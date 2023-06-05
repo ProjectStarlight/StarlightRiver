@@ -214,7 +214,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 		public static float StarwaterGlobalItemGlow;//brightness for item glow, taken from distance of closetest starwater actor (0 - 1 scale)
 		public const float MaxItemGlow = 500f;
 
-		public static Dictionary<int, int> StarlightWaterConversion;//from/to
+		private static Dictionary<int, int> StarlightWaterConversion;//from/to
 
 		//returns 0 if there is no defined type
 		public static int GetConversionType(Item item)
@@ -237,6 +237,11 @@ namespace StarlightRiver.Content.NPCs.Actors
 			return 0;
 		}
 
+		public static bool ShouldItemGlow(Item item)//this does not include vanity items
+		{
+			return StarlightWaterConversion.ContainsKey(item.type);
+		}
+
 		private static void ResetInventoryGlow(StarlightPlayer Player)
 		{
 			//Main.NewText(StarwaterGlobalItemGlow);
@@ -252,12 +257,44 @@ namespace StarlightRiver.Content.NPCs.Actors
 
 			StarlightWaterConversion = new()
 			{
+				#region wood armor types
 				{ ItemID.WoodHelmet, ItemType<StarwoodHat>() },
 				{ ItemID.WoodBreastplate, ItemType<StarwoodChest>() },
 				{ ItemID.WoodGreaves, ItemType<StarwoodBoots>() },
+
+				{ ItemID.RichMahoganyHelmet, ItemType<StarwoodHat>() },
+				{ ItemID.RichMahoganyBreastplate, ItemType<StarwoodChest>() },
+				{ ItemID.RichMahoganyGreaves, ItemType<StarwoodBoots>() },
+
+				{ ItemID.BorealWoodHelmet, ItemType<StarwoodHat>() },
+				{ ItemID.BorealWoodBreastplate, ItemType<StarwoodChest>() },
+				{ ItemID.BorealWoodGreaves, ItemType<StarwoodBoots>() },
+
+				{ ItemID.PalmWoodHelmet, ItemType<StarwoodHat>() },
+				{ ItemID.PalmWoodBreastplate, ItemType<StarwoodChest>() },
+				{ ItemID.PalmWoodGreaves, ItemType<StarwoodBoots>() },
+
+				{ ItemID.EbonwoodHelmet, ItemType<StarwoodHat>() },
+				{ ItemID.EbonwoodBreastplate, ItemType<StarwoodChest>() },
+				{ ItemID.EbonwoodGreaves, ItemType<StarwoodBoots>() },
+
+				{ ItemID.ShadewoodHelmet, ItemType<StarwoodHat>() },
+				{ ItemID.ShadewoodBreastplate, ItemType<StarwoodChest>() },
+				{ ItemID.ShadewoodGreaves, ItemType<StarwoodBoots>() },
+
+				{ ItemID.AshWoodHelmet, ItemType<StarwoodHat>() },
+				{ ItemID.AshWoodBreastplate, ItemType<StarwoodChest>() },
+				{ ItemID.AshWoodGreaves, ItemType<StarwoodBoots>() },
+
+				{ ItemID.PearlwoodHelmet, ItemType<StarwoodHat>() },
+				{ ItemID.PearlwoodBreastplate, ItemType<StarwoodChest>() },
+				{ ItemID.PearlwoodGreaves, ItemType<StarwoodBoots>() },
+				#endregion
+
 				{ ItemID.WoodenBoomerang, ItemType<StarwoodBoomerang>() },
 				{ ItemID.WandofSparking, ItemType<StarwoodStaff>() },
 				{ ItemType<Sling>(), ItemType<StarwoodSlingshot>() },
+
 				{ ItemID.BottledWater, ItemType<StarlightWater>() },
 				{ ItemID.LesserManaPotion, ItemType<StarlightWater>() },
 			};
@@ -295,7 +332,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 
 		public override bool PreDrawInInventory(Item Item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
 		{
-			if (StarwaterConversion.StarwaterGlobalItemGlow != 0 && StarwaterConversion.GetConversionType(Item) != 0)
+			if (StarwaterConversion.StarwaterGlobalItemGlow != 0 && StarwaterConversion.ShouldItemGlow(Item))
 			{
 				RasterizerState RasterizerCullMode = spriteBatch.GraphicsDevice.RasterizerState;
 				SamplerState SamplerMode = spriteBatch.GraphicsDevice.SamplerStates[0];
