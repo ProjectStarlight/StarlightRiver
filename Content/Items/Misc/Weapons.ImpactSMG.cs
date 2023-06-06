@@ -723,7 +723,7 @@ namespace StarlightRiver.Content.Items.Misc
 						}
 
 						if (Main.myPlayer == Projectile.owner)
-							Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<ImpactSMGExplosion>(), (int)(Projectile.damage * (2 + mp.stacks * 0.1f)), 3f, Projectile.owner, 65 + Owner.GetModPlayer<ImpactSMGPlayer>().stacks * 10);
+							Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<ImpactSMGExplosion>(), (int)(Projectile.damage * (2 + mp.stacks * 0.1f)), 3f, Projectile.owner, 28 + Owner.GetModPlayer<ImpactSMGPlayer>().stacks * 7);
 
 						exploding = false;
 						exploded = true;
