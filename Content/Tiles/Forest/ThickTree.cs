@@ -208,7 +208,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 			TileID.Sets.PreventsTileRemovalIfOnTopOfIt[Type] = true;
 			TileID.Sets.PreventsTileReplaceIfOnTopOfIt[Type] = true;
 
-			this.QuickSetFurniture(4, 4, 0, SoundID.Dig, false, new Color(169, 125, 93));
+			this.QuickSetFurniture(4, 4, 0, SoundID.Dig, true, new Color(169, 125, 93));//a
 		}
 
 		public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
