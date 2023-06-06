@@ -26,7 +26,8 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			Item.mana = 1;
 			Item.width = 32;
 			Item.height = 32;
-			Item.damage = 8;
+			Item.damage = 16;
+			Item.crit = 6;
 			Item.useStyle = ItemUseStyleID.Shoot;
 
 			Item.useTime = 2;
@@ -112,14 +113,15 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 					}
 
 					Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), starPos, Projectile.velocity.RotatedBy(MathHelper.ToRadians(i * 90)) * 1.5f, ModContent.ProjectileType<RuneStaffProjectile>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);
-					(proj.ModProjectile as RuneStaffProjectile).mousePosition = OwnerMouse.Value;
 					proj.timeLeft = 240 + i * 10;
 				}
 
 				Helpers.Helper.PlayPitched("Magic/HolyCastShort", 1f, 1f, starPos);
 
-				Owner.statMana -= 15;
-				Owner.manaRegenDelay += 120;
+				Owner.CheckMana(15, true);
+				Owner.manaRegenDelay += 240;
+
+				Core.Systems.CameraSystem.CameraSystem.shake += 2;
 			}
 
 			if (shooting)
@@ -177,10 +179,10 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 				}			
 			}
 
-			if (Lifetime % 30 == 0)
+			if (Lifetime % 60 == 0)
 			{
-				Owner.statMana -= 3;
-				Owner.manaRegenDelay += 60;
+				Owner.CheckMana(1, true);
+				Owner.manaRegenDelay += 120;
 			}
 			
 			if (Main.rand.NextBool((int)MathHelper.Lerp(20, 2, TreasureLerp)))
@@ -340,9 +342,6 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 	class RuneStaffProjectile : ModProjectile
 	{
-		public bool hasHitMouse;
-
-		public Vector2 mousePosition;
 		public Player Owner => Main.player[Projectile.owner];
 		public override string Texture => AssetDirectory.CaveTempleItem + "RuneStaff";
 		public override void SetStaticDefaults()
@@ -362,22 +361,37 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 			Projectile.hostile = false;
 			Projectile.tileCollide = true;
+
+			Projectile.DamageType = DamageClass.Magic;
 		}
 
 		public override void AI()
 		{
-			if (Vector2.Distance(Projectile.Center, mousePosition) < 5f && Projectile.timeLeft < 225)
+			NPC target = Main.npc.Where(n => n.CanBeChasedBy() && n.Distance(Projectile.Center) < 1000f && (Collision.CanHitLine(Projectile.Center, 1, 1, n.Center, 1, 1) || Collision.CanHitLine(Owner.Center, 1, 1, n.Center, 1, 1))).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
+
+			if (target != null)
 			{
-				hasHitMouse = true;
+				if (Projectile.timeLeft < 225)
+				{
+					Projectile.velocity += Vector2.Normalize(Projectile.Center - target.Center) * -0.75f;
+
+					Projectile.velocity = Vector2.Clamp(Projectile.velocity, new Vector2(-12, -12), new Vector2(12, 12));
+				}
+
+				Projectile.tileCollide = !Collision.CanHitLine(Owner.Center, 1, 1, target.Center, 1, 1);
+			}
+			else
+			{
+				Projectile.tileCollide = true;
+
+				Projectile.velocity *= 0.98f;
+				if (Projectile.velocity.Length() < 0.1f)
+					Projectile.Kill();
 			}
 
-			if (Projectile.timeLeft < 225 && Projectile.timeLeft > 190 && !hasHitMouse)
-			{
-				Projectile.velocity += Vector2.Normalize(Projectile.Center - mousePosition) * -0.75f;
-			}
+			Projectile.rotation += Utils.Clamp(Projectile.velocity.Length() * 0.05f, 0.01f, 0.2f);
 
-			Projectile.rotation += 0.15f;
-
+			
 			if (Main.rand.NextBool(10))
 				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Vector2.Zero, 0, new Color(175, 155, 25), 0.45f);
 		}
