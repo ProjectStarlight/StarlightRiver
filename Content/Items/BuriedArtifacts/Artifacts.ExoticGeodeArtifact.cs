@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Exotic Geode");
-			Tooltip.SetDefault("'Incredibly shiny'\nCan be used at an extractinator");
+			Tooltip.SetDefault("'Incredibly shiny'\nAn extractinator might be able to break it apart...");
 			ItemID.Sets.ExtractinatorMode[Item.type] = Item.type;
 		}
 
