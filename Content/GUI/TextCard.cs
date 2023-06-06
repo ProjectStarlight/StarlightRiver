@@ -54,11 +54,13 @@ namespace StarlightRiver.Content.GUI
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
+			Recalculate();
+
 			int TitleLength = (int)(Terraria.GameContent.FontAssets.DeathText.Value.MeasureString(title).X * 0.65f * textScale) / 2;
 			int MessageLength = (int)(Terraria.GameContent.FontAssets.DeathText.Value.MeasureString(message).X * 0.4f * textScale) / 2;
 			int Longest = MessageLength > TitleLength ? MessageLength : TitleLength;
-			int startY = (int)(Main.screenHeight * Main.UIScale) / 5;
-			int startX = (int)(Main.screenWidth * Main.UIScale) / 2;
+			int startY = Main.screenHeight / 5;
+			int startX = Main.screenWidth / 2;
 			float slide = 0.2f + Helpers.Helper.BezierEase(Math.Clamp(timer / 60f, 0f, 1f)) * 0.8f;
 			float slide2 = 0.4f + Helpers.Helper.BezierEase(Math.Clamp(timer / 60f, 0f, 1f)) * 0.6f;
 			Color textColor = Color.White * ((timer - 60) / 60f);

@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Bosses.SquidBoss;
+﻿using StarlightRiver.Content.Bosses.GlassMiniboss;
+using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.NPCs.Actors;
 using StarlightRiver.Core.Systems.DummyTileSystem;
@@ -110,6 +111,9 @@ namespace StarlightRiver.Core
 		{
 			if (!Main.dedServ)
 				RichTextBox.CloseDialogue(); //Safeguard
+
+			if (!Main.npc.Any(n => n.active && n.type == NPCType<GlassweaverWaiting>()))
+				NPC.NewNPC(null, (int)GlassweaverWaiting.ArenaPos.X, (int)GlassweaverWaiting.ArenaPos.Y, NPCType<GlassweaverWaiting>(), 0, 0, StarlightWorld.HasFlag(WorldFlags.GlassweaverDowned) ? 3 : 2);
 
 			vitricBiome.X = 0;
 			vitricBiome.Y = 0;

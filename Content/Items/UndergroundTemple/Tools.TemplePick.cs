@@ -144,6 +144,9 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 				{
 					int i = (int)(Player.Center.X / 16 + Direction);
 					int j = (int)(Player.position.Y / 16) + k;
+					Tile tile = Main.tile[i, j];
+					if (!tile.HasTile || Main.tileHammer[tile.TileType] || Main.tileAxe[tile.TileType])
+						continue;
 					Player.PickTile(i, j, 45);
 				}
 			}

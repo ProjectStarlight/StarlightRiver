@@ -7,6 +7,7 @@ using StarlightRiver.Helpers;
 using System;
 using System.Linq;
 using Terraria.GameContent.Bestiary;
+using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.SquidBoss
@@ -190,7 +191,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			{
 				int x = (int)(NPC.Center.X / 16) - 50 + k;
 				int y = (int)(NPC.Center.Y / 16) + 28;
-				if (WorldGen.InWorld(x, y))
+				if (WorldGen.InWorld(x, y) && Framing.GetTileSafely(x, y).TileType == TileID.Tombstones)
 					WorldGen.KillTile(x, y);
 			}
 

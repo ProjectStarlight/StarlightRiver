@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.Items.Forest
 	{
 		public override string Texture => AssetDirectory.ForestItem + Name;
 
-		public BricklayersMallet() : base("Bricklayer's Mallet", "Doubles block placement and tool range\nDecreases mining speed by 50% for blocks outside your original range") { }
+		public BricklayersMallet() : base("Bricklayer's Mallet", "Doubles block placement and tool range\nDecreases mining speed by 33% for blocks outside your original range") { }
 
 		public override void Load()
 		{

@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Skullbuster");
-			Tooltip.SetDefault("Right click to throw 4 skullbombs \nRelease right click to shoot them all in quick succession");
+			Tooltip.SetDefault("<right> to throw 4 skullbombs \nRelease <right> to shoot them all in quick succession");
 		}
 
 		public override void SetDefaults()

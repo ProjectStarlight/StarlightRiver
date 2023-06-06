@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public static MethodInfo? AI019Spears_Info;
 		public static Action<Projectile>? AI019Spears;
 
-		public SpearBook() : base("Snake Technique", "Teaches you the Art of the Spear, granting all spear weapons a new combo attack\nThe last strike in the combo deals increased damage and knockback\nRight click to deter enemies with a flurry of stabs") { }
+		public SpearBook() : base("Snake Technique", "Teaches you the Art of the Spear, granting all spear weapons a new combo attack\nThe last strike in the combo deals increased damage and knockback\n<right> to deter enemies with a flurry of stabs") { }
 
 		public override string Texture => AssetDirectory.MiscItem + "SpearBook";
 
