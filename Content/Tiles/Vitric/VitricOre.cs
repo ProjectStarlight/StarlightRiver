@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			TileID.Sets.PreventsTileRemovalIfOnTopOfIt[Type] = true;
 
 			var bottomAnchor = new AnchorData(Terraria.Enums.AnchorType.SolidTile, 2, 0);
-			this.QuickSetFurniture(2, 3, DustType<Air>(), SoundID.Shatter, new Color(200, 255, 230), 18, false, false, "Vitric Ore", bottomAnchor);
+			this.QuickSetFurniture(2, 3, DustType<GlassGravity>(), SoundID.Shatter, new Color(200, 255, 230), 18, false, false, "Vitric Ore", bottomAnchor);
 		}
 
 		public override bool CanExplode(int i, int j)
@@ -89,7 +89,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void SetStaticDefaults()
 		{
-			this.QuickSetFurniture(2, 2, DustType<Air>(), SoundID.Shatter, false, new Color(200, 255, 230), false, false, "Vitric Ore");
+			this.QuickSetFurniture(2, 2, DustType<GlassGravity>(), SoundID.Shatter, false, new Color(200, 255, 230), false, false, "Vitric Ore");
 			MinPick = int.MaxValue;
 			TileID.Sets.Ore[Type] = true;
 		}
