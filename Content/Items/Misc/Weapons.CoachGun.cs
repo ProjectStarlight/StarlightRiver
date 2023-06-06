@@ -48,6 +48,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.shootSpeed = 12f;
 			Item.useAmmo = AmmoID.Bullet;
 			Item.autoReuse = true;
+			Item.value = Item.sellPrice(gold: 2);
 		}
 
 		public override void AddRecipes()

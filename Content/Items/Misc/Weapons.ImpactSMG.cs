@@ -41,6 +41,8 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.noUseGraphic = true;
 			Item.channel = true;
 			Item.useAmmo = AmmoID.Bullet;
+
+			Item.value = Item.sellPrice(gold: 2);
 		}
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)

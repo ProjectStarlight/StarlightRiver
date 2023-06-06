@@ -57,6 +57,8 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			Item.noMelee = true;
 			Item.channel = true;
 			Item.knockBack = 1f;
+
+			Item.value = Item.sellPrice(gold: 1);
 		}
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)

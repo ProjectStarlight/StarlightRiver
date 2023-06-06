@@ -39,7 +39,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.noUseGraphic = true;
 			Item.noMelee = true;
 			Item.autoReuse = false;
-			Item.value = Item.sellPrice(0, 0, 20, 0);
+			Item.value = Item.sellPrice(0, 1, 50, 0);
 			Item.rare = ItemRarityID.Blue;
 		}
 

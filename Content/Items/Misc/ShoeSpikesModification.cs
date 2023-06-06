@@ -49,18 +49,12 @@ namespace StarlightRiver.Content.Items.Misc
 				Recipe recipe = Main.recipe[i];
 
 				if (recipe.TryGetIngredient(ItemID.ShoeSpikes, out Item item))
-				{
-					ShoeSpikeAccessories.Add(item.type);
+				{					
+					ShoeSpikeAccessories.Add(recipe.createItem.type);
 				}
-
-				if (recipe.TryGetIngredient(ItemID.ClimbingClaws, out Item item2))
+				else if (recipe.TryGetIngredient(ItemID.TigerClimbingGear, out Item item2))
 				{
-					ShoeSpikeAccessories.Add(item2.type);
-				}
-
-				if (recipe.TryGetIngredient(ItemID.TigerClimbingGear, out Item item3))
-				{
-					ShoeSpikeAccessories.Add(item3.type);
+					ShoeSpikeAccessories.Add(recipe.createItem.type);
 				}
 			}
 		}
