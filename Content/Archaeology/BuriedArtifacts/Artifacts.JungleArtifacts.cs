@@ -35,6 +35,8 @@ namespace StarlightRiver.Content.Archaeology.BuriedArtifacts
 
 	public class NaturesGiftArtifact : JungleArtifact
 	{
+		public override string TexturePath => $"Terraria/Images/Item_{ItemID.NaturesGift}";
+
 		public override Vector2 Size => new(16, 16);
 
 		public override float SpawnChance => 0.35f;
