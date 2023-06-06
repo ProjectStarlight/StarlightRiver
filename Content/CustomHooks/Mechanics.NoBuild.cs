@@ -23,6 +23,8 @@ namespace StarlightRiver.Content.CustomHooks
 			On_WorldGen.PlaceWire3 += DontPlaceWire3;
 			On_WorldGen.PlaceWire4 += DontPlaceWire4;
 			On_WorldGen.PlaceActuator += DontPlaceActuator;
+			On_WorldGen.KillTile += DontExplodeAtRuntime;
+			On_Player.CheckForGoodTeleportationSpot += DontTeleport;
 
 		}
 
@@ -173,6 +175,30 @@ namespace StarlightRiver.Content.CustomHooks
 			}
 
 			return orig(i, j, type, mute, forced, plr, style);
+		}
+
+		private void DontExplodeAtRuntime(On_WorldGen.orig_KillTile orig, int i, int j, bool fail, bool effectOnly, bool noItem)
+		{
+			if (IsProtected(i, j) && !WorldGen.generatingWorld)
+			{
+				FailFX(new Point16(i, j));
+			}
+
+			orig(i, j, fail, effectOnly, noItem);
+		}
+
+		private Vector2 DontTeleport(On_Player.orig_CheckForGoodTeleportationSpot orig, Player self, ref bool canSpawn, int teleportStartX, int teleportRangeX, int teleportStartY, int teleportRangeY, Player.RandomTeleportationAttemptSettings settings)
+		{
+			Vector2 result = orig(self, ref canSpawn, teleportStartX, teleportRangeX, teleportStartY, teleportRangeY, settings);
+
+			// If invalid spot, recurse untill a valid one is found
+			if (IsProtected((int)result.X, (int)result.Y))
+			{
+				settings.attemptsBeforeGivingUp--;
+				self.CheckForGoodTeleportationSpot(ref canSpawn, teleportStartX, teleportRangeX, teleportStartY, teleportRangeY, settings);
+			}
+
+			return result;
 		}
 
 		public override bool CanUseItem(Item Item, Player player)
