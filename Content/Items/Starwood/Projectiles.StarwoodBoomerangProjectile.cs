@@ -177,7 +177,7 @@ namespace StarlightRiver.Content.Items.Starwood
 			}
 			else if (empowered)
 			{
-				modifiers.SourceDamage += 1.5f;
+				modifiers.SourceDamage *= 2f;
 			}
 		}
 
