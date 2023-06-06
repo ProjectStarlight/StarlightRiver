@@ -233,7 +233,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
 		{
-			return spawnInfo.Player.InModBiome(GetInstance<VitricDesertBiome>()) ? 100 : 0;
+			return spawnInfo.Player.InModBiome(GetInstance<VitricDesertBiome>()) ? 60 : 0;
 		}
 
 		public override void ModifyNPCLoot(NPCLoot npcLoot)

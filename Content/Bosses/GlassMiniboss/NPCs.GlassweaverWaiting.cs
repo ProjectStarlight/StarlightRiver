@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public Player talkingTo;
 
-		Vector2 ArenaPos => StarlightWorld.vitricBiome.TopLeft() * 16 + new Vector2(0, 80 * 16) + new Vector2(0, 256);
+		public static Vector2 ArenaPos => StarlightWorld.vitricBiome.TopLeft() * 16 + new Vector2(0, 80 * 16) + new Vector2(0, 256);
 
 		public override string Texture => AssetDirectory.Glassweaver + Name;
 

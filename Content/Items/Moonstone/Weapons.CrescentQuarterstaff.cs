@@ -34,8 +34,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Item.DamageType = DamageClass.Melee;
 			Item.width = 36;
 			Item.height = 44;
-			Item.useTime = 12;
-			Item.useAnimation = 12;
+			Item.useTime = 25;
+			Item.useAnimation = 25;
 			Item.reuseDelay = 20;
 			Item.channel = true;
 			Item.useStyle = ItemUseStyleID.Shoot;

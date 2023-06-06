@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			DisplayName.SetDefault("Thunderbuss");
 
 			Tooltip.SetDefault("Fires powerful lightning at enemies in a cone\n" +
-				"Right click to fire an explosive lightning orb, attracting and boosting your lightning\n" +
+				"<right> to fire an explosive lightning orb, attracting and boosting your lightning\n" +
 				"'Crush the path of most resistance'");
 		}
 

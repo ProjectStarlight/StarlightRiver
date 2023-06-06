@@ -22,8 +22,8 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.width = 16;
 			Item.height = 16;
 			Item.useStyle = ItemUseStyleID.Shoot;
-			Item.useTime = 16;
-			Item.useAnimation = 16;
+			Item.useTime = 20;
+			Item.useAnimation = 20;
 			Item.shootSpeed = 1f;
 			Item.knockBack = 4f;
 			Item.UseSound = SoundID.Item116;
@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.channel = true;
 			Item.autoReuse = true;
 			Item.DamageType = DamageClass.Ranged;
-			Item.damage = 16;
+			Item.damage = 9;
 			Item.useAmmo = AmmoID.Bullet;
 			Item.rare = ItemRarityID.Green;
 		}
