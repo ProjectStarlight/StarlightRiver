@@ -10,12 +10,12 @@ namespace StarlightRiver.Content.Archaeology
 	{
 		public override void Load()
 		{
-			On_Main.DoDraw_DrawNPCsBehindTiles += DrawArtifacts;
+			On_Main.DoDraw_Tiles_Solid += DrawArtifacts;
 		}
 
 		public override void Unload()
 		{
-			On_Main.DoDraw_DrawNPCsBehindTiles -= DrawArtifacts;
+			On_Main.DoDraw_Tiles_Solid -= DrawArtifacts;
 		}
 
 		public override void PreUpdateDusts()
@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Archaeology
 			ModContent.GetInstance<ArchaeologyMapLayer>().CalculateDrawables();
 		}
 
-		public void DrawArtifacts(On_Main.orig_DoDraw_DrawNPCsBehindTiles orig, Main self)
+		public void DrawArtifacts(On_Main.orig_DoDraw_Tiles_Solid orig, Main self)
 		{
 			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 			foreach (KeyValuePair<int, TileEntity> item in TileEntity.ByID)
