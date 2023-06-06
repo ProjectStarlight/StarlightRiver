@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Item.mana = 12;
 			Item.width = 40;
 			Item.height = 40;
-			Item.value = Item.sellPrice(0, 0, 80, 0);
+			Item.value = Item.sellPrice(0, 2, 0, 0);
 			Item.rare = ItemRarityID.Green;
 			Item.knockBack = 2.5f;
 			Item.UseSound = SoundID.Item25;

@@ -33,6 +33,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Item.shootSpeed = 60;
 			Item.rare = Terraria.ID.ItemRarityID.Green;
 			Item.autoReuse = true;
+
+			Item.value = Item.sellPrice(gold: 2);
 		}
 
 		public override ModItem Clone(Item newEntity)

@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.CameraSystem;
+﻿using StarlightRiver.Content.Items.Gravedigger;
+using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -163,6 +164,22 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			spriteBatch.Draw(glowTex, position + new Vector2(-50, -65), null, color, 0f, origin, 1f, 0f, 0f);
 
 			return false;
+		}
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.Ebonwood, 30);
+			recipe.AddIngredient<LivingBlood>(10);
+			recipe.AddIngredient(ItemID.DemoniteBar, 10);
+			recipe.AddTile(TileID.DemonAltar);
+			recipe.Register();
+
+			recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.Shadewood, 30);
+			recipe.AddIngredient<LivingBlood>(10);
+			recipe.AddIngredient(ItemID.CrimtaneBar, 10);
+			recipe.AddTile(TileID.DemonAltar);
+			recipe.Register();
 		}
 	}
 

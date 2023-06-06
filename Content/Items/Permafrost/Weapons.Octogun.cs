@@ -36,6 +36,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			Item.rare = ItemRarityID.Green;
 			Item.autoReuse = true;
+
+			Item.value = Item.sellPrice(gold: 2);
 		}
 
 		public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
