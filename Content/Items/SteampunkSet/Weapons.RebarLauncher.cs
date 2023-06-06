@@ -68,6 +68,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			recipe.AddIngredient(ItemID.HellstoneBar, 12);
 			recipe.AddIngredient(ModContent.ItemType<AncientGear>(), 6);
 			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 

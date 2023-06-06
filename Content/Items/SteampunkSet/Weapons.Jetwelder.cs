@@ -88,6 +88,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			recipe.AddIngredient<SandstoneChunk>(5);
 			recipe.AddIngredient(ModContent.ItemType<AncientGear>(), 6);
 			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 

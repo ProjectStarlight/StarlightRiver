@@ -37,6 +37,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			recipe.AddIngredient(ItemID.DesertFossil, 15);
 			recipe.AddIngredient(ModContent.ItemType<AncientGear>(), 4);
 			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 

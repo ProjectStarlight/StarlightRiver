@@ -53,6 +53,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			recipe.AddIngredient<Bladesaw>();
 			recipe.AddIngredient(ModContent.ItemType<AncientGear>(), 6);
 			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 
