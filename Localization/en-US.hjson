@@ -3561,6 +3561,8 @@ Mods: {
 			GauntletSpawner.DisplayName: Gauntlet Spawner
 			SpawnEgg.DisplayName: Spawn Egg
 			PalestoneDummy.DisplayName: Pale Slash
+			RuneStaffHoldout.DisplayName: Shine Staff
+			RuneStaffHoldoutFlash.DisplayName: Shine Staff
 		}
 
 		Tiles: {
