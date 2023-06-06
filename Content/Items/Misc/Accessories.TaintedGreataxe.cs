@@ -39,7 +39,9 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ModifyHitNPCWithProj(Player player, Projectile proj, NPC target, ref NPC.HitModifiers hit)
 		{
-			if (Main.projectile[ProjectileIndex].ModProjectile is TaintedGreataxeProjectile greatAxe)
+			TaintedGreataxe item = GetEquippedInstance(player) as TaintedGreataxe;
+
+			if (Main.projectile[item.ProjectileIndex].ModProjectile is TaintedGreataxeProjectile greatAxe)
 			{
 				if (Equipped(player) && greatAxe.stickyAI)
 				{
@@ -59,7 +61,9 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ModifyHitNPC(Player player, Item Item, NPC target, ref NPC.HitModifiers hit)
 		{
-			if (Main.projectile[ProjectileIndex].ModProjectile is TaintedGreataxeProjectile greatAxe)
+			TaintedGreataxe item = GetEquippedInstance(player) as TaintedGreataxe;
+
+			if (Main.projectile[item.ProjectileIndex].ModProjectile is TaintedGreataxeProjectile greatAxe)
 			{
 				if (Equipped(player) && greatAxe.stickyAI)
 				{
@@ -80,7 +84,9 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void OnHitNPCWithProj(Player player, Projectile proj, NPC target, NPC.HitInfo info, int damageDone)
 		{
-			if (Main.projectile[ProjectileIndex].ModProjectile is TaintedGreataxeProjectile greatAxe)
+			TaintedGreataxe item = GetEquippedInstance(player) as TaintedGreataxe;
+
+			if (Main.projectile[item.ProjectileIndex].ModProjectile is TaintedGreataxeProjectile greatAxe)
 			{
 				if (Equipped(player))
 				{
@@ -107,7 +113,9 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void OnHitNPC(Player player, Item Item, NPC target, NPC.HitInfo info, int damageDone)
 		{
-			if (Main.projectile[ProjectileIndex].ModProjectile is TaintedGreataxeProjectile greatAxe)
+			TaintedGreataxe item = GetEquippedInstance(player) as TaintedGreataxe;
+
+			if (Main.projectile[item.ProjectileIndex].ModProjectile is TaintedGreataxeProjectile greatAxe)
 			{
 				if (Equipped(player))
 				{
