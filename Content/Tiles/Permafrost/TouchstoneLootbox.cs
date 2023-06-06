@@ -1,6 +1,8 @@
-﻿using StarlightRiver.Core.Systems;
+﻿using StarlightRiver.Content.Items.Permafrost;
+using StarlightRiver.Core.Systems;
 using System.Collections.Generic;
 using Terraria.ID;
+using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Permafrost
@@ -9,11 +11,13 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 	{
 		public override string Texture => AssetDirectory.PermafrostTile + Name;
 
+		public override int HoverItemIcon => ModContent.ItemType<TouchstoneLootboxItem>();
+
 		internal override List<Loot> GoldLootPool => new()
 		{
-				new Loot(ItemType<Items.UndergroundTemple.TemplePick>(), 1),
-				new Loot(ItemType<Items.UndergroundTemple.TempleSpear>(), 1),
-				new Loot(ItemType<Items.UndergroundTemple.TempleRune>(), 1)
+				new Loot(ItemID.BlizzardinaBottle, 1),
+				new Loot(ItemID.FlurryBoots, 1),
+				new Loot(ItemType<BookOfFrost>(), 1)
 			};
 
 		internal override List<Loot> SmallLootPool => new()
@@ -26,12 +30,14 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 				new Loot(ItemID.PlatinumBar, 10, 20),
 				new Loot(ItemID.Diamond, 1, 1),
 				new Loot(ItemID.IceBlock, 200, 800),
-				new Loot(ItemType<AuroraIceBar>(), 2, 5)
+				new Loot(ItemType<AuroraIceBar>(), 2, 5),
+				new Loot(ItemType<SquidBossSpawn>(), 1, 1)
 			};
 
 		public override void SafeSetDefaults()
 		{
-			QuickBlock.QuickSetFurniture(this, 2, 2, DustID.GoldCoin, SoundID.Tink, false, new Color(151, 151, 151));
+			TileObjectData.newTile.DrawYOffset = 2;
+			QuickBlock.QuickSetFurniture(this, 2, 2, DustID.Stone, SoundID.Tink, false, new Color(151, 151, 151));
 		}
 	}
 

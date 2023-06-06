@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			Item.CloneDefaults(ItemID.QueenSpiderStaff);
 			Item.sentry = true;
-			Item.damage = 14;
+			Item.damage = 6;
 			Item.DamageType = DamageClass.Summon;
 			Item.mana = 15;
 			Item.knockBack = 0f;
@@ -381,6 +381,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			return false;
 		}
+
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
 			float useless = 0f;
@@ -399,7 +400,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			if (!rightClickMode)
 			{
-				modifiers.SourceDamage *= 1f + timeSpentOnTarget / 720f;
+				modifiers.SourceDamage *= 1f + timeSpentOnTarget / 720f * 0.5f;
 
 				if (target != targetNPC)
 					modifiers.SourceDamage *= 0.5f;
@@ -817,7 +818,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.03f);
@@ -893,7 +894,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				}
 			}
 
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 }

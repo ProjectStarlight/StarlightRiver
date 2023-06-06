@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override void HoldItem(Player player)
 		{
-			if (charge == 29)
+			if (player.channel && charge == 29)
 			{
 				Helper.PlayPitched("MagicAttack", 1, 1, player.Center);
 
@@ -73,6 +73,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 				{
 					Dust.NewDustPerfect(player.Center, ModContent.DustType<Dusts.Cinder>(), Vector2.One.RotatedBy(k / 40f * 6.28f) * 1.5f, 0, GetColor(k / 40f * 6.28f * 3), Main.rand.NextFloat(0.5f, 1));
 				}
+
+				charge = 30;
 			}
 
 			if (player.channel && charge < 30)
@@ -205,7 +207,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.01f);

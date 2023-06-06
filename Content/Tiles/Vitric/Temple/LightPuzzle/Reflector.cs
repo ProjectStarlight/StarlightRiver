@@ -211,7 +211,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 			effect.Parameters["uColor"].SetValue(color2.ToVector3() * 0.35f);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			float height = texBeam.Height / 10f * (1 - opacity);
 			int width = (int)(Projectile.Center - endPoint).Length() - 6;
@@ -233,7 +233,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D impactTex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
 			Texture2D impactTex2 = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ItemGlow").Value;

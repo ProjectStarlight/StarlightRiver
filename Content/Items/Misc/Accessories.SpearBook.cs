@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public static MethodInfo? AI019Spears_Info;
 		public static Action<Projectile>? AI019Spears;
 
-		public SpearBook() : base("Snake Technique", "Teaches you the Art of the Spear, granting all spear weapons a new combo attack\nThe last strike in the combo deals increased damage and knockback\nRight click to deter enemies with a flurry of stabs") { }
+		public SpearBook() : base("Snake Technique", "Teaches you the Art of the Spear, granting all spear weapons a new combo attack\nThe last strike in the combo deals increased damage and knockback\n<right> to deter enemies with a flurry of stabs") { }
 
 		public override string Texture => AssetDirectory.MiscItem + "SpearBook";
 
@@ -355,7 +355,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Main.spriteBatch.Draw(texture, Projectile.Center - Main.screenPosition, default, lightColor * Projectile.Opacity, Projectile.rotation + rotationOffset + slashRotationOffset, origin, Projectile.scale, effects, 0);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			return false;
 		}
@@ -700,7 +700,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);

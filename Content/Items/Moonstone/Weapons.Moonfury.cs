@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override void SetDefaults()
 		{
-			Item.damage = 25;
+			Item.damage = 28;
 			Item.DamageType = DamageClass.Melee;
 			Item.width = 36;
 			Item.height = 38;
@@ -75,7 +75,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 			direction *= -10;
 			velocity = direction;
-			damage *= 2;
+			damage = (int)(damage * 1.5f);
 		}
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -83,7 +83,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			if (cooldown > 0)
 				return false;
 
-			cooldown = 75;
+			cooldown = 95;
 			return true;
 		}
 
@@ -92,11 +92,13 @@ namespace StarlightRiver.Content.Items.Moonstone
 			if (target.HasBuff(ModContent.BuffType<MoonfuryDebuff>()))
 			{
 				CameraSystem.shake += 10;
+
 				int index = target.FindBuffIndex(ModContent.BuffType<MoonfuryDebuff>());
 				target.DelBuff(index);
+
 				Helper.PlayPitched("Magic/Shadow1", 1, Main.rand.NextFloat(-0.1f, 0.1f));
-				modifiers.SourceDamage += 5;
-				modifiers.SourceDamage += (int)(target.defense / 5f);
+				modifiers.FlatBonusDamage += 20;
+				modifiers.FlatBonusDamage += (int)(target.defense / 5f);
 				Projectile.NewProjectile(player.GetSource_ItemUse(Item), target.Center, Vector2.Zero, ModContent.ProjectileType<MoonfuryRing>(), 0, 0, player.whoAmI);
 
 				for (int i = 0; i < 16; i++)
@@ -262,7 +264,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
@@ -386,7 +388,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);

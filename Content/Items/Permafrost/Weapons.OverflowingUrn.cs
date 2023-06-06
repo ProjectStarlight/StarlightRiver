@@ -419,7 +419,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Effect effect1 = Filters.Scene["CycloneIce"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect1.Parameters["transformMatrix"].SetValue(world * view * projection);
@@ -443,7 +443,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			trail?.Render(effect1);
 			Main.graphics.GraphicsDevice.BlendState = oldState;
 
-			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 

@@ -73,7 +73,7 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
 			Texture2D texStar = ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/ItemGlow").Value;
@@ -93,7 +93,7 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			return true;
 		}

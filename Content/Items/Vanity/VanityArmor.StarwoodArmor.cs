@@ -38,12 +38,13 @@ namespace StarlightRiver.Content.Items.Vanity
 			isEmpowered = player.GetModPlayer<StarlightPlayer>().empowered;
 		}
 
-		public void DrawArmorLayer(PlayerDrawSet info)
+		public void DrawArmorLayer(PlayerDrawSet info, IArmorLayerDrawable.SubLayer subLayer)
 		{
+			int tempFixOffset = info.drawPlayer.gravDir == 1 ? -17 : 11;//todo: find out where in the drawing I accidentally hardcoded for the normal hat
 			if (info.drawPlayer.GetModPlayer<StarlightPlayer>().empowered)
-				ArmorHelper.QuickDrawHeadFramed(info, AssetDirectory.VanityItem + "AncientStarwoodHat_Worn_Alt", 1, new Vector2(0, -17));
+				ArmorHelper.QuickDrawHeadFramed(info, AssetDirectory.VanityItem + "AncientStarwoodHat_Worn_Alt", 1, new Vector2(0, tempFixOffset));
 			else
-				ArmorHelper.QuickDrawHeadFramed(info, AssetDirectory.VanityItem + "AncientStarwoodHat_Worn", 1, new Vector2(0, -17));
+				ArmorHelper.QuickDrawHeadFramed(info, AssetDirectory.VanityItem + "AncientStarwoodHat_Worn", 1, new Vector2(0, tempFixOffset));
 		}
 	}
 
@@ -80,7 +81,7 @@ namespace StarlightRiver.Content.Items.Vanity
 			isEmpowered = Player.GetModPlayer<StarlightPlayer>().empowered;
 		}
 
-		public void DrawArmorLayer(PlayerDrawSet info)
+		public void DrawArmorLayer(PlayerDrawSet info, IArmorLayerDrawable.SubLayer subLayer)
 		{
 			if (info.drawPlayer.GetModPlayer<StarlightPlayer>().empowered)
 				ArmorHelper.QuickDrawBodyFramed(info, AssetDirectory.VanityItem + "AncientStarwoodChest_Body_Alt", 1, new Vector2(10, 18));
@@ -120,7 +121,7 @@ namespace StarlightRiver.Content.Items.Vanity
 			isEmpowered = Player.GetModPlayer<StarlightPlayer>().empowered;
 		}
 
-		public void DrawArmorLayer(PlayerDrawSet info)
+		public void DrawArmorLayer(PlayerDrawSet info, IArmorLayerDrawable.SubLayer subLayer)
 		{
 			if (info.drawPlayer.GetModPlayer<StarlightPlayer>().empowered)
 				ArmorHelper.QuickDrawLegsFramed(info, AssetDirectory.VanityItem + "AncientStarwoodBoots_Legs_Alt", 1, new Vector2(10, 18));

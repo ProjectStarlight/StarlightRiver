@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
 		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 		{
-			if (i > Main.screenPosition.X / 16 && i < Main.screenPosition.X / 16 + Main.screenWidth / 16 && j > Main.screenPosition.Y / 16 && j < Main.screenPosition.Y / 16 + Main.screenHeight / 16)
+			if (i + 1 > Main.screenPosition.X / 16 && i - 1 < Main.screenPosition.X / 16 + Main.screenWidth / 16 && j + 1 > Main.screenPosition.Y / 16 && j - 1 < Main.screenPosition.Y / 16 + Main.screenHeight / 16)
 			{
 				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Tiles/Overgrow/WallOvergrowGrassFlow").Value;
 				float offset = i * j % 6.28f;

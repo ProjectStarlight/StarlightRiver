@@ -93,7 +93,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 			return Player.armor[0].type == ModContent.ItemType<GeomancerHood>() && Player.armor[1].type == ModContent.ItemType<GeomancerRobe>() && Player.armor[2].type == ModContent.ItemType<GeomancerPants>();
 		}
 
-		public void DrawArmorLayer(PlayerDrawSet info)
+		public void DrawArmorLayer(PlayerDrawSet info, IArmorLayerDrawable.SubLayer subLayer)
 		{
 			GeomancerPlayer modPlayer = info.drawPlayer.GetModPlayer<GeomancerPlayer>();
 			if (modPlayer.SetBonusActive && modPlayer.storedGem != StoredGem.None && info.drawPlayer.armor[10].type == ItemID.None)
@@ -143,15 +143,15 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 		public override void UpdateArmorSet(Player Player)
 		{
-			Player.setBonus = "Kills ands critical strikes with magic have a chance to drop magic gems\n" +
+			Player.setBonus = "Kills and critical strikes with magic have a chance to drop magic gems\n" +
 			"Each gem activates a different effect when picked up\n" +
 			"Obtaining another gem stores the previous effect\n" +
-			"Collecting all breifly activates every effect at once";
+			"Collecting all briefly activates every effect at once";
 
 			Player.GetModPlayer<GeomancerPlayer>().SetBonusActive = true;
 		}
 
-		public void DrawArmorLayer(PlayerDrawSet info)
+		public void DrawArmorLayer(PlayerDrawSet info, IArmorLayerDrawable.SubLayer subLayer)
 		{
 			GeomancerPlayer modPlayer = info.drawPlayer.GetModPlayer<GeomancerPlayer>();
 			if (modPlayer.SetBonusActive && modPlayer.storedGem != StoredGem.None && info.drawPlayer.armor[11].type == ItemID.None)
@@ -190,7 +190,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 			Item.rare = ItemRarityID.Orange;
 		}
 
-		public void DrawArmorLayer(PlayerDrawSet info)
+		public void DrawArmorLayer(PlayerDrawSet info, IArmorLayerDrawable.SubLayer subLayer)
 		{
 			GeomancerPlayer modPlayer = info.drawPlayer.GetModPlayer<GeomancerPlayer>();
 

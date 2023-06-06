@@ -41,10 +41,12 @@ namespace StarlightRiver.Content.Items.Starwood
 			isEmpowered = Player.GetModPlayer<StarlightPlayer>().empowered;
 		}
 
-		public void DrawArmorLayer(PlayerDrawSet info)//custom drawing the hat (todo)
+		public void DrawArmorLayer(PlayerDrawSet info, IArmorLayerDrawable.SubLayer subLayer)
 		{
 			if (info.drawPlayer.GetModPlayer<StarlightPlayer>().empowered)
 				ArmorHelper.QuickDrawHeadFramed(info, AssetDirectory.StarwoodItem + "StarwoodHat_Head_Alt", 1, new Vector2(0, -3));
+			//else
+			//	ArmorHelper.QuickDrawHeadFramed(info, AssetDirectory.StarwoodItem + "StarwoodHat_Head", 1, new Vector2(0, -3));
 		}
 	}
 
@@ -58,6 +60,8 @@ namespace StarlightRiver.Content.Items.Starwood
 		public override void Load()//adds method to Starlight Player event
 		{
 			StarlightPlayer.OnHitNPCEvent += ModifyHitNPCStarwood;
+			StarlightPlayer.OnHitNPCWithProjEvent += ModifyHitNPCWithProjStarwood;
+			StarlightPlayer.ResetEffectsEvent += ResetEmpowerment;
 		}
 
 		public override void SetStaticDefaults()
@@ -86,7 +90,6 @@ namespace StarlightRiver.Content.Items.Starwood
 		{
 			isEmpowered = Player.GetModPlayer<StarlightPlayer>().empowered;
 		}
-
 		public override bool IsArmorSet(Item head, Item body, Item legs)
 		{
 			return head.type == ItemType<StarwoodHat>() &&
@@ -95,7 +98,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
 		public override void UpdateArmorSet(Player Player)
 		{
-			Player.setBonus = "Picking up mana stars empowers Starwood items, temporarily granting them new effects";
+			Player.setBonus = "Picking up mana stars empowers Starwood items, temporarily granting them new effects\nAll enemies have a chance of dropping mana stars on death";
 			StarlightPlayer mp = Player.GetModPlayer<StarlightPlayer>();
 
 			if (mp.empowermentTimer > 0 && ArmorHelper.IsSetEquipped(this, Player)) //checks if complete to disable empowerment if set is removed
@@ -118,10 +121,39 @@ namespace StarlightRiver.Content.Items.Starwood
 				target.GetGlobalNPC<ManastarDrops>().DropStar = true;
 		}
 
-		public void DrawArmorLayer(PlayerDrawSet info)
+		private void ModifyHitNPCWithProjStarwood(Player Player, Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (info.drawPlayer.GetModPlayer<StarlightPlayer>().empowered)
-				ArmorHelper.QuickDrawBodyFramed(info, AssetDirectory.StarwoodItem + "StarwoodChest_Body_Alt", 1, new Vector2(10, 18));
+			if (ArmorHelper.IsSetEquipped(this, Player))
+				target.GetGlobalNPC<ManastarDrops>().DropStar = true;
+		}
+
+		private void ResetEmpowerment(StarlightPlayer modPlayer)
+		{
+			Player player = modPlayer.Player;
+
+			if (!(player.armor[1].ModItem is Starwood.StarwoodChest) || !ArmorHelper.IsSetEquipped(player.armor[1].ModItem, player)) // Checks armor set is off since it does not seem to be called in armor when the set is not complete
+			{
+				modPlayer.empowered = false;
+				modPlayer.empowermentTimer = 0;
+			}
+		}
+
+		public void DrawArmorLayer(PlayerDrawSet info, IArmorLayerDrawable.SubLayer subLayer)
+		{
+			if (subLayer == IArmorLayerDrawable.SubLayer.InFront)
+			{
+				if (info.drawPlayer.GetModPlayer<StarlightPlayer>().empowered)
+					ArmorHelper.QuickDrawFrontArmsFramed(info, AssetDirectory.StarwoodItem + "StarwoodChest_Body_Alt", 1, new Vector2(0, -5));
+				//else//debug
+				//	ArmorHelper.QuickDrawFrontArmsFramed(info, AssetDirectory.StarwoodItem + "StarwoodChest_Body2", 1, new Vector2(0, -5));
+			}
+			else
+			{
+				if (info.drawPlayer.GetModPlayer<StarlightPlayer>().empowered)
+					ArmorHelper.QuickDrawBodyFramed(info, AssetDirectory.StarwoodItem + "StarwoodChest_Body_Alt", 1, new Vector2(0, -5));
+				//else
+				//	ArmorHelper.QuickDrawBodyFramed(info, AssetDirectory.StarwoodItem + "StarwoodChest_Body2", 1, new Vector2(0, -5));
+			}
 		}
 	}
 
@@ -159,7 +191,7 @@ namespace StarlightRiver.Content.Items.Starwood
 			isEmpowered = Player.GetModPlayer<StarlightPlayer>().empowered;
 		}
 
-		public void DrawArmorLayer(PlayerDrawSet info)
+		public void DrawArmorLayer(PlayerDrawSet info, IArmorLayerDrawable.SubLayer subLayer)
 		{
 			if (info.drawPlayer.GetModPlayer<StarlightPlayer>().empowered)
 				ArmorHelper.QuickDrawLegsFramed(info, AssetDirectory.StarwoodItem + "StarwoodBoots_Legs_Alt", 1, new Vector2(10, 18));

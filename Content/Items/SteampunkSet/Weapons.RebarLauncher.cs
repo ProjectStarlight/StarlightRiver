@@ -65,14 +65,9 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();
-			recipe.AddIngredient(ItemID.DemoniteBar, 10);
-			recipe.AddIngredient(ModContent.ItemType<AncientGear>(), 8);
+			recipe.AddIngredient(ItemID.HellstoneBar, 12);
+			recipe.AddIngredient(ModContent.ItemType<AncientGear>(), 6);
 			recipe.AddTile(TileID.Anvils);
-
-			Recipe recipe2 = CreateRecipe();
-			recipe2.AddIngredient(ItemID.CrimtaneBar, 10);
-			recipe2.AddIngredient(ModContent.ItemType<AncientGear>(), 8);
-			recipe2.AddTile(TileID.Anvils);
 		}
 	}
 
@@ -405,7 +400,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Effect effect = Filters.Scene["RebarTrail"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.SteampunkItem + "RebarTrailTexture").Value);

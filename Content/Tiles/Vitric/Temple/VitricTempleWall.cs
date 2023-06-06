@@ -15,6 +15,11 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			DustType = DustType<Dusts.Sand>();
 		}
 
+		public override bool CanExplode(int i, int j)
+		{
+			return false;
+		}
+
 		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 		{
 			Texture2D tex = Request<Texture2D>(AssetDirectory.VitricTile + "VitricTempleWall").Value;

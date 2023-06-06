@@ -1,4 +1,5 @@
 using StarlightRiver.Content.Dusts;
+using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -48,14 +49,11 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();
-			recipe.AddIngredient(ItemID.DemoniteBar, 10);
-			recipe.AddIngredient(ModContent.ItemType<AncientGear>(), 8);
+			recipe.AddIngredient(ItemID.Diamond);
+			recipe.AddIngredient<Bladesaw>();
+			recipe.AddIngredient(ModContent.ItemType<AncientGear>(), 6);
 			recipe.AddTile(TileID.Anvils);
-
-			Recipe recipe2 = CreateRecipe();
-			recipe2.AddIngredient(ItemID.CrimtaneBar, 10);
-			recipe2.AddIngredient(ModContent.ItemType<AncientGear>(), 8);
-			recipe2.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 

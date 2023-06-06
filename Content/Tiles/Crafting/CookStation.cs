@@ -64,13 +64,19 @@ namespace StarlightRiver.Content.Tiles.Crafting
 
 	public class CookStationItem : QuickTileItem
 	{
-		public CookStationItem() : base("Prep Station", "Right click to prepare meals", "CookStation", 0, AssetDirectory.CraftingTile) { }
+		public CookStationItem() : base("Prep Station", "<right> to prepare meals", "CookStation", 0, AssetDirectory.CraftingTile) { }
 
 		public override void AddRecipes()
 		{
 			CreateRecipe()
 			.AddIngredient(ItemID.Wood, 20)
-			.AddIngredient(RecipeGroupID.IronBar, 5)
+			.AddIngredient(ItemID.IronBar, 5)
+			.AddTile(TileID.WorkBenches)
+			.Register();
+
+			CreateRecipe()
+			.AddIngredient(ItemID.Wood, 20)
+			.AddIngredient(ItemID.LeadBar, 5)
 			.AddTile(TileID.WorkBenches)
 			.Register();
 		}

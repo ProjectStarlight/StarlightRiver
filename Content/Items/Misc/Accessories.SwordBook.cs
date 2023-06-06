@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private static List<int> blackListedSwords;
 
-		public SwordBook() : base("Mantis Technique", "Teaches you the Art of the Sword, granting all sword weapons a new combo attack\nRight click to parry, reflecting projectiles") { }
+		public SwordBook() : base("Mantis Technique", "Teaches you the Art of the Sword, granting all sword weapons a new combo attack\n<right> to parry, reflecting projectiles") { }
 
 		public override string Texture => AssetDirectory.MiscItem + "SwordBook";
 
@@ -406,7 +406,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);

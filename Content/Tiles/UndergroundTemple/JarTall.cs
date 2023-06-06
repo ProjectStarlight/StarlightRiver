@@ -17,6 +17,21 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 		public override void SetStaticDefaults()
 		{
 			this.QuickSetFurniture(2, 4, DustType<Dusts.Stamina>(), SoundID.Shatter, false, new Color(204, 91, 50), false, false, "Stamina Jar");
+			MinPick = int.MaxValue;
+			TileID.Sets.PreventsTileRemovalIfOnTopOfIt[Type] = true;
+		}
+
+		public override bool CanExplode(int i, int j)
+		{
+			return false;
+		}
+
+		public override void MouseOver(int i, int j)
+		{
+			Player Player = Main.LocalPlayer;
+			Player.cursorItemIconID = ModContent.ItemType<Items.Hovers.WindsHover>();
+			Player.noThrow = 2;
+			Player.cursorItemIconEnabled = true;
 		}
 
 		public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)

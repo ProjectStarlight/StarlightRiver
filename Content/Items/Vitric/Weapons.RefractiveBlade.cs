@@ -292,7 +292,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount);
@@ -478,13 +478,13 @@ namespace StarlightRiver.Content.Items.Vitric
 			effect.Parameters["uOpacity"].SetValue(prog);
 
 			sb.End();
-			sb.Begin(default, BlendState.Additive, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
+			sb.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			Rectangle target = toRect(pos, (int)(10 * (w + prog)), (int)(30 * (h + prog)));
 			sb.Draw(texRing, target, null, color * prog, Projectile.rotation - 1.57f / 2, texRing.Size() / 2, 0, 0);
 
 			sb.End();
-			sb.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+			sb.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		private Rectangle toRect(Vector2 pos, int w, int h)
@@ -512,7 +512,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			effect.Parameters["uColor"].SetValue(color.ToVector3());
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			float height = texBeam.Height / 4f;
 			int width = (int)(Projectile.Center - endPoint).Length() - 76;
@@ -545,7 +545,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			float opacity = height / (texBeam.Height / 2f) * 0.75f;
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			if (Owner == Main.LocalPlayer)
 			{
@@ -554,7 +554,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D impactTex = Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
 			Texture2D impactTex2 = Request<Texture2D>(AssetDirectory.GUI + "ItemGlow").Value;

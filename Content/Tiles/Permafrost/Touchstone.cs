@@ -1,5 +1,6 @@
-﻿using StarlightRiver.Core.Systems;
-using StarlightRiver.Content.Abilities;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Buffs;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,12 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			Main.tileLighted[Type] = true;
 
 			QuickBlock.QuickSetFurniture(this, 2, 4, DustID.Ice, SoundID.Tink, false, new Color(155, 200, 255), false, false, "Touchstone");
+			MinPick = int.MaxValue;
+		}
+
+		public override bool CanExplode(int i, int j)
+		{
+			return false;
 		}
 
 		public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
@@ -209,6 +216,11 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 		public override void AI()
 		{
+			foreach (Player player in Main.player.Where(n => Vector2.Distance(n.Center, NPC.Center) < 1000))
+			{
+				player.AddBuff(ModContent.BuffType<TouchstoneWispBuff>(), 60);
+			}
+
 			if (owner != Main.LocalPlayer)
 				return;
 
@@ -357,7 +369,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
@@ -368,6 +380,18 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
 			trail?.Render(effect);
+		}
+	}
+
+	class TouchstoneWispBuff : SmartBuff
+	{
+		public override string Texture => "StarlightRiver/Assets/Buffs/ProtectiveShard";
+
+		public TouchstoneWispBuff() : base("Aurora Curiosity", "What lies below?\nIncreased mining speed", false) { }
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+			player.pickSpeed /= 2;
 		}
 	}
 }

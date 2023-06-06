@@ -300,7 +300,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			spriteBatch.End();
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			Effect effect = Filters.Scene["AlphaTextureTrail"].GetShader().Shader;
@@ -309,7 +309,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			effect.Parameters["alpha"].SetValue(Projectile.timeLeft < 10 ? MathHelper.Lerp(1, 0, 1f - Projectile.timeLeft / 10f) : 1);
 
 			trail?.Render(effect);
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		private BezierCurve GetBezierCurve()
@@ -433,7 +433,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		public override void PostDraw(Color lightColor)
 		{
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
 			float sin = 1 + (float)Math.Sin(Projectile.timeLeft * 10);
 			float cos = 1 + (float)Math.Cos(Projectile.timeLeft * 10);
@@ -448,7 +448,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			}
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		private void KillEffects()
@@ -517,7 +517,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.02f);
@@ -528,7 +528,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
 			trail?.Render(effect);
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 }

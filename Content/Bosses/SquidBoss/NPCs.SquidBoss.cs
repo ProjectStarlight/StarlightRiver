@@ -1,6 +1,7 @@
-using StarlightRiver.Content.DropRules;
 using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.DropRules;
 using StarlightRiver.Content.GUI;
+using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Content.Items.Permafrost;
 using StarlightRiver.Content.NPCs.BaseTypes;
 using StarlightRiver.Core.Systems.CameraSystem;
@@ -163,8 +164,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				ItemType<TentacleHook>()
 			});
 
+			normalMode.OnSuccess(ItemDropRule.OneFromOptions(1, new int[]
+			{
+				ItemType<AxeBook>(),
+				ItemType<SwordBook>(),
+				ItemType<SpearBook>()
+			}));
+
 			npcLoot.Add(normalMode);
-			npcLoot.Add(CustomDropRules.onlyInNormalMode(ItemType<SquidFins>(), 4));
 			npcLoot.Add(ItemDropRule.Common(ItemType<Tiles.Trophies.AuroracleTrophyItem>(), 10, 1, 1));
 			npcLoot.Add(ItemDropRule.BossBag(ItemType<SquidBossBag>()));
 		}

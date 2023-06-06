@@ -12,6 +12,11 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 		{
 			QuickBlock.QuickSetWall(this, DustID.Ice, SoundID.Tink, ItemType<AuroraBrickWallItem>(), true, new Color(33, 65, 94));
 		}
+
+		public override bool CanExplode(int i, int j)
+		{
+			return false;
+		}
 	}
 
 	[SLRDebug]

@@ -124,7 +124,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			effect.Parameters["alpha"].SetValue((float)Math.Pow(shieldTimer / 200f, 0.25f));
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			if (flickerTime > 0 && flickerTime < 16)
 			{
@@ -146,7 +146,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			spriteBatch.Draw(target, PlayerTarget.getPlayerTargetPosition(drawPlayer.whoAmI), PlayerTarget.getPlayerTargetSourceRectangle(drawPlayer.whoAmI), Color.White);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 }

@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			DisplayName.SetDefault("Thunderbuss");
 
 			Tooltip.SetDefault("Fires powerful lightning at enemies in a cone\n" +
-				"Right click to fire an explosive lightning orb, attracting and boosting your lightning\n" +
+				"<right> to fire an explosive lightning orb, attracting and boosting your lightning\n" +
 				"'Crush the path of most resistance'");
 		}
 
@@ -510,7 +510,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			Effect effect = Filters.Scene["LightningTrail"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
@@ -784,7 +784,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			Effect effect = Filters.Scene["LightningTrail"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);

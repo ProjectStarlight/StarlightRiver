@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 				fadeOut = allTimer / 60f;
 
 			spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 			Effect effect = Filters.Scene["RainbowAura"].GetShader().Shader;
 
@@ -113,7 +113,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 			if (Player.mount.Active)
 				samplerState = Terraria.Graphics.Renderers.LegacyPlayerRenderer.MountedSamplerState;
 
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, samplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, samplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		public override void ResetEffects()

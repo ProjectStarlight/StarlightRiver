@@ -268,7 +268,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				effect.Parameters["uColor"].SetValue(color.ToVector3());
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
+				spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 
 				float height = texBeam.Height / 8f;
 				int width = (int)(NPC.Center - healingTarget.Center).Length();

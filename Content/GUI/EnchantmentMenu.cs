@@ -67,7 +67,7 @@ namespace StarlightRiver.Content.GUI
 			base.Draw(spriteBatch);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
 
 			foreach (SmartUIElement element in Elements.Where(n => n is EnchantButton))
 			{
@@ -75,7 +75,7 @@ namespace StarlightRiver.Content.GUI
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+			spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
 
 			if (Main.LocalPlayer.controlHook) //Temporary closing logic
 			{

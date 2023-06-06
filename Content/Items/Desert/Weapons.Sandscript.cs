@@ -46,7 +46,6 @@ namespace StarlightRiver.Content.Items.Desert
 			recipe.AddIngredient(ItemID.Sandstone, 10);
 			recipe.AddIngredient(ItemID.Topaz);
 			recipe.AddTile(TileID.Anvils);
-			recipe.AddCondition(RecipeSystem.GetCondition(Item));
 			recipe.Register();
 		}
 	}

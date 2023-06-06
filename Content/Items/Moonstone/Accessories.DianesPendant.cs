@@ -207,7 +207,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			//DrawTrail(Main.spriteBatch);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "Glow").Value;
 
@@ -221,7 +221,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			}
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			if (flashTimer < 1)
 			{
@@ -433,7 +433,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
@@ -448,7 +448,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 			trail2?.Render(effect);
 
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 

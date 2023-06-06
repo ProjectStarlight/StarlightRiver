@@ -129,7 +129,7 @@ namespace StarlightRiver.Content.Items.Misc
 			var frame = new Rectangle(xFrame * xFrameSize, yFrame * yFrameSize, xFrameSize, yFrameSize);
 
 			/*Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);*/
+			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);*/
 
 			for (int k = Projectile.oldPos.Length - 1; k > 0; k--) //TODO: Clean this shit up
 			{
@@ -141,7 +141,7 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 
 			/*Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.AlphaBlend, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);*/
+			Main.spriteBatch.Begin(default, BlendState.AlphaBlend, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);*/
 
 			Main.spriteBatch.Draw(texture, Projectile.Center - Main.screenPosition, frame, lightColor, Projectile.rotation, new Vector2(xFrameSize, yFrameSize) / 2, Projectile.scale, SpriteEffects.None, 0f);
 
@@ -587,7 +587,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Effect effect = Filters.Scene["LightningTrail"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);

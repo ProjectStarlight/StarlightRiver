@@ -46,6 +46,10 @@ namespace StarlightRiver.Content.Events
 
 			if (Active)
 			{
+				// Failsafe incase the crow despawns... shouldn't happen anymore but who knows!
+				if (occuring && !Main.npc.Any(n => n.active && n.type == ModContent.NPCType<Crow>()))
+					NPC.NewNPC(null, Main.spawnTileX * 16, sequence == 0 ? Main.spawnTileY * 16 - 240 : Main.spawnTileY * 16 - 120, ModContent.NPCType<Crow>());
+
 				bool talking = Main.npc.Any(n => n.active && n.type == ModContent.NPCType<Crow>() && (n.ModNPC as Crow).InCutscene);
 				Main.bloodMoon = false;
 
@@ -117,6 +121,8 @@ namespace StarlightRiver.Content.Events
 			{
 				occuring = true;
 				willOccur = false;
+				Main.NewText("A strange traveler has arrived...", new Color(150, 200, 255));
+				NPC.NewNPC(null, Main.spawnTileX * 16, sequence == 0 ? Main.spawnTileY * 16 - 240 : Main.spawnTileY * 16 - 120, ModContent.NPCType<Crow>());
 			}
 		}
 	}
@@ -186,7 +192,7 @@ namespace StarlightRiver.Content.Events
 				mapEffect.Parameters["map"].SetValue(starsMap.RenderTarget);
 				mapEffect.Parameters["background"].SetValue(starsTarget.RenderTarget);
 
-				spriteBatch.Begin(default, default, default, default, default, mapEffect, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, mapEffect, Main.GameViewMatrix.TransformationMatrix);
 
 				spriteBatch.Draw(starsMap.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
 

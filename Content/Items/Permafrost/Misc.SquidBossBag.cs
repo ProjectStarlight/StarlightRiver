@@ -1,4 +1,5 @@
 using StarlightRiver.Content.DropRules;
+using StarlightRiver.Content.Items.Misc;
 using Terraria.GameContent;
 using Terraria.GameContent.Creative;
 using Terraria.GameContent.ItemDropRules;
@@ -68,10 +69,17 @@ namespace StarlightRiver.Content.Items.Permafrost
 				ItemType<TentacleHook>()
 			}, 3);
 
+			itemLoot.Add(ItemDropRule.OneFromOptions(1, new int[]
+			{
+				ItemType<AxeBook>(),
+				ItemType<SpearBook>(),
+				ItemType<SwordBook>()
+			}));
+
 			itemLoot.Add(notMasterMode);
 			itemLoot.Add(masterMode);
 
-			itemLoot.Add(ItemDropRule.Common(ItemType<SquidFins>(), 3));
+			itemLoot.Add(ItemDropRule.Common(ItemType<SquidFins>(), 1));
 		}
 
 		//This method is stolen from examplemod and I trust it to emulate vanilla accurately

@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Bladesaw");
-			Tooltip.SetDefault("Shreds through enemies \nRepeated hits overheat the saw, increasing damage \nRight click to use as a tool");
+			Tooltip.SetDefault("Shreds through enemies \nRepeated hits overheat the saw, increasing damage \n<right> to use as a tool");
 
 			ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
 		}

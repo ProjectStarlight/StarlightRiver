@@ -23,14 +23,14 @@ namespace StarlightRiver.Content.Items.Breacher
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Scrapshot");
-			Tooltip.SetDefault("Right click to hook your enemies and pull closer\nFire while hooked to reduce spread and go flying");
+			Tooltip.SetDefault("<right> to hook your enemies and pull closer\nFire while hooked to reduce spread and go flying");
 		}
 
 		public override void SetDefaults()
 		{
 			Item.width = 24;
 			Item.height = 28;
-			Item.damage = 6;
+			Item.damage = 9;
 			Item.useAnimation = 30;
 			Item.useTime = 30;
 			Item.useStyle = ItemUseStyleID.Shoot;
@@ -488,7 +488,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);

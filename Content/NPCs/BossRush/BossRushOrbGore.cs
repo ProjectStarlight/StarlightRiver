@@ -62,14 +62,14 @@ namespace StarlightRiver.Content.NPCs.BossRush
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() * 0.5f, 1, SpriteEffects.None, 0);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Main.spriteBatch.Draw(glow, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Black, color, (Projectile.timeLeft - 240) / 180f), Projectile.rotation, tex.Size() * 0.5f, 1, SpriteEffects.None, 0);
 			Main.spriteBatch.Draw(glow, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Black, color, (Projectile.timeLeft - 240) / 180f), Projectile.rotation, glow.Size() * 0.5f, 1, SpriteEffects.None, 0);
 			Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Black, color, (Projectile.timeLeft - 240) / 180f) * 0.5f, Projectile.rotation, bloom.Size() * 0.5f, 1, SpriteEffects.None, 0);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 			return false;
 		}

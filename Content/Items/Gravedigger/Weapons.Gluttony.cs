@@ -3,7 +3,6 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
@@ -122,7 +121,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Projectile.Center = Player.Center;
 			Projectile.rotation = direction.ToRotation();
 
-			if (Player.statMana < Player.HeldItem.mana)
+			if (Player.statMana < Player.HeldItem.mana || Player.statMana <= 0)
 				released = true;
 
 			if (Player.channel && Player.HeldItem.type == ModContent.ItemType<Gluttony>() && !released)
@@ -150,12 +149,16 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				Projectile.timeLeft = 2;
 				released = true;
 			}
-			else
+			else if (timer > 3)
 			{
 				timer -= 3;
 
 				if (timer > 0)
 					Projectile.timeLeft = 2;
+			}
+			else
+			{
+				Projectile.timeLeft = 0;
 			}
 
 			UpdateTargets(Player);
@@ -232,7 +235,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Effect effect = Filters.Scene["GluttonyTrail"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(0.05f * Main.GameUpdateCount);
@@ -333,13 +336,13 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.Black * prog * 0.8f, Projectile.rotation + 1.57f + 0.1f, new Vector2(tex.Width / 2, tex.Height), prog * 0.55f, 0, 0);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, effect1, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect1, Main.GameViewMatrix.TransformationMatrix);
 
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(220, 50, 90) * prog, Projectile.rotation + 1.57f + 0.1f, new Vector2(tex.Width / 2, tex.Height), prog * 0.55f, 0, 0);
 			//spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			return false;
 		}
@@ -439,7 +442,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Effect effect = Filters.Scene["GhoulTrail"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);

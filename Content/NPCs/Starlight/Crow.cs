@@ -36,7 +36,6 @@ namespace StarlightRiver.Content.NPCs.Starlight
 
 		public override void SetDefaults()
 		{
-			NPC.townNPC = true;
 			NPC.friendly = true;
 			NPC.width = 40;
 			NPC.height = 64;
@@ -57,18 +56,17 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			visible = false;
 		}
 
+		public override bool CheckActive()
+		{
+			return false;
+		}
+
 		public override void AI()
 		{
 			Timer++;
 
 			if (InCutscene || leaving)
 				CutsceneTimer++;
-
-			if (Main.LocalPlayer.controlHook)
-			{
-				CutsceneTimer = 0;
-				visible = false;
-			}
 
 			if (visible)
 			{
@@ -219,11 +217,12 @@ namespace StarlightRiver.Content.NPCs.Starlight
 
 			if (CutsceneTimer >= 140)
 			{
-				NPC.active = false;
 				StarlightEventSequenceSystem.willOccur = false;
 				StarlightEventSequenceSystem.occuring = false;
 
 				StarlightEventSequenceSystem.sequence++;
+
+				NPC.active = false;
 			}
 		}
 
@@ -247,7 +246,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			Main.LocalPlayer.GetHandler().SetStaminaRegenCD(0);
 
 			if (CutsceneTimer == 1)
-				CameraSystem.MoveCameraOut(30, NPC.Center, Vector2.SmoothStep);
+				CameraSystem.MoveCameraOut(30, NPC.Center + Vector2.UnitY * 120, Vector2.SmoothStep);
 
 			if (CutsceneTimer < 300)
 				SpawnAnimation();
@@ -450,6 +449,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 				DrawFlashingStar(spriteBatch, CutsceneTimer);
 			}
 		}
+
 		public string GetHint()
 		{
 			return "What does he want with me?";

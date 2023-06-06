@@ -1,15 +1,12 @@
-﻿using StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets;
-using StarlightRiver.Content.Abilities;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.CustomHooks;
+using StarlightRiver.Content.Items.Misc;
+using StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Terraria.ID;
-using Terraria;
-using StarlightRiver.Content.CustomHooks;
 using Terraria.DataStructures;
-using StarlightRiver.Content.Items.Misc;
-using StarlightRiver.Content.Items.BaseTypes;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
@@ -22,26 +19,21 @@ namespace StarlightRiver.Content.Tiles.Underground
 		public override void SetStaticDefaults()
 		{
 			QuickBlock.QuickSetFurniture(this, 5, 6, DustID.Stone, SoundID.Tink, false, new Color(100, 100, 100), false, false, "Mysterious Shrine");
+			MinPick = int.MaxValue;
 		}
 
-		//public override void SafeNearbyEffects(int i, int j, bool closer)
-		//{
-		//	Tile tile = Framing.GetTileSafely(i, j);
+		public override bool CanExplode(int i, int j)
+		{
+			return false;
+		}
 
-		//	if ((tile.TileFrameX == 0 || tile.TileFrameX == 5 * 18) && tile.TileFrameY == 0)
-		//	{
-		//		Projectile dummy = Dummy(i, j);
-
-		//		if (dummy is null)
-		//			return;
-
-		//		//if (((EvasionShrineDummy)dummy.ModProjectile).State == 0 && tile.TileFrameX >= 90)//resets frame if idle, duplicated from dummy code?
-		//		//{
-		//		//	tile.TileFrameX -= 5 * 18;
-		//		//	dummy.ai[0] = 0;
-		//		//}
-		//	}
-		//}
+		public override void MouseOver(int i, int j)
+		{
+			Player Player = Main.LocalPlayer;
+			Player.cursorItemIconID = ModContent.ItemType<Items.Hovers.GenericHover>();
+			Player.noThrow = 2;
+			Player.cursorItemIconEnabled = true;
+		}
 
 		public override bool SpawnConditions(int i, int j)//ensures the dummy can spawn if the tile gets stuck in the second frame
 		{
@@ -248,7 +240,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 					int realX = ParentX - 2 + x;
 					int realY = ParentY - 3 + y;
 
-					Framing.GetTileSafely(realX, realY).TileFrameX = (short)((x + (frame * tileWidth)) * 18);
+					Framing.GetTileSafely(realX, realY).TileFrameX = (short)((x + frame * tileWidth) * 18);
 				}
 			}
 		}

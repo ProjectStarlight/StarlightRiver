@@ -205,7 +205,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			if (!NPC.IsABestiaryIconDummy || drawColor == Color.White)
 			{
 				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 				for (int i = 0; i < 6; i++)
 				{
 					float angle = i / 6f * MathHelper.TwoPi;
@@ -225,7 +225,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				}
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 
 			return false;
@@ -233,7 +233,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
 		{
-			return spawnInfo.Player.InModBiome(GetInstance<VitricDesertBiome>()) ? 100 : 0;
+			return spawnInfo.Player.InModBiome(GetInstance<VitricDesertBiome>()) ? 60 : 0;
 		}
 
 		public override void ModifyNPCLoot(NPCLoot npcLoot)
@@ -365,7 +365,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			if (!NPC.IsABestiaryIconDummy || drawColor == Color.White)
 			{
 				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 				for (int i = 0; i < 6; i++)
 				{
 					float angle = i / 6f * MathHelper.TwoPi;
@@ -380,7 +380,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				}
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 
 			return false;

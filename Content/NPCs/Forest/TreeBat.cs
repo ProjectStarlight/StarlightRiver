@@ -2,7 +2,6 @@
 using StarlightRiver.Helpers;
 using System;
 using System.Linq;
-using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -40,7 +39,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 			NPC.width = 26;
 			NPC.height = 20;
 			NPC.knockBackResist = 0;
-			NPC.lifeMax = 40;
+			NPC.lifeMax = 5;
 			NPC.noGravity = true;
 			NPC.noTileCollide = false;
 			NPC.damage = 10;
@@ -48,6 +47,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 			NPC.HitSound = SoundID.NPCHit1;
 			NPC.DeathSound = SoundID.NPCDeath4;
 			NPC.chaseable = false;
+			NPC.npcSlots = 0;
 		}
 
 		public override void AI()
@@ -166,24 +166,27 @@ namespace StarlightRiver.Content.NPCs.Forest
 			if (!spawnInfo.Player.ZoneForest() || Main.dayTime || Main.time > 24000) //they should only spawn late at night in the forest
 				return 0;
 
-			for (int x = -30; x < 30; x++)
+			if (Main.rand.NextBool(4))
 			{
-				for (int y = -30; y < 30; y++)
+				for (int x = -30; x < 30; x++)
 				{
-					int realX = spawnInfo.SpawnTileX + x;
-					int realY = spawnInfo.SpawnTileY + y;
-
-					Tile tile = Framing.GetTileSafely(realX, realY);
-					Tile tileUnder = Framing.GetTileSafely(realX, realY + 1);
-					Tile tileWayUnder = Framing.GetTileSafely(realX, realY + 4);
-
-					if (tile.TileType == TileID.Trees && !tileUnder.HasTile && !tileWayUnder.HasTile)
+					for (int y = -30; y < 30; y++)
 					{
-						if (Main.npc.Any(n => n.type == NPC.type && n.position == new Vector2(realX * 16 + 8, realY * 16 + 24)))
-							continue;
+						int realX = spawnInfo.SpawnTileX + x;
+						int realY = spawnInfo.SpawnTileY + y;
 
-						NPC.NewNPC(NPC.GetSource_NaturalSpawn(), realX * 16 + 8, realY * 16 + 28, NPC.type);
-						return 0;
+						Tile tile = Framing.GetTileSafely(realX, realY);
+						Tile tileUnder = Framing.GetTileSafely(realX, realY + 1);
+						Tile tileWayUnder = Framing.GetTileSafely(realX, realY + 4);
+
+						if (tile.TileType == TileID.Trees && !tileUnder.HasTile && !tileWayUnder.HasTile)
+						{
+							if (Main.npc.Any(n => n.type == NPC.type && n.position == new Vector2(realX * 16 + 8, realY * 16 + 24)))
+								continue;
+
+							NPC.NewNPC(NPC.GetSource_NaturalSpawn(), realX * 16 + 8, realY * 16 + 28, NPC.type);
+							return 0;
+						}
 					}
 				}
 			}

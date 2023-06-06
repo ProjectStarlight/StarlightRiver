@@ -67,7 +67,7 @@ namespace StarlightRiver.Content.Archaeology
 		{
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D mainTex = ModContent.Request<Texture2D>(Texture).Value;
 			Texture2D glowTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
@@ -90,7 +90,7 @@ namespace StarlightRiver.Content.Archaeology
 			DrawBeam(beamTex, pos, 1 - GetProgress(108), rot / 132f + 4.0f, 0.18f * GetProgress(108));
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Main.spriteBatch.Draw(mainTex, pos, null, lightColor, 0f, mainTex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
 			return false;

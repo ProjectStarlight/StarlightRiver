@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override string Texture => AssetDirectory.GravediggerItem + Name;
 
-		public BloodAmulet() : base("Blood Amulet", "Every 25 damage taken releases a homing bloodbolt \nThese bolts damage enemies and guaruntee they drop life hearts on death") { }
+		public BloodAmulet() : base("Blood Amulet", "Every 25 damage taken releases a homing bloodbolt \nThese bolts damage enemies and guarantee they drop life hearts on death") { }
 
 		public override void Load()
 		{
@@ -183,7 +183,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount);
