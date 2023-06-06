@@ -53,7 +53,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 				if (releaseCounter > 0.5f)
 					offsetLerper -= 0.015f;
-
+				
 				if (offsetLerper <= 0)
 				{
 					Destroy();
@@ -85,19 +85,20 @@ namespace StarlightRiver.Content.Items.Geomancer
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
+			SpriteEffects spriteEffects = (int)Main.player[Projectile.owner].gravDir == 1 ? SpriteEffects.None : SpriteEffects.FlipVertically;
 			if (Projectile.scale == bigScale)
 			{
 				float progress = glowCounter % 1;
 				float transparency = (float)Math.Pow(1 - progress, 2);
 				float scale = 0.95f + progress;
 
-				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), null, Color.White * transparency, Projectile.rotation, tex.Size() / 2, scale * Projectile.scale, SpriteEffects.None, 0f);
+				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), null, Color.White * transparency, Projectile.rotation, tex.Size() / 2, scale * Projectile.scale, spriteEffects, 0f);
 			}
 
 			float progress2 = 1 - fade;
 			float transparency2 = (float)Math.Pow(1 - progress2, 2);
 			float scale2 = 0.95f + progress2;
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), null, Color.White * transparency2, Projectile.rotation, tex.Size() / 2, Projectile.scale * scale2, SpriteEffects.None, 0f);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), null, Color.White * transparency2, Projectile.rotation, tex.Size() / 2, Projectile.scale * scale2, spriteEffects, 0f);
 			return false;
 		}
 
@@ -110,7 +111,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 			float progress2 = 1 - fade;
 			float transparency2 = (float)Math.Pow(1 - progress2, 2);
 			float scale2 = 0.95f + progress2;
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), null, Color.White * whiteCounter * transparency2, Projectile.rotation, tex.Size() / 2, Projectile.scale * scale2, SpriteEffects.None, 0f);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), null, Color.White * whiteCounter * transparency2, Projectile.rotation, tex.Size() / 2, Projectile.scale * scale2, (int)Main.player[Projectile.owner].gravDir == 1 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0f);
 		}
 
 		protected virtual void SafeAI() { }
