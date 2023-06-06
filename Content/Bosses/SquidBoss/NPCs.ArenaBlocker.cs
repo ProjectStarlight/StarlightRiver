@@ -34,6 +34,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			NPC.noGravity = true;
 			NPC.noTileCollide = true;
 			NPC.dontTakeDamage = true;
+			NPC.knockBackResist = 0; // Fae Whip fix
 		}
 
 		public override void AI()
