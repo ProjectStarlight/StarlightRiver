@@ -133,20 +133,26 @@ namespace StarlightRiver.Content.Items.Jungle
 		private void ApplyDoTItems(Player player, Item Item, NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (Equipped(player))
+			{
 				modifiers.HideCombatText();
+				modifiers.DisableCrit();
+			}
 		}
 
 		private void ApplyDoTProjectiles(Player player, Projectile proj, NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (Equipped(player))
+			{
 				modifiers.HideCombatText();
+				modifiers.DisableCrit();
+			}
 		}
 
 		private void PostHitItems(Player player, Item Item, NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (Equipped(player))
 			{
-				BuffInflictor.InflictStack<CorpseflowerBuff, CorpseflowerStack>(target, 600, new CorpseflowerStack() { duration = 600, damage = Utils.Clamp((int)(damageDone * 0.33f), 0, damageDone) });
+				BuffInflictor.InflictStack<CorpseflowerBuff, CorpseflowerStack>(target, 600, new CorpseflowerStack() { duration = 600, damage = Utils.Clamp((int)(damageDone * 0.45f), 1, damageDone) });
 				target.life += damageDone;
 			}
 		}
@@ -155,7 +161,7 @@ namespace StarlightRiver.Content.Items.Jungle
 		{
 			if (Equipped(player))
 			{
-				BuffInflictor.InflictStack<CorpseflowerBuff, CorpseflowerStack>(target, 600, new CorpseflowerStack() { duration = 600, damage = Utils.Clamp((int)(damageDone * 0.33f), 0, damageDone) });
+				BuffInflictor.InflictStack<CorpseflowerBuff, CorpseflowerStack>(target, 600, new CorpseflowerStack() { duration = 600, damage = Utils.Clamp((int)(damageDone * 0.45f), 1, damageDone) });
 				target.life += damageDone;
 			}
 		}

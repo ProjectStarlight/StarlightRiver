@@ -30,6 +30,12 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			ItemID.Sets.ShimmerTransformToItem[ItemID.ManaFlower] = Type;
 		}
+		public override void SetStaticDefaults()
+		{
+			Tooltip.SetDefault("Cursed : You can not drink mana potions or other mana-replenishing items\nMagic attacks have a 25% chance to leech a large portion of their damage as mana");
+
+			ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.ManaFlower;
+		}
 
 		private void ManaLeechOnHitProj(Player Player, Projectile proj, NPC target, NPC.HitInfo info, int damageDone)
 		{
@@ -74,11 +80,6 @@ namespace StarlightRiver.Content.Items.Misc
 				return false;
 
 			return true;
-		}
-
-		public override void SetStaticDefaults()
-		{
-			Tooltip.SetDefault("Cursed : You can not drink mana potions or other mana-replenishing items\nMagic attacks have a 25% chance to leech a large portion of their damage as mana");
 		}
 	}
 }
