@@ -18,6 +18,11 @@ namespace StarlightRiver.Content.Items.Misc
 			StarlightPlayer.NaturalLifeRegenEvent -= HealthRegenLoss;
 		}
 
+		public override void SafeSetDefaults()
+		{
+			Item.value = Item.sellPrice(silver: 55);
+		}
+
 		public override void SafeUpdateEquip(Player Player)
 		{
 			Player.maxRunSpeed *= 1.20f;

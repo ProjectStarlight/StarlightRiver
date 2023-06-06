@@ -32,6 +32,11 @@ namespace StarlightRiver.Content.Items.Misc
 				"<right> on the Greataxe whilst it is Embedded to release it");
 		}
 
+		public override void SafeSetDefaults()
+		{
+			Item.value = Item.sellPrice(gold: 2);
+		}
+
 		private void ModifyHitNPCWithProj(Player player, Projectile proj, NPC target, ref NPC.HitModifiers hit)
 		{
 			if (Main.projectile[ProjectileIndex].ModProjectile is TaintedGreataxeProjectile greatAxe)
