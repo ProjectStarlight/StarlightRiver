@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Scrapshot");
-			Tooltip.SetDefault("Right click to hook your enemies and pull closer\nFire while hooked to reduce spread and go flying");
+			Tooltip.SetDefault("<right> to hook your enemies and pull closer\nFire while hooked to reduce spread and go flying");
 		}
 
 		public override void SetDefaults()

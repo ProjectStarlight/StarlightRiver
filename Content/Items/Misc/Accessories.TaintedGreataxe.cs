@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			Tooltip.SetDefault("Cursed : Landing a Critical Strike will inflict Focused on a new, different enemy\n" +
-				"Right-click on the Greataxe whilst it is Embedded to release it");
+				"<right> on the Greataxe whilst it is Embedded to release it");
 		}
 
 		private void ModifyHitNPCWithProj(Player player, Projectile proj, NPC target, ref NPC.HitModifiers hit)
