@@ -36,9 +36,6 @@ namespace StarlightRiver.Content.CustomHooks
 			if (StarlightRiver.debugMode)
 				return false;
 
-			if (BossRushSystem.isBossRush)
-				return true;
-
 			if (!Main.gameMenu || Main.dedServ) //shouldnt trigger while generating the world from the menu
 			{
 				foreach (Rectangle region in ProtectionWorld.ProtectedRegions)
@@ -71,6 +68,9 @@ namespace StarlightRiver.Content.CustomHooks
 					return true;
 				}
 			}
+
+			if (BossRushSystem.isBossRush)
+				return true;
 
 			return false;
 		}
