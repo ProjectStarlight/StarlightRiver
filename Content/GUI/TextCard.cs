@@ -54,6 +54,8 @@ namespace StarlightRiver.Content.GUI
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
+			Recalculate();
+
 			int TitleLength = (int)(Terraria.GameContent.FontAssets.DeathText.Value.MeasureString(title).X * 0.65f * textScale) / 2;
 			int MessageLength = (int)(Terraria.GameContent.FontAssets.DeathText.Value.MeasureString(message).X * 0.4f * textScale) / 2;
 			int Longest = MessageLength > TitleLength ? MessageLength : TitleLength;

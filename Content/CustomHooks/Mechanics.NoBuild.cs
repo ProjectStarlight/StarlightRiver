@@ -55,6 +55,10 @@ namespace StarlightRiver.Content.CustomHooks
 
 				Tile tile = Framing.GetTileSafely(x, y);
 
+				// Let the player break their own tombstones atleast.
+				if (tile.TileType == TileID.Tombstones)
+					return false;
+
 				if (tile.WallType == WallType<Content.Tiles.Vitric.Temple.VitricTempleWall>())
 					return true;
 
@@ -182,6 +186,7 @@ namespace StarlightRiver.Content.CustomHooks
 			if (IsProtected(i, j) && !WorldGen.generatingWorld)
 			{
 				FailFX(new Point16(i, j));
+				return;
 			}
 
 			orig(i, j, fail, effectOnly, noItem);
@@ -195,7 +200,7 @@ namespace StarlightRiver.Content.CustomHooks
 			if (IsProtected((int)result.X, (int)result.Y))
 			{
 				settings.attemptsBeforeGivingUp--;
-				self.CheckForGoodTeleportationSpot(ref canSpawn, teleportStartX, teleportRangeX, teleportStartY, teleportRangeY, settings);
+				result = self.CheckForGoodTeleportationSpot(ref canSpawn, teleportStartX, teleportRangeX, teleportStartY, teleportRangeY, settings);
 			}
 
 			return result;
