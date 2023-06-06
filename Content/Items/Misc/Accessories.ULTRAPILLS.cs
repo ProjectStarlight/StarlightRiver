@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Items.Gravedigger;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -107,6 +108,23 @@ namespace StarlightRiver.Content.Items.Misc
 				return false;
 
 			return true;
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.HealingPotion);
+			recipe.AddIngredient<LivingBlood>(15);
+			recipe.AddIngredient(ItemID.DemoniteBar, 10);
+			recipe.AddTile(TileID.DemonAltar);
+			recipe.Register();
+
+			recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.HealingPotion);
+			recipe.AddIngredient<LivingBlood>(15);
+			recipe.AddIngredient(ItemID.CrimtaneBar, 10);
+			recipe.AddTile(TileID.DemonAltar);
+			recipe.Register();
 		}
 	}
 
