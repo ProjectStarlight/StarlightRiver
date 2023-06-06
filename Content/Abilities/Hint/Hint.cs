@@ -137,13 +137,15 @@ namespace StarlightRiver.Content.Abilities.Hint
 			Projectile.penetrate = -1;
 			Projectile.friendly = false;
 			Projectile.hostile = false;
+			Projectile.timeLeft = 2;
+			Projectile.ignoreWater = true;
 		}
 
 		public override void AI()
 		{
 			Timer++;
 
-			if (Timer < text.Length * 5f)
+			if (Timer < text.Length * 6f)
 				Projectile.timeLeft = 2;
 
 			if (Timer > text.Length * 2f)
@@ -151,6 +153,11 @@ namespace StarlightRiver.Content.Abilities.Hint
 
 			if (follow && !Main.dedServ)
 				Projectile.Center = Main.screenPosition + new Vector2(Main.screenWidth / 2, Main.screenHeight / 2 - 64);
+		}
+
+		public override bool TileCollideStyle(ref int width, ref int height, ref bool fallThrough, ref Vector2 hitboxCenterFrac)
+		{
+			return false;
 		}
 
 		public override bool PreDraw(ref Color lightColor)
