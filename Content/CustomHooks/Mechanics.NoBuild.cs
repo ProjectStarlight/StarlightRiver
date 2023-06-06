@@ -10,6 +10,65 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.CustomHooks
 {
+	class ProtectionGlobalTime : GlobalTile
+	{
+		public override bool CanExplode(int i, int j, int type)
+		{
+			if (IsProtected(i, j))
+				return false;
+
+			return base.CanExplode(i, j, type);
+		}
+
+		public bool IsProtected(int x, int y) //TODO: move this to an easily accessible class later (not a fucking global item)
+		{
+			if (StarlightRiver.debugMode)
+				return false;
+
+			if (!Main.gameMenu || Main.dedServ) //shouldnt trigger while generating the world from the menu
+			{
+				foreach (Rectangle region in ProtectionWorld.ProtectedRegions)
+				{
+					if (region.Contains(new Point(x, y)))
+						return true;
+				}
+
+				foreach (Ref<Rectangle> region in ProtectionWorld.RuntimeProtectedRegions)
+				{
+					if (region.Value.Contains(new Point(x, y)))
+						return true;
+				}
+
+				Tile tile = Framing.GetTileSafely(x, y);
+
+				// Let the player break their own tombstones atleast.
+				if (tile.TileType == TileID.Tombstones)
+					return false;
+
+				if (tile.WallType == WallType<Content.Tiles.Vitric.Temple.VitricTempleWall>())
+					return true;
+
+				if (tile.WallType == WallType<AuroraBrickWall>())
+				{
+					for (int k = 0; k < Main.maxProjectiles; k++) //this is gross. Unfortunate.
+					{
+						Projectile proj = Main.projectile[k];
+
+						if (proj.active && proj.timeLeft > 10 && proj.ModProjectile is InteractiveProjectile && (proj.ModProjectile as InteractiveProjectile).CheckPoint(x, y))
+							return false;
+					}
+
+					return true;
+				}
+			}
+
+			if (BossRushSystem.isBossRush)
+				return true;
+
+			return false;
+		}
+	}
+
 	public class ProtectionGlobalItem : GlobalItem
 	{
 		public override void Load()
@@ -25,7 +84,6 @@ namespace StarlightRiver.Content.CustomHooks
 			On_WorldGen.PlaceActuator += DontPlaceActuator;
 			On_WorldGen.KillTile += DontExplodeAtRuntime;
 			On_Player.CheckForGoodTeleportationSpot += DontTeleport;
-
 		}
 
 		/// <summary>
@@ -34,7 +92,7 @@ namespace StarlightRiver.Content.CustomHooks
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <returns></returns>
-		private bool IsProtected(int x, int y)
+		public bool IsProtected(int x, int y)
 		{
 			if (StarlightRiver.debugMode)
 				return false;
