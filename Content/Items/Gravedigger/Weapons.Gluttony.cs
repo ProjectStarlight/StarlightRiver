@@ -149,12 +149,16 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				Projectile.timeLeft = 2;
 				released = true;
 			}
-			else
+			else if (timer > 3)
 			{
 				timer -= 3;
 
 				if (timer > 0)
 					Projectile.timeLeft = 2;
+			}
+			else
+			{
+				Projectile.timeLeft = 0;
 			}
 
 			UpdateTargets(Player);
