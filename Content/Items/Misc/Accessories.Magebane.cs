@@ -15,6 +15,8 @@ namespace StarlightRiver.Content.Items.Misc
 			StarlightPlayer.CanUseItemEvent += PreventManaPotion;
 			StarlightPlayer.OnHitNPCEvent += ManaLeechOnHit;
 			StarlightPlayer.OnHitNPCWithProjEvent += ManaLeechOnHitProj;
+
+			StarlightItem.SetStaticDefaultsEvent += ShimmerToItem;
 		}
 
 		public override void Unload()
@@ -22,6 +24,11 @@ namespace StarlightRiver.Content.Items.Misc
 			StarlightPlayer.CanUseItemEvent -= PreventManaPotion;
 			StarlightPlayer.OnHitNPCEvent -= ManaLeechOnHit;
 			StarlightPlayer.OnHitNPCWithProjEvent -= ManaLeechOnHitProj;
+		}
+
+		private void ShimmerToItem()
+		{
+			ItemID.Sets.ShimmerTransformToItem[ItemID.ManaFlower] = Type;
 		}
 
 		private void ManaLeechOnHitProj(Player Player, Projectile proj, NPC target, NPC.HitInfo info, int damageDone)
