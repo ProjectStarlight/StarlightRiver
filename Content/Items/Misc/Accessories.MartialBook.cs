@@ -27,6 +27,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SafeSetDefaults()
 		{
 			Item.rare = ItemRarityID.Orange;
+			Item.value = Item.sellPrice(gold: 3);
 		}
 
 		public override void AddRecipes()

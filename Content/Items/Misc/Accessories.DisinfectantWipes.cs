@@ -45,5 +45,10 @@ namespace StarlightRiver.Content.Items.Misc
 					Player.buffTime[i] -= 180;
 			}
 		}
+
+		public override void SafeSetDefaults()
+		{
+			Item.value = Item.sellPrice(silver: 50);
+		}
 	}
 }

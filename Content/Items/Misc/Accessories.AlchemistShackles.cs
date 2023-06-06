@@ -26,6 +26,12 @@ namespace StarlightRiver.Content.Items.Misc
 			DisplayName.SetDefault("Alchemist's Shackles");
 			Tooltip.SetDefault("Resource potions are more effective when their respective resource is lower \nCursed : Potion sickness effects last 15 seconds longer");
 		}
+
+		public override void SafeSetDefaults()
+		{
+			Item.value = Item.sellPrice(silver: 50);
+		}
+
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();

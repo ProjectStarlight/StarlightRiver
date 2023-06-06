@@ -181,6 +181,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SafeSetDefaults()
 		{
 			Item.rare = ItemRarityID.White; //funny reference :)	
+			Item.value = Item.sellPrice(silver: 35);
 		}
 
 		public override void AddRecipes()

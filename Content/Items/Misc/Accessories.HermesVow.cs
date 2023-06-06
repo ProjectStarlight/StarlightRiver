@@ -48,6 +48,11 @@ namespace StarlightRiver.Content.Items.Misc
 			Tooltip.SetDefault("Cursed\nMassively increased acceleration and movement speed\nIncreased jump height and max movement speed\nYou are unable to use wings");
 		}
 
+		public override void SafeSetDefaults()
+		{
+			Item.value = Item.sellPrice(silver: 75);
+		}
+
 		public override void OnEquip(Player Player, Item item)
 		{
 			for (int i = 3; i < 10; i++)

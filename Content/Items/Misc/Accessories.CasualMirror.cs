@@ -38,6 +38,11 @@ namespace StarlightRiver.Content.Items.Misc
 			Tooltip.SetDefault("Cursed : Your DoT and regeneration effects are inverted.\nRegenerate life when you would take damage-over-time.\nTake damage-over-time when you would regenerate life.\nThis includes natural regeneration!");
 		}
 
+		public override void SafeSetDefaults()
+		{
+			Item.value = Item.sellPrice(gold: 2);
+		}
+
 		public override void SafeUpdateEquip(Player Player)
 		{
 			Player.GetModPlayer<CasualMirrorPlayer>().equipped = true;

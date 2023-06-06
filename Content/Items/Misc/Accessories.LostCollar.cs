@@ -15,6 +15,11 @@ namespace StarlightRiver.Content.Items.Misc
 			Tooltip.SetDefault("+40% Inoculation\nDebuffs you inflict are inflicted on yourself\n+5% movement and attack speed per debuff affecting you\nCursed : Lose all debuff immunities");
 		}
 
+		public override void SafeSetDefaults()
+		{
+			Item.value = Item.sellPrice(gold: 1, silver: 25);
+		}
+
 		public override void Load() //TODO: Make cursedaccessory.Load not hide this
 		{
 			StatusTrackingNPC.buffCompareEffects += CollarEffects;

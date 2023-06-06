@@ -26,5 +26,10 @@ namespace StarlightRiver.Content.Items.Misc
 
 			orig(self, buffId);
 		}
+
+		public override void SafeSetDefaults()
+		{
+			Item.value = Item.sellPrice(silver: 50);
+		}
 	}
 }

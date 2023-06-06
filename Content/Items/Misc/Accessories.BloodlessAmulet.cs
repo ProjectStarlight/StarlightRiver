@@ -51,6 +51,11 @@ namespace StarlightRiver.Content.Items.Misc
 				"\n'Leave your flesh behind, for your rage is all you need'");
 		}
 
+		public override void SafeSetDefaults()
+		{
+			Item.value = Item.sellPrice(gold: 7, silver: 50);
+		}
+
 		public override void SafeUpdateEquip(Player Player)
 		{
 			Player.GetDamage(DamageClass.Generic) += rage / 2000f;

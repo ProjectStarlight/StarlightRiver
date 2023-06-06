@@ -37,6 +37,11 @@ namespace StarlightRiver.Content.Items.Misc
 			ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.ManaFlower;
 		}
 
+		public override void SafeSetDefaults()
+		{
+			Item.value = Item.sellPrice(gold: 1);
+		}
+
 		private void ManaLeechOnHitProj(Player Player, Projectile proj, NPC target, NPC.HitInfo info, int damageDone)
 		{
 			if (proj.DamageType == DamageClass.Magic && Equipped(Player) && Main.rand.NextFloat() < 0.25f)

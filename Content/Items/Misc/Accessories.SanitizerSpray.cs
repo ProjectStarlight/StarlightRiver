@@ -68,5 +68,10 @@ namespace StarlightRiver.Content.Items.Misc
 					npc.AddBuff(type, transferredBuffDuration);
 			}
 		}
+
+		public override void SafeSetDefaults()
+		{
+			Item.value = Item.sellPrice(silver: 50);
+		}
 	}
 }

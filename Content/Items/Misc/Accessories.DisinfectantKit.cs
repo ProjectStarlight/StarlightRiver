@@ -20,11 +20,21 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SafeUpdateEquip(Player Player)
 		{
+			bool hasDebuff = false;
+
 			for (int i = 0; i < Player.MaxBuffs; i++)
 			{
 				if (Helper.IsValidDebuff(Player, i))
-					return;
+					hasDebuff = true;
 			}
+
+			if (hasDebuff)
+				Player.GetCritChance(DamageClass.Generic) += 10;
+		}
+
+		public override void SafeSetDefaults()
+		{
+			Item.value = Item.sellPrice(gold: 1);
 		}
 
 		public override void AddRecipes()

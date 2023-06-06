@@ -18,6 +18,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SafeSetDefaults()
 		{
 			Item.rare = ItemRarityID.Orange;
+			Item.value = Item.sellPrice(gold: 1, silver: 85);
 		}
 
 		private void ModifyCritProj(Player Player, Projectile proj, NPC target, ref NPC.HitModifiers hit)

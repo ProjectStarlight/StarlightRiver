@@ -34,6 +34,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SafeSetDefaults()
 		{
 			Item.rare = Terraria.ID.ItemRarityID.Orange;
+			Item.value = Item.sellPrice(gold: 2);
 		}
 
 		/// <summary>

@@ -28,6 +28,11 @@ namespace StarlightRiver.Content.Items.Misc
 			StarlightPlayer.PreDrawEvent += DrawClock;
 		}
 
+		public override void SafeSetDefaults()
+		{
+			Item.value = Item.sellPrice(gold: 15);
+		}
+
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
 			int sin = (int)(Math.Sin(Main.GameUpdateCount * 0.1f) * 50);
