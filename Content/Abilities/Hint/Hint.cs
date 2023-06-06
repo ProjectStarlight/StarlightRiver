@@ -1,5 +1,6 @@
 ﻿using ReLogic.Graphics;
 using System;
+using System.Collections.Generic;
 using Terraria.GameContent;
 using Terraria.GameInput;
 
@@ -82,6 +83,15 @@ namespace StarlightRiver.Content.Abilities.Hint
 						hintToDisplay = hintable.GetHint();
 						return;
 					}
+					else
+					{
+						if (npc.friendly)
+							hintToDisplay = $"It's my good friend, {npc.FullName}!";
+						else if (npc.boss)
+							hintToDisplay = $"Thats {npc.FullName}! Focus!";
+						else
+							hintToDisplay = $"It's just a {npc.FullName}.";
+					}
 				}
 			}
 
@@ -139,6 +149,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 			Projectile.hostile = false;
 			Projectile.timeLeft = 2;
 			Projectile.ignoreWater = true;
+			Projectile.hide = true;
 		}
 
 		public override void AI()
@@ -158,6 +169,11 @@ namespace StarlightRiver.Content.Abilities.Hint
 		public override bool TileCollideStyle(ref int width, ref int height, ref bool fallThrough, ref Vector2 hitboxCenterFrac)
 		{
 			return false;
+		}
+
+		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
+		{
+			overWiresUI.Add(index);
 		}
 
 		public override bool PreDraw(ref Color lightColor)
