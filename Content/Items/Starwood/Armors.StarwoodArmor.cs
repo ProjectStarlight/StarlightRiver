@@ -41,10 +41,12 @@ namespace StarlightRiver.Content.Items.Starwood
 			isEmpowered = Player.GetModPlayer<StarlightPlayer>().empowered;
 		}
 
-		public void DrawArmorLayer(PlayerDrawSet info)//custom drawing the hat (todo)
+		public void DrawArmorLayer(PlayerDrawSet info, IArmorLayerDrawable.SubLayer subLayer)
 		{
 			if (info.drawPlayer.GetModPlayer<StarlightPlayer>().empowered)
 				ArmorHelper.QuickDrawHeadFramed(info, AssetDirectory.StarwoodItem + "StarwoodHat_Head_Alt", 1, new Vector2(0, -3));
+			else//debug
+				ArmorHelper.QuickDrawHeadFramed(info, AssetDirectory.StarwoodItem + "StarwoodHat_Head", 1, new Vector2(0, -3));
 		}
 	}
 
@@ -86,7 +88,6 @@ namespace StarlightRiver.Content.Items.Starwood
 		{
 			isEmpowered = Player.GetModPlayer<StarlightPlayer>().empowered;
 		}
-
 		public override bool IsArmorSet(Item head, Item body, Item legs)
 		{
 			return head.type == ItemType<StarwoodHat>() &&
@@ -118,10 +119,22 @@ namespace StarlightRiver.Content.Items.Starwood
 				target.GetGlobalNPC<ManastarDrops>().DropStar = true;
 		}
 
-		public void DrawArmorLayer(PlayerDrawSet info)
+		public void DrawArmorLayer(PlayerDrawSet info, IArmorLayerDrawable.SubLayer subLayer)
 		{
-			if (info.drawPlayer.GetModPlayer<StarlightPlayer>().empowered)
-				ArmorHelper.QuickDrawBodyFramed(info, AssetDirectory.StarwoodItem + "StarwoodChest_Body_Alt", 1, new Vector2(10, 18));
+			if (subLayer == IArmorLayerDrawable.SubLayer.InFront)
+			{
+				if (info.drawPlayer.GetModPlayer<StarlightPlayer>().empowered)
+					ArmorHelper.QuickDrawFrontArmsFramed(info, AssetDirectory.StarwoodItem + "StarwoodChest_Body_Alt", 1, new Vector2(0, -3));
+				else//debug
+					ArmorHelper.QuickDrawFrontArmsFramed(info, AssetDirectory.StarwoodItem + "StarwoodChest_Body3", 1, new Vector2(0, -5));
+			}
+			else
+			{
+				if (info.drawPlayer.GetModPlayer<StarlightPlayer>().empowered)
+					ArmorHelper.QuickDrawBodyFramed(info, AssetDirectory.StarwoodItem + "StarwoodChest_Body_Alt", 1, new Vector2(0, 0));
+				else
+					ArmorHelper.QuickDrawBodyFramed(info, AssetDirectory.StarwoodItem + "StarwoodChest_Body3", 1, new Vector2(0, -5));
+			}
 		}
 	}
 
@@ -159,7 +172,7 @@ namespace StarlightRiver.Content.Items.Starwood
 			isEmpowered = Player.GetModPlayer<StarlightPlayer>().empowered;
 		}
 
-		public void DrawArmorLayer(PlayerDrawSet info)
+		public void DrawArmorLayer(PlayerDrawSet info, IArmorLayerDrawable.SubLayer subLayer)
 		{
 			if (info.drawPlayer.GetModPlayer<StarlightPlayer>().empowered)
 				ArmorHelper.QuickDrawLegsFramed(info, AssetDirectory.StarwoodItem + "StarwoodBoots_Legs_Alt", 1, new Vector2(10, 18));

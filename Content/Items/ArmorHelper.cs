@@ -1,7 +1,9 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.Faewhip;
+using System;
 using Terraria.DataStructures;
 using static Terraria.ModLoader.ModContent;
+using static Terraria.ModLoader.PlayerDrawLayer;
 
 namespace StarlightRiver.Content.Items
 {
@@ -37,12 +39,25 @@ namespace StarlightRiver.Content.Items
 			if (info.drawPlayer.ActiveAbility<Whip>())
 				return;
 
-			Texture2D tex = Request<Texture2D>(texture).Value;
-			int frame = (int)(info.drawPlayer.legFrame.Y/*TODO*/ * 0.01785714286f);//(int)((frame / 1120f) * 20);
-			Vector2 pos = (info.drawPlayer.MountedCenter - Main.screenPosition + offset).ToPoint16().ToVector2() + new Vector2(0, info.drawPlayer.gfxOffY);
-			int height = (int)(tex.Height * 0.05f);//tex.Height / 20
+			Texture2D newTex = Request<Texture2D>(texture).Value;
+
+			//uses body frame for the 1.3 sheets because headframe is always zero for some reason
+			int frame = (int)(info.drawPlayer.bodyFrame.Y / info.drawPlayer.bodyFrame.Height) ;//(int)((info.drawPlayer.bodyFrame.Y / 1120f) * 20);
+			int height = (int)(newTex.Height / 20);
+
+			Vector2 pos = (info.drawPlayer.MountedCenter - Main.screenPosition + 
+				new Vector2(offset.X, info.drawPlayer.gravDir == -1 ? -offset.Y : offset.Y) + //flips offsets when gravity is
+				new Vector2(0, info.drawPlayer.gfxOffY)).ToPoint16().ToVector2() + //stepping up blocks
+				info.drawPlayer.headPosition;//player gore position
+			//head does not use bopping while walking since it is built into the sheet (despite vanilla using for the head for some reason?)
+
 			Color drawColor = color ?? info.colorArmorHead;
-			info.DrawDataCache.Add(new DrawData(tex, pos, new Rectangle(0, frame * height, tex.Width, height), immuneFade ? drawColor * ((255 - info.drawPlayer.immuneAlpha) * 0.003921568627f) : drawColor, info.drawPlayer.headRotation, new Vector2(tex.Width * 0.5f, tex.Height * 0.025f), scale, info.playerEffect, 0));
+
+			info.DrawDataCache.Add(new DrawData(newTex, pos, new Rectangle(0, frame * height, newTex.Width, height), 
+				immuneFade ? drawColor * ((255 - info.drawPlayer.immuneAlpha) * 0.003921568627f) : drawColor,
+				info.drawPlayer.headRotation, 
+				new Vector2(newTex.Width * 0.5f, newTex.Height * 0.025f), 
+				scale, info.playerEffect, 0));
 		}
 
 		/// <summary>
@@ -60,12 +75,116 @@ namespace StarlightRiver.Content.Items
 			if (info.drawPlayer.ActiveAbility<Whip>())
 				return;
 
-			Texture2D tex = Request<Texture2D>(texture).Value;
-			int frame = (int)(info.drawPlayer.bodyFrame.Y * 0.01785714286f);//(int)((frame / 1120f) * 20);
-			var pos = (info.drawPlayer.position + info.drawPlayer.bodyPosition - Main.screenPosition + offset).ToPoint16().ToVector2();
-			int height = (int)(tex.Height * 0.05f);//tex.Height / 20
+			Texture2D newTex = Request<Texture2D>(texture).Value;
+
+			//gets values based on frame instead of location on vanilla sized sheet
+			int torsoFrameX = (int)(info.compTorsoFrame.X / info.compTorsoFrame.Width);
+			int torsoFrameY = (int)(info.compTorsoFrame.Y / info.compTorsoFrame.Height);
+
+			const int frameCountX = 9;
+			const int frameCountY = 4;
+
+			//frame size based on new sheet
+			int frameWidth = (int)(newTex.Width / frameCountX);
+			int frameHeight = (int)(newTex.Height / frameCountY);
+			var a = new Between(PlayerDrawLayers.HeldItem, PlayerDrawLayers.ArmOverItem);
+
+			Vector2 pos = (info.drawPlayer.MountedCenter - Main.screenPosition + 
+				new Vector2(offset.X, info.drawPlayer.gravDir == -1 ? -offset.Y : offset.Y) + 
+				new Vector2(0, info.drawPlayer.gfxOffY)).ToPoint16().ToVector2() +
+				info.drawPlayer.bodyPosition + //player gore position
+				Main.OffsetsPlayerHeadgear[info.drawPlayer.bodyFrame.Y / info.drawPlayer.bodyFrame.Height];//bobbing while walking
+
 			Color drawColor = color ?? info.colorArmorBody;
-			info.DrawDataCache.Add(new DrawData(tex, pos, new Rectangle(0, frame * height, tex.Width, height), immuneFade ? drawColor * ((255 - info.drawPlayer.immuneAlpha) * 0.003921568627f) : drawColor, info.drawPlayer.bodyRotation, new Vector2(tex.Width * 0.5f, tex.Height * 0.025f), scale, info.playerEffect, 0));
+			Color outColor = immuneFade ? drawColor * ((255 - info.drawPlayer.immuneAlpha) * 0.003921568627f) : drawColor;
+
+			info.DrawDataCache.Add(new DrawData(newTex, pos, new Rectangle(torsoFrameX * frameWidth, torsoFrameY * frameHeight, frameWidth, frameHeight),
+				outColor,
+				info.drawPlayer.bodyRotation,
+				new Vector2(frameWidth / 2, frameHeight / 2),
+				scale, info.playerEffect, 0));
+
+			//int frontArmFrameX = (int)(info.compFrontArmFrame.X / info.compFrontArmFrame.Width);
+			//int frontArmFrameY = (int)(info.compFrontArmFrame.Y / info.compFrontArmFrame.Height);
+
+			//Main.NewText(info.compFrontArmFrame);
+
+			//info.DrawDataCache.Add(new DrawData(newTex, pos, new Rectangle(frontArmFrameX * frameWidth, frontArmFrameY * frameHeight, frameWidth, frameHeight),
+			//	outColor, 
+			//	info.compositeFrontArmRotation, 
+			//	new Vector2(frameWidth / 2, frameHeight / 2), 
+			//	scale, info.playerEffect, 0));
+		}
+
+		public static void QuickDrawFrontArmsFramed(PlayerDrawSet info, string texture, float scale, Vector2 offset, Color? color = null, bool immuneFade = false)
+		{
+			if (info.drawPlayer.ActiveAbility<Whip>())
+				return;
+
+			Texture2D newTex = Request<Texture2D>(texture).Value;
+
+			//gets values based on frame instead of location on vanilla sized sheet
+			int torsoFrameX = (int)(info.compTorsoFrame.X / info.compTorsoFrame.Width);
+			int torsoFrameY = (int)(info.compTorsoFrame.Y / info.compTorsoFrame.Height);
+
+			const int frameCountX = 9;
+			const int frameCountY = 4;
+
+			//frame size based on new sheet
+			int frameWidth = (int)(newTex.Width / frameCountX);
+			int frameHeight = (int)(newTex.Height / frameCountY);
+			var a = new Between(PlayerDrawLayers.HeldItem, PlayerDrawLayers.ArmOverItem);
+
+			Vector2 fixedOffset = new Vector2(offset.X, info.drawPlayer.gravDir == -1 ? -offset.Y : offset.Y);
+
+			Vector2 pos = (info.drawPlayer.MountedCenter - Main.screenPosition +
+				fixedOffset +
+				new Vector2(0, info.drawPlayer.gfxOffY)).ToPoint16().ToVector2() +
+				info.drawPlayer.bodyPosition + //player gore position
+				Main.OffsetsPlayerHeadgear[info.drawPlayer.bodyFrame.Y / info.drawPlayer.bodyFrame.Height];//bobbing while walking
+
+			Color drawColor = color ?? info.colorArmorBody;
+			Color outColor = immuneFade ? drawColor * ((255 - info.drawPlayer.immuneAlpha) * 0.003921568627f) : drawColor;
+
+			//info.DrawDataCache.Add(new DrawData(newTex, pos, new Rectangle(torsoFrameX * frameWidth, torsoFrameY * frameHeight, frameWidth, frameHeight),
+			//	outColor, 
+			//	info.drawPlayer.bodyRotation, 
+			//	new Vector2(frameWidth / 2, frameHeight / 2), 
+			//	scale, info.playerEffect, 0));
+
+			Vector2 someothervalue5 = new Vector2((float)(-5 * info.drawPlayer.direction), -1f);
+
+			Vector2 vector = pos; /*new Vector2(
+				(float)(int)(info.Position.X - Main.screenPosition.X - 
+				(float)(info.drawPlayer.bodyFrame.Width / 2) + 
+				(float)(info.drawPlayer.width / 2)), 
+
+				(float)(int)(info.Position.Y - Main.screenPosition.Y + 
+				(float)info.drawPlayer.height - 
+				(float)info.drawPlayer.bodyFrame.Height + 4f)) + 
+				info.drawPlayer.bodyPosition + 
+				new Vector2((float)(info.drawPlayer.bodyFrame.Width / 2), 
+				(float)(info.drawPlayer.bodyFrame.Height / 2));*/
+
+			//Vector2 value = Main.OffsetsPlayerHeadgear[info.drawPlayer.bodyFrame.Y / info.drawPlayer.bodyFrame.Height];
+			//value.Y -= 2f;
+			//vector += value * (float)(-((Enum)info.playerEffect).HasFlag((Enum)(object)(SpriteEffects)2).ToDirectionInt());
+			vector += someothervalue5;
+			if (info.compFrontArmFrame.X / info.compFrontArmFrame.Width >= 7)
+			{
+				vector += new Vector2(info.drawPlayer.direction, info.drawPlayer.gravDir);
+			}
+
+			int frontArmFrameX = (int)(info.compFrontArmFrame.X / info.compFrontArmFrame.Width);
+			int frontArmFrameY = (int)(info.compFrontArmFrame.Y / info.compFrontArmFrame.Height);
+
+			Main.NewText(info.drawPlayer.direction);
+
+			info.DrawDataCache.Add(new DrawData(newTex, vector + new Vector2(0f, 1f), new Rectangle(frontArmFrameX * frameWidth, frontArmFrameY * frameHeight, frameWidth, frameHeight),
+				outColor,
+				info.drawPlayer.bodyRotation + info.compositeFrontArmRotation,//may just need arm rotationw
+				new Vector2(frameWidth / 2, frameHeight / 2) + someothervalue5 + new Vector2(0f, 1f),
+				scale, info.playerEffect, 0));
 		}
 
 		/// <summary>
@@ -83,12 +202,12 @@ namespace StarlightRiver.Content.Items
 			if (info.drawPlayer.ActiveAbility<Whip>())
 				return;
 
-			Texture2D tex = Request<Texture2D>(texture).Value;
+			Texture2D newTex = Request<Texture2D>(texture).Value;
 			int frame = (int)(info.drawPlayer.legFrame.Y * 0.01785714286f);//(int)((frame / 1120f) * 20);
 			var pos = (info.drawPlayer.position + info.drawPlayer.legPosition - Main.screenPosition + offset).ToPoint16().ToVector2();
-			int height = (int)(tex.Height * 0.05f);//tex.Height / 20
+			int height = (int)(newTex.Height * 0.05f);//tex.Height / 20
 			Color drawColor = color ?? info.colorArmorLegs;
-			info.DrawDataCache.Add(new DrawData(tex, pos, new Rectangle(0, frame * height, tex.Width, height), immuneFade ? drawColor * ((255 - info.drawPlayer.immuneAlpha) * 0.003921568627f) : drawColor, info.drawPlayer.legRotation, new Vector2(tex.Width * 0.5f, tex.Height * 0.025f), scale, info.playerEffect, 0));
+			info.DrawDataCache.Add(new DrawData(newTex, pos, new Rectangle(0, frame * height, newTex.Width, height), immuneFade ? drawColor * ((255 - info.drawPlayer.immuneAlpha) * 0.003921568627f) : drawColor, info.drawPlayer.legRotation, new Vector2(newTex.Width * 0.5f, newTex.Height * 0.025f), scale, info.playerEffect, 0));
 		}
 	}
 }
