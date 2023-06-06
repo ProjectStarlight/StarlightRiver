@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 			Item.value = Item.sellPrice(copper: 10);
 			Item.rare = ItemRarityID.Orange;
 
-			Item.maxStack = 20;
+			Item.maxStack = 9999;
 			Item.damage = 20;
 			Item.knockBack = 1.5f;
 
