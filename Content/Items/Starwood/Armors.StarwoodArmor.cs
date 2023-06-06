@@ -138,10 +138,22 @@ namespace StarlightRiver.Content.Items.Starwood
 			}
 		}
 
-		public void DrawArmorLayer(PlayerDrawSet info)
+		public void DrawArmorLayer(PlayerDrawSet info, IArmorLayerDrawable.SubLayer subLayer)
 		{
-			if (info.drawPlayer.GetModPlayer<StarlightPlayer>().empowered)
-				ArmorHelper.QuickDrawBodyFramed(info, AssetDirectory.StarwoodItem + "StarwoodChest_Body_Alt", 1, new Vector2(10, 18));
+			if (subLayer == IArmorLayerDrawable.SubLayer.InFront)
+			{
+				if (info.drawPlayer.GetModPlayer<StarlightPlayer>().empowered)
+					ArmorHelper.QuickDrawFrontArmsFramed(info, AssetDirectory.StarwoodItem + "StarwoodChest_Body_Alt", 1, new Vector2(0, -5));
+				//else//debug
+				//	ArmorHelper.QuickDrawFrontArmsFramed(info, AssetDirectory.StarwoodItem + "StarwoodChest_Body2", 1, new Vector2(0, -5));
+			}
+			else
+			{
+				if (info.drawPlayer.GetModPlayer<StarlightPlayer>().empowered)
+					ArmorHelper.QuickDrawBodyFramed(info, AssetDirectory.StarwoodItem + "StarwoodChest_Body_Alt", 1, new Vector2(0, -5));
+				//else
+				//	ArmorHelper.QuickDrawBodyFramed(info, AssetDirectory.StarwoodItem + "StarwoodChest_Body2", 1, new Vector2(0, -5));
+			}
 		}
 	}
 
