@@ -15,6 +15,7 @@ namespace StarlightRiver.Content.CustomHooks
 		public override void Load()
 		{
 			On_Player.PickTile += DontPickInZone;
+			On_Player.PickWall += DontPickWallInZone;
 			On_WorldGen.PlaceTile += DontManuallyPlaceInZone;
 			On_WorldGen.PoundTile += DontPoundTile;
 			On_WorldGen.PlaceWire += DontPlaceWire;
@@ -139,6 +140,17 @@ namespace StarlightRiver.Content.CustomHooks
 			}
 
 			return orig(x, y);
+		}
+
+		private void DontPickWallInZone(On_Player.orig_PickWall orig, Player self, int x, int y, int damage)
+		{
+			if (IsProtected(x, y))
+			{
+				FailFX(new Point16(x, y));
+				return;
+			}
+
+			orig(self, x, y, damage);
 		}
 
 		private void DontPickInZone(On_Player.orig_PickTile orig, Player self, int x, int y, int pickPower)
