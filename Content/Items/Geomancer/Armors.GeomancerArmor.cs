@@ -30,6 +30,11 @@ namespace StarlightRiver.Content.Items.Geomancer
 		{
 			DisplayName.SetDefault("Geomancer's Hood");
 			//Tooltip.SetDefault("15% increased ranged critical strike damage");
+			if (Main.netMode != NetmodeID.Server)
+			{
+				int equipSlotHead = EquipLoader.GetEquipSlot(Mod, Name, EquipType.Head);//unsure why this is needed, but it is
+				ArmorIDs.Head.Sets.DrawHead[equipSlotHead] = false;//array does not take the item id
+			}
 		}
 
 		public override void SetDefaults()
@@ -96,6 +101,8 @@ namespace StarlightRiver.Content.Items.Geomancer
 		public void DrawArmorLayer(PlayerDrawSet info, IArmorLayerDrawable.SubLayer subLayer)
 		{
 			GeomancerPlayer modPlayer = info.drawPlayer.GetModPlayer<GeomancerPlayer>();
+			//this set does not need to check for an empty vanity slot since this only gets called if visible
+			//but this is left as is since you could wear a second set of the armor over itself to stop the visual effects
 			if (modPlayer.SetBonusActive && modPlayer.storedGem != StoredGem.None && info.drawPlayer.armor[10].type == ItemID.None)
 			{
 				GeomancerDrawer.Draw(ModContent.Request<Texture2D>(AssetDirectory.GeomancerItem + "GeomancerHood_Head_Gems").Value, info, info.drawPlayer.bodyFrame, info.drawPlayer.headRotation);
@@ -232,11 +239,13 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 	public static class GeomancerDrawer
 	{
-		public static void Draw(Texture2D texture, PlayerDrawSet info, Rectangle frame, float rotation) //TODO: Port this over to new system
+		public static void Draw(Texture2D texture, PlayerDrawSet info, Rectangle frame, float rotation)
 		{
 			Player armorOwner = info.drawPlayer;
 
-			Vector2 drawPos = armorOwner.MountedCenter - Main.screenPosition - new Vector2(0, 3 - armorOwner.gfxOffY);
+			Vector2 weirdGravityOffset = new Vector2(0, info.drawPlayer.gravDir == -1 ? 6 : 0);//copied from ArmorHelper, but needed an extra 2 pixels;
+
+			Vector2 drawPos = armorOwner.MountedCenter - Main.screenPosition - new Vector2(0, 3 - armorOwner.gfxOffY) + weirdGravityOffset;
 			float timerVar = (float)(Main.timeForVisualEffects * 0.05f % 2.4f / 2.4f) * 6.28f;
 			float timer = (float)(Math.Sin(timerVar) / 2f) + 0.5f;
 
@@ -245,56 +254,56 @@ namespace StarlightRiver.Content.Items.Geomancer
 			Filters.Scene["RainbowArmor2"].GetShader().Shader.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.005f);
 			Filters.Scene["RainbowArmor2"].GetShader().Shader.Parameters["uOpacity"].SetValue(1.25f - timer);
 
-			try
+			//try
+			//{
+			var value = new DrawData(
+						texture,
+						new Vector2((int)drawPos.X, (int)drawPos.Y),
+						frame,
+						GeomancerPlayer.GetArmorColor(armorOwner),
+						rotation,
+						new Vector2(frame.Width / 2, frame.Height / 2),
+						1,
+						info.playerEffect,
+						0
+					)
 			{
-				var value = new DrawData(
-							texture,
-							new Vector2((int)drawPos.X, (int)drawPos.Y),
-							frame,
-							GeomancerPlayer.GetArmorColor(armorOwner),
-							rotation,
-							new Vector2(frame.Width / 2, frame.Height / 2),
-							1,
-						   armorOwner.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
-							0
-						)
+				shader = armorOwner.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.All ? GeomancerPlayer.shaderValue : 0
+			};
+			info.DrawDataCache.Add(value);
+			//}
+			//catch
+			//{
+			//	Main.NewText("First wave of geomancer armor drawing not working");
+			//}
+
+			//try
+			//{
+			for (float i = 0; i < 6.28f; i += 1.57f)
+			{
+				Vector2 offset = i.ToRotationVector2() * 2 * timer;
+				var value2 = new DrawData(
+						texture,
+						new Vector2((int)drawPos.X, (int)drawPos.Y) + offset,
+						frame,
+						GeomancerPlayer.GetArmorColor(armorOwner) * 0.25f,
+						rotation,
+						new Vector2(frame.Width / 2, frame.Height / 2),
+						1,
+						info.playerEffect,
+						0
+					)
 				{
-					shader = armorOwner.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.All ? GeomancerPlayer.shaderValue : 0
+					shader = armorOwner.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.All ? GeomancerPlayer.shaderValue2 : 0
 				};
-				info.DrawDataCache.Add(value);
-			}
-			catch
-			{
-				Main.NewText("First wave of geomancer armor drawing not working");
-			}
 
-			try
-			{
-				for (float i = 0; i < 6.28f; i += 1.57f)
-				{
-					Vector2 offset = i.ToRotationVector2() * 2 * timer;
-					var value2 = new DrawData(
-							texture,
-							new Vector2((int)drawPos.X, (int)drawPos.Y) + offset,
-							frame,
-							GeomancerPlayer.GetArmorColor(armorOwner) * 0.25f,
-							rotation,
-							new Vector2(frame.Width / 2, frame.Height / 2),
-							1,
-							armorOwner.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
-							0
-						)
-					{
-						shader = armorOwner.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.All ? GeomancerPlayer.shaderValue2 : 0
-					};
-
-					info.DrawDataCache.Add(value2);
-				}
+				info.DrawDataCache.Add(value2);
 			}
-			catch
-			{
-				Main.NewText("Second wave of geomancer armor drawing not working");
-			}
+			//}
+			//catch
+			//{
+			//	Main.NewText("Second wave of geomancer armor drawing not working");
+			//}
 		}
 	}
 }

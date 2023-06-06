@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 		private void PreDrawGlowFX(Player Player, SpriteBatch spriteBatch)
 		{
-			if (!Player.GetModPlayer<GeomancerPlayer>().SetBonusActive)
+			if (!SetBonusActive)//removed GetModPlayer since these can directly access it here
 				return;
 
 			if (!CustomHooks.PlayerTarget.canUseTarget)
@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 			Effect effect = Filters.Scene["RainbowAura"].GetShader().Shader;
 
-			if (Player.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.All)
+			if (storedGem == StoredGem.All)
 			{
 
 				float sin = (float)Math.Sin(Main.GameUpdateCount / 10f);
@@ -87,7 +87,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 					spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI), color * 0.25f * fadeOut);
 				}
 			}
-			else if (Player.GetModPlayer<GeomancerPlayer>().ActivationCounter > 0)
+			else if (ActivationCounter > 0)
 			{
 				float sin = Player.GetModPlayer<GeomancerPlayer>().ActivationCounter;
 				float opacity = 1.5f - sin;
