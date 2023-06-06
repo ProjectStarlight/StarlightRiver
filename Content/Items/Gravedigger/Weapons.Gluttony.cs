@@ -3,7 +3,6 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
@@ -122,7 +121,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Projectile.Center = Player.Center;
 			Projectile.rotation = direction.ToRotation();
 
-			if (Player.statMana < Player.HeldItem.mana)
+			if (Player.statMana < Player.HeldItem.mana || Player.statMana <= 0)
 				released = true;
 
 			if (Player.channel && Player.HeldItem.type == ModContent.ItemType<Gluttony>() && !released)
