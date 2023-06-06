@@ -39,7 +39,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 			NPC.width = 26;
 			NPC.height = 20;
 			NPC.knockBackResist = 0;
-			NPC.lifeMax = 40;
+			NPC.lifeMax = 5;
 			NPC.noGravity = true;
 			NPC.noTileCollide = false;
 			NPC.damage = 10;
@@ -47,6 +47,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 			NPC.HitSound = SoundID.NPCHit1;
 			NPC.DeathSound = SoundID.NPCDeath4;
 			NPC.chaseable = false;
+			NPC.npcSlots = 0;
 		}
 
 		public override void AI()
