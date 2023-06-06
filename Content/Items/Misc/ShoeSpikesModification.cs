@@ -52,6 +52,16 @@ namespace StarlightRiver.Content.Items.Misc
 				{
 					ShoeSpikeAccessories.Add(item.type);
 				}
+
+				if (recipe.TryGetIngredient(ItemID.ClimbingClaws, out Item item2))
+				{
+					ShoeSpikeAccessories.Add(item2.type);
+				}
+
+				if (recipe.TryGetIngredient(ItemID.TigerClimbingGear, out Item item3))
+				{
+					ShoeSpikeAccessories.Add(item3.type);
+				}
 			}
 		}
 
