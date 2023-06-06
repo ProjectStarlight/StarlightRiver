@@ -676,6 +676,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 					if (GlobalTimer == 60)
 					{
+						NPC.defense = Main.expertMode ? 14 : 10; // safeguard defense value
 						NPC.dontTakeDamage = false; //damagable again
 						NPC.friendly = false;
 					}
