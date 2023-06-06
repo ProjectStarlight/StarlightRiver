@@ -97,7 +97,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 				target.DelBuff(index);
 
 				Helper.PlayPitched("Magic/Shadow1", 1, Main.rand.NextFloat(-0.1f, 0.1f));
-				modifiers.FlatBonusDamage += 10;
+				modifiers.FlatBonusDamage += 20;
 				modifiers.FlatBonusDamage += (int)(target.defense / 5f);
 				Projectile.NewProjectile(player.GetSource_ItemUse(Item), target.Center, Vector2.Zero, ModContent.ProjectileType<MoonfuryRing>(), 0, 0, player.whoAmI);
 
