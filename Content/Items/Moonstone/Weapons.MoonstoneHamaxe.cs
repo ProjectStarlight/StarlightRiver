@@ -411,7 +411,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 				Point point = pos.ToTileCoordinates();
 
 				if (Collision.CanHitLine(Main.player[Projectile.owner].Center, 1, 1, pos, 1, 1))
-					WorldGen.KillWall(point.X, point.Y);
+					Main.player[Projectile.owner].PickWall(point.X, point.Y, 100);
 			}
 		}
 
