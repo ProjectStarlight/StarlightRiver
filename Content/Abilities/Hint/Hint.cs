@@ -74,7 +74,10 @@ namespace StarlightRiver.Content.Abilities.Hint
 
 			for (int k = 0; k < Main.maxNPCs; k++)
 			{
-				if (Main.npc[k].Hitbox.Contains(pos.ToPoint()))
+				Rectangle box = Main.npc[k].Hitbox;
+				box.Inflate(10, 10);
+
+				if (box.Contains(pos.ToPoint()))
 				{
 					NPC npc = Main.npc[k];
 
@@ -97,7 +100,10 @@ namespace StarlightRiver.Content.Abilities.Hint
 
 			for (int k = 0; k < Main.maxProjectiles; k++)
 			{
-				if (Main.projectile[k].Hitbox.Contains(pos.ToPoint()))
+				Rectangle box = Main.projectile[k].Hitbox;
+				box.Inflate(10, 10);
+
+				if (box.Contains(pos.ToPoint()))
 				{
 					Projectile proj = Main.projectile[k];
 
