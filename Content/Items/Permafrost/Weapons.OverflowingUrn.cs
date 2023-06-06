@@ -50,6 +50,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Item.noMelee = true;
 			Item.noUseGraphic = true;
 			Item.autoReuse = true;
+
+			Item.value = Item.sellPrice(gold: 2);
 		}
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)

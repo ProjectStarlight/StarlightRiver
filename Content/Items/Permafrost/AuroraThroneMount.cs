@@ -215,5 +215,10 @@ namespace StarlightRiver.Content.Items.Permafrost
 			DisplayName.SetDefault("Aurora Crown");
 			Tooltip.SetDefault("Combat Mount: Summons an Aurora Throne\nLashes out with whip-like appendages\n<right> to summon explosive Auroralings");
 		}
+
+		public override void SafeSetDefaults()
+		{
+			Item.value = Item.sellPrice(gold: 2);
+		}
 	}
 }
