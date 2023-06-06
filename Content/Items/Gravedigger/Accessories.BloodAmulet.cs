@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override string Texture => AssetDirectory.GravediggerItem + Name;
 
-		public BloodAmulet() : base("Blood Amulet", "Every 25 damage taken releases a homing bloodbolt \nThese bolts damage enemies and guaruntee they drop life hearts on death") { }
+		public BloodAmulet() : base("Blood Amulet", "Every 25 damage taken releases a homing bloodbolt \nThese bolts damage enemies and guarantee they drop life hearts on death") { }
 
 		public override void Load()
 		{

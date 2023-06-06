@@ -58,6 +58,8 @@ namespace StarlightRiver.Content.Items.Starwood
 		public override void Load()//adds method to Starlight Player event
 		{
 			StarlightPlayer.OnHitNPCEvent += ModifyHitNPCStarwood;
+			StarlightPlayer.OnHitNPCWithProjEvent += ModifyHitNPCWithProjStarwood;
+			StarlightPlayer.ResetEffectsEvent += ResetEmpowerment;
 		}
 
 		public override void SetStaticDefaults()
@@ -95,7 +97,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
 		public override void UpdateArmorSet(Player Player)
 		{
-			Player.setBonus = "Picking up mana stars empowers Starwood items, temporarily granting them new effects";
+			Player.setBonus = "Picking up mana stars empowers Starwood items, temporarily granting them new effects\nAll enemies have a chance of dropping mana stars on death";
 			StarlightPlayer mp = Player.GetModPlayer<StarlightPlayer>();
 
 			if (mp.empowermentTimer > 0 && ArmorHelper.IsSetEquipped(this, Player)) //checks if complete to disable empowerment if set is removed
@@ -116,6 +118,23 @@ namespace StarlightRiver.Content.Items.Starwood
 		{
 			if (ArmorHelper.IsSetEquipped(this, Player))
 				target.GetGlobalNPC<ManastarDrops>().DropStar = true;
+		}
+
+		private void ModifyHitNPCWithProjStarwood(Player Player, Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			if (ArmorHelper.IsSetEquipped(this, Player))
+				target.GetGlobalNPC<ManastarDrops>().DropStar = true;
+		}
+
+		private void ResetEmpowerment(StarlightPlayer modPlayer)
+		{
+			Player player = modPlayer.Player;
+
+			if (!(player.armor[1].ModItem is Starwood.StarwoodChest) || !ArmorHelper.IsSetEquipped(player.armor[1].ModItem, player)) // Checks armor set is off since it does not seem to be called in armor when the set is not complete
+			{
+				modPlayer.empowered = false;
+				modPlayer.empowermentTimer = 0;
+			}
 		}
 
 		public void DrawArmorLayer(PlayerDrawSet info)

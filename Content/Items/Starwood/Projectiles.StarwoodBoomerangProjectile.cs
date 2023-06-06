@@ -165,16 +165,9 @@ namespace StarlightRiver.Content.Items.Starwood
 			{
 				if (Projectile.ai[1] >= CHARGE_TIME - 3 && Projectile.ai[1] <= CHARGE_TIME + 3)
 				{
-					if (empowered)
-					{
-						modifiers.SourceDamage *= ScaleMult;
-						modifiers.Knockback *= ScaleMult;
-					}
-					else
-					{
-						modifiers.SourceDamage *= ScaleMult;
-						modifiers.Knockback *= ScaleMult;
-					}
+					modifiers.SourceDamage *= ScaleMult;
+					modifiers.Knockback *= ScaleMult;
+					modifiers.HitDirectionOverride = target.Center.X > Projectile.Center.X ? 1 : -1;
 				}
 				else
 				{
@@ -184,7 +177,7 @@ namespace StarlightRiver.Content.Items.Starwood
 			}
 			else if (empowered)
 			{
-				modifiers.SourceDamage += 3;
+				modifiers.SourceDamage += 1.5f;
 			}
 		}
 
