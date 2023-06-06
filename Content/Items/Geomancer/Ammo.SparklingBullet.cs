@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Sparkling Bullet");
-			Tooltip.SetDefault("Regenerates on a successful hit");
+			Tooltip.SetDefault("Restored on a successful hit");
 		}
 
 		public override void SetDefaults()
