@@ -1,8 +1,10 @@
 ﻿using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Terraria.GameContent;
 using Terraria.GameInput;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Abilities.Hint
 {
@@ -88,6 +90,9 @@ namespace StarlightRiver.Content.Abilities.Hint
 					}
 					else
 					{
+						if (npc.FullName == "")
+							return;
+
 						if (npc.friendly)
 							hintToDisplay = $"It's my good friend, {npc.FullName}!";
 						else if (npc.boss)
@@ -123,6 +128,16 @@ namespace StarlightRiver.Content.Abilities.Hint
 				hintToDisplay = hintableT.GetHint();
 				return;
 			}
+
+			if (tile.HasTile && Main.tileSolid[tile.TileType])
+				hintToDisplay = $"It's just some {ProcessName(TileID.Search.GetName(tile.TileType))}...";
+		}
+
+		private string ProcessName(string input)
+		{
+			input = Regex.Replace(input, "(.*)/(.*)", "$2");
+			input = Regex.Replace(input, "([a-z])([A-Z])", "$1 $2");
+			return input;
 		}
 
 		public override void UpdateActive()
