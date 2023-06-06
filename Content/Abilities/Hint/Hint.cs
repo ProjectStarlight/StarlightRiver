@@ -1,7 +1,10 @@
 ﻿using ReLogic.Graphics;
 using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Terraria.GameContent;
 using Terraria.GameInput;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Abilities.Hint
 {
@@ -73,7 +76,10 @@ namespace StarlightRiver.Content.Abilities.Hint
 
 			for (int k = 0; k < Main.maxNPCs; k++)
 			{
-				if (Main.npc[k].Hitbox.Contains(pos.ToPoint()))
+				Rectangle box = Main.npc[k].Hitbox;
+				box.Inflate(10, 10);
+
+				if (box.Contains(pos.ToPoint()))
 				{
 					NPC npc = Main.npc[k];
 
@@ -82,12 +88,27 @@ namespace StarlightRiver.Content.Abilities.Hint
 						hintToDisplay = hintable.GetHint();
 						return;
 					}
+					else
+					{
+						if (npc.FullName == "")
+							return;
+
+						if (npc.friendly)
+							hintToDisplay = $"It's my good friend, {npc.FullName}!";
+						else if (npc.boss)
+							hintToDisplay = $"Thats {npc.FullName}! Focus!";
+						else
+							hintToDisplay = $"It's just a {npc.FullName}.";
+					}
 				}
 			}
 
 			for (int k = 0; k < Main.maxProjectiles; k++)
 			{
-				if (Main.projectile[k].Hitbox.Contains(pos.ToPoint()))
+				Rectangle box = Main.projectile[k].Hitbox;
+				box.Inflate(10, 10);
+
+				if (box.Contains(pos.ToPoint()))
 				{
 					Projectile proj = Main.projectile[k];
 
@@ -107,6 +128,16 @@ namespace StarlightRiver.Content.Abilities.Hint
 				hintToDisplay = hintableT.GetHint();
 				return;
 			}
+
+			if (tile.HasTile && Main.tileSolid[tile.TileType])
+				hintToDisplay = $"It's just some {ProcessName(TileID.Search.GetName(tile.TileType))}...";
+		}
+
+		private string ProcessName(string input)
+		{
+			input = Regex.Replace(input, "(.*)/(.*)", "$2");
+			input = Regex.Replace(input, "([a-z])([A-Z])", "$1 $2");
+			return input;
 		}
 
 		public override void UpdateActive()
@@ -137,13 +168,16 @@ namespace StarlightRiver.Content.Abilities.Hint
 			Projectile.penetrate = -1;
 			Projectile.friendly = false;
 			Projectile.hostile = false;
+			Projectile.timeLeft = 2;
+			Projectile.ignoreWater = true;
+			Projectile.hide = true;
 		}
 
 		public override void AI()
 		{
 			Timer++;
 
-			if (Timer < text.Length * 5f)
+			if (Timer < text.Length * 6f)
 				Projectile.timeLeft = 2;
 
 			if (Timer > text.Length * 2f)
@@ -151,6 +185,16 @@ namespace StarlightRiver.Content.Abilities.Hint
 
 			if (follow && !Main.dedServ)
 				Projectile.Center = Main.screenPosition + new Vector2(Main.screenWidth / 2, Main.screenHeight / 2 - 64);
+		}
+
+		public override bool TileCollideStyle(ref int width, ref int height, ref bool fallThrough, ref Vector2 hitboxCenterFrac)
+		{
+			return false;
+		}
+
+		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
+		{
+			overWiresUI.Add(index);
 		}
 
 		public override bool PreDraw(ref Color lightColor)

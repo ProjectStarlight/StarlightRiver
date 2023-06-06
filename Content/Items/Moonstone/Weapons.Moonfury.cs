@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override void SetDefaults()
 		{
-			Item.damage = 22;
+			Item.damage = 28;
 			Item.DamageType = DamageClass.Melee;
 			Item.width = 36;
 			Item.height = 38;
@@ -92,11 +92,13 @@ namespace StarlightRiver.Content.Items.Moonstone
 			if (target.HasBuff(ModContent.BuffType<MoonfuryDebuff>()))
 			{
 				CameraSystem.shake += 10;
+
 				int index = target.FindBuffIndex(ModContent.BuffType<MoonfuryDebuff>());
 				target.DelBuff(index);
+
 				Helper.PlayPitched("Magic/Shadow1", 1, Main.rand.NextFloat(-0.1f, 0.1f));
-				modifiers.SourceDamage += 5;
-				modifiers.SourceDamage += (int)(target.defense / 5f);
+				modifiers.FlatBonusDamage += 10;
+				modifiers.FlatBonusDamage += (int)(target.defense / 5f);
 				Projectile.NewProjectile(player.GetSource_ItemUse(Item), target.Center, Vector2.Zero, ModContent.ProjectileType<MoonfuryRing>(), 0, 0, player.whoAmI);
 
 				for (int i = 0; i < 16; i++)

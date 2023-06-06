@@ -217,11 +217,12 @@ namespace StarlightRiver.Content.NPCs.Starlight
 
 			if (CutsceneTimer >= 140)
 			{
-				NPC.active = false;
 				StarlightEventSequenceSystem.willOccur = false;
 				StarlightEventSequenceSystem.occuring = false;
 
 				StarlightEventSequenceSystem.sequence++;
+
+				NPC.active = false;
 			}
 		}
 

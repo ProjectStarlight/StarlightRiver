@@ -43,7 +43,9 @@ namespace StarlightRiver.Content.NPCs.Actors
 
 		public void ResetConversion()
 		{
-			targetItem.GetGlobalItem<TransformableItem>().starlightWaterActor = null;
+			if (targetItem != null)
+				targetItem.GetGlobalItem<TransformableItem>().starlightWaterActor = null;
+
 			targetItem = null;
 			targetItemTransformType = 0;
 			transformTimer = 0;
@@ -294,6 +296,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 				{ ItemID.WoodenBoomerang, ItemType<StarwoodBoomerang>() },
 				{ ItemID.WandofSparking, ItemType<StarwoodStaff>() },
 				{ ItemType<Sling>(), ItemType<StarwoodSlingshot>() },
+				{ ItemID.Wood, ItemType<StarwoodCharm>() },
 
 				{ ItemID.BottledWater, ItemType<StarlightWater>() },
 				{ ItemID.LesserManaPotion, ItemType<StarlightWater>() },
