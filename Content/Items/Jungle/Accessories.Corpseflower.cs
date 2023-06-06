@@ -146,7 +146,7 @@ namespace StarlightRiver.Content.Items.Jungle
 		{
 			if (Equipped(player))
 			{
-				BuffInflictor.InflictStack<CorpseflowerBuff, CorpseflowerStack>(target, 600, new CorpseflowerStack() { duration = 600, damage = (int)(damageDone * 0.33f) });
+				BuffInflictor.InflictStack<CorpseflowerBuff, CorpseflowerStack>(target, 600, new CorpseflowerStack() { duration = 600, damage = Utils.Clamp((int)(damageDone * 0.33f), 0, damageDone) });
 				target.life += damageDone;
 			}
 		}
@@ -155,7 +155,7 @@ namespace StarlightRiver.Content.Items.Jungle
 		{
 			if (Equipped(player))
 			{
-				BuffInflictor.InflictStack<CorpseflowerBuff, CorpseflowerStack>(target, 600, new CorpseflowerStack() { duration = 600, damage = (int)(damageDone * 0.33f) });
+				BuffInflictor.InflictStack<CorpseflowerBuff, CorpseflowerStack>(target, 600, new CorpseflowerStack() { duration = 600, damage = Utils.Clamp((int)(damageDone * 0.33f), 0, damageDone) });
 				target.life += damageDone;
 			}
 		}

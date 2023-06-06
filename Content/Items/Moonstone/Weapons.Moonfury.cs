@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override void SetDefaults()
 		{
-			Item.damage = 25;
+			Item.damage = 22;
 			Item.DamageType = DamageClass.Melee;
 			Item.width = 36;
 			Item.height = 38;
@@ -75,7 +75,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 			direction *= -10;
 			velocity = direction;
-			damage *= 2;
+			damage = (int)(damage * 1.5f);
 		}
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -83,7 +83,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			if (cooldown > 0)
 				return false;
 
-			cooldown = 75;
+			cooldown = 95;
 			return true;
 		}
 

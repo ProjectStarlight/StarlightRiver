@@ -15,6 +15,7 @@ namespace StarlightRiver.Content.CustomHooks
 		public override void Load()
 		{
 			On_Player.PickTile += DontPickInZone;
+			On_Player.PickWall += DontPickWallInZone;
 			On_WorldGen.PlaceTile += DontManuallyPlaceInZone;
 			On_WorldGen.PoundTile += DontPoundTile;
 			On_WorldGen.PlaceWire += DontPlaceWire;
@@ -22,6 +23,8 @@ namespace StarlightRiver.Content.CustomHooks
 			On_WorldGen.PlaceWire3 += DontPlaceWire3;
 			On_WorldGen.PlaceWire4 += DontPlaceWire4;
 			On_WorldGen.PlaceActuator += DontPlaceActuator;
+			On_WorldGen.KillTile += DontExplodeAtRuntime;
+			On_Player.CheckForGoodTeleportationSpot += DontTeleport;
 
 		}
 
@@ -35,9 +38,6 @@ namespace StarlightRiver.Content.CustomHooks
 		{
 			if (StarlightRiver.debugMode)
 				return false;
-
-			if (BossRushSystem.isBossRush)
-				return true;
 
 			if (!Main.gameMenu || Main.dedServ) //shouldnt trigger while generating the world from the menu
 			{
@@ -71,6 +71,9 @@ namespace StarlightRiver.Content.CustomHooks
 					return true;
 				}
 			}
+
+			if (BossRushSystem.isBossRush)
+				return true;
 
 			return false;
 		}
@@ -141,6 +144,17 @@ namespace StarlightRiver.Content.CustomHooks
 			return orig(x, y);
 		}
 
+		private void DontPickWallInZone(On_Player.orig_PickWall orig, Player self, int x, int y, int damage)
+		{
+			if (IsProtected(x, y))
+			{
+				FailFX(new Point16(x, y));
+				return;
+			}
+
+			orig(self, x, y, damage);
+		}
+
 		private void DontPickInZone(On_Player.orig_PickTile orig, Player self, int x, int y, int pickPower)
 		{
 			if (IsProtected(x, y))
@@ -161,6 +175,30 @@ namespace StarlightRiver.Content.CustomHooks
 			}
 
 			return orig(i, j, type, mute, forced, plr, style);
+		}
+
+		private void DontExplodeAtRuntime(On_WorldGen.orig_KillTile orig, int i, int j, bool fail, bool effectOnly, bool noItem)
+		{
+			if (IsProtected(i, j) && !WorldGen.generatingWorld)
+			{
+				FailFX(new Point16(i, j));
+			}
+
+			orig(i, j, fail, effectOnly, noItem);
+		}
+
+		private Vector2 DontTeleport(On_Player.orig_CheckForGoodTeleportationSpot orig, Player self, ref bool canSpawn, int teleportStartX, int teleportRangeX, int teleportStartY, int teleportRangeY, Player.RandomTeleportationAttemptSettings settings)
+		{
+			Vector2 result = orig(self, ref canSpawn, teleportStartX, teleportRangeX, teleportStartY, teleportRangeY, settings);
+
+			// If invalid spot, recurse untill a valid one is found
+			if (IsProtected((int)result.X, (int)result.Y))
+			{
+				settings.attemptsBeforeGivingUp--;
+				self.CheckForGoodTeleportationSpot(ref canSpawn, teleportStartX, teleportRangeX, teleportStartY, teleportRangeY, settings);
+			}
+
+			return result;
 		}
 
 		public override bool CanUseItem(Item Item, Player player)
