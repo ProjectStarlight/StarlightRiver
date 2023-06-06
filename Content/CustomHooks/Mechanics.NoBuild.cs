@@ -185,8 +185,9 @@ namespace StarlightRiver.Content.CustomHooks
 		{
 			if (IsProtected(i, j) && !WorldGen.generatingWorld)
 			{
-				FailFX(new Point16(i, j));
-				return;
+				// Disabling for now since this breaks dashables... we will need a better fix for bombs only later.
+				//FailFX(new Point16(i, j));
+				//return;
 			}
 
 			orig(i, j, fail, effectOnly, noItem);
