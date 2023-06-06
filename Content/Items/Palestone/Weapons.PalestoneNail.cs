@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Items.Palestone
 			Item.useTime = 36;
 			Item.useAnimation = 36;
 			Item.useStyle = ItemUseStyleID.Swing;
-			Item.value = Item.buyPrice(0, 0, 12, 0);
+			Item.value = Item.buyPrice(0, 0, 75, 0);
 			Item.rare = ItemRarityID.White;
 			Item.UseSound = SoundID.Item44;
 

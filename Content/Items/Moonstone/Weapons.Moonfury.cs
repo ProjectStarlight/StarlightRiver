@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Item.useAnimation = 25;
 			Item.useStyle = ItemUseStyleID.Swing;
 			Item.knockBack = 7.5f;
-			Item.value = 1000;
+			Item.value = Item.sellPrice(gold: 1);
 			Item.rare = ItemRarityID.Green;
 			Item.UseSound = SoundID.Item1;
 			Item.shootSpeed = 14f;
