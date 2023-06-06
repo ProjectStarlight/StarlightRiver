@@ -296,6 +296,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 				{ ItemID.WoodenBoomerang, ItemType<StarwoodBoomerang>() },
 				{ ItemID.WandofSparking, ItemType<StarwoodStaff>() },
 				{ ItemType<Sling>(), ItemType<StarwoodSlingshot>() },
+				{ ItemID.Wood, ItemType<StarwoodCharm>() },
 
 				{ ItemID.BottledWater, ItemType<StarlightWater>() },
 				{ ItemID.LesserManaPotion, ItemType<StarlightWater>() },

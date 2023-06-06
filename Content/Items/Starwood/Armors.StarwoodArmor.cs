@@ -59,6 +59,7 @@ namespace StarlightRiver.Content.Items.Starwood
 		{
 			StarlightPlayer.OnHitNPCEvent += ModifyHitNPCStarwood;
 			StarlightPlayer.OnHitNPCWithProjEvent += ModifyHitNPCWithProjStarwood;
+			StarlightPlayer.ResetEffectsEvent += ResetEmpowerment;
 		}
 
 		public override void SetStaticDefaults()
@@ -123,6 +124,17 @@ namespace StarlightRiver.Content.Items.Starwood
 		{
 			if (ArmorHelper.IsSetEquipped(this, Player))
 				target.GetGlobalNPC<ManastarDrops>().DropStar = true;
+		}
+
+		private void ResetEmpowerment(StarlightPlayer modPlayer)
+		{
+			Player player = modPlayer.Player;
+
+			if (!(player.armor[1].ModItem is Starwood.StarwoodChest) || !ArmorHelper.IsSetEquipped(player.armor[1].ModItem, player)) // Checks armor set is off since it does not seem to be called in armor when the set is not complete
+			{
+				modPlayer.empowered = false;
+				modPlayer.empowermentTimer = 0;
+			}
 		}
 
 		public void DrawArmorLayer(PlayerDrawSet info)
@@ -230,17 +242,6 @@ namespace StarlightRiver.Core
 				empowered = true;
 				empowermentTimer = 600;//resets timer
 			}
-		}
-
-		public override void UpdateEquips()
-		{
-			if (!(Player.armor[1].ModItem is Content.Items.Starwood.StarwoodChest) || !ArmorHelper.IsSetEquipped(Player.armor[1].ModItem, Player)) // Checks armor set is off since it does not seem to be called in armor when the set is not complete
-			{
-				empowered = false;
-				empowermentTimer = 0;
-			}
-
-			base.UpdateEquips();
 		}
 	}
 }
