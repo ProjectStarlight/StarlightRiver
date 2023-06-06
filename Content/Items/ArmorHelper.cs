@@ -39,17 +39,19 @@ namespace StarlightRiver.Content.Items
 			if (info.drawPlayer.ActiveAbility<Whip>())
 				return;
 
+			//TODO: somewhere this is hardcoded to the sheet size, as gravity flip is broken for old starwood hat, for now it has a temp fix
+
 			Texture2D newTex = Request<Texture2D>(texture).Value;
 
 			//uses body frame for the 1.3 sheets because headframe is always zero for some reason
 			int frame = (int)(info.drawPlayer.bodyFrame.Y / info.drawPlayer.bodyFrame.Height) ;//(int)((info.drawPlayer.bodyFrame.Y / 1120f) * 20);
 			int height = (int)(newTex.Height / 20);
 
-			Vector2 pos = (info.drawPlayer.MountedCenter - Main.screenPosition + 
-				new Vector2(offset.X, info.drawPlayer.gravDir == -1 ? -offset.Y : offset.Y) + //flips offsets when gravity is
+			Vector2 pos = (info.drawPlayer.MountedCenter - Main.screenPosition +
+				offset + //flips offsets when gravity is
 				new Vector2(0, info.drawPlayer.gfxOffY)).ToPoint16().ToVector2() + //stepping up blocks
 				info.drawPlayer.headPosition;//player gore position
-			//head does not use bopping while walking since it is built into the sheet (despite vanilla using for the head for some reason?)
+											 //head does not use bopping while walking since it is built into the sheet (despite vanilla using for the head for some reason?)
 
 			Color drawColor = color ?? info.colorArmorHead;
 
@@ -77,43 +79,59 @@ namespace StarlightRiver.Content.Items
 
 			Texture2D newTex = Request<Texture2D>(texture).Value;
 
-			//gets values based on frame instead of location on vanilla sized sheet
-			int torsoFrameX = (int)(info.compTorsoFrame.X / info.compTorsoFrame.Width);
-			int torsoFrameY = (int)(info.compTorsoFrame.Y / info.compTorsoFrame.Height);
-
 			const int frameCountX = 9;
 			const int frameCountY = 4;
 
 			//frame size based on new sheet
 			int frameWidth = (int)(newTex.Width / frameCountX);
 			int frameHeight = (int)(newTex.Height / frameCountY);
-			var a = new Between(PlayerDrawLayers.HeldItem, PlayerDrawLayers.ArmOverItem);
 
-			Vector2 pos = (info.drawPlayer.MountedCenter - Main.screenPosition + 
-				new Vector2(offset.X, info.drawPlayer.gravDir == -1 ? -offset.Y : offset.Y) + 
+			Vector2 weirdGravityOffset = new Vector2(0, info.drawPlayer.gravDir == -1 ? 4 : 0);
+
+			Vector2 pos = (info.drawPlayer.MountedCenter - Main.screenPosition +
+				offset + 
 				new Vector2(0, info.drawPlayer.gfxOffY)).ToPoint16().ToVector2() +
 				info.drawPlayer.bodyPosition + //player gore position
-				Main.OffsetsPlayerHeadgear[info.drawPlayer.bodyFrame.Y / info.drawPlayer.bodyFrame.Height];//bobbing while walking
+				Main.OffsetsPlayerHeadgear[info.drawPlayer.bodyFrame.Y / info.drawPlayer.bodyFrame.Height] * info.drawPlayer.gravDir;//bobbing while walking
+
+			pos += weirdGravityOffset;
 
 			Color drawColor = color ?? info.colorArmorBody;
 			Color outColor = immuneFade ? drawColor * ((255 - info.drawPlayer.immuneAlpha) * 0.003921568627f) : drawColor;
+
+
+			//back shoulder may be broken or out of order
+			int backShoulderFrameX = (int)(info.compBackShoulderFrame.X / info.compBackShoulderFrame.Width);
+			int backShoulderFrameY = (int)(info.compBackShoulderFrame.Y / info.compBackShoulderFrame.Height);
+
+			info.DrawDataCache.Add(new DrawData(newTex, pos, new Rectangle(backShoulderFrameX * frameWidth, backShoulderFrameY * frameHeight, frameWidth, frameHeight),
+				outColor,
+				info.drawPlayer.bodyRotation,
+				new Vector2(frameWidth / 2, frameHeight / 2),
+				scale, info.playerEffect, 0));
+
+
+
+			int backArmFrameX = (int)(info.compBackArmFrame.X / info.compBackArmFrame.Width);
+			int backArmFrameY = (int)(info.compBackArmFrame.Y / info.compBackArmFrame.Height);
+
+			info.DrawDataCache.Add(new DrawData(newTex, pos, new Rectangle(backArmFrameX * frameWidth, backArmFrameY * frameHeight, frameWidth, frameHeight),
+				outColor,
+				info.compositeBackArmRotation,
+				new Vector2(frameWidth / 2, frameHeight / 2),
+				scale, info.playerEffect, 0));
+
+
+
+			//gets values based on frame instead of location on vanilla sized sheet
+			int torsoFrameX = (int)(info.compTorsoFrame.X / info.compTorsoFrame.Width);
+			int torsoFrameY = (int)(info.compTorsoFrame.Y / info.compTorsoFrame.Height);
 
 			info.DrawDataCache.Add(new DrawData(newTex, pos, new Rectangle(torsoFrameX * frameWidth, torsoFrameY * frameHeight, frameWidth, frameHeight),
 				outColor,
 				info.drawPlayer.bodyRotation,
 				new Vector2(frameWidth / 2, frameHeight / 2),
 				scale, info.playerEffect, 0));
-
-			//int frontArmFrameX = (int)(info.compFrontArmFrame.X / info.compFrontArmFrame.Width);
-			//int frontArmFrameY = (int)(info.compFrontArmFrame.Y / info.compFrontArmFrame.Height);
-
-			//Main.NewText(info.compFrontArmFrame);
-
-			//info.DrawDataCache.Add(new DrawData(newTex, pos, new Rectangle(frontArmFrameX * frameWidth, frontArmFrameY * frameHeight, frameWidth, frameHeight),
-			//	outColor, 
-			//	info.compositeFrontArmRotation, 
-			//	new Vector2(frameWidth / 2, frameHeight / 2), 
-			//	scale, info.playerEffect, 0));
 		}
 
 		public static void QuickDrawFrontArmsFramed(PlayerDrawSet info, string texture, float scale, Vector2 offset, Color? color = null, bool immuneFade = false)
@@ -124,8 +142,8 @@ namespace StarlightRiver.Content.Items
 			Texture2D newTex = Request<Texture2D>(texture).Value;
 
 			//gets values based on frame instead of location on vanilla sized sheet
-			int torsoFrameX = (int)(info.compTorsoFrame.X / info.compTorsoFrame.Width);
-			int torsoFrameY = (int)(info.compTorsoFrame.Y / info.compTorsoFrame.Height);
+			//int torsoFrameX = (int)(info.compTorsoFrame.X / info.compTorsoFrame.Width);
+			//int torsoFrameY = (int)(info.compTorsoFrame.Y / info.compTorsoFrame.Height);
 
 			const int frameCountX = 9;
 			const int frameCountY = 4;
@@ -133,58 +151,60 @@ namespace StarlightRiver.Content.Items
 			//frame size based on new sheet
 			int frameWidth = (int)(newTex.Width / frameCountX);
 			int frameHeight = (int)(newTex.Height / frameCountY);
-			var a = new Between(PlayerDrawLayers.HeldItem, PlayerDrawLayers.ArmOverItem);
 
-			Vector2 fixedOffset = new Vector2(offset.X, info.drawPlayer.gravDir == -1 ? -offset.Y : offset.Y);
+			Vector2 weirdGravityOffset =  new Vector2(0, info.drawPlayer.gravDir == -1 ? 4 : 0);
 
-			Vector2 pos = (info.drawPlayer.MountedCenter - Main.screenPosition +
-				fixedOffset +
-				new Vector2(0, info.drawPlayer.gfxOffY)).ToPoint16().ToVector2() +
-				info.drawPlayer.bodyPosition + //player gore position
-				Main.OffsetsPlayerHeadgear[info.drawPlayer.bodyFrame.Y / info.drawPlayer.bodyFrame.Height];//bobbing while walking
+			//Vector2 fixedOffset = new Vector2(offset.X, offset.Y);// info.drawPlayer.gravDir == -1 ? offset.Y : offset.Y);
 
 			Color drawColor = color ?? info.colorArmorBody;
 			Color outColor = immuneFade ? drawColor * ((255 - info.drawPlayer.immuneAlpha) * 0.003921568627f) : drawColor;
 
-			//info.DrawDataCache.Add(new DrawData(newTex, pos, new Rectangle(torsoFrameX * frameWidth, torsoFrameY * frameHeight, frameWidth, frameHeight),
-			//	outColor, 
-			//	info.drawPlayer.bodyRotation, 
-			//	new Vector2(frameWidth / 2, frameHeight / 2), 
-			//	scale, info.playerEffect, 0));
 
+			Vector2 pos = (info.drawPlayer.MountedCenter - Main.screenPosition +
+				offset +
+				new Vector2(0, info.drawPlayer.gfxOffY)).ToPoint16().ToVector2() +
+				info.drawPlayer.bodyPosition + //player gore position (uses same for torso, arms, and shoulders
+				Main.OffsetsPlayerHeadgear[info.drawPlayer.bodyFrame.Y / info.drawPlayer.bodyFrame.Height] * info.drawPlayer.gravDir;//bobbing while walking
+
+			//values that are needed to match vanilla
 			Vector2 someothervalue5 = new Vector2((float)(-5 * info.drawPlayer.direction), -1f);
 
-			Vector2 vector = pos; /*new Vector2(
-				(float)(int)(info.Position.X - Main.screenPosition.X - 
-				(float)(info.drawPlayer.bodyFrame.Width / 2) + 
-				(float)(info.drawPlayer.width / 2)), 
-
-				(float)(int)(info.Position.Y - Main.screenPosition.Y + 
-				(float)info.drawPlayer.height - 
-				(float)info.drawPlayer.bodyFrame.Height + 4f)) + 
-				info.drawPlayer.bodyPosition + 
-				new Vector2((float)(info.drawPlayer.bodyFrame.Width / 2), 
-				(float)(info.drawPlayer.bodyFrame.Height / 2));*/
-
-			//Vector2 value = Main.OffsetsPlayerHeadgear[info.drawPlayer.bodyFrame.Y / info.drawPlayer.bodyFrame.Height];
-			//value.Y -= 2f;
-			//vector += value * (float)(-((Enum)info.playerEffect).HasFlag((Enum)(object)(SpriteEffects)2).ToDirectionInt());
-			vector += someothervalue5;
+			pos += someothervalue5;
 			if (info.compFrontArmFrame.X / info.compFrontArmFrame.Width >= 7)
-			{
-				vector += new Vector2(info.drawPlayer.direction, info.drawPlayer.gravDir);
-			}
+				pos += new Vector2(info.drawPlayer.direction, info.drawPlayer.gravDir);
+
+			pos += weirdGravityOffset;
 
 			int frontArmFrameX = (int)(info.compFrontArmFrame.X / info.compFrontArmFrame.Width);
 			int frontArmFrameY = (int)(info.compFrontArmFrame.Y / info.compFrontArmFrame.Height);
 
-			Main.NewText(info.drawPlayer.direction);
-
-			info.DrawDataCache.Add(new DrawData(newTex, vector + new Vector2(0f, 1f), new Rectangle(frontArmFrameX * frameWidth, frontArmFrameY * frameHeight, frameWidth, frameHeight),
+			//front arm
+			info.DrawDataCache.Add(new DrawData(newTex, pos + new Vector2(0f, 1f), new Rectangle(frontArmFrameX * frameWidth, frontArmFrameY * frameHeight, frameWidth, frameHeight),
 				outColor,
-				info.drawPlayer.bodyRotation + info.compositeFrontArmRotation,//may just need arm rotationw
+				info.drawPlayer.bodyRotation + info.compositeFrontArmRotation,//may just need arm rotation
 				new Vector2(frameWidth / 2, frameHeight / 2) + someothervalue5 + new Vector2(0f, 1f),
 				scale, info.playerEffect, 0));
+
+
+			if (info.compShoulderOverFrontArm)
+			{
+				Vector2 posTemp2 = (info.drawPlayer.MountedCenter - Main.screenPosition +
+					offset +
+					new Vector2(0, info.drawPlayer.gfxOffY)).ToPoint16().ToVector2() +
+					info.drawPlayer.bodyPosition + // + //player gore position
+					Main.OffsetsPlayerHeadgear[info.drawPlayer.bodyFrame.Y / info.drawPlayer.bodyFrame.Height] * info.drawPlayer.gravDir;//bobbing while walking
+
+				posTemp2 += weirdGravityOffset;
+
+				int frontShoulderFrameX = (int)(info.compFrontShoulderFrame.X / info.compFrontShoulderFrame.Width);
+				int frontShoulderFrameY = (int)(info.compFrontShoulderFrame.Y / info.compFrontShoulderFrame.Height);
+
+				info.DrawDataCache.Add(new DrawData(newTex, posTemp2, new Rectangle(frontShoulderFrameX * frameWidth, frontShoulderFrameY * frameHeight, frameWidth, frameHeight),
+					outColor,
+					info.drawPlayer.bodyRotation,
+					new Vector2(frameWidth / 2, frameHeight / 2),
+					scale, info.playerEffect, 0));
+			}
 		}
 
 		/// <summary>

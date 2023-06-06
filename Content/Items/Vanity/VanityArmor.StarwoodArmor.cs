@@ -40,10 +40,11 @@ namespace StarlightRiver.Content.Items.Vanity
 
 		public void DrawArmorLayer(PlayerDrawSet info, IArmorLayerDrawable.SubLayer subLayer)
 		{
+			int tempFixOffset = info.drawPlayer.gravDir == 1 ? -17 : 11;//todo: find out where in the drawing I accidentally hardcoded for the normal hat
 			if (info.drawPlayer.GetModPlayer<StarlightPlayer>().empowered)
-				ArmorHelper.QuickDrawHeadFramed(info, AssetDirectory.VanityItem + "AncientStarwoodHat_Worn_Alt", 1, new Vector2(0, -17));
+				ArmorHelper.QuickDrawHeadFramed(info, AssetDirectory.VanityItem + "AncientStarwoodHat_Worn_Alt", 1, new Vector2(0, tempFixOffset));
 			else
-				ArmorHelper.QuickDrawHeadFramed(info, AssetDirectory.VanityItem + "AncientStarwoodHat_Worn", 1, new Vector2(0, -17));
+				ArmorHelper.QuickDrawHeadFramed(info, AssetDirectory.VanityItem + "AncientStarwoodHat_Worn", 1, new Vector2(0, tempFixOffset));
 		}
 	}
 
