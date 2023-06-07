@@ -345,7 +345,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			npcLoot.Add(rule); // add the chain to the loot table
 
-			npcLoot.Add(ItemDropRule.Common(ItemType<MagmaCore>(), 1, 1, 2));
+			npcLoot.Add(ItemDropRule.Common(ItemType<MagmaCore>(), 1, 3, 5));
 			npcLoot.Add(ItemDropRule.ByCondition(new SimpleItemDropRuleCondition(DropConditionText, () => !StarlightWorld.HasFlag(WorldFlags.VitricBossDowned), ShowItemDropInUI.WhenConditionSatisfied), ItemType<StaminaUp>()));
 
 			npcLoot.Add(ItemDropRule.Common(ItemType<Items.BarrierDye.VitricBossBarrierDye>(), 10, 1, 1));

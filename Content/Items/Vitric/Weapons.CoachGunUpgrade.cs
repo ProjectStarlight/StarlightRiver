@@ -52,7 +52,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			CreateRecipe().
 				AddIngredient(ModContent.ItemType<CoachGun>()).
-				AddIngredient(ModContent.ItemType<MagmaCore>(), 3).
+				AddIngredient(ModContent.ItemType<MagmaCore>()).
 				AddIngredient(ItemID.HellstoneBar, 12).
 				AddTile(TileID.Anvils).
 				Register();
