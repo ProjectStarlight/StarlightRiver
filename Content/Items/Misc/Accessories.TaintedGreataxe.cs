@@ -39,11 +39,14 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ModifyHitNPCWithProj(Player player, Projectile proj, NPC target, ref NPC.HitModifiers hit)
 		{
+			if (!Equipped(player))
+				return;
+
 			TaintedGreataxe item = GetEquippedInstance(player) as TaintedGreataxe;
 
 			if (Main.projectile[item.ProjectileIndex].ModProjectile is TaintedGreataxeProjectile greatAxe)
 			{
-				if (Equipped(player) && greatAxe.stickyAI)
+				if (greatAxe.stickyAI)
 				{
 					if (target == greatAxe.targetNPC)
 					{
@@ -61,11 +64,14 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ModifyHitNPC(Player player, Item Item, NPC target, ref NPC.HitModifiers hit)
 		{
+			if (!Equipped(player))
+				return;
+
 			TaintedGreataxe item = GetEquippedInstance(player) as TaintedGreataxe;
 
 			if (Main.projectile[item.ProjectileIndex].ModProjectile is TaintedGreataxeProjectile greatAxe)
 			{
-				if (Equipped(player) && greatAxe.stickyAI)
+				if (greatAxe.stickyAI)
 				{
 					if (target == greatAxe.targetNPC)
 					{
@@ -84,28 +90,28 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void OnHitNPCWithProj(Player player, Projectile proj, NPC target, NPC.HitInfo info, int damageDone)
 		{
+			if (!Equipped(player))
+				return;
+
 			TaintedGreataxe item = GetEquippedInstance(player) as TaintedGreataxe;
 
 			if (Main.projectile[item.ProjectileIndex].ModProjectile is TaintedGreataxeProjectile greatAxe)
 			{
-				if (Equipped(player))
+				if (info.Crit && !greatAxe.Embedding)
 				{
-					if (info.Crit && !greatAxe.Embedding)
-					{
-						//if there is an enemy close to the target that was just critted, the greataxe will go into them
-						NPC npc = Main.npc.Where(n => n.active && n != target && target.Distance(n.Center) < 400f)
-							.OrderBy(n => target.Distance(n.Center)).FirstOrDefault();
+					//if there is an enemy close to the target that was just critted, the greataxe will go into them
+					NPC npc = Main.npc.Where(n => n.active && n != target && target.Distance(n.Center) < 400f)
+						.OrderBy(n => target.Distance(n.Center)).FirstOrDefault();
 
-						if (npc != default)
-						{
-							greatAxe.targetNPC = npc;
-							greatAxe.Embedding = true;
-						}
-						else
-						{
-							greatAxe.targetNPC = target;
-							greatAxe.Embedding = true;
-						}
+					if (npc != default)
+					{
+						greatAxe.targetNPC = npc;
+						greatAxe.Embedding = true;
+					}
+					else
+					{
+						greatAxe.targetNPC = target;
+						greatAxe.Embedding = true;
 					}
 				}
 			}
@@ -113,28 +119,28 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void OnHitNPC(Player player, Item Item, NPC target, NPC.HitInfo info, int damageDone)
 		{
+			if (!Equipped(player))
+				return;
+
 			TaintedGreataxe item = GetEquippedInstance(player) as TaintedGreataxe;
 
 			if (Main.projectile[item.ProjectileIndex].ModProjectile is TaintedGreataxeProjectile greatAxe)
 			{
-				if (Equipped(player))
+				if (info.Crit && !greatAxe.Embedding)
 				{
-					if (info.Crit && !greatAxe.Embedding)
-					{
-						//if there is an enemy close to the target that was just critted, the greataxe will go into them
-						NPC npc = Main.npc.Where(n => n.active && n != target && target.Distance(n.Center) < 400f)
-							.OrderBy(n => target.Distance(n.Center)).FirstOrDefault();
+					//if there is an enemy close to the target that was just critted, the greataxe will go into them
+					NPC npc = Main.npc.Where(n => n.active && n != target && target.Distance(n.Center) < 400f)
+						.OrderBy(n => target.Distance(n.Center)).FirstOrDefault();
 
-						if (npc != default)
-						{
-							greatAxe.targetNPC = npc;
-							greatAxe.Embedding = true;
-						}
-						else
-						{
-							greatAxe.targetNPC = target;
-							greatAxe.Embedding = true;
-						}
+					if (npc != default)
+					{
+						greatAxe.targetNPC = npc;
+						greatAxe.Embedding = true;
+					}
+					else
+					{
+						greatAxe.targetNPC = target;
+						greatAxe.Embedding = true;
 					}
 				}
 			}
