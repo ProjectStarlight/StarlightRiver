@@ -2,6 +2,7 @@
 using Terraria.ID;
 using StarlightRiver.Content.Abilities;
 using static Terraria.ModLoader.ModContent;
+using Terraria;
 
 namespace StarlightRiver.Content.Tiles.Moonstone
 {
@@ -17,10 +18,9 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 		public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 		{
 			//Utils.DrawBorderString(spriteBatch, temp.ToString(), (new Vector2(i + 12, j + 7 - (i % 4)) * 16) - Main.screenPosition, Color.White, 0.75f);
-
 			for (int k = j - 1; k > j - 6; k--)
 			{
-				if (Main.tile[i, k].HasTile)
+				if (Main.tile[i, k].HasTile && WorldGen.SolidOrSlopedTile(i, k) && !TileID.Sets.NotReallySolid[Main.tile[i, k].TileType])
 					return true;
 			}
 
