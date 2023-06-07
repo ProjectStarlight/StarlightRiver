@@ -7,7 +7,7 @@ Haunted | Afflicted enemies take 1 DPS per Haunted stack. When an enemy has 20 H
 Volatile | Afflicted enemies take 7% more damage and deal 3% more damage for every stack of Volatile. Caps at 5 stacks. | 220 | 205 | 140
 Grazes | Occur when an enemies projectile barely misses you. Grazes have a cooldown of 2 seconds by default. | 135 | 235 | 255
 Barrier | Provides significant damage reduction while active. When you resist damage this way, the amount you would have taken is subtracted from your barrier. Your barrier recovers after a brief period of not taking damage. | 100 | 255 | 255
-Starlight | Consumed to cast Abilities. The mystical energy of the mind that governs meaning, memory, and connection, and allows its wielders to accomplish great feats by bringing their will into reality. Its users dream of an enigmatic library, surrounding an armillary sphere with a strange onyx orb at its center. | 170 | 240 | 255
+Starlight | Consumed to cast Abilities. The mystical energy of the mind that governs meaning, memory, and connection, and allows its wielders to accomplish great feats by bringing their will into reality. | 170 | 240 | 255
 Cursed | This item comes with a build-defining boon and a crippling flaw. Curses can usually be worked around, and sometimes even turned in your favor. | 200 | 100 | 255
 Inoculation | Multiplicative reduction to the DoT damage you take. | 170 | 255 | 150
 Rend | Permanently decreases defense by the specified amount, stacking additively. | 255 | 100 | 80

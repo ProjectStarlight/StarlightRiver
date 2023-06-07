@@ -397,7 +397,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			return TextState switch
 			{
 				0 => "The crow-like... creature... gets up off the ground with a triumphant look in its beady eyes, dusting itself off, and then straightening its ruffled feathers.",
-				1 => "\"There you are! I've jumped through seventeen different axons and the half the entire Capricorn Tropic trying to find you!\"",
+				1 => "\"There you are! I've jumped through seventeen different axons and half the entire Capricorn Tropic trying to find you!\"",
 				2 => "\"Yes, yes, my name is Alican, and I believe we can help each other. You see, I am a Seeker. Of what, exactly, is not free information, but I'll give you a hint.\"",
 				3 => "Alican leans towards you, with its voice reduced to a whisper and a manic glint in its eye.",
 				4 => "\"Mana's not the only thing out there. It's an engine of change, it can blow things up, it can reverse entropy, but it's not all there is. I'm studying *Starlight*. The inverse of mana... the energy of meaning, of memory, of connection. If you let me observe your efforts, I'll teach you how to use it.\"",
