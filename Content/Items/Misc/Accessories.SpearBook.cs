@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public static MethodInfo? AI019Spears_Info;
 		public static Action<Projectile>? AI019Spears;
 
-		public SpearBook() : base("Snake Technique", "Teaches you the Art of the Spear, granting all spear weapons a new combo attack\nThe last strike in the combo deals increased damage and knockback\n<right> to deter enemies with a flurry of stabs") { }
+		public SpearBook() : base("Snake Technique", "Teaches you the Art of the Spear, granting all normal spear weapons a new combo attack\nThe last strike in the combo deals increased damage and knockback\n<right> to deter enemies with a flurry of stabs") { }
 
 		public override string Texture => AssetDirectory.MiscItem + "SpearBook";
 
@@ -46,12 +46,14 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public void PostLoad()
 		{
+			List<int> blacklistedSpears = new() { ModContent.ProjectileType<Vitric.FacetProjectile>() };
+			
 			spearList = new Dictionary<int, bool>();
 			var proj = new Projectile();
 			for (int i = 0; i < ProjectileLoader.ProjectileCount; i++)
 			{
 				proj.SetDefaults(i);
-				spearList.Add(i, proj.aiStyle == 19);
+				spearList.Add(i, proj.aiStyle == 19 && !blacklistedSpears.Contains(proj.type));
 			}
 		}
 
