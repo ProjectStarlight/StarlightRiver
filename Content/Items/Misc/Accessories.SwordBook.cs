@@ -74,6 +74,9 @@ namespace StarlightRiver.Content.Items.Misc
 					if (Main.projectile.Any(n => n.active && (n.type == ModContent.ProjectileType<SwordBookProjectile>() || n.type == ModContent.ProjectileType<SwordBookParry>()) && n.owner == player.whoAmI))
 						return false;
 
+					item.noMelee = true;
+					item.noUseGraphic = true;
+
 					if (Main.mouseRight) // Parry on right click
 					{
 						int i = Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Normalize(Main.MouseWorld - player.Center) * 20, ModContent.ProjectileType<SwordBookParry>(), item.damage, item.knockBack, player.whoAmI);
@@ -223,10 +226,16 @@ namespace StarlightRiver.Content.Items.Misc
 			Owner.direction = Direction;
 			Owner.heldProj = Projectile.whoAmI;
 
-			Vector2 itemRectStart = Projectile.Center + Projectile.rotation.ToRotationVector2() * length * 0.5f;
-			var itemRect = new Rectangle((int)itemRectStart.X, (int)itemRectStart.Y, 2, 2);
-			itemRect.Inflate((int)length / 2, (int)length / 2);
-			playerItemCheckEmitUseVisuals(Owner, Item, itemRect);
+			Owner.itemAnimation = Owner.itemTime = 3;
+			Owner.itemAnimationMax = 0;
+
+			if (Projectile.timeLeft %4 == 0)
+			{
+				Vector2 itemRectStart = Projectile.Center + Projectile.rotation.ToRotationVector2() * length * 0.5f;
+				var itemRect = new Rectangle((int)itemRectStart.X, (int)itemRectStart.Y, 2, 2);
+				itemRect.Inflate((int)length / 2, (int)length / 2);
+				playerItemCheckEmitUseVisuals(Owner, Item, itemRect);
+			}
 
 			if (comboState < 3 && Progress == 0 && Item.shoot > ProjectileID.None) //spawn projectile if relevant
 				Projectile.NewProjectile(null, Owner.Center, Vector2.Normalize(Main.MouseWorld - Owner.Center) * Item.shootSpeed, Item.shoot, Projectile.damage, Projectile.knockBack, Projectile.owner);
@@ -305,6 +314,14 @@ namespace StarlightRiver.Content.Items.Misc
 			ManageTrail();
 		}
 
+		public override void Kill(int timeLeft)
+		{
+			Owner.itemAnimation = Owner.itemTime = 0;
+			Owner.itemTimeMax = 0;
+			Owner.HeldItem.noMelee = false;
+			Owner.HeldItem.noUseGraphic = false;
+		}
+
 		/// <summary>
 		/// Simple easing function used for the sword swings
 		/// </summary>
@@ -319,6 +336,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			float rot = Projectile.rotation + (Direction == 1 ? 0 : -(float)Math.PI / 2f);
 
+			float collisionPoint = 0f;
 			Vector2 start = Owner.Center;
 			Vector2 end = Owner.Center + Vector2.UnitX.RotatedBy(rot) * (length + holdOut);
 
@@ -332,7 +350,17 @@ namespace StarlightRiver.Content.Items.Misc
 				return true;
 			}
 
-			return null;
+			return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), start, end, 10, ref collisionPoint); ;
+		}
+
+		public override void CutTiles()
+		{
+			float rot = Projectile.rotation + (Direction == 1 ? 0 : -(float)Math.PI / 2f);
+
+			Vector2 start = Owner.Center;
+			Vector2 end = Owner.Center + Vector2.UnitX.RotatedBy(rot) * (length + holdOut);
+
+			Utils.PlotTileLine(start, end, 40 * Projectile.scale, DelegateMethods.CutTiles);
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -452,6 +480,9 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 
 			Projectile.Center = Owner.Center + Vector2.UnitX.RotatedBy(Projectile.rotation) * (float)Math.Sin(Projectile.timeLeft / 20f * 1.57f) * 32;
+			Owner.heldProj = Projectile.whoAmI;
+			Owner.itemAnimation = Owner.itemTime = 3;
+			Owner.itemAnimationMax = 10;
 
 			if (State == 0)
 			{
@@ -537,6 +568,14 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 
 			return false;
+		}
+
+		public override void Kill(int timeLeft)
+		{
+			Owner.itemAnimation = Owner.itemTime = 0;
+			Owner.itemTimeMax = 0;
+			Owner.HeldItem.noMelee = false;
+			Owner.HeldItem.noUseGraphic = false;
 		}
 	}
 }
