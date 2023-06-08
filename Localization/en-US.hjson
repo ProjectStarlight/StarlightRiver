@@ -4348,5 +4348,24 @@ Mods: {
 				Neither.Label: Neither
 			}
 		}
+
+		Compat: {
+			BossChecklist: {
+				Auroracle: {
+					SpawnInfo: Drop a Suspicious Looking Offering into the prismatic waters of the Permafrost Shrine, accessed only through the coldest caves.
+					Despawn: The frozen cathedral falls silent.
+				}
+
+				Glassweaver: {
+					SpawnInfo: Challenge the glassweaver in his forge, near the edge of the Vitric Desert.
+					Despawn: The Glassweaver claims victory.
+				}
+
+				Ceiros: {
+					SpawnInfo: Use a Glass Idol at the altar atop the Vitric Temple, after breaking the crystal covering it using Forbidden Winds.
+					Despawn: The Vitric Forge falls silent. The Glassweaver is dissapointed.
+				}
+			}
+		}
 	}
 }

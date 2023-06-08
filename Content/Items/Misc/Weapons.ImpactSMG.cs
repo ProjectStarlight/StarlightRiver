@@ -26,16 +26,16 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SetDefaults()
 		{
-			Item.damage = 10;
+			Item.damage = 7;
 			Item.DamageType = DamageClass.Ranged;
 			Item.width = 24;
 			Item.height = 24;
-			Item.useTime = 5;
-			Item.useAnimation = 5;
+			Item.useTime = 6;
+			Item.useAnimation = 6;
 			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.noMelee = true;
 			Item.knockBack = 2f;
-			Item.rare = ItemRarityID.Blue;
+			Item.rare = ItemRarityID.Orange;
 			Item.shoot = ModContent.ProjectileType<ImpactSMGHoldout>();
 			Item.shootSpeed = 1f;
 			Item.noUseGraphic = true;
@@ -59,7 +59,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();
-			recipe.AddRecipeGroup(RecipeGroupID.IronBar, 8);
+			recipe.AddIngredient(ItemID.HellstoneBar, 8);
 			recipe.AddIngredient(ItemID.IllegalGunParts);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
@@ -476,7 +476,10 @@ namespace StarlightRiver.Content.Items.Misc
 			Owner.PickAmmo(Owner.HeldItem, out int projID, out float shootSpeed, out int damage, out float knockBack, out int ammoID);
 
 			if (Main.myPlayer == Projectile.owner)
-				Projectile.NewProjectile(Projectile.GetSource_FromAI(), pos, Projectile.rotation.ToRotationVector2() * Main.rand.NextFloat(25f, 25f + shootSpeed), ModContent.ProjectileType<ImpactSMGShot>(), (int)(Projectile.damage * (Overheated ? 1.2f : 1f)), Projectile.knockBack, Projectile.owner);
+			{
+				int finalDamage = (int)(Projectile.damage * (Overheated ? 0.8f : 0.5f));
+				Projectile.NewProjectile(Projectile.GetSource_FromAI(), pos, Projectile.rotation.ToRotationVector2() * Main.rand.NextFloat(25f, 25f + shootSpeed), ModContent.ProjectileType<ImpactSMGShot>(), finalDamage, Projectile.knockBack, Projectile.owner);
+			}
 
 			Gore.NewGoreDirect(Projectile.GetSource_FromAI(), Projectile.Center + new Vector2(Projectile.direction == 1 ? -14 : 0, -10 * Projectile.spriteDirection).RotatedBy(Projectile.rotation), -Projectile.rotation.ToRotationVector2() * 3f + Vector2.UnitY * -2f, Mod.Find<ModGore>("ImpactSMG_Shell").Type).timeLeft = 1;
 

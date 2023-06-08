@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public override void SetDefaults()
 		{
-			Item.damage = 45;
+			Item.damage = 47;
 			Item.DamageType = DamageClass.Ranged;
 			Item.width = 24;
 			Item.height = 24;
@@ -106,7 +106,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			{
 				for (int i = 0; i < 4; i++)
 				{
-					var bomb = Projectile.NewProjectileDirect(source, position, velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(0.8f, 1.3f), type, damage, knockback, player.whoAmI);
+					var bomb = Projectile.NewProjectileDirect(source, position, velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(0.8f, 1.3f), type, damage + 15, knockback, player.whoAmI);
 					(bomb.ModProjectile as SkullBomb).crosshairSin = -i * 0.15f;
 				}
 

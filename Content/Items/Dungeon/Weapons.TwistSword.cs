@@ -27,8 +27,8 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public override void SetDefaults()
 		{
-			Item.damage = 28;
-			Item.crit = 5;
+			Item.damage = 31;
+			Item.crit = 6;
 			Item.DamageType = DamageClass.Melee;
 			Item.width = 40;
 			Item.height = 20;
