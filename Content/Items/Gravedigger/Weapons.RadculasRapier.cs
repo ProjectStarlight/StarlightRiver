@@ -291,7 +291,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		public override void AI()
 		{
 			Owner.heldProj = Projectile.whoAmI;
-			Owner.itemTime = 2;
+			Owner.itemTime = Owner.itemAnimation = 2;
 
 			Projectile.velocity = Vector2.Normalize(Projectile.velocity);
 
