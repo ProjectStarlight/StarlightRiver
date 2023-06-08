@@ -3,7 +3,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Paintings
 {
-	class EggCodexPainting : ModTile
+	class EndOfTimePainting : ModTile
 	{
 		public override string Texture => AssetDirectory.PaintingTile + Name;
 
@@ -11,11 +11,10 @@ namespace StarlightRiver.Content.Tiles.Paintings
 		{
 			this.QuickSetPainting(2, 2, 7, new Color(99, 50, 30), "Painting");
 		}
-
 	}
 
-	class EggCodexPaintingItem : QuickTileItem
+	class EndOfTimePaintingItem : QuickTileItem
 	{
-		public EggCodexPaintingItem() : base("Codex Genesis", "'K. Ra'", "EggCodexPainting", 0, AssetDirectory.PaintingTile) { }
+		public EndOfTimePaintingItem() : base("End of Time", "'K. Ra'", "EndOfTimePainting", 0, AssetDirectory.PaintingTile) { }
 	}
 }
