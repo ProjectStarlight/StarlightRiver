@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Terraria;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Vitric
@@ -68,6 +67,15 @@ namespace StarlightRiver.Content.Items.Vitric
 				broken = false;
 
 			return true;
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ModContent.ItemType<SandstoneChunk>(), 8);
+			recipe.AddIngredient(ModContent.ItemType<VitricOre>(), 12);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 

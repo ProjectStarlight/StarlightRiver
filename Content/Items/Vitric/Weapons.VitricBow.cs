@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Ancient Vitric Bow");
-			Tooltip.SetDefault("");
+			Tooltip.SetDefault("Fires additional smaller arrows");
 		}
 
 		public override void SetDefaults()
@@ -47,6 +47,15 @@ namespace StarlightRiver.Content.Items.Vitric
 			Main.projectile[proj2].noDropItem = true;
 			NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj2);
 			return true;
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ModContent.ItemType<SandstoneChunk>(), 8);
+			recipe.AddIngredient(ModContent.ItemType<VitricOre>(), 12);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 }

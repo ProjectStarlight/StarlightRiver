@@ -21,5 +21,13 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 					)
 				);
 		}
+
+		public override void AddRecipes()
+		{
+			var recipe = Recipe.Create(Mod.Find<ModItem>("TempleBrickItem").Type, 50);
+			recipe.AddIngredient(ItemID.StoneBlock, 50);
+			recipe.AddTile(TileID.Hellforge);
+			recipe.Register();
+		}
 	}
 }
