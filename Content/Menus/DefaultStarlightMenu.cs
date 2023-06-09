@@ -47,7 +47,6 @@ namespace StarlightRiver.Content.Menus
 		public override bool PreDrawLogo(SpriteBatch spriteBatch, ref Vector2 logoDrawCenter, ref float logoRotation, ref float logoScale, ref Color drawColor)
 		{
 			logoScale = 1.0f;
-
 			Timer++;
 
 			Main.dayTime = false;
@@ -85,16 +84,18 @@ namespace StarlightRiver.Content.Menus
 
 			sparkles.DrawParticles(Main.spriteBatch);
 
+			////vertical light beams
 			//var tex = ModContent.Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowSolo", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
 			//var myRand = new Random(1283125412);
 
-			//for(int k = 0; k < Main.screenWidth; k += tex.Width * 2)
+			//for (int k = 0; k < Main.screenWidth; k += tex.Width * 2)
 			//{
 			//	float sin = (float)Math.Sin(Timer * 0.01f + myRand.Next(120)) * (float)Math.Sin(Timer * 0.0152f + myRand.Next(120));
 			//	float sin2 = (float)Math.Sin(Timer * 0.01f + myRand.Next(120)) * (float)Math.Sin(Timer * 0.0152f + myRand.Next(120));
-			//	var color = new Color(100 + (int)(sin2 * 50), 200 + (int)(sin2 * 50), 255) * (0.75f);
-			//	Main.spriteBatch.Draw(tex, new Vector2(k + myRand.Next(-10, 10), Main.screenHeight + 30), null, color, 0, new Vector2(tex.Width / 2, tex.Height), 3.0f + sin * 1.0f, 0, 0);
+			//	var color = new Color(100 + (int)(sin2 * 50), 200 + (int)(sin2 * 50), 255, 0) * 0.75f;
+			//	Main.spriteBatch.Draw(tex, new Vector2(k + myRand.Next(-10, 10), Main.screenHeight + 30), null, color, 0, new Vector2(tex.Width / 2, tex.Height), 1.5f + sin, 0, 0);
 			//}
+
 
 			float heightScale = (float)Math.Sin((Timer + 2) * 0.025f) * 5 + 5;
 			Texture2D midTex = ModContent.Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowMid").Value;
@@ -102,7 +103,7 @@ namespace StarlightRiver.Content.Menus
 
 			for (int k = 0; k < Main.screenWidth; k += midTex.Width)
 			{
-				Main.spriteBatch.Draw(midTex, new Vector2(k + 8, Main.screenHeight + 8 + heightScale), null, overlayColor, 0, new Vector2(midTex.Width / 2, midTex.Height), 1f, 0, 0);
+				Main.spriteBatch.Draw(midTex, new Vector2(k + 8, Main.screenHeight + 8 + heightScale), null, overlayColor, 0, new Vector2(midTex.Width / 2, midTex.Height), new Vector2(1, 2), 0, 0);
 			}
 
 			float heightScale2 = (float)Math.Sin(Timer * 0.025f) * 3 + 3;
@@ -110,7 +111,7 @@ namespace StarlightRiver.Content.Menus
 
 			for (float k = 0; k < Main.screenWidth + glowLines.Width; k += glowLines.Width > 1 ? glowLines.Width - 1.00f : 1)//during loading the texture has a width of one
 			{
-				Main.spriteBatch.Draw(glowLines, new Vector2(k + 8 + (int)(Timer * 0.5f) % glowLines.Width - glowLines.Width, Main.screenHeight + 8 + heightScale2), null, overlayColor * 0.45f, 0, new Vector2(glowLines.Width / 2, glowLines.Height), 1f, 0, 0);
+				Main.spriteBatch.Draw(glowLines, new Vector2(k + 8 + (int)(Timer * 0.5f) % glowLines.Width - glowLines.Width, Main.screenHeight + 8 + heightScale2), null, overlayColor * 0.45f, 0, new Vector2(glowLines.Width / 2, glowLines.Height), new Vector2(1, 1.25f), 0, 0);
 			}
 
 			return true;

@@ -3207,6 +3207,11 @@ Mods: {
 				DisplayName: Pink Laser Pointer
 				Tooltip: ""
 			}
+
+			EndOfTimePaintingItem: {
+				DisplayName: End of Time
+				Tooltip: "'K. Ra'"
+			}
 		}
 
 		Projectiles: {
@@ -3729,6 +3734,7 @@ Mods: {
 			VitricLargeCrystal.MapEntry: Vitric Large Crystal
 			VitricMediumCrystal.MapEntry: Vitric Medium Crystal
 			VitricSmallCrystal.MapEntry: Vitric Small Crystal
+			EndOfTimePainting.MapEntry: Painting
 		}
 
 		Biomes: {
