@@ -20,9 +20,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					possible.Add(Player.whoAmI);
 			}
 
-			if (possible.Count == 0)
+			if (possible.Count <= 0)
 			{
 				Phase = (int)AIStates.Fleeing;
+				AttackTimer = 0;
 				return;
 			}
 

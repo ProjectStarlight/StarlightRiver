@@ -523,6 +523,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					else //else advance the attack pattern
 					{
 						AttackPhase++;
+						RandomizeTarget();
+
 						variantAttack = Main.rand.NextBool();
 
 						if (AttackPhase > (Main.expertMode ? 5 : 4))
@@ -617,6 +619,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 						else //else advance the attack pattern
 						{
 							AttackPhase++;
+							RandomizeTarget();
 
 							if (AttackPhase > (Main.expertMode ? 6 : 5))
 								AttackPhase = 1;
@@ -711,6 +714,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 						}
 
 						AttackPhase++;
+						RandomizeTarget();
 
 						variantAttack = Main.rand.NextBool();
 
@@ -796,6 +800,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					if (AttackTimer == 1)
 					{
 						AttackPhase++;
+						RandomizeTarget();
 
 						if (AttackPhase > 3)
 							AttackPhase = 1;
@@ -815,10 +820,13 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			if (Phase == (int)AIStates.Fleeing)
 			{
+				AttackTimer++;
+				NPC.position += Vector2.UnitY * 5;
+
 				if (GlobalTimer < 50)
 					Arena.waterfallWidth = 50 - (int)GlobalTimer;
 
-				if (GlobalTimer > 50)
+				if (AttackTimer > 50)
 					NPC.active = false;
 			}
 		}
