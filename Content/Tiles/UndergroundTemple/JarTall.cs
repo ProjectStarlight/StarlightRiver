@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Helpers;
@@ -16,7 +17,7 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 
 		public override void SetStaticDefaults()
 		{
-			this.QuickSetFurniture(2, 4, DustType<Dusts.Stamina>(), SoundID.Shatter, false, new Color(204, 91, 50), false, false, "Stamina Jar");
+			this.QuickSetFurniture(2, 4, DustType<Dusts.Stamina>(), SoundID.Shatter, false, new Color(91, 211, 233), false, false, "Stamina Jar");
 			MinPick = int.MaxValue;
 			TileID.Sets.PreventsTileRemovalIfOnTopOfIt[Type] = true;
 		}
@@ -36,10 +37,20 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 
 		public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
 		{
-			Lighting.AddLight(new Vector2(i, j) * 16, new Vector3(1, 0.5f, 0.2f) * 0.3f);
+			Lighting.AddLight(new Vector2(i, j) * 16, new Vector3(0.9f, 2.1f, 2.3f) * 0.3f);
 
-			if (Main.rand.NextBool(4))
-				Dust.NewDustPerfect(new Vector2(i + Main.rand.NextFloat(), j + Main.rand.NextFloat()) * 16, DustType<Dusts.Stamina>(), new Vector2(0, -Main.rand.NextFloat()));
+			if (Main.rand.NextBool(15))
+			{
+				if (Main.rand.NextBool(4))
+				{
+					var d = Dust.NewDustPerfect(new Vector2(i + Main.rand.NextFloat(), j + Main.rand.NextFloat()) * 16, DustType<Dusts.Aurora>(), new Vector2(0, -Main.rand.NextFloat()), 0, new Color(91, 211, 233), 1);
+					d.customData = Main.rand.NextFloat(0.7f, 1.1f);
+				}
+				else
+				{
+					var d = Dust.NewDustPerfect(new Vector2(i + Main.rand.NextFloat(), j + Main.rand.NextFloat()) * 16, DustType<Dusts.Cinder>(), new Vector2(0, -Main.rand.NextFloat()), 0, new Color(91, 151, 233), 1);
+				}
+			}
 		}
 
 		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
@@ -83,6 +94,7 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 				WorldGen.KillTile(ParentX, ParentY);
 				NetMessage.SendTileSquare(Player.whoAmI, (int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f), 2, 4, TileChangeType.None);
 
+				Item.NewItem(null, Projectile.Hitbox, ModContent.ItemType<StaminaGel>(), Main.rand.Next(3, 12));
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
 			}
 		}
@@ -90,7 +102,7 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
 			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + Vector2.UnitY * 16, tex.Frame(), Color.OrangeRed * 0.7f, 0, tex.Size() / 2, 0.8f, 0, 0);
+			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + Vector2.UnitY * 16, tex.Frame(), new Color(91, 211, 233) * 0.7f, 0, tex.Size() / 2, 0.8f, 0, 0);
 		}
 	}
 
