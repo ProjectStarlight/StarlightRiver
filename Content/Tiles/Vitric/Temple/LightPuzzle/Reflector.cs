@@ -115,7 +115,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 					break;
 				}
 
-				if (Framing.GetTileSafely((int)posCheck.X / 16, (int)posCheck.Y / 16).TileType == ModContent.TileType<LightGoal>())
+				if (Framing.GetTileSafely((int)posCheck.X / 16, (int)posCheck.Y / 16).TileType == ModContent.TileType<LightGoal>() && Emit == 1)
 				{
 					endPoint = posCheck;
 					LightPuzzleHandler.solvedPoints++;
