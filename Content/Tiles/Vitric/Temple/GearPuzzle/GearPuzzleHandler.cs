@@ -8,7 +8,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 		public static int engagedObjectives;
 		public static int solveTimer;
 
-		public static bool Solved => engagedObjectives >= 9;
+		public static bool Solved => engagedObjectives >= 15;
 
 		private static Vector2 puzzleOriginLocation;
 
