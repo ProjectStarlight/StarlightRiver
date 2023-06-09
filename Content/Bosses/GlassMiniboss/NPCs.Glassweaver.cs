@@ -1,6 +1,6 @@
 ﻿using ReLogic.Content;
-using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.GUI;
 using StarlightRiver.Core.Loaders.UILoading;
 using System;
 using System.IO;
@@ -87,7 +87,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		{
 			NPC.width = 82;
 			NPC.height = 75;
-			NPC.lifeMax = 1800;
+			NPC.lifeMax = 2300;
 			NPC.damage = 20;
 			NPC.aiStyle = -1;
 			NPC.noGravity = true;
@@ -117,7 +117,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 		{
-			NPC.lifeMax = (int)(2000 * bossAdjustment);
+			NPC.lifeMax = (int)(2800 * bossAdjustment);
 		}
 
 		public override bool CheckDead()
