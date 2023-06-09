@@ -122,6 +122,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			NPC.noTileCollide = true;
 			NPC.knockBackResist = 0;
 			NPC.dontTakeDamage = true;
+			NPC.npcSlots = 10;
 
 			baseLife = 2000;
 		}

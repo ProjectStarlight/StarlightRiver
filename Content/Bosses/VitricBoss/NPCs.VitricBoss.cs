@@ -124,6 +124,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			NPC.noTileCollide = true;
 			NPC.dontTakeDamageFromHostiles = true;
 			NPC.behindTiles = true;
+			NPC.npcSlots = 10;
 
 			NPC.HitSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/VitricBoss/ceramicimpact");
 
