@@ -49,6 +49,9 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 		{
 			orig(self);
 
+			if (StarlightRiver.debugMode)
+				return;
+
 			if (Inside)
 			{
 				Cutaway activeCutaway = cutaways.FirstOrDefault(n => n.fadeTime < 0.95f);
