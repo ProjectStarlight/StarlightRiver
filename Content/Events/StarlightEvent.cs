@@ -106,6 +106,12 @@ namespace StarlightRiver.Content.Events
 			}
 		}
 
+		public override void ClearWorld()
+		{
+			sequence = 0;
+			willOccur = false;
+		}
+
 		public override void SaveWorldData(TagCompound tag)
 		{
 			tag["sequence"] = sequence;

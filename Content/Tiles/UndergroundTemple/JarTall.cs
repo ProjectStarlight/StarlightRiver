@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 
 		public override void SetStaticDefaults()
 		{
-			this.QuickSetFurniture(2, 4, DustType<Dusts.Stamina>(), SoundID.Shatter, false, new Color(91, 211, 233), false, false, "Stamina Jar");
+			this.QuickSetFurniture(2, 4, DustID.Glass, SoundID.Shatter, false, new Color(91, 211, 233), false, false, "Stamina Jar");
 			MinPick = int.MaxValue;
 			TileID.Sets.PreventsTileRemovalIfOnTopOfIt[Type] = true;
 		}

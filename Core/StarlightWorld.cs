@@ -23,7 +23,6 @@ namespace StarlightRiver.Core
 
 		public static Rectangle vitricBiome = new();
 
-		public static int squidNPCProgress = 0;
 		public static Rectangle squidBossArena = new();
 
 		public static Rectangle VitricBossArena => new(vitricBiome.X + vitricBiome.Width / 2 - 59, vitricBiome.Y - 1, 108, 74); //ceiros arena
@@ -107,18 +106,22 @@ namespace StarlightRiver.Core
 				NPC.NewNPC(new EntitySource_WorldEvent(), squidBossArena.Center.X * 16 + 8, squidBossArena.Center.Y * 16 + 56 * 16, NPCType<ArenaActor>());
 		}
 
-		public override void OnWorldLoad()
+		public override void ClearWorld()
 		{
-			if (!Main.dedServ)
-				RichTextBox.CloseDialogue(); //Safeguard
-
-			if (!Main.npc.Any(n => n.active && n.type == NPCType<GlassweaverWaiting>()))
-				NPC.NewNPC(null, (int)GlassweaverWaiting.ArenaPos.X, (int)GlassweaverWaiting.ArenaPos.Y, NPCType<GlassweaverWaiting>(), 0, 0, StarlightWorld.HasFlag(WorldFlags.GlassweaverDowned) ? 3 : 2);
-
 			vitricBiome.X = 0;
 			vitricBiome.Y = 0;
 
 			flags = default;
+
+			Content.Physics.VerletChainSystem.toDraw.Clear();
+
+			DummyTile.dummies.Clear();
+		}
+
+		public override void OnWorldLoad()
+		{
+			if (!Main.dedServ)
+				RichTextBox.CloseDialogue(); //Safeguard
 		}
 
 		public override void SaveWorldData(TagCompound tag)
@@ -126,7 +129,6 @@ namespace StarlightRiver.Core
 			tag["VitricBiomePos"] = vitricBiome.TopLeft();
 			tag["VitricBiomeSize"] = vitricBiome.Size();
 
-			tag["SquidNPCProgress"] = squidNPCProgress;
 			tag["SquidBossArenaPos"] = squidBossArena.TopLeft();
 			tag["SquidBossArenaSize"] = squidBossArena.Size();
 			tag["PermafrostCenter"] = permafrostCenter;
@@ -141,7 +143,6 @@ namespace StarlightRiver.Core
 			vitricBiome.Width = (int)tag.Get<Vector2>("VitricBiomeSize").X;
 			vitricBiome.Height = (int)tag.Get<Vector2>("VitricBiomeSize").Y;
 
-			squidNPCProgress = tag.GetInt("SquidNPCProgress");
 			squidBossArena.X = (int)tag.Get<Vector2>("SquidBossArenaPos").X;
 			squidBossArena.Y = (int)tag.Get<Vector2>("SquidBossArenaPos").Y;
 			squidBossArena.Width = (int)tag.Get<Vector2>("SquidBossArenaSize").X;
@@ -150,9 +151,9 @@ namespace StarlightRiver.Core
 
 			flags = (WorldFlags)tag.GetInt(nameof(flags));
 
-			Content.Physics.VerletChainSystem.toDraw.Clear();
-
-			DummyTile.dummies.Clear();
+			// Handle quest NPC fallback, we may want to abstract this out somehow in the future...
+			if (!Main.npc.Any(n => n.active && n.type == NPCType<GlassweaverWaiting>()))
+				NPC.NewNPC(null, (int)GlassweaverWaiting.ArenaPos.X, (int)GlassweaverWaiting.ArenaPos.Y, NPCType<GlassweaverWaiting>(), 0, 0, StarlightWorld.HasFlag(WorldFlags.GlassweaverDowned) ? 3 : 2);
 		}
 
 		public override void Unload()

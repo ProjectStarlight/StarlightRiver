@@ -30,9 +30,16 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 
 				Main.QueueMainThreadAction(() =>
 				{
-					targets.ForEach(n => n.RenderTarget?.Dispose());
-					targets.Clear();
-					targets = null;
+					if (targets != null)
+					{
+						targets.ForEach(n => n.RenderTarget?.Dispose());
+						targets.Clear();
+						targets = null;
+					}
+					else
+					{
+						Mod.Logger.Warn("Screen targets was null, all ScreenTargets may not have been released! (leaking VRAM!)");
+					}
 				});
 			}
 		}
