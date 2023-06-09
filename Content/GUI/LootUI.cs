@@ -4,6 +4,7 @@ using StarlightRiver.Core.Loaders.UILoading;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
@@ -12,6 +13,9 @@ namespace StarlightRiver.Content.GUI
 {
 	public class LootUI : SmartUIState
 	{
+		public Point16 OriginPosition;
+		//const float MaxDistance = 300;
+
 		private Item BigItem = new();
 		internal Item[] Selections = new Item[2];
 		internal List<string> Quotes;
@@ -42,13 +46,16 @@ namespace StarlightRiver.Content.GUI
 		{
 			if (Main.gameMenu)
 				Visible = false;
-
+			//if (Vector2.Distance(OriginPosition.ToVector2(), Main.LocalPlayer.Center) > 500)
 			if (Selections[1] != null)
 			{
 				Visible = false;
 				Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), BigItem);
 				Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), Selections[0], Selections[0].stack);
 				Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), Selections[1], Selections[1].stack);
+
+				WorldGen.KillTile(OriginPosition.X, OriginPosition.Y);
+				NetMessage.SendTileSquare(Main.myPlayer, OriginPosition.X, OriginPosition.Y, 2, 2, TileChangeType.None);
 			}
 		}
 
