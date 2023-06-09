@@ -1,5 +1,6 @@
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.GUI;
+using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using Terraria.ID;
@@ -145,11 +146,16 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			return TextState switch
 			{
 				0 => "\"Congratulations, you destroyed many decades of my finest work! I really should have thought this through more. I was going to have those help you clear out the forge, but... I'm sure you'll figure it out. Let me fill you in on what to expect.",
-				1 => "It pulls out what looks to be a map, but with completely illegible scribbles in place of anything useful. You're not sure how one capable of creating such intricate crystal work is so inept at moving a pen on paper, but you've seen more bizzare things...",
-				2 => "\"My Great Map of the Grand Forge Temple. Just another legendary artwork that I'm allowing you to briefly look at, free of charge. You can see the two main rooms of the forge here, and here. Both are most likely broken in some way, and if you want access to the vault at the bottom, you'll have to get the power system and hammer system in working order.\"",
-				3 => "\"If you enter the vault, there's a pretty high likelihood of the Sentinel taking notice. It will not be happy, but most adventurers have no such compunctions about theft from holy forge-temples and the murder of religious guardians, so you'll probably be able to take it out just fine.\"",
-				4 => "\"Why are you looking at me like that? Did I not tell you about the Sentinel before? Ah. It's just a... slightly oversized ceramic snake. That's all. It is not capable of melting the entire temple if you do not escape fast enough. Nope. Just talk to me when you defeat that slightly oversized snake so I can finally move in.\"",
-				5 => "\"Anyway, here's the Temple Key. Why do you suddenly look so uneasy? Remember your duty, adventurer, and get me my forge temple!\"",
+				1 => "\"Here is my Great Map of the Grand Forge Temple. Just another legendary artwork that I'm allowing you to briefly look at, free of charge.\"",
+				2 => "It pulls out what looks to be a map, but with completely illegible scribbles in place of anything useful. You're not sure how one capable of creating such intricate crystal work is so inept at moving a pen on paper, but you've seen more bizzare things...",
+				3 => "\"You can see the two main rooms of the forge at the heart of the temple. Both are most likely broken in some way, and if you want access to the vault at the bottom, you'll have to get the power system and hammer system in working order.\"",
+				4 => "\"If you enter the vault, there's a pretty high likelihood of the Sentinel taking notice. It will not be happy, but most adventurers have no such compunctions about theft from holy forge-temples and the murder of religious guardians, so you'll probably be able to take it out just fine.\"",
+				5 => "\"Why are you looking at me like that? Did I not tell you about the Sentinel before? Ah. It's just a... slightly oversized ceramic snake. That's all. It is not capable of melting the entire temple if you do not escape fast enough. Nope. Just talk to me when you defeat that slightly oversized snake so I can finally move in.\"",
+				6 => "\"Anyway, here's the Temple Key. Why do you suddenly look so uneasy? Remember your duty, adventurer, and get me my forge temple!\"",
+				-1 => "It hands you an old scroll. You unravel the bindings expecting a map, but what you are looking at... is definitely not a map.",
+				-2 => "It looks at you, befuddled, before pulling out a stained papyrus that looks to be a map, but with completely illegible scribbles in place of anything useful. You're not sure how one capable of creating such intricate crystal work is so inept at moving a pen on paper, but you've seen more bizzare things... Especially what it gave you previously.",
+				-3 => "\"How rude of you to leave me mid-explanation! Should I really trust you with the future of my work? But given you have proven your strength, I do suppose you are the best choice.\"",
+				-4 => "\"I haven't even told you how to get into the temple yet. So, as I was saying...\"",
 				_ => "This text should never be seen! Please report to https://github.com/ProjectStarlight/StarlightRiver/issues",
 			};
 		}
@@ -239,46 +245,67 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				RichTextBox.OpenDialogue(NPC, "Glassweaver", GetWinDialogue());
 				RichTextBox.AddButton("\"...\"", () =>
 				{
-					TextState++;
-					RichTextBox.SetData(NPC, "Glassweaver", GetWinDialogue());
-					if (TextState == 3)
+					DoNormalWinDialogue();
+					if (TextState == -1)
 					{
 						RichTextBox.ClearButtons();
+						
+						(Main.LocalPlayer.QuickSpawnItemDirect(NPC.GetSource_FromThis(), ItemType<ForgeMap>()).ModItem as ForgeMap).isEpic = true;
+						State = 4;
 
-						RichTextBox.AddButton("\"Wait, what?\"", () =>
+						RichTextBox.AddButton("\"Uhhh... What?\"", () =>
 						{
-							TextState++;
+							Main.LocalPlayer.QuickSpawnItemDirect(NPC.GetSource_FromThis(), ItemType<ForgeMap>());
+							TextState = -2;
 							RichTextBox.SetData(NPC, "Glassweaver", GetWinDialogue());
-							Item.NewItem(NPC.GetSource_FromThis(), Main.LocalPlayer.Center, ItemType<Items.Vitric.TempleEntranceKey>());
 
 							RichTextBox.ClearButtons();
 
-							RichTextBox.AddButton("I need a key.", () =>
-							{
-								if (Helpers.Helper.HasItem(Main.LocalPlayer, ItemType<Items.Vitric.TempleEntranceKey>(), 1))
-								{
-									RichTextBox.SetData(NPC, "Glassweaver", GetKeyDialogue());
-								}
-								else
-								{
-									Item.NewItem(NPC.GetSource_FromThis(), Main.LocalPlayer.Center, ItemType<Items.Vitric.TempleEntranceKey>());
-									RichTextBox.CloseDialogue();
-								}
-							});
-
-							RichTextBox.AddButton("Close", () =>
-							{
-								StarlightWorld.Flag(WorldFlags.GlassweaverDowned);
-
-								RichTextBox.CloseDialogue();
-								State = 4;
-								Timer = 0;
-							});
+							TextState = 2;
+							RichTextBox.AddButton("\"...\"", () => DoNormalWinDialogue());
 						});
+
+						RichTextBox.AddButton("(Say Nothing)", () =>
+						{
+							RichTextBox.ClearButtons();
+
+							TextState = 2;
+							DoNormalWinDialogue();
+
+							RichTextBox.AddButton("\"...\"", () => DoNormalWinDialogue());
+						});
+					}
+					else if (TextState == 2)
+					{
+						Main.LocalPlayer.QuickSpawnItemDirect(NPC.GetSource_FromThis(), ItemType<ForgeMap>());
+						State = 4;
 					}
 				});
 			}
-			else if (State == 4) //After talking after win
+			else if (State == 4) //After giving you the map
+			{
+				TextState = -3;
+
+				RichTextBox.OpenDialogue(NPC, "Glassweaver", GetWinDialogue());
+				RichTextBox.AddButton("\"...\"", () =>
+				{
+					TextState = -4;
+					RichTextBox.SetData(NPC, "Glassweaver", GetWinDialogue());
+
+					RichTextBox.ClearButtons();
+
+					RichTextBox.AddButton("\"...\"", () =>
+					{
+						RichTextBox.ClearButtons();
+
+						TextState = 2;
+						DoNormalWinDialogue();
+
+						RichTextBox.AddButton("\"...\"", () => DoNormalWinDialogue());
+					});
+				});
+			}
+			else if (State == 5) //After talking after win
 			{
 				RichTextBox.OpenDialogue(NPC, "Glassweaver", GetKeyDialogue());
 				RichTextBox.SetData(NPC, "Glassweaver", GetKeyDialogue());
@@ -308,12 +335,56 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				RichTextBox.AddButton("See you later", () =>
 				{
 					RichTextBox.CloseDialogue();
-					State = 4;
+					State = 5;
 					Timer = 0;
 				});
 			}
 
 			return "";
+		}
+
+		public void DoNormalWinDialogue() {
+			if (TextState == 1 && Main.rand.NextFloat() < 0.01f)
+				TextState = -1;
+			else
+				TextState++;
+
+			RichTextBox.SetData(NPC, "Glassweaver", GetWinDialogue());
+			if (TextState == 4)
+			{
+				RichTextBox.ClearButtons();
+
+				RichTextBox.AddButton("\"Wait, what?\"", () =>
+				{
+					TextState++;
+					RichTextBox.SetData(NPC, "Glassweaver", GetWinDialogue());
+					Item.NewItem(NPC.GetSource_FromThis(), Main.LocalPlayer.Center, ItemType<Items.Vitric.TempleEntranceKey>());
+
+					RichTextBox.ClearButtons();
+
+					RichTextBox.AddButton("I need a key.", () =>
+					{
+						if (Helpers.Helper.HasItem(Main.LocalPlayer, ItemType<Items.Vitric.TempleEntranceKey>(), 1))
+						{
+							RichTextBox.SetData(NPC, "Glassweaver", GetKeyDialogue());
+						}
+						else
+						{
+							Item.NewItem(NPC.GetSource_FromThis(), Main.LocalPlayer.Center, ItemType<Items.Vitric.TempleEntranceKey>());
+							RichTextBox.CloseDialogue();
+						}
+					});
+
+					RichTextBox.AddButton("Close", () =>
+					{
+						StarlightWorld.Flag(WorldFlags.GlassweaverDowned);
+
+						RichTextBox.CloseDialogue();
+						State = 5;
+						Timer = 0;
+					});
+				});
+			}
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
