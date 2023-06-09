@@ -22,14 +22,14 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 		internal override List<Loot> SmallLootPool => new()
 		{
-				new Loot(ItemID.HealingPotion, 4, 8),
+				new Loot(ItemID.HealingPotion, 2, 5),
 				new Loot(ItemID.ManaPotion, 3, 6),
 				new Loot(ItemID.FrostburnArrow, 40, 60),
 				new Loot(ItemID.LifeCrystal, 1, 1),
 				new Loot(ItemID.ManaCrystal, 2, 2),
-				new Loot(ItemID.PlatinumBar, 10, 20),
+				new Loot(ItemID.PlatinumBar, 5, 7),
 				new Loot(ItemID.Diamond, 1, 1),
-				new Loot(ItemID.IceBlock, 200, 800),
+				new Loot(ItemID.IceBlock, 50, 100),
 				new Loot(ItemType<AuroraIceBar>(), 2, 5),
 				new Loot(ItemType<SquidBossSpawn>(), 1, 1)
 			};
