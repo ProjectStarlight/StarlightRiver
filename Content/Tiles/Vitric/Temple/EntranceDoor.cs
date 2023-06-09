@@ -25,6 +25,11 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			return false;
 		}
 
+		public override bool Slope(int i, int j)
+		{
+			return false;
+		}
+
 		public override bool RightClick(int i, int j)
 		{
 			if (Helpers.Helper.TryTakeItem(Main.LocalPlayer, ModContent.ItemType<Items.Vitric.TempleEntranceKey>(), 1))
