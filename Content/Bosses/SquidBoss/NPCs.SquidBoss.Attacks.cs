@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			{
 				Player Player = Main.player[k];
 
-				if (Player.active && StarlightWorld.squidBossArena.Contains((Player.Center / 16).ToPoint()))
+				if (!Player.dead && Player.active && StarlightWorld.squidBossArena.Contains((Player.Center / 16).ToPoint()))
 					possible.Add(Player.whoAmI);
 			}
 

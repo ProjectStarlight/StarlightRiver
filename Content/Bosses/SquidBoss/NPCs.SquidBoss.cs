@@ -821,12 +821,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			if (Phase == (int)AIStates.Fleeing)
 			{
 				AttackTimer++;
-				NPC.position += Vector2.UnitY * 5;
+				NPC.position += Vector2.UnitY * 10;
 
 				if (GlobalTimer < 50)
 					Arena.waterfallWidth = 50 - (int)GlobalTimer;
 
-				if (AttackTimer > 50)
+				if (AttackTimer > 80)
 					NPC.active = false;
 			}
 		}
