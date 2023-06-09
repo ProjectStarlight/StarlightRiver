@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
@@ -22,6 +23,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			Projectile.hostile = false;
 			Projectile.friendly = false;
 			Projectile.damage = 0;
+		}
+
+		public override void AI()
+		{
+			if (Projectile.timeLeft >= 59)
+				Projectile.netUpdate = true;
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -67,6 +74,16 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				spriteBatch.Draw(body, pos, null, new Color(255, 80, 80) * (float)Math.Sin(Math.Max(0, timer - (dist - k) / dist * 30) / 30f * 3.14f), rot, body.Size() / 2, scale, 0, 0);
 				spriteBatch.Draw(body, pos, null, new Color(255, 120, 120) * (1 - timer / 20f), rot, body.Size() / 2, timer / 10f, 0, 0);
 			}
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.WriteVector2(endPoint);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			endPoint = reader.ReadVector2();
 		}
 	}
 }

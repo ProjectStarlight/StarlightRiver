@@ -37,6 +37,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			{
 				initialized = true;
 				initialPosition = Projectile.Center;
+				Projectile.netUpdate = true;
 			}
 
 			Projectile.scale -= 1 / 400f;
@@ -62,8 +63,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				d.customData = Main.rand.NextFloat(0.5f, 1);
 			}
 
-			ManageCaches();
-			ManageTrail();
+			if (!Main.dedServ)
+			{
+				ManageCaches();
+				ManageTrail();
+			}
 		}
 
 		public override void Kill(int timeLeft)

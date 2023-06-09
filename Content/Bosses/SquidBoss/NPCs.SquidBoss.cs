@@ -460,6 +460,15 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			if (arenaActor is null || !arenaActor.active)
 				arenaActor = Main.npc.FirstOrDefault(n => n.active && n.ModNPC is ArenaActor);
 
+			if (platforms is null || platforms.Count != 4 || platforms.Any(n => !n.active || n.ModNPC is IcePlatform))
+				RebuildPlatforms();
+
+			if (Phase >= (int)AIStates.FirstPhase)
+			{
+				if (tentacles is null || tentacles.Count != 4 || tentacles.Any(n => !n.active || n.ModNPC is Tentacle))
+					RebuildTentacles();
+			}
+
 			//boss health bar glow effects
 
 			float sin = (float)Math.Sin(Main.GameUpdateCount * 0.05f);
@@ -473,12 +482,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 				NPC.damage = 0;
 
-				foreach (NPC NPC in Main.npc.Where(n => n.active && n.ModNPC is IcePlatform))
-				{
-					platforms.Add(NPC);
-				}
-
-				platforms.RemoveAll(n => Math.Abs(n.Center.X - Main.npc.FirstOrDefault(l => l.active && l.ModNPC is ArenaActor).Center.X) >= 550);
+				RebuildPlatforms();
 
 				spawnPoint = NPC.Center;
 
@@ -584,6 +588,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					float fun = (float)(-937.5f * Math.Pow(x / 325f, 3) + 1406.25f * Math.Pow(x / 325f, 2) - 143.75 * x / 325f);
 					float dif = fun - (float)(-937.5f * Math.Pow(GlobalTimer / 325f, 3) + 1406.25f * Math.Pow(GlobalTimer / 325f, 2) - 143.75 * GlobalTimer / 325f);
 					Arena.NPC.ai[0] += dif;
+					Arena.NPC.netUpdate = true;
 
 					NPC.Center = Vector2.SmoothStep(savedPoint, spawnPoint + new Vector2(0, -750), GlobalTimer / 325f);
 
@@ -675,6 +680,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					float fun = (float)(-833.33f * Math.Pow(x / 325f, 3) + 1250f * Math.Pow(x / 325f, 2) - 116.66 * x / 325f);
 					float dif = fun - (float)(-833.33f * Math.Pow(GlobalTimer / 325f, 3) + 1250f * Math.Pow(GlobalTimer / 325f, 2) - 116.66 * GlobalTimer / 325f);
 					Arena.NPC.ai[0] += dif;
+					Arena.NPC.netUpdate = true;
 
 					if (GlobalTimer % 45 == 0 && GlobalTimer < 200)
 						Helper.PlayPitched("SquidBoss/UnderwaterSwoosh", 1, 0f, NPC.Center);
@@ -832,14 +838,72 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			}
 		}
 
+		/// <summary>
+		/// Failsafe method to re-find the boss' platforms if he de-syncs with them
+		/// </summary>
+		public void RebuildPlatforms()
+		{
+			if (platforms is null)
+				platforms = new();
+
+			platforms.Clear();
+
+			foreach (NPC NPC in Main.npc.Where(n => n.active && n.ModNPC is IcePlatform))
+			{
+				platforms.Add(NPC);
+			}
+
+			Mod.Logger.Info($"Added {platforms.Count} platforms to auroracle's platform collection");
+
+			platforms.RemoveAll(n => Math.Abs(n.Center.X - Main.npc.FirstOrDefault(l => l.active && l.ModNPC is ArenaActor).Center.X) >= 550);
+
+			Mod.Logger.Info($"Retained {platforms.Count} platforms to auroracle's platform collection");
+
+			if (platforms is null || platforms.Count != 4 || platforms.Any(n => !n.active || n.ModNPC is IcePlatform))
+			{
+				NPC.active = false;
+				Mod.Logger.Error("Auroracle failed to rebuild platform collection, aborting!");
+			}
+		}
+
+		/// <summary>
+		/// Failsafe method to re-find the boss' tentacles if he de-syncs with them
+		/// </summary>
+		public void RebuildTentacles()
+		{
+			if (tentacles is null)
+				tentacles = new();
+
+			tentacles.Clear();
+
+			foreach (NPC NPC in Main.npc.Where(n => n.active && n.ModNPC is Tentacle))
+			{
+				tentacles.Add(NPC);
+			}
+
+			Mod.Logger.Info($"Added {tentacles.Count} tentacles to auroracle's tentacle collection");
+
+			tentacles.Sort((a, b) => a.ai[2] > b.ai[2] ? 1 : -1);
+
+			if (tentacles is null || tentacles.Count != 4 || tentacles.Any(n => !n.active || n.ModNPC is Tentacle))
+			{
+				NPC.active = false;
+				Mod.Logger.Error("Auroracle failed to rebuild tentacle collection, aborting!");
+			}
+		}
+
 		public override void SendExtraAI(System.IO.BinaryWriter writer)
 		{
 			writer.Write(variantAttack);
+			writer.WriteVector2(spawnPoint);
+			writer.WriteVector2(savedPoint);
 		}
 
 		public override void ReceiveExtraAI(System.IO.BinaryReader reader)
 		{
 			variantAttack = reader.ReadBoolean();
+			spawnPoint = reader.ReadVector2();
+			savedPoint = reader.ReadVector2();
 		}
 
 		public string GetHint()

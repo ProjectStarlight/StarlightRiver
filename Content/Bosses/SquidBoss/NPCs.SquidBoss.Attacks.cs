@@ -145,7 +145,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					tentacle.stalkWaviness = 0;
 					tentacle.zSpin = time / 30f * 6.28f;
 
-					tentacles[k].Center = Vector2.SmoothStep(tentacle.basePoint, tentacle.movementTarget, time / 40f);
+					tentacle.NPC.Center = Vector2.SmoothStep(tentacle.basePoint, tentacle.movementTarget, time / 40f);
+					tentacle.NPC.netUpdate = true;
 				}
 
 				if (AttackTimer == k * 100 + 70) //impact
@@ -170,9 +171,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				if (AttackTimer > k * 100 + 70 && AttackTimer < k * 100 + 300) //retracting
 				{
 					int time = (int)AttackTimer - (k * 100 + 70);
-					tentacles[k].Center = Vector2.SmoothStep(tentacle.movementTarget, tentacle.basePoint, time / 190f);
+					tentacle.NPC.Center = Vector2.SmoothStep(tentacle.movementTarget, tentacle.basePoint, time / 190f);
 					tentacle.stalkWaviness = Math.Min(1.5f, time / 30f);
 					tentacle.zSpin = 0;
+					tentacle.NPC.netUpdate = true;
 
 					if (AttackTimer == k * 100 + 250 && tentacle.State != 2)
 						tentacle.State = 1;
@@ -353,6 +355,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				tentacleL.stalkWaviness = 0;
 				tentacleR.stalkWaviness = 0;
 
+				tentacleL.NPC.netUpdate = true;
+				tentacleR.NPC.netUpdate = true;
+
 				SpawnTell(tentacleL.movementTarget + new Vector2(0, 128), tentacleL.basePoint);
 				SpawnTell(tentacleR.movementTarget + new Vector2(0, 128), tentacleR.basePoint);
 
@@ -524,6 +529,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 						tentacle.NPC.Center = platforms[k].Center + new Vector2(0 + offX, -150 + offY);
 						tentacle.basePoint = tentacle.NPC.Center;
 						tentacle.movementTarget = Vector2.Lerp(tentacle.NPC.Center, spawnPoint, 0.25f);
+						tentacle.NPC.netUpdate = true;
 					}
 
 					if (AttackTimer > 60 + k * 20 && AttackTimer < 120 + k * 20)
@@ -566,6 +572,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 						if (k == 3)
 							tentacle.State = 1;
+
+						tentacle.NPC.netUpdate = true;
 					}
 				}
 				else // logic for the sweeping tentacle
@@ -583,6 +591,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					{
 						tentacle.basePoint = spawnPoint + Vector2.UnitX * (-0.5f + Helpers.Helper.BezierEase((AttackTimer - (100 + k * 20)) / 180f)) * 1200;
 						tentacle.NPC.Center = spawnPoint + Vector2.UnitX.RotatedBy(Helpers.Helper.BezierEase((AttackTimer - (100 + k * 20)) / 180f) * 3.14f) * -890;
+						tentacle.NPC.netUpdate = true;
 					}
 
 					if (AttackTimer > 320 + k * 20 && tentacle.downwardDrawDistance > 28)
@@ -796,6 +805,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					tentacle.basePoint = tentacles[k].Center;
 					tentacle.stalkWaviness = 0.5f;
 					tentacle.movementTarget = tentacles[k].Center + new Vector2(off * 0.65f, -1200);
+					tentacle.NPC.netUpdate = true;
 				}
 			}
 
@@ -900,6 +910,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					var tentacle = tentacles[k].ModNPC as Tentacle;
 					tentacles[k].Center = spawnPoint + new Vector2(-600, -1100);
 					tentacle.basePoint = tentacles[k].Center;
+					tentacle.NPC.netUpdate = true;
 				}
 
 				for (int k = 2; k < 4; k++) //right
@@ -907,6 +918,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					var tentacle = tentacles[k].ModNPC as Tentacle;
 					tentacles[k].Center = spawnPoint + new Vector2(600, -1100);
 					tentacle.basePoint = tentacles[k].Center;
+					tentacle.NPC.netUpdate = true;
 				}
 			}
 
@@ -973,6 +985,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					tentacle.movementTarget = Main.player[NPC.target].Center;
 					tentacle.NPC.netUpdate = true;
 					tentacle.stalkWaviness = 0.5f;
+					tentacle.NPC.netUpdate = true;
 
 					SpawnTell(tentacle.movementTarget, tentacle.basePoint);
 
@@ -1028,6 +1041,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					tentacle.basePoint = tentacles[k].Center;
 					tentacle.movementTarget = Main.player[NPC.target].Center;
 					tentacle.shouldDrawPortal = true;
+					tentacle.NPC.netUpdate = true;
 
 					SpawnTell(tentacle.movementTarget, tentacle.basePoint);
 

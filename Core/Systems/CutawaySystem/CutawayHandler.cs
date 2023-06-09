@@ -1,6 +1,5 @@
 ﻿using StarlightRiver.Content.Tiles.Permafrost;
 using Terraria.DataStructures;
-using Terraria.ID;
 
 namespace StarlightRiver.Core.Systems.CutawaySystem
 {
@@ -31,7 +30,7 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 			// Vitric temple overlay
 			Point16 dimensions = Point16.Zero;
 			StructureHelper.Generator.GetDimensions("Structures/VitricTempleNew", StarlightRiver.Instance, ref dimensions);
-			var templePos = new Vector2(StarlightWorld.vitricBiome.Center.X - dimensions.X / 2, StarlightWorld.vitricBiome.Center.Y - 1) * 16;
+			Vector2 templePos = new Vector2(StarlightWorld.vitricBiome.Center.X - dimensions.X / 2, StarlightWorld.vitricBiome.Center.Y - 1) * 16;
 			templePos.Y -= 9;
 			templeOverlay = new Cutaway(ModContent.Request<Texture2D>("StarlightRiver/Assets/Overlay/TempleOverlay", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value, templePos)
 			{
@@ -62,12 +61,11 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 			return false;
 		}
 
-		public override void PostUpdateWorld()
+		public override void PostUpdateEverything()
 		{
-			if (!created)
+			if (!Main.dedServ && !created)
 			{
-				if (Main.netMode == NetmodeID.SinglePlayer)
-					CreateCutaways();
+				CreateCutaways();
 				created = true;
 			}
 		}

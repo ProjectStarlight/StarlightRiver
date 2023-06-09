@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				}
 			}
 
-			if (GlobalTimer == 100)
+			if (GlobalTimer == 100 && !Main.dedServ)
 			{
 				string title = Main.rand.NextBool(10000) ? "Jammed Mod" : "The Venerated";
 				UILoader.GetUIState<TextCard>().Display("Auroracle", title, null, 440);
@@ -73,7 +73,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 						default: x = 0; y = 0; xb = 0; break;
 					}
 
-					int i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X + x, (int)NPC.Center.Y - 50, NPCType<Tentacle>(), 0, 1);
+					int i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X + x, (int)NPC.Center.Y - 50, NPCType<Tentacle>(), 0, 1, 0, k);
 					(Main.npc[i].ModNPC as Tentacle).Parent = this;
 					(Main.npc[i].ModNPC as Tentacle).movementTarget = new Vector2((int)NPC.Center.X + x, (int)NPC.Center.Y - 500 - y);
 					(Main.npc[i].ModNPC as Tentacle).offsetFromParentBody = xb;
@@ -81,6 +81,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					(Main.npc[i].ModNPC as Tentacle).Timer = 120 + k * 20;
 					(Main.npc[i].ModNPC as Tentacle).stalkWaviness = 0;
 					tentacles.Add(Main.npc[i]);
+
+					Main.npc[i].netUpdate = true;
 				}
 
 				if (GlobalTimer == 100 + k * 30)

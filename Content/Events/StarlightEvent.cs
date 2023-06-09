@@ -22,8 +22,6 @@ namespace StarlightRiver.Content.Events
 
 		public override void PostUpdateTime()
 		{
-			Main.NewText($"Occuring: {occuring}, WillOccur: {willOccur}, Sequence: {sequence}");
-
 			// Handles the fade effects
 			if (occuring && fadeTimer < 300)
 				fadeTimer++;

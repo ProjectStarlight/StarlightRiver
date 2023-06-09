@@ -4,8 +4,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 {
 	class SqueezeTell : ModProjectile, IDrawAdditive
 	{
-		public Vector2 endPoint;
-
 		public override string Texture => AssetDirectory.Invisible;
 
 		public override void SetStaticDefaults()

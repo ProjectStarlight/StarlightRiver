@@ -23,6 +23,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public ref float State => ref NPC.ai[0];
 		public ref float Timer => ref NPC.ai[1];
+		public ref float Index => ref NPC.ai[2];
 
 		internal ArenaActor Arena => Parent.Arena;
 
@@ -75,45 +76,49 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer)
 		{
-			if (Parent != null)
+			if (Parent is null)
 			{
-				Color glowColor;
-				Color auroraColor;
-
-				float sin1 = 1 + (float)Math.Sin(Timer / 10f);
-				float cos1 = 1 + (float)Math.Cos(Timer / 10f);
-				auroraColor = new Color(0.5f + cos1 * 0.2f, 0.8f, 0.5f + sin1 * 0.2f);
-
-				switch (State) //Select the color of this tentacle's glow
-				{
-					case 0: //vulnerable
-						float sin0 = 1 + (float)Math.Sin(Timer / 10f);
-						glowColor = new Color(255, 100 + (int)(sin0 * 50), 40);
-
-						break;
-
-					case 1: //invulnerable
-						glowColor = auroraColor;
-
-						if (Parent.Phase == (int)SquidBoss.AIStates.ThirdPhase)
-							glowColor = new Color(1.2f + sin1 * 0.1f, 0.7f + sin1 * -0.25f, 0.25f) * 0.8f;
-
-						break;
-
-					case 2: //dead
-						glowColor = new Color(100, 100, 150) * 0.5f;
-
-						break;
-
-					default: glowColor = Color.Black; break;
-				}
-
-				if (NPCLayer == 0)
-					DrawLowerLayer(spriteBatch, auroraColor, glowColor);
-
-				if (NPCLayer == 1 && Timer > 60)
-					DrawUpperLayer(spriteBatch, auroraColor, glowColor);
+				NPC.active = false;
+				return;
 			}
+
+			Color glowColor;
+			Color auroraColor;
+
+			float sin1 = 1 + (float)Math.Sin(Timer / 10f);
+			float cos1 = 1 + (float)Math.Cos(Timer / 10f);
+			auroraColor = new Color(0.5f + cos1 * 0.2f, 0.8f, 0.5f + sin1 * 0.2f);
+
+			switch (State) //Select the color of this tentacle's glow
+			{
+				case 0: //vulnerable
+					float sin0 = 1 + (float)Math.Sin(Timer / 10f);
+					glowColor = new Color(255, 100 + (int)(sin0 * 50), 40);
+
+					break;
+
+				case 1: //invulnerable
+					glowColor = auroraColor;
+
+					if (Parent.Phase == (int)SquidBoss.AIStates.ThirdPhase)
+						glowColor = new Color(1.2f + sin1 * 0.1f, 0.7f + sin1 * -0.25f, 0.25f) * 0.8f;
+
+					break;
+
+				case 2: //dead
+					glowColor = new Color(100, 100, 150) * 0.5f;
+
+					break;
+
+				default: glowColor = Color.Black; break;
+			}
+
+			if (NPCLayer == 0)
+				DrawLowerLayer(spriteBatch, auroraColor, glowColor);
+
+			if (NPCLayer == 1 && Timer > 60)
+				DrawUpperLayer(spriteBatch, auroraColor, glowColor);
+
 		}
 
 		private void DrawLowerLayer(SpriteBatch spriteBatch, Color auroraColor, Color glowColor)
@@ -334,7 +339,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			}
 
 			if ((State == 0 || State == 1) && Timer == 0)
+			{
 				basePoint = NPC.Center;
+				NPC.netUpdate = true;
+			}
 
 			if (NPC.oldPos[0].Y > Arena.WaterLevelWorld && NPC.position.Y <= Arena.WaterLevelWorld || NPC.oldPos[0].Y + NPC.height <= Arena.WaterLevelWorld && NPC.position.Y + NPC.height > Arena.WaterLevelWorld)
 			{
@@ -395,17 +403,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void SendExtraAI(System.IO.BinaryWriter writer)
 		{
-			writer.Write(basePoint.X);
-			writer.Write(basePoint.Y);
-
-			writer.Write(movementTarget.X);
-			writer.Write(movementTarget.Y);
+			writer.WriteVector2(basePoint);
+			writer.WriteVector2(movementTarget);
 		}
 
 		public override void ReceiveExtraAI(System.IO.BinaryReader reader)
 		{
-			basePoint = new Vector2(reader.ReadSingle(), reader.ReadSingle());
-			movementTarget = new Vector2(reader.ReadSingle(), reader.ReadSingle());
+			basePoint = reader.ReadVector2();
+			movementTarget = reader.ReadVector2();
 		}
 	}
 }
