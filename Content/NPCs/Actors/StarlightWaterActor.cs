@@ -4,6 +4,7 @@ using StarlightRiver.Content.Items.Starwood;
 using StarlightRiver.Content.Items.Vanity;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -14,15 +15,16 @@ namespace StarlightRiver.Content.NPCs.Actors
 		const int DUST_RANGE = 250;//used for horizontal dust distance and circularrange of underwater lights
 		const int ITEM_RANGE = 200;//circular range for detecting items
 
+		const float TRANSFORM_TIME = 300f;//time it takes to transform the item
+		const int WINDDOWN_TIME = 240;
+
 		public Item targetItem;
 		public int targetItemTransformType = 0;
 
 		public int transformTimer = 0;
-		const float TransformTimerLength = 300f;//time it takes to transform the item
 		public int windDown = 0;
-		const int WindDownTimerLength = 240;
 
-		public bool HasTransformedItem = false;
+		public bool hasTransformedItem = false;
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -46,8 +48,12 @@ namespace StarlightRiver.Content.NPCs.Actors
 			targetItem = null;
 			targetItemTransformType = 0;
 			transformTimer = 0;
-			windDown = 0;//if HasTransformedItem is true setting this to zero will immediately despawn this
-						 //this does not reset HasTransformedItem, since if the item has been transformed we want this to immediately despawn and not to reset
+
+			//if HasTransformedItem is true setting this to zero will immediately despawn this
+			//this does not reset HasTransformedItem, since if the item has been transformed we want this to immediately despawn and not to reset
+			windDown = 0;
+
+			NPC.netUpdate = true;
 		}
 
 		public override void AI()
@@ -57,7 +63,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 			else if (Main.tile[(int)(NPC.position.X / 16), (int)(NPC.position.Y / 16)].LiquidAmount < 1)
 				NPC.position.Y += 1;
 
-			if (!HasTransformedItem)//skips day check, item glow, and stops producing dust if item has been transformed and npc is waiting to depspawn
+			if (!hasTransformedItem)//skips day check, item glow, and stops producing dust if item has been transformed and npc is waiting to depspawn
 			{
 				//stop everything and immediately despawn if day
 				//does not get checked if on windDown, since the npc will be despawning soon anyway
@@ -66,6 +72,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 				{
 					ResetConversion();
 					NPC.active = false;
+					NPC.netUpdate = true;
 				}
 
 				if (Main.netMode == NetmodeID.SinglePlayer || Main.netMode == NetmodeID.MultiplayerClient)//clientside only
@@ -111,7 +118,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 				#endregion
 			}
 
-			if (HasTransformedItem)//if this has already transformed the item
+			if (hasTransformedItem)//if this has already transformed the item
 			{
 				windDown--;//this timer counts down for some reason
 
@@ -119,6 +126,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 				{
 					ResetConversion();
 					NPC.active = false;
+					NPC.netUpdate = true;
 				}
 			}
 			else if (targetItem is null)//not transforming, looking for new item
@@ -140,6 +148,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 								targetItem = Item;
 								GlobalItem.starlightWaterActor = this;
 								targetItemTransformType = ConversionType;
+								NPC.netUpdate = true;
 							}
 						}
 					}
@@ -169,10 +178,10 @@ namespace StarlightRiver.Content.NPCs.Actors
 				//if above saftey checks succeed, progress the conversion timer
 				transformTimer++;
 
-				Lighting.AddLight(targetItem.Center, new Vector3(10, 13, 25) * 0.04f * transformTimer / TransformTimerLength);
+				Lighting.AddLight(targetItem.Center, new Vector3(10, 13, 25) * 0.04f * transformTimer / TRANSFORM_TIME);
 
 				//when the end of transform timer has been reached
-				if (transformTimer > TransformTimerLength)
+				if (transformTimer > TRANSFORM_TIME)
 				{
 					if (targetItem.stack > 1)
 					{
@@ -180,6 +189,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 						targetItem.wet = false;
 						Item.NewItem(targetItem.GetSource_FromThis(), targetItem.Center, targetItem);
 						targetItem.stack = 1;//likely not needed
+						NPC.netUpdate = true;
 					}
 
 					GlobalItem.starlightWaterActor = null;//likely not needed, but just in case removes reference to this from old global item instance
@@ -191,8 +201,9 @@ namespace StarlightRiver.Content.NPCs.Actors
 						GlobalItem2.starlightWaterActor = this;//sets ref on new global item instance to this to finish the cooldown
 
 					targetItem.velocity.Y -= 5;
-					HasTransformedItem = true;
-					windDown = WindDownTimerLength;
+					hasTransformedItem = true;
+					windDown = WINDDOWN_TIME;
+					NPC.netUpdate = true;
 
 					for (int i = 0; i < 40; i++)
 						Dust.NewDustPerfect(targetItem.Center, ModContent.DustType<Dusts.BlueStamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10));
@@ -205,6 +216,20 @@ namespace StarlightRiver.Content.NPCs.Actors
 					//at this point, the npc idles until the timer runs out while the item finishes it's animation, at which point it despawns
 				}
 			}
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(transformTimer);
+			writer.Write(windDown);
+			writer.Write(hasTransformedItem);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			transformTimer = reader.ReadInt32();
+			windDown = reader.ReadInt32();
+			hasTransformedItem = reader.ReadBoolean();
 		}
 	}
 
