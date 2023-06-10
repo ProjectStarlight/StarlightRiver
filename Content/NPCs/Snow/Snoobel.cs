@@ -45,8 +45,8 @@ namespace StarlightRiver.Content.NPCs.Snow
 
 		public VerletChain trunkChain;
 
-		public bool CanHit => attackTimer > WHIP_BUILDUP && currentPhase == (int) AiStates.Whipping || pulling;
-			
+		public bool CanHit => attackTimer > WHIP_BUILDUP && currentPhase == (int)AiStates.Whipping || pulling;
+
 		private Vector2 TrunkStart => NPC.Center + new Vector2(33 * NPC.spriteDirection, 7 + NPC.gfxOffY + NPC.velocity.Y);
 
 		private Player Target => Main.player[NPC.target];
@@ -116,13 +116,13 @@ namespace StarlightRiver.Content.NPCs.Snow
 
 			switch (currentPhase)
 			{
-				case (int) AiStates.Walking:
+				case (int)AiStates.Walking:
 					WalkingBehavior(); break;
-				case (int) AiStates.Whipping:
+				case (int)AiStates.Whipping:
 					WhippingBehavior(); break;
-				case (int) AiStates.Pulling:
+				case (int)AiStates.Pulling:
 					PullingBehavior(); break;
-				case (int) AiStates.Deciding:
+				case (int)AiStates.Deciding:
 					DecidingBehavior(); break;
 			}
 
@@ -271,7 +271,7 @@ namespace StarlightRiver.Content.NPCs.Snow
 
 			if (attackTimer >= 200)
 			{
-				currentPhase = (int) AiStates.Deciding;
+				currentPhase = (int)AiStates.Deciding;
 				attackTimer = 0;
 			}
 
@@ -393,9 +393,9 @@ namespace StarlightRiver.Content.NPCs.Snow
 			//phase = Phase.Pulling;
 			switch (currentPhase)
 			{
-				case (int) AiStates.Whipping:
+				case (int)AiStates.Whipping:
 					WhippingBehavior(); break;
-				case (int) AiStates.Pulling:
+				case (int)AiStates.Pulling:
 					PullingBehavior(); break;
 			}
 
@@ -462,7 +462,7 @@ namespace StarlightRiver.Content.NPCs.Snow
 			attackTimer = 0;
 			trunkChain.forceGravity = new Vector2(0, 0.1f);
 			trunkChain.useEndPoint = false;
-			currentPhase = (int) AiStates.Walking;
+			currentPhase = (int)AiStates.Walking;
 		}
 		public string GetHint()
 		{
@@ -498,7 +498,7 @@ namespace StarlightRiver.Content.NPCs.Snow
 				//kind of a horrible hack but it should work >99% of the time
 				//maybe refactor to give snoobels UUIDs to find the correct parent 100% of the time (or maybe a UUID NPC/projectile system since we seem to require parent child connections a lot)
 				NPC closestSnoobel = null;
-				
+
 				for (int i = 0; i < Main.maxNPCs; i++)
 				{
 					NPC eachNpc = Main.npc[i];

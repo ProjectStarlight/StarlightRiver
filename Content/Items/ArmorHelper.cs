@@ -1,9 +1,7 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.Faewhip;
-using System;
 using Terraria.DataStructures;
 using static Terraria.ModLoader.ModContent;
-using static Terraria.ModLoader.PlayerDrawLayer;
 
 namespace StarlightRiver.Content.Items
 {
@@ -44,7 +42,7 @@ namespace StarlightRiver.Content.Items
 			Texture2D newTex = Request<Texture2D>(texture).Value;
 
 			//uses body frame for the 1.3 sheets because headframe is always zero for some reason
-			int frame = (int)(info.drawPlayer.bodyFrame.Y / info.drawPlayer.bodyFrame.Height) ;//(int)((info.drawPlayer.bodyFrame.Y / 1120f) * 20);
+			int frame = (int)(info.drawPlayer.bodyFrame.Y / info.drawPlayer.bodyFrame.Height);//(int)((info.drawPlayer.bodyFrame.Y / 1120f) * 20);
 			int height = (int)(newTex.Height / 20);
 
 			Vector2 pos = (info.drawPlayer.MountedCenter - Main.screenPosition +
@@ -55,10 +53,10 @@ namespace StarlightRiver.Content.Items
 
 			Color drawColor = color ?? info.colorArmorHead;
 
-			info.DrawDataCache.Add(new DrawData(newTex, pos, new Rectangle(0, frame * height, newTex.Width, height), 
+			info.DrawDataCache.Add(new DrawData(newTex, pos, new Rectangle(0, frame * height, newTex.Width, height),
 				immuneFade ? drawColor * ((255 - info.drawPlayer.immuneAlpha) * 0.003921568627f) : drawColor,
-				info.drawPlayer.headRotation, 
-				new Vector2(newTex.Width * 0.5f, newTex.Height * 0.025f), 
+				info.drawPlayer.headRotation,
+				new Vector2(newTex.Width * 0.5f, newTex.Height * 0.025f),
 				scale, info.playerEffect, 0));
 		}
 
@@ -89,7 +87,7 @@ namespace StarlightRiver.Content.Items
 			Vector2 weirdGravityOffset = new Vector2(0, info.drawPlayer.gravDir == -1 ? 4 : 0);
 
 			Vector2 pos = (info.drawPlayer.MountedCenter - Main.screenPosition +
-				offset + 
+				offset +
 				new Vector2(0, info.drawPlayer.gfxOffY)).ToPoint16().ToVector2() +
 				info.drawPlayer.bodyPosition + //player gore position
 				Main.OffsetsPlayerHeadgear[info.drawPlayer.bodyFrame.Y / info.drawPlayer.bodyFrame.Height] * info.drawPlayer.gravDir;//bobbing while walking
@@ -152,7 +150,7 @@ namespace StarlightRiver.Content.Items
 			int frameWidth = (int)(newTex.Width / frameCountX);
 			int frameHeight = (int)(newTex.Height / frameCountY);
 
-			Vector2 weirdGravityOffset =  new Vector2(0, info.drawPlayer.gravDir == -1 ? 4 : 0);
+			Vector2 weirdGravityOffset = new Vector2(0, info.drawPlayer.gravDir == -1 ? 4 : 0);
 
 			//Vector2 fixedOffset = new Vector2(offset.X, offset.Y);// info.drawPlayer.gravDir == -1 ? offset.Y : offset.Y);
 

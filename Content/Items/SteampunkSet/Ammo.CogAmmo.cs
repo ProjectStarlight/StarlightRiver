@@ -1,7 +1,6 @@
 ﻿using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
-using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
 

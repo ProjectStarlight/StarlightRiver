@@ -1,11 +1,5 @@
-using StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Core.Systems.DummyTileSystem;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Terraria.ID;
 using StarlightRiver.Content.Items.BaseTypes;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {

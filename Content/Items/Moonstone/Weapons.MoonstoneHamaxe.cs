@@ -1,5 +1,4 @@
-﻿using StarlightRiver.Content.Tiles.Moonstone;
-using StarlightRiver.Core.Systems.CameraSystem;
+﻿using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;

@@ -1,5 +1,5 @@
-﻿using StarlightRiver.Content.Biomes;
-using StarlightRiver.Content.Abilities;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Biomes;
 using StarlightRiver.Core.Systems;
 using Terraria.DataStructures;
 

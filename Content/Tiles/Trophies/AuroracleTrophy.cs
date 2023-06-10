@@ -1,5 +1,4 @@
 ﻿using System;
-using Terraria.DataStructures;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Trophies

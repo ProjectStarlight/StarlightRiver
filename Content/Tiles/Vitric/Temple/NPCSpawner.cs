@@ -1,5 +1,5 @@
-﻿using StarlightRiver.Content.NPCs.Vitric.Gauntlet;
-using StarlightRiver.Content.Abilities;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.NPCs.Vitric.Gauntlet;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;

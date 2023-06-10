@@ -1,6 +1,4 @@
-﻿using ReLogic.Content;
-using ReLogic.Graphics;
-using System;
+﻿using System;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ObjectData;

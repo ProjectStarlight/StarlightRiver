@@ -3,7 +3,6 @@ using StarlightRiver.Content.Items.Moonstone;
 using StarlightRiver.Core.Systems.BarrierSystem;
 using StarlightRiver.Helpers;
 using System;
-using Terraria;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;

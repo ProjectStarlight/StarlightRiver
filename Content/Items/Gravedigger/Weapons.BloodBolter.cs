@@ -2,7 +2,6 @@ using StarlightRiver.Content.Dusts;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 

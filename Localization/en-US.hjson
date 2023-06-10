@@ -3212,6 +3212,15 @@ Mods: {
 				DisplayName: End of Time
 				Tooltip: "'K. Ra'"
 			}
+
+			ForgeMap: {
+				DisplayName: Glassweaver's Map
+				Tooltip:
+					'''
+					Quite a self-explanatory exquisite piece of art isn't it?
+					Right click on the item to view the map.
+					'''
+			}
 		}
 
 		Projectiles: {

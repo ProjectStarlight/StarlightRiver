@@ -1,8 +1,7 @@
-﻿using System;
+﻿using StarlightRiver.Content.Abilities;
+using System;
 using Terraria.ID;
-using StarlightRiver.Content.Abilities;
 using static Terraria.ModLoader.ModContent;
-using Terraria;
 
 namespace StarlightRiver.Content.Tiles.Moonstone
 {
@@ -60,7 +59,7 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 			}
 
 			//extra checks in case this is next to a wall
-			if(Main.tile[i + 1, j - 2].HasTile && WorldGen.SolidOrSlopedTile(i + 1, j - 2))//if there is a tile on top of 3x3 area
+			if (Main.tile[i + 1, j - 2].HasTile && WorldGen.SolidOrSlopedTile(i + 1, j - 2))//if there is a tile on top of 3x3 area
 			{
 				RightHighest = 3;
 				AnyOnRight = false;
@@ -94,7 +93,7 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 
 			bool fillInBottomGap = Main.tile[i, j].IsHalfBlock || Main.tile[i, j].TopSlope;
 			int stepUp = ((AnyOnRight || AnyOnLeft) && RightHighest + LeftHighest != -2) ? 1 : 5;
-			var frame = new Rectangle(0, 0, 16, ((88 - stepUp * 8 + 8 * (j % stepUp)))  + (slopes ? 15 : 0) + (fillInBottomGap ? 5 : 0));//one pixel off because scaling issues
+			var frame = new Rectangle(0, 0, 16, ((88 - stepUp * 8 + 8 * (j % stepUp))) + (slopes ? 15 : 0) + (fillInBottomGap ? 5 : 0));//one pixel off because scaling issues
 			spriteBatch.Draw(midTex, new Vector2(i + 12, j + 12.5f + (fillInBottomGap ? 0.625f/*one extra pixel than half a block*/ : 0)) * 16 - Main.screenPosition, frame, overlayColor, default, new Vector2(0, frame.Height), new Vector2(1, 2), default, default);
 
 			//Utils.DrawBorderString(spriteBatch, RightHighest.ToString(), (new Vector2(i + 12, j + 7 - (i % 4)) * 16) - Main.screenPosition, Color.Red, 0.75f);

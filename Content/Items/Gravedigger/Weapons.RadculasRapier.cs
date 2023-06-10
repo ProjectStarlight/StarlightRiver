@@ -580,7 +580,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 			Tile tile = Main.tile[(int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16];
 
-			if (!Collision.CanHitLine(Owner.Center, 1, 1, teleportPos, 3, 3) || (tile.HasTile && Main.tileSolid[tile.TileType] && !TileID.Sets.Platforms[tile.TileType])) 
+			if (!Collision.CanHitLine(Owner.Center, 1, 1, teleportPos, 3, 3) || (tile.HasTile && Main.tileSolid[tile.TileType] && !TileID.Sets.Platforms[tile.TileType]))
 			{
 				Projectile.Kill();
 				return;

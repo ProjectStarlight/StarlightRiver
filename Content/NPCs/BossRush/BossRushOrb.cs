@@ -1,7 +1,7 @@
-﻿using StarlightRiver.Content.Backgrounds;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Backgrounds;
 using StarlightRiver.Core.Systems.BossRushSystem;
 using StarlightRiver.Core.Systems.CameraSystem;
-using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using StarlightRiver.Helpers;
 using System;

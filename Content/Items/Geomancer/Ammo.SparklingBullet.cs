@@ -1,5 +1,4 @@
 ﻿using StarlightRiver.Content.Items.BuriedArtifacts;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 

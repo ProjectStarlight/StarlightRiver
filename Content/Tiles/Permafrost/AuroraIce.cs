@@ -1,5 +1,5 @@
-﻿using StarlightRiver.Helpers;
-using StarlightRiver.Content.Abilities;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Helpers;
 using System;
 using Terraria.GameContent;
 using Terraria.ID;

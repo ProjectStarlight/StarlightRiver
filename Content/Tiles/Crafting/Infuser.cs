@@ -1,6 +1,5 @@
 ﻿using StarlightRiver.Content.GUI;
 using StarlightRiver.Core.Systems;
-using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Crafting

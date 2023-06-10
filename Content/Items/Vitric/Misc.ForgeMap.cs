@@ -1,12 +1,12 @@
 ﻿using StarlightRiver.Content.GUI;
 using StarlightRiver.Core.Loaders.UILoading;
+using System.Collections.Generic;
+using System.Linq;
+using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
+using Terraria.ModLoader.IO;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
-using System.Collections.Generic;
-using Terraria.GameContent.UI.Elements;
-using Terraria.ModLoader.IO;
-using System.Linq;
 
 namespace StarlightRiver.Content.Items.Vitric
 {

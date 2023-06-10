@@ -53,7 +53,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 				if (releaseCounter > 0.5f)
 					offsetLerper -= 0.015f;
-				
+
 				if (offsetLerper <= 0)
 				{
 					Destroy();

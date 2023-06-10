@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Terraria;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Vitric

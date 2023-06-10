@@ -1,5 +1,5 @@
-﻿using Terraria.DataStructures;
-using StarlightRiver.Content.Abilities;
+﻿using StarlightRiver.Content.Abilities;
+using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ObjectData;

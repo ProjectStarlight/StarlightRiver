@@ -4,10 +4,7 @@ using StarlightRiver.Content.Items.Starwood;
 using StarlightRiver.Content.Items.Vanity;
 using System;
 using System.Collections.Generic;
-using System.Net;
 using Terraria.ID;
-using Terraria.ModLoader;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Actors
@@ -50,7 +47,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 			targetItemTransformType = 0;
 			transformTimer = 0;
 			windDown = 0;//if HasTransformedItem is true setting this to zero will immediately despawn this
-			//this does not reset HasTransformedItem, since if the item has been transformed we want this to immediately despawn and not to reset
+						 //this does not reset HasTransformedItem, since if the item has been transformed we want this to immediately despawn and not to reset
 		}
 
 		public override void AI()
@@ -114,11 +111,11 @@ namespace StarlightRiver.Content.NPCs.Actors
 				#endregion
 			}
 
-			if(HasTransformedItem)//if this has already transformed the item
+			if (HasTransformedItem)//if this has already transformed the item
 			{
 				windDown--;//this timer counts down for some reason
 
-				if(windDown <= 0)
+				if (windDown <= 0)
 				{
 					ResetConversion();
 					NPC.active = false;
@@ -150,7 +147,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 			}
 			else//has valid item
 			{
-				if(!targetItem.TryGetGlobalItem<TransformableItem>(out TransformableItem GlobalItem) || targetItem.IsAir || !targetItem.active || GlobalItem.starlightWaterActor == null)
+				if (!targetItem.TryGetGlobalItem<TransformableItem>(out TransformableItem GlobalItem) || targetItem.IsAir || !targetItem.active || GlobalItem.starlightWaterActor == null)
 				{
 					//something has gone wrong and the item either no longer has a valid global item, the item no longer exists, or the item's reference no longer exists
 					ResetConversion();
@@ -177,7 +174,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 				//when the end of transform timer has been reached
 				if (transformTimer > TransformTimerLength)
 				{
-					if(targetItem.stack > 1)
+					if (targetItem.stack > 1)
 					{
 						targetItem.stack--;
 						targetItem.wet = false;
@@ -190,7 +187,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 					//running this on an item clears it's global item instances
 					targetItem.SetDefaults(targetItemTransformType);
 
-					if(targetItem.TryGetGlobalItem<TransformableItem>(out TransformableItem GlobalItem2))
+					if (targetItem.TryGetGlobalItem<TransformableItem>(out TransformableItem GlobalItem2))
 						GlobalItem2.starlightWaterActor = this;//sets ref on new global item instance to this to finish the cooldown
 
 					targetItem.velocity.Y -= 5;
@@ -231,7 +228,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 					return ItemType<AncientStarwoodBoots>();
 			}
 
-			if(StarlightWaterConversion.TryGetValue(item.type, out int conversionType))
+			if (StarlightWaterConversion.TryGetValue(item.type, out int conversionType))
 			{
 				return conversionType;
 			}
@@ -316,7 +313,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 
 		public override bool OnPickup(Item item, Player player)//completely stops conversion on pickup since this cant be detected by the WaterActor
 		{
-			if(starlightWaterActor != null)
+			if (starlightWaterActor != null)
 			{
 				starlightWaterActor.ResetConversion();//fine to be called even if the item has been transformed already
 				starlightWaterActor = null;//should be null anyways
@@ -355,7 +352,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 
 		public override void PostUpdate(Item Item)
 		{
-			if(starlightWaterActor != null)//makes item float upwards
+			if (starlightWaterActor != null)//makes item float upwards
 			{
 				if (starlightWaterActor.transformTimer > 0)
 				{

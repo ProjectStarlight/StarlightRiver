@@ -3,7 +3,6 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 

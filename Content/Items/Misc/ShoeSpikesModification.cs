@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Items.Misc
 				Recipe recipe = Main.recipe[i];
 
 				if (recipe.TryGetIngredient(ItemID.ShoeSpikes, out Item item))
-				{					
+				{
 					ShoeSpikeAccessories.Add(recipe.createItem.type);
 				}
 				else if (recipe.TryGetIngredient(ItemID.TigerClimbingGear, out Item item2))

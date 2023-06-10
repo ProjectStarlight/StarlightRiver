@@ -1,6 +1,6 @@
-﻿using StarlightRiver.Content.Tiles.Underground.WitShrineGames;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Tiles.Underground.WitShrineGames;
 using StarlightRiver.Core.Systems.DummyTileSystem;
-using StarlightRiver.Content.Abilities;
 using System;
 using Terraria.ID;
 

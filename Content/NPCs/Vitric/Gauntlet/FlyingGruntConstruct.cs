@@ -1,7 +1,6 @@
 using StarlightRiver.Content.Dusts;
 using System;
 using System.Linq;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;

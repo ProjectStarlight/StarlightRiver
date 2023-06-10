@@ -47,7 +47,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public void PostLoad()
 		{
 			List<int> blacklistedSpears = new() { ModContent.ProjectileType<Vitric.FacetProjectile>() };
-			
+
 			spearList = new Dictionary<int, bool>();
 			var proj = new Projectile();
 			for (int i = 0; i < ProjectileLoader.ProjectileCount; i++)

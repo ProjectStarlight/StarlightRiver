@@ -1,6 +1,4 @@
 ﻿using StarlightRiver.Content.Dusts;
-using StarlightRiver.Content.Tiles.UndergroundTemple;
-using StarlightRiver.Core;
 using StarlightRiver.Core.Systems;
 using System.Collections.Generic;
 using Terraria.ID;

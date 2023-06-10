@@ -220,7 +220,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Effects of different gems:");
-			
+
 			Tooltip.SetDefault(
 			"[i/s1:" + ItemType<GeoDiamond>() + "]: Critical strikes partially ignore armor, with increased chance for missing enemy HP \n" +
 			"[i/s1:" + ItemType<GeoTopaz>() + "]: +100 barrier. Gain a shield that points to your cursor and blocks attacks, consuming barrier \n" +

@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 	}
 
-		public class ThrusterEmber : ModProjectile
+	public class ThrusterEmber : ModProjectile
 	{
 		public override string Texture => AssetDirectory.Assets + "Invisible";
 

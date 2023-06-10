@@ -229,7 +229,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Owner.itemAnimation = Owner.itemTime = 3;
 			Owner.itemAnimationMax = 0;
 
-			if (Projectile.timeLeft %4 == 0)
+			if (Projectile.timeLeft % 4 == 0)
 			{
 				Vector2 itemRectStart = Projectile.Center + Projectile.rotation.ToRotationVector2() * length * 0.5f;
 				var itemRect = new Rectangle((int)itemRectStart.X, (int)itemRectStart.Y, 2, 2);
