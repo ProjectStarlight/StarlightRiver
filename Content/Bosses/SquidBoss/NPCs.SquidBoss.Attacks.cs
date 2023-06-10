@@ -70,6 +70,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				(platforms[k].ModNPC as IcePlatform).index = k;
 				platforms[k].netUpdate = true;
 			}
+
+			NPC.netUpdate = true;
 		}
 
 		#region phase 1

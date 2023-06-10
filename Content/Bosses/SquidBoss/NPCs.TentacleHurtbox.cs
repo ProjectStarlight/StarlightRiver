@@ -36,11 +36,20 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				return;
 			}
 
-			NPC.lifeMax = tentacle.NPC.lifeMax;
-			NPC.life = tentacle.NPC.life;
+			if (Parent is null || !Parent.NPC.active)
+			{
+				NPC.active = false;
+				return;
+			}
+
+			NPC.realLife = Parent.NPC.whoAmI;
+
 			NPC.Hitbox = tentacle.GetDamageHitbox();
 
 			NPC.dontTakeDamage = tentacle.State != 0;
+
+			if (Parent.NPC.life < Parent.NPC.lifeMax - tentacle.NPC.lifeMax * 4)
+				NPC.dontTakeDamage = true;
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -58,27 +67,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			modifiers.FinalDamage *= 1.25f;
 		}
 
-		public override void OnHitByItem(Player player, Item item, NPC.HitInfo hit, int damageDone)
-		{
-			if (Parent.NPC.life > Parent.NPC.lifeMax - NPC.lifeMax * 4)
-				Parent.NPC.life -= damageDone;
-
-			else if (Parent.NPC.life - damageDone < Parent.NPC.lifeMax - NPC.lifeMax * 4)
-				Parent.NPC.life = Parent.NPC.lifeMax - NPC.lifeMax * 4;
-
-			NPC.life = NPC.lifeMax;
-		}
-
-		public override void OnHitByProjectile(Projectile projectile, NPC.HitInfo hit, int damageDone)
-		{
-			if (Parent.NPC.life > Parent.NPC.lifeMax - NPC.lifeMax * 4)
-				Parent.NPC.life -= damageDone;
-
-			else if (Parent.NPC.life - damageDone < Parent.NPC.lifeMax - NPC.lifeMax * 4)
-				Parent.NPC.life = Parent.NPC.lifeMax - NPC.lifeMax * 4;
-
-			NPC.life = NPC.lifeMax;
-		}
 		public string GetHint()
 		{
 			return "Its protecting the main body!";

@@ -828,7 +828,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			if (Phase == (int)AIStates.Fleeing)
 			{
 				AttackTimer++;
-				NPC.position += Vector2.UnitY * 10;
+				NPC.position += Vector2.UnitY * 16;
 
 				if (GlobalTimer < 50)
 					Arena.waterfallWidth = 50 - (int)GlobalTimer;
@@ -855,6 +855,20 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			Mod.Logger.Info($"Added {platforms.Count} platforms to auroracle's platform collection");
 
 			platforms.RemoveAll(n => Math.Abs(n.Center.X - Main.npc.FirstOrDefault(l => l.active && l.ModNPC is ArenaActor).Center.X) >= 550);
+
+			// Sort by index
+			platforms.Sort((a, b) =>
+			{
+				var ma = a.ModNPC as IcePlatform;
+				var mb = b.ModNPC as IcePlatform;
+
+				if (ma is null || mb is null)
+				{
+					return -1;
+				}
+
+				return ma.index > mb.index ? 1 : -1;
+			});
 
 			Mod.Logger.Info($"Retained {platforms.Count} platforms to auroracle's platform collection");
 
@@ -902,6 +916,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			variantAttack = reader.ReadBoolean();
 			spawnPoint = reader.ReadVector2();
 			savedPoint = reader.ReadVector2();
+
+			// rebuild here incase platform order has changed
+			RebuildPlatforms();
 		}
 
 		public string GetHint()
