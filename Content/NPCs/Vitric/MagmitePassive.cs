@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 {
 	internal class MagmitePassive : ModNPC, IHintable
 	{
-		private static int maxLifeTime = 300; // how many ticks before the magmite starts searching for lava to kill itself :))
+		private static readonly int maxLifeTime = 300; // how many ticks before the magmite starts searching for lava to kill itself :))
 
 		private int frameCounter = 0;
 
@@ -103,7 +103,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 					lava = lavaVec.Value.X;
 			}
 
-			bool findNewPoint = (NPC.Center.X - targetX < 10f) && lava != null;
+			bool findNewPoint = NPC.Center.X - targetX < 10f && lava != null;
 
 			if ((targetX == 0 || findNewPoint || ActionTimer % 240 == 0) && switchTimer <= 0)
 			{

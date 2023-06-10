@@ -97,7 +97,6 @@ namespace StarlightRiver.Content.Items
 			Color drawColor = color ?? info.colorArmorBody;
 			Color outColor = immuneFade ? drawColor * ((255 - info.drawPlayer.immuneAlpha) * 0.003921568627f) : drawColor;
 
-
 			//back shoulder may be broken or out of order
 			int backShoulderFrameX = (int)(info.compBackShoulderFrame.X / info.compBackShoulderFrame.Width);
 			int backShoulderFrameY = (int)(info.compBackShoulderFrame.Y / info.compBackShoulderFrame.Height);
@@ -108,8 +107,6 @@ namespace StarlightRiver.Content.Items
 				new Vector2(frameWidth / 2, frameHeight / 2),
 				scale, info.playerEffect, 0));
 
-
-
 			int backArmFrameX = (int)(info.compBackArmFrame.X / info.compBackArmFrame.Width);
 			int backArmFrameY = (int)(info.compBackArmFrame.Y / info.compBackArmFrame.Height);
 
@@ -118,8 +115,6 @@ namespace StarlightRiver.Content.Items
 				info.compositeBackArmRotation,
 				new Vector2(frameWidth / 2, frameHeight / 2),
 				scale, info.playerEffect, 0));
-
-
 
 			//gets values based on frame instead of location on vanilla sized sheet
 			int torsoFrameX = (int)(info.compTorsoFrame.X / info.compTorsoFrame.Width);
@@ -157,7 +152,6 @@ namespace StarlightRiver.Content.Items
 			Color drawColor = color ?? info.colorArmorBody;
 			Color outColor = immuneFade ? drawColor * ((255 - info.drawPlayer.immuneAlpha) * 0.003921568627f) : drawColor;
 
-
 			Vector2 pos = (info.drawPlayer.MountedCenter - Main.screenPosition +
 				offset +
 				new Vector2(0, info.drawPlayer.gfxOffY)).ToPoint16().ToVector2() +
@@ -182,7 +176,6 @@ namespace StarlightRiver.Content.Items
 				info.drawPlayer.bodyRotation + info.compositeFrontArmRotation,//may just need arm rotation
 				new Vector2(frameWidth / 2, frameHeight / 2) + someothervalue5 + new Vector2(0f, 1f),
 				scale, info.playerEffect, 0));
-
 
 			if (info.compShoulderOverFrontArm)
 			{

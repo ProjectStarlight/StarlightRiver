@@ -1,4 +1,4 @@
-﻿ using Mono.Cecil.Cil;
+﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems.InstancedBuffSystem;

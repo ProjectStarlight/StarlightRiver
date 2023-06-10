@@ -163,7 +163,6 @@ namespace StarlightRiver.Content.Items.Vitric
 			Left.Set(basePos.X, 0);
 			Top.Set(basePos.Y, 0);
 
-
 			spriteBatch.Draw(Texture, GetDimensions().ToRectangle(), Color.White);
 
 			exitButton.Draw(spriteBatch);

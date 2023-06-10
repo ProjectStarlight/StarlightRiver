@@ -75,6 +75,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 					int index = NPC.NewNPC(new EntitySource_TileInteraction(null, i, j), i * 16 + Main.rand.Next(32), j * 16 + Main.rand.Next(32), NPCType<BerrySlime>());
 					Main.npc[index].velocity = Vector2.UnitY.RotatedByRandom(0.6f) * -8;
 				}
+
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Grass, new Vector2(i, j) * 16);
 			}
 

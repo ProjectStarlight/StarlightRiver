@@ -11,7 +11,11 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 	{
 		public override string Texture => AssetDirectory.CaveTempleItem + Name;
 
-		public override bool CanUseItem(Player player) => player.ownedProjectileCounts[ProjectileType<RuneStaffHoldout>()] <= 0;
+		public override bool CanUseItem(Player player)
+		{
+			return player.ownedProjectileCounts[ProjectileType<RuneStaffHoldout>()] <= 0;
+		}
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Shine Staff");
@@ -98,7 +102,6 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 				Projectile.Kill();
 				return;
 			}
-
 
 			if ((!Owner.channel || Owner.statMana <= 15) && !shooting && Lifetime >= 30)
 			{
@@ -390,7 +393,6 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			}
 
 			Projectile.rotation += Utils.Clamp(Projectile.velocity.Length() * 0.05f, 0.01f, 0.2f);
-
 
 			if (Main.rand.NextBool(10))
 				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Vector2.Zero, 0, new Color(175, 155, 25), 0.45f);

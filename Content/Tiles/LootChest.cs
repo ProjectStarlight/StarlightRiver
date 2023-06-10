@@ -77,6 +77,7 @@ namespace StarlightRiver.Content.Tiles
 					//lets the server know the frame as changed so other players cannot also open it
 					NetMessage.SendTileSquare(Main.myPlayer, i, j, 2, 2, TileChangeType.None);
 				}
+
 				return true;
 			}
 

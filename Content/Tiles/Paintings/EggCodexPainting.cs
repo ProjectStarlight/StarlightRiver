@@ -8,7 +8,6 @@
 		{
 			this.QuickSetPainting(2, 2, 7, new Color(99, 50, 30), "Painting");
 		}
-
 	}
 
 	class EggCodexPaintingItem : QuickTileItem

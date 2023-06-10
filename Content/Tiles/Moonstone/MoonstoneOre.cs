@@ -100,7 +100,6 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 			//Utils.DrawBorderString(spriteBatch, LeftHighest.ToString(), (new Vector2(i + 12, j + 8 - (i % 4)) * 16) - Main.screenPosition, Color.Green, 0.75f);
 			//Utils.DrawBorderString(spriteBatch, stepUp.ToString(), (new Vector2(i + 12, j + 9 - (i % 4)) * 16) - Main.screenPosition, Color.Blue, 0.75f);
 
-
 			Texture2D glowLines = Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowLines", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
 			int realX = i * 16;
 			int realY = (int)((j + yOffsetLeft + yOffsetRight) * 16);

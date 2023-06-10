@@ -327,7 +327,6 @@ namespace StarlightRiver.Content.Items.Palestone
 
 					NPC target = Main.npc[(int)EnemyWhoAmI];
 
-
 					if (!Collision.CanHitLine(Projectile.Center, 1, 1, target.Center, 1, 1))
 					{
 						AttackState = Flying;
@@ -389,7 +388,6 @@ namespace StarlightRiver.Content.Items.Palestone
 							var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Bottom, Vector2.UnitY * 15f, ModContent.ProjectileType<PalestoneSlash>(), Projectile.damage, 1f, Projectile.owner, 0, 1f);
 
 							PalestoneSlash slash = proj.ModProjectile as PalestoneSlash;
-
 
 							slash.parent = Projectile;
 							slash.knockbackVelo = new Vector2(0f, 25f);

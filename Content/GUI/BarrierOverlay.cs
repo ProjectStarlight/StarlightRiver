@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.GUI
 {
 	class BarrierOverlay : SmartUIState
 	{
-		readonly List<String> resourceSetsWithText = new List<string> { "Default", "HorizontalBarsWithText", "HorizontalBarsWithFullText", "NewWithText" };
+		readonly List<string> resourceSetsWithText = new() { "Default", "HorizontalBarsWithText", "HorizontalBarsWithFullText", "NewWithText" };
 		public override bool Visible => true;
 
 		public override int InsertionIndex(List<GameInterfaceLayer> layers)
@@ -124,6 +124,7 @@ namespace StarlightRiver.Content.GUI
 						{
 							yOffset = 25f;
 						}
+
 						pos = new Vector2(Main.screenWidth - 292 + k * 24, yOffset);
 						if (k >= 10)
 							pos += new Vector2(-240, 28);
