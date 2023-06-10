@@ -27,7 +27,9 @@ namespace StarlightRiver.Content.Tiles.Herbology
 			for (int k = 0; k < 10; k++)//k = max range up, this checks the area above it
 			{
 				if (Main.tile[i, j - 1 - k].HasTile && Main.tileBlockLight[Main.tile[i, j - 1 - k].TileType])
+				{
 					break;//breaks if a light blocking block is found
+				}
 				else if (k == 9)//starts downward scan on last block checked
 				{
 					for (int m = 0; m < 10; m++)//k = max range down, if the area above it clear this looks for the first plant below it

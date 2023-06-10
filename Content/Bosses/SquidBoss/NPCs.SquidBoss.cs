@@ -843,8 +843,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		/// </summary>
 		public void RebuildPlatforms()
 		{
-			if (platforms is null)
-				platforms = new();
+			platforms ??= new();
 
 			platforms.Clear();
 
@@ -871,8 +870,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		/// </summary>
 		public void RebuildTentacles()
 		{
-			if (tentacles is null)
-				tentacles = new();
+			tentacles ??= new();
 
 			tentacles.Clear();
 
