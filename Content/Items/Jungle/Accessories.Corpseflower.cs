@@ -200,8 +200,8 @@ namespace StarlightRiver.Content.Items.Jungle
 		{
 			if (AnyInflicted(npc))
 			{
-				if (damage < (GetInstance(npc) as CorpseflowerBuff).totalDamage * 0.33f)
-					damage = (int)((GetInstance(npc) as CorpseflowerBuff).totalDamage * 0.33f);
+				if (damage < (GetInstance(npc) as CorpseflowerBuff).totalDamage * 0.1f)
+					damage = (int)((GetInstance(npc) as CorpseflowerBuff).totalDamage * 0.1f);
 			}
 		}
 
