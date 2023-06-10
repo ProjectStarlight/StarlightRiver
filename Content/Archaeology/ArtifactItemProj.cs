@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Archaeology
@@ -38,6 +39,9 @@ namespace StarlightRiver.Content.Archaeology
 
 		public override void AI()
 		{
+			if (fadeIn == 0)
+				Projectile.netUpdate = true;
+
 			if (fadeIn < 1)
 			{
 				fadeIn += 0.03f;
@@ -110,6 +114,22 @@ namespace StarlightRiver.Content.Archaeology
 		{
 			var itemDrop = new Rectangle((int)Projectile.position.X + (int)(size.X / 2), (int)Projectile.position.Y + (int)(size.Y / 2), 1, 1);
 			Item.NewItem(new EntitySource_Misc("Artifact"), itemDrop, itemType);
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.WriteRGB(glowColor);
+			writer.Write(itemType);
+			writer.WriteVector2(size);
+			writer.Write(sparkleType);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			glowColor = reader.ReadRGB();
+			itemType = reader.ReadInt32();
+			size = reader.ReadVector2();
+			sparkleType = reader.ReadInt32();
 		}
 	}
 }

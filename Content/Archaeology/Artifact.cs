@@ -143,7 +143,7 @@ namespace StarlightRiver.Content.Archaeology
 				for (int j = 0; j < Size.Y / 16; j++)
 				{
 					Tile tile = Main.tile[i + Position.X, j + Position.Y];
-					if (tile.HasTile)
+					if (tile.HasTile && Main.tileSolid[tile.TileType])
 						return;
 				}
 			}
