@@ -439,7 +439,7 @@ namespace StarlightRiver.Content.Items.Misc
 				Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, new Color(180, 50, 50, 0), flashTimer / 20f), Projectile.rotation, bloomTex.Size() / 2f, 0.85f, 0f, 0f);
 			}
 
-			if (barrelFlashed)
+			if (barrelFlashed && !flashed)
 			{
 				Vector2 armPos = Owner.RotatedRelativePoint(Owner.MountedCenter, true);
 				armPos += Utils.SafeNormalize(Projectile.velocity, Vector2.UnitX) * 15f;
