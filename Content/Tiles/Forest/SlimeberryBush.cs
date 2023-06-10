@@ -1,4 +1,5 @@
-﻿using Terraria.DataStructures;
+﻿using StarlightRiver.Content.Packets;
+using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
@@ -68,11 +69,22 @@ namespace StarlightRiver.Content.Tiles.Forest
 					}
 				}
 
+				NetMessage.SendTileSquare(Main.myPlayer, newX, newY, 2, 2);
+
 				int rand = Main.rand.Next(3, 5);
 
 				for (int k = 0; k < rand; k++)
 				{
-					int index = NPC.NewNPC(new EntitySource_TileInteraction(null, i, j), i * 16 + Main.rand.Next(32), j * 16 + Main.rand.Next(32), NPCType<BerrySlime>());
+					int randX = Main.rand.Next(32);
+					int randY = Main.rand.Next(32);
+
+					if (Main.netMode == NetmodeID.MultiplayerClient)
+					{
+						var packet = new SpawnNPC(Main.myPlayer, i * 16 + randX, j * 16 + randY, NPCType<BerrySlime>());
+						packet.Send(-1, -1, false);
+					}
+
+					int index = NPC.NewNPC(new EntitySource_TileInteraction(null, i, j), i * 16 + randX, j * 16 + randY, NPCType<BerrySlime>());
 					Main.npc[index].velocity = Vector2.UnitY.RotatedByRandom(0.6f) * -8;
 				}
 
@@ -141,6 +153,9 @@ namespace StarlightRiver.Content.Tiles.Forest
 		public override void AI()
 		{
 			GlobalTimer++;
+
+			if (GlobalTimer == 1)
+				NPC.netUpdate = true;
 
 			if (GlobalTimer > 300) //die after 5 seconds
 			{

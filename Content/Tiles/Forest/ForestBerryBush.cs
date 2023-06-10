@@ -66,7 +66,11 @@ namespace StarlightRiver.Content.Tiles.Forest
 						Main.tile[newX + k, newY + l].TileFrameX -= 36; //Changes frames to berry-less
 				}
 
+				NetMessage.SendTileSquare(Main.myPlayer, newX, newY, 2, 2);
+
 				Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemType<ForestBerries>()); //Drops berries
+																												   //TODO: Send item spawn packet
+
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Grass, new Vector2(i, j) * 16);
 			}
 

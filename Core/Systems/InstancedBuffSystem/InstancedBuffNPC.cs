@@ -49,7 +49,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		{
 			orig(self, lowerBuffTime);
 
-			if (Main.netMode != Terraria.ID.NetmodeID.MultiplayerClient)
+			if (!Main.dedServ)
 				self.GetGlobalNPC<InstancedBuffNPC>().buffInstances.ForEach(n => n.UpdateNPC(self));
 		}
 

@@ -858,7 +858,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			Mod.Logger.Info($"Retained {platforms.Count} platforms to auroracle's platform collection");
 
-			if (platforms is null || platforms.Count != 4 || platforms.Any(n => !n.active || n.ModNPC is IcePlatform))
+			if (platforms is null || platforms.Count != 4 || platforms.Any(n => !n.active || n.ModNPC is not IcePlatform))
 			{
 				NPC.active = false;
 				Mod.Logger.Error("Auroracle failed to rebuild platform collection, aborting!");

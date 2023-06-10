@@ -207,7 +207,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 						// Synced spawn, TODO, abstract this to a general synced spawn later?
 						if (Main.netMode == NetmodeID.MultiplayerClient)
 						{
-							Main.NewText(NPC.Center);
 							var packet = new SpawnNPC(Main.myPlayer, (int)NPC.Center.X, (int)NPC.Center.Y + 630, NPCType<SquidBoss>());
 							packet.Send(-1, -1, false);
 						}
