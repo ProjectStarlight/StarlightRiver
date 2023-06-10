@@ -1228,6 +1228,15 @@ Mods: {
 				Tooltip: Slightly increases Starlight regeneration
 			}
 
+			SwordBook: {
+				DisplayName: Mantis Technique
+				Tooltip:
+					'''
+					Teaches you the Art of the Sword, granting all sword weapons a new combo attack
+					<right> to parry, reflecting projectiles
+					'''
+			}
+
 			TaintedGreataxe.Tooltip:
 				'''
 				Cursed : Landing a Critical Strike will inflict Focused on a new, different enemy
@@ -3261,10 +3270,6 @@ Mods: {
 			VitricSand.MapEntry: ""
 			VitricSoftSand.MapEntry: ""
 			VitricSandPlain.MapEntry: ""
-			// VitricGiantCrystal.MapEntry: ""
-			// VitricLargeCrystal.MapEntry: ""
-			// VitricMediumCrystal.MapEntry: ""
-			// VitricSmallCrystal.MapEntry: ""
 		}
 
 		Biomes: {
