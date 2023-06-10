@@ -35,6 +35,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SetStaticDefaults()
 		{
+			base.SetStaticDefaults();
 			blackListedSwords = new() { ModContent.ItemType<Moonstone.Moonfury>() };
 		}
 
