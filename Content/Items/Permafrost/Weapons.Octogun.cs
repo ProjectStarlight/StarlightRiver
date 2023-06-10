@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.noMelee = true;
 
-			Item.UseSound = new Terraria.Audio.SoundStyle("StarlightRiver/Sounds/Guns/Octogun") with { Volume = 0.7f, PitchVariance = 0.4f };
+			Item.UseSound = new Terraria.Audio.SoundStyle("StarlightRiver/Sounds/Guns/Octogun") with { Volume = 0.4f, PitchVariance = 0.4f };
 
 			Item.shoot = ProjectileID.PurificationPowder;
 			Item.shootSpeed = 20f;
