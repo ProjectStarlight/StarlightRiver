@@ -39,6 +39,11 @@ namespace StarlightRiver.Content.Items.Desert
 				"\n+40 max Barrier");
 		}
 
+		public override void SafeSetDefaults()
+		{
+			Item.value = Item.sellPrice(gold: 3, silver: 50);
+		}
+
 		public override void SafeUpdateEquip(Player player)
 		{
 			BarrierPlayer bp = player.GetModPlayer<BarrierPlayer>();

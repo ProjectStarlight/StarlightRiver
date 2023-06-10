@@ -41,6 +41,8 @@ namespace StarlightRiver.Content.Items.Dungeon
 			Item.channel = true;
 			Item.noUseGraphic = true;
 			Item.autoReuse = true;
+
+			Item.value = Item.sellPrice(gold: 2);
 		}
 
 		public override ModItem Clone(Item Item)

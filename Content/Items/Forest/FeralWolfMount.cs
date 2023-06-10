@@ -183,5 +183,10 @@ namespace StarlightRiver.Content.Items.Forest
 			DisplayName.SetDefault("Juicy Steak");
 			Tooltip.SetDefault("Combat Mount: Summons a Feral Wolf \nInflicts bleeding with powerful bites\n<right> to howl and boost the speed of minions");
 		}
+
+		public override void SafeSetDefaults()
+		{
+			Item.value = Item.sellPrice(gold: 1);
+		}
 	}
 }

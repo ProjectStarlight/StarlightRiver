@@ -42,11 +42,12 @@ namespace StarlightRiver.Content.Items.Vitric
 			Item.noMelee = true;
 			Item.knockBack = 7;
 			Item.useTurn = false;
-			Item.value = Item.sellPrice(0, 2, 20, 0);
 			Item.rare = ItemRarityID.Orange;
 			Item.shoot = ProjectileType<RefractiveBladeProj>();
 			Item.shootSpeed = 0.1f;
 			Item.noUseGraphic = true;
+
+			Item.value = Item.sellPrice(gold: 2, silver: 75);
 		}
 
 		public override void HoldItem(Player Player)

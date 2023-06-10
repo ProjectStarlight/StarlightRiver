@@ -39,6 +39,8 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			Item.channel = true;
 
 			Item.shoot = ProjectileType<RuneStaffHoldout>();
+
+			Item.value = Item.sellPrice(gold: 1);
 		}
 	}
 

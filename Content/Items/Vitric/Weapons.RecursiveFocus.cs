@@ -28,7 +28,6 @@ namespace StarlightRiver.Content.Items.Vitric
 			Item.knockBack = 0f;
 
 			Item.rare = ItemRarityID.Orange;
-			Item.value = Item.sellPrice(gold: 2);
 
 			Item.UseSound = SoundID.Item25;
 			Item.useStyle = ItemUseStyleID.HoldUp;
@@ -37,6 +36,8 @@ namespace StarlightRiver.Content.Items.Vitric
 			Item.shootSpeed = 1f;
 
 			Item.useTime = Item.useAnimation = 35;
+
+			Item.value = Item.sellPrice(gold: 2, silver: 75);
 		}
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)

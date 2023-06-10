@@ -21,13 +21,15 @@ namespace StarlightRiver.Content.Items.BarrierDye
 		public override void SetDefaults()
 		{
 			Item.rare = ItemRarityID.Orange;
+
+			Item.value = Item.sellPrice(silver: 90);
 		}
 
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();
 			recipe.AddIngredient(ModContent.ItemType<MoonstoneBarItem>(), 6);
-			recipe.AddTile(TileID.Anvils);
+			recipe.AddTile(TileID.DyeVat);
 			recipe.Register();
 		}
 

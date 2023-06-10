@@ -25,11 +25,12 @@ namespace StarlightRiver.Content.Items.Vitric
 			Item.useAnimation = 18;
 			Item.useStyle = ItemUseStyleID.Swing;
 			Item.knockBack = 7.5f;
-			Item.value = 1000;
 			Item.rare = ItemRarityID.Green;
 			Item.UseSound = SoundID.Item1;
 			Item.autoReuse = false;
 			Item.useTurn = true;
+
+			Item.value = Item.sellPrice(gold: 1);
 		}
 
 		public override bool? CanHitNPC(Player Player, NPC target)

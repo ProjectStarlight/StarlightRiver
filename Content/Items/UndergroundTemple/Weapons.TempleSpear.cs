@@ -37,6 +37,8 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			Item.shoot = ProjectileType<TempleSpearProjectile>();
 			Item.shootSpeed = 1;
 			Item.channel = true;
+
+			Item.value = Item.sellPrice(gold: 1);
 		}
 	}
 

@@ -15,6 +15,11 @@
 			);
 		}
 
+		public override void SafeSetDefaults()
+		{
+			Item.value = Item.sellPrice(gold: 5);
+		}
+
 		public override void BuffEffects(Player Player, float multiplier)
 		{
 			Player.slime = true;

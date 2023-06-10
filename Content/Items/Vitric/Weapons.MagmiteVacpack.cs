@@ -22,7 +22,6 @@ namespace StarlightRiver.Content.Items.Vitric
 			Item.height = 20;
 
 			Item.rare = ItemRarityID.Orange;
-			Item.value = Item.sellPrice(gold: 4, silver: 75);
 
 			Item.damage = 28;
 			Item.DamageType = DamageClass.Summon;
@@ -37,6 +36,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			Item.noUseGraphic = true;
 			Item.channel = true;
+
+			Item.value = Item.sellPrice(gold: 2, silver: 75);
 		}
 
 		public override Vector2? HoldoutOffset()

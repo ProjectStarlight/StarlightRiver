@@ -7,6 +7,6 @@
 
 	public class IvySeeds : QuickMaterial
 	{
-		public IvySeeds() : base("Forest Ivy Seeds", "Can grow in hanging planters", 99, 0, 1, AssetDirectory.BrewingItem) { }
+		public IvySeeds() : base("Forest Ivy Seeds", "Can grow in hanging planters", 99, 20, 1, AssetDirectory.BrewingItem) { }
 	}
 }

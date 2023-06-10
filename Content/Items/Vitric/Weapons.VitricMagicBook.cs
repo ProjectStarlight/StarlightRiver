@@ -36,6 +36,8 @@ namespace StarlightRiver.Content.Items.Vitric
 			Item.noMelee = true;
 			Item.DamageType = DamageClass.Magic;
 			Item.mana = 15;
+
+			Item.value = Item.sellPrice(gold: 1);
 		}
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)

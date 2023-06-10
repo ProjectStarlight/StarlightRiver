@@ -13,6 +13,8 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SafeSetDefaults()
 		{
 			Item.rare = ItemRarityID.Orange;
+
+			Item.value = Item.sellPrice(gold: 1);
 		}
 
 		public override void SafeUpdateEquip(Player Player)

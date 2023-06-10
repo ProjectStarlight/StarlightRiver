@@ -36,6 +36,8 @@ namespace StarlightRiver.Content.Items.Vitric
 			Item.shoot = ModContent.ProjectileType<NeedlerProj>();
 			Item.shootSpeed = 14f;
 			Item.autoReuse = true;
+
+			Item.value = Item.sellPrice(gold: 2, silver: 75);
 		}
 
 		public override Vector2? HoldoutOffset()

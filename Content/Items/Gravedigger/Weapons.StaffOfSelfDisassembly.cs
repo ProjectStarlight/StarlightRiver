@@ -37,6 +37,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Item.buffType = ModContent.BuffType<FleshApparationBuff>();
 			Item.UseSound = SoundID.Item44;
 			Item.noMelee = true;
+
+			Item.value = Item.sellPrice(gold: 2);
 		}
 
 		public override bool CanUseItem(Player player)

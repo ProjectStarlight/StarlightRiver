@@ -22,6 +22,12 @@ namespace StarlightRiver.Content.Items.Food.Special
 			StarlightItem.OnPickupEvent += BonusHeal;
 		}
 
+		public override void SafeSetDefaults()
+		{
+			Item.value = Item.sellPrice(gold: 5);
+		}
+
+
 		private bool BonusHeal(Item Item, Player Player)
 		{
 			if (Active(Player))

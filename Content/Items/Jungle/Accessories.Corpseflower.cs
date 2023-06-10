@@ -1,4 +1,4 @@
-﻿using Mono.Cecil.Cil;
+﻿ using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems.InstancedBuffSystem;
@@ -40,6 +40,11 @@ namespace StarlightRiver.Content.Items.Jungle
 			Tooltip.SetDefault("All damage dealt is converted into damage over time\nDamage is initially decreased, but can interact with DoT-related accessories\nYou are unable to critically strike");
 
 			ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.NaturesGift;
+		}
+
+		public override void SafeSetDefaults()
+		{
+			Item.value = Item.sellPrice(silver: 54);
 		}
 
 		public override void AddRecipes()

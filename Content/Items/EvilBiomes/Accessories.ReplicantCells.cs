@@ -8,6 +8,11 @@ namespace StarlightRiver.Content.Items.EvilBiomes
 
 		public ReplicantCells() : base("Replicant Cells", "+15% Inoculation\nHealth regeneration starts slightly faster") { }
 
+		public override void SafeSetDefaults()
+		{
+			Item.value = Item.sellPrice(silver: 30);
+		}
+
 		public override void SafeUpdateEquip(Player Player)
 		{
 			Player.GetModPlayer<DoTResistancePlayer>().DoTResist += 0.15f;

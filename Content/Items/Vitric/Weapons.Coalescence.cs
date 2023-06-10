@@ -42,6 +42,8 @@ namespace StarlightRiver.Content.Items.Vitric
 			Item.mana = 40;
 
 			Item.useTurn = true;
+
+			Item.value = Item.sellPrice(gold: 2, silver: 75);
 		}
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)

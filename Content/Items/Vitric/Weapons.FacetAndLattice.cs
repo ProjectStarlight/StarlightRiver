@@ -40,6 +40,8 @@ namespace StarlightRiver.Content.Items.Vitric
 			Item.noMelee = true;
 			Item.noUseGraphic = true;
 			Item.UseSound = SoundID.DD2_MonkStaffSwing;
+
+			Item.value = Item.sellPrice(gold: 2, silver: 75);
 		}
 
 		public override void HoldItem(Player Player)

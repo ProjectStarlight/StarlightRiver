@@ -32,6 +32,8 @@ namespace StarlightRiver.Content.Items.Starwood
 			Item.shootSpeed = 15f;
 			Item.noMelee = true;
 			Item.autoReuse = true;
+
+			Item.value = Item.sellPrice(silver: 25);
 		}
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)

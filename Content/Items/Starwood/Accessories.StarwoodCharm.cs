@@ -13,6 +13,8 @@ namespace StarlightRiver.Content.Items.Starwood
 		{
 			Item.rare = ItemRarityID.Blue;
 			Item.Size = new Vector2(24, 28);
+
+			Item.value = Item.sellPrice(silver: 25);
 		}
 
 		public override void Load()

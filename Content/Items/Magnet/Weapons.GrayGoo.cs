@@ -73,6 +73,14 @@ namespace StarlightRiver.Content.Items.Magnet
 			proj.originalDamage = damage;
 			return false;
 		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ModContent.ItemType<ChargedMagnet>(), 6);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+		}
 	}
 
 	public class GrayGooProj : ModProjectile

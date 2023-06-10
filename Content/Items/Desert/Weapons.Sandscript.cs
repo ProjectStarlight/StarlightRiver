@@ -31,6 +31,8 @@ namespace StarlightRiver.Content.Items.Desert
 			Item.mana = 10;
 
 			Item.UseSound = SoundID.Item45;
+
+			Item.value = Item.sellPrice(silver: 50);
 		}
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)

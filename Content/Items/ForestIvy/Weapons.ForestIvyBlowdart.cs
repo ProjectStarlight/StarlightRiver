@@ -39,6 +39,8 @@ namespace StarlightRiver.Content.Items.ForestIvy
 							  // (btw 7 more than vanilla blowpipe)
 
 			// TODO: Value
+
+			Item.value = Item.sellPrice(silver: 75);
 		}
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)

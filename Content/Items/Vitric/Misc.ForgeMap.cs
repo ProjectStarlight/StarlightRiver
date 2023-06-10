@@ -31,6 +31,8 @@ namespace StarlightRiver.Content.Items.Vitric
 			Item.height = 32;
 
 			Item.maxStack = 1;
+
+			Item.value = Item.sellPrice(gold: 1);
 		}
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)

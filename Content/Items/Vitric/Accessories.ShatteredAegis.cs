@@ -27,6 +27,8 @@ namespace StarlightRiver.Content.Items.Vitric
 			Item.accessory = true;
 			Item.width = 32;
 			Item.height = 32;
+
+			Item.value = Item.sellPrice(gold: 2);
 		}
 
 		public override void SafeUpdateEquip(Player Player)

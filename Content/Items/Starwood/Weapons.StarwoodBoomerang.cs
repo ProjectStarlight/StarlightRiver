@@ -29,6 +29,8 @@ namespace StarlightRiver.Content.Items.Starwood
 			Item.shoot = ModContent.ProjectileType<StarwoodBoomerangProjectile>();
 			Item.useAnimation = 10;
 			Item.noMelee = true;
+
+			Item.value = Item.sellPrice(silver: 25);
 		}
 
 		public override bool CanUseItem(Player Player)

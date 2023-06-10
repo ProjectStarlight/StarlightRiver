@@ -33,6 +33,13 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 		}
 
+		public override void SetStaticDefaults()
+		{
+			Item.rare = ItemRarityID.Green;
+
+			Item.value = Item.sellPrice(silver: 25);
+		}
+
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();

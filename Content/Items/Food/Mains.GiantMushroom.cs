@@ -10,6 +10,8 @@ namespace StarlightRiver.Content.Items.Food
 		{
 			Item.value = 200;
 			Item.rare = ItemRarityID.Orange;
+
+			Item.value = Item.sellPrice(silver: 40);
 		}
 
 		public override void BuffEffects(Player Player, float multiplier)

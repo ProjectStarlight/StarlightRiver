@@ -19,6 +19,8 @@ namespace StarlightRiver.Content.Items.BarrierDye
 		public override void SetDefaults()
 		{
 			Item.rare = ItemRarityID.Orange;
+
+			Item.value = Item.sellPrice(silver: 15);
 		}
 
 		public override void LoseBarrierEffects(Player Player)
