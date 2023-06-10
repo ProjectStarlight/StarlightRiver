@@ -460,12 +460,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			if (arenaActor is null || !arenaActor.active)
 				arenaActor = Main.npc.FirstOrDefault(n => n.active && n.ModNPC is ArenaActor);
 
-			if (platforms is null || platforms.Count != 4 || platforms.Any(n => !n.active || n.ModNPC is IcePlatform))
+			if (platforms is null || platforms.Count != 4 || platforms.Any(n => !n.active || n.ModNPC is not IcePlatform))
 				RebuildPlatforms();
 
 			if (Phase >= (int)AIStates.FirstPhase)
 			{
-				if (tentacles is null || tentacles.Count != 4 || tentacles.Any(n => !n.active || n.ModNPC is Tentacle))
+				if (tentacles is null || tentacles.Count != 4 || tentacles.Any(n => !n.active || n.ModNPC is not Tentacle))
 					RebuildTentacles();
 			}
 
@@ -883,7 +883,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			tentacles.Sort((a, b) => a.ai[2] > b.ai[2] ? 1 : -1);
 
-			if (tentacles is null || tentacles.Count != 4 || tentacles.Any(n => !n.active || n.ModNPC is Tentacle))
+			if (tentacles is null || tentacles.Count != 4 || tentacles.Any(n => !n.active || n.ModNPC is not Tentacle))
 			{
 				NPC.active = false;
 				Mod.Logger.Error("Auroracle failed to rebuild tentacle collection, aborting!");

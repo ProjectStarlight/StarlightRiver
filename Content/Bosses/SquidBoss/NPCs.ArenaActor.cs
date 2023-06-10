@@ -229,7 +229,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		private void RegeneratePlatforms()
 		{
-			platforms.ForEach(n => n.active = false);
+			foreach (NPC npc in Main.npc.Where(n => n.active && (n.type == NPCType<IcePlatform>() || n.type == NPCType<IcePlatformSmall>() || n.type == NPCType<GoldPlatform>())))
+			{
+				npc.active = false;
+			}
+
 			platforms.Clear();
 
 			SpawnPlatform(-640, 200);

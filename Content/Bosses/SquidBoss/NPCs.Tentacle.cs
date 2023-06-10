@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public ref float Timer => ref NPC.ai[1];
 		public ref float Index => ref NPC.ai[2];
 
-		internal ArenaActor Arena => Parent.Arena;
+		internal ArenaActor Arena => Parent?.Arena;
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -322,8 +322,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
              * 0: state
              * 1: timer
              */
-			if (Parent == null || !Parent.NPC.active)
+			if (Parent == null || !Parent.NPC.active || Arena == null || !Arena.NPC.active)
+			{
 				NPC.active = false;
+				return;
+			}
 
 			if (hurtboxActor is null || !hurtboxActor.active)
 			{

@@ -222,6 +222,8 @@ namespace StarlightRiver.Content.NPCs.Starlight
 
 				StarlightEventSequenceSystem.sequence++;
 
+				NetMessage.SendData(MessageID.WorldData);
+
 				NPC.active = false;
 			}
 		}

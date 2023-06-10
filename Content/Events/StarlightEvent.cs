@@ -4,6 +4,7 @@ using StarlightRiver.Content.Bosses.VitricBoss;
 using StarlightRiver.Content.NPCs.Starlight;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
+using System.IO;
 using System.Linq;
 using Terraria.Graphics.Effects;
 using Terraria.ModLoader.IO;
@@ -42,6 +43,8 @@ namespace StarlightRiver.Content.Events
 				willOccur = false;
 				Main.NewText("A strange traveler has arrived...", new Color(150, 200, 255));
 				NPC.NewNPC(null, Main.spawnTileX * 16, sequence == 0 ? Main.spawnTileY * 16 - 240 : Main.spawnTileY * 16 - 120, ModContent.NPCType<Crow>());
+
+				NetMessage.SendData(Terraria.ID.MessageID.WorldData);
 			}
 
 			if (Active)
@@ -130,6 +133,20 @@ namespace StarlightRiver.Content.Events
 				Main.NewText("A strange traveler has arrived...", new Color(150, 200, 255));
 				NPC.NewNPC(null, Main.spawnTileX * 16, sequence == 0 ? Main.spawnTileY * 16 - 240 : Main.spawnTileY * 16 - 120, ModContent.NPCType<Crow>());
 			}
+		}
+
+		public override void NetSend(BinaryWriter writer)
+		{
+			writer.Write(occuring);
+			writer.Write(willOccur);
+			writer.Write(sequence);
+		}
+
+		public override void NetReceive(BinaryReader reader)
+		{
+			occuring = reader.ReadBoolean();
+			willOccur = reader.ReadBoolean();
+			sequence = reader.ReadInt32();
 		}
 	}
 

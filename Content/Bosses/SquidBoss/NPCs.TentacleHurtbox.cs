@@ -31,7 +31,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public override void AI()
 		{
 			if (tentacle is null || !tentacle.NPC.active)
+			{
 				NPC.active = false;
+				return;
+			}
 
 			NPC.lifeMax = tentacle.NPC.lifeMax;
 			NPC.life = tentacle.NPC.life;

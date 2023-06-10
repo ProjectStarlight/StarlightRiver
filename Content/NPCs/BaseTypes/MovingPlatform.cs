@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using Terraria.GameContent.Bestiary;
 
 namespace StarlightRiver.Content.NPCs.BaseTypes
@@ -36,10 +35,6 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 			DisplayName.SetDefault("");
 		}
 
-		public virtual void SafeSendExtraAI() { }
-
-		public virtual void SafeReceiveExtraAI() { }
-
 		public sealed override void SetDefaults()
 		{
 			SafeSetDefaults();
@@ -62,16 +57,6 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
 		{
 			database.Entries.Remove(bestiaryEntry);
-		}
-
-		public override sealed void SendExtraAI(BinaryWriter writer)
-		{
-			SafeSendExtraAI();
-		}
-
-		public override sealed void ReceiveExtraAI(BinaryReader reader)
-		{
-			SafeReceiveExtraAI();
 		}
 
 		public sealed override void AI()
