@@ -156,7 +156,7 @@ namespace StarlightRiver.Content.Tiles.Herbology.Crops
 			}
 		}
 
-		public virtual int GrowthPercentChance(int i, int j)
+		public virtual int GrowthPercentChance(int i, int j)//unsure why this is based on height
 		{
 			return 100 / Height;
 		}
