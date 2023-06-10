@@ -1,9 +1,11 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.Packets;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
@@ -132,6 +134,12 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 			var entity = (TouchstoneTileEntity)TileEntity.ByID[index];
 
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				var packet = new SpawnNPC(Main.myPlayer, i * 16, j * 16, ModContent.NPCType<TouchstoneWisp>());
+				packet.Send(-1, -1, false);
+			}
+
 			int NPCIndex = NPC.NewNPC(new EntitySource_TileInteraction(null, i, j), i * 16, j * 16, ModContent.NPCType<TouchstoneWisp>());
 			(Main.npc[NPCIndex].ModNPC as TouchstoneWisp).targetPos = entity.targetPoint;
 			(Main.npc[NPCIndex].ModNPC as TouchstoneWisp).owner = Main.LocalPlayer;
@@ -175,6 +183,16 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 		{
 			targetPoint = tag.Get<Vector2>("Point");
 		}
+
+		public override void NetSend(BinaryWriter writer)
+		{
+			writer.WriteVector2(targetPoint);
+		}
+
+		public override void NetReceive(BinaryReader reader)
+		{
+			targetPoint = reader.ReadVector2();
+		}
 	}
 
 	[SLRDebug]
@@ -216,12 +234,15 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 		public override void AI()
 		{
+			if (NPC.ai[1] == 0)
+				NPC.netUpdate = true;
+
 			foreach (Player player in Main.player.Where(n => Vector2.Distance(n.Center, NPC.Center) < 1000))
 			{
 				player.AddBuff(ModContent.BuffType<TouchstoneWispBuff>(), 60);
 			}
 
-			if (owner != Main.LocalPlayer)
+			if (targetPos == Vector2.Zero)
 				return;
 
 			NPC.ai[1] += 0.1f;
@@ -380,6 +401,16 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
 			trail?.Render(effect);
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.WriteVector2(targetPos);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			targetPos = reader.ReadVector2();
 		}
 	}
 
