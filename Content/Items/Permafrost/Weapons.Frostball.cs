@@ -1,6 +1,5 @@
 ﻿using StarlightRiver.Content.Tiles.Permafrost;
 using System;
-using Terraria;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Permafrost

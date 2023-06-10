@@ -1,13 +1,6 @@
-﻿using StarlightRiver.Content.Bosses.GlassMiniboss;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Dusts;
-using StarlightRiver.Content.Items.Vitric;
-using System;
+﻿using StarlightRiver.Content.Abilities;
 using System.IO;
-using System.Linq;
-using Terraria;
 using Terraria.Audio;
-using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -31,7 +24,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override void SetDefaults()
 		{
-            base.SetDefaults();
+			base.SetDefaults();
 			NPC.catchItem = ItemType<CoolmiteItem>();
 			NPC.HitSound = SoundID.Item27;
 		}
@@ -47,10 +40,10 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
-            base.SendExtraAI(writer);
+			base.SendExtraAI(writer);
 			writer.Write(melting);
 			writer.Write(meltingTimer);
-        }
+		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
@@ -61,7 +54,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override bool PreAI()
 		{
-            bool runAI = base.PreAI();
+			bool runAI = base.PreAI();
 
 			Vector2? lavaPos = FindLava(); // make coolmite target lava if nearby so it can melt back down to a magmite
 
@@ -72,7 +65,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			else
 				targetX = null;
 
-            return runAI;
+			return runAI;
 		}
 
 		public override void PostAI()
@@ -84,31 +77,31 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			if (tile.LiquidAmount > 0 && tile.LiquidType == LiquidID.Lava)
 			{
 				melting = true;
-            }
+			}
 
-            if (melting)
-            {
-                meltingTimer++;
+			if (melting)
+			{
+				meltingTimer++;
 
-                if (meltingTimer % 4 == 0)
-                    Gore.NewGoreDirect(NPC.GetSource_FromAI(), NPC.Center, (Vector2.UnitY * -3).RotatedByRandom(0.2f), Mod.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(0.5f, 0.8f));
-            }
+				if (meltingTimer % 4 == 0)
+					Gore.NewGoreDirect(NPC.GetSource_FromAI(), NPC.Center, (Vector2.UnitY * -3).RotatedByRandom(0.2f), Mod.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(0.5f, 0.8f));
+			}
 
-            if (meltingTimer > 120)
-            {
-                NPC.active = false;
-                NPC magmite = NPC.NewNPCDirect(NPC.GetSource_FromThis(), (int)NPC.position.X, (int)NPC.position.Y, NPCType<MagmitePassive>(), 0, NPC.ai[0], NPC.ai[1], NPC.ai[2], NPC.ai[3], NPC.target);
-                magmite.frame = NPC.frame;
-                magmite.velocity = NPC.velocity;
-                magmite.velocity.Y = -10;
+			if (meltingTimer > 120)
+			{
+				NPC.active = false;
+				NPC magmite = NPC.NewNPCDirect(NPC.GetSource_FromThis(), (int)NPC.position.X, (int)NPC.position.Y, NPCType<MagmitePassive>(), 0, NPC.ai[0], NPC.ai[1], NPC.ai[2], NPC.ai[3], NPC.target);
+				magmite.frame = NPC.frame;
+				magmite.velocity = NPC.velocity;
+				magmite.velocity.Y = -10;
 
-                SoundEngine.PlaySound(SoundID.Item176);
+				SoundEngine.PlaySound(SoundID.Item176);
 
-                for (int k = 0; k < 20; k++)
-                    Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.Center, (Vector2.UnitY * Main.rand.NextFloat(-8, -1)).RotatedByRandom(0.5f), Mod.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(0.5f, 0.8f));
+				for (int k = 0; k < 20; k++)
+					Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.Center, (Vector2.UnitY * Main.rand.NextFloat(-8, -1)).RotatedByRandom(0.5f), Mod.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(0.5f, 0.8f));
 
-                for (int k = 0; k < 20; k++)
-                    Dust.NewDustDirect(NPC.Center, 16, 16, DustID.Torch, 0, 0, 0, default, 1.5f).velocity *= 3f;
+				for (int k = 0; k < 20; k++)
+					Dust.NewDustDirect(NPC.Center, 16, 16, DustID.Torch, 0, 0, 0, default, 1.5f).velocity *= 3f;
 			}
 
 			NPC.shimmerTransparency = MeltingTransparency;

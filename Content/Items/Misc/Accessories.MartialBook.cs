@@ -1,5 +1,4 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
 using System.Collections.Generic;
 using Terraria.ID;
 

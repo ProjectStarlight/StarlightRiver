@@ -1,7 +1,4 @@
-﻿using Terraria.DataStructures;
-using static Terraria.ModLoader.ModContent;
-
-namespace StarlightRiver.Content.Tiles.Trophies
+﻿namespace StarlightRiver.Content.Tiles.Trophies
 {
 	class CeirosTrophy : ModTile
 	{

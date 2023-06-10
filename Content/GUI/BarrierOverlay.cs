@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.GUI
 				for (int k = 0; k <= fullHeartsToDraw; k++)
 				{
 					Vector2 pos = Vector2.Zero;
-					
+
 					if (Main.ResourceSetsManager.ActiveSetKeyName == "HorizontalBars" || Main.ResourceSetsManager.ActiveSetKeyName == "HorizontalBarsWithText" || Main.ResourceSetsManager.ActiveSetKeyName == "HorizontalBarsWithFullText")
 					{
 						float yOffset = 24f;

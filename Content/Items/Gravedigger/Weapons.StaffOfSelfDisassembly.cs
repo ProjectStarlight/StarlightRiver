@@ -1,7 +1,6 @@
 ﻿using StarlightRiver.Content.Buffs;
 using System;
 using System.Linq;
-using Terraria;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Gravedigger

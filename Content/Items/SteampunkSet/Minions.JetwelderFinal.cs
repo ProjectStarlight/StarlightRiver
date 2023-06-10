@@ -2,7 +2,6 @@
 using StarlightRiver.Content.Items.Misc;
 using System;
 using System.Linq;
-using Terraria;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.SteampunkSet

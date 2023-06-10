@@ -1,6 +1,6 @@
-﻿using StarlightRiver.Core.Systems.BarrierSystem;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Core.Systems.BarrierSystem;
 using StarlightRiver.Helpers;
-using StarlightRiver.Content.Abilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

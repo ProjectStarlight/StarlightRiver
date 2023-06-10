@@ -3,7 +3,6 @@ using StarlightRiver.Content.Tiles.UndergroundTemple;
 using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
-using Terraria.GameContent;
 using Terraria.GameContent.ObjectInteractions;
 using Terraria.ID;
 

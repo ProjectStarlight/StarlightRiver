@@ -1,7 +1,4 @@
-﻿using Terraria.DataStructures;
-using static Terraria.ModLoader.ModContent;
-
-namespace StarlightRiver.Content.Tiles.Paintings
+﻿namespace StarlightRiver.Content.Tiles.Paintings
 {
 	class EggCodexPainting : ModTile
 	{

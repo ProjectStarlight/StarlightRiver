@@ -2,7 +2,6 @@ using StarlightRiver.Content.Buffs.Summon;
 using StarlightRiver.Content.Tiles.Palestone;
 using System;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -56,7 +55,7 @@ namespace StarlightRiver.Content.Items.Palestone
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();
-				
+
 			recipe.AddIngredient(ItemID.SilverBar, 12);
 			recipe.AddIngredient<PalestoneItem>(25);
 			recipe.AddTile(TileID.Anvils);
@@ -316,7 +315,7 @@ namespace StarlightRiver.Content.Items.Palestone
 					Projectile.velocity = (Projectile.velocity * (45f - 1) + toIdlePos) / 45f;
 
 					if (Vector2.Distance(Projectile.Center, idlePos) < 50f)
-					{ 
+					{
 						AttackState = Walking;
 						Projectile.velocity *= 0.25f;
 					}

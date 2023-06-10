@@ -1,8 +1,5 @@
-﻿using StarlightRiver.Core;
-using StarlightRiver.Core.Systems.BarrierSystem;
-using Terraria;
+﻿using StarlightRiver.Core.Systems.BarrierSystem;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Food
 {

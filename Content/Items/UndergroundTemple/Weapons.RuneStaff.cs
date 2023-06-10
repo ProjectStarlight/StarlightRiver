@@ -1,8 +1,6 @@
 ﻿using StarlightRiver.Content.Archaeology;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -98,7 +96,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 				Projectile.Kill();
 				return;
 			}
-				
+
 
 			if ((!Owner.channel || Owner.statMana <= 15) && !shooting && Lifetime >= 30)
 			{
@@ -176,7 +174,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 					Helpers.Helper.PlayPitched("Effects/BleepLouder", 1.25f, MathHelper.Lerp(0.75f, 2.5f, TreasureLerp), starPos);
 					PingTimer = 0;
 					playedSound = false;
-				}			
+				}
 			}
 
 			if (Lifetime % 60 == 0)
@@ -184,7 +182,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 				Owner.CheckMana(1, true);
 				Owner.manaRegenDelay += 120;
 			}
-			
+
 			if (Main.rand.NextBool((int)MathHelper.Lerp(20, 2, TreasureLerp)))
 				Dust.NewDustPerfect(starPos, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(5f, 5f), 0, new Color(175, 155, 25), 0.5f);
 		}
@@ -194,7 +192,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			float[] closestDistances = new float[4];
 
 			var artifacts = new List<Artifact>();
-			
+
 			foreach (KeyValuePair<int, TileEntity> item in TileEntity.ByID)
 			{
 				if (item.Value is Artifact artifact)
@@ -333,7 +331,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			Main.spriteBatch.Draw(starTex, starPos - Main.screenPosition, null, new Color(150, 150, 10, 0) * fade, starRot, starTex.Size() / 2f, 0.3f, 0f, 0f);
 
 			Main.spriteBatch.Draw(starTex, starPos - Main.screenPosition, null, new Color(255, 255, 255, 0) * fade, starRot, starTex.Size() / 2f, 0.2f, 0, 0);
-			
+
 			Main.spriteBatch.Draw(bloomTex, starPos - Main.screenPosition, null, new Color(255, 255, 255, 0) * 0.5f * fade, 0f, bloomTex.Size() / 2f, 0.55f, 0, 0);
 
 			return false;
@@ -391,7 +389,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 			Projectile.rotation += Utils.Clamp(Projectile.velocity.Length() * 0.05f, 0.01f, 0.2f);
 
-			
+
 			if (Main.rand.NextBool(10))
 				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Vector2.Zero, 0, new Color(175, 155, 25), 0.45f);
 		}

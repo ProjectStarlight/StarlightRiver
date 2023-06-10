@@ -1,5 +1,5 @@
-﻿using StarlightRiver.Core.Systems.CameraSystem;
-using StarlightRiver.Content.Abilities;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using System.Linq;
 using Terraria.ID;

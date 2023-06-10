@@ -1,11 +1,3 @@
-using StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Core.Systems.DummyTileSystem;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Terraria.ID;
-
 namespace StarlightRiver.Content.Tiles.Underground
 {
 	class EvasionShrineBiome : ModBiome

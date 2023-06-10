@@ -178,7 +178,7 @@ namespace StarlightRiver.Content.CustomHooks
 					oldScreen = Main.screenPosition;
 					oldItemLocation = player.itemLocation;
 					int oldHeldProj = player.heldProj;
-					
+
 					//temp change Player's actual position to lock into their frame
 					positionOffset = getPositionOffset(i);
 					player.position = positionOffset;

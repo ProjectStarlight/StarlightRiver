@@ -1,6 +1,6 @@
-﻿using StarlightRiver.Content.Foregrounds;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Foregrounds;
 using StarlightRiver.Content.Items.EvilBiomes;
-using StarlightRiver.Content.Abilities;
 using System;
 using Terraria.Audio;
 using Terraria.DataStructures;

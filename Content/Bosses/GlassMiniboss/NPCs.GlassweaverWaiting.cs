@@ -178,7 +178,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		{
 			return Main.rand.Next(3) switch
 			{
-				0 => "\"Seems like you got some of that ceramic dust on you... oh dont worry, it probably dosent cause lung cancer. Anyways thanks for taking care of that sentinel! I'll get my things ready to move in...\"",
+				0 => "\"Seems like you got some of that ceramic dust on you... oh dont worry, it probably doesn't cause lung cancer. Anyways thanks for taking care of that sentinel! I'll get my things ready to move in...\"",
 				1 => "\"Wow, I wasn't sure you could handle that! Erm, I mean, I totally believed in you the whole time. Totally didnt have money on the sentinel. Anyways, I'll be moving in soon.\"",
 				2 => "\"Dont worry about the burn marks, they'll buff out. Thanks for clearing out that sentinel for me, I'll be moving in soon, so dont go poking through my stuff.\"",
 				_ => "This text should never be seen! Please report to https://github.com/ProjectStarlight/StarlightRiver/issues",
@@ -249,7 +249,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					if (TextState == -1)
 					{
 						RichTextBox.ClearButtons();
-						
+
 						(Main.LocalPlayer.QuickSpawnItemDirect(NPC.GetSource_FromThis(), ItemType<ForgeMap>()).ModItem as ForgeMap).isEpic = true;
 						State = 4;
 
@@ -343,7 +343,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			return "";
 		}
 
-		public void DoNormalWinDialogue() {
+		public void DoNormalWinDialogue()
+		{
 			if (TextState == 1 && Main.rand.NextFloat() < 0.01f)
 				TextState = -1;
 			else

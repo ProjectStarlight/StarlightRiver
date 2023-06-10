@@ -1,7 +1,4 @@
-using StarlightRiver.Content.Items.Jungle;
-using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Core.Systems.ChestLootSystem;
-using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Paintings
 {

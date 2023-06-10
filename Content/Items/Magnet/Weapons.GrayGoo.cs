@@ -3,7 +3,6 @@ using StarlightRiver.Content.Dusts;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;

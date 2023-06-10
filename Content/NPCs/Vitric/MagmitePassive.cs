@@ -1,7 +1,6 @@
-﻿using System;
+﻿using StarlightRiver.Content.Abilities;
+using System;
 using System.IO;
-using StarlightRiver.Content.Abilities;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
@@ -181,7 +180,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				ActionState = 0;
 				ActionTimer = 0;
 				NPC.position.Y -= 16;
-					NPC.position.X += 26 * NPC.direction;
+				NPC.position.X += 26 * NPC.direction;
 			}
 		}
 
@@ -202,7 +201,8 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			}
 		}
 
-		public override void FindFrame(int frameHeight) {
+		public override void FindFrame(int frameHeight)
+		{
 			if (NPC.IsABestiaryIconDummy)
 			{
 				frameCounter++;

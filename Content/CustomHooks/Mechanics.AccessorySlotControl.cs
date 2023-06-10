@@ -1,6 +1,3 @@
-using StarlightRiver.Content.Items.BaseTypes;
-using Terraria.UI;
-
 namespace StarlightRiver.Content.CustomHooks
 {
 	//GETTING RID OF CURSED LOGIC FOR RELEASE

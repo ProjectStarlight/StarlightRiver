@@ -1,6 +1,5 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using Terraria.ID;
-using static Terraria.ModLoader.PlayerDrawLayer;
 
 namespace StarlightRiver.Content.Items.Starwood
 {

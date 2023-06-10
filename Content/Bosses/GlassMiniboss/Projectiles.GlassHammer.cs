@@ -2,7 +2,6 @@ using ReLogic.Content;
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.DataStructures;
 using static Terraria.ModLoader.ModContent;
 
