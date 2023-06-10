@@ -246,7 +246,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void Kill(int timeLeft)
 		{
-			Helper.PlayPitched("GlassMiniboss/GlassSmash", 0.5f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
+			Helper.PlayPitched("GlassMiniboss/GlassSmash", 0.3f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
 
 			for (int i = 1; i < 5; i++)
 			{
