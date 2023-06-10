@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void Update()
 		{
-			if (Main.rand.NextBool(4) && CutawayHandler.forgeOverlay.fadeTime < 1)
+			if (Main.rand.NextBool(4) && CutawayHandler.forgeOverlay?.fadeTime < 1)
 			{
 				Vector2 pos = Projectile.position - new Vector2(567, 400);
 
@@ -72,7 +72,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			LightingBufferRenderer.DrawWithLighting(pos, backdrop, frame);
 			Main.spriteBatch.Draw(backdropGlow, pos, frame, Color.White);
 
-			float fade = 1 - CutawayHandler.forgeOverlay.fadeTime;
+			float fade = 1 - CutawayHandler.forgeOverlay?.fadeTime ?? 0;
 
 			float pulse0 = (float)Math.Sin(Main.GameUpdateCount * 0.14f) + (float)Math.Cos(Main.GameUpdateCount * 0.017f);
 			Lighting.AddLight(pos + Main.screenPosition + new Vector2(965, 350), new Vector3(1, 0.8f, 0.4f) * (1.2f + pulse0 * 0.1f) * fade);

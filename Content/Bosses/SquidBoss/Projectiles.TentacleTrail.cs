@@ -30,10 +30,19 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void AI()
 		{
+			if (parent?.NPC is null)
+			{
+				Projectile.active = false;
+				return;
+			}
+
 			Projectile.Center = parent.NPC.Center;
 
-			ManageCaches();
-			ManageTrail();
+			if (!Main.dedServ)
+			{
+				ManageCaches();
+				ManageTrail();
+			}
 		}
 
 		protected void ManageCaches()

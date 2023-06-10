@@ -180,11 +180,6 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 		{
 			num = fail ? 1 : 3;
 		}
-
-		public override void KillMultiTile(int i, int j, int frameX, int frameY)
-		{
-			Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, Mod.Find<ModItem>(name).Type);
-		}
 	}
 
 	//Bathtub
@@ -542,13 +537,8 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 		{
 			Player Player = Main.LocalPlayer;
 			Player.noThrow = 2;
-			Player.cursorItemIconEnabled = true;
-			Player.cursorItemIconID = Mod.Find<ModItem>(name.Replace("Closed", "")).Type;
-		}
-
-		public override void KillMultiTile(int i, int j, int frameX, int frameY)
-		{
-			Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, Mod.Find<ModItem>(name.Replace("Closed", "")).Type);
+			//Player.cursorItemIconEnabled = true;
+			//Player.cursorItemIconID = Mod.Find<ModItem>(name.Replace("Closed", "")).Type;
 		}
 	}
 
@@ -615,13 +605,8 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 		{
 			Player Player = Main.LocalPlayer;
 			Player.noThrow = 2;
-			Player.cursorItemIconEnabled = true;
-			Player.cursorItemIconID = Mod.Find<ModItem>(name.Replace("Open", "")).Type;
-		}
-
-		public override void KillMultiTile(int i, int j, int frameX, int frameY)
-		{
-			Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, Mod.Find<ModItem>(name.Replace("Open", "")).Type);
+			//Player.cursorItemIconEnabled = true;
+			//Player.cursorItemIconID = Mod.Find<ModItem>(name.Replace("Open", "")).Type;
 		}
 	}
 

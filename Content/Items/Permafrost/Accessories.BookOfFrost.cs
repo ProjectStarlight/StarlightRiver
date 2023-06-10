@@ -10,6 +10,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 {
 	public class BookOfFrost : SmartAccessory
 	{
+		public int cooldown;
+
 		public override string Texture => AssetDirectory.PermafrostItem + Name;
 
 		public BookOfFrost() : base("Book Of Frost", "Melee critical strikes cause an icy explosion") { }
@@ -26,14 +28,10 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Item.value = Item.sellPrice(gold: 1, silver: 25);
 		}
 
-		public override void AddRecipes()
+		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			Recipe recipe = CreateRecipe();
-			recipe.AddIngredient(ItemID.Book);
-			recipe.AddIngredient(ItemID.IceBlock, 20);
-			recipe.AddIngredient<AuroraIceBar>(5);
-			recipe.AddTile(TileID.Anvils);
-			recipe.Register();
+			if (cooldown > 0)
+				cooldown--;
 		}
 
 		private void ProjectileCritExplosion(Player player, Projectile proj, NPC target, NPC.HitInfo info, int damageDone)
@@ -41,10 +39,13 @@ namespace StarlightRiver.Content.Items.Permafrost
 			if (!Equipped(player))
 				return;
 
-			if (proj.CountsAsClass(DamageClass.Melee) && info.Crit)
+			var instance = GetEquippedInstance(player) as BookOfFrost;
+
+			if (proj.CountsAsClass(DamageClass.Melee) && info.Crit && instance.cooldown <= 0)
 			{
 				Helper.PlayPitched("Magic/FrostHit", 0.75f, Main.rand.NextFloat(-0.05f, 0.05f), target.Center);
-				Projectile.NewProjectile(player.GetSource_OnHit(target), target.Center, Vector2.Zero, ModContent.ProjectileType<FrostExplosion>(), (int)(damageDone * 1.25f), info.Knockback * 0.25f, player.whoAmI);
+				Projectile.NewProjectile(player.GetSource_OnHit(target), target.Center, Vector2.Zero, ModContent.ProjectileType<FrostExplosion>(), (int)(damageDone * 0.75f), info.Knockback * 0.25f, player.whoAmI);
+				instance.cooldown = 60;
 			}
 		}
 
@@ -53,11 +54,24 @@ namespace StarlightRiver.Content.Items.Permafrost
 			if (!Equipped(player))
 				return;
 
-			if (Item.CountsAsClass(DamageClass.Melee) && info.Crit)
+			var instance = GetEquippedInstance(player) as BookOfFrost;
+
+			if (Item.CountsAsClass(DamageClass.Melee) && info.Crit && instance.cooldown <= 0)
 			{
 				Helper.PlayPitched("Magic/FrostHit", 0.75f, Main.rand.NextFloat(-0.05f, 0.05f), target.Center);
-				Projectile.NewProjectile(player.GetSource_OnHit(target), target.Center, Vector2.Zero, ModContent.ProjectileType<FrostExplosion>(), (int)(damageDone * 1.25f), info.Knockback * 0.25f, player.whoAmI);
+				Projectile.NewProjectile(player.GetSource_OnHit(target), target.Center, Vector2.Zero, ModContent.ProjectileType<FrostExplosion>(), (int)(damageDone * 0.75f), info.Knockback * 0.25f, player.whoAmI);
+				instance.cooldown = 60;
 			}
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.Book);
+			recipe.AddIngredient(ItemID.IceBlock, 20);
+			recipe.AddIngredient<AuroraIceBar>(5);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 

@@ -40,4 +40,19 @@ namespace StarlightRiver.Content.Tiles.Forest
 			}
 		}
 	}
+
+	public class LeafWallItem : QuickWallItem
+	{
+		public override string Texture => AssetDirectory.ForestTile + Name;
+
+		public LeafWallItem() : base("Flowing leaf wall", "", WallType<LeafWall>(), 0) { }
+
+		public override void AddRecipes()
+		{
+			var recipe = Recipe.Create(Type, 50);
+			recipe.AddIngredient(ItemID.GrassWall, 50);
+			recipe.AddTile(TileID.WorkBenches);
+			recipe.Register();
+		}
+	}
 }

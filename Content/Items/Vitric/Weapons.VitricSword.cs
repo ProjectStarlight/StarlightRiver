@@ -68,6 +68,15 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			return true;
 		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ModContent.ItemType<SandstoneChunk>(), 8);
+			recipe.AddIngredient(ModContent.ItemType<VitricOre>(), 12);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+		}
 	}
 
 	internal class VitricSwordProjectile : ModProjectile

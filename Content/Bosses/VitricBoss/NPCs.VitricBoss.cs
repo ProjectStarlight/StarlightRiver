@@ -11,7 +11,6 @@ using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.Utilities;
 using static Terraria.ModLoader.ModContent;
 
@@ -65,8 +64,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		private float prevPhase = 0;
 		private float prevAttackPhase = 0;
 
-		private static LocalizedText DropConditionText { get; set; }
-
 		public override string Texture => AssetDirectory.VitricBoss + Name;
 
 		#region tml hooks
@@ -96,9 +93,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			};
 			NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
-
-			DropConditionText = this.GetLocalization("FirstKillRule");
-			DropConditionText.SetDefault("Dropped on first kill");
 		}
 
 		public override void Load()
@@ -124,6 +118,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			NPC.noTileCollide = true;
 			NPC.dontTakeDamageFromHostiles = true;
 			NPC.behindTiles = true;
+			NPC.npcSlots = 10;
 
 			NPC.HitSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/VitricBoss/ceramicimpact");
 
@@ -346,7 +341,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			npcLoot.Add(rule); // add the chain to the loot table
 
 			npcLoot.Add(ItemDropRule.Common(ItemType<MagmaCore>(), 1, 3, 5));
-			npcLoot.Add(ItemDropRule.ByCondition(new SimpleItemDropRuleCondition(DropConditionText, () => !StarlightWorld.HasFlag(WorldFlags.VitricBossDowned), ShowItemDropInUI.WhenConditionSatisfied), ItemType<StaminaUp>()));
+			npcLoot.Add(ItemDropRule.Common(ItemType<StaminaUp>(), 3, 1, 1));
 
 			npcLoot.Add(ItemDropRule.Common(ItemType<Items.BarrierDye.VitricBossBarrierDye>(), 10, 1, 1));
 			npcLoot.Add(ItemDropRule.Common(ItemType<Tiles.Trophies.CeirosTrophyItem>(), 10, 1, 1));

@@ -9,7 +9,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.UndergroundTemple
 {
-	class JarTall : DummyTile
+	class JarTall : DummyTile, IHintable
 	{
 		public override int DummyType => ProjectileType<JarDummy>();
 
@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 
 		public override void SetStaticDefaults()
 		{
-			this.QuickSetFurniture(2, 4, DustType<Dusts.Stamina>(), SoundID.Shatter, false, new Color(91, 211, 233), false, false, "Stamina Jar");
+			this.QuickSetFurniture(2, 4, DustID.Glass, SoundID.Shatter, false, new Color(91, 211, 233), false, false, "Stamina Jar");
 			MinPick = int.MaxValue;
 			TileID.Sets.PreventsTileRemovalIfOnTopOfIt[Type] = true;
 		}
@@ -38,19 +38,6 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 		public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
 		{
 			Lighting.AddLight(new Vector2(i, j) * 16, new Vector3(0.9f, 2.1f, 2.3f) * 0.3f);
-
-			if (Main.rand.NextBool(15))
-			{
-				if (Main.rand.NextBool(4))
-				{
-					var d = Dust.NewDustPerfect(new Vector2(i + Main.rand.NextFloat(), j + Main.rand.NextFloat()) * 16, DustType<Dusts.Aurora>(), new Vector2(0, -Main.rand.NextFloat()), 0, new Color(91, 211, 233), 1);
-					d.customData = Main.rand.NextFloat(0.7f, 1.1f);
-				}
-				else
-				{
-					var d = Dust.NewDustPerfect(new Vector2(i + Main.rand.NextFloat(), j + Main.rand.NextFloat()) * 16, DustType<Dusts.Cinder>(), new Vector2(0, -Main.rand.NextFloat()), 0, new Color(91, 151, 233), 1);
-				}
-			}
 		}
 
 		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
@@ -81,11 +68,35 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 		{
 			return false;
 		}
+
+		public string GetHint()
+		{
+			return "A huge vial of pure starlight -- It's reinforced the glass itself over the centuries. Maybe a powerful starlight force could shatter it.";
+		}
 	}
 
 	internal class JarDummy : Dummy, IDrawAdditive
 	{
-		public JarDummy() : base(TileType<JarTall>(), 32, 32) { }
+		public JarDummy() : base(TileType<JarTall>(), 32, 64) { }
+
+		public override void Update()
+		{
+			if (Main.rand.NextBool(15))
+			{
+				Vector2 pos = Projectile.position + new Vector2(Main.rand.Next(Projectile.width), Main.rand.Next(Projectile.height));
+				pos += Vector2.UnitY * 8;
+
+				if (Main.rand.NextBool(4))
+				{
+					var d = Dust.NewDustPerfect(pos, DustType<Dusts.Aurora>(), new Vector2(0, -Main.rand.NextFloat()), 0, new Color(91, 211, 233), 1);
+					d.customData = Main.rand.NextFloat(0.7f, 1.1f);
+				}
+				else
+				{
+					Dust.NewDustPerfect(pos, DustType<Dusts.Cinder>(), new Vector2(0, -Main.rand.NextFloat()), 0, new Color(91, 151, 233), 1);
+				}
+			}
+		}
 
 		public override void Collision(Player Player)
 		{

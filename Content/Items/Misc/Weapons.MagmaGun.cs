@@ -371,7 +371,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			foreach (NPC target in Main.npc)
 			{
-				if (target.townNPC || !target.active)
+				if (target.townNPC || !target.active || target.dontTakeDamage || target.immortal)
 					continue;
 
 				foreach (MagmaGlob glob in Globs)
