@@ -274,7 +274,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 					if (Projectile.soundDelay == 0)
 					{
-						Helper.PlayPitched("Magic/RecursiveFocusLaserLoopingAlt", 0.7f + MathHelper.Lerp(0, 0.6f, timeSpentOnTarget / 720f), Main.rand.NextFloat(-0.05f, 0.05f), Projectile.Center);
+						Helper.PlayPitched("Magic/RecursiveFocusLaserLoopingAlt", 0.4f + MathHelper.Lerp(0, 0.6f, timeSpentOnTarget / 720f), Main.rand.NextFloat(-0.05f, 0.05f), Projectile.Center);
 						Projectile.soundDelay = 30;
 					}
 				}
@@ -440,11 +440,11 @@ namespace StarlightRiver.Content.Items.Vitric
 				Dust.NewDustPerfect(Projectile.Center - angle.ToRotationVector2() * (25f - MathHelper.Lerp(0, 20, 1 - modeSwitchTransitionTimer / 120f)), ModContent.DustType<Dusts.Glow>(), angle.ToRotationVector2() * 0.65f, 0, new Color(255, 195, 135), 0.2f);
 
 			if (modeSwitchTransitionTimer == 45)
-				Helper.PlayPitched("Magic/FireCast", 0.8f, 0, Projectile.Center);
+				Helper.PlayPitched("Magic/FireCast", 0.4f, 0, Projectile.Center);
 
 			if (modeSwitchTransitionTimer <= 0)
 			{
-				Helper.PlayPitched("Magic/FireHit", 0.8f, 0, Projectile.Center);
+				Helper.PlayPitched("Magic/FireHit", 0.4f, 0, Projectile.Center);
 
 				if (!Main.dedServ)
 				{
@@ -542,7 +542,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			if (timeSpentOnTarget == 240)
 			{
-				Helper.PlayPitched("Magic/FireHit", 0.5f, 0, Projectile.Center);
+				Helper.PlayPitched("Magic/FireHit", 0.5f, 0.1f, Projectile.Center);
 				flashing = true;
 
 				if (!Main.dedServ)
@@ -567,7 +567,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 			else if (timeSpentOnTarget == 480)
 			{
-				Helper.PlayPitched("Magic/FireHit", 0.75f, 0, Projectile.Center);
+				Helper.PlayPitched("Magic/FireHit", 0.6f, 0.2f, Projectile.Center);
 				flashing = true;
 
 				if (!Main.dedServ)
@@ -592,7 +592,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 			else if (timeSpentOnTarget == 719)
 			{
-				Helper.PlayPitched("Magic/FireHit", 1f, 0, Projectile.Center);
+				Helper.PlayPitched("Magic/FireHit", 0.7f, 0.3f, Projectile.Center);
 				flashing = true;
 
 				if (!Main.dedServ)
@@ -638,11 +638,11 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 
 			if (timeSpentOnTarget == 165)
-				Helper.PlayPitched("GlassMiniboss/GlassExplode", 0.75f, 0, Projectile.Center);
+				Helper.PlayPitched("GlassMiniboss/GlassExplode", 0.7f, 0, Projectile.Center);
 			else if (timeSpentOnTarget == 405)
-				Helper.PlayPitched("GlassMiniboss/GlassExplode", 1f, 0, Projectile.Center);
+				Helper.PlayPitched("GlassMiniboss/GlassExplode", 0.7f, 0.1f, Projectile.Center);
 			else if (timeSpentOnTarget == 645)
-				Helper.PlayPitched("GlassMiniboss/GlassExplode", 1.25f, 0, Projectile.Center);
+				Helper.PlayPitched("GlassMiniboss/GlassExplode", 0.7f, 0.2f, Projectile.Center);
 		}
 
 		public void UpdateMultiMode()

@@ -433,7 +433,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 		public override void AI()
 		{
 			if (Projectile.timeLeft == 70)
-				Helpers.Helper.PlayPitched("ShadowSpawn", 1, 1, Projectile.Center);
+				Helpers.Helper.PlayPitched("ShadowSpawn", 0.4f, 1, Projectile.Center);
 
 			if (Projectile.timeLeft == 30)
 			{
