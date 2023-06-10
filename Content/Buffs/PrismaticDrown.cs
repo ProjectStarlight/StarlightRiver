@@ -22,7 +22,18 @@
 			}
 			else
 			{
-				Player.breath--;
+				// makes the player drown. I had to do this manually because the player is considered out of water
+				Player.breath = (int)MathHelper.Max(-6, Player.breath - 4);
+
+				if (Player.breath <= 0)
+				{
+					// decreases health then kills player
+					Player.statLife--;
+					if (Player.statLife <= 0)
+					{
+						Player.KillMe(Terraria.DataStructures.PlayerDeathReason.ByOther(1), 1, 0);
+					}
+				}
 			}
 		}
 
