@@ -229,8 +229,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 		{
 			const int tileWidth = 3;
 			const int tileHeight = 6;
-			int a = 3 / 2;
-			int b = 5 / 2;
+
 			for (int x = 0; x < tileWidth; x++)
 			{
 				for (int y = 0; y < tileHeight; y++)
