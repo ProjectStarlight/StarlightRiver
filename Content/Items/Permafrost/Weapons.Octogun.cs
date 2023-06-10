@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.noMelee = true;
 
-			Item.UseSound = new Terraria.Audio.SoundStyle("StarlightRiver/Sounds/SquidBoss/MagicSplash") with { Volume = 0.85f, PitchVariance = 0.1f };
+			Item.UseSound = new Terraria.Audio.SoundStyle("StarlightRiver/Sounds/Guns/Octogun") with { Volume = 0.7f, PitchVariance = 0.4f };
 
 			Item.shoot = ProjectileID.PurificationPowder;
 			Item.shootSpeed = 20f;
@@ -223,7 +223,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 						Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, mouseDirection * 20f,
 							ModContent.ProjectileType<AuroracleInkBullet>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI, 1); // [ai] is one for tiny ink
 
-						Helper.PlayPitched("SquidBoss/SuperSplash", 0.45f, -0.1f, Projectile.position);
+						Helper.PlayPitched("Impacts/IceShoot", Main.rand.NextFloat(0.3f, 0.4f), Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
+						Helper.PlayPitched("Guns/EnergySMG", Main.rand.NextFloat(0.2f, 0.3f), Main.rand.NextFloat(0.2f, 0.5f), Projectile.position);
 
 						float sin = 1 + (float)Math.Sin(Main.GameUpdateCount * 10); //yes ive reused this color like 17 times shh
 						float cos = 1 + (float)Math.Cos(Main.GameUpdateCount * 10);
@@ -245,7 +246,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		public override void Kill(int timeLeft)
 		{
 			Gore.NewGoreDirect(Projectile.GetSource_Death(), Projectile.Center, Vector2.One.RotatedByRandom(6.28f) * 1.5f, Mod.Find<ModGore>("Octogun_Tentapistol").Type).timeLeft = 90;
-			Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath1 with { Pitch = -0.65f }, Projectile.Center);
+			Helper.PlayPitched("Impacts/EnergyBreak", Main.rand.NextFloat(0.4f, 0.5f), Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -469,7 +470,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 					Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.7f, 1.25f), 0, color, 0.5f);
 			}
 
-			Helper.PlayPitched("SquidBoss/LightSplash", 0.4f, 0, Projectile.position);
+			Helper.PlayPitched("Impacts/IceHit", 0.5f, 0, Projectile.position);
 		}
 
 		private void ManageCaches()
