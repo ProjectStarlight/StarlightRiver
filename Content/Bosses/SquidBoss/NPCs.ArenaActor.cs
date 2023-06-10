@@ -6,6 +6,7 @@ using StarlightRiver.Core.Systems.CutawaySystem;
 using StarlightRiver.Core.Systems.LightingSystem;
 using StarlightRiver.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
@@ -16,6 +17,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 	class ArenaActor : ModNPC
 	{
 		public NPC fakeBoss;
+		private readonly List<NPC> platforms = new();
 
 		public int waterfallWidth = 0;
 		ParticleSystem bubblesSystem = new(AssetDirectory.SquidBoss + "Bubble", UpdateBubblesBody);
@@ -125,30 +127,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			if (VisualTimerA > 6.28f)
 				VisualTimerA = 0;
 
-			if (!Main.npc.Any(n => n.active && n.ModNPC is IcePlatform)) //spawn platforms if not present
+			// Remove invalid platforms from tracked platforms
+			platforms.RemoveAll(n => !n.active || !(n.ModNPC is IcePlatform || n.ModNPC is IcePlatformSmall || n.ModNPC is GoldPlatform));
+
+			if (platforms.Count < 15) // respawn platforms if not present
 			{
-				SpawnPlatform(-640, 200);
-				SpawnPlatform(640, 200);
-
-				SpawnPlatform(-400, -70);
-				SpawnPlatform(400, -70);
-
-				SpawnPlatform(-150, -260);
-				SpawnPlatform(150, -260);
-
-				SpawnPlatform(-240, -150, true);
-				SpawnPlatform(240, -150, true);
-
-				SpawnPlatform(-460, 30, true);
-				SpawnPlatform(460, 30, true);
-
-				SpawnPlatform(-140, 300, true);
-				SpawnPlatform(140, 300, true);
-
-				SpawnPlatform(-340, 240, true);
-				SpawnPlatform(340, 240, true);
-
-				NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y - 2000, NPCType<GoldPlatform>());
+				RegeneratePlatforms();
 			}
 
 			Vector2 pos = NPC.Center + new Vector2(-832, 35 * 16) + new Vector2(0, -WaterLevel);
@@ -242,6 +226,36 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					}
 				}
 			}
+		}
+
+		private void RegeneratePlatforms()
+		{
+			platforms.ForEach(n => n.active = false);
+			platforms.Clear();
+
+			SpawnPlatform(-640, 200);
+			SpawnPlatform(640, 200);
+
+			SpawnPlatform(-400, -70);
+			SpawnPlatform(400, -70);
+
+			SpawnPlatform(-150, -260);
+			SpawnPlatform(150, -260);
+
+			SpawnPlatform(-240, -150, true);
+			SpawnPlatform(240, -150, true);
+
+			SpawnPlatform(-460, 30, true);
+			SpawnPlatform(460, 30, true);
+
+			SpawnPlatform(-140, 300, true);
+			SpawnPlatform(140, 300, true);
+
+			SpawnPlatform(-340, 240, true);
+			SpawnPlatform(340, 240, true);
+
+			int i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y - 2000, NPCType<GoldPlatform>());
+			platforms.Add(Main.npc[i]);
 		}
 
 		public void DrawWater(SpriteBatch spriteBatch)
@@ -470,10 +484,15 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		private void SpawnPlatform(int x, int y, bool small = false)
 		{
+			int i;
+
 			if (small)
-				NPC.NewNPC(NPC.GetSource_FromThis(), (int)(NPC.Center.X + x), (int)(NPC.Center.Y + y), NPCType<IcePlatformSmall>());
+				i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)(NPC.Center.X + x), (int)(NPC.Center.Y + y), NPCType<IcePlatformSmall>());
 			else
-				NPC.NewNPC(NPC.GetSource_FromThis(), (int)(NPC.Center.X + x), (int)(NPC.Center.Y + y), NPCType<IcePlatform>());
+				i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)(NPC.Center.X + x), (int)(NPC.Center.Y + y), NPCType<IcePlatform>());
+
+			if (i != -1)
+				platforms.Add(Main.npc[i]);
 		}
 
 		private Rectangle GetSource(float offset, Texture2D tex)
