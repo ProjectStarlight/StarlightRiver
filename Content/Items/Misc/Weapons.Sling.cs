@@ -89,8 +89,8 @@ namespace StarlightRiver.Content.Items.Misc
 			float rotation = itemPosition.DirectionTo(Main.MouseWorld).ToRotation();
 			player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, rotation - (player.direction == 1 ? MathHelper.ToRadians(60f) : MathHelper.ToRadians(120f)));
 			player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, rotation - (player.direction == 1 ? MathHelper.ToRadians(120f) : MathHelper.ToRadians(60f)));
-			Vector2 itemSize = new Vector2(22);
-			Vector2 itemOrigin = new Vector2(-6f, 0f);
+			var itemSize = new Vector2(22);
+			var itemOrigin = new Vector2(-6f, 0f);
 			HoldStyleAdjustments(player, rotation, itemPosition, itemSize, itemOrigin, true, false, true);
 		}
 
@@ -462,7 +462,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 	class SlingSeedProjectile : ModProjectile
 	{
-		public override string Texture => AssetDirectory.IvyItem + "SeedProjectile"; //vanilla seed looks bad
+		public override string Texture => AssetDirectory.MiscItem + "SeedProjectile"; //vanilla seed looks bad
 
 		public override void SetStaticDefaults()
 		{

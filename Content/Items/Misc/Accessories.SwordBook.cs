@@ -350,7 +350,8 @@ namespace StarlightRiver.Content.Items.Misc
 				return true;
 			}
 
-			return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), start, end, 10, ref collisionPoint); ;
+			return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), start, end, 10, ref collisionPoint);
+			;
 		}
 
 		public override void CutTiles()
