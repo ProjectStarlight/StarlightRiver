@@ -29,6 +29,8 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			Main.tileSpelunker[Type] = true;
 			Main.tileOreFinderPriority[Type] = 490;//just below chests
 
+			TileID.Sets.AvoidedByMeteorLanding[Type] = true;//prevents meteor landing on aboveground structures
+
 			QuickBlock.QuickSetFurniture(this, 2, 4, DustID.Ice, SoundID.Tink, false, new Color(155, 200, 255), false, false, "Touchstone");
 			MinPick = int.MaxValue;
 		}
