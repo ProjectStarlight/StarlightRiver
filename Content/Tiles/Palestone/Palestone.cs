@@ -26,6 +26,7 @@ namespace StarlightRiver.Content.Tiles.Palestone
 				.Register();
 		}
 	}
+
 	internal class Palestone : ModTile
 	{
 		public override string Texture => AssetDirectory.PalestoneTile + Name;

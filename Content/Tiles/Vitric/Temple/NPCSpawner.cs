@@ -18,6 +18,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		{
 			this.QuickSetFurniture(2, 3, 0, SoundID.Tink, new Color(255, 255, 255));
 		}
+
 		public string GetHint()
 		{
 			return "Dangerous.";

@@ -106,16 +106,14 @@ namespace StarlightRiver.Content.NPCs.Actors
 				}
 				#endregion
 
-				#region circular area of dust
+				//circular area of dust
 				Vector2 circularLightPos = NPC.Center + Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(-DUST_RANGE, DUST_RANGE);
 				Tile tile2 = Framing.GetTileSafely(circularLightPos);
-
 				if (tile2.LiquidAmount > 0 && tile2.LiquidType == LiquidID.Water && Main.rand.NextBool(2))//under water lights
 				{
 					var d = Dust.NewDustPerfect(circularLightPos, ModContent.DustType<Dusts.AuroraSuction>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(), 0, new Color(0, 50, 255), 0.5f);
 					d.customData = new Dusts.AuroraSuctionData(this, Main.rand.NextFloat(0.4f, 0.5f));
 				}
-				#endregion
 			}
 
 			if (hasTransformedItem)//if this has already transformed the item
