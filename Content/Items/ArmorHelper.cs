@@ -34,9 +34,6 @@ namespace StarlightRiver.Content.Items
 		/// <param name="immuneFade"></param>
 		public static void QuickDrawHeadFramed(PlayerDrawSet info, string texture, float scale, Vector2 offset, Color? color = null, bool immuneFade = false)//TODO fix framing (uses leg frame since head is always zero)
 		{
-			if (info.drawPlayer.ActiveAbility<Whip>())
-				return;
-
 			//TODO: somewhere this is hardcoded to the sheet size, as gravity flip is broken for old starwood hat, for now it has a temp fix
 
 			Texture2D newTex = Request<Texture2D>(texture).Value;
@@ -72,9 +69,6 @@ namespace StarlightRiver.Content.Items
 		/// <param name="immuneFade"></param>
 		public static void QuickDrawBodyFramed(PlayerDrawSet info, string texture, float scale, Vector2 offset, Color? color = null, bool immuneFade = false)
 		{
-			if (info.drawPlayer.ActiveAbility<Whip>())
-				return;
-
 			Texture2D newTex = Request<Texture2D>(texture).Value;
 
 			const int frameCountX = 9;
@@ -129,9 +123,6 @@ namespace StarlightRiver.Content.Items
 
 		public static void QuickDrawFrontArmsFramed(PlayerDrawSet info, string texture, float scale, Vector2 offset, Color? color = null, bool immuneFade = false)
 		{
-			if (info.drawPlayer.ActiveAbility<Whip>())
-				return;
-
 			Texture2D newTex = Request<Texture2D>(texture).Value;
 
 			//gets values based on frame instead of location on vanilla sized sheet
@@ -210,9 +201,6 @@ namespace StarlightRiver.Content.Items
 		/// <param name="immuneFade"></param>
 		public static void QuickDrawLegsFramed(PlayerDrawSet info, string texture, float scale, Vector2 offset, Color? color = null, bool immuneFade = false)
 		{
-			if (info.drawPlayer.ActiveAbility<Whip>())
-				return;
-
 			Texture2D newTex = Request<Texture2D>(texture).Value;
 			int frame = (int)(info.drawPlayer.legFrame.Y * 0.01785714286f);//(int)((frame / 1120f) * 20);
 			var pos = (info.drawPlayer.position + info.drawPlayer.legPosition - Main.screenPosition + offset).ToPoint16().ToVector2();
