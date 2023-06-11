@@ -81,8 +81,8 @@ namespace StarlightRiver.Content.Items.Misc
 				Register();
 
 			CreateRecipe().
-				AddIngredient(ModContent.ItemType<Earthduster>()).
-				AddIngredient(ItemID.CrimtaneBar, 12).
+				AddIngredient(ModContent.ItemType<Soilgun>()).
+				AddIngredient(ItemID.DemoniteBar, 12).
 				AddIngredient(ItemID.Bone, 50).
 				AddTile(TileID.Anvils).
 				Register();
