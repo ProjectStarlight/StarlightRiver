@@ -11,8 +11,12 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 
 		public override void SetStaticDefaults()
 		{
+			TileID.Sets.Ore[Type] = true;
+			Main.tileSpelunker[Type] = true;
+			Main.tileOreFinderPriority[Type] = 410;//just above meteorite
 			this.QuickSet(50, DustType<Dusts.Stone>(), SoundID.Tink, new Color(64, 71, 89), ItemType<Items.Moonstone.MoonstoneOreItem>(), true, true, "Moonstone Ore");
 		}
+
 #pragma warning disable IDE0047 // Remove unnecessary parentheses
 		public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 		{
