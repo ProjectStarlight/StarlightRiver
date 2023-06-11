@@ -12,6 +12,7 @@ using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
+using static Terraria.GameContent.Animations.Actions.NPCs;
 
 namespace StarlightRiver.Content.Tiles.Permafrost
 {
@@ -21,6 +22,8 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 		public override void SetStaticDefaults()
 		{
+			TileID.Sets.BasicChest[Type] = true;
+			TileObjectData.newTile.DrawYOffset = 2;
 			TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(ModContent.GetInstance<TouchstoneTileEntity>().Hook_AfterPlacement, -1, 0, false);
 			Main.tileLighted[Type] = true;
 

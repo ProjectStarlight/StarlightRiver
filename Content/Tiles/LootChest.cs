@@ -29,6 +29,7 @@ namespace StarlightRiver.Content.Tiles
 
 		public override void SetStaticDefaults()
 		{
+			TileID.Sets.BasicChest[Type] = true;
 			TileID.Sets.HasOutlines[Type] = true;
 			TileID.Sets.DisableSmartCursor[Type] = true;
 			Main.tileSpelunker[Type] = true;
