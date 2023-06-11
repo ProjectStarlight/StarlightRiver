@@ -119,21 +119,21 @@ namespace StarlightRiver.Content.Items.Desert
 			Projectile.scale = MathHelper.Lerp(0.6f, 1.2f, EaseBuilder.EaseQuarticOut.Ease(Progress));
 
 			float lerper = MathHelper.Lerp(45f, 2f, EaseBuilder.EaseCircularInOut.Ease(Progress));
-			
+
 			if (Projectile.timeLeft < MaxTimeleft)
 				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2CircularEdge(lerper, lerper), ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(0.5f, 0.5f), 0, Main.rand.NextBool() ? new Color(30, 230, 200) : new Color(230, 170, 100), 0.4f);
 
 			if (Projectile.timeLeft == 10)
 			{
 				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Owner.Center, Owner.DirectionTo(OwnerMouse.Value), ModContent.ProjectileType<SandSlash>(), Projectile.damage, Projectile.knockBack, Projectile.owner, SwingDirection);
-			
+
 				for (int i = 0; i < 10; i++)
 				{
 					Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Owner.DirectionTo(OwnerMouse.Value) * 3f + Main.rand.NextVector2Circular(1.5f, 1.5f), 0, Main.rand.NextBool() ? new Color(30, 230, 200) : new Color(230, 170, 100), 0.4f);
 
 					Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Sand>(), Owner.DirectionTo(OwnerMouse.Value) * 3f + Main.rand.NextVector2Circular(1.5f, 1.5f), 140, default, 0.6f).noGravity = true;
 				}
-			}				
+			}
 		}
 
 		public override void Kill(int timeLeft)

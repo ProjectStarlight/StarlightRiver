@@ -410,7 +410,6 @@ namespace StarlightRiver.Content.Items.Misc
 			Texture2D bloomMap = ModContent.Request<Texture2D>(Texture + "_BloomMap").Value;
 			Texture2D starTex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "StarTexture").Value;
 
-
 			SpriteEffects flip = Projectile.spriteDirection == -1 ? SpriteEffects.FlipVertically : 0f;
 
 			if (Owner.GetModPlayer<ImpactSMGPlayer>().stacks > 0)

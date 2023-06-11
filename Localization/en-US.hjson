@@ -3545,6 +3545,7 @@ Mods: {
 			ConstructSpawner.DisplayName: Construct Spawner
 			GauntletSpawner.DisplayName: Gauntlet Spawner
 			SpawnEgg.DisplayName: Spawn Egg
+			SandscriptBook.DisplayName: Sandscript Book
 		}
 
 		Tiles: {

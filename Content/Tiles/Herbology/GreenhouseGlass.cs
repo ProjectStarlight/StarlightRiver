@@ -36,8 +36,11 @@ namespace StarlightRiver.Content.Tiles.Herbology
 				{
 					const int PlantRangeDown = 10;
 					for (int m = 0; m < PlantRangeDown; m++)//k = max range down, if the area above it clear this looks for the first plant below it
+					{
 						if (Main.tile[i, j + 1 + m].HasTile && Main.tileSolid[Main.tile[i, j + 1 + m].TileType] && !Main.tileSolidTop[Main.tile[i, j + 1 + m].TileType])
+						{
 							break;//breaks if Solid is true, Active is true, and solidTop is false
+						}
 						else if (
 							Main.tile[i, j + 1 + m].HasTile &&
 							Main.tileFrameImportant[Main.tile[i, j + 1 + m].TileType] &&
@@ -48,14 +51,18 @@ namespace StarlightRiver.Content.Tiles.Herbology
 							{
 								//if (Main.rand.NextBool(2))//50% chance to effect modded plant
 								//{
-									ModContent.GetModTile(Main.tile[i, j + 1 + m].TileType)?.RandomUpdate(i, j + 1 + m);
-									NetMessage.SendTileSquare(Main.myPlayer, i, j, 2, 2, TileChangeType.None);
+								ModContent.GetModTile(Main.tile[i, j + 1 + m].TileType)?.RandomUpdate(i, j + 1 + m);
+								NetMessage.SendTileSquare(Main.myPlayer, i, j, 2, 2, TileChangeType.None);
 								//}
 							}
 							else//vanilla grow check has seperate changes
+							{
 								GrowVanillaPlant(i, j + 1 + m);
+							}
+
 							break;
 						}
+					}
 				}
 			}
 		}
@@ -64,7 +71,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
 		{
 			int type = Main.tile[i, j].TileType;
 			const int baseChance = 10;//chance when plant conditions are not met
-			//tehse chances are not really based on much 
+									  //tehse chances are not really based on much 
 			switch (type)
 			{
 				//vanilla dye plants have seperate tiles for each stage, but share the same tile for each plant type
@@ -73,6 +80,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
 						Main.tile[i, j].TileType = 83;
 						NetMessage.SendTileSquare(Main.myPlayer, i, j, 2, 2, TileChangeType.None);
 					}
+
 					break;
 				case 83://last stage before bloom
 					{
@@ -86,7 +94,10 @@ namespace StarlightRiver.Content.Tiles.Herbology
 										Main.tile[i, j].TileType = 84;
 								}
 								else if (Main.rand.NextBool(baseChance))
+								{
 									Main.tile[i, j].TileType = 84;
+								}
+
 								break;
 
 							case 18://moonglow
@@ -96,7 +107,10 @@ namespace StarlightRiver.Content.Tiles.Herbology
 										Main.tile[i, j].TileType = 84;
 								}
 								else if (Main.rand.NextBool(baseChance))
+								{
 									Main.tile[i, j].TileType = 84;
+								}
+
 								break;
 
 							case 36://blinkroot
@@ -111,9 +125,11 @@ namespace StarlightRiver.Content.Tiles.Herbology
 										Main.tile[i, j].TileType = 84;
 								}
 								else if (Main.rand.NextBool(baseChance))
+								{
 									Main.tile[i, j].TileType = 84;
-								break;
+								}
 
+								break;
 
 							case 72://waterleaf
 								if (Main.raining || Main.tile[i, j].LiquidType == LiquidID.Water && Main.tile[i, j].LiquidAmount > 0)
@@ -122,7 +138,10 @@ namespace StarlightRiver.Content.Tiles.Herbology
 										Main.tile[i, j].TileType = 84;
 								}
 								else if (Main.rand.NextBool(baseChance))
+								{
 									Main.tile[i, j].TileType = 84;
+								}
+
 								break;
 
 							case 90://fireblossom
@@ -131,13 +150,16 @@ namespace StarlightRiver.Content.Tiles.Herbology
 									if (Main.rand.NextBool(2))
 										Main.tile[i, j].TileType = 84;
 								}
-								else  if (!Main.raining && Main.IsItDay())//vanilla uses sunset instead of daytime
+								else if (!Main.raining && Main.IsItDay())//vanilla uses sunset instead of daytime
 								{
 									if (Main.rand.NextBool(4))
 										Main.tile[i, j].TileType = 84;
 								}
 								else if (Main.rand.NextBool(baseChance))
+								{
 									Main.tile[i, j].TileType = 84;
+								}
+
 								break;
 
 							case 108://shiverthorn
@@ -149,14 +171,16 @@ namespace StarlightRiver.Content.Tiles.Herbology
 								Main.tile[i, j].TileType = 84;
 								break;
 						}
+
 						NetMessage.SendTileSquare(Main.myPlayer, i, j, 2, 2, TileChangeType.None);
 					}
+
 					break;
 				case TileID.Bamboo: //assumes top block of bamboo /broken
 					{
 						if (Main.rand.NextBool(3))
 						{
-							if(!Main.tile[i, j - 1].HasTile)
+							if (!Main.tile[i, j - 1].HasTile)
 							{
 								//WorldGen.PlaceTile(i, j - 1, TileID.Bamboo, true, true);//does not work for some reason
 								Main.tile[i, j - 1].Get<TileWallWireStateData>().HasTile = true;
@@ -166,6 +190,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
 							}
 						}
 					}
+
 					break;
 				case TileID.Pumpkins: //does not assume top block
 					{
@@ -174,7 +199,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
 							int sheetFrameX = Main.tile[i, j].TileFrameX / 18;
 							int offsetX = sheetFrameX % 2;
 
-							if (sheetFrameX < 8) 
+							if (sheetFrameX < 8)
 							{
 								int sheetFrameY = Main.tile[i, j].TileFrameY / 18;
 								int offsetY = sheetFrameY % 2;
@@ -186,10 +211,12 @@ namespace StarlightRiver.Content.Tiles.Herbology
 										Main.tile[i + x - offsetX, j + y - offsetY].TileFrameX += 36;
 									}
 								}
+
 								NetMessage.SendTileSquare(Main.myPlayer, i, j, 2, 2, TileChangeType.None);
 							}
 						}
 					}
+
 					break;
 			}
 		}
