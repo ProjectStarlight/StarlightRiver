@@ -161,6 +161,7 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 			recipe.AddIngredient(ModContent.ItemType<SandstoneChunk>(), 8);
 			recipe.AddIngredient(ModContent.ItemType<MagmaCore>(), 2);
 			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 
