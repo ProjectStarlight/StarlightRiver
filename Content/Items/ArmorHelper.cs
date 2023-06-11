@@ -125,10 +125,6 @@ namespace StarlightRiver.Content.Items
 		{
 			Texture2D newTex = Request<Texture2D>(texture).Value;
 
-			//gets values based on frame instead of location on vanilla sized sheet
-			//int torsoFrameX = (int)(info.compTorsoFrame.X / info.compTorsoFrame.Width);
-			//int torsoFrameY = (int)(info.compTorsoFrame.Y / info.compTorsoFrame.Height);
-
 			const int frameCountX = 9;
 			const int frameCountY = 4;
 
