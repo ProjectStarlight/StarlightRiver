@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Items.Desert
 
 			Item.shootSpeed = 1f;
 			Item.knockBack = 7f;
-			Item.damage = 31;
+			Item.damage = 15;
 			Item.crit = 6;
 			Item.shoot = ProjectileType<SandscriptBook>();
 			Item.rare = ItemRarityID.Blue;
@@ -246,7 +246,7 @@ namespace StarlightRiver.Content.Items.Desert
 				Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Sand>(), target.Center.DirectionTo(Owner.Center) * Main.rand.NextFloat(5f) + Main.rand.NextVector2Circular(3f, 3f), 140, default, 0.6f).noGravity = false;
 			}
 
-			Helper.PlayPitched("Impacts/StabTiny", 1f, 1f, Projectile.Center); // [PH] for egshels
+			Helper.PlayPitched("Impacts/StoneStrikeLight", 1f, Main.rand.NextFloat(0.6f, 1.0f), Projectile.Center); // [PH] for egshels
 		}
 
 		public override bool PreDraw(ref Color lightColor)
