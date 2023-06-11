@@ -21,7 +21,9 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			TileObjectData.newTile.RandomStyleRange = 3;
 			TileObjectData.newTile.StyleHorizontal = true;
 			MinPick = int.MaxValue;
+			Main.tileOreFinderPriority[Type] = 490;//just below chests
 			TileID.Sets.Ore[Type] = true;
+			Main.tileSpelunker[Type] = true;
 			TileID.Sets.PreventsTileRemovalIfOnTopOfIt[Type] = true;
 
 			var bottomAnchor = new AnchorData(Terraria.Enums.AnchorType.SolidTile, 2, 0);

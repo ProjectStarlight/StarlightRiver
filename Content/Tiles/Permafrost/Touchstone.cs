@@ -22,10 +22,12 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 		public override void SetStaticDefaults()
 		{
-			TileID.Sets.BasicChest[Type] = true;
+			TileID.Sets.PreventsTileRemovalIfOnTopOfIt[Type] = true;
 			TileObjectData.newTile.DrawYOffset = 2;
 			TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(ModContent.GetInstance<TouchstoneTileEntity>().Hook_AfterPlacement, -1, 0, false);
 			Main.tileLighted[Type] = true;
+			Main.tileSpelunker[Type] = true;
+			Main.tileOreFinderPriority[Type] = 490;//just below chests
 
 			QuickBlock.QuickSetFurniture(this, 2, 4, DustID.Ice, SoundID.Tink, false, new Color(155, 200, 255), false, false, "Touchstone");
 			MinPick = int.MaxValue;

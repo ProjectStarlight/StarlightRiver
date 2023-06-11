@@ -29,11 +29,11 @@ namespace StarlightRiver.Content.Tiles
 
 		public override void SetStaticDefaults()
 		{
-			TileID.Sets.BasicChest[Type] = true;
+			TileID.Sets.PreventsTileRemovalIfOnTopOfIt[Type] = true;
 			TileID.Sets.HasOutlines[Type] = true;
 			TileID.Sets.DisableSmartCursor[Type] = true;
 			Main.tileSpelunker[Type] = true;
-			Main.tileOreFinderPriority[Type] = 500;
+			Main.tileOreFinderPriority[Type] = 490;//just below chests
 			SafeSetDefaults();
 			MinPick = int.MaxValue;
 		}
