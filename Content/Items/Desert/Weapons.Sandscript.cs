@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.Items.Desert
 			Item.rare = ItemRarityID.Blue;
 			Item.noMelee = true;
 			Item.DamageType = DamageClass.Magic;
-			Item.mana = 20;
+			Item.mana = 3;
 
 			Item.UseSound = SoundID.DD2_MonkStaffSwing;
 
