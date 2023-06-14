@@ -132,6 +132,9 @@ namespace StarlightRiver.Content.Items.Desert
 					Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Sand>(), Owner.DirectionTo(OwnerMouse.Value) * 3f + Main.rand.NextVector2Circular(1.5f, 1.5f), 140, default, 0.6f).noGravity = true;
 				}
 			}
+
+			if (Projectile.timeLeft > 10)
+				Projectile.velocity = Vector2.Lerp(Projectile.velocity, Owner.DirectionTo(OwnerMouse.Value), 0.1f);
 		}
 
 		public override void Kill(int timeLeft)
