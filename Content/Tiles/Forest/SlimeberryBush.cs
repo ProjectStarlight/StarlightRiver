@@ -116,12 +116,12 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 	public class Slimeberry : QuickMaterial
 	{
-		public Slimeberry() : base("Slimeberry", "'Ew.'", 99, 1, ItemRarityID.Blue, AssetDirectory.ForestTile) { }
+		public Slimeberry() : base("Slimeberry", "Ew.", 99, 1, ItemRarityID.Blue, AssetDirectory.ForestTile) { }
 	}
 
 	public class SlimeberryBushItem : QuickTileItem
 	{
-		public SlimeberryBushItem() : base("Slimeberry Bush", "Plant to grow your own slimeberries", "SlimeberryBush", ItemRarityID.Blue, AssetDirectory.ForestTile) { }
+		public SlimeberryBushItem() : base("Slimeberry Bush", "Places a slimeberry bush", "SlimeberryBush", ItemRarityID.Blue, AssetDirectory.ForestTile) { }
 	}
 
 	public class BerrySlime : ModNPC
@@ -147,7 +147,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 			NPC.HitSound = SoundID.NPCHit1;
 			NPC.DeathSound = SoundID.NPCDeath1;
 
-			NPC.alpha = 90;
+			NPC.color = new Color(30, Main.rand.Next(170, 250), Main.rand.Next(220, 255));
 		}
 
 		public override void AI()
@@ -164,7 +164,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 					NPC.velocity *= 0;
 					NPC.frame = new Rectangle(0, NPC.height, NPC.width, NPC.height);
 
-					NPC.alpha += 3;
+					NPC.alpha += 5;
 					NPC.position.Y += 0.1f;
 					NPC.noGravity = true;
 					NPC.noTileCollide = true;
@@ -201,7 +201,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			spriteBatch.Draw(Request<Texture2D>(Texture).Value, NPC.position - screenPos, NPC.frame, drawColor * ((255 - NPC.alpha) / 255f), NPC.rotation, Vector2.Zero, NPC.scale, 0, 0);
+			spriteBatch.Draw(Request<Texture2D>(Texture).Value, NPC.position - screenPos, NPC.frame, drawColor.MultiplyRGBA(NPC.color * ((255 - NPC.alpha) / 255f)), NPC.rotation, Vector2.Zero, NPC.scale, 0, 0);
 			spriteBatch.Draw(Request<Texture2D>(Texture + "Shine").Value, NPC.position - screenPos, NPC.frame, drawColor * (0.6f * (255 - NPC.alpha) / 255f), NPC.rotation, Vector2.Zero, NPC.scale, 0, 0);
 			return false;
 		}
