@@ -420,6 +420,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		{
 			State = tag.GetAsInt("State");
 		}
+
 		public string GetHint()
 		{
 			return "Is this... creature... really what 'lurks beneath the desert?'";

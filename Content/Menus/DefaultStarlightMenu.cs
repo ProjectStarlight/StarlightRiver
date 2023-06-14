@@ -84,18 +84,6 @@ namespace StarlightRiver.Content.Menus
 
 			sparkles.DrawParticles(Main.spriteBatch);
 
-			////vertical light beams
-			//var tex = ModContent.Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowSolo", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
-			//var myRand = new Random(1283125412);
-
-			//for (int k = 0; k < Main.screenWidth; k += tex.Width * 2)
-			//{
-			//	float sin = (float)Math.Sin(Timer * 0.01f + myRand.Next(120)) * (float)Math.Sin(Timer * 0.0152f + myRand.Next(120));
-			//	float sin2 = (float)Math.Sin(Timer * 0.01f + myRand.Next(120)) * (float)Math.Sin(Timer * 0.0152f + myRand.Next(120));
-			//	var color = new Color(100 + (int)(sin2 * 50), 200 + (int)(sin2 * 50), 255, 0) * 0.75f;
-			//	Main.spriteBatch.Draw(tex, new Vector2(k + myRand.Next(-10, 10), Main.screenHeight + 30), null, color, 0, new Vector2(tex.Width / 2, tex.Height), 1.5f + sin, 0, 0);
-			//}
-
 			float heightScale = (float)Math.Sin((Timer + 2) * 0.025f) * 5 + 5;
 			Texture2D midTex = ModContent.Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowMid").Value;
 			Color overlayColor = new Color(0.12f, 0.135f, 0.23f, 0f) * (((float)Math.Sin(Timer * 0.02f) + 4) / 4);

@@ -68,15 +68,13 @@ namespace StarlightRiver.Content.Items.Desert
 
 	internal class SandscriptBook : ModProjectile
 	{
-		public float Progress => 1f - Projectile.timeLeft / MaxTimeleft;
-
 		public ref float SwingDirection => ref Projectile.ai[1];
-
 		public ref float MaxTimeleft => ref Projectile.ai[0];
 
-		public Vector2? OwnerMouse => (Main.myPlayer == Owner.whoAmI) ? Main.MouseWorld : null;
+		public float Progress => 1f - Projectile.timeLeft / MaxTimeleft;
 
 		public Player Owner => Main.player[Projectile.owner];
+		public Vector2? OwnerMouse => (Main.myPlayer == Owner.whoAmI) ? Main.MouseWorld : null;
 
 		public override string Texture => AssetDirectory.DesertItem + "Sandscript";
 
@@ -163,7 +161,7 @@ namespace StarlightRiver.Content.Items.Desert
 	{
 		public bool hasPlayedSound;
 
-		public float maxTimeleft = 55;
+		public const float maxTimeleft = 55;
 
 		private List<Vector2> cache;
 		private Trail trail;
