@@ -56,17 +56,14 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 		public float TreasureLerp;
 
-
 		public List<Vector2> oldStarPositions = new();
 		public Player Owner => Main.player[Projectile.owner];
 		public Vector2? OwnerMouse => (Main.myPlayer == Owner.whoAmI) ? Main.MouseWorld : null;
 		public override string Texture => AssetDirectory.CaveTempleItem + "RuneStaff";
 
-
 		public ref float StarRotation => ref Projectile.ai[0];
 		public ref float PingTimer => ref Projectile.ai[1];
 		public ref float Lifetime => ref Projectile.ai[2];
-
 
 		public override void SetStaticDefaults()
 		{
