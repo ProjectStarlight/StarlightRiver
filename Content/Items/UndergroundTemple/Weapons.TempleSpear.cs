@@ -44,7 +44,6 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 	class TempleSpearProjectile : ModProjectile
 	{
-		public int maxCharge;
 
 		public int oldCharge; // used for drawing
 
@@ -56,9 +55,9 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 		public Vector2 pullbackOffset; //cache the pullback offset for the stab
 
-		public Vector2? OwnerMouse => (Main.myPlayer == Owner.whoAmI) ? Main.MouseWorld : null;
-
 		public ref float Timer => ref Projectile.ai[0];
+
+		public ref float maxCharge => ref Projectile.ai[1];
 
 		public Player Owner => Main.player[Projectile.owner];
 
@@ -87,6 +86,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 		{
 			maxCharge = (int)(Owner.HeldItem.useAnimation * (1f / Owner.GetTotalAttackSpeed(DamageClass.Melee)));
 			maxCharge = Utils.Clamp(maxCharge, 15, 60);
+			Projectile.netUpdate = true;
 		}
 
 		public override void AI()
@@ -96,6 +96,10 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 				Projectile.Kill();
 				return;
 			}
+
+			ControlsPlayer controlsPlayer = Owner.GetModPlayer<ControlsPlayer>();
+			if (Owner == Main.LocalPlayer)
+				controlsPlayer.mouseRotationListener = true;
 
 			Owner.heldProj = Projectile.whoAmI;
 			Owner.itemTime = 2;
@@ -119,12 +123,12 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 				for (int i = 0; i < 15; i++)
 				{
-					Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(15, 15), ModContent.DustType<Dusts.GlowFastDecelerate>(), Owner.DirectionTo(OwnerMouse.Value) * Main.rand.NextFloat(3f, 7f), 0, new Color(255, 200, 150), 0.6f);
+					Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(15, 15), ModContent.DustType<Dusts.GlowFastDecelerate>(), Owner.DirectionTo(controlsPlayer.mouseWorld) * Main.rand.NextFloat(3f, 7f), 0, new Color(255, 200, 150), 0.6f);
 				}
 
 				if (charged)
 				{
-					var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<TempleSpearLaser>(), Projectile.damage * 2, 0f, Projectile.owner);
+					var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<TempleSpearLaser>(), Projectile.damage * 2, 0f, Projectile.owner, ai0: Projectile.identity);
 					(proj.ModProjectile as TempleSpearLaser).parent = Projectile;
 
 					Helper.PlayPitched("Effects/FancySwoosh", 1f, 0.2f, Owner.Center);
@@ -133,7 +137,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 			if (!stabbing)
 			{
-				Projectile.velocity = Owner.DirectionTo(OwnerMouse.Value);
+				Projectile.velocity = Owner.DirectionTo(controlsPlayer.mouseWorld);
 
 				Projectile.timeLeft = 2;
 
@@ -275,7 +279,11 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 		public Projectile parent;
 
+		public ref float parentIdentity => ref Projectile.ai[0];
+
 		public Player Owner => Main.player[Projectile.owner];
+
+
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -297,6 +305,18 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 		public override void AI()
 		{
+			if (parent is null)
+			{
+				foreach (Projectile projectile in Main.projectile)
+				{
+					if (projectile.owner == Owner.whoAmI && parentIdentity == projectile.identity)
+					{
+						parent = projectile;
+						break;
+					}
+				}
+			}
+
 			if (parent is null || !parent.active)
 			{
 				Projectile.Kill();
@@ -308,7 +328,11 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 			Projectile.rotation += 0.025f;
 
-			Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(4, 4), ModContent.DustType<Dusts.GlowFastDecelerate>(), Owner.DirectionTo((parent.ModProjectile as TempleSpearProjectile).OwnerMouse.Value).RotatedByRandom(0.35f) * Main.rand.NextFloat(3f, 7f), 0, new Color(255, 200, 150), 0.3f);
+			ControlsPlayer controlsPlayer = Owner.GetModPlayer<ControlsPlayer>();
+			if (Owner == Main.LocalPlayer)
+				controlsPlayer.mouseRotationListener = true;
+
+			Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(4, 4), ModContent.DustType<Dusts.GlowFastDecelerate>(), Owner.DirectionTo(controlsPlayer.mouseWorld).RotatedByRandom(0.35f) * Main.rand.NextFloat(3f, 7f), 0, new Color(255, 200, 150), 0.3f);
 
 			if (Main.rand.NextBool(7))
 				Dust.NewDustPerfect(Projectile.Center + new Vector2(100, 0f).RotatedBy(parent.rotation - MathHelper.PiOver2) + Main.rand.NextVector2Circular(4, 4), ModContent.DustType<Dusts.GlowFastDecelerate>(), Vector2.UnitY.RotatedByRandom(0.35f) * -Main.rand.NextFloat(2f, 5f), 0, new Color(255, 200, 150), 0.3f);
