@@ -6,6 +6,10 @@ namespace StarlightRiver.Content.Items.BaseTypes
 {
 	public abstract class SmartAccessory : ModItem
 	{
+		public static int ACCESSORY_START_INDEX = 3;
+		public static int VANITY_ACCESSORY_START_INDEX = 13;
+		public static int DEFAULT_ACCESSORY_SLOT_COUNT = 5;
+
 		/// <summary>
 		/// For use with simulated accessories, the accessory simulating this one is it's parent.
 		/// This is a list for if you are simulating the same accessory from multiple sources,
@@ -43,18 +47,20 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		/// </summary>
 		/// <param name="Player">The player to check for the item on</param>
 		/// <returns>If the item is equipped or simulated.</returns>
-		public bool Equipped(Player Player)
+		public bool Equipped(Player player)
 		{
-			for (int k = 3; k < 10 + Player.extraAccessorySlots; k++) //didnt work with extra slots, in my case, master mode extra slot. I referred to vanilla code to fix it
+			int accessoryCount = DEFAULT_ACCESSORY_SLOT_COUNT + player.GetAmountOfExtraAccessorySlotsToShow();
+
+			for (int k = ACCESSORY_START_INDEX; k < ACCESSORY_START_INDEX + accessoryCount; k++)
 			{
-				if (Player.IsItemSlotUnlockedAndUsable(k))
+				if (player.IsItemSlotUnlockedAndUsable(k))
 				{
-					if (Player.armor[k].type == Item.type)
+					if (player.armor[k].type == Item.type)
 						return true;
 				}
 			}
 
-			AccessorySimulationPlayer mp = Player.GetModPlayer<AccessorySimulationPlayer>();
+			AccessorySimulationPlayer mp = player.GetModPlayer<AccessorySimulationPlayer>();
 			if (mp.simulatedAccessories.Any(n => n.type == Item.type))
 				return true;
 
@@ -79,14 +85,45 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		/// <returns>The SmartAccessory instance if one is found, null if the item is not equipped or simulated.</returns>
 		public static SmartAccessory GetEquippedInstance(Player player, int type)
 		{
-			int accessoryIndex = 5 + player.GetAmountOfExtraAccessorySlotsToShow();
+			int accessoryCount = DEFAULT_ACCESSORY_SLOT_COUNT + player.GetAmountOfExtraAccessorySlotsToShow();
 
-			for (int k = 3; k <= 3 + accessoryIndex; k++)
+			for (int k = ACCESSORY_START_INDEX; k < ACCESSORY_START_INDEX + accessoryCount; k++)
 			{
 				if (player.armor[k].type == type)
 					return player.armor[k].ModItem as SmartAccessory;
 			}
 
+			AccessorySimulationPlayer mp = player.GetModPlayer<AccessorySimulationPlayer>();
+			return mp.simulatedAccessories.FirstOrDefault(n => n.type == type)?.ModItem as SmartAccessory;
+		}
+
+		/// <summary>
+		/// Gets the instance of the accessory directly or simulated in a vanity slot
+		/// </summary>
+		/// <param name="player">The player to get the equipped instance from.</param>
+		/// <returns>The SmartAccessory instance if one is found, null if the item is not equipped or simulated in a vanity slot.</returns>
+		public SmartAccessory GetVisualInstance(Player player)
+		{
+			return GetVisualInstance(player, Item.type);
+		}
+
+		/// <summary>
+		/// Gets the instance of the accessory directly or simulated in a vanity slot
+		/// </summary>
+		/// <param name="player">The player to get the equipped instance from.</param>
+		/// <param name="type">The type of accessory to look for, this should be the ID of an item extending SmartAccessory</param>
+		/// <returns>The SmartAccessory instance if one is found, null if the item is not equipped or simulated in a vanity slot.</returns>
+		public static SmartAccessory GetVisualInstance(Player player, int type)
+		{
+
+			int accessoryCount = DEFAULT_ACCESSORY_SLOT_COUNT + player.GetAmountOfExtraAccessorySlotsToShow();
+
+			for (int k = VANITY_ACCESSORY_START_INDEX; k < VANITY_ACCESSORY_START_INDEX + accessoryCount; k++)
+			{
+				if (player.armor[k].type == type)
+					return player.armor[k].ModItem as SmartAccessory;
+			}
+			
 			AccessorySimulationPlayer mp = player.GetModPlayer<AccessorySimulationPlayer>();
 			return mp.simulatedAccessories.FirstOrDefault(n => n.type == type)?.ModItem as SmartAccessory;
 		}
@@ -215,6 +252,8 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		private void OnEquipHandler(On_AchievementsHelper.orig_HandleOnEquip orig, Player player, Item item, int context)
 		{
+			//TODO: when quick swapping vanity slots, this only calls on the one being set to vanity not the one being set to the real spot.
+			//also doesn't call when swapping between loadouts
 			if (item.ModItem is SmartAccessory)
 				(item.ModItem as SmartAccessory).Equip(player, item);
 
@@ -225,7 +264,9 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		{
 			simulatedAccessories.Clear();
 
-			for (int k = 3; k <= 7 + Player.extraAccessorySlots; k++)
+			int accessoryCount = SmartAccessory.DEFAULT_ACCESSORY_SLOT_COUNT + Player.GetAmountOfExtraAccessorySlotsToShow();
+
+			for (int k = SmartAccessory.ACCESSORY_START_INDEX; k < SmartAccessory.ACCESSORY_START_INDEX + accessoryCount; k++)
 			{
 				(Player.armor[k].ModItem as SmartAccessory)?.Equip(Player, Player.armor[k]);
 			}

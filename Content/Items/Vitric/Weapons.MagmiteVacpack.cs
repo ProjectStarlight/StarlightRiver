@@ -40,6 +40,11 @@ namespace StarlightRiver.Content.Items.Vitric
 			Item.value = Item.sellPrice(gold: 2, silver: 75);
 		}
 
+		public override bool CanUseItem(Player Player)
+		{
+			return !Player.channel;
+		}
+
 		public override Vector2? HoldoutOffset()
 		{
 			return new Vector2(-10f, 0f);

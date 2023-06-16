@@ -64,7 +64,7 @@ namespace StarlightRiver.Core
 		public delegate void ModifyHitNPCDelegate(Player player, Item Item, NPC target, ref NPC.HitModifiers modifiers);
 		public override void ModifyHitNPCWithItem(Item item, NPC target, ref NPC.HitModifiers modifiers)
 		{
-			//AddHitPacket(null, target, damage, knockback, crit); PORTTODO: Change
+			AddHitPacket(null, target, modifiers);
 			ModifyHitNPCEvent?.Invoke(Player, item, target, ref modifiers);
 		}
 
@@ -77,7 +77,7 @@ namespace StarlightRiver.Core
 		public delegate void ModifyHitNPCWithProjDelegate(Player player, Projectile proj, NPC target, ref NPC.HitModifiers modifiers);
 		public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref NPC.HitModifiers modifiers)
 		{
-			//AddHitPacket(proj, target, damage, knockback, crit);  PORTTODO: Change
+			Main.NewText("hit target with proj");
 			ModifyHitNPCWithProjEvent?.Invoke(Player, proj, target, ref modifiers);
 		}
 
@@ -90,7 +90,7 @@ namespace StarlightRiver.Core
 		public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			OnHitNPCEvent?.Invoke(Player, item, target, hit, damageDone);
-			SendHitPacket();
+			SendHitPacket(hit, damageDone);
 		}
 
 		/// <summary>
@@ -102,7 +102,7 @@ namespace StarlightRiver.Core
 		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			OnHitNPCWithProjEvent?.Invoke(Player, proj, target, hit, damageDone);
-			SendHitPacket();
+			SendHitPacket(hit, damageDone);
 		}
 
 		public delegate void NaturalLifeRegenDelegate(Player player, ref float regen);
