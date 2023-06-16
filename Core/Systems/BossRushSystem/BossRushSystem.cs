@@ -22,6 +22,8 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 {
 	internal class BossRushSystem : ModSystem
 	{
+		public const float MAX_DEATH_FADEOUT = 330f;
+
 		public static bool isBossRush = false;
 
 		public static int bossRushDifficulty;
@@ -44,6 +46,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		public static int speedupTimer;
 
 		public static int transitionTimer = 0;
+		public static int deathFadeoutTimer = 0;
 		public static Rectangle visibleArea = new(0, 0, 0, 0);
 
 		public static List<BossRushStage> stages;
@@ -60,6 +63,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			StarlightRiverBackground.DrawOverlayEvent += DrawOverlay;
 			StarlightRiverBackground.CheckIsActiveEvent += () => isBossRush;
 			On_Main.DoUpdate += Speedup;
+			On_NPC.UpdateNPC += disableWhenDead;
 
 			File.WriteAllBytes(Path.Combine(ModLoader.ModPath, "BossRushWorld.wld"), Mod.GetFileBytes("Worlds/BossRushWorld.wld"));
 			File.WriteAllBytes(Path.Combine(ModLoader.ModPath, "BossRushWorld.twld"), Mod.GetFileBytes("Worlds/BossRushWorld.twld"));
@@ -81,13 +85,33 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			scoreMult = bossRushDifficulty + 1;
 
 			transitionTimer = 0;
+			deathFadeoutTimer = 0;
 
 			MasterDeathTicker.animationTimer = 480;
 			UILoader.GetUIState<MessageBox>().Visible = false;
 		}
 
 		/// <summary>
-		/// Ends the boss rush and submits your final score
+		/// pauses the boss rush and submits your final score, waiting for player to exit out or click retry
+		/// </summary>
+		public static void deadLogic()
+		{
+			if (Main.GameMode == 0)
+				savedNormalScore = Score;
+			if (Main.GameMode == 1)
+				savedExpertScore = Score;
+			if (Main.GameMode == 2)
+				savedMasterScore = Score;
+
+			if (deathFadeoutTimer < MAX_DEATH_FADEOUT)
+				deathFadeoutTimer++;
+
+			Main.LocalPlayer.respawnTimer = 2;
+			BossRushGUIHack.inScoreScreen = true; //just means if they exit out without the button dumps them into the score screen from dead
+		}
+
+		/// <summary>
+		/// Ends the boss rush and submits your final score. Returning to the main screen
 		/// </summary>
 		public static void End()
 		{
@@ -102,6 +126,12 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 
 			BossRushScore.Reset();
 			BossRushGUIHack.inScoreScreen = true;
+		}
+
+		public override void PreSaveAndQuit()
+		{
+			UILoader.GetUIState<BossRushDeathScreen>().Visible = false;
+
 		}
 
 		/// <summary>
@@ -331,7 +361,11 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 
 			// end the rush if the player died
 			if (Main.LocalPlayer.dead)
-				End();
+			{
+				deadLogic();
+				return;
+			}
+				
 
 			// decrement the score as time goes on
 			scoreTimer++;
@@ -439,6 +473,9 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			else if (transitionTimer - 90 <= 30)
 				opacity = (transitionTimer - 90) / 30f;
 
+			if (deathFadeoutTimer > 0)
+				opacity = deathFadeoutTimer / MAX_DEATH_FADEOUT;
+
 			sb.Draw(tex, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White * opacity);
 
 			Vector2 pos = visibleArea.TopLeft() - Main.screenPosition;
@@ -457,6 +494,14 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 				sb.Draw(tex, new Rectangle(0, (int)(pos.Y + visibleArea.Height), Main.screenWidth, Main.screenHeight - (int)(pos.Y + visibleArea.Height)), Color.White);
 				sb.Draw(gradH, new Rectangle(0, (int)(pos.Y + visibleArea.Height - 80), Main.screenWidth, 80), color);
 			}
+		}
+
+		private void disableWhenDead(On_NPC.orig_UpdateNPC orig, NPC self, int i)
+		{
+			if (isBossRush && Main.LocalPlayer.dead && self.boss)
+				return;
+
+			orig.Invoke(self, i);
 		}
 
 		/// <summary>

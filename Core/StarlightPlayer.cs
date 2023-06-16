@@ -4,6 +4,7 @@ using StarlightRiver.Content.Items.Breacher;
 using StarlightRiver.Content.Packets;
 using StarlightRiver.Content.Tiles.Vitric;
 using StarlightRiver.Core.Loaders.UILoading;
+using StarlightRiver.Core.Systems.BossRushSystem;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Helpers;
@@ -152,7 +153,7 @@ namespace StarlightRiver.Core
 
 			DummyTile.dummies.Clear();
 
-			if (Main.masterMode)
+			if (Main.masterMode && !BossRushSystem.isBossRush)
 			{
 				UILoader.GetUIState<MessageBox>().Display("WARNING", "Starlight River has unique behavior for its bosses in Master Mode. This behavior is intended to be immensely difficult over anything else, and assumes a high amount of knowldge about " +
 					"both the mod and base game. Starlight River Master Mode is not intended for a first playthrough. Starlight River Master Mode is not intended to be fair. Starlight River Master Mode is not intended to be fun for everyone. " +
