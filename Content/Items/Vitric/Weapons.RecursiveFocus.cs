@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.Audio;
@@ -70,21 +71,11 @@ namespace StarlightRiver.Content.Items.Vitric
 		}
 	}
 
-	public class RecursiveFocusGlobalNPC : GlobalNPC
-	{
-		public bool Targeted;
-		public override bool InstancePerEntity => true;
-
-		public override bool PreAI(NPC npc)
-		{
-			Targeted = Main.projectile.Any(p => p.active && p.type == ModContent.ProjectileType<RecursiveFocusLaser>() && (p.ModProjectile as RecursiveFocusLaser).TargetNPC == npc);
-
-			return base.PreAI(npc);
-		}
-	}
-
 	public class RecursiveFocusProjectile : ModProjectile
 	{
+		public Vector2 LineOfSightPos => Owner.Center + new Vector2(0f, -200); // needed for LOS check
+
+		public NPC[] targets = new NPC[3]; // for multi mode
 		public bool MultiMode => Projectile.ai[0] != 0f;
 		public ref float SwitchTimer => ref Projectile.ai[1];
 		public Player Owner => Main.player[Projectile.owner];
@@ -124,13 +115,15 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (SwitchTimer > 0)
 				SwitchTimer--;
 
+			PopulateTargets();
+
 			if (!Main.projectile.Any(p => p.active && p.owner == Owner.whoAmI && p.type == ModContent.ProjectileType<RecursiveFocusLaser>()))
 			{
 				if (MultiMode)
 				{
-					for (int i = 1; i < 4; i++)
+					for (int i = 0; i < 3; i++)
 					{
-						Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<RecursiveFocusLaser>(), Projectile.damage, 0f, Owner.whoAmI, 1f, 0f, i * 5);
+						Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<RecursiveFocusLaser>(), Projectile.damage, 0f, Owner.whoAmI, 1f, 0f);
 
 						proj.originalDamage = Projectile.originalDamage;
 						(proj.ModProjectile as RecursiveFocusLaser).parent = Projectile;
@@ -212,17 +205,60 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			SoundEngine.PlaySound(SoundID.Shatter, Projectile.position);
 		}
+
+		internal void PopulateTargets()
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				if (targets[i] == null)
+					targets[i] = Main.npc.Where(n => n.CanBeChasedBy() && n.Distance(Projectile.Center) < 1000f && !AlreadyTargeted(n) && CheckLOS(n)).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
+				else if (!targets[i].active || targets[i].Distance(Projectile.Center) > 1000f || !CheckLOS(targets[i]))
+					targets[i] = null;
+			}
+		}
+
+		internal bool AlreadyTargeted(NPC target)
+		{
+			if (targets[0] == target || targets[1] == target || targets[2] == target)
+				return true;
+
+			return false;
+		}
+
+		internal bool CheckLOS(NPC target)
+		{
+			int checkCount = 3;
+
+			if (!Collision.CanHit(Owner.Center, 1, 1, target.Center, 1, 1))
+				checkCount--;
+
+			if (!Collision.CanHit(Projectile.Center, 1, 1, target.Center, 1, 1))
+				checkCount--;
+
+			if (!Collision.CanHit(LineOfSightPos, 1, 1, target.Center, 1, 1))
+				checkCount--;
+
+			return checkCount > 0;
+		}
 	}
 
 	public class RecursiveFocusLaser : ModProjectile
 	{
+		private List<Vector2> cache;
+		private Trail trail;
+		private Trail trail2;
+		private Trail trail3;
+		private Trail trail4;
+
 		public int order; // each projectile needs a diff attack delay
 		public Projectile parent;
 		public NPC TargetNPC;
+
+		public int Lifetime; // for trail drawing
+		public RecursiveFocusProjectile crystal => parent.ModProjectile as RecursiveFocusProjectile;
 		public bool HasTarget => TargetNPC != null;
 		public bool MultiMode => Projectile.ai[0] != 0f;
 		public ref float TimeSpentOnTarget => ref Projectile.ai[1];
-		public ref float AttackDelay => ref Projectile.ai[2];
 		public Player Owner => Main.player[Projectile.owner];
 		public override string Texture => AssetDirectory.Invisible;
 		public override void SetStaticDefaults()
@@ -253,35 +289,40 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void AI()
 		{
-			if (parent == null)
+			if (parent == null || !parent.active)
 			{
 				Projectile.Kill();
 				return;
 			}
 
-			if (AttackDelay > 0)
-				AttackDelay--;
+			Lifetime++;
 
 			if (HasTarget)
 			{
+				if (!Main.dedServ)
+				{
+					ManageCaches();
+					ManageTrail();
+				}
+
 				if (TimeSpentOnTarget < 600)
 					TimeSpentOnTarget++;
 
-				if (!TargetNPC.active || TargetNPC.Distance(Projectile.Center) > 1000f || !Collision.CanHitLine(Owner.Center, 1, 1, TargetNPC.Center, 1, 1) || !Collision.CanHitLine(Projectile.Center, 1, 1, TargetNPC.Center, 1, 1))
+				if (!TargetNPC.active || TargetNPC.Distance(Projectile.Center) > 1000f || !crystal.CheckLOS(TargetNPC))
 				{
 					TargetNPC = null;
-					AttackDelay = 60 + order * 5; // offset the attack delays so they dont target the same thing (in multi mode)
 				}
 			}
 			else
 			{
-				if (AttackDelay <= 0f)
-					TargetNPC = FindTarget();
+				TargetNPC = MultiMode ? crystal.targets[order] : FindTarget();
 
 				TimeSpentOnTarget = 0;
 			}
 
 			UpdateProjectile();
+
+			Dust.NewDustPerfect(crystal.LineOfSightPos, DustID.Torch);
 		}
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
@@ -292,6 +333,13 @@ namespace StarlightRiver.Content.Items.Vitric
 			float useless = 0f;
 
 			return TimeSpentOnTarget > 2 && Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, TargetNPC.Center, 15, ref useless);
+		}
+
+		public override bool PreDraw(ref Color lightColor)
+		{
+			DrawTrail(Main.spriteBatch);
+
+			return false;
 		}
 
 		internal void UpdateProjectile()
@@ -311,7 +359,78 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		internal NPC FindTarget()
 		{
-			return Main.npc.Where(n => n.CanBeChasedBy() && n.Distance(Projectile.Center) < 1000f && !n.GetGlobalNPC<RecursiveFocusGlobalNPC>().Targeted && (Collision.CanHitLine(Owner.Center, 1, 1, n.Center, 1, 1) || Collision.CanHitLine(Projectile.Center, 1, 1, n.Center, 1, 1))).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
+			return Main.npc.Where(n => n.CanBeChasedBy() && n.Distance(Projectile.Center) < 1000f && crystal.CheckLOS(n)).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
 		}
+
+		#region PRIMITIVE DRAWING
+		private void ManageCaches()
+		{
+			cache = new List<Vector2>();
+			for (int i = 0; i < 13; i++)
+			{
+				cache.Add(Vector2.Lerp(Projectile.Center + Projectile.velocity, TargetNPC.Center, i / 13f));
+			}
+
+			cache.Add(TargetNPC.Center);
+		}
+
+		private void ManageTrail()
+		{
+			trail ??= new Trail(Main.instance.GraphicsDevice, 14, new TriangularTip(4), factor => MultiMode ? 4 : MathHelper.Lerp(3, 10, TimeSpentOnTarget / 600f), factor => new Color(255, 165, 115) * 0.6f);
+
+			trail.Positions = cache.ToArray();
+			trail.NextPosition = TargetNPC.Center;
+
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 14, new TriangularTip(4), factor => MultiMode ? 4 : MathHelper.Lerp(3, 10, TimeSpentOnTarget / 600f), factor => new Color(255, 150, 50) * 0.6f);
+
+			trail2.Positions = cache.ToArray();
+			trail2.NextPosition = TargetNPC.Center;
+
+			trail3 ??= new Trail(Main.instance.GraphicsDevice, 14, new TriangularTip(4), factor => MultiMode ? 6 : MathHelper.Lerp(4, 14, TimeSpentOnTarget / 600f), factor => new Color(255, 165, 115) * 0.6f);
+
+			trail3.Positions = cache.ToArray();
+			trail3.NextPosition = TargetNPC.Center;
+
+			trail4 ??= new Trail(Main.instance.GraphicsDevice, 14, new TriangularTip(4), factor => MultiMode ? 6 : MathHelper.Lerp(4, 14, TimeSpentOnTarget / 600f), factor => new Color(255, 150, 50) * 0.6f);
+
+			trail4.Positions = cache.ToArray();
+			trail4.NextPosition = TargetNPC.Center;
+		}
+
+		private void DrawTrail(SpriteBatch spriteBatch)
+		{
+			spriteBatch.End();
+			Effect effect = Filters.Scene["InfernoTrail"].GetShader().Shader;
+
+			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+			effect.Parameters["intensity"].SetValue(new Vector2(1f, 0.15f));
+			effect.Parameters["sinTime"].SetValue((float)Math.Sin(Lifetime * 0.05f));
+			effect.Parameters["time"].SetValue(Lifetime * -0.02f);
+			effect.Parameters["repeats"].SetValue(1);
+			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+
+			if (HasTarget && TimeSpentOnTarget > 2)
+			{
+				trail?.Render(effect);
+				trail2?.Render(effect);
+
+				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
+
+				trail?.Render(effect);
+				trail3?.Render(effect);
+
+				effect.Parameters["time"].SetValue(Lifetime * 0.05f);
+				trail2?.Render(effect);
+				trail4?.Render(effect);
+			}
+
+			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+		}
+
+		#endregion PRIMITIVEDRAWING
 	}
 }
