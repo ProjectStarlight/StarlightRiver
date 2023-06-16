@@ -33,7 +33,6 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.knockBack = 0;
 			Item.rare = ItemRarityID.Blue;
 			Item.value = Item.sellPrice(0, 1, 0, 0);
-			Item.channel = true;
 			Item.shoot = ProjectileType<BalloonGunBalloon>();
 			Item.shootSpeed = 10f;
 			Item.autoReuse = true;
