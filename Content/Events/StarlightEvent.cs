@@ -2,6 +2,7 @@
 using StarlightRiver.Content.Backgrounds;
 using StarlightRiver.Content.Bosses.VitricBoss;
 using StarlightRiver.Content.NPCs.Starlight;
+using StarlightRiver.Core.Systems.BossRushSystem;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
 using System.IO;
@@ -19,7 +20,7 @@ namespace StarlightRiver.Content.Events
 
 		public static int fadeTimer;
 
-		public static bool Active => !Main.dayTime && (occuring || fadeTimer > 0);
+		public static bool Active => !Main.dayTime && (occuring || fadeTimer > 0) && !BossRushSystem.isBossRush;
 
 		public override void PostUpdateTime()
 		{
