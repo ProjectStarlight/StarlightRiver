@@ -1,7 +1,6 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Content.Items.Potions;
 using StarlightRiver.Core.Systems.BarrierSystem;
-using StarlightRiver.Helpers;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Desert
 {
@@ -11,31 +10,9 @@ namespace StarlightRiver.Content.Items.Desert
 
 		public DefiledAnkh() : base(ModContent.Request<Texture2D>(AssetDirectory.DesertItem + "DefiledAnkh").Value) { }
 
-		public override void Load()
-		{
-			StarlightPlayer.PreUpdateBuffsEvent += RemoveDebuffs;
-		}
-
-		private void RemoveDebuffs(Player player)
-		{
-			if (Equipped(player) && (player.GetModPlayer<BarrierPlayer>().barrier > 0 || player.GetModPlayer<BarrierPlayer>().justHitWithBarrier))
-			{
-				for (int i = 0; i < player.buffType.Length; i++)
-				{
-					int buffType = player.buffType[i];
-
-					if (Helper.IsValidDebuff(player, i) && buffType != ModContent.BuffType<NoShieldPot>() && Main.debuff[buffType])
-					{
-						player.DelBuff(i);
-						i--;
-					}
-				}
-			}
-		}
-
 		public override void SetStaticDefaults()
 		{
-			Tooltip.SetDefault("Cursed : Your Barrier protects against twenty-five percent less damage\nYou cannot gain any debuff besides Potion, Barrier and Mana Sickness while Barrier is active" +
+			Tooltip.SetDefault("Cursed : Your Barrier protects against twenty-five percent less damage\n+100% innoculation while barrier is active\nimmunity to most debuffs while barrier is active" +
 				"\n+40 max Barrier");
 		}
 
@@ -49,6 +26,27 @@ namespace StarlightRiver.Content.Items.Desert
 			BarrierPlayer bp = player.GetModPlayer<BarrierPlayer>();
 			bp.barrierDamageReduction -= 0.25f;
 			bp.maxBarrier += 40;
+
+			if (bp.barrier > 0)
+			{
+				player.buffImmune[BuffID.Bleeding] = true;
+				player.buffImmune[BuffID.Confused] = true;
+				player.buffImmune[BuffID.Darkness] = true;
+				player.buffImmune[BuffID.Silenced] = true;
+				player.buffImmune[BuffID.Weak] = true;
+				player.buffImmune[BuffID.BrokenArmor] = true;
+				player.buffImmune[BuffID.Cursed] = true;
+				player.buffImmune[BuffID.Poisoned] = true;
+				player.buffImmune[BuffID.Slow] = true;
+				player.buffImmune[BuffID.Stoned] = true;
+				player.buffImmune[BuffID.Rabies] = true;
+				player.buffImmune[BuffID.Chilled] = true;
+				player.buffImmune[BuffID.Ichor] = true;
+				player.buffImmune[BuffID.Frozen] = true;
+				player.buffImmune[BuffID.Webbed] = true;
+
+				player.GetModPlayer<DoTResistancePlayer>().DoTResist += 1;
+			}
 		}
 	}
 }
