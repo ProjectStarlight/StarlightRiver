@@ -8,6 +8,7 @@ using System;
 using System.IO;
 using System.Linq;
 using Terraria.Graphics.Effects;
+using Terraria.ID;
 using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Events
@@ -43,15 +44,17 @@ namespace StarlightRiver.Content.Events
 				occuring = true;
 				willOccur = false;
 				Main.NewText("A strange traveler has arrived...", new Color(150, 200, 255));
-				NPC.NewNPC(null, Main.spawnTileX * 16, sequence == 0 ? Main.spawnTileY * 16 - 240 : Main.spawnTileY * 16 - 120, ModContent.NPCType<Crow>());
 
-				NetMessage.SendData(Terraria.ID.MessageID.WorldData);
+				if (Main.netMode != NetmodeID.MultiplayerClient)
+					NPC.NewNPC(null, Main.spawnTileX * 16, sequence == 0 ? Main.spawnTileY * 16 - 240 : Main.spawnTileY * 16 - 120, ModContent.NPCType<Crow>());
+
+				NetMessage.SendData(MessageID.WorldData);
 			}
 
 			if (Active)
 			{
 				// Failsafe incase the crow despawns... shouldn't happen anymore but who knows!
-				if (occuring && !Main.npc.Any(n => n.active && n.type == ModContent.NPCType<Crow>()))
+				if (occuring && !Main.npc.Any(n => n.active && n.type == ModContent.NPCType<Crow>()) && Main.netMode != NetmodeID.MultiplayerClient)
 					NPC.NewNPC(null, Main.spawnTileX * 16, sequence == 0 ? Main.spawnTileY * 16 - 240 : Main.spawnTileY * 16 - 120, ModContent.NPCType<Crow>());
 
 				bool talking = Main.npc.Any(n => n.active && n.type == ModContent.NPCType<Crow>() && (n.ModNPC as Crow).InCutscene);
@@ -132,7 +135,9 @@ namespace StarlightRiver.Content.Events
 				occuring = true;
 				willOccur = false;
 				Main.NewText("A strange traveler has arrived...", new Color(150, 200, 255));
-				NPC.NewNPC(null, Main.spawnTileX * 16, sequence == 0 ? Main.spawnTileY * 16 - 240 : Main.spawnTileY * 16 - 120, ModContent.NPCType<Crow>());
+
+				if (Main.netMode != NetmodeID.MultiplayerClient)
+					NPC.NewNPC(null, Main.spawnTileX * 16, sequence == 0 ? Main.spawnTileY * 16 - 240 : Main.spawnTileY * 16 - 120, ModContent.NPCType<Crow>());
 			}
 		}
 
