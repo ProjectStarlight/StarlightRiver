@@ -21,7 +21,9 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 
 			if (pollTimer % 20 == 0)
 			{
-				float thisDPS = totalDamage * 3f + 1;
+				float thisDPS = totalDamage * 3f;
+				if (thisDPS < 1)
+					thisDPS = 1f;
 				totalDamage = 0;
 
 				if (thisDPS > DPSTarget && (DPSTarget / thisDPS) < resistance)
