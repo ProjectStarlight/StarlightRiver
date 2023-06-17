@@ -609,6 +609,8 @@ namespace StarlightRiver.Content.Items.Vitric
 					color *= 0.5f;
 
 				Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, color, 0f, bloomTex.Size() / 2f, 0.2f * scale, 0f, 0f);
+
+				Main.spriteBatch.Draw(bloomTex, targetNPC.Center - Main.screenPosition, null, Color.White with { A = 0 }, 0f, bloomTex.Size() / 2f, 0.1f * scale, 0f, 0f);
 			}
 
 			return false;
