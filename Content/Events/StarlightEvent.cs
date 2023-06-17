@@ -21,10 +21,17 @@ namespace StarlightRiver.Content.Events
 
 		public static int fadeTimer;
 
-		public static bool Active => !Main.dayTime && (occuring || fadeTimer > 0) && !BossRushSystem.isBossRush;
+		public static bool Active => !Main.dayTime && (occuring || fadeTimer > 0);
 
 		public override void PostUpdateTime()
 		{
+			if (BossRushSystem.isBossRush)
+			{
+				occuring = false;
+				willOccur = false;
+				return;
+			}
+
 			// Handles the fade effects
 			if (occuring && fadeTimer < 300)
 				fadeTimer++;

@@ -216,6 +216,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 						CutawaySystem.CutawayHandler.CreateCutaways();
 
 						NPC.NewNPC(null, (int)a.X + 952, (int)a.Y + 720, ModContent.NPCType<BossRushOrb>());
+						Main.LocalPlayer.GetModPlayer<MedalPlayer>().QualifyForMedal("BossRush", 999);
 
 						visibleArea = new Rectangle((int)a.X, (int)a.Y, 500, 360);
 						HushArmorSystem.DPSTarget = 75;
