@@ -50,8 +50,14 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void AI()
 		{
+			NPC.dontTakeDamage = true;
+			NPC.immortal = true;
+
 			Timer++;
 			VisualTimer++;
+
+			if (State < 0 || State > 5)
+				State = StarlightWorld.HasFlag(WorldFlags.GlassweaverDowned) ? 3 : 0;
 
 			if (talkingTo != null && Vector2.Distance(talkingTo.Center, NPC.Center) > 2000)
 			{
