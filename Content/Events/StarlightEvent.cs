@@ -31,6 +31,14 @@ namespace StarlightRiver.Content.Events
 			if (!occuring && fadeTimer > 0)
 				fadeTimer--;
 
+			// Should never occur in boss rush
+			if (BossRushSystem.isBossRush)
+			{
+				occuring = false;
+				willOccur = false;
+				sequence = 0;
+			}
+
 			if (Main.dayTime && occuring)
 			{
 				occuring = false;
