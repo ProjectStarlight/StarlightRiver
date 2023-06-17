@@ -73,7 +73,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 	public class RecursiveFocusProjectile : ModProjectile
 	{
-		public Vector2 LineOfSightPos => Owner.Center + new Vector2(0f, -200); // needed for LOS check
+		public Vector2 LineOfSightPos => Owner.Center + new Vector2(0f, -70); // needed for LOS check
 
 		public NPC[] targets = new NPC[3]; // for multi mode
 		public bool MultiMode => Projectile.ai[0] != 0f;
@@ -250,13 +250,16 @@ namespace StarlightRiver.Content.Items.Vitric
 		private Trail trail3;
 		private Trail trail4;
 
-		public int order; // each projectile needs a diff attack delay
+		public int order;
 		public Projectile parent;
-		public NPC TargetNPC;
+		public NPC targetNPC;
 
-		public int Lifetime; // for trail drawing
+		public int stage;
+		public int lifetime; // for trail drawing
+		public int pulseTimer;
+		public int trailFade;
 		public RecursiveFocusProjectile crystal => parent.ModProjectile as RecursiveFocusProjectile;
-		public bool HasTarget => TargetNPC != null;
+		public bool HasTarget => targetNPC != null;
 		public bool MultiMode => Projectile.ai[0] != 0f;
 		public ref float TimeSpentOnTarget => ref Projectile.ai[1];
 		public Player Owner => Main.player[Projectile.owner];
@@ -295,7 +298,10 @@ namespace StarlightRiver.Content.Items.Vitric
 				return;
 			}
 
-			Lifetime++;
+			if (pulseTimer > 0)
+				pulseTimer--;
+
+			lifetime++;
 
 			if (HasTarget)
 			{
@@ -305,24 +311,72 @@ namespace StarlightRiver.Content.Items.Vitric
 					ManageTrail();
 				}
 
-				if (TimeSpentOnTarget < 600)
-					TimeSpentOnTarget++;
-
-				if (!TargetNPC.active || TargetNPC.Distance(Projectile.Center) > 1000f || !crystal.CheckLOS(TargetNPC))
+				if (MultiMode)
 				{
-					TargetNPC = null;
+					if (TimeSpentOnTarget < 5)
+						TimeSpentOnTarget++;
 				}
+				else
+				{
+
+					if (stage < 3)
+					{
+						if (TimeSpentOnTarget < 180)
+						{
+							TimeSpentOnTarget++;
+						}
+						else
+						{
+							stage++;
+							TimeSpentOnTarget = 3;
+
+							pulseTimer = 15;
+
+							BezierCurve curve = GetBezierCurve();
+
+							int points = 26;
+							Vector2[] curvePositions = curve.GetPoints(points).ToArray();
+
+							for (int i = 0; i < 26; i++)
+							{
+								for (int d = 0; d < 2; d++)
+								{
+									Dust.NewDustPerfect(curvePositions[i], ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(1f, 1f), 0, new Color(255, 150, 50), 0.7f);
+								}
+							}
+						}
+					}
+				}
+
+				if (trailFade < 15)
+					trailFade++;
+
+				if (!targetNPC.active || targetNPC.Distance(Projectile.Center) > 1000f || !crystal.CheckLOS(targetNPC))
+				{
+					targetNPC = null;
+					TimeSpentOnTarget = 0;
+					stage = 0;
+					trailFade = 0;
+				}  
 			}
 			else
 			{
-				TargetNPC = MultiMode ? crystal.targets[order] : FindTarget();
+				targetNPC = MultiMode ? crystal.targets[order] : FindTarget();
 
 				TimeSpentOnTarget = 0;
+				stage = 0;
+				trailFade = 0;
 			}
 
 			UpdateProjectile();
 
 			Dust.NewDustPerfect(crystal.LineOfSightPos, DustID.Torch);
+		}
+
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+		{
+			if (!MultiMode)
+				modifiers.SourceDamage *= 1 + stage;
 		}
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
@@ -332,12 +386,21 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			float useless = 0f;
 
-			return TimeSpentOnTarget > 2 && Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, TargetNPC.Center, 15, ref useless);
+			return TimeSpentOnTarget > 2 && Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, targetNPC.Center, 15, ref useless);
 		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
 			DrawTrail(Main.spriteBatch);
+
+			if (MultiMode)
+			{
+
+			}
+			else
+			{
+
+			}
 
 			return false;
 		}
@@ -363,52 +426,122 @@ namespace StarlightRiver.Content.Items.Vitric
 		}
 
 		#region PRIMITIVE DRAWING
+		private BezierCurve GetBezierCurve()
+		{
+			Vector2[] curvePoints =
+			{
+				Vector2.Lerp(Projectile.Center + Projectile.velocity, targetNPC.Center, 0.2f) + new Vector2(0f, -40f * (float)Math.Sin(lifetime * 0.05f)).RotatedBy(Projectile.DirectionTo(targetNPC.Center).ToRotation()),
+				Vector2.Lerp(Projectile.Center + Projectile.velocity, targetNPC.Center, 0.4f) + new Vector2(0f, 80f * (float)Math.Cos(lifetime * -0.075f)).RotatedBy(Projectile.DirectionTo(targetNPC.Center).ToRotation()),
+				Vector2.Lerp(Projectile.Center + Projectile.velocity, targetNPC.Center, 0.6f) + new Vector2(0f, 50f *(float)Math.Sin(lifetime * -0.05f)).RotatedBy(Projectile.DirectionTo(targetNPC.Center).ToRotation()),
+				Vector2.Lerp(Projectile.Center + Projectile.velocity, targetNPC.Center, 0.8f) + new Vector2(0f, -30f *(float)Math.Cos(lifetime * 0.075f)).RotatedBy(Projectile.DirectionTo(targetNPC.Center).ToRotation()),
+			};
+
+			var curve = new BezierCurve(new Vector2[] { 
+				Projectile.Center + Projectile.velocity, 
+				curvePoints[0],
+				curvePoints[1],
+				curvePoints[2],
+				curvePoints[3],
+				targetNPC.Center 
+			});
+
+			return curve;
+		}
+
 		private void ManageCaches()
 		{
-			cache = new List<Vector2>();
-			for (int i = 0; i < 13; i++)
+			if (cache is null)
 			{
-				cache.Add(Vector2.Lerp(Projectile.Center + Projectile.velocity, TargetNPC.Center, i / 13f));
+				cache = new List<Vector2>();
+
+				for (int i = 0; i < 26; i++)
+				{
+					cache.Add(Projectile.Center + Projectile.velocity);
+				}
 			}
 
-			cache.Add(TargetNPC.Center);
+			for (int k = 0; k < 26; k++)
+			{
+				BezierCurve curve = GetBezierCurve();
+
+				int points = 26;
+				Vector2[] curvePositions = curve.GetPoints(points).ToArray();
+
+				cache[k] = curvePositions[k];
+			}
 		}
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 14, new TriangularTip(4), factor => MultiMode ? 4 : MathHelper.Lerp(3, 10, TimeSpentOnTarget / 600f), factor => new Color(255, 165, 115) * 0.6f);
+			trail ??= new Trail(Main.instance.GraphicsDevice, 26, new TriangularTip(4), factor => MultiMode ? 4 : 4 * 1 + stage, factor => 
+			{
+				if (trailFade < 15)
+					return Color.Lerp(Color.Transparent, new Color(255, 165, 115), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
+
+				if (pulseTimer > 0)
+					return Color.Lerp(Color.White, new Color(255, 165, 115), 1f - pulseTimer / 15f) * 0.6f;
+
+				return new Color(255, 165, 115) * 0.6f;
+			});
 
 			trail.Positions = cache.ToArray();
-			trail.NextPosition = TargetNPC.Center;
+			trail.NextPosition = cache[25];
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 14, new TriangularTip(4), factor => MultiMode ? 4 : MathHelper.Lerp(3, 10, TimeSpentOnTarget / 600f), factor => new Color(255, 150, 50) * 0.6f);
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 26, new TriangularTip(4), factor => MultiMode ? 4 : 4 * 1 + stage, factor =>
+			{
+				if (trailFade < 15)
+					return Color.Lerp(Color.Transparent, new Color(255, 150, 50), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
+
+				if (pulseTimer > 0)
+					return Color.Lerp(new Color(255, 165, 115), new Color(255, 150, 50), 1f - pulseTimer / 15f) * 0.6f;
+
+				return new Color(255, 150, 50) * 0.6f;
+			});
 
 			trail2.Positions = cache.ToArray();
-			trail2.NextPosition = TargetNPC.Center;
+			trail2.NextPosition = cache[25];
 
-			trail3 ??= new Trail(Main.instance.GraphicsDevice, 14, new TriangularTip(4), factor => MultiMode ? 6 : MathHelper.Lerp(4, 14, TimeSpentOnTarget / 600f), factor => new Color(255, 165, 115) * 0.6f);
+			trail3 ??= new Trail(Main.instance.GraphicsDevice, 26, new TriangularTip(4), factor => MultiMode ? 7 : 5 * 1 + stage, factor =>
+			{
+				if (trailFade < 15)
+					return Color.Lerp(Color.Transparent, new Color(255, 165, 115), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
+
+				if (pulseTimer > 0)
+					return Color.Lerp(Color.White, new Color(255, 165, 115), 1f - pulseTimer / 15f) * 0.6f;
+
+				return new Color(255, 165, 115) * 0.6f;
+			});
 
 			trail3.Positions = cache.ToArray();
-			trail3.NextPosition = TargetNPC.Center;
+			trail3.NextPosition = cache[25];
 
-			trail4 ??= new Trail(Main.instance.GraphicsDevice, 14, new TriangularTip(4), factor => MultiMode ? 6 : MathHelper.Lerp(4, 14, TimeSpentOnTarget / 600f), factor => new Color(255, 150, 50) * 0.6f);
+			trail4 ??= new Trail(Main.instance.GraphicsDevice, 26, new TriangularTip(4), factor => MultiMode ? 7 : 5 * 1 + stage, factor =>
+			{
+				if (trailFade < 15)
+					return Color.Lerp(Color.Transparent, new Color(255, 150, 50), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
+
+				if (pulseTimer > 0)
+					return Color.Lerp(new Color(255, 165, 115), new Color(255, 150, 50), 1f - pulseTimer / 15f) * 0.6f;
+
+				return new Color(255, 150, 50) * 0.6f;
+			});
 
 			trail4.Positions = cache.ToArray();
-			trail4.NextPosition = TargetNPC.Center;
+			trail4.NextPosition = cache[25];
 		}
 
 		private void DrawTrail(SpriteBatch spriteBatch)
 		{
 			spriteBatch.End();
-			Effect effect = Filters.Scene["InfernoTrail"].GetShader().Shader;
+			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
 			Matrix view = Main.GameViewMatrix.ZoomMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["intensity"].SetValue(new Vector2(1f, 0.15f));
-			effect.Parameters["sinTime"].SetValue((float)Math.Sin(Lifetime * 0.05f));
-			effect.Parameters["time"].SetValue(Lifetime * -0.02f);
+			/*effect.Parameters["intensity"].SetValue(new Vector2(0.1f, 0.15f));
+			effect.Parameters["sinTime"].SetValue(Lifetime * 0.075f);*/
+			effect.Parameters["time"].SetValue(lifetime * -0.02f);
 			effect.Parameters["repeats"].SetValue(1);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
@@ -423,7 +556,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				trail?.Render(effect);
 				trail3?.Render(effect);
 
-				effect.Parameters["time"].SetValue(Lifetime * 0.05f);
+				effect.Parameters["time"].SetValue(lifetime * 0.05f);
 				trail2?.Render(effect);
 				trail4?.Render(effect);
 			}
