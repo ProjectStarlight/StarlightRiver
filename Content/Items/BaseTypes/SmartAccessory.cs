@@ -251,15 +251,6 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public override void UpdateEquips()
 		{
-			simulatedAccessories.RemoveAll(n => n.IsAir);
-
-			foreach (Item item in simulatedAccessories)
-			{
-				ModItem modItem = item.ModItem;
-				modItem.UpdateAccessory(Player, true);
-				modItem.UpdateEquip(Player);
-			}
-
 			int accessoryCount = SmartAccessory.DEFAULT_ACCESSORY_SLOT_COUNT + Player.GetAmountOfExtraAccessorySlotsToShow();
 			//iterate over equipped accessories so we can discover if any have changed in order to equip this
 			//done this way so we can capture all the various ways terraria has for modifying equip slots cloned/not cloned quick swap, loadout swap etc.
@@ -270,6 +261,15 @@ namespace StarlightRiver.Content.Items.BaseTypes
 					accsLastFrame[k] = Player.armor[k].type;
 					(Player.armor[k].ModItem as SmartAccessory)?.Equip(Player, Player.armor[k]);
 				}
+			}
+
+			simulatedAccessories.RemoveAll(n => n.IsAir);
+
+			foreach (Item item in simulatedAccessories)
+			{
+				ModItem modItem = item.ModItem;
+				modItem.UpdateAccessory(Player, true);
+				modItem.UpdateEquip(Player);
 			}
 		}
 	}
