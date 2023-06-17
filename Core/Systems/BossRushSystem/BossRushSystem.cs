@@ -217,7 +217,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 						NPC.NewNPC(null, (int)a.X + 952, (int)a.Y + 720, ModContent.NPCType<BossRushOrb>());
 
 						visibleArea = new Rectangle((int)a.X, (int)a.Y, 500, 360);
-						HushArmorSystem.DPSTarget = 50;
+						HushArmorSystem.DPSTarget = 75;
 					},
 					a => _ = a,
 					100
@@ -232,7 +232,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 						Item.NewItem(null, a + new Vector2(800, 2700), ModContent.ItemType<SquidBossSpawn>());
 
 						visibleArea = new Rectangle((int)a.X, (int)a.Y + 120, 1748, 2800);
-						HushArmorSystem.DPSTarget = 80;
+						HushArmorSystem.DPSTarget = 120;
 					},
 					a => StarlightWorld.squidBossArena = new Rectangle(a.X, a.Y, 109, 180)),
 
@@ -248,7 +248,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 						NPC.NewNPC(null, (int)a.X + 600, (int)a.Y + 24 * 16, ModContent.NPCType<Glassweaver>());
 
 						visibleArea = new Rectangle((int)a.X, (int)a.Y + 32, 1200 - 16, 532);
-						HushArmorSystem.DPSTarget = 120;
+						HushArmorSystem.DPSTarget = 175;
 					},
 					a => StarlightWorld.vitricBiome = new Rectangle(a.X + 37, a.Y - 68, 400, 140)),
 
@@ -274,7 +274,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 						ModContent.GetInstance<VitricBossAltar>().SpawnBoss(dummy.ParentX - 2, dummy.ParentY - 3, Main.LocalPlayer);
 
 						visibleArea = new Rectangle((int)a.X + 1040, (int)a.Y + 60, 1520, 1064);
-						HushArmorSystem.DPSTarget = 150;
+						HushArmorSystem.DPSTarget = 215;
 					},
 					a => _ = a),
 
@@ -287,7 +287,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 						NPC.NewNPC(null, (int)a.X + 250, (int)a.Y + 200, ModContent.NPCType<BossRushGoal>());
 
 						visibleArea = new Rectangle((int)a.X, (int)a.Y, 500, 360);
-						HushArmorSystem.DPSTarget = 50;
+						HushArmorSystem.DPSTarget = 75;
 					},
 					a => _ = a),
 			};
