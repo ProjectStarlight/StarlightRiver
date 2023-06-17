@@ -13,6 +13,8 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 
 		public static void CreateCutaways()
 		{
+			CutawayHook.cutaways.Clear();
+
 			// Auroracle temple overlay
 			cathedralOverlay = new Cutaway(ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/SquidBoss/CathedralOver", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value, StarlightWorld.squidBossArena.TopLeft() * 16)
 			{

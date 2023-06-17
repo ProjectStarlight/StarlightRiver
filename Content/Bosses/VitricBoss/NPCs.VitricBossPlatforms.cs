@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			NPC.lifeMax = 10;
 		}
 
-		public virtual bool findParent()
+		public virtual bool FindParent()
 		{
 			for (int i = 0; i < Main.maxNPCs; i++)
 			{
@@ -52,7 +52,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
              */
 
 			if (parent == null || !parent.NPC.active)
-				findParent();
+				FindParent();
 
 			if (NPC.ai[0] == 0)
 			{
@@ -124,7 +124,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 	internal class VitricBossPlatformDown : VitricBossPlatformUp
 	{
 
-		public override bool findParent()
+		public override bool FindParent()
 		{
 			for (int i = 0; i < Main.maxNPCs; i++)
 			{
@@ -147,7 +147,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
              */
 
 			if (parent == null || !parent.NPC.active)
-				findParent();
+				FindParent();
 
 			if (NPC.ai[0] == 0)
 			{

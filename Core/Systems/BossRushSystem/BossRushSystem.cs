@@ -212,12 +212,13 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 					new Vector2(952, 720),
 					a =>
 					{
-						StarlightWorld.vitricBiome = new Rectangle(0, 2000, 40, 40);
+						StarlightWorld.vitricBiome = new Rectangle(2000, 2000, 40, 40);
+						CutawaySystem.CutawayHandler.CreateCutaways();
 
 						NPC.NewNPC(null, (int)a.X + 952, (int)a.Y + 720, ModContent.NPCType<BossRushOrb>());
 
 						visibleArea = new Rectangle((int)a.X, (int)a.Y, 500, 360);
-						HushArmorSystem.DPSTarget = 100;
+						HushArmorSystem.DPSTarget = 75;
 					},
 					a => _ = a,
 					100
@@ -232,7 +233,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 						Item.NewItem(null, a + new Vector2(800, 2700), ModContent.ItemType<SquidBossSpawn>());
 
 						visibleArea = new Rectangle((int)a.X, (int)a.Y + 120, 1748, 2800);
-						HushArmorSystem.DPSTarget = 200;
+						HushArmorSystem.DPSTarget = 120;
 					},
 					a => StarlightWorld.squidBossArena = new Rectangle(a.X, a.Y, 109, 180)),
 
@@ -243,12 +244,13 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 					a =>
 					{
 						StarlightWorld.vitricBiome = new Rectangle((int)(a.X + 37 * 16) / 16, (int)(a.Y - 68 * 16) / 16, 400, 140);
+						CutawaySystem.CutawayHandler.CreateCutaways();
 						CutawaySystem.CutawayHandler.forgeOverlay.pos = StarlightWorld.GlassweaverArena.TopLeft() + new Vector2(-2, 2) * 16;
 
 						NPC.NewNPC(null, (int)a.X + 600, (int)a.Y + 24 * 16, ModContent.NPCType<Glassweaver>());
 
 						visibleArea = new Rectangle((int)a.X, (int)a.Y + 32, 1200 - 16, 532);
-						HushArmorSystem.DPSTarget = 240;
+						HushArmorSystem.DPSTarget = 175;
 					},
 					a => StarlightWorld.vitricBiome = new Rectangle(a.X + 37, a.Y - 68, 400, 140)),
 
@@ -258,7 +260,8 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 					new Vector2(1600, 1000),
 					a =>
 					{
-						StarlightWorld.vitricBiome = new Rectangle((int)(a.X - 200 * 16) / 16, (int)(a.Y - 6 * 16) / 16, 400, 140);
+						StarlightWorld.vitricBiome = new Rectangle((int)(a.X - 200 * 16) / 16, (int)(a.Y - 6 * 16) / 16, 400, 640);
+						CutawaySystem.CutawayHandler.CreateCutaways();
 
 						var dummy = Main.projectile.FirstOrDefault(n => n.active && n.ModProjectile is VitricBossAltarDummy)?.ModProjectile as VitricBossAltarDummy;
 
@@ -274,7 +277,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 						ModContent.GetInstance<VitricBossAltar>().SpawnBoss(dummy.ParentX - 2, dummy.ParentY - 3, Main.LocalPlayer);
 
 						visibleArea = new Rectangle((int)a.X + 1040, (int)a.Y + 60, 1520, 1064);
-						HushArmorSystem.DPSTarget = 270;
+						HushArmorSystem.DPSTarget = 215;
 					},
 					a => _ = a),
 
@@ -287,7 +290,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 						NPC.NewNPC(null, (int)a.X + 250, (int)a.Y + 200, ModContent.NPCType<BossRushGoal>());
 
 						visibleArea = new Rectangle((int)a.X, (int)a.Y, 500, 360);
-						HushArmorSystem.DPSTarget = 1;
+						HushArmorSystem.DPSTarget = 75;
 					},
 					a => _ = a),
 			};

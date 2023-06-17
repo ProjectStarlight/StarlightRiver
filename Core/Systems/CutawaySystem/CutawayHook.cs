@@ -1,6 +1,5 @@
 ﻿using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
-using StarlightRiver.Core.Systems.BossRushSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,9 +39,6 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 
 		private void DrawPositive(On_Main.orig_DrawDust orig, Main self)
 		{
-			if (BossRushSystem.BossRushSystem.isBossRush)
-				return;
-
 			for (int k = 0; k < cutaways.Count; k++)
 				cutaways[k].Draw();
 
@@ -53,7 +49,7 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 		{
 			orig(self);
 
-			if (StarlightRiver.debugMode ||  BossRushSystem.BossRushSystem.isBossRush)
+			if (StarlightRiver.debugMode)
 				return;
 
 			if (Inside)

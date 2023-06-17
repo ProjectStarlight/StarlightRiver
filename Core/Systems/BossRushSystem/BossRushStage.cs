@@ -86,6 +86,9 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		/// </summary>
 		public void BeginFight()
 		{
+			foreach (NPC npc in Main.npc)
+				npc.active = false;
+
 			BossRushSystem.trackedBossType = bossType;
 			spawnBoss(actualPosition);
 		}
