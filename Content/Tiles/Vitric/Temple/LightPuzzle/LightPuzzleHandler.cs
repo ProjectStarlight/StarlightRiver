@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Core.Systems.CameraSystem;
+using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 {
@@ -32,6 +33,19 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 		{
 			solved = false;
 			solveTimer = 0;
+		}
+
+		public override void SaveWorldData(TagCompound tag)
+		{
+			tag["solved"] = solved;
+		}
+
+		public override void LoadWorldData(TagCompound tag)
+		{
+			solved = tag.GetBool("solved");
+
+			if (solved)
+				solveTimer = 180;
 		}
 	}
 }
