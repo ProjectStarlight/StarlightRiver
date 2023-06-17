@@ -79,7 +79,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public override void NearbyEffects(int i, int j, bool closer)
 		{
-			Framing.GetTileSafely(i, j).IsActuated = LightPuzzle.LightPuzzleHandler.Solved;
+			Framing.GetTileSafely(i, j).IsActuated = LightPuzzle.LightPuzzleHandler.solved;
 		}
 	}
 

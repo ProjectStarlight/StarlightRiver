@@ -45,14 +45,14 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
 				return;
 
-			float puzzleProg = LightPuzzle.LightPuzzleHandler.solvedPoints;
+			float puzzleProg = LightPuzzle.LightPuzzleHandler.solved ? 1 : 0;
 
 			if (power < puzzleProg - 0.01f)
 				power += 0.01f;
 			else if (power > puzzleProg + 0.01f)
 				power -= 0.01f;
 
-			if (LightPuzzle.LightPuzzleHandler.Solved)
+			if (LightPuzzle.LightPuzzleHandler.solved)
 				timer++;
 
 			Vector2 pos = Projectile.Center + new Vector2(0, 88);

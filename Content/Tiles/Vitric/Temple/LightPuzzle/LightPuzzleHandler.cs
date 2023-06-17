@@ -2,8 +2,6 @@
 {
 	class LightPuzzleHandler : ModSystem
 	{
-		public static int solvedPoints;
-
-		public static bool Solved => solvedPoints >= 1;
+		public static bool solved;
 	}
 }
