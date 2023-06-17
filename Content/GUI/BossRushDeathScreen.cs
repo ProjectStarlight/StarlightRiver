@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.GUI
 				Top = new StyleDimension(80f, 0.5f),
 			};
 
-			retryButton.OnLeftClick += (a, b) => clickRetryButton();
+			retryButton.OnLeftClick += (a, b) => ClickRetryButton();
 
 			Vector2 giveUpSize = FontAssets.MouseText.Value.MeasureString("Give Up?");
 			giveUpButton = new UIText("Give Up?")
@@ -38,13 +38,13 @@ namespace StarlightRiver.Content.GUI
 				Top = new StyleDimension(120f, 0.5f),
 			};
 
-			giveUpButton.OnLeftClick += (a, b) => clickGiveUpButton();
+			giveUpButton.OnLeftClick += (a, b) => ClickGiveUpButton();
 
 			Append(retryButton);
 			Append(giveUpButton);
 		}
 
-		public void clickGiveUpButton()
+		public void ClickGiveUpButton()
 		{
 			Visible = false;
 			WorldGen.SaveAndQuit();
@@ -53,7 +53,7 @@ namespace StarlightRiver.Content.GUI
 			BossRushGUIHack.inScoreScreen = true;
 		}
 
-		public void clickRetryButton()
+		public void ClickRetryButton()
 		{
 			Visible = false;
 			Main.LocalPlayer.respawnTimer = 0;
@@ -72,7 +72,7 @@ namespace StarlightRiver.Content.GUI
 			Recalculate();
 
 			string value = Lang.inter[38].Value; //pulled directly from vanilla comes free with translation
-			DynamicSpriteFontExtensionMethods.DrawString(spriteBatch, FontAssets.DeathText.Value, value, new Vector2((float)(Main.screenWidth / 2) - FontAssets.DeathText.Value.MeasureString(value).X / 2f, (float)(Main.screenHeight / 2) -60f), Main.LocalPlayer.GetDeathAlpha(Color.Transparent), 0f, default(Vector2), 1f, (SpriteEffects)0, 0f);
+			DynamicSpriteFontExtensionMethods.DrawString(spriteBatch, FontAssets.DeathText.Value, value, new Vector2(Main.screenWidth / 2 - FontAssets.DeathText.Value.MeasureString(value).X / 2f, Main.screenHeight / 2 - 60f), Main.LocalPlayer.GetDeathAlpha(Color.Transparent), 0f, default, 1f, 0, 0f);
 
 			string ScoreString = "Final score: " + BossRushSystem.Score;
 
