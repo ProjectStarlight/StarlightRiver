@@ -26,12 +26,6 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		private readonly string tooltip;
 
 		/// <summary>
-		/// When this is first equipped we want to perform onEquip logic to simulate child accessories or other setup data
-		/// Done this way since most inventory logic is client side (but accessories are synced) and this is easier than trying to hunt down places where equipment is set in multiplayer
-		/// </summary>
-		public bool isDoneOnEquip = false;
-
-		/// <summary>
 		/// Override this and add the types of SmartAccessories you want this one to simulate. Note that simulated accessories are reset on unequip/reload, so you will need to save any persistent data on the parent accessory.
 		/// </summary>
 		public virtual List<int> ChildTypes => new();
@@ -163,8 +157,6 @@ namespace StarlightRiver.Content.Items.BaseTypes
 				Simulate(type, player);
 
 			OnEquip(player, item);
-
-			isDoneOnEquip = true;
 		}
 
 		/// <summary>
@@ -197,9 +189,6 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public sealed override void UpdateEquip(Player player)
 		{
-			if (!isDoneOnEquip)
-				Equip(player, Item);
-
 			if (isChild)
 			{
 				var toRemove = new List<Item>(); //Removes unequipped accessories from parents
@@ -245,20 +234,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 	{
 		public List<Item> simulatedAccessories = new();
 
-		public override void Load()
-		{
-			On_AchievementsHelper.HandleOnEquip += OnEquipHandler;
-		}
-
-		private void OnEquipHandler(On_AchievementsHelper.orig_HandleOnEquip orig, Player player, Item item, int context)
-		{
-			//TODO: when quick swapping vanity slots, this only calls on the one being set to vanity not the one being set to the real spot.
-			//also doesn't call when swapping between loadouts
-			if (item.ModItem is SmartAccessory)
-				(item.ModItem as SmartAccessory).Equip(player, item);
-
-			orig(player, item, context);
-		}
+		public int[] accsLastFrame = new int[20];
 
 		public override void OnEnterWorld()
 		{
@@ -269,6 +245,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			for (int k = SmartAccessory.ACCESSORY_START_INDEX; k < SmartAccessory.ACCESSORY_START_INDEX + accessoryCount; k++)
 			{
 				(Player.armor[k].ModItem as SmartAccessory)?.Equip(Player, Player.armor[k]);
+				accsLastFrame[k] = Player.armor[k].type;
 			}
 		}
 
@@ -281,6 +258,18 @@ namespace StarlightRiver.Content.Items.BaseTypes
 				ModItem modItem = item.ModItem;
 				modItem.UpdateAccessory(Player, true);
 				modItem.UpdateEquip(Player);
+			}
+
+			int accessoryCount = SmartAccessory.DEFAULT_ACCESSORY_SLOT_COUNT + Player.GetAmountOfExtraAccessorySlotsToShow();
+			//iterate over equipped accessories so we can discover if any have changed in order to equip this
+			//done this way so we can capture all the various ways terraria has for modifying equip slots cloned/not cloned quick swap, loadout swap etc.
+			for (int k = SmartAccessory.ACCESSORY_START_INDEX; k < SmartAccessory.ACCESSORY_START_INDEX + accessoryCount; k++)
+			{
+				if (Player.armor[k].type != accsLastFrame[k])
+				{
+					accsLastFrame[k] = Player.armor[k].type;
+					(Player.armor[k].ModItem as SmartAccessory)?.Equip(Player, Player.armor[k]);
+				}
 			}
 		}
 	}
