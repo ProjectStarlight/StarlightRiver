@@ -1,4 +1,5 @@
-﻿using MonoMod.RuntimeDetour;
+﻿using Mono.Cecil.Cil;
+using MonoMod.Cil;
 using System;
 
 namespace StarlightRiver.Core
@@ -9,14 +10,22 @@ namespace StarlightRiver.Core
 
 		public override void Load()
 		{
-			var d = new Hook(typeof(PlayerLoader).GetMethod("UpdateBadLifeRegen"), typeof(DoTResistancePlayer).GetMethod("ReduceDoT"));
-			d.Apply();
+			IL_Player.UpdateLifeRegen += InsertResist;
 		}
 
-		public static void ReduceDoT(Action<Player> orig, Player Player)
+		private void InsertResist(ILContext il)
 		{
-			orig(Player);
-			Player.lifeRegen = (int)(Player.lifeRegen * (1.0f - Player.GetModPlayer<DoTResistancePlayer>().DoTResist));
+			ILCursor c = new(il);
+
+			c.TryGotoNext(MoveType.After, n => n.MatchCall(typeof(PlayerLoader), "UpdateBadLifeRegen"));
+			c.Emit(OpCodes.Ldarg, 0);
+			c.EmitDelegate<Action<Player>>(ReduceDoT);
+		}
+
+		public static void ReduceDoT(Player Player)
+		{
+			if (Player.lifeRegen < 0)
+				Player.lifeRegen = (int)(Player.lifeRegen * (1.0f - Player.GetModPlayer<DoTResistancePlayer>().DoTResist));
 		}
 
 		public override void ResetEffects()
