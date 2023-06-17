@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.CameraSystem;
+﻿using ReLogic.Utilities;
+using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -155,7 +156,8 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (pulseTimer > 0)
 				pulseTimer--;
 
-			PopulateTargets();
+			if (MultiMode)
+				PopulateTargets();
 
 			if (!Main.projectile.Any(p => p.active && p.owner == Owner.whoAmI && p.type == ModContent.ProjectileType<RecursiveFocusLaser>()) && SwitchTimer <= 0)
 			{
@@ -257,6 +259,9 @@ namespace StarlightRiver.Content.Items.Vitric
 			Texture2D baseTexGlow = ModContent.Request<Texture2D>(Texture + "Base_Glow").Value;
 			Texture2D crystalTexGlow = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
 
+			if (MultiMode)
+				Main.spriteBatch.Draw(crystalTexGlow, Projectile.Center - Main.screenPosition, null, new Color(255, 150, 100, 0), Projectile.rotation, crystalTexGlow.Size() / 2f, Projectile.scale, 0f, 0f);
+
 			Main.spriteBatch.Draw(baseTex, Projectile.Center + new Vector2(0, 20) - Projectile.oldVelocity - Main.screenPosition, null, Color.White, Projectile.velocity.X * 0.075f, baseTex.Size() / 2f, Projectile.scale, SpriteEffects.None, 0);
 			Main.spriteBatch.Draw(crystalTex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, crystalTex.Size() / 2f, Projectile.scale, SpriteEffects.None, 0);
 
@@ -295,14 +300,11 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		internal void PopulateTargets()
 		{
-			if (Owner.HasMinionAttackTargetNPC && Main.npc[Owner.MinionAttackTargetNPC].Distance(Projectile.Center) < 1000f)
-				targets[0] = Main.npc[Owner.MinionAttackTargetNPC];
-
 			for (int i = 0; i < 3; i++)
 			{
 				if (targets[i] == null)
 					targets[i] = Main.npc.Where(n => n.CanBeChasedBy() && n.Distance(Projectile.Center) < 1000f && !AlreadyTargeted(n) && CheckLOS(n)).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
-				else if (!targets[i].active || targets[i].Distance(Projectile.Center) > 1000f || !CheckLOS(targets[i]))
+				else if (!targets[i].active || targets[i].Distance(Projectile.Center) > 1000f || !CheckLOS(targets[i]) || !MultiMode)
 					targets[i] = null;
 			}
 		}
@@ -342,11 +344,15 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public int order;
 		public Projectile parent;
+		public NPC oldTargetNPC; // for resetting charge on things like whip hits (when you switch targets like this there isnt a frame where targetNPC is null so we have to check what it was before)
 		public NPC targetNPC;
 
 		public int lifetime; // for trail drawing
 		public int pulseTimer;
 		public int trailFade;
+
+		SlotId currentLaserSound;
+		SlotId currentAltLaserSound;
 
 		public int Stage
 		{
@@ -411,7 +417,9 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			lifetime++;
 
-			if (Owner.HasMinionAttackTargetNPC && Main.npc[Owner.MinionAttackTargetNPC].Distance(Projectile.Center) < 1000f && !MultiMode)
+			oldTargetNPC = targetNPC;
+
+			if (Owner.HasMinionAttackTargetNPC && Main.npc[Owner.MinionAttackTargetNPC].Distance(Projectile.Center) < 1000f && crystal.CheckLOS(Main.npc[Owner.MinionAttackTargetNPC]) && !MultiMode)
 				targetNPC = Main.npc[Owner.MinionAttackTargetNPC];
 
 			if (HasTarget)
@@ -442,7 +450,7 @@ namespace StarlightRiver.Content.Items.Vitric
 						}
 					}
 
-					Main.NewText(TimeSpentOnTarget + " : " + Stage);
+					Helper.PlayPitched("Magic/RefractiveCharge", 1f, 0f, Projectile.Center);
 
 					crystal.pulseTimer = 15;
 				}
@@ -465,11 +473,58 @@ namespace StarlightRiver.Content.Items.Vitric
 				if (trailFade < 15)
 					trailFade++;
 
+				if (SoundEngine.TryGetActiveSound(currentLaserSound, out ActiveSound sound))
+				{
+					sound.Position = Projectile.Center;
+					sound.Volume = 0.6f;
+					sound.Pitch = 0f;
+				}
+				else
+				{
+					SoundStyle laser = new("StarlightRiver/Sounds/Magic/RecursiveFocusLaserLooping")
+					{
+						IsLooped = true,
+						MaxInstances = 0
+					};
+
+					Func<bool> loopingCondition = new ProjectileAudioTracker(Projectile).IsActiveAndInGame;
+
+					currentLaserSound = SoundEngine.PlaySound(laser, Projectile.Center, (ActiveSound _) => loopingCondition());
+				}
+
+				if (!MultiMode)
+				{
+					if (SoundEngine.TryGetActiveSound(currentAltLaserSound, out ActiveSound altSound))
+					{
+						sound.Position = Projectile.Center;
+						sound.Volume = 0.5f;
+						sound.Pitch = MathHelper.Lerp(0f, 1f, TimeSpentOnTarget / 540f);
+					}
+					else
+					{
+						SoundStyle laser = new("StarlightRiver/Sounds/Magic/RecursiveFocusLaserLooping")
+						{
+							IsLooped = true,
+							MaxInstances = 0
+						};
+
+						Func<bool> loopingCondition = new ProjectileAudioTracker(Projectile).IsActiveAndInGame;
+
+						currentAltLaserSound = SoundEngine.PlaySound(laser, Projectile.Center, (ActiveSound _) => loopingCondition());
+					}
+				}
+
 				if (!targetNPC.active || targetNPC.Distance(Projectile.Center) > 1000f || !crystal.CheckLOS(targetNPC))
 				{
 					targetNPC = null;
 					TimeSpentOnTarget = 0;
 					trailFade = 0;
+
+					if (sound != null)
+						sound.Stop();
+
+					if (SoundEngine.TryGetActiveSound(currentAltLaserSound, out ActiveSound altSound))
+						altSound.Stop();
 				}  
 			}
 			else
@@ -479,6 +534,12 @@ namespace StarlightRiver.Content.Items.Vitric
 				TimeSpentOnTarget = 0;
 				trailFade = 0;
 			}
+
+			if (targetNPC != oldTargetNPC)
+			{
+				TimeSpentOnTarget = 0;
+				trailFade = 0;
+			}		
 
 			UpdateProjectile();
 		}
@@ -588,6 +649,8 @@ namespace StarlightRiver.Content.Items.Vitric
 				Main.spriteBatch.Draw(crystalTexGlow, Projectile.Center - Main.screenPosition, null, Color.White, 0f, crystalTexGlow.Size() / 2f, 2.25f, 0f, 0f);
 
 				color = new Color(255, 150, 50, 0) * fadeIn;
+				if (MultiMode)
+					color *= 0.65f;
 
 				effect.Parameters["uColor"].SetValue(color.ToVector4());
 				effect.CurrentTechnique.Passes[0].Apply();
@@ -606,7 +669,7 @@ namespace StarlightRiver.Content.Items.Vitric
 					color = Color.Lerp(new Color(255, 150, 100, 0), color, 1f - pulseTimer / 15f);
 
 				if (MultiMode)
-					color *= 0.5f;
+					color *= 0.35f;
 
 				Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, color, 0f, bloomTex.Size() / 2f, 0.2f * scale, 0f, 0f);
 
@@ -614,6 +677,11 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 
 			return false;
+		}
+
+		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
+		{
+			overPlayers.Add(index);
 		}
 
 		internal void UpdateProjectile()
@@ -637,12 +705,14 @@ namespace StarlightRiver.Content.Items.Vitric
 		#region PRIMITIVE DRAWING
 		private BezierCurve GetBezierCurve()
 		{
+			float lerper = 1f - Vector2.Distance(Projectile.Center, targetNPC.Center) / 1000f;
+
 			Vector2[] curvePoints =
 			{
-				Vector2.Lerp(Projectile.Center + parent.velocity, targetNPC.Center, 0.2f) + new Vector2(0f, -40f * (float)Math.Sin(lifetime * 0.05f)).RotatedBy(Projectile.DirectionTo(targetNPC.Center).ToRotation()),
-				Vector2.Lerp(Projectile.Center + parent.velocity, targetNPC.Center, 0.4f) + new Vector2(0f, 80f * (float)Math.Cos(lifetime * -0.075f)).RotatedBy(Projectile.DirectionTo(targetNPC.Center).ToRotation()),
-				Vector2.Lerp(Projectile.Center + parent.velocity, targetNPC.Center, 0.6f) + new Vector2(0f, 50f *(float)Math.Sin(lifetime * -0.05f)).RotatedBy(Projectile.DirectionTo(targetNPC.Center).ToRotation()),
-				Vector2.Lerp(Projectile.Center + parent.velocity, targetNPC.Center, 0.8f) + new Vector2(0f, -30f *(float)Math.Cos(lifetime * 0.075f)).RotatedBy(Projectile.DirectionTo(targetNPC.Center).ToRotation()),
+				Vector2.Lerp(Projectile.Center + parent.velocity, targetNPC.Center, 0.2f) + new Vector2(0f, -MathHelper.Lerp(50f, 20f, lerper) * (float)Math.Sin(lifetime * 0.05f)).RotatedBy(Projectile.DirectionTo(targetNPC.Center).ToRotation()),
+				Vector2.Lerp(Projectile.Center + parent.velocity, targetNPC.Center, 0.4f) + new Vector2(0f, MathHelper.Lerp(100f, 40f, lerper) * (float)Math.Cos(lifetime * -0.075f)).RotatedBy(Projectile.DirectionTo(targetNPC.Center).ToRotation()),
+				Vector2.Lerp(Projectile.Center + parent.velocity, targetNPC.Center, 0.6f) + new Vector2(0f, MathHelper.Lerp(60f, 30f, lerper) *(float)Math.Sin(lifetime * -0.05f)).RotatedBy(Projectile.DirectionTo(targetNPC.Center).ToRotation()),
+				Vector2.Lerp(Projectile.Center + parent.velocity, targetNPC.Center, 0.8f) + new Vector2(0f, -MathHelper.Lerp(40f, 10f, lerper) *(float)Math.Cos(lifetime * 0.075f)).RotatedBy(Projectile.DirectionTo(targetNPC.Center).ToRotation()),
 			};
 
 			var curve = new BezierCurve(new Vector2[] { 
@@ -682,7 +752,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 26, new TriangularTip(4), factor => MultiMode ? 4 : 4 * 1 + Stage, factor => 
+			trail ??= new Trail(Main.instance.GraphicsDevice, 26, new TriangularTip(4), factor => MultiMode ? 3 : 4 * 1 + Stage, factor => 
 			{
 				if (trailFade < 15)
 					return Color.Lerp(Color.Transparent, new Color(255, 165, 115), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
@@ -696,7 +766,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = cache[25];
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 26, new TriangularTip(4), factor => MultiMode ? 4 : 4 * 1 + Stage, factor =>
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 26, new TriangularTip(4), factor => MultiMode ? 3 : 4 * 1 + Stage, factor =>
 			{
 				if (trailFade < 15)
 					return Color.Lerp(Color.Transparent, new Color(255, 150, 50), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
@@ -710,7 +780,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			trail2.Positions = cache.ToArray();
 			trail2.NextPosition = cache[25];
 
-			trail3 ??= new Trail(Main.instance.GraphicsDevice, 26, new TriangularTip(4), factor => MultiMode ? 7 : 5 * 1 + Stage, factor =>
+			trail3 ??= new Trail(Main.instance.GraphicsDevice, 26, new TriangularTip(4), factor => MultiMode ? 5 : 7 * 1 + Stage, factor =>
 			{
 				if (trailFade < 15)
 					return Color.Lerp(Color.Transparent, new Color(255, 165, 115), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
@@ -724,7 +794,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			trail3.Positions = cache.ToArray();
 			trail3.NextPosition = cache[25];
 
-			trail4 ??= new Trail(Main.instance.GraphicsDevice, 26, new TriangularTip(4), factor => MultiMode ? 7 : 5 * 1 + Stage, factor =>
+			trail4 ??= new Trail(Main.instance.GraphicsDevice, 26, new TriangularTip(4), factor => MultiMode ? 5 : 7 * 1 + Stage, factor =>
 			{
 				if (trailFade < 15)
 					return Color.Lerp(Color.Transparent, new Color(255, 150, 50), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
