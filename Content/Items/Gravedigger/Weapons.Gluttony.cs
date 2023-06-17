@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Item.value = Item.buyPrice(0, 6, 0, 0);
 			Item.rare = ItemRarityID.Green;
 			Item.damage = 20;
-			Item.mana = 9;
+			Item.mana = 3;
 			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.useTime = 10;
 			Item.useAnimation = 10;
