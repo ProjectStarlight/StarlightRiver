@@ -63,7 +63,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			StarlightRiverBackground.DrawOverlayEvent += DrawOverlay;
 			StarlightRiverBackground.CheckIsActiveEvent += () => isBossRush;
 			On_Main.DoUpdate += Speedup;
-			On_NPC.UpdateNPC += disableWhenDead;
+			On_NPC.UpdateNPC += DisableWhenDead;
 
 			File.WriteAllBytes(Path.Combine(ModLoader.ModPath, "BossRushWorld.wld"), Mod.GetFileBytes("Worlds/BossRushWorld.wld"));
 			File.WriteAllBytes(Path.Combine(ModLoader.ModPath, "BossRushWorld.twld"), Mod.GetFileBytes("Worlds/BossRushWorld.twld"));
@@ -496,7 +496,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			}
 		}
 
-		private void disableWhenDead(On_NPC.orig_UpdateNPC orig, NPC self, int i)
+		private void DisableWhenDead(On_NPC.orig_UpdateNPC orig, NPC self, int i)
 		{
 			if (isBossRush && Main.LocalPlayer.dead && self.boss)
 				return;
