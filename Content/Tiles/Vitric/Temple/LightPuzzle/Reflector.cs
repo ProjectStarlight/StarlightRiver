@@ -109,7 +109,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 				{
 					endPoint = posCheck;
 
-					if (Emit > 0)
+					if (Emit > 0 && !rotating)
 						ActivateDownstream();
 
 					break;

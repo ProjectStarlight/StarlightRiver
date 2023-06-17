@@ -94,6 +94,19 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		{
 			Framing.GetTileSafely(i, j).IsActuated = LightPuzzle.LightPuzzleHandler.solved;
 		}
+
+		public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
+		{
+			Tile tile = Framing.GetTileSafely(i, j);
+
+			Texture2D tex = Request<Texture2D>(Texture).Value;
+			Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 + Vector2.UnitY * -Helper.BezierEase(LightPuzzle.LightPuzzleHandler.solveTimer / 180f) * 5 * 16;
+			var frame = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16);
+
+			spriteBatch.Draw(tex, pos - Main.screenPosition, frame, Lighting.GetColor(i, j));
+
+			return false;
+		}
 	}
 
 	[SLRDebug]

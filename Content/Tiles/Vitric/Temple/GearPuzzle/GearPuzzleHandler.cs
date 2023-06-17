@@ -41,6 +41,12 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 				solveTimer++;
 		}
 
+		public override void ClearWorld()
+		{
+			engagedObjectives = 0;
+			solveTimer = 0;
+		}
+
 		public override void SaveWorldData(TagCompound tag)
 		{
 			tag["puzzleOriginLocation"] = puzzleOriginLocation;
@@ -54,7 +60,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 			bool solved = tag.GetBool("solved");
 
 			if (solved)
-				engagedObjectives = 9;
+				engagedObjectives = 15;
 
 			if (Solved)
 				solveTimer = 180;

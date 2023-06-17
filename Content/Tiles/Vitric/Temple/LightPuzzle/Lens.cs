@@ -31,9 +31,10 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 
 		public override void Update()
 		{
-			if (!rotating)
+			if (!rotating && Main.GameUpdateCount % 60 == 0)
 			{
 				Emit = 1;
+				DeactivateDownstream();
 				FindEndpoint();
 			}
 
