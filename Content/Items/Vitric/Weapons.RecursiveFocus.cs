@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Helpers;
+﻿using StarlightRiver.Core.Systems.CameraSystem;
+using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,7 +51,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				{
 					Projectile proj = Main.projectile[i];
 
-					if (proj.active && proj.type == Item.shoot && proj.owner == player.whoAmI)
+					if (proj.active && (proj.type == Item.shoot || proj.type == ModContent.ProjectileType<RecursiveFocusLaser>()) && proj.owner == player.whoAmI)
 						proj.Kill();
 				}
 			}
@@ -73,11 +74,42 @@ namespace StarlightRiver.Content.Items.Vitric
 
 	public class RecursiveFocusProjectile : ModProjectile
 	{
+		public float TimeSpentOnTarget
+		{
+			get
+			{
+				Projectile proj = Main.projectile.Where(p => p.active && p.type == ModContent.ProjectileType<RecursiveFocusLaser>() && (p.ModProjectile as RecursiveFocusLaser).parent == Projectile && !(p.ModProjectile as RecursiveFocusLaser).MultiMode).FirstOrDefault();
+				if (proj != null)
+				{
+					return (proj.ModProjectile as RecursiveFocusLaser).TimeSpentOnTarget;
+				}
+
+				return 0;
+			}
+		}
+
+		public bool HasSingleTarget
+		{
+			get
+			{
+				Projectile proj = Main.projectile.Where(p => p.active && p.type == ModContent.ProjectileType<RecursiveFocusLaser>() && (p.ModProjectile as RecursiveFocusLaser).parent == Projectile && !(p.ModProjectile as RecursiveFocusLaser).MultiMode).FirstOrDefault();
+				if (proj != null)
+				{
+					return (proj.ModProjectile as RecursiveFocusLaser).HasTarget;
+				}
+
+				return false;
+			}
+		}
+
+		public int pulseTimer;
+
 		public Vector2 LineOfSightPos => Owner.Center + new Vector2(0f, -70); // needed for LOS check
 
 		public NPC[] targets = new NPC[3]; // for multi mode
 		public bool MultiMode => Projectile.ai[0] != 0f;
 		public ref float SwitchTimer => ref Projectile.ai[1];
+		public ref float SwitchCooldown => ref Projectile.ai[2];
 		public Player Owner => Main.player[Projectile.owner];
 
 		public override string Texture => AssetDirectory.VitricItem + Name;
@@ -93,6 +125,8 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Infernal Crystal");
+
+			ProjectileID.Sets.MinionTargettingFeature[Projectile.type] = true;
 		}
 
 		public override void SetDefaults()
@@ -115,9 +149,15 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (SwitchTimer > 0)
 				SwitchTimer--;
 
+			if (SwitchCooldown > 0)
+				SwitchCooldown--;
+
+			if (pulseTimer > 0)
+				pulseTimer--;
+
 			PopulateTargets();
 
-			if (!Main.projectile.Any(p => p.active && p.owner == Owner.whoAmI && p.type == ModContent.ProjectileType<RecursiveFocusLaser>()))
+			if (!Main.projectile.Any(p => p.active && p.owner == Owner.whoAmI && p.type == ModContent.ProjectileType<RecursiveFocusLaser>()) && SwitchTimer <= 0)
 			{
 				if (MultiMode)
 				{
@@ -128,6 +168,7 @@ namespace StarlightRiver.Content.Items.Vitric
 						proj.originalDamage = Projectile.originalDamage;
 						(proj.ModProjectile as RecursiveFocusLaser).parent = Projectile;
 						(proj.ModProjectile as RecursiveFocusLaser).order = i;
+						(proj.ModProjectile as RecursiveFocusLaser).lifetime = i * Main.rand.Next(200, 600);
 					}
 				}
 				else
@@ -139,14 +180,39 @@ namespace StarlightRiver.Content.Items.Vitric
 				}
 			}
 
-			if (Main.mouseRight && SwitchTimer <= 0f)
+			if (Main.mouseRight && Main.mouseRightRelease && SwitchCooldown <= 0 && Owner.HeldItem.type == ModContent.ItemType<RecursiveFocus>())
 			{
+				SwitchCooldown = 240f;
 				SwitchTimer = 60f;
+				Helper.PlayPitched("Magic/FireCast", 1f, 0f, Projectile.Center);
+			}
 
-				if (MultiMode)
-					Projectile.ai[0] = 0f;
-				else
-					Projectile.ai[0] = 1f;
+			if (SwitchTimer > 0)
+			{
+				float lerper = 1f - SwitchTimer / 60f;
+
+				float off = MathHelper.Lerp(100f, 10f, lerper);
+
+				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2CircularEdge(off, off), ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(0.5f, 0.5f), 0, new Color(255, 150, 50), 0.5f);
+
+				if (SwitchTimer == 1)
+				{
+					if (MultiMode)
+						Projectile.ai[0] = 0f;
+					else
+						Projectile.ai[0] = 1f;
+
+					Helper.PlayPitched("Magic/FireHit", 1f, 0f, Projectile.Center);
+
+					for (int i = 0; i < 20; i++)
+					{
+						Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(5f, 5f), 0, new Color(255, 150, 50), 0.5f);
+					}
+
+					CameraSystem.shake += 10;
+
+					pulseTimer = 15;
+				}
 			}
 
 			DoMovement();
@@ -183,15 +249,36 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			Texture2D baseTex = ModContent.Request<Texture2D>(Texture + "Base").Value;
 			Texture2D crystalTex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D bloomTex = ModContent.Request<Texture2D>(Texture + "_Bloom").Value;
+			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
 
 			Texture2D crystalTexOrange = ModContent.Request<Texture2D>(Texture + "_Orange").Value;
 			Texture2D baseTexOrange = ModContent.Request<Texture2D>(Texture + "Base_Orange").Value;
 
+			Texture2D baseTexGlow = ModContent.Request<Texture2D>(Texture + "Base_Glow").Value;
 			Texture2D crystalTexGlow = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
 
 			Main.spriteBatch.Draw(baseTex, Projectile.Center + new Vector2(0, 20) - Projectile.oldVelocity - Main.screenPosition, null, Color.White, Projectile.velocity.X * 0.075f, baseTex.Size() / 2f, Projectile.scale, SpriteEffects.None, 0);
 			Main.spriteBatch.Draw(crystalTex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, crystalTex.Size() / 2f, Projectile.scale, SpriteEffects.None, 0);
+
+			if (HasSingleTarget)
+			{
+				Main.spriteBatch.Draw(baseTexOrange, Projectile.Center + new Vector2(0, 20) - Projectile.oldVelocity - Main.screenPosition, null, Color.White * (TimeSpentOnTarget / 540f), Projectile.velocity.X * 0.075f, baseTexOrange.Size() / 2f, Projectile.scale, 0f, 0f);
+				Main.spriteBatch.Draw(baseTexGlow, Projectile.Center + new Vector2(0, 20) - Projectile.oldVelocity - Main.screenPosition, null, new Color(255, 165, 115, 0) * (TimeSpentOnTarget / 540f), Projectile.velocity.X * 0.075f, baseTexGlow.Size() / 2f, Projectile.scale, 0f, 0f);
+
+				Main.spriteBatch.Draw(crystalTexOrange, Projectile.Center - Main.screenPosition, null, Color.White * (TimeSpentOnTarget / 540f), Projectile.rotation, crystalTexOrange.Size() / 2f, Projectile.scale, 0f, 0f);			
+			}
+
+			if (pulseTimer > 0)
+			{
+				if (TimeSpentOnTarget > 179)
+				{
+					Main.spriteBatch.Draw(crystalTexGlow, Projectile.Center - Main.screenPosition, null, new Color(255, 150, 100, 0) * 0.5f * (pulseTimer / 15f), Projectile.rotation, crystalTexGlow.Size() / 2f, Projectile.scale * MathHelper.Lerp(1f, 3f, 1f - pulseTimer / 15f), 0f, 0f);
+				}
+				else
+				{
+					Main.spriteBatch.Draw(crystalTexOrange, Projectile.Center - Main.screenPosition, null, Color.White * (pulseTimer / 15f), Projectile.rotation, crystalTexOrange.Size() / 2f, Projectile.scale * MathHelper.Lerp(1f, 3f, 1f - pulseTimer / 15f), 0f, 0f);
+				}
+			}
 
 			return false;
 		}
@@ -208,6 +295,9 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		internal void PopulateTargets()
 		{
+			if (Owner.HasMinionAttackTargetNPC && Main.npc[Owner.MinionAttackTargetNPC].Distance(Projectile.Center) < 1000f)
+				targets[0] = Main.npc[Owner.MinionAttackTargetNPC];
+
 			for (int i = 0; i < 3; i++)
 			{
 				if (targets[i] == null)
@@ -254,10 +344,28 @@ namespace StarlightRiver.Content.Items.Vitric
 		public Projectile parent;
 		public NPC targetNPC;
 
-		public int stage;
 		public int lifetime; // for trail drawing
 		public int pulseTimer;
 		public int trailFade;
+
+		public int Stage
+		{
+			get
+			{
+				if (MultiMode)
+					return 0;
+
+				if (TimeSpentOnTarget >= 540)
+					return 3;
+				else if (TimeSpentOnTarget >= 360)
+					return 2;
+				else if (TimeSpentOnTarget >= 180)
+					return 1;
+
+				return 0;
+			}
+		}
+
 		public RecursiveFocusProjectile crystal => parent.ModProjectile as RecursiveFocusProjectile;
 		public bool HasTarget => targetNPC != null;
 		public bool MultiMode => Projectile.ai[0] != 0f;
@@ -303,6 +411,9 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			lifetime++;
 
+			if (Owner.HasMinionAttackTargetNPC && Main.npc[Owner.MinionAttackTargetNPC].Distance(Projectile.Center) < 1000f && !MultiMode)
+				targetNPC = Main.npc[Owner.MinionAttackTargetNPC];
+
 			if (HasTarget)
 			{
 				if (!Main.dedServ)
@@ -311,41 +422,44 @@ namespace StarlightRiver.Content.Items.Vitric
 					ManageTrail();
 				}
 
-				if (MultiMode)
-				{
-					if (TimeSpentOnTarget < 5)
-						TimeSpentOnTarget++;
-				}
-				else
-				{
+				if (TimeSpentOnTarget < 540)
+					TimeSpentOnTarget++;
 
-					if (stage < 3)
+				if (TimeSpentOnTarget % 179 == 0 && !MultiMode && Stage < 3)
+				{
+					pulseTimer = 15;
+
+					BezierCurve curve = GetBezierCurve();
+
+					int points = 26;
+					Vector2[] curvePositions = curve.GetPoints(points).ToArray();
+
+					for (int i = 0; i < 26; i++)
 					{
-						if (TimeSpentOnTarget < 180)
+						for (int d = 0; d < 2; d++)
 						{
-							TimeSpentOnTarget++;
-						}
-						else
-						{
-							stage++;
-							TimeSpentOnTarget = 3;
-
-							pulseTimer = 15;
-
-							BezierCurve curve = GetBezierCurve();
-
-							int points = 26;
-							Vector2[] curvePositions = curve.GetPoints(points).ToArray();
-
-							for (int i = 0; i < 26; i++)
-							{
-								for (int d = 0; d < 2; d++)
-								{
-									Dust.NewDustPerfect(curvePositions[i], ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(1f, 1f), 0, new Color(255, 150, 50), 0.7f);
-								}
-							}
+							Dust.NewDustPerfect(curvePositions[i], ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(1f, 1f), 0, new Color(255, 150, 50), 0.7f);
 						}
 					}
+
+					Main.NewText(TimeSpentOnTarget + " : " + Stage);
+
+					crystal.pulseTimer = 15;
+				}
+
+				if (Main.rand.NextBool(3))
+				{
+					BezierCurve curve = GetBezierCurve();
+
+					int points = 26;
+					Vector2[] curvePositions = curve.GetPoints(points).ToArray();
+
+					Dust.NewDustPerfect(curvePositions[Main.rand.Next(points)], ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(1f, 1f), 0, new Color(255, 150, 50), 0.4f);
+				}
+
+				if (Main.rand.NextBool(8))
+				{
+					Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(2f, 2f), 0, new Color(255, 150, 50), 0.4f);
 				}
 
 				if (trailFade < 15)
@@ -355,7 +469,6 @@ namespace StarlightRiver.Content.Items.Vitric
 				{
 					targetNPC = null;
 					TimeSpentOnTarget = 0;
-					stage = 0;
 					trailFade = 0;
 				}  
 			}
@@ -364,19 +477,28 @@ namespace StarlightRiver.Content.Items.Vitric
 				targetNPC = MultiMode ? crystal.targets[order] : FindTarget();
 
 				TimeSpentOnTarget = 0;
-				stage = 0;
 				trailFade = 0;
 			}
 
 			UpdateProjectile();
-
-			Dust.NewDustPerfect(crystal.LineOfSightPos, DustID.Torch);
 		}
 
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (!MultiMode)
-				modifiers.SourceDamage *= 1 + stage;
+				modifiers.SourceDamage *= 1 + Stage;
+		}
+
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			for (int i = 0; i < 4; i++)
+			{
+				Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(4f, 4f), 0, new Color(255, 150, 50), MultiMode ? 0.3f : 0.6f);
+
+				Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), target.Center.DirectionTo(Projectile.Center).RotatedByRandom(0.7f) * Main.rand.NextFloat(0.5f, 1f), 0, new Color(255, 150, 50), MultiMode ? 0.3f : 0.6f);
+
+				Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), target.Center.DirectionTo(Projectile.Center).RotatedByRandom(0.25f) * Main.rand.NextFloat(2f, 10f), 0, new Color(255, 150, 50), MultiMode ? 0.3f : 0.6f);
+			}
 		}
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
@@ -391,15 +513,104 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override bool PreDraw(ref Color lightColor)
 		{
+			Texture2D baseTex = ModContent.Request<Texture2D>(crystal.Texture + "Base").Value;
+			Texture2D crystalTex = ModContent.Request<Texture2D>(crystal.Texture).Value;
+			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+
+			Texture2D crystalTexOrange = ModContent.Request<Texture2D>(crystal.Texture + "_Orange").Value;
+			Texture2D baseTexOrange = ModContent.Request<Texture2D>(crystal.Texture + "Base_Orange").Value;
+
+			Texture2D crystalTexGlow = ModContent.Request<Texture2D>(crystal.Texture + "_Glow").Value;
+
 			DrawTrail(Main.spriteBatch);
 
-			if (MultiMode)
+			if (HasTarget)
 			{
+				float fadeIn = 1f;
+				if (trailFade < 15)
+					fadeIn = trailFade / 15f;
 
-			}
-			else
-			{
+				float scale = 1f + Stage * 0.55f;
 
+				if (MultiMode)
+					scale = 2f;
+
+				Effect effect = Filters.Scene["DistortSprite"].GetShader().Shader;
+
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+
+				effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.075f);
+				effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.0075f);
+				effect.Parameters["screenPos"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / new Vector2(Main.screenWidth, Main.screenHeight));
+
+				effect.Parameters["offset"].SetValue(new Vector2(0.001f));
+				effect.Parameters["repeats"].SetValue(1);
+				effect.Parameters["uImage1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/SwirlyNoiseLooping").Value);
+				effect.Parameters["uImage2"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.VitricBoss + "LaserBallDistort").Value);
+
+				Color color = new Color(255, 165, 115, 0) * 0.4f * fadeIn * (MultiMode ? 1f : (TimeSpentOnTarget / 540f));
+				if (pulseTimer > 0)
+					color = Color.Lerp(new Color(255, 150, 100, 0) * 0.5f, color, 1f - pulseTimer / 15f);
+
+				if (MultiMode)
+					color *= 0.25f;
+
+				effect.Parameters["uColor"].SetValue(color.ToVector4());
+				effect.Parameters["noiseImage1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "MagicPixel").Value);
+
+				effect.CurrentTechnique.Passes[0].Apply();
+
+				Main.spriteBatch.Draw(crystalTexGlow, Projectile.Center - Main.screenPosition, null, Color.White, 0f, crystalTexGlow.Size() / 2f, 1.25f, 0f, 0f);
+
+				color = new Color(255, 150, 50, 0) * 0.5f * fadeIn * (MultiMode ? 1f : (TimeSpentOnTarget / 540f));
+				if (pulseTimer > 0)
+					color = Color.Lerp(new Color(255, 150, 100, 0) * 0.5f, color, 1f - pulseTimer / 15f);
+				
+				if (MultiMode)
+					color *= 0.25f;
+
+				effect.Parameters["uColor"].SetValue(color.ToVector4());
+				effect.CurrentTechnique.Passes[0].Apply();
+
+				Main.spriteBatch.Draw(crystalTexGlow, Projectile.Center - Main.screenPosition, null, Color.White, 0f, crystalTexGlow.Size() / 2f, 1.25f, 0f, 0f);
+
+				color = new Color(255, 150, 50, 0) * 0.15f * fadeIn * (MultiMode ? 1f : (TimeSpentOnTarget / 540f));
+				if (pulseTimer > 0)
+					color = Color.Lerp(new Color(255, 150, 100, 0) * 0.15f, color, 1f - pulseTimer / 15f);
+
+				if (MultiMode)
+					color *= 0.25f;
+
+				effect.Parameters["uColor"].SetValue(color.ToVector4());
+				effect.CurrentTechnique.Passes[0].Apply();
+
+				Main.spriteBatch.Draw(crystalTexGlow, Projectile.Center - Main.screenPosition, null, Color.White, 0f, crystalTexGlow.Size() / 2f, 2.25f, 0f, 0f);
+
+				color = new Color(255, 150, 50, 0) * fadeIn;
+
+				effect.Parameters["uColor"].SetValue(color.ToVector4());
+				effect.CurrentTechnique.Passes[0].Apply();
+
+				Main.spriteBatch.Draw(bloomTex, targetNPC.Center - Main.screenPosition, null, Color.White, 0f, bloomTex.Size() / 2f, 0.4f * scale, 0f, 0f);
+
+				Main.spriteBatch.Draw(bloomTex, targetNPC.Center - Main.screenPosition, null, Color.White, 0f, bloomTex.Size() / 2f, 0.3f * scale, 0f, 0f);
+
+				Main.spriteBatch.Draw(bloomTex, targetNPC.Center - Main.screenPosition, null, Color.White, 0f, bloomTex.Size() / 2f, 0.1f * scale, 0f, 0f);
+
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+
+				color = new Color(255, 165, 115, 0);
+				if (pulseTimer > 0)
+					color = Color.Lerp(new Color(255, 150, 100, 0), color, 1f - pulseTimer / 15f);
+
+				if (MultiMode)
+					color *= 0.5f;
+
+				Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, color, 0f, bloomTex.Size() / 2f, 0.2f * scale, 0f, 0f);
+
+				Main.spriteBatch.Draw(bloomTex, targetNPC.Center - Main.screenPosition, null, Color.White with { A = 0 }, 0f, bloomTex.Size() / 2f, 0.1f * scale, 0f, 0f);
 			}
 
 			return false;
@@ -409,14 +620,12 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			Projectile.Center = parent.Center;
 
-			RecursiveFocusProjectile proj = parent.ModProjectile as RecursiveFocusProjectile;
-
-			if (proj == null)
+			if (crystal == null)
 				return;
 
-			bool wrongMode = proj.MultiMode && !MultiMode || !proj.MultiMode && MultiMode;
+			bool wrongMode = crystal.MultiMode && !MultiMode || !crystal.MultiMode && MultiMode;
 
-			if (!wrongMode)
+			if (!wrongMode && crystal.SwitchTimer <= 0)
 				Projectile.timeLeft = 2;
 		}
 
@@ -430,14 +639,14 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			Vector2[] curvePoints =
 			{
-				Vector2.Lerp(Projectile.Center + Projectile.velocity, targetNPC.Center, 0.2f) + new Vector2(0f, -40f * (float)Math.Sin(lifetime * 0.05f)).RotatedBy(Projectile.DirectionTo(targetNPC.Center).ToRotation()),
-				Vector2.Lerp(Projectile.Center + Projectile.velocity, targetNPC.Center, 0.4f) + new Vector2(0f, 80f * (float)Math.Cos(lifetime * -0.075f)).RotatedBy(Projectile.DirectionTo(targetNPC.Center).ToRotation()),
-				Vector2.Lerp(Projectile.Center + Projectile.velocity, targetNPC.Center, 0.6f) + new Vector2(0f, 50f *(float)Math.Sin(lifetime * -0.05f)).RotatedBy(Projectile.DirectionTo(targetNPC.Center).ToRotation()),
-				Vector2.Lerp(Projectile.Center + Projectile.velocity, targetNPC.Center, 0.8f) + new Vector2(0f, -30f *(float)Math.Cos(lifetime * 0.075f)).RotatedBy(Projectile.DirectionTo(targetNPC.Center).ToRotation()),
+				Vector2.Lerp(Projectile.Center + parent.velocity, targetNPC.Center, 0.2f) + new Vector2(0f, -40f * (float)Math.Sin(lifetime * 0.05f)).RotatedBy(Projectile.DirectionTo(targetNPC.Center).ToRotation()),
+				Vector2.Lerp(Projectile.Center + parent.velocity, targetNPC.Center, 0.4f) + new Vector2(0f, 80f * (float)Math.Cos(lifetime * -0.075f)).RotatedBy(Projectile.DirectionTo(targetNPC.Center).ToRotation()),
+				Vector2.Lerp(Projectile.Center + parent.velocity, targetNPC.Center, 0.6f) + new Vector2(0f, 50f *(float)Math.Sin(lifetime * -0.05f)).RotatedBy(Projectile.DirectionTo(targetNPC.Center).ToRotation()),
+				Vector2.Lerp(Projectile.Center + parent.velocity, targetNPC.Center, 0.8f) + new Vector2(0f, -30f *(float)Math.Cos(lifetime * 0.075f)).RotatedBy(Projectile.DirectionTo(targetNPC.Center).ToRotation()),
 			};
 
 			var curve = new BezierCurve(new Vector2[] { 
-				Projectile.Center + Projectile.velocity, 
+				Projectile.Center + parent.velocity, 
 				curvePoints[0],
 				curvePoints[1],
 				curvePoints[2],
@@ -456,7 +665,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 				for (int i = 0; i < 26; i++)
 				{
-					cache.Add(Projectile.Center + Projectile.velocity);
+					cache.Add(Projectile.Center + parent.velocity);
 				}
 			}
 
@@ -473,7 +682,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 26, new TriangularTip(4), factor => MultiMode ? 4 : 4 * 1 + stage, factor => 
+			trail ??= new Trail(Main.instance.GraphicsDevice, 26, new TriangularTip(4), factor => MultiMode ? 4 : 4 * 1 + Stage, factor => 
 			{
 				if (trailFade < 15)
 					return Color.Lerp(Color.Transparent, new Color(255, 165, 115), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
@@ -487,7 +696,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = cache[25];
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 26, new TriangularTip(4), factor => MultiMode ? 4 : 4 * 1 + stage, factor =>
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 26, new TriangularTip(4), factor => MultiMode ? 4 : 4 * 1 + Stage, factor =>
 			{
 				if (trailFade < 15)
 					return Color.Lerp(Color.Transparent, new Color(255, 150, 50), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
@@ -501,7 +710,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			trail2.Positions = cache.ToArray();
 			trail2.NextPosition = cache[25];
 
-			trail3 ??= new Trail(Main.instance.GraphicsDevice, 26, new TriangularTip(4), factor => MultiMode ? 7 : 5 * 1 + stage, factor =>
+			trail3 ??= new Trail(Main.instance.GraphicsDevice, 26, new TriangularTip(4), factor => MultiMode ? 7 : 5 * 1 + Stage, factor =>
 			{
 				if (trailFade < 15)
 					return Color.Lerp(Color.Transparent, new Color(255, 165, 115), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
@@ -515,7 +724,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			trail3.Positions = cache.ToArray();
 			trail3.NextPosition = cache[25];
 
-			trail4 ??= new Trail(Main.instance.GraphicsDevice, 26, new TriangularTip(4), factor => MultiMode ? 7 : 5 * 1 + stage, factor =>
+			trail4 ??= new Trail(Main.instance.GraphicsDevice, 26, new TriangularTip(4), factor => MultiMode ? 7 : 5 * 1 + Stage, factor =>
 			{
 				if (trailFade < 15)
 					return Color.Lerp(Color.Transparent, new Color(255, 150, 50), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
