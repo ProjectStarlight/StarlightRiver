@@ -212,7 +212,8 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 					new Vector2(952, 720),
 					a =>
 					{
-						StarlightWorld.vitricBiome = new Rectangle(0, 2000, 40, 40);
+						StarlightWorld.vitricBiome = new Rectangle(2000, 2000, 40, 40);
+						CutawaySystem.CutawayHandler.CreateCutaways();
 
 						NPC.NewNPC(null, (int)a.X + 952, (int)a.Y + 720, ModContent.NPCType<BossRushOrb>());
 
@@ -243,6 +244,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 					a =>
 					{
 						StarlightWorld.vitricBiome = new Rectangle((int)(a.X + 37 * 16) / 16, (int)(a.Y - 68 * 16) / 16, 400, 140);
+						CutawaySystem.CutawayHandler.CreateCutaways();
 						CutawaySystem.CutawayHandler.forgeOverlay.pos = StarlightWorld.GlassweaverArena.TopLeft() + new Vector2(-2, 2) * 16;
 
 						NPC.NewNPC(null, (int)a.X + 600, (int)a.Y + 24 * 16, ModContent.NPCType<Glassweaver>());
@@ -258,7 +260,8 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 					new Vector2(1600, 1000),
 					a =>
 					{
-						StarlightWorld.vitricBiome = new Rectangle((int)(a.X - 200 * 16) / 16, (int)(a.Y - 6 * 16) / 16, 400, 140);
+						StarlightWorld.vitricBiome = new Rectangle((int)(a.X - 200 * 16) / 16, (int)(a.Y - 6 * 16) / 16, 400, 640);
+						CutawaySystem.CutawayHandler.CreateCutaways();
 
 						var dummy = Main.projectile.FirstOrDefault(n => n.active && n.ModProjectile is VitricBossAltarDummy)?.ModProjectile as VitricBossAltarDummy;
 
@@ -365,7 +368,6 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 				deadLogic();
 				return;
 			}
-				
 
 			// decrement the score as time goes on
 			scoreTimer++;
