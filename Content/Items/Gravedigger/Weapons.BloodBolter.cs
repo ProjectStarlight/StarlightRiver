@@ -280,7 +280,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override bool PreKill(NPC npc)
 		{
-			if (hitFromBolter)
+			if (hitFromBolter && !npc.boss && npc.knockBackResist != 0 && Helper.IsFleshy(npc))
 				return false;
 
 			return base.PreKill(npc);
@@ -288,7 +288,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override bool CheckDead(NPC npc)
 		{
-			if (hitFromBolter && !markedForDeath && npc.knockBackResist != 0 && Helper.IsFleshy(npc))
+			if (hitFromBolter && !markedForDeath && !npc.boss && npc.knockBackResist != 0 && Helper.IsFleshy(npc))
 			{
 				Helper.PlayPitched("Impale", 0.5f, Main.rand.NextFloat(-0.1f, 0.1f), npc.Center);
 				npc.life = 1;
