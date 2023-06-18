@@ -9,8 +9,6 @@ namespace StarlightRiver.Content.Items.Vitric
 	{
 		public override string Texture => AssetDirectory.VitricItem + Name;
 
-		//public override int BossBagNPC => NPCType<Bosses.VitricBoss.VitricBoss>();
-
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Treasure Bag (Ceiros)");
@@ -53,34 +51,10 @@ namespace StarlightRiver.Content.Items.Vitric
 				ItemType<RecursiveFocus>()
 			}
 			));
+
+			itemLoot.Add(ItemDropRule.Common(ItemType<MagmaCore>(), 1, 1, 2));
+			itemLoot.Add(ItemDropRule.Common(ItemType<ShatteredAegis>()));
 		}
-
-		/*public override void OpenBossBag(Player Player)
-		{
-			int weapon = Main.rand.Next(5);
-
-			for (int k = 0; k < (Main.masterMode ? 3 : 2); k++)
-			{
-				switch (weapon % 5)
-				{
-					case 0: Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<FacetAndLattice>()); break;
-					case 1: Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<Coalescence>()); break;
-					case 2: Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<Needler>()); break;
-					case 3: Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<RefractiveBlade>()); break;
-					case 4: Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<MagmiteVacpack>()); break;
-				}
-
-				weapon++;
-			}
-
-			Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<VitricOre>(), Main.rand.Next(45, 85));
-			Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<MagmaCore>(), Main.rand.Next(2, 3));
-			Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<Misc.StaminaUp>());
-			Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<ShatteredAegis>());
-
-			if (Main.rand.NextBool(8))
-				Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<BarrierDye.VitricBossBarrierDye>());
-		}*/
 
 		//This method is stolen from examplemod and I trust it to emulate vanilla accurately
 		public override void PostUpdate()

@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SafeSetDefaults()
 		{
-			Item.value = Item.sellPrice(gold: 15);
+			Item.value = Item.sellPrice(platinum: 1);
 		}
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)

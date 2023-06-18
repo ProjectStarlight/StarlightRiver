@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 
 		/// <summary>
-		/// Allows the player to right click with spears that don't normally have them
+		/// Allows the player to right click with swords that don't normally have them
 		/// </summary>
 		/// <param name="item"></param>
 		/// <param name="player"></param>

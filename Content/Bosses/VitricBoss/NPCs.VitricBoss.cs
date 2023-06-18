@@ -164,7 +164,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
 		{
 			return false;
-			//return Phase == (int)AIStates.FirstPhase && AttackPhase == 4 && AttackTimer % 240 < 120;
 		}
 
 		public override bool CheckDead()

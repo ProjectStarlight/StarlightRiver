@@ -296,9 +296,9 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void AI(NPC npc)
 		{
 			if (npc.noGravity)
-				npc.velocity.Y -= 0.005f * MathF.Pow(balloonsAttached, 0.7f);
+				npc.velocity.Y -= 0.005f * MathF.Pow(balloonsAttached, 0.7f) * npc.knockBackResist;
 			else if (!npc.collideY)
-				npc.velocity.Y -= 0.08f * MathF.Pow(balloonsAttached, 0.7f);
+				npc.velocity.Y -= 0.08f * MathF.Pow(balloonsAttached, 0.7f) * npc.knockBackResist;
 		}
 	}
 }

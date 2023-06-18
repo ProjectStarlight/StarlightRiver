@@ -15,8 +15,6 @@ namespace StarlightRiver.Content.Items.Misc
 			StarlightPlayer.CanUseItemEvent += PreventManaPotion;
 			StarlightPlayer.OnHitNPCEvent += ManaLeechOnHit;
 			StarlightPlayer.OnHitNPCWithProjEvent += ManaLeechOnHitProj;
-
-			StarlightItem.SetStaticDefaultsEvent += ShimmerToItem;
 		}
 
 		public override void Unload()
@@ -26,15 +24,12 @@ namespace StarlightRiver.Content.Items.Misc
 			StarlightPlayer.OnHitNPCWithProjEvent -= ManaLeechOnHitProj;
 		}
 
-		private void ShimmerToItem()
-		{
-			ItemID.Sets.ShimmerTransformToItem[ItemID.ManaFlower] = Type;
-		}
 		public override void SetStaticDefaults()
 		{
 			Tooltip.SetDefault("Cursed : You can not drink mana potions or other mana-replenishing items\nMagic attacks have a 25% chance to leech a large portion of their damage as mana");
 
 			ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.ManaFlower;
+			ItemID.Sets.ShimmerTransformToItem[ItemID.ManaFlower] = Type;
 		}
 
 		public override void SafeSetDefaults()

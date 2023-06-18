@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public SoulOfFrog() : base("Soul Of Frog",
 			"Frogs are resurrected on death, growing stronger with each return from the brink.\n" +
 			"Killing other critters has a chance to reveal them as actually being a frog the whole time\n" +
-			"They will then be resurrected as if they were a frog the whole time, because they were" +
+			"They will then be resurrected as if they were a frog the whole time, because they were\n" +
 			"I'm telling you, don't fuck with the frogs, please, they are stronger than you know")
 		{ }
 
