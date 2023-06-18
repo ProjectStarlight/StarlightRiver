@@ -21,9 +21,9 @@ namespace StarlightRiver.Content.Backgrounds
 
 			starsTarget = new(DrawStars, CheckIsActive, 1f);
 			starsMap = new(DrawMap, CheckIsActive, 1f);
+			stars = new("StarlightRiver/Assets/Misc/DotTell", UpdateStars);
 
 			On_Main.DrawInterface += DrawOverlay;
-			stars = new("StarlightRiver/Assets/Misc/DotTell", UpdateStars);
 		}
 
 		public override void Unload()
