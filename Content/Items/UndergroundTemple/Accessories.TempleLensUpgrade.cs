@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 		private void ApplyExposed(NPC target)
 		{
-			var nearby = Main.npc.Where(n => n.active && n != target && n.Distance(target.Center) < 250).ToList();
+			var nearby = Main.npc.Where(n => n.active && n != target && n.Distance(target.Center) < 250 && !n.dontTakeDamage && !n.immortal && !n.friendly).ToList();
 			nearby.ForEach(n => n.AddBuff(ModContent.BuffType<Exposed>(), 200));
 			nearby.ForEach(n => Exposed.CreateDust(n, false));
 		}
