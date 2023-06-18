@@ -74,8 +74,10 @@ namespace StarlightRiver.Content.Abilities.Hint
 
 			Vector2 pos = Main.MouseWorld;
 
+			// Check NPCs
 			for (int k = 0; k < Main.maxNPCs; k++)
 			{
+				//inflate their hitbox to make it easier to hit them
 				Rectangle box = Main.npc[k].Hitbox;
 				box.Inflate(10, 10);
 
@@ -83,12 +85,13 @@ namespace StarlightRiver.Content.Abilities.Hint
 				{
 					NPC npc = Main.npc[k];
 
+					// if there is a custom hint, use that and return
 					if (npc.ModNPC is IHintable hintable)
 					{
 						hintToDisplay = hintable.GetHint();
 						return;
 					}
-					else
+					else // else use a default hint
 					{
 						if (npc.FullName == "")
 							return;
@@ -103,6 +106,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 				}
 			}
 
+			// Check Projectiles
 			for (int k = 0; k < Main.maxProjectiles; k++)
 			{
 				Rectangle box = Main.projectile[k].Hitbox;
@@ -112,6 +116,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 				{
 					Projectile proj = Main.projectile[k];
 
+					// We only check for custom hints here
 					if (proj.ModProjectile is IHintable hintable)
 					{
 						hintToDisplay = hintable.GetHint();
@@ -120,15 +125,18 @@ namespace StarlightRiver.Content.Abilities.Hint
 				}
 			}
 
+			// Check tiles
 			Tile tile = Framing.GetTileSafely((int)pos.X / 16, (int)pos.Y / 16);
 			ModTile modTile = ModContent.GetModTile(tile.TileType);
 
+			// If there is a custom hint use that
 			if (modTile is IHintable hintableT)
 			{
 				hintToDisplay = hintableT.GetHint();
 				return;
 			}
 
+			// Else use a default hint for solid tiles
 			if (tile.HasTile && Main.tileSolid[tile.TileType])
 				hintToDisplay = $"It's just some {ProcessName(TileID.Search.GetName(tile.TileType))}...";
 		}
