@@ -7,14 +7,15 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric
 {
-	internal class Coolmite : MagmitePassive, IHintable
+	internal class CoolmitePassive : MagmitePassive, IHintable
 	{
 		bool melting = false;
 		int meltingTimer = 0;
 
 		public float MeltingTransparency => (float)meltingTimer / 150;
 
-		public override string Texture => "StarlightRiver/Assets/NPCs/Vitric/Coolmite";
+		public virtual int MagmaTransformToNPC => NPCType<MagmitePassive>();
+		public override string Texture => "StarlightRiver/Assets/NPCs/Vitric/CoolmitePassive";
 
 		public override void SetStaticDefaults()
 		{
@@ -25,7 +26,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		public override void SetDefaults()
 		{
 			base.SetDefaults();
-			NPC.catchItem = ItemType<CoolmiteItem>();
+			NPC.catchItem = ItemType<CoolmitePassiveItem>();
 			NPC.HitSound = SoundID.Item27;
 		}
 
@@ -60,21 +61,14 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 			if (lavaPos != null)
 				targetX = ((Vector2)lavaPos).X;
-			else if (NPC.target >= 0)
-				targetX = Main.player[NPC.target].Center.X;
-			else
-				targetX = null;
 
 			return runAI;
 		}
 
 		public override void PostAI()
 		{
-			int x = (int)(NPC.Center.X / 16) + NPC.direction; //check 1 tile infront of la cretura
-			int y = (int)((NPC.Center.Y + 8) / 16);
-			Tile tile = Framing.GetTileSafely(x, y);
-
-			if (tile.LiquidAmount > 0 && tile.LiquidType == LiquidID.Lava)
+			Lifetime = 0;
+			if (NPC.lavaWet)
 			{
 				melting = true;
 			}
@@ -90,10 +84,15 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			if (meltingTimer > 120)
 			{
 				NPC.active = false;
-				NPC magmite = NPC.NewNPCDirect(NPC.GetSource_FromThis(), (int)NPC.position.X, (int)NPC.position.Y, NPCType<MagmitePassive>(), 0, NPC.ai[0], NPC.ai[1], NPC.ai[2], NPC.ai[3], NPC.target);
+				NPC magmite = NPC.NewNPCDirect(NPC.GetSource_FromThis(), (int)NPC.position.X, (int)NPC.position.Y, MagmaTransformToNPC, 0, NPC.ai[0], NPC.ai[1], NPC.ai[2], NPC.ai[3], NPC.target);
 				magmite.frame = NPC.frame;
 				magmite.velocity = NPC.velocity;
 				magmite.velocity.Y = -10;
+				if (magmite.ModNPC is MagmitePassive modMagmite)
+				{
+					modMagmite.maxLifeTime = 600;
+					modMagmite.Lifetime = 0;
+				}
 
 				SoundEngine.PlaySound(SoundID.Item176);
 
@@ -121,37 +120,14 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			}
 		}
 
-		private Vector2? FindLava()
-		{
-			Vector2? lavaPos = null;
-			for (int i = -25; i < 25; i++)
-			{
-				for (int j = -5; j < 15; j++)
-				{
-					Tile tileLava = Main.tile[(int)NPC.Center.X / 16 + i, (int)NPC.Center.Y / 16 + j];
-
-					if (tileLava.LiquidAmount > 0 && tileLava.LiquidType == LiquidID.Lava)
-					{
-						if (lavaPos == null || ((Vector2)lavaPos - NPC.Center).Length() > new Vector2(i, j).Length() * 16)
-						{
-							Vector2 checkPos = NPC.Center + new Vector2(i, j) * 16;
-							if (Collision.CanHitLine(NPC.Center, 1, 1, checkPos, 1, 1) || Collision.CanHitLine(NPC.Center - Vector2.UnitY * 50, 1, 1, checkPos, 1, 1)) // checks if lava can be reached
-								lavaPos = checkPos;
-						}
-					}
-				}
-			}
-
-			return lavaPos;
-		}
-		public string GetHint()
+		new public string GetHint()
 		{
 			return "Even cuter in crystal!";
 		}
 	}
 
-	internal class CoolmiteItem : QuickCritterItem
+	internal class CoolmitePassiveItem : QuickCritterItem
 	{
-		public CoolmiteItem() : base("Coolmite", "Fragile! Please handle with care.", Item.sellPrice(silver: 15), ItemRarityID.Orange, NPCType<Coolmite>(), AssetDirectory.VitricItem) { }
+		public CoolmitePassiveItem() : base("Coolmite", "Fragile! Please handle with care.", Item.sellPrice(silver: 15), ItemRarityID.Orange, NPCType<CoolmitePassive>(), AssetDirectory.VitricItem) { }
 	}
 }

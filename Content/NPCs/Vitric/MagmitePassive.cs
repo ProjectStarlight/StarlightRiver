@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Abilities;
 using System;
 using System.IO;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
@@ -10,13 +11,16 @@ namespace StarlightRiver.Content.NPCs.Vitric
 {
 	internal class MagmitePassive : ModNPC, IHintable
 	{
-		private static readonly int maxLifeTime = 300; // how many ticks before the magmite starts searching for lava to kill itself :))
+		public int maxLifeTime = 450; // how many ticks before the magmite starts searching for lava to kill itself :))
 
-		private int frameCounter = 0;
+		protected int frameCounter = 0;
 
 		private int switchTimer;
 
 		protected float? targetX = 0;
+
+		protected virtual int Offset => 8;
+		protected virtual float Size => 1;
 
 		public ref float ActionState => ref NPC.ai[0];
 		public ref float ActionTimer => ref NPC.ai[1];
@@ -32,9 +36,9 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Small Magmite");
+			DisplayName.SetDefault("Magmite");
 			Main.npcCatchable[Type] = true;
-			NPCID.Sets.ShimmerTransformToNPC[NPC.type] = NPCType<Coolmite>();
+			NPCID.Sets.ShimmerTransformToNPC[NPC.type] = NPCType<CoolmitePassive>();
 		}
 
 		public override void SetDefaults()
@@ -75,25 +79,11 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			NPC.velocity = reader.ReadPackedVector2();
 		}
 
-		public override void AI()
+		public override bool PreAI()
 		{
-			int x = (int)(NPC.Center.X / 16) + NPC.direction; //check 1 tile infront of la cretura
-			int y = (int)((NPC.Center.Y + 8) / 16);
-			Tile tile = Framing.GetTileSafely(x, y);
-			Tile tileUp = Framing.GetTileSafely(x, y - 1);
-			Tile tileClose = Framing.GetTileSafely(x - NPC.direction, y - 1);
-			Tile tileFar = Framing.GetTileSafely(x + NPC.direction * 2, y - 1);
-			Tile tileUnder = Framing.GetTileSafely(x, y + 1);
-
-			Lifetime++;
-			ActionTimer++;
-
-			if (switchTimer > 0)
-				switchTimer--;
-
 			float? lava = null;
 
-			if (Lifetime >= maxLifeTime)
+			if (Lifetime >= maxLifeTime * Size)
 			{
 				if (NPC.lavaWet)
 					NPC.active = false;
@@ -101,6 +91,11 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				Vector2? lavaVec = FindLava();
 				if (lavaVec != null)
 					lava = lavaVec.Value.X;
+			}
+			else
+			{
+				if (NPC.lavaWet)
+					Lifetime--;
 			}
 
 			bool findNewPoint = NPC.Center.X - targetX < 10f && lava != null;
@@ -114,16 +109,35 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			if (lava != null)
 				targetX = lava;
 
+			return base.PreAI();
+		}
+
+		public override void AI()
+		{
+			int x = (int)(NPC.Center.X / 16) + NPC.direction; //check 1 tile infront of la cretura
+			int y = (int)((NPC.Center.Y + Offset) / 16);
+			Tile tile = Framing.GetTileSafely(x, y);
+			Tile tileUp = Framing.GetTileSafely(x, y - 1);
+			Tile tileClose = Framing.GetTileSafely(x - NPC.direction, y - 1);
+			Tile tileFar = Framing.GetTileSafely(x + NPC.direction * 2, y - 1);
+			Tile tileUnder = Framing.GetTileSafely(x, y + 1);
+
+			Lifetime++;
+			ActionTimer++;
+
+			if (switchTimer > 0)
+				switchTimer--;
+
 			if (ActionState == -1)
 			{
 				if (tile.LiquidAmount > 0)
 				{
-					NPC.velocity.Y = -4;
+					NPC.velocity.Y = -4 * Size;
 				}
 				else
 				{
-					NPC.velocity.X += Main.rand.NextBool() ? 5 : -5;
-					NPC.velocity.Y = -10;
+					NPC.velocity.X += (Main.rand.NextBool() ? 5 : -5) * Size;
+					NPC.velocity.Y = -10 * Size;
 					ActionState = 0;
 					if (Main.netMode == NetmodeID.Server)
 						NPC.netUpdate = true;
@@ -154,7 +168,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 				if (TurnTimer > 180)
 				{
-					NPC.velocity.X = NPC.direction * -1;
+					NPC.velocity.X = NPC.direction * -1 * Size;
 					NPC.target = -1;
 					TurnTimer = 0;
 				}
@@ -162,17 +176,17 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				if (targetX != null)
 					NPC.velocity.X += targetX == NPC.Center.X ? 0 : 0.05f * (targetX > NPC.Center.X ? 1 : -1);
 
-				NPC.velocity.X = Math.Min(NPC.velocity.X, 1.5f);
-				NPC.velocity.X = Math.Max(NPC.velocity.X, -1.5f);
+				NPC.velocity.X = Math.Min(NPC.velocity.X, 1.5f * Size);
+				NPC.velocity.X = Math.Max(NPC.velocity.X, -1.5f * Size);
 
 				NPC.direction = NPC.velocity.X > 0 ? 1 : -1;
 				NPC.spriteDirection = NPC.velocity.X > 0 ? 1 : -1;
 
 				if (tileFar.HasTile && tileFar.BlockType == BlockType.Solid && Main.tileSolid[tileFar.TileType] && NPC.velocity.Y == 0) //jump up big cliffs
-					NPC.velocity.Y -= 8;
+					NPC.velocity.Y -= 8 * Size;
 
 				if ((!tileUnder.HasTile || !Main.tileSolid[tileUnder.TileType] && !Main.tileSolidTop[tileUnder.TileType]) && NPC.velocity.Y == 0) //hop off edges
-					NPC.velocity.Y -= 4;
+					NPC.velocity.Y -= 4 * Size;
 			}
 
 			if (ActionState == 1 && ActionTimer == 60)
@@ -253,7 +267,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			return false;
 		}
 
-		private Vector2? FindLava()
+		protected Vector2? FindLava()
 		{
 			Vector2? lavaPos = null;
 			for (int i = -25; i < 25; i++)
