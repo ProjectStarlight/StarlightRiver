@@ -26,20 +26,14 @@ namespace StarlightRiver.Content.Items.Jungle
 
 			On_CombatText.UpdateCombatText += CombatText_UpdateCombatText;
 			IL_NPC.UpdateNPC_BuffApplyDOTs += ChangeDoTColor;
-
-			StarlightItem.SetStaticDefaultsEvent += AddShimmerRecipe;
-		}
-
-		private void AddShimmerRecipe()
-		{
-			ItemID.Sets.ShimmerTransformToItem[ItemID.NaturesGift] = Type; // ig this works
 		}
 
 		public override void SetStaticDefaults()
 		{
-			Tooltip.SetDefault("All damage dealt is converted into damage over time\nDamage is initially decreased, but can interact with DoT-related accessories\nYou are unable to critically strike");
+			Tooltip.SetDefault("All damage dealt is converted into damage over time\nDamage is initially decreased, but can stack\nYou are unable to critically strike");
 
 			ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.NaturesGift;
+			ItemID.Sets.ShimmerTransformToItem[ItemID.NaturesGift] = Type;
 		}
 
 		public override void SafeSetDefaults()

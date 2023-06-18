@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Hovers
 {
@@ -11,6 +12,11 @@ namespace StarlightRiver.Content.Items.Hovers
 		public Hover(string texture) : base()
 		{
 			this.texture = texture;
+		}
+
+		public override void SetStaticDefaults()
+		{
+			ItemID.Sets.Deprecated[Type] = true;
 		}
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
