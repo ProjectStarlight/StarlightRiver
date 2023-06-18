@@ -25,7 +25,7 @@ namespace StarlightRiver.Core
 
 		public static Rectangle squidBossArena = new();
 
-		public static Rectangle VitricBossArena => new(vitricBiome.X + vitricBiome.Width / 2 - 59, vitricBiome.Y - 1, 108, 74); //ceiros arena
+		public static Rectangle VitricBossArena => new(vitricBiome.X + vitricBiome.Width / 2 - 56, vitricBiome.Y - 1, 108, 74); //ceiros arena
 
 		private static Vector2 GlassweaverArenaPos => vitricBiome.TopLeft() * 16 + new Vector2(0, 80 * 16) + new Vector2(0, 256);
 		public static Rectangle GlassweaverArena => new((int)GlassweaverArenaPos.X - 35 * 16, (int)GlassweaverArenaPos.Y - 30 * 16, 70 * 16, 30 * 16);

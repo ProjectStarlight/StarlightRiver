@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.GUI;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
 
@@ -18,7 +19,10 @@ namespace StarlightRiver.Core
 
 		public void QualifyForMedal(Medal medal)
 		{
-			//Main.NewText("Difficulty for current fight is:" + Difficulty);
+			// If a medal is already being attempted, dont start a new one
+			if (attemptedMedal.name != null)
+				return;
+
 			attemptedMedal = medal;
 
 			if (!deathCounters.Any(n => n.name == medal.name))
@@ -158,7 +162,8 @@ namespace StarlightRiver.Core
 
 		public override string ToString()
 		{
-			return name + ": " + (difficulty == 0 ? "Normal" : difficulty == 1 ? "Expert" : difficulty == -1 ? "Journey" : "Master");
+			string split = Regex.Replace(name, "([a-z])([A-Z])", "$1 $2");
+			return split + ": " + (difficulty == 0 ? "Normal" : difficulty == 1 ? "Expert" : difficulty == -1 ? "Journey" : "Master");
 		}
 
 		public override bool Equals(object obj)

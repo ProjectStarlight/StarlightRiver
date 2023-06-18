@@ -70,6 +70,9 @@ namespace StarlightRiver.Content.Tiles.Forest
 					godrayRot = -0.5f * 1.57f + (float)Main.time / 24000f * 3.14f;
 				}
 
+				if (Main.raining)
+					godrayColor *= 1 - Main.cloudAlpha * 2;
+
 				godrayColor.A = 0;
 
 				pos += new Vector2(0, -100);
@@ -88,7 +91,6 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 				if (daySeed % 7 == 0)
 					spriteBatch.Draw(tex2, pos - Main.screenPosition, null, godrayColor, godrayRot, Vector2.Zero, 0.75f, 0, 0);
-
 			}
 
 			if (!up && !down)
@@ -134,7 +136,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 			if (Main.rand.NextBool(20) && right && !up && down)
 			{
-				if (Main.dayTime && Main.time > 10000 && Main.time < 44000)
+				if (Main.dayTime && !Main.raining && Main.time > 10000 && Main.time < 44000)
 				{
 					float godrayRot = (float)Main.time / 54000f * 3.14f;
 					Dust.NewDustPerfect(new Vector2(i, j) * 16 + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(100), ModContent.DustType<Dusts.GoldSlowFade>(), Vector2.UnitX.RotatedBy(godrayRot) * Main.rand.NextFloat(0.25f, 0.5f), 255, default, 0.75f);

@@ -6,6 +6,12 @@ namespace StarlightRiver.Content.Items.BaseTypes
 {
 	public abstract class SmartAccessory : ModItem
 	{
+		public static int ACCESSORY_START_INDEX = 3;
+		public static int ACCESSORY_END_INDEX = 9;
+		public static int VANITY_ACCESSORY_START_INDEX = 13;
+		public static int VANITY_ACCESSORY_END_INDEX = 19;
+		public static int DEFAULT_ACCESSORY_SLOT_COUNT = 5;
+
 		/// <summary>
 		/// For use with simulated accessories, the accessory simulating this one is it's parent.
 		/// This is a list for if you are simulating the same accessory from multiple sources,
@@ -20,12 +26,6 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		private readonly string name;
 		private readonly string tooltip;
-
-		/// <summary>
-		/// When this is first equipped we want to perform onEquip logic to simulate child accessories or other setup data
-		/// Done this way since most inventory logic is client side (but accessories are synced) and this is easier than trying to hunt down places where equipment is set in multiplayer
-		/// </summary>
-		public bool isDoneOnEquip = false;
 
 		/// <summary>
 		/// Override this and add the types of SmartAccessories you want this one to simulate. Note that simulated accessories are reset on unequip/reload, so you will need to save any persistent data on the parent accessory.
@@ -43,18 +43,18 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		/// </summary>
 		/// <param name="Player">The player to check for the item on</param>
 		/// <returns>If the item is equipped or simulated.</returns>
-		public bool Equipped(Player Player)
+		public bool Equipped(Player player)
 		{
-			for (int k = 3; k < 10 + Player.extraAccessorySlots; k++) //didnt work with extra slots, in my case, master mode extra slot. I referred to vanilla code to fix it
+			for (int k = ACCESSORY_START_INDEX; k <= ACCESSORY_END_INDEX; k++)
 			{
-				if (Player.IsItemSlotUnlockedAndUsable(k))
+				if (player.IsItemSlotUnlockedAndUsable(k))
 				{
-					if (Player.armor[k].type == Item.type)
+					if (player.armor[k].type == Item.type)
 						return true;
 				}
 			}
 
-			AccessorySimulationPlayer mp = Player.GetModPlayer<AccessorySimulationPlayer>();
+			AccessorySimulationPlayer mp = player.GetModPlayer<AccessorySimulationPlayer>();
 			if (mp.simulatedAccessories.Any(n => n.type == Item.type))
 				return true;
 
@@ -79,14 +79,42 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		/// <returns>The SmartAccessory instance if one is found, null if the item is not equipped or simulated.</returns>
 		public static SmartAccessory GetEquippedInstance(Player player, int type)
 		{
-			int accessoryIndex = 5 + player.GetAmountOfExtraAccessorySlotsToShow();
+			int accessoryCount = DEFAULT_ACCESSORY_SLOT_COUNT + player.GetAmountOfExtraAccessorySlotsToShow();
 
-			for (int k = 3; k <= 3 + accessoryIndex; k++)
+			for (int k = ACCESSORY_START_INDEX; k <= ACCESSORY_END_INDEX; k++)
 			{
-				if (player.armor[k].type == type)
+				if (player.armor[k].type == type && player.IsItemSlotUnlockedAndUsable(k))
 					return player.armor[k].ModItem as SmartAccessory;
 			}
 
+			AccessorySimulationPlayer mp = player.GetModPlayer<AccessorySimulationPlayer>();
+			return mp.simulatedAccessories.FirstOrDefault(n => n.type == type)?.ModItem as SmartAccessory;
+		}
+
+		/// <summary>
+		/// Gets the instance of the accessory directly or simulated in a vanity slot
+		/// </summary>
+		/// <param name="player">The player to get the equipped instance from.</param>
+		/// <returns>The SmartAccessory instance if one is found, null if the item is not equipped or simulated in a vanity slot.</returns>
+		public SmartAccessory GetVisualInstance(Player player)
+		{
+			return GetVisualInstance(player, Item.type);
+		}
+
+		/// <summary>
+		/// Gets the instance of the accessory directly or simulated in a vanity slot
+		/// </summary>
+		/// <param name="player">The player to get the equipped instance from.</param>
+		/// <param name="type">The type of accessory to look for, this should be the ID of an item extending SmartAccessory</param>
+		/// <returns>The SmartAccessory instance if one is found, null if the item is not equipped or simulated in a vanity slot.</returns>
+		public static SmartAccessory GetVisualInstance(Player player, int type)
+		{
+			for (int k = VANITY_ACCESSORY_START_INDEX; k <= VANITY_ACCESSORY_END_INDEX; k++)
+			{
+				if (player.armor[k].type == type && player.IsItemSlotUnlockedAndUsable(k))
+					return player.armor[k].ModItem as SmartAccessory;
+			}
+			
 			AccessorySimulationPlayer mp = player.GetModPlayer<AccessorySimulationPlayer>();
 			return mp.simulatedAccessories.FirstOrDefault(n => n.type == type)?.ModItem as SmartAccessory;
 		}
@@ -126,8 +154,6 @@ namespace StarlightRiver.Content.Items.BaseTypes
 				Simulate(type, player);
 
 			OnEquip(player, item);
-
-			isDoneOnEquip = true;
 		}
 
 		/// <summary>
@@ -160,9 +186,6 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public sealed override void UpdateEquip(Player player)
 		{
-			if (!isDoneOnEquip)
-				Equip(player, Item);
-
 			if (isChild)
 			{
 				var toRemove = new List<Item>(); //Removes unequipped accessories from parents
@@ -208,31 +231,31 @@ namespace StarlightRiver.Content.Items.BaseTypes
 	{
 		public List<Item> simulatedAccessories = new();
 
-		public override void Load()
-		{
-			On_AchievementsHelper.HandleOnEquip += OnEquipHandler;
-		}
-
-		private void OnEquipHandler(On_AchievementsHelper.orig_HandleOnEquip orig, Player player, Item item, int context)
-		{
-			if (item.ModItem is SmartAccessory)
-				(item.ModItem as SmartAccessory).Equip(player, item);
-
-			orig(player, item, context);
-		}
+		public int[] accsLastFrame = new int[20];
 
 		public override void OnEnterWorld()
 		{
 			simulatedAccessories.Clear();
-
-			for (int k = 3; k <= 7 + Player.extraAccessorySlots; k++)
+			for (int k = SmartAccessory.ACCESSORY_START_INDEX; k <= SmartAccessory.ACCESSORY_END_INDEX; k++)
 			{
 				(Player.armor[k].ModItem as SmartAccessory)?.Equip(Player, Player.armor[k]);
+				accsLastFrame[k] = Player.armor[k].type;
 			}
 		}
 
 		public override void UpdateEquips()
 		{
+			//iterate over equipped accessories so we can discover if any have changed in order to equip this
+			//done this way so we can capture all the various ways terraria has for modifying equip slots cloned/not cloned quick swap, loadout swap etc.
+			for (int k = SmartAccessory.ACCESSORY_START_INDEX; k <= SmartAccessory.ACCESSORY_END_INDEX; k++)
+			{
+				if (Player.armor[k].type != accsLastFrame[k] && Player.IsItemSlotUnlockedAndUsable(k))
+				{
+					accsLastFrame[k] = Player.armor[k].type;
+					(Player.armor[k].ModItem as SmartAccessory)?.Equip(Player, Player.armor[k]);
+				}
+			}
+
 			simulatedAccessories.RemoveAll(n => n.IsAir);
 
 			foreach (Item item in simulatedAccessories)

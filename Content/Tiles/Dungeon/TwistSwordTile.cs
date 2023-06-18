@@ -1,8 +1,4 @@
-﻿//TODO:
-//Sparkles
-//Glowmask
-
-using StarlightRiver.Content.Dusts;
+﻿using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.Dungeon;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
@@ -23,11 +19,7 @@ namespace StarlightRiver.Content.Tiles.Dungeon
 		public override void SetStaticDefaults()
 		{
 			QuickBlock.QuickSetFurniture(this, 1, 1, DustID.Iron, SoundID.Tink, Color.Blue, 16, false, false, "Twisted Greatsword", default, new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0));
-		}
-
-		public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
-		{
-			Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16, 16, ModContent.ItemType<TwistSword>());
+			RegisterItemDrop(ModContent.ItemType<TwistSword>());
 		}
 	}
 

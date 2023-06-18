@@ -58,6 +58,19 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		{
 			Framing.GetTileSafely(i, j).IsActuated = GearPuzzle.GearPuzzleHandler.Solved;
 		}
+
+		public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
+		{
+			Tile tile = Framing.GetTileSafely(i, j);
+
+			Texture2D tex = Request<Texture2D>(Texture).Value;
+			Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 + Vector2.UnitY * -Helper.BezierEase(GearPuzzle.GearPuzzleHandler.solveTimer / 180f) * 7 * 16;
+			var frame = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16);
+
+			spriteBatch.Draw(tex, pos - Main.screenPosition, frame, Lighting.GetColor(i, j));
+
+			return false;
+		}
 	}
 
 	[SLRDebug]
@@ -79,7 +92,20 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public override void NearbyEffects(int i, int j, bool closer)
 		{
-			Framing.GetTileSafely(i, j).IsActuated = LightPuzzle.LightPuzzleHandler.Solved;
+			Framing.GetTileSafely(i, j).IsActuated = LightPuzzle.LightPuzzleHandler.solved;
+		}
+
+		public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
+		{
+			Tile tile = Framing.GetTileSafely(i, j);
+
+			Texture2D tex = Request<Texture2D>(Texture).Value;
+			Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 + Vector2.UnitY * -Helper.BezierEase(LightPuzzle.LightPuzzleHandler.solveTimer / 180f) * 5 * 16;
+			var frame = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16);
+
+			spriteBatch.Draw(tex, pos - Main.screenPosition, frame, Lighting.GetColor(i, j));
+
+			return false;
 		}
 	}
 

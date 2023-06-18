@@ -109,7 +109,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 				{
 					endPoint = posCheck;
 
-					if (Emit > 0)
+					if (Emit > 0 && !rotating)
 						ActivateDownstream();
 
 					break;
@@ -118,7 +118,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 				if (Framing.GetTileSafely((int)posCheck.X / 16, (int)posCheck.Y / 16).TileType == ModContent.TileType<LightGoal>() && Emit == 1)
 				{
 					endPoint = posCheck;
-					LightPuzzleHandler.solvedPoints++;
+					LightPuzzleHandler.solved = true;
 				}
 
 				if (Helper.PointInTile(posCheck) || k == 159)
@@ -151,7 +151,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 
 			if (Framing.GetTileSafely((int)endPoint.X / 16, (int)endPoint.Y / 16).TileType == ModContent.TileType<LightGoal>())
 			{
-				LightPuzzleHandler.solvedPoints--;
+				LightPuzzleHandler.solved = false;
 			}
 
 			Projectile dummy = DummyTile.GetDummy<ReflectorDummy>((int)endPoint.X / 16, (int)endPoint.Y / 16);

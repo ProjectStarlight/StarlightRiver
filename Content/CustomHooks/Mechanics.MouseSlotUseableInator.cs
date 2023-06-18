@@ -66,13 +66,13 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private void LockMouseToSpecialItem(Terraria.UI.On_ItemSlot.orig_LeftClick_ItemArray_int_int orig, Item[] inv, int context, int slot)
 		{
-			if (!(Main.mouseItem.ModItem is Core.InworldItem))
+			if (!(Main.mouseItem.ModItem is Core.InworldItem && !Main.mouseItem.IsAir))
 				orig(inv, context, slot);
 		}
 
 		private void DontDropCoolStuff(On_Player.orig_dropItemCheck orig, Terraria.Player self)
 		{
-			if (!(Main.mouseItem.ModItem is Core.InworldItem))
+			if (!(Main.mouseItem.ModItem is Core.InworldItem && !Main.mouseItem.IsAir))
 				orig(self);
 		}
 	}

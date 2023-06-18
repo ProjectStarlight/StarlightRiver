@@ -146,7 +146,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 					NPC.velocity = projVel * -1;
 					magmaCharge = 0;
 					chargingMagma = false;
-					Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, projVel, ModContent.ProjectileType<FirebugMagma>(), 70, 4);
+					Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, projVel, ModContent.ProjectileType<FirebugMagma>(), 45, 4);
 				}
 			}
 			else

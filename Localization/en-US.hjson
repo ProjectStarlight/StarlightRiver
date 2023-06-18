@@ -3571,6 +3571,7 @@ Mods: {
 			GauntletSpawner.DisplayName: Gauntlet Spawner
 			SpawnEgg.DisplayName: Spawn Egg
 			SandscriptBook.DisplayName: Sandscript Book
+			RecursiveFocusLaser.DisplayName: Infernal Laser
 		}
 
 		Tiles: {

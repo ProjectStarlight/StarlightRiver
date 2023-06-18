@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
-			if (Main.projectile.Any(n => n.active && n.owner == player.whoAmI && n.type == ModContent.ProjectileType<RadculasRapierSwungBlade>()))
+			if (Main.projectile.Any(n => n.active && n.owner == player.whoAmI && (n.type == ModContent.ProjectileType<RadculasRapierSwungBlade>() || n.type == ModContent.ProjectileType<RadculasRapierTeleport>())))
 				return false; // prevents possibility of duplicate projectiles
 
 			if (player.altFunctionUse == 2 && !player.HasBuff<RadculasRapierCooldown>())

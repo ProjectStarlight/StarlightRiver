@@ -332,11 +332,6 @@ namespace StarlightRiver.Content.Items.Misc
 			return false;
 		}
 
-		public override bool? CanCutTiles()
-		{
-			return false;
-		}
-
 		public void BreakTrees(int i, int j, Vector2 visualPos)
 		{
 			Tile tileAtPosition = Framing.GetTileSafely(i, j);

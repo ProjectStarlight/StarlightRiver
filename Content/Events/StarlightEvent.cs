@@ -2,11 +2,13 @@
 using StarlightRiver.Content.Backgrounds;
 using StarlightRiver.Content.Bosses.VitricBoss;
 using StarlightRiver.Content.NPCs.Starlight;
+using StarlightRiver.Core.Systems.BossRushSystem;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
 using System.IO;
 using System.Linq;
 using Terraria.Graphics.Effects;
+using Terraria.ID;
 using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Events
@@ -23,6 +25,13 @@ namespace StarlightRiver.Content.Events
 
 		public override void PostUpdateTime()
 		{
+			if (BossRushSystem.isBossRush)
+			{
+				occuring = false;
+				willOccur = false;
+				return;
+			}
+
 			// Handles the fade effects
 			if (occuring && fadeTimer < 300)
 				fadeTimer++;
@@ -42,15 +51,17 @@ namespace StarlightRiver.Content.Events
 				occuring = true;
 				willOccur = false;
 				Main.NewText("A strange traveler has arrived...", new Color(150, 200, 255));
-				NPC.NewNPC(null, Main.spawnTileX * 16, sequence == 0 ? Main.spawnTileY * 16 - 240 : Main.spawnTileY * 16 - 120, ModContent.NPCType<Crow>());
 
-				NetMessage.SendData(Terraria.ID.MessageID.WorldData);
+				if (Main.netMode != NetmodeID.MultiplayerClient)
+					NPC.NewNPC(null, Main.spawnTileX * 16, sequence == 0 ? Main.spawnTileY * 16 - 240 : Main.spawnTileY * 16 - 120, ModContent.NPCType<Crow>());
+
+				NetMessage.SendData(MessageID.WorldData);
 			}
 
 			if (Active)
 			{
 				// Failsafe incase the crow despawns... shouldn't happen anymore but who knows!
-				if (occuring && !Main.npc.Any(n => n.active && n.type == ModContent.NPCType<Crow>()))
+				if (occuring && !Main.npc.Any(n => n.active && n.type == ModContent.NPCType<Crow>()) && Main.netMode != NetmodeID.MultiplayerClient)
 					NPC.NewNPC(null, Main.spawnTileX * 16, sequence == 0 ? Main.spawnTileY * 16 - 240 : Main.spawnTileY * 16 - 120, ModContent.NPCType<Crow>());
 
 				bool talking = Main.npc.Any(n => n.active && n.type == ModContent.NPCType<Crow>() && (n.ModNPC as Crow).InCutscene);
@@ -131,7 +142,9 @@ namespace StarlightRiver.Content.Events
 				occuring = true;
 				willOccur = false;
 				Main.NewText("A strange traveler has arrived...", new Color(150, 200, 255));
-				NPC.NewNPC(null, Main.spawnTileX * 16, sequence == 0 ? Main.spawnTileY * 16 - 240 : Main.spawnTileY * 16 - 120, ModContent.NPCType<Crow>());
+
+				if (Main.netMode != NetmodeID.MultiplayerClient)
+					NPC.NewNPC(null, Main.spawnTileX * 16, sequence == 0 ? Main.spawnTileY * 16 - 240 : Main.spawnTileY * 16 - 120, ModContent.NPCType<Crow>());
 			}
 		}
 
@@ -152,7 +165,7 @@ namespace StarlightRiver.Content.Events
 
 	internal class StarlightEvent : ModSceneEffect
 	{
-		public override int Music => MusicLoader.GetMusicSlot("StarlightRiver/Sounds/Music/Moonstone");
+		public override int Music => MusicLoader.GetMusicSlot("StarlightRiver/Sounds/Music/StarBird");
 
 		public override SceneEffectPriority Priority => SceneEffectPriority.BossMedium;
 

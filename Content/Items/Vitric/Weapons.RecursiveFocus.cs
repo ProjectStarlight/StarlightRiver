@@ -1,5 +1,9 @@
-﻿using StarlightRiver.Helpers;
+﻿using ReLogic.Utilities;
+using StarlightRiver.Core.Systems.CameraSystem;
+using StarlightRiver.Helpers;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
@@ -48,13 +52,14 @@ namespace StarlightRiver.Content.Items.Vitric
 				{
 					Projectile proj = Main.projectile[i];
 
-					if (proj.active && proj.type == Item.shoot && proj.owner == player.whoAmI)
+					if (proj.active && (proj.type == Item.shoot || proj.type == ModContent.ProjectileType<RecursiveFocusLaser>()) && proj.owner == player.whoAmI)
 						proj.Kill();
 				}
 			}
 
 			Projectile.NewProjectileDirect(source, player.Center, velocity, type, damage, knockback, player.whoAmI).originalDamage = Item.damage;
 			player.UpdateMaxTurrets();
+
 			return false;
 		}
 
@@ -70,59 +75,42 @@ namespace StarlightRiver.Content.Items.Vitric
 
 	public class RecursiveFocusProjectile : ModProjectile
 	{
-		public int modeSwitchTransitionTimer;
+		public float TimeSpentOnTarget
+		{
+			get
+			{
+				Projectile proj = Main.projectile.Where(p => p.active && p.type == ModContent.ProjectileType<RecursiveFocusLaser>() && (p.ModProjectile as RecursiveFocusLaser).parent == Projectile && !(p.ModProjectile as RecursiveFocusLaser).MultiMode).FirstOrDefault();
+				if (proj != null)
+				{
+					return (proj.ModProjectile as RecursiveFocusLaser).TimeSpentOnTarget;
+				}
 
-		public int modeSwitchCooldown;
+				return 0;
+			}
+		}
 
-		public int flashTimer;
+		public bool HasSingleTarget
+		{
+			get
+			{
+				Projectile proj = Main.projectile.Where(p => p.active && p.type == ModContent.ProjectileType<RecursiveFocusLaser>() && (p.ModProjectile as RecursiveFocusLaser).parent == Projectile && !(p.ModProjectile as RecursiveFocusLaser).MultiMode).FirstOrDefault();
+				if (proj != null)
+				{
+					return (proj.ModProjectile as RecursiveFocusLaser).HasTarget;
+				}
 
-		public int trailMult = 5;
+				return false;
+			}
+		}
 
-		public int trailMult2 = 3;
+		public int pulseTimer;
 
-		public int timeSpentOnTarget;
+		public Vector2 LineOfSightPos => Owner.Center + new Vector2(0f, -70); // needed for LOS check
 
-		public int timeSpentOnMultiTargetOne;
-		public int timeSpentOnMultiTargetTwo;
-
-		public Vector2 targetCenter;
-
-		public Vector2 multiTargetCenterOne;
-		public Vector2 multiTargetCenterTwo;
-
-		public bool rightClickMode;
-
-		public bool foundTarget;
-
-		public bool foundMultiTargetOne;
-		public bool foundMultiTargetTwo;
-
-		public bool flashing;
-
-		public NPC oldTargetNPC;
-		public NPC targetNPC;
-
-		public NPC multiTargetNPCOne;
-		public NPC multiTargetNPCTwo;
-
-		private List<Vector2> cache;
-		private Trail trail;
-
-		private List<Vector2> cache2;
-		private Trail trail2;
-
-		private List<Vector2> multiCacheOne;
-		private Trail multiTrailOne;
-
-		private List<Vector2> multiCacheTwo;
-		private Trail multiTrailTwo;
-
-		private List<Vector2> multiCacheThree;
-		private Trail multiTrailThree;
-
-		private List<Vector2> multiCacheFour;
-		private Trail multiTrailFour;
-
+		public NPC[] targets = new NPC[3]; // for multi mode
+		public bool MultiMode => Projectile.ai[0] != 0f;
+		public ref float SwitchTimer => ref Projectile.ai[1];
+		public ref float SwitchCooldown => ref Projectile.ai[2];
 		public Player Owner => Main.player[Projectile.owner];
 
 		public override string Texture => AssetDirectory.VitricItem + Name;
@@ -144,7 +132,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void SetDefaults()
 		{
-			Projectile.friendly = true;
+			Projectile.friendly = false;
 			Projectile.DamageType = DamageClass.Summon;
 			Projectile.penetrate = -1;
 
@@ -155,58 +143,85 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			Projectile.ignoreWater = true;
 			Projectile.tileCollide = false;
-
-			Projectile.usesLocalNPCImmunity = true; //otherwise it hogs all iframes, making nothing else able to hit
-			Projectile.localNPCHitCooldown = 12;
-		}
-
-		public override bool PreAI()
-		{
-			if (targetNPC != null)
-				oldTargetNPC = targetNPC;
-
-			return true;
 		}
 
 		public override void AI()
 		{
-			if (modeSwitchTransitionTimer > 0)
-			{
-				modeSwitchTransitionTimer--;
-				DoModeSwitchTransition();
-			}
+			if (SwitchTimer > 0)
+				SwitchTimer--;
 
-			if (modeSwitchCooldown > 0)
-				modeSwitchCooldown--;
+			if (SwitchCooldown > 0)
+				SwitchCooldown--;
 
-			if (Main.mouseRight && Main.mouseRightRelease && modeSwitchCooldown <= 0 && Owner.HeldItem.type == ModContent.ItemType<RecursiveFocus>())
+			if (pulseTimer > 0)
+				pulseTimer--;
+
+			if (MultiMode)
+				PopulateTargets();
+
+			if (!Main.projectile.Any(p => p.active && p.owner == Owner.whoAmI && p.type == ModContent.ProjectileType<RecursiveFocusLaser>()) && SwitchTimer <= 0)
 			{
-				if (!rightClickMode)
+				if (MultiMode)
 				{
-					modeSwitchTransitionTimer = 120;
-					modeSwitchCooldown = 240;
+					for (int i = 0; i < 3; i++)
+					{
+						Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<RecursiveFocusLaser>(), Projectile.damage, 0f, Owner.whoAmI, 1f, 0f);
+
+						proj.originalDamage = Projectile.originalDamage;
+						(proj.ModProjectile as RecursiveFocusLaser).parent = Projectile;
+						(proj.ModProjectile as RecursiveFocusLaser).order = i;
+						(proj.ModProjectile as RecursiveFocusLaser).lifetime = i * Main.rand.Next(200, 600);
+					}
 				}
 				else
 				{
-					timeSpentOnTarget = 0;
-					timeSpentOnMultiTargetOne = 0;
-					timeSpentOnMultiTargetTwo = 0;
-					foundTarget = false;
-					foundMultiTargetOne = false;
-					foundMultiTargetTwo = false;
-					targetNPC = null;
-					multiTargetNPCOne = null;
-					multiTargetNPCTwo = null;
-					rightClickMode = false;
+					Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<RecursiveFocusLaser>(), Projectile.damage, 0f, Owner.whoAmI);
+
+					proj.originalDamage = Projectile.originalDamage;
+					(proj.ModProjectile as RecursiveFocusLaser).parent = Projectile;
 				}
 			}
 
-			if (!Main.dedServ && foundTarget)
+			if (Main.mouseRight && Main.mouseRightRelease && SwitchCooldown <= 0 && Owner.HeldItem.type == ModContent.ItemType<RecursiveFocus>())
 			{
-				ManageCaches();
-				ManageTrail();
+				SwitchCooldown = 240f;
+				SwitchTimer = 60f;
+				Helper.PlayPitched("Magic/FireCast", 1f, 0f, Projectile.Center);
 			}
 
+			if (SwitchTimer > 0)
+			{
+				float lerper = 1f - SwitchTimer / 60f;
+
+				float off = MathHelper.Lerp(100f, 10f, lerper);
+
+				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2CircularEdge(off, off), ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(0.5f, 0.5f), 0, new Color(255, 150, 50), 0.5f);
+
+				if (SwitchTimer == 1)
+				{
+					if (MultiMode)
+						Projectile.ai[0] = 0f;
+					else
+						Projectile.ai[0] = 1f;
+
+					Helper.PlayPitched("Magic/FireHit", 1f, 0f, Projectile.Center);
+
+					for (int i = 0; i < 20; i++)
+					{
+						Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(5f, 5f), 0, new Color(255, 150, 50), 0.5f);
+					}
+
+					CameraSystem.shake += 10;
+
+					pulseTimer = 15;
+				}
+			}
+
+			DoMovement();
+		}
+
+		internal void DoMovement()
+		{
 			var idlePos = new Vector2(Owner.Center.X, Owner.Center.Y - 70);
 
 			Vector2 toIdlePos = idlePos - Projectile.Center;
@@ -230,195 +245,47 @@ namespace StarlightRiver.Content.Items.Vitric
 				Projectile.velocity = Vector2.Zero;
 				Projectile.netUpdate = true;
 			}
-
-			if (Owner.HasMinionAttackTargetNPC)
-			{
-				NPC npc = Main.npc[Owner.MinionAttackTargetNPC];
-
-				float dist = Vector2.Distance(npc.Center, Projectile.Center);
-
-				if (dist < 1000f)
-				{
-					targetCenter = npc.Center;
-					targetNPC = npc;
-					foundTarget = true;
-				}
-			}
-
-			if (!foundTarget)
-				targetNPC = Projectile.FindTargetWithinRange(1000f);
-
-			if (targetNPC != null)
-			{
-				if (oldTargetNPC != targetNPC)
-					timeSpentOnTarget = 0;
-
-				if (Collision.CanHit(Projectile.Center, 1, 1, targetNPC.Center, 1, 1) && modeSwitchTransitionTimer <= 0)
-				{
-					foundTarget = true;
-					targetCenter = targetNPC.Center;
-
-					if (timeSpentOnTarget < 720)
-						timeSpentOnTarget++;
-				}
-
-				if (!targetNPC.active || Vector2.Distance(Projectile.Center, targetCenter) > 1000f || !Collision.CanHit(Projectile.Center, 1, 1, targetNPC.Center, 1, 1) || modeSwitchTransitionTimer > 0)
-				{
-					timeSpentOnTarget = 0;
-					foundTarget = false;
-				}
-
-				if (foundTarget)
-				{
-					if (!rightClickMode)
-						UpdateSingleMode();
-
-					if (Projectile.soundDelay == 0)
-					{
-						Helper.PlayPitched("Magic/RecursiveFocusLaserLoopingAlt", 0.3f, 0, Projectile.Center);
-						Projectile.soundDelay = 30;
-					}
-				}
-			}
-
-			if (rightClickMode)
-			{
-				FindMultiTarget();
-
-				if (foundTarget || foundMultiTargetOne || foundMultiTargetTwo)
-					UpdateMultiMode();
-			}
 		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			DrawTrail(Main.spriteBatch);
-
 			Texture2D baseTex = ModContent.Request<Texture2D>(Texture + "Base").Value;
 			Texture2D crystalTex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D bloomTex = ModContent.Request<Texture2D>(Texture + "_Bloom").Value;
+			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
 
 			Texture2D crystalTexOrange = ModContent.Request<Texture2D>(Texture + "_Orange").Value;
 			Texture2D baseTexOrange = ModContent.Request<Texture2D>(Texture + "Base_Orange").Value;
 
+			Texture2D baseTexGlow = ModContent.Request<Texture2D>(Texture + "Base_Glow").Value;
 			Texture2D crystalTexGlow = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
 
-			var color = Color.Lerp(Color.Transparent, new Color(255, 150, 50), timeSpentOnTarget / 360f - 1f);
-			color.A = 0;
+			if (MultiMode)
+				Main.spriteBatch.Draw(crystalTexGlow, Projectile.Center - Main.screenPosition, null, new Color(255, 150, 100, 0), Projectile.rotation, crystalTexGlow.Size() / 2f, Projectile.scale, 0f, 0f);
 
-			if (rightClickMode)
+			Main.spriteBatch.Draw(baseTex, Projectile.Center + new Vector2(0, 20) - Projectile.oldVelocity - Main.screenPosition, null, Color.White, Projectile.velocity.X * 0.075f, baseTex.Size() / 2f, Projectile.scale, SpriteEffects.None, 0);
+			Main.spriteBatch.Draw(crystalTex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, crystalTex.Size() / 2f, Projectile.scale, SpriteEffects.None, 0);
+
+			if (HasSingleTarget)
 			{
-				var bloomColor = new Color(255, 150, 50, 0);
-				Main.EntitySpriteDraw(bloomTex, Projectile.Center - Main.screenPosition, null, color * 0.5f, Projectile.rotation, bloomTex.Size() / 2f, Projectile.scale * 1.35f, SpriteEffects.None, 0);
+				Main.spriteBatch.Draw(baseTexOrange, Projectile.Center + new Vector2(0, 20) - Projectile.oldVelocity - Main.screenPosition, null, Color.White * (TimeSpentOnTarget / 540f), Projectile.velocity.X * 0.075f, baseTexOrange.Size() / 2f, Projectile.scale, 0f, 0f);
+				Main.spriteBatch.Draw(baseTexGlow, Projectile.Center + new Vector2(0, 20) - Projectile.oldVelocity - Main.screenPosition, null, new Color(255, 165, 115, 0) * (TimeSpentOnTarget / 540f), Projectile.velocity.X * 0.075f, baseTexGlow.Size() / 2f, Projectile.scale, 0f, 0f);
+
+				Main.spriteBatch.Draw(crystalTexOrange, Projectile.Center - Main.screenPosition, null, Color.White * (TimeSpentOnTarget / 540f), Projectile.rotation, crystalTexOrange.Size() / 2f, Projectile.scale, 0f, 0f);			
 			}
-			else if (timeSpentOnTarget > 360)
-			{
-				Main.EntitySpriteDraw(bloomTex, Projectile.Center - Main.screenPosition, null, color * 0.5f, Projectile.rotation, bloomTex.Size() / 2f, Projectile.scale * 1.35f, SpriteEffects.None, 0);
-			}
 
-			Main.EntitySpriteDraw(baseTex, Projectile.Center + new Vector2(0, 20) - Projectile.oldVelocity - Main.screenPosition, null, Color.White, Projectile.velocity.X * 0.075f, baseTex.Size() / 2f, Projectile.scale, SpriteEffects.None, 0);
-			Main.EntitySpriteDraw(crystalTex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, crystalTex.Size() / 2f, Projectile.scale, SpriteEffects.None, 0);
-
-			if (foundTarget)
+			if (pulseTimer > 0)
 			{
-				if (!rightClickMode)
+				if (TimeSpentOnTarget > 179)
 				{
-					Main.EntitySpriteDraw(baseTexOrange, Projectile.Center + new Vector2(0, 20) - Projectile.oldVelocity - Main.screenPosition, null, Color.Lerp(Color.Transparent, Color.White, timeSpentOnTarget / 720f), Projectile.velocity.X * 0.075f, baseTex.Size() / 2f, Projectile.scale, SpriteEffects.None, 0);
-					Main.EntitySpriteDraw(crystalTexOrange, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, Color.White, timeSpentOnTarget / 720f), Projectile.rotation, crystalTex.Size() / 2f, Projectile.scale, SpriteEffects.None, 0);
-
-					if (timeSpentOnTarget >= 720)
-						Main.EntitySpriteDraw(crystalTexGlow, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.White, Color.Transparent, flashTimer <= 1 ? 0 : 1f - flashTimer / 35f), Projectile.rotation, crystalTexGlow.Size() / 2f, Projectile.scale, SpriteEffects.None, 0);
-
-					if (flashing)
-					{
-						flashTimer++;
-						if (flashTimer > 35)
-						{
-							flashing = false;
-							flashTimer = 0;
-						}
-
-						Texture2D crystalTexWhite = ModContent.Request<Texture2D>(Texture + "_White").Value;
-
-						if (flashTimer > 0)
-							Main.EntitySpriteDraw(crystalTexWhite, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, Color.White, 1f - flashTimer / 35f), Projectile.rotation, crystalTexWhite.Size() / 2f, Projectile.scale, SpriteEffects.None, 0);
-					}
+					Main.spriteBatch.Draw(crystalTexGlow, Projectile.Center - Main.screenPosition, null, new Color(255, 150, 100, 0) * 0.5f * (pulseTimer / 15f), Projectile.rotation, crystalTexGlow.Size() / 2f, Projectile.scale * MathHelper.Lerp(1f, 3f, 1f - pulseTimer / 15f), 0f, 0f);
 				}
-
-				Texture2D laserBloom = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
-				var color2 = new Color(255, 150, 50, 0);
-				var color3 = new Color(255, 195, 135, 0);
-
-				Main.EntitySpriteDraw(laserBloom, targetCenter - Main.screenPosition, null, color2, 0f, laserBloom.Size() / 2f, 0.3f + MathHelper.Lerp(0, 0.4f, timeSpentOnTarget / 720f), SpriteEffects.None, 0);
-				Main.EntitySpriteDraw(laserBloom, targetCenter - Main.screenPosition, null, color3, 0f, laserBloom.Size() / 2f, 0.2f + MathHelper.Lerp(0, 0.4f, timeSpentOnTarget / 720f), SpriteEffects.None, 0);
-
-				if (foundMultiTargetOne && timeSpentOnMultiTargetOne > 2)
+				else
 				{
-					Main.EntitySpriteDraw(laserBloom, multiTargetCenterOne - Main.screenPosition, null, color2, 0f, laserBloom.Size() / 2f, 0.5f, SpriteEffects.None, 0);
-					Main.EntitySpriteDraw(laserBloom, multiTargetCenterOne - Main.screenPosition, null, color3, 0f, laserBloom.Size() / 2f, 0.4f, SpriteEffects.None, 0);
+					Main.spriteBatch.Draw(crystalTexOrange, Projectile.Center - Main.screenPosition, null, Color.White * (pulseTimer / 15f), Projectile.rotation, crystalTexOrange.Size() / 2f, Projectile.scale * MathHelper.Lerp(1f, 3f, 1f - pulseTimer / 15f), 0f, 0f);
 				}
-
-				if (foundMultiTargetOne && timeSpentOnMultiTargetTwo > 2)
-				{
-					Main.EntitySpriteDraw(laserBloom, multiTargetCenterTwo - Main.screenPosition, null, color2, 0f, laserBloom.Size() / 2f, 0.5f, SpriteEffects.None, 0);
-					Main.EntitySpriteDraw(laserBloom, multiTargetCenterTwo - Main.screenPosition, null, color3, 0f, laserBloom.Size() / 2f, 0.4f, SpriteEffects.None, 0);
-				}
-			}
-
-			if (modeSwitchTransitionTimer > 0)
-			{
-				float progress = 1f - modeSwitchTransitionTimer / 120f;
-				Main.EntitySpriteDraw(baseTexOrange, Projectile.Center + new Vector2(0, 20) - Projectile.oldVelocity - Main.screenPosition, null, Color.Lerp(Color.Transparent, Color.White, progress), Projectile.velocity.X * 0.075f, baseTex.Size() / 2f, Projectile.scale, SpriteEffects.None, 0);
-				Main.EntitySpriteDraw(crystalTexOrange, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, Color.White, progress), Projectile.rotation, crystalTex.Size() / 2f, Projectile.scale, SpriteEffects.None, 0);
-			}
-
-			else if (rightClickMode)
-			{
-				Main.EntitySpriteDraw(baseTexOrange, Projectile.Center + new Vector2(0, 20) - Projectile.oldVelocity - Main.screenPosition, null, Color.White, Projectile.velocity.X * 0.075f, baseTex.Size() / 2f, Projectile.scale, SpriteEffects.None, 0);
-				Main.EntitySpriteDraw(crystalTexOrange, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, crystalTex.Size() / 2f, Projectile.scale, SpriteEffects.None, 0);
-
-				Main.EntitySpriteDraw(crystalTexGlow, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, crystalTexGlow.Size() / 2f, Projectile.scale, SpriteEffects.None, 0);
 			}
 
 			return false;
-		}
-
-		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
-		{
-			float useless = 0f;
-			if (rightClickMode)
-			{
-				bool targetOne = Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, targetCenter, 15, ref useless);
-				bool targetTwo = Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, multiTargetCenterOne, 15, ref useless);
-				bool targetThree = Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, multiTargetCenterTwo, 15, ref useless);
-				return foundTarget && targetOne && timeSpentOnTarget > 2 || foundMultiTargetOne && targetTwo && timeSpentOnMultiTargetOne > 2 || foundMultiTargetTwo && targetThree && timeSpentOnMultiTargetTwo > 2;
-			}
-
-			return timeSpentOnTarget > 2 && foundTarget && Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, targetCenter, 15, ref useless);
-		}
-
-		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
-		{
-			if (!rightClickMode)
-			{
-				modifiers.SourceDamage *= 1f + timeSpentOnTarget / 720f * 0.5f;
-
-				if (target != targetNPC)
-					modifiers.SourceDamage *= 0.5f;
-			}
-		}
-
-		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-		{
-			float scale = 0.45f + MathHelper.Lerp(0, 0.1f, timeSpentOnTarget / 720);
-
-			if (target == targetNPC || target == multiTargetNPCOne || target == multiTargetNPCTwo)
-			{
-				for (int i = 0; i < 7; i++)
-				{
-					Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 195, 135), scale);
-				}
-			}
 		}
 
 		public override void Kill(int timeLeft)
@@ -431,386 +298,515 @@ namespace StarlightRiver.Content.Items.Vitric
 			SoundEngine.PlaySound(SoundID.Shatter, Projectile.position);
 		}
 
-		public void DoModeSwitchTransition()
+		internal void PopulateTargets()
 		{
-			float angle = Main.rand.NextFloat(6.28f);
-
-			if (Main.rand.NextBool())
-				Dust.NewDustPerfect(Projectile.Center - angle.ToRotationVector2() * (25f - MathHelper.Lerp(0, 20, 1 - modeSwitchTransitionTimer / 120f)), ModContent.DustType<Dusts.Glow>(), angle.ToRotationVector2() * 0.65f, 0, new Color(255, 150, 50), 0.2f);
-			else
-				Dust.NewDustPerfect(Projectile.Center - angle.ToRotationVector2() * (25f - MathHelper.Lerp(0, 20, 1 - modeSwitchTransitionTimer / 120f)), ModContent.DustType<Dusts.Glow>(), angle.ToRotationVector2() * 0.65f, 0, new Color(255, 195, 135), 0.2f);
-
-			if (modeSwitchTransitionTimer == 45)
-				Helper.PlayPitched("Magic/FireCast", 0.3f, 0, Projectile.Center);
-
-			if (modeSwitchTransitionTimer <= 0)
+			for (int i = 0; i < 3; i++)
 			{
-				Helper.PlayPitched("Magic/FireHit", 0.3f, 0, Projectile.Center);
-
-				if (!Main.dedServ)
-				{
-					for (int i = 0; i < 40; i++)
-					{
-						if (Main.rand.NextBool())
-							Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 150, 50), 0.85f);
-						else
-							Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 195, 135), 0.85f);
-					}
-				}
-
-				rightClickMode = true;
+				if (targets[i] == null)
+					targets[i] = Main.npc.Where(n => n.CanBeChasedBy() && n.Distance(Projectile.Center) < 1000f && !AlreadyTargeted(n) && CheckLOS(n)).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
+				else if (!targets[i].active || targets[i].Distance(Projectile.Center) > 1000f || !CheckLOS(targets[i]) || !MultiMode)
+					targets[i] = null;
 			}
 		}
 
-		public void FindMultiTarget()
+		internal bool AlreadyTargeted(NPC target)
 		{
-			if (!foundMultiTargetOne)
+			if (targets[0] == target || targets[1] == target || targets[2] == target)
+				return true;
+
+			return false;
+		}
+
+		internal bool CheckLOS(NPC target)
+		{
+			int checkCount = 3;
+
+			if (!Collision.CanHit(Owner.Center, 1, 1, target.Center, 1, 1))
+				checkCount--;
+
+			if (!Collision.CanHit(Projectile.Center, 1, 1, target.Center, 1, 1))
+				checkCount--;
+
+			if (!Collision.CanHit(LineOfSightPos, 1, 1, target.Center, 1, 1))
+				checkCount--;
+
+			return checkCount > 0;
+		}
+	}
+
+	public class RecursiveFocusLaser : ModProjectile
+	{
+		private List<Vector2> cache;
+		private Trail trail;
+		private Trail trail2;
+		private Trail trail3;
+		private Trail trail4;
+
+		public int order;
+		public Projectile parent;
+		public NPC oldTargetNPC; // for resetting charge on things like whip hits (when you switch targets like this there isnt a frame where targetNPC is null so we have to check what it was before)
+		public NPC targetNPC;
+
+		public int lifetime; // for trail drawing
+		public int pulseTimer;
+		public int trailFade;
+
+		SlotId currentLaserSound;
+		SlotId currentAltLaserSound;
+
+		public int Stage
+		{
+			get
 			{
-				float range = 1000f;
-				for (int i = 0; i < Main.maxNPCs; i++)
+				if (MultiMode)
+					return 0;
+
+				if (TimeSpentOnTarget >= 540)
+					return 3;
+				else if (TimeSpentOnTarget >= 360)
+					return 2;
+				else if (TimeSpentOnTarget >= 180)
+					return 1;
+
+				return 0;
+			}
+		}
+
+		public RecursiveFocusProjectile crystal => parent.ModProjectile as RecursiveFocusProjectile;
+		public bool HasTarget => targetNPC != null;
+		public bool MultiMode => Projectile.ai[0] != 0f;
+		public ref float TimeSpentOnTarget => ref Projectile.ai[1];
+		public Player Owner => Main.player[Projectile.owner];
+		public override string Texture => AssetDirectory.Invisible;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Infernal Laser");
+
+			ProjectileID.Sets.MinionTargettingFeature[Projectile.type] = true;
+		}
+
+		public override void SetDefaults()
+		{
+			Projectile.friendly = true;
+			Projectile.DamageType = DamageClass.Summon;
+			Projectile.penetrate = -1;
+
+			Projectile.timeLeft = 5;
+
+			Projectile.width = Projectile.height = 26;
+
+			Projectile.ignoreWater = true;
+			Projectile.tileCollide = false;
+
+			Projectile.usesLocalNPCImmunity = true; //otherwise it hogs all iframes, making nothing else able to hit
+			Projectile.localNPCHitCooldown = 12;
+
+			Projectile.ContinuouslyUpdateDamageStats = true;
+		}
+
+		public override void AI()
+		{
+			if (parent == null || !parent.active)
+			{
+				Projectile.Kill();
+				return;
+			}
+
+			if (pulseTimer > 0)
+				pulseTimer--;
+
+			lifetime++;
+
+			oldTargetNPC = targetNPC;
+
+			if (Owner.HasMinionAttackTargetNPC && Main.npc[Owner.MinionAttackTargetNPC].Distance(Projectile.Center) < 1000f && crystal.CheckLOS(Main.npc[Owner.MinionAttackTargetNPC]) && !MultiMode)
+				targetNPC = Main.npc[Owner.MinionAttackTargetNPC];
+
+			if (HasTarget)
+			{
+				if (!Main.dedServ)
 				{
-					NPC npc = Main.npc[i];
+					ManageCaches();
+					ManageTrail();
+				}
 
-					if (npc.active && npc.CanBeChasedBy(Projectile))
+				if (TimeSpentOnTarget < 540)
+					TimeSpentOnTarget++;
+
+				if (TimeSpentOnTarget % 179 == 0 && !MultiMode && Stage < 3)
+				{
+					pulseTimer = 15;
+
+					BezierCurve curve = GetBezierCurve();
+
+					int points = 26;
+					Vector2[] curvePositions = curve.GetPoints(points).ToArray();
+
+					for (int i = 0; i < 26; i++)
 					{
-						bool othernpc = npc == targetNPC || npc == multiTargetNPCTwo;
-
-						if (!othernpc && !npc.dontTakeDamage && Vector2.Distance(Projectile.Center, npc.Center) < range && Collision.CanHit(Projectile.Center, 1, 1, npc.Center, 1, 1))
+						for (int d = 0; d < 2; d++)
 						{
-							float closest = Projectile.Distance(npc.Center);
-
-							if (range > closest)
-							{
-								multiTargetCenterOne = npc.Center;
-								multiTargetNPCOne = npc;
-								foundMultiTargetOne = true;
-								range = closest;
-							}
+							Dust.NewDustPerfect(curvePositions[i], ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(1f, 1f), 0, new Color(255, 150, 50), 0.7f);
 						}
 					}
+
+					Helper.PlayPitched("Magic/RefractiveCharge", 1f, 0f, Projectile.Center);
+
+					crystal.pulseTimer = 15;
 				}
-			}
 
-			if (!foundMultiTargetTwo)
-			{
-				float range = 1000f;
-				for (int i = 0; i < Main.maxNPCs; i++)
+				if (Main.rand.NextBool(3))
 				{
-					NPC npc = Main.npc[i];
+					BezierCurve curve = GetBezierCurve();
 
-					if (npc.active && npc.CanBeChasedBy(Projectile))
+					int points = 26;
+					Vector2[] curvePositions = curve.GetPoints(points).ToArray();
+
+					Dust.NewDustPerfect(curvePositions[Main.rand.Next(points)], ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(1f, 1f), 0, new Color(255, 150, 50), 0.4f);
+				}
+
+				if (Main.rand.NextBool(8))
+				{
+					Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(2f, 2f), 0, new Color(255, 150, 50), 0.4f);
+				}
+
+				if (trailFade < 15)
+					trailFade++;
+
+				if (SoundEngine.TryGetActiveSound(currentLaserSound, out ActiveSound sound))
+				{
+					sound.Position = Projectile.Center;
+					sound.Volume = 0.6f;
+					sound.Pitch = 0f;
+				}
+				else
+				{
+					SoundStyle laser = new("StarlightRiver/Sounds/Magic/RecursiveFocusLaserLooping")
 					{
-						bool othernpc = npc == targetNPC || npc == multiTargetNPCOne;
+						IsLooped = true,
+						MaxInstances = 0
+					};
 
-						if (!othernpc && !npc.dontTakeDamage && Vector2.Distance(Projectile.Center, npc.Center) < 1000f && Collision.CanHit(Projectile.Center, 1, 1, npc.Center, 1, 1))
+					Func<bool> loopingCondition = new ProjectileAudioTracker(Projectile).IsActiveAndInGame;
+
+					currentLaserSound = SoundEngine.PlaySound(laser, Projectile.Center, (ActiveSound _) => loopingCondition());
+				}
+
+				if (!MultiMode)
+				{
+					if (SoundEngine.TryGetActiveSound(currentAltLaserSound, out ActiveSound altSound))
+					{
+						sound.Position = Projectile.Center;
+						sound.Volume = 0.5f;
+						sound.Pitch = MathHelper.Lerp(0f, 1f, TimeSpentOnTarget / 540f);
+					}
+					else
+					{
+						SoundStyle laser = new("StarlightRiver/Sounds/Magic/RecursiveFocusLaserLooping")
 						{
-							float closest = Projectile.Distance(npc.Center);
+							IsLooped = true,
+							MaxInstances = 0
+						};
 
-							if (range > closest)
-							{
-								multiTargetCenterTwo = npc.Center;
-								multiTargetNPCTwo = npc;
-								foundMultiTargetTwo = true;
-								range = closest;
-							}
-						}
+						Func<bool> loopingCondition = new ProjectileAudioTracker(Projectile).IsActiveAndInGame;
+
+						currentAltLaserSound = SoundEngine.PlaySound(laser, Projectile.Center, (ActiveSound _) => loopingCondition());
 					}
 				}
-			}
-		}
 
-		public void UpdateSingleMode()
-		{
-			float scale = 0.4f + MathHelper.Lerp(0, 0.1f, timeSpentOnTarget / 720f);
-			Dust.NewDustPerfect(targetCenter, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 150, 50), scale);
-
-			var dustPos = Vector2.Lerp(Projectile.Center, targetCenter, Main.rand.NextFloat());
-			float dustScale = MathHelper.Lerp(0.2f, 0.6f, timeSpentOnTarget / 720f);
-
-			if (Main.rand.NextBool())
-				Dust.NewDustPerfect(dustPos, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 150, 50), dustScale);
-			else
-				Dust.NewDustPerfect(dustPos, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 195, 135), dustScale);
-
-			if (timeSpentOnTarget < 720)
-			{
-				float angle = Main.rand.NextFloat(6.28f);
-				if (Main.rand.NextBool())
-					Dust.NewDustPerfect(Projectile.Center - angle.ToRotationVector2() * (35f - MathHelper.Lerp(0, 30, timeSpentOnTarget / 720f)), ModContent.DustType<Dusts.Glow>(), angle.ToRotationVector2() * 0.5f, 0, new Color(255, 150, 50), 0.25f);
-				else
-					Dust.NewDustPerfect(Projectile.Center - angle.ToRotationVector2() * (35f - MathHelper.Lerp(0, 30, timeSpentOnTarget / 720f)), ModContent.DustType<Dusts.Glow>(), angle.ToRotationVector2() * 0.5f, 0, new Color(255, 195, 135), 0.25f);
-			}
-
-			if (timeSpentOnTarget == 240)
-			{
-				Helper.PlayPitched("Magic/FireHit", 0.3f, 0.1f, Projectile.Center);
-				flashing = true;
-
-				if (!Main.dedServ)
+				if (!targetNPC.active || targetNPC.Distance(Projectile.Center) > 1000f || !crystal.CheckLOS(targetNPC))
 				{
-					for (int i = 0; i < 30; i++)
-					{
-						if (Main.rand.NextBool())
-							Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * 0.8f, 0, new Color(255, 150, 50), 0.6f);
-						else
-							Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * 0.8f, 0, new Color(255, 195, 135), 0.6f);
-					}
+					targetNPC = null;
+					TimeSpentOnTarget = 0;
+					trailFade = 0;
 
-					for (int i = 0; i < 45; i++)
-					{
-						var pos = Vector2.Lerp(Projectile.Center, targetCenter, Main.rand.NextFloat());
-						if (Main.rand.NextBool())
-							Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * 0.35f, 0, new Color(255, 150, 50), 0.5f);
-						else
-							Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * 0.35f, 0, new Color(255, 195, 135), 0.5f);
-					}
-				}
-			}
-			else if (timeSpentOnTarget == 480)
-			{
-				Helper.PlayPitched("Magic/FireHit", 0.4f, 0.2f, Projectile.Center);
-				flashing = true;
+					if (sound != null)
+						sound.Stop();
 
-				if (!Main.dedServ)
-				{
-					for (int i = 0; i < 35; i++)
-					{
-						if (Main.rand.NextBool())
-							Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 150, 50), 0.85f);
-						else
-							Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 195, 135), 0.85f);
-					}
-
-					for (int i = 0; i < 55; i++)
-					{
-						var pos = Vector2.Lerp(Projectile.Center, targetCenter, Main.rand.NextFloat());
-						if (Main.rand.NextBool())
-							Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * 0.45f, 0, new Color(255, 150, 50), 0.65f);
-						else
-							Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * 0.45f, 0, new Color(255, 195, 135), 0.65f);
-					}
-				}
-			}
-			else if (timeSpentOnTarget == 719)
-			{
-				Helper.PlayPitched("Magic/FireHit", 0.5f, 0.3f, Projectile.Center);
-				flashing = true;
-
-				if (!Main.dedServ)
-				{
-					for (int i = 0; i < 40; i++)
-					{
-						if (Main.rand.NextBool())
-							Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 150, 50), 0.95f);
-						else
-							Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 195, 135), 0.95f);
-					}
-
-					for (int i = 0; i < 60; i++)
-					{
-						var pos = Vector2.Lerp(Projectile.Center, targetCenter, Main.rand.NextFloat());
-						if (Main.rand.NextBool())
-							Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * 0.55f, 0, new Color(255, 150, 50), 0.75f);
-						else
-							Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * 0.55f, 0, new Color(255, 195, 135), 0.75f);
-					}
-				}
-			}
-
-			if (timeSpentOnTarget < 240)
-			{
-				trailMult = 4;
-				trailMult2 = 2;
-			}
-			else if (timeSpentOnTarget < 480)
-			{
-				trailMult = 9;
-				trailMult2 = 7;
-			}
-			else if (timeSpentOnTarget < 720)
-			{
-				trailMult = 14;
-				trailMult2 = 12;
+					if (SoundEngine.TryGetActiveSound(currentAltLaserSound, out ActiveSound altSound))
+						altSound.Stop();
+				}  
 			}
 			else
 			{
-				trailMult = 19;
-				trailMult2 = 17;
+				targetNPC = MultiMode ? crystal.targets[order] : FindTarget();
+
+				TimeSpentOnTarget = 0;
+				trailFade = 0;
 			}
 
-			if (timeSpentOnTarget == 165)
-				Helper.PlayPitched("GlassMiniboss/GlassExplode", 0.3f, 0, Projectile.Center);
-			else if (timeSpentOnTarget == 405)
-				Helper.PlayPitched("GlassMiniboss/GlassExplode", 0.4f, 0.1f, Projectile.Center);
-			else if (timeSpentOnTarget == 645)
-				Helper.PlayPitched("GlassMiniboss/GlassExplode", 0.5f, 0.2f, Projectile.Center);
+			if (targetNPC != oldTargetNPC)
+			{
+				TimeSpentOnTarget = 0;
+				trailFade = 0;
+			}		
+
+			UpdateProjectile();
 		}
 
-		public void UpdateMultiMode()
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
-			if (timeSpentOnTarget > 2)
+			if (!MultiMode)
+				modifiers.SourceDamage *= 1 + Stage;
+		}
+
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			for (int i = 0; i < 4; i++)
 			{
-				float scale = 0.4f;
-				Dust.NewDustPerfect(targetCenter, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 150, 50), scale);
+				Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(4f, 4f), 0, new Color(255, 150, 50), MultiMode ? 0.3f : 0.6f);
 
-				var dustPos = Vector2.Lerp(Projectile.Center, targetCenter, Main.rand.NextFloat());
-				float dustScale = 0.45f;
-				if (Main.rand.NextBool())
-					Dust.NewDustPerfect(dustPos, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 150, 50), dustScale);
-				else
-					Dust.NewDustPerfect(dustPos, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 195, 135), dustScale);
-			}
+				Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), target.Center.DirectionTo(Projectile.Center).RotatedByRandom(0.7f) * Main.rand.NextFloat(0.5f, 1f), 0, new Color(255, 150, 50), MultiMode ? 0.3f : 0.6f);
 
-			if (foundMultiTargetOne)
-			{
-				if (timeSpentOnMultiTargetOne > 2)
-				{
-					float scale = 0.4f;
-					Dust.NewDustPerfect(multiTargetCenterOne, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 150, 50), scale);
-
-					var dustPos = Vector2.Lerp(Projectile.Center, multiTargetCenterOne, Main.rand.NextFloat());
-					float dustScale = 0.45f;
-
-					if (Main.rand.NextBool())
-						Dust.NewDustPerfect(dustPos, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 150, 50), dustScale);
-					else
-						Dust.NewDustPerfect(dustPos, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 195, 135), dustScale);
-				}
-
-				multiTargetCenterOne = multiTargetNPCOne.Center;
-
-				if (timeSpentOnMultiTargetOne < 480)
-					timeSpentOnMultiTargetOne++;
-
-				if (multiTargetNPCOne == targetNPC || multiTargetNPCOne == multiTargetNPCTwo)
-				{
-					multiTargetNPCOne = null;
-					foundMultiTargetOne = false;
-					timeSpentOnMultiTargetOne = 0;
-				}
-				else if (!multiTargetNPCOne.active || Vector2.Distance(Projectile.Center, multiTargetCenterOne) > 1000f || !Collision.CanHit(Projectile.Center, 1, 1, multiTargetCenterOne, 1, 1))
-				{
-					foundMultiTargetOne = false;
-					timeSpentOnMultiTargetOne = 0;
-				}
-			}
-
-			if (foundMultiTargetTwo)
-			{
-				if (timeSpentOnMultiTargetTwo > 2)
-				{
-					float scale = 0.4f;
-					Dust.NewDustPerfect(multiTargetCenterTwo, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 150, 50), scale);
-
-					var dustPos = Vector2.Lerp(Projectile.Center, multiTargetCenterTwo, Main.rand.NextFloat());
-					float dustScale = 0.45f;
-
-					if (Main.rand.NextBool())
-						Dust.NewDustPerfect(dustPos, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 150, 50), dustScale);
-					else
-						Dust.NewDustPerfect(dustPos, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 195, 135), dustScale);
-				}
-
-				multiTargetCenterTwo = multiTargetNPCTwo.Center;
-
-				if (timeSpentOnMultiTargetTwo < 480)
-					timeSpentOnMultiTargetTwo++;
-
-				if (multiTargetNPCTwo == targetNPC || multiTargetNPCTwo == multiTargetNPCOne)
-				{
-					multiTargetNPCTwo = null;
-					foundMultiTargetTwo = false;
-					timeSpentOnMultiTargetTwo = 0;
-				}
-				else if (!multiTargetNPCTwo.active || Vector2.Distance(Projectile.Center, multiTargetCenterTwo) > 1000f || !Collision.CanHit(Projectile.Center, 1, 1, multiTargetCenterTwo, 1, 1))
-				{
-					foundMultiTargetTwo = false;
-					timeSpentOnMultiTargetTwo = 0;
-				}
+				Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), target.Center.DirectionTo(Projectile.Center).RotatedByRandom(0.25f) * Main.rand.NextFloat(2f, 10f), 0, new Color(255, 150, 50), MultiMode ? 0.3f : 0.6f);
 			}
 		}
+
+		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+		{
+			if (!HasTarget)
+				return false;
+
+			float useless = 0f;
+
+			return TimeSpentOnTarget > 2 && Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, targetNPC.Center, 15, ref useless);
+		}
+
+		public override bool PreDraw(ref Color lightColor)
+		{
+			Texture2D baseTex = ModContent.Request<Texture2D>(crystal.Texture + "Base").Value;
+			Texture2D crystalTex = ModContent.Request<Texture2D>(crystal.Texture).Value;
+			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+
+			Texture2D crystalTexOrange = ModContent.Request<Texture2D>(crystal.Texture + "_Orange").Value;
+			Texture2D baseTexOrange = ModContent.Request<Texture2D>(crystal.Texture + "Base_Orange").Value;
+
+			Texture2D crystalTexGlow = ModContent.Request<Texture2D>(crystal.Texture + "_Glow").Value;
+
+			DrawTrail(Main.spriteBatch);
+
+			if (HasTarget)
+			{
+				float fadeIn = 1f;
+				if (trailFade < 15)
+					fadeIn = trailFade / 15f;
+
+				float scale = 1f + Stage * 0.55f;
+
+				if (MultiMode)
+					scale = 2f;
+
+				Effect effect = Filters.Scene["DistortSprite"].GetShader().Shader;
+
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+
+				effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.075f);
+				effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.0075f);
+				effect.Parameters["screenPos"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / new Vector2(Main.screenWidth, Main.screenHeight));
+
+				effect.Parameters["offset"].SetValue(new Vector2(0.001f));
+				effect.Parameters["repeats"].SetValue(1);
+				effect.Parameters["uImage1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/SwirlyNoiseLooping").Value);
+				effect.Parameters["uImage2"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.VitricBoss + "LaserBallDistort").Value);
+
+				Color color = new Color(255, 165, 115, 0) * 0.4f * fadeIn * (MultiMode ? 1f : (TimeSpentOnTarget / 540f));
+				if (pulseTimer > 0)
+					color = Color.Lerp(new Color(255, 150, 100, 0) * 0.5f, color, 1f - pulseTimer / 15f);
+
+				if (MultiMode)
+					color *= 0.25f;
+
+				effect.Parameters["uColor"].SetValue(color.ToVector4());
+				effect.Parameters["noiseImage1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "MagicPixel").Value);
+
+				effect.CurrentTechnique.Passes[0].Apply();
+
+				Main.spriteBatch.Draw(crystalTexGlow, Projectile.Center - Main.screenPosition, null, Color.White, 0f, crystalTexGlow.Size() / 2f, 1.25f, 0f, 0f);
+
+				color = new Color(255, 150, 50, 0) * 0.5f * fadeIn * (MultiMode ? 1f : (TimeSpentOnTarget / 540f));
+				if (pulseTimer > 0)
+					color = Color.Lerp(new Color(255, 150, 100, 0) * 0.5f, color, 1f - pulseTimer / 15f);
+				
+				if (MultiMode)
+					color *= 0.25f;
+
+				effect.Parameters["uColor"].SetValue(color.ToVector4());
+				effect.CurrentTechnique.Passes[0].Apply();
+
+				Main.spriteBatch.Draw(crystalTexGlow, Projectile.Center - Main.screenPosition, null, Color.White, 0f, crystalTexGlow.Size() / 2f, 1.25f, 0f, 0f);
+
+				color = new Color(255, 150, 50, 0) * 0.15f * fadeIn * (MultiMode ? 1f : (TimeSpentOnTarget / 540f));
+				if (pulseTimer > 0)
+					color = Color.Lerp(new Color(255, 150, 100, 0) * 0.15f, color, 1f - pulseTimer / 15f);
+
+				if (MultiMode)
+					color *= 0.25f;
+
+				effect.Parameters["uColor"].SetValue(color.ToVector4());
+				effect.CurrentTechnique.Passes[0].Apply();
+
+				Main.spriteBatch.Draw(crystalTexGlow, Projectile.Center - Main.screenPosition, null, Color.White, 0f, crystalTexGlow.Size() / 2f, 2.25f, 0f, 0f);
+
+				color = new Color(255, 150, 50, 0) * fadeIn;
+				if (MultiMode)
+					color *= 0.65f;
+
+				effect.Parameters["uColor"].SetValue(color.ToVector4());
+				effect.CurrentTechnique.Passes[0].Apply();
+
+				Main.spriteBatch.Draw(bloomTex, targetNPC.Center - Main.screenPosition, null, Color.White, 0f, bloomTex.Size() / 2f, 0.4f * scale, 0f, 0f);
+
+				Main.spriteBatch.Draw(bloomTex, targetNPC.Center - Main.screenPosition, null, Color.White, 0f, bloomTex.Size() / 2f, 0.3f * scale, 0f, 0f);
+
+				Main.spriteBatch.Draw(bloomTex, targetNPC.Center - Main.screenPosition, null, Color.White, 0f, bloomTex.Size() / 2f, 0.1f * scale, 0f, 0f);
+
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+
+				color = new Color(255, 165, 115, 0);
+				if (pulseTimer > 0)
+					color = Color.Lerp(new Color(255, 150, 100, 0), color, 1f - pulseTimer / 15f);
+
+				if (MultiMode)
+					color *= 0.35f;
+
+				Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, color, 0f, bloomTex.Size() / 2f, 0.2f * scale, 0f, 0f);
+
+				Main.spriteBatch.Draw(bloomTex, targetNPC.Center - Main.screenPosition, null, Color.White with { A = 0 }, 0f, bloomTex.Size() / 2f, 0.1f * scale, 0f, 0f);
+			}
+
+			return false;
+		}
+
+		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
+		{
+			overPlayers.Add(index);
+		}
+
+		internal void UpdateProjectile()
+		{
+			Projectile.Center = parent.Center;
+
+			if (crystal == null)
+				return;
+
+			bool wrongMode = crystal.MultiMode && !MultiMode || !crystal.MultiMode && MultiMode;
+
+			if (!wrongMode && crystal.SwitchTimer <= 0)
+				Projectile.timeLeft = 2;
+		}
+
+		internal NPC FindTarget()
+		{
+			return Main.npc.Where(n => n.CanBeChasedBy() && n.Distance(Projectile.Center) < 1000f && crystal.CheckLOS(n)).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
+		}
+
+		#region PRIMITIVE DRAWING
+		private BezierCurve GetBezierCurve()
+		{
+			float lerper = 1f - Vector2.Distance(Projectile.Center, targetNPC.Center) / 1000f;
+
+			Vector2[] curvePoints =
+			{
+				Vector2.Lerp(Projectile.Center + parent.velocity, targetNPC.Center, 0.2f) + new Vector2(0f, -MathHelper.Lerp(50f, 20f, lerper) * (float)Math.Sin(lifetime * 0.05f)).RotatedBy(Projectile.DirectionTo(targetNPC.Center).ToRotation()),
+				Vector2.Lerp(Projectile.Center + parent.velocity, targetNPC.Center, 0.4f) + new Vector2(0f, MathHelper.Lerp(100f, 40f, lerper) * (float)Math.Cos(lifetime * -0.075f)).RotatedBy(Projectile.DirectionTo(targetNPC.Center).ToRotation()),
+				Vector2.Lerp(Projectile.Center + parent.velocity, targetNPC.Center, 0.6f) + new Vector2(0f, MathHelper.Lerp(60f, 30f, lerper) *(float)Math.Sin(lifetime * -0.05f)).RotatedBy(Projectile.DirectionTo(targetNPC.Center).ToRotation()),
+				Vector2.Lerp(Projectile.Center + parent.velocity, targetNPC.Center, 0.8f) + new Vector2(0f, -MathHelper.Lerp(40f, 10f, lerper) *(float)Math.Cos(lifetime * 0.075f)).RotatedBy(Projectile.DirectionTo(targetNPC.Center).ToRotation()),
+			};
+
+			var curve = new BezierCurve(new Vector2[] { 
+				Projectile.Center + parent.velocity, 
+				curvePoints[0],
+				curvePoints[1],
+				curvePoints[2],
+				curvePoints[3],
+				targetNPC.Center 
+			});
+
+			return curve;
+		}
+
 		private void ManageCaches()
 		{
-			cache = new List<Vector2>();
-			for (int i = 0; i < 13; i++)
+			if (cache is null)
 			{
-				cache.Add(Vector2.Lerp(Projectile.Center, targetCenter, i / 13f));
+				cache = new List<Vector2>();
+
+				for (int i = 0; i < 26; i++)
+				{
+					cache.Add(Projectile.Center + parent.velocity);
+				}
 			}
 
-			cache.Add(targetCenter);
-
-			cache2 = new List<Vector2>();
-			for (int i = 0; i < 10; i++)
+			for (int k = 0; k < 26; k++)
 			{
-				cache2.Add(Vector2.Lerp(Projectile.Center, targetCenter, i / 10f));
+				BezierCurve curve = GetBezierCurve();
+
+				int points = 26;
+				Vector2[] curvePositions = curve.GetPoints(points).ToArray();
+
+				cache[k] = curvePositions[k];
 			}
-
-			cache2.Add(targetCenter);
-
-			multiCacheOne = new List<Vector2>();
-			for (int i = 0; i < 13; i++)
-			{
-				multiCacheOne.Add(Vector2.Lerp(Projectile.Center, multiTargetCenterOne, i / 13f));
-			}
-
-			multiCacheOne.Add(multiTargetCenterOne);
-
-			multiCacheThree = new List<Vector2>();
-			for (int i = 0; i < 10; i++)
-			{
-				multiCacheThree.Add(Vector2.Lerp(Projectile.Center, multiTargetCenterOne, i / 10f));
-			}
-
-			multiCacheThree.Add(multiTargetCenterOne);
-
-			multiCacheTwo = new List<Vector2>();
-			for (int i = 0; i < 13; i++)
-			{
-				multiCacheTwo.Add(Vector2.Lerp(Projectile.Center, multiTargetCenterTwo, i / 13f));
-			}
-
-			multiCacheTwo.Add(multiTargetCenterTwo);
-
-			multiCacheFour = new List<Vector2>();
-			for (int i = 0; i < 10; i++)
-			{
-				multiCacheFour.Add(Vector2.Lerp(Projectile.Center, multiTargetCenterTwo, i / 10f));
-			}
-
-			multiCacheFour.Add(multiTargetCenterTwo);
 		}
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 14, new TriangularTip(4), factor => rightClickMode ? 13 : trailMult, factor => new Color(255, 150, 50) * 0.6f * factor.X);
+			trail ??= new Trail(Main.instance.GraphicsDevice, 26, new TriangularTip(4), factor => MultiMode ? 3 : 4 * 1 + Stage, factor => 
+			{
+				if (trailFade < 15)
+					return Color.Lerp(Color.Transparent, new Color(255, 165, 115), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
+
+				if (pulseTimer > 0)
+					return Color.Lerp(Color.White, new Color(255, 165, 115), 1f - pulseTimer / 15f) * 0.6f;
+
+				return new Color(255, 165, 115) * 0.6f;
+			});
 
 			trail.Positions = cache.ToArray();
-			trail.NextPosition = targetCenter;
+			trail.NextPosition = cache[25];
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 11, new TriangularTip(4), factor => rightClickMode ? 11 : trailMult2, factor => new Color(255, 195, 135) * 0.8f * factor.X);
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 26, new TriangularTip(4), factor => MultiMode ? 3 : 4 * 1 + Stage, factor =>
+			{
+				if (trailFade < 15)
+					return Color.Lerp(Color.Transparent, new Color(255, 150, 50), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
 
-			trail2.Positions = cache2.ToArray();
-			trail2.NextPosition = targetCenter;
+				if (pulseTimer > 0)
+					return Color.Lerp(new Color(255, 165, 115), new Color(255, 150, 50), 1f - pulseTimer / 15f) * 0.6f;
 
-			multiTrailOne ??= new Trail(Main.instance.GraphicsDevice, 14, new TriangularTip(4), factor => 13, factor => new Color(255, 150, 50) * 0.6f * factor.X);
+				return new Color(255, 150, 50) * 0.6f;
+			});
 
-			multiTrailOne.Positions = multiCacheOne.ToArray();
-			multiTrailOne.NextPosition = multiTargetCenterOne;
+			trail2.Positions = cache.ToArray();
+			trail2.NextPosition = cache[25];
 
-			multiTrailThree ??= new Trail(Main.instance.GraphicsDevice, 11, new TriangularTip(4), factor => 11, factor => new Color(255, 195, 135) * 0.8f * factor.X);
+			trail3 ??= new Trail(Main.instance.GraphicsDevice, 26, new TriangularTip(4), factor => MultiMode ? 5 : 7 * 1 + Stage, factor =>
+			{
+				if (trailFade < 15)
+					return Color.Lerp(Color.Transparent, new Color(255, 165, 115), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
 
-			multiTrailThree.Positions = multiCacheThree.ToArray();
-			multiTrailThree.NextPosition = multiTargetCenterOne;
+				if (pulseTimer > 0)
+					return Color.Lerp(Color.White, new Color(255, 165, 115), 1f - pulseTimer / 15f) * 0.6f;
 
-			multiTrailTwo ??= new Trail(Main.instance.GraphicsDevice, 14, new TriangularTip(4), factor => 13, factor => new Color(255, 150, 50) * 0.6f * factor.X);
+				return new Color(255, 165, 115) * 0.6f;
+			});
 
-			multiTrailTwo.Positions = multiCacheTwo.ToArray();
-			multiTrailTwo.NextPosition = multiTargetCenterTwo;
+			trail3.Positions = cache.ToArray();
+			trail3.NextPosition = cache[25];
 
-			multiTrailFour ??= new Trail(Main.instance.GraphicsDevice, 11, new TriangularTip(4), factor => 11, factor => new Color(255, 195, 135) * 0.8f * factor.X);
+			trail4 ??= new Trail(Main.instance.GraphicsDevice, 26, new TriangularTip(4), factor => MultiMode ? 5 : 7 * 1 + Stage, factor =>
+			{
+				if (trailFade < 15)
+					return Color.Lerp(Color.Transparent, new Color(255, 150, 50), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
 
-			multiTrailFour.Positions = multiCacheFour.ToArray();
-			multiTrailFour.NextPosition = multiTargetCenterTwo;
+				if (pulseTimer > 0)
+					return Color.Lerp(new Color(255, 165, 115), new Color(255, 150, 50), 1f - pulseTimer / 15f) * 0.6f;
+
+				return new Color(255, 150, 50) * 0.6f;
+			});
+
+			trail4.Positions = cache.ToArray();
+			trail4.NextPosition = cache[25];
 		}
 
 		private void DrawTrail(SpriteBatch spriteBatch)
@@ -819,83 +815,34 @@ namespace StarlightRiver.Content.Items.Vitric
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
+			Matrix view = Main.GameViewMatrix.ZoomMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.03f);
+			/*effect.Parameters["intensity"].SetValue(new Vector2(0.1f, 0.15f));
+			effect.Parameters["sinTime"].SetValue(Lifetime * 0.075f);*/
+			effect.Parameters["time"].SetValue(lifetime * -0.02f);
 			effect.Parameters["repeats"].SetValue(1);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
 
-			if (foundTarget && timeSpentOnTarget > 2)
+			if (HasTarget && TimeSpentOnTarget > 2)
 			{
 				trail?.Render(effect);
 				trail2?.Render(effect);
-			}
 
-			if (rightClickMode)
-			{
-				if (foundMultiTargetOne && timeSpentOnMultiTargetOne > 2)
-				{
-					multiTrailOne?.Render(effect);
-					multiTrailThree?.Render(effect);
-				}
+				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
 
-				if (foundMultiTargetTwo && timeSpentOnMultiTargetTwo > 2)
-				{
-					multiTrailTwo?.Render(effect);
-					multiTrailFour?.Render(effect);
-				}
-			}
-
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
-
-			if (foundTarget && timeSpentOnTarget > 2)
-			{
 				trail?.Render(effect);
+				trail3?.Render(effect);
+
+				effect.Parameters["time"].SetValue(lifetime * 0.05f);
 				trail2?.Render(effect);
+				trail4?.Render(effect);
 			}
 
-			if (rightClickMode)
-			{
-				if (foundMultiTargetOne && timeSpentOnMultiTargetOne > 2)
-				{
-					multiTrailOne?.Render(effect);
-					multiTrailThree?.Render(effect);
-				}
-
-				if (foundMultiTargetTwo && timeSpentOnMultiTargetTwo > 2)
-				{
-					multiTrailTwo?.Render(effect);
-					multiTrailFour?.Render(effect);
-				}
-			}
-
-			effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.02f);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
-
-			if (foundTarget && timeSpentOnTarget >= 720)
-			{
-				trail?.Render(effect);
-				trail2?.Render(effect);
-			}
-
-			if (rightClickMode)
-			{
-				if (foundMultiTargetOne && timeSpentOnMultiTargetOne >= 480)
-				{
-					multiTrailOne?.Render(effect);
-					multiTrailThree?.Render(effect);
-				}
-
-				if (foundMultiTargetTwo && timeSpentOnMultiTargetTwo >= 480)
-				{
-					multiTrailTwo?.Render(effect);
-					multiTrailFour?.Render(effect);
-				}
-			}
-
-			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 		}
+
+		#endregion PRIMITIVEDRAWING
 	}
 }

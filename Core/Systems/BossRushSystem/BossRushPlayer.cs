@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.GUI;
 using StarlightRiver.Core.Loaders.UILoading;
+using StarlightRiver.Core.Systems.BarrierSystem;
 using Terraria.ID;
 
 namespace StarlightRiver.Core.Systems.BossRushSystem
@@ -35,11 +36,28 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 				if (item.healLife > 0) //healing potions
 					return false;
 
-				if (item.type == ItemID.RodofDiscord) //RoD
+				if (item.type == ItemID.RodofDiscord || item.type == ItemID.RodOfHarmony) //RoD
 					return false;
 			}
 
 			return base.CanUseItem(item);
+		}
+
+		private void SetFullResources()
+		{
+			//for entering the world and respawning we set to full so they don't have to wait in the starter room
+			Player.Heal(9999);
+			BarrierPlayer bPlayer = Player.GetModPlayer<BarrierPlayer>();
+			bPlayer.barrier = bPlayer.maxBarrier;
+		}
+
+		public override void OnRespawn()
+		{
+			if (!BossRushSystem.isBossRush)
+				return;
+
+			//reset to full unlike a normal respawn so they're instantly ready to go again
+			SetFullResources();
 		}
 
 		public override void OnEnterWorld()
@@ -47,6 +65,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			if (!BossRushSystem.isBossRush)
 				return;
 
+			SetFullResources();
 			bool starterGear = true;
 			for (int k = 0; k < Player.inventory.Length; k++)
 			{

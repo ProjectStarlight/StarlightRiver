@@ -4,6 +4,7 @@ using StarlightRiver.Content.Items.Breacher;
 using StarlightRiver.Content.Packets;
 using StarlightRiver.Content.Tiles.Vitric;
 using StarlightRiver.Core.Loaders.UILoading;
+using StarlightRiver.Core.Systems.BossRushSystem;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Helpers;
@@ -118,19 +119,22 @@ namespace StarlightRiver.Core
 		/// <param name="damage"></param>
 		/// <param name="knockback"></param>
 		/// <param name="crit"></param>
-		public void AddHitPacket(Projectile proj, NPC target, int damage, float knockback, bool crit)
+		public void AddHitPacket(Projectile proj, NPC target, NPC.HitModifiers modifiers)
 		{
 			if (Main.myPlayer == Player.whoAmI && Main.netMode == NetmodeID.MultiplayerClient)
-				hitPacket = new OnHitPacket(Player, proj, target, damage, knockback, crit);
+				hitPacket = new OnHitPacket(Player, proj, target);
 		}
 
 		/// <summary>
 		/// This is expected to run AFTER the on hit hooks so that if and only if any event during the modify and/or hit hooks wants the data to be synced we will do so
+		/// also adds the hit
 		/// </summary>
-		public void SendHitPacket()
+		public void SendHitPacket(NPC.HitInfo hitInfo, int damageDone)
 		{
 			if (shouldSendHitPacket && hitPacket != null && Main.myPlayer == Player.whoAmI && Main.netMode == NetmodeID.MultiplayerClient)
 			{
+
+				hitPacket.addHitInfo(hitInfo, damageDone);
 				hitPacket.Send(-1, Main.myPlayer, false);
 				shouldSendHitPacket = false;
 				hitPacket = null;
@@ -149,7 +153,7 @@ namespace StarlightRiver.Core
 
 			DummyTile.dummies.Clear();
 
-			if (Main.masterMode)
+			if (Main.masterMode && !BossRushSystem.isBossRush)
 			{
 				UILoader.GetUIState<MessageBox>().Display("WARNING", "Starlight River has unique behavior for its bosses in Master Mode. This behavior is intended to be immensely difficult over anything else, and assumes a high amount of knowldge about " +
 					"both the mod and base game. Starlight River Master Mode is not intended for a first playthrough. Starlight River Master Mode is not intended to be fair. Starlight River Master Mode is not intended to be fun for everyone. " +

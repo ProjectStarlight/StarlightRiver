@@ -80,7 +80,7 @@ namespace StarlightRiver.Content.NPCs.Snow
 
 		public override void OnSpawn(IEntitySource source)
 		{
-			var proj = Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<SnoobelCollider>(), (int)(40 * (Main.expertMode ? 0.5f : 1f)), 0);
+			var proj = Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<SnoobelCollider>(), (int)(30 * (Main.expertMode ? 0.5f : 1f)), 0);
 			(proj.ModProjectile as SnoobelCollider).parent = NPC;
 		}
 
