@@ -36,8 +36,9 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Recipe recipe = CreateRecipe();
 			recipe.AddIngredient(ItemID.Shackle, 2);
-			recipe.AddIngredient(ItemID.LesserHealingPotion, 2);
-			recipe.AddIngredient(ItemID.LesserManaPotion, 2);
+			recipe.AddIngredient(ItemID.HealingPotion, 2);
+			recipe.AddIngredient(ItemID.ManaPotion, 2);
+			recipe.AddIngredient(ItemID.Bone, 10);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
 		}
