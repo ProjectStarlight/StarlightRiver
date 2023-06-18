@@ -165,7 +165,7 @@ namespace StarlightRiver.Content.Events
 
 	internal class StarlightEvent : ModSceneEffect
 	{
-		public override int Music => MusicLoader.GetMusicSlot("StarlightRiver/Sounds/Music/Moonstone");
+		public override int Music => MusicLoader.GetMusicSlot("StarlightRiver/Sounds/Music/StarBird");
 
 		public override SceneEffectPriority Priority => SceneEffectPriority.BossMedium;
 
