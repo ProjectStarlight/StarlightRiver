@@ -174,7 +174,6 @@ namespace StarlightRiver.Content.NPCs.BossRush
 				}
 				else if (warpAnimationTimer == MAX_SUCC_ANIMATION)
 				{
-
 					Helper.PlayPitched("BossRush/ArmillaryExplode", 1, 0f, NPC.Center);
 					Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/OminousIdle");
 				}
@@ -229,9 +228,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 			else
 			{
 				if (NPC.life < NPC.lifeMax / 2)
-				{
 					Vibrate(1f - NPC.life / (NPC.lifeMax / 2f));
-				}
 
 				starViewScale = 0.25f;
 
@@ -240,7 +237,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 				Lighting.AddLight(NPC.Center, new Vector3(0.5f, 0.5f, 1f));
 			}
 
-			float rotationSpeed = 0.0025f * (5f - (float)NPC.life / (float)NPC.lifeMax * 4f);
+			float rotationSpeed = 0.0025f * (5f - NPC.life / (float)NPC.lifeMax * 4f);
 
 			if (isPlayingCrack)
 				rotationSpeed *= (float)Math.Pow(1 + CrackAnimationProgress * 3, 2);
@@ -256,9 +253,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 			hit.HideCombatText = true;
 
 			if (NPC.velocity.Length() < 3)
-			{
 				NPC.velocity += (NPC.Center - player.Center).SafeNormalize(Vector2.Zero);
-			}
 		}
 
 		public override void OnHitByProjectile(Projectile projectile, NPC.HitInfo hit, int damageDone)
@@ -266,9 +261,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 			hit.HideCombatText = true;
 
 			if (NPC.velocity.Length() < 3)
-			{
 				NPC.velocity += (NPC.Center - projectile.Center).SafeNormalize(Vector2.Zero);
-			}
 		}
 
 		public override bool CheckDead()
@@ -347,9 +340,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 			vibratePos += offset;
 
 			if (vibratePos.Length() >= 2)
-			{
 				vibratePos = vibratePos.SafeNormalize(Vector2.Zero) * 2;
-			}
 		}
 
 		private void DrawBubbleCracks(float crackProgress)
@@ -405,7 +396,6 @@ namespace StarlightRiver.Content.NPCs.BossRush
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-
 		}
 
 		private void DrawCollapse(float delay, float scale, float rotation)
@@ -462,7 +452,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 				}
 
 				interpolatedRot.Add(NPC.oldRot[i]);
-				Color color = Color.Cyan * (1f - i * 0.1f) * (1 - (float)NPC.life / (float)NPC.lifeMax);
+				Color color = Color.Cyan * (1f - i * 0.1f) * (1 - NPC.life / (float)NPC.lifeMax);
 
 				foreach (float rotation in interpolatedRot)
 				{
