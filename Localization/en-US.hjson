@@ -3210,6 +3210,31 @@ Mods: {
 				DisplayName: Pink Laser Pointer
 				Tooltip: ""
 			}
+
+			CoolmiteLargeItem: {
+				DisplayName: Coolmismer
+				Tooltip: High intensity beauty! Avoid eye and skin exposure.
+			}
+
+			CoolmiteSmolItem: {
+				DisplayName: Coolmini
+				Tooltip: Sharp edges! Watch your fingers.
+			}
+
+			MagmiteLargeItem: {
+				DisplayName: Magmite
+				Tooltip: Admire him!
+			}
+
+			MagmiteSmolItem: {
+				DisplayName: Magmini
+				Tooltip: Nurture him!
+			}
+
+			CoolmitePassiveItem: {
+				Tooltip: Fragile! Please handle with care.
+				DisplayName: Coolmite
+			}
 		}
 
 		Projectiles: {
@@ -3889,6 +3914,11 @@ Mods: {
 
 			DesertWisp2.DisplayName: Desert Wisp2
 			StaminaShardPickup.DisplayName: Stamina Shard Pickup
+			CoolmiteSmol.DisplayName: Magmini
+			MagmiteLarge.DisplayName: Magmignon
+			MagmiteSmol.DisplayName: Magmini
+			CoolmiteLarge.DisplayName: Magmificent
+			CoolmitePassive.DisplayName: Coolmite
 		}
 
 		Buffs: {

@@ -7,7 +7,9 @@ namespace StarlightRiver.Content.Items.BaseTypes
 	public abstract class SmartAccessory : ModItem
 	{
 		public static int ACCESSORY_START_INDEX = 3;
+		public static int ACCESSORY_END_INDEX = 9;
 		public static int VANITY_ACCESSORY_START_INDEX = 13;
+		public static int VANITY_ACCESSORY_END_INDEX = 19;
 		public static int DEFAULT_ACCESSORY_SLOT_COUNT = 5;
 
 		/// <summary>
@@ -43,9 +45,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		/// <returns>If the item is equipped or simulated.</returns>
 		public bool Equipped(Player player)
 		{
-			int accessoryCount = DEFAULT_ACCESSORY_SLOT_COUNT + player.GetAmountOfExtraAccessorySlotsToShow();
-
-			for (int k = ACCESSORY_START_INDEX; k < ACCESSORY_START_INDEX + accessoryCount; k++)
+			for (int k = ACCESSORY_START_INDEX; k <= ACCESSORY_END_INDEX; k++)
 			{
 				if (player.IsItemSlotUnlockedAndUsable(k))
 				{
@@ -81,9 +81,9 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		{
 			int accessoryCount = DEFAULT_ACCESSORY_SLOT_COUNT + player.GetAmountOfExtraAccessorySlotsToShow();
 
-			for (int k = ACCESSORY_START_INDEX; k < ACCESSORY_START_INDEX + accessoryCount; k++)
+			for (int k = ACCESSORY_START_INDEX; k <= ACCESSORY_END_INDEX; k++)
 			{
-				if (player.armor[k].type == type)
+				if (player.armor[k].type == type && player.IsItemSlotUnlockedAndUsable(k))
 					return player.armor[k].ModItem as SmartAccessory;
 			}
 
@@ -109,12 +109,9 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		/// <returns>The SmartAccessory instance if one is found, null if the item is not equipped or simulated in a vanity slot.</returns>
 		public static SmartAccessory GetVisualInstance(Player player, int type)
 		{
-
-			int accessoryCount = DEFAULT_ACCESSORY_SLOT_COUNT + player.GetAmountOfExtraAccessorySlotsToShow();
-
-			for (int k = VANITY_ACCESSORY_START_INDEX; k < VANITY_ACCESSORY_START_INDEX + accessoryCount; k++)
+			for (int k = VANITY_ACCESSORY_START_INDEX; k <= VANITY_ACCESSORY_END_INDEX; k++)
 			{
-				if (player.armor[k].type == type)
+				if (player.armor[k].type == type && player.IsItemSlotUnlockedAndUsable(k))
 					return player.armor[k].ModItem as SmartAccessory;
 			}
 			
@@ -239,10 +236,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		public override void OnEnterWorld()
 		{
 			simulatedAccessories.Clear();
-
-			int accessoryCount = SmartAccessory.DEFAULT_ACCESSORY_SLOT_COUNT + Player.GetAmountOfExtraAccessorySlotsToShow();
-
-			for (int k = SmartAccessory.ACCESSORY_START_INDEX; k < SmartAccessory.ACCESSORY_START_INDEX + accessoryCount; k++)
+			for (int k = SmartAccessory.ACCESSORY_START_INDEX; k <= SmartAccessory.ACCESSORY_END_INDEX; k++)
 			{
 				(Player.armor[k].ModItem as SmartAccessory)?.Equip(Player, Player.armor[k]);
 				accsLastFrame[k] = Player.armor[k].type;
@@ -251,12 +245,11 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public override void UpdateEquips()
 		{
-			int accessoryCount = SmartAccessory.DEFAULT_ACCESSORY_SLOT_COUNT + Player.GetAmountOfExtraAccessorySlotsToShow();
 			//iterate over equipped accessories so we can discover if any have changed in order to equip this
 			//done this way so we can capture all the various ways terraria has for modifying equip slots cloned/not cloned quick swap, loadout swap etc.
-			for (int k = SmartAccessory.ACCESSORY_START_INDEX; k < SmartAccessory.ACCESSORY_START_INDEX + accessoryCount; k++)
+			for (int k = SmartAccessory.ACCESSORY_START_INDEX; k <= SmartAccessory.ACCESSORY_END_INDEX; k++)
 			{
-				if (Player.armor[k].type != accsLastFrame[k])
+				if (Player.armor[k].type != accsLastFrame[k] && Player.IsItemSlotUnlockedAndUsable(k))
 				{
 					accsLastFrame[k] = Player.armor[k].type;
 					(Player.armor[k].ModItem as SmartAccessory)?.Equip(Player, Player.armor[k]);

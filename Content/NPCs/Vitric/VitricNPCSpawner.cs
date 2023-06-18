@@ -30,6 +30,22 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				if (coords != Point16.Zero)
 					NPC.NewNPC(NPC.GetSource_NaturalSpawn(), coords.X * 16, coords.Y * 16, NPCType<MagmitePassive>(), 0, -1);
 			}
+
+			if (Main.rand.NextBool(4) && Main.npc.Count(n => n.active && n.type == NPCType<MagmiteSmol>()) < 3)
+			{
+				Point16 coords = Helpers.Helper.FindTile(((Player.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(200, 500)) / 16).ToPoint16(), n => !n.HasTile && n.LiquidType == LiquidID.Lava && n.LiquidAmount > 0, 10, 2, 2);
+
+				if (coords != Point16.Zero)
+					NPC.NewNPC(NPC.GetSource_NaturalSpawn(), coords.X * 16, coords.Y * 16, NPCType<MagmiteSmol>(), 0, -1);
+			}
+
+			if (Main.rand.NextBool(4) && Main.npc.Count(n => n.active && n.type == NPCType<MagmiteLarge>()) < 1)
+			{
+				Point16 coords = Helpers.Helper.FindTile(((Player.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(200, 500)) / 16).ToPoint16(), n => !n.HasTile && n.LiquidType == LiquidID.Lava && n.LiquidAmount > 0, 10, 2, 2);
+
+				if (coords != Point16.Zero)
+					NPC.NewNPC(NPC.GetSource_NaturalSpawn(), coords.X * 16, coords.Y * 16, NPCType<MagmiteLarge>(), 0, -1);
+			}
 		}
 	}
 }
