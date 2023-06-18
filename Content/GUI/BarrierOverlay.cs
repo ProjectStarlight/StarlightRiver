@@ -110,18 +110,19 @@ namespace StarlightRiver.Content.GUI
 					if (Main.ResourceSetsManager.ActiveSetKeyName == "Default")
 					{
 						pos = new Vector2(Main.screenWidth - 300 + k * 26, 32f);
+
 						if (k >= 10)
 							pos += new Vector2(-260, 26);
 					}
 					else if (Main.ResourceSetsManager.ActiveSetKeyName == "New" || Main.ResourceSetsManager.ActiveSetKeyName == "NewWithText")
 					{
 						float yOffset = 19f;
+
 						if (Main.ResourceSetsManager.ActiveSetKeyName == "NewWithText")
-						{
 							yOffset = 25f;
-						}
 
 						pos = new Vector2(Main.screenWidth - 292 + k * 24, yOffset);
+
 						if (k >= 10)
 							pos += new Vector2(-240, 28);
 					}

@@ -60,6 +60,7 @@ namespace StarlightRiver.Content.Items.BarrierDye
 		{
 			Recipe recipe = CreateRecipe();
 			recipe.AddIngredient<VitricOre>(5);
+			recipe.AddIngredient<MagmaCore>(1);
 			recipe.AddTile(TileID.DyeVat);
 			recipe.Register();
 		}
