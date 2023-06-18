@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Items.Desert
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Sandscript");
-			Tooltip.SetDefault("Manifests a blade of sand\n`This lost tablet contains a fragment of the Epic of Yeremy\n...The writing is sorta amateurish for an ancient relic`");
+			Tooltip.SetDefault("Manifests a blade of sand\n`The actual words are lost to time...`");
 		}
 
 		public override void SetDefaults()
@@ -101,7 +101,7 @@ namespace StarlightRiver.Content.Items.Desert
 		{
 			float useSpeed = Owner.HeldItem.useTime * (1f - (Owner.GetTotalAttackSpeed(DamageClass.Magic) - 1f));
 			Projectile.timeLeft = (int)(useSpeed * 0.9f);
-			MaxTimeleft = (float)Projectile.timeLeft;
+			MaxTimeleft = Projectile.timeLeft;
 
 			Projectile.velocity = Owner.DirectionTo(OwnerMouse.Value);
 			Projectile.rotation = Projectile.velocity.ToRotation();
