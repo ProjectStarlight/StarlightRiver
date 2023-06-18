@@ -1,5 +1,4 @@
 using StarlightRiver.Content.Items.Moonstone;
-using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Herbology
@@ -26,6 +25,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
 		public override void RandomUpdate(int i, int j)
 		{
 			const int SkyRangeUp = 10;
+
 			for (int k = 0; k < SkyRangeUp; k++)//k = max range up, this checks the area above it
 			{
 				if (Main.tile[i, j - 1 - k].HasTile && Main.tileBlockLight[Main.tile[i, j - 1 - k].TileType])
@@ -35,6 +35,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
 				else if (k == 9)//starts downward scan on last block checked
 				{
 					const int PlantRangeDown = 10;
+
 					for (int m = 0; m < PlantRangeDown; m++)//k = max range down, if the area above it clear this looks for the first plant below it
 					{
 						if (Main.tile[i, j + 1 + m].HasTile && Main.tileSolid[Main.tile[i, j + 1 + m].TileType] && !Main.tileSolidTop[Main.tile[i, j + 1 + m].TileType])
@@ -44,16 +45,14 @@ namespace StarlightRiver.Content.Tiles.Herbology
 						else if (
 							Main.tile[i, j + 1 + m].HasTile &&
 							Main.tileFrameImportant[Main.tile[i, j + 1 + m].TileType] &&
-							!Main.tileSolid[Main.tile[i, j + 1 + m].TileType])//chooses if frameimportant, non-solid, and active
+							!Main.tileSolid[Main.tile[i, j + 1 + m].TileType]) //chooses if frameimportant, non-solid, and active
 						{
 							ModTile modtile = ModContent.GetModTile(Main.tile[i, j + 1 + m].TileType);
+
 							if (modtile is not null)
 							{
-								//if (Main.rand.NextBool(2))//50% chance to effect modded plant
-								//{
 								ModContent.GetModTile(Main.tile[i, j + 1 + m].TileType)?.RandomUpdate(i, j + 1 + m);
 								NetMessage.SendTileSquare(Main.myPlayer, i, j, 2, 2, TileChangeType.None);
-								//}
 							}
 							else//vanilla grow check has seperate changes
 							{
@@ -82,6 +81,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
 					}
 
 					break;
+
 				case 83://last stage before bloom
 					{
 						int tileFrameX = Main.tile[i, j].TileFrameX;
@@ -176,6 +176,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
 					}
 
 					break;
+
 				case TileID.Bamboo: //assumes top block of bamboo /broken
 					{
 						if (Main.rand.NextBool(3))
@@ -192,6 +193,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
 					}
 
 					break;
+
 				case TileID.Pumpkins: //does not assume top block
 					{
 						if (Main.rand.NextBool(3))
