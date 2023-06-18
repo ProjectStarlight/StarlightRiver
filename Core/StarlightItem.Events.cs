@@ -211,7 +211,6 @@ namespace StarlightRiver.Core
 			CanAccessoryBeEquippedWithEvent = null;
 			ModifyItemLootEvent = null;
 			UseItemEvent = null;
-			SetStaticDefaultsEvent = null;
 		}
 	}
 }
