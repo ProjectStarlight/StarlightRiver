@@ -68,8 +68,8 @@ namespace StarlightRiver.Content.Items.Desert
 
 	internal class SandscriptBook : ModProjectile
 	{
-		public ref float SwingDirection => ref Projectile.ai[1];
 		public ref float MaxTimeleft => ref Projectile.ai[0];
+		public ref float SwingDirection => ref Projectile.ai[1];
 
 		public float Progress => 1f - Projectile.timeLeft / MaxTimeleft;
 
