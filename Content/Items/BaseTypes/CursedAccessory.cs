@@ -102,15 +102,16 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			}
 		}
 
-		public override bool CanEquipAccessory(Player Player, int slot, bool modded)
+		public override void OnEquip(Player player, Item item)
 		{
-			Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit55);
-			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item123);
+			if (Main.playerInventory)
+			{
+				SoundEngine.PlaySound(SoundID.NPCHit55);
+				SoundEngine.PlaySound(SoundID.Item123);
 
-			/*for (int k = 0; k <= 50; k++)
-				CursedSystem.AddParticle(new Particle(drawpos, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.75f), 0, 1, CurseColor, 60, Vector2.Zero));*/ // no particles
-
-			return true;
+				for (int k = 0; k <= 50; k++)
+					CursedSystem.AddParticle(new Particle(drawpos, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.75f), 0, 1, CurseColor, 60, Vector2.Zero));
+			}
 		}
 
 		public override void UpdateInventory(Player Player)
