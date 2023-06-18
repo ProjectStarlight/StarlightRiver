@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Archaeology.BuriedArtifacts
 		public override int ItemType => ModContent.ItemType<ArchaeologistsWhip>();
 	}
 
-	public abstract class SandscriptArtifact : DesertArtifact
+	public class SandscriptArtifact : DesertArtifact
 	{
 		public override Vector2 Size => new(30, 34);
 
