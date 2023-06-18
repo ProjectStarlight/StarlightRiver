@@ -72,16 +72,12 @@ namespace StarlightRiver.Content.GUI
 
 					if (Main.ResourceSetsManager.ActiveSetKeyName == "HorizontalBars" || Main.ResourceSetsManager.ActiveSetKeyName == "HorizontalBarsWithText" || Main.ResourceSetsManager.ActiveSetKeyName == "HorizontalBarsWithFullText")
 					{
-						float yOffset = 24f;
-						switch (Main.ResourceSetsManager.ActiveSetKeyName)
+						float yOffset = Main.ResourceSetsManager.ActiveSetKeyName switch
 						{
-							case "HorizontalBarsWithText":
-								yOffset = 28f;
-								break;
-							case "HorizontalBarsWithFullText":
-								yOffset = 26f;
-								break;
-						}
+							"HorizontalBarsWithText" => 28f,
+							"HorizontalBarsWithFullText" => 26f,
+							_ => 24f,
+						};
 
 						pos = new Vector2(Main.screenWidth - 72 - k * 12, yOffset);
 
