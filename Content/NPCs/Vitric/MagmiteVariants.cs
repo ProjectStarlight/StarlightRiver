@@ -98,7 +98,6 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		}
 	}
 
-
 	internal class MagmiteLarge : MagmitePassive, IHintable
 	{
 		protected override int Offset => 10;

@@ -222,7 +222,7 @@ namespace StarlightRiver.Content.Items.Desert
 			}
 
 			Projectile.Center = Owner.Center + Vector2.Lerp(new Vector2(20f * mult, 40f * SwingDirection).RotatedBy(Projectile.rotation), new Vector2(20f * mult, -50f * SwingDirection).RotatedBy(Projectile.rotation), progress);
-			
+
 			if (Projectile.timeLeft < maxTimeleft)
 			{
 				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Projectile.velocity * 2f + Main.rand.NextVector2Circular(2f, 2f), 0, Color.Lerp(new Color(30, 230, 200), new Color(230, 170, 100), progress), 0.5f);

@@ -114,7 +114,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 				if (player.armor[k].type == type && player.IsItemSlotUnlockedAndUsable(k))
 					return player.armor[k].ModItem as SmartAccessory;
 			}
-			
+
 			AccessorySimulationPlayer mp = player.GetModPlayer<AccessorySimulationPlayer>();
 			return mp.simulatedAccessories.FirstOrDefault(n => n.type == type)?.ModItem as SmartAccessory;
 		}

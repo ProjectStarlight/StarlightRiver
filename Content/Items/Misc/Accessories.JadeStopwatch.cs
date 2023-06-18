@@ -69,7 +69,8 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				instance = GetVisualInstance(player) as JadeStopwatch;
 				instance.flashTime = 0;
-			} else
+			}
+			else
 			{
 				instance.flashTime = 20;
 			}

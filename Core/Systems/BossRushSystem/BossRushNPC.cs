@@ -84,7 +84,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 				{
 					damage = 1;
 					storedPartialDamage--;
-					
+
 				}
 			}
 
@@ -129,7 +129,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 
 			HushArmorSystem.totalDamage -= npc.lifeRegen / 120f;
 
-			float dotDamage = HushArmorSystem.resistance  * (-npc.lifeRegen / 120f);
+			float dotDamage = HushArmorSystem.resistance * (-npc.lifeRegen / 120f);
 
 			if (dotDamage < 1)
 			{

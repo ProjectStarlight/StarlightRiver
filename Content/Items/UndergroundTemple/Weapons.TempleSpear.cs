@@ -283,8 +283,6 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 		public Player Owner => Main.player[Projectile.owner];
 
-
-
 		public override string Texture => AssetDirectory.Invisible;
 
 		public override void SetStaticDefaults()

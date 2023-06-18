@@ -270,7 +270,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				Main.spriteBatch.Draw(baseTexOrange, Projectile.Center + new Vector2(0, 20) - Projectile.oldVelocity - Main.screenPosition, null, Color.White * (TimeSpentOnTarget / 540f), Projectile.velocity.X * 0.075f, baseTexOrange.Size() / 2f, Projectile.scale, 0f, 0f);
 				Main.spriteBatch.Draw(baseTexGlow, Projectile.Center + new Vector2(0, 20) - Projectile.oldVelocity - Main.screenPosition, null, new Color(255, 165, 115, 0) * (TimeSpentOnTarget / 540f), Projectile.velocity.X * 0.075f, baseTexGlow.Size() / 2f, Projectile.scale, 0f, 0f);
 
-				Main.spriteBatch.Draw(crystalTexOrange, Projectile.Center - Main.screenPosition, null, Color.White * (TimeSpentOnTarget / 540f), Projectile.rotation, crystalTexOrange.Size() / 2f, Projectile.scale, 0f, 0f);			
+				Main.spriteBatch.Draw(crystalTexOrange, Projectile.Center - Main.screenPosition, null, Color.White * (TimeSpentOnTarget / 540f), Projectile.rotation, crystalTexOrange.Size() / 2f, Projectile.scale, 0f, 0f);
 			}
 
 			if (pulseTimer > 0)
@@ -525,7 +525,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 					if (SoundEngine.TryGetActiveSound(currentAltLaserSound, out ActiveSound altSound))
 						altSound.Stop();
-				}  
+				}
 			}
 			else
 			{
@@ -539,7 +539,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			{
 				TimeSpentOnTarget = 0;
 				trailFade = 0;
-			}		
+			}
 
 			UpdateProjectile();
 		}
@@ -627,7 +627,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				color = new Color(255, 150, 50, 0) * 0.5f * fadeIn * (MultiMode ? 1f : (TimeSpentOnTarget / 540f));
 				if (pulseTimer > 0)
 					color = Color.Lerp(new Color(255, 150, 100, 0) * 0.5f, color, 1f - pulseTimer / 15f);
-				
+
 				if (MultiMode)
 					color *= 0.25f;
 
@@ -715,13 +715,13 @@ namespace StarlightRiver.Content.Items.Vitric
 				Vector2.Lerp(Projectile.Center + parent.velocity, targetNPC.Center, 0.8f) + new Vector2(0f, -MathHelper.Lerp(40f, 10f, lerper) *(float)Math.Cos(lifetime * 0.075f)).RotatedBy(Projectile.DirectionTo(targetNPC.Center).ToRotation()),
 			};
 
-			var curve = new BezierCurve(new Vector2[] { 
-				Projectile.Center + parent.velocity, 
+			var curve = new BezierCurve(new Vector2[] {
+				Projectile.Center + parent.velocity,
 				curvePoints[0],
 				curvePoints[1],
 				curvePoints[2],
 				curvePoints[3],
-				targetNPC.Center 
+				targetNPC.Center
 			});
 
 			return curve;
@@ -752,7 +752,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 26, new TriangularTip(4), factor => MultiMode ? 3 : 4 * 1 + Stage, factor => 
+			trail ??= new Trail(Main.instance.GraphicsDevice, 26, new TriangularTip(4), factor => MultiMode ? 3 : 4 * 1 + Stage, factor =>
 			{
 				if (trailFade < 15)
 					return Color.Lerp(Color.Transparent, new Color(255, 165, 115), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
