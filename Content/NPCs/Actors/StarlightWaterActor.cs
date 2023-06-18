@@ -83,7 +83,6 @@ namespace StarlightRiver.Content.NPCs.Actors
 						StarwaterConversion.StarwaterGlobalItemGlow = Math.Max(StarwaterConversion.StarwaterGlobalItemGlow, 1 - distToPlayer / StarwaterConversion.MaxItemGlow);
 				}
 
-				#region surface light pillars and surface homing dust
 				Vector2 surfaceLightPos = NPC.Center + Vector2.UnitX * Main.rand.NextFloat(-DUST_RANGE, DUST_RANGE) + Vector2.UnitY * Main.rand.NextFloat(-6, 0);
 				Tile tile = Framing.GetTileSafely(surfaceLightPos);
 				Tile tileDown = Framing.GetTileSafely(surfaceLightPos + Vector2.UnitY * 16);
@@ -101,17 +100,16 @@ namespace StarlightRiver.Content.NPCs.Actors
 						bool green = Main.rand.NextBool(15) && !red;
 						var color = new Color(red ? 255 : Main.rand.Next(10), green ? 255 : Main.rand.Next(100), Main.rand.Next(240, 255));
 
-						Dust.NewDustPerfect(surfaceLightPos + new Vector2(0, Main.rand.Next(-4, 1)), ModContent.DustType<Dusts.VerticalGlow>(), Vector2.UnitX * Main.rand.NextFloat(-0.15f, 0.15f), 200, color);
+						Dust.NewDustPerfect(surfaceLightPos + new Vector2(0, Main.rand.Next(-4, 1)), DustType<Dusts.VerticalGlow>(), Vector2.UnitX * Main.rand.NextFloat(-0.15f, 0.15f), 200, color);
 					}
 				}
-				#endregion
 
 				//circular area of dust
 				Vector2 circularLightPos = NPC.Center + Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(-DUST_RANGE, DUST_RANGE);
 				Tile tile2 = Framing.GetTileSafely(circularLightPos);
 				if (tile2.LiquidAmount > 0 && tile2.LiquidType == LiquidID.Water && Main.rand.NextBool(2))//under water lights
 				{
-					var d = Dust.NewDustPerfect(circularLightPos, ModContent.DustType<Dusts.AuroraSuction>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(), 0, new Color(0, 50, 255), 0.5f);
+					var d = Dust.NewDustPerfect(circularLightPos, DustType<Dusts.AuroraSuction>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(), 0, new Color(0, 50, 255), 0.5f);
 					d.customData = new Dusts.AuroraSuctionData(this, Main.rand.NextFloat(0.4f, 0.5f));
 				}
 			}
@@ -133,7 +131,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 				for (int k = 0; k < Main.maxItems; k++)//finds nearby items
 				{
 					Item Item = Main.item[k];
-					if (Item.TryGetGlobalItem<TransformableItem>(out TransformableItem GlobalItem))//sometimes this can return null
+					if (Item.TryGetGlobalItem(out TransformableItem GlobalItem))//sometimes this can return null
 					{
 						//in water, active & not empty, within range
 						if (Item.wet && Item.active && !Item.IsAir && Helpers.Helper.CheckCircularCollision(NPC.Center, ITEM_RANGE, Item.Hitbox))
@@ -154,7 +152,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 			}
 			else//has valid item
 			{
-				if (!targetItem.TryGetGlobalItem<TransformableItem>(out TransformableItem GlobalItem) || targetItem.IsAir || !targetItem.active || GlobalItem.starlightWaterActor == null)
+				if (!targetItem.TryGetGlobalItem(out TransformableItem GlobalItem) || targetItem.IsAir || !targetItem.active || GlobalItem.starlightWaterActor == null)
 				{
 					//something has gone wrong and the item either no longer has a valid global item, the item no longer exists, or the item's reference no longer exists
 					ResetConversion();
@@ -204,7 +202,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 					NPC.netUpdate = true;
 
 					for (int i = 0; i < 40; i++)
-						Dust.NewDustPerfect(targetItem.Center, ModContent.DustType<Dusts.BlueStamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10));
+						Dust.NewDustPerfect(targetItem.Center, DustType<Dusts.BlueStamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10));
 
 					//for (int k = 0; k < Main.maxPlayers; k++)//unknown use
 					//{
@@ -350,7 +348,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 
 		public override GlobalItem Clone(Item item, Item itemClone)
 		{
-			return item.TryGetGlobalItem<TransformableItem>(out TransformableItem gi) ? gi : base.Clone(item, itemClone);
+			return item.TryGetGlobalItem(out TransformableItem gi) ? gi : base.Clone(item, itemClone);
 		}
 
 		public override bool PreDrawInInventory(Item Item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
@@ -387,7 +385,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 
 				if (starlightWaterActor.windDown > 0)
 				{
-					var d = Dust.NewDustPerfect(Item.Center + Vector2.One.RotatedByRandom(6.28f) * 16 * starlightWaterActor.windDown / 240f, ModContent.DustType<Dusts.Aurora>(), Vector2.UnitY * Main.rand.NextFloat(-2, -4), 0, new Color(0, Main.rand.Next(255), 255), 1);
+					var d = Dust.NewDustPerfect(Item.Center + Vector2.One.RotatedByRandom(6.28f) * 16 * starlightWaterActor.windDown / 240f, DustType<Dusts.Aurora>(), Vector2.UnitY * Main.rand.NextFloat(-2, -4), 0, new Color(0, Main.rand.Next(255), 255), 1);
 					d.customData = Main.rand.NextFloat(0.2f, 0.3f) * starlightWaterActor.windDown / 240f;
 
 					Lighting.AddLight(Item.Center, new Vector3(10, 13, 25) * 0.08f * starlightWaterActor.windDown / 240f);
@@ -401,12 +399,12 @@ namespace StarlightRiver.Content.NPCs.Actors
 			if (Item.type == ItemID.FallenStar && Item.wet)
 			{
 				Item.active = false;
-				NPC.NewNPC(null, (int)Item.Center.X, (int)Item.Center.Y + 16, ModContent.NPCType<StarlightWaterActor>());
+				NPC.NewNPC(null, (int)Item.Center.X, (int)Item.Center.Y + 16, NPCType<StarlightWaterActor>());
 
 				for (int k = 0; k < 40; k++)
 				{
 					float rot = Main.rand.NextFloat(6.28f);
-					Dust.NewDustPerfect(Item.Center + Vector2.One.RotatedBy(rot) * 16, ModContent.DustType<Dusts.BlueStamina>(), Vector2.One.RotatedBy(rot) * Main.rand.NextFloat(5));
+					Dust.NewDustPerfect(Item.Center + Vector2.One.RotatedBy(rot) * 16, DustType<Dusts.BlueStamina>(), Vector2.One.RotatedBy(rot) * Main.rand.NextFloat(5));
 				}
 			}
 		}
@@ -423,7 +421,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 					spriteBatch.End();
 					spriteBatch.Begin(default, BlendState.Additive, SamplerMode, default, RasterizerCullMode, default, Main.GameViewMatrix.TransformationMatrix);
 
-					Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Moonstone/GlowSmall").Value;
+					Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Tiles/Moonstone/GlowSmall").Value;
 
 					float alphaMaster = (float)Math.Sin(starlightWaterActor.transformTimer / 300f * 3.14f);
 
@@ -437,9 +435,9 @@ namespace StarlightRiver.Content.NPCs.Actors
 					spriteBatch.Draw(tex, Item.Center + Vector2.UnitX * -20 - Main.screenPosition, null, new Color(100, 30 + (int)(50 * alpha3), 255) * alpha3, 0, new Vector2(tex.Width / 2, tex.Height - 15), 3f * alphaMaster, 0, 0);
 
 					float rot = Main.rand.NextFloat(6.28f);
-					Dust.NewDustPerfect(Item.Center + Vector2.One.RotatedBy(rot) * 16, ModContent.DustType<Dusts.BlueStamina>(), Vector2.One.RotatedBy(rot) * -1.2f);
+					Dust.NewDustPerfect(Item.Center + Vector2.One.RotatedBy(rot) * 16, DustType<Dusts.BlueStamina>(), Vector2.One.RotatedBy(rot) * -1.2f);
 
-					var d = Dust.NewDustPerfect(Item.Center + Vector2.One.RotatedBy(rot) * (16 + 8 * alphaMaster), ModContent.DustType<Dusts.Aurora>(), Vector2.UnitY * Main.rand.NextFloat(-9, -6), 0, new Color(0, Main.rand.Next(255), 255), 1);
+					var d = Dust.NewDustPerfect(Item.Center + Vector2.One.RotatedBy(rot) * (16 + 8 * alphaMaster), DustType<Dusts.Aurora>(), Vector2.UnitY * Main.rand.NextFloat(-9, -6), 0, new Color(0, Main.rand.Next(255), 255), 1);
 					d.customData = Main.rand.NextFloat(0.2f, 0.5f) * alphaMaster;
 
 					spriteBatch.End();
@@ -454,7 +452,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 					spriteBatch.End();
 					spriteBatch.Begin(default, BlendState.Additive, SamplerMode, default, RasterizerCullMode, default, Main.GameViewMatrix.TransformationMatrix);
 
-					Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
+					Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
 					spriteBatch.Draw(tex, Item.Center - Main.screenPosition, null, new Color(100, 150, 255) * (starlightWaterActor.windDown / 240f), 0, tex.Size() / 2, starlightWaterActor.windDown / 240f * 2, 0, 0);
 
 					spriteBatch.End();
