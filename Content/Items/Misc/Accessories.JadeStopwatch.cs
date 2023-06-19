@@ -122,8 +122,8 @@ namespace StarlightRiver.Content.Items.Misc
 		private void DrawClock(Player player, SpriteBatch spriteBatch)
 		{
 			var instance = GetEquippedInstance(player) as JadeStopwatch;
-			if (instance == null)
-				instance = GetVisualInstance(player) as JadeStopwatch;
+
+			instance ??= GetVisualInstance(player) as JadeStopwatch;
 
 			if (instance == null)
 				return;

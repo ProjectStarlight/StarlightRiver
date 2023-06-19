@@ -64,7 +64,7 @@ namespace StarlightRiver.Core
 		public delegate void ModifyHitNPCDelegate(Player player, Item Item, NPC target, ref NPC.HitModifiers modifiers);
 		public override void ModifyHitNPCWithItem(Item item, NPC target, ref NPC.HitModifiers modifiers)
 		{
-			AddHitPacket(null, target, modifiers);
+			AddHitPacket(null, target);
 			ModifyHitNPCEvent?.Invoke(Player, item, target, ref modifiers);
 		}
 

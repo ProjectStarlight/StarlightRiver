@@ -165,7 +165,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				{
 					for (int i = 0; i < 3; i++)
 					{
-						Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<RecursiveFocusLaser>(), Projectile.damage, 0f, Owner.whoAmI, 1f, 0f);
+						var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<RecursiveFocusLaser>(), Projectile.damage, 0f, Owner.whoAmI, 1f, 0f);
 
 						proj.originalDamage = Projectile.originalDamage;
 						(proj.ModProjectile as RecursiveFocusLaser).parent = Projectile;
@@ -175,7 +175,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				}
 				else
 				{
-					Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<RecursiveFocusLaser>(), Projectile.damage, 0f, Owner.whoAmI);
+					var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<RecursiveFocusLaser>(), Projectile.damage, 0f, Owner.whoAmI);
 
 					proj.originalDamage = Projectile.originalDamage;
 					(proj.ModProjectile as RecursiveFocusLaser).parent = Projectile;
@@ -520,8 +520,7 @@ namespace StarlightRiver.Content.Items.Vitric
 					TimeSpentOnTarget = 0;
 					trailFade = 0;
 
-					if (sound != null)
-						sound.Stop();
+					sound?.Stop();
 
 					if (SoundEngine.TryGetActiveSound(currentAltLaserSound, out ActiveSound altSound))
 						altSound.Stop();

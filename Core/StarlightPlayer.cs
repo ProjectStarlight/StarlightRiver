@@ -116,10 +116,7 @@ namespace StarlightRiver.Core
 		/// </summary>
 		/// <param name="proj"></param>
 		/// <param name="target"></param>
-		/// <param name="damage"></param>
-		/// <param name="knockback"></param>
-		/// <param name="crit"></param>
-		public void AddHitPacket(Projectile proj, NPC target, NPC.HitModifiers modifiers)
+		public void AddHitPacket(Projectile proj, NPC target)
 		{
 			if (Main.myPlayer == Player.whoAmI && Main.netMode == NetmodeID.MultiplayerClient)
 				hitPacket = new OnHitPacket(Player, proj, target);
