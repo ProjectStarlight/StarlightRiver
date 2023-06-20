@@ -83,7 +83,7 @@ namespace StarlightRiver.Content.Items.Jungle
 			for (int i = 0; i < Main.maxProjectiles; i++)
 			{
 				Projectile proj = Main.projectile[i];
-				var dagger = proj.ModProjectile as HauntedDaggerProjectile;
+				HauntedDaggerProjectile dagger = proj.ModProjectile as HauntedDaggerProjectile;
 
 				if (proj.active && dagger != null && dagger.TargetWhoAmI == npc.whoAmI && dagger.Embedded)
 				{
@@ -174,7 +174,7 @@ namespace StarlightRiver.Content.Items.Jungle
 				{
 					Projectile proj = Main.projectile.Where(p => p.active && p.type == Type && p.owner == Projectile.owner && p.minionPos == 0).FirstOrDefault();
 
-					var dagger = proj.ModProjectile as HauntedDaggerProjectile;
+					HauntedDaggerProjectile dagger = proj.ModProjectile as HauntedDaggerProjectile;
 					if (dagger != null)
 						return dagger.lifetime;
 				}
@@ -431,7 +431,7 @@ namespace StarlightRiver.Content.Items.Jungle
 
 		public void Unembed(bool dealDamage, NPC target)
 		{
-			var gNPC = target.GetGlobalNPC<HauntedDaggerGlobalNPC>();
+			HauntedDaggerGlobalNPC gNPC = target.GetGlobalNPC<HauntedDaggerGlobalNPC>();
 
 			gNPC.Unembed = dealDamage;
 			gNPC.UnembeddingPlayerWhoAmI = Owner.whoAmI;
@@ -459,7 +459,7 @@ namespace StarlightRiver.Content.Items.Jungle
 		{
 			float totalCount = Owner.ownedProjectileCounts[Type] > 0 ? (float)Owner.ownedProjectileCounts[Type] : 1;
 
-			var idlePos = Owner.Center + new Vector2(0f, -100) + new Vector2(0, 35).RotatedBy(MathHelper.ToRadians(Projectile.minionPos / totalCount * 360f + (Projectile.minionPos == totalCount ? 360f / totalCount : 0f)) + MathHelper.ToRadians(Lifetime));
+			Vector2 idlePos = Owner.Center + new Vector2(0f, -100) + new Vector2(0, 35).RotatedBy(MathHelper.ToRadians(Projectile.minionPos / totalCount * 360f + (Projectile.minionPos == totalCount ? 360f / totalCount : 0f)) + MathHelper.ToRadians(Lifetime));
 
 			float dist = Vector2.Distance(Projectile.Center, idlePos);
 
