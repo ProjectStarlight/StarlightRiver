@@ -300,26 +300,26 @@ namespace StarlightRiver.Content.Tiles.Underground
 			{
 				case 4:
 					Item.NewItem(Projectile.GetSource_FromAI(), Projectile.getRect(), ModContent.ItemType<TarnishedRing>());
-					ShrinePlayer.SimulateGoldChest(Projectile, false);
-					ShrinePlayer.SimulateGoldChest(Projectile, true);
+					ShrineUtils.SimulateGoldChest(Projectile, false);
+					ShrineUtils.SimulateGoldChest(Projectile, true);
 					break;
 				case 3:
 					Item.NewItem(Projectile.GetSource_FromAI(), Projectile.getRect(), ModContent.ItemType<TarnishedRing>());
-					ShrinePlayer.SimulateGoldChest(Projectile, false);
+					ShrineUtils.SimulateGoldChest(Projectile, false);
 					if (Main.rand.NextBool(4))
-						ShrinePlayer.SimulateGoldChest(Projectile, false);
+						ShrineUtils.SimulateGoldChest(Projectile, false);
 
 					break;
 				case 2:
 					Item.NewItem(Projectile.GetSource_FromAI(), Projectile.getRect(), ModContent.ItemType<TarnishedRing>());
-					ShrinePlayer.SimulateGoldChest(Projectile, false);
+					ShrineUtils.SimulateGoldChest(Projectile, false);
 					if (Main.rand.NextBool(4))
-						ShrinePlayer.SimulateWoodenChest(Projectile);
+						ShrineUtils.SimulateWoodenChest(Projectile);
 
 					break;
 				case 1:
 					Item.NewItem(Projectile.GetSource_FromAI(), Projectile.getRect(), ModContent.ItemType<TarnishedRing>());
-					ShrinePlayer.SimulateGoldChest(Projectile, false);
+					ShrineUtils.SimulateGoldChest(Projectile, false);
 					break;
 			}
 		}
