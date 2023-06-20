@@ -229,12 +229,14 @@ namespace StarlightRiver.Content.NPCs.Actors
 		}
 	}
 
-	public static class StarwaterConversion
+	public class StarwaterConversion : IOrderedLoadable
 	{
-		public static float StarwaterGlobalItemGlow;//brightness for item glow, taken from distance of closetest starwater actor (0 - 1 scale)
+		public static float StarwaterGlobalItemGlow; //brightness for item glow, taken from distance of closetest starwater actor (0 - 1 scale)
 		public const float MaxItemGlow = 500f;
 
-		private static Dictionary<int, int> StarlightWaterConversion;//from/to
+		private static Dictionary<int, int> StarlightWaterConversion; //from/to
+
+		public float Priority => 1f;
 
 		//returns 0 if there is no defined type
 		public static int GetConversionType(Item item)
@@ -257,7 +259,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 			return 0;
 		}
 
-		public static bool ShouldItemGlow(Item item)//this does not include vanity items
+		public static bool ShouldItemGlow(Item item) //this does not include vanity items
 		{
 			return StarlightWaterConversion.ContainsKey(item.type);
 		}
@@ -266,12 +268,12 @@ namespace StarlightRiver.Content.NPCs.Actors
 		{
 			//Main.NewText(StarwaterGlobalItemGlow);
 			if (StarwaterGlobalItemGlow > 0.075f)
-				StarwaterGlobalItemGlow *= 0.985f;//fades out the shine on items
+				StarwaterGlobalItemGlow *= 0.985f; //fades out the shine on items
 			else
-				StarwaterGlobalItemGlow = 0;//rounds to zero as there is a check on the item to save performance
+				StarwaterGlobalItemGlow = 0; //rounds to zero as there is a check on the item to save performance
 		}
 
-		public static void Load()
+		public void Load()
 		{
 			StarlightPlayer.ResetEffectsEvent += ResetInventoryGlow;
 
@@ -321,7 +323,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 			};
 		}
 
-		public static void Unload()
+		public void Unload()
 		{
 			StarlightPlayer.ResetEffectsEvent -= ResetInventoryGlow;
 			StarlightWaterConversion = null;
@@ -332,13 +334,13 @@ namespace StarlightRiver.Content.NPCs.Actors
 	{
 		public StarlightWaterActor starlightWaterActor = null;
 
-		public override bool OnPickup(Item item, Player player)//completely stops conversion on pickup since this cant be detected by the WaterActor
+		public override bool OnPickup(Item item, Player player) //completely stops conversion on pickup since this cant be detected by the WaterActor
 		{
 			if (starlightWaterActor != null)
 			{
-				starlightWaterActor.ResetConversion();//fine to be called even if the item has been transformed already
-				starlightWaterActor = null;//should be null anyways
-				item.wet = false;//for some reason this does not get cleared when the player picks up an item
+				starlightWaterActor.ResetConversion(); //fine to be called even if the item has been transformed already
+				starlightWaterActor = null; //should be null anyways
+				item.wet = false; //for some reason this does not get cleared when the player picks up an item
 			}
 
 			return base.OnPickup(item, player);

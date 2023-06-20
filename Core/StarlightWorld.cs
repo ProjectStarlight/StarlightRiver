@@ -1,7 +1,6 @@
 ﻿using StarlightRiver.Content.Bosses.GlassMiniboss;
 using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.GUI;
-using StarlightRiver.Content.NPCs.Actors;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using System.IO;
@@ -29,16 +28,6 @@ namespace StarlightRiver.Core
 
 		private static Vector2 GlassweaverArenaPos => vitricBiome.TopLeft() * 16 + new Vector2(0, 80 * 16) + new Vector2(0, 256);
 		public static Rectangle GlassweaverArena => new((int)GlassweaverArenaPos.X - 35 * 16, (int)GlassweaverArenaPos.Y - 30 * 16, 70 * 16, 30 * 16);
-
-		public override void OnModLoad()
-		{
-			StarwaterConversion.Load();
-		}
-
-		public override void OnModUnload()
-		{
-			StarwaterConversion.Unload();
-		}
 
 		public StarlightWorld()
 		{
