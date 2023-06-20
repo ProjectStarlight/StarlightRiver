@@ -3572,6 +3572,7 @@ Mods: {
 			SpawnEgg.DisplayName: Spawn Egg
 			SandscriptBook.DisplayName: Sandscript Book
 			RecursiveFocusLaser.DisplayName: Infernal Laser
+			GlassShard.DisplayName: Glass Shard
 		}
 
 		Tiles: {
