@@ -3,6 +3,30 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
+	class EvasionShrineBiome : ModBiome
+	{
+		public override SceneEffectPriority Priority => SceneEffectPriority.BossLow;
+
+		public override int Music => MusicLoader.GetMusicSlot("StarlightRiver/Sounds/Music/EvasionShrine");
+
+		public override bool IsBiomeActive(Player player)
+		{
+			return player.GetModPlayer<ShrinePlayer>().EvasionShrineActive;
+		}
+	}
+
+	class CombatShrineBiome : ModBiome
+	{
+		public override SceneEffectPriority Priority => SceneEffectPriority.BossLow;
+
+		public override int Music => MusicLoader.GetMusicSlot("StarlightRiver/Sounds/Music/CombatShrine");
+
+		public override bool IsBiomeActive(Player player)
+		{
+			return player.GetModPlayer<ShrinePlayer>().CombatShrineActive;
+		}
+	}
+
 	public class ShrinePlayer : ModPlayer
 	{
 		public bool CombatShrineActive;
@@ -15,7 +39,10 @@ namespace StarlightRiver.Content.Tiles.Underground
 			EvasionShrineActive = false;
 			//WitShrineActive = false;
 		}
+	}
 
+	public class ShrineUtils
+	{
 		public static void SimulateGoldChest(Projectile source, bool twiceReforge)
 		{
 			int[] chestItems = new int[] { ItemID.BandofRegeneration, ItemID.MagicMirror, ItemID.CloudinaBottle, ItemID.HermesBoots, ItemID.Mace, ItemID.EnchantedBoomerang, ItemID.ShoeSpikes, ItemID.FlareGun };

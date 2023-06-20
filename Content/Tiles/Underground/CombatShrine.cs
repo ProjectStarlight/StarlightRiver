@@ -321,8 +321,8 @@ namespace StarlightRiver.Content.Tiles.Underground
 		private void SpawnReward()
 		{
 			Item.NewItem(Projectile.GetSource_FromAI(), Projectile.getRect(), ModContent.ItemType<DullBlade>());
-			ShrinePlayer.SimulateGoldChest(Projectile, false);//todo: maybe this should be a relic on no-hit
-			ShrinePlayer.SimulateWoodenChest(Projectile);
+			ShrineUtils.SimulateGoldChest(Projectile, false);//todo: maybe this should be a relic on no-hit
+			ShrineUtils.SimulateWoodenChest(Projectile);
 		}
 
 		public override void PostDraw(Color lightColor)
