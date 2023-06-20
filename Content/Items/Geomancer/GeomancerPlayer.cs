@@ -54,8 +54,6 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 		private void PreDrawGlowFX(Player Player, SpriteBatch spriteBatch)
 		{
-			return;
-
 			if (!SetBonusActive)//removed GetModPlayer since these can directly access it here
 				return;
 
