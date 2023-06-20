@@ -12,24 +12,7 @@ namespace StarlightRiver.Content.Items.BarrierDye
 
 		public virtual void LoseBarrierEffects(Player Player) { }
 
-		public virtual void PreDrawEffects(SpriteBatch spriteBatch, Player player)
-		{
-			//awful horrible quick hack to fix the spritebatch
-			//TODO: find out wtf is leaking BlendState.Additive into the predraw on the player so this can be removed.
-			//it'll likely cause bugs elsewhere if not fixed at the source
-
-			//DO NOT LET THIS PASS CODE REVIEW WITHOUT FIXING THIS AT THE SOURCE
-			if (!CustomHooks.PlayerTarget.canUseTarget)
-				return;
-
-			spriteBatch.End();
-			SamplerState samplerState = Main.DefaultSamplerState;
-
-			if (player.mount.Active)
-				samplerState = Terraria.Graphics.Renderers.LegacyPlayerRenderer.MountedSamplerState;
-
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, samplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
-		}
+		public virtual void PreDrawEffects(SpriteBatch spriteBatch, Player player) { }
 
 		public virtual void PostDrawEffects(SpriteBatch spriteBatch, Player Player) { }
 

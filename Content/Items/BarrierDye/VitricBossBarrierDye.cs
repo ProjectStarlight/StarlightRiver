@@ -56,6 +56,7 @@ namespace StarlightRiver.Content.Items.BarrierDye
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
+
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();

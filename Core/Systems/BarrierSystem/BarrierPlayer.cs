@@ -28,7 +28,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 
 		public bool sendUpdatePacket = true; // set this to true whenever something else happens that would desync shield values, for example: onhit effects
 
-		public BarrierDye dye
+		public BarrierDye Dye
 		{
 			get
 			{
@@ -53,13 +53,13 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 		private void PostDrawBarrierFX(Player Player, SpriteBatch spriteBatch)
 		{
 			if (!Main.gameMenu)
-				Player.GetModPlayer<BarrierPlayer>().dye?.PostDrawEffects(spriteBatch, Player);
+				Player.GetModPlayer<BarrierPlayer>().Dye?.PostDrawEffects(spriteBatch, Player);
 		}
 
 		private void PreDrawBarrierFX(Player Player, SpriteBatch spriteBatch)
 		{
 			if (!Main.gameMenu)
-				Player.GetModPlayer<BarrierPlayer>().dye?.PreDrawEffects(spriteBatch, Player);
+				Player.GetModPlayer<BarrierPlayer>().Dye?.PreDrawEffects(spriteBatch, Player);
 		}
 
 		public override void ModifyHurt(ref Player.HurtModifiers modifiers)
@@ -82,7 +82,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 
 				if (barrier > info.Damage)
 				{
-					dye?.HitBarrierEffects(Player);
+					Dye?.HitBarrierEffects(Player);
 
 					CombatText.NewText(Player.Hitbox, Color.Cyan, info.Damage);
 					barrier -= info.Damage;
@@ -92,7 +92,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 				{
 					rechargeAnimationTimer = 0;
 
-					dye?.LoseBarrierEffects(Player);
+					Dye?.LoseBarrierEffects(Player);
 
 					CombatText.NewText(Player.Hitbox, Color.Cyan, barrier);
 					int overblow = info.Damage - barrier;
@@ -109,8 +109,8 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 			{
 				if (rechargeAnimationTimer < 1)
 				{
-					if (dye != null)
-						rechargeAnimationTimer += dye.RechargeAnimationRate;
+					if (Dye != null)
+						rechargeAnimationTimer += Dye.RechargeAnimationRate;
 					else
 						rechargeAnimationTimer += 0.05f;
 				}
@@ -225,7 +225,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 
 			barrierDamageReduction = Main.expertMode ? 0.4f : 0.3f;
 
-			if (dye is null)
+			if (Dye is null)
 			{
 				var Item = new Item();
 				Item.SetDefaults(ModContent.ItemType<BaseBarrierDye>());
