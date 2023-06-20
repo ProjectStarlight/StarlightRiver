@@ -1,9 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Audio;
 using ReLogic.Graphics;
 using ReLogic.Utilities;
-using StarlightRiver.Content.Codex;
-using StarlightRiver.Content.GUI;
-using StarlightRiver.Core.Loaders.UILoading;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -177,27 +174,6 @@ namespace StarlightRiver.Helpers
 			return min + difference * val;
 		}
 
-		public static void UnlockCodexEntry<type>(Player Player)
-		{
-			CodexHandler mp = Player.GetModPlayer<CodexHandler>();
-			CodexEntry entry = mp.Entries.FirstOrDefault(n => n is type);
-
-			if (entry is null || entry.RequiresUpgradedBook && mp.CodexState != 2)
-				return; //dont give the Player void entries if they dont have the void book
-
-			if (entry.Locked)
-			{
-				entry.Locked = false;
-				entry.New = true;
-
-				if (mp.CodexState != 0)
-				{
-					UILoader.GetUIState<CodexPopup>().TripEntry(entry.Title, entry.Icon);
-					SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/CodexUnlock"));
-				}
-			}
-		}
-
 		public static bool CheckLinearCollision(Vector2 point1, Vector2 point2, Rectangle hitbox, out Vector2 intersectPoint)
 		{
 			intersectPoint = Vector2.Zero;
@@ -292,7 +268,7 @@ namespace StarlightRiver.Helpers
 
 					Tile tile = Framing.GetTileSafely(thisPoint);
 
-					if (Main.tileSolid[tile.TileType] && tile.HasTile)
+					if (Main.tileSolid[tile.TileType] && tile.HasTile && !Main.tileSolidTop[tile.TileType])
 					{
 						var rect = new Rectangle(thisPoint.X * 16, thisPoint.Y * 16, 16, 16);
 

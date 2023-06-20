@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Archaeology
@@ -38,6 +39,9 @@ namespace StarlightRiver.Content.Archaeology
 
 		public override void AI()
 		{
+			if (fadeIn == 0)
+				Projectile.netUpdate = true;
+
 			if (fadeIn < 1)
 			{
 				fadeIn += 0.03f;
@@ -67,7 +71,7 @@ namespace StarlightRiver.Content.Archaeology
 		{
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D mainTex = ModContent.Request<Texture2D>(Texture).Value;
 			Texture2D glowTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
@@ -90,7 +94,7 @@ namespace StarlightRiver.Content.Archaeology
 			DrawBeam(beamTex, pos, 1 - GetProgress(108), rot / 132f + 4.0f, 0.18f * GetProgress(108));
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Main.spriteBatch.Draw(mainTex, pos, null, lightColor, 0f, mainTex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
 			return false;
@@ -110,6 +114,22 @@ namespace StarlightRiver.Content.Archaeology
 		{
 			var itemDrop = new Rectangle((int)Projectile.position.X + (int)(size.X / 2), (int)Projectile.position.Y + (int)(size.Y / 2), 1, 1);
 			Item.NewItem(new EntitySource_Misc("Artifact"), itemDrop, itemType);
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.WriteRGB(glowColor);
+			writer.Write(itemType);
+			writer.WriteVector2(size);
+			writer.Write(sparkleType);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			glowColor = reader.ReadRGB();
+			itemType = reader.ReadInt32();
+			size = reader.ReadVector2();
+			sparkleType = reader.ReadInt32();
 		}
 	}
 }

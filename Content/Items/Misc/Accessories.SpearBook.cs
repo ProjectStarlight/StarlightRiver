@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public static MethodInfo? AI019Spears_Info;
 		public static Action<Projectile>? AI019Spears;
 
-		public SpearBook() : base("Snake Technique", "Allows execution of combos with spears\nLast combo attack has increased critical strike chance and damage\nRight click to deter enemies with a flurry of stabs") { }
+		public SpearBook() : base("Snake Technique", "Teaches you the Art of the Spear, granting all normal spear weapons a new combo attack\nThe last strike in the combo deals increased damage and knockback\n<right> to deter enemies with a flurry of stabs") { }
 
 		public override string Texture => AssetDirectory.MiscItem + "SpearBook";
 
@@ -46,12 +46,14 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public void PostLoad()
 		{
+			List<int> blacklistedSpears = new() { ModContent.ProjectileType<Vitric.FacetProjectile>() };
+
 			spearList = new Dictionary<int, bool>();
-			Projectile proj = new Projectile();
+			var proj = new Projectile();
 			for (int i = 0; i < ProjectileLoader.ProjectileCount; i++)
 			{
 				proj.SetDefaults(i);
-				spearList.Add(i, proj.aiStyle == 19);
+				spearList.Add(i, proj.aiStyle == 19 && !blacklistedSpears.Contains(proj.type));
 			}
 		}
 
@@ -63,6 +65,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SafeSetDefaults()
 		{
 			Item.rare = ItemRarityID.Orange;
+			Item.value = Item.sellPrice(gold: 2);
 		}
 
 		/// <summary>
@@ -115,6 +118,9 @@ namespace StarlightRiver.Content.Items.Misc
 					{
 						var modProj = proj.ModProjectile as SpearBookProjectile;
 						modProj.trailColor = ItemColorUtility.GetColor(item.type);
+
+						Main.instance.LoadProjectile(item.shoot);
+
 						modProj.texture = TextureAssets.Projectile[item.shoot].Value;
 						proj.Size = modProj.texture.Size();
 
@@ -257,17 +263,11 @@ namespace StarlightRiver.Content.Items.Misc
 			Vector2 end = start;
 
 			if (CurrentAttack == AttackType.ChargedStab)
-			{
 				end += 1.5f * GetSpearEndVector();
-			}
 			else if (CurrentAttack == AttackType.Stab)
-			{
 				end += 1.1f * GetSpearEndVector();
-			}
 			else
-			{
 				end += GetSpearEndVector();
-			}
 
 			return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), start, end, 10, ref collisionPoint);
 		}
@@ -278,17 +278,11 @@ namespace StarlightRiver.Content.Items.Misc
 			Vector2 end = start;
 
 			if (CurrentAttack == AttackType.ChargedStab)
-			{
 				end += 1.5f * GetSpearEndVector();
-			}
 			else if (CurrentAttack == AttackType.Stab)
-			{
 				end += 1.1f * GetSpearEndVector();
-			}
 			else
-			{
 				end += GetSpearEndVector();
-			}
 
 			Utils.PlotTileLine(start, end, 40 * Projectile.scale, DelegateMethods.CutTiles);
 		}
@@ -317,9 +311,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (CurrentAttack == AttackType.ChargedStab)
 			{
 				if (Main.rand.NextFloat() * 100 < (Owner.GetTotalCritChance(DamageClass.Melee) + Owner.HeldItem.crit) * 2f)
-				{
 					modifiers.SetCrit();
-				}
 
 				modifiers.CritDamage *= 1.5f;
 			}
@@ -366,7 +358,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Main.spriteBatch.Draw(texture, Projectile.Center - Main.screenPosition, default, lightColor * Projectile.Opacity, Projectile.rotation + rotationOffset + slashRotationOffset, origin, Projectile.scale, effects, 0);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			return false;
 		}
@@ -522,7 +514,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ChargedStab()
 		{
-			EaseBuilder StabEase = new EaseBuilder();
+			var StabEase = new EaseBuilder();
 			StabEase.AddPoint(new Vector2(0, 0.6f), EaseFunction.EaseQuinticOut);
 			StabEase.AddPoint(new Vector2(60, 0.3f), EaseFunction.EaseQuinticOut);
 			StabEase.AddPoint(new Vector2(65, 0.3f), EaseFunction.EaseQuinticOut);
@@ -711,7 +703,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);

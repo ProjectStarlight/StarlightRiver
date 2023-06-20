@@ -11,12 +11,12 @@ namespace StarlightRiver.Content.Items.Starwood
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Starwood Boomerang");
-			Tooltip.SetDefault("Hold LMB to channel the boomerang, causing it to release an explosion");
+			Tooltip.SetDefault("Hold <left> to channel the boomerang, causing it to release an explosion");
 		}
 
 		public override void SetDefaults()
 		{
-			Item.damage = 10;
+			Item.damage = 15;
 			Item.DamageType = DamageClass.Melee;
 			Item.width = 18;
 			Item.height = 34;
@@ -29,6 +29,8 @@ namespace StarlightRiver.Content.Items.Starwood
 			Item.shoot = ModContent.ProjectileType<StarwoodBoomerangProjectile>();
 			Item.useAnimation = 10;
 			Item.noMelee = true;
+
+			Item.value = Item.sellPrice(silver: 25);
 		}
 
 		public override bool CanUseItem(Player Player)

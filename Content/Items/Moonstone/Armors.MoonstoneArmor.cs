@@ -99,7 +99,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override void UpdateArmorSet(Player player)
 		{
-			player.setBonus = "Accumulate lunar energy by dealing melee damage\ndouble tap DOWN to summon the legendary spear Datsuzei\nDatsuzei consumes lunar energy and dissapears at zero";
+			player.setBonus = "Accumulate lunar energy by dealing melee damage\nDouble tap DOWN to summon the legendary spear Datsuzei\nDatsuzei consumes this lunar energy and dissapears at zero";
 
 			if (moonCharge > 720)
 				moonCharge = 720;
@@ -214,7 +214,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			if (IsArmorSet(Player) && !Player.dead && PlayerTarget.canUseTarget)
 			{
 				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 				var head = Player.armor[0].ModItem as MoonstoneHead;
 				float charge = head.moonCharge / 720f;
@@ -234,7 +234,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 				spriteBatch.End();
 
-				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, default, null, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 

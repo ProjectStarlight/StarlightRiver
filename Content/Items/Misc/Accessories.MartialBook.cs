@@ -1,5 +1,4 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
 using System.Collections.Generic;
 using Terraria.ID;
 
@@ -9,7 +8,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public MartialBook() : base("Martial Encyclopedia", "Combined effects of Tiger, Snake, and Mantis Techniques\n+10% melee critical damage\nQuit, don't quit... Noodles, don't noodles.") { }
+		public MartialBook() : base("Martial Encyclopedia", "Combined effects of Tiger, Snake, and Mantis Techniques\n+10% melee critical damage\n'Quit, don't quit... Noodles, don't noodles.'") { }
 
 		public override List<int> ChildTypes =>
 			new()
@@ -27,6 +26,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SafeSetDefaults()
 		{
 			Item.rare = ItemRarityID.Orange;
+			Item.value = Item.sellPrice(gold: 3);
 		}
 
 		public override void AddRecipes()

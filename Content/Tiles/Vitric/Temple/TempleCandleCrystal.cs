@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarlightRiver.Content.Biomes;
+using System;
 using Terraria.ID;
 using static StarlightRiver.Helpers.Helper;
 
@@ -12,14 +13,14 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		{
 			Main.tileLighted[Type] = true;
 			this.QuickSetFurniture(1, 2, 0, SoundID.Dig, false, new Color(80, 131, 142), false, false, "Candle", AnchorTableTop(1, true));
-			ItemDrop = ModContent.ItemType<TempleCandleCrystalItem>();
+			RegisterItemDrop(ModContent.ItemType<TempleCandleCrystalItem>());
 		}
 
 		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 		{
 			Tile tile = Main.tile[i, j];
 
-			if (tile.TileFrameX == 0)
+			if (tile.TileFrameX == 0 && Main.LocalPlayer.InModBiome<VitricTempleBiome>())
 			{
 				r = 0.4f;
 				g = 1f;

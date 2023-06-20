@@ -25,6 +25,8 @@ namespace StarlightRiver.Content.Items.Forest
 			Item.useTime = 10;
 			Item.useAnimation = 20;
 			Item.autoReuse = true;
+
+			Item.value = Item.sellPrice(silver: 25);
 		}
 
 		private Point16 FindNextTile(Player Player)
@@ -128,6 +130,8 @@ namespace StarlightRiver.Content.Items.Forest
 			Item.useAnimation = 10;
 			Item.autoReuse = true;
 			maxRange = 40;
+
+			Item.value = Item.sellPrice(gold: 2);
 		}
 	}
 }

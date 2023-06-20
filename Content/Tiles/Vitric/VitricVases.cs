@@ -1,3 +1,4 @@
+using StarlightRiver.Core.Systems;
 using System;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -79,5 +80,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		}
 	}
 
+	[SLRDebug]
 	internal class VitricBreakableVaseItem : QuickTileItem { public VitricBreakableVaseItem() : base("VitricBreakableVaseItem", "Vitric Vase Placer", "Debug Item", "VitricBreakableVases", 2, AssetDirectory.VitricTile) { } }
 }

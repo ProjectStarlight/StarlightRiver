@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Terraria.DataStructures;
+﻿using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Magnet
@@ -11,7 +10,7 @@ namespace StarlightRiver.Content.Items.Magnet
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Uncharged Magnet");
-			Tooltip.SetDefault("May attract charged enemies");
+			Tooltip.SetDefault("Charged enemies are attracted with this in your inventory\nCharged enemies are stronger than normal, but charge this item on death");
 		}
 
 		public override void SetDefaults()
@@ -42,6 +41,18 @@ namespace StarlightRiver.Content.Items.Magnet
 			Item.width = 32;
 			Item.height = 32;
 			Item.maxStack = 999;
+		}
+
+		public override void Update(ref float gravity, ref float maxFallSpeed)
+		{
+			if (Item.lavaWet)
+			{
+				int i = Item.NewItem(Item.GetSource_Misc("Transform"), Item.getRect(), ModContent.ItemType<GrayGoo>()); // may need syncing idk
+
+				Item item = Main.item[i];
+				item.velocity += new Vector2(0f, -1.5f);
+				Item.TurnToAir();
+			}
 		}
 	}
 }

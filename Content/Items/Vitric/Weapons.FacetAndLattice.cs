@@ -20,15 +20,16 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Facet & Lattice");
-			Tooltip.SetDefault("Right click to guard\nAttacks are empowered after a guard\nEmpowerment is more effective with better guard timing");
+			Tooltip.SetDefault("<right> to guard, blocking damage depending on timing\nAttacks are empowered after a guard, also depending on your guard timing");
 		}
 
 		public override void SetDefaults()
 		{
 			Item.DamageType = DamageClass.Melee;
-			Item.damage = 35;
-			Item.useTime = 35;
-			Item.useAnimation = 35;
+			Item.damage = 37;
+			Item.crit = 6;
+			Item.useTime = 30;
+			Item.useAnimation = 30;
 			Item.width = 32;
 			Item.height = 32;
 			Item.knockBack = 8;
@@ -39,6 +40,8 @@ namespace StarlightRiver.Content.Items.Vitric
 			Item.noMelee = true;
 			Item.noUseGraphic = true;
 			Item.UseSound = SoundID.DD2_MonkStaffSwing;
+
+			Item.value = Item.sellPrice(gold: 2, silver: 75);
 		}
 
 		public override void HoldItem(Player Player)
@@ -103,6 +106,25 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			return true;
 		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.Spear);
+			recipe.AddIngredient<SandstoneChunk>(5);
+			recipe.AddIngredient<VitricOre>(10);
+			recipe.AddIngredient<MagmaCore>();
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+
+			recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.Trident);
+			recipe.AddIngredient<SandstoneChunk>(5);
+			recipe.AddIngredient<VitricOre>(10);
+			recipe.AddIngredient<MagmaCore>();
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+		}
 	}
 
 	class FacetProjectile : SpearProjectile, IDrawAdditive
@@ -135,7 +157,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 
 			if (Projectile.timeLeft > (int)(20 * speed) && Projectile.timeLeft < (int)(50 * speed))
-				Projectile.extraUpdates = 8;
+				Projectile.extraUpdates = 1;
 			else
 				Projectile.extraUpdates = 0;
 
@@ -155,6 +177,10 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override bool? CanHitNPC(NPC target)
 		{
 			Player Player = Main.player[Projectile.owner];
+
+			if (target.immune[Projectile.owner] > 0)
+				return false;
+
 			return Projectile.timeLeft < (int)(50 * Player.GetTotalAttackSpeed(DamageClass.Melee)) && target.active && !target.dontTakeDamage && !target.townNPC;
 		}
 
@@ -172,7 +198,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 				Terraria.Audio.SoundEngine.PlaySound(slot2, Projectile.Center);
 
-				modifiers.FinalDamage *= 1 + BuffPower / 50f;
+				modifiers.FinalDamage *= 1 + BuffPower / 25f;
 				modifiers.Knockback *= 3;
 
 				for (int k = 0; k < 20; k++)

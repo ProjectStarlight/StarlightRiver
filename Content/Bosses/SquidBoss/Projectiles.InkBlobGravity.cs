@@ -39,8 +39,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				d.customData = Main.rand.NextFloat(1, 2);
 			}
 
-			ManageCaches();
-			ManageTrail();
+			if (!Main.dedServ)
+			{
+				ManageCaches();
+				ManageTrail();
+			}
 		}
 	}
 }

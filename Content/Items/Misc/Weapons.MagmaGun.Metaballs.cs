@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin();
+			spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		public override bool PostDraw(SpriteBatch spriteBatch, Texture2D target)

@@ -44,6 +44,15 @@ namespace StarlightRiver.Content.Items.Misc
 			proj = Projectile.NewProjectileDirect(source, position, Vector2.Zero, type, damage, knockback, player.whoAmI);
 			return false;
 		}
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.CombatWrench);
+			recipe.AddIngredient(ItemID.FallenStar, 3);
+			recipe.AddIngredient(ItemID.Dynamite, 5);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+		}
 	}
 
 	public class SorcerwrenchProjectile : ModProjectile, IDrawOverTiles

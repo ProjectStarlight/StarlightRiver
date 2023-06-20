@@ -14,7 +14,7 @@ namespace StarlightRiver.Core
 			tile.MinPick = minPick;
 			tile.DustType = dustType;
 			tile.HitSound = hitSound;
-			tile.ItemDrop = drop;
+			tile.RegisterItemDrop(drop);
 			Main.tileMergeDirt[tile.Type] = dirtMerge;
 			Main.tileStone[tile.Type] = stone;
 
@@ -51,14 +51,14 @@ namespace StarlightRiver.Core
 				tile.HitSound = hitSound;
 
 			tile.DustType = dustType;
-			tile.ItemDrop = drop;
+			tile.RegisterItemDrop(drop);
 		}
 
 		public static void QuickSetWall(this ModWall wall, int dustType, SoundStyle hitSound, int drop, bool safe, Color mapColor)
 		{
 			wall.DustType = dustType;
 			wall.HitSound = hitSound;
-			wall.ItemDrop = drop;
+			wall.RegisterItemDrop(drop);
 			Main.wallHouse[wall.Type] = safe;
 			wall.AddMapEntry(mapColor);
 		}

@@ -1,7 +1,6 @@
-﻿using StarlightRiver.Content.Codex.Entries;
-using StarlightRiver.Content.Waters;
+﻿using StarlightRiver.Content.Waters;
 using StarlightRiver.Core.Systems.LightingSystem;
-using StarlightRiver.Helpers;
+using System.Linq;
 using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Content.Biomes
@@ -35,7 +34,7 @@ namespace StarlightRiver.Content.Biomes
 
 		public override void OnInBiome(Player player)
 		{
-			if (Main.Configuration.Get<bool>("UseHeatDistortion", false))
+			if (Main.Configuration.Get<bool>("UseHeatDistortion", false) && !Main.npc.Any(n => n.active && n.boss))
 			{
 				if (!Filters.Scene["GradientDistortion"].IsActive())
 				{
@@ -58,11 +57,6 @@ namespace StarlightRiver.Content.Biomes
 		{
 			if (Filters.Scene["GradientDistortion"].IsActive())
 				Filters.Scene.Deactivate("GradientDistortion");
-		}
-
-		public override void OnEnter(Player player)
-		{
-			Helper.UnlockCodexEntry<VitricEntry>(player);
 		}
 	}
 

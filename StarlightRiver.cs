@@ -104,12 +104,19 @@ namespace StarlightRiver
 
 		public override void Unload()
 		{
-			foreach (IOrderedLoadable loadable in loadCache)
+			if (loadCache != null)
 			{
-				loadable.Unload();
-			}
+				foreach (IOrderedLoadable loadable in loadCache)
+				{
+					loadable.Unload();
+				}
 
-			loadCache = null;
+				loadCache = null;
+			}
+			else
+			{
+				Logger.Warn("load cache was null, IOrderedLoadable's may not have been unloaded...");
+			}
 
 			if (!Main.dedServ)
 			{

@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -47,6 +48,11 @@ namespace StarlightRiver.Content.Items.Misc
 			Tooltip.SetDefault("Cursed\nMassively increased acceleration and movement speed\nIncreased jump height and max movement speed\nYou are unable to use wings");
 		}
 
+		public override void SafeSetDefaults()
+		{
+			Item.value = Item.sellPrice(silver: 75);
+		}
+
 		public override void OnEquip(Player Player, Item item)
 		{
 			for (int i = 3; i < 10; i++)
@@ -68,6 +74,37 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			player.jumpSpeedBoost += 2f;
 			player.extraFall += 10;
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.HermesBoots);
+			recipe.AddIngredient(ItemID.FrogLeg);
+			recipe.AddIngredient(ItemID.TungstenBar, 5);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+
+			recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.HermesBoots);
+			recipe.AddIngredient(ItemID.FrogLeg);
+			recipe.AddIngredient(ItemID.SilverBar, 5);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+
+			recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.HermesBoots);
+			recipe.AddIngredient(ItemID.CreativeWings);
+			recipe.AddIngredient(ItemID.TungstenBar, 5);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+
+			recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.HermesBoots);
+			recipe.AddIngredient(ItemID.CreativeWings);
+			recipe.AddIngredient(ItemID.SilverBar, 5);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 }

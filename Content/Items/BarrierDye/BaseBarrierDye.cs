@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.BarrierSystem;
+﻿using StarlightRiver.Core.Systems;
+using StarlightRiver.Core.Systems.BarrierSystem;
 using System;
 
 namespace StarlightRiver.Content.Items.BarrierDye
@@ -11,7 +12,7 @@ namespace StarlightRiver.Content.Items.BarrierDye
 
 		public virtual void LoseBarrierEffects(Player Player) { }
 
-		public virtual void PreDrawEffects(SpriteBatch spriteBatch, Player Player) { }
+		public virtual void PreDrawEffects(SpriteBatch spriteBatch, Player player) { }
 
 		public virtual void PostDrawEffects(SpriteBatch spriteBatch, Player Player) { }
 
@@ -36,6 +37,7 @@ namespace StarlightRiver.Content.Items.BarrierDye
 		}
 	}
 
+	[SLRDebug]
 	class BaseBarrierDye : BarrierDye
 	{
 		public override string Texture => AssetDirectory.Invisible;
@@ -73,10 +75,7 @@ namespace StarlightRiver.Content.Items.BarrierDye
 				Vector2 dir = Vector2.UnitX.RotatedBy(k / 8f * 6.28f) * (5.5f + sin * 3.2f);
 				Color color = new Color(100, 255, 255) * (opacity - sin * 0.1f) * 0.9f;
 
-				if (Main.LocalPlayer.gravDir == -1f)
-					spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(player.whoAmI), color, 0f, Vector2.Zero, 1f, SpriteEffects.FlipVertically, 0f);
-				else
-					spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(player.whoAmI), color);
+				spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(player.whoAmI) + Vector2.UnitY * player.gfxOffY + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(player.whoAmI), color);
 			}
 
 			spriteBatch.End();

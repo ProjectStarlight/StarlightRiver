@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.BarrierSystem;
+﻿using StarlightRiver.Content.Items.Vitric;
+using StarlightRiver.Core.Systems.BarrierSystem;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.BarrierDye
@@ -18,6 +19,8 @@ namespace StarlightRiver.Content.Items.BarrierDye
 		public override void SetDefaults()
 		{
 			Item.rare = ItemRarityID.Orange;
+
+			Item.value = Item.sellPrice(silver: 15);
 		}
 
 		public override void LoseBarrierEffects(Player Player)
@@ -48,13 +51,19 @@ namespace StarlightRiver.Content.Items.BarrierDye
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.NonPremultiplied, SamplerState.PointClamp, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
 
-			if (Main.LocalPlayer.gravDir == -1f)
-				spriteBatch.Draw(tex, CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI), CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI), Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.FlipVertically, 0f);
-			else
-				spriteBatch.Draw(tex, CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI), CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI), Color.White);
+			spriteBatch.Draw(tex, CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI), CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI), Color.White);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient<VitricOre>(5);
+			recipe.AddIngredient<MagmaCore>(1);
+			recipe.AddTile(TileID.DyeVat);
+			recipe.Register();
 		}
 	}
 }

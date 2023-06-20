@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -20,7 +19,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Coalescence");
-			Tooltip.SetDefault("Charge for a volley of brilliant magic\nFully charged shots leech mana when they collide");
+			Tooltip.SetDefault("Charge for a volley of brilliant magic\nFully charged shots leech mana where their arrows meet");
 		}
 
 		public override void SetDefaults()
@@ -43,6 +42,8 @@ namespace StarlightRiver.Content.Items.Vitric
 			Item.mana = 40;
 
 			Item.useTurn = true;
+
+			Item.value = Item.sellPrice(gold: 2, silver: 75);
 		}
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
@@ -75,6 +76,17 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			if (Main.projectile.Any(n => n.active && n.owner == Player.whoAmI && n.type == ProjectileType<VitricBowProjectile>()))
 				mult = 0;
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient<VitricBow>();
+			recipe.AddIngredient<SandstoneChunk>(7);
+			recipe.AddIngredient<VitricOre>(7);
+			recipe.AddIngredient<MagmaCore>();
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 
@@ -205,13 +217,13 @@ namespace StarlightRiver.Content.Items.Vitric
 			effect.Parameters["uOpacity"].SetValue(prog);
 
 			sb.End();
-			sb.Begin(default, BlendState.Additive, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
+			sb.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			Rectangle target = toRect(pos, (int)(16 * (w + prog)), (int)(60 * (h + prog)));
 			sb.Draw(texRing, target, null, color * prog, Projectile.rotation, texRing.Size() / 2, 0, 0);
 
 			sb.End();
-			sb.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+			sb.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		private Rectangle toRect(Vector2 pos, int w, int h)

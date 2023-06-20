@@ -465,12 +465,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				effect1.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.01f);
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, default, effect1, Main.GameViewMatrix.ZoomMatrix);
+				spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, RasterizerState.CullNone, effect1, Main.GameViewMatrix.TransformationMatrix);
 
 				spriteBatch.Draw(ballTex, NPC.Center - Main.screenPosition, null, Color.White * progress, 0, ballTex.Size() / 2, progress * 1.7f, 0, 0);
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+				spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 
 			if (shouldDrawArc)
@@ -492,7 +492,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
 				var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-				Matrix view = Main.GameViewMatrix.ZoomMatrix;
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
 				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 				effect.Parameters["transformMatrix"].SetValue(world * view * projection);

@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Overflowing Urn");
-			Tooltip.SetDefault("Unleashes a torrent of chilling winds\nProlonged use will frostburn you");
+			Tooltip.SetDefault("Unleashes a torrent of chilling winds\nProlonged use will cause it to go out of control");
 		}
 
 		public override void SetDefaults()
@@ -50,6 +50,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Item.noMelee = true;
 			Item.noUseGraphic = true;
 			Item.autoReuse = true;
+
+			Item.value = Item.sellPrice(gold: 2);
 		}
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
@@ -419,7 +421,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Effect effect1 = Filters.Scene["CycloneIce"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect1.Parameters["transformMatrix"].SetValue(world * view * projection);
@@ -443,7 +445,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			trail?.Render(effect1);
 			Main.graphics.GraphicsDevice.BlendState = oldState;
 
-			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 

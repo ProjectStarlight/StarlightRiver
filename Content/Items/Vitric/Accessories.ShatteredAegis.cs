@@ -27,6 +27,8 @@ namespace StarlightRiver.Content.Items.Vitric
 			Item.accessory = true;
 			Item.width = 32;
 			Item.height = 32;
+
+			Item.value = Item.sellPrice(gold: 2);
 		}
 
 		public override void SafeUpdateEquip(Player Player)
@@ -142,7 +144,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(Projectile.timeLeft * 0.01f);

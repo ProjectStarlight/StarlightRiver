@@ -1,7 +1,6 @@
 ﻿using StarlightRiver.Content.Buffs;
 using System;
 using System.Linq;
-using Terraria;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Gravedigger
@@ -17,10 +16,10 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Staff of Self Disassembly");
-			Tooltip.SetDefault("Reserve 40 life to summon a flesh apparation\n" +
-				"apparations grant increased life regeneration\n" +
-				"life regeneration boost is increased when apparitions strike an enemy");
+			DisplayName.SetDefault("Staff of Self-Disassembly");
+			Tooltip.SetDefault("Reserve 40 life to summon a Flesh Horror\n" +
+				"Horrors grant increased life regeneration\n" +
+				"Life regeneration boost is increased when Horrors strike an enemy");
 
 			ItemID.Sets.GamepadWholeScreenUseRange[Item.type] = true;
 			ItemID.Sets.LockOnIgnoresCollision[Item.type] = true;
@@ -38,6 +37,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Item.buffType = ModContent.BuffType<FleshApparationBuff>();
 			Item.UseSound = SoundID.Item44;
 			Item.noMelee = true;
+
+			Item.value = Item.sellPrice(gold: 2);
 		}
 
 		public override bool CanUseItem(Player player)
@@ -255,7 +256,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Vector2 targetPoint = Owner.Center;
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			//the lines connecting back to the owner
 			Texture2D tex = Terraria.GameContent.TextureAssets.MagicPixel.Value;
@@ -286,7 +287,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Main.spriteBatch.Draw(tex3, target3, source2, new Color(255, 80, 80) * strength, rot - 1.57f, new Vector2(0, 0), 0, 0);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D mainTex = ModContent.Request<Texture2D>(Texture).Value; //the actual sprite of the minion
 

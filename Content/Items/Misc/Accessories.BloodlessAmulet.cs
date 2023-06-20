@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Items.Gravedigger;
 using StarlightRiver.Core.Systems.BarrierSystem;
 using Terraria.ID;
 
@@ -44,13 +45,15 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			DisplayName.SetDefault("Amulet of the Bloodless Warrior");
 			Tooltip.SetDefault("+100 Maximum Barrier" +
-				"\nUnaffected by damage over time" +
-				"\nBarrier absorbs ALL damage" +
-				"\nYou can survive without life" +
-				"\nCursed : You cannot have life" +
-				"\n Slightly reduced barrier recharge" +
-				"\n Healing grants a decaying damage boost instead of life" +
+				"\nBarrier absorbs ALL damage, but recharges slower" +
+				"\nYou are unaffected by damage over time" +
+				"\nCursed : You have 0 HP. Healing grants a decaying damage boost instead of life" +
 				"\n'Leave your flesh behind, for your rage is all you need'");
+		}
+
+		public override void SafeSetDefaults()
+		{
+			Item.value = Item.sellPrice(gold: 7, silver: 50);
 		}
 
 		public override void SafeUpdateEquip(Player Player)
@@ -66,7 +69,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Player.GetModPlayer<BarrierPlayer>().maxBarrier += 100;
 			Player.GetModPlayer<BarrierPlayer>().barrierDamageReduction = 1;
 			Player.GetModPlayer<BarrierPlayer>().playerCanLiveWithOnlyBarrier = true;
-			Player.GetModPlayer<BarrierPlayer>().rechargeRate -= 10;
+			Player.GetModPlayer<BarrierPlayer>().rechargeRate -= 2;
 			Player.statLife = 0;
 			Player.lifeRegen = 0;
 			Player.lifeRegenCount = 0;

@@ -54,7 +54,7 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 			//special stuff for the door
 			Mod.AddContent(new GenericDoorClosed(name + "DoorClosed", color, dust, name + "DoorClosed", path + name + "DoorClosed"));
 			Mod.AddContent(new GenericDoorOpen(name + "DoorOpen", color, dust, name + "DoorOpen", path + name + "DoorOpen"));
-			Mod.AddContent(new GenericFurnitureItem(name + "Door", name + " " + "DoorClosed", path + name + "DoorItem", 6, material));
+			Mod.AddContent(new GenericFurnitureItem(name + "DoorClosed", name + " " + "DoorClosed", path + name + "DoorItem", 6, material));
 		}
 
 		public void Unload() { }
@@ -72,7 +72,6 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 	[Autoload(false)]
 	class GenericFurnitureItem : QuickTileItem
 	{
-		private readonly string internalName;
 		private readonly string name;
 		private readonly int craftingQuantity;
 		private readonly int craftingMaterial;
@@ -82,11 +81,12 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 
 		public override string Texture => texture;
 
+		protected override bool CloneNewInstances => true;
+
 		public GenericFurnitureItem() { }
 
-		public GenericFurnitureItem(string internalName, string name, string texture, int craftingQuantity, int craftingMaterial) : base(name.Replace("Closed", ""), "", name.Replace(" ", ""), 0)
+		public GenericFurnitureItem(string internalName, string name, string texture, int craftingQuantity, int craftingMaterial) : base(internalName, name.Replace("Closed", ""), "", internalName, 0)
 		{
-			this.internalName = internalName;
 			this.name = name;
 			this.craftingQuantity = craftingQuantity;
 			this.craftingMaterial = craftingMaterial;
@@ -179,11 +179,6 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 		public override void NumDust(int i, int j, bool fail, ref int num)
 		{
 			num = fail ? 1 : 3;
-		}
-
-		public override void KillMultiTile(int i, int j, int frameX, int frameY)
-		{
-			Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, Mod.Find<ModItem>(name).Type);
 		}
 	}
 
@@ -542,13 +537,8 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 		{
 			Player Player = Main.LocalPlayer;
 			Player.noThrow = 2;
-			Player.cursorItemIconEnabled = true;
-			Player.cursorItemIconID = Mod.Find<ModItem>(name.Replace("Closed", "")).Type;
-		}
-
-		public override void KillMultiTile(int i, int j, int frameX, int frameY)
-		{
-			Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, Mod.Find<ModItem>(name.Replace("Closed", "")).Type);
+			//Player.cursorItemIconEnabled = true;
+			//Player.cursorItemIconID = Mod.Find<ModItem>(name.Replace("Closed", "")).Type;
 		}
 	}
 
@@ -615,13 +605,8 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 		{
 			Player Player = Main.LocalPlayer;
 			Player.noThrow = 2;
-			Player.cursorItemIconEnabled = true;
-			Player.cursorItemIconID = Mod.Find<ModItem>(name.Replace("Open", "")).Type;
-		}
-
-		public override void KillMultiTile(int i, int j, int frameX, int frameY)
-		{
-			Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, Mod.Find<ModItem>(name.Replace("Open", "")).Type);
+			//Player.cursorItemIconEnabled = true;
+			//Player.cursorItemIconID = Mod.Find<ModItem>(name.Replace("Open", "")).Type;
 		}
 	}
 
@@ -657,18 +642,12 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 			this.QuickSetFurniture(3, 2, dust, SoundID.Dig, false, color);
 
 			AdjTiles = new int[] { TileID.Dressers };
-			ItemDrop = Mod.Find<ModItem>(name).Type;
+			RegisterItemDrop(Mod.Find<ModItem>(name).Type);
 		}
 
 		public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings)
 		{
 			return true;
-		}
-
-		public override void KillMultiTile(int i, int j, int frameX, int frameY)
-		{
-			Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 48, 32, ItemDrop);
-			Chest.DestroyChest(i, j);
 		}
 
 		public override bool RightClick(int i, int j)

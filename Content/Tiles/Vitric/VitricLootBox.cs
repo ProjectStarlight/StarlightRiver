@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using StarlightRiver.Content.Dusts;
+using StarlightRiver.Core.Systems;
+using System.Collections.Generic;
 using Terraria.ID;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
@@ -8,6 +10,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 	class VitricLootBox : LootChest
 	{
 		public override string Texture => AssetDirectory.VitricTile + Name;
+		public override int HoverItemIcon => ModContent.ItemType<VitricLootBoxItem>();
 
 		internal override List<Loot> GoldLootPool => new()
 		{
@@ -29,9 +32,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		public override void SafeSetDefaults()
 		{
 			TileObjectData.newTile.DrawYOffset = 2;
-			this.QuickSetFurniture(2, 2, DustID.GoldCoin, SoundID.Tink, false, new Color(151, 151, 151));
+			this.QuickSetFurniture(2, 2, DustType<GlassGravity>(), SoundID.Tink, false, new Color(151, 151, 151));
 		}
 	}
+
+	[SLRDebug]
 	class VitricLootBoxItem : QuickTileItem
 	{
 		public VitricLootBoxItem() : base("Vitric Loot Box Item", "", "VitricLootBox", 1, AssetDirectory.VitricTile, false) { }

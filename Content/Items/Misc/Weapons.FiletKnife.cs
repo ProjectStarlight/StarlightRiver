@@ -14,8 +14,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			DisplayName.SetDefault("Filet Knife");
 			Tooltip.SetDefault("Critical strikes carve chunks of flesh from enemies\n" +
-			"Devour chunks to heal and gain Blood Frenzy\n" +
-			"Blood Frenzy grants increased attack speed and decreased critical strike chance");
+			"Devour chunks to heal and gain Bloodfrenzy");
 		}
 
 		public override void SetDefaults()
@@ -259,7 +258,7 @@ namespace StarlightRiver.Content.Items.Misc
 				return;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.World = world;

@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			Item.width = 18;
 			Item.height = 18;
-			Item.value = 1;
+			Item.value = Item.sellPrice(silver: 35);
 			Item.rare = ItemRarityID.Green;
 			Item.defense = 4;
 		}
@@ -155,7 +155,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			Item.width = 18;
 			Item.height = 18;
-			Item.value = 1;
+			Item.value = Item.sellPrice(silver: 55);
 			Item.rare = ItemRarityID.Green;
 			Item.defense = 6;
 		}
@@ -184,14 +184,14 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Vitric Greaves");
-			Tooltip.SetDefault("Slightly improved stamina regeneration");
+			Tooltip.SetDefault("Slightly improved starlight regeneration");
 		}
 
 		public override void SetDefaults()
 		{
 			Item.width = 18;
 			Item.height = 18;
-			Item.value = 1;
+			Item.value = Item.sellPrice(silver: 30);
 			Item.rare = ItemRarityID.Green;
 			Item.defense = 5;
 		}

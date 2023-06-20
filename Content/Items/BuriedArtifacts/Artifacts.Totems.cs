@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Wind Totem");
-			Tooltip.SetDefault("Starts or stops the force of the great winds");
+			Tooltip.SetDefault("Summons or banishes a great wind");
 		}
 
 		public override void SetDefaults()
@@ -24,6 +24,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			Item.consumable = false;
 			Item.useStyle = ItemUseStyleID.HoldUp;
 			Item.useTime = Item.useAnimation = 50;
+			Item.UseSound = SoundID.DD2_BookStaffCast;
 		}
 
 		public override bool? UseItem(Player player)
@@ -46,7 +47,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Rain Totem");
-			Tooltip.SetDefault("Starts or stops the force of the great storms");
+			Tooltip.SetDefault("Summons or banishes a great storm");
 		}
 
 		public override void SetDefaults()
@@ -60,6 +61,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			Item.consumable = false;
 			Item.useStyle = ItemUseStyleID.HoldUp;
 			Item.useTime = Item.useAnimation = 50;
+			Item.UseSound = SoundID.Item20;
 		}
 
 		public override bool? UseItem(Player player)

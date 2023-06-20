@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Aqua Sapphire");
-			Tooltip.SetDefault("Barrier negates 5% more damage \n+10 Barrier");
+			Tooltip.SetDefault("Barrier negates 15% more damage \n+20 Barrier");
 		}
 
 		public override void SetDefaults()
@@ -24,8 +24,8 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public override void UpdateAccessory(Player Player, bool hideVisual)
 		{
-			Player.GetModPlayer<BarrierPlayer>().maxBarrier += 10;
-			Player.GetModPlayer<BarrierPlayer>().barrierDamageReduction += 0.05f;
+			Player.GetModPlayer<BarrierPlayer>().maxBarrier += 20;
+			Player.GetModPlayer<BarrierPlayer>().barrierDamageReduction += 0.15f;
 		}
 	}
 }

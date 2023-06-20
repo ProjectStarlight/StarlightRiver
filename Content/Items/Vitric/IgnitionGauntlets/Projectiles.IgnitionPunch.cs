@@ -107,7 +107,7 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 			Texture2D afterTex = ModContent.Request<Texture2D>(Texture + "_After").Value;
 
 			/*Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);*/
+			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);*/
 
 			for (int k = 15; k > 0; k--)
 			{
@@ -119,7 +119,7 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 			}
 
 			/*Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.AlphaBlend, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);*/
+			Main.spriteBatch.Begin(default, BlendState.AlphaBlend, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);*/
 
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * (float)EaseFunction.EaseQuarticOut.Ease(Fade), Projectile.rotation, tex.Size() / 2, Projectile.scale * 1.2f, SpriteEffects.None, 0f);
 			return false;

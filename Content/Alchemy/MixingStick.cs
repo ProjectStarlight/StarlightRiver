@@ -1,7 +1,9 @@
-﻿using Terraria.ID;
+﻿using StarlightRiver.Core.Systems;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Alchemy
 {
+	[SLRDebug]
 	public class MixingStick : ModItem
 	{
 		public override string Texture => AssetDirectory.Alchemy + Name;

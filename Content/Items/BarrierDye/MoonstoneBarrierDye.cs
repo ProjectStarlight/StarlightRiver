@@ -21,13 +21,15 @@ namespace StarlightRiver.Content.Items.BarrierDye
 		public override void SetDefaults()
 		{
 			Item.rare = ItemRarityID.Orange;
+
+			Item.value = Item.sellPrice(silver: 90);
 		}
 
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();
 			recipe.AddIngredient(ModContent.ItemType<MoonstoneBarItem>(), 6);
-			recipe.AddTile(TileID.Anvils);
+			recipe.AddTile(TileID.DyeVat);
 			recipe.Register();
 		}
 
@@ -67,13 +69,10 @@ namespace StarlightRiver.Content.Items.BarrierDye
 
 			Vector2 drawPos = CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI);
 
-			if (Main.LocalPlayer.gravDir == -1f)
-				spriteBatch.Draw(tex, drawPos, rect, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.FlipVertically, 0f);
-			else
-				spriteBatch.Draw(tex, drawPos, rect, Color.White);
+			spriteBatch.Draw(tex, drawPos, rect, Color.White);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 }

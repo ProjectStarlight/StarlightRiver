@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Physics;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using Terraria.ID;
@@ -67,7 +68,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			VerletChainSystem.toDraw.Remove(Chain);
 		}
 	}
-
+	[SLRDebug]
 	class RedBannerShortItem : QuickTileItem
 	{
 		public RedBannerShortItem() : base("Short Flowing Banner", "Debug Item", "RedBannerShort", 2, AssetDirectory.VitricTile, false) { }
