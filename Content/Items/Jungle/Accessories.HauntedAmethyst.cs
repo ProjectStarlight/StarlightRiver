@@ -81,6 +81,10 @@ namespace StarlightRiver.Content.Items.Jungle
 					}
 				}
 			}
+			else if (slotsUsed > 0)
+			{
+				slotsUsed = 0;
+			}
 		}
 
 		public override void AddRecipes()
