@@ -18,7 +18,8 @@ namespace StarlightRiver.Content.Items.Jungle
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Haunted Dagger Staff");
-			Tooltip.SetDefault("Summons haunted daggers to pierce your foes\nWhip embedded targets to cause a powerful strike");
+			Tooltip.SetDefault("Summons haunted daggers, embedding themselves in your foes\nChange summon targets or whip them to violently tear the daggers from their flesh" +
+				"'These aren't enchanted... they're haunted'\n'It's different?'\n'It's different.'");
 			ItemID.Sets.GamepadWholeScreenUseRange[Item.type] = true; // This lets the Player target anywhere on the whole screen while using a controller.
 			ItemID.Sets.LockOnIgnoresCollision[Item.type] = true;
 		}
@@ -47,6 +48,13 @@ namespace StarlightRiver.Content.Items.Jungle
 		{
 			player.AddBuff(Item.buffType, 2);
 			Projectile.NewProjectileDirect(source, Main.MouseWorld, velocity, type, damage, knockback, Main.myPlayer).originalDamage = Item.damage;
+
+			for (int i = 0; i < 15; i++)
+			{
+				Dust.NewDustPerfect(Main.MouseWorld, ModContent.DustType<Dusts.GlowFastDecelerate>(),
+					Main.rand.NextVector2CircularEdge(3f, 3f), 0, new Color(70, 200, 100), 0.5f);
+			}
+
 			return false;
 		}
 
@@ -55,8 +63,16 @@ namespace StarlightRiver.Content.Items.Jungle
 			Recipe recipe = CreateRecipe();
 
 			recipe.AddIngredient(ItemID.RichMahogany, 30);
-			recipe.AddRecipeGroup(RecipeGroupID.IronBar, 15);
-			recipe.AddIngredient(ItemID.JungleSpores);
+			recipe.AddRecipeGroup(ItemID.GoldBar, 15);
+			recipe.AddIngredient(ItemID.JungleSpores, 10);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+
+			recipe = CreateRecipe();
+
+			recipe.AddIngredient(ItemID.RichMahogany, 30);
+			recipe.AddRecipeGroup(ItemID.PlatinumBar, 15);
+			recipe.AddIngredient(ItemID.JungleSpores, 10);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
 		}
@@ -169,10 +185,12 @@ namespace StarlightRiver.Content.Items.Jungle
 				else
 				{
 					Projectile proj = Main.projectile.Where(p => p.active && p.type == Type && p.owner == Projectile.owner && p.minionPos == 0).FirstOrDefault();
-
-					HauntedDaggerProjectile dagger = proj.ModProjectile as HauntedDaggerProjectile;
-					if (dagger != null)
-						return dagger.lifetime;
+					if (proj != null)
+					{
+						HauntedDaggerProjectile dagger = proj.ModProjectile as HauntedDaggerProjectile;
+						if (dagger != null)
+							return dagger.lifetime;
+					}
 				}
 
 				return 0;
