@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Items.Jungle
 			Recipe recipe = CreateRecipe();
 
 			recipe.AddIngredient(ItemID.RichMahogany, 30);
-			recipe.AddRecipeGroup(ItemID.GoldBar, 15);
+			recipe.AddIngredient(ItemID.GoldBar, 15);
 			recipe.AddIngredient(ItemID.JungleSpores, 10);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
@@ -71,7 +71,7 @@ namespace StarlightRiver.Content.Items.Jungle
 			recipe = CreateRecipe();
 
 			recipe.AddIngredient(ItemID.RichMahogany, 30);
-			recipe.AddRecipeGroup(ItemID.PlatinumBar, 15);
+			recipe.AddIngredient(ItemID.PlatinumBar, 15);
 			recipe.AddIngredient(ItemID.JungleSpores, 10);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
