@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Items.Jungle
 		{
 			DisplayName.SetDefault("Haunted Dagger Staff");
 			Tooltip.SetDefault("Summons haunted daggers, embedding themselves in your foes\nChange summon targets or whip them to violently tear the daggers from their flesh" +
-				"'These aren't enchanted... they're haunted'\n'It's different?'\n'It's different.'");
+				"'These aren't enchanted... they're haunted!'\n'It's different?'\n'It's different.'");
 			ItemID.Sets.GamepadWholeScreenUseRange[Item.type] = true; // This lets the Player target anywhere on the whole screen while using a controller.
 			ItemID.Sets.LockOnIgnoresCollision[Item.type] = true;
 		}
