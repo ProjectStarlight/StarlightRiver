@@ -3235,6 +3235,28 @@ Mods: {
 				Tooltip: Fragile! Please handle with care.
 				DisplayName: Coolmite
 			}
+
+			ArtilleryLicense: {
+				DisplayName: Artillery License
+				Tooltip:
+					'''
+					+1 Sentry slot
+					`Totally not forged`
+					'''
+			}
+
+			DefenseSystem: {
+				DisplayName: Arms Dealer's Defense System
+				Tooltip:
+					'''
+					Summons a gun-toting turret
+					Right click to cycle between different guns
+					[i/95]: Modest damage with good range
+					[i/964]: Great damage with short range
+					[i/98]: Light damage with great fire rate
+
+					'''
+			}
 		}
 
 		Projectiles: {
@@ -3573,6 +3595,9 @@ Mods: {
 			SandscriptBook.DisplayName: Sandscript Book
 			RecursiveFocusLaser.DisplayName: Infernal Laser
 			GlassShard.DisplayName: Glass Shard
+			MinigunTurret.DisplayName: Gun turret
+			PistolTurret.DisplayName: Gun turret
+			ShotgunTurret.DisplayName: Gun turret
 		}
 
 		Tiles: {
