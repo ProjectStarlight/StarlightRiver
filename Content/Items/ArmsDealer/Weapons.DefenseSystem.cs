@@ -1,4 +1,5 @@
 ﻿using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.ArmsDealer
@@ -14,6 +15,12 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 
 		public GunType selected = GunType.Pistol;
 
+		public float radialRotation;
+
+		public static Texture2D PistolTex => Terraria.GameContent.TextureAssets.Item[ItemID.FlintlockPistol].Value;
+		public static Texture2D ShotgunTex => Terraria.GameContent.TextureAssets.Item[ItemID.Boomstick].Value;
+		public static Texture2D MinigunTex => Terraria.GameContent.TextureAssets.Item[ItemID.Minishark].Value;
+
 		public override string Texture => AssetDirectory.Debug;
 
 		public override void Load()
@@ -27,9 +34,9 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 
 			Tooltip.SetDefault("Summons a gun-toting turret\n" +
 				"Right click to cycle between different guns\n" +
-				$"[i/{ItemID.FlintlockPistol}]: Modest damage with good range\n" +
-				$"[i/{ItemID.Boomstick}]: Great damage with short range\n" +
-				$"[i/{ItemID.Minishark}]: Light damage with great fire rate\n");
+				$"[i/s1:{ItemID.FlintlockPistol}]: Modest damage with good range\n" +
+				$"[i/s1:{ItemID.Boomstick}]: Great damage with short range\n" +
+				$"[i/s1:{ItemID.Minishark}]: Light damage with great fire rate\n");
 		}
 
 		public override void SetDefaults()
@@ -38,8 +45,8 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 			Item.height = 32;
 			Item.value = Item.sellPrice(gold: 30);
 			Item.rare = ItemRarityID.Green;
-			Item.useTime = 30;
-			Item.useAnimation = 30;
+			Item.useTime = 10;
+			Item.useAnimation = 10;
 			Item.useStyle = ItemUseStyleID.Swing;
 			Item.DamageType = DamageClass.Summon;
 			Item.damage = 12;
@@ -93,11 +100,54 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 			}
 		}
 
+		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+		{
+			return player.altFunctionUse != 2;
+		}
+
+		/// <summary>
+		/// This handles drawing the radial indicator for which gun is selected
+		/// </summary>
+		/// <param name="player"></param>
+		/// <param name="spriteBatch"></param>
 		private void DrawRadial(Player player, SpriteBatch spriteBatch)
 		{
+			// Get the held instance, if it exists
+			var held = player.HeldItem.ModItem as DefenseSystem;
+
+			if (held is null)
+				return;
+
+			// Rotate as appropriate based on gun selection
+			float rotTarget = held.selected switch
+			{
+				GunType.Pistol => 0,
+				GunType.Shotgun => -MathHelper.Pi * 2 / 3,
+				GunType.Minigun => -MathHelper.Pi * 2 / 3 * 2,
+				_ => 0
+			};
+
+			held.radialRotation += Helpers.Helper.RotationDifference(rotTarget, held.radialRotation) * 0.1f;
+			held.radialRotation %= 6.28f;
+
+			// Draw all 3 guns
 			for (int k = 0; k < 3; k++)
 			{
+				bool selected = k == (int)held.selected;
+				Vector2 pos = player.Center + -Vector2.UnitY.RotatedBy(held.radialRotation + k / 3f * 6.28f) * 48 - Main.screenPosition;
 
+				Texture2D tex = k switch
+				{
+					0 => PistolTex,
+					1 => ShotgunTex,
+					2 => MinigunTex,
+					_ => null
+				};
+
+				if (tex is null)
+					return;
+
+				spriteBatch.Draw(tex, pos, null, selected ? Color.White : Color.LightGray * 0.5f, 0, tex.Size() / 2f, selected ? 1 : 0.8f, 0, 0);
 			}
 		}
 	}
@@ -124,7 +174,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 
 		// Used for the visuals of the gun
 		public float gunRotation;
-		public string gunTexture;
+		public Texture2D gunTex;
 
 		public Player Owner => Main.player[Projectile.owner];
 
@@ -132,11 +182,11 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 
 		public override string Texture => AssetDirectory.Invisible;
 
-		public DefenseSystemTurret(int delay, int range, string gunTexture)
+		public DefenseSystemTurret(int delay, int range, Texture2D gunTex)
 		{
 			this.delay = delay;
 			this.range = range;
-			this.gunTexture = gunTexture;
+			this.gunTex = gunTex;
 		}
 
 		public override void SetStaticDefaults()
@@ -163,7 +213,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 
 		/// <summary>
 		/// This should contain the logic that runs when a turret fires, most likely shooting bullets in some way
-		///
+		/// </summary>
 		/// <param name="target">Represents the direction in which bullets should be fired</param>
 		public abstract void Fire(Vector2 target);
 
@@ -200,6 +250,9 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 
 		public sealed override void AI()
 		{
+			// gravity
+			Projectile.velocity.Y += 0.4f;
+
 			// invalidate target if out of range
 			if (target != null && Vector2.Distance(target.Center, Projectile.Center) > range)
 				target = null;
@@ -230,7 +283,6 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D baseTex = ModContent.Request<Texture2D>(AssetDirectory.Debug).Value;
-			Texture2D gunTex = ModContent.Request<Texture2D>(gunTexture).Value;
 
 			Main.spriteBatch.Draw(baseTex, Projectile.Center - Main.screenPosition, null, lightColor, 0, baseTex.Size() / 2f, 1, 0, 0);
 			Main.spriteBatch.Draw(gunTex, Projectile.Center - Main.screenPosition, null, lightColor, gunRotation, gunTex.Size() / 2f, 1, 0, 0);
@@ -244,7 +296,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 	/// </summary>
 	internal class PistolTurret : DefenseSystemTurret
 	{
-		public PistolTurret() : base(34, 1200, AssetDirectory.Debug) { }
+		public PistolTurret() : base(34, 1200, DefenseSystem.PistolTex) { }
 
 		public override void Fire(Vector2 target)
 		{
@@ -258,7 +310,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 	/// </summary>
 	internal class ShotgunTurret : DefenseSystemTurret
 	{
-		public ShotgunTurret() : base(60, 400, AssetDirectory.Debug) { }
+		public ShotgunTurret() : base(60, 400, DefenseSystem.ShotgunTex) { }
 
 		public override void Fire(Vector2 target)
 		{
@@ -276,7 +328,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 	/// </summary>
 	internal class MinigunTurret : DefenseSystemTurret
 	{
-		public MinigunTurret() : base(9, 600, AssetDirectory.Debug) { }
+		public MinigunTurret() : base(9, 600, DefenseSystem.MinigunTex) { }
 
 		public override void Fire(Vector2 target)
 		{
