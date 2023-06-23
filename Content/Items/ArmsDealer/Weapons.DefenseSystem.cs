@@ -34,9 +34,9 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 
 			Tooltip.SetDefault("Summons a gun-toting turret\n" +
 				"Right click to cycle between different guns\n" +
-				$"[i/s1:{ItemID.FlintlockPistol}]: Modest damage with good range\n" +
-				$"[i/s1:{ItemID.Boomstick}]: Great damage with short range\n" +
-				$"[i/s1:{ItemID.Minishark}]: Light damage with great fire rate\n");
+				$"[i/s1:{ItemID.FlintlockPistol}] Modest damage with good range\n" +
+				$"[i/s1:{ItemID.Boomstick}] Great damage with short range\n" +
+				$"[i/s1:{ItemID.Minishark}] Light damage with great fire rate\n");
 		}
 
 		public override void SetDefaults()
@@ -304,8 +304,13 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 		{
 			Texture2D baseTex = ModContent.Request<Texture2D>(AssetDirectory.Debug).Value;
 
+			SpriteEffects effects = SpriteEffects.None;
+
+			if (Vector2.UnitX.RotatedBy(gunRotation).X < 0)
+				effects = SpriteEffects.FlipVertically;
+
 			Main.spriteBatch.Draw(baseTex, Projectile.Center - Main.screenPosition, null, lightColor, 0, baseTex.Size() / 2f, 1, 0, 0);
-			Main.spriteBatch.Draw(gunTex, Projectile.Center - Main.screenPosition, null, lightColor, gunRotation, gunTex.Size() / 2f, 1, 0, 0);
+			Main.spriteBatch.Draw(gunTex, Projectile.Center - Main.screenPosition, null, lightColor, gunRotation, gunTex.Size() / 2f, 1, effects, 0);
 
 			return false;
 		}
