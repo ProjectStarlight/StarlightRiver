@@ -236,7 +236,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 			{
 				NPC npc = Main.npc[Owner.MinionAttackTargetNPC];
 
-				if (Vector2.Distance(Projectile.Center, npc.Center) <= range)
+				if (Vector2.Distance(Projectile.Center, npc.Center) <= range && Collision.CanHit(Projectile.Center, 1, 1, npc.Center, 1, 1))
 				{
 					target = npc;
 					return;
@@ -249,7 +249,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 				if (!npc.active || npc.friendly || !npc.CanBeChasedBy(this))
 					continue;
 
-				if (Vector2.Distance(Projectile.Center, npc.Center) <= range)
+				if (Vector2.Distance(Projectile.Center, npc.Center) <= range && Collision.CanHit(Projectile.Center, 1, 1, npc.Center, 1, 1))
 				{
 					target = npc;
 					return;
