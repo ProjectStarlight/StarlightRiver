@@ -322,11 +322,11 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 	/// </summary>
 	internal class PistolTurret : DefenseSystemTurret
 	{
-		public PistolTurret() : base(34, 1200, DefenseSystem.PistolTex) { }
+		public PistolTurret() : base(27, 1200, DefenseSystem.PistolTex) { }
 
 		public override void Fire(Vector2 target)
 		{
-			Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, target * 14, ProjectileID.Bullet, 25, 1, Projectile.owner);
+			Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, target * 14, ProjectileID.Bullet, 29, 1, Projectile.owner);
 			SoundEngine.PlaySound(SoundID.Item11, Projectile.Center);
 		}
 	}
@@ -354,7 +354,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 	/// </summary>
 	internal class MinigunTurret : DefenseSystemTurret
 	{
-		public MinigunTurret() : base(7, 600, DefenseSystem.MinigunTex) { }
+		public MinigunTurret() : base(8, 600, DefenseSystem.MinigunTex) { }
 
 		public override void Fire(Vector2 target)
 		{
