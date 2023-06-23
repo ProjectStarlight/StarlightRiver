@@ -82,6 +82,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 		public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
 		{
 			position = player.GetModPlayer<ControlsPlayer>().mouseWorld;
+
 			velocity = Vector2.Zero;
 
 			switch (selected)
@@ -102,7 +103,13 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
-			return player.altFunctionUse != 2;
+			if (player.altFunctionUse != 2)
+			{
+				Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
+				player.UpdateMaxTurrets();
+			}
+
+			return false;
 		}
 
 		/// <summary>
@@ -179,6 +186,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 		public Player Owner => Main.player[Projectile.owner];
 
 		public ref float Timer => ref Projectile.ai[0];
+		public ref float Placed => ref Projectile.ai[1];
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -250,8 +258,20 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 
 		public sealed override void AI()
 		{
-			// gravity
-			Projectile.velocity.Y += 0.4f;
+			// Find sentry position
+			if (Placed < 1)
+			{
+				Owner.FindSentryRestingSpot(Projectile.whoAmI, out int worldX, out int worldY, out int pushYUp);
+				Projectile.position = new Vector2(worldX, worldY - pushYUp);
+
+				for (int k = 0; k < 20; k++)
+				{
+					Dust.NewDustPerfect(Projectile.Center + Vector2.UnitY * 24, ModContent.DustType<Dusts.BuzzSpark>(), Main.rand.NextVector2Circular(3, 3), 0, Color.Yellow);
+					Helpers.Helper.PlayPitched("Impacts/StabTiny", 0.5f, 0, Projectile.Center);
+				}
+
+				Placed = 1;
+			}
 
 			// invalidate target if out of range
 			if (target != null && Vector2.Distance(target.Center, Projectile.Center) > range)
@@ -268,8 +288,8 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 				Timer++;
 
 				// Rotate the gun to aim it
-				float targetAngle = (Projectile.Center - target.Center).ToRotation();
-				gunRotation += Helpers.Helper.CompareAngle(gunRotation, targetAngle) * 0.025f;
+				float targetAngle = (target.Center - Projectile.Center).ToRotation();
+				gunRotation += Helpers.Helper.CompareAngle(targetAngle, gunRotation) * 0.075f;
 
 				// If the delay time has passed, fire a shot and reset
 				if (Timer >= delay)
