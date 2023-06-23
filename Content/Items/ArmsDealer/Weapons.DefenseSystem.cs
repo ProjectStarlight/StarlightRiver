@@ -54,6 +54,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 			Item.shoot = 10;
 			Item.shootSpeed = 1;
 			Item.sentry = true;
+			Item.mana = 20;
 		}
 
 		public override bool AltFunctionUse(Player player)
@@ -335,13 +336,13 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 	/// </summary>
 	internal class ShotgunTurret : DefenseSystemTurret
 	{
-		public ShotgunTurret() : base(60, 400, DefenseSystem.ShotgunTex) { }
+		public ShotgunTurret() : base(67, 400, DefenseSystem.ShotgunTex) { }
 
 		public override void Fire(Vector2 target)
 		{
 			for (int k = 0; k < 8; k++)
 			{
-				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, target.RotatedByRandom(0.3f) * Main.rand.NextFloat(6, 8), ProjectileID.Bullet, 18, 1, Projectile.owner);
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, target.RotatedByRandom(0.3f) * Main.rand.NextFloat(6, 8), ProjectileID.Bullet, 11, 1, Projectile.owner);
 			}
 
 			SoundEngine.PlaySound(SoundID.Item36, Projectile.Center);
