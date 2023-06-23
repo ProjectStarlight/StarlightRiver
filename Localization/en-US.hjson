@@ -2907,6 +2907,28 @@ Mods: {
 					100% increased sentry placement speed
 					'''
 			}
+
+			ArtilleryLicense: {
+				DisplayName: Artillery License
+				Tooltip:
+					'''
+					+1 Sentry slot
+					`Totally not forged`
+					'''
+			}
+
+			DefenseSystem: {
+				DisplayName: Arms Dealer's Defense System
+				Tooltip:
+					'''
+					Summons a gun-toting turret
+					Right click to cycle between different guns
+					[i/95]: Modest damage with good range
+					[i/964]: Great damage with short range
+					[i/98]: Light damage with great fire rate
+
+					'''
+			}
 		}
 
 		Projectiles: {
@@ -3183,6 +3205,78 @@ Mods: {
 			VitricOreFloatDummy.DisplayName: ""
 			VitricSmallDummy.DisplayName: ""
 			VitricBannerDummy.DisplayName: ""
+			HintText.DisplayName: Hint Text
+			BurningGround.DisplayName: Burning Ground
+			GlassJavelin.DisplayName: Glass Javelin
+			GlassweaverDoor.DisplayName: Glassweaver Door
+			Glint.DisplayName: Glint
+			AuroraWaterSplash.DisplayName: Aurora Water Splash
+			DoorBomb.DisplayName: Door Bomb
+			Laser.DisplayName: Laser
+			CrystalWave.DisplayName: Crystal Wave
+			FireCone.DisplayName: Fire Cone
+			FireRingHostile.DisplayName: Fire Ring Hostile
+			FireRing.DisplayName: Fire Ring
+			GlassVolley.DisplayName: Glass Volley
+			GlassVolleyShard.DisplayName: Glass Volley Shard
+			SpikeMine.DisplayName: Spike Mine
+			VitricBomb.DisplayName: Vitric Bomb
+			LightningNode.DisplayName: Lightning Node
+			ScrapshotHook.DisplayName: Scrapshot Hook
+			AztecDeathSaxophoneSoundwave.DisplayName: Aztec Death Saxophone Soundwave
+			SandSlash.DisplayName: Sand Slash
+			TwistSwordProjectile.DisplayName: Twist Sword Projectile
+			Acorn.DisplayName: Acorn
+			MonkSpadeProjectile.DisplayName: Monk Spade Projectile
+			GeoAmethystProj.DisplayName: Geo Amethyst Proj
+			GeoDiamondProj.DisplayName: Geo Diamond Proj
+			GeoEmeraldProj.DisplayName: Geo Emerald Proj
+			GeoRubyProj.DisplayName: Geo Ruby Proj
+			GeoSapphireProj.DisplayName: Geo Sapphire Proj
+			GeoTopazProj.DisplayName: Geo Topaz Proj
+			ThunderbussBall.DisplayName: Thunderbuss Ball
+			AxeBookProjectile.DisplayName: Axe Book Projectile
+			BizarreLightning.DisplayName: Bizarre Lightning
+			BizarreLightningOrb.DisplayName: Bizarre Lightning Orb
+			BizarrePotionPoisonCloud.DisplayName: Bizarre Potion Poison Cloud
+			FryingPanThrownProj.DisplayName: Frying Pan Thrown Proj
+			GuillotineVFX.DisplayName: Guillotine V F X
+			HolyAmuletOrb.DisplayName: Holy Amulet Orb
+			SorcerwrenchProjectile.DisplayName: Sorcerwrench Projectile
+			SpearBookProjectile.DisplayName: Spear Book Projectile
+			SwordBookParry.DisplayName: Sword Book Parry
+			SwordBookProjectile.DisplayName: Sword Book Projectile
+			ThrownAxeProjectile.DisplayName: Thrown Axe Projectile
+			UltrapillBlood.DisplayName: Ultrapill Blood
+			DatsuzeiProjectile.DisplayName: Datsuzei Projectile
+			StarGlaive.DisplayName: Star Glaive
+			StarShuriken.DisplayName: Star Shuriken
+			AuroraThroneMountMinion.DisplayName: Aurora Throne Mount Minion
+			FrostballProjectile.DisplayName: Frostball Projectile
+			FrostExplosion.DisplayName: Frost Explosion
+			TentalanceProjectile.DisplayName: Tentalance Projectile
+			StarwoodSlingshotProj.DisplayName: Starwood Slingshot Proj
+			TemplePickProjectile.DisplayName: Temple Pick Projectile
+			TempleSpearLight.DisplayName: Temple Spear Light
+			LaserPointerProjectile.DisplayName: Laser Pointer Projectile
+			CoachGunUpgradeExplosion.DisplayName: Coach Gun Upgrade Explosion
+			MagmaBottleBurn.DisplayName: Magma Bottle Burn
+			MagmiteBombProjectile.DisplayName: Magmite Bomb Projectile
+			MagmiteBottleProjectile.DisplayName: Magmite Bottle Projectile
+			RefractiveBladeLaser.DisplayName: Refractive Blade Laser
+			RefractiveBladeProj.DisplayName: Refractive Blade Proj
+			VitricBowProjectile.DisplayName: Vitric Bow Projectile
+			VitricBowShard.DisplayName: Vitric Bow Shard
+			BossRushOrbGoreProjectile.DisplayName: Boss Rush Orb Gore Projectile
+			ConstructSpawner.DisplayName: Construct Spawner
+			GauntletSpawner.DisplayName: Gauntlet Spawner
+			SpawnEgg.DisplayName: Spawn Egg
+			SandscriptBook.DisplayName: Sandscript Book
+			RecursiveFocusLaser.DisplayName: Infernal Laser
+			GlassShard.DisplayName: Glass Shard
+			MinigunTurret.DisplayName: Gun turret
+			PistolTurret.DisplayName: Gun turret
+			ShotgunTurret.DisplayName: Gun turret
 		}
 
 		Tiles: {
