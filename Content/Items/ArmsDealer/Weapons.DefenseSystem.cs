@@ -340,7 +340,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 
 		public override void Fire(Vector2 target)
 		{
-			for (int k = 0; k < 8; k++)
+			for (int k = 0; k < 6; k++)
 			{
 				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, target.RotatedByRandom(0.3f) * Main.rand.NextFloat(6, 8), ProjectileID.Bullet, 11, 1, Projectile.owner);
 			}
@@ -354,7 +354,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 	/// </summary>
 	internal class MinigunTurret : DefenseSystemTurret
 	{
-		public MinigunTurret() : base(9, 600, DefenseSystem.MinigunTex) { }
+		public MinigunTurret() : base(7, 600, DefenseSystem.MinigunTex) { }
 
 		public override void Fire(Vector2 target)
 		{
