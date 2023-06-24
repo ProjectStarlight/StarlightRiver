@@ -7,7 +7,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 	{
 		public override string Texture => AssetDirectory.ArmsDealerItem + Name;
 
-		public ArtilleryLicense() : base("Artillery License", "+1 Sentry slot\n`Totally not forged`") { }
+		public ArtilleryLicense() : base("Artillery License", "Increases your max number of sentries by 1\n`Totally not forged`") { }
 
 		public override void SafeSetDefaults()
 		{
