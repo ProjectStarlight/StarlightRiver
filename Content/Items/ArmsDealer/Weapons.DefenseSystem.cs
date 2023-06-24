@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 		public static Texture2D ShotgunTex => Terraria.GameContent.TextureAssets.Item[ItemID.Boomstick].Value;
 		public static Texture2D MinigunTex => Terraria.GameContent.TextureAssets.Item[ItemID.Minishark].Value;
 
-		public override string Texture => AssetDirectory.Debug;
+		public override string Texture => AssetDirectory.ArmsDealerItem + Name;
 
 		public override void Load()
 		{
@@ -236,7 +236,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 			{
 				NPC npc = Main.npc[Owner.MinionAttackTargetNPC];
 
-				if (Vector2.Distance(Projectile.Center, npc.Center) <= range && Collision.CanHit(Projectile.Center, 1, 1, npc.Center, 1, 1))
+				if (Vector2.Distance(Projectile.Center, npc.Center) <= range && Collision.CanHit(Projectile.Center + Vector2.UnitY * -10, 1, 1, npc.Center, 1, 1))
 				{
 					target = npc;
 					return;
@@ -249,7 +249,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 				if (!npc.active || npc.friendly || !npc.CanBeChasedBy(this))
 					continue;
 
-				if (Vector2.Distance(Projectile.Center, npc.Center) <= range && Collision.CanHit(Projectile.Center, 1, 1, npc.Center, 1, 1))
+				if (Vector2.Distance(Projectile.Center, npc.Center) <= range && Collision.CanHit(Projectile.Center + Vector2.UnitY * -10, 1, 1, npc.Center, 1, 1))
 				{
 					target = npc;
 					return;
@@ -263,7 +263,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 			if (Placed < 1)
 			{
 				Owner.FindSentryRestingSpot(Projectile.whoAmI, out int worldX, out int worldY, out int pushYUp);
-				Projectile.position = new Vector2(worldX, worldY - pushYUp);
+				Projectile.position = new Vector2(worldX, worldY - pushYUp - 3);
 
 				for (int k = 0; k < 20; k++)
 				{
@@ -289,7 +289,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 				Timer++;
 
 				// Rotate the gun to aim it
-				float targetAngle = (target.Center - Projectile.Center).ToRotation();
+				float targetAngle = (target.Center - (Projectile.Center + Vector2.UnitY * -10)).ToRotation();
 				gunRotation += Helpers.Helper.CompareAngle(targetAngle, gunRotation) * 0.075f;
 
 				// If the delay time has passed, fire a shot and reset
@@ -303,15 +303,17 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D baseTex = ModContent.Request<Texture2D>(AssetDirectory.Debug).Value;
+			Texture2D baseTex = ModContent.Request<Texture2D>(AssetDirectory.ArmsDealerItem + "DefenseSystemStand").Value;
 
 			SpriteEffects effects = SpriteEffects.None;
 
 			if (Vector2.UnitX.RotatedBy(gunRotation).X < 0)
 				effects = SpriteEffects.FlipVertically;
 
-			Main.spriteBatch.Draw(baseTex, Projectile.Center - Main.screenPosition, null, lightColor, 0, baseTex.Size() / 2f, 1, 0, 0);
-			Main.spriteBatch.Draw(gunTex, Projectile.Center - Main.screenPosition, null, lightColor, gunRotation, gunTex.Size() / 2f, 1, effects, 0);
+			var source = new Rectangle(0, (int)(Timer / 4 % 2) * 38, 32, 32);
+
+			Main.spriteBatch.Draw(baseTex, Projectile.Center - Main.screenPosition, source, lightColor, 0, Vector2.One * 16, 1, 0, 0);
+			Main.spriteBatch.Draw(gunTex, Projectile.Center - Main.screenPosition + Vector2.UnitY * -10, null, lightColor, gunRotation, gunTex.Size() / 2f, 1, effects, 0);
 
 			return false;
 		}
@@ -326,7 +328,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 
 		public override void Fire(Vector2 target)
 		{
-			Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, target * 14, ProjectileID.Bullet, 29, 1, Projectile.owner);
+			Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + Vector2.UnitY * -10, target * 14, ProjectileID.Bullet, 29, 1, Projectile.owner);
 			SoundEngine.PlaySound(SoundID.Item11, Projectile.Center);
 		}
 	}
@@ -342,7 +344,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 		{
 			for (int k = 0; k < 6; k++)
 			{
-				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, target.RotatedByRandom(0.3f) * Main.rand.NextFloat(6, 8), ProjectileID.Bullet, 11, 1, Projectile.owner);
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + Vector2.UnitY * -10, target.RotatedByRandom(0.3f) * Main.rand.NextFloat(6, 8), ProjectileID.Bullet, 11, 1, Projectile.owner);
 			}
 
 			SoundEngine.PlaySound(SoundID.Item36, Projectile.Center);
@@ -358,7 +360,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 
 		public override void Fire(Vector2 target)
 		{
-			Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, target.RotatedByRandom(0.05f) * 8, ProjectileID.Bullet, 7, 1, Projectile.owner);
+			Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + Vector2.UnitY * -10, target.RotatedByRandom(0.05f) * 8, ProjectileID.Bullet, 7, 1, Projectile.owner);
 			SoundEngine.PlaySound(SoundID.Item11, Projectile.Center);
 		}
 	}

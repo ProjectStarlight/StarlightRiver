@@ -5,7 +5,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 {
 	internal class ArtilleryLicense : SmartAccessory
 	{
-		public override string Texture => AssetDirectory.Debug;
+		public override string Texture => AssetDirectory.ArmsDealerItem + Name;
 
 		public ArtilleryLicense() : base("Artillery License", "+1 Sentry slot\n`Totally not forged`") { }
 
