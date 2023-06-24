@@ -1,6 +1,8 @@
-﻿using Terraria.Audio;
+﻿using System.Collections.Generic;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Items.ArmsDealer
 {
@@ -16,6 +18,8 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 		public GunType selected = GunType.Pistol;
 
 		public float radialRotation;
+
+		public string dealerName = "Arms Dealer";
 
 		public static Texture2D PistolTex => Terraria.GameContent.TextureAssets.Item[ItemID.FlintlockPistol].Value;
 		public static Texture2D ShotgunTex => Terraria.GameContent.TextureAssets.Item[ItemID.Boomstick].Value;
@@ -43,7 +47,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 		{
 			Item.width = 32;
 			Item.height = 32;
-			Item.value = Item.sellPrice(gold: 30);
+			Item.value = Item.buyPrice(gold: 30);
 			Item.rare = ItemRarityID.Green;
 			Item.useTime = 10;
 			Item.useAnimation = 10;
@@ -55,6 +59,11 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 			Item.shootSpeed = 1;
 			Item.sentry = true;
 			Item.mana = 20;
+		}
+
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			tooltips.Find(n => n.Name == "ItemName").Text = $"{dealerName}'s Defense System";
 		}
 
 		public override bool AltFunctionUse(Player player)
@@ -157,6 +166,16 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 
 				spriteBatch.Draw(tex, pos, null, selected ? Color.White : Color.LightGray * 0.5f, 0, tex.Size() / 2f, selected ? 1 : 0.8f, 0, 0);
 			}
+		}
+
+		public override void SaveData(TagCompound tag)
+		{
+			tag["dealer"] = dealerName;
+		}
+
+		public override void LoadData(TagCompound tag)
+		{
+			dealerName = tag.GetString("dealer");
 		}
 	}
 
