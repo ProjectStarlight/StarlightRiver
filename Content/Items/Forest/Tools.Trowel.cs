@@ -78,7 +78,6 @@ namespace StarlightRiver.Content.Items.Forest
 				case TileID.LivingMahoganyLeaves:
 					return ItemID.RichMahogany;
 
-					//may need to be item instead of tile for hive and bone wand...
 				case TileID.BoneBlock:
 					return ItemID.Bone;
 
