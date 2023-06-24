@@ -64,8 +64,10 @@ namespace StarlightRiver.Content.Items.Starwood
 	{
 		public int lifetime;
 		public int empowermentTimer;
+		public int downtimeTimer;
 		public Projectile otherProj;
 		public Vector2 rotationalVelocity;
+		public Vector2 empowermentCenter;
 		public NPC MinionTarget
 		{
 			get
@@ -83,16 +85,18 @@ namespace StarlightRiver.Content.Items.Starwood
 			{
 				if (IsParent)
 				{
-					return Owner.Center + new Vector2(-25 * Owner.direction, -50) + new Vector2(-35 * Owner.direction * Projectile.minionPos, 0f) + new Vector2(MathHelper.Lerp(12f, 20f, Utils.Clamp((float)Math.Sin(lifetime * 0.015f), 0, 1))).RotatedBy(MathHelper.ToRadians(lifetime));
+					return Owner.Center + new Vector2(-25 * Owner.direction, -50) + new Vector2(-35 * Owner.direction * Projectile.minionPos, 0f) + new Vector2(MathHelper.Lerp(5f, 15f, Utils.Clamp((float)Math.Sin(lifetime * 0.015f), 0, 1))).RotatedBy(MathHelper.ToRadians(lifetime));
 				}
 				else
 				{
-					return Owner.Center + new Vector2(-25 * Owner.direction, -50) + new Vector2(-35 * Owner.direction * otherProj.minionPos, 0f) + new Vector2(MathHelper.Lerp(-12f, -20f, Utils.Clamp((float)Math.Sin(lifetime * 0.015f), 0, 1))).RotatedBy(MathHelper.ToRadians(lifetime));
+					return Owner.Center + new Vector2(-25 * Owner.direction, -50) + new Vector2(-35 * Owner.direction * otherProj.minionPos, 0f) + new Vector2(-MathHelper.Lerp(5f, 15f, Utils.Clamp((float)Math.Sin(lifetime * 0.015f), 0, 1))).RotatedBy(MathHelper.ToRadians(lifetime));
 				}
 			}
 		}
 
 		public StarwoodScepterSummonSplit OtherStar => otherProj.ModProjectile as StarwoodScepterSummonSplit;
+		public Projectile EmpoweredStar => Main.projectile.Where(p => p.active && p.type == ModContent.ProjectileType<StarwoodScepterSummonEmpowered>() && (p.ModProjectile as StarwoodScepterSummonEmpowered).Children.Contains(Projectile.whoAmI)).FirstOrDefault();
+		public bool HasEmpoweredStar => EmpoweredStar != null;
 		public bool IsEmpowered => Owner.GetModPlayer<StarlightPlayer>().empowered;
 		public bool FoundTarget => Target != null;
 		public ref float TargetWhoAmI => ref Projectile.ai[0];
@@ -130,15 +134,56 @@ namespace StarlightRiver.Content.Items.Starwood
 		public override void OnSpawn(IEntitySource source)
 		{
 			TargetWhoAmI = -1f;
+			rotationalVelocity = Projectile.velocity;
 		}
 
 		public override bool MinionContactDamage()
 		{
-			return AttackTimer <= 0;
+			return AttackTimer <= 0 && !HasEmpoweredStar;
 		}
 
 		public override void AI()
 		{
+			if (IsEmpowered)
+			{
+				EmpoweredBehavior();
+			}
+			else
+			{
+				DefaultBehavior();
+			}
+
+			UpdateProjectileLifetime();
+		}
+
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			if (target == Target)
+			{
+				AttackTimer = 40;
+				Projectile.velocity *= -1f;
+				Projectile.velocity += Main.rand.NextVector2CircularEdge(5f, 5f);
+			}
+		}
+
+		public override bool PreDraw(ref Color lightColor)
+		{
+			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+
+			if (HasEmpoweredStar)
+				return false;
+
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(verticalFrames: 2, frameY: Projectile.frame), Color.White, Projectile.rotation, tex.Frame(verticalFrames: 2, frameY: Projectile.frame).Size() / 2f, Projectile.scale, 0f, 0f);
+			
+			return false;
+		}
+
+		internal void DefaultBehavior()
+		{
+			if (empowermentTimer > 0)
+				empowermentTimer = 0;
+
+
 			if (!IsParent)
 			{
 				TargetWhoAmI = OtherStar.TargetWhoAmI;
@@ -147,13 +192,27 @@ namespace StarlightRiver.Content.Items.Starwood
 			if (MinionTarget != null && AttackTimer <= 0 && IsParent)
 				TargetWhoAmI = MinionTarget.whoAmI;
 
+			if (downtimeTimer > 0)
+			{
+				Projectile.velocity *= 0.95f;
+				Projectile.rotation += 0.05f;
+				rotationalVelocity = Projectile.rotation.ToRotationVector2(); 
+				downtimeTimer--;
+				return;
+			}			
+
 			if (!FoundTarget)
 			{
 				DoIdleMovement();
 
-				NPC target = FindTarget();
-				if (target != default)
-					TargetWhoAmI = target.whoAmI;
+				if (IsParent)
+				{
+					NPC target = FindTarget();
+					if (target != default)
+					{
+						TargetWhoAmI = target.whoAmI;
+					}
+				}
 
 				AttackTimer = 0;
 			}
@@ -177,29 +236,64 @@ namespace StarlightRiver.Content.Items.Starwood
 
 				Projectile.rotation += Projectile.velocity.Length() * 0.03f + 0.01f;
 
+				rotationalVelocity = Projectile.rotation.ToRotationVector2();
+
 				if (!Target.active || Target.Distance(Owner.Center) > 1000f)
 				{
 					TargetWhoAmI = -1;
 					AttackTimer = 0;
 				}
 			}
-
-			UpdateProjectileLifetime();
 		}
 
-		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		internal void EmpoweredBehavior()
 		{
-			if (target == Target)
+			if (HasEmpoweredStar)
 			{
-				AttackTimer = 40;
-				Projectile.velocity *= -1f;
-				Projectile.velocity += Main.rand.NextVector2CircularEdge(5f, 5f);
+				Projectile.Center = EmpoweredStar.Center;
+			}
+			else if (empowermentTimer < 60)
+			{
+				if (empowermentTimer == 0)
+				{
+					empowermentCenter = Vector2.Lerp(Projectile.Center, otherProj.Center, 1f);
+
+					Projectile.velocity += Main.rand.NextVector2CircularEdge(10f, 10f);
+				}
+
+				if (empowermentTimer < 25)
+				{
+					Projectile.velocity *= 0.94f;
+					Projectile.rotation += Projectile.velocity.Length() * 0.02f;
+					rotationalVelocity = Projectile.rotation.ToRotationVector2();
+				}
+				else
+				{
+					rotationalVelocity = Vector2.Lerp(rotationalVelocity, Projectile.DirectionTo(otherProj.Center), 0.15f);
+					Projectile.rotation = rotationalVelocity.ToRotation();
+
+					Projectile.Center = Vector2.Lerp(Projectile.Center, otherProj.Center, EaseBuilder.EaseCubicIn.Ease((empowermentTimer - 25f) / 45f));
+				}
+
+				empowermentTimer++;
+			}
+			else if (IsParent)
+			{
+				Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center,
+					Main.rand.NextVector2CircularEdge(5f, 5f), ModContent.ProjectileType<StarwoodScepterSummonEmpowered>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+
+				(proj.ModProjectile as StarwoodScepterSummonEmpowered).Children = new int[] {Projectile.whoAmI, otherProj.whoAmI};
+				(proj.ModProjectile as StarwoodScepterSummonEmpowered).downtimeTimer = 35;
+				empowermentTimer = 0;
+
+				Helpers.DustHelper.DrawStar(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), 5, 1.5f, 1.5f, 0.5f, 1, 0.5f, 0, -1, new Color(120, 25, 255));
 			}
 		}
 
 		internal void DoIdleMovement()
 		{
-			rotationalVelocity = Vector2.Lerp(rotationalVelocity, Projectile.DirectionTo(otherProj.Center), 0.05f);
+			if (lifetime > 2)
+				rotationalVelocity = Vector2.Lerp(rotationalVelocity, Projectile.DirectionTo(otherProj.Center), 0.05f);
 
 			float dist = Vector2.Distance(Projectile.Center, IdlePosition);
 
@@ -223,7 +317,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
 			Projectile.velocity = (Projectile.velocity * (25f - 1) + toIdlePos) / 25f;
 
-			Projectile.rotation = rotationalVelocity.ToRotation() + MathHelper.ToRadians(0f);
+			Projectile.rotation = rotationalVelocity.ToRotation();
 
 			if (dist > 2000f)
 			{
@@ -240,7 +334,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
 			if (!IsParent)
 			{
-				Dust.NewDustPerfect(Projectile.Center, DustID.Torch);
+				Projectile.frame = 1;
 				lifetime = (otherProj.ModProjectile as StarwoodScepterSummonSplit).lifetime;
 			}
 			else
@@ -257,7 +351,9 @@ namespace StarlightRiver.Content.Items.Starwood
 
 	public class StarwoodScepterSummonEmpowered : ModProjectile
 	{
+		public int downtimeTimer;
 		public int[] Children = new int[2];
+		public Projectile[] ProjectileChildren => new Projectile[2] { Main.projectile[Children[0]], Main.projectile[Children[1]] };
  		public NPC MinionTarget
 		{
 			get
@@ -293,30 +389,78 @@ namespace StarlightRiver.Content.Items.Starwood
 			Projectile.minion = true;
 			Projectile.friendly = true;
 			Projectile.hostile = false;
-			Projectile.minionSlots = 1f;
 			Projectile.penetrate = -1;
 			Projectile.DamageType = DamageClass.Summon;
 		}
 
 		public override void AI()
 		{
-			DoIdleMovement();
+			if (!IsEmpowered)
+			{
+				ProjectileChildren[0].velocity += Main.rand.NextVector2Circular(8f, 8f);
+				ProjectileChildren[1].velocity += Main.rand.NextVector2Circular(8f, 8f);
+
+				(ProjectileChildren[0].ModProjectile as StarwoodScepterSummonSplit).downtimeTimer = 35;
+				(ProjectileChildren[1].ModProjectile as StarwoodScepterSummonSplit).downtimeTimer = 35;
+				Projectile.Kill();
+			}
+
+			if (downtimeTimer > 0)
+			{
+				Projectile.velocity *= 0.935f;
+				Projectile.rotation += 0.05f;
+				downtimeTimer--;
+			}
+			else
+			{
+				if (!FoundTarget)
+				{
+					DoIdleMovement();
+
+					NPC target = FindTarget();
+					if (target != default)
+					{
+						TargetWhoAmI = target.whoAmI;
+					}
+				}
+				else
+				{
+
+				}
+			}
 
 			UpdateProjectileLifetime();
 		}
 
 		internal void DoIdleMovement()
 		{
-			float distance = Projectile.Distance(Owner.Center);
+			Vector2 IdlePosition = Owner.Center + new Vector2(-25f * Owner.direction, -50f) + new Vector2(-25f * Owner.direction * ProjectileChildren[0].minionPos, ProjectileChildren[0].minionPos % 2 == 0 ? -25f : 0f);
 
-			Projectile.rotation += Projectile.velocity.Length() * 0.01f;
+			float dist = Vector2.Distance(Projectile.Center, IdlePosition);
 
-			if (distance > 100f)
+			Vector2 toIdlePos = IdlePosition - Projectile.Center;
+			if (toIdlePos.Length() < 0.0001f)
 			{
-				Projectile.velocity += Projectile.DirectionTo(Owner.Center) * 2f;
+				toIdlePos = Vector2.Zero;
+			}
+			else
+			{
+				float speed = 35f;
+				if (dist < 1000f)
+					speed = MathHelper.Lerp(10f, 25f, dist / 1000f);
+
+				if (dist < 100f)
+					speed = MathHelper.Lerp(0.1f, 10f, dist / 100f);
+
+				toIdlePos.Normalize();
+				toIdlePos *= speed;
 			}
 
-			if (distance > 2000f)
+			Projectile.velocity = (Projectile.velocity * (25f - 1) + toIdlePos) / 25f;
+
+			Projectile.rotation += Projectile.velocity.Length() * 0.025f;
+
+			if (dist > 2000f)
 			{
 				Projectile.Center = Owner.Center;
 				Projectile.velocity = Vector2.Zero;
