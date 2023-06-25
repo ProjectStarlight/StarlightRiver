@@ -106,8 +106,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SetDefaults()
 		{
-			Projectile.width = 18;
-			Projectile.height = 24;
+			Projectile.width = 20;
+			Projectile.height = 26;
 
 			Projectile.aiStyle = -1;
 
