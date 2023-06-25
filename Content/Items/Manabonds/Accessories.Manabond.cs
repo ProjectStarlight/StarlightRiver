@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 			{
 				NPC npc = Main.npc[owner.MinionAttackTargetNPC];
 
-				if (Vector2.Distance(minion.Center, npc.Center) <= range && Collision.CanHit(minion.Center + Vector2.UnitY * -10, 1, 1, npc.Center, 1, 1))
+				if (Vector2.Distance(minion.Center, npc.Center) <= range && Collision.CanHit(minion.Center, 1, 1, npc.Center, 1, 1))
 					return npc;
 			}
 
@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 				if (!npc.active || npc.friendly || !npc.CanBeChasedBy(this))
 					continue;
 
-				if (Vector2.Distance(minion.Center, npc.Center) <= range && Collision.CanHit(minion.Center + Vector2.UnitY * -10, 1, 1, npc.Center, 1, 1))
+				if (Vector2.Distance(minion.Center, npc.Center) <= range && Collision.CanHit(minion.Center, 1, 1, npc.Center, 1, 1))
 					return npc;
 			}
 
