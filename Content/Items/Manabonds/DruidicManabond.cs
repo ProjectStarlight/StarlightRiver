@@ -26,6 +26,16 @@ namespace StarlightRiver.Content.Items.Manabonds
 				}
 			}
 		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ModContent.ItemType<BasicManabond>(), 1);
+			recipe.AddIngredient(ItemID.JungleSpores, 15);
+			recipe.AddIngredient(ItemID.Stinger, 5);
+			recipe.AddTile(TileID.Bookcases);
+			recipe.Register();
+		}
 	}
 
 	internal class DruidThorn : ModProjectile

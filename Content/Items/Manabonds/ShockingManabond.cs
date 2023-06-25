@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using StarlightRiver.Content.Items.Magnet;
+using System.Collections.Generic;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Manabonds
@@ -28,6 +29,15 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_LightningBugZap, minion.Center);
 			}
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ModContent.ItemType<BasicManabond>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<ChargedMagnet>(), 1);
+			recipe.AddTile(TileID.Bookcases);
+			recipe.Register();
 		}
 	}
 
