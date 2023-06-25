@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 				for (int k = 0; k < 5; k++)
 				{
-					Projectile.NewProjectile(minion.GetSource_FromThis(), minion.Center, Vector2.Normalize(mp.target.Center - minion.Center).RotatedByRandom(0.5f) * Main.rand.NextFloat(18, 24), ModContent.ProjectileType<DruidThorn>(), 12, 0.25f, minion.owner);
+					Projectile.NewProjectile(minion.GetSource_FromThis(), minion.Center, Vector2.Normalize(mp.target.Center - minion.Center).RotatedByRandom(0.5f) * Main.rand.NextFloat(18, 24), ModContent.ProjectileType<DruidThorn>(), 16, 0.25f, minion.owner);
 				}
 			}
 		}
