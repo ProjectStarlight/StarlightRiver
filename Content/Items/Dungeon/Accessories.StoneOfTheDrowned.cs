@@ -17,11 +17,8 @@ namespace StarlightRiver.Content.Items.Dungeon
 		// i love private terraria methods which require reflection to access
 		public static MethodInfo? playerItemCheckShoot_Info;
 		public static Action<Player, int, Item, int>? playerItemCheckShoot;
-
 		public override string Texture => AssetDirectory.JungleItem + Name;
-
-		public StoneOfTheDrowned() : base("Stone of the Drowned", "+30 barrier\nIncreases your number of max minions by 2 when you have no barrier\nAutomatically summons two slots worth of minions if there is a valid weapon in your inventory") { }
-
+		public StoneOfTheDrowned() : base("Stone of the Drowned", "+30 barrier\nIncreases your max number of minions by 2 when you have no barrier\nAutomatically re-summons two slots worth of minions when you reach 0 barrier") { }
 		public override void Load()
 		{
 			playerItemCheckShoot_Info = typeof(Player).GetMethod("ItemCheck_Shoot", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -40,6 +37,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 		public override void SafeUpdateEquip(Player Player)
 		{
 			Player.GetModPlayer<BarrierPlayer>().maxBarrier += 30;
+
 			if (Player.GetModPlayer<BarrierPlayer>().barrier <= 0)
 			{
 				Player.maxMinions += 2;
