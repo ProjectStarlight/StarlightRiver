@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Items.Jungle
 		{
 			DisplayName.SetDefault("Haunted Dagger Staff");
 			Tooltip.SetDefault("Summons haunted daggers, embedding themselves in your foes\nChange summon targets or whip them to violently tear the daggers from their flesh" +
-				"'These aren't enchanted... they're haunted!'\n'It's different?'\n'It's different.'");
+				"\n'These aren't enchanted... they're haunted!'\n'It's different?'\n'It's different.'");
 			ItemID.Sets.GamepadWholeScreenUseRange[Item.type] = true; // This lets the Player target anywhere on the whole screen while using a controller.
 			ItemID.Sets.LockOnIgnoresCollision[Item.type] = true;
 		}
@@ -83,6 +83,7 @@ namespace StarlightRiver.Content.Items.Jungle
 		public bool Unembed = false;
 		public int UnembedCount = -1;
 		public int UnembeddingPlayerWhoAmI;
+
 		public override bool InstancePerEntity => true;
 
 		public int GetDaggerCount(NPC npc)
@@ -98,9 +99,7 @@ namespace StarlightRiver.Content.Items.Jungle
 				HauntedDaggerProjectile dagger = proj.ModProjectile as HauntedDaggerProjectile;
 
 				if (proj.active && dagger != null && dagger.TargetWhoAmI == npc.whoAmI && dagger.Embedded)
-				{
 					dagger.Unembed(false, npc);
-				}
 			}
 
 			npc.SimpleStrikeNPC(count * 10, 0, false, 0, DamageClass.Summon, true, strikingPlayer.luck);
@@ -110,9 +109,7 @@ namespace StarlightRiver.Content.Items.Jungle
 			Helpers.Helper.PlayPitched("Impacts/GoreLight", 1f, Main.rand.NextFloat(-0.1f, 0.1f), npc.Center);
 			
 			if (!fleshy)
-			{
 				Helpers.Helper.PlayPitched("Impacts/Clink", 1f, Main.rand.NextFloat(-0.1f, 0.1f), npc.Center);
-			}
 
 			for (int i = 0; i < 15; i++)
 			{
@@ -148,9 +145,7 @@ namespace StarlightRiver.Content.Items.Jungle
 			int count = GetDaggerCount(npc);
 
 			if (ProjectileID.Sets.IsAWhip[projectile.type] && projectile.CountsAsClass(DamageClass.Summon) && count > 0)
-			{
 				UnembedDaggers(npc, count, Main.player[projectile.owner]);
-			}
 		}
 
 		public override void AI(NPC npc)
@@ -168,12 +163,38 @@ namespace StarlightRiver.Content.Items.Jungle
 
 	class HauntedDaggerProjectile : ModProjectile
 	{
-		public const int maxAttackDelay = 5;
+		public const int MAX_ATTACK_DELAY = 5;
 
 		public int attackTimer;
 		public int rotTimer;
-
 		public int lifetime;
+
+		public Vector2 rotationalVelocity;
+
+		public Vector2 enemyOffset;
+
+		public NPC EmbeddedTarget;
+
+		public bool Embedded => Projectile.ai[0] != 0f;
+		public ref float TargetWhoAmI => ref Projectile.ai[1];
+		public ref float AttackDelay => ref Projectile.ai[2];
+
+		public NPC Target => TargetWhoAmI > -1 ? Main.npc[(int)TargetWhoAmI] : null;
+		public bool FoundTarget => Target != null;
+
+		public Player Owner => Main.player[Projectile.owner];
+
+		public NPC MinionTarget
+		{
+			get
+			{
+				if (Owner.HasMinionAttackTargetNPC && Main.npc[Owner.MinionAttackTargetNPC].Distance(Projectile.Center) < 1000f)
+					return Main.npc[Owner.MinionAttackTargetNPC];
+
+				return null;
+			}
+		}
+
 		public int Lifetime
 		{
 			get
@@ -196,26 +217,7 @@ namespace StarlightRiver.Content.Items.Jungle
 				return 0;
 			}
 		}
-		public Vector2 rotationalVelocity;
-		public Vector2 enemyOffset;
-		public NPC EmbeddedTarget;
-		public NPC MinionTarget
-		{
-			get
-			{
-				if (Owner.HasMinionAttackTargetNPC && Main.npc[Owner.MinionAttackTargetNPC].Distance(Projectile.Center) < 1000f)
-					return Main.npc[Owner.MinionAttackTargetNPC];
 
-				return null;
-			}
-		}
-
-		public bool FoundTarget => Target != null;
-		public bool Embedded => Projectile.ai[0] != 0f;
-		public ref float TargetWhoAmI => ref Projectile.ai[1];
-		public ref float AttackDelay => ref Projectile.ai[2];
-		public NPC Target => TargetWhoAmI > -1 ? Main.npc[(int)TargetWhoAmI] : null;
-		public Player Owner => Main.player[Projectile.owner];
 		public override string Texture => AssetDirectory.JungleItem + Name;
 		public override void SetStaticDefaults()
 		{
@@ -344,7 +346,7 @@ namespace StarlightRiver.Content.Items.Jungle
 				if (!Target.active || Target.Distance(Owner.Center) > 1000f)
 				{
 					TargetWhoAmI = -1;
-					AttackDelay = maxAttackDelay;
+					AttackDelay = MAX_ATTACK_DELAY;
 					attackTimer = 0;
 				}
 			}
@@ -457,7 +459,7 @@ namespace StarlightRiver.Content.Items.Jungle
 
 			Projectile.ai[0] = 0f;
 			TargetWhoAmI = -1f;
-			AttackDelay = maxAttackDelay;
+			AttackDelay = MAX_ATTACK_DELAY;
 
 			Projectile.velocity *= -1f;
 			attackTimer = 0;
