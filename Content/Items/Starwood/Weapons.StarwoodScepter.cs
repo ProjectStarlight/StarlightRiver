@@ -244,7 +244,6 @@ namespace StarlightRiver.Content.Items.Starwood
 			if (empowermentTimer > 0)
 				empowermentTimer = 0;
 
-
 			if (!IsParent)
 			{
 				TargetWhoAmI = OtherStar.TargetWhoAmI;
