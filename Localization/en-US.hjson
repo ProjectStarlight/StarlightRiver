@@ -3235,6 +3235,16 @@ Mods: {
 				Tooltip: Fragile! Please handle with care.
 				DisplayName: Coolmite
 			}
+
+			BasicManabond: {
+				DisplayName: Manabond
+				Tooltip:
+					'''
+					Your minions can store 50 mana
+					Your minions siphon 15 mana per second from you untill full
+					Your minions spend 10 mana to attack with a magic bolt occasionally
+					'''
+			}
 		}
 
 		Projectiles: {
@@ -3573,6 +3583,7 @@ Mods: {
 			SandscriptBook.DisplayName: Sandscript Book
 			RecursiveFocusLaser.DisplayName: Infernal Laser
 			GlassShard.DisplayName: Glass Shard
+			MagicBolt.DisplayName: Magical bolt
 		}
 
 		Tiles: {
