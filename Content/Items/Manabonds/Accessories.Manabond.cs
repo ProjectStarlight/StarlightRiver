@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 		public override bool SafeCanAccessoryBeEquippedWith(Item equipped, Item incoming, Player player)
 		{
-			if (equipped.ModItem is Manabond)
+			if (equipped.ModItem is Manabond && incoming.ModItem is Manabond)
 				return false;
 
 			return true;
