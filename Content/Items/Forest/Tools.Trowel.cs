@@ -83,6 +83,9 @@ namespace StarlightRiver.Content.Items.Forest
 
 				case TileID.Hive:
 					return ItemID.Hive;
+
+				default:
+					break;
 			}
 
 			return -1;
@@ -102,7 +105,7 @@ namespace StarlightRiver.Content.Items.Forest
 			{
 				Item thisItem = Player.inventory[k];
 
-				if (!thisItem.IsAir && (thisItem.type == itemSubstitution || (itemSubstitution == -1 && thisItem.createTile == tile.TileType)))
+				if (!thisItem.IsAir && (thisItem.type == itemSubstitution || itemSubstitution == -1 && thisItem.createTile == tile.TileType))
 					Item = Player.inventory[k];
 			}
 
