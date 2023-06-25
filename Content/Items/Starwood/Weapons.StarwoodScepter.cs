@@ -161,13 +161,9 @@ namespace StarlightRiver.Content.Items.Starwood
 		public override void AI()
 		{
 			if (IsEmpowered)
-			{
 				EmpoweredBehavior();
-			}
 			else
-			{
 				DefaultBehavior();
-			}
 
 			UpdateProjectileLifetime();
 		}
