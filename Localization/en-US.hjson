@@ -3245,6 +3245,16 @@ Mods: {
 					Your minions spend 10 mana to attack with a magic bolt occasionally
 					'''
 			}
+
+			InfernalManabond: {
+				DisplayName: Manabond
+				Tooltip:
+					'''
+					Your minions can store 40 mana
+					Your minions siphon 6 mana per second from you untill full
+					Your minions spend 20 mana to attack with a exploding fireball occasionally
+					'''
+			}
 		}
 
 		Projectiles: {
@@ -3584,6 +3594,7 @@ Mods: {
 			RecursiveFocusLaser.DisplayName: Infernal Laser
 			GlassShard.DisplayName: Glass Shard
 			MagicBolt.DisplayName: Magical bolt
+			Fireball.DisplayName: Fireball
 		}
 
 		Tiles: {

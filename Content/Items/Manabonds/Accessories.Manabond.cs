@@ -68,7 +68,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 	internal class ManabondProjectile : GlobalProjectile
 	{
 		public int mana;
-		public int maxMana = 50;
+		public int maxMana = 40;
 
 		public int timer = 0;
 
