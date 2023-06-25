@@ -122,8 +122,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 				target = null;
 
 			// Retarget attempt
-			if (target is null)
-				target = bond?.FindTarget(projectile, this);
+			target ??= bond?.FindTarget(projectile, this);
 
 			// Mana siphon attempt
 			if (timer % 5 == 0 && owner.statMana >= 5)
