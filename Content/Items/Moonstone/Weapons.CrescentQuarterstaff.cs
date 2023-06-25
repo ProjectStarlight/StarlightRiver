@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
@@ -506,6 +507,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 				if (slamCharged)
 				{
+					Terraria.Audio.SoundEngine.PlaySound(SoundID.MaxMana, Projectile.Center);
 					DustHelper.DrawDustImage(StaffEnd + Vector2.One * 4, ModContent.DustType<Dusts.GlowFastDecelerate>(), 0.05f, ModContent.Request<Texture2D>(AssetDirectory.MoonstoneItem + "MoonstoneHamaxe_Crescent").Value, 0.7f, 0, new Color(120, 120, 255));
 
 					for (int i = 0; i < 64; i++)
@@ -523,6 +525,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 				CameraSystem.shake += 16;
 				Projectile.NewProjectile(Projectile.GetSource_FromThis(), StaffEnd, Vector2.Zero, ProjectileType<GravediggerSlam>(), 0, 0, Player.whoAmI);
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70, Projectile.Center);
 			}
 		}
 

@@ -4,17 +4,24 @@ using StarlightRiver.Content.Physics;
 using StarlightRiver.Core.Systems.MetaballSystem;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent.Animations;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.NPCs.Moonstone
 {
 	internal class Dreambeast : ModNPC, IHintable
 	{
-		public VerletChain[] chains = new VerletChain[8];
+		public VerletChain[] chains = new VerletChain[6];
+		public VerletChain[] tipChains = new VerletChain[2];
 
 		public Vector2 homePos;
 		public int flashTime;
+		public int frameCounter = 0;
+		public bool showTips = false;
 
 		private bool AppearVisible => Main.LocalPlayer.HasBuff(ModContent.BuffType<Overcharge>());
 		private Player Target => Main.player[NPC.target];
@@ -23,6 +30,8 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 		public ref float Timer => ref NPC.ai[1];
 		public ref float AttackTimer => ref NPC.ai[2];
 		public ref float RandomTime => ref NPC.ai[3];
+
+		public int TelegraphTime => 40;
 
 		public override string Texture => AssetDirectory.Debug;
 
@@ -54,11 +63,28 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 				if (chain is null)
 				{
-					chains[k] = new VerletChain(20 + 2 * k, true, NPC.Center, 5, false)
+					chains[k] = new VerletChain(24 + 2 * Main.rand.Next(4), true, NPC.Center, 5, false)
 					{
-						constraintRepetitions = 5,//defaults to 2, raising this lowers stretching at the cost of performance
-						drag = 1.2f,//This number defaults to 1, Is very sensitive
-						forceGravity = new Vector2(0f, 0.8f),//gravity x/y
+						constraintRepetitions = 10,//defaults to 2, raising this lowers stretching at the cost of performance
+						drag = 1.2f,//this number defaults to 1, is very sensitive
+						forceGravity = -Vector2.UnitX,
+						scale = 0.6f,
+						parent = NPC
+					};
+				}
+			}
+
+			for (int k = 0; k < tipChains.Length; k++)
+			{
+				VerletChain chain = tipChains[k];
+
+				if (chain is null)
+				{
+					tipChains[k] = new VerletChain(16, true, NPC.Center, 5, false)
+					{
+						constraintRepetitions = 10,//defaults to 2, raising this lowers stretching at the cost of performance
+						drag = 1.2f,//this number defaults to 1, is very sensitive
+						forceGravity = -Vector2.UnitX,
 						scale = 0.6f,
 						parent = NPC
 					};
@@ -83,13 +109,15 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			for (int k = 0; k < chains.Length; k++)
 			{
 				VerletChain chain = chains[k];
-				chain?.UpdateChain(NPC.Center);
+				chain.forceGravity = -NPC.rotation.ToRotationVector2();
+				chain?.UpdateChain(NPC.Center - NPC.rotation.ToRotationVector2() * 30 + NPC.rotation.ToRotationVector2().RotatedBy(MathHelper.PiOver2) * (k - chains.Length / 2 + 1) * 15);
 
 				for (int i = 0; i < chain.ropeSegments.Count; i++)
 				{
-					chain.ropeSegments[i].posNow += Vector2.UnitX * (float)Math.Sin(Main.GameUpdateCount * 0.02f + k + i / 4f) * i / 10f;
+					chain.ropeSegments[i].posNow += NPC.rotation.ToRotationVector2().RotatedBy(MathHelper.PiOver2) * (float)Math.Sin(Main.GameUpdateCount * 0.04f + 251 % (k + 1) + i / 4f) * i / 30;
 				}
 			}
+
 
 			if (Phase == 0)
 				PassiveBehavior();
@@ -132,6 +160,16 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			Vector2 diff = target - NPC.Center;
 			NPC.Center = target;
 
+			if (Phase == 0)
+			{
+				NPC.direction = Main.rand.NextBool() ? -1 : 1;
+			}
+			else
+			{
+				NPC.direction = (Target.Center - NPC.Center).X > 0 ? 1 : -1;
+				NPC.rotation = (Target.Center - NPC.Center).ToRotation();
+			}
+
 			//We need to do this so the chains dont snap back like a rubber band
 			foreach (VerletChain chain in chains)
 			{
@@ -160,6 +198,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			}
 
 			NPC.Center += Vector2.One.RotatedBy(Timer * 0.005f) * 0.25f;
+			NPC.rotation = NPC.direction == 1 ? 0 : MathHelper.Pi;
 
 			if (NPC.Opacity < 1)
 				NPC.Opacity += 0.05f;
@@ -176,6 +215,11 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 					Teleport(homePos + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(200, 400));
 				}
 			}
+
+			if (Main.rand.NextBool(40))
+			{
+				frameCounter = frameCounter == 1 ? 0 : 1;
+			}
 		}
 
 		/// <summary>
@@ -189,7 +233,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			{
 				NPC.Opacity = (20 - (AttackTimer - 30)) / 20f;
 
-				if (AttackTimer > 50)
+				if (AttackTimer > 60 && Main.rand.NextBool(60))
 				{
 					AttackTimer = 0;
 					PickTarget();
@@ -200,7 +244,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 						return;
 					}
 
-					Teleport(Target.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(200, 300));
+					Teleport(Target.Center + (Main.rand.NextBool() ? -1 : 1) * Vector2.UnitX.RotatedByRandom(MathHelper.PiOver4) * Main.rand.NextFloat(450, 600));
 					Phase = 2;
 				}
 			}
@@ -214,21 +258,95 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			if (NPC.Opacity < 1)
 				NPC.Opacity += 0.05f;
 
-			if (AttackTimer == 1)
-				NPC.velocity = Vector2.Normalize(NPC.Center - Target.Center) * -40;
-
-			NPC.velocity *= 0.95f;
-
-			if (AttackTimer >= 60)
+			if (AttackTimer < TelegraphTime)
 			{
-				//NPC.Opacity = (20 - (AttackTimer - 60)) / 20f;
+				frameCounter = 0;
+				NPC.Center += Vector2.One.RotatedBy(Timer * 0.005f) * 0.25f;
 
-				if (AttackTimer > 80)
+				float rotDifference = (((Target.Center - NPC.Center).ToRotation() - NPC.rotation) % MathHelper.TwoPi + MathHelper.Pi * 3) % MathHelper.TwoPi - MathHelper.Pi;
+				NPC.rotation = MathHelper.Lerp(NPC.rotation, NPC.rotation + rotDifference, 0.01f);
+			}
+
+			if (AttackTimer > TelegraphTime  && AttackTimer < TelegraphTime + 15)
+			{
+				for (int k = 0; k < chains.Length; k++)
 				{
-					AttackTimer = 0;
-					Phase = 1;
-					return;
+					VerletChain chain = chains[k];
+
+					for (int i = 0; i < chain.ropeSegments.Count; i++)
+					{
+						chain.ropeSegments[i].posNow += NPC.rotation.ToRotationVector2() * 2 + NPC.rotation.ToRotationVector2().RotatedBy(MathHelper.PiOver2) * (k - chains.Length / 2 + 1) * (float)(Math.Pow(2f * i / chain.ropeSegments.Count - 1, 2) + 1);
+					}
 				}
+			}
+
+			if (AttackTimer == TelegraphTime || AttackTimer == TelegraphTime + 2 || AttackTimer == TelegraphTime + 5 || AttackTimer == TelegraphTime + 10 || AttackTimer == TelegraphTime + 65)
+				frameCounter++;
+
+			if (AttackTimer == TelegraphTime + 70)
+				frameCounter = 2;
+
+			if (AttackTimer == TelegraphTime + 75 || AttackTimer == TelegraphTime + 80)
+				frameCounter--;
+
+			if (AttackTimer > TelegraphTime && AttackTimer <  TelegraphTime + 10)
+				NPC.velocity += NPC.rotation.ToRotationVector2() * 7.5f;
+
+			if (AttackTimer == TelegraphTime + 10)
+			{
+				tipChains[0].segmentDistance = 5;
+				tipChains[1].segmentDistance = 5;
+				showTips = true;
+			}
+
+			if (AttackTimer > TelegraphTime)
+			{
+				tipChains[0].forceGravity = Vector2.Zero;
+				tipChains[0]?.UpdateChain(NPC.Center + GetTopTipOffset());
+
+				tipChains[1].forceGravity = Vector2.Zero;
+				tipChains[1]?.UpdateChain(NPC.Center + GetBottomTipOffset());
+			}
+
+			if (AttackTimer >= TelegraphTime + 60 && AttackTimer < TelegraphTime + 70)
+			{
+				for (int i = 0; i < tipChains[0].ropeSegments.Count; i++)
+				{
+					tipChains[0].ropeSegments[i].posNow -= NPC.rotation.ToRotationVector2().RotatedBy(MathHelper.PiOver2) * i / 2 * NPC.direction;
+				}
+
+				for (int i = 0; i < tipChains[1].ropeSegments.Count; i++)
+				{
+					tipChains[1].ropeSegments[i].posNow += NPC.rotation.ToRotationVector2().RotatedBy(MathHelper.PiOver2) * i / 2 * NPC.direction;
+				}
+			}
+
+			if (AttackTimer >= TelegraphTime + 65 && AttackTimer % 4 == 0)
+			{
+				if (tipChains[0].segmentDistance > 0)
+				{
+					tipChains[0].segmentDistance -= 1;
+					tipChains[1].segmentDistance -= 1;
+				}
+				else
+				{
+					showTips = false;
+				}
+			}
+
+			NPC.velocity *= 0.96f;
+
+			if (AttackTimer > TelegraphTime + 6)
+				NPC.velocity *= 0.98f;
+
+			if (AttackTimer == TelegraphTime + 60)
+				NPC.velocity *= -1;
+
+			if (AttackTimer > TelegraphTime + 100)
+			{
+				AttackTimer = 0;
+				Phase = 1;
+				return;
 			}
 		}
 
@@ -241,38 +359,45 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			Phase = 1;
 		}
 
+		public override void FindFrame(int frameHeight)
+		{
+			NPC.frame.Width = 244;
+			NPC.frame.Height = 198;
+
+			NPC.frame.Y = 198 * frameCounter;
+		}
+
 		public void DrawToMetaballs(SpriteBatch spriteBatch)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/VitricBossGodrayHead").Value;
-
-			spriteBatch.Draw(tex, (NPC.Center - Main.screenPosition) / 2, null, Color.White * NPC.Opacity, 0, tex.Size() / 2, 0.5f, 0, 0);
-
-			foreach (VerletChain chain in chains)
+			if (NPC.active)
 			{
-				foreach (RopeSegment segment in chain.ropeSegments)
+				Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.MoonstoneNPC + "Dreambeast").Value;
+
+				foreach (VerletChain chain in chains)
 				{
-					spriteBatch.Draw(tex, segment.ScreenPos / 2, null, Color.White * NPC.Opacity, 0, tex.Size() / 2, 0.05f, 0, 0);
+					foreach (RopeSegment segment in chain.ropeSegments)
+					{
+						spriteBatch.Draw(tex, segment.ScreenPos / 2, NPC.frame, Color.White * NPC.Opacity, 0, new Vector2(122, 99), 0.05f, 0, 0);
+					}
 				}
+
+				foreach (VerletChain chain in tipChains)
+				{
+					if (chain?.ropeSegments != null && showTips)
+					{
+						foreach (RopeSegment segment in chain.ropeSegments)
+						{
+							spriteBatch.Draw(tex, segment.ScreenPos / 2, NPC.frame, Color.White * NPC.Opacity, 0, new Vector2(122, 99), 0.05f, 0, 0);
+						}
+					}
+				}
+
+				spriteBatch.Draw(tex, (NPC.Center - Main.screenPosition) / 2, NPC.frame, Color.White * NPC.Opacity, NPC.rotation + (NPC.direction == -1 ? MathHelper.Pi : 0), new Vector2(122, 99), 0.5f, NPC.direction == -1 ? SpriteEffects.FlipHorizontally : 0, 0);
 			}
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/VitricBossGodrayHead").Value;
-
-			if (!AppearVisible)
-			{
-				Effect effect = Terraria.Graphics.Effects.Filters.Scene["MoonstoneBeastEffect"].GetShader().Shader;
-				effect.Parameters["baseTexture"].SetValue(tex);
-				effect.Parameters["distortTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise2").Value);
-				effect.Parameters["size"].SetValue(tex.Size());
-				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.005f);
-				effect.Parameters["opacity"].SetValue(NPC.Opacity);
-
-				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
-			}
-
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
@@ -287,6 +412,33 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 			return false;
 		}
+
+		public Vector2 GetTopTipOffset()
+		{
+			return frameCounter switch
+			{
+				0 => (NPC.rotation + 0.1f * NPC.direction).ToRotationVector2() * 70,
+				1 => NPC.rotation.ToRotationVector2() * 70,
+				2 => (NPC.rotation - 0.4f * NPC.direction).ToRotationVector2() * 90,
+				4 => -(NPC.rotation + 0.6f * NPC.direction).ToRotationVector2() * 130,
+				5 => -(NPC.rotation + 0.9f * NPC.direction).ToRotationVector2() * 110,
+				_ => Vector2.Zero,
+			};
+		}
+
+		public Vector2 GetBottomTipOffset()
+		{
+			return frameCounter switch
+			{
+				0 => (NPC.rotation + 1.3f * NPC.direction).ToRotationVector2() * 80,
+				1 => (NPC.rotation + 1.4f * NPC.direction).ToRotationVector2() * 90,
+				2 => (NPC.rotation + 1.5f * NPC.direction).ToRotationVector2() * 90,
+				4 => -(NPC.rotation - 0.7f * NPC.direction).ToRotationVector2() * 90,
+				5 => -(NPC.rotation - 1f * NPC.direction).ToRotationVector2() * 90,
+				_ => Vector2.Zero,
+			};
+		}
+
 		public string GetHint()
 		{
 			return "It's not real. It's not real. It's not real. IT'S NOT REAL. IT'S NOT REAL. IT'S NOT REAL.";
