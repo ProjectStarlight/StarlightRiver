@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 	{
 		public override string Texture => AssetDirectory.ManabondItem + Name;
 
-		public InfernalManabond() : base("Manabond", "Your minions can store 40 mana\nYour minions siphon 6 mana per second from you untill full\nYour minions spend 20 mana to attack with a exploding fireball occasionally") { }
+		public InfernalManabond() : base("Infernal Manabond", "Your minions can store 40 mana\nYour minions siphon 6 mana per second from you untill full\nYour minions spend 20 mana to attack with a exploding fireball occasionally") { }
 
 		public override void SafeSetDefaults()
 		{
@@ -178,6 +178,9 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 				if (Projectile.timeLeft < 15)
 					alpha *= Projectile.timeLeft / 15f;
+
+				if (Projectile.timeLeft > 110)
+					alpha *= 1 - (Projectile.timeLeft - 110) / 10f;
 
 				return new Color(255, 50 + (int)(factor.X * 160), 30) * factor.X * alpha;
 			});
