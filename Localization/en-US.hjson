@@ -3266,6 +3266,16 @@ Mods: {
 					Chain lightning inflicts overcharged, decreasing defense
 					'''
 			}
+
+			DruidicManabond: {
+				DisplayName: Druidic Manabond
+				Tooltip:
+					'''
+					Your minions can store 40 mana
+					Your minions siphon 6 mana per second from you untill full
+					Your minions spend 15 mana to attack with a burst of poision thorns
+					'''
+			}
 		}
 
 		Projectiles: {
@@ -3607,6 +3617,7 @@ Mods: {
 			MagicBolt.DisplayName: Magical bolt
 			Fireball.DisplayName: Fireball
 			Shock.DisplayName: Shock bolt
+			DruidThorn.DisplayName: Enchanted thorn
 		}
 
 		Tiles: {
