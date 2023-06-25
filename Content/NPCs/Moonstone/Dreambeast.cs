@@ -16,12 +16,10 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 	internal class Dreambeast : ModNPC, IHintable
 	{
 		public VerletChain[] chains = new VerletChain[6];
-		public VerletChain[] tipChains = new VerletChain[2];
 
 		public Vector2 homePos;
 		public int flashTime;
 		public int frameCounter = 0;
-		public bool showTips = false;
 
 		private bool AppearVisible => Main.LocalPlayer.HasBuff(ModContent.BuffType<Overcharge>());
 		private Player Target => Main.player[NPC.target];
@@ -64,23 +62,6 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				if (chain is null)
 				{
 					chains[k] = new VerletChain(24 + 2 * Main.rand.Next(4), true, NPC.Center, 5, false)
-					{
-						constraintRepetitions = 10,//defaults to 2, raising this lowers stretching at the cost of performance
-						drag = 1.2f,//this number defaults to 1, is very sensitive
-						forceGravity = -Vector2.UnitX,
-						scale = 0.6f,
-						parent = NPC
-					};
-				}
-			}
-
-			for (int k = 0; k < tipChains.Length; k++)
-			{
-				VerletChain chain = tipChains[k];
-
-				if (chain is null)
-				{
-					tipChains[k] = new VerletChain(16, true, NPC.Center, 5, false)
 					{
 						constraintRepetitions = 10,//defaults to 2, raising this lowers stretching at the cost of performance
 						drag = 1.2f,//this number defaults to 1, is very sensitive
@@ -216,9 +197,9 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				}
 			}
 
-			if (Main.rand.NextBool(40))
+			if (AttackTimer % 4 == 0)
 			{
-				frameCounter = frameCounter == 1 ? 0 : 1;
+				frameCounter = ++frameCounter % 7;
 			}
 		}
 
@@ -247,6 +228,11 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 					Teleport(Target.Center + (Main.rand.NextBool() ? -1 : 1) * Vector2.UnitX.RotatedByRandom(MathHelper.PiOver4) * Main.rand.NextFloat(450, 600));
 					Phase = 2;
 				}
+			}
+
+			if (AttackTimer % 4 == 0)
+			{
+				frameCounter = ++frameCounter % 7;
 			}
 		}
 
@@ -292,48 +278,6 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			if (AttackTimer > TelegraphTime && AttackTimer <  TelegraphTime + 10)
 				NPC.velocity += NPC.rotation.ToRotationVector2() * 7.5f;
 
-			if (AttackTimer == TelegraphTime + 10)
-			{
-				tipChains[0].segmentDistance = 5;
-				tipChains[1].segmentDistance = 5;
-				showTips = true;
-			}
-
-			if (AttackTimer > TelegraphTime)
-			{
-				tipChains[0].forceGravity = Vector2.Zero;
-				tipChains[0]?.UpdateChain(NPC.Center + GetTopTipOffset());
-
-				tipChains[1].forceGravity = Vector2.Zero;
-				tipChains[1]?.UpdateChain(NPC.Center + GetBottomTipOffset());
-			}
-
-			if (AttackTimer >= TelegraphTime + 60 && AttackTimer < TelegraphTime + 70)
-			{
-				for (int i = 0; i < tipChains[0].ropeSegments.Count; i++)
-				{
-					tipChains[0].ropeSegments[i].posNow -= NPC.rotation.ToRotationVector2().RotatedBy(MathHelper.PiOver2) * i / 2 * NPC.direction;
-				}
-
-				for (int i = 0; i < tipChains[1].ropeSegments.Count; i++)
-				{
-					tipChains[1].ropeSegments[i].posNow += NPC.rotation.ToRotationVector2().RotatedBy(MathHelper.PiOver2) * i / 2 * NPC.direction;
-				}
-			}
-
-			if (AttackTimer >= TelegraphTime + 65 && AttackTimer % 4 == 0)
-			{
-				if (tipChains[0].segmentDistance > 0)
-				{
-					tipChains[0].segmentDistance -= 1;
-					tipChains[1].segmentDistance -= 1;
-				}
-				else
-				{
-					showTips = false;
-				}
-			}
-
 			NPC.velocity *= 0.96f;
 
 			if (AttackTimer > TelegraphTime + 6)
@@ -342,7 +286,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			if (AttackTimer == TelegraphTime + 60)
 				NPC.velocity *= -1;
 
-			if (AttackTimer > TelegraphTime + 100)
+			if (AttackTimer > TelegraphTime + 90)
 			{
 				AttackTimer = 0;
 				Phase = 1;
@@ -364,6 +308,11 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			NPC.frame.Width = 244;
 			NPC.frame.Height = 198;
 
+			NPC.frame.X = 0;
+
+			if (Phase == 2)
+				NPC.frame.X = 244;
+
 			NPC.frame.Y = 198 * frameCounter;
 		}
 
@@ -378,17 +327,6 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 					foreach (RopeSegment segment in chain.ropeSegments)
 					{
 						spriteBatch.Draw(tex, segment.ScreenPos / 2, NPC.frame, Color.White * NPC.Opacity, 0, new Vector2(122, 99), 0.05f, 0, 0);
-					}
-				}
-
-				foreach (VerletChain chain in tipChains)
-				{
-					if (chain?.ropeSegments != null && showTips)
-					{
-						foreach (RopeSegment segment in chain.ropeSegments)
-						{
-							spriteBatch.Draw(tex, segment.ScreenPos / 2, NPC.frame, Color.White * NPC.Opacity, 0, new Vector2(122, 99), 0.05f, 0, 0);
-						}
 					}
 				}
 
@@ -411,32 +349,6 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			}
 
 			return false;
-		}
-
-		public Vector2 GetTopTipOffset()
-		{
-			return frameCounter switch
-			{
-				0 => (NPC.rotation + 0.1f * NPC.direction).ToRotationVector2() * 70,
-				1 => NPC.rotation.ToRotationVector2() * 70,
-				2 => (NPC.rotation - 0.4f * NPC.direction).ToRotationVector2() * 90,
-				4 => -(NPC.rotation + 0.6f * NPC.direction).ToRotationVector2() * 130,
-				5 => -(NPC.rotation + 0.9f * NPC.direction).ToRotationVector2() * 110,
-				_ => Vector2.Zero,
-			};
-		}
-
-		public Vector2 GetBottomTipOffset()
-		{
-			return frameCounter switch
-			{
-				0 => (NPC.rotation + 1.3f * NPC.direction).ToRotationVector2() * 80,
-				1 => (NPC.rotation + 1.4f * NPC.direction).ToRotationVector2() * 90,
-				2 => (NPC.rotation + 1.5f * NPC.direction).ToRotationVector2() * 90,
-				4 => -(NPC.rotation - 0.7f * NPC.direction).ToRotationVector2() * 90,
-				5 => -(NPC.rotation - 1f * NPC.direction).ToRotationVector2() * 90,
-				_ => Vector2.Zero,
-			};
 		}
 
 		public string GetHint()
