@@ -98,13 +98,9 @@ namespace StarlightRiver.Content.Items.Starwood
 			get
 			{
 				if (IsParent)
-				{
 					return Owner.Center + new Vector2(-25 * Owner.direction, -50) + new Vector2(-35 * Owner.direction * Projectile.minionPos, 0f) + new Vector2(MathHelper.Lerp(5f, 15f, Utils.Clamp((float)Math.Sin(lifetime * 0.015f), 0, 1))).RotatedBy(MathHelper.ToRadians(lifetime));
-				}
 				else
-				{
 					return Owner.Center + new Vector2(-25 * Owner.direction, -50) + new Vector2(-35 * Owner.direction * otherProj.minionPos, 0f) + new Vector2(-MathHelper.Lerp(5f, 15f, Utils.Clamp((float)Math.Sin(lifetime * 0.015f), 0, 1))).RotatedBy(MathHelper.ToRadians(lifetime));
-				}
 			}
 		}
 
@@ -327,7 +323,7 @@ namespace StarlightRiver.Content.Items.Starwood
 		{
 			if (HasEmpoweredStar)
 			{
-				Projectile.Center = EmpoweredStar.Center;
+				Projectile.Center = EmpoweredStar.Center; // the split stars never actually go away, the need to stay alive to occupy the players minion slots. which is why the empowered star has no minion slot value
 			}
 			else if (empowermentTimer < 60)
 			{
@@ -368,7 +364,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
 				empowermentTimer++;
 			}
-			else if (IsParent)
+			else if (IsParent) // only spawn the projectile on the parent
 			{
 				Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center,
 					Main.rand.NextVector2CircularEdge(5f, 5f), ModContent.ProjectileType<StarwoodScepterSummonEmpowered>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
@@ -389,7 +385,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
 		internal void DoIdleMovement()
 		{
-			if (lifetime > 2)
+			if (lifetime > 2) // otherwise you get NaNs from DirectionTo
 				rotationalVelocity = Vector2.Lerp(rotationalVelocity, Projectile.DirectionTo(otherProj.Center), 0.05f);
 
 			float dist = Vector2.Distance(Projectile.Center, IdlePosition);
@@ -433,7 +429,7 @@ namespace StarlightRiver.Content.Items.Starwood
 			{
 				Projectile.frame = 1;
 				lifetime = (otherProj.ModProjectile as StarwoodScepterSummonSplit).lifetime;
-			}
+			}	
 			else
 			{
 				lifetime++;
