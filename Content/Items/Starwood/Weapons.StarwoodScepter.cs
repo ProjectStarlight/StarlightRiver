@@ -13,12 +13,8 @@ namespace StarlightRiver.Content.Items.Starwood
 	{
 		public override void AddLoot()
 		{
-			AddItem(ModContent.ItemType<StarwoodScepter>(), ChestRegionFlags.Surface, 0.5f, 1, true, 2);
+			AddItem(ModContent.ItemType<DormantScepter>(), ChestRegionFlags.Surface, 0.5f, 1, true, 2);
 		}
-	}
-	public class DormantScepter : QuickMaterial
-	{
-		public DormantScepter() : base("Dormant Scepter", "The scepter lies dormant, waning for mystical energy", 1, Item.sellPrice(silver: 2), ItemRarityID.Gray, AssetDirectory.StarwoodItem + "StarwoodScepterDormant", true) { }
 	}
 
 	public class StarwoodScepter : StarwoodItem
@@ -78,10 +74,30 @@ namespace StarlightRiver.Content.Items.Starwood
 	public class StarwoodScepterSummonSplit : ModProjectile
 	{
 		public int lifetime;
+
 		public int empowermentTimer;
-		public int downtimeTimer;
+
+		public float targetWhoAmI;
+
 		public Projectile otherProj;
+
 		public Vector2 rotationalVelocity = Vector2.Zero;
+
+		public StarwoodScepterSummonSplit OtherStar => otherProj.ModProjectile as StarwoodScepterSummonSplit;
+
+		public Projectile EmpoweredStar => Main.projectile.Where(p => p.active && p.type == ModContent.ProjectileType<StarwoodScepterSummonEmpowered>() && (p.ModProjectile as StarwoodScepterSummonEmpowered).Children.Contains(Projectile.whoAmI)).FirstOrDefault();
+		public bool HasEmpoweredStar => EmpoweredStar != null;
+		public bool IsEmpowered => Owner.GetModPlayer<StarlightPlayer>().empowered;
+
+		public bool FoundTarget => Target != null;
+		public NPC Target => targetWhoAmI > -1 ? Main.npc[(int)targetWhoAmI] : null;
+
+		public ref float DowntimeTimer => ref Projectile.ai[0];
+		public ref float AttackTimer => ref Projectile.ai[1];	
+		public bool IsParent => Projectile.ai[2] != 0f;
+
+		public Player Owner => Main.player[Projectile.owner];
+
 		public NPC MinionTarget
 		{
 			get
@@ -104,16 +120,6 @@ namespace StarlightRiver.Content.Items.Starwood
 			}
 		}
 
-		public StarwoodScepterSummonSplit OtherStar => otherProj.ModProjectile as StarwoodScepterSummonSplit;
-		public Projectile EmpoweredStar => Main.projectile.Where(p => p.active && p.type == ModContent.ProjectileType<StarwoodScepterSummonEmpowered>() && (p.ModProjectile as StarwoodScepterSummonEmpowered).Children.Contains(Projectile.whoAmI)).FirstOrDefault();
-		public bool HasEmpoweredStar => EmpoweredStar != null;
-		public bool IsEmpowered => Owner.GetModPlayer<StarlightPlayer>().empowered;
-		public bool FoundTarget => Target != null;
-		public ref float TargetWhoAmI => ref Projectile.ai[0];
-		public ref float AttackTimer => ref Projectile.ai[1];
-		public bool IsParent => Projectile.ai[2] != 0f;
-		public NPC Target => TargetWhoAmI > -1 ? Main.npc[(int)TargetWhoAmI] : null;
-		public Player Owner => Main.player[Projectile.owner];
 		public override string Texture => AssetDirectory.StarwoodItem + Name;
 		public override void SetStaticDefaults()
 		{
@@ -143,7 +149,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
 		public override void OnSpawn(IEntitySource source)
 		{
-			TargetWhoAmI = -1f;
+			targetWhoAmI = -1f;
 			rotationalVelocity = Projectile.velocity;
 		}
 
@@ -239,25 +245,26 @@ namespace StarlightRiver.Content.Items.Starwood
 			return false;
 		}
 
+		/// <summary>
+		/// Contains all of the projectiles behavior when it is NOT empowered. This includes finding targets, idling, and attacking.
+		/// </summary>
 		internal void DefaultBehavior()
 		{
 			if (empowermentTimer > 0)
 				empowermentTimer = 0;
 
 			if (!IsParent)
-			{
-				TargetWhoAmI = OtherStar.TargetWhoAmI;
-			}
+				targetWhoAmI = OtherStar.targetWhoAmI;
 
 			if (MinionTarget != null && AttackTimer <= 0 && IsParent)
-				TargetWhoAmI = MinionTarget.whoAmI;
+				targetWhoAmI = MinionTarget.whoAmI;
 
-			if (downtimeTimer > 0)
+			if (DowntimeTimer > 0)
 			{
 				Projectile.velocity *= 0.95f;
 				Projectile.rotation += 0.05f;
 				rotationalVelocity = Projectile.rotation.ToRotationVector2(); 
-				downtimeTimer--;
+				DowntimeTimer--;
 				return;
 			}			
 
@@ -272,9 +279,7 @@ namespace StarlightRiver.Content.Items.Starwood
 				{
 					NPC target = FindTarget();
 					if (target != default)
-					{
-						TargetWhoAmI = target.whoAmI;
-					}
+						targetWhoAmI = target.whoAmI;
 				}
 
 				AttackTimer = 0;
@@ -312,12 +317,15 @@ namespace StarlightRiver.Content.Items.Starwood
 
 				if (!Target.active || Target.Distance(Owner.Center) > 1000f)
 				{
-					TargetWhoAmI = -1;
+					targetWhoAmI = -1;
 					AttackTimer = 0;
 				}
 			}
 		}
 
+		/// <summary>
+		/// Includes the behavior for doing the empowerment animation, as well as the minimal behavior while there as an empowered star present.
+		/// </summary>
 		internal void EmpoweredBehavior()
 		{
 			if (HasEmpoweredStar)
@@ -345,9 +353,7 @@ namespace StarlightRiver.Content.Items.Starwood
 				else
 				{
 					if (empowermentTimer == 25)
-					{
 						SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/ImpactHeal"), Projectile.Center);
-					}
 
 					rotationalVelocity = Vector2.Lerp(rotationalVelocity, Projectile.DirectionTo(otherProj.Center), 0.15f);
 					Projectile.rotation = rotationalVelocity.ToRotation();
@@ -369,7 +375,7 @@ namespace StarlightRiver.Content.Items.Starwood
 					Main.rand.NextVector2CircularEdge(5f, 5f), ModContent.ProjectileType<StarwoodScepterSummonEmpowered>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
 
 				(proj.ModProjectile as StarwoodScepterSummonEmpowered).Children = new int[] {Projectile.whoAmI, otherProj.whoAmI};
-				(proj.ModProjectile as StarwoodScepterSummonEmpowered).downtimeTimer = 35;
+				(proj.ModProjectile as StarwoodScepterSummonEmpowered).DowntimeTimer = 35;
 				empowermentTimer = 0;
 				proj.originalDamage = (int)(Projectile.originalDamage * 2.5);
 
@@ -382,6 +388,9 @@ namespace StarlightRiver.Content.Items.Starwood
 			}
 		}
 
+		/// <summary>
+		/// Performs the idle movement for the Projectile
+		/// </summary>
 		internal void DoIdleMovement()
 		{
 			if (lifetime > 2) // otherwise you get NaNs from DirectionTo
@@ -419,6 +428,9 @@ namespace StarlightRiver.Content.Items.Starwood
 			}
 		}
 
+		/// <summary>
+		/// Updates the projectiles lifetime according to the buff, as well as some stuff for the parent / non parent behavior
+		/// </summary>
 		internal void UpdateProjectileLifetime()
 		{
 			if (Owner.HasBuff<StarwoodSummonBuff>())
@@ -435,6 +447,10 @@ namespace StarlightRiver.Content.Items.Starwood
 			}
 		}
 
+		/// <summary>
+		/// Finds the closest valid target to the Projectile's Center
+		/// </summary>
+		/// <returns></returns>
 		internal NPC FindTarget()
 		{
 			return Main.npc.Where(n => n.CanBeChasedBy() && n.Distance(Projectile.Center) < 1000f).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
@@ -443,10 +459,24 @@ namespace StarlightRiver.Content.Items.Starwood
 
 	public class StarwoodScepterSummonEmpowered : ModProjectile
 	{
-		public int downtimeTimer;
+		public float targetWhoAmI;
+
 		public int[] Children = new int[2];
+
 		public Projectile[] ProjectileChildren => new Projectile[2] { Main.projectile[Children[0]], Main.projectile[Children[1]] };
- 		public NPC MinionTarget
+
+		public bool IsEmpowered => Owner.GetModPlayer<StarlightPlayer>().empowered;
+
+		public NPC Target => targetWhoAmI > -1 ? Main.npc[(int)targetWhoAmI] : null;
+		public bool FoundTarget => Target != null;
+
+		public ref float DowntimeTimer => ref Projectile.ai[0];
+		public ref float AttackTimer => ref Projectile.ai[1];
+		public bool IsParent => Projectile.ai[2] != 0f;
+
+		public Player Owner => Main.player[Projectile.owner]; 
+
+		public NPC MinionTarget
 		{
 			get
 			{
@@ -456,13 +486,7 @@ namespace StarlightRiver.Content.Items.Starwood
 				return null;
 			}
 		}
-		public bool IsEmpowered => Owner.GetModPlayer<StarlightPlayer>().empowered;
-		public bool FoundTarget => Target != null;
-		public ref float TargetWhoAmI => ref Projectile.ai[0];
-		public ref float AttackTimer => ref Projectile.ai[1];
-		public bool IsParent => Projectile.ai[2] != 0f;
-		public NPC Target => TargetWhoAmI > -1 ? Main.npc[(int)TargetWhoAmI] : null;
-		public Player Owner => Main.player[Projectile.owner];
+
 		public override string Texture => AssetDirectory.StarwoodItem + Name;
 		public override void SetStaticDefaults()
 		{
@@ -503,8 +527,8 @@ namespace StarlightRiver.Content.Items.Starwood
 				ProjectileChildren[0].velocity += Main.rand.NextVector2Circular(8f, 8f);
 				ProjectileChildren[1].velocity += Main.rand.NextVector2Circular(8f, 8f);
 
-				(ProjectileChildren[0].ModProjectile as StarwoodScepterSummonSplit).downtimeTimer = 35;
-				(ProjectileChildren[1].ModProjectile as StarwoodScepterSummonSplit).downtimeTimer = 35;
+				(ProjectileChildren[0].ModProjectile as StarwoodScepterSummonSplit).DowntimeTimer = 35;
+				(ProjectileChildren[1].ModProjectile as StarwoodScepterSummonSplit).DowntimeTimer = 35;
 
 				SoundEngine.PlaySound(SoundID.DD2_WitherBeastHurt, Projectile.Center);
 
@@ -521,11 +545,11 @@ namespace StarlightRiver.Content.Items.Starwood
 				Projectile.Kill();
 			}
 
-			if (downtimeTimer > 0)
+			if (DowntimeTimer > 0)
 			{
 				Projectile.velocity *= 0.935f;
 				Projectile.rotation += Projectile.velocity.Length() * 0.01f + 0.05f;
-				downtimeTimer--;
+				DowntimeTimer--;
 			}
 			else
 			{
@@ -539,7 +563,7 @@ namespace StarlightRiver.Content.Items.Starwood
 					NPC target = FindTarget();
 					if (target != default)
 					{
-						TargetWhoAmI = target.whoAmI;
+						targetWhoAmI = target.whoAmI;
 					}
 				}
 				else
@@ -569,7 +593,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
 						if (AttackTimer > 35 || Vector2.Distance(Target.Center, Projectile.Center) < 15f)
 						{
-							downtimeTimer = 15;
+							DowntimeTimer = 15;
 							AttackTimer = 0;
 						}
 
@@ -587,7 +611,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
 					if (!Target.active || Target.Distance(Owner.Center) > 1000f)
 					{
-						TargetWhoAmI = -1;
+						targetWhoAmI = -1;
 						AttackTimer = 0;
 					}
 				}
@@ -653,7 +677,9 @@ namespace StarlightRiver.Content.Items.Starwood
 
 			return false;
 		}
-
+		/// <summary>
+		/// Performs the idle movement for the Projectile
+		/// </summary>
 		internal void DoIdleMovement()
 		{
 			Vector2 IdlePosition = Owner.Center + new Vector2(-25f * Owner.direction, -50f) + new Vector2(-25f * Owner.direction * ProjectileChildren[0].minionPos, ProjectileChildren[0].minionPos % 2 == 0 ? -25f : 0f);
@@ -689,13 +715,19 @@ namespace StarlightRiver.Content.Items.Starwood
 				Projectile.netUpdate = true;
 			}
 		}
-
+		/// <summary>
+		/// Updates the Projectile's timeLeft according to the buff
+		/// </summary>
 		internal void UpdateProjectileLifetime()
 		{
 			if (Owner.HasBuff<StarwoodSummonBuff>())
 				Projectile.timeLeft = 2;
 		}
 
+		/// <summary>
+		/// Finds the closest valid target to the Projectile's Center
+		/// </summary>
+		/// <returns></returns>
 		internal NPC FindTarget()
 		{
 			return Main.npc.Where(n => n.CanBeChasedBy() && n.Distance(Owner.Center) < 1000f).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
