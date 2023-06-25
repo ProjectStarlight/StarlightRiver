@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.Items.Starwood
 			(proj.ModProjectile as StarwoodScepterSummonSplit).otherProj = proj2;
 			(proj2.ModProjectile as StarwoodScepterSummonSplit).otherProj = proj;
 
-			Helpers.DustHelper.DrawStar(Main.MouseWorld, ModContent.DustType<Dusts.GlowFastDecelerate>(), 5, 1, 1, 0.5f, 1, 0.5f, 0, -1, new Color(240, 200, 20));
+			Helpers.DustHelper.DrawStar(Main.MouseWorld, ModContent.DustType<Dusts.GlowFastDecelerate>(), 5, 1, 1, 0.5f, 1, 1f, 0, -1, new Color(240, 200, 20));
 
 			return false;
 		}
@@ -373,7 +373,7 @@ namespace StarlightRiver.Content.Items.Starwood
 				empowermentTimer = 0;
 				proj.originalDamage = (int)(Projectile.originalDamage * 2.5);
 
-				Helpers.DustHelper.DrawStar(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), 5, 1.5f, 1.5f, 0.5f, 1, 0.5f, 0, -1, new Color(0, 0, 255));
+				Helpers.DustHelper.DrawStar(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), 5, 1.5f, 1.5f, 0.5f, 1, 1f, 0, -1, new Color(0, 0, 255));
 
 				for (int i = 0; i < 20; i++)
 				{
@@ -557,7 +557,7 @@ namespace StarlightRiver.Content.Items.Starwood
 							Projectile.velocity += Projectile.DirectionTo(Target.Center) * 10f;
 							SoundEngine.PlaySound(SoundID.Item9, Projectile.Center);
 
-							Helpers.DustHelper.DrawStar(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), 5, 1f, 0.65f, 0.65f, 1, 0.5f, 0, Main.rand.NextFloat(-1f, 1f), new Color(0, 0, 255));
+							Helpers.DustHelper.DrawStar(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), 5, 1f, 0.65f, 0.65f, 1, 1f, 0, Main.rand.NextFloat(-1f, 1f), new Color(0, 0, 255));
 						}
 
 						float distance = Vector2.Distance(Target.Center, Projectile.Center);
@@ -600,7 +600,7 @@ namespace StarlightRiver.Content.Items.Starwood
 		{
 			if (target == Target)
 			{
-				Helpers.DustHelper.DrawStar(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), 5, 1f, 1f, 0.55f, 1, 0.5f, 0, Main.rand.NextFloat(-1f, 1f), new Color(0, 0, 255));
+				Helpers.DustHelper.DrawStar(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), 5, 1f, 1f, 0.55f, 1, 1f, 0, Main.rand.NextFloat(-1f, 1f), new Color(0, 0, 255));
 
 				for (int i = 0; i < 10; i++)
 				{
