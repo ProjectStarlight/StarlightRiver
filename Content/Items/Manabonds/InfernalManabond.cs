@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 	{
 		public override string Texture => AssetDirectory.ManabondItem + Name;
 
-		public InfernalManabond() : base("Infernal Manabond", "Your minions can store 40 mana\nYour minions siphon 6 mana per second from you untill full\nYour minions spend 20 mana to attack with a exploding fireball occasionally") { }
+		public InfernalManabond() : base("Infernal Manabond", "Your minions can store 40 mana\nYour minions siphon 6 mana per second from you untill full\nYour minions spend 20 mana to attack with an exploding fireball occasionally") { }
 
 		public override void SafeSetDefaults()
 		{

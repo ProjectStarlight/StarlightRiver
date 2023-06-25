@@ -3276,6 +3276,16 @@ Mods: {
 					Your minions spend 15 mana to attack with a burst of poision thorns
 					'''
 			}
+
+			AquaticManabond: {
+				DisplayName: Aquatic Manabond
+				Tooltip:
+					'''
+					Your minions can store 40 mana
+					Your minions siphon 6 mana per second from you untill full
+					Your minions spend 20 mana to attack with a bouncing waterbolt occasionally
+					'''
+			}
 		}
 
 		Projectiles: {
@@ -3618,6 +3628,7 @@ Mods: {
 			Fireball.DisplayName: Fireball
 			Shock.DisplayName: Shock bolt
 			DruidThorn.DisplayName: Enchanted thorn
+			Waterbolt.DisplayName: Waterbolt
 		}
 
 		Tiles: {
