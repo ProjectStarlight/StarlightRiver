@@ -4,7 +4,7 @@ using System.IO;
 using Terraria.GameContent;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Items.Gravedigger
+namespace StarlightRiver.Content.Items.Haunted
 {
 	class PoltergeistMinion : ModProjectile
 	{
@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override void Kill(int timeLeft)
 		{
-			if (owner?.armor[0]?.ModItem != null && owner.armor[0].type == ModContent.ItemType<PoltergeistHead>())
+			if (owner?.armor[0]?.ModItem != null && owner.armor[0].type == ItemType<PoltergeistHead>())
 				(owner.armor[0].ModItem as PoltergeistHead).minions.Remove(Projectile);
 		}
 
@@ -119,9 +119,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		{
 			int ItemType = reader.ReadInt32();
 			if (ItemType == -1)
-			{
 				Item = null;
-			}
 			else
 			{
 				Item = new Item();

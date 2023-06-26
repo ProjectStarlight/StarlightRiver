@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using StarlightRiver.Content.Items.Gravedigger;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Items.Gravedigger
+namespace StarlightRiver.Content.Items.Haunted
 {
 	[AutoloadEquip(EquipType.Head)]
 	public class PoltergeistHead : ModItem
@@ -12,7 +13,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		public int timer;
 		public int sleepTimer;
 
-		public override string Texture => AssetDirectory.GravediggerItem + Name;
+		public override string Texture => AssetDirectory.HauntedItem + Name;
 
 		public override void Load()
 		{
@@ -132,13 +133,13 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		{
 			Recipe recipe = CreateRecipe();
 			recipe.AddIngredient(ItemID.Silk, 14);
-			recipe.AddIngredient(ModContent.ItemType<LivingBlood>(), 7);
+			recipe.AddIngredient(ItemType<VengefulSpirit>(), 7);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
 
 			recipe = CreateRecipe();
 			recipe.AddIngredient(ItemID.Silk, 14);
-			recipe.AddIngredient(ModContent.ItemType<LivingBlood>(), 7);
+			recipe.AddIngredient(ItemType<VengefulSpirit>(), 7);
 			recipe.AddTile(TileID.Loom);
 			recipe.Register();
 		}
@@ -147,7 +148,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 	[AutoloadEquip(EquipType.Body)]
 	public class PoltergeistChest : ModItem
 	{
-		public override string Texture => AssetDirectory.GravediggerItem + Name;
+		public override string Texture => AssetDirectory.HauntedItem + Name;
 
 		public override void SetStaticDefaults()
 		{
@@ -174,13 +175,13 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		{
 			Recipe recipe = CreateRecipe();
 			recipe.AddIngredient(ItemID.Silk, 16);
-			recipe.AddIngredient(ModContent.ItemType<LivingBlood>(), 8);
+			recipe.AddIngredient(ItemType<VengefulSpirit>(), 8);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
 
 			recipe = CreateRecipe();
 			recipe.AddIngredient(ItemID.Silk, 16);
-			recipe.AddIngredient(ModContent.ItemType<LivingBlood>(), 8);
+			recipe.AddIngredient(ItemType<VengefulSpirit>(), 8);
 			recipe.AddTile(TileID.Loom);
 			recipe.Register();
 		}
@@ -189,7 +190,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 	[AutoloadEquip(EquipType.Legs)]
 	public class PoltergeistLegs : ModItem
 	{
-		public override string Texture => AssetDirectory.GravediggerItem + Name;
+		public override string Texture => AssetDirectory.HauntedItem + Name;
 
 		public override void SetStaticDefaults()
 		{
@@ -215,13 +216,13 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		{
 			Recipe recipe = CreateRecipe();
 			recipe.AddIngredient(ItemID.Silk, 12);
-			recipe.AddIngredient(ModContent.ItemType<LivingBlood>(), 6);
+			recipe.AddIngredient(ItemType<VengefulSpirit>(), 6);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
 
 			recipe = CreateRecipe();
 			recipe.AddIngredient(ItemID.Silk, 12);
-			recipe.AddIngredient(ModContent.ItemType<LivingBlood>(), 6);
+			recipe.AddIngredient(ItemType<VengefulSpirit>(), 6);
 			recipe.AddTile(TileID.Loom);
 			recipe.Register();
 		}
