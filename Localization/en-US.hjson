@@ -3235,6 +3235,11 @@ Mods: {
 				Tooltip: Fragile! Please handle with care.
 				DisplayName: Coolmite
 			}
+
+			InfernalCatalyst: {
+				DisplayName: Infernal Catalyst
+				Tooltip: Primes the lavas of hell for transmutation
+			}
 		}
 
 		Projectiles: {
