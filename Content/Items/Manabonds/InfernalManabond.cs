@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 			if (mp.timer % 120 == 0 && mp.mana >= 20 && mp.target != null)
 			{
 				mp.mana -= 20;
-				Projectile.NewProjectile(minion.GetSource_FromThis(), minion.Center, Vector2.Normalize(mp.target.Center - minion.Center) * 14, ModContent.ProjectileType<Fireball>(), 35, 1f, minion.owner);
+				Projectile.NewProjectile(minion.GetSource_FromThis(), minion.Center, minion.Center.DirectionTo(mp.target.Center) * 14, ModContent.ProjectileType<Fireball>(), 35, 1f, minion.owner);
 			}
 		}
 
@@ -61,6 +61,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 			Projectile.timeLeft = 120;
 			Projectile.tileCollide = true;
 			Projectile.penetrate = -1;
+			Projectile.hostile = false;
 		}
 
 		public override void AI()

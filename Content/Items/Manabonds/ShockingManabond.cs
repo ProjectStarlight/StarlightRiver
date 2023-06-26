@@ -21,9 +21,9 @@ namespace StarlightRiver.Content.Items.Manabonds
 			if (mp.timer % 60 == 0 && mp.mana >= 12 && mp.target != null)
 			{
 				mp.mana -= 12;
-				int i = Projectile.NewProjectile(minion.GetSource_FromThis(), minion.Center, Vector2.Zero, ModContent.ProjectileType<Shock>(), 12, 0.25f, minion.owner);
+				var proj = Projectile.NewProjectileDirect(minion.GetSource_FromThis(), minion.Center, Vector2.Zero, ModContent.ProjectileType<Shock>(), 12, 0.25f, minion.owner);
 
-				var bolt = Main.projectile[i].ModProjectile as Shock;
+				var bolt = proj.ModProjectile as Shock;
 				bolt.targets.Add(mp.target);
 				bolt.parent = minion;
 
@@ -59,11 +59,12 @@ namespace StarlightRiver.Content.Items.Manabonds
 			Projectile.penetrate = -1;
 			Projectile.timeLeft = 15;
 			Projectile.tileCollide = false;
+			Projectile.hostile = false;
 		}
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Shock bolt");
+			DisplayName.SetDefault("Shock Bolt");
 		}
 
 		public override void AI()

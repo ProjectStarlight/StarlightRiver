@@ -22,9 +22,9 @@ namespace StarlightRiver.Content.Items.Manabonds
 			if (mp.timer % 60 == 0 && mp.mana >= 6 && mp.target != null)
 			{
 				mp.mana -= 6;
-				int i = Projectile.NewProjectile(minion.GetSource_FromThis(), minion.Center, Vector2.Normalize(mp.target.Center - minion.Center).RotatedByRandom(0.5f) * 15, ModContent.ProjectileType<MagicBolt>(), 12, 0.25f, minion.owner);
+				var proj = Projectile.NewProjectileDirect(minion.GetSource_FromThis(), minion.Center, minion.Center.DirectionTo(mp.target.Center).RotatedByRandom(0.5f) * 15, ModContent.ProjectileType<MagicBolt>(), 12, 0.25f, minion.owner);
 
-				var bolt = Main.projectile[i].ModProjectile as MagicBolt;
+				var bolt = proj.ModProjectile as MagicBolt;
 				bolt.target = mp.target;
 			}
 		}
@@ -57,6 +57,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 			Projectile.timeLeft = 120;
 			Projectile.tileCollide = false;
 			Projectile.penetrate = -1;
+			Projectile.hostile = false;
 		}
 
 		public override void AI()

@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 			if (mp.timer % 50 == 0 && mp.mana >= 8 && mp.target != null)
 			{
 				mp.mana -= 8;
-				Projectile.NewProjectile(minion.GetSource_FromThis(), minion.Center, Vector2.Normalize(mp.target.Center - minion.Center) * 6, ModContent.ProjectileType<Waterbolt>(), 24, 1f, minion.owner);
+				Projectile.NewProjectile(minion.GetSource_FromThis(), minion.Center, minion.Center.DirectionTo(mp.target.Center) * 6, ModContent.ProjectileType<AquaticBolt>(), 24, 1f, minion.owner);
 			}
 		}
 
@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 		}
 	}
 
-	internal class Waterbolt : ModProjectile, IDrawAdditive, IDrawPrimitive
+	internal class AquaticBolt : ModProjectile, IDrawAdditive, IDrawPrimitive
 	{
 		private List<Vector2> cache;
 		private Trail trail;
@@ -60,6 +60,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 			Projectile.DamageType = DamageClass.Summon;
 			Projectile.timeLeft = 600;
 			Projectile.penetrate = 4;
+			Projectile.hostile = false;
 		}
 
 		public override void AI()
@@ -80,11 +81,6 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 			ManageCaches();
 			ManageTrail();
-		}
-
-		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-		{
-
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
