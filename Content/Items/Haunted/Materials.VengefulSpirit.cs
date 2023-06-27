@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Items.Haunted
 			DropConditionText.SetDefault("Dropped after beating either King Slime, Eye of Cthulhu, or Auroracle");
 		}
 
-		public VengefulSpirit() : base("Vengeful Spirit", "", 999, 75, 3, AssetDirectory.HauntedItem) { }
+		public VengefulSpirit() : base("Vengeful Spirit", "", 999, 75, ItemRarityID.Green, AssetDirectory.HauntedItem) { }
 
 		public static void DropVengefulSpirit(NPC npc, NPCLoot npcLoot)
 		{

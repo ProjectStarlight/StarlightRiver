@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Items.Haunted
 			Item.useTime = 36;
 			Item.useAnimation = 36;
 			Item.useStyle = ItemUseStyleID.Swing;
-			Item.value = Item.buyPrice(silver: 50);
+			Item.value = Item.buyPrice(gold: 1);
 			Item.rare = ItemRarityID.Blue;
 			Item.UseSound = SoundID.Item44;
 
