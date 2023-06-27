@@ -6270,6 +6270,11 @@ Mods: {
 
 					'''
 			}
+
+			InfernalCatalyst: {
+				DisplayName: Infernal Catalyst
+				Tooltip: Primes the lavas of hell for transmutation
+			}
 		}
 
 		Projectiles: {
