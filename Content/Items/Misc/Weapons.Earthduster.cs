@@ -1,18 +1,12 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Items.BaseTypes;
+﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.Misc.SoilgunFiles;
-using StarlightRiver.Core;
-using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -35,7 +29,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SetStaticDefaults()
 		{
-			Tooltip.SetDefault("Hold <left> to fire a rapid stream of soil\nCan use many different types of soils\n33% chance to not consume ammo");
+			Tooltip.SetDefault("Hold <left> to fire a rapid stream of earth\nCan use many different blocks as ammo, each with unique effects\n33% chance to not consume ammo");
 		}
 
 		public override void SafeSetDefaults()
@@ -54,6 +48,8 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.channel = true;
 			Item.knockBack = 3f;
 			Item.autoReuse = true;
+
+			Item.value = Item.sellPrice(gold: 2);
 		}
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -85,8 +81,8 @@ namespace StarlightRiver.Content.Items.Misc
 				Register();
 
 			CreateRecipe().
-				AddIngredient(ModContent.ItemType<Earthduster>()).
-				AddIngredient(ItemID.CrimtaneBar, 12).
+				AddIngredient(ModContent.ItemType<Soilgun>()).
+				AddIngredient(ItemID.DemoniteBar, 12).
 				AddIngredient(ItemID.Bone, 50).
 				AddTile(TileID.Anvils).
 				Register();
@@ -515,7 +511,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Effect effect = Terraria.Graphics.Effects.Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
 
 			Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);

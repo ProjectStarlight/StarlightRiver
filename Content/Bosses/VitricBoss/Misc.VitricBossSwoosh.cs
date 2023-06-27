@@ -41,8 +41,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		{
 			var matrix = new Matrix
 			(
-				Main.GameViewMatrix.Zoom.X, 0, 0, 0,
-				0, Main.GameViewMatrix.Zoom.X, 0, 0,
+				Main.GameViewMatrix.TransformationMatrix.M11, 0, 0, 0,
+				0, Main.GameViewMatrix.TransformationMatrix.M22, 0, 0,
 				0, 0, 1, 0,
 				0, 0, 0, 1
 			);

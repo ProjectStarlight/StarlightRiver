@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Tiles.Mushroom
 			TileObjectData.newTile.RandomStyleRange = 5;
 			TileObjectData.newTile.StyleHorizontal = true;
 
-			ItemDrop = ItemType<VibeshroomItem>();
+			RegisterItemDrop(ItemType<VibeshroomItem>());
 
 			this.QuickSetFurniture(1, 1, 61, SoundID.Grass, false, Color.Green);
 			AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);

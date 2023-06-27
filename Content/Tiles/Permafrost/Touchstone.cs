@@ -1,24 +1,43 @@
-﻿using StarlightRiver.Helpers;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.Packets;
+using StarlightRiver.Core.Systems;
+using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
+using static Terraria.GameContent.Animations.Actions.NPCs;
 
 namespace StarlightRiver.Content.Tiles.Permafrost
 {
-	class Touchstone : ModTile
+	class Touchstone : ModTile, IHintable
 	{
 		public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/Touchstone";
 
 		public override void SetStaticDefaults()
 		{
+			TileID.Sets.PreventsTileRemovalIfOnTopOfIt[Type] = true;
+			TileObjectData.newTile.DrawYOffset = 2;
 			TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(ModContent.GetInstance<TouchstoneTileEntity>().Hook_AfterPlacement, -1, 0, false);
 			Main.tileLighted[Type] = true;
+			Main.tileSpelunker[Type] = true;
+			Main.tileOreFinderPriority[Type] = 490;//just below chests
+
+			TileID.Sets.AvoidedByMeteorLanding[Type] = true;//prevents meteor landing on aboveground structures
 
 			QuickBlock.QuickSetFurniture(this, 2, 4, DustID.Ice, SoundID.Tink, false, new Color(155, 200, 255), false, false, "Touchstone");
+			MinPick = int.MaxValue;
+		}
+
+		public override bool CanExplode(int i, int j)
+		{
+			return false;
 		}
 
 		public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
@@ -107,6 +126,10 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 		public override bool RightClick(int i, int j)
 		{
+			// Prevent spawning a wisp if there is already one in the world
+			if (Main.npc.Any(n => n.active && n.type == ModContent.NPCType<TouchstoneWisp>()))
+				return false;
+
 			Tile tile = Framing.GetTileSafely(i, j);
 			i -= tile.TileFrameX / 18;
 			j -= tile.TileFrameY / 18;
@@ -118,11 +141,21 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 			var entity = (TouchstoneTileEntity)TileEntity.ByID[index];
 
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				var packet = new SpawnNPC(Main.myPlayer, i * 16, j * 16, ModContent.NPCType<TouchstoneWisp>());
+				packet.Send(-1, -1, false);
+			}
+
 			int NPCIndex = NPC.NewNPC(new EntitySource_TileInteraction(null, i, j), i * 16, j * 16, ModContent.NPCType<TouchstoneWisp>());
 			(Main.npc[NPCIndex].ModNPC as TouchstoneWisp).targetPos = entity.targetPoint;
 			(Main.npc[NPCIndex].ModNPC as TouchstoneWisp).owner = Main.LocalPlayer;
 
 			return true;
+		}
+		public string GetHint()
+		{
+			return "Full of Starlight, seemingly with a mind of its own...";
 		}
 	}
 
@@ -157,8 +190,19 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 		{
 			targetPoint = tag.Get<Vector2>("Point");
 		}
+
+		public override void NetSend(BinaryWriter writer)
+		{
+			writer.WriteVector2(targetPoint);
+		}
+
+		public override void NetReceive(BinaryReader reader)
+		{
+			targetPoint = reader.ReadVector2();
+		}
 	}
 
+	[SLRDebug]
 	class TouchstoneItem : QuickTileItem
 	{
 		public TouchstoneItem() : base("Touchstone", "A guiding light", "Touchstone", 3, AssetDirectory.PermafrostTile) { }
@@ -197,7 +241,15 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 		public override void AI()
 		{
-			if (owner != Main.LocalPlayer)
+			if (NPC.ai[1] == 0)
+				NPC.netUpdate = true;
+
+			foreach (Player player in Main.player.Where(n => Vector2.Distance(n.Center, NPC.Center) < 1000))
+			{
+				player.AddBuff(ModContent.BuffType<TouchstoneWispBuff>(), 60);
+			}
+
+			if (targetPos == Vector2.Zero)
 				return;
 
 			NPC.ai[1] += 0.1f;
@@ -345,7 +397,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
@@ -356,6 +408,28 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
 			trail?.Render(effect);
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.WriteVector2(targetPos);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			targetPos = reader.ReadVector2();
+		}
+	}
+
+	class TouchstoneWispBuff : SmartBuff
+	{
+		public override string Texture => "StarlightRiver/Assets/Buffs/ProtectiveShard";
+
+		public TouchstoneWispBuff() : base("Aurora Curiosity", "What lies below?\nIncreased mining speed", false) { }
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+			player.pickSpeed /= 2;
 		}
 	}
 }

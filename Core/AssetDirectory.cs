@@ -39,6 +39,7 @@ namespace StarlightRiver.Core
 		public const string CaveTempleItem = Assets + "Items/UndergroundTemple/";
 		public const string DungeonItem = Assets + "Items/Dungeon/";
 		public const string HellItem = Assets + "Items/Hell/";
+		public const string JungleItem = Assets + "Items/Jungle/";
 		public const string MagnetItem = Assets + "Items/Magnet/";
 		public const string GravediggerItem = Assets + "Items/Gravedigger/";
 		public const string DemonItem = Assets + "Items/Demon/";
@@ -74,7 +75,6 @@ namespace StarlightRiver.Core
 		public const string StarwoodItem = Assets + "Items/Starwood/";
 		public const string PalestoneItem = Assets + "Items/Palestone/";
 		public const string AstrofloraItem = Assets + "Items/Astroflora/";
-		public const string IvyItem = Assets + "Items/ForestIvy/";
 		public const string MiscItem = Assets + "Items/Misc/";
 		public const string MiscTile = Assets + "Tiles/Misc/";
 		public const string BreacherItem = Assets + "Items/Breacher/";

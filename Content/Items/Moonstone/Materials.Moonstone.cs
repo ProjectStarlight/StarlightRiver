@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 	public class MoonstoneBarItem : QuickTileItem
 	{
-		public MoonstoneBarItem() : base("Moonstone Bar", "'Shimmering with Beautiful Light'", "MoonstoneBar", ItemRarityID.White, AssetDirectory.MoonstoneItem) { }  //TODO: Fix place type
+		public MoonstoneBarItem() : base("Moonstone Bar", "'Shimmering with twisted starlight'", "MoonstoneBar", ItemRarityID.White, AssetDirectory.MoonstoneItem) { }  //TODO: Fix place type
 
 		public override void SafeSetDefaults()
 		{

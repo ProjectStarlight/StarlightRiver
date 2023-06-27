@@ -88,7 +88,7 @@ namespace StarlightRiver.Content.Tiles.Herbology.Crops
 				MapColor == default ? new Color(200, 255, 220) : MapColor,
 				false, false, MapName, anchor, TopAnchorOverride, valid.ToArray());
 
-			//ItemDrop = Mod.Find<ModItem>(DropType).Type; TODO: What the fuck was this doing before and why does it crash now?
+			RegisterItemDrop(Mod.Find<ModItem>(DropType).Type);// TODO: What the fuck was this doing before and why does it crash now?
 
 			FrameHeight = 16 * Height;
 			LastFrame = (FrameCount - 1) * FrameHeight;
@@ -130,7 +130,7 @@ namespace StarlightRiver.Content.Tiles.Herbology.Crops
 			{
 				Main.LocalPlayer.noThrow = 2;
 				Main.LocalPlayer.cursorItemIconEnabled = true;
-				Main.LocalPlayer.cursorItemIconID = ItemDrop;
+				Main.LocalPlayer.cursorItemIconID = TileLoader.GetItemDropFromTypeAndStyle(Type);
 			}
 		}
 
@@ -156,7 +156,7 @@ namespace StarlightRiver.Content.Tiles.Herbology.Crops
 			}
 		}
 
-		public virtual int GrowthPercentChance(int i, int j)
+		public virtual int GrowthPercentChance(int i, int j)//unsure why this is based on height
 		{
 			return 100 / Height;
 		}
@@ -169,7 +169,7 @@ namespace StarlightRiver.Content.Tiles.Herbology.Crops
 			if (Main.tile[i, j + off].TileFrameX >= LastFrame)
 			{
 				Main.tile[i, j + off].TileFrameX -= (short)FrameHeight;
-				Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemDrop, Main.rand.Next(1, 3));
+				Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, TileLoader.GetItemDropFromTypeAndStyle(Type), Main.rand.Next(1, 3));
 				return true;
 			}
 

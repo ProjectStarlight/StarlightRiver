@@ -10,7 +10,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.CrashTech
 {
-	class CrashPod : DummyTile
+	class CrashPod : DummyTile, IHintable
 	{
 		public override string Texture => "StarlightRiver/Assets/Tiles/CrashTech/CrashPod";
 
@@ -21,6 +21,14 @@ namespace StarlightRiver.Content.Tiles.CrashTech
 			QuickBlock.QuickSetFurniture(this, 2, 4, DustID.Lava, SoundID.Shatter, false, new Color(255, 200, 40), false, false, "Crashed Pod", new AnchorData(AnchorType.SolidWithTop | AnchorType.SolidTile, 2, 0));
 			MinPick = 999;
 			Main.tileLighted[Type] = true;
+		}
+
+		public override void MouseOver(int i, int j)
+		{
+			Player Player = Main.LocalPlayer;
+			Player.cursorItemIconID = ModContent.ItemType<Items.Hovers.WindsHover>();
+			Player.noThrow = 2;
+			Player.cursorItemIconEnabled = true;
 		}
 
 		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
@@ -61,6 +69,11 @@ namespace StarlightRiver.Content.Tiles.CrashTech
 		public override bool CanExplode(int i, int j)
 		{
 			return false;
+		}
+
+		public string GetHint()
+		{
+			return "A fallen droppod, made of metal rich in binding Starlight. You'd have to use a Starlight power of equal strength...";
 		}
 	}
 

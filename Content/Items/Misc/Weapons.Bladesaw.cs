@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Bladesaw");
-			Tooltip.SetDefault("Shreds through enemies \nRepeated hits shred enemies and overheat the saw, increasing damage \nRight click to use as a tool");
+			Tooltip.SetDefault("Shreds through enemies \nRepeated hits overheat the saw, increasing damage \n<right> to use as a tool");
 
 			ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
 		}
@@ -329,11 +329,6 @@ namespace StarlightRiver.Content.Items.Misc
 			if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Owner.Center, Owner.Center + 60 * Projectile.scale * Projectile.rotation.ToRotationVector2(), 20, ref collisionPoint))
 				return true;
 
-			return false;
-		}
-
-		public override bool? CanCutTiles()
-		{
 			return false;
 		}
 

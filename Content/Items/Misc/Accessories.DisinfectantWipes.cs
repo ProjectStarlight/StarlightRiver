@@ -7,7 +7,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public DisinfectantWipes() : base("Disinfectant Wipes", "Critical strikes have a 10% chance to reduce all debuff durations by 3 seconds\nDoes not affect potion sickness debuffs") { }
+		public DisinfectantWipes() : base("Disinfectant Wipes", "Critical strikes have a 10% chance to reduce your debuff durations by 3 seconds\nDoes not affect Potion Sickness debuffs") { }
 
 		public override void Load()
 		{
@@ -44,6 +44,11 @@ namespace StarlightRiver.Content.Items.Misc
 				if (Helper.IsValidDebuff(Player, i))
 					Player.buffTime[i] -= 180;
 			}
+		}
+
+		public override void SafeSetDefaults()
+		{
+			Item.value = Item.sellPrice(silver: 50);
 		}
 	}
 }

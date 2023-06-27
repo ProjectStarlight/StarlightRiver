@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Terraria;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Vitric
@@ -26,11 +25,12 @@ namespace StarlightRiver.Content.Items.Vitric
 			Item.useAnimation = 18;
 			Item.useStyle = ItemUseStyleID.Swing;
 			Item.knockBack = 7.5f;
-			Item.value = 1000;
 			Item.rare = ItemRarityID.Green;
 			Item.UseSound = SoundID.Item1;
 			Item.autoReuse = false;
 			Item.useTurn = true;
+
+			Item.value = Item.sellPrice(gold: 1);
 		}
 
 		public override bool? CanHitNPC(Player Player, NPC target)
@@ -68,6 +68,15 @@ namespace StarlightRiver.Content.Items.Vitric
 				broken = false;
 
 			return true;
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ModContent.ItemType<SandstoneChunk>(), 8);
+			recipe.AddIngredient(ModContent.ItemType<VitricOre>(), 12);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 

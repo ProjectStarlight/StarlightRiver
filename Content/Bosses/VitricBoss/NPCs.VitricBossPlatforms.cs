@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.NPCs.BaseTypes;
 using System.Linq;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
@@ -27,7 +28,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			NPC.lifeMax = 10;
 		}
 
-		public virtual bool findParent()
+		public virtual bool FindParent()
 		{
 			for (int i = 0; i < Main.maxNPCs; i++)
 			{
@@ -51,7 +52,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
              */
 
 			if (parent == null || !parent.NPC.active)
-				findParent();
+				FindParent();
 
 			if (NPC.ai[0] == 0)
 			{
@@ -89,6 +90,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					{
 						dontCollide = true;
 						Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<FireRingHostile>(), 40, 0, Main.myPlayer, 50);
+						Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, NPC.Center);
 					}
 				}
 				else
@@ -122,7 +124,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 	internal class VitricBossPlatformDown : VitricBossPlatformUp
 	{
 
-		public override bool findParent()
+		public override bool FindParent()
 		{
 			for (int i = 0; i < Main.maxNPCs; i++)
 			{
@@ -145,7 +147,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
              */
 
 			if (parent == null || !parent.NPC.active)
-				findParent();
+				FindParent();
 
 			if (NPC.ai[0] == 0)
 			{
@@ -183,6 +185,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					{
 						dontCollide = true;
 						Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<FireRingHostile>(), 40, 0, Main.myPlayer, 50);
+						Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, NPC.Center);
 					}
 				}
 				else

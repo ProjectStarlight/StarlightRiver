@@ -23,7 +23,9 @@
 			dust.position += dust.velocity;
 			dust.scale *= 0.982f;
 			dust.velocity *= 0.97f;
-			dust.velocity.Y += 0.1f;
+			if (!dust.noGravity)
+				dust.velocity.Y += 0.1f;
+
 			dust.rotation += 0.1f;
 
 			if (dust.scale <= 0.2f)

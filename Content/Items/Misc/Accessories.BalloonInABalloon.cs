@@ -7,7 +7,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public BalloonInABalloon() : base("Balloon In A Balloon", "Increases jump height \nIncreases mid air maneuverability\nHold up to fall slower") { }
+		public BalloonInABalloon() : base("Balloon In A Balloon", "Increases jump height \nIncreases mid-air maneuverability\nHold UP to fall slower") { }
 
 		public override void SafeSetDefaults()
 		{
@@ -37,8 +37,7 @@ namespace StarlightRiver.Content.Items.Misc
 			recipe.Register();
 
 			recipe = CreateRecipe();
-			recipe.AddIngredient(ItemID.ShinyRedBalloon, 1);
-			recipe.AddIngredient(ItemID.ShinyRedBalloon, 1);
+			recipe.AddIngredient(ItemID.ShinyRedBalloon, 2);
 			recipe.AddTile(TileID.TinkerersWorkbench);
 			recipe.Register();
 		}

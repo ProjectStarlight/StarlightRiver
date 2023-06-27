@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Foregrounds;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Foregrounds;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Core.Systems.CameraSystem;
@@ -16,7 +17,7 @@ using static Terraria.ModLoader.ModContent;
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
 	[AutoloadBossHead]
-	public sealed partial class VitricBoss : ModNPC
+	public sealed partial class VitricBoss : ModNPC, IHintable
 	{
 		public Vector2 startPos;
 		public Vector2 endPos;
@@ -117,6 +118,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			NPC.noTileCollide = true;
 			NPC.dontTakeDamageFromHostiles = true;
 			NPC.behindTiles = true;
+			NPC.npcSlots = 10;
 
 			NPC.HitSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/VitricBoss/ceramicimpact");
 
@@ -138,13 +140,13 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 		{
-			NPC.lifeMax = (int)(9000 * bossAdjustment);
+			NPC.lifeMax = 9000;
 			NPC.damage = 40;
 			NPC.defense = 14;
 
 			if (Main.masterMode)
 			{
-				NPC.lifeMax = (int)(14000 * bossAdjustment);
+				NPC.lifeMax = 14000;
 				NPC.damage = 60;
 				NPC.defense = 14;
 			}
@@ -162,7 +164,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
 		{
 			return false;
-			//return Phase == (int)AIStates.FirstPhase && AttackPhase == 4 && AttackTimer % 240 < 120;
 		}
 
 		public override bool CheckDead()
@@ -231,12 +232,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			swooshes.ForEach(n => n.Draw());
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			swooshes.ForEach(n => n.DrawAdditive(spriteBatch));
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			body.DrawBody(spriteBatch);
 
@@ -258,17 +259,17 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				effect.Parameters["texSize"].SetValue(Request<Texture2D>(Texture).Value.Size());
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
+				spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 
 				spriteBatch.Draw(Request<Texture2D>(Texture).Value, NPC.Center - screenPos + PainOffset, NPC.frame, new Color(Lighting.GetSubLight(NPC.Center)), NPC.rotation, NPC.frame.Size() / 2, NPC.scale, effects, 0);
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+				spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 				spriteBatch.Draw(Request<Texture2D>(Texture + "Godray").Value, NPC.Center - screenPos + PainOffset + new Vector2(NPC.spriteDirection == 1 ? 20 : -20, -30), null, new Color(255, 175, 100) * ((GlobalTimer - 160) / 600f), NPC.rotation, Request<Texture2D>(Texture + "Godray").Value.Size() / 2, NPC.scale, effects, 0);
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+				spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 
 			return false;
@@ -288,12 +289,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				effect.Parameters["texSize"].SetValue(tex.Size());
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
+				spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 
 				spriteBatch.Draw(tex, NPC.Center - screenPos + PainOffset, NPC.frame, Color.White, NPC.rotation, NPC.frame.Size() / 2, NPC.scale, effects, 0);
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+				spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 
@@ -322,18 +323,24 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public override void ModifyNPCLoot(NPCLoot npcLoot)
 		{
-			npcLoot.Add(ItemDropRule.OneFromOptions(1, new int[]
+			npcLoot.Add(ItemDropRule.BossBag(ItemType<VitricBossBag>()));
+
+			IItemDropRule rule = new LeadingConditionRule(new Conditions.NotExpert()); // check not expert
+			rule.OnSuccess(new LeadingConditionRule(new Conditions.NotMasterMode())); // check not master (i think you need to check both im not sure)
+			rule.OnSuccess(ItemDropRule.OneFromOptions(1, new int[] // roll the items (only in normal mode)
 			{
 				ItemType<FacetAndLattice>(),
 				ItemType<Coalescence>(),
 				ItemType<Needler>(),
 				ItemType<RefractiveBlade>(),
-				ItemType<MagmiteVacpack>()
-			}
-			));
+				ItemType<MagmiteVacpack>(),
+				ItemType<RecursiveFocus>()
+			}));
 
-			npcLoot.Add(ItemDropRule.Common(ItemType<MagmaCore>(), 1, 1, 2));
-			npcLoot.Add(ItemDropRule.Common(ItemType<Items.Misc.StaminaUp>(), 1, 1, 1));
+			npcLoot.Add(rule); // add the chain to the loot table
+
+			npcLoot.Add(ItemDropRule.Common(ItemType<MagmaCore>(), 1, 3, 5));
+			npcLoot.Add(ItemDropRule.Common(ItemType<StaminaUp>(), 3, 1, 1));
 
 			npcLoot.Add(ItemDropRule.Common(ItemType<Items.BarrierDye.VitricBossBarrierDye>(), 10, 1, 1));
 			npcLoot.Add(ItemDropRule.Common(ItemType<Tiles.Trophies.CeirosTrophyItem>(), 10, 1, 1));
@@ -483,7 +490,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			//find crystals
 			if (crystals.Count < 4)
-				findCrystals();
+				FindCrystals();
 
 			//Ticks the timer
 			GlobalTimer++;
@@ -618,6 +625,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 					BossBarOverlay.glowColor = new Color(0.6f + 0.1f * sin, 0.4f + 0.1f * sin, 0) * 0.7f;
 
+					if (NPC.life <= NPC.lifeMax - (1 + crystals.Count(n => n.ai[0] == 3 || n.ai[0] == 1)) * healthGateAmount)
+						NPC.life = NPC.lifeMax - (1 + crystals.Count(n => n.ai[0] == 3 || n.ai[0] == 1)) * healthGateAmount + 1; //set health at phase gate
+
 					AngerAttack();
 					break;
 
@@ -660,6 +670,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 					if (GlobalTimer == 60)
 					{
+						NPC.defense = Main.expertMode ? 14 : 10; // safeguard defense value
 						NPC.dontTakeDamage = false; //damagable again
 						NPC.friendly = false;
 					}
@@ -742,7 +753,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			justRecievedPacket = false; //at end of frame set to no longer just recieved
 		}
 
-		public void findCrystals()
+		public void FindCrystals()
 		{
 			//finds the crystals for ceiros for mp if they haven't been found yet
 			crystals.Clear(); // clear incase it was an edge case where fewer than all 4 were found on a frame since the npc spawn information hadn't arrived yet
@@ -828,5 +839,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				arena = new Rectangle((int)homePos.X + 8 - arenaWidth / 2, (int)homePos.Y - 32 - arenaHeight / 2, arenaWidth, arenaHeight);
 		}
 		#endregion Networking
+
+		#region Hint
+		public string GetHint()
+		{
+			return "Glassweaver mentioned a 'Sentinel'... Focus!";
+		}
+		#endregion Hint
 	}
 }

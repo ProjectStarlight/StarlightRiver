@@ -13,9 +13,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void SetStaticDefaults()
 		{
-			Tooltip.SetDefault("Blasts out Magmites that stick to enemies\n" +
-				"For each Magmite an enemy has stuck on them, they take 10 damage per second, and 3 summon tag damage, up to a maximum of three Magmites\n" +
-				"Magmites bounce off, and deal 50% more damage to enemies with the max amount of Magmites");
+			Tooltip.SetDefault("Blasts out Magmites that stick to enemies and increase summon tag damage");
 		}
 
 		public override void SetDefaults()
@@ -24,7 +22,6 @@ namespace StarlightRiver.Content.Items.Vitric
 			Item.height = 20;
 
 			Item.rare = ItemRarityID.Orange;
-			Item.value = Item.sellPrice(gold: 4, silver: 75);
 
 			Item.damage = 28;
 			Item.DamageType = DamageClass.Summon;
@@ -39,11 +36,29 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			Item.noUseGraphic = true;
 			Item.channel = true;
+
+			Item.value = Item.sellPrice(gold: 2, silver: 75);
+		}
+
+		public override bool CanUseItem(Player Player)
+		{
+			return !Player.channel;
 		}
 
 		public override Vector2? HoldoutOffset()
 		{
 			return new Vector2(-10f, 0f);
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient<MagmiteBottle>();
+			recipe.AddIngredient<SandstoneChunk>(10);
+			recipe.AddIngredient<VitricOre>(5);
+			recipe.AddIngredient<MagmaCore>();
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 
@@ -439,7 +454,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			bool IsSummoner = projectile.minion || projectile.DamageType == DamageClass.Summon || ProjectileID.Sets.MinionShot[projectile.type] == true;
 
 			if (projectile.owner == magmiteOwner && projectile.friendly && IsSummoner && npc.whoAmI == player.MinionAttackTargetNPC && magmiteAmount > 0 && player.HasMinionAttackTargetNPC)
-				modifiers.SourceDamage += magmiteAmount * 3;
+				modifiers.FlatBonusDamage += magmiteAmount * 2;
 		}
 	}
 }

@@ -1,6 +1,5 @@
 ﻿using StarlightRiver.Content.Dusts;
 using StarlightRiver.Core.Systems.DummyTileSystem;
-using Terraria.DataStructures;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -12,7 +11,7 @@ namespace StarlightRiver.Content.Alchemy
 
 		public override void SetStaticDefaults()
 		{
-			Tooltip.SetDefault("Alchemic Cauldron");
+			Tooltip.SetDefault("Places an Alchemic Cauldron");
 		}
 
 		public override void SetDefaults()
@@ -36,15 +35,6 @@ namespace StarlightRiver.Content.Alchemy
 		public override int DummyType => ProjectileType<CauldronDummy>();
 
 		public override string Texture => AssetDirectory.Alchemy + Name;
-
-		public override void KillMultiTile(int i, int j, int frameX, int frameY)
-		{
-			int item = Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemType<CauldronItem>(), 1);
-
-			// Sync the drop for multiPlayer
-			if (Main.netMode == NetmodeID.MultiplayerClient && item >= 0)
-				NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item, 1f);
-		}
 
 		public override void SafeNearbyEffects(int i, int j, bool closer)
 		{

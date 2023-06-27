@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Dusts;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Helpers;
 using System;
 using Terraria.GameContent;
@@ -10,15 +11,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
 	public abstract class WalkableCrystalItem : QuickTileItem
 	{
 		private bool held = false;
-		public WalkableCrystalItem(string name, string placetype, string texturepath) : base(placetype + "Item", name, "The slot this Item is in changes the type placed", placetype, ItemRarityID.Blue, texturepath) { }
 
-		//public override bool AltFunctionUse(Player Player) => true;
-		public override void AutoLightSelect(ref bool dryTorch, ref bool wetTorch, ref bool glowstick)
-		{
-			glowstick = true;
-			dryTorch = true;
-			wetTorch = true;
-		}
+		public WalkableCrystalItem(string name, string placetype, string texturepath) : base(placetype + "Item", name, "The slot this Item is in changes the type placed", placetype, ItemRarityID.Blue, texturepath) { }
 
 		public override void HoldItem(Player Player)
 		{
@@ -51,21 +45,25 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		}
 	}
 
+	[SLRDebug]
 	public class VitricSmallCrystalItem : WalkableCrystalItem
 	{
 		public VitricSmallCrystalItem() : base("Small vitric crystal", "VitricSmallCrystal", AssetDirectory.VitricTile) { }
 	}
 
+	[SLRDebug]
 	public class VitricMediumCrystalItem : WalkableCrystalItem
 	{
 		public VitricMediumCrystalItem() : base("Medium vitric crystal", "VitricMediumCrystal", AssetDirectory.VitricTile) { }
 	}
 
+	[SLRDebug]
 	public class VitricLargeCrystalItem : WalkableCrystalItem
 	{
 		public VitricLargeCrystalItem() : base("Large vitric crystal", "VitricLargeCrystal", AssetDirectory.VitricTile) { }
 	}
 
+	[SLRDebug]
 	public class VitricGiantCrystalItem : WalkableCrystalItem
 	{
 		public VitricGiantCrystalItem() : base("Vitric Giant crystal", "VitricGiantCrystal", AssetDirectory.VitricTile) { }
@@ -139,7 +137,39 @@ namespace StarlightRiver.Content.Tiles.Vitric
 					Dust.NewDustPerfect(pos, ModContent.DustType<CrystalSparkle2>(), Vector2.Zero);
 			}
 
+			ushort slabType = StarlightRiver.Instance.Find<ModTile>("AncientSandstone").Type;
+
+			bool left = Framing.GetTileSafely(i - 1, j).TileType == slabType;
+			bool right = Framing.GetTileSafely(i + 1, j).TileType == slabType;
+			bool up = Framing.GetTileSafely(i, j - 1).TileType == slabType;
+			bool down = Framing.GetTileSafely(i, j + 1).TileType == slabType;
+
+			if (left || right || up || down)
+				WorldGen.KillTile(i, j);
+
 			base.SafeNearbyEffects(i, j, closer);
+		}
+
+		public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
+		{
+			if (fail || effectOnly)
+				return;
+
+			Framing.GetTileSafely(i, j).HasTile = false;
+
+			bool left = Framing.GetTileSafely(i - 1, j).TileType == Type;
+			bool right = Framing.GetTileSafely(i + 1, j).TileType == Type;
+			bool up = Framing.GetTileSafely(i, j - 1).TileType == Type;
+			bool down = Framing.GetTileSafely(i, j + 1).TileType == Type;
+
+			if (left)
+				WorldGen.KillTile(i - 1, j);
+			if (right)
+				WorldGen.KillTile(i + 1, j);
+			if (up)
+				WorldGen.KillTile(i, j - 1);
+			if (down)
+				WorldGen.KillTile(i, j + 1);
 		}
 	}
 

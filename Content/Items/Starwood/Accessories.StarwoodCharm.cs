@@ -7,11 +7,14 @@ namespace StarlightRiver.Content.Items.Starwood
 	{
 		public override string Texture => AssetDirectory.StarwoodItem + Name;
 
-		public StarwoodCharm() : base("Starwood Charm", "Critical strikes generate mana stars\n-3% critical strike chance\n+3% critical strike chance when empowered") { }
+		public StarwoodCharm() : base("Starwood Charm", "Critical strikes generate mana stars\n-3% critical strike chance\n+3% critical strike chance when empowered by Starwood Armor") { }
 
 		public override void SafeSetDefaults()
 		{
 			Item.rare = ItemRarityID.Blue;
+			Item.Size = new Vector2(24, 28);
+
+			Item.value = Item.sellPrice(silver: 25);
 		}
 
 		public override void Load()
@@ -53,10 +56,13 @@ namespace StarlightRiver.Content.Items.Starwood
 		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
 		{
 			StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
+
+			frame.Height -= 2;
 			frame.Height /= 2;
-			origin.Y /= 2;
+
+			origin.Y = frame.Height / 2;
+
 			scale = Main.inventoryScale;
-			position += new Vector2(-4, 4);
 
 			if (!mp.empowered)
 			{
@@ -64,8 +70,27 @@ namespace StarlightRiver.Content.Items.Starwood
 				return false;
 			}
 
-			frame.Y += frame.Height;
+			frame.Y += frame.Height + 2;
 			spriteBatch.Draw(ModContent.Request<Texture2D>(Texture).Value, position, frame, drawColor, 0, origin, scale, 0, 0);
+			return false;
+		}
+
+		public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
+		{
+			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
+
+			Rectangle frame = new Rectangle(0, 0, tex.Width, (tex.Height - 2) / 2);
+			Vector2 offset = new Vector2(0, 4);//keeps item from hovering above floor
+
+			if (!mp.empowered)
+			{
+				spriteBatch.Draw(tex, Item.position - Main.screenPosition + offset, frame, lightColor * alphaColor.A, rotation, default, scale, 0, 0);
+				return false;
+			}
+
+			frame.Y = frame.Height + 2;
+			spriteBatch.Draw(tex, Item.position - Main.screenPosition + offset, frame, lightColor * alphaColor.A, rotation, default, scale, 0, 0);
 			return false;
 		}
 	}

@@ -1,14 +1,4 @@
-﻿using StarlightRiver.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-
-namespace StarlightRiver.Content.Items.Food.Special
+﻿namespace StarlightRiver.Content.Items.Food.Special
 {
 	internal class CreamySoup : BonusIngredient
 	{
@@ -23,6 +13,11 @@ namespace StarlightRiver.Content.Items.Food.Special
 			ModContent.ItemType<Milk>(),
 			ModContent.ItemType<TableSalt>()
 			);
+		}
+
+		public override void SafeSetDefaults()
+		{
+			Item.value = Item.sellPrice(gold: 5);
 		}
 
 		public override void BuffEffects(Player Player, float multiplier)

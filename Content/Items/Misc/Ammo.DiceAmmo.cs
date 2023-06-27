@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Dice");
-			Tooltip.SetDefault("Every shot randomizes");
+			Tooltip.SetDefault("Every shot has randomized stats");
 		}
 
 		public override void SetDefaults()

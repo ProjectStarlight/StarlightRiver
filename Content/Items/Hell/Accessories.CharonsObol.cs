@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Items.Hell
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Charon's Obol");
-			Tooltip.SetDefault("Converts all dropped money to reflective coins, which ricochet projectiles off themselves\nCoins lose their power when they contact any surface\n'Money is the root of all evil'");
+			Tooltip.SetDefault("Converts all dropped money to ancient coins, which ricochet projectiles off themselves\nCoins lose their power when they contact any surface\n'Soon, may the Ferryman come...'");
 		}
 
 		public override void Load()
@@ -398,7 +398,7 @@ namespace StarlightRiver.Content.Items.Hell
 			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);

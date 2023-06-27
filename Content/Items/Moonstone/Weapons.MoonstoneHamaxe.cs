@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override void SetStaticDefaults()
 		{
-			Tooltip.SetDefault("Press <right> to charge up a slam that destroys walls");
+			Tooltip.SetDefault("Press <right> to charge up a slam that destroys a large area of walls");
 		}
 
 		public override void SetDefaults()
@@ -84,6 +84,14 @@ namespace StarlightRiver.Content.Items.Moonstone
 			}
 
 			return base.CanUseItem(player);
+		}
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddRecipeGroup(RecipeGroupID.Wood, 5);
+			recipe.AddIngredient<MoonstoneBarItem>(10);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 
@@ -333,7 +341,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(-Projectile.timeLeft * 0.05f);
@@ -347,7 +355,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			effect.Parameters["sampleTexture2"].SetValue(TextureAssets.MagicPixel.Value);
 
 			trail2?.Render(effect);
-			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 	internal class MoonstoneHamaxeRing : ModProjectile, IDrawPrimitive
@@ -402,7 +410,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 				Point point = pos.ToTileCoordinates();
 
 				if (Collision.CanHitLine(Main.player[Projectile.owner].Center, 1, 1, pos, 1, 1))
-					WorldGen.KillWall(point.X, point.Y);
+					Main.player[Projectile.owner].PickWall(point.X, point.Y, 100);
 			}
 		}
 
@@ -446,7 +454,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);

@@ -1,8 +1,4 @@
-﻿using StarlightRiver.Core;
-using Terraria;
-using Terraria.GameContent.ItemDropRules;
-using Terraria.ID;
-using Terraria.ModLoader;
+﻿using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Food
 {
@@ -14,6 +10,8 @@ namespace StarlightRiver.Content.Items.Food
 		{
 			Item.value = 200;
 			Item.rare = ItemRarityID.Orange;
+
+			Item.value = Item.sellPrice(silver: 40);
 		}
 
 		public override void BuffEffects(Player Player, float multiplier)

@@ -8,6 +8,7 @@ using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Items.Breacher
 {
@@ -73,6 +74,11 @@ namespace StarlightRiver.Content.Items.Breacher
 			recipe.AddIngredient(ModContent.ItemType<Content.Items.SpaceEvent.Astroscrap>(), 12);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
+		}
+
+		public static Condition getMerchantFlareCondition()
+		{
+			return new Condition(Language.GetText("Conditions.PlayerCarriesItem").WithFormatArgs(Lang.GetItemName(ModContent.ItemType<FlareBreacher>())), () => Main.LocalPlayer.HasItem(ModContent.ItemType<FlareBreacher>()) && !Main.LocalPlayer.HasItem(ItemID.FlareGun));
 		}
 	}
 
@@ -333,7 +339,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			Effect effect = Filters.Scene["ShrapnelTrail"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);

@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public HolyAmulet() : base("Holy Amulet", "Releases bursts of homing energy for every 25 HP healed") { }
+		public HolyAmulet() : base("Holy Amulet", "Releases bursts of homing holy energy for every 25 HP you heal") { }
 
 		public override void Load()
 		{
@@ -33,6 +33,11 @@ namespace StarlightRiver.Content.Items.Misc
 				self.GetModPlayer<HolyAmuletHealingTracker>().Healed(healAmount);
 
 			orig(self, healAmount, broadcast);
+		}
+
+		public override void SafeSetDefaults()
+		{
+			Item.value = Item.sellPrice(gold: 1, silver: 25);
 		}
 
 		public override void AddRecipes()
@@ -216,7 +221,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Effect effect = Filters.Scene["Primitives"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);

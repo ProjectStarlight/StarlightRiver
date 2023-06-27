@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Helpers;
+﻿using StarlightRiver.Core.Systems;
+using StarlightRiver.Helpers;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ObjectData;
@@ -36,6 +37,7 @@ namespace StarlightRiver.Content.Tiles.Misc
 		}
 	}
 
+	[SLRDebug]
 	public class RatTentItem : QuickTileItem
 	{
 		public RatTentItem() : base("Strange Tent", "Whats inside?...", "RatTent", 1, AssetDirectory.MiscTile) { }

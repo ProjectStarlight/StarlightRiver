@@ -79,6 +79,11 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 		}
 
+		public override void SafeSetDefaults()
+		{
+			Item.value = Item.sellPrice(gold: 1, silver: 25);
+		}
+
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();

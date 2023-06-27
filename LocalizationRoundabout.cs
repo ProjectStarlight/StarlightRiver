@@ -26,5 +26,13 @@ namespace StarlightRiver
 			valueProp.SetValue(text, value);
 #endif
 		}
+
+		public static LocalizedText DefaultText(string key, string english)
+		{
+			LocalizedText text = Language.GetOrRegister($"Mods.StarlightRiver.{key}", () => english);
+			text.SetDefault(english);
+
+			return text;
+		}
 	}
 }

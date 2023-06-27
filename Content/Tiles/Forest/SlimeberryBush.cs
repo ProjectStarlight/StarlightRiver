@@ -1,5 +1,7 @@
-﻿using Terraria.DataStructures;
+﻿using StarlightRiver.Content.Packets;
+using Terraria.DataStructures;
 using Terraria.Enums;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
@@ -18,6 +20,8 @@ namespace StarlightRiver.Content.Tiles.Forest
 			TileObjectData.newTile.RandomStyleRange = 3;
 			TileObjectData.newTile.DrawYOffset = 2;
 			QuickBlock.QuickSetFurniture(this, 2, 2, DustID.Grass, SoundID.Dig, false, new Color(200, 255, 220), false, false, "", anchor, default, valid);
+
+			HitSound = SoundID.Grass;
 		}
 
 		public override void RandomUpdate(int i, int j)
@@ -65,13 +69,26 @@ namespace StarlightRiver.Content.Tiles.Forest
 					}
 				}
 
+				NetMessage.SendTileSquare(Main.myPlayer, newX, newY, 2, 2);
+
 				int rand = Main.rand.Next(3, 5);
 
 				for (int k = 0; k < rand; k++)
 				{
-					int index = NPC.NewNPC(new EntitySource_TileInteraction(null, i, j), i * 16 + Main.rand.Next(32), j * 16 + Main.rand.Next(32), NPCType<BerrySlime>());
+					int randX = Main.rand.Next(32);
+					int randY = Main.rand.Next(32);
+
+					if (Main.netMode == NetmodeID.MultiplayerClient)
+					{
+						var packet = new SpawnNPC(Main.myPlayer, i * 16 + randX, j * 16 + randY, NPCType<BerrySlime>());
+						packet.Send(-1, -1, false);
+					}
+
+					int index = NPC.NewNPC(new EntitySource_TileInteraction(null, i, j), i * 16 + randX, j * 16 + randY, NPCType<BerrySlime>());
 					Main.npc[index].velocity = Vector2.UnitY.RotatedByRandom(0.6f) * -8;
 				}
+
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Grass, new Vector2(i, j) * 16);
 			}
 
 			return true;
@@ -137,6 +154,9 @@ namespace StarlightRiver.Content.Tiles.Forest
 		{
 			GlobalTimer++;
 
+			if (GlobalTimer == 1)
+				NPC.netUpdate = true;
+
 			if (GlobalTimer > 300) //die after 5 seconds
 			{
 				if (NPC.velocity.Y == 0)
@@ -190,6 +210,11 @@ namespace StarlightRiver.Content.Tiles.Forest
 		{
 			for (int k = 0; k < 20; k++)
 				Dust.NewDust(NPC.position, 16, 16, DustID.t_Slime, 0, 0, 200, NPC.color, 0.5f);
+		}
+
+		public override void ModifyNPCLoot(NPCLoot npcLoot)
+		{
+			npcLoot.Add(ItemDropRule.Common(ItemID.Gel, 1, 1, 2));
 		}
 
 		/*public override void NPCLoot()

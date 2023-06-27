@@ -33,6 +33,22 @@ namespace StarlightRiver.Core.Systems.ChestLootSystem
 
 		protected void AddItem(int item, ChestRegionFlags chestRegions, float chance, (int, int) stackRange, bool exclusive = true, int slotIndex = -1)
 		{
+			AddItem(new int[] { item }, chestRegions, chance, stackRange, exclusive, slotIndex);
+		}
+
+		//array versions (chooses one item from the array, while caaping the rest of the data the same
+		protected void AddItem(int[] items, ChestRegionFlags chestRegions, float chance = 0.125f, int stack = 1, bool exclusive = true, int slotIndex = 0)
+		{
+			AddItem(items, chestRegions, chance, (stack, stack), exclusive, slotIndex);
+		}
+
+		protected void AddItem(int[] items, float chance, (int, int) stackRange, bool exclusive = true, int slotIndex = -1)
+		{
+			AddItem(items, Region, chance, stackRange, exclusive, slotIndex);
+		}
+
+		protected void AddItem(int[] items, ChestRegionFlags chestRegions, float chance, (int, int) stackRange, bool exclusive = true, int slotIndex = -1)
+		{
 			foreach (ChestRegionFlags flag in chestRegions.GetFlags())
 			{
 				Dictionary<ChestRegionFlags, List<ChestLootInfo>> dict = exclusive ? ExclusiveLootInfo : LootInfo;
@@ -40,7 +56,7 @@ namespace StarlightRiver.Core.Systems.ChestLootSystem
 				if (!dict.TryGetValue(flag, out List<ChestLootInfo> list))
 					dict.Add(flag, new List<ChestLootInfo>());
 
-				dict[flag].Add(new ChestLootInfo(item, stackRange, chestRegions, chance, slotIndex));
+				dict[flag].Add(new ChestLootInfo(items, stackRange, chestRegions, chance, slotIndex));
 			}
 		}
 	}

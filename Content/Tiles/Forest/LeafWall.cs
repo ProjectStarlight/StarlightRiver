@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 		{
-			if (i > Main.screenPosition.X / 16 && i < Main.screenPosition.X / 16 + Main.screenWidth / 16 && j > Main.screenPosition.Y / 16 && j < Main.screenPosition.Y / 16 + Main.screenHeight / 16)
+			if (i + 1 > Main.screenPosition.X / 16 && i - 1 < Main.screenPosition.X / 16 + Main.screenWidth / 16 && j + 1 > Main.screenPosition.Y / 16 && j - 1 < Main.screenPosition.Y / 16 + Main.screenHeight / 16)
 			{
 				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Tiles/Forest/LeafWallFlow").Value;
 				var rand = new Random(i * j % 192372);
@@ -38,6 +38,21 @@ namespace StarlightRiver.Content.Tiles.Forest
 						new Rectangle(i * j % 4 * 10, 0, 8, 8), Lighting.GetColor(i, j), offset + sin * 0.07f, new Vector2(4, 4), 1, 0, 0);
 				}
 			}
+		}
+	}
+
+	public class LeafWallItem : QuickWallItem
+	{
+		public override string Texture => AssetDirectory.ForestTile + Name;
+
+		public LeafWallItem() : base("Flowing leaf wall", "", WallType<LeafWall>(), 0) { }
+
+		public override void AddRecipes()
+		{
+			var recipe = Recipe.Create(Type, 50);
+			recipe.AddIngredient(ItemID.GrassWall, 50);
+			recipe.AddTile(TileID.WorkBenches);
+			recipe.Register();
 		}
 	}
 }

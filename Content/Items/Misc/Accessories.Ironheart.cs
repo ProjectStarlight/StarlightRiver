@@ -39,6 +39,11 @@ namespace StarlightRiver.Content.Items.Misc
 				Player.GetModPlayer<StarlightPlayer>().SetIronHeart(damageDone);
 		}
 
+		public override void SafeSetDefaults()
+		{
+			Item.value = Item.sellPrice(gold: 1);
+		}
+
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();
@@ -86,8 +91,6 @@ namespace StarlightRiver.Content.Items.Misc
 				Player.GetModPlayer<BarrierPlayer>().overchargeDrainRate = (int)(2.2f * mp.ironheartTimer);
 			}
 
-			//Main.NewText(level + " | " + mp.ironheartTimer);
-			//Main.NewText(level);
 			if (level < 0.001f)
 			{
 				Player.ClearBuff(Type);

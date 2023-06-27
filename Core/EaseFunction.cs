@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarlightRiver.Helpers;
+using System;
 using System.Collections.Generic;
 
 namespace StarlightRiver.Core
@@ -51,6 +52,21 @@ namespace StarlightRiver.Core
 		//public static EaseFunction Generate(int factor, int type)
 		//{
 		//}
+	}
+
+	public class CubicBezierEase : EaseFunction
+	{
+		private readonly Func<float, float> fun;
+
+		public CubicBezierEase(float p1x, float p1y, float p2x, float p2y)
+		{
+			fun = Helper.CubicBezier(p1x, p1y, p2x, p2y);
+		}
+
+		public override float Ease(float time)
+		{
+			return fun(time);
+		}
 	}
 
 	public class EaseBuilder : EaseFunction

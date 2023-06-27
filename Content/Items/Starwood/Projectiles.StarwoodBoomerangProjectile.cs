@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.Items.Starwood
 	{
 		private const int CHARGE_TIME = 50; //how long it takes to charge up
 
-		private float chargeMult; //a multiplier used during charge up, used both in ai and for drawing (goes from 0 to 1)
+		private float chargeMult; //multiplier used during charge up, used both in ai and for drawing (goes from 0 to 1)
 
 		//These stats get scaled when empowered
 		private int ScaleMult = 2;
@@ -165,16 +165,9 @@ namespace StarlightRiver.Content.Items.Starwood
 			{
 				if (Projectile.ai[1] >= CHARGE_TIME - 3 && Projectile.ai[1] <= CHARGE_TIME + 3)
 				{
-					if (empowered)
-					{
-						modifiers.SourceDamage *= ScaleMult;
-						modifiers.Knockback *= ScaleMult;
-					}
-					else
-					{
-						modifiers.SourceDamage *= ScaleMult;
-						modifiers.Knockback *= ScaleMult;
-					}
+					modifiers.SourceDamage *= ScaleMult;
+					modifiers.Knockback *= ScaleMult;
+					modifiers.HitDirectionOverride = target.Center.X > Projectile.Center.X ? 1 : -1;
 				}
 				else
 				{
@@ -184,7 +177,7 @@ namespace StarlightRiver.Content.Items.Starwood
 			}
 			else if (empowered)
 			{
-				modifiers.SourceDamage += 3;
+				modifiers.SourceDamage *= 2f;
 			}
 		}
 
@@ -261,7 +254,7 @@ namespace StarlightRiver.Content.Items.Starwood
 			}
 
 			Texture2D tex2 = Request<Texture2D>(AssetDirectory.StarwoodItem + "Glow2").Value;//a
-			spriteBatch.Draw(tex2, Projectile.Center - Main.screenPosition, tex2.Frame(), new Color(255, 255, 200, 75) * (Projectile.ai[1] / CHARGE_TIME), 0, tex2.Size() * 0.5f, (-chargeMult + 1) * 1f, 0, 0);
+			spriteBatch.Draw(tex2, Projectile.Center - Main.screenPosition, tex2.Frame(), new Color(255, 255, 200, 75) * (Projectile.ai[1] / CHARGE_TIME), 0, tex2.Size() * 0.5f, (-chargeMult + 1) * 1.2f, 0, 0);
 		}
 
 		public override void PostDraw(Color lightColor)

@@ -59,7 +59,6 @@ namespace StarlightRiver.Content.NPCs.Town
 
 		private void PackUp()
 		{
-			Main.NewText("IMPLEMENT THE STRUCTURE YOU LAZY BITCH");
 		}
 
 		public override void AI()
