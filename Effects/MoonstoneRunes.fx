@@ -22,7 +22,7 @@ float2 screenPosition;
 
 bool drawOriginal = true;
 
-float opacity = 1.0f;
+float opacity;
 
 float4 MainPS(float2 uv : TEXCOORD) : COLOR 
 { 
@@ -48,7 +48,7 @@ float4 MainPS(float2 uv : TEXCOORD) : COLOR
 	ret += tex2D(uImage0, noiseCoords1) * color1;
 	ret += tex2D(uImage0, noiseCoords2) * color2;
 
-	return ret; 
+	return ret * opacity; 
 }
 
 technique SpriteDrawing
