@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReLogic.Content;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.Enums;
@@ -44,10 +45,93 @@ namespace StarlightRiver.Content.Items.Haunted
 
 	public class EchochainWhipProjectile : BaseWhip
 	{
+		public List<Vector2> tipPositions = new();
+		public List<float> tipRotations = new();
+
 		public List<NPC> hitTargets = new();
 		public override string Texture => AssetDirectory.HauntedItem + Name;
 
-		public EchochainWhipProjectile() : base("Echochain", 20, 1.25f, new Color(0, 255, 0)) { }
+		public EchochainWhipProjectile() : base("Echochain", 40, 1.25f, new Color(150, 255, 20) * 0.5f) { }
+
+		public override void ArcAI()
+		{
+			if (Projectile.ai[0] > flyTime * 0.45f)
+			{
+				var points = new List<Vector2>();
+				points.Clear();
+				SetPoints(points);
+
+				Vector2 tipPos = points[39];
+
+				tipPositions.Add(tipPos);
+				if (tipPositions.Count > 15)
+					tipPositions.RemoveAt(0);
+
+				Vector2 difference = points[39] - points[38];
+				float rotation = difference.ToRotation() - MathHelper.PiOver2;
+
+				tipRotations.Add(rotation);
+				if (tipRotations.Count > 15)
+					tipRotations.RemoveAt(0);
+
+				Dust.NewDustPerfect(tipPos, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(1f, 1f), 0, new Color(100, 200, 10), 0.5f);
+
+				Dust.NewDustPerfect(tipPos, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(2f, 2f), 0, new Color(150, 255, 25), 0.35f);
+			}
+		}
+
+		public override void DrawBehindWhip(ref Color lightColor)
+		{
+			Texture2D texBlur = ModContent.Request<Texture2D>(Texture + "_TipBlur").Value;
+			Texture2D texGlow = ModContent.Request<Texture2D>(Texture + "_TipGlow").Value;
+			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+
+			Asset<Texture2D> texture = ModContent.Request<Texture2D>(Texture);
+			Rectangle whipFrame = texture.Frame(1, 5, 0, 0);
+			int height = whipFrame.Height;
+
+			float fadeOut = 1f;
+			if (Projectile.ai[0] > flyTime * 0.4f && Projectile.ai[0] < flyTime * 0.9f)
+				fadeOut *= 1f - (Projectile.ai[0] - flyTime * 0.4f) / (flyTime * 0.5f);
+			else if (Projectile.ai[0] >= flyTime * 0.9f)
+				fadeOut = 0f;
+
+			for (int i = 15; i > 0; i--)
+			{
+				float fade = 1 - (15f - i) / 15f;
+
+				if (i > 0 && i < tipPositions.Count)
+				{
+					whipFrame.Y = height * 4;
+					Color color = Color.Lerp(new Color(20, 135, 15, 0), new Color(100, 200, 10, 0), fade);
+					Main.EntitySpriteDraw(texture.Value, tipPositions[i] - Main.screenPosition, whipFrame, Color.White * fade * fadeOut, tipRotations[i], whipFrame.Size() * 0.5f, Projectile.scale, SpriteEffects.None, 0);
+					
+					Main.spriteBatch.Draw(texBlur, tipPositions[i] - Main.screenPosition, null, Color.White with { A = 0 } * fade * fadeOut, tipRotations[i], texBlur.Size() / 2f, Projectile.scale, 0f, 0f);
+
+					Main.spriteBatch.Draw(bloomTex, tipPositions[i] - Main.screenPosition, null, color * fade * fadeOut, 0f, bloomTex.Size() / 2f, 1f * fade, 0f, 0f);
+
+					Main.spriteBatch.Draw(bloomTex, tipPositions[i] - Main.screenPosition, null, color * fade * fadeOut * 0.5f, 0f, bloomTex.Size() / 2f, 1.5f * fade, 0f, 0f);
+
+					Main.spriteBatch.Draw(bloomTex, tipPositions[i] - Main.screenPosition, null, Color.White with { A = 0 } * fade * fadeOut * 0.6f, 0f, bloomTex.Size() / 2f, 0.8f * fade, 0f, 0f);
+
+					if (i < 15 && i + 1 < tipPositions.Count)
+					{
+						Vector2 newPosition = Vector2.Lerp(tipPositions[i], tipPositions[i + 1], 0.5f);
+						float newRotation = MathHelper.Lerp(tipRotations[i], tipRotations[i + 1], 0.5f);
+
+						Main.EntitySpriteDraw(texture.Value, newPosition - Main.screenPosition, whipFrame, Color.White * fade * fadeOut, newRotation, whipFrame.Size() * 0.5f, Projectile.scale, SpriteEffects.None, 0);
+
+						Main.spriteBatch.Draw(texBlur, newPosition - Main.screenPosition, null, Color.White with { A = 0 } * fade * fadeOut, newRotation, texBlur.Size() / 2f, Projectile.scale, 0f, 0f);
+
+						Main.spriteBatch.Draw(bloomTex, newPosition - Main.screenPosition, null, color * fade * fadeOut, 0f, bloomTex.Size() / 2f, 1f * fade, 0f, 0f);
+
+						Main.spriteBatch.Draw(bloomTex, newPosition - Main.screenPosition, null, color * fade * fadeOut * 0.5f, 0f, bloomTex.Size() / 2f, 1.5f * fade, 0f, 0f);
+
+						Main.spriteBatch.Draw(bloomTex, newPosition - Main.screenPosition, null, Color.White with { A = 0 } * fade * fadeOut * 0.6f, 0f, bloomTex.Size() / 2f, 0.8f * fade, 0f, 0f);
+					}
+				}
+			}
+		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
