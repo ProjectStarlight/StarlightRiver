@@ -261,6 +261,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				{
 					RichTextBox.CloseDialogue();
 
+					NPC.netUpdate = true;
 					SacrificeNPCPacket nPacket = new SacrificeNPCPacket(Main.myPlayer, (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<Glassweaver>(), NPC.whoAmI);
 					nPacket.Send();
 				});
@@ -358,6 +359,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				{
 					RichTextBox.CloseDialogue();
 
+					NPC.netUpdate = true;
 					SacrificeNPCPacket nPacket = new SacrificeNPCPacket(Main.myPlayer, (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<Glassweaver>(), NPC.whoAmI);
 					nPacket.Send();
 				});

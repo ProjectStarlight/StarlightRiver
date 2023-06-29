@@ -98,6 +98,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/Miniboss");
 			NPC.dontTakeDamage = true;
 			NPC.npcSlots = 10;
+			NPC.netUpdate = true; // Because this is a boss, we can make a small exception.
 			NPC.netAlways = true;
 		}
 
