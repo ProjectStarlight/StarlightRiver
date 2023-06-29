@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public Player talkingTo;
 
-		public float TextState; // Client based instead
+		public int TextState = 0; // Client based instead
 
 		public static Vector2 ArenaPos => StarlightWorld.vitricBiome.TopLeft() * 16 + new Vector2(0, 80 * 16) + new Vector2(0, 256);
 
@@ -244,6 +244,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 									{
 										UpdateSyncDataPacket gPacket = new UpdateSyncDataPacket(Main.myPlayer, NPC.whoAmI, 0, 1, VisualTimer, 0);
 										gPacket.Send();
+
 										RichTextBox.CloseDialogue();
 									});
 								});
@@ -259,6 +260,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				RichTextBox.AddButton("\"I'm ready.\"", () =>
 				{
 					RichTextBox.CloseDialogue();
+
 					SacrificeNPCPacket nPacket = new SacrificeNPCPacket(Main.myPlayer, (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<Glassweaver>(), NPC.whoAmI);
 					nPacket.Send();
 				});
@@ -276,7 +278,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 						RichTextBox.ClearButtons();
 
 						(Main.LocalPlayer.QuickSpawnItemDirect(NPC.GetSource_FromThis(), ItemType<ForgeMap>()).ModItem as ForgeMap).isEpic = true;
-						State = 4;
+						UpdateSyncDataPacket gPacket = new UpdateSyncDataPacket(Main.myPlayer, NPC.whoAmI, Timer, 4, VisualTimer, 0);
+						gPacket.Send();
 
 						RichTextBox.AddButton("\"Uhhh... What?\"", () =>
 						{
@@ -303,7 +306,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					else if (TextState == 2)
 					{
 						Main.LocalPlayer.QuickSpawnItemDirect(NPC.GetSource_FromThis(), ItemType<ForgeMap>());
-						State = 4;
+						UpdateSyncDataPacket gPacket = new UpdateSyncDataPacket(Main.myPlayer, NPC.whoAmI, Timer, 4, VisualTimer, 0);
+						gPacket.Send();
 					}
 				});
 			}
@@ -345,7 +349,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					}
 					else
 					{
-						Item.NewItem(NPC.GetSource_FromThis(), Main.LocalPlayer.Center, ItemType<Items.Vitric.TempleEntranceKey>());
+						Main.LocalPlayer.QuickSpawnItem(NPC.GetSource_FromThis(), ItemType<Items.Vitric.TempleEntranceKey>());
 						RichTextBox.CloseDialogue();
 					}
 				});
@@ -353,6 +357,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				RichTextBox.AddButton("Rematch", () =>
 				{
 					RichTextBox.CloseDialogue();
+
 					SacrificeNPCPacket nPacket = new SacrificeNPCPacket(Main.myPlayer, (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<Glassweaver>(), NPC.whoAmI);
 					nPacket.Send();
 				});
@@ -360,6 +365,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				RichTextBox.AddButton("See you later", () =>
 				{
 					RichTextBox.CloseDialogue();
+
 					UpdateSyncDataPacket gPacket = new UpdateSyncDataPacket(Main.myPlayer, NPC.whoAmI, 0, 5, VisualTimer, 0);
 					gPacket.Send();
 				});
@@ -384,7 +390,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				{
 					TextState++;
 					RichTextBox.SetData(NPC, "Glassweaver", GetWinDialogue());
-					Item.NewItem(NPC.GetSource_FromThis(), Main.LocalPlayer.Center, ItemType<Items.Vitric.TempleEntranceKey>());
+					Main.LocalPlayer.QuickSpawnItem(NPC.GetSource_FromThis(), ItemType<Items.Vitric.TempleEntranceKey>());
 
 					RichTextBox.ClearButtons();
 
@@ -396,7 +402,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 						}
 						else
 						{
-							Item.NewItem(NPC.GetSource_FromThis(), Main.LocalPlayer.Center, ItemType<Items.Vitric.TempleEntranceKey>());
+							Main.LocalPlayer.QuickSpawnItem(NPC.GetSource_FromThis(), ItemType<Items.Vitric.TempleEntranceKey>());
 							RichTextBox.CloseDialogue();
 						}
 					});
@@ -406,8 +412,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 						StarlightWorld.Flag(WorldFlags.GlassweaverDowned);
 
 						RichTextBox.CloseDialogue();
-						State = 5;
-						Timer = 0;
+
+						UpdateSyncDataPacket gPacket = new UpdateSyncDataPacket(Main.myPlayer, NPC.whoAmI, 0, 5, VisualTimer, 0);
+						gPacket.Send();
 					});
 				});
 			}
