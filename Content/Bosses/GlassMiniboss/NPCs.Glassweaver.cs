@@ -98,6 +98,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/Miniboss");
 			NPC.dontTakeDamage = true;
 			NPC.npcSlots = 10;
+			NPC.netAlways = true;
 		}
 
 		private SpriteEffects GetSpriteEffects()
@@ -194,7 +195,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 				case (int)Phases.ReturnToForeground:
 
-					if (AttackTimer == 1)
+					if (AttackTimer == 1 && Main.netMode != NetmodeID.Server) // Only display in singelplayer or multiplayer client
 						UILoader.GetUIState<TextCard>().Display("Glassweaver", "Worker of the Anvil", null, 240, 1.2f, false);
 
 					JumpBackAnimation();
