@@ -162,6 +162,25 @@ namespace StarlightRiver.Content.Items.Haunted
 		{
 			StarlightNPC.OnHitByItemEvent += OnHitChains;
 			StarlightNPC.OnHitByProjectileEvent += OnHitChainsProj;
+
+			On_Main.DrawNPCs += DrawEdges;
+		}
+
+		/// <summary>
+		/// Calls the DrawEdge() method for all active edges, in the Main.DrawNPCs() hook
+		/// </summary>
+		/// <param name="orig"></param>
+		/// <param name="self"></param>
+		/// <param name="behindTiles"></param>
+		/// <exception cref="NotImplementedException"></exception>
+		private void DrawEdges(On_Main.orig_DrawNPCs orig, Main self, bool behindTiles)
+		{
+			foreach (EchochainEdge edge in edges)
+			{
+				edge.DrawEdge(Main.spriteBatch);
+			}
+
+			orig(self, behindTiles);
 		}
 
 		/// <summary>
@@ -174,7 +193,7 @@ namespace StarlightRiver.Content.Items.Haunted
 		/// <param name="damageDone"></param>
 		private void OnHitChains(NPC npc, Player player, Item item, NPC.HitInfo hit, int damageDone)
 		{
-			Traverse(npc, (n) => n.SimpleStrikeNPC(damageDone, 0, false), true);
+			Traverse(npc, (n) => n.SimpleStrikeNPC((int)(damageDone * 0.25f), 0, false), true);
 		}
 
 		/// <summary>
@@ -186,17 +205,20 @@ namespace StarlightRiver.Content.Items.Haunted
 		/// <param name="damageDone"></param>
 		private void OnHitChainsProj(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
 		{
-			Traverse(npc, (n) => n.SimpleStrikeNPC(damageDone, 0, false), true);
+			Traverse(npc, (n) => n.SimpleStrikeNPC((int)(damageDone * 0.25f), 0, false), true);
 		}
 
 		public override void PostUpdateEverything()
 		{
 			foreach (EchochainEdge edge in edges)
 			{
-				edge.timer--;
+				edge.UpdateEdge();
+				if (edge.timer <= 0 || !edge.end.npc.active || edge.end == null || !edge.start.npc.active || edge.start == null || Vector2.Distance(edge.start.npc.Center, edge.end.npc.Center) > 500f)
+				{
+					edges.Remove(edge);
+					edge.DestroyEdge();
+				}
 			}
-
-			edges.RemoveAll(n => n.timer <= 0);
 		}
 
 		/// <summary>
@@ -233,9 +255,16 @@ namespace StarlightRiver.Content.Items.Haunted
 				{
 					// This is likely very slightly inefficient over performing the equality
 					// check here, but this is sparsely run and this is far more readable
-					var potential = new EchochainEdge(list[i], list[j], 180);
 
-					if (!edges.Any(n => n == potential))
+					int[] frames = new int[24];
+					for (int a = 0; a < frames.Length; a++) // populate array
+					{
+						frames[a] = Main.rand.Next(3);
+					}
+
+					var potential = new EchochainEdge(list[i], list[j], 1200, frames);
+
+					if (!edges.Any(n => n.Equals(potential)))
 					{
 						edges.Add(potential);
 
@@ -256,7 +285,7 @@ namespace StarlightRiver.Content.Items.Haunted
 		/// <param name="ignoreFirst">If the NPC passed should ignore the action passed or not</param>
 		public static void Traverse(NPC start, Action<NPC> action, bool ignoreFirst = false)
 		{
-			EchochainNode startNode = nodes.First(n => n.npc == start);
+			EchochainNode startNode = nodes.FirstOrDefault(n => n.npc == start);
 
 			// If the start isnt in the graph, give up
 			if (startNode is null)
@@ -308,12 +337,49 @@ namespace StarlightRiver.Content.Items.Haunted
 		public EchochainNode start;
 		public EchochainNode end;
 		public int timer;
+		public int[] chainFrames; // frames for the chain link are randomized upon creation
 
-		public EchochainEdge(EchochainNode start, EchochainNode end, int timer)
+		public EchochainEdge(EchochainNode start, EchochainNode end, int timer, int[] chainFrames)
 		{
 			this.start = start;
 			this.end = end;
 			this.timer = timer;
+			this.chainFrames = chainFrames;
+		}
+
+		public void UpdateEdge()
+		{
+			timer--;
+		}
+
+		public void DestroyEdge()
+		{
+			start.edges.Remove(this);
+			end.edges.Remove(this);
+		}
+
+		public void DrawEdge(SpriteBatch spriteBatch)
+		{
+			if (!start.npc.active || !end.npc.active)
+				return;
+
+			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.HauntedItem + "EchochainWhipChain").Value;
+			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Vector2 chainStart = start.npc.Center;
+			Vector2 chainEnd = end.npc.Center;
+
+			float rotation = chainStart.DirectionTo(chainEnd).ToRotation() + MathHelper.PiOver2;
+
+			float distance = Vector2.Distance(chainStart, chainEnd);
+
+			for (int i = 0; i < (distance / 22); i += 1)
+			{
+				var pos = Vector2.Lerp(chainStart, chainEnd, i * 22 / distance);
+				Rectangle frame = tex.Frame(verticalFrames: 5, frameY: chainFrames[i]);
+				
+				spriteBatch.Draw(tex, pos - Main.screenPosition, frame, Color.White, rotation, frame.Size() / 2f, 1f, 0f, 0f);
+				spriteBatch.Draw(bloomTex, pos - Main.screenPosition, null, new Color(100, 200, 10, 0), 0f, bloomTex.Size() / 2f, 0.25f, 0f, 0f);
+			}
 		}
 
 		/// <summary>
@@ -331,7 +397,7 @@ namespace StarlightRiver.Content.Items.Haunted
 					start == edge.end && end == edge.start;
 			}
 
-			return false;
+			return false;	
 		}
 	}
 
