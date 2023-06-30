@@ -196,11 +196,35 @@ namespace StarlightRiver.Core
 			ModifyDrawInfoEvent?.Invoke(ref drawInfo);
 		}
 
+		public delegate void PreUpdateMovementDelegate(Player player);
+		public static event PreUpdateMovementDelegate PreUpdateMovementEvent;
+		public override void PreUpdateMovement()
+		{
+			PreUpdateMovementEvent?.Invoke(Player);
+		}
+
+		public delegate bool FreeDodgeDelegate(Player player, Player.HurtInfo info);
+		public static event FreeDodgeDelegate FreeDodgeEvent;
+		public override bool FreeDodge(Player.HurtInfo info)
+		{
+			bool result = false;
+
+			if (FreeDodgeEvent is null)
+				return result;
+
+			foreach (FreeDodgeDelegate del in FreeDodgeEvent.GetInvocationList())
+			{
+				result |= del.Invoke(Player, info);
+			}
+
+			return result;
+		}
+
 		/// <summary>
 		/// Used to capture a proj hit before ANY processing occurs for generating a hitpacket.
 		/// normal order is projectile -> NPC -> player with all modify overrides occuring first followed by onhits after refs are finalized 
 		/// </summary>
-		public void OnModifyHitNPCWithProj(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers)
+		public static void OnModifyHitNPCWithProj(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 			{
@@ -213,7 +237,7 @@ namespace StarlightRiver.Core
 		/// Used to capture an item hit before ANY processing occurs for generating a hitpacket.
 		/// normal order is projectile -> NPC -> player with all modify overrides occuring first followed by onhits after refs are finalized 
 		/// </summary>
-		public void OnModifyPlayerHitNPCWithItem(Player player, Item sItem, NPC target, ref NPC.HitModifiers modifiers)
+		public static void OnModifyPlayerHitNPCWithItem(Player player, Item sItem, NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 			{
@@ -251,6 +275,7 @@ namespace StarlightRiver.Core
 			PostUpdateRunSpeedsEvent = null;
 			ResetEffectsEvent = null;
 			ModifyDrawInfoEvent = null;
+			PreUpdateMovementEvent = null;
 
 			ModifyHitNPCWithProjHook.Dispose();
 			ModifyHitNPCWithProjHook = null;
