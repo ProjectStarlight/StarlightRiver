@@ -224,7 +224,7 @@ namespace StarlightRiver.Content.Items.Forest
 			var target = new Rectangle(pos.X, pos.Y, (int)(fill * tex.Width), tex.Height);
 			var source = new Rectangle(0, 0, (int)(fill * tex.Width), tex.Height);
 			var target2 = new Rectangle(pos.X, pos.Y + 2, tex2.Width, tex2.Height);
-			var color = Vector3.Lerp(Color.Red.ToVector3(), Color.Green.ToVector3(), fill);
+			var color = Vector3.Lerp(Color.Red.ToVector3(), Color.Lime.ToVector3(), fill);
 
 			Main.spriteBatch.Draw(tex2, target2, new Color(40, 40, 40));
 			Main.spriteBatch.Draw(tex, target, source, new Color(color.X, color.Y, color.Z));
