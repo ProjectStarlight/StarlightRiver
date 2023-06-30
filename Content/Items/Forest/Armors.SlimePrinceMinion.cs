@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Helpers;
+using System.Collections.Generic;
 using Terraria.Audio;
 using Terraria.ID;
 
@@ -39,6 +40,11 @@ namespace StarlightRiver.Content.Items.Forest
 			Projectile.hostile = false;
 			Projectile.penetrate = -1;
 			Projectile.tileCollide = false;
+		}
+
+		public override bool? CanHitNPC(NPC target)
+		{
+			return target == this.target && State == 1 && Timer > 30 && Timer < 90;
 		}
 
 		public override void AI()
@@ -144,7 +150,7 @@ namespace StarlightRiver.Content.Items.Forest
 			// Fire a thorn at them
 			if (Timer == 110)
 			{
-				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.Center.DirectionTo(target.Center) * 11, ModContent.ProjectileType<SlimeThorn>(), 20, 0.5f, Projectile.owner);
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.Center.DirectionTo(target.Center + target.velocity * 10) * 11, ModContent.ProjectileType<SlimeThorn>(), 20, 0.5f, Projectile.owner);
 				SoundEngine.PlaySound(SoundID.DD2_DrakinShot, Projectile.Center);
 			}
 
@@ -166,6 +172,11 @@ namespace StarlightRiver.Content.Items.Forest
 
 			if (Timer == 60)
 			{
+				var helm = Owner.armor[0].ModItem as SlimePrinceHead;
+
+				if (helm != null)
+					helm.targetVel.Y -= 10;
+
 				State = 3;
 				Timer = 0;
 			}
@@ -181,6 +192,18 @@ namespace StarlightRiver.Content.Items.Forest
 			Projectile.Center = Owner.Center + Vector2.UnitY * Owner.gfxOffY;
 
 			life--;
+
+			if (Timer % 30 == 0)
+			{
+				List<NPC> targets = MinionTargetingHelper.FindTargets(Projectile, 400, true, false);
+				foreach (NPC target in targets)
+				{
+					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.Center.DirectionTo(target.Center) * 11, ModContent.ProjectileType<SlimeThorn>(), 35, 0.5f, Projectile.owner);
+				}
+
+				if (targets.Count > 0)
+					SoundEngine.PlaySound(SoundID.DD2_DrakinShot, Projectile.Center);
+			}
 
 			if (life <= 0)
 			{
@@ -219,6 +242,7 @@ namespace StarlightRiver.Content.Items.Forest
 			Projectile.friendly = true;
 			Projectile.hostile = false;
 			Projectile.timeLeft = 120;
+			Projectile.DamageType = DamageClass.Summon;
 		}
 
 		public override void AI()
