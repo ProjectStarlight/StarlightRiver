@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Items.Forest
 
 			// If the prince is invalid, we need to spawn a new prince
 			if (prince is null || !prince.active || prince.type != ProjectileType<SlimePrinceMinion>() || prince.owner != player.whoAmI)
-				prince = Projectile.NewProjectileDirect(player.GetSource_FromThis(), player.Center, Vector2.Zero, ProjectileType<SlimePrinceMinion>(), 20, 0, player.whoAmI);
+				prince = Projectile.NewProjectileDirect(player.GetSource_FromThis(), player.Center, Vector2.Zero, ProjectileType<SlimePrinceMinion>(), 44, 0, player.whoAmI);
 		}
 
 		public override void SetDefaults()
@@ -73,6 +73,7 @@ namespace StarlightRiver.Content.Items.Forest
 				{
 					if (!helm.Minion.Merged && helm.Minion.life >= SlimePrinceMinion.MAX_LIFE)
 					{
+						targetVel *= 0;
 						helm.Minion.State = 2;
 						helm.Minion.Timer = 0;
 					}
@@ -100,30 +101,30 @@ namespace StarlightRiver.Content.Items.Forest
 			if (helm?.Minion?.State == 2)
 			{
 				player.velocity *= 0.99f;
-				targetVel *= 0;
 			}
 
 			// Custom input handling
 			if (helm?.Minion?.Merged ?? false)
 			{
-				targetVel *= 0.96f;
+				helm.targetVel *= 0.96f;
 
 				if (player.controlLeft)
-					targetVel.X -= 1;
+					helm.targetVel.X -= 1;
 
 				if (player.controlRight)
-					targetVel.X += 1;
+					helm.targetVel.X += 1;
 
 				if (player.controlUp)
-					targetVel.Y -= 1;
+					helm.targetVel.Y -= 1;
 
 				if (player.controlDown)
-					targetVel.Y += 1;
+					helm.targetVel.Y += 1;
 
-				if (targetVel.Length() > 10)
-					targetVel = Vector2.Normalize(targetVel) * 9.99f;
+				if (helm.targetVel.Length() > 10)
+					helm.targetVel = Vector2.Normalize(helm.targetVel) * 9.99f;
 
-				player.velocity = targetVel;
+				player.velocity = helm.targetVel;
+				player.fallStart = (int)player.position.Y;
 			}
 		}
 
