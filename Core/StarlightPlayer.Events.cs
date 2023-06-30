@@ -191,6 +191,30 @@ namespace StarlightRiver.Core
 			ModifyDrawInfoEvent?.Invoke(ref drawInfo);
 		}
 
+		public delegate void PreUpdateMovementDelegate(Player player);
+		public static event PreUpdateMovementDelegate PreUpdateMovementEvent;
+		public override void PreUpdateMovement()
+		{
+			PreUpdateMovementEvent?.Invoke(Player);
+		}
+
+		public delegate bool FreeDodgeDelegate(Player player, Player.HurtInfo info);
+		public static event FreeDodgeDelegate FreeDodgeEvent;
+		public override bool FreeDodge(Player.HurtInfo info)
+		{
+			bool result = false;
+
+			if (FreeDodgeEvent is null)
+				return result;
+
+			foreach (FreeDodgeDelegate del in FreeDodgeEvent.GetInvocationList())
+			{
+				result |= del.Invoke(Player, info);
+			}
+
+			return result;
+		}
+
 		public override void Unload()
 		{
 			CanUseItemEvent = null;
@@ -211,6 +235,7 @@ namespace StarlightRiver.Core
 			PostUpdateRunSpeedsEvent = null;
 			ResetEffectsEvent = null;
 			ModifyDrawInfoEvent = null;
+			PreUpdateMovementEvent = null;
 
 			spawners = null;
 		}
