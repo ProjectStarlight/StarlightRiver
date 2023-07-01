@@ -59,6 +59,9 @@ namespace StarlightRiver.Content.Items.Forest
 			if (helm != null && helm.IsArmorSet(Owner.armor[0], Owner.armor[1], Owner.armor[2]))
 				Projectile.timeLeft = 2;
 
+			if (Vector2.Distance(Projectile.Center, Owner.Center) > 5000)
+				Projectile.Center = Owner.Center;
+
 			switch (State)
 			{
 				case 0: PassiveBehavior(); break;
