@@ -242,8 +242,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 									RichTextBox.AddButton("\"See you around.\"", () =>
 									{
-										UpdateSyncDataPacket gPacket = new UpdateSyncDataPacket(Main.myPlayer, NPC.whoAmI, 0, 1, VisualTimer, 0);
-										gPacket.Send();
+										Timer = 0;
+										State = 1;
+										NPC.netUpdate = true;
 
 										RichTextBox.CloseDialogue();
 									});
@@ -279,8 +280,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 						RichTextBox.ClearButtons();
 
 						(Main.LocalPlayer.QuickSpawnItemDirect(NPC.GetSource_FromThis(), ItemType<ForgeMap>()).ModItem as ForgeMap).isEpic = true;
-						UpdateSyncDataPacket gPacket = new UpdateSyncDataPacket(Main.myPlayer, NPC.whoAmI, Timer, 4, VisualTimer, 0);
-						gPacket.Send();
+						State = 4;
+						NPC.netUpdate = true;
 
 						RichTextBox.AddButton("\"Uhhh... What?\"", () =>
 						{
@@ -307,8 +308,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					else if (TextState == 2)
 					{
 						Main.LocalPlayer.QuickSpawnItemDirect(NPC.GetSource_FromThis(), ItemType<ForgeMap>());
-						UpdateSyncDataPacket gPacket = new UpdateSyncDataPacket(Main.myPlayer, NPC.whoAmI, Timer, 4, VisualTimer, 0);
-						gPacket.Send();
+						State = 4;
+						NPC.netUpdate = true;
 					}
 				});
 			}
@@ -368,8 +369,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				{
 					RichTextBox.CloseDialogue();
 
-					UpdateSyncDataPacket gPacket = new UpdateSyncDataPacket(Main.myPlayer, NPC.whoAmI, 0, 5, VisualTimer, 0);
-					gPacket.Send();
+					Timer = 0;
+					State = 5;
+					NPC.netUpdate = true;
 				});
 			}
 
@@ -415,8 +417,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 						RichTextBox.CloseDialogue();
 
-						UpdateSyncDataPacket gPacket = new UpdateSyncDataPacket(Main.myPlayer, NPC.whoAmI, 0, 5, VisualTimer, 0);
-						gPacket.Send();
+						Timer = 0;
+						State = 5;
+						NPC.netUpdate = true;
 					});
 				});
 			}
