@@ -54,7 +54,10 @@ namespace StarlightRiver.Content.Items.Forest
 			Timer++;
 			HealTimer++;
 
-			Projectile.timeLeft = 2;
+			var helm = Owner.armor[0].ModItem as SlimePrinceHead;
+
+			if (helm != null && helm.IsArmorSet(Owner.armor[0], Owner.armor[1], Owner.armor[2]))
+				Projectile.timeLeft = 2;
 
 			switch (State)
 			{
