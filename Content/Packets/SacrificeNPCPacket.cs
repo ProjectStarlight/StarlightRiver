@@ -1,12 +1,8 @@
 ﻿using NetEasy;
-using StarlightRiver.Content.Bosses.GlassMiniboss;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Packets
 {
@@ -36,10 +32,12 @@ namespace StarlightRiver.Content.Packets
 			Main.npc[oldId].active = false;
 			NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, oldId);
 
-			if (Main.netMode == NetmodeID.Server)
+			if (Main.netMode != NetmodeID.SinglePlayer)
 			{
 				int n = NPC.NewNPC(new EntitySource_SpawnNPC(), x, y, type);
-				NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, n);
+
+				if (n >= 0)
+					NetMessage.SendData(MessageID.SyncNPC, -1, -1, NetworkText.Empty, n);
 			}
 
 			if (Main.netMode == NetmodeID.SinglePlayer)

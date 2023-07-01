@@ -31,10 +31,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		/// </summary>
 		public Vector2 arenaPos;
 
-		internal ref float Phase => ref NPC.ai[0];
 		internal ref float GlobalTimer => ref NPC.ai[1];
 		internal ref float AttackPhase => ref NPC.ai[2];
 		internal ref float AttackTimer => ref NPC.ai[3];
+
+		internal float Phase; // This causes the boss to despawn on the client if synced. This works anyways.
 
 		public Rectangle Arena => new((int)arenaPos.X - 35 * 16, (int)arenaPos.Y - 30 * 16, 70 * 16, 30 * 16);
 
@@ -98,8 +99,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/Miniboss");
 			NPC.dontTakeDamage = true;
 			NPC.npcSlots = 10;
-			NPC.netUpdate = true; // Because this is a boss, we can make a small exception.
-			NPC.netAlways = true;
 		}
 
 		private SpriteEffects GetSpriteEffects()
