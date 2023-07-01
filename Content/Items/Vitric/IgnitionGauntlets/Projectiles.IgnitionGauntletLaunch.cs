@@ -73,7 +73,7 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 			orig(self);
 
 			//putting this here so I dont have to load another detour to get it to load in front of the fist
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 			Main.spriteBatch.End();
 
@@ -90,7 +90,7 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 					var mp = Projectile.ModProjectile as IgnitionGauntletLaunch;
 					Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 					Effect effect = Filters.Scene["ConicalNoise"].GetShader().Shader;
-					Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+					Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 					effect.Parameters["vnoise"].SetValue(ModContent.Request<Texture2D>(Texture + "_noise").Value);
 					effect.Parameters["rotation"].SetValue(mp.noiseRotation);
@@ -102,7 +102,7 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 					Main.spriteBatch.Draw(tex, Projectile.Center + (Projectile.rotation - 1.57f).ToRotationVector2() * 30 - Main.screenPosition, null, color, Projectile.rotation - 1.57f, new Vector2(250, 64), new Vector2(0.4f, 0.4f), SpriteEffects.None, 0f);
 
 					Main.spriteBatch.End();
-					Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+					Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 					effect.Parameters["vnoise"].SetValue(ModContent.Request<Texture2D>(Texture + "_noise").Value);
 					effect.Parameters["rotation"].SetValue(mp.noiseRotation2);
@@ -115,7 +115,7 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 
 					Main.spriteBatch.End();
 
-					Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+					Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 					var handOffset = new Vector2(-10 * player.direction, -16);
 					handOffset = handOffset.RotatedBy(player.fullRotation);
 					Main.spriteBatch.Draw(starTex, player.Center + handOffset - Main.screenPosition, null, new Color(255, 255, 255, 0) * MathHelper.Min(1, player.GetModPlayer<IgnitionPlayer>().loadedCharge / 15f), Main.GameUpdateCount * 0.085f, starTex.Size() / 2, 0.5f + 0.07f * (float)Math.Sin(Main.GameUpdateCount * 0.285f), SpriteEffects.None, 0f);

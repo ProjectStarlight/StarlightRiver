@@ -207,7 +207,10 @@ namespace StarlightRiver.Core.Systems.ChestLootSystem
 
 			// Slot is checked in case no open slot was found, Stack is checked in case the minimum was zero
 			if (slot != -1 && stack > 0)
-				chest.item[slot] = SetupItem(info.itemType, stack, false);
+			{
+				int itemType = WorldGen.genRand.NextFromList(info.itemTypes);
+				chest.item[slot] = SetupItem(itemType, stack, false);
+			}
 		}
 
 		private bool PlaceDisplayCaseOn(Chest chest)
@@ -242,16 +245,16 @@ namespace StarlightRiver.Core.Systems.ChestLootSystem
 
 	public class ChestLootInfo
 	{
-		public readonly int itemType;//this may need to be a func<int> instead
+		public readonly int[] itemTypes;//this may need to be a func<int> instead
 		public readonly (int, int) stackRange;
 		public readonly ChestRegionFlags chestRegions;
 		//public readonly bool exclusive;
 		public readonly float chance;
 		public readonly int slotIndex;
 
-		public ChestLootInfo(int itemType, (int, int) stackRange, ChestRegionFlags chestRegions, float chance, int slotIndex = -1)
+		public ChestLootInfo(int[] itemTypes, (int, int) stackRange, ChestRegionFlags chestRegions, float chance, int slotIndex = -1)
 		{
-			this.itemType = itemType;
+			this.itemTypes = itemTypes;
 			this.stackRange = stackRange;
 			this.chestRegions = chestRegions;
 			//this.exclusive = exclusive;

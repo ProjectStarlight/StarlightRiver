@@ -67,5 +67,10 @@ namespace StarlightRiver.Core.Systems.BlockerTileSystem
 			Main.tileBlockLight[Type] = false;
 			MinPick = int.MaxValue;
 		}
+
+		public override bool CanExplode(int i, int j)
+		{
+			return false;
+		}
 	}
 }

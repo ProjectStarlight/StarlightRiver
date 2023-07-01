@@ -37,6 +37,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			{
 				initialized = true;
 				initialPosition = Projectile.Center;
+				Projectile.netUpdate = true;
 			}
 
 			Projectile.scale -= 1 / 400f;
@@ -62,8 +63,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				d.customData = Main.rand.NextFloat(0.5f, 1);
 			}
 
-			ManageCaches();
-			ManageTrail();
+			if (!Main.dedServ)
+			{
+				ManageCaches();
+				ManageTrail();
+			}
 		}
 
 		public override void Kill(int timeLeft)
@@ -169,7 +173,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);

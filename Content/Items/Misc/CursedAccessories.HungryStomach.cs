@@ -13,13 +13,14 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SetStaticDefaults()
 		{
-			Tooltip.SetDefault("Restore stamina by damaging foes\nMelee weapons are twice as effective\nCursed: Disables natural stamina regenration");
+			Tooltip.SetDefault("Restore Starlight by damaging foes\nMelee weapons restore twice as much\nCursed: Disables natural Starlight regeneration");
 			DisplayName.SetDefault("Hungry Stomach");
 		}
 
 		public override void SafeSetDefaults()
 		{
 			Item.rare = ItemRarityID.Red;
+			Item.value = Item.sellPrice(gold: 2);
 		}
 
 		public override void Load()

@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Vitric Hamaxe");
-			Tooltip.SetDefault("Right click to charge heat\nHeat increases speed\nHeat dissipates over time");
+			Tooltip.SetDefault("<right> to charge heat\nHeat increases speed\nHeat dissipates over time");
 		}
 
 		public override void SetDefaults()

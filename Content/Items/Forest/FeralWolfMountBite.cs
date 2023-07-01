@@ -1,6 +1,5 @@
 ﻿using StarlightRiver.Content.Buffs;
 using System;
-using Terraria;
 
 namespace StarlightRiver.Content.Items.Forest
 {

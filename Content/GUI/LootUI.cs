@@ -4,6 +4,7 @@ using StarlightRiver.Core.Loaders.UILoading;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
@@ -12,6 +13,9 @@ namespace StarlightRiver.Content.GUI
 {
 	public class LootUI : SmartUIState
 	{
+		public Point16 OriginPosition;
+		//const float MaxDistance = 300;
+
 		private Item BigItem = new();
 		internal Item[] Selections = new Item[2];
 		internal List<string> Quotes;
@@ -42,13 +46,16 @@ namespace StarlightRiver.Content.GUI
 		{
 			if (Main.gameMenu)
 				Visible = false;
-
+			//if (Vector2.Distance(OriginPosition.ToVector2(), Main.LocalPlayer.Center) > 500)
 			if (Selections[1] != null)
 			{
 				Visible = false;
 				Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), BigItem);
 				Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), Selections[0], Selections[0].stack);
 				Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), Selections[1], Selections[1].stack);
+
+				WorldGen.KillTile(OriginPosition.X, OriginPosition.Y);
+				NetMessage.SendTileSquare(Main.myPlayer, OriginPosition.X, OriginPosition.Y, 2, 2, TileChangeType.None);
 			}
 		}
 
@@ -80,7 +87,8 @@ namespace StarlightRiver.Content.GUI
 
 			if (!BigItem.IsAir)
 			{
-				Texture2D tex2 = BigItem.type > ItemID.Count ? Request<Texture2D>(BigItem.ModItem.Texture).Value : Request<Texture2D>("Terraria/Item_" + BigItem.type).Value;
+				Main.instance.LoadItem(BigItem.type);
+				Texture2D tex2 = BigItem.type > ItemID.Count ? Request<Texture2D>(BigItem.ModItem.Texture).Value : Terraria.GameContent.TextureAssets.Item[BigItem.type].Value;
 				float scale = tex2.Frame().Size().Length() < 47 ? 1 : 47f / tex2.Frame().Size().Length();
 
 				spriteBatch.Draw(tex2, GetDimensions().Center(), tex2.Frame(), Color.White, 0, tex2.Frame().Size() / 2, scale, 0, 0);

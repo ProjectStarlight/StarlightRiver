@@ -15,7 +15,6 @@ namespace StarlightRiver.Content.Items.Brewing
 			Recipe recipe = CreateRecipe();
 			recipe.AddIngredient(ItemID.BottledWater, 1);
 			recipe.AddIngredient(ItemType<ForestBerries>(), 5);
-			recipe.AddIngredient(ItemType<Ivy>(), 20);
 			recipe.AddTile(TileID.Bottles);
 			recipe.Register();
 		}

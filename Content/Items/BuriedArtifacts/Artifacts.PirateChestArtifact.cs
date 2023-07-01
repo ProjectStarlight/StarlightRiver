@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Pirate Chest");
-			Tooltip.SetDefault("Right click to open\n'Sought after for centuries'");
+			Tooltip.SetDefault("<right> to open\n'Sought after for centuries'");
 		}
 
 		public override void SetDefaults()

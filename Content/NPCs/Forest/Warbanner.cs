@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Buffs;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Physics;
 using StarlightRiver.Core.VerletGenerators;
 using StarlightRiver.Helpers;
@@ -10,7 +11,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Forest
 {
-	class Warbanner : ModNPC, IDrawAdditive
+	class Warbanner : ModNPC, IDrawAdditive, IHintable
 	{
 		public enum BehaviorStates
 		{
@@ -55,7 +56,8 @@ namespace StarlightRiver.Content.NPCs.Forest
 			NPC.width = 80;
 			NPC.height = 200;
 			NPC.knockBackResist = 0.1f;
-			NPC.lifeMax = 100;
+			NPC.lifeMax = 200;
+			NPC.defense = 5;
 			NPC.noGravity = true;
 			NPC.noTileCollide = true;
 			NPC.damage = 1;
@@ -318,7 +320,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 		{
 			//they should only spawn at night in the forest after EoC is dead, and one max
 			if (spawnInfo.Player.ZoneForest() && !Main.dayTime && NPC.downedBoss1 && !Main.npc.Any(n => n.active && n.type == NPC.type))
-				return 0.25f;
+				return 0.05f;
 
 			return 0;
 		}
@@ -330,6 +332,10 @@ namespace StarlightRiver.Content.NPCs.Forest
 				int goreType = StarlightRiver.Instance.Find<ModGore>("WarbannerGore" + Main.rand.Next(7)).Type;
 				Gore.NewGore(NPC.GetSource_Death(), NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), Vector2.Zero, goreType);
 			}
+		}
+		public string GetHint()
+		{
+			return "It somehow bolsters nearby foes...";
 		}
 	}
 

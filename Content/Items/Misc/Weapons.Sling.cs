@@ -2,7 +2,6 @@ using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -49,7 +48,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			Tooltip.SetDefault("Sling seeds, stones, and mushrooms at your enemies\n" +
-				"Seeds have increase velocity\n" +
+				"Seeds have increased velocity\n" +
 				"Stones have less velocity but deal more damage and knockback\n" +
 				"Mushrooms deal less damage but inflict Poisoned\n" +
 				"75% chance to not consume ammo");
@@ -90,8 +89,8 @@ namespace StarlightRiver.Content.Items.Misc
 			float rotation = itemPosition.DirectionTo(Main.MouseWorld).ToRotation();
 			player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, rotation - (player.direction == 1 ? MathHelper.ToRadians(60f) : MathHelper.ToRadians(120f)));
 			player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, rotation - (player.direction == 1 ? MathHelper.ToRadians(120f) : MathHelper.ToRadians(60f)));
-			Vector2 itemSize = new Vector2(22);
-			Vector2 itemOrigin = new Vector2(-6f, 0f);
+			var itemSize = new Vector2(22);
+			var itemOrigin = new Vector2(-6f, 0f);
 			HoldStyleAdjustments(player, rotation, itemPosition, itemSize, itemOrigin, true, false, true);
 		}
 
@@ -463,7 +462,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 	class SlingSeedProjectile : ModProjectile
 	{
-		public override string Texture => AssetDirectory.IvyItem + "SeedProjectile"; //vanilla seed looks bad
+		public override string Texture => AssetDirectory.MiscItem + "SeedProjectile"; //vanilla seed looks bad
 
 		public override void SetStaticDefaults()
 		{

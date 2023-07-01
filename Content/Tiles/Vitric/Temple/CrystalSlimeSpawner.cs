@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.NPCs.Vitric;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System.Linq;
 using Terraria.ID;
@@ -17,6 +18,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		}
 	}
 
+	[SLRDebug]
 	internal class CrystalSlimeSpawnerItem : QuickTileItem
 	{
 		public CrystalSlimeSpawnerItem() : base("NPC Spawner", "", "CrystalSlimeSpawner", 1, AssetDirectory.VitricTile, false) { }

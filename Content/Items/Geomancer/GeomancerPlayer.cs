@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 		private void PreDrawGlowFX(Player Player, SpriteBatch spriteBatch)
 		{
-			if (!Player.GetModPlayer<GeomancerPlayer>().SetBonusActive)
+			if (!SetBonusActive)//removed GetModPlayer since these can directly access it here
 				return;
 
 			if (!CustomHooks.PlayerTarget.canUseTarget)
@@ -65,11 +65,11 @@ namespace StarlightRiver.Content.Items.Geomancer
 				fadeOut = allTimer / 60f;
 
 			spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 			Effect effect = Filters.Scene["RainbowAura"].GetShader().Shader;
 
-			if (Player.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.All)
+			if (storedGem == StoredGem.All)
 			{
 
 				float sin = (float)Math.Sin(Main.GameUpdateCount / 10f);
@@ -87,7 +87,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 					spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI), color * 0.25f * fadeOut);
 				}
 			}
-			else if (Player.GetModPlayer<GeomancerPlayer>().ActivationCounter > 0)
+			else if (ActivationCounter > 0)
 			{
 				float sin = Player.GetModPlayer<GeomancerPlayer>().ActivationCounter;
 				float opacity = 1.5f - sin;
@@ -113,7 +113,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 			if (Player.mount.Active)
 				samplerState = Terraria.Graphics.Renderers.LegacyPlayerRenderer.MountedSamplerState;
 
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, samplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, samplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		public override void ResetEffects()

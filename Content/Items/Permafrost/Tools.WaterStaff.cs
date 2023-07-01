@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Staff of the Waves");
-			Tooltip.SetDefault("Places and removes aurora water\nLeft click to place\nRight click to remove");
+			Tooltip.SetDefault("Places and removes aurora water\n<left> to place\n<right> to remove");
 		}
 
 		public override void SetDefaults()

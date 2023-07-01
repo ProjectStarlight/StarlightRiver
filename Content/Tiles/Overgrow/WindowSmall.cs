@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.DummyTileSystem;
+﻿using StarlightRiver.Core.Systems;
+using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -23,6 +24,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 		}
 	}
 
+	[SLRDebug]
 	class WindowSmallItem : QuickTileItem
 	{
 		public override string Texture => AssetDirectory.OvergrowTile + "WindowSmall";

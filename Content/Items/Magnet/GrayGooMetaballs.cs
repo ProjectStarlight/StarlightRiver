@@ -78,7 +78,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			effect.Parameters["eyeChangeRate"].SetValue(0.1f);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, effect);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, effect);
 
 			spriteBatch.Draw(Target.RenderTarget, position: Vector2.Zero, color: Color.White);
 

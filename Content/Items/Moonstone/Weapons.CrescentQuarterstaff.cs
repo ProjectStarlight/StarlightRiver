@@ -10,7 +10,7 @@ using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
-
+//TODO: sfx
 namespace StarlightRiver.Content.Items.Moonstone
 {
 	public class CrescentQuarterstaff : ModItem
@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Crescent Quarterstaff");
-			Tooltip.SetDefault("Striking enemies charges the staff with lunar energy\n" + "Condenses collected energy into a lunar orb when the final slam hits the ground\n" + "Update this egshels (sfx needed)");
+			Tooltip.SetDefault("Striking enemies charges the staff with lunar energy\n" + "Condenses collected energy into a lunar orb when the final slam hits the ground");
 		}
 
 		public override void SetDefaults()
@@ -34,8 +34,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Item.DamageType = DamageClass.Melee;
 			Item.width = 36;
 			Item.height = 44;
-			Item.useTime = 12;
-			Item.useAnimation = 12;
+			Item.useTime = 25;
+			Item.useAnimation = 25;
 			Item.reuseDelay = 20;
 			Item.channel = true;
 			Item.useStyle = ItemUseStyleID.Shoot;
@@ -326,7 +326,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			spriteBatch.Draw(head, position - Main.screenPosition, null, lightColor, Projectile.rotation + 0.78f, origin, scale, SpriteEffects.None, 0);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			DrawPrimitives();
 
@@ -602,7 +602,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 				Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
 				var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-				Matrix view = Main.GameViewMatrix.ZoomMatrix;
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
 				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
@@ -612,7 +612,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 				trail?.Render(effect);
 
-				Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 

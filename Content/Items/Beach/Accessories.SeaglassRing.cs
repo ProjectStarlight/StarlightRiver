@@ -9,19 +9,21 @@ namespace StarlightRiver.Content.Items.Beach
 	{
 		public override string Texture => AssetDirectory.Assets + "Items/Beach/" + Name;
 
-		public SeaglassRing() : base("Seaglass Ring", "+10 barrier\nBarrier recharge starts slightly faster\n'The battering waves have not diminished its shine'") { }
+		public SeaglassRing() : base("Seaglass Ring", "+30 barrier\nBarrier recharge starts slightly faster\n'The battering waves have not diminished its shine'") { }
 
 		public override void SafeSetDefaults()
 		{
 			Item.rare = ItemRarityID.Blue;
+
+			Item.value = Item.sellPrice(silver: 50);
 		}
 
 		public override void SafeUpdateEquip(Player Player)
 		{
 			BarrierPlayer mp = Player.GetModPlayer<BarrierPlayer>();
 
-			mp.rechargeDelay -= 30;
-			mp.maxBarrier += 10;
+			mp.rechargeDelay -= 60;
+			mp.maxBarrier += 30;
 		}
 	}
 

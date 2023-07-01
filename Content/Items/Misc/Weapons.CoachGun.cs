@@ -27,8 +27,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Coach Gun");
-			Tooltip.SetDefault("M2 to throw out a lit bundle of dynamite\n" +
-				"Explodes in 2.5 seconds, dealing DoT and weakening enemies\n" +
+			Tooltip.SetDefault("<right> to throw out an exploding bundle of dynamite\n" +
 				"Shoot it to detonate it early\n" +
 				"'My business, my rules'");
 		}
@@ -49,6 +48,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.shootSpeed = 12f;
 			Item.useAmmo = AmmoID.Bullet;
 			Item.autoReuse = true;
+			Item.value = Item.sellPrice(gold: 2);
 		}
 
 		public override void AddRecipes()
@@ -260,8 +260,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void Kill(int timeLeft)
 		{
 			CameraSystem.shake += 8;
-
-			SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/FireHit"), Projectile.Center);
+			Helper.PlayPitched("Magic/FireHit", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
 			Helper.PlayPitched("Impacts/AirstrikeImpact", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
 
 			for (int i = 0; i < 10; i++)
@@ -376,7 +375,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Effect effect = Filters.Scene["CoachBombTrail"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
@@ -384,7 +383,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			trail?.Render(effect);
 
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 

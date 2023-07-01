@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Dusts;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Helpers;
 using Terraria.DataStructures;
@@ -9,7 +10,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-	internal class VitricOre : DummyTile
+	internal class VitricOre : DummyTile, IHintable
 	{
 		public override int DummyType => ProjectileType<VitricOreDummy>();
 
@@ -20,10 +21,26 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			TileObjectData.newTile.RandomStyleRange = 3;
 			TileObjectData.newTile.StyleHorizontal = true;
 			MinPick = int.MaxValue;
+			Main.tileOreFinderPriority[Type] = 490;//just below chests
 			TileID.Sets.Ore[Type] = true;
+			Main.tileSpelunker[Type] = true;
+			TileID.Sets.PreventsTileRemovalIfOnTopOfIt[Type] = true;
 
 			var bottomAnchor = new AnchorData(Terraria.Enums.AnchorType.SolidTile, 2, 0);
-			this.QuickSetFurniture(2, 3, DustType<Air>(), SoundID.Shatter, new Color(200, 255, 230), 18, false, false, "Vitric Ore", bottomAnchor);
+			this.QuickSetFurniture(2, 3, DustType<GlassGravity>(), SoundID.Shatter, new Color(200, 255, 230), 18, false, false, "Vitric Ore", bottomAnchor);
+		}
+
+		public override bool CanExplode(int i, int j)
+		{
+			return false;
+		}
+
+		public override void MouseOver(int i, int j)
+		{
+			Player Player = Main.LocalPlayer;
+			Player.cursorItemIconID = ModContent.ItemType<Items.Hovers.WindsHover>();
+			Player.noThrow = 2;
+			Player.cursorItemIconEnabled = true;
 		}
 
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
@@ -60,9 +77,13 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		{
 			return false;
 		}
+		public string GetHint()
+		{
+			return "A crystal, infused with binding Starlight. You'd have to use a Starlight power of equal strength...";
+		}
 	}
 
-	internal class VitricOreFloat : DummyTile
+	internal class VitricOreFloat : DummyTile, IHintable
 	{
 		public override int DummyType => ProjectileType<VitricOreFloatDummy>();
 
@@ -70,9 +91,22 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void SetStaticDefaults()
 		{
-			this.QuickSetFurniture(2, 2, DustType<Air>(), SoundID.Shatter, false, new Color(200, 255, 230), false, false, "Vitric Ore");
+			this.QuickSetFurniture(2, 2, DustType<GlassGravity>(), SoundID.Shatter, false, new Color(200, 255, 230), false, false, "Vitric Ore");
 			MinPick = int.MaxValue;
 			TileID.Sets.Ore[Type] = true;
+		}
+
+		public override bool CanExplode(int i, int j)
+		{
+			return false;
+		}
+
+		public override void MouseOver(int i, int j)
+		{
+			Player Player = Main.LocalPlayer;
+			Player.cursorItemIconID = ModContent.ItemType<Items.Hovers.WindsHover>();
+			Player.noThrow = 2;
+			Player.cursorItemIconEnabled = true;
 		}
 
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
@@ -87,6 +121,10 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		public override bool CanDrop(int i, int j)
 		{
 			return false;
+		}
+		public string GetHint()
+		{
+			return "A crystal, infused with binding Starlight. You'd have to use a Starlight power of equal strength...";
 		}
 	}
 
@@ -166,15 +204,17 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			Texture2D tex = Request<Texture2D>(AssetDirectory.VitricTile + "VitricOreFloatGlow").Value;
 			Color color = Helper.IndicatorColorProximity(150, 300, Projectile.Center);
 
-			Main.spriteBatch.Draw(tex, Projectile.position - new Vector2(1, 5) - Main.screenPosition, color);
+			Main.spriteBatch.Draw(tex, Projectile.position - new Vector2(1, 1) - Main.screenPosition, color);
 		}
 	}
 
+	[SLRDebug]
 	class VitricOreItem : QuickTileItem
 	{
 		public VitricOreItem() : base("Vitric Ore Crystal Item", "", "VitricOre", 1, AssetDirectory.VitricTile, false) { }
 	}
 
+	[SLRDebug]
 	class VitricOreFloatItem : QuickTileItem
 	{
 		public VitricOreFloatItem() : base("Floating Vitric Ore Crystal Item", "", "VitricOreFloat", 1, AssetDirectory.VitricTile, false) { }

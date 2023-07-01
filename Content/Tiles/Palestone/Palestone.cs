@@ -1,10 +1,30 @@
-﻿using static Terraria.ModLoader.ModContent;
+﻿using Terraria.ID;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Palestone
 {
 	internal class PalestoneItem : QuickTileItem
 	{
-		public PalestoneItem() : base("Palestone", "", "Palestone", 0, AssetDirectory.PalestoneTile) { }
+		public PalestoneItem() : base("Palestone Block", "", "Palestone", 0, AssetDirectory.PalestoneTile) { }
+	}
+
+	internal class PalestoneRecipes : ModSystem
+	{
+		public override void AddRecipes()
+		{
+			Recipe.Create(ItemID.Furnace)
+				.AddIngredient(ItemType<PalestoneItem>(), 20)
+				.AddRecipeGroup(RecipeGroupID.Wood, 4)
+				.AddIngredient(ItemID.Torch, 3)
+				.AddTile(TileID.WorkBenches)
+				.Register();
+
+			Recipe.Create(ItemID.WoodenArrow, 25)
+				.AddRecipeGroup(RecipeGroupID.Wood)
+				.AddIngredient(ItemType<PalestoneItem>())
+				.AddTile(TileID.WorkBenches)
+				.Register();
+		}
 	}
 
 	internal class Palestone : ModTile
@@ -21,7 +41,7 @@ namespace StarlightRiver.Content.Tiles.Palestone
 			HitSound = Terraria.ID.SoundID.Tink;
 
 			DustType = Terraria.ID.DustID.Stone;
-			ItemDrop = ItemType<PalestoneItem>();
+			RegisterItemDrop(ItemType<PalestoneItem>());
 
 			AddMapEntry(new Color(167, 180, 191));
 		}

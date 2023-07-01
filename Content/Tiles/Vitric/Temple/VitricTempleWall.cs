@@ -1,3 +1,4 @@
+using StarlightRiver.Core.Systems;
 using Terraria.Graphics;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -14,6 +15,11 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			DustType = DustType<Dusts.Sand>();
 		}
 
+		public override bool CanExplode(int i, int j)
+		{
+			return false;
+		}
+
 		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 		{
 			Texture2D tex = Request<Texture2D>(AssetDirectory.VitricTile + "VitricTempleWall").Value;
@@ -23,18 +29,31 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 			Tile tile = Framing.GetTileSafely(i, j);
 
-			if (Lighting.NotRetro && !WorldGen.SolidTile(tile))
+			if (Lighting.NotRetro)
 			{
 				Lighting.GetCornerColors(i, j, out VertexColors vertices);
 				Main.tileBatch.Draw(tex, target, source, vertices, Vector2.Zero, 1f, SpriteEffects.None);
 			}
+
+			if (TileID.Sets.DrawsWalls[tile.TileType])
+				spriteBatch.Draw(tex, target, source, Lighting.GetColor(i, j));
 		}
 	}
 
+	[SLRDebug]
 	class VitricTempleWallItem : QuickWallItem
 	{
 		public override string Texture => AssetDirectory.VitricTile + "VitricTempleWallItem";
 
-		public VitricTempleWallItem() : base("Vitric Forge Brick Wall", "Sturdy", WallType<VitricTempleWall>(), ItemRarityID.White) { }
+		public VitricTempleWallItem() : base("Vitric Forge Brick Wall (Danger)", "Debug item", WallType<VitricTempleWall>(), ItemRarityID.White) { }
+	}
+
+	class VitricTempleWallSafe : VitricTempleWall { }
+
+	class VitricTempleWallSafeItem : QuickWallItem
+	{
+		public override string Texture => AssetDirectory.VitricTile + "VitricTempleWallItem";
+
+		public VitricTempleWallSafeItem() : base("Vitric Forge Brick Wall (Safe)", "Sturdy", WallType<VitricTempleWallSafe>(), ItemRarityID.White) { }
 	}
 }

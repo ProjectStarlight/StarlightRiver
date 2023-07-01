@@ -3,7 +3,6 @@ using StarlightRiver.Content.Dusts;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -38,7 +37,7 @@ namespace StarlightRiver.Content.Items.Magnet
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Gray Goo");
-			Tooltip.SetDefault("Summons a swarm of nanomachines to devour enemies");
+			Tooltip.SetDefault("Summons a swarm of nanomachines to devour your enemies\n'Say the line, Armstrong!'");
 			ItemID.Sets.GamepadWholeScreenUseRange[Item.type] = true;
 			ItemID.Sets.LockOnIgnoresCollision[Item.type] = true;
 		}
@@ -333,7 +332,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.ZoomMatrix);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 			var goos = Main.projectile.Where(n => n.active && n.type == ProjectileType<GrayGooProj>()).ToList();
 			goos.ForEach(n => DrawGooTarget(n, spriteBatch));

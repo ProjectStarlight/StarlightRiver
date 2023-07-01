@@ -1,5 +1,4 @@
-﻿using StarlightRiver.Content.Projectiles;
-using StarlightRiver.Core.Systems.CameraSystem;
+﻿using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -26,8 +25,8 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			Item.DamageType = DamageClass.Melee;
 			Item.width = 32;
 			Item.height = 32;
-			Item.damage = 11;
-			Item.crit = 10;
+			Item.damage = 15;
+			Item.crit = 6;
 			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.useTime = 60;
 			Item.useAnimation = 60;
@@ -38,12 +37,13 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			Item.shoot = ProjectileType<TempleSpearProjectile>();
 			Item.shootSpeed = 1;
 			Item.channel = true;
+
+			Item.value = Item.sellPrice(gold: 1);
 		}
 	}
 
 	class TempleSpearProjectile : ModProjectile
 	{
-		public int maxCharge;
 
 		public int oldCharge; // used for drawing
 
@@ -55,9 +55,9 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 		public Vector2 pullbackOffset; //cache the pullback offset for the stab
 
-		public Vector2? OwnerMouse => (Main.myPlayer == Owner.whoAmI) ? Main.MouseWorld : null;
-
 		public ref float Timer => ref Projectile.ai[0];
+
+		public ref float maxCharge => ref Projectile.ai[1];
 
 		public Player Owner => Main.player[Projectile.owner];
 
@@ -86,6 +86,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 		{
 			maxCharge = (int)(Owner.HeldItem.useAnimation * (1f / Owner.GetTotalAttackSpeed(DamageClass.Melee)));
 			maxCharge = Utils.Clamp(maxCharge, 15, 60);
+			Projectile.netUpdate = true;
 		}
 
 		public override void AI()
@@ -95,6 +96,10 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 				Projectile.Kill();
 				return;
 			}
+
+			ControlsPlayer controlsPlayer = Owner.GetModPlayer<ControlsPlayer>();
+			if (Owner == Main.LocalPlayer)
+				controlsPlayer.mouseRotationListener = true;
 
 			Owner.heldProj = Projectile.whoAmI;
 			Owner.itemTime = 2;
@@ -118,24 +123,26 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 				for (int i = 0; i < 15; i++)
 				{
-					Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(15, 15), ModContent.DustType<Dusts.GlowFastDecelerate>(), Owner.DirectionTo(OwnerMouse.Value) * Main.rand.NextFloat(3f, 7f), 0, new Color(255, 200, 150), 0.6f);
+					Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(15, 15), ModContent.DustType<Dusts.GlowFastDecelerate>(), Owner.DirectionTo(controlsPlayer.mouseWorld) * Main.rand.NextFloat(3f, 7f), 0, new Color(255, 200, 150), 0.6f);
 				}
 
 				if (charged)
 				{
-					Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<TempleSpearLaser>(), Projectile.damage * 5, 0f, Projectile.owner);
+					var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<TempleSpearLaser>(), Projectile.damage * 2, 0f, Projectile.owner, ai0: Projectile.identity);
 					(proj.ModProjectile as TempleSpearLaser).parent = Projectile;
+
+					Helper.PlayPitched("Effects/FancySwoosh", 1f, 0.2f, Owner.Center);
 				}
 			}
 
 			if (!stabbing)
 			{
-				Projectile.velocity = Owner.DirectionTo(OwnerMouse.Value);
+				Projectile.velocity = Owner.DirectionTo(controlsPlayer.mouseWorld);
 
 				Projectile.timeLeft = 2;
 
 				Timer++;
-				
+
 				if (Timer < 15) // Pullback
 				{
 					float lerper = EaseBuilder.EaseQuinticOut.Ease(Timer / 15f);
@@ -203,6 +210,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			if (!stabbing)
 			{
 				float lerper = MathHelper.Lerp(0f, 0.65f, Timer / (maxCharge + 15f));
+				lerper = Utils.Clamp(lerper, 0f, 0.65f);
 				offset = Main.rand.NextVector2Circular(lerper, lerper);
 			}
 
@@ -212,7 +220,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 			if (stabbing)
 			{
-				Color oldColor = Color.Lerp(Color.Transparent, new Color(255, 240, 130), oldCharge / (maxCharge + 15f));
+				var oldColor = Color.Lerp(Color.Transparent, new Color(255, 240, 130), oldCharge / (maxCharge + 15f));
 				glowColor = Color.Lerp(oldColor, Color.Transparent, Timer / 25f);
 			}
 			else
@@ -226,9 +234,9 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			glowColor.A *= 0;
 
 			Main.spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY) + offset, null, glowColor * fade, Projectile.rotation - MathHelper.PiOver4, texGlow.Size() / 2f, Projectile.scale, 0, 0);
-			
+
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY) + offset, null, Color.White * fade, Projectile.rotation - MathHelper.PiOver4, tex.Size() / 2f, Projectile.scale, 0, 0);
-			
+
 			Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition - new Vector2(10, 0).RotatedBy(Projectile.rotation - MathHelper.PiOver2), null, glowColor * fade * 0.6f, 0f, bloomTex.Size() / 2f, 0.65f, 0, 0);
 
 			offset = new Vector2(-5, 0).RotatedBy(Projectile.rotation - MathHelper.PiOver2);
@@ -271,6 +279,8 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 		public Projectile parent;
 
+		public ref float parentIdentity => ref Projectile.ai[0];
+
 		public Player Owner => Main.player[Projectile.owner];
 
 		public override string Texture => AssetDirectory.Invisible;
@@ -293,6 +303,18 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 		public override void AI()
 		{
+			if (parent is null)
+			{
+				foreach (Projectile projectile in Main.projectile)
+				{
+					if (projectile.owner == Owner.whoAmI && parentIdentity == projectile.identity)
+					{
+						parent = projectile;
+						break;
+					}
+				}
+			}
+
 			if (parent is null || !parent.active)
 			{
 				Projectile.Kill();
@@ -304,7 +326,11 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 			Projectile.rotation += 0.025f;
 
-			Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(4, 4), ModContent.DustType<Dusts.GlowFastDecelerate>(), Owner.DirectionTo((parent.ModProjectile as TempleSpearProjectile).OwnerMouse.Value).RotatedByRandom(0.35f) * Main.rand.NextFloat(3f, 7f), 0, new Color(255, 200, 150), 0.3f);
+			ControlsPlayer controlsPlayer = Owner.GetModPlayer<ControlsPlayer>();
+			if (Owner == Main.LocalPlayer)
+				controlsPlayer.mouseRotationListener = true;
+
+			Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(4, 4), ModContent.DustType<Dusts.GlowFastDecelerate>(), Owner.DirectionTo(controlsPlayer.mouseWorld).RotatedByRandom(0.35f) * Main.rand.NextFloat(3f, 7f), 0, new Color(255, 200, 150), 0.3f);
 
 			if (Main.rand.NextBool(7))
 				Dust.NewDustPerfect(Projectile.Center + new Vector2(100, 0f).RotatedBy(parent.rotation - MathHelper.PiOver2) + Main.rand.NextVector2Circular(4, 4), ModContent.DustType<Dusts.GlowFastDecelerate>(), Vector2.UnitY.RotatedByRandom(0.35f) * -Main.rand.NextFloat(2f, 5f), 0, new Color(255, 200, 150), 0.3f);
@@ -319,7 +345,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 		public override void Kill(int timeLeft)
 		{
 			Vector2 pos = Projectile.Center + new Vector2(100, 0f).RotatedBy(parent.rotation - MathHelper.PiOver2);
-			Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), pos, Vector2.Zero, ModContent.ProjectileType<TempleSpearLight>(), Projectile.damage, 0f, Projectile.owner);
+			var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), pos, Vector2.Zero, ModContent.ProjectileType<TempleSpearLight>(), Projectile.damage, 0f, Projectile.owner);
 			proj.rotation = Projectile.rotation;
 		}
 
@@ -380,9 +406,9 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			spriteBatch.End();
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
-			Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
+			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * -0.03f);
 			effect.Parameters["repeats"].SetValue(1);
@@ -403,7 +429,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			trail?.Render(effect);
 			trail2?.Render(effect);
 
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		private float TrailFade()

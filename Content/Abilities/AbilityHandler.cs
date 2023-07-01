@@ -28,12 +28,12 @@ namespace StarlightRiver.Content.Abilities
 
 		// The Player's stamina stats.
 		public float StaminaMax => StaminaMaxDefault + StaminaMaxBonus;
-		public float StaminaMaxDefault => 1 + Shards.Count / shardsPerVessel + unlockedAbilities.Count;
+		public float StaminaMaxDefault => Shards.Count / shardsPerVessel + unlockedAbilities.Count;
 		public float StaminaMaxBonus
 		{
 			get => staminaMaxBonus;
 			set =>
-				// Can't have less than 0 max hp.
+				// Can't have less than 0 max sp.
 				staminaMaxBonus = Math.Max(value, -StaminaMaxDefault);
 		}
 		public float Stamina

@@ -164,7 +164,7 @@ namespace StarlightRiver.Content.CustomHooks
 			Main.graphics.GraphicsDevice.SetRenderTarget(Target);
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.EffectMatrix);
 
 			for (int i = 0; i < Main.maxPlayers; i++)
 			{

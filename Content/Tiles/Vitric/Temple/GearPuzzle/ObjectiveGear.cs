@@ -1,4 +1,6 @@
-﻿namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
+﻿using StarlightRiver.Core.Systems;
+
+namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 {
 	class ObjectiveGear : GearTile
 	{
@@ -20,12 +22,6 @@
 		public override void OnEngage(GearTileEntity entity)
 		{
 			GearPuzzleHandler.engagedObjectives++;
-
-			for (int k = 0; k < 10; k++)
-				Dust.NewDustPerfect(entity.Position.ToVector2() * 16, ModContent.DustType<Dusts.Glow>(), null, 0, new Color(255, 0, 0));
-
-			if (GearPuzzleHandler.engagedObjectives >= 9)
-				GearPuzzleHandler.solved = true;
 		}
 	}
 
@@ -49,6 +45,7 @@
 		}
 	}
 
+	[SLRDebug]
 	class ObjectiveGearItem : QuickTileItem
 	{
 		public ObjectiveGearItem() : base("Gear puzzle Point", "Debug Item", "ObjectiveGear", 8, AssetDirectory.VitricTile + "GearPeg", true) { }

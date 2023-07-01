@@ -1,5 +1,4 @@
-﻿using Terraria;
-using Terraria.ID;
+﻿using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Food
 {
@@ -10,6 +9,8 @@ namespace StarlightRiver.Content.Items.Food
 		public override void SafeSetDefaults()
 		{
 			Item.rare = ItemRarityID.White;
+
+			Item.value = Item.sellPrice(silver: 5);
 		}
 
 		public override void BuffEffects(Player Player, float multiplier)

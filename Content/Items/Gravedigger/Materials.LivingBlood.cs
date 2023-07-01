@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Living Blood");
-			Tooltip.SetDefault("");
+			Tooltip.SetDefault("'Unnaturally pulses with the light of the Blood Moon'");
 			Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(5, 5));
 			ItemID.Sets.AnimatesAsSoul[Item.type] = true;
 
@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		{
 			if (npc.type == NPCID.BloodZombie || npc.type == NPCID.Drippler)
 			{
-				npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<LivingBlood>(), 8));
+				npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<LivingBlood>(), 6, 1, 3));
 			}
 		}
 	}

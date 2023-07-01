@@ -63,7 +63,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			NPC.lifeMax = 150;
 			NPC.value = 0f;
 			NPC.knockBackResist = 0.2f;
-			NPC.DeathSound = SoundID.Shatter;
+			NPC.HitSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Impacts/IceHit") with { Pitch = -0.3f, PitchVariance = 0.3f };
+			NPC.DeathSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Impacts/EnergyBreak") with { Pitch = -0.3f, PitchVariance = 0.3f };
 			NPC.behindTiles = true;
 		}
 
@@ -129,7 +130,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 					if ((int)timer == 260) //Shield hits the ground
 					{
-						Helper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0.3f, NPC.Center);
+						Helper.PlayPitched("GlassMiniboss/GlassSmash", 0.5f, 0.3f, NPC.Center);
 						CameraSystem.shake += 4;
 
 						for (int i = 0; i < 10; i++)
@@ -158,7 +159,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 					}
 
 					if ((int)timer == 421)
-						Helper.PlayPitched("StoneSlide", 1f, -1f, NPC.Center);
+						Helper.PlayPitched("StoneSlide", 0.5f, -1f, NPC.Center);
 
 					if ((int)timer == 464) //Shield exits the ground
 					{
@@ -302,7 +303,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		public override void DrawHealingGlow(SpriteBatch spriteBatch)
 		{
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D tex = Request<Texture2D>(Texture).Value;
 			Texture2D shieldTex = Request<Texture2D>(Texture + "_Shield").Value;
@@ -320,7 +321,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)

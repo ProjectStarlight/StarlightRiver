@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SafeSetDefaults()
 		{
-			Item.value = 1;
+			Item.value = Item.sellPrice(gold: 1, silver: 25);
 			Item.rare = ItemRarityID.LightRed;
 		}
 

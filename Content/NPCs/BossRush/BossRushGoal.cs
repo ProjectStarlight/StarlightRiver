@@ -41,6 +41,8 @@ namespace StarlightRiver.Content.NPCs.BossRush
 
 				Main.LocalPlayer.QuickSpawnClonedItemDirect(null, item);
 
+				Main.LocalPlayer.GetModPlayer<MedalPlayer>().ProbeMedal("BossRush");
+
 				NPC.active = false;
 			}
 		}
