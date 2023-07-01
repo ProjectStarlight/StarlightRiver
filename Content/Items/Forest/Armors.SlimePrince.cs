@@ -10,6 +10,8 @@ namespace StarlightRiver.Content.Items.Forest
 	{
 		public Projectile prince;
 		public Vector2 targetVel;
+		public float accel = 0.06f;
+		public Vector2 targetAccel;
 
 		public SlimePrinceMinion Minion => prince?.ModProjectile as SlimePrinceMinion;
 
@@ -35,7 +37,7 @@ namespace StarlightRiver.Content.Items.Forest
 
 			// If the prince is invalid, we need to spawn a new prince
 			if (prince is null || !prince.active || prince.type != ProjectileType<SlimePrinceMinion>() || prince.owner != player.whoAmI)
-				prince = Projectile.NewProjectileDirect(player.GetSource_FromThis(), player.Center, Vector2.Zero, ProjectileType<SlimePrinceMinion>(), 44, 0, player.whoAmI);
+				prince = Projectile.NewProjectileDirect(player.GetSource_FromThis(), player.Center, Vector2.Zero, ProjectileType<SlimePrinceMinion>(), 28, 0, player.whoAmI);
 		}
 
 		public override void SetDefaults()
@@ -74,6 +76,7 @@ namespace StarlightRiver.Content.Items.Forest
 					if (!helm.Minion.Merged && helm.Minion.life >= SlimePrinceMinion.MAX_LIFE)
 					{
 						targetVel *= 0;
+						targetAccel *= 0;
 						helm.Minion.State = 2;
 						helm.Minion.Timer = 0;
 					}
@@ -97,31 +100,33 @@ namespace StarlightRiver.Content.Items.Forest
 		{
 			var helm = player.armor[0].ModItem as SlimePrinceHead;
 
-			// Slow the player down while they're transforming
-			if (helm?.Minion?.State == 2)
-			{
-				player.velocity *= 0.99f;
-			}
-
 			// Custom input handling
 			if (helm?.Minion?.Merged ?? false)
 			{
-				helm.targetVel *= 0.96f;
+				helm.targetVel *= 0.98f;
+				helm.targetAccel *= 0.83f;
+
+				accel = 0.06f;
 
 				if (player.controlLeft)
-					helm.targetVel.X -= 1;
+					helm.targetAccel.X -= accel;
 
 				if (player.controlRight)
-					helm.targetVel.X += 1;
+					helm.targetAccel.X += accel;
 
 				if (player.controlUp)
-					helm.targetVel.Y -= 1;
+					helm.targetAccel.Y -= accel;
 
 				if (player.controlDown)
-					helm.targetVel.Y += 1;
+					helm.targetAccel.Y += accel;
+
+				helm.targetVel += helm.targetAccel;
 
 				if (helm.targetVel.Length() > 10)
 					helm.targetVel = Vector2.Normalize(helm.targetVel) * 9.99f;
+
+				if (helm.targetAccel.Length() > 1)
+					helm.targetAccel = Vector2.Normalize(helm.targetAccel) * 0.99f;
 
 				player.velocity = helm.targetVel;
 				player.fallStart = (int)player.position.Y;
