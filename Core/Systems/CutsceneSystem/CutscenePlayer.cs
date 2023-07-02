@@ -1,6 +1,8 @@
-﻿using StarlightRiver.Content.GUI;
+﻿using NetEasy;
+using StarlightRiver.Content.GUI;
 using StarlightRiver.Core.Loaders.UILoading;
 using System;
+using Terraria.ID;
 
 namespace StarlightRiver.Core.Systems.CutsceneSystem
 {
@@ -20,6 +22,25 @@ namespace StarlightRiver.Core.Systems.CutsceneSystem
 		{
 			activeCutscene?.EndCutscene(Player); // end current cutscene to begin another
 			activeCutscene = (Cutscene)Activator.CreateInstance(typeof(T).Assembly.FullName, typeof(T).FullName).Unwrap();
+
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				var packet = new CutscenePacket((byte)Player.whoAmI, typeof(T).FullName, true);
+				packet.Send(-1, Player.whoAmI, false);
+			}
+		}
+
+		/// <summary>
+		/// Sets a given cutscene type as active for this player. This activates cutscene mode.
+		/// 
+		/// This version should typically only be called from net sync packets
+		/// </summary>
+		/// <param name="fullName">The fully qualified name of the cutscene type</param>
+		public void SetActiveCutscene(string fullName)
+		{
+			Mod.Logger.Info($"Activating cutscene {fullName} for {Player.name}");
+			activeCutscene?.EndCutscene(Player); // end current cutscene to begin another
+			activeCutscene = (Cutscene)Activator.CreateInstance(GetType().Assembly.FullName, fullName).Unwrap();
 		}
 
 		/// <summary>
@@ -27,8 +48,15 @@ namespace StarlightRiver.Core.Systems.CutsceneSystem
 		/// </summary>
 		public void DeactivateCutscene()
 		{
+			Mod.Logger.Info($"Ending cutscene for {Player.name}");
 			activeCutscene?.EndCutscene(Player);
 			activeCutscene = null;
+
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				var packet = new CutscenePacket((byte)Player.whoAmI, "", false);
+				packet.Send(-1, Player.whoAmI, false);
+			}
 		}
 
 		public override void PreUpdate()
@@ -75,7 +103,7 @@ namespace StarlightRiver.Core.Systems.CutsceneSystem
 		{
 			CutscenePlayer mp = Main.LocalPlayer.GetModPlayer<CutscenePlayer>();
 
-			if (mp.InCutscene)
+			if (mp.InCutscene || mp.fadeTimer > 0)
 			{
 				spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White * (mp.fadeTimer / 60f));
 
@@ -96,6 +124,18 @@ namespace StarlightRiver.Core.Systems.CutsceneSystem
 		public static void ActivateCutscene<T>(this Player player) where T : Cutscene
 		{
 			player.GetModPlayer<CutscenePlayer>().SetActiveCutscene<T>();
+		}
+
+		/// <summary>
+		/// Sets the player's active cutscene to a new instance of the provided type
+		/// 
+		/// Typically only used by the net sync
+		/// </summary>
+		/// <param name="player">The player to start the cutscene for</param>
+		/// <param name="fullName">The fully qualified name of the cutscene type</param>
+		public static void ActivateCutscene(this Player player, string fullName)
+		{
+			player.GetModPlayer<CutscenePlayer>().SetActiveCutscene(fullName);
 		}
 
 		/// <summary>
@@ -122,6 +162,40 @@ namespace StarlightRiver.Core.Systems.CutsceneSystem
 				return true;
 
 			return false;
+		}
+	}
+
+	[Serializable]
+	public class CutscenePacket : Module
+	{
+		readonly byte whoAmI;
+		readonly string fullType;
+		readonly bool state;
+
+		public CutscenePacket(byte whoAmI, string fullType, bool state)
+		{
+			this.whoAmI = whoAmI;
+			this.fullType = fullType;
+			this.state = state;
+		}
+
+		protected override void Receive()
+		{
+			Player player = Main.player[whoAmI];
+
+			if (state)
+			{
+				player.ActivateCutscene(fullType);
+			}
+			else
+			{
+				StarlightRiver.Instance.Logger.Info($"Ending cutscene for {player.name}");
+				player.GetModPlayer<CutscenePlayer>().activeCutscene?.EndCutscene(player);
+				player.GetModPlayer<CutscenePlayer>().activeCutscene = null;
+			}
+
+			if (Main.netMode == NetmodeID.Server)
+				Send(-1, player.whoAmI, false);
 		}
 	}
 }

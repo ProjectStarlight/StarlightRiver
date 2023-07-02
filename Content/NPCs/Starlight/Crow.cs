@@ -86,12 +86,8 @@ namespace StarlightRiver.Content.NPCs.Starlight
 				InCutscene = true;
 			}
 
-			if (InCutscene && (Main.netMode == NetmodeID.SinglePlayer || Main.netMode == NetmodeID.MultiplayerClient)) //handles cutscenes
+			if (InCutscene) //handles cutscenes
 			{
-				Player player = Main.LocalPlayer;
-				player.immune = true; //TODO: Move this later!!!
-				player.immuneTime = 2;
-
 				switch (StarlightEventSequenceSystem.sequence)
 				{
 					case 0:
@@ -105,9 +101,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			}
 
 			if (leaving)
-			{
 				LeaveAnimation();
-			}
 		}
 
 		/// <summary>
@@ -218,12 +212,16 @@ namespace StarlightRiver.Content.NPCs.Starlight
 
 			if (CutsceneTimer >= 140)
 			{
+				Mod.Logger.Info("Alican is leaving!");
+
 				StarlightEventSequenceSystem.willOccur = false;
 				StarlightEventSequenceSystem.occuring = false;
 
 				StarlightEventSequenceSystem.sequence++;
 
-				NetMessage.SendData(MessageID.WorldData);
+				// Server should tell the clients the event is over
+				if (Main.netMode == NetmodeID.Server)
+					NetMessage.SendData(MessageID.WorldData);
 
 				NPC.active = false;
 			}
@@ -264,7 +262,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			else
 				NPC.direction = Main.LocalPlayer.Center.X > NPC.Center.X ? 1 : -1;
 
-			if (CutsceneTimer == 360) // First encounter
+			if (CutsceneTimer == 360 && !Main.dedServ) // First encounter
 			{
 				if (Main.LocalPlayer.GetHandler().Unlocked<HintAbility>()) // If they already have the ability, special abort dialogue
 				{
