@@ -1,6 +1,5 @@
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Buffs.Summon;
-using StarlightRiver.Core.Systems.ChestLootSystem;
 using System;
 using System.Linq;
 using Terraria.Audio;
@@ -9,14 +8,6 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Starwood
 {
-	public class StarwoodScepterPool : LootPool
-	{
-		public override void AddLoot()
-		{
-			AddItem(ModContent.ItemType<DormantScepter>(), ChestRegionFlags.Surface, 0.5f, 1, true, 2);
-		}
-	}
-
 	public class StarwoodScepter : StarwoodItem
 	{
 		public override string Texture => AssetDirectory.StarwoodItem + Name;
@@ -56,10 +47,10 @@ namespace StarlightRiver.Content.Items.Starwood
 		{
 			player.AddBuff(Item.buffType, 2);
 
-			Projectile proj = Projectile.NewProjectileDirect(source, Main.MouseWorld, Main.rand.NextVector2CircularEdge(5f, 5f), type, damage, knockback, player.whoAmI, ai2: 1f);
+			var proj = Projectile.NewProjectileDirect(source, Main.MouseWorld, Main.rand.NextVector2CircularEdge(5f, 5f), type, damage, knockback, player.whoAmI, ai2: 1f);
 			proj.originalDamage = Item.damage;
 
-			Projectile proj2 = Projectile.NewProjectileDirect(source, Main.MouseWorld, Main.rand.NextVector2CircularEdge(5f, 5f), type, damage, knockback, player.whoAmI, ai2: 0f);
+			var proj2 = Projectile.NewProjectileDirect(source, Main.MouseWorld, Main.rand.NextVector2CircularEdge(5f, 5f), type, damage, knockback, player.whoAmI, ai2: 0f);
 			proj2.originalDamage = Item.damage;
 
 			(proj.ModProjectile as StarwoodScepterSummonSplit).otherProj = proj2;
@@ -93,7 +84,7 @@ namespace StarlightRiver.Content.Items.Starwood
 		public NPC Target => targetWhoAmI > -1 ? Main.npc[(int)targetWhoAmI] : null;
 
 		public ref float DowntimeTimer => ref Projectile.ai[0];
-		public ref float AttackTimer => ref Projectile.ai[1];	
+		public ref float AttackTimer => ref Projectile.ai[1];
 		public bool IsParent => Projectile.ai[2] != 0f;
 
 		public Player Owner => Main.player[Projectile.owner];
@@ -206,13 +197,11 @@ namespace StarlightRiver.Content.Items.Starwood
 
 					// Here we need to make sure the item is synced in multiplayer games.
 					if (Main.netMode == NetmodeID.MultiplayerClient && newItem >= 0)
-					{
 						NetMessage.SendData(MessageID.SyncItem, -1, -1, null, newItem, 1f);
-					}
 				}
 			}
 		}
-	
+
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
@@ -235,7 +224,7 @@ namespace StarlightRiver.Content.Items.Starwood
 			Main.spriteBatch.Draw(blurTex, Projectile.Center - Main.screenPosition, glowFrame, Color.White with { A = 0 } * 0.4f, Projectile.rotation, glowFrame.Size() / 2f, Projectile.scale, 0f, 0f);
 
 			Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, glowFrame, new Color(255, 155, 0, 0) * 0.15f, Projectile.rotation, glowFrame.Size() / 2f, Projectile.scale, 0f, 0f);
-			
+
 			Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, new Color(255, 155, 0, 0) * 0.01f, Projectile.rotation, bloomTex.Size() / 2f, 0.5f, 0f, 0f);
 
 			return false;
@@ -259,10 +248,10 @@ namespace StarlightRiver.Content.Items.Starwood
 			{
 				Projectile.velocity *= 0.95f;
 				Projectile.rotation += 0.05f;
-				rotationalVelocity = Projectile.rotation.ToRotationVector2(); 
+				rotationalVelocity = Projectile.rotation.ToRotationVector2();
 				DowntimeTimer--;
 				return;
-			}			
+			}
 
 			if (!FoundTarget)
 			{
@@ -274,6 +263,7 @@ namespace StarlightRiver.Content.Items.Starwood
 				if (IsParent)
 				{
 					NPC target = FindTarget();
+
 					if (target != default)
 						targetWhoAmI = target.whoAmI;
 				}
@@ -288,8 +278,8 @@ namespace StarlightRiver.Content.Items.Starwood
 					Projectile.rotation += 0.05f;
 
 					Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(2f, 2f), 0, Main.rand.NextBool() ? new Color(255, 200, 0) : new Color(255, 150, 0), 0.2f);
-					
-					AttackTimer--;				
+
+					AttackTimer--;
 				}
 				else
 				{
@@ -367,10 +357,10 @@ namespace StarlightRiver.Content.Items.Starwood
 			}
 			else if (IsParent) // only spawn the projectile on the parent
 			{
-				Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center,
+				var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center,
 					Main.rand.NextVector2CircularEdge(5f, 5f), ModContent.ProjectileType<StarwoodScepterSummonEmpowered>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
 
-				(proj.ModProjectile as StarwoodScepterSummonEmpowered).Children = new int[] {Projectile.whoAmI, otherProj.whoAmI};
+				(proj.ModProjectile as StarwoodScepterSummonEmpowered).Children = new int[] { Projectile.whoAmI, otherProj.whoAmI };
 				(proj.ModProjectile as StarwoodScepterSummonEmpowered).DowntimeTimer = 35;
 				empowermentTimer = 0;
 				proj.originalDamage = (int)(Projectile.originalDamage * 2.5);
@@ -395,6 +385,7 @@ namespace StarlightRiver.Content.Items.Starwood
 			float dist = Vector2.Distance(Projectile.Center, IdlePosition);
 
 			Vector2 toIdlePos = IdlePosition - Projectile.Center;
+
 			if (toIdlePos.Length() < 0.0001f)
 			{
 				toIdlePos = Vector2.Zero;
@@ -436,7 +427,7 @@ namespace StarlightRiver.Content.Items.Starwood
 			{
 				Projectile.frame = 1;
 				lifetime = (otherProj.ModProjectile as StarwoodScepterSummonSplit).lifetime;
-			}	
+			}
 			else
 			{
 				lifetime++;
@@ -470,7 +461,9 @@ namespace StarlightRiver.Content.Items.Starwood
 		public ref float AttackTimer => ref Projectile.ai[1];
 		public bool IsParent => Projectile.ai[2] != 0f;
 
-		public Player Owner => Main.player[Projectile.owner]; 
+		public Player Owner => Main.player[Projectile.owner];
+
+		public override string Texture => AssetDirectory.StarwoodItem + Name;
 
 		public NPC MinionTarget
 		{
@@ -483,7 +476,6 @@ namespace StarlightRiver.Content.Items.Starwood
 			}
 		}
 
-		public override string Texture => AssetDirectory.StarwoodItem + Name;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Empowered Star");
@@ -557,14 +549,14 @@ namespace StarlightRiver.Content.Items.Starwood
 						Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(5f, 5f), 0, new Color(0, 0, 255), 0.35f);
 
 					NPC target = FindTarget();
+
 					if (target != default)
-					{
 						targetWhoAmI = target.whoAmI;
-					}
 				}
 				else
 				{
 					AttackTimer++;
+
 					if (AttackTimer < 15f)
 					{
 						Projectile.velocity *= 0.94f;
@@ -642,9 +634,9 @@ namespace StarlightRiver.Content.Items.Starwood
 		{
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
-			Texture2D blurTex = ModContent.Request<Texture2D>(Texture + "_Blur").Value; 
+			Texture2D blurTex = ModContent.Request<Texture2D>(Texture + "_Blur").Value;
 			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
-			
+
 			lightColor = Color.White;
 
 			for (int i = 0; i < Projectile.oldPos.Length; i++)
@@ -673,6 +665,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
 			return false;
 		}
+
 		/// <summary>
 		/// Performs the idle movement for the Projectile
 		/// </summary>
@@ -690,6 +683,7 @@ namespace StarlightRiver.Content.Items.Starwood
 			else
 			{
 				float speed = 35f;
+
 				if (dist < 1000f)
 					speed = MathHelper.Lerp(10f, 25f, dist / 1000f);
 
@@ -711,6 +705,7 @@ namespace StarlightRiver.Content.Items.Starwood
 				Projectile.netUpdate = true;
 			}
 		}
+
 		/// <summary>
 		/// Updates the Projectile's timeLeft according to the buff
 		/// </summary>
@@ -732,6 +727,10 @@ namespace StarlightRiver.Content.Items.Starwood
 
 	class StarstruckDebuff : SmartBuff
 	{
+		public override string Texture => AssetDirectory.Debug;
+
+		public StarstruckDebuff() : base("Starstruck", "Reach for the stars", true) { }
+
 		public override void Load()
 		{
 			StarlightNPC.UpdateLifeRegenEvent += ApplyDot;
@@ -747,15 +746,11 @@ namespace StarlightRiver.Content.Items.Starwood
 			}
 		}
 
-		public override string Texture => AssetDirectory.Debug;
-
-		public StarstruckDebuff() : base("Starstruck", "Reach for the stars", true) { }
-
 		public override void Update(NPC npc, ref int buffIndex)
 		{
 			if (Main.rand.NextBool(7))
 				Dust.NewDustPerfect(npc.Center + Main.rand.NextVector2Circular(npc.width, npc.height), ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(5f, 5f), 100, new Color(255, 255, 0), 0.5f);
-			
+
 			if (Main.rand.NextBool(7))
 				Dust.NewDustPerfect(npc.Center + Main.rand.NextVector2Circular(npc.width, npc.height), ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(5f, 5f), 100, new Color(0, 0, 255), 0.5f);
 
