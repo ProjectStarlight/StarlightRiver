@@ -3235,6 +3235,18 @@ Mods: {
 				Tooltip: Fragile! Please handle with care.
 				DisplayName: Coolmite
 			}
+
+			HauntedDaggerStaff: {
+				DisplayName: Haunted Dagger Staff
+				Tooltip:
+					'''
+					Summons haunted daggers, embedding themselves in your foes
+					Change summon targets or whip them to violently tear the daggers from their flesh
+					'These aren't enchanted... they're haunted!'
+					'It's different?'
+					'It's different.'
+					'''
+			}
 		}
 
 		Projectiles: {
@@ -3573,6 +3585,7 @@ Mods: {
 			SandscriptBook.DisplayName: Sandscript Book
 			RecursiveFocusLaser.DisplayName: Infernal Laser
 			GlassShard.DisplayName: Glass Shard
+			HauntedDaggerProjectile.DisplayName: Haunted Dagger
 		}
 
 		Tiles: {
@@ -4198,6 +4211,11 @@ Mods: {
 					What lies below?
 					Increased mining speed
 					'''
+			}
+
+			HauntedDaggerSummonBuff: {
+				DisplayName: Haunted Daggers
+				Description: Death by a hundred cuts
 			}
 		}
 
