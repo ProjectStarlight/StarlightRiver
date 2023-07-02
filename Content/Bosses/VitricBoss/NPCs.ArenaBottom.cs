@@ -127,7 +127,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 						var pos = new Vector2(NPC.ai[2] == 1 ? NPC.position.X + NPC.width - NPC.ai[0] : NPC.position.X + NPC.ai[0], NPC.position.Y + 48);
 
 						if (Main.netMode != NetmodeID.MultiplayerClient)
-							Projectile.NewProjectile(NPC.GetSource_FromThis(), pos, Vector2.Zero, ProjectileType<CrystalWave>(), 20, 1);
+							Projectile.NewProjectile(NPC.GetSource_FromThis(), pos, Vector2.Zero, ProjectileType<CrystalWave>(), 20, 1, Owner: -1, ai0: pos.Y);
 					}
 
 					if (NPC.ai[0] > NPC.width)
@@ -155,7 +155,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 							NPC.ai[1] = 0;
 					}
 
-					if (NPC.ai[0] < 120) //dust before rising
+					if (NPC.ai[0] < 120 && Main.netMode != NetmodeID.Server) //dust before rising
 						Dust.NewDust(NPC.position, NPC.width, NPC.height, Terraria.ID.DustID.Torch);
 
 					if (NPC.ai[0] >= 150)
@@ -309,7 +309,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 	internal class CrystalWave : ModProjectile
 	{
-		private float startY;
+		public ref float StartY => ref Projectile.ai[0];
+
+		private bool loaded = false;
 
 		public override string Texture => AssetDirectory.VitricBoss + Name;
 
@@ -325,21 +327,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		public override void AI()
 		{
 			float off = 128 * Projectile.timeLeft / 15 - 64 * (float)Math.Pow(Projectile.timeLeft, 2) / 225;
-			if (Projectile.timeLeft == 30)
-			{
-				Terraria.Audio.SoundEngine.PlaySound(Terraria.ID.SoundID.DD2_WitherBeastCrystalImpact, Projectile.Center);
 
-				for (int k = 0; k < Main.rand.Next(6); k++)
-				{
-					int type = Mod.Find<ModGore>("MagmiteGore").Type;
-					Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.Center - Vector2.UnitY * 16, (Vector2.UnitY * -8).RotatedByRandom(0.2f), type, Main.rand.NextFloat(0.3f, 0.5f));
-					Dust.NewDustPerfect(Projectile.Center - Vector2.UnitY * 16, DustType<Dusts.Glow>(), (Vector2.UnitY * Main.rand.Next(-5, -2)).RotatedByRandom(0.8f), 0, new Color(255, 200, 100), 0.3f);
-				}
-
-				startY = Projectile.position.Y;
-			}
-
-			Projectile.position.Y = startY - off;
+			Projectile.position.Y = StartY - off;
 		}
 
 		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
@@ -349,6 +338,19 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public override void PostDraw(Color lightColor)
 		{
+			if (!loaded)
+			{
+				loaded = true;
+				Terraria.Audio.SoundEngine.PlaySound(Terraria.ID.SoundID.DD2_WitherBeastCrystalImpact, Projectile.Center);
+
+				for (int k = 0; k < Main.rand.Next(6); k++)
+				{
+					int type = Mod.Find<ModGore>("MagmiteGore").Type;
+					Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.Center - Vector2.UnitY * 30, (Vector2.UnitY * -8).RotatedByRandom(0.2f), type, Main.rand.NextFloat(0.3f, 0.5f));
+					Dust.NewDustPerfect(Projectile.Center - Vector2.UnitY * 30, DustType<Dusts.Glow>(), (Vector2.UnitY * Main.rand.Next(-5, -2)).RotatedByRandom(0.8f), 0, new Color(255, 200, 100), 0.3f);
+				}
+			}
+
 			Main.spriteBatch.Draw(Request<Texture2D>(Texture).Value, Projectile.position - Main.screenPosition, Lighting.GetColor((int)Projectile.Center.X / 16, (int)Projectile.Center.Y / 16 - 2) * 1.4f);
 
 			Color color = Color.White * (Projectile.timeLeft / 30f);
