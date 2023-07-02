@@ -31,10 +31,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		/// </summary>
 		public Vector2 arenaPos;
 
-		internal ref float Phase => ref NPC.ai[0];
 		internal ref float GlobalTimer => ref NPC.ai[1];
 		internal ref float AttackPhase => ref NPC.ai[2];
 		internal ref float AttackTimer => ref NPC.ai[3];
+
+		internal float Phase; // This causes the boss to despawn on the client if synced. This works anyways.
 
 		public Rectangle Arena => new((int)arenaPos.X - 35 * 16, (int)arenaPos.Y - 30 * 16, 70 * 16, 30 * 16);
 
@@ -194,7 +195,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 				case (int)Phases.ReturnToForeground:
 
-					if (AttackTimer == 1)
+					if (AttackTimer == 1 && Main.netMode != NetmodeID.Server) // Only display in singelplayer or multiplayer client
 						UILoader.GetUIState<TextCard>().Display("Glassweaver", "Worker of the Anvil", null, 240, 1.2f, false);
 
 					JumpBackAnimation();
