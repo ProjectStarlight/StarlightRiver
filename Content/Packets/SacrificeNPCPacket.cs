@@ -12,15 +12,13 @@ namespace StarlightRiver.Content.Packets
 	[Serializable]
 	public class SacrificeNPCPacket : Module
 	{
-		private readonly int fromWho;
 		private readonly int type;
 		private readonly int oldId;
 		private readonly int x;
 		private readonly int y;
 
-		public SacrificeNPCPacket(int fromWho, int x, int y, int type, int oldId)
+		public SacrificeNPCPacket(int x, int y, int type, int oldId)
 		{
-			this.fromWho = fromWho;
 			this.type = type;
 			this.oldId = oldId;
 			this.x = x;
@@ -30,14 +28,16 @@ namespace StarlightRiver.Content.Packets
 		protected override void Receive()
 		{
 			Main.npc[oldId].active = false;
-			NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, oldId);
 
-			if (Main.netMode != NetmodeID.SinglePlayer)
+			if (Main.netMode == NetmodeID.Server)
 			{
-				int n = NPC.NewNPC(new EntitySource_SpawnNPC(), x, y, type);
+				int newId = NPC.NewNPC(new EntitySource_SpawnNPC(), x, y, type);
 
-				if (n >= 0)
-					NetMessage.SendData(MessageID.SyncNPC, -1, -1, NetworkText.Empty, n);
+				if (newId >= 0)
+					NetMessage.SendData(MessageID.SyncNPC, -1, -1, NetworkText.Empty, newId);
+
+				if (newId != oldId) // Slight optimization occasionally they will use the same NPC index and not need to be synced twice
+					NetMessage.SendData(MessageID.SyncNPC, -1, -1, NetworkText.Empty, oldId);
 			}
 
 			if (Main.netMode == NetmodeID.SinglePlayer)
