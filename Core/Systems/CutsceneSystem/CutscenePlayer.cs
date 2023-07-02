@@ -38,7 +38,9 @@ namespace StarlightRiver.Core.Systems.CutsceneSystem
 		/// <param name="fullName">The fully qualified name of the cutscene type</param>
 		public void SetActiveCutscene(string fullName)
 		{
+#if DEBUG
 			Mod.Logger.Info($"Activating cutscene {fullName} for {Player.name}");
+#endif
 			activeCutscene?.EndCutscene(Player); // end current cutscene to begin another
 			activeCutscene = (Cutscene)Activator.CreateInstance(GetType().Assembly.FullName, fullName).Unwrap();
 		}
@@ -48,7 +50,9 @@ namespace StarlightRiver.Core.Systems.CutsceneSystem
 		/// </summary>
 		public void DeactivateCutscene()
 		{
+#if DEBUG
 			Mod.Logger.Info($"Ending cutscene for {Player.name}");
+#endif
 			activeCutscene?.EndCutscene(Player);
 			activeCutscene = null;
 
@@ -101,11 +105,11 @@ namespace StarlightRiver.Core.Systems.CutsceneSystem
 		/// <param name="spriteBatch"></param>
 		public override void PostDrawInterface(SpriteBatch spriteBatch)
 		{
-			CutscenePlayer mp = Main.LocalPlayer.GetModPlayer<CutscenePlayer>();
+			CutscenePlayer cutscenePlayer = Main.LocalPlayer.GetModPlayer<CutscenePlayer>();
 
-			if (mp.InCutscene || mp.fadeTimer > 0)
+			if (cutscenePlayer.InCutscene || cutscenePlayer.fadeTimer > 0)
 			{
-				spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White * (mp.fadeTimer / 60f));
+				spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White * (cutscenePlayer.fadeTimer / 60f));
 
 				// Hack to redraw the rich text box, this will likely be the only UI we want here, right?
 				if (UILoader.GetUIState<RichTextBox>().Visible)
@@ -189,7 +193,9 @@ namespace StarlightRiver.Core.Systems.CutsceneSystem
 			}
 			else
 			{
+#if DEBUG
 				StarlightRiver.Instance.Logger.Info($"Ending cutscene for {player.name}");
+#endif
 				player.GetModPlayer<CutscenePlayer>().activeCutscene?.EndCutscene(player);
 				player.GetModPlayer<CutscenePlayer>().activeCutscene = null;
 			}

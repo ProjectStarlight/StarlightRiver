@@ -212,7 +212,9 @@ namespace StarlightRiver.Content.NPCs.Starlight
 
 			if (CutsceneTimer >= 140)
 			{
+#if DEBUG
 				Mod.Logger.Info("Alican is leaving!");
+#endif
 
 				StarlightEventSequenceSystem.willOccur = false;
 				StarlightEventSequenceSystem.occuring = false;
