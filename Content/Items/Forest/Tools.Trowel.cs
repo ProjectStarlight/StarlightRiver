@@ -122,7 +122,7 @@ namespace StarlightRiver.Content.Items.Forest
 					Item.stack--;
 					if (Item.stack <= 0)
 						Item.TurnToAir();
-				}	
+				}
 			}
 
 			return true;
