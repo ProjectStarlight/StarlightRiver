@@ -167,7 +167,7 @@ namespace StarlightRiver.Content.Backgrounds
 
 		public override void PostUpdateEverything()
 		{
-			if (!CheckIsActive())
+			if (!CheckIsActive() || Main.dedServ)
 				return;
 
 			// star particles
