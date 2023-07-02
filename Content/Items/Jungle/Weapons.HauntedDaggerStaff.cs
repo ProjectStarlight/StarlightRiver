@@ -107,7 +107,7 @@ namespace StarlightRiver.Content.Items.Jungle
 			bool fleshy = Helpers.Helper.IsFleshy(npc);
 
 			Helpers.Helper.PlayPitched("Impacts/GoreLight", 1f, Main.rand.NextFloat(-0.1f, 0.1f), npc.Center);
-			
+
 			if (!fleshy)
 				Helpers.Helper.PlayPitched("Impacts/Clink", 1f, Main.rand.NextFloat(-0.1f, 0.1f), npc.Center);
 
@@ -300,7 +300,7 @@ namespace StarlightRiver.Content.Items.Jungle
 					NPC target = FindTarget();
 					if (target != default)
 						TargetWhoAmI = target.whoAmI;
-				}			 
+				}
 			}
 			else if (AttackDelay <= 0)
 			{
