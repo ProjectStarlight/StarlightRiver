@@ -1,6 +1,8 @@
 ﻿using StarlightRiver.Content.NPCs.Vitric.Gauntlet;
 using System;
 using System.Linq;
+using Terraria.ID;
+using Terraria.Localization;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
@@ -51,8 +53,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		private void GauntletWave0()
 		{
-			if (AttackTimer == 1)
-				Main.NewText("Begin!", Color.OrangeRed);
+			if (AttackTimer == 1 && Main.netMode != NetmodeID.MultiplayerClient)
+				Terraria.Chat.ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("Begin!"), Color.OrangeRed);
 
 			if (AttackTimer == 120)
 				summonAnimTime = 60;
