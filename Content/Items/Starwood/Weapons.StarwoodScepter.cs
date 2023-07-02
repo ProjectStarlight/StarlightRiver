@@ -47,11 +47,13 @@ namespace StarlightRiver.Content.Items.Starwood
 		{
 			player.AddBuff(Item.buffType, 2);
 
-			var proj = Projectile.NewProjectileDirect(source, Main.MouseWorld, Main.rand.NextVector2CircularEdge(5f, 5f), type, damage, knockback, player.whoAmI, ai2: 1f);
+#pragma warning disable IDE0007
+			Projectile proj = Projectile.NewProjectileDirect(source, Main.MouseWorld, Main.rand.NextVector2CircularEdge(5f, 5f), type, damage, knockback, player.whoAmI, ai2: 1f);
 			proj.originalDamage = Item.damage;
 
-			var proj2 = Projectile.NewProjectileDirect(source, Main.MouseWorld, Main.rand.NextVector2CircularEdge(5f, 5f), type, damage, knockback, player.whoAmI, ai2: 0f);
+			Projectile proj2 = Projectile.NewProjectileDirect(source, Main.MouseWorld, Main.rand.NextVector2CircularEdge(5f, 5f), type, damage, knockback, player.whoAmI, ai2: 0f);
 			proj2.originalDamage = Item.damage;
+#pragma warning restore
 
 			(proj.ModProjectile as StarwoodScepterSummonSplit).otherProj = proj2;
 			(proj2.ModProjectile as StarwoodScepterSummonSplit).otherProj = proj;
