@@ -80,7 +80,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		public override void SafeAI()
 		{
-			if (xFrame == 1 && yFrame == 7 && frameCounter == 1) //Dust when the enemy swings it's sword
+			if (xFrame == 1 && yFrame == 7 && frameCounter == 1 && Main.netMode != NetmodeID.Server) //Dust when the enemy swings it's sword
 			{
 				for (int i = 0; i < 15; i++)
 				{
@@ -455,14 +455,19 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 						for (float i = -1; i < 1.1f; i += 1)
 						{
-							Vector2 arrowVel = arrowPos.DirectionTo(Target.Center).RotatedBy(i / 3f) * 20;
-							int damage = (int)(NPC.damage * (Main.expertMode || Main.masterMode ? 0.3f : 1));
-							var proj = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), arrowPos, arrowVel, ProjectileType<PelterConstructArrow>(), damage, NPC.knockBackResist);
-
-							for (int k = 0; k < 15; k++)
+							if (Main.netMode != NetmodeID.MultiplayerClient)
 							{
-								Vector2 dustPos = arrowPos + Main.rand.NextVector2Circular(10, 10);
-								Dust.NewDustPerfect(dustPos, DustType<Glow>(), arrowPos.DirectionTo(Target.Center).RotatedByRandom(0.7f + i) * Main.rand.NextFloat(0.1f, 1f) * 4f, 0, new Color(255, 150, 50), Main.rand.NextFloat(0.75f, 1.25f)).noGravity = true;
+								Vector2 arrowVel = arrowPos.DirectionTo(Target.Center).RotatedBy(i / 3f) * 20;
+								int damage = (int)(NPC.damage * (Main.expertMode || Main.masterMode ? 0.3f : 1));
+								var proj = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), arrowPos, arrowVel, ProjectileType<PelterConstructArrow>(), damage, NPC.knockBackResist);
+							}
+
+							if (Main.netMode !=  NetmodeID.Server) {
+								for (int k = 0; k < 15; k++)
+								{
+									Vector2 dustPos = arrowPos + Main.rand.NextVector2Circular(10, 10);
+									Dust.NewDustPerfect(dustPos, DustType<Glow>(), arrowPos.DirectionTo(Target.Center).RotatedByRandom(0.7f + i) * Main.rand.NextFloat(0.1f, 1f) * 4f, 0, new Color(255, 150, 50), Main.rand.NextFloat(0.75f, 1.25f)).noGravity = true;
+								}
 							}
 						}
 					}

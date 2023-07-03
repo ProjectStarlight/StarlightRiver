@@ -2,7 +2,9 @@ using ReLogic.Content;
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Terraria.DataStructures;
+using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
@@ -107,6 +109,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void Kill(int timeLeft)
 		{
+			if (Main.netMode == NetmodeID.Server)
+				return;
+
 			Helpers.Helper.PlayPitched("GlassMiniboss/GlassShatter", 1f, Main.rand.NextFloat(0.1f), Projectile.Center);
 
 			for (int k = 0; k < 10; k++)
@@ -157,7 +162,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public ref float Timer => ref Projectile.ai[0];
 
-		public ref float WhoAmI => ref Projectile.ai[1];
+		public ref float OwnerWhoAmI => ref Projectile.ai[1];
+
+		private bool isLoaded = false;
 
 		public override void SetStaticDefaults()
 		{
@@ -180,12 +187,19 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void OnSpawn(IEntitySource source)
 		{
+			OnSpawnSpikeVisualVars();
+		}
+
+		private void OnSpawnSpikeVisualVars()
+		{
 			Projectile.rotation += Main.rand.NextFloat(-0.01f, 0.01f);
 			maxSpikes = 3 + Main.rand.Next(16, 18);
 			points = new Vector2[maxSpikes];
 			offsets = new float[maxSpikes];
 			for (int i = 0; i < maxSpikes; i++)
 				offsets[i] = ((float)Math.Sin(i * MathHelper.Pi / Main.rand.NextFloat(1f, 2f)) + Main.rand.NextFloatDirection()) / 2f;
+
+			isLoaded = true;
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
@@ -195,13 +209,16 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void AI()
 		{
+			if (!isLoaded)
+				OnSpawnSpikeVisualVars();
+
 			Timer++;
 
 			if (Timer == RAISE_TIME - 59)
 			{
-				Projectile.height = (int)(MathHelper.Lerp(240, 150, WhoAmI) * Projectile.scale);
+				Projectile.height = (int)(MathHelper.Lerp(240, 150, OwnerWhoAmI) * Projectile.scale); //using OwnerWhoAmI is shitcode but leaving it incase it has some reason for 1 time randomness like this
 
-				Projectile.rotation += WhoAmI * Projectile.direction * 0.1f;
+				Projectile.rotation += OwnerWhoAmI * Projectile.direction * 0.1f;
 
 				int x = (int)(Projectile.Center.X / 16f);
 				int y = (int)(Projectile.Center.Y / 16f);
@@ -362,6 +379,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			float width = 0.6f + (float)Math.Pow(Utils.GetLerpValue(RAISE_TIME * 0.17f, RAISE_TIME, Timer, true), 2) * 6f * Projectile.scale;
 			Main.EntitySpriteDraw(tellTex.Value, Projectile.Bottom - new Vector2(0, 10) - Main.screenPosition, frameGlow, fade, Projectile.rotation * 0.3f, tellOrigin, new Vector2(width, height), 0, 0);
 			Main.EntitySpriteDraw(tellTex.Value, Projectile.Bottom - new Vector2(0, 10) - Main.screenPosition, frame, fadeInner, Projectile.rotation * 0.3f, tellOrigin, new Vector2(1f, height * 0.6f), 0, 0);
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			
 		}
 	}
 }

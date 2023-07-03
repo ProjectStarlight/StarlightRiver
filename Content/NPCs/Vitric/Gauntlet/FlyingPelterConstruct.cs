@@ -3,6 +3,7 @@ using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
@@ -409,26 +410,34 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 						attacking = false;
 						posToBe = Target.Center + new Vector2(Main.rand.Next(-500, -100) * Math.Sign(Target.Center.X - NPC.Center.X), Main.rand.Next(-200, -70));
 						oldPos = NPC.Center;
+						NPC.netUpdate = true;
 					}
 
 					SoundEngine.PlaySound(SoundID.Item5, NPC.Center);
 
 					if (!empowered)
 					{
-						Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), BowPos, BowPos.DirectionTo(Target.Center).RotatedBy((Target.Center.X - NPC.Center.X) * -0.0003f) * 10, ProjectileType<PelterConstructArrow>(), (int)(NPC.damage * (Main.expertMode || Main.masterMode ? 0.3f : 1)), NPC.knockBackResist);
+						if (Main.netMode != NetmodeID.MultiplayerClient)
+							Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), BowPos, BowPos.DirectionTo(Target.Center).RotatedBy((Target.Center.X - NPC.Center.X) * -0.0003f) * 10, ProjectileType<PelterConstructArrow>(), (int)(NPC.damage * (Main.expertMode || Main.masterMode ? 0.3f : 1)), NPC.knockBackResist);
 					}
 					else
 					{
-						var proj = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), BowPos + bowArmRotation.ToRotationVector2() * 5, bowArmRotation.ToRotationVector2() * 50, ProjectileType<PelterConstructArrowLarge>(), (int)(NPC.damage * (Main.expertMode || Main.masterMode ? 0.3f : 1)), NPC.knockBackResist);
-						proj.rotation = bowArmRotation + 1.57f;
-						proj.ai[0] = proj.Distance(Target.Center) / 5;
+						if (Main.netMode != NetmodeID.MultiplayerClient)
+						{
+							Vector2 projPos = BowPos + bowArmRotation.ToRotationVector2() * 5;
+							var proj = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), projPos, bowArmRotation.ToRotationVector2() * 50, ProjectileType<PelterConstructArrowLarge>(), (int)(NPC.damage * (Main.expertMode || Main.masterMode ? 0.3f : 1)), NPC.knockBackResist, ai0: projPos.Distance(Target.Center) / 5);
+							proj.rotation = bowArmRotation + 1.57f; //TODO: sync this var
+						}
 
 						knockbackVel = bowArmRotation.ToRotationVector2() * -5;
 
-						for (int i = 0; i < 15; i++)
+						if (Main.netMode != NetmodeID.Server)
 						{
-							Vector2 dustPos = BowPos + Main.rand.NextVector2Circular(10, 10);
-							Dust.NewDustPerfect(dustPos, DustType<Dusts.Glow>(), bowArmRotation.ToRotationVector2().RotatedByRandom(0.7f) * Main.rand.NextFloat(0.1f, 1f) * 4f, 0, new Color(255, 150, 50), Main.rand.NextFloat(0.75f, 1.25f)).noGravity = true;
+							for (int i = 0; i < 15; i++)
+							{
+								Vector2 dustPos = BowPos + Main.rand.NextVector2Circular(10, 10);
+								Dust.NewDustPerfect(dustPos, DustType<Dusts.Glow>(), bowArmRotation.ToRotationVector2().RotatedByRandom(0.7f) * Main.rand.NextFloat(0.1f, 1f) * 4f, 0, new Color(255, 150, 50), Main.rand.NextFloat(0.75f, 1.25f)).noGravity = true;
+							}
 						}
 					}
 
@@ -466,6 +475,18 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+		}
+
+		public override void SafeSendExtraAI(BinaryWriter writer)
+		{
+			writer.WritePackedVector2(posToBe);
+			writer.WritePackedVector2(oldPos);
+		}
+
+		public override void SafeReceiveExtraAI(BinaryReader reader)
+		{
+			posToBe = reader.ReadPackedVector2();
+			oldPos = reader.ReadPackedVector2();
 		}
 	}
 
@@ -551,7 +572,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				if (fade <= 0)
 					Projectile.active = false;
 			}
-			else
+			else if (!Main.dedServ)
 			{
 				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(6, 6), 6, null, 0, default, 1.1f);
 			}
@@ -564,15 +585,16 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				Projectile.extraUpdates = 0;
 				Projectile.position += oldVelocity;
 
-				if (!Main.dedServ)
-					ManageCaches();
-
 				Projectile.velocity = Vector2.Zero;
 
-				SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/FireHit"), Projectile.Center);
-				Helper.PlayPitched("Impacts/AirstrikeImpact", 0.3f, Main.rand.NextFloat(-0.1f, 0.1f));
+				if (!Main.dedServ)
+				{
+					ManageCaches();
+					SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/FireHit"), Projectile.Center);
+					Helper.PlayPitched("Impacts/AirstrikeImpact", 0.3f, Main.rand.NextFloat(-0.1f, 0.1f));
 
-				SpawnParticles();
+					SpawnParticles();
+				}
 			}
 
 			return false;

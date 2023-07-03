@@ -31,11 +31,12 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		/// </summary>
 		public Vector2 arenaPos;
 
+		internal ref float Phase => ref NPC.ai[0];
 		internal ref float GlobalTimer => ref NPC.ai[1];
 		internal ref float AttackPhase => ref NPC.ai[2];
 		internal ref float AttackTimer => ref NPC.ai[3];
 
-		internal float Phase; // This causes the boss to despawn on the client if synced. This works anyways.
+
 
 		public Rectangle Arena => new((int)arenaPos.X - 35 * 16, (int)arenaPos.Y - 30 * 16, 70 * 16, 30 * 16);
 
@@ -144,7 +145,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 					arenaPos = StarlightWorld.vitricBiome.TopLeft() * 16 + new Vector2(0, 80 * 16) + new Vector2(0, 256);
 					Phase = (int)Phases.JumpToBackground;
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), arenaPos + new Vector2(528 + 48, -46), Vector2.Zero, ProjectileType<GlassweaverDoor>(), Main.myPlayer, 0, NPC.target);
+
+					if (Main.netMode != NetmodeID.MultiplayerClient)
+						Projectile.NewProjectile(NPC.GetSource_FromThis(), arenaPos + new Vector2(528 + 48, -46), Vector2.Zero, ProjectileType<GlassweaverDoor>(), Main.myPlayer, 0, NPC.target);
+					
 					ResetAttack();
 
 					break;
@@ -167,6 +171,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 					if (!Main.player.Any(n => n.active && !n.dead && n.Hitbox.Intersects(Arena)))
 					{
+						Main.NewText("failphase from criteria");
 						Phase = (int)Phases.FailEffects;
 						AttackTimer = 0;
 						return;
@@ -329,11 +334,13 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
+			writer.WritePackedVector2(arenaPos);
 			writer.Write(attackVariant);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
+			arenaPos = reader.ReadPackedVector2();
 			attackVariant = reader.ReadBoolean();
 		}
 

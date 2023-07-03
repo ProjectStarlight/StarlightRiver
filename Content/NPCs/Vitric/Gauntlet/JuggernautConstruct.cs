@@ -272,9 +272,13 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 							launchTarget.velocity.Y = -6;
 							launchTarget.velocity.X = NPC.direction * 18;
 
-							Vector2 ringVel = NPC.DirectionTo(launchTarget.Center);
-							var ring = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Center + ringVel * 35, ringVel, ProjectileType<Items.Vitric.IgnitionGauntlets.IgnitionGauntletsImpactRing>(), 0, 0, Target.whoAmI, Main.rand.Next(35, 45), ringVel.ToRotation());
-							ring.extraUpdates = 0;
+							//TODO: check if this is going too fast in multiplayer cause of the extraupdates non sync
+							if (Main.netMode != NetmodeID.MultiplayerClient)
+							{
+								Vector2 ringVel = NPC.DirectionTo(launchTarget.Center);
+								var ring = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Center + ringVel * 35, ringVel, ProjectileType<Items.Vitric.IgnitionGauntlets.IgnitionGauntletsImpactRing>(), 0, 0, Target.whoAmI, Main.rand.Next(35, 45), ringVel.ToRotation());
+								ring.extraUpdates = 0;
+							}
 						}
 					}
 					else
@@ -322,17 +326,21 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 			spikePositionY += 32;
 
-			var spikePos = new Vector2(spikePositionX, spikePositionY);
-			var raise = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), spikePos, Vector2.Zero, ProjectileType<GlassRaiseSpike>(), (int)(NPC.damage * (Main.expertMode || Main.masterMode ? 0.3f : 1)), 1f, Main.myPlayer, -20, 1 - spikeCounter / 30f);
-			raise.direction = NPC.spriteDirection;
-			raise.scale = 0.65f;
+			//TODO: check non synced raise params
+			if (Main.netMode != NetmodeID.MultiplayerClient)
+			{
+				var spikePos = new Vector2(spikePositionX, spikePositionY);
+				var raise = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), spikePos, Vector2.Zero, ProjectileType<GlassRaiseSpike>(), (int)(NPC.damage * (Main.expertMode || Main.masterMode ? 0.3f : 1)), 1f, Main.myPlayer, -20, 1 - spikeCounter / 30f);
+				raise.direction = NPC.spriteDirection;
+				raise.scale = 0.65f;
 
-			raise.position.X += (1 - raise.scale) * (raise.width / 2); //readjusting width to match scale
-			raise.width = (int)(raise.width * raise.scale);
+				raise.position.X += (1 - raise.scale) * (raise.width / 2); //readjusting width to match scale
+				raise.width = (int)(raise.width * raise.scale);
+			}
 		}
 		public override void DrawHealingGlow(SpriteBatch spriteBatch)
 		{
-			return;
+			return; //TODO: whats up here?
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);

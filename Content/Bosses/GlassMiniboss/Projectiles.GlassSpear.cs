@@ -1,6 +1,7 @@
 ﻿using ReLogic.Content;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -117,6 +118,16 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Main.EntitySpriteDraw(spear.Value, Projectile.Center - Main.screenPosition, smallFrame, hotFade, Projectile.rotation, spearOrigin, scaleOut, 0, 0);
 
 			return false;
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(boundToParent);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			boundToParent = reader.ReadBoolean();
 		}
 	}
 
