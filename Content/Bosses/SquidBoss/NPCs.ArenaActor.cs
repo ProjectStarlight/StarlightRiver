@@ -205,12 +205,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					if (Item.type == ItemType<SquidBossSpawn>() && WaterLevel == 150 && !Main.npc.Any(n => n.active && n.ModNPC is SquidBoss)) //ready to spawn another squid              
 					{
 						// Synced spawn, TODO, abstract this to a general synced spawn later?
-						if (Main.netMode == NetmodeID.MultiplayerClient)
+						if (Main.netMode == NetmodeID.Server)
 						{
-							var packet = new SpawnNPC(Main.myPlayer, (int)NPC.Center.X, (int)NPC.Center.Y + 630, NPCType<SquidBoss>());
+							Mod.Logger.Info("Sending packet to spawn auroracle");
+							var packet = new SpawnNPC(-1, (int)NPC.Center.X, (int)NPC.Center.Y + 630, NPCType<SquidBoss>());
 							packet.Send(-1, -1, false);
 						}
-						else if (Main.netMode == NetmodeID.SinglePlayer)
+
+						if (Main.netMode != NetmodeID.MultiplayerClient)
 						{
 							NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y + 630, NPCType<SquidBoss>());
 						}
