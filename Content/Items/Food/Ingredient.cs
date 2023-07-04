@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.Items.Food
 		/// <summary>
 		/// Allows you to reset buffs applied in BuffEffects
 		/// </summary>
-		/// <param name="Player">The palyer eating the food</param>
+		/// <param name="Player">The player eating the food</param>
 		/// <param name="multiplier">The power which should be applied to numeric effects</param>
 		public virtual void ResetBuffEffects(Player Player, float multiplier) { }
 

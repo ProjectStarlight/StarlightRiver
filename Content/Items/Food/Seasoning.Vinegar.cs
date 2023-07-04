@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Items.Food
 
 		public override void BuffEffects(Player Player, float multiplier)
 		{
-			Player.GetModPlayer<FoodBuffHandler>().Multiplier -= 0.4f;
+			Player.GetModPlayer<FoodBuffHandler>().Multiplier -= 0.05f;
 		}
 	}
 }
