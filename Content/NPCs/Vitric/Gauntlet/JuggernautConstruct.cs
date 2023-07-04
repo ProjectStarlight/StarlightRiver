@@ -340,8 +340,6 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		}
 		public override void DrawHealingGlow(SpriteBatch spriteBatch)
 		{
-			return; //TODO: whats up here?
-
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
