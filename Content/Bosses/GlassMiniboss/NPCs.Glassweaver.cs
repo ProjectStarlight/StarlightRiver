@@ -351,7 +351,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			newNPC.moveTarget = new Vector2();
 			newNPC.moveStart = new Vector2();
 			newNPC.attackVariant = false;
-			newNPC.hammerIndex = -1;
 			newNPC.bubbleIndex = -1;
 			return newNPC;
 		}

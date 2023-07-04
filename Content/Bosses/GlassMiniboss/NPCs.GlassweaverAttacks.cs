@@ -1,5 +1,6 @@
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
+using System.Linq;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -7,9 +8,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
 	public partial class Glassweaver : ModNPC
 	{
+		public const int BUBBLE_RECOIL_TIME = 300;
 		private const int JAVELIN_SPAWN_TIME = 30;
 		private const int HAMMER_SPAWN_TIME = 90;
-		private const int BUBBLE_RECOIL_TIME = 300;
 		private const int SIDE_OFFSET_X = 480;
 		private const int SIDE_OFFSET_Y = 30;
 		private const int SHORT_OFFSET_X = 130;
@@ -17,13 +18,12 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		private readonly int[] slashTimes = new int[] { 70, 125, 160 };
 
-		Vector2 moveStart;
-		Vector2 moveTarget;
+		public Vector2 moveStart;
+		public Vector2 moveTarget;
 
 		private int javelinTime;
 		private int hammerTime;
 
-		public int hammerIndex;
 		public int bubbleIndex;
 		public int whirlIndex;
 		public int spearIndex;
@@ -150,9 +150,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				{
 					for (int s = 0; s < 3; s++)
 					{
-						int slash = Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ProjectileType<GlassSword>(), 10, 0.2f, Owner: -1, AttackTimer - 2, NPC.whoAmI);
-						(Main.projectile[slash].ModProjectile as GlassSword).variant = s;
-						Main.projectile[slash].netUpdate = true;
+						GlassSword.variantStatic = s;
+						Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ProjectileType<GlassSword>(), 10, 0.2f, Owner: -1, AttackTimer - 2, NPC.whoAmI);
 					}
 				}
 			}
@@ -189,12 +188,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		private void MagmaSpear()
 		{
 			animationType = (int)AttackTypes.MagmaSpear;
-			int lobCount = 3;
-
-			if (Main.masterMode)
-				lobCount = 10;
-			else if (Main.expertMode)
-				lobCount = 4;
 
 			if (AttackTimer == 1)
 			{
@@ -202,7 +195,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				moveStart = NPC.Center;
 				moveTarget = PickSpot() - new Vector2(0, 70);
 				NPC.velocity.Y -= 9f;
-
 				if (Main.netMode != NetmodeID.MultiplayerClient)
 					spearIndex = Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ProjectileType<GlassSpear>(), 10, 0.2f, Owner: -1, 0, NPC.whoAmI);
 				Helpers.Helper.PlayPitched("GlassMiniboss/RippedSoundJump", 1f, 0.7f, NPC.Center);
@@ -233,30 +225,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				NPC.velocity.X *= 0.5f;
 			}
 
-			if (AttackTimer > 65 && AttackTimer < 90 && NPC.collideY && NPC.velocity.Y > 0)
-			{
-				AttackTimer = 90;
-				Main.projectile[spearIndex].ai[0] = 80;
-
-				Helpers.Helper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0.3f, NPC.Center);
-
-				Vector2 lobPos = NPC.Bottom + new Vector2(70 * NPC.direction, -2);
-
-				for (int i = 0; i < lobCount; i++)
-				{
-					float lobVel = MathHelper.ToRadians(MathHelper.Lerp(6, 90, (float)i / lobCount)) * NPC.direction;
-					int index = Projectile.NewProjectile(NPC.GetSource_FromAI(), lobPos, Vector2.Zero, ProjectileType<LavaLob>(), 10, 0.2f, Owner: -1, -44 - i, lobVel);
-
-					if (Main.masterMode && i % 3 != 0)
-						Main.projectile[index].scale = 0.5f;
-				}
-
-				for (int j = 0; j < 50; j++)
-				{
-					Dust.NewDustPerfect(lobPos + Main.rand.NextVector2Circular(20, 1), DustType<Dusts.GlassGravity>(), -Vector2.UnitY.RotatedByRandom(0.8f) * Main.rand.NextFloat(1f, 6f));
-				}
-			}
-
 			if (AttackTimer > 220)
 				ResetAttack();
 		}
@@ -285,7 +253,12 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 				NPC.velocity.Y -= 9f;
 
-				spearIndex = Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ProjectileType<GlassSpear>(), 10, 0.2f, Owner: -1, 0, NPC.whoAmI);
+				if (Main.netMode != NetmodeID.MultiplayerClient)
+				{
+					GlassSpear.setMagmaVariant = true;
+					spearIndex = Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ProjectileType<GlassSpear>(), 10, 0.2f, Owner: -1, 0, NPC.whoAmI);
+				}
+
 				Helpers.Helper.PlayPitched("GlassMiniboss/RippedSoundJump", 1f, 0.7f, NPC.Center);
 			}
 
@@ -303,41 +276,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				NPC.noGravity = true;
 			}
 
-			if (AttackTimer == 65 && Main.netMode != NetmodeID.MultiplayerClient)
-			{
-				if (Main.projectile[spearIndex].ModProjectile is GlassSpear spear)
-				{
-					spear.boundToParent = false;
-					spear.Projectile.velocity = (moveTarget + Vector2.UnitY * 32 - spear.Projectile.Center) * 0.05f;
-					spear.Projectile.velocity.X *= 2.5f;
-
-					NPC.velocity -= spear.Projectile.velocity * 0.35f;
-					//TODO: this could be synced more deterministically if we move this logic into the spear itself instead of needing netupdate here
-					NPC.netUpdate = true;
-					Main.projectile[spearIndex].netUpdate = true;
-				}
-			}
-
-			if (AttackTimer > 65 && AttackTimer < 85)
-			{
-				//TODO: sync
-				if (Main.projectile[spearIndex].ModProjectile is GlassSpear spear)
-					spear.Projectile.velocity.X *= 0.95f;
-			}
-
 			if (AttackTimer > 65 && AttackTimer < 160)
 			{
 				NPC.velocity *= 0.94f;
-			}
-
-			if (AttackTimer == 85)
-			{
-				//TODO: sync
-				if (Main.projectile[spearIndex].ModProjectile is GlassSpear spear)
-					spear.Projectile.velocity *= 0;
-
-				Helpers.Helper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0.3f, NPC.Center);
-				Projectile.NewProjectile(NPC.GetSource_FromAI(), Main.projectile[spearIndex].Center, Vector2.Zero, ProjectileType<BurningGround>(), 1, 0, Owner: -1);
 			}
 
 			if (AttackTimer == 160)
@@ -477,7 +418,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				NPC.velocity.X *= 0.7f;
 
 			if (AttackTimer == HAMMER_SPAWN_TIME && Main.netMode != NetmodeID.MultiplayerClient)
-				hammerIndex = Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ProjectileType<GlassHammer>(), 40, 1, Owner: -1, ai0: NPC.whoAmI, ai1: hammerTime);
+				Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ProjectileType<GlassHammer>(), 40, 1, Owner: -1, ai0: NPC.whoAmI, ai1: hammerTime);
 
 			int spikeCount = 5;
 
@@ -495,9 +436,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			{
 				float spikeX = MathHelper.Lerp(PickSpotSelf().X, PickSpotSelf(-1).X + 102 * Direction, dist);
 				var spikePos = new Vector2(spikeX, arenaPos.Y - 100);
-				var raise = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), spikePos, Vector2.Zero, ProjectileType<GlassRaiseSpike>(), 20, 1f, owner: -1, -20, dist);
-				raise.direction = NPC.direction;
-				raise.netUpdate = true;
+				Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), spikePos, Vector2.Zero, ProjectileType<GlassRaiseSpike>(), 20, 1f, owner: -1, -20, dist);
 			}
 
 			if (AttackTimer > spikeSpawn + spikeCount * betweenSpikes + 120)
@@ -532,7 +471,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				NPC.velocity.X *= 0.7f;
 
 			if (AttackTimer == HAMMER_SPAWN_TIME && Main.netMode != NetmodeID.MultiplayerClient)
-				hammerIndex = Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ProjectileType<GlassHammer>(), 40, 1, Owner: -1, ai0: NPC.whoAmI, ai1: hammerTime);
+				Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ProjectileType<GlassHammer>(), 40, 1, Owner: -1, ai0: NPC.whoAmI, ai1: hammerTime);
 
 			int spikeCount = 3;
 
@@ -550,9 +489,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			{
 				float spikeX = MathHelper.Lerp(arenaPos.X, PickSpotSelf(-1).X + 102 * Direction, dist);
 				var spikePos = new Vector2(spikeX, arenaPos.Y - 120);
-				var raise = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), spikePos, Vector2.Zero, ProjectileType<GlassRaiseSpike>(), 40, 1f, owner: -1, -20, dist);
-				raise.direction = NPC.direction;
-				raise.netUpdate = true;
+				Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), spikePos, Vector2.Zero, ProjectileType<GlassRaiseSpike>(), 40, 1f, owner: -1, -20, dist);
 			}
 
 			if (Main.netMode != NetmodeID.MultiplayerClient 
@@ -563,8 +500,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				float spikeX = MathHelper.Lerp(arenaPos.X, PickSpotSelf().X + 102 * -Direction, dist);
 				var spikePos = new Vector2(spikeX, arenaPos.Y - 120);
 				var raise = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), spikePos, Vector2.Zero, ProjectileType<GlassRaiseSpike>(), 40, 1f, owner: -1, -20, dist);
-				raise.direction = -NPC.direction;
-				raise.netUpdate = true;
+				raise.direction = -NPC.direction; //TODO: not actually synced for multiplayer but this is such a minor visual maybe we don't need to
 			}
 
 			if (AttackTimer > spikeSpawn + spikeCount * betweenSpikes + 120)
@@ -603,18 +539,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				if (Main.netMode != NetmodeID.MultiplayerClient)
 					bubbleIndex = Projectile.NewProjectile(NPC.GetSource_FromAI(), staffPos, Vector2.Zero, ProjectileType<GlassBubble>(), 20, 2f, Main.myPlayer, NPC.whoAmI);
 			}
-
-			if (AttackTimer <= 240 && AttackTimer > 80)
-			{
-				//TODO: sync
-				Main.projectile[bubbleIndex].Center = staffPos + Main.rand.NextVector2Circular(3, 3) * Utils.GetLerpValue(220, 120, AttackTimer, true);
-				NPC.velocity *= 0.87f;
-				NPC.velocity.Y -= 0.01f;
-				CameraSystem.shake += (int)(AttackTimer / 180f);
-			}
-
-			if (AttackTimer == 240)
-				moveTarget = Main.projectile[bubbleIndex].Center; //TODO: sync
 
 			if (AttackTimer > 240 && AttackTimer < BUBBLE_RECOIL_TIME - 1)
 			{
@@ -664,32 +588,40 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		/// <param name="direction">The direction of this vector is used to set the direction of the glass bubble projectile</param>
 		private void HitBubble(Vector2 direction)
 		{
-			Projectile bubble = Main.projectile[bubbleIndex]; //TODO: sync
+			Projectile bubble;
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				//using proj.scale == 1f is a little bit tenuous of a way of determining that this is actually the original one. if this breaks in the future may need to have a specific synced var to determine
+				bubble = Main.projectile.Where(proj => proj.active && proj.type == ModContent.ProjectileType<GlassBubble>() && proj.scale == 1f).FirstOrDefault();
+			} else
+			{
+				bubble = Main.projectile[bubbleIndex];
+			}
 			float speed = 6.77f;
 
-			if (Main.projectile.IndexInRange(bubbleIndex))
+			if (bubble.active && bubble.type == ProjectileType<GlassBubble>())
 			{
-				if (bubble.active && bubble.type == ProjectileType<GlassBubble>())
+				bubble.velocity = direction * speed;
+				bubble.ai[1] = 1;
+
+				if (Main.netMode != NetmodeID.Server)
 				{
 					Helpers.Helper.PlayPitched("GlassMiniboss/GlassBounce", 1f, 0f, NPC.Center);
 					CameraSystem.shake += 5;
-					bubble.velocity = direction * speed;
-					bubble.ai[1] = 1;
-
 					for (int i = 0; i < 30; i++)
 					{
 						Dust.NewDustPerfect(bubble.Center, DustType<Dusts.Cinder>(), Main.rand.NextVector2Circular(6, 3).RotatedBy(NPC.AngleTo(bubble.Center)), 0, GlassColor);
 					}
 				}
+			}
 
-				if (Main.masterMode)
-				{
-					int i = Projectile.NewProjectile(NPC.GetSource_FromAI(), bubble.Center, direction.RotatedBy(1) * speed * 0.6f, ProjectileType<GlassBubble>(), 20, 2f, Main.myPlayer, NPC.whoAmI, 1, 180);
-					Main.projectile[i].scale = 0.8f;
+			if (Main.masterMode && Main.netMode != NetmodeID.MultiplayerClient)
+			{
+				GlassBubble.staticScaleToSet = 0.8f;
+				Projectile.NewProjectile(NPC.GetSource_FromAI(), bubble.Center, direction.RotatedBy(1) * speed * 0.6f, ProjectileType<GlassBubble>(), 20, 2f, Main.myPlayer, NPC.whoAmI, 1, 180);
 
-					i = Projectile.NewProjectile(NPC.GetSource_FromAI(), bubble.Center, direction.RotatedBy(-1) * speed * 0.6f, ProjectileType<GlassBubble>(), 20, 2f, Main.myPlayer, NPC.whoAmI, 1, 180);
-					Main.projectile[i].scale = 0.8f;
-				}
+				GlassBubble.staticScaleToSet = 0.8f;
+				Projectile.NewProjectile(NPC.GetSource_FromAI(), bubble.Center, direction.RotatedBy(-1) * speed * 0.6f, ProjectileType<GlassBubble>(), 20, 2f, Main.myPlayer, NPC.whoAmI, 1, 180);
 			}
 		}
 	}

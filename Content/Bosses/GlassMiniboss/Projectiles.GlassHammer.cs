@@ -21,6 +21,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public ref float TotalTime => ref Projectile.ai[1];
 
+		public bool isLoaded = false;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Woven Hammer");
@@ -37,17 +39,18 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Projectile.hide = true;
 		}
 
-		public override void OnSpawn(IEntitySource source)
-		{
-			swingTimer = (int)TotalTime;
-			Projectile.timeLeft = (int)TotalTime + 50;
-			Helpers.Helper.PlayPitched("GlassMiniboss/WeavingLong", 1f, 0f, Projectile.Center);
-		}
-
 		public override void AI()
 		{
 			if (!Parent.active || Parent.type != NPCType<Glassweaver>())
 				Projectile.Kill();
+
+			if (!isLoaded)
+			{
+				swingTimer = (int)TotalTime;
+				Projectile.timeLeft = (int)TotalTime + 50;
+				Helpers.Helper.PlayPitched("GlassMiniboss/WeavingLong", 1f, 0f, Projectile.Center);
+				isLoaded = true;
+			}
 
 			swingTimer--;
 
@@ -198,6 +201,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			offsets = new float[maxSpikes];
 			for (int i = 0; i < maxSpikes; i++)
 				offsets[i] = ((float)Math.Sin(i * MathHelper.Pi / Main.rand.NextFloat(1f, 2f)) + Main.rand.NextFloatDirection()) / 2f;
+			Projectile.direction = Main.npc[(int)OwnerWhoAmI].direction;
 
 			isLoaded = true;
 		}

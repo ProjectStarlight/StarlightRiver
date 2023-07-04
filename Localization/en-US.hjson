@@ -3763,5 +3763,11 @@ Mods: {
 			StaminaPrefix3.DisplayName: Glowing
 			StaminaPrefix4.DisplayName: Radiant
 		}
+
+		Keybinds: {
+			Starsight.DisplayName: Starsight
+			"Forbidden Winds.DisplayName": Forbidden  Winds
+			Faeflame.DisplayName: Faeflame
+		}
 	}
 }
