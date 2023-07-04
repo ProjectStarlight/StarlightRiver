@@ -1,5 +1,6 @@
 using StarlightRiver.Content.Dusts;
 using System;
+using System.IO;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -513,6 +514,19 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				Bestiary.SLRSpawnConditions.VitricDesert,
 				new FlavorTextBestiaryInfoElement("One of the Glassweaver's constructs. An already formidable duelist, made airborne - speed is war.")
 			});
+		}
+
+		public override void SafeSendExtraAI(BinaryWriter writer)
+		{
+			//frames are being used like cursed timers, maybe TODO: rework this
+			writer.Write(xFrame);
+			writer.Write(yFrame);
+		}
+
+		public override void SafeReceiveExtraAI(BinaryReader reader)
+		{
+			xFrame = reader.ReadInt32();
+			yFrame = reader.ReadInt32();
 		}
 	}
 }
