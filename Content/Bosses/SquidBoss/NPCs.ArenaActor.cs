@@ -90,6 +90,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			if (!NPC.AnyNPCs(NPCType<SquidBoss>()))
 			{
+				if (fakeBoss is null)
+				{
+					fakeBoss = new NPC();
+					fakeBoss.SetDefaults(NPCType<SquidBoss>());
+					fakeBoss.Center = StarlightWorld.squidBossArena.Center() * 16 + new Vector2(0, -500);
+					(fakeBoss.ModNPC as SquidBoss).QuickSetup();
+				}
+
 				(fakeBoss.ModNPC as SquidBoss).tentacles.ForEach(n => n.ai[1]++);
 				(fakeBoss.ModNPC as SquidBoss).GlobalTimer++;
 				(fakeBoss.ModNPC as SquidBoss).Opacity = 0f;

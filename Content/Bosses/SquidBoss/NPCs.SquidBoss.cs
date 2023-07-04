@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		internal ref float AttackPhase => ref NPC.ai[2];
 		internal ref float AttackTimer => ref NPC.ai[3];
 
-		internal ArenaActor Arena => arenaActor.ModNPC as ArenaActor;
+		internal ArenaActor Arena => arenaActor?.ModNPC as ArenaActor;
 
 		internal List<NPC> OrderdPlatforms
 		{
@@ -479,6 +479,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			if (arenaActor is null || !arenaActor.active)
 				arenaActor = Main.npc.FirstOrDefault(n => n.active && n.ModNPC is ArenaActor);
 
+			if (Phase > (int)AIStates.SpawnAnimation)
+				FindEssentialNPCs();
+
 			if (platforms is null || platforms.Count != 4 || platforms.Any(n => !n.active || n.ModNPC is not IcePlatform))
 				RebuildPlatforms();
 
@@ -515,6 +518,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					if (Player.active && StarlightWorld.squidBossArena.Contains((Player.Center / 16).ToPoint()))
 						Player.GetModPlayer<MedalPlayer>().QualifyForMedal("Auroracle", 0);
 				}
+
+				FindEssentialNPCs();
 
 				BossBarOverlay.SetTracked(NPC, ", The Venerated", Request<Texture2D>(AssetDirectory.GUI + "BossBarFrame").Value);
 			}
@@ -909,6 +914,24 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			{
 				NPC.active = false;
 				Mod.Logger.Error("Auroracle failed to rebuild tentacle collection, aborting!");
+			}
+		}
+
+		/// <summary>
+		/// Checks for and re-finds essential supporting NPCs
+		/// </summary>
+		public void FindEssentialNPCs()
+		{
+			if (arenaActor is null || !arenaActor.active || arenaActor.type != NPCType<ArenaActor>())
+				arenaActor = Main.npc.FirstOrDefault(n => n.active && n.type == NPCType<ArenaActor>());
+
+			if (arenaBlocker is null || !arenaBlocker.active || arenaBlocker.type != NPCType<ArenaBlocker>())
+				arenaBlocker = Main.npc.FirstOrDefault(n => n.active && n.type == NPCType<ArenaBlocker>());
+
+			if (arenaActor is null || arenaBlocker is null)
+			{
+				NPC.active = false;
+				Mod.Logger.Error("Auroracle failed to find his arena, aborting!");
 			}
 		}
 
