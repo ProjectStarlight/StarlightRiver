@@ -56,21 +56,24 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		private void ShufflePlatforms()
 		{
-			int n = platforms.Count(); //fisher yates
+			byte[] sections = { 0, 1, 2, 3 };
+			byte[] byteSections = new byte[4];
 
-			while (n > 1)
+			for (int i = 0; i < 4; i++)
 			{
-				n--;
-				int k = Main.rand.Next(n + 1);
-				(platforms[n], platforms[k]) = (platforms[k], platforms[n]);
-
-				(platforms[n].ModNPC as IcePlatform).index = n;
-				platforms[n].netUpdate = true;
-
-				(platforms[k].ModNPC as IcePlatform).index = k;
-				platforms[k].netUpdate = true;
+				int randomIndex = Main.rand.Next(i, 4);
+				byteSections[i] = sections[randomIndex];
+				sections[randomIndex] = sections[i];
 			}
 
+			byte uniqueByte = 0;
+			for (int i = 0; i < 4; i++)
+			{
+				uniqueByte <<= 2;
+				uniqueByte |= byteSections[i];
+			}
+
+			platformOrder = uniqueByte;
 			NPC.netUpdate = true;
 		}
 
@@ -419,7 +422,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					tentacleR.State = 0;
 
 				if (Main.netMode != NetmodeID.MultiplayerClient)
-					Projectile.NewProjectile(NPC.GetSource_FromAI(), new Vector2(platforms[0].Center.X, spawnPoint.Y - 1000), Vector2.Zero, ModContent.ProjectileType<SqueezeTell>(), 0, 0, Main.myPlayer);
+					Projectile.NewProjectile(NPC.GetSource_FromAI(), new Vector2(OrderdPlatforms[0].Center.X, spawnPoint.Y - 1000), Vector2.Zero, ModContent.ProjectileType<SqueezeTell>(), 0, 0, Main.myPlayer);
 			}
 
 			if (AttackTimer > 100 && AttackTimer < 130)
@@ -435,11 +438,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				tentacleL.stalkWaviness = timer * 0.45f;
 				tentacleR.stalkWaviness = timer * 0.45f;
 
-				tentacleL.basePoint.X = Helpers.Helper.LerpFloat(tentacleL.movementTarget.X, platforms[0].Center.X - 100, timer);
-				tentacleR.basePoint.X = Helpers.Helper.LerpFloat(tentacleR.movementTarget.X, platforms[0].Center.X + 100, timer);
+				tentacleL.basePoint.X = Helpers.Helper.LerpFloat(tentacleL.movementTarget.X, OrderdPlatforms[0].Center.X - 100, timer);
+				tentacleR.basePoint.X = Helpers.Helper.LerpFloat(tentacleR.movementTarget.X, OrderdPlatforms[0].Center.X + 100, timer);
 
-				tentacleL.NPC.Center = new Vector2(Helpers.Helper.LerpFloat(tentacleL.movementTarget.X, platforms[0].Center.X - 100, timer), tentacleL.NPC.Center.Y);
-				tentacleR.NPC.Center = new Vector2(Helpers.Helper.LerpFloat(tentacleR.movementTarget.X, platforms[0].Center.X + 100, timer), tentacleR.NPC.Center.Y);
+				tentacleL.NPC.Center = new Vector2(Helpers.Helper.LerpFloat(tentacleL.movementTarget.X, OrderdPlatforms[0].Center.X - 100, timer), tentacleL.NPC.Center.Y);
+				tentacleR.NPC.Center = new Vector2(Helpers.Helper.LerpFloat(tentacleR.movementTarget.X, OrderdPlatforms[0].Center.X + 100, timer), tentacleR.NPC.Center.Y);
 			}
 
 			if (AttackTimer == 260)
@@ -447,12 +450,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			if (AttackTimer > 260 && AttackTimer < 340) //going to the side
 			{
-				var targetPoint = new Vector2(platforms[0].Center.X, spawnPoint.Y - 400);
+				var targetPoint = new Vector2(OrderdPlatforms[0].Center.X, spawnPoint.Y - 400);
 				NPC.Center = Vector2.SmoothStep(savedPoint, targetPoint, (AttackTimer - 260) / 80f);
 			}
 
 			if (AttackTimer == 360)
-				savedPoint = new Vector2(platforms[0].Center.X, spawnPoint.Y - 400);
+				savedPoint = new Vector2(OrderdPlatforms[0].Center.X, spawnPoint.Y - 400);
 
 			if (AttackTimer >= 360 && AttackTimer < 520)
 			{
@@ -550,7 +553,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					{
 						int offX = Main.rand.Next(200) * (tentacle.NPC.Center.X > Arena.NPC.Center.X ? 1 : -1);
 						int offY = Main.rand.Next(-50, 0);
-						tentacle.NPC.Center = platforms[k].Center + new Vector2(0 + offX, -150 + offY);
+						tentacle.NPC.Center = OrderdPlatforms[k].Center + new Vector2(0 + offX, -150 + offY);
 						tentacle.basePoint = tentacle.NPC.Center;
 						tentacle.movementTarget = Vector2.Lerp(tentacle.NPC.Center, spawnPoint, 0.25f);
 						tentacle.NPC.netUpdate = true;
@@ -1133,25 +1136,25 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					ShufflePlatforms();
 
 					var tentacle = tentacles[k].ModNPC as Tentacle;
-					tentacles[k].Center = new Vector2(platforms[k].Center.X, spawnPoint.Y - 100);
+					tentacles[k].Center = new Vector2(OrderdPlatforms[k].Center.X, spawnPoint.Y - 100);
 					tentacle.basePoint = tentacles[k].Center;
 					tentacle.NPC.netUpdate = true;
 				}
 
 				if (AttackTimer < 90)
 				{
-					Dust.NewDust(platforms[k].position, 200, 16, DustID.Fireworks, 0, 0, 0, default, 0.7f);
+					Dust.NewDust(OrderdPlatforms[k].position, 200, 16, DustID.Fireworks, 0, 0, 0, default, 0.7f);
 
 					var tentacle = tentacles[k].ModNPC as Tentacle;
-					tentacles[k].Center = Vector2.SmoothStep(tentacle.basePoint, platforms[k].Center, AttackTimer / 90f);
+					tentacles[k].Center = Vector2.SmoothStep(tentacle.basePoint, OrderdPlatforms[k].Center, AttackTimer / 90f);
 				}
 
 				if (AttackTimer == 90)
 				{
 					var tentacle = tentacles[k].ModNPC as Tentacle;
 					tentacle.movementTarget = tentacles[k].Center;
-					platforms[k].ai[3] = 450; //sets it into fall mode
-											  //(platforms[0].ModNPC as IcePlatform).fallToPos = (int)tentacle.BasePoint.Y;
+					OrderdPlatforms[k].ai[3] = 450; //sets it into fall mode
+													//(platforms[0].ModNPC as IcePlatform).fallToPos = (int)tentacle.BasePoint.Y;
 				}
 
 				if (AttackTimer > 90)

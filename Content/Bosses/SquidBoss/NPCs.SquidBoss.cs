@@ -43,12 +43,31 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public float Opacity = 1;
 		public bool OpaqueJelly = false;
 
+		public byte platformOrder;
+
 		internal ref float Phase => ref NPC.ai[0];
 		internal ref float GlobalTimer => ref NPC.ai[1];
 		internal ref float AttackPhase => ref NPC.ai[2];
 		internal ref float AttackTimer => ref NPC.ai[3];
 
 		internal ArenaActor Arena => arenaActor.ModNPC as ArenaActor;
+
+		internal List<NPC> OrderdPlatforms
+		{
+			get
+			{
+				var list = new List<NPC>();
+
+				for (int k = 0; k < 4; k++)
+				{
+					byte mask = (byte)(0b00000011 << k);
+					byte masked = (byte)(platformOrder & mask);
+					list.Add(platforms[masked >> k]);
+				}
+
+				return list;
+			}
+		}
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -856,19 +875,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			platforms.RemoveAll(n => Math.Abs(n.Center.X - Main.npc.FirstOrDefault(l => l.active && l.ModNPC is ArenaActor).Center.X) >= 550);
 
-			// Sort by index
-			platforms.Sort((a, b) =>
-			{
-				var ma = a.ModNPC as IcePlatform;
-				var mb = b.ModNPC as IcePlatform;
-
-				if (ma is null || mb is null)
-				{
-					return -1;
-				}
-
-				return ma.index > mb.index ? 1 : -1;
-			});
+			// Sort by X position, deterministic
+			platforms.Sort((a, b) => a.Center.X > b.Center.X ? 1 : -1);
 
 			Mod.Logger.Info($"Retained {platforms.Count} platforms to auroracle's platform collection");
 
@@ -909,6 +917,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			writer.Write(variantAttack);
 			writer.WriteVector2(spawnPoint);
 			writer.WriteVector2(savedPoint);
+			writer.Write(platformOrder);
 		}
 
 		public override void ReceiveExtraAI(System.IO.BinaryReader reader)
@@ -916,9 +925,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			variantAttack = reader.ReadBoolean();
 			spawnPoint = reader.ReadVector2();
 			savedPoint = reader.ReadVector2();
-
-			// rebuild here incase platform order has changed
-			RebuildPlatforms();
+			platformOrder = reader.ReadByte();
 		}
 
 		public string GetHint()
