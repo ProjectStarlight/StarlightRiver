@@ -8,7 +8,7 @@ namespace StarlightRiver.Content.Items.Beach
 	{
 		public override string Texture => AssetDirectory.Assets + "Items/Beach/" + Name;
 
-		public SaltCogs() : base("Salt cogs", "Your sentries fire twice as fast for two seconds after placing them\n100% increased sentry placement speed") { }
+		public SaltCogs() : base("Salt Cogs", "Your sentries fire twice as fast for two seconds after placing them\n100% increased sentry placement speed") { }
 
 		public override void Load()
 		{
@@ -48,17 +48,15 @@ namespace StarlightRiver.Content.Items.Beach
 				{
 					int prog = Projectile.SentryLifeTime - projectile.timeLeft;
 
-					Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/Gear").Value;
-					Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/GearSmall").Value;
+					Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Beach/SaltGear").Value;
+					Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Beach/SaltGearSmall").Value;
 					var color = new Color(255, 220, 220);
 
 					if (prog > 200)
 						color *= 1f - (prog - 200) / 40f;
 
-					color.A = 0;
-
-					Main.spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, color, projectile.timeLeft * 0.025f, tex.Size() / 2f, 0.5f, 0, 0);
-					Main.spriteBatch.Draw(tex2, projectile.Center + new Vector2(22, -22) - Main.screenPosition, null, color, projectile.timeLeft * -0.05f, tex2.Size() / 2f, 0.5f, 0, 0);
+					Main.spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, color, projectile.timeLeft * 0.025f, tex.Size() / 2f, 1, 0, 0);
+					Main.spriteBatch.Draw(tex2, projectile.Center + new Vector2(22, -22) - Main.screenPosition, null, color, projectile.timeLeft * -0.05f, tex2.Size() / 2f, 1, 0, 0);
 				}
 			}
 		}
