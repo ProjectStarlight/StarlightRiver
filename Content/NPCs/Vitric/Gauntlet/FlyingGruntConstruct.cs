@@ -469,7 +469,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 								var proj = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), arrowPos, arrowVel, ProjectileType<PelterConstructArrow>(), damage, NPC.knockBackResist);
 							}
 
-							if (Main.netMode !=  NetmodeID.Server) {
+							if (Main.netMode !=  NetmodeID.Server) 
+							{
 								for (int k = 0; k < 15; k++)
 								{
 									Vector2 dustPos = arrowPos + Main.rand.NextVector2Circular(10, 10);

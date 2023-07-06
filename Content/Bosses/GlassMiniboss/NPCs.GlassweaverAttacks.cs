@@ -497,6 +497,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					&& AttackTimer < spikeSpawn + spikeCount * betweenSpikes 
 					&& (AttackTimer - 1) % betweenSpikes == 0)
 			{
+
 				float spikeX = MathHelper.Lerp(arenaPos.X, PickSpotSelf().X + 102 * -Direction, dist);
 				var spikePos = new Vector2(spikeX, arenaPos.Y - 120);
 				var raise = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), spikePos, Vector2.Zero, ProjectileType<GlassRaiseSpike>(), 40, 1f, owner: -1, -20, dist);

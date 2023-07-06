@@ -108,8 +108,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 					Projectile.netUpdate = true;
 				}
-
-			} else
+			}
+			else
 			{
 				if (glassweaver.AttackTimer > 65 && glassweaver.AttackTimer < 90 && glassweaver.NPC.collideY && glassweaver.NPC.velocity.Y > 0)
 				{
