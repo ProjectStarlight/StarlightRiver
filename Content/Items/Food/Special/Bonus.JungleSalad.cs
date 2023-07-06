@@ -51,19 +51,6 @@ namespace StarlightRiver.Content.Items.Food.Special
 		}
 	}
 
-	//public class loaderasd: ModSystem
-	//{
-	//	public override void Load()
-	//	{
-	//		On_Player.PickTile += asd;
-	//	}
-
-	//	private void asd(On_Player.orig_PickTile orig, Player self, int x, int y, int pickPower)
-	//	{
-	//		orig(self, x, y, pickPower);
-	//	}
-	//}
-
 	public class JungleSaladGlobalTile : GlobalTile
 	{ 
 		public static bool AnyActive = false;//faster to check a static bool than to find the mod player 
@@ -180,8 +167,6 @@ namespace StarlightRiver.Content.Items.Food.Special
 					}
 				}
 			}
-
-			//base.KillTile(i, j, type, ref fail, ref effectOnly, ref noItem);
 		}
 
 		private static void DropCustomPotLoot(ModPlayer modPlayer, int i, int j)// :)
@@ -311,7 +296,7 @@ namespace StarlightRiver.Content.Items.Food.Special
 		}
 
 		private static void SpawnCoins(int i, int j)// :(
-		{//vanilla method slightly modified, this could be replaced with a much simpler function if balacing calls for it
+		{//vanilla method slightly modified, this could be replaced with a much simpler function if balacing calls for it, needs discussion
 			const float moneymult = 4f;//originally a money multiplier based on pot type, however this should not take into account the biome for this
 			float moneyvalue = 200 + Main.rand.Next(-100, 101);
 
