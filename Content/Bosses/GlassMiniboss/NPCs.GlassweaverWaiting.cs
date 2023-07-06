@@ -242,9 +242,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 									RichTextBox.AddButton("\"See you around.\"", () =>
 									{
-										Timer = 0;
-										State = 1;
-										NPC.netUpdate = true;
+										GlassweaverWaitingPacket statusPacket = new GlassweaverWaitingPacket(newState: 1, newTimer: 0, npcWhoAmI: NPC.whoAmI);
+										statusPacket.Send();
 
 										RichTextBox.CloseDialogue();
 									});
@@ -262,7 +261,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				{
 					RichTextBox.CloseDialogue();
 
-					NPC.netUpdate = true;
 					SacrificeNPCPacket nPacket = new SacrificeNPCPacket((int)NPC.Center.X, (int)NPC.Center.Y, NPCType<Glassweaver>(), NPC.whoAmI);
 					nPacket.Send();
 				});
@@ -280,8 +278,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 						RichTextBox.ClearButtons();
 
 						(Main.LocalPlayer.QuickSpawnItemDirect(NPC.GetSource_FromThis(), ItemType<ForgeMap>()).ModItem as ForgeMap).isEpic = true;
-						State = 4;
-						NPC.netUpdate = true;
+						State = 4; //only gets set locally
 
 						RichTextBox.AddButton("\"Uhhh... What?\"", () =>
 						{
@@ -308,8 +305,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					else if (TextState == 2)
 					{
 						Main.LocalPlayer.QuickSpawnItemDirect(NPC.GetSource_FromThis(), ItemType<ForgeMap>());
-						State = 4;
-						NPC.netUpdate = true;
+						State = 4; //only gets set locally
 					}
 				});
 			}
@@ -360,7 +356,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				{
 					RichTextBox.CloseDialogue();
 
-					NPC.netUpdate = true;
 					SacrificeNPCPacket nPacket = new SacrificeNPCPacket((int)NPC.Center.X, (int)NPC.Center.Y, NPCType<Glassweaver>(), NPC.whoAmI);
 					nPacket.Send();
 				});
@@ -370,8 +365,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					RichTextBox.CloseDialogue();
 
 					Timer = 0;
-					State = 5;
-					NPC.netUpdate = true;
+					State = 5; //only gets set locally
 				});
 			}
 
@@ -418,8 +412,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 						RichTextBox.CloseDialogue();
 
 						Timer = 0;
-						State = 5;
-						NPC.netUpdate = true;
+						State = 5; //only gets set locally
 					});
 				});
 			}
