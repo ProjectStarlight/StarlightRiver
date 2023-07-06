@@ -598,6 +598,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			{
 				bubble = Main.projectile[bubbleIndex];
 			}
+
 			float speed = 6.77f;
 
 			if (bubble.active && bubble.type == ProjectileType<GlassBubble>())
