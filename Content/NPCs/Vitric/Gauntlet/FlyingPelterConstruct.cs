@@ -17,8 +17,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		private const int BOWFRAMES = 4;
 		private const int XFRAMES = 1;
 
-		private int bowFrame = 0;
-		private int bowFrameCounter = 0;
+		public ref float bowFrame => ref NPC.ai[0];
+		public ref float bowFrameCounter => ref NPC.ai[1];
 
 		private int bodyFrame;
 		private int frameCounter;
@@ -278,7 +278,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			var backFrame = new Rectangle(0, armFrameSize, armTex.Width, armFrameSize);
 
 			int bowFrameHeight = bowTex.Height / BOWFRAMES;
-			var bowFrameBox = new Rectangle(0, bowFrame * bowFrameHeight, bowTex.Width, bowFrameHeight);
+			var bowFrameBox = new Rectangle(0, (int)bowFrame * bowFrameHeight, bowTex.Width, bowFrameHeight);
 
 			int mainFrameHeight = mainTex.Height / Main.npcFrameCount[NPC.type];
 			int mainFrameWidth = mainTex.Width / XFRAMES;
@@ -410,7 +410,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 						attacking = false;
 						posToBe = Target.Center + new Vector2(Main.rand.Next(-500, -100) * Math.Sign(Target.Center.X - NPC.Center.X), Main.rand.Next(-200, -70));
 						oldPos = NPC.Center;
-						NPC.netUpdate = true;
+						NPC.netUpdate = true; // sync from rand. this is kinda frequent at times and seems to hit netspam so maybe this construct needs to be more deterministic
 					}
 
 					SoundEngine.PlaySound(SoundID.Item5, NPC.Center);
