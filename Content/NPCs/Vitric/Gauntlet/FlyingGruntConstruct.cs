@@ -21,6 +21,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 	{
 		private const int XFRAMES = 5;
 
+		public ref float attackPhase => ref NPC.ai[0];
+
 		public int xFrame = 0;
 		public int yFrame = 0;
 
@@ -32,8 +34,6 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		public Vector2 oldPosition = Vector2.Zero;
 
 		private float bobCounter = 0f;
-
-		private AttackPhase attackPhase = AttackPhase.charging;
 
 		private int frameCounter = 0;
 
@@ -119,7 +119,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 					attacking = true;
 
 				AnimateIdle();
-				attackPhase = AttackPhase.charging;
+				attackPhase = (int) AttackPhase.charging;
 			}
 			else
 			{
@@ -210,12 +210,13 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		private void IdleBehavior()
 		{
-			if (GoToPos(movementTarget, oldPosition))
+			if (GoToPos(movementTarget, oldPosition) && Main.netMode != NetmodeID.MultiplayerClient)
 			{
 				oldPosition = NPC.Center;
 				movementTarget = Main.rand.NextVector2Circular(500, 400);
 				movementTarget.Y *= -Math.Sign(movementTarget.Y);
 				movementTarget += Target.Center;
+				NPC.netUpdate = true;
 			}
 		}
 
@@ -233,29 +234,34 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 			switch (attackPhase)
 			{
-				case AttackPhase.charging:
+				case (int) AttackPhase.charging:
 
 					AnimateIdle();
 					NPC.velocity = Vector2.Lerp(NPC.velocity, direction.RotatedByRandom(0.6f) * 10, 0.05f);
+					// this is kind of rough it's a lot of consecutive frames of random movement that can't be synced normally so this will always rubberband in multiplayer unless this gets reworked to be deterministic
 
 					if (NPC.Distance(Target.Center) < 200)
-						attackPhase = AttackPhase.slowing;
+					{
+						attackPhase = (int)AttackPhase.slowing;
+						NPC.netUpdate = true;
+					}
+						
 
 					break;
 
-				case AttackPhase.slowing:
+				case (int) AttackPhase.slowing:
 
 					NPC.velocity *= 0.8f;
 
 					if (NPC.velocity.Length() < 2)
 					{
 						frameCounter = 0;
-						attackPhase = AttackPhase.swinging;
+						attackPhase = (int) AttackPhase.swinging;
 					}
 
 					break;
 
-				case AttackPhase.swinging:
+				case (int) AttackPhase.swinging:
 
 					xFrame = 1;
 					frameCounter++;
@@ -521,12 +527,16 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			//frames are being used like cursed timers, maybe TODO: rework this
 			writer.Write(xFrame);
 			writer.Write(yFrame);
+			writer.WritePackedVector2(movementTarget);
+			writer.WritePackedVector2(oldPosition);
 		}
 
 		public override void SafeReceiveExtraAI(BinaryReader reader)
 		{
 			xFrame = reader.ReadInt32();
 			yFrame = reader.ReadInt32();
+			movementTarget = reader.ReadPackedVector2();
+			oldPosition = reader.ReadPackedVector2();
 		}
 	}
 }

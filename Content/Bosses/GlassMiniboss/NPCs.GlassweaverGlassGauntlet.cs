@@ -28,7 +28,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			if (summonAnimTime > 0 && summonAnimTime < 30)
 				summonAnimTime = 30;
 
-			int i = Projectile.NewProjectile(Entity.GetSource_Misc("SLR:GlassGauntlet"), NPC.Center + new Vector2(32, -128), Vector2.Zero, ProjectileType<GauntletSpawner>(), 0, 0, Main.myPlayer, type, onFloor ? 0 : 0);
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+				return; //only server or single player should be creating these spawners
+
+			int i = Projectile.NewProjectile(Entity.GetSource_Misc("SLR:GlassGauntlet"), NPC.Center + new Vector2(32, -128), Vector2.Zero, ProjectileType<GauntletSpawner>(), 0, 0, Owner: -1, type, onFloor ? 0 : 0);
 
 			if (Main.projectile[i].ModProjectile is GauntletSpawner)
 			{

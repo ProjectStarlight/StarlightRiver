@@ -272,12 +272,11 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 							launchTarget.velocity.Y = -6;
 							launchTarget.velocity.X = NPC.direction * 18;
 
-							//TODO: check if this is going too fast in multiplayer cause of the extraupdates non sync
 							if (Main.netMode != NetmodeID.MultiplayerClient)
 							{
 								Vector2 ringVel = NPC.DirectionTo(launchTarget.Center);
 								var ring = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Center + ringVel * 35, ringVel, ProjectileType<Items.Vitric.IgnitionGauntlets.IgnitionGauntletsImpactRing>(), 0, 0, Target.whoAmI, Main.rand.Next(35, 45), ringVel.ToRotation());
-								ring.extraUpdates = 0;
+								ring.extraUpdates = 0; // This isn't actually being synced but its such a minor visual effect it may not be worth it
 							}
 						}
 					}
