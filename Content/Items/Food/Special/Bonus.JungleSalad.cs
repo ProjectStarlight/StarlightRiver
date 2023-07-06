@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Utilities;
 using static Terraria.ModLoader.PlayerDrawLayer;
 
 namespace StarlightRiver.Content.Items.Food.Special
@@ -39,7 +40,7 @@ namespace StarlightRiver.Content.Items.Food.Special
 	}
 
 	public class JungleSaladStatePlayer : ModPlayer
-	{
+	{//so that each player has a active bool and mult associated with them that can be checked when getting the nearest player
 		public bool Active = false;
 
 		public float Multiplier;
@@ -71,7 +72,7 @@ namespace StarlightRiver.Content.Items.Food.Special
 
 		public override void Load()
 		{
-			ValidTiles = new HashSet<int>//incomplete
+			ValidTiles = new HashSet<int>
 			{
 				TileID.Plants,
 				TileID.Plants2,
@@ -139,6 +140,8 @@ namespace StarlightRiver.Content.Items.Food.Special
 
 		public override void KillTile(int i, int j, int type, ref bool fail, ref bool effectOnly, ref bool noItem)
 		{
+			if (Main.netMode == NetmodeID.MultiplayerClient)//test this in MP, only spawns items so should be fine? dusts may break but if thats the case its not worth having dust on item spawn.
+				return;
 			//as far as I know, kill tile is is best place to check.
 			//PickTile has access to the causing player, but does not get run on projectiles/swinging weapons.
 			if (AnyActive)
@@ -147,28 +150,33 @@ namespace StarlightRiver.Content.Items.Food.Special
 				{
 					JungleSaladStatePlayer modplayer;
 
+					const int maxDistance = 1600;//100 tiles
+
 					if (Main.netMode == NetmodeID.SinglePlayer)
 					{
 						modplayer = Main.LocalPlayer.GetModPlayer<JungleSaladStatePlayer>();
 
-						if (!modplayer.Active)//local player is inactive
+						//local player is inactive or outside range
+						if (!modplayer.Active || modplayer.Player.Distance(new Vector2(i, j) * 16) > maxDistance)
 							return;
 					}
 					else
 					{
-						int index = NearestPlayerWithBuff(i, j);//todo: give distance as an out
+						int index = NearestPlayerWithBuff(i, j, out float distance);//todo: give distance as an out
 
-						if (index == -1)//no player is active
+						//no player is active or closest player is out or range
+						if (index == -1 || distance > maxDistance)
 							return;
 
 						modplayer = Main.player[index].GetModPlayer<JungleSaladStatePlayer>();
 					}
 
-					const int maxDistance = 1600;//100 tiles
-
-					if (Main.rand.NextFloat(100f) < (3f * modplayer.Multiplier) && modplayer.Player.Distance(new Vector2(i, j) * 16) < maxDistance)
+					if (Main.rand.NextFloat(100f) < (3.5f * modplayer.Multiplier))
 					{
-						DropCustomPotLoot(new Vector2(i * 16, j * 16));
+						DropCustomPotLoot(modplayer, i, j);
+
+						for(int g = 0; g < 5; g++)
+							Dust.NewDustPerfect(new Vector2(i * 16, j * 16), DustID.GoldCoin, new Vector2(Main.rand.NextFloat(-0.2f, 0.2f), Main.rand.NextFloat(-0.35f, 0.1f)));
 					}
 				}
 			}
@@ -176,19 +184,301 @@ namespace StarlightRiver.Content.Items.Food.Special
 			//base.KillTile(i, j, type, ref fail, ref effectOnly, ref noItem);
 		}
 
-		private static void DropCustomPotLoot(Vector2 position)
-		{
+		private static void DropCustomPotLoot(ModPlayer modPlayer, int i, int j)// :)
+		{//logic copied from vanilla wiki
+			Player player = modPlayer.Player;
 
+			//this does not add potions and coin portals, for both complexity and balance reasons
+
+			if (Main.netMode != NetmodeID.SinglePlayer && Main.rand.NextBool(30))
+			{
+				Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, ItemID.WormholePotion);
+				return;
+			}
+
+			int dropType = Main.rand.Next(0, 7);//may need to be weighted
+			switch (dropType)
+			{
+				case 0://health
+					{
+						if (player.statLife < player.statLifeMax2)
+						{//does not take the extra 2 chances from expert mode into account
+							Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, ItemID.Heart);
+
+							if(Main.rand.NextBool())//might be unbalanced for grass loot
+								Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, ItemID.Heart);
+						}
+						else
+						{
+							goto case 1;//go to torches
+						}
+					}
+
+					break;
+
+				case 1://torches
+					{
+						if (!PlayerHasTorches(player))
+						{//item amounts are only based on normal mode drop chances
+							if (Main.tile[i, j].LiquidAmount > 0)//replace torches with glowsticks if in water
+								Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, player.ZoneSnow ? ItemID.StickyGlowstick : ItemID.Glowstick, Main.rand.Next(4, 13));
+							else if (player.ZoneHallow)
+								Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, ItemID.HallowedTorch, Main.rand.Next(4, 13));
+							else if (player.ZoneCorrupt)
+								Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, ItemID.CorruptTorch, Main.rand.Next(4, 13));
+							else if (player.ZoneCrimson)
+								Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, ItemID.CrimsonTorch, Main.rand.Next(4, 13));
+							else if (player.ZoneJungle)//this one may be inconsistent with vanilla pot drop rules, ice and desert also share this problem but are rare cases unlike this one
+								Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, ItemID.JungleTorch, Main.rand.Next(4, 13));
+							else if (player.ZoneSnow)
+								Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, ItemID.IceTorch, Main.rand.Next(2, 6));
+							else if (player.ZoneDesert)
+								Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, ItemID.DesertTorch, Main.rand.Next(4, 13));
+							else
+								Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, ItemID.Torch, Main.rand.Next(4, 13));
+						}
+						else
+						{
+							goto case 6;//go to money
+						}
+					}
+
+					break;
+
+				case 2://ammo
+					{//wiki says grenades can spawn but source code says that is impossible due to an oversight
+						if (player.ZoneUnderworldHeight)
+						{
+							Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, ItemID.HellfireArrow, Main.rand.Next(10, 21));
+						}
+						else if (Main.hardMode)
+						{
+							if (Main.rand.NextBool() && (player.ZonePurity || player.ZoneDirtLayerHeight || player.ZoneUnderworldHeight))
+								Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, (WorldGen.SavedOreTiers.Silver != 168) ? ItemID.SilverBullet : ItemID.TungstenBullet, Main.rand.Next(7, 17));//est based on drop tests
+							else
+								Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, ItemID.UnholyArrow, Main.rand.Next(10, 21));
+						}
+						else 
+						{
+							if(Main.rand.NextBool() && (player.ZonePurity || player.ZoneDirtLayerHeight))
+								Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, ItemID.Shuriken, Main.rand.Next(12, 25));//est based on drop tests
+							else
+								Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, ItemID.WoodenArrow, Main.rand.Next(10, 21));
+						}
+					}
+
+					break;
+
+				case 3://healing potions
+					{//ignores expert extra drop chance
+						if (!Main.hardMode)
+							Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, ItemID.LesserHealingPotion);
+						else
+							Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, ItemID.HealingPotion);
+					}
+
+					break;
+
+				case 4://bombs
+					{//lower drop amounts than vanilla
+						if (player.ZoneUndergroundDesert)
+							Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, ItemID.ScarabBomb, Main.rand.Next(1, 4));
+						else if (player.position.Y > (Main.worldSurface * 16))
+							Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, ItemID.Bomb, Main.rand.Next(1, 4));
+						else
+							goto case 5;//go to ropes
+					}
+
+					break;
+
+				case 5://ropes
+					{
+						if(!Main.hardMode && !player.ZoneUnderworldHeight)
+							Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, ItemID.Rope, Main.rand.Next(20, 41));
+						else
+							goto case 6;//go to money
+					}
+
+					break;
+
+				case 6://money
+					{
+						SpawnCoins(i, j);//basically uses a copy of the vanilla coin method since its overly complicated
+					}
+
+					break;
+			}
 		}
 
-		private static int NearestPlayerWithBuff(int i, int j)
+		private static void SpawnCoins(int i, int j)// :(
+		{//vanilla method slightly modified, this could be replaced with a much simpler function if balacing calls for it
+			const float moneymult = 4f;//originally a money multiplier based on pot type, however this should not take into account the biome for this
+			float moneyvalue = 200 + Main.rand.Next(-100, 101);
+
+			if ((double)j < Main.worldSurface)
+				moneyvalue *= 0.5f;
+			else if ((double)j < Main.rockLayer)
+				moneyvalue *= 0.75f;
+			else if (j > Main.maxTilesY - 250)
+				moneyvalue *= 1.25f;
+
+			moneyvalue *= 1f + (float)Main.rand.Next(-20, 21) * 0.01f;
+
+			if (Main.rand.NextBool(4))
+				moneyvalue *= 1f + (float)Main.rand.Next(5, 11) * 0.01f;
+
+			if (Main.rand.NextBool(8))
+				moneyvalue *= 1f + (float)Main.rand.Next(10, 21) * 0.01f;
+
+			if (Main.rand.NextBool(12))
+				moneyvalue *= 1f + (float)Main.rand.Next(20, 41) * 0.01f;
+
+			if (Main.rand.NextBool(16))
+				moneyvalue *= 1f + (float)Main.rand.Next(40, 81) * 0.01f;
+
+			if (Main.rand.NextBool(20))
+				moneyvalue *= 1f + (float)Main.rand.Next(50, 101) * 0.01f;
+
+			if (Main.expertMode)
+				moneyvalue *= 2.5f;
+
+			if (Main.expertMode && Main.rand.NextBool(2))
+				moneyvalue *= 1.25f;
+
+			if (Main.expertMode && Main.rand.NextBool(3))
+				moneyvalue *= 1.5f;
+
+			if (Main.expertMode && Main.rand.NextBool(4))
+				moneyvalue *= 1.75f;
+
+			moneyvalue *= moneymult;
+
+			if (NPC.downedBoss1)
+				moneyvalue *= 1.1f;
+
+			if (NPC.downedBoss2)
+				moneyvalue *= 1.1f;
+
+			if (NPC.downedBoss3)
+				moneyvalue *= 1.1f;
+
+			if (NPC.downedMechBoss1)
+				moneyvalue *= 1.1f;
+
+			if (NPC.downedMechBoss2)
+				moneyvalue *= 1.1f;
+
+			if (NPC.downedMechBoss3)
+				moneyvalue *= 1.1f;
+
+			if (NPC.downedPlantBoss)
+				moneyvalue *= 1.1f;
+
+			if (NPC.downedQueenBee)
+				moneyvalue *= 1.1f;
+
+			if (NPC.downedGolemBoss)
+				moneyvalue *= 1.1f;
+
+			if (NPC.downedPirates)
+				moneyvalue *= 1.1f;
+
+			if (NPC.downedGoblins)
+				moneyvalue *= 1.1f;
+
+			if (NPC.downedFrost)
+				moneyvalue *= 1.1f;
+
+			while ((int)moneyvalue > 0)
+			{
+				if (moneyvalue > 1000000f)
+				{
+					int num11 = (int)(moneyvalue / 1000000f);
+
+					if (num11 > 50 && Main.rand.NextBool(2))
+						num11 /= Main.rand.Next(3) + 1;
+
+					if (Main.rand.NextBool(2))
+						num11 /= Main.rand.Next(3) + 1;
+
+					moneyvalue -= (float)(1000000 * num11);
+					Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, 74, num11);
+					continue;
+				}
+
+				if (moneyvalue > 10000f)
+				{
+					int num12 = (int)(moneyvalue / 10000f);
+
+					if (num12 > 50 && Main.rand.NextBool(2))
+						num12 /= Main.rand.Next(3) + 1;
+
+					if (Main.rand.NextBool(2))
+						num12 /= Main.rand.Next(3) + 1;
+
+					moneyvalue -= (float)(10000 * num12);
+					Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, 73, num12);
+					continue;
+				}
+
+				if (moneyvalue > 100f)
+				{
+					int num13 = (int)(moneyvalue / 100f);
+
+					if (num13 > 50 && Main.rand.NextBool(2))
+						num13 /= Main.rand.Next(3) + 1;
+
+					if (Main.rand.NextBool(2))
+						num13 /= Main.rand.Next(3) + 1;
+
+					moneyvalue -= (float)(100 * num13);
+					Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, 72, num13);
+					continue;
+				}
+
+				int num14 = (int)moneyvalue;
+				if (num14 > 50 && Main.rand.NextBool(2))
+					num14 /= Main.rand.Next(3) + 1;
+
+				if (Main.rand.NextBool(2))
+					num14 /= Main.rand.Next(4) + 1;
+
+				if (num14 < 1)
+					num14 = 1;
+
+				moneyvalue -= (float)num14;
+			    Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, 71, num14);
+			}
+		}
+
+		private static bool PlayerHasTorches(Player player)
+		{
+			int torchCount = 0;
+			const int minTorches = 20;
+			for (int num5 = 0; num5 < 50; num5++)
+			{
+				Item item = player.inventory[num5];
+				if (!item.IsAir && item.createTile == TileID.Torches)
+				{
+					torchCount += item.stack;
+					if (torchCount >= minTorches)
+					{
+						break;
+					}
+				}
+			}
+
+			return torchCount < minTorches;
+		}
+
+		private static int NearestPlayerWithBuff(int i, int j, out float distance)
 		{
 			int closestIndex = -1;
 			float lastDistance = 1000000;
 			Vector2 playerCoords = new Vector2(i * 16, j * 16);
 			foreach (Player player in Main.player)
 			{
-				if (!player.active || player.DeadOrGhost)
+				if (!player.active || player.DeadOrGhost || player.flowerBoots)
 					continue;
 
 				JungleSaladStatePlayer modplayer = player.GetModPlayer<JungleSaladStatePlayer>();
@@ -196,14 +486,15 @@ namespace StarlightRiver.Content.Items.Food.Special
 				if (!modplayer.Active)
 					continue;
 
-				float distance = player.DistanceSQ(playerCoords);
-				if (distance < lastDistance)
+				float thisdistance = player.DistanceSQ(playerCoords);
+				if (thisdistance < lastDistance)
 				{
-					lastDistance = distance;
+					lastDistance = thisdistance;
 					closestIndex = player.whoAmI;
 				}
 			}
 
+			distance = (float)Math.Sqrt(lastDistance);
 			return closestIndex;
 		}
 	}
