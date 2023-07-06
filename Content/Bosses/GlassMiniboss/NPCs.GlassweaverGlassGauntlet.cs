@@ -43,6 +43,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		private void CheckGauntletWave()
 		{
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+				return; //multiplayer clients don't need to check this the server will tell them about it
+
 			if (ActiveGauntletCount <= 0)
 				waitTime++;
 

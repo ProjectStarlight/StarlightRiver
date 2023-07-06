@@ -157,6 +157,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 					if (AttackTimer <= 120)
 					{
+						if (Main.netMode != NetmodeID.Server)
+							RichTextBox.CloseDialogue(); // may accidentially kick players that aren't involved in the fight out of their modal but its probably good enough as is
+
 						SpawnAnimation();
 					}
 					else
@@ -171,7 +174,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 					if (!Main.player.Any(n => n.active && !n.dead && n.Hitbox.Intersects(Arena)))
 					{
-						Main.NewText("failphase from criteria");
 						Phase = (int)Phases.FailEffects;
 						AttackTimer = 0;
 						return;
