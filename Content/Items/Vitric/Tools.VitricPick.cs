@@ -6,6 +6,8 @@ namespace StarlightRiver.Content.Items.Vitric
 {
 	internal class VitricPick : ModItem, IGlowingItem
 	{
+		public const int MAX_HEAT;
+
 		public int heat = 0;
 		public int heatTime = 0;
 
@@ -57,7 +59,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			if (myPick != null && type == TileID.Hellstone)
 			{
-				if (myPick.heat < 20)
+				if (myPick.heat < MAX_HEAT)
 					myPick.heat++;
 
 				tile.LiquidType = 0;
@@ -69,7 +71,12 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override float UseTimeMultiplier(Player Player)
 		{
-			return 1 + heat / 40f;
+			return 1 - heat / (float)(MAX_HEAT * 2);
+		}
+
+		public override float UseAnimationMultiplier(Player player)
+		{
+			return 1 - heat / (float)(MAX_HEAT * 2);
 		}
 
 		public override void UpdateInventory(Player Player)
@@ -88,7 +95,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
 		{
 			Texture2D tex = Request<Texture2D>(Texture + "Glow").Value;
-			Color color = Color.White * (heat / 20f);
+			Color color = Color.White * (heat / (float)MAX_HEAT);
 
 			spriteBatch.Draw(tex, position, frame, color, 0, origin, scale, 0, 0);
 		}
@@ -101,7 +108,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				return;
 
 			Texture2D tex = Request<Texture2D>(Texture + "Glow").Value;
-			Color color = Color.White * (heat / 20f);
+			Color color = Color.White * (heat / (float)MAX_HEAT);
 			Vector2 origin = Player.direction == 1 ? new Vector2(0, tex.Height) : new Vector2(tex.Width, tex.Height);
 
 			var data = new DrawData(tex, info.ItemLocation - Main.screenPosition, null, color, Player.itemRotation, origin, Item.scale, Player.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
