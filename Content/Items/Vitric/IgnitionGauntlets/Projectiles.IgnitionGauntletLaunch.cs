@@ -82,11 +82,11 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 
 			foreach (Projectile Projectile in Main.projectile)
 			{
-				Player player = Main.player[Projectile.owner];
-				Texture2D starTex = ModContent.Request<Texture2D>(Texture + "_Star").Value;
-
-				if (Projectile.type == ModContent.ProjectileType<IgnitionGauntletLaunch>() && Projectile.active && player.GetModPlayer<IgnitionPlayer>().loadedCharge > 15)
+				if (Projectile.active && Projectile.type == ModContent.ProjectileType<IgnitionGauntletLaunch>() && Main.player[Projectile.owner].GetModPlayer<IgnitionPlayer>().loadedCharge > 15)
 				{
+					Player player = Main.player[Projectile.owner];
+					Texture2D starTex = ModContent.Request<Texture2D>(Texture + "_Star").Value;
+
 					var mp = Projectile.ModProjectile as IgnitionGauntletLaunch;
 					Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 					Effect effect = Filters.Scene["ConicalNoise"].GetShader().Shader;
