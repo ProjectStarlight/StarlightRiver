@@ -106,6 +106,9 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 	{
 		public override bool PreDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 		{
+			if (Main.gameMenu)
+				return true;
+
 			bool isValid = (item.DamageType.Type == DamageClass.Summon.Type || item.DamageType.Type == DamageClass.SummonMeleeSpeed.Type) && !Main.LocalPlayer.controlSmart;
 
 			if (!Main.playerInventory && !isValid && Main.LocalPlayer.GetModPlayer<CombatMountPlayer>().activeMount != null)

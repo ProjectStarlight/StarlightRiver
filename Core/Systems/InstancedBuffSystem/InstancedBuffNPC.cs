@@ -49,7 +49,8 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		{
 			orig(self, lowerBuffTime);
 
-			self.GetGlobalNPC<InstancedBuffNPC>().buffInstances.ForEach(n => n.UpdateNPC(self));
+			if (!Main.dedServ && self.type > 0)
+				self.GetGlobalNPC<InstancedBuffNPC>().buffInstances.ForEach(n => n.UpdateNPC(self));
 		}
 
 		/// <summary>

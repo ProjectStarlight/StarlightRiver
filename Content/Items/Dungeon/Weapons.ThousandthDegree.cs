@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 		public override void SetStaticDefaults()
 		{
 			//probably a bad tooltip idk
-			Tooltip.SetDefault("Melts through enemies to build up heat\nReleasing launches the blazing wheel, melting through enemies and sliding on tiles before returning\n'Rip and tear'");
+			Tooltip.SetDefault("Melts through enemies to build up heat\nReleasing launches the blazing wheel\n'Rip and tear'");
 		}
 
 		public override void SetDefaults()
@@ -691,7 +691,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.04f);
@@ -708,7 +708,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			trail2?.Render(effect);
 
 			trail?.Render(effect);
-			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 }

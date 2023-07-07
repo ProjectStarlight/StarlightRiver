@@ -20,12 +20,12 @@ namespace StarlightRiver.Content.Items.Dungeon
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Skullbuster");
-			Tooltip.SetDefault("Right click to throw 4 skullbombs \nRelease right click to shoot them all in quick succession");
+			Tooltip.SetDefault("<right> to throw 4 skullbombs \nRelease <right> to shoot them all in quick succession");
 		}
 
 		public override void SetDefaults()
 		{
-			Item.damage = 45;
+			Item.damage = 47;
 			Item.DamageType = DamageClass.Ranged;
 			Item.width = 24;
 			Item.height = 24;
@@ -45,7 +45,8 @@ namespace StarlightRiver.Content.Items.Dungeon
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();
-			recipe.AddIngredient(ModContent.ItemType<CoachGun>(), 1);
+			recipe.AddIngredient(ItemID.Handgun);
+			recipe.AddIngredient(ItemID.Grenade, 5);
 			recipe.AddIngredient(ItemID.Bone, 10);
 			recipe.AddTile(TileID.Anvils);
 		}
@@ -105,7 +106,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			{
 				for (int i = 0; i < 4; i++)
 				{
-					var bomb = Projectile.NewProjectileDirect(source, position, velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(0.8f, 1.3f), type, damage, knockback, player.whoAmI);
+					var bomb = Projectile.NewProjectileDirect(source, position, velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(0.8f, 1.3f), type, damage + 15, knockback, player.whoAmI);
 					(bomb.ModProjectile as SkullBomb).crosshairSin = -i * 0.15f;
 				}
 
@@ -324,7 +325,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 						if (ammoType != -1)
 						{
-							var proj = Projectile.NewProjectileDirect(Projectile.GetSource_ItemUse_WithPotentialAmmo(baseItem, AmmoID.Bullet), position + offset * 43, direction, ModContent.ProjectileType<SkullBusterBullet>(), 0, Projectile.knockBack, Owner.whoAmI);
+							var proj = Projectile.NewProjectileDirect(null, position + offset * 43, direction, ModContent.ProjectileType<SkullBusterBullet>(), 0, Projectile.knockBack, Owner.whoAmI);
 							(proj.ModProjectile as SkullBusterBullet).target = targetBomb.whoAmI;
 							shotBombs.Add(targetBomb);
 
@@ -721,7 +722,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);

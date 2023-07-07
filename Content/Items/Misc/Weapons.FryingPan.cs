@@ -3,7 +3,6 @@ using StarlightRiver.Helpers;
 
 using System;
 using System.Collections.Generic;
-using Terraria.Graphics.Effects;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -39,14 +38,14 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.noUseGraphic = true;
 			Item.noMelee = true;
 			Item.autoReuse = false;
-			Item.value = Item.sellPrice(0, 0, 20, 0);
+			Item.value = Item.sellPrice(0, 1, 50, 0);
 			Item.rare = ItemRarityID.Blue;
 		}
 
 		public override void AddRecipes()
 		{
 			CreateRecipe()
-				.AddIngredient(RecipeGroupID.IronBar, 15)
+				.AddRecipeGroup(RecipeGroupID.IronBar, 30)
 				.AddTile(TileID.Anvils)
 				.Register();
 		}
@@ -206,19 +205,13 @@ namespace StarlightRiver.Content.Items.Misc
 			else
 			{
 				rotVel = 0f;
+
 				if (Main.mouseLeft)
 				{
 					Projectile.ai[0] = 0;
 					return;
 				}
 			}
-			/*if (currentAttack == CurrentAttack.Spin && Projectile.ai[0] < 1)
-			{
-				zRotation = 6.28f * EaseFunction.EaseQuadInOut.Ease(Projectile.ai[0]);
-				owner.UpdateRotation(zRotation + (facingRight ? 3.14f : 0));
-			}
-			else
-				owner.UpdateRotation(0);*/
 
 			float progress = EaseProgress(Projectile.ai[0]);
 
@@ -297,38 +290,19 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			//DrawTrail(Main.spriteBatch);
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D tex = Request<Texture2D>(Texture).Value;
 
-			bool flip = false;
 			SpriteEffects effects = SpriteEffects.None;
-			/*if (zRotation > 1.57f && zRotation < 4.71f)
-			{
-				flip = true;
-				effects = facingRight ? SpriteEffects.FlipHorizontally : SpriteEffects.FlipVertically;
-			}*/
 
 			var origin = new Vector2(0, tex.Height);
 
 			Vector2 scaleVec = Vector2.One;
-			/*if (flip)
-            {
-				if (facingRight)
-				{
-					scaleVec.X = (float)Math.Abs(Math.Cos(zRotation));
-					origin = new Vector2(tex.Width, tex.Height);
-				}
-				else
-				{
-					scaleVec.Y = (float)Math.Abs(Math.Cos(zRotation));
-					origin = new Vector2(0, 0);
-				}
-            }*/
+
 			for (int k = 16; k > 0; k--)
 			{
-
 				float progress = 1 - (float)((16 - k) / (float)16);
 				Color color = lightColor * EaseFunction.EaseQuarticOut.Ease(progress) * 0.1f;
+
 				if (k > 0 && k < oldRotation.Count)
 					Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, color, oldRotation[k] + 0.78f, origin, Projectile.scale * scaleVec, effects, 0f);
 			}
@@ -373,23 +347,6 @@ namespace StarlightRiver.Content.Items.Misc
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + off;
-		}
-
-		private void DrawTrail(SpriteBatch spriteBatch)
-		{
-			spriteBatch.End();
-			Effect effect = Filters.Scene["CoachBombTrail"].GetShader().Shader;
-
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
-
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/MotionTrail").Value);
-
-			trail?.Render(effect);
-
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		private float EaseProgress(float input)

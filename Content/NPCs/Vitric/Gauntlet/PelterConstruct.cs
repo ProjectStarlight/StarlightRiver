@@ -15,6 +15,11 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		private const int BOWFRAMES = 4;
 		private const int XFRAMES = 3;
 
+		public ref float ShielderComboCooldown => ref NPC.ai[0];
+		public ref float MaxSpeed => ref NPC.ai[1];
+		public ref float Acceleration => ref NPC.ai[2];
+		public ref float BackupDistance => ref NPC.ai[3];
+
 		private int aiCounter = 0;
 
 		private float flipRotation = 0f; //The rotation relating to the flip
@@ -30,7 +35,6 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		private bool shielderComboJumped = false;
 		private bool shielderComboFiring = false;
 		private NPC shielderPartner = default;
-		private int shielderComboCooldown = 500;
 
 		private bool doingFlyingCombo = false;
 		private int flyingComboCooldown = 0;
@@ -44,10 +48,6 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		private int xFrame = 0;
 
 		private Vector2 ringVel = Vector2.Zero;
-
-		private float maxSpeed = 2;
-		private float acceleration = 0.2f;
-		private int backupDistance = 75;
 
 		private bool stopped = false;
 
@@ -81,22 +81,17 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			NPC.lifeMax = 100;
 			NPC.value = 0f;
 			NPC.knockBackResist = 0.6f;
-
-			NPC.HitSound = SoundID.Item27 with
-			{
-				Pitch = -0.3f
-			};
-
-			NPC.DeathSound = SoundID.Shatter;
+			NPC.HitSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Impacts/IceHit") with { PitchVariance = 0.3f };
+			NPC.DeathSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Impacts/EnergyBreak") with { PitchVariance = 0.3f };
 		}
 
 		public override void OnSpawn(IEntitySource source)
 		{
 			FindFrame(48);
-			shielderComboCooldown = Main.rand.Next(450, 550);
-			maxSpeed = Main.rand.NextFloat(1.75f, 2.25f);
-			acceleration = Main.rand.NextFloat(0.22f, 0.35f);
-			backupDistance = Main.rand.Next(50, 100);
+			ShielderComboCooldown = Main.rand.Next(450, 550);
+			MaxSpeed = Main.rand.NextFloat(1.75f, 2.25f);
+			Acceleration = Main.rand.NextFloat(0.22f, 0.35f);
+			BackupDistance = Main.rand.Next(50, 100);
 		}
 
 		public override void SafeAI()
@@ -351,7 +346,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			{
 				doingShielderCombo = true;
 				shielderPartner = tempPartner;
-				(shielderPartner.ModNPC as ShieldConstruct).bounceCooldown = shielderComboCooldown;
+				(shielderPartner.ModNPC as ShieldConstruct).bounceCooldown = ShielderComboCooldown;
 			}
 
 			if (doingShielderCombo)
@@ -496,7 +491,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			if (nearestShielder == default)
 				xPosToBe = (int)Target.Center.X;
 			else
-				xPosToBe = (int)nearestShielder.Center.X - nearestShielder.spriteDirection * backupDistance;
+				xPosToBe = (int)(nearestShielder.Center.X - nearestShielder.spriteDirection * BackupDistance);
 
 			int velDir = Math.Sign(xPosToBe - NPC.Center.X);
 
@@ -518,8 +513,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			}
 			else
 			{
-				NPC.velocity.X += acceleration * velDir;
-				NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -maxSpeed, maxSpeed);
+				NPC.velocity.X += Acceleration * velDir;
+				NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -MaxSpeed, MaxSpeed);
 
 				if (NPC.velocity.Y == 0)
 				{
@@ -563,7 +558,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		public override void DrawHealingGlow(SpriteBatch spriteBatch)
 		{
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			float sin = 0.5f + (float)Math.Sin(Main.timeForVisualEffects * 0.04f) * 0.5f;
 			float distance = sin * 3 + 4;
@@ -578,7 +573,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
@@ -623,7 +618,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			Effect effect = Terraria.Graphics.Effects.Filters.Scene["CeirosRing"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.04f);
@@ -636,7 +631,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
 
 			trail?.Render(effect);
-			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D tex = Request<Texture2D>(Texture).Value;
 			Texture2D glowTex = Request<Texture2D>(Texture + "_Glow").Value;
@@ -647,6 +642,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		public override void Kill(int timeLeft)
 		{
+			if (Main.netMode == NetmodeID.Server)
+				return;
+
 			/*for (int j = 0; j < 8; j++)
             {
                 float lerper = j / 8f;
@@ -671,10 +669,10 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			{
 				ManageCaches();
 				ManageTrail();
+				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(6, 6), 6, null, 0, default, 1.1f);
 			}
 
 			Projectile.rotation = Projectile.velocity.ToRotation() + 1.57f;
-			Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(6, 6), 6, null, 0, default, 1.1f);
 		}
 
 		private void ManageCaches()

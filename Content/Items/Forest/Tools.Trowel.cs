@@ -25,6 +25,8 @@ namespace StarlightRiver.Content.Items.Forest
 			Item.useTime = 10;
 			Item.useAnimation = 20;
 			Item.autoReuse = true;
+
+			Item.value = Item.sellPrice(silver: 25);
 		}
 
 		private Point16 FindNextTile(Player Player)
@@ -63,6 +65,32 @@ namespace StarlightRiver.Content.Items.Forest
 			return default;
 		}
 
+		//returns the item ID that is consumed
+		private static int BlockWandSubstitutions(int createTile)
+		{//this could check item id instead if needed
+			switch (createTile)
+			{
+				case TileID.LivingWood:
+				case TileID.LeafBlock:
+					return ItemID.Wood;
+
+				case TileID.LivingMahogany:
+				case TileID.LivingMahoganyLeaves:
+					return ItemID.RichMahogany;
+
+				case TileID.BoneBlock:
+					return ItemID.Bone;
+
+				case TileID.Hive:
+					return ItemID.Hive;
+
+				default:
+					break;
+			}
+
+			return -1;
+		}
+
 		public override bool? UseItem(Player Player)
 		{
 			Tile tile = Framing.GetTileSafely(Player.tileTargetX, Player.tileTargetY);
@@ -71,11 +99,13 @@ namespace StarlightRiver.Content.Items.Forest
 			if (!tile.HasTile || Main.tileFrameImportant[tile.TileType])
 				return true;
 
+			int itemSubstitution = BlockWandSubstitutions(tile.TileType);//if this block should look for a different item than the one used to place it
+
 			for (int k = 0; k < Player.inventory.Length; k++)  //find the Item to place the tile
 			{
 				Item thisItem = Player.inventory[k];
 
-				if (!thisItem.IsAir && thisItem.createTile == tile.TileType)
+				if (!thisItem.IsAir && (thisItem.type == itemSubstitution || itemSubstitution == -1 && thisItem.createTile == tile.TileType))
 					Item = Player.inventory[k];
 			}
 
@@ -87,9 +117,12 @@ namespace StarlightRiver.Content.Items.Forest
 			if (next != default)
 			{
 				WorldGen.PlaceTile(next.X, next.Y, tile.TileType);
-				Item.stack--;
-				if (Item.stack <= 0)
-					Item.TurnToAir();
+				if (Item.consumable)//so that infinite items do not get used up
+				{
+					Item.stack--;
+					if (Item.stack <= 0)
+						Item.TurnToAir();
+				}
 			}
 
 			return true;
@@ -128,6 +161,8 @@ namespace StarlightRiver.Content.Items.Forest
 			Item.useAnimation = 10;
 			Item.autoReuse = true;
 			maxRange = 40;
+
+			Item.value = Item.sellPrice(gold: 2);
 		}
 	}
 }

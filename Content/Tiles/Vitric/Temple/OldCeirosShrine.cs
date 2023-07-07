@@ -1,4 +1,6 @@
-﻿using StarlightRiver.Core.Systems.DummyTileSystem;
+﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Core.Systems;
+using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -25,7 +27,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 		{
-			(r, g, b) = (0.8f, 0.6f, 0.4f);
+			if (Main.LocalPlayer.InModBiome<VitricTempleBiome>())
+				(r, g, b) = (0.8f, 0.6f, 0.4f);
 		}
 
 		public override bool SpawnConditions(int i, int j)
@@ -74,6 +77,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public override void Update()
 		{
+			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
+				return;
+
 			if (Main.rand.NextBool(20))
 			{
 				Vector2 pos = Projectile.position + Vector2.UnitX * Main.rand.NextFloat(64);
@@ -83,6 +89,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public override void PostDraw(Color lightColor)
 		{
+			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
+				return;
+
 			Texture2D tex = Request<Texture2D>(AssetDirectory.VitricTile + "OldCeirosOrnament" + Parent.TileFrameX).Value;
 			float sin = (float)Math.Sin(Main.GameUpdateCount / 30f);
 			Vector2 pos = Projectile.position - Main.screenPosition + new Vector2(32, -32 + sin * 4);
@@ -92,6 +101,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
+			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
+				return;
+
 			Texture2D texGlow = Request<Texture2D>(AssetDirectory.VitricBoss + "LongGlow").Value;
 			Vector2 pos = Projectile.position - Main.screenPosition + new Vector2(33, 10);
 
@@ -102,6 +114,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		}
 	}
 
+	[SLRDebug]
 	class OldCeirosShrineItem : QuickTileItem
 	{
 		public OldCeirosShrineItem() : base("Old Ceiros Shrine", "Debug Item", "OldCeirosShrine", 0) { }

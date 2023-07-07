@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.CustomHooks
 				var source = new Rectangle(0, 52 * (int)(Main.GameUpdateCount / 4 % 4), 52, 52);
 
 				sb.Draw(back, position, source, Color.White, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);
-				AccessorySlotControl.RedrawItem(sb, inv, position, slot, color);
+				//AccessorySlotControl.RedrawItem(sb, inv, position, slot, color); bandaid fix
 			}
 
 			else
@@ -66,13 +66,13 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private void LockMouseToSpecialItem(Terraria.UI.On_ItemSlot.orig_LeftClick_ItemArray_int_int orig, Item[] inv, int context, int slot)
 		{
-			if (!(Main.mouseItem.ModItem is Core.InworldItem))
+			if (!(Main.mouseItem.ModItem is Core.InworldItem && !Main.mouseItem.IsAir))
 				orig(inv, context, slot);
 		}
 
 		private void DontDropCoolStuff(On_Player.orig_dropItemCheck orig, Terraria.Player self)
 		{
-			if (!(Main.mouseItem.ModItem is Core.InworldItem))
+			if (!(Main.mouseItem.ModItem is Core.InworldItem && !Main.mouseItem.IsAir))
 				orig(self);
 		}
 	}

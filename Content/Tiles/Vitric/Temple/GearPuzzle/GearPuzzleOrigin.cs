@@ -1,4 +1,6 @@
-﻿using System;
+﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Core.Systems;
+using System;
 using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
@@ -18,12 +20,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 			return false;
 		}
-
-		public override void OnEngage(GearTileEntity entity)
-		{
-			for (int k = 0; k < 10; k++)
-				Dust.NewDustPerfect(entity.Position.ToVector2() * 16, ModContent.DustType<Dusts.Glow>(), null, 0, new Color(255, 0, 0));
-		}
 	}
 
 	class GearPuzzleOriginDummy : GearTileDummy
@@ -38,6 +34,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 			Engaged = true;
 			RotationVelocity = 2;
 
+			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
+				return;
+
 			Lighting.AddLight(Projectile.Center, new Vector3(1, 0.7f, 0.4f) * 0.5f);
 		}
 
@@ -50,6 +49,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 			Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Rotation, tex.Size() / 2, 1, 0, 0);
 
+			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
+				return;
+
 			Texture2D magmiteTex = ModContent.Request<Texture2D>(AssetDirectory.VitricNpc + "MagmitePassive").Value;
 			float sinTimer = Main.GameUpdateCount / 20f;
 			var frame = new Rectangle(42, sinTimer % 6.28f < 1.57f ? 0 : (int)(Main.GameUpdateCount / 3f) % 5 * 40, 42, 40);
@@ -58,6 +60,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 		}
 	}
 
+	[SLRDebug]
 	class GearPuzzleOriginPlacer : QuickTileItem
 	{
 		public GearPuzzleOriginPlacer() : base("Gear puzzle origin", "Debug Item", "GearPuzzleOrigin", 8, AssetDirectory.VitricTile + "OriginGearBase", true) { }

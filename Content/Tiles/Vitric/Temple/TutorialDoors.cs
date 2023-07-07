@@ -1,5 +1,6 @@
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Helpers;
@@ -71,6 +72,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		}
 	}
 
+	[SLRDebug]
 	class TutorialDoor1Item : QuickTileItem
 	{
 		public TutorialDoor1Item() : base("TutorialDoor1", "Debug Item", "TutorialDoor1", 1, AssetDirectory.Debug, true) { }
@@ -142,6 +144,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		}
 	}
 
+	[SLRDebug]
 	class TutorialDoor2Item : QuickTileItem
 	{
 		public TutorialDoor2Item() : base("TutorialDoor2", "Debug Item", "TutorialDoor2", 1, AssetDirectory.Debug, true) { }

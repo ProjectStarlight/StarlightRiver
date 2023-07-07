@@ -2,6 +2,7 @@ using StarlightRiver.Content.Dusts;
 using StarlightRiver.Helpers;
 using System;
 using System.Linq;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
@@ -78,14 +79,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			NPC.lifeMax = 150;
 			NPC.value = 0f;
 			NPC.knockBackResist = 0.2f;
-
-			NPC.HitSound = SoundID.Item27 with
-			{
-				Pitch = -0.3f
-			};
-
-			NPC.DeathSound = SoundID.Shatter;
-			cooldownDuration = Main.rand.Next(65, 90);
+			NPC.HitSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Impacts/IceHit") with { PitchVariance = 0.3f };
+			NPC.DeathSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Impacts/EnergyBreak") with { PitchVariance = 0.3f };
+			cooldownDuration = Main.rand.Next(65, 90); //TODO: wtf is this
 			maxSpeed = Main.rand.NextFloat(4.5f, 5.5f);
 			acceleration = Main.rand.NextFloat(0.22f, 0.35f);
 		}
@@ -103,7 +99,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		public override void SafeAI() //TODO: Document snippets with their intended behavior
 		{
-			if (xFrame == 2 && yFrame == 6 && frameCounter == 1) //Dust when the enemy swings it's sword
+			if (xFrame == 2 && yFrame == 6 && frameCounter == 1 && Main.netMode != NetmodeID.Server) //Dust when the enemy swings it's sword
 			{
 				for (int i = 0; i < 15; i++)
 				{
@@ -326,6 +322,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				{
 					NPC.velocity.X = NPC.spriteDirection * 17;
 					NPC.velocity.Y = -3;
+					Helper.PlayPitched("Effects/HeavyWhooshShort", Main.rand.NextFloat(0.2f, 0.3f), Main.rand.NextFloat(0.5f, 0.8f), NPC.Center);
 				}
 			}
 		}
@@ -396,6 +393,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 					{
 						NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Bottom, partner.Top + new Vector2(partner.spriteDirection * 15, 0), 0.1f, 120, 350);
 						comboJumped = true;
+
 					}
 
 					if (comboJumped)
@@ -419,8 +417,12 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 								unboundRotation = -6.28f * NPC.spriteDirection * 0.95f;
 								comboJumpedTwice = true;
 
-								var ring = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Bottom, NPC.Bottom.DirectionTo(partner.Center), ProjectileType<Items.Vitric.IgnitionGauntlets.IgnitionGauntletsImpactRing>(), 0, 0, Target.whoAmI, Main.rand.Next(25, 35), NPC.Center.DirectionTo(partner.Center).ToRotation());
-								ring.extraUpdates = 0;
+								//TODO: check if this is going too fast in multiplayer cause of the extraupdates non sync
+								if (Main.netMode != NetmodeID.MultiplayerClient)
+								{
+									var ring = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Bottom, NPC.Bottom.DirectionTo(partner.Center), ProjectileType<Items.Vitric.IgnitionGauntlets.IgnitionGauntletsImpactRing>(), 0, 0, Target.whoAmI, Main.rand.Next(25, 35), NPC.Center.DirectionTo(partner.Center).ToRotation());
+									ring.extraUpdates = 0;
+								}
 							}
 						}
 					}
@@ -581,7 +583,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		public override void DrawHealingGlow(SpriteBatch spriteBatch)
 		{
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D tex = Request<Texture2D>(Texture).Value;
 			float sin = 0.5f + (float)Math.Sin(Main.timeForVisualEffects * 0.04f) * 0.5f;
@@ -597,7 +599,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)

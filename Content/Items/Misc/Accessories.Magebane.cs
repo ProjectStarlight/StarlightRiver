@@ -24,6 +24,19 @@ namespace StarlightRiver.Content.Items.Misc
 			StarlightPlayer.OnHitNPCWithProjEvent -= ManaLeechOnHitProj;
 		}
 
+		public override void SetStaticDefaults()
+		{
+			Tooltip.SetDefault("Cursed : You can not drink mana potions or other mana-replenishing items\nMagic attacks have a 25% chance to leech a large portion of their damage as mana");
+
+			ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.ManaFlower;
+			ItemID.Sets.ShimmerTransformToItem[ItemID.ManaFlower] = Type;
+		}
+
+		public override void SafeSetDefaults()
+		{
+			Item.value = Item.sellPrice(gold: 1);
+		}
+
 		private void ManaLeechOnHitProj(Player Player, Projectile proj, NPC target, NPC.HitInfo info, int damageDone)
 		{
 			if (proj.DamageType == DamageClass.Magic && Equipped(Player) && Main.rand.NextFloat() < 0.25f)
@@ -67,11 +80,6 @@ namespace StarlightRiver.Content.Items.Misc
 				return false;
 
 			return true;
-		}
-
-		public override void SetStaticDefaults()
-		{
-			Tooltip.SetDefault("Mana replenishing items cannot be used\nMagic attacks have a twenty-five percent chance to leech a large portion of damage as mana on hit");
 		}
 	}
 }

@@ -62,6 +62,7 @@ namespace StarlightRiver.Core.Systems.CameraSystem
 			MoveModifier.Timer = 0;
 			MoveModifier.MovementDuration = duration;
 			MoveModifier.Target = target;
+			MoveModifier.Returning = false;
 
 			MoveModifier.EaseFunction = ease ?? Vector2.SmoothStep;
 		}
@@ -75,6 +76,7 @@ namespace StarlightRiver.Core.Systems.CameraSystem
 		{
 			MoveModifier.Timer = 0;
 			MoveModifier.MovementDuration = duration;
+			MoveModifier.Returning = true;
 
 			MoveModifier.EaseFunction = ease ?? Vector2.SmoothStep;
 		}
@@ -91,15 +93,18 @@ namespace StarlightRiver.Core.Systems.CameraSystem
 
 		public override void ModifyScreenPosition()
 		{
-			float mult = ModContent.GetInstance<Content.Configs.GraphicsConfig>().ScreenshakeMult;
-			mult *= Main.screenWidth / 2048f * 1.2f; //normalize for screen resolution
-			Main.instance.CameraModifiers.Add(new PunchCameraModifier(Main.LocalPlayer.position, Main.rand.NextFloat(3.14f).ToRotationVector2(), shake * mult, 15f, 30, 2000, "Starlight Shake"));
-
 			if (PanModifier.TotalDuration > 0 && PanModifier.PrimaryTarget != Vector2.Zero)
 				Main.instance.CameraModifiers.Add(PanModifier);
 
 			if (AsymetricalPanModifier.TotalDuration > 0 && AsymetricalPanModifier.target != Vector2.Zero)
 				Main.instance.CameraModifiers.Add(AsymetricalPanModifier);
+
+			if (MoveModifier.MovementDuration > 0 && MoveModifier.Target != Vector2.Zero)
+				Main.instance.CameraModifiers.Add(MoveModifier);
+
+			float mult = ModContent.GetInstance<Content.Configs.GraphicsConfig>().ScreenshakeMult;
+			mult *= Main.screenWidth / 2048f * 1.2f; //normalize for screen resolution
+			Main.instance.CameraModifiers.Add(new PunchCameraModifier(Main.LocalPlayer.position, Main.rand.NextFloat(3.14f).ToRotationVector2(), shake * mult, 15f, 30, 2000, "Starlight Shake"));
 
 			if (shake > 0)
 				shake--;

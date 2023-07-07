@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public SanitizerSpray() : base("Sanitizer Spray", "Critical strikes have a 25% chance to transfer partial debuff duration to nearby enemies") { }
+		public SanitizerSpray() : base("Sanitizer Spray", "Critical strikes have a 25% chance to transfer parts of your debuffs to nearby enemies") { }
 
 		public override void Load()
 		{
@@ -67,6 +67,11 @@ namespace StarlightRiver.Content.Items.Misc
 				if (npc.CanBeChasedBy() && Vector2.DistanceSquared(Player.Center, npc.Center) < transferRadius * transferRadius)
 					npc.AddBuff(type, transferredBuffDuration);
 			}
+		}
+
+		public override void SafeSetDefaults()
+		{
+			Item.value = Item.sellPrice(silver: 50);
 		}
 	}
 }

@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Buffs;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Physics;
 using StarlightRiver.Core.Systems.MetaballSystem;
 using System;
@@ -8,7 +9,7 @@ using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.NPCs.Moonstone
 {
-	internal class Dreambeast : ModNPC
+	internal class Dreambeast : ModNPC, IHintable
 	{
 		public VerletChain[] chains = new VerletChain[8];
 
@@ -236,8 +237,6 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			if (NPC.Opacity < 1)
 				NPC.Opacity += 0.05f;
 
-			Main.NewText("Shoot attack");
-
 			AttackTimer = 0;
 			Phase = 1;
 		}
@@ -271,11 +270,11 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				effect.Parameters["opacity"].SetValue(NPC.Opacity);
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			if (AppearVisible && flashTime > 0)
 			{
@@ -287,6 +286,10 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			}
 
 			return false;
+		}
+		public string GetHint()
+		{
+			return "It's not real. It's not real. It's not real. IT'S NOT REAL. IT'S NOT REAL. IT'S NOT REAL.";
 		}
 	}
 
@@ -328,13 +331,13 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				effect.Parameters["noisePower"].SetValue(100f);
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 			}
 
 			spriteBatch.Draw(target, Vector2.Zero, null, Color.White, 0, new Vector2(0, 0), 2f, SpriteEffects.None, 0);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			return false;
 		}

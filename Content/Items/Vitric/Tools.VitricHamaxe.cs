@@ -7,6 +7,8 @@ namespace StarlightRiver.Content.Items.Vitric
 {
 	internal class VitricHamaxe : ModItem, IGlowingItem
 	{
+		public const int MAX_HEAT = 100;
+
 		public int heat = 0;
 		public int heatTime = 0;
 
@@ -15,7 +17,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Vitric Hamaxe");
-			Tooltip.SetDefault("Right click to charge heat\nHeat increases speed\nHeat dissipates over time");
+			Tooltip.SetDefault("<right> to charge heat\nHeat increases speed\nHeat dissipates over time");
 		}
 
 		public override void SetDefaults()
@@ -63,7 +65,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				Item.noMelee = true;
 				Player.itemAnimation = 13;
 
-				if (heat < 100)
+				if (heat < MAX_HEAT)
 				{
 					heat++;
 
@@ -71,7 +73,7 @@ namespace StarlightRiver.Content.Items.Vitric
 					Dust.NewDustPerfect(Player.MountedCenter + (Vector2.One * 40).RotatedBy(Player.itemRotation - (Player.direction == 1 ? MathHelper.PiOver2 : MathHelper.Pi)) + off, DustType<Dusts.Stamina>(), -off * 0.05f);
 				}
 
-				if (heat == 98)
+				if (heat == MAX_HEAT - 2)
 					Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot, Player.Center);
 
 			}
@@ -79,7 +81,12 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override float UseTimeMultiplier(Player Player)
 		{
-			return 1 + heat / 100f;
+			return 1 - heat / (MAX_HEAT * 2f);
+		}
+
+		public override float UseAnimationMultiplier(Player player)
+		{
+			return 1 - heat / (MAX_HEAT * 2f);
 		}
 
 		public override void UpdateInventory(Player Player)
@@ -111,7 +118,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				return;
 
 			Texture2D tex = Request<Texture2D>(Texture + "Glow").Value;
-			Color color = Color.White * (heat / 100f);
+			Color color = Color.White * (heat / (float)MAX_HEAT);
 			Vector2 origin = Player.direction == 1 ? new Vector2(0, tex.Height) : new Vector2(tex.Width, tex.Height);
 
 			var data = new DrawData(tex, info.ItemLocation - Main.screenPosition, null, color, Player.itemRotation, origin, Item.scale, Player.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);

@@ -1,8 +1,8 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
-using StarlightRiver.Content.Codex.Entries;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Core.Loaders.UILoading;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Pickups
 {
-	internal class ForbiddenWindsPickup : AbilityPickup, IDrawPrimitive
+	internal class ForbiddenWindsPickup : AbilityPickup, IDrawPrimitive, IHintable
 	{
 		private List<Vector2> cache1;
 		private List<Vector2> cache2;
@@ -126,8 +126,6 @@ namespace StarlightRiver.Content.Pickups
 
 				Main.LocalPlayer.GetHandler().GetAbility<Dash>(out Dash dash);
 				UILoader.GetUIState<TextCard>().Display("Forbidden Winds", message, dash);
-				Helper.UnlockCodexEntry<WindsEntry>(Main.LocalPlayer);
-				Helper.UnlockCodexEntry<StaminaEntry>(Main.LocalPlayer);
 
 				Filters.Scene.Activate("Shockwave", Player.Center).GetShader().UseProgress(0f).UseIntensity(0);
 				Filters.Scene.Deactivate("Shockwave");
@@ -222,7 +220,7 @@ namespace StarlightRiver.Content.Pickups
 				return;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * -0.01f);
@@ -240,6 +238,11 @@ namespace StarlightRiver.Content.Pickups
 			trail5?.Render(effect);
 			trail6?.Render(effect);
 		}
+
+		public string GetHint()
+		{
+			return "A dense conflux of Starlight energy... could this be the tangle Alican mentioned?";
+		}
 	}
 
 	public class ForbiddenWindsPickupTile : AbilityPickupTile
@@ -247,6 +250,7 @@ namespace StarlightRiver.Content.Pickups
 		public override int PickupType => NPCType<ForbiddenWindsPickup>();
 	}
 
+	[SLRDebug]
 	public class WindsTileItem : QuickTileItem
 	{
 		public WindsTileItem() : base("Forbidden Winds", "Debug placer for ability pickup", "ForbiddenWindsPickupTile", -1) { }

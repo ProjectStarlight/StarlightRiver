@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.NPCs.BaseTypes;
+using System.IO;
 using System.Linq;
 
 namespace StarlightRiver.Content.Bosses.SquidBoss
@@ -6,7 +7,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 	class IcePlatform : MovingPlatform
 	{
 		public int bobTime = 0;
+		public int index;
 
+		public ref float Timer => ref NPC.ai[0];
 		public ref float State => ref NPC.ai[1];
 		public ref float HomeYPosition => ref NPC.ai[2];
 		public ref float FallTime => ref NPC.ai[3];
@@ -21,6 +24,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void SafeAI()
 		{
+			Timer++;
+
+			if (Timer == 1)
+				NPC.netUpdate = true;
+
 			if (HomeYPosition == 0)
 				HomeYPosition = NPC.position.Y;
 
@@ -87,6 +95,16 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 			spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, Lighting.GetColor((int)NPC.Center.X / 16, (int)NPC.Center.Y / 16) * 1.5f, NPC.rotation, tex.Size() / 2, 1, 0, 0);
 			return false;
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(index);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			index = reader.ReadInt32();
 		}
 	}
 

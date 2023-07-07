@@ -49,6 +49,9 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 		{
 			orig(self);
 
+			if (StarlightRiver.debugMode)
+				return;
+
 			if (Inside)
 			{
 				Cutaway activeCutaway = cutaways.FirstOrDefault(n => n.fadeTime < 0.95f);
@@ -63,12 +66,12 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 				effect.Parameters["opacity"].SetValue(1 - activeCutaway.fadeTime);
 
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, default, default, default, default, effect);
+				Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, effect);
 
 				Main.spriteBatch.Draw(cutawayTarget.RenderTarget, Vector2.Zero, Color.White);
 
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, default, default, default, default, default);
+				Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default);
 			}
 		}
 

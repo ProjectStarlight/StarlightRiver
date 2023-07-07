@@ -1,4 +1,6 @@
-﻿using StarlightRiver.Content.NPCs.Vitric.Gauntlet;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.NPCs.Vitric.Gauntlet;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using System.Linq;
@@ -6,7 +8,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
-	internal class NPCSpawner : DummyTile
+	internal class NPCSpawner : DummyTile, IHintable
 	{
 		public override string Texture => AssetDirectory.VitricTile + Name;
 
@@ -16,8 +18,14 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		{
 			this.QuickSetFurniture(2, 3, 0, SoundID.Tink, new Color(255, 255, 255));
 		}
+
+		public string GetHint()
+		{
+			return "Dangerous.";
+		}
 	}
 
+	[SLRDebug]
 	internal class NPCSpawnerItem : QuickTileItem
 	{
 		public NPCSpawnerItem() : base("NPC Spawner", "", "NPCSpawner", 1, AssetDirectory.VitricTile, false) { }
@@ -75,7 +83,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public void SpawnEnemies(int time)
 		{
-			if (time % 60 == 0)
+			if (Main.netMode != NetmodeID.MultiplayerClient && time % 60 == 0)
 			{
 				int monster = Main.rand.Next(3) switch
 				{

@@ -18,15 +18,16 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SafeSetDefaults()
 		{
 			Item.rare = ItemRarityID.Orange;
+			Item.value = Item.sellPrice(gold: 1, silver: 85);
 		}
 
 		private void ModifyCritProj(Player Player, Projectile proj, NPC target, ref NPC.HitModifiers hit)
 		{
 			if (Equipped(Main.player[proj.owner]))
 			{
-				hit.CritDamage += 0.5f - target.life / target.lifeMax / 2;
+				hit.CritDamage += 0.5f - target.life / (float)target.lifeMax / 2;
 
-				if (!target.boss && (target.life / target.lifeMax) < 0.1f)
+				if (!target.boss && (target.life / (float)target.lifeMax) < 0.1f)
 					Execute(target, proj.owner);
 			}
 		}
@@ -35,9 +36,9 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (Equipped(Player))
 			{
-				hit.CritDamage += 0.5f - target.life / target.lifeMax / 2;
+				hit.CritDamage += 0.5f - target.life / (float)target.lifeMax / 2;
 
-				if (!target.boss && (target.life / target.lifeMax) < 0.1f)
+				if (!target.boss && (target.life / (float)target.lifeMax) < 0.1f)
 					Execute(target, Player.whoAmI);
 			}
 		}
@@ -51,6 +52,23 @@ namespace StarlightRiver.Content.Items.Misc
 				Projectile.NewProjectile(Main.player[owner].GetSource_Accessory(Item), NPC.Center, Vector2.Zero, ModContent.ProjectileType<GuillotineVFX>(), 0, 0, Main.myPlayer, NPC.whoAmI, flesh);
 				NPC.StrikeNPC(new NPC.HitInfo() { InstantKill = true });// kill NPC
 			}
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient<DullBlade>();
+			recipe.AddIngredient(ItemID.GoldBar, 10);
+			recipe.AddRecipeGroup("StarlightRiver:Gems");
+			recipe.AddCondition(Condition.NearLava);
+			recipe.Register();
+
+			recipe = CreateRecipe();
+			recipe.AddIngredient<DullBlade>();
+			recipe.AddIngredient(ItemID.PlatinumBar, 10);
+			recipe.AddRecipeGroup("StarlightRiver:Gems");
+			recipe.AddCondition(Condition.NearLava);
+			recipe.Register();
 		}
 	}
 

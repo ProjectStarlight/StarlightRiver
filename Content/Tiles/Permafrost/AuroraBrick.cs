@@ -1,3 +1,4 @@
+using StarlightRiver.Core.Systems;
 using System;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -17,6 +18,11 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 		public override void SetStaticDefaults()
 		{
 			QuickBlock.QuickSet(this, int.MaxValue, DustID.Ice, SoundID.Tink, new Color(81, 192, 240), ItemType<AuroraBrickItem>());
+		}
+
+		public override bool CanExplode(int i, int j)
+		{
+			return false;
 		}
 
 		public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
@@ -60,6 +66,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 		public AuroraBrickItem() : base("Aurora Brick", "Oooh... Preeetttyyy", "AuroraBrick", ItemRarityID.White) { }
 	}
 
+	[SLRDebug]
 	class AuroraBrickDoorItem : QuickTileItem
 	{
 		public override string Texture => AssetDirectory.Debug;

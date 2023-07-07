@@ -166,7 +166,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			{
 				Projectile.velocity.Y = -oldVelocity.Y * 0.2f;
 
-				if (Projectile.velocity.Y < -1f)
+				if (Projectile.velocity.Y < -1f && Main.netMode != NetmodeID.Server)
 				{
 					for (int i = 0; i < 5; i++)
 					{
@@ -182,6 +182,9 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void Kill(int timeLeft)
 		{
+			if (Main.netMode == NetmodeID.Server)
+				return;
+
 			CameraSystem.shake += 6;
 
 			SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/FireHit"), Projectile.Center);
@@ -279,7 +282,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
@@ -288,7 +291,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			trail?.Render(effect);
 
-			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		private void ManageTrail()

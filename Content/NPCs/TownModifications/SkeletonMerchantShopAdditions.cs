@@ -9,6 +9,7 @@ namespace StarlightRiver.Content.NPCs.TownModifications
 		{
 			if (shop.NpcType == NPCID.SkeletonMerchant)
 			{
+				shop.Add(new NPCShop.Entry(ItemID.SpelunkerFlare, Items.Breacher.FlareBreacher.getMerchantFlareCondition()));
 				shop.Add(new NPCShop.Entry(ModContent.ItemType<BizarrePotion>(), Condition.MoonPhaseFirstQuarter));
 			}
 		}

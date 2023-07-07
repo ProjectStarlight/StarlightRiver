@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.CombatMountSystem;
+﻿using StarlightRiver.Core.Systems;
+using StarlightRiver.Core.Systems.CombatMountSystem;
 using System;
 using System.Linq;
 
@@ -117,6 +118,7 @@ namespace StarlightRiver.Content.Items.Example
 		}
 	}
 
+	[SLRDebug]
 	internal class ExampleCombatMountItem : CombatMountItem
 	{
 		public override int MountType => ModContent.MountType<ExampleCombatMountData>();

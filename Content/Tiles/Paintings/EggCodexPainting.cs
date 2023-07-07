@@ -1,7 +1,4 @@
-﻿using Terraria.DataStructures;
-using static Terraria.ModLoader.ModContent;
-
-namespace StarlightRiver.Content.Tiles.Paintings
+﻿namespace StarlightRiver.Content.Tiles.Paintings
 {
 	class EggCodexPainting : ModTile
 	{
@@ -9,17 +6,12 @@ namespace StarlightRiver.Content.Tiles.Paintings
 
 		public override void SetStaticDefaults()
 		{
-			this.QuickSetPainting(2, 2, 7, new Color(180, 180, 120), "Painting");
-		}
-
-		public override void KillMultiTile(int i, int j, int frameX, int frameY)
-		{
-			Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemType<EggCodexPaintingItem>());
+			this.QuickSetPainting(2, 2, 7, new Color(99, 50, 30), "Painting");
 		}
 	}
 
 	class EggCodexPaintingItem : QuickTileItem
 	{
-		public EggCodexPaintingItem() : base("Codex Genesis", "'K. Ra'", "EggCodexPainting", 1, AssetDirectory.PaintingTile) { }
+		public EggCodexPaintingItem() : base("Codex Genesis", "'K. Ra'", "EggCodexPainting", 0, AssetDirectory.PaintingTile) { }
 	}
 }

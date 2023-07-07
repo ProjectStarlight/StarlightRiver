@@ -1,8 +1,10 @@
-﻿using StarlightRiver.Content.Biomes;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Bosses.VitricBoss;
 using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Packets;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.Systems.LightingSystem;
@@ -15,7 +17,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-	internal class VitricBossAltar : DummyTile
+	internal class VitricBossAltar : DummyTile, IHintable
 	{
 		public override int DummyType => ProjectileType<VitricBossAltarDummy>();
 
@@ -105,8 +107,19 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			if (NPC.type == NPCType<VitricBoss>())
 				(Dummy(i, j).ModProjectile as VitricBossAltarDummy).boss = Main.npc[n];
 		}
+
+		public string GetHint()
+		{
+			Tile tile = Framing.GetTileSafely((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
+
+			if (tile.TileFrameX < 90)
+				return "An altar, encased in crystal rich with binding Starlight. You'd have to use a Starlight power of equal strength...";
+			else
+				return "An altar awaiting an offering...";
+		}
 	}
 
+	[SLRDebug]
 	class VitricBossAltarItem : QuickTileItem
 	{
 		public VitricBossAltarItem() : base("Vitric Boss Altar Item", "Debug Item", "VitricBossAltar", 1, AssetDirectory.Debug, true) { }
@@ -263,7 +276,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 				CutsceneTimer++;
 
-				if (CutsceneTimer > 180)
+				if (CutsceneTimer >= 180 && !StarlightWorld.HasFlag(WorldFlags.VitricBossOpen))
 				{
 					StarlightWorld.Flag(WorldFlags.VitricBossOpen);
 

@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Aurora Bell");
-			Tooltip.SetDefault("Summons a sentry bell \nHit the bell with a whip to ring it");
+			Tooltip.SetDefault("Summons a bell sentry\nHit the bell with a whip to ring it");
 		}
 
 		public override void SetDefaults()
@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Item.mana = 12;
 			Item.width = 40;
 			Item.height = 40;
-			Item.value = Item.sellPrice(0, 0, 80, 0);
+			Item.value = Item.sellPrice(0, 2, 0, 0);
 			Item.rare = ItemRarityID.Green;
 			Item.knockBack = 2.5f;
 			Item.UseSound = SoundID.Item25;
@@ -369,7 +369,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
@@ -477,7 +477,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);

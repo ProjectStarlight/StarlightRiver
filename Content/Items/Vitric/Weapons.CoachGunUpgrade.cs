@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Magmatic Coach Gun");
-			Tooltip.SetDefault("Press right click to throw out crystal bombs, bombs explode in chain reactions \nFiring at a bomb detonates it prematurely for more violent results\nHow does he manage to nuke like that?");
+			Tooltip.SetDefault("Press <right> to throw out crystal bombs, which explode in chain reactions \nFiring at a bomb detonates it prematurely for more violent results\n'How does he manage to corenuke like that?'");
 		}
 
 		public override void SetDefaults()
@@ -52,7 +52,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			CreateRecipe().
 				AddIngredient(ModContent.ItemType<CoachGun>()).
-				AddIngredient(ModContent.ItemType<MagmaCore>(), 3).
+				AddIngredient(ModContent.ItemType<MagmaCore>()).
 				AddIngredient(ItemID.HellstoneBar, 12).
 				AddTile(TileID.Anvils).
 				Register();
@@ -246,7 +246,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void Kill(int timeLeft)
 		{
-			Helper.PlayPitched("GlassMiniboss/GlassSmash", 0.5f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
+			Helper.PlayPitched("GlassMiniboss/GlassSmash", 0.3f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
 
 			for (int i = 1; i < 5; i++)
 			{

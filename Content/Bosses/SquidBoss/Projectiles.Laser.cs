@@ -36,6 +36,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void AI()
 		{
+			FindParent();
+
 			if (Projectile.timeLeft == 659 || Main.expertMode && Projectile.timeLeft == 509 || Main.masterMode && Projectile.timeLeft == 359)
 			{
 				int y = (int)Projectile.Center.Y / 16 - 28;
@@ -108,6 +110,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			}
 		}
 
+		public void FindParent()
+		{
+			if (parent is null || !parent.active || parent.type != ModContent.NPCType<SquidBoss>())
+				parent = Main.npc.FirstOrDefault(n => n.active && n.type == ModContent.NPCType<SquidBoss>());
+		}
+
 		public void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer)
 		{
 			float sin = 1 + (float)Math.Sin(Projectile.ai[1] / 10f);
@@ -134,7 +142,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			effect.Parameters["uColor"].SetValue(color.ToVector3());
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			float height = texBeam2.Height / 2f * 1.5f;
 			int adjustedLaserHeight = this.height - 32;
@@ -165,7 +173,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			spriteBatch.Draw(texStar, Projectile.Center - Vector2.UnitY * (this.height - 16) - Main.screenPosition, null, color * 1.1f, Projectile.ai[1] * -0.045f, texStar.Size() / 2, 0.65f, 0, 0);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 		}
 	}

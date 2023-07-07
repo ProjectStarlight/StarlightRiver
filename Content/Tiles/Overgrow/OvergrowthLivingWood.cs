@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
 			AddMapEntry(new Color(125, 70, 40));
 
-			ItemDrop = ModContent.ItemType<OvergrowthLivingWoodItem>();
+			RegisterItemDrop(ModContent.ItemType<OvergrowthLivingWoodItem>());
 			DustType = ModContent.DustType<OvergrowthLivingWoodDust>();
 
 			LocalizedText name = CreateMapEntryName();

@@ -2,6 +2,7 @@
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using System.Linq;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
@@ -50,11 +51,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			NPC.lifeMax = 350;
 			NPC.value = 0f;
 			NPC.knockBackResist = 0f;
-			NPC.HitSound = SoundID.Item27 with
-			{
-				Pitch = -0.3f
-			};
-			NPC.DeathSound = SoundID.Shatter;
+			NPC.HitSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Impacts/IceHit") with { Pitch = -0.3f, PitchVariance = 0.3f };
+			NPC.DeathSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Impacts/EnergyBreak") with { Pitch = -0.3f, PitchVariance = 0.3f };
 		}
 
 		public override void OnSpawn(IEntitySource source)
@@ -274,9 +272,12 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 							launchTarget.velocity.Y = -6;
 							launchTarget.velocity.X = NPC.direction * 18;
 
-							Vector2 ringVel = NPC.DirectionTo(launchTarget.Center);
-							var ring = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Center + ringVel * 35, ringVel, ProjectileType<Items.Vitric.IgnitionGauntlets.IgnitionGauntletsImpactRing>(), 0, 0, Target.whoAmI, Main.rand.Next(35, 45), ringVel.ToRotation());
-							ring.extraUpdates = 0;
+							if (Main.netMode != NetmodeID.MultiplayerClient)
+							{
+								Vector2 ringVel = NPC.DirectionTo(launchTarget.Center);
+								var ring = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Center + ringVel * 35, ringVel, ProjectileType<Items.Vitric.IgnitionGauntlets.IgnitionGauntletsImpactRing>(), 0, 0, Target.whoAmI, Main.rand.Next(35, 45), ringVel.ToRotation());
+								ring.extraUpdates = 0; // This isn't actually being synced but its such a minor visual effect it may not be worth it
+							}
 						}
 					}
 					else
@@ -324,18 +325,22 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 			spikePositionY += 32;
 
-			var spikePos = new Vector2(spikePositionX, spikePositionY);
-			var raise = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), spikePos, Vector2.Zero, ProjectileType<GlassRaiseSpike>(), (int)(NPC.damage * (Main.expertMode || Main.masterMode ? 0.3f : 1)), 1f, Main.myPlayer, -20, 1 - spikeCounter / 30f);
-			raise.direction = NPC.spriteDirection;
-			raise.scale = 0.65f;
+			//TODO: check non synced raise params
+			if (Main.netMode != NetmodeID.MultiplayerClient)
+			{
+				var spikePos = new Vector2(spikePositionX, spikePositionY);
+				var raise = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), spikePos, Vector2.Zero, ProjectileType<GlassRaiseSpike>(), (int)(NPC.damage * (Main.expertMode || Main.masterMode ? 0.3f : 1)), 1f, Main.myPlayer, -20, 1 - spikeCounter / 30f);
+				raise.direction = NPC.spriteDirection;
+				raise.scale = 0.65f;
 
-			raise.position.X += (1 - raise.scale) * (raise.width / 2); //readjusting width to match scale
-			raise.width = (int)(raise.width * raise.scale);
+				raise.position.X += (1 - raise.scale) * (raise.width / 2); //readjusting width to match scale
+				raise.width = (int)(raise.width * raise.scale);
+			}
 		}
 		public override void DrawHealingGlow(SpriteBatch spriteBatch)
 		{
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D tex = Request<Texture2D>(Texture).Value;
 			float sin = 0.5f + (float)Math.Sin(Main.timeForVisualEffects * 0.04f) * 0.5f;
@@ -351,7 +356,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)

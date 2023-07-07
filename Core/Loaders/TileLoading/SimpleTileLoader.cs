@@ -91,6 +91,8 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 
 		public virtual void PostLoad() { }
 
+		public virtual void AddRecipes() { }
+
 		public void PostLoadUnload() { }
 	}
 

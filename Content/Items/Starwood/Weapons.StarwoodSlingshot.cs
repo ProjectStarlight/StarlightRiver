@@ -37,6 +37,8 @@ namespace StarlightRiver.Content.Items.Starwood
 			Item.noMelee = true;
 			Item.useAmmo = ItemID.FallenStar;
 			Item.noUseGraphic = true;
+
+			Item.value = Item.sellPrice(silver: 25);
 		}
 
 		public override bool CanConsumeAmmo(Item ammo, Player player)

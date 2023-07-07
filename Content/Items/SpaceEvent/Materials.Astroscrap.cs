@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Astroscrap");
-			Tooltip.SetDefault("‘Alloy salvaged from the wreckage of your world’s invaders’");
+			Tooltip.SetDefault("‘Alloy salvaged from enigmatic wreckage’");
 		}
 
 		public override void SetDefaults()

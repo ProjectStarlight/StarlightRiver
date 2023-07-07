@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Core.Systems.BarrierSystem;
+using System.IO;
 using Terraria.GameContent.ItemDropRules;
 using static Terraria.ModLoader.ModContent;
 
@@ -45,5 +46,23 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		}
 
 		public virtual void SafeAI() { }
+
+		public sealed override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(partOfGauntlet);
+
+			SafeSendExtraAI(writer);
+		}
+
+		public virtual void SafeSendExtraAI(BinaryWriter writer) { }
+
+		public sealed override void ReceiveExtraAI(BinaryReader reader)
+		{
+			partOfGauntlet = reader.ReadBoolean();
+
+			SafeReceiveExtraAI(reader);
+		}
+
+		public virtual void SafeReceiveExtraAI(BinaryReader reader) { }
 	}
 }

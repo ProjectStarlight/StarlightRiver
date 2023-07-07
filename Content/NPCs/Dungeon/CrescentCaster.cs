@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.BarrierSystem;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Core.Systems.BarrierSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using Terraria.ModLoader.Utilities;
 
 namespace StarlightRiver.Content.NPCs.Dungeon
 {
-	internal class CrescentCaster : ModNPC, IDrawPrimitive
+	internal class CrescentCaster : ModNPC, IDrawPrimitive, IHintable
 	{
 		private const float ACCELERATION = 0.15f;
 		private const float MAXSPEED = 2;
@@ -87,11 +88,11 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 		private void CastBehavior()
 		{
 			List<NPC> tempTargets = ValidTargets(); //purpose of temptargets is to check npcs who were being supported but are no longer
-			var toReduceBarrier = Main.npc.Where(x => x.active && !tempTargets.Contains(x) && supportTargets.Contains(x)).ToList();
+			var toReduceBarrier = Main.npc.Where(n => n.active && n.type != NPCID.None && !tempTargets.Contains(n) && supportTargets.Contains(n)).ToList();
 
 			ClearBarrierAndBolts(toReduceBarrier);
 
-			var toAddBolts = Main.npc.Where(x => x.active && tempTargets.Contains(x) && !supportTargets.Contains(x)).ToList();
+			var toAddBolts = Main.npc.Where(n => n.active && n.type != NPCID.None && tempTargets.Contains(n) && !supportTargets.Contains(n)).ToList();
 
 			foreach (NPC boltNPC in toAddBolts)
 			{
@@ -139,6 +140,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 					break;
 			}
 		}
+
 		private void SupportBehavior()
 		{
 			NPC.frameCounter++;
@@ -289,7 +291,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 			Effect effect = Terraria.Graphics.Effects.Filters.Scene["LightningTrail"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
@@ -364,7 +366,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 
 		private List<NPC> ValidTargets()
 		{
-			return Main.npc.Where(x => x.active && IsValidTarget(x)).ToList();
+			return Main.npc.Where(n => n.active && n.type != NPCID.None && IsValidTarget(n)).ToList();
 		}
 
 		private bool IsValidTarget(NPC potentialTarget)
@@ -399,6 +401,10 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 			}
 
 			return true;
+		}
+		public string GetHint()
+		{
+			return "It somehow shields nearby foes...";
 		}
 	}
 

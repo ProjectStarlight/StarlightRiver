@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -23,9 +22,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			DisplayName.SetDefault("Thunderbuss");
 
 			Tooltip.SetDefault("Fires powerful lightning at enemies in a cone\n" +
-				"Right click to fire a lightning orb\n" +
-				"Shooting at the orb zaps all enemies near it\n" +
-				"The orb explodes on impact, and only one may be active at once\n" +
+				"<right> to fire an explosive lightning orb, attracting and boosting your lightning\n" +
 				"'Crush the path of most resistance'");
 		}
 
@@ -41,6 +38,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			Item.shootSpeed = 10;
 			Item.value = Item.sellPrice(0, 1, 0, 0);
 			Item.rare = ItemRarityID.Orange;
+			Item.noMelee = true;
 		}
 
 		public override bool AltFunctionUse(Player Player)
@@ -512,7 +510,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			Effect effect = Filters.Scene["LightningTrail"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
@@ -532,6 +530,10 @@ namespace StarlightRiver.Content.Items.Magnet
 			}
 
 			CameraSystem.shake += power / 4;
+		}
+
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
 			Projectile.damage = 0;
 		}
 
@@ -786,7 +788,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			Effect effect = Filters.Scene["LightningTrail"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);

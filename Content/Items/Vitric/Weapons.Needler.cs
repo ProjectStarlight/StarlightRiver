@@ -36,6 +36,8 @@ namespace StarlightRiver.Content.Items.Vitric
 			Item.shoot = ModContent.ProjectileType<NeedlerProj>();
 			Item.shootSpeed = 14f;
 			Item.autoReuse = true;
+
+			Item.value = Item.sellPrice(gold: 2, silver: 75);
 		}
 
 		public override Vector2? HoldoutOffset()
@@ -74,6 +76,16 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			player.itemRotation = MathHelper.WrapAngle(player.itemRotation);
 			return false;
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient<SandstoneChunk>(5);
+			recipe.AddIngredient<VitricOre>(10);
+			recipe.AddIngredient<MagmaCore>(2);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 

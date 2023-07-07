@@ -35,12 +35,15 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			for (int k = 0; k < Main.rand.Next(1, 3); k++)
 			{
 				Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX * Main.rand.NextFloat(-Projectile.width / 2, Projectile.width / 2),
-					ModContent.DustType<Dusts.Cinder>(), Vector2.UnitY * Main.rand.NextFloat(-2, 0), 0, new Color(255, Main.rand.Next(150, 250), 50), Main.rand.NextFloat(2));
+					ModContent.DustType<Dusts.Cinder>(), Vector2.UnitY * Main.rand.NextFloat(-2, 0), 0, new Color(255, Main.rand.Next(100, 200), 50), Main.rand.NextFloat(1.2f));
 			}
 
-			//Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowLine>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(7), 0, new Color(255, 150, 50), 1);
+			float alpha = 1;
 
-			Lighting.AddLight(Projectile.Center, new Vector3(255, 100, 20) * 0.025f);
+			if (Timer > 300)
+				alpha *= 1 - (Timer - 300) / 60f;
+
+			Lighting.AddLight(Projectile.Center, new Vector3(255, 100, 20) * 0.025f * alpha);
 
 			for (int k = 0; k < 40; k++)
 			{
@@ -48,14 +51,17 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				Tile tile = Framing.GetTileSafely((int)pos.X / 16, (int)pos.Y / 16);
 
 				if (tile.HasTile)
-					Lighting.AddLight(pos, new Vector3(255, 100, 20) * 0.005f);
+					Lighting.AddLight(pos, new Vector3(255, 100, 20) * 0.005f * alpha);
 			}
 		}
 
 		public override void PostDraw(Color lightColor)
 		{
 			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/LongGlow").Value;
-			var color = new Color(255, 200, 50, 0);
+			var color = new Color(255, 140, 50, 0);
+
+			if (Timer > 300)
+				color *= 1 - (Timer - 300) / 60f;
 
 			var target = new Rectangle((int)Projectile.position.X - (int)Main.screenPosition.X - 16, (int)Projectile.position.Y - (int)Main.screenPosition.Y - 64, Projectile.width + 32, Projectile.height + 64);
 			Main.spriteBatch.Draw(tex, target, null, color, 0, Vector2.Zero, 0, 0);
@@ -72,10 +78,18 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		public void DrawOverTiles(SpriteBatch spriteBatch)
 		{
 			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/GlassMiniboss/FireAura").Value;
-			var color = new Color(255, 200, 50, 0);
-			//color.A = 0;
+			Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
+			var color = new Color(255, 110, 50, 0);
+			var color2 = new Color(255, 200, 50, 0);
+
+			if (Timer > 300)
+			{
+				color *= 1 - (Timer - 300) / 60f;
+				color2 *= 1 - (Timer - 300) / 60f;
+			}
 
 			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, color, 0, tex.Size() / 2, Projectile.width / (float)tex.Width, 0, 0);
+			spriteBatch.Draw(tex2, Projectile.Center - Main.screenPosition, null, color2, 0, tex2.Size() / 2, Projectile.width / (float)tex2.Width * 0.5f, 0, 0);
 		}
 	}
 

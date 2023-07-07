@@ -1,5 +1,4 @@
 ﻿using System;
-using Terraria.DataStructures;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Trophies
@@ -45,16 +44,11 @@ namespace StarlightRiver.Content.Tiles.Trophies
 				spriteBatch.Draw(tex2, pos, null, color * 0.075f, 0, tex2.Size() / 2, scale * 0.32f, 0, 0);
 			}
 		}
-
-		public override void KillMultiTile(int i, int j, int frameX, int frameY)
-		{
-			Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemType<AuroracleTrophyItem>());
-		}
 	}
 
 	class AuroracleTrophyItem : QuickTileItem
 	{
-		public AuroracleTrophyItem() : base("Auroracle Trophy", "", "AuroracleTrophy", 0, AssetDirectory.TrophyTile + "TrophyGenericItem", true, 0) { }
+		public AuroracleTrophyItem() : base("Auroracle Trophy", "", "AuroracleTrophy", 1, AssetDirectory.TrophyTile) { }
 
 		public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 		{

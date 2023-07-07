@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Items.Gravedigger;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -107,6 +108,23 @@ namespace StarlightRiver.Content.Items.Misc
 				return false;
 
 			return true;
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.HealingPotion);
+			recipe.AddIngredient<LivingBlood>(15);
+			recipe.AddIngredient(ItemID.DemoniteBar, 10);
+			recipe.AddTile(TileID.DemonAltar);
+			recipe.Register();
+
+			recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.HealingPotion);
+			recipe.AddIngredient<LivingBlood>(15);
+			recipe.AddIngredient(ItemID.CrimtaneBar, 10);
+			recipe.AddTile(TileID.DemonAltar);
+			recipe.Register();
 		}
 	}
 
@@ -234,7 +252,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Effect effect = Terraria.Graphics.Effects.Filters.Scene["pixelTrail"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["pixelation"].SetValue(0.05f);

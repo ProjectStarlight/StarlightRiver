@@ -1,10 +1,12 @@
 using StarlightRiver.Content.Dusts;
 using System;
+using System.IO;
 using System.Linq;
-using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
+using Terraria.Utilities;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
@@ -20,6 +22,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 	{
 		private const int XFRAMES = 5;
 
+		public ref float attackPhase => ref NPC.ai[0];
+
 		public int xFrame = 0;
 		public int yFrame = 0;
 
@@ -32,8 +36,6 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		private float bobCounter = 0f;
 
-		private AttackPhase attackPhase = AttackPhase.charging;
-
 		private int frameCounter = 0;
 
 		private int attackCooldown = 0;
@@ -45,6 +47,13 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		public bool pelterComboCharging = false;
 		public bool readyForPelterArrow = false;
 		public bool hitPelterArrow = false;
+
+		/// <summary>
+		/// used for the continuous random motion that happens in the idle phase 
+		/// not the best pattern this should be used only in situations like this where imperfections have minor impact on the overall sync
+		/// </summary>
+		public int brownianMotionRandSeed;
+		public UnifiedRandom brownianRand;
 
 		private Player Target => Main.player[NPC.target];
 
@@ -67,11 +76,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			NPC.lifeMax = 170;
 			NPC.value = 0f;
 			NPC.knockBackResist = 0.6f;
-			NPC.HitSound = SoundID.Item27 with
-			{
-				Pitch = -0.3f
-			};
-			NPC.DeathSound = SoundID.Shatter;
+			NPC.HitSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Impacts/IceHit") with { PitchVariance = 0.3f };
+			NPC.DeathSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Impacts/EnergyBreak") with { PitchVariance = 0.3f };
 			NPC.noGravity = true;
 		}
 
@@ -79,11 +85,13 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		{
 			FindFrame(63);
 			movementTarget = oldPosition = NPC.Center;
+			brownianMotionRandSeed = Main.rand.Next(int.MaxValue);
+			brownianRand = new(brownianMotionRandSeed);
 		}
 
 		public override void SafeAI()
 		{
-			if (xFrame == 1 && yFrame == 7 && frameCounter == 1) //Dust when the enemy swings it's sword
+			if (xFrame == 1 && yFrame == 7 && frameCounter == 1 && Main.netMode != NetmodeID.Server) //Dust when the enemy swings it's sword
 			{
 				for (int i = 0; i < 15; i++)
 				{
@@ -121,7 +129,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 					attacking = true;
 
 				AnimateIdle();
-				attackPhase = AttackPhase.charging;
+				attackPhase = (int) AttackPhase.charging;
 			}
 			else
 			{
@@ -212,12 +220,13 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		private void IdleBehavior()
 		{
-			if (GoToPos(movementTarget, oldPosition))
+			if (GoToPos(movementTarget, oldPosition) && Main.netMode != NetmodeID.MultiplayerClient)
 			{
 				oldPosition = NPC.Center;
 				movementTarget = Main.rand.NextVector2Circular(500, 400);
 				movementTarget.Y *= -Math.Sign(movementTarget.Y);
 				movementTarget += Target.Center;
+				NPC.netUpdate = true;
 			}
 		}
 
@@ -235,29 +244,34 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 			switch (attackPhase)
 			{
-				case AttackPhase.charging:
+				case (int) AttackPhase.charging:
 
 					AnimateIdle();
-					NPC.velocity = Vector2.Lerp(NPC.velocity, direction.RotatedByRandom(0.6f) * 10, 0.05f);
+					NPC.velocity = Vector2.Lerp(NPC.velocity, direction.RotatedBy(brownianRand.NextDouble() * 0.6f - brownianRand.NextDouble() * 0.6f) * 10, 0.05f);
+					// Syncing rand seeds like this isn't perfect but its probably good enough for how low impact this is while keeping the jittery motion
 
 					if (NPC.Distance(Target.Center) < 200)
-						attackPhase = AttackPhase.slowing;
+					{
+						attackPhase = (int)AttackPhase.slowing;
+						NPC.netUpdate = true;
+					}
+						
 
 					break;
 
-				case AttackPhase.slowing:
+				case (int) AttackPhase.slowing:
 
 					NPC.velocity *= 0.8f;
 
 					if (NPC.velocity.Length() < 2)
 					{
 						frameCounter = 0;
-						attackPhase = AttackPhase.swinging;
+						attackPhase = (int) AttackPhase.swinging;
 					}
 
 					break;
 
-				case AttackPhase.swinging:
+				case (int) AttackPhase.swinging:
 
 					xFrame = 1;
 					frameCounter++;
@@ -458,14 +472,20 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 						for (float i = -1; i < 1.1f; i += 1)
 						{
-							Vector2 arrowVel = arrowPos.DirectionTo(Target.Center).RotatedBy(i / 3f) * 20;
-							int damage = (int)(NPC.damage * (Main.expertMode || Main.masterMode ? 0.3f : 1));
-							var proj = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), arrowPos, arrowVel, ProjectileType<PelterConstructArrow>(), damage, NPC.knockBackResist);
-
-							for (int k = 0; k < 15; k++)
+							if (Main.netMode != NetmodeID.MultiplayerClient)
 							{
-								Vector2 dustPos = arrowPos + Main.rand.NextVector2Circular(10, 10);
-								Dust.NewDustPerfect(dustPos, DustType<Glow>(), arrowPos.DirectionTo(Target.Center).RotatedByRandom(0.7f + i) * Main.rand.NextFloat(0.1f, 1f) * 4f, 0, new Color(255, 150, 50), Main.rand.NextFloat(0.75f, 1.25f)).noGravity = true;
+								Vector2 arrowVel = arrowPos.DirectionTo(Target.Center).RotatedBy(i / 3f) * 20;
+								int damage = (int)(NPC.damage * (Main.expertMode || Main.masterMode ? 0.3f : 1));
+								var proj = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), arrowPos, arrowVel, ProjectileType<PelterConstructArrow>(), damage, NPC.knockBackResist);
+							}
+
+							if (Main.netMode !=  NetmodeID.Server) 
+							{
+								for (int k = 0; k < 15; k++)
+								{
+									Vector2 dustPos = arrowPos + Main.rand.NextVector2Circular(10, 10);
+									Dust.NewDustPerfect(dustPos, DustType<Glow>(), arrowPos.DirectionTo(Target.Center).RotatedByRandom(0.7f + i) * Main.rand.NextFloat(0.1f, 1f) * 4f, 0, new Color(255, 150, 50), Main.rand.NextFloat(0.75f, 1.25f)).noGravity = true;
+								}
 							}
 						}
 					}
@@ -480,7 +500,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		public override void DrawHealingGlow(SpriteBatch spriteBatch)
 		{
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D tex = Request<Texture2D>(Texture).Value;
 			float sin = 0.5f + (float)Math.Sin(Main.timeForVisualEffects * 0.04f) * 0.5f;
@@ -496,7 +516,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		public override void ModifyHoverBoundingBox(ref Rectangle boundingBox)
@@ -511,6 +531,31 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				Bestiary.SLRSpawnConditions.VitricDesert,
 				new FlavorTextBestiaryInfoElement("One of the Glassweaver's constructs. An already formidable duelist, made airborne - speed is war.")
 			});
+		}
+
+		public override void SafeSendExtraAI(BinaryWriter writer)
+		{
+			//frames are being used like cursed timers, maybe TODO: rework this
+			writer.Write(xFrame);
+			writer.Write(yFrame);
+			writer.WritePackedVector2(movementTarget);
+			writer.WritePackedVector2(oldPosition);
+
+			brownianMotionRandSeed = Main.rand.Next(int.MaxValue);
+			brownianRand = new(brownianMotionRandSeed);
+
+			writer.Write(brownianMotionRandSeed);
+		}
+
+		public override void SafeReceiveExtraAI(BinaryReader reader)
+		{
+			xFrame = reader.ReadInt32();
+			yFrame = reader.ReadInt32();
+			movementTarget = reader.ReadPackedVector2();
+			oldPosition = reader.ReadPackedVector2();
+			brownianMotionRandSeed = reader.ReadInt32();
+
+			brownianRand = new(brownianMotionRandSeed);
 		}
 	}
 }
