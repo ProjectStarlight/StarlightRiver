@@ -61,6 +61,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			if (State == 0)
 			{
+
+				if (!Parent.active || Parent.type != NPCType<Glassweaver>())
+					Projectile.Kill();
+
 				Glassweaver glassweaver = Parent.ModNPC as Glassweaver;
 
 				if (glassweaver.AttackTimer <= 240 && glassweaver.AttackTimer > 80)
