@@ -436,6 +436,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			if (Projectile.timeLeft == 30)
 			{
+				SoundStyle shadowDeath = new($"{nameof(StarlightRiver)}/Sounds/ShadowDeath") { MaxInstances = 3 };
 				int i = Terraria.NPC.NewNPC(Projectile.GetSource_FromThis(), (int)Projectile.Center.X, (int)Projectile.Center.Y, (int)SpawnType);
 				NPC NPC = Main.npc[i];
 				NPC.alpha = 255;
@@ -443,7 +444,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 				NPC.lavaImmune = true;
 				NPC.trapImmune = true;
 				NPC.HitSound = SoundID.NPCHit7;
-				NPC.DeathSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/ShadowDeath");
+				NPC.DeathSound = shadowDeath;
 				NPC.GetGlobalNPC<StarlightNPC>().dontDropItems = true;
 
 				if (hpOverride != -1)
