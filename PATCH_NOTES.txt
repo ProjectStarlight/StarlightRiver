@@ -20,6 +20,7 @@
 - Fixed numerous issues with forest world generation
 - Fixed armor bags deleting items
 - Fixed rotation from aurora water persisting after leaving it
+- Fixed a crash with crescent casters in multiplayer
 
 ## Content
 - New summoner weapon: Haunted Dagger Staff
