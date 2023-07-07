@@ -15,6 +15,7 @@
 - Fixed bricklayer's trowel eating block placement wands
 - Fixed vitric pickaxe getting slower instead of faster as it gained heat
 - Fixed a rare crash that could occur on the player select screen
+- Fixed drop pods being able to spawn hanging off a cliff
 
 ## Content
 - New summoner weapon: Haunted Dagger Staff
