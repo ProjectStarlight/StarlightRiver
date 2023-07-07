@@ -48,7 +48,6 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		public bool readyForPelterArrow = false;
 		public bool hitPelterArrow = false;
 
-
 		/// <summary>
 		/// used for the continuous random motion that happens in the idle phase 
 		/// not the best pattern this should be used only in situations like this where imperfections have minor impact on the overall sync
