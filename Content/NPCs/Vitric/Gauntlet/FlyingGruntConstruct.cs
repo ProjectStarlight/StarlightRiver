@@ -6,6 +6,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
+using Terraria.Utilities;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
@@ -47,6 +48,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		public bool readyForPelterArrow = false;
 		public bool hitPelterArrow = false;
 
+
+		/// <summary>
+		/// used for the continuous random motion that happens in the idle phase 
+		/// not the best pattern this should be used only in situations like this where imperfections have minor impact on the overall sync
+		/// </summary>
+		public int brownianMotionRandSeed;
+		public UnifiedRandom brownianRand;
+
 		private Player Target => Main.player[NPC.target];
 
 		public override string Texture => AssetDirectory.GauntletNpc + "FlyingGruntConstruct";
@@ -77,6 +86,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		{
 			FindFrame(63);
 			movementTarget = oldPosition = NPC.Center;
+			brownianMotionRandSeed = Main.rand.Next(int.MaxValue);
+			brownianRand = new(brownianMotionRandSeed);
 		}
 
 		public override void SafeAI()
@@ -237,8 +248,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				case (int) AttackPhase.charging:
 
 					AnimateIdle();
-					NPC.velocity = Vector2.Lerp(NPC.velocity, direction.RotatedByRandom(0.6f) * 10, 0.05f);
-					// this is kind of rough it's a lot of consecutive frames of random movement that can't be synced normally so this will always rubberband in multiplayer unless this gets reworked to be deterministic
+					NPC.velocity = Vector2.Lerp(NPC.velocity, direction.RotatedBy(brownianRand.NextDouble() * 0.6f - brownianRand.NextDouble() * 0.6f) * 10, 0.05f);
+					// Syncing rand seeds like this isn't perfect but its probably good enough for how low impact this is while keeping the jittery motion
 
 					if (NPC.Distance(Target.Center) < 200)
 					{
@@ -530,6 +541,11 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			writer.Write(yFrame);
 			writer.WritePackedVector2(movementTarget);
 			writer.WritePackedVector2(oldPosition);
+
+			brownianMotionRandSeed = Main.rand.Next(int.MaxValue);
+			brownianRand = new(brownianMotionRandSeed);
+
+			writer.Write(brownianMotionRandSeed);
 		}
 
 		public override void SafeReceiveExtraAI(BinaryReader reader)
@@ -538,6 +554,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			yFrame = reader.ReadInt32();
 			movementTarget = reader.ReadPackedVector2();
 			oldPosition = reader.ReadPackedVector2();
+			brownianMotionRandSeed = reader.ReadInt32();
+
+			brownianRand = new(brownianMotionRandSeed);
 		}
 	}
 }
