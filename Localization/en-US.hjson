@@ -5,7 +5,6 @@ Mods: {
 			"Forbidden Winds.DisplayName": Forbidden  Winds
 			Faeflame.DisplayName: Faeflame
 		}
-
 		Items: {
 			TestWhip: {
 				DisplayName: "[PH]Test Whip"
@@ -121,7 +120,6 @@ Mods: {
 					Vanity Item
 					'''
 			}
-
 			SaltCogs: {
 				DisplayName: Salt cogs
 				Tooltip:
@@ -130,7 +128,6 @@ Mods: {
 					100% increased sentry placement speed
 					'''
 			}
-
 			SeaglassRing: {
 				DisplayName: Seaglass Ring
 				Tooltip:
@@ -2637,7 +2634,7 @@ Mods: {
 				DisplayName: GlassweaverBossBarrierItem
 				Tooltip: debug item
 			}
-
+      
 			CombatShrineBarrierItem: {
 				DisplayName: CombatShrineBarrierItem
 				Tooltip: debug item
@@ -2647,7 +2644,7 @@ Mods: {
 				DisplayName: EvasionShrineBarrierItem
 				Tooltip: debug item
 			}
-
+      
 			VitricBathtub: {
 				DisplayName: Vitric Bathtub
 				Tooltip: ""
@@ -2731,6 +2728,16 @@ Mods: {
 			VitricDoorClosed: {
 				DisplayName: Vitric Door
 				Tooltip: ""
+			}
+
+			CombatShrineBarrierItem: {
+				DisplayName: CombatShrineBarrierItem
+				Tooltip: debug item
+			}
+
+			EvasionShrineBarrierItem: {
+				DisplayName: EvasionShrineBarrierItem
+				Tooltip: debug item
 			}
 
 			TempleChairItem: {
@@ -3777,6 +3784,11 @@ Mods: {
 			StaminaPrefix2.DisplayName: Shining
 			StaminaPrefix3.DisplayName: Glowing
 			StaminaPrefix4.DisplayName: Radiant
+		}
+		Keybinds: {
+			Starsight.DisplayName: Starsight
+			"Forbidden Winds.DisplayName": Forbidden  Winds
+			Faeflame.DisplayName: Faeflame
 		}
 	}
 }
