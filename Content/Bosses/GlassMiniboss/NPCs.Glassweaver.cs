@@ -29,13 +29,13 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		/// <summary>
 		/// Tracks the center off the arena
 		/// </summary>
-		public Vector2 arenaPos;
 
 		internal ref float Phase => ref NPC.ai[0];
 		internal ref float GlobalTimer => ref NPC.ai[1];
 		internal ref float AttackPhase => ref NPC.ai[2];
 		internal ref float AttackTimer => ref NPC.ai[3];
 
+		public Vector2 arenaPos => StarlightWorld.vitricBiome.TopLeft() * 16 + new Vector2(0, 80 * 16) + new Vector2(0, 256);
 		public Rectangle Arena => new((int)arenaPos.X - 35 * 16, (int)arenaPos.Y - 30 * 16, 70 * 16, 30 * 16);
 
 		public override string Texture => AssetDirectory.Glassweaver + Name;
@@ -141,7 +141,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			{
 				case (int)Phases.SpawnEffects:
 
-					arenaPos = StarlightWorld.vitricBiome.TopLeft() * 16 + new Vector2(0, 80 * 16) + new Vector2(0, 256);
 					Phase = (int)Phases.JumpToBackground;
 
 					if (Main.netMode != NetmodeID.MultiplayerClient)
@@ -334,13 +333,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
-			writer.WritePackedVector2(arenaPos);
 			writer.Write(attackVariant);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
-			arenaPos = reader.ReadPackedVector2();
 			attackVariant = reader.ReadBoolean();
 		}
 
