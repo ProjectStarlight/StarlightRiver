@@ -18,6 +18,7 @@
 - Fixed a rare crash that could occur on the player select screen
 - Fixed drop pods being able to spawn hanging off a cliff
 - Fixed numerous issues with forest world generation
+- Fixed armor bags deleting items
 
 ## Content
 - New summoner weapon: Haunted Dagger Staff
