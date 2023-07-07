@@ -21,6 +21,7 @@
 - Fixed armor bags deleting items
 - Fixed rotation from aurora water persisting after leaving it
 - Fixed a crash with crescent casters in multiplayer
+- Fixed crafting recipe for frying pan
 
 ## Content
 - New summoner weapon: Haunted Dagger Staff
