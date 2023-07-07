@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 		/// <summary>
 		/// How much velocity swarmers should attract other nearby swarmers with
 		/// </summary>
-		public virtual float PullPower => 0.2f;
+		public virtual float PullPower => 0.05f;
 
 		/// <summary>
 		/// Causes this NPC to shove others and itself away to get within an ideal distance, prevents clumping
@@ -41,7 +41,8 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 					NPC.velocity += NPC.DirectionFrom(other.Center) * PushPower;
 				}
 
-				bool tooFar = Vector2.DistanceSquared(other.Center, NPC.Center) <= Math.Pow(IdealDistance * 2, 2);
+				bool tooFar = Vector2.DistanceSquared(other.Center, NPC.Center) >= Math.Pow(IdealDistance * 2, 2);
+				tooFar &= Vector2.DistanceSquared(other.Center, NPC.Center) <= Math.Pow(IdealDistance * 4, 2);
 
 				// Attract if too far
 				if (tooFar)
