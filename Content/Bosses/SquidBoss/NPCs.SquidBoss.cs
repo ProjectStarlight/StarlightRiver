@@ -52,7 +52,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		internal ArenaActor Arena => arenaActor?.ModNPC as ArenaActor;
 
-		internal List<NPC> OrderdPlatforms
+		internal List<NPC> OrderedPlatforms
 		{
 			get
 			{
