@@ -97,6 +97,16 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			if (State == 1)
 			{
+
+				if (Main.netMode == NetmodeID.Server)
+				{
+					foreach (Player eachPlayer in Main.player)
+					{
+						if (eachPlayer.active && !eachPlayer.dead && Projectile.Hitbox.Intersects(eachPlayer.Hitbox))
+							OnHitPlayer(eachPlayer, new Player.HurtInfo()); //this is normally run only by the player being hit, but this has important phase info so we want to determine hits on the server side
+					}
+				}
+
 				if (Timer < CRACK_TIME - 30)
 				{
 					Projectile.velocity = Vector2.Lerp(Projectile.velocity, Projectile.DirectionTo(Parent.GetTargetData().Center) * 5f, 0.004f);
@@ -167,7 +177,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
-			if (Timer < CRACK_TIME + 100 && Projectile.ai[1] == 1)
+			if (Timer < CRACK_TIME + 100 && State == 1)
 			{
 				Helpers.Helper.PlayPitched("GlassMiniboss/GlassBounce", 0.9f, 0.2f + Main.rand.NextFloat(-0.2f, 0.4f), Projectile.Center);
 				CameraSystem.shake += 4;
@@ -190,7 +200,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void OnHitPlayer(Player target, Player.HurtInfo info)
 		{
-			if (Projectile.ai[1] == 1)
+			if (State == 1)
 			{
 				if (Timer < CRACK_TIME)
 					Timer = CRACK_TIME;
@@ -202,6 +212,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					Projectile.velocity = Projectile.DirectionFrom(target.Center) * 1.77f;
 					hits += 30;
 				}
+
+				Projectile.netUpdate = true;
 			}
 		}
 

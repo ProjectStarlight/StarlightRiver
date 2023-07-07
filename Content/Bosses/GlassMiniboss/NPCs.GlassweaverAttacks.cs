@@ -538,7 +538,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				NPC.velocity.Y -= 1.5f;
 
 				if (Main.netMode != NetmodeID.MultiplayerClient)
-					bubbleIndex = Projectile.NewProjectile(NPC.GetSource_FromAI(), staffPos, Vector2.Zero, ProjectileType<GlassBubble>(), 20, 2f, Main.myPlayer, NPC.whoAmI);
+					bubbleIndex = Projectile.NewProjectile(NPC.GetSource_FromAI(), staffPos, Vector2.Zero, ProjectileType<GlassBubble>(), 20, 2f, Owner: -1, NPC.whoAmI);
 			}
 
 			if (AttackTimer > 240 && AttackTimer < BUBBLE_RECOIL_TIME - 1)
@@ -620,10 +620,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			if (Main.masterMode && Main.netMode != NetmodeID.MultiplayerClient)
 			{
 				GlassBubble.staticScaleToSet = 0.8f;
-				Projectile.NewProjectile(NPC.GetSource_FromAI(), bubble.Center, direction.RotatedBy(1) * speed * 0.6f, ProjectileType<GlassBubble>(), 20, 2f, Main.myPlayer, NPC.whoAmI, 1, 180);
+				Projectile.NewProjectile(NPC.GetSource_FromAI(), bubble.Center, direction.RotatedBy(1) * speed * 0.6f, ProjectileType<GlassBubble>(), 20, 2f, Owner: -1, NPC.whoAmI, 1, 180);
 
 				GlassBubble.staticScaleToSet = 0.8f;
-				Projectile.NewProjectile(NPC.GetSource_FromAI(), bubble.Center, direction.RotatedBy(-1) * speed * 0.6f, ProjectileType<GlassBubble>(), 20, 2f, Main.myPlayer, NPC.whoAmI, 1, 180);
+				Projectile.NewProjectile(NPC.GetSource_FromAI(), bubble.Center, direction.RotatedBy(-1) * speed * 0.6f, ProjectileType<GlassBubble>(), 20, 2f, Owner: -1, NPC.whoAmI, 1, 180);
 			}
 		}
 	}
