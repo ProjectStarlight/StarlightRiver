@@ -199,8 +199,12 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			maxSpikes = 3 + Main.rand.Next(16, 18);
 			points = new Vector2[maxSpikes];
 			offsets = new float[maxSpikes];
+
 			for (int i = 0; i < maxSpikes; i++)
+			{
 				offsets[i] = ((float)Math.Sin(i * MathHelper.Pi / Main.rand.NextFloat(1f, 2f)) + Main.rand.NextFloatDirection()) / 2f;
+			}
+
 			Projectile.direction = Main.npc[(int)OwnerWhoAmI].direction;
 
 			isLoaded = true;
