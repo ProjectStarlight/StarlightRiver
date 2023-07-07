@@ -19,6 +19,7 @@
 - Fixed drop pods being able to spawn hanging off a cliff
 - Fixed numerous issues with forest world generation
 - Fixed armor bags deleting items
+- Fixed rotation from aurora water persisting after leaving it
 
 ## Content
 - New summoner weapon: Haunted Dagger Staff
