@@ -158,9 +158,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 					if (chargeupCounter >= 1)
 					{
 						if (NPC.velocity == Vector2.Zero)
-						{
 							SoundEngine.PlaySound(SoundID.DeerclopsScream with { Pitch = 0.6f }, NPC.Center);
-						}
 
 						xFrame = 1;
 						NPC.rotation = 0;
@@ -225,7 +223,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 					oldPos.RemoveAt(0);
 			}
 
-			if (chain is null || NPC.DistanceSQ(Target.Center) > 4000000 || enraged)
+			if (chain is null || NPC.DistanceSQ(Target.Center) > 40000 || enraged)
 				return;
 
 			UpdateChain();
@@ -274,9 +272,9 @@ namespace StarlightRiver.Content.NPCs.Misc
 				float opacity = i / (float)oldPos.Count;
 				Main.spriteBatch.Draw(glowTex, slopeOffset + oldPos[i]  - screenPos, NPC.frame, Color.White * opacity * 0.75f, NPC.rotation, origin, NPC.scale * opacity, effects, 0f);
 			}
-
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			// Not sure if the below commented out code is needed.
+			//Main.spriteBatch.End();
+			//Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 			return false;
 		}
 
@@ -396,8 +394,6 @@ namespace StarlightRiver.Content.NPCs.Misc
 			Main.graphics.GraphicsDevice.BlendState = oldState;
 
 			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(Texture + "_Chain_White").Value);
-
-			//trail2?.Render(effect);
 
 			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 		}
