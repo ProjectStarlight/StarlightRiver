@@ -384,10 +384,5 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Main.EntitySpriteDraw(tellTex.Value, Projectile.Bottom - new Vector2(0, 10) - Main.screenPosition, frameGlow, fade, Projectile.rotation * 0.3f, tellOrigin, new Vector2(width, height), 0, 0);
 			Main.EntitySpriteDraw(tellTex.Value, Projectile.Bottom - new Vector2(0, 10) - Main.screenPosition, frame, fadeInner, Projectile.rotation * 0.3f, tellOrigin, new Vector2(1f, height * 0.6f), 0, 0);
 		}
-
-		public override void SendExtraAI(BinaryWriter writer)
-		{
-			
-		}
 	}
 }
