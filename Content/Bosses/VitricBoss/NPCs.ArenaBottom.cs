@@ -326,19 +326,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public override void AI()
 		{
-			float off = 128 * Projectile.timeLeft / 15 - 64 * (float)Math.Pow(Projectile.timeLeft, 2) / 225;
-
-			Projectile.position.Y = StartY - off;
-		}
-
-		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
-		{
-			behindNPCsAndTiles.Add(index);
-		}
-
-		public override void PostDraw(Color lightColor)
-		{
-			if (!loaded)
+			if (!loaded && Main.netMode != NetmodeID.Server)
 			{
 				loaded = true;
 				Terraria.Audio.SoundEngine.PlaySound(Terraria.ID.SoundID.DD2_WitherBeastCrystalImpact, Projectile.Center);
@@ -351,6 +339,18 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				}
 			}
 
+			float off = 128 * Projectile.timeLeft / 15 - 64 * (float)Math.Pow(Projectile.timeLeft, 2) / 225;
+
+			Projectile.position.Y = StartY - off;
+		}
+
+		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
+		{
+			behindNPCsAndTiles.Add(index);
+		}
+
+		public override void PostDraw(Color lightColor)
+		{
 			Main.spriteBatch.Draw(Request<Texture2D>(Texture).Value, Projectile.position - Main.screenPosition, Lighting.GetColor((int)Projectile.Center.X / 16, (int)Projectile.Center.Y / 16 - 2) * 1.4f);
 
 			Color color = Color.White * (Projectile.timeLeft / 30f);
