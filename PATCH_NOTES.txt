@@ -16,6 +16,7 @@
 - Fixed vitric pickaxe getting slower instead of faster as it gained heat
 - Fixed a rare crash that could occur on the player select screen
 - Fixed drop pods being able to spawn hanging off a cliff
+- Fixed numerous issues with forest world generation
 
 ## Content
 - New summoner weapon: Haunted Dagger Staff
