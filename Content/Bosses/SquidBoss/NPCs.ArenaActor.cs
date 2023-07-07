@@ -1,6 +1,5 @@
 using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Items.Permafrost;
-using StarlightRiver.Content.Packets;
 using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Core.Systems.CutawaySystem;
 using StarlightRiver.Core.Systems.LightingSystem;
@@ -213,12 +212,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					if (Item.type == ItemType<SquidBossSpawn>() && WaterLevel == 150 && !Main.npc.Any(n => n.active && n.ModNPC is SquidBoss)) //ready to spawn another squid              
 					{
 						// Synced spawn, TODO, abstract this to a general synced spawn later?
-						if (Main.netMode == NetmodeID.Server)
+						/*if (Main.netMode == NetmodeID.Server)
 						{
 							Mod.Logger.Info("Sending packet to spawn auroracle");
 							var packet = new SpawnNPC(-1, (int)NPC.Center.X, (int)NPC.Center.Y + 630, NPCType<SquidBoss>());
 							packet.Send(-1, -1, false);
-						}
+						}*/
 
 						if (Main.netMode != NetmodeID.MultiplayerClient)
 						{
