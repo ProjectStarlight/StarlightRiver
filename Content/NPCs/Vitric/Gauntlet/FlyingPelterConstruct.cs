@@ -17,8 +17,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		private const int BOWFRAMES = 4;
 		private const int XFRAMES = 1;
 
-		public ref float bowFrame => ref NPC.ai[0];
-		public ref float bowFrameCounter => ref NPC.ai[1];
+		public ref float BowFrame => ref NPC.ai[0];
+		public ref float BowFrameCounter => ref NPC.ai[1];
 
 		private int bodyFrame;
 		private int frameCounter;
@@ -145,7 +145,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 			float rotDifference = Helper.RotationDifference(direction.ToRotation(), bowArmRotation);
 
-			if (!empowered || bowFrameCounter < 75)
+			if (!empowered || BowFrameCounter < 75)
 				bowArmRotation = MathHelper.Lerp(bowArmRotation, bowArmRotation + rotDifference, 0.1f);
 
 			bowRotation = BackArmPos.DirectionTo(BowPos).ToRotation();
@@ -187,8 +187,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			else
 			{
 				attacking = false;
-				bowFrame = 0;
-				bowFrameCounter = 0;
+				BowFrame = 0;
+				BowFrameCounter = 0;
 			}
 
 			NPC.velocity += knockbackVel;
@@ -219,7 +219,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
-				if (bowFrame == 0)
+				if (BowFrame == 0)
 					DrawPredictor(screenPos);
 
 				float sin = 0.5f + (float)Math.Sin(glowCounter) * 0.5f;
@@ -236,7 +236,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
-				if (bowFrame == 0)
+				if (BowFrame == 0)
 					DrawLaserArrow(screenPos);
 			}
 
@@ -277,8 +277,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			var frontFrame = new Rectangle(0, 0, armTex.Width, armFrameSize);
 			var backFrame = new Rectangle(0, armFrameSize, armTex.Width, armFrameSize);
 
-			int bowFrameHeight = bowTex.Height / BOWFRAMES;
-			var bowFrameBox = new Rectangle(0, (int)bowFrame * bowFrameHeight, bowTex.Width, bowFrameHeight);
+			int BowFrameHeight = bowTex.Height / BOWFRAMES;
+			var BowFrameBox = new Rectangle(0, (int)BowFrame * BowFrameHeight, bowTex.Width, BowFrameHeight);
 
 			int mainFrameHeight = mainTex.Height / Main.npcFrameCount[NPC.type];
 			int mainFrameWidth = mainTex.Width / XFRAMES;
@@ -293,7 +293,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				effects = SpriteEffects.FlipHorizontally;
 				bowEffects = SpriteEffects.FlipVertically;
 
-				bowOrigin = new Vector2(bowOrigin.X, bowFrameHeight - bowOrigin.Y);
+				bowOrigin = new Vector2(bowOrigin.X, BowFrameHeight - bowOrigin.Y);
 				backArmOrigin = new Vector2(backArmOrigin.X, armFrameSize - backArmOrigin.Y);
 				bowArmOrigin = new Vector2(bowArmOrigin.X, armFrameSize - bowArmOrigin.Y);
 				//bowOrigin = new Vector2(bowTex.Width - bowOrigin.X, bowOrigin.Y);
@@ -311,7 +311,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			if (!glow)
 				Main.spriteBatch.Draw(armGlowTex, offset + BowArmPos + slopeOffset - screenPos, backFrame, Color.White, bowArmRotation + NPC.rotation, bowArmOrigin, NPC.scale, bowEffects, 0f);
 
-			Main.spriteBatch.Draw(bowTex, offset + BowPos + slopeOffset - screenPos, bowFrameBox, drawColor, bowRotation + NPC.rotation, bowOrigin, NPC.scale, bowEffects, 0f);
+			Main.spriteBatch.Draw(bowTex, offset + BowPos + slopeOffset - screenPos, BowFrameBox, drawColor, bowRotation + NPC.rotation, bowOrigin, NPC.scale, bowEffects, 0f);
 			Main.spriteBatch.Draw(armTex, offset + BackArmPos + slopeOffset - screenPos, frontFrame, drawColor, BackArmRotation + NPC.rotation, backArmOrigin, NPC.scale, bowEffects, 0f);
 
 			if (!glow)
@@ -323,11 +323,11 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			Texture2D predictorTex = Request<Texture2D>(AssetDirectory.Keys + "Shine").Value;
 			float rot = bowArmRotation + 1.57f;
 
-			float charge = EaseFunction.EaseQuadInOut.Ease(MathHelper.Clamp(bowFrameCounter / 100f, 0, 1));
+			float charge = EaseFunction.EaseQuadInOut.Ease(MathHelper.Clamp(BowFrameCounter / 100f, 0, 1));
 			float opacity = (float)Math.Sqrt(charge);
 
-			if (bowFrameCounter > 100)
-				opacity *= 1 - (bowFrameCounter - 100) / 10f;
+			if (BowFrameCounter > 100)
+				opacity *= 1 - (BowFrameCounter - 100) / 10f;
 
 			var scale = new Vector2((0.1f + (1 - charge)) * 0.3f, predictorLength);
 			var origin = new Vector2(predictorTex.Width / 2, predictorTex.Height);
@@ -344,7 +344,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			Vector2 pos = BowPos + bowArmRotation.ToRotationVector2() * 25 - screenPos;
 			Vector2 origin = arrowTex.Size() / 2;
 
-			float charge = 1 - MathHelper.Clamp(bowFrameCounter / 100f, 0, 1);
+			float charge = 1 - MathHelper.Clamp(BowFrameCounter / 100f, 0, 1);
 			float distance = charge * 8;
 
 			for (int i = 0; i < 8; i++)
@@ -395,13 +395,13 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				timeToCharge = 5;
 			}
 
-			bowFrameCounter++;
-			if (bowFrame == 0)
+			BowFrameCounter++;
+			if (BowFrame == 0)
 			{
-				if (bowFrameCounter < 75)
+				if (BowFrameCounter < 75)
 					predictorLength = 0.15f;
 
-				if (bowFrameCounter > timeToShoot)
+				if (BowFrameCounter > timeToShoot)
 				{
 					arrowsShot++;
 					if (arrowsShot > arrowsToShoot)
@@ -441,17 +441,17 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 						}
 					}
 
-					bowFrameCounter = 0;
-					bowFrame++;
+					BowFrameCounter = 0;
+					BowFrame++;
 				}
 			}
-			else if (bowFrameCounter > timeToCharge)
+			else if (BowFrameCounter > timeToCharge)
 			{
-				bowFrameCounter = 0;
-				bowFrame++;
+				BowFrameCounter = 0;
+				BowFrame++;
 			}
 
-			bowFrame %= BOWFRAMES;
+			BowFrame %= BOWFRAMES;
 			NPC.spriteDirection = Math.Sign(NPC.Center.DirectionTo(Target.Center).X);
 
 			NPC.velocity.X = 0;
