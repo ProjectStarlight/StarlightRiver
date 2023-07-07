@@ -200,7 +200,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override void PostAI()
 		{
-			if (Main.rand.NextBool(10))
+			if (Main.rand.NextBool(10) && Main.netMode != NetmodeID.Server)
 				Gore.NewGoreDirect(NPC.GetSource_FromAI(), NPC.Center, (Vector2.UnitY * -3).RotatedByRandom(0.2f), Mod.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(0.5f, 0.8f));
 		}
 

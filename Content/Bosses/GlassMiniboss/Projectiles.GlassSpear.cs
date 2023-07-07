@@ -1,6 +1,7 @@
 ﻿using ReLogic.Content;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -17,8 +18,18 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		public override string Texture => AssetDirectory.Glassweaver + Name;
 
 		public ref float Timer => ref Projectile.ai[0];
+		public ref float ParentWhoAmI => ref Projectile.ai[1];
 
 		public NPC Parent => Main.npc[(int)Projectile.ai[1]];
+
+		public bool isLoaded = false;
+
+		public bool isMagmaVariant = false;
+
+		/// <summary>
+		/// Way of ensuring magma variant is correct on the first frame this is created since setting later would be delayed and cost packets
+		/// </summary>
+		public static bool setMagmaVariant;
 
 		public override void SetStaticDefaults()
 		{
@@ -38,15 +49,24 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void OnSpawn(IEntitySource source)
 		{
-			Helpers.Helper.PlayPitched("GlassMiniboss/WeavingLong", 1f, 0f, Projectile.Center);
+			isMagmaVariant = setMagmaVariant;
+			setMagmaVariant = false;
 		}
 
 		public override void AI()
 		{
+			if (!isLoaded)
+			{
+				Helpers.Helper.PlayPitched("GlassMiniboss/WeavingLong", 1f, 0f, Projectile.Center);
+				isLoaded = true;
+			}
+
 			Timer++;
 
 			if (!Parent.active || Parent.type != NPCType<Glassweaver>())
 				Projectile.Kill();
+
+			Glassweaver glassweaver = Parent.ModNPC as Glassweaver;
 
 			if (boundToParent)
 			{
@@ -57,6 +77,80 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			{
 				if (Projectile.velocity.Length() > 0)
 					Projectile.rotation = Projectile.velocity.ToRotation() + 1.57f;
+			}
+
+			if (isMagmaVariant)
+			{
+				if (glassweaver.AttackTimer == 65)
+				{
+
+					boundToParent = false;
+					Projectile.velocity = (glassweaver.moveTarget + Vector2.UnitY * 32 - Projectile.Center) * 0.05f;
+					Projectile.velocity.X *= 2.5f;
+
+					glassweaver.NPC.velocity -= Projectile.velocity * 0.35f;
+
+					Projectile.netUpdate = true;
+					glassweaver.NPC.netUpdate = true;
+				}
+
+				if (glassweaver.AttackTimer > 65 && glassweaver.AttackTimer < 85)
+					Projectile.velocity.X *= 0.95f;
+
+				if (glassweaver.AttackTimer == 85)
+				{
+					Projectile.velocity *= 0;
+
+					Helpers.Helper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0.3f, glassweaver.NPC.Center);
+
+					if (Main.netMode != NetmodeID.MultiplayerClient)
+						Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ProjectileType<BurningGround>(), 1, 0, Owner: -1);
+
+					Projectile.netUpdate = true;
+				}
+			}
+			else
+			{
+				if (glassweaver.AttackTimer > 65 && glassweaver.AttackTimer < 90 && glassweaver.NPC.collideY && glassweaver.NPC.velocity.Y > 0)
+				{
+					glassweaver.AttackTimer = 90;
+					Timer = 80;
+
+					Helpers.Helper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0.3f, glassweaver.NPC.Center);
+
+					Vector2 lobPos = glassweaver.NPC.Bottom + new Vector2(70 * glassweaver.NPC.direction, -2);
+
+					if (Main.netMode != NetmodeID.MultiplayerClient)
+					{
+						int lobCount = 3;
+
+						if (Main.masterMode)
+							lobCount = 10;
+						else if (Main.expertMode)
+							lobCount = 4;
+
+						for (int i = 0; i < lobCount; i++)
+						{
+							float lobVel = MathHelper.ToRadians(MathHelper.Lerp(6, 90, (float)i / lobCount)) * glassweaver.NPC.direction;
+
+							if (Main.masterMode && i % 3 != 0)
+								LavaLob.staticScaleToSet = 0.5f;
+
+							Projectile.NewProjectile(Projectile.GetSource_FromThis(), lobPos, Vector2.Zero, ProjectileType<LavaLob>(), 10, 0.2f, Owner: -1, -44 - i, lobVel);
+						}
+
+						Projectile.netUpdate = true;
+						glassweaver.NPC.netUpdate = true;
+					}
+
+					if (Main.netMode != NetmodeID.Server)
+					{
+						for (int j = 0; j < 50; j++)
+						{
+							Dust.NewDustPerfect(lobPos + Main.rand.NextVector2Circular(20, 1), DustType<Dusts.GlassGravity>(), -Vector2.UnitY.RotatedByRandom(0.8f) * Main.rand.NextFloat(1f, 6f));
+						}
+					}
+				}
 			}
 
 			Vector2 handPos;
@@ -118,6 +212,18 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			return false;
 		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(boundToParent);
+			writer.Write(isMagmaVariant);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			boundToParent = reader.ReadBoolean();
+			isMagmaVariant = reader.ReadBoolean();
+		}
 	}
 
 	class LavaLob : ModProjectile
@@ -131,6 +237,12 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		public override string Texture => AssetDirectory.Glassweaver + Name;
 
 		public ref float Timer => ref Projectile.ai[0];
+		//TODO: wtf is this rotation adjacent shadow ai[1] thats being used?
+
+		/// <summary>
+		/// Way of ensuring projectile scale is correct on the first frame this is created since setting later would be delayed and cost an additional packet
+		/// </summary>
+		public static float staticScaleToSet = 1f;
 
 		public override void SetStaticDefaults()
 		{
@@ -148,6 +260,12 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Projectile.timeLeft = 360;
 			Projectile.decidesManualFallThrough = true;
 			Projectile.shouldFallThrough = false;
+		}
+
+		public override void OnSpawn(IEntitySource source)
+		{
+			Projectile.scale = staticScaleToSet;
+			staticScaleToSet = 1f;
 		}
 
 		public override void AI()
@@ -272,6 +390,16 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(18, 18), DustType<Dusts.Cinder>(), Projectile.velocity.RotatedByRandom(0.5f) * 0.1f, 0, Glassweaver.GlowDustOrange, 1.5f);
 
 			Helpers.Helper.PlayPitched("GlassMiniboss/RippedSoundExtinguish", 0.8f, 0.5f, Projectile.Center);
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(Projectile.scale);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			Projectile.scale = reader.ReadSingle();
 		}
 	}
 }

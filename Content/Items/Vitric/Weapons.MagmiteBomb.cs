@@ -166,7 +166,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			{
 				Projectile.velocity.Y = -oldVelocity.Y * 0.2f;
 
-				if (Projectile.velocity.Y < -1f)
+				if (Projectile.velocity.Y < -1f && Main.netMode != NetmodeID.Server)
 				{
 					for (int i = 0; i < 5; i++)
 					{
@@ -182,6 +182,9 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void Kill(int timeLeft)
 		{
+			if (Main.netMode == NetmodeID.Server)
+				return;
+
 			CameraSystem.shake += 6;
 
 			SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/FireHit"), Projectile.Center);
