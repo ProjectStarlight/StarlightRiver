@@ -13,6 +13,8 @@
 - Fixed ceiros' master mode behavior desyncing in multiplayer
 - Fixed moonstones spawning too close to the edge of the world
 - Fixed bricklayer's trowel eating block placement wands
+- Fixed vitric pickaxe getting slower instead of faster as it gained heat
+- Fixed a rare crash that could occur on the player select screen
 
 ## Content
 - New summoner weapon: Haunted Dagger Staff

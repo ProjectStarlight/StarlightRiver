@@ -6,7 +6,7 @@ namespace StarlightRiver.Content.Items.Vitric
 {
 	internal class VitricPick : ModItem, IGlowingItem
 	{
-		public const int MAX_HEAT;
+		public const int MAX_HEAT = 20;
 
 		public int heat = 0;
 		public int heatTime = 0;
