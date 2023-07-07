@@ -9,6 +9,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 	{
 		public override string Texture => AssetDirectory.Glassweaver + Name;
 
+		public bool isLoaded = false;
+
 		public override void SetDefaults()
 		{
 			Projectile.width = 15;
@@ -21,13 +23,14 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Projectile.shouldFallThrough = false;
 		}
 
-		public override void OnSpawn(IEntitySource source)
-		{
-			Helpers.Helper.PlayPitched("GlassMiniboss/WeavingShort", 1f, Main.rand.NextFloat(0.33f), Projectile.Center);
-		}
-
 		public override void AI()
 		{
+			if (!isLoaded)
+			{
+				Helpers.Helper.PlayPitched("GlassMiniboss/WeavingShort", 1f, Main.rand.NextFloat(0.33f), Projectile.Center);
+				isLoaded = true;
+			}
+
 			Projectile.localAI[0]++;
 
 			if (Projectile.timeLeft > 100)
