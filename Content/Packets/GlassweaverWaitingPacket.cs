@@ -14,6 +14,9 @@ namespace StarlightRiver.Content.Packets
 	/// <summary>
 	/// A packet for clients to drive the glassweaver's status used in single player as well
 	/// This packet should not need to be created by the server -- only singleplayer or multiplayer clients
+	/// 
+	/// When an NPC sets netupdate to true that only applies to the server telling clients about updates. 
+	/// This packet lets clients tell the server the new glassweaver state and then the server will notify other clients
 	/// </summary>
 	[Serializable]
 	public class GlassweaverWaitingPacket : Module
@@ -21,8 +24,6 @@ namespace StarlightRiver.Content.Packets
 		private readonly float newState;
 		private readonly float newTimer;
 		private readonly int npcWhoAmI;
-
-		//TODO FOR REVIEWER: in theory this could be a generalized packet that sends the ai fields. I think it would be far less readable than doing custom packets like this one since clients needing to declare npc updates to server is probably really rare and unique
 		public GlassweaverWaitingPacket(float newState, float newTimer, int npcWhoAmI)
 		{
 			this.newState = newState;
