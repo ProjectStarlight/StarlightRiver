@@ -532,6 +532,25 @@ Mods: {
 					'''
 			}
 
+			SlimePrinceChest: {
+				DisplayName: Slime Prince's Curiass
+				Tooltip:
+					'''
+					5% increased summoning damage
+					You can summon an additional minion
+					'''
+			}
+
+			SlimePrinceHead: {
+				DisplayName: Slime Prince's Crown
+				Tooltip: 10% increased summoning damage
+			}
+
+			SlimePrinceLegs: {
+				DisplayName: Slime Prince's Tassets
+				Tooltip: Minions inflict 5% exposure
+			}
+
 			Trowel: {
 				DisplayName: Bricklayer's Trowel
 				Tooltip:
@@ -581,12 +600,12 @@ Mods: {
 				DisplayName: Effects of different gems:
 				Tooltip:
 					'''
-					[i/s1:5663]: Critical strikes partially ignore armor, with increased chance for missing enemy HP 
-					[i/s1:5671]: +100 barrier. Gain a shield that points to your cursor and blocks attacks, consuming barrier 
-					[i/s1:5664]: Immediately heal 20 hp. Hits have a chance to create a 5 HP life heart 
-					[i/s1:5670]: Immediately refill mana. Hits have a chance to create 1 to 3 mana stars 
-					[i/s1:5662]: All strikes inflict Toxic Amethyst, a stacking poison debuff 
-					[i/s1:5669]: Hits have a chance to summon a Ruby Dagger to seek the struck enemy for 20% of the hit's damage
+					[i/s1:5666]: Critical strikes partially ignore armor, with increased chance for missing enemy HP 
+					[i/s1:5674]: +100 barrier. Gain a shield that points to your cursor and blocks attacks, consuming barrier 
+					[i/s1:5667]: Immediately heal 20 hp. Hits have a chance to create a 5 HP life heart 
+					[i/s1:5673]: Immediately refill mana. Hits have a chance to create 1 to 3 mana stars 
+					[i/s1:5665]: All strikes inflict Toxic Amethyst, a stacking poison debuff 
+					[i/s1:5672]: Hits have a chance to summon a Ruby Dagger to seek the struck enemy for 20% of the hit's damage
 					'''
 			}
 
@@ -2628,6 +2647,26 @@ Mods: {
 				Tooltip: ""
 			}
 
+			CombatShrineBarrierItem: {
+				DisplayName: CombatShrineBarrierItem
+				Tooltip: debug item
+			}
+
+			EvasionShrineBarrierItem: {
+				DisplayName: EvasionShrineBarrierItem
+				Tooltip: debug item
+			}
+
+			VitricBossBarrierItem: {
+				DisplayName: VitricBossBarrierItem
+				Tooltip: debug item
+			}
+
+			GlassweaverBossBarrierItem: {
+				DisplayName: GlassweaverBossBarrierItem
+				Tooltip: debug item
+			}
+
 			VitricBathtub: {
 				DisplayName: Vitric Bathtub
 				Tooltip: ""
@@ -2711,26 +2750,6 @@ Mods: {
 			VitricDoorClosed: {
 				DisplayName: Vitric Door
 				Tooltip: ""
-			}
-
-			VitricBossBarrierItem: {
-				DisplayName: VitricBossBarrierItem
-				Tooltip: debug item
-			}
-
-			GlassweaverBossBarrierItem: {
-				DisplayName: GlassweaverBossBarrierItem
-				Tooltip: debug item
-			}
-
-			CombatShrineBarrierItem: {
-				DisplayName: CombatShrineBarrierItem
-				Tooltip: debug item
-			}
-
-			EvasionShrineBarrierItem: {
-				DisplayName: EvasionShrineBarrierItem
-				Tooltip: debug item
 			}
 
 			TempleChairItem: {
@@ -2953,6 +2972,7 @@ Mods: {
 			ThousandthDegreeProjectile.DisplayName: Thousandth Degree
 			ThousandthDegreeProjectileFired.DisplayName: Blazing Wheel
 			FeralWolfMountBite.DisplayName: Crushing Jaws
+			SlimePrinceMinion.DisplayName: Slime Prince
 			AmethystShard.DisplayName: Amethyst Shard
 			RubyDagger.DisplayName: Ruby Dagger
 			SparklingBulletProj.DisplayName: Sparkling Bullet
@@ -3367,10 +3387,6 @@ Mods: {
 			VitricSand.MapEntry: ""
 			VitricSoftSand.MapEntry: ""
 			VitricSandPlain.MapEntry: ""
-			// VitricGiantCrystal.MapEntry: ""
-			// VitricLargeCrystal.MapEntry: ""
-			// VitricMediumCrystal.MapEntry: ""
-			// VitricSmallCrystal.MapEntry: ""
 		}
 
 		Biomes: {
@@ -3777,6 +3793,25 @@ Mods: {
 			StaminaPrefix2.DisplayName: Shining
 			StaminaPrefix3.DisplayName: Glowing
 			StaminaPrefix4.DisplayName: Radiant
+		}
+
+		Compat: {
+			BossChecklist: {
+				Auroracle: {
+					SpawnInfo: Drop a Suspicious Looking Offering into the prismatic waters of the Permafrost Shrine, accessed only through the coldest caves.
+					Despawn: The frozen cathedral falls silent.
+				}
+
+				Glassweaver: {
+					SpawnInfo: Challenge the glassweaver in his forge, near the edge of the Vitric Desert.
+					Despawn: The Glassweaver claims victory.
+				}
+
+				Ceiros: {
+					SpawnInfo: Use a Glass Idol at the altar atop the Vitric Temple, after breaking the crystal covering it using Forbidden Winds.
+					Despawn: The Vitric Forge falls silent. The Glassweaver is dissapointed.
+				}
+			}
 		}
 	}
 }

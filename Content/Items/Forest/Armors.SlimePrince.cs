@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Core.Systems.ExposureSystem;
 using Terraria.Audio;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -233,6 +234,36 @@ namespace StarlightRiver.Content.Items.Forest
 				if (exposure.ExposureMultAll < 0.05f)
 					exposure.ExposureMultAll = 0.05f;
 			}
+		}
+	}
+
+	public class SlimePrinceDrops : GlobalNPC
+	{
+		public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
+		{
+			return entity.type == NPCID.KingSlime;
+		}
+
+		public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
+		{
+			var normalMode = new LeadingConditionRule(new Conditions.NotExpert());
+
+			normalMode.OnSuccess(ItemDropRule.FewFromOptions(3, 2, new int[] { ItemType<SlimePrinceHead>(), ItemType<SlimePrinceChest>(), ItemType<SlimePrinceLegs>() }));
+
+			npcLoot.Add(normalMode);
+		}
+	}
+
+	public class SlimePrinceBagDrops : GlobalItem
+	{
+		public override bool AppliesToEntity(Item entity, bool lateInstantiation)
+		{
+			return entity.type == ItemID.KingSlimeBossBag;
+		}
+
+		public override void ModifyItemLoot(Item item, ItemLoot itemLoot)
+		{
+			itemLoot.Add(ItemDropRule.FewFromOptions(3, 2, new int[] { ItemType<SlimePrinceHead>(), ItemType<SlimePrinceChest>(), ItemType<SlimePrinceLegs>() }));
 		}
 	}
 }
