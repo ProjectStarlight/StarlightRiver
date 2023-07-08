@@ -47,7 +47,6 @@ namespace StarlightRiver.Core
 		public const string ArmsDealerItem = Assets + "Items/ArmsDealer/";
 		public const string ManabondItem = Assets + "Items/Manabonds/";
 
-
 		public const string SpaceEventItem = Assets + "Items/SpaceEvent/";
 		public const string SpaceEventNPC = Assets + "NPCs/SpaceEvent/";
 		public const string MiscNPC = Assets + "NPCs/Misc/";
