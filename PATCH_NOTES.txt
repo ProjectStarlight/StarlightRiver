@@ -49,6 +49,7 @@
 - Fixed starwood armor and weapons in multiplayer
 - Fixed artifacts in multiplayer
 - Fixed most gores for multiplayer
+- New summoner armor: Slime prince armor
 
 ## Misc
 - The boss rush now requires you to have defeated each boss atleast once to unlock
