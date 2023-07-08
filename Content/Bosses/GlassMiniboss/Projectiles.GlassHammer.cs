@@ -2,7 +2,9 @@ using ReLogic.Content;
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Terraria.DataStructures;
+using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
@@ -18,6 +20,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		public NPC Parent => Main.npc[(int)Projectile.ai[0]];
 
 		public ref float TotalTime => ref Projectile.ai[1];
+
+		public bool isLoaded = false;
 
 		public override void SetStaticDefaults()
 		{
@@ -35,17 +39,18 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Projectile.hide = true;
 		}
 
-		public override void OnSpawn(IEntitySource source)
-		{
-			swingTimer = (int)TotalTime;
-			Projectile.timeLeft = (int)TotalTime + 50;
-			Helpers.Helper.PlayPitched("GlassMiniboss/WeavingLong", 1f, 0f, Projectile.Center);
-		}
-
 		public override void AI()
 		{
 			if (!Parent.active || Parent.type != NPCType<Glassweaver>())
 				Projectile.Kill();
+
+			if (!isLoaded)
+			{
+				swingTimer = (int)TotalTime;
+				Projectile.timeLeft = (int)TotalTime + 50;
+				Helpers.Helper.PlayPitched("GlassMiniboss/WeavingLong", 1f, 0f, Projectile.Center);
+				isLoaded = true;
+			}
 
 			swingTimer--;
 
@@ -107,6 +112,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void Kill(int timeLeft)
 		{
+			if (Main.netMode == NetmodeID.Server)
+				return;
+
 			Helpers.Helper.PlayPitched("GlassMiniboss/GlassShatter", 1f, Main.rand.NextFloat(0.1f), Projectile.Center);
 
 			for (int k = 0; k < 10; k++)
@@ -157,7 +165,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public ref float Timer => ref Projectile.ai[0];
 
-		public ref float WhoAmI => ref Projectile.ai[1];
+		public ref float OwnerWhoAmI => ref Projectile.ai[1];
+
+		private bool isLoaded = false;
 
 		public override void SetStaticDefaults()
 		{
@@ -180,12 +190,24 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void OnSpawn(IEntitySource source)
 		{
+			OnSpawnSpikeVisualVars();
+		}
+
+		private void OnSpawnSpikeVisualVars()
+		{
 			Projectile.rotation += Main.rand.NextFloat(-0.01f, 0.01f);
 			maxSpikes = 3 + Main.rand.Next(16, 18);
 			points = new Vector2[maxSpikes];
 			offsets = new float[maxSpikes];
+
 			for (int i = 0; i < maxSpikes; i++)
+			{
 				offsets[i] = ((float)Math.Sin(i * MathHelper.Pi / Main.rand.NextFloat(1f, 2f)) + Main.rand.NextFloatDirection()) / 2f;
+			}
+
+			Projectile.direction = Main.npc[(int)OwnerWhoAmI].direction;
+
+			isLoaded = true;
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
@@ -195,13 +217,16 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void AI()
 		{
+			if (!isLoaded)
+				OnSpawnSpikeVisualVars();
+
 			Timer++;
 
 			if (Timer == RAISE_TIME - 59)
 			{
-				Projectile.height = (int)(MathHelper.Lerp(240, 150, WhoAmI) * Projectile.scale);
+				Projectile.height = (int)(MathHelper.Lerp(240, 150, OwnerWhoAmI) * Projectile.scale); //using OwnerWhoAmI is shitcode but leaving it incase it has some reason for 1 time randomness like this
 
-				Projectile.rotation += WhoAmI * Projectile.direction * 0.1f;
+				Projectile.rotation += OwnerWhoAmI * Projectile.direction * 0.1f;
 
 				int x = (int)(Projectile.Center.X / 16f);
 				int y = (int)(Projectile.Center.Y / 16f);

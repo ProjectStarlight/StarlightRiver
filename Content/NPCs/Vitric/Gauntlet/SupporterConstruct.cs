@@ -170,7 +170,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				Color color = Color.OrangeRed;
 				Vector2 pos = NPC.Center - Main.screenPosition;
 
-				if (healingTarget.Distance(NPC.Center) < 300)
+				if (healingTarget.Distance(NPC.Center) < 300 && Main.netMode != NetmodeID.Server)
 				{
 					for (int i = 10; i < width; i += 10)
 					{
