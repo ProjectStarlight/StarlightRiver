@@ -21,9 +21,9 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 
 		public string dealerName = "Arms Dealer";
 
-		public static Texture2D PistolTex => Terraria.GameContent.TextureAssets.Item[ItemID.FlintlockPistol].Value;
-		public static Texture2D ShotgunTex => Terraria.GameContent.TextureAssets.Item[ItemID.Boomstick].Value;
-		public static Texture2D MinigunTex => Terraria.GameContent.TextureAssets.Item[ItemID.Minishark].Value;
+		public static string PistolTex => Terraria.GameContent.TextureAssets.Item?[ItemID.FlintlockPistol]?.Name ?? "PlaceholderForServer";
+		public static string ShotgunTex => Terraria.GameContent.TextureAssets.Item?[ItemID.Boomstick]?.Name ?? "PlaceholderForServer";
+		public static string MinigunTex => Terraria.GameContent.TextureAssets.Item?[ItemID.Minishark]?.Name ?? "PlaceholderForServer";
 
 		public override string Texture => AssetDirectory.ArmsDealerItem + Name;
 
@@ -155,9 +155,9 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 
 				Texture2D tex = k switch
 				{
-					0 => PistolTex,
-					1 => ShotgunTex,
-					2 => MinigunTex,
+					0 => ModContent.Request<Texture2D>(PistolTex).Value,
+					1 => ModContent.Request<Texture2D>(ShotgunTex).Value,
+					2 => ModContent.Request<Texture2D>(MinigunTex).Value,
 					_ => null
 				};
 
@@ -201,7 +201,9 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 
 		// Used for the visuals of the gun
 		public float gunRotation;
-		public Texture2D gunTex;
+		public string gunTexPath;
+
+		public Texture2D GunTex => ModContent.Request<Texture2D>(gunTexPath).Value;
 
 		public Player Owner => Main.player[Projectile.owner];
 
@@ -210,11 +212,11 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 
 		public override string Texture => AssetDirectory.Invisible;
 
-		public DefenseSystemTurret(int delay, int range, Texture2D gunTex)
+		public DefenseSystemTurret(int delay, int range, string gunTexPath)
 		{
 			this.delay = delay;
 			this.range = range;
-			this.gunTex = gunTex;
+			this.gunTexPath = gunTexPath;
 		}
 
 		public override void SetStaticDefaults()
@@ -332,7 +334,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 			var source = new Rectangle(0, (int)(Timer / 4 % 2) * 38, 32, 32);
 
 			Main.spriteBatch.Draw(baseTex, Projectile.Center - Main.screenPosition, source, lightColor, 0, Vector2.One * 16, 1, 0, 0);
-			Main.spriteBatch.Draw(gunTex, Projectile.Center - Main.screenPosition + Vector2.UnitY * -10, null, lightColor, gunRotation, gunTex.Size() / 2f, 1, effects, 0);
+			Main.spriteBatch.Draw(GunTex, Projectile.Center - Main.screenPosition + Vector2.UnitY * -10, null, lightColor, gunRotation, GunTex.Size() / 2f, 1, effects, 0);
 
 			return false;
 		}
