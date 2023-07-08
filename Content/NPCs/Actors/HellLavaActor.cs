@@ -215,7 +215,6 @@ namespace StarlightRiver.Content.NPCs.Actors
 
 		private static void ResetInventoryGlow(StarlightPlayer Player)
 		{
-			//Main.NewText(StarwaterGlobalItemGlow);
 			if (HellLavaItemGlow > 0.075f)
 				HellLavaItemGlow *= 0.985f; //fades out the shine on items
 			else
