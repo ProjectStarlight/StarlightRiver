@@ -185,6 +185,9 @@ namespace StarlightRiver.Content.Abilities.Hint
 		{
 			Timer++;
 
+			if (text is null)
+				return;
+
 			if (Timer < text.Length * 6f)
 				Projectile.timeLeft = 2;
 
@@ -207,6 +210,9 @@ namespace StarlightRiver.Content.Abilities.Hint
 
 		public override bool PreDraw(ref Color lightColor)
 		{
+			if (text is null)
+				return false;
+
 			int end = Math.Min((int)Timer, text.Length);
 			string toDraw = Helpers.Helper.WrapString(text[..end], 400, FontAssets.ItemStack.Value, Projectile.scale);
 

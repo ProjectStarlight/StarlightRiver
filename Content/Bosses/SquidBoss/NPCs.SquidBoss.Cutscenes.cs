@@ -13,14 +13,17 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public void SpawnAnimation()
 		{
 			if (GlobalTimer == 1)
-				savedPoint = Arena.fakeBoss.Center;
+				savedPoint = Arena?.fakeBoss?.Center ?? Arena.NPC.Center;
 
 			if (GlobalTimer > 1 && GlobalTimer < 100)
 			{
 				NPC.Center = spawnPoint + new Vector2(0, 20);
 
-				float progress = Helper.BezierEase(GlobalTimer / 100f);
-				Arena.fakeBoss.Center = Vector2.Lerp(savedPoint, new Vector2(savedPoint.X, spawnPoint.Y), progress);
+				if (Arena?.fakeBoss != null)
+				{
+					float progress = Helper.BezierEase(GlobalTimer / 100f);
+					Arena.fakeBoss.Center = Vector2.Lerp(savedPoint, new Vector2(savedPoint.X, spawnPoint.Y), progress);
+				}
 			}
 
 			if (GlobalTimer == 300)
@@ -83,6 +86,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					tentacles.Add(Main.npc[i]);
 
 					Main.npc[i].netUpdate = true;
+
+					Mod.Logger.Info("Auroracle spawned tentacle " + i);
 				}
 
 				if (GlobalTimer == 100 + k * 30)

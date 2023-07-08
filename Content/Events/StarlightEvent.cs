@@ -48,6 +48,8 @@ namespace StarlightRiver.Content.Events
 			// The event should trigger the next applicable night
 			if (willOccur && !Main.dayTime && Main.time == 0)
 			{
+				Mod.Logger.Info($"Starting starlight event with sequence {sequence}");
+
 				occuring = true;
 				willOccur = false;
 				Main.NewText("A strange traveler has arrived...", new Color(150, 200, 255));
