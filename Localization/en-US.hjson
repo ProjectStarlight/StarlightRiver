@@ -3865,6 +3865,25 @@ Mods: {
 					'''
 			}
 
+			SlimePrinceChest: {
+				DisplayName: Slime Prince's Curiass
+				Tooltip:
+					'''
+					5% increased summoning damage
+					You can summon an additional minion
+					'''
+			}
+
+			SlimePrinceHead: {
+				DisplayName: Slime Prince's Crown
+				Tooltip: 10% increased summoning damage
+			}
+
+			SlimePrinceLegs: {
+				DisplayName: Slime Prince's Tassets
+				Tooltip: Minions inflict 5% exposure
+			}
+
 			Trowel: {
 				DisplayName: Bricklayer's Trowel
 				Tooltip:
@@ -6352,6 +6371,7 @@ Mods: {
 			ThousandthDegreeProjectile.DisplayName: Thousandth Degree
 			ThousandthDegreeProjectileFired.DisplayName: Blazing Wheel
 			FeralWolfMountBite.DisplayName: Crushing Jaws
+			SlimePrinceMinion.DisplayName: Slime Prince
 			AmethystShard.DisplayName: Amethyst Shard
 			RubyDagger.DisplayName: Ruby Dagger
 			SparklingBulletProj.DisplayName: Sparkling Bullet
