@@ -32,5 +32,6 @@
 - New summoner accessory: Druidic Manabond
 - New summoner accessory: Aquatic Manabond
 - New summoner accessory: Salt cogs
+- New NPC: Loot Wraith
 
 ## Misc
