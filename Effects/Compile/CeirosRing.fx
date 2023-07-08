@@ -1,4 +1,9 @@
-﻿matrix transformMatrix;
+﻿
+float time;
+float repeats;
+float opacity = 1;
+
+matrix transformMatrix;
 
 texture sampleTexture;
 sampler2D samplerTex = sampler_state { texture = <sampleTexture>; magfilter = LINEAR; minfilter = LINEAR; mipfilter = LINEAR; AddressU = wrap; AddressV = wrap; };
@@ -21,7 +26,7 @@ VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
 {
     VertexShaderOutput output;
     
-    output.Color = input.Color;
+    output.Color = input.Color * opacity;
     output.TexCoords = input.TexCoords;
     output.Position = mul(input.Position, transformMatrix);
 
@@ -30,9 +35,12 @@ VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
 
 float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 {
-    float2 st = float2(input.TexCoords.x, 0.25 + input.TexCoords.y * 0.5);
-	float4 color = tex2D(samplerTex, st);
-    return color.r * input.Color;
+	float2 st = float2(input.TexCoords.x * repeats, 0.25 + input.TexCoords.y * 0.5);
+
+	float3 color = tex2D(samplerTex, st + float2(time, 0)).xyz;
+	float3 color2 = tex2D(samplerTex, st + float2(-time * 1.5, 0)).xyz * 0.5;
+
+    return float4((color + color2) * input.Color * (1.0 + color.x * 2.0), color.x * input.Color.w);
 }
 
 technique Technique1

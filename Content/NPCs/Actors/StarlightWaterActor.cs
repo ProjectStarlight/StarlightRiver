@@ -320,6 +320,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 
 				{ ItemID.BottledWater, ItemType<StarlightWater>() },
 				{ ItemID.LesserManaPotion, ItemType<StarlightWater>() },
+				{ ItemType<DormantScepter>(), ItemType<StarwoodScepter>()}
 			};
 		}
 

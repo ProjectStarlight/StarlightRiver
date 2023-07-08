@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
@@ -88,12 +89,19 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				if (LaserTimer == 140)
 					direction = (Main.player[parent.NPC.target].Center - Projectile.Center).ToRotation() > LaserRotation ? 1 : -1;
 
-				if (LaserTimer == 141 && copyDirection != null)
-					direction = copyDirection.direction;
+				if (LaserTimer == 141)
+				{
+					if (copyDirection != null)
+						direction = copyDirection.direction;
+
+					Projectile.netUpdate = true;
+				}
+
+				if (LaserTimer == 30)
+					Projectile.netUpdate = true;
 
 				if (LaserTimer > 30 && LaserTimer <= 75)
 				{
-					Projectile.netUpdate = true;
 					LaserRotation = (Main.player[parent.NPC.target].Center - Projectile.Center).ToRotation() + aimOffset;
 
 					Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(300, 300);
@@ -270,6 +278,18 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * width + Vector2.One.RotatedBy(rot) * Main.rand.NextFloat(40), DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot) * 2, 0, color, 0.9f - variation * 0.03f);
 				}
 			}
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(direction);
+			writer.Write(aimOffset);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			direction = reader.ReadInt32();
+			aimOffset = reader.ReadSingle();
 		}
 	}
 }
