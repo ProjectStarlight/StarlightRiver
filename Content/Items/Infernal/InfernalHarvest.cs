@@ -91,6 +91,7 @@ namespace StarlightRiver.Content.Items.Infernal
 			Projectile.tileCollide = false;
 			Projectile.penetrate = -1;
 			Projectile.extraUpdates = 1;
+			Projectile.DamageType = DamageClass.Magic;
 		}
 
 		public override void AI()
@@ -305,6 +306,7 @@ namespace StarlightRiver.Content.Items.Infernal
 			Projectile.tileCollide = false;
 			Projectile.penetrate = -1;
 			Projectile.extraUpdates = 3;
+			Projectile.DamageType = DamageClass.Magic;
 		}
 
 		public override bool? CanHitNPC(NPC target)
@@ -481,6 +483,7 @@ namespace StarlightRiver.Content.Items.Infernal
 			Projectile.height = 140;
 			Projectile.tileCollide = false;
 			Projectile.penetrate = -1;
+			Projectile.DamageType = DamageClass.Magic;
 			Projectile.usesLocalNPCImmunity = true;
 			Projectile.localNPCHitCooldown = 30;
 		}
