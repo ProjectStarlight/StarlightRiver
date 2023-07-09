@@ -2912,6 +2912,15 @@ Mods: {
 				DisplayName: Soft Sand
 				Tooltip: ""
 			}
+
+			InfernalHarvest: {
+				DisplayName: Infernal Harvest
+				Tooltip:
+					'''
+					Swing a huge harvesting scythe to gather mana from enemies
+					<RIGHT> to spend 60 mana to throw the scythe, leaving a burning trail
+					'''
+			}
 		}
 
 		Projectiles: {
