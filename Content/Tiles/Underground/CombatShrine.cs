@@ -444,7 +444,8 @@ namespace StarlightRiver.Content.Tiles.Underground
 			NPC.lavaImmune = true;
 			NPC.trapImmune = true;
 			NPC.HitSound = SoundID.NPCHit7;
-			NPC.DeathSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/ShadowDeath");
+			SoundStyle shadowDeath = new($"{nameof(StarlightRiver)}/Sounds/ShadowDeath") { MaxInstances = 3 };
+			NPC.DeathSound = shadowDeath;
 			if (NPC.TryGetGlobalNPC(out StarlightNPC starlightNPC)) // while this global NPC seems to never exist in time on mp clients, this particular bool only matters for the server
 				starlightNPC.dontDropItems = true; 
 
