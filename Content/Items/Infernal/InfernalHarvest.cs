@@ -137,10 +137,12 @@ namespace StarlightRiver.Content.Items.Infernal
 		{
 			Vector2 perp = Vector2.UnitX.RotatedBy(Projectile.rotation + 1.57f);
 
-			return target.immune[0] <= 0 && Timer < 60 && (
+			bool hit = target.immune[0] <= 0 && Timer < 60 && (
 				Helper.CheckLinearCollision(Projectile.Center, Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation) * SCYTHE_LENGTH, target.Hitbox, out _) ||
 				Helper.CheckLinearCollision(Projectile.Center + perp * 10, Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation) * SCYTHE_LENGTH + perp * 10, target.Hitbox, out _) ||
 				Helper.CheckLinearCollision(Projectile.Center + perp * -10, Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation) * SCYTHE_LENGTH + perp * -10, target.Hitbox, out _));
+
+			return hit ? null : false;
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -307,7 +309,7 @@ namespace StarlightRiver.Content.Items.Infernal
 
 		public override bool? CanHitNPC(NPC target)
 		{
-			return target.immune[0] <= 0 && Projectile.velocity.Length() > 4;
+			return Projectile.velocity.Length() > 4 ? null : false;
 		}
 
 		public override void AI()
@@ -340,7 +342,7 @@ namespace StarlightRiver.Content.Items.Infernal
 
 			if (traveled >= 130)
 			{
-				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<BurnTrail>(), 1, 0, Projectile.owner, Main.rand.Next(3000));
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<BurnTrail>(), 5, 0, Projectile.owner, Main.rand.Next(3000));
 				traveled = 0;
 			}
 
@@ -474,11 +476,13 @@ namespace StarlightRiver.Content.Items.Infernal
 		{
 			Projectile.friendly = true;
 			Projectile.hostile = false;
-			Projectile.damage = 1;
 			Projectile.timeLeft = 200;
-			Projectile.width = 90;
-			Projectile.height = 90;
+			Projectile.width = 140;
+			Projectile.height = 140;
 			Projectile.tileCollide = false;
+			Projectile.penetrate = -1;
+			Projectile.usesLocalNPCImmunity = true;
+			Projectile.localNPCHitCooldown = 30;
 		}
 
 		public override void AI()
@@ -495,13 +499,12 @@ namespace StarlightRiver.Content.Items.Infernal
 
 		public override bool? CanHitNPC(NPC target)
 		{
-			Rectangle burnBox = Projectile.Hitbox;
-			burnBox.Inflate(50, 50);
+			return null;
+		}
 
-			if (target.Hitbox.Intersects(burnBox))
-				target.AddBuff(BuffID.OnFire3, 120);
-
-			return false;
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			target.AddBuff(BuffID.OnFire3, 120);
 		}
 
 		public override bool PreDraw(ref Color lightColor)
