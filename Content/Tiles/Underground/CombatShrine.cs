@@ -31,8 +31,6 @@ namespace StarlightRiver.Content.Tiles.Underground
 		{
 			return "A shrine - to which deity, you do not know, though it wields a blade. The statue's eyes seem to follow you, and strange runes dance across its pedestal.";
 		}
-
-
 	}
 
 	[SLRDebug]

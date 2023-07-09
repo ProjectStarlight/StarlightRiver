@@ -75,7 +75,6 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 			return NonDictSearch<T>(i, j);
 		}
 
-
 		/// <summary>
 		/// searches through projectiles for a dummy that's not found in the dictionary, and adds it to the dictionary if found
 		/// primarily for multiplayer since its more likely to fail to be attached to a key there
