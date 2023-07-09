@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Projectile.friendly = true;
 			Projectile.tileCollide = false;
-			Projectile.Size = new Vector2(38, 38);
+			Projectile.Size = new Vector2(72, 38);
 			//Projectile.penetrate = -1;
 			//Projectile.ownerHitCheck = true;
 			//Projectile.extraUpdates = 3;
@@ -73,17 +73,19 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void AI()
 		{
-			Projectile.velocity = Vector2.Zero;
-			Vector2 direction = Main.GetPlayerArmPosition(Projectile) - Owner.Center;
-			Projectile.Center = Owner.Center + direction * new Vector2(4.25f, 1.25f);
-			Owner.heldProj = Projectile.whoAmI;
 			if (FirstTickOfSwing)
 			{
 				Projectile.spriteDirection = Owner.direction;
-				//float rot = Owner.DirectionTo(Main.MouseWorld).ToRotation();
 			}
+			Projectile.velocity = Vector2.Zero;
+			Owner.heldProj = Projectile.whoAmI;
 
-			Projectile.rotation = (float)Math.Sin(Projectile.ai[0] * 0.175f) * 0.3f;
+			Vector2 armOffset = Main.GetPlayerArmPosition(Projectile) - Owner.Center;
+			Projectile.Center = Owner.Center + armOffset * new Vector2(4.25f, 1.25f);
+
+			Projectile.rotation = (float)Math.Sin(Projectile.ai[0] * 0.175f * Projectile.spriteDirection /* * 0*/) * 0.3f - 
+				(Math.Abs(armOffset.Y) - 6 - Owner.gfxOffY * 1.5f/*slightly fixes rotating when stepping up blocks*/) * 0.05f * -Projectile.spriteDirection;
+			//version that points the upper angle downwards instead: //((Math.Abs(direction.Y) - 6) * 0.05f * -Projectile.spriteDirection);
 
 			Projectile.ai[0]++;
 
@@ -91,7 +93,10 @@ namespace StarlightRiver.Content.Items.Misc
 				Projectile.active = false;
 		}
 
-		
+		public override bool? CanCutTiles()
+		{
+			return false;
+		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
@@ -100,10 +105,23 @@ namespace StarlightRiver.Content.Items.Misc
 			int frameHeight = tex.Height / Main.projFrames[Projectile.type];
 			var frameBox = new Rectangle(0, frameHeight * Projectile.frame, tex.Width, frameHeight);
 
+			//these 2 values are for getting the right rotation point
 			float Xoffset = Projectile.spriteDirection == 1 ? (tex.Width * 0.125f) : (tex.Width * 0.875f);
-			Vector2 rotPoint = new Vector2(Xoffset, frameHeight * 0.35f);
+			Vector2 rotPoint = new Vector2(Xoffset, frameHeight * 0.4f);
 
-			Main.spriteBatch.Draw(tex, Projectile.position + rotPoint + new Vector2(0, -Owner.gfxOffY * 2) - Main.screenPosition, frameBox, lightColor, Projectile.rotation, rotPoint, Projectile.scale, Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+			Main.spriteBatch.Draw(tex, 
+					Projectile.position + 
+					rotPoint + 
+					new Vector2(Projectile.width / 2 - tex.Width / 2 - 0.6f,//weird specific offset to make it symetrical
+					 -Owner.gfxOffY * 1.5f) - //this value is weird and sometimes breaks for no reason?
+					Main.screenPosition, 
+				frameBox, 
+				lightColor, 
+				Projectile.rotation, 
+				rotPoint, 
+				Projectile.scale, 
+				Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 
+				0f);
 
 			return false;
 		}
