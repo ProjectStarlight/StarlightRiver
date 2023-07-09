@@ -48,6 +48,14 @@ namespace StarlightRiver.Content.NPCs.Corruption
 		{
 			Timer++;
 
+			if (Main.dayTime)
+			{
+				NPC.noTileCollide = true;
+				NPC.velocity.Y += 0.25f;
+
+				return;
+			}
+
 			if (NPC.target >= 0)
 			{
 				Player target = Main.player[NPC.target];
@@ -91,6 +99,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 				}
 
 				Dust.NewDustPerfect(NPC.Center, DustID.GreenBlood, Main.rand.NextVector2Circular(1, 1), 0, default, 0.25f);
+				Lighting.AddLight(NPC.Center, new Vector3(0.3f, 0.4f, 0f) * (1f - Timer / 60f));
 
 				if (Timer >= 60)
 				{
@@ -113,11 +122,25 @@ namespace StarlightRiver.Content.NPCs.Corruption
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D texGlow = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
+			Texture2D texGlow = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
 			var frame = new Rectangle(0, (int)(Timer % 30 / 10) * 34, 32, 34);
 
-			spriteBatch.Draw(texGlow, NPC.Center - Main.screenPosition, null, Color.Black * 0.5f, NPC.rotation, texGlow.Size() / 2f, NPC.scale, 0, 0);
-			spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, frame, drawColor * 0.8f, NPC.rotation, Vector2.One * 7, NPC.scale, 0, 0);
+			var color = new Color(50, 80, 0)
+			{
+				A = 0
+			};
+
+			if (State == 0 && Timer > 90)
+				color *= (Timer - 90) / 30f;
+			else if (State == 1 && Timer < 40)
+				color *= 1;
+			else if (State == 1 && Timer >= 40)
+				color *= 1f - (Timer - 40) / 20f;
+			else
+				color *= 0;
+
+			spriteBatch.Draw(texGlow, NPC.Center - Main.screenPosition, null, color, NPC.rotation, texGlow.Size() / 2f, NPC.scale * 0.6f, 0, 0);
+			spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, frame, drawColor * 0.8f, NPC.rotation, new Vector2(16, 17), NPC.scale, 0, 0);
 
 			return false;
 		}
