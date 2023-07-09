@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Abilities;
+﻿using NetEasy;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Core.Systems;
@@ -13,29 +14,23 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
-	class CombatShrine : DummyTile, IHintable
+	class CombatShrine : ShrineTile
 	{
+
+		public const int COMBAT_SHRINE_TILE_WIDTH = 3;
+		public const int COMBAT_SHRINE_TILE_HEIGHT = 6;
 		public override int DummyType => ModContent.ProjectileType<CombatShrineDummy>();
 
 		public override string Texture => "StarlightRiver/Assets/Tiles/Underground/CombatShrine";
+
+		public override int ShrineTileWidth => COMBAT_SHRINE_TILE_WIDTH;
+
+		public override int ShrineTileHeight => COMBAT_SHRINE_TILE_HEIGHT;
 
 		public override void SetStaticDefaults()
 		{
 			QuickBlock.QuickSetFurniture(this, 3, 6, DustID.Stone, SoundID.Tink, false, new Color(100, 100, 100), false, false, "Mysterious Shrine");
 			MinPick = int.MaxValue;
-		}
-
-		public override bool CanExplode(int i, int j)
-		{
-			return false;
-		}
-
-		public override void MouseOver(int i, int j)
-		{
-			Player Player = Main.LocalPlayer;
-			Player.cursorItemIconID = ModContent.ItemType<Items.Hovers.GenericHover>();
-			Player.noThrow = 2;
-			Player.cursorItemIconEnabled = true;
 		}
 
 		public override bool SpawnConditions(int i, int j)//ensures the dummy can spawn if the tile gets stuck in the second frame
@@ -44,50 +39,19 @@ namespace StarlightRiver.Content.Tiles.Underground
 			return (tile.TileFrameX == 0 || tile.TileFrameX == 3 * 18) && tile.TileFrameY == 0;
 		}
 
-		public override bool RightClick(int i, int j)
-		{
-			Tile tile = Framing.GetTileSafely(i, j);
-
-			if (tile.TileFrameX == 3 * 18)//shrine is active
-			{
-				return false;
-			}
-			else if (tile.TileFrameX >= 6 * 18)//shrine is dormant
-			{
-				Main.NewText("The shrine has gone dormant...", Color.DarkSlateGray);
-				return false;
-			}
-
-			int x = i - tile.TileFrameX / 18;
-			int y = j - tile.TileFrameY / 18;
-
-			Projectile dummy = Dummy(x, y);
-
-			if (dummy is null)
-				return false;
-
-			if ((dummy.ModProjectile as CombatShrineDummy).State == 0)
-			{
-				for (int x1 = 0; x1 < 3; x1++)
-				{
-					for (int y1 = 0; y1 < 6; y1++)
-					{
-						int realX = x1 + x;
-						int realY = y1 + y;
-
-						Framing.GetTileSafely(realX, realY).TileFrameX = (short)((3 + x1) * 18);
-					}
-				}
-
-				(dummy.ModProjectile as CombatShrineDummy).State = 1;
-				return true;
-			}
-
-			return false;
-		}
-		public string GetHint()
+		public override string GetHint()
 		{
 			return "A shrine - to which deity, you do not know, though it wields a blade. The statue's eyes seem to follow you, and strange runes dance across its pedestal.";
+		}
+
+		public override bool isShrineDormant(Tile tile)
+		{
+			return tile.TileFrameX >= 6 * 18;
+		}
+
+		public override bool isShrineActive(Tile tile)
+		{
+			return tile.TileFrameX == 3 * 18;
 		}
 	}
 
@@ -97,32 +61,23 @@ namespace StarlightRiver.Content.Tiles.Underground
 		public CombatShrineItem() : base("Combat shrine placer", "debug item", "CombatShrine") { }
 	}
 
-	class CombatShrineDummy : Dummy, IDrawAdditive
+	class CombatShrineDummy : ShrineDummy, IDrawAdditive
 	{
 		public List<NPC> minions = new();
 
 		public int maxWaves = 6;
 		private int waveTime = 0;
-
-		public ref float Timer => ref Projectile.ai[0];
-		public ref float State => ref Projectile.ai[1];
-
 		public float Windup => Math.Min(1, Timer / 120f);
 
-		const int ArenaOffsetX = -25;
-		const int ArenaSizeX = 51;
-		const int ArenaOffsetY = -19;
-		const int ArenaSizeY = 26;
+		public override int ArenaOffsetX => -25;
+		public override int ArenaSizeX => 51;
+		public override int ArenaOffsetY => -19;
+		public override int ArenaSizeY => 26;
 
-		public Rectangle ArenaPlayer => new((ParentX + ArenaOffsetX) * 16, (ParentY + ArenaOffsetY) * 16, ArenaSizeX * 16, ArenaSizeY * 16);
-		public Rectangle ArenaTile => new(ParentX + ArenaOffsetX, ParentY + ArenaOffsetY, ArenaSizeX, ArenaSizeY);
+		public override int ShrineTileWidth => CombatShrine.COMBAT_SHRINE_TILE_WIDTH;
+		public override int ShrineTileHeight => CombatShrine.COMBAT_SHRINE_TILE_HEIGHT;
 
-		public CombatShrineDummy() : base(ModContent.TileType<CombatShrine>(), 3 * 16, 6 * 16) { }
-
-		const float ShrineState_Idle = 0;
-		//const float ShrineState_Active = 1;
-		const float ShrineState_Failed = -1;
-		const float ShrineState_Defeated = -2;
+		public CombatShrineDummy() : base(ModContent.TileType<CombatShrine>(), CombatShrine.COMBAT_SHRINE_TILE_WIDTH * 16, CombatShrine.COMBAT_SHRINE_TILE_HEIGHT * 16) { }
 
 		public override void Update()
 		{
@@ -140,7 +95,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			foreach (Player player in Main.player)
 			{
-				bool thisPlayerInRange = player.active && !player.dead && ArenaPlayer.Intersects(player.Hitbox);
+				bool thisPlayerInRange = player.active && !player.DeadOrGhost && ArenaPlayer.Intersects(player.Hitbox);
 
 				if (thisPlayerInRange && State != ShrineState_Idle)
 					player.GetModPlayer<ShrinePlayer>().CombatShrineActive = true;
@@ -212,6 +167,9 @@ namespace StarlightRiver.Content.Tiles.Underground
 					return;
 				}
 
+				// iterate over minions and remove from the list any that are not given name shadow or active to avoid other npcs replacing them and still counting
+				minions.RemoveAll(n => !n.active || n.GivenName != "Shadow");
+
 				if (!minions.Any(n => n.active) && Timer - waveTime > 181) //advance the wave
 				{
 					SpawnWave();
@@ -227,18 +185,21 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		private void SetFrame(int frame)
 		{
-			const int tileWidth = 3;
-			const int tileHeight = 6;
-
-			for (int x = 0; x < tileWidth; x++)
+			for (int x = 0; x < ShrineTileWidth; x++)
 			{
-				for (int y = 0; y < tileHeight; y++)
+				for (int y = 0; y < ShrineTileHeight; y++)
 				{
 					int realX = ParentX - 1 + x;
 					int realY = ParentY - 3 + y;
 
-					Framing.GetTileSafely(realX, realY).TileFrameX = (short)((x + frame * tileWidth) * 18);
+					Framing.GetTileSafely(realX, realY).TileFrameX = (short)((x + frame * ShrineTileWidth) * 18);
 				}
+			}
+
+			if (Main.netMode == NetmodeID.Server)
+			{
+				NetMessage.SendTileSquare(-1, ParentX, ParentY, ShrineTileWidth - 1, ShrineTileHeight - 3, TileChangeType.None);
+				Projectile.netUpdate = true;
 			}
 		}
 
@@ -310,12 +271,15 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		private void SpawnNPC(Vector2 pos, int type, int dustAmount, float hpOverride = -1, float damageOverride = -1, float defenseOverride = -1, float scale = 1)
 		{
-			int i = Projectile.NewProjectile(new EntitySource_WorldEvent(), pos, Vector2.Zero, ModContent.ProjectileType<SpawnEgg>(), 0, 0, Main.myPlayer, type, dustAmount);
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+				return; //don't spawn this on mp clients
+
+			int i = Projectile.NewProjectile(new EntitySource_WorldEvent(), pos, Vector2.Zero, ModContent.ProjectileType<SpawnEgg>(), 0, 0, Owner: -1, type, scale);
 			(Main.projectile[i].ModProjectile as SpawnEgg).parent = this;
 			(Main.projectile[i].ModProjectile as SpawnEgg).hpOverride = hpOverride;
 			(Main.projectile[i].ModProjectile as SpawnEgg).damageOverride = damageOverride;
 			(Main.projectile[i].ModProjectile as SpawnEgg).defenseOverride = defenseOverride;
-			Main.projectile[i].scale = scale;
+			(Main.projectile[i].ModProjectile as SpawnEgg).DustCount = dustAmount;
 		}
 
 		private void SpawnReward()
@@ -414,8 +378,9 @@ namespace StarlightRiver.Content.Tiles.Underground
 		public float defenseOverride = -1;
 
 		public ref float SpawnType => ref Projectile.ai[0];
-		public ref float DustCount => ref Projectile.ai[1];
+		public ref float projScale => ref Projectile.ai[1];
 
+		public int DustCount;
 		public CombatShrineDummy parent = null;
 
 		public override string Texture => AssetDirectory.Invisible;
@@ -431,41 +396,16 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public override void AI()
 		{
+			Projectile.scale = projScale;
+
 			if (Projectile.timeLeft == 70)
 				Helpers.Helper.PlayPitched("ShadowSpawn", 0.4f, 1, Projectile.Center);
 
-			if (Projectile.timeLeft == 30)
+			if (Projectile.timeLeft == 30 && Main.netMode != NetmodeID.MultiplayerClient)
 			{
-				int i = Terraria.NPC.NewNPC(Projectile.GetSource_FromThis(), (int)Projectile.Center.X, (int)Projectile.Center.Y, (int)SpawnType);
-				NPC NPC = Main.npc[i];
-				NPC.alpha = 255;
-				NPC.GivenName = "Shadow";
-				NPC.lavaImmune = true;
-				NPC.trapImmune = true;
-				NPC.HitSound = SoundID.NPCHit7;
-				NPC.DeathSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/ShadowDeath");
-				NPC.GetGlobalNPC<StarlightNPC>().dontDropItems = true;
-
-				if (hpOverride != -1)
-				{
-					NPC.lifeMax = (int)(NPC.lifeMax * hpOverride);
-					NPC.life = (int)(NPC.life * hpOverride);
-				}
-
-				if (damageOverride != -1)
-					NPC.damage = (int)(NPC.damage * damageOverride);
-
-				if (defenseOverride != -1)
-					NPC.defense = (int)(NPC.defense * defenseOverride);
-
-				//Helpers.Helper.PlayPitched("Magic/Shadow2", 1.1f, 1, Projectile.Center);
-
-				for (int k = 0; k < DustCount; k++)
-				{
-					Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(1.5f, 2), 0, new Color(255, 100, 100), 0.2f);
-				}
-
-				parent?.minions.Add(NPC);
+				int i = NPC.NewNPC(Projectile.GetSource_FromThis(), (int)Projectile.Center.X, (int)Projectile.Center.Y, (int)SpawnType);
+				ShadowSpawnPacket spawnPacket = new ShadowSpawnPacket(i, hpOverride, damageOverride, defenseOverride, parent.Projectile.identity, (int)DustCount);
+				spawnPacket.Send();
 			}
 		}
 
@@ -507,6 +447,71 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 				if (Projectile.timeLeft > 15)
 					spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 100, 100) * ((Projectile.timeLeft - 15) / 15f), 1.57f / 4, tex.Size() / 2, (1 - (Projectile.timeLeft - 15) / 15f) * 2 * Projectile.scale, 0, 0);
+			}
+		}
+	}
+
+	/// <summary>
+	/// Specialized spawning packet for the combat shrine shadows that set their variables. Must be initiated by the server
+	/// </summary>
+	[Serializable]
+	public class ShadowSpawnPacket : Module
+	{
+		readonly int npcId;
+		readonly float hpOverride;
+		readonly float damageOverride;
+		readonly float defenseOverride;
+		readonly int shrineDummyIdentity;
+		readonly int dustCount;
+		public ShadowSpawnPacket(int npcId, float hpOverride, float damageOverride, float defenseOverride, int shrineDummyIdentity, int dustCount)
+		{
+			this.npcId = npcId;
+			this.hpOverride = hpOverride;
+			this.damageOverride = damageOverride;
+			this.defenseOverride = defenseOverride;
+			this.shrineDummyIdentity = shrineDummyIdentity;
+			this.dustCount = dustCount;
+		}
+
+		protected override void Receive()
+		{
+			NPC NPC = Main.npc[npcId];
+			NPC.alpha = 255;
+			NPC.GivenName = "Shadow";
+			NPC.lavaImmune = true;
+			NPC.trapImmune = true;
+			NPC.HitSound = SoundID.NPCHit7;
+			NPC.DeathSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/ShadowDeath");
+			if (NPC.TryGetGlobalNPC(out StarlightNPC starlightNPC)) // while this global NPC seems to never exist in time on mp clients, this particular bool only matters for the server
+				starlightNPC.dontDropItems = true; 
+
+			if (hpOverride != -1)
+			{
+				NPC.lifeMax = (int)(NPC.lifeMax * hpOverride);
+				NPC.life = (int)(NPC.life * hpOverride);
+			}
+
+			if (damageOverride != -1)
+				NPC.damage = (int)(NPC.damage * damageOverride);
+
+			if (defenseOverride != -1)
+				NPC.defense = (int)(NPC.defense * defenseOverride);
+
+			Projectile shrineProjectile = Main.projectile.FirstOrDefault(n => n.active && n.identity == shrineDummyIdentity && n.type == ModContent.ProjectileType<CombatShrineDummy>());
+
+			CombatShrineDummy shrineDummy = shrineProjectile.ModProjectile as CombatShrineDummy;
+			shrineDummy?.minions.Add(NPC);
+
+			if (Main.netMode != NetmodeID.Server)
+			{
+				for (int k = 0; k < dustCount; k++)
+				{
+					Dust.NewDustPerfect(NPC.Center, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(1.5f, 2), 0, new Color(255, 100, 100), 0.2f);
+				}
+			} else
+			{
+				NetMessage.SendData(MessageID.SyncNPC, number: NPC.whoAmI); //send data to ensure NPC fully exists on clients before this packet
+				Send(runLocally: false); //forward packet to clients if this is a server
 			}
 		}
 	}
