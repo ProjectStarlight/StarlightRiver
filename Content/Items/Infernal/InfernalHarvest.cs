@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Items.Infernal
 		public override void SetDefaults()
 		{
 			Item.DamageType = DamageClass.Magic;
-			Item.damage = 32;
+			Item.damage = 34;
 			Item.useStyle = ItemUseStyleID.Swing;
 			Item.noMelee = true;
 			Item.noUseGraphic = true;
@@ -193,7 +193,7 @@ namespace StarlightRiver.Content.Items.Infernal
 
 				for (int i = 0; i < 30; i++)
 				{
-					cache.Add(Vector2.Lerp(Vector2.UnitX.RotatedBy(Projectile.rotation) * SCYTHE_LENGTH, Vector2.Zero, 0.2f));
+					cache.Add(Vector2.Lerp(Vector2.UnitX.RotatedBy(Projectile.rotation) * SCYTHE_LENGTH, Vector2.Zero, 0.3f));
 					cacheBig.Add(Vector2.Lerp(Vector2.UnitX.RotatedBy(Projectile.rotation) * SCYTHE_LENGTH, Vector2.Zero, 0.5f));
 				}
 			}
@@ -339,6 +339,7 @@ namespace StarlightRiver.Content.Items.Infernal
 			{
 				Projectile.velocity *= 0.985f;
 				Projectile.timeLeft--;
+				Timer++;
 				slowedThisFrame = false;
 			}
 
@@ -391,8 +392,8 @@ namespace StarlightRiver.Content.Items.Infernal
 
 			if (Timer < 6)
 				opacity = Timer / 6f;
-			else if (Timer > 340)
-				opacity = 1 - (Timer - 340) / 20f;
+			else if (Timer > 300)
+				opacity = 1 - (Timer - 300) / 60f;
 			else
 				opacity = 1;
 
