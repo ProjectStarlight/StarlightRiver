@@ -1,11 +1,17 @@
-﻿using Terraria.ID;
+﻿using System.IO;
+using Terraria.DataStructures;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 {
-	class SawbladeSmall : ModProjectile
+	public class SawbladeSmall : EvasionProjectile
 	{
+		public static int timeLeftToAssign;
+
 		public Vector2 storedVelocity = Vector2.Zero;
 		public EvasionShrineDummy parent;
+
+		public float timer = 0;
 
 		public float Alpha => 1 - Projectile.alpha / 255f;
 
@@ -28,16 +34,21 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 			Projectile.alpha = 255;
 		}
 
+		public override void OnSpawn(IEntitySource source)
+		{
+			Projectile.timeLeft = timeLeftToAssign;
+		}
+
 		public override void AI()
 		{
 			if (storedVelocity == Vector2.Zero)
 				storedVelocity = Projectile.velocity;
 
-			Projectile.ai[0]++;
+			timer++;
 
-			if (Projectile.ai[0] <= 20)
+			if (timer <= 20)
 			{
-				Projectile.velocity = Vector2.SmoothStep(Vector2.Zero, storedVelocity, Projectile.ai[0] / 20f);
+				Projectile.velocity = Vector2.SmoothStep(Vector2.Zero, storedVelocity, timer / 20f);
 				Projectile.alpha -= 255 / 20;
 			}
 			else if (Projectile.timeLeft <= 20)
@@ -51,14 +62,6 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 			}
 
 			Projectile.rotation -= 0.1f;
-		}
-
-		public override void OnHitPlayer(Player target, Player.HurtInfo info)
-		{
-			parent.lives--;
-
-			if (Main.rand.NextBool(10000))
-				Main.NewText("Skill issue.");
 		}
 
 		public override void PostDraw(Color lightColor)
@@ -95,6 +98,16 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			return true;
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(Projectile.timeLeft);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			Projectile.timeLeft = reader.ReadInt32();
 		}
 	}
 }

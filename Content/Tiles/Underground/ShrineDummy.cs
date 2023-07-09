@@ -1,9 +1,11 @@
 ﻿using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
@@ -29,5 +31,25 @@ namespace StarlightRiver.Content.Tiles.Underground
 		public Rectangle ArenaTile => new(ParentX + ArenaOffsetX, ParentY + ArenaOffsetY, ArenaSizeX, ArenaSizeY);
 
 		public ShrineDummy(int validType, int width, int height) : base(validType, width, height) { }
+
+		protected void SetFrame(int frame)
+		{
+			for (int x = 0; x < ShrineTileWidth; x++)
+			{
+				for (int y = 0; y < ShrineTileHeight; y++)
+				{
+					int realX = ParentX - ShrineTileWidth / 2 + x; //intentionally integer division for rounddown
+					int realY = ParentY - ShrineTileHeight / 2 + y;
+
+					Framing.GetTileSafely(realX, realY).TileFrameX = (short)((x + frame * ShrineTileWidth) * 18);
+				}
+			}
+
+			if (Main.netMode == NetmodeID.Server)
+			{
+				NetMessage.SendTileSquare(-1, ParentX, ParentY, ShrineTileWidth - ShrineTileWidth / 2, ShrineTileHeight - ShrineTileHeight / 2, TileChangeType.None);
+				Projectile.netUpdate = true;
+			}
+		}
 	}
 }

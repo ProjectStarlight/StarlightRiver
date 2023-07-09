@@ -27,32 +27,12 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public override int ShrineTileHeight => COMBAT_SHRINE_TILE_HEIGHT;
 
-		public override void SetStaticDefaults()
-		{
-			QuickBlock.QuickSetFurniture(this, 3, 6, DustID.Stone, SoundID.Tink, false, new Color(100, 100, 100), false, false, "Mysterious Shrine");
-			MinPick = int.MaxValue;
-		}
-
-		public override bool SpawnConditions(int i, int j)//ensures the dummy can spawn if the tile gets stuck in the second frame
-		{
-			Tile tile = Main.tile[i, j];
-			return (tile.TileFrameX == 0 || tile.TileFrameX == 3 * 18) && tile.TileFrameY == 0;
-		}
-
 		public override string GetHint()
 		{
 			return "A shrine - to which deity, you do not know, though it wields a blade. The statue's eyes seem to follow you, and strange runes dance across its pedestal.";
 		}
 
-		public override bool isShrineDormant(Tile tile)
-		{
-			return tile.TileFrameX >= 6 * 18;
-		}
 
-		public override bool isShrineActive(Tile tile)
-		{
-			return tile.TileFrameX == 3 * 18;
-		}
 	}
 
 	[SLRDebug]
@@ -127,7 +107,10 @@ namespace StarlightRiver.Content.Tiles.Underground
 					State = ShrineState_Failed;
 
 					if (Timer > 128)
+					{
+						Projectile.netUpdate = true;
 						Timer = 128;
+					}
 
 					Timer--;
 
@@ -181,26 +164,6 @@ namespace StarlightRiver.Content.Tiles.Underground
 			//{
 			//	ProtectionWorld.RemoveRegionBySource(new Point16(ParentX, ParentY));
 			//}
-		}
-
-		private void SetFrame(int frame)
-		{
-			for (int x = 0; x < ShrineTileWidth; x++)
-			{
-				for (int y = 0; y < ShrineTileHeight; y++)
-				{
-					int realX = ParentX - 1 + x;
-					int realY = ParentY - 3 + y;
-
-					Framing.GetTileSafely(realX, realY).TileFrameX = (short)((x + frame * ShrineTileWidth) * 18);
-				}
-			}
-
-			if (Main.netMode == NetmodeID.Server)
-			{
-				NetMessage.SendTileSquare(-1, ParentX, ParentY, ShrineTileWidth - 1, ShrineTileHeight - 3, TileChangeType.None);
-				Projectile.netUpdate = true;
-			}
 		}
 
 		private void SpawnWave()

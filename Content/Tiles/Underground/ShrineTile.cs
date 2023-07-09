@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Packets;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using System.Collections.Generic;
@@ -12,17 +13,29 @@ namespace StarlightRiver.Content.Tiles.Underground
 	public abstract class ShrineTile : DummyTile, IHintable
 	{
 		public abstract string GetHint();
-
-		public abstract bool isShrineDormant(Tile tile);
-
-		public abstract bool isShrineActive(Tile tile);
-
 		public abstract int ShrineTileWidth { get; }
 		public abstract int ShrineTileHeight { get; }
 
 		public override bool CanExplode(int i, int j)
 		{
 			return false;
+		}
+
+		/// <summary>
+		/// Called for the start packet. used to setup initial variables outside of the State and Timer. Anything included here most likely needs to be added to a SafeSendExtraAI override on the dummy too
+		/// </summary>
+		public virtual void AdditionalSetup(ShrineDummy shrineDummy) { }
+
+		public override void SetStaticDefaults()
+		{
+			QuickBlock.QuickSetFurniture(this, ShrineTileWidth, ShrineTileHeight, DustID.Stone, SoundID.Tink, false, new Color(100, 100, 100), false, false, "Mysterious Shrine");
+			MinPick = int.MaxValue;
+		}
+
+		public override bool SpawnConditions(int i, int j)//ensures the dummy can spawn if the shrine gets stuck in its second frame
+		{
+			Tile tile = Main.tile[i, j];
+			return (tile.TileFrameX == 0 || tile.TileFrameX == ShrineTileWidth * 18) && tile.TileFrameY == 0;
 		}
 
 		public void SetActiveFrame(int startX, int startY)
@@ -54,11 +67,11 @@ namespace StarlightRiver.Content.Tiles.Underground
 		{
 			Tile tile = Framing.GetTileSafely(i, j);
 
-			if (isShrineActive(tile))//shrine is active
+			if (IsShrineActive(tile))//shrine is active
 			{
 				return false;
 			}
-			else if (isShrineDormant(tile))//shrine is dormant
+			else if (IsShrineDormant(tile))//shrine is dormant
 			{
 				Main.NewText("The shrine has gone dormant...", Color.DarkSlateGray);
 				return false;
@@ -68,18 +81,28 @@ namespace StarlightRiver.Content.Tiles.Underground
 			int y = j - tile.TileFrameY / 18;
 
 			Projectile dummy = Dummy(x, y);
-			Main.NewText(dummy is null);
+
 			if (dummy is null)
 				return false;
 			
 			if ((dummy.ModProjectile as ShrineDummy).State == ShrineDummy.ShrineState_Idle)
 			{
-				ShineStartPacket packet = new ShineStartPacket(i, j);
+				ShrineStartPacket packet = new ShrineStartPacket(i, j);
 				packet.Send();
 				return true;
 			}
 
 			return false;
+		}
+
+		public virtual bool IsShrineDormant(Tile tile)
+		{
+			return tile.TileFrameX >= ShrineTileWidth * 2 * 18;
+		}
+
+		public virtual bool IsShrineActive(Tile tile)
+		{
+			return tile.TileFrameX == ShrineTileWidth * 18;
 		}
 	}
 }

@@ -83,48 +83,4 @@ namespace StarlightRiver.Content.Tiles.Underground
 			Item.NewItem(source.GetSource_FromAI(), source.getRect(), chosenItem, prefixGiven: -1);
 		}
 	}
-
-	/// <summary>
-	/// generalized packet for starting a shrine trial. should only be processed by a server or singleplayer client.
-	/// </summary>
-	[Serializable]
-	public class ShineStartPacket : Module
-	{
-		readonly int tileI;
-		readonly int tileJ;
-
-		public ShineStartPacket(int tileI, int tileJ)
-		{
-			this.tileI = tileI;
-			this.tileJ = tileJ;
-		}
-
-		protected override void Receive()
-		{
-			if (Main.netMode == NetmodeID.MultiplayerClient)
-				return; //this is not for execution by multiplayer clients
-
-			Tile tile = Framing.GetTileSafely(tileI, tileJ);
-
-			ModTile mTile = ModContent.GetModTile(tile.TileType);
-
-			if (mTile == null)
-			{
-				StarlightRiver.Instance.Logger.Error("at (" + tileI + ", " + tileJ + ") failed to find shrine tile");
-				return; //failed to find shrine tile (this should never happen)
-			}
-
-			ShrineTile shrineTile = mTile as ShrineTile;
-
-			int x = tileI - tile.TileFrameX / 18;
-			int y = tileJ - tile.TileFrameY / 18;
-
-			shrineTile.SetActiveFrame(x, y);
-
-			Projectile dummy = shrineTile.Dummy(x, y);
-
-			(dummy.ModProjectile as ShrineDummy).State = ShrineDummy.ShrineState_Active;
-			NetMessage.TrySendData(MessageID.SyncProjectile, number: dummy.whoAmI); //setting netupdate to true is strangely unreliable here, so we use netmessage -- TODO: look into why; this may have ramifications elsewhere too
-		}
-	}
 }

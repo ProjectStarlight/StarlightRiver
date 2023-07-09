@@ -5,116 +5,53 @@ using StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
-	class EvasionShrine : DummyTile, IHintable
+	class EvasionShrine : ShrineTile
 	{
+		public const int EVASION_SHRINE_TILE_WIDTH = 5;
+		public const int EVASION_SHRINE_TILE_HEIGHT = 6;
+
 		public override int DummyType => ModContent.ProjectileType<EvasionShrineDummy>();
 
 		public override string Texture => "StarlightRiver/Assets/Tiles/Underground/EvasionShrine";
 
-		public override void SetStaticDefaults()
+		public override int ShrineTileWidth => EvasionShrine.EVASION_SHRINE_TILE_WIDTH;
+
+		public override int ShrineTileHeight => EvasionShrine.EVASION_SHRINE_TILE_HEIGHT;
+
+		public override void AdditionalSetup(ShrineDummy shrineDummy)
 		{
-			QuickBlock.QuickSetFurniture(this, 5, 6, DustID.Stone, SoundID.Tink, false, new Color(100, 100, 100), false, false, "Mysterious Shrine");
-			MinPick = int.MaxValue;
+			(shrineDummy as EvasionShrineDummy).lives = 4;
 		}
 
-		public override bool CanExplode(int i, int j)
-		{
-			return false;
-		}
-
-		public override void MouseOver(int i, int j)
-		{
-			Player Player = Main.LocalPlayer;
-			Player.cursorItemIconID = ModContent.ItemType<Items.Hovers.GenericHover>();
-			Player.noThrow = 2;
-			Player.cursorItemIconEnabled = true;
-		}
-
-		public override bool SpawnConditions(int i, int j)//ensures the dummy can spawn if the tile gets stuck in the second frame
-		{
-			Tile tile = Main.tile[i, j];
-			return (tile.TileFrameX == 0 || tile.TileFrameX == 5 * 18) && tile.TileFrameY == 0;
-		}
-
-		public override bool RightClick(int i, int j)
-		{
-			var tile = (Tile)Framing.GetTileSafely(i, j).Clone();
-
-			if (tile.TileFrameX == 5 * 18)//shrine is active
-			{
-				return false;
-			}
-			else if (tile.TileFrameX >= 10 * 18)//shrine is dormant
-			{
-				Main.NewText("The shrine has gone dormant...", Color.DarkSlateGray);
-				return false;
-			}
-
-			int x = i - tile.TileFrameX / 18;
-			int y = j - tile.TileFrameY / 18;
-
-			Projectile dummy = Dummy(x, y);
-
-			if (dummy is null)
-				return false;
-
-			if ((dummy.ModProjectile as EvasionShrineDummy).State == 0)
-			{
-				for (int x1 = 0; x1 < 5; x1++)
-				{
-					for (int y1 = 0; y1 < 6; y1++)
-					{
-						int realX = x1 + x;
-						int realY = y1 + y;
-
-						Framing.GetTileSafely(realX, realY).TileFrameX = (short)((5 + x1) * 18);
-					}
-				}
-
-				(dummy.ModProjectile as EvasionShrineDummy).Timer = 0;
-				(dummy.ModProjectile as EvasionShrineDummy).State = 1;
-				(dummy.ModProjectile as EvasionShrineDummy).lives = 4;
-				return true;
-			}
-
-			return false;
-		}
-		public string GetHint()
+		public override string GetHint()
 		{
 			return "A shrine - to which deity, you do not know, though it wields a bow. The statue's eyes seem to follow you, and strange runes dance across its pedestal.";
 		}
 	}
 
-	internal partial class EvasionShrineDummy : Dummy, IDrawAdditive
+	public partial class EvasionShrineDummy : ShrineDummy, IDrawAdditive
 	{
 		public int maxAttacks = 15;
 		public int lives;
 		public List<int> attackOrder;
 
-		public ref float Timer => ref Projectile.ai[0];
-		public ref float State => ref Projectile.ai[1];
-
 		public float Windup => Math.Min(1, Timer / 120f);
 
-		const int ArenaOffsetX = -27;
-		const int ArenaSizeX = 55;
-		const int ArenaOffsetY = -30;
-		const int ArenaSizeY = 49;
+		public override int ArenaOffsetX => -27;
+		public override int ArenaSizeX => 55;
+		public override int ArenaOffsetY => -30;
+		public override int ArenaSizeY => 49;
 
-		public Rectangle ArenaPlayer => new((ParentX + ArenaOffsetX) * 16, (ParentY + ArenaOffsetY) * 16, ArenaSizeX * 16, ArenaSizeY * 16);
-		public Rectangle ArenaTile => new(ParentX + ArenaOffsetX, ParentY + ArenaOffsetY, ArenaSizeX, ArenaSizeY);
+		public override int ShrineTileWidth => EvasionShrine.EVASION_SHRINE_TILE_WIDTH;
+		public override int ShrineTileHeight => EvasionShrine.EVASION_SHRINE_TILE_HEIGHT;
 
-		public EvasionShrineDummy() : base(ModContent.TileType<EvasionShrine>(), 5 * 16, 6 * 16) { }
-
-		const float ShrineState_Idle = 0;
-		//const float ShrineState_Active = 1;
-		const float ShrineState_Failed = -1;
-		const float ShrineState_Defeated = -2;
+		public EvasionShrineDummy() : base(ModContent.TileType<EvasionShrine>(), EvasionShrine.EVASION_SHRINE_TILE_WIDTH * 16, EvasionShrine.EVASION_SHRINE_TILE_HEIGHT * 16) { }
 
 		public override void Update()
 		{
@@ -132,7 +69,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			foreach (Player player in Main.player)
 			{
-				bool thisPlayerInRange = player.active && !player.dead && ArenaPlayer.Intersects(player.Hitbox);
+				bool thisPlayerInRange = player.active && !player.DeadOrGhost && ArenaPlayer.Intersects(player.Hitbox);
 
 				if (thisPlayerInRange && State != ShrineState_Idle)
 					player.GetModPlayer<ShrinePlayer>().EvasionShrineActive = true;
@@ -153,7 +90,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			Lighting.AddLight(Projectile.Center + new Vector2(0, -230), color);
 
-			if (State == ShrineState_Idle && Parent.TileFrameX >= 5 * 18)//if idle and frame isnt default (happens when entity is despawned while active)
+			if (State == ShrineState_Idle && Parent.TileFrameX >= ShrineTileWidth * 18)//if idle and frame isnt default (happens when entity is despawned while active)
 			{
 				SetFrame(0);
 				Timer = 0;
@@ -201,7 +138,8 @@ namespace StarlightRiver.Content.Tiles.Underground
 						return;
 					}
 
-					SpawnObstacles((int)Timer - 128);
+					if (Main.netMode != NetmodeID.MultiplayerClient)
+						SpawnObstacles((int)Timer - 128);
 				}
 			}
 			//else//renable this if there are issues with protection being left on
@@ -214,7 +152,11 @@ namespace StarlightRiver.Content.Tiles.Underground
 				State = ShrineState_Failed;
 
 				if (Timer > 128)
+				{
+					Projectile.netUpdate = true;
 					Timer = 128;
+				}
+					
 
 				Timer--;
 
@@ -229,24 +171,11 @@ namespace StarlightRiver.Content.Tiles.Underground
 			}
 		}
 
-		private void SetFrame(int frame)
-		{
-			const int tileWidth = 5;
-			const int tileHeight = 6;
-			for (int x = 0; x < tileWidth; x++)
-			{
-				for (int y = 0; y < tileHeight; y++)
-				{
-					int realX = ParentX - 2 + x;
-					int realY = ParentY - 3 + y;
-
-					Framing.GetTileSafely(realX, realY).TileFrameX = (short)((x + frame * tileWidth) * 18);
-				}
-			}
-		}
-
 		public void SpawnObstacles(int timer)
 		{
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+				return;
+
 			switch (attackOrder[(int)State - 1])
 			{
 				case 0: VerticalSawJaws(timer); break;
@@ -266,36 +195,33 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public void SpawnBlade(Vector2 start, Vector2 vel, int time)
 		{
-			int i = Projectile.NewProjectile(Projectile.GetSource_FromThis(), start, vel, ModContent.ProjectileType<SawbladeSmall>(), 10, 0, Main.myPlayer);
-			var mp = Main.projectile[i].ModProjectile as SawbladeSmall;
-			Main.projectile[i].timeLeft = time;
-			mp.parent = this;
+			SawbladeSmall.timeLeftToAssign = time;
+			Projectile.NewProjectile(Projectile.GetSource_FromThis(), start, vel, ModContent.ProjectileType<SawbladeSmall>(), 10, 0, Owner: -1, ai0: Projectile.identity);
 		}
 
 		public void SpawnDart(Vector2 start, Vector2 mid, Vector2 end, int duration)
 		{
-			int i = Projectile.NewProjectile(Projectile.GetSource_FromThis(), start, Vector2.Zero, ModContent.ProjectileType<Dart>(), 7, 0, Main.myPlayer);
-			var mp = Main.projectile[i].ModProjectile as Dart;
-			mp.endPoint = end;
-			mp.midPoint = mid;
-			mp.duration = duration;
-			mp.parent = this;
+			Dart.midPointToAssign = mid;
+			Dart.endPointToAssign = end;
+			Dart.durationToAssign = duration;
+			Projectile.NewProjectile(Projectile.GetSource_FromThis(), start, Vector2.Zero, ModContent.ProjectileType<Dart>(), 7, 0, Owner: -1, ai0: Projectile.identity);
 		}
 
 		public void SpawnSpear(Vector2 start, Vector2 end, int teleTime, int riseTime, int retractTime, int holdTime = 0)
 		{
-			int i = Projectile.NewProjectile(Projectile.GetSource_FromThis(), start, Vector2.Zero, ModContent.ProjectileType<Spear>(), 15, 0, Main.myPlayer);
-			var mp = Main.projectile[i].ModProjectile as Spear;
-			mp.endPoint = end;
-			mp.timeToRise = riseTime;
-			mp.timeToRetract = retractTime;
-			mp.teleTime = teleTime;
-			mp.holdTime = holdTime;
-			mp.parent = this;
+			Spear.endPointToAssign = end;
+			Spear.riseTimeToAssign = riseTime;
+			Spear.retractTimeToAssign = retractTime;
+			Spear.teleTimeToASsign = teleTime;
+			Spear.holdTimeToAssign = holdTime;
+			Projectile.NewProjectile(Projectile.GetSource_FromThis(), start, Vector2.Zero, ModContent.ProjectileType<Spear>(), 15, 0, Owner: -1, ai0: Projectile.identity);
 		}
 
 		private void SpawnReward()
 		{
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+				return;
+
 			switch (lives)
 			{
 				case 4:
@@ -407,6 +333,16 @@ namespace StarlightRiver.Content.Tiles.Underground
 			float sin = 0.5f + (float)Math.Sin(time * 2 + 1) * 0.5f;
 			float sin2 = 0.5f + (float)Math.Sin(time) * 0.5f;
 			return new Color(80 + (int)(50 * sin), 60, 255) * sin2 * Windup;
+		}
+
+		public override void SafeSendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(lives);
+		}
+
+		public override void SafeReceiveExtraAI(BinaryReader reader)
+		{
+			lives = reader.ReadInt32();
 		}
 	}
 }
