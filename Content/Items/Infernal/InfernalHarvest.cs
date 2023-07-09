@@ -284,6 +284,7 @@ namespace StarlightRiver.Content.Items.Infernal
 		private Trail trail;
 
 		public float traveled;
+		public bool slowedThisFrame;
 
 		public Player Owner => Main.player[Projectile.owner];
 
@@ -301,7 +302,12 @@ namespace StarlightRiver.Content.Items.Infernal
 			Projectile.height = SCYTHE_LENGTH;
 			Projectile.tileCollide = false;
 			Projectile.penetrate = -1;
-			Projectile.extraUpdates = 2;
+			Projectile.extraUpdates = 3;
+		}
+
+		public override bool? CanHitNPC(NPC target)
+		{
+			return target.immune[0] <= 0 && Projectile.velocity.Length() > 4;
 		}
 
 		public override void AI()
@@ -309,12 +315,32 @@ namespace StarlightRiver.Content.Items.Infernal
 			Timer++;
 			traveled += Projectile.velocity.Length();
 
+			slowedThisFrame = false;
+
 			Projectile.rotation -= Projectile.velocity.Length() * 0.01f * Direction;
 			Projectile.velocity *= 0.982f;
 
-			if (traveled >= 160)
+			for (int x = 0; x < 15; x++)
 			{
-				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<BurnTrail>(), 1, 0, Projectile.owner);
+				for (int y = 0; y < 15; y++)
+				{
+					Tile tile = Framing.GetTileSafely((Projectile.position / 16).ToPoint16() + new Point16(x, y));
+
+					if (tile.HasTile && Main.tileSolid[tile.TileType])
+						slowedThisFrame = true;
+				}
+			}
+
+			if (slowedThisFrame)
+			{
+				Projectile.velocity *= 0.985f;
+				Projectile.timeLeft--;
+				slowedThisFrame = false;
+			}
+
+			if (traveled >= 130)
+			{
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<BurnTrail>(), 1, 0, Projectile.owner, Main.rand.Next(3000));
 				traveled = 0;
 			}
 
@@ -325,6 +351,21 @@ namespace StarlightRiver.Content.Items.Infernal
 			}
 
 			Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(90, 90), ModContent.DustType<Dusts.Cinder>(), Vector2.UnitY * -1, 0, new Color(255, Main.rand.Next(100, 200), 20) * (Projectile.velocity.Length() / 24f), Main.rand.NextFloat(0.3f, 0.7f));
+		}
+
+		public override bool OnTileCollide(Vector2 oldVelocity)
+		{
+			if (!slowedThisFrame)
+			{
+				Projectile.velocity = oldVelocity * 0.995f;
+				slowedThisFrame = true;
+			}
+			else
+			{
+				Projectile.velocity = oldVelocity;
+			}
+
+			return false;
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -371,7 +412,7 @@ namespace StarlightRiver.Content.Items.Infernal
 			{
 				cache = new List<Vector2>();
 
-				for (int i = 0; i < 30; i++)
+				for (int i = 0; i < 70; i++)
 				{
 					cache.Add(Vector2.Lerp(Vector2.UnitX.RotatedBy(Projectile.rotation) * SCYTHE_LENGTH, Vector2.Zero, 0.5f));
 				}
@@ -379,7 +420,7 @@ namespace StarlightRiver.Content.Items.Infernal
 
 			cache.Add(Vector2.Lerp(Vector2.UnitX.RotatedBy(Projectile.rotation) * SCYTHE_LENGTH, Vector2.Zero, 0.5f));
 
-			while (cache.Count > 30)
+			while (cache.Count > 70)
 			{
 				cache.RemoveAt(0);
 			}
@@ -387,15 +428,12 @@ namespace StarlightRiver.Content.Items.Infernal
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new TriangularTip(40 * 4), factor => factor * 100f, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 70, new TriangularTip(40 * 4), factor => factor * 100f, factor =>
 			{
 				if (factor.X >= 0.8f)
 					return Color.White * 0;
 
-				float opacity = 0.5f;
-
-				if (Timer > 340)
-					opacity *= Math.Max(0f, 1f - (Timer - 340) / 10f);
+				float opacity = Projectile.velocity.Length() / 24f;
 
 				return new Color(255, (int)(255 * factor.X), 0) * opacity * factor.X;
 			});
@@ -449,8 +487,10 @@ namespace StarlightRiver.Content.Items.Infernal
 
 			float opacity = Projectile.timeLeft / 200f;
 
+			Lighting.AddLight(Projectile.Center, new Vector3(1f, 0.5f, 0f) * Projectile.timeLeft / 200f);
+
 			if (Main.rand.NextBool(3))
-				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(90, 90), ModContent.DustType<Dusts.Cinder>(), Vector2.UnitY * -1, 0, new Color(255, Main.rand.Next(100, 200), 20) * opacity, Main.rand.NextFloat(0.3f, 0.7f));
+				Dust.NewDustPerfect(Projectile.Center + Vector2.UnitY * 70 + Main.rand.NextVector2Circular(90, 90), ModContent.DustType<Dusts.Cinder>(), Vector2.UnitY * -1, 0, new Color(255, Main.rand.Next(100, 200), 20) * opacity, Main.rand.NextFloat(0.3f, 0.7f));
 		}
 
 		public override bool? CanHitNPC(NPC target)
@@ -475,12 +515,12 @@ namespace StarlightRiver.Content.Items.Infernal
 			if (effect is null)
 				return false;
 
-			float opacity = 2f * Projectile.timeLeft / 200f;
+			float opacity = 4f * Projectile.timeLeft / 200f;
 
 			effect.Parameters["u_time"].SetValue(Timer * 0.015f % 2f);
 			effect.Parameters["primary"].SetValue(new Vector3(1, 0.7f, 0.1f) * opacity);
 			effect.Parameters["primaryScaling"].SetValue(new Vector3(1, 1, 1));
-			effect.Parameters["secondary"].SetValue(new Vector3(1f, 0.1f, 0.2f) * opacity);
+			effect.Parameters["secondary"].SetValue(new Vector3(1f, 0.2f, 0.05f) * opacity);
 
 			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value);
 			effect.Parameters["mapTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value);
