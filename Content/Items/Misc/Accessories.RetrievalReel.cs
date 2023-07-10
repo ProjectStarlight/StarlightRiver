@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override bool InstancePerEntity => true;
 
-		public int ReturnPlayerIndex = -1;
+		public int ReturnPlayerIndex = -1;//reel should work on items too, maybe just checking for an owner with the vanilla owner value may be better
 
 		public override void OnSpawn(Projectile projectile, IEntitySource source)
 		{
