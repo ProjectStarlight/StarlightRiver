@@ -7,8 +7,8 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-	class EnchantedWateringCan : ModItem
-	{
+	public class EnchantedWateringCan : ModItem
+	{//would also fit in forest namespace, but since its found underground its in misc instead
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
 		public override void SetStaticDefaults()
@@ -85,7 +85,17 @@ namespace StarlightRiver.Content.Items.Misc
 
 			Projectile.rotation = (float)Math.Sin(Projectile.ai[0] * 0.175f * Projectile.spriteDirection /* * 0*/) * 0.3f - 
 				(Math.Abs(armOffset.Y) - 6 - Owner.gfxOffY * 1.5f/*slightly fixes rotating when stepping up blocks*/) * 0.05f * -Projectile.spriteDirection;
-			//version that points the upper angle downwards instead: //((Math.Abs(direction.Y) - 6) * 0.05f * -Projectile.spriteDirection);
+			//version that points the upper angle upwards instead: //((direction.Y - 6) * 0.05f * -Projectile.spriteDirection);
+
+			//matches the dust to the sprite
+			Dust.NewDustPerfect(
+				Projectile.Center + 
+					new Vector2(Main.rand.NextFloat(-4, 4), Main.rand.NextFloat(-4, 4)) + //random offset
+					new Vector2(-1 * Projectile.spriteDirection, 6) + //offset to center
+					new Vector2(14 * Projectile.spriteDirection, 0).RotatedBy(
+						Projectile.rotation * 2 + 0.4f * Projectile.spriteDirection),
+				DustID.Water, 
+				new Vector2(Main.rand.NextFloat(0f, 0.75f) * Projectile.spriteDirection, Main.rand.NextFloat(-0.2f, 0.2f)));//velocity
 
 			Projectile.ai[0]++;
 

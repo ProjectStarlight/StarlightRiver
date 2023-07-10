@@ -46,7 +46,7 @@ namespace StarlightRiver.Core
 			return true;
 		}
 
-		private bool IsGround(int x, int y, int w)
+		public static bool IsGround(int x, int y, int w)
 		{
 			for (int k = 0; k < w; k++)
 			{
@@ -62,7 +62,7 @@ namespace StarlightRiver.Core
 			return true;
 		}
 
-		private void PlaceTree(int tx, int ty, int height)
+		public static void PlaceTree(int tx, int ty, int height)
 		{
 			ty -= 1;
 
