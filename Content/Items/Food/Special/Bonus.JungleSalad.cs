@@ -334,7 +334,6 @@ namespace StarlightRiver.Content.Items.Food.Special
 				}
 			}
 
-
 			//prehardmode
 			if (NPC.downedBoss1)//EoC
 				moneyvalue *= 1.1f;
@@ -348,14 +347,12 @@ namespace StarlightRiver.Content.Items.Food.Special
 			if (NPC.downedQueenBee)
 				moneyvalue *= 1.1f;
 
-
 			//hardmode
 			if (NPC.downedMechBoss1 || NPC.downedMechBoss2 || NPC.downedMechBoss3)//combined
 				moneyvalue *= 1.3f;
 
 			if (NPC.downedPlantBoss)//amount increased to cover golem too
 				moneyvalue *= 1.2f;
-
 
 			//events
 			if (NPC.downedGoblins)
@@ -366,7 +363,6 @@ namespace StarlightRiver.Content.Items.Food.Special
 
 			 if (NPC.downedFrost)//unsure if this is frostmoon or frost legion...
 				moneyvalue *= 1.1f;
-
 
 			while ((int)moneyvalue > 0)//spawns the coins
 			{
