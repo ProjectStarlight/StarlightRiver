@@ -295,144 +295,113 @@ namespace StarlightRiver.Content.Items.Food.Special
 			}
 		}
 
-		private static void SpawnCoins(int i, int j)// :(
-		{//vanilla method slightly modified, this could be replaced with a much simpler function if balacing calls for it, needs discussion
-			const float moneymult = 4f;//originally a money multiplier based on pot type, however this should not take into account the biome for this
-			float moneyvalue = 200 + Main.rand.Next(-100, 101);
+		private static void SpawnCoins(int i, int j)// :|
+		{//modified vanilla method
+			const float moneymult = 5f;//originally a money multiplier based on pot type, however this should not take into account the biome for this
+			float moneyvalue = 200 + Main.rand.Next(-100, 101);//2 silver +/- 1
 
-			if ((double)j < Main.worldSurface)
-				moneyvalue *= 0.5f;
-			else if ((double)j < Main.rockLayer)
-				moneyvalue *= 0.75f;
-			else if (j > Main.maxTilesY - 250)
-				moneyvalue *= 1.25f;
-
-			moneyvalue *= 1f + (float)Main.rand.Next(-20, 21) * 0.01f;
-
-			if (Main.rand.NextBool(4))
-				moneyvalue *= 1f + (float)Main.rand.Next(5, 11) * 0.01f;
-
-			if (Main.rand.NextBool(8))
-				moneyvalue *= 1f + (float)Main.rand.Next(10, 21) * 0.01f;
-
-			if (Main.rand.NextBool(12))
-				moneyvalue *= 1f + (float)Main.rand.Next(20, 41) * 0.01f;
-
-			if (Main.rand.NextBool(16))
-				moneyvalue *= 1f + (float)Main.rand.Next(40, 81) * 0.01f;
-
-			if (Main.rand.NextBool(20))
-				moneyvalue *= 1f + (float)Main.rand.Next(50, 101) * 0.01f;
-
-			if (Main.expertMode)
-				moneyvalue *= 2.5f;
-
-			if (Main.expertMode && Main.rand.NextBool(2))
-				moneyvalue *= 1.25f;
-
-			if (Main.expertMode && Main.rand.NextBool(3))
-				moneyvalue *= 1.5f;
-
-			if (Main.expertMode && Main.rand.NextBool(4))
-				moneyvalue *= 1.75f;
+			//if ((double)j < Main.worldSurface)//mult based on height prob not needed, kept uncase its decided this is needed
+			//	moneyvalue *= 0.5f;
+			//else if ((double)j < Main.rockLayer)
+			//	moneyvalue *= 0.75f;
+			//else if (j > Main.maxTilesY - 250)
+			//	moneyvalue *= 1.25f;
 
 			moneyvalue *= moneymult;
 
-			if (NPC.downedBoss1)
+			if (Main.expertMode)
+				moneyvalue *= 1.75f;//vanilla is 2.5
+
+			moneyvalue *= Main.rand.NextFloat(0.8f, 1.2f);
+
+			int prev = 10;
+			for(int g = 1; g < 6; g++)//1-5
+			{
+				int max = g == 5 ? 100 : prev;//10, 20, 40, 80, 100
+
+				if(Main.rand.NextBool(g * 4))
+					moneyvalue *= 1f + (float)Main.rand.Next(max / 2, max + 1) * 0.01f;
+
+				prev *= 2;
+			}
+
+			if (Main.expertMode)
+			{
+				for (int g = 1; g < 4; g++)//1-3
+				{
+					 if (Main.rand.NextBool(g + 1))
+						moneyvalue *= 1f + 0.25f * g;
+				}
+			}
+
+
+			//prehardmode
+			if (NPC.downedBoss1)//EoC
 				moneyvalue *= 1.1f;
 
-			if (NPC.downedBoss2)
+			if (NPC.downedBoss2)//EoW/BoC
 				moneyvalue *= 1.1f;
 
-			if (NPC.downedBoss3)
-				moneyvalue *= 1.1f;
-
-			if (NPC.downedMechBoss1)
-				moneyvalue *= 1.1f;
-
-			if (NPC.downedMechBoss2)
-				moneyvalue *= 1.1f;
-
-			if (NPC.downedMechBoss3)
-				moneyvalue *= 1.1f;
-
-			if (NPC.downedPlantBoss)
+			if (NPC.downedBoss3)//Skeletron
 				moneyvalue *= 1.1f;
 
 			if (NPC.downedQueenBee)
 				moneyvalue *= 1.1f;
 
-			if (NPC.downedGolemBoss)
+
+			//hardmode
+			if (NPC.downedMechBoss1 || NPC.downedMechBoss2 || NPC.downedMechBoss3)//combined
+				moneyvalue *= 1.3f;
+
+			if (NPC.downedPlantBoss)//amount increased to cover golem too
+				moneyvalue *= 1.2f;
+
+
+			//events
+			if (NPC.downedGoblins)
 				moneyvalue *= 1.1f;
 
 			if (NPC.downedPirates)
 				moneyvalue *= 1.1f;
 
-			if (NPC.downedGoblins)
+			 if (NPC.downedFrost)//unsure if this is frostmoon or frost legion...
 				moneyvalue *= 1.1f;
 
-			if (NPC.downedFrost)
-				moneyvalue *= 1.1f;
 
-			while ((int)moneyvalue > 0)
+			while ((int)moneyvalue > 0)//spawns the coins
 			{
+				int coinValue = 1;
+				int dropItemID = ItemID.CopperCoin;
+
 				if (moneyvalue > 1000000f)
 				{
-					int num11 = (int)(moneyvalue / 1000000f);
-
-					if (num11 > 50 && Main.rand.NextBool(2))
-						num11 /= Main.rand.Next(3) + 1;
-
-					if (Main.rand.NextBool(2))
-						num11 /= Main.rand.Next(3) + 1;
-
-					moneyvalue -= (float)(1000000 * num11);
-					Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, 74, num11);
-					continue;
+					coinValue = 1000000;
+					dropItemID = ItemID.PlatinumCoin;
 				}
-
-				if (moneyvalue > 10000f)
+				else if (moneyvalue > 10000f)
 				{
-					int num12 = (int)(moneyvalue / 10000f);
-
-					if (num12 > 50 && Main.rand.NextBool(2))
-						num12 /= Main.rand.Next(3) + 1;
-
-					if (Main.rand.NextBool(2))
-						num12 /= Main.rand.Next(3) + 1;
-
-					moneyvalue -= (float)(10000 * num12);
-					Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, 73, num12);
-					continue;
+					coinValue = 10000;
+					dropItemID = ItemID.GoldCoin;
 				}
-
-				if (moneyvalue > 100f)
+				else if (moneyvalue > 100f)
 				{
-					int num13 = (int)(moneyvalue / 100f);
-
-					if (num13 > 50 && Main.rand.NextBool(2))
-						num13 /= Main.rand.Next(3) + 1;
-
-					if (Main.rand.NextBool(2))
-						num13 /= Main.rand.Next(3) + 1;
-
-					moneyvalue -= (float)(100 * num13);
-					Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, 72, num13);
-					continue;
+					coinValue = 100;
+					dropItemID = ItemID.SilverCoin;
 				}
 
-				int num14 = (int)moneyvalue;
-				if (num14 > 50 && Main.rand.NextBool(2))
-					num14 /= Main.rand.Next(3) + 1;
+				int dropAmount = (int)moneyvalue / coinValue;
+
+				if (dropAmount > 50 && Main.rand.NextBool(2))
+					dropAmount /= Main.rand.Next(3) + 1;
 
 				if (Main.rand.NextBool(2))
-					num14 /= Main.rand.Next(4) + 1;
+					dropAmount /= Main.rand.Next(coinValue > 1 ? 3 : 4) + 1;
 
-				if (num14 < 1)
-					num14 = 1;
+				if (dropAmount < 1)//&& coinValue == 1)//only copper coins have this extra check, but I dont see a reason to only have for one
+					dropAmount = 1;
 
-				moneyvalue -= (float)num14;
-			    Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, 71, num14);
+				moneyvalue -= (float)(coinValue * dropAmount);
+			    Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16,dropItemID, dropAmount);		
 			}
 		}
 
