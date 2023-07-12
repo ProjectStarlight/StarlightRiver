@@ -512,7 +512,10 @@ namespace StarlightRiver.Content.Items.Infernal
 			Lighting.AddLight(Projectile.Center, new Vector3(1f, 0.5f, 0f) * Projectile.timeLeft / 200f);
 
 			if (Main.rand.NextBool(3))
-				Dust.NewDustPerfect(Projectile.Center + Vector2.UnitY * 70 + Main.rand.NextVector2Circular(90, 90), ModContent.DustType<Dusts.Cinder>(), Vector2.UnitY * -1, 0, new Color(255, Main.rand.Next(100, 200), 20) * opacity, Main.rand.NextFloat(0.3f, 0.7f));
+				Dust.NewDustPerfect(Projectile.Center + Vector2.UnitY * 70 + Main.rand.NextVector2Circular(90, 90), ModContent.DustType<Dusts.Cinder>(), Vector2.UnitY * -1, 0, new Color(255, Main.rand.Next(100, 200), 20) * opacity, Main.rand.NextFloat(0.2f, 0.8f));
+
+			if (Main.rand.NextBool(5))
+				Dust.NewDustPerfect(Projectile.Center + Vector2.UnitY * 70 + Main.rand.NextVector2Circular(110, 110), ModContent.DustType<Dusts.BigFire>(), Vector2.UnitY * Main.rand.NextFloat(-1, -3), 0, Color.White, 1f);
 		}
 
 		public override bool? CanHitNPC(NPC target)

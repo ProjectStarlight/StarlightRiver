@@ -13,7 +13,7 @@
 		{
 			dust.fadeIn = 0;
 			dust.noLight = false;
-			dust.frame = new Rectangle(0, 0, 18, 18);
+			dust.frame = new Rectangle(0, 0, 18, 24);
 		}
 
 		public override bool Update(Dust dust)
@@ -24,12 +24,14 @@
 				dust.customData = 1;
 			}
 
+			dust.position += dust.velocity;
+
 			if (dust.alpha % 64 == 0)
-				dust.frame.Y += 18;
+				dust.frame.Y += 24;
 
 			Lighting.AddLight(dust.position, new Color(255, 200, 50).ToVector3() * 0.5f);
 
-			dust.alpha += 4;
+			dust.alpha += 16;
 
 			if (dust.alpha > 255)
 				dust.active = false;
