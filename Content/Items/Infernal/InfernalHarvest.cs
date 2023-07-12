@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.Infernal
 	{
 		public int combo = 1;
 
-		public override string Texture => AssetDirectory.Debug;
+		public override string Texture => "StarlightRiver/Assets/Items/Infernal/InfernalHarvest";
 
 		public override void SetStaticDefaults()
 		{
@@ -55,6 +55,7 @@ namespace StarlightRiver.Content.Items.Infernal
 				Projectile.NewProjectile(Item.GetSource_FromThis(), position, velocity * 24, ModContent.ProjectileType<InfernalHarvestPaid>(), damage * 3, knockback, player.whoAmI, 0, velocity.X > 0 ? -1 : 1);
 
 				Helper.PlayPitched("Effects/FancySwoosh", 0.8f, 0.2f, player.Center);
+				Helper.PlayPitched("Magic/FireHit", 0.6f, -0.1f, player.Center);
 			}
 
 			return false;
@@ -101,7 +102,8 @@ namespace StarlightRiver.Content.Items.Infernal
 			Projectile.Center = Owner.MountedCenter;
 
 			Owner.heldProj = Projectile.whoAmI;
-			Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
+			Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.ThreeQuarters, Projectile.rotation - 1.57f);
+			Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.97f);
 
 			if (Timer == 1)
 			{
@@ -117,7 +119,7 @@ namespace StarlightRiver.Content.Items.Infernal
 
 			if (Timer > 16 && Timer < 50)
 			{
-				Vector2 pos = Vector2.UnitX.RotatedBy(Projectile.rotation) * SCYTHE_LENGTH * 0.8f + Main.rand.NextVector2Circular(16, 16);
+				Vector2 pos = Vector2.UnitX.RotatedBy(Projectile.rotation) * SCYTHE_LENGTH * 0.7f + Main.rand.NextVector2Circular(16, 16);
 				var d = Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowFollowPlayer>(), Main.rand.NextVector2Circular(2, 2), 0, new Color(255, 150, 0) * 0.5f, Main.rand.NextFloat(0.3f, 0.6f));
 				d.customData = new object[] { Owner, pos };
 			}
@@ -165,7 +167,8 @@ namespace StarlightRiver.Content.Items.Infernal
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			var origin = new Vector2(tex.Width, tex.Height);
+			Texture2D texGlow = ModContent.Request<Texture2D>(Texture + "Glow").Value;
+			var origin = new Vector2(tex.Width - 16, tex.Height - 16);
 
 			float opacity;
 
@@ -176,10 +179,21 @@ namespace StarlightRiver.Content.Items.Infernal
 			else
 				opacity = 1;
 
+			float glow = 1;
+
+			if (Timer > 50)
+				glow *= Math.Max(0f, 1f - (Timer - 50) / 10f);
+
 			if (direction == 1)
+			{
 				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor * opacity, Projectile.rotation + 1.57f + 1.57f * 0.5f, origin, 1f * opacity, 0, 0);
+				Main.spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, Color.White * glow, Projectile.rotation + 1.57f + 1.57f * 0.5f, origin, 1f * opacity, 0, 0);
+			}
 			else
-				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor * opacity, Projectile.rotation + 1.57f * 0.5f, new Vector2(0, tex.Height), 1f * opacity, SpriteEffects.FlipHorizontally, 0);
+			{
+				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor * opacity, Projectile.rotation + 1.57f * 0.5f, new Vector2(16, tex.Height - 16), 1f * opacity, SpriteEffects.FlipHorizontally, 0);
+				Main.spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, Color.White * glow, Projectile.rotation + 1.57f * 0.5f, new Vector2(16, tex.Height - 16), 1f * opacity, SpriteEffects.FlipHorizontally, 0);
+			}
 
 			return false;
 		}
@@ -198,7 +212,7 @@ namespace StarlightRiver.Content.Items.Infernal
 				}
 			}
 
-			cache.Add(Vector2.Lerp(Vector2.UnitX.RotatedBy(Projectile.rotation) * SCYTHE_LENGTH, Vector2.Zero, 0.2f));
+			cache.Add(Vector2.Lerp(Vector2.UnitX.RotatedBy(Projectile.rotation) * SCYTHE_LENGTH, Vector2.Zero, 0.3f));
 			cacheBig.Add(Vector2.Lerp(Vector2.UnitX.RotatedBy(Projectile.rotation) * SCYTHE_LENGTH, Vector2.Zero, 0.5f));
 
 			while (cache.Count > 30)
@@ -294,7 +308,7 @@ namespace StarlightRiver.Content.Items.Infernal
 		public ref float Timer => ref Projectile.ai[0];
 		public ref float Direction => ref Projectile.ai[1];
 
-		public override string Texture => "StarlightRiver/Assets/Items/Infernal/InfernalHarvestProj";
+		public override string Texture => "StarlightRiver/Assets/Items/Infernal/InfernalHarvestPaid";
 
 		public override void SetDefaults()
 		{

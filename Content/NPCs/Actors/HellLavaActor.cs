@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarlightRiver.Content.Items.Infernal;
+using System;
 using System.Collections.Generic;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -52,6 +53,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 				if (item.Hitbox.Intersects(NPC.Hitbox) && HellLavaConversion.GetConversionType(item) != 0)
 				{
 					item.type = HellLavaConversion.GetConversionType(item);
+					item.SetDefaults(item.type);
 					item.GetGlobalItem<HellTransformItem>().transformed = true;
 					item.velocity = Vector2.UnitY * -15;
 
@@ -227,8 +229,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 
 			ConversionTable = new()
 			{
-				{ ItemID.NightmarePickaxe, ItemID.MoltenPickaxe },
-				{ ItemID.WarAxeoftheNight, ItemID.MoltenHamaxe }
+				{ ItemID.NightmarePickaxe, ItemType<InfernalHarvest>() }
 			};
 		}
 
