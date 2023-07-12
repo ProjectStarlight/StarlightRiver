@@ -33,5 +33,10 @@ namespace StarlightRiver.Content.Configs
 		[DrawTicks]
 		[Tooltip("How keywords should be displayed in tooltips")]
 		public KeywordStyle KeywordStyle = KeywordStyle.Both;
+
+		[Label("Indicate Items with Added Recipes")]
+		[Tooltip("Displays a star icon in vanilla item tooltips if used in Starlight River crafting recipes")]
+		[DefaultValue(true)]
+		public bool AddMaterialIndicator;
 	}
 }
