@@ -33,7 +33,6 @@ namespace StarlightRiver.Content.Packets
 
 		protected override void Receive()
 		{
-			Main.NewText("packet");
 			Player hitPlayer = Main.player[playerId];
 
 			Projectile proj = Main.projectile.First(n => projIdentity == n.identity && n.type == projType); //explictly ignores active check since projectile might be killed before this packet reaches the server and other players
