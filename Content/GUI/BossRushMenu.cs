@@ -34,6 +34,7 @@ namespace StarlightRiver.Content.GUI
 			button.Width.Set(140, 0);
 			button.Height.Set(36, 0);
 			button.SetPadding(10);
+			button.OnMouseOver += (a, b) => SoundEngine.PlaySound(SoundID.MenuTick);
 
 			button.OnLeftClick += (a, b) =>
 			{
@@ -203,6 +204,7 @@ namespace StarlightRiver.Content.GUI
 			button.Width.Set(140, 0);
 			button.Height.Set(36, 0);
 			button.SetPadding(10);
+			button.OnMouseOver += (a, b) => SoundEngine.PlaySound(SoundID.MenuTick);
 
 			button.OnLeftClick += (a, b) =>
 			{
