@@ -146,6 +146,8 @@ namespace StarlightRiver.Content.GUI
 
 	internal class BossRushMenu : SmartUIState
 	{
+		public UIText button;
+
 		public override bool Visible => BossRushGUIHack.inMenu;
 
 		public override int InsertionIndex(List<GameInterfaceLayer> layers)
@@ -184,6 +186,42 @@ namespace StarlightRiver.Content.GUI
 			master.Left.Set(-150, 0.75f);
 			master.Top.Set(-300, 0.5f);
 			Append(master);
+
+			button = new UIText("Back");
+			button.Left.Set(-70, 0.5f);
+			button.Top.Set(320, 0.5f);
+			button.Width.Set(140, 0);
+			button.Height.Set(36, 0);
+			button.SetPadding(10);
+
+			button.OnLeftClick += (a, b) =>
+			{
+				BossRushGUIHack.inMenu = false;
+
+				Main.OpenWorldSelectUI();
+				Main.menuMode = 888;
+
+				SoundEngine.PlaySound(SoundID.MenuClose);
+			};
+
+			Append(button);
+		}
+
+		public override void Draw(SpriteBatch spriteBatch)
+		{
+			var dims = button.GetDimensions().ToRectangle();
+
+			Texture2D background = Main.Assets.Request<Texture2D>("Images/UI/CharCreation/PanelGrayscale").Value;
+			float opacity = button.IsMouseHovering ? 1 : 0.75f;
+			Color color = new Color(73, 94, 171) * opacity;
+
+			button.TextColor = button.IsMouseHovering ? Color.Yellow : Color.White;
+
+			Utils.DrawSplicedPanel(spriteBatch, background, dims.X, dims.Y, dims.Width, dims.Height, 10, 10, 10, 10, color);
+
+			base.Draw(spriteBatch);
+
+			Recalculate();
 		}
 	}
 
@@ -234,6 +272,11 @@ namespace StarlightRiver.Content.GUI
 			string scoreString = sourceScore > 0 ? $"Score: {sourceScore}" : "No score!";
 			Color scoreColor = sourceScore > 0 ? Color.Yellow : Color.Gray;
 			Utils.DrawBorderStringBig(spriteBatch, scoreString, pos + new Vector2(dims.Width / 2f, 536), scoreColor, 0.5f, 0.5f);
+		}
+
+		public override void MouseOver(UIMouseEvent evt)
+		{
+			SoundEngine.PlaySound(SoundID.MenuTick);
 		}
 
 		public override void LeftClick(UIMouseEvent evt)
