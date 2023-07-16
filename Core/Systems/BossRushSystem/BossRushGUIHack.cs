@@ -1,8 +1,8 @@
-﻿using ReLogic.Graphics;
-using StarlightRiver.Content.GUI;
+﻿using StarlightRiver.Content.GUI;
 using StarlightRiver.Core.Loaders.UILoading;
-using Terraria.GameContent;
+using Terraria.Audio;
 using Terraria.GameContent.UI.States;
+using Terraria.ID;
 
 namespace StarlightRiver.Core.Systems.BossRushSystem
 {
@@ -16,7 +16,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		{
 			On_Main.DrawMenu += DrawBossMenu;
 			On_Main.Update += UpdateBossMenu;
-			On_Main.DrawInterface_35_YouDied += drawDeadBossMenu;
+			On_Main.DrawInterface_35_YouDied += DrawDeadBossMenu;
 		}
 
 		private void UpdateBossMenu(On_Main.orig_Update orig, Main self, GameTime gameTime)
@@ -26,13 +26,21 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 				if (inMenu)
 				{
 					inMenu = false;
-					Main.menuMode = 0;
+
+					Main.OpenWorldSelectUI();
+					Main.menuMode = 888;
+
+					SoundEngine.PlaySound(SoundID.MenuClose);
 				}
 
 				if (inScoreScreen)
 				{
 					inScoreScreen = false;
-					Main.menuMode = 0;
+
+					Main.OpenWorldSelectUI();
+					Main.menuMode = 888;
+
+					SoundEngine.PlaySound(SoundID.MenuClose);
 				}
 			}
 
@@ -68,7 +76,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			}
 		}
 
-		private void drawDeadBossMenu(On_Main.orig_DrawInterface_35_YouDied orig)
+		private void DrawDeadBossMenu(On_Main.orig_DrawInterface_35_YouDied orig)
 		{
 			if (BossRushSystem.isBossRush && Main.LocalPlayer.dead)
 			{
