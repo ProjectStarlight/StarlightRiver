@@ -41,6 +41,16 @@ namespace StarlightRiver.Content.GUI
 				{
 					BossRushGUIHack.inMenu = true;
 					SoundEngine.PlaySound(SoundID.MenuOpen);
+
+					foreach (UIElement element in Children)
+					{
+						if (element is BossRushUnlockInfo info)
+							info.animationTimer = 0;
+					}
+				}
+				else
+				{
+					SoundEngine.PlaySound(SoundID.Unlock);
 				}
 			};
 
