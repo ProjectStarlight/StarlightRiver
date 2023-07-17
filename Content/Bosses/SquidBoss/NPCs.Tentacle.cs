@@ -76,8 +76,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer)
 		{
+			if (Parent is null || !Parent.NPC.active)
+				Parent = Main.npc.FirstOrDefault(n => n.active && n.type == ModContent.NPCType<SquidBoss>()).ModNPC as SquidBoss;
+
 			if (Parent is null)
 			{
+				Mod.Logger.Warn("An auroracle tentacle couldn't find it's parent!");
 				NPC.active = false;
 				return;
 			}

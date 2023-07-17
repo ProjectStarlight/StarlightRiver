@@ -83,7 +83,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public void SpawnEnemies(int time)
 		{
-			if (time % 60 == 0)
+			if (Main.netMode != NetmodeID.MultiplayerClient && time % 60 == 0)
 			{
 				int monster = Main.rand.Next(3) switch
 				{

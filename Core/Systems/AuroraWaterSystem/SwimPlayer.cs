@@ -105,6 +105,10 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 
 			targetRotation = ShouldSwim ? Player.velocity.ToRotation() : 1.57f + 3.14f;
 
+			// Forces the rotation target to be upright if the player is emerging
+			if (emergeTime < 19)
+				targetRotation = -MathHelper.PiOver2;
+
 			realRotation %= 6.28f; //handles the rotation, ensures the Player wont randomly snap to rotation when entering/leaving swimming
 
 			if (Math.Abs(targetRotation - realRotation) % 6.28f > 0.21f)
