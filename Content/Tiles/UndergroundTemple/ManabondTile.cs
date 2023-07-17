@@ -33,6 +33,9 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 		public override bool RightClick(int i, int j)
 		{
 			WorldGen.KillTile(i, j);
+
+			NetMessage.SendTileSquare(Main.myPlayer, i, j, 1, 1);
+
 			return true;
 		}
 
