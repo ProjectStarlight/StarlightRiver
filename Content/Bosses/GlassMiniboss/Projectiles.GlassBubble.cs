@@ -1,8 +1,10 @@
 using ReLogic.Content;
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
+using System.IO;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
@@ -14,11 +16,16 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public int hits;
 
+		private NPC Parent => Main.npc[(int)Projectile.ai[0]];
 		private ref float State => ref Projectile.ai[1];
 		private ref float Timer => ref Projectile.ai[2];
 
-		private NPC Parent => Main.npc[(int)Projectile.ai[0]];
+		/// <summary>
+		/// Way of ensuring projectile scale is correct on the first frame this is created since setting later would be delayed and cost an additional packet
+		/// </summary>
+		public static float staticScaleToSet = 1f;
 
+		public bool isLoaded = false;
 		public override string Texture => AssetDirectory.Glassweaver + Name;
 
 		public override void SetStaticDefaults()
@@ -38,12 +45,40 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void OnSpawn(IEntitySource source)
 		{
-			Helpers.Helper.PlayPitched("GlassMiniboss/WeavingSuper", 1f, 0f, Projectile.Center);
+			Projectile.scale = staticScaleToSet;
+			staticScaleToSet = 1f;
 		}
 
 		public override void AI()
 		{
+			if (!isLoaded)
+			{
+				Helpers.Helper.PlayPitched("GlassMiniboss/WeavingSuper", 1f, 0f, Projectile.Center);
+				isLoaded = true;
+			}
+
 			Timer++;
+
+			if (State == 0)
+			{
+
+				if (!Parent.active || Parent.type != NPCType<Glassweaver>())
+					Projectile.Kill();
+
+				Glassweaver glassweaver = Parent.ModNPC as Glassweaver;
+
+				if (glassweaver.AttackTimer <= 240 && glassweaver.AttackTimer > 80)
+				{
+					Vector2 staffPos = glassweaver.NPC.Center + new Vector2(5 * glassweaver.NPC.direction, -100).RotatedBy(glassweaver.NPC.rotation);
+					Projectile.Center = staffPos + Main.rand.NextVector2Circular(3, 3) * Utils.GetLerpValue(220, 120, glassweaver.AttackTimer, true);
+					glassweaver.NPC.velocity *= 0.87f;
+					glassweaver.NPC.velocity.Y -= 0.01f;
+					CameraSystem.shake += (int)(glassweaver.AttackTimer / 180f);
+				}
+
+				if (glassweaver.AttackTimer >= 235 && glassweaver.AttackTimer <= 240) //smear 6 frames incase of a 5 frame skip in multiplayer from low end PCs
+					glassweaver.moveTarget = Projectile.Center;
+			}
 
 			if (Timer < 180 && Main.rand.Next((int)Timer) < 70)
 			{
@@ -62,6 +97,16 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			if (State == 1)
 			{
+
+				if (Main.netMode == NetmodeID.Server)
+				{
+					foreach (Player eachPlayer in Main.player)
+					{
+						if (eachPlayer.active && !eachPlayer.dead && Projectile.Hitbox.Intersects(eachPlayer.Hitbox))
+							OnHitPlayer(eachPlayer, new Player.HurtInfo()); //this is normally run only by the player being hit, but this has important phase info so we want to determine hits on the server side
+					}
+				}
+
 				if (Timer < CRACK_TIME - 30)
 				{
 					Projectile.velocity = Vector2.Lerp(Projectile.velocity, Projectile.DirectionTo(Parent.GetTargetData().Center) * 5f, 0.004f);
@@ -100,10 +145,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		private void Explode()
 		{
-			if (Timer == CRACK_TIME + 101)
+			if (Timer == CRACK_TIME + 101 && Main.netMode != NetmodeID.MultiplayerClient)
 			{
-				//Helpers.Helper.PlayPitched("GlassMiniboss/GlassShatter", 1f, 0.1f, Projectile.Center);
-
 				int shardCount = Main.masterMode ? 6 : Main.expertMode ? 8 : 6;
 
 				for (int i = 0; i < shardCount; i++)
@@ -134,7 +177,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
-			if (Timer < CRACK_TIME + 100 && Projectile.ai[1] == 1)
+			if (Timer < CRACK_TIME + 100 && State == 1)
 			{
 				Helpers.Helper.PlayPitched("GlassMiniboss/GlassBounce", 0.9f, 0.2f + Main.rand.NextFloat(-0.2f, 0.4f), Projectile.Center);
 				CameraSystem.shake += 4;
@@ -157,7 +200,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void OnHitPlayer(Player target, Player.HurtInfo info)
 		{
-			if (Projectile.ai[1] == 1)
+			if (State == 1)
 			{
 				if (Timer < CRACK_TIME)
 					Timer = CRACK_TIME;
@@ -169,6 +212,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					Projectile.velocity = Projectile.DirectionFrom(target.Center) * 1.77f;
 					hits += 30;
 				}
+
+				Projectile.netUpdate = true;
 			}
 		}
 
@@ -278,11 +323,23 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				Main.EntitySpriteDraw(dark.Value, pos - Main.screenPosition, null, Color.Black * 0.2f * fade, rotation, new Vector2(dark.Width() * 0.5f, 0), 12, 0, 0);
 			}
 		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(Projectile.scale);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			Projectile.scale = reader.ReadSingle();
+		}
 	}
 
 	class GlassBubbleFragment : ModProjectile
 	{
-		public int variant;
+
+		public ref float Timer => ref Projectile.ai[0];
+		public ref float Variant => ref Projectile.ai[1];
 
 		public override string Texture => AssetDirectory.Glassweaver + Name;
 
@@ -303,7 +360,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void OnSpawn(IEntitySource source)
 		{
-			variant = Main.rand.Next(3);
+			Variant = Main.rand.Next(3);
 		}
 
 		public override void AI()
@@ -311,11 +368,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			if (Projectile.velocity.Length() > 0.1f)
 				Projectile.rotation = Projectile.velocity.ToRotation() - MathHelper.PiOver2;
 
-			Projectile.localAI[0]++;
+			Timer++;
 
 			if (Projectile.tileCollide == true)
 			{
-				if (Projectile.localAI[0] > 20)
+				if (Timer > 20)
 					Projectile.velocity *= 1.09f;
 			}
 			else
@@ -348,8 +405,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Asset<Texture2D> fragment = Request<Texture2D>(Texture);
-			Rectangle fragFrame = fragment.Frame(4, 2, variant, 0);
-			Rectangle hotFrame = fragment.Frame(4, 2, variant, 1);
+			Rectangle fragFrame = fragment.Frame(4, 2, (int)Variant, 0);
+			Rectangle hotFrame = fragment.Frame(4, 2, (int)Variant, 1);
 
 			Main.EntitySpriteDraw(fragment.Value, Projectile.Center - Main.screenPosition, fragFrame, lightColor, Projectile.rotation, fragFrame.Size() * 0.5f, Projectile.scale, 0, 0);
 

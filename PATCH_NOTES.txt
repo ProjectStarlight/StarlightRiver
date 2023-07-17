@@ -1,0 +1,40 @@
+# 0.2.0
+
+## Bug fixes
+- Fixed an issue where some accessories would fail to function in the master mode slot
+- Fixed the sandscript artifact being unable to spawn
+- Fixed cursed accessories not drawing their backgrounds correctly when equipped
+- Fixed various outdated tooltips
+- Fixed ceiros' drop pool not including shattered aegis on expert mode
+- Fixed glass arrowhead not functioning or having a tooltip
+- Fixed alican causing softlocks in multiplayer
+- Fixed auroracle causing softlocks in multiplayer
+- Fixed glassweaver causing softlocks in multiplayer
+- Fixed ceiros' master mode behavior desyncing in multiplayer
+- Fixed shrines in multiplayer
+- Fixed moonstones spawning too close to the edge of the world
+- Fixed bricklayer's trowel eating block placement wands
+- Fixed vitric pickaxe getting slower instead of faster as it gained heat
+- Fixed vitric hamaxe getting slower instead of faster as it gained heat
+- Fixed a rare crash that could occur on the player select screen
+- Fixed drop pods being able to spawn hanging off a cliff
+- Fixed numerous issues with forest world generation
+- Fixed armor bags deleting items
+- Fixed rotation from aurora water persisting after leaving it
+- Fixed a crash with crescent casters in multiplayer
+- Fixed crafting recipe for frying pan
+
+## Content
+- New summoner weapon: Haunted Dagger Staff
+- New summoner weapon: Starwood Sceptre
+- New summoner accessory: Manabond
+- New summoner accessory: Infernal Manabond
+- New summoner accessory: Shocking Manabond
+- New summoner accessory: Druidic Manabond
+- New summoner accessory: Aquatic Manabond
+- New summoner accessory: Salt cogs
+- New enemy: Gloom slime
+- New enemy: Soul nibbler
+- New enemy: Loot Wraith
+
+## Misc

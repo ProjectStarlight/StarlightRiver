@@ -1,13 +1,19 @@
 ﻿using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 {
-	class Dart : ModProjectile, IDrawPrimitive
+	class Dart : EvasionProjectile, IDrawPrimitive
 	{
+		public static Vector2 midPointToAssign;
+		public static Vector2 endPointToAssign;
+		public static int durationToAssign;
+
 		private List<Vector2> cache;
 		private Trail trail;
 
@@ -37,6 +43,13 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 			Projectile.timeLeft = 120;
 			Projectile.tileCollide = false;
 			Projectile.penetrate = -1;
+		}
+
+		public override void OnSpawn(IEntitySource source)
+		{
+			midPoint = midPointToAssign;
+			endPoint = endPointToAssign;
+			duration = durationToAssign;
 		}
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
@@ -69,16 +82,11 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 
 			Projectile.rotation = (Projectile.position - Projectile.oldPos[0]).ToRotation();
 
-			ManageCaches();
-			ManageTrail();
-		}
-
-		public override void OnHitPlayer(Player target, Player.HurtInfo info)
-		{
-			parent.lives--;
-
-			if (Main.rand.NextBool(10000))
-				Main.NewText("Skill issue.");
+			if (Main.netMode != NetmodeID.Server)
+			{
+				ManageCaches();
+				ManageTrail();
+			}
 		}
 
 		private Vector2 PointOnSpline(float progress)
@@ -178,6 +186,20 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/ShadowTrail").Value);
 
 			trail?.Render(effect);
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.WritePackedVector2(midPoint);
+			writer.WritePackedVector2(endPoint);
+			writer.Write(duration);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			midPoint = reader.ReadPackedVector2();
+			endPoint = reader.ReadPackedVector2();
+			duration = reader.ReadInt32();
 		}
 	}
 }

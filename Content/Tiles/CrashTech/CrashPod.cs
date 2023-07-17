@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Tiles.CrashTech
 		public override void SetStaticDefaults()
 		{
 			QuickBlock.QuickSetFurniture(this, 2, 4, DustID.Lava, SoundID.Shatter, false, new Color(255, 200, 40), false, false, "Crashed Pod", new AnchorData(AnchorType.SolidWithTop | AnchorType.SolidTile, 2, 0));
-			MinPick = 999;
+			MinPick = int.MaxValue;
 			Main.tileLighted[Type] = true;
 		}
 
@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Tiles.CrashTech
 
 		public override bool CanKillTile(int i, int j, ref bool blockDamaged)
 		{
-			return false;
+			return !WorldGen.generatingWorld;
 		}
 
 		public override bool CanExplode(int i, int j)
@@ -125,7 +125,7 @@ namespace StarlightRiver.Content.Tiles.CrashTech
 		public override bool CanKillTile(int i, int j, int type, ref bool blockDamaged)
 		{
 			if (Main.tile[i, j - 1].TileType == TileType<CrashPod>())
-				return false;
+				return !WorldGen.generatingWorld;
 
 			return base.CanKillTile(i, j, type, ref blockDamaged);
 		}

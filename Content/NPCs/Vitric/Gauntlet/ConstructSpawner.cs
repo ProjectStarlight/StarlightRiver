@@ -3,6 +3,7 @@ using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.Graphics.Effects;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 {
@@ -33,8 +34,11 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		{
 			nearestPlayer = Main.player.Where(n => n.active && !n.dead).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
 
-			ManageCaches();
-			ManageTrail();
+			if (Main.netMode != NetmodeID.Server)
+			{
+				ManageCaches();
+				ManageTrail();
+			}
 
 			if (Timer > 1)
 			{
@@ -45,13 +49,13 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				if (gravity)
 					Projectile.velocity.Y += 0.1f;
 
-				if (Main.rand.NextBool(2))
+				if (Main.rand.NextBool(2) && Main.netMode != NetmodeID.Server)
 					Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(10, 10), ModContent.DustType<Cinder>(), Vector2.Zero, 0, new Color(255, 170, 100), 0.65f);
 
 				return;
 			}
 
-			if (Timer < 50)
+			if (Timer < 50 && Main.netMode != NetmodeID.Server)
 			{
 				Vector2 cinderPos = Projectile.Top + Main.rand.NextVector2Circular(40, 40);
 				Vector2 vel = -Vector2.UnitY.RotatedBy(cinderPos.AngleTo(Projectile.Center)) * Main.rand.NextFloat(-2, 2);
@@ -68,7 +72,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		public virtual void SpawnNPC()
 		{
-			NPC.NewNPC(Entity.GetSource_Misc("SLR:GlassGauntlet"), (int)Projectile.Center.X, (int)Projectile.Center.Y, (int)NPCType);
+			if (Main.netMode != NetmodeID.MultiplayerClient)
+				NPC.NewNPC(Entity.GetSource_Misc("SLR:GlassGauntlet"), (int)Projectile.Center.X, (int)Projectile.Center.Y, (int)NPCType);
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
