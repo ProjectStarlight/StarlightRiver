@@ -79,7 +79,7 @@ namespace StarlightRiver.Content.Items.Utility
 
 				for (int k = 0; k < 3; k++)
 				{
-					(storedArmor[k], Player.armor[k]) = (Player.armor[k], storedArmor[k]);
+					(storedArmor[k], Player.armor[k]) = (Player.armor[k].Clone(), storedArmor[k]?.Clone() ?? new Item());
 				}
 
 				return;
@@ -87,22 +87,22 @@ namespace StarlightRiver.Content.Items.Utility
 
 			if (mouseItem.headSlot != -1)
 			{
-				Item temp = storedArmor[0];
-				storedArmor[0] = mouseItem;
+				Item temp = storedArmor[0]?.Clone() ?? new Item();
+				storedArmor[0] = mouseItem.Clone();
 				Main.mouseItem = temp;
 			}
 
 			if (mouseItem.bodySlot != -1)
 			{
-				Item temp = storedArmor[1];
-				storedArmor[1] = mouseItem;
+				Item temp = storedArmor[1]?.Clone() ?? new Item();
+				storedArmor[1] = mouseItem.Clone();
 				Main.mouseItem = temp;
 			}
 
 			if (mouseItem.legSlot != -1)
 			{
-				Item temp = storedArmor[2];
-				storedArmor[2] = mouseItem;
+				Item temp = storedArmor[2]?.Clone() ?? new Item();
+				storedArmor[2] = mouseItem.Clone();
 				Main.mouseItem = temp;
 			}
 		}
