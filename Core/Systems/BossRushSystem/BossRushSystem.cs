@@ -85,6 +85,9 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			transitionTimer = 0;
 			deathFadeoutTimer = 0;
 
+			HushArmorSystem.resistance = 0;
+			HushArmorSystem.highestDPS = 1;
+
 			MasterDeathTicker.animationTimer = 480;
 			UILoader.GetUIState<MessageBox>().Visible = false;
 		}
