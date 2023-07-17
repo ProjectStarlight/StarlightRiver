@@ -11,6 +11,7 @@
 - Fixed auroracle causing softlocks in multiplayer
 - Fixed glassweaver causing softlocks in multiplayer
 - Fixed ceiros' master mode behavior desyncing in multiplayer
+- Fixed shrines in multiplayer
 - Fixed moonstones spawning too close to the edge of the world
 - Fixed bricklayer's trowel eating block placement wands
 - Fixed vitric pickaxe getting slower instead of faster as it gained heat
