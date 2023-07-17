@@ -12,15 +12,13 @@ namespace StarlightRiver.Content.Packets
 	[Serializable]
 	public class SacrificeNPCPacket : Module
 	{
-		private readonly int fromWho;
 		private readonly int type;
 		private readonly int oldId;
 		private readonly int x;
 		private readonly int y;
 
-		public SacrificeNPCPacket(int fromWho, int x, int y, int type, int oldId)
+		public SacrificeNPCPacket(int x, int y, int type, int oldId)
 		{
-			this.fromWho = fromWho;
 			this.type = type;
 			this.oldId = oldId;
 			this.x = x;

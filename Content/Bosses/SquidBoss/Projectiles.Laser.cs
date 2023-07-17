@@ -36,6 +36,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void AI()
 		{
+			FindParent();
+
 			if (Projectile.timeLeft == 659 || Main.expertMode && Projectile.timeLeft == 509 || Main.masterMode && Projectile.timeLeft == 359)
 			{
 				int y = (int)Projectile.Center.Y / 16 - 28;
@@ -106,6 +108,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			{
 				Player.Hurt(PlayerDeathReason.ByCustomReason(Player.name + " got lasered to death by a squid..."), 50, 0);
 			}
+		}
+
+		public void FindParent()
+		{
+			if (parent is null || !parent.active || parent.type != ModContent.NPCType<SquidBoss>())
+				parent = Main.npc.FirstOrDefault(n => n.active && n.type == ModContent.NPCType<SquidBoss>());
 		}
 
 		public void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer)
