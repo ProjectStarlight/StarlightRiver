@@ -5,7 +5,7 @@ namespace StarlightRiver.Core.Systems.PersistentDataSystem
 {
 	internal class PersistentDataStoreSystem
 	{
-		private static Dictionary<Type, PersistentDataStore> stores = new();
+		private readonly static Dictionary<Type, PersistentDataStore> stores = new();
 
 		public static T GetDataStore<T>() where T : PersistentDataStore
 		{
