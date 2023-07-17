@@ -148,10 +148,10 @@ namespace StarlightRiver.Content.GUI
 					}
 
 					duration += ingredient.Fill;
-					durationMult *= ingredient.FullnessMult;
+					durationMult *= ingredient.BuffLengthMult;
 
 					cooldown += (int)(ingredient.Fill * 1.5f);
-					cooldownMult *= ingredient.WellFedMult;
+					cooldownMult *= ingredient.DebuffLengthMult;
 				}
 
 				duration = (int)(duration * durationMult);
@@ -216,8 +216,8 @@ namespace StarlightRiver.Content.GUI
 			if (!source.Item.IsAir && source.Item.ModItem is Ingredient)
 			{
 				(target.ModItem as Meal).Ingredients.Add(source.Item.Clone());
-				(target.ModItem as Meal).FullnessMult *= (source.Item.ModItem as Ingredient).FullnessMult;
-				(target.ModItem as Meal).WellFedMult *= (source.Item.ModItem as Ingredient).WellFedMult;
+				(target.ModItem as Meal).BuffLengthMult *= (source.Item.ModItem as Ingredient).BuffLengthMult;
+				(target.ModItem as Meal).DebuffLengthMult *= (source.Item.ModItem as Ingredient).DebuffLengthMult;
 				(target.ModItem as Meal).Fullness += (source.Item.ModItem as Ingredient).Fill;
 
 				if (source.Item.stack == 1)

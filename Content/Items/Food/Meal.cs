@@ -12,8 +12,8 @@ namespace StarlightRiver.Content.Items.Food
 	{
 		public List<Item> Ingredients { get; set; } = new List<Item>();
 		public int Fullness { get; set; }
-		public float FullnessMult { get; set; } = 1;
-		public float WellFedMult { get; set; } = 1;
+		public float BuffLengthMult { get; set; } = 1;
+		public float DebuffLengthMult { get; set; } = 1;
 
 		public override string Texture => AssetDirectory.FoodItem + Name;
 
@@ -45,8 +45,8 @@ namespace StarlightRiver.Content.Items.Food
 				foreach (Item Item in Ingredients)
 					mp.Consumed.Add(Item.Clone());
 
-				player.AddBuff(BuffType<FoodBuff>(), (int)(Fullness * FullnessMult));
-				player.AddBuff(BuffType<Full>(), (int)(Fullness * 1.5f * WellFedMult));
+				player.AddBuff(BuffType<FoodBuff>(), (int)(Fullness * BuffLengthMult));
+				player.AddBuff(BuffType<Full>(), (int)(Fullness * 1.5f * DebuffLengthMult));
 			}
 			else
 			{
@@ -115,10 +115,10 @@ namespace StarlightRiver.Content.Items.Food
 				tooltips.Add(line);
 			}
 
-			var durationLine = new TooltipLine(Mod, "StarlightRiver: Duration", (int)(Fullness * FullnessMult) / 60 + " seconds duration") { OverrideColor = new Color(110, 235, 255) };
+			var durationLine = new TooltipLine(Mod, "StarlightRiver: Duration", (int)(Fullness * BuffLengthMult) / 60 + " seconds duration") { OverrideColor = new Color(110, 235, 255) };
 			tooltips.Add(durationLine);
 
-			var cooldownLine = new TooltipLine(Mod, "StarlightRiver: Cooldown", (int)(Fullness * 1.5f * WellFedMult) / 60 + " seconds fullness") { OverrideColor = new Color(255, 170, 120) };
+			var cooldownLine = new TooltipLine(Mod, "StarlightRiver: Cooldown", (int)(Fullness * 1.5f * DebuffLengthMult) / 60 + " seconds fullness") { OverrideColor = new Color(255, 170, 120) };
 			tooltips.Add(cooldownLine);
 		}
 
@@ -126,16 +126,16 @@ namespace StarlightRiver.Content.Items.Food
 		{
 			tag.Add("Items", Ingredients);
 			tag.Add("Fullness", Fullness);
-			tag.Add("FullnessMult", FullnessMult);
-			tag.Add("WellFedMult", WellFedMult);
+			tag.Add("FullnessMult", BuffLengthMult);
+			tag.Add("WellFedMult", DebuffLengthMult);
 		}
 
 		public override void LoadData(TagCompound tag)
 		{
 			Ingredients = (List<Item>)tag.GetList<Item>("Items");
 			Fullness = tag.GetInt("Fullness");
-			FullnessMult = tag.GetFloat("FullnessMult");
-			WellFedMult = tag.GetFloat("WellFedMult");
+			BuffLengthMult = tag.GetFloat("FullnessMult");
+			DebuffLengthMult = tag.GetFloat("WellFedMult");
 		}
 	}
 }
