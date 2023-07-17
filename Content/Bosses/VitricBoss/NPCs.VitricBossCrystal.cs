@@ -191,7 +191,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 						if (Main.netMode == Terraria.ID.NetmodeID.MultiplayerClient && Main.myPlayer == Player.whoAmI)
 						{
 							var packet = new CeirosCrystal(Main.myPlayer, NPC.whoAmI, Parent.NPC.whoAmI, Player.velocity);
-							packet.Send(runLocally: false);
+							packet.Send();
 							return;
 						}
 
