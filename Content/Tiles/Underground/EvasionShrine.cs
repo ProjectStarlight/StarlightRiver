@@ -55,13 +55,13 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public override void Update()
 		{
-			if (State == ShrineState_Defeated)//dont run anything if this is defeated
+			if (State == SHRINE_STATE_DEFEATED)//dont run anything if this is defeated
 				return;
 
 			//this check never succeeds since the tile does not spawn dummys on the 3rd frame
 			if (Parent.TileFrameX >= 10 * 18)//check file frame for this being defeated
 			{
-				State = ShrineState_Defeated;
+				State = SHRINE_STATE_DEFEATED;
 				return;//return here so defeated shrines never run the below code even when spawning a new dummy
 			}
 
@@ -71,7 +71,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 			{
 				bool thisPlayerInRange = player.active && !player.DeadOrGhost && ArenaPlayer.Intersects(player.Hitbox);
 
-				if (thisPlayerInRange && State != ShrineState_Idle)
+				if (thisPlayerInRange && State != SHRINE_STATE_IDLE)
 					player.GetModPlayer<ShrinePlayer>().EvasionShrineActive = true;
 
 				anyPlayerInRange = anyPlayerInRange || thisPlayerInRange;
@@ -90,13 +90,13 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			Lighting.AddLight(Projectile.Center + new Vector2(0, -230), color);
 
-			if (State == ShrineState_Idle && Parent.TileFrameX >= ShrineTileWidth * 18)//if idle and frame isnt default (happens when entity is despawned while active)
+			if (State == SHRINE_STATE_IDLE && Parent.TileFrameX >= ShrineTileWidth * 18)//if idle and frame isnt default (happens when entity is despawned while active)
 			{
 				SetFrame(0);
 				Timer = 0;
 			}
 
-			if (State != ShrineState_Idle)
+			if (State != SHRINE_STATE_IDLE)
 			{
 				ProtectionWorld.AddRegionBySource(new Point16(ParentX, ParentY), ArenaTile);//stop calling this and call RemoveRegionBySource() when shrine is completed
 
@@ -109,7 +109,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 					Dust.NewDustPerfect(Projectile.Center + new Vector2(26 * 16, 96 + Main.rand.Next(-44, 44)), ModContent.DustType<Dusts.Glow>(), Vector2.UnitX * Main.rand.NextFloat(2), 0, new Color(155, 40 + Main.rand.Next(50), 255) * Windup, 0.35f);
 				}
 
-				if (State > ShrineState_Idle)
+				if (State > SHRINE_STATE_IDLE)
 				{
 					Timer++;
 
@@ -130,7 +130,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 						if (Timer > 600)
 						{
 							SpawnReward();
-							State = ShrineState_Defeated;
+							State = SHRINE_STATE_DEFEATED;
 							SetFrame(2);
 							ProtectionWorld.RemoveRegionBySource(new Point16(ParentX, ParentY));
 						}
@@ -147,9 +147,9 @@ namespace StarlightRiver.Content.Tiles.Underground
 			//	ProtectionWorld.RemoveRegionBySource(new Point16(ParentX, ParentY));
 			//}
 
-			if (State == ShrineState_Failed || lives <= 0 || !anyPlayerInRange)//Main.player.Any(n => n.active && !n.dead && Vector2.Distance(n.Center, Projectile.Center) < 500) //"fail" conditions, no living Players in radius or already failing
+			if (State == SHRINE_STATE_FAILED || lives <= 0 || !anyPlayerInRange)//Main.player.Any(n => n.active && !n.dead && Vector2.Distance(n.Center, Projectile.Center) < 500) //"fail" conditions, no living Players in radius or already failing
 			{
-				State = ShrineState_Failed;
+				State = SHRINE_STATE_FAILED;
 
 				if (Timer > 128)
 				{
@@ -162,7 +162,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 				if (Timer <= 0)
 				{
-					State = ShrineState_Idle;
+					State = SHRINE_STATE_IDLE;
 					attackOrder = null;
 					ProtectionWorld.RemoveRegionBySource(new Point16(ParentX, ParentY));
 				}
@@ -252,7 +252,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			if (State != ShrineState_Idle && State != ShrineState_Defeated)
+			if (State != SHRINE_STATE_IDLE && State != SHRINE_STATE_DEFEATED)
 			{
 				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Moonstone/GlowSmall").Value;
 				var origin = new Vector2(tex.Width / 2, tex.Height);
@@ -260,7 +260,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(10, 60), default, GetBeamColor(StarlightWorld.visualTimer + 2) * 0.8f, 0, origin, 2.5f, 0, 0);
 				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(-10, 60), default, GetBeamColor(StarlightWorld.visualTimer + 4) * 0.8f, 0, origin, 3.2f, 0, 0);
 
-				if (State > ShrineState_Idle)
+				if (State > SHRINE_STATE_IDLE)
 				{
 					Texture2D fireTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Underground/BrazierFlame").Value;
 					var frame = new Rectangle(0, 32 * (int)(Main.GameUpdateCount / 6 % 6), 16, 32);

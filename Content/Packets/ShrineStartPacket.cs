@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.Packets
 			ShrineDummy shrineDummy = dummy.ModProjectile as ShrineDummy;
 
 			shrineDummy.Timer = 0;
-			shrineDummy.State = ShrineDummy.ShrineState_Active;
+			shrineDummy.State = ShrineDummy.SHRINE_STATE_ACTIVE;
 			shrineTile.AdditionalSetup(shrineDummy);
 
 			NetMessage.TrySendData(MessageID.SyncProjectile, number: dummy.whoAmI); //setting netupdate to true is strangely unreliable here, so we use netmessage -- TODO: look into why; this may have ramifications elsewhere too

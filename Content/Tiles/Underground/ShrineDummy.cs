@@ -1,20 +1,14 @@
 ﻿using StarlightRiver.Core.Systems.DummyTileSystem;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
 	public abstract class ShrineDummy : Dummy
 	{
-		public const float ShrineState_Idle = 0;
-		public const float ShrineState_Active = 1;
-		public const float ShrineState_Failed = -1;
-		public const float ShrineState_Defeated = -2;
+		public const float SHRINE_STATE_IDLE = 0;
+		public const float SHRINE_STATE_ACTIVE = 1;
+		public const float SHRINE_STATE_FAILED = -1;
+		public const float SHRINE_STATE_DEFEATED = -2;
 
 		public ref float Timer => ref Projectile.ai[0];
 		public ref float State => ref Projectile.ai[1];

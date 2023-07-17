@@ -1,9 +1,7 @@
 ﻿using NetEasy;
-using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Core.Systems;
-using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,13 +57,13 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public override void Update()
 		{
-			if (State == ShrineState_Defeated)//dont run anything if this is defeated
+			if (State == SHRINE_STATE_DEFEATED)//dont run anything if this is defeated
 				return;
 
 			//this check never succeeds since the tile does not spawn dummys on the 3rd frame
 			if (Parent.TileFrameX >= 6 * 18)//check file frame for this being defeated
 			{
-				State = ShrineState_Defeated;
+				State = SHRINE_STATE_DEFEATED;
 				return;//return here so defeated shrines never run the below code even when spawning a new dummy
 			}
 
@@ -75,19 +73,19 @@ namespace StarlightRiver.Content.Tiles.Underground
 			{
 				bool thisPlayerInRange = player.active && !player.DeadOrGhost && ArenaPlayer.Intersects(player.Hitbox);
 
-				if (thisPlayerInRange && State != ShrineState_Idle)
+				if (thisPlayerInRange && State != SHRINE_STATE_IDLE)
 					player.GetModPlayer<ShrinePlayer>().CombatShrineActive = true;
 
 				anyPlayerInRange = anyPlayerInRange || thisPlayerInRange;
 			}
 
-			if (State == ShrineState_Idle && Parent.TileFrameX >= 3 * 18)//if idle and frame isnt default (happens when entity is despawned while active)
+			if (State == SHRINE_STATE_IDLE && Parent.TileFrameX >= 3 * 18)//if idle and frame isnt default (happens when entity is despawned while active)
 			{
 				SetFrame(0);
 				return;
 			}
 
-			if (State != ShrineState_Idle)//this does not need a defeated check because of the above one
+			if (State != SHRINE_STATE_IDLE)//this does not need a defeated check because of the above one
 			{
 				ProtectionWorld.AddRegionBySource(new Point16(ParentX, ParentY), ArenaTile);//stop calling this and call RemoveRegionBySource() when shrine is completed
 
@@ -100,9 +98,9 @@ namespace StarlightRiver.Content.Tiles.Underground
 					Dust.NewDustPerfect(Projectile.Center + new Vector2(24 * 16, 24 + Main.rand.Next(-40, 40)), ModContent.DustType<Dusts.Glow>(), Vector2.UnitX * Main.rand.NextFloat(2), 0, new Color(255, 40 + Main.rand.Next(50), 75) * Windup, 0.35f);
 				}
 
-				if (State == ShrineState_Failed || !anyPlayerInRange) //"fail" conditions, no living Players in radius or already failing
+				if (State == SHRINE_STATE_FAILED || !anyPlayerInRange) //"fail" conditions, no living Players in radius or already failing
 				{
-					State = ShrineState_Failed;
+					State = SHRINE_STATE_FAILED;
 
 					if (Timer > 128)
 					{
@@ -114,7 +112,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 					if (Timer <= 0)
 					{
-						State = ShrineState_Idle;
+						State = SHRINE_STATE_IDLE;
 						waveTime = 0;
 
 						foreach (NPC NPC in minions)
@@ -137,7 +135,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 							Dust.NewDustPerfect(Projectile.Center + new Vector2(0, -32), ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5), 0, new Color(255, 100, 100), 0.6f);
 
 						SpawnReward();
-						State = ShrineState_Defeated;
+						State = SHRINE_STATE_DEFEATED;
 
 						Timer = 0;
 						waveTime = 0;
@@ -283,7 +281,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			if (State != ShrineState_Idle && State != ShrineState_Defeated)
+			if (State != SHRINE_STATE_IDLE && State != SHRINE_STATE_DEFEATED)
 			{
 				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Moonstone/GlowSmall").Value;
 				var origin = new Vector2(tex.Width / 2, tex.Height);
@@ -365,7 +363,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 			if (Projectile.timeLeft == 30 && Main.netMode != NetmodeID.MultiplayerClient)
 			{
 				int i = NPC.NewNPC(Projectile.GetSource_FromThis(), (int)Projectile.Center.X, (int)Projectile.Center.Y, (int)SpawnType);
-				ShadowSpawnPacket spawnPacket = new ShadowSpawnPacket(i, hpOverride, damageOverride, defenseOverride, parent.Projectile.identity, (int)DustCount);
+				var spawnPacket = new ShadowSpawnPacket(i, hpOverride, damageOverride, defenseOverride, parent.Projectile.identity, DustCount);
 				spawnPacket.Send();
 			}
 		}
@@ -424,6 +422,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 		readonly float defenseOverride;
 		readonly int shrineDummyIdentity;
 		readonly int dustCount;
+
 		public ShadowSpawnPacket(int npcId, float hpOverride, float damageOverride, float defenseOverride, int shrineDummyIdentity, int dustCount)
 		{
 			this.npcId = npcId;
@@ -444,8 +443,9 @@ namespace StarlightRiver.Content.Tiles.Underground
 			NPC.HitSound = SoundID.NPCHit7;
 			SoundStyle shadowDeath = new($"{nameof(StarlightRiver)}/Sounds/ShadowDeath") { MaxInstances = 3 };
 			NPC.DeathSound = shadowDeath;
+
 			if (NPC.TryGetGlobalNPC(out StarlightNPC starlightNPC)) // while this global NPC seems to never exist in time on mp clients, this particular bool only matters for the server
-				starlightNPC.dontDropItems = true; 
+				starlightNPC.dontDropItems = true;
 
 			if (hpOverride != -1)
 			{
@@ -461,7 +461,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			Projectile shrineProjectile = Main.projectile.FirstOrDefault(n => n.active && n.identity == shrineDummyIdentity && n.type == ModContent.ProjectileType<CombatShrineDummy>());
 
-			CombatShrineDummy shrineDummy = shrineProjectile.ModProjectile as CombatShrineDummy;
+			var shrineDummy = shrineProjectile.ModProjectile as CombatShrineDummy;
 			shrineDummy?.minions.Add(NPC);
 
 			if (Main.netMode != NetmodeID.Server)
@@ -470,7 +470,8 @@ namespace StarlightRiver.Content.Tiles.Underground
 				{
 					Dust.NewDustPerfect(NPC.Center, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(1.5f, 2), 0, new Color(255, 100, 100), 0.2f);
 				}
-			} else
+			}
+			else
 			{
 				NetMessage.SendData(MessageID.SyncNPC, number: NPC.whoAmI); //send data to ensure NPC fully exists on clients before this packet
 				Send(runLocally: false); //forward packet to clients if this is a server

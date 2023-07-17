@@ -85,7 +85,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 			if (dummy is null)
 				return false;
 			
-			if ((dummy.ModProjectile as ShrineDummy).State == ShrineDummy.ShrineState_Idle)
+			if ((dummy.ModProjectile as ShrineDummy).State == ShrineDummy.SHRINE_STATE_IDLE)
 			{
 				ShrineStartPacket packet = new ShrineStartPacket(i, j);
 				packet.Send();
