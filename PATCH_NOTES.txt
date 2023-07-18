@@ -11,6 +11,7 @@
 - Fixed auroracle causing softlocks in multiplayer
 - Fixed glassweaver causing softlocks in multiplayer
 - Fixed ceiros' master mode behavior desyncing in multiplayer
+- Fixed shrines in multiplayer
 - Fixed moonstones spawning too close to the edge of the world
 - Fixed bricklayer's trowel eating block placement wands
 - Fixed vitric pickaxe getting slower instead of faster as it gained heat
@@ -32,5 +33,12 @@
 - New summoner accessory: Druidic Manabond
 - New summoner accessory: Aquatic Manabond
 - New summoner accessory: Salt cogs
+- New enemy: Gloom slime
+- New enemy: Soul nibbler
+- New enemy: Loot Wraith
 
 ## Misc
+- The boss rush now requires you to have defeated each boss atleast once to unlock
+- The boss rush will now save your scores across sessions
+- Updated boss rush damage resistance calculations to discourage strategies related to stalling
+- Updated the boss rush GUI

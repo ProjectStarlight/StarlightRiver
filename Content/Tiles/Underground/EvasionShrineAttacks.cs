@@ -3,7 +3,7 @@ using System;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
-	internal partial class EvasionShrineDummy : Dummy, IDrawAdditive
+	public partial class EvasionShrineDummy : ShrineDummy, IDrawAdditive
 	{
 		int free = 0; // tracks the free square for the spear squares attack
 
@@ -11,6 +11,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 		{
 			Timer = 127;
 			State++;
+			Projectile.netUpdate = true;
 		}
 
 		private void VerticalSawJaws(int timer)
