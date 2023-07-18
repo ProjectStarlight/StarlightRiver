@@ -38,3 +38,7 @@
 - New enemy: Loot Wraith
 
 ## Misc
+- The boss rush now requires you to have defeated each boss atleast once to unlock
+- The boss rush will now save your scores across sessions
+- Updated boss rush damage resistance calculations to discourage strategies related to stalling
+- Updated the boss rush GUI

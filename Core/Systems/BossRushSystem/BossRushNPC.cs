@@ -1,12 +1,11 @@
-﻿using System;
-
-namespace StarlightRiver.Core.Systems.BossRushSystem
+﻿namespace StarlightRiver.Core.Systems.BossRushSystem
 {
 	internal class HushArmorSystem : ModSystem
 	{
 		public static float resistance;
 
 		public static float DPSTarget;
+		public static float highestDPS;
 
 		private static int pollTimer;
 
@@ -19,20 +18,29 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 
 			pollTimer++;
 
-			if (pollTimer % 20 == 0)
+			if (pollTimer % 40 == 0)
 			{
-				float thisDPS = totalDamage * 3f;
-				if (thisDPS < 1)
-					thisDPS = 1f;
+				float thisDPS = totalDamage * 1.5f;
+
+				if (thisDPS > highestDPS)
+					highestDPS = thisDPS;
+
 				totalDamage = 0;
 
-				if (thisDPS > DPSTarget && (DPSTarget / thisDPS) < resistance)
-					resistance = Helpers.Helper.LerpFloat(resistance, DPSTarget / thisDPS, 0.66f);
-				else if (resistance < 1)
-					resistance += 0.001f;
+				float resistLimit = DPSTarget * 1.5f / highestDPS;
+
+				if (thisDPS > 0)
+					resistance += (DPSTarget - thisDPS * resistance) * 0.0005f;
+
+				if (resistance > resistLimit)
+					resistance = resistLimit;
+
+				resistance = MathHelper.Clamp(resistance, 0.001f, 1);
 
 				if (!StarlightRiver.debugMode)
 					return;
+
+				//resistance = 0;
 
 				Main.NewText("=====================================================", new Color(200, 200, 200));
 				Main.NewText("Adapative damage resistance stats:");
@@ -41,8 +49,8 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 				Main.NewText("unadjusted DPS estimate: " + thisDPS, new Color(255, 200, 200));
 				Main.NewText("adjusted DPS estimate: " + thisDPS * resistance, new Color(255, 225, 200));
 				Main.NewText("DPS target: " + DPSTarget, new Color(255, 255, 200));
-				Main.NewText("Current boss: " + BossRushSystem.trackedBossType, new Color(225, 255, 200));
-				Main.NewText("Current stage: " + BossRushSystem.currentStage, new Color(200, 255, 200));
+				Main.NewText("Highest DPS: " + highestDPS, new Color(225, 255, 200));
+				Main.NewText("Resistance limit: " + resistLimit, new Color(200, 255, 200));
 				Main.NewText("=====================================================", new Color(200, 200, 200));
 			}
 		}
@@ -74,6 +82,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 
 		private void AdaptiveDR(ref NPC.HitInfo info, NPC npc)
 		{
+			HushArmorSystem.totalDamage += info.Damage;
 			int damage = (int)(info.Damage * HushArmorSystem.resistance);
 
 			if (damage == 0)
@@ -100,14 +109,6 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			}
 
 			info.Damage = damage;
-		}
-
-		public override void HitEffect(NPC npc, NPC.HitInfo hit)
-		{
-			if (!BossRushSystem.isBossRush)
-				return;
-
-			HushArmorSystem.totalDamage += (int)(hit.Damage * (1 / HushArmorSystem.resistance));
 		}
 
 		public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns)
