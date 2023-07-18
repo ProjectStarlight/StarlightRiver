@@ -18,6 +18,7 @@
 - Fixed rotation from aurora water persisting after leaving it
 - Fixed a crash with crescent casters in multiplayer
 - Fixed crafting recipe for frying pan
+- Fixed jade stopwatch with channel items
 
 ## Content
 - New summoner weapon: Haunted Dagger Staff
