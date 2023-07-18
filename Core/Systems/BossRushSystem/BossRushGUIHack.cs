@@ -28,7 +28,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 					inMenu = false;
 
 					Main.OpenWorldSelectUI();
-					Main.menuMode = 888;
+					Main.menuMode = MenuID.FancyUI;
 
 					SoundEngine.PlaySound(SoundID.MenuClose);
 				}
@@ -38,7 +38,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 					inScoreScreen = false;
 
 					Main.OpenWorldSelectUI();
-					Main.menuMode = 888;
+					Main.menuMode = MenuID.FancyUI;
 
 					SoundEngine.PlaySound(SoundID.MenuClose);
 				}
@@ -52,18 +52,18 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			if (inMenu)
 			{
 				Main.MenuUI.SetState(UILoader.GetUIState<BossRushMenu>());
-				Main.menuMode = 888;
+				Main.menuMode = MenuID.FancyUI;
 			}
 
 			if (inScoreScreen)
 			{
 				Main.MenuUI.SetState(UILoader.GetUIState<BossRushScore>());
-				Main.menuMode = 888;
+				Main.menuMode = MenuID.FancyUI;
 			}
 
 			orig(self, gameTime);
 
-			if (Main.gameMenu && Main.menuMode == 888 && Main.MenuUI.CurrentState is UIWorldSelect)
+			if (Main.gameMenu && Main.menuMode == MenuID.FancyUI && Main.MenuUI.CurrentState is UIWorldSelect)
 			{
 				Main.spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
 

@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.GUI
 
 		public bool Unlocked => BossRushDataStore.UnlockedBossRush;
 
-		public override bool Visible => Main.gameMenu && Main.menuMode == 888 && Main.MenuUI.CurrentState is UIWorldSelect;
+		public override bool Visible => Main.gameMenu && Main.menuMode == MenuID.FancyUI && Main.MenuUI.CurrentState is UIWorldSelect;
 
 		public override int InsertionIndex(List<GameInterfaceLayer> layers)
 		{
@@ -211,7 +211,7 @@ namespace StarlightRiver.Content.GUI
 				BossRushGUIHack.inMenu = false;
 
 				Main.OpenWorldSelectUI();
-				Main.menuMode = 888;
+				Main.menuMode = MenuID.FancyUI;
 
 				SoundEngine.PlaySound(SoundID.MenuClose);
 			};
