@@ -45,6 +45,7 @@
 - Fixed crystal slime in multiplayer
 - Fixed dashable barriers in multiplayer
 - Fixed gears puzzle in multiplayer
+- Fixed light puzzle in multiplayer
 
 
 ## Misc

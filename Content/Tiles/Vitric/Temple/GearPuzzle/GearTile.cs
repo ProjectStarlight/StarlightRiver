@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 		public override bool IsTileValidForEntity(int i, int j)
 		{
 			Tile tile = Main.tile[i, j];
-			return ModContent.GetModTile(tile.TileType) is GearTile || !tile.HasTile; // we OR with !tile.HasTile so it doesn't get deleted in multiplayer from unloaded tiles
+			return ModContent.GetModTile(tile.TileType) is GearTile && tile.HasTile;
 		}
 
 		public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction, int alternate)
@@ -57,12 +57,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 			}
 
 			return Place(i, j);
-		}
-
-		public override void Update()
-		{
-			if (!IsTileValidForEntity(Position.X, Position.Y))
-				Kill(Position.X, Position.Y);
 		}
 
 		/// <summary>

@@ -57,7 +57,6 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		{
 			if (!performedSpawnEffects)
 			{
-				Main.NewText("dusted");
 				performedSpawnEffects = true;
 				// Spawn dust
 				for (int k = 0; k < 20; k++)
