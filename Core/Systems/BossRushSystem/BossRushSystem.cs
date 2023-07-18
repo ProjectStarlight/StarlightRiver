@@ -5,8 +5,10 @@ using StarlightRiver.Content.Bosses.VitricBoss;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Permafrost;
 using StarlightRiver.Content.NPCs.BossRush;
+using StarlightRiver.Content.PersistentData;
 using StarlightRiver.Content.Tiles.Vitric;
 using StarlightRiver.Core.Loaders.UILoading;
+using StarlightRiver.Core.Systems.PersistentDataSystem;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System.Collections.Generic;
 using System.IO;
@@ -38,10 +40,6 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		public static int hitsTaken;
 		public static int timeScore;
 		public static int scoreMult;
-
-		public static int savedNormalScore;
-		public static int savedExpertScore;
-		public static int savedMasterScore;
 
 		public static int speedupTimer;
 
@@ -87,6 +85,9 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			transitionTimer = 0;
 			deathFadeoutTimer = 0;
 
+			HushArmorSystem.resistance = 0;
+			HushArmorSystem.highestDPS = 1;
+
 			MasterDeathTicker.animationTimer = 480;
 			UILoader.GetUIState<MessageBox>().Visible = false;
 		}
@@ -97,11 +98,13 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		public static void deadLogic()
 		{
 			if (Main.GameMode == 0)
-				savedNormalScore = Score;
+				PersistentDataStoreSystem.GetDataStore<BossRushDataStore>().normalScore = Score;
 			if (Main.GameMode == 1)
-				savedExpertScore = Score;
+				PersistentDataStoreSystem.GetDataStore<BossRushDataStore>().expertScore = Score;
 			if (Main.GameMode == 2)
-				savedMasterScore = Score;
+				PersistentDataStoreSystem.GetDataStore<BossRushDataStore>().masterScore = Score;
+
+			PersistentDataStoreSystem.GetDataStore<BossRushDataStore>().ForceSave();
 
 			if (deathFadeoutTimer < MAX_DEATH_FADEOUT)
 				deathFadeoutTimer++;
@@ -116,11 +119,13 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		public static void End()
 		{
 			if (Main.GameMode == 0)
-				savedNormalScore = Score;
+				PersistentDataStoreSystem.GetDataStore<BossRushDataStore>().normalScore = Score;
 			if (Main.GameMode == 1)
-				savedExpertScore = Score;
+				PersistentDataStoreSystem.GetDataStore<BossRushDataStore>().expertScore = Score;
 			if (Main.GameMode == 2)
-				savedMasterScore = Score;
+				PersistentDataStoreSystem.GetDataStore<BossRushDataStore>().masterScore = Score;
+
+			PersistentDataStoreSystem.GetDataStore<BossRushDataStore>().ForceSave();
 
 			WorldGen.SaveAndQuit();
 
