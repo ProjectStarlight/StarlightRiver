@@ -2898,6 +2898,15 @@ Mods: {
 				DisplayName: Soft Sand
 				Tooltip: ""
 			}
+
+			SaltCogs: {
+				DisplayName: Salt Cogs
+				Tooltip:
+					'''
+					Your sentries fire twice as fast for two seconds after placing them
+					100% increased sentry placement speed
+					'''
+			}
 		}
 
 		Projectiles: {
@@ -3461,6 +3470,9 @@ Mods: {
 			InfusionSlotPickup.DisplayName: Unnerving Device
 			BerrySlime.DisplayName: Slimeberry
 			TouchstoneWisp.DisplayName: Aurora Spirit
+			SoulNibbler.DisplayName: Soul Nibbler
+			LootWraith.DisplayName: Loot Wraith
+			GloomSlime.DisplayName: Gloom Slime
 		}
 
 		Buffs: {
