@@ -6704,6 +6704,10 @@ Mods: {
 			VitricSand.MapEntry: ""
 			VitricSoftSand.MapEntry: ""
 			VitricSandPlain.MapEntry: ""
+			// VitricGiantCrystal.MapEntry: ""
+			// VitricLargeCrystal.MapEntry: ""
+			// VitricMediumCrystal.MapEntry: ""
+			// VitricSmallCrystal.MapEntry: ""
 		}
 
 		Biomes: {
@@ -7132,6 +7136,12 @@ Mods: {
 					Despawn: The Vitric Forge falls silent. The Glassweaver is dissapointed.
 				}
 			}
+		}
+
+		Keybinds: {
+			Starsight.DisplayName: Starsight
+			"Forbidden Winds.DisplayName": Forbidden  Winds
+			Faeflame.DisplayName: Faeflame
 		}
 	}
 }

@@ -77,6 +77,7 @@ namespace StarlightRiver.Core
 		public delegate void ModifyHitNPCWithProjDelegate(Player player, Projectile proj, NPC target, ref NPC.HitModifiers modifiers);
 		public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref NPC.HitModifiers modifiers)
 		{
+			AddHitPacket(proj, target);
 			ModifyHitNPCWithProjEvent?.Invoke(Player, proj, target, ref modifiers);
 		}
 

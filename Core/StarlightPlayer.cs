@@ -130,7 +130,6 @@ namespace StarlightRiver.Core
 		{
 			if (shouldSendHitPacket && hitPacket != null && Main.myPlayer == Player.whoAmI && Main.netMode == NetmodeID.MultiplayerClient)
 			{
-
 				hitPacket.addHitInfo(hitInfo, damageDone);
 				hitPacket.Send(-1, Main.myPlayer, false);
 				shouldSendHitPacket = false;
