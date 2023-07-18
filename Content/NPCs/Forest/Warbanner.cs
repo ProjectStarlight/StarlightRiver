@@ -115,13 +115,16 @@ namespace StarlightRiver.Content.NPCs.Forest
 			GlobalTimer++;
 			VisualTimer++;
 
-			chain.UpdateChain(NPC.Center + Vector2.UnitY * -40);
-			miniChain0.UpdateChain(NPC.Center + new Vector2(22, -48));
-			miniChain1.UpdateChain(NPC.Center + new Vector2(-22, -48));
+			if (Main.netMode != NetmodeID.Server)
+			{
+				chain.UpdateChain(NPC.Center + Vector2.UnitY * -40);
+				miniChain0.UpdateChain(NPC.Center + new Vector2(22, -48));
+				miniChain1.UpdateChain(NPC.Center + new Vector2(-22, -48));
 
-			chain.IterateRope(UpdateBanner);
-			miniChain0.IterateRope(UpdateBannerSmall);
-			miniChain1.IterateRope(UpdateBannerSmall);
+				chain.IterateRope(UpdateBanner);
+				miniChain0.IterateRope(UpdateBannerSmall);
+				miniChain1.IterateRope(UpdateBannerSmall);
+			}
 
 			Lighting.AddLight(NPC.Center, new Vector3(1.25f, 0.4f, 0.2f) * VFXAlpha * 0.7f);
 

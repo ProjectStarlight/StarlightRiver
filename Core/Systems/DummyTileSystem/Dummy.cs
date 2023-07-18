@@ -26,7 +26,7 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 
 		public virtual bool ValidTile(Tile tile)
 		{
-			return tile.TileType == validType && tile.HasTile; //the tile is null only where tiles are unloaded in multiPlayer. We don't want to kill off dummies on unloaded tiles until tile is known because Projectile is recieved MUCH farther than the tiles.
+			return tile.TileType == validType || !tile.HasTile; //the tile doesn't hasTile only where tiles are unloaded in multiPlayer. We don't want to kill off dummies on unloaded tiles until tile is known because Projectile is recieved MUCH farther than the tiles.
 		}
 
 		public override bool PreDraw(ref Color lightColor)

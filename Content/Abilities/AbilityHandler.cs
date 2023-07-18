@@ -380,7 +380,9 @@ namespace StarlightRiver.Content.Abilities
 			if (ActiveAbility != null && called.Contains(ActiveAbility))
 			{
 				ActiveAbility.UpdateActive();
-				ActiveAbility.UpdateActiveEffects();
+
+				if (Main.netMode != NetmodeID.Server)
+					ActiveAbility.UpdateActiveEffects();
 
 				if (Main.netMode != NetmodeID.Server && Player == Main.LocalPlayer)
 					NetMessage.SendData(MessageID.PlayerControls, -1, -1, null, Main.LocalPlayer.whoAmI);

@@ -320,8 +320,11 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 				}
 			}
 
-			ManageCaches();
-			ManageTrail();
+			if (Main.netMode != NetmodeID.Server)
+			{
+				ManageCaches();
+				ManageTrail();
+			}
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)

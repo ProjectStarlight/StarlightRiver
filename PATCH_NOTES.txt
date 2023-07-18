@@ -7,11 +7,6 @@
 - Fixed various outdated tooltips
 - Fixed ceiros' drop pool not including shattered aegis on expert mode
 - Fixed glass arrowhead not functioning or having a tooltip
-- Fixed alican causing softlocks in multiplayer
-- Fixed auroracle causing softlocks in multiplayer
-- Fixed glassweaver causing softlocks in multiplayer
-- Fixed ceiros' master mode behavior desyncing in multiplayer
-- Fixed shrines in multiplayer
 - Fixed moonstones spawning too close to the edge of the world
 - Fixed bricklayer's trowel eating block placement wands
 - Fixed vitric pickaxe getting slower instead of faster as it gained heat
@@ -36,5 +31,19 @@
 - New enemy: Gloom slime
 - New enemy: Soul nibbler
 - New enemy: Loot Wraith
+
+## Multiplayer Compatibility
+- Fixed alican causing softlocks in multiplayer
+- Fixed auroracle causing softlocks in multiplayer
+- Fixed glassweaver causing softlocks in multiplayer
+- Fixed ceiros' master mode behavior desyncing in multiplayer
+- Fixed construct spawners in multiplayer
+- Fixed shrines in multiplayer
+- Fixed Tentalance in multiplayer
+- Fixed Haunted warbanner in multiplayer
+- Fixed crystal slime in multiplayer
+- Fixed dashable barriers in multiplayer
+- Fixed gears puzzle in multiplayer
+
 
 ## Misc

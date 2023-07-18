@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Helpers;
+using System.IO;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -14,6 +15,8 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		public override string Texture => AssetDirectory.VitricNpc + "CrystalSlime";
 
 		public ref float Shield => ref NPC.ai[1];
+
+		private bool performedSpawnEffects = false;
 
 		public override void SetStaticDefaults()
 		{
@@ -52,6 +55,17 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override void AI()
 		{
+			if (!performedSpawnEffects)
+			{
+				Main.NewText("dusted");
+				performedSpawnEffects = true;
+				// Spawn dust
+				for (int k = 0; k < 20; k++)
+				{
+					Dust.NewDust(NPC.Center, 20, 20, DustType<Dusts.Cinder>()); 
+				}
+			}
+
 			NPC.TargetClosest(true);
 			Player Player = Main.player[NPC.target];
 			AbilityHandler mp = Player.GetHandler();
