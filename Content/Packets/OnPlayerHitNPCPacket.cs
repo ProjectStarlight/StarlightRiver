@@ -96,8 +96,6 @@ namespace StarlightRiver.Content.Packets
 					DamageClass damageClass = proj.DamageType;
 					NPC.HitModifiers modifiers = Main.npc[NPCId].GetIncomingStrikeModifiers(damageClass, hitDirection: 0, ignoreArmorDebuffs: false);
 
-					Console.WriteLine(proj.ModProjectile);
-
 					if (runProjMethods && proj.ModProjectile != null)
 						proj.ModProjectile.ModifyHitNPC(Main.npc[NPCId], ref modifiers);
 
@@ -114,10 +112,6 @@ namespace StarlightRiver.Content.Packets
 
 			if (Main.netMode == Terraria.ID.NetmodeID.Server && fromWho != -1)
 				Send(-1, fromWho, false);
-
-			if (Main.netMode == Terraria.ID.NetmodeID.Server && fromWho != -1)
-				Console.WriteLine("executed for proj identity: " + projIdentity);
-
 		}
 	}
 }
