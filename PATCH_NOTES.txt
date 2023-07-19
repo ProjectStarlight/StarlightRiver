@@ -55,3 +55,20 @@
 - The boss rush will now save your scores across sessions
 - Updated boss rush damage resistance calculations to discourage strategies related to stalling
 - Updated the boss rush GUI
+
+## Balance
+- Starlight regeneration has recieved a large overhaul
+- Each point of starlight regeneration now grants 0.05 starlight per second
+- Base starlight regeneration is now 5 (0.25 per second)
+- Starlight regeneration penalth from movement significantly reduced
+- Starlight regeneration cooldown after using an ability significantly reduced
+- Many pieces of equipment with starlight regeneration have been updated to reflect new values
+- Barrier base values have been buffed
+- Base resistance 40%/30% (expert+/normal) => 50% (always)
+- Base recharge delay 8s => 5s
+- Base recharge rate 4 => 6
+- Tentalance damage increased (16 => 18)
+- Tentalance now has 50% damage falloff per target pierced
+- Ancient Lens critical strike chance decreased (3% => 2%) critical strike damage increased (10% => 15%)
+- Truestrike Lens critical strike chance decreased (4% => 2%) critical strike damage increased (10% => 20%)
+
