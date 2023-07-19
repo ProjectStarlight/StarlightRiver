@@ -10,7 +10,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		private List<Vector2> cache;
 		private Trail trail;
 
-
 		public ref float ParentWhoAmI => ref Projectile.ai[0];
 
 		public NPC Parent => Main.npc[(int)Projectile.ai[0]];

@@ -33,7 +33,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 			GearPuzzleClickPacket gearPacket = new GearPuzzleClickPacket(i, j, DummyType);
 			gearPacket.Send();
 
-
 			return true;
 		}
 	}

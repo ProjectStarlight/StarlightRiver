@@ -158,6 +158,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 					Projectile.NewProjectile(Owner.GetSource_ItemUse(Owner.HeldItem), Projectile.Center, Projectile.velocity.RotatedBy(0.25f), Type, Projectile.damage / 2, Projectile.knockBack, Projectile.owner, 0, 14);
 					Projectile.NewProjectile(Owner.GetSource_ItemUse(Owner.HeldItem), Projectile.Center, Projectile.velocity.RotatedBy(-0.25f), Type, Projectile.damage / 2, Projectile.knockBack, Projectile.owner, 0, 14);
 				}
+
 				Helper.PlayPitched("SquidBoss/LightSplash", 0.3f, -0.5f, Owner.Center);
 			}
 
@@ -168,6 +169,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 					Projectile.NewProjectile(Owner.GetSource_ItemUse(Owner.HeldItem), Projectile.Center, Projectile.velocity.RotatedBy(0.45f), Type, Projectile.damage / 2, Projectile.knockBack, Projectile.owner, 0, 1);
 					Projectile.NewProjectile(Owner.GetSource_ItemUse(Owner.HeldItem), Projectile.Center, Projectile.velocity.RotatedBy(-0.45f), Type, Projectile.damage / 2, Projectile.knockBack, Projectile.owner, 0, 1);
 				}
+
 				Helper.PlayPitched("SquidBoss/SuperSplash", 0.5f, -0.5f, Owner.Center);
 			}
 

@@ -775,8 +775,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				{
 					Bosses.SquidBoss.Laser.ParentWhoAmIToAssign = NPC.whoAmI;
 					Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, -200), Vector2.Zero, ModContent.ProjectileType<Laser>(), 150, 0.2f, 255, 0, AttackTimer * 0.1f);
-				}
-					
+				}	
 			}
 
 			int laserTime = Main.masterMode ? 300 : Main.expertMode ? 450 : 600; //faster in expert

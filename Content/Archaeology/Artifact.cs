@@ -156,7 +156,6 @@ namespace StarlightRiver.Content.Archaeology
 
 			Projectile proj = Projectile.NewProjectileDirect(new EntitySource_Misc("Artifact"), WorldPosition, new Vector2(0, -0.5f), ModContent.ProjectileType<ArtifactItemProj>(), 0, 0);
 
-
 			ArtifactSpawnPacket packet = new ArtifactSpawnPacket(this.ID, Position.X, Position.Y, proj.identity, TexturePath);
 			packet.Send();
 

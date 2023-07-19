@@ -384,7 +384,6 @@ namespace StarlightRiver.Content.Items.Starwood
 					proj.originalDamage = (int)(Projectile.originalDamage * 2.5); // this doesn't actually need to be synced so it can be assigned like this
 				}
 
-
 				empowermentTimer = 0;
 
 				Helpers.DustHelper.DrawStar(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), 5, 1.5f, 1.5f, 0.5f, 1, 1f, 0, -1, new Color(0, 0, 255));

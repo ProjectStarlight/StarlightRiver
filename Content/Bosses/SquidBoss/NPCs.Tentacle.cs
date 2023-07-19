@@ -13,7 +13,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public static int offsetFromParentBodyToAssign;
 		public static int parentIdToAssign;
 
-
 		public Vector2 movementTarget;
 		public Vector2 basePoint;
 		public int offsetFromParentBody;

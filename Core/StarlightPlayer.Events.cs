@@ -209,7 +209,6 @@ namespace StarlightRiver.Core
 			}
 		}
 
-
 		/// <summary>
 		/// Used to capture an item hit before ANY processing occurs for generating a hitpacket.
 		/// normal order is projectile -> NPC -> player with all modify overrides occuring first followed by onhits after refs are finalized 

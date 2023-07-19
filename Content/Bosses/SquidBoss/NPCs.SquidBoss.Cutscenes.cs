@@ -78,7 +78,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 							default: x = 0; y = 0; xb = 0; break;
 						}
 
-
 						Tentacle.movementTargetToAssign = new Vector2((int)NPC.Center.X + x, (int)NPC.Center.Y - 500 - y);
 						Tentacle.offsetFromParentBodyToAssign = xb;
 						float timer = 120 + k * 20;
@@ -112,7 +111,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					tentacle.stalkWaviness = progress * 0.5f;
 				}
 			}
-			
+
 
 			if (GlobalTimer > 500 && GlobalTimer <= 550) //tentacles returning back underwater
 			{

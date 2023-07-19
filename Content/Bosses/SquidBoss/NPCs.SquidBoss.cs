@@ -514,7 +514,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				RebuildPlatforms();
 
 				spawnPoint = NPC.Center;
-				
+
 				if (Main.netMode != NetmodeID.MultiplayerClient)
 				{
 					int i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y - 1050, NPCType<ArenaBlocker>(), 0, 800);
