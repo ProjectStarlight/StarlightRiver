@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Pickups
 					return;
 			}
 
-			var abilitySpawnPacket = new Packets.SpawnNPC(Main.myPlayer, i * 16 + 8, j * 16 + 24, PickupType);
+			var abilitySpawnPacket = new Packets.SpawnNPC(i * 16 + 8, j * 16 + 24, PickupType);
 			abilitySpawnPacket.Send();
 		}
 	}
