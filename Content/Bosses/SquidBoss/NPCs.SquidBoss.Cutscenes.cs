@@ -112,7 +112,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				}
 			}
 
-
 			if (GlobalTimer > 500 && GlobalTimer <= 550) //tentacles returning back underwater
 			{
 				foreach (NPC tentacle in tentacles)
