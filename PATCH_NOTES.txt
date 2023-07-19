@@ -71,4 +71,6 @@
 - Tentalance now has 50% damage falloff per target pierced
 - Ancient Lens critical strike chance decreased (3% => 2%) critical strike damage increased (10% => 15%)
 - Truestrike Lens critical strike chance decreased (4% => 2%) critical strike damage increased (10% => 20%)
-
+- Soilgun damage reduced (16 => 4)
+- Earthduster damage reduced (25 => 6)
+- Soilgun/Earthduster crimsand nerfed (healing chance 33% => 20%) (healing 2 + 10% damage => 1)
