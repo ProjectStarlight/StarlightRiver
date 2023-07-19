@@ -61,3 +61,4 @@
 - Soilgun damage reduced (16 => 4)
 - Earthduster damage reduced (25 => 6)
 - Soilgun/Earthduster crimsand nerfed (healing chance 33% => 20%) (healing 2 + 10% damage => 1)
+- Auroracle's water will now deal a small amount of damage when you fall in to alert you of the danger
