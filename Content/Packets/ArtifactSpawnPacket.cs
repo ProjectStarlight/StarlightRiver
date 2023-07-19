@@ -1,0 +1,44 @@
+﻿using NetEasy;
+using StarlightRiver.Content.Archaeology;
+using System;
+using System.Linq;
+using Terraria.DataStructures;
+using static Terraria.ModLoader.PlayerDrawLayer;
+
+namespace StarlightRiver.Content.Packets
+{
+	/// <summary>
+	/// Sent from server to clients
+	/// notifes them to remove the tile entity and update the texturepath on the projectile
+	/// sort of a large packet that could get split for bad performace but these shouldn't be super time sensitive nor frequent
+	/// </summary>
+	[Serializable]
+	public class ArtifactSpawnPacket : Module
+	{
+		private readonly short x;
+		private readonly short y;
+		private readonly int artifactId;
+		private readonly int projectileIdentity;
+		private readonly string texturePath;
+
+		public ArtifactSpawnPacket(int artifactId, short x, short y, int projectileIdentity, string texturePath)
+		{
+			this.x = x;
+			this.y = y;
+			this.artifactId = artifactId;
+			this.projectileIdentity = projectileIdentity;
+			this.texturePath = texturePath;
+		}
+
+		protected override void Receive()
+		{
+			ModTileEntity artifactEntity = TileEntity.ByID[artifactId] as ModTileEntity;
+			
+			artifactEntity.Kill(x, y);
+			ModContent.GetInstance<ArchaeologyMapLayer>().CalculateDrawables();
+
+			ArtifactItemProj proj = Main.projectile.FirstOrDefault(n => n.identity == projectileIdentity).ModProjectile as ArtifactItemProj;
+			proj.itemTexture = texturePath;
+		}
+	}
+}

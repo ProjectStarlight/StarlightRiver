@@ -47,6 +47,7 @@
 - Fixed gears puzzle in multiplayer
 - Fixed light puzzle in multiplayer
 - Fixed starwood armor and weapons in multiplayer
+- Fixed artifacts in multiplayer
 
 
 ## Misc

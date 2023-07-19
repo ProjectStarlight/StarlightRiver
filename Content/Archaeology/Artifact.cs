@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Helpers;
+﻿using StarlightRiver.Content.Packets;
+using StarlightRiver.Helpers;
 using System;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
@@ -119,7 +120,7 @@ namespace StarlightRiver.Content.Archaeology
 				return;
 
 			int modifiedSparkleRate = (int)(SparkleRate / sparkleMult); //spawns sparkles relative to light level
-			if (Main.rand.NextBool(modifiedSparkleRate))
+			if (modifiedSparkleRate > 0 && Main.rand.NextBool(modifiedSparkleRate))
 				Dust.NewDustPerfect(WorldPosition + Size * new Vector2(Main.rand.NextFloat(), Main.rand.NextFloat()), SparkleDust, Vector2.Zero);
 		}
 
@@ -148,16 +149,17 @@ namespace StarlightRiver.Content.Archaeology
 				}
 			}
 
-			Kill(Position.X, Position.Y);
-			ModContent.GetInstance<ArchaeologyMapLayer>().CalculateDrawables();
+			ArtifactItemProj.glowColorToAssign = BeamColor;
+			ArtifactItemProj.itemTypeToAssign = ItemType;
+			ArtifactItemProj.sizeToAssign = Size;
+			ArtifactItemProj.sparkleTypeToAssign = SparkleDust;
 
-			var proj = Projectile.NewProjectileDirect(new EntitySource_Misc("Artifact"), WorldPosition, new Vector2(0, -0.5f), ModContent.ProjectileType<ArtifactItemProj>(), 0, 0);
-			var modProj = proj.ModProjectile as ArtifactItemProj;
-			modProj.itemTexture = TexturePath;
-			modProj.glowColor = BeamColor;
-			modProj.itemType = ItemType;
-			modProj.size = Size;
-			modProj.sparkleType = SparkleDust;
+			Projectile proj = Projectile.NewProjectileDirect(new EntitySource_Misc("Artifact"), WorldPosition, new Vector2(0, -0.5f), ModContent.ProjectileType<ArtifactItemProj>(), 0, 0);
+
+
+			ArtifactSpawnPacket packet = new ArtifactSpawnPacket(this.ID, Position.X, Position.Y, proj.identity, TexturePath);
+			packet.Send();
+
 		}
 	}
 }
