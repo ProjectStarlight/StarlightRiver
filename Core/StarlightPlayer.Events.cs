@@ -207,7 +207,6 @@ namespace StarlightRiver.Core
 				Main.player[projectile.owner].TryGetModPlayer(out StarlightPlayer starlightPlayer);
 				starlightPlayer.AddHitPacket(projectile, target);
 			}
-
 		}
 
 

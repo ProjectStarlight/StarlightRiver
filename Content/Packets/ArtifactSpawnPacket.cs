@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.Packets
 {
 	/// <summary>
 	/// Sent from server to clients
-	/// notifes them to remove the tile entity and update the texturepath on the projectile
+	/// notifies them to remove the tile entity and update the texturepath on the projectile
 	/// sort of a large packet that could get split for bad performace but these shouldn't be super time sensitive nor frequent
 	/// </summary>
 	[Serializable]
