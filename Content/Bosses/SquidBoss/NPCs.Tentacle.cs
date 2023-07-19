@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.NPCs.BaseTypes;
 using System;
 using System.Linq;
+using Terraria.DataStructures;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -8,12 +9,17 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 {
 	public class Tentacle : ModNPC, IUnderwater
 	{
+		public static Vector2 movementTargetToAssign;
+		public static int offsetFromParentBodyToAssign;
+		public static int parentIdToAssign;
+
+
 		public Vector2 movementTarget;
 		public Vector2 basePoint;
 		public int offsetFromParentBody;
 		public bool shouldDrawPortal;
 
-		public float stalkWaviness = 1;
+		public float stalkWaviness = 0;
 		public float zSpin = 0;
 		public int downwardDrawDistance = 28;
 
@@ -62,6 +68,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			NPC.knockBackResist = 0f;
 			NPC.HitSound = SoundID.NPCHit1;
 			NPC.dontTakeDamage = true;
+		}
+
+		public override void OnSpawn(IEntitySource source)
+		{
+			movementTarget = movementTargetToAssign;
+			offsetFromParentBody = offsetFromParentBodyToAssign;
+			basePoint = NPC.Center + Vector2.UnitY * 10;
+			Parent = Main.npc[parentIdToAssign].ModNPC as SquidBoss;
 		}
 
 		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
@@ -412,12 +426,17 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		{
 			writer.WriteVector2(basePoint);
 			writer.WriteVector2(movementTarget);
+			writer.Write(offsetFromParentBody);
+			writer.Write(Parent.NPC.whoAmI);
 		}
 
 		public override void ReceiveExtraAI(System.IO.BinaryReader reader)
 		{
 			basePoint = reader.ReadVector2();
 			movementTarget = reader.ReadVector2();
+			offsetFromParentBody = reader.ReadInt32();
+			int parentId = reader.ReadInt32();
+			Parent = Main.npc[parentId].ModNPC as SquidBoss;
 		}
 	}
 }

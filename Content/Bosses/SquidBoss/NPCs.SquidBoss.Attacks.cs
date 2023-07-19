@@ -10,6 +10,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 	{
 		private void RandomizeTarget()
 		{
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+				return;
+
 			var possible = new List<int>();
 
 			for (int k = 0; k < Main.maxPlayers; k++)
@@ -24,6 +27,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			{
 				Phase = (int)AIStates.Fleeing;
 				AttackTimer = 0;
+				NPC.netUpdate = true;
 				return;
 			}
 
@@ -36,11 +40,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		{
 			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
-				int i = Projectile.NewProjectile(NPC.GetSource_FromThis(), start, Vector2.Zero, ModContent.ProjectileType<TentacleTell>(), 0, 0, Main.myPlayer);
-				Projectile proj = Main.projectile[i];
-
-				if (proj.ModProjectile is TentacleTell)
-					(proj.ModProjectile as TentacleTell).endPoint = end;
+				TentacleTell.endPointToAssign = end;
+				Projectile.NewProjectile(NPC.GetSource_FromThis(), start, Vector2.Zero, ModContent.ProjectileType<TentacleTell>(), 0, 0, Main.myPlayer);
 			}
 		}
 
@@ -109,7 +110,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					if (tentacle.State != 2)
 						tentacle.State = 1;
 
-					savedPoint = new Vector2(Main.player[NPC.target].Center.X + adj + (Main.rand.NextBool() ? 150 : -150), Main.player[NPC.target].Center.Y);
+					if (Main.netMode != NetmodeID.Server)
+					{
+						savedPoint = new Vector2(Main.player[NPC.target].Center.X + adj + (Main.rand.NextBool() ? 150 : -150), Main.player[NPC.target].Center.Y);
+						NPC.netUpdate = true;
+					}
 
 					SpawnTell(tentacle.movementTarget + new Vector2(0, -64), tentacle.basePoint);
 
@@ -542,7 +547,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			for (int k = 0; k < 4; k++)
 			{
-				var tentacle = tentacles[k].ModNPC as Tentacle;
+				Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
 
 				if (k != 2) // logic for the poking tentacles
 				{
@@ -609,10 +614,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 						tentacle.downwardDrawDistance++;
 
 					if (AttackTimer == 90 + k * 20 && Main.netMode != NetmodeID.MultiplayerClient)
-					{
-						int i = Projectile.NewProjectile(NPC.GetSource_FromThis(), tentacle.NPC.Center, Vector2.Zero, ModContent.ProjectileType<TentacleTrail>(), 0, 0, Main.myPlayer);
-						(Main.projectile[i].ModProjectile as TentacleTrail).parent = tentacle;
-					}
+						Projectile.NewProjectile(NPC.GetSource_FromThis(), tentacle.NPC.Center, Vector2.Zero, ModContent.ProjectileType<TentacleTrail>(), 0, 0, Main.myPlayer, ai0: tentacle.NPC.whoAmI);
 
 					if (AttackTimer > 100 + k * 20 && AttackTimer < 280 + k * 20)
 					{
@@ -771,9 +773,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 				if (Main.netMode != NetmodeID.MultiplayerClient)
 				{
-					int i = Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, -200), Vector2.Zero, ModContent.ProjectileType<Laser>(), 150, 0.2f, 255, 0, AttackTimer * 0.1f);
-					(Main.projectile[i].ModProjectile as Laser).parent = NPC;
+					Bosses.SquidBoss.Laser.ParentWhoAmIToAssign = NPC.whoAmI;
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, -200), Vector2.Zero, ModContent.ProjectileType<Laser>(), 150, 0.2f, 255, 0, AttackTimer * 0.1f);
 				}
+					
 			}
 
 			int laserTime = Main.masterMode ? 300 : Main.expertMode ? 450 : 600; //faster in expert

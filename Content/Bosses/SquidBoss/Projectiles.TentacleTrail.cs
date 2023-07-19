@@ -10,7 +10,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		private List<Vector2> cache;
 		private Trail trail;
 
-		public Tentacle parent;
+
+		public ref float ParentWhoAmI => ref Projectile.ai[0];
+
+		public NPC Parent => Main.npc[(int)Projectile.ai[0]];
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -30,13 +33,13 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void AI()
 		{
-			if (parent?.NPC is null)
+			if (Parent is null)
 			{
 				Projectile.active = false;
 				return;
 			}
 
-			Projectile.Center = parent.NPC.Center;
+			Projectile.Center = Parent.Center;
 
 			if (!Main.dedServ)
 			{
