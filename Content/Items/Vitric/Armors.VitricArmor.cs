@@ -198,7 +198,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void UpdateEquip(Player Player)
 		{
-			Player.GetHandler().StaminaRegenRate += 0.1f;
+			Player.GetHandler().StaminaRegenRate += 2;
 		}
 
 		public override void AddRecipes()
