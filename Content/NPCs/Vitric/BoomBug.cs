@@ -386,36 +386,42 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			return false;
 		}
 
+		public override void HitEffect(NPC.HitInfo hit)
+		{
+			if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
+			{
+				SoundEngine.PlaySound(SoundID.Item14, NPC.Center);
+
+				for (int i = 0; i < 4; i++)
+				{
+					var dust = Dust.NewDustDirect(NPC.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<CoachGunDust>());
+					dust.velocity = Main.rand.NextVector2Circular(2, 2);
+					dust.scale = Main.rand.NextFloat(0.8f, 1.4f);
+					dust.alpha = 70 + Main.rand.Next(60);
+					dust.rotation = Main.rand.NextFloat(6.28f);
+				}
+
+				for (int i = 0; i < 8; i++)
+				{
+					Vector2 dir = Main.rand.NextVector2CircularEdge(0.5f, 0.5f) + Main.rand.NextVector2Circular(0.5f, 0.5f);
+					Dust.NewDustPerfect(NPC.Center + dir * 24, ModContent.DustType<Dusts.GlowLineFast>(), dir * 12, 0, Color.OrangeRed, Main.rand.NextFloat(0.65f, 1.15f));
+				}
+
+				for (int i = 0; i < 4; i++)
+				{
+					var dust = Dust.NewDustDirect(NPC.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<CoachGunDustTwo>());
+					dust.velocity = Main.rand.NextVector2Circular(2, 2);
+					dust.scale = Main.rand.NextFloat(0.8f, 1.4f);
+					dust.alpha = Main.rand.Next(80) + 40;
+					dust.rotation = Main.rand.NextFloat(6.28f);
+
+					Dust.NewDustPerfect(NPC.Center + Main.rand.NextVector2Circular(25, 25), ModContent.DustType<CoachGunDustGlow>()).scale = 0.9f;
+				}
+			}
+		}
+
 		public override void OnKill()
 		{
-			SoundEngine.PlaySound(SoundID.Item14, NPC.Center);
-
-			for (int i = 0; i < 4; i++)
-			{
-				var dust = Dust.NewDustDirect(NPC.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<CoachGunDust>());
-				dust.velocity = Main.rand.NextVector2Circular(2, 2);
-				dust.scale = Main.rand.NextFloat(0.8f, 1.4f);
-				dust.alpha = 70 + Main.rand.Next(60);
-				dust.rotation = Main.rand.NextFloat(6.28f);
-			}
-
-			for (int i = 0; i < 8; i++)
-			{
-				Vector2 dir = Main.rand.NextVector2CircularEdge(0.5f, 0.5f) + Main.rand.NextVector2Circular(0.5f, 0.5f);
-				Dust.NewDustPerfect(NPC.Center + dir * 24, ModContent.DustType<Dusts.GlowLineFast>(), dir * 12, 0, Color.OrangeRed, Main.rand.NextFloat(0.65f, 1.15f));
-			}
-
-			for (int i = 0; i < 4; i++)
-			{
-				var dust = Dust.NewDustDirect(NPC.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<CoachGunDustTwo>());
-				dust.velocity = Main.rand.NextVector2Circular(2, 2);
-				dust.scale = Main.rand.NextFloat(0.8f, 1.4f);
-				dust.alpha = Main.rand.Next(80) + 40;
-				dust.rotation = Main.rand.NextFloat(6.28f);
-
-				Dust.NewDustPerfect(NPC.Center + Main.rand.NextVector2Circular(25, 25), ModContent.DustType<CoachGunDustGlow>()).scale = 0.9f;
-			}
-
 			for (int i = 0; i < 2; i++)
 			{
 				Vector2 velocity = Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(1, 2);
