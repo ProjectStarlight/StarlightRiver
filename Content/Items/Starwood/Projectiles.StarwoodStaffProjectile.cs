@@ -62,7 +62,8 @@ namespace StarlightRiver.Content.Items.Starwood
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			target.GetGlobalNPC<StarwoodScoreCounter>().AddScore(counterScore, Projectile.owner, damageDone);
+			if (Main.LocalPlayer.whoAmI == Projectile.owner)
+				target.GetGlobalNPC<StarwoodScoreCounter>().AddScore(counterScore, Projectile.owner, damageDone);
 		}
 
 		public override void Kill(int timeLeft)

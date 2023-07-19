@@ -120,7 +120,7 @@ namespace StarlightRiver.Content.Items.Starwood
 			if (ArmorHelper.IsSetEquipped(this, Player))
 			{
 				target.GetGlobalNPC<ManastarDrops>().DropStar = true;
-				Player.GetModPlayer<StarlightPlayer>().shouldSendHitPacket = true;
+				Player.GetModPlayer<StarlightPlayer>().SetHitPacketStatus(shouldRunProjMethods: false);
 			}
 		}
 
@@ -129,7 +129,7 @@ namespace StarlightRiver.Content.Items.Starwood
 			if (ArmorHelper.IsSetEquipped(this, Player))
 			{
 				target.GetGlobalNPC<ManastarDrops>().DropStar = true;
-				Player.GetModPlayer<StarlightPlayer>().shouldSendHitPacket = true;
+				Player.GetModPlayer<StarlightPlayer>().SetHitPacketStatus(shouldRunProjMethods: false);
 			}
 		}
 

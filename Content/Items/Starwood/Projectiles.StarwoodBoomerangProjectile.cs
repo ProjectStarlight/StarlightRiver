@@ -192,7 +192,8 @@ namespace StarlightRiver.Content.Items.Starwood
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			NextPhase(0, true);
-			Projectile.netUpdate = true;
+			Main.player[Projectile.owner].TryGetModPlayer<StarlightPlayer>(out StarlightPlayer starlightPlayer);
+			starlightPlayer.SetHitPacketStatus(shouldRunProjMethods: true);
 		}
 
 		public override void OnHitPlayer(Player target, Player.HurtInfo info)
