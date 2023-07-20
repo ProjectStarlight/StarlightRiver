@@ -55,9 +55,6 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override bool CanUseItem(Player player)
 		{
-			if (!player.channel)
-				charge = 0;
-
 			return !Main.projectile.Any(n => n.active && n.type == ModContent.ProjectileType<TentalanceProjectile>() && n.owner == player.whoAmI);
 		}
 
@@ -68,6 +65,9 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override void HoldItem(Player player)
 		{
+			if (!player.channel && player.ownedProjectileCounts[ModContent.ProjectileType<TentalanceProjectile>()] == 0)
+				charge = 0;
+
 			if (player.channel && charge == 29)
 			{
 				Helper.PlayPitched("MagicAttack", 1, 1, player.Center);
@@ -136,8 +136,10 @@ namespace StarlightRiver.Content.Items.Permafrost
 				{
 					ChargeSnapshot = Charge;
 					Projectile.damage += Charge;
-
 					Helper.PlayPitched("SquidBoss/LightSplash", 0.2f, -0.5f, Owner.Center);
+
+					var heldLance = Owner.HeldItem.ModItem as Tentalance;
+					heldLance.charge = 0;
 				}
 			}
 			else
