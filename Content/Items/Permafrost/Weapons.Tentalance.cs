@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override void HoldItem(Player player)
 		{
-			if (!player.channel)
+			if (!player.channel && player.ownedProjectileCounts[ModContent.ProjectileType<TentalanceProjectile>()] == 0)
 				charge = 0;
 
 			if (player.channel && charge == 29)
@@ -136,8 +136,10 @@ namespace StarlightRiver.Content.Items.Permafrost
 				{
 					ChargeSnapshot = Charge;
 					Projectile.damage += Charge;
-
 					Helper.PlayPitched("SquidBoss/LightSplash", 0.2f, -0.5f, Owner.Center);
+
+					Tentalance heldLance = Owner.HeldItem.ModItem as Tentalance;
+					heldLance.charge = 0;
 				}
 			}
 			else
@@ -187,11 +189,6 @@ namespace StarlightRiver.Content.Items.Permafrost
 				ManageCaches();
 				ManageTrail();
 			}
-		}
-
-		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-		{
-			Projectile.damage /= 2;
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
