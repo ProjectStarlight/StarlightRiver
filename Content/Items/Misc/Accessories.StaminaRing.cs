@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public StaminaRing() : base("Band of Starlight", "Slightly increases Starlight regeneration") { }
+		public StaminaRing() : base("Band of Starlight", "+2 Starlight regeneration") { }
 
 		public override void SafeSetDefaults()
 		{
@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SafeUpdateEquip(Player Player)
 		{
 			AbilityHandler mp = Player.GetHandler();
-			mp.StaminaRegenRate += 0.05f;
+			mp.StaminaRegenRate += 2;
 		}
 
 		public override void AddRecipes()

@@ -18,10 +18,10 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 		public int overchargeDrainRate = 60;
 
 		public int timeSinceLastHit = 0;
-		public int rechargeDelay = 480;
-		public int rechargeRate = 4;
+		public int rechargeDelay = 300;
+		public int rechargeRate = 6;
 
-		public float barrierDamageReduction = 0.3f;
+		public float barrierDamageReduction = 0.5f;
 
 		public float rechargeAnimationTimer;
 		public Item barrierDyeItem;
@@ -220,10 +220,10 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 			dontDrainOvercharge = false;
 			overchargeDrainRate = 60;
 
-			rechargeDelay = 480;
-			rechargeRate = 4;
+			rechargeDelay = 300;
+			rechargeRate = 6;
 
-			barrierDamageReduction = Main.expertMode ? 0.4f : 0.3f;
+			barrierDamageReduction = 0.5f;
 
 			if (Dye is null)
 			{

@@ -226,7 +226,9 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 	public class SoilgunCrimsandSoil : BaseSoilProjectile
 	{
 		public override string Texture => "Terraria/Images/Item_" + ItemID.CrimsandBlock;
+
 		public SoilgunCrimsandSoil() : base(new Color(39, 17, 14), new Color(56, 17, 14), new Color(135, 43, 34), DustID.CrimsonPlants) { }
+
 		public override void SafeAI()
 		{
 			if (Main.rand.NextBool(10))
@@ -238,7 +240,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (Main.rand.NextBool(3) && Main.player[Projectile.owner].statLife < Main.player[Projectile.owner].statLifeMax2)
+			if (Main.rand.NextBool(5) && Main.player[Projectile.owner].statLife < Main.player[Projectile.owner].statLifeMax2)
 			{
 				for (int i = 0; i < 12; i++)
 				{
@@ -247,13 +249,14 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 				}
 
 				if (Main.myPlayer == Projectile.owner && !target.SpawnedFromStatue && target.lifeMax > 5 && target.type != NPCID.TargetDummy)
-					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.DirectionTo(Main.player[Projectile.owner].Center), ModContent.ProjectileType<SoilgunLifeSteal>(), 0, 0f, Projectile.owner, 2 + (int)(damageDone * 0.1f));
+					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.DirectionTo(Main.player[Projectile.owner].Center), ModContent.ProjectileType<SoilgunLifeSteal>(), 0, 0f, Projectile.owner, 1);
 			}
 		}
 
 		public override void Kill(int timeLeft)
 		{
 			SoundEngine.PlaySound(SoundID.Dig, Projectile.position);
+
 			for (int i = 0; i < 15; i++)
 			{
 				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.CrimsonPlants, 0f, 0f, 25, default, Main.rand.NextFloat(0.8f, 1f));
