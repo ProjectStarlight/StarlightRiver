@@ -176,4 +176,21 @@ namespace StarlightRiver.Content.Items.Misc
 			time = tag.GetString("time");
 		}
 	}
+
+	public class JadeStopwatchGlobalItem : GlobalItem
+	{
+		/// <summary>
+		/// Used to disable channel items on the extra/reduced frame given by jade stopwatch so they don't spam the screen
+		/// </summary>
+		/// <param name="item"></param>
+		/// <param name="player"></param>
+		/// <returns></returns>
+		public override bool CanUseItem(Item item, Player player)
+		{
+			if (player.channel && SmartAccessory.GetEquippedInstance(player, ModContent.ItemType<JadeStopwatch>()) != null)
+				return false;
+				
+			return base.CanUseItem(item, player);
+		}
+	}
 }

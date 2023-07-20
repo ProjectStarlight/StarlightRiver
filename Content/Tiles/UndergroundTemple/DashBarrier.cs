@@ -52,8 +52,11 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 		{
 			if (AbilityHelper.CheckDash(Player, Projectile.Hitbox))
 			{
-				WorldGen.KillTile(ParentX, ParentY);
-				NetMessage.SendTileSquare(Player.whoAmI, (int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f), 2, 3, TileChangeType.None);
+				if (Main.myPlayer == Player.whoAmI)
+				{
+					WorldGen.KillTile(ParentX, ParentY);
+					NetMessage.SendTileSquare(Player.whoAmI, (int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f), 2, 3, TileChangeType.None);
+				}
 
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Tink, Projectile.Center);
 			}

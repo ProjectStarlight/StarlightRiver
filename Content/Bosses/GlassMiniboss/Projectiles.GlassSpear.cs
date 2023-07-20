@@ -91,7 +91,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					glassweaver.NPC.velocity -= Projectile.velocity * 0.35f;
 
 					Projectile.netUpdate = true;
-					glassweaver.NPC.netUpdate = true;
+					NetMessage.SendData(MessageID.SyncNPC, number: glassweaver.NPC.whoAmI);
 				}
 
 				if (glassweaver.AttackTimer > 65 && glassweaver.AttackTimer < 85)
@@ -140,7 +140,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 						}
 
 						Projectile.netUpdate = true;
-						glassweaver.NPC.netUpdate = true;
+						NetMessage.SendData(MessageID.SyncNPC, number: glassweaver.NPC.whoAmI);
 					}
 
 					if (Main.netMode != NetmodeID.Server)

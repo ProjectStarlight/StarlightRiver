@@ -32,6 +32,9 @@ namespace StarlightRiver.Content.Abilities
 		public abstract bool HotKeyMatch(TriggersSet triggers, AbilityHotkeys abilityKeys);
 		public virtual void ModifyDrawInfo(ref PlayerDrawSet drawInfo) { }
 		public virtual void Reset() { }
+		/// <summary>
+		/// for visual effects like dusts and gores. Only executed by clients.
+		/// </summary>
 		public virtual void UpdateActiveEffects() { }
 		public virtual void DrawActiveEffects(SpriteBatch spriteBatch) { }
 		public virtual void UpdateFixed() { }

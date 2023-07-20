@@ -84,6 +84,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			return false;
 		}
 
+		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+		{
+			return false; // Disable contact damage
+		}
+
 		public void DrawBestiary(SpriteBatch spriteBatch, Vector2 screenPos)
 		{
 			Animate(12, 0, 8);
@@ -510,8 +515,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 				spawnPoint = NPC.Center;
 
-				int i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y - 1050, NPCType<ArenaBlocker>(), 0, 800);
-				arenaBlocker = Main.npc[i];
+				if (Main.netMode != NetmodeID.MultiplayerClient)
+				{
+					int i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y - 1050, NPCType<ArenaBlocker>(), 0, 800);
+					arenaBlocker = Main.npc[i];
+				}
 
 				for (int k = 0; k < Main.maxPlayers; k++)
 				{
@@ -556,7 +564,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 						AttackPhase++;
 						RandomizeTarget();
 
-						variantAttack = Main.rand.NextBool();
+						if (Main.netMode != NetmodeID.MultiplayerClient)
+						{
+							variantAttack = Main.rand.NextBool();
+							NPC.netUpdate = true;
+						}
 
 						if (AttackPhase > (Main.expertMode ? 5 : 4))
 							AttackPhase = 1;
@@ -908,14 +920,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				tentacles.Add(NPC);
 			}
 
-			Mod.Logger.Info($"Added {tentacles.Count} tentacles to auroracle's tentacle collection");
-
 			tentacles.Sort((a, b) => a.ai[2] > b.ai[2] ? 1 : -1);
 
 			if (tentacles is null || tentacles.Count != 4 || tentacles.Any(n => !n.active || n.ModNPC is not Tentacle))
 			{
-				NPC.active = false;
-				Mod.Logger.Error("Auroracle failed to rebuild tentacle collection, aborting!");
+				Mod.Logger.Error("Auroracle failed to rebuild tentacle collection!");
 			}
 		}
 
