@@ -55,6 +55,9 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override bool CanUseItem(Player player)
 		{
+			if (!player.channel)
+				charge = 0;
+
 			return !Main.projectile.Any(n => n.active && n.type == ModContent.ProjectileType<TentalanceProjectile>() && n.owner == player.whoAmI);
 		}
 
