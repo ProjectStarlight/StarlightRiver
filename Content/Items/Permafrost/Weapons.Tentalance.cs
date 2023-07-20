@@ -55,6 +55,9 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override bool CanUseItem(Player player)
 		{
+			if (!player.channel)
+				charge = 0;
+
 			return !Main.projectile.Any(n => n.active && n.type == ModContent.ProjectileType<TentalanceProjectile>() && n.owner == player.whoAmI);
 		}
 
@@ -65,9 +68,6 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override void HoldItem(Player player)
 		{
-			if (!player.channel)
-				charge = 0;
-
 			if (player.channel && charge == 29)
 			{
 				Helper.PlayPitched("MagicAttack", 1, 1, player.Center);
@@ -187,11 +187,6 @@ namespace StarlightRiver.Content.Items.Permafrost
 				ManageCaches();
 				ManageTrail();
 			}
-		}
-
-		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-		{
-			Projectile.damage /= 2;
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)

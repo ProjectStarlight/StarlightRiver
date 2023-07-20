@@ -30,15 +30,8 @@ namespace StarlightRiver.Content.Items.Forest
 		{
 			DisplayName.SetDefault("Slime Prince's Crown");
 			Tooltip.SetDefault("10% increased summoning damage");
-		}
 
-		public override void UpdateArmorSet(Player player)
-		{
-			player.setBonus = "A slime prince follows you around\nDouble tap DOWN to fuse with the prince\nYou can control the prince during this time\nThe prince takes damage instead of you during this time";
-
-			// If the prince is invalid, we need to spawn a new prince
-			if (prince is null || !prince.active || prince.type != ProjectileType<SlimePrinceMinion>() || prince.owner != player.whoAmI)
-				prince = Projectile.NewProjectileDirect(player.GetSource_FromThis(), player.Center, Vector2.Zero, ProjectileType<SlimePrinceMinion>(), 28, 0, player.whoAmI);
+			ArmorIDs.Head.Sets.DrawFullHair[Item.headSlot] = true;
 		}
 
 		public override void SetDefaults()
@@ -48,6 +41,15 @@ namespace StarlightRiver.Content.Items.Forest
 			Item.value = 1;
 			Item.rare = ItemRarityID.Green;
 			Item.defense = 2;
+		}
+
+		public override void UpdateArmorSet(Player player)
+		{
+			player.setBonus = "A slime prince follows you around\nDouble tap DOWN to fuse with the prince\nYou can control the prince during this time\nThe prince takes damage instead of you during this time";
+
+			// If the prince is invalid, we need to spawn a new prince
+			if (prince is null || !prince.active || prince.type != ProjectileType<SlimePrinceMinion>() || prince.owner != player.whoAmI)
+				prince = Projectile.NewProjectileDirect(player.GetSource_FromThis(), player.Center, Vector2.Zero, ProjectileType<SlimePrinceMinion>(), 28, 0, player.whoAmI);
 		}
 
 		public override bool IsArmorSet(Item head, Item body, Item legs)
@@ -161,7 +163,7 @@ namespace StarlightRiver.Content.Items.Forest
 		}
 	}
 
-	[AutoloadEquip(EquipType.Body)]
+	[AutoloadEquip(new EquipType[] { EquipType.Body, EquipType.Front })]
 	public class SlimePrinceChest : ModItem
 	{
 		public override string Texture => AssetDirectory.ForestItem + Name;
@@ -170,6 +172,8 @@ namespace StarlightRiver.Content.Items.Forest
 		{
 			DisplayName.SetDefault("Slime Prince's Curiass");
 			Tooltip.SetDefault("5% increased summoning damage\nYou can summon an additional minion");
+
+			ArmorIDs.Body.Sets.IncludedCapeFront[Item.bodySlot] = Item.frontSlot;
 		}
 
 		public override void SetDefaults()
