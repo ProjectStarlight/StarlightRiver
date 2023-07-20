@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Item.width = 54;
 			Item.height = 54;
 			Item.DamageType = DamageClass.Melee;
-			Item.damage = 16;
+			Item.damage = 18;
 			Item.useTime = 30;
 			Item.useAnimation = 30;
 			Item.useStyle = Terraria.ID.ItemUseStyleID.Shoot;
@@ -173,6 +173,11 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			ManageCaches();
 			ManageTrail();
+		}
+
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			Projectile.damage /= 2;
 		}
 
 		public Color GetColor(float off)

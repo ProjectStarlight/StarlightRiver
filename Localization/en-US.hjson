@@ -2907,6 +2907,28 @@ Mods: {
 					100% increased sentry placement speed
 					'''
 			}
+
+			ArtilleryLicense: {
+				DisplayName: Artillery License
+				Tooltip:
+					'''
+					Increases your max number of sentries by 1
+					`Totally not forged`
+					'''
+			}
+
+			DefenseSystem: {
+				DisplayName: Arms Dealer's Defense System
+				Tooltip:
+					'''
+					Summons a gun-toting turret
+					Right click to cycle between different guns
+					[i/s1:95] Modest damage with good range
+					[i/s1:964] Great damage with short range
+					[i/s1:98] Light damage with great fire rate
+
+					'''
+			}
 		}
 
 		Projectiles: {
@@ -3183,6 +3205,9 @@ Mods: {
 			VitricOreFloatDummy.DisplayName: ""
 			VitricSmallDummy.DisplayName: ""
 			VitricBannerDummy.DisplayName: ""
+			MinigunTurret.DisplayName: Gun turret
+			PistolTurret.DisplayName: Gun turret
+			ShotgunTurret.DisplayName: Gun turret
 		}
 
 		Tiles: {
