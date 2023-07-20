@@ -13,6 +13,10 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Packets
 {
+	/// <summary>
+	/// Tells the other clients and server to resize and update a specific gear in the puzzle. Note that it does not assign a size but rather increments for all
+	/// flow is always client -> server -> other clients
+	/// </summary>
 	[Serializable]
 	public class GearPuzzleClickPacket : Module
 	{

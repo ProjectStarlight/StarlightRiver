@@ -11,12 +11,11 @@ namespace StarlightRiver.Content.NPCs.Vitric
 	internal class CrystalSlime : ModNPC
 	{
 		public int badHits;
+		private bool performedSpawnEffects = false;
 
 		public override string Texture => AssetDirectory.VitricNpc + "CrystalSlime";
 
 		public ref float Shield => ref NPC.ai[1];
-
-		private bool performedSpawnEffects = false;
 
 		public override void SetStaticDefaults()
 		{

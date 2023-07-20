@@ -10,6 +10,7 @@ namespace StarlightRiver.Content.Archaeology
 		public static int itemTypeToAssign;
 		public static Vector2 sizeToAssign;
 		public static int sparkleTypeToAssign;
+
 		public override string Texture => itemTexture;
 
 		public string itemTexture = AssetDirectory.Invisible;

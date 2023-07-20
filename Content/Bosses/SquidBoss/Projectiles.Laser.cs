@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public static int ParentWhoAmIToAssign;
 
-		public NPC Parent;
+		public NPC parent;
 		public ref float Timer => ref Projectile.ai[1];
 
 		public int height;
@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void OnSpawn(IEntitySource source)
 		{
-			Parent = Main.npc[ParentWhoAmIToAssign];
+			parent = Main.npc[ParentWhoAmIToAssign];
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			{
 				int y = (int)Projectile.Center.Y / 16 - 28;
 
-				int xOff = (Parent.ModNPC as SquidBoss).variantAttack ? 18 : -76;
+				int xOff = (parent.ModNPC as SquidBoss).variantAttack ? 18 : -76;
 
 				for (int k = 0; k < 59; k++)
 				{
@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			Timer++;
 
-			Projectile.Center = Parent.Center;
+			Projectile.Center = parent.Center;
 
 			//collision
 			int height = 0;
@@ -185,13 +185,13 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
-			writer.Write(Parent.whoAmI);
+			writer.Write(parent.whoAmI);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
 			int parentId = reader.ReadInt32();
-			Parent = Main.npc[parentId];
+			parent = Main.npc[parentId];
 		}
 	}
 }

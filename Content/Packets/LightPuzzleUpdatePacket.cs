@@ -14,6 +14,10 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Packets
 {
+	/// <summary>
+	/// Sends the rotation of a particular reflector to all other clients and server and then activates the beams
+	/// flow is always client -> server -> other clients
+	/// </summary>
 	[Serializable]
 	public class LightPuzzleUpdatePacket : Module
 	{
