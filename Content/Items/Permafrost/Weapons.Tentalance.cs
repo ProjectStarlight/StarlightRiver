@@ -194,6 +194,11 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Projectile.damage /= 2;
 		}
 
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			Projectile.damage /= 2;
+		}
+
 		public Color GetColor(float off)
 		{
 			float sin = 1 + (float)Math.Sin(Timer * 0.1f + off);
