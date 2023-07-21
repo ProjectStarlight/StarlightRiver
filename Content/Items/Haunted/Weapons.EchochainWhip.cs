@@ -1,8 +1,11 @@
 ﻿using ReLogic.Content;
+using StarlightRiver.Core.Systems.CameraSystem;
+using StarlightRiver.Core.Systems.InstancedBuffSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent.Creative;
 using Terraria.Graphics.Effects;
@@ -12,12 +15,13 @@ namespace StarlightRiver.Content.Items.Haunted
 {
 	public class EchochainWhip : ModItem
 	{
+		internal int cooldown;
 		public override string Texture => AssetDirectory.HauntedItem + Name;
 
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Echochain");
-			Tooltip.SetDefault("Chains enemies together, sharing summon damage between them\nHold and release <right> to chain enemies near you to the ground, chaining all effected enemies");
+			Tooltip.SetDefault("Chains enemies together, sharing summon damage between them\nHold and release <right> to snare enemies near your mouse to the ground, chaining all effected enemies");
 			CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1;
 		}
 
@@ -25,6 +29,28 @@ namespace StarlightRiver.Content.Items.Haunted
 		{
 			Item.DefaultToWhip(ModContent.ProjectileType<EchochainWhipProjectile>(), 15, 3f, 3.75f, 40);
 			Item.SetShopValues(ItemRarityColor.Green2, Item.sellPrice(gold: 1));
+		}
+
+		public override bool AltFunctionUse(Player player)
+		{
+			return cooldown <= 0;
+		}
+
+		public override void UpdateInventory(Player player)
+		{
+			if (cooldown > 0)
+				cooldown--;
+		}
+
+		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+		{
+			if (player.altFunctionUse == 2 && cooldown <= 0)
+			{
+				Main.NewText("ratio");
+				cooldown = 120;
+			}
+
+			return true;
 		}
 
 		public override void AddRecipes()
@@ -215,7 +241,24 @@ namespace StarlightRiver.Content.Items.Haunted
 			if (!item.CountsAsClass(DamageClass.Summon))
 				return;
 
-			Traverse(npc, (n) => n.SimpleStrikeNPC((int)(damageDone * 0.25f), 0, false), true);
+			//Traverse(npc, (n) => BuffInflictor.InflictStack<EchochainDamageDebuff, EchochainDamageStack>(n, 30, new EchochainDamageStack() { duration = 30, damage = hit.SourceDamage}), true);
+
+			Traverse(npc, (n) =>
+			{
+				n.SimpleStrikeNPC(hit.SourceDamage, 0);
+
+				for (int i = 0; i < 10; i++)
+				{
+					Dust.NewDustPerfect(n.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(5f, 5f), 0, new Color(120, 255, 40), 0.65f);
+
+					Dust.NewDustPerfect(n.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2CircularEdge(5f, 5f), 0, new Color(120, 255, 40), 0.65f);
+				}
+
+				Dust.NewDustPerfect(n.Center, ModContent.DustType<EchochainBurstDust>(), Vector2.Zero, 0, default, Main.rand.NextFloat(0.5f, 0.75f));
+
+				Helper.PlayPitched("Magic/Shadow1", 0.5f, 0f, npc.Center);
+				CameraSystem.shake += 2;
+			}, true);
 		}
 
 		/// <summary>
@@ -232,7 +275,26 @@ namespace StarlightRiver.Content.Items.Haunted
 			if (ProjectileID.Sets.IsAWhip[projectile.type] || !projectile.CountsAsClass(DamageClass.Summon)) // only minions should proc the chain hits
 				return;
 
-			Traverse(npc, (n) => n.SimpleStrikeNPC((int)(damageDone * 0.25f), 0, false), true);
+			//Traverse(npc, (n) => BuffInflictor.InflictStack<EchochainDamageDebuff, EchochainDamageStack>(n, 30, new EchochainDamageStack() { duration = 30, damage = hit.SourceDamage }), true);
+
+			Traverse(npc, (n) =>
+			{
+				n.SimpleStrikeNPC(hit.SourceDamage, 0);
+
+				for (int i = 0; i < 10; i++)
+				{
+					Dust.NewDustPerfect(n.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(5f, 5f), 0, new Color(120, 255, 40), 0.65f);
+
+					Dust.NewDustPerfect(n.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2CircularEdge(5f, 5f), 0, new Color(120, 255, 40), 0.65f);
+				}
+
+				Dust.NewDustPerfect(n.Center, ModContent.DustType<EchochainBurstDust>(), Vector2.Zero, 0, default, Main.rand.NextFloat(0.5f, 0.75f));
+
+				Helper.PlayPitched("Magic/Shadow1", 0.5f, 0f, npc.Center);
+				if (CameraSystem.shake < 6)
+					CameraSystem.shake += 2;
+
+			}, true);
 		}
 
 		public override void PostUpdateEverything()
@@ -313,7 +375,7 @@ namespace StarlightRiver.Content.Items.Haunted
 
 						for (int d = 0; d < 20; d++)
 						{
-							Dust.NewDustPerfect(Vector2.Lerp(list[i].npc.Center, list[j].npc.Center, d / 20f), ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(3f, 3f), 0, new Color(100, 200, 20), 1f);
+							Dust.NewDustPerfect(Vector2.Lerp(list[i].npc.Center, list[j].npc.Center, d / 20f), ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(3f, 3f), 0, new Color(150, 200, 20), 0.5f);
 						}
 					}
 				}
@@ -419,6 +481,7 @@ namespace StarlightRiver.Content.Items.Haunted
 		public EchochainNode start;
 		public EchochainNode end;
 		public int timer;
+		public int fadeInTimer;
 
 		public int[] chainFrames; // frames for the chain link are randomized upon creation
 
@@ -430,11 +493,15 @@ namespace StarlightRiver.Content.Items.Haunted
 			this.end = end;
 			this.timer = timer;
 			this.chainFrames = chainFrames;
+			fadeInTimer = 30;
 		}
 
 		public void UpdateEdge()
 		{
 			timer--;
+			if (fadeInTimer > 0)
+				fadeInTimer--;
+
 			if (!Main.dedServ)
 			{
 				ManageCaches();
@@ -446,6 +513,11 @@ namespace StarlightRiver.Content.Items.Haunted
 		{
 			start.edges.Remove(this);
 			end.edges.Remove(this);
+
+			for (int d = 0; d < 20; d++)
+			{
+				Dust.NewDustPerfect(Vector2.Lerp(start.npc.Center, end.npc.Center, d / 20f), ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(3f, 3f), 0, new Color(150, 200, 20), 0.5f);
+			}
 		}
 
 		public void DrawEdge(SpriteBatch spriteBatch)
@@ -466,21 +538,23 @@ namespace StarlightRiver.Content.Items.Haunted
 
 			float distance = Vector2.Distance(chainStart, chainEnd);
 
+			float fadeIn = 1f - fadeInTimer / 30f;
+
 			for (int i = 0; i < (distance / 22); i += 1)
 			{
 				var pos = Vector2.Lerp(chainStart, chainEnd, i * 22 / distance);
 
-				spriteBatch.Draw(bloomTex, pos - Main.screenPosition, null, new Color(100, 200, 10, 0) * 0.2f, 0f, bloomTex.Size() / 2f, 0.5f, 0f, 0f);
+				spriteBatch.Draw(bloomTex, pos - Main.screenPosition, null, new Color(100, 200, 10, 0) * 0.1f, 0f, bloomTex.Size() / 2f, 0.5f, 0f, 0f);
 
 				Rectangle frame = tex.Frame(verticalFrames: 5, frameY: chainFrames[i]);	
-				spriteBatch.Draw(tex, pos - Main.screenPosition, frame, Color.White, rotation, frame.Size() / 2f, 1f, 0f, 0f);
+				spriteBatch.Draw(tex, pos - Main.screenPosition, frame, Color.White * fadeIn, rotation, frame.Size() / 2f, 1f, 0f, 0f);
 
 				frame = texBlur.Frame(verticalFrames: 5, frameY: chainFrames[i]);
-				spriteBatch.Draw(texBlur, pos - Main.screenPosition, frame, Color.White with { A = 0 } * 0.5f, rotation, frame.Size() / 2f, 1f, 0f, 0f);
+				spriteBatch.Draw(texBlur, pos - Main.screenPosition, frame, Color.White with { A = 0 } * 0.5f * fadeIn, rotation, frame.Size() / 2f, 1f, 0f, 0f);
 			}
 
-			spriteBatch.Draw(bloomTex, chainStart - Main.screenPosition, null, new Color(100, 200, 10, 0) * 0.15f, 0f, bloomTex.Size() / 2f, 0.45f, 0f, 0f);
-			spriteBatch.Draw(bloomTex, chainEnd - Main.screenPosition, null, new Color(100, 200, 10, 0) * 0.15f, 0f, bloomTex.Size() / 2f, 0.45f, 0f, 0f);
+			spriteBatch.Draw(bloomTex, chainStart - Main.screenPosition, null, new Color(100, 200, 10, 0) * 0.1f * fadeIn, 0f, bloomTex.Size() / 2f, 0.45f, 0f, 0f);
+			spriteBatch.Draw(bloomTex, chainEnd - Main.screenPosition, null, new Color(100, 200, 10, 0) * 0.1f * fadeIn, 0f, bloomTex.Size() / 2f, 0.45f, 0f, 0f);
 		}
 
 		#region Primitive Drawing
@@ -565,6 +639,112 @@ namespace StarlightRiver.Content.Items.Haunted
 		{
 			this.edges = edges;
 			this.npc = npc;
+		}
+	}
+
+	/*class EchochainDamageDebuff : StackableBuff<EchochainDamageStack>
+	{
+		public override string Name => "EchochainDamageBuff";
+
+		public override string DisplayName => "Taking Damage"; // this should never be applied to a player so
+
+		public override string Texture => AssetDirectory.Invisible;
+
+		public override bool Debuff => true;
+
+		public override string Tooltip => "Chained up...";
+
+		public override EchochainDamageStack GenerateDefaultStackTyped(int duration)
+		{
+			return new EchochainDamageStack()
+			{
+				duration = 30, // duration of the stack should ALWAYS be 30 ticks
+				damage = 1
+			};
+		}
+
+		public override void PerStackEffectsNPC(NPC npc, EchochainDamageStack stack)
+		{
+			float lerper = EaseBuilder.EaseCubicOut.Ease(stack.duration / 30f);
+
+			float power = MathHelper.Lerp(0f, 50f, lerper);
+
+			float rotation = MathHelper.Pi * lerper;
+
+			if (stack.duration % 2 == 0)
+			{
+				Dust.NewDustPerfect(npc.Center + Vector2.One.RotatedBy(rotation) * power, ModContent.DustType<Dusts.Glow>(), Main.rand.NextVector2Circular(1.5f, 1.5f), 0, new Color(120, 255, 40), 0.65f);
+				Dust.NewDustPerfect(npc.Center + Vector2.One.RotatedBy(rotation + MathHelper.Pi) * power, ModContent.DustType<Dusts.Glow>(), Main.rand.NextVector2Circular(1.5f, 1.5f), 0, new Color(120, 255, 40), 0.65f);
+			}
+
+			if (stack.duration == 1)
+			{
+				npc.SimpleStrikeNPC(stack.damage, 0);
+
+				for (int i = 0; i < 10; i++)
+				{
+					Dust.NewDustPerfect(npc.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(5f, 5f), 0, new Color(120, 255, 40), 0.65f);
+
+					Dust.NewDustPerfect(npc.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2CircularEdge(5f, 5f), 0, new Color(120, 255, 40), 0.65f);
+				}
+
+				Dust.NewDustPerfect(npc.Center, ModContent.DustType<EchochainBurstDust>(), Vector2.Zero, 0, default, Main.rand.NextFloat(0.75f, 1.25f));
+
+				Helper.PlayPitched("Magic/Shadow1", 0.5f, 0f, npc.Center);
+				CameraSystem.shake += 2;
+			}
+		}
+	}
+
+	class EchochainDamageStack : BuffStack
+	{
+		public int damage;
+	}*/
+
+	public class EchochainBurstDust : ModDust
+	{
+		public override string Texture => AssetDirectory.Invisible;
+
+		public override void OnSpawn(Dust dust)
+		{
+			dust.frame = new Rectangle(0, 0, 4, 4);
+			dust.scale *= 0.045f;
+			dust.rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+		}
+
+		public override Color? GetAlpha(Dust dust, Color lightColor)
+		{
+			return Color.Lerp(new Color(200, 40, 20, 0), new Color(25, 25, 25, 0), dust.alpha / 255f) * ((255 - dust.alpha) / 255f);
+		}
+
+		public override bool Update(Dust dust)
+		{
+			dust.alpha += 20;
+			dust.scale += 0.015f;
+			if (dust.alpha >= 255)
+				dust.active = false;
+
+			return false;
+		}
+
+		public override bool PreDraw(Dust dust)
+		{
+			float lerper = 1f - dust.alpha / 255f;
+
+			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Dust + Name).Value;
+			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+
+			Main.spriteBatch.Draw(bloomTex, dust.position - Main.screenPosition, null, new Color(135, 255, 10, 0) * 0.25f * lerper, 0f, bloomTex.Size() / 2f, dust.scale * 20f, 0f, 0f);
+
+			Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, new Color(135, 255, 10, 0) * 0.75f * lerper, dust.rotation, tex.Size() / 2f, dust.scale, 0f, 0f);
+
+			Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, new Color(90, 255, 130, 0) * lerper, dust.rotation, tex.Size() / 2f, dust.scale, 0f, 0f);
+
+			Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, new Color(255, 255, 150, 0) * lerper, dust.rotation, tex.Size() / 2f, dust.scale, 0f, 0f);
+
+			Main.spriteBatch.Draw(bloomTex, dust.position - Main.screenPosition, null, new Color(90, 255, 130, 0) * 0.25f * lerper, 0f, bloomTex.Size() / 2f, dust.scale * 20f, 0f, 0f);
+
+			return false;
 		}
 	}
 }

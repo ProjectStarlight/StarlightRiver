@@ -4233,6 +4233,16 @@ Mods: {
 				DisplayName: Haunted Daggers
 				Description: Death by a hundred cuts
 			}
+
+			StarlightRiver/Assets/Invisible: {
+				DisplayName: Taking Damage
+				Description: Chained up...
+			}
+
+			EchochainDamageBuff: {
+				DisplayName: Taking Damage
+				Description: Chained up...
+			}
 		}
 
 		Prefixes: {
