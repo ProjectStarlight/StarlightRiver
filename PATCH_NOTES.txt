@@ -34,7 +34,6 @@
 - New enemy: Gloom slime
 - New enemy: Soul nibbler
 - New enemy: Loot Wraith
->>>>>>> master
 
 ## Multiplayer Compatibility
 - Fixed alican causing softlocks in multiplayer
