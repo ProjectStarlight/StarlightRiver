@@ -1,7 +1,11 @@
-﻿using StarlightRiver.Content.Items.BaseTypes;
+﻿using NetEasy;
+using StarlightRiver.Content.Items.BaseTypes;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Items.Misc
@@ -84,8 +88,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 				if (instance.slowTime <= 0)
 				{
-					instance.slowTime = 60;
-					(GetEquippedInstance(player) as JadeStopwatch).flashTime = 20;
+					JadeStopWatchHitPacket packet = new JadeStopWatchHitPacket(player.whoAmI);
+					packet.Send();
 				}
 			}
 		}
@@ -98,8 +102,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 				if (instance.slowTime <= 0)
 				{
-					instance.slowTime = 60;
-					(GetEquippedInstance(player) as JadeStopwatch).flashTime = 20;
+					JadeStopWatchHitPacket packet = new JadeStopWatchHitPacket(player.whoAmI);
+					packet.Send();
 				}
 			}
 		}
@@ -116,7 +120,31 @@ namespace StarlightRiver.Content.Items.Misc
 					return;
 			}
 
+			DrawDusts(self);
+
 			orig(self, i);
+		}
+
+		private void DrawDusts(Player player)
+		{
+			var instance = GetEquippedInstance(player) as JadeStopwatch;
+			instance ??= GetVisualInstance(player) as JadeStopwatch;
+
+			if (instance is null)
+				return;
+
+			if (instance.slowTime <= 0)
+			{
+				float rot = Main.rand.NextFloat(6.28f);
+				var d = Dust.NewDustPerfect(player.Center, ModContent.DustType<Dusts.GlowFollowPlayer>(), Vector2.One.RotatedBy(rot + 1.5f) * 1.5f, 0, new Color(50, 255, 150) * 0.5f, 0.25f);
+				d.customData = new object[] { player, Vector2.One.RotatedBy(rot) * 36 };
+			}
+			else
+			{
+				float rot = Main.rand.NextFloat(6.28f);
+				var d = Dust.NewDustPerfect(player.Center, ModContent.DustType<Dusts.GlowFollowPlayer>(), Vector2.One.RotatedBy(rot + 1.5f) * 0.5f, 0, Color.Red * 0.5f, 0.25f);
+				d.customData = new object[] { player, Vector2.One.RotatedBy(rot) * 36 };
+			}
 		}
 
 		private void DrawClock(Player player, SpriteBatch spriteBatch)
@@ -149,19 +177,6 @@ namespace StarlightRiver.Content.Items.Misc
 
 			var target2 = new Rectangle((int)pos.X, (int)pos.Y, 34, 12);
 			spriteBatch.Draw(armTex, target2, null, color * 0.5f * alpha, Main.GameUpdateCount * 0.01f * speed, new Vector2(0, armTex.Height / 2), 0, 0);
-
-			if (slowTime <= 0)
-			{
-				float rot = Main.rand.NextFloat(6.28f);
-				var d = Dust.NewDustPerfect(player.Center, ModContent.DustType<Dusts.GlowFollowPlayer>(), Vector2.One.RotatedBy(rot + 1.5f) * 1.5f, 0, new Color(50, 255, 150) * 0.5f, 0.25f);
-				d.customData = new object[] { player, Vector2.One.RotatedBy(rot) * 36 };
-			}
-			else
-			{
-				float rot = Main.rand.NextFloat(6.28f);
-				var d = Dust.NewDustPerfect(player.Center, ModContent.DustType<Dusts.GlowFollowPlayer>(), Vector2.One.RotatedBy(rot + 1.5f) * 0.5f, 0, Color.Red * 0.5f, 0.25f);
-				d.customData = new object[] { player, Vector2.One.RotatedBy(rot) * 36 };
-			}
 		}
 
 		public override void SaveData(TagCompound tag)
@@ -174,6 +189,20 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			feat = tag.GetString("feat");
 			time = tag.GetString("time");
+		}
+
+		public override void NetSend(BinaryWriter writer)
+		{
+			writer.Write(slowTime);
+			writer.Write(feat);
+			writer.Write(time);
+		}
+
+		public override void NetReceive(BinaryReader reader)
+		{
+			slowTime = reader.ReadInt32();
+			feat = reader.ReadString();
+			time = reader.ReadString();
 		}
 	}
 
@@ -191,6 +220,36 @@ namespace StarlightRiver.Content.Items.Misc
 				return false;
 				
 			return base.CanUseItem(item, player);
+		}
+	}
+
+
+	/// <summary>
+	/// Packet to be sent when a player is hit while jade stopwatch is equipped so the other clients can know about it
+	/// </summary>
+	[Serializable]
+	public class JadeStopWatchHitPacket : Module
+	{
+		private readonly byte fromWho;
+
+		public JadeStopWatchHitPacket(int fromWho)
+		{
+			this.fromWho = (byte)fromWho;
+		}
+		protected override void Receive()
+		{
+			Player player = Main.player[fromWho];
+
+			var instance = SmartAccessory.GetEquippedInstance(player, ModContent.ItemType<JadeStopwatch>()) as JadeStopwatch;
+
+			if (instance is not null)
+			{
+				instance.slowTime = 60;
+				instance.flashTime = 20;
+			}
+
+			if (Main.netMode == NetmodeID.Server)
+				Send(-1, fromWho, false);
 		}
 	}
 }
