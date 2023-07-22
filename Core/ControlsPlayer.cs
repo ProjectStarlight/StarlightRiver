@@ -56,14 +56,14 @@ namespace StarlightRiver.Core
 					rightClickListener = false;
 				}
 
-				if (mouseListener && Vector2.Distance(mouseWorld, oldMouseWorld) > 10f)
+				if (mouseListener && Vector2.Distance(mouseWorld, oldMouseWorld) > 5f)
 				{
 					oldMouseWorld = mouseWorld;
 					sendControls = true;
 					mouseListener = false;
 				}
 
-				if (mouseRotationListener && Math.Abs((mouseWorld - Player.MountedCenter).ToRotation() - (oldMouseWorld - Player.MountedCenter).ToRotation()) > 0.15f)
+				if (mouseRotationListener && Math.Abs((mouseWorld - Player.MountedCenter).ToRotation() - (oldMouseWorld - Player.MountedCenter).ToRotation()) > 0.1f)
 				{
 					oldMouseWorld = mouseWorld;
 					sendControls = true;
