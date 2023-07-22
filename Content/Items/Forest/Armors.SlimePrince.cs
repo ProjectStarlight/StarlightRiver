@@ -89,6 +89,8 @@ namespace StarlightRiver.Content.Items.Forest
 						helm.Minion.State = 0;
 						helm.Minion.Timer = 0;
 					}
+
+					helm.Minion.Projectile.netUpdate = true;
 				}
 			}
 
