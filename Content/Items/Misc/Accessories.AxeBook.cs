@@ -4,6 +4,7 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -71,59 +72,20 @@ namespace StarlightRiver.Content.Items.Misc
 					if (Main.projectile.Any(n => n.active && (n.type == ModContent.ProjectileType<AxeBookProjectile>() || n.type == ModContent.ProjectileType<ThrownAxeProjectile>()) && n.owner == player.whoAmI))
 						return false;
 
-					if (Main.mouseRight)
+					if (Main.mouseRight && Main.myPlayer == player.whoAmI)
 					{
 						Vector2 vel = Vector2.Normalize(Main.MouseWorld - player.Center) * Math.Clamp(item.damage * 0.12f, 5, 6.5f);
 
-						int thrownAxeIndex = Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, vel, ModContent.ProjectileType<ThrownAxeProjectile>(), item.damage, item.knockBack, player.whoAmI);
-						Projectile thrownAxe = Main.projectile[thrownAxeIndex];
-
-						thrownAxe.timeLeft = 300;
-						thrownAxe.scale = item.scale * 1.25f;
-
-						if (thrownAxe.ModProjectile is ThrownAxeProjectile)
-						{
-							var modProj = thrownAxe.ModProjectile as ThrownAxeProjectile;
-							modProj.trailColor = ItemColorUtility.GetColor(item.type);
-							modProj.texture = TextureAssets.Item[item.type].Value;
-							modProj.length = (float)Math.Sqrt(Math.Pow(modProj.texture.Width, 2) + Math.Pow(modProj.texture.Width, 2)) * item.scale;
-							modProj.lifeSpan = 300;
-						}
-
-						return false;
-					}
-
-					int axeIndex = Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Zero, ModContent.ProjectileType<AxeBookProjectile>(), item.damage * 2, item.knockBack, player.whoAmI);
-					Projectile proj = Main.projectile[axeIndex];
-
-					proj.timeLeft = item.useAnimation * 5;
-					proj.scale = item.scale * (1.2f + comboState * 0.3f);
-
-					if (proj.ModProjectile is AxeBookProjectile)
+						Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, vel, ModContent.ProjectileType<ThrownAxeProjectile>(), item.damage, item.knockBack, player.whoAmI);
+					} 
+					else if (Main.myPlayer == player.whoAmI)
 					{
-						var modProj = proj.ModProjectile as AxeBookProjectile;
-						modProj.trailColor = ItemColorUtility.GetColor(item.type);
-						modProj.texture = TextureAssets.Item[item.type].Value;
-						modProj.length = (float)Math.Sqrt(Math.Pow(modProj.texture.Width, 2) + Math.Pow(modProj.texture.Width, 2)) * item.scale;
-						modProj.lifeSpan = item.useAnimation * 5;
-						modProj.baseAngle = (Main.MouseWorld - player.Center).ToRotation() + (float)Math.PI / 4f;
-						modProj.comboState = comboState;
+						float baseAngle = (Main.MouseWorld - player.Center).ToRotation() + (float)Math.PI / 4f;
+						Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Zero, ModContent.ProjectileType<AxeBookProjectile>(), item.damage * 2, item.knockBack, player.whoAmI, ai0: comboState, ai2: baseAngle);
+
+						comboState++;
+						comboState %= 3;
 					}
-
-					float pitch = -0.3f;
-					pitch += comboState * 0.1f;
-
-					if (pitch >= 1)
-						pitch = 1;
-
-					Helper.PlayPitched("Effects/HeavyWhoosh", 1, pitch, player.Center);
-					Helper.PlayPitched("GlassMiniboss/GlassShatter", 1, pitch, player.Center);
-
-					if (Item.UseSound.HasValue)
-						Terraria.Audio.SoundEngine.PlaySound(Item.UseSound.Value, player.Center);
-
-					comboState++;
-					comboState %= 3;
 
 					return false;
 				}
@@ -135,11 +97,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 	internal class AxeBookProjectile : ModProjectile, IDrawPrimitive
 	{
-		public float length;
-		public int comboState;
 		public Texture2D texture;
 		public int lifeSpan;
-		public float baseAngle;
 		public float holdOut;
 		public Color trailColor;
 
@@ -147,14 +106,22 @@ namespace StarlightRiver.Content.Items.Misc
 		private List<Vector2> cache;
 		private Trail trail;
 
+		private bool doneOnSpawn = false;
+
 		private bool hitTree;
 
 		private readonly bool flipSprite = false;
 
 		public float Progress => 1 - Projectile.timeLeft / (float)lifeSpan;
-		public int Direction => (Math.Abs(baseAngle - (float)Math.PI / 4f) < Math.PI / 2f) ? 1 : -1;
+		public int Direction => (Math.Abs(BaseAngle - (float)Math.PI / 4f) < Math.PI / 2f) ? 1 : -1;
 		public Player Owner => Main.player[Projectile.owner];
 		public float FadeOut => Projectile.timeLeft < 60 ? Projectile.timeLeft / 60f : 1;
+
+		public ref float ComboState => ref Projectile.ai[0];
+		public ref float Length => ref Projectile.ai[1];
+		public ref float BaseAngle => ref Projectile.ai[2];
+
+		public Item Item => Owner.HeldItem; // The owner cant switch off untill this dies anyways since its a heldProj
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -172,6 +139,48 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.extraUpdates = 3;
 		}
 
+		public override void OnSpawn(IEntitySource source)
+		{
+			SpawnLogic();
+		}
+
+		private void SpawnLogic()
+		{
+			//we just call this directly by all clients and server since it doesn't require any additional data being sent beyond ai fields
+			if (doneOnSpawn)
+				return;
+
+			Projectile.timeLeft = Item.useAnimation * 5;
+			Projectile.scale = Item.scale * (1.2f + ComboState * 0.3f);
+			lifeSpan = Item.useAnimation * 5;
+
+			if (Main.netMode != NetmodeID.Server)
+			{
+				trailColor = ItemColorUtility.GetColor(Item.type);
+				texture = TextureAssets.Item[Item.type].Value;
+				Length = (float)Math.Sqrt(Math.Pow(texture.Width, 2) + Math.Pow(texture.Width, 2)) * Item.scale;
+
+				PlaySound();
+			}
+
+			doneOnSpawn = true;
+		}
+
+		private void PlaySound()
+		{
+			float pitch = -0.3f;
+			pitch += ComboState * 0.1f;
+
+			if (pitch >= 1)
+				pitch = 1;
+
+			Helper.PlayPitched("Effects/HeavyWhoosh", 1, pitch, Owner.MountedCenter);
+			Helper.PlayPitched("GlassMiniboss/GlassShatter", 1, pitch, Owner.MountedCenter);
+
+			if (Item.UseSound.HasValue)
+				Terraria.Audio.SoundEngine.PlaySound(Item.UseSound.Value, Owner.MountedCenter);
+		}
+
 		private void DoSwingAnimation(Player player)
 		{
 			Projectile instance = Main.projectile.FirstOrDefault(n => n.ModProjectile is AxeBookProjectile && n.owner == player.whoAmI);
@@ -187,11 +196,13 @@ namespace StarlightRiver.Content.Items.Misc
 			Owner.direction = Direction;
 			Owner.heldProj = Projectile.whoAmI;
 
+			SpawnLogic();
+
 			// Cut trees
 			if (Progress > 0 && !hitTree)
 			{
 				float rot = Projectile.rotation + (Direction == 1 ? 0 : -(float)Math.PI / 2f);
-				Vector2 center = Owner.Center + Vector2.UnitX.RotatedBy(rot) * (length * Projectile.scale + holdOut);
+				Vector2 center = Owner.Center + Vector2.UnitX.RotatedBy(rot) * (Length * Projectile.scale + holdOut);
 
 				for (int x = -1; x <= 1; x++)
 				{
@@ -209,7 +220,7 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 
 			// Combat logic
-			switch (comboState)
+			switch (ComboState)
 			{
 				case 0:
 					if (Progress == 0)
@@ -218,14 +229,14 @@ namespace StarlightRiver.Content.Items.Misc
 						lifeSpan -= 20;
 					}
 
-					Projectile.rotation = baseAngle + (SwingEase(Progress) * 3f - 1.5f) * Direction;
-					holdOut = (float)Math.Sin(SwingEase(Progress) * 3.14f) * length * 0.2f;
+					Projectile.rotation = BaseAngle + (SwingEase(Progress) * 3f - 1.5f) * Direction;
+					holdOut = (float)Math.Sin(SwingEase(Progress) * 3.14f) * Length * 0.2f;
 
 					break;
 
 				case 1:
-					Projectile.rotation = baseAngle + (SwingEase(Progress) * 3f - 1.5f) * Direction;
-					holdOut = (float)Math.Sin(SwingEase(Progress) * 3.14f) * length * 0.3f;
+					Projectile.rotation = BaseAngle + (SwingEase(Progress) * 3f - 1.5f) * Direction;
+					holdOut = (float)Math.Sin(SwingEase(Progress) * 3.14f) * Length * 0.3f;
 
 					break;
 
@@ -238,16 +249,17 @@ namespace StarlightRiver.Content.Items.Misc
 					}
 
 					float rot = Projectile.rotation + (Direction == 1 ? 0 : -(float)Math.PI / 2f);
-					Vector2 end = Owner.Center + Vector2.UnitX.RotatedBy(rot) * (length * Projectile.scale + holdOut) * .75f;
+					Vector2 end = Owner.Center + Vector2.UnitX.RotatedBy(rot) * (Length * Projectile.scale + holdOut) * .75f;
 					Dust.NewDust(end - Vector2.One * 5, 10, 10, ModContent.DustType<Dusts.Cinder>(), 0, 0, 0, GetSwingColor(Progress));
 
-					Projectile.rotation = baseAngle + (SwingEase(Progress) * 3f - 1.5f) * Direction;
-					holdOut = (float)Math.Sin(SwingEase(Progress) * 3.14f) * length * 0.4f;
+					Projectile.rotation = BaseAngle + (SwingEase(Progress) * 3f - 1.5f) * Direction;
+					holdOut = (float)Math.Sin(SwingEase(Progress) * 3.14f) * Length * 0.4f;
 
 					break;
 			}
 
-			ManageTrail();
+			if (Main.netMode != NetmodeID.Server)
+				ManageTrail();
 
 			if (freeze > 1)
 			{
@@ -256,7 +268,8 @@ namespace StarlightRiver.Content.Items.Misc
 				return;
 			}
 
-			ManageCaches();
+			if (Main.netMode != NetmodeID.Server)
+				ManageCaches();
 		}
 
 		public float SwingEase(float progress)
@@ -269,7 +282,7 @@ namespace StarlightRiver.Content.Items.Misc
 			float rot = Projectile.rotation + (Direction == 1 ? 0 : -(float)Math.PI / 2f);
 
 			Vector2 start = Owner.Center;
-			Vector2 end = Owner.Center + Vector2.UnitX.RotatedBy(rot) * (length * Projectile.scale + holdOut) * 1.15f;
+			Vector2 end = Owner.Center + Vector2.UnitX.RotatedBy(rot) * (Length * Projectile.scale + holdOut) * 1.15f;
 
 			if (freeze <= 1 && Helper.CheckLinearCollision(start, end, targetHitbox, out Vector2 colissionPoint))
 			{
@@ -294,7 +307,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Helper.PlayPitched(Helper.IsFleshy(target) ? "Impacts/GoreLight" : "Impacts/Clink", 1, -Main.rand.NextFloat(0.25f), Owner.Center);
 			CameraSystem.shake += 4;
 
-			if (comboState == 2 && target.defense > 0)
+			if (ComboState == 2 && target.defense > 0)
 				target.defense--;
 
 			target.velocity += Vector2.Normalize(target.Center - Owner.Center) * Projectile.knockBack * 2 * target.knockBackResist;
@@ -302,6 +315,9 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (freeze == 0)
 				freeze += 24;
+
+			Owner.TryGetModPlayer<StarlightPlayer>(out StarlightPlayer starlightPlayer);
+			starlightPlayer.SetHitPacketStatus(shouldRunProjMethods: true);
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -323,11 +339,11 @@ namespace StarlightRiver.Content.Items.Misc
 
 				for (int i = 0; i < 50; i++)
 				{
-					cache.Add(Vector2.UnitX.RotatedBy(Projectile.rotation - Math.PI / 4f) * (length + holdOut) * Projectile.scale * 0.7f);
+					cache.Add(Vector2.UnitX.RotatedBy(Projectile.rotation - Math.PI / 4f) * (Length + holdOut) * Projectile.scale * 0.7f);
 				}
 			}
 
-			cache.Add(Vector2.UnitX.RotatedBy(Projectile.rotation - Math.PI / 4f) * (length + holdOut) * Projectile.scale * 0.7f);
+			cache.Add(Vector2.UnitX.RotatedBy(Projectile.rotation - Math.PI / 4f) * (Length + holdOut) * Projectile.scale * 0.7f);
 
 			while (cache.Count > 50)
 			{
@@ -337,10 +353,10 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private Color GetSwingColor(float factor)
 		{
-			if (comboState == 1)
+			if (ComboState == 1)
 				return Color.Lerp(trailColor, Color.Red, Progress * 0.5f) * (float)Math.Min(factor, Progress) * 0.9f * (float)Math.Sin(Progress * 3.14f) * FadeOut;
 
-			if (comboState == 2)
+			if (ComboState == 2)
 				return Color.Lerp(trailColor, Color.Red, Progress) * FadeOut;
 
 			return trailColor * (float)Math.Min(factor, Progress) * 0.9f * (float)Math.Sin(Progress * 3.14f) * FadeOut;
@@ -348,7 +364,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(40 * 4), factor => (float)Math.Min(factor, Progress) * length * 1.25f, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(40 * 4), factor => (float)Math.Min(factor, Progress) * Length * 1.25f, factor =>
 			{
 				if (factor.X >= 0.98f)
 					return Color.White * 0;
@@ -389,9 +405,9 @@ namespace StarlightRiver.Content.Items.Misc
 
 	internal class ThrownAxeProjectile : ModProjectile, IDrawPrimitive
 	{
-		public float length;
+		public const int LIFE_SPAN = 300;
+
 		public Texture2D texture;
-		public int lifeSpan;
 		public Color trailColor;
 
 		private int freeze = 0;
@@ -399,10 +415,14 @@ namespace StarlightRiver.Content.Items.Misc
 		private Trail trail;
 		private Vector2 freezePoint;
 		private float storedScale;
+		private bool doneOnSpawn;
 
-		public float Progress => 1 - Projectile.timeLeft / (float)lifeSpan;
+		public float Progress => 1 - Projectile.timeLeft / (float)LIFE_SPAN;
 		public Player Owner => Main.player[Projectile.owner];
 		public float FadeOut => Projectile.timeLeft < 60 ? Projectile.timeLeft / 60f : 1;
+		public Item Item => Owner.HeldItem;
+
+		public ref float Length => ref Projectile.ai[1];
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -413,11 +433,37 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.tileCollide = false;
 			Projectile.penetrate = -1;
 			Projectile.extraUpdates = 3;
+			Projectile.timeLeft = LIFE_SPAN;
+		}
+
+		public override void OnSpawn(IEntitySource source)
+		{
+			SpawnLogic();
+		}
+
+		private void SpawnLogic()
+		{
+			//we just call this directly by all clients and server since it doesn't require any additional data being sent beyond ai fields
+			if (doneOnSpawn)
+				return;
+
+			Projectile.scale = Item.scale * 1.25f;
+
+			if (Main.netMode != NetmodeID.Server)
+			{
+				trailColor = ItemColorUtility.GetColor(Item.type);
+				texture = TextureAssets.Item[Item.type].Value;
+				Length = (float)Math.Sqrt(Math.Pow(texture.Width, 2) + Math.Pow(texture.Width, 2)) * Item.scale;
+			}
+
+			doneOnSpawn = true;
 		}
 
 		public override void AI()
 		{
 			Owner.heldProj = Projectile.whoAmI;
+
+			SpawnLogic();
 
 			if (storedScale == 0)
 				storedScale = Projectile.scale;
@@ -443,7 +489,8 @@ namespace StarlightRiver.Content.Items.Misc
 				trailColor = Color.Transparent;
 			}
 
-			ManageTrail();
+			if (Main.netMode != NetmodeID.Server)
+				ManageTrail();
 
 			if (freeze > 0)
 			{
@@ -453,7 +500,8 @@ namespace StarlightRiver.Content.Items.Misc
 				return;
 			}
 
-			ManageCaches();
+			if (Main.netMode != NetmodeID.Server)
+				ManageCaches();
 
 			Projectile.rotation += 0.12f;
 
@@ -471,7 +519,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
-			return Helper.CheckCircularCollision(Projectile.Center, (int)(length * Projectile.scale) / 2, targetHitbox);
+			return Helper.CheckCircularCollision(Projectile.Center, (int)(Length * Projectile.scale) / 2, targetHitbox);
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -494,6 +542,9 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (freeze == 0)
 				freeze += 12;
+
+			Owner.TryGetModPlayer<StarlightPlayer>(out StarlightPlayer starlightPlayer);
+			starlightPlayer.SetHitPacketStatus(shouldRunProjMethods: true);
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -513,14 +564,14 @@ namespace StarlightRiver.Content.Items.Misc
 
 				for (int i = 0; i < 50; i++)
 				{
-					cache.Add(Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation - Math.PI / 4f) * length / 2 * Projectile.scale * 0.7f);
+					cache.Add(Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation - Math.PI / 4f) * Length / 2 * Projectile.scale * 0.7f);
 				}
 			}
 
 			if (Projectile.friendly)
-				cache.Add(Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation - Math.PI / 4f) * length / 2 * Projectile.scale * 0.7f);
+				cache.Add(Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation - Math.PI / 4f) * Length / 2 * Projectile.scale * 0.7f);
 			else
-				cache.Add(freezePoint + Vector2.UnitX.RotatedBy(Projectile.rotation - Math.PI / 4f) * length / 2 * Projectile.scale * 0.7f);
+				cache.Add(freezePoint + Vector2.UnitX.RotatedBy(Projectile.rotation - Math.PI / 4f) * Length / 2 * Projectile.scale * 0.7f);
 
 			while (cache.Count > 50)
 			{
