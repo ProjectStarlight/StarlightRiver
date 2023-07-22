@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Terraria.ID;
 
 namespace StarlightRiver.Core
 {
@@ -8,6 +9,9 @@ namespace StarlightRiver.Core
 
 		public static Color GetColor(int type)
 		{
+			if (Main.netMode == NetmodeID.Server)
+				return Color.Transparent; //server doesn't have textures
+
 			if (AverageColor.ContainsKey(type))
 			{
 				return AverageColor[type];
@@ -21,6 +25,9 @@ namespace StarlightRiver.Core
 
 		private static void AddColor(int type)
 		{
+			if (Main.netMode == NetmodeID.Server)
+				return; //server doesn't have textures
+
 			Texture2D tex = Terraria.GameContent.TextureAssets.Item[type].Value;
 
 			int numPixels = 0;
