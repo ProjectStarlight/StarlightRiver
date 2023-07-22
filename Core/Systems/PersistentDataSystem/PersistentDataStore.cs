@@ -21,10 +21,7 @@ namespace StarlightRiver.Core.Systems.PersistentDataSystem
 			LoadFromFile(currentPath);
 		}
 
-		public void Unload()
-		{
-
-		}
+		public void Unload() { }
 
 		/// <summary>
 		/// Forces a save of this data.

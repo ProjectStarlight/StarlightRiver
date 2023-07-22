@@ -15,7 +15,7 @@
 
 		public void Unload()
 		{
-			StarlightPlayer.spawners.Remove(this);
+			StarlightPlayer.spawners?.Remove(this);
 		}
 
 		public virtual void Tick(Player Player) { }

@@ -17,9 +17,6 @@ namespace StarlightRiver.Core.Loaders
 			GameShaders.Armor.BindShader(ModContent.ItemType<RainbowCycleDye2>(), new ArmorShaderData(new Ref<Effect>(Filters.Scene["RainbowArmor2"].GetShader().Shader), "BasicPass"));
 		}
 
-		public void Unload()
-		{
-
-		}
+		public void Unload() { }
 	}
 }
