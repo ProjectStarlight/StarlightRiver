@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Items.Forest
 			StarlightPlayer.PreUpdateMovementEvent += SlimeMovement;
 			On_Player.KeyDoubleTap += ActivateMerge;
 
-			StarlightPlayer.FreeDodgeEvent += AbosrbSlime;
+			StarlightPlayer.FreeDodgeEvent += AbsorbDamage;
 		}
 
 		public override void SetStaticDefaults()
@@ -73,6 +73,7 @@ namespace StarlightRiver.Content.Items.Forest
 			if (keyDir == 0 && self.armor[0].type == ItemType<SlimePrinceHead>())
 			{
 				var helm = self.armor[0].ModItem as SlimePrinceHead;
+				helm?.LocateMinion(self);
 
 				if (helm.Minion != null)
 				{
@@ -102,6 +103,7 @@ namespace StarlightRiver.Content.Items.Forest
 		private void SlimeMovement(Player player)
 		{
 			var helm = player.armor[0].ModItem as SlimePrinceHead;
+			helm?.LocateMinion(player);
 
 			// Custom input handling
 			if (helm?.Minion?.Merged ?? false)
@@ -143,7 +145,7 @@ namespace StarlightRiver.Content.Items.Forest
 		/// <param name="player"></param>
 		/// <param name="info"></param>
 		/// <returns></returns>
-		private bool AbosrbSlime(Player player, Player.HurtInfo info)
+		private bool AbsorbDamage(Player player, Player.HurtInfo info)
 		{
 			var helm = player.armor[0].ModItem as SlimePrinceHead;
 
@@ -160,6 +162,27 @@ namespace StarlightRiver.Content.Items.Forest
 			}
 
 			return false;
+		}
+
+		/// <summary>
+		/// This method attempts to relocate the prince if they are lost, or if
+		/// they have not been detected yet in a multiplayer scenario
+		/// </summary>
+		/// <param name="player">The player looking for their prince</param>
+		private void LocateMinion(Player player)
+		{
+			// No need to search, we already have him!
+			if (prince != null && prince.active)
+				return;
+
+			foreach (Projectile proj in Main.projectile)
+			{
+				if (proj.active && proj.type == ProjectileType<SlimePrinceMinion>() && proj.owner == player.whoAmI)
+				{
+					prince = proj;
+					return;
+				}
+			}
 		}
 	}
 
