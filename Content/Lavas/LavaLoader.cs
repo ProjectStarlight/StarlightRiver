@@ -36,8 +36,8 @@ namespace StarlightRiver.Content.Lavas
 			Terraria.GameContent.Liquid.IL_LiquidRenderer.InternalPrepareDraw -= SwapLavaDrawEffects;
 			//IL.Terraria.Main.DrawTiles -= DrawSpecialLavaBlock;
 
-			lavas = null;
-			ActiveStyle = null;
+			lavas ??= null;
+			ActiveStyle ??= null;
 		}
 
 		public float Priority => 1;

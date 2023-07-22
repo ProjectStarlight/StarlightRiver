@@ -28,7 +28,7 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 			On_Main.CheckMonoliths -= BuildTargets;
 
 			actorsSem.WaitOne();
-			actors = null;
+			actors ??= null;
 			actorsSem.Release();
 		}
 
