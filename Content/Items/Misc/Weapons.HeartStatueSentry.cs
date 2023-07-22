@@ -111,6 +111,9 @@ namespace StarlightRiver.Content.Items.Misc
 				wasFiring = true;
 			}
 
+			if (wasFiring)
+				Lighting.AddLight(Projectile.Center, Color.Red.ToVector3());
+
 			if (damageDone > 500)
 			{
 				Item.NewItem(Projectile.GetSource_FromThis(), Projectile.Hitbox, ItemID.Heart);
