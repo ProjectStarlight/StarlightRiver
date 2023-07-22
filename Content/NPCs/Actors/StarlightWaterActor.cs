@@ -327,7 +327,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 		public void Unload()
 		{
 			StarlightPlayer.ResetEffectsEvent -= ResetInventoryGlow;
-			StarlightWaterConversion = null;
+			StarlightWaterConversion ??= null;
 		}
 	}
 
