@@ -3,12 +3,15 @@ using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
+using static Humanizer.In;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -97,38 +100,19 @@ namespace StarlightRiver.Content.Items.Misc
 					if (Main.projectile.Any(n => n.active && n.type == ModContent.ProjectileType<SpearBookProjectile>() && n.owner == player.whoAmI))
 						return false;
 
-					int i;
-					if (Main.mouseRight)
+					float targetAngle = (Main.MouseWorld - player.MountedCenter).ToRotation();
+					if (Main.mouseRight && Main.myPlayer == player.whoAmI)
 					{
-						i = Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Zero, ModContent.ProjectileType<SpearBookProjectile>(), item.damage * 2 / 3, item.knockBack, player.whoAmI, 5);
+						Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Zero, ModContent.ProjectileType<SpearBookProjectile>(), item.damage * 2 / 3, item.knockBack, player.whoAmI, 5, ai2: targetAngle);
 
 						comboState = 0;
 					}
-					else
+					else if (Main.myPlayer == player.whoAmI)
 					{
-						i = Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Zero, ModContent.ProjectileType<SpearBookProjectile>(), item.damage, item.knockBack, player.whoAmI, comboState);
+						Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Zero, ModContent.ProjectileType<SpearBookProjectile>(), item.damage, item.knockBack, player.whoAmI, comboState, ai2: targetAngle);
 
 						comboState++;
 						comboState %= 5;
-					}
-
-					Projectile proj = Main.projectile[i];
-
-					if (proj.ModProjectile is SpearBookProjectile)
-					{
-						var modProj = proj.ModProjectile as SpearBookProjectile;
-						modProj.trailColor = ItemColorUtility.GetColor(item.type);
-
-						Main.instance.LoadProjectile(item.shoot);
-
-						modProj.texture = TextureAssets.Projectile[item.shoot].Value;
-						proj.Size = modProj.texture.Size();
-
-						modProj.original = new Projectile();
-						modProj.original.SetDefaults(item.shoot);
-						modProj.original.owner = player.whoAmI;
-						modProj.original.damage = proj.damage;
-						modProj.original.knockBack = proj.knockBack;
 					}
 
 					return false;
@@ -163,6 +147,9 @@ namespace StarlightRiver.Content.Items.Misc
 			Stab
 		}
 
+		public static float opacityToAssign = 1f;
+		public static bool spawnProjToAssign = true;
+
 		public Texture2D texture;
 		public Color trailColor;
 
@@ -195,6 +182,8 @@ namespace StarlightRiver.Content.Items.Misc
 		private ref float Timer => ref Projectile.ai[1];
 		private ref float TargetAngle => ref Projectile.ai[2];
 
+		public Item Item => Owner.HeldItem; // The owner cant switch off untill this dies anyways since its a heldProj
+
 		public override void SetDefaults()
 		{
 			Projectile.friendly = true;
@@ -211,8 +200,24 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void OnSpawn(IEntitySource source)
 		{
-			TargetAngle = (Main.MouseWorld - Owner.MountedCenter).ToRotation();
 			Owner.direction = TargetAngle > -MathHelper.PiOver2 && TargetAngle < MathHelper.PiOver2 ? 1 : -1;
+
+			trailColor = ItemColorUtility.GetColor(Item.type);
+
+			Main.instance.LoadProjectile(Item.shoot);
+
+			texture = TextureAssets.Projectile[Item.shoot].Value;
+			Projectile.Size = texture.Size();
+
+			Projectile.Opacity = opacityToAssign;
+			opacityToAssign = 1f;
+
+			if (spawnProjToAssign && Item.shoot > 0)
+			{
+				int i = Projectile.NewProjectile(Item.GetSource_FromThis(), Projectile.Center, TargetAngle.ToRotationVector2() * 5, Item.shoot, Projectile.damage, Projectile.knockBack, Projectile.owner);
+				original = Main.projectile[i];
+			}
+			spawnProjToAssign = true;
 		}
 
 		public override void AI()
@@ -252,8 +257,11 @@ namespace StarlightRiver.Content.Items.Misc
 
 			Owner.itemRotation = MathHelper.WrapAngle(Projectile.rotation - ((Owner.direction > 0) ? 0 : MathHelper.Pi));
 
-			ManageCaches();
-			ManageTrail();
+			if (Main.netMode != NetmodeID.Server)
+			{
+				ManageCaches();
+				ManageTrail();
+			}
 		}
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
@@ -552,24 +560,12 @@ namespace StarlightRiver.Content.Items.Misc
 
 			Owner.velocity.X *= 0.975f; // slow the player down ever so slightly
 
-			if (Timer > 60 && Timer < 120 && Timer % 10 == 0)
+			if (Timer > 60 && Timer < 120 && Timer % 10 == 0 && Main.myPlayer == Owner.whoAmI)
 			{
 				float randomRotation = TargetAngle + (Main.rand.NextFloat() - 0.5f) * MathHelper.Pi / 4;
-				int i = Projectile.NewProjectile(Owner.GetSource_ItemUse(Owner.HeldItem), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<SpearBookProjectile>(), Projectile.damage / 2, Projectile.knockBack, Owner.whoAmI, (float)AttackType.Stab);
-
-				Projectile proj = Main.projectile[i];
-
-				if (proj.ModProjectile is SpearBookProjectile)
-				{
-					var modProj = proj.ModProjectile as SpearBookProjectile;
-					modProj.trailColor = trailColor;
-					modProj.texture = texture;
-					proj.Size = Projectile.Size;
-
-					proj.ai[2] = randomRotation;
-					proj.Opacity = 0.4f;
-					modProj.original = null;
-				}
+				spawnProjToAssign = false;
+				opacityToAssign = 0.4f;
+				Projectile.NewProjectile(Owner.GetSource_ItemUse(Owner.HeldItem), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<SpearBookProjectile>(), Projectile.damage / 2, Projectile.knockBack, Owner.whoAmI, (float)AttackType.Stab, ai2: randomRotation);
 			}
 		}
 
@@ -718,6 +714,40 @@ namespace StarlightRiver.Content.Items.Misc
 			if (motion == Motion.Slash2 || motion == Motion.Stab)
 			{
 				trail2?.Render(effect);
+			}
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(Owner.direction);
+			writer.Write(Projectile.Opacity);
+			writer.Write(original is not null);
+
+			if (original is not null)
+				writer.Write(original.identity);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			Owner.direction = reader.ReadInt32();
+			Projectile.Opacity = reader.ReadSingle();
+			bool containsOriginalProj = reader.ReadBoolean();
+
+			if (containsOriginalProj) 
+			{
+				int originalIdentity = reader.ReadInt32();
+
+				original = Main.projectile.First(n => n.identity == originalIdentity);
+			}
+
+			if (Main.netMode != NetmodeID.Server)
+			{
+				Main.instance.LoadProjectile(Item.shoot);
+
+				trailColor = ItemColorUtility.GetColor(Item.type);
+
+				texture = TextureAssets.Projectile[Item.shoot].Value;
+				Projectile.Size = texture.Size();
 			}
 		}
 	}
