@@ -1,10 +1,13 @@
 ﻿using System;
 using System.IO;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
 	class TentacleTell : ModProjectile, IDrawAdditive
 	{
+		public static Vector2 endPointToAssign;
+
 		public Vector2 endPoint;
 
 		public override string Texture => AssetDirectory.SquidBoss + "TentacleTellTop";
@@ -23,6 +26,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			Projectile.hostile = false;
 			Projectile.friendly = false;
 			Projectile.damage = 0;
+		}
+
+		public override void OnSpawn(IEntitySource source)
+		{
+			endPoint = endPointToAssign;
 		}
 
 		public override void AI()

@@ -27,7 +27,7 @@ namespace StarlightRiver.Core.Loaders
 
 		public void Unload()
 		{
-			Enchantments = null;
+			Enchantments ??= null;
 		}
 	}
 }

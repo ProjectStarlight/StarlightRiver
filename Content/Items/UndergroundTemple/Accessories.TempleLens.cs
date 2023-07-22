@@ -8,7 +8,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 	{
 		public override string Texture => AssetDirectory.CaveTempleItem + Name;
 
-		public TempleLens() : base("Ancient Lens", "Critical strikes cause enemies around the struck enemy to glow, revealing other enemies\n+3% critical strike chance \n+10% critical strike damage") { }
+		public TempleLens() : base("Ancient Lens", "Critical strikes cause enemies around the struck enemy to glow, revealing other enemies\n+2% critical strike chance \n+15% critical strike damage") { }
 
 		public override void SafeSetDefaults()
 		{
@@ -17,8 +17,8 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 		public override void SafeUpdateEquip(Player Player)
 		{
-			Player.GetCritChance(DamageClass.Generic) += 3;
-			Player.GetModPlayer<CritMultiPlayer>().AllCritMult += 0.1f;
+			Player.GetCritChance(DamageClass.Generic) += 2;
+			Player.GetModPlayer<CritMultiPlayer>().AllCritMult += 0.15f;
 		}
 
 		public override void Load()

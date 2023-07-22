@@ -1,5 +1,7 @@
 ﻿using StarlightRiver.Content.Items;
 using StarlightRiver.Content.Items.Vanity;
+using StarlightRiver.Content.Packets;
+using System;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -116,13 +118,19 @@ namespace StarlightRiver.Content.Items.Starwood
 		private void ModifyHitNPCStarwood(Player Player, Item Item, NPC target, NPC.HitInfo info, int damageDone)//sets bool on hit NPCs
 		{
 			if (ArmorHelper.IsSetEquipped(this, Player))
+			{
 				target.GetGlobalNPC<ManastarDrops>().DropStar = true;
+				Player.GetModPlayer<StarlightPlayer>().SetHitPacketStatus(shouldRunProjMethods: false);
+			}
 		}
 
 		private void ModifyHitNPCWithProjStarwood(Player Player, Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (ArmorHelper.IsSetEquipped(this, Player))
+			{
 				target.GetGlobalNPC<ManastarDrops>().DropStar = true;
+				Player.GetModPlayer<StarlightPlayer>().SetHitPacketStatus(shouldRunProjMethods: false);
+			}
 		}
 
 		private void ResetEmpowerment(StarlightPlayer modPlayer)
@@ -197,6 +205,7 @@ namespace StarlightRiver.Content.Items.Starwood
 	{
 		public override bool OnPickup(Item Item, Player Player)
 		{
+			//clientside
 			if (new int[] { ItemID.Star, ItemID.SoulCake, ItemID.SugarPlum }.Contains(Item.type))
 			{
 				StarlightPlayer mp = Player.GetModPlayer<StarlightPlayer>();
@@ -235,19 +244,8 @@ namespace StarlightRiver.Core
 		{
 			if (Player.armor[1].ModItem is Content.Items.Starwood.StarwoodChest && ArmorHelper.IsSetEquipped(Player.armor[1].ModItem, Player))//checks if complete, not completely needed but is there so empowered isnt true for a brief moment
 			{
-				if (!empowered)
-				{
-					for (int k = 0; k < 80; k++)//pickup sfx
-						Dust.NewDustPerfect(Player.Center, DustType<Content.Dusts.BlueStamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.8f, 1.2f) * new Vector2(1f, 1.5f), 0, default, 1.5f);
-				}
-				else
-				{
-					for (int k = 0; k < 40; k++)//reduced pickup sfx if its already active
-						Dust.NewDustPerfect(Player.Center, DustType<Content.Dusts.BlueStamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.5f, 0.8f) * new Vector2(1f, 1.5f), 0, default, 1.5f);
-				}
-
-				empowered = true;
-				empowermentTimer = 600;//resets timer
+				StarwoodEmpowermentPacket packet = new StarwoodEmpowermentPacket(Player.whoAmI);
+				packet.Send();
 			}
 		}
 	}

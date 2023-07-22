@@ -192,11 +192,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		public override void HitEffect(NPC.HitInfo hit)
 		{
 			attacking = true;
-		}
 
-		public override void OnKill()
-		{
-			if (Main.netMode != NetmodeID.Server)
+			if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
 			{
 				for (int i = 0; i < 9; i++)
 				{

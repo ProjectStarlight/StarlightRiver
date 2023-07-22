@@ -95,7 +95,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		{
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 			{
-				var packet = new SpawnNPC(Main.myPlayer, i * 16 + 40, j * 16 + 556, NPCType<VitricBoss>());
+				var packet = new SpawnNPC(i * 16 + 40, j * 16 + 556, NPCType<VitricBoss>());
 				packet.Send(-1, -1, false);
 
 				return;

@@ -7,10 +7,6 @@
 - Fixed various outdated tooltips
 - Fixed ceiros' drop pool not including shattered aegis on expert mode
 - Fixed glass arrowhead not functioning or having a tooltip
-- Fixed alican causing softlocks in multiplayer
-- Fixed auroracle causing softlocks in multiplayer
-- Fixed glassweaver causing softlocks in multiplayer
-- Fixed ceiros' master mode behavior desyncing in multiplayer
 - Fixed moonstones spawning too close to the edge of the world
 - Fixed bricklayer's trowel eating block placement wands
 - Fixed vitric pickaxe getting slower instead of faster as it gained heat
@@ -22,6 +18,7 @@
 - Fixed rotation from aurora water persisting after leaving it
 - Fixed a crash with crescent casters in multiplayer
 - Fixed crafting recipe for frying pan
+- Fixed jade stopwatch with channel items
 
 ## Content
 - New summoner weapon: Haunted Dagger Staff
@@ -32,6 +29,51 @@
 - New summoner accessory: Druidic Manabond
 - New summoner accessory: Aquatic Manabond
 - New summoner accessory: Salt cogs
-- New NPC: Loot Wraith
+- New summoner armor: Slime prince armor
+- New enemy: Gloom slime
+- New enemy: Soul nibbler
+- New enemy: Loot Wraith
+>>>>>>> master
+
+## Multiplayer Compatibility
+- Fixed alican causing softlocks in multiplayer
+- Fixed auroracle causing softlocks in multiplayer
+- Fixed glassweaver causing softlocks in multiplayer
+- Fixed ceiros' master mode behavior desyncing in multiplayer
+- Fixed construct spawners in multiplayer
+- Fixed shrines in multiplayer
+- Fixed Tentalance in multiplayer
+- Fixed Haunted warbanner in multiplayer
+- Fixed crystal slime in multiplayer
+- Fixed dashable barriers in multiplayer
+- Fixed gears puzzle in multiplayer
+- Fixed light puzzle in multiplayer
+- Fixed starwood armor and weapons in multiplayer
+- Fixed artifacts in multiplayer
+- Fixed most gores for multiplayer
 
 ## Misc
+- The boss rush now requires you to have defeated each boss atleast once to unlock
+- The boss rush will now save your scores across sessions
+- Updated boss rush damage resistance calculations to discourage strategies related to stalling
+- Updated the boss rush GUI
+
+## Balance
+- Starlight regeneration has recieved a large overhaul
+- Each point of starlight regeneration now grants 0.05 starlight per second
+- Base starlight regeneration is now 5 (0.25 per second)
+- Starlight regeneration penalth from movement significantly reduced
+- Starlight regeneration cooldown after using an ability significantly reduced
+- Many pieces of equipment with starlight regeneration have been updated to reflect new values
+- Barrier base values have been buffed
+- Base resistance 40%/30% (expert+/normal) => 50% (always)
+- Base recharge delay 8s => 5s
+- Base recharge rate 4 => 6
+- Tentalance damage increased (16 => 18)
+- Tentalance now has 50% damage falloff per target pierced
+- Ancient Lens critical strike chance decreased (3% => 2%) critical strike damage increased (10% => 15%)
+- Truestrike Lens critical strike chance decreased (4% => 2%) critical strike damage increased (10% => 20%)
+- Soilgun damage reduced (16 => 4)
+- Earthduster damage reduced (25 => 6)
+- Soilgun/Earthduster crimsand nerfed (healing chance 33% => 20%) (healing 2 + 10% damage => 1)
+- Auroracle's water will now deal a small amount of damage when you fall in to alert you of the danger

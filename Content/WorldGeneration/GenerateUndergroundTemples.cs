@@ -12,7 +12,7 @@ namespace StarlightRiver.Core
 		{
 			for (int x = 0; x < Main.maxTilesX - 200; x += WorldGen.genRand.Next(70, 130))
 			{
-				int y = WorldGen.genRand.Next((int)Main.worldSurface + 50, (int)Main.rockLayer);
+				int y = WorldGen.genRand.Next((int)Main.worldSurface + 50, (int)Main.rockLayer + 150);
 
 				if (WorldGen.InWorld(x, y) &&
 					(Framing.GetTileSafely(x, y).TileType == TileID.Stone || Framing.GetTileSafely(x, y).TileType == TileID.Dirt) &&

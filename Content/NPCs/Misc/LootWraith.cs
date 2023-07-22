@@ -278,16 +278,19 @@ namespace StarlightRiver.Content.NPCs.Misc
 			return false;
 		}
 
-		public override void OnKill()
+		public override void HitEffect(NPC.HitInfo hit)
 		{
-			if (!enraged)
-				ChainGores();
-
-			for (int i = 0; i < 3; i++)
+			if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
 			{
-				Gore.NewGore(NPC.GetSource_Death(), NPC.Center, Main.rand.NextVector2Circular(2, 2), GoreID.Smoke1, Main.rand.NextFloat(0.5f,2));
-				Gore.NewGore(NPC.GetSource_Death(), NPC.Center, Main.rand.NextVector2Circular(2, 2), GoreID.Smoke2, Main.rand.NextFloat(0.5f, 2));
-				Gore.NewGore(NPC.GetSource_Death(), NPC.Center, Main.rand.NextVector2Circular(2, 2), GoreID.Smoke3, Main.rand.NextFloat(0.5f, 2));
+				if (!enraged)
+					ChainGores();
+
+				for (int i = 0; i < 3; i++)
+				{
+					Gore.NewGore(NPC.GetSource_Death(), NPC.Center, Main.rand.NextVector2Circular(2, 2), GoreID.Smoke1, Main.rand.NextFloat(0.5f, 2));
+					Gore.NewGore(NPC.GetSource_Death(), NPC.Center, Main.rand.NextVector2Circular(2, 2), GoreID.Smoke2, Main.rand.NextFloat(0.5f, 2));
+					Gore.NewGore(NPC.GetSource_Death(), NPC.Center, Main.rand.NextVector2Circular(2, 2), GoreID.Smoke3, Main.rand.NextFloat(0.5f, 2));
+				}
 			}
 		}
 

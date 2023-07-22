@@ -102,6 +102,28 @@ Mods: {
 				Use this to finalize alchemy recipes to craft them.
 				'''
 
+			ArtilleryLicense: {
+				DisplayName: Artillery License
+				Tooltip:
+					'''
+					Increases your max number of sentries by 1
+					`Totally not forged`
+					'''
+			}
+
+			DefenseSystem: {
+				DisplayName: Arms Dealer's Defense System
+				Tooltip:
+					'''
+					Summons a gun-toting turret
+					Right click to cycle between different guns
+					[i/s1:95] Modest damage with good range
+					[i/s1:964] Great damage with short range
+					[i/s1:98] Light damage with great fire rate
+
+					'''
+			}
+
 			MoonstoneBarrierDye: {
 				DisplayName: Moonstone Tincture
 				Tooltip:
@@ -532,6 +554,25 @@ Mods: {
 					'''
 			}
 
+			SlimePrinceChest: {
+				DisplayName: Slime Prince's Curiass
+				Tooltip:
+					'''
+					5% increased summoning damage
+					You can summon an additional minion
+					'''
+			}
+
+			SlimePrinceHead: {
+				DisplayName: Slime Prince's Crown
+				Tooltip: 10% increased summoning damage
+			}
+
+			SlimePrinceLegs: {
+				DisplayName: Slime Prince's Tassets
+				Tooltip: Minions inflict 5% exposure
+			}
+
 			Trowel: {
 				DisplayName: Bricklayer's Trowel
 				Tooltip:
@@ -581,12 +622,12 @@ Mods: {
 				DisplayName: Effects of different gems:
 				Tooltip:
 					'''
-					[i/s1:5663]: Critical strikes partially ignore armor, with increased chance for missing enemy HP 
-					[i/s1:5671]: +100 barrier. Gain a shield that points to your cursor and blocks attacks, consuming barrier 
-					[i/s1:5664]: Immediately heal 20 hp. Hits have a chance to create a 5 HP life heart 
-					[i/s1:5670]: Immediately refill mana. Hits have a chance to create 1 to 3 mana stars 
-					[i/s1:5662]: All strikes inflict Toxic Amethyst, a stacking poison debuff 
-					[i/s1:5669]: Hits have a chance to summon a Ruby Dagger to seek the struck enemy for 20% of the hit's damage
+					[i/s1:5668]: Critical strikes partially ignore armor, with increased chance for missing enemy HP 
+					[i/s1:5676]: +100 barrier. Gain a shield that points to your cursor and blocks attacks, consuming barrier 
+					[i/s1:5669]: Immediately heal 20 hp. Hits have a chance to create a 5 HP life heart 
+					[i/s1:5675]: Immediately refill mana. Hits have a chance to create 1 to 3 mana stars 
+					[i/s1:5667]: All strikes inflict Toxic Amethyst, a stacking poison debuff 
+					[i/s1:5674]: Hits have a chance to summon a Ruby Dagger to seek the struck enemy for 20% of the hit's damage
 					'''
 			}
 
@@ -1280,7 +1321,7 @@ Mods: {
 
 			StaminaRing: {
 				DisplayName: Band of Starlight
-				Tooltip: Slightly increases Starlight regeneration
+				Tooltip: +2 Starlight regeneration
 			}
 
 			SwordBook: {
@@ -1707,8 +1748,8 @@ Mods: {
 				Tooltip:
 					'''
 					Critical strikes cause enemies around the struck enemy to glow, revealing other enemies
-					+3% critical strike chance 
-					+10% critical strike damage
+					+2% critical strike chance 
+					+15% critical strike damage
 					'''
 			}
 
@@ -1718,8 +1759,8 @@ Mods: {
 					'''
 					Critical strikes expose enemies near the struck enemy
 					Exposed enemies have 20% increased Exposure on first hit
-					+4% critical strike chance
-					+10% critical strike damage
+					+2% critical strike chance
+					+20% critical strike damage
 					'''
 			}
 
@@ -1964,7 +2005,7 @@ Mods: {
 
 			VitricLegs: {
 				DisplayName: Vitric Greaves
-				Tooltip: Slightly improved starlight regeneration
+				Tooltip: + 2 Starlight regeneration
 			}
 
 			VitricMagicBook: {
@@ -2628,6 +2669,16 @@ Mods: {
 				Tooltip: ""
 			}
 
+			CombatShrineBarrierItem: {
+				DisplayName: CombatShrineBarrierItem
+				Tooltip: debug item
+			}
+
+			EvasionShrineBarrierItem: {
+				DisplayName: EvasionShrineBarrierItem
+				Tooltip: debug item
+			}
+
 			VitricBathtub: {
 				DisplayName: Vitric Bathtub
 				Tooltip: ""
@@ -2720,16 +2771,6 @@ Mods: {
 
 			GlassweaverBossBarrierItem: {
 				DisplayName: GlassweaverBossBarrierItem
-				Tooltip: debug item
-			}
-
-			CombatShrineBarrierItem: {
-				DisplayName: CombatShrineBarrierItem
-				Tooltip: debug item
-			}
-
-			EvasionShrineBarrierItem: {
-				DisplayName: EvasionShrineBarrierItem
 				Tooltip: debug item
 			}
 
@@ -2930,6 +2971,9 @@ Mods: {
 			GlassSpike.DisplayName: Glass Spike
 			LavaDart.DisplayName: Magma Shot
 			TelegraphedGlassSpike.DisplayName: Glass Spike
+			MinigunTurret.DisplayName: Gun turret
+			PistolTurret.DisplayName: Gun turret
+			ShotgunTurret.DisplayName: Gun turret
 			BreachCannonSentry.DisplayName: Breach Cannon
 			ExplosiveFlare.DisplayName: Explosive Flare
 			FlareShrapnel.DisplayName: Explosive Shrapnel
@@ -2953,6 +2997,7 @@ Mods: {
 			ThousandthDegreeProjectile.DisplayName: Thousandth Degree
 			ThousandthDegreeProjectileFired.DisplayName: Blazing Wheel
 			FeralWolfMountBite.DisplayName: Crushing Jaws
+			SlimePrinceMinion.DisplayName: Slime Prince
 			AmethystShard.DisplayName: Amethyst Shard
 			RubyDagger.DisplayName: Ruby Dagger
 			SparklingBulletProj.DisplayName: Sparkling Bullet
@@ -3252,6 +3297,7 @@ Mods: {
 			WitShrine.MapEntry: Mysterious Shrine
 			DashBarrier.MapEntry: ""
 			JarTall.MapEntry: Stamina Jar
+			ManabondTile.MapEntry: Manabond
 			TempleChestSimple.MapEntry: ""
 			TempleLootBubble.MapEntry: ""
 			VerletBanner.MapEntry: ""
@@ -3433,17 +3479,20 @@ Mods: {
 			VitricBossPlatformUp.DisplayName: ""
 			VitricBossPlatformUpSmall.DisplayName: ""
 			BossRushOrb.DisplayName: ???
+			SoulNibbler.DisplayName: Soul Nibbler
 			CrescentCaster.DisplayName: Crescent Caster
 			Blover.DisplayName: Blover
 			TreeBat.DisplayName: Tree Bat
 			Warbanner.DisplayName: Haunted Warbanner
 			Fogbinder.DisplayName: Fogbinder
+			LootWraith.DisplayName: Loot Wraith
 			AngryCrescent.DisplayName: Angry Crescent
 			Dreamprism.DisplayName: Dreamprism
 			Crusher.DisplayName: Masher
 			Snoobel.DisplayName: Snoobel
 			SwordEnemy.DisplayName: Sky Splicer
 			Crow.DisplayName: ???
+			GloomSlime.DisplayName: Gloom Slime
 			BoomBug.DisplayName: Firebug
 			CoolmiteLarge.DisplayName: Coolmismer
 			CoolmitePassive.DisplayName: Coolmite
@@ -3469,7 +3518,6 @@ Mods: {
 			InfusionSlotPickup.DisplayName: Unnerving Device
 			BerrySlime.DisplayName: Slimeberry
 			TouchstoneWisp.DisplayName: Aurora Spirit
-			LootWraith.DisplayName: Loot Wraith
 		}
 
 		Buffs: {
@@ -3778,6 +3826,25 @@ Mods: {
 			StaminaPrefix2.DisplayName: Shining
 			StaminaPrefix3.DisplayName: Glowing
 			StaminaPrefix4.DisplayName: Radiant
+		}
+
+		Compat: {
+			BossChecklist: {
+				Auroracle: {
+					SpawnInfo: Drop a Suspicious Looking Offering into the prismatic waters of the Permafrost Shrine, accessed only through the coldest caves.
+					Despawn: The frozen cathedral falls silent.
+				}
+
+				Glassweaver: {
+					SpawnInfo: Challenge the glassweaver in his forge, near the edge of the Vitric Desert.
+					Despawn: The Glassweaver claims victory.
+				}
+
+				Ceiros: {
+					SpawnInfo: Use a Glass Idol at the altar atop the Vitric Temple, after breaking the crystal covering it using Forbidden Winds.
+					Despawn: The Vitric Forge falls silent. The Glassweaver is dissapointed.
+				}
+			}
 		}
 	}
 }

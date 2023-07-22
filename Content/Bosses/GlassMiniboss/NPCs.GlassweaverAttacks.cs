@@ -202,6 +202,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			if (AttackTimer == 5 && Main.netMode != NetmodeID.MultiplayerClient)
 			{
+				NPC.netUpdate = true; // this shouldn't be necessary but this attack seems to have a lot of visual drift
+
 				if (Main.projectile[spearIndex].ModProjectile is GlassSpear spear)
 					Glint.SpawnGlint(spear.Projectile.Center, new Color(150, 200, 255), new Color(150, 150, 255));
 			}
@@ -239,7 +241,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			if (AttackTimer == 1)
 			{
 				NPC.TargetClosest();
-				NPC.direction = Main.rand.NextBool() ? 1 : -1;
+				if (Main.netMode != NetmodeID.MultiplayerClient)
+				{
+					NPC.direction = Main.rand.NextBool() ? 1 : -1;
+					NPC.netUpdate = true;
+				}
 
 				moveStart = NPC.Center;
 				moveTarget.X = Target.Center.X;

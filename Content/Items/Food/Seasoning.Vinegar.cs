@@ -4,7 +4,7 @@ namespace StarlightRiver.Content.Items.Food
 {
 	internal class Vinegar : Ingredient
 	{
-		public Vinegar() : base("Food buffs are 5% less effective\n+10% duration", 120, IngredientType.Seasoning, 1.1f) { }
+		public Vinegar() : base("Food buffs are 5% less effective\n+10% duration", 360, IngredientType.Seasoning, 1.1f) { }
 
 		public override void SafeSetDefaults()
 		{
@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Items.Food
 
 		public override void BuffEffects(Player Player, float multiplier)
 		{
-			Player.GetModPlayer<FoodBuffHandler>().Multiplier -= 0.4f;
+			Player.GetModPlayer<FoodBuffHandler>().Multiplier -= 0.05f;
 		}
 	}
 }

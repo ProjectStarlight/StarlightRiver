@@ -1,6 +1,7 @@
 ﻿using ReLogic.Content;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.GUI;
+using StarlightRiver.Content.PersistentData;
 using StarlightRiver.Core.Loaders.UILoading;
 using System;
 using System.IO;
@@ -122,6 +123,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override bool CheckDead()
 		{
+			BossRushDataStore.DefeatBoss(BossrushUnlockFlag.Glassweaver);
 			StarlightWorld.Flag(WorldFlags.DesertOpen);
 
 			NPC.life = 1;
@@ -145,7 +147,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 					if (Main.netMode != NetmodeID.MultiplayerClient)
 						Projectile.NewProjectile(NPC.GetSource_FromThis(), arenaPos + new Vector2(528 + 48, -46), Vector2.Zero, ProjectileType<GlassweaverDoor>(), Main.myPlayer, 0, NPC.target);
-					
+
 					ResetAttack();
 
 					break;
@@ -333,12 +335,16 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
+			writer.WritePackedVector2(moveTarget);
 			writer.Write(attackVariant);
+			writer.Write(NPC.direction);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
+			moveTarget = reader.ReadPackedVector2();
 			attackVariant = reader.ReadBoolean();
+			NPC.direction = reader.ReadInt32();
 		}
 
 		//i hate this specific thing right here

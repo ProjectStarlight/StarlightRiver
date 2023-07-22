@@ -12,6 +12,8 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 	public class Soilgun : MultiAmmoWeapon
 	{
+		public override string Texture => AssetDirectory.MiscItem + Name;
+
 		public override List<AmmoStruct> ValidAmmos => new()
 		{
 			new AmmoStruct(ItemID.SandBlock, ModContent.ProjectileType<SoilgunSandSoil>(), 2),
@@ -24,17 +26,6 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			new AmmoStruct(Mod.Find<ModItem>("VitricSandItem").Type, ModContent.ProjectileType<SoilgunVitricSandSoil>(), 8),
 			new AmmoStruct(ItemID.MudBlock, ModContent.ProjectileType<SoilgunMudSoil>(), 3),
 		};
-		public override bool CanConsumeAmmo(Item ammo, Player player)
-		{
-			return false;
-		}
-
-		public override bool SafeCanUseItem(Player player)
-		{
-			return player.ownedProjectileCounts[ModContent.ProjectileType<SoilgunHoldout>()] <= 0;
-		}
-
-		public override string Texture => AssetDirectory.MiscItem + Name;
 
 		public override void SetStaticDefaults()
 		{
@@ -45,7 +36,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 		public override void SafeSetDefaults()
 		{
 			Item.DamageType = DamageClass.Ranged;
-			Item.damage = 14;
+			Item.damage = 4;
 			Item.width = 60;
 			Item.height = 36;
 			Item.useAnimation = Item.useTime = 55;
@@ -61,9 +52,19 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			Item.value = Item.sellPrice(gold: 1);
 		}
 
+		public override bool CanConsumeAmmo(Item ammo, Player player)
+		{
+			return false;
+		}
+
+		public override bool SafeCanUseItem(Player player)
+		{
+			return player.ownedProjectileCounts[ModContent.ProjectileType<SoilgunHoldout>()] <= 0;
+		}
+
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
-			Projectile proj = Projectile.NewProjectileDirect(source, position, velocity, ModContent.ProjectileType<SoilgunHoldout>(), damage, knockback, player.whoAmI, 0, type);
+			var proj = Projectile.NewProjectileDirect(source, position, velocity, ModContent.ProjectileType<SoilgunHoldout>(), damage, knockback, player.whoAmI, 0, type);
 			if (proj.ModProjectile is SoilgunHoldout soilGun)
 				soilGun.SoilAmmoID = currentAmmoStruct.ammoID;
 			return false;
@@ -82,23 +83,36 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 	class SoilgunGlobalItem : GlobalItem
 	{
+		public TooltipLine ammoTooltip;
+
 		public override bool InstancePerEntity => true;
 
-		public TooltipLine infoTooltip2;
-		public List<int> ValidSoils => new() { ItemID.SandBlock, ItemID.EbonsandBlock, ItemID.PearlsandBlock, ItemID.CrimsandBlock, ItemID.DirtBlock, ItemID.SiltBlock,
-			ItemID.SlushBlock, Mod.Find<ModItem>("VitricSandItem").Type, ItemID.MudBlock};
+		public List<int> ValidSoils => new()
+		{
+			ItemID.SandBlock,
+			ItemID.EbonsandBlock,
+			ItemID.PearlsandBlock,
+			ItemID.CrimsandBlock,
+			ItemID.DirtBlock,
+			ItemID.SiltBlock,
+			ItemID.SlushBlock,
+			Mod.Find<ModItem>("VitricSandItem").Type,
+			ItemID.MudBlock
+		};
+
 		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
 		{
 			if (Main.LocalPlayer.HasItem(ModContent.ItemType<Soilgun>()) || Main.LocalPlayer.HasItem(ModContent.ItemType<Earthduster>()))
 			{
 				if (ValidSoils.Contains(item.type))
 				{
-					TooltipLine tooltip = new TooltipLine(Mod, "SoilgunAmmoTooltip", "This item can be used as ammo for the Soilgun and Earthduster");
+					var tooltip = new TooltipLine(Mod, "SoilgunAmmoTooltip", "This item can be used as ammo for the Soilgun and Earthduster");
 					tooltips.Add(tooltip);
 					tooltip.OverrideColor = new Color(202, 148, 115);
+
 					if (item.type == Mod.Find<ModItem>("VitricSandItem").Type)
 					{
-						TooltipLine infoTooltip = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of glassy sand, that cause crystals to grow out of enemies\nFor each crystal an enemy has, they take 2 damage per second, plus a base damage of 4, up to a maximum of 10 crystals\nIf an enemy has had 10 crystals on them for more than 4 seconds, all crystals become charged, exploding shorty after");
+						var infoTooltip = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of glassy sand, that cause crystals to grow out of enemies\nFor each crystal an enemy has, they take 2 damage per second, plus a base damage of 4, up to a maximum of 10 crystals\nIf an enemy has had 10 crystals on them for more than 4 seconds, all crystals become charged, exploding shorty after");
 						tooltips.Add(infoTooltip);
 						infoTooltip.OverrideColor = new Color(202, 148, 115);
 						return;
@@ -106,23 +120,24 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 					switch (item.type)
 					{
-						case ItemID.SandBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of sand that split into many grains of sand upon death"); break;
-						case ItemID.CrimsandBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of Crimsand that steal life from hit enemies"); break;
-						case ItemID.EbonsandBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of Ebonsand that apply stacks of Haunted to enemies"); break;
-						case ItemID.PearlsandBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of Pearlsand that home in on enemies"); break;
-						case ItemID.DirtBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of dirt"); break;
-						case ItemID.SiltBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of silt, that spawn coins upon hitting enemies"); break;
-						case ItemID.SlushBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of slush that cause hit enemies to have icicles impale them\nHitting and enemy with more than 10 icicles causes all icicles to shatter, causing large amounts of damage"); break;
-						case ItemID.MudBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of mud that bounce off tiles and enemies"); break;
+						case ItemID.SandBlock: ammoTooltip = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of sand that split into many grains of sand upon death"); break;
+						case ItemID.CrimsandBlock: ammoTooltip = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of Crimsand that steal life from hit enemies"); break;
+						case ItemID.EbonsandBlock: ammoTooltip = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of Ebonsand that apply stacks of Haunted to enemies"); break;
+						case ItemID.PearlsandBlock: ammoTooltip = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of Pearlsand that home in on enemies"); break;
+						case ItemID.DirtBlock: ammoTooltip = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of dirt"); break;
+						case ItemID.SiltBlock: ammoTooltip = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of silt, that spawn coins upon hitting enemies"); break;
+						case ItemID.SlushBlock: ammoTooltip = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of slush that cause hit enemies to have icicles impale them\nHitting and enemy with more than 10 icicles causes all icicles to shatter, causing large amounts of damage"); break;
+						case ItemID.MudBlock: ammoTooltip = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of mud that bounce off tiles and enemies"); break;
 					}
 
-					tooltips.Add(infoTooltip2);
-					infoTooltip2.OverrideColor = new Color(202, 148, 115);
+					tooltips.Add(ammoTooltip);
+					ammoTooltip.OverrideColor = new Color(202, 148, 115);
 				}
 			}
 		}
 	}
 
+	//TODO: Port to stackable buffs
 	class SoilgunGlobalNPC : GlobalNPC
 	{
 		public const int MAXHAUNTEDSTACKS = 20;
@@ -398,7 +413,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			int DustFrequency = (int)(15 - Utils.Clamp(CurrentCharge / 5, 0, 12));
 			if (Main.rand.NextBool(Utils.Clamp(DustFrequency, 1, 15)))
 			{
-				Dust dust = Dust.NewDustDirect(barrelPos, 2, 8, ChooseChargeDust(), 0f, 0f);
+				var dust = Dust.NewDustDirect(barrelPos, 2, 8, ChooseChargeDust(), 0f, 0f);
 				dust.scale = Main.rand.NextFloat(0.8f, 1.2f);
 				dust.noGravity = false;
 				if (Main.rand.NextBool(5))
@@ -414,7 +429,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 				SpriteEffects spriteEffects = Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
 				float progress = 1 - DrawWhiteTimer / 30f;
-				Color drawColor = Color.Lerp(Color.White, Color.Transparent, progress);
+				var drawColor = Color.Lerp(Color.White, Color.Transparent, progress);
 
 				Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, null, drawColor, Projectile.rotation, texture.Size() / 2, 1f, spriteEffects, 0);
 			}
@@ -447,7 +462,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			{
 				Vector2 dustVelocity = shootVelocity.RotatedByRandom(MathHelper.ToRadians(8)) * Main.rand.NextFloat(0.25f, 0.45f);
 
-				Dust dust = Dust.NewDustDirect(position, 2, 8, DustID.Dirt, dustVelocity.X, dustVelocity.Y);
+				var dust = Dust.NewDustDirect(position, 2, 8, DustID.Dirt, dustVelocity.X, dustVelocity.Y);
 				dust.scale = Main.rand.NextFloat(1.1f, 1.55f);
 				dust.noGravity = true;
 			}
