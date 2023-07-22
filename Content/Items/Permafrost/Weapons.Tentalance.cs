@@ -138,7 +138,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 					Projectile.damage += Charge;
 					Helper.PlayPitched("SquidBoss/LightSplash", 0.2f, -0.5f, Owner.Center);
 
-					Tentalance heldLance = Owner.HeldItem.ModItem as Tentalance;
+					var heldLance = Owner.HeldItem.ModItem as Tentalance;
 					heldLance.charge = 0;
 				}
 			}
