@@ -29,6 +29,7 @@
 - New summoner accessory: Druidic Manabond
 - New summoner accessory: Aquatic Manabond
 - New summoner accessory: Salt cogs
+- New summoner armor: Slime prince armor
 - New enemy: Gloom slime
 - New enemy: Soul nibbler
 - New enemy: Loot Wraith
@@ -49,7 +50,8 @@
 - Fixed starwood armor and weapons in multiplayer
 - Fixed artifacts in multiplayer
 - Fixed most gores for multiplayer
-- New summoner armor: Slime prince armor
+- Fix Jade stopwatch for multiplayer
+- Fix martial books for multiplayer
 
 ## Misc
 - The boss rush now requires you to have defeated each boss atleast once to unlock
