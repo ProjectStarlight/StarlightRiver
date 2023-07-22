@@ -60,7 +60,10 @@ namespace StarlightRiver.Content.Items.Forest
 				Projectile.timeLeft = 2;
 
 			if (Vector2.Distance(Projectile.Center, Owner.Center) > 5000)
+			{
 				Projectile.Center = Owner.Center;
+				Projectile.netUpdate = true;
+			}
 
 			switch (State)
 			{
@@ -162,7 +165,7 @@ namespace StarlightRiver.Content.Items.Forest
 			}
 
 			// Fire a thorn at them
-			if (Timer == 110)
+			if (Timer == 110 && Main.netMode != NetmodeID.Server)
 			{
 				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.Center.DirectionTo(target.Center + target.velocity * 10) * 11, ModContent.ProjectileType<SlimeThorn>(), 20, 0.5f, Projectile.owner);
 				SoundEngine.PlaySound(SoundID.DD2_DrakinShot, Projectile.Center);
@@ -209,7 +212,7 @@ namespace StarlightRiver.Content.Items.Forest
 
 			Projectile.frame = Timer % 40 < 20 ? 1 : 0;
 
-			if (Timer % 30 == 0)
+			if (Timer % 30 == 0 && Main.netMode != NetmodeID.Server)
 			{
 				List<NPC> targets = MinionTargetingHelper.FindTargets(Projectile, 400, true, false);
 				foreach (NPC target in targets)
