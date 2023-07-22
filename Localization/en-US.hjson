@@ -2948,6 +2948,11 @@ Mods: {
 				DisplayName: Soft Sand
 				Tooltip: ""
 			}
+
+			HeartStatueSentryItem: {
+				DisplayName: Heart Statue?
+				Tooltip: Summons a heart statue powered by your enemie's souls
+			}
 		}
 
 		Projectiles: {
@@ -3228,6 +3233,7 @@ Mods: {
 			VitricOreFloatDummy.DisplayName: ""
 			VitricSmallDummy.DisplayName: ""
 			VitricBannerDummy.DisplayName: ""
+			HeartStatueSentry.DisplayName: Heart Statue?
 		}
 
 		Tiles: {
@@ -3811,6 +3817,11 @@ Mods: {
 					What lies below?
 					Increased mining speed
 					'''
+			}
+
+			HeartStatueDrain: {
+				DisplayName: Heart Siphon
+				Description: ""
 			}
 		}
 
