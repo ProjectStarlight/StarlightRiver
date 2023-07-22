@@ -29,10 +29,7 @@ namespace StarlightRiver.Content.CustomHooks
 			WaterAddonHandler.addons.Add(this);
 		}
 
-		public void Unload()
-		{
-			WaterAddonHandler.addons.Remove(this);
-		}
+		public void Unload() { }
 	}
 
 	class WaterAddonHandler : HookGroup
@@ -58,8 +55,8 @@ namespace StarlightRiver.Content.CustomHooks
 
 		public override void Unload()
 		{
-			addons = null;
-			activeAddon = null;
+			addons ??= null;
+			activeAddon ??= null;
 		}
 
 		private void SwapBlockTexture(ILContext il)
