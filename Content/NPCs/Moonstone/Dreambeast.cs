@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using NetEasy;
 using ReLogic.Utilities;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Biomes;
@@ -15,7 +16,6 @@ using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using static Terraria.ModLoader.PlayerDrawLayer;
 
 namespace StarlightRiver.Content.NPCs.Moonstone
 {
@@ -37,6 +37,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 		public int frameCounter = 0;
 		public bool idle = true;
 		public bool driftClockwise = true;
+		private bool hasLoaded = false;
 
 		private bool AppearVisible => Main.LocalPlayer.GetModPlayer<LunacyPlayer>().Insane;
 		private Player Target => Main.player[NPC.target];
@@ -77,28 +78,30 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			return clone;
 		}
 
-		public override void OnSpawn(IEntitySource source)
-		{
-			for (int k = 0; k < chains.Length; k++)
-			{
-				VerletChain chain = chains[k];
-
-				if (chain is null)
-				{
-					chains[k] = new VerletChain(24 + 2 * Main.rand.Next(4), true, NPC.Center, 5, false)
-					{
-						constraintRepetitions = 10,//defaults to 2, raising this lowers stretching at the cost of performance
-						drag = 1.2f,//this number defaults to 1, is very sensitive
-						forceGravity = -Vector2.UnitX,
-						scale = 0.6f,
-						parent = NPC
-					};
-				}
-			}
-		}
-
 		public override void AI()
 		{
+			if (!hasLoaded)
+			{
+				hasLoaded = true;
+
+				for (int k = 0; k < chains.Length; k++)
+				{
+					VerletChain chain = chains[k];
+
+					if (chain is null)
+					{
+						chains[k] = new VerletChain(24 + 2 * Main.rand.Next(4), true, NPC.Center, 5, false)
+						{
+							constraintRepetitions = 10,//defaults to 2, raising this lowers stretching at the cost of performance
+							drag = 1.2f,//this number defaults to 1, is very sensitive
+							forceGravity = -Vector2.UnitX,
+							scale = 0.6f,
+							parent = NPC
+						};
+					}
+				}
+			}
+
 			Timer++;
 			AttackTimer++;
 
@@ -617,7 +620,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 	public partial class LunacyPlayer : ModPlayer, ILoadable
 	{
 		public float lunacy = 0;
-		private int sanityTimer = 0;
+		public int sanityTimer = 0;
 
 		private int fullyInsaneTimer = 0;
 		private bool awarded = false;
@@ -632,6 +635,14 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				return;
 
 			On_Main.GUIBarsDraw += DrawLunacyMeter;
+		}
+
+		public override void SendClientChanges(ModPlayer clientPlayer)
+		{
+			var clone = clientPlayer as LunacyPlayer;
+
+			var packet = new LunacyPacket(this);
+			packet.Send(-1, Player.whoAmI, false);
 		}
 
 		public override void PostUpdateBuffs()
@@ -800,6 +811,36 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				damageSource = PlayerDeathReason.ByCustomReason(Player.name + "'s mind was torn apart by their hallucinations");
 
 			return true;
+		}
+	}
+
+	[Serializable]
+	public class LunacyPacket : Module
+	{
+		public readonly byte whoAmI;
+		public readonly float lunacy;
+		public readonly int sanity;
+
+
+		public LunacyPacket(LunacyPlayer lPlayer)
+		{
+			whoAmI = (byte)lPlayer.Player.whoAmI;
+			lunacy = lPlayer.lunacy;
+			sanity = lPlayer.sanityTimer;
+		}
+
+		protected override void Receive()
+		{
+			LunacyPlayer Player = Main.player[whoAmI].GetModPlayer<LunacyPlayer>();
+
+			Player.lunacy = lunacy;
+			Player.sanityTimer = sanity;
+
+			if (Main.netMode == Terraria.ID.NetmodeID.Server)
+			{
+				Send(-1, Player.Player.whoAmI, false);
+				return;
+			}
 		}
 	}
 }

@@ -517,8 +517,11 @@ namespace StarlightRiver.Content.Items.Moonstone
 						dust.velocity = -5 * dustOffset;
 					}
 
-					var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), StaffEnd - Vector2.UnitY * 32 * Projectile.scale, new Vector2(Player.direction * 10, 0) * MeleeSpeed, ProjectileType<CrescentOrb>(), (int)MathHelper.Lerp(Projectile.damage * 0.25f, Projectile.damage, Charge), 0, Projectile.owner, 0, 0);
-					proj.scale = (1 + Charge) / 2 * Projectile.scale;
+					if (Main.netMode != NetmodeID.MultiplayerClient)
+					{
+						var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), StaffEnd - Vector2.UnitY * 32 * Projectile.scale, new Vector2(Player.direction * 10, 0) * MeleeSpeed, ProjectileType<CrescentOrb>(), (int)MathHelper.Lerp(Projectile.damage * 0.25f, Projectile.damage, Charge), 0, Projectile.owner, 0, 0);
+						proj.scale = (1 + Charge) / 2 * Projectile.scale;
+					}
 
 					charge = 0;
 				}
