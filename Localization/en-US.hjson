@@ -3235,6 +3235,16 @@ Mods: {
 				Tooltip: Fragile! Please handle with care.
 				DisplayName: Coolmite
 			}
+
+			InsomniacsGaze: {
+				DisplayName: Lost Collar
+				Tooltip:
+					'''
+					You gain lunacy when you are grazed or hit
+					Cursed: your insanity causes to hallucinate
+					While insane, you apply
+					'''
+			}
 		}
 
 		Projectiles: {
@@ -3573,6 +3583,8 @@ Mods: {
 			SandscriptBook.DisplayName: Sandscript Book
 			RecursiveFocusLaser.DisplayName: Infernal Laser
 			GlassShard.DisplayName: Glass Shard
+			DreambeastProj.DisplayName: Dream Shard
+			DreambeastProjHome.DisplayName: Dream Essence
 		}
 
 		Tiles: {
@@ -4198,6 +4210,16 @@ Mods: {
 					What lies below?
 					Increased mining speed
 					'''
+			}
+
+			Dreamwarp: {
+				DisplayName: Dreamwarp
+				Description: Cuckoo for cocao puffs
+			}
+
+			Dreamblaze: {
+				DisplayName: Dreamblaze
+				Description: The essence of dreams burns at an unfathomable intensity
 			}
 		}
 

@@ -1,11 +1,8 @@
 ﻿using StarlightRiver.Content.Biomes;
 using StarlightRiver.Core.Systems.MetaballSystem;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.ID;
+using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Content.NPCs.Moonstone
 {

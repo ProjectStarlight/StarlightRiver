@@ -1,16 +1,9 @@
-﻿using Microsoft.Xna.Framework.Graphics.PackedVector;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
+﻿using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using static StarlightRiver.Content.NPCs.Moonstone.Dreambeast;
 
 namespace StarlightRiver.Content.NPCs.Moonstone
 {
@@ -47,6 +40,9 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			}
 
 			Projectile.rotation = Projectile.velocity.ToRotation();
+
+			if (Projectile.timeLeft < 15)
+				Projectile.Opacity -= 0.066f;
 		}
 
 		public override bool CanHitPlayer(Player target)
@@ -67,8 +63,6 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				Dust.NewDust(Projectile.Center, 0, 0, ModContent.DustType<Dusts.Stone>(), Projectile.velocity.X / 4, Projectile.velocity.Y / 4);
 				Dust.NewDust(Projectile.Center, 0, 0, ModContent.DustType<Dusts.GlowFastDecelerate>(), Projectile.velocity.X / 4, Projectile.velocity.Y / 4, 35, new Color(150, 120, 255) * 0.5f, Main.rand.NextFloat(1f, 1.2f));
 			}
-
-			SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -118,7 +112,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			Projectile.width = 36;
 			Projectile.height = 20;
 			Projectile.penetrate = 1;
-			Projectile.timeLeft = 210;
+			Projectile.timeLeft = 180;
 			Projectile.tileCollide = false;
 			Projectile.ignoreWater = true;
 			Projectile.damage = 66;
@@ -136,9 +130,11 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 		public override void AI()
 		{
-			float homingMult = Math.Min(1 - (Projectile.timeLeft - 150f) / 60f, 1);
+			float homingMult = Math.Min(1 - (Projectile.timeLeft - 120f) / 60f, 1);
 
-			Projectile.velocity = Vector2.Lerp(Projectile.velocity, PathCenter.DirectionTo(Target.position) * 10, 0.03f * homingMult);
+			Projectile.velocity = Vector2.Lerp(Projectile.velocity, PathCenter.DirectionTo(Target.position) * 15, 0.03f * homingMult);
+
+			Projectile.rotation += 0.05f;
 
 			PathCenter += Projectile.velocity;
 
