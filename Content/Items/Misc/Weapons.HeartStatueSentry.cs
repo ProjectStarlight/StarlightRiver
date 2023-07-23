@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public Player Owner => Main.player[Projectile.owner];
 
 		public ref float Timer => ref Projectile.ai[0];
-		public ref float Firing => ref Projectile.ai[1];
+		public ref float PulseTime => ref Projectile.ai[1];
 
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
@@ -93,6 +93,9 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Timer++;
 
+			if (PulseTime > 0)
+				PulseTime--;
+
 			if (Timer == 1)
 			{
 				Owner.FindSentryRestingSpot(Projectile.whoAmI, out int worldX, out int worldY, out int pushYUp);
@@ -117,6 +120,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (damageDone > 500)
 			{
 				Item.NewItem(Projectile.GetSource_FromThis(), Projectile.Hitbox, ItemID.Heart);
+				PulseTime = 30;
 				damageDone = 0;
 			}
 		}
@@ -132,10 +136,19 @@ namespace StarlightRiver.Content.Items.Misc
 			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "Glow").Value;
 			Texture2D radTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/GlowRing").Value;
 			Texture2D tickTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/DirectionalBeam").Value;
+			Texture2D bloomTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
 
 			int frameX = wasFiring ? 34 : 0;
 			int frameY = wasFiring ? (46 * ((int)Timer % 20 / 5)) : 0;
 			var source = new Rectangle(frameX, frameY, 34, 46);
+
+			if (PulseTime > 0)
+			{
+				Color pulseColor = new Color(255, 50, 50) * (PulseTime / 30f);
+				pulseColor.A = 0;
+
+				Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition + Vector2.UnitY * -16, null, pulseColor, 0, bloomTex.Size() / 2f, (1 - PulseTime / 30f) * 3, 0, 0);
+			}
 
 			Main.spriteBatch.Draw(statueTex, Projectile.Center - Main.screenPosition, source, lightColor, 0, new Vector2(17, 23), 1, 0, 0);
 			Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, source, Color.White, 0, new Vector2(17, 23), 1, 0, 0);
