@@ -2953,6 +2953,16 @@ Mods: {
 				DisplayName: Heart Statue?
 				Tooltip: Summons a heart statue powered by your enemie's souls
 			}
+
+			ManEaterPot: {
+				DisplayName: Man Eater Pot
+				Tooltip:
+					'''
+					Causes man eaters to sprout from your head
+					These man eaters will consume heart pickups to empower themselves
+					Consumed heart pickups heal you after a delay
+					'''
+			}
 		}
 
 		Projectiles: {
@@ -3234,6 +3244,7 @@ Mods: {
 			VitricSmallDummy.DisplayName: ""
 			VitricBannerDummy.DisplayName: ""
 			HeartStatueSentry.DisplayName: Heart Statue?
+			ManEaterPotMinion.DisplayName: Tamed Man Eater
 		}
 
 		Tiles: {
@@ -3822,6 +3833,11 @@ Mods: {
 			HeartStatueDrain: {
 				DisplayName: Heart Siphon
 				Description: ""
+			}
+
+			ManEaterPotBuff: {
+				DisplayName: Man Eaters
+				Description: Quite the hairdo you have!
 			}
 		}
 
