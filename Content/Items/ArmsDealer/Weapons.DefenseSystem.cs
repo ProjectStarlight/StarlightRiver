@@ -21,9 +21,9 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 
 		public string dealerName = "Arms Dealer";
 
-		public static string PistolTex => Terraria.GameContent.TextureAssets.Item?[ItemID.FlintlockPistol]?.Name ?? "PlaceholderForServer";
-		public static string ShotgunTex => Terraria.GameContent.TextureAssets.Item?[ItemID.Boomstick]?.Name ?? "PlaceholderForServer";
-		public static string MinigunTex => Terraria.GameContent.TextureAssets.Item?[ItemID.Minishark]?.Name ?? "PlaceholderForServer";
+		public static string PistolTex => "Terraria/" + Terraria.GameContent.TextureAssets.Item?[ItemID.FlintlockPistol]?.Name ?? "PlaceholderForServer";
+		public static string ShotgunTex => "Terraria/" + Terraria.GameContent.TextureAssets.Item?[ItemID.Boomstick]?.Name ?? "PlaceholderForServer";
+		public static string MinigunTex => "Terraria/" + Terraria.GameContent.TextureAssets.Item?[ItemID.Minishark]?.Name ?? "PlaceholderForServer";
 
 		public override string Texture => AssetDirectory.ArmsDealerItem + Name;
 
