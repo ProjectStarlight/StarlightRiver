@@ -242,7 +242,7 @@ namespace StarlightRiver.Content.Items.Jungle
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (Raged)
-				modifiers.SourceDamage += 0.1f;
+				modifiers.SourceDamage += 0.5f;
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -257,8 +257,8 @@ namespace StarlightRiver.Content.Items.Jungle
 		public override bool PreDraw(ref Color lightColor)
 		{
 			int frameX = Raged ? 50 : 0;
-			int frameY = Raged ? Projectile.timeLeft / 10 % 2 * 34 : Projectile.timeLeft / 10 % 4 * 34;
-			var source = new Rectangle(frameX, frameY, 50, 34);
+			int frameY = Raged ? Projectile.timeLeft / 10 % 2 * 38 : Projectile.timeLeft / 10 % 4 * 38;
+			var source = new Rectangle(frameX, frameY, 50, 38);
 
 			float dist = Vector2.Distance(Projectile.Center, Origin);
 
@@ -267,7 +267,7 @@ namespace StarlightRiver.Content.Items.Jungle
 			Texture2D texVine = ModContent.Request<Texture2D>(Texture + "Vine").Value;
 			Texture2D texBlob = ModContent.Request<Texture2D>(Texture + "Blob").Value;
 
-			for (int k = 0; k < dist; k++)
+			for (int k = texVine.Height; k < dist; k++)
 			{
 				float prog = k / dist;
 				var pos = Vector2.Lerp(Projectile.Center, Origin, prog);
