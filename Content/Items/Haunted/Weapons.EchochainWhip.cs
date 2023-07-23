@@ -42,12 +42,29 @@ namespace StarlightRiver.Content.Items.Haunted
 				cooldown--;
 		}
 
+		public override bool CanUseItem(Player player)
+		{
+			if (player.altFunctionUse == 2)
+			{
+				Item.UseSound = SoundID.DD2_BetsyFireballImpact;
+				Item.useStyle = ItemUseStyleID.Shoot;
+			}
+			else
+			{
+				Item.UseSound = SoundID.Item152;
+				Item.useStyle = ItemUseStyleID.Swing;
+			}
+
+			return base.CanUseItem(player);
+		}
+
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
 			if (player.altFunctionUse == 2 && cooldown <= 0)
 			{
-				Main.NewText("ratio");
+				Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<EchochainWhipAltProjectile>(), damage, knockback, player.whoAmI);
 				cooldown = 120;
+				return false;
 			}
 
 			return true;
@@ -68,6 +85,243 @@ namespace StarlightRiver.Content.Items.Haunted
 			recipe.AddIngredient<VengefulSpirit>(10);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
+		}
+	}
+
+	public class EchochainWhipAltProjectile : ModProjectile
+	{
+		public Point16?[] tiles = new Point16?[10];
+		public NPC[] targets = new NPC[10];
+
+		public Vector2 OwnerMouse => Owner.GetModPlayer<ControlsPlayer>().mouseWorld;
+		public Player Owner => Main.player[Projectile.owner];
+
+		public bool CanHold => Owner.GetModPlayer<ControlsPlayer>().mouseRight && !Owner.CCed && !Owner.noItems;
+
+		public override string Texture => AssetDirectory.Invisible;
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Echochain Aura");
+		}
+
+		public override void SetDefaults()
+		{
+			Projectile.DamageType = DamageClass.Summon;
+			Projectile.width = 10;
+			Projectile.height = 10;
+			Projectile.friendly = true;
+			Projectile.tileCollide = false;
+			Projectile.ignoreWater = true;
+		}
+
+		public override bool? CanDamage()
+		{
+			return false;
+		}
+
+		public override bool PreAI()
+		{ 
+			Projectile.Center = Vector2.Lerp(Projectile.Center, OwnerMouse, 0.1f);
+			PopulateTilesAndTargets();
+			return true;
+		}
+
+		public override void AI()
+		{
+			Projectile.rotation = Owner.DirectionTo(OwnerMouse).ToRotation();
+
+			if (!CanHold)
+			{
+				Owner.itemTime = 0;
+				Owner.itemAnimation = 0;
+				Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, 0f); // gotta set the composite arm here again otherwise the players front arm appears out for a frame and it looks bad
+				Projectile.Kill();
+
+				var targetsToChain = new List<NPC>();
+
+				for (int i = 0; i < targets.Length; i++)
+				{
+					if (tiles[i] == null || targets[i] != null && targets[i].active)
+						targetsToChain.Add(targets[i]);
+				}
+
+				if (targetsToChain.Count >= 2)
+					EchochainSystem.AddNPCS(targetsToChain);
+
+				for (int i = 0; i < tiles.Length; i++)
+				{
+					if (tiles[i] == null || targets[i] == null)
+						return;
+
+					int[] frames = new int[17];
+					for (int a = 0; a < frames.Length; a++) // populate array
+					{
+						frames[a] = Main.rand.Next(3);
+					}
+
+					Vector2 pos = new Vector2(tiles[i].Value.X * 16, tiles[i].Value.Y * 16);
+					var proj = Projectile.NewProjectileDirect(null, pos, Vector2.Zero, ModContent.ProjectileType<EchochainWhipAltProjectileChain>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+
+					(proj.ModProjectile as EchochainWhipAltProjectileChain).target = targets[i];
+					(proj.ModProjectile as EchochainWhipAltProjectileChain).tilePosition = pos;
+					(proj.ModProjectile as EchochainWhipAltProjectileChain).chainFrames = frames;
+				}
+
+				return;
+			}
+
+			Owner.ChangeDir(OwnerMouse.X < Owner.Center.X ? -1 : 1);
+			Owner.heldProj = Projectile.whoAmI;
+			Owner.itemTime = 2;
+			Owner.itemAnimation = 2;
+
+			Projectile.timeLeft = 2;
+
+			Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, -2f * Owner.direction);
+			Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, 0f);
+
+			for (int i = 0; i < tiles.Length; i++)
+			{
+				if (tiles[i] == null)
+					return;
+
+				Vector2 pos = new Vector2(tiles[i].Value.X * 16, tiles[i].Value.Y * 16);
+				pos += new Vector2(12f, 0f);
+
+				if (Main.rand.NextBool(5))
+					Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(1f, 1f) + Vector2.UnitY * -Main.rand.NextFloat(2f), 0, new Color(100, 200, 10), 0.35f);
+
+				if (Main.rand.NextBool(5))
+					Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(2f, 2f) + Vector2.UnitY * -Main.rand.NextFloat(3f), 0, new Color(150, 255, 25), 0.2f);
+			}
+		}
+
+		public override bool PreDraw(ref Color lightColor)
+		{
+			return false;
+		}
+
+		private void PopulateTilesAndTargets()
+		{
+			for (int i = 0; i < tiles.Length; i++)
+			{
+				tiles[i] = null;
+				targets[i] = null;
+			}
+
+			Vector2 startPos = Projectile.Center + new Vector2(-50, 0);
+
+			for (int x = 0; x < 10; x++)
+			{
+				int index = x;
+
+				for (int y = 0; y < 10; y++) // search 10 tiles down
+				{
+					Vector2 worldPos = startPos + new Vector2(16f * x, y * 16f);
+					Point16 tilePos = new Point16((int)worldPos.X / 16, (int)worldPos.Y / 16);
+					Tile tile = Framing.GetTileSafely(tilePos);
+					if (tile.HasTile && WorldGen.SolidOrSlopedTile(tile) && !tiles.Contains(tilePos))
+					{
+						targets[index] = Main.npc.Where(n => n.active && n.CanBeChasedBy() && n.Distance(worldPos) < 250f && !targets.Contains(n)).OrderBy(n => n.Distance(worldPos)).FirstOrDefault();
+						tiles[index] = tilePos;
+						Main.NewText(y);
+						break;
+					}				
+				}
+			}
+		}
+	}
+
+	public class EchochainWhipAltProjectileChain : ModProjectile
+	{
+		public int[] chainFrames;
+
+		public Vector2 tilePosition;
+
+		public NPC target;
+
+		public ref float StabTimer => ref Projectile.ai[0];
+
+		public Player Owner => Main.player[Projectile.owner];
+
+		public override string Texture => AssetDirectory.Invisible;
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Echo Chain");
+		}
+
+		public override void SetDefaults()
+		{
+			Projectile.DamageType = DamageClass.Summon;
+			Projectile.width = 16;
+			Projectile.height = 16;
+			Projectile.friendly = false;
+			Projectile.hostile = false;
+			Projectile.tileCollide = false;
+			Projectile.ignoreWater = true;
+			Projectile.timeLeft = 300;
+			Projectile.penetrate = -1;
+		}
+
+		public override void AI()
+		{
+			if (target == null || !target.active || tilePosition.Distance(target.Center) > 350f)
+			{
+				Projectile.Kill();
+				return;
+			}
+
+			if (StabTimer < 60f)
+				StabTimer++;
+
+			float progress = StabTimer / 60f;
+
+			if (progress < 0.5f)
+			{
+				Projectile.Center = Vector2.Lerp(tilePosition + new Vector2(0f, -20f), target.Center, EaseBuilder.EaseQuarticInOut.Ease(StabTimer / 30f));
+			}
+			else
+			{
+				Projectile.Center = Vector2.Lerp(target.Center, tilePosition + new Vector2(0f, -20f), EaseBuilder.EaseQuarticIn.Ease((StabTimer - 30f) / 30f));
+				if (target.knockBackResist > 0f)
+					target.Center = Projectile.Center;
+			}
+		}
+
+		public override bool PreDraw(ref Color lightColor)
+		{
+			if (target == null || !target.active)
+				return false;
+
+			SpriteBatch spriteBatch = Main.spriteBatch;
+
+			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.HauntedItem + "EchochainWhipChain").Value;
+			Texture2D texGlow = ModContent.Request<Texture2D>(AssetDirectory.HauntedItem + "EchochainWhipChain_Glow").Value;
+			Texture2D texBlur = ModContent.Request<Texture2D>(AssetDirectory.HauntedItem + "EchochainWhipChain_Blur").Value;
+			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Vector2 chainStart = tilePosition;
+			Vector2 chainEnd = Projectile.Center;
+
+			float rotation = chainStart.DirectionTo(chainEnd).ToRotation() + MathHelper.PiOver2;
+
+			float distance = Vector2.Distance(chainStart, chainEnd);
+
+			for (int i = 0; i < (distance / 22); i += 1)
+			{
+				var pos = Vector2.Lerp(chainStart, chainEnd, i * 22 / distance);
+
+				spriteBatch.Draw(bloomTex, pos - Main.screenPosition, null, new Color(100, 200, 10, 0) * 0.1f, 0f, bloomTex.Size() / 2f, 0.5f, 0f, 0f);
+
+				Rectangle frame = tex.Frame(verticalFrames: 5, frameY: chainFrames[i]);
+				spriteBatch.Draw(tex, pos - Main.screenPosition, frame, Color.White, rotation, frame.Size() / 2f, 1f, 0f, 0f);
+
+				frame = texBlur.Frame(verticalFrames: 5, frameY: chainFrames[i]);
+				spriteBatch.Draw(texBlur, pos - Main.screenPosition, frame, Color.White with { A = 0 } * 0.5f, rotation, frame.Size() / 2f, 1f, 0f, 0f);
+			}
+
+			return false;
 		}
 	}
 
@@ -297,7 +551,7 @@ namespace StarlightRiver.Content.Items.Haunted
 			}, true);
 		}
 
-		public override void PostUpdateEverything()
+		public override void PreUpdateDusts()
 		{
 			List<EchochainEdge> edgesToRemove = new();
 
@@ -318,6 +572,28 @@ namespace StarlightRiver.Content.Items.Haunted
 				edge.DestroyEdge();
 			}
 		}
+
+		/*public override void PostUpdateEverything()
+		{
+			List<EchochainEdge> edgesToRemove = new();
+
+			foreach (EchochainEdge edge in edges)
+			{
+				edge.UpdateEdge();
+				// removes ALL chains in which theyre timer has ran out, one of their npcs is inactive, one of their npcs is too far away from another, or somehow both of the edges npcs are the same.
+				if (edge.timer <= 0 || !edge.end.npc.active || edge.end == null || !edge.start.npc.active || edge.start == null || Vector2.Distance(edge.start.npc.Center, edge.end.npc.Center) > 500f || edge.start == edge.end)
+				{
+					edgesToRemove.Add(edge);
+				}
+			}
+
+			// this prevents "Collection was modified, enumeration may not execute"
+			foreach (EchochainEdge edge in edgesToRemove)
+			{
+				edges.Remove(edge);
+				edge.DestroyEdge();
+			}
+		}*/
 
 		/// <summary>
 		/// This function will create appropriate nodes and edges for NPCs when they are

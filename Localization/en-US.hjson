@@ -3602,6 +3602,8 @@ Mods: {
 			GlassShard.DisplayName: Glass Shard
 			EchochainWhipProjectile.DisplayName: Echochain
 			HauntedDaggerProjectile.DisplayName: Haunted Dagger
+			EchochainWhipAltProjectile.DisplayName: Magmite Vacpack
+			EchochainWhipAltProjectileChain.DisplayName: Echo Chain
 		}
 
 		Tiles: {
