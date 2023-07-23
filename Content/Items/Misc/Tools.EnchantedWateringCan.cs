@@ -4,6 +4,10 @@ using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using System;
 using Terraria.ID;
+using Terraria.DataStructures;
+using Terraria;
+using StarlightRiver.Content.Tiles.Forest;
+using StarlightRiver.Content.Tiles.Vitric;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -14,7 +18,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Enchanted Watering Can");
-			Tooltip.SetDefault("todo");
+			Tooltip.SetDefault("Grows saplings into large saplings\nSpeeds up the growth of large saplings");
 		}
 
 		public override void SetDefaults()
@@ -24,7 +28,6 @@ namespace StarlightRiver.Content.Items.Misc
 
 			Item.useTime = 12;
 			Item.useAnimation = 12;
-			Item.reuseDelay = 20;
 
 			Item.channel = true;
 			Item.useStyle = ItemUseStyleID.Shoot;
@@ -37,7 +40,33 @@ namespace StarlightRiver.Content.Items.Misc
 
 			Item.value = Item.sellPrice(0, 1, 50, 0);
 			Item.rare = ItemRarityID.Blue;
+
+			Item.autoReuse = true;
+			Item.reuseDelay = 70;
+			//Item.mana = 20;
 		}
+
+		//public override bool CanUseItem(Player player)
+		//{
+		//	return true;
+		//	if(player.statMana >= Item.mana)
+		//	{
+		//		player.statMana -= Item.mana;
+		//		return true;
+		//	}
+
+		//	return false;
+		//}
+		//public override bool? UseItem(Player player)
+		//{
+		//	if (player.statMana >= Item.mana)
+		//	{
+		//		player.statMana -= Item.mana;
+		//		return true;
+		//	}
+
+		//	return false;
+		//}
 
 		public override void AddRecipes()
 		{
@@ -50,7 +79,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 	internal class EnchantedWateringCanProj : ModProjectile
 	{
-		public override string Texture => AssetDirectory.MiscItem + "EnchantedWateringCan";
+		public override string Texture => AssetDirectory.MiscItem + "EnchantedWateringCanProj";
 
 		Player Owner => Main.player[Projectile.owner];	
 		private bool FirstTickOfSwing => Projectile.ai[0] == 0;
@@ -65,7 +94,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Projectile.friendly = true;
 			Projectile.tileCollide = false;
-			Projectile.Size = new Vector2(72, 38);
+			Projectile.Size = new Vector2(104, 38);
 			//Projectile.penetrate = -1;
 			//Projectile.ownerHitCheck = true;
 			//Projectile.extraUpdates = 3;
@@ -76,31 +105,191 @@ namespace StarlightRiver.Content.Items.Misc
 			if (FirstTickOfSwing)
 			{
 				Projectile.spriteDirection = Owner.direction;
+
 			}
 			Projectile.velocity = Vector2.Zero;
 			Owner.heldProj = Projectile.whoAmI;
 
 			Vector2 armOffset = Main.GetPlayerArmPosition(Projectile) - Owner.Center;
-			Projectile.Center = Owner.Center + armOffset * new Vector2(4.25f, 1.25f);
+			Projectile.Center = Owner.Center + armOffset * new Vector2(4.50f, 0.75f);
 
-			Projectile.rotation = (float)Math.Sin(Projectile.ai[0] * 0.175f * Projectile.spriteDirection /* * 0*/) * 0.3f - 
-				(Math.Abs(armOffset.Y) - 6 - Owner.gfxOffY * 1.5f/*slightly fixes rotating when stepping up blocks*/) * 0.05f * -Projectile.spriteDirection;
+			Projectile.rotation = (float)Math.Sin(Projectile.ai[0] * 0.175f * Projectile.spriteDirection * 0.5f) * 0.3f;
 			//version that points the upper angle upwards instead: //((direction.Y - 6) * 0.05f * -Projectile.spriteDirection);
 
 			//matches the dust to the sprite
 			Dust.NewDustPerfect(
-				Projectile.Center + 
+				Projectile.Center +
 					new Vector2(Main.rand.NextFloat(-4, 4), Main.rand.NextFloat(-4, 4)) + //random offset
-					new Vector2(-1 * Projectile.spriteDirection, 6) + //offset to center
+					new Vector2(8 * Projectile.spriteDirection, -6) + //offset to center
 					new Vector2(14 * Projectile.spriteDirection, 0).RotatedBy(
 						Projectile.rotation * 2 + 0.4f * Projectile.spriteDirection),
-				DustID.Water, 
-				new Vector2(Main.rand.NextFloat(0f, 0.75f) * Projectile.spriteDirection, Main.rand.NextFloat(-0.2f, 0.2f)));//velocity
+				/*DustID.BlueFairy,*/ DustID.Water, 
+				/*Vector2.Zero, default, default, 0.3f);*/ new Vector2(Main.rand.NextFloat(0f, 0.75f) * Projectile.spriteDirection, Main.rand.NextFloat(-0.2f, 0.2f)));//velocity
 
 			Projectile.ai[0]++;
 
-			if (Projectile.ai[0] > 28)
+			const int ProjectileTime = 56;
+
+			if (Projectile.ai[0] > ProjectileTime)
 				Projectile.active = false;
+
+			if(Projectile.ai[0] == ProjectileTime / 2)//check for saplings halfway through item use time
+			{
+				int hitboxTileWidth = Projectile.width / 16;
+				int hitboxTileHeight = Projectile.height / 16;
+				for (int s = 0; s < hitboxTileWidth; s++)//x
+				{
+					for (int t = 0; t < hitboxTileHeight; t++)//y
+					{
+						Vector2 pos = Projectile.position / 16 + new Vector2(0.5f, 0.66f);
+						//SpawnDustAtTile((int)pos.X + s, (int)pos.Y + t);//debug
+						if (CheckForSapling((int)pos.X + s, (int)pos.Y + t))
+							break;
+						else if(CheckForLargeSapling((int)pos.X + s, (int)pos.Y + t))
+						{
+							s++;//skip next x value
+							break;
+						}
+					}
+				}
+			}
+		}
+
+
+		void SpawnDustAtTile(int i, int j, int DustID = DustID.BlueFairy)
+		{
+			for (int g = 0; g < 16; g++)
+			{
+				Dust.NewDustPerfect(
+				new Vector2(i, j) * 16 + new Vector2(Main.rand.Next(0, 16), Main.rand.Next(0, 16)),
+				DustID,
+				Vector2.Zero, default, default, 0.35f);
+			}
+		}
+
+		public bool CheckForSapling(int i, int j)
+		{
+			if (!(Main.tile[i, j].HasTile && Main.tile[i, j].TileType == TileID.Saplings))//doesn't work on vanity saplings
+				return false;
+
+			int offsetY = Main.tile[i, j].TileFrameY / 18;
+
+			//check if tile sapling is on is a valid tile
+			int belowTileType = Main.tile[i, j - offsetY + 2].TileType;
+			if (!(belowTileType == TileID.Dirt || belowTileType == TileID.Grass || belowTileType == TileID.GolfGrass))
+				return false;
+
+			bool leftOpen = true;
+			bool rightOpen = true;
+			for (int s = 0; s < 3; s++)//x
+			{
+				if (s == 1)
+					continue;
+				for (int t = 0; t < 3; t++)//y
+				{
+					int posX = i - 1 + s;
+					int poxY = j - offsetY + t;
+					if (s == 0)
+					{
+						int type = Main.tile[posX, poxY].TileType;
+						if (t == 2)
+						{
+							leftOpen = leftOpen && Main.tile[posX, poxY].HasTile && (type == TileID.Grass || type == TileID.Dirt || type == TileID.GolfGrass);
+						}
+						else
+						{
+							leftOpen = leftOpen && !(Main.tile[posX, poxY].HasTile &&
+								(!Main.tileCut[type] ||
+								type == TileID.Saplings ||
+								type == TileID.VanityTreeSakuraSaplings ||
+								type == TileID.VanityTreeWillowSaplings));//can break other saplings
+						}
+
+						//SpawnDustAtTile(i - 1 + s, j - offsetY + t, leftOpen ? DustID.GreenFairy : DustID.PinkFairy);//debug
+					}
+
+					if (s == 2)
+					{
+						int type = Main.tile[posX, poxY].TileType;
+						if (t == 2)
+						{
+							rightOpen = rightOpen && Main.tile[posX, poxY].HasTile && (type == TileID.Grass || type == TileID.Dirt || type == TileID.GolfGrass);
+						}
+						else
+						{
+							rightOpen = rightOpen && !(Main.tile[posX, poxY].HasTile &&
+								!(Main.tileCut[type] ||
+								type == TileID.Saplings ||
+								type == TileID.VanityTreeSakuraSaplings ||
+								type == TileID.VanityTreeWillowSaplings));//can break other saplings
+						}
+
+						//SpawnDustAtTile(i - 1 + s, j - offsetY + t, rightOpen ? DustID.GreenFairy : DustID.PinkFairy);//debug
+					}
+				}
+			}
+
+			if(leftOpen || rightOpen)
+			{
+				int offsetX =
+					(leftOpen && rightOpen) ? (Main.rand.NextBool() ? -1 : 0) :
+					leftOpen ? -1 : 0;//last case it could be is right
+
+				for (int s = 0; s < 2; s++)//x
+				{
+					for (int t = -1; t < 2; t++)//y
+					{
+						int posX = i + offsetX + s;
+						int posY = j - offsetY + t;
+
+						if (Main.tile[posX, posY].TileType == TileID.Saplings)//makes removing the sapling silent
+							Main.tile[posX, posY].ClearTile();
+						else
+							WorldGen.KillTile(posX, posY);
+
+						Gore.NewGore(
+							new EntitySource_TileInteraction(Owner, posX, posY), 
+							new Vector2(posX, posY) * 16 + new Vector2(Main.rand.Next(0, 16), Main.rand.Next(0, 16)), 
+							Vector2.Zero, 
+							GoreID.TreeLeaf_Normal);
+					}
+				}
+
+				Helper.PlaceMultitile(new Point16(i + offsetX, j - offsetY - 1), ModContent.TileType<ThickTreeSapling>());
+			}
+			//Main.NewText(Main.tile[i, j].TileFrameX + " | " + Main.tile[i, j].TileFrameY);
+			return true;
+		}
+
+		public bool CheckForLargeSapling(int i, int j)
+		{
+			Tile tile = Main.tile[i, j];
+			if (tile.TileType == ModContent.TileType<ThickTreeSapling>())
+			{
+				int offsetX = tile.TileFrameX % 36 / 18;
+				int offsetY = tile.TileFrameY / 18;
+				//Main.NewText(Main.tile[i, j].TileFrameX + " | " + Main.tile[i, j].TileFrameY);
+
+				int posX = i - offsetX;
+				int posY = j - offsetY;
+
+				for (int p = -2; p <= 2; p++)
+				{
+					Dust.NewDustPerfect(
+						new Vector2(posX + 1, posY) * 16 + new Vector2(p * 6, Main.rand.Next(4, 33)),
+						DustID.GreenFairy,
+						new Vector2(p * 0.05f + Main.rand.NextFloat(-0.05f, 0.05f), Main.rand.NextFloat(-0.7f, -0.25f)),
+						0,
+						new Color(255, 220, 255), 1f);
+				}
+
+				ModContent.GetModTile(Main.tile[posX, posY].TileType)?.RandomUpdate(posX, posY);
+				NetMessage.SendTileSquare(Main.myPlayer, posX, posY, 2, 3, TileChangeType.None);
+
+				//SpawnDustAtTile(i - offsetX, j - offsetY, DustID.PinkFairy);//debug
+				return true;
+			}
+			return false;
 		}
 
 		public override bool? CanCutTiles()
@@ -117,13 +306,13 @@ namespace StarlightRiver.Content.Items.Misc
 
 			//these 2 values are for getting the right rotation point
 			float Xoffset = Projectile.spriteDirection == 1 ? (tex.Width * 0.125f) : (tex.Width * 0.875f);
-			Vector2 rotPoint = new Vector2(Xoffset, frameHeight * 0.4f);
+			Vector2 rotPoint = new Vector2(Xoffset, frameHeight * 0.5f);
 
 			Main.spriteBatch.Draw(tex, 
 					Projectile.position + 
 					rotPoint + 
 					new Vector2(Projectile.width / 2 - tex.Width / 2 - 0.6f,//weird specific offset to make it symetrical
-					 -Owner.gfxOffY * 1.5f) - //this value is weird and sometimes breaks for no reason?
+					 -Owner.gfxOffY * 0.5f) - //this value is weird and sometimes breaks for no reason?
 					Main.screenPosition, 
 				frameBox, 
 				lightColor, 

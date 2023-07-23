@@ -51,7 +51,7 @@ namespace StarlightRiver.Core
 			for (int k = 0; k < w; k++)
 			{
 				Tile tile = Framing.GetTileSafely(x + k, y);
-				if (!(tile.HasTile && tile.Slope == SlopeType.Solid && !tile.IsHalfBlock && (tile.TileType == TileID.Grass || tile.TileType == TileID.Dirt)))
+				if (!(tile.HasTile && tile.Slope == SlopeType.Solid && !tile.IsHalfBlock && (tile.TileType == TileID.Grass || tile.TileType == TileID.Dirt || tile.TileType == TileID.GolfGrass)))
 					return false;
 
 				Tile tile2 = Framing.GetTileSafely(x + k, y - 1);

@@ -85,7 +85,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			for (int k = 0; k < w; k++)
 			{
 				Tile tile = Framing.GetTileSafely(x + k, y);
-				if (tile.HasTile && tile.TileType != Type && Main.tileSolid[tile.TileType] && !Main.tileSolidTop[tile.TileType])//this version allows stuff the player can stand on but pass though (platforms, tool stations)
+				if (tile.HasTile && tile.TileType != Type && Main.tileSolid[tile.TileType] && !Main.tileSolidTop[tile.TileType])//this version allows the tree to break stuff the player can stand on but pass though (platforms, tool stations)
 					return false;
 			}
 
