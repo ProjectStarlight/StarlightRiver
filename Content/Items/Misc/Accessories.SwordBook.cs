@@ -80,18 +80,12 @@ namespace StarlightRiver.Content.Items.Misc
 					
 					if (Main.mouseRight && Main.myPlayer == player.whoAmI) // Parry on right click
 					{
-						SwordBookParry.itemTypeToAssign = item.type;
-						SwordBookParry.itemScaleToAssign = item.scale;
-						int i = Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Normalize(Main.MouseWorld - player.Center) * 20, ModContent.ProjectileType<SwordBookParry>(), item.damage, item.knockBack, player.whoAmI);
-						Projectile proj = Main.projectile[i];
-						player.itemTime = proj.timeLeft; //should be okay for mp cause this is for locking the player's hotbar
-						player.itemAnimation = proj.timeLeft;
+						Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Normalize(Main.MouseWorld - player.Center) * 20, ModContent.ProjectileType<SwordBookParry>(), item.damage, item.knockBack, player.whoAmI);
 					}
 					else if (Main.myPlayer == player.whoAmI) // Combo on left click
 					{
-						SwordBookProjectile.comboStateToAssign = comboState;
 						float baseAngle = (Main.MouseWorld - player.Center).ToRotation() + (float)Math.PI / 4f;
-						Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Zero, ModContent.ProjectileType<SwordBookProjectile>(), item.damage, item.knockBack, player.whoAmI, ai0: baseAngle);
+						Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Zero, ModContent.ProjectileType<SwordBookProjectile>(), item.damage, item.knockBack, player.whoAmI, ai0: baseAngle, ai1: comboState);
 
 						comboState++;
 						comboState %= 4;
@@ -108,10 +102,7 @@ namespace StarlightRiver.Content.Items.Misc
 	class SwordBookProjectile : ModProjectile, IDrawPrimitive
 	{
 		// Info about the sword that created this projectile
-		public static int comboStateToAssign;
-
 		public float length;
-		public int comboState;
 		public Texture2D texture;
 		public int lifeSpan;
 		public float holdOut;
@@ -122,6 +113,7 @@ namespace StarlightRiver.Content.Items.Misc
 		private Trail trail;
 
 		private bool hasDoneSwingSound = false;
+		private bool hasDoneOnSpawn = false;
 
 		// These handle replicating the vanilla effects which we must do via reflection
 		public static MethodInfo? playerItemCheckEmitUseVisuals_Info;
@@ -130,13 +122,16 @@ namespace StarlightRiver.Content.Items.Misc
 		public static MethodInfo? ApplyNPCOnHitEffects_Info;
 		public static Action<Player, Item, Rectangle, int, float, int, int, int>? ApplyNPCOnHitEffects;
 
+		public Item itemSnapshot; //lock in the item on creation incase they bypass the item switching prevention
+
 		// Properties
 		public float Progress => 1 - Projectile.timeLeft / (float)lifeSpan;
 		public int Direction => (Math.Abs(BaseAngle - (float)Math.PI / 4f) < Math.PI / 2f) ? 1 : -1;
 		public Player Owner => Main.player[Projectile.owner];
-		public Item Item => Owner.HeldItem; // The owner cant switch off untill this dies anyways since its a heldProj
 
 		public ref float BaseAngle => ref Projectile.ai[0];
+		
+		public ref float ComboState => ref Projectile.ai[1];
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -166,14 +161,29 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void OnSpawn(IEntitySource source)
 		{
-			Projectile.timeLeft = Item.useAnimation * 4;
-			lifeSpan = Projectile.timeLeft;
-			Projectile.scale = Item.scale;
-			trailColor = ItemColorUtility.GetColor(Item.type);
-			texture = TextureAssets.Item[Item.type].Value;
-			length = (float)Math.Sqrt(Math.Pow(texture.Width, 2) + Math.Pow(texture.Width, 2)) * Item.scale;
-			
-			comboState = comboStateToAssign;
+			SpawnLogic();
+		}
+
+		private void SpawnLogic()
+		{
+			if (!hasDoneOnSpawn)
+			{
+				//call by all clients to setup
+				hasDoneOnSpawn = true;
+
+				itemSnapshot = Owner.HeldItem;
+
+				Projectile.timeLeft = itemSnapshot.useAnimation * 4;
+				lifeSpan = Projectile.timeLeft;
+				Projectile.scale = itemSnapshot.scale;
+
+				if (Main.netMode != NetmodeID.Server)
+				{
+					trailColor = ItemColorUtility.GetColor(itemSnapshot.type);
+					texture = TextureAssets.Item[itemSnapshot.type].Value;
+					length = (float)Math.Sqrt(Math.Pow(texture.Width, 2) + Math.Pow(texture.Width, 2)) * itemSnapshot.scale;
+				}
+			}
 		}
 
 		/// <summary>
@@ -188,7 +198,7 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				var mp = instance.ModProjectile as SwordBookProjectile;
 
-				switch (mp.comboState)
+				switch (mp.ComboState)
 				{
 					case 0:
 						Player.bodyFrame = Player.bodyFrame = new Rectangle(0, 56 * (int)(3 + mp.Progress), 40, 56);
@@ -215,42 +225,41 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				hasDoneSwingSound = true;
 
-				float pitch = 1 - Item.useAnimation / 60f;
-				pitch += comboState * 0.1f;
+				float pitch = 1 - itemSnapshot.useAnimation / 60f;
+				pitch += ComboState * 0.1f;
 
 				if (pitch >= 1)
 					pitch = 1;
 
 				Helper.PlayPitched("Effects/HeavyWhooshShort", 1, pitch, Owner.Center);
 
-				if (Item.UseSound.HasValue)
-					Terraria.Audio.SoundEngine.PlaySound(Item.UseSound.Value, Owner.Center);
+				if (itemSnapshot.UseSound.HasValue)
+					Terraria.Audio.SoundEngine.PlaySound(itemSnapshot.UseSound.Value, Owner.Center);
 			}
 		}
 
 		public override void AI()
 		{
+			Owner.itemTime = Projectile.timeLeft; //lock most inventory stuff except hotkeys(bug) while this is active. setting animationtime would prevent hotkeys too but results in an invisible super sword
+
 			Projectile.Center = Owner.Center;
 			Owner.direction = Direction;
 			Owner.heldProj = Projectile.whoAmI;
 
-			Owner.itemAnimation = Owner.itemTime = 3;
-			Owner.itemAnimationMax = 0;
-
-			PlaySwingSound();
+			SpawnLogic();
 
 			if (Projectile.timeLeft % 4 == 0)
 			{
 				Vector2 itemRectStart = Projectile.Center + Projectile.rotation.ToRotationVector2() * length * 0.5f;
 				var itemRect = new Rectangle((int)itemRectStart.X, (int)itemRectStart.Y, 2, 2);
 				itemRect.Inflate((int)length / 2, (int)length / 2);
-				playerItemCheckEmitUseVisuals(Owner, Item, itemRect);
+				playerItemCheckEmitUseVisuals(Owner, itemSnapshot, itemRect);
 			}
 
-			if (comboState < 3 && Progress == 0 && Item.shoot > ProjectileID.None && Projectile.owner == Main.myPlayer) //spawn projectile if relevant
-				Projectile.NewProjectile(null, Owner.Center, Vector2.Normalize(Main.MouseWorld - Owner.Center) * Item.shootSpeed, Item.shoot, Projectile.damage, Projectile.knockBack, Projectile.owner);
+			if (ComboState < 3 && Progress == 0 && itemSnapshot.shoot > ProjectileID.None && Projectile.owner == Main.myPlayer) //spawn projectile if relevant
+				Projectile.NewProjectile(null, Owner.Center, Vector2.Normalize(Main.MouseWorld - Owner.Center) * itemSnapshot.shootSpeed, itemSnapshot.shoot, Projectile.damage, Projectile.knockBack, Projectile.owner);
 
-			switch (comboState)
+			switch (ComboState)
 			{
 				case 0:
 					Projectile.rotation = BaseAngle + (SwingEase(Progress) * 3f - 1.5f) * Direction;
@@ -294,13 +303,13 @@ namespace StarlightRiver.Content.Items.Misc
 
 					float rot = Projectile.rotation + (Direction == 1 ? 0 : -(float)Math.PI / 2f);
 
-					if (Item.shoot > ProjectileID.None && Projectile.owner == Main.myPlayer) //create projectile ring on circular slash
+					if (itemSnapshot.shoot > ProjectileID.None && Projectile.owner == Main.myPlayer) //create projectile ring on circular slash
 					{
 						for (int k = 0; k < 12; k++)
 						{
 							if (Projectile.timeLeft == (int)(lifeSpan * (k / 12f)))
 							{
-								int i = Projectile.NewProjectile(null, Owner.Center, Vector2.UnitX.RotatedBy(Projectile.rotation) * Item.shootSpeed, Item.shoot, Projectile.damage / 4, Projectile.knockBack, Projectile.owner);
+								int i = Projectile.NewProjectile(null, Owner.Center, Vector2.UnitX.RotatedBy(Projectile.rotation) * itemSnapshot.shootSpeed, itemSnapshot.shoot, Projectile.damage / 4, Projectile.knockBack, Projectile.owner);
 								Main.projectile[i].scale *= 0.75f; //scale and timeleft aren't set for other players but this could be any projectile type. TODO: find a solution for this
 
 								if (Main.projectile[i].extraUpdates > 0)
@@ -373,12 +382,12 @@ namespace StarlightRiver.Content.Items.Misc
 			CameraSystem.shake += 3;
 
 			// Simulate on-hit effects
-			ItemLoader.OnHitNPC(Item, Owner, target, hit, damageDone);
-			NPCLoader.OnHitByItem(target, Owner, Item, hit, damageDone);
+			ItemLoader.OnHitNPC(itemSnapshot, Owner, target, hit, damageDone);
+			NPCLoader.OnHitByItem(target, Owner, itemSnapshot, hit, damageDone);
 			PlayerLoader.OnHitNPC(Owner, target, hit, damageDone);
-			Owner.StatusToNPC(Item.type, target.whoAmI);
+			Owner.StatusToNPC(itemSnapshot.type, target.whoAmI);
 			float knockback = hit.Knockback;
-			ApplyNPCOnHitEffects(Owner, Item, Projectile.Hitbox, Projectile.damage, knockback, target.whoAmI, Main.DamageVar(damageDone, Owner.luck), damageDone);
+			ApplyNPCOnHitEffects(Owner, itemSnapshot, Projectile.Hitbox, Projectile.damage, knockback, target.whoAmI, Main.DamageVar(damageDone, Owner.luck), damageDone);
 
 			target.velocity += Vector2.Normalize(target.Center - Owner.Center) * Projectile.knockBack * 2 * target.knockBackResist;
 		}
@@ -450,53 +459,23 @@ namespace StarlightRiver.Content.Items.Misc
 
 			trail?.Render(effect);
 		}
-
-		public override void SendExtraAI(BinaryWriter writer)
-		{
-			writer.Write(Item.type);
-			writer.Write(Item.scale);
-			writer.Write(Projectile.timeLeft);
-			writer.Write(lifeSpan);
-			writer.Write(comboState);
-		}
-
-		public override void ReceiveExtraAI(BinaryReader reader)
-		{
-			int itemType = reader.ReadInt32();
-			float scale = reader.ReadSingle();
-			Projectile.timeLeft = reader.ReadInt32();
-			lifeSpan = reader.ReadInt32();
-			comboState = reader.ReadInt32();
-
-			Projectile.scale = scale;
-
-			if (Main.netMode != NetmodeID.Server)
-			{
-				trailColor = ItemColorUtility.GetColor(itemType);
-				texture = TextureAssets.Item[itemType].Value;
-				length = (float)Math.Sqrt(Math.Pow(texture.Width, 2) + Math.Pow(texture.Width, 2)) * scale;
-			}
-		}
 	}
 
 	class SwordBookParry : ModProjectile
 	{
-		public static int itemTypeToAssign;
-		public static float itemScaleToAssign;
-
-		public int itemType;
-		public float itemScale;
-
 		public float length;
 		public Texture2D texture;
 
 		public float oldRot;
 		public Vector2 oldPos;
 
+		private bool hasDoneOnSpawn = false;
+
+		public Item itemSnapshot; //lock in the item on creation incase they bypass the item switching prevention
+
 		public ref float State => ref Projectile.ai[0];
 
 		public Player Owner => Main.player[Projectile.owner];
-		public Item Item => Owner.HeldItem;
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -511,22 +490,32 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void OnSpawn(IEntitySource source)
 		{
-			itemType = itemTypeToAssign;
-			itemScale = itemScaleToAssign;
 			SetTextureAndLength();
 		}
 
 		private void SetTextureAndLength()
 		{
-			if (Main.netMode != NetmodeID.Server)
+			if (!hasDoneOnSpawn)
 			{
-				texture = TextureAssets.Item[itemType].Value;
-				length = (float)Math.Sqrt(Math.Pow(texture.Width, 2) + Math.Pow(texture.Width, 2)) * itemScale;
+				hasDoneOnSpawn = true;
+				itemSnapshot = Owner.HeldItem;
+
+				if (Main.netMode != NetmodeID.Server)
+				{
+					texture = TextureAssets.Item[itemSnapshot.type].Value;
+					length = (float)Math.Sqrt(Math.Pow(texture.Width, 2) + Math.Pow(texture.Width, 2)) * itemSnapshot.scale;
+				}
 			}
 		}
 
 		public override void AI()
 		{
+			Owner.itemTime = Projectile.timeLeft; //lock most inventory stuff except hotkeys(bug) while this is active. setting animationtime would prevent hotkeys too but results in an invisible super sword
+
+			Owner.heldProj = Projectile.whoAmI;
+
+			SetTextureAndLength();
+
 			if (Projectile.velocity.Length() > 0) // Orient on spawn
 			{
 				Projectile.rotation = Projectile.velocity.ToRotation();
@@ -556,18 +545,18 @@ namespace StarlightRiver.Content.Items.Misc
 						if (!colliding)
 							continue;
 
-						if (proj.damage <= Item.damage * 2)
+						if (proj.damage <= itemSnapshot.damage * 2)
 						{
 							CameraSystem.shake += 20;
 							CombatText.NewText(Owner.Hitbox, Color.Yellow, "Parry");
 
-							if (Item.shoot != ProjectileID.None && Projectile.owner == Main.myPlayer)
+							if (itemSnapshot.shoot != ProjectileID.None && Projectile.owner == Main.myPlayer)
 							{
-								Projectile.NewProjectile(null, proj.Center, proj.velocity * -1, Item.shoot, Projectile.damage, Projectile.knockBack, Projectile.owner);
+								Projectile.NewProjectile(null, proj.Center, proj.velocity * -1, itemSnapshot.shoot, Projectile.damage, Projectile.knockBack, Projectile.owner);
 
 								for (int i = 0; i < 4; i++)
 								{
-									Projectile.NewProjectile(null, proj.Center, proj.velocity.RotatedByRandom(0.5f) * -Main.rand.NextFloat(0.8f, 1.0f), Item.shoot, Projectile.damage / 4, Projectile.knockBack, Projectile.owner);
+									Projectile.NewProjectile(null, proj.Center, proj.velocity.RotatedByRandom(0.5f) * -Main.rand.NextFloat(0.8f, 1.0f), itemSnapshot.shoot, Projectile.damage / 4, Projectile.knockBack, Projectile.owner);
 								}
 							}
 
@@ -619,20 +608,6 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 
 			return false;
-		}
-
-		public override void SendExtraAI(BinaryWriter writer)
-		{
-			writer.Write(itemType);
-			writer.Write(itemScale);
-		}
-
-		public override void ReceiveExtraAI(BinaryReader reader)
-		{
-			itemType = reader.ReadInt32();
-			itemScale = reader.ReadSingle();
-
-			SetTextureAndLength();
 		}
 	}
 }
