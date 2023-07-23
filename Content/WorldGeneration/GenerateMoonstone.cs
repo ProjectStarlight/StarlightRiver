@@ -78,9 +78,9 @@ namespace StarlightRiver.Content.WorldGeneration
 		{
 			bool ignorePlayers = false;
 
-			if (i < 50 || i > Main.maxTilesX - 50)
+			if (i < 75 || i > Main.maxTilesX - 75)
 				return false;
-			if (j < 50 || j > Main.maxTilesY - 50)
+			if (j < 75 || j > Main.maxTilesY - 75)
 				return false;
 
 			int num = 35;

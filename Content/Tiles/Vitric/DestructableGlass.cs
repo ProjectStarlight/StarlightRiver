@@ -22,6 +22,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void NearbyEffects(int i, int j, bool closer)
 		{
+			//NearbyEffects is clientside only
 			if (closer)
 			{
 				var hitbox = new Rectangle(i * 16, j * 16, 16, 16);
@@ -40,6 +41,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				{
 					WorldGen.KillTile(i, j);
 					Framing.GetTileSafely(i, j).IsActuated = true;
+					NetMessage.SendTileSquare(Main.LocalPlayer.whoAmI, i, j);
 				}
 				else
 				{

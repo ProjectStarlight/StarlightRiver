@@ -121,9 +121,9 @@ namespace StarlightRiver.Content.NPCs.Forest
 			NPC.frame = new Rectangle(frameWidth * xFrame, frameHeight * yFrame, frameWidth, frameHeight);
 		}
 
-		public override void OnKill()
+		public override void HitEffect(NPC.HitInfo hit)
 		{
-			if (Main.netMode != NetmodeID.Server)
+			if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
 			{
 				for (int j = 1; j <= 4; j++)
 				{

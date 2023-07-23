@@ -1,6 +1,5 @@
 using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Items.Permafrost;
-using StarlightRiver.Content.Packets;
 using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Core.Systems.CutawaySystem;
 using StarlightRiver.Core.Systems.LightingSystem;
@@ -8,6 +7,7 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -90,6 +90,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			if (!NPC.AnyNPCs(NPCType<SquidBoss>()))
 			{
+				if (fakeBoss is null)
+				{
+					fakeBoss = new NPC();
+					fakeBoss.SetDefaults(NPCType<SquidBoss>());
+					fakeBoss.Center = StarlightWorld.squidBossArena.Center() * 16 + new Vector2(0, -500);
+					(fakeBoss.ModNPC as SquidBoss).QuickSetup();
+				}
+
 				(fakeBoss.ModNPC as SquidBoss).tentacles.ForEach(n => n.ai[1]++);
 				(fakeBoss.ModNPC as SquidBoss).GlobalTimer++;
 				(fakeBoss.ModNPC as SquidBoss).Opacity = 0f;
@@ -185,7 +193,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				Player player = Main.player[k];
 
 				if (player.active && player.Hitbox.Intersects(new Rectangle((int)pos.X, (int)pos.Y, 104 * 16, (int)WaterLevel)))
+				{
+					if (!player.HasBuff(BuffType<Buffs.PrismaticDrown>()) && NPC.AnyNPCs(ModContent.NPCType<Content.Bosses.SquidBoss.SquidBoss>()))
+						player.Hurt(PlayerDeathReason.ByCustomReason("fell into the drink"), Main.masterMode ? 50 : Main.expertMode ? 20 : 10, 0);
+
 					player.AddBuff(BuffType<Buffs.PrismaticDrown>(), 4, false);
+				}
 			}
 
 			for (int k = 0; k < Main.maxItems; k++)
@@ -204,16 +217,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 					if (Item.type == ItemType<SquidBossSpawn>() && WaterLevel == 150 && !Main.npc.Any(n => n.active && n.ModNPC is SquidBoss)) //ready to spawn another squid              
 					{
-						// Synced spawn, TODO, abstract this to a general synced spawn later?
-						if (Main.netMode == NetmodeID.MultiplayerClient)
-						{
-							var packet = new SpawnNPC(Main.myPlayer, (int)NPC.Center.X, (int)NPC.Center.Y + 630, NPCType<SquidBoss>());
-							packet.Send(-1, -1, false);
-						}
-						else if (Main.netMode == NetmodeID.SinglePlayer)
-						{
+						if (Main.netMode != NetmodeID.MultiplayerClient)
 							NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y + 630, NPCType<SquidBoss>());
-						}
 
 						Item.active = false;
 						Item.TurnToAir();

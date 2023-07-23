@@ -5,6 +5,11 @@ namespace StarlightRiver.Content.NPCs.TownModifications
 {
 	class MechanicShopAdditions : GlobalNPC
 	{
+		public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
+		{
+			return entity.type == NPCID.Mechanic;
+		}
+
 		public override void ModifyShop(NPCShop shop)
 		{
 			if (shop.NpcType == NPCID.Mechanic)

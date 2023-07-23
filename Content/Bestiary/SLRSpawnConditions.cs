@@ -10,9 +10,9 @@
 
 		public static void Unload()
 		{
-			VitricDesert = null;
-			AuroraSquid = null;
-			Moonstone = null;
+			VitricDesert ??= null;
+			AuroraSquid ??= null;
+			Moonstone ??= null;
 		}
 	}
 }

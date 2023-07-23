@@ -59,12 +59,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 			return Place(i, j);
 		}
 
-		public override void Update()
-		{
-			if (!IsTileValidForEntity(Position.X, Position.Y))
-				Kill(Position.X, Position.Y);
-		}
-
 		/// <summary>
 		/// Performs an action on all gears in a system. Has no built-in base case, you must implement one in your action.
 		/// </summary>

@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Packets;
 using StarlightRiver.Core.Systems;
 using Terraria.DataStructures;
 
@@ -29,15 +30,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 			if (dummy is null || dummy.gearAnimation > 0)
 				return false;
 
-			entity.Disengage();
-
-			dummy.oldSize = dummy.Size;
-			dummy.Size++;
-			dummy.gearAnimation = 40;
-
-			GearPuzzleHandler.engagedObjectives = 0;
-
-			GearPuzzleHandler.PuzzleOriginEntity?.Engage(2);
+			GearPuzzleClickPacket gearPacket = new GearPuzzleClickPacket(i, j, DummyType);
+			gearPacket.Send();
 
 			return true;
 		}
