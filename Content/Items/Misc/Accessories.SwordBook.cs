@@ -86,7 +86,7 @@ namespace StarlightRiver.Content.Items.Misc
 					{
 						float baseAngle = (Main.MouseWorld - player.Center).ToRotation() + (float)Math.PI / 4f;
 						Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Zero, ModContent.ProjectileType<SwordBookProjectile>(), item.damage, item.knockBack, player.whoAmI, ai0: baseAngle, ai1: comboState);
-
+						
 						comboState++;
 						comboState %= 4;
 					}
@@ -96,6 +96,14 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 
 			return true;
+		}
+
+		public override bool? CanHitNPC(Player player, NPC target)
+		{
+			if (player.ownedProjectileCounts[ModContent.ProjectileType<SwordBookProjectile>()] > 0 || player.ownedProjectileCounts[ModContent.ProjectileType<SwordBookParry>()] > 0)
+				return false; //prevent regular melee damage while a swordbook is active so we can use itemanimation
+
+			return base.CanHitNPC(player, target);
 		}
 	}
 
@@ -183,6 +191,8 @@ namespace StarlightRiver.Content.Items.Misc
 					texture = TextureAssets.Item[itemSnapshot.type].Value;
 					length = (float)Math.Sqrt(Math.Pow(texture.Width, 2) + Math.Pow(texture.Width, 2)) * itemSnapshot.scale;
 				}
+
+				PlaySwingSound();
 			}
 		}
 
@@ -240,7 +250,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void AI()
 		{
-			Owner.itemTime = Projectile.timeLeft; //lock most inventory stuff except hotkeys(bug) while this is active. setting animationtime would prevent hotkeys too but results in an invisible super sword
+			Owner.itemAnimation = Owner.itemTime = Projectile.timeLeft; //lock inventory while this is active
+			Owner.itemAnimationMax = 0; //make sure the regular weapon holdout doesn't render (makes an invisible super sword so you need to disable onhit elsewhere)
 
 			Projectile.Center = Owner.Center;
 			Owner.direction = Direction;
@@ -510,7 +521,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void AI()
 		{
-			Owner.itemTime = Projectile.timeLeft; //lock most inventory stuff except hotkeys(bug) while this is active. setting animationtime would prevent hotkeys too but results in an invisible super sword
+			Owner.itemAnimation = Owner.itemTime = Projectile.timeLeft; //lock inventory while this is active
+			Owner.itemAnimationMax = 0; //make sure the regular weapon holdout doesn't render (makes an invisible super sword so you need to disable onhit elsewhere)
 
 			Owner.heldProj = Projectile.whoAmI;
 

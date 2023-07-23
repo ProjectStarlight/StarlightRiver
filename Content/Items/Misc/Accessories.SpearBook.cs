@@ -225,7 +225,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			Projectile.Center = Owner.Center;
 			Owner.heldProj = Projectile.whoAmI;
-			Owner.itemAnimation = Owner.itemTime = 2;
+			Owner.itemAnimation = Owner.itemTime = 2; //unlike axe and swordbook spears are a projectile normally so this is a safe way to lock hotbar
 			Owner.itemAnimationMax = 10;
 
 			OriginalAI();

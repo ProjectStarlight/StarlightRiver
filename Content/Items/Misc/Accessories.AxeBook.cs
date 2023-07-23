@@ -93,6 +93,14 @@ namespace StarlightRiver.Content.Items.Misc
 
 			return true;
 		}
+
+		public override bool? CanHitNPC(Player player, NPC target)
+		{
+			if (player.ownedProjectileCounts[ModContent.ProjectileType<AxeBookProjectile>()] > 0 || player.ownedProjectileCounts[ModContent.ProjectileType<ThrownAxeProjectile>()] > 0)
+				return false; //prevent regular melee damage while a axe is active so we can use itemanimation
+
+			return base.CanHitNPC(player, target);
+		}
 	}
 
 	internal class AxeBookProjectile : ModProjectile, IDrawPrimitive
@@ -121,7 +129,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public ref float Length => ref Projectile.ai[1];
 		public ref float BaseAngle => ref Projectile.ai[2];
 
-		public Item Item => Owner.HeldItem; // The owner cant switch off untill this dies anyways since its a heldProj
+		public Item Item => Owner.HeldItem;
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -197,6 +205,9 @@ namespace StarlightRiver.Content.Items.Misc
 			Owner.heldProj = Projectile.whoAmI;
 
 			SpawnLogic();
+
+			Owner.itemAnimation = Owner.itemTime = Projectile.timeLeft; //lock inventory while this is active
+			Owner.itemAnimationMax = 0; //make sure the regular weapon holdout doesn't render (makes an invisible super axe so you need to disable onhit elsewhere)
 
 			// Cut trees
 			if (Progress > 0 && !hitTree)
@@ -464,6 +475,9 @@ namespace StarlightRiver.Content.Items.Misc
 			Owner.heldProj = Projectile.whoAmI;
 
 			SpawnLogic();
+
+			Owner.itemAnimation = Owner.itemTime = Projectile.timeLeft; //lock inventory while this is active
+			Owner.itemAnimationMax = 0; //make sure the regular weapon holdout doesn't render (makes an invisible super axe so you need to disable onhit elsewhere)
 
 			if (storedScale == 0)
 				storedScale = Projectile.scale;
