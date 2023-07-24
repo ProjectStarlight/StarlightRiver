@@ -53,6 +53,7 @@
 - Fixed most gores for multiplayer
 - Fixed Jade stopwatch for multiplayer
 - Fixed martial books for multiplayer
+- Fixed laser pointers for multiplayer
 - Improved barrier network performance. Far fewer packets sent
 
 ## Misc

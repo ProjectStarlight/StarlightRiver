@@ -63,7 +63,7 @@ namespace StarlightRiver.Core
 					mouseListener = false;
 				}
 
-				if (mouseRotationListener && Math.Abs((mouseWorld - Player.MountedCenter).ToRotation() - (oldMouseWorld - Player.MountedCenter).ToRotation()) > 0.1f)
+				if (mouseRotationListener && Math.Abs((mouseWorld - Player.MountedCenter).ToRotation() - (oldMouseWorld - Player.MountedCenter).ToRotation()) > 0.01f)
 				{
 					oldMouseWorld = mouseWorld;
 					sendControls = true;
