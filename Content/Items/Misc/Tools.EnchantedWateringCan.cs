@@ -8,6 +8,7 @@ using Terraria.DataStructures;
 using Terraria;
 using StarlightRiver.Content.Tiles.Forest;
 using StarlightRiver.Content.Tiles.Vitric;
+using StarlightRiver.Content.Dusts.ArtifactSparkles;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -38,35 +39,13 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.noUseGraphic = true;
 			Item.noMelee = true;
 
-			Item.value = Item.sellPrice(0, 1, 50, 0);
+			Item.value = Item.sellPrice(0, 3, 0, 0);
 			Item.rare = ItemRarityID.Blue;
 
 			Item.autoReuse = true;
 			Item.reuseDelay = 70;
-			//Item.mana = 20;
+			Item.mana = 20;
 		}
-
-		//public override bool CanUseItem(Player player)
-		//{
-		//	return true;
-		//	if(player.statMana >= Item.mana)
-		//	{
-		//		player.statMana -= Item.mana;
-		//		return true;
-		//	}
-
-		//	return false;
-		//}
-		//public override bool? UseItem(Player player)
-		//{
-		//	if (player.statMana >= Item.mana)
-		//	{
-		//		player.statMana -= Item.mana;
-		//		return true;
-		//	}
-
-		//	return false;
-		//}
 
 		public override void AddRecipes()
 		{
@@ -82,7 +61,6 @@ namespace StarlightRiver.Content.Items.Misc
 		public override string Texture => AssetDirectory.MiscItem + "EnchantedWateringCanProj";
 
 		Player Owner => Main.player[Projectile.owner];	
-		private bool FirstTickOfSwing => Projectile.ai[0] == 0;
 
 		public override void SetStaticDefaults()
 		{
@@ -100,13 +78,13 @@ namespace StarlightRiver.Content.Items.Misc
 			//Projectile.extraUpdates = 3;
 		}
 
+		public override void OnSpawn(IEntitySource source)
+		{
+			Projectile.spriteDirection = Owner.direction;
+		}
+
 		public override void AI()
 		{
-			if (FirstTickOfSwing)
-			{
-				Projectile.spriteDirection = Owner.direction;
-
-			}
 			Projectile.velocity = Vector2.Zero;
 			Owner.heldProj = Projectile.whoAmI;
 
@@ -155,17 +133,16 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 		}
 
-
-		void SpawnDustAtTile(int i, int j, int DustID = DustID.BlueFairy)
-		{
-			for (int g = 0; g < 16; g++)
-			{
-				Dust.NewDustPerfect(
-				new Vector2(i, j) * 16 + new Vector2(Main.rand.Next(0, 16), Main.rand.Next(0, 16)),
-				DustID,
-				Vector2.Zero, default, default, 0.35f);
-			}
-		}
+		//void SpawnDustAtTile(int i, int j, int DustID = DustID.BlueFairy)
+		//{
+		//	for (int g = 0; g < 16; g++)
+		//	{
+		//		Dust.NewDustPerfect(
+		//		new Vector2(i, j) * 16 + new Vector2(Main.rand.Next(0, 16), Main.rand.Next(0, 16)),
+		//		DustID,
+		//		Vector2.Zero, default, default, 0.35f);
+		//	}
+		//}
 
 		public bool CheckForSapling(int i, int j)
 		{
@@ -269,18 +246,26 @@ namespace StarlightRiver.Content.Items.Misc
 				int offsetX = tile.TileFrameX % 36 / 18;
 				int offsetY = tile.TileFrameY / 18;
 				//Main.NewText(Main.tile[i, j].TileFrameX + " | " + Main.tile[i, j].TileFrameY);
-
 				int posX = i - offsetX;
 				int posY = j - offsetY;
 
-				for (int p = -2; p <= 2; p++)
+				for (int s = 0; s < 2; s++)//x
 				{
-					Dust.NewDustPerfect(
-						new Vector2(posX + 1, posY) * 16 + new Vector2(p * 6, Main.rand.Next(4, 33)),
-						DustID.GreenFairy,
-						new Vector2(p * 0.05f + Main.rand.NextFloat(-0.05f, 0.05f), Main.rand.NextFloat(-0.7f, -0.25f)),
-						0,
-						new Color(255, 220, 255), 1f);
+					for (int t = 0; t < 3; t++)//y
+					{
+						if (!Main.rand.NextBool(2, 3))
+							continue;
+
+						int posX2 = i - offsetX + s;
+						int posY2 = j - offsetY + t;
+
+						Dust.NewDustPerfect(
+							new Vector2(posX2, posY2) * 16 + new Vector2(Main.rand.Next(0, 17) + 4, Main.rand.Next(4, 21)),
+							ModContent.DustType<LimeArtifactSparkle>(),
+							new Vector2(Main.rand.NextFloat(-0.05f, 0.05f), Main.rand.NextFloat(-0.3f, -0.15f)),
+							0,
+							new Color(230, 255, 255), 1f);
+					}
 				}
 
 				ModContent.GetModTile(Main.tile[posX, posY].TileType)?.RandomUpdate(posX, posY);

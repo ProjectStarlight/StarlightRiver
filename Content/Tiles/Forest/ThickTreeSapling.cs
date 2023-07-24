@@ -103,10 +103,4 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		//	return true;
 		//}
 	}
-
-	[SLRDebug]
-	class ThickTreeSaplingPlacer: QuickTileItem
-	{
-		public ThickTreeSaplingPlacer() : base("Large Sapling Placer", "", "ThickTreeSapling", 1, AssetDirectory.ForestTile, false) { }
-	}
 }
