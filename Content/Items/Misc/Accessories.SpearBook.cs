@@ -217,6 +217,7 @@ namespace StarlightRiver.Content.Items.Misc
 				int i = Projectile.NewProjectile(Item.GetSource_FromThis(), Projectile.Center, TargetAngle.ToRotationVector2() * 5, Item.shoot, Projectile.damage, Projectile.knockBack, Projectile.owner);
 				original = Main.projectile[i];
 			}
+
 			spawnProjToAssign = true;
 		}
 

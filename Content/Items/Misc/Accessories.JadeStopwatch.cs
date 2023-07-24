@@ -223,7 +223,6 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 	}
 
-
 	/// <summary>
 	/// Packet to be sent when a player is hit while jade stopwatch is equipped so the other clients can know about it
 	/// </summary>
