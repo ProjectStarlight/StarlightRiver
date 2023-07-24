@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Buffs;
 using StarlightRiver.Helpers;
 using System;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -23,7 +24,7 @@ namespace StarlightRiver.Content.Items.Jungle
 
 		public override void SetDefaults()
 		{
-			Item.damage = 22;
+			Item.damage = 14;
 			Item.knockBack = 5f;
 			Item.mana = 10;
 			Item.width = 32;
@@ -31,8 +32,8 @@ namespace StarlightRiver.Content.Items.Jungle
 			Item.useTime = 36;
 			Item.useAnimation = 36;
 			Item.useStyle = ItemUseStyleID.Swing;
-			Item.value = Item.buyPrice(silver: 50);
-			Item.rare = ItemRarityID.Blue;
+			Item.value = Item.buyPrice(silver: 90);
+			Item.rare = ItemRarityID.Green;
 			Item.UseSound = SoundID.Item44;
 
 			Item.noMelee = true;
@@ -45,6 +46,18 @@ namespace StarlightRiver.Content.Items.Jungle
 		{
 			player.AddBuff(Item.buffType, 2);
 			Projectile.NewProjectileDirect(source, player.Center, velocity, type, damage, knockback, Main.myPlayer).originalDamage = Item.damage;
+
+			for (int k = 0; k < 20; k++)
+			{
+				Dust.NewDustPerfect(player.Center + new Vector2(0, -48), DustID.JungleGrass, Vector2.UnitY.RotatedByRandom(1f) * -Main.rand.NextFloat(4));
+			}
+
+			for (int k = 0; k < 10; k++)
+			{
+				Dust.NewDustPerfect(player.Center + new Vector2(0, -48), DustID.Mud, Vector2.UnitY.RotatedByRandom(1f) * -Main.rand.NextFloat(3));
+			}
+
+			SoundEngine.PlaySound(SoundID.Grass, player.Center);
 
 			return false;
 		}
@@ -76,7 +89,7 @@ namespace StarlightRiver.Content.Items.Jungle
 
 		public bool Raged => RageTime > 0;
 
-		public Vector2 Origin => Owner.Center + new Vector2(0, -16);
+		public Vector2 Origin => Owner.Center + new Vector2(0, -32 + Owner.gfxOffY);
 
 		public override string Texture => AssetDirectory.JungleItem + Name;
 
@@ -136,6 +149,9 @@ namespace StarlightRiver.Content.Items.Jungle
 
 			if (Projectile.timeLeft <= 2)
 				Projectile.timeLeft = 10000;
+
+			if (!Owner.HasBuff<ManEaterPotBuff>())
+				Projectile.timeLeft = 0;
 		}
 
 		/// <summary>
@@ -170,7 +186,7 @@ namespace StarlightRiver.Content.Items.Jungle
 			}
 
 			// Else, fall back to targeting an enemy
-			npcTarget = Projectile.TargetClosestNPC(TARGET_RADIUS, false, true);
+			npcTarget = Projectile.TargetClosestNPC(TARGET_RADIUS, true, true);
 
 			// If we found one, go into attack mode
 			if (npcTarget != null && npcTarget.active)
@@ -231,7 +247,7 @@ namespace StarlightRiver.Content.Items.Jungle
 		{
 			float totalCount = Owner.ownedProjectileCounts[Type] > 0 ? Owner.ownedProjectileCounts[Type] : 1;
 
-			Vector2 idlePos = Owner.Center + new Vector2(-32 + Projectile.minionPos / totalCount * 64, -64);
+			Vector2 idlePos = Owner.Center + new Vector2(-32 + Projectile.minionPos / totalCount * 64, -72);
 			idlePos += Vector2.UnitX.RotatedBy(Projectile.timeLeft / 40f + Projectile.minionPos) * 10;
 
 			Projectile.position += (idlePos - Projectile.Center) * 0.06f;
@@ -267,12 +283,14 @@ namespace StarlightRiver.Content.Items.Jungle
 			Texture2D texVine = ModContent.Request<Texture2D>(Texture + "Vine").Value;
 			Texture2D texBlob = ModContent.Request<Texture2D>(Texture + "Blob").Value;
 
+			Texture2D texPot = ModContent.Request<Texture2D>(Texture + "Pot").Value;
+
 			for (int k = texVine.Height; k < dist; k++)
 			{
 				float prog = k / dist;
 				var pos = Vector2.Lerp(Projectile.Center, Origin, prog);
 
-				Main.spriteBatch.Draw(texVine, pos - Main.screenPosition, null, lightColor, Projectile.rotation + 1.57f, texVine.Size() / 2f, 1, 0, 0);
+				Main.spriteBatch.Draw(texVine, pos - Main.screenPosition, null, Lighting.GetColor((pos / 16).ToPoint()), pos.DirectionTo(Origin).ToRotation() + 1.57f, texVine.Size() / 2f, 1, 0, 0);
 
 				k += texVine.Height;
 			}
@@ -285,6 +303,8 @@ namespace StarlightRiver.Content.Items.Jungle
 			}
 
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, source, lightColor, Projectile.rotation + 1.57f, new Vector2(25, 17), 1, 0, 0);
+
+			Main.spriteBatch.Draw(texPot, Origin - Main.screenPosition, null, Lighting.GetColor((Origin / 16).ToPoint()), 0, texPot.Size() / 2f, 1, 0, 0);
 
 			return false;
 		}
