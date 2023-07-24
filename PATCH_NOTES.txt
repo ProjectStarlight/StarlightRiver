@@ -50,8 +50,9 @@
 - Fixed starwood armor and weapons in multiplayer
 - Fixed artifacts in multiplayer
 - Fixed most gores for multiplayer
-- Fix Jade stopwatch for multiplayer
-- Fix martial books for multiplayer
+- Fixed Jade stopwatch for multiplayer
+- Fixed martial books for multiplayer
+- Improved barrier network performance. Far fewer packets sent
 
 ## Misc
 - The boss rush now requires you to have defeated each boss atleast once to unlock
