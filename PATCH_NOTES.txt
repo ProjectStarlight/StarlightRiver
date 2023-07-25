@@ -54,6 +54,7 @@
 - Fixed Jade stopwatch for multiplayer
 - Fixed martial books for multiplayer
 - Fixed laser pointers for multiplayer
+- Fixed forest berry bushes in multiplayer
 - Improved barrier network performance. Far fewer packets sent
 
 ## Misc
