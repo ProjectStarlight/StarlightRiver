@@ -122,8 +122,10 @@ namespace StarlightRiver.Content.Items.Misc
 						Vector2 pos = Projectile.position / 16 + new Vector2(0.5f, 0.66f);
 						//SpawnDustAtTile((int)pos.X + s, (int)pos.Y + t);//debug
 						if (CheckForSapling((int)pos.X + s, (int)pos.Y + t))
+						{
 							break;
-						else if(CheckForLargeSapling((int)pos.X + s, (int)pos.Y + t))
+						}
+						else if (CheckForLargeSapling((int)pos.X + s, (int)pos.Y + t))
 						{
 							s++;//skip next x value
 							break;
@@ -274,6 +276,7 @@ namespace StarlightRiver.Content.Items.Misc
 				//SpawnDustAtTile(i - offsetX, j - offsetY, DustID.PinkFairy);//debug
 				return true;
 			}
+
 			return false;
 		}
 
