@@ -1,9 +1,9 @@
-﻿using System;
-using Terraria.ID;
-using Terraria.DataStructures;
-using StarlightRiver.Helpers;
+﻿using StarlightRiver.Content.Dusts.ArtifactSparkles;
 using StarlightRiver.Content.Tiles.Vitric;
-using StarlightRiver.Content.Dusts.ArtifactSparkles;
+using StarlightRiver.Helpers;
+using System;
+using Terraria.DataStructures;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -55,7 +55,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + "EnchantedWateringCanProj";
 
-		Player Owner => Main.player[Projectile.owner];	
+		Player Owner => Main.player[Projectile.owner];
 
 		public override void SetStaticDefaults()
 		{
@@ -96,7 +96,7 @@ namespace StarlightRiver.Content.Items.Misc
 					new Vector2(8 * Projectile.spriteDirection, -6) + //offset to center
 					new Vector2(14 * Projectile.spriteDirection, 0).RotatedBy(
 						Projectile.rotation * 2 + 0.4f * Projectile.spriteDirection),
-				/*DustID.BlueFairy,*/ DustID.Water, 
+				/*DustID.BlueFairy,*/ DustID.Water,
 				/*Vector2.Zero, default, default, 0.3f);*/ new Vector2(Main.rand.NextFloat(0f, 0.75f) * Projectile.spriteDirection, Main.rand.NextFloat(-0.2f, 0.2f)));//velocity
 
 			Projectile.ai[0]++;
@@ -106,7 +106,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (Projectile.ai[0] > ProjectileTime)
 				Projectile.active = false;
 
-			if(Projectile.ai[0] == ProjectileTime / 2)//check for saplings halfway through item use time
+			if (Projectile.ai[0] == ProjectileTime / 2)//check for saplings halfway through item use time
 			{
 				int hitboxTileWidth = Projectile.width / 16;
 				int hitboxTileHeight = Projectile.height / 16;
@@ -203,7 +203,7 @@ namespace StarlightRiver.Content.Items.Misc
 				}
 			}
 
-			if(leftOpen || rightOpen)
+			if (leftOpen || rightOpen)
 			{
 				int offsetX =
 					(leftOpen && rightOpen) ? (Main.rand.NextBool() ? -1 : 0) :
@@ -222,9 +222,9 @@ namespace StarlightRiver.Content.Items.Misc
 							WorldGen.KillTile(posX, posY);
 
 						Gore.NewGore(
-							new EntitySource_TileInteraction(Owner, posX, posY), 
-							new Vector2(posX, posY) * 16 + new Vector2(Main.rand.Next(0, 16), Main.rand.Next(0, 16)), 
-							Vector2.Zero, 
+							new EntitySource_TileInteraction(Owner, posX, posY),
+							new Vector2(posX, posY) * 16 + new Vector2(Main.rand.Next(0, 16), Main.rand.Next(0, 16)),
+							Vector2.Zero,
 							GoreID.TreeLeaf_Normal);
 					}
 				}
@@ -289,20 +289,20 @@ namespace StarlightRiver.Content.Items.Misc
 
 			//these 2 values are for getting the right rotation point
 			float Xoffset = Projectile.spriteDirection == 1 ? (tex.Width * 0.125f) : (tex.Width * 0.875f);
-			Vector2 rotPoint = new Vector2(Xoffset, frameHeight * 0.5f);
+			var rotPoint = new Vector2(Xoffset, frameHeight * 0.5f);
 
-			Main.spriteBatch.Draw(tex, 
-					Projectile.position + 
-					rotPoint + 
+			Main.spriteBatch.Draw(tex,
+					Projectile.position +
+					rotPoint +
 					new Vector2(Projectile.width / 2 - tex.Width / 2 - 0.6f,//weird specific offset to make it symetrical
 					 -Owner.gfxOffY * 0.5f) - //this value is weird and sometimes breaks for no reason?
-					Main.screenPosition, 
-				frameBox, 
-				lightColor, 
-				Projectile.rotation, 
-				rotPoint, 
-				Projectile.scale, 
-				Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 
+					Main.screenPosition,
+				frameBox,
+				lightColor,
+				Projectile.rotation,
+				rotPoint,
+				Projectile.scale,
+				Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally,
 				0f);
 
 			return false;
