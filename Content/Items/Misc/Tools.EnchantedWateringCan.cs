@@ -1,12 +1,7 @@
-﻿using StarlightRiver.Core.Systems.AuroraWaterSystem;
-using StarlightRiver.Core.Systems.CameraSystem;
-using StarlightRiver.Helpers;
-using System.Collections.Generic;
-using System;
+﻿using System;
 using Terraria.ID;
 using Terraria.DataStructures;
-using Terraria;
-using StarlightRiver.Content.Tiles.Forest;
+using StarlightRiver.Helpers;
 using StarlightRiver.Content.Tiles.Vitric;
 using StarlightRiver.Content.Dusts.ArtifactSparkles;
 
