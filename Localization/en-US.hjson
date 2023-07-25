@@ -2948,6 +2948,25 @@ Mods: {
 				DisplayName: Soft Sand
 				Tooltip: ""
 			}
+
+			EnchantedWateringCan: {
+				DisplayName: Enchanted Watering Can
+				Tooltip:
+					'''
+					Grows saplings into large saplings
+					Speeds up the growth of large saplings
+					'''
+			}
+
+			ThickTreeSaplingPlacer: {
+				DisplayName: Large Sapling Placer
+				Tooltip: ""
+			}
+
+			ThickTreeAcorn: {
+				DisplayName: Large Acorn
+				Tooltip: ""
+			}
 		}
 
 		Projectiles: {
@@ -3228,6 +3247,7 @@ Mods: {
 			VitricOreFloatDummy.DisplayName: ""
 			VitricSmallDummy.DisplayName: ""
 			VitricBannerDummy.DisplayName: ""
+			EnchantedWateringCanProj.DisplayName: Enchanted Watering Can
 		}
 
 		Tiles: {
@@ -3413,6 +3433,7 @@ Mods: {
 			VitricSand.MapEntry: ""
 			VitricSoftSand.MapEntry: ""
 			VitricSandPlain.MapEntry: ""
+			ThickTreeSapling.MapEntry: Large sapling
 			// VitricGiantCrystal.MapEntry: ""
 			// VitricLargeCrystal.MapEntry: ""
 			// VitricMediumCrystal.MapEntry: ""

@@ -103,4 +103,9 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		//	return true;
 		//}
 	}
+
+	class ThickTreeAcorn : QuickTileItem
+	{
+		public ThickTreeAcorn() : base("Large Acorn", "", "ThickTreeSapling", 1, AssetDirectory.ForestTile, false) { }
+	}
 }
