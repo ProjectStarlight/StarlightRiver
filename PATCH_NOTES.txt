@@ -23,6 +23,7 @@
 ## Content
 - New summoner weapon: Haunted Dagger Staff
 - New summoner weapon: Starwood Sceptre
+- New summoner weapon: Heart Statue?
 - New summoner accessory: Manabond
 - New summoner accessory: Infernal Manabond
 - New summoner accessory: Shocking Manabond
@@ -33,7 +34,6 @@
 - New enemy: Gloom slime
 - New enemy: Soul nibbler
 - New enemy: Loot Wraith
->>>>>>> master
 
 ## Multiplayer Compatibility
 - Fixed alican causing softlocks in multiplayer

@@ -216,9 +216,10 @@ namespace StarlightRiver.Content.Items.Forest
 
 			if (Timer % 30 == 0 && Main.netMode != NetmodeID.Server)
 			{
+				List<NPC> targets = MinionTargetingHelper.FindTargets(Projectile, 400, true, false);
+
 				if (Projectile.owner == Main.myPlayer)
 				{
-					List<NPC> targets = MinionTargetingHelper.FindTargets(Projectile, 400, true, false);
 					foreach (NPC target in targets)
 					{
 						Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.Center.DirectionTo(target.Center) * 11, ModContent.ProjectileType<SlimeThorn>(), 35, 0.5f, Projectile.owner);
