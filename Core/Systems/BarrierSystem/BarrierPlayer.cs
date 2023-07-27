@@ -236,6 +236,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 				barrierDyeItem = Item;
 			}
 		}
+
 		public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
 		{
 			//for syncing on world joins

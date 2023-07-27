@@ -59,7 +59,6 @@ namespace StarlightRiver.Content.Items.Permafrost
 		public Player Owner => Main.player[Projectile.owner];
 		public ref float Timer => ref Projectile.ai[0];
 		public ref float ChargeSnapshot => ref Projectile.ai[1];
-
 		public ref float Charge => ref Projectile.ai[2];
 
 		public override string Texture => AssetDirectory.PermafrostItem + Name;

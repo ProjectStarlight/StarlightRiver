@@ -120,12 +120,12 @@ namespace StarlightRiver.Content.Items.Misc
 					return;
 			}
 
-			DrawDusts(self);
+			SpawnDusts(self);
 
 			orig(self, i);
 		}
 
-		private void DrawDusts(Player player)
+		private void SpawnDusts(Player player)
 		{
 			var instance = GetEquippedInstance(player) as JadeStopwatch;
 			instance ??= GetVisualInstance(player) as JadeStopwatch;
