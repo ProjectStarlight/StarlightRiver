@@ -61,7 +61,6 @@ namespace StarlightRiver.Content.GUI
 				visible = false;
 			}
 
-
 			if (TopBar.IsMouseHovering && Main.mouseLeft)
 			{
 				if (!Moving)
@@ -250,7 +249,6 @@ namespace StarlightRiver.Content.GUI
 			SideSlot0.ExtractItemToInventory();
 			SideSlot1.ExtractItemToInventory();
 			SeasonSlot.ExtractItemToInventory();
-
 		}
 	}
 
@@ -303,8 +301,6 @@ namespace StarlightRiver.Content.GUI
 				if (Item.stack > 1)
 					Utils.DrawBorderString(spriteBatch, Item.stack.ToString(), GetDimensions().Position() + Vector2.One * 32, Color.White, 0.75f);
 			}
-
-
 		}
 
 		public override void SafeClick(UIMouseEvent evt)
@@ -426,7 +422,6 @@ namespace StarlightRiver.Content.GUI
 				Item.TurnToAir();
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
 			}
-
 		}
 
 		public override void SafeUpdate(GameTime gameTime)
