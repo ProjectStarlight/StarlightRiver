@@ -93,7 +93,7 @@ namespace StarlightRiver.Content.Items.Forest
 						helm.Minion.Timer = 0;
 					}
 
-					helm.Minion.Projectile.netUpdate = true;
+					NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, helm.Minion.Projectile.whoAmI);
 				}
 			}
 

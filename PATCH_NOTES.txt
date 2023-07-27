@@ -52,6 +52,11 @@
 - Fixed artifacts in multiplayer
 - Fixed most gores for multiplayer
 - Fixed cooking in multiplayer
+- Fixed Jade stopwatch for multiplayer
+- Fixed martial books for multiplayer
+- Fixed laser pointers for multiplayer
+- Fixed forest berry bushes in multiplayer
+- Improved barrier network performance. Far fewer packets sent
 
 ## Misc
 - The boss rush now requires you to have defeated each boss atleast once to unlock

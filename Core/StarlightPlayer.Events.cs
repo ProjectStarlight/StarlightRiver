@@ -224,7 +224,7 @@ namespace StarlightRiver.Core
 		/// Used to capture a proj hit before ANY processing occurs for generating a hitpacket.
 		/// normal order is projectile -> NPC -> player with all modify overrides occuring first followed by onhits after refs are finalized 
 		/// </summary>
-		public void OnModifyHitNPCWithProj(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers)
+		public static void OnModifyHitNPCWithProj(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 			{
@@ -237,7 +237,7 @@ namespace StarlightRiver.Core
 		/// Used to capture an item hit before ANY processing occurs for generating a hitpacket.
 		/// normal order is projectile -> NPC -> player with all modify overrides occuring first followed by onhits after refs are finalized 
 		/// </summary>
-		public void OnModifyPlayerHitNPCWithItem(Player player, Item sItem, NPC target, ref NPC.HitModifiers modifiers)
+		public static void OnModifyPlayerHitNPCWithItem(Player player, Item sItem, NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 			{
