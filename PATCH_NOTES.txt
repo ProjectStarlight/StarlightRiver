@@ -33,6 +33,9 @@
 - New summoner accessory: Druidic Manabond
 - New summoner accessory: Aquatic Manabond
 - New summoner accessory: Salt Cogs
+- New summoner accessory: Watch Battery
+- New summoner accessory: Seaglass Lens
+- New summoner accessory: Exotic Timepiece
 - New summoner armor: Slime prince armor
 - New enemy: Gloom Slime
 - New enemy: Soul Nibbler
