@@ -1,5 +1,7 @@
 ﻿using StarlightRiver.Content.Items.Magnet;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -118,6 +120,19 @@ namespace StarlightRiver.Content.Items.Manabonds
 					nodes.Add(point2);
 				}
 			}
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(parentToAssign.identity);
+			writer.Write(initialTargetToAssign.whoAmI);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			int id = reader.ReadInt32();
+			parentToAssign = Main.projectile.FirstOrDefault(n => n.active && n.identity == id);
+			initialTargetToAssign = Main.npc[reader.ReadInt32()];
 		}
 
 		public NPC FindValidTarget(Vector2 start)
