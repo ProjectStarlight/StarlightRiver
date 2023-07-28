@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Items.Jungle
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
 			player.AddBuff(Item.buffType, 2);
-			Projectile.NewProjectileDirect(source, player.Center, velocity, type, damage, knockback, Main.myPlayer).originalDamage = Item.damage;
+			Projectile.NewProjectileDirect(source, player.Center + new Vector2(0, -32), velocity, type, damage, knockback, Main.myPlayer).originalDamage = Item.damage;
 
 			for (int k = 0; k < 20; k++)
 			{
@@ -268,6 +268,9 @@ namespace StarlightRiver.Content.Items.Jungle
 
 			// Retarget every hit
 			State = 0;
+
+			Owner.TryGetModPlayer(out StarlightPlayer starlightPlayer);
+			starlightPlayer.SetHitPacketStatus(shouldRunProjMethods: true);
 		}
 
 		public override bool PreDraw(ref Color lightColor)
