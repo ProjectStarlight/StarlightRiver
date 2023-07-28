@@ -21,18 +21,20 @@
 - Fixed jade stopwatch with channel items
 
 ## Content
+- New summoner weapon: Arms Dealer's Defense System
 - New summoner weapon: Haunted Dagger Staff
 - New summoner weapon: Starwood Sceptre
 - New summoner weapon: Heart Statue?
+- New summoner accessory: Artillery License
 - New summoner accessory: Manabond
 - New summoner accessory: Infernal Manabond
 - New summoner accessory: Shocking Manabond
 - New summoner accessory: Druidic Manabond
 - New summoner accessory: Aquatic Manabond
-- New summoner accessory: Salt cogs
+- New summoner accessory: Salt Cogs
 - New summoner armor: Slime prince armor
-- New enemy: Gloom slime
-- New enemy: Soul nibbler
+- New enemy: Gloom Slime
+- New enemy: Soul Nibbler
 - New enemy: Loot Wraith
 
 ## Multiplayer Compatibility
