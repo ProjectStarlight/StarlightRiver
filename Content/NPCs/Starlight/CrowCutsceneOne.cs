@@ -21,7 +21,16 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			player.immuneNoBlink = true;
 
 			if (timer == 1)
-				CameraSystem.MoveCameraOut(30, alican.Center + Vector2.UnitY * 120, Vector2.SmoothStep);
+			{
+				Vector2 cameraPos = alican.Center;
+
+				while (!Helpers.Helper.PointInTile(cameraPos))
+				{
+					cameraPos.Y += 4;
+				}
+
+				CameraSystem.MoveCameraOut(30, cameraPos, Vector2.SmoothStep);
+			}
 		}
 
 		public override void EndCutscene(Player player)

@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.GUI
 			};
 
 			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Auroracle, "Auroracle", "StarlightRiver/Assets/Bosses/SquidBoss/SquidBoss_Head_Boss", 40));
-			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Glassweaver, "Glassweaver", "StarlightRiver/Assets/Bosses/GlassMiniboss/Glassweaver_BossHead", 70));
+			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Glassweaver, "Glassweaver", "StarlightRiver/Assets/Bosses/GlassMiniboss/Glassweaver_Head_Boss", 70));
 			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Ceiros, "Ceiros", "StarlightRiver/Assets/Bosses/VitricBoss/VitricBoss_Head_Boss", 100));
 
 			Append(button);
