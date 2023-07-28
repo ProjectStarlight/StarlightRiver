@@ -124,15 +124,19 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
-			writer.Write(parentToAssign.identity);
-			writer.Write(initialTargetToAssign.whoAmI);
+			writer.Write(parent.identity);
+			writer.Write(targets[0].whoAmI);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
 			int id = reader.ReadInt32();
-			parentToAssign = Main.projectile.FirstOrDefault(n => n.active && n.identity == id);
-			initialTargetToAssign = Main.npc[reader.ReadInt32()];
+			parent = Main.projectile.FirstOrDefault(n => n.active && n.identity == id);
+
+			if (targets.Count > 0)
+				targets[0] = Main.npc[reader.ReadInt32()];
+			else
+				targets.Add(Main.npc[reader.ReadInt32()]);
 		}
 
 		public NPC FindValidTarget(Vector2 start)
