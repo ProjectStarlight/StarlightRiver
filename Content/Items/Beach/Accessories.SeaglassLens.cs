@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Items.Beach
 		{
 			Player owner = Main.player[projectile.owner];
 
-			if (Equipped(owner) && projectile.DamageType == DamageClass.Summon && Main.rand.NextBool(10))
+			if (owner == Main.LocalPlayer && Equipped(owner) && projectile.DamageType == DamageClass.Summon && Main.rand.NextBool(10))
 				target.SimpleStrikeNPC(damageDone / 2, hit.HitDirection, true);
 		}
 
