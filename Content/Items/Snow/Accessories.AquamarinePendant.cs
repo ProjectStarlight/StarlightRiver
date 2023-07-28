@@ -19,6 +19,9 @@ namespace StarlightRiver.Content.Items.Snow
 			BarrierPlayer bPlayer = player.GetModPlayer<BarrierPlayer>();
 			bPlayer.maxBarrier += 15;
 
+			if (Main.myPlayer != player.whoAmI)
+				return; //other clients shouldn't fire extra shards
+
 			if (bPlayer.barrier > 0)
 			{
 				hasBarrier = true;
