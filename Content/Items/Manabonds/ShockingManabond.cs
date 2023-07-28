@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Items.Magnet;
 using System.Collections.Generic;
+using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Manabonds
@@ -21,11 +22,10 @@ namespace StarlightRiver.Content.Items.Manabonds
 			if (mp.timer % 60 == 0 && mp.mana >= 12 && mp.target != null)
 			{
 				mp.mana -= 12;
-				var proj = Projectile.NewProjectileDirect(minion.GetSource_FromThis(), minion.Center, Vector2.Zero, ModContent.ProjectileType<Shock>(), 12, 0.25f, minion.owner);
 
-				var bolt = proj.ModProjectile as Shock;
-				bolt.targets.Add(mp.target);
-				bolt.parent = minion;
+				Shock.parentToAssign = minion;
+				Shock.initialTargetToAssign = mp.target;
+				Projectile.NewProjectileDirect(minion.GetSource_FromThis(), minion.Center, Vector2.Zero, ModContent.ProjectileType<Shock>(), 12, 0.25f, minion.owner);
 
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_LightningBugZap, minion.Center);
 			}
@@ -44,6 +44,9 @@ namespace StarlightRiver.Content.Items.Manabonds
 	internal class Shock : ModProjectile, IDrawAdditive
 	{
 		public Projectile parent;
+
+		public static Projectile parentToAssign;
+		public static NPC initialTargetToAssign;
 
 		public readonly List<Vector2> nodes = new();
 		public readonly List<NPC> targets = new();
@@ -65,6 +68,12 @@ namespace StarlightRiver.Content.Items.Manabonds
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Shock Bolt");
+		}
+
+		public override void OnSpawn(IEntitySource source)
+		{
+			parent = parentToAssign;
+			targets.Add(initialTargetToAssign);
 		}
 
 		public override void AI()
