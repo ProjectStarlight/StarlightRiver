@@ -1,6 +1,7 @@
 ﻿using ReLogic.Content;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.GUI;
+using StarlightRiver.Content.PersistentData;
 using StarlightRiver.Core.Loaders.UILoading;
 using System;
 using System.IO;
@@ -29,13 +30,13 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		/// <summary>
 		/// Tracks the center off the arena
 		/// </summary>
-		public Vector2 arenaPos;
 
 		internal ref float Phase => ref NPC.ai[0];
 		internal ref float GlobalTimer => ref NPC.ai[1];
 		internal ref float AttackPhase => ref NPC.ai[2];
 		internal ref float AttackTimer => ref NPC.ai[3];
 
+		public Vector2 arenaPos => StarlightWorld.vitricBiome.TopLeft() * 16 + new Vector2(0, 80 * 16) + new Vector2(0, 256);
 		public Rectangle Arena => new((int)arenaPos.X - 35 * 16, (int)arenaPos.Y - 30 * 16, 70 * 16, 30 * 16);
 
 		public override string Texture => AssetDirectory.Glassweaver + Name;
@@ -122,6 +123,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override bool CheckDead()
 		{
+			BossRushDataStore.DefeatBoss(BossrushUnlockFlag.Glassweaver);
 			StarlightWorld.Flag(WorldFlags.DesertOpen);
 
 			NPC.life = 1;
@@ -141,9 +143,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			{
 				case (int)Phases.SpawnEffects:
 
-					arenaPos = StarlightWorld.vitricBiome.TopLeft() * 16 + new Vector2(0, 80 * 16) + new Vector2(0, 256);
 					Phase = (int)Phases.JumpToBackground;
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), arenaPos + new Vector2(528 + 48, -46), Vector2.Zero, ProjectileType<GlassweaverDoor>(), Main.myPlayer, 0, NPC.target);
+
+					if (Main.netMode != NetmodeID.MultiplayerClient)
+						Projectile.NewProjectile(NPC.GetSource_FromThis(), arenaPos + new Vector2(528 + 48, -46), Vector2.Zero, ProjectileType<GlassweaverDoor>(), Main.myPlayer, 0, NPC.target);
+
 					ResetAttack();
 
 					break;
@@ -152,6 +156,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 					if (AttackTimer <= 120)
 					{
+						if (Main.netMode != NetmodeID.Server)
+							RichTextBox.CloseDialogue(); // may accidentially kick players that aren't involved in the fight out of their modal but its probably good enough as is
+
 						SpawnAnimation();
 					}
 					else
@@ -194,7 +201,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 				case (int)Phases.ReturnToForeground:
 
-					if (AttackTimer == 1)
+					if (AttackTimer == 1 && Main.netMode != NetmodeID.Server) // Only display in singelplayer or multiplayer client
 						UILoader.GetUIState<TextCard>().Display("Glassweaver", "Worker of the Anvil", null, 240, 1.2f, false);
 
 					JumpBackAnimation();
@@ -328,12 +335,16 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
+			writer.WritePackedVector2(moveTarget);
 			writer.Write(attackVariant);
+			writer.Write(NPC.direction);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
+			moveTarget = reader.ReadPackedVector2();
 			attackVariant = reader.ReadBoolean();
+			NPC.direction = reader.ReadInt32();
 		}
 
 		//i hate this specific thing right here
@@ -343,7 +354,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			newNPC.moveTarget = new Vector2();
 			newNPC.moveStart = new Vector2();
 			newNPC.attackVariant = false;
-			newNPC.hammerIndex = -1;
 			newNPC.bubbleIndex = -1;
 			return newNPC;
 		}

@@ -1,14 +1,20 @@
 ﻿using StarlightRiver.Content.NPCs.BaseTypes;
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
+using System.IO;
 using System.Linq;
 using Terraria.DataStructures;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
 	class Laser : InteractiveProjectile, IUnderwater
 	{
+
+		public static int ParentWhoAmIToAssign;
+
 		public NPC parent;
+		public ref float Timer => ref Projectile.ai[1];
 
 		public int height;
 
@@ -22,6 +28,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			Projectile.hostile = true;
 			Projectile.timeLeft = Main.masterMode ? 360 : Main.expertMode ? 510 : 660;
 			Projectile.aiStyle = -1;
+		}
+
+		public override void OnSpawn(IEntitySource source)
+		{
+			parent = Main.npc[ParentWhoAmIToAssign];
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
@@ -52,7 +63,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				}
 			}
 
-			Projectile.ai[1]++;
+			Timer++;
 
 			Projectile.Center = parent.Center;
 
@@ -66,7 +77,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 				for (int i = -2; i <= 2; i++)
 				{
-					if (Main.tile[(int)pos.X / 16 + i, (int)pos.Y / 16].HasTile)
+					if (Framing.GetTileSafely(pos).HasTile)
 						k = 200;
 				}
 			}
@@ -75,17 +86,20 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			var rect = new Rectangle((int)Projectile.position.X, (int)Projectile.position.Y - height + 16, Projectile.width, height - 16);
 
-			float sin = 1 + (float)Math.Sin(Projectile.ai[1] / 10f);
-			float cos = 1 + (float)Math.Cos(Projectile.ai[1] / 10f);
+			float sin = 1 + (float)Math.Sin(Timer / 10f);
+			float cos = 1 + (float)Math.Cos(Timer / 10f);
 			var color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
 
 			if (Main.masterMode)
 				color = new Color(1, 0.65f + sin * 0.25f, 0.25f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
 
-			for (int k = 0; k < rect.Height; k += 500)
+			if (Main.netMode != NetmodeID.Server)
 			{
-				int i = Dust.NewDust(rect.TopLeft() + Vector2.UnitY * k, rect.Width, rect.Height - k, ModContent.DustType<Dusts.Glow>(), 0, -6, 0, color, Main.rand.NextFloat(0.4f, 0.6f));
-				Main.dust[i].noLight = true;
+				for (int k = 0; k < rect.Height; k += 500)
+				{
+					int i = Dust.NewDust(rect.TopLeft() + Vector2.UnitY * k, rect.Width, rect.Height - k, ModContent.DustType<Dusts.Glow>(), 0, -6, 0, color, Main.rand.NextFloat(0.4f, 0.6f));
+					Main.dust[i].noLight = true;
+				}
 			}
 
 			if (Projectile.timeLeft > 30)
@@ -102,16 +116,16 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					CameraSystem.shake += (int)Math.Max(0, 1.5f - Math.Abs(Main.LocalPlayer.Center.X - endPos.X) * 0.0025f);
 			}
 
-			foreach (Player Player in Main.player.Where(n => n.active && n.Hitbox.Intersects(rect)))
+			if (Main.netMode != NetmodeID.Server && Main.LocalPlayer.Hitbox.Intersects(rect)) // Damage is dictated by the local client for that more fair seeming hitboxes
 			{
-				Player.Hurt(PlayerDeathReason.ByCustomReason(Player.name + " got lasered to death by a squid..."), 50, 0);
+				Main.LocalPlayer.Hurt(PlayerDeathReason.ByCustomReason(Main.LocalPlayer.name + " got lasered to death by a squid..."), 50, 0);
 			}
 		}
 
 		public void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer)
 		{
-			float sin = 1 + (float)Math.Sin(Projectile.ai[1] / 10f);
-			float cos = 1 + (float)Math.Cos(Projectile.ai[1] / 10f);
+			float sin = 1 + (float)Math.Sin(Timer / 10f);
+			float cos = 1 + (float)Math.Cos(Timer / 10f);
 			Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * 1.05f;
 
 			if (Main.masterMode)
@@ -147,8 +161,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				Vector2 pos = Projectile.Center + Vector2.UnitY * -k - Main.screenPosition;
 				int thisHeight = k > (adjustedLaserHeight - 500) ? (adjustedLaserHeight % 500) : 500;
 
-				var source = new Rectangle((int)(Projectile.ai[1] * 0.01f * -texBeam.Width), 0, (int)(texBeam.Width * thisHeight / 500f), texBeam.Height);
-				var source1 = new Rectangle((int)(Projectile.ai[1] * 0.023f * -texBeam.Width), 0, (int)(texBeam.Width * thisHeight / 500f), texBeam.Height);
+				var source = new Rectangle((int)(Timer * 0.01f * -texBeam.Width), 0, (int)(texBeam.Width * thisHeight / 500f), texBeam.Height);
+				var source1 = new Rectangle((int)(Timer * 0.023f * -texBeam.Width), 0, (int)(texBeam.Width * thisHeight / 500f), texBeam.Height);
 				var source2 = new Rectangle(0, 0, (int)(texBeam2.Width * thisHeight / 500f), texBeam2.Height);
 
 				var target = new Rectangle((int)pos.X, (int)pos.Y, thisHeight, (int)(height * 1.25f * alpha));
@@ -161,12 +175,23 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				spriteBatch.Draw(texBeam2, target3, source2, color * 1.1f, -1.57f, origin2, 0, 0);
 			}
 
-			spriteBatch.Draw(texStar, Projectile.Center - Vector2.UnitY * (this.height - 16) - Main.screenPosition, null, color * 1.1f, Projectile.ai[1] * 0.025f, texStar.Size() / 2, 1, 0, 0);
-			spriteBatch.Draw(texStar, Projectile.Center - Vector2.UnitY * (this.height - 16) - Main.screenPosition, null, color * 1.1f, Projectile.ai[1] * -0.045f, texStar.Size() / 2, 0.65f, 0, 0);
+			spriteBatch.Draw(texStar, Projectile.Center - Vector2.UnitY * (this.height - 16) - Main.screenPosition, null, color * 1.1f, Timer * 0.025f, texStar.Size() / 2, 1, 0, 0);
+			spriteBatch.Draw(texStar, Projectile.Center - Vector2.UnitY * (this.height - 16) - Main.screenPosition, null, color * 1.1f, Timer * -0.045f, texStar.Size() / 2, 0.65f, 0, 0);
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(parent.whoAmI);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			int parentId = reader.ReadInt32();
+			parent = Main.npc[parentId];
 		}
 	}
 }

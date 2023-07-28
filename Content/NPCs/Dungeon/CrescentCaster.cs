@@ -88,11 +88,11 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 		private void CastBehavior()
 		{
 			List<NPC> tempTargets = ValidTargets(); //purpose of temptargets is to check npcs who were being supported but are no longer
-			var toReduceBarrier = Main.npc.Where(x => x.active && !tempTargets.Contains(x) && supportTargets.Contains(x)).ToList();
+			var toReduceBarrier = Main.npc.Where(n => n.active && n.type != NPCID.None && !tempTargets.Contains(n) && supportTargets.Contains(n)).ToList();
 
 			ClearBarrierAndBolts(toReduceBarrier);
 
-			var toAddBolts = Main.npc.Where(x => x.active && tempTargets.Contains(x) && !supportTargets.Contains(x)).ToList();
+			var toAddBolts = Main.npc.Where(n => n.active && n.type != NPCID.None && tempTargets.Contains(n) && !supportTargets.Contains(n)).ToList();
 
 			foreach (NPC boltNPC in toAddBolts)
 			{
@@ -140,6 +140,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 					break;
 			}
 		}
+
 		private void SupportBehavior()
 		{
 			NPC.frameCounter++;
@@ -274,14 +275,17 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 			return false;
 		}
 
-		public override void OnKill()
+		public override void HitEffect(NPC.HitInfo hit)
 		{
-			ClearBarrierAndBolts(supportTargets);
-
-			if (Main.netMode != NetmodeID.Server)
+			if (NPC.life <= 0)
 			{
-				for (int j = 1; j <= 5; j++)
-					Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("CrescentCasterGore" + j).Type);
+				ClearBarrierAndBolts(supportTargets);
+
+				if (Main.netMode != NetmodeID.Server)
+				{
+					for (int j = 1; j <= 5; j++)
+						Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("CrescentCasterGore" + j).Type);
+				}
 			}
 		}
 
@@ -365,7 +369,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 
 		private List<NPC> ValidTargets()
 		{
-			return Main.npc.Where(x => x.active && IsValidTarget(x)).ToList();
+			return Main.npc.Where(n => n.active && n.type != NPCID.None && IsValidTarget(n)).ToList();
 		}
 
 		private bool IsValidTarget(NPC potentialTarget)

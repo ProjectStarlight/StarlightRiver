@@ -2,14 +2,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
+using Terraria;
 using Terraria.Graphics.Effects;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Permafrost
 {
 	internal class Tentalance : ModItem
 	{
-		public int charge = 0;
-
 		public override string Texture => AssetDirectory.PermafrostItem + Name;
 
 		public override void SetStaticDefaults()
@@ -22,7 +23,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Item.width = 54;
 			Item.height = 54;
 			Item.DamageType = DamageClass.Melee;
-			Item.damage = 16;
+			Item.damage = 18;
 			Item.useTime = 30;
 			Item.useAnimation = 30;
 			Item.useStyle = Terraria.ID.ItemUseStyleID.Shoot;
@@ -37,14 +38,6 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Item.value = Item.sellPrice(gold: 2);
 		}
 
-		public override ModItem Clone(Item newEntity)
-		{
-			ModItem clone = base.Clone(newEntity);
-			(clone as Tentalance).charge = charge;
-
-			return clone;
-		}
-
 		public Color GetColor(float off)
 		{
 			float sin = 1 + (float)Math.Sin(off);
@@ -52,35 +45,9 @@ namespace StarlightRiver.Content.Items.Permafrost
 			return new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
 		}
 
-		public override bool CanUseItem(Player player)
-		{
-			if (!player.channel)
-				charge = 0;
-
-			return !Main.projectile.Any(n => n.active && n.type == ModContent.ProjectileType<TentalanceProjectile>() && n.owner == player.whoAmI);
-		}
-
 		public override bool CanShoot(Player player)
 		{
-			return CanUseItem(player);
-		}
-
-		public override void HoldItem(Player player)
-		{
-			if (player.channel && charge == 29)
-			{
-				Helper.PlayPitched("MagicAttack", 1, 1, player.Center);
-
-				for (int k = 0; k < 40; k++)
-				{
-					Dust.NewDustPerfect(player.Center, ModContent.DustType<Dusts.Cinder>(), Vector2.One.RotatedBy(k / 40f * 6.28f) * 1.5f, 0, GetColor(k / 40f * 6.28f * 3), Main.rand.NextFloat(0.5f, 1));
-				}
-
-				charge = 30;
-			}
-
-			if (player.channel && charge < 30)
-				charge++;
+			return player.ownedProjectileCounts[ModContent.ProjectileType<TentalanceProjectile>()] == 0;
 		}
 	}
 
@@ -90,10 +57,9 @@ namespace StarlightRiver.Content.Items.Permafrost
 		private Trail trail;
 
 		public Player Owner => Main.player[Projectile.owner];
-		public int Charge => (Owner.HeldItem.ModItem is Tentalance) ? (Owner.HeldItem.ModItem as Tentalance).charge : 0;
-
 		public ref float Timer => ref Projectile.ai[0];
 		public ref float ChargeSnapshot => ref Projectile.ai[1];
+		public ref float Charge => ref Projectile.ai[2];
 
 		public override string Texture => AssetDirectory.PermafrostItem + Name;
 
@@ -121,11 +87,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override void AI()
 		{
-			//Owner.heldProj = Projectile.whoAmI;
-
-			//die when not held
-			if (Owner.HeldItem.type != ModContent.ItemType<Tentalance>())
-				Projectile.active = false;
+			Owner.itemTime = Projectile.timeLeft; //lock player from switching off until this is done
+			Owner.itemAnimation = Projectile.timeLeft; 
 
 			if (!Owner.channel || Timer > 0)
 			{
@@ -134,15 +97,33 @@ namespace StarlightRiver.Content.Items.Permafrost
 				if (ChargeSnapshot <= 0)
 				{
 					ChargeSnapshot = Charge;
-					Projectile.damage += Charge;
-
+					Projectile.damage += (int)Charge;
 					Helper.PlayPitched("SquidBoss/LightSplash", 0.2f, -0.5f, Owner.Center);
+					if (ChargeSnapshot <= 0)
+						ChargeSnapshot = 1; //make sure it atleast does damage on its attack
 				}
 			}
 			else
 			{
+				if (Owner.channel && Charge == 29)
+				{
+					Helper.PlayPitched("MagicAttack", 1, 1, Owner.Center);
+
+					for (int k = 0; k < 40; k++)
+					{
+						Dust.NewDustPerfect(Owner.Center, ModContent.DustType<Dusts.Cinder>(), Vector2.One.RotatedBy(k / 40f * 6.28f) * 1.5f, 0, GetColor(k / 40f * 6.28f * 3), Main.rand.NextFloat(0.5f, 1));
+					}
+
+					Charge = 30;
+				}
+
+				if (Owner.channel && Charge < 30)
+					Charge++;
+
 				Projectile.timeLeft = 120;
-				Projectile.velocity = Vector2.Normalize(Main.MouseWorld - Owner.Center) * Projectile.velocity.Length();
+				Owner.TryGetModPlayer(out ControlsPlayer controlsPlayer);
+				controlsPlayer.mouseRotationListener = true;
+				Projectile.velocity = Vector2.Normalize(controlsPlayer.mouseWorld - Owner.Center) * Projectile.velocity.Length();
 
 				Owner.SetCompositeArmFront(true, 0, Projectile.rotation - 1.57f);
 				Owner.direction = Projectile.velocity.X > 0 ? 1 : -1;
@@ -150,15 +131,23 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			if (Timer == 10 && ChargeSnapshot >= 15)
 			{
-				Projectile.NewProjectile(Owner.GetSource_ItemUse(Owner.HeldItem), Projectile.Center, Projectile.velocity.RotatedBy(0.25f), Type, Projectile.damage / 2, Projectile.knockBack, Projectile.owner, 0, 14);
-				Projectile.NewProjectile(Owner.GetSource_ItemUse(Owner.HeldItem), Projectile.Center, Projectile.velocity.RotatedBy(-0.25f), Type, Projectile.damage / 2, Projectile.knockBack, Projectile.owner, 0, 14);
+				if (Main.myPlayer == Projectile.owner)
+				{
+					Projectile.NewProjectile(Owner.GetSource_ItemUse(Owner.HeldItem), Projectile.Center, Projectile.velocity.RotatedBy(0.25f), Type, Projectile.damage / 2, Projectile.knockBack, Projectile.owner, 0, 14);
+					Projectile.NewProjectile(Owner.GetSource_ItemUse(Owner.HeldItem), Projectile.Center, Projectile.velocity.RotatedBy(-0.25f), Type, Projectile.damage / 2, Projectile.knockBack, Projectile.owner, 0, 14);
+				}
+
 				Helper.PlayPitched("SquidBoss/LightSplash", 0.3f, -0.5f, Owner.Center);
 			}
 
 			if (Timer == 20 && ChargeSnapshot >= 30)
 			{
-				Projectile.NewProjectile(Owner.GetSource_ItemUse(Owner.HeldItem), Projectile.Center, Projectile.velocity.RotatedBy(0.45f), Type, Projectile.damage / 2, Projectile.knockBack, Projectile.owner, 0, 1);
-				Projectile.NewProjectile(Owner.GetSource_ItemUse(Owner.HeldItem), Projectile.Center, Projectile.velocity.RotatedBy(-0.45f), Type, Projectile.damage / 2, Projectile.knockBack, Projectile.owner, 0, 1);
+				if (Main.myPlayer == Projectile.owner)
+				{
+					Projectile.NewProjectile(Owner.GetSource_ItemUse(Owner.HeldItem), Projectile.Center, Projectile.velocity.RotatedBy(0.45f), Type, Projectile.damage / 2, Projectile.knockBack, Projectile.owner, 0, 1);
+					Projectile.NewProjectile(Owner.GetSource_ItemUse(Owner.HeldItem), Projectile.Center, Projectile.velocity.RotatedBy(-0.45f), Type, Projectile.damage / 2, Projectile.knockBack, Projectile.owner, 0, 1);
+				}
+
 				Helper.PlayPitched("SquidBoss/SuperSplash", 0.5f, -0.5f, Owner.Center);
 			}
 
@@ -171,8 +160,16 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			Lighting.AddLight(Projectile.Center, GetColor(Charge * 0.1f).ToVector3());
 
-			ManageCaches();
-			ManageTrail();
+			if (Main.netMode != NetmodeID.Server)
+			{
+				ManageCaches();
+				ManageTrail();
+			}
+		}
+
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			Projectile.damage /= 2;
 		}
 
 		public Color GetColor(float off)

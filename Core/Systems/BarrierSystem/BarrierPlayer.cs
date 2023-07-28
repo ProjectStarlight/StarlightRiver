@@ -2,6 +2,7 @@
 using StarlightRiver.Content.Items.BarrierDye;
 using System;
 using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Core.Systems.BarrierSystem
@@ -17,16 +18,16 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 		public bool dontDrainOvercharge = false;
 		public int overchargeDrainRate = 60;
 
-		public int timeSinceLastHit = 0;
-		public int rechargeDelay = 480;
-		public int rechargeRate = 4;
+		public int timeSinceLastHit = 1;
+		public int rechargeDelay = 300;
+		public int rechargeRate = 6;
 
-		public float barrierDamageReduction = 0.3f;
+		public float barrierDamageReduction = 0.5f;
 
 		public float rechargeAnimationTimer;
 		public Item barrierDyeItem;
 
-		public bool sendUpdatePacket = true; // set this to true whenever something else happens that would desync shield values, for example: onhit effects
+		public bool sendUpdatePacket = false; // set this to true whenever something else happens that would desync shield values, for example: onhit effects
 
 		public BarrierDye Dye
 		{
@@ -78,6 +79,8 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 		{
 			if (barrier > 0)
 			{
+				sendUpdatePacket = true; //possible TODO of reworking this into a playerhitpacket like the npc hit packet
+
 				float reduction = 1.0f - barrierDamageReduction;
 
 				if (barrier > info.Damage)
@@ -189,6 +192,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 
 			if (sendUpdatePacket || clone?.barrierDyeItem?.type != barrierDyeItem?.type)
 			{
+				sendUpdatePacket = false;
 				var packet = new ShieldPacket(this);
 				packet.Send(-1, Player.whoAmI, false);
 			}
@@ -220,10 +224,10 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 			dontDrainOvercharge = false;
 			overchargeDrainRate = 60;
 
-			rechargeDelay = 480;
-			rechargeRate = 4;
+			rechargeDelay = 300;
+			rechargeRate = 6;
 
-			barrierDamageReduction = Main.expertMode ? 0.4f : 0.3f;
+			barrierDamageReduction = 0.5f;
 
 			if (Dye is null)
 			{
@@ -231,6 +235,13 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 				Item.SetDefaults(ModContent.ItemType<BaseBarrierDye>());
 				barrierDyeItem = Item;
 			}
+		}
+
+		public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
+		{
+			//for syncing on world joins
+			var packet = new ShieldPacket(this);
+			packet.Send(toWho, Player.whoAmI, false);
 		}
 	}
 
@@ -240,6 +251,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 		public readonly byte whoAmI;
 		public readonly int shield;
 		public readonly int dyeType;
+		public readonly int timeSinceLastHit;
 
 		public ShieldPacket(BarrierPlayer sPlayer)
 		{
@@ -250,13 +262,24 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 				dyeType = ModContent.ItemType<BaseBarrierDye>();
 			else
 				dyeType = sPlayer.barrierDyeItem.type;
+
+			timeSinceLastHit = sPlayer.timeSinceLastHit;
 		}
 
 		protected override void Receive()
 		{
 			BarrierPlayer Player = Main.player[whoAmI].GetModPlayer<BarrierPlayer>();
 
+			int priorBarrier = Player.barrier;
 			Player.barrier = shield;
+			if (Player.barrier <= 0)
+				Player.rechargeAnimationTimer = 0;
+
+			Player.timeSinceLastHit = timeSinceLastHit;
+			if (Player.timeSinceLastHit == 0 && Player.maxBarrier > 0) // probably close enough
+				Player.justHitWithBarrier = true; 
+
+			Main.NewText(Player.justHitWithBarrier);
 
 			if (Player.barrierDyeItem is null || Player.barrierDyeItem.type != dyeType)
 			{

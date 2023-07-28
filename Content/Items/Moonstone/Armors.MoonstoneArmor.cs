@@ -67,7 +67,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			if (head.moonCharge >= 180 && oldCharge < 180 || head.moonCharge >= 720 && oldCharge < 720)
 				head.moonFlash = 30;
 
-			Player.GetModPlayer<StarlightPlayer>().shouldSendHitPacket = true;
+			Player.GetModPlayer<StarlightPlayer>().SetHitPacketStatus(shouldRunProjMethods: false);
 		}
 
 		public override void SetStaticDefaults()

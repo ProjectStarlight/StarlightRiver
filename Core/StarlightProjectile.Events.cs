@@ -37,11 +37,21 @@
 			KillEvent?.Invoke(Projectile, timeLeft);
 		}
 
+		public delegate void PostDrawDelegate(Projectile projectile, Color lightColor);
+		public static event PostDrawDelegate PostDrawEvent;
+		public override void PostDraw(Projectile projectile, Color lightColor)
+		{
+			PostDrawEvent?.Invoke(projectile, lightColor);
+		}
+
 		public override void Unload()
 		{
 			ModifyHitNPCEvent = null;
+			OnHitNPCEvent = null;
+			OnHitPlayerEvent = null;
+			PostAIEvent = null;
 			KillEvent = null;
-			ModifyHitNPCEvent = null;
+			PostDrawEvent = null;
 		}
 	}
 }

@@ -2,6 +2,7 @@
 using StarlightRiver.Content.Foregrounds;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Vitric;
+using StarlightRiver.Content.PersistentData;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -348,6 +349,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public override void BossLoot(ref string name, ref int potionType)
 		{
+			BossRushDataStore.DefeatBoss(BossrushUnlockFlag.Ceiros);
 			StarlightWorld.Flag(WorldFlags.VitricBossDowned);
 
 			foreach (Player Player in Main.player.Where(n => n.active && arena.Contains(n.Center.ToPoint())))

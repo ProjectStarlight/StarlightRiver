@@ -21,8 +21,8 @@ namespace StarlightRiver.Content.Physics
 
 		public void Unload()
 		{
-			target = null;
-			toDraw = null;
+			target ??= null;
+			toDraw ??= null;
 		}
 
 		private void DrawVerletBanners(On_Main.orig_DrawProjectiles orig, Main self)

@@ -4,6 +4,7 @@ using StarlightRiver.Content.Events;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems.CameraSystem;
+using StarlightRiver.Core.Systems.CutsceneSystem;
 using System;
 using System.Linq;
 using Terraria.DataStructures;
@@ -85,12 +86,8 @@ namespace StarlightRiver.Content.NPCs.Starlight
 				InCutscene = true;
 			}
 
-			if (InCutscene && (Main.netMode == NetmodeID.SinglePlayer || Main.netMode == NetmodeID.MultiplayerClient)) //handles cutscenes
+			if (InCutscene) //handles cutscenes
 			{
-				Player player = Main.LocalPlayer;
-				player.immune = true; //TODO: Move this later!!!
-				player.immuneTime = 2;
-
 				switch (StarlightEventSequenceSystem.sequence)
 				{
 					case 0:
@@ -104,9 +101,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			}
 
 			if (leaving)
-			{
 				LeaveAnimation();
-			}
 		}
 
 		/// <summary>
@@ -217,12 +212,18 @@ namespace StarlightRiver.Content.NPCs.Starlight
 
 			if (CutsceneTimer >= 140)
 			{
+#if DEBUG
+				Mod.Logger.Info("Alican is leaving!");
+#endif
+
 				StarlightEventSequenceSystem.willOccur = false;
 				StarlightEventSequenceSystem.occuring = false;
 
 				StarlightEventSequenceSystem.sequence++;
 
-				NetMessage.SendData(MessageID.WorldData);
+				// Server should tell the clients the event is over
+				if (Main.netMode == NetmodeID.Server)
+					NetMessage.SendData(MessageID.WorldData);
 
 				NPC.active = false;
 			}
@@ -244,18 +245,26 @@ namespace StarlightRiver.Content.NPCs.Starlight
 		/// </summary>
 		private void FirstEncounter()
 		{
-			Main.LocalPlayer.GetHandler().Stamina = 0;
-			Main.LocalPlayer.GetHandler().SetStaminaRegenCD(0);
+			// This should trigger for -every- player
+			if (CutsceneTimer <= 1)
+			{
+				foreach (Player player in Main.player.Where(n => n.active))
+				{
+					player.ActivateCutscene<CrowCutsceneOne>();
+				}
+			}
 
-			if (CutsceneTimer == 1)
-				CameraSystem.MoveCameraOut(30, NPC.Center + Vector2.UnitY * 120, Vector2.SmoothStep);
+			// If all players are done talking, end the event!
+			if (!Main.player.Any(n => n.active && n.InCutscene<CrowCutsceneOne>()))
+				Leave();
 
+			// Play spawn animation or face the local player if not
 			if (CutsceneTimer < 300)
 				SpawnAnimation();
 			else
 				NPC.direction = Main.LocalPlayer.Center.X > NPC.Center.X ? 1 : -1;
 
-			if (CutsceneTimer == 360) // First encounter
+			if (CutsceneTimer == 360 && !Main.dedServ) // First encounter
 			{
 				if (Main.LocalPlayer.GetHandler().Unlocked<HintAbility>()) // If they already have the ability, special abort dialogue
 				{
@@ -264,9 +273,9 @@ namespace StarlightRiver.Content.NPCs.Starlight
 					RichTextBox.ClearButtons();
 					RichTextBox.AddButton("Bye!", () =>
 					{
-						CameraSystem.ReturnCamera(30, Vector2.SmoothStep);
+						// Deactivate the cutscene for the local player
+						Main.LocalPlayer.DeactivateCutscene();
 						RichTextBox.CloseDialogue();
-						CutsceneTimer = 363;
 					});
 					return;
 				}
@@ -300,9 +309,8 @@ namespace StarlightRiver.Content.NPCs.Starlight
 									RichTextBox.ClearButtons();
 									RichTextBox.AddButton("Bye?", () =>
 									{
-										CameraSystem.ReturnCamera(30, Vector2.SmoothStep);
+										Main.LocalPlayer.DeactivateCutscene();
 										RichTextBox.CloseDialogue();
-										CutsceneTimer = 363;
 
 										string message = StarlightRiver.Instance.AbilityKeys.Get<HintAbility>().GetAssignedKeys().Count > 0 ?
 											$"Aim your cursor and press {StarlightRiver.Instance.AbilityKeys.Get<HintAbility>().GetAssignedKeys()[0]} to inspect the world." :
@@ -319,11 +327,9 @@ namespace StarlightRiver.Content.NPCs.Starlight
 				});
 			}
 
-			if (CutsceneTimer == 362)
-				CutsceneTimer = 361;
-
+			// Stall untill dialogue is done
 			if (CutsceneTimer >= 362)
-				Leave();
+				CutsceneTimer = 361;
 		}
 
 		/// <summary>

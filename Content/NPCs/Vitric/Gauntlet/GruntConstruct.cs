@@ -81,7 +81,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			NPC.knockBackResist = 0.2f;
 			NPC.HitSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Impacts/IceHit") with { PitchVariance = 0.3f };
 			NPC.DeathSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Impacts/EnergyBreak") with { PitchVariance = 0.3f };
-			cooldownDuration = Main.rand.Next(65, 90);
+			cooldownDuration = Main.rand.Next(65, 90); //TODO: wtf is this
 			maxSpeed = Main.rand.NextFloat(4.5f, 5.5f);
 			acceleration = Main.rand.NextFloat(0.22f, 0.35f);
 		}
@@ -99,7 +99,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		public override void SafeAI() //TODO: Document snippets with their intended behavior
 		{
-			if (xFrame == 2 && yFrame == 6 && frameCounter == 1) //Dust when the enemy swings it's sword
+			if (xFrame == 2 && yFrame == 6 && frameCounter == 1 && Main.netMode != NetmodeID.Server) //Dust when the enemy swings it's sword
 			{
 				for (int i = 0; i < 15; i++)
 				{
@@ -192,9 +192,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			}
 		}
 
-		public override void OnKill()
+		public override void HitEffect(NPC.HitInfo hit)
 		{
-			if (Main.netMode != NetmodeID.Server)
+			if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
 			{
 				for (int i = 0; i < 9; i++)
 				{
@@ -417,8 +417,12 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 								unboundRotation = -6.28f * NPC.spriteDirection * 0.95f;
 								comboJumpedTwice = true;
 
-								var ring = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Bottom, NPC.Bottom.DirectionTo(partner.Center), ProjectileType<Items.Vitric.IgnitionGauntlets.IgnitionGauntletsImpactRing>(), 0, 0, Target.whoAmI, Main.rand.Next(25, 35), NPC.Center.DirectionTo(partner.Center).ToRotation());
-								ring.extraUpdates = 0;
+								//TODO: check if this is going too fast in multiplayer cause of the extraupdates non sync
+								if (Main.netMode != NetmodeID.MultiplayerClient)
+								{
+									var ring = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Bottom, NPC.Bottom.DirectionTo(partner.Center), ProjectileType<Items.Vitric.IgnitionGauntlets.IgnitionGauntletsImpactRing>(), 0, 0, Target.whoAmI, Main.rand.Next(25, 35), NPC.Center.DirectionTo(partner.Center).ToRotation());
+									ring.extraUpdates = 0;
+								}
 							}
 						}
 					}

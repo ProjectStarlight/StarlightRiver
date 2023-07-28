@@ -6,6 +6,11 @@ namespace StarlightRiver.Content.Archaeology
 {
 	public class ArtifactItemProj : ModProjectile
 	{
+		public static Color glowColorToAssign;
+		public static int itemTypeToAssign;
+		public static Vector2 sizeToAssign;
+		public static int sparkleTypeToAssign;
+
 		public override string Texture => itemTexture;
 
 		public string itemTexture = AssetDirectory.Invisible;
@@ -37,11 +42,16 @@ namespace StarlightRiver.Content.Archaeology
 			Projectile.tileCollide = false;
 		}
 
+		public override void OnSpawn(IEntitySource source)
+		{
+			glowColor = glowColorToAssign;
+			itemType = itemTypeToAssign;
+			size = sizeToAssign;
+			sparkleType = sparkleTypeToAssign;
+		}
+
 		public override void AI()
 		{
-			if (fadeIn == 0)
-				Projectile.netUpdate = true;
-
 			if (fadeIn < 1)
 			{
 				fadeIn += 0.03f;

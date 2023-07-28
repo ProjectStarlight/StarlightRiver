@@ -1,6 +1,7 @@
 ﻿
 float time;
 float repeats;
+float opacity = 1;
 
 matrix transformMatrix;
 
@@ -25,7 +26,7 @@ VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
 {
     VertexShaderOutput output;
     
-    output.Color = input.Color;
+    output.Color = input.Color * opacity;
     output.TexCoords = input.TexCoords;
     output.Position = mul(input.Position, transformMatrix);
 

@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 		public override void Unload()
 		{
-			sparkles = null;
+			sparkles ??= null;
 		}
 
 		private static void updateSparkles(Particle particle)

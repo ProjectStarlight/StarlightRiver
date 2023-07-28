@@ -1,5 +1,6 @@
 ﻿using ReLogic.Content;
 using System;
+using System.IO;
 using Terraria.DataStructures;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -13,11 +14,18 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		private Vector2 gripPos;
 		public int variant;
 
+		/// <summary>
+		/// Used to set variant on the first frame for sync.
+		/// </summary>
+		public static int variantStatic = 0;
+
 		public override string Texture => AssetDirectory.Glassweaver + Name;
 
 		public ref float Timer => ref Projectile.ai[0];
 
 		public NPC Parent => Main.npc[(int)Projectile.ai[1]];
+
+		public bool isLoaded = false;
 
 		public override void SetStaticDefaults()
 		{
@@ -39,13 +47,20 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void OnSpawn(IEntitySource source)
 		{
-			Helpers.Helper.PlayPitched("GlassMiniboss/WeavingShort", 1f, 0f, Projectile.Center);
+			variant = variantStatic;
+			variantStatic = 0;
 		}
 
 		public override void AI()
 		{
 			if (!Parent.active || Parent.type != NPCType<Glassweaver>())
 				Projectile.Kill();
+
+			if (!isLoaded)
+			{
+				Helpers.Helper.PlayPitched("GlassMiniboss/WeavingShort", 1f, 0f, Projectile.Center);
+				isLoaded = true;
+			}
 
 			Timer++;
 
@@ -200,6 +215,16 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Main.EntitySpriteDraw(slash.Value, gripPos - Main.screenPosition, slashLine, slashColor * 1.25f, MathHelper.Pi / 3f * Parent.direction + rot * 0.4f, slashFill.Size() * new Vector2(0.5f, 0.33f), slashScale * 0.98f, 0, 0);
 
 			return false;
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(variant);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			variant = reader.ReadInt32();
 		}
 	}
 }

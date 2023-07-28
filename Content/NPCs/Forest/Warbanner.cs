@@ -115,13 +115,16 @@ namespace StarlightRiver.Content.NPCs.Forest
 			GlobalTimer++;
 			VisualTimer++;
 
-			chain.UpdateChain(NPC.Center + Vector2.UnitY * -40);
-			miniChain0.UpdateChain(NPC.Center + new Vector2(22, -48));
-			miniChain1.UpdateChain(NPC.Center + new Vector2(-22, -48));
+			if (Main.netMode != NetmodeID.Server)
+			{
+				chain.UpdateChain(NPC.Center + Vector2.UnitY * -40);
+				miniChain0.UpdateChain(NPC.Center + new Vector2(22, -48));
+				miniChain1.UpdateChain(NPC.Center + new Vector2(-22, -48));
 
-			chain.IterateRope(UpdateBanner);
-			miniChain0.IterateRope(UpdateBannerSmall);
-			miniChain1.IterateRope(UpdateBannerSmall);
+				chain.IterateRope(UpdateBanner);
+				miniChain0.IterateRope(UpdateBannerSmall);
+				miniChain1.IterateRope(UpdateBannerSmall);
+			}
 
 			Lighting.AddLight(NPC.Center, new Vector3(1.25f, 0.4f, 0.2f) * VFXAlpha * 0.7f);
 
@@ -325,14 +328,18 @@ namespace StarlightRiver.Content.NPCs.Forest
 			return 0;
 		}
 
-		public override void OnKill()
+		public override void HitEffect(NPC.HitInfo hit)
 		{
-			for (int k = 0; k <= 12; k++)
+			if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
 			{
-				int goreType = StarlightRiver.Instance.Find<ModGore>("WarbannerGore" + Main.rand.Next(7)).Type;
-				Gore.NewGore(NPC.GetSource_Death(), NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), Vector2.Zero, goreType);
+				for (int k = 0; k <= 12; k++)
+				{
+					int goreType = StarlightRiver.Instance.Find<ModGore>("WarbannerGore" + Main.rand.Next(7)).Type;
+					Gore.NewGore(NPC.GetSource_Death(), NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), Vector2.Zero, goreType);
+				}
 			}
 		}
+
 		public string GetHint()
 		{
 			return "It somehow bolsters nearby foes...";
