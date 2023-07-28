@@ -69,6 +69,7 @@
 - Added quick hotkeys to prep station and chef bag
 - Empty prep station slots now say which type of ingredient goes there
 - Alican's cutscene camera more accurately predicts his fall
+- Updated numerous sprites
 
 ## Balance
 - Starlight regeneration has recieved a large overhaul
