@@ -19,6 +19,7 @@
 - Fixed a crash with crescent casters in multiplayer
 - Fixed crafting recipe for frying pan
 - Fixed jade stopwatch with channel items
+- Fixed missing starsight text for ankh chests
 
 ## Content
 - New summoner weapon: Arms Dealer's Defense System
