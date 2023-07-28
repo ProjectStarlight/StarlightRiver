@@ -200,7 +200,9 @@ namespace StarlightRiver.Content.Items.Haunted
 			get
 			{
 				if (Projectile.minionPos <= 0)
+				{
 					return lifetime;
+				}
 				else
 				{
 					Projectile proj = Main.projectile.Where(p => p.active && p.type == Type && p.owner == Projectile.owner && p.minionPos == 0).FirstOrDefault();
@@ -479,7 +481,9 @@ namespace StarlightRiver.Content.Items.Haunted
 
 			Vector2 toIdlePos = idlePos - Projectile.Center;
 			if (toIdlePos.Length() < 0.0001f)
+			{
 				toIdlePos = Vector2.Zero;
+			}
 			else
 			{
 				float speed = 35f;

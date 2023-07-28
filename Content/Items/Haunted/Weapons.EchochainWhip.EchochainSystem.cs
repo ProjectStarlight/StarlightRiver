@@ -459,7 +459,6 @@ namespace StarlightRiver.Content.Items.Haunted
 		}
 		#endregion Primitive Drawing
 
-
 		/// <summary>
 		/// Checks the equality of two edges. Since this graph is undirected, if the order is inversed
 		/// it should still count as equal to that edge.

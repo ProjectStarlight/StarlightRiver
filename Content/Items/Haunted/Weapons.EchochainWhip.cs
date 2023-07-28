@@ -519,7 +519,6 @@ namespace StarlightRiver.Content.Items.Haunted
 				}
 			}
 
-
 			target.velocity += tilePosition.DirectionTo(target.Center) * 5f;
 
 			Helper.PlayPitched("Impacts/StabTiny", 1f, 0f, Projectile.Center);

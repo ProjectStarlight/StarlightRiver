@@ -119,7 +119,9 @@ namespace StarlightRiver.Content.Items.Haunted
 		{
 			int ItemType = reader.ReadInt32();
 			if (ItemType == -1)
+			{
 				Item = null;
+			}
 			else
 			{
 				Item = new Item();
