@@ -51,6 +51,7 @@
 - Fixed starwood armor and weapons in multiplayer
 - Fixed artifacts in multiplayer
 - Fixed most gores for multiplayer
+- Fixed cooking in multiplayer
 - Fixed Jade stopwatch for multiplayer
 - Fixed martial books for multiplayer
 - Fixed laser pointers for multiplayer
@@ -62,6 +63,8 @@
 - The boss rush will now save your scores across sessions
 - Updated boss rush damage resistance calculations to discourage strategies related to stalling
 - Updated the boss rush GUI
+- Added quick hotkeys to prep station and chef bag
+- Empty prep station slots now say which type of ingredient goes there
 
 ## Balance
 - Starlight regeneration has recieved a large overhaul

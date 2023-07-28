@@ -40,6 +40,7 @@ namespace StarlightRiver.Content.Tiles.Crafting
 
 			if (!CookingUI.visible)
 			{
+				CookingUI.prepStationPos = new Vector2(i * 16, j * 16);
 				CookingUI.visible = true;
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuOpen);
 
