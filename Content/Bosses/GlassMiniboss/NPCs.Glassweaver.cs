@@ -11,6 +11,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
+	[AutoloadBossHead]
 	public partial class Glassweaver : ModNPC, IHintable
 	{
 		public static readonly Color GlowDustOrange = new(6255, 108, 0);

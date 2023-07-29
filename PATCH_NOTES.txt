@@ -19,6 +19,7 @@
 - Fixed a crash with crescent casters in multiplayer
 - Fixed crafting recipe for frying pan
 - Fixed jade stopwatch with channel items
+- Fixed missing starsight text for ankh chests
 
 ## Content
 - New summoner weapon: Arms Dealer's Defense System
@@ -67,6 +68,8 @@
 - Updated the boss rush GUI
 - Added quick hotkeys to prep station and chef bag
 - Empty prep station slots now say which type of ingredient goes there
+- Alican's cutscene camera more accurately predicts his fall
+- Updated numerous sprites
 
 ## Balance
 - Starlight regeneration has recieved a large overhaul
@@ -87,3 +90,5 @@
 - Earthduster damage reduced (25 => 6)
 - Soilgun/Earthduster crimsand nerfed (healing chance 33% => 20%) (healing 2 + 10% damage => 1)
 - Auroracle's water will now deal a small amount of damage when you fall in to alert you of the danger
+- Slightly decreased damage of auroracle's wavy ink attack in phase 1
+- Reduced the spawn rate of display cases
