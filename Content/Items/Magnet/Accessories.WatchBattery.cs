@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Items.Magnet
 		{
 			Player owner = Main.player[projectile.owner];
 
-			if (owner != null && Equipped(owner))
+			if (owner != null && Equipped(owner) && owner == Main.LocalPlayer)
 			{
 				if (projectile.timeLeft == (Projectile.SentryLifeTime - 1))
 				{
