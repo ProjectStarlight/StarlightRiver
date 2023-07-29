@@ -98,8 +98,13 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (Timer == 1)
 			{
-				Owner.FindSentryRestingSpot(Projectile.whoAmI, out int worldX, out int worldY, out int pushYUp);
-				Projectile.position = new Vector2(worldX, worldY - pushYUp - 8);
+				if (Main.LocalPlayer == Owner)
+				{
+					Owner.FindSentryRestingSpot(Projectile.whoAmI, out int worldX, out int worldY, out int pushYUp);
+					Projectile.position = new Vector2(worldX, worldY - pushYUp - 8);
+
+					Projectile.netUpdate = true;
+				}
 
 				// After summoning you get a head-start to spawning a heart
 				damageDone = 350;
