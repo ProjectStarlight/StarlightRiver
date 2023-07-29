@@ -2963,6 +2963,27 @@ Mods: {
 					Consumed heart pickups heal you after a delay
 					'''
 			}
+
+			WatchBattery: {
+				DisplayName: Watch Battery
+				Tooltip: Your sentries shock nearby enemies when placed
+			}
+
+			SeaglassLens: {
+				DisplayName: Seaglass Lens
+				Tooltip: Your sentries can critically strike
+			}
+
+			ExoticTimepiece: {
+				DisplayName: Exotic Timepiece
+				Tooltip:
+					'''
+					Your sentries fire faster and shock nearby enemies when placed
+					Your minions and sentries occasionally deal extra damage
+					This extra damage counts as a critical strike
+					200% increased sentry placement speed
+					'''
+			}
 		}
 
 		Projectiles: {
