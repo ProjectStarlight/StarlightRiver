@@ -1,5 +1,7 @@
-﻿using System;
+﻿using NetEasy;
+using System;
 using System.Linq;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Packets
 {
@@ -35,7 +37,7 @@ namespace StarlightRiver.Content.Packets
 			if (proj is null)
 				return;
 
-			Player.HurtInfo hurtInfo = new Player.HurtInfo
+			var hurtInfo = new Player.HurtInfo
 			{
 				Damage = damage
 			};
