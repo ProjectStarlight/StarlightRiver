@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -293,8 +294,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 						if (bowFrameCounter > 25)
 						{
 							SoundEngine.PlaySound(SoundID.Item5, NPC.Center);
-							var proj = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), BowPos, BowPos.DirectionTo(arrowTarget) * 10, ModContent.ProjectileType<PelterConstructArrow>(), (int)(NPC.damage * (Main.expertMode || Main.masterMode ? 0.3f : 1)), NPC.knockBackResist);
-							proj.aiStyle = -1;
+							
+							if (Main.netMode != NetmodeID.MultiplayerClient)
+							{
+								PelterConstructArrow.AIStyleToAssign = -1;
+								Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), BowPos, BowPos.DirectionTo(arrowTarget) * 10, ModContent.ProjectileType<PelterConstructArrow>(), (int)(NPC.damage * (Main.expertMode || Main.masterMode ? 0.3f : 1)), NPC.knockBackResist);
+
+							}
+
 							bowFrameCounter = 0;
 							bowFrame++;
 						}
@@ -409,8 +416,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 								flipRotation = 6.28f * NPC.spriteDirection * 0.95f;
 								shielderComboFiring = true;
 
-								var ring = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Bottom, ringVel, ProjectileType<Items.Vitric.IgnitionGauntlets.IgnitionGauntletsImpactRing>(), 0, 0, Target.whoAmI, Main.rand.Next(25, 35), NPC.Center.DirectionTo(shielderPartner.Center).ToRotation());
-								ring.extraUpdates = 0;
+								if (Main.netMode != NetmodeID.MultiplayerClient)
+									Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Bottom, ringVel, ProjectileType<Items.Vitric.IgnitionGauntlets.IgnitionGauntletsImpactRing>(), 0, 0, Target.whoAmI, Main.rand.Next(25, 35), NPC.Center.DirectionTo(shielderPartner.Center).ToRotation());
+
 								return true;
 							}
 						}
@@ -450,7 +458,10 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				if (bowFrameCounter > 25)
 				{
 					SoundEngine.PlaySound(SoundID.Item5, NPC.Center);
-					Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), BowPos, BowPos.DirectionTo(Target.Center).RotatedBy((Target.Center.X - NPC.Center.X) * -0.0003f) * 10, ModContent.ProjectileType<PelterConstructArrow>(), (int)(NPC.damage * (Main.expertMode || Main.masterMode ? 0.3f : 1)), NPC.knockBackResist);
+
+					if (Main.netMode != NetmodeID.MultiplayerClient)
+						Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), BowPos, BowPos.DirectionTo(Target.Center).RotatedBy((Target.Center.X - NPC.Center.X) * -0.0003f) * 10, ModContent.ProjectileType<PelterConstructArrow>(), (int)(NPC.damage * (Main.expertMode || Main.masterMode ? 0.3f : 1)), NPC.knockBackResist);
+					
 					bowFrameCounter = 0;
 					bowFrame++;
 				}
@@ -583,10 +594,26 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				new FlavorTextBestiaryInfoElement("One of the Glassweaver's constructs. Relatively fragile, it draws intricate arrows from its own molten body.")
 			});
 		}
+
+		public override void SafeSendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(bowFrame);
+			writer.Write(bowFrameCounter);
+			writer.Write(flyingComboCooldown);
+		}
+
+		public override void SafeReceiveExtraAI(BinaryReader reader)
+		{
+			bowFrame = reader.ReadInt32();
+			bowFrameCounter = reader.ReadInt32();
+			flyingComboCooldown = reader.ReadInt32();
+		}
 	}
 
 	internal class PelterConstructArrow : ModProjectile
 	{
+		public static int AIStyleToAssign = 1;
+
 		private List<Vector2> cache;
 		private Trail trail;
 
@@ -610,6 +637,12 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Glass Arrow");
+		}
+
+		public override void OnSpawn(IEntitySource source)
+		{
+			Projectile.aiStyle = AIStyleToAssign;
+			AIStyleToAssign = 1;
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -700,6 +733,16 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(Projectile.aiStyle);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			Projectile.aiStyle = reader.ReadInt32();
 		}
 	}
 }
