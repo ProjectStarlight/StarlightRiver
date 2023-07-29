@@ -1,5 +1,6 @@
 ﻿using System;
 using Terraria.GameContent.Bestiary;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.NPCs.BaseTypes
 {
@@ -62,6 +63,10 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 		public sealed override void AI()
 		{
 			SafeAI();
+
+			//TODO: More elegant sync guarantee later perhaps, this should ensure platforms always eventually exist in MP
+			if (Main.netMode == NetmodeID.Server && Main.GameUpdateCount % 60 == 0)
+				NPC.netUpdate = true;
 
 			float yDistTraveled = NPC.position.Y - prevPos.Y;
 
