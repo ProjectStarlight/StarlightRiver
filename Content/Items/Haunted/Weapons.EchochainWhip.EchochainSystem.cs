@@ -75,23 +75,28 @@ namespace StarlightRiver.Content.Items.Haunted
 			if (edge == default)
 				return;
 
+			player.GetModPlayer<StarlightPlayer>().SetHitPacketStatus(false);
+
 			float mult = MathHelper.Lerp(0.5f, 0.25f, edge.timer / (float)MAX_EDGE_TIMER);
 
 			Traverse(npc, (n) =>
 			{
-				n.SimpleStrikeNPC((int)(hit.SourceDamage * mult), 0);
-
-				for (int i = 0; i < 4; i++)
+				if (Main.myPlayer == player.whoAmI)
 				{
-					Dust.NewDustPerfect(n.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(5f, 5f), 0, new Color(120, 255, 40), 0.65f);
+					n.SimpleStrikeNPC((int)(hit.SourceDamage * mult), 0);
 
-					Dust.NewDustPerfect(n.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2CircularEdge(5f, 5f), 0, new Color(120, 255, 40), 0.65f);
+					for (int i = 0; i < 4; i++)
+					{
+						Dust.NewDustPerfect(n.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(5f, 5f), 0, new Color(120, 255, 40), 0.65f);
+
+						Dust.NewDustPerfect(n.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2CircularEdge(5f, 5f), 0, new Color(120, 255, 40), 0.65f);
+					}
+
+					Dust.NewDustPerfect(n.Center, ModContent.DustType<EchochainBurstDust>(), Vector2.Zero, 0, default, Main.rand.NextFloat(0.5f, 0.75f));
+
+					Helper.PlayPitched("Magic/Shadow1", 0.5f, 0f, npc.Center);
+					CameraSystem.shake += 2;
 				}
-
-				Dust.NewDustPerfect(n.Center, ModContent.DustType<EchochainBurstDust>(), Vector2.Zero, 0, default, Main.rand.NextFloat(0.5f, 0.75f));
-
-				Helper.PlayPitched("Magic/Shadow1", 0.5f, 0f, npc.Center);
-				CameraSystem.shake += 2;
 			}, true);
 
 			hitCooldowns[player.whoAmI] = 15;
@@ -119,25 +124,28 @@ namespace StarlightRiver.Content.Items.Haunted
 			if (edge == default)
 				return;
 
-			float mult = MathHelper.Lerp(0.5f, 0.25f, 1f - edge.timer / (float)MAX_EDGE_TIMER);
+			Main.player[projectile.owner].GetModPlayer<StarlightPlayer>().SetHitPacketStatus(false);
+
+			float mult = MathHelper.Lerp(0.5f, 0.25f, edge.timer / (float)MAX_EDGE_TIMER);
 
 			Traverse(npc, (n) =>
 			{
-				n.SimpleStrikeNPC((int)(hit.SourceDamage * mult), 0);
-
-				for (int i = 0; i < 4; i++)
+				if (Main.myPlayer == projectile.owner)
 				{
-					Dust.NewDustPerfect(n.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(5f, 5f), 0, new Color(120, 255, 40), 0.65f);
+					n.SimpleStrikeNPC((int)(hit.SourceDamage * mult), 0);
 
-					Dust.NewDustPerfect(n.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2CircularEdge(5f, 5f), 0, new Color(120, 255, 40), 0.65f);
-				}
+					for (int i = 0; i < 4; i++)
+					{
+						Dust.NewDustPerfect(n.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(5f, 5f), 0, new Color(120, 255, 40), 0.65f);
 
-				Dust.NewDustPerfect(n.Center, ModContent.DustType<EchochainBurstDust>(), Vector2.Zero, 0, default, Main.rand.NextFloat(0.5f, 0.75f));
+						Dust.NewDustPerfect(n.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2CircularEdge(5f, 5f), 0, new Color(120, 255, 40), 0.65f);
+					}
 
-				Helper.PlayPitched("Magic/Shadow1", 0.5f, 0f, npc.Center);
-				if (CameraSystem.shake < 6)
+					Dust.NewDustPerfect(n.Center, ModContent.DustType<EchochainBurstDust>(), Vector2.Zero, 0, default, Main.rand.NextFloat(0.5f, 0.75f));
+
+					Helper.PlayPitched("Magic/Shadow1", 0.5f, 0f, npc.Center);
 					CameraSystem.shake += 2;
-
+				}
 			}, true);
 
 			hitCooldowns[projectile.owner] = 15;
@@ -433,6 +441,7 @@ namespace StarlightRiver.Content.Items.Haunted
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = cache[9];
 		}
+
 		public void DrawPrimitives(SpriteBatch spriteBatch)
 		{
 			spriteBatch.End();

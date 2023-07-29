@@ -139,135 +139,18 @@ namespace StarlightRiver.Content.Items.Haunted
 		public override void AI()
 		{
 			if (DeathTimer > 0)
-			{
-				float progress = 1f - DeathTimer / 30f;
-
-				Projectile.timeLeft = 2;
-				DeathTimer--;
-
-				if (DeathTimer == 1)
-				{
-					Projectile.Kill();
-					Owner.itemTime = 0;
-					Owner.itemAnimation = 0;
-					Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, 0f); // gotta set the composite arm here again otherwise the players front arm appears out for a frame and it looks bad		
-					return;
-				}
-
-				if (progress < 0.25f)
-				{
-					handRotation = MathHelper.Lerp(-1f, -3f, EaseBuilder.EaseCircularInOut.Ease(1f - (DeathTimer - 22.5f) / 7.5f)) * Owner.direction;
-				}
-				else
-				{
-					handRotation = MathHelper.Lerp(-3f, -0.5f, EaseBuilder.EaseQuarticIn.Ease(1f - DeathTimer / 22.5f)) * Owner.direction;
-					if (progress >= 0.9f && !playedSound)
-					{
-						Helper.PlayPitched("Effects/HeavyWhooshShort", 1f, 0f, Owner.Center);
-
-						CameraSystem.shake += 6;
-						playedSound = true;
-					}
-				}
-			}
+				UpdateDeathAnimation();
 			else
-			{
-				Projectile.rotation = Owner.DirectionTo(OwnerMouse).ToRotation();
+				UpdateHeldProjectile();
 
-				if (!CanHold)
-				{				
-					Projectile.timeLeft = 5;
-					DeathTimer = 30f;
-					oldMouse = OwnerMouse;
-					CameraSystem.shake += 4;
-					Helper.PlayPitched("Effects/HeavyWhoosh", 1f, 0f, Owner.Center);
+			UpdateDustVisuals();
 
-					for (int i = 0; i < Main.rand.Next(2, 4); i++)
-					{
-						Dust.NewDustPerfect(Owner.Center + new Vector2(15f * Owner.direction, -5f) + Main.rand.NextVector2CircularEdge(5f, 5f), ModContent.DustType<Dusts.GlowLine>(), -Vector2.UnitY.RotatedByRandom(0.2f) * 1.5f, 200, new Color(130, 255, 50, 0), 0.35f);
-					}
-
-					var targetsToChain = new List<NPC>();
-
-					for (int i = 0; i < enemyTiles.Length; i++)
-					{
-						if (enemyTiles[i] != null && targets[i] != null && targets[i].active && Collision.CanHitLine(new Vector2(enemyTiles[i].Value.X * 16, enemyTiles[i].Value.Y * 16) + new Vector2(0f, -30f), 2, 2, targets[i].Center, 2, 2))
-						{
-							Vector2 pos = new Vector2(enemyTiles[i].Value.X * 16, enemyTiles[i].Value.Y * 16);
-
-							targetsToChain.Add(targets[i]);
-
-							int[] frames = new int[17];
-							for (int a = 0; a < frames.Length; a++) // populate array
-							{
-								frames[a] = Main.rand.Next(3);
-							}
-
-							var proj = Projectile.NewProjectileDirect(null, pos, Vector2.Zero, ModContent.ProjectileType<EchochainWhipAltProjectileChain>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
-
-							EchochainWhipAltProjectileChain chain = proj.ModProjectile as EchochainWhipAltProjectileChain;
-							chain.target = targets[i];
-							chain.tilePosition = pos + new Vector2(0f, 15f);
-							chain.chainFrames = frames;
-							chain.maxStabTimer = MathHelper.Lerp(30f, 60f, Vector2.Distance(pos + new Vector2(0f, 15f), targets[i].Center) / 250f);
-						}
-					}
-
-					if (targetsToChain.Count >= 2)
-					{
-						EchochainSystem.AddNPCS(targetsToChain);
-						for (int i = 0; i < targetsToChain.Count; i++)
-						{
-							EchochainSystem.ResetTimers(targetsToChain[i]);
-						}
-					}				
-				}
-
-				Owner.ChangeDir(OwnerMouse.X < Owner.Center.X ? -1 : 1);
-
-				Projectile.timeLeft = 2;
-
-				handRotation = -1f * Owner.direction;
-			}
-
-			for (int i = 0; i < tiles.Length; i++)
-			{
-				if (tiles[i] != null)
-				{
-					Vector2 pos = new Vector2(tiles[i].Value.X * 16, tiles[i].Value.Y * 16);
-					pos += new Vector2(12f, 0f);
-					pos.X += Main.rand.Next(-8, 8);
-
-					if (Main.rand.NextBool(10))
-						Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(1f, 1f) + Vector2.UnitY * -Main.rand.NextFloat(2f), 0, new Color(100, 200, 10), 0.35f);
-
-					if (Main.rand.NextBool(10))
-						Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(2f, 2f) + Vector2.UnitY.RotatedByRandom(1f) * -Main.rand.NextFloat(3f), 0, new Color(150, 255, 25), 0.2f);
-				}
-			}
-
-			for (int i = 0; i < enemyTiles.Length; i++)
-			{
-				if (enemyTiles[i] != null)
-				{
-					Vector2 pos = new Vector2(enemyTiles[i].Value.X * 16, enemyTiles[i].Value.Y * 16);
-					pos += new Vector2(12f, 0f);
-
-					if (Main.rand.NextBool(20))
-						Dust.NewDustPerfect(pos, ModContent.DustType<EchochainChainDust>(), (Vector2.UnitY * -Main.rand.NextFloat(1.5f)).RotatedByRandom(0.5f), Main.rand.Next(150), default, 1.25f).noGravity = true;
-				}
-			}
-
-			if (Main.rand.NextBool(5))
-				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(15f, 15f), ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(2f, 2f) + Vector2.UnitY * -Main.rand.NextFloat(5f), 0, new Color(150, 255, 25), 0.2f);
-			
 			Owner.heldProj = Projectile.whoAmI;
 			Owner.itemTime = 2;
 			Owner.itemAnimation = 2;
 
 			Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, handRotation);
 			Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, 0f);
-
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -350,6 +233,136 @@ namespace StarlightRiver.Content.Items.Haunted
 			return false;
 		}
 
+		private void UpdateDustVisuals()
+		{
+			for (int i = 0; i < tiles.Length; i++)
+			{
+				if (tiles[i] != null)
+				{
+					Vector2 pos = new Vector2(tiles[i].Value.X * 16, tiles[i].Value.Y * 16);
+					pos += new Vector2(12f, 0f);
+					pos.X += Main.rand.Next(-8, 8);
+
+					if (Main.rand.NextBool(10))
+						Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(1f, 1f) + Vector2.UnitY * -Main.rand.NextFloat(2f), 0, new Color(100, 200, 10), 0.35f);
+
+					if (Main.rand.NextBool(10))
+						Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(2f, 2f) + Vector2.UnitY.RotatedByRandom(1f) * -Main.rand.NextFloat(3f), 0, new Color(150, 255, 25), 0.2f);
+				}
+			}
+
+			for (int i = 0; i < enemyTiles.Length; i++)
+			{
+				if (enemyTiles[i] != null)
+				{
+					Vector2 pos = new Vector2(enemyTiles[i].Value.X * 16, enemyTiles[i].Value.Y * 16);
+					pos += new Vector2(12f, 0f);
+
+					if (Main.rand.NextBool(20))
+						Dust.NewDustPerfect(pos, ModContent.DustType<EchochainChainDust>(), (Vector2.UnitY * -Main.rand.NextFloat(1.5f)).RotatedByRandom(0.5f), Main.rand.Next(150), default, 1.25f).noGravity = true;
+				}
+			}
+
+			if (Main.rand.NextBool(5))
+				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(15f, 15f), ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(2f, 2f) + Vector2.UnitY * -Main.rand.NextFloat(5f), 0, new Color(150, 255, 25), 0.2f);
+
+		}
+
+		private void UpdateDeathAnimation()
+		{
+			float progress = 1f - DeathTimer / 30f;
+
+			Projectile.timeLeft = 2;
+			DeathTimer--;
+
+			if (DeathTimer == 1)
+			{
+				Projectile.Kill();
+				Owner.itemTime = 0;
+				Owner.itemAnimation = 0;
+				Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, 0f); // gotta set the composite arm here again otherwise the players front arm appears out for a frame and it looks bad		
+				return;
+			}
+
+			if (progress < 0.25f)
+			{
+				handRotation = MathHelper.Lerp(-1f, -3f, EaseBuilder.EaseCircularInOut.Ease(1f - (DeathTimer - 22.5f) / 7.5f)) * Owner.direction;
+			}
+			else
+			{
+				handRotation = MathHelper.Lerp(-3f, -0.5f, EaseBuilder.EaseQuarticIn.Ease(1f - DeathTimer / 22.5f)) * Owner.direction;
+				if (progress >= 0.9f && !playedSound)
+				{
+					Helper.PlayPitched("Effects/HeavyWhooshShort", 1f, 0f, Owner.Center);
+
+					CameraSystem.shake += 6;
+					playedSound = true;
+				}
+			}
+		}
+
+		private void UpdateHeldProjectile()
+		{
+			Owner.GetModPlayer<ControlsPlayer>().rightClickListener = true;
+			Projectile.rotation = Owner.DirectionTo(OwnerMouse).ToRotation();
+
+			if (!CanHold)
+			{
+				Projectile.timeLeft = 5;
+				DeathTimer = 30f;
+				oldMouse = OwnerMouse;
+				CameraSystem.shake += 4;
+				Helper.PlayPitched("Effects/HeavyWhoosh", 1f, 0f, Owner.Center);
+
+				for (int i = 0; i < Main.rand.Next(2, 4); i++)
+				{
+					Dust.NewDustPerfect(Owner.Center + new Vector2(15f * Owner.direction, -5f) + Main.rand.NextVector2CircularEdge(5f, 5f), ModContent.DustType<Dusts.GlowLine>(), -Vector2.UnitY.RotatedByRandom(0.2f) * 1.5f, 200, new Color(130, 255, 50, 0), 0.35f);
+				}
+
+				var targetsToChain = new List<NPC>();
+
+				for (int i = 0; i < enemyTiles.Length; i++)
+				{
+					if (enemyTiles[i] != null && targets[i] != null && targets[i].active && Collision.CanHitLine(new Vector2(enemyTiles[i].Value.X * 16, enemyTiles[i].Value.Y * 16) + new Vector2(0f, -30f), 2, 2, targets[i].Center, 2, 2))
+					{
+						Vector2 pos = new Vector2(enemyTiles[i].Value.X * 16, enemyTiles[i].Value.Y * 16);
+
+						targetsToChain.Add(targets[i]);
+
+						int[] frames = new int[17];
+						for (int a = 0; a < frames.Length; a++) // populate array
+						{
+							frames[a] = Main.rand.Next(3);
+						}
+
+						if (Main.myPlayer == Owner.whoAmI)
+						{
+							EchochainWhipAltProjectileChain.targetToAssign = targets[i];
+							EchochainWhipAltProjectileChain.tilePositionToAssign = pos + new Vector2(0f, 15f);
+							EchochainWhipAltProjectileChain.chainFramesToAssign = frames;
+							EchochainWhipAltProjectileChain.maxStabTimerToAssign = MathHelper.Lerp(30f, 60f, Vector2.Distance(pos + new Vector2(0f, 15f), targets[i].Center) / 250f);
+							Projectile.NewProjectileDirect(null, pos, Vector2.Zero, ModContent.ProjectileType<EchochainWhipAltProjectileChain>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+						}
+					}
+				}
+
+				if (targetsToChain.Count >= 2)
+				{
+					EchochainSystem.AddNPCS(targetsToChain);
+					for (int i = 0; i < targetsToChain.Count; i++)
+					{
+						EchochainSystem.ResetTimers(targetsToChain[i]);
+					}
+				}
+			}
+
+			Owner.ChangeDir(OwnerMouse.X < Owner.Center.X ? -1 : 1);
+
+			Projectile.timeLeft = 2;
+
+			handRotation = -1f * Owner.direction;
+		}
+
 		private void PopulateTilesAndTargets()
 		{
 			for (int i = 0; i < tiles.Length; i++)
@@ -394,17 +407,21 @@ namespace StarlightRiver.Content.Items.Haunted
 
 	public class EchochainWhipAltProjectileChain : ModProjectile
 	{
-		public float maxStabTimer = 60f;
+		public static float maxStabTimerToAssign;
+		private float maxStabTimer = 60f;
 
-		public int[] chainFrames;
+		public static int[] chainFramesToAssign;
+		private int[] chainFrames;
 
-		public Vector2 tilePosition;
+		public static Vector2 tilePositionToAssign;
+		private Vector2 tilePosition;
 
-		public NPC target;
+		public static NPC targetToAssign;
+		private NPC target;
 
-		public bool hasHit;
+		private bool hasHit;
 
-		public bool hitGround;
+		private bool hitGround;
 
 		public ref float StabTimer => ref Projectile.ai[0];
 
@@ -429,6 +446,14 @@ namespace StarlightRiver.Content.Items.Haunted
 			Projectile.timeLeft = 300;
 			Projectile.penetrate = -1;
 			Projectile.hide = true;
+		}
+
+		public override void OnSpawn(IEntitySource source)
+		{
+			maxStabTimer = maxStabTimerToAssign;
+			chainFrames = chainFramesToAssign;
+			tilePosition = tilePositionToAssign;
+			target = targetToAssign;
 		}
 
 		public override bool? CanHitNPC(NPC target)
@@ -498,6 +523,9 @@ namespace StarlightRiver.Content.Items.Haunted
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
+			Owner.TryGetModPlayer(out StarlightPlayer sp);
+			sp.SetHitPacketStatus(true);
+
 			hasHit = true;
 			if (target.knockBackResist <= 0f || Main.projectile.Any(p => p.active && p != Projectile && p.type == Type && (p.ModProjectile as EchochainWhipAltProjectileChain).target == target))
 				Projectile.Kill();
