@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Dusts;
+using StarlightRiver.Content.Items.Haunted;
 using StarlightRiver.Content.Physics;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 using static Terraria.ModLoader.ModContent;
@@ -68,7 +70,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 			NPC.HitSound = SoundID.NPCHit54;
 			NPC.DeathSound = SoundID.NPCDeath6;
 			NPC.noGravity = true;
-			NPC.noTileCollide= true;
+			NPC.noTileCollide = true;
 			NPC.dontCountMe = true;
 			NPC.dontTakeDamage = true;
 		}
@@ -91,7 +93,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 		{
 			xTile = tag.GetInt("xTile");
 			yTile = tag.GetInt("yTile");
-			NPC.Center = ChainStart + new Vector2(0,1);
+			NPC.Center = ChainStart + new Vector2(0, 1);
 			chain = new VerletChain(NUM_SEGMENTS, true, ChainStart, 5, false)
 			{
 				forceGravity = new Vector2(0, 0.1f),
@@ -270,7 +272,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 			for (int i = 0; i < oldPos.Count; i++)
 			{
 				float opacity = i / (float)oldPos.Count;
-				Main.spriteBatch.Draw(glowTex, slopeOffset + oldPos[i]  - screenPos, NPC.frame, Color.White * opacity * 0.75f, NPC.rotation, origin, NPC.scale * opacity, effects, 0f);
+				Main.spriteBatch.Draw(glowTex, slopeOffset + oldPos[i] - screenPos, NPC.frame, Color.White * opacity * 0.75f, NPC.rotation, origin, NPC.scale * opacity, effects, 0f);
 			}
 			// Not sure if the below commented out code is needed.
 			//Main.spriteBatch.End();
@@ -298,6 +300,11 @@ namespace StarlightRiver.Content.NPCs.Misc
 		{
 			int frameWidth = NPC.width;
 			NPC.frame = new Rectangle(frameWidth * xFrame, 0, frameWidth, frameHeight);
+		}
+
+		public override void ModifyNPCLoot(NPCLoot npcLoot)
+		{
+			npcLoot.Add(ItemDropRule.Common(ItemType<VengefulSpirit>(), 1, 2, 4));
 		}
 
 		private void UpdateChain()

@@ -23,8 +23,10 @@ This is a major update, adding early multiplayer support, a bunch of Summoner co
 - Fixed missing Starsight text for Ankh Chests
 
 ## Content:
-- New material: Vengeful Spirit, dropped by ghosts
-- Some recipes have been updated to use Vengeful Spirits instead of Living Blood
+- New material: Vengeful Spirit
+ - Dropped by ghosts, Some recipes have been updated to use Vengeful Spirits instead of Living Blood
+- New tool: Enchanted Watering Can
+ - Spawns in underground chests, use it on a normal sapling to grow it into a big tree
 - New sentry: Arms Dealer's Defense System
  - Purchased from the Arms Dealer that conjures different kinds of mounted turrets to fight for you
 - New summon: Haunted Dagger Staff
@@ -38,7 +40,7 @@ This is a major update, adding early multiplayer support, a bunch of Summoner co
 - New sentry: Heart Statue?
  - Crafted by throwing a Heart Statue in Starwater, summoning a living statue to siphon life from enemies and occasionally spawn life hearts
 - New accessory: Artillery License
- - Sold by the Arms Dealer, grants +1 sentry slot and +10% sentry damage
+ - Sold by the Arms Dealer, grants +1 sentry slot
 - New accessory: Manabond
  - Found in certain Stone Temples, grants minions their own mana bar that refills from your own, allowing them to cast magic bolts at foes
 - New accessory: Infernal Manabond
@@ -54,7 +56,7 @@ This is a major update, adding early multiplayer support, a bunch of Summoner co
 - New accessory: Watch Battery
  - Crafted with a Charged Magnet, makes sentries shock nearby enemies when summoned, inflicting Overcharged
 - New accessory: Seaglass Lens
- - Crafted with a Seaglass Ring, allows minions and sentries to critically strike
+ - Crafted with a Seaglass Ring, allows minions and sentries to occasionally deal extra damage which counts as a critical strike
 - New accessory: Exotic Timepiece
  - Crafted with Salt Cogs, Watch Battery, and Seaglass Lens, combines their effects and grants +100% sentry placement speed
 - New accessory: Haunted Amethyst
@@ -64,13 +66,11 @@ This is a major update, adding early multiplayer support, a bunch of Summoner co
 - New armor: Slime Prince armor
  - Dropped by King Slime, summons a Slime Prince that can envelop your body for 10s, granting invulnerability and new attacks
 - New enemy: Gloom Slime
- - Spawns during nighttime in shallow caves, a swarmer that latching onto you and blinds your vision
+ - Spawns during nighttime in shallow caves, a swarmer that latches onto you and blinds your vision
 - New enemy: Soul Nibbler
  - Spawns during nighttime in the Corruption, a swarmer that tries to lunge at you with 6-10 of its other kin
 - New enemy: Loot Wraith
  - Spawns occasionally protecting chests, dropping Vengeful Spirit
-- New item: Enchanted Watering Can
- - Spawns in underground chests, use it on a normal sapling to grow it into a big tree
 
 ## Multiplayer Compatibility:
 - Fixed Alican, Auroracle and Glassweaver causing softlocks in multiplayer
