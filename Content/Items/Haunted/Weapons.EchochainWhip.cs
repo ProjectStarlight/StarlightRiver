@@ -4,6 +4,7 @@ using StarlightRiver.Core.Systems.InstancedBuffSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -608,7 +609,23 @@ namespace StarlightRiver.Content.Items.Haunted
 
 			return false;
 		}
-	}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(maxStabTimer);
+			writer.Write(Array.ConvertAll(chainFrames, b => (byte)b), 0, chainFrames.Length); // this should work i think?
+			writer.WriteVector2(tilePosition);
+			writer.Write(target.whoAmI);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			maxStabTimer = reader.ReadInt32();
+			chainFrames = Array.ConvertAll(reader.ReadBytes(chainFrames.Length), i => (int)i);
+			tilePosition = reader.ReadVector2();
+			target = Main.npc.Where(n => n.whoAmI == reader.ReadInt32()).FirstOrDefault(); // absolutely no clue if this is the correct way to do this
+		}
+	}	
 
 	public class EchochainWhipProjectile : BaseWhip
 	{
@@ -703,6 +720,9 @@ namespace StarlightRiver.Content.Items.Haunted
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
+			Main.player[Projectile.owner].TryGetModPlayer(out StarlightPlayer sp);
+			sp.SetHitPacketStatus(true);
+
 			hitTargets.Add(target);
 
 			var points = new List<Vector2>();

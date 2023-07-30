@@ -82,21 +82,19 @@ namespace StarlightRiver.Content.Items.Haunted
 			Traverse(npc, (n) =>
 			{
 				if (Main.myPlayer == player.whoAmI)
-				{
 					n.SimpleStrikeNPC((int)(hit.SourceDamage * mult), 0);
 
-					for (int i = 0; i < 4; i++)
-					{
-						Dust.NewDustPerfect(n.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(5f, 5f), 0, new Color(120, 255, 40), 0.65f);
+				for (int i = 0; i < 4; i++)
+				{
+					Dust.NewDustPerfect(n.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(5f, 5f), 0, new Color(120, 255, 40), 0.65f);
 
-						Dust.NewDustPerfect(n.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2CircularEdge(5f, 5f), 0, new Color(120, 255, 40), 0.65f);
-					}
-
-					Dust.NewDustPerfect(n.Center, ModContent.DustType<EchochainBurstDust>(), Vector2.Zero, 0, default, Main.rand.NextFloat(0.5f, 0.75f));
-
-					Helper.PlayPitched("Magic/Shadow1", 0.5f, 0f, npc.Center);
-					CameraSystem.shake += 2;
+					Dust.NewDustPerfect(n.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2CircularEdge(5f, 5f), 0, new Color(120, 255, 40), 0.65f);
 				}
+
+				Dust.NewDustPerfect(n.Center, ModContent.DustType<EchochainBurstDust>(), Vector2.Zero, 0, default, Main.rand.NextFloat(0.5f, 0.75f));
+
+				Helper.PlayPitched("Magic/Shadow1", 0.5f, 0f, npc.Center);
+				CameraSystem.shake += 2;
 			}, true);
 
 			hitCooldowns[player.whoAmI] = 15;
@@ -131,21 +129,19 @@ namespace StarlightRiver.Content.Items.Haunted
 			Traverse(npc, (n) =>
 			{
 				if (Main.myPlayer == projectile.owner)
-				{
 					n.SimpleStrikeNPC((int)(hit.SourceDamage * mult), 0);
 
-					for (int i = 0; i < 4; i++)
-					{
-						Dust.NewDustPerfect(n.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(5f, 5f), 0, new Color(120, 255, 40), 0.65f);
+				for (int i = 0; i < 4; i++)
+				{
+					Dust.NewDustPerfect(n.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(5f, 5f), 0, new Color(120, 255, 40), 0.65f);
 
-						Dust.NewDustPerfect(n.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2CircularEdge(5f, 5f), 0, new Color(120, 255, 40), 0.65f);
-					}
-
-					Dust.NewDustPerfect(n.Center, ModContent.DustType<EchochainBurstDust>(), Vector2.Zero, 0, default, Main.rand.NextFloat(0.5f, 0.75f));
-
-					Helper.PlayPitched("Magic/Shadow1", 0.5f, 0f, npc.Center);
-					CameraSystem.shake += 2;
+					Dust.NewDustPerfect(n.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2CircularEdge(5f, 5f), 0, new Color(120, 255, 40), 0.65f);
 				}
+
+				Dust.NewDustPerfect(n.Center, ModContent.DustType<EchochainBurstDust>(), Vector2.Zero, 0, default, Main.rand.NextFloat(0.5f, 0.75f));
+
+				Helper.PlayPitched("Magic/Shadow1", 0.5f, 0f, npc.Center);
+
 			}, true);
 
 			hitCooldowns[projectile.owner] = 15;
