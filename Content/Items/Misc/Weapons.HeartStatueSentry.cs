@@ -84,6 +84,12 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.timeLeft = Projectile.SentryLifeTime;
 		}
 
+		public override void OnSpawn(IEntitySource source)
+		{
+			Owner.FindSentryRestingSpot(Projectile.whoAmI, out int worldX, out int worldY, out int pushYUp);
+			Projectile.position = new Vector2(worldX, worldY - pushYUp - 8);
+		}
+
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
 			return false;
@@ -96,14 +102,8 @@ namespace StarlightRiver.Content.Items.Misc
 			if (PulseTime > 0)
 				PulseTime--;
 
-			if (Timer == 1)
-			{
-				Owner.FindSentryRestingSpot(Projectile.whoAmI, out int worldX, out int worldY, out int pushYUp);
-				Projectile.position = new Vector2(worldX, worldY - pushYUp - 8);
-
-				// After summoning you get a head-start to spawning a heart
+			if (Timer == 1) // After summoning you get a head-start to spawning a heart
 				damageDone = 350;
-			}
 
 			wasFiring = false;
 

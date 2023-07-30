@@ -126,7 +126,7 @@ namespace StarlightRiver.Core
 		/// <param name="shouldRunProjMethods">determines whether the specific modprojectile onhit methods should be run. set to false if this is from the starlightplayer hook, true if you're setting this inside a projectile</param>
 		public void SetHitPacketStatus(bool shouldRunProjMethods)
 		{
-			if (Main.netMode == NetmodeID.MultiplayerClient)
+			if (Main.netMode == NetmodeID.MultiplayerClient && Player.whoAmI == Main.myPlayer)
 			{
 				shouldSendHitPacket = true;
 

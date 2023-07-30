@@ -901,8 +901,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			if (platforms is null || platforms.Count != 4 || platforms.Any(n => !n.active || n.ModNPC is not IcePlatform))
 			{
-				NPC.active = false;
-				Mod.Logger.Error("Auroracle failed to rebuild platform collection, aborting!");
+				Mod.Logger.Error("Auroracle failed to rebuild platform collection!");
 			}
 		}
 
@@ -941,8 +940,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			if (arenaActor is null || arenaBlocker is null)
 			{
-				NPC.active = false;
-				Mod.Logger.Error("Auroracle failed to find his arena, aborting!");
+				Mod.Logger.Error("Auroracle failed to find his arena!");
 			}
 		}
 

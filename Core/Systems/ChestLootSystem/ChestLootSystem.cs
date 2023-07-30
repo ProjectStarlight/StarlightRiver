@@ -13,7 +13,7 @@ namespace StarlightRiver.Core.Systems.ChestLootSystem
 {
 	public class ChestLootSystem : IPostLoadable
 	{
-		private const float DISPLAY_CASE_CHANCE = 0.125f;
+		private const float DISPLAY_CASE_CHANCE = 0.05f;
 
 		private Dictionary<int, ChestRegionFlags> framingToRegion;
 		private HashSet<ChestRegionFlags> displayCaseReplaceable;
