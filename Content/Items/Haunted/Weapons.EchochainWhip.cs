@@ -613,7 +613,7 @@ namespace StarlightRiver.Content.Items.Haunted
 		public override void SendExtraAI(BinaryWriter writer)
 		{
 			writer.Write(maxStabTimer);
-			writer.Write(Array.ConvertAll(chainFrames, b => (byte)b), 0, chainFrames.Length); // this should work i think?
+			writer.Write(Array.ConvertAll(chainFrames, b => (byte)b), 0, 17); // this should work i think?
 			writer.WriteVector2(tilePosition);
 			writer.Write(target.whoAmI);
 		}
@@ -621,9 +621,10 @@ namespace StarlightRiver.Content.Items.Haunted
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
 			maxStabTimer = reader.ReadInt32();
-			chainFrames = Array.ConvertAll(reader.ReadBytes(chainFrames.Length), i => (int)i);
+			chainFrames = Array.ConvertAll(reader.ReadBytes(17), i => (int)i);
 			tilePosition = reader.ReadVector2();
-			target = Main.npc.Where(n => n.whoAmI == reader.ReadInt32()).FirstOrDefault(); // absolutely no clue if this is the correct way to do this
+			int whoAmI = reader.ReadInt32();
+			target = Main.npc.Where(n => n.whoAmI == whoAmI).FirstOrDefault(); // absolutely no clue if this is the correct way to do this
 		}
 	}	
 
