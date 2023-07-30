@@ -69,6 +69,8 @@ This is a major update, adding early multiplayer support, a bunch of Summoner co
  - Spawns during nighttime in the Corruption, a swarmer that tries to lunge at you with 6-10 of its other kin
 - New enemy: Loot Wraith
  - Spawns occasionally protecting chests, dropping Vengeful Spirit
+- New item: Enchanted Watering Can
+ - Spawns in underground chests, use it on a normal sapling to grow it into a big tree
 
 ## Multiplayer Compatibility:
 - Fixed Alican, Auroracle and Glassweaver causing softlocks in multiplayer
