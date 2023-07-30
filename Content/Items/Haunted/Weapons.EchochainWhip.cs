@@ -71,6 +71,11 @@ namespace StarlightRiver.Content.Items.Haunted
 			return true;
 		}
 
+		public override void HoldItem(Player player)
+		{
+			player.GetModPlayer<ControlsPlayer>().rightClickListener = true;
+		}
+
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();
@@ -303,7 +308,6 @@ namespace StarlightRiver.Content.Items.Haunted
 
 		private void UpdateHeldProjectile()
 		{
-			Owner.GetModPlayer<ControlsPlayer>().rightClickListener = true;
 			Owner.GetModPlayer<ControlsPlayer>().mouseListener = true;
 			Projectile.rotation = Owner.DirectionTo(OwnerMouse).ToRotation();
 
@@ -326,18 +330,18 @@ namespace StarlightRiver.Content.Items.Haunted
 				{
 					if (enemyTiles[i] != null && targets[i] != null && targets[i].active && Collision.CanHitLine(new Vector2(enemyTiles[i].Value.X * 16, enemyTiles[i].Value.Y * 16) + new Vector2(0f, -30f), 2, 2, targets[i].Center, 2, 2))
 					{
-						Vector2 pos = new Vector2(enemyTiles[i].Value.X * 16, enemyTiles[i].Value.Y * 16);
-
 						targetsToChain.Add(targets[i]);
-
-						int[] frames = new int[17];
-						for (int a = 0; a < frames.Length; a++) // populate array
-						{
-							frames[a] = Main.rand.Next(3);
-						}
 
 						if (Main.myPlayer == Owner.whoAmI)
 						{
+							Vector2 pos = new Vector2(enemyTiles[i].Value.X * 16, enemyTiles[i].Value.Y * 16);
+
+							int[] frames = new int[17];
+							for (int a = 0; a < frames.Length; a++) // populate array
+							{
+								frames[a] = Main.rand.Next(3);
+							}
+
 							EchochainWhipAltProjectileChain.targetToAssign = targets[i];
 							EchochainWhipAltProjectileChain.tilePositionToAssign = pos + new Vector2(0f, 15f);
 							EchochainWhipAltProjectileChain.chainFramesToAssign = frames;
@@ -489,7 +493,7 @@ namespace StarlightRiver.Content.Items.Haunted
 			else
 			{
 				Projectile.Center = Vector2.Lerp(Projectile.Center, tilePosition + new Vector2(0f, target.height > 25 ? -target.height : -25f), EaseBuilder.EaseQuarticIn.Ease((StabTimer - maxStabTimer * 0.25f) / (maxStabTimer * 0.75f)));
-				
+
 				if (target.knockBackResist > 0f)
 					target.Center = Projectile.Center - tilePosition.DirectionTo(target.Center) * 50f * (1f - progress);
 
@@ -499,7 +503,8 @@ namespace StarlightRiver.Content.Items.Haunted
 					Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact, Projectile.Center);
 					CameraSystem.shake += 4;
 
-					target.SimpleStrikeNPC(Projectile.damage * 2, 0);
+					if (Main.myPlayer == Owner.whoAmI)
+						target.SimpleStrikeNPC(Projectile.damage * 2, 0);
 
 					for (int i = 0; i < 20; i++)
 					{
@@ -548,7 +553,7 @@ namespace StarlightRiver.Content.Items.Haunted
 				}
 			}
 
-			target.velocity += tilePosition.DirectionTo(target.Center) * 5f;
+			target.velocity += tilePosition.DirectionTo(target.Center) * 5f * target.knockBackResist;
 
 			Helper.PlayPitched("Impacts/StabTiny", 1f, 0f, Projectile.Center);
 		}
@@ -613,18 +618,19 @@ namespace StarlightRiver.Content.Items.Haunted
 		public override void SendExtraAI(BinaryWriter writer)
 		{
 			writer.Write(maxStabTimer);
-			writer.Write(Array.ConvertAll(chainFrames, b => (byte)b), 0, 17); // this should work i think?
+			writer.Write(Array.ConvertAll(chainFrames, b => (byte)b), 0, 17);
 			writer.WriteVector2(tilePosition);
 			writer.Write(target.whoAmI);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
-			maxStabTimer = reader.ReadInt32();
+			maxStabTimer = reader.ReadSingle();
 			chainFrames = Array.ConvertAll(reader.ReadBytes(17), i => (int)i);
 			tilePosition = reader.ReadVector2();
 			int whoAmI = reader.ReadInt32();
-			target = Main.npc[whoAmI]; // absolutely no clue if this is the correct way to do this
+
+			target = Main.npc[whoAmI];
 		}
 	}	
 
