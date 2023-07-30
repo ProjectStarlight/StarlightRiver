@@ -23,6 +23,7 @@
 
 ## Content
 - New tool: Enchanted Watering Can
+- New Item: Large Acorn
 - New summoner weapon: Arms Dealer's Defense System
 - New summoner weapon: Haunted Dagger Staff
 - New summoner weapon: Starwood Sceptre
