@@ -7,6 +7,7 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -137,7 +138,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			// Remove invalid platforms from tracked platforms
 			platforms.RemoveAll(n => !n.active || !(n.ModNPC is IcePlatform || n.ModNPC is IcePlatformSmall || n.ModNPC is GoldPlatform));
 
-			if (platforms.Count < 15) // respawn platforms if not present
+			if (platforms.Count < 15 && Main.netMode != NetmodeID.MultiplayerClient) // respawn platforms if not present
 			{
 				RegeneratePlatforms();
 			}
@@ -192,7 +193,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				Player player = Main.player[k];
 
 				if (player.active && player.Hitbox.Intersects(new Rectangle((int)pos.X, (int)pos.Y, 104 * 16, (int)WaterLevel)))
+				{
+					if (!player.HasBuff(BuffType<Buffs.PrismaticDrown>()) && NPC.AnyNPCs(ModContent.NPCType<Content.Bosses.SquidBoss.SquidBoss>()))
+						player.Hurt(PlayerDeathReason.ByCustomReason("fell into the drink"), Main.masterMode ? 50 : Main.expertMode ? 20 : 10, 0);
+
 					player.AddBuff(BuffType<Buffs.PrismaticDrown>(), 4, false);
+				}
 			}
 
 			for (int k = 0; k < Main.maxItems; k++)

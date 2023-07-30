@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Dusts;
+using StarlightRiver.Content.Items.Haunted;
 using StarlightRiver.Content.Items.Misc;
 using System.Collections.Generic;
 using Terraria.Audio;

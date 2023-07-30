@@ -99,6 +99,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && State == 0)
 				State = 1; //when the altar is hit, make the BG rise out of the ground
 
+			//TODO: More elegant sync guarantee later perhaps, this should ensure backs always eventually exist in MP
+			if (Main.netMode == NetmodeID.Server && Main.GameUpdateCount % 60 == 0)
+				NPC.netUpdate = true;
+
 			if (State == 1)
 			{
 				Timer++;

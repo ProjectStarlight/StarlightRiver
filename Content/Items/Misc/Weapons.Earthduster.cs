@@ -12,6 +12,8 @@ namespace StarlightRiver.Content.Items.Misc
 {
 	public class Earthduster : MultiAmmoWeapon
 	{
+		public override string Texture => AssetDirectory.MiscItem + Name;
+
 		public override List<AmmoStruct> ValidAmmos => new()
 		{
 			new AmmoStruct(ItemID.SandBlock, ModContent.ProjectileType<SoilgunSandSoil>(), 2),
@@ -25,8 +27,6 @@ namespace StarlightRiver.Content.Items.Misc
 			new AmmoStruct(ItemID.MudBlock, ModContent.ProjectileType<SoilgunMudSoil>(), 3),
 		};
 
-		public override string Texture => AssetDirectory.MiscItem + Name;
-
 		public override void SetStaticDefaults()
 		{
 			Tooltip.SetDefault("Hold <left> to fire a rapid stream of earth\nCan use many different blocks as ammo, each with unique effects\n33% chance to not consume ammo");
@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SafeSetDefaults()
 		{
 			Item.DamageType = DamageClass.Ranged;
-			Item.damage = 25;
+			Item.damage = 6;
 			Item.width = 70;
 			Item.height = 40;
 			Item.useAnimation = Item.useTime = 5;
@@ -54,10 +54,11 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
-			Projectile proj = Projectile.NewProjectileDirect(source, position, velocity, ModContent.ProjectileType<EarthdusterHoldout>(), damage, knockback, player.whoAmI);
+			var proj = Projectile.NewProjectileDirect(source, position, velocity, ModContent.ProjectileType<EarthdusterHoldout>(), damage, knockback, player.whoAmI);
 
 			if (proj.ModProjectile is EarthdusterHoldout earthduster)
 				earthduster.SoilType = type;
+
 			return false;
 		}
 
@@ -206,7 +207,7 @@ namespace StarlightRiver.Content.Items.Misc
 						SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = -0.5f }, Owner.Center);
 						if (Main.myPlayer == Projectile.owner)
 						{
-							Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), armPos, Projectile.velocity * 1.5f, ModContent.ProjectileType<EarthdusterRing>(), 0, 0f, Owner.whoAmI, 15f);
+							var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), armPos, Projectile.velocity * 1.5f, ModContent.ProjectileType<EarthdusterRing>(), 0, 0f, Owner.whoAmI, 15f);
 
 							(proj.ModProjectile as EarthdusterRing).trailColorOutline = (GhostProj.ModProjectile as BaseSoilProjectile).RingOutsideColor;
 
@@ -318,12 +319,12 @@ namespace StarlightRiver.Content.Items.Misc
 			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
 			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
 
-			Vector2 offset = Vector2.Lerp(Vector2.Zero, Vector2.UnitY.RotatedBy(Projectile.rotation + (Owner.direction == -1 ? MathHelper.Pi : 0f)) * 13f, shots / (float)MAXSHOTS);
+			var offset = Vector2.Lerp(Vector2.Zero, Vector2.UnitY.RotatedBy(Projectile.rotation + (Owner.direction == -1 ? MathHelper.Pi : 0f)) * 13f, shots / (float)MAXSHOTS);
 			Main.spriteBatch.Draw(dirtTex, Projectile.Center + offset - Main.screenPosition, null, lightColor, Projectile.rotation, dirtTex.Size() / 2f, Projectile.scale, Owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
 
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2f, Projectile.scale, Owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
 
-			Color color = Color.Lerp(Color.Transparent, (GhostProj.ModProjectile as BaseSoilProjectile).RingInsideColor, shots / (float)MAXSHOTS);
+			var color = Color.Lerp(Color.Transparent, (GhostProj.ModProjectile as BaseSoilProjectile).RingInsideColor, shots / (float)MAXSHOTS);
 			//if (reloading)
 			//color = Color.Lerp(GetRingInsideColor(), Color.Transparent, ShootDelay / 90f);
 
@@ -477,7 +478,7 @@ namespace StarlightRiver.Content.Items.Misc
 			for (int i = 0; i < 33; i++) //TODO: Cache offsets, to improve performance
 			{
 				double rad = i / 32f * 6.28f;
-				Vector2 offset = new Vector2((float)Math.Sin(rad) * 0.3f, (float)Math.Cos(rad));
+				var offset = new Vector2((float)Math.Sin(rad) * 0.3f, (float)Math.Cos(rad));
 				offset *= radius;
 				offset = offset.RotatedBy(Projectile.velocity.ToRotation());
 				cache.Add(Projectile.Center + offset);
@@ -496,7 +497,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			trail2 ??= new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 10 * (1 - Progress), factor => trailColor);
 			float nextplace = 33f / 32f;
-			Vector2 offset = new Vector2((float)Math.Sin(nextplace), (float)Math.Cos(nextplace));
+			var offset = new Vector2((float)Math.Sin(nextplace), (float)Math.Cos(nextplace));
 			offset *= Radius;
 
 			trail.Positions = cache.ToArray();
@@ -510,9 +511,9 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Effect effect = Terraria.Graphics.Effects.Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
 
-			Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);

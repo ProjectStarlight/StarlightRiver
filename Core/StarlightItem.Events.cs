@@ -82,6 +82,13 @@ namespace StarlightRiver.Core
 			return base.OnPickup(Item, Player);
 		}
 
+		/// <summary>
+		/// Runs on all clients and server for left clicks only. 
+		/// However it's super unreliable w/ short clicks or autoreuse so its better to force clientside logic
+		/// </summary>
+		/// <param name="Item"></param>
+		/// <param name="Player"></param>
+		/// <returns></returns>
 		public delegate bool CanUseItemDelegate(Item Item, Player Player);
 		public static event CanUseItemDelegate CanUseItemEvent;
 		public override bool CanUseItem(Item Item, Player Player)

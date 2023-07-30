@@ -192,9 +192,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			}
 		}
 
-		public override void OnKill()
+		public override void HitEffect(NPC.HitInfo hit)
 		{
-			if (Main.netMode != NetmodeID.Server)
+			if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
 			{
 				for (int i = 0; i < 9; i++)
 				{
@@ -592,7 +592,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			for (int i = 0; i < 8; i++)
 			{
 				float rad = i * 6.28f / 8;
-				Vector2 offset = Vector2.UnitX.RotatedBy(rad) * distance;
+				Vector2 offset = Vector2.UnitX.RotatedBy(rad) * distance + NPC.netOffset;
 				Color color = Color.OrangeRed * (1.75f - sin) * 0.7f;
 
 				DrawConstruct(tex, null, spriteBatch, Main.screenPosition, color, offset, false);

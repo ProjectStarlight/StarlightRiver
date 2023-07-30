@@ -48,7 +48,7 @@ namespace StarlightRiver.Content.Items.Misc
 					BuffInflictor.Inflict<BarbedKnifeBleed>(target, 300);
 
 				if (Main.netMode == NetmodeID.MultiplayerClient)
-					Player.GetModPlayer<StarlightPlayer>().shouldSendHitPacket = true;
+					Player.GetModPlayer<StarlightPlayer>().SetHitPacketStatus(shouldRunProjMethods: false);
 			}
 		}
 

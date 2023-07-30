@@ -360,17 +360,15 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		{
 			if (pairedGrunt != default)
 				(pairedGrunt.ModNPC as FlyingGruntConstruct).attacking = true;
-		}
 
-		public override void OnKill()
-		{
-			if (Main.netMode != NetmodeID.Server)
+			if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
 			{
 				for (int i = 0; i < 9; i++)
 					Dust.NewDustPerfect(NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), DustType<Cinder>(), Main.rand.NextVector2Circular(3, 3), 0, new Color(255, 150, 50), Main.rand.NextFloat(0.75f, 1.25f)).noGravity = false;
 
 				for (int k = 1; k <= 12; k++)
 					Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("ConstructGore" + k).Type);
+
 			}
 		}
 
@@ -468,7 +466,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			for (int i = 0; i < 8; i++)
 			{
 				float rad = i * 6.28f / 8;
-				Vector2 offset = Vector2.UnitX.RotatedBy(rad) * distance;
+				Vector2 offset = Vector2.UnitX.RotatedBy(rad) * distance + NPC.netOffset;
 				Color color = Color.OrangeRed * (1.75f - sin) * 0.7f;
 				DrawComponents(false, Main.screenPosition, color, offset);
 			}
