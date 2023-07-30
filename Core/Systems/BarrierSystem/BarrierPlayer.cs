@@ -279,8 +279,6 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 			if (Player.timeSinceLastHit == 0 && Player.maxBarrier > 0) // probably close enough
 				Player.justHitWithBarrier = true; 
 
-			Main.NewText(Player.justHitWithBarrier);
-
 			if (Player.barrierDyeItem is null || Player.barrierDyeItem.type != dyeType)
 			{
 				var Item = new Item();
