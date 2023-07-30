@@ -22,11 +22,14 @@
 - Fixed missing starsight text for ankh chests
 
 ## Content
+- New material: Vengeful Spirit, dropped by ghosts
+- Some recipes have been updated to use Vengeful spirits instead of living blood
 - New tool: Enchanted Watering Can
 - New summoner weapon: Arms Dealer's Defense System
 - New summoner weapon: Haunted Dagger Staff
 - New summoner weapon: Starwood Sceptre
 - New summoner weapon: Heart Statue?
+- New summoner weapon: Echochain Whip
 - New summoner accessory: Artillery License
 - New summoner accessory: Manabond
 - New summoner accessory: Infernal Manabond
@@ -37,6 +40,8 @@
 - New summoner accessory: Watch Battery
 - New summoner accessory: Seaglass Lens
 - New summoner accessory: Exotic Timepiece
+- New summoner accessory: Haunted Amethyst
+- New summoner accessory: Stone of the Drowned
 - New summoner armor: Slime prince armor
 - New enemy: Gloom Slime
 - New enemy: Soul Nibbler
