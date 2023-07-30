@@ -266,7 +266,6 @@ namespace StarlightRiver.Content.Items.Haunted
 
 			if (Main.rand.NextBool(5))
 				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(15f, 15f), ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(2f, 2f) + Vector2.UnitY * -Main.rand.NextFloat(5f), 0, new Color(150, 255, 25), 0.2f);
-
 		}
 
 		private void UpdateDeathAnimation()
@@ -305,6 +304,7 @@ namespace StarlightRiver.Content.Items.Haunted
 		private void UpdateHeldProjectile()
 		{
 			Owner.GetModPlayer<ControlsPlayer>().rightClickListener = true;
+			Owner.GetModPlayer<ControlsPlayer>().mouseListener = true;
 			Projectile.rotation = Owner.DirectionTo(OwnerMouse).ToRotation();
 
 			if (!CanHold)
@@ -624,7 +624,7 @@ namespace StarlightRiver.Content.Items.Haunted
 			chainFrames = Array.ConvertAll(reader.ReadBytes(17), i => (int)i);
 			tilePosition = reader.ReadVector2();
 			int whoAmI = reader.ReadInt32();
-			target = Main.npc.Where(n => n.whoAmI == whoAmI).FirstOrDefault(); // absolutely no clue if this is the correct way to do this
+			target = Main.npc[whoAmI]; // absolutely no clue if this is the correct way to do this
 		}
 	}	
 
