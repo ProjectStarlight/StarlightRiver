@@ -22,6 +22,7 @@
 - Fixed missing starsight text for ankh chests
 
 ## Content
+- New tool: Enchanted Watering Can
 - New summoner weapon: Arms Dealer's Defense System
 - New summoner weapon: Haunted Dagger Staff
 - New summoner weapon: Starwood Sceptre
@@ -73,6 +74,7 @@
 - Empty prep station slots now say which type of ingredient goes there
 - Alican's cutscene camera more accurately predicts his fall
 - Updated numerous sprites
+- Updated stack size of placeables
 
 ## Balance
 - Starlight regeneration has recieved a large overhaul
