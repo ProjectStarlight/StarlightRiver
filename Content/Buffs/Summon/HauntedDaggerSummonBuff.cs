@@ -1,4 +1,4 @@
-﻿using StarlightRiver.Content.Items.Jungle;
+﻿using StarlightRiver.Content.Items.Haunted;
 
 namespace StarlightRiver.Content.Buffs.Summon
 {

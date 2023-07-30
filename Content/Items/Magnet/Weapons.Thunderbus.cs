@@ -1,4 +1,4 @@
-﻿using StarlightRiver.Content.Items.Gravedigger;
+﻿using StarlightRiver.Content.Items.Haunted;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;

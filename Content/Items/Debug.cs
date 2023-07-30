@@ -1,5 +1,6 @@
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Events;
+using StarlightRiver.Content.Items.Haunted;
 using StarlightRiver.Core.Systems;
 using Terraria.ID;
 
@@ -42,13 +43,15 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
-			StarlightEventSequenceSystem.sequence = 0;
+			/*StarlightEventSequenceSystem.sequence = 0;
 			player.GetHandler().unlockedAbilities.Clear();
 			player.GetHandler().InfusionLimit = 0;
 
 			Main.time = 53999;
 			Main.dayTime = true;
-			StarlightEventSequenceSystem.willOccur = true;
+			StarlightEventSequenceSystem.willOccur = true;*/
+
+			Dust.NewDustPerfect(Main.MouseWorld, ModContent.DustType<EchochainBurstDust>(), Vector2.Zero, 0, default, 1f);
 
 			return true;
 		}

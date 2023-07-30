@@ -9,11 +9,11 @@ using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Items.Jungle
+namespace StarlightRiver.Content.Items.Haunted
 {
 	public class HauntedDaggerStaff : ModItem
 	{
-		public override string Texture => AssetDirectory.JungleItem + Name;
+		public override string Texture => AssetDirectory.HauntedItem + Name;
 
 		public override void SetStaticDefaults()
 		{
@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Items.Jungle
 			Item.useTime = 36;
 			Item.useAnimation = 36;
 			Item.useStyle = ItemUseStyleID.Swing;
-			Item.value = Item.buyPrice(silver: 50);
+			Item.value = Item.buyPrice(gold: 1);
 			Item.rare = ItemRarityID.Blue;
 			Item.UseSound = SoundID.Item44;
 
@@ -64,7 +64,7 @@ namespace StarlightRiver.Content.Items.Jungle
 
 			recipe.AddIngredient(ItemID.RichMahogany, 30);
 			recipe.AddIngredient(ItemID.GoldBar, 15);
-			recipe.AddIngredient(ItemID.JungleSpores, 10);
+			recipe.AddIngredient<VengefulSpirit>(10);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
 
@@ -72,7 +72,7 @@ namespace StarlightRiver.Content.Items.Jungle
 
 			recipe.AddIngredient(ItemID.RichMahogany, 30);
 			recipe.AddIngredient(ItemID.PlatinumBar, 15);
-			recipe.AddIngredient(ItemID.JungleSpores, 10);
+			recipe.AddIngredient<VengefulSpirit>(10);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
 		}
@@ -96,7 +96,7 @@ namespace StarlightRiver.Content.Items.Jungle
 			for (int i = 0; i < Main.maxProjectiles; i++)
 			{
 				Projectile proj = Main.projectile[i];
-				HauntedDaggerProjectile dagger = proj.ModProjectile as HauntedDaggerProjectile;
+				var dagger = proj.ModProjectile as HauntedDaggerProjectile;
 
 				if (proj.active && dagger != null && dagger.TargetWhoAmI == npc.whoAmI && dagger.Embedded)
 					dagger.Unembed(false, npc);
@@ -208,7 +208,7 @@ namespace StarlightRiver.Content.Items.Jungle
 					Projectile proj = Main.projectile.Where(p => p.active && p.type == Type && p.owner == Projectile.owner && p.minionPos == 0).FirstOrDefault();
 					if (proj != null)
 					{
-						HauntedDaggerProjectile dagger = proj.ModProjectile as HauntedDaggerProjectile;
+						var dagger = proj.ModProjectile as HauntedDaggerProjectile;
 						if (dagger != null)
 							return dagger.lifetime;
 					}
@@ -218,7 +218,7 @@ namespace StarlightRiver.Content.Items.Jungle
 			}
 		}
 
-		public override string Texture => AssetDirectory.JungleItem + Name;
+		public override string Texture => AssetDirectory.HauntedItem + Name;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Haunted Dagger");
@@ -310,9 +310,9 @@ namespace StarlightRiver.Content.Items.Jungle
 				{
 					DoIdleMovement();
 
-					rotTimer += (int)MathHelper.Lerp(1f, 50f, EaseBuilder.EaseCubicIn.Ease(attackTimer / 45f));
+					rotTimer += (int)MathHelper.Lerp(1f, 50f, EaseFunction.EaseCubicIn.Ease(attackTimer / 45f));
 
-					float lerper = MathHelper.Lerp(30f, 2f, EaseBuilder.EaseCubicIn.Ease(attackTimer / 45f));
+					float lerper = MathHelper.Lerp(30f, 2f, EaseFunction.EaseCubicIn.Ease(attackTimer / 45f));
 					if (Main.rand.NextBool(3))
 						Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2CircularEdge(lerper, lerper), ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(0.25f, 0.25f), 0, new Color(70, 200, 100), 0.5f);
 				}
@@ -473,7 +473,7 @@ namespace StarlightRiver.Content.Items.Jungle
 
 		internal void DoIdleMovement()
 		{
-			float totalCount = Owner.ownedProjectileCounts[Type] > 0 ? (float)Owner.ownedProjectileCounts[Type] : 1;
+			float totalCount = Owner.ownedProjectileCounts[Type] > 0 ? Owner.ownedProjectileCounts[Type] : 1;
 
 			Vector2 idlePos = Owner.Center + new Vector2(0f, -100) + new Vector2(0, 35).RotatedBy(MathHelper.ToRadians(Projectile.minionPos / totalCount * 360f + (Projectile.minionPos == totalCount ? 360f / totalCount : 0f)) + MathHelper.ToRadians(Lifetime));
 
