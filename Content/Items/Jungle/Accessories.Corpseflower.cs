@@ -20,8 +20,6 @@ namespace StarlightRiver.Content.Items.Jungle
 
 		public Corpseflower() : base(ModContent.Request<Texture2D>(AssetDirectory.JungleItem + "Corpseflower").Value) { }
 
-		private static Hook SendDataHook;
-
 		private static bool skipSendData = false;
 
 		public override void Load()
