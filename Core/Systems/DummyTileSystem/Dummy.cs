@@ -26,7 +26,7 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 
 		public virtual bool ValidTile(Tile tile)
 		{
-			return tile.TileType == validType && tile.HasTile; //the tile is null only where tiles are unloaded in multiPlayer. We don't want to kill off dummies on unloaded tiles until tile is known because Projectile is recieved MUCH farther than the tiles.
+			return tile.TileType == validType && tile.HasTile;
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -84,7 +84,7 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 
 		public sealed override void AI()
 		{
-			if (ValidTile(Parent))
+			if (ValidTile(Parent) || Main.netMode == NetmodeID.MultiplayerClient) //multiplayer clients aren't allowed to kill dummies since they can have unloaded tiles
 				Projectile.timeLeft = 2;
 
 			if (Main.netMode == NetmodeID.MultiplayerClient)

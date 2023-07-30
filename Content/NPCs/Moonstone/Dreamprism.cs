@@ -185,19 +185,22 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			NPC.frame = new Rectangle(0, yFrame * frameHeight, NPC.width, frameHeight);
 		}
 
-		public override void OnKill()
+		public override void HitEffect(NPC.HitInfo hit)
 		{
-			for (int i = 1; i < 5; i++)
+			if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
 			{
-				float angle = i / 4f * 6.28f + rockRotation;
-				Vector2 offset = (angle.ToRotationVector2() * new Vector2(30, 10)).RotatedBy(0.3f * Math.Sin(rockRotation * 0.2f));
+				for (int i = 1; i < 5; i++)
+				{
+					float angle = i / 4f * 6.28f + rockRotation;
+					Vector2 offset = (angle.ToRotationVector2() * new Vector2(30, 10)).RotatedBy(0.3f * Math.Sin(rockRotation * 0.2f));
 
-				Gore.NewGoreDirect(NPC.GetSource_FromThis(), NPC.Center + offset, Main.rand.NextVector2Circular(2, 2), Mod.Find<ModGore>("Dreamprism_Rock" + i.ToString()).Type);
-			}
+					Gore.NewGoreDirect(NPC.GetSource_FromThis(), NPC.Center + offset, Main.rand.NextVector2Circular(2, 2), Mod.Find<ModGore>("Dreamprism_Rock" + i.ToString()).Type);
+				}
 
-			for (int j = 1; j < 6; j++)
-			{
-				Gore.NewGoreDirect(NPC.GetSource_FromThis(), NPC.Center + Main.rand.NextVector2Circular(10, 30), Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("Dreamprism_Gore" + j.ToString()).Type);
+				for (int j = 1; j < 6; j++)
+				{
+					Gore.NewGoreDirect(NPC.GetSource_FromThis(), NPC.Center + Main.rand.NextVector2Circular(10, 30), Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("Dreamprism_Gore" + j.ToString()).Type);
+				}
 			}
 		}
 

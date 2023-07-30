@@ -120,8 +120,8 @@ namespace StarlightRiver
 
 			if (!Main.dedServ)
 			{
-				Instance = null;
-				AbilityKeys.Unload();
+				Instance ??= null;
+				AbilityKeys?.Unload();
 
 				SLRSpawnConditions.Unload();
 			}

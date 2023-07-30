@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using Terraria.Graphics.Effects;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
@@ -100,6 +101,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
+			if (Main.netMode == NetmodeID.Server) //no caches on the server
+				return base.Colliding(projHitbox, targetHitbox);
+
 			for (int k = 5; k < cache.Count; k++)
 			{
 				var hitbox = new Rectangle((int)cache[k].X - k / 2, (int)cache[k].Y - k / 2, k, k);

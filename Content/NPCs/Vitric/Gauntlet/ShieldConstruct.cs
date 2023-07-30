@@ -15,8 +15,12 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		private const int XFRAMES = 2;
 		private const int MAXSTACK = 4; //How many shielders can stack
 
-		public int bounceCooldown = 0;
-		private float timer = 0;
+		public ref float Timer => ref NPC.ai[0];
+		public ref float MaxSpeed => ref NPC.ai[1];
+		public ref float Acceleration => ref NPC.ai[2];
+		public ref float TimerTickSpeed => ref NPC.ai[3];
+
+		public float bounceCooldown = 0;
 
 		private Vector2 shieldOffset;
 
@@ -32,17 +36,13 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		public int stackCooldown = 0;
 		public Vector2 stackOffset = Vector2.Zero; //The offset of the stacker when they first land
 
-		private float maxSpeed = 2;
-		private float acceleration = 0.2f;
-		private float timerTickSpeed = 1;
-
 		private int savedDirection = 1;
 
 		private int ExplosionTimer = 120;
 
 		private Player Target => Main.player[NPC.target];
 
-		public bool Guarding => timer > 260;
+		public bool Guarding => Timer > 260;
 
 		public override string Texture => AssetDirectory.GauntletNpc + "ShieldConstruct";
 
@@ -71,10 +71,10 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		public override void OnSpawn(IEntitySource source)
 		{
 			FindFrame(56);
-			maxSpeed = Main.rand.NextFloat(1f, 1.25f);
-			acceleration = Main.rand.NextFloat(0.12f, 0.25f);
-			timerTickSpeed = Main.rand.NextFloat(0.85f, 1f);
-			timer = Main.rand.Next(100);
+			MaxSpeed = Main.rand.NextFloat(1f, 1.25f);
+			Acceleration = Main.rand.NextFloat(0.12f, 0.25f);
+			TimerTickSpeed = Main.rand.NextFloat(0.85f, 1f);
+			Timer = Main.rand.Next(100);
 		}
 
 		public override void SafeAI()
@@ -99,12 +99,12 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			if (StackingComboLogic())
 				return;
 
-			if (timer < 300 || timer >= 400)
-				timer += timerTickSpeed;
+			if (Timer < 300 || Timer >= 400)
+				Timer += TimerTickSpeed;
 
-			timer %= 500;
+			Timer %= 500;
 
-			if (timer > 200)
+			if (Timer > 200)
 			{
 				float shieldAnimationProgress;
 				xFrame = 1;
@@ -115,20 +115,20 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 				NPC.spriteDirection = savedDirection;
 
-				if (timer < 400)
+				if (Timer < 400)
 				{
-					if (timer < 250) //Shield Raising, preparing to slam
+					if (Timer < 250) //Shield Raising, preparing to slam
 					{
-						shieldAnimationProgress = EaseFunction.EaseCubicInOut.Ease((timer - 200) / 50f);
+						shieldAnimationProgress = EaseFunction.EaseCubicInOut.Ease((Timer - 200) / 50f);
 						shieldOffset = up * shieldAnimationProgress;
 					}
-					else if (timer <= 260) //Shield lowering towards the ground
+					else if (Timer <= 260) //Shield lowering towards the ground
 					{
-						shieldAnimationProgress = EaseFunction.EaseQuarticIn.Ease((timer - 250) / 10f);
+						shieldAnimationProgress = EaseFunction.EaseQuarticIn.Ease((Timer - 250) / 10f);
 						shieldOffset = Vector2.Lerp(up, down, shieldAnimationProgress);
 					}
 
-					if ((int)timer == 260) //Shield hits the ground
+					if ((int)Timer == 260 && Main.netMode != NetmodeID.Server) //Shield hits the ground
 					{
 						Helper.PlayPitched("GlassMiniboss/GlassSmash", 0.5f, 0.3f, NPC.Center);
 						CameraSystem.shake += 4;
@@ -142,26 +142,26 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				}
 				else
 				{
-					if (timer < 464) //Shield slowly sliding out of the ground
+					if (Timer < 464) //Shield slowly sliding out of the ground
 					{
-						shieldAnimationProgress = EaseFunction.EaseQuadIn.Ease((timer - 400) / 64f);
+						shieldAnimationProgress = EaseFunction.EaseQuadIn.Ease((Timer - 400) / 64f);
 						shieldOffset = Vector2.Lerp(down, new Vector2(0, 4), shieldAnimationProgress);
 					}
-					else if (timer < 470) //Shield jolts out of the ground
+					else if (Timer < 470) //Shield jolts out of the ground
 					{
-						shieldAnimationProgress = EaseFunction.EaseQuadOut.Ease((timer - 464) / 6f);
+						shieldAnimationProgress = EaseFunction.EaseQuadOut.Ease((Timer - 464) / 6f);
 						shieldOffset = Vector2.Lerp(new Vector2(0, 4), up, shieldAnimationProgress);
 					}
 					else //Shield lowers back into place
 					{
-						shieldAnimationProgress = EaseFunction.EaseQuinticInOut.Ease((timer - 470) / 30f);
+						shieldAnimationProgress = EaseFunction.EaseQuinticInOut.Ease((Timer - 470) / 30f);
 						shieldOffset = up * (1 - shieldAnimationProgress);
 					}
 
-					if ((int)timer == 421)
+					if ((int)Timer == 421)
 						Helper.PlayPitched("StoneSlide", 0.5f, -1f, NPC.Center);
 
-					if ((int)timer == 464) //Shield exits the ground
+					if ((int)Timer == 464 && Main.netMode != NetmodeID.Server) //Shield exits the ground
 					{
 						CameraSystem.shake += 2;
 
@@ -173,8 +173,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 					}
 				}
 
-				if (Guarding && (Math.Sign(NPC.Center.DirectionTo(Target.Center).X) != NPC.spriteDirection || NPC.Distance(Target.Center) > 350) && timer < 400)
-					timer = 400;
+				if (Guarding && (Math.Sign(NPC.Center.DirectionTo(Target.Center).X) != NPC.spriteDirection || NPC.Distance(Target.Center) > 350) && Timer < 400)
+					Timer = 400;
 
 				NPC.velocity.X *= 0.9f;
 				return;
@@ -284,9 +284,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			}
 		}
 
-		public override void OnKill()
+		public override void HitEffect(NPC.HitInfo hit)
 		{
-			if (Main.netMode != NetmodeID.Server)
+			if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
 			{
 				for (int i = 0; i < 12; i++)
 				{
@@ -314,7 +314,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			for (int i = 0; i < 8; i++)
 			{
 				float rad = i * 6.28f / 8;
-				Vector2 offset = Vector2.UnitX.RotatedBy(rad) * distance;
+				Vector2 offset = Vector2.UnitX.RotatedBy(rad) * distance + NPC.netOffset;
 				Color color = Color.OrangeRed * (1.75f - sin) * 0.7f;
 
 				DrawConstruct(tex, shieldTex, null, spriteBatch, Main.screenPosition, color, offset, false);
@@ -338,8 +338,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 			int velDir = Math.Sign(xPosToBe - NPC.Center.X);
 
-			NPC.velocity.X += acceleration * velDir;
-			NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -maxSpeed, maxSpeed);
+			NPC.velocity.X += Acceleration * velDir;
+			NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -MaxSpeed, MaxSpeed);
 
 			if (NPC.velocity.Y == 0)
 			{
@@ -424,7 +424,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 			NPC.spriteDirection = stackPartnerBelow.spriteDirection;
 			stacksLeft = partnerModNPC.stacksLeft - 1;
-			timer = 0;
+			Timer = 0;
 			shieldOffset = Vector2.Zero;
 			xFrame = 1;
 

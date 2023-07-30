@@ -82,6 +82,13 @@ namespace StarlightRiver.Core
 			return base.OnPickup(Item, Player);
 		}
 
+		/// <summary>
+		/// Runs on all clients and server for left clicks only. 
+		/// However it's super unreliable w/ short clicks or autoreuse so its better to force clientside logic
+		/// </summary>
+		/// <param name="Item"></param>
+		/// <param name="Player"></param>
+		/// <returns></returns>
 		public delegate bool CanUseItemDelegate(Item Item, Player Player);
 		public static event CanUseItemDelegate CanUseItemEvent;
 		public override bool CanUseItem(Item Item, Player Player)
@@ -197,6 +204,32 @@ namespace StarlightRiver.Core
 			return base.UseItem(Item, Player);
 		}
 
+		public delegate float UseTimeMultiplierDelegate(Item item, Player player);
+		public static event UseTimeMultiplierDelegate UseTimeMultiplierEvent;
+		public override float UseTimeMultiplier(Item item, Player player)
+		{
+			float toReturn = 1;
+			foreach (UseTimeMultiplierDelegate del in UseTimeMultiplierEvent.GetInvocationList())
+			{
+				toReturn *= del(item, player);
+			}
+
+			return toReturn;
+		}
+
+		public delegate float UseAnimationMultiplierDelegate(Item item, Player player);
+		public static event UseAnimationMultiplierDelegate UseAnimationMultiplierEvent;
+		public override float UseAnimationMultiplier(Item item, Player player)
+		{
+			float toReturn = 1;
+			foreach (UseAnimationMultiplierDelegate del in UseAnimationMultiplierEvent.GetInvocationList())
+			{
+				toReturn *= del(item, player);
+			}
+
+			return toReturn;
+		}
+
 		public override void Unload()
 		{
 			ExtractinatorUseEvent = null;
@@ -211,6 +244,8 @@ namespace StarlightRiver.Core
 			CanAccessoryBeEquippedWithEvent = null;
 			ModifyItemLootEvent = null;
 			UseItemEvent = null;
+			UseTimeMultiplierEvent = null;
+			UseAnimationMultiplierEvent = null;
 		}
 	}
 }

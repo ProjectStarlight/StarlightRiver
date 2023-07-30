@@ -28,8 +28,8 @@ namespace StarlightRiver.Core.Loaders
 			On_Main.DrawProjectiles -= Main_DrawProjectiles;
 			On_Main.Update -= Main_Update;
 
-			projTarget = null;
-			tileTarget = null;
+			projTarget ??= null;
+			tileTarget ??= null;
 		}
 
 		private void Main_DrawProjectiles(On_Main.orig_DrawProjectiles orig, Main self)

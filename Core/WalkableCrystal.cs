@@ -61,6 +61,7 @@ namespace StarlightRiver.Core
 			Main.tileFrameImportant[Type] = true;
 			TileID.Sets.DrawsWalls[Type] = true;
 
+			TileObjectData.newTile.CoordinateWidth = 16;
 			TileObjectData.newTile.UsesCustomCanPlace = true;
 			TileObjectData.newTile.HookPlaceOverride = new PlacementHook(PostPlace, -1, 0, true);
 			TileObjectData.addTile(Type);

@@ -13,14 +13,17 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public void SpawnAnimation()
 		{
 			if (GlobalTimer == 1)
-				savedPoint = Arena.fakeBoss.Center;
+				savedPoint = Arena?.fakeBoss?.Center ?? Arena.NPC.Center;
 
 			if (GlobalTimer > 1 && GlobalTimer < 100)
 			{
 				NPC.Center = spawnPoint + new Vector2(0, 20);
 
-				float progress = Helper.BezierEase(GlobalTimer / 100f);
-				Arena.fakeBoss.Center = Vector2.Lerp(savedPoint, new Vector2(savedPoint.X, spawnPoint.Y), progress);
+				if (Arena?.fakeBoss != null)
+				{
+					float progress = Helper.BezierEase(GlobalTimer / 100f);
+					Arena.fakeBoss.Center = Vector2.Lerp(savedPoint, new Vector2(savedPoint.X, spawnPoint.Y), progress);
+				}
 			}
 
 			if (GlobalTimer == 300)
@@ -56,42 +59,49 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				CameraSystem.DoPanAnimation(440, NPC.Center + new Vector2(0, -600));
 			}
 
-			for (int k = 0; k < 4; k++) //each tenticle
+			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
-				if (GlobalTimer == 100)
+				for (int k = 0; k < 4; k++) //each tentacle
 				{
-					int x;
-					int y;
-					int xb;
-
-					switch (k) //I handle these manually to get them to line up with the window correctly
+					if (GlobalTimer == 100)
 					{
-						case 0: x = -270; y = 0; xb = -50; break;
-						case 1: x = -420; y = -100; xb = -20; break;
-						case 3: x = 270; y = 0; xb = 50; break;
-						case 2: x = 420; y = -100; xb = 20; break;
-						default: x = 0; y = 0; xb = 0; break;
+						int x;
+						int y;
+						int xb;
+
+						switch (k) //I handle these manually to get them to line up with the window correctly
+						{
+							case 0: x = -270; y = 0; xb = -50; break;
+							case 1: x = -420; y = -100; xb = -20; break;
+							case 3: x = 270; y = 0; xb = 50; break;
+							case 2: x = 420; y = -100; xb = 20; break;
+							default: x = 0; y = 0; xb = 0; break;
+						}
+
+						Tentacle.movementTargetToAssign = new Vector2((int)NPC.Center.X + x, (int)NPC.Center.Y - 500 - y);
+						Tentacle.offsetFromParentBodyToAssign = xb;
+						float timer = 120 + k * 20;
+						Tentacle.parentIdToAssign = NPC.whoAmI;
+						int i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X + x, (int)NPC.Center.Y - 50, NPCType<Tentacle>(), 0, 1, ai1: timer, ai2: k);
+
+						tentacles.Add(Main.npc[i]);
 					}
-
-					int i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X + x, (int)NPC.Center.Y - 50, NPCType<Tentacle>(), 0, 1, 0, k);
-					(Main.npc[i].ModNPC as Tentacle).Parent = this;
-					(Main.npc[i].ModNPC as Tentacle).movementTarget = new Vector2((int)NPC.Center.X + x, (int)NPC.Center.Y - 500 - y);
-					(Main.npc[i].ModNPC as Tentacle).offsetFromParentBody = xb;
-					(Main.npc[i].ModNPC as Tentacle).basePoint = Main.npc[i].Center + Vector2.UnitY * 10;
-					(Main.npc[i].ModNPC as Tentacle).Timer = 120 + k * 20;
-					(Main.npc[i].ModNPC as Tentacle).stalkWaviness = 0;
-					tentacles.Add(Main.npc[i]);
-
-					Main.npc[i].netUpdate = true;
 				}
+			}
 
+			for (int k = 0; k < 4; k++) //each tentacle
+			{
 				if (GlobalTimer == 100 + k * 30)
 				{
+					if (tentacles.Count != 4)
+						RebuildTentacles();
+
 					CameraSystem.shake += 5;
-					Helper.PlayPitched("ArenaHit", 0.5f, 1f, tentacles[k].Center);
+					if (tentacles.Count == 4) // Almost always skips the first sound in multiplayer but its better than crashing
+						Helper.PlayPitched("ArenaHit", 0.5f, 1f, tentacles[k].Center);
 				}
 
-				if (GlobalTimer > 100 + k * 30 && GlobalTimer <= 160 + k * 30)
+				if (GlobalTimer > 100 + k * 30 && GlobalTimer <= 160 + k * 30 && tentacles.Count == 4)
 				{
 					var tentacle = tentacles[k].ModNPC as Tentacle;
 					float progress = Helper.SwoopEase((GlobalTimer - (100 + k * 30)) / 60f);

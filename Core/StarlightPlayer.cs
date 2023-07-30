@@ -36,8 +36,8 @@ namespace StarlightRiver.Core
 
 		public static List<PlayerTicker> spawners = new();
 
-		public bool shouldSendHitPacket = false;
-		public OnHitPacket hitPacket = null;
+		protected bool shouldSendHitPacket = false;
+		public OnPlayerHitNPCPacket hitPacket = null;
 
 		public int Timer { get; private set; }
 
@@ -116,10 +116,23 @@ namespace StarlightRiver.Core
 		/// </summary>
 		/// <param name="proj"></param>
 		/// <param name="target"></param>
-		public void AddHitPacket(Projectile proj, NPC target)
+		protected void AddHitPacket(Projectile proj, NPC target)
 		{
-			if (Main.myPlayer == Player.whoAmI && Main.netMode == NetmodeID.MultiplayerClient)
-				hitPacket = new OnHitPacket(Player, proj, target);
+			hitPacket = new OnPlayerHitNPCPacket(Player, proj, target, false);
+		}
+		/// <summary>
+		/// sets a hit packet to be run at the end of the hit processing
+		/// </summary>
+		/// <param name="shouldRunProjMethods">determines whether the specific modprojectile onhit methods should be run. set to false if this is from the starlightplayer hook, true if you're setting this inside a projectile</param>
+		public void SetHitPacketStatus(bool shouldRunProjMethods)
+		{
+			if (Main.netMode == NetmodeID.MultiplayerClient && Player.whoAmI == Main.myPlayer)
+			{
+				shouldSendHitPacket = true;
+
+				if (shouldRunProjMethods)
+					hitPacket.SetRunProjMethods();
+			}
 		}
 
 		/// <summary>
@@ -130,7 +143,6 @@ namespace StarlightRiver.Core
 		{
 			if (shouldSendHitPacket && hitPacket != null && Main.myPlayer == Player.whoAmI && Main.netMode == NetmodeID.MultiplayerClient)
 			{
-
 				hitPacket.addHitInfo(hitInfo, damageDone);
 				hitPacket.Send(-1, Main.myPlayer, false);
 				shouldSendHitPacket = false;

@@ -28,4 +28,4 @@ Github issues should match the following format, for ease of organization and re
 ## Additional context and log files
 **Add any other context about the problem here.** 
 Please attach Client.Log for all single-player issues and both Cleint.log and Server.log (if the host) for all multiplayer issues.
-Log files are integral to identifying and fixing bugs and especially crashes. Please make sure you include the **ENTIRE LOG** and not just the final error message. Log files are usually found under `Documents\My Games\Terraria\ModLoader\Logs`
+Log files are integral to identifying and fixing bugs and especially crashes. Please make sure you include the **ENTIRE LOG** and not just the final error message. Log files are usually found under `Steam\steamapps\common\tModLoader\tModLoader-Logs`

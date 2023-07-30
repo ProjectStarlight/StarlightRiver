@@ -23,6 +23,10 @@ namespace StarlightRiver.Content.Archaeology.BuriedArtifacts
 
 	public class SandscriptArtifact : DesertArtifact
 	{
+		public override string TexturePath => AssetDirectory.DesertItem + "Sandscript";
+
+		public override int SparkleRate => 40;
+
 		public override Vector2 Size => new(30, 34);
 
 		public override float SpawnChance => 1f;

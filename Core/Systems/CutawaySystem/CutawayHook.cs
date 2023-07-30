@@ -27,8 +27,8 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 
 		public override void Unload()
 		{
-			cutaways = null;
-			cutawayTarget = null;
+			cutaways ??= null;
+			cutawayTarget ??= null;
 		}
 
 		private void ClearCutaways(On_WorldGen.orig_SaveAndQuit orig, Action callback)

@@ -89,7 +89,7 @@ namespace StarlightRiver.Core
 
 						for (int y = surface - Math.Min(xOff / 2 + noise + 5, 9); true; y++)
 						{
-							WorldGen.PlaceWall(k + x, y, WallType<LeafWall>());
+							WorldGen.PlaceWall(k + x, y, WallType<LeafWall>(), true);
 
 							if (y - surface > 20 || !WorldGen.InWorld(k + x, y + 1) || Main.tile[k + x, y + 1].WallType != 0)
 								break;
@@ -117,13 +117,13 @@ namespace StarlightRiver.Core
 
 					WorldGen.PlaceTile(x, y2, TileType<Palestone>(), true, true); //Kills and places palestone
 
-					WorldGen.SlopeTile(x, y2);
+					WorldGen.SlopeTile(x, y2, 0, true);
 
 					if (y2 == y - xSqr && xRel < width / 2 && WorldGen.genRand.NextBool(2) && !Main.tile[x, y2 - 1].HasTile) //Slopes only if exposed to air
-						WorldGen.SlopeTile(x, y2, 2);
+						WorldGen.SlopeTile(x, y2, 2, true);
 
 					if (y2 == y - xSqr && xRel > width / 2 && WorldGen.genRand.NextBool(2) && !Main.tile[x, y2 - 1].HasTile) //Slopes only if exposed to air
-						WorldGen.SlopeTile(x, y2, 1);
+						WorldGen.SlopeTile(x, y2, 1, true);
 				}
 			}
 		}

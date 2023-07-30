@@ -33,8 +33,8 @@ namespace StarlightRiver.Core.Systems.ForegroundSystem
 
 		public void Unload()
 		{
-			Foregrounds.ForEach(t => t.Unload());
-			Foregrounds = null;
+			Foregrounds?.ForEach(t => t.Unload());
+			Foregrounds ??= null;
 		}
 	}
 }

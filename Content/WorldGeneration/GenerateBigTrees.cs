@@ -12,7 +12,7 @@ namespace StarlightRiver.Core
 	{
 		private void BigTreeGen(GenerationProgress progress, GameConfiguration configuration)
 		{
-			progress.Message = "Planting the forest...";
+			progress.Message = "Planting big trees...";
 			for (int k = 60; k < Main.maxTilesX - 60; k++)
 			{
 				if (k > Main.maxTilesX / 3 && k < Main.maxTilesX / 3 * 2 && WorldGen.genRand.NextBool(9)) //inner part of the world
@@ -68,6 +68,14 @@ namespace StarlightRiver.Core
 
 			if (ty - height < 1)
 				return;
+
+			for (int x = -1; x < 3; x++)
+			{
+				for (int y = 0; y < (height + 4); y++)
+				{
+					WorldGen.KillTile(tx + x, ty - y);
+				}
+			}
 
 			Helper.PlaceMultitile(new Point16(tx - 1, ty - 3), TileType<ThickTreeBase>());
 

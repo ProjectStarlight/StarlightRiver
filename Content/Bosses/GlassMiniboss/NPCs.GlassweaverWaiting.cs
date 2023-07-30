@@ -1,6 +1,7 @@
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Vitric;
+using StarlightRiver.Content.Packets;
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using Terraria.ID;
@@ -17,6 +18,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public Player talkingTo;
 
+		public int TextState = 0; // Client based instead
+
 		public static Vector2 ArenaPos => StarlightWorld.vitricBiome.TopLeft() * 16 + new Vector2(0, 80 * 16) + new Vector2(0, 256);
 
 		public override string Texture => AssetDirectory.Glassweaver + Name;
@@ -24,7 +27,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		public ref float Timer => ref NPC.ai[0];
 		public ref float State => ref NPC.ai[1];
 		public ref float VisualTimer => ref NPC.ai[2];
-		public ref float TextState => ref NPC.ai[3];
 
 		public override void SetStaticDefaults()
 		{
@@ -59,18 +61,21 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			if (State < 0 || State > 5)
 				State = StarlightWorld.HasFlag(WorldFlags.GlassweaverDowned) ? 3 : 0;
 
-			if (talkingTo != null && Vector2.Distance(talkingTo.Center, NPC.Center) > 2000)
+			if (Main.netMode != NetmodeID.Server) // Client based stuff
 			{
-				talkingTo = null;
-				TextState = 0;
-				RichTextBox.CloseDialogue();
-			}
+				if (talkingTo != null && Vector2.Distance(talkingTo.Center, NPC.Center) > 2000)
+				{
+					talkingTo = null;
+					TextState = 0;
+					RichTextBox.CloseDialogue();
+				}
 
-			if (talkingTo != null && talkingTo.TalkNPC != NPC)
-			{
-				talkingTo = null;
-				TextState = 0;
-				RichTextBox.CloseDialogue();
+				if (talkingTo != null && talkingTo.TalkNPC != NPC)
+				{
+					talkingTo = null;
+					TextState = 0;
+					RichTextBox.CloseDialogue();
+				}
 			}
 
 			if (State == 0 || State >= 2)
@@ -115,6 +120,18 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					State = 2;
 				}
 			}
+		}
+
+		public override bool CheckActive()
+		{
+			if (Main.netMode == NetmodeID.MultiplayerClient && !NPC.active) // Close any dialogs if the npc is inactive.
+			{
+				talkingTo = null;
+				TextState = 0;
+				RichTextBox.CloseDialogue();
+			}
+
+			return true;
 		}
 
 		private string GetIntroDialogue()
@@ -193,6 +210,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override string GetChat()
 		{
+			if (Main.netMode == NetmodeID.Server) // Dialog only for client or in singleplayer.
+				return "";
+
 			talkingTo = Main.LocalPlayer;
 
 			if (State == 0) //Waiting at entrance
@@ -222,8 +242,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 									RichTextBox.AddButton("\"See you around.\"", () =>
 									{
-										State = 1;
-										Timer = 0;
+										GlassweaverWaitingPacket statusPacket = new GlassweaverWaitingPacket(newState: 1, newTimer: 0, npcWhoAmI: NPC.whoAmI);
+										statusPacket.Send();
 
 										RichTextBox.CloseDialogue();
 									});
@@ -239,9 +259,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 				RichTextBox.AddButton("\"I'm ready.\"", () =>
 				{
-					NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<Glassweaver>());
 					RichTextBox.CloseDialogue();
-					NPC.active = false;
+
+					SacrificeNPCPacket nPacket = new SacrificeNPCPacket((int)NPC.Center.X, (int)NPC.Center.Y, NPCType<Glassweaver>(), NPC.whoAmI);
+					nPacket.Send();
 				});
 
 				RichTextBox.AddButton("Close", RichTextBox.CloseDialogue);
@@ -257,7 +278,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 						RichTextBox.ClearButtons();
 
 						(Main.LocalPlayer.QuickSpawnItemDirect(NPC.GetSource_FromThis(), ItemType<ForgeMap>()).ModItem as ForgeMap).isEpic = true;
-						State = 4;
+						State = 4; //only gets set locally
 
 						RichTextBox.AddButton("\"Uhhh... What?\"", () =>
 						{
@@ -284,7 +305,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					else if (TextState == 2)
 					{
 						Main.LocalPlayer.QuickSpawnItemDirect(NPC.GetSource_FromThis(), ItemType<ForgeMap>());
-						State = 4;
+						State = 4; //only gets set locally
 					}
 				});
 			}
@@ -326,23 +347,25 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					}
 					else
 					{
-						Item.NewItem(NPC.GetSource_FromThis(), Main.LocalPlayer.Center, ItemType<Items.Vitric.TempleEntranceKey>());
+						Main.LocalPlayer.QuickSpawnItem(NPC.GetSource_FromThis(), ItemType<Items.Vitric.TempleEntranceKey>());
 						RichTextBox.CloseDialogue();
 					}
 				});
 
 				RichTextBox.AddButton("Rematch", () =>
 				{
-					NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<Glassweaver>());
 					RichTextBox.CloseDialogue();
-					NPC.active = false;
+
+					SacrificeNPCPacket nPacket = new SacrificeNPCPacket((int)NPC.Center.X, (int)NPC.Center.Y, NPCType<Glassweaver>(), NPC.whoAmI);
+					nPacket.Send();
 				});
 
 				RichTextBox.AddButton("See you later", () =>
 				{
 					RichTextBox.CloseDialogue();
-					State = 5;
+
 					Timer = 0;
+					State = 5; //only gets set locally
 				});
 			}
 
@@ -365,7 +388,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				{
 					TextState++;
 					RichTextBox.SetData(NPC, "Glassweaver", GetWinDialogue());
-					Item.NewItem(NPC.GetSource_FromThis(), Main.LocalPlayer.Center, ItemType<Items.Vitric.TempleEntranceKey>());
+					Main.LocalPlayer.QuickSpawnItem(NPC.GetSource_FromThis(), ItemType<Items.Vitric.TempleEntranceKey>());
 
 					RichTextBox.ClearButtons();
 
@@ -377,7 +400,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 						}
 						else
 						{
-							Item.NewItem(NPC.GetSource_FromThis(), Main.LocalPlayer.Center, ItemType<Items.Vitric.TempleEntranceKey>());
+							Main.LocalPlayer.QuickSpawnItem(NPC.GetSource_FromThis(), ItemType<Items.Vitric.TempleEntranceKey>());
 							RichTextBox.CloseDialogue();
 						}
 					});
@@ -387,8 +410,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 						StarlightWorld.Flag(WorldFlags.GlassweaverDowned);
 
 						RichTextBox.CloseDialogue();
-						State = 5;
+
 						Timer = 0;
+						State = 5; //only gets set locally
 					});
 				});
 			}

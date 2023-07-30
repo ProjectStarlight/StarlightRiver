@@ -1,11 +1,13 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Packets;
 using StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.IO;
+using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
@@ -72,7 +74,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 
 		public override void Update()
 		{
-			if (rotating)
+			if (rotating) // this rotation is all done client side and then updated to other clients when key is released in one packet
 			{
 				if (Vector2.Distance(Main.MouseWorld, Projectile.Center) > 48)
 					Rotation += Helper.CompareAngle((Main.MouseWorld - Projectile.Center).ToRotation(), Rotation) * 0.1f;
@@ -83,11 +85,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 				if (!Main.mouseRight)
 				{
 					rotating = false;
-					FindEndpoint();
-					Projectile.netUpdate = true;
-
-					Parent.TileFrameX = (short)(Rotation / 6.28f * 3600);
-					Rotation = Parent.TileFrameX / 3600f * 6.28f;
+					LightPuzzleUpdatePacket puzzlePacket = new LightPuzzleUpdatePacket((int)(Projectile.position.X / 16), (int)(Projectile.position.Y / 16), Projectile.type, Rotation);
+					puzzlePacket.Send();
 				}
 			}
 			else
@@ -99,7 +98,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 			}
 		}
 
-		protected void FindEndpoint()
+		public void FindEndpoint()
 		{
 			for (int k = 2; k < 160; k++)
 			{
