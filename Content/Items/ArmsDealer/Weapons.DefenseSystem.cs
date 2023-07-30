@@ -236,6 +236,12 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 			Projectile.timeLeft = Projectile.SentryLifeTime;
 		}
 
+		public override void OnSpawn(IEntitySource source)
+		{
+			Owner.FindSentryRestingSpot(Projectile.whoAmI, out int worldX, out int worldY, out int pushYUp);
+			Projectile.position = new Vector2(worldX, worldY - pushYUp - 3);
+		}
+
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
 			return false;
@@ -283,14 +289,6 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 			// Find sentry position
 			if (Placed < 1)
 			{
-				if (Owner == Main.LocalPlayer)
-				{
-					Owner.FindSentryRestingSpot(Projectile.whoAmI, out int worldX, out int worldY, out int pushYUp);
-					Projectile.position = new Vector2(worldX, worldY - pushYUp - 3);
-
-					Projectile.netUpdate = true;
-				}
-
 				for (int k = 0; k < 20; k++)
 				{
 					Dust.NewDustPerfect(Projectile.Center + Vector2.UnitY * 24, ModContent.DustType<Dusts.BuzzSpark>(), Main.rand.NextVector2Circular(3, 3), 0, Color.Yellow);

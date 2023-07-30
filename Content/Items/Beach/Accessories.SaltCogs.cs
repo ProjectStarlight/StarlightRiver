@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Items.Beach
 		{
 			Player owner = Main.player[projectile.owner];
 
-			if (owner != null && Equipped(owner))
+			if (owner != null && Equipped(owner) && projectile.sentry)
 			{
 				if (projectile.timeLeft == (Projectile.SentryLifeTime - 1))
 					projectile.extraUpdates += 1;
@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Items.Beach
 		{
 			Player owner = Main.player[projectile.owner];
 
-			if (owner != null && Equipped(owner))
+			if (owner != null && Equipped(owner) && projectile.sentry)
 			{
 				if (projectile.timeLeft >= (Projectile.SentryLifeTime - COG_DURATION))
 				{
