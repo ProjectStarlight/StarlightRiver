@@ -46,12 +46,12 @@ namespace StarlightRiver.Core
 			return true;
 		}
 
-		private bool IsGround(int x, int y, int w)
+		public static bool IsGround(int x, int y, int w)
 		{
 			for (int k = 0; k < w; k++)
 			{
 				Tile tile = Framing.GetTileSafely(x + k, y);
-				if (!(tile.HasTile && tile.Slope == SlopeType.Solid && !tile.IsHalfBlock && (tile.TileType == TileID.Grass || tile.TileType == TileID.Dirt)))
+				if (!(tile.HasTile && tile.Slope == SlopeType.Solid && !tile.IsHalfBlock && (tile.TileType == TileID.Grass || tile.TileType == TileID.Dirt || tile.TileType == TileID.GolfGrass)))
 					return false;
 
 				Tile tile2 = Framing.GetTileSafely(x + k, y - 1);
@@ -62,7 +62,7 @@ namespace StarlightRiver.Core
 			return true;
 		}
 
-		private void PlaceTree(int tx, int ty, int height)
+		public static void PlaceTree(int tx, int ty, int height)
 		{
 			ty -= 1;
 
