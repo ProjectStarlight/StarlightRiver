@@ -42,8 +42,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override string Texture => AssetDirectory.Glassweaver + Name;
 
-		public override string BossHeadTexture => AssetDirectory.Glassweaver + Name + "_BossHead";
-
 		//Phase tracking utils
 		public enum Phases
 		{

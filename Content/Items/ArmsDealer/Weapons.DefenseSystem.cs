@@ -283,8 +283,13 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 			// Find sentry position
 			if (Placed < 1)
 			{
-				Owner.FindSentryRestingSpot(Projectile.whoAmI, out int worldX, out int worldY, out int pushYUp);
-				Projectile.position = new Vector2(worldX, worldY - pushYUp - 3);
+				if (Owner == Main.LocalPlayer)
+				{
+					Owner.FindSentryRestingSpot(Projectile.whoAmI, out int worldX, out int worldY, out int pushYUp);
+					Projectile.position = new Vector2(worldX, worldY - pushYUp - 3);
+
+					Projectile.netUpdate = true;
+				}
 
 				for (int k = 0; k < 20; k++)
 				{
