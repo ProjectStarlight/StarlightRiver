@@ -2964,6 +2964,32 @@ Mods: {
 					'''
 			}
 
+			EchochainWhip: {
+				DisplayName: Echochain
+				Tooltip:
+					'''
+					Chains enemies together, sharing summon damage between them
+					Hold and release <right> to chain enemies near you to the ground, chaining all effected enemies
+					'''
+			}
+
+			HauntedDaggerStaff: {
+				DisplayName: Haunted Dagger Staff
+				Tooltip:
+					'''
+					Summons haunted daggers, embedding themselves in your foes
+					Change summon targets or whip them to violently tear the daggers from their flesh
+					'These aren't enchanted... they're haunted!'
+					'It's different?'
+					'It's different.'
+					'''
+			}
+
+			VengefulSpirit: {
+				DisplayName: Vengeful Spirit
+				Tooltip: "'I don't think it likes you'"
+				"Drop Rule": Dropped after beating either King Slime, Eye of Cthulhu, or Auroracle
+			}
 			WatchBattery: {
 				DisplayName: Watch Battery
 				Tooltip: Your sentries shock nearby enemies when placed
@@ -3264,6 +3290,79 @@ Mods: {
 			VitricOreFloatDummy.DisplayName: ""
 			VitricSmallDummy.DisplayName: ""
 			VitricBannerDummy.DisplayName: ""
+			HintText.DisplayName: Hint Text
+			BurningGround.DisplayName: Burning Ground
+			GlassJavelin.DisplayName: Glass Javelin
+			GlassweaverDoor.DisplayName: Glassweaver Door
+			Glint.DisplayName: Glint
+			AuroraWaterSplash.DisplayName: Aurora Water Splash
+			DoorBomb.DisplayName: Door Bomb
+			Laser.DisplayName: Laser
+			CrystalWave.DisplayName: Crystal Wave
+			FireCone.DisplayName: Fire Cone
+			FireRingHostile.DisplayName: Fire Ring Hostile
+			FireRing.DisplayName: Fire Ring
+			GlassVolley.DisplayName: Glass Volley
+			GlassVolleyShard.DisplayName: Glass Volley Shard
+			SpikeMine.DisplayName: Spike Mine
+			VitricBomb.DisplayName: Vitric Bomb
+			LightningNode.DisplayName: Lightning Node
+			ScrapshotHook.DisplayName: Scrapshot Hook
+			AztecDeathSaxophoneSoundwave.DisplayName: Aztec Death Saxophone Soundwave
+			SandSlash.DisplayName: Sand Slash
+			TwistSwordProjectile.DisplayName: Twist Sword Projectile
+			Acorn.DisplayName: Acorn
+			MonkSpadeProjectile.DisplayName: Monk Spade Projectile
+			GeoAmethystProj.DisplayName: Geo Amethyst Proj
+			GeoDiamondProj.DisplayName: Geo Diamond Proj
+			GeoEmeraldProj.DisplayName: Geo Emerald Proj
+			GeoRubyProj.DisplayName: Geo Ruby Proj
+			GeoSapphireProj.DisplayName: Geo Sapphire Proj
+			GeoTopazProj.DisplayName: Geo Topaz Proj
+			ThunderbussBall.DisplayName: Thunderbuss Ball
+			AxeBookProjectile.DisplayName: Axe Book Projectile
+			BizarreLightning.DisplayName: Bizarre Lightning
+			BizarreLightningOrb.DisplayName: Bizarre Lightning Orb
+			BizarrePotionPoisonCloud.DisplayName: Bizarre Potion Poison Cloud
+			FryingPanThrownProj.DisplayName: Frying Pan Thrown Proj
+			GuillotineVFX.DisplayName: Guillotine V F X
+			HolyAmuletOrb.DisplayName: Holy Amulet Orb
+			SorcerwrenchProjectile.DisplayName: Sorcerwrench Projectile
+			SpearBookProjectile.DisplayName: Spear Book Projectile
+			SwordBookParry.DisplayName: Sword Book Parry
+			SwordBookProjectile.DisplayName: Sword Book Projectile
+			ThrownAxeProjectile.DisplayName: Thrown Axe Projectile
+			UltrapillBlood.DisplayName: Ultrapill Blood
+			DatsuzeiProjectile.DisplayName: Datsuzei Projectile
+			StarGlaive.DisplayName: Star Glaive
+			StarShuriken.DisplayName: Star Shuriken
+			AuroraThroneMountMinion.DisplayName: Aurora Throne Mount Minion
+			FrostballProjectile.DisplayName: Frostball Projectile
+			FrostExplosion.DisplayName: Frost Explosion
+			TentalanceProjectile.DisplayName: Tentalance Projectile
+			StarwoodSlingshotProj.DisplayName: Starwood Slingshot Proj
+			TemplePickProjectile.DisplayName: Temple Pick Projectile
+			TempleSpearLight.DisplayName: Temple Spear Light
+			LaserPointerProjectile.DisplayName: Laser Pointer Projectile
+			CoachGunUpgradeExplosion.DisplayName: Coach Gun Upgrade Explosion
+			MagmaBottleBurn.DisplayName: Magma Bottle Burn
+			MagmiteBombProjectile.DisplayName: Magmite Bomb Projectile
+			MagmiteBottleProjectile.DisplayName: Magmite Bottle Projectile
+			RefractiveBladeLaser.DisplayName: Refractive Blade Laser
+			RefractiveBladeProj.DisplayName: Refractive Blade Proj
+			VitricBowProjectile.DisplayName: Vitric Bow Projectile
+			VitricBowShard.DisplayName: Vitric Bow Shard
+			BossRushOrbGoreProjectile.DisplayName: Boss Rush Orb Gore Projectile
+			ConstructSpawner.DisplayName: Construct Spawner
+			GauntletSpawner.DisplayName: Gauntlet Spawner
+			SpawnEgg.DisplayName: Spawn Egg
+			SandscriptBook.DisplayName: Sandscript Book
+			RecursiveFocusLaser.DisplayName: Infernal Laser
+			GlassShard.DisplayName: Glass Shard
+			EchochainWhipProjectile.DisplayName: Echochain
+			HauntedDaggerProjectile.DisplayName: Haunted Dagger
+			EchochainWhipAltProjectile.DisplayName: Magmite Vacpack
+			EchochainWhipAltProjectileChain.DisplayName: Echo Chain
 			HeartStatueSentry.DisplayName: Heart Statue?
 			ManEaterPotMinion.DisplayName: Tamed Man Eater
 		}
@@ -3851,6 +3950,20 @@ Mods: {
 					'''
 			}
 
+			HauntedDaggerSummonBuff: {
+				DisplayName: Haunted Daggers
+				Description: Death by a hundred cuts
+			}
+
+			StarlightRiver/Assets/Invisible: {
+				DisplayName: Taking Damage
+				Description: Chained up...
+			}
+
+			EchochainDamageBuff: {
+				DisplayName: Taking Damage
+				Description: Chained up...
+				
 			HeartStatueDrain: {
 				DisplayName: Heart Siphon
 				Description: ""

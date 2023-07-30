@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.Gravedigger;
+using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -8,15 +9,15 @@ using System.IO;
 using System.Linq;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Items.Misc
+namespace StarlightRiver.Content.Items.Haunted
 {
 	public class TaintedGreataxe : CursedAccessory
 	{
 		public int ProjectileIndex;
 
-		public override string Texture => AssetDirectory.MiscItem + Name;
+		public override string Texture => AssetDirectory.HauntedItem + Name;
 
-		public TaintedGreataxe() : base(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "TaintedGreataxe").Value) { }
+		public TaintedGreataxe() : base(ModContent.Request<Texture2D>(AssetDirectory.HauntedItem + "TaintedGreataxe").Value) { }
 
 		public override void Load()
 		{
@@ -42,7 +43,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (!Equipped(player))
 				return;
 
-			TaintedGreataxe item = GetEquippedInstance(player) as TaintedGreataxe;
+			var item = GetEquippedInstance(player) as TaintedGreataxe;
 
 			if (Main.projectile[item.ProjectileIndex].ModProjectile is TaintedGreataxeProjectile greatAxe)
 			{
@@ -67,7 +68,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (!Equipped(player))
 				return;
 
-			TaintedGreataxe item = GetEquippedInstance(player) as TaintedGreataxe;
+			var item = GetEquippedInstance(player) as TaintedGreataxe;
 
 			if (Main.projectile[item.ProjectileIndex].ModProjectile is TaintedGreataxeProjectile greatAxe)
 			{
@@ -93,7 +94,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (!Equipped(player))
 				return;
 
-			TaintedGreataxe item = GetEquippedInstance(player) as TaintedGreataxe;
+			var item = GetEquippedInstance(player) as TaintedGreataxe;
 
 			if (Main.projectile[item.ProjectileIndex].ModProjectile is TaintedGreataxeProjectile greatAxe)
 			{
@@ -122,7 +123,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (!Equipped(player))
 				return;
 
-			TaintedGreataxe item = GetEquippedInstance(player) as TaintedGreataxe;
+			var item = GetEquippedInstance(player) as TaintedGreataxe;
 
 			if (Main.projectile[item.ProjectileIndex].ModProjectile is TaintedGreataxeProjectile greatAxe)
 			{
@@ -163,14 +164,14 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Recipe recipe = CreateRecipe();
 			recipe.AddIngredient<DullBlade>();
-			recipe.AddIngredient<LivingBlood>(10);
+			recipe.AddIngredient<VengefulSpirit>(10);
 			recipe.AddIngredient(ItemID.DemoniteBar, 10);
 			recipe.AddTile(TileID.DemonAltar);
 			recipe.Register();
 
 			recipe = CreateRecipe();
 			recipe.AddIngredient<DullBlade>();
-			recipe.AddIngredient<LivingBlood>(10);
+			recipe.AddIngredient<VengefulSpirit>(10);
 			recipe.AddIngredient(ItemID.CrimtaneBar, 10);
 			recipe.AddTile(TileID.DemonAltar);
 			recipe.Register();
@@ -193,7 +194,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public Player Owner => Main.player[Projectile.owner];
 
-		public override string Texture => AssetDirectory.MiscItem + Name;
+		public override string Texture => AssetDirectory.HauntedItem + Name;
 
 		public override void SetStaticDefaults()
 		{
