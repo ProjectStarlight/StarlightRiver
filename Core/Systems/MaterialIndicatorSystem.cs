@@ -8,6 +8,7 @@ namespace StarlightRiver.Core.Systems
 	internal class MaterialIndicatorSystem : ModSystem
 	{
 		public static List<int> slrMaterials = new ();
+
 		public override void PostSetupRecipes()
 		{
 			for (int i = 1; i < ItemLoader.ItemCount; i++)
@@ -29,13 +30,12 @@ namespace StarlightRiver.Core.Systems
 
 				if (recipe is not null && recipe.Mod == StarlightRiver.Instance &&
 				(recipe.HasIngredient(item.type) || recipe.acceptedGroups.Exists(x => GetRecipeGroup(x).ValidItems.Contains(item.type))))
-				{
 					return true;
-				}
 			}
 
 			return false;
 		}
+
 		private RecipeGroup GetRecipeGroup(int id)
 		{
 			if (RecipeGroup.recipeGroups.TryGetValue(id, out RecipeGroup value))
@@ -44,6 +44,7 @@ namespace StarlightRiver.Core.Systems
 			return null;
 		}
 	}
+
 	internal class AddIndicatorToTooltips : GlobalItem
 	{
 		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
@@ -65,6 +66,7 @@ namespace StarlightRiver.Core.Systems
 	internal class MaterialIndicatorIcon : ModItem
 	{
 		public override string Texture => AssetDirectory.GUI + "MaterialIndicator";
+
 		public override void SetStaticDefaults()
 		{
 			//ItemID.Sets.Deprecated[Item.type] = true; //This is what vanilla uses for items like SleepingIcon, but sadly chat tags can't be used with deprecated items
