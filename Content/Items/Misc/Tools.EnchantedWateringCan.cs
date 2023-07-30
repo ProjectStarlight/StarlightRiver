@@ -1,5 +1,5 @@
 ﻿using StarlightRiver.Content.Dusts.ArtifactSparkles;
-using StarlightRiver.Content.Tiles.Vitric;
+using StarlightRiver.Content.Tiles.Forest;
 using StarlightRiver.Helpers;
 using System;
 using Terraria.DataStructures;
@@ -8,7 +8,7 @@ using Terraria.ID;
 namespace StarlightRiver.Content.Items.Misc
 {
 	public class EnchantedWateringCan : ModItem
-	{//would also fit in forest namespace, but since its found underground its in misc instead
+	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
 		public override void SetStaticDefaults()
@@ -53,14 +53,13 @@ namespace StarlightRiver.Content.Items.Misc
 
 	internal class EnchantedWateringCanProj : ModProjectile
 	{
-		public override string Texture => AssetDirectory.MiscItem + "EnchantedWateringCanProj";
-
 		Player Owner => Main.player[Projectile.owner];
+
+		public override string Texture => AssetDirectory.MiscItem + "EnchantedWateringCanProj";
 
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Enchanted Watering Can");
-			//Main.projFrames[Projectile.type] = 1;
 		}
 
 		public override void SetDefaults()
@@ -68,9 +67,6 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.friendly = true;
 			Projectile.tileCollide = false;
 			Projectile.Size = new Vector2(104, 38);
-			//Projectile.penetrate = -1;
-			//Projectile.ownerHitCheck = true;
-			//Projectile.extraUpdates = 3;
 		}
 
 		public override void OnSpawn(IEntitySource source)
@@ -96,8 +92,8 @@ namespace StarlightRiver.Content.Items.Misc
 					new Vector2(8 * Projectile.spriteDirection, -6) + //offset to center
 					new Vector2(14 * Projectile.spriteDirection, 0).RotatedBy(
 						Projectile.rotation * 2 + 0.4f * Projectile.spriteDirection),
-				/*DustID.BlueFairy,*/ DustID.Water,
-				/*Vector2.Zero, default, default, 0.3f);*/ new Vector2(Main.rand.NextFloat(0f, 0.75f) * Projectile.spriteDirection, Main.rand.NextFloat(-0.2f, 0.2f)));//velocity
+				DustID.Water,
+				new Vector2(Main.rand.NextFloat(0f, 0.75f) * Projectile.spriteDirection, Main.rand.NextFloat(-0.2f, 0.2f))); //velocity
 
 			Projectile.ai[0]++;
 
@@ -106,16 +102,17 @@ namespace StarlightRiver.Content.Items.Misc
 			if (Projectile.ai[0] > ProjectileTime)
 				Projectile.active = false;
 
-			if (Projectile.ai[0] == ProjectileTime / 2)//check for saplings halfway through item use time
+			if (Projectile.ai[0] == ProjectileTime / 2) //check for saplings halfway through item use time
 			{
 				int hitboxTileWidth = Projectile.width / 16;
 				int hitboxTileHeight = Projectile.height / 16;
-				for (int s = 0; s < hitboxTileWidth; s++)//x
+
+				for (int s = 0; s < hitboxTileWidth; s++) //x
 				{
-					for (int t = 0; t < hitboxTileHeight; t++)//y
+					for (int t = 0; t < hitboxTileHeight; t++) //y
 					{
 						Vector2 pos = Projectile.position / 16 + new Vector2(0.5f, 0.66f);
-						//SpawnDustAtTile((int)pos.X + s, (int)pos.Y + t);//debug
+
 						if (CheckForSapling((int)pos.X + s, (int)pos.Y + t))
 						{
 							break;
@@ -130,36 +127,28 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 		}
 
-		//void SpawnDustAtTile(int i, int j, int DustID = DustID.BlueFairy)
-		//{
-		//	for (int g = 0; g < 16; g++)
-		//	{
-		//		Dust.NewDustPerfect(
-		//		new Vector2(i, j) * 16 + new Vector2(Main.rand.Next(0, 16), Main.rand.Next(0, 16)),
-		//		DustID,
-		//		Vector2.Zero, default, default, 0.35f);
-		//	}
-		//}
-
 		public bool CheckForSapling(int i, int j)
 		{
-			if (!(Main.tile[i, j].HasTile && Main.tile[i, j].TileType == TileID.Saplings))//doesn't work on vanity saplings
+			if (!(Main.tile[i, j].HasTile && Main.tile[i, j].TileType == TileID.Saplings)) //doesn't work on vanity saplings
 				return false;
 
 			int offsetY = Main.tile[i, j].TileFrameY / 18;
 
 			//check if tile sapling is on is a valid tile
 			int belowTileType = Main.tile[i, j - offsetY + 2].TileType;
+
 			if (!(belowTileType == TileID.Dirt || belowTileType == TileID.Grass || belowTileType == TileID.GolfGrass))
 				return false;
 
 			bool leftOpen = true;
 			bool rightOpen = true;
-			for (int s = 0; s < 3; s++)//x
+
+			for (int s = 0; s < 3; s++) //x
 			{
 				if (s == 1)
 					continue;
-				for (int t = 0; t < 3; t++)//y
+
+				for (int t = 0; t < 3; t++) //y
 				{
 					int posX = i - 1 + s;
 					int poxY = j - offsetY + t;
@@ -176,10 +165,8 @@ namespace StarlightRiver.Content.Items.Misc
 								(!Main.tileCut[type] ||
 								type == TileID.Saplings ||
 								type == TileID.VanityTreeSakuraSaplings ||
-								type == TileID.VanityTreeWillowSaplings));//can break other saplings
+								type == TileID.VanityTreeWillowSaplings)); //can break other saplings
 						}
-
-						//SpawnDustAtTile(i - 1 + s, j - offsetY + t, leftOpen ? DustID.GreenFairy : DustID.PinkFairy);//debug
 					}
 
 					if (s == 2)
@@ -195,10 +182,8 @@ namespace StarlightRiver.Content.Items.Misc
 								!(Main.tileCut[type] ||
 								type == TileID.Saplings ||
 								type == TileID.VanityTreeSakuraSaplings ||
-								type == TileID.VanityTreeWillowSaplings));//can break other saplings
+								type == TileID.VanityTreeWillowSaplings)); //can break other saplings
 						}
-
-						//SpawnDustAtTile(i - 1 + s, j - offsetY + t, rightOpen ? DustID.GreenFairy : DustID.PinkFairy);//debug
 					}
 				}
 			}
@@ -207,16 +192,16 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				int offsetX =
 					(leftOpen && rightOpen) ? (Main.rand.NextBool() ? -1 : 0) :
-					leftOpen ? -1 : 0;//last case it could be is right
+					leftOpen ? -1 : 0;  //last case it could be is right
 
-				for (int s = 0; s < 2; s++)//x
+				for (int s = 0; s < 2; s++) //x
 				{
 					for (int t = -1; t < 2; t++)//y
 					{
 						int posX = i + offsetX + s;
 						int posY = j - offsetY + t;
 
-						if (Main.tile[posX, posY].TileType == TileID.Saplings)//makes removing the sapling silent
+						if (Main.tile[posX, posY].TileType == TileID.Saplings) //makes removing the sapling silent
 							Main.tile[posX, posY].ClearTile();
 						else
 							WorldGen.KillTile(posX, posY);
@@ -231,7 +216,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 				Helper.PlaceMultitile(new Point16(i + offsetX, j - offsetY - 1), ModContent.TileType<ThickTreeSapling>());
 			}
-			//Main.NewText(Main.tile[i, j].TileFrameX + " | " + Main.tile[i, j].TileFrameY);
+
 			return true;
 		}
 
@@ -242,7 +227,6 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				int offsetX = tile.TileFrameX % 36 / 18;
 				int offsetY = tile.TileFrameY / 18;
-				//Main.NewText(Main.tile[i, j].TileFrameX + " | " + Main.tile[i, j].TileFrameY);
 				int posX = i - offsetX;
 				int posY = j - offsetY;
 
@@ -268,7 +252,6 @@ namespace StarlightRiver.Content.Items.Misc
 				ModContent.GetModTile(Main.tile[posX, posY].TileType)?.RandomUpdate(posX, posY);
 				NetMessage.SendTileSquare(Main.myPlayer, posX, posY, 2, 3, TileChangeType.None);
 
-				//SpawnDustAtTile(i - offsetX, j - offsetY, DustID.PinkFairy);//debug
 				return true;
 			}
 
@@ -287,16 +270,16 @@ namespace StarlightRiver.Content.Items.Misc
 			int frameHeight = tex.Height / Main.projFrames[Projectile.type];
 			var frameBox = new Rectangle(0, frameHeight * Projectile.frame, tex.Width, frameHeight);
 
-			//these 2 values are for getting the right rotation point
+			// these 2 values are for getting the right rotation point
 			float Xoffset = Projectile.spriteDirection == 1 ? (tex.Width * 0.125f) : (tex.Width * 0.875f);
 			var rotPoint = new Vector2(Xoffset, frameHeight * 0.5f);
 
+			// weird specific offset to make it symetrical
+			// this value is weird and sometimes breaks for no reason?
+			Vector2 pos = Projectile.position + rotPoint + new Vector2(Projectile.width / 2 - tex.Width / 2 - 0.6f, -Owner.gfxOffY * 0.5f) - Main.screenPosition;
+
 			Main.spriteBatch.Draw(tex,
-					Projectile.position +
-					rotPoint +
-					new Vector2(Projectile.width / 2 - tex.Width / 2 - 0.6f,//weird specific offset to make it symetrical
-					 -Owner.gfxOffY * 0.5f) - //this value is weird and sometimes breaks for no reason?
-					Main.screenPosition,
+				pos,
 				frameBox,
 				lightColor,
 				Projectile.rotation,

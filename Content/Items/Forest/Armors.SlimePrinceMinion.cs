@@ -226,8 +226,8 @@ namespace StarlightRiver.Content.Items.Forest
 					}
 				}
 
-				//if (targets.Count > 0)
-				//	SoundEngine.PlaySound(SoundID.DD2_DrakinShot, Projectile.Center);
+				if (targets.Count > 0)
+					SoundEngine.PlaySound(SoundID.DD2_DrakinShot, Projectile.Center);
 			}
 
 			if (Timer % 14 == 0)
