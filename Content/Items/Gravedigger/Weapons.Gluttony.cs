@@ -167,8 +167,12 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 			UpdateTargets(Player);
 			SuckEnemies(Player);
-			ManageCaches();
-			ManageTrails();
+			
+			if (!Main.dedServ)
+			{
+				ManageCaches();
+				ManageTrails();
+			}
 		}
 
 		private void ManageCaches()
@@ -391,8 +395,12 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		public override void AI()
 		{
 			Movement();
-			ManageCaches();
-			ManageTrail();
+
+			if (!Main.dedServ)
+			{
+				ManageCaches();
+				ManageTrail();
+			}
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
