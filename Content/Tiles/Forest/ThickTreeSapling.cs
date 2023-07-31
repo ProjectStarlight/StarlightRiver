@@ -81,6 +81,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 	class ThickTreeAcorn : QuickTileItem
 	{
-		public ThickTreeAcorn() : base("Large Acorn", "", "ThickTreeSapling", 1, AssetDirectory.ForestTile, false) { }
+		public ThickTreeAcorn() : base("Large Acorn", "", "ThickTreeSapling", 1, AssetDirectory.ForestTile, false, 
+			ItemValue: Item.buyPrice(silver: 50)) { }
 	}
 }
