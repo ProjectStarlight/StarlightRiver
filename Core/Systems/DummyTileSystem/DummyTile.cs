@@ -125,8 +125,6 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 			return false;
 		}
 
-		public virtual void PostSpawnDummy(Projectile dummy) { }
-
 		public virtual void SafeNearbyEffects(int i, int j, bool closer) { }
 
 		public virtual bool SpawnConditions(int i, int j)
@@ -159,8 +157,6 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 
 					var key = new Point16(i, j);
 					dummies[key] = Main.projectile[n];
-
-					PostSpawnDummy(Main.projectile[n]);
 				}
 			}
 
