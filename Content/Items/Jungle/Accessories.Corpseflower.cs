@@ -1,10 +1,14 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
 using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems.InstancedBuffSystem;
 using StarlightRiver.Helpers;
 using System;
+using System.Reflection;
 using Terraria.ID;
+using Terraria.Localization;
+using static Humanizer.In;
 
 namespace StarlightRiver.Content.Items.Jungle
 {
@@ -16,6 +20,8 @@ namespace StarlightRiver.Content.Items.Jungle
 
 		public Corpseflower() : base(ModContent.Request<Texture2D>(AssetDirectory.JungleItem + "Corpseflower").Value) { }
 
+		private static bool skipSendData = false;
+
 		public override void Load()
 		{
 			StarlightPlayer.ModifyHitNPCEvent += ApplyDoTItems;
@@ -26,6 +32,15 @@ namespace StarlightRiver.Content.Items.Jungle
 
 			On_CombatText.UpdateCombatText += CombatText_UpdateCombatText;
 			IL_NPC.UpdateNPC_BuffApplyDOTs += ChangeDoTColor;
+
+			On_NetMessage.SendData += SendDataOverrideHack;
+		}
+
+		public override void Unload()
+		{
+			On_CombatText.UpdateCombatText -= CombatText_UpdateCombatText;
+			IL_NPC.UpdateNPC_BuffApplyDOTs -= ChangeDoTColor;
+			On_NetMessage.SendData -= SendDataOverrideHack;
 		}
 
 		public override void SetStaticDefaults()
@@ -100,7 +115,7 @@ namespace StarlightRiver.Content.Items.Jungle
 		private void ApplyDoTColor(int i, int whoAmI)
 		{
 			CorpseflowerBuff buff = InstancedBuffNPC.GetInstance<CorpseflowerBuff>(Main.npc[whoAmI]);
-			if (buff is null || i < 0) // WEIRD ass bug with ceiros that caused index out of bounds. Tested with other enemies, just happens with ceiros. This seems to fix it tho 
+			if (buff is null || i < 0 || Main.dedServ) // WEIRD ass bug with ceiros that caused index out of bounds. Tested with other enemies, just happens with ceiros. This seems to fix it tho 
 				return;
 
 			maxTimeLefts[i] = Main.combatText[i].lifeTime;
@@ -135,6 +150,9 @@ namespace StarlightRiver.Content.Items.Jungle
 			{
 				modifiers.HideCombatText();
 				modifiers.DisableCrit();
+
+				if (Main.netMode == NetmodeID.MultiplayerClient) //TODO: rework this too
+					modifiers.Knockback *= 0; //not ideal but this is just since mp doesn't send regular hit packets so that it doesn't appear rubberbanding we prevent local knockback too
 			}
 		}
 
@@ -142,8 +160,11 @@ namespace StarlightRiver.Content.Items.Jungle
 		{
 			if (Equipped(player))
 			{
-				modifiers.HideCombatText();
+				modifiers.HideCombatText(); //it looks like these doesn't actually work possibly reach out to collaborators?
 				modifiers.DisableCrit();
+
+				if (Main.netMode == NetmodeID.MultiplayerClient) //TODO: rework this too
+					modifiers.Knockback *= 0;//not ideal but this is just since mp doesn't send regular hit packets so that it doesn't appear rubberbanding we prevent local knockback too
 			}
 		}
 
@@ -152,7 +173,15 @@ namespace StarlightRiver.Content.Items.Jungle
 			if (Equipped(player))
 			{
 				BuffInflictor.InflictStack<CorpseflowerBuff, CorpseflowerStack>(target, 600, new CorpseflowerStack() { duration = 600, damage = Utils.Clamp((int)(damageDone * 0.45f), 1, damageDone) });
-				target.life += damageDone;
+				
+				if (Main.myPlayer == player.whoAmI)
+				{
+					target.life += damageDone;
+					skipSendData = true;
+				}
+
+				player.TryGetModPlayer(out StarlightPlayer sp);
+				sp.SetHitPacketStatus(false);
 			}
 		}
 
@@ -161,7 +190,29 @@ namespace StarlightRiver.Content.Items.Jungle
 			if (Equipped(player))
 			{
 				BuffInflictor.InflictStack<CorpseflowerBuff, CorpseflowerStack>(target, 600, new CorpseflowerStack() { duration = 600, damage = Utils.Clamp((int)(damageDone * 0.45f), 1, damageDone) });
-				target.life += damageDone;
+
+				if (Main.myPlayer == player.whoAmI)
+				{
+					target.life += damageDone;
+					skipSendData = true;
+				}
+
+				player.TryGetModPlayer(out StarlightPlayer sp);
+				sp.SetHitPacketStatus(false);
+			}
+		}
+
+		private void SendDataOverrideHack(On_NetMessage.orig_SendData orig, int msgType, int remoteClient = -1, int ignoreClient = -1, NetworkText text = null, int number = 0, float number2 = 0f, float number3 = 0f, float number4 = 0f, int number5 = 0, int number6 = 0, int number7 = 0)
+		{
+			//SYNC TODO: this could use a full rework for mp compatibility since this is vile
+			if (msgType == MessageID.DamageNPC && Equipped(Main.LocalPlayer) && skipSendData) 
+			{
+				skipSendData = false;
+				return; //horrifying hack to avoid sending regular hitpackets while using corpseflower since those could accidentally kill the NPC on other clients / server
+			}
+			else
+			{
+				orig(msgType, remoteClient, ignoreClient, text, number, number2, number3, number4, number5, number6, number7);
 			}
 		}
 	}
@@ -192,17 +243,22 @@ namespace StarlightRiver.Content.Items.Jungle
 
 		private void StarlightNPC_UpdateLifeRegenEvent(NPC npc, ref int damage)
 		{
-			if (AnyInflicted(npc))
+			InstancedBuff buff = GetInstance(npc);
+			if (buff != null)
 			{
-				if (damage < (GetInstance(npc) as CorpseflowerBuff).totalDamage * 0.1f)
-					damage = (int)((GetInstance(npc) as CorpseflowerBuff).totalDamage * 0.1f);
+				if (damage < (buff as CorpseflowerBuff).totalDamage * 0.1f)
+					damage = (int)((buff as CorpseflowerBuff).totalDamage * 0.1f);
 			}
 		}
 
-		private void ResetDamage(NPC NPC)
+		private void ResetDamage(NPC npc)
 		{
-			if (AnyInflicted(NPC))
-				(GetInstance(NPC) as CorpseflowerBuff).totalDamage = 0;
+
+			InstancedBuff buff = GetInstance(npc);
+			if (buff != null)
+			{
+				(buff as CorpseflowerBuff).totalDamage = 0;
+			}
 		}
 
 		public override CorpseflowerStack GenerateDefaultStackTyped(int duration)
