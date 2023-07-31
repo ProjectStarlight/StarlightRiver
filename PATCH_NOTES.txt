@@ -24,11 +24,11 @@ This is a major update, adding early multiplayer support, a bunch of Summoner co
 
 ## Content:
 - New material: Vengeful Spirit
- - Dropped by ghosts, Some recipes have been updated to use Vengeful Spirits instead of Living Blood
+ - Dropped by ghosts, some recipes have been updated to use Vengeful Spirits instead of Living Blood
 - New tool: Enchanted Watering Can
  - Spawns in underground chests, use it on a normal sapling to grow it into a big tree
 - New Item: Large Acorn
- - Sold by dryad, allows you do grow big trees
+ - Sold by dryad, allows you to grow big trees
 - New sentry: Arms Dealer's Defense System
  - Purchased from the Arms Dealer that conjures different kinds of mounted turrets to fight for you
 - New summon: Haunted Dagger Staff
