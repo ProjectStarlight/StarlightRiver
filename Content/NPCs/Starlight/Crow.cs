@@ -66,6 +66,10 @@ namespace StarlightRiver.Content.NPCs.Starlight
 		{
 			Timer++;
 
+			// This guarantees all clients get relevant info about this NPC eventually
+			if (Main.netMode == NetmodeID.Server && Main.GameUpdateCount % 60 == 0)
+				NPC.netUpdate = true;
+
 			if (InCutscene || leaving)
 				CutsceneTimer++;
 

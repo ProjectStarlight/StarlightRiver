@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.rare = ItemRarityID.Blue;
 			Item.noUseGraphic = false;
 			Item.consumable = true;
-			Item.maxStack = 999;
+			Item.maxStack = 9999;
 			Item.UseSound = SoundID.Item8;
 		}
 

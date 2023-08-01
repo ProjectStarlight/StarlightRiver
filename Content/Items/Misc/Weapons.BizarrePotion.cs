@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.autoReuse = true;
 			Item.noUseGraphic = true;
 			Item.consumable = true;
-			Item.maxStack = 999;
+			Item.maxStack = 9999;
 		}
 	}
 
