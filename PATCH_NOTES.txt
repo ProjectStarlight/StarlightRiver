@@ -4,6 +4,7 @@
 - Fixed an issue where alican would fail to spawn for some clients
 - Fixed some whips firing double projectiles with autoswing
 - Fixed some sentry items dealing damage when swung like swords
+- Fixed auroracle's tentacles having their vulnerability state desync, making him appear immortal
 
 ## Misc:
 - Adjusted max stack size of some items to 9999 to match vanilla
