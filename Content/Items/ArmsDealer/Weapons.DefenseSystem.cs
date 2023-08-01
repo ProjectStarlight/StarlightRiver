@@ -59,6 +59,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 			Item.shootSpeed = 1;
 			Item.sentry = true;
 			Item.mana = 20;
+			Item.noMelee = true;
 		}
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)

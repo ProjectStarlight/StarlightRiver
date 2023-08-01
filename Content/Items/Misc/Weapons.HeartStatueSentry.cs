@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Item.width = 32;
 			Item.height = 32;
-			Item.value = Item.buyPrice(gold: 30);
+			Item.value = Item.buyPrice(gold: 1);
 			Item.rare = ItemRarityID.Green;
 			Item.useTime = 10;
 			Item.useAnimation = 10;
@@ -32,6 +32,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.shootSpeed = 1;
 			Item.sentry = true;
 			Item.mana = 20;
+			Item.noMelee = true;
 		}
 
 		public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
