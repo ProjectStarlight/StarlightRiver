@@ -4,7 +4,7 @@ namespace StarlightRiver.Content.Buffs.Summon
 {
 	class HauntedDaggerSummonBuff : SmartBuff
 	{
-		public override string Texture => AssetDirectory.Buffs + "Rage";
+		public override string Texture => AssetDirectory.Buffs + "HauntedDaggerBuff";
 
 		public HauntedDaggerSummonBuff() : base("Haunted Daggers", "Death by a hundred cuts", false, true) { }
 

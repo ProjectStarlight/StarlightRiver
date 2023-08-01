@@ -315,7 +315,7 @@ namespace StarlightRiver.Content.Items.Jungle
 
 	class ManEaterPotBuff : SmartBuff
 	{
-		public override string Texture => AssetDirectory.Buffs + "Rage";
+		public override string Texture => AssetDirectory.Buffs + "ManEaterPotBuff";
 
 		public ManEaterPotBuff() : base("Man Eaters", "Quite the hairdo you have!", false, true) { }
 
