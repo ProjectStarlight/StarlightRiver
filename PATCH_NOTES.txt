@@ -7,6 +7,7 @@
 ## Misc:
 - Adjusted max stack size of some items to 9999 to match vanilla
 - Adjusted volume of Arms dealer's defense system
+- Disabled natural spawns during modded boss fights
 
 ## Balance:
 - Man eater pot physics adjusted and damage reduced (14 ➜ 7)
