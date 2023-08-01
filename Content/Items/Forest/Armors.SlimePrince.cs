@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.Items.Forest
 			{
 				// If the prince is invalid, we need to spawn a new prince
 				if (prince is null || !prince.active || prince.type != ProjectileType<SlimePrinceMinion>() || prince.owner != player.whoAmI)
-					prince = Projectile.NewProjectileDirect(player.GetSource_FromThis(), player.Center, Vector2.Zero, ProjectileType<SlimePrinceMinion>(), 28, 0, player.whoAmI);
+					prince = Projectile.NewProjectileDirect(player.GetSource_FromThis(), player.Center, Vector2.Zero, ProjectileType<SlimePrinceMinion>(), 17, 0, player.whoAmI);
 			}
 		}
 

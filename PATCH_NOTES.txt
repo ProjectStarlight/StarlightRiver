@@ -1,3 +1,18 @@
+# 0.2.1
+
+## Fixes:
+- Fixed an issue where alican would fail to spawn for some clients
+- Fixed some whips firing double projectiles with autoswing
+
+## Misc:
+- Adjusted max stack size of some items to 9999 to match vanilla
+- Adjusted volume of Arms dealer's defense system
+
+## Balance:
+- Man eater pot physics adjusted and damage reduced (14 ➜ 7)
+- Echochain damage reduced (15 ➜ 11) Alt fire cooldown increased (2s ➜ 10s)
+- Slime prince armor minion damage reduced (28 ➜ 17) projectile damage reduced (20 ➜ 10)
+
 # Starlight River v0.2.0: The Power Of Friendship is now live!
 This is a major update, adding early multiplayer support, a bunch of Summoner content, a new Swarmer class of enemies that are small and feeble alone but prefer to attack in large groups, and a bunch of other fixes and improvements.
 
