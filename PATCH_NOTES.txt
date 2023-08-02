@@ -1,6 +1,7 @@
-# 0.2.1
+# Starlight River v0.2.1
 
 ## Fixes:
+- Fixed dashable temple door for multiplayer
 - Fixed an issue where alican would fail to spawn for some clients
 - Fixed some whips firing double projectiles with autoswing
 - Fixed some sentry items dealing damage when swung like swords
@@ -16,3 +17,4 @@
 - Man eater pot physics adjusted and damage reduced (14 ➜ 7)
 - Echochain damage reduced (15 ➜ 11) Alt fire cooldown increased (2s ➜ 10s)
 - Slime prince armor minion damage reduced (28 ➜ 17) projectile damage reduced (20 ➜ 10)
+
