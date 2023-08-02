@@ -2,6 +2,7 @@
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
 using Terraria.Graphics.Effects;
+using Terraria.ID;
 
 namespace StarlightRiver.Core.Systems.BarrierSystem
 {
@@ -43,7 +44,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 			{
 				NPC NPC = Main.npc[i];
 
-				if (NPC.behindTiles != behindTiles || !NPC.active || NPC.GetGlobalNPC<BarrierNPC>().barrier <= 0)
+				if (NPC.behindTiles != behindTiles || !NPC.active || NPC.type <= NPCID.None || NPC.GetGlobalNPC<BarrierNPC>().barrier <= 0)
 					continue;
 
 				if (NPC.ModNPC != null)
