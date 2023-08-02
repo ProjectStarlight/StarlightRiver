@@ -5,6 +5,7 @@ using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
@@ -73,6 +74,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 			NPC.noTileCollide = true;
 			NPC.dontCountMe = true;
 			NPC.dontTakeDamage = true;
+			NPC.netAlways = true;
 		}
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
@@ -101,6 +103,8 @@ namespace StarlightRiver.Content.NPCs.Misc
 				useEndPoint = true,
 				endPoint = NPC.Center
 			};
+
+			NPC.netUpdate = true;
 		}
 
 		public override void SaveData(TagCompound tag)
@@ -113,6 +117,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 		{
 			Lighting.AddLight(NPC.Center, Color.Cyan.ToVector3() * 0.5f);
 			NPC.TargetClosest(true);
+
 			if (!enraged)
 			{
 				screechTimer++;
@@ -154,9 +159,11 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 				Tile tile = Framing.GetTileSafely(xTile, yTile);
 				Chest chest = Main.chest.Where(n => n != null && n.x == xTile && n.y == yTile).FirstOrDefault();
+
 				if (ChainStart.Distance(Target.Center) < 500 && (!tile.HasTile || chest.frame > 0 || chargeupCounter > 0))
 				{
 					chargeupCounter += 0.01f;
+
 					if (chargeupCounter >= 1)
 					{
 						if (NPC.velocity == Vector2.Zero)
@@ -165,6 +172,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 						xFrame = 1;
 						NPC.rotation = 0;
 						NPC.velocity.Y = -8;
+
 						if (NPC.Distance(ChainStart) > 100)
 						{
 							Helper.PlayPitched("Impacts/GlassExplodeShort", 1, Main.rand.NextFloat(0.1f, 0.3f), NPC.Center);
@@ -179,7 +187,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 							for (int i = 0; i < 14; i++)
 							{
 								Vector2 dir = Main.rand.NextVector2CircularEdge(1, 1);
-								Dust.NewDustPerfect(NPC.Center + dir * 25, ModContent.DustType<Dusts.GlowLineFast>(), dir * Main.rand.NextFloat(10), 0, Color.Cyan, 1);
+								Dust.NewDustPerfect(NPC.Center + dir * 25, DustType<Dusts.GlowLineFast>(), dir * Main.rand.NextFloat(10), 0, Color.Cyan, 1);
 							}
 
 							ChainGores();
@@ -221,6 +229,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 			if (xFrame == 1)
 			{
 				oldPos.Add(NPC.Center);
+
 				if (oldPos.Count > 10)
 					oldPos.RemoveAt(0);
 			}
@@ -247,6 +256,18 @@ namespace StarlightRiver.Content.NPCs.Misc
 		{
 			if (hit.Knockback > 0)
 				takenKnockback = true;
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(xTile);
+			writer.Write(yTile);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			xTile = reader.ReadInt32();
+			yTile = reader.ReadInt32();
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
