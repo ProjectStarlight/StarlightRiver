@@ -2,3 +2,8 @@
 
 ## Fixes:
 - Fixed a crash that could occur when enemies have barrier in multiplayer
+- Fixed loot wraith's having infinite chase range in multiplayer
+
+## Tuning:
+- Increased vengeful spirit drop rate from ghosts (20% => 50%)
+- Increased loot wraith generation frequency (1/15 => 1/10)
