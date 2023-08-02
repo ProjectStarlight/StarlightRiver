@@ -34,8 +34,8 @@ namespace StarlightRiver.Content.Items.Haunted
 			if (npc.type == NPCID.Ghost)
 			{
 				IItemDropRule rule = ItemDropRule.ByCondition(new SimpleItemDropRuleCondition(DropConditionText, () => NPC.downedBoss1 || NPC.downedSlimeKing || StarlightWorld.HasFlag(WorldFlags.SquidBossDowned),
-					ShowItemDropInUI.Always), ModContent.ItemType<VengefulSpirit>(), 5);
-				
+					ShowItemDropInUI.Always), ModContent.ItemType<VengefulSpirit>(), 2);
+
 				npcLoot.Add(rule);
 			}
 		}
