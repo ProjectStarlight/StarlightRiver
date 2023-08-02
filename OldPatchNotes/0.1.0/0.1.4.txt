@@ -1,0 +1,44 @@
+# Starlight River v0.1.4: Day Three is live!
+This patch is another hotfix to address the less-impactful bugs that were missed in the last update, along with more balancing tweaks and enabling of previously-WIP items.
+## Fixes:
+* Fixed some accessories not properly being counted as Shoe Spikes
+* Bombs can no longer break things they shouldn't be able to, again
+* Hunter Potion no longer gives you wallhacks to see Artifacts
+* Moonstone Hamaxe can no longer break temple walls
+* Fixed an error with Nature's Gift artifact textures
+* Fixed Large Trees hovering a pixel off the ground
+* Made Disinfectant Kit actually give crit chance
+* Added sell prices to an unholy amount of items
+* Rune Staff now properly works with mana
+* Fixed more tooltips, keywords, and typos
+* Fixed Tainted Greataxe
+## Content:
+* Added recipe for the Death Sax weapon (30 Ebon/Shadewood, 10 Demonite/Crimtane Bars, and 10 Living Blood at a Demon Altar)
+ * Dealing or taking damage with any other weapon slowly charges up the Death Sax and its primal roar, creating a large AoE of destruction on use
+* Added recipe to the ULTRAPILLS accessory (15 Living Blood and 10 Demonite/Crimtane Bars at a Demon Altar)
+ * Dealing damage and killing enemies creates a shower of blood that heals you
+ * Cursed: You can not heal by any other means
+* Added recipe for the Magebane accessory (Shimmer a Mana Flower)
+ * Dealing magic damage leeches mana from enemies
+ * Cursed: You can not use Mana Potions or any other recovery item
+* Added recipe for the Cogwheel mount (15 Desert Fossils and 4 Ancient Gears at an anvil)
+ * A platform mount with a cog underneath it that can climb walls and deal damage to enemies at high enough speeds
+* Added recipe for the Steamsaw melee weapon (Bladesaw and 6 Ancient Gears at an avil)
+ * Shreds enemies in melee with a circular saw that builds up pressure, released when letting go of M1 to launch the blade at high velocity
+* Added recipe for the Jetwelder summon weapon (5 Ancient Ceramic and 6 Ancient Gears at an anvil)
+ * Fires a superheated jet flame that deals summon tag damage and creates Scrap from slain enemies, which can be consumed to construct temporary steampunk robots
+* Added a recipe for the Rebar Launcher ranged weapon (12 Hellstone Bars and 6 Ancient Gears at an anvil)
+ * Launches high velocity rebar into enemies at range, embedding in their flesh. With good aim, this rebar can then be struck *again* by *more rebar* to drive it deeper into the enemy
+
+## QoL:
+* Merchant and Skeleton Merchant now sell Flares if you have a Flare Breacher in your inventory
+* Sparkling bullets can stack to 9999
+
+## Balancing:
+* Corpseflower damage multiplier increased (33% ➜ 45%), but you can no longer proc oncrit effects on initial weapon hits
+* Greatly increased Rune Staff's damage (8 ➜ 16 DMG)
+* Rune Staff projectiles now home in on enemies
+
+## Sundries:
+- Beautified even more sprites and visuals (Tiger, Snake, and Mantis Techniques, Martial Encyclopedia, Glass Arrowhead, Warded Mail, Acorn Sprout, Starwood Charm, Boomerang, and Staff, Twisted Greatsword, Staff of Self-Dissasembly, Copper & Tin Coils)
+- Made the Perfectly Generic Object a little more generic

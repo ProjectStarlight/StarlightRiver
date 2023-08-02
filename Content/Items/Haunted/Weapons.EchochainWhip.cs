@@ -1,6 +1,5 @@
 ﻿using ReLogic.Content;
 using StarlightRiver.Core.Systems.CameraSystem;
-using StarlightRiver.Core.Systems.InstancedBuffSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -28,7 +27,7 @@ namespace StarlightRiver.Content.Items.Haunted
 
 		public override void SetDefaults()
 		{
-			Item.DefaultToWhip(ModContent.ProjectileType<EchochainWhipProjectile>(), 15, 3f, 3.75f, 40);
+			Item.DefaultToWhip(ModContent.ProjectileType<EchochainWhipProjectile>(), 11, 3f, 3.75f, 40);
 			Item.SetShopValues(ItemRarityColor.Green2, Item.sellPrice(gold: 1));
 		}
 
@@ -64,11 +63,11 @@ namespace StarlightRiver.Content.Items.Haunted
 			if (player.altFunctionUse == 2 && cooldown <= 0)
 			{
 				Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<EchochainWhipAltProjectile>(), damage, knockback, player.whoAmI);
-				cooldown = 120;
+				cooldown = 600;
 				return false;
 			}
 
-			return true;
+			return !Main.projectile.Any(n => n.active && n.type == type && n.owner == player.whoAmI);
 		}
 
 		public override void HoldItem(Player player)
@@ -171,7 +170,7 @@ namespace StarlightRiver.Content.Items.Haunted
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
-			
+
 			effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.005f);
 			effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.005f);
 			effect.Parameters["screenPos"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / new Vector2(Main.screenWidth, Main.screenHeight));
@@ -184,7 +183,7 @@ namespace StarlightRiver.Content.Items.Haunted
 
 			Color color = new Color(150, 255, 25, 0) * 0.5f * fadeOut;
 			effect.Parameters["uColor"].SetValue(color.ToVector4());
-			
+
 			effect.CurrentTechnique.Passes[0].Apply();
 
 			Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.White, 0f, bloomTex.Size() / 2f, 0.65f, 0f, 0f);
@@ -245,7 +244,7 @@ namespace StarlightRiver.Content.Items.Haunted
 			{
 				if (tiles[i] != null)
 				{
-					Vector2 pos = new Vector2(tiles[i].Value.X * 16, tiles[i].Value.Y * 16);
+					var pos = new Vector2(tiles[i].Value.X * 16, tiles[i].Value.Y * 16);
 					pos += new Vector2(12f, 0f);
 					pos.X += Main.rand.Next(-8, 8);
 
@@ -261,7 +260,7 @@ namespace StarlightRiver.Content.Items.Haunted
 			{
 				if (enemyTiles[i] != null)
 				{
-					Vector2 pos = new Vector2(enemyTiles[i].Value.X * 16, enemyTiles[i].Value.Y * 16);
+					var pos = new Vector2(enemyTiles[i].Value.X * 16, enemyTiles[i].Value.Y * 16);
 					pos += new Vector2(12f, 0f);
 
 					if (Main.rand.NextBool(20))
@@ -334,7 +333,7 @@ namespace StarlightRiver.Content.Items.Haunted
 
 						if (Main.myPlayer == Owner.whoAmI)
 						{
-							Vector2 pos = new Vector2(enemyTiles[i].Value.X * 16, enemyTiles[i].Value.Y * 16);
+							var pos = new Vector2(enemyTiles[i].Value.X * 16, enemyTiles[i].Value.Y * 16);
 
 							int[] frames = new int[17];
 							for (int a = 0; a < frames.Length; a++) // populate array
@@ -389,7 +388,7 @@ namespace StarlightRiver.Content.Items.Haunted
 				for (int y = 0; y < 25; y++) // search 25 tiles down
 				{
 					Vector2 worldPos = startPos + new Vector2(16f * x, y * 16f);
-					Point16 tilePos = new Point16((int)worldPos.X / 16, (int)worldPos.Y / 16);
+					var tilePos = new Point16((int)worldPos.X / 16, (int)worldPos.Y / 16);
 					Tile tile = Framing.GetTileSafely(tilePos);
 					Tile aboveTile = Framing.GetTileSafely(new Point16(tilePos.X, tilePos.Y - 1));
 					if (tile.HasTile && !WorldGen.SolidOrSlopedTile(aboveTile) && WorldGen.SolidOrSlopedTile(tile) && !tiles.Contains(tilePos))
@@ -404,7 +403,7 @@ namespace StarlightRiver.Content.Items.Haunted
 						}
 
 						break;
-					}				
+					}
 				}
 			}
 		}
@@ -596,7 +595,7 @@ namespace StarlightRiver.Content.Items.Haunted
 			{
 				int chainFrame = chainFrames[i];
 				var pos = Vector2.Lerp(chainStart, chainEnd, i * 22 / distance);
-				
+
 				spriteBatch.Draw(bloomTex, pos - Main.screenPosition, null, new Color(100, 200, 10, 0) * 0.5f, 0f, bloomTex.Size() / 2f, 0.5f, 0f, 0f);
 
 				Rectangle frame = tex.Frame(verticalFrames: 5, frameY: chainFrame);
@@ -632,7 +631,7 @@ namespace StarlightRiver.Content.Items.Haunted
 
 			target = Main.npc[whoAmI];
 		}
-	}	
+	}
 
 	public class EchochainWhipProjectile : BaseWhip
 	{

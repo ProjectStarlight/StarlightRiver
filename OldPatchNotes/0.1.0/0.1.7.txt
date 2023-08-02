@@ -1,0 +1,20 @@
+# Starlight River v0.1.7: LukewarmFix2 is live!
+This patch is a small hotfix to address some minor issues, along with the Auroracle spawning bug, before we begin working on much more complicated fixes and actual new content.
+## Fixes:
+- Fixed Auroracle not spawning
+- Fixed the blocks under loot chests and Touchstones being mineable
+- Made Greenhouse Glass actually work on most vanilla plants
+- Made meteors avoid Touchstones
+- Fixed Earthduster recipe
+## Content:
+- Added recipe for Ignition Gauntlets (10 Hellstone Bars, 8 Ancient Ceramic, 2 Magmatic Cores)
+ - Unleash a rapid flurry of punches, slowly gaining Ignition Charge as you deal damage
+ - Hold RMB to consume Ignition Charge, launching yourself at your cursor at escape velocity and dealing damage to anything in the way
+ - LMB while flying to vent remaining Ignition Charge, creating a large explosion wherever you aim
+## Balancing:
+* Corpseflower tick rate increased
+* Slightly increased Impact SMG damage (4 ➜ 8 DMG), significantly increased Impact SMG's buff stacking (5% ➜ 10% more DMG per stack), greatly increased throw velocity, tripled explosion damage / explosion damage's buff scaling, and significantly reduced fire rate when overheated
+## Sundries:
+- Added new sound effects for Gunstrap Boots, Sandscript, and Octogun
+- Made many sound effects much quieter
+- Made Perfectly Generic Object actually more generic as the previous update in fact made it less generic

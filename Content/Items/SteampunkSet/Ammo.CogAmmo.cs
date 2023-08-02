@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Item.value = Item.sellPrice(copper: 5);
 			Item.rare = ItemRarityID.Green;
 
-			Item.maxStack = 999;
+			Item.maxStack = 9999;
 			Item.damage = 10;
 			Item.knockBack = 1f;
 
