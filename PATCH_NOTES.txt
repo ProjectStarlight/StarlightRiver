@@ -5,6 +5,7 @@
 - Fixed some whips firing double projectiles with autoswing
 - Fixed some sentry items dealing damage when swung like swords
 - Fixed auroracle's tentacles having their vulnerability state desync, making him appear immortal
+- Fixed drop pods allowing the tiles under them to be mined
 
 ## Misc:
 - Adjusted max stack size of some items to 9999 to match vanilla
