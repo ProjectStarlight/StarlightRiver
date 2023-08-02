@@ -7,11 +7,14 @@
 - Fixed some sentry items dealing damage when swung like swords
 - Fixed auroracle's tentacles having their vulnerability state desync, making him appear immortal
 - Fixed drop pods allowing the tiles under them to be mined
+- Fixed haunted warbanner targeting friendly NPCs
+- Fixed some missing buff icons
 
 ## Misc:
 - Adjusted max stack size of some items to 9999 to match vanilla
 - Adjusted volume of Arms dealer's defense system
 - Disabled natural spawns during modded boss fights
+- Torches can now be placed on large trees
 
 ## Balance:
 - Man eater pot physics adjusted and damage reduced (14 ➜ 7)
