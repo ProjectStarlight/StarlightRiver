@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.rare = ItemRarityID.Blue;
 			Item.value = Item.buyPrice(0, 0, 0, 40);
 
-			Item.maxStack = 999;
+			Item.maxStack = 9999;
 
 			Item.damage = 15;
 			Item.knockBack = 1.5f;

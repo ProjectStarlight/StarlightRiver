@@ -59,6 +59,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 			Item.shootSpeed = 1;
 			Item.sentry = true;
 			Item.mana = 20;
+			Item.noMelee = true;
 		}
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
@@ -292,8 +293,9 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 				for (int k = 0; k < 20; k++)
 				{
 					Dust.NewDustPerfect(Projectile.Center + Vector2.UnitY * 24, ModContent.DustType<Dusts.BuzzSpark>(), Main.rand.NextVector2Circular(3, 3), 0, Color.Yellow);
-					Helpers.Helper.PlayPitched("Impacts/StabTiny", 0.5f, 0, Projectile.Center);
 				}
+
+				Helpers.Helper.PlayPitched("Impacts/StabTiny", 0.5f, 0, Projectile.Center);
 
 				Placed = 1;
 			}

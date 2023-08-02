@@ -1,6 +1,8 @@
 ﻿using StarlightRiver.Content.Dusts;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
+using System.Linq;
+using Terraria.DataStructures;
 using Terraria.GameContent.Creative;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -23,6 +25,11 @@ namespace StarlightRiver.Content.Items.Magnet
 			Item.DefaultToWhip(ModContent.ProjectileType<ThunderBeadsProj>(), 30, 1.2f, 5f, 25);
 			Item.value = Item.sellPrice(0, 2, 0, 0);
 			Item.rare = ItemRarityID.Orange;
+		}
+
+		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+		{
+			return !Main.projectile.Any(n => n.active && n.type == type && n.owner == player.whoAmI);
 		}
 
 		public override void AddRecipes()

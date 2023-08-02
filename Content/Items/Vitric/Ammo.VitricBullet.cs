@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Item.value = Item.sellPrice(copper: 12);
 			Item.rare = ItemRarityID.Green;
 
-			Item.maxStack = 999;
+			Item.maxStack = 9999;
 			Item.damage = 6;
 			Item.knockBack = 1f;
 

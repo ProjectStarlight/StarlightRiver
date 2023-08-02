@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Items.Jungle
 
 		public override void SetDefaults()
 		{
-			Item.damage = 14;
+			Item.damage = 7;
 			Item.knockBack = 5f;
 			Item.mana = 10;
 			Item.width = 32;
@@ -209,7 +209,7 @@ namespace StarlightRiver.Content.Items.Jungle
 
 			Projectile.position += (heartTarget.Center - Projectile.Center) * 0.04f;
 
-			Projectile.position += Projectile.Center.DirectionTo(Owner.Center) * (float)Math.Sin(Projectile.timeLeft * 0.1f + Projectile.minionPos) * 2.5f;
+			Projectile.position += Projectile.Center.DirectionTo(Owner.Center) * (float)Math.Sin(Projectile.timeLeft * 0.1f + Projectile.minionPos) * 2.9f;
 
 			// If we intersect the heart, consume it
 			if (Projectile.Hitbox.Intersects(heartTarget.Hitbox))
@@ -237,7 +237,7 @@ namespace StarlightRiver.Content.Items.Jungle
 
 			Projectile.position += (npcTarget.Center - Projectile.Center) * 0.04f;
 
-			Projectile.position += Projectile.Center.DirectionTo(Owner.Center) * (float)Math.Sin(Projectile.timeLeft * 0.1f + Projectile.minionPos) * 2.5f;
+			Projectile.position += Projectile.Center.DirectionTo(Owner.Center) * (float)Math.Sin(Projectile.timeLeft * 0.1f + Projectile.minionPos) * 2.9f;
 		}
 
 		/// <summary>
@@ -315,7 +315,7 @@ namespace StarlightRiver.Content.Items.Jungle
 
 	class ManEaterPotBuff : SmartBuff
 	{
-		public override string Texture => AssetDirectory.Buffs + "Rage";
+		public override string Texture => AssetDirectory.Buffs + "ManEaterPotBuff";
 
 		public ManEaterPotBuff() : base("Man Eaters", "Quite the hairdo you have!", false, true) { }
 

@@ -1,4 +1,6 @@
-﻿using Terraria.GameContent.Creative;
+﻿using System.Linq;
+using Terraria.DataStructures;
+using Terraria.GameContent.Creative;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Misc
@@ -18,6 +20,11 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Item.DefaultToWhip(ModContent.ProjectileType<TinCoilWhip>(), 5, 1.2f, 5f, 25);
 			Item.SetShopValues(ItemRarityID.White, Item.sellPrice(0, 0, 50));
+		}
+
+		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+		{
+			return !Main.projectile.Any(n => n.active && n.type == type && n.owner == player.whoAmI);
 		}
 
 		public override void AddRecipes()
