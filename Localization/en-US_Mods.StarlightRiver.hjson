@@ -4440,6 +4440,11 @@ Buffs: {
 			Increased mining speed
 			'''
 	}
+
+	HorrorDarkness: {
+		DisplayName: Horror Darkness
+		Description: Mods.StarlightRiver.Buffs.HorrorDarkness.Description
+	}
 }
 
 Prefixes: {
