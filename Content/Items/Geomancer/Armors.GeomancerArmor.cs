@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Geomancer's Hood");
-			//Tooltip.SetDefault("15% increased ranged critical strike damage");
+
 			if (Main.netMode != NetmodeID.Server)
 			{
 				int equipSlotHead = EquipLoader.GetEquipSlot(Mod, Name, EquipType.Head);//unsure why this is needed, but it is
@@ -48,7 +48,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 		public override void UpdateEquip(Player Player)
 		{
-			if (Player.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.Topaz || Player.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.All)
+			if (Player.GetModPlayer<GeomancerPlayer>().activeGem == StoredGem.Topaz || Player.GetModPlayer<GeomancerPlayer>().activeGem == StoredGem.All)
 				Player.GetModPlayer<BarrierPlayer>().maxBarrier += 100;
 		}
 
@@ -103,7 +103,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 			GeomancerPlayer modPlayer = info.drawPlayer.GetModPlayer<GeomancerPlayer>();
 			//this set does not need to check for an empty vanity slot since this only gets called if visible
 			//but this is left as is since you could wear a second set of the armor over itself to stop the visual effects
-			if (modPlayer.SetBonusActive && modPlayer.storedGem != StoredGem.None && info.drawPlayer.armor[10].type == ItemID.None)
+			if (modPlayer.SetBonusActive && modPlayer.activeGem != StoredGem.None && info.drawPlayer.armor[10].type == ItemID.None)
 			{
 				GeomancerDrawer.Draw(ModContent.Request<Texture2D>(AssetDirectory.GeomancerItem + "GeomancerHood_Head_Gems").Value, info, info.drawPlayer.bodyFrame, info.drawPlayer.headRotation);
 			}
@@ -126,7 +126,6 @@ namespace StarlightRiver.Content.Items.Geomancer
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Geomancer's Cowl");
-			//Tooltip.SetDefault("10% increased ranged damage");
 		}
 
 		public override void SetDefaults()
@@ -137,11 +136,6 @@ namespace StarlightRiver.Content.Items.Geomancer
 			Item.defense = 6;
 			Item.rare = ItemRarityID.Orange;
 		}
-
-		/*public override void UpdateEquip(Player Player)
-        {
-            Player.rangedDamage += 0.1f;
-        }*/
 
 		public override bool IsArmorSet(Item head, Item body, Item legs)
 		{
@@ -161,7 +155,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 		public void DrawArmorLayer(PlayerDrawSet info, IArmorLayerDrawable.SubLayer subLayer)
 		{
 			GeomancerPlayer modPlayer = info.drawPlayer.GetModPlayer<GeomancerPlayer>();
-			if (modPlayer.SetBonusActive && modPlayer.storedGem != StoredGem.None && info.drawPlayer.armor[11].type == ItemID.None)
+			if (modPlayer.SetBonusActive && modPlayer.activeGem != StoredGem.None && info.drawPlayer.armor[11].type == ItemID.None)
 			{
 				GeomancerDrawer.Draw(ModContent.Request<Texture2D>(AssetDirectory.GeomancerItem + "GeomancerRobe_Body_Gems").Value, info, info.drawPlayer.bodyFrame, info.drawPlayer.bodyRotation);
 				GeomancerDrawer.Draw(ModContent.Request<Texture2D>(AssetDirectory.GeomancerItem + "GeomancerRobe_Body_Rims").Value, info, info.drawPlayer.bodyFrame, info.drawPlayer.bodyRotation);
@@ -201,7 +195,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 		{
 			GeomancerPlayer modPlayer = info.drawPlayer.GetModPlayer<GeomancerPlayer>();
 
-			if (modPlayer.SetBonusActive && modPlayer.storedGem != StoredGem.None && info.drawPlayer.armor[12].type == ItemID.None)
+			if (modPlayer.SetBonusActive && modPlayer.activeGem != StoredGem.None && info.drawPlayer.armor[12].type == ItemID.None)
 				GeomancerDrawer.Draw(ModContent.Request<Texture2D>(AssetDirectory.GeomancerItem + "GeomancerPants_Legs_Gems").Value, info, info.drawPlayer.legFrame, info.drawPlayer.bodyRotation);
 		}
 
@@ -254,8 +248,6 @@ namespace StarlightRiver.Content.Items.Geomancer
 			Filters.Scene["RainbowArmor2"].GetShader().Shader.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.005f);
 			Filters.Scene["RainbowArmor2"].GetShader().Shader.Parameters["uOpacity"].SetValue(1.25f - timer);
 
-			//try
-			//{
 			var value = new DrawData(
 						texture,
 						new Vector2((int)drawPos.X, (int)drawPos.Y),
@@ -268,17 +260,10 @@ namespace StarlightRiver.Content.Items.Geomancer
 						0
 					)
 			{
-				shader = armorOwner.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.All ? GeomancerPlayer.shaderValue : 0
+				shader = armorOwner.GetModPlayer<GeomancerPlayer>().activeGem == StoredGem.All ? GeomancerPlayer.shaderValue : 0
 			};
 			info.DrawDataCache.Add(value);
-			//}
-			//catch
-			//{
-			//	Main.NewText("First wave of geomancer armor drawing not working");
-			//}
 
-			//try
-			//{
 			for (float i = 0; i < 6.28f; i += 1.57f)
 			{
 				Vector2 offset = i.ToRotationVector2() * 2 * timer;
@@ -294,16 +279,11 @@ namespace StarlightRiver.Content.Items.Geomancer
 						0
 					)
 				{
-					shader = armorOwner.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.All ? GeomancerPlayer.shaderValue2 : 0
+					shader = armorOwner.GetModPlayer<GeomancerPlayer>().activeGem == StoredGem.All ? GeomancerPlayer.shaderValue2 : 0
 				};
 
 				info.DrawDataCache.Add(value2);
 			}
-			//}
-			//catch
-			//{
-			//	Main.NewText("Second wave of geomancer armor drawing not working");
-			//}
 		}
 	}
 }
