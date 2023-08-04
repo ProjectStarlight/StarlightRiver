@@ -5,6 +5,7 @@ using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
@@ -93,14 +94,6 @@ namespace StarlightRiver.Content.NPCs.Misc
 		{
 			xTile = tag.GetInt("xTile");
 			yTile = tag.GetInt("yTile");
-			NPC.Center = ChainStart + new Vector2(0, 1);
-			chain = new VerletChain(NUM_SEGMENTS, true, ChainStart, 5, false)
-			{
-				forceGravity = new Vector2(0, 0.1f),
-				simStartOffset = 0,
-				useEndPoint = true,
-				endPoint = NPC.Center
-			};
 		}
 
 		public override void SaveData(TagCompound tag)
@@ -115,6 +108,19 @@ namespace StarlightRiver.Content.NPCs.Misc
 			NPC.TargetClosest(true);
 			if (!enraged)
 			{
+				if (chain is null)
+				{
+					NPC.Center = ChainStart + new Vector2(0, 1);
+
+					chain = new VerletChain(NUM_SEGMENTS, true, ChainStart, 5, false)
+					{
+						forceGravity = new Vector2(0, 0.1f),
+						simStartOffset = 0,
+						useEndPoint = true,
+						endPoint = NPC.Center
+					};
+				}
+
 				screechTimer++;
 
 				if (screechTimer < 30)
@@ -437,6 +443,18 @@ namespace StarlightRiver.Content.NPCs.Misc
 				if (Main.rand.NextBool(2))
 					Gore.NewGoreDirect(NPC.GetSource_Death(), segment.posNow, Main.rand.NextVector2Circular(1, 1), Mod.Find<ModGore>("LootWraith_Chain").Type);
 			}
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(xTile);
+			writer.Write(yTile);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			xTile = reader.ReadInt32();
+			yTile = reader.ReadInt32();
 		}
 	}
 }
