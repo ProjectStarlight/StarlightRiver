@@ -3,6 +3,9 @@
 ## Fixes:
 - Fixed a crash that could occur when enemies have barrier in multiplayer
 - Fixed loot wraith's having infinite chase range in multiplayer
+- Fixed a number of issues realated to accessories and loadouts
+- Fixed manabonds being useable in cosmetic slots
+- Fixed a crash that could occur during auroracle's death
 
 ## Tuning:
 - Increased vengeful spirit drop rate from ghosts (20% => 50%)
