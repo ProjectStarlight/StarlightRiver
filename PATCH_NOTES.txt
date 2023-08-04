@@ -14,3 +14,6 @@
 ## Tuning:
 - Increased vengeful spirit drop rate from ghosts (20% => 50%)
 - Increased loot wraith generation frequency (1/15 => 1/10)
+
+## Balance:
+- Decreased aurora bell cooldown time (5s => 2.5s)
