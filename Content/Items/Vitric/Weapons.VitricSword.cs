@@ -91,6 +91,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Projectile.width = 12;
 			Projectile.height = 18;
 			Projectile.friendly = true;
+			Projectile.hostile = false;
 			Projectile.penetrate = -1;
 			Projectile.timeLeft = 120;
 			Projectile.tileCollide = false;
