@@ -7,6 +7,8 @@
 - Fixed manabonds being useable in cosmetic slots
 - Fixed a crash that could occur during auroracle's death
 - Fixed ancient vitric blade damaging town NPCs
+- Fixed some items with on-hit effects not functioning properly
+- Fixed an issue where other mod's on-hot effects would not function properly
 
 ## Tuning:
 - Increased vengeful spirit drop rate from ghosts (20% => 50%)
