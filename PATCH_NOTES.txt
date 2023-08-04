@@ -2,7 +2,9 @@
 
 ## Fixes:
 - Fixed Loot Wraith in multiplayer
+- Fixed geomancer armor in multiplayer
 
 ## Balance:
 - Upped Loot Wraith Spawn Rate (1/15) -> (1/8)
+- Reduced geomancer armor defense value (16) -> (13)
 

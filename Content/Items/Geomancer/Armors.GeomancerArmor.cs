@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 			Item.width = 28;
 			Item.height = 28;
 			Item.value = 8000;
-			Item.defense = 5;
+			Item.defense = 4;
 			Item.rare = ItemRarityID.Orange;
 		}
 
@@ -133,7 +133,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 			Item.width = 34;
 			Item.height = 20;
 			Item.value = 6000;
-			Item.defense = 6;
+			Item.defense = 5;
 			Item.rare = ItemRarityID.Orange;
 		}
 
@@ -187,7 +187,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 			Item.width = 30;
 			Item.height = 20;
 			Item.value = 4000;
-			Item.defense = 5;
+			Item.defense = 4;
 			Item.rare = ItemRarityID.Orange;
 		}
 
