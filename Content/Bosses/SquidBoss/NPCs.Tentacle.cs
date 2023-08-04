@@ -335,10 +335,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void AI()
 		{
-			/* AI fields:
-             * 0: state
-             * 1: timer
-             */
 			if (Parent == null || !Parent.NPC.active || Arena == null || !Arena.NPC.active)
 			{
 				NPC.active = false;
@@ -350,12 +346,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				int i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<TentacleHurtbox>());
 				hurtboxActor = Main.npc[i];
 
-				var actor = Main.npc[i].ModNPC as TentacleHurtbox;
-
-				if (actor != null)
-					actor.tentacle = this;
-				else
-					hurtboxActor = null;
+				TentacleHurtbox.tentacleToAssign = this;
 			}
 
 			if ((State == 0 || State == 1) && Timer == 0)

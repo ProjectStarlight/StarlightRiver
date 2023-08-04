@@ -143,10 +143,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
 					WorldGen.KillTile((int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f));
 					NetMessage.SendTileSquare(Player.whoAmI, (int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f), 2, 3, TileChangeType.None);
 				}
-				else
-				{
-					Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
-				}
+
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
 
 				for (int k = 0; k <= 10; k++)
 				{
@@ -186,10 +184,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
 					WorldGen.KillTile((int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f));
 					NetMessage.SendTileSquare(Player.whoAmI, (int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f), 2, 2, TileChangeType.None);
 				}
-				else
-				{
-					Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
-				}
+
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
 
 				for (int k = 0; k <= 10; k++)
 				{

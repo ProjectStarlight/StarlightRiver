@@ -16,6 +16,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 			LocalizedText name = CreateMapEntryName();
 			name.SetDefault("Large Tree");
 
+			TileID.Sets.IsATreeTrunk[Type] = true;
 			Main.tileAxe[Type] = true;
 			AddMapEntry(new Color(169, 125, 93), name);
 

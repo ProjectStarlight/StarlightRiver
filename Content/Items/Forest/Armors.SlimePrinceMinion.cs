@@ -168,7 +168,7 @@ namespace StarlightRiver.Content.Items.Forest
 			if (Timer == 110 && Main.netMode != NetmodeID.Server)
 			{
 				if (Projectile.owner == Main.myPlayer)
-					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.Center.DirectionTo(target.Center + target.velocity * 10) * 11, ModContent.ProjectileType<SlimeThorn>(), 20, 0.5f, Projectile.owner);
+					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.Center.DirectionTo(target.Center + target.velocity * 10) * 11, ModContent.ProjectileType<SlimeThorn>(), 10, 0.5f, Projectile.owner);
 
 				SoundEngine.PlaySound(SoundID.DD2_DrakinShot, Projectile.Center);
 			}
@@ -222,7 +222,7 @@ namespace StarlightRiver.Content.Items.Forest
 				{
 					foreach (NPC target in targets)
 					{
-						Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.Center.DirectionTo(target.Center) * 11, ModContent.ProjectileType<SlimeThorn>(), 35, 0.5f, Projectile.owner);
+						Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.Center.DirectionTo(target.Center) * 11, ModContent.ProjectileType<SlimeThorn>(), 15, 0.5f, Projectile.owner);
 					}
 				}
 

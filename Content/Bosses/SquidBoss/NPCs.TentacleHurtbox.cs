@@ -1,10 +1,14 @@
 ﻿using StarlightRiver.Content.Abilities;
+using System.IO;
+using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
 	internal class TentacleHurtbox : ModNPC, IHintable
 	{
+		public static Tentacle tentacleToAssign;
+
 		public Tentacle tentacle;
 
 		public SquidBoss Parent => tentacle.Parent;
@@ -26,6 +30,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 		{
 			NPC.lifeMax = Main.masterMode ? (int)(1000 * bossAdjustment) : (int)(750 * bossAdjustment);
+		}
+
+		public override void OnSpawn(IEntitySource source)
+		{
+			tentacle = tentacleToAssign;
 		}
 
 		public override void AI()
@@ -65,6 +74,16 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public override void ModifyHitByProjectile(Projectile projectile, ref NPC.HitModifiers modifiers)
 		{
 			modifiers.FinalDamage *= 1.25f;
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(tentacle.NPC.whoAmI);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			tentacle = Main.npc[reader.ReadInt32()].ModNPC as Tentacle;
 		}
 
 		public string GetHint()

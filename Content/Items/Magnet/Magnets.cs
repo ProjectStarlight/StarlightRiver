@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			Item.value = Item.sellPrice(0, 0, 5, 0);
 			Item.width = 32;
 			Item.height = 32;
-			Item.maxStack = 999;
+			Item.maxStack = 9999;
 		}
 	}
 
@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			Item.value = Item.sellPrice(0, 0, 15, 0);
 			Item.width = 32;
 			Item.height = 32;
-			Item.maxStack = 999;
+			Item.maxStack = 9999;
 		}
 
 		public override void Update(ref float gravity, ref float maxFallSpeed)

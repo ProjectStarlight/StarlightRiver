@@ -1,0 +1,36 @@
+# Starlight River 0.1.8: LukewarmFix3 is live!
+
+## Fixes:
+- Fixed Armillary Trial's adaptive damage reduction not applying to damage-over-time effects
+- Fixed an issue where the jade stopwatch had strange interactions with held/charged items
+- Tuned some Metal Detector values to better reflect the rarity of modded tiles
+- Made meteors and moonstones avoid destroying Touchstone structures
+- Fixed the Bloodbolter deleting bosses before they can drop loot
+- Fixed accessories not taking effect when swapping loadouts
+- Fixed overlays appearing where they shouldn't in boss rush
+- Fixed a number of issues with Vitric Temple puzzles
+- Fixed story NPCs spawning in the Armillary Trial
+- Fixed the Twisted Greatsword duplicating itself
+- Fixed infinite scaling on the Magmite Vacpac
+- Fixed Bladesaw not cutting grass/pots
+- Removed a legacy recipe for Gray Goo
+- Fixed Inoculation not taking effect
+- Fixed an unloading related crash
+
+## Balancing:
+- Adjusted the damage various boss and enemies deal. In general enemies should be less scary and bosses more scary
+- Adjusted the Armillary Trial's adaptive DPS targets (~33% higher, should make it a little less bullet spongey)
+- Reworked Defiled Ankh (Remove all debuffs while barrier is active ➜ Grants 100% inoculation and immunity to most debuffs while barrier is active)
+- Increased Seaglass Ring's granted barrier (+10 Barrier ➜ +30 Barrier) and recharge delay reduction (-0.5s Barrier recharge delay ➜ -1s Barrier recharge delay)
+- Increased Aqua Sapphire's granted barrier (+10 Barrier ➜ +20 Barrier) and barrier effectiveness (+5% Barrier Effectiveness ➜ +15% Barrier Effectiveness)
+- Significantly increased Rune of Warding's granted barrier (+20 Barrier ➜ +50 Barrier)
+- Reduced Tentalance damage (20 DMG ➜ 16 DMG)
+- Reduced Sandscript mana cost (20 MP ➜ 3 MP)
+- Reduced Gluttony mana cost (9 MP ➜ 3 MP)
+
+## Sundries:
+- Added short cutscenes when Vitric Temple puzzles are solved to make their completion more obvious
+- Godrays from large trees now dim in the rain
+- Updated the Recursive Focus' visual effects
+- Improved the Armillary Trial death screen
+- Retrained the Perfectly Generic Object's genericism generation neural network

@@ -1,0 +1,117 @@
+# Starlight River v0.2.0: The Power Of Friendship is now live!
+This is a major update, adding early multiplayer support, a bunch of Summoner content, a new Swarmer class of enemies that are small and feeble alone but prefer to attack in large groups, and a bunch of other fixes and improvements.
+
+## Fixes:
+- Fixed an issue where some accessories would fail to function in the Master Mode slot
+- Fixed Sandscript failing to spawn as a Desert Artifact
+- Fixed Cursed Accessories not drawing their backgrounds correctly when equipped
+- Fixed various outdated tooltips
+- Fixed Ceiros' drop pool not including shattered aegis on expert mode
+- Fixed Glass Arrowhead not functioning or having a tooltip
+- Fixed Moonshards spawning too close to the edge of the world
+- Fixed Bricklayer's Trowel eating block placement wands
+- Fixed Vitric Pickaxe getting slower instead of faster as it gained heat
+- Fixed Vitric Hamaxe getting slower instead of faster as it gained heat
+- Fixed a rare crash that could occur on the player select screen
+- Fixed Drop Pods being able to spawn hanging off a cliff
+- Fixed numerous issues with forest world generation
+- Fixed Armor Bags deleting items
+- Fixed rotation from Aurora Water persisting after leaving it
+- Fixed a crash with Crescent Casters in multiplayer
+- Fixed crafting recipe for Frying Pan
+- Fixed Jade Stopwatch with channel items
+- Fixed missing Starsight text for Ankh Chests
+
+## Content:
+- New material: Vengeful Spirit
+ - Dropped by ghosts, some recipes have been updated to use Vengeful Spirits instead of Living Blood
+- New tool: Enchanted Watering Can
+ - Spawns in underground chests, use it on a normal sapling to grow it into a big tree
+- New Item: Large Acorn
+ - Sold by dryad, allows you to grow big trees
+- New sentry: Arms Dealer's Defense System
+ - Purchased from the Arms Dealer that conjures different kinds of mounted turrets to fight for you
+- New summon: Haunted Dagger Staff
+ - Crafted with Vengeful Spirits that summons haunted daggers to embed in your enemies, violently ripping themselves out when struck with a whip or retargeted
+- New whip: Echochain Whip
+ - Crafted with Vengeful Spirits that forms Echochains between struck enemies to mirror summon damage taken between them, conjuring countless chains to tie down enemies when holding RMB
+- New summon: Starwood Scepter
+ - Crafted by throwing a Dormant Scepter in Starwater, summoning two halves of a star to tag team enemies and merge into one whole when empowered with Starwood's set bonus
+- New summon: Man Eater Staff
+ - Crafted with Jungle materials that sprouts Mini Man Eaters from a pot on your head, dropping extra life hearts on kill but consuming part of their healing to enter their rage state
+- New sentry: Heart Statue?
+ - Crafted by throwing a Heart Statue in Starwater, summoning a living statue to siphon life from enemies and occasionally spawn life hearts
+- New accessory: Artillery License
+ - Sold by the Arms Dealer, grants +1 sentry slot
+- New accessory: Manabond
+ - Found in certain Stone Temples, grants minions their own mana bar that refills from your own, allowing them to cast magic bolts at foes
+- New accessory: Infernal Manabond
+ - Replaces your minions magic bolts with a more expensive but powerful firebolt
+- New accessory: Shocking Manabond
+ - Replaces your minions magic bolts with a slower firing lightning attack that sunders armor
+- New accessory: Druidic Manabond
+ - Replaces your minions magic bolts with a very expensive thorn shotgun that inflicts poison
+- New accessory: Aquatic Manabond
+ - Replaces your minions magic bolts with a fast firing and cheap waterbolt that can bounce
+- New accessory: Salt Cogs
+ - Crafted from Sea Salt, doubles the fire rate of sentries for 2 seconds after their summoning
+- New accessory: Watch Battery
+ - Crafted with a Charged Magnet, makes sentries shock nearby enemies when summoned, inflicting Overcharged
+- New accessory: Seaglass Lens
+ - Crafted with a Seaglass Ring, allows minions and sentries to occasionally deal extra damage which counts as a critical strike
+- New accessory: Exotic Timepiece
+ - Crafted with Salt Cogs, Watch Battery, and Seaglass Lens, combines their effects and grants +100% sentry placement speed
+- New accessory: Haunted Amethyst
+ - Crafted with Amethyst at a Demon Altar, grants +1 summon slot when below half health, auto-summoning its occupant when the conditions are met
+- New accessory: Stone of the Drowned
+ - Crafted with Aqua Sapphire and Haunted Amethyst, granting +2 summon slots when you have no barrier, auto-summoning its occupants when the conditions are met
+- New armor: Slime Prince armor
+ - Dropped by King Slime, summons a Slime Prince that can envelop your body for 10s, granting invulnerability and new attacks
+- New enemy: Gloom Slime
+ - Spawns during nighttime in shallow caves, a swarmer that latches onto you and blinds your vision
+- New enemy: Soul Nibbler
+ - Spawns during nighttime in the Corruption, a swarmer that tries to lunge at you with 6-10 of its other kin
+- New enemy: Loot Wraith
+ - Spawns occasionally protecting chests, dropping Vengeful Spirit
+
+## Multiplayer Compatibility:
+- Fixed Alican, Auroracle and Glassweaver causing softlocks in multiplayer
+- Fixed Ceiros' Master Mode behavior desyncing in multiplayer
+- Fixed Construct Spawners, Shrines, dashable barriers, Gear Alignment puzzle, Light Maze puzzle, Artifacts, and cooking in multiplayer
+- Fixed Tentalance, Haunted Warbanner, Crystal Slime, Starwood armor & weapons, Jade Stopwatch, Martial books, Laser Pointers, Forest Berry bushes, and most gores  in multiplayer
+- Improved barrier network performance, far fewer packets sent
+- Generally just added multiplayer compatability, it's not perfect so make sure to make a GitHub issue report if you encounter anything odd
+
+## Balancing
+- Starlight regeneration has recieved a large overhaul
+- Each point of starlight regeneration now grants 0.05 Starlight per second
+- Base starlight regeneration is now 5 (0.25 per second)
+- Starlight regeneration penalty from movement significantly reduced
+- Starlight regeneration cooldown after using an ability significantly reduced
+- Many pieces of equipment with Starlight regeneration have been updated to reflect new values
+- Barrier base values have been buffed
+ - Base resistance 40%/30% (expert+/normal) ➜ 50% (always)
+ - Base recharge delay 8s ➜ 5s
+ - Base recharge rate 4 ➜ 6
+- Tentalance damage increased (16 ➜ 18 DMG)
+- Tentalance now has 50% damage falloff per target pierced
+- Ancient Lens critical strike chance decreased (3% ➜ 2%), critical strike damage increased (10% ➜ 15%)
+- Truestrike Lens critical strike chance decreased (4% ➜ 2%), critical strike damage increased (10% ➜ 20%)
+- Soilgun damage reduced (16 ➜ 4)
+- Earthduster damage reduced (25 ➜ 6)
+- Soilgun/Earthduster crimsand nerfed (healing chance 33% ➜ 20%) (healing flat 2 + 10% damage ➜ 1)
+- Auroracle's water will now deal a small amount of damage when you fall in to alert you of the danger
+- Slightly decreased damage of Auroracle's wavy ink attack in phase 1
+- Reduced the spawn rate of display cases
+
+## Misc
+- Armillary Trial now requires you to have defeated each boss atleast once to unlock
+- Armillary Trial will now save your scores across sessions
+- Updated Armillary Trial damage resistance calculations to discourage strategies related to stalling
+- Updated Armillary Trial GUI
+- Added quick hotkeys to Prep Station and Chef Bag
+- Empty Prep Station slots now say which type of ingredient goes there
+- Alican's cutscene camera more accurately predicts his fall
+- Updated numerous sprites
+- Added an indicator to most material items' Material text to show if they're used in a Starlight River recipe or not (doesn't work on nested recipes so don't rely on it too much)
+- Perfectly Generic Object should now more accurately represent the platonic ideal of genericism by being less generic in order to stand out less, rather than being too perfectly generic

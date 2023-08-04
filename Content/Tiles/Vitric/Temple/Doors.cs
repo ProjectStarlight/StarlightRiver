@@ -4,6 +4,7 @@ using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Helpers;
+using Terraria.DataStructures;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -126,11 +127,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			return false;
 		}
 
-		public override void PostSpawnDummy(Projectile dummy)
-		{
-			dummy.position.X -= 8;
-		}
-
 		public override void SetStaticDefaults()
 		{
 			MinPick = int.MaxValue;
@@ -149,22 +145,28 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	{
 		public DashableDoorDummy() : base(TileType<DashableDoor>(), 16 * 3, 16 * 13) { }
 
+		public override void OnSpawn(IEntitySource source)
+		{
+			Projectile.position.X -= 8;
+		}
+
 		public override void Collision(Player Player)
 		{
-			if (Player.Hitbox.Intersects(Projectile.Hitbox))
+			if (AbilityHelper.CheckDash(Player, Projectile.Hitbox))
 			{
-				if (AbilityHelper.CheckDash(Player, Projectile.Hitbox))
+				if (Main.myPlayer == Player.whoAmI)
 				{
 					WorldGen.KillTile(ParentX, ParentY);
-
-					Player.GetModPlayer<AbilityHandler>().ActiveAbility?.Deactivate();
-					Player.velocity = Vector2.Normalize(Player.velocity) * -10f;
-					Player.velocity.Y -= 5;
-
-					CameraSystem.shake += 10;
-
-					Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Player.Center);
+					NetMessage.SendTileSquare(Player.whoAmI, (int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f), 2, 13, TileChangeType.None);
 				}
+
+				Player.GetModPlayer<AbilityHandler>().ActiveAbility?.Deactivate();
+				Player.velocity = Vector2.Normalize(Player.velocity) * -10f;
+				Player.velocity.Y -= 5;
+
+				CameraSystem.shake += 10;
+
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Player.Center);
 			}
 		}
 
