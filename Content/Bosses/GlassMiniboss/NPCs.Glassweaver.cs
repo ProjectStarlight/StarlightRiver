@@ -95,7 +95,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			NPC.boss = true;
 			NPC.defense = 14;
 			NPC.HitSound = SoundID.NPCHit52;
-			Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/Miniboss");
+			Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/GlassWeaver");
 			NPC.dontTakeDamage = true;
 			NPC.npcSlots = 10;
 		}
