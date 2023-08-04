@@ -9,6 +9,7 @@
 - Fixed ancient vitric blade damaging town NPCs
 - Fixed some items with on-hit effects not functioning properly
 - Fixed an issue where other mod's on-hot effects would not function properly
+- Fixed missing tooltip on glass arrowhead
 
 ## Tuning:
 - Increased vengeful spirit drop rate from ghosts (20% => 50%)
