@@ -7,7 +7,7 @@ namespace StarlightRiver.Content.Items.Vitric
 	{
 		public override string Texture => AssetDirectory.VitricItem + Name;
 
-		public GlassArrowhead() : base("Glass Arrowhead", "Critical strikes cause fired arrows to shatter into glass shards") { }
+		public GlassArrowhead() : base("Glass Arrowhead", "Critical strikes cause arrows to shatter into glass shards") { }
 
 		public override void Load()
 		{
@@ -33,10 +33,9 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 		}
 
-		public override void SetStaticDefaults()
+		public override void SafeSetDefaults()
 		{
 			Item.rare = ItemRarityID.Green;
-
 			Item.value = Item.sellPrice(silver: 25);
 		}
 
