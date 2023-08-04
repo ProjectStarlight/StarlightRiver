@@ -221,6 +221,11 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 
 	public class ArchaeologistsWhipGProj : GlobalProjectile
 	{
+		public override bool AppliesToEntity(Projectile entity, bool lateInstantiation)
+		{
+			return entity.minion;
+		}
+
 		public override void AI(Projectile projectile)
 		{
 			Player player = Main.player[projectile.owner];
