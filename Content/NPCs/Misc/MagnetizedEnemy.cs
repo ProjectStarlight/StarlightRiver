@@ -48,7 +48,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 			if (npc.boss || npc.immortal || npc.dontTakeDamage || npc.friendly || npc.townNPC)
 				return;
 
-			if (!Main.rand.NextBool(50))
+			if (!Main.rand.NextBool(30))
 				return;
 
 			if (source is EntitySource_SpawnNPC spawnSource)

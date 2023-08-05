@@ -52,6 +52,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			NPC.noGravity = true;
 			NPC.lifeMax = 10;
 
+			NPC.width = 1;
+			NPC.height = 1;
+
 			fakeBoss = new NPC();
 			fakeBoss.SetDefaults(NPCType<SquidBoss>());
 			fakeBoss.Center = StarlightWorld.squidBossArena.Center() * 16 + new Vector2(0, -500);
@@ -87,6 +90,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		{
 			VisualTimerA += 0.04f; //used as timers for visuals
 			VisualTimerB += 0.01f;
+
+			if ((int)(VisualTimerA * 1 / 0.04f) % 60 == 0)
+				NPC.netUpdate = true;
 
 			if (!NPC.AnyNPCs(NPCType<SquidBoss>()))
 			{

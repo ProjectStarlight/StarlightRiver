@@ -12,6 +12,7 @@
 - Fixed some items with on-hit effects not functioning properly
 - Fixed an issue where other mod's on-hot effects would not function properly
 - Fixed missing tooltip on glass arrowhead
+- Fixed Alican in multiplayer (for real this time)
 
 ## Tuning:
 - Increased vengeful spirit drop rate from ghosts (20% => 50%)
