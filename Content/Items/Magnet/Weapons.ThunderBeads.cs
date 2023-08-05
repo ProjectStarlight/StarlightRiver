@@ -285,6 +285,7 @@ namespace StarlightRiver.Content.Items.Magnet
 		private void OverrideWhipControlPoints(On_Projectile.orig_FillWhipControlPoints orig, Projectile proj, List<Vector2> controlPoints)
 		{
 			orig(proj, controlPoints);
+
 			if (proj.ModProjectile is ThunderBeadsProj modProj && modProj.embedded)
 			{
 				proj.WhipPointsForCollision.Clear();

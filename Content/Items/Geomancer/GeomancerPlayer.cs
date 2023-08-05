@@ -391,6 +391,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 		}
 	}
 
+	// TODO: Refactor to stackable buff
 	public class GeoNPC : GlobalNPC
 	{
 		public override bool InstancePerEntity => true;

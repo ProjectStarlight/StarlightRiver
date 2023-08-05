@@ -209,6 +209,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 				case (int)Phases.DirectPhase:
 
+					NPC.dontTakeDamage = false; // extra failsafe
 					NPC.rotation = MathHelper.Lerp(NPC.rotation, 0, 0.33f);
 
 					if (NPC.velocity.Y > 0f && NPC.collideY && !disableJumpSound)

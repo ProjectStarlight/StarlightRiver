@@ -95,7 +95,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		/// <summary>
 		/// pauses the boss rush and submits your final score, waiting for player to exit out or click retry
 		/// </summary>
-		public static void deadLogic()
+		public static void DeadLogic()
 		{
 			if (Main.GameMode == 0)
 				PersistentDataStoreSystem.GetDataStore<BossRushDataStore>().normalScore = Score;
@@ -371,7 +371,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			// end the rush if the player died
 			if (Main.LocalPlayer.dead)
 			{
-				deadLogic();
+				DeadLogic();
 				return;
 			}
 

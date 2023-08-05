@@ -303,24 +303,27 @@ namespace StarlightRiver.Content.CustomHooks
 
 	public class ProtectionGlobalProjectile : GlobalProjectile //gravestones shouldnt do terrible things
 	{
+		public override bool AppliesToEntity(Projectile entity, bool lateInstantiation)
+		{
+			return entity.aiStyle == 17;
+		}
+
 		public override void PostAI(Projectile Projectile)
 		{
-			if (Projectile.aiStyle == 17)
-			{
-				foreach (Rectangle region in ProtectionWorld.ProtectedRegions)
-				{
-					if (region.Contains(new Point((int)Projectile.Center.X / 16, (int)Projectile.Center.Y / 16)))
-					{
-						Projectile.active = false;
-					}
-				}
 
-				foreach (Ref<Rectangle> region in ProtectionWorld.RuntimeProtectedRegions)
+			foreach (Rectangle region in ProtectionWorld.ProtectedRegions)
+			{
+				if (region.Contains(new Point((int)Projectile.Center.X / 16, (int)Projectile.Center.Y / 16)))
 				{
-					if (region.Value.Contains(new Point((int)Projectile.Center.X / 16, (int)Projectile.Center.Y / 16)))
-					{
-						Projectile.active = false;
-					}
+					Projectile.active = false;
+				}
+			}
+
+			foreach (Ref<Rectangle> region in ProtectionWorld.RuntimeProtectedRegions)
+			{
+				if (region.Value.Contains(new Point((int)Projectile.Center.X / 16, (int)Projectile.Center.Y / 16)))
+				{
+					Projectile.active = false;
 				}
 			}
 		}

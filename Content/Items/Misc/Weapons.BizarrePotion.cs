@@ -817,6 +817,7 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 	}
 
+	// TODO: Port to... buff?
 	public class BizarrePotionGNPC : GlobalNPC
 	{
 		public override bool InstancePerEntity => true;
