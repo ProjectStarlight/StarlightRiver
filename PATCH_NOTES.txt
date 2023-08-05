@@ -22,7 +22,7 @@
 ## Balance:
 - Reduced geomancer armor defense value (16 => 13)
 - Decreased aurora bell cooldown time (5s => 2.5s)
-- Thousandth degree regenerates it's saw if it doesn't return in one second
+- Thousandth degree regenerates it's saw if it doesn't return in 1.2 seconds
 
 ## Misc:
 = Removed some unused content

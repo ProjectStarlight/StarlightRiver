@@ -66,7 +66,9 @@ namespace StarlightRiver.Content.Items.Dungeon
 	{
 		private const int MAXHEAT = 30;
 
-		private const int MAX_COOLDOWN = 60; //if it takes longer than this for the fired shot to return, it is available to use again
+		private const int MAX_COOLDOWN = 80; //if it takes longer than this for the fired shot to return, it is available to use again
+
+		private const int MAX_FIRED = 5; //controls the hardcap on how many fired projectiles can be out at once
 
 		private int flashTimer;
 
@@ -163,7 +165,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 				{
 					CoolDown--;
 				}
-				else
+				else if (owner.ownedProjectileCounts[ModContent.ProjectileType<ThousandthDegreeProjectileFired>()] <= MAX_FIRED)
 				{
 					needsClick = true;
 					fired = false; // good to use again
