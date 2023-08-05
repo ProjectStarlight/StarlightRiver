@@ -261,18 +261,6 @@ namespace StarlightRiver.Content.NPCs.Misc
 				takenKnockback = true;
 		}
 
-		public override void SendExtraAI(BinaryWriter writer)
-		{
-			writer.Write(xTile);
-			writer.Write(yTile);
-		}
-
-		public override void ReceiveExtraAI(BinaryReader reader)
-		{
-			xTile = reader.ReadInt32();
-			yTile = reader.ReadInt32();
-		}
-
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
 			Texture2D texture = Request<Texture2D>(Texture).Value;
