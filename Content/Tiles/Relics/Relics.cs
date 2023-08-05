@@ -21,8 +21,23 @@ namespace StarlightRiver.Content.Tiles.Relics
 
 		private void LoadRelic(string name, string displayName)
 		{
-			Mod.AddContent(new LoaderTileItem(name + "RelicItem", displayName, "", name + "Relic", ItemRarityID.Master, AssetRoot + name, true));
+			Mod.AddContent(new RelicItem(name + "RelicItem", displayName, "", name + "Relic", ItemRarityID.Master, AssetRoot + name, true));
 			Mod.AddContent(new BaseRelic(name));
+		}
+	}
+
+	public class RelicItem : LoaderTileItem
+	{
+		public RelicItem(string internalName, string name, string tooltip, string placetype, int rare = 0, string texturePath = null, bool pathHasName = false, int ItemValue = 0)
+			: base(internalName, name, tooltip, placetype, rare, texturePath, pathHasName, ItemValue)
+		{
+
+		}
+
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
+			Item.master = true;
 		}
 	}
 
@@ -107,8 +122,8 @@ namespace StarlightRiver.Content.Tiles.Relics
 			{
 				if (Main.rand.NextBool(30))
 				{
-					var d = Dust.NewDustPerfect(new Vector2(i + Main.rand.NextFloat(), j + 1) * 16, ModContent.DustType<Dusts.Aurora>(), Vector2.UnitY * Main.rand.Next(-6, -2), 0, new Color(50, Main.rand.Next(100, 200), 255));
-					d.customData = 0.8f;
+					var d = Dust.NewDustPerfect(new Vector2(i + Main.rand.NextFloat(), j + 1) * 16, ModContent.DustType<Dusts.PulsingSparkle>(), Vector2.UnitY * Main.rand.Next(-4, -2), 0, new Color(20, Main.rand.Next(100, 200), 255));
+					d.customData = Main.rand.NextFloat(0.7f, 1.4f);
 				}
 
 				if (Main.rand.NextBool(6))
@@ -170,14 +185,14 @@ namespace StarlightRiver.Content.Tiles.Relics
 			var sin = (float)Math.Sin(Main.GameUpdateCount * 0.05f);
 			var sin2 = (float)Math.Sin(Main.GameUpdateCount * 0.05f + 2f);
 
-			spriteBatch.Draw(tex, drawPos, null, new Color(190, 255, 255, 0), 0, tex.Size() / 2f, 0.3f + sin * 0.1f, 0, 0);
-			spriteBatch.Draw(tex, drawPos, null, new Color(190, 255, 255, 0), 1.57f / 2f, tex.Size() / 2f, 0.2f + sin2 * 0.1f, 0, 0);
+			spriteBatch.Draw(tex, drawPos, null, new Color(190, 255, 255, 0), 0, tex.Size() / 2f, 0.25f + sin * 0.1f, 0, 0);
+			spriteBatch.Draw(tex, drawPos, null, new Color(190, 255, 255, 0), 1.57f / 2f, tex.Size() / 2f, 0.15f + sin2 * 0.1f, 0, 0);
 
-			spriteBatch.Draw(tex, drawPos, null, new Color(0, 230, 255, 0), 0, tex.Size() / 2f, 0.5f + sin * 0.1f, 0, 0);
-			spriteBatch.Draw(tex, drawPos, null, new Color(0, 160, 255, 0), 1.57f / 2f, tex.Size() / 2f, 0.4f + sin2 * 0.1f, 0, 0);
+			spriteBatch.Draw(tex, drawPos, null, new Color(0, 230, 255, 0), 0, tex.Size() / 2f, 0.45f + sin * 0.1f, 0, 0);
+			spriteBatch.Draw(tex, drawPos, null, new Color(0, 160, 255, 0), 1.57f / 2f, tex.Size() / 2f, 0.35f + sin2 * 0.1f, 0, 0);
 
-			spriteBatch.Draw(tex, drawPos, null, new Color(0, 10, 60, 0), 0, tex.Size() / 2f, 0.6f + sin * 0.1f, 0, 0);
-			spriteBatch.Draw(tex, drawPos, null, new Color(0, 0, 60, 0), 1.57f / 2f, tex.Size() / 2f, 0.5f + sin2 * 0.1f, 0, 0);
+			spriteBatch.Draw(tex, drawPos, null, new Color(0, 10, 60, 0), 0, tex.Size() / 2f, 0.55f + sin * 0.1f, 0, 0);
+			spriteBatch.Draw(tex, drawPos, null, new Color(0, 0, 60, 0), 1.57f / 2f, tex.Size() / 2f, 0.45f + sin2 * 0.1f, 0, 0);
 
 			// Draw the main texture
 			spriteBatch.Draw(texture, drawPos, frame, color, 0f, origin, 1f, effects, 0f);

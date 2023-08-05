@@ -3431,16 +3431,6 @@ Items: {
 		DisplayName: Pink Laser Pointer
 		Tooltip: ""
 	}
-
-	AuroracleRelicItem: {
-		DisplayName: Auroracle Relic
-		Tooltip: ""
-	}
-
-	CeirosRelicItem: {
-		DisplayName: Ceiros Relic
-		Tooltip: ""
-	}
 }
 
 Projectiles: {
