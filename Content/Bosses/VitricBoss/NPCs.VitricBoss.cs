@@ -345,6 +345,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			npcLoot.Add(ItemDropRule.Common(ItemType<Items.BarrierDye.VitricBossBarrierDye>(), 10, 1, 1));
 			npcLoot.Add(ItemDropRule.Common(ItemType<Tiles.Trophies.CeirosTrophyItem>(), 10, 1, 1));
+
+			npcLoot.Add(ItemDropRule.MasterModeCommonDrop(Mod.Find<ModItem>("CeirosRelic").Type));
 		}
 
 		public override void BossLoot(ref string name, ref int potionType)

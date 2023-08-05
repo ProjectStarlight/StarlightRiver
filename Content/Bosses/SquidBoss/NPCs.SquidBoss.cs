@@ -200,6 +200,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			npcLoot.Add(normalMode);
 			npcLoot.Add(ItemDropRule.Common(ItemType<Tiles.Trophies.AuroracleTrophyItem>(), 10, 1, 1));
 			npcLoot.Add(ItemDropRule.BossBag(ItemType<SquidBossBag>()));
+
+			npcLoot.Add(ItemDropRule.MasterModeCommonDrop(Mod.Find<ModItem>("AuroracleRelic").Type));
 		}
 
 		public override void BossLoot(ref string name, ref int potionType)

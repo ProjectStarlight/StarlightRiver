@@ -1,5 +1,8 @@
 # Starlight River 0.2.2
 
+## Content:
+- Added relics
+
 ## Fixes:
 - Fixed a crash that could occur when enemies have barrier in multiplayer
 - Fixed loot wraith's having infinite chase range in multiplayer
