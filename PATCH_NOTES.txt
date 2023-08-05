@@ -1,5 +1,8 @@
 # Starlight River v0.2.2
 
+## Content:
+- Added master mode relics
+
 ## Fixes:
 - Fixed Loot Wraith in multiplayer
 - Fixed geomancer armor in multiplayer
