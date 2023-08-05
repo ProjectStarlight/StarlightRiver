@@ -2,9 +2,13 @@
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace StarlightRiver.Content.Items.Dungeon
 {
@@ -130,19 +134,12 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 			if (CanHold && !fired)
 			{
-				if (Main.myPlayer == Projectile.owner)
-				{
-					float interpolant = Utils.GetLerpValue(5f, 25f, Projectile.Distance(Main.MouseWorld), true);
+				owner.TryGetModPlayer(out ControlsPlayer controlsPlayer);
+				controlsPlayer.mouseRotationListener = true;
 
-					Vector2 oldVelocity = Projectile.velocity;
+				float interpolant = Utils.GetLerpValue(5f, 25f, Projectile.Distance(controlsPlayer.mouseWorld), true);
 
-					Projectile.velocity = Vector2.Lerp(Projectile.velocity, owner.DirectionTo(Main.MouseWorld), interpolant);
-					if (Projectile.velocity != oldVelocity)
-					{
-						Projectile.netSpam = 0;
-						Projectile.netUpdate = true;
-					}
-				}
+				Projectile.velocity = Vector2.Lerp(Projectile.velocity, owner.DirectionTo(controlsPlayer.mouseWorld), interpolant);
 
 				wheelRot += MathHelper.Lerp(0.1f, 0.35f, CurrentHeat / MAXHEAT);
 
@@ -158,8 +155,6 @@ namespace StarlightRiver.Content.Items.Dungeon
 				Projectile.friendly = false;
 				if (!fired)
 					LaunchWheel();
-				else if (owner.ownedProjectileCounts[ModContent.ProjectileType<ThousandthDegreeProjectileFired>()] <= 0)
-					Projectile.Kill();
 
 				if (fireProjectile is null || !(fireProjectile.ModProjectile is ThousandthDegreeProjectileFired)) //weird bug where sometimes during Ceiros fight the game thought that the fireProjectile was a Ceiros attack projectile. Didn't actually do anything besides throw an error, weapon still worked as normal. This is just an extra safety check
 					return;
@@ -168,14 +163,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 				{
 					float interpolant = Utils.GetLerpValue(5f, 25f, Projectile.Distance(fireProjectile.Center), true);
 
-					Vector2 oldVelocity = Projectile.velocity;
-
 					Projectile.velocity = Vector2.Lerp(Projectile.velocity, owner.DirectionTo(fireProjectile.Center), interpolant);
-					if (Projectile.velocity != oldVelocity)
-					{
-						Projectile.netSpam = 0;
-						Projectile.netUpdate = true;
-					}
 				}
 			}
 
@@ -285,19 +273,21 @@ namespace StarlightRiver.Content.Items.Dungeon
 			if (Main.myPlayer == Projectile.owner)
 			{
 				int damage = (int)(Projectile.damage * MathHelper.Lerp(0.9f, 2f, CurrentHeat / MAXHEAT));
+				ThousandthDegreeProjectileFired.parentProjToAssign = Projectile;
+				ThousandthDegreeProjectileFired.inputHeatToAssign = CurrentHeat;
 				var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), wheelPos, Projectile.DirectionTo(Main.MouseWorld) * 20f, ModContent.ProjectileType<ThousandthDegreeProjectileFired>(), damage, 2.5f, Projectile.owner);
-				if (proj.ModProjectile is ThousandthDegreeProjectileFired wheel)
-				{
-					wheel.parentProj = Projectile;
-					wheel.inputHeat = CurrentHeat;
-				}
 
 				fireProjectile = proj;
+
+				Projectile.netUpdate = true;
 			}
+
+			owner.TryGetModPlayer(out ControlsPlayer controlsPlayer);
+			controlsPlayer.mouseRotationListener = true;
 
 			for (int i = 0; i < 8; i++)
 			{
-				Vector2 velo = Projectile.DirectionTo(Main.MouseWorld);
+				Vector2 velo = Projectile.DirectionTo(controlsPlayer.mouseWorld);
 				Dust.NewDustPerfect(wheelPos + Main.rand.NextVector2Circular(2f, 2f), ModContent.DustType<Dusts.MagmaSmoke>(), velo.RotatedByRandom(0.5f) * Main.rand.NextFloat(1.8f, 2.5f) + Vector2.UnitY * -1f, 155, default, Main.rand.NextFloat(0.6f, 0.9f));
 
 				Dust.NewDustPerfect(wheelPos, ModContent.DustType<Dusts.Glow>(), velo.RotatedByRandom(0.65f) * Main.rand.NextFloat(5f, 7f), 0, new Color(255, 160, 50), 0.4f);
@@ -310,11 +300,30 @@ namespace StarlightRiver.Content.Items.Dungeon
 			Helper.PlayPitched("Magic/FireHit", 0.45f, 0, wheelPos);
 			CameraSystem.shake += 4;
 		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			int identityToWrite = -1;
+
+			if (fireProjectile != null)
+				identityToWrite = fireProjectile.identity;
+
+			writer.Write(identityToWrite);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			int projIdentity = reader.ReadInt32();
+			fireProjectile = Main.projectile.FirstOrDefault(n => n.active && n.identity == projIdentity);
+		}
 	}
 
 	class ThousandthDegreeProjectileFired : ModProjectile
 	{
 		private const int MAXHEAT = 30;
+
+		public static Projectile parentProjToAssign;
+		public static float inputHeatToAssign;
 
 		private List<Vector2> cache;
 		private Trail trail;
@@ -361,6 +370,12 @@ namespace StarlightRiver.Content.Items.Dungeon
 			Projectile.width = Projectile.height = 36;
 			Projectile.timeLeft = 2400;
 			Projectile.ignoreWater = true;
+		}
+
+		public override void OnSpawn(IEntitySource source)
+		{
+			parentProj = parentProjToAssign;
+			inputHeat = inputHeatToAssign;
 		}
 
 		public override void AI()
@@ -499,6 +514,8 @@ namespace StarlightRiver.Content.Items.Dungeon
 				dust3.velocity = Utils.ToRotationVector2(angle2) * 2f;
 				dust3.noGravity = true;
 			}
+
+			parentProj.Kill();
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
@@ -709,6 +726,20 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 			trail?.Render(effect);
 			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(inputHeat);
+			writer.Write(parentProj.identity);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			inputHeat = reader.ReadSingle();
+			int projIdentity = reader.ReadInt32();
+
+			parentProj = Main.projectile.FirstOrDefault(n => n.active && n.identity == projIdentity);
 		}
 	}
 }
