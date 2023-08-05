@@ -4,6 +4,7 @@
 - Fixed Loot Wraith in multiplayer
 - Fixed geomancer armor in multiplayer
 - Fixed jetwelder in multiplayer
+- Fixed thousandth degree in multiplayer
 - Fixed a crash that could occur when enemies have barrier in multiplayer
 - Fixed a number of issues realated to accessories and loadouts
 - Fixed manabonds being useable in cosmetic slots
