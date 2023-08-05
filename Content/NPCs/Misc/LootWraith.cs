@@ -5,6 +5,7 @@ using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
@@ -73,6 +74,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 			NPC.noTileCollide = true;
 			NPC.dontCountMe = true;
 			NPC.dontTakeDamage = true;
+			NPC.netAlways = true;
 		}
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
@@ -93,14 +95,6 @@ namespace StarlightRiver.Content.NPCs.Misc
 		{
 			xTile = tag.GetInt("xTile");
 			yTile = tag.GetInt("yTile");
-			NPC.Center = ChainStart + new Vector2(0, 1);
-			chain = new VerletChain(NUM_SEGMENTS, true, ChainStart, 5, false)
-			{
-				forceGravity = new Vector2(0, 0.1f),
-				simStartOffset = 0,
-				useEndPoint = true,
-				endPoint = NPC.Center
-			};
 		}
 
 		public override void SaveData(TagCompound tag)
@@ -113,8 +107,22 @@ namespace StarlightRiver.Content.NPCs.Misc
 		{
 			Lighting.AddLight(NPC.Center, Color.Cyan.ToVector3() * 0.5f);
 			NPC.TargetClosest(true);
+
 			if (!enraged)
 			{
+				if (chain is null)
+				{
+					NPC.Center = ChainStart + new Vector2(0, 1);
+
+					chain = new VerletChain(NUM_SEGMENTS, true, ChainStart, 5, false)
+					{
+						forceGravity = new Vector2(0, 0.1f),
+						simStartOffset = 0,
+						useEndPoint = true,
+						endPoint = NPC.Center
+					};
+				}
+
 				screechTimer++;
 
 				if (screechTimer < 30)
@@ -154,9 +162,11 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 				Tile tile = Framing.GetTileSafely(xTile, yTile);
 				Chest chest = Main.chest.Where(n => n != null && n.x == xTile && n.y == yTile).FirstOrDefault();
+
 				if (ChainStart.Distance(Target.Center) < 500 && (!tile.HasTile || chest.frame > 0 || chargeupCounter > 0))
 				{
 					chargeupCounter += 0.01f;
+
 					if (chargeupCounter >= 1)
 					{
 						if (NPC.velocity == Vector2.Zero)
@@ -165,6 +175,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 						xFrame = 1;
 						NPC.rotation = 0;
 						NPC.velocity.Y = -8;
+
 						if (NPC.Distance(ChainStart) > 100)
 						{
 							Helper.PlayPitched("Impacts/GlassExplodeShort", 1, Main.rand.NextFloat(0.1f, 0.3f), NPC.Center);
@@ -179,7 +190,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 							for (int i = 0; i < 14; i++)
 							{
 								Vector2 dir = Main.rand.NextVector2CircularEdge(1, 1);
-								Dust.NewDustPerfect(NPC.Center + dir * 25, ModContent.DustType<Dusts.GlowLineFast>(), dir * Main.rand.NextFloat(10), 0, Color.Cyan, 1);
+								Dust.NewDustPerfect(NPC.Center + dir * 25, DustType<Dusts.GlowLineFast>(), dir * Main.rand.NextFloat(10), 0, Color.Cyan, 1);
 							}
 
 							ChainGores();
@@ -221,6 +232,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 			if (xFrame == 1)
 			{
 				oldPos.Add(NPC.Center);
+
 				if (oldPos.Count > 10)
 					oldPos.RemoveAt(0);
 			}
@@ -437,6 +449,18 @@ namespace StarlightRiver.Content.NPCs.Misc
 				if (Main.rand.NextBool(2))
 					Gore.NewGoreDirect(NPC.GetSource_Death(), segment.posNow, Main.rand.NextVector2Circular(1, 1), Mod.Find<ModGore>("LootWraith_Chain").Type);
 			}
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(xTile);
+			writer.Write(yTile);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			xTile = reader.ReadInt32();
+			yTile = reader.ReadInt32();
 		}
 	}
 }

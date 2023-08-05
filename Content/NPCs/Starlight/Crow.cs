@@ -222,16 +222,19 @@ namespace StarlightRiver.Content.NPCs.Starlight
 				Mod.Logger.Info("Alican is leaving!");
 #endif
 
-				StarlightEventSequenceSystem.willOccur = false;
-				StarlightEventSequenceSystem.occuring = false;
-
-				StarlightEventSequenceSystem.sequence++;
-
-				// Server should tell the clients the event is over
 				if (Main.netMode == NetmodeID.Server)
+				{
+					StarlightEventSequenceSystem.willOccur = false;
+					StarlightEventSequenceSystem.occuring = false;
+
+					StarlightEventSequenceSystem.sequence++;
+
+					// Server should tell the clients the event is over
+
 					NetMessage.SendData(MessageID.WorldData);
 
-				NPC.active = false;
+					NPC.active = false;
+				}
 			}
 		}
 

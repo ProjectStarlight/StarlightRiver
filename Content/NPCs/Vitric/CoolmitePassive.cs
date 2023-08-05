@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		{
 			base.ReceiveExtraAI(reader);
 			melting = reader.ReadBoolean();
-			meltingTimer = reader.Read();
+			meltingTimer = reader.ReadInt32();
 		}
 
 		public override bool PreAI()

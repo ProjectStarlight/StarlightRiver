@@ -122,13 +122,15 @@ namespace StarlightRiver.Content.Items.Utility
 
 		public override void AI()
 		{
-			Projectile.Center = Owner.Center;
+			Vector2 OwnerCenter = Owner.Center + new Vector2(0, Owner.gfxOffY);
+
+			Projectile.Center = OwnerCenter;
 			ControlsPlayer controlsPlayer = Owner.GetModPlayer<ControlsPlayer>();
 			controlsPlayer.mouseRotationListener = true;
-			LaserRotation = (controlsPlayer.mouseWorld - Owner.Center).ToRotation();
+			LaserRotation = (controlsPlayer.mouseWorld - OwnerCenter).ToRotation();
 			Owner.heldProj = Projectile.whoAmI;
 			Owner.itemAnimation = Owner.itemTime = 2;
-			Owner.ChangeDir(Math.Sign((Main.MouseWorld - Owner.Center).X));
+			Owner.ChangeDir(Math.Sign((Main.MouseWorld - OwnerCenter).X));
 			Owner.itemRotation = MathHelper.WrapAngle(LaserRotation - ((Owner.direction == 1) ? 0 : MathHelper.Pi));
 
 			if (Owner.channel)
@@ -148,8 +150,10 @@ namespace StarlightRiver.Content.Items.Utility
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Main.spriteBatch.Draw(ModContent.Request<Texture2D>(Texture).Value, Owner.Center - Main.screenPosition, null, lightColor, LaserRotation, new Vector2(0, ModContent.Request<Texture2D>(Texture).Value.Height - 3), 1, 0, 0);
-			Main.spriteBatch.Draw(ModContent.Request<Texture2D>(Texture + "Glow").Value, Owner.Center - Main.screenPosition, null, color, LaserRotation, new Vector2(0, ModContent.Request<Texture2D>(Texture + "Glow").Value.Height - 3), 1, 0, 0);
+			Vector2 OwnerCenterScreen = Owner.Center + new Vector2(0, Owner.gfxOffY) - Main.screenPosition;
+
+			Main.spriteBatch.Draw(ModContent.Request<Texture2D>(Texture).Value, OwnerCenterScreen, null, lightColor, LaserRotation, new Vector2(0, ModContent.Request<Texture2D>(Texture).Value.Height - 3), 1, 0, 0);
+			Main.spriteBatch.Draw(ModContent.Request<Texture2D>(Texture + "Glow").Value, OwnerCenterScreen, null, color, LaserRotation, new Vector2(0, ModContent.Request<Texture2D>(Texture + "Glow").Value.Height - 3), 1, 0, 0);
 			return false;
 		}
 

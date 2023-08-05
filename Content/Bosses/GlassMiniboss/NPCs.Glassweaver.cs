@@ -95,7 +95,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			NPC.boss = true;
 			NPC.defense = 14;
 			NPC.HitSound = SoundID.NPCHit52;
-			Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/Miniboss");
+			Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/GlassWeaver");
 			NPC.dontTakeDamage = true;
 			NPC.npcSlots = 10;
 		}
@@ -209,6 +209,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 				case (int)Phases.DirectPhase:
 
+					NPC.dontTakeDamage = false; // extra failsafe
 					NPC.rotation = MathHelper.Lerp(NPC.rotation, 0, 0.33f);
 
 					if (NPC.velocity.Y > 0f && NPC.collideY && !disableJumpSound)
