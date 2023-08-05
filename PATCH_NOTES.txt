@@ -3,6 +3,7 @@
 ## Fixes:
 - Fixed Loot Wraith in multiplayer
 - Fixed geomancer armor in multiplayer
+- Fixed jetwelder in multiplayer
 
 ## Balance:
 - Upped Loot Wraith Spawn Rate (1/15) -> (1/8)
