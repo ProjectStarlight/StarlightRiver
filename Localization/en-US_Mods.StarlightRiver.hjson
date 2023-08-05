@@ -2226,6 +2226,11 @@ Items: {
 			'''
 	}
 
+	GlassArrowhead: {
+		DisplayName: Glass Arrowhead
+		Tooltip: Critical strikes cause arrows to shatter into glass shards
+	}
+
 	GlassIdol: {
 		Tooltip: Used to worship a powerful guardian.
 		DisplayName: Glass Idol
@@ -3052,16 +3057,6 @@ Items: {
 		Tooltip: ""
 	}
 
-	VitricBossBarrierItem: {
-		DisplayName: VitricBossBarrierItem
-		Tooltip: debug item
-	}
-
-	GlassweaverBossBarrierItem: {
-		DisplayName: GlassweaverBossBarrierItem
-		Tooltip: debug item
-	}
-
 	CombatShrineBarrierItem: {
 		DisplayName: CombatShrineBarrierItem
 		Tooltip: debug item
@@ -3157,6 +3152,16 @@ Items: {
 		Tooltip: ""
 	}
 
+	VitricBossBarrierItem: {
+		DisplayName: VitricBossBarrierItem
+		Tooltip: debug item
+	}
+
+	GlassweaverBossBarrierItem: {
+		DisplayName: GlassweaverBossBarrierItem
+		Tooltip: debug item
+	}
+
 	TempleChairItem: {
 		DisplayName: Temple Chair
 		Tooltip: ""
@@ -3248,7 +3253,7 @@ Items: {
 	}
 
 	MinibossItem: {
-		DisplayName: Music Box (Miniboss)
+		DisplayName: Music Box (GlassWeaver)
 		Tooltip: ""
 	}
 
@@ -3374,11 +3379,6 @@ Items: {
 
 	StaminaPickup: {
 		DisplayName: Stamina Pickup
-		Tooltip: ""
-	}
-
-	GlassArrowhead: {
-		DisplayName: Glass Arrowhead
 		Tooltip: ""
 	}
 
@@ -4106,21 +4106,6 @@ NPCs: {
 
 	EnchantNPC: {
 		DisplayName: Enchant N P C
-
-		TownNPCMood: {
-			Content: I am content.
-			NoHome: I hate not having a home.
-			FarFromHome: I am too far from home.
-			LoveSpace: I love having so much space.
-			DislikeCrowded: I dislike how crowded I am.
-			HateCrowded: I hate how crowded I am.
-			LikeNPC_Princess: I like {NPCName}.
-			Princess_LovesNPC: I like {NPCName}.
-		}
-	}
-
-	Voidsmith: {
-		DisplayName: Voidsmith
 
 		TownNPCMood: {
 			Content: I am content.
