@@ -21,3 +21,6 @@
 ## Balance:
 - Reduced geomancer armor defense value (16 => 13)
 - Decreased aurora bell cooldown time (5s => 2.5s)
+
+## Misc:
+= Removed some unused content
