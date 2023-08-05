@@ -116,7 +116,7 @@ namespace StarlightRiver.Content.Tiles.Relics
 
 		public override void NearbyEffects(int i, int j, bool closer)
 		{
-			var tile = Framing.GetTileSafely(i, j + 1);
+			Tile tile = Framing.GetTileSafely(i, j + 1);
 
 			if (tile.TileType != Type)
 			{
@@ -138,7 +138,7 @@ namespace StarlightRiver.Content.Tiles.Relics
 
 		public override void SetDrawPositions(int i, int j, ref int width, ref int offsetY, ref int height, ref short tileFrameX, ref short tileFrameY)
 		{
-			tileFrameX %= FrameWidth; 
+			tileFrameX %= FrameWidth;
 			tileFrameY %= FrameHeight * 2;
 		}
 
@@ -150,12 +150,12 @@ namespace StarlightRiver.Content.Tiles.Relics
 
 		public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch)
 		{
-			Vector2 offScreen = new Vector2(Main.offScreenRange);
+			var offScreen = new Vector2(Main.offScreenRange);
 
 			if (Main.drawToScreen)
 				offScreen = Vector2.Zero;
 
-			Point p = new Point(i, j);
+			var p = new Point(i, j);
 			Tile tile = Main.tile[p.X, p.Y];
 
 			if (tile == null || !tile.HasTile)
@@ -181,9 +181,9 @@ namespace StarlightRiver.Content.Tiles.Relics
 			Vector2 drawPos = worldPos + offScreen - Main.screenPosition + new Vector2(0f, -40f) + new Vector2(0f, offset * 4f);
 
 			// background glow
-			var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/StarTexture").Value;
-			var sin = (float)Math.Sin(Main.GameUpdateCount * 0.05f);
-			var sin2 = (float)Math.Sin(Main.GameUpdateCount * 0.05f + 2f);
+			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/StarTexture").Value;
+			float sin = (float)Math.Sin(Main.GameUpdateCount * 0.05f);
+			float sin2 = (float)Math.Sin(Main.GameUpdateCount * 0.05f + 2f);
 
 			spriteBatch.Draw(tex, drawPos, null, new Color(190, 255, 255, 0), 0, tex.Size() / 2f, 0.25f + sin * 0.1f, 0, 0);
 			spriteBatch.Draw(tex, drawPos, null, new Color(190, 255, 255, 0), 1.57f / 2f, tex.Size() / 2f, 0.15f + sin2 * 0.1f, 0, 0);
