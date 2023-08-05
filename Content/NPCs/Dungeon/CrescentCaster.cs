@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 
 		private List<NPC> supportTargets = new();
 
-		private readonly List<CrescentCasterBolt> Bolts = new();
+		private readonly List<CrescentCasterBolt> Bolts = Main.netMode == NetmodeID.Server ? null : new();
 
 		private Player Target => Main.player[NPC.target];
 
@@ -310,6 +310,9 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 
 		private void UpdateBolts()
 		{
+			if (Main.netMode == NetmodeID.Server)
+				return;
+
 			foreach (CrescentCasterBolt bolt in Bolts)
 			{
 				bolt.resetCounter += bolt.resetCounterIncrement;
@@ -349,6 +352,9 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 
 		private void CreateBolt(NPC other)
 		{
+			if (Main.netMode == NetmodeID.Server)
+				return;
+
 			Vector2 midPoint = CalculateMidpoint(other);
 			Bolts.Add(new CrescentCasterBolt(other, NPC, midPoint, Main.rand.NextFloat(2.5f) * NPC.DirectionTo(midPoint)));
 		}
@@ -362,6 +368,9 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 				clearBarrierNPC.rechargeRate = 0;
 				clearBarrierNPC.rechargeDelay = 180;
 			}
+
+			if (Main.netMode == NetmodeID.Server)
+				return;
 
 			foreach (CrescentCasterBolt bolt in Bolts.ToArray())
 			{
