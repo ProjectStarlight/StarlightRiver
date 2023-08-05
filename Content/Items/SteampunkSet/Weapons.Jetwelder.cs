@@ -109,7 +109,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		private float scaleCounter = 0f;
 
-		private Player Player => Main.player[Projectile.owner];
+		private Player Owner => Main.player[Projectile.owner];
 
 		public override string Texture => AssetDirectory.SteampunkItem + "JetwelderSelector";
 
@@ -145,6 +145,9 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		public override bool PreDraw(ref Color lightColor)
 		{
+			if (Main.myPlayer != Owner.whoAmI)
+				return false; // This is effectively a UI element. no logic needed for other clients or server
+
 			DrawRobot(Main.spriteBatch,
 					  ModContent.Request<Texture2D>(Texture + "_Crawler").Value,
 					  ModContent.Request<Texture2D>(Texture + "_Crawler_Gray").Value,
@@ -175,9 +178,12 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		public override void AI()
 		{
-			JetwelderPlayer modPlayer = Player.GetModPlayer<JetwelderPlayer>();
+			if (Main.myPlayer != Owner.whoAmI)
+				return; // This is effectively a UI element. no logic needed for other clients or server
+
+			JetwelderPlayer modPlayer = Owner.GetModPlayer<JetwelderPlayer>();
 			Projectile.velocity = Vector2.Zero;
-			Projectile.Center = Player.Center;
+			Projectile.Center = Owner.Center;
 
 			if (Main.mouseRight)
 			{
@@ -186,18 +192,18 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 				Projectile.timeLeft = 2;
 
-				direction = Player.DirectionTo(Main.MouseWorld);
+				direction = Owner.DirectionTo(Main.MouseWorld);
 				direction.Normalize();
 
-				Player.ChangeDir(Math.Sign(direction.X));
+				Owner.ChangeDir(Math.Sign(direction.X));
 
-				Player.itemTime = Player.itemAnimation = 2;
-				Player.itemRotation = direction.ToRotation();
+				Owner.itemTime = Owner.itemAnimation = 2;
+				Owner.itemRotation = direction.ToRotation();
 
-				if (Player.direction != 1)
-					Player.itemRotation -= 3.14f;
+				if (Owner.direction != 1)
+					Owner.itemRotation -= 3.14f;
 
-				Player.itemRotation = MathHelper.WrapAngle(Player.itemRotation);
+				Owner.itemRotation = MathHelper.WrapAngle(Owner.itemRotation);
 
 				rotation = MathHelper.WrapAngle(direction.ToRotation());
 
@@ -264,11 +270,9 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				if (projType == ModContent.ProjectileType<JetwelderFinal>() && modPlayer.scrap >= 20)
 					modPlayer.scrap -= 20;
 
-				//modPlayer.scrap = 20;
-				//Main.NewText(modPlayer.scrap.ToString(), Color.Orange);
-				Vector2 position = Player.Center;
+				Vector2 position = Owner.Center;
 				if (projType == ModContent.ProjectileType<JetwelderCrawler>() || projType == ModContent.ProjectileType<JetwelderJumper>())
-					position = FindFirstTile(Player.Center, projType);
+					position = FindFirstTile(Owner.Center, projType);
 
 				if (projType == ModContent.ProjectileType<JetwelderGatler>())
 					position.Y -= 10;
@@ -291,7 +295,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 						}
 					}
 
-					var proj = Projectile.NewProjectileDirect(Projectile.InheritSource(Projectile), position, Vector2.Zero, projType, Projectile.damage, Projectile.knockBack, Player.whoAmI);
+					var proj = Projectile.NewProjectileDirect(Projectile.InheritSource(Projectile), position, Vector2.Zero, projType, Projectile.damage, Projectile.knockBack, Owner.whoAmI);
 					proj.originalDamage = Projectile.damage;
 				}
 			}
@@ -319,10 +323,10 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		private void DrawRobot(SpriteBatch spriteBatch, Texture2D regTex, Texture2D grayTex, float angle, int minScrap, float growCounter)
 		{
-			bool gray = Player.GetModPlayer<JetwelderPlayer>().scrap < minScrap;
+			bool gray = Owner.GetModPlayer<JetwelderPlayer>().scrap < minScrap;
 
 			Vector2 dir = angle.ToRotationVector2() * 80;
-			Vector2 pos = Player.Center + dir - Main.screenPosition;
+			Vector2 pos = Owner.Center + dir - Main.screenPosition;
 			Texture2D tex = gray ? grayTex : regTex;
 
 			float lerper = MathHelper.Clamp(EaseFunction.EaseCubicOut.Ease(growCounter), 0, 1);
@@ -344,10 +348,6 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			{
 				spriteBatch.Draw(barTex, new Vector2(i + barTex.Width / 2, barPos.Y), frame, Color.White * (gray ? 0.33f : 1), 0f, barTex.Size() / new Vector2(2, 4), EaseFunction.EaseCubicOut.Ease(scaleCounter), SpriteEffects.None, 0f);
 			}
-			/*Vector2 origin = new Vector2(6, 13);
-            if (minScrap > 9)
-                origin.X = 8;
-            ChatManager.DrawColorCodedStringWithShadow(spriteBatch, Terraria.GameContent.FontAssets.ItemStack.Value, minScrap.ToString(), pos - new Vector2(0, 40 * scale), Player.GetModPlayer<JetwelderPlayer>().scrap >= minScrap ? Color.White : Color.Red, 0f, origin, Vector2.One * EaseFunction.EaseCubicOut.Ease(scaleCounter));*/
 		}
 	}
 
@@ -357,7 +357,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		private float scaleCounter = 0f;
 
-		private Player Player => Main.player[Projectile.owner];
+		private Player Owner => Main.player[Projectile.owner];
 
 		public override string Texture => AssetDirectory.SteampunkItem + Name;
 
@@ -390,25 +390,28 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 			Projectile.velocity = Vector2.Zero;
 
-			if (Player.channel)
+			if (Owner.channel)
 			{
 				Projectile.timeLeft = 2;
-				Player.itemTime = Player.itemAnimation = 2;
+				Owner.itemTime = Owner.itemAnimation = 2;
 
-				direction = Player.DirectionTo(Main.MouseWorld);
+				Owner.TryGetModPlayer(out ControlsPlayer controlsPlayer);
+				controlsPlayer.mouseRotationListener = true;
+
+				direction = Owner.DirectionTo(controlsPlayer.mouseWorld);
 				direction.Normalize();
-				Player.ChangeDir(Math.Sign(direction.X));
+				Owner.ChangeDir(Math.Sign(direction.X));
 
-				Player.itemRotation = direction.ToRotation();
+				Owner.itemRotation = direction.ToRotation();
 
-				if (Player.direction != 1)
-					Player.itemRotation -= 3.14f;
+				if (Owner.direction != 1)
+					Owner.itemRotation -= 3.14f;
 
-				Player.itemRotation = MathHelper.WrapAngle(Player.itemRotation);
+				Owner.itemRotation = MathHelper.WrapAngle(Owner.itemRotation);
 			}
 
 			Projectile.rotation = direction.ToRotation();
-			Projectile.Center = Player.Center + new Vector2(0, Player.gfxOffY) + new Vector2(30, -18 * Player.direction).RotatedBy(Projectile.rotation);
+			Projectile.Center = Owner.Center + new Vector2(0, Owner.gfxOffY) + new Vector2(30, -18 * Owner.direction).RotatedBy(Projectile.rotation);
 
 			for (int i = 0; i < Projectile.width * Projectile.scale; i++)
 				Lighting.AddLight(Projectile.Center + direction * i, Color.LightBlue.ToVector3() * 0.6f);
@@ -423,7 +426,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
-			if (Main.rand.NextBool(4))
+			if (Main.rand.NextBool(4) && Owner.whoAmI == Main.myPlayer)
 				target.AddBuff(BuffID.OnFire, 150);
 
 			modifiers.Knockback *= 0;
@@ -436,7 +439,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			int frameHeight = tex.Height / Main.projFrames[Projectile.type];
 			var frame = new Rectangle(0, frameHeight * Projectile.frame, tex.Width, frameHeight);
 
-			SpriteEffects effects = Player.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipVertically;
+			SpriteEffects effects = Owner.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipVertically;
 			Texture2D bloomTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
 			Color bloomColor = Color.White;
 			bloomColor.A = 0;
@@ -466,6 +469,9 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
+			Owner.TryGetModPlayer(out StarlightPlayer starlightPlayer);
+			starlightPlayer.SetHitPacketStatus(shouldRunProjMethods: true); //only server can spawn items
+
 			if (target.life <= 0 && Main.rand.NextBool(2))
 				SpawnScrap(target.Center);
 			else if (Main.rand.NextBool(8))
@@ -525,7 +531,6 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			if (Player.GetModPlayer<JetwelderPlayer>().scrap < 20)
 				Player.GetModPlayer<JetwelderPlayer>().scrap++;
 
-			//Main.NewText(Player.GetModPlayer<JetwelderPlayer>().scrap.ToString());
 			return false;
 		}
 
@@ -585,7 +590,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		{
 			Player Player = drawInfo.drawPlayer;
 
-			if (Player.HeldItem.type != ModContent.ItemType<Jetwelder>())
+			if (Player.HeldItem.type != ModContent.ItemType<Jetwelder>() || Player.whoAmI != Main.myPlayer)
 				return;
 
 			Texture2D barTex = ModContent.Request<Texture2D>(AssetDirectory.SteampunkItem + "JetwelderBar").Value;

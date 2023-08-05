@@ -1,11 +1,13 @@
-# Starlight River 0.2.2
+# Starlight River v0.2.2
 
 ## Content:
 - Added relics
 
 ## Fixes:
+- Fixed Loot Wraith in multiplayer
+- Fixed geomancer armor in multiplayer
+- Fixed jetwelder in multiplayer
 - Fixed a crash that could occur when enemies have barrier in multiplayer
-- Fixed loot wraith's having infinite chase range in multiplayer
 - Fixed a number of issues realated to accessories and loadouts
 - Fixed manabonds being useable in cosmetic slots
 - Fixed a crash that could occur during auroracle's death
@@ -13,10 +15,16 @@
 - Fixed some items with on-hit effects not functioning properly
 - Fixed an issue where other mod's on-hot effects would not function properly
 - Fixed missing tooltip on glass arrowhead
+- Fixed Alican in multiplayer (for real this time)
 
 ## Tuning:
 - Increased vengeful spirit drop rate from ghosts (20% => 50%)
-- Increased loot wraith generation frequency (1/15 => 1/10)
+- Increased loot wraith generation frequency (1/15 => 1/8)
 
 ## Balance:
+- Reduced geomancer armor defense value (16 => 13)
 - Decreased aurora bell cooldown time (5s => 2.5s)
+
+## Misc:
+= Removed some unused content
+- Updated music tracks for auroracle arena and glassweaver

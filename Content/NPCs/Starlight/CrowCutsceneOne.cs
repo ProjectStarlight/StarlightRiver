@@ -35,7 +35,8 @@ namespace StarlightRiver.Content.NPCs.Starlight
 
 		public override void EndCutscene(Player player)
 		{
-			CameraSystem.ReturnCamera(30, Vector2.SmoothStep);
+			if (player == Main.LocalPlayer)
+				CameraSystem.ReturnCamera(30, Vector2.SmoothStep);
 		}
 	}
 }

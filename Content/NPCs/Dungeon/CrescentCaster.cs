@@ -301,8 +301,11 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 			effect.Parameters["repeats"].SetValue(1f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+
 			foreach (CrescentCasterBolt bolt in Bolts)
+			{
 				bolt.Render(effect);
+			}
 		}
 
 		private void UpdateBolts()
@@ -347,7 +350,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 		private void CreateBolt(NPC other)
 		{
 			Vector2 midPoint = CalculateMidpoint(other);
-			Bolts.Add(new CrescentCasterBolt(other, NPC, midPoint, Main.rand.NextFloat(2.5f) * NPC.DirectionTo(midPoint), Main.instance.GraphicsDevice));
+			Bolts.Add(new CrescentCasterBolt(other, NPC, midPoint, Main.rand.NextFloat(2.5f) * NPC.DirectionTo(midPoint)));
 		}
 
 		private void ClearBarrierAndBolts(List<NPC> npcs)
@@ -434,7 +437,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 
 		public float DistanceFade => 1 - resetCounter / 30f;
 
-		public CrescentCasterBolt(NPC targetNPC, NPC owner, Vector2 midPoint, Vector2 midPointDirection, GraphicsDevice device)
+		public CrescentCasterBolt(NPC targetNPC, NPC owner, Vector2 midPoint, Vector2 midPointDirection)
 		{
 			this.targetNPC = targetNPC;
 			this.owner = owner;
@@ -442,21 +445,26 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 			this.midPointDirection = midPointDirection;
 			resetCounterIncrement = Main.rand.NextFloat(0.85f, 1.15f);
 
-			trail = new Trail(device, 15, new TriangularTip(4), factor => 16, factor =>
+			if (!Main.dedServ)
 			{
-				if (factor.X > 0.99f)
-					return Color.Transparent;
+				GraphicsDevice device = Main.graphics.GraphicsDevice;
 
-				return new Color(160, 220, 255) * fade * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X) * DistanceFade;
-			});
+				trail = new Trail(device, 15, new TriangularTip(4), factor => 16, factor =>
+				{
+					if (factor.X > 0.99f)
+						return Color.Transparent;
 
-			trail2 = new Trail(device, 15, new TriangularTip(4), factor => 3 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
-			{
-				float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
-				return Color.Lerp(baseColor, endColor, EaseFunction.EaseCubicIn.Ease(1 - progress)) * fade * progress * DistanceFade;
-			});
+					return new Color(160, 220, 255) * fade * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X) * DistanceFade;
+				});
 
-			UpdateTrailPoints();
+				trail2 = new Trail(device, 15, new TriangularTip(4), factor => 3 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
+				{
+					float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
+					return Color.Lerp(baseColor, endColor, EaseFunction.EaseCubicIn.Ease(1 - progress)) * fade * progress * DistanceFade;
+				});
+
+				UpdateTrailPoints();
+			}
 
 			fade = 0;
 		}

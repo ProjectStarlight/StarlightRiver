@@ -95,16 +95,6 @@ namespace StarlightRiver.Content.NPCs.Misc
 		{
 			xTile = tag.GetInt("xTile");
 			yTile = tag.GetInt("yTile");
-			NPC.Center = ChainStart + new Vector2(0, 1);
-			chain = new VerletChain(NUM_SEGMENTS, true, ChainStart, 5, false)
-			{
-				forceGravity = new Vector2(0, 0.1f),
-				simStartOffset = 0,
-				useEndPoint = true,
-				endPoint = NPC.Center
-			};
-
-			NPC.netUpdate = true;
 		}
 
 		public override void SaveData(TagCompound tag)
@@ -120,6 +110,19 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 			if (!enraged)
 			{
+				if (chain is null)
+				{
+					NPC.Center = ChainStart + new Vector2(0, 1);
+
+					chain = new VerletChain(NUM_SEGMENTS, true, ChainStart, 5, false)
+					{
+						forceGravity = new Vector2(0, 0.1f),
+						simStartOffset = 0,
+						useEndPoint = true,
+						endPoint = NPC.Center
+					};
+				}
+
 				screechTimer++;
 
 				if (screechTimer < 30)
@@ -256,18 +259,6 @@ namespace StarlightRiver.Content.NPCs.Misc
 		{
 			if (hit.Knockback > 0)
 				takenKnockback = true;
-		}
-
-		public override void SendExtraAI(BinaryWriter writer)
-		{
-			writer.Write(xTile);
-			writer.Write(yTile);
-		}
-
-		public override void ReceiveExtraAI(BinaryReader reader)
-		{
-			xTile = reader.ReadInt32();
-			yTile = reader.ReadInt32();
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -458,6 +449,18 @@ namespace StarlightRiver.Content.NPCs.Misc
 				if (Main.rand.NextBool(2))
 					Gore.NewGoreDirect(NPC.GetSource_Death(), segment.posNow, Main.rand.NextVector2Circular(1, 1), Mod.Find<ModGore>("LootWraith_Chain").Type);
 			}
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(xTile);
+			writer.Write(yTile);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			xTile = reader.ReadInt32();
+			yTile = reader.ReadInt32();
 		}
 	}
 }

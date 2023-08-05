@@ -1,4 +1,4 @@
-﻿# Starlight River v0.2.1
+# Starlight River v0.2.1
 
 ## Fixes:
 - Fixed dashable temple door for multiplayer
