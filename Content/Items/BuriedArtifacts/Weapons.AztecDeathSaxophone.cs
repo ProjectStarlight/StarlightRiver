@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Items.Gravedigger;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
+using System;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -56,7 +57,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 		{
 			if (target.life <= 0)
 			{
-				IncreaseCharge(Player, 0.75f);
+				IncreaseCharge(Player, 2f);
 
 				for (int i = 0; i < 15; i++)
 				{
@@ -71,7 +72,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 
 			if (valid)
 			{
-				IncreaseCharge(Player);
+				IncreaseCharge(Player, Math.Max(4, damage * 0.2f));
 
 				for (int i = 0; i < 15; i++)
 				{
@@ -158,6 +159,9 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 
 			if (flashTimer > 0)
 				color = Color.Lerp(new Color(255, 255, 255, 0), new Color(200, 0, 0, 0), 1f - flashTimer / 45f);
+
+			if (charge >= MAX_CHARGE)
+				color = Color.Lerp(color, Color.White, 0.5f + (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.5f);
 
 			spriteBatch.Draw(texGlow, position + new Vector2(-1), null, color, 0f, origin, scale, 0f, 0f);
 

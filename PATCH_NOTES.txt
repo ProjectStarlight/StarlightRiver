@@ -11,3 +11,7 @@
 ## Content:
 - Added master mode relics
 - Enabled hotsprings
+
+## Balance:
+- Greatly increased charge rate of the aztec death saxophone
+- Aztec death saxophone now flashes when fully charged
