@@ -6,6 +6,7 @@
 - Fixed Shrines spawning in the aether biome
 - Fixed infernal manabond being able to damage immortal NPCs
 - Fixed Vitric blade dealing damage to town NPCs again
+- Fixed thrown offerings occasionally phasing through tiles
 
 ## Content:
 - Added master mode relics
