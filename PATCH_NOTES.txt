@@ -2,3 +2,4 @@
 
 ## Content:
 - Added master mode relics
+- Enabled hotsprings

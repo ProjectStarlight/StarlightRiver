@@ -24,7 +24,7 @@ namespace StarlightRiver.Core
 					{
 						MakePool(target);
 
-						for(int k = -4; k < 6; k++)
+						for (int k = -4; k < 6; k++)
 						{
 							WorldGen.PlaceTile(target.X + target.Width / 2 + k, target.Y + target.Height / 2 - 4, StarlightRiver.Instance.Find<ModTile>("Springstone").Type);
 							WorldGen.PlaceTile(target.X + target.Width / 2 + k / 2, target.Y + target.Height / 2 - 3, StarlightRiver.Instance.Find<ModTile>("Springstone").Type);
@@ -33,12 +33,12 @@ namespace StarlightRiver.Core
 						Helper.PlaceMultitile(new Point16(target.X + target.Width / 2 - 2, target.Y + target.Height / 2 - 9), ModContent.TileType<HotspringFountain>());
 
 						int amount = WorldGen.genRand.Next(2, 5);
-						for(int k = 0; k < amount; k++)
+						for (int k = 0; k < amount; k++)
 						{
-							var pos = target.Center.ToVector2() + Vector2.UnitY.RotatedByRandom(6.28f) * Main.rand.Next(20, 30);
-							var width = Main.rand.Next(20, 35);
-							var height = 8;
-							Rectangle miniTarget = new Rectangle((int)pos.X - width / 2, (int)pos.Y - height / 2, width, height);
+							Vector2 pos = target.Center.ToVector2() + Vector2.UnitY.RotatedByRandom(6.28f) * Main.rand.Next(20, 30);
+							int width = Main.rand.Next(20, 35);
+							int height = 8;
+							var miniTarget = new Rectangle((int)pos.X - width / 2, (int)pos.Y - height / 2, width, height);
 							MakePool(miniTarget);
 						}
 
