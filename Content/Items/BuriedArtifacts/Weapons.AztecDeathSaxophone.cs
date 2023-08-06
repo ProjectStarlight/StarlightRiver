@@ -161,7 +161,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 				color = Color.Lerp(new Color(255, 255, 255, 0), new Color(200, 0, 0, 0), 1f - flashTimer / 45f);
 
 			if (charge >= MAX_CHARGE)
-				color = Color.Lerp(color, Color.White, 0.5f + (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.5f);
+				color = Color.Lerp(color, new Color(200, 200, 200, 0), 0.5f + (float)Math.Sin(Main.GameUpdateCount * 0.2f) * 0.5f);
 
 			spriteBatch.Draw(texGlow, position + new Vector2(-1), null, color, 0f, origin, scale, 0f, 0f);
 
