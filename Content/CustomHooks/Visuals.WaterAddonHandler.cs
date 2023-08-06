@@ -129,7 +129,7 @@ namespace StarlightRiver.Content.CustomHooks
 			if (activeAddon != null)
 			{
 				sb.End();
-				sb.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
 			}
 		}
 
@@ -148,7 +148,7 @@ namespace StarlightRiver.Content.CustomHooks
 			if (activeAddon != null)
 			{
 				sb.End();
-				sb.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
 			}
 		}
 	}

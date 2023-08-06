@@ -15,6 +15,9 @@
     <NoWarn>1701;1702;MSB3270</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="OldPatchNotes\0.2.0\0.2.2.txt" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="tModLoader.CodeAssist" Version="0.1.*" />
     <Reference Include="NetEasy">
       <HintPath>lib\NetEasy_v0.1.8.dll</HintPath>
