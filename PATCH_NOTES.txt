@@ -2,6 +2,7 @@
 
 ## Fixes:
 - Fixed Alican for the 7th time
+- Fixed Auroracle targeting the dummy player in multiplayer
 
 ## Content:
 - Added master mode relics

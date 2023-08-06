@@ -479,6 +479,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void AI()
 		{
+#if DEBUG
+			if (Main.GameUpdateCount % 60 == 0)
+				Mod.Logger.Info($"[{Main.GameUpdateCount}] Auroracle's target is {Main.player[NPC.target].name}({NPC.target}) at {Main.player[NPC.target].Center}");
+#endif
+
 			GlobalTimer++;
 
 			DoLighting();
@@ -537,7 +542,13 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			}
 
 			if (Phase == (int)AIStates.SpawnAnimation)
+			{
 				SpawnAnimation();
+
+				// We need to find an initial target here for MP
+				if (NPC.target == 255)
+					RandomizeTarget();
+			}
 
 			if (Phase == (int)AIStates.FirstPhase) //first phase, part 1. Tentacle attacks and ink.
 			{
