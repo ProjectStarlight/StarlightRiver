@@ -20,7 +20,8 @@ namespace StarlightRiver.Core
 					Point16 dims = new(WorldGen.genRand.Next(30, 70), 10);
 					var target = new Rectangle(x, y, dims.X, dims.Y);
 
-					if (WorldGen.InWorld(x, y) && WorldGenHelper.IsRectangleSafe(target))
+					// Hotsprings spawn with the same conditions as shrines
+					if (WorldGen.InWorld(x, y) && WorldGenHelper.IsRectangleSafe(target, ShrineCondition))
 					{
 						MakePool(target);
 

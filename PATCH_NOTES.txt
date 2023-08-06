@@ -3,6 +3,7 @@
 ## Fixes:
 - Fixed Alican for the 7th time
 - Fixed Auroracle targeting the dummy player in multiplayer
+- Fixed Shrines spawning in the aether biome
 
 ## Content:
 - Added master mode relics
