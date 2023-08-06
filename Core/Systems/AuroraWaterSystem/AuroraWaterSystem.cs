@@ -37,6 +37,8 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 		public static ScreenTarget auroraTarget = new(DrawAuroraTarget, () => true, 1);
 		public static ScreenTarget auroraBackTarget = new(DrawAuroraBackTarget, () => true, 1);
 
+		public static bool failedLoad = false;
+
 		public float Priority => 1;
 
 		public override void Load()
@@ -224,6 +226,13 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 
 		public override unsafe void SaveWorldData(TagCompound tag)
 		{
+			if (failedLoad)
+			{
+				Mod.Logger.Info("Did not save aurora water data as it previously failed to load.");
+				failedLoad = false;
+				return;
+			}
+
 			AuroraWaterData[] myData = Main.tile.GetData<AuroraWaterData>();
 			byte[] data = new byte[myData.Length];
 
@@ -242,6 +251,13 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 		{
 			AuroraWaterData[] targetData = Main.tile.GetData<AuroraWaterData>();
 			byte[] data = tag.GetByteArray("tileData");
+
+			if (targetData.Length != data.Length)
+			{
+				Mod.Logger.Error($"Failed to load aurora water raw data, saved data was of incorrect size. Loaded data was {data.Length}, expected {targetData.Length}. Aurora water will not be loaded.");
+				failedLoad = true;
+				return;
+			}
 
 			fixed (AuroraWaterData* ptr = targetData)
 			{
