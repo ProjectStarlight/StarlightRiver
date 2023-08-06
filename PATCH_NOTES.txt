@@ -1,5 +1,8 @@
 # Starlight River 0.2.3
 
+## Fixes:
+- Fixed Alican for the 7th time
+
 ## Content:
 - Added master mode relics
 - Enabled hotsprings
