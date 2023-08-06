@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override bool? CanHitNPC(Player Player, NPC target)
 		{
-			return !broken;
+			return !broken ? null : false;
 		}
 
 		public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)

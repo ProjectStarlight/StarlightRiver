@@ -4,6 +4,8 @@
 - Fixed Alican for the 7th time
 - Fixed Auroracle targeting the dummy player in multiplayer
 - Fixed Shrines spawning in the aether biome
+- Fixed infernal manabond being able to damage immortal NPCs
+- Fixed Vitric blade dealing damage to town NPCs again
 
 ## Content:
 - Added master mode relics
