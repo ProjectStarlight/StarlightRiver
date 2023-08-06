@@ -2,3 +2,11 @@
 
 ## Content:
 - Added master mode relics
+
+## Balance:
+- Replaced skeleton archers with Hoplites in the shrine of combat
+
+## Misc
+- Updated Hermes' Vow description
+- Added recipe for both desert monoliths
+- Updated Flipped Desert Monolith Description

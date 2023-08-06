@@ -113,6 +113,7 @@ namespace StarlightRiver.Content.Tiles.Desert
 		public override string Texture => AssetDirectory.DesertTile + Name;
 
 		public DesertMonolithItem() : base("Desert Monolith", "Places a section of desert monolith", "DesertMonolith") { }
+
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();
@@ -139,6 +140,7 @@ namespace StarlightRiver.Content.Tiles.Desert
 		public override string Texture => AssetDirectory.DesertTile + Name;
 
 		public DesertMonolithFlippedItem() : base("Flipped Desert Monolith", "Places a section of flipped desert monolith\n'Even the text is flipped!'", "DesertMonolithFlipped") { }
+
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();
