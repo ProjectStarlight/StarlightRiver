@@ -15,3 +15,5 @@
 ## Balance:
 - Greatly increased charge rate of the aztec death saxophone
 - Aztec death saxophone now flashes when fully charged
+- Increased drop rate of jetwelder scrap (roughly 2x)
+- Jetwelder scrap fills ~3x more of the bar
