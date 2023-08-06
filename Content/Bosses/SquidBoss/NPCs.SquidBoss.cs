@@ -537,7 +537,13 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			}
 
 			if (Phase == (int)AIStates.SpawnAnimation)
+			{
 				SpawnAnimation();
+
+				// We need to find an initial target here for MP
+				if (NPC.target == 255)
+					RandomizeTarget();
+			}
 
 			if (Phase == (int)AIStates.FirstPhase) //first phase, part 1. Tentacle attacks and ink.
 			{

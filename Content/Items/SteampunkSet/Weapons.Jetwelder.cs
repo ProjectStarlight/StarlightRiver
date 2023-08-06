@@ -472,9 +472,10 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Owner.TryGetModPlayer(out StarlightPlayer starlightPlayer);
 			starlightPlayer.SetHitPacketStatus(shouldRunProjMethods: true); //only server can spawn items
 
-			if (target.life <= 0 && Main.rand.NextBool(2))
+			if (target.life <= 0)
 				SpawnScrap(target.Center);
-			else if (Main.rand.NextBool(8))
+
+			else if (Main.rand.NextBool(4))
 				SpawnScrap(target.Center);
 		}
 
@@ -528,8 +529,9 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		public override bool OnPickup(Player Player)
 		{
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab, Player.position);
+
 			if (Player.GetModPlayer<JetwelderPlayer>().scrap < 20)
-				Player.GetModPlayer<JetwelderPlayer>().scrap++;
+				Player.GetModPlayer<JetwelderPlayer>().scrap += 4;
 
 			return false;
 		}
