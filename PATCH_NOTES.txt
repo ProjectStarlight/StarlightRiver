@@ -24,3 +24,4 @@
 - Updated description for Hermes' Vow
 - Updated description for Flipped Desert Monolith
 - Added Recipe for Desert Monoliths
+- Added a new sound effect for Forbidden Winds pickup
