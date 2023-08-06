@@ -479,11 +479,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void AI()
 		{
-#if DEBUG
-			if (Main.GameUpdateCount % 60 == 0)
-				Mod.Logger.Info($"[{Main.GameUpdateCount}] Auroracle's target is {Main.player[NPC.target].name}({NPC.target}) at {Main.player[NPC.target].Center}");
-#endif
-
 			GlobalTimer++;
 
 			DoLighting();
