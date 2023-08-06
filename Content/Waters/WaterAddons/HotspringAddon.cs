@@ -1,7 +1,6 @@
 ﻿using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Tiles.Underground;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
-using Terraria.GameContent.Drawing;
 using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Content.Waters.WaterAddons
@@ -53,7 +52,7 @@ namespace StarlightRiver.Content.Waters.WaterAddons
 
 					// This is the offset for the BACKGROUND, which is the position of the FOREGROUND minus screen pos (why? because god is a cruel creature)
 					if (!Main.drawToScreen)
-						pos -= (Main.sceneWaterPos - Main.screenPosition);
+						pos -= Main.sceneWaterPos - Main.screenPosition;
 
 					Vector2 tsp = Main.screenPosition;
 
@@ -79,7 +78,7 @@ namespace StarlightRiver.Content.Waters.WaterAddons
 
 					// This is the offset for the FOREGROUND, which is the position of the WALL RT minus screen pos (why? because god is a cruel creature)
 					if (!Main.drawToScreen)
-						pos -= (Main.sceneWallPos - Main.screenPosition);
+						pos -= Main.sceneWallPos - Main.screenPosition;
 
 					Vector2 tsp = Main.screenPosition;
 
@@ -90,8 +89,6 @@ namespace StarlightRiver.Content.Waters.WaterAddons
 
 		public override void SpritebatchChange()
 		{
-			Main.NewText($"Water: {Main.sceneWaterPos} Background: {Main.sceneBackgroundPos}");
-
 			Effect effect = Filters.Scene["HotspringWater"].GetShader().Shader;
 			effect.Parameters["offset"].SetValue(Vector2.Zero);
 			effect.Parameters["sampleTexture2"].SetValue(hotspringMapTarget.RenderTarget);

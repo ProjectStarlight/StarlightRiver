@@ -123,7 +123,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 		public void DrawMap(SpriteBatch spriteBatch)
 		{
 			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, scale: 18f, 0, 0);
+			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, scale: 24f, 0, 0);
 		}
 	}
 }
