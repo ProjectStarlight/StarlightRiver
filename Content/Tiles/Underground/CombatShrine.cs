@@ -187,8 +187,8 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			if (state == 3)
 			{
-				SpawnNPC(Center + new Vector2(130, 40), NPCID.SkeletonArcher, 20, hpOverride: 0.2f, damageOverride: 0.2f, defenseOverride: 0f);
-				SpawnNPC(Center + new Vector2(-130, 40), NPCID.SkeletonArcher, 20, hpOverride: 0.2f, damageOverride: 0.2f, defenseOverride: 0f);
+				SpawnNPC(Center + new Vector2(130, 40), NPCID.GreekSkeleton, 20);
+				SpawnNPC(Center + new Vector2(-130, 40), NPCID.GreekSkeleton, 20);
 				SpawnNPC(Center + new Vector2(140, -140), NPCID.CaveBat, 20);
 				SpawnNPC(Center + new Vector2(-140, -140), NPCID.CaveBat, 20);
 			}
@@ -198,8 +198,8 @@ namespace StarlightRiver.Content.Tiles.Underground
 				SpawnNPC(Center + new Vector2(130, 50), NPCID.Skeleton, 20);
 				SpawnNPC(Center + new Vector2(-130, 50), NPCID.Skeleton, 20);
 
-				SpawnNPC(Center + new Vector2(267, -40), NPCID.SkeletonArcher, 20, hpOverride: 0.2f, damageOverride: 0.2f, defenseOverride: 0f);
-				SpawnNPC(Center + new Vector2(-267, -40), NPCID.SkeletonArcher, 20, hpOverride: 0.2f, damageOverride: 0.2f, defenseOverride: 0f);
+				SpawnNPC(Center + new Vector2(267, -40), NPCID.GreekSkeleton, 20);
+				SpawnNPC(Center + new Vector2(-267, -40), NPCID.GreekSkeleton, 20);
 
 				SpawnNPC(Center + new Vector2(70, -140), NPCID.CaveBat, 20);
 				SpawnNPC(Center + new Vector2(-70, -140), NPCID.CaveBat, 20);
@@ -207,8 +207,8 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			if (state == 5)
 			{
-				SpawnNPC(Center + new Vector2(130, 50), NPCID.SkeletonArcher, 20, hpOverride: 0.2f, damageOverride: 0.2f, defenseOverride: 0f);
-				SpawnNPC(Center + new Vector2(-130, 50), NPCID.SkeletonArcher, 20, hpOverride: 0.2f, damageOverride: 0.2f, defenseOverride: 0f);
+				SpawnNPC(Center + new Vector2(130, 50), NPCID.GreekSkeleton, 20);
+				SpawnNPC(Center + new Vector2(-130, 50), NPCID.GreekSkeleton, 20);
 
 				SpawnNPC(Center + new Vector2(120, -160), NPCID.CaveBat, 20);
 				SpawnNPC(Center + new Vector2(-120, -160), NPCID.CaveBat, 20);

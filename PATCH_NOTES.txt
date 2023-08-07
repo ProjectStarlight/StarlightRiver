@@ -18,3 +18,10 @@
 - Aztec death saxophone now flashes when fully charged
 - Increased drop rate of jetwelder scrap (roughly 2x)
 - Jetwelder scrap fills ~3x more of the bar
+- Skeleton archers are now replaced by Hoplites in the shrine of combat
+
+## Misc
+- Updated description for Hermes' Vow
+- Updated description for Flipped Desert Monolith
+- Added Recipe for Desert Monoliths
+- Added a new sound effect for Forbidden Winds pickup
