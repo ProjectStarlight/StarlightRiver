@@ -39,9 +39,7 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 
 		private void DrawBehindNPCs(On_Main.orig_DrawCachedProjs orig, Main self, List<int> projCache, bool startSpriteBatch)
 		{
-			orig(self, projCache, startSpriteBatch);
-
-			if (projCache == Main.instance.DrawCacheProjsBehindNPCsAndTiles)
+			if (projCache == Main.instance.DrawCacheProjsBehindNPCsAndTiles && startSpriteBatch)
 			{
 				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.Transform);
 
@@ -53,6 +51,8 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 
 				Main.spriteBatch.End();
 			}
+
+			orig(self, projCache, startSpriteBatch);
 		}
 
 		public override void Unload()

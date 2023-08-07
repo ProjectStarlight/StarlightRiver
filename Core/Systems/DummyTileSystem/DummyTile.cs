@@ -142,7 +142,6 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 
 				if (dummy is null || !dummy.active)
 				{
-					Main.NewText(dummy?.ToString() ?? "null");
 					if (Main.netMode == Terraria.ID.NetmodeID.MultiplayerClient)
 					{
 						var packet = new SpawnDummy(Main.myPlayer, type, i, j);

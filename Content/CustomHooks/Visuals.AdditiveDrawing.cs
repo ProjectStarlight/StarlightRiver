@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.CustomHooks
 					(Main.projectile[k].ModProjectile as IDrawAdditive).DrawAdditive(Main.spriteBatch);
 			}
 
-			foreach(Dummy dummy in DummySystem.dummies) // Dummies
+			foreach (Dummy dummy in DummySystem.dummies) // Dummies
 			{
 				if (dummy is IDrawAdditive drawer)
 					drawer.DrawAdditive(Main.spriteBatch);
