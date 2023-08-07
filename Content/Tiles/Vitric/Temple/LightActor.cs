@@ -67,6 +67,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			int w = Parent.TileFrameY * 8; // The sprite is flipped so we have to flip this too
 			int h = Parent.TileFrameX * 16;
 
+			offscreenRadius = h + 126;
+
 			var target = new Rectangle((int)pos.X - w / 2, (int)pos.Y, w, h);
 
 			if (Main.rand.NextBool(12))
