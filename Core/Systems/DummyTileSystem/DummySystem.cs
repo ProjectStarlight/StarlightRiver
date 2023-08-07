@@ -26,7 +26,7 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 		{
 			orig(self);
 
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.Transform);
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.Transform);
 
 			dummies.ForEach(n =>
 			{
@@ -41,7 +41,7 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 		{
 			orig(self);
 
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.Transform);
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.Transform);
 
 			dummies.ForEach(n =>
 			{

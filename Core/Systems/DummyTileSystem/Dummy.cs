@@ -6,7 +6,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Core.Systems.DummyTileSystem
 {
-	public abstract class Dummy : Entity, ILoadable
+	public abstract class Dummy : Entity, ILoadable, IPostLoadable
 	{
 		/// <summary>
 		/// Numeric ID of this dummy. This is only consistent at runtime and depends on load order.
@@ -42,6 +42,11 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 
 		public void Load(Mod mod)
 		{
+			OnLoad(mod);
+		}
+
+		public void PostLoad()
+		{
 			// Build and register the prototype
 			type = DummySystem.prototypes.Count;
 
@@ -49,8 +54,11 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 
 			DummySystem.prototypes.Add(type, this);
 			DummySystem.types.Add(GetType(), type);
+		}
 
-			OnLoad(mod);
+		public void PostLoadUnload()
+		{
+			Unload();
 		}
 
 		/// <summary>
