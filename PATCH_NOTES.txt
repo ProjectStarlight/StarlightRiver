@@ -8,6 +8,7 @@
 - Fixed Vitric blade dealing damage to town NPCs again
 - Fixed thrown offerings occasionally phasing through tiles
 - Added a graceful fail if aurora water fails to load. Further fixes for this pending.
+- Overhauled the backend for tile dummy actors. This should hopefully resolve issues with missing puzzle elements.
 
 ## Content:
 - Added master mode relics
