@@ -118,7 +118,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 	class DashableDoor : DummyTile
 	{
-		public override int DummyType => ProjectileType<DashableDoorDummy>();
+		public override int DummyType => DummySystem.DummyType<DashableDoorDummy>();
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -145,19 +145,19 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	{
 		public DashableDoorDummy() : base(TileType<DashableDoor>(), 16 * 3, 16 * 13) { }
 
-		public override void OnSpawn(IEntitySource source)
+		public override void OnSpawn()
 		{
-			Projectile.position.X -= 8;
+			position.X -= 8;
 		}
 
 		public override void Collision(Player Player)
 		{
-			if (AbilityHelper.CheckDash(Player, Projectile.Hitbox))
+			if (AbilityHelper.CheckDash(Player, Hitbox))
 			{
 				if (Main.myPlayer == Player.whoAmI)
 				{
 					WorldGen.KillTile(ParentX, ParentY);
-					NetMessage.SendTileSquare(Player.whoAmI, (int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f), 2, 13, TileChangeType.None);
+					NetMessage.SendTileSquare(Player.whoAmI, (int)(position.X / 16f), (int)(position.Y / 16f), 2, 13, TileChangeType.None);
 				}
 
 				Player.GetModPlayer<AbilityHandler>().ActiveAbility?.Deactivate();
@@ -172,8 +172,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public override void PostDraw(Color lightColor)
 		{
-			Main.spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricTile + "TutorialDoor2").Value, Projectile.position + Vector2.UnitX * 8 - Main.screenPosition, lightColor);
-			Main.spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricTile + "TutorialDoor2Glow").Value, Projectile.position + Vector2.UnitX * 8 - Main.screenPosition, Helper.IndicatorColor);
+			Main.spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricTile + "TutorialDoor2").Value, position + Vector2.UnitX * 8 - Main.screenPosition, lightColor);
+			Main.spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricTile + "TutorialDoor2Glow").Value, position + Vector2.UnitX * 8 - Main.screenPosition, Helper.IndicatorColor);
 		}
 	}
 

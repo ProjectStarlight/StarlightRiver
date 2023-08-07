@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Helpers;
+﻿using StarlightRiver.Core.Systems.DummyTileSystem;
+using StarlightRiver.Helpers;
 using System;
 using Terraria.GameInput;
 using Terraria.Graphics.Effects;
@@ -148,6 +149,19 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 					{
 						//we only want to handle special cases for projectiles
 						var whippable = Main.projectile[i].ModProjectile as IFaeWhippable;
+
+						if (whippable != null && whippable.IsWhipColliding(tipsPosition))
+						{
+							attachedWhippable = whippable;
+							attachedWhippable.OnAttach(this);
+							attached = true;
+						}
+					}
+
+					// Check VS dummy interactions
+					foreach (Dummy dummy in DummySystem.dummies)
+					{
+						var whippable = dummy as IFaeWhippable;
 
 						if (whippable != null && whippable.IsWhipColliding(tipsPosition))
 						{

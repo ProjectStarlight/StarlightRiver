@@ -1,21 +1,29 @@
-﻿using System.IO;
+﻿using NetEasy;
+using System;
+using System.IO;
 using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace StarlightRiver.Core.Systems.DummyTileSystem
 {
-	public abstract class Dummy : ModProjectile
+	public abstract class Dummy : Entity, ILoadable
 	{
+		/// <summary>
+		/// Numeric ID of this dummy. This is only consistent at runtime and depends on load order.
+		/// </summary>
+		public int type;
+
+		public bool netUpdate;
+		public int identity;
+
 		protected int validType;
-		private int width;
-		private int height;
 
 		public Tile Parent => Main.tile[ParentX, ParentY];
 
-		public virtual int ParentX => (int)Projectile.Center.X / 16;
-		public virtual int ParentY => (int)Projectile.Center.Y / 16;
+		public virtual int ParentX => (int)Center.X / 16;
+		public virtual int ParentY => (int)Center.Y / 16;
 
-		public override string Texture => AssetDirectory.Invisible;
+		public Dummy() { }
 
 		public Dummy(int validType, int width, int height)
 		{
@@ -29,83 +37,187 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 			return tile.TileType == validType && tile.HasTile;
 		}
 
-		public override bool PreDraw(ref Color lightColor)
+		public void Load(Mod mod)
 		{
-			return false;
+			// Build and register the prototype
+			type = DummySystem.prototypes.Count;
+			DummySystem.prototypes.Add(type, this);
+			DummySystem.types.Add(GetType(), type);
+
+			OnLoad(mod);
 		}
 
+		/// <summary>
+		/// Additional effects that should run when this Dummy's prototype loads at load time. ``this`` will be the prototype here.
+		/// </summary>
+		/// <param name="mod">The Starlight River instance</param>
+		public virtual void OnLoad(Mod mod) { }
+
+		/// <summary>
+		/// Unload anything that needs to be unloaded here
+		/// </summary>
+		public virtual void Unload() { }
+
+		/// <summary>
+		/// The equivelent of this dummy's AI. Runs every frame after projectiles update.
+		/// </summary>
 		public virtual void Update() { }
 
+		/// <summary>
+		/// Effects that should occur when this dummy collides with the player. Override Colliding to change the detection logic.
+		/// </summary>
+		/// <param name="Player">The player colliding with the dummy</param>
 		public virtual void Collision(Player Player) { }
 
+		/// <summary>
+		/// Occurs whenever a new dummy instance is spawned. Similar to SetDefaults on various ModTypes.
+		/// </summary>
 		public virtual void SafeSetDefaults() { }
 
+		/// <summary>
+		/// Effects that occur when a new dummy instance is spawned after defaults are set.
+		/// </summary>
+		public virtual void OnSpawn() { }
+
+		/// <summary>
+		/// Sends extra net data when netUpdate = true
+		/// </summary>
+		/// <param name="writer"></param>
 		public virtual void SafeSendExtraAI(BinaryWriter writer) { }
 
+		/// <summary>
+		/// Companion hook to SafeSendExtraAI, retrieve your data here.
+		/// </summary>
+		/// <param name="reader"></param>
 		public virtual void SafeReceiveExtraAI(BinaryReader reader) { }
 
-		public sealed override void SetStaticDefaults()
+		/// <summary>
+		/// Draws after all projectiles draw.
+		/// </summary>
+		/// <param name="lightColor"></param>
+		public virtual void PostDraw(Color lightColor) { }
+
+		/// <summary>
+		/// Draws behind Tiles and NPCs. Equivelent to Projectile.Hide = true and DrawBehindNPCsAndTiles in DrawBehind hook.
+		/// </summary>
+		public virtual void DrawBehindTiles() { }
+
+		/// <summary>
+		/// Determines if a player should be considered colliding with this dummy or not.
+		/// </summary>
+		/// <param name="player">The player to check</param>
+		/// <returns>If Collision should run or not</returns>
+		public virtual bool Colliding(Player player) 
 		{
-			DisplayName.SetDefault("");
+			return player.Hitbox.Intersects(Hitbox);
 		}
 
-		public sealed override void SendExtraAI(BinaryWriter writer)
+		/// <summary>
+		/// Determines how this entity is cloned (including cloning from the prototype on spawning)
+		/// </summary>
+		/// <returns>A clone of this dummy</returns>
+		public virtual Dummy Clone()
 		{
+			return MemberwiseClone() as Dummy;
+		}
+
+		public void SendExtraAI(BinaryWriter writer)
+		{
+			// These three get ready earlier on to identify the dummy
+			writer.Write(position.X);
+			writer.Write(position.Y);
+			writer.Write(type);
+
 			writer.Write(validType);
 			writer.Write(width);
 			writer.Write(height);
+			writer.Write(identity);
 
 			SafeSendExtraAI(writer);
 		}
 
-		public sealed override void ReceiveExtraAI(BinaryReader reader)
+		public void ReceiveExtraAI(BinaryReader reader)
 		{
 			validType = reader.ReadInt32();
 			width = reader.ReadInt32();
 			height = reader.ReadInt32();
+			identity = reader.ReadInt32();
 
 			var key = new Point16(ParentX, ParentY);
-			DummyTile.dummies[key] = Projectile;
+			DummyTile.dummiesByPosition[key] = this;
 
 			SafeReceiveExtraAI(reader);
 		}
 
-		public sealed override void SetDefaults()
+		public void AI()
 		{
-			SafeSetDefaults();
+			if (!ValidTile(Parent) && Main.netMode != NetmodeID.MultiplayerClient) //multiplayer clients aren't allowed to kill dummies since they can have unloaded tiles
+				active = false;
 
-			Projectile.width = width;
-			Projectile.height = height;
-			Projectile.hostile = true;
-			Projectile.damage = 1;
-			Projectile.timeLeft = 2;
-			Projectile.netImportant = true;
-		}
-
-		public sealed override void AI()
-		{
-			if (ValidTile(Parent) || Main.netMode == NetmodeID.MultiplayerClient) //multiplayer clients aren't allowed to kill dummies since they can have unloaded tiles
-				Projectile.timeLeft = 2;
-
-			if (Main.netMode == NetmodeID.MultiplayerClient)
+			for (int i = 0; i < Main.maxPlayers; i++)
 			{
-				//in single Player we can use the CanHitPlayer, but in MP that is only run by the server so we need to check Players manually for clients
-				for (int i = 0; i < Main.maxPlayers; i++)
-				{
-					Player Player = Main.player[i];
+				Player player = Main.player[i];
 
-					if (Player.Hitbox.Intersects(Projectile.Hitbox))
-						Collision(Player);
-				}
+				if (Colliding(player))
+					Collision(player);
 			}
 
 			Update();
+
+			if (netUpdate)
+			{
+				var stream = new MemoryStream();
+				BinaryWriter writer = new BinaryWriter(stream);
+				SendExtraAI(writer);
+				new DummyPacket(stream.ToArray()).Send(-1, -1, false);
+
+				writer.Dispose();
+			}
 		}
 
-		public sealed override bool CanHitPlayer(Player target)
+		public bool CanHitPlayer(Player target)
 		{
 			Collision(target);
 			return false;
+		}
+	}
+
+	[Serializable]
+	public class DummyPacket : Module
+	{
+		public byte[] data;
+
+		public DummyPacket(byte[] data)
+		{
+			this.data = data;
+		}
+
+		protected override void Receive()
+		{
+			MemoryStream stream = new(data);
+			BinaryReader reader = new(stream);
+
+			float x = reader.ReadSingle();
+			float y = reader.ReadSingle();
+			int type = reader.ReadInt32();
+
+			var dummy = DummyTile.GetDummy((int)(x / 16),(int)(y / 16), type);
+
+			if (dummy != null)
+			{
+				dummy.position = new Vector2(x, y);
+				dummy.type = type;
+
+				dummy.ReceiveExtraAI(reader);
+			}
+
+			reader.Dispose();
+
+			if (Main.netMode == NetmodeID.Server)
+			{
+				Send(-1, -1, false);
+				return;
+			}
 		}
 	}
 }

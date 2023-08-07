@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 	public abstract class EvasionProjectile : ModProjectile
 	{
 		public ref float ParentIdentity => ref Projectile.ai[0];
-		public EvasionShrineDummy Parent => Main.projectile.FirstOrDefault(n => n.identity == ParentIdentity).ModProjectile as EvasionShrineDummy;
+		public EvasionShrineDummy Parent => DummySystem.dummies.FirstOrDefault(n => n is EvasionShrineDummy && (n as EvasionShrineDummy).identity == ParentIdentity) as EvasionShrineDummy;
 
 		public override void OnHitPlayer(Player target, Player.HurtInfo info)
 		{

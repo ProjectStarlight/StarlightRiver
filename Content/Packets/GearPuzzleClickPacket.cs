@@ -1,15 +1,9 @@
 ﻿using NetEasy;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Bosses.VitricBoss;
-using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle;
-using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using Terraria.DataStructures;
 using Terraria.ID;
-using static StarlightRiver.Content.Bosses.VitricBoss.VitricBoss;
-using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Packets
 {
@@ -33,7 +27,7 @@ namespace StarlightRiver.Content.Packets
 
 		protected override void Receive()
 		{
-			var dummy = DummyTile.GetDummy(tileX, tileY, dummyType).ModProjectile as GearTileDummy;
+			var dummy = DummyTile.GetDummy(tileX, tileY, dummyType) as GearTileDummy;
 
 			var entity = TileEntity.ByPosition[new Point16(tileX, tileY)] as GearTileEntity;
 
@@ -44,7 +38,7 @@ namespace StarlightRiver.Content.Packets
 
 				return;
 			}
-				
+
 
 			if (dummy is null)
 			{
@@ -56,14 +50,14 @@ namespace StarlightRiver.Content.Packets
 
 			entity.Disengage();
 
-			dummy.oldSize = dummy.Size;
-			dummy.Size++;
+			dummy.oldSize = dummy.GearSize;
+			dummy.GearSize++;
 			dummy.gearAnimation = 40;
 
 			GearPuzzleHandler.engagedObjectives = 0;
 
 			GearPuzzleHandler.PuzzleOriginEntity?.Engage(2);
-			
+
 			if (Main.netMode == NetmodeID.Server)
 				Send(-1, Sender, false);
 		}

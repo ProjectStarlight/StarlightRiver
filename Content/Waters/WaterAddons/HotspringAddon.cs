@@ -1,6 +1,8 @@
 ﻿using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Tiles.Underground;
+using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
+using System.Linq;
 using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Content.Waters.WaterAddons
@@ -26,12 +28,9 @@ namespace StarlightRiver.Content.Waters.WaterAddons
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default);
 
-			for (int k = 0; k < Main.maxProjectiles; k++)
+			foreach (Dummy dummy in DummySystem.dummies.Where(n => n.active && n is HotspringFountainDummy))
 			{
-				Projectile proj = Main.projectile[k];
-
-				if (proj.active && proj.ModProjectile is HotspringFountainDummy)
-					(proj.ModProjectile as HotspringFountainDummy).DrawMap(Main.spriteBatch);
+				(dummy as HotspringFountainDummy).DrawMap(Main.spriteBatch);
 			}
 		}
 

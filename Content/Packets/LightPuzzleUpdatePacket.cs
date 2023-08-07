@@ -1,16 +1,8 @@
 ﻿using NetEasy;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Bosses.VitricBoss;
-using StarlightRiver.Content.Dusts;
-using StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle;
 using StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle;
-using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
-using Terraria.DataStructures;
 using Terraria.ID;
-using static StarlightRiver.Content.Bosses.VitricBoss.VitricBoss;
-using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Packets
 {
@@ -36,15 +28,15 @@ namespace StarlightRiver.Content.Packets
 
 		protected override void Receive()
 		{
-			ReflectorDummy dummy = DummyTile.GetDummy(x, y, dummyType).ModProjectile as ReflectorDummy;
+			var dummy = DummyTile.GetDummy(x, y, dummyType) as ReflectorDummy;
 
 			if (Main.netMode != NetmodeID.SinglePlayer)
 				dummy.DeactivateDownstream(); //clear beam for everyone before creating the new beams
 
-			dummy.Rotation = rotation;
+			dummy.rotation = rotation;
 
-			dummy.Parent.TileFrameX = (short)(dummy.Rotation / 6.28f * 3600);
-			dummy.Rotation = dummy.Parent.TileFrameX / 3600f * 6.28f;
+			dummy.Parent.TileFrameX = (short)(dummy.rotation / 6.28f * 3600);
+			dummy.rotation = dummy.Parent.TileFrameX / 3600f * 6.28f;
 
 			dummy.FindEndpoint();
 

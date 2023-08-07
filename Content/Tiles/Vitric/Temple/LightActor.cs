@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	{
 		public override string Texture => AssetDirectory.Invisible;
 
-		public override int DummyType => ModContent.ProjectileType<LightActorDummy>();
+		public override int DummyType => DummySystem.DummyType<LightActorDummy>();
 
 		public override void SetStaticDefaults()
 		{
@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
 				return;
 
-			Vector2 pos = Projectile.Center;
+			Vector2 pos = Center;
 			int w = Parent.TileFrameY * 8; // The sprite is flipped so we have to flip this too
 			int h = Parent.TileFrameX * 16;
 
@@ -76,16 +76,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			{
 				Lighting.AddLight(pos + Vector2.UnitY * k * 16, new Vector3(0.5f, 0.75f, 0.9f) * 0.5f);
 			}
-
-			Projectile.hide = true;
 		}
 
-		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
-		{
-			behindNPCsAndTiles.Add(index);
-		}
-
-		public override void PostDraw(Color lightColor)
+		public override void DrawBehindTiles()
 		{
 			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
 				return;
@@ -103,7 +96,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value;
 
-			Vector2 pos = Projectile.Center - Main.screenPosition;
+			Vector2 pos = Center - Main.screenPosition;
 
 			var target = new Rectangle((int)pos.X, (int)pos.Y + 8, Parent.TileFrameX * 16, Parent.TileFrameY * 16);
 			spriteBatch.Draw(tex, target, null, color * 0.1f, 1.57f, new Vector2(0, tex.Height / 2f), 0, 0);

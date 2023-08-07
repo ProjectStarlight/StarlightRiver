@@ -46,14 +46,13 @@ namespace StarlightRiver.Content.Packets
 
 			shrineTile.SetActiveFrame(x, y);
 
-			Projectile dummy = shrineTile.Dummy(x, y);
-			ShrineDummy shrineDummy = dummy.ModProjectile as ShrineDummy;
+			ShrineDummy shrineDummy = shrineTile.Dummy(x, y) as ShrineDummy;
 
-			shrineDummy.Timer = 0;
-			shrineDummy.State = ShrineDummy.SHRINE_STATE_ACTIVE;
+			shrineDummy.timer = 0;
+			shrineDummy.state = ShrineDummy.SHRINE_STATE_ACTIVE;
 			shrineTile.AdditionalSetup(shrineDummy);
 
-			NetMessage.TrySendData(MessageID.SyncProjectile, number: dummy.whoAmI); //setting netupdate to true is strangely unreliable here, so we use netmessage -- TODO: look into why; this may have ramifications elsewhere too
+			shrineDummy.netUpdate = true;
 		}
 	}
 }
