@@ -12,7 +12,7 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 		public override void Load()
 		{
 			On_Main.DrawProjectiles += DrawDummies;
-			On_Main.DrawCachedProjs += DrawBehindNPCs;
+			On_Main.DoDraw_DrawNPCsBehindTiles += DrawBehindNPCs;
 		}
 
 		public override void PostUpdateProjectiles()
@@ -37,22 +37,19 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 			Main.spriteBatch.End();
 		}
 
-		private void DrawBehindNPCs(On_Main.orig_DrawCachedProjs orig, Main self, List<int> projCache, bool startSpriteBatch)
+		private void DrawBehindNPCs(On_Main.orig_DoDraw_DrawNPCsBehindTiles orig, Main self)
 		{
-			if (projCache == Main.instance.DrawCacheProjsBehindNPCsAndTiles && startSpriteBatch)
+			orig(self);
+
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.Transform);
+
+			dummies.ForEach(n =>
 			{
-				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.Transform);
+				if (!n.offscreen)
+					n.DrawBehindTiles();
+			});
 
-				dummies.ForEach(n =>
-				{
-					if (!n.offscreen)
-						n.DrawBehindTiles();
-				});
-
-				Main.spriteBatch.End();
-			}
-
-			orig(self, projCache, startSpriteBatch);
+			Main.spriteBatch.End();
 		}
 
 		public override void Unload()
