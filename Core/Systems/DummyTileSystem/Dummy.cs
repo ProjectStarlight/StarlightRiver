@@ -16,6 +16,9 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 		public bool netUpdate;
 		public int identity;
 
+		public int offscreenRadius = 256;
+		public bool offscreen;
+
 		protected int validType;
 
 		public Tile Parent => Main.tile[ParentX, ParentY];
@@ -41,6 +44,9 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 		{
 			// Build and register the prototype
 			type = DummySystem.prototypes.Count;
+
+			this.SafeSetDefaults();
+
 			DummySystem.prototypes.Add(type, this);
 			DummySystem.types.Add(GetType(), type);
 
@@ -163,6 +169,10 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 			}
 
 			Update();
+
+			Rectangle cullBox = Hitbox;
+			cullBox.Inflate(offscreenRadius, offscreenRadius);
+			offscreen = !cullBox.Intersects(new Rectangle((int)Main.screenPosition.X, (int)Main.screenPosition.Y, Main.screenWidth, Main.screenHeight));
 
 			if (netUpdate)
 			{

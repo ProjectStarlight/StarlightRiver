@@ -137,11 +137,12 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 		{
 			if (!Main.tileFrameImportant[Type] || SpawnConditions(i, j))
 			{
-				int type = DummyType;//cache type here so you dont grab the it from a dict every single iteration
+				int type = DummyType;
 				Dummy dummy = Dummy(i, j);
 
 				if (dummy is null || !dummy.active)
 				{
+					Main.NewText(dummy?.ToString() ?? "null");
 					if (Main.netMode == Terraria.ID.NetmodeID.MultiplayerClient)
 					{
 						var packet = new SpawnDummy(Main.myPlayer, type, i, j);

@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Core.Systems.DummyTileSystem
 {
@@ -15,19 +11,30 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 
 		public override void Load()
 		{
-			On_Main.PostUpdateAllProjectiles += UpdateDummies;
 			On_Main.DrawProjectiles += DrawDummies;
 			On_Main.DrawCachedProjs += DrawBehindNPCs;
 		}
 
-		private void UpdateDummies(On_Main.orig_PostUpdateAllProjectiles orig, Main self)
+		public override void PostUpdateProjectiles()
 		{
 			dummies.ForEach(n => n.AI());
+
+			dummies.RemoveAll(n => !n.active);
 		}
 
 		private void DrawDummies(On_Main.orig_DrawProjectiles orig, Main self)
 		{
-			dummies.ForEach(n => n.PostDraw(Lighting.GetColor((n.Center / 16).ToPoint())));
+			orig(self);
+
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.Transform);
+
+			dummies.ForEach(n =>
+			{
+				if (!n.offscreen)
+					n.PostDraw(Lighting.GetColor((n.Center / 16).ToPoint()));
+			});
+
+			Main.spriteBatch.End();
 		}
 
 		private void DrawBehindNPCs(On_Main.orig_DrawCachedProjs orig, Main self, List<int> projCache, bool startSpriteBatch)
@@ -36,7 +43,15 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 
 			if (projCache == Main.instance.DrawCacheProjsBehindNPCsAndTiles)
 			{
-				dummies.ForEach(n => n.DrawBehindTiles());
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.Transform);
+
+				dummies.ForEach(n =>
+				{
+					if (!n.offscreen)
+						n.DrawBehindTiles();
+				});
+
+				Main.spriteBatch.End();
 			}
 		}
 
@@ -59,9 +74,9 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 		/// <param name="pos">The position in the world to spawn the dummy at</param>
 		public static Dummy NewDummy(int type, Vector2 pos)
 		{
-			var dummy = prototypes[type].Clone();
+			Dummy dummy = prototypes[type].Clone();
 			dummy.active = true;
-			dummy.position = pos;
+			dummy.Center = pos;
 			dummy.identity = Main.rand.Next(int.MaxValue); // Lets hope this is random enough!
 
 			dummy.SafeSetDefaults();
