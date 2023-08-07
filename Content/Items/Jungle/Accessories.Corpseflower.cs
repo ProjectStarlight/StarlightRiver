@@ -173,7 +173,7 @@ namespace StarlightRiver.Content.Items.Jungle
 			if (Equipped(player))
 			{
 				BuffInflictor.InflictStack<CorpseflowerBuff, CorpseflowerStack>(target, 600, new CorpseflowerStack() { duration = 600, damage = Utils.Clamp((int)(damageDone * 0.45f), 1, damageDone) });
-				
+
 				if (Main.myPlayer == player.whoAmI)
 				{
 					target.life += damageDone;
@@ -205,7 +205,7 @@ namespace StarlightRiver.Content.Items.Jungle
 		private void SendDataOverrideHack(On_NetMessage.orig_SendData orig, int msgType, int remoteClient = -1, int ignoreClient = -1, NetworkText text = null, int number = 0, float number2 = 0f, float number3 = 0f, float number4 = 0f, int number5 = 0, int number6 = 0, int number7 = 0)
 		{
 			//SYNC TODO: this could use a full rework for mp compatibility since this is vile
-			if (msgType == MessageID.DamageNPC && Equipped(Main.LocalPlayer) && skipSendData) 
+			if (msgType == MessageID.DamageNPC && Equipped(Main.LocalPlayer) && skipSendData)
 			{
 				skipSendData = false;
 				return; //horrifying hack to avoid sending regular hitpackets while using corpseflower since those could accidentally kill the NPC on other clients / server

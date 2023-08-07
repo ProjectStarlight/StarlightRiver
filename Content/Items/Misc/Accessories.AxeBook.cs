@@ -77,7 +77,7 @@ namespace StarlightRiver.Content.Items.Misc
 						Vector2 vel = Vector2.Normalize(Main.MouseWorld - player.Center) * Math.Clamp(item.damage * 0.12f, 5, 6.5f);
 
 						Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, vel, ModContent.ProjectileType<ThrownAxeProjectile>(), item.damage, item.knockBack, player.whoAmI);
-					} 
+					}
 					else if (Main.myPlayer == player.whoAmI)
 					{
 						float baseAngle = (Main.MouseWorld - player.Center).ToRotation() + (float)Math.PI / 4f;

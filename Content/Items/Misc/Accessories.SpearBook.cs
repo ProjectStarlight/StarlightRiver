@@ -212,7 +212,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.Opacity = opacityToAssign;
 			opacityToAssign = 1f;
 
-			if (spawnProjToAssign && Item.shoot > 0)
+			if (spawnProjToAssign && Item.shoot > ProjectileID.None)
 			{
 				int i = Projectile.NewProjectile(Item.GetSource_FromThis(), Projectile.Center, TargetAngle.ToRotationVector2() * 5, Item.shoot, Projectile.damage, Projectile.knockBack, Projectile.owner);
 				original = Main.projectile[i];
@@ -734,7 +734,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.Opacity = reader.ReadSingle();
 			bool containsOriginalProj = reader.ReadBoolean();
 
-			if (containsOriginalProj) 
+			if (containsOriginalProj)
 			{
 				int originalIdentity = reader.ReadInt32();
 

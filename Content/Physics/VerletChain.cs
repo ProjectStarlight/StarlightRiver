@@ -68,7 +68,7 @@ namespace StarlightRiver.Content.Physics
 			if (chain.parent is null)
 				return true;
 
-			if (chain.parent is Entity)
+			if (chain.parent is not null)
 				return !(chain.parent as Entity).active;
 
 			return false;

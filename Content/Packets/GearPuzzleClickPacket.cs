@@ -39,7 +39,6 @@ namespace StarlightRiver.Content.Packets
 				return;
 			}
 
-
 			if (dummy is null)
 			{
 				if (Main.netMode == NetmodeID.Server)

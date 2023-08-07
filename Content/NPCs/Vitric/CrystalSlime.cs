@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				// Spawn dust
 				for (int k = 0; k < 20; k++)
 				{
-					Dust.NewDust(NPC.Center, 20, 20, DustType<Dusts.Cinder>()); 
+					Dust.NewDust(NPC.Center, 20, 20, DustType<Dusts.Cinder>());
 				}
 			}
 

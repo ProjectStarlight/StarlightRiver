@@ -55,7 +55,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 			Item.DamageType = DamageClass.Summon;
 			Item.damage = 12;
 			Item.UseSound = SoundID.Item44;
-			Item.shoot = 10;
+			Item.shoot = ProjectileID.PurificationPowder;
 			Item.shootSpeed = 1;
 			Item.sentry = true;
 			Item.mana = 20;

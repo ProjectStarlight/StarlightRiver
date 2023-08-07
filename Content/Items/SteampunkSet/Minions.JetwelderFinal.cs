@@ -240,7 +240,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 					frontOffsetY = 16;
 
 					Vector2 velocity = Vector2.UnitY.RotatedByRandom(0.5f).RotatedBy(frontRotation) * -15;
-					
+
 					if (Main.myPlayer == Owner.whoAmI)
 						Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + bulletOffset, velocity, ModContent.ProjectileType<JetwelderFinalMissle>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI, trueTarget.whoAmI);
 				}

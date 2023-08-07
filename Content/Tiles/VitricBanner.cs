@@ -35,8 +35,6 @@ namespace StarlightRiver.Content.Tiles
 
 		public VitricBannerDummy() : base(TileType<VitricBanner>(), 32, 32) { }
 
-
-
 		public override void SafeSetDefaults()
 		{
 			Chain = new TriangularBanner(16, false, Center, 16)

@@ -218,7 +218,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (player.channel && SmartAccessory.GetEquippedInstance(player, ModContent.ItemType<JadeStopwatch>()) != null)
 				return false;
-				
+
 			return base.CanUseItem(item, player);
 		}
 	}

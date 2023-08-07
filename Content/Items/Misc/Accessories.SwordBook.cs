@@ -77,7 +77,7 @@ namespace StarlightRiver.Content.Items.Misc
 				{
 					if (Main.projectile.Any(n => n.active && (n.type == ModContent.ProjectileType<SwordBookProjectile>() || n.type == ModContent.ProjectileType<SwordBookParry>()) && n.owner == player.whoAmI))
 						return false;
-					
+
 					if (Main.mouseRight && Main.myPlayer == player.whoAmI) // Parry on right click
 					{
 						Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Normalize(Main.MouseWorld - player.Center) * 20, ModContent.ProjectileType<SwordBookParry>(), item.damage, item.knockBack, player.whoAmI);
@@ -86,7 +86,7 @@ namespace StarlightRiver.Content.Items.Misc
 					{
 						float baseAngle = (Main.MouseWorld - player.Center).ToRotation() + (float)Math.PI / 4f;
 						Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Zero, ModContent.ProjectileType<SwordBookProjectile>(), item.damage, item.knockBack, player.whoAmI, ai0: baseAngle, ai1: comboState);
-						
+
 						comboState++;
 						comboState %= 4;
 					}
@@ -138,7 +138,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public Player Owner => Main.player[Projectile.owner];
 
 		public ref float BaseAngle => ref Projectile.ai[0];
-		
+
 		public ref float ComboState => ref Projectile.ai[1];
 
 		public override string Texture => AssetDirectory.Invisible;

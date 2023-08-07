@@ -52,7 +52,7 @@ namespace StarlightRiver.Content.Items.Food.Special
 	}
 
 	public class JungleSaladGlobalTile : GlobalTile
-	{ 
+	{
 		public static bool AnyActive = false;//faster to check a static bool than to find the mod player 
 
 		public static HashSet<int> ValidTiles;
@@ -162,7 +162,7 @@ namespace StarlightRiver.Content.Items.Food.Special
 					{
 						DropCustomPotLoot(modplayer, i, j);
 
-						for(int g = 0; g < 5; g++)
+						for (int g = 0; g < 5; g++)
 							Dust.NewDustPerfect(new Vector2(i * 16, j * 16), DustID.GoldCoin, new Vector2(Main.rand.NextFloat(-0.2f, 0.2f), Main.rand.NextFloat(-0.35f, 0.1f)));
 					}
 				}
@@ -190,7 +190,7 @@ namespace StarlightRiver.Content.Items.Food.Special
 						{//does not take the extra 2 chances from expert mode into account
 							Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, ItemID.Heart);
 
-							if(Main.rand.NextBool())//might be unbalanced for grass loot
+							if (Main.rand.NextBool())//might be unbalanced for grass loot
 								Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, ItemID.Heart);
 						}
 						else
@@ -243,9 +243,9 @@ namespace StarlightRiver.Content.Items.Food.Special
 							else
 								Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, ItemID.UnholyArrow, Main.rand.Next(10, 21));
 						}
-						else 
+						else
 						{
-							if(Main.rand.NextBool() && (player.ZonePurity || player.ZoneDirtLayerHeight))
+							if (Main.rand.NextBool() && (player.ZonePurity || player.ZoneDirtLayerHeight))
 								Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, ItemID.Shuriken, Main.rand.Next(12, 25));//est based on drop tests
 							else
 								Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, ItemID.WoodenArrow, Main.rand.Next(10, 21));
@@ -278,7 +278,7 @@ namespace StarlightRiver.Content.Items.Food.Special
 
 				case 5://ropes
 					{
-						if(!Main.hardMode && !player.ZoneUnderworldHeight)
+						if (!Main.hardMode && !player.ZoneUnderworldHeight)
 							Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, ItemID.Rope, Main.rand.Next(20, 41));
 						else
 							goto case 6;//go to money
@@ -315,11 +315,11 @@ namespace StarlightRiver.Content.Items.Food.Special
 			moneyvalue *= Main.rand.NextFloat(0.8f, 1.2f);
 
 			int prev = 10;
-			for(int g = 1; g < 6; g++)//1-5
+			for (int g = 1; g < 6; g++)//1-5
 			{
 				int max = g == 5 ? 100 : prev;//10, 20, 40, 80, 100
 
-				if(Main.rand.NextBool(g * 4))
+				if (Main.rand.NextBool(g * 4))
 					moneyvalue *= 1f + (float)Main.rand.Next(max / 2, max + 1) * 0.01f;
 
 				prev *= 2;
@@ -329,7 +329,7 @@ namespace StarlightRiver.Content.Items.Food.Special
 			{
 				for (int g = 1; g < 4; g++)//1-3
 				{
-					 if (Main.rand.NextBool(g + 1))
+					if (Main.rand.NextBool(g + 1))
 						moneyvalue *= 1f + 0.25f * g;
 				}
 			}
@@ -361,7 +361,7 @@ namespace StarlightRiver.Content.Items.Food.Special
 			if (NPC.downedPirates)
 				moneyvalue *= 1.1f;
 
-			 if (NPC.downedFrost)//unsure if this is frostmoon or frost legion...
+			if (NPC.downedFrost)//unsure if this is frostmoon or frost legion...
 				moneyvalue *= 1.1f;
 
 			while ((int)moneyvalue > 0)//spawns the coins
@@ -397,7 +397,7 @@ namespace StarlightRiver.Content.Items.Food.Special
 					dropAmount = 1;
 
 				moneyvalue -= (float)(coinValue * dropAmount);
-			    Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16,dropItemID, dropAmount);		
+				Item.NewItem(WorldGen.GetItemSource_FromTileBreak(i, j), i * 16, j * 16, 16, 16, dropItemID, dropAmount);
 			}
 		}
 

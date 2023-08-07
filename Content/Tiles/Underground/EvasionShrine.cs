@@ -152,7 +152,6 @@ namespace StarlightRiver.Content.Tiles.Underground
 					netUpdate = true;
 					timer = 128;
 				}
-					
 
 				timer--;
 

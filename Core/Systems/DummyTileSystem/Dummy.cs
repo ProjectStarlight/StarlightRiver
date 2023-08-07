@@ -45,7 +45,7 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 			// Build and register the prototype
 			type = DummySystem.prototypes.Count;
 
-			this.SafeSetDefaults();
+			SafeSetDefaults();
 
 			DummySystem.prototypes.Add(type, this);
 			DummySystem.types.Add(GetType(), type);
@@ -113,7 +113,7 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 		/// </summary>
 		/// <param name="player">The player to check</param>
 		/// <returns>If Collision should run or not</returns>
-		public virtual bool Colliding(Player player) 
+		public virtual bool Colliding(Player player)
 		{
 			return player.Hitbox.Intersects(Hitbox);
 		}
@@ -211,7 +211,7 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 			float y = reader.ReadSingle();
 			int type = reader.ReadInt32();
 
-			var dummy = DummyTile.GetDummy((int)(x / 16),(int)(y / 16), type);
+			Dummy dummy = DummyTile.GetDummy((int)(x / 16), (int)(y / 16), type);
 
 			if (dummy != null)
 			{

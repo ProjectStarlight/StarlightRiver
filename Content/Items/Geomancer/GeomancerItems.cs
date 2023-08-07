@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 				SetBonus(Player);
 			}
-				
+
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab, Player.position);
 			return false;
 		}

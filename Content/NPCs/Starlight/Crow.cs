@@ -217,7 +217,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			}
 
 			if (CutsceneTimer >= 140)
-					NPC.active = false;
+				NPC.active = false;
 		}
 
 		/// <summary>

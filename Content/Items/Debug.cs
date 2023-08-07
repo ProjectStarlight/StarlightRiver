@@ -43,11 +43,13 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
-			for(int x = 0; x < Main.maxTilesX; x++)
-				for(int y = 0; y < Main.maxTilesY; y++)
+			for (int x = 0; x < Main.maxTilesX; x++)
+			{
+				for (int y = 0; y < Main.maxTilesY; y++)
 				{
 					Framing.GetTileSafely(x, y).ClearEverything();
 				}
+			}
 
 			StarlightWorld.SpringGen(default, default);
 			return true;
