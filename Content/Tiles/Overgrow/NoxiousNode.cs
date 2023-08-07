@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 			return base.ValidTile(tile) || DetachedLife > 0;
 		}
 
-		public void Kill(int timeLeft)
+		public void Kill()
 		{
 			Helpers.Helper.PlayPitched("Effects/Splat", 1, 0, Center);
 
