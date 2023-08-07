@@ -10,8 +10,8 @@ namespace StarlightRiver.Content.Tiles.Underground
 		public const float SHRINE_STATE_FAILED = -1;
 		public const float SHRINE_STATE_DEFEATED = -2;
 
-		public ref float Timer => ref Projectile.ai[0];
-		public ref float State => ref Projectile.ai[1];
+		public float timer;
+		public float state;
 
 		public abstract int ArenaOffsetX { get; }
 		public abstract int ArenaSizeX { get; }
@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 			if (Main.netMode == NetmodeID.Server)
 			{
 				NetMessage.SendTileSquare(-1, ParentX, ParentY, ShrineTileWidth - ShrineTileWidth / 2, ShrineTileHeight - ShrineTileHeight / 2, TileChangeType.None);
-				Projectile.netUpdate = true;
+				netUpdate = true;
 			}
 		}
 	}

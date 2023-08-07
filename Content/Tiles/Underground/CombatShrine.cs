@@ -2,6 +2,7 @@
 using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Core.Systems;
+using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public const int COMBAT_SHRINE_TILE_WIDTH = 3;
 		public const int COMBAT_SHRINE_TILE_HEIGHT = 6;
-		public override int DummyType => ModContent.ProjectileType<CombatShrineDummy>();
+		public override int DummyType => DummySystem.DummyType<CombatShrineDummy>();
 
 		public override string Texture => "StarlightRiver/Assets/Tiles/Underground/CombatShrine";
 
@@ -43,7 +44,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public int maxWaves = 6;
 		private int waveTime = 0;
-		public float Windup => Math.Min(1, Timer / 120f);
+		public float Windup => Math.Min(1, timer / 120f);
 
 		public override int ArenaOffsetX => -25;
 		public override int ArenaSizeX => 51;
@@ -57,13 +58,13 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public override void Update()
 		{
-			if (State == SHRINE_STATE_DEFEATED)//dont run anything if this is defeated
+			if (state == SHRINE_STATE_DEFEATED)//dont run anything if this is defeated
 				return;
 
 			//this check never succeeds since the tile does not spawn dummys on the 3rd frame
 			if (Parent.TileFrameX >= 6 * 18)//check file frame for this being defeated
 			{
-				State = SHRINE_STATE_DEFEATED;
+				state = SHRINE_STATE_DEFEATED;
 				return;//return here so defeated shrines never run the below code even when spawning a new dummy
 			}
 
@@ -73,46 +74,46 @@ namespace StarlightRiver.Content.Tiles.Underground
 			{
 				bool thisPlayerInRange = player.active && !player.DeadOrGhost && ArenaPlayer.Intersects(player.Hitbox);
 
-				if (thisPlayerInRange && State != SHRINE_STATE_IDLE)
+				if (thisPlayerInRange && state != SHRINE_STATE_IDLE)
 					player.GetModPlayer<ShrinePlayer>().CombatShrineActive = true;
 
 				anyPlayerInRange = anyPlayerInRange || thisPlayerInRange;
 			}
 
-			if (State == SHRINE_STATE_IDLE && Parent.TileFrameX >= 3 * 18)//if idle and frame isnt default (happens when entity is despawned while active)
+			if (state == SHRINE_STATE_IDLE && Parent.TileFrameX >= 3 * 18)//if idle and frame isnt default (happens when entity is despawned while active)
 			{
 				SetFrame(0);
 				return;
 			}
 
-			if (State != SHRINE_STATE_IDLE)//this does not need a defeated check because of the above one
+			if (state != SHRINE_STATE_IDLE)//this does not need a defeated check because of the above one
 			{
 				ProtectionWorld.AddRegionBySource(new Point16(ParentX, ParentY), ArenaTile);//stop calling this and call RemoveRegionBySource() when shrine is completed
 
-				(Mod as StarlightRiver).useIntenseMusic = true;
-				Dust.NewDustPerfect(Projectile.Center + new Vector2(Main.rand.NextFloat(-24, 24), 28), ModContent.DustType<Dusts.Glow>(), Vector2.UnitY * -Main.rand.NextFloat(2), 0, new Color(255, 40 + Main.rand.Next(50), 75) * Windup, 0.2f);
+				StarlightRiver.Instance.useIntenseMusic = true;
+				Dust.NewDustPerfect(Center + new Vector2(Main.rand.NextFloat(-24, 24), 28), ModContent.DustType<Dusts.Glow>(), Vector2.UnitY * -Main.rand.NextFloat(2), 0, new Color(255, 40 + Main.rand.Next(50), 75) * Windup, 0.2f);
 
 				if (Main.rand.NextBool(2))
 				{
-					Dust.NewDustPerfect(Projectile.Center + new Vector2(-25 * 16 - 8 + 32, 24 + Main.rand.Next(-40, 40)), ModContent.DustType<Dusts.Glow>(), Vector2.UnitX * -Main.rand.NextFloat(2), 0, new Color(255, 40 + Main.rand.Next(50), 75) * Windup, 0.35f);
-					Dust.NewDustPerfect(Projectile.Center + new Vector2(24 * 16, 24 + Main.rand.Next(-40, 40)), ModContent.DustType<Dusts.Glow>(), Vector2.UnitX * Main.rand.NextFloat(2), 0, new Color(255, 40 + Main.rand.Next(50), 75) * Windup, 0.35f);
+					Dust.NewDustPerfect(Center + new Vector2(-25 * 16 - 8 + 32, 24 + Main.rand.Next(-40, 40)), ModContent.DustType<Dusts.Glow>(), Vector2.UnitX * -Main.rand.NextFloat(2), 0, new Color(255, 40 + Main.rand.Next(50), 75) * Windup, 0.35f);
+					Dust.NewDustPerfect(Center + new Vector2(24 * 16, 24 + Main.rand.Next(-40, 40)), ModContent.DustType<Dusts.Glow>(), Vector2.UnitX * Main.rand.NextFloat(2), 0, new Color(255, 40 + Main.rand.Next(50), 75) * Windup, 0.35f);
 				}
 
-				if (State == SHRINE_STATE_FAILED || !anyPlayerInRange) //"fail" conditions, no living Players in radius or already failing
+				if (state == SHRINE_STATE_FAILED || !anyPlayerInRange) //"fail" conditions, no living Players in radius or already failing
 				{
-					State = SHRINE_STATE_FAILED;
+					state = SHRINE_STATE_FAILED;
 
-					if (Timer > 128)
+					if (timer > 128)
 					{
-						Projectile.netUpdate = true;
-						Timer = 128;
+						netUpdate = true;
+						timer = 128;
 					}
 
-					Timer--;
+					timer--;
 
-					if (Timer <= 0)
+					if (timer <= 0)
 					{
-						State = SHRINE_STATE_IDLE;
+						state = SHRINE_STATE_IDLE;
 						waveTime = 0;
 
 						foreach (NPC NPC in minions)
@@ -125,19 +126,19 @@ namespace StarlightRiver.Content.Tiles.Underground
 					return;
 				}
 
-				Timer++;
+				timer++;
 
-				if (State == maxWaves + 2)
+				if (state == maxWaves + 2)
 				{
-					if (Timer - waveTime >= 128)// --- !  WIN CONDITION  ! ---
+					if (timer - waveTime >= 128)// --- !  WIN CONDITION  ! ---
 					{
 						for (int k = 0; k < 30; k++)
-							Dust.NewDustPerfect(Projectile.Center + new Vector2(0, -32), ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5), 0, new Color(255, 100, 100), 0.6f);
+							Dust.NewDustPerfect(Center + new Vector2(0, -32), ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5), 0, new Color(255, 100, 100), 0.6f);
 
 						SpawnReward();
-						State = SHRINE_STATE_DEFEATED;
+						state = SHRINE_STATE_DEFEATED;
 
-						Timer = 0;
+						timer = 0;
 						waveTime = 0;
 						SetFrame(2);
 						ProtectionWorld.RemoveRegionBySource(new Point16(ParentX, ParentY));
@@ -149,11 +150,11 @@ namespace StarlightRiver.Content.Tiles.Underground
 				// iterate over minions and remove from the list any that are not given name shadow or active to avoid other npcs replacing them and still counting
 				minions.RemoveAll(n => !n.active || n.GivenName != "Shadow");
 
-				if (!minions.Any(n => n.active) && Timer - waveTime > 181) //advance the wave
+				if (!minions.Any(n => n.active) && timer - waveTime > 181) //advance the wave
 				{
 					SpawnWave();
-					waveTime = (int)Timer;
-					State++;
+					waveTime = (int)timer;
+					state++;
 				}
 			}
 			//else//renable this if there are issues with protection being left on
@@ -165,66 +166,66 @@ namespace StarlightRiver.Content.Tiles.Underground
 		private void SpawnWave()
 		{
 			for (int k = 0; k < 20; k++)
-				Dust.NewDustPerfect(Projectile.Center + new Vector2(Main.rand.NextFloat(-24, 24), 28), ModContent.DustType<Dusts.Glow>(), Vector2.UnitY * -Main.rand.NextFloat(5), 0, new Color(255, Main.rand.Next(50), 0), 0.5f);
+				Dust.NewDustPerfect(Center + new Vector2(Main.rand.NextFloat(-24, 24), 28), ModContent.DustType<Dusts.Glow>(), Vector2.UnitY * -Main.rand.NextFloat(5), 0, new Color(255, Main.rand.Next(50), 0), 0.5f);
 
-			if (State == 1)
+			if (state == 1)
 			{
-				SpawnNPC(Projectile.Center + new Vector2(130, 50), NPCID.RedSlime, 20);
-				SpawnNPC(Projectile.Center + new Vector2(-130, 50), NPCID.RedSlime, 20);
-				SpawnNPC(Projectile.Center + new Vector2(267, -40), NPCID.RedSlime, 20);
-				SpawnNPC(Projectile.Center + new Vector2(-267, -40), NPCID.RedSlime, 20);
+				SpawnNPC(Center + new Vector2(130, 50), NPCID.RedSlime, 20);
+				SpawnNPC(Center + new Vector2(-130, 50), NPCID.RedSlime, 20);
+				SpawnNPC(Center + new Vector2(267, -40), NPCID.RedSlime, 20);
+				SpawnNPC(Center + new Vector2(-267, -40), NPCID.RedSlime, 20);
 			}
 
-			if (State == 2)
+			if (state == 2)
 			{
-				SpawnNPC(Projectile.Center + new Vector2(110, 50), NPCID.RedSlime, 20);
-				SpawnNPC(Projectile.Center + new Vector2(-110, 50), NPCID.RedSlime, 20);
-				SpawnNPC(Projectile.Center + new Vector2(240, 40), NPCID.Skeleton, 20);
-				SpawnNPC(Projectile.Center + new Vector2(-240, 40), NPCID.Skeleton, 20);
-				SpawnNPC(Projectile.Center + new Vector2(0, -150), NPCID.CaveBat, 20);
+				SpawnNPC(Center + new Vector2(110, 50), NPCID.RedSlime, 20);
+				SpawnNPC(Center + new Vector2(-110, 50), NPCID.RedSlime, 20);
+				SpawnNPC(Center + new Vector2(240, 40), NPCID.Skeleton, 20);
+				SpawnNPC(Center + new Vector2(-240, 40), NPCID.Skeleton, 20);
+				SpawnNPC(Center + new Vector2(0, -150), NPCID.CaveBat, 20);
 			}
 
-			if (State == 3)
+			if (state == 3)
 			{
-				SpawnNPC(Projectile.Center + new Vector2(130, 40), NPCID.GreekSkeleton, 20);
-				SpawnNPC(Projectile.Center + new Vector2(-130, 40), NPCID.GreekSkeleton, 20);
-				SpawnNPC(Projectile.Center + new Vector2(140, -140), NPCID.CaveBat, 20);
-				SpawnNPC(Projectile.Center + new Vector2(-140, -140), NPCID.CaveBat, 20);
+				SpawnNPC(Center + new Vector2(130, 40), NPCID.GreekSkeleton, 20);
+				SpawnNPC(Center + new Vector2(-130, 40), NPCID.GreekSkeleton, 20);
+				SpawnNPC(Center + new Vector2(140, -140), NPCID.CaveBat, 20);
+				SpawnNPC(Center + new Vector2(-140, -140), NPCID.CaveBat, 20);
 			}
 
-			if (State == 4)
+			if (state == 4)
 			{
-				SpawnNPC(Projectile.Center + new Vector2(130, 50), NPCID.Skeleton, 20);
-				SpawnNPC(Projectile.Center + new Vector2(-130, 50), NPCID.Skeleton, 20);
+				SpawnNPC(Center + new Vector2(130, 50), NPCID.Skeleton, 20);
+				SpawnNPC(Center + new Vector2(-130, 50), NPCID.Skeleton, 20);
 
-				SpawnNPC(Projectile.Center + new Vector2(267, -40), NPCID.GreekSkeleton, 20);
-				SpawnNPC(Projectile.Center + new Vector2(-267, -40), NPCID.GreekSkeleton, 20);
+				SpawnNPC(Center + new Vector2(267, -40), NPCID.GreekSkeleton, 20);
+				SpawnNPC(Center + new Vector2(-267, -40), NPCID.GreekSkeleton, 20);
 
-				SpawnNPC(Projectile.Center + new Vector2(70, -140), NPCID.CaveBat, 20);
-				SpawnNPC(Projectile.Center + new Vector2(-70, -140), NPCID.CaveBat, 20);
+				SpawnNPC(Center + new Vector2(70, -140), NPCID.CaveBat, 20);
+				SpawnNPC(Center + new Vector2(-70, -140), NPCID.CaveBat, 20);
 			}
 
-			if (State == 5)
+			if (state == 5)
 			{
-				SpawnNPC(Projectile.Center + new Vector2(130, 50), NPCID.GreekSkeleton, 20);
-				SpawnNPC(Projectile.Center + new Vector2(-130, 50), NPCID.GreekSkeleton, 20);
+				SpawnNPC(Center + new Vector2(130, 50), NPCID.GreekSkeleton, 20);
+				SpawnNPC(Center + new Vector2(-130, 50), NPCID.GreekSkeleton, 20);
 
-				SpawnNPC(Projectile.Center + new Vector2(120, -160), NPCID.CaveBat, 20);
-				SpawnNPC(Projectile.Center + new Vector2(-120, -160), NPCID.CaveBat, 20);
+				SpawnNPC(Center + new Vector2(120, -160), NPCID.CaveBat, 20);
+				SpawnNPC(Center + new Vector2(-120, -160), NPCID.CaveBat, 20);
 
-				SpawnNPC(Projectile.Center + new Vector2(220, -110), NPCID.CaveBat, 20);
-				SpawnNPC(Projectile.Center + new Vector2(-220, -110), NPCID.CaveBat, 20);
+				SpawnNPC(Center + new Vector2(220, -110), NPCID.CaveBat, 20);
+				SpawnNPC(Center + new Vector2(-220, -110), NPCID.CaveBat, 20);
 			}
 
-			if (State == 6)
+			if (state == 6)
 			{
-				SpawnNPC(Projectile.Center + new Vector2(130, 50), NPCID.Skeleton, 20);
-				SpawnNPC(Projectile.Center + new Vector2(-130, 50), NPCID.Skeleton, 20);
+				SpawnNPC(Center + new Vector2(130, 50), NPCID.Skeleton, 20);
+				SpawnNPC(Center + new Vector2(-130, 50), NPCID.Skeleton, 20);
 
-				SpawnNPC(Projectile.Center + new Vector2(267, -50), NPCID.Skeleton, 20);
-				SpawnNPC(Projectile.Center + new Vector2(-267, -50), NPCID.Skeleton, 20);
+				SpawnNPC(Center + new Vector2(267, -50), NPCID.Skeleton, 20);
+				SpawnNPC(Center + new Vector2(-267, -50), NPCID.Skeleton, 20);
 
-				SpawnNPC(Projectile.Center + new Vector2(0, -170), NPCID.Demon, 40, hpOverride: 2f, scale: 1.5f);
+				SpawnNPC(Center + new Vector2(0, -170), NPCID.Demon, 40, hpOverride: 2f, scale: 1.5f);
 			}
 		}
 
@@ -243,9 +244,9 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		private void SpawnReward()
 		{
-			Item.NewItem(Projectile.GetSource_FromAI(), Projectile.getRect(), ModContent.ItemType<DullBlade>());
-			ShrineUtils.SimulateGoldChest(Projectile, false);//todo: maybe this should be a relic on no-hit
-			ShrineUtils.SimulateWoodenChest(Projectile);
+			Item.NewItem(GetSource_FromAI(), Hitbox, ModContent.ItemType<DullBlade>());
+			ShrineUtils.SimulateGoldChest(this, false);//todo: maybe this should be a relic on no-hit
+			ShrineUtils.SimulateWoodenChest(this);
 		}
 
 		public override void PostDraw(Color lightColor)
@@ -281,39 +282,39 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			if (State != SHRINE_STATE_IDLE && State != SHRINE_STATE_DEFEATED)
+			if (state != SHRINE_STATE_IDLE && state != SHRINE_STATE_DEFEATED)
 			{
 				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Moonstone/GlowSmall").Value;
 				var origin = new Vector2(tex.Width / 2, tex.Height);
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, 60), default, GetBeamColor(StarlightWorld.visualTimer), 0, origin, 3.5f, 0, 0);
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(10, 60), default, GetBeamColor(StarlightWorld.visualTimer + 2) * 0.8f, 0, origin, 2.5f, 0, 0);
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(-10, 60), default, GetBeamColor(StarlightWorld.visualTimer + 4) * 0.8f, 0, origin, 3.2f, 0, 0);
+				spriteBatch.Draw(tex, Center - Main.screenPosition + new Vector2(0, 60), default, GetBeamColor(StarlightWorld.visualTimer), 0, origin, 3.5f, 0, 0);
+				spriteBatch.Draw(tex, Center - Main.screenPosition + new Vector2(10, 60), default, GetBeamColor(StarlightWorld.visualTimer + 2) * 0.8f, 0, origin, 2.5f, 0, 0);
+				spriteBatch.Draw(tex, Center - Main.screenPosition + new Vector2(-10, 60), default, GetBeamColor(StarlightWorld.visualTimer + 4) * 0.8f, 0, origin, 3.2f, 0, 0);
 
 				float rad = -32;
 
-				if (State >= maxWaves + 2)
-					rad += Helpers.Helper.BezierEase((Timer - waveTime) / 128f) * 32;
+				if (state >= maxWaves + 2)
+					rad += Helpers.Helper.BezierEase((timer - waveTime) / 128f) * 32;
 
-				for (int k = 0; k < Math.Min(State - 2, maxWaves - 1); k++)
+				for (int k = 0; k < Math.Min(state - 2, maxWaves - 1); k++)
 				{
 					Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
-					spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, -44) + Vector2.UnitX.RotatedBy(k / (float)(maxWaves - 2) * 3.14f) * rad, default, new Color(255, 100, 100), 0, tex.Size() / 2, 0.3f, 0, 0);
-					spriteBatch.Draw(tex2, Projectile.Center - Main.screenPosition + new Vector2(0, -32) + Vector2.UnitX.RotatedBy(k / (float)(maxWaves - 2) * 3.14f) * rad, default, new Color(255, 100, 100), 0, tex2.Size() / 2, 0.3f, 0, 0);
-					spriteBatch.Draw(tex2, Projectile.Center - Main.screenPosition + new Vector2(0, -32) + Vector2.UnitX.RotatedBy(k / (float)(maxWaves - 2) * 3.14f) * rad, default, Color.White, 0, tex2.Size() / 2, 0.1f, 0, 0);
+					spriteBatch.Draw(tex, Center - Main.screenPosition + new Vector2(0, -44) + Vector2.UnitX.RotatedBy(k / (float)(maxWaves - 2) * 3.14f) * rad, default, new Color(255, 100, 100), 0, tex.Size() / 2, 0.3f, 0, 0);
+					spriteBatch.Draw(tex2, Center - Main.screenPosition + new Vector2(0, -32) + Vector2.UnitX.RotatedBy(k / (float)(maxWaves - 2) * 3.14f) * rad, default, new Color(255, 100, 100), 0, tex2.Size() / 2, 0.3f, 0, 0);
+					spriteBatch.Draw(tex2, Center - Main.screenPosition + new Vector2(0, -32) + Vector2.UnitX.RotatedBy(k / (float)(maxWaves - 2) * 3.14f) * rad, default, Color.White, 0, tex2.Size() / 2, 0.1f, 0, 0);
 				}
 
 				Texture2D barrier = ModContent.Request<Texture2D>("StarlightRiver/Assets/MotionTrail").Value;
 				var sourceRect = new Rectangle(0, (int)(Main.GameUpdateCount * 0.4f), barrier.Width, barrier.Height);
 				var sourceRect2 = new Rectangle(0, (int)(Main.GameUpdateCount * -0.73f), barrier.Width, barrier.Height);
 
-				var targetRect = new Rectangle((int)(Projectile.Center.X - Main.screenPosition.X) - 25 * 16 - 10, (int)(Projectile.Center.Y - Main.screenPosition.Y) - 16, 32, 80);
+				var targetRect = new Rectangle((int)(Center.X - Main.screenPosition.X) - 25 * 16 - 10, (int)(Center.Y - Main.screenPosition.Y) - 16, 32, 80);
 				spriteBatch.Draw(barrier, targetRect, sourceRect, new Color(255, 100, 100) * 0.6f * Windup);
 				spriteBatch.Draw(barrier, targetRect, sourceRect2, new Color(255, 50, 50) * 0.5f * Windup);
 				targetRect.Inflate(-15, 0);
 				targetRect.Offset(15, 0);
 				spriteBatch.Draw(barrier, targetRect, sourceRect2, Color.White * Windup);
 
-				targetRect = new Rectangle((int)(Projectile.Center.X - Main.screenPosition.X) + 24 * 16 - 6, (int)(Projectile.Center.Y - Main.screenPosition.Y) - 16, 32, 80);
+				targetRect = new Rectangle((int)(Center.X - Main.screenPosition.X) + 24 * 16 - 6, (int)(Center.Y - Main.screenPosition.Y) - 16, 32, 80);
 				spriteBatch.Draw(barrier, targetRect, sourceRect, new Color(255, 100, 100) * 0.6f * Windup, 0, default, SpriteEffects.FlipHorizontally, 0);
 				spriteBatch.Draw(barrier, targetRect, sourceRect2, new Color(255, 50, 50) * 0.5f * Windup, 0, default, SpriteEffects.FlipHorizontally, 0);
 				targetRect.Inflate(-15, 0);
@@ -363,7 +364,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 			if (Projectile.timeLeft == 30 && Main.netMode != NetmodeID.MultiplayerClient)
 			{
 				int i = NPC.NewNPC(Projectile.GetSource_FromThis(), (int)Projectile.Center.X, (int)Projectile.Center.Y, (int)SpawnType);
-				var spawnPacket = new ShadowSpawnPacket(i, hpOverride, damageOverride, defenseOverride, parent.Projectile.identity, DustCount);
+				var spawnPacket = new ShadowSpawnPacket(i, hpOverride, damageOverride, defenseOverride, parent.identity, DustCount);
 				spawnPacket.Send();
 			}
 		}
@@ -459,9 +460,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 			if (defenseOverride != -1)
 				NPC.defense = (int)(NPC.defense * defenseOverride);
 
-			Projectile shrineProjectile = Main.projectile.FirstOrDefault(n => n.active && n.identity == shrineDummyIdentity && n.type == ModContent.ProjectileType<CombatShrineDummy>());
-
-			var shrineDummy = shrineProjectile.ModProjectile as CombatShrineDummy;
+			CombatShrineDummy shrineDummy = DummySystem.dummies.FirstOrDefault(n => n.active && n.identity == shrineDummyIdentity && n is CombatShrineDummy) as CombatShrineDummy;
 			shrineDummy?.minions.Add(NPC);
 
 			if (Main.netMode != NetmodeID.Server)

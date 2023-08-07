@@ -80,12 +80,12 @@ namespace StarlightRiver.Content.Tiles.Underground
 			int x = i - tile.TileFrameX / 18;
 			int y = j - tile.TileFrameY / 18;
 
-			Projectile dummy = Dummy(x, y);
+			Dummy dummy = Dummy(x, y);
 
 			if (dummy is null)
 				return false;
 			
-			if ((dummy.ModProjectile as ShrineDummy).State == ShrineDummy.SHRINE_STATE_IDLE)
+			if ((dummy as ShrineDummy).state == ShrineDummy.SHRINE_STATE_IDLE)
 			{
 				ShrineStartPacket packet = new ShrineStartPacket(i, j);
 				packet.Send();

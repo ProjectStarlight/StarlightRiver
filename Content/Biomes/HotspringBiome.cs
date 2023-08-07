@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Tiles.Underground;
+using StarlightRiver.Core.Systems.DummyTileSystem;
 using System.Linq;
 
 namespace StarlightRiver.Content.Biomes
@@ -16,7 +17,7 @@ namespace StarlightRiver.Content.Biomes
 
 		public override bool IsBiomeActive(Player player)
 		{
-			return Main.projectile.Any(n => n.active && n.type == ModContent.ProjectileType<HotspringFountainDummy>() && Vector2.Distance(player.Center, n.Center) < 30 * 16);
+			return DummySystem.dummies.Any(n => n.active && n is HotspringFountainDummy && Vector2.Distance(player.Center, n.Center) < 30 * 16);
 		}
 	}
 }

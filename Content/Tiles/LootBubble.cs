@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Tiles
 
 		public virtual string BubbleTexture => "StarlightRiver/Assets/Tiles/Bubble";
 
-		public override int DummyType => ProjectileType<LootBubbleDummy>();
+		public override int DummyType => DummySystem.DummyType<LootBubbleDummy>();
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -54,6 +54,8 @@ namespace StarlightRiver.Content.Tiles
 
 	class LootBubbleDummy : Dummy, IDrawAdditive
 	{
+		public float timer;
+
 		public LootBubbleDummy() : base(0, 32, 32) { }
 
 		public override bool ValidTile(Tile tile)
@@ -68,30 +70,30 @@ namespace StarlightRiver.Content.Tiles
 			if (bubble.CanOpen(Player) && Player.Hitbox.Intersects(new Rectangle(ParentX * 16, ParentY * 16, 16, 16)))
 			{
 				Loot loot = bubble.GoldLootPool[Main.rand.Next(bubble.GoldLootPool.Count)];
-				Item.NewItem(Projectile.GetSource_FromThis(), Projectile.Center, loot.type, loot.GetCount());
-				bubble.PickupEffects(Projectile.Center);
+				Item.NewItem(GetSource_FromThis(), Center, loot.type, loot.GetCount());
+				bubble.PickupEffects(Center);
 
 				WorldGen.KillTile(ParentX, ParentY);
-				NetMessage.SendTileSquare(Player.whoAmI, (int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f), 2, 2, TileChangeType.None);
+				NetMessage.SendTileSquare(Player.whoAmI, (int)(position.X / 16f), (int)(position.Y / 16f), 2, 2, TileChangeType.None);
 			}
 		}
 
 		public override void Update()
 		{
-			Projectile.ai[0] += 0.1f;
+			timer += 0.1f;
 		}
 
 		public override void PostDraw(Color lightColor)
 		{
 			var bubble = GetModTile(Parent.TileType) as LootBubble;
-			bubble.DrawBubble(Projectile.position - Main.screenPosition, Main.spriteBatch, Projectile.ai[0]);
+			bubble.DrawBubble(position - Main.screenPosition, Main.spriteBatch, timer);
 		}
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
 			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
 			float sin = 0.5f + (float)(Math.Sin(StarlightWorld.visualTimer) * 0.5f);
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.SkyBlue * (0.4f + sin * 0.1f), 0, tex.Size() / 2, 0.8f + sin * 0.1f, 0, 0);
+			spriteBatch.Draw(tex, Center - Main.screenPosition, null, Color.SkyBlue * (0.4f + sin * 0.1f), 0, tex.Size() / 2, 0.8f + sin * 0.1f, 0, 0);
 		}
 	}
 }
