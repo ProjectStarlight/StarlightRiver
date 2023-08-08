@@ -39,8 +39,6 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 
 		private void DrawBehindNPCs(On_Main.orig_DoDraw_DrawNPCsBehindTiles orig, Main self)
 		{
-			orig(self);
-
 			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.Transform);
 
 			dummies.ForEach(n =>
@@ -50,6 +48,8 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 			});
 
 			Main.spriteBatch.End();
+
+			orig(self);
 		}
 
 		public override void Unload()
