@@ -1,0 +1,28 @@
+﻿# Starlight River 0.2.3
+
+## Fixes:
+- Fixed Alican for the 7th time
+- Fixed Auroracle targeting the dummy player in multiplayer
+- Fixed Shrines spawning in the aether biome
+- Fixed infernal manabond being able to damage immortal NPCs
+- Fixed Vitric blade dealing damage to town NPCs again
+- Fixed thrown offerings occasionally phasing through tiles
+- Added a graceful fail if aurora water fails to load. Further fixes for this pending.
+- Overhauled the backend for tile dummy actors. This should hopefully resolve issues with missing puzzle elements.
+
+## Content:
+- Added master mode relics
+- Enabled hotsprings
+
+## Balance:
+- Greatly increased charge rate of the aztec death saxophone
+- Aztec death saxophone now flashes when fully charged
+- Increased drop rate of jetwelder scrap (roughly 2x)
+- Jetwelder scrap fills ~3x more of the bar
+- Skeleton archers are now replaced by Hoplites in the shrine of combat
+
+## Misc
+- Updated description for Hermes' Vow
+- Updated description for Flipped Desert Monolith
+- Added Recipe for Desert Monoliths
+- Added a new sound effect for Forbidden Winds pickup
