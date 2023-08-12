@@ -59,7 +59,6 @@ namespace StarlightRiver.Content.GUI
 			Vector2 target = talking.Center + new Vector2(0, 50 + talking.height * 0.5f);
 			Vector2 absolutePosition = target - Main.screenPosition + (target - (Main.screenPosition + Main.ScreenSize.ToVector2() / 2)) * 0.15f;
 
-
 			// Calculate bounding
 			position = absolutePosition / Main.UIScale;
 
@@ -81,9 +80,6 @@ namespace StarlightRiver.Content.GUI
 
 			// This accounts for buttons
 			boundingBox.Height += 44;
-
-			boundingBox.Width = (int)(boundingBox.Width);
-			boundingBox.Height = (int)(boundingBox.Height);
 
 			// Bound the position so that the box is in the screen
 			if (boundingBox.X < 0)
@@ -111,7 +107,7 @@ namespace StarlightRiver.Content.GUI
 			// Dim if the player is underneath
 			var nearby = new Rectangle(-52 + (int)absolutePosition.X - 260, (int)absolutePosition.Y - 40, 620, Math.Max(140, (int)Markdown.GetHeight(message, 1, 500) + 40));
 			Rectangle player = Main.LocalPlayer.Hitbox;
-			player.Offset((-Main.screenPosition).ToPoint());	
+			player.Offset((-Main.screenPosition).ToPoint());
 
 			if (nearby.Intersects(player))
 			{
