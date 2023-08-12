@@ -16,6 +16,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="OldPatchNotes\0.2.0\0.2.2.txt" />
+    <None Remove="OldPatchNotes\0.2.0\0.2.4.txt" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="tModLoader.CodeAssist" Version="0.1.*" />

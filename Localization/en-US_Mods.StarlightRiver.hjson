@@ -872,12 +872,12 @@ Items: {
 		DisplayName: Effects of different gems:
 		Tooltip:
 			'''
-			[i/s1:5681]: Critical strikes partially ignore armor, with increased chance for missing enemy HP 
-			[i/s1:5689]: +100 barrier. Gain a shield that points to your cursor and blocks attacks, consuming barrier 
-			[i/s1:5682]: Immediately heal 20 hp. Hits have a chance to create a 5 HP life heart 
-			[i/s1:5688]: Immediately refill mana. Hits have a chance to create 1 to 3 mana stars 
-			[i/s1:5680]: All strikes inflict Toxic Amethyst, a stacking poison debuff 
-			[i/s1:5687]: Hits have a chance to summon a Ruby Dagger to seek the struck enemy for 20% of the hit's damage
+			[i/s1:5686]: Critical strikes partially ignore armor, with increased chance for missing enemy HP 
+			[i/s1:5694]: +100 barrier. Gain a shield that points to your cursor and blocks attacks, consuming barrier 
+			[i/s1:5687]: Immediately heal 20 hp. Hits have a chance to create a 5 HP life heart 
+			[i/s1:5693]: Immediately refill mana. Hits have a chance to create 1 to 3 mana stars 
+			[i/s1:5685]: All strikes inflict Toxic Amethyst, a stacking poison debuff 
+			[i/s1:5692]: Hits have a chance to summon a Ruby Dagger to seek the struck enemy for 20% of the hit's damage
 			'''
 	}
 
@@ -3985,22 +3985,7 @@ Biomes: {
 
 NPCs: {
 	Glassweaver.DisplayName: Glassweaver
-
-	GlassweaverWaiting: {
-		DisplayName: Glassweaver
-
-		TownNPCMood: {
-			Content: I am content.
-			NoHome: I hate not having a home.
-			FarFromHome: I am too far from home.
-			LoveSpace: I love having so much space.
-			DislikeCrowded: I dislike how crowded I am.
-			HateCrowded: I hate how crowded I am.
-			LikeNPC_Princess: I like {NPCName}.
-			Princess_LovesNPC: I like {NPCName}.
-		}
-	}
-
+	GlassweaverWaiting.DisplayName: Glassweaver
 	ArenaActor.DisplayName: ""
 	GoldPlatform.DisplayName: ""
 	IcePlatform.DisplayName: ""

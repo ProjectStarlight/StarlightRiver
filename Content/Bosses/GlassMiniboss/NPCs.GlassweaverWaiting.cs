@@ -213,6 +213,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			};
 		}
 
+		public override bool CanChat()
+		{
+			return true;
+		}
+
 		public override string GetChat()
 		{
 			if (Main.netMode == NetmodeID.Server) // Dialog only for client or in singleplayer.
