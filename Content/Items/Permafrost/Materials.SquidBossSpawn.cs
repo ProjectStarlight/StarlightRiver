@@ -107,5 +107,14 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			return false;
 		}
+
+		public override void AddRecipes()
+		{
+			CreateRecipe().
+				AddIngredient(ModContent.ItemType<SquidBossSpawn>()).
+				AddIngredient(ModContent.ItemType<AuroraIceBar>(), 30).
+				AddTile(TileID.DemonAltar).
+				Register();
+		}
 	}
 }

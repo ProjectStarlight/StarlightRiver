@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override void SetDefaults()
 		{
-			Item.damage = 20;
+			Item.damage = 30;
 			Item.channel = true;
 			Item.DamageType = DamageClass.Magic;
 			Item.mana = 3;

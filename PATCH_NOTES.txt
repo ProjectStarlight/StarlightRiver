@@ -5,6 +5,7 @@
 - Increased the amount of damage auroracle's tentacles take (1.25x => 1.4x)
 - Decreased Raducla's Rapier damage (12 => 9)
 - Haunted armor now applies an additional 40 mana reservation per weapon
+- Overflowing urn damage increased (20 => 30)
 
 ## Fixes
 - Fixed a bug where you could avoid auroracle's laser by running to the edge of the arena
@@ -17,3 +18,4 @@
 - Glassweaver no longer counts as a town NPC
 - Crystal slimes can now spawn after you have obtained forbidden winds
 - Crystal slimes now drop 1-5 vitric shards
+- Added a recipe for the endless auroracle spawn item
