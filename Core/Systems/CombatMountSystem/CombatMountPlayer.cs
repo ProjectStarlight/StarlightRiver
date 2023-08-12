@@ -93,6 +93,9 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 		{
 			if (mountingTime > 0)
 				Player.gfxOffY = Helpers.Helper.LerpFloat(Player.mount.PlayerOffset, 0, 1 - mountingTime / 30f) - (float)Math.Sin(3.14f * (1 - mountingTime / 30f)) * 64;
+
+			if (activeMount is null)
+				mountingTime = 0;
 		}
 
 		public void Dismount()

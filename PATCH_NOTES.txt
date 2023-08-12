@@ -13,6 +13,8 @@
 - Hardened against dummy-related crashes
 - Fixed manabonds not comsuming mana with mana cost reduction accessories
 - Fixed an error window that could occur when talking to an NPC
+- Fixed a crash that could occur on unloading
+- Fixed aurora throne leaving you levitating if you dismount early
 
 ## Tweaks
 - Prevented dialogue boxes from going offscreen
