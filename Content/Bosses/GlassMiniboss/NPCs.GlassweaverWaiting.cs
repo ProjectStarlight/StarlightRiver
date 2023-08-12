@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void SetDefaults()
 		{
-			NPC.townNPC = true;
+			NPC.netAlways = true;
 			NPC.friendly = true;
 			NPC.width = 64;
 			NPC.height = 64;
@@ -48,6 +48,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			NPC.HitSound = SoundID.NPCHit1;
 			NPC.DeathSound = SoundID.NPCDeath1;
 			NPC.knockBackResist = 0;
+		}
+
+		public override bool NeedSaving()
+		{
+			return true;
 		}
 
 		public override void AI()

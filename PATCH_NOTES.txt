@@ -11,3 +11,4 @@
 
 ## Tweaks
 - Prevented dialogue boxes from going offscreen
+- Glassweaver no longer counts as a town NPC
