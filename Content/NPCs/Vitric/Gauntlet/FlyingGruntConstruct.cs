@@ -129,7 +129,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 					attacking = true;
 
 				AnimateIdle();
-				attackPhase = (int) AttackPhase.charging;
+				attackPhase = (int)AttackPhase.charging;
 			}
 			else
 			{
@@ -241,7 +241,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 			switch (attackPhase)
 			{
-				case (int) AttackPhase.charging:
+				case (int)AttackPhase.charging:
 
 					AnimateIdle();
 					NPC.velocity = Vector2.Lerp(NPC.velocity, direction.RotatedBy(brownianRand.NextDouble() * 0.6f - brownianRand.NextDouble() * 0.6f) * 10, 0.05f);
@@ -252,23 +252,22 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 						attackPhase = (int)AttackPhase.slowing;
 						NPC.netUpdate = true;
 					}
-						
 
 					break;
 
-				case (int) AttackPhase.slowing:
+				case (int)AttackPhase.slowing:
 
 					NPC.velocity *= 0.8f;
 
 					if (NPC.velocity.Length() < 2)
 					{
 						frameCounter = 0;
-						attackPhase = (int) AttackPhase.swinging;
+						attackPhase = (int)AttackPhase.swinging;
 					}
 
 					break;
 
-				case (int) AttackPhase.swinging:
+				case (int)AttackPhase.swinging:
 
 					xFrame = 1;
 					frameCounter++;
@@ -476,7 +475,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 								var proj = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), arrowPos, arrowVel, ProjectileType<PelterConstructArrow>(), damage, NPC.knockBackResist);
 							}
 
-							if (Main.netMode !=  NetmodeID.Server) 
+							if (Main.netMode != NetmodeID.Server)
 							{
 								for (int k = 0; k < 15; k++)
 								{

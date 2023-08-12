@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 {
 	internal class VitricOre : DummyTile, IHintable
 	{
-		public override int DummyType => ProjectileType<VitricOreDummy>();
+		public override int DummyType => DummySystem.DummyType<VitricOreDummy>();
 
 		public override string Texture => AssetDirectory.VitricTile + Name;
 
@@ -85,7 +85,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 	internal class VitricOreFloat : DummyTile, IHintable
 	{
-		public override int DummyType => ProjectileType<VitricOreFloatDummy>();
+		public override int DummyType => DummySystem.DummyType<VitricOreFloatDummy>();
 
 		public override string Texture => AssetDirectory.VitricTile + Name;
 
@@ -130,26 +130,26 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 	internal class VitricOreDummy : Dummy
 	{
-		public override string Texture => AssetDirectory.VitricTile + "VitricOreGlow";
+		public string Texture => AssetDirectory.VitricTile + "VitricOreGlow";
 
 		public VitricOreDummy() : base(TileType<VitricOre>(), 32, 48) { }
 
 		public override void Collision(Player Player)
 		{
-			if (AbilityHelper.CheckDash(Player, Projectile.Hitbox))
+			if (AbilityHelper.CheckDash(Player, Hitbox))
 			{
 				if (Main.myPlayer == Player.whoAmI)
 				{
-					WorldGen.KillTile((int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f));
-					NetMessage.SendTileSquare(Player.whoAmI, (int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f), 2, 3, TileChangeType.None);
+					WorldGen.KillTile((int)(position.X / 16f), (int)(position.Y / 16f));
+					NetMessage.SendTileSquare(Player.whoAmI, (int)(position.X / 16f), (int)(position.Y / 16f), 2, 3, TileChangeType.None);
 				}
 
-				Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Center);
 
 				for (int k = 0; k <= 10; k++)
 				{
-					Dust.NewDustPerfect(Projectile.Center, DustType<GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.3f);
-					Dust.NewDustPerfect(Projectile.Center, DustType<Air>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 0.8f);
+					Dust.NewDustPerfect(Center, DustType<GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.3f);
+					Dust.NewDustPerfect(Center, DustType<Air>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 0.8f);
 				}
 			}
 		}
@@ -158,39 +158,39 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		{
 			int texNum = 1 + Parent.TileFrameX / 36;
 			Texture2D tex = Request<Texture2D>(Texture + texNum).Value;
-			Color color = Helper.IndicatorColorProximity(150, 300, Projectile.Center);
+			Color color = Helper.IndicatorColorProximity(150, 300, Center);
 
 			var offset = new Vector2(-1, -1);
 
 			if (texNum > 1)
 				offset.Y -= 2;
 
-			Main.spriteBatch.Draw(tex, Projectile.position + offset - Main.screenPosition, color);
+			Main.spriteBatch.Draw(tex, position + offset - Main.screenPosition, color);
 		}
 	}
 
 	internal class VitricOreFloatDummy : Dummy
 	{
-		public override string Texture => AssetDirectory.VitricTile + "VitricOreFloatGlow";
+		public string Texture => AssetDirectory.VitricTile + "VitricOreFloatGlow";
 
 		public VitricOreFloatDummy() : base(TileType<VitricOreFloat>(), 32, 32) { }
 
 		public override void Collision(Player Player)
 		{
-			if (AbilityHelper.CheckDash(Player, Projectile.Hitbox))
+			if (AbilityHelper.CheckDash(Player, Hitbox))
 			{
 				if (Main.myPlayer == Player.whoAmI)
 				{
-					WorldGen.KillTile((int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f));
-					NetMessage.SendTileSquare(Player.whoAmI, (int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f), 2, 2, TileChangeType.None);
+					WorldGen.KillTile((int)(position.X / 16f), (int)(position.Y / 16f));
+					NetMessage.SendTileSquare(Player.whoAmI, (int)(position.X / 16f), (int)(position.Y / 16f), 2, 2, TileChangeType.None);
 				}
 
-				Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Center);
 
 				for (int k = 0; k <= 10; k++)
 				{
-					Dust.NewDustPerfect(Projectile.Center, DustType<GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.3f);
-					Dust.NewDustPerfect(Projectile.Center, DustType<Air>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 0.8f);
+					Dust.NewDustPerfect(Center, DustType<GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.3f);
+					Dust.NewDustPerfect(Center, DustType<Air>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 0.8f);
 				}
 			}
 		}
@@ -198,9 +198,9 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		public override void PostDraw(Color lightColor)
 		{
 			Texture2D tex = Request<Texture2D>(AssetDirectory.VitricTile + "VitricOreFloatGlow").Value;
-			Color color = Helper.IndicatorColorProximity(150, 300, Projectile.Center);
+			Color color = Helper.IndicatorColorProximity(150, 300, Center);
 
-			Main.spriteBatch.Draw(tex, Projectile.position - new Vector2(1, 1) - Main.screenPosition, color);
+			Main.spriteBatch.Draw(tex, position - new Vector2(1, 1) - Main.screenPosition, color);
 		}
 	}
 

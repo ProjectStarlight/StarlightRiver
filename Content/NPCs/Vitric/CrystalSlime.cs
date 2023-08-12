@@ -1,8 +1,11 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.ForbiddenWinds;
+using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Dusts;
+using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Helpers;
-using System.IO;
 using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -60,7 +63,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				// Spawn dust
 				for (int k = 0; k < 20; k++)
 				{
-					Dust.NewDust(NPC.Center, 20, 20, DustType<Dusts.Cinder>()); 
+					Dust.NewDust(NPC.Center, 20, 20, DustType<Dusts.Cinder>());
 				}
 			}
 
@@ -109,6 +112,11 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			}
 		}
 
+		public override void ModifyNPCLoot(NPCLoot npcLoot)
+		{
+			npcLoot.Add(ItemDropRule.Common(ItemType<VitricOre>(), 1, 1, 5));
+		}
+
 		public override void ModifyIncomingHit(ref NPC.HitModifiers modifiers)
 		{
 			if (Shield == 1)
@@ -132,6 +140,9 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
 		{
+			if (spawnInfo.Player.InModBiome<VitricDesertBiome>() && spawnInfo.Player.GetModPlayer<AbilityHandler>().Unlocked<Dash>())
+				return 20;
+
 			return 0;
 		}
 

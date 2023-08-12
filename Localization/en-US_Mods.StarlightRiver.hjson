@@ -872,12 +872,12 @@ Items: {
 		DisplayName: Effects of different gems:
 		Tooltip:
 			'''
-			[i/s1:7681]: Critical strikes partially ignore armor, with increased chance for missing enemy HP 
-			[i/s1:7689]: +100 barrier. Gain a shield that points to your cursor and blocks attacks, consuming barrier 
-			[i/s1:7682]: Immediately heal 20 hp. Hits have a chance to create a 5 HP life heart 
-			[i/s1:7688]: Immediately refill mana. Hits have a chance to create 1 to 3 mana stars 
-			[i/s1:7680]: All strikes inflict Toxic Amethyst, a stacking poison debuff 
-			[i/s1:7687]: Hits have a chance to summon a Ruby Dagger to seek the struck enemy for 20% of the hit's damage
+			[i/s1:5686]: Critical strikes partially ignore armor, with increased chance for missing enemy HP 
+			[i/s1:5694]: +100 barrier. Gain a shield that points to your cursor and blocks attacks, consuming barrier 
+			[i/s1:5687]: Immediately heal 20 hp. Hits have a chance to create a 5 HP life heart 
+			[i/s1:5693]: Immediately refill mana. Hits have a chance to create 1 to 3 mana stars 
+			[i/s1:5685]: All strikes inflict Toxic Amethyst, a stacking poison debuff 
+			[i/s1:5692]: Hits have a chance to summon a Ruby Dagger to seek the struck enemy for 20% of the hit's damage
 			'''
 	}
 
@@ -1440,6 +1440,7 @@ Items: {
 			Cursed
 			Massively increased acceleration and movement speed
 			Increased jump height and max movement speed
+			Works with boots
 			You are unable to use wings
 			'''
 	}
@@ -2226,6 +2227,11 @@ Items: {
 			'''
 	}
 
+	GlassArrowhead: {
+		DisplayName: Glass Arrowhead
+		Tooltip: Critical strikes cause arrows to shatter into glass shards
+	}
+
 	GlassIdol: {
 		Tooltip: Used to worship a powerful guardian.
 		DisplayName: Glass Idol
@@ -2477,7 +2483,11 @@ Items: {
 
 	DesertMonolithFlippedItem: {
 		DisplayName: Flipped Desert Monolith
-		Tooltip: Places a section of flipped desert monolith
+		Tooltip:
+			'''
+			Places a section of flipped desert monolith
+			'Even the text is flipped!'
+			'''
 	}
 
 	DesertMonolithItem: {
@@ -3052,16 +3062,6 @@ Items: {
 		Tooltip: ""
 	}
 
-	VitricBossBarrierItem: {
-		DisplayName: VitricBossBarrierItem
-		Tooltip: debug item
-	}
-
-	GlassweaverBossBarrierItem: {
-		DisplayName: GlassweaverBossBarrierItem
-		Tooltip: debug item
-	}
-
 	CombatShrineBarrierItem: {
 		DisplayName: CombatShrineBarrierItem
 		Tooltip: debug item
@@ -3069,6 +3069,16 @@ Items: {
 
 	EvasionShrineBarrierItem: {
 		DisplayName: EvasionShrineBarrierItem
+		Tooltip: debug item
+	}
+
+	VitricBossBarrierItem: {
+		DisplayName: VitricBossBarrierItem
+		Tooltip: debug item
+	}
+
+	GlassweaverBossBarrierItem: {
+		DisplayName: GlassweaverBossBarrierItem
 		Tooltip: debug item
 	}
 
@@ -3248,7 +3258,7 @@ Items: {
 	}
 
 	MinibossItem: {
-		DisplayName: Music Box (Miniboss)
+		DisplayName: Music Box (GlassWeaver)
 		Tooltip: ""
 	}
 
@@ -3259,6 +3269,16 @@ Items: {
 
 	AuroracleItem: {
 		DisplayName: Music Box (Auroracle)
+		Tooltip: ""
+	}
+
+	AuroracleRelicItem: {
+		DisplayName: Auroracle Relic
+		Tooltip: ""
+	}
+
+	CeirosRelicItem: {
+		DisplayName: Ceiros Relic
 		Tooltip: ""
 	}
 
@@ -3377,11 +3397,6 @@ Items: {
 		Tooltip: ""
 	}
 
-	GlassArrowhead: {
-		DisplayName: Glass Arrowhead
-		Tooltip: ""
-	}
-
 	ForestBerries: {
 		DisplayName: Forest Berries
 		Tooltip: ""
@@ -3433,8 +3448,196 @@ Items: {
 	}
 }
 
+Tiles: {
+	CauldronTile.MapEntry: Alchemic Cauldron
+	SeaglassRingTile.MapEntry: ""
+	FaeflamePickupTile.MapEntry: ""
+	ForbiddenWindsPickupTile.MapEntry: ""
+	StaminaShardTile.MapEntry: ""
+	CookStation.MapEntry: Cooking Station
+	Infuser.MapEntry: Infuser
+	CrashPod.MapEntry: Crashed Pod
+	AnkhChest.MapEntry: Ankh Chest
+	DesertMonolith.MapEntry: ""
+	DesertMonolithFlipped.MapEntry: ""
+	TwistSwordTile.MapEntry: Twisted Greatsword
+	PinkSeaSalt.MapEntry: ""
+	TableSalt.MapEntry: ""
+	ForestBerryBush.MapEntry: ""
+	MonkSpear.MapEntry: Monk's Spade
+	SlimeberryBush.MapEntry: ""
+	ThickTree.MapEntry: Large Tree
+	ThickTreeBase.MapEntry: ""
+	ThickTreeSapling.MapEntry: Large sapling
+	TallAncientFruit.MapEntry: Ancient Fruit
+	TallGoldenRice.MapEntry: Golden Rice
+	TallRice.MapEntry: Rice
+	GreenhouseGlass.MapEntry: Greenhouse Glass
+	Bouncer.MapEntry: ""
+	StaminaGem.MapEntry: ""
+	DisplayCase.MapEntry: Relic Case
+	DisplayCaseFriendly.MapEntry: Relic Case
+	PatreonPlaque.MapEntry: ""
+	RatTent.MapEntry: Strange Tent
+	MoonstoneBar.MapEntry: Metal Bar
+	MoonstoneOre.MapEntry: Moonstone Ore
+	JellyShroom.MapEntry: Jelly Shroom
+	Lumishroom.MapEntry: ""
+	Vibeshroom.MapEntry: ""
+	BlueTorchOvergrow.MapEntry: ""
+	OvergrowthLivingWoodTile.MapEntry: Overgrown Living Wood
+	Overgrow.MapEntry: Music Box
+	Rock2x2.MapEntry: ""
+	SetpieceAltar.MapEntry: ""
+	SkeletonBrickTile.MapEntry: Skeleton Brick
+	TorchOvergrow.MapEntry: ""
+	WindowSmall.MapEntry: ""
+	WispAltarL.MapEntry: ""
+	WispAltarR.MapEntry: ""
+	AuroraclePainting.MapEntry: Painting
+	EggCodexPainting.MapEntry: Painting
+	EndOfTimePainting.MapEntry: Painting
+	RatKingPainting.MapEntry: Painting
+	AuroraBrick.MapEntry: ""
+	AuroraBrickDoor.MapEntry: ""
+	AuroraIce.MapEntry: ""
+	DoorBombShooter.MapEntry: ""
+	PermafrostIce.MapEntry: ""
+	Touchstone.MapEntry: Touchstone
+	TouchstoneLootbox.MapEntry: ""
+	AuroracleTrophy.MapEntry: Trophy
+	Auroracle.MapEntry: Music Box
+	CeirosTrophy.MapEntry: Trophy
+	CombatShrine.MapEntry: Mysterious Shrine
+	EvasionShrine.MapEntry: Mysterious Shrine
+	HotspringFountain.MapEntry: ""
+	MagmiteShrine.MapEntry: The Boi
+	WitShrine.MapEntry: Mysterious Shrine
+	DashBarrier.MapEntry: ""
+	JarTall.MapEntry: Stamina Jar
+	ManabondTile.MapEntry: Manabond
+	TempleChestSimple.MapEntry: ""
+	TempleLootBubble.MapEntry: ""
+	VerletBanner.MapEntry: ""
+	DestructableGlass.MapEntry: ""
+	ForgeActor.MapEntry: ""
+	ForgeDoor.MapEntry: Forge Door
+	ForgeInnerDoor.MapEntry: Forge Door
+	RedBannerShort.MapEntry: ""
+	SandstoneDoor.MapEntry: ""
+	CrystalSlimeSpawner.MapEntry: ""
+	DashableDoor.MapEntry: ""
+	DoorGears.MapEntry: ""
+	DoorLasers.MapEntry: ""
+	DoorVertical.MapEntry: ""
+	EntranceDoor.MapEntry: Vitric Temple Door
+	DynamicGear.MapEntry: ""
+	GearPuzzleOrigin.MapEntry: ""
+	ObjectiveGear.MapEntry: ""
+	LightActor.MapEntry: ""
+	EmptyHolder.MapEntry: ""
+	Lens.MapEntry: ""
+	LightBlocker.MapEntry: ""
+	LightGoal.MapEntry: ""
+	Reflector.MapEntry: ""
+	LowWindBanner.MapEntry: ""
+	MainForge.MapEntry: Vitric Forgeheart
+	NPCSpawner.MapEntry: ""
+	OldCeirosShrine.MapEntry: ""
+	TallWindow.MapEntry: ""
+	TallWindowCrystal.MapEntry: ""
+	TallWindowLava.MapEntry: ""
+	TempleCandle.MapEntry: Candle
+	TempleCandleCrystal.MapEntry: Candle
+	TempleCeirosFountain.MapEntry: Fountain
+	TempleWallCandle.MapEntry: Candle
+	TutorialDoor1.MapEntry: ""
+	TutorialDoor2.MapEntry: ""
+	VitricPillarWall.MapEntry: ""
+	VitricPillarWallCrystal.MapEntry: ""
+	VitricPillarWallLava.MapEntry: ""
+	VitricPillarWallShort.MapEntry: ""
+	WindsRoomActor.MapEntry: ""
+	VitricBannerSmall.MapEntry: ""
+	VitricBanner.MapEntry: ""
+	VitricBossAltar.MapEntry: Ceiro's Altar
+	VitricBreakableVases.MapEntry: Pot
+	VitricDecor1x1.MapEntry: ""
+	VitricDecor1x1Inverted.MapEntry: ""
+	VitricDecor1x2.MapEntry: ""
+	VitricDecor1x2Inverted.MapEntry: ""
+	VitricDecor2x1.MapEntry: ""
+	VitricDecor2x1Inverted.MapEntry: ""
+	VitricDecor2x2.MapEntry: ""
+	VitricDecor2x2Inverted.MapEntry: ""
+	// VitricGiantCrystal.MapEntry: ""
+	// VitricLargeCrystal.MapEntry: ""
+	VitricLootBox.MapEntry: ""
+	// VitricMediumCrystal.MapEntry: ""
+	VitricOre.MapEntry: Vitric Ore
+	VitricOreFloat.MapEntry: Vitric Ore
+	VitricRoundCactus.MapEntry: ""
+	VitricSmallCactus.MapEntry: ""
+	// VitricSmallCrystal.MapEntry: ""
+	VitricSpike.MapEntry: ""
+	VitricBathtub.MapEntry: ""
+	VitricBed.MapEntry: ""
+	VitricBookcase.MapEntry: ""
+	VitricCandelabra.MapEntry: ""
+	VitricCandle.MapEntry: ""
+	VitricChair.MapEntry: ""
+	VitricChandelier.MapEntry: ""
+	VitricClock.MapEntry: ""
+	VitricDresser.MapEntry: ""
+	VitricLamp.MapEntry: ""
+	VitricLantern.MapEntry: ""
+	VitricPiano.MapEntry: ""
+	VitricSink.MapEntry: ""
+	VitricSofa.MapEntry: ""
+	VitricTable.MapEntry: ""
+	VitricWorkbench.MapEntry: ""
+	VitricDoorClosed.MapEntry: ""
+	VitricDoorOpen.MapEntry: ""
+	TempleChair.MapEntry: Chair
+	TempleLargeVase.MapEntry: Large Vase
+	TempleLargeVaseCrystal.MapEntry: Large Vase
+	TempleWorkbench.MapEntry: Workbench
+	TempleThrone.MapEntry: Throne
+	TempleFloorWeaponRack.MapEntry: Weapon Rack
+	TempleTable.MapEntry: Table
+	TempleTableCrystal.MapEntry: Table
+	TempleWeaponRack0.MapEntry: Weapon Rack
+	TempleWeaponRack1.MapEntry: Weapon Rack
+	TempleWeaponRack2.MapEntry: Weapon Rack
+	TempleWeaponRack3.MapEntry: Weapon Rack
+	TempleThingamajig.MapEntry: Weapon Rack
+	TempleBrick.MapEntry: ""
+	VitricBoss1.MapEntry: Music Box
+	VitricBoss2.MapEntry: Music Box
+	VitricPassive.MapEntry: Music Box
+	VitricTemple.MapEntry: Music Box
+	Miniboss.MapEntry: Music Box
+	LeafOvergrow.MapEntry: ""
+	BrickOvergrow.MapEntry: ""
+	StoneOvergrow.MapEntry: ""
+	Springstone.MapEntry: ""
+	ShrineBrazier.MapEntry: ""
+	WitTile.MapEntry: ""
+	AncientSandstone.MapEntry: ""
+	AncientSandstoneTile.MapEntry: ""
+	VitricBrick.MapEntry: ""
+	VitricCactus.MapEntry: ""
+	VitricGlass.MapEntry: ""
+	VitricSand.MapEntry: ""
+	VitricSoftSand.MapEntry: ""
+	VitricSandPlain.MapEntry: ""
+	VitricGiantCrystal.MapEntry: Vitric Giant Crystal
+	VitricLargeCrystal.MapEntry: Vitric Large Crystal
+	VitricMediumCrystal.MapEntry: Vitric Medium Crystal
+	VitricSmallCrystal.MapEntry: Vitric Small Crystal
+}
+
 Projectiles: {
-	CauldronDummy.DisplayName: ""
 	ArtifactItemProj.DisplayName: Artifact
 	GlassBubble.DisplayName: Volatile Bubble
 	GlassBubbleFragment.DisplayName: Glass Shard
@@ -3664,60 +3867,11 @@ Projectiles: {
 	PelterConstructArrowLarge.DisplayName: Glass Arrow
 	KettleMortar.DisplayName: Magma Shot
 	SnakeSpit.DisplayName: Molten glass
-	CrashPodDummy.DisplayName: ""
-	AnkhChestDummy.DisplayName: ""
-	TwistSwordTileProj.DisplayName: ""
 	PinkSeaSaltProjectile.DisplayName: Sea Salt
 	TableSaltProjectile.DisplayName: Table Salt
-	MonkSpearDummy.DisplayName: ""
-	BouncerDummy.DisplayName: ""
-	StaminaGemDummy.DisplayName: ""
-	StaminaOrbDummy.DisplayName: ""
-	LootBubbleDummy.DisplayName: ""
-	JellyShroomDummy.DisplayName: ""
-	BossWindowDummy.DisplayName: ""
-	NoxiousNodeDummy.DisplayName: ""
-	WindowSmallDummy.DisplayName: ""
-	BossGateDummy.DisplayName: ""
-	CombatShrineDummy.DisplayName: ""
 	Dart.DisplayName: Cursed Dart
 	SawbladeSmall.DisplayName: Cursed Sawblade
 	Spear.DisplayName: Cursed Spear
-	EvasionShrineDummy.DisplayName: ""
-	HotspringFountainDummy.DisplayName: ""
-	WitShrineDummy.DisplayName: ""
-	DashBarrierDummy.DisplayName: ""
-	JarDummy.DisplayName: ""
-	VerletBannerDummy.DisplayName: ""
-	ForgeActorDummy.DisplayName: ""
-	RedBannerShortDummy.DisplayName: ""
-	CrystalSlimeSpawnerDummy.DisplayName: ""
-	DashableDoorDummy.DisplayName: ""
-	DynamicGearDummy.DisplayName: ""
-	GearPuzzleOriginDummy.DisplayName: ""
-	ObjectiveGearDummy.DisplayName: ""
-	LightActorDummy.DisplayName: ""
-	LensDummy.DisplayName: ""
-	ReflectorDummy.DisplayName: ""
-	LowWindBannerDummy.DisplayName: ""
-	MainForgeDummy.DisplayName: ""
-	NPCSpawnerDummy.DisplayName: ""
-	OldCeirosShrineDummy.DisplayName: ""
-	TallWindowCrystalDummy.DisplayName: ""
-	TallWindowDummy.DisplayName: ""
-	TallWindowLavaDummy.DisplayName: ""
-	TutorialDoor1Dummy.DisplayName: ""
-	TutorialDoor2Dummy.DisplayName: ""
-	WindsRoomActorDummy.DisplayName: ""
-	VitricBannerSmallDummy.DisplayName: ""
-	VitricBossAltarDummy.DisplayName: ""
-	VitricGiantDummy.DisplayName: ""
-	VitricLargeDummy.DisplayName: ""
-	VitricMediumDummy.DisplayName: ""
-	VitricOreDummy.DisplayName: ""
-	VitricOreFloatDummy.DisplayName: ""
-	VitricSmallDummy.DisplayName: ""
-	VitricBannerDummy.DisplayName: ""
 	HintText.DisplayName: Hint Text
 	BurningGround.DisplayName: Burning Ground
 	GlassJavelin.DisplayName: Glass Javelin
@@ -3787,196 +3941,6 @@ Projectiles: {
 	SpawnEgg.DisplayName: Spawn Egg
 }
 
-Tiles: {
-	CauldronTile.MapEntry: Alchemic Cauldron
-	SeaglassRingTile.MapEntry: ""
-	FaeflamePickupTile.MapEntry: ""
-	ForbiddenWindsPickupTile.MapEntry: ""
-	StaminaShardTile.MapEntry: ""
-	CookStation.MapEntry: Cooking Station
-	Infuser.MapEntry: Infuser
-	CrashPod.MapEntry: Crashed Pod
-	AnkhChest.MapEntry: Ankh Chest
-	DesertMonolith.MapEntry: ""
-	DesertMonolithFlipped.MapEntry: ""
-	TwistSwordTile.MapEntry: Twisted Greatsword
-	PinkSeaSalt.MapEntry: ""
-	TableSalt.MapEntry: ""
-	ForestBerryBush.MapEntry: ""
-	MonkSpear.MapEntry: Monk's Spade
-	SlimeberryBush.MapEntry: ""
-	ThickTree.MapEntry: Large Tree
-	ThickTreeBase.MapEntry: ""
-	ThickTreeSapling.MapEntry: Large sapling
-	TallAncientFruit.MapEntry: Ancient Fruit
-	TallGoldenRice.MapEntry: Golden Rice
-	TallRice.MapEntry: Rice
-	GreenhouseGlass.MapEntry: Greenhouse Glass
-	Bouncer.MapEntry: ""
-	StaminaGem.MapEntry: ""
-	DisplayCase.MapEntry: Relic Case
-	DisplayCaseFriendly.MapEntry: Relic Case
-	PatreonPlaque.MapEntry: ""
-	RatTent.MapEntry: Strange Tent
-	MoonstoneBar.MapEntry: Metal Bar
-	MoonstoneOre.MapEntry: Moonstone Ore
-	JellyShroom.MapEntry: Jelly Shroom
-	Lumishroom.MapEntry: ""
-	Vibeshroom.MapEntry: ""
-	BlueTorchOvergrow.MapEntry: ""
-	OvergrowthLivingWoodTile.MapEntry: Overgrown Living Wood
-	Overgrow.MapEntry: Music Box
-	Rock2x2.MapEntry: ""
-	SetpieceAltar.MapEntry: ""
-	SkeletonBrickTile.MapEntry: Skeleton Brick
-	TorchOvergrow.MapEntry: ""
-	WindowSmall.MapEntry: ""
-	WispAltarL.MapEntry: ""
-	WispAltarR.MapEntry: ""
-	AuroraclePainting.MapEntry: Painting
-	EggCodexPainting.MapEntry: Painting
-	EndOfTimePainting.MapEntry: Painting
-	RatKingPainting.MapEntry: Painting
-	AuroraBrick.MapEntry: ""
-	AuroraBrickDoor.MapEntry: ""
-	AuroraIce.MapEntry: ""
-	BossGate.MapEntry: ""
-	DoorBombShooter.MapEntry: ""
-	PermafrostIce.MapEntry: ""
-	Touchstone.MapEntry: Touchstone
-	TouchstoneLootbox.MapEntry: ""
-	AuroracleTrophy.MapEntry: Trophy
-	Auroracle.MapEntry: Music Box
-	CeirosTrophy.MapEntry: Trophy
-	CombatShrine.MapEntry: Mysterious Shrine
-	EvasionShrine.MapEntry: Mysterious Shrine
-	HotspringFountain.MapEntry: ""
-	MagmiteShrine.MapEntry: The Boi
-	WitShrine.MapEntry: Mysterious Shrine
-	DashBarrier.MapEntry: ""
-	JarTall.MapEntry: Stamina Jar
-	ManabondTile.MapEntry: Manabond
-	TempleChestSimple.MapEntry: ""
-	TempleLootBubble.MapEntry: ""
-	VerletBanner.MapEntry: ""
-	DestructableGlass.MapEntry: ""
-	ForgeActor.MapEntry: ""
-	ForgeDoor.MapEntry: Forge Door
-	ForgeInnerDoor.MapEntry: Forge Door
-	RedBannerShort.MapEntry: ""
-	SandstoneDoor.MapEntry: ""
-	CrystalSlimeSpawner.MapEntry: ""
-	DashableDoor.MapEntry: ""
-	DoorGears.MapEntry: ""
-	DoorLasers.MapEntry: ""
-	DoorVertical.MapEntry: ""
-	EntranceDoor.MapEntry: Vitric Temple Door
-	DynamicGear.MapEntry: ""
-	GearPuzzleOrigin.MapEntry: ""
-	ObjectiveGear.MapEntry: ""
-	LightActor.MapEntry: ""
-	EmptyHolder.MapEntry: ""
-	Lens.MapEntry: ""
-	LightBlocker.MapEntry: ""
-	LightGoal.MapEntry: ""
-	Reflector.MapEntry: ""
-	LowWindBanner.MapEntry: ""
-	MainForge.MapEntry: Vitric Forgeheart
-	NPCSpawner.MapEntry: ""
-	OldCeirosShrine.MapEntry: ""
-	TallWindow.MapEntry: ""
-	TallWindowCrystal.MapEntry: ""
-	TallWindowLava.MapEntry: ""
-	TempleCandle.MapEntry: Candle
-	TempleCandleCrystal.MapEntry: Candle
-	TempleCeirosFountain.MapEntry: Fountain
-	TempleWallCandle.MapEntry: Candle
-	TutorialDoor1.MapEntry: ""
-	TutorialDoor2.MapEntry: ""
-	VitricPillarWall.MapEntry: ""
-	VitricPillarWallCrystal.MapEntry: ""
-	VitricPillarWallLava.MapEntry: ""
-	VitricPillarWallShort.MapEntry: ""
-	WindsRoomActor.MapEntry: ""
-	VitricBannerSmall.MapEntry: ""
-	VitricBanner.MapEntry: ""
-	VitricBossAltar.MapEntry: Ceiro's Altar
-	VitricBreakableVases.MapEntry: Pot
-	VitricDecor1x1.MapEntry: ""
-	VitricDecor1x1Inverted.MapEntry: ""
-	VitricDecor1x2.MapEntry: ""
-	VitricDecor1x2Inverted.MapEntry: ""
-	VitricDecor2x1.MapEntry: ""
-	VitricDecor2x1Inverted.MapEntry: ""
-	VitricDecor2x2.MapEntry: ""
-	VitricDecor2x2Inverted.MapEntry: ""
-	// VitricGiantCrystal.MapEntry: ""
-	// VitricLargeCrystal.MapEntry: ""
-	VitricLootBox.MapEntry: ""
-	// VitricMediumCrystal.MapEntry: ""
-	VitricOre.MapEntry: Vitric Ore
-	VitricOreFloat.MapEntry: Vitric Ore
-	VitricRoundCactus.MapEntry: ""
-	VitricSmallCactus.MapEntry: ""
-	// VitricSmallCrystal.MapEntry: ""
-	VitricSpike.MapEntry: ""
-	VitricBathtub.MapEntry: ""
-	VitricBed.MapEntry: ""
-	VitricBookcase.MapEntry: ""
-	VitricCandelabra.MapEntry: ""
-	VitricCandle.MapEntry: ""
-	VitricChair.MapEntry: ""
-	VitricChandelier.MapEntry: ""
-	VitricClock.MapEntry: ""
-	VitricDresser.MapEntry: ""
-	VitricLamp.MapEntry: ""
-	VitricLantern.MapEntry: ""
-	VitricPiano.MapEntry: ""
-	VitricSink.MapEntry: ""
-	VitricSofa.MapEntry: ""
-	VitricTable.MapEntry: ""
-	VitricWorkbench.MapEntry: ""
-	VitricDoorClosed.MapEntry: ""
-	VitricDoorOpen.MapEntry: ""
-	TempleChair.MapEntry: Chair
-	TempleLargeVase.MapEntry: Large Vase
-	TempleLargeVaseCrystal.MapEntry: Large Vase
-	TempleWorkbench.MapEntry: Workbench
-	TempleThrone.MapEntry: Throne
-	TempleFloorWeaponRack.MapEntry: Weapon Rack
-	TempleTable.MapEntry: Table
-	TempleTableCrystal.MapEntry: Table
-	TempleWeaponRack0.MapEntry: Weapon Rack
-	TempleWeaponRack1.MapEntry: Weapon Rack
-	TempleWeaponRack2.MapEntry: Weapon Rack
-	TempleWeaponRack3.MapEntry: Weapon Rack
-	TempleThingamajig.MapEntry: Weapon Rack
-	TempleBrick.MapEntry: ""
-	VitricBoss1.MapEntry: Music Box
-	VitricBoss2.MapEntry: Music Box
-	VitricPassive.MapEntry: Music Box
-	VitricTemple.MapEntry: Music Box
-	Miniboss.MapEntry: Music Box
-	LeafOvergrow.MapEntry: ""
-	BrickOvergrow.MapEntry: ""
-	StoneOvergrow.MapEntry: ""
-	Springstone.MapEntry: ""
-	ShrineBrazier.MapEntry: ""
-	WitTile.MapEntry: ""
-	AncientSandstone.MapEntry: ""
-	AncientSandstoneTile.MapEntry: ""
-	VitricBrick.MapEntry: ""
-	VitricCactus.MapEntry: ""
-	VitricGlass.MapEntry: ""
-	VitricSand.MapEntry: ""
-	VitricSoftSand.MapEntry: ""
-	VitricSandPlain.MapEntry: ""
-	VitricGiantCrystal.MapEntry: Vitric Giant Crystal
-	VitricLargeCrystal.MapEntry: Vitric Large Crystal
-	VitricMediumCrystal.MapEntry: Vitric Medium Crystal
-	VitricSmallCrystal.MapEntry: Vitric Small Crystal
-}
-
 Biomes: {
 	HotspringBiome: {
 		DisplayName: Hotsprings
@@ -4021,22 +3985,7 @@ Biomes: {
 
 NPCs: {
 	Glassweaver.DisplayName: Glassweaver
-
-	GlassweaverWaiting: {
-		DisplayName: Glassweaver
-
-		TownNPCMood: {
-			Content: I am content.
-			NoHome: I hate not having a home.
-			FarFromHome: I am too far from home.
-			LoveSpace: I love having so much space.
-			DislikeCrowded: I dislike how crowded I am.
-			HateCrowded: I hate how crowded I am.
-			LikeNPC_Princess: I like {NPCName}.
-			Princess_LovesNPC: I like {NPCName}.
-		}
-	}
-
+	GlassweaverWaiting.DisplayName: Glassweaver
 	ArenaActor.DisplayName: ""
 	GoldPlatform.DisplayName: ""
 	IcePlatform.DisplayName: ""
@@ -4106,21 +4055,6 @@ NPCs: {
 
 	EnchantNPC: {
 		DisplayName: Enchant N P C
-
-		TownNPCMood: {
-			Content: I am content.
-			NoHome: I hate not having a home.
-			FarFromHome: I am too far from home.
-			LoveSpace: I love having so much space.
-			DislikeCrowded: I dislike how crowded I am.
-			HateCrowded: I hate how crowded I am.
-			LikeNPC_Princess: I like {NPCName}.
-			Princess_LovesNPC: I like {NPCName}.
-		}
-	}
-
-	Voidsmith: {
-		DisplayName: Voidsmith
 
 		TownNPCMood: {
 			Content: I am content.

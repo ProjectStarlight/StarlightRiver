@@ -167,7 +167,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 			UpdateTargets(Player);
 			SuckEnemies(Player);
-			
+
 			if (!Main.dedServ)
 			{
 				ManageCaches();

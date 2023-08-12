@@ -1,4 +1,6 @@
-﻿namespace StarlightRiver.Content.CustomHooks
+﻿using StarlightRiver.Core.Systems.DummyTileSystem;
+
+namespace StarlightRiver.Content.CustomHooks
 {
 	class AdditiveDrawing : HookGroup
 	{
@@ -20,6 +22,12 @@
 			{
 				if (Main.projectile[k].active && Main.projectile[k].ModProjectile is IDrawAdditive)
 					(Main.projectile[k].ModProjectile as IDrawAdditive).DrawAdditive(Main.spriteBatch);
+			}
+
+			foreach (Dummy dummy in DummySystem.dummies) // Dummies
+			{
+				if (dummy is IDrawAdditive drawer)
+					drawer.DrawAdditive(Main.spriteBatch);
 			}
 
 			for (int k = 0; k < Main.maxNPCs; k++) //NPCs

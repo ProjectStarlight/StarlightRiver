@@ -277,7 +277,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 
 			Player.timeSinceLastHit = timeSinceLastHit;
 			if (Player.timeSinceLastHit == 0 && Player.maxBarrier > 0) // probably close enough
-				Player.justHitWithBarrier = true; 
+				Player.justHitWithBarrier = true;
 
 			if (Player.barrierDyeItem is null || Player.barrierDyeItem.type != dyeType)
 			{

@@ -104,7 +104,7 @@ namespace StarlightRiver.Core
 
 			Content.Physics.VerletChainSystem.toDraw.Clear();
 
-			DummyTile.dummies.Clear();
+			DummyTile.dummiesByPosition.Clear();
 		}
 
 		public override void OnWorldLoad()

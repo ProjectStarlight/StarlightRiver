@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
 {
 	internal class Bouncer : DummyTile, IHintable
 	{
-		public override int DummyType => ProjectileType<BouncerDummy>();
+		public override int DummyType => DummySystem.DummyType<BouncerDummy>();
 
 		public override string Texture => AssetDirectory.InteractiveTile + Name;
 
@@ -47,7 +47,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
 		{
 			AbilityHandler mp = Player.GetHandler();
 
-			if (AbilityHelper.CheckDash(Player, Projectile.Hitbox))
+			if (AbilityHelper.CheckDash(Player, Hitbox))
 			{
 				mp.ActiveAbility?.Deactivate();
 
@@ -56,19 +56,15 @@ namespace StarlightRiver.Content.Tiles.Interactive
 					Player.velocity = Vector2.Normalize(Player.velocity) * -18f;
 					Player.wingTime = Player.wingTimeMax;
 					Player.rocketTime = Player.rocketTimeMax;
-					//Player.jumpAgainCloud = true;
-					//Player.jumpAgainBlizzard = true;
-					//Player.jumpAgainSandstorm = true;
-					//Player.jumpAgainFart = true;
-					//Player.jumpAgainSail = true;
+					// TODO: Jump reset once Tmod adds that!
 				}
 
-				Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Center);
 
 				for (int k = 0; k <= 30; k++)
 				{
-					int dus = Dust.NewDust(Projectile.position, 48, 32, DustType<Dusts.GlassAttracted>(), Main.rand.Next(-16, 15), Main.rand.Next(-16, 15), 0, default, 1.3f);
-					Main.dust[dus].customData = Projectile.Center;
+					int dus = Dust.NewDust(position, 48, 32, DustType<Dusts.GlassAttracted>(), Main.rand.Next(-16, 15), Main.rand.Next(-16, 15), 0, default, 1.3f);
+					Main.dust[dus].customData = Center;
 				}
 			}
 		}
@@ -76,8 +72,8 @@ namespace StarlightRiver.Content.Tiles.Interactive
 		public override void PostDraw(Color lightColor)
 		{
 			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Tiles/Interactive/BouncerGlow").Value;
-			Color color = Helper.IndicatorColorProximity(150, 300, Projectile.Center);
-			Main.spriteBatch.Draw(tex, Projectile.position - Vector2.One - Main.screenPosition, color);
+			Color color = Helper.IndicatorColorProximity(150, 300, Center);
+			Main.spriteBatch.Draw(tex, position - Vector2.One - Main.screenPosition, color);
 		}
 	}
 }

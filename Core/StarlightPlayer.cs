@@ -160,7 +160,7 @@ namespace StarlightRiver.Core
 			AbilityInventory.shouldReset = true;
 			inTutorial = false;
 
-			DummyTile.dummies.Clear();
+			DummyTile.dummiesByPosition.Clear();
 
 			if (Main.masterMode && !BossRushSystem.isBossRush)
 			{

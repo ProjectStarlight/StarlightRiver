@@ -48,7 +48,6 @@ namespace StarlightRiver.Content.Items.Haunted
 
 		public override void AI()
 		{
-
 			if (owner.dead && opacity > 0)
 				opacity -= 0.05f;
 			else if (opacity < 1)
@@ -118,6 +117,7 @@ namespace StarlightRiver.Content.Items.Haunted
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
 			int ItemType = reader.ReadInt32();
+
 			if (ItemType == -1)
 			{
 				Item = null;
@@ -133,6 +133,7 @@ namespace StarlightRiver.Content.Items.Haunted
 			if (owner?.armor[0]?.ModItem != null)
 			{
 				(owner.armor[0].ModItem as PoltergeistHead).sleepTimer = sleepTimer;
+
 				if (Projectile.active && !(owner.armor[0].ModItem as PoltergeistHead).minions.Contains(Projectile))
 					(owner.armor[0].ModItem as PoltergeistHead).minions.Add(Projectile);
 			}
@@ -159,10 +160,7 @@ namespace StarlightRiver.Content.Items.Haunted
 		{
 			if (Item != null && !Item.IsAir)
 			{
-
 				Texture2D tex = TextureAssets.Item[Item.type].Value;
-				//var frames = Main.itemFrame[Item.type];
-
 				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor * opacity, Projectile.rotation, tex.Size() / 2, 1, 0, 0);
 			}
 

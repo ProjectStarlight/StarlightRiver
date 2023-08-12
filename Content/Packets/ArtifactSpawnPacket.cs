@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Packets
 		protected override void Receive()
 		{
 			ModTileEntity artifactEntity = TileEntity.ByID[artifactId] as ModTileEntity;
-			
+
 			artifactEntity.Kill(x, y);
 			ModContent.GetInstance<ArchaeologyMapLayer>().CalculateDrawables();
 

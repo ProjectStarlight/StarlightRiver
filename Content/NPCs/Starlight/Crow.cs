@@ -217,25 +217,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			}
 
 			if (CutsceneTimer >= 140)
-			{
-#if DEBUG
-				Mod.Logger.Info("Alican is leaving!");
-#endif
-
-				if (Main.netMode == NetmodeID.Server)
-				{
-					StarlightEventSequenceSystem.willOccur = false;
-					StarlightEventSequenceSystem.occuring = false;
-
-					StarlightEventSequenceSystem.sequence++;
-
-					// Server should tell the clients the event is over
-
-					NetMessage.SendData(MessageID.WorldData);
-
-					NPC.active = false;
-				}
-			}
+				NPC.active = false;
 		}
 
 		/// <summary>
@@ -265,7 +247,20 @@ namespace StarlightRiver.Content.NPCs.Starlight
 
 			// If all players are done talking, end the event!
 			if (!Main.player.Any(n => n.active && n.InCutscene<CrowCutsceneOne>()))
+			{
 				Leave();
+
+				StarlightEventSequenceSystem.willOccur = false;
+				StarlightEventSequenceSystem.occuring = false;
+
+				StarlightEventSequenceSystem.sequence++;
+
+				NetMessage.SendData(MessageID.WorldData);
+
+				// NPC dies early on the server
+				if (Main.netMode == NetmodeID.Server)
+					NPC.active = false;
+			}
 
 			// Play spawn animation or face the local player if not
 			if (CutsceneTimer < 300)

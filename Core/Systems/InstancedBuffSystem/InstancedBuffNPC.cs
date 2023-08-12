@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Terraria.ID;
 
 namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 {
@@ -59,7 +60,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		{
 			orig(self, lowerBuffTime);
 
-			if (self.type > 0 && self.active)
+			if (self.type > NPCID.None && self.active)
 				self.GetGlobalNPC<InstancedBuffNPC>().buffInstances.ForEach(n => n.UpdateNPC(self));
 		}
 

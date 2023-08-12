@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.Pickups
 
 			if (timer == 1)
 			{
-				SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Pickups/get")); //start the SFX
+				SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Pickups/ForbiddenWinds")); //start the SFX
 
 				cache1.Clear();
 				cache2.Clear();

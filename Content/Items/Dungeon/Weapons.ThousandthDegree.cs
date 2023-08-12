@@ -169,7 +169,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 				{
 					needsClick = true;
 					fired = false; // good to use again
-				}	
+				}
 			}
 
 			Projectile.rotation = Utils.ToRotation(Projectile.velocity);

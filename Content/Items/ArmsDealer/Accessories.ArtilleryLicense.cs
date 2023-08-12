@@ -21,4 +21,3 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 		}
 	}
 }
-

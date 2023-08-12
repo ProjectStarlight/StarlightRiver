@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	{
 		public override string Texture => AssetDirectory.VitricTile + Name;
 
-		public override int DummyType => ModContent.ProjectileType<CrystalSlimeSpawnerDummy>();
+		public override int DummyType => DummySystem.DummyType<CrystalSlimeSpawnerDummy>();
 
 		public override void SetStaticDefaults()
 		{
@@ -26,10 +26,10 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 	internal class CrystalSlimeSpawnerDummy : Dummy
 	{
-		public bool active;
+		public bool spawnerActive;
 
-		public ref float Timer => ref Projectile.ai[0];
-		public ref float Spawned => ref Projectile.ai[1];
+		public float timer;
+		public float spawned;
 
 		public CrystalSlimeSpawnerDummy() : base(ModContent.TileType<CrystalSlimeSpawner>(), 32, 48) { }
 
@@ -38,20 +38,20 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 				return; // As of this time no logic in here here is for multiplayer clients
 
-			if (Timer <= 0 && Main.player.Any(n => Vector2.Distance(n.Center, Projectile.Center) < 300))
+			if (timer <= 0 && Main.player.Any(n => Vector2.Distance(n.Center, Center) < 300))
 			{
-				active = true;
-				Timer = 1200;
+				spawnerActive = true;
+				timer = 1200;
 			}
 
-			if (Timer > 0)
-				Timer--;
+			if (timer > 0)
+				timer--;
 
-			if (active && !Main.npc.Any(n => n.active && n.type == ModContent.NPCType<CrystalSlime>()))
+			if (spawnerActive && !Main.npc.Any(n => n.active && n.type == ModContent.NPCType<CrystalSlime>()))
 			{
-				NPC.NewNPC(Projectile.GetSource_FromThis(), (int)Projectile.Center.X, (int)Projectile.Center.Y, ModContent.NPCType<CrystalSlime>(), 0, 0, 1);
+				NPC.NewNPC(GetSource_FromThis(), (int)Center.X, (int)Center.Y, ModContent.NPCType<CrystalSlime>(), 0, 0, 1);
 
-				active = false;
+				spawnerActive = false;
 			}
 		}
 

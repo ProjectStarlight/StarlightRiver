@@ -132,8 +132,11 @@ namespace StarlightRiver.Content.Items.Manabonds
 			{
 				int toSiphon = Math.Min(1, maxMana - mana);
 
-				if (owner.CheckMana(toSiphon, true))
+				if (owner.CheckMana(toSiphon, false))
+				{
+					owner.statMana -= toSiphon;
 					mana += toSiphon;
+				}
 
 				if (toSiphon > 0 && owner.manaRegenDelay < 15)
 					owner.manaRegenDelay = 15;

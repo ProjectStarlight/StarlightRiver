@@ -88,7 +88,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		public override void AI()
 		{
 			Owner.itemTime = Projectile.timeLeft; //lock player from switching off until this is done
-			Owner.itemAnimation = Projectile.timeLeft; 
+			Owner.itemAnimation = Projectile.timeLeft;
 
 			if (!Owner.channel || Timer > 0)
 			{

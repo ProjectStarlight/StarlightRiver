@@ -481,6 +481,11 @@ namespace StarlightRiver.Content.Items.Haunted
 
 			return false;
 		}
+
+		public override int GetHashCode()
+		{
+			throw new NotImplementedException();
+		}
 	}
 
 	/// <summary>

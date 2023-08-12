@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 {
 	class DashBarrier : DummyTile, IHintable
 	{
-		public override int DummyType => ProjectileType<DashBarrierDummy>();
+		public override int DummyType => DummySystem.DummyType<DashBarrierDummy>();
 
 		public override string Texture => AssetDirectory.UndergroundTempleTile + Name;
 
@@ -50,15 +50,15 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 
 		public override void Collision(Player Player)
 		{
-			if (AbilityHelper.CheckDash(Player, Projectile.Hitbox))
+			if (AbilityHelper.CheckDash(Player, Hitbox))
 			{
 				if (Main.myPlayer == Player.whoAmI)
 				{
 					WorldGen.KillTile(ParentX, ParentY);
-					NetMessage.SendTileSquare(Player.whoAmI, (int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f), 2, 3, TileChangeType.None);
+					NetMessage.SendTileSquare(Player.whoAmI, (int)(position.X / 16f), (int)(position.Y / 16f), 2, 3, TileChangeType.None);
 				}
 
-				Terraria.Audio.SoundEngine.PlaySound(SoundID.Tink, Projectile.Center);
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Tink, Center);
 			}
 		}
 	}

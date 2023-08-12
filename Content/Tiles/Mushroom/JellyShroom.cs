@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Tiles.Mushroom
 {
 	class JellyShroom : DummyTile
 	{
-		public override int DummyType => ProjectileType<JellyShroomDummy>();
+		public override int DummyType => DummySystem.DummyType<JellyShroomDummy>();
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -29,13 +29,16 @@ namespace StarlightRiver.Content.Tiles.Mushroom
 
 	class JellyShroomDummy : Dummy, IHintable
 	{
+		public float timer;
+		public float bounceState;
+
 		public JellyShroomDummy() : base(TileType<JellyShroom>(), 7 * 16, 2 * 16) { }
 
 		public override void Collision(Player Player)
 		{
-			if (Projectile.ai[1] == 0 && Player.velocity.Y > 0)
+			if (bounceState == 0 && Player.velocity.Y > 0)
 			{
-				Projectile.ai[1] = 1;
+				bounceState = 1;
 				Player.velocity.Y *= -1;
 				Player.velocity.Y -= 5;
 
@@ -43,7 +46,7 @@ namespace StarlightRiver.Content.Tiles.Mushroom
 					Player.velocity.Y = -10;
 
 				for (int k = 16; k < 96; k++)
-					Dust.NewDustPerfect(Projectile.position + new Vector2(k, Main.rand.Next(36)), DustType<Dusts.BlueStamina>(), Vector2.One.RotatedByRandom(3.14f) * 2, 0, default, 0.9f);
+					Dust.NewDustPerfect(position + new Vector2(k, Main.rand.Next(36)), DustType<Dusts.BlueStamina>(), Vector2.One.RotatedByRandom(3.14f) * 2, 0, default, 0.9f);
 
 				SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/JellyBounce"), Player.Center);
 			}
@@ -56,23 +59,23 @@ namespace StarlightRiver.Content.Tiles.Mushroom
 				if (Main.rand.NextBool(120))
 				{
 					float off = -2 * k * k / 357 + 232 * k / 357 - 1280 / 119;
-					Dust.NewDustPerfect(Projectile.position + new Vector2(k, 36 - off), DustType<Dusts.BlueStamina>(), new Vector2(0, Main.rand.NextFloat(0.4f, 0.6f)), 0, default, 0.7f);
+					Dust.NewDustPerfect(position + new Vector2(k, 36 - off), DustType<Dusts.BlueStamina>(), new Vector2(0, Main.rand.NextFloat(0.4f, 0.6f)), 0, default, 0.7f);
 				}
 			}
 
-			Lighting.AddLight(Projectile.Center, new Vector3(0.2f, 0.4f, 0.7f));
+			Lighting.AddLight(Center, new Vector3(0.2f, 0.4f, 0.7f));
 
-			if (Projectile.ai[1] == 1)
-				Projectile.ai[0]++;
+			if (bounceState == 1)
+				timer++;
 
-			if (Projectile.ai[0] >= 90)
+			if (timer >= 90)
 			{
-				Projectile.ai[1] = 0;
-				Projectile.ai[0] = 0;
+				bounceState = 0;
+				timer = 0;
 			}
 		}
 
-		public override bool PreDraw(ref Color lightColor)
+		public override void PostDraw(Color lightColor)
 		{
 			Texture2D back = Request<Texture2D>("StarlightRiver/Assets/Tiles/Mushroom/JellyShroomBack").Value;
 			Texture2D blob0 = Request<Texture2D>("StarlightRiver/Assets/Tiles/Mushroom/JellyShroom0").Value;
@@ -80,12 +83,12 @@ namespace StarlightRiver.Content.Tiles.Mushroom
 			Texture2D blob2 = Request<Texture2D>("StarlightRiver/Assets/Tiles/Mushroom/JellyShroom2").Value;
 			Texture2D blob3 = Request<Texture2D>("StarlightRiver/Assets/Tiles/Mushroom/JellyShroom3").Value;
 
-			Vector2 pos = Projectile.position - Main.screenPosition;
+			Vector2 pos = position - Main.screenPosition;
 
 			float mult = 0.05f;
 
-			if (Projectile.ai[1] == 1)
-				mult = 0.05f + 0.00533333f * Projectile.ai[0] - 0.0000592593f * Projectile.ai[0] * Projectile.ai[0];
+			if (bounceState == 1)
+				mult = 0.05f + 0.00533333f * timer - 0.0000592593f * timer * timer;
 
 			SpriteBatch spriteBatch = Main.spriteBatch;
 			spriteBatch.Draw(back, pos, lightColor);
@@ -93,21 +96,20 @@ namespace StarlightRiver.Content.Tiles.Mushroom
 			DrawBlob(spriteBatch, blob1, pos + new Vector2(52, 42), 1, 0.15f);
 			DrawBlob(spriteBatch, blob2, pos + new Vector2(24, 40), 2, 0.15f);
 			DrawBlob(spriteBatch, blob3, pos + new Vector2(16, 62), 3, 0.15f);
-
-			return false;
 		}
 
 		private void DrawBlob(SpriteBatch spriteBatch, Texture2D tex, Vector2 pos, float offset, float mult)
 		{
-			float speed = Projectile.ai[1] == 1 ? 4 : 1;
+			float speed = bounceState == 1 ? 4 : 1;
 
 			float sin = 1 + (float)Math.Sin(StarlightWorld.visualTimer * speed + offset) * mult;
 			float sin2 = 1 + (float)Math.Sin(StarlightWorld.visualTimer * speed + offset + 1) * mult;
 			var target = new Rectangle((int)pos.X + tex.Width / 2, (int)pos.Y + tex.Height / 2, (int)(tex.Width * sin), (int)(tex.Height * sin2));
 
-			Color color = Projectile.ai[1] == 0 ? Color.White : Color.Lerp(new Color(255, 100, 100), Color.White, Projectile.ai[0] / 90f);
+			Color color = bounceState == 0 ? Color.White : Color.Lerp(new Color(255, 100, 100), Color.White, timer / 90f);
 			spriteBatch.Draw(tex, target, null, color, 0, tex.Size() / 2, 0, 0);
 		}
+
 		public string GetHint()
 		{
 			return "This mushroom is different. And bouncy.";

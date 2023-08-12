@@ -294,7 +294,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 						if (bowFrameCounter > 25)
 						{
 							SoundEngine.PlaySound(SoundID.Item5, NPC.Center);
-							
+
 							if (Main.netMode != NetmodeID.MultiplayerClient)
 							{
 								PelterConstructArrow.AIStyleToAssign = -1;
@@ -461,7 +461,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 					if (Main.netMode != NetmodeID.MultiplayerClient)
 						Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), BowPos, BowPos.DirectionTo(Target.Center).RotatedBy((Target.Center.X - NPC.Center.X) * -0.0003f) * 10, ModContent.ProjectileType<PelterConstructArrow>(), (int)(NPC.damage * (Main.expertMode || Main.masterMode ? 0.3f : 1)), NPC.knockBackResist);
-					
+
 					bowFrameCounter = 0;
 					bowFrame++;
 				}

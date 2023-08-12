@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 {
 	class MonkSpear : DummyTile, IHintable
 	{
-		public override int DummyType => ProjectileType<MonkSpearDummy>();
+		public override int DummyType => DummySystem.DummyType<MonkSpearDummy>();
 
 		public override string Texture => AssetDirectory.ForestTile + Name;
 
@@ -46,41 +46,43 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 	class MonkSpearDummy : Dummy
 	{
-		public MonkSpearDummy() : base(TileType<MonkSpear>(), 4 * 16, 6 * 16) { }
-
 		private VerletChain ChainShort;
 		private VerletChain ChainLong;
 
+		private float timer;
+
+		public MonkSpearDummy() : base(TileType<MonkSpear>(), 4 * 16, 6 * 16) { }
+
 		public override void SafeSetDefaults()
 		{
-			ChainLong = new VerletChain(8, false, Projectile.Center + new Vector2(14, -26), 8)
+			ChainLong = new VerletChain(8, false, Center + new Vector2(14, -26), 8)
 			{
 				constraintRepetitions = 2,//defaults to 2, raising this lowers stretching at the cost of performance
 				drag = 2f,//This number defaults to 1, Is very sensitive
 				forceGravity = new Vector2(0f, 0.25f),//gravity x/y
 				scale = 0.4f,
-				parent = Projectile
+				parent = this
 			};
 
-			ChainShort = new VerletChain(6, false, Projectile.Center + new Vector2(14, -26), 8)
+			ChainShort = new VerletChain(6, false, Center + new Vector2(14, -26), 8)
 			{
 				constraintRepetitions = 2,//defaults to 2, raising this lowers stretching at the cost of performance
 				drag = 2f,//This number defaults to 1, Is very sensitive
 				forceGravity = new Vector2(0f, 0.22f),//gravity x/y
 				scale = 0.5f,
-				parent = Projectile
+				parent = this
 			};
 		}
 
 		public override void Update()
 		{
-			ChainLong.UpdateChain(Projectile.Center + new Vector2(14, -16));
-			ChainShort.UpdateChain(Projectile.Center + new Vector2(14, -16));
+			ChainLong.UpdateChain(Center + new Vector2(14, -16));
+			ChainShort.UpdateChain(Center + new Vector2(14, -16));
 
 			ChainLong.IterateRope(WindForceLong);
 			ChainShort.IterateRope(WindForceShort);
 
-			Projectile.ai[0] += 0.005f;
+			timer += 0.005f;
 		}
 
 		public override void PostDraw(Color lightColor)
@@ -89,19 +91,19 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 			for (int k = 0; k < 3; k++)
 			{
-				int x = (int)((Projectile.position.X + 8) / 16) + k;
-				int y = (int)((Projectile.position.Y + 6 * 16 + 8) / 16);
-				Main.spriteBatch.Draw(tex, Projectile.position + new Vector2(k * 16, 6 * 16) - Main.screenPosition, new Rectangle(k * 16, 0, 16, 16), Lighting.GetColor(x, y));
+				int x = (int)((position.X + 8) / 16) + k;
+				int y = (int)((position.Y + 6 * 16 + 8) / 16);
+				Main.spriteBatch.Draw(tex, position + new Vector2(k * 16, 6 * 16) - Main.screenPosition, new Rectangle(k * 16, 0, 16, 16), Lighting.GetColor(x, y));
 			}
 		}
 
 		private void WindForceShort(int index)//wind
 		{
-			int offset = (int)(Projectile.position.X / 16 + Projectile.position.Y / 16);
+			int offset = (int)(position.X / 16 + position.Y / 16);
 
 			float sin = (float)System.Math.Sin(StarlightWorld.visualTimer + offset - index / 3f);
 
-			float cos = (float)System.Math.Cos(Projectile.ai[0]);
+			float cos = (float)System.Math.Cos(timer);
 			float sin2 = (float)System.Math.Sin(StarlightWorld.visualTimer + offset + cos);
 
 			var posShort = new Vector2(ChainShort.ropeSegments[index].posNow.X + 1 + sin2 * 0.6f, ChainShort.ropeSegments[index].posNow.Y + sin * 0.8f);
@@ -112,23 +114,17 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 		private void WindForceLong(int index)
 		{
-			int offset = (int)(Projectile.position.X / 16 + Projectile.position.Y / 16);
+			int offset = (int)(position.X / 16 + position.Y / 16);
 
 			float sin = (float)System.Math.Sin(StarlightWorld.visualTimer + offset - index / 3f);
 
-			float cos = (float)System.Math.Cos(Projectile.ai[0]);
+			float cos = (float)System.Math.Cos(timer);
 			float sin2 = (float)System.Math.Sin(StarlightWorld.visualTimer + offset + cos);
 
 			var posLong = new Vector2(ChainLong.ropeSegments[index].posNow.X + 1 + sin2 * 0.6f, ChainLong.ropeSegments[index].posNow.Y + sin * 0.8f);
 			Color colorLong = new Color(40, 60, 150).MultiplyRGB(Color.White * (1 - sin * 0.2f)).MultiplyRGB(Lighting.GetColor((int)posLong.X / 16, (int)posLong.Y / 16));
 			ChainLong.ropeSegments[index].posNow = posLong;
 			ChainLong.ropeSegments[index].color = colorLong;
-		}
-
-		public override void Kill(int timeLeft)
-		{
-			VerletChainSystem.toDraw.Remove(ChainShort);
-			VerletChainSystem.toDraw.Remove(ChainLong);
 		}
 	}
 }

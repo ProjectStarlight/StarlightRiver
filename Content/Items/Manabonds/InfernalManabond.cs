@@ -122,7 +122,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 			foreach (NPC npc in Main.npc)
 			{
-				if (npc.active && !npc.friendly && npc.Hitbox.Intersects(inflated))
+				if (npc.active && npc.CanBeChasedBy(this) && !npc.friendly && npc.Hitbox.Intersects(inflated))
 				{
 					npc.SimpleStrikeNPC(Projectile.damage, 0, false, Projectile.knockBack, Projectile.DamageType);
 					npc.AddBuff(BuffID.OnFire, 300);
