@@ -12,3 +12,5 @@
 ## Tweaks
 - Prevented dialogue boxes from going offscreen
 - Glassweaver no longer counts as a town NPC
+- Crystal slimes can now spawn after you have obtained forbidden winds
+- Crystal slimes now drop 1-5 vitric shards
