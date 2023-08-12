@@ -74,7 +74,7 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 			Dummy dummy = prototypes[type].Clone();
 			dummy.active = true;
 			dummy.Center = pos;
-			dummy.identity = Main.rand.Next(int.MaxValue); // Lets hope this is random enough!
+			dummy.identity = Guid.NewGuid().GetHashCode();
 
 			dummy.SafeSetDefaults();
 
