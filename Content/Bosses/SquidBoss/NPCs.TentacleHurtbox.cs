@@ -68,12 +68,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void ModifyHitByItem(Player player, Item item, ref NPC.HitModifiers modifiers)
 		{
-			modifiers.FinalDamage *= 1.25f;
+			modifiers.FinalDamage *= 1.4f;
 		}
 
 		public override void ModifyHitByProjectile(Projectile projectile, ref NPC.HitModifiers modifiers)
 		{
-			modifiers.FinalDamage *= 1.25f;
+			modifiers.FinalDamage *= 1.4f;
 		}
 
 		public override void SendExtraAI(BinaryWriter writer)
