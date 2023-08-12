@@ -13,7 +13,7 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 
 		public static ScreenTarget cutawayTarget = new(DrawCutawayTarget, () => Inside, 1);
 
-		private static bool Inside => cutaways.Any(n => n.fadeTime < 0.95f);
+		private static bool Inside => cutaways?.Any(n => n.fadeTime < 0.95f) ?? false;
 
 		public override void Load()
 		{
