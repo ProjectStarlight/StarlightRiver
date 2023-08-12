@@ -73,6 +73,13 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 			return null;
 		}
 
+		/// <summary>
+		/// Determines if a dummy exists at a given position with the given type or not
+		/// </summary>
+		/// <param name="i"></param>
+		/// <param name="j"></param>
+		/// <param name="type"></param>
+		/// <returns>If the described dummy is extant locally</returns>
 		public static bool DummyExists(int i, int j, int type)
 		{
 			if (GetDummy(i, j, type) != null)
@@ -81,6 +88,13 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 			return NonDictSearch(i, j, type);
 		}
 
+		/// <summary>
+		/// Determines if a dummy exists at a given position with the given type or not
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="i"></param>
+		/// <param name="j"></param>
+		/// <returns>If the described dummy is extant locally</returns>
 		public static bool DummyExists<T>(int i, int j) where T : Dummy
 		{
 			if (GetDummy<T>(i, j) != null)
