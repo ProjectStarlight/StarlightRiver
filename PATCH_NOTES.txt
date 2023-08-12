@@ -1,0 +1,9 @@
+# Starlight River 0.2.5
+
+## Balance
+- Decreased the damage of auroracle's wavy ink projectiles in normal and expert mode
+- Increased the amount of damage auroracle's tentacles take (1.25x => 1.4x)
+
+## Fixes
+- Fixed a bug where you could avoid auroracle's laser by running to the edge of the arena
+- Fixed a crash that could occur with starsight and LuiAFK

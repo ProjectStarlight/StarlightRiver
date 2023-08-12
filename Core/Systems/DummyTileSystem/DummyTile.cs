@@ -15,6 +15,13 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 			return GetDummy(i, j, DummyType);
 		}
 
+		/// <summary>
+		/// Attempts to find a dummy at the given coordiantes of the given type
+		/// </summary>
+		/// <param name="i"></param>
+		/// <param name="j"></param>
+		/// <param name="type"></param>
+		/// <returns>The dummy instance or null if one does not exist</returns>
 		public static Dummy GetDummy(int i, int j, int type)
 		{
 			var key = new Point16(i, j);
@@ -37,6 +44,13 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 			return null;
 		}
 
+		/// <summary>
+		/// Attempts to find a dummy at the given coordiantes of the given type
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="i"></param>
+		/// <param name="j"></param>
+		/// <returns>The dummy instance or null if one does not exist</returns>
 		public static Dummy GetDummy<T>(int i, int j) where T : Dummy
 		{
 			var key = new Point16(i, j);

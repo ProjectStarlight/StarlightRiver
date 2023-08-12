@@ -30,6 +30,9 @@ namespace StarlightRiver.Content.Packets
 		{
 			var dummy = DummyTile.GetDummy(x, y, dummyType) as ReflectorDummy;
 
+			if (dummy is null)
+				return;
+
 			if (Main.netMode != NetmodeID.SinglePlayer)
 				dummy.DeactivateDownstream(); //clear beam for everyone before creating the new beams
 
