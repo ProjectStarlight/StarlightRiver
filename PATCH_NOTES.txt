@@ -8,3 +8,6 @@
 - Fixed a bug where you could avoid auroracle's laser by running to the edge of the arena
 - Fixed a crash that could occur with starsight and LuiAFK
 - Hardened against dummy-related crashes
+
+## Tweaks
+- Prevented dialogue boxes from going offscreen

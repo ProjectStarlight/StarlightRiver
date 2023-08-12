@@ -82,21 +82,24 @@ namespace StarlightRiver.Content.GUI
 			// This accounts for buttons
 			boundingBox.Height += 44;
 
+			boundingBox.Width = (int)(boundingBox.Width);
+			boundingBox.Height = (int)(boundingBox.Height);
+
 			// Bound the position so that the box is in the screen
 			if (boundingBox.X < 0)
-				absolutePosition.X += -boundingBox.X;
+				absolutePosition.X += -boundingBox.X * Main.UIScale;
 
 			if (boundingBox.Y < 0)
-				absolutePosition.Y += -boundingBox.Y;
+				absolutePosition.Y += -boundingBox.Y * Main.UIScale;
 
 			if (boundingBox.X + boundingBox.Width > Main.screenWidth)
-				absolutePosition.X -= boundingBox.X + boundingBox.Width - Main.screenWidth;
+				absolutePosition.X -= (boundingBox.X + boundingBox.Width - Main.screenWidth) * Main.UIScale;
 
 			if (boundingBox.Y + boundingBox.Height > Main.screenHeight)
-				absolutePosition.Y -= boundingBox.Y + boundingBox.Height - Main.screenHeight;
+				absolutePosition.Y -= (boundingBox.Y + boundingBox.Height - Main.screenHeight) * Main.UIScale;
 
 			// Reset the bounding box
-			boundingBox = new Rectangle();
+			boundingBox = new Rectangle(9999, 9999, 0, 0);
 
 			// Recalculate rectangles
 			position = absolutePosition / Main.UIScale;
