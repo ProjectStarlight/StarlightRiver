@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Items.Magnet
 
 		public override void SetDefaults()
 		{
-			Item.DefaultToWhip(ModContent.ProjectileType<ThunderBeadsProj>(), 30, 1.2f, 5f, 25);
+			Item.DefaultToWhip(ModContent.ProjectileType<ThunderBeadsProj>(), 34, 1.2f, 5f, 25);
 			Item.value = Item.sellPrice(0, 2, 0, 0);
 			Item.rare = ItemRarityID.Orange;
 		}
@@ -141,11 +141,6 @@ namespace StarlightRiver.Content.Items.Magnet
 			return base.PreAI();
 		}
 
-		public override void ArcAI()
-		{
-			//xFrame = 0;
-		}
-
 		public override bool ShouldDrawSegment(int segment)
 		{
 			return segment % 3 == 0;
@@ -154,6 +149,7 @@ namespace StarlightRiver.Content.Items.Magnet
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			ableToHit = false;
+
 			if (!embedded)
 			{
 				Projectile.ownerHitCheck = false;

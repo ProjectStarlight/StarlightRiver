@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.Items.Haunted
 			for (int k = 0; k < minions.Count; k++)
 			{
 				var proj = minions[k].ModProjectile as PoltergeistMinion;
-				player.GetModPlayer<ResourceReservationPlayer>().ReserveMana((int)(proj.Item.mana * (60f / proj.Item.useTime) * 2));
+				player.GetModPlayer<ResourceReservationPlayer>().ReserveMana((int)(proj.Item.mana * (60f / proj.Item.useTime) * 2 + 40));
 			}
 
 			if (player == Main.LocalPlayer && sleepTimer == 1 && minions.Count > 0) //warning message

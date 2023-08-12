@@ -3,6 +3,8 @@
 ## Balance
 - Decreased the damage of auroracle's wavy ink projectiles in normal and expert mode
 - Increased the amount of damage auroracle's tentacles take (1.25x => 1.4x)
+- Decreased Raducla's Rapier damage (12 => 9)
+- Haunted armor now applies an additional 40 mana reservation per weapon
 
 ## Fixes
 - Fixed a bug where you could avoid auroracle's laser by running to the edge of the arena
