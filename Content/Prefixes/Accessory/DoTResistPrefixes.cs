@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using StarlightRiver.Core.Systems.InoculationSystem;
+using System.Collections.Generic;
 
 namespace StarlightRiver.Content.Prefixes.Accessory
 {
@@ -34,7 +35,7 @@ namespace StarlightRiver.Content.Prefixes.Accessory
 
 		public override void Update(Item Item, Player Player)
 		{
-			Player.GetModPlayer<DoTResistancePlayer>().DoTResist += power;
+			Player.GetModPlayer<InoculationPlayer>().DoTResist += power;
 		}
 
 		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)

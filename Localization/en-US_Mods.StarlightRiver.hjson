@@ -872,12 +872,12 @@ Items: {
 		DisplayName: Effects of different gems:
 		Tooltip:
 			'''
-			[i/s1:5686]: Critical strikes partially ignore armor, with increased chance for missing enemy HP 
-			[i/s1:5694]: +100 barrier. Gain a shield that points to your cursor and blocks attacks, consuming barrier 
-			[i/s1:5687]: Immediately heal 20 hp. Hits have a chance to create a 5 HP life heart 
-			[i/s1:5693]: Immediately refill mana. Hits have a chance to create 1 to 3 mana stars 
-			[i/s1:5685]: All strikes inflict Toxic Amethyst, a stacking poison debuff 
-			[i/s1:5692]: Hits have a chance to summon a Ruby Dagger to seek the struck enemy for 20% of the hit's damage
+			[i/s1:5688]: Critical strikes partially ignore armor, with increased chance for missing enemy HP 
+			[i/s1:5696]: +100 barrier. Gain a shield that points to your cursor and blocks attacks, consuming barrier 
+			[i/s1:5689]: Immediately heal 20 hp. Hits have a chance to create a 5 HP life heart 
+			[i/s1:5695]: Immediately refill mana. Hits have a chance to create 1 to 3 mana stars 
+			[i/s1:5687]: All strikes inflict Toxic Amethyst, a stacking poison debuff 
+			[i/s1:5694]: Hits have a chance to summon a Ruby Dagger to seek the struck enemy for 20% of the hit's damage
 			'''
 	}
 
@@ -1925,8 +1925,10 @@ Items: {
 		DisplayName: Blood Crystal
 		Tooltip:
 			'''
-			Cursed : Debuffs you inflict are also inflicted onto you 
-			All debuffs you inflict stack and last longer
+			Inflict blood resonance for every debuff on an enemy when you hit them
+			Cursed : Inflict an equal amount of blood resonance on yourself
+			Blood resonance decreases inoculation by 1% per stack
+			You take 5 damage per second while you have blood resonance
 			'''
 	}
 
@@ -3072,16 +3074,6 @@ Items: {
 		Tooltip: debug item
 	}
 
-	VitricBossBarrierItem: {
-		DisplayName: VitricBossBarrierItem
-		Tooltip: debug item
-	}
-
-	GlassweaverBossBarrierItem: {
-		DisplayName: GlassweaverBossBarrierItem
-		Tooltip: debug item
-	}
-
 	VitricBathtub: {
 		DisplayName: Vitric Bathtub
 		Tooltip: ""
@@ -3164,6 +3156,26 @@ Items: {
 
 	VitricDoorClosed: {
 		DisplayName: Vitric Door
+		Tooltip: ""
+	}
+
+	VitricBossBarrierItem: {
+		DisplayName: VitricBossBarrierItem
+		Tooltip: debug item
+	}
+
+	GlassweaverBossBarrierItem: {
+		DisplayName: GlassweaverBossBarrierItem
+		Tooltip: debug item
+	}
+
+	AuroracleRelicItem: {
+		DisplayName: Auroracle Relic
+		Tooltip: ""
+	}
+
+	CeirosRelicItem: {
+		DisplayName: Ceiros Relic
 		Tooltip: ""
 	}
 
@@ -3262,23 +3274,8 @@ Items: {
 		Tooltip: ""
 	}
 
-	OvergrowItem: {
-		DisplayName: Music Box (Overgrow)
-		Tooltip: ""
-	}
-
 	AuroracleItem: {
 		DisplayName: Music Box (Auroracle)
-		Tooltip: ""
-	}
-
-	AuroracleRelicItem: {
-		DisplayName: Auroracle Relic
-		Tooltip: ""
-	}
-
-	CeirosRelicItem: {
-		DisplayName: Ceiros Relic
 		Tooltip: ""
 	}
 
@@ -3486,7 +3483,6 @@ Tiles: {
 	Vibeshroom.MapEntry: ""
 	BlueTorchOvergrow.MapEntry: ""
 	OvergrowthLivingWoodTile.MapEntry: Overgrown Living Wood
-	Overgrow.MapEntry: Music Box
 	Rock2x2.MapEntry: ""
 	SetpieceAltar.MapEntry: ""
 	SkeletonBrickTile.MapEntry: Skeleton Brick
@@ -3631,10 +3627,10 @@ Tiles: {
 	VitricSand.MapEntry: ""
 	VitricSoftSand.MapEntry: ""
 	VitricSandPlain.MapEntry: ""
-	VitricGiantCrystal.MapEntry: Vitric Giant Crystal
-	VitricLargeCrystal.MapEntry: Vitric Large Crystal
-	VitricMediumCrystal.MapEntry: Vitric Medium Crystal
-	VitricSmallCrystal.MapEntry: Vitric Small Crystal
+	// VitricGiantCrystal.MapEntry: ""
+	// VitricLargeCrystal.MapEntry: ""
+	// VitricMediumCrystal.MapEntry: ""
+	// VitricSmallCrystal.MapEntry: ""
 }
 
 Projectiles: {
@@ -4324,6 +4320,11 @@ Buffs: {
 	ShieldDegenReduction: {
 		DisplayName: Barrier Affinity
 		Description: Barrier sticks to you better
+	}
+
+	BloodCrystalBuff: {
+		DisplayName: Blood Resonance
+		Description: Inoculation is decreased
 	}
 
 	StarstruckDebuff: {

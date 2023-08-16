@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Core.Loaders.UILoading;
+using StarlightRiver.Core.Systems.InoculationSystem;
 using System;
 using System.Collections.Generic;
 using Terraria.GameContent;
@@ -61,7 +62,7 @@ namespace StarlightRiver.Content.GUI
 				if (Timer < 25)
 					Timer++;
 
-				DoTResistancePlayer ResistPlayer = Player.GetModPlayer<DoTResistancePlayer>();
+				InoculationPlayer ResistPlayer = Player.GetModPlayer<InoculationPlayer>();
 
 				int resistPercent = (int)Math.Round(ResistPlayer.DoTResist * 100, MidpointRounding.AwayFromZero);
 				DoTResistPanel.value = $"{resistPercent}%";
