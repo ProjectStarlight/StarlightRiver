@@ -19,7 +19,6 @@ namespace StarlightRiver.Content.Tiles.MusicBox
 			LoadMusicBox("VitricPassive", "Music Box (Vitric Desert)", "Sounds/Music/GlassPassive");
 			LoadMusicBox("VitricTemple", "Music Box (Vitric Temple)", "Sounds/Music/GlassTemple");
 			LoadMusicBox("Miniboss", "Music Box (GlassWeaver)", "Sounds/Music/GlassWeaver");
-			LoadMusicBox("Overgrow", "Music Box (Overgrow)", "Sounds/Music/Overgrow");
 			LoadMusicBox("Auroracle", "Music Box (Auroracle)", "Sounds/Music/SquidBoss");
 		}
 
