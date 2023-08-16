@@ -25,6 +25,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			NPC.noTileCollide = true;
 			NPC.knockBackResist = 0f;
 			NPC.HitSound = SoundID.NPCHit1;
+			NPC.netAlways = true;
 		}
 
 		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
