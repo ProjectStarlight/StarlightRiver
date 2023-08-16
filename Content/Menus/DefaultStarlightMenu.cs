@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Menus
 		public static int Timer;
 
 		public override string DisplayName => "Moonstone";
-		public override int Music => MusicLoader.GetMusicSlot(Mod, "Sounds/Music/AluminumPassive");
+		public override int Music => MusicLoader.GetMusicSlot(Mod, "Sounds/Music/Moonstone");
 
 		public override Asset<Texture2D> Logo => ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/MenuIcon");
 
