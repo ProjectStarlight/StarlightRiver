@@ -22,7 +22,9 @@ namespace StarlightRiver.Content.Items.Manabonds
 			if (mp.timer % 50 == 0 && mp.mana >= 8 && mp.target != null)
 			{
 				mp.mana -= 8;
-				Projectile.NewProjectile(minion.GetSource_FromThis(), minion.Center, minion.Center.DirectionTo(mp.target.Center) * 6, ModContent.ProjectileType<AquaticBolt>(), 24, 1f, minion.owner);
+
+				if (Main.myPlayer == minion.owner)
+					Projectile.NewProjectile(minion.GetSource_FromThis(), minion.Center, minion.Center.DirectionTo(mp.target.Center) * 6, ModContent.ProjectileType<AquaticBolt>(), 24, 1f, minion.owner);
 			}
 		}
 
@@ -73,14 +75,17 @@ namespace StarlightRiver.Content.Items.Manabonds
 					Projectile.timeLeft = 15;
 			}
 
-			for (int k = 0; k < 3; k++)
+			if (Main.netMode != NetmodeID.Server)
 			{
-				var d = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(5, 5), DustID.DungeonWater, Vector2.Zero, 0, default, Main.rand.NextFloat(1f, 1.5f));
-				d.noGravity = true;
-			}
+				for (int k = 0; k < 3; k++)
+				{
+					var d = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(5, 5), DustID.DungeonWater, Vector2.Zero, 0, default, Main.rand.NextFloat(1f, 1.5f));
+					d.noGravity = true;
+				}
 
-			ManageCaches();
-			ManageTrail();
+				ManageCaches();
+				ManageTrail();
+			}
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)

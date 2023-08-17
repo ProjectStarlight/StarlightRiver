@@ -148,7 +148,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 		public override void PostDraw(Projectile projectile, Color lightColor)
 		{
-			if (!ManaActive(projectile))
+			if (!ManaActive(projectile) || Main.myPlayer != projectile.owner)
 				return;
 
 			float fill = mana / (float)maxMana;
