@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -23,6 +24,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			NPC.knockBackResist = 3f;
 			NPC.HitSound = SoundID.NPCHit1;
 			NPC.DeathSound = SoundID.NPCDeath1;
+		}
+
+		public override void OnSpawn(IEntitySource source)
+		{
+			NPC.velocity += Vector2.UnitY.RotatedByRandom(1) * 20;
 		}
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)

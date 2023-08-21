@@ -1,5 +1,7 @@
 ﻿using StarlightRiver.Helpers;
 using System.Collections.Generic;
+using System.IO;
+using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
@@ -22,16 +24,19 @@ namespace StarlightRiver.Content.Items.Manabonds
 			if (mp.timer % 60 == 0 && mp.mana >= 6 && mp.target != null)
 			{
 				mp.mana -= 6;
-				var proj = Projectile.NewProjectileDirect(minion.GetSource_FromThis(), minion.Center, minion.Center.DirectionTo(mp.target.Center).RotatedByRandom(0.5f) * 15, ModContent.ProjectileType<MagicBolt>(), 12, 0.25f, minion.owner);
-
-				var bolt = proj.ModProjectile as MagicBolt;
-				bolt.target = mp.target;
+				if (Main.myPlayer == minion.owner)
+				{
+					MagicBolt.targetToAssign = mp.target;
+					Projectile.NewProjectileDirect(minion.GetSource_FromThis(), minion.Center, minion.Center.DirectionTo(mp.target.Center).RotatedByRandom(0.5f) * 15, ModContent.ProjectileType<MagicBolt>(), 12, 0.25f, minion.owner);
+				}
 			}
 		}
 	}
 
 	internal class MagicBolt : ModProjectile, IDrawPrimitive
 	{
+		public static NPC targetToAssign;
+
 		private List<Vector2> cache;
 		private Trail trail;
 
@@ -60,6 +65,11 @@ namespace StarlightRiver.Content.Items.Manabonds
 			Projectile.hostile = false;
 		}
 
+		public override void OnSpawn(IEntitySource source)
+		{
+			target = targetToAssign;
+		}
+
 		public override void AI()
 		{
 			if (State == 0)
@@ -82,8 +92,11 @@ namespace StarlightRiver.Content.Items.Manabonds
 				Projectile.velocity *= 0;
 			}
 
-			ManageCaches();
-			ManageTrail();
+			if (Main.netMode != NetmodeID.Server)
+			{
+				ManageCaches();
+				ManageTrail();
+			}
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -93,6 +106,9 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 			var d = Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Aurora>(), Main.rand.NextVector2Circular(2, 2), 0, new Color(40, 200, 255));
 			d.customData = 1.2f;
+
+			Main.player[Projectile.owner].TryGetModPlayer(out StarlightPlayer starlightPlayer);
+			starlightPlayer.SetHitPacketStatus(shouldRunProjMethods: true);
 		}
 
 		private void ManageCaches()
@@ -151,6 +167,17 @@ namespace StarlightRiver.Content.Items.Manabonds
 			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
 
 			trail?.Render(effect);
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(target.whoAmI);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			int targetId = reader.ReadInt32();
+			target = Main.npc[targetId];
 		}
 	}
 }

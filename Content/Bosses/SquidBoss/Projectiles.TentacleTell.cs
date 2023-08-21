@@ -33,12 +33,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			endPoint = endPointToAssign;
 		}
 
-		public override void AI()
-		{
-			if (Projectile.timeLeft >= 59)
-				Projectile.netUpdate = true;
-		}
-
 		public override bool PreDraw(ref Color lightColor)
 		{
 			return false;
