@@ -371,7 +371,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			foreach (NPC target in Main.npc)
 			{
-				if (target.townNPC || !target.active || target.dontTakeDamage || target.immortal)
+				if (target.townNPC || !target.active || target.dontTakeDamage || target.immortal || target.friendly)
 					continue;
 
 				foreach (MagmaGlob glob in Globs)
@@ -432,7 +432,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool? CanHitNPC(NPC target)
 		{
-			if (target.townNPC || target.immune[Projectile.owner] > 0)
+			if (target.townNPC || target.friendly || target.immune[Projectile.owner] > 0)
 				return false;
 
 			foreach (MagmaGlob glob in Globs)

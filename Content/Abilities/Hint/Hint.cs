@@ -150,7 +150,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 
 		public override void UpdateActive()
 		{
-			int i = Projectile.NewProjectile(null, Main.MouseWorld + Vector2.UnitY * -32, Vector2.Zero, ModContent.ProjectileType<HintText>(), 0, 0, Main.myPlayer);
+			int i = Projectile.NewProjectile(Player.GetSource_FromThis(), Main.MouseWorld + Vector2.UnitY * -32, Vector2.Zero, ModContent.ProjectileType<HintText>(), 0, 0, Main.myPlayer);
 			var proj = Main.projectile[i].ModProjectile as HintText;
 
 			if (proj != null)

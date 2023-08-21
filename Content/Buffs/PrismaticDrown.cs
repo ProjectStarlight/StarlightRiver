@@ -28,7 +28,7 @@
 
 		public override void Update(NPC npc, ref int buffIndex)
 		{
-			npc.lifeRegen -= 40;
+			npc.lifeRegen -= 60;
 		}
 	}
 }

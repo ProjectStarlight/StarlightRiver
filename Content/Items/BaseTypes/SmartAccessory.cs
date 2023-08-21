@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Terraria.GameContent.Achievements;
 
 namespace StarlightRiver.Content.Items.BaseTypes
 {
@@ -45,16 +44,11 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		/// <returns>If the item is equipped or simulated.</returns>
 		public bool Equipped(Player player)
 		{
-			for (int k = ACCESSORY_START_INDEX; k <= ACCESSORY_END_INDEX; k++)
-			{
-				if (player.IsItemSlotUnlockedAndUsable(k))
-				{
-					if (player.armor[k].type == Item.type)
-						return true;
-				}
-			}
+			AccessoryPlayer mp = player.GetModPlayer<AccessoryPlayer>();
 
-			AccessorySimulationPlayer mp = player.GetModPlayer<AccessorySimulationPlayer>();
+			if (mp.standardAccessories.Any(n => n.type == Item.type))
+				return true;
+
 			if (mp.simulatedAccessories.Any(n => n.type == Item.type))
 				return true;
 
@@ -79,16 +73,10 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		/// <returns>The SmartAccessory instance if one is found, null if the item is not equipped or simulated.</returns>
 		public static SmartAccessory GetEquippedInstance(Player player, int type)
 		{
-			int accessoryCount = DEFAULT_ACCESSORY_SLOT_COUNT + player.GetAmountOfExtraAccessorySlotsToShow();
+			AccessoryPlayer mp = player.GetModPlayer<AccessoryPlayer>();
 
-			for (int k = ACCESSORY_START_INDEX; k <= ACCESSORY_END_INDEX; k++)
-			{
-				if (player.armor[k].type == type && player.IsItemSlotUnlockedAndUsable(k))
-					return player.armor[k].ModItem as SmartAccessory;
-			}
-
-			AccessorySimulationPlayer mp = player.GetModPlayer<AccessorySimulationPlayer>();
-			return mp.simulatedAccessories.FirstOrDefault(n => n.type == type)?.ModItem as SmartAccessory;
+			return mp.standardAccessories.FirstOrDefault(n => n.type == type)?.ModItem as SmartAccessory ??
+				mp.simulatedAccessories.FirstOrDefault(n => n.type == type)?.ModItem as SmartAccessory;
 		}
 
 		/// <summary>
@@ -115,7 +103,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 					return player.armor[k].ModItem as SmartAccessory;
 			}
 
-			AccessorySimulationPlayer mp = player.GetModPlayer<AccessorySimulationPlayer>();
+			AccessoryPlayer mp = player.GetModPlayer<AccessoryPlayer>();
 			return mp.simulatedAccessories.FirstOrDefault(n => n.type == type)?.ModItem as SmartAccessory;
 		}
 
@@ -126,7 +114,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		/// <param name="player"></param>
 		private void Simulate(int itemType, Player player)
 		{
-			AccessorySimulationPlayer mp = player.GetModPlayer<AccessorySimulationPlayer>();
+			AccessoryPlayer mp = player.GetModPlayer<AccessoryPlayer>();
 
 			Item existingSimulacrum = mp.simulatedAccessories.FirstOrDefault(n => n.type == itemType);
 			var simulacrumModItem = existingSimulacrum?.ModItem as SmartAccessory;
@@ -204,6 +192,16 @@ namespace StarlightRiver.Content.Items.BaseTypes
 					Item.TurnToAir();
 			}
 
+			// Register this type as equipped every frame, as is standard practice for accs
+			player.GetModPlayer<AccessoryPlayer>().equippedTypes.Add(Item.type);
+
+			// If the pointer to this item is not being tracked for updates yet, add it
+			if (!Equipped(player))
+			{
+				player.GetModPlayer<AccessoryPlayer>().standardAccessories.Add(Item);
+				Equip(player, Item);
+			}
+
 			SafeUpdateEquip(player);
 		}
 
@@ -227,35 +225,35 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		}
 	}
 
-	public class AccessorySimulationPlayer : ModPlayer
+	public class AccessoryPlayer : ModPlayer
 	{
+		public List<Item> standardAccessories = new();
+		public List<int> equippedTypes = new();
+
 		public List<Item> simulatedAccessories = new();
 
 		public int[] accsLastFrame = new int[20];
 
+		public override void Load()
+		{
+			On_Player.TrySwitchingLoadout += ResetSimulation;
+		}
+
+		private void ResetSimulation(On_Player.orig_TrySwitchingLoadout orig, Player self, int loadoutIndex)
+		{
+			self.GetModPlayer<AccessoryPlayer>().standardAccessories.Clear();
+			self.GetModPlayer<AccessoryPlayer>().simulatedAccessories.Clear();
+			orig(self, loadoutIndex);
+		}
+
 		public override void OnEnterWorld()
 		{
+			standardAccessories.Clear();
 			simulatedAccessories.Clear();
-			for (int k = SmartAccessory.ACCESSORY_START_INDEX; k <= SmartAccessory.ACCESSORY_END_INDEX; k++)
-			{
-				(Player.armor[k].ModItem as SmartAccessory)?.Equip(Player, Player.armor[k]);
-				accsLastFrame[k] = Player.armor[k].type;
-			}
 		}
 
 		public override void UpdateEquips()
 		{
-			//iterate over equipped accessories so we can discover if any have changed in order to equip this
-			//done this way so we can capture all the various ways terraria has for modifying equip slots cloned/not cloned quick swap, loadout swap etc.
-			for (int k = SmartAccessory.ACCESSORY_START_INDEX; k <= SmartAccessory.ACCESSORY_END_INDEX; k++)
-			{
-				if (Player.armor[k].type != accsLastFrame[k] && Player.IsItemSlotUnlockedAndUsable(k))
-				{
-					accsLastFrame[k] = Player.armor[k].type;
-					(Player.armor[k].ModItem as SmartAccessory)?.Equip(Player, Player.armor[k]);
-				}
-			}
-
 			simulatedAccessories.RemoveAll(n => n.IsAir);
 
 			foreach (Item item in simulatedAccessories)
@@ -264,6 +262,14 @@ namespace StarlightRiver.Content.Items.BaseTypes
 				modItem.UpdateAccessory(Player, true);
 				modItem.UpdateEquip(Player);
 			}
+		}
+
+		public override void ResetEffects()
+		{
+			// This is a bit slow, huh :/
+			standardAccessories.RemoveAll(n => !equippedTypes.Contains(n.type));
+
+			equippedTypes.Clear();
 		}
 	}
 }

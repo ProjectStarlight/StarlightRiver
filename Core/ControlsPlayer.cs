@@ -8,6 +8,10 @@ namespace StarlightRiver.Core
 	{
 		//this is used to keep track of Player controls that are otherwise not possible to keep in sync (wtf tml why does terraria sync altfunctionuse but not for modded Items)
 
+		public bool mouseLeft = false;
+
+		private bool oldMouseLeft = false;
+
 		/// <summary>
 		/// technically called the "interact" key in game
 		/// </summary>
@@ -42,12 +46,26 @@ namespace StarlightRiver.Core
 		/// sends immediately when right click value changes. sets it self to false each frame
 		/// </summary>
 		public bool rightClickListener = false;
+
+		/// <summary>
+		/// set this to true when something wants to listen for the value of left click changing
+		/// sends immediately when left click value changes. sets it self to false each frame
+		/// </summary>
+		public bool leftClickListener = false;
 		public override void PreUpdate()
 		{
 			if (Main.myPlayer == Player.whoAmI)
 			{
+				mouseLeft = PlayerInput.Triggers.Current.MouseLeft;
 				mouseRight = PlayerInput.Triggers.Current.MouseRight;
 				mouseWorld = Main.MouseWorld;
+
+				if (leftClickListener && mouseLeft != oldMouseLeft)
+				{
+					oldMouseLeft = mouseLeft;
+					sendControls = true;
+					leftClickListener = false;
+				}
 
 				if (rightClickListener && mouseRight != oldMouseRight)
 				{
@@ -56,14 +74,14 @@ namespace StarlightRiver.Core
 					rightClickListener = false;
 				}
 
-				if (mouseListener && Vector2.Distance(mouseWorld, oldMouseWorld) > 10f)
+				if (mouseListener && Vector2.Distance(mouseWorld, oldMouseWorld) > 5f)
 				{
 					oldMouseWorld = mouseWorld;
 					sendControls = true;
 					mouseListener = false;
 				}
 
-				if (mouseRotationListener && Math.Abs((mouseWorld - Player.MountedCenter).ToRotation() - (oldMouseWorld - Player.MountedCenter).ToRotation()) > 0.15f)
+				if (mouseRotationListener && Math.Abs((mouseWorld - Player.MountedCenter).ToRotation() - (oldMouseWorld - Player.MountedCenter).ToRotation()) > 0.01f)
 				{
 					oldMouseWorld = mouseWorld;
 					sendControls = true;
@@ -95,6 +113,9 @@ namespace StarlightRiver.Core
 			if (cPlayer.mouseRight)
 				controls |= 0b10000000;
 
+			if (cPlayer.mouseLeft)
+				controls |= 0b01000000;
+
 			xDist = (short)(cPlayer.mouseWorld.X - cPlayer.Player.position.X);
 			yDist = (short)(cPlayer.mouseWorld.Y - cPlayer.Player.position.Y);
 		}
@@ -107,6 +128,11 @@ namespace StarlightRiver.Core
 				Player.mouseRight = true;
 			else
 				Player.mouseRight = false;
+
+			if ((controls & 0b01000000) == 0b01000000)
+				Player.mouseLeft = true;
+			else
+				Player.mouseLeft = false;
 
 			Player.mouseWorld = new Vector2(xDist + Player.Player.position.X, yDist + Player.Player.position.Y);
 

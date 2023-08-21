@@ -118,14 +118,17 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 		public override void AI()
 		{
-			Player Player = Main.player[Projectile.owner];
+			Player player = Main.player[Projectile.owner];
 
-			Vector2 direction = Main.MouseWorld - Player.Center;
+			player.TryGetModPlayer(out ControlsPlayer controlsPlayer);
+			controlsPlayer.mouseRotationListener = true;
+
+			Vector2 direction = controlsPlayer.mouseWorld - player.Center;
 			direction.Normalize();
 
 			Projectile.rotation = direction.ToRotation();
 
-			Projectile.Center = Player.Center + direction * 35;
+			Projectile.Center = player.Center + direction * 35;
 		}
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
@@ -175,10 +178,13 @@ namespace StarlightRiver.Content.Items.Geomancer
 		{
 			Player Player = Main.player[Projectile.owner];
 
+			Player.TryGetModPlayer(out ControlsPlayer controlsPlayer);
+			controlsPlayer.mouseRotationListener = true;
+
 			if (shieldLife < 0 && Projectile.timeLeft > EXPLOSIONTIME)
 				Projectile.timeLeft = EXPLOSIONTIME;
 
-			Vector2 direction = Main.MouseWorld - Player.Center;
+			Vector2 direction = controlsPlayer.mouseWorld - Player.Center;
 			direction.Normalize();
 
 			Projectile.rotation = direction.ToRotation();
@@ -187,7 +193,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 			Projectile.Center = Player.Center + direction * MathHelper.Lerp(35, 26, shieldSpring);
 
-			if (Player.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.Topaz || Player.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.All)
+			if (Player.GetModPlayer<GeomancerPlayer>().activeGem == StoredGem.Topaz || Player.GetModPlayer<GeomancerPlayer>().activeGem == StoredGem.All)
 			{
 				if (Projectile.timeLeft > EXPLOSIONTIME)
 					Projectile.timeLeft = EXPLOSIONTIME + 2;
@@ -270,6 +276,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 		public override void Kill(int timeLeft)
 		{
+			//kill is clientside only so this is fine
 			Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<TopazShieldFade>(), 0, 0, Projectile.owner);
 			CameraSystem.shake += 4;
 			var direction = Vector2.Normalize(Main.MouseWorld - Main.player[Projectile.owner].Center);
@@ -354,6 +361,8 @@ namespace StarlightRiver.Content.Items.Geomancer
 			{
 				initialized = true;
 				offset = Projectile.Center - target.Center;
+
+				target.GetGlobalNPC<GeoNPC>().amethystDebuff += 100;
 			}
 
 			if (fadeIn < 15)

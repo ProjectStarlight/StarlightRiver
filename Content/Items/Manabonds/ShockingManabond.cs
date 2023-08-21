@@ -1,5 +1,8 @@
 ﻿using StarlightRiver.Content.Items.Magnet;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Manabonds
@@ -21,13 +24,13 @@ namespace StarlightRiver.Content.Items.Manabonds
 			if (mp.timer % 60 == 0 && mp.mana >= 12 && mp.target != null)
 			{
 				mp.mana -= 12;
-				var proj = Projectile.NewProjectileDirect(minion.GetSource_FromThis(), minion.Center, Vector2.Zero, ModContent.ProjectileType<Shock>(), 12, 0.25f, minion.owner);
 
-				var bolt = proj.ModProjectile as Shock;
-				bolt.targets.Add(mp.target);
-				bolt.parent = minion;
-
-				Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_LightningBugZap, minion.Center);
+				if (Main.myPlayer == minion.owner)
+				{
+					Shock.parentToAssign = minion;
+					Shock.initialTargetToAssign = mp.target;
+					Projectile.NewProjectileDirect(minion.GetSource_FromThis(), minion.Center, Vector2.Zero, ModContent.ProjectileType<Shock>(), 12, 0.25f, minion.owner);
+				}
 			}
 		}
 
@@ -45,8 +48,13 @@ namespace StarlightRiver.Content.Items.Manabonds
 	{
 		public Projectile parent;
 
+		public static Projectile parentToAssign;
+		public static NPC initialTargetToAssign;
+
 		public readonly List<Vector2> nodes = new();
 		public readonly List<NPC> targets = new();
+
+		private bool spawnSoundPerformed = false;
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -67,10 +75,23 @@ namespace StarlightRiver.Content.Items.Manabonds
 			DisplayName.SetDefault("Shock Bolt");
 		}
 
+		public override void OnSpawn(IEntitySource source)
+		{
+			parent = parentToAssign;
+			targets.Add(initialTargetToAssign);
+		}
+
 		public override void AI()
 		{
 			if (parent is null)
 				return;
+
+			if (!spawnSoundPerformed)
+			{
+				spawnSoundPerformed = true;
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_LightningBugZap, Projectile.Center);
+			}
+			
 
 			if (Projectile.timeLeft == 14)
 			{
@@ -82,33 +103,58 @@ namespace StarlightRiver.Content.Items.Manabonds
 						targets.Add(target);
 				}
 
-				foreach (NPC npc in targets)
+				if (Main.myPlayer == Projectile.owner)
 				{
-					npc.SimpleStrikeNPC(Projectile.damage, 0, false, 0, Projectile.DamageType, true);
-					npc.AddBuff(ModContent.BuffType<Buffs.Overcharge>(), 60);
-				}
-			}
-
-			if (Main.GameUpdateCount % 2 == 0) //rebuild electricity nodes
-			{
-				nodes.Clear();
-
-				for (int i = 0; i < targets.Count; i++)
-				{
-					Vector2 point1 = i == 0 ? parent.Center : targets[i - 1].Center;
-					Vector2 point2 = targets[i].Center;
-
-					int nodeCount = (int)Vector2.Distance(point1, point2) / 45;
-
-					for (int k = 1; k < nodeCount; k++)
+					foreach (NPC npc in targets)
 					{
-						nodes.Add(Vector2.Lerp(point1, point2, k / (float)nodeCount) +
-							(k == nodes.Count - 1 ? Vector2.Zero : Vector2.Normalize(point1 - point2).RotatedBy(1.57f) * (Main.rand.NextFloat(2) - 1) * 14));
+						npc.SimpleStrikeNPC(Projectile.damage, 0, false, 0, Projectile.DamageType, true);
+						npc.AddBuff(ModContent.BuffType<Buffs.Overcharge>(), 60);
 					}
-
-					nodes.Add(point2);
 				}
 			}
+
+			if (Main.netMode != NetmodeID.Server && Main.GameUpdateCount % 2 == 0) //rebuild electricity nodes
+			{
+				RebuildElectricNodes();
+			}
+		}
+
+		private void RebuildElectricNodes()
+		{
+			nodes.Clear();
+
+			for (int i = 0; i < targets.Count; i++)
+			{
+				Vector2 point1 = i == 0 ? parent.Center : targets[i - 1].Center;
+				Vector2 point2 = targets[i].Center;
+
+				int nodeCount = (int)Vector2.Distance(point1, point2) / 45;
+
+				for (int k = 1; k < nodeCount; k++)
+				{
+					nodes.Add(Vector2.Lerp(point1, point2, k / (float)nodeCount) +
+						(k == nodes.Count - 1 ? Vector2.Zero : Vector2.Normalize(point1 - point2).RotatedBy(1.57f) * (Main.rand.NextFloat(2) - 1) * 14));
+				}
+
+				nodes.Add(point2);
+			}
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(parent.identity);
+			writer.Write(targets[0].whoAmI);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			int id = reader.ReadInt32();
+			parent = Main.projectile.FirstOrDefault(n => n.active && n.identity == id);
+
+			if (targets.Count > 0)
+				targets[0] = Main.npc[reader.ReadInt32()];
+			else
+				targets.Add(Main.npc[reader.ReadInt32()]);
 		}
 
 		public NPC FindValidTarget(Vector2 start)

@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Item.width = 32;
 			Item.height = 32;
 
-			Item.maxStack = 999;
+			Item.maxStack = 9999;
 		}
 
 		public override bool CanRightClick()

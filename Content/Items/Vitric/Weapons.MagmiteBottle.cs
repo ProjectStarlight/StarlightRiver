@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Item.shoot = ModContent.ProjectileType<MagmiteBottleProjectile>();
 			Item.shootSpeed = 8.5f;
 			Item.consumable = true;
-			Item.maxStack = 999;
+			Item.maxStack = 9999;
 		}
 
 		public override void AddRecipes()

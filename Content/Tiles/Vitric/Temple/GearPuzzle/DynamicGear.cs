@@ -1,13 +1,15 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Packets;
 using StarlightRiver.Core.Systems;
+using StarlightRiver.Core.Systems.DummyTileSystem;
 using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 {
 	class DynamicGear : GearTile
 	{
-		public override int DummyType => ModContent.ProjectileType<DynamicGearDummy>();
+		public override int DummyType => DummySystem.DummyType<DynamicGearDummy>();
 
 		public override void MouseOver(int i, int j)
 		{
@@ -19,7 +21,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 		public override bool RightClick(int i, int j)
 		{
-			var dummy = Dummy(i, j).ModProjectile as GearTileDummy;
+			var dummy = Dummy(i, j) as GearTileDummy;
 
 			var entity = TileEntity.ByPosition[new Point16(i, j)] as GearTileEntity;
 
@@ -29,15 +31,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 			if (dummy is null || dummy.gearAnimation > 0)
 				return false;
 
-			entity.Disengage();
-
-			dummy.oldSize = dummy.Size;
-			dummy.Size++;
-			dummy.gearAnimation = 40;
-
-			GearPuzzleHandler.engagedObjectives = 0;
-
-			GearPuzzleHandler.PuzzleOriginEntity?.Engage(2);
+			GearPuzzleClickPacket gearPacket = new GearPuzzleClickPacket(i, j, DummyType);
+			gearPacket.Send();
 
 			return true;
 		}
@@ -54,21 +49,21 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
 				return;
 
-			Lighting.AddLight(Projectile.Center, new Vector3(0.1f, 0.2f, 0.3f) * Size);
+			Lighting.AddLight(Center, new Vector3(0.1f, 0.2f, 0.3f) * GearSize);
 
-			if (Size == 0)
-				Lighting.AddLight(Projectile.Center, new Vector3(0.65f, 0.4f, 0.1f));
+			if (GearSize == 0)
+				Lighting.AddLight(Center, new Vector3(0.65f, 0.4f, 0.1f));
 		}
 
 		public override void PostDraw(Color lightColor)
 		{
 			Texture2D pegTex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "GearPeg").Value;
-			Main.spriteBatch.Draw(pegTex, Projectile.Center - Main.screenPosition, null, lightColor, 0, pegTex.Size() / 2, 1, 0, 0);
+			Main.spriteBatch.Draw(pegTex, Center - Main.screenPosition, null, lightColor, 0, pegTex.Size() / 2, 1, 0, 0);
 
 			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
 				return;
 
-			Texture2D tex = Size switch
+			Texture2D tex = GearSize switch
 			{
 				0 => ModContent.Request<Texture2D>(AssetDirectory.Invisible).Value,
 				1 => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearSmall").Value,
@@ -91,22 +86,22 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 				if (gearAnimation > 20)
 				{
 					float progress = Helpers.Helper.BezierEase((gearAnimation - 20) / 20f);
-					Main.spriteBatch.Draw(texOld, Projectile.Center - Main.screenPosition, null, Color.White * 0.75f * progress, 0, texOld.Size() / 2, progress, 0, 0);
+					Main.spriteBatch.Draw(texOld, Center - Main.screenPosition, null, Color.White * 0.75f * progress, 0, texOld.Size() / 2, progress, 0, 0);
 				}
 				else
 				{
 					float progress = Helpers.Helper.SwoopEase(1 - gearAnimation / 20f);
-					Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * 0.75f * progress, 0, tex.Size() / 2, progress, 0, 0);
+					Main.spriteBatch.Draw(tex, Center - Main.screenPosition, null, Color.White * 0.75f * progress, 0, tex.Size() / 2, progress, 0, 0);
 				}
 
 				return;
 			}
 
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * 0.75f, Rotation, tex.Size() / 2, 1, 0, 0);
+			Main.spriteBatch.Draw(tex, Center - Main.screenPosition, null, Color.White * 0.75f, Rotation, tex.Size() / 2, 1, 0, 0);
 
 			if (GearPuzzleHandler.Solved) //draws the crystal gear once the puzzle is finished
 			{
-				tex = Size switch
+				tex = GearSize switch
 				{
 					0 => ModContent.Request<Texture2D>(AssetDirectory.Invisible).Value,
 					1 => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "CrystalGearSmall").Value,
@@ -123,7 +118,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 
-				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, Rotation, tex.Size() / 2, 1, 0, 0);
+				Main.spriteBatch.Draw(tex, Center - Main.screenPosition, null, Color.White, Rotation, tex.Size() / 2, 1, 0, 0);
 
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);

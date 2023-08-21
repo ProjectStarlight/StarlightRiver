@@ -21,9 +21,9 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 
 		public string dealerName = "Arms Dealer";
 
-		public static string PistolTex => Terraria.GameContent.TextureAssets.Item?[ItemID.FlintlockPistol]?.Name ?? "PlaceholderForServer";
-		public static string ShotgunTex => Terraria.GameContent.TextureAssets.Item?[ItemID.Boomstick]?.Name ?? "PlaceholderForServer";
-		public static string MinigunTex => Terraria.GameContent.TextureAssets.Item?[ItemID.Minishark]?.Name ?? "PlaceholderForServer";
+		public static string PistolTex => "Terraria/" + Terraria.GameContent.TextureAssets.Item?[ItemID.FlintlockPistol]?.Name ?? "PlaceholderForServer";
+		public static string ShotgunTex => "Terraria/" + Terraria.GameContent.TextureAssets.Item?[ItemID.Boomstick]?.Name ?? "PlaceholderForServer";
+		public static string MinigunTex => "Terraria/" + Terraria.GameContent.TextureAssets.Item?[ItemID.Minishark]?.Name ?? "PlaceholderForServer";
 
 		public override string Texture => AssetDirectory.ArmsDealerItem + Name;
 
@@ -55,10 +55,11 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 			Item.DamageType = DamageClass.Summon;
 			Item.damage = 12;
 			Item.UseSound = SoundID.Item44;
-			Item.shoot = 10;
+			Item.shoot = ProjectileID.PurificationPowder;
 			Item.shootSpeed = 1;
 			Item.sentry = true;
 			Item.mana = 20;
+			Item.noMelee = true;
 		}
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
@@ -236,6 +237,12 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 			Projectile.timeLeft = Projectile.SentryLifeTime;
 		}
 
+		public override void OnSpawn(IEntitySource source)
+		{
+			Owner.FindSentryRestingSpot(Projectile.whoAmI, out int worldX, out int worldY, out int pushYUp);
+			Projectile.position = new Vector2(worldX, worldY - pushYUp - 3);
+		}
+
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
 			return false;
@@ -283,14 +290,12 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 			// Find sentry position
 			if (Placed < 1)
 			{
-				Owner.FindSentryRestingSpot(Projectile.whoAmI, out int worldX, out int worldY, out int pushYUp);
-				Projectile.position = new Vector2(worldX, worldY - pushYUp - 3);
-
 				for (int k = 0; k < 20; k++)
 				{
 					Dust.NewDustPerfect(Projectile.Center + Vector2.UnitY * 24, ModContent.DustType<Dusts.BuzzSpark>(), Main.rand.NextVector2Circular(3, 3), 0, Color.Yellow);
-					Helpers.Helper.PlayPitched("Impacts/StabTiny", 0.5f, 0, Projectile.Center);
 				}
+
+				Helpers.Helper.PlayPitched("Impacts/StabTiny", 0.5f, 0, Projectile.Center);
 
 				Placed = 1;
 			}

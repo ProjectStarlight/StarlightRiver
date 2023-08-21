@@ -42,6 +42,7 @@ namespace StarlightRiver.Core
 		public const string JungleItem = Assets + "Items/Jungle/";
 		public const string MagnetItem = Assets + "Items/Magnet/";
 		public const string GravediggerItem = Assets + "Items/Gravedigger/";
+		public const string HauntedItem = Assets + "Items/Haunted/";
 		public const string DemonItem = Assets + "Items/Demon/";
 		public const string GeomancerItem = Assets + "Items/Geomancer/";
 		public const string ArmsDealerItem = Assets + "Items/ArmsDealer/";

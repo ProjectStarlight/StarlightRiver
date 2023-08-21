@@ -366,4 +366,4 @@ FodyWeavers.xsd
 FETCH_HEAD
 *.pack
 refs/remotes/origin/ArmorEnchantAndBags
-FETCH_HEAD
+/Localization/en-US.hjson

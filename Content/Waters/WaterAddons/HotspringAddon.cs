@@ -1,6 +1,8 @@
 ﻿using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Tiles.Underground;
+using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
+using System.Linq;
 using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Content.Waters.WaterAddons
@@ -8,9 +10,9 @@ namespace StarlightRiver.Content.Waters.WaterAddons
 	class HotspringAddon : WaterAddon
 	{
 		public static ScreenTarget hotspringMapTarget = new(RenderMainTarget, () => HotspringFountainDummy.AnyOnscreen, 1);
-		public static ScreenTarget hotspringShineTarget = new(RenderSecondaryTarget, () => HotspringFountainDummy.AnyOnscreen, 1);
 
-		public Vector2 oldScreenPos;
+		public static ScreenTarget hotspringBackShineTarget = new(RenderForegroundShine, () => HotspringFountainDummy.AnyOnscreen, 1, (a) => Main.waterTarget.Size());
+		public static ScreenTarget hotspringFrontShineTarget = new(RenderBackgroundShine, () => HotspringFountainDummy.AnyOnscreen, 1, (a) => Main.instance.backWaterTarget.Size());
 
 		public override bool Visible => HotspringFountainDummy.AnyOnscreen;
 
@@ -26,16 +28,13 @@ namespace StarlightRiver.Content.Waters.WaterAddons
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default);
 
-			for (int k = 0; k < Main.maxProjectiles; k++)
+			foreach (Dummy dummy in DummySystem.dummies.Where(n => n.active && n is HotspringFountainDummy))
 			{
-				Projectile proj = Main.projectile[k];
-
-				if (proj.active && proj.ModProjectile is HotspringFountainDummy)
-					(proj.ModProjectile as HotspringFountainDummy).DrawMap(Main.spriteBatch);
+				(dummy as HotspringFountainDummy).DrawMap(Main.spriteBatch);
 			}
 		}
 
-		private static void RenderSecondaryTarget(SpriteBatch spriteBatch)
+		private static void RenderForegroundShine(SpriteBatch spriteBatch)
 		{
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
@@ -44,40 +43,69 @@ namespace StarlightRiver.Content.Waters.WaterAddons
 
 			Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/HotspringWaterMap", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
 
-			//The seam issue is not in this file, See StarlightRiver.cs and enable the commented out PostDrawInterface hook to view RTs
 			for (int i = -tex2.Width; i <= Main.screenWidth + tex2.Width; i += tex2.Width)
 			{
 				for (int j = -tex2.Height; j <= Main.screenHeight + tex2.Height; j += tex2.Height)
 				{
-					//the divide by 1.3 and 1.5 are what keep the tile tied to the world location, seems to be tied to the 2 magic numbers in HotspringAddon.cs
 					var pos = new Vector2(i, j);
-					spriteBatch.Draw(tex2, pos - new Vector2(Main.screenPosition.X % tex2.Width, Main.screenPosition.Y % tex2.Height), null, Color.White);
+
+					// This is the offset for the BACKGROUND, which is the position of the FOREGROUND minus screen pos (why? because god is a cruel creature)
+					if (!Main.drawToScreen)
+						pos -= Main.sceneWaterPos - Main.screenPosition;
+
+					Vector2 tsp = Main.screenPosition;
+
+					spriteBatch.Draw(tex2, pos - new Vector2(tsp.X % tex2.Width, tsp.Y % tex2.Height), null, Color.White);
+				}
+			}
+		}
+
+		private static void RenderBackgroundShine(SpriteBatch spriteBatch)
+		{
+			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
+
+			spriteBatch.End();
+			Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default);
+
+			Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/HotspringWaterMap", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+
+			for (int i = -tex2.Width; i <= Main.screenWidth + tex2.Width; i += tex2.Width)
+			{
+				for (int j = -tex2.Height; j <= Main.screenHeight + tex2.Height; j += tex2.Height)
+				{
+					var pos = new Vector2(i, j);
+
+					// This is the offset for the FOREGROUND, which is the position of the WALL RT minus screen pos (why? because god is a cruel creature)
+					if (!Main.drawToScreen)
+						pos -= Main.sceneWallPos - Main.screenPosition;
+
+					Vector2 tsp = Main.screenPosition;
+
+					spriteBatch.Draw(tex2, pos - new Vector2(tsp.X % tex2.Width, tsp.Y % tex2.Height), null, Color.White);
 				}
 			}
 		}
 
 		public override void SpritebatchChange()
 		{
-			oldScreenPos = Main.screenPosition;
-
 			Effect effect = Filters.Scene["HotspringWater"].GetShader().Shader;
-			//effect.Parameters["offset"].SetValue((Main.screenPosition - oldScreenPos) * -1);
+			effect.Parameters["offset"].SetValue(Vector2.Zero);
 			effect.Parameters["sampleTexture2"].SetValue(hotspringMapTarget.RenderTarget);
-			effect.Parameters["sampleTexture3"].SetValue(hotspringShineTarget.RenderTarget);
+			effect.Parameters["sampleTexture3"].SetValue(hotspringFrontShineTarget.RenderTarget);
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount / 20f);
 
-			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.Transform);
 		}
 
 		public override void SpritebatchChangeBack()
 		{
 			Effect effect = Filters.Scene["HotspringWater"].GetShader().Shader;
-			//effect.Parameters["offset"].SetValue((Main.screenPosition - oldScreenPos) * -1);
+			effect.Parameters["offset"].SetValue(Vector2.Zero);
 			effect.Parameters["sampleTexture2"].SetValue(hotspringMapTarget.RenderTarget);
-			effect.Parameters["sampleTexture3"].SetValue(hotspringShineTarget.RenderTarget);
+			effect.Parameters["sampleTexture3"].SetValue(hotspringBackShineTarget.RenderTarget);
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount / 20f);
 
-			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.Transform);
 		}
 	}
 }

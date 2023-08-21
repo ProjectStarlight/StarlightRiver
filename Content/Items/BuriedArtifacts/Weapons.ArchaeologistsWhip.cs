@@ -1,6 +1,8 @@
 ﻿using ReLogic.Content;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent.Creative;
 using Terraria.ID;
 
@@ -22,6 +24,11 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			Item.DefaultToWhip(ModContent.ProjectileType<ArchaeologistsWhip_Whip>(), 15, 1.2f, 5f, 25);
 			Item.value = Item.sellPrice(0, 1, 0, 0);
 			Item.rare = ItemRarityID.Green;
+		}
+
+		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+		{
+			return !Main.projectile.Any(n => n.active && n.type == type && n.owner == player.whoAmI);
 		}
 	}
 
@@ -214,6 +221,11 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 
 	public class ArchaeologistsWhipGProj : GlobalProjectile
 	{
+		public override bool AppliesToEntity(Projectile entity, bool lateInstantiation)
+		{
+			return entity.minion;
+		}
+
 		public override void AI(Projectile projectile)
 		{
 			Player player = Main.player[projectile.owner];

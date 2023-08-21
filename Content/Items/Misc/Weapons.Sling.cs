@@ -154,6 +154,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Vector2 worldPosition = new Vector2(i, j).ToWorldCoordinates();
 			Player nearestPlayer = Main.player[Player.FindClosest(worldPosition, 16, 16)];
+
 			if (nearestPlayer.HasItem(ModContent.ItemType<Sling>()))
 			{
 				if ((type == TileID.Plants || type == TileID.Plants2 || type == TileID.PottedPlants1 || type == TileID.PottedPlants2) && Main.rand.NextFloat() < 0.75f)

@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Alchemy
 
 	internal class CauldronTile : DummyTile
 	{
-		public override int DummyType => ProjectileType<CauldronDummy>();
+		public override int DummyType => DummySystem.DummyType<CauldronDummy>();
 
 		public override string Texture => AssetDirectory.Alchemy + Name;
 
@@ -51,15 +51,12 @@ namespace StarlightRiver.Content.Alchemy
 			int y = j - Main.tile[i, j].TileFrameY / 16 % 2;
 			if (DummyExists(x, y, DummyType))
 			{
-				var cauldronDummy = (CauldronDummyAbstract)Dummy(x, y).ModProjectile;
+				var cauldronDummy = (CauldronDummyAbstract)Dummy(x, y);
+
 				if (Main.LocalPlayer.HeldItem.type == ModContent.ItemType<MixingStick>())
-				{
 					cauldronDummy.AttemptStartCraft();
-				}
 				else
-				{
 					cauldronDummy.DumpIngredients();
-				}
 			}
 
 			return false;

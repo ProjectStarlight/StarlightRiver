@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Buffs;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -136,6 +137,33 @@ namespace StarlightRiver.Content.Items.Food
 			Fullness = tag.GetInt("Fullness");
 			BuffLengthMult = tag.GetFloat("FullnessMult");
 			DebuffLengthMult = tag.GetFloat("WellFedMult");
+		}
+
+		public override void NetSend(BinaryWriter writer)
+		{
+			writer.Write(Fullness);
+			writer.Write(BuffLengthMult);
+			writer.Write(DebuffLengthMult);
+
+			writer.Write(Ingredients.Count);
+			foreach (Item eachIngrediennt in Ingredients)
+				writer.Write(eachIngrediennt.type);
+		}
+
+		public override void NetReceive(BinaryReader reader)
+		{
+			Fullness = reader.ReadInt32();
+			BuffLengthMult = reader.ReadSingle();
+			DebuffLengthMult = reader.ReadSingle();
+
+			Ingredients = new List<Item>();
+			int ingredientCount = reader.ReadInt32();
+
+			for (int i = 0; i < ingredientCount; i++)
+			{
+				int ingredientType = reader.ReadInt32();
+				Ingredients.Add(new Item(ingredientType));
+			}
 		}
 	}
 }

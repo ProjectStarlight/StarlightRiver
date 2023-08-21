@@ -27,8 +27,8 @@ namespace StarlightRiver.Content.CustomHooks
 
 		public override void Unload()
 		{
-			ForegroundParticles = null;
-			BackgroundParticles = null;
+			ForegroundParticles ??= null;
+			BackgroundParticles ??= null;
 		}
 
 		private void ForceDrawBlack(On_Main.orig_DrawBlack orig, Main self, bool force)

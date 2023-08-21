@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 		public override void Unload()
 		{
-			sparkles = null;
+			sparkles ??= null;
 		}
 
 		private static void updateSparkles(Particle particle)
@@ -120,7 +120,7 @@ namespace StarlightRiver.Content.CustomHooks
 				string texture = Player.GetHandler().Unlocked(ability.GetType())
 					? ability.PreviewTexture
 					: ability.PreviewTextureOff;
-				spriteBatch.Draw(ModContent.Request<Texture2D>(texture).Value, origin + new Vector2(564 - k * 32, 64), Color.White);
+				spriteBatch.Draw(ModContent.Request<Texture2D>(texture).Value, origin + new Vector2(542 - k * 32, 64), Color.White);
 			}
 
 			if (Player.statLifeMax > 400) //why vanilla dosent do this I dont know

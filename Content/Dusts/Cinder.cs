@@ -16,7 +16,7 @@
 		{
 			dust.noGravity = true;
 			dust.scale *= 0.38f;
-			dust.frame = new Rectangle(0, 0, 160, 160);
+			dust.frame = new Rectangle(0, 0, 0, 0);
 			dust.fadeIn = 0;
 			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
 			dust.noLightEmittence = false;
@@ -29,6 +29,7 @@
 				dust.position -= Vector2.One * 80 * dust.scale;
 				dust.noLightEmittence = true;
 				dust.velocity.Y *= 1.1f;
+				dust.frame = new Rectangle(0, 0, 160, 160);
 			}
 
 			if (dust.customData is Vector2 target)

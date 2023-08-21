@@ -1,0 +1,33 @@
+# Starlight River v0.1.2: Day One is live!
+This update is focused on fixing the most impactful issues in the release.
+## Fixes:
+- Fixed multiple critical issues with Alican and Glassweaver's dialogue. If you were unable to progress these dialogues, or the dialogue went offscreen, it should be fixed
+- Fixed multiple visual bugs related to zoom and UI scale. This is relevant to the prior fix, but also affects issues with Barrier overlay manifesting as a strange blue ghost when not at 100% zoom, among other things
+- Fixed several materials being unobtainable or inconsistent (Ancient Cogs can now be obtained by Extractinating things like silt and Exotic Geodes, Balloon in a Balloon is now obtainable with two balloons, Prep Station can be made with both iron variants now, Radculas Rapier is now obtainable on Crimson worlds, Desert Monoliths now actually regularly drop themselves, Mysterious Braziers and other furniture dropping two of themselves when broken, etc)
+- Fixed LearnableRecipe on Sandscript making it not actually obtainable
+- Fixed Auroracle not actually dropping all of the Technique Books (it dropped the axe and sword book, but not the spear book)
+- Fixed a potential Ceiros phase softlock
+- Fixed Underground Temple lootboxes not actually dropping some of their items
+- Fixed Golden Guillotine popping every single enemy instantly
+- Fixed issues with the Palenail's AI
+- Fixed Facet & Lattice literally just not working
+- Fixed many tiles that should not be explodeable being explodeable
+- Fixed Barrier not drawing correctly on alternate UI layouts
+- Fixed typos and capitalization issues
+## QoL:
+- Added indicators when hovering your mouse over many things that were sources of confusion - Item Cases, Combat & Evasion Shrines, Aurora Touchstones, Crash Pods, Stamina Jars, etc. The fact that they are interactable and with what you might need to interact with them is now much clearer
+- Added hints to Item Cases
+- Added a mining speed buff when following an Aurora Wisp between Touchstones, to make the trip much less of an awful slog 
+- Made the Glass Idol more easily obtainable and allowed it to be crafted directly *at* the Temple Forge
+## Balancing:
+- Halved fire rate of Double Cross and reduced damage (6 ➜ 4 DMG)
+- Greatly reduced Point of Light's laser damage (55 ➜ 30 laser DMG) and slightly increased its melee damage (11 ➜ 15 melee DMG)
+- Greatly reduced Recursive Focus' damage (14 ➜ 6 DMG)
+- Greatly reduced Radcula's Rapier's damage (30 ➜ 12 DMG)
+- Buffed Scrapshot's per-pellet damage (6 ➜ 9 DMG)
+- Made Warbanner enemies twice as rare and a bit scarier (150 ➜ 200 HP)
+## Sundries:
+- Beautified many sprites and visuals, like the Whirlwind Pickaxe, Prep Station, Ancient Lens, Truestrike Lens, Rune Staff, etc
+- Added tooltips to Fossil artifacts, making it clear that they sell for a lot of money
+- Made the Perfectly Generic Object a little more generic
+- Made Master Mode make fun of you more
