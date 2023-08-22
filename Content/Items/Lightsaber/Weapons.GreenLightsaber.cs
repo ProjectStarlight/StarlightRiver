@@ -2,6 +2,7 @@
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using System.Collections.Generic;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -18,6 +19,8 @@ namespace StarlightRiver.Content.Items.Lightsaber
 
 		protected override void RightClickBehavior()
 		{
+			Owner.GetModPlayer<LightsaberPlayer>().greenCooldown = 180;
+
 			if (!jumped)
 			{
 				jumped = true;
@@ -49,7 +52,7 @@ namespace StarlightRiver.Content.Items.Lightsaber
 			if (!Owner.GetModPlayer<LightsaberPlayer>().jumping)
 			{
 				CameraSystem.shake += 10;
-
+				SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Lightsaber/LightsaberImpact"));
 				for (int i = 0; i < 30; i++)
 					Dust.NewDustPerfect(Owner.Bottom, ModContent.DustType<LightsaberGlow>(), Main.rand.NextVector2Circular(10, 10), 0, new Color(BladeColor.X, BladeColor.Y, BladeColor.Z), Main.rand.NextFloat(1.95f, 2.35f));
 

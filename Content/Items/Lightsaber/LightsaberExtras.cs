@@ -1,5 +1,6 @@
 ﻿using Terraria.DataStructures;
 using Terraria.ID;
+using static Humanizer.In;
 
 namespace StarlightRiver.Content.Items.Lightsaber
 {
@@ -19,6 +20,7 @@ namespace StarlightRiver.Content.Items.Lightsaber
 	public class LightsaberPlayer : ModPlayer
 	{
 		public int whiteCooldown = -1;
+		public int greenCooldown = -1;
 		public bool dashing = false;
 
 		public bool jumping = false;
@@ -28,8 +30,10 @@ namespace StarlightRiver.Content.Items.Lightsaber
 
 		public override void ResetEffects()
 		{
-			if (whiteCooldown > 1 || Player.itemAnimation == 0)
+			if (whiteCooldown > -1 && Player.itemAnimation == 0)
 				whiteCooldown--;
+			if (greenCooldown > -1 && Player.itemAnimation == 0 /*&& !Player.GetModPlayer<LightsaberPlayer>().jumping*/)
+				greenCooldown--;
 		}
 
 		public override void ModifyHurt(ref Player.HurtModifiers modifiers)
@@ -47,6 +51,12 @@ namespace StarlightRiver.Content.Items.Lightsaber
 			{
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item9 with { Pitch = Main.rand.NextFloat(-0.1f, 0.1f) }, Player.Center);
 				var dust = Dust.NewDustPerfect(Player.Center, ModContent.DustType<LightsaberStar>(), Vector2.Zero, 0, new Color(200, 200, 255, 0), 0.3f);
+				dust.customData = Player.whoAmI;
+			}
+			if (greenCooldown == 0)
+			{
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item9 with { Pitch = Main.rand.NextFloat(-0.1f, 0.1f) }, Player.Center);
+				var dust = Dust.NewDustPerfect(Player.Center, ModContent.DustType<LightsaberStar>(), Vector2.Zero, 0, new Color(50, 255, 50, 0), 0.3f);
 				dust.customData = Player.whoAmI;
 			}
 		}

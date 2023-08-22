@@ -16,14 +16,14 @@
 
 //TODO on yellow rightclick:
 //Make the player not able to clip through walls
-//Sound effects
+//Sound effects (added one for dashing, might be good enough?)
 //Make the player not freeze for a second
 //Garauntee it's impossible for the player to get stuck dashing
 //Adjust color
 
 //TODO on orange rightclick:
 //Better effect
-//Better description
+//Better description (added quote, is it good?)
 
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
@@ -74,7 +74,7 @@ namespace StarlightRiver.Content.Items.Lightsaber
 					tooltips.Add(new TooltipLine(Mod, "Lightsaber Description", "Right click to flip in the air, spinning the blade \n'Do or do not. There is no try'"));
 					break;
 				case ItemID.OrangePhaseblade:
-					tooltips.Add(new TooltipLine(Mod, "Lightsaber Description", "Right click throw to the cursor \nHold right click to leave it there\n'[Insert star wars quote]'"));
+					tooltips.Add(new TooltipLine(Mod, "Lightsaber Description", "Left click throw to the cursor \nHold left click to leave it there\n'You still have much to learn, my young apprentice'"));
 					break;
 			}
 		}
@@ -134,14 +134,18 @@ namespace StarlightRiver.Content.Items.Lightsaber
 
 			return base.AltFunctionUse(item, player);
 		}
-
+		public override bool CanUseItem(Item item, Player player)
+		{
+			if (item.type == ItemID.WhitePhaseblade && player.GetModPlayer<LightsaberPlayer>().whiteCooldown > 0 && player.altFunctionUse == 2)
+				return false;
+			if (item.type == ItemID.GreenPhaseblade && player.GetModPlayer<LightsaberPlayer>().greenCooldown > 0 && player.altFunctionUse == 2)
+				return false;
+			return true;
+		}
 		public override bool Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
 			if (Main.Configuration.Get<bool>("Lightsabers", true))
 			{
-				if (item.type == ItemID.WhitePhaseblade && player.GetModPlayer<LightsaberPlayer>().whiteCooldown > 0 && player.altFunctionUse == 2)
-					return false;
-
 				if (phaseblades.Contains(item.type))
 				{
 					var proj = Projectile.NewProjectileDirect(source, position, velocity, type, damage, knockback, player.whoAmI);
@@ -513,7 +517,7 @@ namespace StarlightRiver.Content.Items.Lightsaber
 					currentAttack = (CurrentAttack)((int)currentAttack + 1);
 				}
 
-				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item15 with { Pitch = Main.rand.NextFloat(-0.1f, 0.1f) }, Owner.Center);
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item15 with { Pitch = Main.rand.NextFloat(-0.1f, 0.1f), MaxInstances = 3 }, Owner.Center);
 
 				startRotation = endRotation;
 				startSquish = endSquish;

@@ -8,7 +8,7 @@
 
 		protected override void RightClickBehavior()
 		{
-			Owner.GetModPlayer<LightsaberPlayer>().whiteCooldown = 1200;
+			Owner.GetModPlayer<LightsaberPlayer>().whiteCooldown = 600; // Was 1200
 
 			if (UneasedProgress > 0.5f && !spawnedSecond)
 			{

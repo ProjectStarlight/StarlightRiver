@@ -3939,6 +3939,18 @@ Projectiles: {
 	ConstructSpawner.DisplayName: Construct Spawner
 	GauntletSpawner.DisplayName: Gauntlet Spawner
 	SpawnEgg.DisplayName: Spawn Egg
+	BlueLightsaberLaser.DisplayName: Laser
+	BlueLightsaberLensFlare.DisplayName: Laser
+	BlueLightsaberProjectile.DisplayName: Lightsaber
+	GreenLightsaberShockwave.DisplayName: Shockwave
+	LightsaberImpactRing.DisplayName: Lightsaber
+	LightsaberProj_Green.DisplayName: Lightsaber
+	LightsaberProj_Orange.DisplayName: Lightsaber
+	LightsaberProj_Purple.DisplayName: Lightsaber
+	LightsaberProj_Red.DisplayName: Lightsaber
+	LightsaberProj_White.DisplayName: Lightsaber
+	LightsaberProj_Yellow.DisplayName: Lightsaber
+	YellowLightsaberDashProjectile.DisplayName: Lightsaber
 }
 
 Biomes: {
@@ -4548,5 +4560,24 @@ Configs: {
 		Brackets.Label: Brackets
 		Both.Label: Both
 		Neither.Label: Neither
+	}
+}
+
+Compat: {
+	BossChecklist: {
+		Auroracle: {
+			SpawnInfo: Drop a Suspicious Looking Offering into the prismatic waters of the Permafrost Shrine, accessed only through the coldest caves.
+			Despawn: The frozen cathedral falls silent.
+		}
+
+		Glassweaver: {
+			SpawnInfo: Challenge the glassweaver in his forge, near the edge of the Vitric Desert.
+			Despawn: The Glassweaver claims victory.
+		}
+
+		Ceiros: {
+			SpawnInfo: Use a Glass Idol at the altar atop the Vitric Temple, after breaking the crystal covering it using Forbidden Winds.
+			Despawn: The Vitric Forge falls silent. The Glassweaver is dissapointed.
+		}
 	}
 }

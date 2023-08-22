@@ -1,4 +1,5 @@
-﻿using static Terraria.ModLoader.ModContent;
+﻿using Terraria.Audio;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Lightsaber
 {
@@ -28,6 +29,7 @@ namespace StarlightRiver.Content.Items.Lightsaber
 				dashing = true;
 				Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.Zero, ProjectileType<YellowLightsaberDashProjectile>(), Projectile.damage * 2, 0, Owner.whoAmI);
 				Owner.GetModPlayer<LightsaberPlayer>().dashing = true;
+				SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Lightsaber/LightsaberSwish"));
 			}
 
 			if (dashing)
