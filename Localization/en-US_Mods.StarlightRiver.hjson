@@ -3446,6 +3446,20 @@ Items: {
 		DisplayName: Pink Laser Pointer
 		Tooltip: ""
 	}
+
+	InfernalCatalyst: {
+		DisplayName: Infernal Catalyst
+		Tooltip: Primes the lavas of hell for transmutation
+	}
+
+	InfernalHarvest: {
+		DisplayName: Infernal Harvest
+		Tooltip:
+			'''
+			Swing a huge harvesting scythe to gather mana from enemies
+			<right> to spend 90 mana to throw the scythe, leaving a burning trail
+			'''
+	}
 }
 
 Tiles: {
