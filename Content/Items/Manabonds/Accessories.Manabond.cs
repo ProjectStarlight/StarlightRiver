@@ -89,7 +89,9 @@ namespace StarlightRiver.Content.Items.Manabonds
 		public bool ManaActive(Projectile projectile)
 		{
 			Player owner = Main.player[projectile.owner];
-			return owner.armor.Any(n => n.ModItem is Manabond); // Checks if the player has any manabond on
+
+			return owner.GetModPlayer<AccessoryPlayer>().standardAccessories.Any(n => n.ModItem is Manabond) ||
+				owner.GetModPlayer<AccessoryPlayer>().simulatedAccessories.Any(n => n.ModItem is Manabond); // Checks if the player has any manabond on
 		}
 
 		/// <summary>
@@ -104,7 +106,8 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 			Player owner = Main.player[projectile.owner];
 
-			return owner.armor.FirstOrDefault(n => n.ModItem is Manabond).ModItem as Manabond;
+			return owner.GetModPlayer<AccessoryPlayer>().standardAccessories.FirstOrDefault(n => n.ModItem is Manabond)?.ModItem as Manabond ??
+				owner.GetModPlayer<AccessoryPlayer>().simulatedAccessories.FirstOrDefault(n => n.ModItem is Manabond)?.ModItem as Manabond;
 		}
 
 		public override void PostAI(Projectile projectile)
@@ -129,8 +132,11 @@ namespace StarlightRiver.Content.Items.Manabonds
 			{
 				int toSiphon = Math.Min(1, maxMana - mana);
 
-				if (owner.CheckMana(toSiphon, true))
+				if (owner.CheckMana(toSiphon, false))
+				{
+					owner.statMana -= toSiphon;
 					mana += toSiphon;
+				}
 
 				if (toSiphon > 0 && owner.manaRegenDelay < 15)
 					owner.manaRegenDelay = 15;
@@ -142,7 +148,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 		public override void PostDraw(Projectile projectile, Color lightColor)
 		{
-			if (!ManaActive(projectile))
+			if (!ManaActive(projectile) || Main.myPlayer != projectile.owner)
 				return;
 
 			float fill = mana / (float)maxMana;

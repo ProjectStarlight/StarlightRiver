@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Hermes' Vow");
-			Tooltip.SetDefault("Cursed\nMassively increased acceleration and movement speed\nIncreased jump height and max movement speed\nYou are unable to use wings");
+			Tooltip.SetDefault("Cursed\nMassively increased acceleration and movement speed\nIncreased jump height and max movement speed\nWorks with boots\nYou are unable to use wings");
 		}
 
 		public override void SafeSetDefaults()

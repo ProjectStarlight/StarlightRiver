@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override bool? CanHitNPC(Player Player, NPC target)
 		{
-			return !broken;
+			return !broken ? null : false;
 		}
 
 		public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
@@ -91,6 +91,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Projectile.width = 12;
 			Projectile.height = 18;
 			Projectile.friendly = true;
+			Projectile.hostile = false;
 			Projectile.penetrate = -1;
 			Projectile.timeLeft = 120;
 			Projectile.tileCollide = false;

@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		private float frontOffsetY = 0f;
 		private Vector2 frontOffset = new(-6, -15);
 
-		private Player Player => Main.player[Projectile.owner];
+		private Player Owner => Main.player[Projectile.owner];
 
 		public override string Texture => AssetDirectory.SteampunkItem + "JetwelderFinal";
 
@@ -135,7 +135,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			posToBe = Vector2.Zero;
 
 			var offset = new Vector2((float)Math.Cos(Main.timeForVisualEffects * 3f + idleHoverOffset) * 50, -100 + idleYOffset);
-			Vector2 direction = Player.Center + offset - Projectile.Center;
+			Vector2 direction = Owner.Center + offset - Projectile.Center;
 
 			if (direction.Length() > 15)
 				Projectile.velocity = Vector2.Lerp(Projectile.velocity, Vector2.Normalize(direction) * IDLE_SPEED, 0.05f);
@@ -208,7 +208,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			for (int i = 0; i < 3; i++)
 			{
 				Vector2 velocity = Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(1, 2);
-				Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, velocity, ModContent.ProjectileType<CoachGunEmber>(), 0, 0, Player.whoAmI).scale = Main.rand.NextFloat(0.85f, 1.15f);
+				Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, velocity, ModContent.ProjectileType<CoachGunEmber>(), 0, 0, Owner.whoAmI).scale = Main.rand.NextFloat(0.85f, 1.15f);
 			}
 
 			for (int i = 0; i < 10; i++)
@@ -240,7 +240,9 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 					frontOffsetY = 16;
 
 					Vector2 velocity = Vector2.UnitY.RotatedByRandom(0.5f).RotatedBy(frontRotation) * -15;
-					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + bulletOffset, velocity, ModContent.ProjectileType<JetwelderFinalMissle>(), Projectile.damage, Projectile.knockBack, Player.whoAmI, trueTarget.whoAmI);
+
+					if (Main.myPlayer == Owner.whoAmI)
+						Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + bulletOffset, velocity, ModContent.ProjectileType<JetwelderFinalMissle>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI, trueTarget.whoAmI);
 				}
 				else //back
 				{
@@ -249,7 +251,9 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 					backOffsetY = 16;
 
 					Vector2 velocity = Vector2.UnitY.RotatedByRandom(0.5f).RotatedBy(backRotation) * -15;
-					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + bulletOffset, velocity, ModContent.ProjectileType<JetwelderFinalMissle>(), Projectile.damage, Projectile.knockBack, Player.whoAmI, trueTarget.whoAmI);
+
+					if (Main.myPlayer == Owner.whoAmI)
+						Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + bulletOffset, velocity, ModContent.ProjectileType<JetwelderFinalMissle>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI, trueTarget.whoAmI);
 				}
 			}
 		}
@@ -317,7 +321,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		public override string Texture => AssetDirectory.SteampunkItem + Name;
 
-		private Player Player => Main.player[Projectile.owner];
+		private Player Owner => Main.player[Projectile.owner];
 
 		public override void SetStaticDefaults()
 		{
@@ -412,10 +416,10 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			for (int i = 0; i < 1; i++)
 			{
 				Vector2 velocity = Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(1, 2);
-				Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, velocity, ModContent.ProjectileType<CoachGunEmber>(), 0, 0, Player.whoAmI).scale = Main.rand.NextFloat(0.85f, 1.15f);
+				Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, velocity, ModContent.ProjectileType<CoachGunEmber>(), 0, 0, Owner.whoAmI).scale = Main.rand.NextFloat(0.85f, 1.15f);
 			}
 
-			Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<JetwelderJumperExplosion>(), Projectile.damage, 0, Player.whoAmI, victim == default ? -1 : victim.whoAmI);
+			Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<JetwelderJumperExplosion>(), Projectile.damage, 0, Owner.whoAmI, victim == default ? -1 : victim.whoAmI);
 			for (int i = 0; i < 2; i++)
 			{
 				Vector2 vel = Main.rand.NextFloat(6.28f).ToRotationVector2();

@@ -21,8 +21,8 @@ namespace StarlightRiver.Content.Physics
 
 		public void Unload()
 		{
-			target = null;
-			toDraw = null;
+			target ??= null;
+			toDraw ??= null;
 		}
 
 		private void DrawVerletBanners(On_Main.orig_DrawProjectiles orig, Main self)
@@ -68,14 +68,8 @@ namespace StarlightRiver.Content.Physics
 			if (chain.parent is null)
 				return true;
 
-			if (chain.parent is NPC)
-				return !(chain.parent as NPC).active;
-
-			if (chain.parent is Projectile)
-				return !(chain.parent as Projectile).active;
-
-			if (chain.parent is Player)
-				return !(chain.parent as Player).active;
+			if (chain.parent is not null)
+				return !(chain.parent as Entity).active;
 
 			return false;
 		}
@@ -155,7 +149,7 @@ namespace StarlightRiver.Content.Physics
 		///		Terraria.Player: if Terraria.Player.active is false
 		/// 
 		/// </summary>
-		public object parent;
+		public Entity parent;
 
 		public VerletChain(int SegCount, bool specialDraw, Vector2 StartPoint, int SegDistance, bool CollideWithTiles = false)
 		{

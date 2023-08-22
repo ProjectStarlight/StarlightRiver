@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		private bool firing = false;
 
-		private Player Player => Main.player[Projectile.owner];
+		private Player Owner => Main.player[Projectile.owner];
 
 		public override string Texture => AssetDirectory.SteampunkItem + "JetwelderGatler";
 
@@ -116,7 +116,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			posToBe = Vector2.Zero;
 
 			var offset = new Vector2((float)Math.Cos(Main.timeForVisualEffects * 3f + idleHoverOffset) * 50, -100 + idleYOffset);
-			Vector2 direction = Player.Center + offset - Projectile.Center;
+			Vector2 direction = Owner.Center + offset - Projectile.Center;
 
 			if (direction.Length() > 15)
 				Projectile.velocity = Vector2.Lerp(Projectile.velocity, Vector2.Normalize(direction) * IDLE_SPEED, 0.02f);
@@ -197,7 +197,9 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				bulletOffset = bulletOffset.RotatedBy(currentRotation);
 
 				Gore.NewGore(Projectile.GetSource_FromThis(), Projectile.Center, new Vector2(Math.Sign(dir.X) * -1, -0.5f) * 2, Mod.Find<ModGore>("JetwelderCasing").Type, 1f);
-				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + bulletOffset, dir.RotatedByRandom(0.13f) * 15, ProjectileID.Bullet, Projectile.damage, Projectile.knockBack, Player.whoAmI);
+
+				if (Owner.whoAmI == Main.myPlayer)
+					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + bulletOffset, dir.RotatedByRandom(0.13f) * 15, ProjectileID.Bullet, Projectile.damage, Projectile.knockBack, Owner.whoAmI);
 			}
 		}
 

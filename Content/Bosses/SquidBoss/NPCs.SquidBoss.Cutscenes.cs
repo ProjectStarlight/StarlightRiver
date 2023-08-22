@@ -59,44 +59,49 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				CameraSystem.DoPanAnimation(440, NPC.Center + new Vector2(0, -600));
 			}
 
-			for (int k = 0; k < 4; k++) //each tenticle
+			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
-				if (GlobalTimer == 100)
+				for (int k = 0; k < 4; k++) //each tentacle
 				{
-					int x;
-					int y;
-					int xb;
-
-					switch (k) //I handle these manually to get them to line up with the window correctly
+					if (GlobalTimer == 100)
 					{
-						case 0: x = -270; y = 0; xb = -50; break;
-						case 1: x = -420; y = -100; xb = -20; break;
-						case 3: x = 270; y = 0; xb = 50; break;
-						case 2: x = 420; y = -100; xb = 20; break;
-						default: x = 0; y = 0; xb = 0; break;
+						int x;
+						int y;
+						int xb;
+
+						switch (k) //I handle these manually to get them to line up with the window correctly
+						{
+							case 0: x = -270; y = 0; xb = -50; break;
+							case 1: x = -420; y = -100; xb = -20; break;
+							case 3: x = 270; y = 0; xb = 50; break;
+							case 2: x = 420; y = -100; xb = 20; break;
+							default: x = 0; y = 0; xb = 0; break;
+						}
+
+						Tentacle.movementTargetToAssign = new Vector2((int)NPC.Center.X + x, (int)NPC.Center.Y - 500 - y);
+						Tentacle.offsetFromParentBodyToAssign = xb;
+						float timer = 120 + k * 20;
+						Tentacle.parentIdToAssign = NPC.whoAmI;
+						int i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X + x, (int)NPC.Center.Y - 50, NPCType<Tentacle>(), 0, 1, ai1: timer, ai2: k);
+
+						tentacles.Add(Main.npc[i]);
 					}
-
-					int i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X + x, (int)NPC.Center.Y - 50, NPCType<Tentacle>(), 0, 1, 0, k);
-					(Main.npc[i].ModNPC as Tentacle).Parent = this;
-					(Main.npc[i].ModNPC as Tentacle).movementTarget = new Vector2((int)NPC.Center.X + x, (int)NPC.Center.Y - 500 - y);
-					(Main.npc[i].ModNPC as Tentacle).offsetFromParentBody = xb;
-					(Main.npc[i].ModNPC as Tentacle).basePoint = Main.npc[i].Center + Vector2.UnitY * 10;
-					(Main.npc[i].ModNPC as Tentacle).Timer = 120 + k * 20;
-					(Main.npc[i].ModNPC as Tentacle).stalkWaviness = 0;
-					tentacles.Add(Main.npc[i]);
-
-					Main.npc[i].netUpdate = true;
-
-					Mod.Logger.Info("Auroracle spawned tentacle " + i);
 				}
+			}
 
+			for (int k = 0; k < 4; k++) //each tentacle
+			{
 				if (GlobalTimer == 100 + k * 30)
 				{
+					if (tentacles.Count != 4)
+						RebuildTentacles();
+
 					CameraSystem.shake += 5;
-					Helper.PlayPitched("ArenaHit", 0.5f, 1f, tentacles[k].Center);
+					if (tentacles.Count == 4) // Almost always skips the first sound in multiplayer but its better than crashing
+						Helper.PlayPitched("ArenaHit", 0.5f, 1f, tentacles[k].Center);
 				}
 
-				if (GlobalTimer > 100 + k * 30 && GlobalTimer <= 160 + k * 30)
+				if (GlobalTimer > 100 + k * 30 && GlobalTimer <= 160 + k * 30 && tentacles.Count == 4)
 				{
 					var tentacle = tentacles[k].ModNPC as Tentacle;
 					float progress = Helper.SwoopEase((GlobalTimer - (100 + k * 30)) / 60f);
@@ -213,28 +218,32 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			{
 				NPC.Kill();
 
-				for (int n = 0; n < 100; n++)
+				if (Main.netMode != NetmodeID.Server)
 				{
-					var off = new Vector2(Main.rand.Next(-50, 50), Main.rand.Next(80, 120));
-					Dust.NewDustPerfect(NPC.Center + off, DustType<Dusts.Stamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6) + Vector2.UnitY * -8, 0, Color.White, 2);
-				}
+					//possible todo: replace this with a projectile or something that spawns on death to ensure all clients get this? will randomly skip for clients that run behind and get the inactive status first
+					for (int n = 0; n < 100; n++)
+					{
+						var off = new Vector2(Main.rand.Next(-50, 50), Main.rand.Next(80, 120));
+						Dust.NewDustPerfect(NPC.Center + off, DustType<Dusts.Stamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6) + Vector2.UnitY * -8, 0, Color.White, 2);
+					}
 
-				for (int n = 0; n < 100; n++)
-				{
-					var off = new Vector2(Main.rand.Next(-50, 50), Main.rand.Next(80, 120));
-					Vector2 vel = Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6);
-					var color = Color.Lerp(new Color(255, 100, 0) * 0.5f, Color.White, Main.rand.NextFloat(0.7f));
-					Dust.NewDustPerfect(NPC.Center + off + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(30), DustType<Dusts.Ink>(), vel, 0, color, Main.rand.NextFloat(1, 2.4f));
-				}
+					for (int n = 0; n < 100; n++)
+					{
+						var off = new Vector2(Main.rand.Next(-50, 50), Main.rand.Next(80, 120));
+						Vector2 vel = Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6);
+						var color = Color.Lerp(new Color(255, 100, 0) * 0.5f, Color.White, Main.rand.NextFloat(0.7f));
+						Dust.NewDustPerfect(NPC.Center + off + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(30), DustType<Dusts.Ink>(), vel, 0, color, Main.rand.NextFloat(1, 2.4f));
+					}
 
-				for (int k = 0; k <= 5; k++)
-				{
-					Gore.NewGore(NPC.GetSource_Death(), NPC.Center + Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(60), Vector2.One.RotatedByRandom(6.28f) * 6, StarlightRiver.Instance.Find<ModGore>("SquidGore" + k).Type);
-				}
+					for (int k = 0; k <= 5; k++)
+					{
+						Gore.NewGore(NPC.GetSource_Death(), NPC.Center + Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(60), Vector2.One.RotatedByRandom(6.28f) * 6, StarlightRiver.Instance.Find<ModGore>("SquidGore" + k).Type);
+					}
 
-				for (int k = 0; k < 10; k++)
-				{
-					Gore.NewGore(NPC.GetSource_Death(), NPC.Center + Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(60), Vector2.One.RotatedByRandom(6.28f) * 6, StarlightRiver.Instance.Find<ModGore>("SquidGoreTentacle").Type);
+					for (int k = 0; k < 10; k++)
+					{
+						Gore.NewGore(NPC.GetSource_Death(), NPC.Center + Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(60), Vector2.One.RotatedByRandom(6.28f) * 6, StarlightRiver.Instance.Find<ModGore>("SquidGoreTentacle").Type);
+					}
 				}
 			}
 		}

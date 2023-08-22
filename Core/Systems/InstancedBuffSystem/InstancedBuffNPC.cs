@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Terraria.ID;
 
 namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 {
@@ -25,7 +26,12 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		/// <returns>The inflicted instance, or null if one does not exist</returns>
 		public static T? GetInstance<T>(NPC npc) where T : InstancedBuff
 		{
-			return npc.GetGlobalNPC<InstancedBuffNPC>().buffInstances.FirstOrDefault(n => n is T) as T;
+			npc.TryGetGlobalNPC(out InstancedBuffNPC instancedBuffNPC);
+
+			if (instancedBuffNPC != null)
+				return instancedBuffNPC.buffInstances.FirstOrDefault(n => n is T) as T;
+			else
+				return null;
 		}
 
 		/// <summary>
@@ -36,7 +42,12 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		/// <returns>The inflicted instance, or null if one does not exist</returns>
 		public static InstancedBuff? GetInstance(NPC npc, string name)
 		{
-			return npc.GetGlobalNPC<InstancedBuffNPC>().buffInstances.FirstOrDefault(n => n.Name == name);
+			npc.TryGetGlobalNPC(out InstancedBuffNPC instancedBuffNPC);
+
+			if (instancedBuffNPC != null)
+				return instancedBuffNPC.buffInstances.FirstOrDefault(n => n.Name == name);
+			else
+				return null;
 		}
 
 		/// <summary>
@@ -49,7 +60,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		{
 			orig(self, lowerBuffTime);
 
-			if (!Main.dedServ && self.type > 0)
+			if (self.type > NPCID.None && self.active)
 				self.GetGlobalNPC<InstancedBuffNPC>().buffInstances.ForEach(n => n.UpdateNPC(self));
 		}
 

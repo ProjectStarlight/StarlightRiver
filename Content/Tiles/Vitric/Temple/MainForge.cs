@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
 	class MainForge : DummyTile
 	{
-		public override int DummyType => ModContent.ProjectileType<MainForgeDummy>();
+		public override int DummyType => DummySystem.DummyType<MainForgeDummy>();
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -30,16 +30,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public MainForgeDummy() : base(ModContent.TileType<MainForge>(), 19 * 16, 15 * 16) { }
 
-		public override void SafeSetDefaults()
-		{
-			Projectile.hide = true;
-		}
-
-		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
-		{
-			behindNPCsAndTiles.Add(index);
-		}
-
 		public override void Update()
 		{
 			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
@@ -55,7 +45,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			if (LightPuzzle.LightPuzzleHandler.solved)
 				timer++;
 
-			Vector2 pos = Projectile.Center + new Vector2(0, 88);
+			Vector2 pos = Center + new Vector2(0, 88);
 
 			Lighting.AddLight(pos, new Vector3(1, 0.8f, 0.5f) * HammerFunction(timer * 0.01f) * 0.02f);
 
@@ -97,36 +87,24 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			}
 		}
 
-		public override bool PreDraw(ref Color lightColor)
-		{
-			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
-				return false;
-
-			SpriteBatch spriteBatch = Main.spriteBatch;
-
-			DrawLaser(spriteBatch);
-
-			Vector2 pos = Projectile.position - Main.screenPosition;
-
-			var bgTarget = new Rectangle(80, 48, 128, 200);
-			bgTarget.Offset(pos.ToPoint());
-
-			TempleTileUtils.DrawBackground(spriteBatch, bgTarget);
-
-			return true;
-		}
-
-		public override void PostDraw(Color lightColor)
+		public override void DrawBehindTiles()
 		{
 			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
 				return;
 
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
+			DrawLaser(spriteBatch);
+
+			Vector2 pos = position - Main.screenPosition;
+
+			var bgTarget = new Rectangle(80, 48, 128, 200);
+			bgTarget.Offset(pos.ToPoint());
+
+			TempleTileUtils.DrawBackground(spriteBatch, bgTarget);
+
 			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MainForgeOver").Value;
 			Texture2D texHammer = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MainForgeHammer").Value;
-
-			Vector2 pos = Projectile.position - Main.screenPosition;
 
 			var offset = new Vector2(0, HammerFunction(timer * 0.01f));
 
@@ -152,7 +130,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 			float puzzleProg = power;
 
-			Vector2 centerPos = Projectile.position + new Vector2(Projectile.width / 2f, 0);
+			Vector2 centerPos = position + new Vector2(this.width / 2f, 0);
 			Vector2 endpoint = centerPos + new Vector2(0, 200);
 			float rot = (centerPos - endpoint).ToRotation();
 			var color = Color.Lerp(Color.Orange, new Color(255, 110, 0), 0.5f + (float)Math.Sin(Main.GameUpdateCount * 0.05f) * 0.5f);

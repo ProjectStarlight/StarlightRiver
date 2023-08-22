@@ -24,7 +24,6 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				rand = Main.rand.NextFloat(6.28f);
 				Projectile.netUpdate = true;
 			}
-				
 
 			if (moveTimer < 60)
 			{

@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 {
 	public abstract class GearTile : DummyTile
 	{
-		public override int DummyType => ModContent.ProjectileType<GearTileDummy>();
+		public override int DummyType => DummySystem.DummyType<GearTileDummy>();
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -57,12 +57,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 			}
 
 			return Place(i, j);
-		}
-
-		public override void Update()
-		{
-			if (!IsTileValidForEntity(Position.X, Position.Y))
-				Kill(Position.X, Position.Y);
 		}
 
 		/// <summary>
@@ -324,7 +318,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 		protected GearTileEntity GearEntity => TileEntity.ByPosition[new Point16(ParentX, ParentY)] as GearTileEntity;
 
-		public int Size
+		public int GearSize
 		{
 			get => GearEntity.size;
 			set => GearEntity.size = value % 4;
@@ -353,19 +347,19 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 			if (oldSize == 0 && gearAnimation > 20) //no fadeout when there is nothing to fade out
 				gearAnimation = 20;
 
-			if (gearAnimation == 15 && Size != 0)
+			if (gearAnimation == 15 && GearSize != 0)
 			{
-				for (int k = 0; k < 10 * Size; k++)
+				for (int k = 0; k < 10 * GearSize; k++)
 				{
 					Vector2 off = Vector2.One.RotatedByRandom(6.28f);
-					Dust.NewDustPerfect(Projectile.Center + off * Size * 10, ModContent.DustType<Dusts.GlowFastDecelerate>(), off * Main.rand.NextFloat(Size * 2 - 2, Size * 2) * 0.6f, 0, new Color(100, 200, 255), 0.5f);
+					Dust.NewDustPerfect(Center + off * GearSize * 10, ModContent.DustType<Dusts.GlowFastDecelerate>(), off * Main.rand.NextFloat(GearSize * 2 - 2, GearSize * 2) * 0.6f, 0, new Color(100, 200, 255), 0.5f);
 				}
 			}
 		}
 
 		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = Size switch
+			Texture2D tex = GearSize switch
 			{
 				0 => ModContent.Request<Texture2D>(AssetDirectory.Invisible).Value,
 				1 => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearSmall").Value,
@@ -373,7 +367,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 				3 => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearLarge").Value,
 				_ => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearSmall").Value,
 			};
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * 0.75f, Rotation, tex.Size() / 2, 1, 0, 0);
+			Main.spriteBatch.Draw(tex, Center - Main.screenPosition, null, Color.White * 0.75f, Rotation, tex.Size() / 2, 1, 0, 0);
 		}
 	}
 }

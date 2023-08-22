@@ -1,6 +1,7 @@
 ﻿using ReLogic.Content;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.GUI;
+using StarlightRiver.Content.PersistentData;
 using StarlightRiver.Core.Loaders.UILoading;
 using System;
 using System.IO;
@@ -10,6 +11,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
+	[AutoloadBossHead]
 	public partial class Glassweaver : ModNPC, IHintable
 	{
 		public static readonly Color GlowDustOrange = new(6255, 108, 0);
@@ -39,8 +41,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		public Rectangle Arena => new((int)arenaPos.X - 35 * 16, (int)arenaPos.Y - 30 * 16, 70 * 16, 30 * 16);
 
 		public override string Texture => AssetDirectory.Glassweaver + Name;
-
-		public override string BossHeadTexture => AssetDirectory.Glassweaver + Name + "_BossHead";
 
 		//Phase tracking utils
 		public enum Phases
@@ -95,7 +95,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			NPC.boss = true;
 			NPC.defense = 14;
 			NPC.HitSound = SoundID.NPCHit52;
-			Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/Miniboss");
+			Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/GlassWeaver");
 			NPC.dontTakeDamage = true;
 			NPC.npcSlots = 10;
 		}
@@ -122,6 +122,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override bool CheckDead()
 		{
+			BossRushDataStore.DefeatBoss(BossrushUnlockFlag.Glassweaver);
 			StarlightWorld.Flag(WorldFlags.DesertOpen);
 
 			NPC.life = 1;
@@ -145,7 +146,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 					if (Main.netMode != NetmodeID.MultiplayerClient)
 						Projectile.NewProjectile(NPC.GetSource_FromThis(), arenaPos + new Vector2(528 + 48, -46), Vector2.Zero, ProjectileType<GlassweaverDoor>(), Main.myPlayer, 0, NPC.target);
-					
+
 					ResetAttack();
 
 					break;
@@ -208,6 +209,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 				case (int)Phases.DirectPhase:
 
+					NPC.dontTakeDamage = false; // extra failsafe
 					NPC.rotation = MathHelper.Lerp(NPC.rotation, 0, 0.33f);
 
 					if (NPC.velocity.Y > 0f && NPC.collideY && !disableJumpSound)
@@ -333,12 +335,16 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
+			writer.WritePackedVector2(moveTarget);
 			writer.Write(attackVariant);
+			writer.Write(NPC.direction);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
+			moveTarget = reader.ReadPackedVector2();
 			attackVariant = reader.ReadBoolean();
+			NPC.direction = reader.ReadInt32();
 		}
 
 		//i hate this specific thing right here

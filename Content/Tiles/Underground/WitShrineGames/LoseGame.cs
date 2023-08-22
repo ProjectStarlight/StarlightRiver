@@ -13,7 +13,7 @@
 		{
 			for (int k = 0; k <= 6; k++)
 			{
-				if (parent.Timer == 30 * k)
+				if (parent.timer == 30 * k)
 				{
 					for (int x = -k; x <= k; x++)
 					{
@@ -30,7 +30,7 @@
 				}
 			}
 
-			if (parent.Timer == 210)
+			if (parent.timer == 210)
 				parent.GotoGame(0);
 		}
 	}

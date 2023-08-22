@@ -1,6 +1,7 @@
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Buffs.Summon;
 using System;
+using System.IO;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -45,18 +46,18 @@ namespace StarlightRiver.Content.Items.Starwood
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
-			player.AddBuff(Item.buffType, 2);
+			player.AddBuff(Item.buffType, 2, false);
 
 #pragma warning disable IDE0007
 			Projectile proj = Projectile.NewProjectileDirect(source, Main.MouseWorld, Main.rand.NextVector2CircularEdge(5f, 5f), type, damage, knockback, player.whoAmI, ai2: 1f);
-			proj.originalDamage = Item.damage;
+			proj.originalDamage = Item.damage; //original damage doesn't need to be synced so this is okay
 
+			StarwoodScepterSummonSplit.otherProjToAssign = proj.whoAmI;
 			Projectile proj2 = Projectile.NewProjectileDirect(source, Main.MouseWorld, Main.rand.NextVector2CircularEdge(5f, 5f), type, damage, knockback, player.whoAmI, ai2: 0f);
 			proj2.originalDamage = Item.damage;
 #pragma warning restore
 
 			(proj.ModProjectile as StarwoodScepterSummonSplit).otherProj = proj2;
-			(proj2.ModProjectile as StarwoodScepterSummonSplit).otherProj = proj;
 
 			Helpers.DustHelper.DrawStar(Main.MouseWorld, ModContent.DustType<Dusts.GlowFastDecelerate>(), 5, 1, 1, 0.5f, 1, 1f, 0, -1, new Color(240, 200, 20));
 
@@ -66,6 +67,8 @@ namespace StarlightRiver.Content.Items.Starwood
 
 	public class StarwoodScepterSummonSplit : ModProjectile
 	{
+		public static int otherProjToAssign; //only really relevant for first frame on proj2 so it can visually spawn and split away instead of waiting for the first netupdate
+
 		public int lifetime;
 
 		public int empowermentTimer;
@@ -144,6 +147,7 @@ namespace StarlightRiver.Content.Items.Starwood
 		{
 			targetWhoAmI = -1f;
 			rotationalVelocity = Projectile.velocity;
+			otherProj = Main.projectile[otherProjToAssign];
 		}
 
 		public override bool MinionContactDamage()
@@ -166,8 +170,12 @@ namespace StarlightRiver.Content.Items.Starwood
 			if (target == Target)
 			{
 				AttackTimer = 40;
-				Projectile.velocity *= -1f;
-				Projectile.velocity += Main.rand.NextVector2CircularEdge(5f, 5f);
+				if (Main.myPlayer == Projectile.owner)
+				{
+					Projectile.velocity *= -1f;
+					Projectile.velocity += Main.rand.NextVector2CircularEdge(5f, 5f);
+					Projectile.netUpdate = true;
+				}
 
 				SoundEngine.PlaySound(SoundID.Item9, Projectile.Center);
 			}
@@ -202,6 +210,9 @@ namespace StarlightRiver.Content.Items.Starwood
 						NetMessage.SendData(MessageID.SyncItem, -1, -1, null, newItem, 1f);
 				}
 			}
+
+			Main.player[Projectile.owner].TryGetModPlayer<StarlightPlayer>(out StarlightPlayer starlightPlayer);
+			starlightPlayer.SetHitPacketStatus(shouldRunProjMethods: true);
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -324,7 +335,11 @@ namespace StarlightRiver.Content.Items.Starwood
 			{
 				if (empowermentTimer == 0)
 				{
-					Projectile.velocity += Main.rand.NextVector2CircularEdge(10f, 10f);
+					if (Main.myPlayer == Projectile.owner)
+					{
+						Projectile.velocity += Main.rand.NextVector2CircularEdge(10f, 10f);
+						Projectile.netUpdate = true;
+					}
 
 					for (int i = 0; i < 10; i++)
 					{
@@ -359,13 +374,17 @@ namespace StarlightRiver.Content.Items.Starwood
 			}
 			else if (IsParent) // only spawn the projectile on the parent
 			{
-				var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center,
-					Main.rand.NextVector2CircularEdge(5f, 5f), ModContent.ProjectileType<StarwoodScepterSummonEmpowered>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+				if (Main.myPlayer == Projectile.owner)
+				{
+					StarwoodScepterSummonEmpowered.childrenToAssign = new int[] { Projectile.whoAmI, otherProj.whoAmI };
+					int downtimeTimer = 35;
+					var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center,
+						Main.rand.NextVector2CircularEdge(5f, 5f), ModContent.ProjectileType<StarwoodScepterSummonEmpowered>(), Projectile.damage, Projectile.knockBack, Projectile.owner, ai0: downtimeTimer);
 
-				(proj.ModProjectile as StarwoodScepterSummonEmpowered).Children = new int[] { Projectile.whoAmI, otherProj.whoAmI };
-				(proj.ModProjectile as StarwoodScepterSummonEmpowered).DowntimeTimer = 35;
+					proj.originalDamage = (int)(Projectile.originalDamage * 2.5); // this doesn't actually need to be synced so it can be assigned like this
+				}
+
 				empowermentTimer = 0;
-				proj.originalDamage = (int)(Projectile.originalDamage * 2.5);
 
 				Helpers.DustHelper.DrawStar(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), 5, 1.5f, 1.5f, 0.5f, 1, 1f, 0, -1, new Color(0, 0, 255));
 
@@ -444,10 +463,23 @@ namespace StarlightRiver.Content.Items.Starwood
 		{
 			return Main.npc.Where(n => n.CanBeChasedBy() && n.Distance(Projectile.Center) < 1000f).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
 		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(otherProj.identity);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			int otherProjIdentity = reader.ReadInt32();
+			otherProj = Main.projectile.FirstOrDefault(n => n.active && n.identity == otherProjIdentity);
+		}
 	}
 
 	public class StarwoodScepterSummonEmpowered : ModProjectile
 	{
+		public static int[] childrenToAssign;
+
 		public float targetWhoAmI;
 
 		public int[] Children = new int[2];
@@ -505,31 +537,46 @@ namespace StarlightRiver.Content.Items.Starwood
 			Projectile.localNPCHitCooldown = 10;
 		}
 
+		public override void OnSpawn(IEntitySource source)
+		{
+			Children[0] = childrenToAssign[0]; //split to avoid aliasing if you have multiple of these active
+			Children[1] = childrenToAssign[1];
+		}
+
 		public override bool MinionContactDamage()
 		{
 			return FoundTarget;
+		}
+
+		public override void Kill(int timeLeft)
+		{
+			SoundEngine.PlaySound(SoundID.DD2_WitherBeastHurt, Projectile.Center);
+
+			for (int i = 0; i < 10; i++)
+			{
+				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.StarFragment>(), Main.rand.NextVector2Circular(5f, 5f), 100, Color.White with { A = 0 }, 2f);
+			}
+
+			for (int i = 0; i < 10; i++)
+			{
+				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(5f, 5f), 0, new Color(0, 0, 255), 0.65f);
+			}
 		}
 
 		public override void AI()
 		{
 			if (!IsEmpowered)
 			{
-				ProjectileChildren[0].velocity += Main.rand.NextVector2Circular(8f, 8f);
-				ProjectileChildren[1].velocity += Main.rand.NextVector2Circular(8f, 8f);
-
-				(ProjectileChildren[0].ModProjectile as StarwoodScepterSummonSplit).DowntimeTimer = 35;
-				(ProjectileChildren[1].ModProjectile as StarwoodScepterSummonSplit).DowntimeTimer = 35;
-
-				SoundEngine.PlaySound(SoundID.DD2_WitherBeastHurt, Projectile.Center);
-
-				for (int i = 0; i < 10; i++)
+				if (Main.myPlayer == Projectile.owner)
 				{
-					Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.StarFragment>(), Main.rand.NextVector2Circular(5f, 5f), 100, Color.White with { A = 0 }, 2f);
-				}
+					ProjectileChildren[0].velocity += Main.rand.NextVector2Circular(8f, 8f);
+					ProjectileChildren[1].velocity += Main.rand.NextVector2Circular(8f, 8f);
 
-				for (int i = 0; i < 10; i++)
-				{
-					Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(5f, 5f), 0, new Color(0, 0, 255), 0.65f);
+					(ProjectileChildren[0].ModProjectile as StarwoodScepterSummonSplit).DowntimeTimer = 35;
+					(ProjectileChildren[1].ModProjectile as StarwoodScepterSummonSplit).DowntimeTimer = 35;
+
+					ProjectileChildren[0].netUpdate = true;
+					ProjectileChildren[1].netUpdate = true;
 				}
 
 				Projectile.Kill();
@@ -629,7 +676,10 @@ namespace StarlightRiver.Content.Items.Starwood
 
 			Projectile.velocity *= 1.25f;
 
-			target.AddBuff(ModContent.BuffType<StarstruckDebuff>(), 600);
+			target.AddBuff(ModContent.BuffType<StarstruckDebuff>(), 600, true);
+
+			Main.player[Projectile.owner].TryGetModPlayer<StarlightPlayer>(out StarlightPlayer starlightPlayer);
+			starlightPlayer.SetHitPacketStatus(shouldRunProjMethods: true);
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -724,6 +774,24 @@ namespace StarlightRiver.Content.Items.Starwood
 		internal NPC FindTarget()
 		{
 			return Main.npc.Where(n => n.CanBeChasedBy() && n.Distance(Owner.Center) < 1000f).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(Main.projectile[Children[0]].identity);
+			writer.Write(Main.projectile[Children[1]].identity);
+			writer.Write(Projectile.originalDamage);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			int childIdentity1 = reader.ReadInt32();
+			Children[0] = Main.projectile.FirstOrDefault(n => n.active && n.identity == childIdentity1).whoAmI;
+
+			int childIdentity2 = reader.ReadInt32();
+			Children[1] = Main.projectile.FirstOrDefault(n => n.active && n.identity == childIdentity2).whoAmI;
+
+			Projectile.originalDamage = reader.ReadInt32();
 		}
 	}
 

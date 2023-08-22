@@ -68,7 +68,9 @@ namespace StarlightRiver.Content.Items.Starwood
 				case 0://flying outward
 					if (empowered)
 					{
-						Projectile.velocity += Vector2.Normalize(Main.MouseWorld - Projectile.Center);
+						ControlsPlayer cPlayer = Main.player[Projectile.owner].GetModPlayer<ControlsPlayer>();
+						cPlayer.mouseListener = true;
+						Projectile.velocity += Vector2.Normalize(cPlayer.mouseWorld - Projectile.Center);
 
 						if (Projectile.velocity.Length() > 10)//swap this for shootspeed or something
 							Projectile.velocity = Vector2.Normalize(Projectile.velocity) * 10; //cap to max speed
@@ -79,7 +81,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
 					break;
 
-				case 1://has hit something
+				case 1://has hit something or max distance
 					if (projOwner.controlUseItem || Projectile.ai[1] >= CHARGE_TIME - 5)
 					{
 						if (Projectile.ai[1] == 0)
@@ -190,11 +192,14 @@ namespace StarlightRiver.Content.Items.Starwood
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			NextPhase(0, true);
+			Main.player[Projectile.owner].TryGetModPlayer<StarlightPlayer>(out StarlightPlayer starlightPlayer);
+			starlightPlayer.SetHitPacketStatus(shouldRunProjMethods: true);
 		}
 
 		public override void OnHitPlayer(Player target, Player.HurtInfo info)
 		{
 			NextPhase(0, true);
+			Projectile.netUpdate = true;
 		}
 
 		private Texture2D GlowingTrail => Request<Texture2D>(AssetDirectory.StarwoodItem + "StarwoodBoomerangGlowTrail").Value;

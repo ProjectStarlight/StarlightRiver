@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
 	class TutorialDoor1 : DummyTile
 	{
-		public override int DummyType => ProjectileType<TutorialDoor1Dummy>();
+		public override int DummyType => DummySystem.DummyType<TutorialDoor1Dummy>();
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 	class TutorialDoor1Dummy : Dummy
 	{
-		public ref float Progress => ref Projectile.ai[0];
+		public float progress;
 
 		public TutorialDoor1Dummy() : base(TileType<TutorialDoor1>(), 16 * 2, 16 * 13) { }
 
@@ -38,12 +38,12 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		{
 			if (Main.LocalPlayer.GetModPlayer<StarlightPlayer>().inTutorial)
 			{
-				if (Progress < 1)
-					Progress += 0.005f;
+				if (progress < 1)
+					progress += 0.005f;
 			}
-			else if (Progress > 0)
+			else if (progress > 0)
 			{
-				Progress -= 0.005f;
+				progress -= 0.005f;
 			}
 		}
 
@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		{
 			if (Player.GetModPlayer<StarlightPlayer>().inTutorial)
 			{
-				if (Player.Hitbox.Intersects(Projectile.Hitbox))
+				if (Player.Hitbox.Intersects(Hitbox))
 					Player.velocity.X = 1;
 			}
 		}
@@ -60,11 +60,11 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		{
 			Player Player = Main.LocalPlayer;
 
-			if (Progress > 0)
+			if (progress > 0)
 			{
 				Texture2D tex = Request<Texture2D>(AssetDirectory.VitricTile + "TutorialDoor1").Value;
-				int off = (int)(tex.Height * Progress);
-				Vector2 pos = Projectile.position - Main.screenPosition;
+				int off = (int)(tex.Height * progress);
+				Vector2 pos = position - Main.screenPosition;
 				var source = new Rectangle(0, 0, tex.Width, off);
 
 				Main.spriteBatch.Draw(tex, pos, source, lightColor);
@@ -80,7 +80,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 	class TutorialDoor2 : DummyTile
 	{
-		public override int DummyType => ProjectileType<TutorialDoor2Dummy>();
+		public override int DummyType => DummySystem.DummyType<TutorialDoor2Dummy>();
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -108,9 +108,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public override void Collision(Player Player)
 		{
-			if (ShouldBeOn(Player) && Player.Hitbox.Intersects(Projectile.Hitbox))
+			if (ShouldBeOn(Player) && Player.Hitbox.Intersects(Hitbox))
 			{
-				if (AbilityHelper.CheckDash(Player, Projectile.Hitbox))
+				if (AbilityHelper.CheckDash(Player, Hitbox))
 				{
 					Player.GetModPlayer<StarlightPlayer>().inTutorial = false;
 
@@ -138,8 +138,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 			if (ShouldBeOn(Player))
 			{
-				Main.spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricTile + "TutorialDoor2").Value, Projectile.position - Main.screenPosition, lightColor);
-				Main.spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricTile + "TutorialDoor2Glow").Value, Projectile.position - Main.screenPosition, Helper.IndicatorColor);
+				Main.spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricTile + "TutorialDoor2").Value, position - Main.screenPosition, lightColor);
+				Main.spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricTile + "TutorialDoor2Glow").Value, position - Main.screenPosition, Helper.IndicatorColor);
 			}
 		}
 	}

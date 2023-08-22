@@ -1,0 +1,5 @@
+# Starlight River v0.1.5: Oh, That Is Not Supposed To Happen is live!
+Oops
+## Fixes:
+* Added back the ability to hit things with projectiles, causing various destructive forces to negatively impact the structural integrity of the struck entity's flesh, bones, tendons, ligaments, and organs, eventually resulting in the loss of their ability to maintained continued biological homeostasis
+Sorry about that. Incredible confluence of unluck caused a really strange issue that we never caught in testing.

@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 {
 	class JarTall : DummyTile, IHintable
 	{
-		public override int DummyType => ProjectileType<JarDummy>();
+		public override int DummyType => DummySystem.DummyType<JarDummy>();
 
 		public override string Texture => AssetDirectory.UndergroundTempleTile + Name;
 
@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 		{
 			if (Main.tile[i, j].TileFrameX == 0 && Main.tile[i, j].TileFrameY == 0)
 			{
-				Projectile dummy = Dummy(i, j);
+				Dummy dummy = Dummy(i, j);
 
 				if (dummy is null)
 					return;
@@ -83,7 +83,7 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 		{
 			if (Main.rand.NextBool(15))
 			{
-				Vector2 pos = Projectile.position + new Vector2(Main.rand.Next(Projectile.width), Main.rand.Next(Projectile.height));
+				Vector2 pos = position + new Vector2(Main.rand.Next(width), Main.rand.Next(height));
 				pos += Vector2.UnitY * 8;
 
 				if (Main.rand.NextBool(4))
@@ -100,20 +100,20 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 
 		public override void Collision(Player Player)
 		{
-			if (AbilityHelper.CheckDash(Player, Projectile.Hitbox))
+			if (AbilityHelper.CheckDash(Player, Hitbox))
 			{
 				WorldGen.KillTile(ParentX, ParentY);
-				NetMessage.SendTileSquare(Player.whoAmI, (int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f), 2, 4, TileChangeType.None);
+				NetMessage.SendTileSquare(Player.whoAmI, (int)(position.X / 16f), (int)(position.Y / 16f), 2, 4, TileChangeType.None);
 
-				Item.NewItem(null, Projectile.Hitbox, ModContent.ItemType<StaminaGel>(), Main.rand.Next(3, 12));
-				Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
+				Item.NewItem(null, Hitbox, ModContent.ItemType<StaminaGel>(), Main.rand.Next(3, 12));
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Center);
 			}
 		}
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
 			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + Vector2.UnitY * 16, tex.Frame(), new Color(91, 211, 233) * 0.7f, 0, tex.Size() / 2, 0.8f, 0, 0);
+			spriteBatch.Draw(tex, Center - Main.screenPosition + Vector2.UnitY * 16, tex.Frame(), new Color(91, 211, 233) * 0.7f, 0, tex.Size() / 2, 0.8f, 0, 0);
 		}
 	}
 

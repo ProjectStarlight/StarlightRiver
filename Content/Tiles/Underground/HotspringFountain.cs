@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 {
 	class HotspringFountain : DummyTile, IHintable
 	{
-		public override int DummyType => ModContent.ProjectileType<HotspringFountainDummy>();
+		public override int DummyType => DummySystem.DummyType<HotspringFountainDummy>();
 
 		public override string Texture => AssetDirectory.Assets + "Tiles/Underground/HotspringFountain";
 
@@ -56,18 +56,18 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 	class HotspringFountainDummy : Dummy
 	{
-		public static bool AnyOnscreen => Main.projectile.Any(n => n.active && n.type == ModContent.ProjectileType<HotspringFountainDummy>() && Vector2.Distance(n.Center, Main.screenPosition + Helpers.Helper.ScreenSize / 2) < 1000);
+		public static bool AnyOnscreen => DummySystem.dummies.Any(n => n.active && n is HotspringFountainDummy && Vector2.DistanceSquared(n.Center, Main.screenPosition + Helpers.Helper.ScreenSize / 2) < Math.Pow(1000, 2));
 
 		public HotspringFountainDummy() : base(ModContent.TileType<HotspringFountain>(), 5 * 16, 5 * 16) { }
 
 		public override void Update()
 		{
-			Lighting.AddLight(Projectile.Center, new Vector3(150, 220, 230) * 0.002f);
+			Lighting.AddLight(Center, new Vector3(150, 220, 230) * 0.002f);
 
 			if (Main.rand.NextBool(10))
-				Dust.NewDustPerfect(Projectile.Center + Vector2.UnitY * -20, ModContent.DustType<Dusts.Mist>(), new Vector2(0.2f, -Main.rand.NextFloat(0.7f, 1.6f)), Main.rand.Next(50, 70), Color.White, Main.rand.NextFloat(0.2f, 0.5f));
+				Dust.NewDustPerfect(Center + Vector2.UnitY * -20, ModContent.DustType<Dusts.Mist>(), new Vector2(0.2f, -Main.rand.NextFloat(0.7f, 1.6f)), Main.rand.Next(50, 70), Color.White, Main.rand.NextFloat(0.2f, 0.5f));
 
-			foreach (Player player in Main.player.Where(n => n.wet && Vector2.Distance(n.Center, Projectile.Center) < 30 * 16))
+			foreach (Player player in Main.player.Where(n => n.wet && Vector2.Distance(n.Center, Center) < 30 * 16))
 				player.AddBuff(ModContent.BuffType<HotspringHeal>(), 10);
 
 			for (int x = -30; x < 30; x += 1)
@@ -77,8 +77,8 @@ namespace StarlightRiver.Content.Tiles.Underground
 					if (new Vector2(x, y).Length() > 30)
 						continue;
 
-					int checkX1 = (int)(Projectile.Center.X / 16 + x);
-					int checkY1 = (int)(Projectile.Center.Y / 16 + y);
+					int checkX1 = (int)(Center.X / 16 + x);
+					int checkY1 = (int)(Center.Y / 16 + y);
 					Tile tile1 = Framing.GetTileSafely(checkX1, checkY1);
 					Tile tile2 = Framing.GetTileSafely(checkX1, checkY1 - 1);
 
@@ -90,14 +90,14 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 							if (Main.rand.NextBool(40) && !(tile2.HasTile && Main.tileSolid[tile2.TileType]))//not sure if correct way to check solid
 							{
-								Vector2 pos = Projectile.Center + new Vector2(x, y - 1) * 16 + Vector2.UnitX * Main.rand.NextFloat(16);
+								Vector2 pos = Center + new Vector2(x, y - 1) * 16 + Vector2.UnitX * Main.rand.NextFloat(16);
 								Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.Mist>(), new Vector2(0.2f, -Main.rand.NextFloat(0.7f, 1.6f)), Main.rand.Next(50, 70), Color.White, Main.rand.NextFloat(0.2f, 0.5f));
 							}
 						}
 
 						if (Main.rand.NextBool(600))
 						{
-							Vector2 pos = Projectile.Center + new Vector2(x, y) * 16 + Vector2.UnitX * Main.rand.NextFloat(16);
+							Vector2 pos = Center + new Vector2(x, y) * 16 + Vector2.UnitX * Main.rand.NextFloat(16);
 							Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.SpringBubble>(), Vector2.UnitY * -Main.rand.NextFloat(0.5f, 1.2f), Main.rand.Next(40, 55), new Color(230, 255, 255), Main.rand.NextFloat(0.3f, 0.4f));
 						}
 					}
@@ -109,13 +109,13 @@ namespace StarlightRiver.Content.Tiles.Underground
 			int x1 = (int)(Math.Sin(angle) * Main.rand.Next(30));
 			int y1 = (int)(Math.Cos(angle) * Main.rand.Next(30));
 
-			int checkX = (int)(Projectile.Center.X / 16 + x1);
-			int checkY = (int)(Projectile.Center.Y / 16 + y1);
+			int checkX = (int)(Center.X / 16 + x1);
+			int checkY = (int)(Center.Y / 16 + y1);
 			Tile tile = Framing.GetTileSafely(checkX, checkY);
 
 			if (tile.LiquidType == LiquidID.Water && tile.LiquidAmount > 0)
 			{
-				var d = Dust.NewDustPerfect(Projectile.Center + new Vector2(x1, y1) * 16 + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(16), ModContent.DustType<Dusts.Aurora>(), Vector2.Zero, 0, new Color(150, 255, 255) * 0.3f, 1);
+				var d = Dust.NewDustPerfect(Center + new Vector2(x1, y1) * 16 + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(16), ModContent.DustType<Dusts.Aurora>(), Vector2.Zero, 0, new Color(150, 255, 255) * 0.3f, 1);
 				d.customData = Main.rand.NextFloat(0.6f, 0.9f);
 			}
 		}
@@ -123,7 +123,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 		public void DrawMap(SpriteBatch spriteBatch)
 		{
 			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, scale: 18f, 0, 0);
+			spriteBatch.Draw(tex, Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, scale: 24f, 0, 0);
 		}
 	}
 }

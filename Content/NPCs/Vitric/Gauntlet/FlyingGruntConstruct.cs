@@ -129,7 +129,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 					attacking = true;
 
 				AnimateIdle();
-				attackPhase = (int) AttackPhase.charging;
+				attackPhase = (int)AttackPhase.charging;
 			}
 			else
 			{
@@ -192,11 +192,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		public override void HitEffect(NPC.HitInfo hit)
 		{
 			attacking = true;
-		}
 
-		public override void OnKill()
-		{
-			if (Main.netMode != NetmodeID.Server)
+			if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
 			{
 				for (int i = 0; i < 9; i++)
 				{
@@ -244,7 +241,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 			switch (attackPhase)
 			{
-				case (int) AttackPhase.charging:
+				case (int)AttackPhase.charging:
 
 					AnimateIdle();
 					NPC.velocity = Vector2.Lerp(NPC.velocity, direction.RotatedBy(brownianRand.NextDouble() * 0.6f - brownianRand.NextDouble() * 0.6f) * 10, 0.05f);
@@ -255,23 +252,22 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 						attackPhase = (int)AttackPhase.slowing;
 						NPC.netUpdate = true;
 					}
-						
 
 					break;
 
-				case (int) AttackPhase.slowing:
+				case (int)AttackPhase.slowing:
 
 					NPC.velocity *= 0.8f;
 
 					if (NPC.velocity.Length() < 2)
 					{
 						frameCounter = 0;
-						attackPhase = (int) AttackPhase.swinging;
+						attackPhase = (int)AttackPhase.swinging;
 					}
 
 					break;
 
-				case (int) AttackPhase.swinging:
+				case (int)AttackPhase.swinging:
 
 					xFrame = 1;
 					frameCounter++;
@@ -479,7 +475,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 								var proj = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), arrowPos, arrowVel, ProjectileType<PelterConstructArrow>(), damage, NPC.knockBackResist);
 							}
 
-							if (Main.netMode !=  NetmodeID.Server) 
+							if (Main.netMode != NetmodeID.Server)
 							{
 								for (int k = 0; k < 15; k++)
 								{
@@ -509,7 +505,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			for (int i = 0; i < 8; i++)
 			{
 				float rad = i * 6.28f / 8;
-				Vector2 offset = Vector2.UnitX.RotatedBy(rad) * distance;
+				Vector2 offset = Vector2.UnitX.RotatedBy(rad) * distance + NPC.netOffset;
 				Color color = Color.OrangeRed * (1.75f - sin) * 0.7f;
 
 				DrawConstruct(tex, null, spriteBatch, Main.screenPosition, color, offset, false);

@@ -80,7 +80,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 					if (Main.netMode == NetmodeID.MultiplayerClient)
 					{
-						var packet = new SpawnNPC(Main.myPlayer, i * 16 + randX, j * 16 + randY, NPCType<BerrySlime>());
+						var packet = new SpawnNPC(i * 16 + randX, j * 16 + randY, NPCType<BerrySlime>());
 						packet.Send(-1, -1, false);
 					}
 

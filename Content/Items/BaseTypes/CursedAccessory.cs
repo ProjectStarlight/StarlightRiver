@@ -31,8 +31,8 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public static void UnloadSystem()
 		{
-			CursedSystem = null;
-			ShardsSystem = null;
+			CursedSystem ??= null;
+			ShardsSystem ??= null;
 		}
 
 		protected CursedAccessory(Texture2D glow) : base("Unnamed Cursed Accessory", "You forgot to give this a display name dingus!")

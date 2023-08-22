@@ -1,9 +1,17 @@
 ﻿using System;
+using System.IO;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 {
-	class Spear : ModProjectile
+	class Spear : EvasionProjectile
 	{
+		public static Vector2 endPointToAssign;
+		public static int riseTimeToAssign;
+		public static int retractTimeToAssign;
+		public static int teleTimeToASsign;
+		public static int holdTimeToAssign;
+
 		public Vector2 startPoint;
 		public Vector2 endPoint;
 		public int timeToRise;
@@ -30,6 +38,15 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 			Projectile.penetrate = -1;
 			Projectile.tileCollide = false;
 			Projectile.alpha = 255;
+		}
+
+		public override void OnSpawn(IEntitySource source)
+		{
+			endPoint = endPointToAssign;
+			timeToRise = riseTimeToAssign;
+			timeToRetract = retractTimeToAssign;
+			teleTime = teleTimeToASsign;
+			holdTime = holdTimeToAssign;
 		}
 
 		public override void AI()
@@ -68,14 +85,6 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 				return true;
 
 			return false;
-		}
-
-		public override void OnHitPlayer(Player target, Player.HurtInfo info)
-		{
-			parent.lives--;
-
-			if (Main.rand.NextBool(10000))
-				Main.NewText("Skill issue.");
 		}
 
 		public override void PostDraw(Color lightColor)
@@ -145,6 +154,24 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			return true;
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.WritePackedVector2(endPoint);
+			writer.Write(timeToRise);
+			writer.Write(timeToRetract);
+			writer.Write(teleTime);
+			writer.Write(holdTime);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			endPoint = reader.ReadPackedVector2();
+			timeToRise = reader.ReadInt32();
+			timeToRetract = reader.ReadInt32();
+			teleTime = reader.ReadInt32();
+			holdTime = reader.ReadInt32();
 		}
 	}
 }

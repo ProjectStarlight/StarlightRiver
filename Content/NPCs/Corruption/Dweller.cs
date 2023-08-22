@@ -276,14 +276,15 @@ namespace StarlightRiver.Content.NPCs.Corruption
 			return SpawnCondition.Corruption.Chance * 0.27f;
 		}
 
-		public override void OnKill()
+		public override void HitEffect(NPC.HitInfo hit)
 		{
-			if (Main.netMode != NetmodeID.Server)
+			if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
 			{
 				for (int j = 1; j <= 7; j++)
 					Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("DwellerGore" + j).Type);
 			}
 		}
+
 		public string GetHint()
 		{
 			return "There's something here.";

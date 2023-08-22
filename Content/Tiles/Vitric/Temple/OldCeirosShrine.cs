@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
 	class OldCeirosShrine : DummyTile
 	{
-		public override int DummyType => ProjectileType<OldCeirosShrineDummy>();
+		public override int DummyType => DummySystem.DummyType<OldCeirosShrineDummy>();
 
 		public override string Texture => AssetDirectory.VitricTile + Name;
 
@@ -82,7 +82,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 			if (Main.rand.NextBool(20))
 			{
-				Vector2 pos = Projectile.position + Vector2.UnitX * Main.rand.NextFloat(64);
+				Vector2 pos = position + Vector2.UnitX * Main.rand.NextFloat(64);
 				Dust.NewDustPerfect(pos, DustType<Dusts.Aurora>(), Vector2.UnitY * Main.rand.NextFloat(-4, -1), 0, new Color(255, Main.rand.Next(150, 255), 50), Main.rand.NextFloat(0.5f, 1f));
 			}
 		}
@@ -94,7 +94,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 			Texture2D tex = Request<Texture2D>(AssetDirectory.VitricTile + "OldCeirosOrnament" + Parent.TileFrameX).Value;
 			float sin = (float)Math.Sin(Main.GameUpdateCount / 30f);
-			Vector2 pos = Projectile.position - Main.screenPosition + new Vector2(32, -32 + sin * 4);
+			Vector2 pos = position - Main.screenPosition + new Vector2(32, -32 + sin * 4);
 
 			Main.spriteBatch.Draw(tex, pos, null, Color.White, 0, tex.Size() / 2, 1, 0, 0);
 		}
@@ -105,7 +105,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 				return;
 
 			Texture2D texGlow = Request<Texture2D>(AssetDirectory.VitricBoss + "LongGlow").Value;
-			Vector2 pos = Projectile.position - Main.screenPosition + new Vector2(33, 10);
+			Vector2 pos = position - Main.screenPosition + new Vector2(33, 10);
 
 			float sin = (float)Math.Sin(Main.GameUpdateCount / 18f);
 

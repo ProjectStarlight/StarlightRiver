@@ -1,11 +1,13 @@
 ﻿using StarlightRiver.Content.Items.Food;
 using StarlightRiver.Content.Items.Food.Special;
+using StarlightRiver.Content.Items.Utility;
 using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
+using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
@@ -32,6 +34,8 @@ namespace StarlightRiver.Content.GUI
 
 		public static Vector2 Basepos = new(Main.screenWidth / 2 - 173, Main.screenHeight / 2 - 122);
 
+		public static Vector2 prepStationPos = Vector2.Zero;
+
 		public override bool Visible => visible;
 
 		public override int InsertionIndex(List<GameInterfaceLayer> layers)
@@ -51,8 +55,11 @@ namespace StarlightRiver.Content.GUI
 
 		public override void SafeUpdate(GameTime gameTime)
 		{
-			if (!Main.playerInventory)
+			if (!Main.playerInventory || prepStationPos.DistanceSQ(Main.LocalPlayer.position) > 60000)
+			{
+				ExtractItems();
 				visible = false;
+			}
 
 			if (TopBar.IsMouseHovering && Main.mouseLeft)
 			{
@@ -148,10 +155,10 @@ namespace StarlightRiver.Content.GUI
 					}
 
 					duration += ingredient.Fill;
-					durationMult *= ingredient.FullnessMult;
+					durationMult *= ingredient.BuffLengthMult;
 
 					cooldown += (int)(ingredient.Fill * 1.5f);
-					cooldownMult *= ingredient.WellFedMult;
+					cooldownMult *= ingredient.DebuffLengthMult;
 				}
 
 				duration = (int)(duration * durationMult);
@@ -216,8 +223,8 @@ namespace StarlightRiver.Content.GUI
 			if (!source.Item.IsAir && source.Item.ModItem is Ingredient)
 			{
 				(target.ModItem as Meal).Ingredients.Add(source.Item.Clone());
-				(target.ModItem as Meal).FullnessMult *= (source.Item.ModItem as Ingredient).FullnessMult;
-				(target.ModItem as Meal).WellFedMult *= (source.Item.ModItem as Ingredient).WellFedMult;
+				(target.ModItem as Meal).BuffLengthMult *= (source.Item.ModItem as Ingredient).BuffLengthMult;
+				(target.ModItem as Meal).DebuffLengthMult *= (source.Item.ModItem as Ingredient).DebuffLengthMult;
 				(target.ModItem as Meal).Fullness += (source.Item.ModItem as Ingredient).Fill;
 
 				if (source.Item.stack == 1)
@@ -229,9 +236,19 @@ namespace StarlightRiver.Content.GUI
 
 		private void Exit()
 		{
+			ExtractItems();
 			visible = false;
+			ChefBagUI.visible = false;
 			Main.playerInventory = false;
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuClose);
+		}
+
+		public void ExtractItems()
+		{
+			MainSlot.ExtractItemToInventory();
+			SideSlot0.ExtractItemToInventory();
+			SideSlot1.ExtractItemToInventory();
+			SeasonSlot.ExtractItemToInventory();
 		}
 	}
 
@@ -248,7 +265,23 @@ namespace StarlightRiver.Content.GUI
 		public override void Draw(SpriteBatch spriteBatch)
 		{
 			if (IsMouseHovering)
+			{
 				Main.LocalPlayer.mouseInterface = true;
+
+				if (!Item.IsAir)
+				{
+					Main.LocalPlayer.mouseInterface = true;
+					Main.HoverItem = Item.Clone();
+					Main.hoverItemName = "a"; //required but the value doesn't matter for having it show up
+
+					if (Main.keyState.PressingShift() && (ChefBagUI.visible || Helper.getFreeInventorySlot(Main.LocalPlayer) != -1))
+						Main.cursorOverride = 7;
+				}
+				else
+				{
+					Main.hoverItemName = "Place [c/" + Ingredient.GetDescriptionColor(Type).Hex3() + ":" + Ingredient.GetDescription(Type) + "] here";
+				}
+			}
 
 			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/GUI/CookSlotY").Value;
 			switch (Type)
@@ -267,17 +300,20 @@ namespace StarlightRiver.Content.GUI
 
 				if (Item.stack > 1)
 					Utils.DrawBorderString(spriteBatch, Item.stack.ToString(), GetDimensions().Position() + Vector2.One * 32, Color.White, 0.75f);
-
-				if (IsMouseHovering)
-				{
-					Main.LocalPlayer.mouseInterface = true;
-					Main.HoverItem = Item.Clone();
-					Main.hoverItemName = "a";
-				}
 			}
 		}
 
 		public override void SafeClick(UIMouseEvent evt)
+		{
+			Main.isMouseLeftConsumedByUI = true;
+
+			if (PlayerInput.Triggers.Current.SmartSelect)
+				ExtractItemToInventory();
+			else
+				LeftClick();
+		}
+
+		private void LeftClick()
 		{
 			Player Player = Main.LocalPlayer;
 
@@ -329,8 +365,63 @@ namespace StarlightRiver.Content.GUI
 					Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
 				}
 			}
+		}
 
-			Main.isMouseLeftConsumedByUI = true;
+		public override void SafeRightClick(UIMouseEvent evt)
+		{
+			if (Main.mouseItem.IsAir)
+			{
+				var item = new Item();
+				item.SetDefaults(Item.type);
+				item.stack = 1;
+
+				Main.mouseItem = item;
+
+				Item.stack--;
+
+				if (Item.stack == 0)
+					Item.TurnToAir();
+
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuTick);
+			}
+			else if (Main.mouseItem.type == Item.type && Main.mouseItem.stack < Main.mouseItem.maxStack)
+			{
+				Main.mouseItem.stack++;
+				Item.stack--;
+
+				if (Item.stack == 0)
+					Item.TurnToAir();
+
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuTick);
+			}
+		}
+
+		public void ExtractItemToInventory()
+		{
+			//extract items out of the UI and place into chef bag / inventory
+			//use for shift left clicking and exiting the UI
+
+			Item bag = Main.LocalPlayer.inventory.FirstOrDefault(n => n.type == ItemType<ChefBag>());
+
+			if (bag != null)
+			{
+				if ((bag.ModItem as ChefBag).InsertItem(Item.Clone()))
+				{
+					Item.TurnToAir();
+					Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
+					return;
+				}
+			}
+
+			//attempt to quick place into your inventory if no chef bag or invalid to place there
+			int invSlotCount = Helper.getFreeInventorySlot(Main.LocalPlayer);
+
+			if (!Item.IsAir && invSlotCount != -1)
+			{
+				Main.LocalPlayer.GetItem(Main.myPlayer, Item.Clone(), GetItemSettings.InventoryUIToInventorySettings);
+				Item.TurnToAir();
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
+			}
 		}
 
 		public override void SafeUpdate(GameTime gameTime)

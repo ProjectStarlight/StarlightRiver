@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.NPCs.BaseTypes;
 using System;
 using System.Linq;
+using Terraria.DataStructures;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -8,16 +9,23 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 {
 	public class Tentacle : ModNPC, IUnderwater
 	{
+		private const int MAX_SPLASH_COOLDOWN = 40;
+		public static Vector2 movementTargetToAssign;
+		public static int offsetFromParentBodyToAssign;
+		public static int parentIdToAssign;
+
 		public Vector2 movementTarget;
 		public Vector2 basePoint;
 		public int offsetFromParentBody;
 		public bool shouldDrawPortal;
 
-		public float stalkWaviness = 1;
+		public float stalkWaviness = 0;
 		public float zSpin = 0;
 		public int downwardDrawDistance = 28;
 
 		private NPC hurtboxActor;
+
+		private int splashCooldown = 0;
 
 		public SquidBoss Parent { get; set; }
 
@@ -62,6 +70,15 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			NPC.knockBackResist = 0f;
 			NPC.HitSound = SoundID.NPCHit1;
 			NPC.dontTakeDamage = true;
+			NPC.netAlways = true;
+		}
+
+		public override void OnSpawn(IEntitySource source)
+		{
+			movementTarget = movementTargetToAssign;
+			offsetFromParentBody = offsetFromParentBodyToAssign;
+			basePoint = NPC.Center + Vector2.UnitY * 10;
+			Parent = Main.npc[parentIdToAssign].ModNPC as SquidBoss;
 		}
 
 		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
@@ -77,7 +94,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer)
 		{
 			if (Parent is null || !Parent.NPC.active)
-				Parent = Main.npc.FirstOrDefault(n => n.active && n.type == ModContent.NPCType<SquidBoss>()).ModNPC as SquidBoss;
+				Parent = Main.npc.FirstOrDefault(n => n.active && n.type == NPCType<SquidBoss>())?.ModNPC as SquidBoss;
 
 			if (Parent is null)
 			{
@@ -322,42 +339,38 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void AI()
 		{
-			/* AI fields:
-             * 0: state
-             * 1: timer
-             */
 			if (Parent == null || !Parent.NPC.active || Arena == null || !Arena.NPC.active)
 			{
 				NPC.active = false;
 				return;
 			}
 
-			if (hurtboxActor is null || !hurtboxActor.active)
+			if (Main.netMode != NetmodeID.MultiplayerClient && (hurtboxActor is null || !hurtboxActor.active))
 			{
+				TentacleHurtbox.tentacleToAssign = this;
 				int i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<TentacleHurtbox>());
-				hurtboxActor = Main.npc[i];
-
-				var actor = Main.npc[i].ModNPC as TentacleHurtbox;
-
-				if (actor != null)
-					actor.tentacle = this;
-				else
-					hurtboxActor = null;
+				hurtboxActor = Main.npc[i]; //doesn't actually need to be synced since this just controls the hurtbox spawning failsafe
 			}
 
-			if ((State == 0 || State == 1) && Timer == 0)
+			if ((State == 0 || State == 1) && Timer == 0 && Main.netMode != NetmodeID.MultiplayerClient)
 			{
 				basePoint = NPC.Center;
 				NPC.netUpdate = true;
 			}
 
-			if (NPC.oldPos[0].Y > Arena.WaterLevelWorld && NPC.position.Y <= Arena.WaterLevelWorld || NPC.oldPos[0].Y + NPC.height <= Arena.WaterLevelWorld && NPC.position.Y + NPC.height > Arena.WaterLevelWorld)
+			splashCooldown--;
+			
+			if ((NPC.oldPos[0].Y > Arena.WaterLevelWorld && NPC.position.Y <= Arena.WaterLevelWorld || NPC.oldPos[0].Y + NPC.height <= Arena.WaterLevelWorld && NPC.position.Y + NPC.height > Arena.WaterLevelWorld) && splashCooldown <= 0)
 			{
+				splashCooldown = MAX_SPLASH_COOLDOWN;
+
 				float tentacleSin = (float)Math.Sin(Timer / 20f) * stalkWaviness;
 
 				Helpers.Helper.PlayPitched("SquidBoss/LightSplash", 0.5f, 0, NPC.Center);
 				Helpers.Helper.PlayPitched("Magic/WaterWoosh", 0.8f, 0, NPC.Center);
-				Projectile.NewProjectile(NPC.GetSource_FromThis(), new Vector2(NPC.Center.X + tentacleSin * 30, Arena.WaterLevelWorld - 41), Vector2.Zero, ProjectileType<AuroraWaterSplash>(), 0, 0, Main.myPlayer);
+				
+				if (Main.netMode != NetmodeID.MultiplayerClient)
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), new Vector2(NPC.Center.X + tentacleSin * 30, Arena.WaterLevelWorld - 41), Vector2.Zero, ProjectileType<AuroraWaterSplash>(), 0, 0, Main.myPlayer);
 
 				for (int k = 0; k < 10; k++)
 				{
@@ -412,12 +425,17 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		{
 			writer.WriteVector2(basePoint);
 			writer.WriteVector2(movementTarget);
+			writer.Write(offsetFromParentBody);
+			writer.Write(Parent.NPC.whoAmI);
 		}
 
 		public override void ReceiveExtraAI(System.IO.BinaryReader reader)
 		{
 			basePoint = reader.ReadVector2();
 			movementTarget = reader.ReadVector2();
+			offsetFromParentBody = reader.ReadInt32();
+			int parentId = reader.ReadInt32();
+			Parent = Main.npc[parentId].ModNPC as SquidBoss;
 		}
 	}
 }

@@ -23,9 +23,6 @@ namespace StarlightRiver.Core
 		public readonly int maxWidth;
 		public readonly int maxHeight;
 		protected readonly string texturePath;
-		public readonly string dummyName;
-
-		public override int DummyType => Mod.Find<ModProjectile>(dummyName).Type;
 
 		public override string Texture => texturePath + Name;
 
@@ -34,7 +31,7 @@ namespace StarlightRiver.Core
 			return Main.tile[i, j].TileFrameX > 0;
 		}
 
-		protected WalkableCrystal(int maxWidth, int maxHeight, string dummyType, string path = null, string structurePath = null, int variantCount = 1, string drop = null, int dust = 0, Color? mapColor = null, SoundStyle? sound = null)
+		protected WalkableCrystal(int maxWidth, int maxHeight, string path = null, string structurePath = null, int variantCount = 1, string drop = null, int dust = 0, Color? mapColor = null, SoundStyle? sound = null)
 		{
 			itemName = drop;
 			texturePath = path;
@@ -45,7 +42,6 @@ namespace StarlightRiver.Core
 			this.maxHeight = maxHeight;
 			this.maxWidth = maxWidth;
 			this.sound = sound;
-			dummyName = dummyType;
 		}
 
 		public override void Load()
@@ -61,6 +57,7 @@ namespace StarlightRiver.Core
 			Main.tileFrameImportant[Type] = true;
 			TileID.Sets.DrawsWalls[Type] = true;
 
+			TileObjectData.newTile.CoordinateWidth = 16;
 			TileObjectData.newTile.UsesCustomCanPlace = true;
 			TileObjectData.newTile.HookPlaceOverride = new PlacementHook(PostPlace, -1, 0, true);
 			TileObjectData.addTile(Type);
@@ -122,17 +119,7 @@ namespace StarlightRiver.Core
 
 		public WalkableCrystalDummy(int validType, int VariantCount = 1) : base(validType, 16, 16) { variantCount = VariantCount; }
 
-		public override void SafeSetDefaults()
-		{
-			Projectile.hide = true;
-		}
-
-		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
-		{
-			behindNPCsAndTiles.Add(index);
-		}
-
-		public override void PostDraw(Color lightColor)
+		public override void DrawBehindTiles()
 		{
 			Tile t = Parent;
 
@@ -140,7 +127,7 @@ namespace StarlightRiver.Core
 			{
 				Texture2D tex = TextureAssets.Tile[t.TileType].Value;
 				Rectangle frame = tex.Frame(variantCount, 1, t.TileFrameX - 1);
-				Vector2 pos = Projectile.position - Main.screenPosition + DrawOffset - new Vector2(frame.Width * 0.5f, frame.Height);
+				Vector2 pos = position - Main.screenPosition + DrawOffset - new Vector2(frame.Width * 0.5f, frame.Height);
 				LightingBufferRenderer.DrawWithLighting(pos, tex, frame, DrawColor);
 			}
 		}

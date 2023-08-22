@@ -1,9 +1,16 @@
-﻿using Terraria.DataStructures;
+﻿using MonoMod.RuntimeDetour;
+using System;
+using System.Reflection;
+using Terraria.DataStructures;
+using Terraria.ID;
 
 namespace StarlightRiver.Core
 {
 	public partial class StarlightPlayer : ModPlayer
 	{
+		private static Hook ModifyHitNPCWithProjHook;
+		private static Hook ModifyPlayerHitNPCWithItemHook;
+
 		//for Can-Use effects, runs before the item is used, return false to stop item use
 		public delegate bool CanUseItemDelegate(Player player, Item item);
 		public static event CanUseItemDelegate CanUseItemEvent;
@@ -58,20 +65,19 @@ namespace StarlightRiver.Core
 		/// <summary>
 		/// Use this event for the Player hitting an NPC with an Item directly (true melee).
 		/// This happens before the onHit hook and should be used if the effect modifies the any of the ref variables otherwise stick to the onHit.
-		/// Set StarlightPlayer.shouldSendHitPacket to true to sync if this has an effect beyond editting ref variables.
+		/// call StarlightPlayer.SetHitPacketStatus to sync if this has an effect beyond editting ref variables.
 		/// </summary>
 		public static event ModifyHitNPCDelegate ModifyHitNPCEvent;
 		public delegate void ModifyHitNPCDelegate(Player player, Item Item, NPC target, ref NPC.HitModifiers modifiers);
 		public override void ModifyHitNPCWithItem(Item item, NPC target, ref NPC.HitModifiers modifiers)
 		{
-			AddHitPacket(null, target);
 			ModifyHitNPCEvent?.Invoke(Player, item, target, ref modifiers);
 		}
 
 		/// <summary>
 		/// Use this event for Projectile hitting NPCs for situations where a Projectile should be owned by a Player.
 		/// This happens before the onHit hook and should be used if the effect modifies the any of the ref variables otherwise stick to the onHit.
-		/// Set StarlightPlayer.shouldSendHitPacket to true to sync if this has an effect beyond editting ref variables.
+		/// call StarlightPlayer.SetHitPacketStatus to sync if this has an effect beyond editting ref variables.
 		/// </summary>
 		public static event ModifyHitNPCWithProjDelegate ModifyHitNPCWithProjEvent;
 		public delegate void ModifyHitNPCWithProjDelegate(Player player, Projectile proj, NPC target, ref NPC.HitModifiers modifiers);
@@ -82,7 +88,7 @@ namespace StarlightRiver.Core
 
 		/// <summary>
 		/// Use this event for the Player hitting an NPC with an Item directly (true melee).
-		/// Set StarlightPlayer.shouldSendHitPacket to true to sync if this has an effect for multiPlayer.
+		/// call StarlightPlayer.SetHitPacketStatus to sync if this has an effect for multiPlayer.
 		/// </summary>
 		public static event OnHitNPCDelegate OnHitNPCEvent;
 		public delegate void OnHitNPCDelegate(Player player, Item Item, NPC target, NPC.HitInfo hit, int damageDone);
@@ -94,7 +100,7 @@ namespace StarlightRiver.Core
 
 		/// <summary>
 		/// Use this event for Projectile hitting NPCs for situations where a Projectile should be owned by a Player.
-		/// Set StarlightPlayer.shouldSendHitPacket to true to sync if this has an effect for multiPlayer.
+		/// call StarlightPlayer.SetHitPacketStatus to sync if this has an effect for multiPlayer.
 		/// </summary>
 		public static event OnHitNPCWithProjDelegate OnHitNPCWithProjEvent;
 		public delegate void OnHitNPCWithProjDelegate(Player player, Projectile proj, NPC target, NPC.HitInfo hit, int damageDone);
@@ -191,6 +197,72 @@ namespace StarlightRiver.Core
 			ModifyDrawInfoEvent?.Invoke(ref drawInfo);
 		}
 
+		public delegate void PreUpdateMovementDelegate(Player player);
+		public static event PreUpdateMovementDelegate PreUpdateMovementEvent;
+		public override void PreUpdateMovement()
+		{
+			PreUpdateMovementEvent?.Invoke(Player);
+		}
+
+		public delegate bool FreeDodgeDelegate(Player player, Player.HurtInfo info);
+		public static event FreeDodgeDelegate FreeDodgeEvent;
+		public override bool FreeDodge(Player.HurtInfo info)
+		{
+			bool result = false;
+
+			if (FreeDodgeEvent is null)
+				return result;
+
+			foreach (FreeDodgeDelegate del in FreeDodgeEvent.GetInvocationList())
+			{
+				result |= del.Invoke(Player, info);
+			}
+
+			return result;
+		}
+
+		public delegate void Orig_OnModifyHitNPCWithProj(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers);
+		public delegate void Orig_OnModifyPlayerHitNPCWithItem(Player player, Item sItem, NPC target, ref NPC.HitModifiers modifiers);
+
+		/// <summary>
+		/// Used to capture a proj hit before ANY processing occurs for generating a hitpacket.
+		/// normal order is projectile -> NPC -> player with all modify overrides occuring first followed by onhits after refs are finalized 
+		/// </summary>
+		public static void OnModifyHitNPCWithProj(Orig_OnModifyHitNPCWithProj orig, Projectile projectile, NPC target, ref NPC.HitModifiers modifiers)
+		{
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				Main.player[projectile.owner].TryGetModPlayer(out StarlightPlayer starlightPlayer);
+				starlightPlayer.AddHitPacket(projectile, target);
+			}
+
+			orig(projectile, target, ref modifiers);
+		}
+
+		/// <summary>
+		/// Used to capture an item hit before ANY processing occurs for generating a hitpacket.
+		/// normal order is projectile -> NPC -> player with all modify overrides occuring first followed by onhits after refs are finalized 
+		/// </summary>
+		public static void OnModifyPlayerHitNPCWithItem(Orig_OnModifyPlayerHitNPCWithItem orig, Player player, Item sItem, NPC target, ref NPC.HitModifiers modifiers)
+		{
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				player.TryGetModPlayer(out StarlightPlayer starlightPlayer);
+				starlightPlayer.AddHitPacket(null, target);
+			}
+
+			orig(player, sItem, target, ref modifiers);
+		}
+
+		public override void Load()
+		{
+			MethodInfo ModifyHitNPCWithProjMethod = typeof(CombinedHooks).GetMethod("ModifyHitNPCWithProj", BindingFlags.Public | BindingFlags.Static);
+			ModifyHitNPCWithProjHook = new Hook(ModifyHitNPCWithProjMethod, OnModifyHitNPCWithProj);
+
+			MethodInfo ModifyPlayerHitNPCWithItemMethod = typeof(CombinedHooks).GetMethod("ModifyPlayerHitNPCWithItem", BindingFlags.Public | BindingFlags.Static);
+			ModifyPlayerHitNPCWithItemHook = new Hook(ModifyPlayerHitNPCWithItemMethod, OnModifyPlayerHitNPCWithItem);
+		}
+
 		public override void Unload()
 		{
 			CanUseItemEvent = null;
@@ -211,6 +283,13 @@ namespace StarlightRiver.Core
 			PostUpdateRunSpeedsEvent = null;
 			ResetEffectsEvent = null;
 			ModifyDrawInfoEvent = null;
+			PreUpdateMovementEvent = null;
+
+			ModifyHitNPCWithProjHook.Dispose();
+			ModifyHitNPCWithProjHook = null;
+
+			ModifyPlayerHitNPCWithItemHook.Dispose();
+			ModifyPlayerHitNPCWithItemHook = null;
 
 			spawners = null;
 		}

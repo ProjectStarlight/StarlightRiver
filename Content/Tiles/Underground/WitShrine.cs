@@ -8,7 +8,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 {
 	class WitShrine : DummyTile, IHintable
 	{
-		public override int DummyType => ModContent.ProjectileType<WitShrineDummy>();
+		public override int DummyType => DummySystem.DummyType<WitShrineDummy>();
 
 		public override string Texture => "StarlightRiver/Assets/Tiles/Underground/WitShrine";
 
@@ -23,12 +23,12 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			if (tile.TileFrameX == 0 && tile.TileFrameY == 0)
 			{
-				Projectile dummy = Dummy(i, j);
+				Dummy dummy = Dummy(i, j);
 
 				if (dummy is null)
 					return;
 
-				if (((WitShrineDummy)dummy.ModProjectile).State == 0 && tile.TileFrameX > 36)
+				if (((WitShrineDummy)dummy).state == 0 && tile.TileFrameX > 36)
 					tile.TileFrameX -= 3 * 18;
 			}
 		}
@@ -40,9 +40,9 @@ namespace StarlightRiver.Content.Tiles.Underground
 			int x = i - tile.TileFrameX / 16;
 			int y = j - tile.TileFrameY / 16;
 
-			Projectile dummy = Dummy(x, y);
+			Dummy dummy = Dummy(x, y);
 
-			if ((dummy.ModProjectile as WitShrineDummy).State == 0)
+			if ((dummy as WitShrineDummy).state == 0)
 			{
 				for (int x1 = 0; x1 < 3; x1++)
 				{
@@ -55,8 +55,8 @@ namespace StarlightRiver.Content.Tiles.Underground
 					}
 				}
 
-				(dummy.ModProjectile as WitShrineDummy).State = 1;
-				(dummy.ModProjectile as WitShrineDummy).Timer = 0;
+				(dummy as WitShrineDummy).state = 1;
+				(dummy as WitShrineDummy).timer = 0;
 				return true;
 			}
 
@@ -87,18 +87,18 @@ namespace StarlightRiver.Content.Tiles.Underground
 		public Vector2 oldPlayer = Vector2.Zero;
 		public int PlayerTimer = 0;
 
-		public ref float Timer => ref Projectile.ai[0];
-		public ref float State => ref Projectile.ai[1];
+		public float timer;
+		public float state;
 
-		public float Windup => Math.Min(1, Timer / 120f);
+		public float Windup => Math.Min(1, timer / 120f);
 
-		private Vector2 PlayerCenter => Projectile.Center + new Vector2(-48 * 3 + 24, -16 * 22) + Vector2.SmoothStep(Player * 48, oldPlayer * 48, PlayerTimer / 30f);
+		private Vector2 PlayerCenter => Center + new Vector2(-48 * 3 + 24, -16 * 22) + Vector2.SmoothStep(Player * 48, oldPlayer * 48, PlayerTimer / 30f);
 
 		public WitShrineDummy() : base(ModContent.TileType<WitShrine>(), 3 * 16, 6 * 16) { }
 
 		public override void Update()
 		{
-			if (State == 0 && Parent.TileFrameX > 3 * 18)
+			if (state == 0 && Parent.TileFrameX > 3 * 18)
 			{
 				ResetBoard();
 				Player = Vector2.Zero;
@@ -116,17 +116,17 @@ namespace StarlightRiver.Content.Tiles.Underground
 				}
 			}
 
-			if (State != 0)
+			if (state != 0)
 			{
-				Dust.NewDustPerfect(Projectile.Center + new Vector2(Main.rand.NextFloat(-24, 24), 28), ModContent.DustType<Dusts.Glow>(), Vector2.UnitY * -Main.rand.NextFloat(2), 0, new Color(30, 80, 255) * Windup, 0.2f);
-				Timer++;
+				Dust.NewDustPerfect(Center + new Vector2(Main.rand.NextFloat(-24, 24), 28), ModContent.DustType<Dusts.Glow>(), Vector2.UnitY * -Main.rand.NextFloat(2), 0, new Color(30, 80, 255) * Windup, 0.2f);
+				timer++;
 			}
 
-			if (State > 0)
+			if (state > 0)
 			{
-				if (Timer == 1) //setup game board
+				if (timer == 1) //setup game board
 				{
-					switch (State)
+					switch (state)
 					{
 						case 1: activeGame = new MazeGame(this); break;
 						case 2: activeGame = new WinGame(this); break;
@@ -197,26 +197,26 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public void WinGame()
 		{
-			State++;
-			Timer = 0;
+			state++;
+			timer = 0;
 		}
 
 		public void LoseGame()
 		{
-			State = 99;
-			Timer = 0;
+			state = 99;
+			timer = 0;
 		}
 
 		public void GotoGame(int index)
 		{
-			State = index;
-			Timer = 0;
+			state = index;
+			timer = 0;
 		}
 
 		public override void PostDraw(Color lightColor)
 		{
 			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Underground/WitPlayerTile").Value;
-			Vector2 basePos = Projectile.Center + new Vector2(-48 * 3 + 24, -16 * 22) - Main.screenPosition;
+			Vector2 basePos = Center + new Vector2(-48 * 3 + 24, -16 * 22) - Main.screenPosition;
 			Vector2 targetPos = basePos + Vector2.SmoothStep(Player * 48, oldPlayer * 48, PlayerTimer / 30f) + Vector2.One;
 			var source = new Rectangle(0, 0, 34, 34);
 
@@ -225,18 +225,18 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			if (State != 0)
+			if (state != 0)
 			{
 				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Moonstone/GlowSmall").Value;
 				var origin = new Vector2(tex.Width / 2, tex.Height);
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, 60), default, GetBeamColor(StarlightWorld.visualTimer), 0, origin, 3.5f, 0, 0);
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(10, 60), default, GetBeamColor(StarlightWorld.visualTimer + 2) * 0.8f, 0, origin, 2.5f, 0, 0);
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(-10, 60), default, GetBeamColor(StarlightWorld.visualTimer + 4) * 0.8f, 0, origin, 3.2f, 0, 0);
+				spriteBatch.Draw(tex, Center - Main.screenPosition + new Vector2(0, 60), default, GetBeamColor(StarlightWorld.visualTimer), 0, origin, 3.5f, 0, 0);
+				spriteBatch.Draw(tex, Center - Main.screenPosition + new Vector2(10, 60), default, GetBeamColor(StarlightWorld.visualTimer + 2) * 0.8f, 0, origin, 2.5f, 0, 0);
+				spriteBatch.Draw(tex, Center - Main.screenPosition + new Vector2(-10, 60), default, GetBeamColor(StarlightWorld.visualTimer + 4) * 0.8f, 0, origin, 3.2f, 0, 0);
 
 				Texture2D runeTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Underground/WitRune").Value;
 				var runeFrame = new Rectangle(0, 0, 22, 22);
-				Vector2 basePos = Projectile.Center + new Vector2(-48 * 3 + 24, -16 * 22) - Main.screenPosition;
-				Vector2 parallaxPoint = Projectile.Center + new Vector2(0, -16 * 22 + 152);// - new Vector2(Main.screenWidth, Main.screenHeight) / 2;
+				Vector2 basePos = Center + new Vector2(-48 * 3 + 24, -16 * 22) - Main.screenPosition;
+				Vector2 parallaxPoint = Center + new Vector2(0, -16 * 22 + 152);// - new Vector2(Main.screenWidth, Main.screenHeight) / 2;
 				Color color = Color.Transparent;
 				Color color2 = Color.Transparent;
 				var rand = new Random(1234758924);

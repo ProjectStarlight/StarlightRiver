@@ -11,11 +11,11 @@ using Terraria.ObjectData;
 
 namespace StarlightRiver.Content.Tiles.Desert
 {
-	public class AnkhChest : DummyTile
+	public class AnkhChest : DummyTile, IHintable
 	{
 		public override string Texture => AssetDirectory.DesertTile + Name;
 
-		public override int DummyType => ModContent.ProjectileType<AnkhChestDummy>();
+		public override int DummyType => DummySystem.DummyType<AnkhChestDummy>();
 
 		public override void SetStaticDefaults()
 		{
@@ -236,24 +236,27 @@ namespace StarlightRiver.Content.Tiles.Desert
 				player.cursorItemIconEnabled = true;
 			}
 		}
+
+		public string GetHint()
+		{
+			return "Starlight-infused crystals encrust the chests' lock... Perhaps equally powerful starlight could break them off";
+		}
 	}
 
 	internal class AnkhChestDummy : Dummy
 	{
-		public override string Texture => AssetDirectory.DesertTile + "AnkhChestGlow";
-
 		public AnkhChestDummy() : base(ModContent.TileType<AnkhChest>(), 32, 48) { }
 
 		public override void Collision(Player Player)
 		{
-			if (AbilityHelper.CheckDash(Player, Projectile.Hitbox))
+			if (AbilityHelper.CheckDash(Player, Hitbox))
 			{
-				SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
+				SoundEngine.PlaySound(SoundID.Shatter, Center);
 				Player.GetHandler().ActiveAbility?.Deactivate();
 				Player.velocity = Vector2.Normalize(Player.velocity) * -10f;
 
-				int i = (int)(Projectile.position.X / 16);
-				int j = (int)(Projectile.position.Y / 16);
+				int i = (int)(position.X / 16);
+				int j = (int)(position.Y / 16);
 
 				for (int k = 0; k < 2; k++)
 				{
@@ -266,20 +269,20 @@ namespace StarlightRiver.Content.Tiles.Desert
 
 				for (int k = 0; k <= 10; k++)
 				{
-					Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.3f);
-					Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Air>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 0.8f);
+					Dust.NewDustPerfect(Center, ModContent.DustType<Dusts.GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.3f);
+					Dust.NewDustPerfect(Center, ModContent.DustType<Dusts.Air>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 0.8f);
 				}
 
-				Projectile.active = false;
+				active = false;
 			}
 		}
 
 		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Color color = Helper.IndicatorColorProximity(150, 300, Projectile.Center);
+			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.DesertTile + "AnkhChestGlow").Value;
+			Color color = Helper.IndicatorColorProximity(150, 300, Center);
 
-			Main.spriteBatch.Draw(tex, Projectile.position - new Vector2(1, -1) - Main.screenPosition, color);
+			Main.spriteBatch.Draw(tex, position - new Vector2(1, -1) - Main.screenPosition, color);
 		}
 	}
 

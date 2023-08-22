@@ -4,8 +4,13 @@ namespace StarlightRiver.Content.Items.Geomancer
 {
 	public abstract class GeoGem : ModItem
 	{
-
 		public override string Texture => AssetDirectory.GeomancerItem + Name;
+
+		protected abstract float Rotation { get; }
+
+		protected abstract int ProjectileType { get; }
+
+		protected abstract StoredGem GemType { get; }
 
 		public override void SetStaticDefaults()
 		{
@@ -27,9 +32,16 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 		public override bool OnPickup(Player Player)
 		{
-			SetBonus(Player);
+			GeomancerPlayer modPlayer = Player.GetModPlayer<GeomancerPlayer>();
+			if (!modPlayer.GetIsStored(GemType) && modPlayer.activeGem != StoredGem.All)
+			{
+				if (Player.whoAmI == Main.myPlayer)
+					Projectile.NewProjectile(null, Player.Center, Vector2.Zero, ProjectileType, 0, 0, Player.whoAmI, Rotation);
+
+				SetBonus(Player);
+			}
+
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab, Player.position);
-			Player.GetModPlayer<GeomancerPlayer>().timer = 1200;
 			return false;
 		}
 
@@ -45,49 +57,40 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 	public class GeoDiamond : GeoGem
 	{
-		const float rotation = 1.046f;
+		protected override float Rotation => 1.046f;
+
+		protected override int ProjectileType => ModContent.ProjectileType<GeoDiamondProj>();
+
+		protected override StoredGem GemType => StoredGem.Diamond;
+
 		protected override void SetName()
 		{
 			DisplayName.SetDefault("Diamond");
-		}
-
-		protected override void SetBonus(Player Player)
-		{
-			GeomancerPlayer modPlayer = Player.GetModPlayer<GeomancerPlayer>();
-			if (!modPlayer.DiamondStored && modPlayer.storedGem != StoredGem.All)
-			{
-				Projectile.NewProjectile(null, Player.Center, Vector2.Zero, ModContent.ProjectileType<GeoDiamondProj>(), 0, 0, Player.whoAmI, rotation);
-				modPlayer.DiamondStored = true;
-				modPlayer.storedGem = StoredGem.Diamond;
-				modPlayer.ActivationCounter = 1f;
-			}
 		}
 	}
 
 	public class GeoRuby : GeoGem
 	{
-		const float rotation = 1.046f * 2;
+		protected override float Rotation => 1.046f * 2;
+
+		protected override int ProjectileType => ModContent.ProjectileType<GeoRubyProj>();
+
+		protected override StoredGem GemType => StoredGem.Ruby;
+
 		protected override void SetName()
 		{
 			DisplayName.SetDefault("Ruby");
-		}
-
-		protected override void SetBonus(Player Player)
-		{
-			GeomancerPlayer modPlayer = Player.GetModPlayer<GeomancerPlayer>();
-			if (!modPlayer.RubyStored && modPlayer.storedGem != StoredGem.All)
-			{
-				Projectile.NewProjectile(null, Player.Center, Vector2.Zero, ModContent.ProjectileType<GeoRubyProj>(), 0, 0, Player.whoAmI, rotation);
-				modPlayer.RubyStored = true;
-				modPlayer.storedGem = StoredGem.Ruby;
-				modPlayer.ActivationCounter = 1f;
-			}
 		}
 	}
 
 	public class GeoEmerald : GeoGem
 	{
-		const float rotation = 1.046f * 3;
+		protected override float Rotation => 1.046f * 3;
+
+		protected override int ProjectileType => ModContent.ProjectileType<GeoEmeraldProj>();
+
+		protected override StoredGem GemType => StoredGem.Emerald;
+
 		protected override void SetName()
 		{
 			DisplayName.SetDefault("Emerald");
@@ -98,21 +101,17 @@ namespace StarlightRiver.Content.Items.Geomancer
 			int healAmount = (int)MathHelper.Min(Player.statLifeMax2 - Player.statLife, 20);
 			Player.HealEffect(20);
 			Player.statLife += healAmount;
-
-			GeomancerPlayer modPlayer = Player.GetModPlayer<GeomancerPlayer>();
-			if (!modPlayer.EmeraldStored && modPlayer.storedGem != StoredGem.All)
-			{
-				Projectile.NewProjectile(null, Player.Center, Vector2.Zero, ModContent.ProjectileType<GeoEmeraldProj>(), 0, 0, Player.whoAmI, rotation);
-				modPlayer.EmeraldStored = true;
-				modPlayer.storedGem = StoredGem.Emerald;
-				modPlayer.ActivationCounter = 1f;
-			}
 		}
 	}
 
 	public class GeoSapphire : GeoGem
 	{
-		const float rotation = 1.046f * 4;
+		protected override float Rotation => 1.046f * 4;
+
+		protected override int ProjectileType => ModContent.ProjectileType<GeoSapphireProj>();
+
+		protected override StoredGem GemType => StoredGem.Sapphire;
+
 		protected override void SetName()
 		{
 			DisplayName.SetDefault("Sapphire");
@@ -123,57 +122,34 @@ namespace StarlightRiver.Content.Items.Geomancer
 			int healAmount = (int)MathHelper.Min(Player.statManaMax2 - Player.statMana, 200);
 			Player.ManaEffect(healAmount);
 			Player.statMana += healAmount;
-
-			GeomancerPlayer modPlayer = Player.GetModPlayer<GeomancerPlayer>();
-			if (!modPlayer.SapphireStored && modPlayer.storedGem != StoredGem.All)
-			{
-				Projectile.NewProjectile(null, Player.Center, Vector2.Zero, ModContent.ProjectileType<GeoSapphireProj>(), 0, 0, Player.whoAmI, rotation);
-				modPlayer.SapphireStored = true;
-				modPlayer.storedGem = StoredGem.Sapphire;
-				modPlayer.ActivationCounter = 1f;
-			}
 		}
 	}
 
 	public class GeoTopaz : GeoGem
 	{
-		const float rotation = 1.046f * 5;
+		protected override float Rotation => 1.046f * 5;
+
+		protected override int ProjectileType => ModContent.ProjectileType<GeoTopazProj>();
+
+		protected override StoredGem GemType => StoredGem.Topaz;
+
 		protected override void SetName()
 		{
 			DisplayName.SetDefault("Topaz");
-		}
-
-		protected override void SetBonus(Player Player)
-		{
-			GeomancerPlayer modPlayer = Player.GetModPlayer<GeomancerPlayer>();
-			if (!modPlayer.TopazStored && modPlayer.storedGem != StoredGem.All)
-			{
-				Projectile.NewProjectile(null, Player.Center, Vector2.Zero, ModContent.ProjectileType<GeoTopazProj>(), 0, 0, Player.whoAmI, rotation);
-				modPlayer.TopazStored = true;
-				modPlayer.storedGem = StoredGem.Topaz;
-				modPlayer.ActivationCounter = 1f;
-			}
 		}
 	}
 
 	public class GeoAmethyst : GeoGem
 	{
-		const float rotation = 1.046f * 6;
+		protected override float Rotation => 1.046f * 6;
+
+		protected override int ProjectileType => ModContent.ProjectileType<GeoAmethystProj>();
+
+		protected override StoredGem GemType => StoredGem.Amethyst;
+
 		protected override void SetName()
 		{
 			DisplayName.SetDefault("Amethyst");
-		}
-
-		protected override void SetBonus(Player Player)
-		{
-			GeomancerPlayer modPlayer = Player.GetModPlayer<GeomancerPlayer>();
-			if (!modPlayer.AmethystStored && modPlayer.storedGem != StoredGem.All)
-			{
-				Projectile.NewProjectile(null, Player.Center, Vector2.Zero, ModContent.ProjectileType<GeoAmethystProj>(), 0, 0, Player.whoAmI, rotation);
-				modPlayer.AmethystStored = true;
-				modPlayer.storedGem = StoredGem.Amethyst;
-				modPlayer.ActivationCounter = 1f;
-			}
 		}
 	}
 }

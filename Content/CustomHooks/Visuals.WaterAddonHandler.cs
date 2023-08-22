@@ -29,10 +29,7 @@ namespace StarlightRiver.Content.CustomHooks
 			WaterAddonHandler.addons.Add(this);
 		}
 
-		public void Unload()
-		{
-			WaterAddonHandler.addons.Remove(this);
-		}
+		public void Unload() { }
 	}
 
 	class WaterAddonHandler : HookGroup
@@ -58,8 +55,8 @@ namespace StarlightRiver.Content.CustomHooks
 
 		public override void Unload()
 		{
-			addons = null;
-			activeAddon = null;
+			addons ??= null;
+			activeAddon ??= null;
 		}
 
 		private void SwapBlockTexture(ILContext il)
@@ -132,7 +129,7 @@ namespace StarlightRiver.Content.CustomHooks
 			if (activeAddon != null)
 			{
 				sb.End();
-				sb.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
 			}
 		}
 
@@ -151,7 +148,7 @@ namespace StarlightRiver.Content.CustomHooks
 			if (activeAddon != null)
 			{
 				sb.End();
-				sb.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
 			}
 		}
 	}

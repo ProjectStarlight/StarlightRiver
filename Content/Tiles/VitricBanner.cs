@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Tiles
 	{
 		public override string Texture => AssetDirectory.VitricTile + Name;
 
-		public override int DummyType => ProjectileType<VitricBannerDummy>();
+		public override int DummyType => DummySystem.DummyType<VitricBannerDummy>();
 
 		public override void SetStaticDefaults()
 		{
@@ -29,13 +29,15 @@ namespace StarlightRiver.Content.Tiles
 
 	internal class VitricBannerDummy : Dummy
 	{
-		public VitricBannerDummy() : base(TileType<VitricBanner>(), 32, 32) { }
+		public float timer;
 
 		private TriangularBanner Chain;
 
+		public VitricBannerDummy() : base(TileType<VitricBanner>(), 32, 32) { }
+
 		public override void SafeSetDefaults()
 		{
-			Chain = new TriangularBanner(16, false, Projectile.Center, 16)
+			Chain = new TriangularBanner(16, false, Center, 16)
 			{
 				constraintRepetitions = 2,//defaults to 2, raising this lowers stretching at the cost of performance
 				drag = 2f,//This number defaults to 1, Is very sensitive
@@ -46,19 +48,19 @@ namespace StarlightRiver.Content.Tiles
 
 		public override void Update()
 		{
-			Chain.UpdateChain(Projectile.Center);
+			Chain.UpdateChain(Center);
 			Chain.IterateRope(WindForce);
 
-			Projectile.ai[0] += 0.005f;
+			timer += 0.005f;
 		}
 
 		private void WindForce(int index)//wind
 		{
-			int offset = (int)(Projectile.position.X / 16 + Projectile.position.Y / 16);
+			int offset = (int)(position.X / 16 + position.Y / 16);
 
 			float sin = (float)System.Math.Sin(StarlightWorld.visualTimer + offset - index / 3f);
 
-			float cos = (float)System.Math.Cos(Projectile.ai[0]);
+			float cos = (float)System.Math.Cos(timer);
 			float sin2 = (float)System.Math.Sin(StarlightWorld.visualTimer + offset + cos);
 
 			var pos = new Vector2(Chain.ropeSegments[index].posNow.X + 1 + sin2 * 1.2f, Chain.ropeSegments[index].posNow.Y + sin * 1.4f);
@@ -67,11 +69,6 @@ namespace StarlightRiver.Content.Tiles
 
 			Chain.ropeSegments[index].posNow = pos;
 			Chain.ropeSegments[index].color = color;
-		}
-
-		public override void Kill(int timeLeft)
-		{
-			VerletChainSystem.toDraw.Remove(Chain);
 		}
 	}
 }

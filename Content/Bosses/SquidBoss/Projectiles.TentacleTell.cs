@@ -1,10 +1,13 @@
 ﻿using System;
 using System.IO;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
 	class TentacleTell : ModProjectile, IDrawAdditive
 	{
+		public static Vector2 endPointToAssign;
+
 		public Vector2 endPoint;
 
 		public override string Texture => AssetDirectory.SquidBoss + "TentacleTellTop";
@@ -25,10 +28,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			Projectile.damage = 0;
 		}
 
-		public override void AI()
+		public override void OnSpawn(IEntitySource source)
 		{
-			if (Projectile.timeLeft >= 59)
-				Projectile.netUpdate = true;
+			endPoint = endPointToAssign;
 		}
 
 		public override bool PreDraw(ref Color lightColor)

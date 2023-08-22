@@ -287,6 +287,7 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 	}
 
+	// TODO: Rework to stackable buff
 	public class BalloonGunGNPC : GlobalNPC
 	{
 		public override bool InstancePerEntity => true;

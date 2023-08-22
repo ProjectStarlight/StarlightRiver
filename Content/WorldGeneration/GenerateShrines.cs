@@ -62,6 +62,10 @@ namespace StarlightRiver.Core
 			if (vitricBiome.Contains(b.ToPoint()))
 				return false;
 
+			var aether = new Rectangle((int)GenVars.shimmerPosition.X, (int)GenVars.shimmerPosition.Y, 125, 125);
+			if (aether.Contains(b.ToPoint()))
+				return false;
+
 			return true;
 		}
 	}

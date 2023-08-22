@@ -134,16 +134,23 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public override void SafeAI()
 		{
 			if (HomeYPosition == 0)
+			{
 				HomeYPosition = NPC.position.Y;
+				NPC.netUpdate = true;
+			}
 
 			if (beingStoodOn)
 			{
 				Dust.NewDust(NPC.position, NPC.width, NPC.height, Terraria.ID.DustID.Ice);
 				FallTimer++;
+
+				NPC.netUpdate = true;
 			}
 			else if (FallTimer > 0)
 			{
 				FallTimer--;
+
+				NPC.netUpdate = true;
 			}
 
 			int maxStandTime = Main.masterMode ? 2 : 20;

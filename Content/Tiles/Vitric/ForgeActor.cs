@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 {
 	class ForgeActor : DummyTile
 	{
-		public override int DummyType => ProjectileType<ForgeActorDummy>();
+		public override int DummyType => DummySystem.DummyType<ForgeActorDummy>();
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -24,32 +24,22 @@ namespace StarlightRiver.Content.Tiles.Vitric
 	{
 		public ForgeActorDummy() : base(TileType<ForgeActor>(), 16, 16) { }
 
-		public override void SafeSetDefaults()
-		{
-			Projectile.hide = true;
-		}
-
 		public override void Update()
 		{
 			if (Main.rand.NextBool(4) && CutawayHandler.forgeOverlay?.fadeTime < 1)
 			{
-				Vector2 pos = Projectile.position - new Vector2(567, 400);
+				Vector2 pos = position - new Vector2(567, 400);
 
 				Dust.NewDustPerfect(pos + new Vector2(160 + Main.rand.Next(-18, 18), 380), DustType<Dusts.Cinder>(), Vector2.UnitY * Main.rand.NextFloat(-2, 0), 0, new Color(255, Main.rand.Next(150, 200), 40), Main.rand.NextFloat());
 				Dust.NewDustPerfect(pos + new Vector2(965 + Main.rand.Next(-18, 18), 380), DustType<Dusts.Cinder>(), Vector2.UnitY * Main.rand.NextFloat(-2, 0), 0, new Color(255, Main.rand.Next(150, 200), 40), Main.rand.NextFloat());
 			}
 		}
 
-		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
-		{
-			behindNPCsAndTiles.Add(index);
-		}
-
-		public override void PostDraw(Color lightColor)
+		public override void DrawBehindTiles()
 		{
 			Player player = Main.player[Main.myPlayer];
 
-			Vector2 pos = Projectile.position - new Vector2(567, 400) - Main.screenPosition;
+			Vector2 pos = position - new Vector2(567, 400) - Main.screenPosition;
 
 			Texture2D backdrop = Request<Texture2D>(AssetDirectory.Glassweaver + "Backdrop").Value;
 			Texture2D farBackdrop = Request<Texture2D>(AssetDirectory.Glassweaver + "FarBackdrop").Value;
@@ -59,7 +49,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 			Texture2D backdropBlack = Request<Texture2D>(AssetDirectory.Glassweaver + "BackdropBlack").Value;
 
-			Vector2 parallaxOffset = new Vector2(Main.screenPosition.X + Main.screenWidth / 2f - Projectile.position.X, 0) * 0.15f;
+			Vector2 parallaxOffset = new Vector2(Main.screenPosition.X + Main.screenWidth / 2f - position.X, 0) * 0.15f;
 
 			var frame = new Rectangle(0, 0, backdrop.Width, backdrop.Height);
 

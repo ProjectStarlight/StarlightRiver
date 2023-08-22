@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Biomes;
 using StarlightRiver.Core.Systems;
+using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using Terraria.DataStructures;
 
@@ -7,7 +8,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 {
 	class GearPuzzleOrigin : GearTile
 	{
-		public override int DummyType => ModContent.ProjectileType<GearPuzzleOriginDummy>();
+		public override int DummyType => DummySystem.DummyType<GearPuzzleOriginDummy>();
 
 		public override bool RightClick(int i, int j)
 		{
@@ -30,33 +31,33 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 		{
 			base.Update();
 
-			Size = 3;
+			GearSize = 3;
 			Engaged = true;
 			RotationVelocity = 2;
 
 			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
 				return;
 
-			Lighting.AddLight(Projectile.Center, new Vector3(1, 0.7f, 0.4f) * 0.5f);
+			Lighting.AddLight(Center, new Vector3(1, 0.7f, 0.4f) * 0.5f);
 		}
 
 		public override void PostDraw(Color lightColor)
 		{
+			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
+				return;
+
 			Texture2D bgTex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "OriginGearBase").Value;
-			Main.EntitySpriteDraw(bgTex, Projectile.Center - Main.screenPosition, null, lightColor, 0, new Vector2(bgTex.Width / 2, 4), 1, 0, 0);
+			Main.EntitySpriteDraw(bgTex, Center - Main.screenPosition, null, lightColor, 0, new Vector2(bgTex.Width / 2, 4), 1, 0, 0);
 
 			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "OriginGear").Value;
 
-			Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Rotation, tex.Size() / 2, 1, 0, 0);
-
-			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
-				return;
+			Main.EntitySpriteDraw(tex, Center - Main.screenPosition, null, lightColor, Rotation, tex.Size() / 2, 1, 0, 0);
 
 			Texture2D magmiteTex = ModContent.Request<Texture2D>(AssetDirectory.VitricNpc + "MagmitePassive").Value;
 			float sinTimer = Main.GameUpdateCount / 20f;
 			var frame = new Rectangle(42, sinTimer % 6.28f < 1.57f ? 0 : (int)(Main.GameUpdateCount / 3f) % 5 * 40, 42, 40);
 
-			Main.EntitySpriteDraw(magmiteTex, Projectile.Center - Main.screenPosition, frame, Color.White, (float)Math.Sin(sinTimer), new Vector2(21, 0), 1, SpriteEffects.FlipHorizontally, 0);
+			Main.EntitySpriteDraw(magmiteTex, Center - Main.screenPosition, frame, Color.White, (float)Math.Sin(sinTimer), new Vector2(21, 0), 1, SpriteEffects.FlipHorizontally, 0);
 		}
 	}
 

@@ -15,6 +15,10 @@
     <NoWarn>1701;1702;MSB3270</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="OldPatchNotes\0.2.0\0.2.2.txt" />
+    <None Remove="OldPatchNotes\0.2.0\0.2.4.txt" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="tModLoader.CodeAssist" Version="0.1.*" />
     <Reference Include="NetEasy">
       <HintPath>lib\NetEasy_v0.1.8.dll</HintPath>
@@ -32,5 +36,6 @@
   <ItemGroup>
     <Folder Include="Assets\Healthbars\" />
     <Folder Include="Content\NPCs\Vitric\GlassTrial\" />
+    <Folder Include="Localization\" />
   </ItemGroup>
 </Project>

@@ -15,37 +15,19 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public TallWindowDummyBase(int type) : base(type, 16, 16) { }
 
-		public override void SafeSetDefaults()
-		{
-			Projectile.hide = true;
-		}
-
-		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
-		{
-			behindNPCsAndTiles.Add(index);
-		}
-
-		public override bool PreDraw(ref Color lightColor)
+		public override void DrawBehindTiles()
 		{
 			SpriteBatch spriteBatch = Main.spriteBatch;
-			Vector2 pos = Projectile.Center - Main.screenPosition - Vector2.One * 8;
+
+			Texture2D tex = Request<Texture2D>(TextureOver).Value;
+			Vector2 pos = Center - Main.screenPosition - Vector2.One * 8;
 
 			var bgTarget = new Rectangle(6, 32, 84, 256);
 			bgTarget.Offset(pos.ToPoint());
 
 			TempleTileUtils.DrawBackground(spriteBatch, bgTarget);
 
-			return true;
-		}
-
-		public override void PostDraw(Color lightColor)
-		{
-			SpriteBatch spriteBatch = Main.spriteBatch;
-
-			Texture2D tex = Request<Texture2D>(TextureOver).Value;
-			Vector2 pos = Projectile.Center - Main.screenPosition - Vector2.One * 8;
-
-			var tilePos = (Projectile.position / 16).ToPoint16();
+			var tilePos = (position / 16).ToPoint16();
 			RedrawWall(tilePos.X, tilePos.Y + 2);
 			RedrawWall(tilePos.X + 1, tilePos.Y + 2);
 			RedrawWall(tilePos.X + 4, tilePos.Y + 2);
@@ -76,7 +58,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 	class TallWindow : DummyTile
 	{
-		public override int DummyType => ProjectileType<TallWindowDummy>();
+		public override int DummyType => DummySystem.DummyType<TallWindowDummy>();
 
 		public override string Texture => AssetDirectory.VitricTile + "TallWindow";
 
@@ -106,7 +88,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 	class TallWindowLava : TallWindow
 	{
-		public override int DummyType => ProjectileType<TallWindowLavaDummy>();
+		public override int DummyType => DummySystem.DummyType<TallWindowLavaDummy>();
 	}
 
 	[SLRDebug]
@@ -131,8 +113,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
 			Texture2D tex = Request<Texture2D>(TextureOver + "Glow").Value;
-			Vector2 pos = Projectile.Center - Main.screenPosition - Vector2.One * 8;
-			float sin = 0.5f + (float)Math.Sin(Main.GameUpdateCount * 0.05f + Projectile.position.X * 1 / 16f) * 0.25f;
+			Vector2 pos = Center - Main.screenPosition - Vector2.One * 8;
+			float sin = 0.5f + (float)Math.Sin(Main.GameUpdateCount * 0.05f + position.X * 1 / 16f) * 0.25f;
 
 			spriteBatch.Draw(tex, pos, Color.White * sin);
 		}
@@ -140,7 +122,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 	class TallWindowCrystal : TallWindow
 	{
-		public override int DummyType => ProjectileType<TallWindowCrystalDummy>();
+		public override int DummyType => DummySystem.DummyType<TallWindowCrystalDummy>();
 	}
 
 	[SLRDebug]

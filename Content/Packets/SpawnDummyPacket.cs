@@ -23,25 +23,21 @@ namespace StarlightRiver.Content.Packets
 
 		protected override void Receive()
 		{
-			if (Main.netMode == Terraria.ID.NetmodeID.Server)
+			if (DummyTile.DummyExists(x, y, type))
 			{
-				if (DummyTile.DummyExists(x, y, type))
-				{
-					DummyTile.GetDummy(x, y, type).netUpdate = true; //this case meant that a Player went up to a tile dummy that did not exist for them, but did on server and we want to make sure they receive it
-					return;
-				}
-
-				var p = new Projectile();
-				p.SetDefaults(type);
-
-				Vector2 spawnPos = new Vector2(x, y) * 16 + p.Size / 2;
-
-				int n = Projectile.NewProjectile(new EntitySource_WorldEvent(), spawnPos, Vector2.Zero, type, 0, 0);
-				NetMessage.SendData(Terraria.ID.MessageID.SyncProjectile, -1, -1, null, n);
-
-				var key = new Point16(x, y);
-				DummyTile.dummies[key] = Main.projectile[n];
+				//this case meant that a Player went up to a tile dummy that did not exist for them, but did on the server and we want to make sure they receive it
+				DummyTile.GetDummy(x, y, type).netUpdate = true;
+				return;
 			}
+
+			Vector2 spawnPos = new Vector2(x, y) * 16 + DummySystem.prototypes[type].Size / 2;
+			Dummy newDummy = DummySystem.NewDummy(type, spawnPos);
+
+			var key = new Point16(x, y);
+			DummyTile.dummiesByPosition[key] = newDummy;
+
+			if (Main.netMode == Terraria.ID.NetmodeID.Server)
+				Send(-1, -1, false);
 		}
 	}
 }

@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.autoReuse = true;
 			Item.noUseGraphic = true;
 			Item.consumable = true;
-			Item.maxStack = 999;
+			Item.maxStack = 9999;
 		}
 	}
 
@@ -817,6 +817,7 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 	}
 
+	// TODO: Port to... buff?
 	public class BizarrePotionGNPC : GlobalNPC
 	{
 		public override bool InstancePerEntity => true;

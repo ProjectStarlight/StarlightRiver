@@ -22,7 +22,9 @@ namespace StarlightRiver.Content.Items.Manabonds
 			if (mp.timer % 120 == 0 && mp.mana >= 20 && mp.target != null)
 			{
 				mp.mana -= 20;
-				Projectile.NewProjectile(minion.GetSource_FromThis(), minion.Center, minion.Center.DirectionTo(mp.target.Center) * 14, ModContent.ProjectileType<Fireball>(), 35, 1f, minion.owner);
+				
+				if (Main.myPlayer == minion.owner) 
+					Projectile.NewProjectile(minion.GetSource_FromThis(), minion.Center, minion.Center.DirectionTo(mp.target.Center) * 14, ModContent.ProjectileType<Fireball>(), 35, 1f, minion.owner);
 			}
 		}
 
@@ -77,8 +79,11 @@ namespace StarlightRiver.Content.Items.Manabonds
 			if (Main.rand.NextBool(2))
 				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Cinder>(), Vector2.UnitY * Main.rand.NextFloat(-2, -1), 0, new Color(255, Main.rand.Next(150, 255), 40), Main.rand.NextFloat(1f));
 
-			ManageCaches();
-			ManageTrail();
+			if (Main.netMode != NetmodeID.Server)
+			{
+				ManageCaches();
+				ManageTrail();
+			}
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -97,6 +102,9 @@ namespace StarlightRiver.Content.Items.Manabonds
 				return false;
 
 			Explode();
+
+			Main.player[Projectile.owner].TryGetModPlayer(out StarlightPlayer starlightPlayer);
+			starlightPlayer.SetHitPacketStatus(shouldRunProjMethods: true);
 
 			return false;
 		}
@@ -122,10 +130,12 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 			foreach (NPC npc in Main.npc)
 			{
-				if (npc.active && !npc.friendly && npc.Hitbox.Intersects(inflated))
+				if (npc.active && npc.CanBeChasedBy(this) && !npc.friendly && npc.Hitbox.Intersects(inflated))
 				{
-					npc.SimpleStrikeNPC(Projectile.damage, 0, false, Projectile.knockBack, Projectile.DamageType);
-					npc.AddBuff(BuffID.OnFire, 300);
+					if (Main.myPlayer == Projectile.owner)
+						npc.SimpleStrikeNPC(Projectile.damage, 0, false, Projectile.knockBack, Projectile.DamageType);
+
+					npc.AddBuff(BuffID.OnFire, 300, quiet: true); //quiet since the SLR onhit packet will call this too on all clients and server so it doesn't need its own packets
 				}
 			}
 		}

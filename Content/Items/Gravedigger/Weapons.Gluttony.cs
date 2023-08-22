@@ -1,4 +1,5 @@
 using StarlightRiver.Content.Buffs;
+using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -115,7 +116,10 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Player Player = Main.player[Projectile.owner];
 			Projectile.damage = (int)(Player.HeldItem.damage * Player.GetDamage(DamageClass.Magic).Multiplicative);
 
-			direction = Main.MouseWorld - Player.Center;
+			Player.TryGetModPlayer(out ControlsPlayer controlsPlayer);
+			controlsPlayer.mouseRotationListener = true;
+
+			direction = controlsPlayer.mouseWorld - Player.Center;
 			direction.Normalize();
 
 			Projectile.Center = Player.Center;
@@ -126,7 +130,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 			if (Player.channel && Player.HeldItem.type == ModContent.ItemType<Gluttony>() && !released)
 			{
-				Player.ChangeDir(Main.MouseWorld.X > Player.position.X ? 1 : -1);
+				Player.ChangeDir(controlsPlayer.mouseWorld.X > Player.position.X ? 1 : -1);
 
 				//Player.itemTime = Player.itemAnimation = 2;
 				Projectile.timeLeft = 2;
@@ -163,8 +167,12 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 			UpdateTargets(Player);
 			SuckEnemies(Player);
-			ManageCaches();
-			ManageTrails();
+
+			if (!Main.dedServ)
+			{
+				ManageCaches();
+				ManageTrails();
+			}
 		}
 
 		private void ManageCaches()
@@ -387,8 +395,12 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		public override void AI()
 		{
 			Movement();
-			ManageCaches();
-			ManageTrail();
+
+			if (!Main.dedServ)
+			{
+				ManageCaches();
+				ManageTrail();
+			}
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
