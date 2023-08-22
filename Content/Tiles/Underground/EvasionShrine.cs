@@ -333,11 +333,15 @@ namespace StarlightRiver.Content.Tiles.Underground
 		public override void SafeSendExtraAI(BinaryWriter writer)
 		{
 			writer.Write(lives);
+			writer.Write(timer);
+			writer.Write(state);
 		}
 
 		public override void SafeReceiveExtraAI(BinaryReader reader)
 		{
 			lives = reader.ReadInt32();
+			timer = reader.ReadSingle();
+			state = reader.ReadSingle();
 		}
 	}
 }

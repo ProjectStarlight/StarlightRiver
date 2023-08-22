@@ -92,6 +92,8 @@ namespace StarlightRiver.Content.Tiles.Underground
 				return true;
 			}
 
+			dummy.netUpdate = true;
+
 			return false;
 		}
 
