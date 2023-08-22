@@ -11,3 +11,4 @@
 ## Tweaks
 - mana bars no longer show for players that don't own the minion
 - Added a sell value to warding rune (25 silver)
+- Changed typo in druidic manabond
