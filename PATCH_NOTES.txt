@@ -7,6 +7,8 @@
 - Fixed multiplayer artifact crash bug with other players being too far away
 - Fixed manabond crash bug
 - Naturally spawned crystal slimes now have shield
+- Fixed shrines not starting correctly in multiplayer
+- Fixed a crash that could occur in the vitric desert in multiplayer
 
 ## Tweaks
 - mana bars no longer show for players that don't own the minion
