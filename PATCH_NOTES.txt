@@ -6,6 +6,7 @@
 - Added a timeout to tentacles splashing aurora water to prevent rare very loud sound
 - Fixed multiplayer artifact crash bug with other players being too far away
 - Fixed manabond crash bug
+- Naturally spawned crystal slimes now have shield
 
 ## Tweaks
 - mana bars no longer show for players that don't own the minion
