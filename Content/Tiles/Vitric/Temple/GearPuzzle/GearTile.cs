@@ -321,8 +321,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 		public int GearSize
 		{
 			get => GearEntity?.size ?? 0;
-			set 
-				{
+			set
+			{
 				if (GearEntity != null)
 					GearEntity.size = value % 4;
 			}
