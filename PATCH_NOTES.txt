@@ -9,6 +9,7 @@
 - Naturally spawned crystal slimes now have shield
 - Fixed shrines not starting correctly in multiplayer
 - Fixed a crash that could occur in the vitric desert in multiplayer
+- Boss rush will now fail if the player manages to teleport out of bounds
 
 ## Tweaks
 - mana bars no longer show for players that don't own the minion
