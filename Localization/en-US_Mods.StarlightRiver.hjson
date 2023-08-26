@@ -1,3 +1,18 @@
+GUI: {
+	BossRush: {
+		Retry: Retry?
+		Quit: Give Up?
+		DeathScore: "Final Score: "
+		Button: Armillary Trial
+		NormalName: Boss Rush
+		ExpertName: Boss Blitz
+		MasterName: Starlight Showdown
+		NormalRules: " - Fight all Starlight River bosses in order! NEWBLOCK - Normal difficulty NEWBLOCK - Full heal between bosses"
+		ExpertRules: " - Fight all Starlight River bosses in order! NEWBLOCK - Expert difficulty NEWBLOCK - Heal 200 life between bosses NEWBLOCK - Game moves at 1.25x speed NEWBLOCK - 2x Score multiplier"
+		MasterRules: " - Theoretically Possible! NEWBLOCK - Master difficulty NEWBLOCK - No healing between bosses NEWBLOCK - Game moves at 1.5x speed NEWBLOCK - Healing potions disabled NEWBLOCK - Teleportation disabled NEWBLOCK - 3x Score multiplier"
+	}
+}
+
 Keybinds: {
 	Starsight.DisplayName: Starsight
 	"Forbidden Winds.DisplayName": Forbidden  Winds
@@ -133,7 +148,7 @@ Items: {
 		DisplayName: Moonstone Tincture
 		Tooltip:
 			'''
-			Causes barrier to reflect the light of the moon
+			Causes {{barrier}} to reflect the light of the moon
 			Equipable
 			Vanity Item
 			'''
@@ -143,7 +158,7 @@ Items: {
 		DisplayName: Sentinel's Tincture
 		Tooltip:
 			'''
-			Causes barrier effect to mimic the shield of the Shattered Sentinel
+			Causes {{barrier}} effect to mimic the shield of the Shattered Sentinel
 			Equipable
 			Vanity Item
 			'''
@@ -182,8 +197,8 @@ Items: {
 		DisplayName: Seaglass Ring
 		Tooltip:
 			'''
-			+30 barrier
-			Barrier recharge starts slightly faster
+			+30 {{barrier}}
+			{{Barrier}} recharge starts slightly faster
 			'The battering waves have not diminished its shine'
 			'''
 	}
@@ -373,7 +388,7 @@ Items: {
 
 	DebugModerEnabler: {
 		DisplayName: Debug Mode
-		Tooltip: Enables debug mode
+		Tooltip: Enables {{Debug}} mode
 	}
 
 	DebugStick: {
@@ -384,10 +399,10 @@ Items: {
 	DefiledAnkh: {
 		Tooltip:
 			'''
-			Cursed : Your Barrier protects against twenty-five percent less damage
-			+100% inoculation while barrier is active
-			immunity to most debuffs while barrier is active
-			+40 max Barrier
+			Cursed : Your {{Barrier}} protects against twenty-five percent less damage
+			+100% {{Inoculation}} while {{Barrier}} is active
+			immunity to most debuffs while {{Barrier}} is active
+			+40 max {{Barrier}}
 			'''
 		DisplayName: Defiled Ankh
 	}
@@ -405,8 +420,8 @@ Items: {
 		DisplayName: Aqua Sapphire
 		Tooltip:
 			'''
-			Barrier negates 15% more damage 
-			+20 Barrier
+			{{Barrier}} negates 15% more damage 
+			+20 {{Barrier}}
 			'''
 	}
 
@@ -438,9 +453,9 @@ Items: {
 		DisplayName: Starlight Pendant
 		Tooltip:
 			'''
-			Boosts mana regen based on your current barrier
-			Consuming mana boosts barrier regen
-			-10 barrier
+			Boosts mana regen based on your current {{barrier}}
+			Consuming mana boosts {{barrier}} regen
+			-10 {{barrier}}
 			'''
 	}
 
@@ -448,9 +463,9 @@ Items: {
 		DisplayName: Stone of the Drowned
 		Tooltip:
 			'''
-			+30 barrier
-			Increases your max number of minions by 2 when you have no barrier
-			Automatically re-summons two slots worth of minions when you reach 0 barrier
+			+30 {{barrier}}
+			Increases your max number of minions by 2 when you have no {{barrier}}
+			Automatically re-summons two slots worth of minions when you reach 0 {{barrier}}
 			'''
 	}
 
@@ -477,9 +492,9 @@ Items: {
 		DisplayName: Warded Mail
 		Tooltip:
 			'''
-			Barrier damage is applied to attackers as thorns 
-			+Barrier negates 10% more damage 
-			+40 barrier
+			{{Barrier}} damage is applied to attackers as thorns 
+			+{{Barrier}} negates 10% more damage 
+			+40 {{barrier}}
 			'''
 	}
 
@@ -487,7 +502,7 @@ Items: {
 		DisplayName: Replicant Cells
 		Tooltip:
 			'''
-			+15% Inoculation
+			+15% {{Inoculation}}
 			Health regeneration starts slightly faster
 			'''
 	}
@@ -817,7 +832,7 @@ Items: {
 
 	SlimePrinceLegs: {
 		DisplayName: Slime Prince's Tassets
-		Tooltip: Minions inflict 5% exposure
+		Tooltip: Minions inflict 5% {{exposure}}
 	}
 
 	Trowel: {
@@ -872,12 +887,12 @@ Items: {
 		DisplayName: Effects of different gems:
 		Tooltip:
 			'''
-			[i/s1:5686]: Critical strikes partially ignore armor, with increased chance for missing enemy HP 
-			[i/s1:5694]: +100 barrier. Gain a shield that points to your cursor and blocks attacks, consuming barrier 
-			[i/s1:5687]: Immediately heal 20 hp. Hits have a chance to create a 5 HP life heart 
-			[i/s1:5693]: Immediately refill mana. Hits have a chance to create 1 to 3 mana stars 
-			[i/s1:5685]: All strikes inflict Toxic Amethyst, a stacking poison debuff 
-			[i/s1:5692]: Hits have a chance to summon a Ruby Dagger to seek the struck enemy for 20% of the hit's damage
+			[i/s1:5671]: Critical strikes partially ignore armor, with increased chance for missing enemy HP 
+			[i/s1:5679]: +100 barrier. Gain a shield that points to your cursor and blocks attacks, consuming {{barrier}} 
+			[i/s1:5672]: Immediately heal 20 hp. Hits have a chance to create a 5 HP life heart 
+			[i/s1:5678]: Immediately refill mana. Hits have a chance to create 1 to 3 mana stars 
+			[i/s1:5670]: All strikes inflict Toxic Amethyst, a stacking poison debuff 
+			[i/s1:5677]: Hits have a chance to summon a Ruby Dagger to seek the struck enemy for 20% of the hit's damage
 			'''
 	}
 
@@ -958,7 +973,7 @@ Items: {
 		Tooltip:
 			'''
 			Rapidly stabs enemies, inflicting a stacking bleed
-			Press <right> to teleport to the cursor, Reaping bleed stacks of enemies in the way for high damage and lifesteal
+			Press <right> to teleport to the cursor, {{Reaping}} bleed stacks of enemies in the way for high damage and lifesteal
 			Striking multiple enemies with the teleport lowers its cooldown
 			'''
 	}
@@ -967,7 +982,7 @@ Items: {
 		DisplayName: Staff of Self-Disassembly
 		Tooltip:
 			'''
-			Reserve 40 life to summon a Flesh Horror
+			{{Reserve}} 40 life to summon a Flesh Horror
 			Horrors grant increased life regeneration
 			Life regeneration boost is increased when Horrors strike an enemy
 			'''
@@ -1008,7 +1023,7 @@ Items: {
 		Tooltip:
 			'''
 			5% increased magic damage
-			+15% Inoculation
+			+15% {{Inoculation}}
 			'''
 	}
 
@@ -1025,7 +1040,7 @@ Items: {
 	TaintedGreataxe: {
 		Tooltip:
 			'''
-			Cursed : Landing a Critical Strike will inflict Focused on a new, different enemy
+			Cursed : Landing a Critical Strike will inflict {{Focused}} on a new, different enemy
 			<right> on the Greataxe whilst it is Embedded to release it
 			'''
 		DisplayName: Tainted Greataxe
@@ -1145,7 +1160,7 @@ Items: {
 			'''
 			Your minions can store 40 mana
 			Your minions siphon 6 mana per second from you untill full
-			Your minions spend 15 mana to attack with a burst of poision thorns
+			Your minions spend 15 mana to attack with a burst of poison thorns
 			'''
 	}
 
@@ -1189,7 +1204,7 @@ Items: {
 		Tooltip:
 			'''
 			Teaches you the Art of Axes, granting all axe weapons a new combo attack
-			The final strike will rend enemies' armor
+			The final strike will {{rend}} enemies' armor
 			<right> to throw your axe
 			'''
 	}
@@ -1233,10 +1248,10 @@ Items: {
 		DisplayName: Amulet of the Bloodless Warrior
 		Tooltip:
 			'''
-			+100 Maximum Barrier
-			Barrier absorbs ALL damage, but recharges slower
+			+100 {{Barrier}}
+			{{Barrier}} absorbs ALL damage, but recharges slower
 			You are unaffected by damage over time
-			Cursed : You have 0 HP. Healing grants a decaying damage boost instead of life
+			You have 0 life. Healing grants a decaying damage boost instead of life
 			'Leave your flesh behind, for your rage is all you need'
 			'''
 	}
@@ -1248,7 +1263,7 @@ Items: {
 
 	BuffChalice: {
 		DisplayName: Plexus Chalice
-		Tooltip: Inflicting debuffs temporarily increases your Inoculation
+		Tooltip: Inflicting debuffs temporarily increases your {{Inoculation}}
 	}
 
 	CasualMirror: {
@@ -1447,15 +1462,15 @@ Items: {
 
 	HolyAmulet: {
 		DisplayName: Holy Amulet
-		Tooltip: Releases bursts of homing holy energy for every 25 HP you heal
+		Tooltip: Releases bursts of homing holy energy for every 25 life you heal
 	}
 
 	HungryStomach: {
 		Tooltip:
 			'''
-			Restore Starlight by damaging foes
+			Restore {{Starlight}} by damaging foes
 			Melee weapons restore twice as much
-			Cursed: Disables natural Starlight regeneration
+			Disables natural {{Starlight}} regeneration
 			'''
 		DisplayName: Hungry Stomach
 	}
@@ -1482,7 +1497,7 @@ Items: {
 
 	Ironheart: {
 		DisplayName: Ironheart
-		Tooltip: Melee damage generates decaying barrier and defense
+		Tooltip: Melee damage generates decaying {{barrier}} and defense
 	}
 
 	JadeStopwatch: {
@@ -1499,7 +1514,7 @@ Items: {
 		DisplayName: Lost Collar
 		Tooltip:
 			'''
-			+40% Inoculation
+			+40% {{Inoculation}}
 			Debuffs you inflict are inflicted on yourself
 			+5% movement and attack speed per debuff affecting you
 			Cursed : Lose all debuff immunities
@@ -1525,7 +1540,7 @@ Items: {
 		Tooltip:
 			'''
 			Combined effects of Tiger, Snake, and Mantis Techniques
-			+10% melee critical damage
+			+10% melee critical strike damage
 			'Quit, don't quit... Noodles, don't noodles.'
 			'''
 	}
@@ -1537,7 +1552,7 @@ Items: {
 
 	PandorasShield: {
 		DisplayName: Pandora's Shield
-		Tooltip: Grazes grant a portion of the projectiles' damage as barrier
+		Tooltip: "{{Grazes}} grant a portion of the projectiles' damage as {{barrier}}"
 	}
 
 	PhilosophersMortar: {
@@ -1644,8 +1659,8 @@ Items: {
 		DisplayName: Spiked Mail
 		Tooltip:
 			'''
-			Barrier damage is applied to attackers as thorns 
-			+20 barrier
+			{{Barrier}} damage is applied to attackers as thorns 
+			+20 {{barrier}}
 			'''
 	}
 
@@ -1656,7 +1671,7 @@ Items: {
 
 	StaminaRing: {
 		DisplayName: Band of Starlight
-		Tooltip: +2 Starlight regeneration
+		Tooltip: +2 {{Starlight}} regeneration
 	}
 
 	SwordBook: {
@@ -1707,13 +1722,13 @@ Items: {
 		Tooltip:
 			'''
 			Consuming mana charges a Crescent Guardian, blitzing nearby enemies when fully charged
-			+20 barrier
+			+20 {{barrier}}
 			'''
 	}
 
 	Moonfury: {
 		DisplayName: Moonfury
-		Tooltip: Call down a shard of moonstone, inflicting Dreamfire on struck enemies
+		Tooltip: Call down a shard of moonstone, inflicting {{Dreamfire}} on struck enemies
 	}
 
 	MoonstoneArrow: {
@@ -1728,7 +1743,7 @@ Items: {
 
 	MoonstoneChest: {
 		DisplayName: Moonstone Chestpiece
-		Tooltip: +35 Barrier
+		Tooltip: +35 {{Barrier}}
 	}
 
 	MoonstoneHamaxe: {
@@ -1741,7 +1756,7 @@ Items: {
 		Tooltip:
 			'''
 			2% increased melee critical strike chance
-			+20 Barrier
+			+20 {{Barrier}}
 			'''
 	}
 
@@ -1750,7 +1765,7 @@ Items: {
 		Tooltip:
 			'''
 			Improved acceleration
-			 +25 Barrier
+			 +25 {{Barrier}}
 			'''
 	}
 
@@ -1893,22 +1908,22 @@ Items: {
 		DisplayName: Greater Barrier Potion
 		Tooltip:
 			'''
-			Grants 120 barrier
-			Greatly reduces overcharge barrier loss for 5 seconds
+			Grants 120 {barrier}
+			Greatly reduces overcharge {barrier} loss for 5 seconds
 			'''
 	}
 
 	InoculationPotion: {
-		DisplayName: Inoculation Potion
-		Tooltip: +30% Inoculation
+		DisplayName: "{{Inoculation}} Potion"
+		Tooltip: +30% {{Inoculation}}
 	}
 
 	LesserBarrierPotion: {
 		DisplayName: Lesser Barrier Potion
 		Tooltip:
 			'''
-			Grants 40 barrier
-			Greatly reduces overcharge barrier loss for 3 seconds
+			Grants 40 {barrier}
+			Greatly reduces overcharge {barrier} loss for 3 seconds
 			'''
 	}
 
@@ -1916,8 +1931,8 @@ Items: {
 		DisplayName: " Barrier Potion"
 		Tooltip:
 			'''
-			Grants 80 barrier
-			Greatly reduces overcharge barrier loss for 4 seconds
+			Grants 80 {barrier}
+			Greatly reduces overcharge {barrier} loss for 4 seconds
 			'''
 	}
 
@@ -1934,8 +1949,8 @@ Items: {
 		DisplayName: Aquamarine Pendant
 		Tooltip:
 			'''
-			+15 Barrier 
-			Losing all of your barrier releases ice shards
+			+15 {{Barrier}} 
+			Losing all of your {{barrier}} releases ice shards
 			'''
 	}
 
@@ -2102,7 +2117,7 @@ Items: {
 		Tooltip:
 			'''
 			Critical strikes expose enemies near the struck enemy
-			Exposed enemies have 20% increased Exposure on first hit
+			Exposed enemies have 20% increased {{Exposure}} on first hit
 			+2% critical strike chance
 			+20% critical strike damage
 			'''
@@ -2115,7 +2130,7 @@ Items: {
 
 	TempleRune: {
 		DisplayName: Rune of Warding
-		Tooltip: +50 barrier
+		Tooltip: +50 {{barrier}}
 	}
 
 	TempleSpear: {
@@ -2315,7 +2330,7 @@ Items: {
 		Tooltip:
 			'''
 			Hold <right> to charge a laser
-			Enemies struck by the laser have 25% increased melee Exposure
+			Enemies struck by the laser have 25% increased melee {{Exposure}}
 			'''
 	}
 
@@ -2335,7 +2350,7 @@ Items: {
 
 	StaminaUp: {
 		DisplayName: Glass Starlight Vessel
-		Tooltip: Increased maximum Starlight by 1
+		Tooltip: Increased maximum {{Starlight}} by 1
 	}
 
 	TempleEntranceKey: {
@@ -2453,17 +2468,17 @@ Items: {
 
 	FaeflameTileItem: {
 		DisplayName: Faeflame
-		Tooltip: Debug placer for ability pickup
+		Tooltip: "{{Debug}} placer for ability pickup"
 	}
 
 	StaminaShardTileItem: {
 		DisplayName: Starlight Shard
-		Tooltip: Debug Item
+		Tooltip: "{{Debug}} Item"
 	}
 
 	WindsTileItem: {
 		DisplayName: Forbidden Winds
-		Tooltip: Debug placer for ability pickup
+		Tooltip: "{{Debug}} placer for ability pickup"
 	}
 
 	CookStationItem: {
@@ -2609,7 +2624,7 @@ Items: {
 
 	NoxiousNodeItem: {
 		DisplayName: Noxious Node
-		Tooltip: Debug item
+		Tooltip: "{{Debug}} item"
 	}
 
 	OvergrowthLivingWoodItem: {
@@ -2644,17 +2659,17 @@ Items: {
 
 	WindowSmallItem: {
 		DisplayName: Smol Window
-		Tooltip: Debug Item
+		Tooltip: "{{Debug}} Item"
 	}
 
 	WispAltarLItem: {
 		DisplayName: Wisp Altar L Placer
-		Tooltip: Debug Item
+		Tooltip: "{{Debug}} Item"
 	}
 
 	WispAltarRItem: {
 		DisplayName: Wisp Altar R Placer
-		Tooltip: Debug Item
+		Tooltip: "{{Debug}} Item"
 	}
 
 	AuroraclePaintingItem: {
@@ -2683,7 +2698,7 @@ Items: {
 	}
 
 	AuroraBrickDoorItem: {
-		DisplayName: Debug Brick Placer
+		DisplayName: "{{Debug}} Brick Placer"
 		Tooltip: ""
 	}
 
@@ -2703,7 +2718,7 @@ Items: {
 	}
 
 	DoorBombShooterItem: {
-		DisplayName: Debug Shooter Placer
+		DisplayName: "{{Debug}} Shooter Placer"
 		Tooltip: ""
 	}
 
@@ -2734,7 +2749,7 @@ Items: {
 
 	CombatShrineItem: {
 		DisplayName: Combat shrine placer
-		Tooltip: debug item
+		Tooltip: "{{Debug}} item"
 	}
 
 	HotspringFountainItem: {
@@ -2749,12 +2764,12 @@ Items: {
 
 	DashBarrierItem: {
 		DisplayName: Dash Barrier
-		Tooltip: Debug Item
+		Tooltip: "{{Debug}} Item"
 	}
 
 	JarTallItem: {
 		DisplayName: Stamina Jar Placer (Tall)
-		Tooltip: Debug Item
+		Tooltip: "{{Debug}} Item"
 	}
 
 	TempleChestPlacer: {
@@ -2774,12 +2789,12 @@ Items: {
 
 	TestBubble: {
 		DisplayName: Bubble
-		Tooltip: Debug Item
+		Tooltip: "{{Debug}} Item"
 	}
 
 	VerletBannerItem: {
 		DisplayName: Verlet banner
-		Tooltip: Debug Item
+		Tooltip: "{{Debug}} Item"
 	}
 
 	AncientSandstonePillarWallItem: {
@@ -2809,17 +2824,17 @@ Items: {
 
 	ForgeDoorItem: {
 		DisplayName: Forge Door
-		Tooltip: Debug Item
+		Tooltip: "{{Debug}} Item"
 	}
 
 	ForgeInnerDoorItem: {
 		DisplayName: Forge Inner Door
-		Tooltip: Debug Item
+		Tooltip: "{{Debug}} Item"
 	}
 
 	RedBannerShortItem: {
 		DisplayName: Short Flowing Banner
-		Tooltip: Debug Item
+		Tooltip: "{{Debug}} Item"
 	}
 
 	CrystalSlimeSpawnerItem: {
@@ -2829,7 +2844,7 @@ Items: {
 
 	DashableDoorItem: {
 		DisplayName: DashableDoor
-		Tooltip: Debug Item
+		Tooltip: "{{Debug}} Item"
 	}
 
 	DoorGearsItem: {
@@ -2849,37 +2864,37 @@ Items: {
 
 	EntranceDoorItem: {
 		DisplayName: EntranceDoor
-		Tooltip: Debug Item
+		Tooltip: "{{Debug}} Item"
 	}
 
 	GearPuzzleOriginPlacer: {
 		DisplayName: Gear puzzle origin
-		Tooltip: Debug Item
+		Tooltip: "{{Debug}} Item"
 	}
 
 	GearTilePlacer: {
 		DisplayName: Gear puzzle
-		Tooltip: Debug Item
+		Tooltip: "{{Debug}} Item"
 	}
 
 	ObjectiveGearItem: {
 		DisplayName: Gear puzzle Point
-		Tooltip: Debug Item
+		Tooltip: "{{Debug}} Item"
 	}
 
 	LightActorItem: {
 		DisplayName: Light actor placer
-		Tooltip: Debug item
+		Tooltip: "{{Debug}} item"
 	}
 
 	LensItem: {
 		DisplayName: Reflector Lens
-		Tooltip: Debug Item
+		Tooltip: "{{Debug}} Item"
 	}
 
 	ReflectorItem: {
 		DisplayName: Reflector
-		Tooltip: Debug Item
+		Tooltip: "{{Debug}} Item"
 	}
 
 	LowWindBannerItem: {
@@ -2889,7 +2904,7 @@ Items: {
 
 	MainForgeItem: {
 		DisplayName: Main forge
-		Tooltip: Debug item
+		Tooltip: "{{Debug}} item"
 	}
 
 	NPCSpawnerItem: {
@@ -2899,22 +2914,22 @@ Items: {
 
 	OldCeirosShrineItem: {
 		DisplayName: Old Ceiros Shrine
-		Tooltip: Debug Item
+		Tooltip: "{{Debug}} Item"
 	}
 
 	TallWindowCrystalItem: {
 		DisplayName: Crystal Window Actor
-		Tooltip: Debug Item
+		Tooltip: "{{Debug}} Item"
 	}
 
 	TallWindowItem: {
 		DisplayName: Window Actor
-		Tooltip: Debug Item
+		Tooltip: "{{Debug}} Item"
 	}
 
 	TallWindowLavaItem: {
 		DisplayName: Lava Window Actor
-		Tooltip: Debug Item
+		Tooltip: "{{Debug}} Item"
 	}
 
 	TempleCandleCrystalItem: {
@@ -2939,12 +2954,12 @@ Items: {
 
 	TutorialDoor1Item: {
 		DisplayName: TutorialDoor1
-		Tooltip: Debug Item
+		Tooltip: "{{Debug}} Item"
 	}
 
 	TutorialDoor2Item: {
 		DisplayName: TutorialDoor2
-		Tooltip: Debug Item
+		Tooltip: "{{Debug}} Item"
 	}
 
 	VitricPillarWallCrystalItem: {
@@ -2969,7 +2984,7 @@ Items: {
 
 	VitricTempleWallItem: {
 		DisplayName: Vitric Forge Brick Wall (Danger)
-		Tooltip: Debug item
+		Tooltip: "{{Debug}} item"
 	}
 
 	VitricTempleWallSafeItem: {
@@ -2979,7 +2994,7 @@ Items: {
 
 	WindsRoomActorItem: {
 		DisplayName: Winds Room Actor
-		Tooltip: Debug Item
+		Tooltip: "{{Debug}} Item"
 	}
 
 	VitricBannerSmallItem: {
@@ -2989,17 +3004,17 @@ Items: {
 
 	VitricBossAltarItem: {
 		DisplayName: Vitric Boss Altar Item
-		Tooltip: Debug Item
+		Tooltip: "{{{{Debug}}}} Item"
 	}
 
 	VitricBreakableVaseItem: {
 		DisplayName: Vitric Vase Placer
-		Tooltip: Debug Item
+		Tooltip: "{{Debug}} Item"
 	}
 
 	VitricFountainItem: {
 		DisplayName: Vitric Fountain
-		Tooltip: Debug Item
+		Tooltip: "{{Debug}} Item"
 	}
 
 	VitricGiantCrystalItem: {
@@ -3014,7 +3029,7 @@ Items: {
 
 	VitricLargeFountainItem: {
 		DisplayName: Vitric Large Fountain
-		Tooltip: Debug Item
+		Tooltip: "{{Debug}} Item"
 	}
 
 	VitricLootBoxItem: {
@@ -3064,22 +3079,22 @@ Items: {
 
 	CombatShrineBarrierItem: {
 		DisplayName: CombatShrineBarrierItem
-		Tooltip: debug item
+		Tooltip: "{{Debug}} item"
 	}
 
 	EvasionShrineBarrierItem: {
 		DisplayName: EvasionShrineBarrierItem
-		Tooltip: debug item
+		Tooltip: "{{Debug}} item"
 	}
 
 	VitricBossBarrierItem: {
 		DisplayName: VitricBossBarrierItem
-		Tooltip: debug item
+		Tooltip: "{{Debug}} item"
 	}
 
 	GlassweaverBossBarrierItem: {
 		DisplayName: GlassweaverBossBarrierItem
-		Tooltip: debug item
+		Tooltip: "{{Debug}} item"
 	}
 
 	VitricBathtub: {
@@ -3259,11 +3274,6 @@ Items: {
 
 	MinibossItem: {
 		DisplayName: Music Box (GlassWeaver)
-		Tooltip: ""
-	}
-
-	OvergrowItem: {
-		DisplayName: Music Box (Overgrow)
 		Tooltip: ""
 	}
 
@@ -3486,7 +3496,6 @@ Tiles: {
 	Vibeshroom.MapEntry: ""
 	BlueTorchOvergrow.MapEntry: ""
 	OvergrowthLivingWoodTile.MapEntry: Overgrown Living Wood
-	Overgrow.MapEntry: Music Box
 	Rock2x2.MapEntry: ""
 	SetpieceAltar.MapEntry: ""
 	SkeletonBrickTile.MapEntry: Skeleton Brick
@@ -4293,7 +4302,7 @@ Buffs: {
 
 	PlexusChaliceBuff: {
 		DisplayName: Plexus Resistance
-		Description: +30% Inoculation
+		Description: +30% {{Inoculation}}
 	}
 
 	MoonfuryDebuff: {
@@ -4313,7 +4322,7 @@ Buffs: {
 
 	InoculationPotionBuff: {
 		DisplayName: Inoculated
-		Description: +30% Inoculation
+		Description: +30% {{Inoculation}}
 	}
 
 	NoShieldPot: {

@@ -122,7 +122,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 	[SLRDebug]
 	class VitricBossAltarItem : QuickTileItem
 	{
-		public VitricBossAltarItem() : base("Vitric Boss Altar Item", "Debug Item", "VitricBossAltar", 1, AssetDirectory.Debug, true) { }
+		public VitricBossAltarItem() : base("Vitric Boss Altar Item", "{{{{Debug}}}} Item", "VitricBossAltar", 1, AssetDirectory.Debug, true) { }
 	}
 
 	internal class VitricBossAltarDummy : Dummy

@@ -260,6 +260,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 	[SLRDebug]
 	class ReflectorItem : QuickTileItem
 	{
-		public ReflectorItem() : base("Reflector", "Debug Item", "Reflector") { }
+		public ReflectorItem() : base("Reflector", "{{Debug}} Item", "Reflector") { }
 	}
 }

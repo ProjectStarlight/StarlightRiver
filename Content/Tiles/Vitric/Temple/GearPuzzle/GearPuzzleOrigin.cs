@@ -64,6 +64,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 	[SLRDebug]
 	class GearPuzzleOriginPlacer : QuickTileItem
 	{
-		public GearPuzzleOriginPlacer() : base("Gear puzzle origin", "Debug Item", "GearPuzzleOrigin", 8, AssetDirectory.VitricTile + "OriginGearBase", true) { }
+		public GearPuzzleOriginPlacer() : base("Gear puzzle origin", "{{Debug}} Item", "GearPuzzleOrigin", 8, AssetDirectory.VitricTile + "OriginGearBase", true) { }
 	}
 }

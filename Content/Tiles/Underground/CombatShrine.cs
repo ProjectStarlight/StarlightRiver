@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 	[SLRDebug]
 	class CombatShrineItem : QuickTileItem
 	{
-		public CombatShrineItem() : base("Combat shrine placer", "debug item", "CombatShrine") { }
+		public CombatShrineItem() : base("Combat shrine placer", "{{Debug}} item", "CombatShrine") { }
 	}
 
 	class CombatShrineDummy : ShrineDummy, IDrawAdditive

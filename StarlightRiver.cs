@@ -3,6 +3,7 @@ global using Microsoft.Xna.Framework.Graphics;
 global using StarlightRiver.Core;
 global using Terraria;
 global using Terraria.ModLoader;
+global using Terraria.Localization;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Bestiary;
 using System;

@@ -21,7 +21,7 @@ namespace StarlightRiver.Core.Systems
 			if (!StarlightRiver.debugMode || Main.playerInventory)
 				return;
 
-			string menu = "Debug mode options:\n " +
+			string menu = "{{Debug}} mode options:\n " +
 				"Y: Hold to speed up game\n " +
 				"U: Hold to slow down game\n " +
 				"P: Press to change difficulty";
@@ -122,7 +122,7 @@ namespace StarlightRiver.Core.Systems
 			{
 				tooltips.Clear();
 
-				TooltipLine line = new(Mod, "SLRDebug", "[DISABLED]\ndebug only")
+				TooltipLine line = new(Mod, "SLR{{Debug}}", "[DISABLED]\n{{Debug}} only")
 				{
 					OverrideColor = Color.Red
 				};

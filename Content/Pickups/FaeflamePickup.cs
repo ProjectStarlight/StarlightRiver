@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.Pickups
 	[SLRDebug]
 	public class FaeflameTileItem : QuickTileItem
 	{
-		public FaeflameTileItem() : base("Faeflame", "Debug placer for ability pickup", "FaeflamePickupTile", -1) { }
+		public FaeflameTileItem() : base("Faeflame", "{{Debug}} placer for ability pickup", "FaeflamePickupTile", -1) { }
 
 		public override string Texture => "StarlightRiver/Assets/Abilities/Faeflame";
 	}

@@ -71,6 +71,6 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 	{
 		public override string Texture => AssetDirectory.Debug;
 
-		public AuroraBrickDoorItem() : base("Debug Brick Placer", "", "AuroraBrickDoor", ItemRarityID.White) { }
+		public AuroraBrickDoorItem() : base("{{Debug}} Brick Placer", "", "AuroraBrickDoor", ItemRarityID.White) { }
 	}
 }

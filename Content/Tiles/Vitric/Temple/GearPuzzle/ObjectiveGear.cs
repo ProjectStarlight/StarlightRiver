@@ -51,6 +51,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 	[SLRDebug]
 	class ObjectiveGearItem : QuickTileItem
 	{
-		public ObjectiveGearItem() : base("Gear puzzle Point", "Debug Item", "ObjectiveGear", 8, AssetDirectory.VitricTile + "GearPeg", true) { }
+		public ObjectiveGearItem() : base("Gear puzzle Point", "{{Debug}} Item", "ObjectiveGear", 8, AssetDirectory.VitricTile + "GearPeg", true) { }
 	}
 }
