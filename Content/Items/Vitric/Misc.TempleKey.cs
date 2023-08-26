@@ -4,6 +4,6 @@
 	{
 		public override string Texture => AssetDirectory.VitricItem + Name;
 
-		public TempleKey() : base("Small Forge Key", "Opens a door inside the Vitric Forge.", Terraria.ID.ItemRarityID.Quest, 0, 1) { }
+		public TempleKey() : base("Small Forge Key", "Opens a door inside the Vitric Forge.", 9999, 0, Terraria.ID.ItemRarityID.Quest) { }
 	}
 }
