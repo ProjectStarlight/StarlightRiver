@@ -16,8 +16,6 @@ namespace StarlightRiver.Content.GUI
 {
 	public class CookingUI : SmartUIState
 	{
-		private static readonly LocalizedText cookInstructions = LocalizationRoundabout.DefaultText("GUI.Cooking.Instructions", "Place a Main Course in\nthe top slot to start\ncooking");
-
 		public static bool visible;
 
 		private static bool Moving = false;
@@ -128,7 +126,7 @@ namespace StarlightRiver.Content.GUI
 			int drawY = 0;
 			if (!Elements.Any(n => n is CookingSlot && !(n as CookingSlot).Item.IsAir && ((n as CookingSlot).Item.ModItem as Ingredient).ThisType == IngredientType.Main))
 			{
-				Utils.DrawBorderString(spriteBatch, cookInstructions.Value, Basepos + new Vector2(186, 54 + drawY), Color.White, 0.7f);
+				Utils.DrawBorderString(spriteBatch, "Place a Main Course in\nthe top slot to start\ncooking", Basepos + new Vector2(186, 54 + drawY), Color.White, 0.7f);
 			}
 			else
 			{
