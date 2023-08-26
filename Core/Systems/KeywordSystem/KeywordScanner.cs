@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Terraria.UI.Chat;
 
 namespace StarlightRiver.Core.Systems.KeywordSystem
@@ -56,7 +57,7 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 			keywords = null;
 		}
 
-		private string BuildKeyword(Keyword word)
+		private static string BuildKeyword(Keyword word)
 		{
 			GUIConfig config = ModContent.GetInstance<GUIConfig>();
 
@@ -134,50 +135,23 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 
 		public string ScanLine(string input)
 		{
-			string[] strings = input.Split(' ');
+			string pattern = @"\{\{([^{}]+)\}\}";
+			Regex regex = new Regex(pattern);
 
-			for (int k = 0; k < strings.Length; k++)
+			MatchEvaluator evaluator = new MatchEvaluator(match =>
 			{
-				string word = strings[k];
+				string keyString = match.Groups[1].Value;
 
-				if (word.Length < 1)
-					continue;
+				Keyword keyword = keywords.FirstOrDefault(n => string.Equals(n.keyword, keyString, StringComparison.OrdinalIgnoreCase));
 
-				if (word[0] == '\\')
-				{
-					strings[k] = word[1..];
-					continue;
-				}
+				if (!thisKeywords.Contains(keyword))
+					thisKeywords.Add(keyword);
 
-				if (keywords.Any(n => string.Equals(n.keyword, word, StringComparison.OrdinalIgnoreCase)))
-				{
-					Keyword keyword = keywords.FirstOrDefault(n => string.Equals(n.keyword, word, StringComparison.OrdinalIgnoreCase));
+				return BuildKeyword(keyword);
+			});
 
-					if (!thisKeywords.Contains(keyword))
-						thisKeywords.Add(keyword);
-
-					strings[k] = BuildKeyword(keyword);
-					continue;
-				}
-
-				string suffix = word[^1..];
-
-				if (suffix == ":" || suffix == "," || suffix == "." || suffix == ";") //Common punctuation that shouldnt invalidate a keyword.
-				{
-					if (keywords.Any(n => string.Equals(n.keyword, word[..^1], StringComparison.OrdinalIgnoreCase)))
-					{
-						Keyword keyword = keywords.FirstOrDefault(n => string.Equals(n.keyword, word[..^1], StringComparison.OrdinalIgnoreCase));
-
-						if (!thisKeywords.Contains(keyword))
-							thisKeywords.Add(keyword);
-
-						strings[k] = BuildKeyword(keyword) + suffix;
-						continue;
-					}
-				}
-			}
-
-			return string.Join(' ', strings);
+			string result = regex.Replace(input, evaluator);
+			return result;
 		}
 	}
 }

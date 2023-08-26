@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Items.BarrierDye
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Moonstone Tincture");
-			Tooltip.SetDefault("Causes barrier to reflect the light of the moon\nEquipable\nVanity Item");
+			Tooltip.SetDefault("Causes {{barrier}} to reflect the light of the moon\nEquipable\nVanity Item");
 		}
 
 		public override void SetDefaults()
