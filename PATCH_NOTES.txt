@@ -17,3 +17,5 @@
 - Added a sell value to warding rune (25 silver)
 - Changed typo in druidic manabond
 - Ceiros' arena's pillars will no longer fall down before the background stops
+- Removed a number of unused music tracks, reducing filesize significantly
+- Some title screen music has changed as a result of this
