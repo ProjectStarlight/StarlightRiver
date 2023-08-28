@@ -22,8 +22,9 @@ namespace StarlightRiver.Content.Items.Geomancer
 	{
 		public bool SetBonusActive = false;
 
-		public StoredGem storedGem = StoredGem.None;
+		public StoredGem activeGem = StoredGem.None;
 
+		//these bools suck. If someone wants to refactor this this is a good target to be replaced with a dict
 		public bool DiamondStored = false;
 		public bool RubyStored = false;
 		public bool EmeraldStored = false;
@@ -45,6 +46,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 		public override void Load()
 		{
 			StarlightPlayer.PreDrawEvent += PreDrawGlowFX;
+			StarlightPlayer.OnHitNPCWithProjEvent += OnHitWithProj;
 		}
 
 		public override void Unload()
@@ -69,7 +71,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 			Effect effect = Filters.Scene["RainbowAura"].GetShader().Shader;
 
-			if (storedGem == StoredGem.All)
+			if (activeGem == StoredGem.All)
 			{
 
 				float sin = (float)Math.Sin(Main.GameUpdateCount / 10f);
@@ -132,7 +134,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 			if (!SetBonusActive)
 			{
-				storedGem = StoredGem.None;
+				activeGem = StoredGem.None;
 				DiamondStored = false;
 				RubyStored = false;
 				EmeraldStored = false;
@@ -166,43 +168,48 @@ namespace StarlightRiver.Content.Items.Geomancer
 			timer--;
 
 			BarrierPlayer shieldPlayer = Player.GetModPlayer<BarrierPlayer>();
-			if ((storedGem == StoredGem.Topaz || storedGem == StoredGem.All) && Player.ownedProjectileCounts[ModContent.ProjectileType<TopazShield>()] == 0 && shieldPlayer.maxBarrier - shieldPlayer.barrier < 100)
+			if ((activeGem == StoredGem.Topaz || activeGem == StoredGem.All) && Player.ownedProjectileCounts[ModContent.ProjectileType<TopazShield>()] == 0 && shieldPlayer.maxBarrier - shieldPlayer.barrier < 100)
 				Projectile.NewProjectile(Player.GetSource_ItemUse(Player.armor[0]), Player.Center, Vector2.Zero, ModContent.ProjectileType<TopazShield>(), 10, 7, Player.whoAmI);
 
-			if (storedGem == StoredGem.All)
+			if (activeGem == StoredGem.All)
 			{
 				allTimer--;
 				if (allTimer < 0)
-					storedGem = StoredGem.None;
+					activeGem = StoredGem.None;
 			}
 
 			ActivationCounter -= 0.03f;
 			Lighting.AddLight(Player.Center, GetArmorColor(Player).ToVector3());
 		}
 
-		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
+		public static void OnHitWithProj(Player player, Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (!SetBonusActive)
+			player.TryGetModPlayer(out GeomancerPlayer geomancerPlayer);
+
+			if (!geomancerPlayer.SetBonusActive)
 				return;
 
 			if (proj.DamageType != DamageClass.Magic)
 				return;
 
-			int odds = Math.Max(1, 15 - rngProtector);
-			if ((hit.Crit || target.life <= 0) && storedGem != StoredGem.All)
+			player.TryGetModPlayer(out StarlightPlayer starlightPlayer);
+			starlightPlayer.SetHitPacketStatus(shouldRunProjMethods: false);
+
+			int odds = Math.Max(1, 15 - geomancerPlayer.rngProtector);
+			if ((hit.Crit || target.life <= 0) && geomancerPlayer.activeGem != StoredGem.All)
 			{
-				rngProtector++;
+				geomancerPlayer.rngProtector++;
 				if (Main.rand.NextBool(odds))
 				{
-					rngProtector = 0;
-					SpawnGem(target, Player.GetModPlayer<GeomancerPlayer>());
+					geomancerPlayer.rngProtector = 0;
+					SpawnGem(target, player.GetModPlayer<GeomancerPlayer>());
 				}
 			}
 
-			int critRate = Math.Min(Player.HeldItem.crit, 4);
-			critRate += (int)(100 * Player.GetCritChance(DamageClass.Magic));
+			int critRate = Math.Min(player.HeldItem.crit, 4);
+			critRate += (int)(100 * player.GetCritChance(DamageClass.Magic));
 
-			if (Main.rand.Next(100) <= critRate && (storedGem == StoredGem.Sapphire || storedGem == StoredGem.All))
+			if (Main.rand.Next(100) <= critRate && (geomancerPlayer.activeGem == StoredGem.Sapphire || geomancerPlayer.activeGem == StoredGem.All))
 			{
 				int numStars = Main.rand.Next(3) + 1;
 				for (int i = 0; i < numStars; i++) //Doing a loop so they spawn separately
@@ -211,7 +218,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 				}
 			}
 
-			if ((storedGem == StoredGem.Diamond || storedGem == StoredGem.All) && hit.Crit)
+			if ((geomancerPlayer.activeGem == StoredGem.Diamond || geomancerPlayer.activeGem == StoredGem.All) && hit.Crit)
 			{
 				int extraDamage = target.defense / 2;
 				extraDamage += (int)(proj.damage * 0.2f * (target.life / (float)target.lifeMax));
@@ -223,33 +230,35 @@ namespace StarlightRiver.Content.Items.Geomancer
 				target.HitEffect(0, extraDamage);
 			}
 
-			if (Main.rand.Next(100) <= critRate && (storedGem == StoredGem.Emerald || storedGem == StoredGem.All))
+			if (Main.rand.Next(100) <= critRate && (geomancerPlayer.activeGem == StoredGem.Emerald || geomancerPlayer.activeGem == StoredGem.All))
 				Item.NewItem(target.GetSource_Loot(), new Rectangle((int)target.position.X, (int)target.position.Y, target.width, target.height), ModContent.ItemType<EmeraldHeart>());
 
-			if ((storedGem == StoredGem.Ruby || storedGem == StoredGem.All) && Main.rand.NextFloat() > 0.3f && proj.type != ModContent.ProjectileType<RubyDagger>())
-				Projectile.NewProjectile(Player.GetSource_ItemUse(Player.armor[0]), Player.Center, Main.rand.NextVector2Circular(7, 7), ModContent.ProjectileType<RubyDagger>(), (int)(proj.damage * 0.3f) + 1, hit.Knockback, Player.whoAmI, target.whoAmI);
+			if (player.whoAmI == Main.myPlayer && (geomancerPlayer.activeGem == StoredGem.Ruby || geomancerPlayer.activeGem == StoredGem.All) && Main.rand.NextFloat() > 0.3f && proj.type != ModContent.ProjectileType<RubyDagger>())
+				Projectile.NewProjectile(player.GetSource_ItemUse(player.armor[0]), player.Center, Main.rand.NextVector2Circular(7, 7), ModContent.ProjectileType<RubyDagger>(), (int)(proj.damage * 0.3f) + 1, hit.Knockback, player.whoAmI, target.whoAmI);
 
-			if (storedGem == StoredGem.Amethyst || storedGem == StoredGem.All && target.GetGlobalNPC<GeoNPC>().amethystDebuff < 400)
+			if (player.whoAmI == Main.myPlayer && geomancerPlayer.activeGem == StoredGem.Amethyst || geomancerPlayer.activeGem == StoredGem.All && target.GetGlobalNPC<GeoNPC>().amethystDebuff < 400)
 			{
-				if (Main.rand.NextBool(Math.Max(10 / Player.HeldItem.useTime * (int)Math.Pow(target.GetGlobalNPC<GeoNPC>().amethystDebuff, 0.3f) / 2, 1)))
+				if (Main.rand.NextBool(Math.Max(10 / player.HeldItem.useTime * (int)Math.Pow(target.GetGlobalNPC<GeoNPC>().amethystDebuff, 0.3f) / 2, 1)))
 				{
 					Projectile.NewProjectile(
-						Player.GetSource_ItemUse(Player.armor[0]),
+						player.GetSource_ItemUse(player.armor[0]),
 						target.position + new Vector2(Main.rand.Next(target.width), Main.rand.Next(target.height)),
 						Vector2.Zero,
 						ModContent.ProjectileType<AmethystShard>(),
 						0,
 						0,
-						Player.whoAmI,
+						player.whoAmI,
 						target.GetGlobalNPC<GeoNPC>().amethystDebuff,
 						target.whoAmI);
-					target.GetGlobalNPC<GeoNPC>().amethystDebuff += 100;
 				}
 			}
 		}
 
 		private static void SpawnGem(NPC target, GeomancerPlayer modPlayer)
 		{
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+				return;
+
 			int ItemType = -1;
 			var ItemTypes = new List<int>();
 
@@ -303,16 +312,72 @@ namespace StarlightRiver.Content.Items.Geomancer
 				gemTypes.Add(StoredGem.Diamond);
 
 			if (gemTypes.Count == 0)
-				modPlayer.storedGem = StoredGem.None;
+				modPlayer.activeGem = StoredGem.None;
 			else
-				modPlayer.storedGem = gemTypes[Main.rand.Next(gemTypes.Count)];
+				modPlayer.activeGem = gemTypes[Main.rand.Next(gemTypes.Count)];
+		}
+
+		/// <summary>
+		/// Gives a geomancer player a particular gem type and sets it to the active one
+		/// </summary>
+		/// <param name="player"></param>
+		public void GiveGemType(StoredGem gemType)
+		{
+			activeGem = gemType;
+
+			if (activeGem == StoredGem.Amethyst)
+				AmethystStored = true;
+
+			if (activeGem == StoredGem.Topaz)
+				TopazStored = true;
+
+			if (activeGem == StoredGem.Sapphire)
+				SapphireStored = true;
+
+			if (activeGem == StoredGem.Ruby)
+				RubyStored = true;
+
+			if (activeGem == StoredGem.Emerald)
+				EmeraldStored = true;
+
+			if (activeGem == StoredGem.Diamond)
+				DiamondStored = true;
+		}
+
+		/// <summary>
+		/// checks if a particular gem type is currently stored by enum
+		/// </summary>
+		/// <param name="player"></param>
+		/// <param name="storedGemType"></param>
+		/// <returns></returns>
+		public bool GetIsStored(StoredGem storedGemType)
+		{
+			if (storedGemType == StoredGem.Amethyst)
+				return AmethystStored;
+
+			if (storedGemType == StoredGem.Topaz)
+				return TopazStored;
+
+			if (storedGemType == StoredGem.Sapphire)
+				return SapphireStored;
+
+			if (storedGemType == StoredGem.Ruby)
+				return RubyStored;
+
+			if (storedGemType == StoredGem.Emerald)
+				return EmeraldStored;
+
+			if (storedGemType == StoredGem.Diamond)
+				return DiamondStored;
+
+			return false;
 		}
 
 		public static Color GetArmorColor(Player Player)
 		{
-			StoredGem storedGem = Player.GetModPlayer<GeomancerPlayer>().storedGem;
+			StoredGem activeGem = Player.GetModPlayer<GeomancerPlayer>().activeGem;
 
-			return storedGem switch
+			return activeGem switch
 			{
 				StoredGem.All => Main.hslToRgb((float)Main.timeForVisualEffects * 0.005f % 1, 1f, 0.5f),
 				StoredGem.Amethyst => Color.Purple,
@@ -326,6 +391,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 		}
 	}
 
+	// TODO: Refactor to stackable buff
 	public class GeoNPC : GlobalNPC
 	{
 		public override bool InstancePerEntity => true;

@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Item.width = 32;
 			Item.height = 32;
-			Item.value = Item.buyPrice(gold: 30);
+			Item.value = Item.buyPrice(gold: 1);
 			Item.rare = ItemRarityID.Green;
 			Item.useTime = 10;
 			Item.useAnimation = 10;
@@ -32,6 +32,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.shootSpeed = 1;
 			Item.sentry = true;
 			Item.mana = 20;
+			Item.noMelee = true;
 		}
 
 		public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
@@ -84,6 +85,12 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.timeLeft = Projectile.SentryLifeTime;
 		}
 
+		public override void OnSpawn(IEntitySource source)
+		{
+			Owner.FindSentryRestingSpot(Projectile.whoAmI, out int worldX, out int worldY, out int pushYUp);
+			Projectile.position = new Vector2(worldX, worldY - pushYUp - 8);
+		}
+
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
 			return false;
@@ -96,14 +103,8 @@ namespace StarlightRiver.Content.Items.Misc
 			if (PulseTime > 0)
 				PulseTime--;
 
-			if (Timer == 1)
-			{
-				Owner.FindSentryRestingSpot(Projectile.whoAmI, out int worldX, out int worldY, out int pushYUp);
-				Projectile.position = new Vector2(worldX, worldY - pushYUp - 8);
-
-				// After summoning you get a head-start to spawning a heart
+			if (Timer == 1) // After summoning you get a head-start to spawning a heart
 				damageDone = 350;
-			}
 
 			wasFiring = false;
 

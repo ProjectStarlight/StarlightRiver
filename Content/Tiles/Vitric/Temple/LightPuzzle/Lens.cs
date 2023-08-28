@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Core.Systems;
+using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using Terraria.ID;
 
@@ -6,7 +7,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 {
 	class Lens : Reflector
 	{
-		public override int DummyType => ModContent.ProjectileType<LensDummy>();
+		public override int DummyType => DummySystem.DummyType<LensDummy>();
 
 		public override string Texture => AssetDirectory.Debug;
 
@@ -33,7 +34,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 		{
 			if (!rotating && Main.GameUpdateCount % 60 == 0)
 			{
-				Emit = 1;
+				emitting = 1;
 				DeactivateDownstream();
 				FindEndpoint();
 			}
@@ -56,7 +57,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 
 			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value;
 
-			Vector2 pos = Projectile.Center - Main.screenPosition + Vector2.UnitY * -48;
+			Vector2 pos = Center - Main.screenPosition + Vector2.UnitY * -48;
 
 			for (int k = 0; k < 3; k++)
 			{
@@ -75,7 +76,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 			}
 
 			Texture2D texMirror = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MirrorOver").Value;
-			Main.spriteBatch.Draw(texMirror, Projectile.Center - Main.screenPosition, null, Color.White, Rotation - 3.14f - 1.57f / 2, texMirror.Size() / 2, 1, 0, 0);
+			Main.spriteBatch.Draw(texMirror, Center - Main.screenPosition, null, Color.White, rotation - 3.14f - 1.57f / 2, texMirror.Size() / 2, 1, 0, 0);
 		}
 	}
 

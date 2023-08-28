@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override void SetDefaults()
 		{
-			Item.damage = 12;
+			Item.damage = 9;
 			Item.DamageType = DamageClass.Melee;
 
 			Item.useTime = 30;

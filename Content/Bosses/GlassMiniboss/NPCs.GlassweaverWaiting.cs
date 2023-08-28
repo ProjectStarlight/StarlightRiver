@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void SetDefaults()
 		{
-			NPC.townNPC = true;
+			NPC.netAlways = true;
 			NPC.friendly = true;
 			NPC.width = 64;
 			NPC.height = 64;
@@ -48,6 +48,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			NPC.HitSound = SoundID.NPCHit1;
 			NPC.DeathSound = SoundID.NPCDeath1;
 			NPC.knockBackResist = 0;
+		}
+
+		public override bool NeedSaving()
+		{
+			return true;
 		}
 
 		public override void AI()
@@ -206,6 +211,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				2 => "\"Dont worry about the burn marks, they'll buff out. Thanks for clearing out that sentinel for me, I'll be moving in soon, so dont go poking through my stuff.\"",
 				_ => "This text should never be seen! Please report to https://github.com/ProjectStarlight/StarlightRiver/issues",
 			};
+		}
+
+		public override bool CanChat()
+		{
+			return true;
 		}
 
 		public override string GetChat()

@@ -39,7 +39,7 @@ namespace StarlightRiver.Content.Alchemy
 			{
 				foreach (Item eachWorldItem in Main.item)
 				{
-					if (eachWorldItem.active && Projectile.Hitbox.Contains(eachWorldItem.Center.ToPoint()))
+					if (eachWorldItem.active && Hitbox.Contains(eachWorldItem.Center.ToPoint()))
 					{
 						if (AttemptAddItem(eachWorldItem.Clone()))
 						{
@@ -52,7 +52,7 @@ namespace StarlightRiver.Content.Alchemy
 			}
 
 			wrapper.bubbleColor = new Color(127, 127, 127);
-			wrapper.cauldronRect = Projectile.Hitbox;
+			wrapper.cauldronRect = Hitbox;
 
 			bool skipIngredientLogic = false;
 			if (currentRecipe != null)
@@ -106,7 +106,7 @@ namespace StarlightRiver.Content.Alchemy
 			}
 		}
 
-		public override bool PreDraw(ref Color lightColor)
+		public override void PostDraw(Color lightColor)
 		{
 			if (mostRecentIngredient != null && wrapper.bubbleOpacity > 0f)
 			{
@@ -119,18 +119,16 @@ namespace StarlightRiver.Content.Alchemy
 
 				wrapper.bubbleColor.A = (byte)(wrapper.bubbleColor.A * wrapper.bubbleOpacity);
 				SpriteBatch spriteBatch = Main.spriteBatch;
-				spriteBatch.Draw(bubbleSheet, Projectile.position - Main.screenPosition - new Vector2(0, frameHeight - bubbleYOffset), new Rectangle(0, frameHeight * wrapper.bubbleAnimationFrame, bubbleSheet.Width, frameHeight), wrapper.bubbleColor);
+				spriteBatch.Draw(bubbleSheet, position - Main.screenPosition - new Vector2(0, frameHeight - bubbleYOffset), new Rectangle(0, frameHeight * wrapper.bubbleAnimationFrame, bubbleSheet.Width, frameHeight), wrapper.bubbleColor);
 
 				spriteBatch.End();
 				spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
-				spriteBatch.Draw(bubbleGlow, Projectile.position - Main.screenPosition - new Vector2(0, frameHeight - bubbleYOffset), new Rectangle(0, frameHeight * wrapper.bubbleAnimationFrame, bubbleSheet.Width, frameHeight), wrapper.bubbleColor * wrapper.bubbleOpacity);
+				spriteBatch.Draw(bubbleGlow, position - Main.screenPosition - new Vector2(0, frameHeight - bubbleYOffset), new Rectangle(0, frameHeight * wrapper.bubbleAnimationFrame, bubbleSheet.Width, frameHeight), wrapper.bubbleColor * wrapper.bubbleOpacity);
 
 				spriteBatch.End();
 				spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			}
-
-			return false;
 		}
 
 		/// <summary>

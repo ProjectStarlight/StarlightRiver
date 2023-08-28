@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		{
 			Item.stack--;
 			int i = Item.NewItem(player.GetSource_ItemUse(Item), player.Center + new Vector2(0, -32), Item.type);
-			Main.item[i].velocity = Vector2.UnitX * player.direction * 15;
+			Main.item[i].velocity = new Vector2(player.direction * 15, -2);
 			return true;
 		}
 
@@ -100,12 +100,21 @@ namespace StarlightRiver.Content.Items.Permafrost
 			if (noItems && noBosses)
 			{
 				int i = Item.NewItem(player.GetSource_ItemUse(Item), player.Center + new Vector2(0, -32), ModContent.ItemType<SquidBossSpawn>());
-				Main.item[i].velocity = Vector2.UnitX * player.direction * 15;
+				Main.item[i].velocity = new Vector2(player.direction * 15, -2);
 				(Main.item[i].ModItem as SquidBossSpawn).realItem = false;
 				return true;
 			}
 
 			return false;
+		}
+
+		public override void AddRecipes()
+		{
+			CreateRecipe().
+				AddIngredient(ModContent.ItemType<SquidBossSpawn>()).
+				AddIngredient(ModContent.ItemType<AuroraIceBar>(), 30).
+				AddTile(TileID.DemonAltar).
+				Register();
 		}
 	}
 }

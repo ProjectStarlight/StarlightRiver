@@ -1,9 +1,6 @@
 ﻿using NetEasy;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Packets
@@ -35,9 +32,12 @@ namespace StarlightRiver.Content.Packets
 		{
 			Player hitPlayer = Main.player[playerId];
 
-			Projectile proj = Main.projectile.First(n => projIdentity == n.identity && n.type == projType); //explictly ignores active check since projectile might be killed before this packet reaches the server and other players
+			Projectile proj = Main.projectile.FirstOrDefault(n => projIdentity == n.identity && n.type == projType); //explictly ignores active check since projectile might be killed before this packet reaches the server and other players
 
-			Player.HurtInfo hurtInfo = new Player.HurtInfo
+			if (proj is null)
+				return;
+
+			var hurtInfo = new Player.HurtInfo
 			{
 				Damage = damage
 			};

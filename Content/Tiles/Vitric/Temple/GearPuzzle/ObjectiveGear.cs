@@ -1,18 +1,19 @@
 ﻿using StarlightRiver.Core.Systems;
+using StarlightRiver.Core.Systems.DummyTileSystem;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 {
 	class ObjectiveGear : GearTile
 	{
-		public override int DummyType => ModContent.ProjectileType<ObjectiveGearDummy>();
+		public override int DummyType => DummySystem.DummyType<ObjectiveGearDummy>();
 
 		public override bool RightClick(int i, int j)
 		{
-			var dummy = Dummy(i, j).ModProjectile as GearTileDummy;
+			var dummy = Dummy(i, j) as GearTileDummy;
 
 			if (Main.LocalPlayer.HeldItem.type == ModContent.ItemType<Items.DebugStick>())
 			{
-				dummy.Size++;
+				dummy.GearSize++;
 				return true;
 			}
 
@@ -32,8 +33,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 		public override void PostDraw(Color lightColor)
 		{
 			Texture2D pegTex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "GearPeg").Value;
-			Main.spriteBatch.Draw(pegTex, Projectile.Center - Main.screenPosition, null, lightColor, 0, pegTex.Size() / 2, 1, 0, 0);
-			Texture2D tex = Size switch
+			Main.spriteBatch.Draw(pegTex, Center - Main.screenPosition, null, lightColor, 0, pegTex.Size() / 2, 1, 0, 0);
+			Texture2D tex = GearSize switch
 			{
 				0 => ModContent.Request<Texture2D>(AssetDirectory.Invisible).Value,
 				1 => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "CeramicGearSmall").Value,
@@ -41,7 +42,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 				3 => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "CeramicGearLarge").Value,
 				_ => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "CeramicGearSmall").Value,
 			};
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Rotation, tex.Size() / 2, 1, 0, 0);
+			Main.spriteBatch.Draw(tex, Center - Main.screenPosition, null, lightColor, Rotation, tex.Size() / 2, 1, 0, 0);
 		}
 	}
 

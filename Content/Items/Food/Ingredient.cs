@@ -88,18 +88,9 @@ namespace StarlightRiver.Content.Items.Food
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
-			string description;
-			Color nameColor;
-			Color descriptionColor;
-
-			switch (ThisType)
-			{
-				case IngredientType.Main: description = "Main Course"; nameColor = new Color(255, 220, 140); descriptionColor = new Color(255, 220, 80); break;
-				case IngredientType.Side: description = "Side Dish"; nameColor = new Color(140, 255, 140); descriptionColor = new Color(80, 255, 80); break;
-				case IngredientType.Seasoning: description = "Seasonings"; nameColor = new Color(140, 200, 255); descriptionColor = new Color(80, 140, 255); break;
-				case IngredientType.Bonus: description = "Bonus Effects"; nameColor = new Color(255, 200, 200); descriptionColor = new Color(255, 140, 140); break;
-				default: description = "ERROR"; nameColor = Color.Black; descriptionColor = Color.Black; break;
-			}
+			string description = GetDescription(ThisType);
+			Color nameColor = GetColor(ThisType);
+			Color descriptionColor = GetDescriptionColor(ThisType);
 
 			foreach (TooltipLine line in tooltips)
 			{
@@ -127,14 +118,53 @@ namespace StarlightRiver.Content.Items.Food
 			}
 		}
 
+		public string GetDescription()
+		{
+			return GetDescription(ThisType);
+		}
+
 		public Color GetColor()
 		{
-			return ThisType switch
+			return GetColor(ThisType);
+		}
+
+		public Color GetDescriptionColor()
+		{
+			return GetDescriptionColor(ThisType);
+		}
+
+		public static string GetDescription(IngredientType type)
+		{
+			return type switch
+			{
+				IngredientType.Main => "Main Course",
+				IngredientType.Side => "Side Dish",
+				IngredientType.Seasoning => "Seasonings",
+				IngredientType.Bonus => "Bonus Effects",
+				_ => "ERROR",
+			};
+		}
+
+		public static Color GetColor(IngredientType type)
+		{
+			return type switch
 			{
 				IngredientType.Main => new Color(255, 220, 140),
 				IngredientType.Side => new Color(140, 255, 140),
 				IngredientType.Seasoning => new Color(140, 200, 255),
 				IngredientType.Bonus => new Color(255, 150, 150),
+				_ => Color.Black,
+			};
+		}
+
+		public static Color GetDescriptionColor(IngredientType type)
+		{
+			return type switch
+			{
+				IngredientType.Main => new Color(255, 220, 80),
+				IngredientType.Side => new Color(80, 255, 80),
+				IngredientType.Seasoning => new Color(80, 140, 255),
+				IngredientType.Bonus => new Color(255, 140, 140),
 				_ => Color.Black,
 			};
 		}

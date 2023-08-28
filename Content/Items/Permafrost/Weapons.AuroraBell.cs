@@ -122,7 +122,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			counter++;
 
 			if (chargeCounter < 300)
-				chargeCounter++;
+				chargeCounter += 2;
 
 			if (chargeCounter == 299)
 				Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center + offset, Vector2.Zero, ModContent.ProjectileType<AuroraBellRingSmall>(), 0, 0, Owner.whoAmI);

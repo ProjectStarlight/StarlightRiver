@@ -8,7 +8,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
 {
 	internal class StaminaOrb : DummyTile
 	{
-		public override int DummyType => ProjectileType<StaminaOrbDummy>();
+		public override int DummyType => DummySystem.DummyType<StaminaOrbDummy>();
 
 		public override string Texture => AssetDirectory.InteractiveTile + Name;
 
@@ -34,18 +34,20 @@ namespace StarlightRiver.Content.Tiles.Interactive
 
 	internal class StaminaOrbDummy : Dummy
 	{
+		public float timer;
+
 		public StaminaOrbDummy() : base(TileType<StaminaOrb>(), 16, 16) { }
 
 		public override void Update()
 		{
-			if (Projectile.localAI[0] > 0)
+			if (timer > 0)
 			{
-				Projectile.localAI[0]--;
+				timer--;
 			}
 			else
 			{
 				float rot = Main.rand.NextFloat(0, 6.28f);
-				Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Stamina>(), new Vector2((float)Math.Cos(rot), (float)Math.Sin(rot)) * 0.4f, 0, default, 2f);
+				Dust.NewDustPerfect(Center, DustType<Dusts.Stamina>(), new Vector2((float)Math.Cos(rot), (float)Math.Sin(rot)) * 0.4f, 0, default, 2f);
 			}
 		}
 
@@ -54,12 +56,12 @@ namespace StarlightRiver.Content.Tiles.Interactive
 			AbilityHandler mp = Player.GetHandler();
 
 			mp.Stamina++;
-			Projectile.localAI[0] = 300;
-			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item112, Projectile.Center);
+			timer = 300;
+			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item112, Center);
 			CombatText.NewText(Player.Hitbox, new Color(255, 170, 60), "+1");
 
 			for (float k = 0; k <= 6.28; k += 0.1f)
-				Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Stamina>(), new Vector2((float)Math.Cos(k), (float)Math.Sin(k)) * (Main.rand.Next(25) * 0.1f), 0, default, 3f);
+				Dust.NewDustPerfect(Center, DustType<Dusts.Stamina>(), new Vector2((float)Math.Cos(k), (float)Math.Sin(k)) * (Main.rand.Next(25) * 0.1f), 0, default, 3f);
 		}
 	}
 

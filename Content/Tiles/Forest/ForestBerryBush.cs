@@ -1,4 +1,5 @@
-﻿using Terraria.DataStructures;
+﻿using StarlightRiver.Content.Packets;
+using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ObjectData;
@@ -68,8 +69,8 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 				NetMessage.SendTileSquare(Main.myPlayer, newX, newY, 2, 2);
 
-				Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemType<ForestBerries>()); //Drops berries
-																												   //TODO: Send item spawn packet
+				var itemPacket = new SpawnItemPacket(new Vector2(i, j) * 16, ItemType<ForestBerries>());//Drops berries	
+				itemPacket.Send();
 
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Grass, new Vector2(i, j) * 16);
 			}

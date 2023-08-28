@@ -200,6 +200,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			npcLoot.Add(normalMode);
 			npcLoot.Add(ItemDropRule.Common(ItemType<Tiles.Trophies.AuroracleTrophyItem>(), 10, 1, 1));
 			npcLoot.Add(ItemDropRule.BossBag(ItemType<SquidBossBag>()));
+
+			npcLoot.Add(ItemDropRule.MasterModeCommonDrop(Mod.Find<ModItem>("AuroracleRelicItem").Type));
 		}
 
 		public override void BossLoot(ref string name, ref int potionType)
@@ -535,7 +537,13 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			}
 
 			if (Phase == (int)AIStates.SpawnAnimation)
+			{
 				SpawnAnimation();
+
+				// We need to find an initial target here for MP
+				if (NPC.target == 255)
+					RandomizeTarget();
+			}
 
 			if (Phase == (int)AIStates.FirstPhase) //first phase, part 1. Tentacle attacks and ink.
 			{
@@ -901,8 +909,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			if (platforms is null || platforms.Count != 4 || platforms.Any(n => !n.active || n.ModNPC is not IcePlatform))
 			{
-				NPC.active = false;
-				Mod.Logger.Error("Auroracle failed to rebuild platform collection, aborting!");
+				Mod.Logger.Error("Auroracle failed to rebuild platform collection!");
 			}
 		}
 
@@ -941,8 +948,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			if (arenaActor is null || arenaBlocker is null)
 			{
-				NPC.active = false;
-				Mod.Logger.Error("Auroracle failed to find his arena, aborting!");
+				Mod.Logger.Error("Auroracle failed to find his arena!");
 			}
 		}
 

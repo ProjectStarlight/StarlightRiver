@@ -17,12 +17,13 @@ namespace StarlightRiver.Content.NPCs.Starlight
 		public bool visible;
 		public bool leaving;
 
+		public float localTextState;
+
 		public override string Texture => "StarlightRiver/Assets/NPCs/Starlight/Crow";
 
 		public ref float Timer => ref NPC.ai[0];
 		public ref float State => ref NPC.ai[1];
 		public ref float CutsceneTimer => ref NPC.ai[2];
-		public ref float TextState => ref NPC.ai[3];
 
 		public bool InCutscene
 		{
@@ -51,6 +52,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			NPC.knockBackResist = 0;
 			NPC.gfxOffY = -4;
 			NPC.noGravity = true;
+			NPC.netAlways = true;
 
 			NPC.frame = new Rectangle(0, 0, 0, 0);
 
@@ -65,6 +67,10 @@ namespace StarlightRiver.Content.NPCs.Starlight
 		public override void AI()
 		{
 			Timer++;
+
+			// This guarantees all clients get relevant info about this NPC eventually
+			if (Main.netMode == NetmodeID.Server && Main.GameUpdateCount % 60 == 0)
+				NPC.netUpdate = true;
 
 			if (InCutscene || leaving)
 				CutsceneTimer++;
@@ -211,22 +217,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			}
 
 			if (CutsceneTimer >= 140)
-			{
-#if DEBUG
-				Mod.Logger.Info("Alican is leaving!");
-#endif
-
-				StarlightEventSequenceSystem.willOccur = false;
-				StarlightEventSequenceSystem.occuring = false;
-
-				StarlightEventSequenceSystem.sequence++;
-
-				// Server should tell the clients the event is over
-				if (Main.netMode == NetmodeID.Server)
-					NetMessage.SendData(MessageID.WorldData);
-
 				NPC.active = false;
-			}
 		}
 
 		/// <summary>
@@ -256,7 +247,20 @@ namespace StarlightRiver.Content.NPCs.Starlight
 
 			// If all players are done talking, end the event!
 			if (!Main.player.Any(n => n.active && n.InCutscene<CrowCutsceneOne>()))
+			{
 				Leave();
+
+				StarlightEventSequenceSystem.willOccur = false;
+				StarlightEventSequenceSystem.occuring = false;
+
+				StarlightEventSequenceSystem.sequence++;
+
+				NetMessage.SendData(MessageID.WorldData);
+
+				// NPC dies early on the server
+				if (Main.netMode == NetmodeID.Server)
+					NPC.active = false;
+			}
 
 			// Play spawn animation or face the local player if not
 			if (CutsceneTimer < 300)
@@ -283,19 +287,19 @@ namespace StarlightRiver.Content.NPCs.Starlight
 				RichTextBox.OpenDialogue(NPC, "Crow?", GetIntroDialogue());
 				RichTextBox.AddButton("Continue", () =>
 				{
-					TextState++;
+					localTextState++;
 					RichTextBox.SetData(NPC, "Crow?", GetIntroDialogue());
 
-					if (TextState == 3)
+					if (localTextState == 3)
 						RichTextBox.SetData(NPC, "Alican", GetIntroDialogue());
-					if (TextState == 4)
+					if (localTextState == 4)
 					{
 						RichTextBox.ClearButtons();
 						RichTextBox.AddButton("Accept", () =>
 						{
-							TextState++;
+							localTextState++;
 							RichTextBox.SetData(NPC, "Alican", GetIntroDialogue());
-							if (TextState == 5)
+							if (localTextState == 5)
 							{
 								RichTextBox.ClearButtons();
 								RichTextBox.AddButton("Accept", () =>
@@ -303,7 +307,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 									Main.LocalPlayer.GetHandler().Unlock<HintAbility>();
 									Stamina.gainAnimationTimer = 240;
 
-									TextState++;
+									localTextState++;
 									RichTextBox.SetData(NPC, "Alican", GetIntroDialogue());
 
 									RichTextBox.ClearButtons();
@@ -362,7 +366,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 				RichTextBox.OpenDialogue(NPC, "Alican", GetInfusionDialogue());
 				RichTextBox.AddButton("What?", () =>
 				{
-					TextState++;
+					localTextState++;
 					RichTextBox.SetData(NPC, "Alican", GetInfusionDialogue());
 
 					RichTextBox.ClearButtons();
@@ -370,7 +374,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 					{
 						Main.LocalPlayer.GetHandler().InfusionLimit++;
 
-						TextState++;
+						localTextState++;
 						RichTextBox.SetData(NPC, "Alican", GetInfusionDialogue());
 
 						RichTextBox.ClearButtons();
@@ -402,7 +406,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 
 		private string GetIntroDialogue()
 		{
-			return TextState switch
+			return localTextState switch
 			{
 				0 => "The crow-like... creature... gets up off the ground with a triumphant look in its beady eyes, dusting itself off, and then straightening its ruffled feathers.",
 				1 => "\"There you are! I've jumped through seventeen different axons and half the entire Capricorn Tropic trying to find you!\"",
@@ -417,7 +421,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 
 		private string GetInfusionDialogue()
 		{
-			return TextState switch
+			return localTextState switch
 			{
 				0 => "Placeholder 1",
 				1 => "Placeholder 2",

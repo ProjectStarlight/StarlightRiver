@@ -1,0 +1,47 @@
+# Starlight River v0.1.3: Day Two is live!
+This patch is another hotfix to address some more critical issues and the less-impactful bugs that were missed in the last update, along with some extra QoL and balancing tweaks.
+## Fixes:
+- Fixed a critical issue that would cause the player save to be corrupted when logging out with cooked food, and restored any corrupted characters lost in this way
+- Fixed a critical issue related to Starlight River NPCs like Alican mysteriously disappearing and causing a softlock
+- Fixed a crash preventing servers from starting... this means you can at least launch servers, but again, as we've said many times, it's *really not stable* and *many things break* and you should *really just wait for us to finish official multiplayer support*
+- Fixed Ceiros gaining an unintentionally high amount of defense in Phase 2
+- Fixed Radcula's Rapier letting you clip through walls
+- Fixed Auroracle's laser attack not allowing you to place blocks in the Armillary Trial
+- Fixed the Aurora Curiosity buff gained by following Aurora Wisps actually halving your mining speed rather than doubling it
+- Fixed Whirlwind Pickaxe not being affected by mining speed buffs/debuffs
+- Fixed Gluttony spazzing out when you run out of mana
+- Fixed a bug where the tentalance would replay it's charge animation very quickly
+- Fixed a bug where hint text would dissappear near tiles
+- Fixed Whirlwind Pickaxe being able to destroy things it shouldn't
+- Fixed an issue where auroracle's arena could be knocked back
+- Fixed Starwood Armor set bonus lingering after removing it and not causing mana drops on kill
+- Fixed a crash related to Starlight Water
+- Fixed Starwood Charm being unobtainable
+- Fixed being unable to remove tombstones in protected regions
+- Fixed being able to teleport into protected regions
+- Fixed tutorial text scaling incorrectly with UI scale
+- Fixed aurora water scaling incorrectly with zoom
+- Fixed barrier glow jittering on slopes
+- Fixed more tooltips and Keywords
+## Content:
+- Reworked the Rune Staff, now renamed to the Shine Staff, found in lootbox chests: 
+ - Creates a star that shatters into a spread of small stars that home in on your cursor
+ - Holding M1 instead drains mana to preserve the star, pulsing its light faster and faster depending on how close you are to treasures and artifacts
+## QoL:
+- Added Forbidden Winds indicator when hovering your mouse over Ankh Chests
+- Added Natures Gift as a Jungle artifact, making Corpseflower and other items that use it less painful to obtain
+- Added all other wood type armors to the recipe table for Starwood Armor
+- Made the hitbox for getting hints from NPCs larger and added some default hints to many more things in the world
+- Living Blood drop rate increased
+- Adjusted some spawn rates of annoying flying enemies
+- Added some default hints to various things in the world
+## Balancing:
+- Greatly reduced Impact SMG's thrown attack damage (65 ➜ 28 DMG) and buff scaling on said attack (+10 ➜ +7 DMG per reload stack)
+- Increased Moonfury base damage (25 ➜ 28 DMG) but nerfed its projectile damage (2x ➜ 1.5 DMG), cooldown (1.25s ➜ 1.6s), and Dreamfire buff functionality (DMG x [5 + armor / 5] ➜ +20 DMG & +20% Armor Penetration)
+- Reduced Gunchucks fire rate by ~25% and reduced damage (16 ➜ 9 DMG)
+- Buffed Starwood Boomerang damage (10 ➜ 15 DMG)
+- Increased the Armillary Trial's DPS normalization targets
+## Sundries:
+- Beautified even more sprites and visuals (Barbed Knife, Soujourner's Scarf, Seaglass Ring, Aqua Sapphire, Defiled Ankh, Barrier Potions, Rune of Warding, Forest Berries, Palestone)
+- Updated some keyword text
+- Made the Perfectly Generic Object a little more generic

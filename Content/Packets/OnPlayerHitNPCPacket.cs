@@ -61,9 +61,8 @@ namespace StarlightRiver.Content.Packets
 			runProjMethods = true;
 		}
 
-		protected override void Receive() //PORTTODO: Figure out if this is needed and if so now to adapt to the new system;
+		protected override void Receive()
 		{
-
 			Player Player = Main.player[fromWho];
 			StarlightPlayer modPlayer = Player.GetModPlayer<StarlightPlayer>();
 

@@ -20,9 +20,12 @@ namespace StarlightRiver.Content.Items.Manabonds
 			{
 				mp.mana -= 15;
 
-				for (int k = 0; k < 5; k++)
+				if (Main.myPlayer == minion.owner)
 				{
-					Projectile.NewProjectile(minion.GetSource_FromThis(), minion.Center, minion.Center.DirectionTo(mp.target.Center).RotatedByRandom(0.5f) * Main.rand.NextFloat(18, 24), ModContent.ProjectileType<DruidThorn>(), 16, 0.25f, minion.owner);
+					for (int k = 0; k < 5; k++)
+					{
+						Projectile.NewProjectile(minion.GetSource_FromThis(), minion.Center, minion.Center.DirectionTo(mp.target.Center).RotatedByRandom(0.5f) * Main.rand.NextFloat(18, 24), ModContent.ProjectileType<DruidThorn>(), 16, 0.25f, minion.owner);
+					}
 				}
 			}
 		}

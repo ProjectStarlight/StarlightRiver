@@ -230,7 +230,9 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 					var dust4 = Dust.NewDustPerfect(Player.Center + offset + Player.velocity * 5, ModContent.DustType<IgnitionGauntletWind>(), Vector2.Normalize(-Player.velocity) * Main.rand.NextFloat(6.5f), 0, Color.White, 1.5f);
 					dust4.rotation = dust4.velocity.ToRotation();
 					dust4.position -= (dust4.rotation - 1.57f).ToRotationVector2() * 35;
-					Player.velocity = Vector2.Lerp(Player.velocity, Player.DirectionTo(Main.MouseWorld) * 20 * (float)Math.Sqrt(lerper), 0.15f * acceleration);
+
+					if (Player.DirectionTo(Main.MouseWorld).LengthSquared() != 0)
+						Player.velocity = Vector2.Lerp(Player.velocity, Player.DirectionTo(Main.MouseWorld) * 20 * (float)Math.Sqrt(lerper), 0.15f * acceleration);
 				}
 
 				Player.fullRotationOrigin = Player.Size / 2;

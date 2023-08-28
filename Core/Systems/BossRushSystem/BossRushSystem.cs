@@ -8,6 +8,7 @@ using StarlightRiver.Content.NPCs.BossRush;
 using StarlightRiver.Content.PersistentData;
 using StarlightRiver.Content.Tiles.Vitric;
 using StarlightRiver.Core.Loaders.UILoading;
+using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.Systems.PersistentDataSystem;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System.Collections.Generic;
@@ -95,7 +96,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		/// <summary>
 		/// pauses the boss rush and submits your final score, waiting for player to exit out or click retry
 		/// </summary>
-		public static void deadLogic()
+		public static void DeadLogic()
 		{
 			if (Main.GameMode == 0)
 				PersistentDataStoreSystem.GetDataStore<BossRushDataStore>().normalScore = Score;
@@ -269,7 +270,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 						StarlightWorld.vitricBiome = new Rectangle((int)(a.X - 200 * 16) / 16, (int)(a.Y - 6 * 16) / 16, 400, 640);
 						CutawaySystem.CutawayHandler.CreateCutaways();
 
-						var dummy = Main.projectile.FirstOrDefault(n => n.active && n.ModProjectile is VitricBossAltarDummy)?.ModProjectile as VitricBossAltarDummy;
+						var dummy = DummySystem.dummies.FirstOrDefault(n => n.active && n is VitricBossAltarDummy) as VitricBossAltarDummy;
 
 						if (Framing.GetTileSafely(dummy.ParentX, dummy.ParentY).TileFrameX < 90)
 						{
@@ -371,7 +372,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			// end the rush if the player died
 			if (Main.LocalPlayer.dead)
 			{
-				deadLogic();
+				DeadLogic();
 				return;
 			}
 

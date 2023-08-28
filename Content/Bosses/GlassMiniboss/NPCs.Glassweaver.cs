@@ -11,6 +11,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
+	[AutoloadBossHead]
 	public partial class Glassweaver : ModNPC, IHintable
 	{
 		public static readonly Color GlowDustOrange = new(6255, 108, 0);
@@ -40,8 +41,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		public Rectangle Arena => new((int)arenaPos.X - 35 * 16, (int)arenaPos.Y - 30 * 16, 70 * 16, 30 * 16);
 
 		public override string Texture => AssetDirectory.Glassweaver + Name;
-
-		public override string BossHeadTexture => AssetDirectory.Glassweaver + Name + "_BossHead";
 
 		//Phase tracking utils
 		public enum Phases
@@ -96,7 +95,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			NPC.boss = true;
 			NPC.defense = 14;
 			NPC.HitSound = SoundID.NPCHit52;
-			Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/Miniboss");
+			Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/GlassWeaver");
 			NPC.dontTakeDamage = true;
 			NPC.npcSlots = 10;
 		}
@@ -210,6 +209,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 				case (int)Phases.DirectPhase:
 
+					NPC.dontTakeDamage = false; // extra failsafe
 					NPC.rotation = MathHelper.Lerp(NPC.rotation, 0, 0.33f);
 
 					if (NPC.velocity.Y > 0f && NPC.collideY && !disableJumpSound)

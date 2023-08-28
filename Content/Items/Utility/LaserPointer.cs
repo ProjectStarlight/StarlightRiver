@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Helpers;
 using System;
+using System.IO;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -66,8 +67,8 @@ namespace StarlightRiver.Content.Items.Utility
 		{
 			if (!Main.projectile.Any(n => n.active && n.type == Item.shoot && n.owner == player.whoAmI))
 			{
-				var p = Projectile.NewProjectileDirect(source, player.Center, Vector2.Zero, ModContent.ProjectileType<LaserPointerProjectile>(), damage, knockback, player.whoAmI);
-				(p.ModProjectile as LaserPointerProjectile).color = color;
+				LaserPointerProjectile.colorToAssign = color;
+				Projectile.NewProjectileDirect(source, player.Center, Vector2.Zero, ModContent.ProjectileType<LaserPointerProjectile>(), damage, knockback, player.whoAmI);
 			}
 
 			return false;
@@ -96,6 +97,8 @@ namespace StarlightRiver.Content.Items.Utility
 
 	class LaserPointerProjectile : ModProjectile, IDrawAdditive
 	{
+		public static Color colorToAssign;
+
 		public Vector2 endPoint;
 		public float LaserRotation;
 		public Color color;
@@ -112,13 +115,22 @@ namespace StarlightRiver.Content.Items.Utility
 			Projectile.penetrate = -1;
 		}
 
+		public override void OnSpawn(IEntitySource source)
+		{
+			color = colorToAssign;
+		}
+
 		public override void AI()
 		{
-			Projectile.Center = Owner.Center;
-			LaserRotation = (Main.MouseWorld - Owner.Center).ToRotation();
+			Vector2 OwnerCenter = Owner.Center + new Vector2(0, Owner.gfxOffY);
+
+			Projectile.Center = OwnerCenter;
+			ControlsPlayer controlsPlayer = Owner.GetModPlayer<ControlsPlayer>();
+			controlsPlayer.mouseRotationListener = true;
+			LaserRotation = (controlsPlayer.mouseWorld - OwnerCenter).ToRotation();
 			Owner.heldProj = Projectile.whoAmI;
 			Owner.itemAnimation = Owner.itemTime = 2;
-			Owner.ChangeDir(Math.Sign((Main.MouseWorld - Owner.Center).X));
+			Owner.ChangeDir(Math.Sign((Main.MouseWorld - OwnerCenter).X));
 			Owner.itemRotation = MathHelper.WrapAngle(LaserRotation - ((Owner.direction == 1) ? 0 : MathHelper.Pi));
 
 			if (Owner.channel)
@@ -138,8 +150,10 @@ namespace StarlightRiver.Content.Items.Utility
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Main.spriteBatch.Draw(ModContent.Request<Texture2D>(Texture).Value, Owner.Center - Main.screenPosition, null, lightColor, LaserRotation, new Vector2(0, ModContent.Request<Texture2D>(Texture).Value.Height - 3), 1, 0, 0);
-			Main.spriteBatch.Draw(ModContent.Request<Texture2D>(Texture + "Glow").Value, Owner.Center - Main.screenPosition, null, color, LaserRotation, new Vector2(0, ModContent.Request<Texture2D>(Texture + "Glow").Value.Height - 3), 1, 0, 0);
+			Vector2 OwnerCenterScreen = Owner.Center + new Vector2(0, Owner.gfxOffY) - Main.screenPosition;
+
+			Main.spriteBatch.Draw(ModContent.Request<Texture2D>(Texture).Value, OwnerCenterScreen, null, lightColor, LaserRotation, new Vector2(0, ModContent.Request<Texture2D>(Texture).Value.Height - 3), 1, 0, 0);
+			Main.spriteBatch.Draw(ModContent.Request<Texture2D>(Texture + "Glow").Value, OwnerCenterScreen, null, color, LaserRotation, new Vector2(0, ModContent.Request<Texture2D>(Texture + "Glow").Value.Height - 3), 1, 0, 0);
 			return false;
 		}
 
@@ -161,6 +175,16 @@ namespace StarlightRiver.Content.Items.Utility
 
 			Texture2D impactTex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
 			spriteBatch.Draw(impactTex, endPoint - Main.screenPosition, null, color, 0, impactTex.Size() / 2, 0.5f, 0, 0);
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.WriteRGB(color);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			color = reader.ReadRGB();
 		}
 	}
 }

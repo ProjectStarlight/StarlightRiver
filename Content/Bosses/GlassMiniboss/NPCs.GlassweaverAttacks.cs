@@ -380,8 +380,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				NPC.velocity.X *= 0.8f;
 			}
 
-			if (Main.netMode != NetmodeID.MultiplayerClient 
-					&& AttackTimer % betweenSpearTime == 0 && AttackTimer >= JAVELIN_SPAWN_TIME 
+			if (Main.netMode != NetmodeID.MultiplayerClient
+					&& AttackTimer % betweenSpearTime == 0 && AttackTimer >= JAVELIN_SPAWN_TIME
 					&& AttackTimer < JAVELIN_SPAWN_TIME + spearCount * betweenSpearTime)
 			{
 				NPC.FaceTarget();
@@ -435,9 +435,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			int betweenSpikes = 5;
 			float dist = Utils.GetLerpValue(spikeSpawn - 1.5f, spikeSpawn + spikeCount * betweenSpikes, AttackTimer, true);
 
-			if (Main.netMode != NetmodeID.MultiplayerClient 
-					&& AttackTimer >= spikeSpawn 
-					&& AttackTimer < spikeSpawn + spikeCount * betweenSpikes 
+			if (Main.netMode != NetmodeID.MultiplayerClient
+					&& AttackTimer >= spikeSpawn
+					&& AttackTimer < spikeSpawn + spikeCount * betweenSpikes
 					&& AttackTimer % betweenSpikes == 0)
 			{
 				float spikeX = MathHelper.Lerp(PickSpotSelf().X, PickSpotSelf(-1).X + 102 * Direction, dist);
@@ -488,9 +488,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			int betweenSpikes = 5;
 			float dist = Utils.GetLerpValue(spikeSpawn - 1.5f, spikeSpawn + spikeCount * betweenSpikes, AttackTimer, true);
 
-			if (Main.netMode != NetmodeID.MultiplayerClient 
-					&& AttackTimer >= spikeSpawn - 1 
-					&& AttackTimer < spikeSpawn + spikeCount * betweenSpikes 
+			if (Main.netMode != NetmodeID.MultiplayerClient
+					&& AttackTimer >= spikeSpawn - 1
+					&& AttackTimer < spikeSpawn + spikeCount * betweenSpikes
 					&& AttackTimer % betweenSpikes == 0)
 			{
 				float spikeX = MathHelper.Lerp(arenaPos.X, PickSpotSelf(-1).X + 102 * Direction, dist);
@@ -498,9 +498,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), spikePos, Vector2.Zero, ProjectileType<GlassRaiseSpike>(), 40, 1f, owner: -1, -20, dist);
 			}
 
-			if (Main.netMode != NetmodeID.MultiplayerClient 
-					&& AttackTimer >= spikeSpawn 
-					&& AttackTimer < spikeSpawn + spikeCount * betweenSpikes 
+			if (Main.netMode != NetmodeID.MultiplayerClient
+					&& AttackTimer >= spikeSpawn
+					&& AttackTimer < spikeSpawn + spikeCount * betweenSpikes
 					&& (AttackTimer - 1) % betweenSpikes == 0)
 			{
 
@@ -600,7 +600,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			{
 				//using proj.scale == 1f is a little bit tenuous of a way of determining that this is actually the original one. if this breaks in the future may need to have a specific synced var to determine
 				bubble = Main.projectile.Where(proj => proj.active && proj.type == ModContent.ProjectileType<GlassBubble>() && proj.scale == 1f).FirstOrDefault();
-			} else
+			}
+			else
 			{
 				bubble = Main.projectile[bubbleIndex];
 			}

@@ -208,7 +208,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 
 					if (GlobalTimer % 60 == 0) //periodically check for more targets
 					{
-						NPC potentialTarget = NPC.FindNearestNPC(n => !n.noGravity && !targets.Contains(n) && Vector2.Distance(NPC.Center, n.Center) < 500);
+						NPC potentialTarget = NPC.FindNearestNPC(n => n.active && !n.friendly && !n.noGravity && !targets.Contains(n) && Vector2.Distance(NPC.Center, n.Center) < 500);
 
 						if (potentialTarget != null)
 							targets.Add(potentialTarget);

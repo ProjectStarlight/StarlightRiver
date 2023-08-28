@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		private int fireCounter = 0;
 
-		private Player Player => Main.player[Projectile.owner];
+		private Player Owner => Main.player[Projectile.owner];
 
 		public override string Texture => AssetDirectory.SteampunkItem + "JetwelderJumper";
 
@@ -172,10 +172,10 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		private void FireMissle(NPC target)
 		{
-			if (target != default)
+			if (target != default && Owner.whoAmI == Main.myPlayer)
 			{
 				Vector2 vel = ArcVelocityHelper.GetArcVel(Projectile.Center, target.Center, 0.25f, 300, 600);
-				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, vel, ModContent.ProjectileType<JetwelderJumperMissle>(), Projectile.damage * 2, Projectile.knockBack, Player.whoAmI, target.whoAmI);
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, vel, ModContent.ProjectileType<JetwelderJumperMissle>(), Projectile.damage * 2, Projectile.knockBack, Owner.whoAmI, target.whoAmI);
 			}
 		}
 	}
@@ -225,8 +225,11 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			if (Projectile.frame == 0)
 				Lighting.AddLight(Projectile.Center, Color.Red.ToVector3() * 0.7f);
 
-			ManageCaches();
-			ManageTrail();
+			if (Main.netMode != NetmodeID.Server)
+			{
+				ManageCaches();
+				ManageTrail();
+			}
 		}
 
 		public override bool PreDraw(ref Color lightColor)

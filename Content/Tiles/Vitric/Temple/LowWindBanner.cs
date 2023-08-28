@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	{
 		public override string Texture => AssetDirectory.Invisible;
 
-		public override int DummyType => ProjectileType<LowWindBannerDummy>();
+		public override int DummyType => DummySystem.DummyType<LowWindBannerDummy>();
 
 		public override void SetStaticDefaults()
 		{
@@ -25,10 +25,12 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 	internal class LowWindBannerDummy : Dummy
 	{
+		public float timer;
+
 		private RectangularBanner Chain;
 		int blow;
 
-		public override int ParentY => (int)(Projectile.position.Y / 16);
+		public override int ParentY => (int)(position.Y / 16);
 
 		public LowWindBannerDummy() : base(TileType<LowWindBanner>(), 16, 200) { }
 
@@ -39,22 +41,22 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public override void SafeSetDefaults()
 		{
-			Chain = new RectangularBanner(16, false, Projectile.Center - Vector2.UnitY * 90, 8)
+			Chain = new RectangularBanner(16, false, Center - Vector2.UnitY * 90, 8)
 			{
 				constraintRepetitions = 2,//defaults to 2, raising this lowers stretching at the cost of performance
 				drag = 2f,//This number defaults to 1, Is very sensitive
 				forceGravity = new Vector2(0f, 1.25f),//gravity x/y
 				scale = 15.0f,
-				parent = Projectile
+				parent = this
 			};
 		}
 
 		public override void Update()
 		{
-			Chain.UpdateChain(Projectile.Center - Vector2.UnitY * 90);
+			Chain.UpdateChain(Center - Vector2.UnitY * 90);
 			Chain.IterateRope(WindForce);
 
-			Projectile.ai[0] += 0.005f;
+			timer += 0.005f;
 
 			if (blow > 0)
 				blow--;
@@ -74,7 +76,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 			if (index > 2)
 			{
-				int offset = (int)(Projectile.position.X / 16 + Projectile.position.Y / 16);
+				int offset = (int)(position.X / 16 + position.Y / 16);
 
 				float sin = (float)System.Math.Sin(StarlightWorld.visualTimer + offset);
 				float sin2 = (float)System.Math.Sin(Main.GameUpdateCount * 0.016f + offset);
@@ -89,11 +91,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 			Chain.ropeSegments[index].posNow = pos;
 			Chain.ropeSegments[index].color = color;
-		}
-
-		public override void Kill(int timeLeft)
-		{
-			VerletChainSystem.toDraw.Remove(Chain);
 		}
 	}
 }
