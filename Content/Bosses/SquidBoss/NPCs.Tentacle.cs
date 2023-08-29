@@ -359,7 +359,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			}
 
 			splashCooldown--;
-			
+
 			if ((NPC.oldPos[0].Y > Arena.WaterLevelWorld && NPC.position.Y <= Arena.WaterLevelWorld || NPC.oldPos[0].Y + NPC.height <= Arena.WaterLevelWorld && NPC.position.Y + NPC.height > Arena.WaterLevelWorld) && splashCooldown <= 0)
 			{
 				splashCooldown = MAX_SPLASH_COOLDOWN;
@@ -368,7 +368,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 				Helpers.Helper.PlayPitched("SquidBoss/LightSplash", 0.5f, 0, NPC.Center);
 				Helpers.Helper.PlayPitched("Magic/WaterWoosh", 0.8f, 0, NPC.Center);
-				
+
 				if (Main.netMode != NetmodeID.MultiplayerClient)
 					Projectile.NewProjectile(NPC.GetSource_FromThis(), new Vector2(NPC.Center.X + tentacleSin * 30, Arena.WaterLevelWorld - 41), Vector2.Zero, ProjectileType<AuroraWaterSplash>(), 0, 0, Main.myPlayer);
 

@@ -310,11 +310,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			if (boss != null && boss.active)
 				return true;
 
-			var left = Main.npc.FirstOrDefault(n => n.ModNPC is VitricBackdropLeft);
+			NPC left = Main.npc.FirstOrDefault(n => n.ModNPC is VitricBackdropLeft);
 			if (left?.ModNPC != null && (left.ModNPC as VitricBackdropLeft).State >= 3)
 				return true;
 
-			var right = Main.npc.FirstOrDefault(n => n.ModNPC is VitricBackdropRight);
+			NPC right = Main.npc.FirstOrDefault(n => n.ModNPC is VitricBackdropRight);
 			if (right?.ModNPC != null && (left.ModNPC as VitricBackdropRight).State >= 3)
 				return true;
 
