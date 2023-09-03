@@ -601,5 +601,37 @@ namespace StarlightRiver.Helpers
 
 			return true;
 		}
+
+		// for custom hold style animations, see Skullbuster / Sling etc
+		public static void CleanHoldStyle(Player player, float desiredRotation, Vector2 desiredPosition, Vector2 spriteSize, Vector2? rotationOriginFromCenter = null, bool noSandstorm = false, bool flipAngle = false, bool stepDisplace = true)
+		{
+			if (noSandstorm)
+				player.sandStorm = false;
+
+			if (rotationOriginFromCenter == null)
+				rotationOriginFromCenter = new Vector2?(Vector2.Zero);
+
+			Vector2 origin = rotationOriginFromCenter.Value;
+			origin.X *= player.direction;
+			origin.Y *= player.gravDir;
+			player.itemRotation = desiredRotation;
+
+			if (flipAngle)
+				player.itemRotation *= player.direction;
+			else if (player.direction < 0)
+				player.itemRotation += 3.1415927f;
+
+			Vector2 consistentAnchor = player.itemRotation.ToRotationVector2() * (spriteSize.X / -2f - 10f) * player.direction - origin.RotatedBy(player.itemRotation, default);
+			Vector2 offsetAgain = spriteSize * -0.5f;
+			Vector2 finalPosition = desiredPosition + offsetAgain + consistentAnchor;
+			if (stepDisplace)
+			{
+				int frame = player.bodyFrame.Y / player.bodyFrame.Height;
+				if (frame > 6 && frame < 10 || frame > 13 && frame < 17)
+					finalPosition -= Vector2.UnitY * 2f;
+			}
+
+			player.itemLocation = finalPosition;
+		}
 	}
 }
