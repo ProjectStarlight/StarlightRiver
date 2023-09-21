@@ -117,6 +117,9 @@ namespace StarlightRiver.Content.Items.Dungeon
 			if (justAltUsed)
 				return;
 
+			if (Item.noUseGraphic) // the item draws wrong for the first frame it is drawn when you switch directions for some odd reason, this plus setting it to true in shoot makes it not draw for the first frame.
+				Item.noUseGraphic = false;
+
 			float animProgress = 1f - player.itemTime / (float)player.itemTimeMax;
 
 			if (Main.myPlayer == player.whoAmI)
@@ -242,6 +245,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 				//Projectile.NewProjectile(player.GetSource_ItemUse(Item), position + offset * 43, Vector2.Zero, ModContent.ProjectileType<CoachGunMuzzleFlash>(), 0, 0, player.whoAmI, rot);
 
 				CameraSystem.shake += 2;
+				Item.noUseGraphic = true;
 			}
 
 			return false;
@@ -906,7 +910,9 @@ namespace StarlightRiver.Content.Items.Dungeon
 			dust.position += dust.velocity;
 
 			if (!dust.noGravity)
+			{
 				dust.velocity *= 0.99f;
+			}
 			else
 			{
 				dust.velocity *= 0.975f;
