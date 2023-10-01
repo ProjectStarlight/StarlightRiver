@@ -46,6 +46,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 		{
 			base.Update();
 
+			if (GearEntity is null)
+				return;
+
 			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
 				return;
 

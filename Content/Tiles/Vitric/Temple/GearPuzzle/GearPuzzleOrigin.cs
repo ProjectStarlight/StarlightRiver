@@ -31,6 +31,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 		{
 			base.Update();
 
+			if (GearEntity is null)
+				return;
+
 			GearSize = 3;
 			Engaged = true;
 			RotationVelocity = 2;
