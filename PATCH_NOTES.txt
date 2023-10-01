@@ -4,6 +4,7 @@
 - Fixed a crash that could occur on reload
 - Fixed a crash that could occur with the gear puzzle
 - Fixed structures sometimes generating inside of the vitric desert
+- Fixed an issue where the text box could never fade in on rare occurances
 
 ## Tweaks
 - Reduced the life of gloom slimes in difficulties above normal
