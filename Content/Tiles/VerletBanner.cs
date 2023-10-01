@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Tiles
 	[SLRDebug]
 	class VerletBannerItem : QuickTileItem
 	{
-		public VerletBannerItem() : base("Verlet banner", "Debug Item", "VerletBanner", 1, AssetDirectory.VitricTile, false) { }
+		public VerletBannerItem() : base("Verlet banner", "{{Debug}} Item", "VerletBanner", 1, AssetDirectory.VitricTile, false) { }
 	}
 
 	internal class VerletBannerDummy : Dummy

@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Items.Food
 
 		private void LootEaterSteak(NPC NPC, NPCLoot npcloot)
 		{
-			if (NPC.type is NPCID.EaterofSouls or NPCID.Corruptor)
+			if (NPC.type == NPCID.EaterofSouls || NPC.type == NPCID.Corruptor)
 				npcloot.Add(ItemDropRule.Common(ModContent.ItemType<EaterSteak>(), 8));
 		}
 	}

@@ -5,6 +5,7 @@ using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Content.Items.Permafrost;
 using StarlightRiver.Content.NPCs.BaseTypes;
 using StarlightRiver.Content.PersistentData;
+using StarlightRiver.Core.Systems.BossRushSystem;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -881,6 +882,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 				if (AttackTimer > 80)
 					NPC.active = false;
+
+				BossRushSystem.ForceFail();
 			}
 		}
 

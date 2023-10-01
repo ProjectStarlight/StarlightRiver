@@ -253,7 +253,7 @@ namespace StarlightRiver.Content.Pickups
 	[SLRDebug]
 	public class WindsTileItem : QuickTileItem
 	{
-		public WindsTileItem() : base("Forbidden Winds", "Debug placer for ability pickup", "ForbiddenWindsPickupTile", -1) { }
+		public WindsTileItem() : base("Forbidden Winds", "{{Debug}} placer for ability pickup", "ForbiddenWindsPickupTile", -1) { }
 
 		public override string Texture => "StarlightRiver/Assets/Abilities/ForbiddenWindsPreview";
 	}

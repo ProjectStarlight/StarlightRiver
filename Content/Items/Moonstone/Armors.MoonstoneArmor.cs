@@ -73,7 +73,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Moonstone Helmet");
-			Tooltip.SetDefault("2% increased melee critical strike chance\n+20 Barrier");
+			Tooltip.SetDefault("2% increased melee critical strike chance\n+20 {{Barrier}}");
 		}
 
 		public override void SetDefaults()
@@ -255,7 +255,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Moonstone Chestpiece");
-			Tooltip.SetDefault("+35 Barrier");
+			Tooltip.SetDefault("+35 {{Barrier}}");
 		}
 
 		public override void SetDefaults()
@@ -312,7 +312,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Moonstone Greaves");
-			Tooltip.SetDefault("Improved acceleration\n +25 Barrier");
+			Tooltip.SetDefault("Improved acceleration\n +25 {{Barrier}}");
 		}
 
 		public override void SetDefaults()

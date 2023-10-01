@@ -3,6 +3,7 @@ using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.PersistentData;
 using StarlightRiver.Core.Loaders.UILoading;
+using StarlightRiver.Core.Systems.BossRushSystem;
 using System;
 using System.IO;
 using System.Linq;
@@ -321,6 +322,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 						NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<GlassweaverWaiting>(), 0, 0, StarlightWorld.HasFlag(WorldFlags.DesertOpen) ? 4 : 2);
 						NPC.active = false;
 					}
+
+					BossRushSystem.ForceFail();
 
 					break;
 			}

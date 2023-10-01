@@ -14,6 +14,7 @@ using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -94,6 +95,24 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		}
 
 		/// <summary>
+		/// Forces a failure of the boss rush if a boss flees for example. To be called by the boss.
+		/// </summary>
+		public static void ForceFail()
+		{
+			if (isBossRush)
+			{
+				foreach (Player player in Main.player)
+				{
+					if (player.active)
+					{
+						player.KillMe(PlayerDeathReason.ByCustomReason($"{player.name} was swept away by the starlight river"), 9999999, 1, false);
+						player.Center = Vector2.One * 32;
+					}
+				}
+			}
+		}
+
+		/// <summary>
 		/// pauses the boss rush and submits your final score, waiting for player to exit out or click retry
 		/// </summary>
 		public static void DeadLogic()
@@ -108,7 +127,16 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			PersistentDataStoreSystem.GetDataStore<BossRushDataStore>().ForceSave();
 
 			if (deathFadeoutTimer < MAX_DEATH_FADEOUT)
+			{
 				deathFadeoutTimer++;
+			}
+			else
+			{
+				foreach (NPC npc in Main.npc)
+				{
+					npc.active = false;
+				}
+			}
 
 			Main.LocalPlayer.respawnTimer = 2;
 			BossRushGUIHack.inScoreScreen = true; //just means if they exit out without the button dumps them into the score screen from dead

@@ -142,6 +142,6 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 	{
 		public override string Texture => AssetDirectory.Debug;
 
-		public NoxiousNodeItem() : base("Noxious Node", "Debug item", "NoxiousNode") { }
+		public NoxiousNodeItem() : base("Noxious Node", "{{Debug}} item", "NoxiousNode") { }
 	}
 }

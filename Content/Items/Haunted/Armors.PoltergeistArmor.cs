@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.Items.Haunted
 		{
 			player.setBonus =
 				"Double tap DOWN with a magic weapon to haunt or unhaunt it, or with an empty hand to unhaunt all\n" +
-				"Haunted weapons float around you and attack automatically, but decrease your max mana\n" +
+				"Haunted weapons float around you and attack automatically, but {{Reserve}} mana\n" +
 				"Haunted weapons become disinterested in non-magic users and can't be used while haunted";
 
 			minions.RemoveAll(n => !n.active || n.type != ProjectileType<PoltergeistMinion>());
@@ -153,7 +153,7 @@ namespace StarlightRiver.Content.Items.Haunted
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Haunting Breastplate");
-			Tooltip.SetDefault("5% increased magic damage\n+15% Inoculation");
+			Tooltip.SetDefault("5% increased magic damage\n+15% {{Inoculation}}");
 		}
 
 		public override void SetDefaults()

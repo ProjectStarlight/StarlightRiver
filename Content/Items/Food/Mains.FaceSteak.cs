@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Items.Food
 
 		private void LootFaceSteak(NPC NPC, NPCLoot npcloot)
 		{
-			if (NPC.type is NPCID.FaceMonster or NPCID.Herpling)
+			if (NPC.type == NPCID.FaceMonster || NPC.type == NPCID.Herpling)
 				npcloot.Add(ItemDropRule.Common(ModContent.ItemType<FaceSteak>(), 8));
 		}
 	}

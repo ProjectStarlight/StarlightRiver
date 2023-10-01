@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		private float prevState = 0;
 
 		protected ref float Timer => ref NPC.ai[0];
-		protected ref float State => ref NPC.ai[1];
+		public ref float State => ref NPC.ai[1];
 		protected ref float ScrollTimer => ref NPC.ai[2];
 		protected ref float ScrollDelay => ref NPC.ai[3];
 
@@ -330,30 +330,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 	public class VitricBackdropRight : VitricBackdropLeft //im lazy
 	{
-		/*public override void MainDraw(SpriteBatch sb)
-        {
-            string path = AssetDirectory.VitricBoss + Name;
-            Texture2D tex = Request<Texture2D>(path).Value;
-            Texture2D tex2 = Request<Texture2D>(path + "Top").Value;
-            int targetHeight = (int)(Timer / Risetime * tex.Height);
-
-            if (State >= 3) //ignore timer after rising is done
-                targetHeight = tex.Height;
-
-            const int yOffset = 3; // Fit perfectly in the gap
-
-            Rectangle target = new Rectangle(
-                (int)(NPC.position.X - Main.screenPosition.X),
-                (int)(NPC.position.Y - targetHeight - Main.screenPosition.Y) - yOffset,
-                tex.Width,
-                targetHeight);
-
-            Rectangle source = new Rectangle(0, 0, tex.Width, targetHeight);
-
-            Helpers.LightingBufferRenderer.DrawWithLighting(target, tex, source, default);
-            Helpers.LightingBufferRenderer.DrawWithLighting(target.TopLeft() - Vector2.UnitY * 56, tex2, tex2.Bounds, default);
-        }*/
-
 		public override void MainDraw(SpriteBatch sb)
 		{
 			string path = AssetDirectory.VitricBoss + Name;

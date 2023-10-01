@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Staff of Self-Disassembly");
-			Tooltip.SetDefault("Reserve 40 life to summon a Flesh Horror\n" +
+			Tooltip.SetDefault("{{Reserve}} 40 life to summon a Flesh Horror\n" +
 				"Horrors grant increased life regeneration\n" +
 				"Life regeneration boost is increased when Horrors strike an enemy");
 

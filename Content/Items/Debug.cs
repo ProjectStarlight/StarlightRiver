@@ -75,7 +75,7 @@ namespace StarlightRiver.Content.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Debug Mode");
-			Tooltip.SetDefault("Enables debug mode");
+			Tooltip.SetDefault("Enables {{Debug}} mode");
 		}
 
 		public override void SetDefaults()
