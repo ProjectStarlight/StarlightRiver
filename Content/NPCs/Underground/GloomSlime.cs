@@ -35,6 +35,11 @@ namespace StarlightRiver.Content.NPCs.Underground
 			NPC.DeathSound = SoundID.NPCDeath1;
 		}
 
+		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
+		{
+			NPC.lifeMax = 25 + (NPC.lifeMax - 25) / 2;
+		}
+
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
 		{
 			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
