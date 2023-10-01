@@ -69,6 +69,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
 	[SLRDebug]
 	class RedBannerShortItem : QuickTileItem
 	{
-		public RedBannerShortItem() : base("Short Flowing Banner", "Debug Item", "RedBannerShort", 2, AssetDirectory.VitricTile, false) { }
+		public RedBannerShortItem() : base("Short Flowing Banner", "{{Debug}} Item", "RedBannerShort", 2, AssetDirectory.VitricTile, false) { }
 	}
 }

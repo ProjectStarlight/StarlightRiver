@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 	{
 		public override string Texture => AssetDirectory.OvergrowTile + "WindowSmall";
 
-		public WindowSmallItem() : base("Smol Window", "Debug Item", "WindowSmall", 1) { }
+		public WindowSmallItem() : base("Smol Window", "{{Debug}} Item", "WindowSmall", 1) { }
 	}
 
 	class WindowSmallDummy : Dummy, IDrawAdditive

@@ -46,6 +46,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			recipe.Register();
 		}
 	}
+
 	internal class VitricBulletProjectile : ModProjectile
 	{
 		private List<Vector2> cache;

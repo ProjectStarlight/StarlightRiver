@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public StaminaRing() : base("Band of Starlight", "+2 Starlight regeneration") { }
+		public StaminaRing() : base("Band of Starlight", "+2 {{Starlight}} regeneration") { }
 
 		public override void SafeSetDefaults()
 		{

@@ -180,6 +180,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	[SLRDebug]
 	class DashableDoorItem : QuickTileItem
 	{
-		public DashableDoorItem() : base("DashableDoor", "Debug Item", "DashableDoor", 1, AssetDirectory.Debug, true) { }
+		public DashableDoorItem() : base("DashableDoor", "{{Debug}} Item", "DashableDoor", 1, AssetDirectory.Debug, true) { }
 	}
 }

@@ -83,6 +83,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 	[SLRDebug]
 	class LensItem : QuickTileItem
 	{
-		public LensItem() : base("Reflector Lens", "Debug Item", "Lens") { }
+		public LensItem() : base("Reflector Lens", "{{Debug}} Item", "Lens") { }
 	}
 }

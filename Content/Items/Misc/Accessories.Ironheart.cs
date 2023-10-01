@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public Ironheart() : base("Ironheart", "Melee damage generates decaying barrier and defense") { }
+		public Ironheart() : base("Ironheart", "Melee damage generates decaying {{barrier}} and defense") { }
 
 		public override void Load()
 		{

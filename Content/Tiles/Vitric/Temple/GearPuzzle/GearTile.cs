@@ -320,8 +320,12 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 		public int GearSize
 		{
-			get => GearEntity.size;
-			set => GearEntity.size = value % 4;
+			get => GearEntity?.size ?? 0;
+			set
+			{
+				if (GearEntity != null)
+					GearEntity.size = value % 4;
+			}
 		}
 
 		public float Rotation

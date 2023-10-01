@@ -91,7 +91,6 @@ namespace StarlightRiver.Content.Items.Manabonds
 				spawnSoundPerformed = true;
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_LightningBugZap, Projectile.Center);
 			}
-			
 
 			if (Projectile.timeLeft == 14)
 			{

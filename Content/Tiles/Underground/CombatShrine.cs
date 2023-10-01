@@ -5,6 +5,7 @@ using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -35,7 +36,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 	[SLRDebug]
 	class CombatShrineItem : QuickTileItem
 	{
-		public CombatShrineItem() : base("Combat shrine placer", "debug item", "CombatShrine") { }
+		public CombatShrineItem() : base("Combat shrine placer", "{{Debug}} item", "CombatShrine") { }
 	}
 
 	class CombatShrineDummy : ShrineDummy, IDrawAdditive
@@ -328,6 +329,18 @@ namespace StarlightRiver.Content.Tiles.Underground
 			float sin = 0.5f + (float)Math.Sin(time * 2 + 1) * 0.5f;
 			float sin2 = 0.5f + (float)Math.Sin(time) * 0.5f;
 			return new Color(255, (int)(50 * sin), 0) * sin2 * Windup;
+		}
+
+		public override void SafeSendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(timer);
+			writer.Write(state);
+		}
+
+		public override void SafeReceiveExtraAI(BinaryReader reader)
+		{
+			timer = reader.ReadSingle();
+			state = reader.ReadSingle();
 		}
 	}
 

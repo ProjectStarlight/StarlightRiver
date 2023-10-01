@@ -10,6 +10,7 @@ Barrier | Provides significant damage reduction while active. When you resist da
 Starlight | Consumed to cast Abilities. The mystical energy of the mind that governs meaning, memory, and connection, and allows its wielders to accomplish great feats by bringing their will into reality. | 170 | 240 | 255
 Cursed | This item comes with a build-defining boon and a crippling flaw. Curses can usually be worked around, and sometimes even turned in your favor. | 200 | 100 | 255
 Inoculation | Multiplicative reduction to the DoT damage you take. | 170 | 255 | 150
+Reserve | A resource with an amount reserved cannot go above it's maximum minus it's reserved amount. | 180 | 180 | 200
 Rend | Permanently decreases defense by the specified amount, stacking additively. | 255 | 100 | 80
 Overcharged | Decreases enemy defense and causes them to constantly create shocking sparks, damaging nearby enemies. | 0 | 255 | 255
 Artifact | A buried piece of treasure, identified by the sparkles that appear when shining light over the blocks it's buried within. | 255 | 210 | 100

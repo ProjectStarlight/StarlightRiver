@@ -44,10 +44,10 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Amulet of the Bloodless Warrior");
-			Tooltip.SetDefault("+100 Maximum Barrier" +
-				"\nBarrier absorbs ALL damage, but recharges slower" +
+			Tooltip.SetDefault("+100 {{Barrier}}" +
+				"\n{{Barrier}} absorbs ALL damage, but recharges slower" +
 				"\nYou are unaffected by damage over time" +
-				"\nCursed : You have 0 HP. Healing grants a decaying damage boost instead of life" +
+				"\nYou have 0 life. Healing grants a decaying damage boost instead of life" +
 				"\n'Leave your flesh behind, for your rage is all you need'");
 		}
 

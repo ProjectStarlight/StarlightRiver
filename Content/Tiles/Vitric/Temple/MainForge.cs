@@ -200,6 +200,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	{
 		public override string Texture => AssetDirectory.Debug;
 
-		public MainForgeItem() : base("Main forge", "Debug item", "MainForge") { }
+		public MainForgeItem() : base("Main forge", "{{Debug}} item", "MainForge") { }
 	}
 }

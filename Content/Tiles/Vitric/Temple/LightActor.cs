@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	{
 		public override string Texture => AssetDirectory.Debug;
 
-		public LightActorItem() : base("Light actor placer", "Debug item", "LightActor", 6) { }
+		public LightActorItem() : base("Light actor placer", "{{Debug}} item", "LightActor", 6) { }
 	}
 
 	internal class LightActorDummy : Dummy
