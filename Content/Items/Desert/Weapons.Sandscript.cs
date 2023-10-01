@@ -137,11 +137,6 @@ namespace StarlightRiver.Content.Items.Desert
 				Projectile.velocity = Vector2.Lerp(Projectile.velocity, Owner.DirectionTo(OwnerMouse.Value), 0.1f);
 		}
 
-		public override void Kill(int timeLeft)
-		{
-			base.Kill(timeLeft);
-		}
-
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
