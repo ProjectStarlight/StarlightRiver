@@ -316,7 +316,18 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 			set => GearEntity.rotationOffset = value;
 		}
 
-		protected GearTileEntity GearEntity => TileEntity.ByPosition[new Point16(ParentX, ParentY)] as GearTileEntity;
+		protected GearTileEntity GearEntity
+		{
+			get
+			{
+				var key = new Point16(ParentX, ParentY);
+
+				if (TileEntity.ByPosition.ContainsKey(key))
+					return TileEntity.ByPosition[key] as GearTileEntity;
+
+				return null;
+			}
+		}
 
 		public int GearSize
 		{
@@ -345,6 +356,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 		public override void Update()
 		{
+			if (GearEntity is null)
+				return;
+
 			if (gearAnimation > 0)
 				gearAnimation--;
 

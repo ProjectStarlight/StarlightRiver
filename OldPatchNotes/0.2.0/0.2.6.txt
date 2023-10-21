@@ -1,4 +1,4 @@
-# Starlight River 0.2.6
+﻿# Starlight River 0.2.6
 
 ## Fixes
 - Fixed Auroracle never targetting certain players
@@ -19,3 +19,19 @@
 - Ceiros' arena's pillars will no longer fall down before the background stops
 - Removed a number of unused music tracks, reducing filesize significantly
 - Some title screen music has changed as a result of this
+
+# Starlight River 0.2.6.1
+
+## Fixes
+- Maintinence for october stable release
+
+# Starlight River 0.2.6.2
+
+## Fixes
+- Fixed a crash that could occur on reload
+- Fixed a crash that could occur with the gear puzzle
+- Fixed structures sometimes generating inside of the vitric desert
+- Fixed an issue where the text box could never fade in on rare occurances
+
+## Tweaks
+- Reduced the life of gloom slimes in difficulties above normal
