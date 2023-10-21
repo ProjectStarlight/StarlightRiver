@@ -194,7 +194,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
 			for (int i = 0; i < target.buffType.Length; i++)
 			{
-				if (BuffID.Sets.IsAnNPCWhipDebuff[target.buffType[i]])
+				if (BuffID.Sets.IsATagBuff[target.buffType[i]])
 					hasTag = true;
 			}
 
