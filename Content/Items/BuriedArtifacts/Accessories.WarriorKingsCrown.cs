@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			Player.GetCritChance(DamageClass.Summon) += Player.maxMinions * 2;
 			Player.GetDamage(DamageClass.Summon) += Player.maxTurrets * 0.2f;
 			Player.GetDamage(DamageClass.Summon) += 2;
-			Player.GetModPlayer<CombatMountPlayer>().combatMountCooldownMultiplier -= 0.3f;
+			Player.GetModPlayer<CombatMountPlayer>().combatMountCooldownMultiplier += 0.3f;
 
 			Player.maxMinions = 0;
 			Player.maxTurrets = 0;

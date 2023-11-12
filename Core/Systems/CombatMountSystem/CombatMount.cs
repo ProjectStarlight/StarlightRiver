@@ -112,7 +112,7 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 			damageCoefficient = (int)player.GetTotalDamage(DamageClass.Summon).ApplyTo(originalDamageCoefficient);
 			primaryAttackTimer = MaxPrimaryTime;
 			primaryCooldownTimer = primaryCooldownCoefficient + primaryAttackTimer;
-			primaryCooldownTimer = (int)(primaryCooldownTimer * player.GetModPlayer<CombatMountPlayer>().combatMountCooldownMultiplier);
+			primaryCooldownTimer = (int)(primaryCooldownTimer * (1f / player.GetModPlayer<CombatMountPlayer>().combatMountCooldownMultiplier));
 			OnStartPrimaryAction(player);
 		}
 
@@ -140,7 +140,7 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 			damageCoefficient = (int)player.GetTotalDamage(DamageClass.Summon).ApplyTo(originalDamageCoefficient);
 			secondaryAbilityTimer = secondarySpeedCoefficient;
 			secondaryCooldownTimer = (int)(secondaryCooldownCoefficient * secondaryCooldownSpeedMultiplier) + secondaryAbilityTimer;
-			secondaryCooldownTimer = (int)(secondaryCooldownTimer * player.GetModPlayer<CombatMountPlayer>().combatMountCooldownMultiplier);
+			secondaryCooldownTimer = (int)(secondaryCooldownTimer * (1f / player.GetModPlayer<CombatMountPlayer>().combatMountCooldownMultiplier));
 			OnStartSecondaryAction(player);
 		}
 

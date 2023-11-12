@@ -7,7 +7,7 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 		public CombatMount activeMount;
 
 		/// <summary>
-		/// Multiplier for combat mount cooldowns
+		/// Multiplier for combat mount cooldowns. Increase to decrease the cooldown and vice versa, ex: 1.5f = 50% faster, 0.5f = 50% slower
 		/// </summary>
 		public float combatMountCooldownMultiplier = 1f;
 
