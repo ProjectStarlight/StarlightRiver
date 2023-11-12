@@ -6,6 +6,11 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 	{
 		public CombatMount activeMount;
 
+		/// <summary>
+		/// Multiplier for combat mount cooldowns
+		/// </summary>
+		public float combatMountCooldownMultiplier = 1f;
+
 		public int mountingTime;
 		public Vector2 startPoint;
 
@@ -52,6 +57,11 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 			}
 
 			orig(self);
+		}
+
+		public override void ResetEffects()
+		{
+			combatMountCooldownMultiplier = 1f;
 		}
 
 		public override void PreUpdateMovement() //Updates the active mount's timers and calls their actions.

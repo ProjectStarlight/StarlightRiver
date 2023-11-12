@@ -3456,6 +3456,16 @@ Items: {
 		DisplayName: Pink Laser Pointer
 		Tooltip: ""
 	}
+
+	WarriorKingsCrown: {
+		DisplayName: Warrior King's Crown
+		Tooltip:
+			'''
+			Cursed : All of your summon slots are converted into +2% summoning critical strike per slotchance and all of your sentry slots are converted into +20% summoning damage per slot
+			Summoning damage increased by 200%
+			Combat mount cooldowns reduced by 30%
+			'''
+	}
 }
 
 Tiles: {

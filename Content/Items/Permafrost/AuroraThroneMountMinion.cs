@@ -29,9 +29,9 @@ namespace StarlightRiver.Content.Items.Permafrost
 		{
 			Projectile.ai[0]++;
 
-			NPC target = Helpers.Helper.FindNearestNPC(Projectile.Center, true);
+			NPC target = Main.npc.Where(n => n.CanBeChasedBy() && n.Distance(Projectile.Center) < 1500f).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
 
-			if (target != null && Projectile.ai[0] > 30)
+			if (target != default && Projectile.ai[0] > 30)
 				Projectile.velocity += Vector2.Normalize(Projectile.Center - target.Center) * -0.55f;
 
 			if (Projectile.ai[0] < 30 || Projectile.velocity.Length() > 10)
