@@ -27,7 +27,11 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 		/// </summary>
 		public float moveSpeedMultiplier = 1;
 		/// <summary>
-		/// The base amount of damage this mount does. The primary and secondary effects may be effected by this differently.
+		/// The base damage this mount does before buffs. Used similarly to Projectile.originalDamage.
+		/// </summary>
+		public int originalDamageCoefficient;
+		/// <summary>
+		/// The damage this mount does. The primary and secondary effects may be effected by this differently.
 		/// </summary>
 		public int damageCoefficient;
 
@@ -72,7 +76,7 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 
 		public void MountUp(Player player)
 		{
-			SetDefaults();
+			//SetDefaults();
 			player.GetModPlayer<CombatMountPlayer>().activeMount = this;
 		}
 
@@ -105,8 +109,10 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 
 		public void StartPrimaryAction(Player player)
 		{
+			damageCoefficient = (int)player.GetTotalDamage(DamageClass.Summon).ApplyTo(originalDamageCoefficient);
 			primaryAttackTimer = MaxPrimaryTime;
 			primaryCooldownTimer = primaryCooldownCoefficient + primaryAttackTimer;
+			primaryCooldownTimer = (int)(primaryCooldownTimer * (1f / player.GetModPlayer<CombatMountPlayer>().combatMountCooldownMultiplier));
 			OnStartPrimaryAction(player);
 		}
 
@@ -131,8 +137,10 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 
 		public void StartSecondaryAction(Player player)
 		{
+			damageCoefficient = (int)player.GetTotalDamage(DamageClass.Summon).ApplyTo(originalDamageCoefficient);
 			secondaryAbilityTimer = secondarySpeedCoefficient;
 			secondaryCooldownTimer = (int)(secondaryCooldownCoefficient * secondaryCooldownSpeedMultiplier) + secondaryAbilityTimer;
+			secondaryCooldownTimer = (int)(secondaryCooldownTimer * (1f / player.GetModPlayer<CombatMountPlayer>().combatMountCooldownMultiplier));
 			OnStartSecondaryAction(player);
 		}
 
