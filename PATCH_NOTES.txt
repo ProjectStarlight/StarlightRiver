@@ -2,6 +2,7 @@
 
 ## Fixes
 - Fixed Face Steak dropping from Eater of Souls (now drops from Face Monsters)
+- Fixed amulet of the bloodless warrior making you appear dead in multiplayer
 
 ## Tweaks
 - Both Eater Steak and Face Steak can now drop from Corruptors and Herplings respectively
