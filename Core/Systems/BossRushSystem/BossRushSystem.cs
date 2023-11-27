@@ -240,7 +240,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		{
 			stages = new List<BossRushStage>()
 			{
-				new BossRushStage(
+				new(
 					"Structures/ArmillarySphereRoom",
 					ModContent.NPCType<BossRushOrb>(),
 					new Vector2(952, 720),
@@ -259,7 +259,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 					100
 					),
 
-				new BossRushStage(
+				new(
 					"Structures/SquidBossArena",
 					ModContent.NPCType<SquidBoss>(),
 					new Vector2(500, 1600),
@@ -272,7 +272,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 					},
 					a => StarlightWorld.squidBossArena = new Rectangle(a.X, a.Y, 109, 180)),
 
-				new BossRushStage(
+				new(
 					"Structures/VitricForge",
 					ModContent.NPCType<Glassweaver>(),
 					new Vector2(600, 24 * 16),
@@ -289,7 +289,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 					},
 					a => StarlightWorld.vitricBiome = new Rectangle(a.X + 37, a.Y - 68, 400, 140)),
 
-				new BossRushStage(
+				new(
 					"Structures/VitricTempleNew",
 					ModContent.NPCType<VitricBoss>(),
 					new Vector2(1600, 1000),
@@ -316,7 +316,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 					},
 					a => _ = a),
 
-				new BossRushStage(
+				new(
 					"Structures/BossRushEnd",
 					ModContent.NPCType<BossRushGoal>(),
 					new Vector2(50, 200),

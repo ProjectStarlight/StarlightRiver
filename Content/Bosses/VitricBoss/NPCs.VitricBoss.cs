@@ -130,10 +130,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			{
 				swooshes = new List<VitricBossSwoosh>()
 				{
-				new VitricBossSwoosh(new Vector2(-16, -40), 6, this),
-				new VitricBossSwoosh(new Vector2(16, -40), 6, this),
-				new VitricBossSwoosh(new Vector2(-46, -34), 10, this),
-				new VitricBossSwoosh(new Vector2(46, -34), 10, this)
+				new(new Vector2(-16, -40), 6, this),
+				new(new Vector2(16, -40), 6, this),
+				new(new Vector2(-46, -34), 10, this),
+				new(new Vector2(46, -34), 10, this)
 				};
 
 				body = new BodyHandler(this);
