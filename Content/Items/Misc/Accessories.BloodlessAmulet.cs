@@ -70,7 +70,13 @@ namespace StarlightRiver.Content.Items.Misc
 			Player.GetModPlayer<BarrierPlayer>().barrierDamageReduction = 1;
 			Player.GetModPlayer<BarrierPlayer>().playerCanLiveWithOnlyBarrier = true;
 			Player.GetModPlayer<BarrierPlayer>().rechargeRate -= 2;
-			Player.statLife = 0;
+
+			// 0 hp is okay for singleplayer but would require some unholy IL edits for multiplayer. setting it to 1 instead seems fine
+			if (Main.netMode == NetmodeID.SinglePlayer)
+				Player.statLife = 0;
+			else
+				Player.statLife = 1;
+			
 			Player.lifeRegen = 0;
 			Player.lifeRegenCount = 0;
 		}
