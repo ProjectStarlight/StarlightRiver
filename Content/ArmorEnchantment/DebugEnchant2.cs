@@ -8,7 +8,7 @@ namespace StarlightRiver.Content.ArmorEnchantment
 
 		public DebugEnchant2(Guid guid) : base(guid) { }
 
-		public override string Texture => AssetDirectory.ArmorEnchant + "DebugEnchant";
+		public override string Texture => AssetDirectory.ArmorEnchant + "{{Debug}}Enchant";
 
 		public override bool IsAvailable(Item head, Item chest, Item legs)
 		{

@@ -171,11 +171,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 								target.rocketTime = target.rocketTimeMax;
 								target.wingTime = target.wingTimeMax;
-								target.canJumpAgain_Cloud = true;
-								target.canJumpAgain_Blizzard = true;
-								target.canJumpAgain_Sandstorm = true;
-								target.canJumpAgain_Fart = true;
-								target.canJumpAgain_Sail = true;
+								target.RefreshExtraJumps();
 							}
 
 							var topColission = new Rectangle((int)NPC.position.X, (int)NPC.position.Y - 840, NPC.width, NPC.height);

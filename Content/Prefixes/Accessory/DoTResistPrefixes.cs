@@ -50,16 +50,16 @@ namespace StarlightRiver.Content.Prefixes.Accessory
 
 	internal class DoTResistPrefix1 : DoTResistPrefix
 	{
-		public DoTResistPrefix1() : base(0.02f, "Healthy", "+2% Inoculation") { }
+		public DoTResistPrefix1() : base(0.02f, "Healthy", "+2% {{Inoculation}}") { }
 	}
 
 	internal class DoTResistPrefix2 : DoTResistPrefix
 	{
-		public DoTResistPrefix2() : base(0.04f, "Protected", "+4% Inoculation") { }
+		public DoTResistPrefix2() : base(0.04f, "Protected", "+4% {{Inoculation}}") { }
 	}
 
 	internal class DoTResistPrefix3 : DoTResistPrefix
 	{
-		public DoTResistPrefix3() : base(0.05f, "Blessed", "+5% Inoculation") { }
+		public DoTResistPrefix3() : base(0.05f, "Blessed", "+5% {{Inoculation}}") { }
 	}
 }

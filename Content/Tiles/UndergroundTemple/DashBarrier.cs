@@ -66,6 +66,6 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 	[SLRDebug]
 	public class DashBarrierItem : QuickTileItem
 	{
-		public DashBarrierItem() : base("Dash Barrier", "Debug Item", "DashBarrier", -12, AssetDirectory.UndergroundTempleTile) { }
+		public DashBarrierItem() : base("Dash Barrier", "{{Debug}} Item", "DashBarrier", -12, AssetDirectory.UndergroundTempleTile) { }
 	}
 }

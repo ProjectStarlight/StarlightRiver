@@ -28,6 +28,6 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 	{
 		public override string Texture => "StarlightRiver/Assets/Tiles/Bubble";
 
-		public TestBubble() : base("Bubble", "Debug Item", "TempleLootBubble", 5, AssetDirectory.UndergroundTempleTile) { }
+		public TestBubble() : base("Bubble", "{{Debug}} Item", "TempleLootBubble", 5, AssetDirectory.UndergroundTempleTile) { }
 	}
 }

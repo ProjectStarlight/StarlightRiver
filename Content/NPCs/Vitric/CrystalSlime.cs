@@ -4,6 +4,7 @@ using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Helpers;
+using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
@@ -39,6 +40,11 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			NPC.knockBackResist = 0.6f;
 			NPC.aiStyle = 1;
 			NPC.immortal = true;
+		}
+
+		public override void OnSpawn(IEntitySource source)
+		{
+			Shield = 1; // make sure it spawns with a shield even if the spawnNPC doesn't include the shield value
 		}
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)

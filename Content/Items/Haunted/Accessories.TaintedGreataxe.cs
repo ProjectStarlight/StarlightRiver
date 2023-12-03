@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Items.Haunted
 
 		public override void SetStaticDefaults()
 		{
-			Tooltip.SetDefault("Cursed : Landing a Critical Strike will inflict Focused on a new, different enemy\n" +
+			Tooltip.SetDefault("Cursed : Landing a Critical Strike will inflict {{Focused}} on a new, different enemy\n" +
 				"<right> on the Greataxe whilst it is Embedded to release it");
 		}
 

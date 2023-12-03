@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private int oldBarrier;
 
-		public SpikedMail() : base("Spiked Mail", "Barrier damage is applied to attackers as thorns \n+20 barrier") { }
+		public SpikedMail() : base("Spiked Mail", "{{Barrier}} damage is applied to attackers as thorns \n+20 {{barrier}}") { }
 
 		public override void Load()
 		{

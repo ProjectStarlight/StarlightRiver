@@ -117,6 +117,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	[SLRDebug]
 	class OldCeirosShrineItem : QuickTileItem
 	{
-		public OldCeirosShrineItem() : base("Old Ceiros Shrine", "Debug Item", "OldCeirosShrine", 0) { }
+		public OldCeirosShrineItem() : base("Old Ceiros Shrine", "{{Debug}} Item", "OldCeirosShrine", 0) { }
 	}
 }

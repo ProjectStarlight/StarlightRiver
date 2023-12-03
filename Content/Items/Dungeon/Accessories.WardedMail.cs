@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 	{
 		public override string Texture => AssetDirectory.DungeonItem + Name;
 
-		public WardedMail() : base("Warded Mail", "Barrier damage is applied to attackers as thorns \n+Barrier negates 10% more damage \n+40 barrier") { }
+		public WardedMail() : base("Warded Mail", "{{Barrier}} damage is applied to attackers as thorns \n+{{Barrier}} negates 10% more damage \n+40 {{barrier}}") { }
 
 		public override List<int> ChildTypes => new()
 		{

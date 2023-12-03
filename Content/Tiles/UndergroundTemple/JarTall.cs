@@ -122,6 +122,6 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 	{
 		public override string Texture => AssetDirectory.Debug;
 
-		public JarTallItem() : base("Stamina Jar Placer (Tall)", "Debug Item", "JarTall", -12) { }
+		public JarTallItem() : base("Stamina Jar Placer (Tall)", "{{Debug}} Item", "JarTall", -12) { }
 	}
 }

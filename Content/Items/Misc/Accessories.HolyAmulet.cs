@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public HolyAmulet() : base("Holy Amulet", "Releases bursts of homing holy energy for every 25 HP you heal") { }
+		public HolyAmulet() : base("Holy Amulet", "Releases bursts of homing holy energy for every 25 life you heal") { }
 
 		public override void Load()
 		{

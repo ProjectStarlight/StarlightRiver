@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Items.BarrierDye
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Sentinel's Tincture");
-			Tooltip.SetDefault("Causes barrier effect to mimic the shield of the Shattered Sentinel\nEquipable\nVanity Item");
+			Tooltip.SetDefault("Causes {{barrier}} effect to mimic the shield of the Shattered Sentinel\nEquipable\nVanity Item");
 		}
 
 		public override void SetDefaults()

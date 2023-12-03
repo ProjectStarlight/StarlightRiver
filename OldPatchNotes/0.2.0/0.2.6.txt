@@ -1,0 +1,37 @@
+﻿# Starlight River 0.2.6
+
+## Fixes
+- Fixed Auroracle never targetting certain players
+- Various improvements to Auroracle multiplayer experience
+- Added a timeout to tentacles splashing aurora water to prevent rare very loud sound
+- Fixed multiplayer artifact crash bug with other players being too far away
+- Fixed manabond crash bug
+- Naturally spawned crystal slimes now have shield
+- Fixed shrines not starting correctly in multiplayer
+- Fixed a crash that could occur in the vitric desert in multiplayer
+- Boss rush will now fail if the player manages to teleport out of bounds
+- Fixed an issue of small temple keys having a negative max stack size
+
+## Tweaks
+- mana bars no longer show for players that don't own the minion
+- Added a sell value to warding rune (25 silver)
+- Changed typo in druidic manabond
+- Ceiros' arena's pillars will no longer fall down before the background stops
+- Removed a number of unused music tracks, reducing filesize significantly
+- Some title screen music has changed as a result of this
+
+# Starlight River 0.2.6.1
+
+## Fixes
+- Maintinence for october stable release
+
+# Starlight River 0.2.6.2
+
+## Fixes
+- Fixed a crash that could occur on reload
+- Fixed a crash that could occur with the gear puzzle
+- Fixed structures sometimes generating inside of the vitric desert
+- Fixed an issue where the text box could never fade in on rare occurances
+
+## Tweaks
+- Reduced the life of gloom slimes in difficulties above normal

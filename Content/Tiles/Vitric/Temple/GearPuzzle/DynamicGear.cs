@@ -46,6 +46,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 		{
 			base.Update();
 
+			if (GearEntity is null)
+				return;
+
 			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
 				return;
 
@@ -133,6 +136,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 	[SLRDebug]
 	class GearTilePlacer : QuickTileItem
 	{
-		public GearTilePlacer() : base("Gear puzzle", "Debug Item", "DynamicGear", 8, AssetDirectory.VitricTile) { }
+		public GearTilePlacer() : base("Gear puzzle", "{{Debug}} Item", "DynamicGear", 8, AssetDirectory.VitricTile) { }
 	}
 }

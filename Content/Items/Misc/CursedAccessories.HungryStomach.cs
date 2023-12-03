@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SetStaticDefaults()
 		{
-			Tooltip.SetDefault("Restore Starlight by damaging foes\nMelee weapons restore twice as much\nCursed: Disables natural Starlight regeneration");
+			Tooltip.SetDefault("Restore {{Starlight}} by damaging foes\nMelee weapons restore twice as much\nDisables natural {{Starlight}} regeneration");
 			DisplayName.SetDefault("Hungry Stomach");
 		}
 

@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	[SLRDebug]
 	class WindsRoomActorItem : QuickTileItem
 	{
-		public WindsRoomActorItem() : base("Winds Room Actor", "Debug Item", "WindsRoomActor", 0, AssetDirectory.VitricTile + "WindsRoomOrnamentLeft", true) { }
+		public WindsRoomActorItem() : base("Winds Room Actor", "{{Debug}} Item", "WindsRoomActor", 0, AssetDirectory.VitricTile + "WindsRoomOrnamentLeft", true) { }
 	}
 
 	class WindsRoomActorDummy : Dummy
