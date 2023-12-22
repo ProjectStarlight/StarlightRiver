@@ -3456,6 +3456,16 @@ Items: {
 		DisplayName: Pink Laser Pointer
 		Tooltip: ""
 	}
+
+	MediRemote: {
+		DisplayName: M.E.D.I Remote
+		Tooltip:
+			'''
+			Summons a Medical Energy Delivery Instrument, to siphon health energy from your enemies
+			After siphoning enough health energy, it drops a healing beacon
+			Only one can be summoned at a time
+			'''
+	}
 }
 
 Tiles: {
@@ -3948,6 +3958,7 @@ Projectiles: {
 	ConstructSpawner.DisplayName: Construct Spawner
 	GauntletSpawner.DisplayName: Gauntlet Spawner
 	SpawnEgg.DisplayName: Spawn Egg
+	MediRemoteProjectile.DisplayName: Medical Energy Delivery Instrument
 }
 
 Biomes: {
@@ -4382,6 +4393,11 @@ Buffs: {
 			What lies below?
 			Increased mining speed
 			'''
+	}
+
+	MediRemoteSummonBuff: {
+		DisplayName: M.E.D.I Remote
+		Description: Always good to see a healing drone
 	}
 }
 
