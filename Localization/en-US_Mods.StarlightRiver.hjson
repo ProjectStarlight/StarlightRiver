@@ -4089,6 +4089,7 @@ NPCs: {
 
 	DesertWisp2.DisplayName: Desert Wisp2
 	StaminaShardPickup.DisplayName: Stamina Shard Pickup
+	SpiderHead.DisplayName: "[PH] Spider Head"
 }
 
 Buffs: {
