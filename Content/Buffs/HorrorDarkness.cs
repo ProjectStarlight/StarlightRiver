@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using StarlightRiver.Helpers;
+using System.Linq;
 using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Content.Buffs
@@ -14,14 +15,29 @@ namespace StarlightRiver.Content.Buffs
 	internal class HorrorDarknessSystem : ModSystem
 	{
 		/// <summary>
-		/// The maximum amount of rays to scan to generate light, will auto-adjust based on performance
+		/// The maximum amount of rays to scan to generate light
 		/// </summary>
-		public static int maxScans;
+		public static int slices = 200;
+
+		/// <summary>
+		/// The distance each ray marches per step
+		/// </summary>
+		public static int resolution = 4;
+
+		/// <summary>
+		/// The max radius of the desired light
+		/// </summary>
+		public static int radius = 640;
 
 		/// <summary>
 		/// RenderTarget which holds the occluded lighting map
 		/// </summary>
 		public static ScreenTarget lightTarget = new(DrawLights, () => Main.LocalPlayer.HasBuff<HorrorDarkness>(), 1);
+
+		/// <summary>
+		/// Total amount of checks per reay
+		/// </summary>
+		public static int Polls => 640 / resolution;
 
 		/// <summary>
 		/// If drawing should occur or not, based on if the RenderTarget is active
@@ -37,9 +53,11 @@ namespace StarlightRiver.Content.Buffs
 		{
 			if (Active && lightTarget.RenderTarget != null)
 			{
-				Effect effect = Filters.Scene["StarMap"].GetShader().Shader;
+				Effect effect = Filters.Scene["HorrorLight"].GetShader().Shader;
 				effect.Parameters["map"].SetValue(lightTarget.RenderTarget);
 				effect.Parameters["background"].SetValue(Main.screenTarget);
+				effect.Parameters["screenSize"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+				effect.Parameters["rad"].SetValue(4);
 
 				Main.spriteBatch.Begin();
 				Texture2D clearTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/MagicPixel").Value;
@@ -66,45 +84,59 @@ namespace StarlightRiver.Content.Buffs
 		{
 			Player player = Main.LocalPlayer;
 
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/Light").Value;
-			float texLen = tex.Size().Length();
-
 			Texture2D clearTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/MagicPixel").Value;
 			spriteBatch.Draw(clearTex, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.Black);
 
-			maxScans = 160;
+			float[] dists = Enumerable.Repeat((float)Polls * resolution, slices).ToArray();
 
-			for (int k = 0; k < maxScans; k++)
+			for (int k = 0; k < slices; k++)
 			{
-				float rot = k / (float)maxScans * 6.28f;
+				float rot = k / (float)slices * 6.28f;
 
-				Vector2 endPoint = player.Center + Vector2.UnitX.RotatedBy(rot) * 160 * 8;
-
-				for (int i = 0; i < 160; i++)
+				for (int i = 0; i < Polls; i++)
 				{
-					Vector2 posCheck = player.Center + Vector2.UnitX.RotatedBy(rot) * i * 8;
+					Vector2 posCheck = player.Center + Vector2.UnitX.RotatedBy(rot) * i * resolution;
 
-					if (Helper.PointInTile(posCheck) || i == 159)
+					if (Helper.PointInTile(posCheck))
 					{
-						endPoint = posCheck;
+						Vector2 endPoint = posCheck;
+						dists[k] = Vector2.Distance(player.Center, endPoint) + 4;
 						break;
 					}
-				}
-
-				float dist = Vector2.Distance(player.Center, endPoint) + 4;
-				float texDist = dist / (160 * 8f) * texLen;
-				var source = new Rectangle(0, 0, (int)texDist, tex.Height);
-				var target = new Rectangle(0, 0, (int)dist, tex.Height);
-				target.Offset((player.Center - Main.screenPosition).ToPoint());
-
-				Color color = Color.White;
-				color.A = 0;
-
-				spriteBatch.Draw(tex, target, source, color, rot, new Vector2(0, tex.Height / 2f), 0, 0);
-
-				Texture2D impactTex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowAlpha").Value;
-				spriteBatch.Draw(impactTex, endPoint - Main.screenPosition, null, color * (1 - dist / (160 * 8f)) * 0.3f, 0, impactTex.Size() / 2, 1 - dist / (160 * 8f), 0, 0);
+				}			
 			}
+
+			for (int k = 1; k < slices - 1; k++)
+			{
+				float dist = dists[k];
+
+				DrawSlice(spriteBatch, dist, k / (float)slices * 6.28f);
+				int synth = 8;
+				for (int i = 1; i < synth; i++)
+				{
+					float percent = (float)i / synth;
+					DrawSlice(spriteBatch, Helper.LerpFloat(dist, dists[k - 1], percent), (k - percent) / (float)slices * 6.28f);
+					DrawSlice(spriteBatch, Helper.LerpFloat(dist, dists[k + 1], percent), (k + percent) / (float)slices * 6.28f);
+				}
+			}
+		}
+
+		public static void DrawSlice(SpriteBatch spriteBatch, float dist, float rot)
+		{
+			Player player = Main.LocalPlayer;
+
+			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/Light").Value;
+			float texLen = tex.Size().Length();
+
+			float texDist = dist / ((float)Polls * resolution) * texLen;
+			var source = new Rectangle(0, 0, (int)texDist, tex.Height);
+			var target = new Rectangle(0, 0, (int)dist, tex.Height);
+			target.Offset((player.Center - Main.screenPosition).ToPoint());
+
+			Color color = Color.White;
+			color.A = 0;
+
+			spriteBatch.Draw(tex, target, source, color * 0.1f, rot, new Vector2(0, tex.Height / 2f), 0, 0);
 		}
 	}
 }
