@@ -10,6 +10,8 @@ namespace StarlightRiver.Content.Bosses.SpiderBoss
 	internal class SpiderHead : ModNPC
 	{
 		public Vector2 start;
+
+		public float curveProgress;
 		public int[] pathCoefficients = new int[4];
 
 		public ref float Timer => ref NPC.ai[0];
@@ -22,8 +24,8 @@ namespace StarlightRiver.Content.Bosses.SpiderBoss
 		public Vector2 PointOnPath(float progress)
 		{
 			float t = progress * 6.28f;
-			float x = 300 * (float)Math.Sin(pathCoefficients[0] * t) + 300 * (float)Math.Sin(pathCoefficients[1] * t);
-			float y = 300 * (float)Math.Sin(pathCoefficients[2] * t) + 300 * (float)Math.Sin(pathCoefficients[3] * t);
+			float x = 500 * (float)Math.Sin(pathCoefficients[0] * t) + 500 * (float)Math.Sin(pathCoefficients[1] * t);
+			float y = 500 * (float)Math.Sin(pathCoefficients[2] * t) + 500 * (float)Math.Sin(pathCoefficients[3] * t);
 
 			return start + new Vector2(x, y);
 		}
@@ -57,20 +59,21 @@ namespace StarlightRiver.Content.Bosses.SpiderBoss
 			if (start == Vector2.Zero)
 				start = NPC.Center;
 
-			NPC.Center = PointOnPath(Timer % 600 / 600f);
+			NPC.Center = PointOnPath(curveProgress);
 
-			for(int x = -4; x <= 4; x++)
+			// Tunnel boring logic
+			for(int x = -3; x <= 3; x++)
 			{
-				for(int y = -4; y <= 4; y++)
+				for(int y = -3; y <= 3; y++)
 				{
 					int checkX = (int)NPC.Center.X / 16 + x;
 					int checkY = (int)NPC.Center.Y / 16 + y;
 
 
 
-					if ((Math.Abs(x) > 2 || Math.Abs(y) > 2) && Framing.GetTileSafely(checkX, checkY).WallType != WallID.Wood)
+					if ((Math.Abs(x) > 1 || Math.Abs(y) > 1) && Framing.GetTileSafely(checkX, checkY).WallType != WallID.Wood)
 					{
-						WorldGen.PlaceTile(checkX, checkY, TileID.WoodBlock, false, true);
+						WorldGen.PlaceTile(checkX, checkY, TileID.WoodBlock, true, true);
 					}
 					else
 					{
@@ -79,6 +82,25 @@ namespace StarlightRiver.Content.Bosses.SpiderBoss
 					}
 				}
 			}
+
+			curveProgress += 0.00025f;
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+		{
+			var tex = ModContent.Request<Texture2D>(AssetDirectory.Debug).Value;
+
+			spriteBatch.Draw(tex, NPC.Center - screenPos, Color.Red);
+
+			int segments = 20;
+			for(int k = 0; k < segments; k++)
+			{
+				var point = PointOnPath(curveProgress - k * 0.001f);
+				float rot = point.DirectionTo(PointOnPath(curveProgress - k * 0.002f)).ToRotation();
+				spriteBatch.Draw(tex, point - screenPos, null, Color.White, rot, tex.Size() / 2f, 1, 0, 0);
+			}
+
+			return true;
 		}
 	}
 }
