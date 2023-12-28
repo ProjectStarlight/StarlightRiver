@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using StarlightRiver.Content.CustomHooks;
+using System.Collections.Generic;
+using System.IO;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -60,6 +62,16 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 			Item.sentry = true;
 			Item.mana = 20;
 			Item.noMelee = true;
+		}
+
+		public override void NetSend(BinaryWriter writer)
+		{
+			writer.Write(dealerName);
+		}
+
+		public override void NetReceive(BinaryReader reader)
+		{
+			dealerName = reader.ReadString();
 		}
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
@@ -130,6 +142,14 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 		/// <param name="spriteBatch"></param>
 		private void DrawRadial(Player player, SpriteBatch spriteBatch)
 		{
+			// Only draw radial menu for player wielding this 
+			if (player.whoAmI != Main.myPlayer)
+				return;
+
+			// Don't draw radial menu for render target
+			if (!PlayerTarget.canUseTarget)
+				return;
+
 			// Get the held instance, if it exists
 			var held = player.HeldItem.ModItem as DefenseSystem;
 
