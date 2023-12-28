@@ -11,6 +11,7 @@ namespace StarlightRiver.Content.Items
 	class DebugStick : ModItem
 	{
 		public Arm arm = new(Main.LocalPlayer.Center, 5, 110, ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/DebugArm").Value);
+		public Vector2 point;
 
 		public override string Texture => AssetDirectory.Assets + "Items/DebugStick";
 
@@ -51,8 +52,10 @@ namespace StarlightRiver.Content.Items
 
 		public override void HoldItem(Player player)
 		{
+			point += (Main.MouseWorld - point) * 0.1f;
+
 			arm.start = player.Center;
-			arm.IKToPoint(Main.MouseWorld);
+			arm.IKToPoint(point);
 			arm.Update();
 		}
 

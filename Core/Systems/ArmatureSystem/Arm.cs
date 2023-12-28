@@ -107,7 +107,7 @@ namespace StarlightRiver.Core.Systems.ArmatureSystem
 				float targetRotation = toTarget.ToRotation();
 
 				segments[i].rotation = targetRotation;
-				target = target + Vector2.UnitX.RotatedBy(targetRotation) * -currentSegment.length;
+				target += Vector2.UnitX.RotatedBy(targetRotation) * -currentSegment.length;
 			}
 		}
 

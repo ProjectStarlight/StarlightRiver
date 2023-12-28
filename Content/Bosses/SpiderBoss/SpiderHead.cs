@@ -69,9 +69,7 @@ namespace StarlightRiver.Content.Bosses.SpiderBoss
 					int checkX = (int)NPC.Center.X / 16 + x;
 					int checkY = (int)NPC.Center.Y / 16 + y;
 
-
-
-					if ((Math.Abs(x) > 1 || Math.Abs(y) > 1) && Framing.GetTileSafely(checkX, checkY).WallType != WallID.Wood)
+					if ((Math.Abs(x) > 2 || Math.Abs(y) > 2) && Framing.GetTileSafely(checkX, checkY).WallType != WallID.Wood)
 					{
 						WorldGen.PlaceTile(checkX, checkY, TileID.WoodBlock, true, true);
 					}
