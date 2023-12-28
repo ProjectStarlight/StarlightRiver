@@ -2,6 +2,7 @@ using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Events;
 using StarlightRiver.Content.Items.Haunted;
 using StarlightRiver.Core.Systems;
+using StarlightRiver.Core.Systems.ArmatureSystem;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items
@@ -9,6 +10,8 @@ namespace StarlightRiver.Content.Items
 	[SLRDebug]
 	class DebugStick : ModItem
 	{
+		public Arm arm = new(Main.LocalPlayer.Center, 5, 110, ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/DebugArm").Value);
+
 		public override string Texture => AssetDirectory.Assets + "Items/DebugStick";
 
 		public override void SetStaticDefaults()
@@ -43,28 +46,19 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
-			for (int x = 0; x < Main.maxTilesX; x++)
-			{
-				for (int y = 0; y < Main.maxTilesY; y++)
-				{
-					Framing.GetTileSafely(x, y).ClearEverything();
-				}
-			}
-
-			StarlightWorld.SpringGen(default, default);
 			return true;
+		}
 
-			StarlightEventSequenceSystem.sequence = 0;
-			player.GetHandler().unlockedAbilities.Clear();
-			player.GetHandler().InfusionLimit = 0;
+		public override void HoldItem(Player player)
+		{
+			arm.start = player.Center;
+			arm.IKToPoint(Main.MouseWorld);
+			arm.Update();
+		}
 
-			Main.time = 53999;
-			Main.dayTime = true;
-			StarlightEventSequenceSystem.willOccur = true;
-
-			Dust.NewDustPerfect(Main.MouseWorld, ModContent.DustType<EchochainBurstDust>(), Vector2.Zero, 0, default, 1f);
-
-			return true;
+		public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		{
+			arm.DrawArm(spriteBatch);
 		}
 	}
 
