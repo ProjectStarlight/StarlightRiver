@@ -178,17 +178,22 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				return;
 			}
 
-			float random = Main.rand.NextFloat(totalLunacy);
-
-			foreach (Player player in possibleTargets)
+			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
-				if (random < player.GetModPlayer<LunacyPlayer>().lunacy)
+				float random = Main.rand.NextFloat(totalLunacy);
+
+				foreach (Player player in possibleTargets)
 				{
-					NPC.target = player.whoAmI;
-					break;
+					if (random < player.GetModPlayer<LunacyPlayer>().lunacy)
+					{
+						NPC.target = player.whoAmI;
+						break;
+					}
+
+					random -= player.GetModPlayer<LunacyPlayer>().lunacy;
 				}
 
-				random -= player.GetModPlayer<LunacyPlayer>().lunacy;
+				NPC.netUpdate = true;
 			}
 		}
 
@@ -204,7 +209,11 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 			if (Phase == AIState.Idle)
 			{
-				NPC.direction = Main.rand.NextBool() ? -1 : 1;
+				if (Main.netMode != NetmodeID.MultiplayerClient)
+				{
+					NPC.direction = Main.rand.NextBool() ? -1 : 1;
+					NPC.netUpdate = true;
+				}
 			}
 			else
 			{
@@ -253,17 +262,23 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				if (AttackTimer > RandomTime + 20)
 				{
 					AttackTimer = 0;
-					RandomTime = Main.rand.Next(240, 360);
 
 					Player player = Main.player.FirstOrDefault(n => n.active && Vector2.Distance(n.Center, homePos) < 3000);
 
-					if (player != null)
+					if (Main.netMode != NetmodeID.MultiplayerClient)
 					{
-						Teleport(player.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(400, 600));
-					}
-					else
-					{
-						Teleport(homePos + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(180, 420));
+						RandomTime = Main.rand.Next(240, 360);
+
+						if (player != null)
+						{
+							Teleport(player.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(400, 600));
+						}
+						else
+						{
+							Teleport(homePos + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(180, 420));
+						}
+
+						NPC.netUpdate = true;
 					}
 				}
 			}
@@ -296,9 +311,14 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 						return;
 					}
 
-					RandomTime = Main.rand.Next(60, 120);
-					Teleport(Target.Center + (Main.rand.NextBool() ? -1 : 1) * Vector2.UnitX.RotatedByRandom(MathHelper.PiOver4) * Main.rand.NextFloat(450, 600));
-					Phase = Main.rand.NextBool(4) ? AIState.Shoot : AIState.Charge;
+					if (Main.netMode != NetmodeID.MultiplayerClient)
+					{
+						RandomTime = Main.rand.Next(60, 120);
+						Teleport(Target.Center + (Main.rand.NextBool() ? -1 : 1) * Vector2.UnitX.RotatedByRandom(MathHelper.PiOver4) * Main.rand.NextFloat(450, 600));
+						Phase = Main.rand.NextBool(4) ? AIState.Shoot : AIState.Charge;
+
+						NPC.netUpdate = true;
+					}
 				}
 			}
 		}
@@ -374,7 +394,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			if (AttackTimer == 1)
 				driftClockwise = !(NPC.rotation < 0 && NPC.rotation > -MathHelper.PiOver2 || NPC.rotation < MathHelper.Pi && NPC.rotation > MathHelper.PiOver2);
 
-			idle = AttackTimer < TelegraphTime + 40;
+			idle = AttackTimer < TelegraphTime + 40 || AttackTimer > TelegraphTime + 310;
 
 			if (NPC.Opacity < 1)
 				NPC.Opacity += 0.05f;
@@ -383,13 +403,13 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			if (AttackTimer == TelegraphTime + 40)
 				frameCounter = 0;
 
-			if (AttackTimer == TelegraphTime + 45 || AttackTimer == TelegraphTime + 48 || AttackTimer == TelegraphTime + 50 || AttackTimer == TelegraphTime + 300)
-				frameCounter++;
-
-			if (AttackTimer == TelegraphTime + 305)
+			else if (AttackTimer == TelegraphTime + 305)
 				frameCounter = 2;
 
-			if (AttackTimer == TelegraphTime + 243 || AttackTimer == TelegraphTime + 308 || AttackTimer == TelegraphTime + 310)
+			else if (AttackTimer == TelegraphTime + 45 || AttackTimer == TelegraphTime + 48 || AttackTimer == TelegraphTime + 50 || AttackTimer == TelegraphTime + 300)
+				frameCounter++;
+
+			else if (AttackTimer == TelegraphTime + 243 || AttackTimer == TelegraphTime + 308 || AttackTimer == TelegraphTime + 310)
 				frameCounter--;
 
 			// Orb sfx begins
@@ -429,6 +449,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				Helpers.Helper.PlayPitched("VitricBoss/CeirosPillarImpact", 0.5f, 0.5f, NPC.Center);
 				Helpers.Helper.PlayPitched("Magic/HolyCastShort", 1.2f, 0f, NPC.Center);
 
+				// Crunch frame
 				frameCounter = 5;
 				projChargeTime = 0;
 
@@ -450,7 +471,6 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 					for (int i = 0; i < 2; i++)
 					{
 						Projectile.NewProjectile(NPC.GetSource_FromThis(), OrbPos, NPC.rotation.ToRotationVector2().RotatedBy(MathHelper.Pi * 2 / 3 * (i == 0 ? -1 : 1)).RotatedByRandom(MathHelper.Pi / 3) * 10, ModContent.ProjectileType<DreambeastProjHome>(), 66, 2, -1, NPC.target);
-
 					}
 				}
 			}
@@ -475,6 +495,11 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			NPC.velocity += Target.velocity * 0.025f;
 
 			NPC.velocity *= 0.975f;
+
+			if (NPC.oldPosition.Distance(NPC.position) > 20 && Main.netMode != NetmodeID.Server && AttackTimer - TelegraphTime > 0)
+			{
+				Main.NewText($"Unexpected TP at {AttackTimer - TelegraphTime}");
+			}
 
 			// Attack ends
 			if (AttackTimer > 360)
@@ -505,11 +530,14 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			{
 				Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.MoonstoneNPC + "Dreambeast").Value;
 
-				foreach (VerletChain chain in chains)
+				if (hasLoaded)
 				{
-					foreach (RopeSegment segment in chain.ropeSegments)
+					foreach (VerletChain chain in chains)
 					{
-						spriteBatch.Draw(tex, segment.ScreenPos / 2, NPC.frame, Color.White * NPC.Opacity, 0, new Vector2(122, 99), 0.05f, 0, 0);
+						foreach (RopeSegment segment in chain.ropeSegments)
+						{
+							spriteBatch.Draw(tex, segment.ScreenPos / 2, NPC.frame, Color.White * NPC.Opacity, 0, new Vector2(122, 99), 0.05f, 0, 0);
+						}
 					}
 				}
 
@@ -637,13 +665,13 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			On_Main.GUIBarsDraw += DrawLunacyMeter;
 		}
 
-		public override void SendClientChanges(ModPlayer clientPlayer)
-		{
-			var clone = clientPlayer as LunacyPlayer;
+		//public override void SendClientChanges(ModPlayer clientPlayer)
+		//{
+		//	var clone = clientPlayer as LunacyPlayer;
 
-			var packet = new LunacyPacket(this);
-			packet.Send(-1, Player.whoAmI, false);
-		}
+		//	var packet = new LunacyPacket(this);
+		//	packet.Send(-1, Player.whoAmI, false);
+		//}
 
 		public override void PostUpdateBuffs()
 		{
