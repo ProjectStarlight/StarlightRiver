@@ -7,6 +7,7 @@
 - Defense system now deals summon damage
 - Breach Cannon now mostly works in multiplayer
 - Supply Beacon no longer spawns extras in multiplayer
+- Fix for Archaeologist Whip's treasure drops in multiplayer
 
 ## Tweaks
 - Both Eater Steak and Face Steak can now drop from Corruptors and Herplings respectively
