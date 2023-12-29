@@ -2,14 +2,17 @@
 
 ## Fixes
 - Fixed Face Steak dropping from Eater of Souls (now drops from Face Monsters)
+- Defense system now deals summon damage
+- Supply Beacon now has buff icons
+
+## Multiplayer
 - Fixed amulet of the bloodless warrior making you appear dead in multiplayer
 - Defense System's radial selector no longer draws for other players in multiplayer
-- Defense system now deals summon damage
 - Breach Cannon now mostly works in multiplayer
 - Supply Beacon no longer spawns extras in multiplayer
-- Supply Beacon now has buff icons
 - Fix for Archaeologist Whip's treasure drops in multiplayer
 - Fix for pirate chest in multiplayer
+- Visual sync for sandscript
 
 ## Tweaks
 - Both Eater Steak and Face Steak can now drop from Corruptors and Herplings respectively
