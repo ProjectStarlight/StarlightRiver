@@ -29,22 +29,28 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void SafeSetDefaults()
 		{
-			Chain = new VerletChain(8, false, Center, 8)
+			if (Main.netMode != NetmodeID.Server)
 			{
-				constraintRepetitions = 2,//defaults to 2, raising this lowers stretching at the cost of performance
-				drag = 2f,//This number defaults to 1, Is very sensitive
-				forceGravity = new Vector2(0f, 0.3f),//gravity x/y
-				scale = 1.1f,
-				parent = this
-			};
+				Chain = new VerletChain(8, false, Center, 8)
+				{
+					constraintRepetitions = 2,//defaults to 2, raising this lowers stretching at the cost of performance
+					drag = 2f,//This number defaults to 1, Is very sensitive
+					forceGravity = new Vector2(0f, 0.3f),//gravity x/y
+					scale = 1.1f,
+					parent = this
+				};
+			}
 		}
 
 		public override void Update()
 		{
-			Chain.UpdateChain(Center);
+			if (Main.netMode != NetmodeID.Server)
+			{
+				Chain.UpdateChain(Center);
 
-			Chain.IterateRope(WindForce);
-			timer += 0.005f;
+				Chain.IterateRope(WindForce);
+				timer += 0.005f;
+			}
 		}
 
 		private void WindForce(int index)//wind
