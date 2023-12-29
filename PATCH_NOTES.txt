@@ -13,6 +13,7 @@
 - Fix for Archaeologist Whip's treasure drops in multiplayer
 - Fix for pirate chest in multiplayer
 - Visual sync for sandscript
+- Cloudstrike functional in mp
 
 ## Tweaks
 - Both Eater Steak and Face Steak can now drop from Corruptors and Herplings respectively
