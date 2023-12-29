@@ -9,6 +9,7 @@
 - Supply Beacon no longer spawns extras in multiplayer
 - Supply Beacon now has buff icons
 - Fix for Archaeologist Whip's treasure drops in multiplayer
+- Fix for pirate chest in multiplayer
 
 ## Tweaks
 - Both Eater Steak and Face Steak can now drop from Corruptors and Herplings respectively
