@@ -5,8 +5,10 @@
 - Fixed amulet of the bloodless warrior making you appear dead in multiplayer
 - Defense System's radial selector no longer draws for other players in multiplayer
 - Defense system now deals summon damage
+- Breach Cannon now mostly works in multiplayer
 
 ## Tweaks
 - Both Eater Steak and Face Steak can now drop from Corruptors and Herplings respectively
 - Upped Defense system and heart statue usetime to match all other sentries
 - Seaglass Lens now deals real crits that can benefit from other accessories instead of non-scaling phantom crits
+- Breach Cannon now has Id based Iframes and no longer blocks other weapons from dealing damage
