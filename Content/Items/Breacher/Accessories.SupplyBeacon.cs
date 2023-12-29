@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public override void OnHurt(Player.HurtInfo info)
 		{
-			if (cooldown <= 0 && active)
+			if (cooldown <= 0 && active && Main.myPlayer == Player.whoAmI)
 			{
 				damageTicker += info.Damage;
 
