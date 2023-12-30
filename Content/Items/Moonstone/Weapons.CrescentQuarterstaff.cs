@@ -567,16 +567,20 @@ namespace StarlightRiver.Content.Items.Moonstone
 				CurrentAttack = AttackType.Stab;
 
 				if (Main.myPlayer == Projectile.owner)
+				{
 					initialRotation = (Main.MouseWorld - Player.MountedCenter).ToRotation();
+					Projectile.netUpdate = true;
+				}
 			}
 
 			if (Main.myPlayer == Projectile.owner)
 			{
 				oldDirection = (int)Direction;
 				Direction = Main.MouseWorld.X > Player.position.X ? 1 : -1; // prevents incorrect aiming since it takes so long to charge up
-			}
 
-			Projectile.netUpdate = true;
+				if (oldDirection != Direction)
+					Projectile.netUpdate = true;
+			}
 
 			curAttackDone = false;
 			slammed = false;
