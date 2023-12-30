@@ -65,7 +65,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 			if (Main.projectile.Any(n => n.active && n.owner == player.whoAmI && n.type == ProjectileType<CrescentQuarterstaffProj>()))
 				return false; // prevents possibility of duplicate projectiles
 
-			int proj = Projectile.NewProjectile(source, position, velocity, type, damage, knockback, Main.myPlayer, combo, charge);
+			Projectile.NewProjectile(source, position, velocity, type, damage, knockback, Main.myPlayer, combo, charge);
+			
 			return false;
 		}
 
@@ -140,6 +141,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private bool slamCharged = false;
 		private bool slammed = false;
+		private int oldDirection = 0;
 
 		private AttackType CurrentAttack
 		{
@@ -147,6 +149,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			set => Projectile.ai[0] = (float)value;
 		}
 		private ref float charge => ref Projectile.ai[1];
+		private ref float Direction => ref Projectile.ai[2];
 
 		private Player Player => Main.player[Projectile.owner];
 		private float ArmRotation => Projectile.rotation - ((Player.direction > 0) ? MathHelper.Pi / 3 : MathHelper.Pi * 2 / 3);
@@ -443,11 +446,23 @@ namespace StarlightRiver.Content.Items.Moonstone
 				slamCharged = true;
 			}
 
-			Player.direction = Main.MouseWorld.X > Player.position.X ? 1 : -1; // prevents incorrect aiming since it takes so long to charge up
+			if (Main.myPlayer == Projectile.owner)
+			{
+				if (oldDirection == 0)
+					Projectile.netUpdate = true;
+
+				oldDirection = (int)Direction;
+				Direction = Main.MouseWorld.X > Player.position.X ? 1 : -1; // prevents incorrect aiming since it takes so long to charge up
+
+				if (Direction != oldDirection)
+					Projectile.netUpdate = true;
+			}
+			
+			Player.direction = Direction == 0 ? 1 : (int)Direction;
 
 			float progress = 0;
 			float startAngle = -MathHelper.PiOver2 + Player.direction * MathHelper.Pi / 12;
-			float swingAngle = Player.direction * MathHelper.PiOver2 * 1.05f;
+			float swingAngle = Direction * MathHelper.PiOver2 * 1.05f;
 
 			// stops further movement after slam
 			if (!slammed)
@@ -529,9 +544,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 				CameraSystem.shake += 16;
 
 				if (Main.myPlayer == Projectile.owner)
-				{
 					Projectile.NewProjectile(Projectile.GetSource_FromThis(), StaffEnd, Vector2.Zero, ProjectileType<GravediggerSlam>(), 0, 0, Player.whoAmI);
-				}
 
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70, Projectile.Center);
 			}
@@ -552,10 +565,19 @@ namespace StarlightRiver.Content.Items.Moonstone
 			else
 			{
 				CurrentAttack = AttackType.Stab;
-				initialRotation = (Main.MouseWorld - Player.MountedCenter).ToRotation();
+
+				if (Main.myPlayer == Projectile.owner)
+					initialRotation = (Main.MouseWorld - Player.MountedCenter).ToRotation();
 			}
 
-			Player.direction = Main.MouseWorld.X > Player.position.X ? 1 : -1;
+			if (Main.myPlayer == Projectile.owner)
+			{
+				oldDirection = (int)Direction;
+				Direction = Main.MouseWorld.X > Player.position.X ? 1 : -1; // prevents incorrect aiming since it takes so long to charge up
+			}
+
+			Projectile.netUpdate = true;
+
 			curAttackDone = false;
 			slammed = false;
 

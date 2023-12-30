@@ -267,7 +267,6 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 						segment.posNow += diff;
 					}
 				}
-
 			}
 		}
 
