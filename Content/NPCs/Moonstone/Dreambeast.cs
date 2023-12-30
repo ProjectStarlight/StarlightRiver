@@ -78,13 +78,6 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			NPC.knockBackResist = 0;
 		}
 
-		public override ModNPC Clone(NPC newEntity)
-		{
-			ModNPC clone = base.Clone(newEntity);
-			(clone as Dreambeast).chains = chains;
-			return clone;
-		}
-
 		// Can only hit slightly lunatic players
 		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
 		{
@@ -103,27 +96,8 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 		public override void AI()
 		{
 			// Generate chains if not loaded
-			if (!hasLoaded)
-			{
-				hasLoaded = true;
-
-				for (int k = 0; k < chains.Length; k++)
-				{
-					VerletChain chain = chains[k];
-
-					if (chain is null)
-					{
-						chains[k] = new VerletChain(24 + 2 * Main.rand.Next(4), true, NPC.Center, 4, false)
-						{
-							constraintRepetitions = 10,
-							drag = 1.2f,
-							forceGravity = -Vector2.UnitX,
-							scale = 0.6f,
-							parent = NPC,
-						};
-					}
-				}
-			}
+			if (!hasLoaded && Main.netMode != NetmodeID.Server)
+				InitTentacles();
 
 			AttackTimer++;
 
@@ -174,6 +148,28 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			if (idle && AttackTimer % 4 == 0)
 			{
 				frameCounter = ++frameCounter % 7;
+			}
+		}
+
+		private void InitTentacles()
+		{
+			hasLoaded = true;
+
+			for (int k = 0; k < chains.Length; k++)
+			{
+				VerletChain chain = chains[k];
+
+				if (chain is null)
+				{
+					chains[k] = new VerletChain(24 + 2 * Main.rand.Next(4), true, NPC.Center, 4, false)
+					{
+						constraintRepetitions = 10,
+						drag = 1.2f,
+						forceGravity = -Vector2.UnitX,
+						scale = 0.6f,
+						parent = NPC,
+					};
+				}
 			}
 		}
 

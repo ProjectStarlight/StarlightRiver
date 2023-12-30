@@ -10,6 +10,11 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 	{
 		public override string Texture => AssetDirectory.MoonstoneNPC + Name;
 
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Dream Shard");
+		}
+
 		public override void SetDefaults()
 		{
 			Projectile.hostile = true;
@@ -22,11 +27,6 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			Projectile.damage = 66;
 		}
 
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("Dream Shard");
-		}
-
 		public override void AI()
 		{
 			Projectile.velocity *= 1.06f;
@@ -34,9 +34,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			Color color = Helpers.Helper.MoltenVitricGlow(MathHelper.Min(200 - Projectile.timeLeft, 120));
 
 			if (Main.rand.NextBool())
-			{
 				Dust.NewDust(Projectile.Center, 0, 0, ModContent.DustType<Dusts.MoonstoneShimmer>());
-			}
 
 			Projectile.rotation = Projectile.velocity.ToRotation();
 
@@ -86,11 +84,10 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 	public class DreambeastProjHome : ModProjectile, IDrawPrimitive, IDrawAdditive
 	{
-		public ref float target => ref Projectile.ai[0];
 
 		private List<Vector2> cache;
 		private Trail trail;
-
+		public ref float target => ref Projectile.ai[0];
 		public Player Target => Main.player[(int)target];
 
 		public Vector2 PathCenter

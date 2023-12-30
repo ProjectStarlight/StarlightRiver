@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			{
 				NPC npc = Main.npc[k];
 
-				if (npc.ModNPC is Dreambeast)
+				if (npc.ModNPC is Dreambeast && npc.active)
 					(npc.ModNPC as Dreambeast).DrawToMetaballs(spriteBatch);
 			}
 		}
