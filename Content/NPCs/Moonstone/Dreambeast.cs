@@ -97,7 +97,11 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 		{
 			// Generate chains if not loaded
 			if (!hasLoaded && Main.netMode != NetmodeID.Server)
-				InitTentacles();
+				InitChains();
+
+			// Update chain position and color
+			if (hasLoaded)
+				UpdateChains();
 
 			AttackTimer++;
 
@@ -110,24 +114,6 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 			if (flashTime < 30 && Phase != 0)
 				flashTime++;
-
-			// Update chain position and color
-			for (int k = 0; k < chains.Length; k++)
-			{
-				VerletChain chain = chains[k];
-				chain.forceGravity = -Rotation.ToRotationVector2();
-				float chainOriginRotation = (k - chains.Length / 2 + 1) * MathHelper.PiOver2 / chains.Length;
-				chain?.UpdateChain(NPC.Center - Rotation.ToRotationVector2() * 80 + Rotation.ToRotationVector2().RotatedBy(MathHelper.PiOver2 - chainOriginRotation) * (k - chains.Length / 2 + 1) * 15);
-
-				for (int i = 0; i < chain.ropeSegments.Count; i++)
-				{
-					chain.ropeSegments[i].posNow += Rotation.ToRotationVector2().RotatedBy(MathHelper.PiOver2) * (float)Math.Sin(StarlightWorld.visualTimer + 251 % (k + 1) + i / 4f) * i / 30;
-
-					float sin = (float)Math.Sin(StarlightWorld.visualTimer + k);
-
-					chain.ropeSegments[i].color = new Color(66 + (int)(30 * sin), 33, 144 - (int)(40 * sin));
-				}
-			}
 
 			// Despawn when no players are lunatic
 			if (Main.player.Count(n => n.active && n.GetModPlayer<LunacyPlayer>().lunacy > 0 && n.position.Distance(NPC.position) < 2000) == 0)
@@ -151,7 +137,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			}
 		}
 
-		private void InitTentacles()
+		private void InitChains()
 		{
 			hasLoaded = true;
 
@@ -169,6 +155,26 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 						scale = 0.6f,
 						parent = NPC,
 					};
+				}
+			}
+		}
+
+		private void UpdateChains()
+		{
+			for (int k = 0; k < chains.Length; k++)
+			{
+				VerletChain chain = chains[k];
+				chain.forceGravity = -Rotation.ToRotationVector2();
+				float chainOriginRotation = (k - chains.Length / 2 + 1) * MathHelper.PiOver2 / chains.Length;
+				chain?.UpdateChain(NPC.Center - Rotation.ToRotationVector2() * 80 + Rotation.ToRotationVector2().RotatedBy(MathHelper.PiOver2 - chainOriginRotation) * (k - chains.Length / 2 + 1) * 15);
+
+				for (int i = 0; i < chain.ropeSegments.Count; i++)
+				{
+					chain.ropeSegments[i].posNow += Rotation.ToRotationVector2().RotatedBy(MathHelper.PiOver2) * (float)Math.Sin(StarlightWorld.visualTimer + 251 % (k + 1) + i / 4f) * i / 30;
+
+					float sin = (float)Math.Sin(StarlightWorld.visualTimer + k);
+
+					chain.ropeSegments[i].color = new Color(66 + (int)(30 * sin), 33, 144 - (int)(40 * sin));
 				}
 			}
 		}
@@ -241,15 +247,19 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			}
 
 			//We need to do this so the chains dont snap back like a rubber band (it still does so beats me lol)
-			foreach (VerletChain chain in chains)
+			if (hasLoaded)
 			{
-				chain.startPoint += diff;
-
-				foreach (RopeSegment segment in chain.ropeSegments)
+				foreach (VerletChain chain in chains)
 				{
-					segment.posOld += diff;
-					segment.posNow += diff;
+					chain.startPoint += diff;
+
+					foreach (RopeSegment segment in chain.ropeSegments)
+					{
+						segment.posOld += diff;
+						segment.posNow += diff;
+					}
 				}
+
 			}
 		}
 
@@ -380,15 +390,18 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				frameCounter--;
 
 			// Tentacle animation
-			if (AttackTimer > TelegraphTime && AttackTimer < TelegraphTime + 15)
+			if (hasLoaded)
 			{
-				for (int k = 0; k < chains.Length; k++)
+				if (AttackTimer > TelegraphTime && AttackTimer < TelegraphTime + 15)
 				{
-					VerletChain chain = chains[k];
-
-					for (int i = 0; i < chain.ropeSegments.Count; i++)
+					for (int k = 0; k < chains.Length; k++)
 					{
-						chain.ropeSegments[i].posNow += Rotation.ToRotationVector2() * 2 + Rotation.ToRotationVector2().RotatedBy(MathHelper.PiOver2) * (k - chains.Length / 2 + 1) * (float)(Math.Pow(2.5f * i / chain.ropeSegments.Count - 1, 2) + 1);
+						VerletChain chain = chains[k];
+
+						for (int i = 0; i < chain.ropeSegments.Count; i++)
+						{
+							chain.ropeSegments[i].posNow += Rotation.ToRotationVector2() * 2 + Rotation.ToRotationVector2().RotatedBy(MathHelper.PiOver2) * (k - chains.Length / 2 + 1) * (float)(Math.Pow(2.5f * i / chain.ropeSegments.Count - 1, 2) + 1);
+						}
 					}
 				}
 			}
@@ -760,16 +773,19 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 		{
 			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
 
-			for (int k = 0; k < chains.Length; k++)
+			if (hasLoaded)
 			{
-				VerletChain chain = chains[k];
-
-				for (int i = 0; i < chain.ropeSegments.Count; i++)
+				for (int k = 0; k < chains.Length; k++)
 				{
-					RopeSegment segment = chain.ropeSegments[i];
-					float progress = 1.35f - (float)k / chain.segmentCount;
-					float progress2 = 1.22f - (float)k / chain.segmentCount;
-					sb.Draw(tex, segment.posNow - Main.screenPosition, null, segment.color * progress * 0.175f * NPC.Opacity, 0, tex.Size() / 2, progress2, 0, 0);
+					VerletChain chain = chains[k];
+
+					for (int i = 0; i < chain.ropeSegments.Count; i++)
+					{
+						RopeSegment segment = chain.ropeSegments[i];
+						float progress = 1.35f - (float)k / chain.segmentCount;
+						float progress2 = 1.22f - (float)k / chain.segmentCount;
+						sb.Draw(tex, segment.posNow - Main.screenPosition, null, segment.color * progress * 0.175f * NPC.Opacity, 0, tex.Size() / 2, progress2, 0, 0);
+					}
 				}
 			}
 		}
