@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
-using Terraria.ID;
 
 namespace StarlightRiver.Content.NPCs.Moonstone
 {
@@ -56,7 +55,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			modifiers.FinalDamage *= target.GetModPlayer<LunacyPlayer>().GetInsanityDamageMult();
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int k = 0; k < 5; k++)
 			{
@@ -180,7 +179,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			if (Main.LocalPlayer.GetModPlayer<LunacyPlayer>().Insane)
 			{
 				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), color * Projectile.Opacity, Projectile.rotation, tex.Size() / 2, 0.5f, 0, 0);
-				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), Color.White * Projectile.Opacity, Projectile.rotation, tex.Size() / 2,  0.4f, 0, 0);
+				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), Color.White * Projectile.Opacity, Projectile.rotation, tex.Size() / 2, 0.4f, 0, 0);
 			}
 
 			return false;
@@ -254,5 +253,4 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
 		}
 	}
-
 }
