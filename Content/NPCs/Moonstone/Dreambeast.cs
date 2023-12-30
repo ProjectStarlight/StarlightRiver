@@ -3,12 +3,14 @@ using ReLogic.Utilities;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Content.Physics;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
@@ -89,6 +91,12 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 		{
 			target.GetModPlayer<LunacyPlayer>().ReturnSanity(10);
 			modifiers.FinalDamage *= target.GetModPlayer<LunacyPlayer>().GetInsanityDamageMult();
+
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				SanityHitPacket packet = new SanityHitPacket(target.whoAmI, 10);
+				packet.Send();
+			}
 		}
 
 		#region AI

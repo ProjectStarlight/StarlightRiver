@@ -1,6 +1,9 @@
-﻿using ReLogic.Utilities;
+﻿using NetEasy;
+using ReLogic.Utilities;
 using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Core.Systems.MetaballSystem;
 using System;
 using System.Linq;
@@ -302,6 +305,61 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				damageSource = PlayerDeathReason.ByCustomReason(Player.name + "'s mind was torn apart by their hallucinations");
 
 			return true;
+		}
+
+		public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
+		{
+			//for syncing on world joins
+			var packet = new LunacyPacket(this);
+			packet.Send(toWho, Player.whoAmI, false);
+		}
+	}
+
+	[Serializable]
+	public class LunacyPacket : Module
+	{
+		private readonly byte player;
+		private readonly float lunacy;
+
+		public LunacyPacket(LunacyPlayer lPlayer)
+		{
+			this.player = (byte)lPlayer.Player.whoAmI;
+			this.lunacy = lPlayer.lunacy;
+		}
+
+		protected override void Receive()
+		{
+			Player player = Main.player[this.player];
+
+			player.GetModPlayer<LunacyPlayer>().lunacy = lunacy;
+
+			if (Main.netMode == NetmodeID.Server)
+				Send(-1, this.player, false);
+		}
+	}
+
+	/// <summary>
+	/// Packet to be sent when a player is hit when lunatic so the other clients can know about it
+	/// </summary>
+	[Serializable]
+	public class SanityHitPacket : Module
+	{
+		private readonly byte sanityReceiver;
+		private readonly int sanityReturned;
+
+		public SanityHitPacket(int sanityReceiver, int sanityReturned)
+		{
+			this.sanityReceiver = (byte)sanityReceiver;
+			this.sanityReturned = sanityReturned;
+		}
+		protected override void Receive()
+		{
+			Player player = Main.player[sanityReceiver];
+
+			player.GetModPlayer<LunacyPlayer>().ReturnSanity(sanityReturned);
+
+			if (Main.netMode == NetmodeID.Server)
+				Send(-1, sanityReceiver, false);
 		}
 	}
 }

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.NPCs.Moonstone
 {
@@ -51,6 +52,12 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 		{
 			target.GetModPlayer<LunacyPlayer>().ReturnSanity(8);
 			modifiers.FinalDamage *= target.GetModPlayer<LunacyPlayer>().GetInsanityDamageMult();
+
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				SanityHitPacket packet = new SanityHitPacket(target.whoAmI, 8);
+				packet.Send();
+			}
 		}
 
 		public override void OnKill(int timeLeft)
@@ -166,6 +173,12 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 		{
 			target.GetModPlayer<LunacyPlayer>().ReturnSanity(4);
 			modifiers.FinalDamage *= target.GetModPlayer<LunacyPlayer>().GetInsanityDamageMult();
+
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				SanityHitPacket packet = new SanityHitPacket(target.whoAmI, 4);
+				packet.Send();
+			}
 		}
 
 		public override bool PreDraw(ref Color lightColor)

@@ -517,7 +517,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 						dust.velocity = -5 * dustOffset;
 					}
 
-					if (Main.netMode != NetmodeID.MultiplayerClient)
+					if (Main.myPlayer == Projectile.owner)
 					{
 						var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), StaffEnd - Vector2.UnitY * 32 * Projectile.scale, new Vector2(Player.direction * 10, 0) * MeleeSpeed, ProjectileType<CrescentOrb>(), (int)MathHelper.Lerp(Projectile.damage * 0.25f, Projectile.damage, Charge), 0, Projectile.owner, 0, 0);
 						proj.scale = (1 + Charge) / 2 * Projectile.scale;
@@ -527,7 +527,12 @@ namespace StarlightRiver.Content.Items.Moonstone
 				}
 
 				CameraSystem.shake += 16;
-				Projectile.NewProjectile(Projectile.GetSource_FromThis(), StaffEnd, Vector2.Zero, ProjectileType<GravediggerSlam>(), 0, 0, Player.whoAmI);
+
+				if (Main.myPlayer == Projectile.owner)
+				{
+					Projectile.NewProjectile(Projectile.GetSource_FromThis(), StaffEnd, Vector2.Zero, ProjectileType<GravediggerSlam>(), 0, 0, Player.whoAmI);
+				}
+
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70, Projectile.Center);
 			}
 		}
