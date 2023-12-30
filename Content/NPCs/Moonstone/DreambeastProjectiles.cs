@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 		{
 			Projectile.hostile = true;
 			Projectile.width = 36;
-			Projectile.height = 20;
+			Projectile.height = 36;
 			Projectile.penetrate = 1;
 			Projectile.timeLeft = 45;
 			Projectile.tileCollide = false;
