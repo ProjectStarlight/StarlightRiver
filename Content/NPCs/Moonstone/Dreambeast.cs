@@ -281,7 +281,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				Phase = AIState.Rest;
 				NPC.Opacity = 1;
 				AttackTimer = 0;
-				RandomTime = 30;
+				RandomTime = 90;
 				return;
 			}
 
