@@ -16,6 +16,7 @@
 - Cloudstrike functional in mp
 - Skullbuster mp fixes
 - Blood Amulet functional in mp
+- Radculas Rapier mp fixes
 
 ## Tweaks
 - Both Eater Steak and Face Steak can now drop from Corruptors and Herplings respectively
