@@ -14,9 +14,11 @@
 - Fix for pirate chest in multiplayer
 - Visual sync for sandscript
 - Cloudstrike functional in mp
+- Skullbuster mp fixes
 
 ## Tweaks
 - Both Eater Steak and Face Steak can now drop from Corruptors and Herplings respectively
 - Upped Defense system and heart statue usetime to match all other sentries
 - Seaglass Lens now deals real crits that can benefit from other accessories instead of non-scaling phantom crits
 - Breach Cannon now has Id based Iframes and no longer blocks other weapons from dealing damage
+- Skullbuster bombs now use local Iframes
