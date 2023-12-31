@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarlightRiver.Core.Systems.ArmatureSystem;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,8 @@ namespace StarlightRiver.Content.Bosses.SpiderBoss
 
 		public float curveProgress;
 		public int[] pathCoefficients = new int[4];
+
+		public Arm[] legs = new Arm[44];
 
 		public ref float Timer => ref NPC.ai[0];
 		public ref float Phase => ref NPC.ai[1];
@@ -40,6 +43,11 @@ namespace StarlightRiver.Content.Bosses.SpiderBoss
 			for(int k = 0; k < 4; k++)
 			{
 				pathCoefficients[k] = Main.rand.Next(4, 10);
+			}
+
+			for(int k = 0; k < 44; k++)
+			{
+				legs[k] = new Arm(NPC.Center, 2, 16, ModContent.Request<Texture2D>(AssetDirectory.Debug).Value);
 			}
 
 			NPC.lifeMax = 10000;
@@ -81,7 +89,32 @@ namespace StarlightRiver.Content.Bosses.SpiderBoss
 				}
 			}
 
-			curveProgress += 0.00025f;
+			// Normalize crawl progress
+			float dist = Vector2.Distance(NPC.Center, PointOnPath(curveProgress + 0.00025f));
+			float progCoeff = Math.Min(1, 4 / dist);
+
+			curveProgress += 0.00025f * progCoeff;
+
+			// Aniamte legs
+			int segments = 20;
+			for (int k = 0; k < segments; k++)
+			{
+				var point = PointOnPath(curveProgress - k * 0.001f);
+				float rot = point.DirectionTo(PointOnPath(curveProgress - k * 0.002f)).ToRotation();
+
+				legs[k * 2].start = point + Vector2.UnitX.RotatedBy(rot + 1.57f) * 16;
+				legs[k * 2 + 1].start = point + Vector2.UnitX.RotatedBy(rot - 1.57f) * 16;
+
+				Vector2 offset = Vector2.UnitX.RotatedBy(Timer * 0.15f + k * 1.2f) * 12;
+
+				legs[k * 2].IKToPoint(point + Vector2.UnitX.RotatedBy(rot + 1.57f) * 42 + offset);
+				legs[k * 2 + 1].IKToPoint(point + Vector2.UnitX.RotatedBy(rot - 1.57f) * 42 + offset * -1);
+			}
+
+			foreach (Arm arm in legs)
+			{
+				arm.Update();
+			}
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -96,6 +129,11 @@ namespace StarlightRiver.Content.Bosses.SpiderBoss
 				var point = PointOnPath(curveProgress - k * 0.001f);
 				float rot = point.DirectionTo(PointOnPath(curveProgress - k * 0.002f)).ToRotation();
 				spriteBatch.Draw(tex, point - screenPos, null, Color.White, rot, tex.Size() / 2f, 1, 0, 0);
+			}
+
+			foreach(Arm arm in legs)
+			{
+				arm.DrawArm(spriteBatch);
 			}
 
 			return true;
