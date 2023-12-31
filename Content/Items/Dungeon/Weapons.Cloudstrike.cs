@@ -156,13 +156,16 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		private static void CreateStatic(Item item, int charge, Player Player, bool fullCharge = false)
 		{
+			if (Main.myPlayer != Player.whoAmI)
+				return;
+
 			Vector2 dir = Main.rand.NextFloat(6.28f).ToRotationVector2();
 			Vector2 offset = Main.rand.NextBool(4) ? dir * Main.rand.NextFloat(30) : new Vector2(Main.rand.Next(-35, 35), Player.height / 2);
 
-			float smalLCharge = fullCharge ? 0.5f : 0.01f;
+			float smallCharge = fullCharge ? 0.5f : 0.01f;
 
 			var source = new EntitySource_ItemUse(Player, item);
-			var proj = Projectile.NewProjectileDirect(source, Player.Center + offset, dir.RotatedBy(Main.rand.NextFloat(-1, 1)) * 5, ModContent.ProjectileType<CloudstrikeShot>(), 0, 0, Player.whoAmI, smalLCharge, 2);
+			var proj = Projectile.NewProjectileDirect(source, Player.Center + offset, dir.RotatedBy(Main.rand.NextFloat(-1, 1)) * 5, ModContent.ProjectileType<CloudstrikeShot>(), 0, 0, Player.whoAmI, smallCharge, 2);
 			var mp = proj.ModProjectile as CloudstrikeShot;
 			mp.velocityMult = Main.rand.Next(1, 4);
 
