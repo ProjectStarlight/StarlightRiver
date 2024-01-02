@@ -118,7 +118,6 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		/// </summary>
 		private void Reinitialize()
 		{
-			Main.NewText("reinit: " + Main.time);
 			directionTwo = Main.MouseWorld - Owner.MountedCenter;
 			directionTwo.Normalize();
 			Owner.ChangeDir(Main.MouseWorld.X > Owner.MountedCenter.X ? 1 : -1);
