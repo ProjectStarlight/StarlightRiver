@@ -21,6 +21,7 @@
 - Bloodbolter functional in mp
 _ Visual sync for Tombsmasher
 - Haunted dagger staff functional in mp
+- Tentacle hook visual sync
 
 ## Tweaks
 - Both Eater Steak and Face Steak can now drop from Corruptors and Herplings respectively
