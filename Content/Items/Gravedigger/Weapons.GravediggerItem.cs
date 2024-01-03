@@ -231,7 +231,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				Projectile.frameCounter = 0;
 			}
 
-			if (CheckFrameDeath()) //TODO: Sync in multiPlayer
+			if (CheckFrameDeath())
 			{
 				SlashWindow--;
 				if (Owner == Main.LocalPlayer)
