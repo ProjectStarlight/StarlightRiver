@@ -133,7 +133,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Owner.TryGetModPlayer(out StarlightPlayer starlightPlayer);
 			starlightPlayer.SetHitPacketStatus(shouldRunProjMethods: true); //only server can spawn items
 
-			target.GetGlobalNPC<BloodAmuletGNPC>().dropHeart = true;
+			if (target.active)
+				target.GetGlobalNPC<BloodAmuletGNPC>().dropHeart = true;
 
 			Projectile.friendly = false;
 
