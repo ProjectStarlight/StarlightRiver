@@ -5,6 +5,7 @@
 - Defense system now deals summon damage
 - Supply Beacon now has buff icons
 - Resource reservation overlays now draw for the new interfaces with numbers
+- Shine staff no longer stacks mana regen delay penalty for repeated use
 
 ## Multiplayer
 - Fixed amulet of the bloodless warrior making you appear dead in multiplayer
@@ -25,6 +26,7 @@ _ Visual sync for Tombsmasher
 - Infernal manabond onhit visual sync
 - Fix missing graphics device for coach gun
 - Maneater pot visual sync
+- Shine staff visual sync
 
 ## Tweaks
 - Both Eater Steak and Face Steak can now drop from Corruptors and Herplings respectively
