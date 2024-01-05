@@ -3959,6 +3959,8 @@ Projectiles: {
 	GauntletSpawner.DisplayName: Gauntlet Spawner
 	SpawnEgg.DisplayName: Spawn Egg
 	MediRemoteProjectile.DisplayName: Medical Energy Delivery Instrument
+	MediRemoteBeaconProjectile.DisplayName: Medical Energy Delivery Instrument Beacon
+	MediRemoteHealthBeacon.DisplayName: Medical Energy Delivery Instrument Beacon
 }
 
 Biomes: {
