@@ -24,6 +24,7 @@ _ Visual sync for Tombsmasher
 - Tentacle hook visual sync
 - Infernal manabond onhit visual sync
 - Fix missing graphics device for coach gun
+- Maneater pot visual sync
 
 ## Tweaks
 - Both Eater Steak and Face Steak can now drop from Corruptors and Herplings respectively
