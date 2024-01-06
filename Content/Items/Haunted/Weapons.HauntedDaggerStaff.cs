@@ -189,7 +189,6 @@ namespace StarlightRiver.Content.Items.Haunted
 
 		public bool embedded = false;
 
-
 		public ref float AttackTimer => ref Projectile.ai[0];
 		public ref float TargetWhoAmI => ref Projectile.ai[1];
 		public ref float AttackDelay => ref Projectile.ai[2];

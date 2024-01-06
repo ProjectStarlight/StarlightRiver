@@ -511,7 +511,6 @@ namespace StarlightRiver.Content.Items.Dungeon
 				Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<SkullbusterSkull>(), Projectile.damage, 0, Owner.whoAmI);
 			}
 
-
 			for (int i = 0; i < 10; i++)
 			{
 				var dust = Dust.NewDustDirect(Projectile.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<SkullbusterDust>());

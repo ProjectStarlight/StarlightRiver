@@ -223,7 +223,6 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		private float Radius => 150 * (float)Math.Sqrt(Progress) * radiusMult;
 
-
 		private bool hasDoneVisuals = false;
 
 		public ref float GoreX => ref Projectile.ai[0];
