@@ -73,6 +73,9 @@ namespace StarlightRiver.Core
 		public const string PermafrostItem = Assets + "Items/Permafrost/";
 		public const string SquidBoss = Assets + "Bosses/SquidBoss/";
 
+		public const string SpiderBoss = Assets + "Bosses/SpiderBoss/";
+		public const string SpiderTile = Assets + "Tiles/Spider/";
+
 		public const string BarrierDyeItem = Assets + "Items/BarrierDye/";
 		public const string SlimeItem = Assets + "Items/Slime/";
 		public const string StarwoodItem = Assets + "Items/Starwood/";

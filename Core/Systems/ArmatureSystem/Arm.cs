@@ -106,6 +106,9 @@ namespace StarlightRiver.Core.Systems.ArmatureSystem
 				Vector2 toTarget = target - currentSegment.start;
 				float targetRotation = toTarget.ToRotation();
 
+				if (targetRotation != targetRotation) // == NaN
+					targetRotation = 0;
+
 				segments[i].rotation = targetRotation;
 				target += Vector2.UnitX.RotatedBy(targetRotation) * -currentSegment.length;
 			}
@@ -121,6 +124,12 @@ namespace StarlightRiver.Core.Systems.ArmatureSystem
 			for(int k = 1; k < segments.Length; k++)
 			{
 				segments[k].start = segments[k - 1].Endpoint;
+			}
+
+			for(int k = 0; k < segments.Length; k++)
+			{
+				if (segments[k].rotation != segments[k].rotation) // == NaN
+					segments[k].rotation = 0;
 			}
 		}
 
