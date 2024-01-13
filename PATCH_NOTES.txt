@@ -27,6 +27,7 @@ _ Visual sync for Tombsmasher
 - Fix missing graphics device for coach gun
 - Maneater pot visual sync
 - Shine staff visual sync
+- Fixed auto-select being prevented from placing torches and throwing glowsticks
 
 ## Tweaks
 - Both Eater Steak and Face Steak can now drop from Corruptors and Herplings respectively
