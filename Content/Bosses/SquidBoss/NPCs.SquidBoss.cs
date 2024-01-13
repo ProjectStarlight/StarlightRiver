@@ -959,6 +959,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public override void SendExtraAI(System.IO.BinaryWriter writer)
 		{
 			writer.Write(variantAttack);
+			writer.Write(NPC.dontTakeDamage);
 			writer.WriteVector2(spawnPoint);
 			writer.WriteVector2(savedPoint);
 			writer.Write(platformOrder);
@@ -967,6 +968,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public override void ReceiveExtraAI(System.IO.BinaryReader reader)
 		{
 			variantAttack = reader.ReadBoolean();
+			NPC.dontTakeDamage = reader.ReadBoolean();
 			spawnPoint = reader.ReadVector2();
 			savedPoint = reader.ReadVector2();
 			platformOrder = reader.ReadByte();
