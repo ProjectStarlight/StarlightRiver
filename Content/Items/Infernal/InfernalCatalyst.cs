@@ -1,4 +1,6 @@
 ﻿using StarlightRiver.Content.NPCs.Actors;
+using System;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Infernal
@@ -10,6 +12,11 @@ namespace StarlightRiver.Content.Items.Infernal
 		public override string Texture => AssetDirectory.Debug;
 
 		public InfernalCatalyst() : base("Infernal Catalyst", "Primes the lavas of hell for transmutation", 9999, 0, ItemRarityID.Orange) { }
+
+		public override void Load()
+		{
+			StarlightNPC.ModifyNPCLootEvent += DropCatalyst;
+		}
 
 		public override void Update(ref float gravity, ref float maxFallSpeed)
 		{
@@ -56,11 +63,16 @@ namespace StarlightRiver.Content.Items.Infernal
 				Projectile.NewProjectile(Item.GetSource_FromThis(), Item.Center + new Vector2(0, 20), Vector2.Zero, ModContent.ProjectileType<FirePillar>(), 0, 0, Main.myPlayer, 1.5f);
 
 				Helpers.Helper.PlayPitched("Magic/FireHit", 1, -0.5f, Item.Center);
-
 				Helpers.Helper.PlayPitched("Magic/FireHit", 0.5f, 0.5f, Item.Center);
 
 				Item.TurnToAir();
 			}
+		}
+
+		private void DropCatalyst(NPC npc, NPCLoot npcloot)
+		{
+			if (npc.type == NPCID.Demon)
+				npcloot.Add(ItemDropRule.Common(Item.type, 4, 1, 1));
 		}
 	}
 }
