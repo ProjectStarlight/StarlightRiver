@@ -5,14 +5,45 @@ namespace StarlightRiver.Content.Items.Infernal
 {
 	internal class InfernalCatalyst : QuickMaterial
 	{
+		bool canTransform = true;
+
 		public override string Texture => AssetDirectory.Debug;
 
 		public InfernalCatalyst() : base("Infernal Catalyst", "Primes the lavas of hell for transmutation", 9999, 0, ItemRarityID.Orange) { }
 
 		public override void Update(ref float gravity, ref float maxFallSpeed)
 		{
-			if (Item.lavaWet && Item.Center.Y > (Main.maxTilesY - 200) * 16)
+			if (canTransform && Item.lavaWet && Item.Center.Y > (Main.maxTilesY - 200) * 16)
 			{
+				var tile = Framing.GetTileSafely((int)Item.Center.X / 16, (int)Item.Center.Y / 16);
+
+				for(int k = 0; k <= 7; k++)
+				{
+					var check = Framing.GetTileSafely((int)Item.Center.X / 16 + k, (int)Item.Center.Y / 16);
+
+					if (check.HasTile || check.LiquidType != LiquidID.Lava)
+						Item.position.X -= (7 - k) * 16;
+				}
+
+				for (int k = -7; k <= 0; k++)
+				{
+					var check = Framing.GetTileSafely((int)Item.Center.X / 16 + k, (int)Item.Center.Y / 16);
+
+					if (check.HasTile || check.LiquidType != LiquidID.Lava)
+						Item.position.X += (7 - -k) * 16;
+				}
+
+				for (int k = -6; k <= 6; k++)
+				{
+					var check = Framing.GetTileSafely((int)Item.Center.X / 16 + k, (int)Item.Center.Y / 16);
+
+					if (check.HasTile || check.LiquidType != LiquidID.Lava)
+					{
+						canTransform = false;
+						return;
+					}
+				}
+
 				NPC.NewNPC(Item.GetSource_FromThis(), (int)Item.Center.X, (int)Item.Center.Y, ModContent.NPCType<HellLavaActor>());
 
 				for (int k = 0; k < 20; k++)
