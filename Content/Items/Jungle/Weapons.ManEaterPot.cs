@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Buffs;
 using StarlightRiver.Helpers;
 using System;
+using System.IO;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -81,6 +82,8 @@ namespace StarlightRiver.Content.Items.Jungle
 		public Item heartTarget;
 		public NPC npcTarget;
 
+		public int animationTimer = 10000;
+
 		public ref float RageTime => ref Projectile.ai[0];
 		public ref float EatTime => ref Projectile.ai[1];
 		public ref float State => ref Projectile.ai[2];
@@ -110,11 +113,14 @@ namespace StarlightRiver.Content.Items.Jungle
 			Projectile.minionSlots = 1f;
 			Projectile.penetrate = -1;
 			Projectile.DamageType = DamageClass.Summon;
-			Projectile.timeLeft = 10000;
+			Projectile.timeLeft = 2;
 		}
 
 		public override void AI()
 		{
+			if (Owner.HasBuff<ManEaterPotBuff>())
+				Projectile.timeLeft = 2;
+
 			if (RageTime > 0)
 				RageTime--;
 
@@ -147,11 +153,10 @@ namespace StarlightRiver.Content.Items.Jungle
 			if (State == 2)
 				AttackTarget();
 
-			if (Projectile.timeLeft <= 2)
-				Projectile.timeLeft = 10000;
+			animationTimer--;
 
-			if (!Owner.HasBuff<ManEaterPotBuff>())
-				Projectile.timeLeft = 0;
+			if (animationTimer <= 2)
+				animationTimer = 10000;
 		}
 
 		/// <summary>
@@ -209,7 +214,7 @@ namespace StarlightRiver.Content.Items.Jungle
 
 			Projectile.position += (heartTarget.Center - Projectile.Center) * 0.04f;
 
-			Projectile.position += Projectile.Center.DirectionTo(Owner.Center) * (float)Math.Sin(Projectile.timeLeft * 0.1f + Projectile.minionPos) * 2.9f;
+			Projectile.position += Projectile.Center.DirectionTo(Owner.Center) * (float)Math.Sin(animationTimer * 0.1f + Projectile.minionPos) * 2.9f;
 
 			// If we intersect the heart, consume it
 			if (Projectile.Hitbox.Intersects(heartTarget.Hitbox))
@@ -219,6 +224,7 @@ namespace StarlightRiver.Content.Items.Jungle
 				RageTime = 600;
 				EatTime = 120;
 				State = 0;
+				Projectile.netUpdate = true;
 			}
 		}
 
@@ -237,7 +243,7 @@ namespace StarlightRiver.Content.Items.Jungle
 
 			Projectile.position += (npcTarget.Center - Projectile.Center) * 0.04f;
 
-			Projectile.position += Projectile.Center.DirectionTo(Owner.Center) * (float)Math.Sin(Projectile.timeLeft * 0.1f + Projectile.minionPos) * 2.9f;
+			Projectile.position += Projectile.Center.DirectionTo(Owner.Center) * (float)Math.Sin(animationTimer * 0.1f + Projectile.minionPos) * 2.9f;
 		}
 
 		/// <summary>
@@ -248,7 +254,7 @@ namespace StarlightRiver.Content.Items.Jungle
 			float totalCount = Owner.ownedProjectileCounts[Type] > 0 ? Owner.ownedProjectileCounts[Type] : 1;
 
 			Vector2 idlePos = Owner.Center + new Vector2(-32 + Projectile.minionPos / totalCount * 64, -72);
-			idlePos += Vector2.UnitX.RotatedBy(Projectile.timeLeft / 40f + Projectile.minionPos) * 10;
+			idlePos += Vector2.UnitX.RotatedBy(animationTimer / 40f + Projectile.minionPos) * 10;
 
 			Projectile.position += (idlePos - Projectile.Center) * 0.06f;
 
@@ -276,7 +282,7 @@ namespace StarlightRiver.Content.Items.Jungle
 		public override bool PreDraw(ref Color lightColor)
 		{
 			int frameX = Raged ? 50 : 0;
-			int frameY = Raged ? Projectile.timeLeft / 10 % 2 * 38 : Projectile.timeLeft / 10 % 4 * 38;
+			int frameY = Raged ? animationTimer / 10 % 2 * 38 : animationTimer / 10 % 4 * 38;
 			var source = new Rectangle(frameX, frameY, 50, 38);
 
 			float dist = Vector2.Distance(Projectile.Center, Origin);
@@ -310,6 +316,16 @@ namespace StarlightRiver.Content.Items.Jungle
 			Main.spriteBatch.Draw(texPot, Origin - Main.screenPosition, null, Lighting.GetColor((Origin / 16).ToPoint()), 0, texPot.Size() / 2f, 1, 0, 0);
 
 			return false;
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(animationTimer);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			animationTimer = reader.ReadInt32();
 		}
 	}
 

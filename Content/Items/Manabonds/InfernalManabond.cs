@@ -91,6 +91,9 @@ namespace StarlightRiver.Content.Items.Manabonds
 			if (State == 1)
 				return;
 
+			Main.player[Projectile.owner].TryGetModPlayer(out StarlightPlayer starlightPlayer);
+			starlightPlayer.SetHitPacketStatus(shouldRunProjMethods: true);
+
 			target.AddBuff(BuffID.OnFire, 300);
 
 			Explode();
@@ -102,9 +105,6 @@ namespace StarlightRiver.Content.Items.Manabonds
 				return false;
 
 			Explode();
-
-			Main.player[Projectile.owner].TryGetModPlayer(out StarlightPlayer starlightPlayer);
-			starlightPlayer.SetHitPacketStatus(shouldRunProjMethods: true);
 
 			return false;
 		}

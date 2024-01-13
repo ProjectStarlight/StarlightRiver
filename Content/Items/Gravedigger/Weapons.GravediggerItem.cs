@@ -2,6 +2,7 @@ using StarlightRiver.Content.Buffs;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
+using System.IO;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -65,6 +66,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		private const int COLUMNTHREEFRAMES = 3;
 		private const int COLUMNFOURFRAMES = 4;
 
+		private bool shouldDoSFX = true;
+
 		private int frameX = 0;
 		private int SlashWindow = 0;
 		private Vector2 direction = Vector2.Zero;
@@ -88,13 +91,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Projectile.ownerHitCheck = true;
 		}
 
-		Player Player => Main.player[Projectile.owner];
-
-		private bool FirstTickOfSwing
-		{
-			get => Projectile.ai[1] == 0;
-			set => Projectile.ai[1] = value ? 0 : 1;
-		}
+		Player Owner => Main.player[Projectile.owner];
 
 		private int SwingFrame
 		{
@@ -110,97 +107,118 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			3 => new Vector2(FRAMEWIDTH * 0.35f, FRAMEHEIGHT * 0.6f),
 			_ => Vector2.Zero,
 		};
-		public override void AI()
+
+		public override void OnSpawn(IEntitySource source)
 		{
-			Projectile.velocity = Vector2.Zero;
-			if (FirstTickOfSwing)
+			Reinitialize();
+		}
+
+		/// <summary>
+		/// resets the projectile to an initial state using the players mouse / controls to determine, and sets a netupdate to be sent
+		/// </summary>
+		private void Reinitialize()
+		{
+			directionTwo = Main.MouseWorld - Owner.MountedCenter;
+			directionTwo.Normalize();
+			Owner.ChangeDir(Main.MouseWorld.X > Owner.MountedCenter.X ? 1 : -1);
+			Projectile.frame = 0;
+			Projectile.frameCounter = 0;
+			SlashWindow = 30;
+
+			if (Owner.controlUp)
 			{
-				directionTwo = Main.MouseWorld - Player.MountedCenter;
-				directionTwo.Normalize();
-				Player.ChangeDir(Main.MouseWorld.X > Player.MountedCenter.X ? 1 : -1);
-				Projectile.frame = 0;
-				Projectile.frameCounter = 0;
-				SlashWindow = 30;
-				FirstTickOfSwing = false;
-				if (Player.controlUp)
+				direction = new Vector2(Owner.direction, -1);
+				SwingFrame = 2;
+			}
+			else if (Owner.controlDown)
+			{
+				Owner.GetModPlayer<GravediggerPlayer>().Combo = 0;
+				direction = new Vector2(Owner.direction, -1);
+				SwingFrame = 3;
+			}
+			else
+			{
+				Owner.GetModPlayer<GravediggerPlayer>().Combo++;
+				SwingFrame = Owner.GetModPlayer<GravediggerPlayer>().SwingFrame == 1 ? 0 : 1;
+				if (SwingFrame == 0)
 				{
-					direction = new Vector2(Player.direction, -1);
-					SwingFrame = 2;
-				}
-				else if (Player.controlDown)
-				{
-					Player.GetModPlayer<GravediggerPlayer>().Combo = 0;
-					direction = new Vector2(Player.direction, -1);
-					SwingFrame = 3;
+					direction = new Vector2(Owner.direction, 1);
 				}
 				else
 				{
-					Player.GetModPlayer<GravediggerPlayer>().Combo++;
-					SwingFrame = Player.GetModPlayer<GravediggerPlayer>().SwingFrame == 1 ? 0 : 1;
-					if (SwingFrame == 0)
-					{
-						direction = new Vector2(Player.direction, 1);
-					}
-					else
-					{
-						direction = new Vector2(Player.direction, -1);
-					}
+					direction = new Vector2(Owner.direction, -1);
 				}
-
-				direction.Normalize();
-				Player.GetModPlayer<GravediggerPlayer>().SwingFrame = SwingFrame;
-
-				DoSFX();
 			}
 
-			Player.heldProj = Projectile.whoAmI;
-			Player.itemTime = 2;
-			Player.itemAnimation = 2;
-			Player.GetModPlayer<GravediggerPlayer>().SwingDelay = 2;
+			direction.Normalize();
+			Owner.GetModPlayer<GravediggerPlayer>().SwingFrame = SwingFrame;
+
+			shouldDoSFX = true;
+
+			Projectile.netUpdate = true;
+		}
+
+		public override void AI()
+		{
+			Projectile.velocity = Vector2.Zero;
+			if (shouldDoSFX)
+			{
+				shouldDoSFX = false;
+
+				Helper.PlayPitched("Effects/HeavyWhooshShort", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
+			}
+
+			Owner.heldProj = Projectile.whoAmI;
+			Owner.itemTime = 2;
+			Owner.itemAnimation = 2;
+			Owner.GetModPlayer<GravediggerPlayer>().SwingDelay = 2;
 			Vector2 frameOrigin;
-			if (Player.direction < 0)
+			if (Owner.direction < 0)
 				frameOrigin = new Vector2(FRAMEWIDTH, FRAMEHEIGHT) - SwingOrigin;
 			else
 				frameOrigin = SwingOrigin;
 
-			Projectile.position = Player.MountedCenter - frameOrigin;
+			Projectile.position = Owner.MountedCenter - frameOrigin;
 			if (SwingFrame < 2)
 			{
 				if (!CheckFrameDeath())
 				{
 					if (SwingFrame == 0 && Projectile.frame < 3)
-						direction = direction.RotatedBy(Player.direction * 0.3f);
+						direction = direction.RotatedBy(Owner.direction * 0.3f);
 					else if (SwingFrame == 1)
-						direction = direction.RotatedBy(Player.direction * -0.45f);
+						direction = direction.RotatedBy(Owner.direction * -0.45f);
 				}
 
-				Player.ChangeDir(Main.MouseWorld.X > Player.MountedCenter.X ? 1 : -1);
+				Owner.TryGetModPlayer(out ControlsPlayer controlsPlayer);
+				controlsPlayer.mouseRotationListener = true;
+
+				Owner.ChangeDir(controlsPlayer.mouseWorld.X > Owner.MountedCenter.X ? 1 : -1);
 				Projectile.position += directionTwo * 10;
-				Player.itemRotation = MathHelper.WrapAngle(direction.ToRotation() - ((Player.direction < 0) ? 0 : MathHelper.Pi));
-				Projectile.rotation = MathHelper.WrapAngle(Player.AngleFrom(Projectile.position + frameOrigin) - ((Player.direction < 0) ? 0 : MathHelper.Pi));
+				Owner.itemRotation = MathHelper.WrapAngle(direction.ToRotation() - ((Owner.direction < 0) ? 0 : MathHelper.Pi));
+				Projectile.rotation = MathHelper.WrapAngle(Owner.AngleFrom(Projectile.position + frameOrigin) - ((Owner.direction < 0) ? 0 : MathHelper.Pi));
 			}
 			else
 			{
 				if (!CheckFrameDeath())
 				{
 					if (SwingFrame == 2) //swing UP
-						direction = direction.RotatedBy(Player.direction * -0.3f);
+						direction = direction.RotatedBy(Owner.direction * -0.3f);
 					else if (SwingFrame == 3) //swing DOWN
-						direction = direction.RotatedBy(Player.direction * -0.2f);
+						direction = direction.RotatedBy(Owner.direction * -0.2f);
 				}
 
-				Player.itemRotation = MathHelper.WrapAngle(direction.ToRotation() - ((Player.direction < 0) ? 0 : MathHelper.Pi));
+				Owner.itemRotation = MathHelper.WrapAngle(direction.ToRotation() - ((Owner.direction < 0) ? 0 : MathHelper.Pi));
 				Projectile.rotation = 0;
 			}
 
 			#region hardcoding
-			if (SwingFrame == 3 && Player.direction < 0)
+			if (SwingFrame == 3 && Owner.direction < 0)
 				Projectile.position -= new Vector2(5, 20);
 
 			if (SwingFrame == 2)
-				Projectile.position.X += 14 * Player.direction;
+				Projectile.position.X += 14 * Owner.direction;
 
-			if (SwingFrame == 1 && Player.direction < 0)
+			if (SwingFrame == 1 && Owner.direction < 0)
 				Projectile.position.Y += 12;
 			#endregion
 
@@ -213,18 +231,18 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				Projectile.frameCounter = 0;
 			}
 
-			if (CheckFrameDeath()) //TODO: Sync in multiPlayer
+			if (CheckFrameDeath())
 			{
 				SlashWindow--;
-				if (Player == Main.LocalPlayer)
+				if (Owner == Main.LocalPlayer)
 				{
 					if (Main.mouseLeft && SlashWindow < 20)
 					{
-						FirstTickOfSwing = true;
+						Reinitialize();
 					}
 					else if (SlashWindow < 0)
 					{
-						Player.GetModPlayer<GravediggerPlayer>().Combo = 0;
+						Owner.GetModPlayer<GravediggerPlayer>().Combo = 0;
 						Projectile.active = false;
 					}
 				}
@@ -253,10 +271,6 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			return Projectile.frame >= deathFrame;
 		}
 
-		private void DoSFX()
-		{
-			Helper.PlayPitched("Effects/HeavyWhooshShort", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
-		}
 		public override Color? GetAlpha(Color lightColor)
 		{
 			return Color.Lerp(lightColor, Color.White, 0.2f);
@@ -269,10 +283,10 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			SpriteEffects effects;
 
 			Vector2 frameOrigin = SwingOrigin;
-			if (Player.direction < 0)
+			if (Owner.direction < 0)
 				frameOrigin.X = FRAMEWIDTH - SwingOrigin.X;
 
-			if (Player.direction < 0)
+			if (Owner.direction < 0)
 				effects = SpriteEffects.None;
 			else
 				effects = SpriteEffects.FlipHorizontally;
@@ -289,9 +303,14 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			Player Player = Main.player[Projectile.owner];
-			CameraSystem.shake += 3;
+			Main.player[Projectile.owner].TryGetModPlayer(out StarlightPlayer sp);
+			sp.SetHitPacketStatus(true);
+
+			if (Main.myPlayer == Owner.whoAmI)
+				CameraSystem.shake += 3;
+
 			Helper.PlayPitched("Impacts/GoreLight", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), target.Center);
+
 			if (target.knockBackResist != 0)
 			{
 				switch (SwingFrame)
@@ -307,7 +326,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 					case 2:
 						if (!target.noGravity)
 						{
-							target.AddBuff(ModContent.BuffType<ShovelSlowFall>(), 120);
+							target.AddBuff(ModContent.BuffType<ShovelSlowFall>(), 120, true);
 							target.velocity.Y = -8f;
 						}
 
@@ -315,8 +334,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 					case 3:
 						if (!target.collideY && !target.noGravity)
 						{
-							target.AddBuff(ModContent.BuffType<ShovelQuickFall>(), 60);
-							target.GetGlobalNPC<GravediggerNPC>().SlamPlayer = Player;
+							target.AddBuff(ModContent.BuffType<ShovelQuickFall>(), 60, true);
+							target.GetGlobalNPC<GravediggerNPC>().SlamPlayer = Owner;
 						}
 
 						break;
@@ -330,7 +349,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 			if (SwingFrame < 2)
 			{
-				modifiers.HitDirectionOverride = Math.Sign(target.Center.X - Player.Center.X);
+				modifiers.HitDirectionOverride = Math.Sign(target.Center.X - Owner.Center.X);
 				if (target.HasBuff(ModContent.BuffType<ShovelSlowFall>()))
 					modifiers.Knockback *= 0.3f;
 			}
@@ -380,6 +399,30 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				dustDirection2 *= Main.rand.NextFloat(0.5f, 4f + knockback);
 				Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.BloodMetaballDustLight>(), dustDirection2, 0, default, 0.2f);
 			}
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.WritePackedVector2(directionTwo);
+			writer.WritePackedVector2(direction);
+			writer.Write(Projectile.frame);
+			writer.Write(Projectile.frameCounter);
+			writer.Write(SlashWindow);
+			writer.Write(SwingFrame);
+			writer.Write(shouldDoSFX);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			directionTwo = reader.ReadPackedVector2();
+			direction = reader.ReadPackedVector2();
+			Projectile.frame = reader.ReadInt32();
+			Projectile.frameCounter = reader.ReadInt32();
+			SlashWindow = reader.ReadInt32();
+			SwingFrame = reader.ReadInt32();
+			Owner.GetModPlayer<GravediggerPlayer>().SwingFrame = SwingFrame;
+			shouldDoSFX = reader.ReadBoolean();
+
 		}
 	}
 

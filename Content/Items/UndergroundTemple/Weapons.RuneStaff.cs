@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Archaeology;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -58,7 +59,6 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 		public List<Vector2> oldStarPositions = new();
 		public Player Owner => Main.player[Projectile.owner];
-		public Vector2? OwnerMouse => (Main.myPlayer == Owner.whoAmI) ? Main.MouseWorld : null;
 		public override string Texture => AssetDirectory.CaveTempleItem + "RuneStaff";
 
 		public ref float StarRotation => ref Projectile.ai[0];
@@ -87,22 +87,24 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 		public override void OnSpawn(IEntitySource source)
 		{
-			Projectile.velocity = Owner.DirectionTo(OwnerMouse.Value);
+			Projectile.velocity = Owner.DirectionTo(Main.MouseWorld);
 			Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
-			Projectile.netUpdate = true;
 		}
 
 		public override void AI()
 		{
-			Lifetime++;
-
-			Vector2 starPos = Projectile.Center + (Projectile.rotation - MathHelper.PiOver4).ToRotationVector2() * 25f + new Vector2(0f, Owner.gfxOffY);
-
 			if (!(Owner.HeldItem.ModItem is RuneStaff))
 			{
 				Projectile.Kill();
 				return;
 			}
+
+			Lifetime++;
+
+			Vector2 starPos = Projectile.Center + (Projectile.rotation - MathHelper.PiOver4).ToRotationVector2() * 25f + new Vector2(0f, Owner.gfxOffY);
+
+			Owner.TryGetModPlayer(out ControlsPlayer controlsPlayer);
+			controlsPlayer.mouseRotationListener = true;
 
 			if ((!Owner.channel || Owner.statMana <= 15) && !shooting && Lifetime >= 30)
 			{
@@ -116,14 +118,19 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 						Dust.NewDustPerfect(starPos, ModContent.DustType<Dusts.GlowFastDecelerate>(), Projectile.velocity.RotatedBy(MathHelper.ToRadians(i * 90)).RotatedByRandom(0.3f) * Main.rand.NextFloat(3f), 0, new Color(175, 155, 25), 0.65f);
 					}
 
-					Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), starPos, Projectile.velocity.RotatedBy(MathHelper.ToRadians(i * 90)) * 1.5f, ModContent.ProjectileType<RuneStaffProjectile>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);
-					proj.timeLeft = 240 + i * 10;
+					if (Main.myPlayer == Projectile.owner)
+					{
+						RuneStaffProjectile.timeLeftToAssign = 240 + i * 10;
+						Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), starPos, Projectile.velocity.RotatedBy(MathHelper.ToRadians(i * 90)) * 1.5f, ModContent.ProjectileType<RuneStaffProjectile>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);
+					}
 				}
 
 				Helpers.Helper.PlayPitched("Magic/HolyCastShort", 1f, 1f, starPos);
 
 				Owner.CheckMana(15, true);
-				Owner.manaRegenDelay += 240;
+
+				if (Owner.manaRegenDelay < 240)
+					Owner.manaRegenDelay = 240;
 
 				Core.Systems.CameraSystem.CameraSystem.shake += 2;
 			}
@@ -138,7 +145,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			else
 			{
 				Projectile.timeLeft = 2;
-				Projectile.velocity = Vector2.Lerp(Projectile.velocity, Owner.DirectionTo(OwnerMouse.Value), 0.1f);
+				Projectile.velocity = Vector2.Lerp(Projectile.velocity, Owner.DirectionTo(controlsPlayer.mouseWorld), 0.1f);
 				Projectile.Center = Owner.MountedCenter + (Projectile.rotation - MathHelper.PiOver4).ToRotationVector2() * 30f;
 			}
 
@@ -149,7 +156,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.PiOver2 - MathHelper.PiOver4);
 
 			Owner.heldProj = Projectile.whoAmI;
-			Owner.ChangeDir(OwnerMouse.Value.X < Owner.Center.X ? -1 : 1);
+			Owner.ChangeDir(controlsPlayer.mouseWorld.X < Owner.Center.X ? -1 : 1);
 
 			if (shooting)
 				return;
@@ -289,6 +296,16 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			return lerper;
 		}
 
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(Projectile.rotation);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			Projectile.rotation = reader.ReadInt32();
+		}
+
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
@@ -346,6 +363,8 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 	class RuneStaffProjectile : ModProjectile
 	{
+
+		public static int timeLeftToAssign = 240;
 		public Player Owner => Main.player[Projectile.owner];
 		public override string Texture => AssetDirectory.CaveTempleItem + "RuneStaff";
 		public override void SetStaticDefaults()
@@ -367,6 +386,12 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			Projectile.tileCollide = true;
 
 			Projectile.DamageType = DamageClass.Magic;
+		}
+
+		public override void OnSpawn(IEntitySource source)
+		{
+			Projectile.timeLeft = timeLeftToAssign;
+			timeLeftToAssign = 240;
 		}
 
 		public override void AI()
@@ -405,6 +430,16 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			{
 				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(2.5f, 2.5f), 0, new Color(175, 155, 25), 0.45f);
 			}
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(Projectile.timeLeft);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			Projectile.timeLeft = reader.ReadInt32();
 		}
 
 		public override bool PreDraw(ref Color lightColor)

@@ -75,9 +75,9 @@ namespace StarlightRiver.Content.NPCs.Misc
 				Vector2 dir = Main.rand.NextFloat(6.28f).ToRotationVector2();
 				Vector2 offset = Main.rand.NextBool(4) ? dir * Main.rand.NextFloat(30) : new Vector2(Main.rand.Next(-35, 35), npc.height / 2);
 
-				float smalLCharge = 0.5f;
+				float smallCharge = 0.5f;
 
-				var proj = Projectile.NewProjectileDirect(npc.GetSource_FromAI(), npc.Center + offset, dir.RotatedBy(Main.rand.NextFloat(-1, 1)) * 5, ModContent.ProjectileType<CloudstrikeShot>(), 0, 0, chargedPlayer.whoAmI, smalLCharge, 2);
+				var proj = Projectile.NewProjectileDirect(npc.GetSource_FromAI(), npc.Center + offset, dir.RotatedBy(Main.rand.NextFloat(-1, 1)) * 5, ModContent.ProjectileType<CloudstrikeShot>(), 0, 0, chargedPlayer.whoAmI, smallCharge, 2);
 				var mp = proj.ModProjectile as CloudstrikeShot;
 				mp.velocityMult = Main.rand.Next(1, 4);
 
