@@ -819,7 +819,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 				if (GlobalTimer == 240) //roar and activate
 				{
-					NPC.dontTakeDamage = false;
 					CameraSystem.shake += 40;
 					Terraria.Audio.SoundEngine.PlaySound(SoundID.Roar, NPC.Center);
 				}
@@ -829,6 +828,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 				if (GlobalTimer > 240) //following unless using ink attack
 				{
+					NPC.dontTakeDamage = false;
+
 					if (AttackPhase != 3)
 					{
 						Vector2 moveTarget = Main.player[NPC.target].Center;
