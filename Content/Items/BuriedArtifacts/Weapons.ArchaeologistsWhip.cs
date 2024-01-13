@@ -141,13 +141,13 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 				return;
 			}
 
-			int[] treasure = [
-			ModContent.ItemType<AWhip_BlueGem>(),
+			int[] treasure = {
+				ModContent.ItemType<AWhip_BlueGem>(),
 				ModContent.ItemType<AWhip_GreenGem>(),
 				ModContent.ItemType<AWhip_RedGem>(),
 				ModContent.ItemType<AWhip_Coin>(),
-				ModContent.ItemType<AWhip_Necklace>(),
-			];
+				ModContent.ItemType<AWhip_Necklace>()
+			};
 
 			if (Main.rand.NextBool(9))
 			{
