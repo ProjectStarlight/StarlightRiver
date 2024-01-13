@@ -37,6 +37,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		public int twistTarget;
 		public int shieldShaderTimer;
 
+		public int fleeTimer;
+
 		public bool rotationLocked;
 		public float lockedRotation;
 
@@ -519,7 +521,13 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			//Main AI
 			Lighting.AddLight(NPC.Center, new Vector3(1, 0.8f, 0.4f)); //glow
 
+			// Handles fleeing logic. To make sure we dont force a client into having a fleeing boss too early we give the boss a 1 second "charge" to flee
 			if (Phase != (int)AIStates.Leaving && Phase != (int)AIStates.Dying && arena != new Rectangle() && !Main.player.Any(n => n.active && !n.dead && arena.Contains(n.Center.ToPoint()))) //if no valid players are detected
+				fleeTimer++;
+			else
+				fleeTimer = 0;
+
+			if (fleeTimer > 60)
 			{
 				GlobalTimer = 0;
 				Phase = (int)AIStates.Leaving; //begone thot!
