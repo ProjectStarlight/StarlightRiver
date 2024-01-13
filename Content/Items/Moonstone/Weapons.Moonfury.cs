@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Moonfury");
-			Tooltip.SetDefault("Call down a shard of moonstone, inflicting Dreamfire on struck enemies");
+			Tooltip.SetDefault("Call down a shard of moonstone, inflicting {{Dreamfire}} on struck enemies");
 		}
 
 		public override void SetDefaults()

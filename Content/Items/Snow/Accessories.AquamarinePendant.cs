@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Items.Snow
 
 		public override string Texture => AssetDirectory.SnowItem + Name;
 
-		public AquamarinePendant() : base("Aquamarine Pendant", "+15 Barrier \nLosing all of your barrier releases ice shards") { }
+		public AquamarinePendant() : base("Aquamarine Pendant", "+15 {{Barrier}} \nLosing all of your {{barrier}} releases ice shards") { }
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{

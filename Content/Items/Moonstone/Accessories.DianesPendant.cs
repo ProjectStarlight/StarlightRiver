@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Diane's Pendant");
-			Tooltip.SetDefault("Consuming mana charges a Crescent Guardian, blitzing nearby enemies when fully charged\n+20 barrier");
+			Tooltip.SetDefault("Consuming mana charges a Crescent Guardian, blitzing nearby enemies when fully charged\n+20 {{barrier}}");
 		}
 
 		public override void SetDefaults()

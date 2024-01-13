@@ -9,9 +9,9 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 {
 	public class CutawayHook : HookGroup
 	{
-		public static List<Cutaway> cutaways = new();
+		public static List<Cutaway> cutaways;
 
-		public static ScreenTarget cutawayTarget = new(DrawCutawayTarget, () => Inside, 1);
+		public static ScreenTarget cutawayTarget;
 
 		private static bool Inside => cutaways?.Any(n => n.fadeTime < 0.95f) ?? false;
 
@@ -20,6 +20,9 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 			if (Main.dedServ)
 				return;
 
+			cutaways = new();
+			cutawayTarget = new(DrawCutawayTarget, () => Inside, 1);
+
 			On_Main.DrawInfernoRings += DrawNegative;
 			On_Main.DrawDust += DrawPositive;
 			On_WorldGen.SaveAndQuit += ClearCutaways;
@@ -27,8 +30,8 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 
 		public override void Unload()
 		{
-			cutaways ??= null;
-			cutawayTarget ??= null;
+			cutaways = null;
+			cutawayTarget = null;
 		}
 
 		private void ClearCutaways(On_WorldGen.orig_SaveAndQuit orig, Action callback)

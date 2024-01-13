@@ -254,8 +254,30 @@ namespace StarlightRiver.Core
 			orig(player, sItem, target, ref modifiers);
 		}
 
+		/// <summary>
+		/// This load creates a hook into the beginning of a hit processing so we can snapshot the initial state 
+		/// to send a packet to other clients and server to have them process all the custom onhit logic too where needed
+		/// </summary>
 		public override void Load()
 		{
+			//Order of operations for processing a projectile hit is as follows:
+			// 1. ProjectileLoader.ModifyHitNPC (event in StarlightProjectile.Events)
+			// 2. NPCLoader.ModifyHitByProjectile (event in StarlightNPC.Events) 
+			// 3. PlayerLoader.ModifyHitNPCWithProj (event in this class) <-- only if projectile has a player owner, will be skipped for server projs
+			// 4. ProjectileLoader.OnHitNPC (event in StarlightProjectile.Events)
+			// 5. NPCLoader.OnHitByProjectile (event in StarlightNPC.Events)
+			// 6. PlayerLoader.OnHitNPCWithProj (Event in this class) <-- only if projectile has a player owner, will be skipped for server projs
+
+			//order of operations for processing an item hit (true melee) is as follows
+			// 1. ItemLoader.ModifyHitNPC (event in StarlightItem.Events)
+			// 2. NPCLoader.ModifyHitByItem (event in StarlightNPC.Events)
+			// 3. PlayerLoader.ModifyHitNPCWithItem (event in this class)
+			// 4. ItemLoader.OnHitNPC (event in StarlightItem.Events)
+			// 5. NPCLoader.OnHitByItem (event in StarlightNPC.Events)
+			// 6. PlayerLoader.OnHitNPCWithItem (event in this class)
+
+			//No guarantees on ordering within each step unless we write something for that (probably not needed, just use the right event?)
+
 			MethodInfo ModifyHitNPCWithProjMethod = typeof(CombinedHooks).GetMethod("ModifyHitNPCWithProj", BindingFlags.Public | BindingFlags.Static);
 			ModifyHitNPCWithProjHook = new Hook(ModifyHitNPCWithProjMethod, OnModifyHitNPCWithProj);
 

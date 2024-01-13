@@ -73,11 +73,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 
 			if (emergeTime == 18) //reset jumps
 			{
-				Player.canJumpAgain_Fart = true;
-				Player.canJumpAgain_Sail = true;
-				Player.canJumpAgain_Cloud = true;
-				Player.canJumpAgain_Blizzard = true;
-				Player.canJumpAgain_Sandstorm = true;
+				Player.RefreshExtraJumps();
 				Player.rocketTime = Player.rocketTimeMax;
 				Player.wingTime = Player.wingTimeMax;
 
@@ -145,11 +141,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 				return;
 			}
 
-			Player.canJumpAgain_Fart = false;
-			Player.canJumpAgain_Sail = false;
-			Player.canJumpAgain_Cloud = false;
-			Player.canJumpAgain_Blizzard = false;
-			Player.canJumpAgain_Sandstorm = false;
+			Player.ConsumeAllExtraJumps();
 			Player.rocketTime = -1;
 			Player.wingTime = -1;
 

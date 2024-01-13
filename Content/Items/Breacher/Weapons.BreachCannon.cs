@@ -18,6 +18,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			Item.CloneDefaults(ItemID.QueenSpiderStaff);
 			Item.damage = 12;
+			Item.DamageType = DamageClass.Summon;
 			Item.mana = 12;
 			Item.width = 40;
 			Item.height = 40;
@@ -82,13 +83,10 @@ namespace StarlightRiver.Content.Items.Breacher
 			if (originTile == Vector2.Zero)
 				return false;
 
-			var proj = Projectile.NewProjectileDirect(source, (originTile - Vector2.UnitX.RotatedBy(minDirection * 1.57f)) * 16, velocity, type, damage, knockback, player.whoAmI, minDirection);
-			var mp = proj.ModProjectile as BreachCannonSentry;
+			BreachCannonSentry.rotationToAssign = minDirection * 1.57f + 3.14f;
+			BreachCannonSentry.tileOriginToAassign = originTile;
+			Projectile.NewProjectileDirect(source, (originTile - Vector2.UnitX.RotatedBy(minDirection * 1.57f)) * 16, velocity, type, damage, knockback, player.whoAmI, minDirection);
 
-			//Main.NewText("Spawned at (" + ((int)originTile.X).ToString() + "," + ((int)originTile.Y).ToString() + ")");
-			mp.tileOrigin = originTile;
-			proj.originalDamage = Item.damage;
-			proj.rotation = minDirection * 1.57f + 3.14f;
 			player.UpdateMaxTurrets();
 
 			return false;

@@ -315,9 +315,9 @@ namespace StarlightRiver.Core
 
 			vertices = new VertexPositionColorTexture[]
 			{
-				new VertexPositionColorTexture(a.Vec3(), colorA, texCoordA),
-				new VertexPositionColorTexture(b.Vec3(), colorB, texCoordB),
-				new VertexPositionColorTexture(c.Vec3(), colorC, texCoordC)
+				new(a.Vec3(), colorA, texCoordA),
+				new(b.Vec3(), colorB, texCoordB),
+				new(c.Vec3(), colorC, texCoordC)
 			};
 
 			indices = new short[]

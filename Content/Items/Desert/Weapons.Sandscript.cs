@@ -1,6 +1,9 @@
-﻿using StarlightRiver.Helpers;
+﻿using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -74,7 +77,6 @@ namespace StarlightRiver.Content.Items.Desert
 		public float Progress => 1f - Projectile.timeLeft / MaxTimeleft;
 
 		public Player Owner => Main.player[Projectile.owner];
-		public Vector2? OwnerMouse => (Main.myPlayer == Owner.whoAmI) ? Main.MouseWorld : null;
 
 		public override string Texture => AssetDirectory.DesertItem + "Sandscript";
 
@@ -103,7 +105,7 @@ namespace StarlightRiver.Content.Items.Desert
 			Projectile.timeLeft = (int)(useSpeed * 0.9f);
 			MaxTimeleft = Projectile.timeLeft;
 
-			Projectile.velocity = Owner.DirectionTo(OwnerMouse.Value);
+			Projectile.velocity = Owner.DirectionTo(Main.MouseWorld);
 			Projectile.rotation = Projectile.velocity.ToRotation();
 		}
 
@@ -121,25 +123,24 @@ namespace StarlightRiver.Content.Items.Desert
 			if (Projectile.timeLeft < MaxTimeleft)
 				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2CircularEdge(lerper, lerper), ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(0.5f, 0.5f), 0, Main.rand.NextBool() ? new Color(30, 230, 200) : new Color(230, 170, 100), 0.4f);
 
+			Owner.TryGetModPlayer(out ControlsPlayer controlsPlayer);
+			controlsPlayer.mouseRotationListener = true;
+
 			if (Projectile.timeLeft == 10)
 			{
-				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Owner.Center, Owner.DirectionTo(OwnerMouse.Value), ModContent.ProjectileType<SandSlash>(), Projectile.damage, Projectile.knockBack, Projectile.owner, SwingDirection);
+				if (Owner.whoAmI == Main.myPlayer)
+					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Owner.Center, Owner.DirectionTo(controlsPlayer.mouseWorld), ModContent.ProjectileType<SandSlash>(), Projectile.damage, Projectile.knockBack, Projectile.owner, SwingDirection);
 
 				for (int i = 0; i < 10; i++)
 				{
-					Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Owner.DirectionTo(OwnerMouse.Value) * 3f + Main.rand.NextVector2Circular(1.5f, 1.5f), 0, Main.rand.NextBool() ? new Color(30, 230, 200) : new Color(230, 170, 100), 0.4f);
+					Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Owner.DirectionTo(controlsPlayer.mouseWorld) * 3f + Main.rand.NextVector2Circular(1.5f, 1.5f), 0, Main.rand.NextBool() ? new Color(30, 230, 200) : new Color(230, 170, 100), 0.4f);
 
-					Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Sand>(), Owner.DirectionTo(OwnerMouse.Value) * 3f + Main.rand.NextVector2Circular(1.5f, 1.5f), 140, default, 0.6f).noGravity = true;
+					Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Sand>(), Owner.DirectionTo(controlsPlayer.mouseWorld) * 3f + Main.rand.NextVector2Circular(1.5f, 1.5f), 140, default, 0.6f).noGravity = true;
 				}
 			}
 
 			if (Projectile.timeLeft > 10)
-				Projectile.velocity = Vector2.Lerp(Projectile.velocity, Owner.DirectionTo(OwnerMouse.Value), 0.1f);
-		}
-
-		public override void Kill(int timeLeft)
-		{
-			base.Kill(timeLeft);
+				Projectile.velocity = Vector2.Lerp(Projectile.velocity, Owner.DirectionTo(controlsPlayer.mouseWorld), 0.1f);
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -158,6 +159,18 @@ namespace StarlightRiver.Content.Items.Desert
 				Main.spriteBatch.Draw(tex, Projectile.Center + new Vector2(0f, Owner.gfxOffY) - Main.screenPosition, null, lightColor * mult, Projectile.rotation, tex.Size() / 2f, Projectile.scale * MathHelper.Lerp(1f, 2f, EaseBuilder.EaseCubicOut.Ease(1f - Projectile.timeLeft / 10f)), 0f, 0f);
 			return false;
 		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(Projectile.timeLeft);
+			writer.Write(Projectile.rotation);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			Projectile.timeLeft = reader.ReadInt32();
+			Projectile.rotation = reader.ReadSingle();
+		}
 	}
 
 	internal class SandSlash : ModProjectile, IDrawPrimitive
@@ -171,8 +184,6 @@ namespace StarlightRiver.Content.Items.Desert
 		private Trail trail2;
 
 		public ref float SwingDirection => ref Projectile.ai[0];
-
-		public Vector2? OwnerMouse => (Main.myPlayer == Owner.whoAmI) ? Main.MouseWorld : null;
 
 		public Player Owner => Main.player[Projectile.owner];
 
@@ -211,7 +222,8 @@ namespace StarlightRiver.Content.Items.Desert
 					hasPlayedSound = true;
 					Terraria.Audio.SoundEngine.PlaySound(SoundID.Item45, Projectile.Center);
 
-					Core.Systems.CameraSystem.CameraSystem.shake += 5;
+					if (Main.myPlayer == Projectile.owner)
+						Core.Systems.CameraSystem.CameraSystem.shake += 5;
 				}
 			}
 			else
@@ -241,6 +253,9 @@ namespace StarlightRiver.Content.Items.Desert
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
+			Owner.TryGetModPlayer(out StarlightPlayer starlightPlayer);
+			starlightPlayer.SetHitPacketStatus(shouldRunProjMethods: true);
+
 			for (int i = 0; i < 4; i++)
 			{
 				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), target.Center.DirectionTo(Owner.Center) * Main.rand.NextFloat(7f) + Main.rand.NextVector2Circular(2f, 2f), 0, Color.Lerp(new Color(30, 230, 200), new Color(230, 170, 100), 1f - Projectile.timeLeft / maxTimeleft), 0.75f);

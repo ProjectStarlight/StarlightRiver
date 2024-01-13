@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
+using static Humanizer.In;
 
 namespace StarlightRiver.Content.Items.Gravedigger
 {
@@ -17,7 +18,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		{
 			DisplayName.SetDefault("Radcula's Rapier");
 			Tooltip.SetDefault("Rapidly stabs enemies, inflicting a stacking bleed\n" +
-				"Press <right> to teleport to the cursor, Reaping bleed stacks of enemies in the way for high damage and lifesteal\n" +
+				"Press <right> to teleport to the cursor, {{Reaping}} bleed stacks of enemies in the way for high damage and lifesteal\n" +
 				"Striking multiple enemies with the teleport lowers its cooldown");
 		}
 
@@ -55,6 +56,12 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
 
 			return false;
+		}
+
+		public override void HoldItem(Player player)
+		{
+			player.TryGetModPlayer(out ControlsPlayer controlsPlayer);
+			controlsPlayer.mouseListener = true; // Add listener here to have BEFORE projectile is spawned
 		}
 
 		public override bool CanUseItem(Player player)
@@ -254,6 +261,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public Player.CompositeArmStretchAmount stretch = Player.CompositeArmStretchAmount.Full;
 
+		private bool isInitialized = false;
+
 		public override string Texture => AssetDirectory.MiscItem + "RadculasRapier_Spear";
 
 		public Player Owner => Main.player[Projectile.owner];
@@ -282,14 +291,15 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Projectile.localNPCHitCooldown = 1;
 		}
 
-		public override void OnSpawn(IEntitySource source)
-		{
-			Projectile.timeLeft = (int)(Owner.HeldItem.useAnimation * (1f / Owner.GetTotalAttackSpeed(DamageClass.Melee)));
-			maxTimeLeft = Projectile.timeLeft;
-		}
-
 		public override void AI()
 		{
+			if (!isInitialized)
+			{
+				isInitialized = true;
+				Projectile.timeLeft = (int)(Owner.HeldItem.useAnimation * (1f / Owner.GetTotalAttackSpeed(DamageClass.Melee)));
+				maxTimeLeft = Projectile.timeLeft;
+			}
+
 			Owner.heldProj = Projectile.whoAmI;
 			Owner.itemTime = Owner.itemAnimation = 2;
 
@@ -301,13 +311,16 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 			if (!fading)
 			{
+				Owner.TryGetModPlayer(out ControlsPlayer controlsPlayer);
+				controlsPlayer.mouseRotationListener = true;
+
 				float totalTime = maxTimeLeft * 0.2f; //total amount of frames the stab lasts
 
 				if (stabTimer < totalTime)
 				{
 					if (stabTimer == 1) //things are initialized here each stab, such as the random rotation, and the randomness of the length of the stab
 					{
-						Projectile.velocity = Owner.DirectionTo(Main.MouseWorld).RotatedByRandom(0.35f);
+						Projectile.velocity = Owner.DirectionTo(controlsPlayer.mouseWorld).RotatedByRandom(0.35f);
 						stabVec = new Vector2(Main.rand.NextFloat(90, 150), 0);
 						hitNPCs.Clear();
 					}
@@ -347,13 +360,13 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				if (Main.rand.NextBool(5))
 				{
 					var pos = Vector2.Lerp(Owner.Center, Projectile.Center, Main.rand.NextFloat());
-					Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.GlowFastDecelerate>(), pos.DirectionTo(Main.MouseWorld).RotatedByRandom(0.35f) * Main.rand.NextFloat(2f, 5f), 0, new Color(255, 0, 0, 100), 0.45f);
+					Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.GlowFastDecelerate>(), pos.DirectionTo(controlsPlayer.mouseWorld).RotatedByRandom(0.35f) * Main.rand.NextFloat(2f, 5f), 0, new Color(255, 0, 0, 100), 0.45f);
 				}
 
 				if (Main.rand.NextBool(5))
 				{
 					var pos = Vector2.Lerp(Owner.Center, Projectile.Center, Main.rand.NextFloat());
-					Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.GlowLineFast>(), pos.DirectionTo(Main.MouseWorld).RotatedByRandom(0.35f) * Main.rand.NextFloat(2f, 5f), 0, new Color(255, 0, Main.rand.Next(255), 100), 1.25f);
+					Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.GlowLineFast>(), pos.DirectionTo(controlsPlayer.mouseWorld).RotatedByRandom(0.35f) * Main.rand.NextFloat(2f, 5f), 0, new Color(255, 0, Main.rand.Next(255), 100), 1.25f);
 				}
 
 				if (!Owner.channel && amountStabs > 5 && Projectile.timeLeft == maxTimeLeft)
@@ -491,6 +504,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public List<Vector2> teleportPositions = new();
 
+		private bool isInitialized = false;
+
 		public Player Owner => Main.player[Projectile.owner];
 
 		public override string Texture => AssetDirectory.MiscItem + "RadculasRapier_Spear";
@@ -521,6 +536,12 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override void AI()
 		{
+			if (!isInitialized)
+			{
+				Initialize();
+				isInitialized = true;
+			}
+
 			Projectile.Center = Owner.MountedCenter;
 
 			Owner.heldProj = Projectile.whoAmI;
@@ -564,9 +585,12 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			}
 		}
 
-		public override void OnSpawn(IEntitySource source)
+		private void Initialize()
 		{
 			RadculasRapierPlayer mp = Owner.GetModPlayer<RadculasRapierPlayer>();
+
+			Owner.TryGetModPlayer(out ControlsPlayer controlsPlayer);
+			controlsPlayer.mouseListener = true;
 
 			originalPos = Owner.Center;
 
@@ -576,9 +600,9 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 			originalRot = Projectile.rotation;
 
-			Vector2 teleportPos = Owner.Center + Owner.DirectionTo(Main.MouseWorld) * 250f;
+			Vector2 teleportPos = Owner.Center + Owner.DirectionTo(controlsPlayer.mouseWorld) * 250f;
 
-			Tile tile = Main.tile[(int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16];
+			Tile tile = Main.tile[(int)controlsPlayer.mouseWorld.X / 16, (int)controlsPlayer.mouseWorld.Y / 16];
 
 			if (!Collision.CanHitLine(Owner.Center, 1, 1, teleportPos, 3, 3) || tile.HasTile && Main.tileSolid[tile.TileType] && !TileID.Sets.Platforms[tile.TileType])
 			{
@@ -616,7 +640,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			if (tile.HasTile && Main.tileSolid[tile.TileType] && !TileID.Sets.Platforms[tile.TileType]) //additional check for player teleporting inside of a wall somehow (seemed to be caused by slopes)
 				Owner.position -= new Vector2(0f, Owner.height);
 
-			Owner.velocity += originalPos.DirectionTo(Main.MouseWorld) * 6.5f;
+			Owner.velocity += originalPos.DirectionTo(controlsPlayer.mouseWorld) * 6.5f;
 
 			teleported = true;
 

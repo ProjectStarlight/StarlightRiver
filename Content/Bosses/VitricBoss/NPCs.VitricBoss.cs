@@ -3,6 +3,7 @@ using StarlightRiver.Content.Foregrounds;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Content.PersistentData;
+using StarlightRiver.Core.Systems.BossRushSystem;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -129,10 +130,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			{
 				swooshes = new List<VitricBossSwoosh>()
 				{
-				new VitricBossSwoosh(new Vector2(-16, -40), 6, this),
-				new VitricBossSwoosh(new Vector2(16, -40), 6, this),
-				new VitricBossSwoosh(new Vector2(-46, -34), 10, this),
-				new VitricBossSwoosh(new Vector2(46, -34), 10, this)
+				new(new Vector2(-16, -40), 6, this),
+				new(new Vector2(16, -40), 6, this),
+				new(new Vector2(-46, -34), 10, this),
+				new(new Vector2(46, -34), 10, this)
 				};
 
 				body = new BodyHandler(this);
@@ -721,6 +722,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 						foreach (NPC NPC in Main.npc.Where(n => n.ModNPC is VitricBackdropLeft || n.ModNPC is VitricBossPlatformUp))
 							NPC.active = false; //arena reset
 					}
+
+					BossRushSystem.ForceFail();
 
 					break;
 

@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public override void OnHurt(Player.HurtInfo info)
 		{
-			if (cooldown <= 0 && active)
+			if (cooldown <= 0 && active && Main.myPlayer == Player.whoAmI)
 			{
 				damageTicker += info.Damage;
 
@@ -315,7 +315,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 	class SupplyBeaconDefense : SmartBuff
 	{
-		public override string Texture => AssetDirectory.Debug;
+		public override string Texture => AssetDirectory.Buffs + Name;
 
 		public SupplyBeaconDefense() : base("Supply Beacon", "Defense increased", false) { }
 
@@ -334,7 +334,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 	class SupplyBeaconHeal : SmartBuff
 	{
-		public override string Texture => AssetDirectory.Debug;
+		public override string Texture => AssetDirectory.Buffs + Name;
 
 		public SupplyBeaconHeal() : base("Supply Beacon", "Regeneration increased", false) { }
 
@@ -354,7 +354,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 	class SupplyBeaconDamage : SmartBuff
 	{
-		public override string Texture => AssetDirectory.Debug;
+		public override string Texture => AssetDirectory.Buffs + Name;
 
 		public SupplyBeaconDamage() : base("Supply Beacon", "Damage increased", false) { }
 

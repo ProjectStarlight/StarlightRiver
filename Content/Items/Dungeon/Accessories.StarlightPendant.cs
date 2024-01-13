@@ -16,9 +16,9 @@ namespace StarlightRiver.Content.Items.Dungeon
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Starlight Pendant");
-			Tooltip.SetDefault("Boosts mana regen based on your current barrier\n" +
-				"Consuming mana boosts barrier regen\n" +
-				"-10 barrier");
+			Tooltip.SetDefault("Boosts mana regen based on your current {{barrier}}\n" +
+				"Consuming mana boosts {{barrier}} regen\n" +
+				"-10 {{barrier}}");
 		}
 
 		public override void SetDefaults()

@@ -38,16 +38,14 @@ namespace StarlightRiver.Content.Items.Vitric
 			var aim = Vector2.Normalize(Main.MouseWorld - player.Center);
 
 			int proj = Projectile.NewProjectile(source, player.Center, (aim * 8.5f).RotatedBy(0.1f), type, damage, knockback, player.whoAmI);
-			Main.projectile[proj].scale = 0.5f;
-			Main.projectile[proj].damage /= 2;
+			Main.projectile[proj].scale = 0.5f; // Not synced. not sure how we would handle vanilla projectile manipulation sync
+			Main.projectile[proj].damage /= 2; // damage is synced implicitly since it's determined by the client on hit
 			Main.projectile[proj].noDropItem = true;
-			NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj);
 
 			int proj2 = Projectile.NewProjectile(source, player.Center, (aim * 8.5f).RotatedBy(-0.1f), type, damage, knockback, player.whoAmI);
 			Main.projectile[proj2].scale = 0.5f;
 			Main.projectile[proj2].damage /= 2;
 			Main.projectile[proj2].noDropItem = true;
-			NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj2);
 			return true;
 		}
 

@@ -17,11 +17,11 @@ namespace StarlightRiver.Content.GUI
 
 		public static Vector2 position;
 
-		private static float opacity;
+		private static float opacity = 1f;
 
-		public static int boxTimer;
+		public static int boxTimer = 0;
 
-		private static int textTimer;
+		private static int textTimer = 0;
 
 		private static float widthOff = 0;
 

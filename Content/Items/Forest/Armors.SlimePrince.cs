@@ -238,7 +238,7 @@ namespace StarlightRiver.Content.Items.Forest
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Slime Prince's Tassets");
-			Tooltip.SetDefault("Minions inflict 5% exposure");
+			Tooltip.SetDefault("Minions inflict 5% {{exposure}}");
 		}
 
 		public override void SetDefaults()

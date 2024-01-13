@@ -34,6 +34,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 		{
 			Texture2D pegTex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "GearPeg").Value;
 			Main.spriteBatch.Draw(pegTex, Center - Main.screenPosition, null, lightColor, 0, pegTex.Size() / 2, 1, 0, 0);
+
 			Texture2D tex = GearSize switch
 			{
 				0 => ModContent.Request<Texture2D>(AssetDirectory.Invisible).Value,
@@ -42,6 +43,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 				3 => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "CeramicGearLarge").Value,
 				_ => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "CeramicGearSmall").Value,
 			};
+
 			Main.spriteBatch.Draw(tex, Center - Main.screenPosition, null, lightColor, Rotation, tex.Size() / 2, 1, 0, 0);
 		}
 	}
@@ -49,6 +51,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 	[SLRDebug]
 	class ObjectiveGearItem : QuickTileItem
 	{
-		public ObjectiveGearItem() : base("Gear puzzle Point", "Debug Item", "ObjectiveGear", 8, AssetDirectory.VitricTile + "GearPeg", true) { }
+		public ObjectiveGearItem() : base("Gear puzzle Point", "{{Debug}} Item", "ObjectiveGear", 8, AssetDirectory.VitricTile + "GearPeg", true) { }
 	}
 }
