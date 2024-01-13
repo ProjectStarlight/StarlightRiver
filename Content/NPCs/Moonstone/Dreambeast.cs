@@ -1,18 +1,11 @@
-﻿using NetEasy;
-using ReLogic.Utilities;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Biomes;
-using StarlightRiver.Content.Buffs;
-using StarlightRiver.Content.Items.Misc;
+﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Physics;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.Audio;
-using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
@@ -98,7 +91,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 			{
-				SanityHitPacket packet = new SanityHitPacket(target.whoAmI, 10);
+				var packet = new SanityHitPacket(target.whoAmI, 10);
 				packet.Send();
 			}
 		}
@@ -400,7 +393,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 						int cloneId = NPC.NewNPC(NPC.GetSource_FromAI(), (int)clonePos.X, (int)clonePos.Y, ModContent.NPCType<Dreambeast>(), 0, (float)fakeout, cloneRotation, 0, stayTime, target.whoAmI);
 						(Main.npc[cloneId].ModNPC as Dreambeast).parent = NPC.whoAmI;
-						
+
 						mirageCount++;
 					}
 				}
