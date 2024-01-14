@@ -29,6 +29,9 @@ _ Visual sync for Tombsmasher
 - Shine staff visual sync
 - Fixed auto-select being prevented from placing torches and throwing glowsticks
 
+## Content
+- New enemy: Dreambeast
+
 ## Tweaks
 - Both Eater Steak and Face Steak can now drop from Corruptors and Herplings respectively
 - Upped Defense system and heart statue usetime to match all other sentries

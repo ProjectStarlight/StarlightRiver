@@ -143,7 +143,7 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 
 		public override void FloorVisuals(Player player)
 		{
-			player.AddBuff(BuffType<Buffs.Overcharge>(), 120);
+			player.AddBuff(BuffType<Buffs.Dreamwarp>(), 240);
 		}
 
 		public string GetHint()

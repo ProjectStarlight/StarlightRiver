@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.GUI;
 using StarlightRiver.Core.Loaders.UILoading;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
@@ -71,6 +72,16 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void LoadData(TagCompound tag)
 		{
 			isEpic = tag.GetBool("isEpic");
+		}
+
+		public override void NetSend(BinaryWriter writer)
+		{
+			writer.Write(isEpic);
+		}
+
+		public override void NetReceive(BinaryReader reader)
+		{
+			isEpic = reader.ReadBoolean();
 		}
 	}
 
