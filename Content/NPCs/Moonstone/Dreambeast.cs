@@ -58,7 +58,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 		public ref float AttackTimer => ref NPC.ai[2];
 		public ref float RandomTime => ref NPC.ai[3];
 
-		public int TelegraphTime => 120;
+		public int TelegraphTime => 180;
 		public Vector2 OrbPos => NPC.Center + Rotation.ToRotationVector2() * 80;
 
 		public override string Texture => AssetDirectory.MoonstoneNPC + "Dreambeast";
@@ -190,6 +190,8 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			var possibleTargets = new List<Player>();
 			float totalLunacy = 0;
 
+			NPC.target = -1;
+
 			// Logic to choose random insane player to be the target (chance scales with lunacy)
 			foreach (Player player in Main.player)
 			{
@@ -201,10 +203,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			}
 
 			if (possibleTargets.Count <= 0)
-			{
-				NPC.target = -1;
 				return;
-			}
 
 			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
@@ -351,7 +350,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 					if (Main.netMode != NetmodeID.MultiplayerClient)
 					{
-						Teleport(Target.Center + (Main.rand.NextBool() ? -1 : 1) * Vector2.UnitX.RotatedByRandom(MathHelper.Pi / 3) * Main.rand.NextFloat(450, 600));
+						Teleport(Target.Center + (Main.rand.NextBool() ? -1 : 1) * Vector2.UnitX.RotatedByRandom(MathHelper.PiOver4) * Main.rand.NextFloat(450, 600));
 						NPC.netUpdate = true;
 					}
 				}
@@ -361,9 +360,9 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				{
 					AttackTimer = 0;
 
-					if (Main.netMode != NetmodeID.MultiplayerClient)
+					if (Main.netMode != NetmodeID.MultiplayerClient && NPC.target != -1)
 					{
-						RandomTime = Main.rand.Next(60, 150);
+						RandomTime = Main.rand.Next(90, 150);
 						Phase = Main.rand.NextBool(4) ? AIState.Shoot : AIState.Charge;
 
 						NPC.netUpdate = true;
@@ -371,7 +370,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				}
 
 				// Spawn mirages
-				else if (Main.netMode != NetmodeID.MultiplayerClient && (Main.rand.NextBool(480) || mirageCount < 1))
+				else if (Main.netMode != NetmodeID.MultiplayerClient && (Main.rand.NextBool(300) || mirageCount < 1))
 				{
 					// Logic to choose random insane player to be the target of clone
 					var possibleTargets = new List<Player>();
@@ -386,11 +385,11 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 					if (possibleTargets.Count > 0)
 					{
 						Player target = possibleTargets[Main.rand.Next(possibleTargets.Count)];
-						Vector2 clonePos = target.Center + (Main.rand.NextBool() ? -1 : 1) * Vector2.UnitX.RotatedByRandom(MathHelper.Pi / 3) * Main.rand.NextFloat(450, 600);
+						Vector2 clonePos = target.Center + (Main.rand.NextBool() ? -1 : 1) * Vector2.UnitX.RotatedByRandom(MathHelper.PiOver4) * Main.rand.NextFloat(450, 600);
 
 						float cloneRotation = (target.Center - clonePos).RotatedByRandom(0.3f).RotatedByRandom(0.2f).ToRotation();
 						AIState fakeout = Main.rand.NextBool(4) ? AIState.MirageShoot : AIState.MirageCharge;
-						float stayTime = Main.rand.Next(60, 150);
+						float stayTime = Main.rand.Next(60, 180);
 
 						int cloneId = NPC.NewNPC(NPC.GetSource_FromAI(), (int)clonePos.X, (int)clonePos.Y, ModContent.NPCType<Dreambeast>(), 0, (float)fakeout, cloneRotation, 0, stayTime, target.whoAmI);
 						(Main.npc[cloneId].ModNPC as Dreambeast).parent = NPC.whoAmI;
@@ -408,8 +407,8 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 		{
 			idle = false;
 
-			if (NPC.Opacity < 1 && AttackTimer >= TelegraphTime - 40)
-				NPC.Opacity += 0.025f;
+			if (NPC.Opacity < 1 && AttackTimer >= TelegraphTime - 90)
+				NPC.Opacity += 0.01f;
 
 			// When not charging, adjust aim
 			if (AttackTimer < TelegraphTime)
@@ -463,7 +462,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			NPC.velocity *= 0.975f;
 
 			// Charge ends
-			if (AttackTimer > TelegraphTime + 70)
+			if (AttackTimer > TelegraphTime + 90)
 			{
 				AttackTimer = 0;
 				Phase = AIState.Rest;
@@ -477,8 +476,8 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 		/// </summary>
 		private void AttackShoot()
 		{
-			if (NPC.Opacity < 1 && AttackTimer >= TelegraphTime - 30)
-				NPC.Opacity += 0.025f;
+			if (NPC.Opacity < 1 && AttackTimer >= TelegraphTime - 90)
+				NPC.Opacity += 0.01f;
 
 			if (AttackTimer == 1)
 				driftClockwise = !(Rotation < 0 && Rotation > -MathHelper.PiOver2 || Rotation < MathHelper.Pi && Rotation > MathHelper.PiOver2);

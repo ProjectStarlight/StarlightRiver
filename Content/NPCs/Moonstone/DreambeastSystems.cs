@@ -150,7 +150,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				if (lunacy < 100)
 					lunacy = MathHelper.Lerp(lunacy, 100, 0.05f);
 
-				lunacy += 0.5f;
+				lunacy += 0.25f;
 			}
 			else if (Player.InModBiome<MoonstoneBiome>())
 			{
