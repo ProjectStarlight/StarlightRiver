@@ -16,15 +16,15 @@ namespace StarlightRiver.Noise
 		private const int PrimeW = 1013;
 
 		private static readonly Decimal2[] Grad2D = {
-			new Decimal2(-1,-1),new Decimal2( 1,-1),new Decimal2(-1,1),new Decimal2( 1,1),
-			new Decimal2( 0,-1),new Decimal2(-1,0),new Decimal2( 0,1),new Decimal2( 1,0),
+			new(-1,-1),new( 1,-1),new(-1,1),new( 1,1),
+			new( 0,-1),new(-1,0),new( 0,1),new( 1,0),
 		};
 
 		private static readonly Decimal3[] Grad3D = {
-			new Decimal3( 1,1,0),new Decimal3(-1,1,0),new Decimal3( 1,-1,0),new Decimal3(-1,-1,0),
-			new Decimal3( 1,0,1),new Decimal3(-1,0,1),new Decimal3( 1,0,-1),new Decimal3(-1,0,-1),
-			new Decimal3( 0,1,1),new Decimal3( 0,-1,1),new Decimal3( 0,1,-1),new Decimal3( 0,-1,-1),
-			new Decimal3( 1,1,0),new Decimal3( 0,-1,1),new Decimal3(-1,1,0),new Decimal3( 0,-1,-1),
+			new( 1,1,0),new(-1,1,0),new( 1,-1,0),new(-1,-1,0),
+			new( 1,0,1),new(-1,0,1),new( 1,0,-1),new(-1,0,-1),
+			new( 0,1,1),new( 0,-1,1),new( 0,1,-1),new( 0,-1,-1),
+			new( 1,1,0),new( 0,-1,1),new(-1,1,0),new( 0,-1,-1),
 		};
 
 		[MethodImpl(Inline)]

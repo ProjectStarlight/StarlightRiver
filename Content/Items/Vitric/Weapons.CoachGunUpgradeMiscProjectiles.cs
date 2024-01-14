@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			Projectile.rotation = Projectile.velocity.ToRotation();
 
-			if (!Main.dedServ)
+			if (Main.netMode != NetmodeID.Server)
 			{
 				ManageCaches();
 				ManageTrail();
@@ -55,7 +55,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<Dusts.Glow>(), 0f, 0f, 0, Color.DarkOrange, 0.35f);
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			SoundEngine.PlaySound(SoundID.Shatter, Projectile.position);
 

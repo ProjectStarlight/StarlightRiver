@@ -253,8 +253,11 @@ namespace StarlightRiver.Content.Items.Misc
 				}
 			}
 
-			ManageCaches();
-			ManageTrail();
+			if (Main.netMode != NetmodeID.Server)
+			{
+				ManageCaches();
+				ManageTrail();
+			}
 		}
 
 		public override void Kill(int timeLeft)
