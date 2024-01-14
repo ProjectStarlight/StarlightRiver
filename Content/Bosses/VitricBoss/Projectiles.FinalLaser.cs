@@ -174,7 +174,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			effect1.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.01f);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, RasterizerState.CullNone, effect1, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect1, Main.GameViewMatrix.TransformationMatrix);
 
 			spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricBoss + Name).Value, Projectile.Center - Main.screenPosition, null, Color.White * Projectile.scale, 0, Projectile.Size / 2, Projectile.scale * 1.7f, 0, 0);
 
@@ -215,7 +215,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				effect.Parameters["uColor"].SetValue(color.ToVector3());
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 
 				float height = texBeam.Height / 2f;
 				int width = (int)(Projectile.Center - endpoint).Length();
@@ -248,7 +248,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				float opacity = height / (texBeam.Height / 2f);
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 				if (parent.arena.Contains(Main.LocalPlayer.Center.ToPoint()))
 				{
@@ -257,7 +257,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				}
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 				Texture2D impactTex = Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
 				Texture2D impactTex2 = Request<Texture2D>(AssetDirectory.GUI + "ItemGlow").Value;

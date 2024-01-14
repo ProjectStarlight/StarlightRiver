@@ -29,13 +29,13 @@ namespace StarlightRiver.Compat.BossChecklist
 			spriteBatch.Draw(tex2, rect, null, Color.Black * 0.6f, 0, Vector2.UnitY * 2, 0, 0);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.UIScaleMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
 
 			spriteBatch.Draw(tex, rect.Center(), null, Color.White * sin, 0, tex.Size() / 2, 1, 0, 0);
 			ceirosSystem.DrawParticles(spriteBatch);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
 
 			spriteBatch.Draw(tex0, rect.Center(), null, color, 0, tex0.Size() / 2, 1, 0, 0);
 

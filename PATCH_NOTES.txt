@@ -6,6 +6,7 @@
 - Supply Beacon now has buff icons
 - Resource reservation overlays now draw for the new interfaces with numbers
 - Shine staff no longer stacks mana regen delay penalty for repeated use
+- Using Main.DefaultSamplerState for spritebatches to avoid some blurry sprites
 
 ## Multiplayer
 - Fixed amulet of the bloodless warrior making you appear dead in multiplayer
@@ -28,6 +29,9 @@ _ Visual sync for Tombsmasher
 - Maneater pot visual sync
 - Shine staff visual sync
 - Fixed auto-select being prevented from placing torches and throwing glowsticks
+
+## Content
+- New enemy: Dreambeast
 
 ## Tweaks
 - Both Eater Steak and Face Steak can now drop from Corruptors and Herplings respectively

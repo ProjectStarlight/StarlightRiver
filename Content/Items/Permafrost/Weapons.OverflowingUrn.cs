@@ -445,7 +445,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			trail?.Render(effect1);
 			Main.graphics.GraphicsDevice.BlendState = oldState;
 
-			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 

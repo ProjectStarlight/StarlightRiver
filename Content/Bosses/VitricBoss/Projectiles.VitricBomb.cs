@@ -106,33 +106,38 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			}
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
-			Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.Center);
-			Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_KoboldExplosion, Projectile.Center);
-			Helper.PlayPitched("Magic/FireHit", 0.5f, 0, Projectile.Center);
-
-			for (int k = 0; k < 80; k++)
+			if (Main.netMode != NetmodeID.Server)
 			{
-				Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.LavaSpark>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), 0, new Color(255, 155, 0), Main.rand.NextFloat(0.1f, 0.8f));
-			}
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.Center);
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_KoboldExplosion, Projectile.Center);
+				Helper.PlayPitched("Magic/FireHit", 0.5f, 0, Projectile.Center);
 
-			for (int k = 0; k < 60; k++)
-			{
-				Vector2 velocity = Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(30);
-				float scale = Main.rand.NextFloat(1.2f, 2.7f);
+				for (int k = 0; k < 80; k++)
+				{
+					Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.LavaSpark>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), 0, new Color(255, 155, 0), Main.rand.NextFloat(0.1f, 0.8f));
+				}
 
-				var d = Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.GlassAttracted>(), velocity, Scale: scale);
-				d.customData = Projectile.Center;
+				for (int k = 0; k < 60; k++)
+				{
+					Vector2 velocity = Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(30);
+					float scale = Main.rand.NextFloat(1.2f, 2.7f);
 
-				var d2 = Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.GlassAttractedGlow>(), velocity, Scale: scale);
-				d2.customData = Projectile.Center;
-				d2.frame = d.frame;
+					var d = Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.GlassAttracted>(), velocity, Scale: scale);
+					d.customData = Projectile.Center;
+
+					var d2 = Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.GlassAttractedGlow>(), velocity, Scale: scale);
+					d2.customData = Projectile.Center;
+					d2.frame = d.frame;
+				}
 			}
 
 			for (int k = 0; k < 4; k++)
 			{
-				Gore.NewGore(Projectile.GetSource_Death(), Projectile.Center, Vector2.One.RotatedByRandom(6.28f) * 5, Mod.Find<ModGore>("Mine" + k).Type);
+				if (Main.netMode != NetmodeID.Server)
+					Gore.NewGore(Projectile.GetSource_Death(), Projectile.Center, Vector2.One.RotatedByRandom(6.28f) * 5, Mod.Find<ModGore>("Mine" + k).Type);
+				
 				if (Main.netMode != NetmodeID.MultiplayerClient)
 					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.UnitY.RotatedByRandom(1) * -Main.rand.NextFloat(3, 5), ProjectileType<Items.Vitric.NeedlerEmber>(), 0, 0, 0);
 			}
@@ -147,7 +152,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				Player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByProjectile(Player.whoAmI, Projectile.whoAmI), Main.expertMode ? Projectile.damage * 2 : Projectile.damage, 0);
 			}
 
-			if (Main.masterMode)
+			if (Main.masterMode && Main.netMode != NetmodeID.MultiplayerClient)
 			{
 				for (int k = 0; k < 8; k++)
 					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.UnitX.RotatedBy(k / 8f * 6.28f) * 18, ProjectileType<TelegraphedGlassSpike>(), 20, 1, Main.myPlayer);

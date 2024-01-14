@@ -269,12 +269,12 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			crack.Parameters["texSize"].SetValue(Request<Texture2D>(Texture).Value.Size());
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, RasterizerState.CullNone, crack, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, crack, Main.GameViewMatrix.TransformationMatrix);
 
 			Main.EntitySpriteDraw(Request<Texture2D>(Texture).Value, Projectile.Center - Main.screenPosition, null, Color.Black, Projectile.rotation, Request<Texture2D>(Texture).Size() * 0.5f, Projectile.scale, SpriteEffects.None, 0);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.AlphaBlend, default, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, BlendState.AlphaBlend, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		private void DrawBloom()

@@ -3237,6 +3237,8 @@ Projectiles: {
 	ConstructSpawner.DisplayName: Construct Spawner
 	GauntletSpawner.DisplayName: Gauntlet Spawner
 	SpawnEgg.DisplayName: Spawn Egg
+	DreambeastProj.DisplayName: Dream Shard
+	DreambeastProjHome.DisplayName: Dream Essence
 }
 
 Biomes: {
@@ -3660,6 +3662,11 @@ Buffs: {
 	TouchstoneWispBuff: {
 		DisplayName: Touchstone Wisp Buff
 		Description: Mods.StarlightRiver.Buffs.TouchstoneWispBuff.Description
+	}
+
+	Dreamwarp: {
+		DisplayName: Dreamwarp
+		Description: Cuckoo for cocao puffs
 	}
 }
 

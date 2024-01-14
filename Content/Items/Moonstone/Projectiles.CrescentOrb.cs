@@ -78,7 +78,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			effect1.Parameters["opacity"].SetValue(Projectile.Opacity);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, RasterizerState.CullNone, effect1, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect1, Main.GameViewMatrix.TransformationMatrix);
 
 			spriteBatch.Draw(TextureAssets.Projectile[Projectile.type].Value, Projectile.Center - Main.screenPosition, null, Color.White * Projectile.scale, Projectile.rotation, Vector2.One * 32, Projectile.scale, 0, 0);
 

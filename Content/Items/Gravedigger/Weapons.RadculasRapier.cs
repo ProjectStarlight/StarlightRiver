@@ -112,7 +112,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			if (PlayerTarget.canUseTarget)
 			{
 				spriteBatch.End();
-				spriteBatch.Begin(default, blendState: BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, blendState: BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 				bool active = player.active && !player.outOfRange && !player.dead;
 				if (active && player.GetModPlayer<RadculasRapierPlayer>().teleportTimer > 0)
@@ -125,7 +125,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				}
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 
@@ -134,7 +134,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			if (PlayerTarget.canUseTarget)
 			{
 				spriteBatch.End();
-				spriteBatch.Begin(default, blendState: BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, blendState: BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 				bool active = player.active && !player.outOfRange && !player.dead;
 				if (active && player.GetModPlayer<RadculasRapierPlayer>().trailPositions.Count > 0)
@@ -481,7 +481,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			}
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix); //also dont know if this spritebatch reset is needed
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix); //also dont know if this spritebatch reset is needed
 
 			Main.spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY) + new Vector2(-55, 0).RotatedBy(Projectile.rotation - MathHelper.PiOver2), null, color, Projectile.rotation, texGlow.Size() / 2f, Projectile.scale, 0, 0);
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY) + off, null, Color.White * fade, Projectile.rotation, Vector2.Zero, Projectile.scale, 0, 0);

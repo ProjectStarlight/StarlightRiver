@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
@@ -9,6 +10,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 {
 	class LavaDart : ModProjectile, IDrawPrimitive
 	{
+		public static Vector2 midPointToAssign;
+		public static Vector2 endPointToAssign;
+
 		private List<Vector2> cache;
 		private Trail trail;
 
@@ -50,21 +54,26 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			return false;
 		}
 
+		public override void OnSpawn(IEntitySource source)
+		{
+			midPoint = midPointToAssign;
+			endPoint = endPointToAssign;
+
+			setStartAndDist();
+		}
+
+		private void setStartAndDist()
+		{
+			startPoint = Projectile.Center;
+			Projectile.timeLeft = (int)Duration + 30;
+
+			dist1 = ApproximateSplineLength(30, startPoint, midPoint - startPoint, midPoint, endPoint - startPoint);
+			dist2 = ApproximateSplineLength(30, midPoint, endPoint - startPoint, endPoint, endPoint - midPoint);
+		}
+
 		public override void AI()
 		{
 			Projectile.rotation = Projectile.velocity.ToRotation();
-
-			if (startPoint == Vector2.Zero)
-			{
-				startPoint = Projectile.Center;
-				Projectile.timeLeft = (int)Duration + 30;
-
-				dist1 = ApproximateSplineLength(30, startPoint, midPoint - startPoint, midPoint, endPoint - startPoint);
-				dist2 = ApproximateSplineLength(30, midPoint, endPoint - startPoint, endPoint, endPoint - midPoint);
-
-				if (Main.netMode == NetmodeID.Server)
-					Projectile.netUpdate = true;
-			}
 
 			float timer = Duration + 30 - Projectile.timeLeft;
 
@@ -139,8 +148,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			midPoint = reader.ReadPackedVector2();
 			endPoint = reader.ReadPackedVector2();
 
-			dist1 = ApproximateSplineLength(30, startPoint, midPoint - startPoint, midPoint, endPoint - startPoint);
-			dist2 = ApproximateSplineLength(30, midPoint, endPoint - startPoint, endPoint, endPoint - midPoint);
+			if (startPoint == Vector2.Zero)
+				setStartAndDist();
 		}
 
 		private void ManageCaches()

@@ -142,7 +142,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
 			//godbeams
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			// Update + draw dusts
 			particles.DrawParticles(spriteBatch);

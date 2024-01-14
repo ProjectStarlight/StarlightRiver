@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.GUI
 		{
 			//additive stuff, shame I have to do this but terraria really do be terraria
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.UIScaleMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
 
 			Texture2D glowTex = Request<Texture2D>(AssetDirectory.GUI + "ItemGlow").Value;
 			float sin = (float)Math.Sin(Main.GameUpdateCount / 20f);

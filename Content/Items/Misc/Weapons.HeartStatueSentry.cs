@@ -219,7 +219,7 @@ namespace StarlightRiver.Content.Items.Misc
 			spriteBatch.Draw(texBeam, target2, source2, color, rotation, origin, 0, 0);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			for (int i = 0; i < width; i += 10)
 			{
