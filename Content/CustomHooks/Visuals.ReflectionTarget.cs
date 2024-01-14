@@ -117,7 +117,7 @@ namespace StarlightRiver.Content.CustomHooks
 				GD.Clear(Color.Transparent);
 				Main.GameViewMatrix.Zoom = new Vector2(1, 1);
 				sb.End();
-				sb.Begin(SpriteSortMode.Texture, default, default, default, RasterizerState.CullNone, default);
+				sb.Begin(SpriteSortMode.Texture, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default);
 
 				DrawWallReflectionNormalMapEvent?.Invoke(sb);
 			}
@@ -168,7 +168,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 			if (reflectionConfig.DustReflectionsOn)
 			{
-				sb.Begin(SpriteSortMode.Deferred, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				sb.Begin(SpriteSortMode.Deferred, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 				try
 				{
 					//tml does this try catch for some reason, maybe gores are bugged in this version, v2022.3.35.3, possible TODO: remove the try catch if tml removes theirs
@@ -291,7 +291,7 @@ namespace StarlightRiver.Content.CustomHooks
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Texture, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(SpriteSortMode.Texture, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 }

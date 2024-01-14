@@ -94,7 +94,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 				Main.spriteBatch.Draw(backTex, target, source, Color.White);
 
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.UIScaleMatrix);
+				Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
 
 				Texture2D glowTex = Request<Texture2D>(AssetDirectory.MoonstoneItem + "DatsuzeiHotbarGlow").Value;
 
@@ -127,14 +127,14 @@ namespace StarlightRiver.Content.Items.Moonstone
 				if (activationTimerNoCurve > 85)
 				{
 					Main.spriteBatch.End();
-					Main.spriteBatch.Begin(default, default, default, default, default, effect1, Main.UIScaleMatrix);
+					Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, effect1, Main.UIScaleMatrix);
 
 					Texture2D spearTex = Request<Texture2D>(AssetDirectory.MoonstoneItem + "DatsuzeiHotbarSprite").Value;
 					Main.spriteBatch.Draw(spearTex, target.Center() + new Vector2(0, -40), null, Color.White, 0, spearTex.Size() / 2, 1, 0, 0);
 				}
 
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
 
 				if (activationTimerNoCurve >= 80)
 				{

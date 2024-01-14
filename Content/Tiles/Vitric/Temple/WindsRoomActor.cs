@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			LightingBufferRenderer.DrawWithLighting(pos, backdrop);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			spriteBatch.Draw(backdropGlow, pos, Color.White);
 

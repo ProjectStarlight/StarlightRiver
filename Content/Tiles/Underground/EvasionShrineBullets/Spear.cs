@@ -107,7 +107,7 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			int timer = timeToRise + timeToRetract + teleTime + holdTime - Projectile.timeLeft;
 
@@ -151,7 +151,7 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			return true;
 		}

@@ -51,7 +51,7 @@ namespace StarlightRiver.Compat.BossChecklist
 			spriteBatch.Draw(glow, rect.Center(), null, glowColor, 0, glow.Size() / 2, 1, 0, 0);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.UIScaleMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
 
 			spriteBatch.Draw(blur, rect.Center(), null, glowColor * 0.55f, 0, blur.Size() / 2, 1, 0, 0);
 			spriteBatch.Draw(blur, rect.Center(), null, glowColor * 0.3f, 0, blur.Size() / 2, 1.05f, 0, 0);
@@ -59,7 +59,7 @@ namespace StarlightRiver.Compat.BossChecklist
 			auroracleSystem.DrawParticles(spriteBatch);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
 
 			spriteBatch.Draw(body, rect.Center(), null, color, 0, body.Size() / 2, 1, 0, 0);
 			spriteBatch.Draw(specular, rect.Center(), null, Color.White, 0, specular.Size() / 2, 1, 0, 0);
