@@ -32,8 +32,6 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 		{
 			Projectile.velocity *= 1.06f;
 
-			Color color = Helpers.Helper.MoltenVitricGlow(MathHelper.Min(200 - Projectile.timeLeft, 120));
-
 			if (Main.rand.NextBool())
 				Dust.NewDust(Projectile.Center, 0, 0, ModContent.DustType<Dusts.MoonstoneShimmer>());
 
