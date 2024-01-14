@@ -58,7 +58,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 		public ref float AttackTimer => ref NPC.ai[2];
 		public ref float RandomTime => ref NPC.ai[3];
 
-		public int TelegraphTime => 90;
+		public int TelegraphTime => 120;
 		public Vector2 OrbPos => NPC.Center + Rotation.ToRotationVector2() * 80;
 
 		public override string Texture => AssetDirectory.MoonstoneNPC + "Dreambeast";
