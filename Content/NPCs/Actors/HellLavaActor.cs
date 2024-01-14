@@ -229,7 +229,8 @@ namespace StarlightRiver.Content.NPCs.Actors
 
 			ConversionTable = new()
 			{
-				{ ItemID.NightmarePickaxe, ItemType<InfernalHarvest>() }
+				{ ItemID.NightmarePickaxe, ItemType<InfernalHarvest>() },
+				{ ItemID.Muramasa, ItemType<GlowingObsidian>() }
 			};
 		}
 

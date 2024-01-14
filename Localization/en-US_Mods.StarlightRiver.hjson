@@ -2745,6 +2745,15 @@ Items: {
 		DisplayName: Pink Laser Pointer
 		Tooltip: ""
 	}
+
+	GlowingObsidian: {
+		DisplayName: Glowing Obsidian
+		Tooltip:
+			'''
+			Inflicts stacking burning
+			[RIGHT] to skewer nearby enemies, increasing burning damage taken
+			'''
+	}
 }
 
 Tiles: {
@@ -3667,6 +3676,11 @@ Buffs: {
 	Dreamwarp: {
 		DisplayName: Dreamwarp
 		Description: Cuckoo for cocao puffs
+	}
+
+	GlowingObsidianFire: {
+		DisplayName: Infernal flames
+		Description: Burning up!
 	}
 }
 
