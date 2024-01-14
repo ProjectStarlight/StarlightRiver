@@ -247,6 +247,9 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 		private void DrawLunacyMeter()
 		{
+			if (Player.dead)
+				return;
+
 			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.MoonstoneNPC + "LunaticEye").Value;
 
 			Vector2 offset = -Vector2.UnitY * (50 + Player.gfxOffY);

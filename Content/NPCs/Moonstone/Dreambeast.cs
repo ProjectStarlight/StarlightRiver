@@ -58,7 +58,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 		public ref float AttackTimer => ref NPC.ai[2];
 		public ref float RandomTime => ref NPC.ai[3];
 
-		public int TelegraphTime => 120;
+		public int TelegraphTime => 90;
 		public Vector2 OrbPos => NPC.Center + Rotation.ToRotationVector2() * 80;
 
 		public override string Texture => AssetDirectory.MoonstoneNPC + "Dreambeast";
@@ -296,10 +296,10 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				{
 					AttackTimer = 0;
 
-					Player player = Main.player.FirstOrDefault(n => n.active && Vector2.Distance(n.Center, homePos) < 3000);
-
 					if (Main.netMode != NetmodeID.MultiplayerClient)
 					{
+						Player player = Main.player.FirstOrDefault(n => n.active && Vector2.Distance(n.Center, homePos) < 3000);
+
 						RandomTime = Main.rand.Next(240, 360);
 
 						if (player != null)
@@ -329,10 +329,11 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			// Slows down and rotates back to normal
 			NPC.velocity *= 0.99f;
 
-			float targetRotation = Math.Abs(Rotation) < MathHelper.PiOver2 ? 0 : MathHelper.Pi;
-
+			float targetRotation = Rotation.ToRotationVector2().X > 0 ? 0 : MathHelper.Pi;
 			float rotDifference = ((targetRotation - Rotation) % MathHelper.TwoPi + MathHelper.Pi * 3) % MathHelper.TwoPi - MathHelper.Pi;
+
 			Rotation = MathHelper.Lerp(Rotation, Rotation + rotDifference, 0.005f);
+			NPC.direction = Rotation.ToRotationVector2().X > 0 ? 1 : -1;
 
 			// After disappearing
 			if (AttackTimer > 60)
@@ -356,13 +357,13 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				}
 
 				// Start next attack
-				else if (AttackTimer > RandomTime + 30 || mirageCount < 1 && Main.rand.NextBool(10) && Main.netMode != NetmodeID.MultiplayerClient)
+				else if (AttackTimer > RandomTime + 90 || mirageCount < 1 && Main.rand.NextBool(5) && Main.netMode != NetmodeID.MultiplayerClient)
 				{
 					AttackTimer = 0;
 
 					if (Main.netMode != NetmodeID.MultiplayerClient)
 					{
-						RandomTime = Main.rand.Next(180, 360);
+						RandomTime = Main.rand.Next(60, 150);
 						Phase = Main.rand.NextBool(4) ? AIState.Shoot : AIState.Charge;
 
 						NPC.netUpdate = true;
@@ -370,7 +371,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				}
 
 				// Spawn mirages
-				else if (Main.netMode != NetmodeID.MultiplayerClient && (Main.rand.NextBool(600) || mirageCount < 1))
+				else if (Main.netMode != NetmodeID.MultiplayerClient && (Main.rand.NextBool(480) || mirageCount < 1))
 				{
 					// Logic to choose random insane player to be the target of clone
 					var possibleTargets = new List<Player>();
@@ -385,7 +386,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 					if (possibleTargets.Count > 0)
 					{
 						Player target = possibleTargets[Main.rand.Next(possibleTargets.Count)];
-						Vector2 clonePos = target.Center + (Main.rand.NextBool() ? -1 : 1) * Vector2.UnitX.RotatedByRandom(MathHelper.PiOver4) * Main.rand.NextFloat(450, 600);
+						Vector2 clonePos = target.Center + (Main.rand.NextBool() ? -1 : 1) * Vector2.UnitX.RotatedByRandom(MathHelper.Pi / 3) * Main.rand.NextFloat(450, 600);
 
 						float cloneRotation = (target.Center - clonePos).RotatedByRandom(0.3f).RotatedByRandom(0.2f).ToRotation();
 						AIState fakeout = Main.rand.NextBool(4) ? AIState.MirageShoot : AIState.MirageCharge;
@@ -407,12 +408,6 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 		{
 			idle = false;
 
-			if (AttackTimer == 1 && Main.netMode != NetmodeID.MultiplayerClient)
-			{
-				NPC.velocity = Vector2.One.RotatedByRandom(MathHelper.TwoPi) * Main.rand.NextFloat(0.1f, 0.25f);
-				NPC.netUpdate = true;
-			}
-
 			if (NPC.Opacity < 1 && AttackTimer >= TelegraphTime - 40)
 				NPC.Opacity += 0.025f;
 
@@ -423,13 +418,13 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				NPC.Center += Vector2.One.RotatedBy(AttackTimer + RandomTime * 0.005f) * 0.25f;
 
 				float rotDifference = (((Target.Center - NPC.Center).ToRotation() - Rotation) % MathHelper.TwoPi + MathHelper.Pi * 3) % MathHelper.TwoPi - MathHelper.Pi;
-				Rotation = MathHelper.Lerp(Rotation, Rotation + rotDifference, 0.1f);
+				Rotation = MathHelper.WrapAngle(MathHelper.Lerp(Rotation, Rotation + rotDifference, 0.1f));
 
 				NPC.direction = (Target.Center - NPC.Center).X > 0 ? 1 : -1;
 			}
 
 			if (AttackTimer == TelegraphTime)
-				Helpers.Helper.PlayPitched("VitricBoss/CeirosRoar", 0.8f, 0.5f, NPC.Center);
+				Helper.PlayPitched("VitricBoss/CeirosRoar", 0.8f, 0.5f, NPC.Center);
 
 			// Funny animation numbers
 			if (AttackTimer == TelegraphTime || AttackTimer == TelegraphTime + 2 || AttackTimer == TelegraphTime + 5 || AttackTimer == TelegraphTime + 12 || AttackTimer == TelegraphTime + 40)
@@ -505,7 +500,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 			// Orb sfx begins
 			if (AttackTimer == TelegraphTime + 45)
-				Helpers.Helper.PlayPitched("VitricBoss/LaserCharge", 0.5f, 0.4f, NPC.Center);
+				Helper.PlayPitched("VitricBoss/LaserCharge", 0.5f, 0.4f, NPC.Center);
 
 			// Dreambeast orb charging
 			if (AttackTimer > TelegraphTime + 45 && AttackTimer < TelegraphTime + 200)
@@ -537,8 +532,8 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			// When the dreambeast bites down on the orb
 			if (AttackTimer == TelegraphTime + 240)
 			{
-				Helpers.Helper.PlayPitched("VitricBoss/CeirosPillarImpact", 0.5f, 0.5f, NPC.Center);
-				Helpers.Helper.PlayPitched("Magic/HolyCastShort", 1.2f, 0f, NPC.Center);
+				Helper.PlayPitched("VitricBoss/CeirosPillarImpact", 0.5f, 0.5f, NPC.Center);
+				Helper.PlayPitched("Magic/HolyCastShort", 1.2f, 0f, NPC.Center);
 
 				// Crunch frame
 				frameCounter = 5;
@@ -581,6 +576,8 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			float rotDifference = (((Target.Center - NPC.Center).ToRotation() - Rotation) % MathHelper.TwoPi + MathHelper.Pi * 3) % MathHelper.TwoPi - MathHelper.Pi;
 			Rotation = MathHelper.WrapAngle(MathHelper.Lerp(Rotation, Rotation + rotDifference, 0.1f));
 
+			Rotation = MathHelper.Lerp(Rotation, Rotation + rotDifference, 0.1f);
+
 			NPC.direction = Rotation < MathHelper.PiOver2 && Rotation > -MathHelper.PiOver2 ? 1 : -1;
 
 			NPC.velocity += Target.velocity * 0.025f;
@@ -606,6 +603,8 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 			NPC.direction = Rotation < MathHelper.PiOver2 && Rotation > -MathHelper.PiOver2 ? 1 : -1;
 
+			float rotDifference = (((Target.Center - NPC.Center).ToRotation() - Rotation) % MathHelper.TwoPi + MathHelper.Pi * 3) % MathHelper.TwoPi - MathHelper.Pi;
+
 			// Adjust aim and movement as if real attack (charge fakeout)
 			if (Phase == AIState.MirageCharge)
 			{
@@ -618,7 +617,6 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				frameCounter = 0;
 				NPC.Center += Vector2.One.RotatedBy(AttackTimer + RandomTime * 0.005f) * 0.25f;
 
-				float rotDifference = (((Target.Center - NPC.Center).ToRotation() - Rotation) % MathHelper.TwoPi + MathHelper.Pi * 3) % MathHelper.TwoPi - MathHelper.Pi;
 				Rotation = MathHelper.Lerp(Rotation, Rotation + rotDifference, 0.1f);
 			}
 			else if (Phase == AIState.MirageShoot)
@@ -633,7 +631,6 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				if (NPC.Center.Distance(Target.Center) > 600)
 					NPC.Center = Vector2.Lerp(NPC.Center, Target.Center, 0.01f * (NPC.Center.Distance(Target.Center) - 600) / 400f);
 
-				float rotDifference = (((Target.Center - NPC.Center).ToRotation() - Rotation) % MathHelper.TwoPi + MathHelper.Pi * 3) % MathHelper.TwoPi - MathHelper.Pi;
 				Rotation = MathHelper.WrapAngle(MathHelper.Lerp(Rotation, Rotation + rotDifference, 0.1f));
 
 				NPC.direction = Rotation < MathHelper.PiOver2 && Rotation > -MathHelper.PiOver2 ? 1 : -1;
@@ -823,12 +820,12 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				effect.Parameters["screenPosition"].SetValue(NPC.position);
 				effect.Parameters["drawOriginal"].SetValue(false);
 
-				spriteBatch.Draw(mirageTex, NPC.Center - Main.screenPosition, NPC.frame, Color.White * mirageOpacity, Rotation + (NPC.direction == -1 ? MathHelper.Pi : 0), new Vector2(122, 99), 1, NPC.direction == -1 ? SpriteEffects.FlipHorizontally : 0, 0);
+				spriteBatch.Draw(mirageTex, NPC.Center + NPC.netOffset - Main.screenPosition, NPC.frame, Color.White * mirageOpacity, Rotation + (NPC.direction == -1 ? MathHelper.Pi : 0), new Vector2(122, 99), 1, NPC.direction == -1 ? SpriteEffects.FlipHorizontally : 0, 0);
 
 				spriteBatch.End();
 				spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect);
 
-				spriteBatch.Draw(mirageTex, NPC.Center - Main.screenPosition, NPC.frame, Color.White * mirageOpacity, Rotation + (NPC.direction == -1 ? MathHelper.Pi : 0), new Vector2(122, 99), 1, NPC.direction == -1 ? SpriteEffects.FlipHorizontally : 0, 0);
+				spriteBatch.Draw(mirageTex, NPC.Center + NPC.netOffset - Main.screenPosition, NPC.frame, Color.White * mirageOpacity, Rotation + (NPC.direction == -1 ? MathHelper.Pi : 0), new Vector2(122, 99), 1, NPC.direction == -1 ? SpriteEffects.FlipHorizontally : 0, 0);
 			}
 
 			spriteBatch.End();
