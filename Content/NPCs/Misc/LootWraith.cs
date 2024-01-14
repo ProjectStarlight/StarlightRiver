@@ -288,7 +288,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 			}
 			// Not sure if the below commented out code is needed.
 			//Main.spriteBatch.End();
-			//Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			//Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 			return false;
 		}
 
@@ -417,7 +417,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(Texture + "_Chain_White").Value);
 
-			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		private List<Vector2> GetChainPoints()

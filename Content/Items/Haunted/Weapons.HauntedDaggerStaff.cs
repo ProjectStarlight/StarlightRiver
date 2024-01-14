@@ -456,7 +456,7 @@ namespace StarlightRiver.Content.Items.Haunted
 			Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, new Color(70, 200, 100, 0), Projectile.rotation + MathHelper.ToRadians(rotTimer), bloomTex.Size() / 2f, 1f, 0f, 0f);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
 			return false;
 		}

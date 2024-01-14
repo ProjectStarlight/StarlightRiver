@@ -104,7 +104,7 @@ namespace StarlightRiver.Content.Archaeology
 			DrawBeam(beamTex, pos, 1 - GetProgress(108), rot / 132f + 4.0f, 0.18f * GetProgress(108));
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Main.spriteBatch.Draw(mainTex, pos, null, lightColor, 0f, mainTex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
 			return false;

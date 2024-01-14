@@ -724,14 +724,14 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				}
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			// Tentacles
 			if (AppearVisible && hasLoaded && NPC.Opacity > 0)
@@ -822,13 +822,13 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				spriteBatch.Draw(mirageTex, NPC.Center + NPC.netOffset - Main.screenPosition, NPC.frame, Color.White * mirageOpacity, Rotation + (NPC.direction == -1 ? MathHelper.Pi : 0), new Vector2(122, 99), 1, NPC.direction == -1 ? SpriteEffects.FlipHorizontally : 0, 0);
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect);
+				spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect);
 
 				spriteBatch.Draw(mirageTex, NPC.Center + NPC.netOffset - Main.screenPosition, NPC.frame, Color.White * mirageOpacity, Rotation + (NPC.direction == -1 ? MathHelper.Pi : 0), new Vector2(122, 99), 1, NPC.direction == -1 ? SpriteEffects.FlipHorizontally : 0, 0);
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			return false;
 		}
