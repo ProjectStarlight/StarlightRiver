@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
@@ -64,7 +65,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 			if (Main.projectile.Any(n => n.active && n.owner == player.whoAmI && n.type == ProjectileType<CrescentQuarterstaffProj>()))
 				return false; // prevents possibility of duplicate projectiles
 
-			int proj = Projectile.NewProjectile(source, position, velocity, type, damage, knockback, Main.myPlayer, combo, charge);
+			Projectile.NewProjectile(source, position, velocity, type, damage, knockback, Main.myPlayer, combo, charge);
+			
 			return false;
 		}
 
@@ -139,6 +141,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private bool slamCharged = false;
 		private bool slammed = false;
+		private int oldDirection = 0;
 
 		private AttackType CurrentAttack
 		{
@@ -146,6 +149,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			set => Projectile.ai[0] = (float)value;
 		}
 		private ref float charge => ref Projectile.ai[1];
+		private ref float Direction => ref Projectile.ai[2];
 
 		private Player Player => Main.player[Projectile.owner];
 		private float ArmRotation => Projectile.rotation - ((Player.direction > 0) ? MathHelper.Pi / 3 : MathHelper.Pi * 2 / 3);
@@ -326,7 +330,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			spriteBatch.Draw(head, position - Main.screenPosition, null, lightColor, Projectile.rotation + 0.78f, origin, scale, SpriteEffects.None, 0);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			DrawPrimitives();
 
@@ -442,11 +446,23 @@ namespace StarlightRiver.Content.Items.Moonstone
 				slamCharged = true;
 			}
 
-			Player.direction = Main.MouseWorld.X > Player.position.X ? 1 : -1; // prevents incorrect aiming since it takes so long to charge up
+			if (Main.myPlayer == Projectile.owner)
+			{
+				if (oldDirection == 0)
+					Projectile.netUpdate = true;
+
+				oldDirection = (int)Direction;
+				Direction = Main.MouseWorld.X > Player.position.X ? 1 : -1; // prevents incorrect aiming since it takes so long to charge up
+
+				if (Direction != oldDirection)
+					Projectile.netUpdate = true;
+			}
+			
+			Player.direction = Direction == 0 ? 1 : (int)Direction;
 
 			float progress = 0;
 			float startAngle = -MathHelper.PiOver2 + Player.direction * MathHelper.Pi / 12;
-			float swingAngle = Player.direction * MathHelper.PiOver2 * 1.05f;
+			float swingAngle = Direction * MathHelper.PiOver2 * 1.05f;
 
 			// stops further movement after slam
 			if (!slammed)
@@ -506,6 +522,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 				if (slamCharged)
 				{
+					Terraria.Audio.SoundEngine.PlaySound(SoundID.MaxMana, Projectile.Center);
 					DustHelper.DrawDustImage(StaffEnd + Vector2.One * 4, ModContent.DustType<Dusts.GlowFastDecelerate>(), 0.05f, ModContent.Request<Texture2D>(AssetDirectory.MoonstoneItem + "MoonstoneHamaxe_Crescent").Value, 0.7f, 0, new Color(120, 120, 255));
 
 					for (int i = 0; i < 64; i++)
@@ -515,14 +532,21 @@ namespace StarlightRiver.Content.Items.Moonstone
 						dust.velocity = -5 * dustOffset;
 					}
 
-					var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), StaffEnd - Vector2.UnitY * 32 * Projectile.scale, new Vector2(Player.direction * 10, 0) * MeleeSpeed, ProjectileType<CrescentOrb>(), (int)MathHelper.Lerp(Projectile.damage * 0.25f, Projectile.damage, Charge), 0, Projectile.owner, 0, 0);
-					proj.scale = (1 + Charge) / 2 * Projectile.scale;
+					if (Main.myPlayer == Projectile.owner)
+					{
+						var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), StaffEnd - Vector2.UnitY * 32 * Projectile.scale, new Vector2(Player.direction * 10, 0) * MeleeSpeed, ProjectileType<CrescentOrb>(), (int)MathHelper.Lerp(Projectile.damage * 0.25f, Projectile.damage, Charge), 0, Projectile.owner, 0, 0);
+						proj.scale = (1 + Charge) / 2 * Projectile.scale;
+					}
 
 					charge = 0;
 				}
 
 				CameraSystem.shake += 16;
-				Projectile.NewProjectile(Projectile.GetSource_FromThis(), StaffEnd, Vector2.Zero, ProjectileType<GravediggerSlam>(), 0, 0, Player.whoAmI);
+
+				if (Main.myPlayer == Projectile.owner)
+					Projectile.NewProjectile(Projectile.GetSource_FromThis(), StaffEnd, Vector2.Zero, ProjectileType<GravediggerSlam>(), 0, 0, Player.whoAmI);
+
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70, Projectile.Center);
 			}
 		}
 
@@ -541,10 +565,23 @@ namespace StarlightRiver.Content.Items.Moonstone
 			else
 			{
 				CurrentAttack = AttackType.Stab;
-				initialRotation = (Main.MouseWorld - Player.MountedCenter).ToRotation();
+
+				if (Main.myPlayer == Projectile.owner)
+				{
+					initialRotation = (Main.MouseWorld - Player.MountedCenter).ToRotation();
+					Projectile.netUpdate = true;
+				}
 			}
 
-			Player.direction = Main.MouseWorld.X > Player.position.X ? 1 : -1;
+			if (Main.myPlayer == Projectile.owner)
+			{
+				oldDirection = (int)Direction;
+				Direction = Main.MouseWorld.X > Player.position.X ? 1 : -1; // prevents incorrect aiming since it takes so long to charge up
+
+				if (oldDirection != Direction)
+					Projectile.netUpdate = true;
+			}
+
 			curAttackDone = false;
 			slammed = false;
 
@@ -612,7 +649,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 				trail?.Render(effect);
 
-				Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 

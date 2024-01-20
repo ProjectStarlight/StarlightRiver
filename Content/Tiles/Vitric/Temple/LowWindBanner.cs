@@ -41,27 +41,33 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public override void SafeSetDefaults()
 		{
-			Chain = new RectangularBanner(16, false, Center - Vector2.UnitY * 90, 8)
+			if (Main.netMode != NetmodeID.Server)
 			{
-				constraintRepetitions = 2,//defaults to 2, raising this lowers stretching at the cost of performance
-				drag = 2f,//This number defaults to 1, Is very sensitive
-				forceGravity = new Vector2(0f, 1.25f),//gravity x/y
-				scale = 15.0f,
-				parent = this
-			};
+				Chain = new RectangularBanner(16, false, Center - Vector2.UnitY * 90, 8)
+				{
+					constraintRepetitions = 2,//defaults to 2, raising this lowers stretching at the cost of performance
+					drag = 2f,//This number defaults to 1, Is very sensitive
+					forceGravity = new Vector2(0f, 1.25f),//gravity x/y
+					scale = 15.0f,
+					parent = this
+				};
+			}
 		}
 
 		public override void Update()
 		{
-			Chain.UpdateChain(Center - Vector2.UnitY * 90);
-			Chain.IterateRope(WindForce);
+			if (Main.netMode != NetmodeID.Server)
+			{
+				Chain.UpdateChain(Center - Vector2.UnitY * 90);
+				Chain.IterateRope(WindForce);
 
-			timer += 0.005f;
+				timer += 0.005f;
 
-			if (blow > 0)
-				blow--;
-			else if (blow < 0)
-				blow++;
+				if (blow > 0)
+					blow--;
+				else if (blow < 0)
+					blow++;
+			}
 		}
 
 		public override void Collision(Player Player)

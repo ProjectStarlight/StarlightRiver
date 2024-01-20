@@ -214,7 +214,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			if (IsArmorSet(Player) && !Player.dead && PlayerTarget.canUseTarget)
 			{
 				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 				var head = Player.armor[0].ModItem as MoonstoneHead;
 				float charge = head.moonCharge / 720f;

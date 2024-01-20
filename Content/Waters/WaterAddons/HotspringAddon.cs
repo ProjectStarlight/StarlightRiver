@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Waters.WaterAddons
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default);
+			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default);
 
 			foreach (Dummy dummy in DummySystem.dummies.Where(n => n.active && n is HotspringFountainDummy))
 			{

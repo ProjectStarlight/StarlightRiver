@@ -136,7 +136,7 @@ namespace StarlightRiver.Content.Backgrounds
 			sb.Draw(tex, target, source, color * 0.05f);
 
 			sb.End();
-			sb.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			stars.DrawParticles(sb);
 		}

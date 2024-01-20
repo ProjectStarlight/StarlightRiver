@@ -290,7 +290,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			{
 				Main.spriteBatch.End();
 				DrawTrail();
-				Main.spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 				for (int i = 0; i < oldPos.Count(); i++)
 				{
 					float opacity = i / (float)oldPos.Count();
@@ -299,7 +299,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				}
 
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frame, lightColor, rotation, frame.Size() / 2, Projectile.scale, spriteEffects, 0f);

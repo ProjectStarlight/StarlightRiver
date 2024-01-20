@@ -1,14 +1,19 @@
+using Microsoft.CodeAnalysis;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
+using static Humanizer.In;
 
 namespace StarlightRiver.Content.Items.Gravedigger
 {
 	public class BloodBolter : ModItem
 	{
+		// SYNC TODO: a projectile hitting a mob and "killing" them but not having it actually kill is really jank in mp. this probably needs another pass
+		
 		public override string Texture => AssetDirectory.GravediggerItem + Name;
 
 		public override void SetStaticDefaults()
@@ -139,6 +144,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 	internal class BloodBolt : ModProjectile
 	{
+		private Player Owner => Main.player[Projectile.owner];
+
 		public override string Texture => AssetDirectory.GravediggerItem + Name;
 
 		public override void SetStaticDefaults()
@@ -175,18 +182,26 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			return false;
 		}
 
-		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) //ModifyHitNPC so it runs before enemies prehurt method
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
-			BloodBolterGNPC GNPC = target.GetGlobalNPC<BloodBolterGNPC>();
-			GNPC.hitFromBolter = true;
-			GNPC.boltOffset = target.Center - Projectile.Center;
-			GNPC.bolt = Projectile;
+			if (target.active && !target.boss && target.knockBackResist != 0 && Helper.IsFleshy(target))
+			{
+				modifiers.SetMaxDamage(target.life - 1); // Cap damage to not kill NPC outright, we'll assume 1 off lethal is a blood bolter "kill"
+				Owner.TryGetModPlayer(out StarlightPlayer starlightPlayer);
+				starlightPlayer.SetHitPacketStatus(shouldRunProjMethods: true);
 
-			GoreDestroyerNPC goreDestroyerNPC = target.GetGlobalNPC<GoreDestroyerNPC>();
-			goreDestroyerNPC.destroyGore = true;
+				GoreDestroyerNPC goreDestroyerNPC = target.GetGlobalNPC<GoreDestroyerNPC>();
+				goreDestroyerNPC.destroyGore = true;
+			}
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			if (target.life <= 1 && target.active && !target.boss && target.knockBackResist != 0 && Helper.IsFleshy(target))
+				BloodBolterGNPC.MarkForDeath(target, Projectile);
+		}
+
+		public override void OnKill(int timeLeft)
 		{
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item10, Projectile.Center);
 
@@ -208,12 +223,18 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		private float Radius => 150 * (float)Math.Sqrt(Progress) * radiusMult;
 
+		private bool hasDoneVisuals = false;
+
+		public ref float GoreX => ref Projectile.ai[0];
+		public ref float GoreY => ref Projectile.ai[1];
+
 		public override void SetDefaults()
 		{
 			Projectile.width = 80;
 			Projectile.height = 80;
 			Projectile.DamageType = DamageClass.Ranged;
 			Projectile.friendly = true;
+			Projectile.hostile = false;
 			Projectile.tileCollide = false;
 			Projectile.penetrate = -1;
 			Projectile.timeLeft = 10;
@@ -224,9 +245,30 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			DisplayName.SetDefault("Blood Bolter");
 		}
 
-		public override bool PreDraw(ref Color lightColor)
+		public override void AI()
 		{
-			return false;
+			if (!hasDoneVisuals && Main.netMode != NetmodeID.Server)
+			{
+				hasDoneVisuals = true;
+
+				Helper.PlayPitched("Impacts/GoreHeavy", 0.5f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
+				CameraSystem.shake += 8;
+				Vector2 goreVelocity = new Vector2(GoreX, GoreY);
+				Vector2 direction = -Vector2.Normalize(goreVelocity);
+
+				for (int i = 0; i < 16; i++)
+				{
+					Dust.NewDustPerfect(Projectile.Center - goreVelocity + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), DustID.Blood, Main.rand.NextVector2Circular(5, 5), 0, default, 1.4f);
+					Dust.NewDustPerfect(Projectile.Center - goreVelocity + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), DustID.Blood, direction.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(3, 8), 0, default, 2.1f);
+					Dust.NewDustPerfect(Projectile.Center - goreVelocity + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), ModContent.DustType<BloodMetaballDust>(), direction.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(3, 8), 0, default, 0.3f);
+					Dust.NewDustPerfect(Projectile.Center - goreVelocity + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), ModContent.DustType<BloodMetaballDustLight>(), direction.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(3, 8), 0, default, 0.3f);
+				}
+
+				for (int i = 0; i < 8; i++)
+				{
+					Dust.NewDustPerfect(Projectile.Center - goreVelocity + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), ModContent.DustType<SmokeDustColor>(), Main.rand.NextVector2Circular(3, 3), 0, Color.DarkRed, Main.rand.NextFloat(1, 1.5f));
+				}
+			}
 		}
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
@@ -240,13 +282,16 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 			return false;
 		}
+
+		public override bool PreDraw(ref Color lightColor)
+		{
+			return false;
+		}
 	}
 
 	public class BloodBolterGNPC : GlobalNPC
 	{
-		public bool hitFromBolter = false;
-
-		public Projectile bolt = default;
+		public Projectile storedBolt = default;
 		public Vector2 boltOffset = Vector2.Zero;
 
 		public bool markedForDeath = false;
@@ -255,83 +300,65 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override bool InstancePerEntity => true;
 
-		public override void ResetEffects(NPC npc)
-		{
-			hitFromBolter = false;
-		}
-
 		public override void PostAI(NPC npc)
 		{
-			if (markedForDeath && bolt != default)
+			if (markedForDeath && storedBolt != default)
 			{
-				npc.Center = bolt.Center + boltOffset + new Vector2(3, 3);
-				npc.velocity = bolt.velocity;
+				npc.Center = storedBolt.Center + boltOffset + new Vector2(3, 3);
+				npc.velocity = storedBolt.velocity;
 
 				deathCounter++;
 
-				if (!bolt.active || (npc.collideX || npc.collideY) && deathCounter > 2)
+				if (!storedBolt.active || (npc.collideX || npc.collideY) && deathCounter > 2)
 				{
-					bolt.active = false;
+					SpawnBlood(npc, storedBolt);
+					markedForDeath = false;
+					storedBolt.active = false;
 					npc.Kill();
-					SpawnBlood(npc, bolt);
 				}
 			}
 		}
 
-		public override bool PreKill(NPC npc)
+		public override bool CheckActive(NPC npc)
 		{
-			if (hitFromBolter && !npc.boss && npc.knockBackResist != 0 && Helper.IsFleshy(npc))
+			if (markedForDeath && storedBolt != default )
 				return false;
 
-			return base.PreKill(npc);
+			return true;
 		}
 
-		public override bool CheckDead(NPC npc)
+		public static void MarkForDeath(NPC target, Projectile bolt)
 		{
-			if (hitFromBolter && !markedForDeath && !npc.boss && npc.knockBackResist != 0 && Helper.IsFleshy(npc))
-			{
-				Helper.PlayPitched("Impale", 0.5f, Main.rand.NextFloat(-0.1f, 0.1f), npc.Center);
-				npc.life = 1;
-				markedForDeath = true;
-				npc.immortal = true;
-				npc.noTileCollide = false;
-				npc.noGravity = true;
+			Helper.PlayPitched("Impale", 0.5f, Main.rand.NextFloat(-0.1f, 0.1f), target.Center);
+			target.life = 1;
+			target.immortal = true;
+			target.noTileCollide = false;
+			target.noGravity = true;
+			target.active = true; // Force active for mp? this could be a bad idea for high latency environments, needs more testing
 
-				npc.width -= 6;
-				npc.height -= 6;
+			target.width -= 6;
+			target.height -= 6;
 
-				if (bolt != default)
-				{
-					bolt.friendly = false;
-					bolt.penetrate++;
-				}
+			bolt.friendly = false;
+			bolt.penetrate++;
 
-				return false;
-			}
+			if (bolt.timeLeft < 20)
+				bolt.timeLeft = 20;
+			else if (bolt.timeLeft > 30)
+				bolt.timeLeft = 30;
 
-			return base.CheckDead(npc);
+			BloodBolterGNPC GNPC = target.GetGlobalNPC<BloodBolterGNPC>();
+			GNPC.markedForDeath = true;
+
+			GNPC.boltOffset = target.Center - bolt.Center;
+			GNPC.storedBolt = bolt;
 		}
 
 		private static void SpawnBlood(NPC npc, Projectile projectile)
 		{
-			Helper.PlayPitched("Impacts/GoreHeavy", 0.5f, Main.rand.NextFloat(-0.1f, 0.1f), npc.Center);
-			CameraSystem.shake += 8;
-			Vector2 direction = -Vector2.Normalize(projectile.velocity);
-
-			for (int i = 0; i < 16; i++)
-			{
-				Dust.NewDustPerfect(npc.Center - projectile.velocity + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2), DustID.Blood, Main.rand.NextVector2Circular(5, 5), 0, default, 1.4f);
-				Dust.NewDustPerfect(npc.Center - projectile.velocity + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2), DustID.Blood, direction.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(3, 8), 0, default, 2.1f);
-				Dust.NewDustPerfect(npc.Center - projectile.velocity + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2), ModContent.DustType<BloodMetaballDust>(), direction.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(3, 8), 0, default, 0.3f);
-				Dust.NewDustPerfect(npc.Center - projectile.velocity + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2), ModContent.DustType<BloodMetaballDustLight>(), direction.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(3, 8), 0, default, 0.3f);
-			}
-
-			for (int i = 0; i < 8; i++)
-			{
-				Dust.NewDustPerfect(npc.Center - projectile.velocity + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2), ModContent.DustType<SmokeDustColor>(), Main.rand.NextVector2Circular(3, 3), 0, Color.DarkRed, Main.rand.NextFloat(1, 1.5f));
-			}
-
-			Projectile.NewProjectile(new EntitySource_HitEffect(npc), npc.Center, Vector2.Zero, ModContent.ProjectileType<BloodBolterExplosion>(), (int)(projectile.damage * 1.6f), projectile.knockBack, projectile.owner);
+			// For the sake of mp compat this projectile is going to be spawned by the server. Player will miss out on some DPS calcs / onhit procs but its better than totally non-functional
+			if (Main.netMode != NetmodeID.MultiplayerClient)
+				Projectile.NewProjectile(new EntitySource_Parent(projectile), npc.Center, Vector2.Zero, ModContent.ProjectileType<BloodBolterExplosion>(), (int)(projectile.damage * 1.6f), projectile.knockBack, Owner: Main.myPlayer, ai0: projectile.velocity.X, ai1: projectile.velocity.Y);
 		}
 	}
 }
