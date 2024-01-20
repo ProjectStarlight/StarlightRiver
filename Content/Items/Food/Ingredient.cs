@@ -36,8 +36,11 @@ namespace StarlightRiver.Content.Items.Food
 
 		public override string Texture => AssetDirectory.FoodItem + Name;
 
-		public override void AddRecipes() //this is dumb, too bad!
+		public virtual void SafeAddRecipes() { }
+
+		public sealed override void AddRecipes() //this is dumb, too bad!
 		{
+			SafeAddRecipes();
 			ChefBag.ingredientTypes.Add(Item.type);
 		}
 

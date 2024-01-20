@@ -17,5 +17,14 @@ namespace StarlightRiver.Content.Items.Food
 		{
 			Player.GetModPlayer<FoodBuffHandler>().Multiplier += 0.3f;
 		}
+
+		public override void SafeAddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ModContent.ItemType<Flour>());
+			recipe.AddIngredient(ItemID.BottledWater, 1);
+			recipe.AddTile(TileID.CookingPots);
+			recipe.Register();
+		}
 	}
 }

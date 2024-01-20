@@ -61,7 +61,15 @@ namespace StarlightRiver.Content.GUI
 				visible = false;
 			}
 
-			if (TopBar.IsMouseHovering && Main.mouseLeft)
+			var dragDims = new Rectangle((int)Basepos.X - 10, (int)Basepos.Y - 10, 376, 40);
+
+			if (ChefBagUI.visible)
+			{
+				dragDims.X -= 560;
+				dragDims.Width += 560;
+			}
+
+			if (dragDims.Contains(Main.MouseScreen.ToPoint()) && Main.mouseLeft)
 			{
 				if (!Moving)
 					MoveOffset = Main.MouseScreen - Basepos;
@@ -87,7 +95,7 @@ namespace StarlightRiver.Content.GUI
 			if (Basepos.Y > Main.screenHeight - 20 - 244)
 				Basepos.Y = Main.screenHeight - 20 - 244;
 
-			ChefBagUI.Move(Basepos + new Vector2(-480, 0));
+			ChefBagUI.Move(Basepos + new Vector2(-520, 40));
 
 			Main.isMouseLeftConsumedByUI = true;
 			SetPosition(MainSlot, 44, 44);
@@ -112,8 +120,10 @@ namespace StarlightRiver.Content.GUI
 
 			if (ChefBagUI.visible)
 			{
-				backDims.X -= 520;
-				backDims.Width += 520;
+				backDims.X -= 560;
+				backDims.Width += 560;
+
+				backDims.Height += 20;
 			}
 
 			spriteBatch.Draw(TextureAssets.MagicPixel.Value, backDims, new Color(25, 25, 25) * 0.5f);

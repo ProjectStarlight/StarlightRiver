@@ -29,5 +29,14 @@ namespace StarlightRiver.Content.Items.Food
 		{
 			Player.potionDelay += 4;
 		}
+
+		public override void SafeAddRecipes()
+		{
+			Recipe recipe = CreateRecipe(5);
+			recipe.AddIngredient(ItemID.HealingPotion, 1);
+			recipe.AddIngredient(ItemID.Gel, 5);
+			recipe.AddTile(TileID.CookingPots);
+			recipe.Register();
+		}
 	}
 }
