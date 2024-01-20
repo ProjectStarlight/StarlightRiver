@@ -243,6 +243,22 @@ namespace StarlightRiver.Content.Items.Infernal
 		}
 	}
 
+	internal class GlowingObsidianSpike : ModProjectile
+	{
+		public override string Texture => "StarlightRiver/Assets/Items/Infernal/GlowingObsidianSpike";
+
+		public override void SetDefaults()
+		{
+			Projectile.DamageType = DamageClass.Melee;
+			Projectile.tileCollide = false;
+			Projectile.timeLeft = 9999;
+			Projectile.penetrate = -1;
+			Projectile.width = 400;
+			Projectile.height = 400;
+			Projectile.friendly = true;
+		}
+	}
+
 	internal class GlowingObsidianFire : StackableBuff
 	{
 		public override string Name => "GlowingObsidianFire";
