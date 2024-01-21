@@ -43,3 +43,5 @@ _ Visual sync for Tombsmasher
 - Breach Cannon now has Id based Iframes and no longer blocks other weapons from dealing damage
 - Skullbuster bombs now use local Iframes
 - Blood Amulet now uses local Iframes
+- Updated Ceiros' background sprites
+- Added an elevator out of Auroracle's arena
