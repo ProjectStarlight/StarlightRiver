@@ -17,5 +17,14 @@ namespace StarlightRiver.Content.Biomes
 		{
 			return Main.tile[(int)player.Center.X / 16, (int)player.Center.Y / 16].WallType == ModContent.WallType<AuroraBrickWall>();
 		}
+
+		public override void OnInBiome(Player player)
+		{
+			if (player == Main.LocalPlayer && Main.SmartCursorWanted)
+			{
+				Main.SmartCursorWanted_Mouse = false;
+				Main.SmartCursorWanted_GamePad = false;
+			}
+		}
 	}
 }

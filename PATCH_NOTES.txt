@@ -45,3 +45,4 @@ _ Visual sync for Tombsmasher
 - Blood Amulet now uses local Iframes
 - Updated Ceiros' background sprites
 - Added an elevator out of Auroracle's arena
+- Smart cursor is now automatically disabled in auroracle's arena
