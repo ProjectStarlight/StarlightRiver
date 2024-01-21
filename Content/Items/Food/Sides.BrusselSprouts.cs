@@ -4,7 +4,7 @@ namespace StarlightRiver.Content.Items.Food
 {
 	internal class BrusselSprouts : Ingredient
 	{
-		public BrusselSprouts() : base("+5% max health", 240, IngredientType.Side) { }
+		public BrusselSprouts() : base("+5% max health", 3600, IngredientType.Side) { }
 
 		public override void SafeSetDefaults()
 		{
