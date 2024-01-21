@@ -247,7 +247,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target, tex, source, default);
 			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target2, tex3, source2, default);
-			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target.TopLeft() - Vector2.UnitY * 56, tex2, tex2.Bounds, default);
+			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target.TopLeft() + new Vector2(-134, -120), tex2, tex2.Bounds, default);
 		}
 
 		public virtual void ScrollDraw(SpriteBatch sb) //im lazy
@@ -266,10 +266,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default);
 			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default);
-
-			Texture2D tex2 = Request<Texture2D>(path + "Glow").Value;
-			sb.Draw(tex2, target1, source1, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.visualTimer) * 0.1f), 0, Vector2.Zero, 0, 0);
-			sb.Draw(tex2, target2, source2, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.visualTimer) * 0.1f), 0, Vector2.Zero, 0, 0);
 		}
 
 		public virtual void SpawnPlatforms(bool rising = true)
@@ -354,7 +350,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target, tex, source, default);
 			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target2, tex3, source2, default);
-			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target.TopLeft() - Vector2.UnitY * 56, tex2, tex2.Bounds, default);
+			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target.TopLeft() + new Vector2(64, -78), tex2, tex2.Bounds, default);
 
 			if (Holidays.AnySpecialEvent)//1 in 32 or any special date event
 			{
@@ -379,10 +375,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default);
 			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default);
-
-			Texture2D tex2 = Request<Texture2D>(path + "Glow").Value;
-			sb.Draw(tex2, target1, source1, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.visualTimer) * 0.1f), 0, Vector2.Zero, 0, 0);
-			sb.Draw(tex2, target2, source2, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.visualTimer) * 0.1f), 0, Vector2.Zero, 0, 0);
 
 			if (Holidays.AnySpecialEvent)//1 in 32 or any special date event
 			{
