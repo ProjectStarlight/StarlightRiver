@@ -5,7 +5,7 @@ namespace StarlightRiver.Content.Items.Food
 {
 	internal class Eye : Ingredient
 	{
-		public Eye() : base("+10% critical strike chance", 540, IngredientType.Side) { }
+		public Eye() : base("+10% critical strike chance", 900, IngredientType.Side) { }
 
 		public override void Load()
 		{

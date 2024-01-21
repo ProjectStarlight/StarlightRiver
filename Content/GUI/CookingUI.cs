@@ -184,8 +184,8 @@ namespace StarlightRiver.Content.GUI
 					drawY += (int)(FontAssets.ItemStack.Value.MeasureString(line.Item1).Y * 0.65f) + 2;
 				}
 
-				Utils.DrawBorderString(spriteBatch, duration / 60 + " seconds duration", Basepos + new Vector2(186, 150), new Color(110, 235, 255), 0.65f);
-				Utils.DrawBorderString(spriteBatch, cooldown / 60 + " seconds fullness", Basepos + new Vector2(186, 164), new Color(255, 170, 120), 0.65f);
+				Utils.DrawBorderString(spriteBatch, $"{(int)(duration / 3600)}m {duration % 3600 / 60}s duration", Basepos + new Vector2(186, 150), new Color(110, 235, 255), 0.65f);
+				Utils.DrawBorderString(spriteBatch, $"{(int)(cooldown / 3600)}m {cooldown % 3600 / 60}s fullness", Basepos + new Vector2(186, 164), new Color(255, 170, 120), 0.65f);
 
 				if (lineCount > 5)
 				{

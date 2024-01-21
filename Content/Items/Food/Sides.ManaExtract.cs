@@ -4,7 +4,7 @@ namespace StarlightRiver.Content.Items.Food
 {
 	internal class ManaExtract : Ingredient
 	{
-		public ManaExtract() : base("Restore 50 mana on use\nReduces duration of potion sickness slightly", 120, IngredientType.Side) { }
+		public ManaExtract() : base("Restore 50 mana on use\nReduces duration of potion sickness slightly", 900, IngredientType.Side) { }
 
 		public override void SafeSetDefaults()
 		{

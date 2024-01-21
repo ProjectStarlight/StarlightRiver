@@ -4,7 +4,7 @@ namespace StarlightRiver.Content.Items.Food
 {
 	internal class Butter : Ingredient
 	{
-		public Butter() : base("Increased life regen speed", 300, IngredientType.Side) { }
+		public Butter() : base("Increased life regen speed", 1800, IngredientType.Side) { }
 
 		public override void SafeSetDefaults()
 		{

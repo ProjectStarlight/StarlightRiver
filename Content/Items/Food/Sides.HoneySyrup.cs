@@ -6,7 +6,7 @@ namespace StarlightRiver.Content.Items.Food
 {
 	internal class HoneySyrup : Ingredient
 	{
-		public HoneySyrup() : base("Heal 100 life on use\n5% reduced movement speed", 240, IngredientType.Side) { }
+		public HoneySyrup() : base("Heal 100 life on use\n5% reduced movement speed", 3600, IngredientType.Side) { }
 
 		public override void Load()
 		{

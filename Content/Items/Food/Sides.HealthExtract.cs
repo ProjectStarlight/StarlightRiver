@@ -4,7 +4,7 @@ namespace StarlightRiver.Content.Items.Food
 {
 	internal class HealthExtract : Ingredient
 	{
-		public HealthExtract() : base("Heal 50 life on use\nReduces duration of potion sickness slightly", 120, IngredientType.Side) { }
+		public HealthExtract() : base("Heal 50 life on use\nReduces duration of potion sickness slightly", 900, IngredientType.Side) { }
 
 		public override void SafeSetDefaults()
 		{

@@ -4,7 +4,7 @@ namespace StarlightRiver.Content.Items.Food
 {
 	internal class Milk : Ingredient
 	{
-		public Milk() : base("+8 defense", 240, IngredientType.Side) { }
+		public Milk() : base("+8 defense", 1800, IngredientType.Side) { }
 
 		public override void SafeSetDefaults()
 		{
