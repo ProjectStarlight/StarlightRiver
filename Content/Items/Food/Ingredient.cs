@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Items.Food
 		{
 			SafeAddRecipes();
 
-			if (IngredientType != IngredientType.Bonus)
+			if (ThisType != IngredientType.Bonus)
 				ChefBag.ingredientTypes.Add(Item.type);
 		}
 
