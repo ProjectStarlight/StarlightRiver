@@ -26,6 +26,7 @@ _ Visual sync for Tombsmasher
 - Haunted dagger staff functional in mp
 - Tentacle hook visual sync
 - Infernal manabond onhit visual sync
+- Angry crescents mostly functional in mp
 - Fix missing graphics device for coach gun
 - Maneater pot visual sync
 - Shine staff visual sync
