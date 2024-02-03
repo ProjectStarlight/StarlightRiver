@@ -1,8 +1,4 @@
-﻿using StarlightRiver.Core;
-using Terraria;
-using Terraria.ModLoader;
-
-namespace StarlightRiver.Content.Items.Potions
+﻿namespace StarlightRiver.Content.Items.Potions
 {
 	class InoculationPotion : ModItem
 	{
@@ -10,8 +6,8 @@ namespace StarlightRiver.Content.Items.Potions
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Inoculation Potion");
-			Tooltip.SetDefault("+30% Inoculation");
+			DisplayName.SetDefault("{{Inoculation}} Potion");
+			Tooltip.SetDefault("+30% {{Inoculation}}");
 		}
 
 		public override void SetDefaults()
@@ -34,7 +30,7 @@ namespace StarlightRiver.Content.Items.Potions
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Inoculated");
-			Description.SetDefault("+30% Inoculation");
+			Description.SetDefault("+30% {{Inoculation}}");
 		}
 
 		public override void Update(Player Player, ref int buffIndex)

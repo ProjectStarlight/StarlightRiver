@@ -174,7 +174,6 @@
 //                if (globalTimer == 98) SwordFrame = 1;
 //                if (globalTimer == 114) SwordFrame = 0;
 
-
 //                float offset = (80 - globalTimer) * 12f;
 //                float progress = Math.Min((globalTimer - 70) / 10f, 1f);
 //                Projectile.rotation = Projectile.rotation.AngleLerp(1.39626f / 2f, 0.06f * progress);

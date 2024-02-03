@@ -1,9 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
-using System;
-using Terraria;
-using Terraria.ModLoader;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -11,11 +7,11 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public BuffChalice() : base("Plexus Chalice", "Inflicting debuffs temporarily increases debuff resistance") { }
+		public BuffChalice() : base("Plexus Chalice", "Inflicting debuffs temporarily increases your {{Inoculation}}") { }
 
 		public override void Load()
 		{
-			StatusTrackingNPC.buffCompareEffects += ChaliceEffects;			
+			StatusTrackingNPC.buffCompareEffects += ChaliceEffects;
 		}
 
 		public override void Unload()
@@ -34,21 +30,43 @@ namespace StarlightRiver.Content.Items.Misc
 				}
 			}
 		}
-		class PlexusChaliceBuff : ModBuff
+
+		public override void SafeSetDefaults()
 		{
+			Item.value = Item.sellPrice(gold: 1, silver: 85);
+		}
 
-            public override string Texture => AssetDirectory.PotionsItem + Name;
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient<TarnishedRing>();
+			recipe.AddIngredient(ItemID.PlatinumBar, 10);
+			recipe.AddRecipeGroup("StarlightRiver:Gems", 10);
+			recipe.AddCondition(Condition.NearLava);
+			recipe.Register();
 
-			public override void SetStaticDefaults()
-			{
-				DisplayName.SetDefault("Plexus Resistance");
-				Description.SetDefault("+30% Inoculation");
-			}
+			recipe = CreateRecipe();
+			recipe.AddIngredient<TarnishedRing>();
+			recipe.AddIngredient(ItemID.GoldBar, 10);
+			recipe.AddRecipeGroup("StarlightRiver:Gems", 10);
+			recipe.AddCondition(Condition.NearLava);
+			recipe.Register();
+		}
+	}
 
-			public override void Update(Player Player, ref int buffIndex)
-			{
-				Player.GetModPlayer<DoTResistancePlayer>().DoTResist += 0.3f;
-			}
+	class PlexusChaliceBuff : ModBuff
+	{
+		public override string Texture => AssetDirectory.PotionsItem + Name;
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Plexus Resistance");
+			Description.SetDefault("+30% {{Inoculation}}");
+		}
+
+		public override void Update(Player Player, ref int buffIndex)
+		{
+			Player.GetModPlayer<DoTResistancePlayer>().DoTResist += 0.3f;
 		}
 	}
 }

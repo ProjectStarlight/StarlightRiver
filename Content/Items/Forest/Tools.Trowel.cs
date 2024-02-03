@@ -1,12 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using System;
-using Terraria;
+﻿using System;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Forest
 {
@@ -30,12 +25,13 @@ namespace StarlightRiver.Content.Items.Forest
 			Item.useTime = 10;
 			Item.useAnimation = 20;
 			Item.autoReuse = true;
+
+			Item.value = Item.sellPrice(silver: 25);
 		}
 
 		private Point16 FindNextTile(Player Player)
 		{
-			if (Math.Abs(Player.tileTargetX - (Player.Center.X / 16)) > Player.tileRangeX ||
-				Math.Abs(Player.tileTargetY - (Player.Center.Y / 16)) > Player.tileRangeY)
+			if (Math.Abs(Player.tileTargetX - Player.Center.X / 16) > Player.tileRangeX || Math.Abs(Player.tileTargetY - Player.Center.Y / 16) > Player.tileRangeY)
 				return default;
 
 			Tile tile = Framing.GetTileSafely(Player.tileTargetX, Player.tileTargetY);
@@ -49,11 +45,11 @@ namespace StarlightRiver.Content.Items.Forest
 				float angle = (new Vector2(Player.tileTargetX, Player.tileTargetY) * 16 + Vector2.One * 8 - Player.Center).ToRotation();
 				angle = Helpers.Helper.ConvertAngle(angle);
 
-				if (angle < Math.PI / 4 || angle > (Math.PI / 4) * 7)
+				if (angle < Math.PI / 4 || angle > Math.PI / 4 * 7)
 					nextX -= k * direction;
-				else if (angle >= Math.PI / 4 && angle <= (Math.PI / 4) * 3)
+				else if (angle >= Math.PI / 4 && angle <= Math.PI / 4 * 3)
 					nextY += k * direction;
-				else if (angle > (Math.PI / 4) * 3 && angle < (Math.PI / 4) * 5)
+				else if (angle > Math.PI / 4 * 3 && angle < Math.PI / 4 * 5)
 					nextX += k * direction;
 				else
 					nextY -= k * direction;
@@ -62,12 +58,37 @@ namespace StarlightRiver.Content.Items.Forest
 
 				if (!nextTile.HasTile)
 					return new Point16(nextX, nextY);
-
 				else if (nextTile.TileType != tile.TileType)
 					return default;
 			}
 
 			return default;
+		}
+
+		//returns the item ID that is consumed
+		private static int BlockWandSubstitutions(int createTile)
+		{//this could check item id instead if needed
+			switch (createTile)
+			{
+				case TileID.LivingWood:
+				case TileID.LeafBlock:
+					return ItemID.Wood;
+
+				case TileID.LivingMahogany:
+				case TileID.LivingMahoganyLeaves:
+					return ItemID.RichMahogany;
+
+				case TileID.BoneBlock:
+					return ItemID.Bone;
+
+				case TileID.Hive:
+					return ItemID.Hive;
+
+				default:
+					break;
+			}
+
+			return -1;
 		}
 
 		public override bool? UseItem(Player Player)
@@ -78,11 +99,13 @@ namespace StarlightRiver.Content.Items.Forest
 			if (!tile.HasTile || Main.tileFrameImportant[tile.TileType])
 				return true;
 
+			int itemSubstitution = BlockWandSubstitutions(tile.TileType);//if this block should look for a different item than the one used to place it
+
 			for (int k = 0; k < Player.inventory.Length; k++)  //find the Item to place the tile
 			{
-				var thisItem = Player.inventory[k];
+				Item thisItem = Player.inventory[k];
 
-				if (!thisItem.IsAir && thisItem.createTile == tile.TileType)
+				if (!thisItem.IsAir && (thisItem.type == itemSubstitution || itemSubstitution == -1 && thisItem.createTile == tile.TileType))
 					Item = Player.inventory[k];
 			}
 
@@ -94,9 +117,12 @@ namespace StarlightRiver.Content.Items.Forest
 			if (next != default)
 			{
 				WorldGen.PlaceTile(next.X, next.Y, tile.TileType);
-				Item.stack--;
-				if (Item.stack <= 0)
-					Item.TurnToAir();
+				if (Item.consumable)//so that infinite items do not get used up
+				{
+					Item.stack--;
+					if (Item.stack <= 0)
+						Item.TurnToAir();
+				}
 			}
 
 			return true;
@@ -112,7 +138,7 @@ namespace StarlightRiver.Content.Items.Forest
 			if (!tile.HasTile || Main.tileFrameImportant[tile.TileType])
 				return;
 
-			var pos = FindNextTile(Main.LocalPlayer).ToVector2() * 16 - Main.screenPosition;
+			Vector2 pos = FindNextTile(Main.LocalPlayer).ToVector2() * 16 - Main.screenPosition;
 
 			spriteBatch.Draw(TextureAssets.Tile[tile.TileType].Value, pos, new Rectangle(162, 54, 16, 16), Helpers.Helper.IndicatorColor * 0.5f);
 		}
@@ -135,6 +161,8 @@ namespace StarlightRiver.Content.Items.Forest
 			Item.useAnimation = 10;
 			Item.autoReuse = true;
 			maxRange = 40;
+
+			Item.value = Item.sellPrice(gold: 2);
 		}
 	}
 }

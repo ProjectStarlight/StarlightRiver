@@ -1,31 +1,23 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
 
-namespace StarlightRiver.Content.Tiles.Vitric
+namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 {
 	public abstract class GearTile : DummyTile
 	{
-		public override int DummyType => ModContent.ProjectileType<GearTileDummy>();
+		public override int DummyType => DummySystem.DummyType<GearTileDummy>();
 
 		public override string Texture => AssetDirectory.Invisible;
 
 		public override void SetStaticDefaults()
 		{
 			TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(ModContent.GetInstance<GearTileEntity>().Hook_AfterPlacement, -1, 0, false);
-			QuickBlock.QuickSetFurniture(this, 1, 1, 1, SoundID.PlayerHit, new Color(1, 1, 1)); // Is the sound correct..?
+			this.QuickSetFurniture(1, 1, 1, SoundID.PlayerHit, new Color(1, 1, 1)); // Is the sound correct..?
 		}
 
 		public virtual void OnEngage(GearTileEntity entity) { }
@@ -40,20 +32,14 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		public float rotationVelocity;
 		public float rotationOffset;
 
-		public int Teeth
+		public int Teeth => size switch
 		{
-			get
-			{
-				switch (size)
-				{
-					case 0: return 1;
-					case 1: return 4;
-					case 2: return 8;
-					case 3: return 12;
-					default: return 1;
-				}
-			}
-		}
+			0 => 1,
+			1 => 4,
+			2 => 8,
+			3 => 12,
+			_ => 1,
+		};
 
 		public override bool IsTileValidForEntity(int i, int j)
 		{
@@ -191,27 +177,36 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				{
 					int thisSize = Teeth;
 					int nextSize = entity.Teeth;
-					float ratio = (thisSize / (float)nextSize);
+					float ratio = thisSize / (float)nextSize;
 
 					entity.rotationVelocity = rotationVelocity * -1 * ratio;
 
 					if (entity == this) //This is here to prevent the first gear which engages from reversing itself
 						entity.rotationVelocity *= -1;
 
-					float trueAngle = ((Position.ToVector2() * 16 + Vector2.One * 8) - (entity.Position.ToVector2() * 16 + Vector2.One * 8)).ToRotation();
+					float trueAngle = (Position.ToVector2() * 16 + Vector2.One * 8 - (entity.Position.ToVector2() * 16 + Vector2.One * 8)).ToRotation();
 
-					entity.rotationOffset = -(ratio * rotationOffset) + ((1 + ratio) * trueAngle) + (float)Math.PI / entity.Teeth;
+					entity.rotationOffset = -(ratio * rotationOffset) + (1 + ratio) * trueAngle + (float)Math.PI / entity.Teeth;
+
+					if (!engaged) // I dont care how dumb this looks it works because FORMAL LOGIC and we release in 2 days so fucking send it
+					{
+						var newGear = ModContent.GetModTile(Framing.GetTileSafely(Position).TileType) as GearTile;
+						newGear?.OnEngage(this);
+					}
 
 					engaged = true;
-
-					Tile tile = Main.tile[Position.X, Position.Y];
-					(ModContent.GetModTile(tile.TileType) as GearTile)?.OnEngage(this);
 
 					entity.RecurseOverGears(entity.Engage);
 				}
 			}
 
-			engaged = true;					
+			if (!engaged) // I dont care how dumb this looks it works because FORMAL LOGIC and we release in 2 days so fucking send it
+			{
+				var newGear = ModContent.GetModTile(Framing.GetTileSafely(Position).TileType) as GearTile;
+				newGear?.OnEngage(this);
+			}
+
+			engaged = true;
 		}
 
 		/// <summary>
@@ -255,7 +250,9 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		public void Toggle(float rotationVelocity)
 		{
 			if (engaged)
+			{
 				Disengage(Position, size);
+			}
 			else
 			{
 				this.rotationVelocity = rotationVelocity;
@@ -303,28 +300,73 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		protected bool Engaged
 		{
-			get => Entity.engaged;
-			set => Entity.engaged = value;
+			get
+			{
+				if (GearEntity != null)
+					return GearEntity.engaged;
+
+				return false;
+			}
+			set
+			{
+				if (GearEntity != null)
+					GearEntity.engaged = value;
+			}
 		}
 
 		protected float RotationVelocity
 		{
-			get => Entity.rotationVelocity;
-			set => Entity.rotationVelocity = value;
+			get
+			{
+				if (GearEntity != null)
+					return GearEntity.rotationVelocity;
+
+				return 0;
+			}
+			set
+			{
+				if (GearEntity != null)
+					GearEntity.rotationVelocity = value;
+			}
 		}
 
 		protected float RotationOffset
 		{
-			get => Entity.rotationOffset;
-			set => Entity.rotationOffset = value;
+			get
+			{
+				if (GearEntity != null)
+					return GearEntity.rotationOffset;
+
+				return 0;
+			}
+			set
+			{
+				if (GearEntity != null)
+					GearEntity.rotationOffset = value;
+			}
 		}
 
-		protected GearTileEntity Entity => TileEntity.ByPosition[new Point16(ParentX, ParentY)] as GearTileEntity;
-
-		public int Size
+		protected GearTileEntity GearEntity
 		{
-			get => Entity.size;
-			set => Entity.size = value % 4;
+			get
+			{
+				var key = new Point16(ParentX, ParentY);
+
+				if (TileEntity.ByPosition.ContainsKey(key))
+					return TileEntity.ByPosition[key] as GearTileEntity;
+
+				return null;
+			}
+		}
+
+		public int GearSize
+		{
+			get => GearEntity?.size ?? 0;
+			set
+			{
+				if (GearEntity != null)
+					GearEntity.size = value % 4;
+			}
 		}
 
 		public float Rotation
@@ -344,36 +386,36 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void Update()
 		{
+			if (GearEntity is null)
+				return;
+
 			if (gearAnimation > 0)
 				gearAnimation--;
 
 			if (oldSize == 0 && gearAnimation > 20) //no fadeout when there is nothing to fade out
 				gearAnimation = 20;
 
-			if(gearAnimation == 15 && Size != 0)
+			if (gearAnimation == 15 && GearSize != 0)
 			{
-				for (int k = 0; k < 10 * Size; k++)
+				for (int k = 0; k < 10 * GearSize; k++)
 				{
 					Vector2 off = Vector2.One.RotatedByRandom(6.28f);
-					Dust.NewDustPerfect(Projectile.Center + off * Size * 10, ModContent.DustType<Dusts.GlowFastDecelerate>(), off * Main.rand.NextFloat(Size * 2 - 2, Size * 2) * 0.6f, 0, new Color(100, 200, 255), 0.5f);
+					Dust.NewDustPerfect(Center + off * GearSize * 10, ModContent.DustType<Dusts.GlowFastDecelerate>(), off * Main.rand.NextFloat(GearSize * 2 - 2, GearSize * 2) * 0.6f, 0, new Color(100, 200, 255), 0.5f);
 				}
 			}
 		}
 
 		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex;
-
-			switch (Size)
+			Texture2D tex = GearSize switch
 			{
-				case 0: tex = ModContent.Request<Texture2D>(AssetDirectory.Invisible).Value; break;
-				case 1: tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearSmall").Value; break;
-				case 2: tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearMid").Value; break;
-				case 3: tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearLarge").Value; break;
-				default: tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearSmall").Value; break;
-			}
-
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * 0.75f, Rotation, tex.Size() / 2, 1, 0, 0);
+				0 => ModContent.Request<Texture2D>(AssetDirectory.Invisible).Value,
+				1 => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearSmall").Value,
+				2 => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearMid").Value,
+				3 => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearLarge").Value,
+				_ => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearSmall").Value,
+			};
+			Main.spriteBatch.Draw(tex, Center - Main.screenPosition, null, Color.White * 0.75f, Rotation, tex.Size() / 2, 1, 0, 0);
 		}
 	}
 }

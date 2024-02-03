@@ -1,206 +1,207 @@
-﻿using System;
+﻿using StarlightRiver.Helpers;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-using StarlightRiver.Core;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
-using Terraria.Graphics.Effects;
-using StarlightRiver.Helpers;
 using System.IO;
+using Terraria.DataStructures;
+using Terraria.Graphics.Effects;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
-    class LavaDart : ModProjectile, IDrawPrimitive
-    {
-        private List<Vector2> cache;
-        private Trail trail;
+	class LavaDart : ModProjectile, IDrawPrimitive
+	{
+		public static Vector2 midPointToAssign;
+		public static Vector2 endPointToAssign;
 
-        private Vector2 startPoint;
-        public Vector2 endPoint;
-        public Vector2 midPoint;
+		private List<Vector2> cache;
+		private Trail trail;
 
-        public ref float Duration => ref Projectile.ai[0];
+		private Vector2 startPoint;
+		public Vector2 endPoint;
+		public Vector2 midPoint;
 
-        public float dist1;
-        public float dist2;
+		public ref float Duration => ref Projectile.ai[0];
 
-        public override string Texture => AssetDirectory.VitricBoss + Name;
+		public float dist1;
+		public float dist2;
 
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("Magma Shot");
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 2;
-            ProjectileID.Sets.TrailingMode[Projectile.type] = 1;
-        }
+		public override string Texture => AssetDirectory.VitricBoss + Name;
 
-        public override void SetDefaults()
-        {
-            Projectile.width = 16;
-            Projectile.height = 16;
-            Projectile.hostile = true;
-            Projectile.timeLeft = 120;
-            Projectile.tileCollide = false;
-            Projectile.penetrate = -1;
-        }
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Magma Shot");
+			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 2;
+			ProjectileID.Sets.TrailingMode[Projectile.type] = 1;
+		}
 
-        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
-        {
-            float timer = (Duration + 30) - Projectile.timeLeft;
+		public override void SetDefaults()
+		{
+			Projectile.width = 16;
+			Projectile.height = 16;
+			Projectile.hostile = true;
+			Projectile.timeLeft = 120;
+			Projectile.tileCollide = false;
+			Projectile.penetrate = -1;
+		}
 
-            if (timer > 30)
-                return base.Colliding(projHitbox, targetHitbox);
+		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+		{
+			float timer = Duration + 30 - Projectile.timeLeft;
 
-            return false;
-        }
+			if (timer > 30)
+				return base.Colliding(projHitbox, targetHitbox);
 
-        public override void AI()
-        {
-            Projectile.rotation = Projectile.velocity.ToRotation();
+			return false;
+		}
 
-            if (startPoint == Vector2.Zero)
-            {
-                startPoint = Projectile.Center;
-                Projectile.timeLeft = (int)Duration + 30;
+		public override void OnSpawn(IEntitySource source)
+		{
+			midPoint = midPointToAssign;
+			endPoint = endPointToAssign;
 
-                dist1 = ApproximateSplineLength(30, startPoint, midPoint - startPoint, midPoint, endPoint - startPoint);
-                dist2 = ApproximateSplineLength(30, midPoint, endPoint - startPoint, endPoint, endPoint - midPoint);
+			setStartAndDist();
+		}
 
-                if (Main.netMode == NetmodeID.Server)
-                    Projectile.netUpdate = true;
-            }
+		private void setStartAndDist()
+		{
+			startPoint = Projectile.Center;
+			Projectile.timeLeft = (int)Duration + 30;
 
-            float timer = (Duration + 30) - Projectile.timeLeft;
+			dist1 = ApproximateSplineLength(30, startPoint, midPoint - startPoint, midPoint, endPoint - startPoint);
+			dist2 = ApproximateSplineLength(30, midPoint, endPoint - startPoint, endPoint, endPoint - midPoint);
+		}
 
-            if (endPoint != Vector2.Zero && timer > 30)
-            {
-                Projectile.Center = PointOnSpline((timer - 30) / Duration);
-            }
+		public override void AI()
+		{
+			Projectile.rotation = Projectile.velocity.ToRotation();
 
-            Projectile.rotation = (Projectile.position - Projectile.oldPos[0]).ToRotation() + 1.57f;
+			float timer = Duration + 30 - Projectile.timeLeft;
 
-            Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 200, 100), 0.5f);
+			if (endPoint != Vector2.Zero && timer > 30)
+			{
+				Projectile.Center = PointOnSpline((timer - 30) / Duration);
+			}
 
-            if (Main.netMode != NetmodeID.Server)
-            {
-                ManageCaches();
-                ManageTrail();
-            }
-        }
+			Projectile.rotation = (Projectile.position - Projectile.oldPos[0]).ToRotation() + 1.57f;
 
-        private Vector2 PointOnSpline(float progress)
-        {
-            float factor = dist1 / (dist1 + dist2);
+			Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 200, 100), 0.5f);
 
-            if (progress < factor)
-                return Vector2.Hermite(startPoint, midPoint - startPoint, midPoint, endPoint - startPoint, progress * (1 / factor));
-            if (progress >= factor)
-                return Vector2.Hermite(midPoint, endPoint - startPoint, endPoint, endPoint - midPoint, (progress - factor) * (1 / (1 - factor)));
+			if (Main.netMode != NetmodeID.Server)
+			{
+				ManageCaches();
+				ManageTrail();
+			}
+		}
 
-            return Vector2.Zero;
-        }
+		private Vector2 PointOnSpline(float progress)
+		{
+			float factor = dist1 / (dist1 + dist2);
 
-        private float ApproximateSplineLength(int steps, Vector2 start, Vector2 startTan, Vector2 end, Vector2 endTan)
-        {
-            float total = 0;
-            Vector2 prevPoint = start;
+			if (progress < factor)
+				return Vector2.Hermite(startPoint, midPoint - startPoint, midPoint, endPoint - startPoint, progress * (1 / factor));
+			if (progress >= factor)
+				return Vector2.Hermite(midPoint, endPoint - startPoint, endPoint, endPoint - midPoint, (progress - factor) * (1 / (1 - factor)));
 
-            for (int k = 0; k < steps; k++)
-            {
-                Vector2 testPoint = Vector2.Hermite(start, startTan, end, endTan, k / (float)steps);
-                total += Vector2.Distance(prevPoint, testPoint);
+			return Vector2.Zero;
+		}
 
-                prevPoint = testPoint;
-            }
+		private float ApproximateSplineLength(int steps, Vector2 start, Vector2 startTan, Vector2 end, Vector2 endTan)
+		{
+			float total = 0;
+			Vector2 prevPoint = start;
 
-            return total;
-        }
+			for (int k = 0; k < steps; k++)
+			{
+				var testPoint = Vector2.Hermite(start, startTan, end, endTan, k / (float)steps);
+				total += Vector2.Distance(prevPoint, testPoint);
 
-        public override void PostDraw(Color lightColor)
-        {
-            var spriteBatch = Main.spriteBatch;
+				prevPoint = testPoint;
+			}
 
-            int timer = ((int)Duration + 30) - Projectile.timeLeft;
+			return total;
+		}
 
-            if (timer < 30)
-            {
-                var tellTex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "Line").Value;
-                float alpha = (float)Math.Sin(timer / 30f * 3.14f);
+		public override void PostDraw(Color lightColor)
+		{
+			SpriteBatch spriteBatch = Main.spriteBatch;
 
-                for (int k = 0; k < 20; k++)
-                    spriteBatch.Draw(tellTex, PointOnSpline(k / 20f) - Main.screenPosition, null, new Color(255, 200, 100) * alpha * 0.6f, Projectile.rotation, tellTex.Size() / 2, 3, 0, 0);
-            }
-        }
+			int timer = (int)Duration + 30 - Projectile.timeLeft;
 
-        public override void SendExtraAI(BinaryWriter writer)
-        {
-            writer.WritePackedVector2(midPoint);
-            writer.WritePackedVector2(endPoint);
-        }
+			if (timer < 30)
+			{
+				Texture2D tellTex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "Line").Value;
+				float alpha = (float)Math.Sin(timer / 30f * 3.14f);
 
-        public override void ReceiveExtraAI(BinaryReader reader)
-        {
-            midPoint = reader.ReadPackedVector2();
-            endPoint = reader.ReadPackedVector2();
+				for (int k = 0; k < 20; k++)
+					spriteBatch.Draw(tellTex, PointOnSpline(k / 20f) - Main.screenPosition, null, new Color(255, 200, 100) * alpha * 0.6f, Projectile.rotation, tellTex.Size() / 2, 3, 0, 0);
+			}
+		}
 
-            dist1 = ApproximateSplineLength(30, startPoint, midPoint - startPoint, midPoint, endPoint - startPoint);
-            dist2 = ApproximateSplineLength(30, midPoint, endPoint - startPoint, endPoint, endPoint - midPoint);
-        }
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.WritePackedVector2(midPoint);
+			writer.WritePackedVector2(endPoint);
+		}
 
-        private void ManageCaches()
-        {
-            if (cache == null)
-            {
-                cache = new List<Vector2>();
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			midPoint = reader.ReadPackedVector2();
+			endPoint = reader.ReadPackedVector2();
 
-                for (int i = 0; i < 30; i++)
-                {
-                    cache.Add(Projectile.Center);
-                }
-            }
+			if (startPoint == Vector2.Zero)
+				setStartAndDist();
+		}
 
-            cache.Add(Projectile.Center);
+		private void ManageCaches()
+		{
+			if (cache == null)
+			{
+				cache = new List<Vector2>();
 
-            while (cache.Count > 30)
-            {
-                cache.RemoveAt(0);
-            }
-        }
+				for (int i = 0; i < 30; i++)
+				{
+					cache.Add(Projectile.Center);
+				}
+			}
 
-        private void ManageTrail()
-        {
-            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 30, new TriangularTip(40 * 4), factor => factor * 40, factor =>
-            {
-                float alpha = 1;
+			cache.Add(Projectile.Center);
 
-                if (Projectile.timeLeft < 20)
-                    alpha = Projectile.timeLeft / 20f;
+			while (cache.Count > 30)
+			{
+				cache.RemoveAt(0);
+			}
+		}
 
-                return new Color(255, 175 + (int)((float)Math.Sin(factor.X * 3.14f * 5) * 25), 100) * (float)Math.Sin(factor.X * 3.14f) * alpha;
-            });
+		private void ManageTrail()
+		{
+			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new TriangularTip(40 * 4), factor => factor * 40, factor =>
+			{
+				float alpha = 1;
 
-            trail.Positions = cache.ToArray();
-            trail.NextPosition = Projectile.Center + Projectile.velocity;
-        }
+				if (Projectile.timeLeft < 20)
+					alpha = Projectile.timeLeft / 20f;
 
-        public void DrawPrimitives()
-        {
-            Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+				return new Color(255, 175 + (int)((float)Math.Sin(factor.X * 3.14f * 5) * 25), 100) * (float)Math.Sin(factor.X * 3.14f) * alpha;
+			});
 
-            Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-            Matrix view = Main.GameViewMatrix.ZoomMatrix;
-            Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			trail.Positions = cache.ToArray();
+			trail.NextPosition = Projectile.Center + Projectile.velocity;
+		}
 
-            effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
-            effect.Parameters["repeats"].SetValue(2f);
-            effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-            effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
+		public void DrawPrimitives()
+		{
+			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-            trail?.Render(effect);
-        }
-    }
+			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
+			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
+			effect.Parameters["repeats"].SetValue(2f);
+			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
+
+			trail?.Render(effect);
+		}
+	}
 }

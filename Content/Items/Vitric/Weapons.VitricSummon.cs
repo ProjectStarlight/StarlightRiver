@@ -72,4 +72,3 @@ namespace StarlightRiver.Content.Items.Vitric
         }
     }
 }*/
-

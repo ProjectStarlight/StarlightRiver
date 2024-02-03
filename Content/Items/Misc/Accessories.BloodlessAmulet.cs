@@ -1,10 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
-using Terraria;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Items.Gravedigger;
+using StarlightRiver.Core.Systems.BarrierSystem;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -18,15 +15,15 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void Load()
 		{
-			On.Terraria.Player.HealEffect += GrantRage;
+			On_Player.HealEffect += GrantRage;
 		}
 
 		public override void Unload()
 		{
-			On.Terraria.Player.HealEffect -= GrantRage;
+			On_Player.HealEffect -= GrantRage;
 		}
 
-		private void GrantRage(On.Terraria.Player.orig_HealEffect orig, Player self, int healAmount, bool broadcast)
+		private void GrantRage(On_Player.orig_HealEffect orig, Player self, int healAmount, bool broadcast)
 		{
 			if (Equipped(self))
 			{
@@ -38,37 +35,48 @@ namespace StarlightRiver.Content.Items.Misc
 					CombatText.NewText(self.Hitbox, Color.Orange, rageToAdd / 10);
 				}
 			}
-			else orig(self, healAmount, broadcast);
+			else
+			{
+				orig(self, healAmount, broadcast);
+			}
 		}
 
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Amulet of the Bloodless Warrior");
-			Tooltip.SetDefault("+100 Maximum Barrier" +
-				"\nUnaffected by damage over time" +
-				"\nBarrier absorbs ALL damage" +
-				"\nYou can survive without life"+
-				"\nCursed : You cannot have life" +
-				"\n Slightly reduced barrier recharge" +
-				"\n Healing grants a decaying damage boost instead of life" +
+			Tooltip.SetDefault("+100 {{Barrier}}" +
+				"\n{{Barrier}} absorbs ALL damage, but recharges slower" +
+				"\nYou are unaffected by damage over time" +
+				"\nYou have 0 life. Healing grants a decaying damage boost instead of life" +
 				"\n'Leave your flesh behind, for your rage is all you need'");
+		}
+
+		public override void SafeSetDefaults()
+		{
+			Item.value = Item.sellPrice(gold: 7, silver: 50);
 		}
 
 		public override void SafeUpdateEquip(Player Player)
 		{
 			Player.GetDamage(DamageClass.Generic) += rage / 2000f;
 
-			if(rage > 0)
+			if (rage > 0)
 				rage--;
 
 			if (rage > 800)
 				rage = 800;
 
-			Player.GetModPlayer<BarrierPlayer>().MaxBarrier += 100;
-			Player.GetModPlayer<BarrierPlayer>().BarrierDamageReduction = 1;
-			Player.GetModPlayer<BarrierPlayer>().PlayerCanLiveWithOnlyBarrier = true;
-			Player.GetModPlayer<BarrierPlayer>().RechargeRate -= 10;
-			Player.statLife = 0;
+			Player.GetModPlayer<BarrierPlayer>().maxBarrier += 100;
+			Player.GetModPlayer<BarrierPlayer>().barrierDamageReduction = 1;
+			Player.GetModPlayer<BarrierPlayer>().playerCanLiveWithOnlyBarrier = true;
+			Player.GetModPlayer<BarrierPlayer>().rechargeRate -= 2;
+
+			// 0 hp is okay for singleplayer but would require some unholy IL edits for multiplayer. setting it to 1 instead seems fine
+			if (Main.netMode == NetmodeID.SinglePlayer)
+				Player.statLife = 0;
+			else
+				Player.statLife = 1;
+			
 			Player.lifeRegen = 0;
 			Player.lifeRegenCount = 0;
 		}

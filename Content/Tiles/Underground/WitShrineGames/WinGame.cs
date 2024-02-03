@@ -1,12 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-
-namespace StarlightRiver.Content.Tiles.Underground.WitShrineGames
+﻿namespace StarlightRiver.Content.Tiles.Underground.WitShrineGames
 {
 	class WinGame : WitShrineGame
 	{
@@ -21,9 +13,10 @@ namespace StarlightRiver.Content.Tiles.Underground.WitShrineGames
 		{
 			for (int k = 0; k <= 6; k++)
 			{
-				if (parent.Timer == 30 * k)
+				if (parent.timer == 30 * k)
 				{
 					for (int x = -k; x <= k; x++)
+					{
 						for (int y = -k; y <= k; y++)
 						{
 							int realX = Clamp(parent.Player.X + x);
@@ -31,12 +24,13 @@ namespace StarlightRiver.Content.Tiles.Underground.WitShrineGames
 
 							gameBoard[realX, realY] = WitShrineDummy.runeState.Goal;
 						}
+					}
 
 					parent.PlayerTimer = 30;
 				}
 			}
 
-			if (parent.Timer == 210)
+			if (parent.timer == 210)
 				parent.WinGame();
 		}
 	}

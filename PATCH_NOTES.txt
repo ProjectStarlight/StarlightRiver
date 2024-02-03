@@ -1,0 +1,45 @@
+# Starlight River 0.2.7
+
+## Fixes
+- Fixed Face Steak dropping from Eater of Souls (now drops from Face Monsters)
+- Defense system now deals summon damage
+- Supply Beacon now has buff icons
+- Resource reservation overlays now draw for the new interfaces with numbers
+- Shine staff no longer stacks mana regen delay penalty for repeated use
+- Using Main.DefaultSamplerState for spritebatches to avoid some blurry sprites
+- Fixed gear puzzle crash
+
+## Multiplayer
+- Fixed amulet of the bloodless warrior making you appear dead in multiplayer
+- Defense System's radial selector no longer draws for other players in multiplayer
+- Breach Cannon now mostly works in multiplayer
+- Supply Beacon no longer spawns extras in multiplayer
+- Fix for Archaeologist Whip's treasure drops in multiplayer
+- Fix for pirate chest in multiplayer
+- Visual sync for sandscript
+- Cloudstrike functional in mp
+- Skullbuster mp fixes
+- Blood Amulet functional in mp
+- Radculas Rapier mp fixes
+- Bloodbolter functional in mp
+_ Visual sync for Tombsmasher
+- Haunted dagger staff functional in mp
+- Tentacle hook visual sync
+- Infernal manabond onhit visual sync
+- Fix missing graphics device for coach gun
+- Maneater pot visual sync
+- Shine staff visual sync
+- Fixed auto-select being prevented from placing torches and throwing glowsticks
+- Hardened dummy system against players joining a world late
+- vitric ore dummies now properly remove themselves for clients
+
+## Content
+- New enemy: Dreambeast
+
+## Tweaks
+- Both Eater Steak and Face Steak can now drop from Corruptors and Herplings respectively
+- Upped Defense system and heart statue usetime to match all other sentries
+- Seaglass Lens now deals real crits that can benefit from other accessories instead of non-scaling phantom crits
+- Breach Cannon now has Id based Iframes and no longer blocks other weapons from dealing damage
+- Skullbuster bombs now use local Iframes
+- Blood Amulet now uses local Iframes

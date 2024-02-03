@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework.Audio;
-using ReLogic.Utilities;
+﻿using ReLogic.Utilities;
 
 namespace StarlightRiver.Core
 {

@@ -1,161 +1,165 @@
-﻿using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.CustomHooks;
+using StarlightRiver.Content.Items.Misc;
+using StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets;
+using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria.ModLoader;
+using System.IO;
+using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Buffs;
-using StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
-	class EvasionShrine : DummyTile
+	class EvasionShrine : ShrineTile
 	{
-		public override int DummyType => ModContent.ProjectileType<EvasionShrineDummy>();
+		public const int EVASION_SHRINE_TILE_WIDTH = 5;
+		public const int EVASION_SHRINE_TILE_HEIGHT = 6;
+
+		public override int DummyType => DummySystem.DummyType<EvasionShrineDummy>();
 
 		public override string Texture => "StarlightRiver/Assets/Tiles/Underground/EvasionShrine";
 
-		public override void SetStaticDefaults()
+		public override int ShrineTileWidth => EvasionShrine.EVASION_SHRINE_TILE_WIDTH;
+
+		public override int ShrineTileHeight => EvasionShrine.EVASION_SHRINE_TILE_HEIGHT;
+
+		public override void AdditionalSetup(ShrineDummy shrineDummy)
 		{
-			QuickBlock.QuickSetFurniture(this, 3, 6, DustID.Stone, SoundID.Tink, false, new Color(100, 100, 100), false, false, "Mysterious Shrine");
+			(shrineDummy as EvasionShrineDummy).lives = 4;
 		}
 
-		public override void SafeNearbyEffects(int i, int j, bool closer)
+		public override string GetHint()
 		{
-			var tile = Framing.GetTileSafely(i, j);
-
-			if (tile.TileFrameX == 0 && tile.TileFrameY == 0)
-			{
-				var dummy = Dummy(i, j);
-
-				if (dummy is null)
-					return;
-
-				if (((EvasionShrineDummy)dummy.ModProjectile).State == 0 && tile.TileFrameX > 36)
-					tile.TileFrameX -= 3 * 18;
-			}
-		}
-
-		public override bool RightClick(int i, int j)
-		{
-			var tile = (Tile)(Framing.GetTileSafely(i, j).Clone());
-
-			int x = i - tile.TileFrameX / 16;
-			int y = j - tile.TileFrameY / 16;
-
-			var dummy = Dummy(x, y);
-
-			if ((dummy.ModProjectile as EvasionShrineDummy).State == 0)
-			{
-				for (int x1 = 0; x1 < 3; x1++)
-					for (int y1 = 0; y1 < 6; y1++)
-					{
-						int realX = x1 + i - tile.TileFrameX / 18;
-						int realY = y1 + j - tile.TileFrameY / 18;
-
-						Framing.GetTileSafely(realX, realY).TileFrameX += 3 * 18;
-					}
-
-				(dummy.ModProjectile as EvasionShrineDummy).State = 1;
-				(dummy.ModProjectile as EvasionShrineDummy).lives = 4;
-				return true;
-			}
-
-			return false;
+			return "A shrine - to which deity, you do not know, though it wields a bow. The statue's eyes seem to follow you, and strange runes dance across its pedestal.";
 		}
 	}
 
-	internal partial class EvasionShrineDummy : Dummy, IDrawAdditive
+	public partial class EvasionShrineDummy : ShrineDummy, IDrawAdditive
 	{
 		public int maxAttacks = 15;
 		public int lives;
 		public List<int> attackOrder;
 
-		public ref float Timer => ref Projectile.ai[0];
-		public ref float State => ref Projectile.ai[1];
+		public float Windup => Math.Min(1, timer / 120f);
 
-		public float Windup => Math.Min(1, Timer / 120f);
+		public override int ArenaOffsetX => -27;
+		public override int ArenaSizeX => 55;
+		public override int ArenaOffsetY => -30;
+		public override int ArenaSizeY => 49;
 
-		public EvasionShrineDummy() : base(ModContent.TileType<EvasionShrine>(), 3 * 16, 6 * 16) { }
+		public override int ShrineTileWidth => EvasionShrine.EVASION_SHRINE_TILE_WIDTH;
+		public override int ShrineTileHeight => EvasionShrine.EVASION_SHRINE_TILE_HEIGHT;
+
+		public EvasionShrineDummy() : base(ModContent.TileType<EvasionShrine>(), EvasionShrine.EVASION_SHRINE_TILE_WIDTH * 16, EvasionShrine.EVASION_SHRINE_TILE_HEIGHT * 16) { }
 
 		public override void Update()
 		{
-			var color = new Vector3(0.15f, 0.12f, 0.2f) * 3.4f;
+			if (state == SHRINE_STATE_DEFEATED)//dont run anything if this is defeated
+				return;
 
-			Lighting.AddLight(Projectile.Center + new Vector2(240, 0), color);
-			Lighting.AddLight(Projectile.Center + new Vector2(-240, 0), color);
-
-			Lighting.AddLight(Projectile.Center + new Vector2(240, -50), color);
-			Lighting.AddLight(Projectile.Center + new Vector2(-240, -50), color);
-
-			Lighting.AddLight(Projectile.Center + new Vector2(240, -100), color);
-			Lighting.AddLight(Projectile.Center + new Vector2(-240, -100), color);
-
-			Lighting.AddLight(Projectile.Center + new Vector2(0, -230), color);
-
-			if (State == 0 && Parent.TileFrameX > 3 * 18)
+			//this check never succeeds since the tile does not spawn dummys on the 3rd frame
+			if (Parent.TileFrameX >= 10 * 18)//check file frame for this being defeated
 			{
-				for (int x = 0; x < 3; x++)
-					for (int y = 0; y < 6; y++)
-					{
-						int realX = ParentX - 1 + x;
-						int realY = ParentY - 3 + y;
-
-						Framing.GetTileSafely(realX, realY).TileFrameX -= 3 * 18;
-					}
-
-				Timer = 0;
+				state = SHRINE_STATE_DEFEATED;
+				return;//return here so defeated shrines never run the below code even when spawning a new dummy
 			}
 
-			if (State != 0)
+			bool anyPlayerInRange = false;
+
+			foreach (Player player in Main.player)
 			{
-				(Mod as StarlightRiver).useIntenseMusic = true;
-				Dust.NewDustPerfect(Projectile.Center + new Vector2(Main.rand.NextFloat(-24, 24), 28), ModContent.DustType<Dusts.Glow>(), Vector2.UnitY * -Main.rand.NextFloat(2), 0, new Color(150, 30, 205) * Windup, 0.2f);
+				bool thisPlayerInRange = player.active && !player.DeadOrGhost && ArenaPlayer.Intersects(player.Hitbox);
 
-				if (State > 0)
+				if (thisPlayerInRange && state != SHRINE_STATE_IDLE)
+					player.GetModPlayer<ShrinePlayer>().EvasionShrineActive = true;
+
+				anyPlayerInRange = anyPlayerInRange || thisPlayerInRange;
+			}
+
+			Vector3 color = new Vector3(0.15f, 0.12f, 0.2f) * 3.4f;
+
+			Lighting.AddLight(Center + new Vector2(240, 0), color);
+			Lighting.AddLight(Center + new Vector2(-240, 0), color);
+
+			Lighting.AddLight(Center + new Vector2(240, -50), color);
+			Lighting.AddLight(Center + new Vector2(-240, -50), color);
+
+			Lighting.AddLight(Center + new Vector2(240, -100), color);
+			Lighting.AddLight(Center + new Vector2(-240, -100), color);
+
+			Lighting.AddLight(Center + new Vector2(0, -230), color);
+
+			if (state == SHRINE_STATE_IDLE && Parent.TileFrameX >= ShrineTileWidth * 18)//if idle and frame isnt default (happens when entity is despawned while active)
+			{
+				SetFrame(0);
+				timer = 0;
+			}
+
+			if (state != SHRINE_STATE_IDLE)
+			{
+				ProtectionWorld.AddRegionBySource(new Point16(ParentX, ParentY), ArenaTile);//stop calling this and call RemoveRegionBySource() when shrine is completed
+
+				StarlightRiver.Instance.useIntenseMusic = true;
+				Dust.NewDustPerfect(Center + new Vector2(Main.rand.NextFloat(-24, 24), 28), ModContent.DustType<Dusts.Glow>(), Vector2.UnitY * -Main.rand.NextFloat(2), 0, new Color(150, 30, 205) * Windup, 0.2f);
+
+				if (Main.rand.NextBool(2))
 				{
-					Timer++;
+					Dust.NewDustPerfect(Center + new Vector2(-27 * 16 - 8 + 32, 96 + Main.rand.Next(-44, 44)), ModContent.DustType<Dusts.Glow>(), Vector2.UnitX * -Main.rand.NextFloat(2), 0, new Color(155, 40 + Main.rand.Next(50), 255) * Windup, 0.35f);
+					Dust.NewDustPerfect(Center + new Vector2(26 * 16, 96 + Main.rand.Next(-44, 44)), ModContent.DustType<Dusts.Glow>(), Vector2.UnitX * Main.rand.NextFloat(2), 0, new Color(155, 40 + Main.rand.Next(50), 255) * Windup, 0.35f);
+				}
 
-					if(attackOrder is null)
+				if (state > SHRINE_STATE_IDLE)
+				{
+					timer++;
+
+					if (attackOrder is null)
 					{
 						attackOrder = new List<int>();
+
 						for (int k = 0; k < 15; k++)
+						{
 							attackOrder.Add(k);
+						}
 
 						attackOrder = Helpers.Helper.RandomizeList<int>(attackOrder);
 					}
 
-					if (State > maxAttacks)
+					if (state > maxAttacks) // --- !  WIN CONDITION  ! ---
 					{
-						if(Timer > 600)
+						if (timer > 600)
 						{
-							State = -1;
+							SpawnReward();
+							state = SHRINE_STATE_DEFEATED;
+							SetFrame(2);
+							ProtectionWorld.RemoveRegionBySource(new Point16(ParentX, ParentY));
 						}
+
 						return;
 					}
 
-					SpawnObstacles((int)Timer - 128);
+					if (Main.netMode != NetmodeID.MultiplayerClient)
+						SpawnObstacles((int)timer - 128);
 				}
 			}
 
-			if (State == -1 || lives <= 0 || (!Main.player.Any(n => n.active && !n.dead && Vector2.Distance(n.Center, Projectile.Center) < 500))) //"fail" conditions, no living Players in radius or already failing
+			if (state == SHRINE_STATE_FAILED || lives <= 0 || !anyPlayerInRange)//Main.player.Any(n => n.active && !n.dead && Vector2.Distance(n.Center, Center) < 500) //"fail" conditions, no living Players in radius or already failing
 			{
-				State = -1;
+				state = SHRINE_STATE_FAILED;
 
-				if (Timer > 128)
-					Timer = 128;
-
-				Timer--;
-
-				if (Timer <= 0)
+				if (timer > 128)
 				{
-					State = 0;
+					netUpdate = true;
+					timer = 128;
+				}
+
+				timer--;
+
+				if (timer <= 0)
+				{
+					state = SHRINE_STATE_IDLE;
 					attackOrder = null;
+					ProtectionWorld.RemoveRegionBySource(new Point16(ParentX, ParentY));
 				}
 
 				return;
@@ -164,7 +168,10 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public void SpawnObstacles(int timer)
 		{
-			switch(attackOrder[(int)State - 1])
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+				return;
+
+			switch (attackOrder[(int)state - 1])
 			{
 				case 0: VerticalSawJaws(timer); break;
 				case 1: HorizontalSawJaws(timer); break;
@@ -183,81 +190,91 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public void SpawnBlade(Vector2 start, Vector2 vel, int time)
 		{
-			int i = Projectile.NewProjectile(Projectile.GetSource_FromThis(), start, vel, ModContent.ProjectileType<SawbladeSmall>(), 10, 0, Main.myPlayer);
-			var mp = (Main.projectile[i].ModProjectile as SawbladeSmall);
-			Main.projectile[i].timeLeft = time;
-			mp.parent = this;
+			SawbladeSmall.timeLeftToAssign = time;
+			Projectile.NewProjectile(GetSource_FromThis(), start, vel, ModContent.ProjectileType<SawbladeSmall>(), 10, 0, Owner: -1, ai0: identity);
 		}
 
 		public void SpawnDart(Vector2 start, Vector2 mid, Vector2 end, int duration)
 		{
-			int i = Projectile.NewProjectile(Projectile.GetSource_FromThis(), start, Vector2.Zero, ModContent.ProjectileType<Dart>(), 7, 0, Main.myPlayer);
-			var mp = (Main.projectile[i].ModProjectile as Dart);
-			mp.endPoint = end;
-			mp.midPoint = mid;
-			mp.duration = duration;
-			mp.parent = this;
+			Dart.midPointToAssign = mid;
+			Dart.endPointToAssign = end;
+			Dart.durationToAssign = duration;
+			Projectile.NewProjectile(GetSource_FromThis(), start, Vector2.Zero, ModContent.ProjectileType<Dart>(), 7, 0, Owner: -1, ai0: identity);
 		}
 
 		public void SpawnSpear(Vector2 start, Vector2 end, int teleTime, int riseTime, int retractTime, int holdTime = 0)
 		{
-			int i = Projectile.NewProjectile(Projectile.GetSource_FromThis(), start, Vector2.Zero, ModContent.ProjectileType<Spear>(), 15, 0, Main.myPlayer);
-			var mp = (Main.projectile[i].ModProjectile as Spear);
-			mp.endPoint = end;
-			mp.timeToRise = riseTime;
-			mp.timeToRetract = retractTime;
-			mp.teleTime = teleTime;
-			mp.holdTime = holdTime;
-			mp.parent = this;
+			Spear.endPointToAssign = end;
+			Spear.riseTimeToAssign = riseTime;
+			Spear.retractTimeToAssign = retractTime;
+			Spear.teleTimeToASsign = teleTime;
+			Spear.holdTimeToAssign = holdTime;
+			Projectile.NewProjectile(GetSource_FromThis(), start, Vector2.Zero, ModContent.ProjectileType<Spear>(), 15, 0, Owner: -1, ai0: identity);
 		}
 
 		private void SpawnReward()
 		{
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+				return;
+
 			switch (lives)
 			{
 				case 4:
+					Item.NewItem(GetSource_FromAI(), Hitbox, ModContent.ItemType<TarnishedRing>());
+					ShrineUtils.SimulateGoldChest(this, false);
+					ShrineUtils.SimulateGoldChest(this, true);
 					break;
 				case 3:
+					Item.NewItem(GetSource_FromAI(), Hitbox, ModContent.ItemType<TarnishedRing>());
+					ShrineUtils.SimulateGoldChest(this, false);
+					if (Main.rand.NextBool(4))
+						ShrineUtils.SimulateGoldChest(this, false);
+
 					break;
 				case 2:
+					Item.NewItem(GetSource_FromAI(), Hitbox, ModContent.ItemType<TarnishedRing>());
+					ShrineUtils.SimulateGoldChest(this, false);
+					if (Main.rand.NextBool(4))
+						ShrineUtils.SimulateWoodenChest(this);
+
 					break;
 				case 1:
-					break;
-				default:
+					Item.NewItem(GetSource_FromAI(), Hitbox, ModContent.ItemType<TarnishedRing>());
+					ShrineUtils.SimulateGoldChest(this, false);
 					break;
 			}
 		}
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			if (State != 0)
+			if (state != SHRINE_STATE_IDLE && state != SHRINE_STATE_DEFEATED)
 			{
-				var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Moonstone/GlowSmall").Value;
+				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Moonstone/GlowSmall").Value;
 				var origin = new Vector2(tex.Width / 2, tex.Height);
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, 60), default, GetBeamColor(StarlightWorld.rottime), 0, origin, 3.5f, 0, 0);
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(10, 60), default, GetBeamColor(StarlightWorld.rottime + 2) * 0.8f, 0, origin, 2.5f, 0, 0);
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(-10, 60), default, GetBeamColor(StarlightWorld.rottime + 4) * 0.8f, 0, origin, 3.2f, 0, 0);
+				spriteBatch.Draw(tex, Center - Main.screenPosition + new Vector2(0, 60), default, GetBeamColor(StarlightWorld.visualTimer), 0, origin, 3.5f, 0, 0);
+				spriteBatch.Draw(tex, Center - Main.screenPosition + new Vector2(10, 60), default, GetBeamColor(StarlightWorld.visualTimer + 2) * 0.8f, 0, origin, 2.5f, 0, 0);
+				spriteBatch.Draw(tex, Center - Main.screenPosition + new Vector2(-10, 60), default, GetBeamColor(StarlightWorld.visualTimer + 4) * 0.8f, 0, origin, 3.2f, 0, 0);
 
-				if (State > 0)
+				if (state > SHRINE_STATE_IDLE)
 				{
-					var fireTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Underground/BrazierFlame").Value;
+					Texture2D fireTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Underground/BrazierFlame").Value;
 					var frame = new Rectangle(0, 32 * (int)(Main.GameUpdateCount / 6 % 6), 16, 32);
 
-					Vector2 leftPos = Projectile.Center - Main.screenPosition + new Vector2(-248, -220);
-					Vector2 leftMidPos = Projectile.Center - Main.screenPosition + new Vector2(-120, -140);
-					Vector2 rightMidPos = Projectile.Center - Main.screenPosition + new Vector2(120, -140);
-					Vector2 rightPos = Projectile.Center - Main.screenPosition + new Vector2(248, -220);
+					Vector2 leftPos = Center - Main.screenPosition + new Vector2(-248, -220);
+					Vector2 leftMidPos = Center - Main.screenPosition + new Vector2(-120, -140);
+					Vector2 rightMidPos = Center - Main.screenPosition + new Vector2(120, -140);
+					Vector2 rightPos = Center - Main.screenPosition + new Vector2(248, -220);
 
-					if (State > maxAttacks)
+					if (state > maxAttacks)
 					{
-						if (Timer > 300)
+						if (timer > 300)
 						{
-							float progress = Math.Min(1, (Timer - 300) / 240f);
+							float progress = Math.Min(1, (timer - 300) / 240f);
 
-							leftPos = Projectile.Center - Main.screenPosition + Vector2.SmoothStep(new Vector2(-248, -220), Vector2.Zero, progress);
-							leftMidPos = Projectile.Center - Main.screenPosition + Vector2.SmoothStep(new Vector2(-120, -140), Vector2.Zero, progress);
-							rightMidPos = Projectile.Center - Main.screenPosition + Vector2.SmoothStep(new Vector2(120, -140), Vector2.Zero, progress);
-							rightPos = Projectile.Center - Main.screenPosition + Vector2.SmoothStep(new Vector2(248, -220), Vector2.Zero, progress);
+							leftPos = Center - Main.screenPosition + Vector2.SmoothStep(new Vector2(-248, -220), Vector2.Zero, progress);
+							leftMidPos = Center - Main.screenPosition + Vector2.SmoothStep(new Vector2(-120, -140), Vector2.Zero, progress);
+							rightMidPos = Center - Main.screenPosition + Vector2.SmoothStep(new Vector2(120, -140), Vector2.Zero, progress);
+							rightPos = Center - Main.screenPosition + Vector2.SmoothStep(new Vector2(248, -220), Vector2.Zero, progress);
 						}
 					}
 
@@ -284,15 +301,47 @@ namespace StarlightRiver.Content.Tiles.Underground
 						spriteBatch.Draw(fireTex, rightPos, frame, new Color(200, 100, 255), 0, fireTex.Size() / 2, 1, 0, 0);
 						spriteBatch.Draw(fireTex, rightPos, frame, Color.White, 0, fireTex.Size() / 2, 0.95f, 0, 0);
 					}
+
+					Texture2D barrier = ModContent.Request<Texture2D>("StarlightRiver/Assets/MotionTrail").Value;
+					var sourceRect = new Rectangle(0, (int)(Main.GameUpdateCount * 0.4f), barrier.Width, barrier.Height);
+					var sourceRect2 = new Rectangle(0, (int)(Main.GameUpdateCount * -0.73f), barrier.Width, barrier.Height);
+
+					var targetRect = new Rectangle((int)(Center.X - Main.screenPosition.X) - 27 * 16 - 10, (int)(Center.Y - Main.screenPosition.Y) + 48, 32, 96);
+					spriteBatch.Draw(barrier, targetRect, sourceRect, new Color(155, 100, 255) * 0.6f * Windup);
+					spriteBatch.Draw(barrier, targetRect, sourceRect2, new Color(85, 50, 150) * 0.5f * Windup);
+					targetRect.Inflate(-15, 0);
+					targetRect.Offset(15, 0);
+					spriteBatch.Draw(barrier, targetRect, sourceRect2, Color.White * Windup);
+
+					targetRect = new Rectangle((int)(Center.X - Main.screenPosition.X) + 26 * 16 - 6, (int)(Center.Y - Main.screenPosition.Y) + 48, 32, 96);
+					spriteBatch.Draw(barrier, targetRect, sourceRect, new Color(155, 100, 255) * 0.6f * Windup, 0, default, SpriteEffects.FlipHorizontally, 0);
+					spriteBatch.Draw(barrier, targetRect, sourceRect2, new Color(85, 50, 150) * 0.5f * Windup, 0, default, SpriteEffects.FlipHorizontally, 0);
+					targetRect.Inflate(-15, 0);
+					targetRect.Offset(-15, 0);
+					spriteBatch.Draw(barrier, targetRect, sourceRect2, Color.White * Windup);
 				}
 			}
 		}
 
 		private Color GetBeamColor(float time)
 		{
-			var sin = (0.5f + (float)Math.Sin(time * 2 + 1) * 0.5f);
-			var sin2 = (0.5f + (float)Math.Sin(time) * 0.5f);
+			float sin = 0.5f + (float)Math.Sin(time * 2 + 1) * 0.5f;
+			float sin2 = 0.5f + (float)Math.Sin(time) * 0.5f;
 			return new Color(80 + (int)(50 * sin), 60, 255) * sin2 * Windup;
+		}
+
+		public override void SafeSendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(lives);
+			writer.Write(timer);
+			writer.Write(state);
+		}
+
+		public override void SafeReceiveExtraAI(BinaryReader reader)
+		{
+			lives = reader.ReadInt32();
+			timer = reader.ReadSingle();
+			state = reader.ReadSingle();
 		}
 	}
 }

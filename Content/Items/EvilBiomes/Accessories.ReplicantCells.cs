@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
-using Terraria;
-using Terraria.ModLoader;
+﻿using StarlightRiver.Content.Items.BaseTypes;
 
 namespace StarlightRiver.Content.Items.EvilBiomes
 {
@@ -15,13 +6,18 @@ namespace StarlightRiver.Content.Items.EvilBiomes
 	{
 		public override string Texture => AssetDirectory.EvilBiomesItem + Name;
 
-		public ReplicantCells() : base("Replicant Cells", "+15% DoT Resist\nHealth regeneration starts slightly faster") { }
+		public ReplicantCells() : base("Replicant Cells", "+15% {{Inoculation}}\nHealth regeneration starts slightly faster") { }
+
+		public override void SafeSetDefaults()
+		{
+			Item.value = Item.sellPrice(silver: 30);
+		}
 
 		public override void SafeUpdateEquip(Player Player)
 		{
 			Player.GetModPlayer<DoTResistancePlayer>().DoTResist += 0.15f;
 
-			if(Player.lifeRegenTime % 5 == 0) 
+			if (Player.lifeRegenTime % 5 == 0)
 				Player.lifeRegenTime++;
 		}
 	}

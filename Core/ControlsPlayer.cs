@@ -1,126 +1,146 @@
-﻿using Microsoft.Xna.Framework;
-using NetEasy;
-using StarlightRiver.Content.Buffs;
-using StarlightRiver.Helpers;
+﻿using NetEasy;
 using System;
-using Terraria;
 using Terraria.GameInput;
-using Terraria.ModLoader;
-using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Core 
+namespace StarlightRiver.Core
 {
 	public class ControlsPlayer : ModPlayer
-    {
-        //this is used to keep track of Player controls that are otherwise not possible to keep in sync (wtf tml why does terraria sync altfunctionuse but not for modded Items)
+	{
+		//this is used to keep track of Player controls that are otherwise not possible to keep in sync (wtf tml why does terraria sync altfunctionuse but not for modded Items)
 
-        /// <summary>
-        /// technically called the "interact" key in game
-        /// </summary>
-        public bool mouseRight = false;
+		public bool mouseLeft = false;
 
-        private bool oldMouseRight = false;
+		private bool oldMouseLeft = false;
 
-        public Vector2 mouseWorld;
+		/// <summary>
+		/// technically called the "interact" key in game
+		/// </summary>
+		public bool mouseRight = false;
 
-        private Vector2 oldMouseWorld;
+		private bool oldMouseRight = false;
 
-        /// <summary>
-        /// Set this to true when something wants to send controls
-        /// sets itself to false after one send
-        /// </summary>
-        public bool sendControls = false;
+		public Vector2 mouseWorld;
 
-        /// <summary>
-        /// set this to true when something wants to recieve updates on the mouseworld changes 
-        /// this particular mouse listener will send many changes and is generally tight tolerance, sending much more frequently
-        /// </summary>
-        public bool mouseListener = false;
+		private Vector2 oldMouseWorld;
 
-        /// <summary>
-        /// set this to true when something wants to recieve updates on mouseworld changes 
-        /// this particular mouse listener will only send changes when the rotation to the Player changes, sending much less frequently
-        /// </summary>
-        public bool mouseRotationListener = false;
+		/// <summary>
+		/// Set this to true when something wants to send controls
+		/// sets itself to false after one send
+		/// </summary>
+		public bool sendControls = false;
 
-        /// <summary>
-        /// set this to true when something wants to listen for the value of right click changing
-        /// sends immediately when right click value changes. sets it self to false each frame
-        /// </summary>
-        public bool rightClickListener = false;
-        public override void PreUpdate()
-        {
-            if (Main.myPlayer == Player.whoAmI)
-            {
-                mouseRight = PlayerInput.Triggers.Current.MouseRight;
-                mouseWorld = Main.MouseWorld;
+		/// <summary>
+		/// set this to true when something wants to recieve updates on the mouseworld changes 
+		/// this particular mouse listener will send many changes and is generally tight tolerance, sending much more frequently
+		/// </summary>
+		public bool mouseListener = false;
 
-                if (rightClickListener && mouseRight != oldMouseRight)
-                {
-                    oldMouseRight = mouseRight;
-                    sendControls = true;
-                    rightClickListener = false;
-                }
+		/// <summary>
+		/// set this to true when something wants to recieve updates on mouseworld changes 
+		/// this particular mouse listener will only send changes when the rotation to the Player changes, sending much less frequently
+		/// </summary>
+		public bool mouseRotationListener = false;
 
-                if (mouseListener && Vector2.Distance(mouseWorld, oldMouseWorld) > 10f)
-                {
-                    oldMouseWorld = mouseWorld;
-                    sendControls = true;
-                    mouseListener = false;
-                } 
-                
-                if (mouseRotationListener && Math.Abs((mouseWorld - Player.MountedCenter).ToRotation() - (oldMouseWorld - Player.MountedCenter).ToRotation()) > 0.15f)
-                {
-                    oldMouseWorld = mouseWorld;
-                    sendControls = true;
-                    mouseRotationListener = false;
-                }
+		/// <summary>
+		/// set this to true when something wants to listen for the value of right click changing
+		/// sends immediately when right click value changes. sets it self to false each frame
+		/// </summary>
+		public bool rightClickListener = false;
 
-                if (sendControls)
-                {
-                    sendControls = false;
-                    ControlsPacket packet = new ControlsPacket(this);
-                    packet.Send(-1, Player.whoAmI, false);
-                }
+		/// <summary>
+		/// set this to true when something wants to listen for the value of left click changing
+		/// sends immediately when left click value changes. sets it self to false each frame
+		/// </summary>
+		public bool leftClickListener = false;
+		public override void PreUpdate()
+		{
+			if (Main.myPlayer == Player.whoAmI)
+			{
+				mouseLeft = PlayerInput.Triggers.Current.MouseLeft;
+				mouseRight = PlayerInput.Triggers.Current.MouseRight;
+				mouseWorld = Main.MouseWorld;
 
-            }
-        }
-    }
+				if (leftClickListener && mouseLeft != oldMouseLeft)
+				{
+					oldMouseLeft = mouseLeft;
+					sendControls = true;
+					leftClickListener = false;
+				}
 
-    [Serializable]
-    public class ControlsPacket : Module
-    {
-        public readonly byte whoAmI;
-        public readonly byte controls;
-        public readonly short xDist;
-        public readonly short yDist;
+				if (rightClickListener && mouseRight != oldMouseRight)
+				{
+					oldMouseRight = mouseRight;
+					sendControls = true;
+					rightClickListener = false;
+				}
 
-        public ControlsPacket(ControlsPlayer cPlayer)
-        {
-            whoAmI = (byte)cPlayer.Player.whoAmI;
+				if (mouseListener && Vector2.Distance(mouseWorld, oldMouseWorld) > 5f)
+				{
+					oldMouseWorld = mouseWorld;
+					sendControls = true;
+					mouseListener = false;
+				}
 
-            if (cPlayer.mouseRight) controls |= 0b10000000;
+				if (mouseRotationListener && Math.Abs((mouseWorld - Player.MountedCenter).ToRotation() - (oldMouseWorld - Player.MountedCenter).ToRotation()) > 0.01f)
+				{
+					oldMouseWorld = mouseWorld;
+					sendControls = true;
+					mouseRotationListener = false;
+				}
 
-            xDist = (short)(cPlayer.mouseWorld.X - cPlayer.Player.position.X);
-            yDist = (short)(cPlayer.mouseWorld.Y - cPlayer.Player.position.Y);
+				if (sendControls)
+				{
+					sendControls = false;
+					var packet = new ControlsPacket(this);
+					packet.Send(-1, Player.whoAmI, false);
+				}
+			}
+		}
+	}
 
-        }
+	[Serializable]
+	public class ControlsPacket : Module
+	{
+		public readonly byte whoAmI;
+		public readonly byte controls;
+		public readonly short xDist;
+		public readonly short yDist;
 
-        protected override void Receive()
-        {
-            ControlsPlayer Player = Main.player[whoAmI].GetModPlayer<ControlsPlayer>();
-            if ((controls & 0b10000000) == 0b10000000)
-                Player.mouseRight = true;
-            else
-                Player.mouseRight = false;
+		public ControlsPacket(ControlsPlayer cPlayer)
+		{
+			whoAmI = (byte)cPlayer.Player.whoAmI;
 
-            Player.mouseWorld = new Vector2(xDist + Player.Player.position.X, yDist + Player.Player.position.Y);
+			if (cPlayer.mouseRight)
+				controls |= 0b10000000;
 
-            if (Main.netMode == Terraria.ID.NetmodeID.Server)
-            {
-                Send(-1, Player.Player.whoAmI, false);
-                return;
-            }
-        }
-    }
+			if (cPlayer.mouseLeft)
+				controls |= 0b01000000;
+
+			xDist = (short)(cPlayer.mouseWorld.X - cPlayer.Player.position.X);
+			yDist = (short)(cPlayer.mouseWorld.Y - cPlayer.Player.position.Y);
+		}
+
+		protected override void Receive()
+		{
+			ControlsPlayer Player = Main.player[whoAmI].GetModPlayer<ControlsPlayer>();
+
+			if ((controls & 0b10000000) == 0b10000000)
+				Player.mouseRight = true;
+			else
+				Player.mouseRight = false;
+
+			if ((controls & 0b01000000) == 0b01000000)
+				Player.mouseLeft = true;
+			else
+				Player.mouseLeft = false;
+
+			Player.mouseWorld = new Vector2(xDist + Player.Player.position.X, yDist + Player.Player.position.Y);
+
+			if (Main.netMode == Terraria.ID.NetmodeID.Server)
+			{
+				Send(-1, Player.Player.whoAmI, false);
+				return;
+			}
+		}
+	}
 }
