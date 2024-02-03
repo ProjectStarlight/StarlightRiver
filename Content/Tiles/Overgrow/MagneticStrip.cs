@@ -32,6 +32,10 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 		{
 			var tile = Framing.GetTileSafely(i, j);
 
+			// Dont switch gravity if toggled
+			if (tile.IsActuated)
+				return;
+
 			var rect = tile.TileFrameX switch //funny new C# feature is funny -- looks strangely like pattern matching in smth like python or ocaml?
 			{
 				0 => new Rectangle(i * 16, j * 16 - 160, 16, 160),
@@ -47,8 +51,8 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 			{
 				var mp = player.GetModPlayer<MagneticStripPlayer>();
 
-				if (mp.direction == GravDirection.down)
-					mp.ChangeDirection((GravDirection)tile.TileFrameX);
+				//if (mp.direction == GravDirection.down)
+					//mp.ChangeDirection((GravDirection)tile.TileFrameX);
 
 				mp.direction = (GravDirection)tile.TileFrameX;
 				mp.holdOver = 10;
@@ -73,6 +77,9 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 		public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch)
 		{
 			var tile = Framing.GetTileSafely(i, j);
+
+			if (tile.IsActuated)
+				return;
 
 			//Draw the glow
 			var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value;
@@ -132,9 +139,18 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 		public float fakeXVel;
 
 		public GravDirection direction;
+		public GravDirection previous;
 
 		public override void PreUpdateMovement()
 		{
+			//Adjust player dimensions when appropriate
+			if (direction != previous)
+			{
+				ChangeDirection(direction);
+			}
+
+			previous = direction;
+
 			//Reset the player's rotation so we dont get stuck rotated the wrong way when not in a field
 			if (holdOver == 1)
 			{
@@ -183,6 +199,50 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 			//sideways to the right
 			if (direction == GravDirection.right)
 			{
+				// Constraint on the top
+				bool free = false;
+				while(!free && Player.velocity.X != 0)
+				{
+					free = true;
+
+					int x = (int)(Player.position.X / 16);
+					int y = (int)(Player.position.Y / 16);
+
+					for (int k = 0; k < 2; k++)
+					{
+						var tile = Framing.GetTileSafely(x + k, y);
+						if (tile.HasTile && !tile.IsActuated && Main.tileSolid[tile.TileType] && !Main.tileSolidTop[tile.TileType])
+							free = false;
+					}
+
+					if (!free)
+					{
+						Player.position.Y += 1;
+					}
+				}
+
+				// Constraint on the bottom
+				free = false;
+				while (!free && Player.velocity.X != 0)
+				{
+					free = true;
+
+					int x = (int)(Player.position.X / 16);
+					int y = (int)(Player.position.Y / 16) + 3;
+
+					for (int k = 0; k < 2; k++)
+					{
+						var tile = Framing.GetTileSafely(x + k, y);
+						if (tile.HasTile && !tile.IsActuated && Main.tileSolid[tile.TileType] && !Main.tileSolidTop[tile.TileType])
+							free = false;
+					}
+
+					if (!free)
+					{
+						Player.position.Y -= 1;
+					}
+				}
+
 				//rotate the player sprite for visual effect
 				Player.fullRotation = 3.14f + 1.57f;
 				Player.fullRotationOrigin = Player.Size / 2;
@@ -238,6 +298,50 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 			//Essentially the same as above but with direction reversed.
 			if (direction == GravDirection.left)
 			{
+				// Constraint on the top
+				bool free = false;
+				while (!free && Player.velocity.X != 0)
+				{
+					free = true;
+
+					int x = (int)(Player.position.X / 16);
+					int y = (int)(Player.position.Y / 16);
+
+					for (int k = 0; k < 2; k++)
+					{
+						var tile = Framing.GetTileSafely(x + k, y);
+						if (tile.HasTile && !tile.IsActuated && Main.tileSolid[tile.TileType] && !Main.tileSolidTop[tile.TileType])
+							free = false;
+					}
+
+					if (!free)
+					{
+						Player.position.Y += 1;
+					}
+				}
+
+				// Constraint on the bottom
+				free = false;
+				while (!free && Player.velocity.X != 0)
+				{
+					free = true;
+
+					int x = (int)(Player.position.X / 16);
+					int y = (int)(Player.position.Y / 16) + 4;
+
+					for (int k = 0; k < 2; k++)
+					{
+						var tile = Framing.GetTileSafely(x + k, y);
+						if (tile.HasTile && !tile.IsActuated && Main.tileSolid[tile.TileType] && !Main.tileSolidTop[tile.TileType])
+							free = false;
+					}
+
+					if (!free)
+					{
+						Player.position.Y -= 1;
+					}
+				}
+
 				Player.fullRotation = 1.57f;
 				Player.fullRotationOrigin = Player.Size / 2;
 
@@ -306,12 +410,13 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 			{
 				fakeXVel = Math.Max(1, Player.velocity.X);
 				Player.velocity.X = Player.velocity.Y;
+				Player.width = 42;
 			}
-
-			if (direction == GravDirection.left)
+			else if (direction == GravDirection.left)
 			{
 				fakeXVel = Math.Min(-1, Player.velocity.X);
 				Player.velocity.X = Player.velocity.Y;
+				Player.width = 42;
 			}
 		}
 	}
