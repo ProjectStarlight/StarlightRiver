@@ -45,3 +45,4 @@ _ Visual sync for Tombsmasher
 - Breach Cannon now has Id based Iframes and no longer blocks other weapons from dealing damage
 - Skullbuster bombs now use local Iframes
 - Blood Amulet now uses local Iframes
+- Added some missing sell prices
