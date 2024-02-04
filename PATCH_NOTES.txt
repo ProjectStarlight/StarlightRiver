@@ -8,6 +8,7 @@
 - Shine staff no longer stacks mana regen delay penalty for repeated use
 - Using Main.DefaultSamplerState for spritebatches to avoid some blurry sprites
 - Fixed gear puzzle crash
+- Fixed glassweaver occasionally spawning inside of terrain
 
 ## Multiplayer
 - Fixed amulet of the bloodless warrior making you appear dead in multiplayer
