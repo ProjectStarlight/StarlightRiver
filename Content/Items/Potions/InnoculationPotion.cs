@@ -6,7 +6,7 @@
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("{{Inoculation}} Potion");
+			DisplayName.SetDefault("Inoculation Potion");
 			Tooltip.SetDefault("+30% {{Inoculation}}");
 		}
 
@@ -30,7 +30,7 @@
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Inoculated");
-			Description.SetDefault("+30% {{Inoculation}}");
+			Description.SetDefault("+30% Inoculation");
 		}
 
 		public override void Update(Player Player, ref int buffIndex)

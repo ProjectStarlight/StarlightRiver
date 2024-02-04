@@ -112,10 +112,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			drawColor.A = 255;
 
-			spriteBatch.Draw(tex, NPC.Center + Vector2.UnitY * 4 - screenPos, null, drawColor, 0, tex.Size() / 2, 1, 0, 0);
+			spriteBatch.Draw(tex, NPC.Center + Vector2.UnitY * 20 - screenPos, null, drawColor, 0, tex.Size() / 2, 1, 0, 0);
 
 			if (!dontCollide && masterExpirationTimer > 0)
-				spriteBatch.Draw(tex, NPC.Center + Vector2.UnitY * 4 - screenPos, null, Color.Lerp(Color.Transparent, Color.Red, masterExpirationTimer / 300f), 0, tex.Size() / 2, 1, 0, 0);
+				spriteBatch.Draw(tex, NPC.Center + Vector2.UnitY * 20 - screenPos, null, Color.Lerp(Color.Transparent, Color.Red, masterExpirationTimer / 300f), 0, tex.Size() / 2, 1, 0, 0);
 
 			return false;
 		}
