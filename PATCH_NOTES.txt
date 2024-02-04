@@ -9,6 +9,9 @@
 - Shine staff no longer stacks mana regen delay penalty for repeated use
 - Using Main.DefaultSamplerState for spritebatches to avoid some blurry sprites
 - Fixed gear puzzle crash
+- Fixed glassweaver occasionally spawning inside of terrain
+- Fixed aqua saphire spawning in stacks of 2
+- Fixed fall damage not resetting properly with the cogwheel and slime prince armor
 - Fixed an issue where inactive moving platforms could be grappled to
 
 ## Multiplayer
@@ -45,6 +48,7 @@ _ Visual sync for Tombsmasher
 - Breach Cannon now has Id based Iframes and no longer blocks other weapons from dealing damage
 - Skullbuster bombs now use local Iframes
 - Blood Amulet now uses local Iframes
+- Added some missing sell prices
 - Updated Ceiros' background sprites
 - Added screenspace reflections to Ceiros' arena
 - Added an elevator out of Auroracle's arena
