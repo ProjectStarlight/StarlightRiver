@@ -10,6 +10,7 @@
 - Fixed gear puzzle crash
 - Fixed glassweaver occasionally spawning inside of terrain
 - Fixed aqua saphire spawning in stacks of 2
+- Fixed fall damage not resetting properly with the cogwheel and slime prince armor
 
 ## Multiplayer
 - Fixed amulet of the bloodless warrior making you appear dead in multiplayer
