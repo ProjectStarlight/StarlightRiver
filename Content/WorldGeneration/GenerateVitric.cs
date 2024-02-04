@@ -567,7 +567,7 @@ namespace StarlightRiver.Core
 
 			ProtectionWorld.ProtectedRegions.Add(new Rectangle(x, vitricBiome.Center.Y - 10, dims.X, dims.Y));
 
-			NPC.NewNPC(new EntitySource_WorldGen(), (x + 80) * 16, vitricBiome.Center.Y * 16, NPCType<Content.Bosses.GlassMiniboss.GlassweaverWaiting>());
+			NPC.NewNPC(new EntitySource_WorldGen(), (x + 80) * 16, (StarlightWorld.vitricBiome.Center.Y + 20) * 16, NPCType<Content.Bosses.GlassMiniboss.GlassweaverWaiting>());
 		}
 
 		private static void GenTemple()

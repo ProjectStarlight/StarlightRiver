@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.CameraSystem;
+﻿using StarlightRiver.Content.CustomHooks;
+using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using System.IO;
@@ -247,10 +248,33 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target, tex, source, default);
 			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target2, tex3, source2, default);
-			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target.TopLeft() - Vector2.UnitY * 56, tex2, tex2.Bounds, default);
+			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target.TopLeft() + new Vector2(-134, -120), tex2, tex2.Bounds, default);
+
+			sb.End();
+			sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+
+			Texture2D reflectionMap = Request<Texture2D>(path + "ReflectionMap").Value;
+			Texture2D reflectionMapSide = Request<Texture2D>(path + "SideReflectionMap").Value;
+
+			DrawReflections(sb, reflectionMap, target.TopLeft());
+			DrawReflections(sb, reflectionMapSide, target2.TopLeft());
+
+			sb.End();
+			sb.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
-		public virtual void ScrollDraw(SpriteBatch sb) //im lazy
+	/// <summary>
+	/// small helper function to draw the reflections for the vitric crystals
+	/// </summary>
+	protected void DrawReflections(SpriteBatch spriteBatch, Texture2D reflectionMap, Vector2 screenPos, Rectangle? sourceRect = null)
+	{
+		Color tintColor = new Color(75, 150, 255, NPC.AnyNPCs(NPCType<VitricBoss>()) ? 70 : 200);
+
+		ReflectionTarget.DrawReflection(spriteBatch, screenPos, normalMap: reflectionMap, flatOffset: new Vector2(-0.0025f, 0.07f), offsetScale: 0.04f, tintColor: tintColor, restartSpriteBatch: false, sourceRect: sourceRect);
+		ReflectionTarget.isDrawReflectablesThisFrame = true;
+	}
+
+	public virtual void ScrollDraw(SpriteBatch sb) //im lazy
 		{
 			string path = AssetDirectory.VitricBoss + Name;
 			Texture2D tex = Request<Texture2D>(path).Value;
@@ -267,9 +291,16 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default);
 			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default);
 
-			Texture2D tex2 = Request<Texture2D>(path + "Glow").Value;
-			sb.Draw(tex2, target1, source1, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.visualTimer) * 0.1f), 0, Vector2.Zero, 0, 0);
-			sb.Draw(tex2, target2, source2, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.visualTimer) * 0.1f), 0, Vector2.Zero, 0, 0);
+			sb.End();
+			sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+
+			Texture2D reflectionMap = Request<Texture2D>(path + "ReflectionMap").Value;
+
+			DrawReflections(sb, reflectionMap, target1.TopLeft(), source1);
+			DrawReflections(sb, reflectionMap, target2.TopLeft(), source2);
+
+			sb.End();
+			sb.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		public virtual void SpawnPlatforms(bool rising = true)
@@ -354,13 +385,25 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target, tex, source, default);
 			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target2, tex3, source2, default);
-			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target.TopLeft() - Vector2.UnitY * 56, tex2, tex2.Bounds, default);
+			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target.TopLeft() + new Vector2(64, -78), tex2, tex2.Bounds, default);
 
 			if (Holidays.AnySpecialEvent)//1 in 32 or any special date event
 			{
 				Texture2D egg = Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/VitricRightEasterEgg").Value;
 				Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target, egg, source);
 			}
+
+			sb.End();
+			sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+
+			Texture2D reflectionMap = Request<Texture2D>(path + "ReflectionMap").Value;
+			Texture2D reflectionMapSide = Request<Texture2D>(path + "SideReflectionMap").Value;
+
+			DrawReflections(sb, reflectionMap, target.TopLeft());
+			DrawReflections(sb, reflectionMapSide, target2.TopLeft());
+
+			sb.End();
+			sb.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		public override void ScrollDraw(SpriteBatch sb)
@@ -380,9 +423,16 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default);
 			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default);
 
-			Texture2D tex2 = Request<Texture2D>(path + "Glow").Value;
-			sb.Draw(tex2, target1, source1, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.visualTimer) * 0.1f), 0, Vector2.Zero, 0, 0);
-			sb.Draw(tex2, target2, source2, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.visualTimer) * 0.1f), 0, Vector2.Zero, 0, 0);
+			sb.End();
+			sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+
+			Texture2D reflectionMap = Request<Texture2D>(path + "ReflectionMap").Value;
+
+			DrawReflections(sb, reflectionMap, target1.TopLeft(), source1);
+			DrawReflections(sb, reflectionMap, target2.TopLeft(), source2);
+
+			sb.End();
+			sb.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			if (Holidays.AnySpecialEvent)//1 in 32 or any special date event
 			{

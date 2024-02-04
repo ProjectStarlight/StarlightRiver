@@ -139,7 +139,7 @@ namespace StarlightRiver.Content.Items.Forest
 					helm.targetAccel = Vector2.Normalize(helm.targetAccel) * 0.99f;
 
 				player.velocity = helm.targetVel;
-				player.fallStart = (int)player.position.Y;
+				player.fallStart = (int)(player.position.Y / 16f);
 			}
 		}
 

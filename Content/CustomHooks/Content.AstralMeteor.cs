@@ -56,15 +56,13 @@ namespace StarlightRiver.Content.CustomHooks
 					}
 				}
 
-				if (Main.netMode == NetmodeID.SinglePlayer)
-					Main.NewText("A shard of the moon has landed!", new Color(107, 233, 231));
+				Terraria.Chat.ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("A shard of the moon has landed!"), new Color(107, 233, 231));
 
-				else if (Main.netMode == NetmodeID.Server)
-					Terraria.Chat.ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("A shard of the moon has landed!"), new Color(107, 233, 231));
+				if (Main.netMode == NetmodeID.Server)
+					NetMessage.SendTileSquare(Main.myPlayer, target.X - 30, target.Y - 30, 60, 70, TileChangeType.None);
 
 				return true;
 			}
-
 			else
 			{
 				return orig(i, j, ignorePlayers);

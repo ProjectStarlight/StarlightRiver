@@ -16,6 +16,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 		public override void SafeSetDefaults()
 		{
+			Item.value = Item.sellPrice(0, 2, 50, 0);
 			Item.rare = ItemRarityID.Orange;
 		}
 
