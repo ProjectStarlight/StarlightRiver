@@ -4091,6 +4091,7 @@ NPCs: {
 
 	DesertWisp2.DisplayName: Desert Wisp2
 	StaminaShardPickup.DisplayName: Stamina Shard Pickup
+	EscapePlatform.DisplayName: ""
 }
 
 Buffs: {
