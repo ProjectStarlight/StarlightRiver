@@ -9,6 +9,7 @@
 - Using Main.DefaultSamplerState for spritebatches to avoid some blurry sprites
 - Fixed gear puzzle crash
 - Fixed glassweaver occasionally spawning inside of terrain
+- Fixed aqua saphire spawning in stacks of 2
 
 ## Multiplayer
 - Fixed amulet of the bloodless warrior making you appear dead in multiplayer
