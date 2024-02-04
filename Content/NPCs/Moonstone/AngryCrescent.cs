@@ -411,7 +411,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				initializeAnimation = reader.ReadBoolean();
 
 				Player target = Main.player[NPC.target];
-				var curve = new BezierCurve([target.Center + new Vector2((150 + offset.X) * flip, -150 + offset.Y), target.Bottom + new Vector2(0, 325), target.Center + new Vector2((-150 + offset.X) * flip, -150 + offset.Y)]);
+				var curve = new BezierCurve(target.Center + new Vector2((150 + offset.X) * flip, -150 + offset.Y), target.Bottom + new Vector2(0, 325), target.Center + new Vector2((-150 + offset.X) * flip, -150 + offset.Y));
 				curvePositions = curve.GetPoints(15).ToArray();
 			}
 		}
