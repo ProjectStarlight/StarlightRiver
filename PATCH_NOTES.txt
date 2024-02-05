@@ -40,6 +40,8 @@ _ Visual sync for Tombsmasher
 
 ## Content
 - New enemy: Dreambeast
+- Made the following items obtainable in normal gameplay: Cabbage, Dough, Flour,  Sugar, Brussel Sprouts, Carrot, Eye, Health Extract, Hoeny Syrup, Lettuce, Mana Extract
+- Added vegetable plants that grow in the forest
 
 ## Tweaks
 - Both Eater Steak and Face Steak can now drop from Corruptors and Herplings respectively
@@ -48,6 +50,8 @@ _ Visual sync for Tombsmasher
 - Breach Cannon now has Id based Iframes and no longer blocks other weapons from dealing damage
 - Skullbuster bombs now use local Iframes
 - Blood Amulet now uses local Iframes
+- Improved the chef bag UI (and cooking UI as a consequence)
+- Re-balanced the duration of food items. In general it should now be difficult to cook food with durations less than 5 minutes
 - Added some missing sell prices
 - Updated Ceiros' background sprites
 - Added screenspace reflections to Ceiros' arena

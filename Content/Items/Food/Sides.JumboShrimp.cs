@@ -4,7 +4,7 @@ namespace StarlightRiver.Content.Items.Food
 {
 	internal class JumboShrimp : Ingredient
 	{
-		public JumboShrimp() : base("+10% damage and movement speed when underwater", 200, IngredientType.Side) { }
+		public JumboShrimp() : base("+10% damage and movement speed when underwater", 3600 * 2, IngredientType.Side) { }
 
 		public override void SafeSetDefaults()
 		{

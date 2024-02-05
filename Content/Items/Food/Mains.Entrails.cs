@@ -4,7 +4,7 @@ namespace StarlightRiver.Content.Items.Food
 {
 	internal class Entrails : Ingredient
 	{
-		public Entrails() : base("+20% damage and -20% max health\n-20% duration", 360, IngredientType.Main, 0.8f) { }
+		public Entrails() : base("+20% damage and -20% max health\n-20% duration", 3600 * 3, IngredientType.Main, 0.8f) { }
 
 		public override void SafeSetDefaults()
 		{
