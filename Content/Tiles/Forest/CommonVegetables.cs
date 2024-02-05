@@ -41,6 +41,8 @@ namespace StarlightRiver.Content.Tiles.Forest
 							targetTile.TileFrameX += (short)fullFrameWidth; //adds the width of the frame to that specific tile's frame. this should push it forward by one full frame of your multitile sprite. cast to short because vanilla.
 						}
 					}
+
+					NetMessage.SendTileSquare(Main.myPlayer, i, j, 1, 2);
 				}
 			}
 		}
