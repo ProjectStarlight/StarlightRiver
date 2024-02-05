@@ -19,14 +19,14 @@ namespace StarlightRiver.Content.GUI
 		public static bool visible;
 
 		public static UIGrid grid = new();
+		public static UIScrollbar scroll = new();
+
 		public static UIImageButton SortButton = new(Request<Texture2D>("StarlightRiver/Assets/GUI/SortButton", ReLogic.Content.AssetRequestMode.ImmediateLoad));
-		public static UIImageButton OwnedButton = new(Request<Texture2D>("StarlightRiver/Assets/GUI/HideButtonOff", ReLogic.Content.AssetRequestMode.ImmediateLoad));
 
 		public static UIImageButton IngredientTab = new(Request<Texture2D>("StarlightRiver/Assets/GUI/IngredientButton", ReLogic.Content.AssetRequestMode.ImmediateLoad));
 		public static UIImageButton RecipieTab = new(Request<Texture2D>("StarlightRiver/Assets/GUI/MealButton", ReLogic.Content.AssetRequestMode.ImmediateLoad));
 
 		public static string sortMode = "Rarity";
-		public static bool hideUnowned = false;
 
 		public override bool Visible => visible;
 
@@ -37,21 +37,24 @@ namespace StarlightRiver.Content.GUI
 
 		public override void OnInitialize()
 		{
+			scroll.Width.Set(32, 0);
+			scroll.Height.Set(216, 0);
+			scroll.Left.Set(490 - 220, 0.5f);
+			scroll.Top.Set(-220, 0.5f);
+			Append(scroll);
+
 			grid.Left.Set(-220, 0.5f);
 			grid.Top.Set(-220, 0.5f);
-			grid.Width.Set(480, 0);
+			grid.Width.Set(490, 0);
 			grid.Height.Set(216, 0);
 			grid.ListPadding = 4;
-			grid.MaxWidth.Set(480, 0);
+			grid.MaxWidth.Set(490, 0);
 			grid.MaxHeight.Set(216, 0);
-
+			grid.SetScrollbar(scroll);
 			Append(grid);
 
 			AddElement(SortButton, -260, 0.5f, -220, 0.5f, 32, 0f, 32, 0f);
 			SortButton.OnLeftClick += (a, b) => ChangeSortMode();
-
-			AddElement(OwnedButton, -260, 0.5f, -180, 0.5f, 32, 0f, 32, 0f);
-			OwnedButton.OnLeftClick += (a, b) => ChangeOwnedMode();
 
 			AddElement(IngredientTab, -220, 0.5f, -256, 0.5f, 50, 0f, 28, 0f);
 			IngredientTab.OnLeftClick += (a, b) => RebuildGrid();
@@ -60,39 +63,29 @@ namespace StarlightRiver.Content.GUI
 			RecipieTab.OnLeftClick += (a, b) => RebuildRecipies();
 		}
 
-		private void ChangeOwnedMode()
-		{
-			hideUnowned = !hideUnowned;
-			OwnedButton.SetImage(Request<Texture2D>("StarlightRiver/Assets/GUI/HideButton" + (hideUnowned ? "On" : "Off"), ReLogic.Content.AssetRequestMode.ImmediateLoad));
-			RebuildGrid();
-		}
-
 		private void ChangeSortMode()
 		{
-			switch (sortMode)
+			sortMode = sortMode switch
 			{
-				case "Rarity": sortMode = "Type"; break;
-				case "Type": sortMode = "Alphabetical"; break;
-				case "Alphabetical": sortMode = "Rarity Reverse"; break;
-				case "Rarity Reverse": sortMode = "Type Reverse"; break;
-				case "Type Reverse": sortMode = "Alphabetical Reverse"; break;
-				case "Alphabetical Reverse": sortMode = "Rarity"; break;
-			}
-
+				"Rarity" => "Type",
+				"Type" => "Owned",
+				"Owned" => "Rarity",
+				_ => "Rarity",
+			};
 			grid.UpdateOrder();
 			UILoader.GetUIState<ChefBagUI>().Recalculate();
 		}
 
 		public static void Move(Vector2 moveTarget)
 		{
+			scroll.Left.Set(moveTarget.X + 490, 0);
+			scroll.Top.Set(moveTarget.Y, 0);
+
 			grid.Left.Set(moveTarget.X, 0);
 			grid.Top.Set(moveTarget.Y, 0);
 
 			SortButton.Left.Set(moveTarget.X - 40, 0);
 			SortButton.Top.Set(moveTarget.Y, 0);
-
-			OwnedButton.Left.Set(moveTarget.X - 40, 0);
-			OwnedButton.Top.Set(moveTarget.Y + 40, 0);
 
 			IngredientTab.Left.Set(moveTarget.X, 0);
 			IngredientTab.Top.Set(moveTarget.Y - 36, 0);
@@ -107,23 +100,11 @@ namespace StarlightRiver.Content.GUI
 		{
 			grid.Clear();
 
-			if (hideUnowned)
+			for (int k = 0; k < ChefBag.ingredientTypes.Count; k++)
 			{
-				for (int k = 0; k < openBag.Items.Count; k++)
-				{
-					var item = new Item();
-					item.SetDefaults(openBag.Items[k].type);
-					grid.Add(new IngredientStorageSlot(item, k));
-				}
-			}
-			else
-			{
-				for (int k = 0; k < ChefBag.ingredientTypes.Count; k++)
-				{
-					var item = new Item();
-					item.SetDefaults(ChefBag.ingredientTypes[k]);
-					grid.Add(new IngredientStorageSlot(item, k));
-				}
+				var item = new Item();
+				item.SetDefaults(ChefBag.ingredientTypes[k]);
+				grid.Add(new IngredientStorageSlot(item, k));
 			}
 
 			grid.UpdateOrder();
@@ -147,11 +128,19 @@ namespace StarlightRiver.Content.GUI
 			if (grid._items.Count() == 0)
 				RebuildGrid();
 
+			if (!Main.playerInventory)
+				visible = false;
+
+			grid.Width.Set(600, 0);
+			grid.MaxWidth.Set(490, 0);
+
+			Recalculate();
+		}
+
+		public override void Draw(SpriteBatch spriteBatch)
+		{
 			if (SortButton.IsMouseHovering)
 				Main.hoverItemName = "Sort mode:\n" + sortMode;
-
-			if (OwnedButton.IsMouseHovering)
-				Main.hoverItemName = "Hide unowned:\n" + hideUnowned;
 
 			if (IngredientTab.IsMouseHovering)
 				Main.hoverItemName = "Ingredients";
@@ -159,8 +148,7 @@ namespace StarlightRiver.Content.GUI
 			if (RecipieTab.IsMouseHovering)
 				Main.hoverItemName = "Cookbook";
 
-			if (!Main.playerInventory)
-				visible = false;
+			base.Draw(spriteBatch);
 		}
 	}
 
@@ -168,6 +156,18 @@ namespace StarlightRiver.Content.GUI
 	{
 		public Item item;
 		public float scale;
+
+		public int IngredientType => (int)(item.ModItem as Ingredient).ThisType;
+
+		public int Count
+		{
+			get
+			{
+				List<Item> items = ChefBagUI.openBag.Items;
+				Item heldItem = items.FirstOrDefault(n => n.type == item.type);
+				return heldItem?.stack ?? 0;
+			}
+		}
 
 		public IngredientStorageSlot(Item item, int index, float scale = 1)
 		{
@@ -253,37 +253,45 @@ namespace StarlightRiver.Content.GUI
 			{
 				"Rarity" => CompareRarity(other),
 				"Type" => CompareType(other),
-				"Alphabetical" => CompareAlphabetical(other),
-				"Rarity Reverse" => CompareRarity(other) * -1,
-				"Type Reverse" => CompareType(other) * -1,
-				"Alphabetical Reverse" => CompareAlphabetical(other) * -1,
+				"Owned" => CompareOwned(other),
 				_ => CompareRarity(other),//use rarity sort as a default
 			};
 		}
 
 		private int CompareRarity(IngredientStorageSlot other)
 		{
-			int firstOrder = item.type > other.item.type ? 1 : 0;
+			if (item.rare != other.item.rare)
+				return item.rare.CompareTo(other.item.rare);
 
-			int x = item.rare * 6 + (int)(item.ModItem as Ingredient).ThisType * 2 + firstOrder;
-			int y = other.item.rare * 6 + (int)(other.item.ModItem as Ingredient).ThisType * 2 + firstOrder;
+			if (IngredientType != other.IngredientType)
+				return IngredientType.CompareTo(other.IngredientType);
 
-			return x >= y ? 1 : -1;
+			return item.type.CompareTo(other.item.type);
 		}
 
 		private int CompareType(IngredientStorageSlot other)
 		{
-			int firstOrder = item.type > other.item.type ? 1 : 0;
+			if (IngredientType != other.IngredientType)
+				return IngredientType.CompareTo(other.IngredientType);
 
-			int x = (int)(item.ModItem as Ingredient).ThisType * 24 + item.rare * 2 + firstOrder;
-			int y = (int)(other.item.ModItem as Ingredient).ThisType * 24 + other.item.rare * 2 + firstOrder;
+			if (item.rare != other.item.rare)
+				return item.rare.CompareTo(other.item.rare);
 
-			return x >= y ? 1 : -1;
+			return item.type.CompareTo(other.item.type);
 		}
 
-		private int CompareAlphabetical(IngredientStorageSlot other)
+		private int CompareOwned(IngredientStorageSlot other)
 		{
-			return item.Name.CompareTo(other.item.Name);
+			if (Count != other.Count)
+				return other.Count.CompareTo(Count);
+
+			if (item.rare != other.item.rare)
+				return item.rare.CompareTo(other.item.rare);
+
+			if (IngredientType != other.IngredientType)
+				return IngredientType.CompareTo(other.IngredientType);
+
+			return item.type.CompareTo(other.item.type);
 		}
 	}
 
@@ -295,7 +303,7 @@ namespace StarlightRiver.Content.GUI
 		{
 			this.item = item;
 
-			Width.Set(230, 0);
+			Width.Set(240, 0);
 			Height.Set(50, 0);
 
 			Left.Set(index % 2 * 240, 0);
@@ -306,7 +314,7 @@ namespace StarlightRiver.Content.GUI
 				var newItem = new Item();
 				newItem.SetDefaults(Result.Recipie().AsList()[k]);
 				var slot = new IngredientStorageSlot(newItem, k + 1, 0.8f);
-				slot.Left.Set(50 + k * 42, 0);
+				slot.Left.Set(54 + k * 44, 0);
 				slot.Top.Set(8, 0);
 				Append(slot);
 			}
@@ -325,7 +333,13 @@ namespace StarlightRiver.Content.GUI
 			List<Item> items = ChefBagUI.openBag.Items;
 			Item heldItem = items.FirstOrDefault(n => n.type == item.type);
 
-			Color color = Color.White;
+			bool craftable = true;
+			for(int k = 0; k < 4; k++)
+			{
+				craftable &= ChefBagUI.openBag.Items.Any(n => n != null && n.type == Result.Recipie().AsList()[k] && n.stack > 0); 
+			}
+
+			Color color = !craftable ? Color.LightGray * 0.5f : Color.White;
 
 			Color color2 = (item.ModItem as Ingredient).GetColor().MultiplyRGB(color);
 			color2.A = 0;

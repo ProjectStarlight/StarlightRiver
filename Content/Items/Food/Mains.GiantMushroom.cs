@@ -4,7 +4,7 @@ namespace StarlightRiver.Content.Items.Food
 {
 	internal class GiantMushroom : Ingredient
 	{
-		public GiantMushroom() : base("+40 max health", 1100, IngredientType.Main) { }
+		public GiantMushroom() : base("+40 max health", 3600 * 6, IngredientType.Main) { }
 
 		public override void SafeSetDefaults()
 		{

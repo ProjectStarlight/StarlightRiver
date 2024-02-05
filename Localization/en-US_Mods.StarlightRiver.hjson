@@ -3466,6 +3466,11 @@ Items: {
 			Combat mount cooldowns reduced by 30%
 			'''
 	}
+
+	CommonVegetablesItem: {
+		DisplayName: Common Vegetable Seeds
+		Tooltip: Plant to grow your own veggies
+	}
 }
 
 Tiles: {
@@ -3654,6 +3659,7 @@ Tiles: {
 	VitricLargeCrystal.MapEntry: Vitric Large Crystal
 	VitricMediumCrystal.MapEntry: Vitric Medium Crystal
 	VitricSmallCrystal.MapEntry: Vitric Small Crystal
+	CommonVegetables.MapEntry: ""
 }
 
 Projectiles: {

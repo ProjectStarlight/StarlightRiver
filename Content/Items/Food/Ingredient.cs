@@ -36,9 +36,14 @@ namespace StarlightRiver.Content.Items.Food
 
 		public override string Texture => AssetDirectory.FoodItem + Name;
 
-		public override void AddRecipes() //this is dumb, too bad!
+		public virtual void SafeAddRecipes() { }
+
+		public sealed override void AddRecipes() //this is dumb, too bad!
 		{
-			ChefBag.ingredientTypes.Add(Item.type);
+			SafeAddRecipes();
+
+			if (ThisType != IngredientType.Bonus)
+				ChefBag.ingredientTypes.Add(Item.type);
 		}
 
 		protected bool Active(Player player)
@@ -109,7 +114,7 @@ namespace StarlightRiver.Content.Items.Food
 
 			if (ThisType != IngredientType.Bonus)
 			{
-				var fullLine = new TooltipLine(Mod, "StarlightRiver: Fullness", "adds " + Fill / 60 + " seconds duration to food")
+				var fullLine = new TooltipLine(Mod, "StarlightRiver: Fullness", $"adds {Fill / 3600}m {Fill % 3600 / 60}s duration to food")
 				{
 					OverrideColor = new Color(110, 235, 255)
 				};
