@@ -8,11 +8,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 	{
 		public override string Texture => AssetDirectory.DungeonItem + Name;
 
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("Aqua Sapphire");
-			Tooltip.SetDefault("{{Barrier}} negates 15% more damage \n+20 {{Barrier}}");
-		}
+		public AquaSapphire() : base("Aqua Sapphire", "{{Barrier}} negates 15% more damage \n+20 {{Barrier}}") { }
 
 		public override void SafeSetDefaults()
 		{
