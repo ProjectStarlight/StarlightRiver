@@ -61,7 +61,15 @@ namespace StarlightRiver.Content.GUI
 				visible = false;
 			}
 
-			if (TopBar.IsMouseHovering && Main.mouseLeft)
+			var dragDims = new Rectangle((int)Basepos.X - 10, (int)Basepos.Y - 10, 376, 40);
+
+			if (ChefBagUI.visible)
+			{
+				dragDims.X -= 560;
+				dragDims.Width += 560;
+			}
+
+			if (dragDims.Contains(Main.MouseScreen.ToPoint()) && Main.mouseLeft)
 			{
 				if (!Moving)
 					MoveOffset = Main.MouseScreen - Basepos;
@@ -87,7 +95,7 @@ namespace StarlightRiver.Content.GUI
 			if (Basepos.Y > Main.screenHeight - 20 - 244)
 				Basepos.Y = Main.screenHeight - 20 - 244;
 
-			ChefBagUI.Move(Basepos + new Vector2(-480, 0));
+			ChefBagUI.Move(Basepos + new Vector2(-520, 40));
 
 			Main.isMouseLeftConsumedByUI = true;
 			SetPosition(MainSlot, 44, 44);
@@ -112,8 +120,10 @@ namespace StarlightRiver.Content.GUI
 
 			if (ChefBagUI.visible)
 			{
-				backDims.X -= 520;
-				backDims.Width += 520;
+				backDims.X -= 560;
+				backDims.Width += 560;
+
+				backDims.Height += 20;
 			}
 
 			spriteBatch.Draw(TextureAssets.MagicPixel.Value, backDims, new Color(25, 25, 25) * 0.5f);
@@ -174,8 +184,8 @@ namespace StarlightRiver.Content.GUI
 					drawY += (int)(FontAssets.ItemStack.Value.MeasureString(line.Item1).Y * 0.65f) + 2;
 				}
 
-				Utils.DrawBorderString(spriteBatch, duration / 60 + " seconds duration", Basepos + new Vector2(186, 150), new Color(110, 235, 255), 0.65f);
-				Utils.DrawBorderString(spriteBatch, cooldown / 60 + " seconds fullness", Basepos + new Vector2(186, 164), new Color(255, 170, 120), 0.65f);
+				Utils.DrawBorderString(spriteBatch, $"{(int)(duration / 3600)}m {duration % 3600 / 60}s duration", Basepos + new Vector2(186, 150), new Color(110, 235, 255), 0.65f);
+				Utils.DrawBorderString(spriteBatch, $"{(int)(cooldown / 3600)}m {cooldown % 3600 / 60}s fullness", Basepos + new Vector2(186, 164), new Color(255, 170, 120), 0.65f);
 
 				if (lineCount > 5)
 				{
@@ -214,7 +224,7 @@ namespace StarlightRiver.Content.GUI
 				Item.position = Main.LocalPlayer.Center;
 				Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), Item);
 
-				Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_BetsyScream); //TODO: Change to custom chop chop sizzle sound
+				Helper.PlayPitched("Effects/UIAlchemy", 1, 0, Main.LocalPlayer.Center);
 			}
 		}
 

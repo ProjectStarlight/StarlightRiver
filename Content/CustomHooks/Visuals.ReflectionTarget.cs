@@ -117,7 +117,7 @@ namespace StarlightRiver.Content.CustomHooks
 				GD.Clear(Color.Transparent);
 				Main.GameViewMatrix.Zoom = new Vector2(1, 1);
 				sb.End();
-				sb.Begin(SpriteSortMode.Texture, default, default, default, RasterizerState.CullNone, default);
+				sb.Begin(SpriteSortMode.Texture, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default);
 
 				DrawWallReflectionNormalMapEvent?.Invoke(sb);
 			}
@@ -168,7 +168,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 			if (reflectionConfig.DustReflectionsOn)
 			{
-				sb.Begin(SpriteSortMode.Deferred, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				sb.Begin(SpriteSortMode.Deferred, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 				try
 				{
 					//tml does this try catch for some reason, maybe gores are bugged in this version, v2022.3.35.3, possible TODO: remove the try catch if tml removes theirs
@@ -208,7 +208,7 @@ namespace StarlightRiver.Content.CustomHooks
 		/// <summary>
 		/// helper function to set params onto the reflection shader and draw to screen when called
 		/// </summary>
-		public static void DrawReflection(SpriteBatch spriteBatch, Vector2 screenPos, Texture2D normalMap, Vector2 flatOffset, float offsetScale, Color tintColor, bool restartSpriteBatch = true)
+		public static void DrawReflection(SpriteBatch spriteBatch, Vector2 screenPos, Texture2D normalMap, Vector2 flatOffset, float offsetScale, Color tintColor, bool restartSpriteBatch = true, Rectangle? sourceRect = null)
 		{
 			ReflectionSubConfig reflectionConfig = ModContent.GetInstance<GraphicsConfig>().ReflectionConfig;
 
@@ -221,7 +221,12 @@ namespace StarlightRiver.Content.CustomHooks
 					spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 				}
 
-				var data = new DrawData(normalMap, screenPos, new Color(255, 255, 255, 0));
+				var data = new DrawData(normalMap, screenPos, sourceRect, new Color(255, 255, 255, 0));
+
+				Vector2 normalMapPos = new Vector2(screenPos.X / Target.RenderTarget.Width, screenPos.Y / Target.RenderTarget.Height);
+
+				if (sourceRect != null)
+					normalMapPos = new Vector2((screenPos.X - sourceRect.Value.Left) / Target.RenderTarget.Width, (screenPos.Y - sourceRect.Value.Top) / Target.RenderTarget.Height);
 
 				//need to force the registers into using the proper data
 				Main.graphics.GraphicsDevice.Textures[1] = Target.RenderTarget;
@@ -230,7 +235,7 @@ namespace StarlightRiver.Content.CustomHooks
 				GameShaders.Misc[simpleReflectionShaderPath].Shader.Parameters["reflectionTargetSize"].SetValue(Target.RenderTarget.Size());
 				GameShaders.Misc[simpleReflectionShaderPath].Shader.Parameters["flatOffset"].SetValue(flatOffset);
 				GameShaders.Misc[simpleReflectionShaderPath].Shader.Parameters["offsetScale"].SetValue(offsetScale);
-				GameShaders.Misc[simpleReflectionShaderPath].Shader.Parameters["normalMapPosition"].SetValue(new Vector2(screenPos.X / Target.RenderTarget.Width, screenPos.Y / Target.RenderTarget.Height));
+				GameShaders.Misc[simpleReflectionShaderPath].Shader.Parameters["normalMapPosition"].SetValue(normalMapPos);
 				GameShaders.Misc[simpleReflectionShaderPath].Shader.Parameters["tintColor"].SetValue(tintColor.ToVector4());
 
 				GameShaders.Misc[simpleReflectionShaderPath].Apply(data);
@@ -291,7 +296,7 @@ namespace StarlightRiver.Content.CustomHooks
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Texture, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(SpriteSortMode.Texture, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 }

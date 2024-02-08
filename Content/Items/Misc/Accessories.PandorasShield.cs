@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public PandorasShield() : base("Pandora's Shield", "Grazes grant a portion of the projectiles' damage as barrier") { }
+		public PandorasShield() : base("Pandora's Shield", "{{Grazes}} grant a portion of the projectiles' damage as {{barrier}}") { }
 
 		public override void SafeSetDefaults()
 		{

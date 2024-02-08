@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Terraria.ID;
+using static Humanizer.In;
 
 namespace StarlightRiver.Content.Items.Permafrost
 {
@@ -67,19 +68,22 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			if (launching)
 			{
+				Owner.TryGetModPlayer(out ControlsPlayer controlsPlayer);
+				controlsPlayer.mouseListener = true;
+
 				if (timer++ % 6 == 0)
 					followPoints.Add(Projectile.Center);
 
 				if (timer < 120)
 				{
-					if (Projectile.Distance(Main.MouseWorld) > 25)
+					if (Projectile.Distance(controlsPlayer.mouseWorld) > 25)
 					{
-						Projectile.velocity = Projectile.DirectionTo(Main.MouseWorld) * Projectile.velocity.Length();
+						Projectile.velocity = Projectile.DirectionTo(controlsPlayer.mouseWorld) * Projectile.velocity.Length();
 						stillTimer = 0;
 					}
 					else
 					{
-						Projectile.Center = Main.MouseWorld;
+						Projectile.Center = controlsPlayer.mouseWorld;
 						stillTimer++;
 						if (stillTimer > 15)
 							timer = 121;
@@ -87,7 +91,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 				}
 				else
 				{
-					Projectile.velocity = Owner.DirectionTo(Main.MouseWorld) * Projectile.velocity.Length();
+					Projectile.velocity = Owner.DirectionTo(controlsPlayer.mouseWorld) * Projectile.velocity.Length();
 				}
 			}
 		}

@@ -94,13 +94,13 @@ namespace StarlightRiver.Content.GUI
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.UIScaleMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
 
 			spriteBatch.Draw(texGlow, pos + off, BossBarOverlay.glowColor * 0.5f);
 			spriteBatch.Draw(texGlow, new Rectangle((int)(pos.X + off.X), (int)(pos.Y + off.Y), progress, 22), new Rectangle(0, 0, progress, 22), BossBarOverlay.glowColor);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
 
 			Utils.DrawBorderString(spriteBatch, NPC.FullName + BossBarOverlay.text + ": " + NPC.life + "/" + NPC.lifeMax, pos + new Vector2(516 / 2, -20), Color.White, 1, 0.5f, 0);
 

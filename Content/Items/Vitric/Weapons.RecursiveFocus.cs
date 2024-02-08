@@ -661,7 +661,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				Main.spriteBatch.Draw(bloomTex, targetNPC.Center - Main.screenPosition, null, Color.White, 0f, bloomTex.Size() / 2f, 0.1f * scale, 0f, 0f);
 
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
 				color = new Color(255, 165, 115, 0);
 				if (pulseTimer > 0)
@@ -839,7 +839,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				trail4?.Render(effect);
 			}
 
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		#endregion PRIMITIVEDRAWING

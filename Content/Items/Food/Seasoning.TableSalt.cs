@@ -5,7 +5,7 @@ namespace StarlightRiver.Content.Items.Food
 {
 	internal class TableSalt : Ingredient
 	{
-		public TableSalt() : base("Food buffs are 5% more effective", 900, IngredientType.Seasoning) { }
+		public TableSalt() : base("Food buffs are 5% more effective", 7200, IngredientType.Seasoning) { }
 
 		public override void SafeSetDefaults()
 		{

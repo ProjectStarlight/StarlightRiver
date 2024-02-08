@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Items.BarrierDye
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Sentinel's Tincture");
-			Tooltip.SetDefault("Causes barrier effect to mimic the shield of the Shattered Sentinel\nEquipable\nVanity Item");
+			Tooltip.SetDefault("Causes {{barrier}} effect to mimic the shield of the Shattered Sentinel\nEquipable\nVanity Item");
 		}
 
 		public override void SetDefaults()
@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.Items.BarrierDye
 			spriteBatch.Draw(tex, CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI), CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI), Color.White);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		public override void AddRecipes()

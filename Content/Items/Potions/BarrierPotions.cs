@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Items.Potions
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault(prefix + " Barrier Potion");
-			Tooltip.SetDefault($"Grants {amount} barrier\nGreatly reduces overcharge barrier loss for {duration / 60} seconds");
+			Tooltip.SetDefault($"Grants {amount} {{barrier}}\nGreatly reduces overcharge {{barrier}} loss for {duration / 60} seconds");
 		}
 
 		public override void SetDefaults()

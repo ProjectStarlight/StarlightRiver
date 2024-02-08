@@ -5,6 +5,7 @@ using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -35,7 +36,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 	[SLRDebug]
 	class CombatShrineItem : QuickTileItem
 	{
-		public CombatShrineItem() : base("Combat shrine placer", "debug item", "CombatShrine") { }
+		public CombatShrineItem() : base("Combat shrine placer", "{{Debug}} item", "CombatShrine") { }
 	}
 
 	class CombatShrineDummy : ShrineDummy, IDrawAdditive
@@ -266,7 +267,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 				Effect effect = Terraria.Graphics.Effects.Filters.Scene["Whitewash"].GetShader().Shader;
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 
 				spriteBatch.Draw(TextureAssets.Npc[target.type].Value, target.Center + Vector2.UnitX * 2 - Main.screenPosition, target.frame, Color.White, target.rotation, target.frame.Size() / 2, target.scale, target.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
 				spriteBatch.Draw(TextureAssets.Npc[target.type].Value, target.Center + Vector2.UnitX * -2 - Main.screenPosition, target.frame, Color.White, target.rotation, target.frame.Size() / 2, target.scale, target.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
@@ -274,7 +275,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 				spriteBatch.Draw(TextureAssets.Npc[target.type].Value, target.Center + Vector2.UnitY * -2 - Main.screenPosition, target.frame, Color.White, target.rotation, target.frame.Size() / 2, target.scale, target.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 				spriteBatch.Draw(TextureAssets.Npc[target.type].Value, target.Center - Main.screenPosition, target.frame, Color.Black, target.rotation, target.frame.Size() / 2, target.scale, target.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
 			}
@@ -328,6 +329,18 @@ namespace StarlightRiver.Content.Tiles.Underground
 			float sin = 0.5f + (float)Math.Sin(time * 2 + 1) * 0.5f;
 			float sin2 = 0.5f + (float)Math.Sin(time) * 0.5f;
 			return new Color(255, (int)(50 * sin), 0) * sin2 * Windup;
+		}
+
+		public override void SafeSendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(timer);
+			writer.Write(state);
+		}
+
+		public override void SafeReceiveExtraAI(BinaryReader reader)
+		{
+			timer = reader.ReadSingle();
+			state = reader.ReadSingle();
 		}
 	}
 

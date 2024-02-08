@@ -22,8 +22,8 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.height = 32;
 			Item.value = Item.buyPrice(gold: 1);
 			Item.rare = ItemRarityID.Green;
-			Item.useTime = 10;
-			Item.useAnimation = 10;
+			Item.useTime = 30;
+			Item.useAnimation = 30;
 			Item.useStyle = ItemUseStyleID.Swing;
 			Item.DamageType = DamageClass.Summon;
 			Item.damage = 12;
@@ -219,7 +219,7 @@ namespace StarlightRiver.Content.Items.Misc
 			spriteBatch.Draw(texBeam, target2, source2, color, rotation, origin, 0, 0);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			for (int i = 0; i < width; i += 10)
 			{

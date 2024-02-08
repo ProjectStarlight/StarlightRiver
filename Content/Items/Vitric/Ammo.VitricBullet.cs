@@ -46,6 +46,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			recipe.Register();
 		}
 	}
+
 	internal class VitricBulletProjectile : ModProjectile
 	{
 		private List<Vector2> cache;
@@ -136,7 +137,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			trail?.Render(effect);
 
-			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			return true;
 		}
 

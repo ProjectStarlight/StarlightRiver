@@ -22,8 +22,8 @@ namespace StarlightRiver.Content.Items.Manabonds
 			if (mp.timer % 120 == 0 && mp.mana >= 20 && mp.target != null)
 			{
 				mp.mana -= 20;
-				
-				if (Main.myPlayer == minion.owner) 
+
+				if (Main.myPlayer == minion.owner)
 					Projectile.NewProjectile(minion.GetSource_FromThis(), minion.Center, minion.Center.DirectionTo(mp.target.Center) * 14, ModContent.ProjectileType<Fireball>(), 35, 1f, minion.owner);
 			}
 		}
@@ -91,6 +91,9 @@ namespace StarlightRiver.Content.Items.Manabonds
 			if (State == 1)
 				return;
 
+			Main.player[Projectile.owner].TryGetModPlayer(out StarlightPlayer starlightPlayer);
+			starlightPlayer.SetHitPacketStatus(shouldRunProjMethods: true);
+
 			target.AddBuff(BuffID.OnFire, 300);
 
 			Explode();
@@ -102,9 +105,6 @@ namespace StarlightRiver.Content.Items.Manabonds
 				return false;
 
 			Explode();
-
-			Main.player[Projectile.owner].TryGetModPlayer(out StarlightPlayer starlightPlayer);
-			starlightPlayer.SetHitPacketStatus(shouldRunProjMethods: true);
 
 			return false;
 		}

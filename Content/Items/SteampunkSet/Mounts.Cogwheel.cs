@@ -206,6 +206,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			{
 				direction = new Vector2(0, -1);
 				dustPos = Player.Center + new Vector2(Player.direction * 15, 45 + Player.velocity.Y * 2);
+				Player.fallStart = (int)(Player.position.Y / 16f);
 			}
 
 			if (Player.velocity.X == 0 && climbing || Player.velocity.Y == 0)

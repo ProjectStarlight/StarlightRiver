@@ -1,11 +1,59 @@
-# Starlight River 0.2.6
+# Starlight River 0.2.7
 
 ## Fixes
-- Fixed Auroracle never targetting certain players
-- Various improvements to Auroracle multiplayer experience
-- Added a timeout to tentacles splashing aurora water to prevent rare very loud sound
-- Fixed multiplayer artifact crash bug with other players being too far away
-- Fixed manabond crash bug
+- Fixed auto-select being prevented from placing torches and throwing glowsticks
+- Fixed Face Steak dropping from Eater of Souls (now drops from Face Monsters)
+- Defense system now deals summon damage
+- Supply Beacon now has buff icons
+- Resource reservation overlays now draw for the new interfaces with numbers
+- Shine staff no longer stacks mana regen delay penalty for repeated use
+- Using Main.DefaultSamplerState for spritebatches to avoid some blurry sprites
+- Fixed gear puzzle crash
+- Fixed glassweaver occasionally spawning inside of terrain
+- Fixed aqua saphire spawning in stacks of 2
+- Fixed fall damage not resetting properly with the cogwheel and slime prince armor
+- Fixed an issue where inactive moving platforms could be grappled to
+
+## Multiplayer
+- Fixed amulet of the bloodless warrior making you appear dead in multiplayer
+- Defense System's radial selector no longer draws for other players in multiplayer
+- Breach Cannon now mostly works in multiplayer
+- Supply Beacon no longer spawns extras in multiplayer
+- Fix for Archaeologist Whip's treasure drops in multiplayer
+- Fix for pirate chest in multiplayer
+- Visual sync for sandscript
+- Cloudstrike functional in mp
+- Skullbuster mp fixes
+- Blood Amulet functional in mp
+- Radculas Rapier mp fixes
+- Bloodbolter functional in mp
+_ Visual sync for Tombsmasher
+- Haunted dagger staff functional in mp
+- Tentacle hook visual sync
+- Infernal manabond onhit visual sync
+- Angry crescents mostly functional in mp
+- Fix missing graphics device for coach gun
+- Maneater pot visual sync
+- Shine staff visual sync
+- Hardened dummy system against players joining a world late
+- vitric ore dummies now properly remove themselves for clients
+
+## Content
+- New enemy: Dreambeast
+- Made the following items obtainable in normal gameplay: Cabbage, Dough, Flour,  Sugar, Brussel Sprouts, Carrot, Eye, Health Extract, Hoeny Syrup, Lettuce, Mana Extract
+- Added vegetable plants that grow in the forest
 
 ## Tweaks
-- mana bars no longer show for players that don't own the minion
+- Both Eater Steak and Face Steak can now drop from Corruptors and Herplings respectively
+- Upped Defense system and heart statue usetime to match all other sentries
+- Seaglass Lens now deals real crits that can benefit from other accessories instead of non-scaling phantom crits
+- Breach Cannon now has Id based Iframes and no longer blocks other weapons from dealing damage
+- Skullbuster bombs now use local Iframes
+- Blood Amulet now uses local Iframes
+- Improved the chef bag UI (and cooking UI as a consequence)
+- Re-balanced the duration of food items. In general it should now be difficult to cook food with durations less than 5 minutes
+- Added some missing sell prices
+- Updated Ceiros' background sprites
+- Added screenspace reflections to Ceiros' arena
+- Added an elevator out of Auroracle's arena
+- Smart cursor is now automatically disabled in auroracle's arena

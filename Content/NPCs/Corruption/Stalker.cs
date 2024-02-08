@@ -78,6 +78,11 @@ namespace StarlightRiver.Content.NPCs.Corruption
 
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
 		{
+			// Server does not initialize lighting engine so stalkers won't function there without making them clientside entirely
+			// Therefore stalkers are disabled in multiplayer until someone wants to come here and completely rewrite them
+			if (Main.netMode == NetmodeID.Server)
+				return 0;
+
 			Tile tile = Framing.GetTileSafely(spawnInfo.SpawnTileX, spawnInfo.SpawnTileY);
 			Vector2 spawnPoint = new Vector2(spawnInfo.SpawnTileX, spawnInfo.SpawnTileY) * 16;
 

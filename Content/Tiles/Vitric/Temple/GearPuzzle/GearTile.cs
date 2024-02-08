@@ -300,28 +300,73 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 		protected bool Engaged
 		{
-			get => GearEntity.engaged;
-			set => GearEntity.engaged = value;
+			get
+			{
+				if (GearEntity != null)
+					return GearEntity.engaged;
+
+				return false;
+			}
+			set
+			{
+				if (GearEntity != null)
+					GearEntity.engaged = value;
+			}
 		}
 
 		protected float RotationVelocity
 		{
-			get => GearEntity.rotationVelocity;
-			set => GearEntity.rotationVelocity = value;
+			get
+			{
+				if (GearEntity != null)
+					return GearEntity.rotationVelocity;
+
+				return 0;
+			}
+			set
+			{
+				if (GearEntity != null)
+					GearEntity.rotationVelocity = value;
+			}
 		}
 
 		protected float RotationOffset
 		{
-			get => GearEntity.rotationOffset;
-			set => GearEntity.rotationOffset = value;
+			get
+			{
+				if (GearEntity != null)
+					return GearEntity.rotationOffset;
+
+				return 0;
+			}
+			set
+			{
+				if (GearEntity != null)
+					GearEntity.rotationOffset = value;
+			}
 		}
 
-		protected GearTileEntity GearEntity => TileEntity.ByPosition[new Point16(ParentX, ParentY)] as GearTileEntity;
+		protected GearTileEntity GearEntity
+		{
+			get
+			{
+				var key = new Point16(ParentX, ParentY);
+
+				if (TileEntity.ByPosition.ContainsKey(key))
+					return TileEntity.ByPosition[key] as GearTileEntity;
+
+				return null;
+			}
+		}
 
 		public int GearSize
 		{
-			get => GearEntity.size;
-			set => GearEntity.size = value % 4;
+			get => GearEntity?.size ?? 0;
+			set
+			{
+				if (GearEntity != null)
+					GearEntity.size = value % 4;
+			}
 		}
 
 		public float Rotation
@@ -341,6 +386,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 		public override void Update()
 		{
+			if (GearEntity is null)
+				return;
+
 			if (gearAnimation > 0)
 				gearAnimation--;
 

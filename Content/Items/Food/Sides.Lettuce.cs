@@ -5,7 +5,7 @@ namespace StarlightRiver.Content.Items.Food
 {
 	internal class Lettuce : Ingredient
 	{
-		public Lettuce() : base("+40 maximum barrier", 60, IngredientType.Side) { }
+		public Lettuce() : base("+40 maximum barrier", 3600, IngredientType.Side) { }
 
 		public override void SafeSetDefaults()
 		{

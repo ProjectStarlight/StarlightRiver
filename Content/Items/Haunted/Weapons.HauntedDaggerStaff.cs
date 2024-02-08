@@ -1,7 +1,11 @@
-﻿using StarlightRiver.Content.Buffs.Summon;
+﻿using NetEasy;
+using StarlightRiver.Content.Buffs.Summon;
+using StarlightRiver.Content.Items.BarrierDye;
+using StarlightRiver.Core.Systems.BarrierSystem;
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -88,21 +92,32 @@ namespace StarlightRiver.Content.Items.Haunted
 
 		public int GetDaggerCount(NPC npc)
 		{
-			return Main.projectile.Where(p => p.active && p.type == ModContent.ProjectileType<HauntedDaggerProjectile>() && (p.ModProjectile as HauntedDaggerProjectile).TargetWhoAmI == npc.whoAmI && (p.ModProjectile as HauntedDaggerProjectile).Embedded).Count();
+			return Main.projectile.Where(p => p.active && p.type == ModContent.ProjectileType<HauntedDaggerProjectile>() && (p.ModProjectile as HauntedDaggerProjectile).TargetWhoAmI == npc.whoAmI && (p.ModProjectile as HauntedDaggerProjectile).embedded).Count();
 		}
 
-		public void UnembedDaggers(NPC npc, int count, Player strikingPlayer)
+		public static void UnembedDaggers(NPC npc, int count, Player strikingPlayer)
 		{
+			if (Main.myPlayer == strikingPlayer.whoAmI && Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				var packet = new UnembedPacket(npc, strikingPlayer);
+				packet.Send(-1, strikingPlayer.whoAmI, false);
+			}
+
 			for (int i = 0; i < Main.maxProjectiles; i++)
 			{
 				Projectile proj = Main.projectile[i];
 				var dagger = proj.ModProjectile as HauntedDaggerProjectile;
 
-				if (proj.active && dagger != null && dagger.TargetWhoAmI == npc.whoAmI && dagger.Embedded)
+				if (proj.active && dagger != null && dagger.TargetWhoAmI == npc.whoAmI && dagger.embedded)
 					dagger.Unembed(false, npc);
 			}
 
-			npc.SimpleStrikeNPC(count * 10, 0, false, 0, DamageClass.Summon, true, strikingPlayer.luck);
+			if (strikingPlayer.whoAmI == Main.myPlayer) // Only player with the whip does the damage and gets the shake
+			{
+				npc.SimpleStrikeNPC(count * 10, 0, false, 0, DamageClass.Summon, true, strikingPlayer.luck);
+
+				CameraSystem.shake += 8;
+			}
 
 			bool fleshy = Helpers.Helper.IsFleshy(npc);
 
@@ -136,8 +151,6 @@ namespace StarlightRiver.Content.Items.Haunted
 					Main.rand.NextVector2Circular(10f, 10f), 0, new Color(150, 80, 30), 0.5f);
 				}
 			}
-
-			CameraSystem.shake += 8;
 		}
 
 		public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
@@ -165,7 +178,6 @@ namespace StarlightRiver.Content.Items.Haunted
 	{
 		public const int MAX_ATTACK_DELAY = 5;
 
-		public int attackTimer;
 		public int rotTimer;
 		public int lifetime;
 
@@ -173,9 +185,11 @@ namespace StarlightRiver.Content.Items.Haunted
 
 		public Vector2 enemyOffset;
 
-		public NPC EmbeddedTarget;
+		public NPC embeddedTarget;
 
-		public bool Embedded => Projectile.ai[0] != 0f;
+		public bool embedded = false;
+
+		public ref float AttackTimer => ref Projectile.ai[0];
 		public ref float TargetWhoAmI => ref Projectile.ai[1];
 		public ref float AttackDelay => ref Projectile.ai[2];
 
@@ -248,15 +262,15 @@ namespace StarlightRiver.Content.Items.Haunted
 
 		public override bool PreAI()
 		{
-			if (Embedded)
+			if (embedded)
 			{
-				Projectile.position = EmbeddedTarget.position + enemyOffset;
+				Projectile.position = embeddedTarget.position + enemyOffset;
 
-				bool wrongTarget = MinionTarget != null && EmbeddedTarget != MinionTarget;
-				bool deadTarget = !EmbeddedTarget.active;
+				bool wrongTarget = MinionTarget != null && embeddedTarget != MinionTarget;
+				bool deadTarget = !embeddedTarget.active;
 
 				if (wrongTarget || deadTarget)
-					Unembed(wrongTarget && !deadTarget, EmbeddedTarget);
+					Unembed(wrongTarget && !deadTarget, embeddedTarget);
 
 				UpdateProjectileLifetime();
 
@@ -304,15 +318,15 @@ namespace StarlightRiver.Content.Items.Haunted
 			}
 			else if (AttackDelay <= 0)
 			{
-				attackTimer++;
+				AttackTimer++;
 
-				if (attackTimer < 45)
+				if (AttackTimer < 45)
 				{
 					DoIdleMovement();
 
-					rotTimer += (int)MathHelper.Lerp(1f, 50f, EaseFunction.EaseCubicIn.Ease(attackTimer / 45f));
+					rotTimer += (int)MathHelper.Lerp(1f, 50f, EaseFunction.EaseCubicIn.Ease(AttackTimer / 45f));
 
-					float lerper = MathHelper.Lerp(30f, 2f, EaseFunction.EaseCubicIn.Ease(attackTimer / 45f));
+					float lerper = MathHelper.Lerp(30f, 2f, EaseFunction.EaseCubicIn.Ease(AttackTimer / 45f));
 					if (Main.rand.NextBool(3))
 						Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2CircularEdge(lerper, lerper), ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(0.25f, 0.25f), 0, new Color(70, 200, 100), 0.5f);
 				}
@@ -327,7 +341,7 @@ namespace StarlightRiver.Content.Items.Haunted
 					rotationalVelocity = Vector2.Lerp(rotationalVelocity, Projectile.DirectionTo(Target.Center), 0.15f);
 					Projectile.rotation = rotationalVelocity.ToRotation() + MathHelper.PiOver2;
 
-					if (attackTimer == 45)
+					if (AttackTimer == 45)
 					{
 						Projectile.velocity += Projectile.DirectionTo(Target.Center) * 22f;
 
@@ -347,19 +361,21 @@ namespace StarlightRiver.Content.Items.Haunted
 				{
 					TargetWhoAmI = -1;
 					AttackDelay = MAX_ATTACK_DELAY;
-					attackTimer = 0;
+					AttackTimer = 0;
 				}
 			}
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (!Embedded && target.life > 0)
+			Owner.TryGetModPlayer(out StarlightPlayer starlightPlayer);
+			starlightPlayer.SetHitPacketStatus(shouldRunProjMethods: true);
+
+			if (!embedded && target.life > 0)
 			{
-				EmbeddedTarget = target;
-				Projectile.ai[0] = 1f;
+				embeddedTarget = target;
+				embedded = true;
 				Projectile.friendly = false;
-				Projectile.tileCollide = false;
 				enemyOffset = Projectile.position - target.position;
 				enemyOffset -= Projectile.velocity;
 				Projectile.netUpdate = true;
@@ -398,7 +414,7 @@ namespace StarlightRiver.Content.Items.Haunted
 
 		public override bool MinionContactDamage()
 		{
-			return !Embedded && AttackDelay <= 0 && attackTimer >= 45;
+			return !embedded && AttackDelay <= 0 && AttackTimer >= 45;
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -440,7 +456,7 @@ namespace StarlightRiver.Content.Items.Haunted
 			Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, new Color(70, 200, 100, 0), Projectile.rotation + MathHelper.ToRadians(rotTimer), bloomTex.Size() / 2f, 1f, 0f, 0f);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
 			return false;
 		}
@@ -457,12 +473,12 @@ namespace StarlightRiver.Content.Items.Haunted
 			if (gNPC.UnembedCount <= 0)
 				gNPC.UnembedCount = count;
 
-			Projectile.ai[0] = 0f;
+			embedded = false;
 			TargetWhoAmI = -1f;
 			AttackDelay = MAX_ATTACK_DELAY;
 
 			Projectile.velocity *= -1f;
-			attackTimer = 0;
+			AttackTimer = 0;
 
 			for (int i = 0; i < 6; i++)
 			{
@@ -520,6 +536,57 @@ namespace StarlightRiver.Content.Items.Haunted
 		internal NPC FindTarget()
 		{
 			return Main.npc.Where(n => n.CanBeChasedBy() && n.Distance(Owner.Center) < 1000f).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(embedded);
+			writer.WritePackedVector2(enemyOffset);
+
+			if (embeddedTarget != null)
+				writer.Write(embeddedTarget.whoAmI);
+			else
+				writer.Write(-1);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			embedded = reader.ReadBoolean();
+			enemyOffset = reader.ReadPackedVector2();
+			int embeddedTargetId = reader.ReadInt32();
+
+			if (embeddedTargetId >= 0)
+				embeddedTarget = Main.npc[embeddedTargetId];
+			else 
+				embeddedTarget = null;
+		}
+	}
+
+	[Serializable]
+	public class UnembedPacket : Module
+	{
+		public readonly byte strikingPlayerWhoAmI;
+		public readonly int npcWhoAmI;
+
+		public UnembedPacket(NPC npc, Player strikingPlayer)
+		{
+			strikingPlayerWhoAmI = (byte)strikingPlayer.whoAmI;
+			npcWhoAmI = npc.whoAmI;
+		}
+
+		protected override void Receive()
+		{
+			Player player = Main.player[strikingPlayerWhoAmI];
+			NPC npc = Main.npc[npcWhoAmI];
+
+			// "Count" doesn't matter for the other players since only the striker deals damage
+			HauntedDaggerGlobalNPC.UnembedDaggers(npc, 0, player);
+
+			if (Main.netMode == NetmodeID.Server)
+			{
+				Send(-1, strikingPlayerWhoAmI, false);
+				return;
+			}
 		}
 	}
 }

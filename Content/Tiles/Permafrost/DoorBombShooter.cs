@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			spriteBatch.Draw(barrier, targetRect, sourceRect2, Color.White * 1);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 
@@ -65,6 +65,6 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 	{
 		public override string Texture => AssetDirectory.Debug;
 
-		public DoorBombShooterItem() : base("Debug Shooter Placer", "", "DoorBombShooter", ItemRarityID.White) { }
+		public DoorBombShooterItem() : base("{{Debug}} Shooter Placer", "", "DoorBombShooter", ItemRarityID.White) { }
 	}
 }

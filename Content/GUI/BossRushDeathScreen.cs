@@ -55,10 +55,13 @@ namespace StarlightRiver.Content.GUI
 
 		public void ClickRetryButton()
 		{
-			Visible = false;
-			Main.LocalPlayer.respawnTimer = 0;
-			BossRushSystem.Reset();
-			BossRushGUIHack.inScoreScreen = false;
+			if (BossRushSystem.deathFadeoutTimer >= BossRushSystem.MAX_DEATH_FADEOUT)
+			{
+				Visible = false;
+				Main.LocalPlayer.respawnTimer = 0;
+				BossRushSystem.Reset();
+				BossRushGUIHack.inScoreScreen = false;
+			}
 		}
 
 		public override void Draw(SpriteBatch spriteBatch)
@@ -80,6 +83,11 @@ namespace StarlightRiver.Content.GUI
 
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+
+			if (BossRushSystem.deathFadeoutTimer >= BossRushSystem.MAX_DEATH_FADEOUT)
+				timer++;
+
+			retryButton.TextColor = Color.White * (timer / 60f);
 
 			base.Draw(spriteBatch);
 		}

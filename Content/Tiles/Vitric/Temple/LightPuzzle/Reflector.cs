@@ -210,7 +210,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 			effect.Parameters["uColor"].SetValue(color2.ToVector3() * 0.35f);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			float height = texBeam.Height / 10f * (1 - opacity);
 			int width = (int)(Center - endPoint).Length() - 6;
@@ -232,7 +232,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D impactTex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
 			Texture2D impactTex2 = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ItemGlow").Value;
@@ -260,6 +260,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 	[SLRDebug]
 	class ReflectorItem : QuickTileItem
 	{
-		public ReflectorItem() : base("Reflector", "Debug Item", "Reflector") { }
+		public ReflectorItem() : base("Reflector", "{{Debug}} Item", "Reflector") { }
 	}
 }

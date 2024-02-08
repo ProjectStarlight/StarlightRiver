@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	{
 		public override string Texture => AssetDirectory.VitricTile + "VitricTempleWallItem";
 
-		public VitricTempleWallItem() : base("Vitric Forge Brick Wall (Danger)", "Debug item", WallType<VitricTempleWall>(), ItemRarityID.White) { }
+		public VitricTempleWallItem() : base("Vitric Forge Brick Wall (Danger)", "{{Debug}} item", WallType<VitricTempleWall>(), ItemRarityID.White) { }
 	}
 
 	class VitricTempleWallSafe : VitricTempleWall { }

@@ -46,6 +46,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 		{
 			base.Update();
 
+			if (GearEntity is null)
+				return;
+
 			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
 				return;
 
@@ -116,12 +119,12 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 				effect.Parameters["texSize"].SetValue(tex.Size());
 
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 
 				Main.spriteBatch.Draw(tex, Center - Main.screenPosition, null, Color.White, Rotation, tex.Size() / 2, 1, 0, 0);
 
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 		public string GetHint()
@@ -133,6 +136,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 	[SLRDebug]
 	class GearTilePlacer : QuickTileItem
 	{
-		public GearTilePlacer() : base("Gear puzzle", "Debug Item", "DynamicGear", 8, AssetDirectory.VitricTile) { }
+		public GearTilePlacer() : base("Gear puzzle", "{{Debug}} Item", "DynamicGear", 8, AssetDirectory.VitricTile) { }
 	}
 }

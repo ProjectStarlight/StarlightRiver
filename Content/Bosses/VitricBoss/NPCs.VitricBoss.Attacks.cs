@@ -163,7 +163,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				if (AttackTimer == 1) //set the crystal's home position to where they are
 				{
 					crystalModNPC.StartPos = crystal.Center;
-					favoriteCrystal = bossRand.Next(4); //randomize which crystal will have the opening
+
+					if (Main.netMode != NetmodeID.MultiplayerClient)
+					{
+						favoriteCrystal = bossRand.Next(4); //randomize which crystal will have the opening
+						NPC.netUpdate = true;
+					}
 				}
 
 				if (AttackTimer > 1 && AttackTimer <= 60) //suck the crystals in
@@ -623,10 +628,13 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				{
 					Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_KoboldExplosion, NPC.Center);
 
-					for (int k = 0; k < 10; k++)
+					if (Main.netMode != NetmodeID.MultiplayerClient)
 					{
-						var target = new Vector2(bossRand.Next(-10, 10) * 100, 500);
-						SpawnDart(NPC.Center, NPC.Center + new Vector2(target.X / 2, -500), NPC.Center + target, bossRand.Next(60, 120));
+						for (int k = 0; k < 10; k++)
+						{
+							var target = new Vector2(bossRand.Next(-10, 10) * 100, 500);
+							SpawnDart(NPC.Center, NPC.Center + new Vector2(target.X / 2, -500), NPC.Center + target, bossRand.Next(60, 120));
+						}
 					}
 				}
 
@@ -717,8 +725,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		private void WhirlAndSmash()
 		{
-			if (AttackTimer == 1)
-				favoriteCrystal = bossRand.Next(2); //bootleg but I dont feel like syncing another var
+			if (AttackTimer == 1 && Main.netMode != NetmodeID.MultiplayerClient)
+			{
+				favoriteCrystal = bossRand.Next(2);
+				NPC.netUpdate = true;
+			}
 
 			if (AttackTimer < 240)
 			{
@@ -947,10 +958,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public void SpawnDart(Vector2 start, Vector2 mid, Vector2 end, int duration)
 		{
-			int i = Projectile.NewProjectile(NPC.GetSource_FromThis(), start, Vector2.Zero, ProjectileType<LavaDart>(), 25, 0, Main.myPlayer, ai0: duration);
-			var mp = Main.projectile[i].ModProjectile as LavaDart;
-			mp.endPoint = end;
-			mp.midPoint = mid;
+			LavaDart.midPointToAssign = mid;
+			LavaDart.endPointToAssign = end;
+			Projectile.NewProjectile(NPC.GetSource_FromThis(), start, Vector2.Zero, ProjectileType<LavaDart>(), 25, 0, Main.myPlayer, ai0: duration);
 		}
 
 		private void Laser()

@@ -25,6 +25,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
 	[SLRDebug]
 	class ForgeDoorItem : QuickTileItem
 	{
-		public ForgeDoorItem() : base("Forge Door", "Debug Item", "ForgeDoor", 1, AssetDirectory.Debug, true) { }
+		public ForgeDoorItem() : base("Forge Door", "{{Debug}} Item", "ForgeDoor", 1, AssetDirectory.Debug, true) { }
 	}
 }

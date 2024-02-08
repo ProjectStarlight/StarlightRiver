@@ -122,7 +122,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 	[SLRDebug]
 	class VitricBossAltarItem : QuickTileItem
 	{
-		public VitricBossAltarItem() : base("Vitric Boss Altar Item", "Debug Item", "VitricBossAltar", 1, AssetDirectory.Debug, true) { }
+		public VitricBossAltarItem() : base("Vitric Boss Altar Item", "{{{{Debug}}}} Item", "VitricBossAltar", 1, AssetDirectory.Debug, true) { }
 	}
 
 	internal class VitricBossAltarDummy : Dummy
@@ -283,7 +283,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			cutsceneTimer++;
 
 			//controls the drawing of the barriers
-			if (barrierTimer < 120 && boss != null && boss.active)
+			if (barrierTimer < 120 && ShouldBarrierBeUp())
 			{
 				barrierTimer++;
 
@@ -299,13 +299,29 @@ namespace StarlightRiver.Content.Tiles.Vitric
 					}
 				}
 			}
-			else if (barrierTimer > 0 && (boss == null || !boss.active))
+			else if (barrierTimer > 0 && !ShouldBarrierBeUp())
 			{
 				barrierTimer--;
 			}
 		}
 
-		private bool checkIfDrawReflection()
+		private bool ShouldBarrierBeUp()
+		{
+			if (boss != null && boss.active)
+				return true;
+
+			NPC left = Main.npc.FirstOrDefault(n => n.ModNPC is VitricBackdropLeft);
+			if (left?.ModNPC != null && (left.ModNPC as VitricBackdropLeft).State >= 3)
+				return true;
+
+			NPC right = Main.npc.FirstOrDefault(n => n.ModNPC is VitricBackdropRight);
+			if (right?.ModNPC != null && (left.ModNPC as VitricBackdropRight).State >= 3)
+				return true;
+
+			return false;
+		}
+
+		private bool ShouldDrawReflection()
 		{
 			var parentPos = new Point16((int)position.X / 16, (int)position.Y / 16);
 			Tile parent = Framing.GetTileSafely(parentPos.X, parentPos.Y);
@@ -328,7 +344,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 			else if (parent.TileFrameX < 90 && ReflectionTarget.canUseTarget)
 			{
-				if (checkIfDrawReflection())
+				if (ShouldDrawReflection())
 				{
 					ReflectionTarget.DrawReflection(spriteBatch, screenPos: position - Main.screenPosition, normalMap: Request<Texture2D>(AssetDirectory.VitricTile + "VitricBossAltarReflectionMap").Value, flatOffset: new Vector2(-0.0075f, 0.011f), tintColor: new Color(150, 150, 255, 200), offsetScale: 0.05f);
 					ReflectionTarget.isDrawReflectablesThisFrame = true;
