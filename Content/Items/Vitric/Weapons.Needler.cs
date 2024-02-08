@@ -1,12 +1,16 @@
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Core.Systems.CameraSystem;
+using StarlightRiver.Core.Systems.PixelationSystem;
 using StarlightRiver.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.Graphics.Effects;
 using Terraria.ID;
+using static tModPorter.ProgressUpdate;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
@@ -91,6 +95,12 @@ namespace StarlightRiver.Content.Items.Vitric
 
 	public class NeedlerProj : ModProjectile
 	{
+		private List<Vector2> cache;
+		private Trail trail;
+		private Trail trail2;
+
+		private int stuckTimer;
+
 		int enemyID;
 		bool stuck = false;
 		Vector2 offset = Vector2.Zero;
@@ -102,6 +112,9 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Needle");
+
+			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 9;
+			ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
 		}
 
 		public override void SetDefaults()
@@ -111,9 +124,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Projectile.hostile = false;
 			Projectile.friendly = true;
 			Projectile.aiStyle = 113;
-			Projectile.width = Projectile.height = 20;
-			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 9;
-			ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
+			Projectile.width = Projectile.height = 8;
 		}
 
 		private void findIfHit()
@@ -130,6 +141,8 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			if (stuck)
 			{
+				stuckTimer++;
+
 				NPC target = Main.npc[enemyID];
 				int needles = target.GetGlobalNPC<NeedlerNPC>().needles;
 
@@ -185,6 +198,15 @@ namespace StarlightRiver.Content.Items.Vitric
 			return true;
 		}
 
+		public override void AI()
+		{
+			if (Main.netMode != NetmodeID.Server)
+			{
+				ManageCaches();
+				ManageTrail();
+			}
+		}
+
 		public override void PostAI()
 		{
 			if (Main.myPlayer != Projectile.owner && !stuck)
@@ -211,29 +233,83 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			SpriteBatch spriteBatch = Main.spriteBatch;
-			Color color;
+			if (stuckTimer <= 10)
+				DrawPrimitives();
 
-			if (stuck)
-				color = Helper.MoltenVitricGlow(100 - needleLerp * 10);
-			else
-				color = Helper.MoltenVitricGlow(100);
+			SpriteBatch sb = Main.spriteBatch;
 
-			ReLogic.Content.Asset<Texture2D> tex = TextureAssets.Projectile[Projectile.type];
-			Rectangle glassFrame = tex.Frame(2, 1, 0);
-			Rectangle hotFrame = tex.Frame(2, 1, 1);
-			spriteBatch.Draw(tex.Value, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), glassFrame, lightColor, Projectile.rotation, tex.Size() * 0.5f, Projectile.scale, SpriteEffects.None, 0);
-			spriteBatch.Draw(tex.Value, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), hotFrame, color * (needleLerp / 10f), Projectile.rotation, tex.Size() * 0.5f, Projectile.scale, SpriteEffects.None, 0);
+			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 
-			if (stuck)
-			{
-				tex = ModContent.Request<Texture2D>(AssetDirectory.VitricItem + "NeedlerBloom");
-				color = Color.Lerp(Color.Orange, Color.Red, needleLerp / 20f);
-				color.A = 0;
-				spriteBatch.Draw(tex.Value, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), null, color * 0.66f, Projectile.rotation, tex.Size() * 0.5f, (Projectile.scale * (needleLerp / 10f) + 0.25f) * new Vector2(1f, 1.25f), SpriteEffects.None, 0f);
-			}
+			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+
+			sb.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2f, Projectile.scale, SpriteEffects.None, 0f);
+
+			sb.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, new Color(255, 150, 20, 0) * 0.55f, 0f, bloomTex.Size() / 2f, 0.25f, SpriteEffects.None, 0f);
+
+
 
 			return false;
+		}
+
+		private void ManageCaches()
+		{
+			if (cache == null)
+			{
+				cache = new List<Vector2>();
+				for (int i = 0; i < 10; i++)
+				{
+					cache.Add(Projectile.Center + Projectile.velocity);
+				}
+			}
+
+			cache.Add(Projectile.Center + Projectile.velocity);
+
+			while (cache.Count > 10)
+			{
+				cache.RemoveAt(0);
+			}
+		}
+
+		private void ManageTrail()
+		{
+			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(190), factor => factor * 4.5f, factor =>
+			{
+				return Color.Lerp(new Color(255, 50, 20), new Color(35, 70, 120), EaseBuilder.EaseQuarticOut.Ease(1f - factor.X)) * (1f - stuckTimer / 10f);
+			});
+
+			trail.Positions = cache.ToArray();
+			trail.NextPosition = Projectile.Center + Projectile.velocity;
+
+			trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(190), factor => factor * 4f, factor =>
+			{
+				return Color.Lerp(new Color(255, 150, 20), new Color(50, 100, 170), EaseBuilder.EaseQuarticOut.Ease(1f - factor.X)) * (1f - stuckTimer / 10f);
+			});
+
+			trail2.Positions = cache.ToArray();
+			trail2.NextPosition = Projectile.Center + Projectile.velocity;
+		}
+
+		public void DrawPrimitives()
+		{
+			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("UnderProjectiles", () =>
+			{
+				Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+
+				Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+				Matrix view = Main.GameViewMatrix.ZoomMatrix;
+				Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
+				effect.Parameters["repeats"].SetValue(1f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "GlowTrail").Value);
+				trail?.Render(effect);
+
+				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "FireTrail").Value);
+
+				trail?.Render(effect);
+				trail2?.Render(effect);
+			});
 		}
 	}
 

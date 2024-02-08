@@ -73,7 +73,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 				justAltUsed = true;
 
 				if (cooldown > 0)
-					return false;				
+					return;				
 			}
 			else
 			{
