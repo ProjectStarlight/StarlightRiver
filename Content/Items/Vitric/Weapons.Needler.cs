@@ -1,15 +1,19 @@
 using StarlightRiver.Content.Dusts;
+using StarlightRiver.Content.Items.UndergroundTemple;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.PixelationSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
+using static Humanizer.In;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static tModPorter.ProgressUpdate;
 
 namespace StarlightRiver.Content.Items.Vitric
@@ -37,49 +41,27 @@ namespace StarlightRiver.Content.Items.Vitric
 			Item.noMelee = true;
 			Item.knockBack = 0;
 			Item.rare = ItemRarityID.Orange;
-			Item.shoot = ModContent.ProjectileType<NeedlerProj>();
+			Item.shoot = ModContent.ProjectileType<NeedlerHoldout>();
 			Item.shootSpeed = 14f;
 			Item.autoReuse = true;
+			Item.channel = true;
+			Item.noUseGraphic = true;
 
 			Item.value = Item.sellPrice(gold: 2, silver: 75);
-		}
-
-		public override Vector2? HoldoutOffset()
-		{
-			return new Vector2(-10, 0);
-		}
-
-		public override bool? UseItem(Player Player)
-		{
-			Helper.PlayPitched("Guns/SMG2", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), Player.position);
-			return true;
 		}
 
 		//TODO: Add glowmask to weapon
 		//TODO: Add holdoffset
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
-			Helper.PlayPitched("Guns/SMG2", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
-			Vector2 direction = velocity;
-			float itemRotation = Main.rand.NextFloat(-0.1f, 0.1f);
-			direction = direction.RotatedBy(itemRotation * 2);
-			Projectile.NewProjectile(source, position, direction, type, damage, knockback, player.whoAmI);
+			Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
 
-			direction = velocity.RotatedBy(itemRotation);
-
-			for (int i = 0; i < 15; i++)
-			{
-				var dust = Dust.NewDustPerfect(position + direction * 3f, 6, direction.RotatedBy(Main.rand.NextFloat(-1, 1)) / 5f * Main.rand.NextFloat());
-				dust.noGravity = true;
-			}
-
-			player.itemRotation = direction.ToRotation(); //TODO: Wrap properly when facing left
-
-			if (player.direction != 1)
-				player.itemRotation -= 3.14f;
-
-			player.itemRotation = MathHelper.WrapAngle(player.itemRotation);
 			return false;
+		}
+
+		public override bool CanUseItem(Player player)
+		{
+			return player.ownedProjectileCounts[ModContent.ProjectileType<NeedlerHoldout>()] <= 0;
 		}
 
 		public override void AddRecipes()
@@ -90,6 +72,166 @@ namespace StarlightRiver.Content.Items.Vitric
 			recipe.AddIngredient<MagmaCore>(2);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
+		}
+	}
+	
+	public class NeedlerHoldout : ModProjectile
+	{
+		public bool updateVelocity = true;
+		public ref float Timer => ref Projectile.ai[0];	
+		public ref float UseTime => ref Projectile.ai[1];
+		public bool CanHold => Owner.channel && !Owner.CCed && !Owner.noItems;
+		public Vector2 ArmPosition => Owner.RotatedRelativePoint(Owner.MountedCenter, true) + new Vector2(16f, -4f * Owner.direction).RotatedBy(Projectile.velocity.ToRotation());
+		public Vector2 BarrelPosition => ArmPosition + Projectile.velocity * Projectile.width * 0.5f + new Vector2(-14f * Owner.direction, -5f).RotatedBy(Projectile.rotation);
+		public Player Owner => Main.player[Projectile.owner];
+		public override string Texture => AssetDirectory.VitricItem + Name;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Needler");
+
+			Main.projFrames[Type] = 3;
+		}
+
+		public override void SetDefaults()
+		{
+			Projectile.width = 50;
+			Projectile.height = 44;
+			Projectile.friendly = true;
+			Projectile.tileCollide = false;
+			Projectile.ignoreWater = true;
+		}
+
+		public override void AI()
+		{
+			if (!CanHold)
+				Projectile.Kill();
+
+			if (Timer == 0f)
+				UseTime = CombinedHooks.TotalUseTime(Owner.HeldItem.useTime, Owner, Owner.HeldItem);
+
+			Timer++;
+
+			float spinUpTime = (int)(UseTime * MathHelper.Lerp(2.5f, 1f, Timer < 75f ? Timer / 75f : 1f)); // the time between shots / time between the sprite frame changes is greater when first starting firing
+
+			if (++Projectile.frameCounter % spinUpTime == 0)
+			Projectile.frame = ++Projectile.frame % Main.projFrames[Projectile.type];
+
+
+			if ((int)Timer % spinUpTime == 0)
+			{
+				Shoot();
+			}
+
+			UpdateHeldProjectile();
+		}
+
+		public override bool PreDraw(ref Color lightColor)
+		{
+			if (Timer <= 2)
+				return false;
+
+			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D texGlow = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
+			Texture2D texBlur = ModContent.Request<Texture2D>(Texture + "_Blur").Value;
+
+			Texture2D itemTexGlow = ModContent.Request<Texture2D>(AssetDirectory.VitricItem + "Needler_Glow").Value;
+			Texture2D itemTexBlur = ModContent.Request<Texture2D>(AssetDirectory.VitricItem + "Needler_Blur").Value;
+
+			Rectangle frame = tex.Frame(verticalFrames: 3, frameY: Projectile.frame);
+
+			Rectangle glowFrame = texGlow.Frame(verticalFrames: 3, frameY: Projectile.frame);
+
+			SpriteEffects spriteEffects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+
+			Vector2 position = Projectile.Center + Vector2.Lerp(Vector2.Zero, new Vector2(-4f * Owner.direction, 0f), EaseBuilder.EaseCircularIn.Ease(Timer < 75f ? Timer / 75f : 1f)).RotatedBy(Projectile.rotation) - Main.screenPosition;
+
+			Main.spriteBatch.Draw(tex, position, frame, lightColor, Projectile.rotation, frame.Size() / 2f, Projectile.scale, spriteEffects, 0f);
+
+			Effect effect = Filters.Scene["DistortSprite"].GetShader().Shader;
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+
+			effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.035f);
+			effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.0035f);
+			effect.Parameters["screenPos"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / new Vector2(Main.screenWidth, Main.screenHeight));
+
+			effect.Parameters["offset"].SetValue(new Vector2(0.001f));
+			effect.Parameters["repeats"].SetValue(1);
+			effect.Parameters["uImage1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/SwirlyNoiseLooping").Value);
+			effect.Parameters["uImage2"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.VitricBoss + "LaserBallDistort").Value);
+
+			Color color = new Color(255, 50, 20, 0) * (Timer < 35f ? Timer / 35f : 1f) * 0.55f;
+
+			effect.Parameters["uColor"].SetValue(color.ToVector4());
+			effect.Parameters["noiseImage1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/SwirlyNoiseLooping").Value);
+
+			effect.CurrentTechnique.Passes[0].Apply();
+
+			Main.spriteBatch.Draw(itemTexGlow, position, null, Color.White, Projectile.rotation, itemTexGlow.Size() / 2f, Projectile.scale, spriteEffects, 0f);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			
+			return false;
+		}
+
+		/// <summary>
+		/// Called when the held projectile should shoot its projectile (in this case, Needle)
+		/// </summary>
+		private void Shoot()
+		{
+			Helper.PlayPitched("Guns/SMG2", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
+
+			if (Main.myPlayer == Projectile.owner)
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), BarrelPosition, Projectile.velocity.RotatedByRandom(0.15f) * Owner.HeldItem.shootSpeed, ModContent.ProjectileType<NeedlerProj>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+
+			updateVelocity = true;
+		}
+
+		/// <summary>
+		/// Updates the basic variables needed for a held projectile
+		/// </summary>
+		private void UpdateHeldProjectile()
+		{
+			Owner.ChangeDir(Projectile.direction);
+			Owner.heldProj = Projectile.whoAmI;
+			Owner.itemTime = 2;
+			Owner.itemAnimation = 2;
+
+			Projectile.timeLeft = 2;
+			Projectile.rotation = Utils.ToRotation(Projectile.velocity);
+			Owner.itemRotation = Utils.ToRotation(Projectile.velocity * Projectile.direction);
+
+			Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - (Projectile.direction == 1 ? MathHelper.ToRadians(70f) : MathHelper.ToRadians(110f)));
+
+			if (Projectile.spriteDirection == -1)
+				Projectile.rotation += 3.1415927f;
+
+			Projectile.position = ArmPosition - Projectile.Size * 0.5f;
+
+			if (Main.myPlayer == Projectile.owner && updateVelocity)
+			{
+				updateVelocity = false;
+
+				float interpolant = Utils.GetLerpValue(5f, 25f, Projectile.Distance(Main.MouseWorld), true);
+
+				Vector2 oldVelocity = Projectile.velocity;
+
+				Projectile.velocity = Vector2.Lerp(Projectile.velocity, Owner.DirectionTo(Main.MouseWorld), interpolant).RotatedByRandom(0.15f);
+				if (Projectile.velocity != oldVelocity)
+				{
+					Projectile.netSpam = 0;
+					Projectile.netUpdate = true;
+				}
+			}
+
+			Projectile.spriteDirection = Projectile.direction;
+		}
+
+		public override bool? CanDamage()
+		{
+			return false;
 		}
 	}
 
@@ -112,9 +254,6 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Needle");
-
-			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 9;
-			ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
 		}
 
 		public override void SetDefaults()
@@ -123,8 +262,8 @@ namespace StarlightRiver.Content.Items.Vitric
 			Projectile.tileCollide = true;
 			Projectile.hostile = false;
 			Projectile.friendly = true;
-			Projectile.aiStyle = 113;
 			Projectile.width = Projectile.height = 8;
+			Projectile.timeLeft = 1200;
 		}
 
 		private void findIfHit()
@@ -200,6 +339,30 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void AI()
 		{
+			if (Projectile.timeLeft < 1185)
+			{
+				if (Projectile.velocity.Y < 20f)
+				{
+					Projectile.velocity.Y += 0.45f;
+
+					if (Projectile.velocity.Y > 0)
+					{
+						if (Projectile.velocity.Y < 12f)
+							Projectile.velocity.Y *= 1.040f;
+						else
+							Projectile.velocity.Y *= 1.020f;
+					}
+				}
+			}
+
+			if (Main.rand.NextBool(15) && Projectile.timeLeft < 1195)
+			{
+				Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(5f, 5f);
+
+				Dust.NewDustPerfect(pos, ModContent.DustType<Glow>(), Vector2.Zero, 0, new Color(255, 50, 20), 0.5f);
+				Dust.NewDustPerfect(pos, ModContent.DustType<Glow>(), Vector2.Zero, 0, new Color(255, 255, 255), 0.15f);
+			}
+
 			if (Main.netMode != NetmodeID.Server)
 			{
 				ManageCaches();
@@ -242,11 +405,9 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
 
-			sb.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2f, Projectile.scale, SpriteEffects.None, 0f);
+			sb.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation + MathHelper.PiOver2, tex.Size() / 2f, Projectile.scale, SpriteEffects.None, 0f);
 
 			sb.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, new Color(255, 150, 20, 0) * 0.55f, 0f, bloomTex.Size() / 2f, 0.25f, SpriteEffects.None, 0f);
-
-
 
 			return false;
 		}
