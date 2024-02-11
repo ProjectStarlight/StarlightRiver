@@ -27,6 +27,8 @@ namespace StarlightRiver.Core.Systems.PixelationSystem
 		public override void PostSetupContent()
 		{
 			// IDK if i need to call GetInstance here
+			ModContent.GetInstance<PixelationSystem>().RegisterScreenTarget("UnderTiles", RenderLayer.UnderTiles);
+
 			ModContent.GetInstance<PixelationSystem>().RegisterScreenTarget("UnderProjectiles", RenderLayer.UnderProjectiles);
 			ModContent.GetInstance<PixelationSystem>().RegisterScreenTarget("OverProjectiles", RenderLayer.OverProjectiles);
 
@@ -173,6 +175,33 @@ namespace StarlightRiver.Core.Systems.PixelationSystem
 		private void DrawNPCTargets(On_Main.orig_DrawNPCs orig, Main self, bool behindTiles)
 		{
 			SpriteBatch sb = Main.spriteBatch;
+
+			if (behindTiles)
+			{
+				foreach (PixelationTarget target in pixelationTargets.Where(t => t.Active && t.renderType == RenderLayer.UnderTiles))
+				{
+					PixelPalette palette = target.palette;
+
+					bool doNotApplyCorrection = palette.NoCorrection || Main.graphics.GraphicsProfile == GraphicsProfile.Reach;
+
+					Effect paletteCorrection = doNotApplyCorrection ? null : Filters.Scene["PaletteCorrection"].GetShader().Shader;
+
+					if (paletteCorrection != null)
+					{
+						paletteCorrection.Parameters["palette"].SetValue(palette.Colors);
+						paletteCorrection.Parameters["colorCount"].SetValue(palette.ColorCount);
+					}
+
+					sb.End();
+					sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp,
+						DepthStencilState.None, RasterizerState.CullNone, paletteCorrection, Main.GameViewMatrix.EffectMatrix);
+
+					sb.Draw(target.pixelationTarget2.RenderTarget, Vector2.Zero, null, Color.White, 0, new Vector2(0, 0), 2f, SpriteEffects.None, 0);
+
+					sb.End();
+					sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				}
+			}
 
 			foreach (PixelationTarget target in pixelationTargets.Where(t => t.Active && t.renderType == RenderLayer.UnderNPCs))
 			{
@@ -326,5 +355,6 @@ namespace StarlightRiver.Core.Systems.PixelationSystem
 		OverPlayers = 3,
 		UnderNPCs = 4,
 		OverNPCs = 5,
+		UnderTiles = 6,
 	}
 }

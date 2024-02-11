@@ -3,6 +3,7 @@ using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.ExposureSystem;
+using StarlightRiver.Core.Systems.PixelationSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -628,8 +629,11 @@ namespace StarlightRiver.Content.Items.Vitric
 			float lerper = 1f - dust.alpha / 255f;
 
 			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "SmokeTransparent_" + dust.customData).Value;
-
-			Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, Color.Lerp(dust.color, Color.Black, 1f - lerper) * lerper, dust.rotation, tex.Size() / 2f, dust.scale, 0f, 0f);
+			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("OverNPCs", () =>
+			{
+				Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, Color.Lerp(dust.color, Color.Black, 1f - lerper)
+					* lerper, dust.rotation, tex.Size() / 2f, dust.scale, 0f, 0f);
+			});
 
 			return false;
 		}
