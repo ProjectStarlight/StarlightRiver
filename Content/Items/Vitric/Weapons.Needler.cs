@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		//TODO: Adjust rarity sellprice and balance
 		public override void SetDefaults()
 		{
-			Item.damage = 11;
+			Item.damage = 7;
 			Item.DamageType = DamageClass.Ranged;
 			Item.width = 24;
 			Item.height = 24;
@@ -266,7 +266,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public int NeedleCount => stuck ? Main.projectile.Count(p => p.active && p.type == Type
 									&& (p.ModProjectile as NeedlerProj).enemyID == enemyID) : -1;
-		public float NeedleProgress => NeedleCount / 12f;
+		public float NeedleProgress => NeedleCount / 7f;
 		public override string Texture => AssetDirectory.VitricItem + Name;
 
 		public override void SetStaticDefaults()
@@ -283,7 +283,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Projectile.width = Projectile.height = 8;
 			Projectile.timeLeft = 1200;
 			Projectile.hide = true;
-			Projectile.ArmorPenetration = 5;
+			Projectile.ArmorPenetration = 10;
 		}
 
 		//TODO: Move methods to top + method breaks
@@ -537,7 +537,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override string Texture => AssetDirectory.Invisible;
 		private float Progress => Utils.Clamp(1 - Projectile.timeLeft / 30f, 0f, 1f);
 
-		private float Radius => Projectile.ai[0] * EaseBuilder.EaseCubicOut.Ease(Progress);
+		private float Radius => Projectile.ai[0] * EaseBuilder.EaseQuinticOut.Ease(Progress);
 
 		public override void SetDefaults()
 		{
@@ -773,7 +773,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		private void Explode(NPC npc)
 		{
-			float mult = 10f + 0.05f * Main.projectile.Count(p => p.active && p.type == ModContent.ProjectileType<NeedlerProj>() && (p.ModProjectile as NeedlerProj).enemyID == npc.whoAmI);
+			float mult = 10f + 0.35f * Main.projectile.Count(p => p.active && p.type == ModContent.ProjectileType<NeedlerProj>() && (p.ModProjectile as NeedlerProj).enemyID == npc.whoAmI);
 
 			foreach (Projectile proj in Main.projectile.Where(p => p.active && p.type == ModContent.ProjectileType<NeedlerProj>() && (p.ModProjectile as NeedlerProj).enemyID == npc.whoAmI))
 				proj.active = false;
