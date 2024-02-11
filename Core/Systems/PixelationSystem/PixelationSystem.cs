@@ -302,7 +302,7 @@ namespace StarlightRiver.Core.Systems.PixelationSystem
 
 		public PixelationTarget(string id, PixelPalette palette, RenderLayer renderType)
 		{
-			pixelationDrawActions = [];
+			pixelationDrawActions = new List<Action>();
 
 			pixelationTarget = new(DrawPixelTarget, () => Active, 1f);
 			pixelationTarget2 = new(DrawPixelTarget2, () => Active, 1.1f);
