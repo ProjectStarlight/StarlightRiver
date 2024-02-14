@@ -52,7 +52,7 @@ namespace StarlightRiver.Content.CustomHooks
 		private float NewThreshold(float orig)
 		{
 			if (StarlightWorld.vitricBiome.Intersects(Helper.ScreenTiles))
-				return 0.1f;
+				return 0.01f;
 			else
 				return orig;
 		}
