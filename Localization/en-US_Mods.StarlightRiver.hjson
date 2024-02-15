@@ -3471,6 +3471,11 @@ Items: {
 		DisplayName: Common Vegetable Seeds
 		Tooltip: Plant to grow your own veggies
 	}
+
+	GrayMatterItem: {
+		DisplayName: Gray Matter
+		Tooltip: You can see it thinking
+	}
 }
 
 Tiles: {
@@ -4007,6 +4012,11 @@ Biomes: {
 	EvasionShrineBiome: {
 		DisplayName: Evasion Shrine Biome
 		TownNPCDialogueName: the Evasion Shrine Biome
+	}
+
+	GraymatterBiome: {
+		DisplayName: Graymatter Biome
+		TownNPCDialogueName: the Graymatter Biome
 	}
 }
 

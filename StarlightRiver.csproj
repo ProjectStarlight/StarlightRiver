@@ -15,6 +15,7 @@
     <NoWarn>1701;1702;MSB3270</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Effects\GrayMatter.fx" />
     <None Remove="OldPatchNotes\0.2.0\0.2.2.txt" />
     <None Remove="OldPatchNotes\0.2.0\0.2.4.txt" />
     <None Remove="OldPatchNotes\0.2.0\0.2.6.txt" />
