@@ -55,6 +55,11 @@ namespace StarlightRiver.Core.Systems.PlayableCharacterSystem
 		/// </summary>
 		public Dictionary<Type, PlayableCharacterSlot> Characters => isMainCharacter ? characters : owner.GetModPlayer<PlayableCharacterPlayer>().characters;
 
+		public override void Load()
+		{
+			Terraria.On_Player.JumpMovement += ChangeJump;
+		}
+
 		/// <summary>
 		/// Swaps the player to the specified playable character
 		/// </summary>
@@ -108,6 +113,19 @@ namespace StarlightRiver.Core.Systems.PlayableCharacterSystem
 
 					characters[type] = slot;
 				}
+			}
+		}
+
+		private void ChangeJump(On_Player.orig_JumpMovement orig, Player self)
+		{
+			if (self.GetModPlayer<PlayableCharacterPlayer>().ValidAlt)
+			{
+				if (self.GetModPlayer<PlayableCharacterPlayer>().playingAs.OnJumpInput())
+					orig(self);
+			}
+			else
+			{
+				orig(self);
 			}
 		}
 
