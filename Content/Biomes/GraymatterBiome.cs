@@ -48,6 +48,18 @@ namespace StarlightRiver.Content.Biomes
 						var color = Color.White;
 						color.A = 0;
 
+						// Decrease opacity as more tiles are nearby to normalize gradient intensity for more consistent
+						// effects between differnet sized chunks
+						for(int x2 = -1; x2 <= 1; x2++)
+						{
+							for(int y2 = -1; y2 <= 1; y2++)
+							{
+								if (Framing.GetTileSafely(target + new Point16(x2, y2)).TileType == ModContent.TileType<GrayMatter>())
+									color *= 0.85f;
+							}
+						}
+
+						// Draw to map
 						spriteBatch.Draw(glow, drawPos, null, color, 0, glow.Size() / 2f, 1.5f, 0, 0);						
 					}
 				}
