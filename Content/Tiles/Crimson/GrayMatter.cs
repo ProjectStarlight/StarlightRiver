@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Crimson
 {
@@ -33,6 +34,11 @@ namespace StarlightRiver.Content.Tiles.Crimson
 		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 		{
 			(r, g, b) = (0.7f, 0.7f, 0.7f);
+		}
+
+		public override void FloorVisuals(Player player)
+		{
+			player.AddBuff(BuffID.Invisibility, 10);
 		}
 	}
 }

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Biomes
 {
@@ -14,6 +15,8 @@ namespace StarlightRiver.Content.Biomes
 	{
 		public static ScreenTarget hallucinationMap;
 		public static ScreenTarget overHallucinationMap;
+
+		public static int fullscreenTimer = 0;
 
 		public override void Load()
 		{
@@ -28,8 +31,20 @@ namespace StarlightRiver.Content.Biomes
 			return player.ZoneCrimson; // TODO: Add variable for monolith later
 		}
 
+		public override void OnInBiome(Player player)
+		{
+			if (player == Main.LocalPlayer)
+			{
+				if (player.HasBuff(BuffID.Invisibility) && fullscreenTimer < 60)
+					fullscreenTimer++;
+				else if (fullscreenTimer > 0)
+					fullscreenTimer--;
+			}
+		}
+
 		public void DrawHallucinationMap(SpriteBatch spriteBatch)
 		{
+			var glow = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
 			var pos = (Main.screenPosition / 16).ToPoint16();
 
 			var width = Main.screenWidth / 16 + 1;
@@ -43,7 +58,6 @@ namespace StarlightRiver.Content.Biomes
 
 					if (Framing.GetTileSafely(target).TileType == ModContent.TileType<GrayMatter>())
 					{
-						var glow = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
 						Vector2 drawPos = target.ToVector2() * 16 + Vector2.One * 8 - Main.screenPosition;
 						var color = Color.White;
 						color.A = 0;
@@ -64,6 +78,9 @@ namespace StarlightRiver.Content.Biomes
 					}
 				}
 			}
+
+			spriteBatch.Draw(glow, Main.LocalPlayer.Center - Main.screenPosition, null, new Color(1, 1, 1f, 0), 0, glow.Size() / 2f, Main.screenWidth / glow.Width * (fullscreenTimer / 20f), 0, 0);
+			spriteBatch.Draw(glow, Main.LocalPlayer.Center - Main.screenPosition, null, new Color(1, 1, 1f, 0), 0, glow.Size() / 2f, Main.screenWidth / glow.Width * (fullscreenTimer / 20f), 0, 0);
 		}
 
 		public void DrawOverHallucinationMap(SpriteBatch spriteBatch)
