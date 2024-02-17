@@ -19,8 +19,16 @@ namespace StarlightRiver.Content.Tiles.Crimson
 		public override void SetStaticDefaults()
 		{
 			Main.tileSolid[Type] = true;
-			Main.tileMergeDirt[Type] = true;
 			Main.tileBlockLight[Type] = true;
+
+			Main.tileMerge[Type][TileID.Dirt] = true;
+			Main.tileMerge[TileID.Dirt][Type] = true;
+
+			Main.tileMerge[Type][TileID.CrimsonGrass] = true;
+			Main.tileMerge[TileID.CrimsonGrass][Type] = true;
+
+			Main.tileMerge[Type][TileID.Crimstone] = true;
+			Main.tileMerge[TileID.Crimstone][Type] = true;
 
 			HitSound = Terraria.ID.SoundID.Tink;
 
