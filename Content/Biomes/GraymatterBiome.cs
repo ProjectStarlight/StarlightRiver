@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.Biomes
 							for(int y2 = -1; y2 <= 1; y2++)
 							{
 								if (Framing.GetTileSafely(target + new Point16(x2, y2)).TileType == ModContent.TileType<GrayMatter>())
-									color *= 0.85f;
+									color *= 0.82f;
 							}
 						}
 
@@ -85,7 +85,25 @@ namespace StarlightRiver.Content.Biomes
 
 		public void DrawOverHallucinationMap(SpriteBatch spriteBatch)
 		{
+			var pos = (Main.screenPosition / 16).ToPoint16();
 
+			var width = Main.screenWidth / 16 + 1;
+			var height = Main.screenHeight / 16 + 1;
+
+			for (int x = 0; x < width; x++)
+			{
+				for (int y = 0; y < height; y++)
+				{
+					Point16 target = pos + new Point16(x, y);
+					var tile = Framing.GetTileSafely(target);
+
+					if (tile.TileType == ModContent.TileType<Dendrite>())
+					{
+						var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Crimson/DendriteReal").Value;
+						spriteBatch.Draw(tex, target.ToVector2() * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), Color.White * 0.8f);
+					}
+				}
+			}
 		}
 
 		private void DrawAuras(On_Main.orig_DrawInterface orig, Main self, GameTime gameTime)

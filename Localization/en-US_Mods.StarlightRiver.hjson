@@ -3476,6 +3476,11 @@ Items: {
 		DisplayName: Gray Matter
 		Tooltip: You can see it thinking
 	}
+
+	DendriteItem: {
+		DisplayName: Dendrite
+		Tooltip: Doyoyouuyuuhuyhh *BRRPT* *Anyuerism*
+	}
 }
 
 Tiles: {

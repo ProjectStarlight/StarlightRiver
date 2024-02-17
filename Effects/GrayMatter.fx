@@ -37,11 +37,11 @@ float4 main(float2 uv : TEXCOORD0) : COLOR0
     float noise = tex2D(InputLayer2, (ns +  time * 0.1)).x;
     
     float push = noise * distort;
-    st += push * 0.3;
+    st += push * 0.15;
     float3 final = tex2D(InputLayer0,st).xyz;
     
     float gray = (final.r + final.g + final.b) / 3.0;
-    float power = min(1.0, tex2D(InputLayer1,st).x * 1.5 + push);
+    float power = min(1.0, tex2D(InputLayer1,st).x * 1.5 + push * 1.5);
     float3 grayscale = float3(gray, gray, gray) * power + final * (1.0 - power);
     final = grayscale;
     
@@ -49,9 +49,8 @@ float4 main(float2 uv : TEXCOORD0) : COLOR0
     final += push * chrome * 4.0;    
     final += push;   
     
-    st -= push * 0.3;
-    float4 overlay = tex2D(InputLayer3,st * 2.0);
-    overlay.a *= power	;
+    float4 overlay = tex2D(InputLayer3,st);
+    overlay.a *= power;
     final.rgb = overlay.rgb * overlay.a + final.rgb * (1.0 - overlay.a);
     
     return float4(final,1.0);
