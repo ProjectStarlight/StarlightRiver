@@ -158,7 +158,7 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new TriangularTip(40 * 4), factor => factor * 30, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 30, factor =>
 			{
 				float alpha = 1;
 

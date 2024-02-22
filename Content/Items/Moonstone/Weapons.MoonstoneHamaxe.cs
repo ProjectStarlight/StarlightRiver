@@ -303,7 +303,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 35, new TriangularTip(40 * 4), factor => factor * 18f, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 35, new NoTip(), factor => factor * 18f, factor =>
 			{
 				if (factor.X >= 0.96f)
 					return Color.White * 0;
@@ -317,7 +317,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 35, new TriangularTip(40 * 4), factor => factor * 10f, factor =>
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 35, new NoTip(), factor => factor * 10f, factor =>
 			{
 				if (factor.X >= 0.96f)
 					return Color.White * 0;
@@ -435,9 +435,9 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 40, new TriangularTip(1), factor => 100 * (1 - Progress), factor => new Color(120, 120, 255));
+			trail ??= new Trail(Main.instance.GraphicsDevice, 40, new NoTip(), factor => 100 * (1 - Progress), factor => new Color(120, 120, 255));
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 40, new TriangularTip(1), factor => 35 * (1 - Progress), factor => Color.White);
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 40, new NoTip(), factor => 35 * (1 - Progress), factor => Color.White);
 			float nextplace = 40f / 39f;
 			var offset = new Vector2((float)Math.Sin(nextplace), (float)Math.Cos(nextplace));
 			offset *= Radius;

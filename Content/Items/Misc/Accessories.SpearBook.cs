@@ -643,7 +643,7 @@ namespace StarlightRiver.Content.Items.Misc
 			// first trail
 			if (motion == Motion.Swing || motion == Motion.Slash)
 			{
-				trail ??= new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new TriangularTip(40 * 4), factor => (float)Math.Min(factor, progress) * length * 0.75f, factor =>
+				trail ??= new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new NoTip(), factor => (float)Math.Min(factor, progress) * length * 0.75f, factor =>
 				{
 					if (factor.X >= 0.98f)
 						return Color.White * 0;
@@ -665,7 +665,7 @@ namespace StarlightRiver.Content.Items.Misc
 				// repeat for second trail (only when it is needed for second slash or stab)
 				if (motion == Motion.Stab)
 				{
-					trail2 ??= new Trail(Main.instance.GraphicsDevice, TRAIL2LENGTH, new TriangularTip(40 * 4), factor => (1f - (float)Math.Pow(2 * factor - 1, 2)) * length * 0.5f, factor =>
+					trail2 ??= new Trail(Main.instance.GraphicsDevice, TRAIL2LENGTH, new NoTip(), factor => (1f - (float)Math.Pow(2 * factor - 1, 2)) * length * 0.5f, factor =>
 					{
 						if (factor.X >= 0.98f)
 							return Color.White * 0;
@@ -675,7 +675,7 @@ namespace StarlightRiver.Content.Items.Misc
 				}
 				else
 				{
-					trail2 ??= new Trail(Main.instance.GraphicsDevice, TRAIL2LENGTH, new TriangularTip(40 * 4), factor => (float)Math.Min(factor, progress) * length * 0.75f, factor =>
+					trail2 ??= new Trail(Main.instance.GraphicsDevice, TRAIL2LENGTH, new NoTip(), factor => (float)Math.Min(factor, progress) * length * 0.75f, factor =>
 					{
 						if (factor.X >= 0.98f)
 							return Color.White * 0;

@@ -215,7 +215,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 100, new TriangularTip(40 * 4), factor => factor * 16, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 100, new NoTip(), factor => factor * 16, factor =>
 			{
 				if (factor.X >= 0.98f)
 					return Color.White * 0;
@@ -358,7 +358,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 100, new TriangularTip(40 * 4), factor => factor * 32, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 100, new NoTip(), factor => factor * 32, factor =>
 			{
 				if (factor.X >= 0.98f)
 					return Color.White * 0;

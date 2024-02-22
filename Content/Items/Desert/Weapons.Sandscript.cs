@@ -316,7 +316,7 @@ namespace StarlightRiver.Content.Items.Desert
 				mult = 1f - (Projectile.timeLeft - maxTimeleft * 0.5f) / maxTimeleft * 0.5f;
 			}
 
-			trail ??= new Trail(Main.instance.GraphicsDevice, 20, new TriangularTip(0), factor => 30f * factor, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 20, new NoTip(), factor => 30f * factor, factor =>
 			{
 				if (factor.X >= 0.85f)
 					return Color.Transparent;
@@ -327,7 +327,7 @@ namespace StarlightRiver.Content.Items.Desert
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 20, new TriangularTip(0), factor => 20f, factor =>
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 20, new NoTip(), factor => 20f, factor =>
 			{
 				if (factor.X >= 0.85f)
 					return Color.Transparent;

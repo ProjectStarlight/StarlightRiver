@@ -203,7 +203,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, oldPositionCacheLength, new TriangularTip(trailMaxWidth * 4), factor => factor * trailMaxWidth, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, oldPositionCacheLength, new NoTip(), factor => factor * trailMaxWidth, factor =>
 			{
 				// 1 = full opacity, 0 = transparent.
 				float normalisedAlpha = 1 - Projectile.alpha / 255f;

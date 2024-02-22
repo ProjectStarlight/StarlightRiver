@@ -619,7 +619,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, (int)Projectile.ai[0], new TriangularTip(4), factor => 14 * fade, factor => new Color(255, 100, 65) * 0.5f * (float)Math.Sqrt(factor.X));
+			trail ??= new Trail(Main.instance.GraphicsDevice, (int)Projectile.ai[0], new NoTip(), factor => 14 * fade, factor => new Color(255, 100, 65) * 0.5f * (float)Math.Sqrt(factor.X));
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;

@@ -382,7 +382,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			float y = (float)Math.Sin(-rot) * 40;
 			var off = new Vector2(x, y);
 
-			trail ??= new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(40 * 4), factor => factor * 25, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => factor * 25, factor =>
 			{
 				if (factor.X >= 0.98f)
 					return Color.White * 0;

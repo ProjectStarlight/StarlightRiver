@@ -327,7 +327,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(4), factor => 13 * factor, factor => Color.OrangeRed);
+			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => 13 * factor, factor => Color.OrangeRed);
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;

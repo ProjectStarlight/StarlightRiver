@@ -149,7 +149,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new TriangularTip(40 * 4), factor => factor * 8, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 8, factor =>
 			{
 				float alpha = 1;
 

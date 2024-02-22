@@ -493,7 +493,7 @@ namespace StarlightRiver.Content.Items.Magnet
 
 		private void ManageTrails()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(40 * 4), factor => 40 + power, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => 40 + power, factor =>
 			{
 				if (factor.X > 0.99f)
 					return Color.Transparent;
@@ -752,7 +752,7 @@ namespace StarlightRiver.Content.Items.Magnet
 
 		private void ManageTrails()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(40 * 4), factor => 10 + factor * 4 + (Projectile.timeLeft <= 30 ? Helper.SwoopEase(1 - Projectile.timeLeft / 30f) * 30 : 0), factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => 10 + factor * 4 + (Projectile.timeLeft <= 30 ? Helper.SwoopEase(1 - Projectile.timeLeft / 30f) * 30 : 0), factor =>
 			{
 				if (factor.X > 0.95f)
 					return Color.Transparent;
@@ -767,7 +767,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Vector2.UnitX.RotatedBy(Main.GameUpdateCount * 0.1f + 11 / 10f * 3) * 60;
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(40 * 4), factor => 10 + factor * 4 + (Projectile.timeLeft <= 30 ? Helper.SwoopEase(1 - Projectile.timeLeft / 30f) * 30 : 0), factor =>
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => 10 + factor * 4 + (Projectile.timeLeft <= 30 ? Helper.SwoopEase(1 - Projectile.timeLeft / 30f) * 30 : 0), factor =>
 			{
 				if (factor.X > 0.95f)
 					return Color.Transparent;
