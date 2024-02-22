@@ -313,8 +313,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 			trail ??= new Trail(Main.instance.GraphicsDevice, 15, new NoTip(), factor => (10 + factor * 25) * MathHelper.Lerp(0.4f, 1f, ChargeRatio), factor =>
 			{
-				if (factor.X >= 0.96f)
-					return Color.White * 0;
+				if (factor.X == 1)
+					return Color.Transparent;
 
 				return new Color(120, 20 + (int)(100 * factor.X), 255) * (float)Math.Sin(factor.X * 3.14f);
 			});
@@ -324,8 +324,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 			trail2 ??= new Trail(Main.instance.GraphicsDevice, 15, new NoTip(), factor => (80 + 0 + factor * 0) * MathHelper.Lerp(0.4f, 1f, ChargeRatio), factor =>
 			{
-				if (factor.X >= 0.96f)
-					return Color.White * 0;
+				if (factor.X == 1)
+					return Color.Transparent;
 
 				return new Color(100, 20 + (int)(60 * factor.X), 255) * 0.15f * (float)Math.Sin(factor.X * 3.14f);
 			});

@@ -305,8 +305,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 		{
 			trail ??= new Trail(Main.instance.GraphicsDevice, 35, new NoTip(), factor => factor * 18f, factor =>
 			{
-				if (factor.X >= 0.96f)
-					return Color.White * 0;
+				if (factor.X == 1)
+					return Color.Transparent;
 
 				if (Projectile.timeLeft <= 30 && slammed)
 					return new Color(120, 20 + (int)(100 * factor.X), 255) * MathHelper.Lerp(1f, 0f, 1f - Projectile.timeLeft / 30f) * factor.X;
@@ -319,8 +319,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 			trail2 ??= new Trail(Main.instance.GraphicsDevice, 35, new NoTip(), factor => factor * 10f, factor =>
 			{
-				if (factor.X >= 0.96f)
-					return Color.White * 0;
+				if (factor.X == 1)
+					return Color.Transparent;
 
 				if (Projectile.timeLeft <= 30 && slammed)
 					return new Color(120, 20 + (int)(100 * factor.X), 255) * MathHelper.Lerp(0.85f, 0f, 1f - Projectile.timeLeft / 30f) * factor.X;

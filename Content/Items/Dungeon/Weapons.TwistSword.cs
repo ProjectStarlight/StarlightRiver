@@ -384,8 +384,8 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 			trail ??= new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => factor * 25, factor =>
 			{
-				if (factor.X >= 0.98f)
-					return Color.White * 0;
+				if (factor.X == 1)
+					return Color.Transparent;
 
 				return new Color(50, 30 + (int)(100 * factor.X), 255) * factor.X;
 			});

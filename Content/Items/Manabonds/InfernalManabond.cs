@@ -184,8 +184,8 @@ namespace StarlightRiver.Content.Items.Manabonds
 				if (factor.X > 0.8f)
 					alpha = 1 + (factor.X - 0.8f) * 30;
 
-				if (factor.X >= 0.99f)
-					alpha = 0;
+				if (factor.X == 1)
+					return Color.Transparent;
 
 				if (Projectile.timeLeft < 15)
 					alpha *= Projectile.timeLeft / 15f;

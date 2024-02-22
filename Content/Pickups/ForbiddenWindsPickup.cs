@@ -170,8 +170,8 @@ namespace StarlightRiver.Content.Pickups
 			{
 				trail ??= new Trail(Main.instance.GraphicsDevice, 120, new NoTip(), factor => Math.Min((float)Math.Sin(factor * 3.14f) * 50, 50), factor =>
 				{
-					if (factor.X >= 0.95f)
-						return Color.White * 0;
+					if (factor.X == 1)
+						return Color.Transparent;
 
 					int time = Main.LocalPlayer.GetModPlayer<StarlightPlayer>().pickupTimer;
 					float mul = 1;
@@ -189,8 +189,8 @@ namespace StarlightRiver.Content.Pickups
 			{
 				trail ??= new Trail(Main.instance.GraphicsDevice, 120, new NoTip(), factor => Math.Min((float)Math.Sin(factor * 3.14f) * 13, 13), factor =>
 				{
-					if (factor.X >= 0.95f)
-						return Color.White * 0;
+					if (factor.X == 1)
+						return Color.Transparent;
 
 					int time = Main.LocalPlayer.GetModPlayer<StarlightPlayer>().pickupTimer;
 					float mul = 1;

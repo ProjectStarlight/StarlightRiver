@@ -645,8 +645,8 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				trail ??= new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new NoTip(), factor => (float)Math.Min(factor, progress) * length * 0.75f, factor =>
 				{
-					if (factor.X >= 0.98f)
-						return Color.White * 0;
+					if (factor.X == 1)
+						return Color.Transparent;
 
 					return trailColor * (float)Math.Min(factor.X, progress) * 0.5f * (float)Math.Sin(progress * 3.14f) * 2;
 				});
@@ -667,8 +667,8 @@ namespace StarlightRiver.Content.Items.Misc
 				{
 					trail2 ??= new Trail(Main.instance.GraphicsDevice, TRAIL2LENGTH, new NoTip(), factor => (1f - (float)Math.Pow(2 * factor - 1, 2)) * length * 0.5f, factor =>
 					{
-						if (factor.X >= 0.98f)
-							return Color.White * 0;
+						if (factor.X == 1)
+							return Color.Transparent;
 
 						return trailColor * (float)Math.Min(factor.X, progress) * 0.5f * (float)Math.Sin(progress * 3.14f) * 4;
 					});
@@ -677,8 +677,8 @@ namespace StarlightRiver.Content.Items.Misc
 				{
 					trail2 ??= new Trail(Main.instance.GraphicsDevice, TRAIL2LENGTH, new NoTip(), factor => (float)Math.Min(factor, progress) * length * 0.75f, factor =>
 					{
-						if (factor.X >= 0.98f)
-							return Color.White * 0;
+						if (factor.X == 1)
+							return Color.Transparent;
 
 						return trailColor * (float)Math.Min(factor.X, progress) * 1.5f * (float)Math.Sin(progress * 3.14f);
 					});

@@ -233,8 +233,8 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 		{
 			trail ??= new Trail(Main.instance.GraphicsDevice, 120, new NoTip(), factor => 5, factor =>
 			{
-				if (factor.X >= 0.95f)
-					return Color.White * 0;
+				if (factor.X == 1)
+					return Color.Transparent;
 
 				return new Color(155, 155, 155) * (float)Math.Sin(factor.X * 3.14f) * 0.15f * radius;
 			});
