@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Buffs;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -26,8 +27,10 @@ namespace StarlightRiver.Content.Tiles.Crimson
 			Main.tileLighted[Type] = true;
 
 			HitSound = Terraria.ID.SoundID.NPCHit1;
-
 			DustType = Terraria.ID.DustID.Blood;
+
+			MinPick = 101;
+
 			RegisterItemDrop(ModContent.ItemType<GrayMatterItem>());
 
 			AddMapEntry(new Color(167, 180, 191));
@@ -78,7 +81,7 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 		public override void FloorVisuals(Player player)
 		{
-			player.AddBuff(BuffID.Invisibility, 10);
+			player.AddBuff(ModContent.BuffType<CrimsonHallucination>(), 10);
 		}
 	}
 }

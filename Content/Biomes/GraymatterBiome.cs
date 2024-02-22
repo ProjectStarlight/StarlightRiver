@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.ScreenTargetSystem;
+﻿using StarlightRiver.Content.Buffs;
+using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
@@ -46,7 +47,7 @@ namespace StarlightRiver.Content.Biomes
 		{
 			if (player == Main.LocalPlayer)
 			{
-				if (player.HasBuff(BuffID.Invisibility) && fullscreenTimer < 60)
+				if (player.HasBuff(ModContent.BuffType<CrimsonHallucination>()) && fullscreenTimer < 60)
 					fullscreenTimer++;
 				else if (fullscreenTimer > 0)
 					fullscreenTimer--;
