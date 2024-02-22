@@ -1,10 +1,5 @@
-﻿using StarlightRiver.Content.Tiles.Crimson;
-using StarlightRiver.Core.Systems.ScreenTargetSystem;
+﻿using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -63,7 +58,7 @@ namespace StarlightRiver.Content.Biomes
 			onDrawHallucinationMap?.Invoke(spriteBatch);
 
 			// Draw the screen overlay for when the player is actively standing on gray matter
-			var glow = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
+			Texture2D glow = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
 
 			spriteBatch.Draw(glow, Main.LocalPlayer.Center - Main.screenPosition, null, new Color(1, 1, 1f, 0), 0, glow.Size() / 2f, Main.screenWidth / glow.Width * (fullscreenTimer / 20f), 0, 0);
 			spriteBatch.Draw(glow, Main.LocalPlayer.Center - Main.screenPosition, null, new Color(1, 1, 1f, 0), 0, glow.Size() / 2f, Main.screenWidth / glow.Width * (fullscreenTimer / 20f), 0, 0);
@@ -75,8 +70,8 @@ namespace StarlightRiver.Content.Biomes
 
 			var pos = (Main.screenPosition / 16).ToPoint16();
 
-			var width = Main.screenWidth / 16 + 1;
-			var height = Main.screenHeight / 16 + 1;
+			int width = Main.screenWidth / 16 + 1;
+			int height = Main.screenHeight / 16 + 1;
 
 			for (int x = 0; x < width; x++)
 			{
@@ -93,7 +88,7 @@ namespace StarlightRiver.Content.Biomes
 			if (IsBiomeActive(Main.LocalPlayer))
 			{
 				Effect shader = Filters.Scene["GrayMatter"].GetShader().Shader;
-				var noise = ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/SwirlyNoiseLooping").Value;
+				Texture2D noise = ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/SwirlyNoiseLooping").Value;
 
 				shader.Parameters["background"].SetValue(Main.screenTarget);
 				shader.Parameters["map"].SetValue(hallucinationMap.RenderTarget);
