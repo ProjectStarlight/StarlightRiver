@@ -78,7 +78,6 @@ namespace StarlightRiver.Core.Systems.PixelationSystem
 
 			orig(self);
 
-
 			foreach (PixelationTarget target in pixelationTargets.Where(t => t.Active && t.renderType == RenderLayer.OverPlayers))
 			{
 				PixelPalette palette = target.palette;
