@@ -3481,6 +3481,11 @@ Items: {
 		DisplayName: Dendrite
 		Tooltip: Doyoyouuyuuhuyhh *BRRPT* *Anyuerism*
 	}
+
+	BonemineItem: {
+		DisplayName: Bone mine
+		Tooltip: Doyoyouuyuuhuyhh *BRRPT* *Anyuerism*
+	}
 }
 
 Tiles: {

@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Biomes
 			hallucinationMap = new(DrawHallucinationMap, () => IsBiomeActive(Main.LocalPlayer), 1);
 			overHallucinationMap = new(DrawOverHallucinationMap, () => IsBiomeActive(Main.LocalPlayer), 1.1f);
 
-			On_Main.DrawInterface += DrawAuras;
+			On_Main.DrawItemTextPopups += DrawAuras;
 		}
 
 		public override bool IsBiomeActive(Player player)
@@ -102,11 +102,17 @@ namespace StarlightRiver.Content.Biomes
 						var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Crimson/DendriteReal").Value;
 						spriteBatch.Draw(tex, target.ToVector2() * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), Color.White * 0.8f);
 					}
+
+					if (tile.TileType == ModContent.TileType<Bonemine>())
+					{
+						var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Symbol").Value;
+						spriteBatch.Draw(tex, target.ToVector2() * 16  + Vector2.One * 8 - Main.screenPosition, null, Color.Red * 0.8f, 0, tex.Size() / 2f, 1, 0, 0);
+					}
 				}
 			}
 		}
 
-		private void DrawAuras(On_Main.orig_DrawInterface orig, Main self, GameTime gameTime)
+		private void DrawAuras(On_Main.orig_DrawItemTextPopups orig, float scaleTarget)
 		{
 			if (IsBiomeActive(Main.LocalPlayer))
 			{
@@ -120,14 +126,16 @@ namespace StarlightRiver.Content.Biomes
 				shader.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
 				shader.Parameters["screensize"].SetValue(noise.Size() / new Vector2(Main.screenWidth, Main.screenHeight));
 
-				Main.spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default, shader);
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default, shader, Main.GameViewMatrix.TransformationMatrix);
 
 				Main.spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
 
 				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default);
 			}
 
-			orig(self, gameTime);
+			orig(scaleTarget);
 		}
 	}
 }
