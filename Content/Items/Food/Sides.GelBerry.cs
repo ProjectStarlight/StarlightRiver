@@ -1,19 +1,21 @@
-﻿using StarlightRiver.Core;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
+﻿using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Food
 {
-    internal class GelBerry : Ingredient
-    {
-        public GelBerry() : base("+5 mana regeneration", 120, IngredientType.Side) { }
+	internal class GelBerry : Ingredient
+	{
+		public GelBerry() : base("+5 mana regeneration", 900, IngredientType.Side) { }
 
-        public override void SafeSetDefaults() => Item.rare = ItemRarityID.White;
+		public override void SafeSetDefaults()
+		{
+			Item.rare = ItemRarityID.White;
 
-        public override void BuffEffects(Player Player, float multiplier)
-        {
-            Player.manaRegen += 5;
-        }
-    }
+			Item.value = Item.sellPrice(silver: 5);
+		}
+
+		public override void BuffEffects(Player Player, float multiplier)
+		{
+			Player.manaRegen += 5;
+		}
+	}
 }

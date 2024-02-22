@@ -4,14 +4,24 @@ using System.Linq;
 namespace StarlightRiver.Content.Abilities
 {
 	public class ShardSet
-    {
-        private readonly HashSet<int> collected = new HashSet<int>();
+	{
+		private readonly HashSet<int> collected = new();
 
-        public bool Has(int id) => collected.Contains(id);
-        public void Add(int id) => collected.Add(id);
+		public bool Has(int id)
+		{
+			return collected.Contains(id);
+		}
 
-        public int Count => collected.Count;
+		public void Add(int id)
+		{
+			collected.Add(id);
+		}
 
-        public List<int> ToList() => collected.ToList();
-    }
+		public int Count => collected.Count;
+
+		public List<int> ToList()
+		{
+			return collected.ToList();
+		}
+	}
 }

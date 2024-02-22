@@ -1,47 +1,49 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Tiles;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Items.Permafrost;
+using StarlightRiver.Core.Systems;
 using System.Collections.Generic;
 using Terraria.ID;
+using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Permafrost
 {
-    class TouchstoneLootbox : LootChest
-    {
-        public override string Texture => AssetDirectory.PermafrostTile + Name;
+	class TouchstoneLootbox : LootChest
+	{
+		public override string Texture => AssetDirectory.PermafrostTile + Name;
 
-        internal override List<Loot> GoldLootPool
-        {
-            get => new List<Loot>
-            {
-                new Loot(ItemType<Content.Items.UndergroundTemple.TemplePick>(), 1),
-                new Loot(ItemType<Content.Items.UndergroundTemple.TempleSpear>(), 1),
-                new Loot(ItemType<Content.Items.UndergroundTemple.TempleRune>(), 1)
-            };
-        }
+		public override int HoverItemIcon => ModContent.ItemType<TouchstoneLootboxItem>();
 
-        internal override List<Loot> SmallLootPool
-        {
-            get => new List<Loot>
-            {
-                new Loot(ItemID.HealingPotion, 4, 8),
-                new Loot(ItemID.ManaPotion, 3, 6),
-                new Loot(ItemID.FrostburnArrow, 40, 60),
-                new Loot(ItemID.LifeCrystal, 1, 1),
-                new Loot(ItemID.ManaCrystal, 2, 2),
-                new Loot(ItemID.PlatinumBar, 10, 20),
-                new Loot(ItemID.Diamond, 1, 1),
-                new Loot(ItemID.IceBlock, 200, 800),
-                new Loot(ItemType<AuroraIceBar>(), 2, 5)
-            };
-        }
+		internal override List<Loot> GoldLootPool => new()
+		{
+				new Loot(ItemID.BlizzardinaBottle, 1),
+				new Loot(ItemID.FlurryBoots, 1),
+				new Loot(ItemType<BookOfFrost>(), 1)
+			};
 
-        public override void SafeSetDefaults() => QuickBlock.QuickSetFurniture(this, 2, 2, DustID.GoldCoin, SoundID.Tink, false, new Color(151, 151, 151));
-    }
+		internal override List<Loot> SmallLootPool => new()
+		{
+				new Loot(ItemID.HealingPotion, 2, 5),
+				new Loot(ItemID.ManaPotion, 3, 6),
+				new Loot(ItemID.FrostburnArrow, 40, 60),
+				new Loot(ItemID.LifeCrystal, 1, 1),
+				new Loot(ItemID.ManaCrystal, 2, 2),
+				new Loot(ItemID.PlatinumBar, 5, 7),
+				new Loot(ItemID.Diamond, 1, 1),
+				new Loot(ItemID.IceBlock, 50, 100),
+				new Loot(ItemType<AuroraIceBar>(), 2, 5),
+				new Loot(ItemType<SquidBossSpawn>(), 1, 1)
+			};
 
-    class TouchstoneLootboxItem : QuickTileItem
-    {
-        public TouchstoneLootboxItem() : base("Touchstone Chest Placer", "", "TouchstoneLootbox", 0, AssetDirectory.PermafrostTile) { }
-    }
+		public override void SafeSetDefaults()
+		{
+			TileObjectData.newTile.DrawYOffset = 2;
+			QuickBlock.QuickSetFurniture(this, 2, 2, DustID.Stone, SoundID.Tink, false, new Color(151, 151, 151));
+		}
+	}
+
+	[SLRDebug]
+	class TouchstoneLootboxItem : QuickTileItem
+	{
+		public TouchstoneLootboxItem() : base("Touchstone Chest Placer", "", "TouchstoneLootbox", 0, AssetDirectory.PermafrostTile) { }
+	}
 }

@@ -1,13 +1,8 @@
-﻿using StarlightRiver.Prefixes.CombatMountPrefixes;
+﻿using StarlightRiver.Content.Prefixes.CombatMountPrefixes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using Terraria.ModLoader;
 using Terraria.Utilities;
-using static Terraria.Mount;
 
 namespace StarlightRiver.Core.Systems.CombatMountSystem
 {
@@ -32,7 +27,11 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 		/// </summary>
 		public float moveSpeedMultiplier = 1;
 		/// <summary>
-		/// The base amount of damage this mount does. The primary and secondary effects may be effected by this differently.
+		/// The base damage this mount does before buffs. Used similarly to Projectile.originalDamage.
+		/// </summary>
+		public int originalDamageCoefficient;
+		/// <summary>
+		/// The damage this mount does. The primary and secondary effects may be effected by this differently.
 		/// </summary>
 		public int damageCoefficient;
 
@@ -77,7 +76,7 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 
 		public void MountUp(Player player)
 		{
-			SetDefaults();
+			//SetDefaults();
 			player.GetModPlayer<CombatMountPlayer>().activeMount = this;
 		}
 
@@ -110,8 +109,10 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 
 		public void StartPrimaryAction(Player player)
 		{
+			damageCoefficient = (int)player.GetTotalDamage(DamageClass.Summon).ApplyTo(originalDamageCoefficient);
 			primaryAttackTimer = MaxPrimaryTime;
 			primaryCooldownTimer = primaryCooldownCoefficient + primaryAttackTimer;
+			primaryCooldownTimer = (int)(primaryCooldownTimer * (1f / player.GetModPlayer<CombatMountPlayer>().combatMountCooldownMultiplier));
 			OnStartPrimaryAction(player);
 		}
 
@@ -136,8 +137,10 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 
 		public void StartSecondaryAction(Player player)
 		{
+			damageCoefficient = (int)player.GetTotalDamage(DamageClass.Summon).ApplyTo(originalDamageCoefficient);
 			secondaryAbilityTimer = secondarySpeedCoefficient;
 			secondaryCooldownTimer = (int)(secondaryCooldownCoefficient * secondaryCooldownSpeedMultiplier) + secondaryAbilityTimer;
+			secondaryCooldownTimer = (int)(secondaryCooldownTimer * (1f / player.GetModPlayer<CombatMountPlayer>().combatMountCooldownMultiplier));
 			OnStartSecondaryAction(player);
 		}
 
@@ -161,7 +164,7 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 	}
 
 	public abstract class CombatMountItem : ModItem
-	{		
+	{
 		protected CombatMount mount;
 
 		public override string Texture => AssetDirectory.Debug;
@@ -202,7 +205,7 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 
 		public override int ChoosePrefix(UnifiedRandom rand)
 		{
-			var list = CombatMountPrefix.combatMountPrefixTypes;
+			List<int> list = CombatMountPrefix.combatMountPrefixTypes;
 			return list[rand.Next(list.Count())];
 		}
 
@@ -211,12 +214,15 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 			mount.ResetStats();
 			mount.SetDefaults();
 
-			var prefix = PrefixLoader.GetPrefix(Item.prefix);
+			ModPrefix prefix = PrefixLoader.GetPrefix(Item.prefix);
 
 			if (prefix is CombatMountPrefix)
 				(prefix as CombatMountPrefix).ApplyToMount(mount);
 
 			mount.MountUp(player);
+
+			player.GetModPlayer<CombatMountPlayer>().mountingTime = 30;
+			player.GetModPlayer<CombatMountPlayer>().startPoint = player.Center;
 
 			return true;
 		}

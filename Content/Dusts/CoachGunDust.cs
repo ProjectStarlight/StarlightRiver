@@ -1,378 +1,385 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
 using System;
-using Terraria;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Dusts
 {
 	public class CoachGunDust : ModDust
-    {
-        public override string Texture => AssetDirectory.Dust + "NeedlerDust";
-        public override void OnSpawn(Dust dust)
-        {
-            dust.noGravity = true;
-            dust.scale *= Main.rand.NextFloat(0.8f, 2f);
-            dust.frame = new Rectangle(0, 0, 34, 36);
-        }
+	{
+		public override string Texture => AssetDirectory.Dust + "NeedlerDust";
+		public override void OnSpawn(Dust dust)
+		{
+			dust.noGravity = true;
+			dust.scale *= Main.rand.NextFloat(0.8f, 2f);
+			dust.frame = new Rectangle(0, 0, 34, 36);
+		}
 
-        public override Color? GetAlpha(Dust dust, Color lightColor)
-        {
-            Color gray = new Color(25, 25, 25);
-            Color ret;
-            if (dust.alpha < 80)
-            {
-                ret = Color.Lerp(Color.Yellow, Color.Orange, dust.alpha / 80f);
-            }
-            else if (dust.alpha < 140)
-            {
-                ret = Color.Lerp(Color.Orange, gray, (dust.alpha - 80) / 80f);
-            }
-            else
-                ret = gray;
-            return ret * ((255 - dust.alpha) / 255f);
-        }
+		public override Color? GetAlpha(Dust dust, Color lightColor)
+		{
+			var gray = new Color(25, 25, 25);
+			Color ret;
+			if (dust.alpha < 80)
+			{
+				ret = Color.Lerp(Color.Yellow, Color.Orange, dust.alpha / 80f);
+			}
+			else if (dust.alpha < 140)
+			{
+				ret = Color.Lerp(Color.Orange, gray, (dust.alpha - 80) / 80f);
+			}
+			else
+			{
+				ret = gray;
+			}
 
-        public override bool Update(Dust dust)
-        {
-            if (Math.Abs(dust.velocity.X) > 3)
-                dust.velocity.X *= 0.85f;
-            else
-                dust.velocity.X *= 0.92f;
+			return ret * ((255 - dust.alpha) / 255f);
+		}
 
-            if (dust.velocity.Y > -2)
-                dust.velocity.Y -= 0.1f;
-            else
-                dust.velocity.Y *= 0.92f;
+		public override bool Update(Dust dust)
+		{
+			if (Math.Abs(dust.velocity.X) > 3)
+				dust.velocity.X *= 0.85f;
+			else
+				dust.velocity.X *= 0.92f;
 
-            if (dust.velocity.Y > 0)
-                dust.velocity.Y *= 0.85f;
-            if (dust.alpha > 100)
-            {
-                dust.scale += 0.01f;
-                dust.alpha += 2;
-            }
-            else
-            {
-                Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.1f);
-                dust.scale *= 0.985f;
-                dust.alpha += 4;
-            }
-            dust.position += dust.velocity;
-            if (dust.alpha >= 255)
-                dust.active = false;
+			if (dust.velocity.Y > -2)
+				dust.velocity.Y -= 0.1f;
+			else
+				dust.velocity.Y *= 0.92f;
 
-            return false;
-        }
-    }
+			if (dust.velocity.Y > 0)
+				dust.velocity.Y *= 0.85f;
+			if (dust.alpha > 100)
+			{
+				dust.scale += 0.01f;
+				dust.alpha += 2;
+			}
+			else
+			{
+				Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.1f);
+				dust.scale *= 0.985f;
+				dust.alpha += 4;
+			}
 
-    public class CoachGunDustTwo : ModDust
-    {
-        public override string Texture => AssetDirectory.Dust + "NeedlerDustTwo";
+			dust.position += dust.velocity;
+			if (dust.alpha >= 255)
+				dust.active = false;
 
-        public override void OnSpawn(Dust dust)
-        {
-            dust.noGravity = true;
-            dust.scale *= Main.rand.NextFloat(0.8f, 2f);
-            dust.frame = new Rectangle(0, 0, 34, 36);
-        }
+			return false;
+		}
+	}
 
-        public override Color? GetAlpha(Dust dust, Color lightColor)
-        {
-            Color gray = new Color(25, 25, 25);
-            Color ret;
-            if (dust.alpha < 80)
-            {
-                ret = Color.Lerp(Color.Yellow, Color.Orange, dust.alpha / 80f);
-            }
-            else if (dust.alpha < 140)
-            {
-                ret = Color.Lerp(Color.Orange, gray, (dust.alpha - 80) / 80f);
-            }
-            else
-                ret = gray;
-            return ret * ((255 - dust.alpha) / 255f);
-        }
+	public class CoachGunDustTwo : ModDust
+	{
+		public override string Texture => AssetDirectory.Dust + "NeedlerDust";
 
-        public override bool Update(Dust dust)
-        {
-            if (Math.Abs(dust.velocity.X) > 3)
-                dust.velocity.X *= 0.85f;
-            else
-                dust.velocity.X *= 0.92f;
+		public override void OnSpawn(Dust dust)
+		{
+			dust.noGravity = true;
+			dust.scale *= Main.rand.NextFloat(0.8f, 2f);
+			dust.frame = new Rectangle(0, 0, 34, 36);
+		}
 
-            if (dust.velocity.Y > -2)
-                dust.velocity.Y -= 0.1f;
-            else
-                dust.velocity.Y *= 0.92f;
+		public override Color? GetAlpha(Dust dust, Color lightColor)
+		{
+			var gray = new Color(25, 25, 25);
+			Color ret;
+			if (dust.alpha < 80)
+			{
+				ret = Color.Lerp(Color.Yellow, Color.Orange, dust.alpha / 80f);
+			}
+			else if (dust.alpha < 140)
+			{
+				ret = Color.Lerp(Color.Orange, gray, (dust.alpha - 80) / 80f);
+			}
+			else
+			{
+				ret = gray;
+			}
 
-            if (dust.velocity.Y > 3.5f)
-                dust.velocity.Y = 3.5f;
+			return ret * ((255 - dust.alpha) / 255f);
+		}
 
-            if (dust.alpha > 100)
-            {
-                dust.scale *= 0.975f;
-                dust.alpha += 2;
-            }
-            else
-            {
-                Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.1f);
-                dust.scale *= 0.985f;
-                dust.alpha += 4;
-            }
-            dust.position += dust.velocity;
+		public override bool Update(Dust dust)
+		{
+			if (Math.Abs(dust.velocity.X) > 3)
+				dust.velocity.X *= 0.85f;
+			else
+				dust.velocity.X *= 0.92f;
 
-            if (dust.alpha >= 255)
-                dust.active = false;
+			if (dust.velocity.Y > -2)
+				dust.velocity.Y -= 0.1f;
+			else
+				dust.velocity.Y *= 0.92f;
 
-            return false;
-        }
-    }
+			if (dust.velocity.Y > 3.5f)
+				dust.velocity.Y = 3.5f;
 
-    public class CoachGunDustThree : ModDust
-    {
-        public override string Texture => AssetDirectory.Dust + "NeedlerDustThree";
-        public override void OnSpawn(Dust dust)
-        {
-            dust.noGravity = true;
-            dust.scale *= Main.rand.NextFloat(0.8f, 2f);
-            dust.frame = new Rectangle(0, 0, 34, 36);
-        }
+			if (dust.alpha > 100)
+			{
+				dust.scale *= 0.975f;
+				dust.alpha += 2;
+			}
+			else
+			{
+				Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.1f);
+				dust.scale *= 0.985f;
+				dust.alpha += 4;
+			}
 
-        public override Color? GetAlpha(Dust dust, Color lightColor)
-        {
-            Color gray = new Color(25, 25, 25);
-            Color ret;
-            if (dust.alpha < 40)
-                ret = Color.Lerp(Color.Yellow, Color.Orange, dust.alpha / 40f);
-            else if (dust.alpha < 80)
-                ret = Color.Lerp(Color.Orange, gray, (dust.alpha - 40) / 40f);
-            else
-                ret = gray;
+			dust.position += dust.velocity;
 
-            return ret * ((255 - dust.alpha) / 255f);
-        }
+			if (dust.alpha >= 255)
+				dust.active = false;
 
-        public override bool Update(Dust dust)
-        {
-            if (dust.velocity.Length() > 3)
-                dust.velocity *= 0.85f;
-            else
-                dust.velocity *= 0.92f;
+			return false;
+		}
+	}
 
-            if (dust.alpha > 60)
-            {
-                dust.scale += 0.01f;
-                dust.alpha += 6;
-            }
-            else
-            {
-                Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.1f);
-                dust.scale *= 0.985f;
-                dust.alpha += 4;
-            }
+	public class CoachGunDustThree : ModDust
+	{
+		public override string Texture => AssetDirectory.Dust + "NeedlerDust";
+		public override void OnSpawn(Dust dust)
+		{
+			dust.noGravity = true;
+			dust.scale *= Main.rand.NextFloat(0.8f, 2f);
+			dust.frame = new Rectangle(0, 0, 34, 36);
+		}
 
-            dust.position += dust.velocity;
+		public override Color? GetAlpha(Dust dust, Color lightColor)
+		{
+			var gray = new Color(25, 25, 25);
+			Color ret;
+			if (dust.alpha < 40)
+				ret = Color.Lerp(Color.Yellow, Color.Orange, dust.alpha / 40f);
+			else if (dust.alpha < 80)
+				ret = Color.Lerp(Color.Orange, gray, (dust.alpha - 40) / 40f);
+			else
+				ret = gray;
 
-            if (dust.alpha >= 255)
-                dust.active = false;
+			return ret * ((255 - dust.alpha) / 255f);
+		}
 
-            return false;
-        }
-    }
+		public override bool Update(Dust dust)
+		{
+			if (dust.velocity.Length() > 3)
+				dust.velocity *= 0.85f;
+			else
+				dust.velocity *= 0.92f;
 
-    class CoachGunDustFour : ModDust
-    {
-        public override string Texture => "StarlightRiver/Assets/Keys/GlowVerySoft";
+			if (dust.alpha > 60)
+			{
+				dust.scale += 0.01f;
+				dust.alpha += 6;
+			}
+			else
+			{
+				Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.1f);
+				dust.scale *= 0.985f;
+				dust.alpha += 4;
+			}
 
-        public override Color? GetAlpha(Dust dust, Color lightColor)
-        {
-            var curveOut = Curve(1 - dust.fadeIn / 40f);
-            var color = Color.Lerp(dust.color, new Color(255, 100, 0), dust.fadeIn / 30f);
-            dust.color = color * (curveOut + 0.4f);
-            return dust.color;
-        }
+			dust.position += dust.velocity;
 
-        float Curve(float input) //shrug it works, just a cubic regression for a nice looking curve
-        {
-            return -2.65f + 19.196f * input - 32.143f * input * input + 15.625f * input * input * input;
-        }
+			if (dust.alpha >= 255)
+				dust.active = false;
 
-        public override void OnSpawn(Dust dust)
-        {
-            dust.color = Color.Transparent;
-            dust.fadeIn = 0;
-            dust.noLight = false;
-            dust.scale *= 0.3f;
-            dust.frame = new Rectangle(0, 0, 64, 64);
-            dust.velocity *= 2;
-            dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
-        }
+			return false;
+		}
+	}
 
-        public override bool Update(Dust dust)
-        {
-            if (dust.color == Color.Transparent)
-                dust.position -= Vector2.One * 32 * dust.scale;
+	class CoachGunDustGlow : ModDust
+	{
+		public override string Texture => "StarlightRiver/Assets/Keys/GlowVerySoft";
 
-            //dust.rotation += dust.velocity.Y * 0.1f;
-            dust.position += dust.velocity;
-            dust.velocity *= 0.95f;
-            dust.shader.UseColor(dust.color);
-            dust.scale *= 0.97f;
-            dust.fadeIn++;
+		public override Color? GetAlpha(Dust dust, Color lightColor)
+		{
+			float curveOut = Curve(1 - dust.fadeIn / 40f);
+			var color = Color.Lerp(dust.color, new Color(255, 100, 0), dust.fadeIn / 30f);
+			dust.color = color * (curveOut + 0.4f);
+			return dust.color;
+		}
 
-            Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.6f);
+		float Curve(float input) //shrug it works, just a cubic regression for a nice looking curve
+		{
+			return -2.65f + 19.196f * input - 32.143f * input * input + 15.625f * input * input * input;
+		}
 
-            if (dust.fadeIn > 40)
-                dust.active = false;
+		public override void OnSpawn(Dust dust)
+		{
+			dust.color = Color.Transparent;
+			dust.fadeIn = 0;
+			dust.noLight = false;
+			dust.scale *= 0.3f;
+			dust.frame = new Rectangle(0, 0, 64, 64);
+			dust.velocity *= 2;
+			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
+		}
 
-            return false;
-        }
-    }
+		public override bool Update(Dust dust)
+		{
+			if (dust.color == Color.Transparent)
+				dust.position -= Vector2.One * 32 * dust.scale;
 
-    class CoachGunSparks : ModDust
-    {
-        public override string Texture => "StarlightRiver/Assets/Keys/GlowVerySoft";
+			//dust.rotation += dust.velocity.Y * 0.1f;
+			dust.position += dust.velocity;
+			dust.velocity *= 0.95f;
+			dust.shader.UseColor(dust.color);
+			dust.scale *= 0.97f;
+			dust.fadeIn++;
 
-        public override void OnSpawn(Dust dust)
-        {
-            dust.noLight = false;
-            dust.noGravity = true;
-            dust.scale *= 0.15f;
-            dust.frame = new Rectangle(0, 0, 64, 64);
-            dust.color = Color.Lerp(Color.Red, Color.Yellow, Main.rand.NextFloat());
-            dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
-        }
+			Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.6f);
 
-        public override Color? GetAlpha(Dust dust, Color lightColor)
-        {
-            return Color.Lerp(dust.color, Color.Orange, dust.fadeIn / 45f);
-        }
+			if (dust.fadeIn > 40)
+				dust.active = false;
 
-        public override bool Update(Dust dust)
-        {
-            dust.shader.UseColor(dust.color);
-            dust.position += dust.velocity;
-            dust.velocity.Y += 0.03f;
-            dust.scale *= 0.97f;
+			return false;
+		}
+	}
 
-            dust.fadeIn++;
+	class CoachGunSparks : ModDust
+	{
+		public override string Texture => "StarlightRiver/Assets/Keys/GlowVerySoft";
 
-            Lighting.AddLight(dust.position, dust.color.ToVector3() * dust.scale);
+		public override void OnSpawn(Dust dust)
+		{
+			dust.noLight = false;
+			dust.noGravity = true;
+			dust.scale *= 0.15f;
+			dust.frame = new Rectangle(0, 0, 64, 64);
+			dust.color = Color.Lerp(Color.Red, Color.Yellow, Main.rand.NextFloat());
+			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
+		}
 
-            if (dust.fadeIn > 45)
-                dust.active = false;
-            return false;
-        }
-    }
+		public override Color? GetAlpha(Dust dust, Color lightColor)
+		{
+			return Color.Lerp(dust.color, Color.Orange, dust.fadeIn / 45f);
+		}
 
-    public class CoachGunDustFive : ModDust
-    {
-        public override string Texture => AssetDirectory.Dust + "NeedlerDust";
-        public override void OnSpawn(Dust dust)
-        {
-            dust.noGravity = true;
-            dust.scale *= Main.rand.NextFloat(0.8f, 2f);
-            dust.frame = new Rectangle(0, 0, 34, 36);
-        }
+		public override bool Update(Dust dust)
+		{
+			dust.shader.UseColor(dust.color);
+			dust.position += dust.velocity;
+			dust.velocity.Y += 0.03f;
+			dust.scale *= 0.97f;
 
-        public override Color? GetAlpha(Dust dust, Color lightColor)
-        {
-            Color gray = new Color(25, 25, 25);
-            Color ret;
-            if (dust.alpha < 80)
-            {
-                ret = Color.Lerp(Color.Yellow, Color.Orange, dust.alpha / 80f);
-            }
-            else if (dust.alpha < 140)
-            {
-                ret = Color.Lerp(Color.Orange, gray, (dust.alpha - 80) / 80f);
-            }
-            else
-                ret = gray;
-            return ret * ((255 - dust.alpha) / 255f);
-        }
+			dust.fadeIn++;
 
-        public override bool Update(Dust dust)
-        {
-            if (Math.Abs(dust.velocity.X) > 7)
-                dust.velocity.X *= 0.85f;
-            else
-                dust.velocity.X *= 0.92f;
+			Lighting.AddLight(dust.position, dust.color.ToVector3() * dust.scale);
 
-            if (dust.velocity.Y > -2)
-                dust.velocity.Y -= 0.1f;
+			if (dust.fadeIn > 45)
+				dust.active = false;
+			return false;
+		}
+	}
 
-            if (dust.velocity.Y > 3.5f)
-                dust.velocity.Y = 3.5f;
+	public class CoachGunDustFive : ModDust
+	{
+		public override string Texture => AssetDirectory.Dust + "NeedlerDust";
+		public override void OnSpawn(Dust dust)
+		{
+			dust.noGravity = true;
+			dust.scale *= Main.rand.NextFloat(0.8f, 2f);
+			dust.frame = new Rectangle(0, 0, 34, 36);
+		}
 
-            else
-                dust.velocity.Y *= 0.92f;
+		public override Color? GetAlpha(Dust dust, Color lightColor)
+		{
+			var gray = new Color(25, 25, 25);
+			Color ret;
+			if (dust.alpha < 80)
+			{
+				ret = Color.Lerp(Color.Yellow, Color.Orange, dust.alpha / 80f);
+			}
+			else if (dust.alpha < 140)
+			{
+				ret = Color.Lerp(Color.Orange, gray, (dust.alpha - 80) / 80f);
+			}
+			else
+			{
+				ret = gray;
+			}
 
-            if (dust.alpha > 100)
-            {
-                dust.scale += 0.01f;
-                dust.alpha += 2;
-            }
-            else
-            {
-                Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.1f);
-                dust.scale *= 0.985f;
-                dust.alpha += 4;
-            }
-            dust.position += dust.velocity;
-            if (dust.alpha >= 255)
-                dust.active = false;
+			return ret * ((255 - dust.alpha) / 255f);
+		}
 
-            return false;
-        }
-    }
-    public class CoachSmoke : ModDust
-    {
-        public override string Texture => AssetDirectory.Dust + "NeedlerDust";
-        public override void OnSpawn(Dust dust)
-        {
-            dust.noGravity = true;
-            dust.scale *= Main.rand.NextFloat(0.8f, 2f);
-            dust.frame = new Rectangle(0, 0, 34, 36);
-            dust.rotation = Main.rand.NextFloat(6.28f);
-        }
+		public override bool Update(Dust dust)
+		{
+			if (Math.Abs(dust.velocity.X) > 7)
+				dust.velocity.X *= 0.85f;
+			else
+				dust.velocity.X *= 0.92f;
 
-        public override Color? GetAlpha(Dust dust, Color lightColor)
-        {
-            return dust.color;
-        }
+			if (dust.velocity.Y > -2)
+				dust.velocity.Y -= 0.1f;
 
-        public override bool Update(Dust dust)
-        {
-            dust.velocity *= 0.98f;
-            dust.velocity.X *= 0.95f;
+			if (dust.velocity.Y > 3.5f)
+				dust.velocity.Y = 3.5f;
 
-            if (dust.velocity.Y > -2)
-                dust.velocity.Y -= 0.1f;
+			else
+				dust.velocity.Y *= 0.92f;
 
-            dust.color *= 0.98f;
+			if (dust.alpha > 100)
+			{
+				dust.scale += 0.01f;
+				dust.alpha += 2;
+			}
+			else
+			{
+				Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.1f);
+				dust.scale *= 0.985f;
+				dust.alpha += 4;
+			}
 
-            if (dust.alpha > 100)
-            {
-                dust.scale *= 0.975f;
-                dust.alpha += 2;
-            }
-            else
-            {
-                Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.1f);
-                dust.scale *= 0.985f;
-                dust.alpha += 4;
-            }
+			dust.position += dust.velocity;
+			if (dust.alpha >= 255)
+				dust.active = false;
 
-            dust.position += dust.velocity;
-            dust.rotation += 0.01f;
+			return false;
+		}
+	}
+	public class CoachSmoke : ModDust
+	{
+		public override string Texture => AssetDirectory.Dust + "NeedlerDust";
+		public override void OnSpawn(Dust dust)
+		{
+			dust.noGravity = true;
+			dust.scale *= Main.rand.NextFloat(0.8f, 2f);
+			dust.frame = new Rectangle(0, 0, 34, 36);
+			dust.rotation = Main.rand.NextFloat(6.28f);
+		}
 
-            if (dust.alpha >= 255)
-                dust.active = false;
+		public override Color? GetAlpha(Dust dust, Color lightColor)
+		{
+			return dust.color;
+		}
 
-            return false;
-        }
-    }
+		public override bool Update(Dust dust)
+		{
+			dust.velocity *= 0.98f;
+			dust.velocity.X *= 0.95f;
+
+			if (dust.velocity.Y > -2)
+				dust.velocity.Y -= 0.1f;
+
+			dust.color *= 0.98f;
+
+			if (dust.alpha > 100)
+			{
+				dust.scale *= 0.975f;
+				dust.alpha += 2;
+			}
+			else
+			{
+				Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.1f);
+				dust.scale *= 0.985f;
+				dust.alpha += 4;
+			}
+
+			dust.position += dust.velocity;
+			dust.rotation += 0.01f;
+
+			if (dust.alpha >= 255)
+				dust.active = false;
+
+			return false;
+		}
+	}
 }

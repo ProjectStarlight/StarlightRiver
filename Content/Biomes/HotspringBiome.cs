@@ -1,15 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Codex.Entries;
-using StarlightRiver.Content.Tiles.Underground;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-using System;
-using System.Collections.Generic;
+﻿using StarlightRiver.Content.Tiles.Underground;
+using StarlightRiver.Core.Systems.DummyTileSystem;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Biomes
 {
@@ -26,7 +17,7 @@ namespace StarlightRiver.Content.Biomes
 
 		public override bool IsBiomeActive(Player player)
 		{
-			return Main.projectile.Any(n => n.active && n.type == ModContent.ProjectileType<HotspringFountainDummy>() && Vector2.Distance(player.Center, n.Center) < 30 * 16);
+			return DummySystem.dummies.Any(n => n.active && n is HotspringFountainDummy && Vector2.Distance(player.Center, n.Center) < 30 * 16);
 		}
 	}
 }

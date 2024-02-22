@@ -1,40 +1,42 @@
-﻿using Terraria.ModLoader.Config;
+﻿using System.ComponentModel;
+using Terraria.ModLoader.Config;
 
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-using System.ComponentModel;
-
-namespace StarlightRiver.Configs
+namespace StarlightRiver.Content.Configs
 {
-    public enum OverlayState
-    {
-        AlwaysOn = 0,
-        WhileNotFull = 1,
-        WhileUsing = 2,
-        Never = 3
-    }
-
-    public enum KeywordStyle
-	{       
-        Colors = 0,
-        Brackets = 1,
-        Both = 2,
-        Neither = 3
+	public enum OverlayState
+	{
+		AlwaysOn = 0,
+		WhileNotFull = 1,
+		WhileUsing = 2,
+		Never = 3
 	}
 
-    public class GUIConfig : ModConfig
-    {
-        public override ConfigScope Mode => ConfigScope.ClientSide;
+	public enum KeywordStyle
+	{
+		Colors = 0,
+		Brackets = 1,
+		Both = 2,
+		Neither = 3
+	}
 
-        [Label("Overhead Stamina Display")]
-        [DrawTicks]
-        [Tooltip("When/If the overhead stamina meter should display")]
-        [DefaultValue(typeof(OverlayState), "WhileNotFull")]
-        public OverlayState OverheadStaminaState = OverlayState.WhileNotFull;
+	public class GUIConfig : ModConfig
+	{
+		public override ConfigScope Mode => ConfigScope.ClientSide;
 
-        [Label("Keyword Style")]
-        [DrawTicks]
-        [Tooltip("How keywords should be displayed in tooltips")]
-        public KeywordStyle KeywordStyle = KeywordStyle.Both;
-    }
+		[Label("Overhead Starlight Display")]
+		[DrawTicks]
+		[Tooltip("When/If the overhead starlight meter should display")]
+		[DefaultValue(typeof(OverlayState), "WhileNotFull")]
+		public OverlayState OverheadStaminaState = OverlayState.WhileNotFull;
+
+		[Label("Keyword Style")]
+		[DrawTicks]
+		[Tooltip("How keywords should be displayed in tooltips")]
+		public KeywordStyle KeywordStyle = KeywordStyle.Both;
+
+		[Label("Indicate Items with Added Recipes")]
+		[Tooltip("Displays a star icon in vanilla item tooltips if used in Starlight River crafting recipes")]
+		[DefaultValue(true)]
+		public bool AddMaterialIndicator;
+	}
 }

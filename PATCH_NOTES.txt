@@ -1,0 +1,4 @@
+# Starlight River 0.2.8
+
+## Fixes
+- Fixed drawblack in vitric biome (no more visible black squares)

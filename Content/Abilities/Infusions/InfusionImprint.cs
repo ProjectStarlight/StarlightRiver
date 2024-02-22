@@ -1,211 +1,280 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Graphics;
-using StarlightRiver.Content.Abilities;
+﻿using ReLogic.Graphics;
 using StarlightRiver.Content.GUI;
-using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Abilities.AbilityContent.Infusions
+namespace StarlightRiver.Content.Abilities.Infusions
 {
 	public abstract class InfusionImprint : InfusionItem
-    {
-        public override Type AbilityType => null;
+	{
+		public List<InfusionObjective> objectives = new();
 
-        public override bool Equippable => false;
+		/// <summary>
+		/// The asset location of the preview video for this imprint
+		/// </summary>
+		public virtual string PreviewVideo => AssetDirectory.Debug;
 
-        public List<InfusionObjective> objectives = new List<InfusionObjective>();
+		/// <summary>
+		/// The item type of the infusion this will transform to
+		/// </summary>
+		public virtual int TransformTo => ItemID.DirtBlock;
 
-        public virtual string PreviewVideo => AssetDirectory.Debug;
-        public virtual int TransformTo => ItemID.DirtBlock;
-        public virtual bool Visible => true;
+		/// <summary>
+		/// If this infusion imprint should be an option from the imprint creation GUI
+		/// </summary>
+		public virtual bool Visible => true;
+
+		public override Type AbilityType => null;
+
+		public override bool Equippable => false;
 
 		public sealed override void SetStaticDefaults()
-        {
-            SafeSetStaticDefaults();
-            InfusionMaker.infusionOptions.Add(Item.type);
-        }
+		{
+			SafeSetStaticDefaults();
+			InfusionMaker.infusionOptions.Add(Item.type);
+		}
 
-        public virtual void SafeSetStaticDefaults() { }
+		public virtual void SafeSetStaticDefaults() { }
 
-        public override void SetDefaults()
-        {
-            Item.width = 20;
-            Item.height = 14;
-            Item.rare = ItemRarityID.Blue;
-        }
+		public override void SetDefaults()
+		{
+			Item.width = 20;
+			Item.height = 14;
+			Item.rare = ItemRarityID.Blue;
+		}
 
-        public InfusionObjective FindObjective(Player Player, string objectiveText)
-        {
-            for (int k = 0; k < Player.inventory.Length; k++)
-            {
-                var Item = Player.inventory[k];
+		/// <summary>
+		/// Gets the first objective instance on any imprint in the given player's inventory
+		/// </summary>
+		/// <param name="Player">The player to scan the inventory of</param>
+		/// <param name="objectiveID">The ID to match the objective by</param>
+		/// <returns>The objective instance if found, null otherwise</returns>
+		public static InfusionObjective FindObjective(Player Player, string objectiveID)
+		{
+			for (int k = 0; k < Player.inventory.Length; k++)
+			{
+				Item Item = Player.inventory[k];
 
-                if (Item.ModItem is InfusionImprint)
-                {
-                    var objective = (Item.ModItem as InfusionImprint).objectives.FirstOrDefault(n => n.text == objectiveText);
+				if (Item.ModItem is InfusionImprint)
+				{
+					InfusionObjective objective = (Item.ModItem as InfusionImprint).objectives.FirstOrDefault(n => n.ID == objectiveID);
 
-                    if (objective != null)
-                        return objective;
-                }
-            }
+					if (objective != null)
+						return objective;
+				}
+			}
 
-            return null;
-        }
+			return null;
+		}
 
-        public override void UpdateInventory(Player Player)
-        {
-            bool transform = true;
+		/// <summary>
+		/// Gets the instance of an objective on this specific imprint by ID. Used for tooltips
+		/// </summary>
+		/// <param name="objectiveID">The ID to match the objective by</param>
+		/// <returns></returns>
+		public InfusionObjective FindObjectiveOnThis(string objectiveID)
+		{
+			return objectives.FirstOrDefault(n => n.ID == objectiveID);
+		}
 
-            if (objectives.Count <= 0)
-                return;
+		/// <summary>
+		/// Handles checking the progress of objectives, and transforming when appropriate
+		/// </summary>
+		/// <param name="Player"></param>
+		public override void UpdateInventory(Player Player)
+		{
+			bool transform = true;
 
-            foreach (var objective in objectives)
-            {
-                if (objective.progress < objective.maxProgress) 
-                    transform = false;
+			if (objectives.Count <= 0)
+				return;
 
-                if (objective.progress > objective.maxProgress)
-                    objective.progress = objective.maxProgress;
-            }
+			foreach (InfusionObjective objective in objectives)
+			{
+				if (objective.progress < objective.maxProgress)
+					transform = false;
 
-            if (transform)
-            {
-                Item.SetDefaults(TransformTo);
-                Item.newAndShiny = true;
-                Main.NewText("Objectives Complete! You've obtained: " + Item.Name);
-            }           
-        }
+				if (objective.progress > objective.maxProgress)
+					objective.progress = objective.maxProgress;
+			}
 
-        public override bool PreDrawTooltip(ReadOnlyCollection<TooltipLine> lines, ref int x, ref int y)
-        {
-            var pos = new Vector2(x, y);
+			if (transform)
+			{
+				Item.SetDefaults(TransformTo);
+				Item.newAndShiny = true;
+				Main.NewText("Objectives Complete! You've obtained: " + Item.Name);
+			}
+		}
 
-            Utils.DrawBorderString(Main.spriteBatch, "Imprinted slate: " + Item.Name, pos, new Color(170, 120, 255).MultiplyRGB(Main.MouseTextColorReal));
-            pos.Y += 28;
+		/// <summary>
+		/// This renders the custom tooltips of objective text/bar pairs instead of the standard tooltip
+		/// </summary>
+		/// <param name="line"></param>
+		/// <param name="yOffset"></param>
+		/// <returns></returns>
+		public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset)
+		{
+			if (line.Mod == Mod.Name && line.Name.StartsWith("SLRObjective_"))
+			{
+				string[] parts = line.Name.Split('_');
 
-            Utils.DrawBorderString(Main.spriteBatch, "Complete objectives to transform into an infusion", pos, Main.MouseTextColorReal);
-            pos.Y += 28;
+				if (parts.Length == 2)
+				{
+					string id = parts[1];
+					InfusionObjective objective = FindObjectiveOnThis(id);
 
-            foreach (var objective in objectives)
-            {
-                objective.DrawTextAndBar(Main.spriteBatch, pos);
-                pos.Y += 28;
-            }
+					if (objective is null)
+					{
+						Mod.Logger.Error("Invalid objective key in infusion tooltip!");
+						Item.TurnToAir();
+						return false;
+					}
 
-            return false;
-        }
+					yOffset = line.Y - (int)objective.DrawTextAndBar(Main.spriteBatch, new Vector2(line.X, line.Y));
+					return false;
+				}
+				else
+				{
+					Mod.Logger.Error("Invalid objective key in infusion tooltip!");
+					Item.TurnToAir();
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			tooltips.Find(n => n.Name == "ItemName").Text = "Imprinted slate: " + Item.Name;
+			tooltips.Find(n => n.Name == "ItemName").OverrideColor = new Color(170, 120, 255);
+
+			tooltips.Add(new(Mod, "SLRInfo", "Complete objectives to transform into an infusion"));
+
+			foreach (InfusionObjective objective in objectives)
+			{
+				tooltips.Add(new(Mod, "SLRObjective_" + objective.ID, objective.text));
+			}
+		}
 
 		public override ModItem Clone(Item Item)
 		{
-            var newClone = base.Clone(Item);
+			ModItem newClone = base.Clone(Item);
 
-            if (newClone is InfusionImprint)
-                (newClone as InfusionImprint).objectives = objectives;
+			if (newClone is InfusionImprint)
+				(newClone as InfusionImprint).objectives = objectives;
 
-            return newClone;
-        }
+			return newClone;
+		}
 
-        public override void SaveData(TagCompound tag)
-        {
-            List<TagCompound> objectiveTags = new List<TagCompound>();
+		public override void SaveData(TagCompound tag)
+		{
+			var objectiveTags = new List<TagCompound>();
 
-            foreach (InfusionObjective obj in objectives)
-            {
-                var tag2 = new TagCompound();
-                obj.SaveData(tag2);
-                objectiveTags.Add(tag2);
-            }
+			foreach (InfusionObjective obj in objectives)
+			{
+				var tag2 = new TagCompound();
+				obj.SaveData(tag2);
+				objectiveTags.Add(tag2);
+			}
 
-            tag["objectives"] = objectiveTags;
-        }
+			tag["objectives"] = objectiveTags;
+		}
 
-        public override void LoadData(TagCompound tag)
-        {
-            objectives.Clear();
+		public override void LoadData(TagCompound tag)
+		{
+			objectives.Clear();
 
-            var tags = tag.GetList<TagCompound>("objectives");
+			IList<TagCompound> tags = tag.GetList<TagCompound>("objectives");
 
-            foreach (TagCompound objectiveTag in tags)
-            {
-                var objective = new InfusionObjective("Invalid Objective", 1);
-                objective.LoadData(objectiveTag);
-                objectives.Add(objective);
-            }
-        }
+			foreach (TagCompound objectiveTag in tags)
+			{
+				var objective = new InfusionObjective("Invalid Objective", 1, "null");
+				objective.LoadData(objectiveTag);
+				objectives.Add(objective);
+			}
+		}
 	}
 
-    public class InfusionObjective
-    {
-        public float progress;
-        public string text;
-        public float maxProgress;
+	/// <summary>
+	/// This class represents an objective in an infusion imprint
+	/// </summary>
+	public class InfusionObjective
+	{
+		public float progress;
+		public float maxProgress;
 
-        public InfusionObjective(string text, float maxProgress, Color color = default)
-        {
-            this.text = text;
-            this.maxProgress = maxProgress;
-        }
+		public string text;
+		public string ID;
 
-        public void SaveData(TagCompound tag)
-        {
-            tag["progress"] = progress;
-            tag["maxProgress"] = maxProgress;
-            tag["text"] = text;
-        }
-
-        public void LoadData(TagCompound tag)
+		public InfusionObjective(string text, float maxProgress, string iD)
 		{
-            progress = tag.GetFloat("progress");
-            maxProgress = tag.GetFloat("maxProgress");
-            text = tag.GetString("text");
-        }
+			this.text = text;
+			this.maxProgress = maxProgress;
+			ID = iD;
+		}
 
-        public void DrawBar(SpriteBatch sb, Vector2 pos)
-        {
-            var tex = Request<Texture2D>(AssetDirectory.GUI + "ChungusMeter").Value;
-            sb.Draw(tex, pos, Color.White);
-        }
-
-        public float DrawText(SpriteBatch sb, Vector2 pos)
+		public void SaveData(TagCompound tag)
 		{
-            var wrapped = Helpers.Helper.WrapString(text + ": " + progress + "/" + maxProgress, 130, Terraria.GameContent.FontAssets.ItemStack.Value, 0.8f);
-            sb.DrawString(Terraria.GameContent.FontAssets.ItemStack.Value, wrapped, pos, Color.White, 0, Vector2.Zero, 0.8f, 0, 0);
+			tag["progress"] = progress;
+			tag["maxProgress"] = maxProgress;
+			tag["text"] = text;
+			tag["ID"] = ID;
+		}
 
-            return Terraria.GameContent.FontAssets.ItemStack.Value.MeasureString(wrapped).Y * 0.8f;
-        }
+		public void LoadData(TagCompound tag)
+		{
+			progress = tag.GetFloat("progress");
+			maxProgress = tag.GetFloat("maxProgress");
+			text = tag.GetString("text");
+			ID = tag.GetString("ID");
+		}
 
-        public float DrawTextAndBar(SpriteBatch sb, Vector2 pos) //For the UI only
-        {
-            var wrapped = (">  " + text + ": " + progress + "/" + maxProgress);
-            Utils.DrawBorderString(sb, wrapped, pos, progress >= maxProgress ? new Color(140, 140, 140).MultiplyRGB(Main.MouseTextColorReal) : Main.MouseTextColorReal);
-            pos.X += Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(wrapped).X + 8;
-            pos.Y += 2;
+		/// <summary>
+		/// renders the text of this objective. Used by the infusion imprint making GUI
+		/// </summary>
+		/// <param name="sb">the spriteBatch to draw the text with</param>
+		/// <param name="pos">the top-left of the text</param>
+		/// <returns>the botttom Y position of the text, can be used to chain calls to this to draw a vertical list</returns>
+		public float DrawText(SpriteBatch sb, Vector2 pos)
+		{
+			string wrapped = Helpers.Helper.WrapString(text + ": " + progress + "/" + maxProgress, 130, Terraria.GameContent.FontAssets.ItemStack.Value, 0.8f);
+			sb.DrawString(Terraria.GameContent.FontAssets.ItemStack.Value, wrapped, pos, Color.White, 0, Vector2.Zero, 0.8f, 0, 0);
 
-            var tex = Request<Texture2D>(AssetDirectory.GUI + "ChungusMeter").Value;
-            var texFill = Request<Texture2D>(AssetDirectory.GUI + "ChungusMeterFill").Value;
-            var fill = (int)(progress / maxProgress * texFill.Width);
+			return Terraria.GameContent.FontAssets.ItemStack.Value.MeasureString(wrapped).Y * 0.8f;
+		}
 
-            var fillRect = new Rectangle((int)pos.X + 14, (int)pos.Y + 4, fill, texFill.Height);
-            var fillSource = new Rectangle(0, 0, (int)(progress / maxProgress * texFill.Width), texFill.Height);
+		/// <summary>
+		/// This renders the tooltip line of the objective on the infusion imprint item
+		/// </summary>
+		/// <param name="sb">the spriteBatch used to render the text/bar pair</param>
+		/// <param name="pos">the base position the text and bar should draw at</param>
+		/// <returns>the y position of the bottom of the fully drawn section, can be used to chain calls to this to draw a vertical list</returns>
+		public float DrawTextAndBar(SpriteBatch sb, Vector2 pos) //For the UI only
+		{
+			string wrapped = "- " + text + ": " + progress + "/" + maxProgress;
+			Utils.DrawBorderString(sb, wrapped, pos, progress >= maxProgress ? new Color(140, 140, 140).MultiplyRGB(Main.MouseTextColorReal) : Main.MouseTextColorReal);
+			pos.X += Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(wrapped).X + 8;
+			pos.Y += 2;
 
-            var color = progress >= maxProgress ? Color.Lerp(new Color(80, 180, 255), new Color(120, 255, 255), 0.5f + (float)Math.Sin(Main.GameUpdateCount * 0.2f) * 0.5f) : new Color(80, 180, 255);
-            sb.Draw(texFill, fillRect, fillSource, color);
-            sb.Draw(tex, pos, Color.White);
+			Texture2D tex = Request<Texture2D>(AssetDirectory.GUI + "ChungusMeter").Value;
+			Texture2D texFill = Request<Texture2D>(AssetDirectory.GUI + "ChungusMeterFill").Value;
+			int fill = (int)(progress / maxProgress * texFill.Width);
 
-            if(fill > 4)
-                sb.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, new Rectangle((int)pos.X + 14 + fill, (int)pos.Y + 4, 2, 10), Color.White);
+			var fillRect = new Rectangle((int)pos.X + 14, (int)pos.Y + 4, fill, texFill.Height);
+			var fillSource = new Rectangle(0, 0, (int)(progress / maxProgress * texFill.Width), texFill.Height);
 
-            return pos.Y;
-        }
-    }
+			Color color = progress >= maxProgress ? Color.Lerp(new Color(80, 180, 255), new Color(120, 255, 255), 0.5f + (float)Math.Sin(Main.GameUpdateCount * 0.2f) * 0.5f) : new Color(80, 180, 255);
+			sb.Draw(texFill, fillRect, fillSource, color);
+			sb.Draw(tex, pos, Color.White);
 
+			if (fill > 4)
+				sb.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, new Rectangle((int)pos.X + 14 + fill, (int)pos.Y + 4, 2, 10), Color.White);
+
+			return pos.Y;
+		}
+	}
 }

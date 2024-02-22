@@ -1,17 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Mono.Cecil.Cil;
+using MonoMod.Cil;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria.Graphics.Effects;
-using Terraria;
-using MonoMod.Cil;
-using Mono.Cecil.Cil;
-using Terraria.GameContent.UI;
-using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Core;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.CustomHooks
@@ -38,17 +29,14 @@ namespace StarlightRiver.Content.CustomHooks
 			WaterAddonHandler.addons.Add(this);
 		}
 
-		public void Unload()
-		{
-			WaterAddonHandler.addons.Remove(this);
-		}
+		public void Unload() { }
 	}
 
 	class WaterAddonHandler : HookGroup
 	{
-		public static List<WaterAddon> addons = new List<WaterAddon>();
+		public static List<WaterAddon> addons = new();
 
-		public static WaterAddon activeAddon; 
+		public static WaterAddon activeAddon;
 
 		public override float Priority => 1.1f;
 
@@ -56,7 +44,7 @@ namespace StarlightRiver.Content.CustomHooks
 		{
 			StarlightPlayer.PostUpdateEvent += UpdateActiveAddon;
 
-			IL.Terraria.Main.DoDraw += AddWaterShader;
+			IL_Main.DoDraw += AddWaterShader;
 			//IL.Terraria.Main.DrawTiles += SwapBlockTexture;//TODO: Figure out where this logic moved in vanilla
 		}
 
@@ -67,8 +55,8 @@ namespace StarlightRiver.Content.CustomHooks
 
 		public override void Unload()
 		{
-			addons = null;
-			activeAddon = null;
+			addons ??= null;
+			activeAddon ??= null;
 		}
 
 		private void SwapBlockTexture(ILContext il)
@@ -84,7 +72,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private Texture2D LavaBlockBody(Texture2D arg, int x, int y)
 		{
-			var tile = Framing.GetTileSafely(x, y);
+			Tile tile = Framing.GetTileSafely(x, y);
 
 			if (tile.LiquidType != LiquidID.Water)
 				return arg;
@@ -98,7 +86,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private void AddWaterShader(ILContext il)
 		{
-			ILCursor c = new ILCursor(il);
+			var c = new ILCursor(il);
 
 			//back target
 			c.TryGotoNext(n => n.MatchLdfld<Main>("backWaterTarget"));
@@ -128,7 +116,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private void NewDrawBack()
 		{
-			var sb = Main.spriteBatch;
+			SpriteBatch sb = Main.spriteBatch;
 
 			if (activeAddon != null)
 			{
@@ -141,13 +129,13 @@ namespace StarlightRiver.Content.CustomHooks
 			if (activeAddon != null)
 			{
 				sb.End();
-				sb.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+				sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
 			}
 		}
 
 		private void NewDraw()
 		{
-			var sb = Main.spriteBatch;
+			SpriteBatch sb = Main.spriteBatch;
 
 			if (activeAddon != null)
 			{
@@ -160,7 +148,7 @@ namespace StarlightRiver.Content.CustomHooks
 			if (activeAddon != null)
 			{
 				sb.End();
-				sb.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+				sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
 			}
 		}
 	}

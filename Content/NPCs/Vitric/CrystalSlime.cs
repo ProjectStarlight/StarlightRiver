@@ -1,138 +1,173 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Dusts;
+﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
-using StarlightRiver.Core;
+using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Dusts;
+using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Helpers;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
+using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.ItemDropRules;
+using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric
 {
 	internal class CrystalSlime : ModNPC
-    {
-        public override string Texture => AssetDirectory.VitricNpc + "CrystalSlime";
+	{
+		public int badHits;
+		private bool performedSpawnEffects = false;
 
-        public ref float Shield => ref NPC.ai[1];
+		public override string Texture => AssetDirectory.VitricNpc + "CrystalSlime";
 
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("Crystal Slime");
-            Main.npcFrameCount[NPC.type] = 2;
-        }
+		public ref float Shield => ref NPC.ai[1];
 
-        public override void SetDefaults()
-        {
-            NPC.width = 48;
-            NPC.height = 32;
-            NPC.damage = 10;
-            NPC.defense = 5;
-            NPC.lifeMax = 25;
-            NPC.HitSound = SoundID.NPCHit42;
-            NPC.DeathSound = SoundID.NPCDeath1;
-            NPC.value = 10f;
-            NPC.knockBackResist = 0.6f;
-            NPC.aiStyle = 1;
-            NPC.immortal = true;
-        }
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Crystal Slime");
+			Main.npcFrameCount[NPC.type] = 2;
+		}
 
-        public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
-        {
-            bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
-            {
-                Bestiary.SLRSpawnConditions.VitricDesert,
-                new FlavorTextBestiaryInfoElement("[PH] Entry")
-            });
-        }
+		public override void SetDefaults()
+		{
+			NPC.width = 48;
+			NPC.height = 32;
+			NPC.damage = 10;
+			NPC.defense = 5;
+			NPC.lifeMax = 25;
+			NPC.HitSound = SoundID.NPCHit42;
+			NPC.DeathSound = SoundID.NPCDeath1;
+			NPC.value = 10f;
+			NPC.knockBackResist = 0.6f;
+			NPC.aiStyle = 1;
+			NPC.immortal = true;
+		}
 
-        public override Color? GetAlpha(Color drawColor)
-        {
-            return Lighting.GetColor((int)NPC.position.X / 16, (int)NPC.position.Y / 16) * 0.75f;
-        }
+		public override void OnSpawn(IEntitySource source)
+		{
+			Shield = 1; // make sure it spawns with a shield even if the spawnNPC doesn't include the shield value
+		}
 
-        public override void AI()
-        {
-            NPC.TargetClosest(true);
-            Player Player = Main.player[NPC.target];
-            AbilityHandler mp = Player.GetHandler();
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
+			{
+				Bestiary.SLRSpawnConditions.VitricDesert,
+				new FlavorTextBestiaryInfoElement("An extremely elusive specimen. It's taken in a large amount of crystals and Starlight energy, forming a priceless coating over its membrane. Anyone that finds an intact one should be extremely careful not to break it, for it's likely they will never encounter it again.")
+			});
+		}
 
-            if (AbilityHelper.CheckDash(Player, NPC.Hitbox) && Shield == 1)
-            {
-                Shield = 0;
-                NPC.velocity += Player.velocity * 0.5f;
+		public override Color? GetAlpha(Color drawColor)
+		{
+			return Lighting.GetColor((int)NPC.position.X / 16, (int)NPC.position.Y / 16) * 0.75f;
+		}
 
-                mp.ActiveAbility?.Deactivate();
-                Player.velocity = Vector2.Normalize(Player.velocity) * -10f;
+		public override void AI()
+		{
+			if (!performedSpawnEffects)
+			{
+				performedSpawnEffects = true;
+				// Spawn dust
+				for (int k = 0; k < 20; k++)
+				{
+					Dust.NewDust(NPC.Center, 20, 20, DustType<Dusts.Cinder>());
+				}
+			}
 
-                Player.immune = true;
-                Player.immuneTime = 10;
+			NPC.TargetClosest(true);
+			Player Player = Main.player[NPC.target];
+			AbilityHandler mp = Player.GetHandler();
 
-                Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, NPC.Center);
+			if (AbilityHelper.CheckDash(Player, NPC.Hitbox) && Shield == 1)
+			{
+				Shield = 0;
+				NPC.velocity += Player.velocity * 0.5f;
 
-                for (int k = 0; k <= 20; k++)
-                    Dust.NewDust(NPC.position, 48, 32, DustType<Dusts.GlassGravity>(), Main.rand.Next(-3, 2), -3, 0, default, 1.7f);
+				mp.ActiveAbility?.Deactivate();
+				Player.velocity = Vector2.Normalize(Player.velocity) * -10f;
 
-                NPC.netUpdate = true;
-            }
+				Player.immune = true;
+				Player.immuneTime = 10;
 
-            if (Shield == 1)
-            {
-                NPC.immortal = true;
-                NPC.HitSound = SoundID.NPCHit42;
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, NPC.Center);
 
-                if (Main.rand.Next(30) == 0)
-                {
-                    if (Main.rand.NextBool())
-                        Dust.NewDust(NPC.position, NPC.width, NPC.height, ModContent.DustType<CrystalSparkle>(), 0, 0);
-                    else
-                        Dust.NewDust(NPC.position, NPC.width, NPC.height, ModContent.DustType<CrystalSparkle2>(), 0, 0);
-                }
-            }
-            else
-            {
-                NPC.immortal = false;
-                NPC.HitSound = SoundID.NPCHit1;
-            }
-        }
+				for (int k = 0; k <= 20; k++)
+				{
+					Dust.NewDust(NPC.position, 48, 32, DustType<GlassGravity>(), Main.rand.Next(-3, 2), -3, 0, default, 1.7f);
+				}
 
-        public override bool StrikeNPC(ref double damage, int defense, ref float knockback, int hitDirection, ref bool crit)
-        {
-            if (Shield == 1)
-                damage = 0;
+				NPC.netUpdate = true;
+			}
 
-            return base.StrikeNPC(ref damage, defense, ref knockback, hitDirection, ref crit);
-        }
+			if (Shield == 1)
+			{
+				NPC.immortal = true;
+				NPC.HitSound = SoundID.NPCHit42;
 
-        public override void ModifyHitPlayer(Player target, ref int damage, ref bool crit)
-        {
-            if (AbilityHelper.CheckDash(target, NPC.Hitbox))
-            {
-                target.immune = true;
-                target.immuneTime = 5;
-            }
-        }
+				if (Main.rand.NextBool(30))
+				{
+					if (Main.rand.NextBool())
+						Dust.NewDust(NPC.position, NPC.width, NPC.height, DustType<CrystalSparkle>(), 0, 0);
+					else
+						Dust.NewDust(NPC.position, NPC.width, NPC.height, DustType<CrystalSparkle2>(), 0, 0);
+				}
+			}
+			else
+			{
+				NPC.immortal = false;
+				NPC.HitSound = SoundID.NPCHit1;
+			}
+		}
 
-        public override float SpawnChance(NPCSpawnInfo spawnInfo)
-        {
-            return 0;
-        }
+		public override void ModifyNPCLoot(NPCLoot npcLoot)
+		{
+			npcLoot.Add(ItemDropRule.Common(ItemType<VitricOre>(), 1, 1, 5));
+		}
 
-        public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
-        {
-            if (Shield == 1)
-            {
-                Color color = Helper.IndicatorColor;
-                spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/NPCs/Vitric/Crystal").Value, NPC.position - screenPos + new Vector2(-2, -5), Lighting.GetColor((int)NPC.position.X / 16, (int)NPC.position.Y / 16));
-                spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/NPCs/Vitric/CrystalGlow").Value, NPC.position - screenPos + new Vector2(-3, -6), color);
-            }
-        }
-    }
+		public override void ModifyIncomingHit(ref NPC.HitModifiers modifiers)
+		{
+			if (Shield == 1)
+			{
+				modifiers.FinalDamage -= int.MaxValue;
+				modifiers.HideCombatText();
 
-    /* TODO: Figure out why banners make the game melt
+				badHits++;
+				CombatText.NewText(NPC.Hitbox, new Color(200, 255, 255), badHits > 20 ? "Dash into me first!" : "Blocked!");
+			}
+		}
+
+		public override void ModifyHitPlayer(Player target, ref Player.HurtModifiers modifiers)
+		{
+			if (AbilityHelper.CheckDash(target, NPC.Hitbox))
+			{
+				target.immune = true;
+				target.immuneTime = 5;
+			}
+		}
+
+		public override float SpawnChance(NPCSpawnInfo spawnInfo)
+		{
+			if (spawnInfo.Player.InModBiome<VitricDesertBiome>() && spawnInfo.Player.GetModPlayer<AbilityHandler>().Unlocked<Dash>())
+				return 20;
+
+			return 0;
+		}
+
+		public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+		{
+			if (Shield == 1)
+			{
+				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/NPCs/Vitric/Crystal").Value;
+				Texture2D texGlow = Request<Texture2D>("StarlightRiver/Assets/NPCs/Vitric/CrystalGlow").Value;
+				Color color = Helper.IndicatorColor;
+
+				spriteBatch.Draw(tex, NPC.Center - screenPos, null, drawColor, NPC.rotation, tex.Size() / 2f, NPC.scale, 0, 0);
+				spriteBatch.Draw(texGlow, NPC.Center - screenPos, null, color, NPC.rotation, texGlow.Size() / 2f, NPC.scale, 0, 0);
+			}
+		}
+	}
+
+	/* TODO: Figure out why banners make the game melt
+>>>>>>> master
     internal class CrystalSlimeBanner : ModBanner
     {
         public CrystalSlimeBanner() : base("CrystalSlimeBannerItem", NPCType<CrystalSlime>(), AssetDirectory.VitricNpc) { }

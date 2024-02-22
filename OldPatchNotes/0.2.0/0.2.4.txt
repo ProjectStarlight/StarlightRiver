@@ -1,0 +1,15 @@
+﻿# Starlight River 0.2.4
+
+## Fixes:
+- Fixed a crash that could occur near tile actor dummies
+
+# Starlight River 0.2.4.1
+
+## Fixes:
+- Fixed a crash that could occur in the vitric temple
+- Fixed starlight jars flickering
+
+# Starlight River 0.2.4.2 (I'm so sorry)
+
+## Fixes:
+- Fixed a draw order issue

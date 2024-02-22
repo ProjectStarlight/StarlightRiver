@@ -1,7 +1,7 @@
 ﻿namespace StarlightRiver.Core
 {
 	public interface IDrawPrimitive
-    {
-        void DrawPrimitives();
-    }
+	{
+		void DrawPrimitives();
+	}
 }

@@ -1,169 +1,197 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.NPCs.BaseTypes;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.NPCs.BaseTypes;
+using StarlightRiver.Core.Systems.CameraSystem;
 using System;
+using System.IO;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
-using Terraria.ModLoader;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
-    class Laser : InteractiveProjectile, IUnderwater
-    {
-        public NPC Parent;
+	class Laser : InteractiveProjectile, IUnderwater
+	{
 
-        public int Height;
+		public static int ParentWhoAmIToAssign;
 
-        public override string Texture => AssetDirectory.SquidBoss + Name;
+		public NPC parent;
+		public ref float Timer => ref Projectile.ai[1];
 
-        public override bool OnTileCollide(Vector2 oldVelocity) => false;
+		public int height;
 
-        public override bool PreDraw(ref Color drawColor) => false;
+		public override string Texture => AssetDirectory.SquidBoss + Name;
 
-        public override void SetDefaults()
-        {
-            Projectile.width = 60;
-            Projectile.height = 1;
-            Projectile.damage = 50;
-            Projectile.hostile = true;
-            Projectile.timeLeft = Main.masterMode ? 360 : Main.expertMode ? 510 : 660;
-            Projectile.aiStyle = -1;
-        }
+		public override void SetDefaults()
+		{
+			Projectile.width = 60;
+			Projectile.height = 1;
+			Projectile.damage = 50;
+			Projectile.hostile = true;
+			Projectile.timeLeft = Main.masterMode ? 360 : Main.expertMode ? 510 : 660;
+			Projectile.aiStyle = -1;
+		}
 
-        public override void AI()
-        {
-            if (Projectile.timeLeft == 659 || Main.expertMode && Projectile.timeLeft == 509 || Main.masterMode && Projectile.timeLeft == 359)
-            {
-                int y = (int)Projectile.Center.Y / 16 - 28;
+		public override void OnSpawn(IEntitySource source)
+		{
+			parent = Main.npc[ParentWhoAmIToAssign];
+		}
 
-                int xOff = (Parent.ModNPC as SquidBoss).variantAttack ? 18 : -76;
+		public override bool OnTileCollide(Vector2 oldVelocity)
+		{
+			return false;
+		}
 
-                for (int k = 0; k < 59; k++)
-                {
-                    int x = (int)Projectile.Center.X / 16 + xOff + k;
-                    ValidPoints.Add(new Point16(x, y));
-                }
-            }
+		public override bool PreDraw(ref Color drawColor)
+		{
+			return false;
+		}
 
-            Projectile.ai[1]++;
+		public override void AI()
+		{
+			if (Projectile.timeLeft == 659 || Main.expertMode && Projectile.timeLeft == 509 || Main.masterMode && Projectile.timeLeft == 359)
+			{
+				int y = (int)Projectile.Center.Y / 16 - 28;
 
-            Projectile.Center = Parent.Center;
+				int xOff = (parent.ModNPC as SquidBoss).variantAttack ? 18 : -76;
 
-            //collision
-            int height = 0;
+				for (int k = 0; k < 59; k++)
+				{
+					if (Main.masterMode && ((k + 1) % 20 <= 5 || (k + 1) % 20 >= 15))
+						continue;
 
-            for (int k = 0; k < 200; k++)
-            {
-                Vector2 pos = Projectile.Center + new Vector2(0, -16 * k);
-                height += 16;
+					int x = (int)Projectile.Center.X / 16 + xOff + k;
+					ValidPoints.Add(new Point16(x, y));
+				}
+			}
 
-                for (int i = -2; i <= 2; i++)
-                {
-                    if (Main.tile[(int)pos.X / 16 + i, (int)pos.Y / 16].HasTile)
-                        k = 200;
-                }
-            }
+			Timer++;
 
-            Height = height;
+			Projectile.Center = parent.Center;
 
-            Rectangle rect = new Rectangle((int)Projectile.position.X, (int)Projectile.position.Y - height + 16, Projectile.width, height - 16);
+			//collision
+			int height = 0;
 
-            float sin = 1 + (float)Math.Sin(Projectile.ai[1] / 10f);
-            float cos = 1 + (float)Math.Cos(Projectile.ai[1] / 10f);
-            Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
+			for (int k = 0; k < 200; k++)
+			{
+				Vector2 pos = Projectile.Center + new Vector2(0, -16 * k);
+				height += 16;
 
-            if (Main.masterMode)
-                color = new Color(1, 0.65f + sin * 0.25f, 0.25f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
+				for (int i = -2; i <= 2; i++)
+				{
+					if (Framing.GetTileSafely(pos).HasTile)
+						k = 200;
+				}
+			}
 
-            for (int k = 0; k < rect.Height; k += 500)
-            {
-                int i = Dust.NewDust(rect.TopLeft() + Vector2.UnitY * k, rect.Width, rect.Height - k, ModContent.DustType<Dusts.Glow>(), 0, -6, 0, color, Main.rand.NextFloat(0.4f, 0.6f));
-                Main.dust[i].noLight = true;
-            }
+			this.height = height;
 
-            if (Projectile.timeLeft > 30)
-            {
-                var endPos = Projectile.Center - Vector2.UnitY * (height - 84);
+			var rect = new Rectangle((int)Projectile.position.X, (int)Projectile.position.Y - height + 16, Projectile.width, height - 16);
 
-                for (int k = 0; k < 5; k++)
-                {
-                    var vel = Vector2.UnitY.RotatedByRandom(2f) * Main.rand.NextFloat(15);
-                    Dust.NewDustPerfect(endPos, ModContent.DustType<Dusts.ColoredSpark>(), vel, 0, color, Main.rand.NextFloat(1.2f, 2.6f));
-                }
+			float sin = 1 + (float)Math.Sin(Timer / 10f);
+			float cos = 1 + (float)Math.Cos(Timer / 10f);
+			var color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
 
-                if (Core.Systems.CameraSystem.Shake < 10)
-                    Core.Systems.CameraSystem.Shake += (int)Math.Max(0, 1.5f - Math.Abs(Main.LocalPlayer.Center.X - endPos.X) * 0.0025f);
-            }
+			if (Main.masterMode)
+				color = new Color(1, 0.65f + sin * 0.25f, 0.25f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
 
-            foreach (Player Player in Main.player.Where(n => n.active && n.Hitbox.Intersects(rect)))
-            {
-                Player.Hurt(PlayerDeathReason.ByCustomReason(Player.name + " got lasered to death by a squid..."), 50, 0);
-            }
-        }
+			if (Main.netMode != NetmodeID.Server)
+			{
+				for (int k = 0; k < rect.Height; k += 500)
+				{
+					int i = Dust.NewDust(rect.TopLeft() + Vector2.UnitY * k, rect.Width, rect.Height - k, ModContent.DustType<Dusts.Glow>(), 0, -6, 0, color, Main.rand.NextFloat(0.4f, 0.6f));
+					Main.dust[i].noLight = true;
+				}
+			}
 
-        public void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer)
-        {
-            float sin = 1 + (float)Math.Sin(Projectile.ai[1] / 10f);
-            float cos = 1 + (float)Math.Cos(Projectile.ai[1] / 10f);
-            Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * 1.05f;
+			if (Projectile.timeLeft > 30)
+			{
+				Vector2 endPos = Projectile.Center - Vector2.UnitY * (height - 84);
 
-            if (Main.masterMode)
-                color = new Color(1, 0.5f + sin * 0.25f, 0.25f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
+				for (int k = 0; k < 5; k++)
+				{
+					Vector2 vel = Vector2.UnitY.RotatedByRandom(2f) * Main.rand.NextFloat(15);
+					Dust.NewDustPerfect(endPos, ModContent.DustType<Dusts.ColoredSpark>(), vel, 0, color, Main.rand.NextFloat(1.2f, 2.6f));
+				}
 
-            var denom = (Main.masterMode ? 330 : Main.expertMode ? 480 : 630);
+				if (CameraSystem.shake < 10)
+					CameraSystem.shake += (int)Math.Max(0, 1.5f - Math.Abs(Main.LocalPlayer.Center.X - endPos.X) * 0.0025f);
+			}
 
-            float alpha = Projectile.timeLeft > denom ? 1 - (Projectile.timeLeft - denom) / 30f : Projectile.timeLeft < 30 ? Projectile.timeLeft / 30f : 1;
-            color = color * alpha;
+			if (Main.netMode != NetmodeID.Server && Main.LocalPlayer.Hitbox.Intersects(rect)) // Damage is dictated by the local client for that more fair seeming hitboxes
+			{
+				Main.LocalPlayer.Hurt(PlayerDeathReason.ByCustomReason(Main.LocalPlayer.name + " got lasered to death by a squid..."), 50, 0);
+			}
+		}
 
-            var texBeam = ModContent.Request<Texture2D>("StarlightRiver/Assets/ShadowTrail").Value;
-            var texBeam2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value;
-            var texStar = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ItemGlow").Value;
+		public void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer)
+		{
+			float sin = 1 + (float)Math.Sin(Timer / 10f);
+			float cos = 1 + (float)Math.Cos(Timer / 10f);
+			Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * 1.05f;
 
-            Vector2 origin = new Vector2(0, texBeam.Height / 2);
-            Vector2 origin2 = new Vector2(0, texBeam2.Height / 2);
+			if (Main.masterMode)
+				color = new Color(1, 0.5f + sin * 0.25f, 0.25f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
 
-            var effect = StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value;
+			int denom = Main.masterMode ? 330 : Main.expertMode ? 480 : 630;
 
-            effect.Parameters["uColor"].SetValue(color.ToVector3());
+			float alpha = Projectile.timeLeft > denom ? 1 - (Projectile.timeLeft - denom) / 30f : Projectile.timeLeft < 30 ? Projectile.timeLeft / 30f : 1;
+			color *= alpha;
 
-            spriteBatch.End();
-            spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+			Texture2D texBeam = ModContent.Request<Texture2D>("StarlightRiver/Assets/ShadowTrail").Value;
+			Texture2D texBeam2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value;
+			Texture2D texStar = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ItemGlow").Value;
 
-            float height = texBeam2.Height / 2f * 1.5f;
-            int adjustedLaserHeight = Height - 32;
+			var origin = new Vector2(0, texBeam.Height / 2);
+			var origin2 = new Vector2(0, texBeam2.Height / 2);
 
-            for (int k = 0; k <= adjustedLaserHeight; k += 500)
-            {
-                if (k > (adjustedLaserHeight - 500)) //Change to end for the last segment
-                    texBeam2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrailOneEnd").Value;
+			Effect effect = StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value;
 
-                var pos = Projectile.Center + Vector2.UnitY * -k - Main.screenPosition;
-                var thisHeight = k > (adjustedLaserHeight - 500) ? (adjustedLaserHeight % 500) : 500;
+			effect.Parameters["uColor"].SetValue(color.ToVector3());
 
-                var source = new Rectangle((int)(Projectile.ai[1] * 0.01f * -texBeam.Width), 0, (int)(texBeam.Width * thisHeight / 500f), texBeam.Height);
-                var source1 = new Rectangle((int)(Projectile.ai[1] * 0.023f * -texBeam.Width), 0, (int)(texBeam.Width * thisHeight / 500f), texBeam.Height);
-                var source2 = new Rectangle(0, 0, (int)(texBeam2.Width * thisHeight / 500f), texBeam2.Height);
+			spriteBatch.End();
+			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
-                var target = new Rectangle((int)pos.X, (int)pos.Y, thisHeight, (int)(height * 1.25f * alpha));
-                var target2 = new Rectangle((int)pos.X, (int)pos.Y, thisHeight, (int)(height * 2.8f * alpha));
-                var target3 = new Rectangle((int)pos.X, (int)pos.Y, thisHeight, (int)(50 * alpha));
+			float height = texBeam2.Height / 2f * 1.5f;
+			int adjustedLaserHeight = this.height - 32;
 
-                spriteBatch.Draw(texBeam, target, source, color * 0.65f, -1.57f, origin, 0, 0);
-                spriteBatch.Draw(texBeam, target, source1, color * 0.45f, -1.57f, origin, 0, 0);
-                spriteBatch.Draw(texBeam2, target2, source2, color * 0.65f, -1.57f, origin2, 0, 0);
-                spriteBatch.Draw(texBeam2, target3, source2, color * 1.1f, -1.57f, origin2, 0, 0);
+			for (int k = 0; k <= adjustedLaserHeight; k += 500)
+			{
+				if (k > (adjustedLaserHeight - 500)) //Change to end for the last segment
+					texBeam2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrailOneEnd").Value;
 
-                Main.NewText(thisHeight);
-            }
+				Vector2 pos = Projectile.Center + Vector2.UnitY * -k - Main.screenPosition;
+				int thisHeight = k > (adjustedLaserHeight - 500) ? (adjustedLaserHeight % 500) : 500;
 
-            spriteBatch.Draw(texStar, Projectile.Center - Vector2.UnitY * (Height - 16) - Main.screenPosition, null, color * 1.1f, Projectile.ai[1] * 0.025f, texStar.Size() / 2, 1, 0, 0);
-            spriteBatch.Draw(texStar, Projectile.Center - Vector2.UnitY * (Height - 16) - Main.screenPosition, null, color * 1.1f, Projectile.ai[1] * -0.045f, texStar.Size() / 2, 0.65f, 0, 0);
+				var source = new Rectangle((int)(Timer * 0.01f * -texBeam.Width), 0, (int)(texBeam.Width * thisHeight / 500f), texBeam.Height);
+				var source1 = new Rectangle((int)(Timer * 0.023f * -texBeam.Width), 0, (int)(texBeam.Width * thisHeight / 500f), texBeam.Height);
+				var source2 = new Rectangle(0, 0, (int)(texBeam2.Width * thisHeight / 500f), texBeam2.Height);
 
-            spriteBatch.End();
-            spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+				var target = new Rectangle((int)pos.X, (int)pos.Y, thisHeight, (int)(height * 1.25f * alpha));
+				var target2 = new Rectangle((int)pos.X, (int)pos.Y, thisHeight, (int)(height * 2.8f * alpha));
+				var target3 = new Rectangle((int)pos.X, (int)pos.Y, thisHeight, (int)(50 * alpha));
 
-        }
-    }
+				spriteBatch.Draw(texBeam, target, source, color * 0.65f, -1.57f, origin, 0, 0);
+				spriteBatch.Draw(texBeam, target, source1, color * 0.45f, -1.57f, origin, 0, 0);
+				spriteBatch.Draw(texBeam2, target2, source2, color * 0.65f, -1.57f, origin2, 0, 0);
+				spriteBatch.Draw(texBeam2, target3, source2, color * 1.1f, -1.57f, origin2, 0, 0);
+			}
+
+			spriteBatch.Draw(texStar, Projectile.Center - Vector2.UnitY * (this.height - 16) - Main.screenPosition, null, color * 1.1f, Timer * 0.025f, texStar.Size() / 2, 1, 0, 0);
+			spriteBatch.Draw(texStar, Projectile.Center - Vector2.UnitY * (this.height - 16) - Main.screenPosition, null, color * 1.1f, Timer * -0.045f, texStar.Size() / 2, 0.65f, 0, 0);
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(parent.whoAmI);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			int parentId = reader.ReadInt32();
+			parent = Main.npc[parentId];
+		}
+	}
 }

@@ -1,15 +1,12 @@
-﻿using Terraria.ModLoader;
-using Terraria;
-using Terraria.ModLoader.IO;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
 using Terraria.Localization;
+using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Core
 {
-    class RecipeSystem : ModSystem
+	class RecipeSystem : ModSystem
 	{
-		public static List<string> knownRecipies = new List<string>();
+		public static List<string> knownRecipies = new();
 
 		public override void OnWorldLoad()
 		{
@@ -36,9 +33,9 @@ namespace StarlightRiver.Core
 			}
 		}
 
-		public static Recipe.Condition GetCondition(Item result)
+		public static Condition GetCondition(Item result)
 		{
-			return new Recipe.Condition(NetworkText.FromLiteral("Must be unlocked"), n => RecipeSystem.knownRecipies.Contains(result.Name));
+			return new Condition(LocalizedText.Empty, () => RecipeSystem.knownRecipies.Contains(result.Name));
 		}
 	}
 }

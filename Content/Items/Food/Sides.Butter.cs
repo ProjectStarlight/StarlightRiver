@@ -1,19 +1,21 @@
-﻿using StarlightRiver.Core;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
+﻿using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Food
 {
-    internal class Butter : Ingredient
-    {
-        public Butter() : base("+20 maximum life", 300, IngredientType.Side) { }
+	internal class Butter : Ingredient
+	{
+		public Butter() : base("Increased life regen speed", 1800, IngredientType.Side) { }
 
-        public override void SafeSetDefaults() => Item.rare = ItemRarityID.White;
+		public override void SafeSetDefaults()
+		{
+			Item.rare = ItemRarityID.White;
 
-        public override void BuffEffects(Player Player, float multiplier)
-        {
-            Player.statLifeMax2 += 20;
-        }
-    }
+			Item.value = Item.sellPrice(silver: 5);
+		}
+
+		public override void BuffEffects(Player Player, float multiplier)
+		{
+			Player.lifeRegen += 1;
+		}
+	}
 }

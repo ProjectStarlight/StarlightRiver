@@ -1,44 +1,38 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using StarlightRiver.Content.Tiles.Vitric;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-
 
 namespace StarlightRiver.Core
 {
 	class StatusTrackingNPC : GlobalNPC
 	{
 		private Player attacker;
-		private int[] storedBuffs = new int[5];
-		private int[] storedTimes = new int[5];
+		private readonly int[] storedBuffs = new int[20];
+		private readonly int[] storedTimes = new int[20];
 		private bool compareBuffs;
 
 		public static event Action<Player, NPC, int[], int[], int[], int[]> buffCompareEffects;
 
 		public override bool InstancePerEntity => true;
 
-		public StatusTrackingNPC Tracker(NPC NPC) => NPC.GetGlobalNPC<StatusTrackingNPC>();
+		public StatusTrackingNPC Tracker(NPC NPC)
+		{
+			return NPC.GetGlobalNPC<StatusTrackingNPC>();
+		}
 
 		public override bool PreAI(NPC NPC)
 		{
 			return base.PreAI(NPC);
 		}
 
-		public override void ModifyHitByItem(NPC NPC, Player Player, Item Item, ref int damage, ref float knockback, ref bool crit)
+		public override void ModifyHitByItem(NPC npc, Player player, Item item, ref NPC.HitModifiers modifiers)
 		{
-			Tracker(NPC).attacker = Player;
-			Tracker(NPC).compareBuffs = true;
+			Tracker(npc).attacker = player;
+			Tracker(npc).compareBuffs = true;
 		}
 
-		public override void ModifyHitByProjectile(NPC NPC, Projectile Projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref NPC.HitModifiers modifiers)
 		{
-			Tracker(NPC).attacker = Main.player[Projectile.owner];
-			Tracker(NPC).compareBuffs = true;
+			Tracker(npc).attacker = Main.player[projectile.owner];
+			Tracker(npc).compareBuffs = true;
 		}
 
 		public override void ResetEffects(NPC NPC)

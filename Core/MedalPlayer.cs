@@ -1,29 +1,16 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Helpers;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Bosses.SquidBoss;
-using StarlightRiver.Content.GUI;
-using StarlightRiver.Content.Items.Breacher;
-using StarlightRiver.Content.Tiles.Permafrost;
-using StarlightRiver.Content.Tiles.Vitric;
-using StarlightRiver.Items.Armor;
-using StarlightRiver.Packets;
-using System;
+﻿using StarlightRiver.Content.GUI;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
+using System.Text.RegularExpressions;
 using Terraria.DataStructures;
-using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace StarlightRiver.Core
 {
 	class MedalPlayer : ModPlayer
 	{
-		public List<Medal> medals = new List<Medal>();
-		public List<DeathCounter> deathCounters = new List<DeathCounter>();
+		public List<Medal> medals = new();
+		public List<DeathCounter> deathCounters = new();
 
 		private Medal attemptedMedal;
 		private DeathCounter activeCounter;
@@ -32,17 +19,20 @@ namespace StarlightRiver.Core
 
 		public void QualifyForMedal(Medal medal)
 		{
-			Main.NewText("Difficulty for current fight is:" + Difficulty);
+			// If a medal is already being attempted, dont start a new one
+			if (attemptedMedal.name != null)
+				return;
+
 			attemptedMedal = medal;
 
-			if(!deathCounters.Any(n => n.name == medal.name))
+			if (!deathCounters.Any(n => n.name == medal.name))
 				deathCounters.Add(new DeathCounter(medal.name, 0));
 
 			activeCounter = deathCounters.FirstOrDefault(n => n.name == medal.name);
 		}
 
 		public void QualifyForMedal(string name, float order)
-		{			
+		{
 			var medal = new Medal(name, Difficulty, order);
 			QualifyForMedal(medal);
 		}
@@ -64,10 +54,9 @@ namespace StarlightRiver.Core
 			activeCounter = null;
 		}
 
-		public override void Hurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit)
+		public override void OnHurt(Player.HurtInfo info)
 		{
-			if (!pvp)
-				attemptedMedal = default;
+			attemptedMedal = default;
 		}
 
 		public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource)
@@ -89,33 +78,38 @@ namespace StarlightRiver.Core
 
 		public override void LoadData(TagCompound tag)
 		{
-			medals.Clear();
+			this.medals.Clear();
 			deathCounters.Clear();
 
-			var list = new List<Medal>();
-			var list2 = tag.GetList<TagCompound>("medals");
+			var medals = new List<Medal>();
+			IList<TagCompound> loadedMedals = tag.GetList<TagCompound>("medals");
 
-			foreach (TagCompound c in list2)
-				list.Add(Medal.Deserialize(c));
+			foreach (TagCompound c in loadedMedals)
+			{
+				medals.Add(Medal.Deserialize(c));
+			}
 
-			medals = list;
+			this.medals = medals;
 
-			var list3 = new List<DeathCounter>();
-			var list4 = tag.GetList<TagCompound>("deathCounters");
+			var deaths = new List<DeathCounter>();
+			IList<TagCompound> loadedDeaths = tag.GetList<TagCompound>("deathCounters");
 
-			foreach (TagCompound c in list4)
-				list3.Add(DeathCounter.Deserialize(c));
+			foreach (TagCompound c in loadedDeaths)
+			{
+				deaths.Add(DeathCounter.Deserialize(c));
+			}
 
-			deathCounters = list3;
+			deathCounters = deaths;
 		}
 
 		public Texture2D GetMedalTexture(string name)
 		{
-			var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Medals/" + name).Value;
+			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Medals/" + name).Value;
 
 			if (tex is null)
 				return ModContent.Request<Texture2D>("StarlightRiver/Assets/Medals/Cheater").Value;
-			else return tex;
+			else
+				return tex;
 		}
 
 		public int GetDeaths(string name)
@@ -168,7 +162,8 @@ namespace StarlightRiver.Core
 
 		public override string ToString()
 		{
-			return name + ": " + (difficulty == 0 ? "Normal" : difficulty == 1 ? "Expert" : difficulty == -1 ? "Journey" : "Master");
+			string split = Regex.Replace(name, "([a-z])([A-Z])", "$1 $2");
+			return split + ": " + (difficulty == 0 ? "Normal" : difficulty == 1 ? "Expert" : difficulty == -1 ? "Journey" : "Master");
 		}
 
 		public override bool Equals(object obj)
@@ -190,6 +185,11 @@ namespace StarlightRiver.Core
 		public static Medal Deserialize(TagCompound tag)
 		{
 			return new Medal(tag.GetString("name"), tag.GetInt("difficulty"), tag.GetFloat("order"));
+		}
+
+		public override int GetHashCode()
+		{
+			throw new System.NotImplementedException();
 		}
 	}
 }

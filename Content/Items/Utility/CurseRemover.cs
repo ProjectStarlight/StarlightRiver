@@ -1,10 +1,7 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Utility
 {
@@ -15,7 +12,7 @@ namespace StarlightRiver.Content.Items.Utility
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Scroll of Undoing");
-			Tooltip.SetDefault("Place over an equipped cursed Item to destroy it\n'There's no turning back, most of the time'");
+			Tooltip.SetDefault("Place over an equipped Cursed item to destroy it\n'There's no turning back, most of the time'");
 		}
 
 		public override void SetDefaults()
@@ -37,7 +34,6 @@ namespace StarlightRiver.Content.Items.Utility
 			if (Player.armor[slot].ModItem is CursedAccessory && slot <= (Main.masterMode ? 9 : 8) + Player.extraAccessorySlots)
 			{
 				(Player.armor[slot].ModItem as CursedAccessory).GoingBoom = true;
-
 				Item.TurnToAir();
 			}
 
