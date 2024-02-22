@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using StarlightRiver.Content.Biomes;
+using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Crimson
@@ -15,6 +12,23 @@ namespace StarlightRiver.Content.Tiles.Crimson
 	internal class Dendrite : ModTile
 	{
 		public override string Texture => "StarlightRiver/Assets/Tiles/Crimson/" + Name;
+
+		public override void Load()
+		{
+			GraymatterBiome.onDrawOverPerTile += DrawRealVersion;
+		}
+
+		private void DrawRealVersion(SpriteBatch spriteBatch, int x, int y)
+		{
+			var target = new Point16(x, y);
+			Tile tile = Framing.GetTileSafely(target);
+
+			if (tile.TileType == ModContent.TileType<Dendrite>())
+			{
+				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Crimson/DendriteReal").Value;
+				spriteBatch.Draw(tex, target.ToVector2() * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), Color.White * 0.8f);
+			}
+		}
 
 		public override void SetStaticDefaults()
 		{
