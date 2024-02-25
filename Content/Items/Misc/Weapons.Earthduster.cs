@@ -209,9 +209,9 @@ namespace StarlightRiver.Content.Items.Misc
 						{
 							var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), armPos, Projectile.velocity * 1.5f, ModContent.ProjectileType<EarthdusterRing>(), 0, 0f, Owner.whoAmI, 15f);
 
-							(proj.ModProjectile as EarthdusterRing).trailColorOutline = (GhostProj.ModProjectile as BaseSoilProjectile).RingOutsideColor;
+							(proj.ModProjectile as EarthdusterRing).trailColorOutline = (GhostProj.ModProjectile as BaseSoilProjectile).Colors["RingOutsideColor"];
 
-							(proj.ModProjectile as EarthdusterRing).trailColor = (GhostProj.ModProjectile as BaseSoilProjectile).RingInsideColor;
+							(proj.ModProjectile as EarthdusterRing).trailColor = (GhostProj.ModProjectile as BaseSoilProjectile).Colors["RingInsideColor"];
 						}
 					}
 				}
@@ -324,7 +324,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2f, Projectile.scale, Owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
 
-			var color = Color.Lerp(Color.Transparent, (GhostProj.ModProjectile as BaseSoilProjectile).RingInsideColor, shots / (float)MAXSHOTS);
+			var color = Color.Lerp(Color.Transparent, (GhostProj.ModProjectile as BaseSoilProjectile).Colors["RingInsideColor"], shots / (float)MAXSHOTS);
 			//if (reloading)
 			//color = Color.Lerp(GetRingInsideColor(), Color.Transparent, ShootDelay / 90f);
 

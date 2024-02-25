@@ -1,4 +1,5 @@
-﻿using Terraria.ID;
+﻿using StarlightRiver.Core.Systems.PixelationSystem;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 {
@@ -67,6 +68,54 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 		public override void OnSpawn(Dust dust)
 		{
 			UpdateType = DustID.Sand;
+		}
+	}
+
+	public class SoilgunSmoke : ModDust
+	{
+		public override string Texture => AssetDirectory.Invisible;
+
+		public override void OnSpawn(Dust dust)
+		{
+			dust.frame = new Rectangle(0, 0, 4, 4);
+			dust.customData = 1 + Main.rand.Next(3);
+			dust.rotation = Main.rand.NextFloat(6.28f);
+		}
+
+		public override bool Update(Dust dust)
+		{
+			dust.velocity.Y -= 0.015f;
+			dust.position += dust.velocity;
+			dust.velocity *= 0.95f;
+			dust.rotation += dust.velocity.Length() * 0.01f;
+
+			dust.alpha += 4;
+
+			dust.alpha = (int)(dust.alpha * 1.0075f);
+
+			dust.scale *= 0.96f;
+
+			if (dust.alpha >= 255)
+				dust.active = false;
+
+			return false;
+		}
+
+		public override bool PreDraw(Dust dust)
+		{
+			float lerper = 1f - dust.alpha / 255f;
+
+			Color color = dust.color;
+
+			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "SmokeTransparent_" + dust.customData).Value;
+			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("OverProjectiles", () =>
+			{
+				Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, color * lerper, dust.rotation, tex.Size() / 2f, dust.scale, 0f, 0f);
+
+				Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, color * lerper, dust.rotation + MathHelper.PiOver2, tex.Size() / 2f, dust.scale, 0f, 0f);
+			});
+
+			return false;
 		}
 	}
 }

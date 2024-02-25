@@ -1,4 +1,6 @@
-﻿using StarlightRiver.Core.Systems.CameraSystem;
+﻿using StarlightRiver.Content.Dusts;
+using StarlightRiver.Core.Systems.CameraSystem;
+using StarlightRiver.Core.Systems.PixelationSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -10,18 +12,24 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 {
 	public abstract class BaseSoilProjectile : ModProjectile
 	{
-		public int dustID;
-
-		public bool Gravity = true;
-
-		public bool DrawTrail = true;
-
-		public Color TrailColor = Color.White;
-		public Color RingOutsideColor = Color.White;
-		public Color RingInsideColor = Color.White;
-
 		private List<Vector2> cache;
 		private Trail trail;
+		private Trail trail2;
+
+		public int dustID;
+
+		public bool gravity = true;
+
+		public bool drawTrail = true;
+
+		public Dictionary<string, Color> Colors = new()
+		{
+			{ "SmokeColor", Color.White },
+			{ "TrailColor", Color.White },
+			{ "TrailInsideColor", Color.White },
+			{ "RingOutsideColor", Color.White },
+			{ "RingInsideColor", Color.White },
+		};
 
 		public float AmmoType => Projectile.ai[0];
 
@@ -29,11 +37,14 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 		public override string Texture => AssetDirectory.Invisible; //using the item id for texture was dumb when it can just be requested
 
-		protected BaseSoilProjectile(Color trailColor, Color ringOutsideColor, Color ringInsideColor, int dustID)
+		protected BaseSoilProjectile(Color trailColor, Color trailInsideColor, Color ringOutsideColor, Color ringInsideColor, Color smokeColor, int dustID)
 		{
-			TrailColor = trailColor;
-			RingOutsideColor = ringOutsideColor;
-			RingInsideColor = ringInsideColor;
+			Colors["TrailColor"] = trailColor;
+			Colors["TrailInsideColor"] = trailInsideColor;
+			Colors["RingOutsideColor"] = ringOutsideColor;
+			Colors["RingInsideColor"] = ringInsideColor;
+			Colors["SmokeColor"] = smokeColor;
+
 			this.dustID = dustID;
 		}
 
@@ -65,12 +76,27 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 			Projectile.rotation = Projectile.velocity.ToRotation();
 
-			if (Projectile.timeLeft < 230 && Gravity)
+			if (Projectile.timeLeft < 225 && gravity)
 			{
-				Projectile.velocity.Y += 0.96f;
-				if (Projectile.velocity.Y > 16f)
-					Projectile.velocity.Y = 16f;
+				if (Projectile.velocity.Y < 18f)
+				{
+					Projectile.velocity.Y += 0.55f;
+
+					if (Projectile.velocity.Y > 0)
+					{
+						if (Projectile.velocity.Y < 12f)
+							Projectile.velocity.Y *= 1.030f;
+						else
+							Projectile.velocity.Y *= 1.015f;
+					}
+				}
 			}
+
+			Dust.NewDustPerfect(Projectile.Center + Projectile.velocity + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<SoilgunSmoke>(),
+				 Main.rand.NextVector2Circular(1f, 1f), Main.rand.Next(180, 220), Colors["SmokeColor"], Main.rand.NextFloat(0.03f, 0.05f));
+
+			if (Main.rand.NextBool(6))
+				Dust.NewDustPerfect(Projectile.Center, dustID, Vector2.Zero, 100).noGravity = true;
 
 			if (!Main.dedServ)
 			{
@@ -79,32 +105,43 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			}
 		}
 
+		public virtual void SafeOnKill()
+		{
+			
+		}
+
+		public sealed override void OnKill(int timeLeft)
+		{
+			SafeOnKill();
+
+			SoundEngine.PlaySound(SoundID.Dig, Projectile.position);
+
+			for (int i = 0; i < 5; i++)
+			{
+				Dust.NewDustPerfect(Projectile.Center, dustID, -Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.5f),
+					Main.rand.Next(100), default, Main.rand.NextFloat(1f, 1.5f)).noGravity = true;
+
+				Dust dust = Dust.NewDustPerfect(Projectile.Center + Projectile.velocity + Main.rand.NextVector2Circular(5f, 5f),
+					ModContent.DustType<PixelSmokeColor>(), -Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.5f),
+					Main.rand.Next(125, 180), Colors["TrailColor"], Main.rand.NextFloat(0.03f, 0.05f));
+
+				dust.rotation = Main.rand.NextFloat(6.28f);
+				dust.customData = Colors["TrailInsideColor"];
+			}
+		}
+
 		public override bool PreDraw(ref Color lightColor)
 		{
 			DrawPrimitives();
 
-			//this predraw code is kinda bad examplemod boilerplate but it works
-			SpriteEffects spriteEffects = SpriteEffects.None;
-			if (Projectile.spriteDirection == -1)
-				spriteEffects = SpriteEffects.FlipHorizontally;
+			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
 
-			Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
+			Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Colors["RingInsideColor"] with { A = 0 }, Projectile.rotation, bloomTex.Size() / 2f, Projectile.scale * 0.35f, 0f, 0f);
 
-			int frameHeight = texture.Height / Main.projFrames[Projectile.type];
-			int startY = frameHeight * Projectile.frame;
+			Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Colors["RingOutsideColor"] with { A = 0 }, Projectile.rotation, bloomTex.Size() / 2f, Projectile.scale * 0.25f, 0f, 0f);
 
-			var sourceRectangle = new Rectangle(0, startY, texture.Width, frameHeight);
-
-			Vector2 origin = sourceRectangle.Size() / 2f;
-
-			float offsetX = 0f;
-			origin.X = Projectile.spriteDirection == 1 ? sourceRectangle.Width - offsetX : offsetX;
-
-			Color drawColor = Projectile.GetAlpha(lightColor);
-
-			Main.EntitySpriteDraw(texture,
-				Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY),
-				sourceRectangle, drawColor, Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2f, Projectile.scale, 0f, 0f);
 
 			return false;
 		}
@@ -116,11 +153,11 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 				cache = new List<Vector2>();
 				for (int i = 0; i < 13; i++)
 				{
-					cache.Add(Projectile.Center);
+					cache.Add(Projectile.Center + Projectile.velocity);
 				}
 			}
 
-			cache.Add(Projectile.Center);
+			cache.Add(Projectile.Center + Projectile.velocity);
 
 			while (cache.Count > 13)
 			{
@@ -130,72 +167,55 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 13, new TriangularTip(4), factor => 7, factor => TrailColor * 0.8f * factor.X);
+			trail ??= new Trail(Main.instance.GraphicsDevice, 13, new TriangularTip(4), factor => 8, factor => Colors["TrailColor"] * factor.X);
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
+
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 13, new TriangularTip(4), factor => 4, factor => Colors["TrailInsideColor"] * factor.X * 0.5f);
+
+			trail2.Positions = cache.ToArray();
+			trail2.NextPosition = Projectile.Center + Projectile.velocity;
 		}
+
 		public void DrawPrimitives()
 		{
-			if (!DrawTrail)
+			if (!drawTrail)
 				return;
-			Main.spriteBatch.End();
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("UnderProjectiles", () =>
+			{
+				Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.01f);
-			effect.Parameters["repeats"].SetValue(1);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "SoilgunMuddyTrail").Value);
+				var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			trail?.Render(effect);
+				effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.01f);
+				effect.Parameters["repeats"].SetValue(1);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "GlowTrail").Value);
 
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
-
-			trail?.Render(effect);
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				trail?.Render(effect);
+				trail2?.Render(effect);
+			});
 		}
 	}
 
 	public class SoilgunDirtSoil : BaseSoilProjectile
 	{
 		public override string Texture => "Terraria/Images/Item_" + ItemID.DirtBlock;
-		public SoilgunDirtSoil() : base(new Color(30, 19, 12), new Color(81, 47, 27), new Color(105, 67, 44), DustID.Dirt) { }
-		public override void SafeAI()
+		public SoilgunDirtSoil() : base(new Color(30, 19, 12), new Color(60, 35, 20), new Color(81, 47, 27), new Color(105, 67, 44), new Color(82, 45, 22), DustID.Dirt) { }
+		public override void SafeOnKill()
 		{
-			if (Main.rand.NextBool(10))
-			{
-				var dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Dirt, 0f, 0f, 25, default, Main.rand.NextFloat(0.9f, 1.25f));
-				dust.noGravity = true;
-				if (Main.rand.NextBool(3))
-				{
-					Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<SandNoGravity>(), 0f, 0f, 120, default, Main.rand.NextFloat(0.7f, 1.1f));
-				}
-			}
-		}
 
-		public override void Kill(int timeLeft)
-		{
-			SoundEngine.PlaySound(SoundID.Dig, Projectile.position);
-			for (int i = 0; i < 15; i++)
-			{
-				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Dirt, 0f, 0f, 15, default, Main.rand.NextFloat(0.8f, 1f));
-			}
-
-			for (int i = 0; i < 5; i++)
-			{
-				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<Dusts.Sand>(), 0f, 0f, 140, default, Main.rand.NextFloat(0.8f, 1.1f));
-			}
 		}
 	}
 
 	public class SoilgunSandSoil : BaseSoilProjectile
 	{
 		public override string Texture => "Terraria/Images/Item_" + ItemID.SandBlock;
-		public SoilgunSandSoil() : base(new Color(58, 49, 18), new Color(139, 131, 59), new Color(212, 192, 100), DustID.Sand) { }
+		public SoilgunSandSoil() : base(new Color(58, 49, 18), new Color(30, 19, 12), new Color(139, 131, 59), new Color(212, 192, 100), new Color(30, 19, 12), DustID.Sand) { }
 		public override void SafeAI()
 		{
 			if (Main.rand.NextBool(8))
@@ -227,7 +247,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 	{
 		public override string Texture => "Terraria/Images/Item_" + ItemID.CrimsandBlock;
 
-		public SoilgunCrimsandSoil() : base(new Color(39, 17, 14), new Color(56, 17, 14), new Color(135, 43, 34), DustID.CrimsonPlants) { }
+		public SoilgunCrimsandSoil() : base(new Color(39, 17, 14), new Color(30, 19, 12), new Color(56, 17, 14), new Color(135, 43, 34), new Color(30, 19, 12), DustID.CrimsonPlants) { }
 
 		public override void SafeAI()
 		{
@@ -267,7 +287,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 	public class SoilgunEbonsandSoil : BaseSoilProjectile
 	{
 		public override string Texture => "Terraria/Images/Item_" + ItemID.EbonsandBlock;
-		public SoilgunEbonsandSoil() : base(new Color(26, 18, 31), new Color(62, 45, 75), new Color(119, 106, 138), DustID.Ebonwood) { }
+		public SoilgunEbonsandSoil() : base(new Color(26, 18, 31), new Color(30, 19, 12), new Color(62, 45, 75), new Color(119, 106, 138), new Color(30, 19, 12), DustID.Ebonwood) { }
 		public override void SafeAI()
 		{
 			if (Main.rand.NextBool(8))
@@ -306,7 +326,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 		public override string Texture => "Terraria/Images/Item_" + ItemID.PearlsandBlock;
 
 		private bool foundTarget;
-		public SoilgunPearlsandSoil() : base(new Color(87, 77, 106), new Color(87, 77, 106), new Color(246, 235, 228), DustID.Pearlsand) { }
+		public SoilgunPearlsandSoil() : base(new Color(87, 77, 106), new Color(30, 19, 12), new Color(87, 77, 106), new Color(246, 235, 228), new Color(30, 19, 12), DustID.Pearlsand) { }
 		public override Color? GetAlpha(Color lightColor)
 		{
 			return Color.White;
@@ -314,7 +334,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 		public override void SafeAI()
 		{
-			Gravity = !foundTarget;
+			gravity = !foundTarget;
 
 			Vector2 npcCenter = Projectile.Center;
 			NPC npc = Projectile.FindTargetWithinRange(1500f);
@@ -359,7 +379,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 	{
 		public override string Texture => AssetDirectory.VitricTile + "VitricSandItem";
 
-		public SoilgunVitricSandSoil() : base(new Color(87, 129, 140), new Color(87, 129, 140), new Color(171, 230, 167), ModContent.DustType<VitricSandDust>()) { }
+		public SoilgunVitricSandSoil() : base(new Color(87, 129, 140), new Color(30, 19, 12), new Color(87, 129, 140), new Color(171, 230, 167), new Color(30, 19, 12), ModContent.DustType<VitricSandDust>()) { }
 
 		//yeah this is copied from vitric bullet they kinda similar tho
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -402,7 +422,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 	public class SoilgunSlushSoil : BaseSoilProjectile
 	{
 		public override string Texture => "Terraria/Images/Item_" + ItemID.SlushBlock;
-		public SoilgunSlushSoil() : base(new Color(27, 40, 51), new Color(27, 40, 51), new Color(164, 182, 180), DustID.Slush) { }
+		public SoilgunSlushSoil() : base(new Color(27, 40, 51), new Color(30, 19, 12), new Color(27, 40, 51), new Color(164, 182, 180), new Color(30, 19, 12), DustID.Slush) { }
 		public override void SafeAI()
 		{
 			if (Main.rand.NextBool(8))
@@ -454,7 +474,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 	public class SoilgunSiltSoil : BaseSoilProjectile
 	{
 		public override string Texture => "Terraria/Images/Item_" + ItemID.SiltBlock;
-		public SoilgunSiltSoil() : base(new Color(22, 24, 32), new Color(49, 51, 61), new Color(106, 107, 118), DustID.Silt) { }
+		public SoilgunSiltSoil() : base(new Color(22, 24, 32), new Color(30, 19, 12), new Color(49, 51, 61), new Color(106, 107, 118), new Color(30, 19, 12), DustID.Silt) { }
 		public override void SafeAI()
 		{
 			if (Main.rand.NextBool(8))
@@ -497,7 +517,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			Projectile.usesLocalNPCImmunity = true; //without local immunity this was by far the worse ammo, about 3x less dps than just dirt. high hit cooldown to compensate though.
 			Projectile.localNPCHitCooldown = 20;
 		}
-		public SoilgunMudSoil() : base(new Color(30, 21, 24), new Color(73, 57, 63), new Color(111, 83, 89), DustID.Mud) { }
+		public SoilgunMudSoil() : base(new Color(30, 21, 24), new Color(30, 19, 12), new Color(73, 57, 63), new Color(111, 83, 89), new Color(30, 19, 12), DustID.Mud) { }
 		public override void SafeAI()
 		{
 			if (Main.rand.NextBool(4))

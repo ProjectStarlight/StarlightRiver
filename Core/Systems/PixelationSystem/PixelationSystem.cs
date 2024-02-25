@@ -332,7 +332,7 @@ namespace StarlightRiver.Core.Systems.PixelationSystem
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
 			sb.End();
-			sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.GameViewMatrix.EffectMatrix);
+			sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 			for (int i = 0; i < pixelationDrawActions.Count; i++)
 			{
