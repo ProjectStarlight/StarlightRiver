@@ -483,8 +483,10 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			{
 				for (int i = 0; i < 4 + Main.rand.Next(3); i++)
 				{
+					float minSpeed = MathHelper.Lerp(0.8f, 1f, ChargeProgress);
+
 					Projectile.NewProjectile(Projectile.GetSource_FromThis(), BarrelPosition,
-						shootVelocity.RotatedByRandom(MathHelper.ToRadians(18)) * Main.rand.NextFloat(0.9f, 1.1f), projectileID, damage, knockBack, Owner.whoAmI);
+						shootVelocity.RotatedByRandom(MathHelper.Lerp(0.3f, 0.04f, ChargeProgress)) * Main.rand.NextFloat(minSpeed, 1.1f) * MathHelper.Lerp(0.65f, 1.55f, ChargeProgress), projectileID, damage, knockBack, Owner.whoAmI);
 				}
 			}
 
