@@ -14,14 +14,6 @@ using System.Reflection;
 
 namespace StarlightRiver
 {
-	public class TemporaryFix : PreJITFilter
-	{
-		public override bool ShouldJIT(MemberInfo member)
-		{
-			return false;
-		}
-	}
-
 	public partial class StarlightRiver : Mod
 	{
 		private List<IOrderedLoadable> loadCache;
@@ -44,7 +36,6 @@ namespace StarlightRiver
 		public StarlightRiver()
 		{
 			Instance = this;
-			PreJITFilter = new TemporaryFix();
 		}
 
 		public bool useIntenseMusic = false; //TODO: Make some sort of music handler at some point for this
