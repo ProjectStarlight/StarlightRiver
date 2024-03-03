@@ -189,6 +189,7 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 
 			if (netUpdate && Main.netMode == NetmodeID.Server)
 			{
+				netUpdate = false;
 				var stream = new MemoryStream();
 				BinaryWriter writer = new BinaryWriter(stream);
 				SendExtraAI(writer);
