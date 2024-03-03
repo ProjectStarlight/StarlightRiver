@@ -1,4 +1,7 @@
 # Starlight River 0.2.8
 
+## Multiplayer
+- Removed extra unnecesary packets from dummy system
+
 ## Fixes
 - Fixed drawblack in vitric biome (no more visible black squares)
