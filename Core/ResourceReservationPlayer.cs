@@ -84,8 +84,17 @@ namespace StarlightRiver.Core
 			if (Main.ResourceSetsManager.ActiveSetKeyName == "New")
 				DrawReservedManaFancy();
 
+			if (Main.ResourceSetsManager.ActiveSetKeyName == "NewWithText")
+				DrawReservedManaFancy();
+
 			if (Main.ResourceSetsManager.ActiveSetKeyName == "HorizontalBars")
-				DrawReservedManaBars();
+				DrawReservedManaBars(48f);
+
+			if (Main.ResourceSetsManager.ActiveSetKeyName == "HorizontalBarsWithText")
+				DrawReservedManaBars(52.5f);
+
+			if (Main.ResourceSetsManager.ActiveSetKeyName == "HorizontalBarsWithFullText")
+				DrawReservedManaBars(50f);
 		}
 
 		private void DrawReservedLife()
@@ -100,11 +109,17 @@ namespace StarlightRiver.Core
 			{
 				Vector2 pos = Vector2.Zero;
 
-				if (Main.ResourceSetsManager.ActiveSetKeyName == "HorizontalBars")
+				if (Main.ResourceSetsManager.ActiveSetKeyName == "HorizontalBars" || Main.ResourceSetsManager.ActiveSetKeyName == "HorizontalBarsWithText" || Main.ResourceSetsManager.ActiveSetKeyName == "HorizontalBarsWithFullText")
 				{
 					Texture2D texBar = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ReservedBar").Value;
+					float yOffset = 24f;
+					
+					if (Main.ResourceSetsManager.ActiveSetKeyName == "HorizontalBarsWithText")
+						yOffset = 28f;
+					else if (Main.ResourceSetsManager.ActiveSetKeyName == "HorizontalBarsWithFullText")
+						yOffset = 26f;
 
-					pos = new Vector2(Main.screenWidth - 60 - vanillaHearts * 12 + k * 12, 24f);
+					pos = new Vector2(Main.screenWidth - 60 - vanillaHearts * 12 + k * 12, yOffset);
 
 					int width2 = 0;
 
@@ -141,6 +156,13 @@ namespace StarlightRiver.Core
 				else if (Main.ResourceSetsManager.ActiveSetKeyName == "New")
 				{
 					pos = new Vector2(Main.screenWidth - 76 - k * 24, 47f);
+
+					if (k >= 10)
+						pos += new Vector2(240, -28);
+				}
+				else if (Main.ResourceSetsManager.ActiveSetKeyName == "NewWithText")
+				{
+					pos = new Vector2(Main.screenWidth - 76 - k * 24, 52f);
 
 					if (k >= 10)
 						pos += new Vector2(240, -28);
@@ -241,7 +263,7 @@ namespace StarlightRiver.Core
 			}
 		}
 
-		private void DrawReservedManaBars()
+		private void DrawReservedManaBars(float yOffset)
 		{
 			Player player = Main.LocalPlayer;
 
@@ -251,7 +273,7 @@ namespace StarlightRiver.Core
 			for (int k = 0; k <= fullStarsToDraw; k++)
 			{
 				Texture2D texBar = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ReservedBar").Value;
-				var pos = new Vector2(Main.screenWidth - 70 - vanillaStars * 12 + k * 12, 48f);
+				var pos = new Vector2(Main.screenWidth - 70 - vanillaStars * 12 + k * 12, yOffset);
 
 				int width2 = 0;
 

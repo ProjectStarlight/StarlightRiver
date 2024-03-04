@@ -1,7 +1,9 @@
 ﻿using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -28,6 +30,9 @@ namespace StarlightRiver.Content.Items.Breacher
 
 	public class BreachCannonSentry : ModProjectile, IDrawPrimitive, IDrawAdditive
 	{
+		public static Vector2 tileOriginToAassign;
+		public static float rotationToAssign;
+
 		public Vector2 tileOrigin = Vector2.Zero;
 
 		private List<Vector2> cache;
@@ -90,15 +95,29 @@ namespace StarlightRiver.Content.Items.Breacher
 			Projectile.sentry = true;
 			Projectile.DamageType = DamageClass.Summon;
 			Projectile.ignoreWater = true;
+			Projectile.usesIDStaticNPCImmunity = true;
+			Projectile.idStaticNPCHitCooldown = 10;
+		}
+
+		public override void OnSpawn(IEntitySource source)
+		{
+			tileOrigin = tileOriginToAassign;
+			Projectile.rotation = rotationToAssign;
 		}
 
 		public override void AI()
 		{
 			Projectile.Center = tileWorldPos - originAngleRad.ToRotationVector2() * 26;
-			float rotDifference = Helper.RotationDifference(Projectile.DirectionTo(Main.MouseWorld).ToRotation(), Projectile.rotation);
 
 			if (owner.HeldItem.type == ModContent.ItemType<BreachCannon>())
+			{
+				owner.TryGetModPlayer(out ControlsPlayer controlsPlayer);
+				controlsPlayer.mouseRotationListener = true;
+
+				float rotDifference = Helper.RotationDifference(Projectile.DirectionTo(controlsPlayer.mouseWorld).ToRotation(), Projectile.rotation);
+
 				Projectile.rotation = MathHelper.Lerp(Projectile.rotation, Projectile.rotation + rotDifference, 0.07f);
+			}
 
 			laserStartpoint = Projectile.Center + Projectile.rotation.ToRotationVector2().RotatedBy(InvertRotation() ? 0.2f : -0.2f) * 44;
 			Vector2 offset = CalculateOffset(laserStartpoint, Projectile.rotation, 15, 1);
@@ -125,18 +144,14 @@ namespace StarlightRiver.Content.Items.Breacher
 			SpawnParticles();
 
 			if (!Main.tile[(int)tileOrigin.X, (int)tileOrigin.Y].HasTile && Projectile.timeLeft > 2)
-			{
-				//Main.NewText("Killed at (" + ((int)tileOrigin.X).ToString() + "," + ((int)tileOrigin.Y).ToString() + ")");
 				Projectile.timeLeft = 2;
-			}
 
 			var color = Color.Lerp(Color.Cyan, new Color(0, 0, 255), 0.5f);
 			Lighting.AddLight(laserStartpoint, color.ToVector3() * laserSizeMult);
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
-			//Main.NewText(Projectile.Center.X.ToString());
 			for (int k = 1; k <= 5; k++)
 				Gore.NewGoreDirect(Projectile.GetSource_Death(), Projectile.position + new Vector2(Main.rand.Next(Projectile.width), Main.rand.Next(Projectile.height)), Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("BreachCannonSentryGore" + k).Type);
 		}
@@ -346,7 +361,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			if (superLaser)
 				superTrail?.Render(effect);
 
-			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		public void DrawPrimitives()
@@ -455,7 +470,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			effect.Parameters["topColor"].SetValue(topColor.ToVector3());
 			effect.Parameters["bottomColor"].SetValue(bottomColor.ToVector3());
 
-			sb.Begin(default, default, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			sb.Draw(ballTex, laserStartpoint - Main.screenPosition, null, Color.White, ballRotation, ballTex.Size() / 2, scale * laserSizeMult, SpriteEffects.None, 0f);
 			sb.Draw(ballTex, laserEndpoint - Main.screenPosition, null, Color.White, ballRotation, ballTex.Size() / 2, scale * laserSizeMult * 0.85f, SpriteEffects.None, 0f);
@@ -468,7 +483,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			}
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, endState, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, endState, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		public void DrawAdditive(SpriteBatch sb)
@@ -518,6 +533,18 @@ namespace StarlightRiver.Content.Items.Breacher
 					Dust.NewDustPerfect(superLaserEndpoint + new Vector2(0, 35) + vel * 2, ModContent.DustType<BreachImpactSpark>(), vel, 0, Color.Lerp(color1, color2, Main.rand.NextFloat()), Main.rand.NextFloat(1.25f, 1.6f));
 				}
 			}
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.WriteVector2(tileOrigin);
+			writer.Write(Projectile.rotation);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			tileOrigin = reader.ReadVector2();
+			Projectile.rotation = reader.ReadSingle();
 		}
 	}
 }

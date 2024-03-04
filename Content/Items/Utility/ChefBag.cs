@@ -98,9 +98,6 @@ namespace StarlightRiver.Content.Items.Utility
 
 				item.TurnToAir();
 
-				if (ChefBagUI.hideUnowned)
-					ChefBagUI.RebuildGrid();
-
 				return true;
 			}
 
@@ -120,9 +117,6 @@ namespace StarlightRiver.Content.Items.Utility
 				{
 					Items.Remove(storedItem);
 
-					if (ChefBagUI.hideUnowned)
-						ChefBagUI.RebuildGrid();
-
 					return storedItem.Clone();
 				}
 				else
@@ -131,9 +125,6 @@ namespace StarlightRiver.Content.Items.Utility
 					var item = new Item();
 					item.SetDefaults(type);
 					item.stack = amount;
-
-					if (ChefBagUI.hideUnowned)
-						ChefBagUI.RebuildGrid();
 
 					return item;
 				}

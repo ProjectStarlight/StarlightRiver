@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			Projectile.rotation = Projectile.velocity.ToRotation();
 
-			if (!Main.dedServ)
+			if (Main.netMode != NetmodeID.Server)
 			{
 				ManageCaches();
 				ManageTrail();
@@ -55,7 +55,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<Dusts.Glow>(), 0f, 0f, 0, Color.DarkOrange, 0.35f);
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			SoundEngine.PlaySound(SoundID.Shatter, Projectile.position);
 
@@ -92,7 +92,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
 
 			trail?.Render(effect);
-			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			SpriteEffects spriteEffects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 

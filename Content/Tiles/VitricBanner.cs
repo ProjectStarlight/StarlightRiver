@@ -37,21 +37,27 @@ namespace StarlightRiver.Content.Tiles
 
 		public override void SafeSetDefaults()
 		{
-			Chain = new TriangularBanner(16, false, Center, 16)
+			if (Main.netMode != NetmodeID.Server)
 			{
-				constraintRepetitions = 2,//defaults to 2, raising this lowers stretching at the cost of performance
-				drag = 2f,//This number defaults to 1, Is very sensitive
-				forceGravity = new Vector2(0f, 0.25f),//gravity x/y
-				scale = 0.6f
-			};
+				Chain = new TriangularBanner(16, false, Center, 16)
+				{
+					constraintRepetitions = 2,//defaults to 2, raising this lowers stretching at the cost of performance
+					drag = 2f,//This number defaults to 1, Is very sensitive
+					forceGravity = new Vector2(0f, 0.25f),//gravity x/y
+					scale = 0.6f
+				};
+			}
 		}
 
 		public override void Update()
 		{
-			Chain.UpdateChain(Center);
-			Chain.IterateRope(WindForce);
+			if (Main.netMode != NetmodeID.Server)
+			{
+				Chain.UpdateChain(Center);
+				Chain.IterateRope(WindForce);
 
-			timer += 0.005f;
+				timer += 0.005f;
+			}
 		}
 
 		private void WindForce(int index)//wind

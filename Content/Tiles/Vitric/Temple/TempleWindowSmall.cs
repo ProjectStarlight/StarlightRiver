@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 			LightingBufferRenderer.DrawWithLighting(pos, tex, Color.White);
 
-			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		public void RedrawWall(int i, int j)
@@ -78,7 +78,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	[SLRDebug]
 	class TallWindowItem : QuickTileItem
 	{
-		public TallWindowItem() : base("Window Actor", "Debug Item", "TallWindow", 0, AssetDirectory.VitricTile + "WindsRoomOrnamentLeft", true) { }
+		public TallWindowItem() : base("Window Actor", "{{Debug}} Item", "TallWindow", 0, AssetDirectory.VitricTile + "WindsRoomOrnamentLeft", true) { }
 	}
 
 	class TallWindowDummy : TallWindowDummyBase
@@ -94,7 +94,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	[SLRDebug]
 	class TallWindowLavaItem : QuickTileItem
 	{
-		public TallWindowLavaItem() : base("Lava Window Actor", "Debug Item", "TallWindowLava", 0, AssetDirectory.VitricTile + "WindsRoomOrnamentLeft", true) { }
+		public TallWindowLavaItem() : base("Lava Window Actor", "{{Debug}} Item", "TallWindowLava", 0, AssetDirectory.VitricTile + "WindsRoomOrnamentLeft", true) { }
 	}
 
 	class TallWindowLavaDummy : TallWindowDummyBase
@@ -128,7 +128,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	[SLRDebug]
 	class TallWindowCrystalItem : QuickTileItem
 	{
-		public TallWindowCrystalItem() : base("Crystal Window Actor", "Debug Item", "TallWindowCrystal", 0, AssetDirectory.VitricTile + "WindsRoomOrnamentLeft", true) { }
+		public TallWindowCrystalItem() : base("Crystal Window Actor", "{{Debug}} Item", "TallWindowCrystal", 0, AssetDirectory.VitricTile + "WindsRoomOrnamentLeft", true) { }
 	}
 
 	class TallWindowCrystalDummy : TallWindowDummyBase

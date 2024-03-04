@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Refractive Blade");
-			Tooltip.SetDefault("Hold <right> to charge a laser\nEnemies struck by the laser have 25% increased melee Exposure");
+			Tooltip.SetDefault("Hold <right> to charge a laser\nEnemies struck by the laser have 25% increased melee {{Exposure}}");
 		}
 
 		public override void SetDefaults()
@@ -479,13 +479,13 @@ namespace StarlightRiver.Content.Items.Vitric
 			effect.Parameters["uOpacity"].SetValue(prog);
 
 			sb.End();
-			sb.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			Rectangle target = toRect(pos, (int)(10 * (w + prog)), (int)(30 * (h + prog)));
 			sb.Draw(texRing, target, null, color * prog, Projectile.rotation - 1.57f / 2, texRing.Size() / 2, 0, 0);
 
 			sb.End();
-			sb.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		private Rectangle toRect(Vector2 pos, int w, int h)
@@ -513,7 +513,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			effect.Parameters["uColor"].SetValue(color.ToVector3());
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			float height = texBeam.Height / 4f;
 			int width = (int)(Projectile.Center - endPoint).Length() - 76;
@@ -546,7 +546,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			float opacity = height / (texBeam.Height / 2f) * 0.75f;
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			if (Owner == Main.LocalPlayer)
 			{
@@ -555,7 +555,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D impactTex = Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
 			Texture2D impactTex2 = Request<Texture2D>(AssetDirectory.GUI + "ItemGlow").Value;

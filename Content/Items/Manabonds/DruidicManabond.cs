@@ -6,7 +6,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 	{
 		public override string Texture => AssetDirectory.ManabondItem + Name;
 
-		public DruidicManabond() : base("Druidic Manabond", "Your minions can store 40 mana\nYour minions siphon 6 mana per second from you untill full\nYour minions spend 15 mana to attack with a burst of poision thorns") { }
+		public DruidicManabond() : base("Druidic Manabond", "Your minions can store 40 mana\nYour minions siphon 6 mana per second from you untill full\nYour minions spend 15 mana to attack with a burst of poison thorns") { }
 
 		public override void SafeSetDefaults()
 		{
@@ -20,9 +20,12 @@ namespace StarlightRiver.Content.Items.Manabonds
 			{
 				mp.mana -= 15;
 
-				for (int k = 0; k < 5; k++)
+				if (Main.myPlayer == minion.owner)
 				{
-					Projectile.NewProjectile(minion.GetSource_FromThis(), minion.Center, minion.Center.DirectionTo(mp.target.Center).RotatedByRandom(0.5f) * Main.rand.NextFloat(18, 24), ModContent.ProjectileType<DruidThorn>(), 16, 0.25f, minion.owner);
+					for (int k = 0; k < 5; k++)
+					{
+						Projectile.NewProjectile(minion.GetSource_FromThis(), minion.Center, minion.Center.DirectionTo(mp.target.Center).RotatedByRandom(0.5f) * Main.rand.NextFloat(18, 24), ModContent.ProjectileType<DruidThorn>(), 16, 0.25f, minion.owner);
+					}
 				}
 			}
 		}

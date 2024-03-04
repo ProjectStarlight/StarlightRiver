@@ -8,7 +8,7 @@ namespace StarlightRiver.Content.ArmorEnchantment
 
 		public DebugEnchant(Guid guid) : base(guid) { }
 
-		public override string Texture => AssetDirectory.ArmorEnchant + "DebugEnchant";
+		public override string Texture => AssetDirectory.ArmorEnchant + "{{Debug}}Enchant";
 
 		public override bool IsAvailable(Item head, Item chest, Item legs)
 		{
@@ -17,8 +17,8 @@ namespace StarlightRiver.Content.ArmorEnchantment
 
 		public override void UpdateSet(Player Player)
 		{
-			Player.setBonus = "Spams the chat with debug text";
-			Main.NewText(Player.name + " Is wearing armor enchanted with the debug enchant!");
+			Player.setBonus = "Spams the chat with {{Debug}} text";
+			Main.NewText(Player.name + " Is wearing armor enchanted with the {{Debug}} enchant!");
 		}
 
 		public override void DrawInInventory(Item Item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)

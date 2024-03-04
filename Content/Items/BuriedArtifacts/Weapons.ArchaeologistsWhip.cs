@@ -1,6 +1,7 @@
 ﻿using ReLogic.Content;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Creative;
@@ -131,12 +132,21 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			int[] treasure = new int[] {
-			ModContent.ItemType<AWhip_BlueGem>(),
-			ModContent.ItemType<AWhip_GreenGem>(),
-			ModContent.ItemType<AWhip_RedGem>(),
-			ModContent.ItemType<AWhip_Coin>(),
-			ModContent.ItemType<AWhip_Necklace>(),
+
+			// Items can only be spawned on server or singleplayer
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				Main.player[Projectile.owner].TryGetModPlayer(out StarlightPlayer sp);
+				sp.SetHitPacketStatus(true);
+				return;
+			}
+
+			int[] treasure = {
+				ModContent.ItemType<AWhip_BlueGem>(),
+				ModContent.ItemType<AWhip_GreenGem>(),
+				ModContent.ItemType<AWhip_RedGem>(),
+				ModContent.ItemType<AWhip_Coin>(),
+				ModContent.ItemType<AWhip_Necklace>()
 			};
 
 			if (Main.rand.NextBool(9))
@@ -215,7 +225,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Treasure buff");
-			Description.SetDefault("Your minions do more damage");
+			Description.SetDefault("Your minions do more contact damage");
 		}
 	}
 

@@ -143,7 +143,7 @@ namespace StarlightRiver.Content.CustomHooks
 				for (int k = 0; k < Main.maxNPCs; k++)
 				{
 					NPC n = Main.npc[k];
-					if (n.active && n.ModNPC is MovingPlatform && n.Hitbox.Intersects(proj.Hitbox))
+					if (n.active && n.ModNPC is MovingPlatform && !(n.ModNPC as MovingPlatform).dontCollide && n.Hitbox.Intersects(proj.Hitbox))
 					{
 						proj.position += n.velocity;
 

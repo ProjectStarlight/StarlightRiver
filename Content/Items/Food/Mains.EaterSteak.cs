@@ -5,7 +5,7 @@ namespace StarlightRiver.Content.Items.Food
 {
 	internal class EaterSteak : Ingredient
 	{
-		public EaterSteak() : base("+10% damage reduction", 900, IngredientType.Main) { }
+		public EaterSteak() : base("+10% damage reduction", 3600 * 4, IngredientType.Main) { }
 
 		public override void SafeSetDefaults()
 		{
@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Items.Food
 
 		private void LootEaterSteak(NPC NPC, NPCLoot npcloot)
 		{
-			if (NPC.type == NPCID.EaterofSouls)
+			if (NPC.type == NPCID.EaterofSouls || NPC.type == NPCID.Corruptor)
 				npcloot.Add(ItemDropRule.Common(ModContent.ItemType<EaterSteak>(), 8));
 		}
 	}

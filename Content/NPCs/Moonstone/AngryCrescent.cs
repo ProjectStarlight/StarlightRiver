@@ -3,6 +3,8 @@ using StarlightRiver.Content.Items.Moonstone;
 using StarlightRiver.Core.Systems.BarrierSystem;
 using StarlightRiver.Helpers;
 using System;
+using System.IO;
+using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
@@ -99,10 +101,11 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			{
 				case 0:
 
-					if (!initialized)
+					if (!initialized && Main.netMode != NetmodeID.MultiplayerClient)
 					{
 						flip = Main.rand.NextBool() ? -1 : 1;
 						initialized = true;
+						NPC.netUpdate = true;
 					}
 
 					NPC.TargetClosest(false);
@@ -133,8 +136,11 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 							}
 						}
 
-						if (Main.rand.NextBool() && AttackDelay == 120 && !blinked)
+						if (Main.rand.NextBool() && AttackDelay == 120 && !blinked && Main.netMode != NetmodeID.MultiplayerClient)
+						{
 							blinking = true;
+							NPC.netUpdate = true;
+						}
 
 						if (blinking)
 						{
@@ -167,7 +173,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 						barrierNPC.drawGlow = false;
 					}
 
-					if (NPC.Distance(player.Center) < 800f && AttackDelay <= 0 && !player.dead)
+					if (NPC.Distance(player.Center) < 800f && AttackDelay <= 0 && !player.dead && Main.netMode != NetmodeID.MultiplayerClient)
 					{
 						blinked = false;
 						initializeAnimation = false;
@@ -276,7 +282,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			Texture2D eyeTex = ModContent.Request<Texture2D>(Texture + "_Eyes").Value;
 			Vector2 origin = texture.Size() / 2f;
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			for (int k = 0; k < NPC.oldPos.Length; k++)
 			{
@@ -287,7 +293,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			}
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Main.spriteBatch.Draw(texture, NPC.Center - screenPos, null, Color.White, NPC.rotation, texture.Size() / 2f, NPC.scale, SpriteEffects.None, 0f);
 
@@ -312,11 +318,15 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 		{
 			if (NPC.life <= 0)
 			{
-				for (int i = 0; i < 2; i++)
+				if (Main.netMode != NetmodeID.MultiplayerClient)
 				{
-					Projectile.NewProjectileDirect(NPC.GetSource_Death(), NPC.Center, i == 1 ? NPC.velocity.RotatedBy(-MathHelper.PiOver2) * Main.rand.NextFloat(0.3f, 0.7f) :
-						NPC.velocity.RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(0.3f, 0.7f),
-						ModContent.ProjectileType<AngryCrescentDeathProjectile>(), 0, 0, Main.myPlayer).frame = i;
+					for (int i = 0; i < 2; i++)
+					{
+						Projectile.NewProjectileDirect(NPC.GetSource_Death(), NPC.Center, i == 1 ? 
+							NPC.velocity.RotatedBy(-MathHelper.PiOver2) * Main.rand.NextFloat(0.3f, 0.7f) :
+							NPC.velocity.RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(0.3f, 0.7f),
+							ModContent.ProjectileType<AngryCrescentDeathProjectile>(), 0, 0, Main.myPlayer).frame = i;
+					}
 				}
 
 				for (int i = 0; i < 15; i++)
@@ -363,6 +373,48 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<MoonstoneOreItem>(), 3, 1, 3));
 			npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<DianesPendant>(), 150));
 		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(flip);
+			writer.Write(eyeFrame);
+			writer.Write(blinked);
+			writer.Write(blinking);
+			writer.Write(curving);
+
+			// Entering state "1" params
+			// Sort of sloppy making the assumption that only 1 packet is ever sent for state 1 and that its near enough to the transition
+			if (AIState == 1)
+			{
+				writer.WritePackedVector2(offset);
+				writer.Write(pointOnChain);
+				writer.Write(animating);
+				writer.Write(initializeAnimation);
+			}
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			flip = reader.ReadInt32();
+			eyeFrame = reader.ReadInt32();
+			blinked = reader.ReadBoolean();
+			blinking = reader.ReadBoolean();
+			curving = reader.ReadBoolean();
+
+			// Entering state "1" params
+			// Sort of sloppy making the assumption that only 1 packet is ever sent for state 1 and that its near enough to the transition
+			if (AIState == 1)
+			{
+				offset = reader.ReadPackedVector2();
+				pointOnChain = reader.ReadInt32();
+				animating = reader.ReadBoolean();
+				initializeAnimation = reader.ReadBoolean();
+
+				Player target = Main.player[NPC.target];
+				var curve = new BezierCurve(target.Center + new Vector2((150 + offset.X) * flip, -150 + offset.Y), target.Bottom + new Vector2(0, 325), target.Center + new Vector2((-150 + offset.X) * flip, -150 + offset.Y));
+				curvePositions = curve.GetPoints(15).ToArray();
+			}
+		}
 	}
 
 	class AngryCrescentDeathProjectile : ModProjectile
@@ -402,8 +454,11 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			Projectile.rotation += Projectile.velocity.Length() * 0.02f;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
+			if (Main.netMode == NetmodeID.Server)
+				return;
+
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath with { Volume = 0.7f, PitchVariance = 0.1f }, Projectile.position);
 
 			for (int i = 0; i < 15; i++)

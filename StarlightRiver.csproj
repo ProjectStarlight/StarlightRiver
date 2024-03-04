@@ -8,7 +8,7 @@
     <LangVersion>latest</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='{{Debug}}|AnyCPU'">
     <NoWarn>1701;1702;MSB3270</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -17,6 +17,7 @@
   <ItemGroup>
     <None Remove="OldPatchNotes\0.2.0\0.2.2.txt" />
     <None Remove="OldPatchNotes\0.2.0\0.2.4.txt" />
+    <None Remove="OldPatchNotes\0.2.0\0.2.6.txt" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="tModLoader.CodeAssist" Version="0.1.*" />

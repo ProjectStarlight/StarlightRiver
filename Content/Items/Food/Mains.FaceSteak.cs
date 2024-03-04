@@ -5,7 +5,7 @@ namespace StarlightRiver.Content.Items.Food
 {
 	internal class FaceSteak : Ingredient
 	{
-		public FaceSteak() : base("+3% critical strike chance", 900, IngredientType.Main) { }
+		public FaceSteak() : base("+3% critical strike chance", 3600 * 4, IngredientType.Main) { }
 
 		public override void SafeSetDefaults()
 		{
@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Items.Food
 
 		private void LootFaceSteak(NPC NPC, NPCLoot npcloot)
 		{
-			if (NPC.type == NPCID.EaterofSouls)
+			if (NPC.type == NPCID.FaceMonster || NPC.type == NPCID.Herpling)
 				npcloot.Add(ItemDropRule.Common(ModContent.ItemType<FaceSteak>(), 8));
 		}
 	}

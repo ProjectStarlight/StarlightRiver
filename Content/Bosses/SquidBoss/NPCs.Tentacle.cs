@@ -9,6 +9,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 {
 	public class Tentacle : ModNPC, IUnderwater
 	{
+		private const int MAX_SPLASH_COOLDOWN = 40;
 		public static Vector2 movementTargetToAssign;
 		public static int offsetFromParentBodyToAssign;
 		public static int parentIdToAssign;
@@ -23,6 +24,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public int downwardDrawDistance = 28;
 
 		private NPC hurtboxActor;
+
+		private int splashCooldown = 0;
 
 		public SquidBoss Parent { get; set; }
 
@@ -67,6 +70,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			NPC.knockBackResist = 0f;
 			NPC.HitSound = SoundID.NPCHit1;
 			NPC.dontTakeDamage = true;
+			NPC.netAlways = true;
 		}
 
 		public override void OnSpawn(IEntitySource source)
@@ -341,27 +345,32 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				return;
 			}
 
-			if (hurtboxActor is null || !hurtboxActor.active)
+			if (Main.netMode != NetmodeID.MultiplayerClient && (hurtboxActor is null || !hurtboxActor.active))
 			{
-				int i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<TentacleHurtbox>());
-				hurtboxActor = Main.npc[i];
-
 				TentacleHurtbox.tentacleToAssign = this;
+				int i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<TentacleHurtbox>());
+				hurtboxActor = Main.npc[i]; //doesn't actually need to be synced since this just controls the hurtbox spawning failsafe
 			}
 
-			if ((State == 0 || State == 1) && Timer == 0)
+			if ((State == 0 || State == 1) && Timer == 0 && Main.netMode != NetmodeID.MultiplayerClient)
 			{
 				basePoint = NPC.Center;
 				NPC.netUpdate = true;
 			}
 
-			if (NPC.oldPos[0].Y > Arena.WaterLevelWorld && NPC.position.Y <= Arena.WaterLevelWorld || NPC.oldPos[0].Y + NPC.height <= Arena.WaterLevelWorld && NPC.position.Y + NPC.height > Arena.WaterLevelWorld)
+			splashCooldown--;
+
+			if ((NPC.oldPos[0].Y > Arena.WaterLevelWorld && NPC.position.Y <= Arena.WaterLevelWorld || NPC.oldPos[0].Y + NPC.height <= Arena.WaterLevelWorld && NPC.position.Y + NPC.height > Arena.WaterLevelWorld) && splashCooldown <= 0)
 			{
+				splashCooldown = MAX_SPLASH_COOLDOWN;
+
 				float tentacleSin = (float)Math.Sin(Timer / 20f) * stalkWaviness;
 
 				Helpers.Helper.PlayPitched("SquidBoss/LightSplash", 0.5f, 0, NPC.Center);
 				Helpers.Helper.PlayPitched("Magic/WaterWoosh", 0.8f, 0, NPC.Center);
-				Projectile.NewProjectile(NPC.GetSource_FromThis(), new Vector2(NPC.Center.X + tentacleSin * 30, Arena.WaterLevelWorld - 41), Vector2.Zero, ProjectileType<AuroraWaterSplash>(), 0, 0, Main.myPlayer);
+
+				if (Main.netMode != NetmodeID.MultiplayerClient)
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), new Vector2(NPC.Center.X + tentacleSin * 30, Arena.WaterLevelWorld - 41), Vector2.Zero, ProjectileType<AuroraWaterSplash>(), 0, 0, Main.myPlayer);
 
 				for (int k = 0; k < 10; k++)
 				{

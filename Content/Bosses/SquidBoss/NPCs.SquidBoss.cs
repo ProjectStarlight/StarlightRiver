@@ -5,6 +5,7 @@ using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Content.Items.Permafrost;
 using StarlightRiver.Content.NPCs.BaseTypes;
 using StarlightRiver.Content.PersistentData;
+using StarlightRiver.Core.Systems.BossRushSystem;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -818,7 +819,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 				if (GlobalTimer == 240) //roar and activate
 				{
-					NPC.dontTakeDamage = false;
 					CameraSystem.shake += 40;
 					Terraria.Audio.SoundEngine.PlaySound(SoundID.Roar, NPC.Center);
 				}
@@ -828,6 +828,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 				if (GlobalTimer > 240) //following unless using ink attack
 				{
+					NPC.dontTakeDamage = false;
+
 					if (AttackPhase != 3)
 					{
 						Vector2 moveTarget = Main.player[NPC.target].Center;
@@ -881,6 +883,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 				if (AttackTimer > 80)
 					NPC.active = false;
+
+				BossRushSystem.ForceFail();
 			}
 		}
 
@@ -955,6 +959,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public override void SendExtraAI(System.IO.BinaryWriter writer)
 		{
 			writer.Write(variantAttack);
+			writer.Write(NPC.dontTakeDamage);
 			writer.WriteVector2(spawnPoint);
 			writer.WriteVector2(savedPoint);
 			writer.Write(platformOrder);
@@ -963,6 +968,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public override void ReceiveExtraAI(System.IO.BinaryReader reader)
 		{
 			variantAttack = reader.ReadBoolean();
+			NPC.dontTakeDamage = reader.ReadBoolean();
 			spawnPoint = reader.ReadVector2();
 			savedPoint = reader.ReadVector2();
 			platformOrder = reader.ReadByte();

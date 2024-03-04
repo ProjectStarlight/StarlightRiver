@@ -142,9 +142,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				VisualTimerA = 0;
 
 			// Remove invalid platforms from tracked platforms
-			platforms.RemoveAll(n => !n.active || !(n.ModNPC is IcePlatform || n.ModNPC is IcePlatformSmall || n.ModNPC is GoldPlatform));
+			platforms.RemoveAll(n => !n.active || !(n.ModNPC is IcePlatform || n.ModNPC is IcePlatformSmall || n.ModNPC is GoldPlatform || n.ModNPC is EscapePlatform));
 
-			if (platforms.Count < 15 && Main.netMode != NetmodeID.MultiplayerClient) // respawn platforms if not present
+			if (platforms.Count < 16 && Main.netMode != NetmodeID.MultiplayerClient) // respawn platforms if not present
 			{
 				RegeneratePlatforms();
 			}
@@ -240,7 +240,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		private void RegeneratePlatforms()
 		{
-			foreach (NPC npc in Main.npc.Where(n => n.active && (n.type == NPCType<IcePlatform>() || n.type == NPCType<IcePlatformSmall>() || n.type == NPCType<GoldPlatform>())))
+			foreach (NPC npc in Main.npc.Where(n => n.active && (n.type == NPCType<IcePlatform>() || n.type == NPCType<IcePlatformSmall>() || n.type == NPCType<GoldPlatform>() || n.type == NPCType<EscapePlatform>())))
 			{
 				npc.active = false;
 			}
@@ -268,7 +268,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			SpawnPlatform(-340, 240, true);
 			SpawnPlatform(340, 240, true);
 
-			int i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y - 2000, NPCType<GoldPlatform>());
+			int i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y - 2060, NPCType<GoldPlatform>());
+			platforms.Add(Main.npc[i]);
+
+			i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y - 360, NPCType<EscapePlatform>());
 			platforms.Add(Main.npc[i]);
 		}
 

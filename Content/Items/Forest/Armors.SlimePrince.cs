@@ -139,7 +139,7 @@ namespace StarlightRiver.Content.Items.Forest
 					helm.targetAccel = Vector2.Normalize(helm.targetAccel) * 0.99f;
 
 				player.velocity = helm.targetVel;
-				player.fallStart = (int)player.position.Y;
+				player.fallStart = (int)(player.position.Y / 16f);
 			}
 		}
 
@@ -238,7 +238,7 @@ namespace StarlightRiver.Content.Items.Forest
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Slime Prince's Tassets");
-			Tooltip.SetDefault("Minions inflict 5% exposure");
+			Tooltip.SetDefault("Minions inflict 5% {{exposure}}");
 		}
 
 		public override void SetDefaults()

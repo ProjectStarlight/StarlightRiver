@@ -362,6 +362,9 @@ namespace StarlightRiver.Content.Items.Hell
 
 		private void ManageCaches()
 		{
+			if (Main.netMode == NetmodeID.Server)
+				return;
+
 			if (cache == null)
 			{
 				cache = new List<Vector2>();
@@ -378,6 +381,8 @@ namespace StarlightRiver.Content.Items.Hell
 
 		private void ManageTrail()
 		{
+			if (Main.netMode == NetmodeID.Server)
+				return;
 
 			trail ??= new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new NoTip(), factor => trailWidth * 3f, factor => TrailColor);
 

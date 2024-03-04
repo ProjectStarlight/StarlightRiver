@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			primaryCooldownCoefficient = 20;
 			secondaryCooldownCoefficient = 900;
 			secondarySpeedCoefficient = 30;
-			damageCoefficient = 42;
+			originalDamageCoefficient = 42;
 			autoReuse = true;
 		}
 

@@ -38,6 +38,9 @@ namespace StarlightRiver.Content.Items
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
+			int x = StarlightWorld.vitricBiome.X - 37;
+
+			Dust.NewDustPerfect(new Vector2((x + 80) * 16, (StarlightWorld.vitricBiome.Center.Y + 20) * 16), DustID.Firefly);
 
 		}
 
@@ -75,7 +78,7 @@ namespace StarlightRiver.Content.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Debug Mode");
-			Tooltip.SetDefault("Enables debug mode");
+			Tooltip.SetDefault("Enables {{Debug}} mode");
 		}
 
 		public override void SetDefaults()

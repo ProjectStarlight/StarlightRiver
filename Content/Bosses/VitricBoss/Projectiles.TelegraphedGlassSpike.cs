@@ -58,7 +58,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			target.AddBuff(BuffID.Bleeding, 300);
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			Color color = Helpers.Helper.MoltenVitricGlow(MathHelper.Min(200 - Projectile.timeLeft, 120));
 

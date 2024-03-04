@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.CustomHooks
 			Terraria.UI.On_ItemSlot.LeftClick_ItemArray_int_int += LockMouseToSpecialItem;
 			Terraria.UI.On_ItemSlot.Draw_SpriteBatch_ItemArray_int_int_Vector2_Color += DrawSpecial;
 
-			IL_Player.ScrollHotbar += AllowBigScrolling;
+			//IL_Player.ScrollHotbar += AllowBigScrolling; disabled since it appears to do nothing currently and breaks auto-select
 			//IL_Player.Update += AllowBigHotkeying; PORTTODO: Fix IL, never mind this is unused for now. fix later if we actually use it!
 		}
 

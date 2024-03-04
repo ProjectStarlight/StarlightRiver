@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Diane's Pendant");
-			Tooltip.SetDefault("Consuming mana charges a Crescent Guardian, blitzing nearby enemies when fully charged\n+20 barrier");
+			Tooltip.SetDefault("Consuming mana charges a Crescent Guardian, blitzing nearby enemies when fully charged\n+20 {{barrier}}");
 		}
 
 		public override void SetDefaults()
@@ -206,7 +206,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			//DrawTrail(Main.spriteBatch);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "Glow").Value;
 
@@ -220,7 +220,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			}
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			if (flashTimer < 1)
 			{
@@ -447,7 +447,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 			trail2?.Render(effect);
 
-			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 

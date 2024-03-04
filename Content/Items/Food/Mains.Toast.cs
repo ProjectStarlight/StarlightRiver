@@ -4,7 +4,7 @@ namespace StarlightRiver.Content.Items.Food
 {
 	internal class Toast : Ingredient
 	{
-		public Toast() : base("+5% all damage\n+5% defense", 400, IngredientType.Main) { }
+		public Toast() : base("+5% all damage\n+5% defense", 3600 * 5, IngredientType.Main) { }
 
 		public override void SafeSetDefaults()
 		{

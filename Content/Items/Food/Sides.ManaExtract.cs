@@ -4,7 +4,7 @@ namespace StarlightRiver.Content.Items.Food
 {
 	internal class ManaExtract : Ingredient
 	{
-		public ManaExtract() : base("Restore 50 mana on use\nReduces duration of potion sickness slightly", 120, IngredientType.Side) { }
+		public ManaExtract() : base("Restore 50 mana on use\nReduces duration of potion sickness slightly", 900, IngredientType.Side) { }
 
 		public override void SafeSetDefaults()
 		{
@@ -28,6 +28,15 @@ namespace StarlightRiver.Content.Items.Food
 		public override void ResetBuffEffects(Player Player, float multiplier)
 		{
 			Player.potionDelay += 4;
+		}
+
+		public override void SafeAddRecipes()
+		{
+			Recipe recipe = CreateRecipe(5);
+			recipe.AddIngredient(ItemID.ManaPotion, 1);
+			recipe.AddIngredient(ItemID.Gel, 5);
+			recipe.AddTile(TileID.CookingPots);
+			recipe.Register();
 		}
 	}
 }

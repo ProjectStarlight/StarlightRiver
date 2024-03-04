@@ -67,32 +67,35 @@ namespace StarlightRiver.Content.NPCs.Forest
 			NPC.chaseable = true;
 			NPC.value = 100;
 
-			chain = new RectangularBanner(15, false, NPC.Center + Vector2.UnitY * -40, 8)
+			if (Main.netMode != NetmodeID.Server)
 			{
-				constraintRepetitions = 2,
-				drag = 1.2f,
-				forceGravity = new Vector2(0f, 0.55f),
-				scale = 16f,
-				parent = NPC
-			};
+				chain = new RectangularBanner(15, false, NPC.Center + Vector2.UnitY * -40, 8)
+				{
+					constraintRepetitions = 2,
+					drag = 1.2f,
+					forceGravity = new Vector2(0f, 0.55f),
+					scale = 16f,
+					parent = NPC
+				};
 
-			miniChain0 = new RectangularBanner(10, false, NPC.Center + new Vector2(22, -48), 8)
-			{
-				constraintRepetitions = 2,
-				drag = 1.35f,
-				forceGravity = new Vector2(0f, 0.55f),
-				scale = 4f,
-				parent = NPC
-			};
+				miniChain0 = new RectangularBanner(10, false, NPC.Center + new Vector2(22, -48), 8)
+				{
+					constraintRepetitions = 2,
+					drag = 1.35f,
+					forceGravity = new Vector2(0f, 0.55f),
+					scale = 4f,
+					parent = NPC
+				};
 
-			miniChain1 = new RectangularBanner(10, false, NPC.Center + new Vector2(-22, -48), 8)
-			{
-				constraintRepetitions = 2,
-				drag = 1.35f,
-				forceGravity = new Vector2(0f, 0.55f),
-				scale = 4f,
-				parent = NPC
-			};
+				miniChain1 = new RectangularBanner(10, false, NPC.Center + new Vector2(-22, -48), 8)
+				{
+					constraintRepetitions = 2,
+					drag = 1.35f,
+					forceGravity = new Vector2(0f, 0.55f),
+					scale = 4f,
+					parent = NPC
+				};
+			}
 		}
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)

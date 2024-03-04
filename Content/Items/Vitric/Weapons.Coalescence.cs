@@ -217,13 +217,13 @@ namespace StarlightRiver.Content.Items.Vitric
 			effect.Parameters["uOpacity"].SetValue(prog);
 
 			sb.End();
-			sb.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			Rectangle target = toRect(pos, (int)(16 * (w + prog)), (int)(60 * (h + prog)));
 			sb.Draw(texRing, target, null, color * prog, Projectile.rotation, texRing.Size() / 2, 0, 0);
 
 			sb.End();
-			sb.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		private Rectangle toRect(Vector2 pos, int w, int h)

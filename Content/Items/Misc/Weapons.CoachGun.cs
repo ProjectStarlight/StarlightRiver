@@ -253,8 +253,11 @@ namespace StarlightRiver.Content.Items.Misc
 				}
 			}
 
-			ManageCaches();
-			ManageTrail();
+			if (Main.netMode != NetmodeID.Server)
+			{
+				ManageCaches();
+				ManageTrail();
+			}
 		}
 
 		public override void Kill(int timeLeft)
@@ -383,7 +386,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			trail?.Render(effect);
 
-			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 

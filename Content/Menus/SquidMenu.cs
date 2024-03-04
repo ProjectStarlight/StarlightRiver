@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Menus
 		readonly ParticleSystem bubblesSystem = new(AssetDirectory.SquidBoss + "Bubble", UpdateBubblesBody);
 
 		public override string DisplayName => "Auroracle";
-		public override int Music => MusicLoader.GetMusicSlot(Mod, "Sounds/Music/PermafrostPassive");
+		public override int Music => MusicLoader.GetMusicSlot(Mod, "Sounds/Music/SquidArena");
 
 		public override Asset<Texture2D> Logo => Request<Texture2D>("StarlightRiver/Assets/Misc/MenuIcon");
 
@@ -128,7 +128,7 @@ namespace StarlightRiver.Content.Menus
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
 
 			return true;
 		}

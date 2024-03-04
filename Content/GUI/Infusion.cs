@@ -151,12 +151,12 @@ namespace StarlightRiver.Content.GUI
 			base.Draw(spriteBatch);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.UIScaleMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
 
 			linkParticles.DrawParticles(spriteBatch);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
 
 			RemoveAllChildren();
 			Initialize();
@@ -337,14 +337,14 @@ namespace StarlightRiver.Content.GUI
 			else if (equipped != null)
 			{
 				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.UIScaleMatrix);
+				spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
 
 				Texture2D glowTex = Request<Texture2D>("StarlightRiver/Assets/Abilities/HexGlow").Value;
 				float sin = 0.75f + (float)Math.Sin(Main.GameUpdateCount / 20f) * 0.25f;
 				spriteBatch.Draw(glowTex, GetDimensions().Center(), null, equipped.color * sin, 0, glowTex.Size() / 2, 1.2f, 0, 0);
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
 
 				if (Main.rand.NextBool(5))
 				{

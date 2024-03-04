@@ -501,7 +501,7 @@ namespace StarlightRiver.Core
 		/// <param name="validGround"></param>
 		private static void GenRuins()
 		{
-			var ruinedHouseSizes = new Point16[6] { new Point16(8, 7), new Point16(14, 7), new Point16(12, 7), new Point16(10, 6), new Point16(12, 5), new Point16(14, 7) };
+			var ruinedHouseSizes = new Point16[6] { new(8, 7), new(14, 7), new(12, 7), new(10, 6), new(12, 5), new(14, 7) };
 			int failCount = 0;
 			for (int i = 0; i < 6; ++i)
 			{
@@ -567,7 +567,7 @@ namespace StarlightRiver.Core
 
 			ProtectionWorld.ProtectedRegions.Add(new Rectangle(x, vitricBiome.Center.Y - 10, dims.X, dims.Y));
 
-			NPC.NewNPC(new EntitySource_WorldGen(), (x + 80) * 16, vitricBiome.Center.Y * 16, NPCType<Content.Bosses.GlassMiniboss.GlassweaverWaiting>());
+			NPC.NewNPC(new EntitySource_WorldGen(), (x + 80) * 16, (StarlightWorld.vitricBiome.Center.Y + 20) * 16, NPCType<Content.Bosses.GlassMiniboss.GlassweaverWaiting>());
 		}
 
 		private static void GenTemple()
