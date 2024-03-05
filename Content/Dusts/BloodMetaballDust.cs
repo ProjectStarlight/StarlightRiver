@@ -1,4 +1,5 @@
-﻿using Terraria.ID;
+﻿using StarlightRiver.Content.Metaballs;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Dusts
 {
