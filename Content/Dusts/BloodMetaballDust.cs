@@ -13,6 +13,8 @@ namespace StarlightRiver.Content.Dusts
 
 		public override bool Update(Dust dust)
 		{
+			BloodMetaballs.Visible = true;
+
 			dust.position += dust.velocity;
 
 			dust.customData ??= Main.rand.NextFloat(0.75f, 1.5f);

@@ -76,7 +76,8 @@ namespace StarlightRiver.Content.Archaeology
 
 		public override void Update()
 		{
-			CheckOpen();
+			if (IsOnScreen())
+				CheckOpen();
 		}
 
 		public override void SaveData(TagCompound tag)
@@ -158,7 +159,6 @@ namespace StarlightRiver.Content.Archaeology
 
 			ArtifactSpawnPacket packet = new ArtifactSpawnPacket(this.ID, Position.X, Position.Y, proj.identity, TexturePath);
 			packet.Send();
-
 		}
 	}
 }

@@ -32,6 +32,8 @@ namespace StarlightRiver.Content.Tiles.Mushroom
 		public float timer;
 		public float bounceState;
 
+		public override bool DoesCollision => true;
+
 		public JellyShroomDummy() : base(TileType<JellyShroom>(), 7 * 16, 2 * 16) { }
 
 		public override void Collision(Player Player)

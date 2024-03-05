@@ -26,6 +26,8 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 		public virtual int ParentX => (int)Center.X / 16;
 		public virtual int ParentY => (int)Center.Y / 16;
 
+		public virtual bool DoesCollision => false;
+
 		public Dummy() { }
 
 		public Dummy(int validType, int width, int height)
@@ -177,7 +179,7 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 			{
 				Player player = Main.player[i];
 
-				if (Colliding(player))
+				if (DoesCollision && Colliding(player))
 					Collision(player);
 			}
 
