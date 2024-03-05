@@ -7,6 +7,7 @@ namespace StarlightRiver.Content.Items.Magnet
 {
 	internal class GrayGooMetaballs : MetaballActor
 	{
+		public static bool visible;
 
 		public int DustType => ModContent.DustType<GrayGooDust>();
 
@@ -18,7 +19,7 @@ namespace StarlightRiver.Content.Items.Magnet
 
 		public override bool OverEnemies => true;
 
-		public override bool Active => Main.dust.Any(x => x.active && (x.type == DustType || x.type == DustType2));
+		public override bool Active => visible;
 
 		public override void DrawShapes(SpriteBatch spriteBatch)
 		{
@@ -91,6 +92,8 @@ namespace StarlightRiver.Content.Items.Magnet
 		{
 			var sourceRect = new Rectangle(0, 0, target.Width, target.Height);
 			LightingBufferRenderer.DrawWithLighting(sourceRect, target, sourceRect, InteriorColor, new Vector2(2, 2));
+
+			visible = false;
 			return false;
 		}
 	}
