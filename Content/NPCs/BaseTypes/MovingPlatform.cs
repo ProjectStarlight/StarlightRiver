@@ -77,21 +77,21 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 				//so we can end up with frames where the platform skips 5x its normal velocity likely clipping through Players since the platform is thin.
 				//to solve this, the collision code takes into account the previous platform position accessed by this AI for the hitbox to cover the whole travel from previous fully processed frame.
 				//only handling big upwards y movements since the horizontal skips don't seem as jarring to the user since platforms tend to be wide, and vertical down skips aren't jarring since Player drops onto platform anyway instead of clipping through.
-				foreach (Player Player in Main.player)
+				foreach (Player player in Main.player)
 				{
-					if (!Player.active || Player.dead || Player.GoingDownWithGrapple || Player.GetModPlayer<StarlightPlayer>().platformTimer > 0)
+					if (!player.active || player.dead || player.GoingDownWithGrapple || player.GetModPlayer<StarlightPlayer>().platformTimer > 0)
 						continue;
 
-					var PlayerRect = new Rectangle((int)Player.position.X, (int)Player.position.Y + Player.height, Player.width, 1);
-					var NPCRect = new Rectangle((int)NPC.position.X, (int)NPC.position.Y, NPC.width, 8 + (Player.velocity.Y > 0 ? (int)Player.velocity.Y : 0) + (int)Math.Abs(yDistTraveled));
+					var PlayerRect = new Rectangle((int)player.position.X, (int)player.position.Y + player.height, player.width, 1);
+					var NPCRect = new Rectangle((int)NPC.position.X, (int)NPC.position.Y, NPC.width, 8 + (player.velocity.Y > 0 ? (int)player.velocity.Y : 0) + (int)Math.Abs(yDistTraveled));
 
-					if (PlayerRect.Intersects(NPCRect) && Player.position.Y <= NPC.position.Y)
+					if (PlayerRect.Intersects(NPCRect) && player.position.Y <= NPC.position.Y)
 					{
-						if (!Player.justJumped && Player.velocity.Y >= 0)
+						if (!player.justJumped && player.velocity.Y >= 0)
 						{
-							Player.velocity.Y = 0;
-							Player.position.Y = NPC.position.Y - Player.height + 4;
-							Player.position += NPC.velocity;
+							player.velocity.Y = 0;
+							player.position.Y = NPC.position.Y - player.height + 4;
+							player.position += NPC.velocity;
 						}
 					}
 				}

@@ -175,12 +175,15 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 				return;
 			}
 
-			for (int i = 0; i < Main.maxPlayers; i++)
+			if (DoesCollision)
 			{
-				Player player = Main.player[i];
+				for (int i = 0; i < Main.maxPlayers; i++)
+				{
+					Player player = Main.player[i];
 
-				if (DoesCollision && Colliding(player))
-					Collision(player);
+					if (Colliding(player))
+						Collision(player);
+				}
 			}
 
 			Update();
