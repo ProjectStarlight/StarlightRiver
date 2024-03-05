@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.CustomHooks
 			}
 
 			// If the tile is in the vitric biome and doesn't block light, emit light.
-			if (StarlightWorld.vitricBiome.Contains(x, y))
+			if (VitricDesertBiome.onScreen && StarlightWorld.vitricBiome.Contains(x, y))
 			{
 				bool tileBlock = tile.HasTile && Main.tileBlockLight[tile.TileType] && !(tile.Slope != SlopeType.Solid || tile.IsHalfBlock);
 				bool wallBlock = Main.wallLight[tile.WallType];
