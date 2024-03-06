@@ -5,6 +5,8 @@
 
 using StarlightRiver.Content.Items.Moonstone;
 using System;
+using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
@@ -18,65 +20,91 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 
 		public override void SetStaticDefaults()
 		{
-			QuickBlock.QuickSetFurniture(this, 3, 3, ModContent.DustType<MoonstoneArrowDust>(), SoundID.Tink, false, new Color(255, 255, 150), false, false, "Moonstone Monolith");
+			TileObjectData.newTile.DrawYOffset = 2;
+			QuickBlock.QuickSetFurniture(this, 2, 3, ModContent.DustType<MoonstoneArrowDust>(), SoundID.Tink, false, new Color(255, 255, 150), false, false, "Moonstone Monolith");
 			AnimationFrameHeight = 54;
 		}
 
 		public override void AnimateTile(ref int frame, ref int frameCounter)
 		{
-			if (frame > 0 && ++frameCounter >= 5)
-			{
-				frameCounter = 0;
-				frame++;
-				if (frame > 18)
-					frame = 7;
-			}
+            if ((frameCounter = ++frameCounter % 8) == 0)
+                frame = (++frame - 6) % 12 + 6;
 		}
 
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
 		{
-			Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, 48, 48, ModContent.ItemType<MoonstoneMonolithItem>());
+			//Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, 48, 48, ModContent.ItemType<MoonstoneMonolithItem>());
 		}
 
 		public override bool RightClick(int i, int j)
 		{
-			Player player = Main.LocalPlayer;
-			Tile tile = Main.tile[i, j];
-			int left = i;
-			int top = j;
-
-			while (tile.TileFrameX != 0)
-			{
-				left--;
-				tile = Main.tile[left, j];
-			}
-
-			while (tile.TileFrameY % 54 != 0)
-			{
-				top--;
-				tile = Main.tile[left, top];
-			}
-
-			if (tile.TileFrameY == 0)
-			{
-				for (int x = 0; x < 3; x++)
-					for (int y = 0; y < 3; y++)
-					{
-						tile = Main.tile[left + x, top + y];
-						tile.TileFrameY += 54;
-					}
-			}
-			else
-			{
-				for (int x = 0; x < 3; x++)
-					for (int y = 0; y < 3; y++)
-					{
-						tile = Main.tile[left + x, top + y];
-						tile.TileFrameY = (short)(y * 18);
-					}
-			}
+			SoundEngine.PlaySound(SoundID.Mech, new Vector2(i, j) * 16);
+			HitWire(i, j);
 
 			return true;
+		}
+
+		public override void HitWire(int i, int j)
+		{
+			//b
+			Tile interactTile = Main.tile[i, j];
+
+			int offsetX = interactTile.TileFrameX / 18;
+			int offsetY = interactTile.TileFrameY / 18 % 3;
+			Tile targetTile = Main.tile[i - offsetX, j - offsetY];
+
+			bool inactive = targetTile.TileFrameY == 0;
+			for (int x = 0; x < 2; x++)
+				for (int y = 0; y < 3; y++)
+				{
+					int coordX = i - offsetX + x;
+					int coordY = j - offsetY + y;
+
+					if (inactive)
+						Main.tile[coordX, coordY].TileFrameY += 54;
+					else
+						Main.tile[coordX, coordY].TileFrameY = (short)(y * 18);
+
+					if (Wiring.running)
+						Wiring.SkipWire(coordX, coordY);
+				}
+
+			NetMessage.SendTileSquare(-1, i - offsetX, j - offsetY + 1, 3);
+		}
+
+		public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
+		{
+			Tile tile = Main.tile[i, j];
+			Texture2D texture = ModContent.Request<Texture2D>(AssetDirectory.MoonstoneTile + "MoonstoneMonolith").Value;
+			Texture2D glowTexture = ModContent.Request<Texture2D>(AssetDirectory.MoonstoneTile + "MoonstoneMonolith_Glow").Value;
+
+			Vector2 zero = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
+
+			const int height = 16;
+			// if the bottom tile is a pixel taller
+			//int height = tile.TileFrameY % AnimationFrameHeight == 36 ? 18 : 16;
+
+			int frameYOffset = tile.TileFrameY >= 54 ? Main.tileFrame[Type] * AnimationFrameHeight : 0;
+
+			Vector2 pos = new Vector2(
+					i * 16 - (int)Main.screenPosition.X,
+					j * 16 - (int)Main.screenPosition.Y + 2) + zero;
+
+			Rectangle frame = new Rectangle(
+					tile.TileFrameX,
+					tile.TileFrameY + frameYOffset,
+					16,
+					height);
+
+			spriteBatch.Draw(
+				texture, pos, frame, 
+				Lighting.GetColor(i, j), 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+
+			spriteBatch.Draw(
+				glowTexture, pos, frame,
+				Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+
+			return false;
 		}
 	}
 
