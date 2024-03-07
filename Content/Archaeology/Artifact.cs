@@ -1,6 +1,8 @@
 ﻿using StarlightRiver.Content.Packets;
 using StarlightRiver.Helpers;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
 
@@ -74,12 +76,6 @@ namespace StarlightRiver.Content.Archaeology
 			GenericDraw(spriteBatch);
 		}
 
-		public override void Update()
-		{
-			if (IsOnScreen())
-				CheckOpen();
-		}
-
 		public override void SaveData(TagCompound tag)
 		{
 			tag[nameof(displayedOnMap)] = displayedOnMap;
@@ -90,6 +86,7 @@ namespace StarlightRiver.Content.Archaeology
 			try
 			{
 				displayedOnMap = tag.GetBool(nameof(displayedOnMap));
+				ArtifactManager.artifacts.Add(this);
 			}
 			catch (Exception e)
 			{
@@ -159,6 +156,39 @@ namespace StarlightRiver.Content.Archaeology
 
 			ArtifactSpawnPacket packet = new ArtifactSpawnPacket(this.ID, Position.X, Position.Y, proj.identity, TexturePath);
 			packet.Send();
+		}
+	}
+
+	public class ArtifactManager : ModSystem
+	{
+		public static List<Artifact> artifacts = new();
+		public static bool scanNextFrame;
+
+		public override void Load()
+		{
+			On_WorldGen.KillTile += QueueScan;
+		}
+
+		private void QueueScan(On_WorldGen.orig_KillTile orig, int i, int j, bool fail, bool effectOnly, bool noItem)
+		{
+			orig(i, j, fail, effectOnly, noItem);
+
+			if (!fail && !effectOnly)
+				scanNextFrame = true;
+		}
+
+		public override void PostUpdateEverything()
+		{
+			if (scanNextFrame)
+			{
+				artifacts.ForEach(n => n.CheckOpen());
+				scanNextFrame = false;
+			}
+		}
+
+		public override void ClearWorld()
+		{
+			artifacts.Clear();
 		}
 	}
 }
