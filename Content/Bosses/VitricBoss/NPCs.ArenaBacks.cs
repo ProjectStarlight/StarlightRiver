@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.CustomHooks;
+﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
@@ -208,7 +209,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			if (!NPC.active)
+			if (!NPC.active || !VitricDesertBiome.onScreen)
 				return false;
 
 			if (State == 3 || State == 4)

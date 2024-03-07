@@ -11,6 +11,7 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 		const int PADDING = 20;
 
 		public static bool GettingColors = false;
+		public static bool bufferNeedsPopulated = false;
 
 		public static VertexBuffer lightingQuadBuffer;
 
@@ -59,6 +60,11 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 
 		private static void PopulateTileTexture(Vector2 start)
 		{
+			Main.NewText(bufferNeedsPopulated);
+
+			if (!bufferNeedsPopulated)
+				return;
+
 			GettingColors = true;
 
 			var tileLightingBuffer = new Color[tileLightingTarget.RenderTarget.Width * tileLightingTarget.RenderTarget.Height];
@@ -77,6 +83,8 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 			tileLightingTarget.RenderTarget.SetData(tileLightingBuffer);
 			tileLightingCenter = start;
 			GettingColors = false;
+
+			bufferNeedsPopulated = false;
 		}
 
 		private static void PopulateTileTextureScrolling(Vector2 start, int yToStart, int yToEnd)
@@ -190,6 +198,8 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 		//Scale is important here instead of just modifying the pos rectangle to change where the texture samples from the lighting buffer, otherwise it would sample from the base points
 		public static void DrawWithLighting(Rectangle pos, Texture2D tex, Rectangle source, Color color = default, Vector2 scale = default)
 		{
+			LightingBuffer.bufferNeedsPopulated = true;
+
 			//TODO: Include an origin that the point scales from
 			if (Main.dedServ || !Helper.OnScreen(new Rectangle(pos.X, pos.Y, tex.Width, tex.Height)))
 				return;
