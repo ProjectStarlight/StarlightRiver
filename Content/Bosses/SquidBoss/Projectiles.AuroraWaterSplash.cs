@@ -1,4 +1,6 @@
-﻿namespace StarlightRiver.Content.Bosses.SquidBoss
+﻿using StarlightRiver.Core.Systems.AuroraWaterSystem;
+
+namespace StarlightRiver.Content.Bosses.SquidBoss
 {
 	internal class AuroraWaterSplash : ModProjectile
 	{
@@ -9,6 +11,11 @@
 			Projectile.width = 72;
 			Projectile.height = 106;
 			Projectile.timeLeft = 40;
+		}
+
+		public override void AI()
+		{
+			AuroraWaterSystem.visCounter = 30;
 		}
 
 		public override bool PreDraw(ref Color lightColor)

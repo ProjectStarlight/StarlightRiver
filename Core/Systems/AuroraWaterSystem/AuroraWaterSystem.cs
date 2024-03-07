@@ -16,7 +16,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 		public bool HasAuroraWater
 		{
 			get => (PackedData & 0b00000001) == 1;
-			set => PackedData = (byte)(~PackedData & (value ? 1 : 0));
+			set => PackedData = (byte)(value ? PackedData | 0x01 : PackedData & ~0x01);
 		}
 
 		public int AuroraWaterFrameX
@@ -34,8 +34,11 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 
 	class AuroraWaterSystem : ModSystem
 	{
-		public static ScreenTarget auroraTarget = new(DrawAuroraTarget, () => true, 1);
-		public static ScreenTarget auroraBackTarget = new(DrawAuroraBackTarget, () => true, 1);
+		public static int visCounter = 0;
+		public static bool Visible => visCounter > 0;
+
+		public static ScreenTarget auroraTarget;
+		public static ScreenTarget auroraBackTarget;
 
 		public static bool failedLoad = false;
 
@@ -44,6 +47,8 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 		public override void Load()
 		{
 			On_Main.DrawInfernoRings += DrawAuroraWater;
+			auroraTarget = new(DrawAuroraTarget, () => Visible, 1);
+			auroraBackTarget = new(DrawAuroraBackTarget, () => Visible, 1);
 		}
 
 		public static void DrawToMetaballTarget()
@@ -140,7 +145,12 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 		private void DrawAuroraWater(On_Main.orig_DrawInfernoRings orig, Main self)
 		{
 			orig(self);
-			AuroraWaterTileMetaballs.DrawSpecial();
+
+			if (Visible)
+			{
+				AuroraWaterTileMetaballs.DrawSpecial();
+				visCounter--;
+			}
 		}
 
 		public static void PlaceAuroraWater(int i, int j)
@@ -269,9 +279,18 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 		}
 	}
 
+	class AuroraWaterGlobalTile : GlobalTile
+	{
+		public override void NearbyEffects(int i, int j, int type, bool closer)
+		{
+			if (Main.tile[i, j].Get<AuroraWaterData>().HasAuroraWater)
+				AuroraWaterSystem.visCounter = 30;
+		}
+	}
+
 	class AuroraWaterTileMetaballs : MetaballActor
 	{
-		public override bool Active => !Main.LocalPlayer.InModBiome(ModContent.GetInstance<Content.Biomes.PermafrostTempleBiome>());
+		public override bool Active => AuroraWaterSystem.Visible && !Main.LocalPlayer.InModBiome(ModContent.GetInstance<Content.Biomes.PermafrostTempleBiome>());
 
 		public override Color OutlineColor => new(255, 0, 255);
 
