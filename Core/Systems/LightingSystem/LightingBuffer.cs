@@ -15,9 +15,9 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 
 		public static VertexBuffer lightingQuadBuffer;
 
-		public static ScreenTarget screenLightingTarget = new(DrawFinalTarget, () => true, 0.2f);
-		public static ScreenTarget tileLightingTarget = new(null, () => true, 0.1f, ResizeTile);
-		public static ScreenTarget tileLightingTempTarget = new(null, () => true, 0, ResizeTileTemp);
+		public static ScreenTarget screenLightingTarget = new(DrawFinalTarget, () => bufferNeedsPopulated, 0.2f);
+		public static ScreenTarget tileLightingTarget = new(null, () => bufferNeedsPopulated, 0.1f, ResizeTile);
+		public static ScreenTarget tileLightingTempTarget = new(null, () => bufferNeedsPopulated, 0, ResizeTileTemp);
 
 		public static Vector2 tileLightingCenter;
 
@@ -60,11 +60,6 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 
 		private static void PopulateTileTexture(Vector2 start)
 		{
-			Main.NewText(bufferNeedsPopulated);
-
-			if (!bufferNeedsPopulated)
-				return;
-
 			GettingColors = true;
 
 			var tileLightingBuffer = new Color[tileLightingTarget.RenderTarget.Width * tileLightingTarget.RenderTarget.Height];
@@ -83,8 +78,6 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 			tileLightingTarget.RenderTarget.SetData(tileLightingBuffer);
 			tileLightingCenter = start;
 			GettingColors = false;
-
-			bufferNeedsPopulated = false;
 		}
 
 		private static void PopulateTileTextureScrolling(Vector2 start, int yToStart, int yToEnd)
@@ -155,6 +148,9 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 
 		public static void DrawFinalTarget(SpriteBatch sb)
 		{
+			if (!bufferNeedsPopulated)
+				return;
+
 			if (ModContent.GetInstance<GraphicsConfig>().HighQualityLighting)
 			{
 				refreshTimer++;
@@ -182,6 +178,8 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 
 				PopulateScreenTexture();
 			}
+
+			bufferNeedsPopulated = false;
 		}
 	}
 
