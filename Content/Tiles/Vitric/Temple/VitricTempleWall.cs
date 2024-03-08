@@ -7,7 +7,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
 	class VitricTempleWall : ModWall
 	{
-		public override string Texture => AssetDirectory.VitricTile + "VitricTempleWallEdge";
+		public override string Texture => AssetDirectory.VitricTile + "VitricTempleWall";
 
 		public override void SetStaticDefaults()
 		{
@@ -20,23 +20,22 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			return false;
 		}
 
-		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
+		public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 		{
-			Texture2D tex = Request<Texture2D>(AssetDirectory.VitricTile + "VitricTempleWall").Value;
-			var target = new Vector2(i * 16 - Main.screenPosition.X, j * 16 - Main.screenPosition.Y);
-			target += new Vector2(Helpers.Helper.TileAdj.X * 16, Helpers.Helper.TileAdj.Y * 16);
-			var source = new Rectangle(i % 14 * 16, j % 25 * 16, 16, 16);
+			var tile = Main.tile[i, j];
 
-			Tile tile = Framing.GetTileSafely(i, j);
+			var frame = new Rectangle(i % 14 * 16, j % 25 * 16, 16, 16);
+			var frame2 = new Rectangle(tile.WallFrameX, tile.WallFrameY, 32, 32);
 
-			if (Lighting.NotRetro)
-			{
-				Lighting.GetCornerColors(i, j, out VertexColors vertices);
-				Main.tileBatch.Draw(tex, target, source, vertices, Vector2.Zero, 1f, SpriteEffects.None);
-			}
+			VertexColors vertices;
+			Lighting.GetCornerColors(i, j, out vertices);
 
-			if (TileID.Sets.DrawsWalls[tile.TileType])
-				spriteBatch.Draw(tex, target, source, Lighting.GetColor(i, j));
+			if (!(frame2.Intersects(new Rectangle(36, 36, 36 * 3, 36)) || frame2.Intersects(new Rectangle(36 * 6, 36, 36 * 3, 36 * 2)) || frame2.Intersects(new Rectangle(36 * 10, 0, 36 * 2, 36 * 3))))
+				Main.tileBatch.Draw(Request<Texture2D>(Texture + "Edge").Value, new Vector2(i * 16 - (int)Main.screenPosition.X + Main.offScreenRange - 8, j * 16 - (int)Main.screenPosition.Y + Main.offScreenRange - 8), frame2, vertices, Vector2.Zero, 1f, SpriteEffects.None);
+			
+			Main.tileBatch.Draw(Request<Texture2D>(Texture).Value, new Vector2(i * 16 - (int)Main.screenPosition.X + Main.offScreenRange, j * 16 - (int)Main.screenPosition.Y + Main.offScreenRange), frame, vertices, Vector2.Zero, 1f, SpriteEffects.None);
+
+			return false;
 		}
 	}
 

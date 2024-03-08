@@ -82,8 +82,8 @@ namespace StarlightRiver.Core
 				indicies[6 * k + 5] = (short)(4 * k + 2);
 			}
 
-			vertexBuffer.SetData(verticies);
-			indexBuffer.SetData(indicies);
+			vertexBuffer?.SetData(verticies);
+			indexBuffer?.SetData(indicies);
 		}
 
 		public void DrawParticles(SpriteBatch spriteBatch)
