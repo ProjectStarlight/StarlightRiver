@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Configs;
+﻿using ReLogic.Threading;
+using StarlightRiver.Content.Configs;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using static Terraria.ModLoader.ModContent;
@@ -57,29 +58,43 @@ namespace StarlightRiver.Core
 		{
 			var offset = anchorType == AnchorOptions.World ? Main.screenPosition : Vector2.Zero;
 
-			for (int k = 0; k < particles.Count; k++)
+			FastParallel.For(0, particles.Count, (from, to, context) =>
 			{
-				var particle = particles[k];
+				for (int k = from; k < to; k++)
+				{
+					var particle = particles[k];
 
-				if (!Main.gameInactive)
-					updateFunction(particle);
+					if (!Main.gameInactive)
+						updateFunction(particle);
 
-				var plane = particle.Frame != default ? particle.Frame : texture.Frame();
-				plane.Offset((particle.Position - offset).ToPoint());
-				plane.Width = (int)(plane.Width * particle.Scale);
-				plane.Height = (int)(plane.Height * particle.Scale);
+					var frame = particle.Frame != default ? particle.Frame : texture.Frame();
+					var plane = frame;
+					plane.Offset((particle.Position - offset).ToPoint());
+					plane.Width = (int)(plane.Width * particle.Scale);
+					plane.Height = (int)(plane.Height * particle.Scale);
 
-				verticies[4 * k + 0] = new(plane.TopLeft().RotatedBy(particle.Rotation, plane.Center.ToVector2()).Vec3().ScreenCoord(), particle.Color, new Vector2(0, 0));
-				verticies[4 * k + 1] = new(plane.TopRight().RotatedBy(particle.Rotation, plane.Center.ToVector2()).Vec3().ScreenCoord(), particle.Color, new Vector2(0, 1));
-				verticies[4 * k + 2] = new(plane.BottomLeft().RotatedBy(particle.Rotation, plane.Center.ToVector2()).Vec3().ScreenCoord(), particle.Color, new Vector2(1, 0));
-				verticies[4 * k + 3] = new(plane.BottomRight().RotatedBy(particle.Rotation, plane.Center.ToVector2()).Vec3().ScreenCoord(), particle.Color, new Vector2(1, 1));
+					float x = frame.X / (float)texture.Width;
+					float y = frame.Y / (float)texture.Height;
+					float w = frame.Width / (float)texture.Width;
+					float h = frame.Height / (float)texture.Height;
 
-				indicies[6 * k + 0] = (short)(4 * k + 0);
-				indicies[6 * k + 1] = (short)(4 * k + 1);
-				indicies[6 * k + 2] = (short)(4 * k + 2);
-				indicies[6 * k + 3] = (short)(4 * k + 1);
-				indicies[6 * k + 4] = (short)(4 * k + 3);
-				indicies[6 * k + 5] = (short)(4 * k + 2);
+					verticies[4 * k + 0] = new(plane.TopLeft().RotatedBy(particle.Rotation, plane.Center.ToVector2()).Vec3().ScreenCoord(), particle.Color * particle.Alpha, new Vector2(x, y));
+					verticies[4 * k + 1] = new(plane.TopRight().RotatedBy(particle.Rotation, plane.Center.ToVector2()).Vec3().ScreenCoord(), particle.Color * particle.Alpha, new Vector2(x + w, y));
+					verticies[4 * k + 2] = new(plane.BottomLeft().RotatedBy(particle.Rotation, plane.Center.ToVector2()).Vec3().ScreenCoord(), particle.Color * particle.Alpha, new Vector2(x, y + h));
+					verticies[4 * k + 3] = new(plane.BottomRight().RotatedBy(particle.Rotation, plane.Center.ToVector2()).Vec3().ScreenCoord(), particle.Color * particle.Alpha, new Vector2(x + w, y + h));
+
+					indicies[6 * k + 0] = (short)(4 * k + 0);
+					indicies[6 * k + 1] = (short)(4 * k + 1);
+					indicies[6 * k + 2] = (short)(4 * k + 2);
+					indicies[6 * k + 3] = (short)(4 * k + 1);
+					indicies[6 * k + 4] = (short)(4 * k + 3);
+					indicies[6 * k + 5] = (short)(4 * k + 2);
+				}
+			});
+
+			for(int k = particles.Count * 4; k < maxParticles * 4; k++)
+			{
+				verticies[k] = new();
 			}
 
 			vertexBuffer?.SetData(verticies);

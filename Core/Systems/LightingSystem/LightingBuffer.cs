@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Configs;
+﻿using ReLogic.Threading;
+using StarlightRiver.Content.Configs;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using StarlightRiver.Helpers;
 using Terraria.Graphics.Effects;
@@ -64,16 +65,15 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 
 			var tileLightingBuffer = new Color[tileLightingTarget.RenderTarget.Width * tileLightingTarget.RenderTarget.Height];
 
-			for (int x = 0; x < tileLightingTarget.RenderTarget.Width; x++)
+			FastParallel.For(0, tileLightingTarget.RenderTarget.Width * tileLightingTarget.RenderTarget.Height, (from, to, context) =>
 			{
-				for (int y = 0; y < tileLightingTarget.RenderTarget.Height; y++)
+				for(int k = from; k < to; k++)
 				{
-					int index = y * tileLightingTarget.RenderTarget.Width + x;
-
-					if (tileLightingBuffer.Length > index)
-						tileLightingBuffer[index] = Lighting.GetColor((int)start.X / 16 + x, (int)start.Y / 16 + y);
+					int x = k % tileLightingTarget.RenderTarget.Width;
+					int y = k / tileLightingTarget.RenderTarget.Width;
+					tileLightingBuffer[k] = Lighting.GetColor((int)start.X / 16 + x, (int)start.Y / 16 + y);
 				}
-			}
+			});
 
 			tileLightingTarget.RenderTarget.SetData(tileLightingBuffer);
 			tileLightingCenter = start;
