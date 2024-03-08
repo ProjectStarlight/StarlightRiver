@@ -15,59 +15,131 @@ namespace StarlightRiver.Core
 
 		public delegate void Update(Particle particle);
 
-		private readonly List<Particle> Particles = new();
-		private Texture2D Texture;
-		private readonly Update UpdateDelegate;
+		private readonly List<Particle> particles = new();
+		private Texture2D texture;
+		private readonly Update updateFunction;
 
-		private readonly AnchorOptions Anchor;
+		private readonly AnchorOptions anchorType;
 
-		public ParticleSystem(string texture, Update updateDelegate, AnchorOptions anchor = AnchorOptions.Screen)
+		private int maxParticles;
+
+		private DynamicVertexBuffer vertexBuffer;
+		private DynamicIndexBuffer indexBuffer;
+
+		VertexPositionColorTexture[] verticies;
+		short[] indicies;
+
+		private BasicEffect effect;
+
+		public ParticleSystem(string texture, Update updateDelegate, AnchorOptions anchor = AnchorOptions.Screen, int maxParticles = 10000)
 		{
-			Texture = Request<Texture2D>(texture, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
-			UpdateDelegate = updateDelegate;
-			Anchor = anchor;
+			this.texture = Request<Texture2D>(texture, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+			updateFunction = updateDelegate;
+			anchorType = anchor;
+			this.maxParticles = maxParticles;
+
+			verticies = new VertexPositionColorTexture[maxParticles * 4];
+			indicies = new short[maxParticles * 6];
+
+			Main.QueueMainThreadAction(() =>
+			{
+				effect = new BasicEffect(Main.instance.GraphicsDevice);
+				effect.TextureEnabled = true;
+				effect.VertexColorEnabled = true;
+				effect.Texture = this.texture;
+
+				vertexBuffer = new DynamicVertexBuffer(Main.instance.GraphicsDevice, typeof(VertexPositionColorTexture), maxParticles * 4, BufferUsage.None);
+				indexBuffer = new DynamicIndexBuffer(Main.instance.GraphicsDevice, IndexElementSize.SixteenBits, maxParticles * 6, BufferUsage.None);
+			});			
+		}
+
+		public void PopulateBuffers()
+		{
+			var offset = anchorType == AnchorOptions.World ? Main.screenPosition : Vector2.Zero;
+
+			for (int k = 0; k < particles.Count; k++)
+			{
+				var particle = particles[k];
+
+				if (!Main.gameInactive)
+					updateFunction(particle);
+
+				var plane = particle.Frame != default ? particle.Frame : texture.Frame();
+				plane.Offset((particle.Position - offset).ToPoint());
+				plane.Width = (int)(plane.Width * particle.Scale);
+				plane.Height = (int)(plane.Height * particle.Scale);
+
+				verticies[4 * k + 0] = new(plane.TopLeft().RotatedBy(particle.Rotation, plane.Center.ToVector2()).Vec3().ScreenCoord(), particle.Color, new Vector2(0, 0));
+				verticies[4 * k + 1] = new(plane.TopRight().RotatedBy(particle.Rotation, plane.Center.ToVector2()).Vec3().ScreenCoord(), particle.Color, new Vector2(0, 1));
+				verticies[4 * k + 2] = new(plane.BottomLeft().RotatedBy(particle.Rotation, plane.Center.ToVector2()).Vec3().ScreenCoord(), particle.Color, new Vector2(1, 0));
+				verticies[4 * k + 3] = new(plane.BottomRight().RotatedBy(particle.Rotation, plane.Center.ToVector2()).Vec3().ScreenCoord(), particle.Color, new Vector2(1, 1));
+
+				indicies[6 * k + 0] = (short)(4 * k + 0);
+				indicies[6 * k + 1] = (short)(4 * k + 1);
+				indicies[6 * k + 2] = (short)(4 * k + 2);
+				indicies[6 * k + 3] = (short)(4 * k + 1);
+				indicies[6 * k + 4] = (short)(4 * k + 3);
+				indicies[6 * k + 5] = (short)(4 * k + 2);
+			}
+
+			vertexBuffer.SetData(verticies);
+			indexBuffer.SetData(indicies);
 		}
 
 		public void DrawParticles(SpriteBatch spriteBatch)
 		{
 			if (GetInstance<GraphicsConfig>().ParticlesActive)
 			{
-				for (int k = 0; k < Particles.Count; k++)
+				/*for (int k = 0; k < particles.Count; k++)
 				{
-					Particle particle = Particles[k];
+					Particle particle = particles[k];
 
 					if (particle is null)
 						continue;
 
 					if (!Main.gameInactive)
-						UpdateDelegate(particle);
+						updateFunction(particle);
 
 					Vector2 pos = particle.Position;
-					if (Anchor == AnchorOptions.World)
+					if (anchorType == AnchorOptions.World)
 						pos -= Main.screenPosition;
 
-					if (Helper.OnScreen(pos))
-						spriteBatch.Draw(Texture, pos, particle.Frame == new Rectangle() ? Texture.Bounds : particle.Frame, particle.Color * particle.Alpha, particle.Rotation, particle.Frame.Size() / 2, particle.Scale, 0, 0);
+					spriteBatch.Draw(texture, pos, particle.Frame == new Rectangle() ? texture.Bounds : particle.Frame, particle.Color * particle.Alpha, particle.Rotation, particle.Frame.Size() / 2, particle.Scale, 0, 0);
+				}*/
+
+				spriteBatch.End();
+
+				PopulateBuffers();
+
+				Main.instance.GraphicsDevice.SetVertexBuffer(vertexBuffer);
+				Main.instance.GraphicsDevice.Indices = indexBuffer;
+
+				foreach (EffectPass pass in effect.CurrentTechnique.Passes)
+				{
+					pass.Apply();
+					Main.instance.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, vertexBuffer.VertexCount, 0, indexBuffer.IndexCount / 3);
 				}
 
-				Particles.RemoveAll(n => n is null || n.Timer <= 0);
+				spriteBatch.Begin();
+
+				particles.RemoveAll(n => n is null || n.Timer <= 0);
 			}
 		}
 
 		public void AddParticle(Particle particle)
 		{
-			if (GetInstance<GraphicsConfig>().ParticlesActive && !Main.gameInactive)
-				Particles.Add(particle);
+			if (GetInstance<GraphicsConfig>().ParticlesActive && !Main.gameInactive && particles.Count < maxParticles)
+				particles.Add(particle);
 		}
 
 		public void ClearParticles()
 		{
-			Particles.Clear();
+			particles.Clear();
 		}
 
 		public void SetTexture(Texture2D texture)
 		{
-			Texture = texture;
+			this.texture = texture;
 		}
 	}
 

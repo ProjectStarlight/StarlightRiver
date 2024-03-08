@@ -199,7 +199,7 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 			LightingBuffer.bufferNeedsPopulated = true;
 
 			//TODO: Include an origin that the point scales from
-			if (Main.dedServ || !Helper.OnScreen(new Rectangle(pos.X, pos.Y, tex.Width, tex.Height)))
+			if (Main.dedServ || !ScreenTracker.OnScreenScreenspace(new Rectangle(pos.X, pos.Y, tex.Width, tex.Height)))
 				return;
 
 			if (color == default)

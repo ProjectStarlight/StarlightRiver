@@ -283,7 +283,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private bool CheckBackground(Vector2 pos, Vector2 size, Rectangle biome, bool dontCheckScreen = false)
 		{
-			if (dontCheckScreen || Helper.OnScreen(new Rectangle((int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y)))
+			if (dontCheckScreen || ScreenTracker.OnScreenScreenspace(pos))
 			{
 				if (!Main.BackgroundEnabled)
 					return true;

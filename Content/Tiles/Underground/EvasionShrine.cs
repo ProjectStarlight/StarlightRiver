@@ -100,7 +100,6 @@ namespace StarlightRiver.Content.Tiles.Underground
 			{
 				ProtectionWorld.AddRegionBySource(new Point16(ParentX, ParentY), ArenaTile);//stop calling this and call RemoveRegionBySource() when shrine is completed
 
-				StarlightRiver.Instance.useIntenseMusic = true;
 				Dust.NewDustPerfect(Center + new Vector2(Main.rand.NextFloat(-24, 24), 28), ModContent.DustType<Dusts.Glow>(), Vector2.UnitY * -Main.rand.NextFloat(2), 0, new Color(150, 30, 205) * Windup, 0.2f);
 
 				if (Main.rand.NextBool(2))

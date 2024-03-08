@@ -17,6 +17,11 @@ namespace StarlightRiver.Content.Archaeology
 		public bool displayedOnMap = false;
 
 		/// <summary>
+		/// Cached hitbox size for screen checks
+		/// </summary>
+		public Rectangle bounds;
+
+		/// <summary>
 		/// Whether or not the artifact can be revealed by the archaeologist's map. Set to false if the artifact has a special reveal condition
 		/// </summary>
 		public virtual bool CanBeRevealed()
@@ -86,6 +91,7 @@ namespace StarlightRiver.Content.Archaeology
 			try
 			{
 				displayedOnMap = tag.GetBool(nameof(displayedOnMap));
+				bounds = new Rectangle((int)WorldPosition.X, (int)WorldPosition.Y, (int)Size.X, (int)Size.Y);
 				ArtifactManager.artifacts.Add(this);
 			}
 			catch (Exception e)
@@ -101,7 +107,7 @@ namespace StarlightRiver.Content.Archaeology
 
 		public bool IsOnScreen()
 		{
-			return Helper.OnScreen(new Rectangle((int)WorldPosition.X - (int)Main.screenPosition.X, (int)WorldPosition.Y - (int)Main.screenPosition.Y, (int)Size.X, (int)Size.Y));
+			return ScreenTracker.OnScreen(bounds);
 		}
 
 		public void CreateSparkles()

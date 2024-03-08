@@ -287,7 +287,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		private void DrawShine(Rectangle target)
 		{
-			if (Main.dedServ || !Helper.OnScreen(target))
+			if (Main.dedServ || !ScreenTracker.OnScreenScreenspace(target))
 				return;
 
 			//these should only initialize on the client!!!
@@ -389,7 +389,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		{
 			var drawCheck = new Rectangle(StarlightWorld.squidBossArena.X * 16 - (int)Main.screenPosition.X, StarlightWorld.squidBossArena.Y * 16 - (int)Main.screenPosition.Y, StarlightWorld.squidBossArena.Width * 16, StarlightWorld.squidBossArena.Height * 16);
 
-			if (!Helper.OnScreen(drawCheck))
+			if (!ScreenTracker.OnScreenScreenspace(drawCheck))
 				return;
 
 			//parallax background
