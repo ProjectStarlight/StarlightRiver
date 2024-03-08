@@ -40,7 +40,7 @@ namespace StarlightRiver.Core
 
 		public static bool OnScreenScreenspace(Vector2 point)
 		{
-			return screen.Contains((point - Main.screenPosition).ToPoint());
+			return screen.Contains((point + Main.screenPosition).ToPoint());
 		}
 
 		public static bool OnScreenScreenspace(Rectangle rect)

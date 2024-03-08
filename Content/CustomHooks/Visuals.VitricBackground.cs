@@ -283,7 +283,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private bool CheckBackground(Vector2 pos, Vector2 size, Rectangle biome, bool dontCheckScreen = false)
 		{
-			if (dontCheckScreen || ScreenTracker.OnScreenScreenspace(pos))
+			if (dontCheckScreen || ScreenTracker.OnScreenScreenspace(new Rectangle((int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y)))
 			{
 				if (!Main.BackgroundEnabled)
 					return true;
@@ -314,12 +314,6 @@ namespace StarlightRiver.Content.CustomHooks
 				if (x > -texture.Width && x < Main.screenWidth + 30)
 					Main.spriteBatch.Draw(texture, new Vector2(x, y), null, color, 0f, Vector2.Zero, 1f, flip ? SpriteEffects.FlipVertically : 0, 0);
 			}
-		}
-
-		private static int GetParallaxOffset2(float startpoint, float factor)
-		{
-			float vanillaParallax = 1 - (Main.caveParallax - 0.8f) / 0.2f;
-			return (int)((Main.screenWidth / 2 - startpoint) * factor * vanillaParallax);
 		}
 
 		private static int GetParallaxOffset(float startpoint, float factor)
