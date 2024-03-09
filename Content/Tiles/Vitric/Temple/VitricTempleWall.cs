@@ -22,17 +22,16 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 		{
-			var tile = Main.tile[i, j];
+			Tile tile = Main.tile[i, j];
 
 			var frame = new Rectangle(i % 14 * 16, j % 25 * 16, 16, 16);
 			var frame2 = new Rectangle(tile.WallFrameX, tile.WallFrameY, 32, 32);
 
-			VertexColors vertices;
-			Lighting.GetCornerColors(i, j, out vertices);
+			Lighting.GetCornerColors(i, j, out VertexColors vertices);
 
 			if (!(frame2.Intersects(new Rectangle(36, 36, 36 * 3, 36)) || frame2.Intersects(new Rectangle(36 * 6, 36, 36 * 3, 36 * 2)) || frame2.Intersects(new Rectangle(36 * 10, 0, 36 * 2, 36 * 3))))
 				Main.tileBatch.Draw(Request<Texture2D>(Texture + "Edge").Value, new Vector2(i * 16 - (int)Main.screenPosition.X + Main.offScreenRange - 8, j * 16 - (int)Main.screenPosition.Y + Main.offScreenRange - 8), frame2, vertices, Vector2.Zero, 1f, SpriteEffects.None);
-			
+
 			Main.tileBatch.Draw(Request<Texture2D>(Texture).Value, new Vector2(i * 16 - (int)Main.screenPosition.X + Main.offScreenRange, j * 16 - (int)Main.screenPosition.Y + Main.offScreenRange), frame, vertices, Vector2.Zero, 1f, SpriteEffects.None);
 
 			return false;

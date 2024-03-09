@@ -22,13 +22,13 @@ namespace StarlightRiver.Core
 
 		private readonly AnchorOptions anchorType;
 
-		private int maxParticles;
+		private readonly int maxParticles;
 
 		private DynamicVertexBuffer vertexBuffer;
 		private DynamicIndexBuffer indexBuffer;
 
-		VertexPositionColorTexture[] verticies;
-		short[] indicies;
+		readonly VertexPositionColorTexture[] verticies;
+		readonly short[] indicies;
 
 		private BasicEffect effect;
 
@@ -44,31 +44,33 @@ namespace StarlightRiver.Core
 
 			Main.QueueMainThreadAction(() =>
 			{
-				effect = new BasicEffect(Main.instance.GraphicsDevice);
-				effect.TextureEnabled = true;
-				effect.VertexColorEnabled = true;
-				effect.Texture = this.texture;
+				effect = new BasicEffect(Main.instance.GraphicsDevice)
+				{
+					TextureEnabled = true,
+					VertexColorEnabled = true,
+					Texture = this.texture
+				};
 
 				vertexBuffer = new DynamicVertexBuffer(Main.instance.GraphicsDevice, typeof(VertexPositionColorTexture), maxParticles * 4, BufferUsage.WriteOnly);
 				indexBuffer = new DynamicIndexBuffer(Main.instance.GraphicsDevice, IndexElementSize.SixteenBits, maxParticles * 6, BufferUsage.WriteOnly);
-			});			
+			});
 		}
 
 		public void PopulateBuffers()
 		{
-			var offset = anchorType == AnchorOptions.World ? Main.screenPosition : Vector2.Zero;
+			Vector2 offset = anchorType == AnchorOptions.World ? Main.screenPosition : Vector2.Zero;
 
 			FastParallel.For(0, particles.Count, (from, to, context) =>
 			{
 				for (int k = from; k < to; k++)
 				{
-					var particle = particles[k];
+					Particle particle = particles[k];
 
 					if (!Main.gameInactive)
 						updateFunction(particle);
 
-					var frame = particle.Frame != default ? particle.Frame : texture.Frame();
-					var plane = frame;
+					Rectangle frame = particle.Frame != default ? particle.Frame : texture.Frame();
+					Rectangle plane = frame;
 					plane.Offset((particle.Position - offset).ToPoint());
 					plane.Width = (int)(plane.Width * particle.Scale);
 					plane.Height = (int)(plane.Height * particle.Scale);
@@ -92,7 +94,7 @@ namespace StarlightRiver.Core
 				}
 			});
 
-			for(int k = particles.Count * 4; k < maxParticles * 4; k++)
+			for (int k = particles.Count * 4; k < maxParticles * 4; k++)
 			{
 				verticies[k] = new();
 			}

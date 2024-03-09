@@ -76,7 +76,7 @@ namespace StarlightRiver.Content.Items.Misc
 				Player.statLife = 0;
 			else
 				Player.statLife = 1;
-			
+
 			Player.lifeRegen = 0;
 			Player.lifeRegenCount = 0;
 		}

@@ -67,7 +67,7 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 
 			FastParallel.For(0, tileLightingTarget.RenderTarget.Width * tileLightingTarget.RenderTarget.Height, (from, to, context) =>
 			{
-				for(int k = from; k < to; k++)
+				for (int k = from; k < to; k++)
 				{
 					int x = k % tileLightingTarget.RenderTarget.Width;
 					int y = k / tileLightingTarget.RenderTarget.Width;

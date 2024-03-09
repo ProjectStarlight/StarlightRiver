@@ -54,7 +54,7 @@ namespace StarlightRiver.Core
 
 		public static bool OnScreenScreenspace(Rectangle rect)
 		{
-			rect.Offset((Main.screenPosition).ToPoint());
+			rect.Offset(Main.screenPosition.ToPoint());
 			return screen.Intersects(rect);
 		}
 	}

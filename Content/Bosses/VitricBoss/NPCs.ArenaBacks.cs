@@ -268,18 +268,18 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			sb.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
-	/// <summary>
-	/// small helper function to draw the reflections for the vitric crystals
-	/// </summary>
-	protected void DrawReflections(SpriteBatch spriteBatch, Texture2D reflectionMap, Vector2 screenPos, Rectangle? sourceRect = null)
-	{
-		Color tintColor = new Color(75, 150, 255, NPC.AnyNPCs(NPCType<VitricBoss>()) ? 70 : 200);
+		/// <summary>
+		/// small helper function to draw the reflections for the vitric crystals
+		/// </summary>
+		protected void DrawReflections(SpriteBatch spriteBatch, Texture2D reflectionMap, Vector2 screenPos, Rectangle? sourceRect = null)
+		{
+			Color tintColor = new Color(75, 150, 255, NPC.AnyNPCs(NPCType<VitricBoss>()) ? 70 : 200);
 
-		ReflectionTarget.DrawReflection(spriteBatch, screenPos, normalMap: reflectionMap, flatOffset: new Vector2(-0.0025f, 0.07f), offsetScale: 0.04f, tintColor: tintColor, restartSpriteBatch: false, sourceRect: sourceRect);
-		ReflectionTarget.isDrawReflectablesThisFrame = true;
-	}
+			ReflectionTarget.DrawReflection(spriteBatch, screenPos, normalMap: reflectionMap, flatOffset: new Vector2(-0.0025f, 0.07f), offsetScale: 0.04f, tintColor: tintColor, restartSpriteBatch: false, sourceRect: sourceRect);
+			ReflectionTarget.isDrawReflectablesThisFrame = true;
+		}
 
-	public virtual void ScrollDraw(SpriteBatch sb) //im lazy
+		public virtual void ScrollDraw(SpriteBatch sb) //im lazy
 		{
 			string path = AssetDirectory.VitricBoss + Name;
 			Texture2D tex = Request<Texture2D>(path).Value;

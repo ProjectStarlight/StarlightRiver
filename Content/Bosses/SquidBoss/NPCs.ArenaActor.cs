@@ -152,7 +152,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					RegeneratePlatforms();
 				}
 
-
 				Vector2 pos = NPC.Center + new Vector2(-832, 35 * 16) + new Vector2(0, -WaterLevel);
 
 				//Lighting

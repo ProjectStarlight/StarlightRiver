@@ -13,8 +13,18 @@ namespace StarlightRiver.Content.Tiles.Blockers
 
 		public void Load()
 		{
-			BlockerTileSystem.LoadBarrier("VitricBossBarrier", () => { bool set = ceirosBlockers; ceirosBlockers = false; return set; });
-			BlockerTileSystem.LoadBarrier("GlassweaverBossBarrier", () => { bool set = glassweaverBlockers; glassweaverBlockers = false; return set; });
+			BlockerTileSystem.LoadBarrier("VitricBossBarrier", () =>
+			{
+				bool set = ceirosBlockers;
+				ceirosBlockers = false;
+				return set;
+			});
+			BlockerTileSystem.LoadBarrier("GlassweaverBossBarrier", () =>
+			{
+				bool set = glassweaverBlockers;
+				glassweaverBlockers = false;
+				return set;
+			});
 		}
 
 		public void Unload() { }

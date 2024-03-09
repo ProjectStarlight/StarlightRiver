@@ -77,7 +77,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			{
 				if (Main.netMode != NetmodeID.MultiplayerClient)
 					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ProjectileType<FireRingHostile>(), 20, 0, Main.myPlayer, 50);
-				
+
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.Center);
 			}
 			else

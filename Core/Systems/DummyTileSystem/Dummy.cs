@@ -237,7 +237,8 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 				dummy.type = type;
 
 				dummy.ReceiveExtraAI(reader);
-			} else
+			}
+			else
 			{
 				// this case means a client is receiving an update for a dummy that did not exist before 
 
