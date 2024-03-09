@@ -121,7 +121,15 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				}
 
 				if (Timer > Risetime)
+				{
 					State = 2;
+
+					foreach (NPC NPC in Main.npc.Where(n => n.ModNPC is VitricBossPlatformUp))
+					{
+						NPC.ai[0] = 0;
+						NPC.ai[1] = 0;
+					}
+				}
 
 				if (Timer % 10 == 0)
 					CameraSystem.shake += Timer < 100 ? 3 : 2;
@@ -133,12 +141,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			if (State == 2)
 			{
 				Timer = Risetime;
-
-				foreach (NPC NPC in Main.npc.Where(n => n.ModNPC is VitricBossPlatformUp))
-				{
-					NPC.ai[0] = 0;
-					NPC.ai[1] = 0;
-				}
 
 				ResyncPlatforms();
 			}
@@ -191,11 +193,13 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					foreach (NPC NPC in Main.npc.Where(n => n.ModNPC is VitricBossPlatformUp))
 					{
 						NPC.ai[0] = 0;
+						NPC.ai[1] = 0;
 					}
 
 					ResyncPlatforms();
 
 					State = 2;
+
 					ScrollDelay = 20; //reset acceleration delay
 				}
 			}
