@@ -178,7 +178,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				fullyInsaneTimer = 0;
 
 				if (insaneChargeSound != null)
-				{	
+				{
 					SoundEngine.TryGetActiveSound((SlotId)insaneChargeSound, out ActiveSound sound);
 
 					if (sound != null)

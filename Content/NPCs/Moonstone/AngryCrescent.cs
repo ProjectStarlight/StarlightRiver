@@ -322,7 +322,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				{
 					for (int i = 0; i < 2; i++)
 					{
-						Projectile.NewProjectileDirect(NPC.GetSource_Death(), NPC.Center, i == 1 ? 
+						Projectile.NewProjectileDirect(NPC.GetSource_Death(), NPC.Center, i == 1 ?
 							NPC.velocity.RotatedBy(-MathHelper.PiOver2) * Main.rand.NextFloat(0.3f, 0.7f) :
 							NPC.velocity.RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(0.3f, 0.7f),
 							ModContent.ProjectileType<AngryCrescentDeathProjectile>(), 0, 0, Main.myPlayer).frame = i;

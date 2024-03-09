@@ -351,6 +351,8 @@ namespace StarlightRiver.Content.Items.Magnet
 
 		public override bool Update(Dust dust)
 		{
+			GrayGooMetaballs.visible = true;
+
 			dust.position += dust.velocity;
 			dust.velocity.Y += 0.2f;
 
@@ -371,6 +373,8 @@ namespace StarlightRiver.Content.Items.Magnet
 	{
 		public override bool Update(Dust dust)
 		{
+			GrayGooMetaballs.visible = true;
+
 			var data = (GrayGooDustData)dust.customData;
 			if (!data.proj.active)
 			{

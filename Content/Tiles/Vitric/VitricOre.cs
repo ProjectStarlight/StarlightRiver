@@ -130,6 +130,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 	internal class VitricOreDummy : Dummy
 	{
+		public override bool DoesCollision => true;
+
 		public string Texture => AssetDirectory.VitricTile + "VitricOreGlow";
 
 		public VitricOreDummy() : base(TileType<VitricOre>(), 32, 48) { }
@@ -171,6 +173,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 	internal class VitricOreFloatDummy : Dummy
 	{
+		public override bool DoesCollision => true;
+
 		public string Texture => AssetDirectory.VitricTile + "VitricOreFloatGlow";
 
 		public VitricOreFloatDummy() : base(TileType<VitricOreFloat>(), 32, 32) { }

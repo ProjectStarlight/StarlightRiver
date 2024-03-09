@@ -26,6 +26,8 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 		public virtual int ParentX => (int)Center.X / 16;
 		public virtual int ParentY => (int)Center.Y / 16;
 
+		public virtual bool DoesCollision => false;
+
 		public Dummy() { }
 
 		public Dummy(int validType, int width, int height)
@@ -173,12 +175,15 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 				return;
 			}
 
-			for (int i = 0; i < Main.maxPlayers; i++)
+			if (DoesCollision)
 			{
-				Player player = Main.player[i];
+				for (int i = 0; i < Main.maxPlayers; i++)
+				{
+					Player player = Main.player[i];
 
-				if (Colliding(player))
-					Collision(player);
+					if (Colliding(player))
+						Collision(player);
+				}
 			}
 
 			Update();
@@ -232,7 +237,8 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 				dummy.type = type;
 
 				dummy.ReceiveExtraAI(reader);
-			} else
+			}
+			else
 			{
 				// this case means a client is receiving an update for a dummy that did not exist before 
 
