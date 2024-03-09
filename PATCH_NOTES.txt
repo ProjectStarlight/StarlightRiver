@@ -10,7 +10,7 @@
 - Made improvements to blocker tile detection
 - Made improvements to the vitric biome's lighting
 - Lighting buffer will no longer populate when uneeded
-- Lighting buffer population now takes advantage or parallel processing
+- Lighting buffer population now takes advantage of parallel processing
 - Background particles now render as a single mesh and update in parallel
 - Made improvements for vitric temple wall rendering
 - Made improvements to moving platform grappling hook detection
