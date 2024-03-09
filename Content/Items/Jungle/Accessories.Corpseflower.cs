@@ -14,11 +14,10 @@ namespace StarlightRiver.Content.Items.Jungle
 {
 	public class Corpseflower : CursedAccessory
 	{
+		[CloneByReference]
 		public int[] maxTimeLefts = new int[Main.maxCombatText];
 
 		public override string Texture => AssetDirectory.JungleItem + Name;
-
-		public Corpseflower() : base(ModContent.Request<Texture2D>(AssetDirectory.JungleItem + "Corpseflower").Value) { }
 
 		private static bool skipSendData = false;
 

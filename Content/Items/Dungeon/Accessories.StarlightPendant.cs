@@ -9,6 +9,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 	{
 		private int currentMana = -1;
 
+		[CloneByReference]
 		private readonly List<int> manaConsumed = new();
 
 		public override string Texture => AssetDirectory.DungeonItem + Name;

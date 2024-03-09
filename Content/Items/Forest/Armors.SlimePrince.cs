@@ -43,6 +43,13 @@ namespace StarlightRiver.Content.Items.Forest
 			Item.defense = 2;
 		}
 
+		public override ModItem Clone(Item newEntity)
+		{
+			var clone = base.Clone(newEntity) as SlimePrinceHead;
+			clone.prince = null;
+			return clone;
+		}
+
 		public override void UpdateArmorSet(Player player)
 		{
 			player.setBonus = "A slime prince follows you around\nDouble tap DOWN to fuse with the prince\nYou can control the prince during this time\nThe prince takes damage instead of you during this time";

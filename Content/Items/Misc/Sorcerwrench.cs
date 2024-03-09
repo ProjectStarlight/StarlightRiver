@@ -10,6 +10,7 @@ namespace StarlightRiver.Content.Items.Misc
 {
 	class Sorcerwrench : ModItem
 	{
+		[CloneByReference]
 		public Projectile proj;
 
 		public override string Texture => AssetDirectory.MiscItem + Name;

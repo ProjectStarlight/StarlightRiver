@@ -37,6 +37,20 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			this.tooltip = tooltip;
 		}
 
+		public override ModItem Clone(Item newEntity)
+		{
+			var clone = base.Clone(newEntity) as SmartAccessory;
+
+			var newList = new List<Item>();
+			foreach(Item item in parents)
+			{
+				newList.Add(item.Clone());
+			}
+
+			clone.parents = newList;
+			return clone;
+		}
+
 		/// <summary>
 		/// If this accessory is equipped in a normal slot on the given player or simulated by another accessory.
 		/// </summary>
