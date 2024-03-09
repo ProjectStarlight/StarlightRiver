@@ -9,6 +9,7 @@ namespace StarlightRiver.Core
 	public class ScreenTracker : ModSystem
 	{
 		public static Rectangle screen;
+		public static int initialTimer;
 
 		public override void Load()
 		{
@@ -26,6 +27,14 @@ namespace StarlightRiver.Core
 		{
 			screen.X = (int)Main.screenPosition.X;
 			screen.Y = (int)Main.screenPosition.Y;
+
+			if (Main.gameMenu)
+				initialTimer = 0;
+			else if (initialTimer < 30)
+				initialTimer++;
+
+			if (initialTimer == 30)
+				ResizeScreen(Main.ScreenSize.ToVector2());
 		}
 
 		public static bool OnScreen(Vector2 point)
