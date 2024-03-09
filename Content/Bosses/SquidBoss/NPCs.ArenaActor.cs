@@ -1,3 +1,4 @@
+using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Items.Permafrost;
 using StarlightRiver.Content.Tiles.Permafrost;
@@ -94,7 +95,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			if ((int)(VisualTimerA * 1 / 0.04f) % 60 == 0)
 				NPC.netUpdate = true;
 
-			if (!NPC.AnyNPCs(NPCType<SquidBoss>()))
+			if (PermafrostTempleBiome.anyoneInside && !NPC.AnyNPCs(NPCType<SquidBoss>()))
 			{
 				if (fakeBoss is null)
 				{
@@ -141,97 +142,101 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			if (VisualTimerA > 6.28f)
 				VisualTimerA = 0;
 
-			// Remove invalid platforms from tracked platforms
-			platforms.RemoveAll(n => !n.active || !(n.ModNPC is IcePlatform || n.ModNPC is IcePlatformSmall || n.ModNPC is GoldPlatform || n.ModNPC is EscapePlatform));
-
-			if (platforms.Count < 16 && Main.netMode != NetmodeID.MultiplayerClient) // respawn platforms if not present
+			if (PermafrostTempleBiome.anyoneInside)
 			{
-				RegeneratePlatforms();
-			}
+				// Remove invalid platforms from tracked platforms
+				platforms.RemoveAll(n => !n.active || !(n.ModNPC is IcePlatform || n.ModNPC is IcePlatformSmall || n.ModNPC is GoldPlatform || n.ModNPC is EscapePlatform));
 
-			Vector2 pos = NPC.Center + new Vector2(-832, 35 * 16) + new Vector2(0, -WaterLevel);
-
-			//Lighting
-			if (!(CutawayHandler.cathedralOverlay is null) && CutawayHandler.cathedralOverlay.Fade)
-			{
-				for (int k = 0; k < 45; k++)
+				if (platforms.Count < 16 && Main.netMode != NetmodeID.MultiplayerClient) // respawn platforms if not present
 				{
-					Vector2 target = pos + new Vector2(k / 45f * 3200, 0);
+					RegeneratePlatforms();
+				}
 
-					if (!WorldGen.InWorld((int)pos.X / 16, (int)pos.Y / 16))
-						return;
 
-					if (Framing.GetTileSafely(target).WallType == WhitelistID)
+				Vector2 pos = NPC.Center + new Vector2(-832, 35 * 16) + new Vector2(0, -WaterLevel);
+
+				//Lighting
+				if (!(CutawayHandler.cathedralOverlay is null) && CutawayHandler.cathedralOverlay.Fade)
+				{
+					for (int k = 0; k < 45; k++)
 					{
-						float sin = (float)Math.Sin(VisualTimerA + k);
-						float sin2 = (float)Math.Sin(VisualTimerB + k * 0.2f);
-						float cos = (float)Math.Cos(VisualTimerB + k);
-						Lighting.AddLight(target, new Vector3(10 * (1 + sin2), 14 * (1 + cos), 18) * (0.02f + sin * 0.003f));
+						Vector2 target = pos + new Vector2(k / 45f * 3200, 0);
+
+						if (!WorldGen.InWorld((int)pos.X / 16, (int)pos.Y / 16))
+							return;
+
+						if (Framing.GetTileSafely(target).WallType == WhitelistID)
+						{
+							float sin = (float)Math.Sin(VisualTimerA + k);
+							float sin2 = (float)Math.Sin(VisualTimerB + k * 0.2f);
+							float cos = (float)Math.Cos(VisualTimerB + k);
+							Lighting.AddLight(target, new Vector3(10 * (1 + sin2), 14 * (1 + cos), 18) * (0.02f + sin * 0.003f));
+						}
+					}
+
+					for (int k = 0; k < 10; k++)
+					{
+						int y = -200 + k * 60;
+
+						float opacity = 0.2f;
+
+						if (NPC.Center.Y + y + 60 - pos.Y < 30)
+							opacity = Math.Clamp(1 - (NPC.Center.Y + y + 60 - pos.Y) / 30f, 0.2f, 1);
+
+						Lighting.AddLight(NPC.Center + new Vector2(0, y), new Vector3(1, 1.2f, 1.5f) * 0.65f * opacity);
+						Lighting.AddLight(NPC.Center + new Vector2(-400, y), new Vector3(1, 1.2f, 1.5f) * 0.4f * opacity);
+						Lighting.AddLight(NPC.Center + new Vector2(400, y), new Vector3(1, 1.2f, 1.5f) * 0.4f * opacity);
 					}
 				}
 
-				for (int k = 0; k < 10; k++)
+				//Not Lighting
+				for (int k = 0; k < 100; k++)
 				{
-					int y = -200 + k * 60;
-
-					float opacity = 0.2f;
-
-					if (NPC.Center.Y + y + 60 - pos.Y < 30)
-						opacity = Math.Clamp(1 - (NPC.Center.Y + y + 60 - pos.Y) / 30f, 0.2f, 1);
-
-					Lighting.AddLight(NPC.Center + new Vector2(0, y), new Vector3(1, 1.2f, 1.5f) * 0.65f * opacity);
-					Lighting.AddLight(NPC.Center + new Vector2(-400, y), new Vector3(1, 1.2f, 1.5f) * 0.4f * opacity);
-					Lighting.AddLight(NPC.Center + new Vector2(400, y), new Vector3(1, 1.2f, 1.5f) * 0.4f * opacity);
+					int x = (int)(NPC.Center.X / 16) - 50 + k;
+					int y = (int)(NPC.Center.Y / 16) + 28;
+					if (WorldGen.InWorld(x, y) && Framing.GetTileSafely(x, y).TileType == TileID.Tombstones)
+						WorldGen.KillTile(x, y);
 				}
-			}
 
-			//Not Lighting
-			for (int k = 0; k < 100; k++)
-			{
-				int x = (int)(NPC.Center.X / 16) - 50 + k;
-				int y = (int)(NPC.Center.Y / 16) + 28;
-				if (WorldGen.InWorld(x, y) && Framing.GetTileSafely(x, y).TileType == TileID.Tombstones)
-					WorldGen.KillTile(x, y);
-			}
-
-			for (int k = 0; k < Main.maxPlayers; k++)
-			{
-				Player player = Main.player[k];
-
-				if (player.active && player.Hitbox.Intersects(new Rectangle((int)pos.X, (int)pos.Y, 104 * 16, (int)WaterLevel)))
+				for (int k = 0; k < Main.maxPlayers; k++)
 				{
-					if (!player.HasBuff(BuffType<Buffs.PrismaticDrown>()) && NPC.AnyNPCs(ModContent.NPCType<Content.Bosses.SquidBoss.SquidBoss>()))
-						player.Hurt(PlayerDeathReason.ByCustomReason("fell into the drink"), Main.masterMode ? 50 : Main.expertMode ? 20 : 10, 0);
+					Player player = Main.player[k];
 
-					player.AddBuff(BuffType<Buffs.PrismaticDrown>(), 4, false);
-				}
-			}
-
-			for (int k = 0; k < Main.maxItems; k++)
-			{
-				Item Item = Main.item[k];
-
-				if (Item is null || !Item.active)
-					continue;
-
-				if (Item.Hitbox.Intersects(new Rectangle((int)pos.X, (int)pos.Y + 8, 200 * 16, (int)WaterLevel)) && Item.velocity.Y > -4)
-					Item.velocity.Y -= 0.2f;
-
-				if (Item.Hitbox.Intersects(new Rectangle((int)pos.X, (int)pos.Y - 8, 200 * 16, 16)))
-				{
-					Item.position.Y = WaterLevelWorld - 16 + (float)Math.Sin((VisualTimerA + Item.position.X) % 6.28f) * 4;
-
-					if (Item.type == ItemType<SquidBossSpawn>() && WaterLevel == 150 && !Main.npc.Any(n => n.active && n.ModNPC is SquidBoss)) //ready to spawn another squid              
+					if (player.active && player.Hitbox.Intersects(new Rectangle((int)pos.X, (int)pos.Y, 104 * 16, (int)WaterLevel)))
 					{
-						if (Main.netMode != NetmodeID.MultiplayerClient)
-							NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y + 630, NPCType<SquidBoss>());
+						if (!player.HasBuff(BuffType<Buffs.PrismaticDrown>()) && NPC.AnyNPCs(ModContent.NPCType<Content.Bosses.SquidBoss.SquidBoss>()))
+							player.Hurt(PlayerDeathReason.ByCustomReason("fell into the drink"), Main.masterMode ? 50 : Main.expertMode ? 20 : 10, 0);
 
-						Item.active = false;
-						Item.TurnToAir();
+						player.AddBuff(BuffType<Buffs.PrismaticDrown>(), 4, false);
+					}
+				}
 
-						for (int n = 0; n < 50; n++)
+				for (int k = 0; k < Main.maxItems; k++)
+				{
+					Item Item = Main.item[k];
+
+					if (Item is null || !Item.active)
+						continue;
+
+					if (Item.Hitbox.Intersects(new Rectangle((int)pos.X, (int)pos.Y + 8, 200 * 16, (int)WaterLevel)) && Item.velocity.Y > -4)
+						Item.velocity.Y -= 0.2f;
+
+					if (Item.Hitbox.Intersects(new Rectangle((int)pos.X, (int)pos.Y - 8, 200 * 16, 16)))
+					{
+						Item.position.Y = WaterLevelWorld - 16 + (float)Math.Sin((VisualTimerA + Item.position.X) % 6.28f) * 4;
+
+						if (Item.type == ItemType<SquidBossSpawn>() && WaterLevel == 150 && !Main.npc.Any(n => n.active && n.ModNPC is SquidBoss)) //ready to spawn another squid              
 						{
-							Dust.NewDustPerfect(Item.Center, DustType<Dusts.Starlight>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(20));
+							if (Main.netMode != NetmodeID.MultiplayerClient)
+								NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y + 630, NPCType<SquidBoss>());
+
+							Item.active = false;
+							Item.TurnToAir();
+
+							for (int n = 0; n < 50; n++)
+							{
+								Dust.NewDustPerfect(Item.Center, DustType<Dusts.Starlight>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(20));
+							}
 						}
 					}
 				}
