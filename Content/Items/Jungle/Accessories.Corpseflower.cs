@@ -14,8 +14,7 @@ namespace StarlightRiver.Content.Items.Jungle
 {
 	public class Corpseflower : CursedAccessory
 	{
-		[CloneByReference]
-		public int[] maxTimeLefts = new int[Main.maxCombatText];
+		public static int[] maxTimeLefts = new int[Main.maxCombatText];
 
 		public override string Texture => AssetDirectory.JungleItem + Name;
 

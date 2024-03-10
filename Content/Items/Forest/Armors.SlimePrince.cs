@@ -9,7 +9,9 @@ namespace StarlightRiver.Content.Items.Forest
 	[AutoloadEquip(EquipType.Head)]
 	public class SlimePrinceHead : ModItem
 	{
+		[CloneByReference]
 		public Projectile prince;
+
 		public Vector2 targetVel;
 		public float accel = 0.06f;
 		public Vector2 targetAccel;
@@ -41,13 +43,6 @@ namespace StarlightRiver.Content.Items.Forest
 			Item.value = 1;
 			Item.rare = ItemRarityID.Green;
 			Item.defense = 2;
-		}
-
-		public override ModItem Clone(Item newEntity)
-		{
-			var clone = base.Clone(newEntity) as SlimePrinceHead;
-			clone.prince = null;
-			return clone;
 		}
 
 		public override void UpdateArmorSet(Player player)
