@@ -37,7 +37,9 @@ namespace StarlightRiver.Content.Items.Food
 		public override ModItem Clone(Item newEntity)
 		{
 			var clone = base.Clone(newEntity) as Meal;
-			clone.Ingredients = Ingredients;
+			var newList = new List<Item>();
+			Ingredients.ForEach(n => newList.Add(n.Clone()));
+			clone.Ingredients = newList;
 			return clone;
 		}
 
