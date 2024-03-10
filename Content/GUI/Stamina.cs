@@ -128,9 +128,9 @@ namespace StarlightRiver.Content.GUI
 		/// <summary>
 		/// Particle system used for the gain animation
 		/// </summary>
-		private readonly ParticleSystem gainAnimationParticles = new("StarlightRiver/Assets/GUI/Sparkle", UpdateGainParticles);
+		private readonly ParticleSystem gainAnimationParticles = new("StarlightRiver/Assets/GUI/Sparkle", UpdateGainParticles, ParticleSystem.AnchorOptions.UI);
 
-		private readonly ParticleSystem sparkleParticles = new("StarlightRiver/Assets/GUI/Sparkle", UpdateSparkleParticles);
+		private readonly ParticleSystem sparkleParticles = new("StarlightRiver/Assets/GUI/Sparkle", UpdateSparkleParticles, ParticleSystem.AnchorOptions.UI);
 
 		/// <summary>
 		/// Draws this stamina bar as either the gain animation or standard depending on the animation state of the Stamina UIState

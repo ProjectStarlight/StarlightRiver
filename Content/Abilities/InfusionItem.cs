@@ -4,7 +4,6 @@ namespace StarlightRiver.Content.Abilities
 {
 	public abstract partial class InfusionItem : ModItem
 	{
-		private Ability ability;
 		public Color color;
 
 		public abstract InfusionTier Tier { get; }
@@ -21,11 +20,11 @@ namespace StarlightRiver.Content.Abilities
 				// If this ability doesn't have a type, don't try getting its Ability
 				if (Main.gameMenu || AbilityType == null)
 					return null;
-				// If it does, but ability is uninitialized, set ability to its type [if we have it unlocked]
-				if (ability == null)
-					Player.GetHandler().GetAbility(AbilityType, out ability);
-				// Ret.
-				return ability;
+
+				if (Player.GetHandler().GetAbility(AbilityType, out Ability ability))
+					return ability;
+
+				return null;
 			}
 		}
 

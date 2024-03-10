@@ -9,6 +9,7 @@ namespace StarlightRiver.Content.Items.Misc
 {
 	public class MagmaGun : ModItem
 	{
+		[CloneByReference]
 		private Projectile proj;
 
 		private int counter;

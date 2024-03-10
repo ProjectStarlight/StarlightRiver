@@ -13,6 +13,7 @@ namespace StarlightRiver.Content.Items.Magnet
 {
 	class Thunderbuss : ModItem
 	{
+		[CloneByReference]
 		public Projectile ball;
 
 		public override string Texture => AssetDirectory.MagnetItem + Name;

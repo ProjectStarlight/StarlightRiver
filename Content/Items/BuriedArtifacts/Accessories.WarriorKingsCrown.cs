@@ -12,8 +12,6 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 	{
 		public override string Texture => AssetDirectory.ArtifactItem + Name;
 
-		public WarriorKingsCrown() : base(ModContent.Request<Texture2D>(AssetDirectory.ArtifactItem + "WarriorKingsCrown").Value) { }
-
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Warrior King's Crown");

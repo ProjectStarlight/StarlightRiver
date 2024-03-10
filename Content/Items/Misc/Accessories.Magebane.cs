@@ -8,8 +8,6 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public Magebane() : base(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "Magebane").Value) { }
-
 		public override void Load()
 		{
 			StarlightPlayer.CanUseItemEvent += PreventManaPotion;

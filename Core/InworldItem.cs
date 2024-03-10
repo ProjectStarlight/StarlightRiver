@@ -4,6 +4,7 @@ namespace StarlightRiver.Core
 {
 	public abstract class InworldItem : ModItem
 	{
+		[CloneByReference]
 		public InworldItemNPC inWorldNPC;
 
 		public NPC NPC => inWorldNPC?.NPC;

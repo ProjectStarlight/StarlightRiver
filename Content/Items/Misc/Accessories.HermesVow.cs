@@ -7,8 +7,6 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public HermesVow() : base(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "HermesVow").Value) { }
-
 		public override void Load()
 		{
 			StarlightPlayer.PostUpdateRunSpeedsEvent += AddRunSpeeds;

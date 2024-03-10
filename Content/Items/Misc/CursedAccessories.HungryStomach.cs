@@ -9,7 +9,6 @@ namespace StarlightRiver.Content.Items.Misc
 	internal class HungryStomach : CursedAccessory
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
-		public HungryStomach() : base(Request<Texture2D>(AssetDirectory.MiscItem + "HungryStomachGlow").Value) { }
 
 		public override void SetStaticDefaults()
 		{

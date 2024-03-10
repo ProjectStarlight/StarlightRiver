@@ -7,8 +7,6 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public LostCollar() : base(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "BloodlessAmuletGlow").Value) { }
-
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Lost Collar");

@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.CustomHooks
 			Terraria.GameContent.UI.Elements.On_UICharacterListItem.DrawSelf += DrawSpecialCharacter;
 			Terraria.GameContent.UI.Elements.On_UICharacterListItem.ctor += ShiftTextOver;
 
-			sparkles = new ParticleSystem(AssetDirectory.GUI + "Sparkle", updateSparkles);
+			sparkles = new ParticleSystem(AssetDirectory.GUI + "Sparkle", updateSparkles, ParticleSystem.AnchorOptions.UI);
 		}
 
 		public override void Unload()

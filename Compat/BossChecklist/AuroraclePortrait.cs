@@ -23,7 +23,7 @@ namespace StarlightRiver.Compat.BossChecklist
 			n.Color = Color.Lerp(new Color(r, g, b), Color.White, 0.25f) * (n.Timer / 300f) * a;
 
 			n.Timer--;
-		});
+		}, ParticleSystem.AnchorOptions.UI);
 
 		public static void DrawAuroraclePortrait(SpriteBatch spriteBatch, Rectangle rect, Color color)
 		{

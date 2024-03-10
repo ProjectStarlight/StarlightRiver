@@ -17,8 +17,8 @@ namespace StarlightRiver.Content.CustomHooks
 			if (Main.dedServ)
 				return;
 
-			ForegroundParticles = new ParticleSystem("StarlightRiver/Assets/GUI/HolyBig", UpdateForegroundBody);
-			BackgroundParticles = new ParticleSystem("StarlightRiver/Assets/GUI/Holy", UpdateBackgroundBody);
+			ForegroundParticles = new ParticleSystem("StarlightRiver/Assets/GUI/HolyBig", UpdateForegroundBody, ParticleSystem.AnchorOptions.World);
+			BackgroundParticles = new ParticleSystem("StarlightRiver/Assets/GUI/Holy", UpdateBackgroundBody, ParticleSystem.AnchorOptions.World);
 
 			On_Main.DrawBackgroundBlackFill += DrawVitricBackground;
 			On_Main.DrawBlack += ForceDrawBlack;
@@ -64,8 +64,8 @@ namespace StarlightRiver.Content.CustomHooks
 
 			float randTime = particle.GetHashCode() % 100 + 200f;
 
-			particle.Position.X = particle.StoredPosition.X - Main.screenPosition.X + GetParallaxOffset(particle.StoredPosition.X, 0.15f) + (float)Math.Sin(particle.Timer / randTime * 6.28f) * 20;
-			particle.Position.Y = particle.StoredPosition.Y - Main.screenPosition.Y + GetParallaxOffsetY(particle.StoredPosition.Y, 0.1f);
+			particle.Position.X = particle.StoredPosition.X + GetParallaxOffset(particle.StoredPosition.X, 0.15f) + (float)Math.Sin(particle.Timer / randTime * 6.28f) * 20;
+			particle.Position.Y = particle.StoredPosition.Y + GetParallaxOffsetY(particle.StoredPosition.Y, 0.1f);
 
 			particle.Color = Color.Lerp(new Color(255, 40, 0), new Color(255, 170, 100), particle.Timer / 1800f) * (0.85f * particle.Timer / 1800f);
 			particle.Scale = particle.Timer / 1800f * 0.55f;
@@ -77,8 +77,8 @@ namespace StarlightRiver.Content.CustomHooks
 			particle.Timer--;
 			particle.StoredPosition += particle.Velocity;
 			float randTime = particle.GetHashCode() % 50 + 100f;
-			particle.Position.X = particle.StoredPosition.X - Main.screenPosition.X + GetParallaxOffset(particle.StoredPosition.X, 0.5f) + (float)Math.Sin(particle.Timer / randTime * 6.28f) * 6;
-			particle.Position.Y = particle.StoredPosition.Y - Main.screenPosition.Y + GetParallaxOffsetY(particle.StoredPosition.Y, 0.2f);
+			particle.Position.X = particle.StoredPosition.X + GetParallaxOffset(particle.StoredPosition.X, 0.5f) + (float)Math.Sin(particle.Timer / randTime * 6.28f) * 6;
+			particle.Position.Y = particle.StoredPosition.Y + GetParallaxOffsetY(particle.StoredPosition.Y, 0.2f);
 			particle.Color = Color.Lerp(Color.Red, new Color(255, 255, 200), particle.Timer / 2400f);
 			particle.Scale = particle.Timer / 2400f;
 			particle.Rotation += 0.02f;
@@ -96,9 +96,6 @@ namespace StarlightRiver.Content.CustomHooks
 			if (Player != null && StarlightWorld.vitricBiome.Intersects(Helper.ScreenTiles))
 			{
 				Vector2 basepoint = (StarlightWorld.vitricBiome != default) ? StarlightWorld.vitricBiome.TopLeft() * 16 + new Vector2(-2000, 0) : Vector2.Zero;
-
-				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 				float x = basepoint.X + GetParallaxOffset(basepoint.X, 0.6f) - Main.screenPosition.X;
 				float y = basepoint.Y + GetParallaxOffsetY(basepoint.Y, 0.2f) - Main.screenPosition.Y;

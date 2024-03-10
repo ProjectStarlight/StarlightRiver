@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 	{
 		private int currentMana = -1;
 
-		private readonly List<int> manaConsumed = new();
+		private List<int> manaConsumed = new();
 
 		public override string Texture => AssetDirectory.DungeonItem + Name;
 
@@ -28,6 +28,14 @@ namespace StarlightRiver.Content.Items.Dungeon
 			Item.rare = ItemRarityID.Green;
 			Item.value = Item.buyPrice(0, 5, 0, 0);
 			Item.accessory = true;
+		}
+
+		public override ModItem Clone(Item newEntity)
+		{
+			var clone = base.Clone(newEntity) as StarlightPendant;
+			clone.manaConsumed = new List<int>(manaConsumed);
+
+			return clone;
 		}
 
 		public override void UpdateAccessory(Player Player, bool hideVisual)

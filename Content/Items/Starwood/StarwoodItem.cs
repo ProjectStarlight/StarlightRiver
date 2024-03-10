@@ -2,6 +2,7 @@ namespace StarlightRiver.Content.Items.Starwood
 {
 	public abstract class StarwoodItem : ModItem
 	{
+		[CloneByReference]
 		protected Texture2D EmpoweredTexture;
 		protected bool isEmpowered;
 

@@ -203,6 +203,17 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 			SafeSetDefaults();
 		}
 
+		public override ModItem Clone(Item newEntity)
+		{
+			var clone = base.Clone(newEntity) as CombatMountItem;
+
+			var mount = (CombatMount)Activator.CreateInstance(CombatMountType);
+			mount.SetDefaults();
+			clone.mount = mount;
+
+			return clone;
+		}
+
 		public override int ChoosePrefix(UnifiedRandom rand)
 		{
 			List<int> list = CombatMountPrefix.combatMountPrefixTypes;
