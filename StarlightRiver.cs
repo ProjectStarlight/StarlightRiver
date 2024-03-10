@@ -14,14 +14,6 @@ using System.Reflection;
 
 namespace StarlightRiver
 {
-	public class TemporaryFix : PreJITFilter
-	{
-		public override bool ShouldJIT(MemberInfo member)
-		{
-			return false;
-		}
-	}
-
 	public partial class StarlightRiver : Mod
 	{
 		private List<IOrderedLoadable> loadCache;
@@ -44,7 +36,6 @@ namespace StarlightRiver
 		public StarlightRiver()
 		{
 			Instance = this;
-			PreJITFilter = new TemporaryFix();
 		}
 
 		public static void SetLoadingText(string text)
