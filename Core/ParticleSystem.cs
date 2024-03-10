@@ -58,7 +58,7 @@ namespace StarlightRiver.Core
 		}
 
 		public void PopulateBuffers()
-		{		
+		{
 			FastParallel.For(0, particles.Count, (from, to, context) =>
 			{
 				for (int k = from; k < to; k++)

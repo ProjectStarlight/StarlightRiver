@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			var clone = base.Clone(newEntity) as SmartAccessory;
 
 			var newList = new List<Item>();
-			foreach(Item item in parents)
+			foreach (Item item in parents)
 			{
 				newList.Add(item.Clone());
 			}

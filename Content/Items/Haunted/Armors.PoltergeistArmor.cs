@@ -50,6 +50,7 @@ namespace StarlightRiver.Content.Items.Haunted
 			{
 				newList.Add(proj);
 			}
+
 			clone.minions = newList;
 			return clone;
 		}
