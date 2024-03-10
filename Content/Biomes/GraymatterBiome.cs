@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.Tiles.Crimson;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
 using Terraria.DataStructures;
@@ -9,6 +10,8 @@ namespace StarlightRiver.Content.Biomes
 {
 	internal class GraymatterBiome : ModBiome
 	{
+		public static bool forceGrayMatter;
+
 		public static ScreenTarget hallucinationMap;
 		public static ScreenTarget overHallucinationMap;
 
@@ -40,7 +43,7 @@ namespace StarlightRiver.Content.Biomes
 
 		public override bool IsBiomeActive(Player player)
 		{
-			return player.ZoneCrimson; // TODO: Add variable for monolith later
+			return forceGrayMatter || ModContent.GetInstance<GraymatterBiomeSystem>().anyTiles;
 		}
 
 		public override void OnInBiome(Player player)
@@ -108,6 +111,16 @@ namespace StarlightRiver.Content.Biomes
 			}
 
 			orig(scaleTarget);
+		}
+	}
+
+	internal class GraymatterBiomeSystem : ModSystem
+	{
+		public bool anyTiles;
+
+		public override void TileCountsAvailable(ReadOnlySpan<int> tileCounts)
+		{
+			anyTiles = tileCounts[ModContent.TileType<GrayMatter>()] > 0;
 		}
 	}
 }
