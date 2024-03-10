@@ -36,6 +36,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets\Healthbars\" />
+    <Folder Include="Assets\Palettes\" />
     <Folder Include="Content\NPCs\Vitric\GlassTrial\" />
     <Folder Include="Localization\" />
   </ItemGroup>

@@ -114,7 +114,7 @@ namespace StarlightRiver.Content.Dusts
 
 			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
 
-			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("OverNPCs", () =>
+			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () =>
 			{
 				Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, dust.color * lerper, dust.rotation, tex.Size() / 2f, dust.scale * lerper, 0f, 0f);
 

@@ -111,7 +111,7 @@ namespace StarlightRiver.Content.Dusts
 		{
 			float lerper = 1f - dust.alpha / 255f;
 
-			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("OverNPCs", () =>
+			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () =>
 			{
 				Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Dust + "ImpactLineDust").Value;
 
@@ -155,7 +155,7 @@ namespace StarlightRiver.Content.Dusts
 
 			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Dust + "ImpactLineDust").Value;
 
-			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("OverNPCs", () =>
+			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () =>
 			{
 				Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, dust.color * lerper, dust.rotation, tex.Size() / 2f, new Vector2(dust.scale * lerper, dust.scale), 0f, 0f);
 
@@ -202,7 +202,7 @@ namespace StarlightRiver.Content.Dusts
 
 			if (dust.customData is Color fadeColor)
 			{
-				ModContent.GetInstance<PixelationSystem>().QueueRenderAction("OverNPCs", () =>
+				ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () =>
 				{
 					Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, Color.Lerp(dust.color, fadeColor, 1f - lerper) * lerper, dust.rotation, tex.Size() / 2f, new Vector2(dust.scale * lerper, dust.scale), 0f, 0f);
 

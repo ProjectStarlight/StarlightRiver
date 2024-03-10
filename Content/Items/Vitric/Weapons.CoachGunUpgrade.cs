@@ -629,7 +629,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			float lerper = 1f - dust.alpha / 255f;
 
 			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "SmokeTransparent_" + dust.customData).Value;
-			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("OverNPCs", () =>
+			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () =>
 			{
 				Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, Color.Lerp(dust.color, Color.Black, 1f - lerper)
 					* lerper, dust.rotation, tex.Size() / 2f, dust.scale, 0f, 0f);

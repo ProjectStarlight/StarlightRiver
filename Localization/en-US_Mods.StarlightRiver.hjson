@@ -3967,6 +3967,7 @@ Projectiles: {
 	DreambeastProj.DisplayName: Dream Shard
 	DreambeastProjHome.DisplayName: Dream Essence
 	NeedlerHoldout.DisplayName: Needler
+	SoilgunDirtClump.DisplayName: Soil
 }
 
 Biomes: {

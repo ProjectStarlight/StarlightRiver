@@ -433,7 +433,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
 		{
-			behindNPCsAndTiles.Add(index);
+			overWiresUI.Add(index);
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -454,7 +454,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (Projectile.timeLeft < 30f)
 				fadeOut = Projectile.timeLeft / 30f;
 
-			sb.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor * fadeOut, Projectile.rotation + MathHelper.PiOver2, tex.Size() / 2f, Projectile.scale, SpriteEffects.None, 0f);
+			sb.Draw(tex, Projectile.Center - Main.screenPosition, null, Lighting.GetColor((int)(Projectile.Center.X / 16), (int)(Projectile.Center.Y / 16)) * fadeOut, Projectile.rotation + MathHelper.PiOver2, tex.Size() / 2f, Projectile.scale, SpriteEffects.None, 0f);
 
 			sb.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, new Color(255, 120, 20, 0) * fadeOut * 0.55f, 0f, bloomTex.Size() / 2f, 0.25f, SpriteEffects.None, 0f);
 
@@ -641,6 +641,9 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public void DrawPrimitives()
 		{
+			if (Projectile.timeLeft < 2)
+				return;
+
 			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("UnderProjectiles", () =>
 			{
 				Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;

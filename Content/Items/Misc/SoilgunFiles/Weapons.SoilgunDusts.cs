@@ -89,9 +89,9 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			dust.velocity *= 0.95f;
 			dust.rotation += dust.velocity.Length() * 0.01f;
 
-			dust.alpha += 4;
+			dust.alpha += 8;
 
-			dust.alpha = (int)(dust.alpha * 1.0075f);
+			dust.alpha = (int)(dust.alpha * 1.005f);
 
 			dust.scale *= 0.96f;
 
@@ -108,7 +108,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			Color color = dust.color;
 
 			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "SmokeTransparent_" + dust.customData).Value;
-			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("OverProjectiles", () =>
+			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () =>
 			{
 				Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, color * lerper, dust.rotation, tex.Size() / 2f, dust.scale, 0f, 0f);
 

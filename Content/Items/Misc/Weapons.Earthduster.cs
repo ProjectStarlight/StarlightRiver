@@ -195,7 +195,7 @@ namespace StarlightRiver.Content.Items.Misc
 						{
 							float lerper = MathHelper.Lerp(50f, 1f, ShootDelay / MAXCHARGEDELAY);
 							Vector2 pos = barrelPos + Main.rand.NextVector2CircularEdge(lerper * 0.5f, lerper).RotatedBy(Projectile.rotation);
-							int dustID = (GhostProj.ModProjectile as BaseSoilProjectile).dustID;
+							int dustID = (GhostProj.ModProjectile as SoilProjectile).dustID;
 							Dust.NewDustPerfect(pos, dustID, pos.DirectionTo(barrelPos)).noGravity = true;
 						}
 					}
@@ -209,9 +209,9 @@ namespace StarlightRiver.Content.Items.Misc
 						{
 							var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), armPos, Projectile.velocity * 1.5f, ModContent.ProjectileType<EarthdusterRing>(), 0, 0f, Owner.whoAmI, 15f);
 
-							(proj.ModProjectile as EarthdusterRing).trailColorOutline = (GhostProj.ModProjectile as BaseSoilProjectile).Colors["RingOutsideColor"];
+							(proj.ModProjectile as EarthdusterRing).trailColorOutline = (GhostProj.ModProjectile as SoilProjectile).Colors["RingOutsideColor"];
 
-							(proj.ModProjectile as EarthdusterRing).trailColor = (GhostProj.ModProjectile as BaseSoilProjectile).Colors["RingInsideColor"];
+							(proj.ModProjectile as EarthdusterRing).trailColor = (GhostProj.ModProjectile as SoilProjectile).Colors["RingInsideColor"];
 						}
 					}
 				}
@@ -324,7 +324,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2f, Projectile.scale, Owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
 
-			var color = Color.Lerp(Color.Transparent, (GhostProj.ModProjectile as BaseSoilProjectile).Colors["RingInsideColor"], shots / (float)MAXSHOTS);
+			var color = Color.Lerp(Color.Transparent, (GhostProj.ModProjectile as SoilProjectile).Colors["RingInsideColor"], shots / (float)MAXSHOTS);
 			//if (reloading)
 			//color = Color.Lerp(GetRingInsideColor(), Color.Transparent, ShootDelay / 90f);
 
@@ -368,13 +368,13 @@ namespace StarlightRiver.Content.Items.Misc
 				float x = (float)Math.Cos(rads) * 50;
 				float y = (float)Math.Sin(rads) * 25;
 
-				Dust.NewDustPerfect(position, (GhostProj.ModProjectile as BaseSoilProjectile).dustID, new Vector2(x, y).RotatedBy(Projectile.rotation + MathHelper.PiOver2) * 0.055f + Vector2.UnitX.RotatedBy(Projectile.rotation) * 5f, 0, default, 0.85f).noGravity = true;
+				Dust.NewDustPerfect(position, (GhostProj.ModProjectile as SoilProjectile).dustID, new Vector2(x, y).RotatedBy(Projectile.rotation + MathHelper.PiOver2) * 0.055f + Vector2.UnitX.RotatedBy(Projectile.rotation) * 5f, 0, default, 0.85f).noGravity = true;
 			}
 
 			Vector2 ejectPos = position + new Vector2(-35, -5 * Owner.direction).RotatedBy(Projectile.rotation);
 			for (int i = 0; i < 3; i++)
 			{
-				Dust.NewDustPerfect(ejectPos, (GhostProj.ModProjectile as BaseSoilProjectile).dustID, (-Projectile.velocity * Main.rand.NextFloat(1f, 3f) + Vector2.UnitY * -Main.rand.NextFloat(1f, 3f)).RotatedByRandom(0.45f), Main.rand.Next(150), default, 1.25f);
+				Dust.NewDustPerfect(ejectPos, (GhostProj.ModProjectile as SoilProjectile).dustID, (-Projectile.velocity * Main.rand.NextFloat(1f, 3f) + Vector2.UnitY * -Main.rand.NextFloat(1f, 3f)).RotatedByRandom(0.45f), Main.rand.Next(150), default, 1.25f);
 			}
 
 			shots++;

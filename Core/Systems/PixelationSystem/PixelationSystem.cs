@@ -18,11 +18,12 @@ namespace StarlightRiver.Core.Systems.PixelationSystem
 			if (Main.dedServ)
 				return;
 
-			On_Main.DrawNPCs += DrawNPCTargets;
-			On_Main.DrawSuperSpecialProjectiles += DrawUnderProjectileTargets;
-			On_Main.DrawPlayers_AfterProjectiles += DrawPlayerTargets;
-			On_Main.DrawCachedProjs += DrawOverProjectileTargets;
-		}
+			//On_Main.DrawNPCs += DrawNPCTargets;
+			//On_Main.DrawSuperSpecialProjectiles += DrawUnderProjectileTargets;
+			//On_Main.DrawPlayers_AfterProjectiles += DrawPlayerTargets;
+			On_Main.DrawCachedProjs += DrawTargets;
+			On_Main.DrawDust += DrawDustTargets;
+		}		
 
 		public override void PostSetupContent()
 		{
@@ -30,13 +31,14 @@ namespace StarlightRiver.Core.Systems.PixelationSystem
 			ModContent.GetInstance<PixelationSystem>().RegisterScreenTarget("UnderTiles", RenderLayer.UnderTiles);
 
 			ModContent.GetInstance<PixelationSystem>().RegisterScreenTarget("UnderProjectiles", RenderLayer.UnderProjectiles);
-			ModContent.GetInstance<PixelationSystem>().RegisterScreenTarget("OverProjectiles", RenderLayer.OverProjectiles);
-
-			ModContent.GetInstance<PixelationSystem>().RegisterScreenTarget("UnderPlayers", RenderLayer.UnderPlayers);
-			ModContent.GetInstance<PixelationSystem>().RegisterScreenTarget("OverPlayers", RenderLayer.OverPlayers);
 
 			ModContent.GetInstance<PixelationSystem>().RegisterScreenTarget("UnderNPCs", RenderLayer.UnderNPCs);
-			ModContent.GetInstance<PixelationSystem>().RegisterScreenTarget("OverNPCs", RenderLayer.OverNPCs);
+
+			ModContent.GetInstance<PixelationSystem>().RegisterScreenTarget("OverPlayers", RenderLayer.OverPlayers);
+
+			ModContent.GetInstance<PixelationSystem>().RegisterScreenTarget("OverWiresUI", RenderLayer.OverWiresUI);
+
+			ModContent.GetInstance<PixelationSystem>().RegisterScreenTarget("Dusts", RenderLayer.Dusts);
 		}
 
 		public override void Unload()
@@ -44,13 +46,14 @@ namespace StarlightRiver.Core.Systems.PixelationSystem
 			if (Main.dedServ)
 				return;
 
-			On_Main.DrawNPCs -= DrawNPCTargets;
-			On_Main.DrawPlayers_AfterProjectiles -= DrawPlayerTargets;
-			On_Main.DrawCachedProjs -= DrawOverProjectileTargets;
-			On_Main.DrawSuperSpecialProjectiles -= DrawUnderProjectileTargets;
+			//On_Main.DrawNPCs -= DrawNPCTargets;
+			//On_Main.DrawPlayers_AfterProjectiles -= DrawPlayerTargets;
+			//On_Main.DrawSuperSpecialProjectiles -= DrawUnderProjectileTargets;
+			On_Main.DrawCachedProjs -= DrawTargets;
+			On_Main.DrawDust -= DrawDustTargets;
 		}
 
-		private void DrawPlayerTargets(On_Main.orig_DrawPlayers_AfterProjectiles orig, Main self)
+		/*private void DrawPlayerTargets(On_Main.orig_DrawPlayers_AfterProjectiles orig, Main self)
 		{
 			SpriteBatch sb = Main.spriteBatch;
 
@@ -78,21 +81,66 @@ namespace StarlightRiver.Core.Systems.PixelationSystem
 			}
 
 			orig(self, projCache, startSpriteBatch);
-		}
+		}*/
 
-		private void DrawOverProjectileTargets(On_Main.orig_DrawCachedProjs orig, Main self, List<int> projCache, bool startSpriteBatch)
+		private void DrawTargets(On_Main.orig_DrawCachedProjs orig, Main self, List<int> projCache, bool startSpriteBatch)
 		{
 			SpriteBatch sb = Main.spriteBatch;
 
 			orig(self, projCache, startSpriteBatch);
 
-			foreach (PixelationTarget target in pixelationTargets.Where(t => t.Active && t.renderType == RenderLayer.OverProjectiles))
+			if (projCache.Equals(Main.instance.DrawCacheProjsBehindNPCsAndTiles))
 			{
-				DrawTarget(target, Main.spriteBatch, !startSpriteBatch);
+				foreach (PixelationTarget target in pixelationTargets.Where(t => t.Active && t.renderType == RenderLayer.UnderTiles))
+				{
+					DrawTarget(target, Main.spriteBatch, !startSpriteBatch);
+				}
+			}
+
+			if (projCache.Equals(Main.instance.DrawCacheProjsBehindNPCs))
+			{
+				foreach (PixelationTarget target in pixelationTargets.Where(t => t.Active && t.renderType == RenderLayer.UnderNPCs))
+				{
+					DrawTarget(target, Main.spriteBatch, !startSpriteBatch);
+				}
+			}
+
+			if (projCache.Equals(Main.instance.DrawCacheProjsBehindProjectiles))
+			{
+				foreach (PixelationTarget target in pixelationTargets.Where(t => t.Active && t.renderType == RenderLayer.UnderProjectiles))
+				{
+					DrawTarget(target, Main.spriteBatch, !startSpriteBatch);
+				}
+			}
+
+			if (projCache.Equals(Main.instance.DrawCacheProjsOverPlayers))
+			{
+				foreach (PixelationTarget target in pixelationTargets.Where(t => t.Active && t.renderType == RenderLayer.OverPlayers))
+				{
+					DrawTarget(target, Main.spriteBatch, !startSpriteBatch);
+				}
+			}
+
+			if (projCache.Equals(Main.instance.DrawCacheProjsOverWiresUI))
+			{
+				foreach (PixelationTarget target in pixelationTargets.Where(t => t.Active && t.renderType == RenderLayer.OverWiresUI))
+				{
+					DrawTarget(target, Main.spriteBatch, !startSpriteBatch);
+				}
 			}
 		}
 
-		private void DrawNPCTargets(On_Main.orig_DrawNPCs orig, Main self, bool behindTiles)
+		private void DrawDustTargets(On_Main.orig_DrawDust orig, Main self)
+		{				
+			orig(self);
+
+			foreach (PixelationTarget target in pixelationTargets.Where(t => t.Active && t.renderType == RenderLayer.Dusts))
+			{
+				DrawTarget(target, Main.spriteBatch, false);
+			}
+		}
+
+		/*private void DrawNPCTargets(On_Main.orig_DrawNPCs orig, Main self, bool behindTiles)
 		{
 			SpriteBatch sb = Main.spriteBatch;
 
@@ -104,18 +152,24 @@ namespace StarlightRiver.Core.Systems.PixelationSystem
 				}
 			}
 
-			foreach (PixelationTarget target in pixelationTargets.Where(t => t.Active && t.renderType == RenderLayer.UnderNPCs))
+			if (!behindTiles)
 			{
-				DrawTarget(target, Main.spriteBatch, true);
+				foreach (PixelationTarget target in pixelationTargets.Where(t => t.Active && t.renderType == RenderLayer.UnderNPCs))
+				{
+					DrawTarget(target, Main.spriteBatch, true);
+				}
 			}
 
 			orig(self, behindTiles);
 
-			foreach (PixelationTarget target in pixelationTargets.Where(t => t.Active && t.renderType == RenderLayer.OverNPCs))
+			if (!behindTiles)
 			{
-				DrawTarget(target, Main.spriteBatch, true);
+				foreach (PixelationTarget target in pixelationTargets.Where(t => t.Active && t.renderType == RenderLayer.OverNPCs))
+				{
+					DrawTarget(target, Main.spriteBatch, true);
+				}
 			}
-		}
+		}*/
 
 		private void DrawTarget(PixelationTarget target, SpriteBatch sb, bool endSpriteBatch = true)
 		{
@@ -240,12 +294,11 @@ namespace StarlightRiver.Core.Systems.PixelationSystem
 
 	public enum RenderLayer : int
 	{
-		UnderProjectiles = 0,
-		OverProjectiles = 1,
-		UnderPlayers = 2,
-		OverPlayers = 3,
-		UnderNPCs = 4,
-		OverNPCs = 5,
-		UnderTiles = 6,
+		UnderTiles = 1,
+		UnderNPCs = 2,
+		UnderProjectiles = 3,
+		OverPlayers = 4,	
+		OverWiresUI = 5,
+		Dusts = 6,
 	}
 }

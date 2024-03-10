@@ -36,8 +36,8 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Soilgun");
-			Tooltip.SetDefault("Hold <left> to charge up a volley of soil\nRelease to fire the soil at high velocities\n" +
-				"Can use many different types of soils\n'Soiled it! SOILED IT!'");
+			Tooltip.SetDefault("Hold <left> to charge up a volley of soil\nRelease to fire the soil\n" +
+				"Fully charge to fire a high velocity clump of soil\n'Soiled it! SOILED IT!'");
 		}
 
 		public override void SafeSetDefaults()
@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			Item.damage = 4;
 			Item.width = 60;
 			Item.height = 36;
-			Item.useAnimation = Item.useTime = 160;
+			Item.useAnimation = Item.useTime = 50;
 			Item.shoot = ProjectileID.PurificationPowder;
 			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.rare = ItemRarityID.Blue;
@@ -401,7 +401,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			else
 				fade = 1f;
 
-			Color color = (ghostProjectile.ModProjectile as BaseSoilProjectile).Colors["RingOutsideColor"] with { A = 0 };
+			Color color = (ghostProjectile.ModProjectile as SoilProjectile).Colors["RingOutsideColor"] with { A = 0 };
 
 			SpriteEffects spriteEffects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
@@ -481,17 +481,28 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 			if (Main.myPlayer == Projectile.owner)
 			{
-				for (int i = 0; i < 4 + Main.rand.Next(3); i++)
-				{
-					float minSpeed = MathHelper.Lerp(0.8f, 1f, ChargeProgress);
-
+				if (ChargeProgress >= 1f)
+				{ 
 					Projectile.NewProjectile(Projectile.GetSource_FromThis(), BarrelPosition,
-						shootVelocity.RotatedByRandom(MathHelper.Lerp(0.3f, 0.04f, ChargeProgress)) * Main.rand.NextFloat(minSpeed, 1.1f) * MathHelper.Lerp(0.65f, 1.55f, ChargeProgress), projectileID, damage, knockBack, Owner.whoAmI);
+							shootVelocity * 1f, (ghostProjectile.ModProjectile as SoilProjectile).ClumpType, damage, knockBack, Owner.whoAmI);
 				}
+				else
+				{
+					for (int i = 0; i < 4 + Main.rand.Next(3); i++)
+					{
+						float minSpeed = MathHelper.Lerp(0.8f, 1f, ChargeProgress);
+
+						Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), BarrelPosition,
+							shootVelocity.RotatedByRandom(MathHelper.Lerp(1f, 0.1f, ChargeProgress)) * Main.rand.NextFloat(minSpeed, 1.1f) * MathHelper.Lerp(0.45f, 0.9f, ChargeProgress), projectileID, damage, knockBack, Owner.whoAmI);
+
+						proj.timeLeft = (int)MathHelper.Lerp(15f, 30f, ChargeProgress);
+						(proj.ModProjectile as SoilProjectile).maxTimeleft = MathHelper.Lerp(15f, 30f, ChargeProgress);
+					}
+				}			
 			}
 
-			Color outColor = (ghostProjectile.ModProjectile as BaseSoilProjectile).Colors["RingOutsideColor"];
-			Color inColor = (ghostProjectile.ModProjectile as BaseSoilProjectile).Colors["RingInsideColor"];
+			Color outColor = (ghostProjectile.ModProjectile as SoilProjectile).Colors["RingOutsideColor"];
+			Color inColor = (ghostProjectile.ModProjectile as SoilProjectile).Colors["RingInsideColor"];
 
 			for (int i = 0; i < 12; i++)
 			{
