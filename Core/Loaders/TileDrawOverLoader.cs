@@ -17,7 +17,6 @@ namespace StarlightRiver.Core.Loaders
 				return;
 
 			On_Main.DrawProjectiles += Main_DrawProjectiles;
-			On_Main.Update += Main_Update;
 
 			projTarget = new(DrawProjTarget, () => Main.projectile.Any(n => n.ModProjectile is IDrawOverTiles), 1);
 			tileTarget = new(DrawTileTarget, () => Main.projectile.Any(n => n.ModProjectile is IDrawOverTiles), 1);
@@ -26,7 +25,6 @@ namespace StarlightRiver.Core.Loaders
 		public void Unload()
 		{
 			On_Main.DrawProjectiles -= Main_DrawProjectiles;
-			On_Main.Update -= Main_Update;
 
 			projTarget ??= null;
 			tileTarget ??= null;
@@ -36,13 +34,6 @@ namespace StarlightRiver.Core.Loaders
 		{
 			orig(self);
 			DrawTargets();
-		}
-
-		private static void Main_Update(On_Main.orig_Update orig, Main self, GameTime gameTime)
-		{
-			StarlightRiver.Instance?.CheckScreenSize();
-
-			orig(self, gameTime);
 		}
 
 		private static void DrawProjTarget(SpriteBatch spriteBatch)

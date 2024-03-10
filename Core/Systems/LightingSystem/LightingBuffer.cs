@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Configs;
+﻿using ReLogic.Threading;
+using StarlightRiver.Content.Configs;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using StarlightRiver.Helpers;
 using Terraria.Graphics.Effects;
@@ -11,12 +12,13 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 		const int PADDING = 20;
 
 		public static bool GettingColors = false;
+		public static bool bufferNeedsPopulated = false;
 
 		public static VertexBuffer lightingQuadBuffer;
 
-		public static ScreenTarget screenLightingTarget = new(DrawFinalTarget, () => true, 0.2f);
-		public static ScreenTarget tileLightingTarget = new(null, () => true, 0.1f, ResizeTile);
-		public static ScreenTarget tileLightingTempTarget = new(null, () => true, 0, ResizeTileTemp);
+		public static ScreenTarget screenLightingTarget = new(DrawFinalTarget, () => bufferNeedsPopulated, 0.2f);
+		public static ScreenTarget tileLightingTarget = new(null, () => bufferNeedsPopulated, 0.1f, ResizeTile);
+		public static ScreenTarget tileLightingTempTarget = new(null, () => bufferNeedsPopulated, 0, ResizeTileTemp);
 
 		public static Vector2 tileLightingCenter;
 
@@ -63,16 +65,15 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 
 			var tileLightingBuffer = new Color[tileLightingTarget.RenderTarget.Width * tileLightingTarget.RenderTarget.Height];
 
-			for (int x = 0; x < tileLightingTarget.RenderTarget.Width; x++)
+			FastParallel.For(0, tileLightingTarget.RenderTarget.Width * tileLightingTarget.RenderTarget.Height, (from, to, context) =>
 			{
-				for (int y = 0; y < tileLightingTarget.RenderTarget.Height; y++)
+				for (int k = from; k < to; k++)
 				{
-					int index = y * tileLightingTarget.RenderTarget.Width + x;
-
-					if (tileLightingBuffer.Length > index)
-						tileLightingBuffer[index] = Lighting.GetColor((int)start.X / 16 + x, (int)start.Y / 16 + y);
+					int x = k % tileLightingTarget.RenderTarget.Width;
+					int y = k / tileLightingTarget.RenderTarget.Width;
+					tileLightingBuffer[k] = Lighting.GetColor((int)start.X / 16 + x, (int)start.Y / 16 + y);
 				}
-			}
+			});
 
 			tileLightingTarget.RenderTarget.SetData(tileLightingBuffer);
 			tileLightingCenter = start;
@@ -147,6 +148,9 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 
 		public static void DrawFinalTarget(SpriteBatch sb)
 		{
+			if (!bufferNeedsPopulated)
+				return;
+
 			if (ModContent.GetInstance<GraphicsConfig>().HighQualityLighting)
 			{
 				refreshTimer++;
@@ -174,6 +178,8 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 
 				PopulateScreenTexture();
 			}
+
+			bufferNeedsPopulated = false;
 		}
 	}
 
@@ -190,8 +196,10 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 		//Scale is important here instead of just modifying the pos rectangle to change where the texture samples from the lighting buffer, otherwise it would sample from the base points
 		public static void DrawWithLighting(Rectangle pos, Texture2D tex, Rectangle source, Color color = default, Vector2 scale = default)
 		{
+			LightingBuffer.bufferNeedsPopulated = true;
+
 			//TODO: Include an origin that the point scales from
-			if (Main.dedServ || !Helper.OnScreen(new Rectangle(pos.X, pos.Y, tex.Width, tex.Height)))
+			if (Main.dedServ || !ScreenTracker.OnScreenScreenspace(new Rectangle(pos.X, pos.Y, tex.Width, tex.Height)))
 				return;
 
 			if (color == default)

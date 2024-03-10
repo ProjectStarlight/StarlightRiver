@@ -38,10 +38,6 @@ namespace StarlightRiver
 			Instance = this;
 		}
 
-		public bool useIntenseMusic = false; //TODO: Make some sort of music handler at some point for this
-
-		private Vector2 lastScreenSize; //Putting these in StarlightRiver incase anything else wants to use them (which is likely)
-
 		public static void SetLoadingText(string text)
 		{
 			FieldInfo Interface_loadMods = typeof(Mod).Assembly.GetType("Terraria.ModLoader.UI.Interface")!.GetField("loadMods", BindingFlags.NonPublic | BindingFlags.Static)!;
@@ -86,8 +82,6 @@ namespace StarlightRiver
 
 			if (!Main.dedServ)
 			{
-				lastScreenSize = new Vector2(Main.screenWidth, Main.screenHeight);
-
 				//Hotkeys
 				AbilityKeys = new AbilityHotkeys(this);
 				AbilityKeys.LoadDefaults();
@@ -125,12 +119,6 @@ namespace StarlightRiver
 			{
 				group.AddRecipeGroups();
 			}
-		}
-
-		public void CheckScreenSize()
-		{
-			if (!Main.dedServ && !Main.gameMenu)
-				lastScreenSize = new Vector2(Main.screenWidth, Main.screenHeight);
 		}
 
 		public override void PostSetupContent()

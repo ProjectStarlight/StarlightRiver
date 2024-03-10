@@ -127,7 +127,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 			Vector2 dpos = pos - Main.screenPosition;
 			var target = new Rectangle((int)dpos.X - 564, (int)dpos.Y - 564, 1128, 1128);
 
-			if (!Helpers.Helper.OnScreen(target))
+			if (!ScreenTracker.OnScreen(target))
 				return;
 
 			//background

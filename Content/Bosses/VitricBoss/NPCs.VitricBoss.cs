@@ -3,6 +3,7 @@ using StarlightRiver.Content.Foregrounds;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Content.PersistentData;
+using StarlightRiver.Content.Tiles.Blockers;
 using StarlightRiver.Core.Systems.BossRushSystem;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
@@ -492,6 +493,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public override void AI()
 		{
+			BlockerLoader.ceirosBlockers = true;
+
 			if (arena == new Rectangle())
 				arena = new Rectangle((int)NPC.Center.X + 8 - arenaWidth / 2, (int)NPC.Center.Y - 832 - arenaHeight / 2, arenaWidth, arenaHeight);
 

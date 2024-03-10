@@ -334,9 +334,9 @@ namespace StarlightRiver.Content.GUI
 			Item heldItem = items.FirstOrDefault(n => n.type == item.type);
 
 			bool craftable = true;
-			for(int k = 0; k < 4; k++)
+			for (int k = 0; k < 4; k++)
 			{
-				craftable &= ChefBagUI.openBag.Items.Any(n => n != null && n.type == Result.Recipie().AsList()[k] && n.stack > 0); 
+				craftable &= ChefBagUI.openBag.Items.Any(n => n != null && n.type == Result.Recipie().AsList()[k] && n.stack > 0);
 			}
 
 			Color color = !craftable ? Color.LightGray * 0.5f : Color.White;
