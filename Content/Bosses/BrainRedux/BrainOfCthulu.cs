@@ -7,7 +7,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.Bosses.BrainRedux
 {
-	internal class BrainOfCthulu : GlobalNPC
+	internal partial class BrainOfCthulu : GlobalNPC
 	{
 		/// <summary>
 		/// If this instance of the boss should be our rework or just the vanilla fight
@@ -19,6 +19,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public NPC thinker;
 
 		public List<NPC> neurisms = new();
+		public Vector2 savedPos;
 
 		public ref float Timer => ref npc.ai[0];
 		public ref float State => ref npc.ai[1];
@@ -79,6 +80,61 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 					if (Timer > 60)
 						npc.active = false;
+
+					break;
+
+				// Setup
+				case 0:
+					for(int k = 0; k < 10; k++)
+					{
+						int i = NPC.NewNPC(null, (int)npc.Center.X, (int)npc.Center.Y, ModContent.NPCType<Neurysm>());
+						neurisms.Add(Main.npc[i]);
+					}
+
+					Timer = 0;
+					State = 1;
+
+					break;
+
+				// Intro
+				case 1:
+
+					if (Timer == 1)
+						savedPos = npc.Center;
+
+					if (Timer < 120)
+						npc.Center = Vector2.SmoothStep(savedPos, thinker.Center + new Vector2(0, -180), Timer / 120f);
+
+					if (Timer == 240)
+					{
+						State = 2;
+						Timer = 0;
+						AttackTimer = 0;
+					}
+
+					break;
+
+				// First phase
+				case 2:
+
+					if (Timer == 1)
+						AttackState = Main.rand.Next(3);
+
+					switch(AttackState)
+					{
+						case 0:
+							ShrinkingCircle();
+							break;
+						case 1:
+							ShrinkingCircle();
+							break;
+						case 2:
+							ShrinkingCircle();
+							break;
+						case 3:
+							ShrinkingCircle();
+							break;
+					}
 
 					break;
 			}

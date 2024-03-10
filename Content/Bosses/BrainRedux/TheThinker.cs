@@ -1,16 +1,20 @@
 ﻿using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.Tiles.Crimson;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Bosses.BrainRedux
 {
 	internal class TheThinker : ModNPC
 	{
 		public static readonly List<TheThinker> toRender = new();
+
+		public readonly List<Point16> tilesChanged = new();
 
 		public override string Texture => AssetDirectory.BrainRedux + Name;
 
@@ -47,6 +51,68 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				if (Vector2.DistanceSquared(player.Center, NPC.Center) <= Math.Pow(256, 2))
 					player.AddBuff(ModContent.BuffType<CrimsonHallucination>(), 10);
 			}
+		}
+
+		public void CreateArena()
+		{
+			for(int x = -60; x <= 60; x++)
+			{
+				for(int y = -60; y <= 60; y++)
+				{
+					var off = new Vector2(x, y);
+					var dist = off.LengthSquared();
+
+					if (dist <= Math.Pow(50, 2))
+					{
+						var tile = Main.tile[(int)NPC.Center.X / 16 + x, (int)NPC.Center.Y / 16 + y];
+
+						tile.LiquidAmount = 0;
+
+						if (tile.HasTile && !tile.IsActuated)
+						{
+							tile.IsActuated = true;							
+							tilesChanged.Add(new Point16(x, y));
+						}
+					}
+
+					if (dist > Math.Pow(50, 2) && dist <= Math.Pow(60, 2))
+					{
+						var tile = Main.tile[(int)NPC.Center.X / 16 + x, (int)NPC.Center.Y / 16 + y];
+
+						if (!tile.HasTile)
+						{
+							tile.HasTile = true;
+							tile.TileType = (ushort)ModContent.TileType<BrainBlocker>();
+							tile.Slope = Terraria.ID.SlopeType.Solid;
+							tilesChanged.Add(new Point16(x, y));
+						}
+					}
+				}
+			}
+		}
+
+		public void ResetArena()
+		{
+			foreach(Point16 point in tilesChanged)
+			{
+				var tile = Main.tile[(int)NPC.Center.X / 16 + point.X, (int)NPC.Center.Y / 16 + point.Y];
+
+				if (tile.IsActuated)
+					tile.IsActuated = false;
+
+				if (tile.TileType == ModContent.TileType<BrainBlocker>())
+					tile.HasTile = false;
+			}
+
+			tilesChanged.Clear();
+		}
+
+		public override void OnHitPlayer(Player target, Player.HurtInfo hurtInfo)
+		{
+			if (tilesChanged.Count == 0)
+				CreateArena();
+			else
+				ResetArena();
 		}
 
 		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
