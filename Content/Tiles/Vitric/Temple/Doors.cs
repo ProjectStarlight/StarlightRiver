@@ -143,6 +143,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 	class DashableDoorDummy : Dummy
 	{
+		public override bool DoesCollision => true;
+
 		public DashableDoorDummy() : base(TileType<DashableDoor>(), 16 * 3, 16 * 13) { }
 
 		public override void OnSpawn()

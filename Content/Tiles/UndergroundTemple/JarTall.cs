@@ -77,6 +77,8 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 
 	internal class JarDummy : Dummy, IDrawAdditive
 	{
+		public override bool DoesCollision => true;
+
 		public JarDummy() : base(TileType<JarTall>(), 32, 64) { }
 
 		public override void Update()

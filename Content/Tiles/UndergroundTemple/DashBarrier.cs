@@ -46,6 +46,8 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 
 	internal class DashBarrierDummy : Dummy
 	{
+		public override bool DoesCollision => true;
+
 		public DashBarrierDummy() : base(TileType<DashBarrier>(), 32, 48) { }
 
 		public override void Collision(Player Player)
