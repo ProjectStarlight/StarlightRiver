@@ -24,8 +24,8 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public static void LoadSystem()
 		{
-			CursedSystem = new ParticleSystem("StarlightRiver/Assets/GUI/WhiteCircle", UpdateCursed);
-			ShardsSystem = new ParticleSystem("StarlightRiver/Assets/GUI/charm", UpdateShards);
+			CursedSystem = new ParticleSystem("StarlightRiver/Assets/GUI/WhiteCircle", UpdateCursed, ParticleSystem.AnchorOptions.UI);
+			ShardsSystem = new ParticleSystem("StarlightRiver/Assets/GUI/charm", UpdateShards, ParticleSystem.AnchorOptions.UI);
 		}
 
 		public static void UnloadSystem()
