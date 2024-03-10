@@ -4427,6 +4427,11 @@ Buffs: {
 		DisplayName: Dreamwarp
 		Description: Cuckoo for cocao puffs
 	}
+
+	CrimsonHallucination: {
+		DisplayName: Hallucinating
+		Description: Is any of this real?
+	}
 }
 
 Prefixes: {
