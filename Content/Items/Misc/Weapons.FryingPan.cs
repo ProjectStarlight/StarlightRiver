@@ -339,7 +339,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Vector2 off = (Projectile.rotation + rotVel).ToRotationVector2() * 35;
 			off.X *= (float)Math.Cos(zRotation);
 
-			trail ??= new Trail(Main.instance.GraphicsDevice, 60, new TriangularTip(4), factor => 12, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 60, new NoTip(), factor => 12, factor =>
 			{
 				Color trailColor = Color.DarkGray * MathHelper.Min(rotVel * 18, 0.75f);
 				return trailColor;

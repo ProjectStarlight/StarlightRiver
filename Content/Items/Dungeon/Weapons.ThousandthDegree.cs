@@ -701,12 +701,12 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 16, new TriangularTip(8), factor => 20f, factor => new Color(255, 160, 50) * 0.5f * factor.X);
+			trail ??= new Trail(Main.instance.GraphicsDevice, 16, new NoTip(), factor => 20f, factor => new Color(255, 160, 50) * 0.5f * factor.X);
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 16, new TriangularTip(8), factor => 25f, factor => new Color(255, 50, 15) * 0.75f * factor.X);
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 16, new NoTip(), factor => 25f, factor => new Color(255, 50, 15) * 0.75f * factor.X);
 
 			trail2.Positions = cache.ToArray();
 			trail2.NextPosition = Projectile.Center + Projectile.velocity;

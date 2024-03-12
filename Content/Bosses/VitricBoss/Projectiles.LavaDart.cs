@@ -174,7 +174,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new TriangularTip(40 * 4), factor => factor * 40, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 40, factor =>
 			{
 				float alpha = 1;
 

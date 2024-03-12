@@ -518,10 +518,10 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(40 * 4), factor => 10 + factor * 25, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => 10 + factor * 25, factor =>
 			{
-				if (factor.X >= 0.96f)
-					return Color.White * 0;
+				if (factor.X == 1)
+					return Color.Transparent;
 
 				return new Color(120, 20 + (int)(100 * factor.X), 255) * factor.X * (float)Math.Sin(Projectile.timeLeft / Maxtime * 3.14f);
 			});
@@ -529,10 +529,10 @@ namespace StarlightRiver.Content.Items.Moonstone
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(40 * 4), factor => 80 + 0 + factor * 0, factor =>
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => 80 + 0 + factor * 0, factor =>
 			{
-				if (factor.X >= 0.96f)
-					return Color.White * 0;
+				if (factor.X == 1)
+					return Color.Transparent;
 
 				return new Color(100, 20 + (int)(60 * factor.X), 255) * factor.X * 0.15f * (float)Math.Sin(Projectile.timeLeft / Maxtime * 3.14f);
 			});
@@ -540,10 +540,10 @@ namespace StarlightRiver.Content.Items.Moonstone
 			trail2.Positions = cache.ToArray();
 			trail2.NextPosition = Projectile.Center + Projectile.velocity;
 
-			trailBack ??= new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(40 * 4), factor => 20 + 0 + factor * 0, factor =>
+			trailBack ??= new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => 20 + 0 + factor * 0, factor =>
 			{
-				if (factor.X >= 0.96f)
-					return Color.White * 0;
+				if (factor.X == 1)
+					return Color.Transparent;
 
 				return new Color(100, 20 + (int)(60 * factor.X), 255) * factor.X * (float)Math.Sin(Projectile.timeLeft / Maxtime * 3.14f);
 			});

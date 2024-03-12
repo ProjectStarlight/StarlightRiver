@@ -231,10 +231,10 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 		private void ManageTrail(ref Trail trail, List<Vector2> cache)
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 120, new TriangularTip(40 * 4), factor => 5, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 120, new NoTip(), factor => 5, factor =>
 			{
-				if (factor.X >= 0.95f)
-					return Color.White * 0;
+				if (factor.X == 1)
+					return Color.Transparent;
 
 				return new Color(155, 155, 155) * (float)Math.Sin(factor.X * 3.14f) * 0.15f * radius;
 			});

@@ -258,7 +258,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 90, new TriangularTip(20 * 4), factor => factor * 20, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 90, new NoTip(), factor => factor * 20, factor =>
 			{
 				if (factor.X > 0.95f)
 					return Color.White * 0;

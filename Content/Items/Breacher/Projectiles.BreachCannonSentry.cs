@@ -317,22 +317,22 @@ namespace StarlightRiver.Content.Items.Breacher
 		private void ManageTrail()
 		{
 			var blue = new Color(0, 0, 255);
-			trail ??= new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(4), factor => 15 * laserSizeMult, factor => Color.Lerp(Color.Cyan, blue, factor.Y));
+			trail ??= new Trail(Main.instance.GraphicsDevice, 15, new NoTip(), factor => 15 * laserSizeMult, factor => Color.Lerp(Color.Cyan, blue, factor.Y));
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = laserEndpoint;
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(4), factor => 7 * laserSizeMult, factor => Color.White);
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 15, new NoTip(), factor => 7 * laserSizeMult, factor => Color.White);
 
 			trail2.Positions = cache.ToArray();
 			trail2.NextPosition = laserEndpoint;
 
-			superTrail ??= new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(4), factor => 15 * superLaserSizeMult, factor => Color.Lerp(Color.Cyan, blue, factor.Y));
+			superTrail ??= new Trail(Main.instance.GraphicsDevice, 15, new NoTip(), factor => 15 * superLaserSizeMult, factor => Color.Lerp(Color.Cyan, blue, factor.Y));
 
 			superTrail.Positions = superCache.ToArray();
 			superTrail.NextPosition = superLaserEndpoint;
 
-			superTrail2 ??= new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(4), factor => 7 * superLaserSizeMult, factor => Color.White);
+			superTrail2 ??= new Trail(Main.instance.GraphicsDevice, 15, new NoTip(), factor => 7 * superLaserSizeMult, factor => Color.White);
 
 			superTrail2.Positions = superCache.ToArray();
 			superTrail2.NextPosition = superLaserEndpoint;

@@ -241,7 +241,7 @@ namespace StarlightRiver.Content.Items.Misc
 				cache.Add(target.Center + direction * i);
 			}
 
-			trail = new Trail(Main.instance.GraphicsDevice, 20 + widthExtra * 2, new TriangularTip((int)((target.width + target.height) * 0.6f)), factor => 10 * (1 - Math.Abs(1 - factor - Projectile.timeLeft / (float)(BASE_TIMELEFT + 5))) * (Projectile.timeLeft / (float)BASE_TIMELEFT), factor => Color.Lerp(Color.Red, Color.DarkRed, factor.X) * 0.8f)
+			trail = new Trail(Main.instance.GraphicsDevice, 20 + widthExtra * 2, new NoTip(), factor => 10 * (1 - Math.Abs(1 - factor - Projectile.timeLeft / (float)(BASE_TIMELEFT + 5))) * (Projectile.timeLeft / (float)BASE_TIMELEFT), factor => Color.Lerp(Color.Red, Color.DarkRed, factor.X) * 0.8f)
 			{
 				Positions = cache.ToArray()
 			};

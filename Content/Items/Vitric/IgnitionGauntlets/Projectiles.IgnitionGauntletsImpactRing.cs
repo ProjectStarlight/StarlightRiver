@@ -75,9 +75,9 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 28 * (1 - Progress), factor => Color.Orange);
+			trail ??= new Trail(Main.instance.GraphicsDevice, 33, new NoTip(), factor => 28 * (1 - Progress), factor => Color.Orange);
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 10 * (1 - Progress), factor => Color.White);
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 33, new NoTip(), factor => 10 * (1 - Progress), factor => Color.White);
 			float nextplace = 33f / 32f;
 			var offset = new Vector2((float)Math.Sin(nextplace), (float)Math.Cos(nextplace));
 			offset *= Radius;

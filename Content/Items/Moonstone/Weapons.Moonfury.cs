@@ -369,9 +369,9 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 38 * (1 - Progress), factor => new Color(100, 0, 255));
+			trail ??= new Trail(Main.instance.GraphicsDevice, 33, new NoTip(), factor => 38 * (1 - Progress), factor => new Color(100, 0, 255));
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 20 * (1 - Progress), factor => Color.Lerp(new Color(180, 180, 255), new Color(85, 85, 200), Progress));
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 33, new NoTip(), factor => 20 * (1 - Progress), factor => Color.Lerp(new Color(180, 180, 255), new Color(85, 85, 200), Progress));
 			float nextplace = 33f / 32f;
 			var offset = new Vector2((float)Math.Sin(nextplace), (float)Math.Cos(nextplace));
 			offset *= Radius;

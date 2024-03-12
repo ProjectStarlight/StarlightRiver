@@ -403,10 +403,10 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(40 * 4), factor => (float)Math.Min(factor, Progress) * length * 0.75f, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => (float)Math.Min(factor, Progress) * length * 0.75f, factor =>
 			{
-				if (factor.X >= 0.98f)
-					return Color.White * 0;
+				if (factor.X == 1)
+					return Color.Transparent;
 
 				return trailColor * (float)Math.Min(factor.X, Progress) * 0.5f * (float)Math.Sin(Progress * 3.14f);
 			});

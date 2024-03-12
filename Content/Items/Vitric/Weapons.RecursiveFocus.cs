@@ -751,7 +751,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 26, new TriangularTip(4), factor => MultiMode ? 3 : 4 * 1 + Stage, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 26, new NoTip(), factor => MultiMode ? 3 : 4 * 1 + Stage, factor =>
 			{
 				if (trailFade < 15)
 					return Color.Lerp(Color.Transparent, new Color(255, 165, 115), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
@@ -765,7 +765,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = cache[25];
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 26, new TriangularTip(4), factor => MultiMode ? 3 : 4 * 1 + Stage, factor =>
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 26, new NoTip(), factor => MultiMode ? 3 : 4 * 1 + Stage, factor =>
 			{
 				if (trailFade < 15)
 					return Color.Lerp(Color.Transparent, new Color(255, 150, 50), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
@@ -779,7 +779,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			trail2.Positions = cache.ToArray();
 			trail2.NextPosition = cache[25];
 
-			trail3 ??= new Trail(Main.instance.GraphicsDevice, 26, new TriangularTip(4), factor => MultiMode ? 5 : 7 * 1 + Stage, factor =>
+			trail3 ??= new Trail(Main.instance.GraphicsDevice, 26, new NoTip(), factor => MultiMode ? 5 : 7 * 1 + Stage, factor =>
 			{
 				if (trailFade < 15)
 					return Color.Lerp(Color.Transparent, new Color(255, 165, 115), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
@@ -793,7 +793,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			trail3.Positions = cache.ToArray();
 			trail3.NextPosition = cache[25];
 
-			trail4 ??= new Trail(Main.instance.GraphicsDevice, 26, new TriangularTip(4), factor => MultiMode ? 5 : 7 * 1 + Stage, factor =>
+			trail4 ??= new Trail(Main.instance.GraphicsDevice, 26, new NoTip(), factor => MultiMode ? 5 : 7 * 1 + Stage, factor =>
 			{
 				if (trailFade < 15)
 					return Color.Lerp(Color.Transparent, new Color(255, 150, 50), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);

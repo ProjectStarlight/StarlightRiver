@@ -136,7 +136,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		protected void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new TriangularTip(40 * 4), factor => factor * 16, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 16, factor =>
 			{
 				float alpha = factor.X;
 

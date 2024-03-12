@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		protected void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new TriangularTip(40 * 4), factor => factor * 42, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 42, factor =>
 			{
 				float alpha = factor.X * 0.5f;
 

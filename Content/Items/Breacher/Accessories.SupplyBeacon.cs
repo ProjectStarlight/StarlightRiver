@@ -285,8 +285,8 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 100, new TriangularTip(16), factor => factor * MathHelper.Lerp(11, 22, factor), factor => GetColor());
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 100, new TriangularTip(16), factor => factor * MathHelper.Lerp(6, 12, factor), factor => Color.White);
+			trail ??= new Trail(Main.instance.GraphicsDevice, 100, new NoTip(), factor => factor * MathHelper.Lerp(11, 22, factor), factor => GetColor());
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 100, new NoTip(), factor => factor * MathHelper.Lerp(6, 12, factor), factor => Color.White);
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center;

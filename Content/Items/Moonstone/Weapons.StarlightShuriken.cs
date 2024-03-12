@@ -215,10 +215,10 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 100, new TriangularTip(40 * 4), factor => factor * 16, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 100, new NoTip(), factor => factor * 16, factor =>
 			{
-				if (factor.X >= 0.98f)
-					return Color.White * 0;
+				if (factor.X == 1)
+					return Color.Transparent;
 
 				return new Color(color.R, color.G - 30, color.B) * 0.4f * (float)Math.Pow(factor.X, 2) * (float)Math.Sin(Projectile.timeLeft / 150f * 3.14f);
 			});
@@ -358,10 +358,10 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 100, new TriangularTip(40 * 4), factor => factor * 32, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 100, new NoTip(), factor => factor * 32, factor =>
 			{
-				if (factor.X >= 0.98f)
-					return Color.White * 0;
+				if (factor.X == 1)
+					return Color.Transparent;
 
 				return new Color(color.R, color.G - 30, color.B) * 0.3f * factor.X * (float)Math.Sin(Projectile.timeLeft / 600f * 3.14f);
 			});

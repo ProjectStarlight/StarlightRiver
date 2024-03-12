@@ -245,7 +245,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new TriangularTip(40 * 4), factor => factor * 32, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 32, factor =>
 			{
 				float alpha = factor.X * Projectile.Opacity;
 
