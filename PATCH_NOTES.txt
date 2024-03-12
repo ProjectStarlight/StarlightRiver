@@ -2,3 +2,7 @@
 
 ## Fixes
 - Fixed drawblack in vitric biome (no more visible black squares)
+
+## Content:
+- New Item: Moonstone monolith
+ - Crafted with moonstone bars, mimics the moonstone screen effect

@@ -159,7 +159,7 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Moonstone monolith");
+			DisplayName.SetDefault("Moonstone Monolith");
 			Tooltip.SetDefault("'Dreamifies the skies'");
 		}
 
