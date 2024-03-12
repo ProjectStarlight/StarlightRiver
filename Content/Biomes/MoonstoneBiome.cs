@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.Biomes
 		public ScreenTarget backgroundTarget;
 
 		public int moonstoneBlockCount;
-		public bool monolithActive = false;
+		public bool overrideVFXActive = false;
 
 		private float opacity = 0;
 		private float distortion = 0;
@@ -93,7 +93,7 @@ namespace StarlightRiver.Content.Biomes
 
 		public override void PostUpdateEverything()
 		{
-			if (moonstoneBlockCount < 150 && !monolithActive)
+			if (moonstoneBlockCount < 150 && !overrideVFXActive)
 			{
 				if (distortion > 0)
 					distortion -= 0.005f;
@@ -104,16 +104,16 @@ namespace StarlightRiver.Content.Biomes
 			else
 			{
 				if (distortion < 1)
-					distortion += 0.001f * (monolithActive ? 5 : 1);
+					distortion += 0.001f * (overrideVFXActive ? 5 : 1);
 
 				if (opacity < 1)
-					opacity += 0.001f * (monolithActive ? 10 : 1);
+					opacity += 0.001f * (overrideVFXActive ? 10 : 1);
 			}
 		}
 
 		public override void ResetNearbyTileEffects()
 		{
-			monolithActive = false;
+			overrideVFXActive = false;
 		}
 
 		private void DistortBG(On_Main.orig_DrawSurfaceBG orig, Main self)

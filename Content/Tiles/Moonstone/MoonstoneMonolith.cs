@@ -10,10 +10,12 @@ using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.Enums;
 using Terraria.GameContent.ObjectInteractions;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
+using Terraria.UI;
 
 namespace StarlightRiver.Content.Tiles.Moonstone
 {
@@ -23,12 +25,20 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 
 		public override void SetStaticDefaults()
 		{
-			TileObjectData.newTile.DrawYOffset = 2;//just 
-			QuickBlock.QuickSetFurniture(this, 2, 3, ModContent.DustType<MoonstoneArrowDust>(), SoundID.Tink, false, new Color(106, 113, 124), false, false, "Moonstone Monolith");
+			TileObjectData.newTile.DrawYOffset = 2;
+			TileObjectData.newTile.StyleLineSkip = 2;//may need to be increased to add extra animation
+			//TileObjectData.newTile.StyleHorizontal = true;//may be needed if frame Y is changed
+			QuickBlock.QuickSetFurniture(this, 2, 3, 
+				ModContent.DustType<MoonstoneArrowDust>(), 
+				SoundID.Tink, false, 
+				new Color(106, 113, 124), false, false, 
+				"Moonstone Monolith", 
+				new AnchorData(AnchorType.SolidTile | AnchorType.SolidSide | AnchorType.SolidWithTop, TileObjectData.newTile.Width, 0));
 			TileID.Sets.DisableSmartCursor[Type] = true;
 			TileID.Sets.HasOutlines[Type] = true;
 			AnimationFrameHeight = 54;
 			AdjTiles = new int[] { TileID.LunarMonolith };
+			//RegisterItemDrop(ModContent.ItemType<MoonstoneMonolithItem>());//also works as a fix, may be needed instead if extra animation is added
 		}
 
 		public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings)
@@ -38,9 +48,9 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 
 		public override void AnimateTile(ref int frame, ref int frameCounter)
 		{
-			const int startframeOffset = 6;
+			//const int startframeOffset = 6;
             if ((frameCounter = ++frameCounter % 8) == 0)
-                frame = (++frame - startframeOffset) % 12 + startframeOffset;
+                frame = ++frame % 12;
 		}
 
 		public override bool RightClick(int i, int j)
@@ -54,11 +64,11 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 		{
 			Tile interactTile = Main.tile[i, j];
 
-			int offsetX = interactTile.TileFrameX / 18;
+			int offsetX = interactTile.TileFrameX / 18 % 2;
 			int offsetY = interactTile.TileFrameY / 18 % 3;
 			Tile targetTile = Main.tile[i - offsetX, j - offsetY];
 
-			bool inactive = targetTile.TileFrameY == 0;
+			bool inactive = targetTile.TileFrameX == 0;
 			for (int x = 0; x < 2; x++)
 				for (int y = 0; y < 3; y++)
 				{
@@ -66,9 +76,9 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 					int coordY = j - offsetY + y;
 
 					if (inactive)
-						Main.tile[coordX, coordY].TileFrameY += 54;
+						Main.tile[coordX, coordY].TileFrameX += 36;
 					else
-						Main.tile[coordX, coordY].TileFrameY = (short)(y * 18);
+						Main.tile[coordX, coordY].TileFrameX = (short)(x * 18);
 
 					if (Wiring.running)
 						Wiring.SkipWire(coordX, coordY);
@@ -79,10 +89,8 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 
 		public override void NearbyEffects(int i, int j, bool closer)
 		{
-			if (Main.tile[i, j].TileFrameY >= 54)
-			{
-				ModContent.GetInstance<MoonstoneBiomeSystem>().monolithActive = true;
-			}
+			if (Main.tile[i, j].TileFrameX >= 36)
+				ModContent.GetInstance<MoonstoneBiomeSystem>().overrideVFXActive = true;
 		}
 
 		public override void MouseOver(int i, int j)
@@ -92,21 +100,18 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 			Player.cursorItemIconID = ModContent.ItemType<MoonstoneMonolithItem>();
 			Player.cursorItemIconEnabled = true;
 		}
-
-		public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
-		{
+		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
+		{//d
 			Tile tile = Main.tile[i, j];
-			Texture2D texture = ModContent.Request<Texture2D>(AssetDirectory.MoonstoneTile + "MoonstoneMonolith2").Value;
 			Texture2D glowTexture = ModContent.Request<Texture2D>(AssetDirectory.MoonstoneTile + "MoonstoneMonolith_Glow").Value;
-			//Texture2D highlightTexture = ModContent.Request<Texture2D>(HighlightTexture).Value;
 
 			Vector2 zero = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
-
+			//a
 			const int height = 16;
 			// if the bottom tile is a pixel taller
 			//int height = tile.TileFrameY % AnimationFrameHeight == 36 ? 18 : 16;
 
-			int frameYOffset = tile.TileFrameY >= 54 ? Main.tileFrame[Type] * AnimationFrameHeight : 0;
+			int frameYOffset = Main.tileFrame[Type] * AnimationFrameHeight;
 
 			Vector2 pos = new Vector2(
 					i * 16 - (int)Main.screenPosition.X,
@@ -119,24 +124,69 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 					height);
 
 			spriteBatch.Draw(
-				texture, pos, frame, 
-				Lighting.GetColor(i, j), 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
-
-			spriteBatch.Draw(
 				glowTexture, pos, frame,
 				Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+		}
+		public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
+		{
+			//Tile tile = Main.tile[i, j];
+			//Texture2D glowTexture = ModContent.Request<Texture2D>(AssetDirectory.MoonstoneTile + "MoonstoneMonolith_Glow").Value;
+
+			//Vector2 zero = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
+			////a
+			//const int height = 16;
+			//// if the bottom tile is a pixel taller
+			////int height = tile.TileFrameY % AnimationFrameHeight == 36 ? 18 : 16;
+
+			//int frameYOffset = Main.tileFrame[Type] * AnimationFrameHeight;
+
+			//Vector2 pos = new Vector2(
+			//		i * 16 - (int)Main.screenPosition.X,
+			//		j * 16 - (int)Main.screenPosition.Y + 2) + zero;
+
+			//Rectangle frame = new Rectangle(
+			//		tile.TileFrameX,
+			//		tile.TileFrameY + frameYOffset,
+			//		16,
+			//		height);
 
 			//spriteBatch.Draw(
-			//	highlightTexture, pos, frame,
+			//	glowTexture, pos, frame,
 			//	Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
 
 			return true;
 		}
 	}
 
-	public class MoonstoneMonolithItem : QuickTileItem
+	public class MoonstoneMonolithItem : ModItem//having this as a accessory breaks QuickTileItem
 	{
-		public MoonstoneMonolithItem() : base("Moonstone monolith", "Dreamifies the skies", "MoonstoneMonolith", 2, AssetDirectory.MoonstoneTile, false, Item.sellPrice(0, 0, 50, 0)) { }
+		public override string Texture => AssetDirectory.MoonstoneTile + Name;
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Moonstone monolith");
+			Tooltip.SetDefault("'Dreamifies the skies'");
+		}
+
+		public override void SetDefaults()
+		{
+			Item.width = 22;
+			Item.height = 28;
+
+			Item.rare = ItemRarityID.Orange;
+			Item.value = Item.sellPrice(gold: 1);
+			Item.vanity = true;
+			Item.accessory = true;
+			Item.maxStack = 9999;
+
+			Item.useTurn = true;
+			Item.autoReuse = true;
+			Item.useAnimation = 15;
+			Item.useTime = 10;
+			Item.useStyle = ItemUseStyleID.Swing;
+			Item.consumable = true;
+			Item.createTile = ModContent.TileType<MoonstoneMonolith>();
+		}
 
 		public override void AddRecipes()
 		{
@@ -144,6 +194,11 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 			recipe.AddIngredient(ModContent.ItemType<MoonstoneBarItem>(), 8);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			ModContent.GetInstance<MoonstoneBiomeSystem>().overrideVFXActive = true;
 		}
 	}
 }
