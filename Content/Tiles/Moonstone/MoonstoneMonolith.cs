@@ -1,9 +1,4 @@
-﻿//TODO:
-//Moonstone visuals
-//Make it animate correctly
-//Make it have a mouse over icon
-
-using StarlightRiver.Content.Biomes;
+﻿using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Items.Moonstone;
 using System;
 using System.Linq;
@@ -101,7 +96,7 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 			Player.cursorItemIconEnabled = true;
 		}
 		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
-		{//d
+		{
 			Tile tile = Main.tile[i, j];
 			Texture2D glowTexture = ModContent.Request<Texture2D>(AssetDirectory.MoonstoneTile + "MoonstoneMonolith_Glow").Value;
 
