@@ -80,6 +80,8 @@ namespace StarlightRiver.Content.Tiles.CrashTech
 
 	internal class CrashPodDummy : Dummy
 	{
+		public override bool DoesCollision => true;
+
 		public override void OnLoad(Mod mod)
 		{
 			for (int k = 1; k < 6; k++)
