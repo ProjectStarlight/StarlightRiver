@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Packets
 		{
 			Player hitPlayer = Main.player[playerId];
 
-			Projectile proj = Main.projectile.FirstOrDefault(n => projIdentity == n.identity && n.type == projType); //explictly ignores active check since projectile might be killed before this packet reaches the server and other players
+			Projectile proj = Main.projectile.FirstOrDefault(n => projIdentity == n.identity && n.type == projType); // Explictly ignores active check since projectile might be killed before this packet reaches the server and other players
 
 			if (proj is null)
 				return;
