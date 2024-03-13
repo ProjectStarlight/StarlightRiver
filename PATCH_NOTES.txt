@@ -1,6 +1,7 @@
 # Starlight River 0.2.8
 
 ## Multiplayer
+- Performance optimizations to player onhits. Most noticeable in Glassweaver gauntlet
 - Removed extra unnecesary packets from dummy system
 
 ## Fixes
