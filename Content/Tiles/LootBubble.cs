@@ -56,6 +56,8 @@ namespace StarlightRiver.Content.Tiles
 	{
 		public float timer;
 
+		public override bool DoesCollision => true;
+
 		public LootBubbleDummy() : base(0, 32, 32) { }
 
 		public override bool ValidTile(Tile tile)

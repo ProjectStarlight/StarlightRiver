@@ -113,7 +113,7 @@ namespace StarlightRiver.Core
 				{
 					Texture2D texBar = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ReservedBar").Value;
 					float yOffset = 24f;
-					
+
 					if (Main.ResourceSetsManager.ActiveSetKeyName == "HorizontalBarsWithText")
 						yOffset = 28f;
 					else if (Main.ResourceSetsManager.ActiveSetKeyName == "HorizontalBarsWithFullText")

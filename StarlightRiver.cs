@@ -14,14 +14,6 @@ using System.Reflection;
 
 namespace StarlightRiver
 {
-	public class TemporaryFix : PreJITFilter
-	{
-		public override bool ShouldJIT(MemberInfo member)
-		{
-			return false;
-		}
-	}
-
 	public partial class StarlightRiver : Mod
 	{
 		private List<IOrderedLoadable> loadCache;
@@ -44,12 +36,7 @@ namespace StarlightRiver
 		public StarlightRiver()
 		{
 			Instance = this;
-			PreJITFilter = new TemporaryFix();
 		}
-
-		public bool useIntenseMusic = false; //TODO: Make some sort of music handler at some point for this
-
-		private Vector2 lastScreenSize; //Putting these in StarlightRiver incase anything else wants to use them (which is likely)
 
 		public static void SetLoadingText(string text)
 		{
@@ -95,8 +82,6 @@ namespace StarlightRiver
 
 			if (!Main.dedServ)
 			{
-				lastScreenSize = new Vector2(Main.screenWidth, Main.screenHeight);
-
 				//Hotkeys
 				AbilityKeys = new AbilityHotkeys(this);
 				AbilityKeys.LoadDefaults();
@@ -134,12 +119,6 @@ namespace StarlightRiver
 			{
 				group.AddRecipeGroups();
 			}
-		}
-
-		public void CheckScreenSize()
-		{
-			if (!Main.dedServ && !Main.gameMenu)
-				lastScreenSize = new Vector2(Main.screenWidth, Main.screenHeight);
 		}
 
 		public override void PostSetupContent()

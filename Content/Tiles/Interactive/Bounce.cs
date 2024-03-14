@@ -41,6 +41,8 @@ namespace StarlightRiver.Content.Tiles.Interactive
 
 	internal class BouncerDummy : Dummy
 	{
+		public override bool DoesCollision => true;
+
 		public BouncerDummy() : base(TileType<Bouncer>(), 16, 16) { }
 
 		public override void Collision(Player Player)

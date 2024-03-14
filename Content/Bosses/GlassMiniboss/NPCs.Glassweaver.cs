@@ -2,6 +2,7 @@
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.PersistentData;
+using StarlightRiver.Content.Tiles.Blockers;
 using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems.BossRushSystem;
 using System;
@@ -134,6 +135,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void AI()
 		{
+			BlockerLoader.glassweaverBlockers = true;
+
 			AttackTimer++;
 
 			if (summonAnimTime > 0)

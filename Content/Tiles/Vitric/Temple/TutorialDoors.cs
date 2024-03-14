@@ -32,6 +32,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	{
 		public float progress;
 
+		public override bool DoesCollision => true;
+
 		public TutorialDoor1Dummy() : base(TileType<TutorialDoor1>(), 16 * 2, 16 * 13) { }
 
 		public override void Update()
@@ -99,6 +101,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 	class TutorialDoor2Dummy : Dummy
 	{
+		public override bool DoesCollision => true;
+
 		public TutorialDoor2Dummy() : base(TileType<TutorialDoor2>(), 16 * 2, 16 * 13) { }
 
 		public bool ShouldBeOn(Player player)
