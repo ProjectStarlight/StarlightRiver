@@ -65,6 +65,7 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 
 			bool inactive = targetTile.TileFrameX == 0;
 			for (int x = 0; x < 2; x++)
+			{
 				for (int y = 0; y < 3; y++)
 				{
 					int coordX = i - offsetX + x;
@@ -78,6 +79,7 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 					if (Wiring.running)
 						Wiring.SkipWire(coordX, coordY);
 				}
+			}
 
 			NetMessage.SendTileSquare(-1, i - offsetX, j - offsetY + 1, 3);
 		}
