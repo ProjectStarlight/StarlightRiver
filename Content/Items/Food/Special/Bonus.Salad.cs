@@ -23,7 +23,7 @@
 		public override void BuffEffects(Player Player, float multiplier)
 		{
 			//Player.GetCritChance(DamageClass.Generic) += 0.1f * multiplier;
-			Player.statDefense += (int)(Player.statDefense * (0.1f * multiplier));
+			Player.statDefense *= 1.1f;
 			Player.moveSpeed += Player.moveSpeed * (0.1f * multiplier);
 		}
 	}
