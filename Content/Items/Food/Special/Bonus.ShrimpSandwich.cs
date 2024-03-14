@@ -22,7 +22,8 @@
 
 		public override void BuffEffects(Player Player, float multiplier)
 		{
-
+			Player.accFlipper = true;
+			Player.gills = true;
 		}
 	}
 }
