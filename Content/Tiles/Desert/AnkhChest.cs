@@ -245,6 +245,8 @@ namespace StarlightRiver.Content.Tiles.Desert
 
 	internal class AnkhChestDummy : Dummy
 	{
+		public override bool DoesCollision => true;
+
 		public AnkhChestDummy() : base(ModContent.TileType<AnkhChest>(), 32, 48) { }
 
 		public override void Collision(Player Player)

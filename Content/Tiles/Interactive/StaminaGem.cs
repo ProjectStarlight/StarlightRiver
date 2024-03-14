@@ -44,6 +44,8 @@ namespace StarlightRiver.Content.Tiles.Interactive
 	{
 		private float timer;
 
+		public override bool DoesCollision => true;
+
 		public StaminaGemDummy() : base(TileType<StaminaGem>(), 16, 16) { }
 
 		public override void Update()
