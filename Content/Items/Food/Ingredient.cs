@@ -120,7 +120,8 @@ namespace StarlightRiver.Content.Items.Food
 				if (timeMinutes == 0 && timeSeconds == 0)//leaves out time text completely if added duration is zero
 					return;
 
-				string timeText = (timeMinutes == 0 ? "" : $"{timeMinutes}m ") + (timeSeconds == 0 ? "" : $"{timeSeconds}s ");
+				//it may be a good idea in the future to 
+				string timeText = (timeMinutes == 0 ? "" : $"{timeMinutes} minutes ") + (timeSeconds == 0 ? "" : $"{timeSeconds} seconds ");
 				var fullLine = new TooltipLine(Mod, "StarlightRiver: Fullness", "Adds " + timeText + "duration to food")
 				{
 					OverrideColor = new Color(110, 235, 255)
