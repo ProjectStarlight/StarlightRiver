@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.Items.Food
 		/// <summary>
 		/// The passive effects of a food item while the buff is active
 		/// </summary>
-		/// <param name="Player">The palyer eating the food</param>
+		/// <param name="Player">The player eating the food</param>
 		/// <param name="multiplier">The power which should be applied to numeric effects</param>
 		public virtual void BuffEffects(Player Player, float multiplier) { }
 
@@ -114,7 +114,14 @@ namespace StarlightRiver.Content.Items.Food
 
 			if (ThisType != IngredientType.Bonus)
 			{
-				var fullLine = new TooltipLine(Mod, "StarlightRiver: Fullness", $"adds {Fill / 3600}m {Fill % 3600 / 60}s duration to food")
+				int timeMinutes = Fill / 3600;
+				int timeSeconds = Fill % 3600 / 60;
+
+				if (timeMinutes == 0 && timeSeconds == 0)//leaves out time text completely if added duration is zero
+					return;
+
+				string timeText = (timeMinutes == 0 ? "" : $"{timeMinutes}m ") + (timeSeconds == 0 ? "" : $"{timeSeconds}s ");
+				var fullLine = new TooltipLine(Mod, "StarlightRiver: Fullness", "Adds " + timeText + "duration to food")
 				{
 					OverrideColor = new Color(110, 235, 255)
 				};

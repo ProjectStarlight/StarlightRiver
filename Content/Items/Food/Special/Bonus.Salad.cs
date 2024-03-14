@@ -24,6 +24,8 @@
 		{
 			//Player.GetCritChance(DamageClass.Generic) += 0.1f * multiplier;
 			Player.statDefense *= 1.1f;
+			Player.statLifeMax2 = (int)(Player.statLifeMax2 * 1.1f);
+			Player.statManaMax2 = (int)(Player.statManaMax2 * 1.1f);
 			Player.moveSpeed += Player.moveSpeed * (0.1f * multiplier);
 		}
 	}
