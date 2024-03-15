@@ -8,10 +8,10 @@
 		{
 			return new(
 			Type,
-			ModContent.ItemType<EaterSteak>(),//ModContent.ItemType<Sugar>()//uses eater steak as a placeholder since before it used 2 seasonings
+			ModContent.ItemType<Dough>(),//not how you make pancakes... but is this due to limitations of food recipes
 			ModContent.ItemType<Butter>(),
 			ModContent.ItemType<Milk>(),
-			ModContent.ItemType<Flour>()
+			ModContent.ItemType<Sugar>()
 			);
 		}
 
