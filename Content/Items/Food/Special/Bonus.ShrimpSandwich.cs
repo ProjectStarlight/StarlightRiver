@@ -223,7 +223,7 @@ namespace StarlightRiver.Content.Items.Food.Special
 				int FishingLevel = BaseFishingLevel + info.player.fishingSkill + Math.Min((int)(info.npc.value / (Main.expertMode? 200f : 100f)), 1000);
 				int playerPosY = (int)(info.player.position.Y / 16);
 				RollDropLevels(FishingLevel, out bool common, out bool uncommon, out bool rare, out bool veryrare, out bool legendary);
-				Main.NewText("fishing level: " + FishingLevel, Color.Gold);
+				//Main.NewText("fishing level: " + FishingLevel, Color.Gold);
 				FishingAttempt FishingAttemptData = 
 				new FishingAttempt()
 				{
