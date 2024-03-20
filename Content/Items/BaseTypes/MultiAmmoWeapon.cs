@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.UI.Chat;
@@ -28,7 +29,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			{
 				if (context == 13)
 				{
-					if (inv[slot].ModItem is MultiAmmoWeapon weapon)
+					if (inv[slot].ModItem is MultiAmmoWeapon weapon && weapon.Type == Type)
 					{
 						if (weapon.ammoItem != null)
 						{
@@ -74,7 +75,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		{
 			SafeSetDefaults();
 			Item.DamageType = DamageClass.Ranged;
-			Item.useAmmo = 0;
+			Item.useAmmo = AmmoID.None;
 			Item.shoot = ProjectileID.PurificationPowder;
 		}
 
@@ -183,7 +184,32 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			if (ammoItem == null)
 				return;
 
-			TooltipLine AmmoLine = new TooltipLine(StarlightRiver.Instance, "AmmoLineToolTip", $"Current Ammo: [i:{ammoItem.type}]{ammoItem.stack}");
+			if (!Main.LocalPlayer.controlDown)
+			{
+				tooltips.Add(new TooltipLine(Mod, "Ammo", "[c/646464:Press DOWN for ammo information]"));
+			}
+			else
+			{
+				string ammoList = "Valid Ammunition:\n";
+
+				List<AmmoStruct> ammos = [.. ValidAmmos.OrderBy(a => string.IsNullOrEmpty(a.tooltip) ? 0 : 1)];
+
+				foreach (AmmoStruct ammo in ammos)
+				{
+					Item dummy = new();
+					dummy.SetDefaults(ammo.ammoID);
+
+					string tooltip = !string.IsNullOrEmpty(ammo.tooltip) ? ": " + ammo.tooltip : "";
+
+					ammoList += $"[i:{dummy.type}] {dummy.Name}{tooltip}\n";
+				}
+
+				tooltips.Add(new TooltipLine(StarlightRiver.Instance, "AmmoListTooltip", ammoList));
+			}
+
+			TooltipLine AmmoLine = new TooltipLine(StarlightRiver.Instance, "AmmoLineToolTip", $"Current Ammo:[i:{ammoItem.type}]{ammoItem.stack} {ammoItem.Name}:" +
+				$" {ValidAmmos.Find(a => a.ammoID == ammoItem.type).tooltip}");
+
 			TooltipLine kbLine = tooltips.Find(n => n.Name == "Knockback");
 			int index = kbLine is null ? tooltips.Count - 1 : tooltips.IndexOf(kbLine);
 			tooltips.Insert(index + 1, AmmoLine);
@@ -198,13 +224,16 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public int projectileID;
 		public int ammoID;
-		public AmmoStruct(int ammoid, int projectileid, int damage = 0, float shootspeed = 0f, float knockback = 0f)
+
+		public string tooltip;
+		public AmmoStruct(int ammoid, int projectileid, string tooltip, int damage = 0, float shootspeed = 0f, float knockback = 0f)
 		{
 			ammoID = ammoid;
 			projectileID = projectileid;
 			this.damage = damage;
 			shootSpeed = shootspeed;
 			knockBack = knockback;
+			this.tooltip = tooltip;
 		}
 	}
 }

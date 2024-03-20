@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			}
 			else
 			{
-				Item.useTime = 30;
+				Item.useTime = 30;	
 				Item.useAnimation = 30;
 				Item.noUseGraphic = false;
 

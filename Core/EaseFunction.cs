@@ -27,6 +27,32 @@ namespace StarlightRiver.Core
 		public static readonly EaseFunction EaseCircularIn = new PolynomialEase((float x) => 1f - (float)Math.Sqrt(1.0 - Math.Pow(x, 2)));
 		public static readonly EaseFunction EaseCircularOut = new PolynomialEase((float x) => (float)Math.Sqrt(1.0 - Math.Pow(x - 1.0, 2)));
 		public static readonly EaseFunction EaseCircularInOut = new PolynomialEase((float x) => (x < 0.5f) ? (1f - (float)Math.Sqrt(1.0 - Math.Pow(x * 2, 2))) * 0.5f : (float)((Math.Sqrt(1.0 - Math.Pow(-2 * x + 2, 2)) + 1) * 0.5));
+		
+		public static readonly EaseFunction EaseBackIn = new PolynomialEase((float x) =>
+		{
+			float c1 = 1.70158f;
+			float c3 = c1 + 1f;
+
+			return c3 * x * x * x - c1 * x * x;
+		});
+
+		public static readonly EaseFunction EaseBackOut = new PolynomialEase((float x) =>
+		{
+			float c1 = 1.70158f;
+			float c3 = c1 + 1f;
+
+			return 1 + c3 * (float)Math.Pow(x - 1, 3) + c1 * (float)Math.Pow(x - 1, 2);
+		});
+
+		public static readonly EaseFunction EaseBackInOut = new PolynomialEase((float x) =>
+		{
+			float c1 = 1.70158f;
+			float c2 = c1 * 1.525f;
+
+			return x < 0.5f
+			  ? (float)Math.Pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2) / 2
+			  : ((float)Math.Pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2;
+		});
 
 		public virtual float Ease(float time)
 		{

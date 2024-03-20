@@ -16,15 +16,16 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override List<AmmoStruct> ValidAmmos => new()
 		{
-			new AmmoStruct(ItemID.SandBlock, ModContent.ProjectileType<SoilgunSandSoil>(), 2),
-			new AmmoStruct(ItemID.EbonsandBlock, ModContent.ProjectileType<SoilgunEbonsandSoil>(), 4),
-			new AmmoStruct(ItemID.PearlsandBlock, ModContent.ProjectileType<SoilgunPearlsandSoil>(), 15),
-			new AmmoStruct(ItemID.CrimsandBlock, ModContent.ProjectileType<SoilgunCrimsandSoil>(), 4),
-			new AmmoStruct(ItemID.DirtBlock, ModContent.ProjectileType<SoilgunDirtSoil>(), 2),
-			new AmmoStruct(ItemID.SiltBlock, ModContent.ProjectileType<SoilgunSiltSoil>(), 3),
-			new AmmoStruct(ItemID.SlushBlock, ModContent.ProjectileType<SoilgunSlushSoil>(), 3),
-			new AmmoStruct(Mod.Find<ModItem>("VitricSandItem").Type, ModContent.ProjectileType<SoilgunVitricSandSoil>(), 8),
-			new AmmoStruct(ItemID.MudBlock, ModContent.ProjectileType<SoilgunMudSoil>(), 3),
+			new AmmoStruct(ItemID.DirtBlock, ModContent.ProjectileType<SoilgunDirtSoil>(), "", 2),
+			new AmmoStruct(ItemID.SandBlock, ModContent.ProjectileType<SoilgunSandSoil>(), "Deals area of effect damage", 2),
+			new AmmoStruct(ItemID.EbonsandBlock, ModContent.ProjectileType<SoilgunEbonsandSoil>(), "Inflicts weakening debuff", 4),
+			new AmmoStruct(ItemID.PearlsandBlock, ModContent.ProjectileType<SoilgunPearlsandSoil>(), "Homes onto enemies", 15),
+			new AmmoStruct(ItemID.CrimsandBlock, ModContent.ProjectileType<SoilgunCrimsandSoil>(), "Gain regeneration on hit", 4),
+			new AmmoStruct(ItemID.SiltBlock, ModContent.ProjectileType<SoilgunSiltSoil>(), "Extracts some treasure when fired", 3),
+			new AmmoStruct(ItemID.SlushBlock, ModContent.ProjectileType<SoilgunSlushSoil>(), "Inflicts Frostburn", 3),
+			new AmmoStruct(Mod.Find<ModItem>("VitricSandItem").Type, ModContent.ProjectileType<SoilgunVitricSandSoil>(), "Pierces enemies", 8),
+			new AmmoStruct(ItemID.MudBlock, ModContent.ProjectileType<SoilgunMudSoil>(), "Chance to spawn bees on death", 3),
+			new AmmoStruct(ItemID.AshBlock, ModContent.ProjectileType<SoilgunAshSoil>(), "Inflicts On Fire!", 6),
 		};
 
 		public override void SetStaticDefaults()
@@ -195,7 +196,7 @@ namespace StarlightRiver.Content.Items.Misc
 						{
 							float lerper = MathHelper.Lerp(50f, 1f, ShootDelay / MAXCHARGEDELAY);
 							Vector2 pos = barrelPos + Main.rand.NextVector2CircularEdge(lerper * 0.5f, lerper).RotatedBy(Projectile.rotation);
-							int dustID = (GhostProj.ModProjectile as BaseSoilProjectile).dustID;
+							int dustID = (GhostProj.ModProjectile as SoilProjectile).dustID;
 							Dust.NewDustPerfect(pos, dustID, pos.DirectionTo(barrelPos)).noGravity = true;
 						}
 					}
@@ -209,9 +210,9 @@ namespace StarlightRiver.Content.Items.Misc
 						{
 							var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), armPos, Projectile.velocity * 1.5f, ModContent.ProjectileType<EarthdusterRing>(), 0, 0f, Owner.whoAmI, 15f);
 
-							(proj.ModProjectile as EarthdusterRing).trailColorOutline = (GhostProj.ModProjectile as BaseSoilProjectile).RingOutsideColor;
+							(proj.ModProjectile as EarthdusterRing).trailColorOutline = (GhostProj.ModProjectile as SoilProjectile).Colors["RingOutsideColor"];
 
-							(proj.ModProjectile as EarthdusterRing).trailColor = (GhostProj.ModProjectile as BaseSoilProjectile).RingInsideColor;
+							(proj.ModProjectile as EarthdusterRing).trailColor = (GhostProj.ModProjectile as SoilProjectile).Colors["RingInsideColor"];
 						}
 					}
 				}
@@ -324,7 +325,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2f, Projectile.scale, Owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
 
-			var color = Color.Lerp(Color.Transparent, (GhostProj.ModProjectile as BaseSoilProjectile).RingInsideColor, shots / (float)MAXSHOTS);
+			var color = Color.Lerp(Color.Transparent, (GhostProj.ModProjectile as SoilProjectile).Colors["RingInsideColor"], shots / (float)MAXSHOTS);
 			//if (reloading)
 			//color = Color.Lerp(GetRingInsideColor(), Color.Transparent, ShootDelay / 90f);
 
@@ -360,7 +361,13 @@ namespace StarlightRiver.Content.Items.Misc
 			Vector2 shootVelocity = Utils.SafeNormalize(Projectile.velocity, Vector2.UnitY) * shootSpeed;
 
 			if (Main.myPlayer == Projectile.owner)
-				Projectile.NewProjectile(Projectile.GetSource_FromThis(), position, shootVelocity.RotatedByRandom(MathHelper.ToRadians(15)) * Main.rand.NextFloat(0.9f, 1.1f), SoilType, damage, knockBack, Owner.whoAmI);
+			{
+				Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), position, shootVelocity.RotatedByRandom(MathHelper.ToRadians(15))
+					* Main.rand.NextFloat(0.9f, 1.1f), SoilType, damage, knockBack, Owner.whoAmI);
+
+				proj.timeLeft = 45;
+				(proj.ModProjectile as SoilProjectile).maxTimeleft = 45f;
+			}
 
 			for (float k = 0; k < 50; k++)
 			{
@@ -368,13 +375,13 @@ namespace StarlightRiver.Content.Items.Misc
 				float x = (float)Math.Cos(rads) * 50;
 				float y = (float)Math.Sin(rads) * 25;
 
-				Dust.NewDustPerfect(position, (GhostProj.ModProjectile as BaseSoilProjectile).dustID, new Vector2(x, y).RotatedBy(Projectile.rotation + MathHelper.PiOver2) * 0.055f + Vector2.UnitX.RotatedBy(Projectile.rotation) * 5f, 0, default, 0.85f).noGravity = true;
+				Dust.NewDustPerfect(position, (GhostProj.ModProjectile as SoilProjectile).dustID, new Vector2(x, y).RotatedBy(Projectile.rotation + MathHelper.PiOver2) * 0.055f + Vector2.UnitX.RotatedBy(Projectile.rotation) * 5f, 0, default, 0.85f).noGravity = true;
 			}
 
 			Vector2 ejectPos = position + new Vector2(-35, -5 * Owner.direction).RotatedBy(Projectile.rotation);
 			for (int i = 0; i < 3; i++)
 			{
-				Dust.NewDustPerfect(ejectPos, (GhostProj.ModProjectile as BaseSoilProjectile).dustID, (-Projectile.velocity * Main.rand.NextFloat(1f, 3f) + Vector2.UnitY * -Main.rand.NextFloat(1f, 3f)).RotatedByRandom(0.45f), Main.rand.Next(150), default, 1.25f);
+				Dust.NewDustPerfect(ejectPos, (GhostProj.ModProjectile as SoilProjectile).dustID, (-Projectile.velocity * Main.rand.NextFloat(1f, 3f) + Vector2.UnitY * -Main.rand.NextFloat(1f, 3f)).RotatedByRandom(0.45f), Main.rand.Next(150), default, 1.25f);
 			}
 
 			shots++;

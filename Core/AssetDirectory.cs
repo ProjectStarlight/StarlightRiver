@@ -151,5 +151,6 @@ namespace StarlightRiver.Core
 
 		//misc
 		public const string Keys = Assets + "Keys/";
+		public const string Palettes = Assets + "Palettes/";
 	}
 }
