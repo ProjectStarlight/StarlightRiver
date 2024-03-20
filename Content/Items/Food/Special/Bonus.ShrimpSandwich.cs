@@ -42,9 +42,20 @@ namespace StarlightRiver.Content.Items.Food.Special
 
 	public class ShrimpSandwhichPlayer : ModPlayer
 	{
+		public bool Active = false;
+
+		public override void ResetEffects()
+		{
+			Active = false;
+		}
+	}
+
+	public class ShrimpSandwhichDropsNPC : GlobalNPC
+	{
 		private MethodInfo RollFishingDropInfo;
-		public delegate void RollFishingDropDelegate (Projectile proj, ref FishingAttempt fisher);
+		public delegate void RollFishingDropDelegate(Projectile proj, ref FishingAttempt fisher);
 		public static RollFishingDropDelegate RollFishingDrop;
+
 		public override void Load()
 		{
 			RollFishingDropInfo = typeof(Terraria.Projectile).GetMethod("FishingCheck_RollItemDrop", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -56,43 +67,12 @@ namespace StarlightRiver.Content.Items.Food.Special
 			RollFishingDrop = null;
 		}
 
-		public bool Active = false;
-
-		public override void ResetEffects()
-		{
-			Active = false;
-		}
-	}
-
-	public class ShrimpSandwhichDropsNPC : GlobalNPC
-	{
 		public override void ModifyGlobalLoot(GlobalLoot globalLoot)
 		{
-			LeadingConditionRule leadingConditionRule = new LeadingConditionRule(new ShrimpSandwhichFishDrops());
+			LeadingConditionRule leadingConditionRule = new LeadingConditionRule(new ShrimpSandwhichDropsCondition());
 			leadingConditionRule.OnSuccess(new FishDrop(8));
 			globalLoot.Add(leadingConditionRule);
 			base.ModifyGlobalLoot(globalLoot);
-		}
-	}
-
-	//condition for if the npc should drop fish
-	//if we have a reason to have any underwater npc drop stuff other than fish, this should be made to only check npc.wet, 
-	//and the shrimp check moved to its own condition
-	public class ShrimpSandwhichFishDrops : IItemDropRuleCondition
-	{
-		public bool CanDrop(DropAttemptInfo info)
-		{
-			return !info.npc.SpawnedFromStatue && (info.npc.wet || info.npc.lavaWet || info.npc.honeyWet) && info.player.GetModPlayer<ShrimpSandwhichPlayer>().Active;
-		}
-
-		public bool CanShowItemDropInUI()
-		{
-			return false;
-		}
-
-		public string GetConditionDescription()
-		{
-			return null;//this shouldn't show up in the bestiary, so no text is needed
 		}
 	}
 
@@ -267,7 +247,7 @@ namespace StarlightRiver.Content.Items.Food.Special
 				//Main.NewText("Height teir: " + GetHeightTeir((int)(info.player.position.Y / 16)), Color.SkyBlue);
 				//projecile just to pass into the roll fishing drop method, the proj is never used
 				Projectile dummyProjectile = new Projectile() { position = info.npc.position };
-				ShrimpSandwhichPlayer.RollFishingDrop(dummyProjectile, ref FishingAttemptData);
+				ShrimpSandwhichDropsNPC.RollFishingDrop(dummyProjectile, ref FishingAttemptData);
 
 				int itemdrop = FishingAttemptData.rolledItemDrop;
 				int itemstack = GetFishStack(FishingLevel, itemdrop);//increase the stack size if this is bombfish or frost daggerfish
@@ -305,6 +285,26 @@ namespace StarlightRiver.Content.Items.Food.Special
 		public virtual void ReportDroprates(List<DropRateInfo> drops, DropRateInfoChainFeed ratesInfo)
 		{
 
+		}
+	}
+
+	//if we have a reason to have any underwater npc drop stuff other than fish, this should be made to only check npc.wet, 
+	//and the shrimp check moved to its own condition
+	public class ShrimpSandwhichDropsCondition : IItemDropRuleCondition
+	{
+		public bool CanDrop(DropAttemptInfo info)
+		{
+			return !info.npc.SpawnedFromStatue && (info.npc.wet || info.npc.lavaWet || info.npc.honeyWet) && info.player.GetModPlayer<ShrimpSandwhichPlayer>().Active;
+		}
+
+		public bool CanShowItemDropInUI()
+		{
+			return false;
+		}
+
+		public string GetConditionDescription()
+		{
+			return null;//this shouldn't show up in the bestiary, so no text is needed
 		}
 	}
 }
