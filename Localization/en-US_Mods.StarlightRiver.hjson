@@ -3968,6 +3968,17 @@ Projectiles: {
 	DreambeastProjHome.DisplayName: Dream Essence
 	NeedlerHoldout.DisplayName: Needler
 	SoilgunDirtClump.DisplayName: Soil
+	SoilgunAshSoil.DisplayName: Soil
+	SoilgunAshClump.DisplayName: Soil
+	SoilgunCrimsandClump.DisplayName: Soil
+	SoilgunEbonsandClump.DisplayName: Soil
+	SoilgunMudClump.DisplayName: Soil
+	SoilgunPearlsandClump.DisplayName: Soil
+	SoilgunSandClump.DisplayName: Soil
+	SoilgunSiltClump.DisplayName: Soil
+	SoilgunSlushClump.DisplayName: Soil
+	SoilgunVitricSandClump.DisplayName: Soil
+	SoilgunSandExplosion.DisplayName: Sand
 }
 
 Biomes: {
@@ -4408,6 +4419,11 @@ Buffs: {
 	Dreamwarp: {
 		DisplayName: Dreamwarp
 		Description: Cuckoo for cocao puffs
+	}
+
+	EbonsandDebuff: {
+		DisplayName: Weakened
+		Description: Damage taken increased by 15%
 	}
 }
 

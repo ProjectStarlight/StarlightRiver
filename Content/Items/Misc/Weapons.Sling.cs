@@ -14,9 +14,9 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override List<AmmoStruct> ValidAmmos => new()
 		{
-			new AmmoStruct(ItemID.Seed, ModContent.ProjectileType<SlingSeedProjectile>(), shootspeed: -5f), //seed projectile has 1 extra update, so shootspeed is decreased to compensate, effective shootspeed is around 20
-            new AmmoStruct(ItemID.StoneBlock, ModContent.ProjectileType<SlingStoneProjectile>(), 5, -4f, 2.5f),
-			new AmmoStruct(ItemID.Mushroom, ModContent.ProjectileType<SlingMushroomProjectile>(), -2)
+			new AmmoStruct(ItemID.Seed, ModContent.ProjectileType<SlingSeedProjectile>(), "Flies faster and further", shootspeed: -5f), //seed projectile has 1 extra update, so shootspeed is decreased to compensate, effective shootspeed is around 20
+            new AmmoStruct(ItemID.StoneBlock, ModContent.ProjectileType<SlingStoneProjectile>(), "Slower velocity but hits harder", 5, -4f, 2.5f),
+			new AmmoStruct(ItemID.Mushroom, ModContent.ProjectileType<SlingMushroomProjectile>(), "Weaker damage but inflicts Poisoned", -2)
 		};
 
 		public override bool SafeCanUseItem(Player player)
@@ -48,9 +48,6 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			Tooltip.SetDefault("Sling seeds, stones, and mushrooms at your enemies\n" +
-				"Seeds have increased velocity\n" +
-				"Stones have less velocity but deal more damage and knockback\n" +
-				"Mushrooms deal less damage but inflict Poisoned\n" +
 				"75% chance to not consume ammo");
 		}
 

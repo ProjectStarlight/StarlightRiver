@@ -16,15 +16,16 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override List<AmmoStruct> ValidAmmos => new()
 		{
-			new AmmoStruct(ItemID.SandBlock, ModContent.ProjectileType<SoilgunSandSoil>(), 2),
-			new AmmoStruct(ItemID.EbonsandBlock, ModContent.ProjectileType<SoilgunEbonsandSoil>(), 4),
-			new AmmoStruct(ItemID.PearlsandBlock, ModContent.ProjectileType<SoilgunPearlsandSoil>(), 15),
-			new AmmoStruct(ItemID.CrimsandBlock, ModContent.ProjectileType<SoilgunCrimsandSoil>(), 4),
-			new AmmoStruct(ItemID.DirtBlock, ModContent.ProjectileType<SoilgunDirtSoil>(), 2),
-			new AmmoStruct(ItemID.SiltBlock, ModContent.ProjectileType<SoilgunSiltSoil>(), 3),
-			new AmmoStruct(ItemID.SlushBlock, ModContent.ProjectileType<SoilgunSlushSoil>(), 3),
-			new AmmoStruct(Mod.Find<ModItem>("VitricSandItem").Type, ModContent.ProjectileType<SoilgunVitricSandSoil>(), 8),
-			new AmmoStruct(ItemID.MudBlock, ModContent.ProjectileType<SoilgunMudSoil>(), 3),
+			new AmmoStruct(ItemID.DirtBlock, ModContent.ProjectileType<SoilgunDirtSoil>(), "", 2),
+			new AmmoStruct(ItemID.SandBlock, ModContent.ProjectileType<SoilgunSandSoil>(), "Deals area of effect damage", 2),
+			new AmmoStruct(ItemID.EbonsandBlock, ModContent.ProjectileType<SoilgunEbonsandSoil>(), "Inflicts weakening debuff", 4),
+			new AmmoStruct(ItemID.PearlsandBlock, ModContent.ProjectileType<SoilgunPearlsandSoil>(), "Homes onto enemies", 15),
+			new AmmoStruct(ItemID.CrimsandBlock, ModContent.ProjectileType<SoilgunCrimsandSoil>(), "Gain regeneration on hit", 4),
+			new AmmoStruct(ItemID.SiltBlock, ModContent.ProjectileType<SoilgunSiltSoil>(), "Extracts some treasure when fired", 3),
+			new AmmoStruct(ItemID.SlushBlock, ModContent.ProjectileType<SoilgunSlushSoil>(), "Inflicts Frostburn", 3),
+			new AmmoStruct(Mod.Find<ModItem>("VitricSandItem").Type, ModContent.ProjectileType<SoilgunVitricSandSoil>(), "Pierces enemies", 8),
+			new AmmoStruct(ItemID.MudBlock, ModContent.ProjectileType<SoilgunMudSoil>(), "Chance to spawn bees on death", 3),
+			new AmmoStruct(ItemID.AshBlock, ModContent.ProjectileType<SoilgunAshSoil>(), "Inflicts On Fire!", 6),
 		};
 
 		public override void SetStaticDefaults()
@@ -360,7 +361,13 @@ namespace StarlightRiver.Content.Items.Misc
 			Vector2 shootVelocity = Utils.SafeNormalize(Projectile.velocity, Vector2.UnitY) * shootSpeed;
 
 			if (Main.myPlayer == Projectile.owner)
-				Projectile.NewProjectile(Projectile.GetSource_FromThis(), position, shootVelocity.RotatedByRandom(MathHelper.ToRadians(15)) * Main.rand.NextFloat(0.9f, 1.1f), SoilType, damage, knockBack, Owner.whoAmI);
+			{
+				Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), position, shootVelocity.RotatedByRandom(MathHelper.ToRadians(15))
+					* Main.rand.NextFloat(0.9f, 1.1f), SoilType, damage, knockBack, Owner.whoAmI);
+
+				proj.timeLeft = 45;
+				(proj.ModProjectile as SoilProjectile).maxTimeleft = 45f;
+			}
 
 			for (float k = 0; k < 50; k++)
 			{

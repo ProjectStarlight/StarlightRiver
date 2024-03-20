@@ -433,7 +433,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
 		{
-			overWiresUI.Add(index);
+			behindNPCsAndTiles.Add(index);
 		}
 
 		public override bool PreDraw(ref Color lightColor)

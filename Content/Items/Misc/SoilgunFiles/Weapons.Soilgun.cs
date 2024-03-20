@@ -10,27 +10,25 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
-using static Humanizer.In;
 
 namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 {
-	// This entire thing needs balancing, hopefully this code is better than before and hopefully all issues are fixed
-
 	public class Soilgun : MultiAmmoWeapon
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
 		public override List<AmmoStruct> ValidAmmos => new()
 		{
-			new AmmoStruct(ItemID.SandBlock, ModContent.ProjectileType<SoilgunSandSoil>(), 2),
-			new AmmoStruct(ItemID.EbonsandBlock, ModContent.ProjectileType<SoilgunEbonsandSoil>(), 4),
-			new AmmoStruct(ItemID.PearlsandBlock, ModContent.ProjectileType<SoilgunPearlsandSoil>(), 15),
-			new AmmoStruct(ItemID.CrimsandBlock, ModContent.ProjectileType<SoilgunCrimsandSoil>(), 4),
-			new AmmoStruct(ItemID.DirtBlock, ModContent.ProjectileType<SoilgunDirtSoil>(), 2),
-			new AmmoStruct(ItemID.SiltBlock, ModContent.ProjectileType<SoilgunSiltSoil>(), 3),
-			new AmmoStruct(ItemID.SlushBlock, ModContent.ProjectileType<SoilgunSlushSoil>(), 3),
-			new AmmoStruct(Mod.Find<ModItem>("VitricSandItem").Type, ModContent.ProjectileType<SoilgunVitricSandSoil>(), 8),
-			new AmmoStruct(ItemID.MudBlock, ModContent.ProjectileType<SoilgunMudSoil>(), 3),
+			new AmmoStruct(ItemID.DirtBlock, ModContent.ProjectileType<SoilgunDirtSoil>(), "", 2),
+			new AmmoStruct(ItemID.SandBlock, ModContent.ProjectileType<SoilgunSandSoil>(), "Deals area of effect damage", 2),
+			new AmmoStruct(ItemID.EbonsandBlock, ModContent.ProjectileType<SoilgunEbonsandSoil>(), "Inflicts weakening debuff", 4),
+			new AmmoStruct(ItemID.PearlsandBlock, ModContent.ProjectileType<SoilgunPearlsandSoil>(), "Homes onto enemies", 15),
+			new AmmoStruct(ItemID.CrimsandBlock, ModContent.ProjectileType<SoilgunCrimsandSoil>(), "Gain regeneration on hit", 4),		
+			new AmmoStruct(ItemID.SiltBlock, ModContent.ProjectileType<SoilgunSiltSoil>(), "Extracts some treasure when fired", 3),
+			new AmmoStruct(ItemID.SlushBlock, ModContent.ProjectileType<SoilgunSlushSoil>(), "Inflicts Frostburn", 3),
+			new AmmoStruct(Mod.Find<ModItem>("VitricSandItem").Type, ModContent.ProjectileType<SoilgunVitricSandSoil>(), "Pierces enemies", 8),
+			new AmmoStruct(ItemID.MudBlock, ModContent.ProjectileType<SoilgunMudSoil>(), "Chance to spawn bees on death", 3),
+			new AmmoStruct(ItemID.AshBlock, ModContent.ProjectileType<SoilgunAshSoil>(), "Inflicts On Fire!", 6),
 		};
 
 		public override void SetStaticDefaults()
@@ -350,7 +348,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 				{
 					Shoot();
 
-					Projectile.timeLeft = 30;
+					Projectile.timeLeft = 45;
 					updateVelocity = false;
 					Shot = true;
 				}				
@@ -401,7 +399,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			else
 				fade = 1f;
 
-			Color color = (ghostProjectile.ModProjectile as SoilProjectile).Colors["RingOutsideColor"] with { A = 0 };
+			Color color = (ghostProjectile.ModProjectile as SoilProjectile).Colors["TrailInsideColor"] with { A = 0 };
 
 			SpriteEffects spriteEffects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
@@ -411,26 +409,28 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 			if (Shot)
 			{
-				float progress = 1f - Projectile.timeLeft / 30f;
+				float progress = 1f - Projectile.timeLeft / 45f;
 
 				if (Projectile.timeLeft < 8f)
 					fade = EaseBuilder.EaseCircularIn.Ease(Projectile.timeLeft / 8f);
 
-				// recoil animation is exaggerated when fully charged
-				float recoilDist = MathHelper.Lerp(-8f, -15f, ChargeProgress);
-				float recoilRot = MathHelper.Lerp(-0.25f, -0.45f, ChargeProgress);
+				color *= 1f - progress;
 
-				if (progress < 0.05f)
+				// recoil animation is exaggerated when fully charged
+				float recoilDist = MathHelper.Lerp(-12f, -18f, ChargeProgress);
+				float recoilRot = MathHelper.Lerp(-0.35f, -0.45f, ChargeProgress);
+
+				if (progress < 0.1f)
 				{
-					float lerper = progress / 0.05f;
+					float lerper = progress / 0.1f;
 
 					position += Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(0f, recoilDist, EaseBuilder.EaseCircularOut.Ease(lerper));
 
-					rotation += MathHelper.Lerp(0f, recoilRot * Projectile.direction, EaseBuilder.EaseCircularOut.Ease(lerper));
+					rotation += MathHelper.Lerp(0f, recoilRot * Projectile.direction, EaseBuilder.EaseQuinticOut.Ease(lerper));
 				}
 				else
 				{
-					float lerper = (progress - 0.05f) / 0.95f;
+					float lerper = (progress - 0.1f) / 0.9f;
 					position += Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(recoilDist, 0f, EaseBuilder.EaseBackOut.Ease(lerper));
 
 					rotation += MathHelper.Lerp(recoilRot * Projectile.direction, 0f, EaseBuilder.EaseBackOut.Ease(lerper));
@@ -484,7 +484,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 				if (ChargeProgress >= 1f)
 				{ 
 					Projectile.NewProjectile(Projectile.GetSource_FromThis(), BarrelPosition,
-							shootVelocity * 1f, (ghostProjectile.ModProjectile as SoilProjectile).ClumpType, damage, knockBack, Owner.whoAmI);
+							shootVelocity * 1f, (ghostProjectile.ModProjectile as SoilProjectile).ClumpType, damage * 5, knockBack, Owner.whoAmI);
 				}
 				else
 				{
@@ -501,40 +501,45 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 				}			
 			}
 
-			Color outColor = (ghostProjectile.ModProjectile as SoilProjectile).Colors["RingOutsideColor"];
-			Color inColor = (ghostProjectile.ModProjectile as SoilProjectile).Colors["RingInsideColor"];
+			Color outColor = (ghostProjectile.ModProjectile as SoilProjectile).Colors["TrailColor"];
+			Color inColor = (ghostProjectile.ModProjectile as SoilProjectile).Colors["TrailInsideColor"];
+
+			Color smokeColor = (ghostProjectile.ModProjectile as SoilProjectile).Colors["SmokeColor"];
 
 			for (int i = 0; i < 12; i++)
 			{
 				Dust.NewDustPerfect(BarrelPosition + Projectile.velocity * 10f, ModContent.DustType<PixelatedGlow>(),
-					Projectile.velocity.RotatedByRandom(1f) * Main.rand.NextFloat(0.5f, 3f), 0, outColor with { A = 0 }, 0.25f);
+					Projectile.velocity.RotatedByRandom(1f) * Main.rand.NextFloat(0.5f, 3f), 0, outColor with { A = 0 }, 0.55f);
 			}
 
 			for (int i = 0; i < 5; i++)
 			{
 				Dust.NewDustPerfect(BarrelPosition, ModContent.DustType<PixelatedGlow>(),
 					Projectile.velocity.RotatedByRandom(1.25f) * Main.rand.NextFloat(0f, 2.5f), 0, inColor with { A = 0 }, 0.35f);
+
+				Dust.NewDustPerfect(BarrelPosition, ModContent.DustType<PixelatedImpactLineDust>(),
+					Projectile.velocity.RotatedByRandom(1.25f) * Main.rand.NextFloat(5f, 15f), 0, inColor with { A = 0 }, 0.15f);
 			}
 
 			for (int i = 0; i < 3; i++)
 			{
 				Dust dust = Dust.NewDustPerfect(BarrelPosition, ModContent.DustType<PixelSmokeColor>(),
-					Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.3f, 2f) + Main.rand.NextVector2Circular(1f, 1f), Main.rand.Next(100, 155), new Color(81, 47, 27), Main.rand.NextFloat(0.08f, 0.12f));
+					Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.3f, 2f) + Main.rand.NextVector2Circular(1f, 1f), Main.rand.Next(80, 125), new Color(81, 47, 27), Main.rand.NextFloat(0.08f, 0.12f));
 
 				dust.rotation = Main.rand.NextFloat(6.28f);
 				dust.customData = new Color(105, 67, 44);
 
 				dust = Dust.NewDustPerfect(BarrelPosition, ModContent.DustType<PixelSmokeColor>(),
-					Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(2.5f, 7f) + Main.rand.NextVector2Circular(1f, 1f), Main.rand.Next(100, 175), new Color(81, 47, 27), Main.rand.NextFloat(0.05f, 0.08f));
+					Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(2.5f, 7f) + Main.rand.NextVector2Circular(1f, 1f), Main.rand.Next(80, 135), new Color(81, 47, 27), Main.rand.NextFloat(0.05f, 0.08f));
 
 				dust.rotation = Main.rand.NextFloat(6.28f);
 				dust.customData = new Color(105, 67, 44);
 
 				dust = Dust.NewDustPerfect(BarrelPosition, ModContent.DustType<PixelSmokeColor>(),
-					Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(5f, 7.5f) + Main.rand.NextVector2Circular(1f, 1f), Main.rand.Next(100, 175), outColor, Main.rand.NextFloat(0.05f, 0.095f));
+					Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(5f, 7.5f) + Main.rand.NextVector2Circular(1f, 1f), Main.rand.Next(70, 100), smokeColor, Main.rand.NextFloat(0.05f, 0.095f));
 
 				dust.rotation = Main.rand.NextFloat(6.28f);
-				dust.customData = inColor;			
+				dust.customData = smokeColor;			
 			}
 
 			CameraSystem.shake += (int)MathHelper.Lerp(3, 8, ChargeProgress);
@@ -569,8 +574,12 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 		{
 			Owner.ChangeDir(Projectile.direction);
 			Owner.heldProj = Projectile.whoAmI;
-			Owner.itemTime = 2;
-			Owner.itemAnimation = 2;
+
+			//Owner.itemTime = 2;
+			//Owner.itemAnimation = 2;
+
+			if (Owner.HeldItem.ModItem is not Soilgun)
+				Projectile.Kill();
 
 			if (updateTimeleft)
 				Projectile.timeLeft = 2;
