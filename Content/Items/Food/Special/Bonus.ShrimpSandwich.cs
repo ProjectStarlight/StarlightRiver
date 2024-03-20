@@ -4,6 +4,11 @@ using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.DataStructures;
 using System.Reflection;
+using static Humanizer.In;
+using static Terraria.ID.ContentSamples.CreativeHelper;
+using Steamworks;
+using Terraria;
+using System.Collections;
 
 namespace StarlightRiver.Content.Items.Food.Special
 {
@@ -37,11 +42,13 @@ namespace StarlightRiver.Content.Items.Food.Special
 
 	public class ShrimpSandwhichPlayer : ModPlayer
 	{
+		//todo: make delegates for performance
 		public static MethodInfo RollFishingDropInfo;
 
 		public override void Load()
 		{
 			RollFishingDropInfo = typeof(Terraria.Projectile).GetMethod("FishingCheck_RollItemDrop", BindingFlags.NonPublic | BindingFlags.Instance);
+			//FishingGiveItemToPlayer = typeof(Terraria.Projectile).GetMethod("AI_061_FishingBobber_GiveItemToPlayer", BindingFlags.NonPublic | BindingFlags.Instance);
 		}
 
 		public override void Unload()
@@ -75,7 +82,7 @@ namespace StarlightRiver.Content.Items.Food.Special
 	{
 		public bool CanDrop(DropAttemptInfo info)
 		{
-			return (info.npc.wet || info.npc.lavaWet || info.npc.honeyWet) && info.player.GetModPlayer<ShrimpSandwhichPlayer>().Active;
+			return !info.npc.SpawnedFromStatue && (info.npc.wet || info.npc.lavaWet || info.npc.honeyWet) && info.player.GetModPlayer<ShrimpSandwhichPlayer>().Active;
 		}
 
 		public bool CanShowItemDropInUI()
@@ -117,36 +124,183 @@ namespace StarlightRiver.Content.Items.Food.Special
 			return true;
 		}
 
+		//check copied from FishingCheck() in projectile.cs
+		private int GetHeightTeir(int TilePositionY)
+		{
+			if ((double)TilePositionY < Main.worldSurface * 0.5)
+			{
+				return 0;//space
+			}
+			else if ((double)TilePositionY < Main.worldSurface)
+			{
+				return 1;//overworld
+			}
+			else if ((double)TilePositionY < Main.rockLayer)
+			{
+				return 2;//dirt layer
+			}
+			else if (TilePositionY < Main.maxTilesY - 300)
+			{
+				return 3;//rock layer
+			}
+			else
+			{
+				return 4;//underworld
+			}
+		}
+
+		//modifed from FishingCheck_RollDropLevels() in projectile.cs, removed crate logic
+		private void RollDropLevels(int fishingLevel, out bool common, out bool uncommon, out bool rare, out bool veryrare, out bool legendary)
+		{
+			int num = 150 / fishingLevel;
+			int num2 = 300 / fishingLevel;
+			int num3 = 1050 / fishingLevel;
+			int num4 = 2250 / fishingLevel;
+			int num5 = 4500 / fishingLevel;
+
+			if (num < 2) 
+				num = 2;
+
+			if (num2 < 3)
+				num2 = 3;
+
+			if (num3 < 4)
+				num3 = 4;
+
+			if (num4 < 5)
+				num4 = 5;
+
+			if (num5 < 6)
+				num5 = 6;
+
+			common = false;
+			uncommon = false;
+			rare = false;
+			veryrare = false;
+			legendary = false;
+
+			if (Main.rand.NextBool(num))
+				common = true;
+
+			if (Main.rand.NextBool(num2))
+				uncommon = true;
+
+			if (Main.rand.NextBool(num3))
+				rare = true;
+
+			if (Main.rand.NextBool(num4))
+				veryrare = true;
+
+			if (Main.rand.NextBool(num5))
+				legendary = true;
+		}
+		
+		//modifier from AI_061_FishingBobber_GiveItemToPlayer() in projectile.cs
+		private int GetFishStack(int fishingLevel, int itemType)
+		{
+			int stack = 1;
+			//bomb fish
+			if (itemType == 3196)
+			{
+				int finalFishingLevel = fishingLevel;
+				int minValue = (finalFishingLevel / 20 + 3) / 2;
+				int num = (finalFishingLevel / 10 + 6) / 2;
+				if (Main.rand.Next(50) < finalFishingLevel)
+					num++;
+
+				if (Main.rand.Next(100) < finalFishingLevel)
+					num++;
+
+				if (Main.rand.Next(150) < finalFishingLevel)
+					num++;
+
+				if (Main.rand.Next(200) < finalFishingLevel)
+					num++;
+
+				stack = Main.rand.Next(minValue, num + 1);
+			}
+			//frost daggerfish
+			if (itemType == 3197)//frost daggerfish
+			{
+				int finalFishingLevel2 = fishingLevel;
+				int minValue2 = (finalFishingLevel2 / 4 + 15) / 2;
+				int num2 = (finalFishingLevel2 / 2 + 30) / 2;
+				if (Main.rand.Next(50) < finalFishingLevel2)
+					num2 += 4;
+
+				if (Main.rand.Next(100) < finalFishingLevel2)
+					num2 += 4;
+
+				if (Main.rand.Next(150) < finalFishingLevel2)
+					num2 += 4;
+
+				if (Main.rand.Next(200) < finalFishingLevel2)
+					num2 += 4;
+
+				stack = Main.rand.Next(minValue2, num2 + 1);
+			}
+
+			return stack;
+		}
+
 		public virtual ItemDropAttemptResult TryDroppingItem(DropAttemptInfo info)
 		{
 			ItemDropAttemptResult result;
 			if (info.player.RollLuck(chanceDenominator) < chanceNumerator)
 			{
+				const int BaseFishingLevel = 15;
+				int FishingLevel = BaseFishingLevel + info.player.fishingSkill + (int)(info.npc.value / 100f);
+				int playerPosY = (int)(info.player.position.Y / 16);
+				RollDropLevels(FishingLevel, out bool common, out bool uncommon, out bool rare, out bool veryrare, out bool legendary);
+				Main.NewText("fishing level: " + FishingLevel, Color.Gold);
 				object[] args = new object[] {
 				new FishingAttempt()
 				{
 					X = (int)(info.npc.position.X / 16),
 					Y = (int)(info.npc.position.Y / 16),
-					CanFishInLava = true,
+					CanFishInLava = Main.hardMode || info.player.accLavaFishing,
 					inLava = info.npc.lavaWet,
 					inHoney = info.npc.honeyWet,
-					common = true,
-					uncommon = true,
-					rare = true,
-					veryrare = false,
-					legendary = false,
+					common = common,
+					uncommon = uncommon,
+					rare = rare,
+					veryrare = veryrare,
+					legendary = legendary,//30%~ chance for pet/accessory items
 					crate = false,
-					waterTilesCount = 5000,
-					waterNeededToFish = 200,
-					fishingLevel = 100
-					//waterQuality = 1
+					waterTilesCount = 5000,//ignores water body size, prob best for performance anyway
+					waterNeededToFish = 300,
+					fishingLevel = FishingLevel,//only used for junk item checks, does not give junk if water size is larger than above number, or this is above 50
+					heightLevel = GetHeightTeir((int)(info.player.position.Y / 16))
 				}
-			};
-				ShrimpSandwhichPlayer.RollFishingDropInfo.Invoke(new Projectile(), args);
+				};
+				Main.NewText("Height teir: " + GetHeightTeir((int)(info.player.position.Y / 16)), Color.SkyBlue);
+				Projectile dummyProjectile = new Projectile() { position = info.npc.position };
+				ShrimpSandwhichPlayer.RollFishingDropInfo.Invoke(dummyProjectile, args);
 
+				int itemdrop = ((FishingAttempt)args[0]).rolledItemDrop;
+				int itemstack = GetFishStack(FishingLevel, itemdrop);//increase the stack size if this is bombfish or frost daggerfish
 
-				CommonCode.DropItem(info, ((FishingAttempt)args[0]).rolledItemDrop, info.rng.Next(amountDroppedMinimum, amountDroppedMaximum + 1));
-				result = default;
+				//drop copied from CommonCode.DropItem, which vanilla IItemDropRules use
+				Rectangle npcHitbox = info.npc.Hitbox;
+				int itemindex = Item.NewItem(
+					info.npc.GetSource_Loot(), 
+					new Vector2((float)npcHitbox.X + (float)npcHitbox.Width / 2f, (float)npcHitbox.Y + (float)npcHitbox.Height / 2f),
+					itemdrop, 
+					itemstack, 
+					noBroadcast: false, 
+					-1);
+
+				//allow mods to modify the caught fish
+				PlayerLoader.ModifyCaughtFish(info.player, Main.item[itemindex]);
+				ItemLoader.CaughtFishStack(Main.item[itemindex]);
+
+				if (Main.netMode == NetmodeID.MultiplayerClient)
+					NetMessage.SendData(MessageID.SyncItem, -1, -1, null, itemindex, 1f);
+
+				//changes the item color if this is gel or sharkfin, likely not needed but just in case a mod adds either to the fishing loot pool, and this is run by CommonCode.DropItem anyway
+				CommonCode.ModifyItemDropFromNPC(info.npc, itemindex);
+
+			    result = default;
 				result.State = ItemDropAttemptResultState.Success;
 				return result;
 			}
