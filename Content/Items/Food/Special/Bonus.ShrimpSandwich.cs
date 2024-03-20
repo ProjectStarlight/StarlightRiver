@@ -42,18 +42,18 @@ namespace StarlightRiver.Content.Items.Food.Special
 
 	public class ShrimpSandwhichPlayer : ModPlayer
 	{
-		//todo: make delegates for performance
-		public static MethodInfo RollFishingDropInfo;
-
+		private MethodInfo RollFishingDropInfo;
+		public delegate void RollFishingDropDelegate (Projectile proj, ref FishingAttempt fisher);
+		public static RollFishingDropDelegate RollFishingDrop;
 		public override void Load()
 		{
 			RollFishingDropInfo = typeof(Terraria.Projectile).GetMethod("FishingCheck_RollItemDrop", BindingFlags.NonPublic | BindingFlags.Instance);
-			//FishingGiveItemToPlayer = typeof(Terraria.Projectile).GetMethod("AI_061_FishingBobber_GiveItemToPlayer", BindingFlags.NonPublic | BindingFlags.Instance);
+			RollFishingDrop = (RollFishingDropDelegate)Delegate.CreateDelegate(typeof(RollFishingDropDelegate), RollFishingDropInfo);
 		}
 
 		public override void Unload()
 		{
-			RollFishingDropInfo = null;
+			RollFishingDrop = null;
 		}
 
 		public bool Active = false;
@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.Items.Food.Special
 		public override void ModifyGlobalLoot(GlobalLoot globalLoot)
 		{
 			LeadingConditionRule leadingConditionRule = new LeadingConditionRule(new ShrimpSandwhichFishDrops());
-			leadingConditionRule.OnSuccess(new FishDrop(1));
+			leadingConditionRule.OnSuccess(new FishDrop(8));
 			globalLoot.Add(leadingConditionRule);
 			base.ModifyGlobalLoot(globalLoot);
 		}
@@ -99,22 +99,13 @@ namespace StarlightRiver.Content.Items.Food.Special
 	public class FishDrop : IItemDropRule
 	{
 		public int chanceDenominator;
-		public int amountDroppedMinimum;
-		public int amountDroppedMaximum;
 		public int chanceNumerator;
 
 		public List<IItemDropRuleChainAttempt> ChainedRules { get; private set; }
 
-		public FishDrop(int chanceDenominator, int amountDroppedMinimum = 1, int amountDroppedMaximum = 1, int chanceNumerator = 1)
+		public FishDrop(int chanceDenominator, int chanceNumerator = 1)
 		{
-			if (amountDroppedMinimum > amountDroppedMaximum)
-			{
-				throw new ArgumentOutOfRangeException("amountDroppedMinimum", "amountDroppedMinimum must be lesser or equal to amountDroppedMaximum.");
-			}
-
 			this.chanceDenominator = chanceDenominator;
-			this.amountDroppedMinimum = amountDroppedMinimum;
-			this.amountDroppedMaximum = amountDroppedMaximum;
 			this.chanceNumerator = chanceNumerator;
 			ChainedRules = new List<IItemDropRuleChainAttempt>();
 		}
@@ -253,7 +244,7 @@ namespace StarlightRiver.Content.Items.Food.Special
 				int playerPosY = (int)(info.player.position.Y / 16);
 				RollDropLevels(FishingLevel, out bool common, out bool uncommon, out bool rare, out bool veryrare, out bool legendary);
 				Main.NewText("fishing level: " + FishingLevel, Color.Gold);
-				object[] args = new object[] {
+				FishingAttempt FishingAttemptData = 
 				new FishingAttempt()
 				{
 					X = (int)(info.npc.position.X / 16),
@@ -271,13 +262,14 @@ namespace StarlightRiver.Content.Items.Food.Special
 					waterNeededToFish = 300,
 					fishingLevel = FishingLevel,//only used for junk item checks, does not give junk if water size is larger than above number, or this is above 50
 					heightLevel = GetHeightTeir((int)(info.player.position.Y / 16))
-				}
 				};
-				Main.NewText("Height teir: " + GetHeightTeir((int)(info.player.position.Y / 16)), Color.SkyBlue);
-				Projectile dummyProjectile = new Projectile() { position = info.npc.position };
-				ShrimpSandwhichPlayer.RollFishingDropInfo.Invoke(dummyProjectile, args);
 
-				int itemdrop = ((FishingAttempt)args[0]).rolledItemDrop;
+				//Main.NewText("Height teir: " + GetHeightTeir((int)(info.player.position.Y / 16)), Color.SkyBlue);
+				//projecile just to pass into the roll fishing drop method, the proj is never used
+				Projectile dummyProjectile = new Projectile() { position = info.npc.position };
+				ShrimpSandwhichPlayer.RollFishingDrop(dummyProjectile, ref FishingAttemptData);
+
+				int itemdrop = FishingAttemptData.rolledItemDrop;
 				int itemstack = GetFishStack(FishingLevel, itemdrop);//increase the stack size if this is bombfish or frost daggerfish
 
 				//drop copied from CommonCode.DropItem, which vanilla IItemDropRules use
@@ -286,7 +278,7 @@ namespace StarlightRiver.Content.Items.Food.Special
 					info.npc.GetSource_Loot(), 
 					new Vector2((float)npcHitbox.X + (float)npcHitbox.Width / 2f, (float)npcHitbox.Y + (float)npcHitbox.Height / 2f),
 					itemdrop, 
-					itemstack, 
+					itemstack,// + info.rng.Next(amountDroppedMinimum, amountDroppedMaximum + 1),
 					noBroadcast: false, 
 					-1);
 
