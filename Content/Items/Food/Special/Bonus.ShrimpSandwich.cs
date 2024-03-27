@@ -52,7 +52,7 @@ namespace StarlightRiver.Content.Items.Food.Special
 
 	public class ShrimpSandwhichDropsNPC : GlobalNPC
 	{
-		private MethodInfo RollFishingDropInfo;
+		private static MethodInfo RollFishingDropInfo;
 		public delegate void RollFishingDropDelegate(Projectile proj, ref FishingAttempt fisher);
 		public static RollFishingDropDelegate RollFishingDrop;
 

@@ -23,9 +23,10 @@
 		public override void BuffEffects(Player Player, float multiplier)
 		{
 			//Player.GetCritChance(DamageClass.Generic) += 0.1f * multiplier;
-			Player.statDefense *= 1.1f;
-			Player.statLifeMax2 = (int)(Player.statLifeMax2 * 1.1f);
-			Player.statManaMax2 = (int)(Player.statManaMax2 * 1.1f);
+			//multiplier is always the same for meals, but if we *did* have something that messed with it its prob best to account for it
+			Player.statDefense *= 1.0f + 0.1f * multiplier;
+			Player.statLifeMax2 = (int)(Player.statLifeMax2 * (1.0f + 0.1f * multiplier));
+			Player.statManaMax2 = (int)(Player.statManaMax2 * (1.0f + 0.1f * multiplier));
 			Player.moveSpeed += Player.moveSpeed * (0.1f * multiplier);
 		}
 	}
