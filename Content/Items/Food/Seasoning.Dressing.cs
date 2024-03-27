@@ -9,8 +9,7 @@ namespace StarlightRiver.Content.Items.Food
 		public override void SafeSetDefaults()
 		{
 			Item.rare = ItemRarityID.Blue;
-
-			Item.value = Item.sellPrice(silver: 6);
+			Item.value = Item.buyPrice(silver: 15);
 		}
 
 		public override void BuffEffects(Player Player, float multiplier)//placeholder until drop methods for ingedients are finalized, original stats: +10% duration, chance for enemies to drop ingredients increased

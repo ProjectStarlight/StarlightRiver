@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Items.Food.Special
 {
 	internal class ShrimpSandwich : BonusIngredient
 	{
-		public ShrimpSandwich() : base("Ability to breathe and swim underwater.\nUnderwater enemies have a chance to drop random fish.\n\"It's just that shrimple\"\nWip") { }
+		public ShrimpSandwich() : base("Ability to breathe and swim underwater.\nUnderwater enemies have a chance to drop random fish.\n\"It's just that shrimple\"") { }
 
 		public override FoodRecipie Recipie()
 		{
@@ -43,6 +43,18 @@ namespace StarlightRiver.Content.Items.Food.Special
 	public class ShrimpSandwhichPlayer : ModPlayer
 	{
 		public bool Active = false;
+
+		//reusing this modplayer since its related and so im not making one just for 1 method
+		public override void AnglerQuestReward(float rarityReduction, List<Item> rewardItems)
+		{
+			if (rarityReduction > 0.45f && Main.rand.NextBool(4, 5))//skip if the reward is too rare, or at random sometimes
+			{
+				Item shrimp = new Item();
+				shrimp.SetDefaults(ModContent.ItemType<JumboShrimp>());
+				shrimp.stack = Main.rand.Next(2, 6);//copied fish potion chances
+				rewardItems.Add(shrimp);
+			}
+		}
 
 		public override void ResetEffects()
 		{
