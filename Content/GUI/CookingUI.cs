@@ -219,7 +219,15 @@ namespace StarlightRiver.Content.GUI
 				FoodRecipie special = FoodRecipieHandler.Recipes.FirstOrDefault(n => n.Matches((Item.ModItem as Meal).Ingredients));
 
 				if (special.result != 0) //Bad check. This entire addition is kind of a bandaid. That kinda sucks.
+				{
+					Item specialItem = FoodRecipieHandler.GetFromRecipie(special);
 					(Item.ModItem as Meal).Ingredients.Add(FoodRecipieHandler.GetFromRecipie(special));
+					//special ingredient stats also get counted, on the offchance that they are modified
+					//the alterative to repeating these from CookIngredient was to have a internal slot just for the special ingredient
+					(Item.ModItem as Meal).BuffLengthMult *= (specialItem.ModItem as Ingredient).BuffLengthMult;
+					(Item.ModItem as Meal).DebuffLengthMult *= (specialItem.ModItem as Ingredient).DebuffLengthMult;
+					(Item.ModItem as Meal).Fullness += (specialItem.ModItem as Ingredient).Fill;
+				}
 
 				Item.position = Main.LocalPlayer.Center;
 				Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), Item);
