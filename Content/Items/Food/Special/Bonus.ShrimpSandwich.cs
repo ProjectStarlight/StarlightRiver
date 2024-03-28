@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
-using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Items.Food.Special
 {
@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Items.Food.Special
 		{
 			if (rarityReduction > 0.45f && Main.rand.NextBool(4, 5))//skip if the reward is too rare, or at random sometimes
 			{
-				Item shrimp = new Item();
+				var shrimp = new Item();
 				shrimp.SetDefaults(ModContent.ItemType<JumboShrimp>());
 				shrimp.stack = Main.rand.Next(2, 6);//copied fish potion chances
 				rewardItems.Add(shrimp);
@@ -77,7 +77,7 @@ namespace StarlightRiver.Content.Items.Food.Special
 
 		public override void ModifyGlobalLoot(GlobalLoot globalLoot)
 		{
-			LeadingConditionRule leadingConditionRule = new LeadingConditionRule(new ShrimpSandwhichDropsCondition());
+			var leadingConditionRule = new LeadingConditionRule(new ShrimpSandwhichDropsCondition());
 			leadingConditionRule.OnSuccess(new FishDrop(8));
 			globalLoot.Add(leadingConditionRule);
 			base.ModifyGlobalLoot(globalLoot);
@@ -95,7 +95,7 @@ namespace StarlightRiver.Content.Items.Food.Special
 		{
 			this.chanceDenominator = chanceDenominator;
 			this.chanceNumerator = chanceNumerator;
-			ChainedRules = new List<IItemDropRuleChainAttempt>();
+			ChainedRules = [];
 		}
 
 		public virtual bool CanDrop(DropAttemptInfo info)
@@ -106,15 +106,15 @@ namespace StarlightRiver.Content.Items.Food.Special
 		//check copied from FishingCheck() in projectile.cs
 		private int GetHeightTeir(int TilePositionY)
 		{
-			if ((double)TilePositionY < Main.worldSurface * 0.5)
+			if (TilePositionY < Main.worldSurface * 0.5)
 			{
 				return 0;//space
 			}
-			else if ((double)TilePositionY < Main.worldSurface)
+			else if (TilePositionY < Main.worldSurface)
 			{
 				return 1;//overworld
 			}
-			else if ((double)TilePositionY < Main.rockLayer)
+			else if (TilePositionY < Main.rockLayer)
 			{
 				return 2;//dirt layer
 			}
@@ -137,7 +137,7 @@ namespace StarlightRiver.Content.Items.Food.Special
 			int num4 = 2250 / fishingLevel;
 			int num5 = 4500 / fishingLevel;
 
-			if (num < 2) 
+			if (num < 2)
 				num = 2;
 
 			if (num2 < 3)
@@ -173,7 +173,7 @@ namespace StarlightRiver.Content.Items.Food.Special
 			if (Main.rand.NextBool(num5))
 				legendary = true;
 		}
-		
+
 		//modifier from AI_061_FishingBobber_GiveItemToPlayer() in projectile.cs
 		private int GetFishStack(int fishingLevel, int itemType)
 		{
@@ -228,11 +228,11 @@ namespace StarlightRiver.Content.Items.Food.Special
 			if (info.player.RollLuck(chanceDenominator) < chanceNumerator)
 			{
 				const int BaseFishingLevel = 15;
-				int FishingLevel = BaseFishingLevel + info.player.fishingSkill + Math.Min((int)(info.npc.value / (Main.expertMode? 200f : 100f)), 1000);
+				int FishingLevel = BaseFishingLevel + info.player.fishingSkill + Math.Min((int)(info.npc.value / (Main.expertMode ? 200f : 100f)), 1000);
 				int playerPosY = (int)(info.player.position.Y / 16);
 				RollDropLevels(FishingLevel, out bool common, out bool uncommon, out bool rare, out bool veryrare, out bool legendary);
 				//Main.NewText("fishing level: " + FishingLevel, Color.Gold);
-				FishingAttempt FishingAttemptData = 
+				var FishingAttemptData =
 				new FishingAttempt()
 				{
 					X = (int)(info.npc.position.X / 16),
@@ -254,7 +254,7 @@ namespace StarlightRiver.Content.Items.Food.Special
 
 				//Main.NewText("Height teir: " + GetHeightTeir((int)(info.player.position.Y / 16)), Color.SkyBlue);
 				//projecile just to pass into the roll fishing drop method, the proj is never used
-				Projectile dummyProjectile = new Projectile() { position = info.npc.position };
+				var dummyProjectile = new Projectile() { position = info.npc.position };
 				ShrimpSandwhichDropsNPC.RollFishingDrop(dummyProjectile, ref FishingAttemptData);
 
 				int itemdrop = FishingAttemptData.rolledItemDrop;
@@ -263,11 +263,11 @@ namespace StarlightRiver.Content.Items.Food.Special
 				//drop copied from CommonCode.DropItem, which vanilla IItemDropRules use
 				Rectangle npcHitbox = info.npc.Hitbox;
 				int itemindex = Item.NewItem(
-					info.npc.GetSource_Loot(), 
-					new Vector2((float)npcHitbox.X + (float)npcHitbox.Width / 2f, (float)npcHitbox.Y + (float)npcHitbox.Height / 2f),
-					itemdrop, 
+					info.npc.GetSource_Loot(),
+					new Vector2(npcHitbox.X + npcHitbox.Width / 2f, npcHitbox.Y + npcHitbox.Height / 2f),
+					itemdrop,
 					itemstack,// + info.rng.Next(amountDroppedMinimum, amountDroppedMaximum + 1),
-					noBroadcast: false, 
+					noBroadcast: false,
 					-1);
 
 				//allow mods to modify the caught fish
@@ -280,7 +280,7 @@ namespace StarlightRiver.Content.Items.Food.Special
 				//changes the item color if this is gel or sharkfin, likely not needed but just in case a mod adds either to the fishing loot pool, and this is run by CommonCode.DropItem anyway
 				CommonCode.ModifyItemDropFromNPC(info.npc, itemindex);
 
-			    result = default;
+				result = default;
 				result.State = ItemDropAttemptResultState.Success;
 				return result;
 			}
