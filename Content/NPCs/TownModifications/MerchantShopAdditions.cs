@@ -26,6 +26,11 @@ namespace StarlightRiver.Content.NPCs.TownModifications
 				shop.Add(new NPCShop.Entry(ModContent.ItemType<Milk>(), Condition.DownedEaterOfWorlds));
 				shop.Add(new NPCShop.Entry(ModContent.ItemType<Dressing>()));
 			}
+
+			if (shop.NpcType == NPCID.Dryad)
+			{
+				shop.Add(new NPCShop.Entry(ModContent.ItemType<Cashews>()));
+			}
 		}
 	}
 }
