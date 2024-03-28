@@ -21,9 +21,9 @@ namespace StarlightRiver.Content.NPCs.TownModifications
 				shop.Add(new NPCShop.Entry(ModContent.ItemType<ChefBag>()));
 				shop.Add(new NPCShop.Entry(ModContent.ItemType<TableSalt>()));
 				shop.Add(new NPCShop.Entry(ModContent.ItemType<BlackPepper>()));
-				shop.Add(new NPCShop.Entry(ModContent.ItemType<Flour>()));
 				shop.Add(new NPCShop.Entry(ModContent.ItemType<Sugar>()));
-				shop.Add(new NPCShop.Entry(ModContent.ItemType<Milk>(), Condition.DownedEyeOfCthulhu));
+				shop.Add(new NPCShop.Entry(ModContent.ItemType<Flour>(), Condition.DownedEyeOfCthulhu));
+				shop.Add(new NPCShop.Entry(ModContent.ItemType<Milk>(), Condition.DownedEaterOfWorlds));
 				shop.Add(new NPCShop.Entry(ModContent.ItemType<Dressing>()));
 			}
 		}

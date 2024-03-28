@@ -1,14 +1,9 @@
-﻿using System.Collections.Generic;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.DataStructures;
-using System.Reflection;
-using static Humanizer.In;
-using static Terraria.ID.ContentSamples.CreativeHelper;
-using Steamworks;
-using Terraria;
-using System.Collections;
 
 namespace StarlightRiver.Content.Items.Food.Special
 {
