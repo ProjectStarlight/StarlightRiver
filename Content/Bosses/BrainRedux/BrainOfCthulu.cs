@@ -20,6 +20,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public List<NPC> neurisms = new();
 		public Vector2 savedPos;
+		public Vector2 savedPos2;
 
 		public ref float Timer => ref npc.ai[0];
 		public ref float State => ref npc.ai[1];
@@ -45,6 +46,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			Timer++;
 			AttackTimer++;
+
+			Lighting.AddLight(npc.Center, new Vector3(0.5f, 0.4f, 0.2f));
 
 			// If we dont have a thinker, try to find one
 			if (thinker is null)
@@ -117,8 +120,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				// First phase
 				case 2:
 
-					if (Timer == 1)
-						AttackState = Main.rand.Next(3);
+					if (AttackTimer == 1)
+					{
+						AttackState++;
+						if (AttackState >= 4)
+							AttackState = 0;
+					}
 
 					switch(AttackState)
 					{
@@ -126,13 +133,13 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 							ShrinkingCircle();
 							break;
 						case 1:
-							ShrinkingCircle();
+							LineThrow();
 							break;
 						case 2:
-							ShrinkingCircle();
+							Ram();
 							break;
 						case 3:
-							ShrinkingCircle();
+							Spawn();
 							break;
 					}
 
