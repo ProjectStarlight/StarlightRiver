@@ -1,4 +1,6 @@
-﻿namespace StarlightRiver.Content.Bosses.BrainRedux
+﻿using StarlightRiver.Core.Systems.BarrierSystem;
+
+namespace StarlightRiver.Content.Bosses.BrainRedux
 {
 	internal class Neurysm : ModNPC
 	{
@@ -20,6 +22,9 @@
 			NPC.aiStyle = -1;
 			NPC.knockBackResist = 0f;
 			NPC.defense = 5;
+
+			NPC.GetGlobalNPC<BarrierNPC>().maxBarrier = 200;
+			NPC.GetGlobalNPC<BarrierNPC>().barrier = 200;
 		}
 
 		public override bool CheckActive()

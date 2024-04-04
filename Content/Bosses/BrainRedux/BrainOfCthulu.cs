@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarlightRiver.Core.Systems.BarrierSystem;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -37,6 +38,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public override void SetDefaults(NPC entity)
 		{
 			npc = entity;
+
+			if (reworked)
+			{
+				entity.GetGlobalNPC<BarrierNPC>().maxBarrier = 800;
+				entity.GetGlobalNPC<BarrierNPC>().barrier = 800;
+			}
 		}
 
 		public override bool PreAI(NPC npc)
@@ -44,8 +51,14 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (!reworked)
 				return true;
 
+			npc.GetGlobalNPC<BarrierNPC>().maxBarrier = 800;
+
+			GUI.BossBarOverlay.SetTracked(npc);
+
 			Timer++;
 			AttackTimer++;
+
+			NPC.crimsonBoss = npc.whoAmI;
 
 			Lighting.AddLight(npc.Center, new Vector3(0.5f, 0.4f, 0.2f));
 

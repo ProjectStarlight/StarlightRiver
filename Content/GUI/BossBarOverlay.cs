@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Core.Loaders.UILoading;
+using StarlightRiver.Core.Systems.BarrierSystem;
 using System.Collections.Generic;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
@@ -91,6 +92,16 @@ namespace StarlightRiver.Content.GUI
 
 				spriteBatch.Draw(texFill, new Rectangle((int)(pos.X + off.X), (int)(pos.Y + off.Y) + 2, progress, texFill.Height - 4), Color.White);
 				spriteBatch.Draw(texEdge, pos + off + Vector2.UnitX * progress, Color.White);
+			}
+
+			if (BossBarOverlay.tracked.GetGlobalNPC<BarrierNPC>().barrier > 0)
+			{
+				Texture2D texFill = Request<Texture2D>(AssetDirectory.GUI + "BossbarFillBarrier").Value;
+				Texture2D texEdge = Request<Texture2D>(AssetDirectory.GUI + "BossbarEdgeBarrier").Value;
+
+				int barrier = (int)(BossBarOverlay.tracked?.GetGlobalNPC<BarrierNPC>().barrier / (float)BossBarOverlay.tracked?.GetGlobalNPC<BarrierNPC>().maxBarrier * 456);
+				spriteBatch.Draw(texFill, new Rectangle((int)(pos.X + off.X), (int)(pos.Y + off.Y) + 2, barrier, texFill.Height - 4), Color.White);
+				spriteBatch.Draw(texEdge, pos + off + Vector2.UnitX * barrier, Color.White);
 			}
 
 			spriteBatch.End();

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarlightRiver.Core.Systems.BarrierSystem;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -173,9 +174,14 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				npc.Center += (targetPos - npc.Center) * 0.05f;
 			}
 
-			if (AttackTimer % 15 == 0)
+			if (AttackTimer % 60 == 0 && Main.npc.Count(n => n.active && n.type == Terraria.ID.NPCID.Creeper) < 10)
 			{
-				NPC.NewNPC(npc.GetSource_FromThis(), (int)npc.Center.X, (int)npc.Center.Y, Terraria.ID.NPCID.Creeper);
+				int i = NPC.NewNPC(npc.GetSource_FromThis(), (int)npc.Center.X, (int)npc.Center.Y, Terraria.ID.NPCID.Creeper);
+
+				//TODO: Multiplayer compat
+				Main.npc[i].lifeMax = 30;
+				Main.npc[i].SpawnedFromStatue = true;
+				Main.npc[i].velocity += npc.Center.DirectionTo(Main.player[npc.target].Center) * 30;
 			}
 
 			if (AttackTimer > 480)
