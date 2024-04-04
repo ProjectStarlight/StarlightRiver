@@ -8,6 +8,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public ref float Timer => ref NPC.ai[0];
 		public ref float State => ref NPC.ai[1];
+		public ref float Dead => ref NPC.ai[2];
 
 		public override string Texture => AssetDirectory.BrainRedux + Name;
 
@@ -23,13 +24,37 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			NPC.knockBackResist = 0f;
 			NPC.defense = 5;
 
-			NPC.GetGlobalNPC<BarrierNPC>().maxBarrier = 200;
-			NPC.GetGlobalNPC<BarrierNPC>().barrier = 200;
+			NPC.GetGlobalNPC<BarrierNPC>().maxBarrier = 100;
+			NPC.GetGlobalNPC<BarrierNPC>().barrier = 100;
 		}
 
 		public override bool CheckActive()
 		{
 			return false;
+		}
+
+		public override bool PreKill()
+		{
+			Dead = 1;
+			NPC.life = 1;
+			NPC.dontTakeDamage = true;
+			NPC.immortal = true;
+			return false;
+		}
+
+		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+		{
+			return opacity > 0.5f;
+		}
+
+		public override bool? CanBeHitByItem(Player player, Item item)
+		{
+			return opacity > 0.5f ? null : false;
+		}
+
+		public override bool? CanBeHitByProjectile(Projectile projectile)
+		{
+			return opacity > 0.5f ? null : false;
 		}
 
 		public override void AI()

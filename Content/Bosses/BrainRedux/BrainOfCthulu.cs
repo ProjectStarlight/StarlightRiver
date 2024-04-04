@@ -23,6 +23,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public Vector2 savedPos;
 		public Vector2 savedPos2;
 
+		public List<int> attackQueue = new List<int>();
+
 		public ref float Timer => ref npc.ai[0];
 		public ref float State => ref npc.ai[1];
 		public ref float AttackTimer => ref npc.ai[2];
@@ -107,6 +109,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						neurisms.Add(Main.npc[i]);
 					}
 
+					for(int k = 0; k < 4; k++)
+					{
+						attackQueue.Add(Main.rand.Next(4));
+					}
+
 					Timer = 0;
 					State = 1;
 
@@ -135,9 +142,17 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 					if (AttackTimer == 1)
 					{
-						AttackState++;
-						if (AttackState >= 4)
+						AttackState = attackQueue[0];
+						attackQueue.RemoveAt(0);
+						attackQueue.Add(Main.rand.Next(4));
+
+						// Transition check, if there are no 'alive' neurysms left
+						if (!neurisms.Any(n => n.ai[2] == 0))
+						{
+							State = 3;
+							Timer = 0;
 							AttackState = 0;
+						}
 					}
 
 					switch(AttackState)
