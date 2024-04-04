@@ -1,9 +1,11 @@
-﻿using StarlightRiver.Core.Systems.BarrierSystem;
+﻿using StarlightRiver.Content.Dusts;
+using StarlightRiver.Core.Systems.BarrierSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Bosses.BrainRedux
 {
@@ -151,6 +153,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				float prog = Helpers.Helper.SwoopEase((AttackTimer - 120) / 60f);
 				npc.Center = Vector2.Lerp(savedPos2, savedPos, prog);
+
+				var d = Dust.NewDustPerfect(npc.Center, ModContent.DustType<BloodMetaballDust>(), Vector2.UnitY.RotatedByRandom(1) * Main.rand.NextFloat(-5, -3));
+				d.customData = 1f;
+
+				Dust.NewDustPerfect(npc.Center, DustID.Blood, Vector2.UnitY.RotatedByRandom(6.28f) * Main.rand.NextFloat(1, 5));
 			}
 
 			if (AttackTimer > 180)
