@@ -1,16 +1,23 @@
-﻿using StarlightRiver.Content.Buffs;
+﻿using ReLogic.Utilities;
+using StarlightRiver.Content.Bosses.BrainRedux;
+using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Tiles.Crimson;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
+using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Biomes
 {
 	internal class GraymatterBiome : ModBiome
 	{
 		public static bool forceGrayMatter;
+
+		public List<Vector2> thinkerPositions;
 
 		public static ScreenTarget hallucinationMap;
 		public static ScreenTarget overHallucinationMap;
@@ -117,10 +124,65 @@ namespace StarlightRiver.Content.Biomes
 	internal class GraymatterBiomeSystem : ModSystem
 	{
 		public bool anyTiles;
+		public bool reset;
+
+		public List<Vector2> thinkerPositions = new();
+
+		public override void Load()
+		{
+			On_WorldGen.CrimVein += AddThinker;
+		}
+
+		private void AddThinker(On_WorldGen.orig_CrimVein orig, Vector2D position, Vector2D velocity)
+		{
+			if (!thinkerPositions.Contains(position.ToPoint().ToVector2()))
+				thinkerPositions.Add(position.ToPoint().ToVector2());
+
+			orig(position, velocity);
+		}
 
 		public override void TileCountsAvailable(ReadOnlySpan<int> tileCounts)
 		{
 			anyTiles = tileCounts[ModContent.TileType<GrayMatter>()] > 0;
+		}
+
+		public override void SaveWorldData(TagCompound tag)
+		{
+			tag.Add("ThinkerPositions", thinkerPositions);
+		}
+
+		public override void ClearWorld()
+		{
+			reset = false;
+			TheThinker.toRender.Clear();
+		}
+
+		public override void PostUpdateEverything()
+		{
+			if (!reset)
+			{
+				for (int k = 0; k < Main.maxNPCs; k++)
+				{
+					if (Main.npc[k].ModNPC is TheThinker thinker)
+					{
+						if (thinker.active)
+							thinker.ResetArena();
+					}
+				}
+
+				reset = true;
+			}
+		}
+
+		public override void LoadWorldData(TagCompound tag)
+		{
+			thinkerPositions = tag.GetList<Vector2>("ThinkerPositions") as List<Vector2>;
+
+			foreach (Vector2 pos in thinkerPositions)
+			{
+				if (!Main.npc.Any(n => n.active && n.type == ModContent.NPCType<TheThinker>() && Vector2.Distance(n.Center, pos) < 64))
+					NPC.NewNPC(null, (int)pos.X * 16, (int)pos.Y * 16, ModContent.NPCType<TheThinker>());
+			}
 		}
 	}
 }

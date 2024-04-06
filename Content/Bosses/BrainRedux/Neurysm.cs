@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override void SetDefaults()
 		{
-			NPC.lifeMax = 200;
+			NPC.lifeMax = 150;
 			NPC.damage = 25;
 			NPC.width = 34;
 			NPC.height = 34;
@@ -22,7 +22,6 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			NPC.noGravity = true;
 			NPC.aiStyle = -1;
 			NPC.knockBackResist = 0f;
-			NPC.defense = 5;
 
 			NPC.GetGlobalNPC<BarrierNPC>().maxBarrier = 100;
 			NPC.GetGlobalNPC<BarrierNPC>().barrier = 100;

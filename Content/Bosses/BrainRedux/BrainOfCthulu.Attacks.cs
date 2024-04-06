@@ -74,6 +74,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						(n.ModNPC as Neurysm).Timer = 0;
 					}
 				});
+
+				savedRot = Main.rand.NextFloat(6.28f);
+				npc.netUpdate = true;
 			}
 
 			for (int k = 0; k < neurisms.Count; k++)
@@ -82,7 +85,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				if (AttackTimer == 30 + k * 20)
 				{
-					float rot = 0;
+					float rot = savedRot;
 					float direction = k % 2 == 0 ? 1 : -1;
 
 					float a = (1 - lerp * 2) * 750f;
@@ -97,7 +100,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				if (AttackTimer >= 60 + k * 20 && AttackTimer <= 180 + k * 20)
 				{
-					float rot = 0;
+					float rot = savedRot;
 					float direction = k % 2 == 0 ? 1 : -1;
 
 					float a = (1 - lerp * 2) * 750f;

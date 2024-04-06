@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria.DataStructures;
+using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Bosses.BrainRedux
 {
@@ -14,7 +15,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 	{
 		public static readonly List<TheThinker> toRender = new();
 
-		public readonly List<Point16> tilesChanged = new();
+		public bool active = false;
+		public List<Point16> tilesChanged = new();
 
 		public override string Texture => AssetDirectory.BrainRedux + Name;
 
@@ -53,6 +55,16 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			}
 		}
 
+		public override bool CheckActive()
+		{
+			return false;
+		}
+
+		public override bool NeedSaving()
+		{
+			return true;
+		}
+
 		public void CreateArena()
 		{
 			for(int x = -60; x <= 60; x++)
@@ -84,11 +96,14 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 							tile.HasTile = true;
 							tile.TileType = (ushort)ModContent.TileType<BrainBlocker>();
 							tile.Slope = Terraria.ID.SlopeType.Solid;
+							WorldGen.TileFrame((int)NPC.Center.X / 16 + x, (int)NPC.Center.Y / 16 + y);
 							tilesChanged.Add(new Point16(x, y));
 						}
 					}
 				}
 			}
+
+			active = true;
 		}
 
 		public void ResetArena()
@@ -105,6 +120,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			}
 
 			tilesChanged.Clear();
+			active = false;
 		}
 
 		public override void OnHitPlayer(Player target, Player.HurtInfo hurtInfo)
@@ -118,6 +134,18 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
 		{
 			return Helpers.Helper.CheckCircularCollision(NPC.Center, 64, target.Hitbox);
+		}
+
+		public override void SaveData(TagCompound tag)
+		{
+			tag.Add("active", active);
+			tag.Add("tiles", tilesChanged);
+		}
+
+		public override void LoadData(TagCompound tag)
+		{
+			active = tag.GetBool("active");
+			tilesChanged = tag.GetList<Point16>("tiles") as List<Point16>;
 		}
 
 		private void DrawAura(SpriteBatch sb)

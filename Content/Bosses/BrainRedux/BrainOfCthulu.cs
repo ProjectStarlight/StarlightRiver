@@ -1,10 +1,12 @@
 ﻿using StarlightRiver.Core.Systems.BarrierSystem;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria.ID;
+using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Bosses.BrainRedux
 {
@@ -22,6 +24,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public List<NPC> neurisms = new();
 		public Vector2 savedPos;
 		public Vector2 savedPos2;
+		public float savedRot;
 
 		public List<int> attackQueue = new List<int>();
 
@@ -153,6 +156,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 							Timer = 0;
 							AttackState = 0;
 						}
+
+						npc.netUpdate = true;
 					}
 
 					switch(AttackState)
@@ -175,6 +180,33 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			}
 
 			return false;
+		}
+
+		public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
+		{
+			binaryWriter.WriteVector2(savedPos);
+			binaryWriter.WriteVector2(savedPos2);
+			binaryWriter.Write(savedRot);
+
+			binaryWriter.Write(attackQueue.Count);
+			for(int k = 0; k < attackQueue.Count; k++)
+			{
+				binaryWriter.Write(attackQueue[k]);
+			}
+		}
+
+		public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
+		{
+			savedPos = binaryReader.ReadVector2();
+			savedPos2 = binaryReader.ReadVector2();
+			savedRot = binaryReader.ReadSingle();
+
+			int amount = binaryReader.ReadInt32();
+			attackQueue.Clear();
+			for(int k = 0; k < amount; k++)
+			{
+				attackQueue.Add(binaryReader.ReadInt32());
+			}
 		}
 
 		/// <summary>
