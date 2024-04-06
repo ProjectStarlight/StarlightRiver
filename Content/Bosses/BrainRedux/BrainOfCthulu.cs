@@ -40,23 +40,48 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			return entity.type == NPCID.BrainofCthulhu;
 		}
 
+		public override void Load()
+		{
+			On_WorldGen.CheckOrb += SpecialSpawn;
+		}
+
+		private void SpecialSpawn(On_WorldGen.orig_CheckOrb orig, int i, int j, int type)
+		{
+			var tile = Framing.GetTileSafely(i, j);
+
+			orig(i, j, type);
+
+			if (WorldGen.crimson && WorldGen.shadowOrbCount >= 2 && WorldGen.destroyObject)
+			{
+				Vector2 pos = new Vector2(i, j) * 16;
+
+				if (Main.npc.Any(n => n.active && n.type == ModContent.NPCType<TheThinker>() && Vector2.Distance(n.Center, pos) < 1000))
+				{
+					for (int k = 0; k < Main.maxNPCs; k++)
+					{
+						var npc = Main.npc[k];
+
+						if (npc.active && npc.type == NPCID.BrainofCthulhu)
+							npc.active = false;
+
+						if (npc.active && npc.type == NPCID.Creeper)
+							npc.active = false;
+					}
+
+					SpawnReduxedBrain(pos + new Vector2(0, 200));
+				}
+			}		
+		}
+
 		public override void SetDefaults(NPC entity)
 		{
 			npc = entity;
-
-			if (reworked)
-			{
-				entity.GetGlobalNPC<BarrierNPC>().maxBarrier = 800;
-				entity.GetGlobalNPC<BarrierNPC>().barrier = 800;
-			}
 		}
 
 		public override bool PreAI(NPC npc)
 		{
 			if (!reworked)
 				return true;
-
-			npc.GetGlobalNPC<BarrierNPC>().maxBarrier = 800;
 
 			GUI.BossBarOverlay.SetTracked(npc);
 
@@ -112,10 +137,23 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						neurisms.Add(Main.npc[i]);
 					}
 
-					for(int k = 0; k < 4; k++)
+					attackQueue.Add(Main.rand.Next(4));
+
+					for (int k = 0; k < 3; k++)
 					{
-						attackQueue.Add(Main.rand.Next(4));
+						int next = Main.rand.Next(4);
+
+						while (next == attackQueue.Last())
+							next = Main.rand.Next(4);
+
+						attackQueue.Add(next);
 					}
+
+					npc.lifeMax = 2000;
+					npc.life = 2000;
+
+					npc.GetGlobalNPC<BarrierNPC>().maxBarrier = 800;
+					npc.GetGlobalNPC<BarrierNPC>().barrier = 800;
 
 					Timer = 0;
 					State = 1;
@@ -131,11 +169,17 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					if (Timer < 120)
 						npc.Center = Vector2.SmoothStep(savedPos, thinker.Center + new Vector2(0, -180), Timer / 120f);
 
+					foreach(Player player in Main.player.Where(n => n.active && Vector2.Distance(n.Center, thinker.Center) < 1500))
+					{
+						player.position += (thinker.Center - player.Center) * 0.1f * (Vector2.Distance(player.Center, thinker.Center) / 1500f);
+					}
+
 					if (Timer == 240)
 					{
 						State = 2;
 						Timer = 0;
 						AttackTimer = 0;
+						(thinker.ModNPC as TheThinker)?.CreateArena();
 					}
 
 					break;
@@ -143,14 +187,23 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				// First phase
 				case 2:
 
+					if (npc.life <= npc.lifeMax / 2f)
+						npc.life = (int)(npc.lifeMax / 2f);
+
 					if (AttackTimer == 1)
 					{
 						AttackState = attackQueue[0];
 						attackQueue.RemoveAt(0);
-						attackQueue.Add(Main.rand.Next(4));
 
-						// Transition check, if there are no 'alive' neurysms left
-						if (!neurisms.Any(n => n.ai[2] == 0))
+						int next = Main.rand.Next(4);
+
+						while (next == attackQueue.Last())
+							next = Main.rand.Next(4);
+
+						attackQueue.Add(next);
+
+						// Transition check
+						if (npc.life <= npc.lifeMax / 2f)
 						{
 							State = 3;
 							Timer = 0;
@@ -176,6 +229,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 							break;
 					}
 
+					break;
+
+				// Second phase
+				case 3:
+					npc.dontTakeDamage = false;
+					npc.immortal = false;
 					break;
 			}
 

@@ -53,6 +53,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				if (Vector2.DistanceSquared(player.Center, NPC.Center) <= Math.Pow(256, 2))
 					player.AddBuff(ModContent.BuffType<CrimsonHallucination>(), 10);
 			}
+		
+			if(active && (NPC.crimsonBoss < 0 || !Main.npc[NPC.crimsonBoss].active))
+			{
+				ResetArena();
+			}
 		}
 
 		public override bool CheckActive()
@@ -103,6 +108,19 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				}
 			}
 
+			for(int k = 0; k < 10; k++)
+			{
+				float off = 1 - (k / 9f) * 2f;
+				Vector2 pos = NPC.Center + Vector2.UnitY * off * 750;
+				int i = NPC.NewNPC(null, (int)pos.X, (int)pos.Y, ModContent.NPCType<BrainPlatform>());
+
+				float a = off * 750f;
+				float h = 750f;
+
+				Main.npc[i].width = (int)((float)Math.Sqrt(Math.Pow(h, 2) - Math.Pow(a, 2)) * 2);
+				Main.npc[i].Center = pos;
+			}
+
 			active = true;
 		}
 
@@ -119,16 +137,13 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					tile.HasTile = false;
 			}
 
+			foreach(NPC npc in Main.npc.Where(n => n.active && n.type == ModContent.NPCType<BrainPlatform>()))
+			{
+				npc.active = false;
+			}
+
 			tilesChanged.Clear();
 			active = false;
-		}
-
-		public override void OnHitPlayer(Player target, Player.HurtInfo hurtInfo)
-		{
-			if (tilesChanged.Count == 0)
-				CreateArena();
-			else
-				ResetArena();
 		}
 
 		public override bool CanHitPlayer(Player target, ref int cooldownSlot)

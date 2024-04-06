@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.ScreenTargetSystem;
+﻿using StarlightRiver.Content.CustomHooks;
+using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
 
 namespace StarlightRiver.Content.Backgrounds
@@ -23,7 +24,7 @@ namespace StarlightRiver.Content.Backgrounds
 			starsMap = new(DrawMap, CheckIsActive, 1f);
 			stars = new("StarlightRiver/Assets/Misc/DotTell", UpdateStars);
 
-			On_Main.DrawInterface += DrawOverlay;
+			Screenspace.DrawScreenspaceEvent += DrawOverlay;
 		}
 
 		public override void Unload()
@@ -66,17 +67,15 @@ namespace StarlightRiver.Content.Backgrounds
 		/// <param name="starsMap"></param>
 		/// <param name="starsTarget"></param>
 		public static event DrawOverlayDelegate DrawOverlayEvent;
-		public void DrawOverlay(On_Main.orig_DrawInterface orig, Main self, GameTime gameTime)
+		public void DrawOverlay(SpriteBatch spriteBatch)
 		{
 			if (DrawOverlayEvent != null)
 			{
 				foreach (DrawOverlayDelegate del in DrawOverlayEvent.GetInvocationList())
 				{
-					del(gameTime, starsMap, starsTarget);
+					del(Main.gameTimeCache, starsMap, starsTarget);
 				}
 			}
-
-			orig(self, gameTime);
 		}
 
 		public delegate void DrawMapDelegate(SpriteBatch sb);

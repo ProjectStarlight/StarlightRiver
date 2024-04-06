@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria.Audio;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Bosses.BrainRedux
@@ -14,18 +15,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		#region Phase 1
 		public void ShrinkingCircle()
 		{
-			if (AttackTimer == 1)
+			if (AttackTimer < 60)
 			{
-				neurisms.ForEach(n =>
-				{
-					n.velocity *= 0;
-
-					if ((n.ModNPC as Neurysm).State != 1)
-					{
-						(n.ModNPC as Neurysm).State = 1;
-						(n.ModNPC as Neurysm).Timer = 0;
-					}
-				});
+				npc.Center += (thinker.Center + new Vector2(0, -200) - npc.Center) * 0.08f;
 			}
 
 			if (AttackTimer == 31)
@@ -46,7 +38,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				for (int k = 0; k < neurisms.Count; k++)
 				{
-					float rot = k / (float)neurisms.Count * 6.28f + timer * 3.14f;
+					float rot = k / (float)neurisms.Count * 6.28f + timer * 2.5f;
 
 					neurisms[k].Center = thinker.Center + Vector2.UnitX.RotatedBy(rot) * (750 - timer * 675f);
 					(neurisms[k].ModNPC as Neurysm).State = 0;
@@ -56,16 +48,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (AttackTimer == 240)
 			{
-				AttackTimer = 0;
-			}
-		}
-
-		public void LineThrow()
-		{
-			if (AttackTimer == 1)
-			{
 				neurisms.ForEach(n =>
-				{				
+				{
 					n.velocity *= 0;
 
 					if ((n.ModNPC as Neurysm).State != 1)
@@ -75,6 +59,19 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					}
 				});
 
+				AttackTimer = 0;
+			}
+		}
+
+		public void LineThrow()
+		{
+			if (AttackTimer < 60)
+			{
+				npc.Center += (thinker.Center + new Vector2(0, -200) - npc.Center) * 0.08f;
+			}
+
+			if (AttackTimer == 1)
+			{
 				savedRot = Main.rand.NextFloat(6.28f);
 				npc.netUpdate = true;
 			}
@@ -96,6 +93,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					neurisms[k].Center = thinker.Center + Vector2.UnitX.RotatedBy(rot) * (-750 + 1500 * lerp) + Vector2.UnitY.RotatedBy(rot) * direction * offset;
 					(neurisms[k].ModNPC as Neurysm).State = 2;
 					(neurisms[k].ModNPC as Neurysm).Timer = 0;
+					(neurisms[k].ModNPC as Neurysm).TellTime = 30;
+					(neurisms[k].ModNPC as Neurysm).tellDirection = rot + 1.57f * direction;
+					(neurisms[k].ModNPC as Neurysm).tellLen = offset * 2;
 				}
 
 				if (AttackTimer >= 60 + k * 20 && AttackTimer <= 180 + k * 20)
@@ -125,7 +125,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				}
 			}
 
-			if (AttackTimer >= 120 + neurisms.Count * 20)
+			if (AttackTimer >= 180 + neurisms.Count * 20)
 			{
 				AttackTimer = 0;
 			}		
@@ -154,7 +154,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (AttackTimer > 120)
 			{
-				float prog = Helpers.Helper.SwoopEase((AttackTimer - 120) / 60f);
+				float prog = Helpers.Helper.SwoopEase((AttackTimer - 120) / 90f);
 				npc.Center = Vector2.Lerp(savedPos2, savedPos, prog);
 
 				var d = Dust.NewDustPerfect(npc.Center, ModContent.DustType<BloodMetaballDust>(), Vector2.UnitY.RotatedByRandom(1) * Main.rand.NextFloat(-5, -3));
@@ -163,7 +163,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				Dust.NewDustPerfect(npc.Center, DustID.Blood, Vector2.UnitY.RotatedByRandom(6.28f) * Main.rand.NextFloat(1, 5));
 			}
 
-			if (AttackTimer > 180)
+			if (AttackTimer > 210)
 			{
 				AttackTimer = 0;
 			}
@@ -179,22 +179,25 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				npc.TargetClosest();
 			}
 
-			if (AttackTimer >= 1 && AttackTimer < 480)
+			if (AttackTimer >= 1 && AttackTimer < 200)
 			{
 				npc.Center += (targetPos - npc.Center) * 0.05f;
 			}
 
-			if (AttackTimer % 60 == 0 && Main.npc.Count(n => n.active && n.type == Terraria.ID.NPCID.Creeper) < 10)
+			if (AttackTimer % 20 == 0 && Main.npc.Count(n => n.active && n.type == Terraria.ID.NPCID.Creeper) < 10)
 			{
 				int i = NPC.NewNPC(npc.GetSource_FromThis(), (int)npc.Center.X, (int)npc.Center.Y, Terraria.ID.NPCID.Creeper);
 
 				//TODO: Multiplayer compat
 				Main.npc[i].lifeMax = 30;
+				Main.npc[i].life = 30;
 				Main.npc[i].SpawnedFromStatue = true;
 				Main.npc[i].velocity += npc.Center.DirectionTo(Main.player[npc.target].Center) * 30;
+
+				SoundEngine.PlaySound(SoundID.Zombie10, npc.Center);
 			}
 
-			if (AttackTimer > 480)
+			if (AttackTimer > 200)
 			{
 				AttackTimer = 0;
 			}

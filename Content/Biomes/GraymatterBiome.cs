@@ -1,6 +1,7 @@
 ﻿using ReLogic.Utilities;
 using StarlightRiver.Content.Bosses.BrainRedux;
 using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Tiles.Crimson;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
@@ -45,7 +46,7 @@ namespace StarlightRiver.Content.Biomes
 			hallucinationMap = new(DrawHallucinationMap, () => IsBiomeActive(Main.LocalPlayer), 1);
 			overHallucinationMap = new(DrawOverHallucinationMap, () => IsBiomeActive(Main.LocalPlayer), 1.1f);
 
-			On_Main.DrawItemTextPopups += DrawAuras;
+			Screenspace.DrawScreenspaceEvent += DrawAuras;
 		}
 
 		public override bool IsBiomeActive(Player player)
@@ -94,7 +95,7 @@ namespace StarlightRiver.Content.Biomes
 			}
 		}
 
-		private void DrawAuras(On_Main.orig_DrawItemTextPopups orig, float scaleTarget)
+		private void DrawAuras(SpriteBatch spriteBatch)
 		{
 			if (IsBiomeActive(Main.LocalPlayer))
 			{
@@ -108,16 +109,14 @@ namespace StarlightRiver.Content.Biomes
 				shader.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
 				shader.Parameters["screensize"].SetValue(noise.Size() / new Vector2(Main.screenWidth, Main.screenHeight));
 
-				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default, shader, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default, shader, Main.GameViewMatrix.TransformationMatrix);
 
-				Main.spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+				spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
 
-				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default);
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default);
 			}
-
-			orig(scaleTarget);
 		}
 	}
 
