@@ -1,5 +1,9 @@
 # Starlight River 0.2.8
 
+## Multiplayer
+- Performance optimizations to player onhits. Most noticeable in Glassweaver gauntlet
+- Removed extra unnecesary packets from dummy system
+
 ## Fixes
 - Fixed drawblack in vitric biome (no more visible black squares)
 - Fixed a broken tooltip on the overflowing urn
