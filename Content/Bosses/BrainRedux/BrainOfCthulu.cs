@@ -1,10 +1,9 @@
-﻿using StarlightRiver.Core.Systems.BarrierSystem;
+﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Core.Systems.BarrierSystem;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 
@@ -26,12 +25,27 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public Vector2 savedPos2;
 		public float savedRot;
 
-		public List<int> attackQueue = new List<int>();
+		private float arenaFade;
+
+		public List<int> attackQueue = new();
 
 		public ref float Timer => ref npc.ai[0];
 		public ref float State => ref npc.ai[1];
 		public ref float AttackTimer => ref npc.ai[2];
 		public ref float AttackState => ref npc.ai[3];
+
+		public static float ArenaOpacity => TheBrain?.arenaFade / 120f ?? 0f;
+
+		public static BrainOfCthulu TheBrain
+		{
+			get
+			{
+				if (NPC.crimsonBoss > 0 && Main.npc[NPC.crimsonBoss].TryGetGlobalNPC(out BrainOfCthulu brain))
+					return brain;
+
+				return null;
+			}
+		}
 
 		public override bool InstancePerEntity => true;
 
@@ -43,11 +57,34 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public override void Load()
 		{
 			On_WorldGen.CheckOrb += SpecialSpawn;
+
+			GraymatterBiome.onDrawOverHallucinationMap += DrawPrediction;
+		}
+
+		private void DrawPrediction(SpriteBatch obj)
+		{
+			if (NPC.crimsonBoss > 0)
+			{
+				if (TheBrain != null)
+				{
+					Vector2 pos = TheBrain.npc.Center - Main.screenPosition;
+
+					for (int k = 0; k < TheBrain.attackQueue.Count; k++)
+					{
+						int attack = TheBrain.attackQueue[k];
+						Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.BrainRedux + $"Indicator{attack}").Value;
+						obj.Draw(tex, pos + new Vector2(-100 + k * 66, -50), null, Color.White, 0, tex.Size() / 2f, 1, 0, 0);
+					}
+
+					Texture2D tex2 = ModContent.Request<Texture2D>(AssetDirectory.BrainRedux + $"Indicator{TheBrain.AttackState}").Value;
+					obj.Draw(tex2, pos + new Vector2(0, -100), null, Color.White, 0, tex2.Size() / 2f, 1.5f, 0, 0);
+				}
+			}
 		}
 
 		private void SpecialSpawn(On_WorldGen.orig_CheckOrb orig, int i, int j, int type)
 		{
-			var tile = Framing.GetTileSafely(i, j);
+			Tile tile = Framing.GetTileSafely(i, j);
 
 			orig(i, j, type);
 
@@ -59,7 +96,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				{
 					for (int k = 0; k < Main.maxNPCs; k++)
 					{
-						var npc = Main.npc[k];
+						NPC npc = Main.npc[k];
 
 						if (npc.active && npc.type == NPCID.BrainofCthulhu)
 							npc.active = false;
@@ -70,7 +107,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 					SpawnReduxedBrain(pos + new Vector2(0, 200));
 				}
-			}		
+			}
 		}
 
 		public override void SetDefaults(NPC entity)
@@ -118,7 +155,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				}
 			}
 
-			switch(State)
+			switch (State)
 			{
 				// Fleeing
 				case -1:
@@ -131,7 +168,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				// Setup
 				case 0:
-					for(int k = 0; k < 10; k++)
+					for (int k = 0; k < 10; k++)
 					{
 						int i = NPC.NewNPC(null, (int)npc.Center.X, (int)npc.Center.Y, ModContent.NPCType<Neurysm>());
 						neurisms.Add(Main.npc[i]);
@@ -167,11 +204,22 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						savedPos = npc.Center;
 
 					if (Timer < 120)
-						npc.Center = Vector2.SmoothStep(savedPos, thinker.Center + new Vector2(0, -180), Timer / 120f);
+						npc.Center = Vector2.SmoothStep(savedPos, thinker.Center + new Vector2(0, -250), Timer / 120f);
 
-					foreach(Player player in Main.player.Where(n => n.active && Vector2.Distance(n.Center, thinker.Center) < 1500))
+					foreach (Player player in Main.player.Where(n => n.active && Vector2.Distance(n.Center, thinker.Center) < 1500))
 					{
 						player.position += (thinker.Center - player.Center) * 0.1f * (Vector2.Distance(player.Center, thinker.Center) / 1500f);
+					}
+
+					if (Timer == 120)
+					{
+						(thinker.ModNPC as TheThinker)?.CreateArena();
+					}
+
+					if (Timer >= 120)
+					{
+						if (arenaFade < 120)
+							arenaFade++;
 					}
 
 					if (Timer == 240)
@@ -179,7 +227,6 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						State = 2;
 						Timer = 0;
 						AttackTimer = 0;
-						(thinker.ModNPC as TheThinker)?.CreateArena();
 					}
 
 					break;
@@ -213,7 +260,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						npc.netUpdate = true;
 					}
 
-					switch(AttackState)
+					switch (AttackState)
 					{
 						case 0:
 							ShrinkingCircle();
@@ -235,10 +282,65 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				case 3:
 					npc.dontTakeDamage = false;
 					npc.immortal = false;
+
+					if (AttackTimer == 1)
+					{
+						AttackState = attackQueue[0];
+						attackQueue.RemoveAt(0);
+
+						int next = 3;
+
+						attackQueue.Add(next);
+
+						// Transition check
+						if (npc.life <= npc.lifeMax / 2f)
+						{
+							State = 3;
+							Timer = 0;
+							AttackState = 0;
+						}
+
+						npc.netUpdate = true;
+					}
+
+					switch (AttackState)
+					{
+						case 0:
+							ShrinkingCircle();
+							break;
+						case 1:
+							LineThrow();
+							break;
+						case 2:
+							Ram();
+							break;
+						case 3:
+							Spawn();
+							break;
+					}
+
+					break;
 					break;
 			}
 
 			return false;
+		}
+
+		public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+		{
+			if (reworked)
+			{
+				if (State == 2)
+				{
+					Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/GlowRing").Value;
+					Color color = Color.Gray * Math.Min(1f, Timer / 60f);
+					color.A = 0;
+
+					spriteBatch.Draw(tex, npc.Center - Main.screenPosition, null, color, 0, tex.Size() / 2f, 0.6f, 0, 0);
+
+					spriteBatch.Draw(tex, npc.Center - Main.screenPosition, null, color, 0, tex.Size() / 2f, 0.6f + 0.05f * (float)Math.Sin(Main.GameUpdateCount * 0.1f), 0, 0);
+				}
+			}
 		}
 
 		public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
@@ -248,7 +350,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			binaryWriter.Write(savedRot);
 
 			binaryWriter.Write(attackQueue.Count);
-			for(int k = 0; k < attackQueue.Count; k++)
+			for (int k = 0; k < attackQueue.Count; k++)
 			{
 				binaryWriter.Write(attackQueue[k]);
 			}
@@ -262,7 +364,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			int amount = binaryReader.ReadInt32();
 			attackQueue.Clear();
-			for(int k = 0; k < amount; k++)
+			for (int k = 0; k < amount; k++)
 			{
 				attackQueue.Add(binaryReader.ReadInt32());
 			}
@@ -276,7 +378,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			int i = NPC.NewNPC(null, (int)position.X, (int)position.Y, NPCID.BrainofCthulhu);
 
-			if(Main.npc[i].TryGetGlobalNPC(out BrainOfCthulu brain))
+			if (Main.npc[i].TryGetGlobalNPC(out BrainOfCthulu brain))
 				brain.reworked = true;
 		}
 	}

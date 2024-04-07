@@ -18,6 +18,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public bool active = false;
 		public List<Point16> tilesChanged = new();
 
+		public ref float ExtraRadius => ref NPC.ai[0];
+
 		public override string Texture => AssetDirectory.BrainRedux + Name;
 
 		public override void Load()
@@ -32,10 +34,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			NPC.aiStyle = -1;
 			NPC.width = 128;
 			NPC.height = 128;
-			NPC.immortal = true;
-			NPC.dontTakeDamage = true;
 			NPC.damage = 10;
 			NPC.lifeMax = 1000;
+			NPC.knockBackResist = 0f;
+			NPC.friendly = false;
 
 			toRender.Add(this);
 		}
@@ -46,11 +48,16 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			Lighting.AddLight(NPC.Center, new Vector3(1f, 0.2f, 0.2f));
 
+			if (ExtraRadius > 0)
+				ExtraRadius -= 0.5f;
+
+			NPC.life = NPC.lifeMax;
+
 			for(int k = 0; k < Main.maxPlayers; k++)
 			{
 				var player = Main.player[k];
 
-				if (Vector2.DistanceSquared(player.Center, NPC.Center) <= Math.Pow(256, 2))
+				if (Vector2.DistanceSquared(player.Center, NPC.Center) <= Math.Pow((200 + ExtraRadius), 2))
 					player.AddBuff(ModContent.BuffType<CrimsonHallucination>(), 10);
 			}
 		
@@ -68,6 +75,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public override bool NeedSaving()
 		{
 			return true;
+		}
+
+		public override void HitEffect(NPC.HitInfo hit)
+		{
+			ExtraRadius += hit.Damage * 0.5f;
 		}
 
 		public void CreateArena()
@@ -171,9 +183,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			foreach (TheThinker thinker in toRender)
 			{
-				sb.Draw(glow, thinker.NPC.Center - Main.screenPosition, null, color, 0, glow.Size() / 2f, 6f, 0, 0);
-				sb.Draw(glow, thinker.NPC.Center - Main.screenPosition, null, color, 0, glow.Size() / 2f, 6f, 0, 0);
-				sb.Draw(glow, thinker.NPC.Center - Main.screenPosition, null, color, 0, glow.Size() / 2f, 6f, 0, 0);
+				for (int k = 0; k < 8; k++)
+				{
+					sb.Draw(glow, thinker.NPC.Center - Main.screenPosition, null, color, 0, glow.Size() / 2f, (200 + thinker.ExtraRadius) * 4 / glow.Width, 0, 0);
+				}
+				//sb.Draw(glow, thinker.NPC.Center - Main.screenPosition, null, color, 0, glow.Size() / 2f, 6f, 0, 0);
+				//sb.Draw(glow, thinker.NPC.Center - Main.screenPosition, null, color, 0, glow.Size() / 2f, 6f, 0, 0);
 			}
 
 			toRender.RemoveAll(n => n is null || !n.NPC.active);
