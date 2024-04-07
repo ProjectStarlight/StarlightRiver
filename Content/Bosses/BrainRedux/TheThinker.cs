@@ -17,6 +17,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public bool active = false;
 		public List<Point16> tilesChanged = new();
+		public Vector2 home;
 
 		public ref float ExtraRadius => ref NPC.ai[0];
 
@@ -38,12 +39,16 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			NPC.lifeMax = 1000;
 			NPC.knockBackResist = 0f;
 			NPC.friendly = false;
+			NPC.noTileCollide = true;
 
 			toRender.Add(this);
 		}
 
 		public override void AI()
 		{
+			if (home == default)
+				home = NPC.Center;
+
 			GraymatterBiome.forceGrayMatter = true;
 
 			Lighting.AddLight(NPC.Center, new Vector3(1f, 0.2f, 0.2f));
@@ -93,7 +98,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 					if (dist <= Math.Pow(50, 2))
 					{
-						var tile = Main.tile[(int)NPC.Center.X / 16 + x, (int)NPC.Center.Y / 16 + y];
+						var tile = Main.tile[(int)home.X / 16 + x, (int)home.Y / 16 + y];
 
 						tile.LiquidAmount = 0;
 
@@ -106,14 +111,14 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 					if (dist > Math.Pow(50, 2) && dist <= Math.Pow(60, 2))
 					{
-						var tile = Main.tile[(int)NPC.Center.X / 16 + x, (int)NPC.Center.Y / 16 + y];
+						var tile = Main.tile[(int)home.X / 16 + x, (int)home.Y / 16 + y];
 
 						if (!tile.HasTile)
 						{
 							tile.HasTile = true;
 							tile.TileType = (ushort)ModContent.TileType<BrainBlocker>();
 							tile.Slope = Terraria.ID.SlopeType.Solid;
-							WorldGen.TileFrame((int)NPC.Center.X / 16 + x, (int)NPC.Center.Y / 16 + y);
+							WorldGen.TileFrame((int)home.X / 16 + x, (int)home.Y / 16 + y);
 							tilesChanged.Add(new Point16(x, y));
 						}
 					}
@@ -140,7 +145,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			foreach(Point16 point in tilesChanged)
 			{
-				var tile = Main.tile[(int)NPC.Center.X / 16 + point.X, (int)NPC.Center.Y / 16 + point.Y];
+				var tile = Main.tile[(int)home.X / 16 + point.X, (int)home.Y / 16 + point.Y];
 
 				if (tile.IsActuated)
 					tile.IsActuated = false;
@@ -167,12 +172,14 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			tag.Add("active", active);
 			tag.Add("tiles", tilesChanged);
+			tag.Add("home", home);
 		}
 
 		public override void LoadData(TagCompound tag)
 		{
 			active = tag.GetBool("active");
 			tilesChanged = tag.GetList<Point16>("tiles") as List<Point16>;
+			home = tag.Get<Vector2>("home");
 		}
 
 		private void DrawAura(SpriteBatch sb)

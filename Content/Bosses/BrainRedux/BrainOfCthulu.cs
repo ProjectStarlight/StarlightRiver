@@ -280,6 +280,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				// Second phase
 				case 3:
+
 					npc.dontTakeDamage = false;
 					npc.immortal = false;
 
@@ -288,17 +289,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						AttackState = attackQueue[0];
 						attackQueue.RemoveAt(0);
 
-						int next = 3;
+						int next = Main.rand.Next(2);
 
 						attackQueue.Add(next);
-
-						// Transition check
-						if (npc.life <= npc.lifeMax / 2f)
-						{
-							State = 3;
-							Timer = 0;
-							AttackState = 0;
-						}
 
 						npc.netUpdate = true;
 					}
@@ -306,10 +299,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					switch (AttackState)
 					{
 						case 0:
-							ShrinkingCircle();
+							DoubleSpin();
 							break;
 						case 1:
-							LineThrow();
+							Clones();
 							break;
 						case 2:
 							Ram();
@@ -324,6 +317,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			}
 
 			return false;
+		}
+
+		public override void FindFrame(NPC npc, int frameHeight)
+		{
+			if (reworked && State >= 3)
+				npc.frame.Y += 182 * 4;
 		}
 
 		public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)

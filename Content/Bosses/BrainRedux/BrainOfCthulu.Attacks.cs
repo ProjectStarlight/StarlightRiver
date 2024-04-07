@@ -271,5 +271,90 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			}
 		}
 		#endregion
+
+		#region Phase 2
+		public void DoubleSpin()
+		{
+			Vector2 targetPos = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(AttackTimer / 400f * 6.28f) * 600;
+			Vector2 targetPos2 = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(AttackTimer / 400f * 6.28f) * -600;
+
+			if (AttackTimer == 1)
+			{
+				for (int k = 0; k < neurisms.Count; k++)
+				{
+					(neurisms[k].ModNPC as Neurysm).State = 2;
+					(neurisms[k].ModNPC as Neurysm).Timer = 0;
+				}
+			}
+
+			if (AttackTimer >= 1 && AttackTimer < 400)
+			{
+				npc.Center += (targetPos - npc.Center) * 0.05f;
+				thinker.Center += (targetPos2 - thinker.Center) * 0.05f;
+
+				float rad = 300 + (float)Math.Cos(AttackTimer / 200f * 3.14f + 3.14f) * 200;
+
+				for (int k = 0; k < neurisms.Count; k++)
+				{
+					float rot = k * 2 / (float)neurisms.Count * 6.28f + AttackTimer * -0.02f;
+
+					if (k % 2 == 0)
+						neurisms[k].Center = thinker.Center + Vector2.UnitX.RotatedBy(rot) * rad;
+					else
+						neurisms[k].Center = npc.Center + Vector2.UnitX.RotatedBy(rot) * rad;
+				}
+			}
+
+			if (AttackTimer == 60)
+			{
+				for (int k = 0; k < neurisms.Count; k++)
+				{
+					(neurisms[k].ModNPC as Neurysm).State = 0;
+					(neurisms[k].ModNPC as Neurysm).Timer = 0;
+				}
+			}
+
+			if (AttackTimer == 340)
+			{
+				for (int k = 0; k < neurisms.Count; k++)
+				{
+					(neurisms[k].ModNPC as Neurysm).State = 1;
+					(neurisms[k].ModNPC as Neurysm).Timer = 0;
+				}
+			}
+
+			if (AttackTimer >= 400)
+			{
+				AttackTimer = 0;
+			}
+		}
+
+		public void Clones()
+		{
+			if (AttackTimer == 1)
+			{
+				int random = Main.rand.Next(10);
+				savedPos = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(random / 10f * 6.28f) * 750;
+
+				for(int k = 0; k < 10; k++)
+				{
+					if (k != random)
+						Projectile.NewProjectile(null, (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(k / 10f * 6.28f) * 750, Vector2.Zero, ModContent.ProjectileType<HorrifyingVisage>(), 25, 0, Main.myPlayer);
+				}
+			}
+
+			if (AttackTimer <= 90)
+			{
+				npc.Center += (savedPos - npc.Center) * 0.05f;
+				thinker.Center += ((thinker.ModNPC as TheThinker).home - thinker.Center) * 0.05f;
+			}
+
+			if (AttackTimer == 240)
+			{
+				AttackTimer = 0;
+			}
+
+		}
+		#endregion
 	}
 }
