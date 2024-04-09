@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
-using Terraria.ID;
 using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Biomes

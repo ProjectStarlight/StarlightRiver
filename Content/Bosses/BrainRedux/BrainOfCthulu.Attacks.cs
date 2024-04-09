@@ -1,10 +1,6 @@
 ﻿using StarlightRiver.Content.Dusts;
-using StarlightRiver.Core.Systems.BarrierSystem;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.Audio;
 using Terraria.ID;
 
@@ -22,7 +18,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (AttackTimer == 31)
 			{
-				for(int k = 0; k < neurisms.Count; k++)
+				for (int k = 0; k < neurisms.Count; k++)
 				{
 					float rot = k / (float)neurisms.Count * 6.28f;
 
@@ -129,7 +125,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 					float prog = Helpers.Helper.BezierEase((AttackTimer - (60 + k * 20)) / 120f);
 
-					offset *= (1 - prog * 2);
+					offset *= 1 - prog * 2;
 
 					neurisms[k].Center = thinker.Center + Vector2.UnitX.RotatedBy(rot) * (-750 + 1500 * lerp) + Vector2.UnitY.RotatedBy(rot) * direction * offset;
 					(neurisms[k].ModNPC as Neurysm).State = 0;
@@ -147,7 +143,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (AttackTimer >= 180 + neurisms.Count * 20)
 			{
 				AttackTimer = 0;
-			}		
+			}
 		}
 
 		public void Ram()
@@ -177,6 +173,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (AttackTimer > 120)
 			{
+				contactDamage = true;
 				float prog = Helpers.Helper.SwoopEase((AttackTimer - 120) / chargeTime);
 				npc.Center = Vector2.Lerp(savedPos2, savedPos, prog);
 
@@ -188,6 +185,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (AttackTimer > 120 + chargeTime)
 			{
+				contactDamage = false;
 				AttackTimer = 0;
 			}
 		}
@@ -278,8 +276,33 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			Vector2 targetPos = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(AttackTimer / 400f * 6.28f) * 600;
 			Vector2 targetPos2 = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(AttackTimer / 400f * 6.28f) * -600;
 
-			if (AttackTimer == 1)
+			if (AttackTimer >= 1 && AttackTimer < 400)
 			{
+				float speed = Math.Min(0.05f, AttackTimer / 100f * 0.05f);
+
+				npc.Center += (targetPos - npc.Center) * speed;
+				thinker.Center += (targetPos2 - thinker.Center) * speed;
+
+				if (AttackTimer >= 60)
+				{
+					float rad = 260 + (float)Math.Cos((AttackTimer - 60) / 170f * 3.14f + 3.14f) * 200;
+
+					for (int k = 0; k < neurisms.Count; k++)
+					{
+						float rot = k * 2 / (float)neurisms.Count * 6.28f + AttackTimer * -0.02f;
+
+						if (k % 2 == 0)
+							neurisms[k].Center = thinker.Center + Vector2.UnitX.RotatedBy(rot) * rad;
+						else
+							neurisms[k].Center = npc.Center + Vector2.UnitX.RotatedBy(rot) * rad;
+					}
+				}
+			}
+
+			if (AttackTimer == 60)
+			{
+				contactDamage = true;
+
 				for (int k = 0; k < neurisms.Count; k++)
 				{
 					(neurisms[k].ModNPC as Neurysm).State = 2;
@@ -287,25 +310,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				}
 			}
 
-			if (AttackTimer >= 1 && AttackTimer < 400)
-			{
-				npc.Center += (targetPos - npc.Center) * 0.05f;
-				thinker.Center += (targetPos2 - thinker.Center) * 0.05f;
-
-				float rad = 300 + (float)Math.Cos(AttackTimer / 200f * 3.14f + 3.14f) * 200;
-
-				for (int k = 0; k < neurisms.Count; k++)
-				{
-					float rot = k * 2 / (float)neurisms.Count * 6.28f + AttackTimer * -0.02f;
-
-					if (k % 2 == 0)
-						neurisms[k].Center = thinker.Center + Vector2.UnitX.RotatedBy(rot) * rad;
-					else
-						neurisms[k].Center = npc.Center + Vector2.UnitX.RotatedBy(rot) * rad;
-				}
-			}
-
-			if (AttackTimer == 60)
+			if (AttackTimer == 90)
 			{
 				for (int k = 0; k < neurisms.Count; k++)
 				{
@@ -314,7 +319,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				}
 			}
 
-			if (AttackTimer == 340)
+			if (AttackTimer == 370)
 			{
 				for (int k = 0; k < neurisms.Count; k++)
 				{
@@ -325,35 +330,58 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (AttackTimer >= 400)
 			{
+				contactDamage = false;
+
 				AttackTimer = 0;
 			}
 		}
 
 		public void Clones()
 		{
-			if (AttackTimer == 1)
+			if (AttackTimer <= 30)
+				opacity = 1f - AttackTimer / 30f;
+
+			if (AttackTimer == 30)
 			{
 				int random = Main.rand.Next(10);
-				savedPos = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(random / 10f * 6.28f) * 750;
+				savedPos = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(random / 10f * 6.28f) * 650;
 
-				for(int k = 0; k < 10; k++)
+				for (int k = 0; k < 10; k++)
 				{
 					if (k != random)
-						Projectile.NewProjectile(null, (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(k / 10f * 6.28f) * 750, Vector2.Zero, ModContent.ProjectileType<HorrifyingVisage>(), 25, 0, Main.myPlayer);
+					{
+						var pos = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(k / 10f * 6.28f) * 650;
+						NPC.NewNPC(null, (int)pos.X, (int)pos.Y, ModContent.NPCType<HorrifyingVisage>());
+					}
 				}
+
+				npc.Center = savedPos;
 			}
 
-			if (AttackTimer <= 90)
+			if (AttackTimer > 30 && AttackTimer <= 60)
+				opacity = (AttackTimer - 30) / 30f;
+
+			if (AttackTimer <= 120)
 			{
-				npc.Center += (savedPos - npc.Center) * 0.05f;
-				thinker.Center += ((thinker.ModNPC as TheThinker).home - thinker.Center) * 0.05f;
+				thinker.Center += ((thinker.ModNPC as TheThinker).home - thinker.Center) * 0.02f;
 			}
 
-			if (AttackTimer == 240)
+			if (AttackTimer > 60 && AttackTimer < 510)
+			{
+				if (hurtLastFrame)
+					AttackTimer = 510;
+			}
+
+			if (AttackTimer == 540)
+			{
+				foreach (NPC npc in Main.npc.Where(n => n.active && n.ModNPC is HorrifyingVisage))
+					npc.ai[0] = 540;
+			}
+
+			if (AttackTimer == 600)
 			{
 				AttackTimer = 0;
 			}
-
 		}
 		#endregion
 	}

@@ -1,7 +1,6 @@
 ﻿using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Buffs;
 using Terraria.DataStructures;
-using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Crimson
 {

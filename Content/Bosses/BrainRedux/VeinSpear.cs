@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -37,7 +33,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (Projectile.timeLeft == 270)
 				Projectile.velocity *= 50f;
 
-			foreach(Player player in Main.player)
+			foreach (Player player in Main.player)
 			{
 				if (!player.active)
 					continue;
@@ -81,9 +77,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			Color glowColor = new Color(180, 60, 90) * opacity * 0.25f;
 			glowColor.A = 0;
 
-			Rectangle gSource = new Rectangle(0, 0, glow.Width, glow.Height);
-			Rectangle gTarget = new Rectangle((int)(Projectile.Center.X - Main.screenPosition.X), (int)(Projectile.Center.Y - Main.screenPosition.Y), (int)Vector2.Distance(BrainOfCthulu.TheBrain.npc.Center, Projectile.Center), 100);
-			Vector2 gOrigin = new Vector2(0, glow.Height / 2f);
+			var gSource = new Rectangle(0, 0, glow.Width, glow.Height);
+			var gTarget = new Rectangle((int)(Projectile.Center.X - Main.screenPosition.X), (int)(Projectile.Center.Y - Main.screenPosition.Y), (int)Vector2.Distance(BrainOfCthulu.TheBrain.npc.Center, Projectile.Center), 100);
+			var gOrigin = new Vector2(0, glow.Height / 2f);
 
 			spriteBatch.Draw(glow, gTarget, gSource, glowColor, (Projectile.Center - BrainOfCthulu.TheBrain.npc.Center).ToRotation() - 3.14f, gOrigin, 0, 0);
 
@@ -97,9 +93,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (Projectile.timeLeft > 270)
 			{
 				Texture2D tell = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrailNoEnd").Value;
-				Rectangle source = new Rectangle(0, 0, tell.Width, tell.Height);
-				Rectangle target = new Rectangle((int)(Projectile.Center.X - Main.screenPosition.X), (int)(Projectile.Center.Y - Main.screenPosition.Y), 500, 24);
-				Vector2 origin = new Vector2(0, 12);
+				var source = new Rectangle(0, 0, tell.Width, tell.Height);
+				var target = new Rectangle((int)(Projectile.Center.X - Main.screenPosition.X), (int)(Projectile.Center.Y - Main.screenPosition.Y), 500, 24);
+				var origin = new Vector2(0, 12);
 				Color color = new Color(255, 40, 40) * (float)Math.Sin((Projectile.timeLeft - 270) / 30f * 3.14f) * 0.5f;
 				color.A = 0;
 

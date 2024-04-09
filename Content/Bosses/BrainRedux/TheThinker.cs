@@ -4,8 +4,6 @@ using StarlightRiver.Content.Tiles.Crimson;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
 
@@ -58,15 +56,15 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			NPC.life = NPC.lifeMax;
 
-			for(int k = 0; k < Main.maxPlayers; k++)
+			for (int k = 0; k < Main.maxPlayers; k++)
 			{
-				var player = Main.player[k];
+				Player player = Main.player[k];
 
-				if (Vector2.DistanceSquared(player.Center, NPC.Center) <= Math.Pow((200 + ExtraRadius), 2))
+				if (Vector2.DistanceSquared(player.Center, NPC.Center) <= Math.Pow(200 + ExtraRadius, 2))
 					player.AddBuff(ModContent.BuffType<CrimsonHallucination>(), 10);
 			}
-		
-			if(active && (NPC.crimsonBoss < 0 || !Main.npc[NPC.crimsonBoss].active))
+
+			if (active && (NPC.crimsonBoss < 0 || !Main.npc[NPC.crimsonBoss].active))
 			{
 				ResetArena();
 			}
@@ -89,29 +87,29 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public void CreateArena()
 		{
-			for(int x = -60; x <= 60; x++)
+			for (int x = -60; x <= 60; x++)
 			{
-				for(int y = -60; y <= 60; y++)
+				for (int y = -60; y <= 60; y++)
 				{
 					var off = new Vector2(x, y);
-					var dist = off.LengthSquared();
+					float dist = off.LengthSquared();
 
 					if (dist <= Math.Pow(50, 2))
 					{
-						var tile = Main.tile[(int)home.X / 16 + x, (int)home.Y / 16 + y];
+						Tile tile = Main.tile[(int)home.X / 16 + x, (int)home.Y / 16 + y];
 
 						tile.LiquidAmount = 0;
 
 						if (tile.HasTile && !tile.IsActuated)
 						{
-							tile.IsActuated = true;							
+							tile.IsActuated = true;
 							tilesChanged.Add(new Point16(x, y));
 						}
 					}
 
 					if (dist > Math.Pow(50, 2) && dist <= Math.Pow(60, 2))
 					{
-						var tile = Main.tile[(int)home.X / 16 + x, (int)home.Y / 16 + y];
+						Tile tile = Main.tile[(int)home.X / 16 + x, (int)home.Y / 16 + y];
 
 						if (!tile.HasTile)
 						{
@@ -125,9 +123,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				}
 			}
 
-			for(int k = 0; k < 10; k++)
+			for (int k = 0; k < 10; k++)
 			{
-				float off = 1 - (k / 9f) * 2f;
+				float off = 1 - k / 9f * 2f;
 				Vector2 pos = NPC.Center + Vector2.UnitY * off * 750;
 				int i = NPC.NewNPC(null, (int)pos.X, (int)pos.Y, ModContent.NPCType<BrainPlatform>());
 
@@ -143,9 +141,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public void ResetArena()
 		{
-			foreach(Point16 point in tilesChanged)
+			foreach (Point16 point in tilesChanged)
 			{
-				var tile = Main.tile[(int)home.X / 16 + point.X, (int)home.Y / 16 + point.Y];
+				Tile tile = Main.tile[(int)home.X / 16 + point.X, (int)home.Y / 16 + point.Y];
 
 				if (tile.IsActuated)
 					tile.IsActuated = false;
@@ -154,7 +152,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					tile.HasTile = false;
 			}
 
-			foreach(NPC npc in Main.npc.Where(n => n.active && n.type == ModContent.NPCType<BrainPlatform>()))
+			foreach (NPC npc in Main.npc.Where(n => n.active && n.type == ModContent.NPCType<BrainPlatform>()))
 			{
 				npc.active = false;
 			}
@@ -185,7 +183,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		private void DrawAura(SpriteBatch sb)
 		{
 			Texture2D glow = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
-			var color = Color.White;
+			Color color = Color.White;
 			color.A = 0;
 
 			foreach (TheThinker thinker in toRender)

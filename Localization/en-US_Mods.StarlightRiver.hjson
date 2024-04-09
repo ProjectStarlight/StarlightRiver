@@ -4121,6 +4121,7 @@ NPCs: {
 	StaminaShardPickup.DisplayName: Stamina Shard Pickup
 	EscapePlatform.DisplayName: ""
 	BrainPlatform.DisplayName: ""
+	HorrifyingVisage.DisplayName: Horrifying Visage
 }
 
 Buffs: {

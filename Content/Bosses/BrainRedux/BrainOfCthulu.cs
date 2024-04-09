@@ -24,6 +24,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public Vector2 savedPos;
 		public Vector2 savedPos2;
 		public float savedRot;
+		public bool contactDamage = false;
+
+		public bool hurtLastFrame;
+
+		public float opacity;
 
 		private float arenaFade;
 
@@ -168,6 +173,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				// Setup
 				case 0:
+					opacity = 1;
+
 					for (int k = 0; k < 10; k++)
 					{
 						int i = NPC.NewNPC(null, (int)npc.Center.X, (int)npc.Center.Y, ModContent.NPCType<Neurysm>());
@@ -255,6 +262,20 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 							State = 3;
 							Timer = 0;
 							AttackState = 0;
+
+							// Reset attack queue
+							attackQueue.Clear();
+							attackQueue.Add(Main.rand.Next(2));
+
+							for (int k = 0; k < 3; k++)
+							{
+								int next2 = Main.rand.Next(2);
+
+								while (next2 == attackQueue.Last())
+									next2 = Main.rand.Next(2);
+
+								attackQueue.Add(next2);
+							}
 						}
 
 						npc.netUpdate = true;
@@ -291,6 +312,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 						int next = Main.rand.Next(2);
 
+						while (next == attackQueue.Last())
+							next = Main.rand.Next(2);
+
 						attackQueue.Add(next);
 
 						npc.netUpdate = true;
@@ -313,16 +337,56 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					}
 
 					break;
-					break;
 			}
 
+			hurtLastFrame = false;
+
 			return false;
+		}
+
+		public override bool CanHitPlayer(NPC npc, Player target, ref int cooldownSlot)
+		{
+			return contactDamage && opacity > 0.9f;
+		}
+
+		public override void HitEffect(NPC npc, NPC.HitInfo hit)
+		{
+			hurtLastFrame = true;
 		}
 
 		public override void FindFrame(NPC npc, int frameHeight)
 		{
 			if (reworked && State >= 3)
-				npc.frame.Y += 182 * 4;
+				npc.frame = new Rectangle(0, 182 * 4 + 182 * (int)(Timer / 10f % 4), 200, 182);
+		}
+
+		public override bool? DrawHealthBar(NPC npc, byte hbPosition, ref float scale, ref Vector2 position)
+		{
+			if (State == 3 && AttackState == 1)
+				return false;
+
+			return base.DrawHealthBar(npc, hbPosition, ref scale, ref position);
+		}
+
+		public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+		{
+			var tex = Terraria.GameContent.TextureAssets.Npc[NPCID.BrainofCthulhu].Value;
+
+			if (opacity >= 1)
+			{
+				Main.spriteBatch.Draw(tex, npc.Center - Main.screenPosition, npc.frame, drawColor * opacity, 0, npc.frame.Size() / 2f, npc.scale, 0, 0);
+			}
+			else
+			{
+				for(int k = 0; k < 6; k++)
+				{
+					float rot = k / 6f * 6.28f + opacity * 3.14f;
+					Vector2 offset = Vector2.UnitX.RotatedBy(rot) * (1 - opacity) * 64;
+					spriteBatch.Draw(tex, npc.Center + offset - Main.screenPosition, npc.frame, drawColor * opacity * 0.2f, npc.rotation, npc.frame.Size() / 2f, npc.scale, 0, 0);
+				}
+			}
+
+			return false;
 		}
 
 		public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
