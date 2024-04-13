@@ -384,6 +384,15 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					AttackTimer = 510;
 			}
 
+			// Timeout
+			if (AttackTimer == 509)
+			{
+				SoundEngine.PlaySound(SoundID.NPCDeath10.WithPitchOffset(0.5f), npc.Center);
+
+				foreach (NPC npc in Main.npc.Where(n => n.active && n.ModNPC is HorrifyingVisage))
+					npc.ai[1] = 1;
+			}
+
 			if (AttackTimer == 540)
 			{
 				foreach (NPC npc in Main.npc.Where(n => n.active && n.ModNPC is HorrifyingVisage))
@@ -535,13 +544,13 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				{
 					float rot = k / (float)neurisms.Count * 6.28f;
 
-					neurisms[k].Center = thinker.Center + Vector2.UnitX.RotatedBy(rot) * 80;
+					neurisms[k].Center = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(rot) * 80;
 					(neurisms[k].ModNPC as Neurysm).State = 2;
 					(neurisms[k].ModNPC as Neurysm).Timer = 0;
 				}
 			}
 
-			if (AttackTimer >= 61)
+			if (AttackTimer >= 61 && AttackTimer < 240)
 			{
 				float timer = Helpers.Helper.BezierEase((AttackTimer - 60) / 180f);
 				float totalRot = Main.masterMode ? 2f : Main.expertMode ? 1.5f : 1f;
@@ -550,7 +559,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				{
 					float rot = k / (float)neurisms.Count * 6.28f + timer * totalRot;
 
-					neurisms[k].Center = thinker.Center + Vector2.UnitX.RotatedBy(rot) * (80 + timer * 620f);
+					neurisms[k].Center = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(rot) * (80 + timer * 620f);
 					(neurisms[k].ModNPC as Neurysm).State = 0;
 					(neurisms[k].ModNPC as Neurysm).Timer = 0;
 				}
@@ -567,10 +576,6 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						(n.ModNPC as Neurysm).State = 1;
 						(n.ModNPC as Neurysm).Timer = 0;
 					}
-					else
-					{
-						(n.ModNPC as Neurysm).Timer = 30;
-					}
 				});
 			}
 
@@ -579,6 +584,15 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				if (hurtLastFrame)
 					AttackTimer = 510;
+			}
+
+			// Timeout
+			if (AttackTimer == 509)
+			{
+				SoundEngine.PlaySound(SoundID.NPCDeath10.WithPitchOffset(0.5f), npc.Center);
+
+				foreach (NPC npc in Main.npc.Where(n => n.active && n.ModNPC is HorrifyingVisage))
+					npc.ai[1] = 1;
 			}
 
 			if (AttackTimer == 540 || hurtLastFrame)
