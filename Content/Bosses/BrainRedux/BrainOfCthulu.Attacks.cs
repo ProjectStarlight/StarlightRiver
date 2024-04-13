@@ -492,22 +492,119 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			}
 		}
 
-		public void EdgeChase()
+		public void Clones2()
 		{
+			// Clones
 			if (AttackTimer <= 30)
-			{
 				opacity = 1f - AttackTimer / 30f;
 
+			if (AttackTimer == 60)
+			{
+				int random = Main.rand.Next(4);
+				savedPos = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(random / 4f * 6.28f) * 570;
+
+				for (int k = 0; k < 4; k++)
+				{
+					if (k != random)
+					{
+						Vector2 pos = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(k / 4f * 6.28f) * 570;
+						int i = NPC.NewNPC(null, (int)pos.X, (int)pos.Y, ModContent.NPCType<HorrifyingVisage>());
+						Main.npc[i].Center = pos;
+					}
+				}
+
+				npc.chaseable = false;
+				npc.Center = savedPos;
+			}
+
+			if (AttackTimer > 60 && AttackTimer <= 90)
+				opacity = (AttackTimer - 60) / 30f;
+
+			if (AttackTimer <= 120)
+			{
+				thinker.Center += ((thinker.ModNPC as TheThinker).home - thinker.Center) * 0.03f;
+			}
+
+			if (AttackTimer > 120 && AttackTimer < 540)
+				(thinker.ModNPC as TheThinker).ExtraRadius += 1f;
+
+			// Exapanding circle
+			if (AttackTimer == 31)
+			{
 				for (int k = 0; k < neurisms.Count; k++)
 				{
+					float rot = k / (float)neurisms.Count * 6.28f;
+
+					neurisms[k].Center = thinker.Center + Vector2.UnitX.RotatedBy(rot) * 80;
 					(neurisms[k].ModNPC as Neurysm).State = 2;
 					(neurisms[k].ModNPC as Neurysm).Timer = 0;
 				}
 			}
 
-			if (AttackTimer == 30)
+			if (AttackTimer >= 61)
 			{
+				float timer = Helpers.Helper.BezierEase((AttackTimer - 60) / 180f);
+				float totalRot = Main.masterMode ? 2f : Main.expertMode ? 1.5f : 1f;
 
+				for (int k = 0; k < neurisms.Count; k++)
+				{
+					float rot = k / (float)neurisms.Count * 6.28f + timer * totalRot;
+
+					neurisms[k].Center = thinker.Center + Vector2.UnitX.RotatedBy(rot) * (80 + timer * 620f);
+					(neurisms[k].ModNPC as Neurysm).State = 0;
+					(neurisms[k].ModNPC as Neurysm).Timer = 0;
+				}
+			}
+
+			if (AttackTimer >= 240)
+			{
+				neurisms.ForEach(n =>
+				{
+					n.velocity *= 0;
+
+					if ((n.ModNPC as Neurysm).State != 1)
+					{
+						(n.ModNPC as Neurysm).State = 1;
+						(n.ModNPC as Neurysm).Timer = 0;
+					}
+					else
+					{
+						(n.ModNPC as Neurysm).Timer = 30;
+					}
+				});
+			}
+
+			// End conditions
+			if (AttackTimer > 240 && AttackTimer < 510)
+			{
+				if (hurtLastFrame)
+					AttackTimer = 510;
+			}
+
+			if (AttackTimer == 540 || hurtLastFrame)
+			{
+				foreach (NPC npc in Main.npc.Where(n => n.active && n.ModNPC is HorrifyingVisage))
+				{
+					if (npc.ai[0] < 540)
+						npc.ai[0] = 540;
+				}
+			}
+
+			if (AttackTimer == 600)
+			{
+				neurisms.ForEach(n =>
+				{
+					n.velocity *= 0;
+
+					if ((n.ModNPC as Neurysm).State != 1)
+					{
+						(n.ModNPC as Neurysm).State = 1;
+						(n.ModNPC as Neurysm).Timer = 0;
+					}
+				});
+
+				npc.chaseable = true;
+				AttackTimer = 0;
 			}
 		}
 		#endregion

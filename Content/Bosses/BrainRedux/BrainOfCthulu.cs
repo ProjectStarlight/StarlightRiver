@@ -324,10 +324,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						AttackState = attackQueue[0];
 						attackQueue.RemoveAt(0);
 
-						int next = Main.rand.Next(3);
+						int next = Main.rand.Next(4);
 
 						while (next == attackQueue.Last())
-							next = Main.rand.Next(3);
+							next = Main.rand.Next(4);
 
 						attackQueue.Add(next);
 
@@ -346,7 +346,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 							TeleportHunt();
 							break;
 						case 3:
-							Spawn();
+							Clones2();
 							break;
 					}
 
@@ -403,7 +403,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override bool? DrawHealthBar(NPC npc, byte hbPosition, ref float scale, ref Vector2 position)
 		{
-			if (State == 3 && AttackState == 1)
+			if (State == 3 && (AttackState == 1 || AttackState == 3))
 				return false;
 
 			return base.DrawHealthBar(npc, hbPosition, ref scale, ref position);
