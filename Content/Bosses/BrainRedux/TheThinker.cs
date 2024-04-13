@@ -113,6 +113,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public override void HitEffect(NPC.HitInfo hit)
 		{
 			ExtraRadius += hit.Damage * 0.5f;
+
+			if (ExtraRadius > 300)
+				ExtraRadius = 300;
 		}
 
 		public void CreateArena()
@@ -208,6 +211,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			active = tag.GetBool("active");
 			tilesChanged = tag.GetList<Point16>("tiles") as List<Point16>;
 			home = tag.Get<Vector2>("home");
+		}
+
+		public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
+		{
+			return false;
 		}
 
 		private void DrawAura(SpriteBatch sb)
