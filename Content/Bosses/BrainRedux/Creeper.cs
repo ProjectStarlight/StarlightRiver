@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			if (reworked)
 			{
-				Lighting.AddLight(npc.Center, new Vector3(0.35f, 0.3f, 0.1f));
+				Lighting.AddLight(npc.Center, new Vector3(0.45f, 0.3f, 0.1f));
 			}
 
 			return true;
@@ -34,12 +34,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				return true;
 
 			Texture2D glow = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
-			var color = new Color(140, 120, 40)
+			var color = new Color(180, 100, 40)
 			{
 				A = 0
 			};
 
-			spriteBatch.Draw(glow, npc.Center - Main.screenPosition, null, color, npc.rotation, glow.Size() / 2f, 1f, 0, 0);
+			spriteBatch.Draw(glow, npc.Center - Main.screenPosition, null, color * 0.5f, npc.rotation, glow.Size() / 2f, 0.7f, 0, 0);
 
 			return true;
 		}

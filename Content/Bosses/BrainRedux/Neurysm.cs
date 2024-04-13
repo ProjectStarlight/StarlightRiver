@@ -1,4 +1,5 @@
 ﻿using System;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Bosses.BrainRedux
@@ -10,9 +11,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public float tellLen;
 		public float hurtTime;
 
+		public bool Dead => (BrainOfCthulu.TheBrain?.State ?? 0) >= 3;
+
 		public ref float Timer => ref NPC.ai[0];
 		public ref float State => ref NPC.ai[1];
-		public ref float Dead => ref NPC.ai[2];
 		public ref float TellTime => ref NPC.ai[3];
 
 		public override string Texture => AssetDirectory.BrainRedux + Name;
@@ -38,6 +40,15 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			NPC.HitSound = SoundID.NPCDeath12.WithPitchOffset(-0.25f);
 		}
 
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
+			{
+				BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.TheCrimson,
+				new FlavorTextBestiaryInfoElement("The brain is able to manifest smaller, yet deadlier, shards of itself when empowered by the strage light of The Thinker. These fragments are far more organized than it's regular creeper companions.")
+			});
+		}
+
 		public override bool CheckActive()
 		{
 			return false;
@@ -45,10 +56,6 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override bool PreKill()
 		{
-			Dead = 1;
-			NPC.life = 1;
-			NPC.dontTakeDamage = true;
-			NPC.immortal = true;
 			return false;
 		}
 
@@ -69,12 +76,25 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override void OnHitByProjectile(Projectile projectile, NPC.HitInfo hit, int damageDone)
 		{
-			hurtTime = 15;
+			if (!Dead)
+				hurtTime = 15;
 		}
 
 		public override void OnHitByItem(Player player, Item item, NPC.HitInfo hit, int damageDone)
 		{
-			hurtTime = 15;
+			if (!Dead)
+				hurtTime = 15;
+		}
+
+		public override void ModifyIncomingHit(ref NPC.HitModifiers modifiers)
+		{
+			if (Dead)
+			{
+				modifiers.FinalDamage *= 0;
+				modifiers.HideCombatText();
+
+				CombatText.NewText(NPC.Hitbox, Color.Gray, 0);
+			}
 		}
 
 		public override void AI()
@@ -95,6 +115,19 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			else if (State == 2)
 				opacity = Timer / 30f;
 
+			if (BrainOfCthulu.TheBrain is null)
+			{
+				State = 1;
+
+				if (Timer > 60)
+					NPC.active = false;
+			}
+			else
+			{
+				if (Dead)
+					NPC.realLife = -1;
+			}
+
 			float speed = Vector2.Distance(NPC.position, NPC.oldPosition);
 
 			if (speed > 2f)
@@ -113,10 +146,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 
-			Color glowColor = BrainOfCthulu.TheBrain.State > 2 ? new Color(25, 40, 6) : new Color(255, 10, 12);
+			Color glowColor = Dead ? new Color(25, 40, 6) : new Color(255, 10, 12);
 
-			Color trailOne = BrainOfCthulu.TheBrain.State > 2 ? new Color(100, 180, 30) : new Color(255, 50, 70);
-			Color trailTwo = BrainOfCthulu.TheBrain.State > 2 ? new Color(50, 70, 20) : new Color(100, 0, 20);
+			Color trailOne = Dead ? new Color(100, 180, 30) : new Color(255, 50, 70);
+			Color trailTwo = Dead ? new Color(50, 70, 20) : new Color(100, 0, 20);
 
 			if (opacity >= 0.05f)
 			{

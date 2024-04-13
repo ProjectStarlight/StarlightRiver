@@ -286,7 +286,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				if (AttackTimer >= 60)
 				{
-					float rad = 260 + (float)Math.Cos((AttackTimer - 60) / 170f * 3.14f + 3.14f) * 200;
+					float rad = 280 + (float)Math.Cos((AttackTimer - 60) / 170f * 3.14f + 3.14f) * 200;
 
 					for (int k = 0; k < neurisms.Count; k++)
 					{
@@ -356,6 +356,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					}
 				}
 
+				npc.chaseable = false;
 				npc.Center = savedPos;
 			}
 
@@ -381,6 +382,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (AttackTimer == 600)
 			{
+				npc.chaseable = true;
 				AttackTimer = 0;
 			}
 		}

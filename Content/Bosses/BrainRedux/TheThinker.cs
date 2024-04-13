@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
+using Terraria.GameContent.Bestiary;
 using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Bosses.BrainRedux
@@ -42,10 +43,24 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			toRender.Add(this);
 		}
 
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
+			{
+				BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.TheCrimson,
+				new FlavorTextBestiaryInfoElement("An incredibly dense collection of gray matter, this strange entity sits waiting for it's second half to emerge from hiding. Despite what it is, the Brain of Cthulhu seems to act rather mindlessly without this... thing... to think for it...")
+			});
+		}
+
 		public override void AI()
 		{
 			if (home == default)
 				home = NPC.Center;
+
+			if (BrainOfCthulu.TheBrain is null)
+			{
+				NPC.Center += (home - NPC.Center) * 0.02f;
+			}
 
 			GraymatterBiome.forceGrayMatter = true;
 
@@ -68,6 +83,14 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				ResetArena();
 			}
+		}
+
+		public override void ModifyIncomingHit(ref NPC.HitModifiers modifiers)
+		{
+			modifiers.FinalDamage *= 0;
+			modifiers.HideCombatText();
+
+			CombatText.NewText(NPC.Hitbox, Color.Gray, 0);
 		}
 
 		public override bool CheckActive()

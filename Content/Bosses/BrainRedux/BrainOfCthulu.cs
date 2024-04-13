@@ -72,17 +72,22 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				if (TheBrain != null)
 				{
-					Vector2 pos = TheBrain.npc.Center - Main.screenPosition;
+					TheBrain.PreDraw(TheBrain.npc, obj, Main.screenPosition, Lighting.GetColor((TheBrain.npc.Center / 16).ToPoint()));
 
-					for (int k = 0; k < TheBrain.attackQueue.Count; k++)
+					if (TheBrain.State == 2)
 					{
-						int attack = TheBrain.attackQueue[k];
-						Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.BrainRedux + $"Indicator{attack}").Value;
-						obj.Draw(tex, pos + new Vector2(-100 + k * 66, -50), null, Color.White, 0, tex.Size() / 2f, 1, 0, 0);
-					}
+						Vector2 pos = TheBrain.npc.Center - Main.screenPosition;
 
-					Texture2D tex2 = ModContent.Request<Texture2D>(AssetDirectory.BrainRedux + $"Indicator{TheBrain.AttackState}").Value;
-					obj.Draw(tex2, pos + new Vector2(0, -100), null, Color.White, 0, tex2.Size() / 2f, 1.5f, 0, 0);
+						for (int k = 0; k < TheBrain.attackQueue.Count; k++)
+						{
+							int attack = TheBrain.attackQueue[k];
+							Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.BrainRedux + $"Indicator{attack}").Value;
+							obj.Draw(tex, pos + new Vector2(-100 + k * 66, -50), null, Color.White, 0, tex.Size() / 2f, 1, 0, 0);
+						}
+
+						Texture2D tex2 = ModContent.Request<Texture2D>(AssetDirectory.BrainRedux + $"Indicator{TheBrain.AttackState}").Value;
+						obj.Draw(tex2, pos + new Vector2(0, -100), null, Color.White, 0, tex2.Size() / 2f, 1.5f, 0, 0);
+					}
 				}
 			}
 		}
@@ -193,8 +198,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						attackQueue.Add(next);
 					}
 
-					npc.lifeMax = 2000;
-					npc.life = 2000;
+					int life = Main.masterMode ? 4500 : Main.expertMode ? 3000 : 2000;
+
+					npc.lifeMax = life;
+					npc.life = life;
 
 					npc.GetGlobalNPC<BarrierNPC>().maxBarrier = 800;
 					npc.GetGlobalNPC<BarrierNPC>().barrier = 800;
@@ -277,7 +284,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 								attackQueue.Add(next2);
 							}
 
-							foreach(NPC creeper in Main.npc.Where(n => n.active && n.type == NPCID.Creeper))
+							foreach (NPC creeper in Main.npc.Where(n => n.active && n.type == NPCID.Creeper))
 							{
 								creeper.active = false;
 							}
@@ -359,6 +366,17 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			hurtLastFrame = true;
 		}
 
+		public override void OnKill(NPC npc)
+		{
+			if (reworked)
+			{
+				for (int k = 0; k < 10; k++)
+				{
+					Main.BestiaryTracker.Kills.RegisterKill(thinker);
+				}
+			}
+		}
+
 		public override void FindFrame(NPC npc, int frameHeight)
 		{
 			if (reworked && State >= 3)
@@ -375,7 +393,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			var tex = Terraria.GameContent.TextureAssets.Npc[NPCID.BrainofCthulhu].Value;
+			if (!reworked)
+				return true;
+
+			Texture2D tex = Terraria.GameContent.TextureAssets.Npc[NPCID.BrainofCthulhu].Value;
 
 			if (opacity >= 1)
 			{
@@ -383,7 +404,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			}
 			else
 			{
-				for(int k = 0; k < 6; k++)
+				for (int k = 0; k < 6; k++)
 				{
 					float rot = k / 6f * 6.28f + opacity * 3.14f;
 					Vector2 offset = Vector2.UnitX.RotatedBy(rot) * (1 - opacity) * 64;

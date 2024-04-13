@@ -20,10 +20,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public override void SetDefaults()
 		{
 			NPC.lifeMax = 25;
-			NPC.width = 64;
-			NPC.height = 64;
+			NPC.width = 160;
+			NPC.height = 110;
+			NPC.damage = 30;
 			NPC.noGravity = true;
 			NPC.aiStyle = -1;
+			NPC.chaseable = false;
 		}
 
 		public override void AI()
