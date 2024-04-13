@@ -276,6 +276,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 								attackQueue.Add(next2);
 							}
+
+							foreach(NPC creeper in Main.npc.Where(n => n.active && n.type == NPCID.Creeper))
+							{
+								creeper.active = false;
+							}
 						}
 
 						npc.netUpdate = true;

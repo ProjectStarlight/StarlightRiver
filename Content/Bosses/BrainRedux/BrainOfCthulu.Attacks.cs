@@ -259,6 +259,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				Main.npc[i].life = 30;
 				Main.npc[i].SpawnedFromStatue = true;
 				Main.npc[i].velocity += npc.Center.DirectionTo(Main.player[npc.target].Center) * 30;
+				Main.npc[i].GetGlobalNPC<Creeper>().reworked = true;
 
 				SoundEngine.PlaySound(SoundID.NPCDeath13, npc.Center);
 			}
@@ -273,8 +274,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		#region Phase 2
 		public void DoubleSpin()
 		{
-			Vector2 targetPos = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(AttackTimer / 400f * 6.28f) * 600;
-			Vector2 targetPos2 = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(AttackTimer / 400f * 6.28f) * -600;
+			Vector2 targetPos = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(AttackTimer / 400f * 6.28f) * 550;
+			Vector2 targetPos2 = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(AttackTimer / 400f * 6.28f) * -550;
 
 			if (AttackTimer >= 1 && AttackTimer < 400)
 			{
@@ -350,7 +351,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				{
 					if (k != random)
 					{
-						var pos = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(k / 10f * 6.28f) * 650;
+						Vector2 pos = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(k / 10f * 6.28f) * 650;
 						NPC.NewNPC(null, (int)pos.X, (int)pos.Y, ModContent.NPCType<HorrifyingVisage>());
 					}
 				}
@@ -381,6 +382,25 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (AttackTimer == 600)
 			{
 				AttackTimer = 0;
+			}
+		}
+
+		public void EdgeChase()
+		{
+			if (AttackTimer <= 30)
+			{
+				opacity = 1f - AttackTimer / 30f;
+
+				for (int k = 0; k < neurisms.Count; k++)
+				{
+					(neurisms[k].ModNPC as Neurysm).State = 2;
+					(neurisms[k].ModNPC as Neurysm).Timer = 0;
+				}
+			}
+
+			if (AttackTimer == 30)
+			{
+
 			}
 		}
 		#endregion
