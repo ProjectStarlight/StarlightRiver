@@ -28,6 +28,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			return true;
 		}
 
+		public override bool SpecialOnKill(NPC npc)
+		{
+			return reworked;
+		}
+
 		public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
 			if (!reworked)

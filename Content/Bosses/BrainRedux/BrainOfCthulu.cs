@@ -182,7 +182,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 					for (int k = 0; k < 10; k++)
 					{
-						int i = NPC.NewNPC(null, (int)npc.Center.X, (int)npc.Center.Y, ModContent.NPCType<Neurysm>());
+						int i = NPC.NewNPC(null, (int)npc.Center.X, (int)npc.Center.Y, ModContent.NPCType<Neurysm>(), 0, 1, 60);
 						neurisms.Add(Main.npc[i]);
 					}
 
@@ -198,13 +198,15 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						attackQueue.Add(next);
 					}
 
-					int life = Main.masterMode ? 4500 : Main.expertMode ? 3000 : 2000;
+					int life = Main.masterMode ? 6000 : Main.expertMode ? 4000 : 2000;
 
 					npc.lifeMax = life;
 					npc.life = life;
 
-					npc.GetGlobalNPC<BarrierNPC>().maxBarrier = 800;
-					npc.GetGlobalNPC<BarrierNPC>().barrier = 800;
+					int barrier = Main.masterMode ? 1600 : Main.expertMode ? 1200 : 800;
+
+					npc.GetGlobalNPC<BarrierNPC>().maxBarrier = barrier;
+					npc.GetGlobalNPC<BarrierNPC>().barrier = barrier;
 
 					Timer = 0;
 					State = 1;
@@ -322,10 +324,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						AttackState = attackQueue[0];
 						attackQueue.RemoveAt(0);
 
-						int next = Main.rand.Next(2);
+						int next = Main.rand.Next(3);
 
 						while (next == attackQueue.Last())
-							next = Main.rand.Next(2);
+							next = Main.rand.Next(3);
 
 						attackQueue.Add(next);
 
@@ -341,7 +343,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 							Clones();
 							break;
 						case 2:
-							Ram();
+							TeleportHunt();
 							break;
 						case 3:
 							Spawn();
@@ -359,6 +361,22 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public override bool CanHitPlayer(NPC npc, Player target, ref int cooldownSlot)
 		{
 			return contactDamage && opacity > 0.9f;
+		}
+
+		public override bool? CanBeHitByItem(NPC npc, Player player, Item item)
+		{
+			if (reworked && opacity < 0.5f)
+				return false; 
+
+			return base.CanBeHitByItem(npc, player, item);
+		}
+
+		public override bool? CanBeHitByProjectile(NPC npc, Projectile projectile)
+		{
+			if (reworked && opacity < 0.5f)
+				return false;
+
+			return base.CanBeHitByProjectile(npc, projectile);
 		}
 
 		public override void HitEffect(NPC npc, NPC.HitInfo hit)

@@ -342,7 +342,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (AttackTimer <= 30)
 				opacity = 1f - AttackTimer / 30f;
 
-			if (AttackTimer == 30)
+			if (AttackTimer == 60)
 			{
 				int random = Main.rand.Next(10);
 				savedPos = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(random / 10f * 6.28f) * 650;
@@ -360,15 +360,15 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				npc.Center = savedPos;
 			}
 
-			if (AttackTimer > 30 && AttackTimer <= 60)
-				opacity = (AttackTimer - 30) / 30f;
+			if (AttackTimer > 60 && AttackTimer <= 90)
+				opacity = (AttackTimer - 60) / 30f;
 
 			if (AttackTimer <= 120)
 			{
-				thinker.Center += ((thinker.ModNPC as TheThinker).home - thinker.Center) * 0.02f;
+				thinker.Center += ((thinker.ModNPC as TheThinker).home - thinker.Center) * 0.03f;
 			}
 
-			if (AttackTimer > 60 && AttackTimer < 510)
+			if (AttackTimer > 90 && AttackTimer < 510)
 			{
 				if (hurtLastFrame)
 					AttackTimer = 510;
@@ -383,6 +383,101 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (AttackTimer == 600)
 			{
 				npc.chaseable = true;
+				AttackTimer = 0;
+			}
+		}
+
+		public void TeleportHunt()
+		{
+			if (AttackTimer <= 120)
+			{
+				thinker.Center += ((thinker.ModNPC as TheThinker).home - thinker.Center) * 0.03f;
+			}
+
+			// 5 Charges
+			float motionTime = AttackTimer % 150;
+
+			if (motionTime <= 30)
+			{
+				contactDamage = false;
+				opacity = 1f - motionTime / 30f;
+			}
+
+			if (motionTime == 30)
+			{
+				npc.TargetClosest();
+
+				npc.Center = Main.player[npc.target].Center + Vector2.UnitX.RotatedByRandom(6.28f) * 150;
+
+				savedPos = npc.Center;
+				savedPos2 = savedPos + savedPos.DirectionTo(Main.player[npc.target].Center) * 500;
+			}
+
+			if (motionTime > 30 && motionTime <= 60)
+			{
+				opacity = (motionTime - 30) / 30f;
+			}
+
+			if (motionTime > 30 && motionTime <= 90)
+			{
+				npc.Center = Vector2.SmoothStep(savedPos, savedPos + savedPos.DirectionTo(savedPos2) * -100f, (motionTime - 30) / 60f);
+			}
+
+			if (motionTime == 90)
+			{
+				savedPos = npc.Center;
+				SoundEngine.PlaySound(SoundID.NPCDeath10.WithPitchOffset(0.5f), npc.Center);
+			}
+
+			if (motionTime >= 90)
+			{
+				contactDamage = true;
+				npc.Center = Vector2.Lerp(savedPos, savedPos2, Helpers.Helper.SwoopEase((motionTime - 90) / 60f));
+			}
+
+			// Similar neirusm pattern to spawning in phase 1
+
+			float radiusMax = Main.masterMode ? 700 : Main.expertMode ? 400 : 200;
+			if (AttackTimer == 1)
+			{
+				for (int k = 0; k < neurisms.Count; k++)
+				{
+					float rot = k / (float)neurisms.Count * 6.28f;
+
+					neurisms[k].Center = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(rot) * 750;
+					(neurisms[k].ModNPC as Neurysm).State = 2;
+					(neurisms[k].ModNPC as Neurysm).Timer = 0;
+				}
+			}
+
+			if (AttackTimer >= 31)
+			{
+				for (int k = 0; k < neurisms.Count; k++)
+				{
+					float radius = Helpers.Helper.BezierEase((AttackTimer - 30) / (150 * 5 - 30)) * radiusMax;
+					float rot = k / (float)neurisms.Count * 6.28f + Helpers.Helper.BezierEase((AttackTimer - 30) / (150 * 5 - 30)) * 6;
+
+					neurisms[k].Center = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(rot) * (750 - radius);
+					(neurisms[k].ModNPC as Neurysm).State = 0;
+					(neurisms[k].ModNPC as Neurysm).Timer = 0;
+				}
+			}
+
+			// End
+			if (AttackTimer >= 150 * 5)
+			{
+				neurisms.ForEach(n =>
+				{
+					n.velocity *= 0;
+
+					if ((n.ModNPC as Neurysm).State != 1)
+					{
+						(n.ModNPC as Neurysm).State = 1;
+						(n.ModNPC as Neurysm).Timer = 0;
+					}
+				});
+
+				contactDamage = false;
 				AttackTimer = 0;
 			}
 		}

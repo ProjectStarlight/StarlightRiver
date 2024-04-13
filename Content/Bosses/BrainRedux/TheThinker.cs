@@ -87,10 +87,17 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override void ModifyIncomingHit(ref NPC.HitModifiers modifiers)
 		{
-			modifiers.FinalDamage *= 0;
+			//modifiers.FinalDamage *= 0;
 			modifiers.HideCombatText();
 
 			CombatText.NewText(NPC.Hitbox, Color.Gray, 0);
+		}
+
+		public override bool CheckDead()
+		{
+			NPC.Center = home;
+			ResetArena();
+			return false;
 		}
 
 		public override bool CheckActive()
@@ -146,9 +153,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				}
 			}
 
-			for (int k = 0; k < 10; k++)
+			for (int k = 0; k < 14; k++)
 			{
-				float off = 1 - k / 9f * 2f;
+				float off = 1 - k / 13f * 2f;
 				Vector2 pos = NPC.Center + Vector2.UnitY * off * 750;
 				int i = NPC.NewNPC(null, (int)pos.X, (int)pos.Y, ModContent.NPCType<BrainPlatform>());
 
