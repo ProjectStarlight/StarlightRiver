@@ -8,6 +8,10 @@
 - Fixed drawblack in vitric biome (no more visible black squares)
 - Fixed a broken tooltip on the overflowing urn
 
+## Balance
+- Warrior kings crown scaling changed (200% increased damage base => 40% increased damage base, 20% damage per summon slot => 30% damage per summon slot)
+- Jetwelder no longer generates scrap from statue-spawned enemies or target dummies
+
 ## Optimization
 - Made improvements to dummy tile collision checks
 - Made improvements to various metaball systems culling logic
