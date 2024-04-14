@@ -8,6 +8,10 @@
 - Fixed drawblack in vitric biome (no more visible black squares)
 - Fixed a broken tooltip on the overflowing urn
 
+## Content:
+- New Item: Moonstone monolith
+ - Crafted with moonstone bars, mimics the moonstone screen effect
+
 ## Optimization
 - Made improvements to dummy tile collision checks
 - Made improvements to various metaball systems culling logic
