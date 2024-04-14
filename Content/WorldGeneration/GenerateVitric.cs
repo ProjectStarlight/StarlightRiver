@@ -211,6 +211,8 @@ namespace StarlightRiver.Core
 			FinalCleanup();
 
 			vitricBiome.Y -= 8; //Adjust a bit
+
+			GenVars.structures.AddProtectedStructure(vitricBiome, 20);
 		}
 
 		/// <summary>Generates basic biome shape, such as curved walls, noise on floor and ceiling, and spikes on the bottom.</summary>

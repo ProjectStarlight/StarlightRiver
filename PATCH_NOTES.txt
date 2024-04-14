@@ -8,6 +8,7 @@
 - Fixed drawblack in vitric biome (no more visible black squares)
 - Fixed a broken tooltip on the overflowing urn
 - Fixed a broken tooltip on the electro arrow
+- Made world generation properly integrate the vanilla structure map. This should prevent collisions between the mods structures and vanilla structures, as well as other mods that respect this map.
 
 ## Balance
 - Warrior kings crown scaling changed (200% increased damage base => 40% increased damage base, 20% damage per summon slot => 30% damage per summon slot)
