@@ -70,7 +70,7 @@ namespace StarlightRiver.Core
 						updateFunction(particle);
 
 					Rectangle frame = particle.Frame != default ? particle.Frame : texture.Frame();
-					Rectangle plane = frame;
+					Rectangle plane = new Rectangle(0, 0, frame.Width, frame.Height);
 					plane.Offset((particle.Position - offset).ToPoint());
 					plane.Width = (int)(plane.Width * particle.Scale);
 					plane.Height = (int)(plane.Height * particle.Scale);

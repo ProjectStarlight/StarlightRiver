@@ -11,7 +11,7 @@
 - Made world generation properly integrate the vanilla structure map. This should prevent collisions between the mods structures and vanilla structures, as well as other mods that respect this map.
 
 ## Balance
-- Warrior kings crown scaling changed (200% increased damage base => 40% increased damage base, 20% damage per summon slot => 30% damage per summon slot)
+- Warrior kings crown scaling changed (200% increased damage base => 40% increased damage base, 20% damage per slot => 30% damage per slot)
 - Jetwelder no longer generates scrap from statue-spawned enemies or target dummies
 
 ## Optimization
