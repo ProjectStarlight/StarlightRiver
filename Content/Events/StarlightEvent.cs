@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Abilities.Hint;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.Hint;
 using StarlightRiver.Content.Backgrounds;
 using StarlightRiver.Content.Bosses.VitricBoss;
 using StarlightRiver.Content.NPCs.Starlight;
@@ -252,7 +253,7 @@ namespace StarlightRiver.Content.Events
 
 		private void TriggerEventActivation(NPC NPC) //TODO: This might be worth moving elsewhere? This is a bit hidden away here
 		{
-			if (NPC.boss && StarlightEventSequenceSystem.sequence <= 0) //First visit is after any boss
+			if (NPC.boss && StarlightEventSequenceSystem.sequence <= 0 && Main.player.Any(n => n.active && !n.GetHandler().Unlocked<HintAbility>())) //First visit is after any boss
 				StarlightEventSequenceSystem.willOccur = true;
 
 			if (NPC.type == ModContent.NPCType<VitricBoss>() && StarlightEventSequenceSystem.sequence == 1 && false) //Second visit is after ceiros

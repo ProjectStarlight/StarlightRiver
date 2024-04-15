@@ -86,7 +86,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 				Lighting.AddLight(NPC.Center, new Vector3(0.1f, 0.2f, 0.25f) * 4);
 			}
 
-			if (!InCutscene && !leaving && Main.player.Any(n => n.active && Vector2.Distance(n.Center, NPC.Center) < 400))
+			if (!InCutscene && !leaving && Main.player.Any(n => n.active && Vector2.Distance(n.Center, NPC.Center) < 400 && !n.GetHandler().Unlocked<HintAbility>()))
 			{
 				CutsceneTimer = 0;
 				InCutscene = true;
@@ -239,7 +239,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			// This should trigger for -every- player
 			if (CutsceneTimer <= 1)
 			{
-				foreach (Player player in Main.player.Where(n => n.active))
+				foreach (Player player in Main.player.Where(n => n.active && !n.GetHandler().Unlocked<HintAbility>()))
 				{
 					player.ActivateCutscene<CrowCutsceneOne>();
 				}
