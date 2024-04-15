@@ -69,6 +69,8 @@ namespace StarlightRiver.Content.Events
 				bool talking = Main.npc.Any(n => n.active && n.type == ModContent.NPCType<Crow>() && (n.ModNPC as Crow).InCutscene);
 				Main.bloodMoon = false;
 
+				Terraria.GameContent.Events.LanternNight.WorldClear();
+
 				if (Main.time == 600 && !talking)
 				{
 					int i = Projectile.NewProjectile(null, Main.LocalPlayer.Center + new Vector2(0, -48), Vector2.Zero, ModContent.ProjectileType<HintText>(), 0, 0, Main.myPlayer);
@@ -117,8 +119,8 @@ namespace StarlightRiver.Content.Events
 		{
 			if (Active)
 			{
-				tileColor = Color.Lerp(tileColor, new Color(2, 50, 62), fadeTimer / 300f);
-				backgroundColor = Color.Lerp(backgroundColor, new Color(2, 50, 62), fadeTimer / 300f);
+				tileColor = Color.Lerp(tileColor, new Color(2, 36, 62), fadeTimer / 300f);
+				backgroundColor = Color.Lerp(backgroundColor, new Color(2, 36, 62), fadeTimer / 300f);
 			}
 		}
 
@@ -239,7 +241,7 @@ namespace StarlightRiver.Content.Events
 				spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default);
 
 				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/SwirlyNoiseLooping").Value;
-				spriteBatch.Draw(tex, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), new Rectangle((int)Main.GameUpdateCount / 3, 0, tex.Width, tex.Height), Color.Cyan * (StarlightEventSequenceSystem.fadeTimer / 300f) * 0.2f);
+				spriteBatch.Draw(tex, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), new Rectangle((int)Main.GameUpdateCount / 3, 0, tex.Width, tex.Height), new Color(50, 200, 255) * (StarlightEventSequenceSystem.fadeTimer / 300f) * 0.2f);
 
 				spriteBatch.End();
 			}
