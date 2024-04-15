@@ -131,7 +131,7 @@ namespace StarlightRiver.Content.Menus
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
+			spriteBatch.Begin(default, default, SamplerState.LinearClamp, default, default, default, Main.UIScaleMatrix);
 
 			return true;
 		}

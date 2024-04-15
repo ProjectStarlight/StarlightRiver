@@ -188,7 +188,12 @@ namespace StarlightRiver.Content.CustomHooks
 			for (int k = 5; k >= 0; k--)
 			{
 				if (k == 3)
+				{
 					BackgroundParticles.DrawParticles(Main.spriteBatch);
+
+					Main.spriteBatch.End();
+					Main.spriteBatch.Begin(SpriteSortMode.Deferred, default, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
+				}
 
 				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Backgrounds/Glass" + k).Value;
 
@@ -233,7 +238,12 @@ namespace StarlightRiver.Content.CustomHooks
 				}
 
 				if (k == 1)
+				{
 					ForegroundParticles.DrawParticles(Main.spriteBatch);
+
+					Main.spriteBatch.End();
+					Main.spriteBatch.Begin(SpriteSortMode.Deferred, default, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
+				}
 			}
 
 			int screenCenterX = (int)(Main.screenPosition.X + Main.screenWidth / 2);
