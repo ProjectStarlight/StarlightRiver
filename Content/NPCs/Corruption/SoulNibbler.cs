@@ -149,7 +149,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 		{
 			Tile tile = Framing.GetTileSafely(spawnInfo.SpawnTileX, spawnInfo.SpawnTileY);
 
-			return (spawnInfo.Player.ZoneCorrupt && !Main.dayTime) ? 0.4f : 0;
+			return (spawnInfo.Player.ZoneCorrupt && !Main.dayTime) ? 0.1f : 0;
 		}
 	}
 }

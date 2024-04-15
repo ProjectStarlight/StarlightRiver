@@ -18,6 +18,7 @@
 ## Balance
 - Warrior kings crown scaling changed (200% increased damage base => 40% increased damage base, 20% damage per slot => 30% damage per slot)
 - Jetwelder no longer generates scrap from statue-spawned enemies or target dummies
+- Decreased the spawn rate of gloom slimes and soul nibblers
 
 ## Optimization
 - Made improvements to dummy tile collision checks
