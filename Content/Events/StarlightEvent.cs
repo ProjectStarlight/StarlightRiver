@@ -67,9 +67,12 @@ namespace StarlightRiver.Content.Events
 					NPC.NewNPC(null, Main.spawnTileX * 16, sequence == 0 ? Main.spawnTileY * 16 - 240 : Main.spawnTileY * 16 - 120, ModContent.NPCType<Crow>());
 
 				bool talking = Main.npc.Any(n => n.active && n.type == ModContent.NPCType<Crow>() && (n.ModNPC as Crow).InCutscene);
-				Main.bloodMoon = false;
 
+				Main.bloodMoon = false;
 				Terraria.GameContent.Events.LanternNight.WorldClear();
+
+				foreach (Cloud cloud in Main.cloud)
+					cloud.active = false;
 
 				if (Main.time == 600 && !talking)
 				{
