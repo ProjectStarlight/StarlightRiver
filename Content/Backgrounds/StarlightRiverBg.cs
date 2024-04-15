@@ -202,10 +202,10 @@ namespace StarlightRiver.Content.Backgrounds
 				A = 0
 			};
 
-			if (Main.rand.NextBool(4))
+			if (Main.rand.NextBool(2))
 			{
-				var pos = new Vector2(Main.rand.Next(-Main.screenWidth, Main.screenWidth * 2), Main.rand.Next(-Main.screenHeight, Main.screenHeight * 2));
-				stars.AddParticle(new Particle(pos, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.25f), 0, Main.rand.NextFloat(0.35f), starColor, 1600, pos + Main.screenPosition, new Rectangle(0, 120, 120, 120), 1, 2));
+				var pos = new Vector2(Main.rand.Next(-Main.screenWidth / 2, (int)(Main.screenWidth * 1.5f)), Main.rand.Next(-Main.screenHeight / 2, (int)(Main.screenHeight * 1.5f)));
+				stars.AddParticle(new Particle(pos, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.25f), 0, Main.rand.NextFloat(0.35f), starColor * 0.8f, 1600, pos + Main.screenPosition, new Rectangle(0, 120, 120, 120), 1, 2));
 			}
 
 			float prog = Main.rand.NextFloat();
