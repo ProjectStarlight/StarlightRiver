@@ -33,6 +33,11 @@ namespace StarlightRiver.Content.Events
 				return;
 			}
 
+			if (willOccur && sequence == 0 && !Main.player.Any(n => n.active && !n.GetHandler().Unlocked<HintAbility>()))
+			{
+				willOccur = false;
+			}
+
 			// Handles the fade effects
 			if (occuring && fadeTimer < 300)
 				fadeTimer++;
