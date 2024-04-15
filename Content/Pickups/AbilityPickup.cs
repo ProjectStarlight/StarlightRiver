@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Pickups
 		/// <summary>
 		/// Indicates if the pickup should be visible in-world. Should be controlled using clientside vars.
 		/// </summary>
-		private bool Visible => CanPickup(Main.LocalPlayer);
+		protected bool Visible => CanPickup(Main.LocalPlayer);
 
 		public virtual bool Fancy => true;
 

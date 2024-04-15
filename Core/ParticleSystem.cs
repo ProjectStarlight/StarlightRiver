@@ -105,7 +105,7 @@ namespace StarlightRiver.Core
 
 		public void DrawParticles(SpriteBatch spriteBatch)
 		{
-			if (GetInstance<GraphicsConfig>().ParticlesActive)
+			if (GetInstance<GraphicsConfig>().ParticlesActive && effect != null)
 			{
 				/*for (int k = 0; k < particles.Count; k++)
 				{
