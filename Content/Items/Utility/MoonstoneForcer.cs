@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.Items.Utility
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();
-			recipe.AddRecipeGroup(ItemID.BambooBlock, 5);
+			recipe.AddIngredient(ItemID.BambooBlock, 5);
 			recipe.AddTile(TileID.WorkBenches);
 			recipe.Register();
 		}

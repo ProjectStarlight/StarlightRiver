@@ -3471,6 +3471,16 @@ Items: {
 		DisplayName: Common Vegetable Seeds
 		Tooltip: Plant to grow your own veggies
 	}
+
+	MeteorForcer: {
+		DisplayName: Prayer for Meteorite
+		Tooltip: Guarantees a meteorite will be the next celestial object to fall
+	}
+
+	MoonstoneForcer: {
+		DisplayName: Prayer for Moonstone
+		Tooltip: Guarantees a moonstone will be the next celestial object to fall
+	}
 }
 
 Tiles: {
