@@ -4,6 +4,7 @@ using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Content.Packets;
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 using static Terraria.ModLoader.ModContent;
@@ -48,6 +49,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			NPC.HitSound = SoundID.NPCHit1;
 			NPC.DeathSound = SoundID.NPCDeath1;
 			NPC.knockBackResist = 0;
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
 		}
 
 		public override bool NeedSaving()

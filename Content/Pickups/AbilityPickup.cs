@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Packets;
 using System;
+using Terraria.GameContent.Bestiary;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Pickups
@@ -28,6 +29,11 @@ namespace StarlightRiver.Content.Pickups
 			NPC.noGravity = true;
 			NPC.aiStyle = -1;
 			NPC.friendly = false;
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
 		}
 
 		public virtual void SafeSetDefaults() { }

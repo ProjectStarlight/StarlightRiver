@@ -62,6 +62,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			(fakeBoss.ModNPC as SquidBoss).QuickSetup();
 		}
 
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
+		}
+
 		public override bool NeedSaving()
 		{
 			return true;
@@ -80,11 +85,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public override bool CheckActive()
 		{
 			return false;
-		}
-
-		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
-		{
-			database.Entries.Remove(bestiaryEntry);
 		}
 
 		public override void AI()

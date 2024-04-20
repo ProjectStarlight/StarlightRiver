@@ -77,6 +77,11 @@ namespace StarlightRiver.Content.NPCs.BossRush
 			Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/OminousIdle");
 		}
 
+		public override void SetBestiary(Terraria.GameContent.Bestiary.BestiaryDatabase database, Terraria.GameContent.Bestiary.BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
+		}
+
 		public override void OnSpawn(IEntitySource source)
 		{
 			activeBossRushLocks.Add(this);

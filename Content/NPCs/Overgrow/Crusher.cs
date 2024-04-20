@@ -2,6 +2,7 @@
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using System.Linq;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -30,6 +31,11 @@ namespace StarlightRiver.Content.NPCs.Overgrow
 			NPC.noGravity = true;
 			NPC.knockBackResist = 0;
 			NPC.behindTiles = true;
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
 		}
 
 		public override void AI()

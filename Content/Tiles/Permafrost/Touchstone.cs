@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Terraria.DataStructures;
+using Terraria.GameContent.Bestiary;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
@@ -244,6 +245,11 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			NPC.dontTakeDamage = true;
 		}
 
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
+		}
+
 		public override void AI()
 		{
 			foreach (Player player in Main.player.Where(n => Vector2.Distance(n.Center, NPC.Center) < 1000))
@@ -393,7 +399,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = Terraria.Graphics.Effects.Filters.Scene["CeirosRing"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
