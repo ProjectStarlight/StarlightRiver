@@ -3471,6 +3471,11 @@ Items: {
 		DisplayName: Common Vegetable Seeds
 		Tooltip: Plant to grow your own veggies
 	}
+
+	MoonstoneMonolithItem: {
+		DisplayName: Moonstone monolith
+		Tooltip: Dreamifies the skies
+	}
 }
 
 Tiles: {
@@ -3660,6 +3665,7 @@ Tiles: {
 	VitricMediumCrystal.MapEntry: Vitric Medium Crystal
 	VitricSmallCrystal.MapEntry: Vitric Small Crystal
 	CommonVegetables.MapEntry: ""
+	MoonstoneMonolith.MapEntry: Moonstone Monolith
 }
 
 Projectiles: {

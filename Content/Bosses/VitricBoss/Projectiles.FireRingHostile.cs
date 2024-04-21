@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.Vitric;
+using StarlightRiver.Content.Packets;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -51,8 +52,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public override void OnHitPlayer(Player target, Player.HurtInfo info)
 		{
+			if (Main.LocalPlayer.whoAmI == target.whoAmI)
+			{
+				PlayerHitPacket hitPacket = new PlayerHitPacket(Projectile.identity, target.whoAmI, info.Damage, Projectile.type);
+				hitPacket.Send(-1, Main.LocalPlayer.whoAmI, false);
+			}
+
 			target.velocity += Vector2.Normalize(target.Center - Projectile.Center) * 8;
-			target.AddBuff(BuffID.OnFire, 180);
+			target.AddBuff(BuffID.OnFire, 180, quiet: true);
 
 			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
@@ -90,7 +97,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		private void ManageTrail(ref Trail trail, List<Vector2> cache, int width)
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 40, new TriangularTip(40 * 4), factor => width, factor => new Color(255, 100 + (int)(100 * (float)Math.Sin(TimeFade * 3.14f)), 65) * (float)Math.Sin(TimeFade * 3.14f) * 0.5f);
+			trail ??= new Trail(Main.instance.GraphicsDevice, 40, new NoTip(), factor => width, factor => new Color(255, 100 + (int)(100 * (float)Math.Sin(TimeFade * 3.14f)), 65) * (float)Math.Sin(TimeFade * 3.14f) * 0.5f);
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = cache[39];

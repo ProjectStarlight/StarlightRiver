@@ -17,8 +17,6 @@ namespace StarlightRiver.Content.Items.Haunted
 
 		public override string Texture => AssetDirectory.HauntedItem + Name;
 
-		public TaintedGreataxe() : base(ModContent.Request<Texture2D>(AssetDirectory.HauntedItem + "TaintedGreataxe").Value) { }
-
 		public override void Load()
 		{
 			StarlightPlayer.OnHitNPCEvent += OnHitNPC;

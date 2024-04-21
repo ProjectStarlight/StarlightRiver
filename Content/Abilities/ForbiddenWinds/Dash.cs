@@ -196,7 +196,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
 		private void ManageCaches()
 		{
-			if (Time == 14)
+			if (Time == 15)
 				cache?.Clear();
 
 			if (cache == null || cache.Count < 14)
@@ -219,10 +219,10 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 14, new TriangularTip(40 * 4), factor => Math.Min(factor * 50, 40), factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 14, new NoTip(), factor => Math.Min(factor * 50, 40), factor =>
 			{
-				if (factor.X >= 0.80f)
-					return Color.White * 0;
+				if (factor.X == 1)
+					return Color.Transparent;
 
 				return new Color(140, 150 + (int)(105 * factor.X), 255) * factor.X * (float)Math.Sin(EffectTimer / 45f * 3.14f);
 			});
