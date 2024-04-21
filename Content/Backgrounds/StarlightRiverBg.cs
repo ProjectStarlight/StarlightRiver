@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Backgrounds
 
 			starsTarget = new(DrawStars, CheckIsActive, 1f);
 			starsMap = new(DrawMap, CheckIsActive, 1f);
-			stars = new("StarlightRiver/Assets/Misc/StarParticle", UpdateStars);
+			stars = new("StarlightRiver/Assets/Misc/StarParticle", UpdateStars, ParticleSystem.AnchorOptions.Screen);
 
 			On_Main.DrawInterface += DrawOverlay;
 		}

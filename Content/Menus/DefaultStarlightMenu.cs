@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Menus
 
 		public override void Load()
 		{
-			stars = new("StarlightRiver/Assets/Misc/StarParticle", UpdateStars);
+			stars = new("StarlightRiver/Assets/Misc/StarParticle", UpdateStars, ParticleSystem.AnchorOptions.Screen);
 		}
 
 		public static void DrawStars(SpriteBatch sb)
