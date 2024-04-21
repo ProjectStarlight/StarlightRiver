@@ -42,6 +42,14 @@ namespace StarlightRiver.Content.Items.Haunted
 			Item.defense = 5;
 		}
 
+		public override ModItem Clone(Item newEntity)
+		{
+			var clone = base.Clone(newEntity) as PoltergeistHead;
+			clone.minions = new List<Projectile>(minions);
+
+			return clone;
+		}
+
 		public override void UpdateEquip(Player player)
 		{
 			player.GetModPlayer<CritMultiPlayer>().MagicCritMult += 0.15f;

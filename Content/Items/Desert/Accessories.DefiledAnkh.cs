@@ -8,8 +8,6 @@ namespace StarlightRiver.Content.Items.Desert
 	{
 		public override string Texture => AssetDirectory.DesertItem + Name;
 
-		public DefiledAnkh() : base(ModContent.Request<Texture2D>(AssetDirectory.DesertItem + "DefiledAnkh").Value) { }
-
 		public override void SetStaticDefaults()
 		{
 			Tooltip.SetDefault("Cursed : Your {{Barrier}} protects against twenty-five percent less damage\n+100% {{Inoculation}} while {{Barrier}} is active\nimmunity to most debuffs while {{Barrier}} is active" +

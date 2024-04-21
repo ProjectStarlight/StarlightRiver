@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.GUI
 		private Vector2 offset;
 		private bool dragging;
 
-		private ParticleSystem particles = new(AssetDirectory.GUI + "Holy", ParticleUpdate);
+		private ParticleSystem particles = new(AssetDirectory.GUI + "Holy", ParticleUpdate, ParticleSystem.AnchorOptions.UI);
 
 		public TextureGIF previewGif = null;
 		readonly UIList options = new();
