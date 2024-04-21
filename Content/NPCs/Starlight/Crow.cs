@@ -17,8 +17,6 @@ namespace StarlightRiver.Content.NPCs.Starlight
 		public bool visible;
 		public bool leaving;
 
-		public float localTextState;
-
 		public DialogManager manager;
 
 		public override string Texture => "StarlightRiver/Assets/NPCs/Starlight/Crow";
@@ -98,16 +96,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 
 			if (InCutscene) //handles cutscenes
 			{
-				switch (StarlightEventSequenceSystem.sequence)
-				{
-					case 0:
-						FirstEncounter();
-						break;
-
-					case 1:
-						SecondEncounter();
-						break;
-				}
+				MainAnimation();
 			}
 
 			if (leaving)
@@ -236,9 +225,9 @@ namespace StarlightRiver.Content.NPCs.Starlight
 		}
 
 		/// <summary>
-		/// Dictates the NPCs behavior during the first encounter, where the player is given stamina and the hint ability
+		/// Dictates the NPCs behavior during the encounter, where the player is given stamina and the hint ability
 		/// </summary>
-		private void FirstEncounter()
+		private void MainAnimation()
 		{
 			// This should trigger for -every- player
 			if (CutsceneTimer <= 1)
@@ -310,85 +299,6 @@ namespace StarlightRiver.Content.NPCs.Starlight
 
 			Main.LocalPlayer.GetHandler().GetAbility(out HintAbility hint);
 			UILoader.GetUIState<TextCard>().Display("Starsight", message, hint);
-		}
-
-		/// <summary>
-		/// Dictates the NPCs behavior during the second encounter, where the player recieves an infusion slot
-		/// </summary>
-		private void SecondEncounter()
-		{
-			if (CutsceneTimer == 1)
-				CameraSystem.MoveCameraOut(30, NPC.Center, Vector2.SmoothStep);
-
-			if (CutsceneTimer < 300)
-				SpawnAnimation();
-
-			if (CutsceneTimer == 360) // First encounter
-			{
-				if (Main.LocalPlayer.GetHandler().InfusionLimit >= 1) // If they already have the infusion slot, special abort dialogue
-				{
-					RichTextBox.OpenDialogue(NPC, "Alican", "Oh, strange seeing you again here... Sorry, I thought you were someone else. I must leave to search for them now.");
-
-					RichTextBox.ClearButtons();
-					RichTextBox.AddButton("Bye!", () =>
-					{
-						CameraSystem.ReturnCamera(30, Vector2.SmoothStep);
-						RichTextBox.CloseDialogue();
-						CutsceneTimer = 363;
-					});
-					return;
-				}
-
-				RichTextBox.OpenDialogue(NPC, "Alican", GetInfusionDialogue());
-				RichTextBox.AddButton("What?", () =>
-				{
-					localTextState++;
-					RichTextBox.SetData(NPC, "Alican", GetInfusionDialogue());
-
-					RichTextBox.ClearButtons();
-					RichTextBox.AddButton("Accept", () =>
-					{
-						Main.LocalPlayer.GetHandler().InfusionLimit++;
-
-						localTextState++;
-						RichTextBox.SetData(NPC, "Alican", GetInfusionDialogue());
-
-						RichTextBox.ClearButtons();
-						RichTextBox.AddButton("Goodbye", () =>
-						{
-							CameraSystem.ReturnCamera(30, Vector2.SmoothStep);
-							RichTextBox.CloseDialogue();
-							CutsceneTimer = 363;
-						});
-					});
-
-				});
-			}
-
-			if (CutsceneTimer == 362)
-				CutsceneTimer = 361;
-
-			if (CutsceneTimer >= 362)
-			{
-				Main.playerInventory = true;
-			}
-
-			if (CutsceneTimer == 380)
-				Infusion.gainAnimationTimer = 240;
-
-			if (CutsceneTimer >= 500)
-				Leave();
-		}
-
-		private string GetInfusionDialogue()
-		{
-			return localTextState switch
-			{
-				0 => "Placeholder 1",
-				1 => "Placeholder 2",
-				2 => "Placeholder 3",
-				_ => "This text should never be seen! Please report to https://github.com/ProjectStarlight/StarlightRiver/issues",
-			};
 		}
 
 		private void SetFrame(int x, int y)
