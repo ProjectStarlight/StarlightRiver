@@ -2,9 +2,11 @@
 
 ## Content
 - Added a prayer for meteor and moonstone which will force the respective ore to generate. Crafted for 5 bamboo at a workbench.
+- Replaced the broken moonstone menu with a new starlight river menu
 
 ## Tweaks
 - Updated the visuals of the starlight river background effect
+- Updated Ceiros' arena assets to have better visibility
 
 ## Multiplayer
 - Performance optimizations to player onhits. Most noticeable in Glassweaver gauntlet
