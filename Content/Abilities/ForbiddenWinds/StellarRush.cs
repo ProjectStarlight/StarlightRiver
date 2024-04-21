@@ -1,7 +1,10 @@
 ﻿using StarlightRiver.Content.Abilities.Infusions;
 using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Content.Tiles.Crafting;
+using StarlightRiver.Helpers;
 using System;
+using System.Collections.Generic;
+using Terraria.Graphics.Effects;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -9,16 +12,14 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 {
 	class StellarRush : Dash
 	{
+		public override float ActivationCostDefault => 1.5f;
+
 		public override void OnActivate()
 		{
-			Speed *= 0.95f;
-			Boost = 0.5f;
-			ActivationCostBonus += 0.5f;
-
 			base.OnActivate();
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item96, Player.Center);
 
-			Time = 15;
+			Time = 25;
 		}
 
 		public override void UpdateActive()
@@ -29,22 +30,120 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 			Player.gravity = 0;
 			Player.maxFallSpeed = Math.Max(Player.maxFallSpeed, Speed);
 
+			if (!Main.dedServ)
+			{
+				ManageCaches();
+				ManageTrail();
+			}
+
 			if (Time-- <= 0)
 				Deactivate();
 		}
 
+		public override void Reset()
+		{
+			Boost = 0.5f;
+			Speed = 22;
+			Time = maxTime = 25;
+			CooldownBonus = 0;
+		}
+
 		public override void UpdateActiveEffects()
 		{
+			if (Time == 25)
+				return;
+
 			Vector2 nextPos = Player.Center + Vector2.Normalize(Player.velocity) * Speed;
-			for (float k = -2; k <= 2; k += 0.1f)
+			for (float k = 0; k <= 1; k += 0.08f)
 			{
-				Vector2 pos = nextPos + Vector2.UnitX.RotatedBy(Player.velocity.ToRotation() + k) * 7 * (4 - Time);
+				Vector2 swirlOff = Vector2.UnitX.RotatedBy(Player.velocity.ToRotation() + 1.57f) * (float)Math.Sin((Time + k) / 25f * 6.28f * 1.5f) * 14;
+				Vector2 pos = Player.Center + (Player.Center - nextPos) * k + swirlOff;
+				Vector2 vel = Player.velocity * Main.rand.NextFloat(0.1f, 0.2f) + swirlOff * Main.rand.NextFloat(0.1f, 0.14f);
 
-				Dust.NewDustPerfect(pos, DustType<Dusts.BlueStamina>(), Player.velocity * Main.rand.NextFloat(-0.4f, 0), 0, default, 1 - Time / 15f);
+				var type = k == 0 ? DustType<Dusts.AuroraDecelerating>() : DustType<Dusts.Cinder>();
 
-				if (Math.Abs(k) >= 1.5f)
-					Dust.NewDustPerfect(pos, DustType<Dusts.BlueStamina>(), Player.velocity * Main.rand.NextFloat(-0.6f, -0.4f), 0, default, 2.2f - Time / 15f);
+				if (type == DustType<Dusts.AuroraDecelerating>())
+					vel *= 4;
+
+				var d = Dust.NewDustPerfect(pos, type, vel, 0, new Color(40, 230 - (int)(Time / 25f * 160), 255), Main.rand.NextFloat(0.2f, 0.4f));
+				d.customData = Main.rand.NextFloat(0.4f, 0.9f);
 			}
+		}
+
+		public override void UpdateFixed()
+		{
+			base.UpdateFixed();
+
+			if (cache is null)
+				return;
+
+			if (EffectTimer < 44 - 24)
+			{
+				for (int i = 0; i < 24; i++)
+				{
+					Vector2 swirlOff2 = Vector2.UnitX.RotatedBy((cache[0] - cache[23]).ToRotation() + 1.57f) * (float)Math.Sin((i - 3) / 25f * 6.28f * 1.5f) * 30;
+					cache[i] += swirlOff2 * 0.05f;
+					cache[i] += Vector2.Normalize(cache[23] - cache[0]) * 1f;
+				}
+			}
+		}
+
+		private void ManageCaches()
+		{
+			if (Time == 25)
+				cache?.Clear();
+
+			if (cache == null || cache.Count < 24)
+			{
+				cache = new List<Vector2>();
+
+				for (int i = 0; i < 24; i++)
+				{
+					cache.Add(Player.Center + Player.velocity * 3);
+				}
+			}
+
+			Vector2 swirlOff = Vector2.UnitX.RotatedBy(Player.velocity.ToRotation() + 1.57f) * (float)Math.Sin((Time - 3) / 25f * 6.28f * 1.5f) * 30;
+			cache.Add(Player.Center + Player.velocity * 3 + swirlOff);
+
+			while (cache.Count > 24)
+			{
+				cache.RemoveAt(0);
+			}
+		}
+
+		private void ManageTrail()
+		{
+			trail ??= new Trail(Main.instance.GraphicsDevice, 24, new NoTip(), factor => (float)Math.Sin(factor * 3.14f) * 60, factor =>
+			{
+				if (factor.X == 1)
+					return Color.Transparent;
+
+				return new Color(50, 100 + (int)(factor.X * 150), 255) * (float)Math.Sin(factor.X * 3.14f) * (float)Math.Sin(EffectTimer / 45f * 3.14f) * 0.15f;
+			});
+
+			trail.Positions = cache.ToArray();
+			trail.NextPosition = Player.Center + Player.velocity * 6;
+		}
+
+		public override void DrawPrimitives()
+		{
+			Main.spriteBatch.End();
+
+			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+
+			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
+			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.0025f);
+			effect.Parameters["repeats"].SetValue(1f);
+			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+			effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
+
+			trail?.Render(effect);
+
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 
