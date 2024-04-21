@@ -92,12 +92,18 @@ namespace StarlightRiver.Core
 		}
 
 		/// <summary>
-		/// Starts the dialog by showing the entry marked as "Start".
+		/// Starts the dialog by showing the entry marked as "Start", or the provided key.
 		/// </summary>
-		public void Start()
+		public void Start(string key = "Start")
 		{
+			if (!entries.ContainsKey(key))
+			{
+				Main.NewText($"Failed to get dialogue '{key}' for dialouge '{path}'!", Color.Red);
+				return;
+			}
+
 			RichTextBox.OpenDialogue(talkingTo, "", "");
-			ActivateEntry("Start");
+			ActivateEntry(key);
 		}
 	}
 
