@@ -40,8 +40,8 @@ namespace StarlightRiver.Core
 
 			Stream stream = StarlightRiver.Instance.GetFileStream(pathToFile);
 
-			var entryList = JsonSerializer.Deserialize<List<Entry>>(stream);
-			foreach(Entry entry in entryList)
+			List<Entry> entryList = JsonSerializer.Deserialize<List<Entry>>(stream);
+			foreach (Entry entry in entryList)
 			{
 				entries.Add(entry.Key, entry);
 			}
@@ -73,7 +73,7 @@ namespace StarlightRiver.Core
 				Action buttonAction = () => { };
 
 				if (button.Key == "End")
-					buttonAction += () => RichTextBox.CloseDialogue();
+					buttonAction += RichTextBox.CloseDialogue;
 				else if (button.Key.Length > 0)
 					buttonAction += () => ActivateEntry(button.Key);
 

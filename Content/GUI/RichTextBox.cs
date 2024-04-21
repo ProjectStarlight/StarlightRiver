@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.GUI
 			{
 				boxTimer++;
 			}
-			else 
+			else
 			{
 				if (textTimer < message.Length)
 				{

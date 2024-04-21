@@ -6,7 +6,7 @@ namespace StarlightRiver.Core.Systems
 {
 	internal class DebugSystem : ModSystem
 	{
-		int timer = 0;
+		readonly int timer = 0;
 
 		public override void Load()
 		{

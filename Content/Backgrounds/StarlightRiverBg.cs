@@ -211,7 +211,7 @@ namespace StarlightRiver.Content.Backgrounds
 			float prog = Main.rand.NextFloat();
 			starColor.G = (byte)(150 + prog * 105);
 
-			var star = Main.rand.NextBool(18);
+			bool star = Main.rand.NextBool(18);
 			stars.AddParticle(new Particle(new Vector2(0, Main.screenHeight * 0.2f + prog * 0f), new Vector2(3f + prog * 4f, 1), 0, star ? Main.rand.NextFloat(0.2f, 0.3f) : Main.rand.NextFloat(0.05f, 0.1f), starColor * (star ? 1.2f : 1f), 600, Vector2.One * (prog * 110f), new Rectangle(0, star ? 120 : 0, 120, 120), 1));
 		}
 	}
