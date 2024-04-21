@@ -3079,6 +3079,26 @@ Items: {
 		DisplayName: Soft Sand
 		Tooltip: ""
 	}
+
+	StellarRush: {
+		DisplayName: Stellar Rush
+		Tooltip:
+			'''
+			Forbidden Winds Infusion
+			Dash farther and carry more speed
+			Increases starlight cost to 1.5
+			'''
+	}
+
+	StellarRushItem: {
+		DisplayName: Stellar Rush
+		Tooltip:
+			'''
+			Forbidden Winds Infusion
+			Dash farther and carry more speed
+			Increases starlight cost to 1.5
+			'''
+	}
 }
 
 Tiles: {

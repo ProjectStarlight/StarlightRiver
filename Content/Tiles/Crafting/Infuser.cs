@@ -12,12 +12,6 @@ namespace StarlightRiver.Content.Tiles.Crafting
 		{
 			this.QuickSetFurniture(4, 4, DustID.Stone, SoundID.Dig, false, new Color(113, 113, 113), false, false, "Infuser");
 		}
-
-		public override bool RightClick(int i, int j)
-		{
-			InfusionMaker.visible = true;
-			return true;
-		}
 	}
 
 	[SLRDebug]
