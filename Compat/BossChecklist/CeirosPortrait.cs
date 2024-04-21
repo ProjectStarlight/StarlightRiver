@@ -14,7 +14,7 @@ namespace StarlightRiver.Compat.BossChecklist
 			n.Color = Color.Lerp(Color.Red, Color.Yellow, n.Timer / 100f) * (float)Math.Sin(n.Timer / 100f * 3.14f);
 
 			n.Timer--;
-		});
+		}, ParticleSystem.AnchorOptions.UI);
 
 		public static void DrawCeirosPortrait(SpriteBatch spriteBatch, Rectangle rect, Color color)
 		{

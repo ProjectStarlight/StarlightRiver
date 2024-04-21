@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 		public override void RightClick(Player player)
 		{
 			int bar = (GenVars.gold == TileID.Gold) ? ItemID.PlatinumBar : ItemID.GoldBar;
-			player.QuickSpawnItem(Item.GetSource_DropAsItem(), bar, Main.rand.Next(5,11));
+			player.QuickSpawnItem(Item.GetSource_DropAsItem(), bar, Main.rand.Next(5, 11));
 
 			int[] gems = new int[]
 			{

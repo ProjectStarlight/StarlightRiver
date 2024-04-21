@@ -26,14 +26,14 @@ namespace StarlightRiver.Content.GUI
 		/// <summary>
 		/// Particle system used for the links between infusions and the icons
 		/// </summary>
-		public static ParticleSystem linkParticles = new("StarlightRiver/Assets/Keys/GlowSoft", UpdateLinkDelegate);
+		public static ParticleSystem linkParticles = new("StarlightRiver/Assets/Keys/GlowSoft", UpdateLinkDelegate, ParticleSystem.AnchorOptions.UI);
 
 		/// <summary>
 		/// Particle system used for the gain animation
 		/// </summary>
-		private readonly ParticleSystem gainAnimationParticles = new("StarlightRiver/Assets/GUI/Sparkle", UpdateGainParticles);
+		private readonly ParticleSystem gainAnimationParticles = new("StarlightRiver/Assets/GUI/Sparkle", UpdateGainParticles, ParticleSystem.AnchorOptions.UI);
 
-		private readonly ParticleSystem sparkleParticles = new("StarlightRiver/Assets/GUI/Sparkle", UpdateSparkleParticles);
+		private readonly ParticleSystem sparkleParticles = new("StarlightRiver/Assets/GUI/Sparkle", UpdateSparkleParticles, ParticleSystem.AnchorOptions.UI);
 
 		/// <summary>
 		/// If the gain animation is currently playing

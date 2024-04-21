@@ -44,6 +44,13 @@ namespace StarlightRiver.Content.Items.Breacher
 			Item.shootSpeed = 17;
 		}
 
+		public override ModItem Clone(Item newEntity)
+		{
+			var clone = base.Clone(newEntity) as Scrapshot;
+			clone.hook = hook;
+			return clone;
+		}
+
 		public override Vector2? HoldoutOffset()
 		{
 			return new Vector2(-15, 0);

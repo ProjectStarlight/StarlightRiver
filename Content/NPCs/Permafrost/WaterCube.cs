@@ -1,4 +1,5 @@
-﻿using static Terraria.ModLoader.ModContent;
+﻿using StarlightRiver.Core.Systems.AuroraWaterSystem;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Permafrost
 {
@@ -19,6 +20,7 @@ namespace StarlightRiver.Content.NPCs.Permafrost
 
 		public override void AI()
 		{
+			AuroraWaterSystem.visCounter = 30;
 			NPC.velocity.X = 1;
 		}
 

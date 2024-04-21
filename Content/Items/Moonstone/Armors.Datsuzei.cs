@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			StarlightPlayer.PostUpdateEvent += PlayerFrame;
 			On_Main.DrawInterface_30_Hotbar += OverrideHotbar;
 			activationTimer = 0;
-			sparkles = new ParticleSystem(AssetDirectory.Dust + "Aurora", updateSparkles);
+			sparkles = new ParticleSystem(AssetDirectory.Dust + "Aurora", updateSparkles, ParticleSystem.AnchorOptions.UI);
 		}
 
 		public override void Unload()

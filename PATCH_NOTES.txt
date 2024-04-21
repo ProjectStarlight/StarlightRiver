@@ -1,4 +1,29 @@
 # Starlight River 0.2.8
 
+## Multiplayer
+- Performance optimizations to player onhits. Most noticeable in Glassweaver gauntlet
+- Removed extra unnecesary packets from dummy system
+
 ## Fixes
 - Fixed drawblack in vitric biome (no more visible black squares)
+- Fixed a broken tooltip on the overflowing urn
+
+## Content:
+- New Item: Moonstone monolith
+ - Crafted with moonstone bars, mimics the moonstone screen effect
+
+## Optimization
+- Made improvements to dummy tile collision checks
+- Made improvements to various metaball systems culling logic
+- Made improvements to blocker tile detection
+- Made improvements to the vitric biome's lighting
+- Lighting buffer will no longer populate when uneeded
+- Lighting buffer population now takes advantage of parallel processing
+- Background particles now render as a single mesh and update in parallel
+- Made improvements for vitric temple wall rendering
+- Made improvements to moving platform grappling hook detection
+- Made large improvements to artifact logic
+- Made improvements to various onscreen checks
+- Made improvements to various aspects of glassweaver's fight
+- Made imrpovements to various persistent entities while offscreen
+- Removed some lingering redundant code paths

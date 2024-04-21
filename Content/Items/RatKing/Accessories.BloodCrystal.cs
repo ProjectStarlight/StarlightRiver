@@ -11,8 +11,6 @@ namespace StarlightRiver.Content.Items.RatKing
 	{
 		public override string Texture => AssetDirectory.RatKingItem + Name;
 
-		public BloodCrystal() : base(ModContent.Request<Texture2D>(AssetDirectory.RatKingItem + "BloodCrystal").Value) { }
-
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Blood Crystal");

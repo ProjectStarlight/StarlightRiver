@@ -11,8 +11,6 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public BloodlessAmulet() : base(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "BloodlessAmuletGlow").Value) { }
-
 		public override void Load()
 		{
 			On_Player.HealEffect += GrantRage;
@@ -76,7 +74,7 @@ namespace StarlightRiver.Content.Items.Misc
 				Player.statLife = 0;
 			else
 				Player.statLife = 1;
-			
+
 			Player.lifeRegen = 0;
 			Player.lifeRegenCount = 0;
 		}

@@ -19,6 +19,8 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 		public float DetachedLife;
 		public float rotation;
 
+		public override bool DoesCollision => true;
+
 		public NoxiousNodeDummy() : base(ModContent.TileType<NoxiousNode>(), 8, 8) { }
 
 		public override void Update()
