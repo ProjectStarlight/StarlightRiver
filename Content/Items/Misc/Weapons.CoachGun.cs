@@ -361,7 +361,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(4), factor => 10, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => 10, factor =>
 			{
 				float progress = 1 - Projectile.timeLeft / 150f;
 				var trailColor = Color.Lerp(Color.Red, Color.Yellow, progress);

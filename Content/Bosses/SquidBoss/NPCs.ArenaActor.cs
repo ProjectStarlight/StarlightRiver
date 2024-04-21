@@ -351,7 +351,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			particle.StoredPosition.Y += particle.Velocity.Y;
 			particle.StoredPosition.X += (float)Math.Sin(StarlightWorld.visualTimer + particle.Velocity.X) * 0.45f;
-			particle.Position = particle.StoredPosition - Main.screenPosition;
+			particle.Position = particle.StoredPosition;
 			particle.Alpha = particle.Timer < 70 ? particle.Timer / 70f : particle.Timer > 630 ? 1 - (particle.Timer - 630) / 70f : 1;
 		}
 

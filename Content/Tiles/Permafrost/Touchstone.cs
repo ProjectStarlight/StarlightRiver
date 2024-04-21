@@ -362,7 +362,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 		protected void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new TriangularTip(40 * 4), factor => factor * 12 * NPC.scale, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 12 * NPC.scale, factor =>
 			{
 				float alpha = factor.X;
 

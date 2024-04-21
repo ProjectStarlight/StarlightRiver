@@ -34,6 +34,15 @@ namespace StarlightRiver.Content.Items.Food
 			Item.height = 32;
 		}
 
+		public override ModItem Clone(Item newEntity)
+		{
+			var clone = base.Clone(newEntity) as Meal;
+			var newList = new List<Item>();
+			Ingredients.ForEach(n => newList.Add(n.Clone()));
+			clone.Ingredients = newList;
+			return clone;
+		}
+
 		public override bool CanUseItem(Player player)
 		{
 			FoodBuffHandler mp = player.GetModPlayer<FoodBuffHandler>();
