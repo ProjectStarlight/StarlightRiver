@@ -145,8 +145,6 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void Load()
 		{
-			StarlightPlayer.PostUpdateEvent += DoSwingAnimation;
-
 			// We cache the MethodInfo of the methods we need to simulate vanilla effects here
 			playerItemCheckEmitUseVisuals_Info = typeof(Player).GetMethod("ItemCheck_EmitUseVisuals", BindingFlags.NonPublic | BindingFlags.Instance);
 			playerItemCheckEmitUseVisuals = (Func<Player, Item, Rectangle, Rectangle>)Delegate.CreateDelegate(
@@ -196,39 +194,6 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 		}
 
-		/// <summary>
-		/// Handles the player's body animation for the sword swings
-		/// </summary>
-		/// <param name="Player">The player to animate</param>
-		private void DoSwingAnimation(Player Player)
-		{
-			Projectile instance = Main.projectile.FirstOrDefault(n => n.ModProjectile is SwordBookProjectile && n.owner == Player.whoAmI);
-
-			if (instance != null && instance.active)
-			{
-				var mp = instance.ModProjectile as SwordBookProjectile;
-
-				switch (mp.ComboState)
-				{
-					case 0:
-						Player.bodyFrame = Player.bodyFrame = new Rectangle(0, 56 * (int)(3 + mp.Progress), 40, 56);
-						break;
-
-					case 1:
-						Player.bodyFrame = Player.bodyFrame = new Rectangle(0, 56 * (int)(4 - mp.Progress * 4), 40, 56);
-						break;
-
-					case 2:
-						Player.bodyFrame = Player.bodyFrame = new Rectangle(0, 56 * (int)(3 + mp.Progress), 40, 56);
-						break;
-
-					case 3:
-						Player.bodyFrame = Player.bodyFrame = new Rectangle(0, 56 * (int)(mp.Progress * 4), 40, 56);
-						break;
-				}
-			}
-		}
-
 		private void PlaySwingSound()
 		{
 			if (!hasDoneSwingSound && Main.netMode != NetmodeID.Server)
@@ -256,6 +221,8 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.Center = Owner.Center;
 			Owner.direction = Direction;
 			Owner.heldProj = Projectile.whoAmI;
+
+			Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation + 1.57f * 2.5f);
 
 			SpawnLogic();
 

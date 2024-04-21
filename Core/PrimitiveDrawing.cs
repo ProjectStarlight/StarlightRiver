@@ -21,8 +21,8 @@ namespace StarlightRiver.Core
 			{
 				Main.QueueMainThreadAction(() =>
 				{
-					vertexBuffer = new DynamicVertexBuffer(device, typeof(VertexPositionColorTexture), maxVertices, BufferUsage.None);
-					indexBuffer = new DynamicIndexBuffer(device, IndexElementSize.SixteenBits, maxIndices, BufferUsage.None);
+					vertexBuffer = new DynamicVertexBuffer(device, typeof(VertexPositionColorTexture), maxVertices, BufferUsage.WriteOnly);
+					indexBuffer = new DynamicIndexBuffer(device, IndexElementSize.SixteenBits, maxIndices, BufferUsage.WriteOnly);
 				});
 			}
 		}

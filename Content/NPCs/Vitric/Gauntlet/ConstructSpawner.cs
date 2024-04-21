@@ -15,6 +15,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		public bool gravity = true;
 
 		public Player nearestPlayer = default;
+
+		public NPC fakeNPC;
+
 		public ref float NPCType => ref Projectile.ai[0];
 		public ref float Timer => ref Projectile.ai[1];
 
@@ -32,6 +35,12 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		public override void AI()
 		{
+			if (fakeNPC is null)
+			{
+				fakeNPC = new NPC();
+				fakeNPC.SetDefaults((int)NPCType);
+			}
+
 			nearestPlayer = Main.player.Where(n => n.active && !n.dead).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
 
 			if (Main.netMode != NetmodeID.Server)
@@ -85,9 +94,6 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			var fakeNPC = new NPC();
-			fakeNPC.SetDefaults((int)NPCType);
-
 			Texture2D tex = ModContent.Request<Texture2D>((fakeNPC.ModNPC as VitricConstructNPC).PreviewTexturePath).Value;
 
 			Effect trailEffect = Filters.Scene["CeirosRing"].GetShader().Shader;

@@ -57,7 +57,6 @@ namespace StarlightRiver.Content.Items.Permafrost
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
 			tooltips.FirstOrDefault(n => n.Name == "Damage").Text = tooltips.FirstOrDefault(n => n.Name == "Damage").Text.Replace("damage", "damage over time");
-			tooltips.FirstOrDefault(n => n.Name == "CritChance").Text = "Cannot critically strike";
 		}
 
 		private void PostDrawIcon(Player Player, SpriteBatch spriteBatch)

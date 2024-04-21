@@ -278,10 +278,10 @@ namespace StarlightRiver.Content.Items.Dungeon
 			if (!initialized)
 			{
 				startPoint = Projectile.Center;
-				
+
 				if (Main.netMode != NetmodeID.Server)
 					ManageCaches();
-				
+
 				initialized = true;
 
 				if (!Branch && !Miniature)

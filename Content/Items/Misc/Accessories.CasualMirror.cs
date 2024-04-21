@@ -10,8 +10,6 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public CasualMirror() : base(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "CasualMirror").Value) { }
-
 		public override void Load()
 		{
 			StarlightItem.CanUseItemEvent += TurnMirrorIntoItem;

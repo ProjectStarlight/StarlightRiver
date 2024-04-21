@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 				return false; // prevents possibility of duplicate projectiles
 
 			Projectile.NewProjectile(source, position, velocity, type, damage, knockback, Main.myPlayer, combo, charge);
-			
+
 			return false;
 		}
 
@@ -457,7 +457,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 				if (Direction != oldDirection)
 					Projectile.netUpdate = true;
 			}
-			
+
 			Player.direction = Direction == 0 ? 1 : (int)Direction;
 
 			float progress = 0;

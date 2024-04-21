@@ -8,7 +8,9 @@ namespace StarlightRiver.Content.Metaballs
 {
 	internal class BloodMetaballs : MetaballActor
 	{
-		public override bool Active => Main.dust.Any(x => x.active && x.type == DustType);
+		public static bool Visible = false;
+
+		public override bool Active => Visible;
 
 		public override Color OutlineColor => new(173, 19, 19);
 
@@ -48,6 +50,9 @@ namespace StarlightRiver.Content.Metaballs
 		{
 			var sourceRect = new Rectangle(0, 0, target.Width, target.Height);
 			LightingBufferRenderer.DrawWithLighting(sourceRect, target, sourceRect, InteriorColor, new Vector2(2, 2));
+
+			Visible = false;
+
 			return false;
 		}
 	}

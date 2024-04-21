@@ -133,11 +133,6 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override string Texture => AssetDirectory.Invisible;
 
-		public override void Load()
-		{
-			StarlightPlayer.PostUpdateEvent += DoSwingAnimation;
-		}
-
 		public override void SetDefaults()
 		{
 			Projectile.friendly = true;
@@ -189,15 +184,6 @@ namespace StarlightRiver.Content.Items.Misc
 				Terraria.Audio.SoundEngine.PlaySound(Item.UseSound.Value, Owner.MountedCenter);
 		}
 
-		private void DoSwingAnimation(Player player)
-		{
-			Projectile instance = Main.projectile.FirstOrDefault(n => n.ModProjectile is AxeBookProjectile && n.owner == player.whoAmI);
-			var modProj = instance?.ModProjectile as AxeBookProjectile;
-
-			if (modProj != null && instance.active)
-				player.bodyFrame = new Rectangle(0, (int)(1 + modProj.Progress * 4) * 56, 40, 56);
-		}
-
 		public override void AI()
 		{
 			Projectile.Center = Owner.Center;
@@ -208,6 +194,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 			Owner.itemAnimation = Owner.itemTime = Projectile.timeLeft; //lock inventory while this is active
 			Owner.itemAnimationMax = 0; //make sure the regular weapon holdout doesn't render (makes an invisible super axe so you need to disable onhit elsewhere)
+
+			Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation + 1.57f * 2.5f);
 
 			// Cut trees
 			if (Progress > 0 && !hitTree)

@@ -557,7 +557,7 @@ namespace StarlightRiver.Content.Items.Haunted
 
 			if (embeddedTargetId >= 0)
 				embeddedTarget = Main.npc[embeddedTargetId];
-			else 
+			else
 				embeddedTarget = null;
 		}
 	}

@@ -1,5 +1,4 @@
 ﻿using StarlightRiver.Core.Systems.LightingSystem;
-using StarlightRiver.Helpers;
 using System;
 
 namespace StarlightRiver.Core.Systems.CutawaySystem
@@ -29,7 +28,10 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 			if (opacity == 0)
 				opacity = fadeTime;
 
-			if (Helper.OnScreen(pos - Main.screenPosition, tex.Size()))
+			Rectangle bounds = Dimensions;
+			bounds.Offset((-Main.screenPosition).ToPoint());
+
+			if (ScreenTracker.OnScreenScreenspace(bounds))
 				LightingBufferRenderer.DrawWithLighting(pos - Main.screenPosition, tex, Color.White * opacity);
 
 			if (Fade)
