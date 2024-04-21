@@ -255,7 +255,7 @@ namespace StarlightRiver.Content.NPCs.Snow
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, NUM_SEGMENTS, new TriangularTip(1), factor => 7, factor => Lighting.GetColor((int)(NPC.Center.X / 16), (int)(NPC.Center.Y / 16)));
+			trail ??= new Trail(Main.instance.GraphicsDevice, NUM_SEGMENTS, new NoTip(), factor => 7, factor => Lighting.GetColor((int)(NPC.Center.X / 16), (int)(NPC.Center.Y / 16)));
 
 			List<Vector2> positions = cache;
 			trail.NextPosition = positions[NUM_SEGMENTS - 1];

@@ -313,7 +313,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(4), factor => 4, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => 4, factor =>
 			{
 				Color trailColor = Color.White;
 				return trailColor * 0.3f;
