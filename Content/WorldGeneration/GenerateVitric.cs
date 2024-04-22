@@ -585,6 +585,21 @@ namespace StarlightRiver.Core
 			GearPuzzleHandler.PuzzleOriginLocation = pos + new Point16(14, 130);
 		}
 
+		/// <summary>
+		/// Repairs the temple during the game when the glassweaver should move in
+		/// </summary>
+		public static void RepairTemple()
+		{
+			Point16 dimensions = Point16.Zero;
+			StructureHelper.Generator.GetDimensions("Structures/VitricTempleNew", StarlightRiver.Instance, ref dimensions);
+
+			int yOff = 71;
+
+			var pos = new Point16(vitricBiome.Center.X - dimensions.X / 2, vitricBiome.Center.Y - yOff + 8);
+			pos += new Point16(76, 88);
+			StructureHelper.Generator.GenerateStructure("Structures/VitricTempleRepair", pos, StarlightRiver.Instance);
+		}
+
 		/// <summary>Generates decor of every type throughout the biome</summary>
 		private static void GenDecoration()
 		{

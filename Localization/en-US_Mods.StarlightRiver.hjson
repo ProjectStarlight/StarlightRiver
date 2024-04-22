@@ -3099,6 +3099,11 @@ Items: {
 			Increases starlight cost to 1.5
 			'''
 	}
+
+	VitricPylonItem: {
+		DisplayName: Vitric Pylon
+		Tooltip: You shouldn't have this!
+	}
 }
 
 Tiles: {
@@ -3285,6 +3290,10 @@ Tiles: {
 	VitricSand.MapEntry: ""
 	VitricSoftSand.MapEntry: ""
 	VitricSandPlain.MapEntry: ""
+	// VitricGiantCrystal.MapEntry: ""
+	// VitricLargeCrystal.MapEntry: ""
+	// VitricMediumCrystal.MapEntry: ""
+	VitricPylon.MapEntry: Vitric Pylon
 	// VitricGiantCrystal.MapEntry: ""
 	// VitricLargeCrystal.MapEntry: ""
 	// VitricMediumCrystal.MapEntry: ""

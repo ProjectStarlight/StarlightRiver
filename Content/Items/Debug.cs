@@ -50,6 +50,8 @@ namespace StarlightRiver.Content.Items
 			//player.GetHandler().unlockedAbilities.Clear();
 			player.GetHandler().InfusionLimit = 1;
 
+			StarlightWorld.RepairTemple();
+
 			//Main.time = 53999;
 			//Main.dayTime = true;
 			//StarlightEventSequenceSystem.willOccur = true;
