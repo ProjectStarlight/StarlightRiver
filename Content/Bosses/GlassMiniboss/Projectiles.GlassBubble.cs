@@ -1,4 +1,5 @@
 using ReLogic.Content;
+using StarlightRiver.Content.Packets;
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using System.IO;
@@ -202,6 +203,12 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		{
 			if (State == 1)
 			{
+				if (Main.LocalPlayer.whoAmI == target.whoAmI)
+				{
+					PlayerHitPacket hitPacket = new PlayerHitPacket(Projectile.identity, target.whoAmI, info.Damage, Projectile.type);
+					hitPacket.Send(-1, Main.LocalPlayer.whoAmI, false);
+				}
+
 				if (Timer < CRACK_TIME)
 					Timer = CRACK_TIME;
 
@@ -212,8 +219,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					Projectile.velocity = Projectile.DirectionFrom(target.Center) * 1.77f;
 					hits += 30;
 				}
-
-				Projectile.netUpdate = true;
 			}
 		}
 

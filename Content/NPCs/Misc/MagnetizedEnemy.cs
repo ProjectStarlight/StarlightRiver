@@ -205,7 +205,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 		private void ManageTrails()
 		{
 			Vector2 endPoint = cache[SEGMENTS];
-			trail ??= new Trail(Main.instance.GraphicsDevice, SEGMENTS + 1, new TriangularTip(4), factor => 16 * Math.Max(fade, 1) * MathHelper.Lerp(1, 0.25f, flashOpacity), factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, SEGMENTS + 1, new NoTip(), factor => 16 * Math.Max(fade, 1) * MathHelper.Lerp(1, 0.25f, flashOpacity), factor =>
 			{
 				if (factor.X > 0.99f)
 					return Color.Transparent;
@@ -216,7 +216,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = endPoint;
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, SEGMENTS + 1, new TriangularTip(4), factor => 3 * (fade > 1 ? Main.rand.NextFloat(0.55f, 1.45f) : 1) * Math.Max(fade, 1), factor =>
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, SEGMENTS + 1, new NoTip(), factor => 3 * (fade > 1 ? Main.rand.NextFloat(0.55f, 1.45f) : 1) * Math.Max(fade, 1), factor =>
 			{
 				float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
 				return Color.Lerp(Color.Lerp(baseColor, endColor, EaseFunction.EaseCubicIn.Ease(1 - progress)), Color.White, flashOpacity) * ((fade - 0.5f) * 0.3f) * progress;

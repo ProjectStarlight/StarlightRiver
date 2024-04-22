@@ -10,8 +10,9 @@ namespace StarlightRiver.Core
 	{
 		public enum AnchorOptions
 		{
+			World,
 			Screen,
-			World
+			UI
 		}
 
 		public delegate void Update(Particle particle);
@@ -32,7 +33,7 @@ namespace StarlightRiver.Core
 
 		private BasicEffect effect;
 
-		public ParticleSystem(string texture, Update updateDelegate, AnchorOptions anchor = AnchorOptions.Screen, int maxParticles = 10000)
+		public ParticleSystem(string texture, Update updateDelegate, AnchorOptions anchor = AnchorOptions.World, int maxParticles = 10000)
 		{
 			this.texture = Request<Texture2D>(texture, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
 			updateFunction = updateDelegate;
@@ -58,8 +59,6 @@ namespace StarlightRiver.Core
 
 		public void PopulateBuffers()
 		{
-			Vector2 offset = anchorType == AnchorOptions.World ? Main.screenPosition : Vector2.Zero;
-
 			FastParallel.For(0, particles.Count, (from, to, context) =>
 			{
 				for (int k = from; k < to; k++)
@@ -71,7 +70,7 @@ namespace StarlightRiver.Core
 
 					Rectangle frame = particle.Frame != default ? particle.Frame : texture.Frame();
 					Rectangle plane = frame;
-					plane.Offset((particle.Position - offset).ToPoint());
+					plane.Offset(particle.Position.ToPoint());
 					plane.Width = (int)(plane.Width * particle.Scale);
 					plane.Height = (int)(plane.Height * particle.Scale);
 
@@ -80,10 +79,10 @@ namespace StarlightRiver.Core
 					float w = frame.Width / (float)texture.Width;
 					float h = frame.Height / (float)texture.Height;
 
-					verticies[4 * k + 0] = new(plane.TopLeft().RotatedBy(particle.Rotation, plane.Center.ToVector2()).Vec3().ScreenCoord(), particle.Color * particle.Alpha, new Vector2(x, y));
-					verticies[4 * k + 1] = new(plane.TopRight().RotatedBy(particle.Rotation, plane.Center.ToVector2()).Vec3().ScreenCoord(), particle.Color * particle.Alpha, new Vector2(x + w, y));
-					verticies[4 * k + 2] = new(plane.BottomLeft().RotatedBy(particle.Rotation, plane.Center.ToVector2()).Vec3().ScreenCoord(), particle.Color * particle.Alpha, new Vector2(x, y + h));
-					verticies[4 * k + 3] = new(plane.BottomRight().RotatedBy(particle.Rotation, plane.Center.ToVector2()).Vec3().ScreenCoord(), particle.Color * particle.Alpha, new Vector2(x + w, y + h));
+					verticies[4 * k + 0] = new(plane.TopLeft().RotatedBy(particle.Rotation, plane.Center.ToVector2()).Vec3(), particle.Color * particle.Alpha, new Vector2(x, y));
+					verticies[4 * k + 1] = new(plane.TopRight().RotatedBy(particle.Rotation, plane.Center.ToVector2()).Vec3(), particle.Color * particle.Alpha, new Vector2(x + w, y));
+					verticies[4 * k + 2] = new(plane.BottomLeft().RotatedBy(particle.Rotation, plane.Center.ToVector2()).Vec3(), particle.Color * particle.Alpha, new Vector2(x, y + h));
+					verticies[4 * k + 3] = new(plane.BottomRight().RotatedBy(particle.Rotation, plane.Center.ToVector2()).Vec3(), particle.Color * particle.Alpha, new Vector2(x + w, y + h));
 
 					indicies[6 * k + 0] = (short)(4 * k + 0);
 					indicies[6 * k + 1] = (short)(4 * k + 1);
@@ -107,23 +106,6 @@ namespace StarlightRiver.Core
 		{
 			if (GetInstance<GraphicsConfig>().ParticlesActive && effect != null)
 			{
-				/*for (int k = 0; k < particles.Count; k++)
-				{
-					Particle particle = particles[k];
-
-					if (particle is null)
-						continue;
-
-					if (!Main.gameInactive)
-						updateFunction(particle);
-
-					Vector2 pos = particle.Position;
-					if (anchorType == AnchorOptions.World)
-						pos -= Main.screenPosition;
-
-					spriteBatch.Draw(texture, pos, particle.Frame == new Rectangle() ? texture.Bounds : particle.Frame, particle.Color * particle.Alpha, particle.Rotation, particle.Frame.Size() / 2, particle.Scale, 0, 0);
-				}*/
-
 				spriteBatch.End();
 
 				PopulateBuffers();
@@ -131,13 +113,26 @@ namespace StarlightRiver.Core
 				Main.instance.GraphicsDevice.SetVertexBuffer(vertexBuffer);
 				Main.instance.GraphicsDevice.Indices = indexBuffer;
 
+				Matrix zoom = anchorType switch
+				{
+					AnchorOptions.World => Main.GameViewMatrix.TransformationMatrix,
+					AnchorOptions.Screen => Matrix.Identity,
+					AnchorOptions.UI => Main.UIScaleMatrix,
+					_ => default
+				};
+
+				Vector2 offset = anchorType == AnchorOptions.World ? Main.screenPosition : Vector2.Zero;
+				effect.World = Matrix.CreateTranslation(-offset.Vec3());
+				effect.View = anchorType == AnchorOptions.UI ? Matrix.Identity : zoom;
+				effect.Projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
 				foreach (EffectPass pass in effect.CurrentTechnique.Passes)
 				{
 					pass.Apply();
 					Main.instance.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, vertexBuffer.VertexCount, 0, indexBuffer.IndexCount / 3);
 				}
 
-				spriteBatch.Begin();
+				Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, default, zoom);
 
 				particles.RemoveAll(n => n is null || n.Timer <= 0);
 			}

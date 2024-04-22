@@ -367,9 +367,9 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, TRAIL_LENGTH, new TriangularTip(40), factor => factor * trailWidth * 4f, factor => Color.Red);
+			trail ??= new Trail(Main.instance.GraphicsDevice, TRAIL_LENGTH, new NoTip(), factor => factor * trailWidth * 4f, factor => Color.Red);
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, TRAIL_LENGTH, new TriangularTip(40), factor => factor * trailWidth * 4f, factor => Color.Red);
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, TRAIL_LENGTH, new NoTip(), factor => factor * trailWidth * 4f, factor => Color.Red);
 
 			if (trailWidth < 3.9f && (collided || stuck || Projectile.timeLeft % 6 == 0))
 			{

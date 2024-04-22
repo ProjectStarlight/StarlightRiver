@@ -159,7 +159,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 13, new TriangularTip(4), factor => 4, factor => Color.Red * 0.8f * factor.X);
+			trail ??= new Trail(Main.instance.GraphicsDevice, 13, new NoTip(), factor => 4, factor => Color.Red * 0.8f * factor.X);
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.position + Projectile.velocity;
@@ -520,7 +520,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 13, new TriangularTip(4), factor => 16, factor => new Color(52, 21, 141) * 0.8f * factor.X);
+			trail ??= new Trail(Main.instance.GraphicsDevice, 13, new NoTip(), factor => 16, factor => new Color(52, 21, 141) * 0.8f * factor.X);
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.position + Projectile.velocity;
