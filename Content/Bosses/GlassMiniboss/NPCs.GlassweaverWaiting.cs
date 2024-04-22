@@ -1,4 +1,5 @@
 using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.ForbiddenWinds;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Content.Packets;
@@ -70,7 +71,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Timer++;
 			VisualTimer++;
 
-			if (State < 0 || State > 5)
+			if (State < 0 || State > 7)
 				State = StarlightWorld.HasFlag(WorldFlags.GlassweaverDowned) ? 3 : 0;
 
 			if (Main.netMode != NetmodeID.Server) // Client based stuff
@@ -130,6 +131,16 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					State = 2;
 				}
 			}
+
+			if (State == 6 && Main.time == 0 && Main.dayTime)
+			{
+				NPC.Center = StarlightWorld.vitricBiome.Center.ToVector2() * 16 + new Vector2(-86, 1200);
+				StarlightWorld.RepairTemple();
+
+				Main.NewText("The Glassweaver has moved into the forge!", new Color(160, 230, 255));
+
+				State = 7;
+			}
 		}
 
 		public override bool CheckActive()
@@ -185,6 +196,25 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				Main.LocalPlayer.QuickSpawnItem(NPC.GetSource_FromThis(), ItemType<TempleEntranceKey>());
 		}
 
+		/// <summary>
+		/// Invoked by DialogManager to set the flag for the glassweaver moving in the next day
+		/// </summary>
+		public void SetFlagForMove()
+		{
+			State = 6;
+		}
+
+		/// <summary>
+		/// Invoked by DialogManager to grant an infusion slot and infusion
+		/// </summary>
+		public void GiveInfusion()
+		{
+			Main.LocalPlayer.GetHandler().InfusionLimit++;
+			Infusion.gainAnimationTimer = 240;
+
+			Main.LocalPlayer.QuickSpawnItem(NPC.GetSource_FromThis(), ItemType<StellarRushItem>());
+		}
+
 		public override string GetChat()
 		{
 			if (Main.netMode == NetmodeID.Server) // Dialog only for client or in singleplayer.
@@ -208,9 +238,17 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			{
 				manager.Start("Interruption");
 			}
-			else if (State == 5) //After talking after win
+			else if (State == 5 && !StarlightWorld.HasFlag(WorldFlags.VitricBossDowned)) //After talking after win
 			{
 				manager.Start("Key" + Main.rand.Next(1, 4));
+			}
+			else if (StarlightWorld.HasFlag(WorldFlags.VitricBossDowned) && State < 7)
+			{
+				manager.Start("Moving1");
+			}
+			else if (State == 7 && Main.LocalPlayer.GetHandler().InfusionLimit == 0)
+			{
+				manager.Start("Infusion1");
 			}
 
 			return "";

@@ -317,5 +317,68 @@
         "Text": "Goodbye"
       }
     ]
+  },
+
+
+
+  {
+    "Key": "Moving1",
+    "Title": "Glassweaver",
+    "Body": "\"Well, based on the horrifying screech that shattered half of my work, I'm going to assume to managed to 'deal' with the sentinel. I'll be moving in soon.\"",
+    "Buttons": [
+      {
+        "Key": "Moving2",
+        "Text": "..."
+      }
+    ]
+  },
+  {
+    "Key": "Moving2",
+    "Title": "Glassweaver",
+    "Body": "\"Come see me in the temple in a day or so. I'll be able to make you something special as thanks for your house cleaning duties.\"",
+    "Buttons": [
+      {
+        "Key": "End",
+        "Code": "SetFlagForMove",
+        "Text": "Bye!"
+      }
+    ]
+  },
+
+
+
+  {
+    "Key": "Infusion1",
+    "Title": "Glassweaver",
+    "Body": "\"Hello again! I humbly welcome you to my new abode, as you can see I have already began working my genius on this place, simply look at the beautiful glass pylon to your right!\"",
+    "Buttons": [
+      {
+        "Key": "Infusion2",
+        "Text": "How wonderful..."
+      }
+    ]
+  },
+  {
+    "Key": "Infusion2",
+    "Title": "Glassweaver",
+    "Body": "\"Ah, yes, truly wonderful... Anyways, I did promise you a reward. Some feathered fellow swung by earlier and dropped off a design for something he said you would be interested in. I've taken the liberty of making it for you.\"",
+    "Buttons": [
+      {
+        "Key": "Infusion3",
+        "Text": "..."
+      }
+    ]
+  },
+  {
+    "Key": "Infusion3",
+    "Title": "Glassweaver",
+    "Body": "\"If you have the materials I do have some ideas for a few... variations on this. If you find yourself interested I can offer you the services of my forge.\"",
+    "Buttons": [
+      {
+        "Key": "End",
+        "Code": "GiveInfusion",
+        "Text": "Goodbye"
+      }
+    ]
   }
 ]
