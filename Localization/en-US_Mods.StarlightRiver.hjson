@@ -3104,6 +3104,11 @@ Items: {
 		DisplayName: Vitric Pylon
 		Tooltip: You shouldn't have this!
 	}
+
+	SoundPuzzleDoorItem: {
+		DisplayName: Sound Puzzle Temple Door
+		Tooltip: Temple Door, Opens if sound puzzle is solved
+	}
 }
 
 Tiles: {
@@ -3294,6 +3299,7 @@ Tiles: {
 	// VitricLargeCrystal.MapEntry: ""
 	// VitricMediumCrystal.MapEntry: ""
 	VitricPylon.MapEntry: Vitric Pylon
+	SoundPuzzleDoor.MapEntry: ""
 	// VitricGiantCrystal.MapEntry: ""
 	// VitricLargeCrystal.MapEntry: ""
 	// VitricMediumCrystal.MapEntry: ""
