@@ -596,7 +596,7 @@ namespace StarlightRiver.Core
 			int yOff = 71;
 
 			var pos = new Point16(vitricBiome.Center.X - dimensions.X / 2, vitricBiome.Center.Y - yOff + 8);
-			pos += new Point16(76, 88);
+			pos += new Point16(75, 88);
 			StructureHelper.Generator.GenerateStructure("Structures/VitricTempleRepair", pos, StarlightRiver.Instance);
 		}
 
