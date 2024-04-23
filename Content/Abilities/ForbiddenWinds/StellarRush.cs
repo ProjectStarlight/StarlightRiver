@@ -1,6 +1,6 @@
 ﻿using StarlightRiver.Content.Abilities.Infusions;
 using StarlightRiver.Content.Items.Misc;
-using StarlightRiver.Content.Tiles.Crafting;
+using StarlightRiver.Content.Tiles.Vitric.Temple;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -173,7 +173,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 			Recipe recipe = CreateRecipe();
 			recipe.AddIngredient<BasicInfusion>(1);
 			recipe.AddIngredient<StaminaGel>(25);
-			recipe.AddTile<Infuser>();
+			recipe.AddTile(ModContent.TileType<MainForge>());
 			recipe.Register();
 		}
 	}

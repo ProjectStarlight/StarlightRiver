@@ -1,5 +1,5 @@
 ﻿using StarlightRiver.Content.Items.Misc;
-using StarlightRiver.Content.Tiles.Crafting;
+using StarlightRiver.Content.Tiles.Vitric.Temple;
 using System;
 using Terraria.ID;
 
@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Abilities.Infusions
 			Recipe recipe = CreateRecipe();
 			recipe.AddIngredient(ItemID.StoneBlock, 50);
 			recipe.AddIngredient<StaminaGel>(1);
-			recipe.AddTile<Infuser>();
+			recipe.AddTile(ModContent.TileType<MainForge>());
 			recipe.Register();
 		}
 	}
