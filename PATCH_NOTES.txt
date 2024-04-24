@@ -9,10 +9,12 @@
 ## Tweaks
 - Updated the visuals of the starlight river background effect
 - Updated Ceiros' arena assets to have better visibility
+- Whirlwind pickaxe acts more like a normal pickaxe and has a sell value. Its spin now damages enemies
 
 ## Multiplayer
 - Performance optimizations to player onhits. Most noticeable in Glassweaver gauntlet
 - Removed extra unnecesary packets from dummy system
+- Fixed missing graphics device for whirlwind pickaxe
 
 ## Fixes
 - Fixed drawblack in vitric biome (no more visible black squares)
