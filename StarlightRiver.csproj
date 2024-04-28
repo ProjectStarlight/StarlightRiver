@@ -37,5 +37,6 @@
   <ItemGroup>
     <Folder Include="Assets\Healthbars\" />
     <Folder Include="Content\NPCs\Vitric\GlassTrial\" />
+    <Folder Include="Content\WorldGeneration\NewFolder\" />
   </ItemGroup>
 </Project>

@@ -3109,6 +3109,11 @@ Items: {
 		DisplayName: Sound Puzzle Temple Door
 		Tooltip: Temple Door, Opens if sound puzzle is solved
 	}
+
+	ShardCageBarrierItem: {
+		DisplayName: ShardCageBarrierItem
+		Tooltip: "{{Debug}} item"
+	}
 }
 
 Tiles: {
@@ -3300,6 +3305,7 @@ Tiles: {
 	// VitricMediumCrystal.MapEntry: ""
 	VitricPylon.MapEntry: Vitric Pylon
 	SoundPuzzleDoor.MapEntry: ""
+	ShardCage.MapEntry: ""
 	// VitricGiantCrystal.MapEntry: ""
 	// VitricLargeCrystal.MapEntry: ""
 	// VitricMediumCrystal.MapEntry: ""

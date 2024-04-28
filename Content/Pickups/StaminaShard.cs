@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Pickups
 
 		public override string Texture => GetStaminaTexture();
 
-		public override Color GlowColor => new(0, 30, 90);
+		public override Color GlowColor => new(0, 90, 120);
 
 		public override bool Fancy => false;
 
@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Pickups
 			if (Main.rand.NextBool(8))
 				Dust.NewDustPerfect(NPC.Center + Vector2.One.RotatedByRandom(Math.PI) * Main.rand.NextFloat(16), DustType<Dusts.AuroraFast>(), Vector2.UnitY * -1, 0, new Color(100, 220, 255));
 
-			Lighting.AddLight(NPC.Center, new Vector3(0.5f, 0.25f, 0.05f));
+			Lighting.AddLight(NPC.Center, new Vector3(0.0f, 0.25f, 0.35f));
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
