@@ -27,7 +27,7 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 			{
 				Inside = (n) =>
 				{
-					var arena = StarlightWorld.GlassweaverArena;
+					Rectangle arena = StarlightWorld.GlassweaverArena;
 					arena.Y += 4 * 16;
 					arena.Height -= 4 * 16;
 					return arena.Intersects(n.Hitbox);

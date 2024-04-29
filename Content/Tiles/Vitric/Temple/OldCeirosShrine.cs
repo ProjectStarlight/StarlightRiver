@@ -58,6 +58,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 				i--;
 				tile2 = Framing.GetTileSafely(i, j);
 			}
+
 			while (tile2.TileFrameY > 0)
 			{
 				j--;

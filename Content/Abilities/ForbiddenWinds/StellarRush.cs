@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 				Vector2 pos = Player.Center + (Player.Center - nextPos) * k + swirlOff;
 				Vector2 vel = Player.velocity * Main.rand.NextFloat(0.1f, 0.2f) + swirlOff * Main.rand.NextFloat(0.1f, 0.14f);
 
-				var type = k == 0 ? DustType<Dusts.AuroraDecelerating>() : DustType<Dusts.Cinder>();
+				int type = k == 0 ? DustType<Dusts.AuroraDecelerating>() : DustType<Dusts.Cinder>();
 
 				if (type == DustType<Dusts.AuroraDecelerating>())
 					vel *= 4;

@@ -267,7 +267,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				State == 2 ||
 				State == 3 ||
 				State == 5 && StarlightWorld.HasFlag(WorldFlags.VitricBossDowned) ||
-				State == 7 && Main.LocalPlayer.GetHandler().InfusionLimit == 0) 
+				State == 7 && Main.LocalPlayer.GetHandler().InfusionLimit == 0)
 				&& talkingTo is null)
 			{
 				Texture2D exclaim = Request<Texture2D>("StarlightRiver/Assets/Misc/Exclaim").Value;

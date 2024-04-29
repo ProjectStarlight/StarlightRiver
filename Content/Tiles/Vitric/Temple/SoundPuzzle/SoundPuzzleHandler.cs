@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.SoundPuzzle
 				if (Main.rand.NextBool(2))
 				{
 					Vector2 pos = StarlightWorld.VitricBossArena.BottomLeft() * 16 + new Vector2(-446 + k * 12 * 16, 1524);
-					var color = k < lastTries.Count || solved ? Color.Orange : new Color(40, 80, 90);
+					Color color = k < lastTries.Count || solved ? Color.Orange : new Color(40, 80, 90);
 
 					Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.Cinder>(), Vector2.UnitY * -Main.rand.NextFloat(), 0, color, 1);
 				}
