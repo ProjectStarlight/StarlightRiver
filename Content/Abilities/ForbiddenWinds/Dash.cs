@@ -11,13 +11,12 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 {
 	public class Dash : CooldownAbility, IOrderedLoadable
 	{
-		public const int DEFAULT_TIME = 15;
-
 		public int Time;
+		public int maxTime = 15;
 		public int EffectTimer;
 
-		private List<Vector2> cache;
-		private Trail trail;
+		protected List<Vector2> cache;
+		protected Trail trail;
 
 		public override string Name => "Forbidden Winds";
 		public override string Tooltip => "Channel Starlight to recreate the strange energies fueling the bellows of the Vitric Forges, launching yourself with the winds of memory and shattering the ties of connection within any object you strike. NEWBLOCK " +
@@ -67,7 +66,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 		{
 			Boost = 0.25f;
 			Speed = 28;
-			Time = DEFAULT_TIME;
+			Time = maxTime = 15;
 			CooldownBonus = 0;
 		}
 
@@ -156,9 +155,9 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 				var dash = Player.GetHandler().ActiveAbility as Dash;
 
 				Player.bodyFrame = new Rectangle(0, 56 * 3, 40, 56);
-				Player.UpdateRotation(dash.Time / 15f * 6.28f);
+				Player.UpdateRotation(dash.Time / (float)dash.maxTime * 6.28f);
 
-				if (dash.Time == 15 || Player.dead)
+				if (dash.Time == dash.maxTime || Player.dead)
 					Player.UpdateRotation(0);
 			}
 		}
@@ -231,7 +230,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 			trail.NextPosition = Player.Center + Player.velocity * 6;
 		}
 
-		public void DrawPrimitives()
+		public virtual void DrawPrimitives()
 		{
 			Main.spriteBatch.End();
 

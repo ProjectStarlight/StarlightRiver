@@ -78,7 +78,7 @@ namespace StarlightRiver.Core
 
 					Rectangle plane = new Rectangle(0, 0, frame.Width, frame.Height);
 					plane.Offset(particle.Position.ToPoint());
-          
+
 					plane.Width = (int)(plane.Width * particle.Scale);
 					plane.Height = (int)(plane.Height * particle.Scale);
 

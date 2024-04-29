@@ -94,6 +94,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		public override bool PreDraw(ref Color lightColor)
 		{
+			if (fakeNPC is null)
+				return false;
+
 			Texture2D tex = ModContent.Request<Texture2D>((fakeNPC.ModNPC as VitricConstructNPC).PreviewTexturePath).Value;
 
 			Effect trailEffect = Filters.Scene["CeirosRing"].GetShader().Shader;

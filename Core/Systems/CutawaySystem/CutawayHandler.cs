@@ -25,7 +25,13 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 			// Glassweaver forge overlay
 			forgeOverlay = new Cutaway(ModContent.Request<Texture2D>("StarlightRiver/Assets/Overlay/ForgeOverlay", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value, StarlightWorld.GlassweaverArena.TopLeft() + new Vector2(-2, 2) * 16)
 			{
-				Inside = (n) => StarlightWorld.GlassweaverArena.Intersects(n.Hitbox)
+				Inside = (n) =>
+				{
+					Rectangle arena = StarlightWorld.GlassweaverArena;
+					arena.Y += 4 * 16;
+					arena.Height -= 4 * 16;
+					return arena.Intersects(n.Hitbox);
+				}
 			};
 			CutawayHook.NewCutaway(forgeOverlay);
 

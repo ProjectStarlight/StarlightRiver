@@ -53,8 +53,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 			var frame = new Rectangle(0, 0, backdrop.Width, backdrop.Height);
 
-			Main.spriteBatch.Draw(farBackdrop, pos + parallaxOffset, frame, new Color(170, 140 + (int)(Math.Sin(Main.GameUpdateCount * 0.04f) * 15), 90));
-			Main.spriteBatch.Draw(farBackdropGlow, pos + parallaxOffset, frame, Color.White);
+			if (CutawayHandler.forgeOverlay?.fadeTime < 1)
+			{
+				Main.spriteBatch.Draw(farBackdrop, pos + parallaxOffset, frame, new Color(170, 140 + (int)(Math.Sin(Main.GameUpdateCount * 0.04f) * 15), 90));
+				Main.spriteBatch.Draw(farBackdropGlow, pos + parallaxOffset, frame, Color.White);
+			}
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);

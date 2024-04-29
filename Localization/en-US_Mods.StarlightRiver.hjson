@@ -1580,11 +1580,14 @@ Items: {
 			'''
 	}
 
-	Octogun.Tooltip:
-		'''
-		Converts Musket Balls into Aurora Ink
-		Critical hits and kills cause Tentapistols to sprout from your back
-		'''
+	Octogun: {
+		Tooltip:
+			'''
+			Converts Musket Balls into Aurora Ink
+			Critical hits and kills cause Tentapistols to sprout from your back
+			'''
+		DisplayName: Glocktopus
+	}
 
 	OverflowingUrn: {
 		DisplayName: Overflowing Urn
@@ -3079,6 +3082,36 @@ Items: {
 		DisplayName: Soft Sand
 		Tooltip: ""
 	}
+
+	StellarRush: {
+		DisplayName: Stellar Rush
+		Tooltip:
+			'''
+			Forbidden Winds Infusion
+			Dash farther and carry more speed
+			Increases starlight cost to 1.5
+			'''
+	}
+
+	StellarRushItem: {
+		DisplayName: Stellar Rush
+		Tooltip:
+			'''
+			Forbidden Winds Infusion
+			Dash farther and carry more speed
+			Increases starlight cost to 1.5
+			'''
+	}
+
+	VitricPylonItem: {
+		DisplayName: Vitric Pylon
+		Tooltip: You shouldn't have this!
+	}
+
+	SoundPuzzleDoorItem: {
+		DisplayName: Sound Puzzle Temple Door
+		Tooltip: Temple Door, Opens if sound puzzle is solved
+	}
 }
 
 Tiles: {
@@ -3265,6 +3298,11 @@ Tiles: {
 	VitricSand.MapEntry: ""
 	VitricSoftSand.MapEntry: ""
 	VitricSandPlain.MapEntry: ""
+	// VitricGiantCrystal.MapEntry: ""
+	// VitricLargeCrystal.MapEntry: ""
+	// VitricMediumCrystal.MapEntry: ""
+	VitricPylon.MapEntry: Vitric Pylon
+	SoundPuzzleDoor.MapEntry: ""
 	// VitricGiantCrystal.MapEntry: ""
 	// VitricLargeCrystal.MapEntry: ""
 	// VitricMediumCrystal.MapEntry: ""
