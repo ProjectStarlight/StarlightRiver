@@ -1,0 +1,29 @@
+﻿[
+  {
+    "Key": "Start",
+    "Title": "Test dialog",
+    "Body": "This is some test text",
+    "Buttons": [
+      {
+        "Key": "Second",
+        "Text": "Next"
+      },
+      {
+        "Key": "",
+        "Code": "TestFunction",
+        "Text": "Test code execution"
+      }
+    ]
+  },
+  {
+    "Key": "Second",
+    "Title": "Test dialog",
+    "Body": "This is some more test text",
+    "Buttons": [
+      {
+        "Key": "End",
+        "Text": "Finish"
+      }
+    ]
+  }
+]

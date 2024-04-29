@@ -16,15 +16,15 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 		{
 			DisplayName.SetDefault("Warrior King's Crown");
 			Tooltip.SetDefault("Cursed : All of your summon slots are converted into +2% summoning critical strike chance per slot" +
-				" and all of your sentry slots are converted into +20% summoning damage per slot\n" +
-				"Summoning damage increased by 200%\nCombat mount cooldowns reduced by 30%");
+				" and all of your sentry slots are converted into +30% summoning damage per slot\n" +
+				"Summoning damage increased by 40%\nCombat mount cooldowns reduced by 30%");
 		}
 
 		public override void SafeUpdateAccessory(Player Player, bool hideVisual)
 		{
 			Player.GetCritChance(DamageClass.Summon) += Player.maxMinions * 2;
-			Player.GetDamage(DamageClass.Summon) += Player.maxTurrets * 0.2f;
-			Player.GetDamage(DamageClass.Summon) += 2;
+			Player.GetDamage(DamageClass.Summon) += Player.maxTurrets * 0.3f;
+			Player.GetDamage(DamageClass.Summon) += 0.4f;
 			Player.GetModPlayer<CombatMountPlayer>().combatMountCooldownMultiplier += 0.3f;
 
 			Player.maxMinions = 0;

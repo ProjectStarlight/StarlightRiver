@@ -1,3 +1,4 @@
+using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.NPCs.Permafrost;
 using StarlightRiver.Core.Systems.MetaballSystem;
@@ -35,7 +36,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 	class AuroraWaterSystem : ModSystem
 	{
 		public static int visCounter = 0;
-		public static bool Visible => visCounter > 0;
+		public static bool Visible => visCounter > 0 || Main.LocalPlayer.InModBiome(ModContent.GetInstance<PermafrostTempleBiome>());
 
 		public static ScreenTarget auroraTarget;
 		public static ScreenTarget auroraBackTarget;

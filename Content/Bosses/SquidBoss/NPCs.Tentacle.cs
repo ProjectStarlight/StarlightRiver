@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using Terraria.DataStructures;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -71,6 +72,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			NPC.HitSound = SoundID.NPCHit1;
 			NPC.dontTakeDamage = true;
 			NPC.netAlways = true;
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
 		}
 
 		public override void OnSpawn(IEntitySource source)

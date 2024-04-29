@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Core.Systems.AuroraWaterSystem;
+using Terraria.GameContent.Bestiary;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Permafrost
@@ -16,6 +17,11 @@ namespace StarlightRiver.Content.NPCs.Permafrost
 			NPC.dontTakeDamage = true;
 			NPC.noGravity = true;
 			NPC.noTileCollide = true;
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
 		}
 
 		public override void AI()
