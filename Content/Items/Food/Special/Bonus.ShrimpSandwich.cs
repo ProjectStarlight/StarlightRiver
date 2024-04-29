@@ -95,7 +95,7 @@ namespace StarlightRiver.Content.Items.Food.Special
 		{
 			this.chanceDenominator = chanceDenominator;
 			this.chanceNumerator = chanceNumerator;
-			ChainedRules = [];
+			ChainedRules = new();
 		}
 
 		public virtual bool CanDrop(DropAttemptInfo info)

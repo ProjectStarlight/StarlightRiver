@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.ForbiddenWinds;
 using StarlightRiver.Content.NPCs.Vitric.Gauntlet;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
@@ -57,7 +58,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 					spawned--;
 			}
 
-			if (Main.player.Any(n => Vector2.Distance(n.Center, Center) < 300) && (spawnerActive || spawned <= 0))
+			if (Main.player.Any(n => Vector2.Distance(n.Center, Center) < 300 && !n.GetHandler().Unlocked<Dash>()) && (spawnerActive || spawned <= 0))
 			{
 				int nearby = Main.npc.Count(n => n.active && Vector2.Distance(n.Center, Center) < 600);
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -48,6 +49,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			NPC.dontCountMe = true;
 			NPC.hide = true;
 			NPC.damage = 0;
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
 		}
 
 		public override void DrawBehind(int index)

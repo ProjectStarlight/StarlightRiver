@@ -5,6 +5,7 @@ using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.IO;
+using Terraria.GameContent.Bestiary;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using static StarlightRiver.Content.Bosses.VitricBoss.VitricBoss;
@@ -69,6 +70,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			NPC.dontTakeDamageFromHostiles = true;
 			NPC.behindTiles = true;
 			NPC.netAlways = true;
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
 		}
 
 		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
@@ -459,7 +465,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				spriteBatch.Draw(texGlow2, NPC.Center - Main.screenPosition, null, color * progress, 0, texGlow2.Size() / 2, progress * 1.0f, default, default);
 				spriteBatch.Draw(texGlow2, NPC.Center - Main.screenPosition, null, color * progress * 1.2f, 0, texGlow2.Size() / 2, progress * 1.6f, default, default);
 
-				Effect effect1 = Filters.Scene["SunPlasma"].GetShader().Shader;
+				Effect effect1 = Terraria.Graphics.Effects.Filters.Scene["SunPlasma"].GetShader().Shader;
 				effect1.Parameters["sampleTexture2"].SetValue(Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/LaserBallMap").Value);
 				effect1.Parameters["sampleTexture3"].SetValue(Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/LaserBallDistort").Value);
 				effect1.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.01f);
@@ -489,7 +495,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 				trail.Positions = positions;
 
-				Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+				Effect effect = Terraria.Graphics.Effects.Filters.Scene["CeirosRing"].GetShader().Shader;
 
 				var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
 				Matrix view = Main.GameViewMatrix.TransformationMatrix;

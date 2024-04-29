@@ -102,6 +102,9 @@ namespace StarlightRiver.Content.Menus
 			if (Main.rand.NextBool(20))
 				bubblesSystem.AddParticle(new Particle(Vector2.Zero, new Vector2(Main.rand.NextFloat(6.28f), -Main.rand.NextFloat(1.6f, 2.2f)), 0, Main.rand.NextFloat(1.0f, 1.4f), Color.White * Main.rand.NextFloat(0.4f, 0.5f), 700, pos + new Vector2(Main.rand.Next(-600, 600), Main.rand.Next(-1200, -600)), new Rectangle(0, Main.rand.Next(3) * 16, 16, 16)));
 
+			spriteBatch.End();
+			spriteBatch.Begin(SpriteSortMode.Deferred, default, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
+
 			Texture2D backdrop = Request<Texture2D>(AssetDirectory.SquidBoss + "Window").Value;
 			spriteBatch.Draw(backdrop, center - backdrop.Size() / 2 + new Vector2(0, -886) - Main.screenPosition, new Color(45, 45, 60));
 
@@ -128,7 +131,7 @@ namespace StarlightRiver.Content.Menus
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
+			spriteBatch.Begin(default, default, SamplerState.LinearClamp, default, default, default, Main.UIScaleMatrix);
 
 			return true;
 		}

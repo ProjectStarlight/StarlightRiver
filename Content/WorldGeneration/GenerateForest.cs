@@ -36,7 +36,7 @@ namespace StarlightRiver.Core
 						}
 					}
 
-					else if (WorldGen.genRand.NextBool(12)) //Berry Bushes
+					else if (WorldGen.genRand.NextBool(12)) //Veggies
 					{
 						for (int y = 10; y < Main.worldSurface; y++)
 						{

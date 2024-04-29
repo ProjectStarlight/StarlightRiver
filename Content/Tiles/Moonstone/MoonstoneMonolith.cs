@@ -22,12 +22,12 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 		{
 			TileObjectData.newTile.DrawYOffset = 2;
 			TileObjectData.newTile.StyleLineSkip = 2;//may need to be increased to add extra animation
-			//TileObjectData.newTile.StyleHorizontal = true;//may be needed if frame Y is changed
-			QuickBlock.QuickSetFurniture(this, 2, 3, 
-				ModContent.DustType<MoonstoneArrowDust>(), 
-				SoundID.Tink, false, 
-				new Color(106, 113, 124), false, false, 
-				"Moonstone Monolith", 
+													 //TileObjectData.newTile.StyleHorizontal = true;//may be needed if frame Y is changed
+			QuickBlock.QuickSetFurniture(this, 2, 3,
+				ModContent.DustType<MoonstoneArrowDust>(),
+				SoundID.Tink, false,
+				new Color(106, 113, 124), false, false,
+				"Moonstone Monolith",
 				new AnchorData(AnchorType.SolidTile | AnchorType.SolidSide | AnchorType.SolidWithTop, TileObjectData.newTile.Width, 0));
 			TileID.Sets.DisableSmartCursor[Type] = true;
 			TileID.Sets.HasOutlines[Type] = true;
@@ -44,8 +44,8 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 		public override void AnimateTile(ref int frame, ref int frameCounter)
 		{
 			//const int startframeOffset = 6;
-            if ((frameCounter = ++frameCounter % 8) == 0)
-                frame = ++frame % 12;
+			if ((frameCounter = ++frameCounter % 8) == 0)
+				frame = ++frame % 12;
 		}
 
 		public override bool RightClick(int i, int j)

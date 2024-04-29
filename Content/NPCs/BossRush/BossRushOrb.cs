@@ -77,6 +77,11 @@ namespace StarlightRiver.Content.NPCs.BossRush
 			Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/OminousIdle");
 		}
 
+		public override void SetBestiary(Terraria.GameContent.Bestiary.BestiaryDatabase database, Terraria.GameContent.Bestiary.BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
+		}
+
 		public override void OnSpawn(IEntitySource source)
 		{
 			activeBossRushLocks.Add(this);
@@ -163,7 +168,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 						Vector2 direction = Vector2.One.RotateRandom(MathHelper.TwoPi) * Main.rand.NextFloat(0.9f, 1.1f);
 
 						Vector2 pos = originalPos - Main.screenPosition + direction * 20;
-						StarlightRiverBackground.stars.AddParticle(new Particle(pos, direction * 30 * (0.6f + (1 - bgStarOpacity) * 0.2f), 0, 0, starColor, 60, Vector2.One * Main.rand.NextFloat(3f, 3.3f), default, 1, 1));
+						StarlightRiverBackground.stars.AddParticle(new Particle(pos, direction * 30 * (0.6f + (1 - bgStarOpacity) * 0.2f), 0, 0, starColor, 60, Vector2.One * Main.rand.NextFloat(3f, 3.3f), new Rectangle(0, 0, 120, 120), 1, 1));
 					}
 
 					StarlightRiverBackground.starOpacity = bgStarOpacity;

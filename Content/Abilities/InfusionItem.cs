@@ -5,6 +5,7 @@ namespace StarlightRiver.Content.Abilities
 	public abstract partial class InfusionItem : ModItem
 	{
 		public Color color;
+		public Ability ability;
 
 		public abstract InfusionTier Tier { get; }
 		public virtual Type AbilityType { get; }
@@ -13,7 +14,7 @@ namespace StarlightRiver.Content.Abilities
 
 		public virtual bool Equippable => true;
 
-		public Ability Ability
+		public Ability BaseAbility
 		{
 			get
 			{
@@ -27,36 +28,15 @@ namespace StarlightRiver.Content.Abilities
 				return null;
 			}
 		}
-
-		public virtual void OnActivate()
-		{
-			Ability?.OnActivate();
-		}
-
-		public virtual void UpdateActive()
-		{
-			Ability?.UpdateActive();
-		}
-
-		public virtual void UpdateActiveEffects()
-		{
-			Ability?.UpdateActiveEffects();
-		}
-
-		public virtual void UpdateFixed()
-		{
-			Ability?.UpdateFixed();
-		}
-
-		public virtual void OnExit()
-		{
-			Ability?.OnExit();
-		}
 	}
 
-	public abstract class InfusionItem<T> : InfusionItem where T : Ability
+	public abstract class InfusionItem<T1, T2> : InfusionItem where T1 : Ability where T2 : T1
 	{
-		public override Type AbilityType => typeof(T);
-		public new T Ability => (T)base.Ability;
+		public override Type AbilityType => typeof(T1);
+
+		public InfusionItem()
+		{
+			ability = Activator.CreateInstance<T2>();
+		}
 	}
 }
