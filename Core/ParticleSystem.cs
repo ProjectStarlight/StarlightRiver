@@ -35,6 +35,9 @@ namespace StarlightRiver.Core
 
 		public ParticleSystem(string texture, Update updateDelegate, AnchorOptions anchor = AnchorOptions.World, int maxParticles = 10000)
 		{
+			if (Main.dedServ)
+				return;
+
 			this.texture = Request<Texture2D>(texture, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
 			updateFunction = updateDelegate;
 			anchorType = anchor;
@@ -59,6 +62,9 @@ namespace StarlightRiver.Core
 
 		public void PopulateBuffers()
 		{
+			if (Main.dedServ)
+				return;
+
 			FastParallel.For(0, particles.Count, (from, to, context) =>
 			{
 				for (int k = from; k < to; k++)
@@ -106,6 +112,9 @@ namespace StarlightRiver.Core
 
 		public void DrawParticles(SpriteBatch spriteBatch)
 		{
+			if (Main.dedServ)
+				return;
+
 			if (GetInstance<GraphicsConfig>().ParticlesActive && effect != null)
 			{
 				spriteBatch.End();
@@ -142,6 +151,9 @@ namespace StarlightRiver.Core
 
 		public void AddParticle(Particle particle)
 		{
+			if (Main.dedServ)
+				return;
+
 			if (GetInstance<GraphicsConfig>().ParticlesActive && !Main.gameInactive && particles.Count < maxParticles)
 				particles.Add(particle);
 		}

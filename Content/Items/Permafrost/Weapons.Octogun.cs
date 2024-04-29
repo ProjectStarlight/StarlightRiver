@@ -13,6 +13,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override void SetStaticDefaults()
 		{
+			DisplayName.SetDefault("Glocktopus");
 			Tooltip.SetDefault("Converts Musket Balls into Aurora Ink\n" +
 				"Critical hits and kills cause Tentapistols to sprout from your back");
 		}

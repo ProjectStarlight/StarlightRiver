@@ -1580,11 +1580,14 @@ Items: {
 			'''
 	}
 
-	Octogun.Tooltip:
-		'''
-		Converts Musket Balls into Aurora Ink
-		Critical hits and kills cause Tentapistols to sprout from your back
-		'''
+	Octogun: {
+		Tooltip:
+			'''
+			Converts Musket Balls into Aurora Ink
+			Critical hits and kills cause Tentapistols to sprout from your back
+			'''
+		DisplayName: Glocktopus
+	}
 
 	OverflowingUrn: {
 		DisplayName: Overflowing Urn
