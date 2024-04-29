@@ -1,9 +1,12 @@
 ﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Physics;
 using StarlightRiver.Core.Systems.BarrierSystem;
+using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 
@@ -33,6 +36,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		private float arenaFade;
 
 		public List<int> attackQueue = new();
+
+		public VerletChain chain;
+		private List<Vector2> cache;
+		private Trail trail;
 
 		public ref float Timer => ref npc.ai[0];
 		public ref float State => ref npc.ai[1];
@@ -123,6 +130,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public override void SetDefaults(NPC entity)
 		{
 			npc = entity;
+			chain = new VerletChain(40, true, npc.Center, 10);
 		}
 
 		public override bool PreAI(NPC npc)
@@ -163,6 +171,22 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					State = -1;
 					Timer = 0;
 				}
+			}
+
+			if (chain != null)
+			{
+				chain.startPoint = npc.Center + Vector2.UnitY * 90;
+				chain.endPoint = thinker.Center;
+				chain.useEndPoint = true;
+				chain.drag = 1.1f;
+				chain.forceGravity = Vector2.UnitY * 1f;
+				chain.UpdateChain();
+			}
+
+			if (!Main.dedServ)
+			{
+				ManageCaches();
+				ManageTrail();
 			}
 
 			switch (State)
@@ -416,6 +440,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			Texture2D tex = Terraria.GameContent.TextureAssets.Npc[NPCID.BrainofCthulhu].Value;
 
+			if (State == 2 && chain != null)
+			{
+				DrawPrimitives();
+			}
+
 			if (opacity >= 1)
 			{
 				Main.spriteBatch.Draw(tex, npc.Center - Main.screenPosition, npc.frame, drawColor * opacity, 0, npc.frame.Size() / 2f, npc.scale, 0, 0);
@@ -448,6 +477,52 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					spriteBatch.Draw(tex, npc.Center - Main.screenPosition, null, color, 0, tex.Size() / 2f, 0.6f + 0.05f * (float)Math.Sin(Main.GameUpdateCount * 0.1f), 0, 0);
 				}
 			}
+		}
+		protected void ManageCaches()
+		{
+			if (cache == null)
+			{
+				cache = new List<Vector2>();
+
+				for (int i = 0; i < chain.segmentCount; i++)
+				{
+					cache.Add(chain.ropeSegments[i].posNow);
+				}
+			}
+
+			for (int i = 0; i < chain.segmentCount; i++)
+			{
+				cache[i] = chain.ropeSegments[i].posNow;
+			}
+		}
+
+		protected void ManageTrail()
+		{
+			trail ??= new Trail(Main.instance.GraphicsDevice, chain.segmentCount, new NoTip(), factor => 10, factor =>
+			{
+				int index = (int)(factor.X * chain.segmentCount);
+				index = Math.Clamp(index, 0, chain.segmentCount - 1);
+				return Lighting.GetColor((chain.ropeSegments[index].posNow / 16).ToPoint());
+				});
+
+			trail.Positions = cache.ToArray();
+			trail.NextPosition = npc.Center;
+		}
+
+		public void DrawPrimitives()
+		{
+			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+
+			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
+			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+			effect.Parameters["time"].SetValue(0f);
+			effect.Parameters["repeats"].SetValue(0f);
+			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+
+			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			trail?.Render(effect);
 		}
 
 		public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)

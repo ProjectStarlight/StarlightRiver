@@ -110,14 +110,6 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			return true;
 		}
 
-		public override void HitEffect(NPC.HitInfo hit)
-		{
-			ExtraRadius += hit.Damage * 0.5f;
-
-			if (ExtraRadius > 300)
-				ExtraRadius = 300;
-		}
-
 		public void CreateArena()
 		{
 			for (int x = -60; x <= 60; x++)

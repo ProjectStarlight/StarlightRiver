@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			if (AttackTimer < 60)
 			{
-				npc.Center += (thinker.Center + new Vector2(0, -250) - npc.Center) * 0.08f;
+				npc.Center += (thinker.Center + new Vector2(100, -250) - npc.Center) * 0.08f;
 			}
 
 			if (AttackTimer == 31)
@@ -64,7 +64,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			if (AttackTimer < 60)
 			{
-				npc.Center += (thinker.Center + new Vector2(0, -250) - npc.Center) * 0.08f;
+				npc.Center += (thinker.Center + new Vector2(-100, -250) - npc.Center) * 0.08f;
 			}
 
 			if (AttackTimer == 1)
