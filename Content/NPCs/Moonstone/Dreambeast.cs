@@ -703,7 +703,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 					Effect effect = Filters.Scene["MoonstoneBeastEffect"].GetShader().Shader;
 					effect.Parameters["baseTexture"].SetValue(tex);
-					effect.Parameters["distortTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise2").Value);
+					effect.Parameters["distortTexture"].SetValue(Assets.Noise.MiscNoise2.Value);
 					effect.Parameters["size"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
 					effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.005f);
 					effect.Parameters["opacity"].SetValue(opacity);
@@ -759,7 +759,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			// Draw flash
 			if (AppearVisible && flashTime > 0 && !Mirage)
 			{
-				Texture2D flashTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
+				Texture2D flashTex = Assets.Keys.GlowAlpha.Value;
 				Color color = Color.White * (1 - flashTime / 30f);
 				color.A = 0;
 
@@ -770,8 +770,8 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			if (AppearVisible && Phase == AIState.Shoot && projChargeTime > 0)
 			{
 				Effect effect = Filters.Scene["CrescentOrb"].GetShader().Shader;
-				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Moonstone/CrescentQuarterstaffMap").Value);
-				effect.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/LaserBallDistort").Value);
+				effect.Parameters["sampleTexture"].SetValue(Assets.Items.Moonstone.CrescentQuarterstaffMap.Value);
+				effect.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.LaserBallDistort.Value);
 				effect.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.01f);
 				effect.Parameters["opacity"].SetValue(1);
 
@@ -788,7 +788,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
+			Texture2D tex = Assets.Keys.Glow.Value;
 			var glowColor = new Color(78, 87, 191);
 			spriteBatch.Draw(tex, OrbPos - Main.screenPosition, tex.Frame(), glowColor * Math.Min(projChargeTime / 30f, 1), 0, tex.Size() / 2, 1.8f * projChargeTime / 150f, 0, 0);
 

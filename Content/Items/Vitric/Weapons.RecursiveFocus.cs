@@ -822,14 +822,14 @@ namespace StarlightRiver.Content.Items.Vitric
 			effect.Parameters["time"].SetValue(lifetime * -0.02f);
 			effect.Parameters["repeats"].SetValue(1);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 
 			if (HasTarget && TimeSpentOnTarget > 2)
 			{
 				trail?.Render(effect);
 				trail2?.Render(effect);
 
-				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
+				effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
 
 				trail?.Render(effect);
 				trail3?.Render(effect);

@@ -98,16 +98,16 @@ namespace StarlightRiver.Content.CustomHooks
 			var box = new Rectangle((int)(origin + new Vector2(110, 66)).X, (int)(origin + new Vector2(86, 66)).Y, 80, 25);
 			var box2 = new Rectangle((int)(origin + new Vector2(196, 66)).X, (int)(origin + new Vector2(86, 66)).Y, 104, 25);
 
-			spriteBatch.Draw(ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/box").Value, box, Color.White); //Stamina box
+			spriteBatch.Draw(Assets.GUI.box.Value, box, Color.White); //Stamina box
 
 			if (mp.AnyUnlocked)//Draw stamina if any unlocked
 			{
-				spriteBatch.Draw(ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/Stamina").Value, origin + new Vector2(115, 68), Color.White);
+				spriteBatch.Draw(Assets.GUI.Stamina.Value, origin + new Vector2(115, 68), Color.White);
 				Utils.DrawBorderString(spriteBatch, PlayerStamina + " SP", origin + new Vector2(142, 68), Color.White);
 			}
 			else//Myserious if locked
 			{
-				spriteBatch.Draw(ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/Stamina3").Value, origin + new Vector2(115, 68), Color.White);
+				spriteBatch.Draw(Assets.GUI.Stamina3.Value, origin + new Vector2(115, 68), Color.White);
 				Utils.DrawBorderString(spriteBatch, "???", origin + new Vector2(142, 68), Color.White);
 			}
 

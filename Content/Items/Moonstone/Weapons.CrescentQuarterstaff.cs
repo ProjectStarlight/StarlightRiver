@@ -645,7 +645,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
 				effect.Parameters["repeats"].SetValue(1f);
 				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-				effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
+				effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
 				trail?.Render(effect);
 

@@ -73,7 +73,7 @@ namespace StarlightRiver.Content.GUI
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
 
-			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/GUI/LootSlotOn").Value;
+			Texture2D tex = Assets.GUI.LootSlotOn.Value;
 
 			Utils.DrawBorderStringBig(spriteBatch, Quotes[QuoteID], GetDimensions().Center() + new Vector2(0, -80) - 1.5f * Terraria.GameContent.FontAssets.ItemStack.Value.MeasureString(Quotes[QuoteID]) / 2, Color.White, 0.5f);
 
@@ -155,7 +155,7 @@ namespace StarlightRiver.Content.GUI
 			if (Parent is LootUI)
 			{
 				var parent = Parent as LootUI;
-				Texture2D tex = parent.Selections.Any(n => n == Item) ? Request<Texture2D>("StarlightRiver/Assets/GUI/LootSlotOn").Value : Request<Texture2D>("StarlightRiver/Assets/GUI/LootSlot").Value;
+				Texture2D tex = parent.Selections.Any(n => n == Item) ? Assets.GUI.LootSlotOn.Value : Assets.GUI.LootSlot.Value;
 				float opacity = IsMouseHovering ? 1 : 0.6f;
 
 				spriteBatch.Draw(tex, GetDimensions().Position(), tex.Frame(), Color.White * opacity, 0, Vector2.Zero, 1, 0, 0);

@@ -348,8 +348,8 @@ namespace StarlightRiver.Content.Items.Breacher
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
-			effect.Parameters["noiseTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/ShaderNoiseLooping").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+			effect.Parameters["noiseTexture"].SetValue(Assets.Noise.ShaderNoiseLooping.Value);
 
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.25f);
 			effect.Parameters["stretch"].SetValue(2f / laserLength);
@@ -373,8 +373,8 @@ namespace StarlightRiver.Content.Items.Breacher
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
-			effect.Parameters["noiseTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/ShaderNoiseLooping").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+			effect.Parameters["noiseTexture"].SetValue(Assets.Noise.ShaderNoiseLooping.Value);
 
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.25f);
 			effect.Parameters["stretch"].SetValue(2f / laserLength);
@@ -458,8 +458,8 @@ namespace StarlightRiver.Content.Items.Breacher
 			sb.End();
 
 			Effect effect = Filters.Scene["BreachLaserBloom"].GetShader().Shader;
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
-			effect.Parameters["noiseTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/ShaderNoiseLooping").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+			effect.Parameters["noiseTexture"].SetValue(Assets.Noise.ShaderNoiseLooping.Value);
 
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.25f);
 			effect.Parameters["stretch"].SetValue(1);

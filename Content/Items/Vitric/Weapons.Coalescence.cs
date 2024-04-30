@@ -169,7 +169,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
 			Texture2D texStar = Request<Texture2D>(AssetDirectory.Dust + "Aurora").Value;
-			Texture2D texGlow = Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
+			Texture2D texGlow = Assets.Keys.GlowSoft.Value;
 
 			var color1 = new Color(80, 240, 255);
 			var color2 = new Color(90, 200, 255);

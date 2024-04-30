@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
+			Texture2D tex = Assets.Keys.GlowSoft.Value;
 			Texture2D tex2 = Request<Texture2D>(AssetDirectory.VitricBoss + "BombTell").Value;
 
 			float bright = (300 - Projectile.timeLeft) / 300f * 0.7f;

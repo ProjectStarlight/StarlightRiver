@@ -415,7 +415,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		private void DrawWind()
 		{
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Gravedigger/GluttonyBG").Value;
+			Texture2D tex = Assets.Items.Gravedigger.GluttonyBG.Value;
 			Main.spriteBatch.End();
 			Effect effect1 = Filters.Scene["CycloneIce"].GetShader().Shader;
 
@@ -437,7 +437,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			effect1.Parameters["startColor"].SetValue(Color.Cyan.ToVector3());
 			effect1.Parameters["endColor"].SetValue(Color.White.ToVector3());
 			effect1.Parameters["sampleTexture"].SetValue(tex);
-			effect1.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/LaserBallDistort").Value);
+			effect1.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.LaserBallDistort.Value);
 
 			BlendState oldState = Main.graphics.GraphicsDevice.BlendState;
 			Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;

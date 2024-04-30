@@ -87,7 +87,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			Texture2D tex = Request<Texture2D>(AssetDirectory.SquidBoss + "AuroralingGlow").Value;
 			Texture2D tex2 = Request<Texture2D>(AssetDirectory.SquidBoss + "AuroralingGlow2").Value;
-			Texture2D tex3 = Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
+			Texture2D tex3 = Assets.Keys.GlowAlpha.Value;
 
 			for (int k = 0; k < Projectile.oldPos.Length; k++)
 			{

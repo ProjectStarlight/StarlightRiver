@@ -75,7 +75,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			{
 				Effect effect = Filters.Scene["MoonstoneBeastEffect"].GetShader().Shader;
 				effect.Parameters["baseTexture"].SetValue(target);
-				effect.Parameters["distortTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise2").Value);
+				effect.Parameters["distortTexture"].SetValue(Assets.Noise.MiscNoise2.Value);
 				effect.Parameters["size"].SetValue(target.Size());
 				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.005f);
 				effect.Parameters["opacity"].SetValue(lunacy / 100f);

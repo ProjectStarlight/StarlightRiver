@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.Items.Forest
 		{
 			Texture2D topTex = ModContent.Request<Texture2D>(AssetDirectory.ForestItem + "FeralWolfMountBiteTop").Value;
 			Texture2D botTex = ModContent.Request<Texture2D>(AssetDirectory.ForestItem + "FeralWolfMountBiteBot").Value;
-			Texture2D glowTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/TriTell").Value;
+			Texture2D glowTex = Assets.Misc.TriTell.Value;
 
 			float swoop = (float)Math.Log10(Progress * 100 + 1) * 0.65f;
 			Color glowColor = new Color(255, 70, 60) * (float)Math.Sin((float)Math.Pow(Progress, 0.5f) * 3.14f);

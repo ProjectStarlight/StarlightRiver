@@ -249,8 +249,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			effect.Parameters["time"].SetValue(0.05f * Main.GameUpdateCount);
 			effect.Parameters["repeats"].SetValue(3f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
-			effect.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/LaserBallDistort").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
+			effect.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.LaserBallDistort.Value);
 
 			effect.Parameters["row"].SetValue(0);
 			trail?.Render(effect);
@@ -325,7 +325,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Gravedigger/GluttonyBG").Value;
+			Texture2D tex = Assets.Items.Gravedigger.GluttonyBG.Value;
 			float prog = Helper.SwoopEase(Math.Min(1, timer / 80f));
 
 			Effect effect1 = Filters.Scene["Cyclone"].GetShader().Shader;
@@ -339,7 +339,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			effect1.Parameters["Resolution"].SetValue(tex.Size());
 			effect1.Parameters["mainColor"].SetValue(new Vector3(0.8f, 0.03f, 0.18f));
 
-			effect1.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/LaserBallDistort").Value);
+			effect1.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.LaserBallDistort.Value);
 
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.Black * prog * 0.8f, Projectile.rotation + 1.57f + 0.1f, new Vector2(tex.Width / 2, tex.Height), prog * 0.55f, 0, 0);
 

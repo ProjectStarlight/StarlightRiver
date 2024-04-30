@@ -363,8 +363,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			float width = waterfallWidth + 2 * (float)Math.Sin(Main.GameUpdateCount * 0.1f);
 			int height = 2850 - (int)WaterLevel;
 
-			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Bosses/SquidBoss/Laser").Value;
-			Texture2D tex2 = Request<Texture2D>("StarlightRiver/Assets/Bosses/SquidBoss/Laser").Value;
+			Texture2D tex = Assets.Bosses.SquidBoss.Laser.Value;
+			Texture2D tex2 = Assets.Bosses.SquidBoss.Laser.Value;
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default);

@@ -395,8 +395,8 @@ namespace StarlightRiver.Content.Items.Misc
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
 			effect.Parameters["repeats"].SetValue(2f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
-			effect.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/MagicPixel").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
+			effect.Parameters["sampleTexture2"].SetValue(Assets.MagicPixel.Value);
 
 			trail?.Render(effect);
 		}
@@ -611,8 +611,8 @@ namespace StarlightRiver.Content.Items.Misc
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
 			effect.Parameters["repeats"].SetValue(2f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
-			effect.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/MagicPixel").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
+			effect.Parameters["sampleTexture2"].SetValue(Assets.MagicPixel.Value);
 
 			trail?.Render(effect);
 		}

@@ -197,7 +197,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				source.X += 114;
 
 			Effect effect = Terraria.Graphics.Effects.Filters.Scene["MoltenForm"].GetShader().Shader;
-			effect.Parameters["sampleTexture2"].SetValue(Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/ShieldMap").Value);
+			effect.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.ShieldMap.Value);
 			effect.Parameters["uTime"].SetValue(2 - parent.shieldShaderTimer / 120f * 2);
 			effect.Parameters["sourceFrame"].SetValue(new Vector4(source.X, source.Y, source.Width, source.Height));
 			effect.Parameters["texSize"].SetValue(tex.Size());

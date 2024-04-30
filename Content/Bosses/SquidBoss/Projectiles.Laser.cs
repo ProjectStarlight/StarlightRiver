@@ -136,8 +136,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			float alpha = Projectile.timeLeft > denom ? 1 - (Projectile.timeLeft - denom) / 30f : Projectile.timeLeft < 30 ? Projectile.timeLeft / 30f : 1;
 			color *= alpha;
 
-			Texture2D texBeam = ModContent.Request<Texture2D>("StarlightRiver/Assets/ShadowTrail").Value;
-			Texture2D texBeam2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value;
+			Texture2D texBeam = Assets.ShadowTrail.Value;
+			Texture2D texBeam2 = Assets.GlowTrail.Value;
 			Texture2D texStar = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ItemGlow").Value;
 
 			var origin = new Vector2(0, texBeam.Height / 2);
@@ -156,7 +156,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			for (int k = 0; k <= adjustedLaserHeight; k += 500)
 			{
 				if (k > (adjustedLaserHeight - 500)) //Change to end for the last segment
-					texBeam2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrailOneEnd").Value;
+					texBeam2 = Assets.GlowTrailOneEnd.Value;
 
 				Vector2 pos = Projectile.Center + Vector2.UnitY * -k - Main.screenPosition;
 				int thisHeight = k > (adjustedLaserHeight - 500) ? (adjustedLaserHeight % 500) : 500;

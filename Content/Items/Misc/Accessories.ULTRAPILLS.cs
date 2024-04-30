@@ -258,11 +258,11 @@ namespace StarlightRiver.Content.Items.Misc
 			effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.03f);
 			effect.Parameters["repeats"].SetValue(1);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/MagicPixel").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.MagicPixel.Value);
 
 			trail?.Render(effect);
 
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/ShaderNoiseLooping").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.Noise.ShaderNoiseLooping.Value);
 			effect.Parameters["time"].SetValue(Projectile.timeLeft * 0.005f);
 			effect.Parameters["pixelation"].SetValue(0.35f);
 			trail?.Render(effect);

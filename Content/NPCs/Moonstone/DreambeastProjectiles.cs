@@ -195,7 +195,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
+			Texture2D tex = Assets.Keys.Glow.Value;
 			var color = new Color(78, 87, 191);
 
 			if (Main.LocalPlayer.GetModPlayer<LunacyPlayer>().Insane)
@@ -215,10 +215,10 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
 				effect.Parameters["repeats"].SetValue(2f);
 				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 				trail?.Render(effect);
 
-				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
+				effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
 				trail?.Render(effect);
 			}
 		}

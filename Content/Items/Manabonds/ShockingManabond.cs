@@ -181,7 +181,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 			if (point1 == Vector2.Zero || point2 == Vector2.Zero)
 				return;
 
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value;
+			Texture2D tex = Assets.GlowTrail.Value;
 
 			Color color = new Color(200, 230, 255) * (Projectile.timeLeft <= 5 ? Projectile.timeLeft / 5f : 1);
 
@@ -203,8 +203,8 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 			foreach (NPC target in targets)
 			{
-				Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Dusts/Aurora").Value;
-				Texture2D tex3 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
+				Texture2D tex2 = Assets.Dusts.Aurora.Value;
+				Texture2D tex3 = Assets.Keys.GlowSoft.Value;
 
 				sb.Draw(tex2, target.Center - Main.screenPosition, null, color, 0, tex2.Size() / 2f, 0.3f, 0, 0);
 				sb.Draw(tex3, target.Center - Main.screenPosition, null, color, 0, tex3.Size() / 2f, 0.5f, 0, 0);

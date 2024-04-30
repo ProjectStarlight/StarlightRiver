@@ -4,6 +4,7 @@ global using StarlightRiver.Core;
 global using Terraria;
 global using Terraria.Localization;
 global using Terraria.ModLoader;
+global using ReLogic.Content;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Bestiary;
 using System;
@@ -110,6 +111,7 @@ namespace StarlightRiver
 				AbilityKeys?.Unload();
 
 				SLRSpawnConditions.Unload();
+
 			}
 		}
 

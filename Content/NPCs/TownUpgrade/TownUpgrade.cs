@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.NPCs.TownUpgrade
 			this.questTip = questTip;
 			this.title = title;
 
-			icon = Request<Texture2D>("StarlightRiver/Assets/NPCs/TownUpgrade/" + NPCName + "Icon").Value;
+			icon = Assets.NPCs.TownUpgrade.GuideIcon.Value;
 		}
 
 		public virtual void ClickButton() { }

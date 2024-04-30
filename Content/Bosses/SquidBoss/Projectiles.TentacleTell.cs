@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		{
 			Texture2D top = ModContent.Request<Texture2D>(Texture).Value;
 			Texture2D body = ModContent.Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleTellBody").Value;
-			Texture2D glow = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value;
+			Texture2D glow = Assets.GlowTrail.Value;
 			Texture2D flat = Terraria.GameContent.TextureAssets.MagicPixel.Value;
 
 			float timer = 60 - Projectile.timeLeft;

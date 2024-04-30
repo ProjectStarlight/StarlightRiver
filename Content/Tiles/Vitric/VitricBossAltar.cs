@@ -340,7 +340,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 			if (parent.TileFrameX >= 90 && !NPC.AnyNPCs(NPCType<VitricBoss>()))
 			{
-				Texture2D texSkull = Request<Texture2D>("StarlightRiver/Assets/Symbol").Value;
+				Texture2D texSkull = Assets.Symbol.Value;
 				spriteBatch.Draw(texSkull, Center - Main.screenPosition, null, new Color(255, 100, 100) * (1 - Vector2.Distance(Main.LocalPlayer.Center, Center) / 200f), 0, texSkull.Size() / 2, 1, 0, 0);
 			}
 

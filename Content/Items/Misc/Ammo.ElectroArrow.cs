@@ -117,7 +117,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (point1 == Vector2.Zero || point2 == Vector2.Zero)
 				return;
 
-			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value;
+			Texture2D tex = Assets.GlowTrail.Value;
 
 			for (int k = 1; k < nodes.Count; k++)
 			{

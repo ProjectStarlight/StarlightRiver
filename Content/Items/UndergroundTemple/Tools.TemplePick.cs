@@ -267,7 +267,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * -0.01f);
 			effect.Parameters["repeats"].SetValue(1f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/GlowTrailNoEnd").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrailNoEnd.Value);
 
 			trail?.Render(effect);
 		}

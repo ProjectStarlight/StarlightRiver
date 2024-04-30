@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Menus
 		public override string DisplayName => "Auroracle";
 		public override int Music => MusicLoader.GetMusicSlot(Mod, "Sounds/Music/SquidArena");
 
-		public override Asset<Texture2D> Logo => Request<Texture2D>("StarlightRiver/Assets/Misc/MenuIcon");
+		public override Asset<Texture2D> Logo => Assets.Misc.MenuIcon;
 
 		private static void UpdateBubblesBody(Particle particle)
 		{
@@ -138,12 +138,12 @@ namespace StarlightRiver.Content.Menus
 
 		public override void PostDrawLogo(SpriteBatch spriteBatch, Vector2 logoDrawCenter, float logoRotation, float logoScale, Color drawColor)
 		{
-			Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/MenuIconGlow2").Value;
+			Texture2D tex2 = Assets.Misc.MenuIconGlow2.Value;
 			Color color = Color.White;
 			color.A = 0;
 			spriteBatch.Draw(tex2, logoDrawCenter, null, color, logoRotation, tex2.Size() / 2f, logoScale, 0, 0);
 
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/MenuIconGlow").Value;
+			Texture2D tex = Assets.Misc.MenuIconGlow.Value;
 			spriteBatch.Draw(tex, logoDrawCenter, null, Color.White, logoRotation, tex.Size() / 2f, logoScale, 0, 0);
 		}
 

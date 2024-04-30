@@ -113,7 +113,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 					_ => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "CrystalGearSmall").Value,
 				};
 				Effect effect = Terraria.Graphics.Effects.Filters.Scene["MoltenForm"].GetShader().Shader;
-				effect.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/ShieldMap").Value);
+				effect.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.ShieldMap.Value);
 				effect.Parameters["uTime"].SetValue(GearPuzzleHandler.solveTimer / 180f * 2);
 				effect.Parameters["sourceFrame"].SetValue(new Vector4(0, 0, tex.Width, tex.Height));
 				effect.Parameters["texSize"].SetValue(tex.Size());

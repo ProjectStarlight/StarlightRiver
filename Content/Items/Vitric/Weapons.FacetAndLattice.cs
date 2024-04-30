@@ -260,7 +260,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (BuffPower <= 0)
 				return;
 
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value;
+			Texture2D tex = Assets.FireTrail.Value;
 			var color = new Color(255, 200, 100);
 
 			var source = new Rectangle((int)(Projectile.timeLeft / 50f * tex.Width / 2), 0, tex.Width / 2, tex.Height);

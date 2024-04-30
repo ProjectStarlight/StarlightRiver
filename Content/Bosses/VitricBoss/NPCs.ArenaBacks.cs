@@ -400,7 +400,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			if (Holidays.AnySpecialEvent)//1 in 32 or any special date event
 			{
-				Texture2D egg = Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/VitricRightEasterEgg").Value;
+				Texture2D egg = Assets.Bosses.VitricBoss.VitricRightEasterEgg.Value;
 				Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target, egg, source);
 			}
 
@@ -447,7 +447,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			if (Holidays.AnySpecialEvent)//1 in 32 or any special date event
 			{
-				Texture2D egg = ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/VitricRightEasterEgg").Value;
+				Texture2D egg = Assets.Bosses.VitricBoss.VitricRightEasterEgg.Value;
 				Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target1, egg, source1);
 				Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target2, egg, source2);
 			}

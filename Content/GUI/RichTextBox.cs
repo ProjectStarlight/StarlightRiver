@@ -160,7 +160,7 @@ namespace StarlightRiver.Content.GUI
 
 		public static void DrawBox(SpriteBatch sb, Rectangle target)
 		{
-			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/GUI/FancyBoxCustom").Value;
+			Texture2D tex = Assets.GUI.FancyBoxCustom.Value;
 			Color color = Color.White * 0.8f * opacity;
 
 			if (target.Width < 12 || target.Height < 12)

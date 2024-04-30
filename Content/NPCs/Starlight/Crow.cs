@@ -151,7 +151,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 		/// </summary>
 		private void DrawFlashingStar(SpriteBatch spriteBatch, float timer)
 		{
-			Texture2D star = ModContent.Request<Texture2D>("StarlightRiver/Assets/StarTexture").Value;
+			Texture2D star = Assets.StarTexture.Value;
 			Vector2 pos = NPC.Center - Main.screenPosition;
 
 			// Fade in
