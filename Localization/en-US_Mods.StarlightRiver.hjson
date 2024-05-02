@@ -5,92 +5,19 @@ Keybinds: {
 }
 
 Items: {
-	TestWhip: {
-		DisplayName: "[PH]Test Whip"
-		Tooltip:
-			'''
-			[PH]Whip Infusion
-			No effect
-			'''
-	}
-
-	TestWhipImprint: {
-		DisplayName: "[PH]Test Whip"
-		Tooltip: No effect
-	}
-
-	Astral: {
-		DisplayName: Comet Rush I
+	StellarRushItem: {
+		DisplayName: Stellar Rush
 		Tooltip:
 			'''
 			Forbidden Winds Infusion
 			Dash farther and carry more speed
-			Increases starlight cost to 1.3
+			Increases starlight cost to 1.5
 			'''
-	}
-
-	Astral2: {
-		DisplayName: Comet Rush II
-		Tooltip:
-			'''
-			Forbidden Winds Infusion
-			Dash farther and carry even more speed
-			Increases starlight cost to 1.6
-			'''
-	}
-
-	Astral3: {
-		DisplayName: Comet Rush III
-		Tooltip:
-			'''
-			Forbidden Winds Infusion
-			Dash farther and carry the most speed
-			Increases starlight cost to 2
-			'''
-	}
-
-	AstralImprint: {
-		DisplayName: Comet Rush
-		Tooltip: Dash farther and carry more speed
-	}
-
-	Blink: {
-		DisplayName: Blink
-		Tooltip:
-			'''
-			Forbidden Winds Infusion
-			Instantly teleport a short distance ahead, avoiding enemies and their attacks
-			'''
-	}
-
-	BlinkImprint: {
-		DisplayName: Blink
-		Tooltip: Instantly teleport a short distance ahead, avoiding enemies and their attacks
-	}
-
-	Pulse: {
-		DisplayName: Pulse
-		Tooltip:
-			'''
-			Forbidden Winds Infusion
-			Dash is replaced by a short, frequent, and potent burst of speed
-			Decreases starlight cost by 0.25
-			'''
-	}
-
-	PulseImprint: {
-		DisplayName: Pulse
-		Tooltip: Dash is replaced by a short, frequent, and potent burst of speed
 	}
 
 	BasicInfusion: {
 		DisplayName: Blank Slate
-		Tooltip:
-			'''
-			Can be imprinted with challenges at an infusion station
-			Complete challenges to transform into an infusion
-			New infusions become available as you progress
-			'''
+		Tooltip: Used to create infusions
 	}
 
 	CauldronItem.Tooltip: Places an Alchemic Cauldron
@@ -660,12 +587,12 @@ Items: {
 		DisplayName: Effects of different gems:
 		Tooltip:
 			'''
-			[i/s1:5683]: Critical strikes partially ignore armor, with increased chance for missing enemy HP 
-			[i/s1:5691]: +100 barrier. Gain a shield that points to your cursor and blocks attacks, consuming {{barrier}} 
-			[i/s1:5684]: Immediately heal 20 hp. Hits have a chance to create a 5 HP life heart 
-			[i/s1:5690]: Immediately refill mana. Hits have a chance to create 1 to 3 mana stars 
-			[i/s1:5682]: All strikes inflict Toxic Amethyst, a stacking poison debuff 
-			[i/s1:5689]: Hits have a chance to summon a Ruby Dagger to seek the struck enemy for 20% of the hit's damage
+			[i/s1:5674]: Critical strikes partially ignore armor, with increased chance for missing enemy HP 
+			[i/s1:5682]: +100 barrier. Gain a shield that points to your cursor and blocks attacks, consuming {{barrier}} 
+			[i/s1:5675]: Immediately heal 20 hp. Hits have a chance to create a 5 HP life heart 
+			[i/s1:5681]: Immediately refill mana. Hits have a chance to create 1 to 3 mana stars 
+			[i/s1:5673]: All strikes inflict Toxic Amethyst, a stacking poison debuff 
+			[i/s1:5680]: Hits have a chance to summon a Ruby Dagger to seek the struck enemy for 20% of the hit's damage
 			'''
 	}
 
@@ -1581,12 +1508,12 @@ Items: {
 	}
 
 	Octogun: {
+		DisplayName: Glocktopus
 		Tooltip:
 			'''
 			Converts Musket Balls into Aurora Ink
 			Critical hits and kills cause Tentapistols to sprout from your back
 			'''
-		DisplayName: Glocktopus
 	}
 
 	OverflowingUrn: {
@@ -2197,9 +2124,19 @@ Items: {
 		Tooltip: <right> to prepare meals
 	}
 
-	InfuserItem: {
-		DisplayName: "[PH]Infuser"
-		Tooltip: Used to imprint infusions
+	BonemineItem: {
+		DisplayName: Bone mine
+		Tooltip: Doyoyouuyuuhuyhh *BRRPT* *Anyuerism*
+	}
+
+	DendriteItem: {
+		DisplayName: Dendrite
+		Tooltip: Doyoyouuyuuhuyhh *BRRPT* *Anyuerism*
+	}
+
+	GrayMatterItem: {
+		DisplayName: Gray Matter
+		Tooltip: You can see it thinking
 	}
 
 	AnkhChestItem: {
@@ -2638,6 +2575,11 @@ Items: {
 		Tooltip: "{{Debug}} Item"
 	}
 
+	SoundPuzzleDoorItem: {
+		DisplayName: Sound Puzzle Temple Door
+		Tooltip: Temple Door, Opens if sound puzzle is solved
+	}
+
 	TallWindowCrystalItem: {
 		DisplayName: Crystal Window Actor
 		Tooltip: "{{Debug}} Item"
@@ -2773,6 +2715,11 @@ Items: {
 		Tooltip: ""
 	}
 
+	VitricPylonItem: {
+		DisplayName: Vitric Pylon
+		Tooltip: You shouldn't have this!
+	}
+
 	VitricRockItem: {
 		DisplayName: Vitric Rock
 		Tooltip: ""
@@ -2796,6 +2743,16 @@ Items: {
 	VitricBannerItem: {
 		DisplayName: Long Flowing Banner
 		Tooltip: ""
+	}
+
+	VitricBossBarrierItem: {
+		DisplayName: VitricBossBarrierItem
+		Tooltip: "{{Debug}} item"
+	}
+
+	GlassweaverBossBarrierItem: {
+		DisplayName: GlassweaverBossBarrierItem
+		Tooltip: "{{Debug}} item"
 	}
 
 	VitricBathtub: {
@@ -2881,16 +2838,6 @@ Items: {
 	VitricDoorClosed: {
 		DisplayName: Vitric Door
 		Tooltip: ""
-	}
-
-	VitricBossBarrierItem: {
-		DisplayName: VitricBossBarrierItem
-		Tooltip: "{{Debug}} item"
-	}
-
-	GlassweaverBossBarrierItem: {
-		DisplayName: GlassweaverBossBarrierItem
-		Tooltip: "{{Debug}} item"
 	}
 
 	CombatShrineBarrierItem: {
@@ -3082,36 +3029,6 @@ Items: {
 		DisplayName: Soft Sand
 		Tooltip: ""
 	}
-
-	StellarRush: {
-		DisplayName: Stellar Rush
-		Tooltip:
-			'''
-			Forbidden Winds Infusion
-			Dash farther and carry more speed
-			Increases starlight cost to 1.5
-			'''
-	}
-
-	StellarRushItem: {
-		DisplayName: Stellar Rush
-		Tooltip:
-			'''
-			Forbidden Winds Infusion
-			Dash farther and carry more speed
-			Increases starlight cost to 1.5
-			'''
-	}
-
-	VitricPylonItem: {
-		DisplayName: Vitric Pylon
-		Tooltip: You shouldn't have this!
-	}
-
-	SoundPuzzleDoorItem: {
-		DisplayName: Sound Puzzle Temple Door
-		Tooltip: Temple Door, Opens if sound puzzle is solved
-	}
 }
 
 Tiles: {
@@ -3121,7 +3038,6 @@ Tiles: {
 	ForbiddenWindsPickupTile.MapEntry: ""
 	StaminaShardTile.MapEntry: ""
 	CookStation.MapEntry: Cooking Station
-	Infuser.MapEntry: Infuser
 	CrashPod.MapEntry: Crashed Pod
 	AnkhChest.MapEntry: Ankh Chest
 	DesertMonolith.MapEntry: ""
@@ -3211,6 +3127,7 @@ Tiles: {
 	MainForge.MapEntry: Vitric Forgeheart
 	NPCSpawner.MapEntry: ""
 	OldCeirosShrine.MapEntry: ""
+	SoundPuzzleDoor.MapEntry: ""
 	TallWindow.MapEntry: ""
 	TallWindowCrystal.MapEntry: ""
 	TallWindowLava.MapEntry: ""
@@ -3243,6 +3160,7 @@ Tiles: {
 	// VitricMediumCrystal.MapEntry: ""
 	VitricOre.MapEntry: Vitric Ore
 	VitricOreFloat.MapEntry: Vitric Ore
+	VitricPylon.MapEntry: Vitric Pylon
 	VitricRoundCactus.MapEntry: ""
 	VitricSmallCactus.MapEntry: ""
 	// VitricSmallCrystal.MapEntry: ""
@@ -3301,16 +3219,12 @@ Tiles: {
 	// VitricGiantCrystal.MapEntry: ""
 	// VitricLargeCrystal.MapEntry: ""
 	// VitricMediumCrystal.MapEntry: ""
-	VitricPylon.MapEntry: Vitric Pylon
-	SoundPuzzleDoor.MapEntry: ""
-	// VitricGiantCrystal.MapEntry: ""
-	// VitricLargeCrystal.MapEntry: ""
-	// VitricMediumCrystal.MapEntry: ""
 	// VitricSmallCrystal.MapEntry: ""
 }
 
 Projectiles: {
 	ArtifactItemProj.DisplayName: Artifact
+	VeinSpear.DisplayName: Vein Spear
 	GlassBubble.DisplayName: Volatile Bubble
 	GlassBubbleFragment.DisplayName: Glass Shard
 	GlassHammer.DisplayName: Woven Hammer
@@ -3548,6 +3462,11 @@ Projectiles: {
 }
 
 Biomes: {
+	GraymatterBiome: {
+		DisplayName: Graymatter Biome
+		TownNPCDialogueName: the Graymatter Biome
+	}
+
 	HotspringBiome: {
 		DisplayName: Hotsprings
 		TownNPCDialogueName: the Hotspring Biome
@@ -3590,6 +3509,8 @@ Biomes: {
 }
 
 NPCs: {
+	BrainPlatform.DisplayName: ""
+	HorrifyingVisage.DisplayName: Horrifying Visage
 	Glassweaver.DisplayName: Glassweaver
 	GlassweaverWaiting.DisplayName: Glassweaver
 	ArenaActor.DisplayName: ""
@@ -3663,6 +3584,11 @@ Buffs: {
 	CoughDropsBuff: {
 		DisplayName: Cough Drops
 		Description: Your speed and damage are boosted
+	}
+
+	CrimsonHallucination: {
+		DisplayName: Hallucinating
+		Description: Is any of this real?
 	}
 
 	Dreamwarp: {
