@@ -1,4 +1,4 @@
-
+﻿
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\tModLoader.targets" />
   <PropertyGroup>
@@ -31,9 +31,9 @@
     <Reference Include="System.Windows.Forms">
       <HintPath>C:\Windows\Microsoft.NET\assembly\GAC_MSIL\System.Windows.Forms\v4.0_4.0.0.0__b77a5c561934e089\System.Windows.Forms.dll</HintPath>
     </Reference>
-  
-	<PackageReference Include="AssGen" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-	<AdditionalFiles Include="**/*.png" />
+
+	  <PackageReference Include="AssGen" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Version="1.0.1" />
+	  <AdditionalFiles Include="**/*.png" />
 		
   </ItemGroup>
   <ItemGroup>
