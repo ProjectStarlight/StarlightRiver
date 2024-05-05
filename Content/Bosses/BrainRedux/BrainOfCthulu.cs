@@ -70,6 +70,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			On_WorldGen.CheckOrb += SpecialSpawn;
 
+			GraymatterBiome.onDrawHallucinationMap += DrawTether;
 			GraymatterBiome.onDrawOverHallucinationMap += DrawPrediction;
 		}
 
@@ -145,7 +146,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			NPC.crimsonBoss = npc.whoAmI;
 
-			Lighting.AddLight(npc.Center, new Vector3(0.5f, 0.4f, 0.2f));
+			if (State != 5)
+				Lighting.AddLight(npc.Center, new Vector3(0.5f, 0.4f, 0.2f));
 
 			// If we dont have a thinker, try to find one
 			if (thinker is null)
@@ -222,12 +224,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						attackQueue.Add(next);
 					}
 
-					int life = Main.masterMode ? 6000 : Main.expertMode ? 4000 : 2000;
+					int life = Main.masterMode ? 1000 : Main.expertMode ? 800 : 600;
 
 					npc.lifeMax = life;
 					npc.life = life;
 
-					int barrier = Main.masterMode ? 1600 : Main.expertMode ? 1200 : 800;
+					int barrier = Main.masterMode ? 400 : Main.expertMode ? 200 : 100;
 
 					npc.GetGlobalNPC<BarrierNPC>().maxBarrier = barrier;
 					npc.GetGlobalNPC<BarrierNPC>().barrier = barrier;
@@ -274,8 +276,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				// First phase
 				case 2:
 
-					if (npc.life <= npc.lifeMax / 2f)
-						npc.life = (int)(npc.lifeMax / 2f);
+					if (thinker.life <= thinker.lifeMax / 2f)
+						thinker.life = (int)(thinker.lifeMax / 2f);
 
 					if (AttackTimer == 1)
 					{
@@ -290,11 +292,15 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						attackQueue.Add(next);
 
 						// Transition check
-						if (npc.life <= npc.lifeMax / 2f)
+						if (thinker.life <= thinker.lifeMax / 2f)
 						{
 							State = 3;
 							Timer = 0;
 							AttackState = 0;
+
+							// Set new trail
+							if (!Main.dedServ)
+								trail = new Trail(Main.instance.GraphicsDevice, chain.segmentCount, new NoTip(), factor => 30, factor => Color.White * opacity * 0.4f);
 
 							// Reset attack queue
 							attackQueue.Clear();
@@ -360,6 +366,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 					switch (AttackState)
 					{
+						case -1:
+							Recover();
+							break;
 						case 0:
 							DoubleSpin();
 							break;
@@ -373,6 +382,24 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 							Clones2();
 							break;
 					}
+
+					break;
+
+				// Temporarily dead
+				case 5:
+
+					npc.noGravity = false;
+					npc.noTileCollide = false;
+
+					if (npc.velocity.Y > 0)
+						npc.rotation += 0.01f;
+					else
+						npc.velocity.X *= 0;
+
+					Dust.NewDust(npc.position, npc.width, npc.height, ModContent.DustType<Dusts.BloodMetaballDust>());
+
+					if (opacity < 1)
+						opacity += 0.01f;
 
 					break;
 			}
@@ -406,6 +433,25 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public override void HitEffect(NPC npc, NPC.HitInfo hit)
 		{
 			hurtLastFrame = true;
+		}
+
+		public override bool CheckDead(NPC npc)
+		{
+			npc.life = 1;
+			State = 5;
+
+			(thinker.ModNPC as TheThinker).Timer = 0;
+			(thinker.ModNPC as TheThinker).AttackTimer = 0;
+
+			for (int k = 0; k < neurisms.Count; k++)
+			{
+				(neurisms[k].ModNPC as Neurysm).State = 1;
+				(neurisms[k].ModNPC as Neurysm).Timer = 0;
+			}
+
+			npc.dontTakeDamage = true;
+
+			return false;
 		}
 
 		public override void OnKill(NPC npc)
@@ -447,7 +493,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (opacity >= 1)
 			{
-				Main.spriteBatch.Draw(tex, npc.Center - Main.screenPosition, npc.frame, drawColor * opacity, 0, npc.frame.Size() / 2f, npc.scale, 0, 0);
+				Main.spriteBatch.Draw(tex, npc.Center - Main.screenPosition, npc.frame, drawColor * opacity, npc.rotation, npc.frame.Size() / 2f, npc.scale, 0, 0);
 			}
 			else
 			{
@@ -478,6 +524,18 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				}
 			}
 		}
+
+		private void DrawTether(SpriteBatch batch)
+		{
+			if (TheBrain is null)
+				return;
+
+			if (TheBrain.State == 3 && TheBrain.chain != null)
+			{
+				TheBrain.DrawPrimitivesGray();
+			}
+		}
+
 		protected void ManageCaches()
 		{
 			if (cache == null)
@@ -490,10 +548,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				}
 			}
 
-			for (int i = 0; i < chain.segmentCount; i++)
+			for (int i = 0; i < chain.segmentCount - 1; i++)
 			{
 				cache[i] = chain.ropeSegments[i].posNow;
 			}
+
+			cache[chain.segmentCount - 1] = chain.endPoint;
 		}
 
 		protected void ManageTrail()
@@ -522,6 +582,22 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 
 			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			trail?.Render(effect);
+		}
+
+		public void DrawPrimitivesGray()
+		{
+			Effect effect = Filters.Scene["LightningTrail"].GetShader().Shader;
+
+			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
+			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+			effect.Parameters["time"]?.SetValue(Main.GameUpdateCount * 0.025f);
+			effect.Parameters["repeats"]?.SetValue(2f);
+			effect.Parameters["transformMatrix"]?.SetValue(world * view * projection);
+
+			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/WavyTrail").Value);
 			trail?.Render(effect);
 		}
 

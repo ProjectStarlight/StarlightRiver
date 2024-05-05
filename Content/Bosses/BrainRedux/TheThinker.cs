@@ -20,6 +20,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public ref float ExtraRadius => ref NPC.ai[0];
 
+		public ref float Timer => ref NPC.ai[1];
+		public ref float AttackTimer => ref NPC.ai[2];
+		public ref float AttackState => ref NPC.ai[3];
+
 		public override string Texture => AssetDirectory.BrainRedux + Name;
 
 		public override void Load()
@@ -35,7 +39,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			NPC.width = 128;
 			NPC.height = 128;
 			NPC.damage = 10;
-			NPC.lifeMax = 1000;
+			NPC.lifeMax = 4000;
 			NPC.knockBackResist = 0f;
 			NPC.friendly = false;
 			NPC.noTileCollide = true;
@@ -66,11 +70,6 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			Lighting.AddLight(NPC.Center, new Vector3(1f, 0.2f, 0.2f));
 
-			if (ExtraRadius > 0)
-				ExtraRadius -= 0.5f;
-
-			NPC.life = NPC.lifeMax;
-
 			for (int k = 0; k < Main.maxPlayers; k++)
 			{
 				Player player = Main.player[k];
@@ -83,14 +82,42 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				ResetArena();
 			}
+
+			// Attacks
+			if (BrainOfCthulu.TheBrain != null && BrainOfCthulu.TheBrain.State == 5)
+			{
+				Timer++;
+				AttackTimer++;
+
+				NPC.dontTakeDamage = false;
+
+				NPC.Center += (home - NPC.Center) * 0.02f;
+
+				if (ExtraRadius < 600 && Timer <= 1140)
+					ExtraRadius += 4f;
+
+				if (Timer > 1140)
+					ExtraRadius -= 10;
+
+				if (Timer >= 1200)
+				{
+					BrainOfCthulu.TheBrain.State = 3;
+					BrainOfCthulu.TheBrain.AttackState = -1;
+					BrainOfCthulu.TheBrain.AttackTimer = 1;
+					BrainOfCthulu.TheBrain.npc.life = BrainOfCthulu.TheBrain.npc.lifeMax;
+					BrainOfCthulu.TheBrain.npc.noGravity = true;
+					BrainOfCthulu.TheBrain.npc.noTileCollide = true;
+					BrainOfCthulu.TheBrain.npc.dontTakeDamage = false;
+				}
+			}
+			else
+			{
+				NPC.dontTakeDamage = true;
+			}
 		}
 
 		public override void ModifyIncomingHit(ref NPC.HitModifiers modifiers)
 		{
-			//modifiers.FinalDamage *= 0;
-			modifiers.HideCombatText();
-
-			CombatText.NewText(NPC.Hitbox, Color.Gray, 0);
 		}
 
 		public override bool CheckDead()

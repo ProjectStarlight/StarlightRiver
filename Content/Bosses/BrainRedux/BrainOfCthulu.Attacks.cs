@@ -272,6 +272,29 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		#endregion
 
 		#region Phase 2
+		public void Recover()
+		{
+			if (AttackTimer < 120)
+			{
+				if (npc.rotation > 0)
+					npc.rotation -= 0.02f;
+
+				npc.position.Y -= 1.8f;
+			}
+
+			if (AttackTimer > 90 && AttackTimer < 120)
+				opacity = 1f - (AttackTimer - 90) / 30f;
+
+			if (AttackTimer == 120)
+				npc.Center = thinker.Center + new Vector2(0, -200);
+
+			if (AttackTimer > 120 && AttackTimer < 150)
+				opacity = (AttackTimer - 120) / 30f;
+
+			if (AttackTimer == 150)
+				AttackTimer = 0;
+		}
+
 		public void DoubleSpin()
 		{
 			if (AttackTimer == 1)
@@ -282,6 +305,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			Vector2 targetPos = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(savedRot + AttackTimer / 400f * 6.28f) * 550;
 			Vector2 targetPos2 = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(savedRot + AttackTimer / 400f * 6.28f) * -550;
+
+			if (AttackTimer < 30)
+				(thinker.ModNPC as TheThinker).ExtraRadius = -100 * AttackTimer / 30f;
 
 			if (AttackTimer >= 1 && AttackTimer < 400)
 			{
@@ -335,6 +361,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				}
 			}
 
+			if (AttackTimer >= 370)
+				(thinker.ModNPC as TheThinker).ExtraRadius = -100 + 100 * (AttackTimer - 370) / 30f;
+
 			if (AttackTimer >= 400)
 			{
 				contactDamage = false;
@@ -348,16 +377,19 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (AttackTimer <= 30)
 				opacity = 1f - AttackTimer / 30f;
 
+			if (AttackTimer > 30 && AttackTimer < 60)
+				(thinker.ModNPC as TheThinker).ExtraRadius = 100 * (AttackTimer - 30) / 30f;
+
 			if (AttackTimer == 60)
 			{
 				int random = Main.rand.Next(10);
-				savedPos = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(random / 10f * 6.28f) * 570;
+				savedPos = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(random / 10f * 6.28f) * 590;
 
 				for (int k = 0; k < 10; k++)
 				{
 					if (k != random)
 					{
-						Vector2 pos = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(k / 10f * 6.28f) * 570;
+						Vector2 pos = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(k / 10f * 6.28f) * 590;
 						int i = NPC.NewNPC(null, (int)pos.X, (int)pos.Y, ModContent.NPCType<HorrifyingVisage>());
 						Main.npc[i].Center = pos;
 					}
@@ -374,9 +406,6 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				thinker.Center += ((thinker.ModNPC as TheThinker).home - thinker.Center) * 0.03f;
 			}
-
-			if (AttackTimer > 120 && AttackTimer < 540)
-				(thinker.ModNPC as TheThinker).ExtraRadius += 1f;
 
 			if (AttackTimer > 90 && AttackTimer < 510)
 			{
@@ -398,6 +427,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				foreach (NPC npc in Main.npc.Where(n => n.active && n.ModNPC is HorrifyingVisage))
 					npc.ai[0] = 540;
 			}
+
+			if (AttackTimer > 540 && AttackTimer < 570)
+				(thinker.ModNPC as TheThinker).ExtraRadius = 100 - 100 * (AttackTimer - 540) / 30f;
 
 			if (AttackTimer == 600)
 			{
@@ -507,16 +539,19 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (AttackTimer <= 30)
 				opacity = 1f - AttackTimer / 30f;
 
+			if (AttackTimer > 30 && AttackTimer < 60)
+				(thinker.ModNPC as TheThinker).ExtraRadius = 100 * (AttackTimer - 30) / 30f;
+
 			if (AttackTimer == 60)
 			{
 				int random = Main.rand.Next(4);
-				savedPos = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(random / 4f * 6.28f) * 570;
+				savedPos = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(random / 4f * 6.28f) * 590;
 
 				for (int k = 0; k < 4; k++)
 				{
 					if (k != random)
 					{
-						Vector2 pos = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(k / 4f * 6.28f) * 570;
+						Vector2 pos = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(k / 4f * 6.28f) * 590;
 						int i = NPC.NewNPC(null, (int)pos.X, (int)pos.Y, ModContent.NPCType<HorrifyingVisage>());
 						Main.npc[i].Center = pos;
 					}
@@ -533,9 +568,6 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				thinker.Center += ((thinker.ModNPC as TheThinker).home - thinker.Center) * 0.03f;
 			}
-
-			if (AttackTimer > 120 && AttackTimer < 540)
-				(thinker.ModNPC as TheThinker).ExtraRadius += 1f;
 
 			// Exapanding circle
 			if (AttackTimer == 31)
@@ -603,6 +635,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						npc.ai[0] = 540;
 				}
 			}
+
+			if (AttackTimer > 540 && AttackTimer < 570)
+				(thinker.ModNPC as TheThinker).ExtraRadius = 100 - 100 * (AttackTimer - 540) / 30f;
 
 			if (AttackTimer == 600)
 			{
