@@ -397,8 +397,8 @@ namespace StarlightRiver.Content.Items.Breacher
 			if (struck)
 				return false;
 
-			Texture2D chainTex1 = ModContent.Request<Texture2D>(AssetDirectory.BreacherItem + "ScrapshotHookChain1").Value;
-			Texture2D chainTex2 = ModContent.Request<Texture2D>(AssetDirectory.BreacherItem + "ScrapshotHookChain2").Value;
+			Texture2D chainTex1 = Assets.Items.Breacher.ScrapshotHookChain1.Value;
+			Texture2D chainTex2 = Assets.Items.Breacher.ScrapshotHookChain2.Value;
 			Player Player = Main.player[Projectile.owner];
 
 			float dist = Vector2.Distance(Player.Center, Projectile.Center);
@@ -501,7 +501,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
 			effect.Parameters["repeats"].SetValue(2f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 
 			trail?.Render(effect);
 		}

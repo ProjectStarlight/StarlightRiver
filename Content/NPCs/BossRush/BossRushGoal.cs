@@ -55,7 +55,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/Clock").Value;
+			Texture2D tex = Assets.Misc.Clock.Value;
 
 			float alpha = 1;
 
@@ -71,7 +71,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 
 			spriteBatch.Draw(tex, pos, null, color * 0.3f * alpha, 0, tex.Size() / 2, 0.6f, 0, 0);
 
-			Texture2D armTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrailOneEnd").Value;
+			Texture2D armTex = Assets.GlowTrailOneEnd.Value;
 
 			var target = new Rectangle((int)pos.X, (int)pos.Y, 40, 12);
 			spriteBatch.Draw(armTex, target, null, color * 0.5f * alpha, Main.GameUpdateCount * 0.12f * speed, new Vector2(0, armTex.Height / 2), 0, 0);

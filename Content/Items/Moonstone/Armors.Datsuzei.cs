@@ -87,7 +87,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 				if (!Main.screenTarget.IsDisposed)
 					Main.spriteBatch.Draw(Main.screenTarget, hideTarget, hideTarget, Color.White * activationTimer);
 
-				Texture2D backTex = Request<Texture2D>(AssetDirectory.MoonstoneItem + "DatsuzeiHotbar").Value;
+				Texture2D backTex = Assets.Items.Moonstone.DatsuzeiHotbar.Value;
 				var target = new Rectangle(111, 20, (int)(backTex.Width * activationTimer), backTex.Height);
 				var source = new Rectangle(0, 0, (int)(backTex.Width * activationTimer), backTex.Height);
 
@@ -96,7 +96,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
 
-				Texture2D glowTex = Request<Texture2D>(AssetDirectory.MoonstoneItem + "DatsuzeiHotbarGlow").Value;
+				Texture2D glowTex = Assets.Items.Moonstone.DatsuzeiHotbarGlow.Value;
 
 				var glowColor = new Color(200, (byte)(255 - 100 * activationTimer), 255);
 
@@ -110,7 +110,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 				if (activationTimer >= 1)
 				{
-					Texture2D glowTex2 = Request<Texture2D>(AssetDirectory.MoonstoneItem + "DatsuzeiHotbarGlow2").Value;
+					Texture2D glowTex2 = Assets.Items.Moonstone.DatsuzeiHotbarGlow2.Value;
 					Color glowColor2 = new Color(200, (byte)(200 - 50 * (float)Math.Sin(Main.GameUpdateCount * 0.05f)), 255) * Math.Min(1, (activationTimerNoCurve - 60) / 60f);
 
 					Main.spriteBatch.Draw(glowTex2, target.Center.ToVector2() + Vector2.UnitY * -1, null, glowColor2 * 0.8f, 0, glowTex2.Size() / 2, 1, 0, 0);
@@ -120,8 +120,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 				//the shader for the flames
 				Effect effect1 = Filters.Scene["MagicalFlames"].GetShader().Shader;
-				effect1.Parameters["sampleTexture1"].SetValue(Request<Texture2D>(AssetDirectory.MoonstoneItem + "DatsuzeiFlameMap1").Value);
-				effect1.Parameters["sampleTexture2"].SetValue(Request<Texture2D>(AssetDirectory.MoonstoneItem + "DatsuzeiFlameMap2").Value);
+				effect1.Parameters["sampleTexture1"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap1.Value);
+				effect1.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
 				effect1.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.008f);
 
 				if (activationTimerNoCurve > 85)
@@ -129,7 +129,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 					Main.spriteBatch.End();
 					Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, effect1, Main.UIScaleMatrix);
 
-					Texture2D spearTex = Request<Texture2D>(AssetDirectory.MoonstoneItem + "DatsuzeiHotbarSprite").Value;
+					Texture2D spearTex = Assets.Items.Moonstone.DatsuzeiHotbarSprite.Value;
 					Main.spriteBatch.Draw(spearTex, target.Center() + new Vector2(0, -40), null, Color.White, 0, spearTex.Size() / 2, 1, 0, 0);
 				}
 
@@ -150,7 +150,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 					else
 						overlayAlpha = 1;
 
-					Texture2D spearShapeTex = Request<Texture2D>(AssetDirectory.MoonstoneItem + "DatsuzeiHotbarSpriteShape").Value;
+					Texture2D spearShapeTex = Assets.Items.Moonstone.DatsuzeiHotbarSpriteShape.Value;
 					Main.spriteBatch.Draw(spearShapeTex, target.Center() + new Vector2(0, -40), null, Color.White * (1 - overlayAlpha), 0, spearShapeTex.Size() / 2, 1, 0, 0);
 				}
 
@@ -566,8 +566,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
 			effect.Parameters["repeats"].SetValue(8f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
-			effect.Parameters["sampleTexture2"].SetValue(Request<Texture2D>("StarlightRiver/Assets/Items/Moonstone/DatsuzeiFlameMap2").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+			effect.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
 
 			trail?.Render(effect);
 

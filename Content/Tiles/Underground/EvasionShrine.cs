@@ -248,7 +248,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 		{
 			if (state != SHRINE_STATE_IDLE && state != SHRINE_STATE_DEFEATED)
 			{
-				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Moonstone/GlowSmall").Value;
+				Texture2D tex = Assets.Tiles.Moonstone.GlowSmall.Value;
 				var origin = new Vector2(tex.Width / 2, tex.Height);
 				spriteBatch.Draw(tex, Center - Main.screenPosition + new Vector2(0, 60), default, GetBeamColor(StarlightWorld.visualTimer), 0, origin, 3.5f, 0, 0);
 				spriteBatch.Draw(tex, Center - Main.screenPosition + new Vector2(10, 60), default, GetBeamColor(StarlightWorld.visualTimer + 2) * 0.8f, 0, origin, 2.5f, 0, 0);
@@ -256,7 +256,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 				if (state > SHRINE_STATE_IDLE)
 				{
-					Texture2D fireTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Underground/BrazierFlame").Value;
+					Texture2D fireTex = Assets.Tiles.Underground.BrazierFlame.Value;
 					var frame = new Rectangle(0, 32 * (int)(Main.GameUpdateCount / 6 % 6), 16, 32);
 
 					Vector2 leftPos = Center - Main.screenPosition + new Vector2(-248, -220);
@@ -301,7 +301,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 						spriteBatch.Draw(fireTex, rightPos, frame, Color.White, 0, fireTex.Size() / 2, 0.95f, 0, 0);
 					}
 
-					Texture2D barrier = ModContent.Request<Texture2D>("StarlightRiver/Assets/MotionTrail").Value;
+					Texture2D barrier = Assets.MotionTrail.Value;
 					var sourceRect = new Rectangle(0, (int)(Main.GameUpdateCount * 0.4f), barrier.Width, barrier.Height);
 					var sourceRect2 = new Rectangle(0, (int)(Main.GameUpdateCount * -0.73f), barrier.Width, barrier.Height);
 

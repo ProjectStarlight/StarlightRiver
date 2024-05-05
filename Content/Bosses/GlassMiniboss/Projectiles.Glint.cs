@@ -52,9 +52,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/StarTexture").Value;
-			Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/GlowRing").Value;
-			Texture2D tex3 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
+			Texture2D tex = Assets.StarTexture.Value;
+			Texture2D tex2 = Assets.Misc.GlowRing.Value;
+			Texture2D tex3 = Assets.Keys.GlowAlpha.Value;
 
 			Color color1 = colorMain * ease(Projectile.timeLeft / 60f);
 			color1.A = 0;

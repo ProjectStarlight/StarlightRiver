@@ -300,7 +300,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Tiles/Moonstone/GlowSmall").Value;
+			Texture2D tex = Assets.Tiles.Moonstone.GlowSmall.Value;
 			float alpha = Projectile.timeLeft > 160 ? 1 - (Projectile.timeLeft - 160) / 20f : 1;
 			Color color = new Color(255, 150, 50) * alpha;
 

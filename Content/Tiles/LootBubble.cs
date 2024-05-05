@@ -93,7 +93,7 @@ namespace StarlightRiver.Content.Tiles
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
+			Texture2D tex = Assets.Keys.Glow.Value;
 			float sin = 0.5f + (float)(Math.Sin(StarlightWorld.visualTimer) * 0.5f);
 			spriteBatch.Draw(tex, Center - Main.screenPosition, null, Color.SkyBlue * (0.4f + sin * 0.1f), 0, tex.Size() / 2, 0.8f + sin * 0.1f, 0, 0);
 		}

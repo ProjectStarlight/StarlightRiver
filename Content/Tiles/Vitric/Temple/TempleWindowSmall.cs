@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public void RedrawWall(int i, int j)
 		{
-			Texture2D tex = Request<Texture2D>(AssetDirectory.VitricTile + "VitricTempleWall").Value;
+			Texture2D tex = Assets.Tiles.Vitric.VitricTempleWall.Value;
 			var target = new Vector2(i * 16 - Main.screenPosition.X, j * 16 - Main.screenPosition.Y);
 			var source = new Rectangle(i % 14 * 16, j % 25 * 16, 16, 16);
 

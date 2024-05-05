@@ -43,8 +43,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			if (!StarlightWorld.HasFlag(WorldFlags.DesertOpen) || !Main.LocalPlayer.InModBiome(ModContent.GetInstance<VitricTempleBiome>()))
 				return;
 
-			Texture2D tex = Request<Texture2D>(AssetDirectory.RiftCrafting + "Glow0").Value;
-			Texture2D tex2 = Request<Texture2D>(AssetDirectory.RiftCrafting + "Glow1").Value;
+			Texture2D tex = Assets.RiftCrafting.Glow0.Value;
+			Texture2D tex2 = Assets.RiftCrafting.Glow1.Value;
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default);

@@ -59,7 +59,7 @@ namespace StarlightRiver.Content.Items.Vitric
 					spriteBatch.End();
 					spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
-					Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/RiftCrafting/Glow1").Value;
+					Texture2D tex = Assets.RiftCrafting.Glow1.Value;
 					float scale1 = Terraria.GameContent.TextureAssets.Item[item.type].Size().Length() / tex.Size().Length();
 					var color = new Color(180, 240, 255);
 

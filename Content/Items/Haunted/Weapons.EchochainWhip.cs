@@ -160,7 +160,7 @@ namespace StarlightRiver.Content.Items.Haunted
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
 
 			float fadeOut = 1f;
 			if (DeathTimer > 0)
@@ -177,9 +177,9 @@ namespace StarlightRiver.Content.Items.Haunted
 
 			effect.Parameters["offset"].SetValue(new Vector2(0.001f));
 			effect.Parameters["repeats"].SetValue(2);
-			effect.Parameters["uImage1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/SwirlyNoiseLooping").Value);
-			effect.Parameters["uImage2"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/PerlinNoise").Value);
-			effect.Parameters["noiseImage1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/PerlinNoise").Value);
+			effect.Parameters["uImage1"].SetValue(Assets.Noise.SwirlyNoiseLooping.Value);
+			effect.Parameters["uImage2"].SetValue(Assets.Noise.PerlinNoise.Value);
+			effect.Parameters["noiseImage1"].SetValue(Assets.Noise.PerlinNoise.Value);
 
 			Color color = new Color(150, 255, 25, 0) * 0.5f * fadeOut;
 			effect.Parameters["uColor"].SetValue(color.ToVector4());
@@ -577,10 +577,10 @@ namespace StarlightRiver.Content.Items.Haunted
 
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.HauntedItem + "EchochainWhipChain").Value;
-			Texture2D texGlow = ModContent.Request<Texture2D>(AssetDirectory.HauntedItem + "EchochainWhipChain_Glow").Value;
-			Texture2D texBlur = ModContent.Request<Texture2D>(AssetDirectory.HauntedItem + "EchochainWhipChain_Blur").Value;
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D tex = Assets.Items.Haunted.EchochainWhipChain.Value;
+			Texture2D texGlow = Assets.Items.Haunted.EchochainWhipChain_Glow.Value;
+			Texture2D texBlur = Assets.Items.Haunted.EchochainWhipChain_Blur.Value;
+			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
 
 			Vector2 chainEnd = tilePosition;
 			Vector2 chainStart = Projectile.Center;
@@ -674,7 +674,7 @@ namespace StarlightRiver.Content.Items.Haunted
 		{
 			Texture2D texBlur = ModContent.Request<Texture2D>(Texture + "_TipBlur").Value;
 			Texture2D texGlow = ModContent.Request<Texture2D>(Texture + "_TipGlow").Value;
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
 
 			Asset<Texture2D> texture = ModContent.Request<Texture2D>(Texture);
 			Rectangle whipFrame = texture.Frame(1, 5, 0, 0);

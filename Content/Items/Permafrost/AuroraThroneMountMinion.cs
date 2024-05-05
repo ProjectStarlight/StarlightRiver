@@ -85,9 +85,9 @@ namespace StarlightRiver.Content.Items.Permafrost
 			SpriteBatch spriteBatch = Main.spriteBatch;
 			var frame = new Rectangle(26 * ((int)(Projectile.ai[0] / 5) % 3), 0, 26, 30);
 
-			Texture2D tex = Request<Texture2D>(AssetDirectory.SquidBoss + "AuroralingGlow").Value;
-			Texture2D tex2 = Request<Texture2D>(AssetDirectory.SquidBoss + "AuroralingGlow2").Value;
-			Texture2D tex3 = Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
+			Texture2D tex = Assets.Bosses.SquidBoss.AuroralingGlow.Value;
+			Texture2D tex2 = Assets.Bosses.SquidBoss.AuroralingGlow2.Value;
+			Texture2D tex3 = Assets.Keys.GlowAlpha.Value;
 
 			for (int k = 0; k < Projectile.oldPos.Length; k++)
 			{

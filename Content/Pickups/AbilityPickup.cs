@@ -161,7 +161,7 @@ namespace StarlightRiver.Content.Pickups
 		{
 			if (Visible)
 			{
-				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/RiftCrafting/Glow0").Value;
+				Texture2D tex = Assets.RiftCrafting.Glow0.Value;
 				Vector2 pos = NPC.Center - Main.screenPosition + new Vector2(0, (float)Math.Sin(StarlightWorld.visualTimer) * 5);
 
 				spriteBatch.Draw(tex, pos, tex.Frame(), GlowColor * 0.3f, 0, tex.Size() / 2, 1, 0, 0);

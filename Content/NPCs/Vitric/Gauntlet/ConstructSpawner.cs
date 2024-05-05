@@ -108,11 +108,11 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			trailEffect.Parameters["time"].SetValue(Projectile.timeLeft * -0.04f);
 			trailEffect.Parameters["repeats"].SetValue(1);
 			trailEffect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			trailEffect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
+			trailEffect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
 			trail?.Render(trailEffect);
 
-			Texture2D glowTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
+			Texture2D glowTex = Assets.Keys.GlowAlpha.Value;
 			var color = new Color(255, 160, 100, 0);
 
 			Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, color * (1 - Timer / 25f), 0, glowTex.Size() / 2, Timer * 0.1f, 0, 0);
@@ -122,7 +122,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, color * 2 * ((25 - Timer) / 25f), 0, glowTex.Size() / 2, 0.25f, 0, 0);
 
 			Effect effect = Filters.Scene["MoltenForm"].GetShader().Shader;
-			effect.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/ShieldMap").Value);
+			effect.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.ShieldMap.Value);
 			effect.Parameters["uTime"].SetValue(Timer / 70f * 2);
 			effect.Parameters["sourceFrame"].SetValue(new Vector4(0, 0, fakeNPC.frame.Width, fakeNPC.frame.Height));
 			effect.Parameters["texSize"].SetValue(tex.Size());

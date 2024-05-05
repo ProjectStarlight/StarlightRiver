@@ -403,8 +403,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.SteampunkItem + "RebarTrailTexture").Value);
-			effect.Parameters["noiseTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.SteampunkItem + "RebarNoiseTexture").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.Items.SteampunkSet.RebarTrailTexture.Value);
+			effect.Parameters["noiseTexture"].SetValue(Assets.Items.SteampunkSet.RebarNoiseTexture.Value);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 			effect.Parameters["progress"].SetValue(trailWidth / 4f);
 			effect.Parameters["repeats"].SetValue(18);

@@ -25,8 +25,8 @@ namespace StarlightRiver.Content.Items.Magnet
 		{
 			Effect borderNoise = Filters.Scene["BorderNoise"].GetShader().Shader;
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowVerySoft").Value;
-			Texture2D harshTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowHarsh").Value;
+			Texture2D tex = Assets.Keys.GlowVerySoft.Value;
+			Texture2D harshTex = Assets.Keys.GlowHarsh.Value;
 
 			if (borderNoise is null)
 				return;

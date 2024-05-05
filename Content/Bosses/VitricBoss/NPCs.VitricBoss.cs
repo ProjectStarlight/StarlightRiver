@@ -255,8 +255,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			if (Phase == (int)AIStates.Dying) //death
 			{
 				Effect effect = Terraria.Graphics.Effects.Filters.Scene["MagmaCracks"].GetShader().Shader;
-				effect.Parameters["sampleTexture2"].SetValue(Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/CrackMap").Value);
-				effect.Parameters["sampleTexture3"].SetValue(Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/ProgressionMap").Value);
+				effect.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.CrackMap.Value);
+				effect.Parameters["sampleTexture3"].SetValue(Assets.Bosses.VitricBoss.ProgressionMap.Value);
 				effect.Parameters["uTime"].SetValue((GlobalTimer - 160) / 600f);
 				effect.Parameters["drawColor"].SetValue(new Color(Lighting.GetSubLight(NPC.Center)).ToVector4());
 
@@ -284,11 +284,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		{
 			if (Phase == (int)AIStates.FirstPhase && NPC.dontTakeDamage) //draws the NPC's shield when immune and in the first phase
 			{
-				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/Shield").Value;
+				Texture2D tex = Assets.Bosses.VitricBoss.Shield.Value;
 				SpriteEffects effects = NPC.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : 0;
 
 				Effect effect = Terraria.Graphics.Effects.Filters.Scene["MoltenForm"].GetShader().Shader;
-				effect.Parameters["sampleTexture2"].SetValue(Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/ShieldMap").Value);
+				effect.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.ShieldMap.Value);
 				effect.Parameters["uTime"].SetValue(2 - shieldShaderTimer / 120f * 2);
 				effect.Parameters["sourceFrame"].SetValue(new Vector4(NPC.frame.X, NPC.frame.Y, NPC.frame.Width, NPC.frame.Height));
 				effect.Parameters["texSize"].SetValue(tex.Size());
@@ -309,8 +309,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
-			Texture2D tex = Request<Texture2D>(AssetDirectory.VitricBoss + "VitricBossBarUnder").Value;
-			Texture2D texOver = Request<Texture2D>(AssetDirectory.VitricBoss + "VitricBossBarOver").Value;
+			Texture2D tex = Assets.Bosses.VitricBoss.VitricBossBarUnder.Value;
+			Texture2D texOver = Assets.Bosses.VitricBoss.VitricBossBarOver.Value;
 			float progress = (float)NPC.life / NPC.lifeMax;
 
 			var target = new Rectangle((int)(position.X - Main.screenPosition.X) + 2, (int)(position.Y - Main.screenPosition.Y), (int)(progress * tex.Width - 4), tex.Height);

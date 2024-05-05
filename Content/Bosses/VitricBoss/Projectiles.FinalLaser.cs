@@ -160,7 +160,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			if (parent is null)
 				return;
 
-			Texture2D texGlow = Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
+			Texture2D texGlow = Assets.Keys.Glow.Value;
 
 			int sin = (int)(Math.Sin(StarlightWorld.visualTimer * 3) * 40f);
 			var color = new Color(255, 160 + sin, 40 + sin / 2);
@@ -169,8 +169,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, color * Projectile.scale * 1.2f, 0, texGlow.Size() / 2, Projectile.scale * 1.6f, default, default);
 
 			Effect effect1 = Terraria.Graphics.Effects.Filters.Scene["SunPlasma"].GetShader().Shader;
-			effect1.Parameters["sampleTexture2"].SetValue(Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/LaserBallMap").Value);
-			effect1.Parameters["sampleTexture3"].SetValue(Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/LaserBallDistort").Value);
+			effect1.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.LaserBallMap.Value);
+			effect1.Parameters["sampleTexture3"].SetValue(Assets.Bosses.VitricBoss.LaserBallDistort.Value);
 			effect1.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.01f);
 
 			spriteBatch.End();
@@ -183,7 +183,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			if (LaserTimer > 30 && LaserTimer <= 120) //tell line
 			{
-				Texture2D texTell = Request<Texture2D>(AssetDirectory.MiscTextures + "DirectionalBeam").Value;
+				Texture2D texTell = Assets.Misc.DirectionalBeam.Value;
 				var origin = new Vector2(0, texTell.Height / 2);
 
 				for (int k = 0; k < 40; k++)
@@ -203,9 +203,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			if (LaserTimer > 150) //the actual laser
 			{
-				Texture2D texBeam = Request<Texture2D>(AssetDirectory.MiscTextures + "BeamCore").Value;
-				Texture2D texBeam2 = Request<Texture2D>(AssetDirectory.MiscTextures + "BeamTrail").Value;
-				Texture2D texDark = Request<Texture2D>(AssetDirectory.MiscTextures + "GradientBlack").Value;
+				Texture2D texBeam = Assets.Misc.BeamCore.Value;
+				Texture2D texBeam2 = Assets.Misc.BeamTrail.Value;
+				Texture2D texDark = Assets.Misc.GradientBlack.Value;
 
 				var origin = new Vector2(0, texBeam.Height / 2);
 				var origin2 = new Vector2(0, texBeam2.Height / 2);
@@ -259,9 +259,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				spriteBatch.End();
 				spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
-				Texture2D impactTex = Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
-				Texture2D impactTex2 = Request<Texture2D>(AssetDirectory.GUI + "ItemGlow").Value;
-				Texture2D glowTex = Request<Texture2D>(AssetDirectory.Assets + "GlowTrail").Value;
+				Texture2D impactTex = Assets.Keys.GlowSoft.Value;
+				Texture2D impactTex2 = Assets.GUI.ItemGlow.Value;
+				Texture2D glowTex = Assets.GlowTrail.Value;
 
 				spriteBatch.Draw(glowTex, target, source, color * 0.95f, LaserRotation, new Vector2(0, glowTex.Height / 2), 0, 0);
 

@@ -49,8 +49,8 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 				if (dummy is null)
 					return;
 
-				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Tiles/UndergroundTemple/JarTallGlow").Value;
-				Texture2D tex2 = Request<Texture2D>("StarlightRiver/Assets/Tiles/UndergroundTemple/JarTallGlow2").Value;
+				Texture2D tex = Assets.Tiles.UndergroundTemple.JarTallGlow.Value;
+				Texture2D tex2 = Assets.Tiles.UndergroundTemple.JarTallGlow2.Value;
 
 				spriteBatch.End();
 				spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default);
@@ -114,7 +114,7 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
+			Texture2D tex = Assets.Keys.Glow.Value;
 			spriteBatch.Draw(tex, Center - Main.screenPosition + Vector2.UnitY * 16, tex.Frame(), new Color(91, 211, 233) * 0.7f, 0, tex.Size() / 2, 0.8f, 0, 0);
 		}
 	}
