@@ -386,9 +386,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 		public override void Update()
 		{
-			if (GearEntity is null)
-				return;
-
 			if (gearAnimation > 0)
 				gearAnimation--;
 
