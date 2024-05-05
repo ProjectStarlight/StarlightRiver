@@ -19,6 +19,8 @@ namespace StarlightRiver.Content.Biomes
 
 		public List<Vector2> thinkerPositions;
 
+		public Vector2 lastGrayPos;
+
 		public static ScreenTarget hallucinationMap;
 		public static ScreenTarget overHallucinationMap;
 
@@ -57,10 +59,16 @@ namespace StarlightRiver.Content.Biomes
 		{
 			if (player == Main.LocalPlayer)
 			{
-				if (player.HasBuff(ModContent.BuffType<CrimsonHallucination>()) && fullscreenTimer < 60)
-					fullscreenTimer++;
+				if (player.HasBuff(ModContent.BuffType<CrimsonHallucination>()))
+				{
+					lastGrayPos = player.Center;
+					if (fullscreenTimer < 40)
+						fullscreenTimer++;
+				}
 				else if (fullscreenTimer > 0)
+				{
 					fullscreenTimer--;
+				}
 			}
 		}
 
@@ -69,10 +77,9 @@ namespace StarlightRiver.Content.Biomes
 			onDrawHallucinationMap?.Invoke(spriteBatch);
 
 			// Draw the screen overlay for when the player is actively standing on gray matter
-			Texture2D glow = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
-
-			spriteBatch.Draw(glow, Main.LocalPlayer.Center - Main.screenPosition, null, new Color(1, 1, 1f, 0), 0, glow.Size() / 2f, Main.screenWidth / glow.Width * (fullscreenTimer / 20f), 0, 0);
-			spriteBatch.Draw(glow, Main.LocalPlayer.Center - Main.screenPosition, null, new Color(1, 1, 1f, 0), 0, glow.Size() / 2f, Main.screenWidth / glow.Width * (fullscreenTimer / 20f), 0, 0);
+			Texture2D glow = Assets.Keys.GlowAlpha.Value;
+			spriteBatch.Draw(glow, lastGrayPos - Main.screenPosition, null, new Color(1, 1, 1f, 0), 0, glow.Size() / 2f, Main.screenWidth / glow.Width * (fullscreenTimer / 9f), 0, 0);
+			spriteBatch.Draw(glow, lastGrayPos - Main.screenPosition, null, new Color(1, 1, 1f, 0), 0, glow.Size() / 2f, Main.screenWidth / glow.Width * (fullscreenTimer / 9f), 0, 0);
 		}
 
 		public void DrawOverHallucinationMap(SpriteBatch spriteBatch)

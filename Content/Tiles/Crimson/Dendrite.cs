@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 			if (tile.TileType == ModContent.TileType<Dendrite>())
 			{
-				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Crimson/DendriteReal").Value;
+				Texture2D tex = Assets.Tiles.Crimson.DendriteReal.Value;
 				spriteBatch.Draw(tex, target.ToVector2() * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), Color.White * 0.8f);
 			}
 		}
@@ -35,14 +35,13 @@ namespace StarlightRiver.Content.Tiles.Crimson
 			Main.tileSolid[Type] = true;
 			Main.tileBlockLight[Type] = true;
 
-			Main.tileMerge[Type][TileID.Dirt] = true;
-			Main.tileMerge[TileID.Dirt][Type] = true;
-
 			Main.tileMerge[Type][TileID.CrimsonGrass] = true;
 			Main.tileMerge[TileID.CrimsonGrass][Type] = true;
 
 			Main.tileMerge[Type][TileID.Crimstone] = true;
 			Main.tileMerge[TileID.Crimstone][Type] = true;
+
+			Main.tileMergeDirt[Type] = true;
 
 			HitSound = Terraria.ID.SoundID.Tink;
 

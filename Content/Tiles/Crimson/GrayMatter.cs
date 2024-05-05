@@ -16,6 +16,7 @@ namespace StarlightRiver.Content.Tiles.Crimson
 		public override void Load()
 		{
 			GraymatterBiome.onDrawHallucinationMap += DrawTileMap;
+			GraymatterBiome.onDrawOverPerTile += DrawRealVersion;
 		}
 
 		public override void SetStaticDefaults()
@@ -37,7 +38,7 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 		private void DrawTileMap(SpriteBatch spriteBatch)
 		{
-			Texture2D glow = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
+			Texture2D glow = Assets.Keys.GlowAlpha.Value;
 			var pos = (Main.screenPosition / 16).ToPoint16();
 
 			int width = Main.screenWidth / 16 + 1;
@@ -67,9 +68,21 @@ namespace StarlightRiver.Content.Tiles.Crimson
 						}
 
 						// Draw to map
-						spriteBatch.Draw(glow, drawPos, null, color, 0, glow.Size() / 2f, 1.5f, 0, 0);
+						spriteBatch.Draw(glow, drawPos, null, color, 0, glow.Size() / 2f, 1.7f, 0, 0);
 					}
 				}
+			}
+		}
+
+		private void DrawRealVersion(SpriteBatch spriteBatch, int x, int y)
+		{
+			var target = new Point16(x, y);
+			Tile tile = Framing.GetTileSafely(target);
+
+			if (tile.TileType == ModContent.TileType<GrayMatter>())
+			{
+				Texture2D tex = Assets.Tiles.Crimson.GrayMatterOver.Value;
+				spriteBatch.Draw(tex, target.ToVector2() * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), Color.White);
 			}
 		}
 
