@@ -119,7 +119,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void PostDraw(Color lightColor)
 		{
-			Texture2D texture = ModContent.Request<Texture2D>(AssetDirectory.Assets + "StarTexture").Value;
+			Texture2D texture = Assets.StarTexture.Value;
 			var color = new Color(220, 205, 140)
 			{
 				A = 0
@@ -172,7 +172,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public void DrawAdditive(SpriteBatch sb)
 		{
-			Texture2D texture = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowSoft").Value;
+			Texture2D texture = Assets.Keys.GlowSoft.Value;
 			var color = new Color(220, 205, 140);
 			sb.Draw(texture, Projectile.Center - Projectile.velocity - Main.screenPosition, null, color * 0.6f, Projectile.rotation, texture.Size() / 2f, Projectile.scale - 0.35f, SpriteEffects.None, 0);
 			sb.Draw(texture, Projectile.Center - Projectile.velocity - Main.screenPosition, null, color, Projectile.rotation, texture.Size() / 2f, Projectile.scale - 0.45f, SpriteEffects.None, 0);

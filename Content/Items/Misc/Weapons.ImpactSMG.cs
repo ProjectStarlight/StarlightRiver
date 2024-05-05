@@ -405,10 +405,10 @@ namespace StarlightRiver.Content.Items.Misc
 			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
 			Texture2D whiteTex = ModContent.Request<Texture2D>(Texture + "_White").Value;
 			Texture2D flareTex = ModContent.Request<Texture2D>(Texture + "Flare").Value;
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
 			Texture2D glowMap = ModContent.Request<Texture2D>(Texture + "_GlowMap").Value;
 			Texture2D bloomMap = ModContent.Request<Texture2D>(Texture + "_BloomMap").Value;
-			Texture2D starTex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "StarTexture").Value;
+			Texture2D starTex = Assets.StarTexture.Value;
 
 			SpriteEffects flip = Projectile.spriteDirection == -1 ? SpriteEffects.FlipVertically : 0f;
 
@@ -1029,12 +1029,12 @@ namespace StarlightRiver.Content.Items.Misc
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 			effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.03f);
 			effect.Parameters["repeats"].SetValue(2f);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "GlowTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 
 			trail?.Render(effect);
 			trail2?.Render(effect);
 
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "FireTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
 
 			trail2?.Render(effect);
 		}

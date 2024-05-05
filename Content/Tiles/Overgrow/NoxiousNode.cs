@@ -95,12 +95,12 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 			Main.spriteBatch.Draw(tex, pos, null, color * opacity, 0, tex.Size() / 2, 5, 0, 0);
 			Main.spriteBatch.Draw(tex, pos, null, color2 * opacity, 0, tex.Size() / 2, 5, 0, 0);
 
-			Texture2D flowerTex = ModContent.Request<Texture2D>(AssetDirectory.OvergrowTile + "NoxiousNode").Value;
+			Texture2D flowerTex = Assets.Tiles.Overgrow.NoxiousNode.Value;
 			Main.spriteBatch.Draw(flowerTex, pos, null, lightColor, rotation, flowerTex.Size() / 2, 1, 0, 0);
 
 			if (DetachedLife <= 0)
 			{
-				Texture2D glowTex = ModContent.Request<Texture2D>(AssetDirectory.OvergrowTile + "NoxiousNodeGlow").Value;
+				Texture2D glowTex = Assets.Tiles.Overgrow.NoxiousNodeGlow.Value;
 				Main.spriteBatch.Draw(glowTex, pos, null, Helpers.Helper.IndicatorColorProximity(400, 512, Center), rotation, glowTex.Size() / 2, 1, 0, 0);
 			}
 		}

@@ -62,9 +62,9 @@ namespace StarlightRiver.Content.Menus
 
 			Vector2 center = Main.screenPosition + new Vector2(Main.screenWidth / 2, Main.screenHeight / 2);
 
-			Texture2D layer0 = Request<Texture2D>(AssetDirectory.SquidBoss + "Background0").Value;
-			Texture2D layer1 = Request<Texture2D>(AssetDirectory.SquidBoss + "Background1").Value;
-			Texture2D layer2 = Request<Texture2D>(AssetDirectory.SquidBoss + "Background2").Value;
+			Texture2D layer0 = Assets.Bosses.SquidBoss.Background0.Value;
+			Texture2D layer1 = Assets.Bosses.SquidBoss.Background1.Value;
+			Texture2D layer2 = Assets.Bosses.SquidBoss.Background2.Value;
 
 			Vector2 pos = center;
 			Vector2 dpos = pos - Main.screenPosition;
@@ -105,21 +105,21 @@ namespace StarlightRiver.Content.Menus
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Deferred, default, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
 
-			Texture2D backdrop = Request<Texture2D>(AssetDirectory.SquidBoss + "Window").Value;
+			Texture2D backdrop = Assets.Bosses.SquidBoss.Window.Value;
 			spriteBatch.Draw(backdrop, center - backdrop.Size() / 2 + new Vector2(0, -886) - Main.screenPosition, new Color(45, 45, 60));
 
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
 
-			Texture2D dome = Request<Texture2D>(AssetDirectory.SquidBoss + "WindowDome").Value;
+			Texture2D dome = Assets.Bosses.SquidBoss.WindowDome.Value;
 			spriteBatch.Draw(dome, center - dome.Size() / 2 + Vector2.UnitY * -886 - Main.screenPosition, null, Color.White * 0.325f, 0, Vector2.Zero, 1, 0, 0);
 
-			Texture2D glass = Request<Texture2D>(AssetDirectory.SquidBoss + "WindowIn").Value;
-			Texture2D glass2 = Request<Texture2D>(AssetDirectory.SquidBoss + "WindowInGlow").Value;
+			Texture2D glass = Assets.Bosses.SquidBoss.WindowIn.Value;
+			Texture2D glass2 = Assets.Bosses.SquidBoss.WindowInGlow.Value;
 			spriteBatch.Draw(glass, center + new Vector2(0, -7 * 16 - 3) - Main.screenPosition, null, Color.White * 0.325f, 0, glass.Size() / 2, 1, 0, 0);
 			spriteBatch.Draw(glass2, center + new Vector2(0, -7 * 16 - 3) - Main.screenPosition, null, Color.White * 0.2f, 0, glass.Size() / 2, 1, 0, 0);
 
-			Texture2D ray = Request<Texture2D>(AssetDirectory.SquidBoss + "Godray").Value;
+			Texture2D ray = Assets.Bosses.SquidBoss.Godray.Value;
 
 			for (int k = 0; k < 4; k++)
 			{

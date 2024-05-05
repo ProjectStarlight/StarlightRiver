@@ -105,7 +105,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 			//but this is left as is since you could wear a second set of the armor over itself to stop the visual effects
 			if (modPlayer.SetBonusActive && modPlayer.activeGem != StoredGem.None && info.drawPlayer.armor[10].type == ItemID.None)
 			{
-				GeomancerDrawer.Draw(ModContent.Request<Texture2D>(AssetDirectory.GeomancerItem + "GeomancerHood_Head_Gems").Value, info, info.drawPlayer.bodyFrame, info.drawPlayer.headRotation);
+				GeomancerDrawer.Draw(Assets.Items.Geomancer.GeomancerHood_Head_Gems.Value, info, info.drawPlayer.bodyFrame, info.drawPlayer.headRotation);
 			}
 		}
 
@@ -157,8 +157,8 @@ namespace StarlightRiver.Content.Items.Geomancer
 			GeomancerPlayer modPlayer = info.drawPlayer.GetModPlayer<GeomancerPlayer>();
 			if (modPlayer.SetBonusActive && modPlayer.activeGem != StoredGem.None && info.drawPlayer.armor[11].type == ItemID.None)
 			{
-				GeomancerDrawer.Draw(ModContent.Request<Texture2D>(AssetDirectory.GeomancerItem + "GeomancerRobe_Body_Gems").Value, info, info.drawPlayer.bodyFrame, info.drawPlayer.bodyRotation);
-				GeomancerDrawer.Draw(ModContent.Request<Texture2D>(AssetDirectory.GeomancerItem + "GeomancerRobe_Body_Rims").Value, info, info.drawPlayer.bodyFrame, info.drawPlayer.bodyRotation);
+				GeomancerDrawer.Draw(Assets.Items.Geomancer.GeomancerRobe_Body_Gems.Value, info, info.drawPlayer.bodyFrame, info.drawPlayer.bodyRotation);
+				GeomancerDrawer.Draw(Assets.Items.Geomancer.GeomancerRobe_Body_Rims.Value, info, info.drawPlayer.bodyFrame, info.drawPlayer.bodyRotation);
 			}
 		}
 
@@ -196,7 +196,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 			GeomancerPlayer modPlayer = info.drawPlayer.GetModPlayer<GeomancerPlayer>();
 
 			if (modPlayer.SetBonusActive && modPlayer.activeGem != StoredGem.None && info.drawPlayer.armor[12].type == ItemID.None)
-				GeomancerDrawer.Draw(ModContent.Request<Texture2D>(AssetDirectory.GeomancerItem + "GeomancerPants_Legs_Gems").Value, info, info.drawPlayer.legFrame, info.drawPlayer.bodyRotation);
+				GeomancerDrawer.Draw(Assets.Items.Geomancer.GeomancerPants_Legs_Gems.Value, info, info.drawPlayer.legFrame, info.drawPlayer.bodyRotation);
 		}
 
 		public override void AddRecipes()

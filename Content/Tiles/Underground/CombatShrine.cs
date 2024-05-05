@@ -383,8 +383,8 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ItemGlow").Value;
-			Texture2D texRing = ModContent.Request<Texture2D>(AssetDirectory.GUI + "RingGlow").Value;
+			Texture2D tex = Assets.GUI.ItemGlow.Value;
+			Texture2D texRing = Assets.GUI.RingGlow.Value;
 
 			float bright = Helpers.Helper.BezierEase(1 - (Projectile.timeLeft - 60) / 120f);
 

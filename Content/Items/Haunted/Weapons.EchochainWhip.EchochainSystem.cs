@@ -383,10 +383,10 @@ namespace StarlightRiver.Content.Items.Haunted
 
 			DrawPrimitives(spriteBatch);
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.HauntedItem + "EchochainWhipChain").Value;
-			Texture2D texGlow = ModContent.Request<Texture2D>(AssetDirectory.HauntedItem + "EchochainWhipChain_Glow").Value;
-			Texture2D texBlur = ModContent.Request<Texture2D>(AssetDirectory.HauntedItem + "EchochainWhipChain_Blur").Value;
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D tex = Assets.Items.Haunted.EchochainWhipChain.Value;
+			Texture2D texGlow = Assets.Items.Haunted.EchochainWhipChain_Glow.Value;
+			Texture2D texBlur = Assets.Items.Haunted.EchochainWhipChain_Blur.Value;
+			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
 			Vector2 chainStart = start.npc.Center;
 			Vector2 chainEnd = end.npc.Center;
 

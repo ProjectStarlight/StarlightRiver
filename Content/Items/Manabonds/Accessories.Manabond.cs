@@ -153,8 +153,8 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 			float fill = mana / (float)maxMana;
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "SmallBar1").Value;
-			Texture2D tex2 = ModContent.Request<Texture2D>(AssetDirectory.GUI + "SmallBar0").Value;
+			Texture2D tex = Assets.GUI.SmallBar1.Value;
+			Texture2D tex2 = Assets.GUI.SmallBar0.Value;
 
 			var pos = (projectile.Center + new Vector2(-tex.Width / 2, -40) + Vector2.UnitY * projectile.height / 2f - Main.screenPosition).ToPoint();
 			var target = new Rectangle(pos.X, pos.Y, (int)(fill * tex.Width), tex.Height);

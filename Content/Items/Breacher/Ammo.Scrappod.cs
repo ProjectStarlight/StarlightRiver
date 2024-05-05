@@ -110,7 +110,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			SpriteEffects spriteEffects = Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-			Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D texture = Assets.Items.Breacher.ScrappodProjectile.Value;
 
 			int frameHeight = texture.Height / Main.projFrames[Projectile.type];
 			int startY = frameHeight * Projectile.frame;

@@ -268,9 +268,9 @@ namespace StarlightRiver.Content.Items.Desert
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D starTex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "StarTexture").Value;
+			Texture2D starTex = Assets.StarTexture.Value;
 
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
 
 			float mult = 0f;
 			if (Projectile.timeLeft > maxTimeleft * 0.6f)

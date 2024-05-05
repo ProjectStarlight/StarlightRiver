@@ -130,9 +130,9 @@ namespace StarlightRiver.Content.CustomHooks
 
 			if (Player.GetModPlayer<BarrierPlayer>().maxBarrier > 0)
 			{
-				Texture2D barrierTex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldHeartOver").Value;
-				Texture2D barrierTex2 = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldHeart").Value;
-				Texture2D barrierTex3 = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldHeartLine").Value;
+				Texture2D barrierTex = Assets.GUI.ShieldHeartOver.Value;
+				Texture2D barrierTex2 = Assets.GUI.ShieldHeart.Value;
+				Texture2D barrierTex3 = Assets.GUI.ShieldHeartLine.Value;
 
 				Vector2 pos = origin + new Vector2(80, 37);
 				int width = barrierTex.Width / 2;
@@ -187,7 +187,7 @@ namespace StarlightRiver.Content.CustomHooks
 				!abilities.Any(n => !Player.GetHandler().Unlocked(n.GetType()))
 				)
 			{
-				Texture2D borderTex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "GoldBorder").Value;
+				Texture2D borderTex = Assets.GUI.GoldBorder.Value;
 				spriteBatch.Draw(borderTex, origin, Color.White);
 
 				if (Main.rand.NextBool(3))

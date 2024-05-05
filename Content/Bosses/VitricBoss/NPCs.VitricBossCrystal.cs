@@ -418,12 +418,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				spriteBatch.Draw(Request<Texture2D>(Texture).Value, NPC.Center - screenPos + new Vector2(2, 0), NPC.frame, Color.White * (1 - factor), NPC.rotation, NPC.frame.Size() / 2, factor * 2 * NPC.scale, 0, 0);
 			}
 
-			spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricBoss + "VitricBossCrystalGlowOrange").Value, NPC.Center - screenPos, NPC.frame, Color.White * 0.8f, NPC.rotation, NPC.frame.Size() / 2, NPC.scale, 0, 0);
-			spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricBoss + "VitricBossCrystalGlowBlue").Value, NPC.Center - screenPos, NPC.frame, Color.White * 0.6f, NPC.rotation, NPC.frame.Size() / 2, NPC.scale, 0, 0);
+			spriteBatch.Draw(Assets.Bosses.VitricBoss.VitricBossCrystalGlowOrange.Value, NPC.Center - screenPos, NPC.frame, Color.White * 0.8f, NPC.rotation, NPC.frame.Size() / 2, NPC.scale, 0, 0);
+			spriteBatch.Draw(Assets.Bosses.VitricBoss.VitricBossCrystalGlowBlue.Value, NPC.Center - screenPos, NPC.frame, Color.White * 0.6f, NPC.rotation, NPC.frame.Size() / 2, NPC.scale, 0, 0);
 
 			if (phase >= 5)
 			{
-				spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricBoss + "VitricBossCrystalShape").Value, NPC.Center - screenPos, NPC.frame, Color.White * (timer / 120f), NPC.rotation, NPC.frame.Size() / 2, NPC.scale, 0, 0);
+				spriteBatch.Draw(Assets.Bosses.VitricBoss.VitricBossCrystalShape.Value, NPC.Center - screenPos, NPC.frame, Color.White * (timer / 120f), NPC.rotation, NPC.frame.Size() / 2, NPC.scale, 0, 0);
 			}
 		}
 
@@ -448,7 +448,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			if (phase == 3)
 			{
-				Texture2D tex = Request<Texture2D>(AssetDirectory.VitricBoss + "GlassSpikeGlow").Value;
+				Texture2D tex = Assets.Bosses.VitricBoss.GlassSpikeGlow.Value;
 				float speed = NPC.velocity.Y / 15f;
 				spriteBatch.Draw(tex, NPC.Center - Main.screenPosition + new Vector2(0, -45), null, new Color(255, 150, 50) * speed, -MathHelper.PiOver4, tex.Size() / 2, 3, 0, 0);
 			}
@@ -456,7 +456,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			if (phase == 6 && timer > 220)
 			{
 				Texture2D texGlow2 = Assets.Keys.Glow.Value;
-				Texture2D ballTex = Request<Texture2D>(AssetDirectory.VitricBoss + "FinalLaser").Value;
+				Texture2D ballTex = Assets.Bosses.VitricBoss.FinalLaser.Value;
 
 				float progress = Math.Min(1, (timer - 220) / 60f);
 				int sin = (int)(Math.Sin(StarlightWorld.visualTimer * 3) * 40f);

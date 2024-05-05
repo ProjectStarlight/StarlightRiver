@@ -309,8 +309,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
-			Texture2D tex = Request<Texture2D>(AssetDirectory.VitricBoss + "VitricBossBarUnder").Value;
-			Texture2D texOver = Request<Texture2D>(AssetDirectory.VitricBoss + "VitricBossBarOver").Value;
+			Texture2D tex = Assets.Bosses.VitricBoss.VitricBossBarUnder.Value;
+			Texture2D texOver = Assets.Bosses.VitricBoss.VitricBossBarOver.Value;
 			float progress = (float)NPC.life / NPC.lifeMax;
 
 			var target = new Rectangle((int)(position.X - Main.screenPosition.X) + 2, (int)(position.Y - Main.screenPosition.Y), (int)(progress * tex.Width - 4), tex.Height);

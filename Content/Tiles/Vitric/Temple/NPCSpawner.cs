@@ -102,7 +102,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		public override void PostDraw(Color lightColor)
 		{
 			SpriteBatch spriteBatch = Main.spriteBatch;
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "NPCSpawnerGlow").Value;
+			Texture2D tex = Assets.Tiles.Vitric.NPCSpawnerGlow.Value;
 			var frame = new Rectangle(0, (int)(1 + Helpers.Helper.SwoopEase(timer / 60f) * 18f) % 8 * 48, 22, 48);
 			Vector2 pos = Center - Main.screenPosition + new Vector2(0, -12 * timer / 60f);
 

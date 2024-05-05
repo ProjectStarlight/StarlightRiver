@@ -213,7 +213,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D tex = Assets.Items.Misc.UltrapillBlood.Value;
 			Main.spriteBatch.Draw(tex, Projectile.Center - Projectile.velocity - Main.screenPosition, null, new Color(150, 10, 10), Projectile.rotation, tex.Size() / 2f, 0.65f, SpriteEffects.None, 0f);
 			return false;
 		}

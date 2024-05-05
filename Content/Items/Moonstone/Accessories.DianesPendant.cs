@@ -203,12 +203,11 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			//DrawTrail(Main.spriteBatch);
-
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "Glow").Value;
+			
+			Texture2D tex = Assets.Items.Moonstone.DianeCrescant.Value;
+			Texture2D glowTex = Assets.Items.Moonstone.DianeCrescantGlow.Value;
 
 			for (int k = AfterimageLength; k > 0; k--)
 			{

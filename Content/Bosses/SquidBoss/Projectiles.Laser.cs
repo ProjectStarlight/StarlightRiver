@@ -138,7 +138,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			Texture2D texBeam = Assets.ShadowTrail.Value;
 			Texture2D texBeam2 = Assets.GlowTrail.Value;
-			Texture2D texStar = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ItemGlow").Value;
+			Texture2D texStar = Assets.GUI.ItemGlow.Value;
 
 			var origin = new Vector2(0, texBeam.Height / 2);
 			var origin2 = new Vector2(0, texBeam2.Height / 2);

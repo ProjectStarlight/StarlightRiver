@@ -90,7 +90,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
-			Texture2D tex = Request<Texture2D>(AssetDirectory.VitricItem + "NeedlerBloom").Value;
+			Texture2D tex = Assets.Items.Vitric.NeedlerBloom.Value;
 			Color bloomColor = Color.Orange;
 			bloomColor.A = 0;
 
@@ -158,7 +158,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D tex = Assets.Keys.GlowHarshAlpha.Value;
 			Color color = Color.Orange;
 			color.A = 0;
 			color *= 0.2f;

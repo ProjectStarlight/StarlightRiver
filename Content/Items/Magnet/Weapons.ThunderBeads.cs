@@ -201,7 +201,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			if (embedded)
 			{
 				Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
-				Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "Glow").Value;
+				Texture2D bloomTex = Assets.Keys.Glow.Value;
 				for (int i = 0; i < cache.Count - 1; i++)
 				{
 					if (i % 3 != 0)

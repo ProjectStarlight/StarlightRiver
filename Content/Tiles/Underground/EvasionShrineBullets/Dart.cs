@@ -126,7 +126,7 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 
 			if (timer < 30)
 			{
-				Texture2D tellTex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "Line").Value;
+				Texture2D tellTex = Assets.GUI.Line.Value;
 				float alpha = (float)Math.Sin(timer / 30f * 3.14f);
 
 				for (int k = 0; k < 20; k++)

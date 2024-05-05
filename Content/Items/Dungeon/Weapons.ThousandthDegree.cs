@@ -239,11 +239,11 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D texGlow = ModContent.Request<Texture2D>(Texture + "_Glowy").Value;
-			Texture2D wheelTex = ModContent.Request<Texture2D>(AssetDirectory.DungeonItem + "ThousandthDegreeProjectileFired").Value;
-			Texture2D wheelTexGlow = ModContent.Request<Texture2D>(AssetDirectory.DungeonItem + "ThousandthDegreeProjectileFired_Glowy").Value;
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D tex = Assets.Items.Dungeon.ThousandthDegreeProjectile.Value;
+			Texture2D texGlow = Assets.Items.Dungeon.ThousandthDegreeProjectile_Glowy.Value;
+			Texture2D wheelTex = Assets.Items.Dungeon.ThousandthDegreeProjectileFired.Value;
+			Texture2D wheelTexGlow = Assets.Items.Dungeon.ThousandthDegreeProjectileFired_Glowy.Value;
+			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Projectile.GetAlpha(lightColor), Projectile.rotation, tex.Size() / 2f, Projectile.scale, owner.direction == -1 ? SpriteEffects.FlipHorizontally : 0, 0f);
 
 			if (flashTimer > 0)
@@ -479,9 +479,9 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D texGlow = ModContent.Request<Texture2D>(Texture + "_Glowy").Value;
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D tex = Assets.Items.Dungeon.ThousandthDegreeProjectile.Value;
+			Texture2D texGlow = Assets.Items.Dungeon.ThousandthDegreeProjectile_Glowy.Value;
+			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
 			var bloomColor = Color.Lerp(Color.Transparent, new Color(255, 50, 15, 0), inputHeat / MAXHEAT);
 			DrawPrimitives();
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, tex.Size() / 2f, Projectile.scale, 0, 0f);

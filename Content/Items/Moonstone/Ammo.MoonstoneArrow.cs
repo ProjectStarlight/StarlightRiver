@@ -173,8 +173,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = Request<Texture2D>(Texture).Value;
-			Texture2D whiteTex = Request<Texture2D>(Texture + "_White").Value;
+			Texture2D tex = Assets.Items.Moonstone.MoonstoneArrow.Value;
+			Texture2D whiteTex = Assets.Items.Moonstone.MoonstoneArrow_White.Value;
 
 			var glowColor = new Color(100, 20, 255, 0);
 

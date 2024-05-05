@@ -351,8 +351,8 @@ namespace StarlightRiver.Content.NPCs.BossRush
 		private void DrawBubbleCracks(float crackProgress)
 		{
 			Effect crack = Filters.Scene["OnyxCracks"].GetShader().Shader;
-			crack.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.VitricBoss + "CrackMap").Value);
-			crack.Parameters["sampleTexture3"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Glassweaver + "BubbleCrackProgression").Value);
+			crack.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.CrackMap.Value);
+			crack.Parameters["sampleTexture3"].SetValue(Assets.Bosses.GlassMiniboss.BubbleCrackProgression.Value);
 			crack.Parameters["uTime"].SetValue(crackProgress);
 			crack.Parameters["drawColor"].SetValue(Color.White.ToVector4());
 			crack.Parameters["sourceFrame"].SetValue(new Vector4(0, 0, 128, 128));

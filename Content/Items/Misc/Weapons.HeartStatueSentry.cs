@@ -228,8 +228,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 			float opacity = height / (texBeam.Height / 2f) * 0.75f;
 
-			Texture2D impactTex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowAlpha").Value;
-			Texture2D glowTex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "GlowTrail").Value;
+			Texture2D impactTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D glowTex = Assets.GlowTrail.Value;
 
 			spriteBatch.Draw(glowTex, target, source, color * 0.05f, rotation, new Vector2(0, glowTex.Height / 2), 0, 0);
 

@@ -186,8 +186,8 @@ namespace StarlightRiver.Content.GUI
 		{
 			Main.instance.LoadItem(item.type);
 
-			Texture2D tex = Request<Texture2D>(AssetDirectory.GUI + "FoodSlot").Value;
-			Texture2D texOver = Request<Texture2D>(AssetDirectory.GUI + "FoodSlotOver").Value;
+			Texture2D tex = Assets.GUI.FoodSlot.Value;
+			Texture2D texOver = Assets.GUI.FoodSlotOver.Value;
 			Texture2D ItemTex = TextureAssets.Item[item.type].Value;
 			Vector2 pos = GetDimensions().Center();
 

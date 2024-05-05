@@ -348,19 +348,19 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			{
 				if (ShouldDrawReflection())
 				{
-					ReflectionTarget.DrawReflection(spriteBatch, screenPos: position - Main.screenPosition, normalMap: Request<Texture2D>(AssetDirectory.VitricTile + "VitricBossAltarReflectionMap").Value, flatOffset: new Vector2(-0.0075f, 0.011f), tintColor: new Color(150, 150, 255, 200), offsetScale: 0.05f);
+					ReflectionTarget.DrawReflection(spriteBatch, screenPos: position - Main.screenPosition, normalMap: Assets.Tiles.Vitric.VitricBossAltarReflectionMap.Value, flatOffset: new Vector2(-0.0075f, 0.011f), tintColor: new Color(150, 150, 255, 200), offsetScale: 0.05f);
 					ReflectionTarget.isDrawReflectablesThisFrame = true;
 				}
 
-				Texture2D glow = Request<Texture2D>(AssetDirectory.VitricTile + "VitricBossAltarGlow").Value;
+				Texture2D glow = Assets.Tiles.Vitric.VitricBossAltarGlow.Value;
 				spriteBatch.Draw(glow, position - Main.screenPosition + new Vector2(-1, 7), glow.Frame(), Helper.IndicatorColorProximity(300, 600, Center), 0, Vector2.Zero, 1, 0, 0);
 			}
 
 			//Barriers
 			Vector2 center = Center + new Vector2(0, 56);
-			Texture2D tex = Request<Texture2D>(AssetDirectory.VitricBoss + "VitricBossBarrier").Value;
-			Texture2D tex2 = Request<Texture2D>(AssetDirectory.VitricBoss + "VitricBossBarrier2").Value;
-			Texture2D texTop = Request<Texture2D>(AssetDirectory.VitricBoss + "VitricBossBarrierTop").Value;
+			Texture2D tex = Assets.Bosses.VitricBoss.VitricBossBarrier.Value;
+			Texture2D tex2 = Assets.Bosses.VitricBoss.VitricBossBarrier2.Value;
+			Texture2D texTop = Assets.Bosses.VitricBoss.VitricBossBarrierTop.Value;
 			//Color color = new Color(180, 225, 255);
 
 			int off = (int)(barrierTimer / 120f * tex.Height);

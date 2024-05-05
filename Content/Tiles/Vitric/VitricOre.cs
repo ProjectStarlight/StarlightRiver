@@ -201,7 +201,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = Request<Texture2D>(AssetDirectory.VitricTile + "VitricOreFloatGlow").Value;
+			Texture2D tex = Assets.Tiles.Vitric.VitricOreFloatGlow.Value;
 			Color color = Helper.IndicatorColorProximity(150, 300, Center);
 
 			Main.spriteBatch.Draw(tex, position - new Vector2(1, 1) - Main.screenPosition, color);

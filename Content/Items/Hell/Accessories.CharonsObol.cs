@@ -302,7 +302,7 @@ namespace StarlightRiver.Content.Items.Hell
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D bloom = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D bloom = Assets.Keys.GlowAlpha.Value;
 			Color bloomColor = TrailColor;
 			bloomColor.A = 0;
 
@@ -318,7 +318,7 @@ namespace StarlightRiver.Content.Items.Hell
 				return false;
 
 			Color coinColor = bouncedOff ? lightColor : Color.White;
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D tex = Assets.Items.Hell.CharonsObol.Value;
 			int frameHeight = tex.Height / Main.projFrames[Projectile.type];
 			var frameBox = new Rectangle(0, frameHeight * Projectile.frame, tex.Width, frameHeight);
 
@@ -327,7 +327,7 @@ namespace StarlightRiver.Content.Items.Hell
 			if (flashTimer <= 0)
 				return false;
 
-			Texture2D whiteTex = ModContent.Request<Texture2D>(AssetDirectory.HellItem + "ObolFlash").Value;
+			Texture2D whiteTex = Assets.Items.Hell.ObolFlash.Value;
 			Main.spriteBatch.Draw(whiteTex, Projectile.Center - Main.screenPosition, frameBox, Color.White * (flashTimer / 15f), Projectile.rotation, frameBox.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
 
 			return false;

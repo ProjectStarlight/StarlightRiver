@@ -309,7 +309,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			Effect effect = Filters.Scene["AlphaTextureTrail"].GetShader().Shader;
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "Octogun_Tentacle").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.Items.Permafrost.Octogun_Tentacle.Value);
 			effect.Parameters["alpha"].SetValue(Projectile.timeLeft < 10 ? MathHelper.Lerp(1, 0, 1f - Projectile.timeLeft / 10f) : 1);
 
 			trail?.Render(effect);
@@ -438,7 +438,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		{
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
+			Texture2D tex = Assets.Keys.GlowSoft.Value;
 			float sin = 1 + (float)Math.Sin(Projectile.timeLeft * 10);
 			float cos = 1 + (float)Math.Cos(Projectile.timeLeft * 10);
 			var color = Color.Lerp(Color.Transparent, Main.masterMode ? new Color(1, 0.25f + sin * 0.25f, 0f) : new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f), FadeInTimer / 15f);

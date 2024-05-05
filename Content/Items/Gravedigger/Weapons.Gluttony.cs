@@ -358,7 +358,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
 			float prog = Helper.SwoopEase(Math.Min(1, timer / 50f));
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.VitricBoss + "ConeTell").Value;
+			Texture2D tex = Assets.Bosses.VitricBoss.ConeTell.Value;
 			//spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 60, 80) * prog * 0.4f, Projectile.rotation + 1.57f + 0.1f, new Vector2(tex.Width / 2, tex.Height), prog * 0.55f, 0, 0);
 		}
 	}

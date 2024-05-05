@@ -128,7 +128,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
 				return;
 
-			Texture2D texGlow = Request<Texture2D>(AssetDirectory.VitricBoss + "LongGlow").Value;
+			Texture2D texGlow = Assets.Bosses.VitricBoss.LongGlow.Value;
 			Vector2 pos = position - Main.screenPosition + new Vector2(33, 10);
 
 			float sin = (float)Math.Sin(Main.GameUpdateCount / 18f);

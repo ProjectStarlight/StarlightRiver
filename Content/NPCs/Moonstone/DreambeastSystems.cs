@@ -247,7 +247,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			if (Player.dead)
 				return;
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.MoonstoneNPC + "LunaticEye").Value;
+			Texture2D tex = Assets.NPCs.Moonstone.LunaticEye.Value;
 
 			Vector2 offset = -Vector2.UnitY * (50 + Player.gfxOffY);
 			Rectangle drawRect = new(0, 0, tex.Width, tex.Height / 5);

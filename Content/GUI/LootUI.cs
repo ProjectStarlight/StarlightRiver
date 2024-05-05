@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.GUI
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
 
-			Texture2D glowTex = Request<Texture2D>(AssetDirectory.GUI + "ItemGlow").Value;
+			Texture2D glowTex = Assets.GUI.ItemGlow.Value;
 			float sin = (float)Math.Sin(Main.GameUpdateCount / 20f);
 			spriteBatch.Draw(glowTex, GetDimensions().Center(), null, Color.Gold * (0.4f + sin * 0.05f), Main.GameUpdateCount / 120f, glowTex.Size() / 2, 0.65f + sin * 0.03f, 0, 0);
 			spriteBatch.Draw(glowTex, GetDimensions().Center(), null, Color.White * (0.4f + sin * 0.05f), -Main.GameUpdateCount / 60f, glowTex.Size() / 2, 0.5f + sin * 0.03f, 0, 0);

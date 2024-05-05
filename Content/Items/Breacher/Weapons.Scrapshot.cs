@@ -397,8 +397,8 @@ namespace StarlightRiver.Content.Items.Breacher
 			if (struck)
 				return false;
 
-			Texture2D chainTex1 = ModContent.Request<Texture2D>(AssetDirectory.BreacherItem + "ScrapshotHookChain1").Value;
-			Texture2D chainTex2 = ModContent.Request<Texture2D>(AssetDirectory.BreacherItem + "ScrapshotHookChain2").Value;
+			Texture2D chainTex1 = Assets.Items.Breacher.ScrapshotHookChain1.Value;
+			Texture2D chainTex2 = Assets.Items.Breacher.ScrapshotHookChain2.Value;
 			Player Player = Main.player[Projectile.owner];
 
 			float dist = Vector2.Distance(Player.Center, Projectile.Center);

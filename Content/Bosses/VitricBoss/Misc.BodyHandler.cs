@@ -59,8 +59,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			if (stopDrawingBody && index > 0)
 				return;
 
-			Texture2D tex = Request<Texture2D>(AssetDirectory.VitricBoss + "VitricBossBody").Value;
-			Texture2D glowTex = Request<Texture2D>(AssetDirectory.VitricBoss + "VitricBossBodyGlow").Value;
+			Texture2D tex = Assets.Bosses.VitricBoss.VitricBossBody.Value;
+			Texture2D glowTex = Assets.Bosses.VitricBoss.VitricBossBodyGlow.Value;
 
 			float rot = 0;
 
@@ -155,7 +155,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			if (index == 0)
 				return;
 
-			Texture2D tex = Request<Texture2D>(AssetDirectory.VitricBoss + "VitricBossBodyShield").Value;
+			Texture2D tex = Assets.Bosses.VitricBoss.VitricBossBodyShield.Value;
 
 			float rot = (chain.ropeSegments[index].posNow - chain.ropeSegments[index - 1].posNow).ToRotation() - (float)Math.PI / 2;
 			Rectangle source = index switch

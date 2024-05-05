@@ -452,8 +452,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			if (Main.LocalPlayer == Main.player[Projectile.owner])
 			{
-				Texture2D barTex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "SmallBar0").Value;
-				Texture2D barTex2 = ModContent.Request<Texture2D>(AssetDirectory.GUI + "SmallBar1").Value;
+				Texture2D barTex = Assets.GUI.SmallBar0.Value;
+				Texture2D barTex2 = Assets.GUI.SmallBar1.Value;
 
 				Vector2 pos = Main.LocalPlayer.Center - Main.screenPosition + new Vector2(0, -36) - barTex.Size() / 2;
 				var target = new Rectangle((int)pos.X + 1, (int)pos.Y - 2, (int)(ShieldLife / 50f * barTex2.Width), barTex2.Height);

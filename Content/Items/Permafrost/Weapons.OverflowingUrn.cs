@@ -64,18 +64,18 @@ namespace StarlightRiver.Content.Items.Permafrost
 			if (Player.HeldItem.type == ModContent.ItemType<OverflowingUrn>())
 			{
 				var item = Player.HeldItem.ModItem as OverflowingUrn;
-				Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "UrnFreezeUnder").Value;
-				Texture2D overlayTex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "UrnFreezeUnder_Overlay").Value;
-				Texture2D icicleTex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "UrnFreezeUnder_Icicle").Value;
-				Texture2D whiteTex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "UrnFreezeUnder_White").Value;
-				Texture2D dividerTex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "UrnFreezeUnder_Divider").Value;
+				Texture2D tex = Assets.Items.Permafrost.UrnFreezeUnder.Value;
+				Texture2D overlayTex = Assets.Items.Permafrost.UrnFreezeUnder_Overlay.Value;
+				Texture2D icicleTex = Assets.Items.Permafrost.UrnFreezeUnder_Icicle.Value;
+				Texture2D whiteTex = Assets.Items.Permafrost.UrnFreezeUnder_White.Value;
+				Texture2D dividerTex = Assets.Items.Permafrost.UrnFreezeUnder_Divider.Value;
 
 				if (item.animationTimer > 0)
 				{
 					if (Player.HasBuff(ModContent.BuffType<UrnFreeze>()))
 					{
-						tex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "UrnFreezeUnder_Overload").Value;
-						overlayTex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "UrnFreezeUnder_Overlay_Overload").Value;
+						tex = Assets.Items.Permafrost.UrnFreezeUnder_Overload.Value;
+						overlayTex = Assets.Items.Permafrost.UrnFreezeUnder_Overlay_Overload.Value;
 					}
 
 					spriteBatch.Draw(tex, Player.Center + Vector2.UnitY * (48 + Player.gfxOffY) - Main.screenPosition, null, Color.White * item.animationTimer, 0, new Vector2(16, 23), item.animationTimer, 0, 0);

@@ -173,8 +173,8 @@ namespace StarlightRiver.Content.Items.Breacher
 
 			if (landed)
 			{
-				Texture2D displayTex = ModContent.Request<Texture2D>(Texture + "_Display").Value;
-				Texture2D symbolTex = ModContent.Request<Texture2D>(Texture + "_Symbol").Value;
+				Texture2D displayTex = Assets.Items.Breacher.SupplyBeaconProj_Display.Value;
+				Texture2D symbolTex = Assets.Items.Breacher.SupplyBeaconProj_Symbol.Value;
 
 				Color displayColor = GetColor();
 				displayColor.A = 0;
@@ -193,7 +193,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 			Main.spriteBatch.Draw(mainTex, position, null, lightColor, Projectile.rotation, mainTex.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
 
-			Texture2D starTex = ModContent.Request<Texture2D>(Texture + "_Star").Value;
+			Texture2D starTex = Assets.Items.Breacher.SupplyBeaconProj_Star.Value;
 			Color color = GetColor();
 			color.A = 0;
 			Color color2 = Color.White;

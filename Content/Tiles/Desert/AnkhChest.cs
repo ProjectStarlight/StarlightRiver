@@ -281,7 +281,7 @@ namespace StarlightRiver.Content.Tiles.Desert
 
 		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.DesertTile + "AnkhChestGlow").Value;
+			Texture2D tex = Assets.Tiles.Desert.AnkhChestGlow.Value;
 			Color color = Helper.IndicatorColorProximity(150, 300, Center);
 
 			Main.spriteBatch.Draw(tex, position - new Vector2(1, -1) - Main.screenPosition, color);

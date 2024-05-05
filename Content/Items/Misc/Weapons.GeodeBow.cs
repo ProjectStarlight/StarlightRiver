@@ -261,13 +261,13 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			for (int i = 1; i <= 5; i++)
 			{
-				Texture2D tex = Request<Texture2D>(Texture + "_Segment" + i.ToString()).Value;
+				Texture2D tex = Request<Texture2D>(Texture + "_Segment" + i.ToString()).Value; //TODO: Make this a spritesheet
 				float progress = MathHelper.Clamp(scaleFactor * 5 - i, 0, 1);
 
 				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2, progress * crystalScales[i - 1], SpriteEffects.None, 0f);
 			}
 
-			Texture2D glowTex = Request<Texture2D>(Texture + "_Glow").Value;
+			Texture2D glowTex = Assets.Items.Misc.GeodeBowGrowth_Glow.Value;
 			Color color = Color.White * 0.8f * Projectile.scale;
 			color.A = 0;
 

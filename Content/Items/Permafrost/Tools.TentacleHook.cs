@@ -134,7 +134,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D chainTexture = ModContent.Request<Texture2D>(Texture + "_Chain").Value;
-			Texture2D chainGlowTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D chainGlowTex = Assets.Keys.GlowAlpha.Value;
 			Texture2D neckTexture = ModContent.Request<Texture2D>(Texture + "_Neck").Value;
 			Vector2 playerCenter = Main.player[Projectile.owner].MountedCenter;
 			Vector2 center = Projectile.Center;

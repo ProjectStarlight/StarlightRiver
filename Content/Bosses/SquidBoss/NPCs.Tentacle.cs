@@ -150,10 +150,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		private void DrawLowerLayer(SpriteBatch spriteBatch, Color auroraColor, Color glowColor)
 		{
-			Texture2D top = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleTop").Value;
-			Texture2D glow = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleGlow").Value;
-			Texture2D glow2 = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleGlow2").Value;
-			Texture2D body = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleBody").Value;
+			Texture2D top = Assets.Bosses.SquidBoss.TentacleTop.Value;
+			Texture2D glow = Assets.Bosses.SquidBoss.TentacleGlow.Value;
+			Texture2D glow2 = Assets.Bosses.SquidBoss.TentacleGlow2.Value;
+			Texture2D body = Assets.Bosses.SquidBoss.TentacleBody.Value;
 
 			int extraLength = (int)(Math.Abs(offsetFromParentBody) * 0.15f);
 			int maxSegments = downwardDrawDistance + extraLength;
@@ -179,8 +179,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				{
 					if (shouldDrawPortal && maxSegments >= 40 + extraLength)
 					{
-						Texture2D portal = Request<Texture2D>(AssetDirectory.SquidBoss + "Portal").Value;
-						Texture2D portalGlow = Request<Texture2D>(AssetDirectory.SquidBoss + "PortalGlow").Value;
+						Texture2D portal = Assets.Bosses.SquidBoss.Portal.Value;
+						Texture2D portalGlow = Assets.Bosses.SquidBoss.PortalGlow.Value;
 						var target = new Rectangle((int)posStill.X, (int)posStill.Y, (int)(0.8f * Math.Min(portal.Width, (int)((downwardDrawDistance - 28) / 24f * portal.Width))), (int)(portal.Height * 0.6f));
 						var target2 = new Rectangle((int)posStill.X, (int)posStill.Y + 6, (int)(Math.Min(portalGlow.Width, (int)((downwardDrawDistance - 28) / 24f * portalGlow.Width)) * 0.8f), (int)(portalGlow.Height * 0.6f));
 						spriteBatch.Draw(portal, target, null, auroraColor * 0.6f, 0, portal.Size() / 2, 0, 0);
@@ -208,17 +208,17 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		private void DrawUpperLayer(SpriteBatch spriteBatch, Color auroraColor, Color glowColor)
 		{
-			Texture2D top = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleTop").Value;
-			Texture2D glow = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleGlow").Value;
-			Texture2D glow2 = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleGlow2").Value;
-			Texture2D glowBlur = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleGlowBlur").Value;
-			Texture2D body = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleBody").Value;
-			Texture2D ring = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleRing").Value;
+			Texture2D top = Assets.Bosses.SquidBoss.TentacleTop.Value;
+			Texture2D glow = Assets.Bosses.SquidBoss.TentacleGlow.Value;
+			Texture2D glow2 = Assets.Bosses.SquidBoss.TentacleGlow2.Value;
+			Texture2D glowBlur = Assets.Bosses.SquidBoss.TentacleGlowBlur.Value;
+			Texture2D body = Assets.Bosses.SquidBoss.TentacleBody.Value;
+			Texture2D ring = Assets.Bosses.SquidBoss.TentacleRing.Value;
 
 			if (shouldDrawPortal)
 			{
-				Texture2D portal = Request<Texture2D>(AssetDirectory.SquidBoss + "Portal").Value;
-				Texture2D portalGlow = Request<Texture2D>(AssetDirectory.SquidBoss + "PortalGlow").Value;
+				Texture2D portal = Assets.Bosses.SquidBoss.Portal.Value;
+				Texture2D portalGlow = Assets.Bosses.SquidBoss.PortalGlow.Value;
 				var target = new Rectangle((int)(basePoint.X - Main.screenPosition.X), (int)(basePoint.Y - Main.screenPosition.Y), Math.Min(portal.Width, (int)((downwardDrawDistance - 28) / 24f * portal.Width)), portal.Height);
 				var target2 = new Rectangle((int)(basePoint.X - Main.screenPosition.X), (int)(basePoint.Y - Main.screenPosition.Y) - 12, Math.Min(portalGlow.Width, (int)((downwardDrawDistance - 28) / 24f * portalGlow.Width)), portalGlow.Height);
 

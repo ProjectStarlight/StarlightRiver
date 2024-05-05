@@ -59,8 +59,8 @@ namespace StarlightRiver.Content.Items.Forest
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D topTex = ModContent.Request<Texture2D>(AssetDirectory.ForestItem + "FeralWolfMountBiteTop").Value;
-			Texture2D botTex = ModContent.Request<Texture2D>(AssetDirectory.ForestItem + "FeralWolfMountBiteBot").Value;
+			Texture2D topTex = Assets.Items.Forest.FeralWolfMountBiteTop.Value;
+			Texture2D botTex = Assets.Items.Forest.FeralWolfMountBiteBot.Value;
 			Texture2D glowTex = Assets.Misc.TriTell.Value;
 
 			float swoop = (float)Math.Log10(Progress * 100 + 1) * 0.65f;

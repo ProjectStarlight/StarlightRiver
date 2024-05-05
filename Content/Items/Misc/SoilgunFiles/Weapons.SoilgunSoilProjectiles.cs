@@ -149,7 +149,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.01f);
 			effect.Parameters["repeats"].SetValue(1);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "SoilgunMuddyTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.Items.Misc.SoilgunMuddyTrail.Value);
 
 			trail?.Render(effect);
 

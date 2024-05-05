@@ -522,7 +522,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			if (Branch)
 				return;
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
+			Texture2D tex = Assets.Keys.GlowSoft.Value;
 
 			Color color = new Color(200, 230, 255) * Fade;
 			for (int i = 0; i < ChargeSqrt; i++)

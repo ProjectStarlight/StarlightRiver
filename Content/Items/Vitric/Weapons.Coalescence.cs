@@ -168,7 +168,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			Texture2D texStar = Request<Texture2D>(AssetDirectory.Dust + "Aurora").Value;
+			Texture2D texStar = Assets.Dusts.Aurora.Value;
 			Texture2D texGlow = Assets.Keys.GlowSoft.Value;
 
 			var color1 = new Color(80, 240, 255);
@@ -478,8 +478,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			Texture2D tex = Request<Texture2D>(AssetDirectory.MiscTextures + "DirectionalBeam").Value;
-			Texture2D tex2 = Request<Texture2D>(AssetDirectory.VitricItem + "BossBowArrow").Value;
+			Texture2D tex = Assets.Misc.DirectionalBeam.Value;
+			Texture2D tex2 = Assets.Items.Vitric.BossBowArrow.Value;
 			var color = new Color(100 + (int)(Projectile.ai[1] / 4f * 100), 200, 255);
 
 			if (Projectile.timeLeft < 30)

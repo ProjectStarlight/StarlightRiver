@@ -237,10 +237,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public virtual void MainDraw(SpriteBatch sb)
 		{
-			string path = AssetDirectory.VitricBoss + Name;
-			Texture2D tex = Request<Texture2D>(path).Value;
-			Texture2D tex2 = Request<Texture2D>(path + "Top").Value;
-			Texture2D tex3 = Request<Texture2D>(path + "Side").Value;
+			Texture2D tex = Assets.Bosses.VitricBoss.VitricBackdropLeft.Value;
+			Texture2D tex2 = Assets.Bosses.VitricBoss.VitricBackdropLeftTop.Value;
+			Texture2D tex3 = Assets.Bosses.VitricBoss.VitricBackdropLeftSide.Value;
 			int targetHeight = (int)(Timer / Risetime * tex.Height);
 
 			if (State >= 3) //ignore timer after rising is done
@@ -264,8 +263,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			sb.End();
 			sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
-			Texture2D reflectionMap = Request<Texture2D>(path + "ReflectionMap").Value;
-			Texture2D reflectionMapSide = Request<Texture2D>(path + "SideReflectionMap").Value;
+			Texture2D reflectionMap = Assets.Bosses.VitricBoss.VitricBackdropLeftReflectionMap.Value;
+			Texture2D reflectionMapSide = Assets.Bosses.VitricBoss.VitricBackdropLeftSideReflectionMap.Value;
 
 			DrawReflections(sb, reflectionMap, target.TopLeft());
 			DrawReflections(sb, reflectionMapSide, target2.TopLeft());
@@ -287,8 +286,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public virtual void ScrollDraw(SpriteBatch sb) //im lazy
 		{
-			string path = AssetDirectory.VitricBoss + Name;
-			Texture2D tex = Request<Texture2D>(path).Value;
+			Texture2D tex = Assets.Bosses.VitricBoss.VitricBackdropLeft.Value;
 			int height1 = (int)(ScrollTimer / Scrolltime * tex.Height);
 			int height2 = tex.Height - height1;
 			//Color color = new Color(180, 225, 255);
@@ -305,7 +303,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			sb.End();
 			sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
-			Texture2D reflectionMap = Request<Texture2D>(path + "ReflectionMap").Value;
+			Texture2D reflectionMap = Assets.Bosses.VitricBoss.VitricBackdropLeftReflectionMap.Value;
 
 			DrawReflections(sb, reflectionMap, target1.TopLeft(), source1);
 			DrawReflections(sb, reflectionMap, target2.TopLeft(), source2);
@@ -375,9 +373,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		public override void MainDraw(SpriteBatch sb)
 		{
 			string path = AssetDirectory.VitricBoss + Name;
-			Texture2D tex = Request<Texture2D>(path).Value;
-			Texture2D tex2 = Request<Texture2D>(path + "Top").Value;
-			Texture2D tex3 = Request<Texture2D>(path + "Side").Value;
+			Texture2D tex = Assets.Bosses.VitricBoss.VitricBackdropRight.Value;
+			Texture2D tex2 = Assets.Bosses.VitricBoss.VitricBackdropRightTop.Value;
+			Texture2D tex3 = Assets.Bosses.VitricBoss.VitricBackdropRightSide.Value;
 			int targetHeight = (int)(Timer / Risetime * tex.Height);
 
 			if (State >= 3) //ignore timer after rising is done
@@ -407,8 +405,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			sb.End();
 			sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
-			Texture2D reflectionMap = Request<Texture2D>(path + "ReflectionMap").Value;
-			Texture2D reflectionMapSide = Request<Texture2D>(path + "SideReflectionMap").Value;
+			Texture2D reflectionMap = Assets.Bosses.VitricBoss.VitricBackdropRightReflectionMap.Value;
+			Texture2D reflectionMapSide = Assets.Bosses.VitricBoss.VitricBackdropRightSideReflectionMap.Value;
 
 			DrawReflections(sb, reflectionMap, target.TopLeft());
 			DrawReflections(sb, reflectionMapSide, target2.TopLeft());
@@ -419,8 +417,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public override void ScrollDraw(SpriteBatch sb)
 		{
-			string path = AssetDirectory.VitricBoss + Name;
-			Texture2D tex = Request<Texture2D>(path).Value;
+			Texture2D tex = Assets.Bosses.VitricBoss.VitricBackdropRight.Value;
 			int height1 = (int)(ScrollTimer / Scrolltime * tex.Height);
 			int height2 = tex.Height - height1;
 			//Color color = new Color(180, 225, 255);
@@ -437,7 +434,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			sb.End();
 			sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
-			Texture2D reflectionMap = Request<Texture2D>(path + "ReflectionMap").Value;
+			Texture2D reflectionMap = Assets.Bosses.VitricBoss.VitricBackdropRightReflectionMap.Value;
 
 			DrawReflections(sb, reflectionMap, target1.TopLeft(), source1);
 			DrawReflections(sb, reflectionMap, target2.TopLeft(), source2);

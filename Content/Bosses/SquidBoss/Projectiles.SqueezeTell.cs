@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			Texture2D arrow = ModContent.Request<Texture2D>(AssetDirectory.SquidBoss + "SqueezeTellArrow").Value;
+			Texture2D arrow = Assets.Bosses.SquidBoss.SqueezeTellArrow.Value;
 			Texture2D glow = Assets.GlowTrailNoEnd.Value;
 			Texture2D flat = Terraria.GameContent.TextureAssets.MagicPixel.Value;
 

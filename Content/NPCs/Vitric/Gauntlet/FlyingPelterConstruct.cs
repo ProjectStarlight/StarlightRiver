@@ -320,7 +320,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		private void DrawPredictor(Vector2 screenPos)
 		{
-			Texture2D predictorTex = Request<Texture2D>(AssetDirectory.Keys + "Shine").Value;
+			Texture2D predictorTex = Assets.Keys.Shine.Value;
 			float rot = bowArmRotation + 1.57f;
 
 			float charge = EaseFunction.EaseQuadInOut.Ease(MathHelper.Clamp(BowFrameCounter / 100f, 0, 1));
@@ -338,7 +338,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		private void DrawLaserArrow(Vector2 screenPos)
 		{
-			Texture2D arrowTex = Request<Texture2D>(AssetDirectory.GauntletNpc + "PelterConstructArrowLarge").Value;
+			Texture2D arrowTex = Assets.NPCs.Vitric.Gauntlet.PelterConstructArrowLarge.Value;
 
 			float rot = bowArmRotation;
 			Vector2 pos = BowPos + bowArmRotation.ToRotationVector2() * 25 - screenPos;
@@ -627,7 +627,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		public void DrawAdditive(SpriteBatch sb)
 		{
-			Texture2D tex = Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
+			Texture2D tex = Assets.Keys.GlowSoft.Value;
 
 			Color color = Color.OrangeRed;
 			for (int i = 0; i < 6; i++)

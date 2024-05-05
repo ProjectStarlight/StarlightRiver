@@ -7,8 +7,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
 	class VitricTempleWall : ModWall
 	{
-		public static Texture2D CustomTexture = Request<Texture2D>(AssetDirectory.VitricTile + "VitricTempleWall").Value;
-		public static Texture2D CustomBackTexture = Request<Texture2D>(AssetDirectory.VitricTile + "VitricTempleWallEdge").Value;
+		public static Texture2D CustomTexture = Assets.Tiles.Vitric.VitricTempleWall.Value;
+		public static Texture2D CustomBackTexture = Assets.Tiles.Vitric.VitricTempleWallEdge.Value;
 
 		public override string Texture => AssetDirectory.VitricTile + "VitricTempleWall";
 
