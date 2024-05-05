@@ -12,6 +12,8 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 
 		public bool dontCollide = false;
 
+		public virtual bool CanFallThrough => true;
+
 		public virtual void SafeSetDefaults() { }
 
 		public virtual void SafeAI() { }
@@ -83,7 +85,7 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 					{
 						Player player = Main.player[k];
 
-						if (!player.active || player.dead || player.GoingDownWithGrapple || player.GetModPlayer<StarlightPlayer>().platformTimer > 0)
+						if (!player.active || player.dead || player.GoingDownWithGrapple || CanFallThrough && player.GetModPlayer<StarlightPlayer>().platformTimer > 0)
 							continue;
 
 						if (player.position.Y <= NPC.position.Y && player.velocity.Y >= 0 && !player.justJumped)
