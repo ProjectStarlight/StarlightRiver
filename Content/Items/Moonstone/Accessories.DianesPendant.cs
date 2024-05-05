@@ -205,7 +205,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		{
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
-			
+
 			Texture2D tex = Assets.Items.Moonstone.DianeCrescant.Value;
 			Texture2D glowTex = Assets.Items.Moonstone.DianeCrescantGlow.Value;
 
