@@ -52,8 +52,11 @@ namespace StarlightRiver.Content.Items.Crimson
 
 		public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
 		{
-			if (player.HasBuff<CrimsonHallucination>())
-				type = ModContent.ProjectileType<LobotomizerFastProjectile>();
+			foreach (Projectile proj in Main.ActiveProjectiles)
+			{
+				if (proj.ModProjectile is LobotomizerHallucination && Vector2.Distance(player.Center, proj.Center) <= (proj.ModProjectile as LobotomizerHallucination).Radius)
+					type = ModContent.ProjectileType<LobotomizerFastProjectile>();
+			}
 		}
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -217,9 +220,6 @@ namespace StarlightRiver.Content.Items.Crimson
 			// Allows this to make it's owner hallucinate
 			var player = Main.player[Projectile.owner];
 
-			if (Vector2.Distance(player.Center, Projectile.Center) <= Radius)
-				player.AddBuff(ModContent.BuffType<CrimsonHallucination>(), 2);
-
 			Lighting.AddLight(Projectile.Center, Color.White.ToVector3() * 1.5f);
 		}
 
@@ -238,7 +238,7 @@ namespace StarlightRiver.Content.Items.Crimson
 		{
 			var tex = Assets.Items.Crimson.LobotomizerProjectile.Value;
 			float opacity = Projectile.timeLeft > 30f ? 1f : (Radius / 300f);
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY), tex.Frame(), lightColor * opacity, Projectile.rotation, Vector2.Zero, Projectile.scale, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), lightColor * opacity, Projectile.rotation, Vector2.Zero, Projectile.scale, 0, 0);
 			return false;
 		}
 
