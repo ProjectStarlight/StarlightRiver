@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.Items.Crimson
 						proj.timeLeft = 30;
 				}
 
-				Projectile.NewProjectile(source, position, velocity * 20f, ModContent.ProjectileType<LobotomizerHallucination>(), 5, 0, player.whoAmI);
+				Projectile.NewProjectile(source, position, velocity * 20f, ModContent.ProjectileType<LobotomizerHallucination>(), Item.damage, 0, player.whoAmI);
 				return false;
 			}
 
@@ -237,7 +237,7 @@ namespace StarlightRiver.Content.Items.Crimson
 		public override bool PreDraw(ref Color lightColor)
 		{
 			var tex = Assets.Items.Crimson.LobotomizerProjectile.Value;
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY), tex.Frame(), lightColor, Projectile.rotation, Vector2.Zero, Projectile.scale, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY), tex.Frame(), lightColor * (Radius / 300f), Projectile.rotation, Vector2.Zero, Projectile.scale, 0, 0);
 			return false;
 		}
 
