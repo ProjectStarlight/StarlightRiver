@@ -2,6 +2,7 @@
 using MonoMod.Cil;
 using System;
 using System.Linq;
+using Terraria;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
@@ -194,6 +195,9 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 				{
 					if (!self.justJumped && self.velocity.Y >= 0)
 					{
+						if ((npc.ModNPC as MovingPlatform).CanFallThrough && self.GetModPlayer<StarlightPlayer>().platformTimer > 0)
+							continue;
+
 						if (fallThrough)
 							self.GetModPlayer<StarlightPlayer>().platformTimer = 10;
 
