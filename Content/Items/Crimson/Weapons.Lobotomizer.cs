@@ -144,6 +144,9 @@ namespace StarlightRiver.Content.Items.Crimson
 
 	public class LobotomizerHallucination : ModProjectile
 	{
+		public Vector2 savedOff;
+		public NPC embedded;
+
 		public override string Texture => AssetDirectory.CrimsonItem + "LobotomizerProjectile";
 
 		public ref float Radius => ref Projectile.ai[0];
@@ -163,16 +166,19 @@ namespace StarlightRiver.Content.Items.Crimson
 		public override void SetDefaults()
 		{
 			Projectile.penetrate = -1;
-			Projectile.timeLeft = 3000;
+			Projectile.timeLeft = 400;
 			Projectile.width = 15;
 			Projectile.height = 15;
 			Projectile.tileCollide = true;
+			Projectile.friendly = true;
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
 			Projectile.position += Projectile.velocity * 2;
 			Projectile.velocity *= 0;
+			Projectile.friendly = false;
+
 			State = 1;
 
 			return false;
@@ -191,8 +197,18 @@ namespace StarlightRiver.Content.Items.Crimson
 			{
 				Projectile.velocity *= 0;
 			}
+			else if (State == 2)
+			{
+				if (!embedded.active || embedded is null)
+				{
+					State = 0;
+					Projectile.timeLeft = 30;
+				}
 
-			if (State == 1 && Radius < 300 && Projectile.timeLeft > 30)
+				Projectile.Center = embedded.Center + savedOff;
+			}
+
+			if (State > 0 && Radius < 300 && Projectile.timeLeft > 30)
 				Radius += 10;
 
 			if (Radius > 0 && Projectile.timeLeft <= 30)
@@ -205,6 +221,17 @@ namespace StarlightRiver.Content.Items.Crimson
 				player.AddBuff(ModContent.BuffType<CrimsonHallucination>(), 2);
 
 			Lighting.AddLight(Projectile.Center, Color.White.ToVector3() * 1.5f);
+		}
+
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			Projectile.position += Projectile.velocity * 2;
+			Projectile.velocity *= 0;
+			Projectile.friendly = false;
+
+			savedOff = Projectile.Center - target.Center;
+			embedded = target;
+			State = 2;
 		}
 
 		public override bool PreDraw(ref Color lightColor)

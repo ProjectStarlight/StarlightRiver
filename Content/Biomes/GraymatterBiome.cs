@@ -53,7 +53,7 @@ namespace StarlightRiver.Content.Biomes
 
 		public override bool IsBiomeActive(Player player)
 		{
-			return forceGrayMatter || forceTimer > 0 || ModContent.GetInstance<GraymatterBiomeSystem>().anyTiles;
+			return forceGrayMatter || forceTimer > 0 || fullscreenTimer > 0 || ModContent.GetInstance<GraymatterBiomeSystem>().anyTiles;
 		}
 
 		public override void OnInBiome(Player player)
