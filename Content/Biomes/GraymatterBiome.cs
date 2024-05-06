@@ -43,6 +43,10 @@ namespace StarlightRiver.Content.Biomes
 
 		public static int fullscreenTimer = 0;
 
+		public override SceneEffectPriority Priority => SceneEffectPriority.None;
+
+		public override int Music => -1;
+
 		public override void Load()
 		{
 			hallucinationMap = new(DrawHallucinationMap, () => IsBiomeActive(Main.LocalPlayer), 1);
