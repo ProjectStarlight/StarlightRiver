@@ -75,16 +75,25 @@ namespace StarlightRiver.Content.Biomes
 
 		public void DrawHallucinationMap(SpriteBatch spriteBatch)
 		{
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+
 			onDrawHallucinationMap?.Invoke(spriteBatch);
 
 			// Draw the screen overlay for when the player is actively standing on gray matter
 			Texture2D glow = Assets.Keys.GlowAlpha.Value;
 			spriteBatch.Draw(glow, lastGrayPos - Main.screenPosition, null, new Color(1, 1, 1f, 0), 0, glow.Size() / 2f, Main.screenWidth / glow.Width * (fullscreenTimer / 9f), 0, 0);
 			spriteBatch.Draw(glow, lastGrayPos - Main.screenPosition, null, new Color(1, 1, 1f, 0), 0, glow.Size() / 2f, Main.screenWidth / glow.Width * (fullscreenTimer / 9f), 0, 0);
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default);
 		}
 
 		public void DrawOverHallucinationMap(SpriteBatch spriteBatch)
 		{
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+
 			onDrawOverHallucinationMap?.Invoke(spriteBatch);
 
 			var pos = (Main.screenPosition / 16).ToPoint16();
@@ -100,6 +109,9 @@ namespace StarlightRiver.Content.Biomes
 					onDrawOverPerTile.Invoke(spriteBatch, target.X, target.Y);
 				}
 			}
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default);
 		}
 
 		private void DrawAuras(SpriteBatch spriteBatch)
