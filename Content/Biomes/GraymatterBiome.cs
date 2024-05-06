@@ -129,7 +129,7 @@ namespace StarlightRiver.Content.Biomes
 				shader.Parameters["screensize"].SetValue(noise.Size() / new Vector2(Main.screenWidth, Main.screenHeight));
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default, shader, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default, shader);
 
 				spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
 
