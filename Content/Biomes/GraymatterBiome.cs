@@ -16,6 +16,7 @@ namespace StarlightRiver.Content.Biomes
 	internal class GraymatterBiome : ModBiome
 	{
 		public static bool forceGrayMatter;
+		public static int forceTimer;
 
 		public List<Vector2> thinkerPositions;
 
@@ -52,7 +53,7 @@ namespace StarlightRiver.Content.Biomes
 
 		public override bool IsBiomeActive(Player player)
 		{
-			return forceGrayMatter || ModContent.GetInstance<GraymatterBiomeSystem>().anyTiles;
+			return forceGrayMatter || forceTimer > 0 || ModContent.GetInstance<GraymatterBiomeSystem>().anyTiles;
 		}
 
 		public override void OnInBiome(Player player)
@@ -160,6 +161,17 @@ namespace StarlightRiver.Content.Biomes
 		{
 			reset = false;
 			TheThinker.toRender.Clear();
+		}
+
+		public override void PreUpdateEntities()
+		{
+			if (GraymatterBiome.forceGrayMatter)
+				GraymatterBiome.forceTimer = 4;
+
+			if (GraymatterBiome.forceTimer > 0)
+				GraymatterBiome.forceTimer--;
+
+			GraymatterBiome.forceGrayMatter = false;
 		}
 
 		public override void PostUpdateEverything()

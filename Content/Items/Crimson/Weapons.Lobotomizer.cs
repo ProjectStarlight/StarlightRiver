@@ -82,7 +82,7 @@ namespace StarlightRiver.Content.Items.Crimson
 
 		public override void SafeAI()
 		{
-			
+			GraymatterBiome.forceGrayMatter = true;
 		}
 
 		public override void PostDraw(Color lightColor)
@@ -171,6 +171,7 @@ namespace StarlightRiver.Content.Items.Crimson
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
+			Projectile.position += Projectile.velocity * 2;
 			Projectile.velocity *= 0;
 			State = 1;
 
