@@ -109,15 +109,17 @@ namespace StarlightRiver.Content.Items.Crimson
 	{
 		public override string Texture => AssetDirectory.CrimsonItem + Name;
 
-		public LobotomizerFastProjectile() : base(10, 70, 140) { }
+		public LobotomizerFastProjectile() : base(15, 0, 140) { }
 
-		public override void OnKill(int timeLeft)
+		public override void SafeAI()
 		{
-			Player player = Main.player[Projectile.owner];
+			Projectile.usesLocalNPCImmunity = true;
 
-			if (Projectile.ai[2] < 2)
+			var player = Main.player[Projectile.owner];
+
+			if (Projectile.timeLeft == 5 && Projectile.ai[2] < 2)
 			{
-				float rot = Projectile.ai[2] == 0 ? -0.2f : 0.4f;
+				float rot = Projectile.ai[2] == 0 ? 0.05f : -0.1f;
 				Projectile.NewProjectile(Projectile.GetSource_FromThis(), player.Center, Projectile.velocity.RotatedBy(rot), ModContent.ProjectileType<LobotomizerFastProjectile>(), Projectile.damage, 0, player.whoAmI, 0, 0, Projectile.ai[2] + 1);
 			}
 		}
@@ -136,7 +138,7 @@ namespace StarlightRiver.Content.Items.Crimson
 			if (Projectile.timeLeft > realDuration - 6)
 				opacity = (realDuration - Projectile.timeLeft) / 6f;
 
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, source, new Color(255, 255, 255, 0) * opacity * 0.5f, Projectile.rotation - 1.57f * 0.5f, new Vector2(tex.Width / 4f, tex.Height * 0.7f), 1f, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, source, new Color(255, 255, 255, 0) * opacity * 0.5f, Projectile.rotation - 1.57f * 0.5f, new Vector2(tex.Width / 4f, tex.Height * 0.7f), 0.8f, 0, 0);
 		}
 	}
 

@@ -32,8 +32,8 @@ namespace StarlightRiver.Content.Projectiles
 
 		public sealed override void SetDefaults()
 		{
-			Projectile.width = 16;
-			Projectile.height = 16;
+			Projectile.width = 32;
+			Projectile.height = 32;
 			Projectile.penetrate = -1;
 			Projectile.aiStyle = 19;
 			Projectile.friendly = true;
