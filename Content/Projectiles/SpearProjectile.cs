@@ -1,4 +1,5 @@
-﻿using Terraria.GameContent;
+﻿using Terraria;
+using Terraria.GameContent;
 
 namespace StarlightRiver.Content.Projectiles
 {
@@ -7,6 +8,16 @@ namespace StarlightRiver.Content.Projectiles
 		public int duration;
 		public float minDistance;
 		public float maxDistance;
+
+		public int RealDuration
+		{
+			get
+			{
+				Player player = Main.player[Projectile.owner];
+				float speed = 1f / player.GetTotalAttackSpeed(DamageClass.Melee);
+				return (int)(duration * speed);
+			}
+		}
 
 		protected SpearProjectile(int duration, float minOff, float maxOff)
 		{
@@ -37,26 +48,31 @@ namespace StarlightRiver.Content.Projectiles
 			SafeAI();
 
 			Player player = Main.player[Projectile.owner];
-			float speed = 1f / player.GetTotalAttackSpeed(DamageClass.Melee);
 
 			player.heldProj = Projectile.whoAmI;
 			player.itemTime = player.itemAnimation;
 
-			int realDuration = (int)(duration * speed);
-
 			if (Projectile.timeLeft == duration)
-				Projectile.timeLeft = realDuration;
+				Projectile.timeLeft = RealDuration;
 
 			Projectile.velocity = Vector2.Normalize(Projectile.velocity);
 
 			Projectile.rotation = MathHelper.Pi * (3 / 4f) + Projectile.velocity.ToRotation();
-			float progress = Projectile.timeLeft > realDuration / 2f ? (realDuration - Projectile.timeLeft) / (realDuration / 2f) : Projectile.timeLeft / (realDuration / 2f);
+			float progress = Projectile.timeLeft > RealDuration / 2f ? (RealDuration - Projectile.timeLeft) / (RealDuration / 2f) : Projectile.timeLeft / (RealDuration / 2f);
 			Projectile.Center = player.MountedCenter + Vector2.SmoothStep(Projectile.velocity * minDistance, Projectile.velocity * maxDistance, progress);
 		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Main.spriteBatch.Draw(TextureAssets.Projectile[Projectile.type].Value, Projectile.Center - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY), TextureAssets.Projectile[Projectile.type].Value.Frame(), Color.White, Projectile.rotation, Vector2.Zero, Projectile.scale, 0, 0);
+			float opacity = 1f;
+
+			if (Projectile.timeLeft < 3)
+				opacity = Projectile.timeLeft / 3f;
+
+			if (Projectile.timeLeft > RealDuration - 3)
+				opacity = (RealDuration - Projectile.timeLeft) / 3f;
+
+			Main.spriteBatch.Draw(TextureAssets.Projectile[Projectile.type].Value, Projectile.Center - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY), TextureAssets.Projectile[Projectile.type].Value.Frame(), lightColor * opacity, Projectile.rotation, Vector2.Zero, Projectile.scale, 0, 0);
 			return false;
 		}
 	}

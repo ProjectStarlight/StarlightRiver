@@ -3029,6 +3029,20 @@ Items: {
 		DisplayName: Soft Sand
 		Tooltip: ""
 	}
+
+	Lobotomizer: {
+		DisplayName: Lobotomizer
+		Tooltip:
+			'''
+			Right click to throw a hallucinatory spear
+			Attacks faster while hallucinating
+			'''
+	}
+
+	DendriteBar: {
+		DisplayName: Dendrite Bar
+		Tooltip: This bar might be smarter than you...
+	}
 }
 
 Tiles: {
