@@ -1,16 +1,7 @@
-﻿using Mono.Cecil;
-using StarlightRiver.Content.Biomes;
-using StarlightRiver.Content.Buffs;
-using StarlightRiver.Content.Items.UndergroundTemple;
+﻿using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Projectiles;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
 using Terraria.DataStructures;
-using Terraria.GameContent;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Crimson
@@ -30,11 +21,11 @@ namespace StarlightRiver.Content.Items.Crimson
 			Item.DamageType = DamageClass.Melee;
 			Item.width = 32;
 			Item.height = 32;
-			Item.damage = 24;
-			Item.crit = 6;
+			Item.damage = 34;
+			Item.crit = 14;
 			Item.useStyle = ItemUseStyleID.Shoot;
-			Item.useTime = 30;
-			Item.useAnimation = 30;
+			Item.useTime = 46;
+			Item.useAnimation = 46;
 			Item.noUseGraphic = true;
 			Item.noMelee = true;
 			Item.knockBack = 2f;
@@ -50,12 +41,37 @@ namespace StarlightRiver.Content.Items.Crimson
 			return true;
 		}
 
+		public override float UseTimeMultiplier(Player player)
+		{
+			foreach (Projectile proj in Main.ActiveProjectiles)
+			{
+				if (proj.ModProjectile is LobotomizerHallucination && Vector2.Distance(player.Center, proj.Center) <= (proj.ModProjectile as LobotomizerHallucination).Radius)
+					return 0.18f;
+			}
+
+			return 1f;
+		}
+
+		public override float UseAnimationMultiplier(Player player)
+		{
+			foreach (Projectile proj in Main.ActiveProjectiles)
+			{
+				if (proj.ModProjectile is LobotomizerHallucination && Vector2.Distance(player.Center, proj.Center) <= (proj.ModProjectile as LobotomizerHallucination).Radius)
+					return 0.18f;
+			}
+
+			return 1f;
+		}
+
 		public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
 		{
 			foreach (Projectile proj in Main.ActiveProjectiles)
 			{
 				if (proj.ModProjectile is LobotomizerHallucination && Vector2.Distance(player.Center, proj.Center) <= (proj.ModProjectile as LobotomizerHallucination).Radius)
+				{
 					type = ModContent.ProjectileType<LobotomizerFastProjectile>();
+					velocity = velocity.RotatedByRandom(0.35f);
+				}
 			}
 		}
 
@@ -63,13 +79,13 @@ namespace StarlightRiver.Content.Items.Crimson
 		{
 			if (player.altFunctionUse == 2)
 			{
-				foreach(Projectile proj in Main.ActiveProjectiles)
+				foreach (Projectile proj in Main.ActiveProjectiles)
 				{
 					if (proj.type == ModContent.ProjectileType<LobotomizerHallucination>() && proj.owner == player.whoAmI)
 						proj.timeLeft = 30;
 				}
 
-				Projectile.NewProjectile(source, position, velocity * 20f, ModContent.ProjectileType<LobotomizerHallucination>(), Item.damage, 0, player.whoAmI);
+				Projectile.NewProjectile(source, position, velocity * 30f, ModContent.ProjectileType<LobotomizerHallucination>(), Item.damage, 0, player.whoAmI);
 				return false;
 			}
 
@@ -81,28 +97,68 @@ namespace StarlightRiver.Content.Items.Crimson
 	{
 		public override string Texture => AssetDirectory.CrimsonItem + Name;
 
-		public LobotomizerProjectile() : base(26, 60, 180) { }
+		public LobotomizerProjectile() : base(40, 60, 180)
+		{
+			isSymetrical = false;
+
+			motionFunction = (n) =>
+			{
+				if (n < 0.15f)
+					return n * n / 0.0225f * -0.1f;
+				if (n < 0.3f)
+					return -0.1f + 1.1f * ((n - 0.15f) * (n - 0.15f) / 0.0225f);
+				if (n < 0.7f)
+					return 1f + (n - 0.3f) / 0.4f * 0.1f;
+				if (n <= 1f)
+					return 1.1f - 1.1f * ((n - 0.7f) * (n - 0.7f) / 0.09f);
+
+				return 0;
+			};
+
+			rotationOffset = 3.14f;
+			origin = new Vector2(0, 15);
+			fadeDuration = 7;
+		}
+
+		// Prevents insane multi hit while held out
+		public override bool? CanHitNPC(NPC target)
+		{
+			float prog = 1f - Projectile.timeLeft / (float)RealDuration;
+			return prog < 0.4f || prog > 0.7f ? null : false;
+		}
 
 		public override void SafeAI()
 		{
 			GraymatterBiome.forceGrayMatter = true;
+
+			if (Projectile.timeLeft == RealDuration)
+			{
+				Helpers.Helper.PlayPitched("Effects/HeavyWhoosh", 1f, -0.5f + Main.rand.NextFloat(0.3f), Projectile.Center);
+				Helpers.Helper.PlayPitched("Effects/HeavyWhooshShort", 1f, 1f + Main.rand.NextFloat(0.2f), Projectile.Center);
+			}
 		}
 
 		public override void PostDraw(Color lightColor)
 		{
-			var tex = Assets.Misc.SpikeTell.Value;
+			Texture2D tex = Assets.Misc.SpikeTell.Value;
 			var source = new Rectangle(tex.Width / 2, 0, tex.Width / 2, tex.Height);
 
 			float opacity = 1f;
-			var realDuration = (Projectile.ModProjectile as SpearProjectile).RealDuration;
 
 			if (Projectile.timeLeft < 6)
 				opacity = Projectile.timeLeft / 6f;
 
-			if (Projectile.timeLeft > realDuration - 6)
-				opacity = (realDuration - Projectile.timeLeft) / 6f;
+			if (Projectile.timeLeft > RealDuration - 6)
+				opacity = (RealDuration - Projectile.timeLeft) / 6f;
 
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, source, new Color(255, 255, 255, 0) * opacity * 0.1f, Projectile.rotation - 1.57f * 0.5f, new Vector2(tex.Width / 4f, tex.Height * 0.8f), 0.5f, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, source, new Color(255, 255, 255, 0) * opacity * 0.1f, Projectile.rotation - 1.57f, new Vector2(tex.Width / 4f, tex.Height * 0.6f), 0.5f, 0, 0);
+
+			float prog = 1f - Projectile.timeLeft / (float)RealDuration;
+			float flashTime = prog < 0.1f ? prog / 0.1f : Math.Max(0, 1 - (prog - 0.1f) / 0.4f);
+
+			tex = Assets.StarTexture.Value;
+
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0) * opacity * (flashTime), Projectile.rotation - 1.57f + Projectile.timeLeft * 0.1f, tex.Size() / 2f, 0.2f + prog * 0.5f, 0, 0);
 
 			Lighting.AddLight(Projectile.Center, Color.White.ToVector3() * 0.4f);
 		}
@@ -112,28 +168,48 @@ namespace StarlightRiver.Content.Items.Crimson
 	{
 		public override string Texture => AssetDirectory.CrimsonItem + Name;
 
-		public LobotomizerFastProjectile() : base(15, 0, 140) { }
+		public LobotomizerFastProjectile() : base(20, 60, 100)
+		{
+			isSymetrical = false;
+
+			motionFunction = (n) =>
+			{
+				if (n < 0.15f)
+					return n * n / 0.0225f * -0.1f;
+				if (n < 0.3f)
+					return -0.1f + 1.1f * ((n - 0.15f) * (n - 0.15f) / 0.0225f);
+				if (n < 0.7f)
+					return 1f + (n - 0.3f) / 0.4f * 0.1f;
+				if (n <= 1f)
+					return 1.1f - 1.1f * ((n - 0.7f) * (n - 0.7f) / 0.09f);
+
+				return 0;
+			};
+
+			rotationOffset = 3.14f;
+			origin = new Vector2(0, 15);
+
+			fadeDuration = 10;
+		}
 
 		public override void SafeAI()
 		{
 			Projectile.usesLocalNPCImmunity = true;
+			Projectile.aiStyle = -1;
 
-			var player = Main.player[Projectile.owner];
-
-			if (Projectile.timeLeft == 5 && Projectile.ai[2] < 2)
+			if (Projectile.timeLeft == RealDuration)
 			{
-				float rot = Projectile.ai[2] == 0 ? 0.05f : -0.1f;
-				Projectile.NewProjectile(Projectile.GetSource_FromThis(), player.Center, Projectile.velocity.RotatedBy(rot), ModContent.ProjectileType<LobotomizerFastProjectile>(), Projectile.damage, 0, player.whoAmI, 0, 0, Projectile.ai[2] + 1);
+				Helpers.Helper.PlayPitched("Effects/HeavyWhooshShort", 1f, 0.4f + Main.rand.NextFloat(0.6f), Projectile.Center);
 			}
 		}
 
 		public override void PostDraw(Color lightColor)
 		{
-			var tex = Assets.Misc.SpikeTell.Value;
+			Texture2D tex = Assets.Misc.SpikeTell.Value;
 			var source = new Rectangle(tex.Width / 2, 0, tex.Width / 2, tex.Height);
 
 			float opacity = 1f;
-			var realDuration = (Projectile.ModProjectile as SpearProjectile).RealDuration;
+			int realDuration = (Projectile.ModProjectile as SpearProjectile).RealDuration;
 
 			if (Projectile.timeLeft < 6)
 				opacity = Projectile.timeLeft / 6f;
@@ -141,7 +217,14 @@ namespace StarlightRiver.Content.Items.Crimson
 			if (Projectile.timeLeft > realDuration - 6)
 				opacity = (realDuration - Projectile.timeLeft) / 6f;
 
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, source, new Color(255, 255, 255, 0) * opacity * 0.5f, Projectile.rotation - 1.57f * 0.5f, new Vector2(tex.Width / 4f, tex.Height * 0.7f), 0.8f, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, source, new Color(255, 255, 255, 0) * opacity * 0.05f, Projectile.rotation - 1.57f, new Vector2(tex.Width / 4f, tex.Height * 0.5f), 0.8f, 0, 0);
+
+			float prog = 1f - Projectile.timeLeft / (float)realDuration;
+			float flashTime = prog < 0.2f ? prog / 0.2f : Math.Max(0, 1 - (prog - 0.2f) / 0.5f);
+
+			tex = Assets.StarTexture.Value;
+
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0) * opacity * (flashTime), Projectile.rotation - 1.57f + Projectile.ai[2] + Projectile.timeLeft * 0.2f, tex.Size() / 2f, 0.1f + prog * 0.3f, 0, 0);
 		}
 	}
 
@@ -184,6 +267,8 @@ namespace StarlightRiver.Content.Items.Crimson
 
 			State = 1;
 
+			Impact();
+
 			return false;
 		}
 
@@ -194,7 +279,8 @@ namespace StarlightRiver.Content.Items.Crimson
 			if (State == 0)
 			{
 				Projectile.velocity.Y += 0.4f;
-				Projectile.rotation = Projectile.velocity.ToRotation() + 1.57f * 1.5f;
+				Projectile.velocity.X *= 0.99f;
+				Projectile.rotation = Projectile.velocity.ToRotation() - 3.14f;
 			}
 			else if (State == 1)
 			{
@@ -211,16 +297,28 @@ namespace StarlightRiver.Content.Items.Crimson
 				Projectile.Center = embedded.Center + savedOff;
 			}
 
-			if (State > 0 && Radius < 300 && Projectile.timeLeft > 30)
+			var maxRad = State == 1 ? 300 : 200;
+
+			if (State > 0 && Radius < maxRad && Projectile.timeLeft > 30)
 				Radius += 10;
 
 			if (Radius > 0 && Projectile.timeLeft <= 30)
 				Radius -= 10;
 
 			// Allows this to make it's owner hallucinate
-			var player = Main.player[Projectile.owner];
+			Player player = Main.player[Projectile.owner];
 
 			Lighting.AddLight(Projectile.Center, Color.White.ToVector3() * 1.5f);
+		}
+
+		public void Impact()
+		{
+			for(int k = 0; k < 10; k++)
+			{
+				Dust.NewDustPerfect(Projectile.Center, DustID.Dirt);
+			}
+
+			Helpers.Helper.PlayPitched("Impacts/StabTiny", 1f, -0.5f, Projectile.Center);
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -232,39 +330,43 @@ namespace StarlightRiver.Content.Items.Crimson
 			savedOff = Projectile.Center - target.Center;
 			embedded = target;
 			State = 2;
+
+			Impact();
 		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			var tex = Assets.Items.Crimson.LobotomizerProjectile.Value;
+			Texture2D tex = Assets.Items.Crimson.LobotomizerFastProjectile.Value;
 			float opacity = Projectile.timeLeft > 30f ? 1f : (Radius / 300f);
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), lightColor * opacity, Projectile.rotation, Vector2.Zero, Projectile.scale, 0, 0);
+			var pos = Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation) * tex.Width / 2f - Main.screenPosition;
+
+			Main.spriteBatch.Draw(tex, pos, tex.Frame(), new Color(255, 255, 255, 0) * opacity, Projectile.rotation, tex.Size() / 2f, Projectile.scale, 0, 0);
 			return false;
 		}
 
 		public override void PostDraw(Color lightColor)
 		{
-			var tex = Assets.Misc.GlowRing.Value;
+			Texture2D tex = Assets.Misc.GlowRing.Value;
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0) * 0.1f, 0, tex.Size() / 2f, Radius * 2f / tex.Width, 0, 0);
 		}
 
 		private void DrawSpearHallucinations(SpriteBatch batch)
 		{
-			foreach(Projectile proj in Main.ActiveProjectiles)
+			foreach (Projectile proj in Main.ActiveProjectiles)
 			{
 				if (proj.type == Type)
 				{
-					var tex = Assets.Misc.StarView.Value;
+					Texture2D tex = Assets.Misc.StarView.Value;
 					batch.Draw(tex, proj.Center - Main.screenPosition, null, new Color(255, 255, 255, 0), 0, tex.Size() / 2f, (proj.ModProjectile as LobotomizerHallucination).Radius * 7f / tex.Width, 0, 0);
 				}
 
 				if (proj.type == ModContent.ProjectileType<LobotomizerProjectile>() || proj.type == ModContent.ProjectileType<LobotomizerFastProjectile>())
 				{
-					var tex = Assets.Misc.SpikeTell.Value;
+					Texture2D tex = Assets.Misc.SpikeTell.Value;
 					var source = new Rectangle(tex.Width / 2, 0, tex.Width / 2, tex.Height);
 
 					float opacity = 1f;
-					var realDuration = (proj.ModProjectile as SpearProjectile).RealDuration;
+					int realDuration = (proj.ModProjectile as SpearProjectile).RealDuration;
 
 					if (proj.timeLeft < 6)
 						opacity = Projectile.timeLeft / 6f;
@@ -272,7 +374,7 @@ namespace StarlightRiver.Content.Items.Crimson
 					if (Projectile.timeLeft > realDuration - 6)
 						opacity = (realDuration - proj.timeLeft) / 6f;
 
-					batch.Draw(tex, proj.Center - Main.screenPosition, source, new Color(255, 255, 255, 0) * opacity, proj.rotation - 1.57f * 0.5f, new Vector2(tex.Width / 4f, tex.Height * 0.8f), 1f, 0, 0);
+					batch.Draw(tex, proj.Center - Main.screenPosition, source, new Color(255, 255, 255, 0) * opacity, proj.rotation - 1.57f, new Vector2(tex.Width / 4f, tex.Height * 0.6f), 1f, 0, 0);
 				}
 			}
 		}
