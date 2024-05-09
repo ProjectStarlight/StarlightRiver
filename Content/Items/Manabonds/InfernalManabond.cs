@@ -177,15 +177,15 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new TriangularTip(40 * 4), factor => factor * 21, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 21, factor =>
 			{
 				float alpha = 1;
 
 				if (factor.X > 0.8f)
 					alpha = 1 + (factor.X - 0.8f) * 30;
 
-				if (factor.X >= 0.99f)
-					alpha = 0;
+				if (factor.X == 1)
+					return Color.Transparent;
 
 				if (Projectile.timeLeft < 15)
 					alpha *= Projectile.timeLeft / 15f;

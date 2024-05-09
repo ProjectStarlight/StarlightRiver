@@ -135,6 +135,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		public float barrierTimer;
 		public float cutsceneTimer;
 
+		public override bool DoesCollision => true;
+
 		public VitricBossAltarDummy() : base(TileType<VitricBossAltar>(), 80, 112) { }
 
 		bool collisionHappened = false;

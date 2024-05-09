@@ -426,7 +426,7 @@ namespace StarlightRiver.Content.Items.Haunted
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(0), factor => 12.5f, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => 12.5f, factor =>
 			{
 				if (factor.X >= 0.85f)
 					return Color.Transparent;

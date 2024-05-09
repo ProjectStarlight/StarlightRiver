@@ -26,14 +26,14 @@ namespace StarlightRiver.Content.GUI
 		/// <summary>
 		/// Particle system used for the links between infusions and the icons
 		/// </summary>
-		public static ParticleSystem linkParticles = new("StarlightRiver/Assets/Keys/GlowSoft", UpdateLinkDelegate);
+		public static ParticleSystem linkParticles = new("StarlightRiver/Assets/Keys/GlowSoft", UpdateLinkDelegate, ParticleSystem.AnchorOptions.UI);
 
 		/// <summary>
 		/// Particle system used for the gain animation
 		/// </summary>
-		private readonly ParticleSystem gainAnimationParticles = new("StarlightRiver/Assets/GUI/Sparkle", UpdateGainParticles);
+		private readonly ParticleSystem gainAnimationParticles = new("StarlightRiver/Assets/GUI/Sparkle", UpdateGainParticles, ParticleSystem.AnchorOptions.UI);
 
-		private readonly ParticleSystem sparkleParticles = new("StarlightRiver/Assets/GUI/Sparkle", UpdateSparkleParticles);
+		private readonly ParticleSystem sparkleParticles = new("StarlightRiver/Assets/GUI/Sparkle", UpdateSparkleParticles, ParticleSystem.AnchorOptions.UI);
 
 		/// <summary>
 		/// If the gain animation is currently playing
@@ -359,14 +359,9 @@ namespace StarlightRiver.Content.GUI
 
 				if (IsMouseHovering && Main.mouseItem.IsAir)
 				{
-					//Grabs the Items tooltip
-					var ToolTip = new System.Text.StringBuilder();
-					for (int k = 0; k < equipped.Item.ToolTip.Lines; k++)
-						ToolTip.AppendLine(equipped.Item.ToolTip.GetLine(k));
-
-					//Draws the name and tooltip at the mouse
-					Utils.DrawBorderStringBig(spriteBatch, equipped.Name, Main.MouseScreen + new Vector2(22, 22), ItemRarity.GetColor(equipped.Item.rare).MultiplyRGB(Main.MouseTextColorReal), 0.39f);
-					Utils.DrawBorderStringBig(spriteBatch, ToolTip.ToString(), Main.MouseScreen + new Vector2(22, 48), Main.MouseTextColorReal, 0.39f);
+					Main.LocalPlayer.mouseInterface = true;
+					Main.HoverItem = equipped.Item.Clone();
+					Main.hoverItemName = "a";
 				}
 			}
 

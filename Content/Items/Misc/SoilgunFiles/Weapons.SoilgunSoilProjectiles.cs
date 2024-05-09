@@ -287,7 +287,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 13, new TriangularTip(4), factor => 8, factor => Colors["TrailColor"] * factor.X * FadeOut());
+			trail ??= new Trail(Main.instance.GraphicsDevice, 13, new NoTip(), factor => 8, factor => Colors["TrailColor"] * factor.X * FadeOut());
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;

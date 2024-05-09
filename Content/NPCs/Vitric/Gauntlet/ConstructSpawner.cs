@@ -15,6 +15,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		public bool gravity = true;
 
 		public Player nearestPlayer = default;
+
+		public NPC fakeNPC;
+
 		public ref float NPCType => ref Projectile.ai[0];
 		public ref float Timer => ref Projectile.ai[1];
 
@@ -32,6 +35,12 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		public override void AI()
 		{
+			if (fakeNPC is null)
+			{
+				fakeNPC = new NPC();
+				fakeNPC.SetDefaults((int)NPCType);
+			}
+
 			nearestPlayer = Main.player.Where(n => n.active && !n.dead).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
 
 			if (Main.netMode != NetmodeID.Server)
@@ -85,8 +94,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			var fakeNPC = new NPC();
-			fakeNPC.SetDefaults((int)NPCType);
+			if (fakeNPC is null)
+				return false;
 
 			Texture2D tex = ModContent.Request<Texture2D>((fakeNPC.ModNPC as VitricConstructNPC).PreviewTexturePath).Value;
 
@@ -162,7 +171,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new TriangularTip(4), factor => 24, factor => new Color(255, 200, 165) * factor.X);
+			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => 24, factor => new Color(255, 200, 165) * factor.X);
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;

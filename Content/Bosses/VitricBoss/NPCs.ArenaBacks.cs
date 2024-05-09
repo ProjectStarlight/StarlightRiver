@@ -1,9 +1,11 @@
-﻿using StarlightRiver.Content.CustomHooks;
+﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -63,6 +65,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			NPC.hide = true;
 		}
 
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
+		}
+
 		public override void SendExtraAI(BinaryWriter writer)
 		{
 			if (State != 0 && State != 1)
@@ -120,7 +127,15 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				}
 
 				if (Timer > Risetime)
+				{
 					State = 2;
+
+					foreach (NPC NPC in Main.npc.Where(n => n.ModNPC is VitricBossPlatformUp))
+					{
+						NPC.ai[0] = 0;
+						NPC.ai[1] = 0;
+					}
+				}
 
 				if (Timer % 10 == 0)
 					CameraSystem.shake += Timer < 100 ? 3 : 2;
@@ -132,12 +147,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			if (State == 2)
 			{
 				Timer = Risetime;
-
-				foreach (NPC NPC in Main.npc.Where(n => n.ModNPC is VitricBossPlatformUp))
-				{
-					NPC.ai[0] = 0;
-					NPC.ai[1] = 0;
-				}
 
 				ResyncPlatforms();
 			}
@@ -190,11 +199,13 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					foreach (NPC NPC in Main.npc.Where(n => n.ModNPC is VitricBossPlatformUp))
 					{
 						NPC.ai[0] = 0;
+						NPC.ai[1] = 0;
 					}
 
 					ResyncPlatforms();
 
 					State = 2;
+
 					ScrollDelay = 20; //reset acceleration delay
 				}
 			}
@@ -208,7 +219,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			if (!NPC.active)
+			if (!NPC.active || !VitricDesertBiome.onScreen)
 				return false;
 
 			if (State == 3 || State == 4)
@@ -263,18 +274,18 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			sb.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
-	/// <summary>
-	/// small helper function to draw the reflections for the vitric crystals
-	/// </summary>
-	protected void DrawReflections(SpriteBatch spriteBatch, Texture2D reflectionMap, Vector2 screenPos, Rectangle? sourceRect = null)
-	{
-		Color tintColor = new Color(75, 150, 255, NPC.AnyNPCs(NPCType<VitricBoss>()) ? 70 : 200);
+		/// <summary>
+		/// small helper function to draw the reflections for the vitric crystals
+		/// </summary>
+		protected void DrawReflections(SpriteBatch spriteBatch, Texture2D reflectionMap, Vector2 screenPos, Rectangle? sourceRect = null)
+		{
+			Color tintColor = new Color(75, 150, 255, NPC.AnyNPCs(NPCType<VitricBoss>()) ? 70 : 200);
 
-		ReflectionTarget.DrawReflection(spriteBatch, screenPos, normalMap: reflectionMap, flatOffset: new Vector2(-0.0025f, 0.07f), offsetScale: 0.04f, tintColor: tintColor, restartSpriteBatch: false, sourceRect: sourceRect);
-		ReflectionTarget.isDrawReflectablesThisFrame = true;
-	}
+			ReflectionTarget.DrawReflection(spriteBatch, screenPos, normalMap: reflectionMap, flatOffset: new Vector2(-0.0025f, 0.07f), offsetScale: 0.04f, tintColor: tintColor, restartSpriteBatch: false, sourceRect: sourceRect);
+			ReflectionTarget.isDrawReflectablesThisFrame = true;
+		}
 
-	public virtual void ScrollDraw(SpriteBatch sb) //im lazy
+		public virtual void ScrollDraw(SpriteBatch sb) //im lazy
 		{
 			string path = AssetDirectory.VitricBoss + Name;
 			Texture2D tex = Request<Texture2D>(path).Value;

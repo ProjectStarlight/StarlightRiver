@@ -87,6 +87,8 @@ namespace StarlightRiver.Core
 			squidBossArena = new Rectangle(center - 40, centerY + 100, 109, 180);
 			StructureHelper.Generator.GenerateStructure("Structures/SquidBossArena", new Point16(center - 40, centerY + 100), Mod);
 
+			GenVars.structures.AddProtectedStructure(squidBossArena, 20);
+
 			Vector2 oldPos = new Vector2(squidBossArena.Center.X, squidBossArena.Y) * 16;
 
 			//Find locations for and place the touchstone altars which lead to the boss' arena

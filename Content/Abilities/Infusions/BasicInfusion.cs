@@ -1,4 +1,6 @@
-﻿using System;
+﻿using StarlightRiver.Content.Items.Misc;
+using StarlightRiver.Content.Tiles.Vitric.Temple;
+using System;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Abilities.Infusions
@@ -16,7 +18,7 @@ namespace StarlightRiver.Content.Abilities.Infusions
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Blank Slate");
-			Tooltip.SetDefault("Can be imprinted with challenges at an infusion station\nComplete challenges to transform into an infusion\nNew infusions become available as you progress");
+			Tooltip.SetDefault("Used to create infusions");
 		}
 
 		public override void SetDefaults()
@@ -24,6 +26,15 @@ namespace StarlightRiver.Content.Abilities.Infusions
 			Item.width = 20;
 			Item.height = 14;
 			Item.rare = ItemRarityID.Blue;
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.StoneBlock, 50);
+			recipe.AddIngredient<StaminaGel>(1);
+			recipe.AddTile(ModContent.TileType<MainForge>());
+			recipe.Register();
 		}
 	}
 }

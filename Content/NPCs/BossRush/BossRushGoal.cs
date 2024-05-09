@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Core.Systems.BossRushSystem;
+using Terraria.GameContent.Bestiary;
 
 namespace StarlightRiver.Content.NPCs.BossRush
 {
@@ -16,6 +17,11 @@ namespace StarlightRiver.Content.NPCs.BossRush
 			NPC.noGravity = true;
 			NPC.knockBackResist = 0f;
 			NPC.friendly = true;
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
 		}
 
 		public override void AI()

@@ -5,6 +5,7 @@ using StarlightRiver.Content.Items.Vanity;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -38,6 +39,11 @@ namespace StarlightRiver.Content.NPCs.Actors
 			NPC.friendly = true;
 			NPC.aiStyle = -1;
 			NPC.noGravity = true;
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
 		}
 
 		public void ResetConversion()

@@ -8,6 +8,7 @@ namespace StarlightRiver.Content.NPCs.Town
 	{
 		int textState = 0;
 		public bool enchanting;
+		public DialogManager manager;
 
 		public override string Texture => "StarlightRiver/Assets/NPCs/Town/EnchantNPC";
 
@@ -26,10 +27,15 @@ namespace StarlightRiver.Content.NPCs.Town
 			NPC.knockBackResist = 0.5f;
 			NPC.dontTakeDamage = true;
 			NPC.dontCountMe = true;
+
+			manager = new("Localization/Dialog/TestDialog.json", NPC);
 		}
 
 		public override string GetChat()
 		{
+			manager.Start();
+			return "";
+
 			textState = 0;
 			UILoader.GetUIState<RichTextBox>().Visible = true;
 			RichTextBox.ClearButtons();
@@ -40,6 +46,11 @@ namespace StarlightRiver.Content.NPCs.Town
 			RichTextBox.AddButton("[]Move Altar", PackUp);
 
 			return "";
+		}
+
+		public void TestFunction()
+		{
+			Main.NewText("Well isnt this neat!");
 		}
 
 		private void Chat()
@@ -63,6 +74,8 @@ namespace StarlightRiver.Content.NPCs.Town
 
 		public override void AI()
 		{
+			return;
+
 			if (RichTextBox.talking == NPC)
 			{
 				SetData();

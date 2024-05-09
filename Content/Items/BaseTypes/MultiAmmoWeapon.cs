@@ -8,13 +8,14 @@ namespace StarlightRiver.Content.Items.BaseTypes
 {
 	public abstract class MultiAmmoWeapon : ModItem
 	{
-		public virtual List<AmmoStruct> ValidAmmos { get; }
-
+		[CloneByReference]
 		public Item ammoItem;
 
 		public bool hasAmmo;
 
 		public AmmoStruct currentAmmoStruct;
+
+		public virtual List<AmmoStruct> ValidAmmos { get; }
 
 		public override void Load()
 		{

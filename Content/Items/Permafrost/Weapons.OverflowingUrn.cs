@@ -57,7 +57,6 @@ namespace StarlightRiver.Content.Items.Permafrost
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
 			tooltips.FirstOrDefault(n => n.Name == "Damage").Text = tooltips.FirstOrDefault(n => n.Name == "Damage").Text.Replace("damage", "damage over time");
-			tooltips.FirstOrDefault(n => n.Name == "CritChance").Text = "Cannot critically strike";
 		}
 
 		private void PostDrawIcon(Player Player, SpriteBatch spriteBatch)
@@ -409,7 +408,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		private void ManageTrails()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 120, new TriangularTip(4), factor => 174 * WindStrength + 0.9f * freezeTimer, factor => Lighting.GetColor(Projectile.Center.ToTileCoordinates()));
+			trail ??= new Trail(Main.instance.GraphicsDevice, 120, new NoTip(), factor => 174 * WindStrength + 0.9f * freezeTimer, factor => Lighting.GetColor(Projectile.Center.ToTileCoordinates()));
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center;
 		}

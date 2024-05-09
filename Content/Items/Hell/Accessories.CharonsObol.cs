@@ -15,8 +15,6 @@ namespace StarlightRiver.Content.Items.Hell
 	{
 		public override string Texture => AssetDirectory.HellItem + Name;
 
-		public CharonsObol() : base(ModContent.Request<Texture2D>(AssetDirectory.HellItem + "CharonsObol").Value) { }
-
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Charon's Obol");

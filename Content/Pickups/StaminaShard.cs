@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Pickups
 
 		public override string Texture => GetStaminaTexture();
 
-		public override Color GlowColor => new(255, 100, 30);
+		public override Color GlowColor => new(0, 30, 90);
 
 		public override bool Fancy => false;
 
@@ -25,10 +25,32 @@ namespace StarlightRiver.Content.Pickups
 
 		public override void Visuals()
 		{
-			if (Main.rand.NextBool(2))
-				Dust.NewDustPerfect(NPC.Center + Vector2.One.RotatedByRandom(Math.PI) * Main.rand.NextFloat(16), DustType<Content.Dusts.Stamina>(), Vector2.UnitY * -1);
+			if (Main.rand.NextBool(8))
+				Dust.NewDustPerfect(NPC.Center + Vector2.One.RotatedByRandom(Math.PI) * Main.rand.NextFloat(16), DustType<Dusts.AuroraFast>(), Vector2.UnitY * -1, 0, new Color(100, 220, 255));
 
 			Lighting.AddLight(NPC.Center, new Vector3(0.5f, 0.25f, 0.05f));
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+		{
+			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/StarTexture").Value;
+			float sin = (float)Math.Sin(Main.GameUpdateCount * 0.05f);
+			float sin2 = (float)Math.Sin(Main.GameUpdateCount * 0.05f + 2f);
+
+			Vector2 drawPos = NPC.Center - screenPos + new Vector2(0, (float)Math.Sin(StarlightWorld.visualTimer) * 5);
+
+			float op = Visible ? 1f : 0.1f;
+
+			spriteBatch.Draw(tex, drawPos, null, new Color(190, 255, 255, 0) * op, 0, tex.Size() / 2f, 0.2f + sin * 0.05f, 0, 0);
+			spriteBatch.Draw(tex, drawPos, null, new Color(190, 255, 255, 0) * op, 1.57f / 2f, tex.Size() / 2f, 0.1f + sin2 * 0.05f, 0, 0);
+
+			spriteBatch.Draw(tex, drawPos, null, new Color(0, 230, 255, 0) * op, 0, tex.Size() / 2f, 0.25f + sin * 0.05f, 0, 0);
+			spriteBatch.Draw(tex, drawPos, null, new Color(0, 160, 255, 0) * op, 1.57f / 2f, tex.Size() / 2f, 0.2f + sin2 * 0.05f, 0, 0);
+
+			spriteBatch.Draw(tex, drawPos, null, new Color(0, 10, 60, 0) * op, 0, tex.Size() / 2f, 0.3f + sin * 0.05f, 0, 0);
+			spriteBatch.Draw(tex, drawPos, null, new Color(0, 0, 60, 0) * op, 1.57f / 2f, tex.Size() / 2f, 0.25f + sin2 * 0.05f, 0, 0);
+
+			return base.PreDraw(spriteBatch, screenPos, drawColor);
 		}
 
 		public override void PickupEffects(Player Player)
@@ -38,9 +60,9 @@ namespace StarlightRiver.Content.Pickups
 			ah.Shards.Add(Parent.TileFrameX);
 
 			if (ah.ShardCount % 3 == 0)
-				UILoader.GetUIState<TextCard>().Display("Starlight Vessel", "Your maximum starlight has increased by 1", null, 240, 0.8f);
+				UILoader.GetUIState<TextCard>().Display("Starlight Vessel", "Your maximum starlight has increased by 1", null, 240, 1f);
 			else
-				UILoader.GetUIState<TextCard>().Display("Starlight Vessel Shard", "Collect " + (3 - ah.ShardCount % 3) + " more to increase your maximum starlight", null, 240, 0.6f);
+				UILoader.GetUIState<TextCard>().Display("Starlight Vessel Shard", "Collect " + (3 - ah.ShardCount % 3) + " more to increase your maximum starlight", null, 240, 1f);
 
 			Player.GetModPlayer<StarlightPlayer>().maxPickupTimer = 1;
 		}
@@ -51,7 +73,7 @@ namespace StarlightRiver.Content.Pickups
 				return "StarlightRiver/Assets/Abilities/Stamina1";
 
 			AbilityHandler ah = Main.LocalPlayer.GetHandler();
-			return "StarlightRiver/Assets/Abilities/Stamina" + (ah.ShardCount + 1) % 3;
+			return "StarlightRiver/Assets/Abilities/Stamina" + (ah.ShardCount % 3 + 1);
 		}
 	}
 

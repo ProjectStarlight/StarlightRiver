@@ -1,6 +1,8 @@
 ﻿using StarlightRiver.Content.Packets;
 using StarlightRiver.Helpers;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
 
@@ -13,6 +15,11 @@ namespace StarlightRiver.Content.Archaeology
 		/// Whether or not the artifact is displayed on the map
 		/// </summary>
 		public bool displayedOnMap = false;
+
+		/// <summary>
+		/// Cached hitbox size for screen checks
+		/// </summary>
+		public Rectangle bounds;
 
 		/// <summary>
 		/// Whether or not the artifact can be revealed by the archaeologist's map. Set to false if the artifact has a special reveal condition
@@ -74,11 +81,6 @@ namespace StarlightRiver.Content.Archaeology
 			GenericDraw(spriteBatch);
 		}
 
-		public override void Update()
-		{
-			CheckOpen();
-		}
-
 		public override void SaveData(TagCompound tag)
 		{
 			tag[nameof(displayedOnMap)] = displayedOnMap;
@@ -89,6 +91,8 @@ namespace StarlightRiver.Content.Archaeology
 			try
 			{
 				displayedOnMap = tag.GetBool(nameof(displayedOnMap));
+				bounds = new Rectangle((int)WorldPosition.X, (int)WorldPosition.Y, (int)Size.X, (int)Size.Y);
+				ArtifactManager.artifacts.Add(this);
 			}
 			catch (Exception e)
 			{
@@ -103,7 +107,7 @@ namespace StarlightRiver.Content.Archaeology
 
 		public bool IsOnScreen()
 		{
-			return Helper.OnScreen(new Rectangle((int)WorldPosition.X - (int)Main.screenPosition.X, (int)WorldPosition.Y - (int)Main.screenPosition.Y, (int)Size.X, (int)Size.Y));
+			return ScreenTracker.OnScreen(bounds);
 		}
 
 		public void CreateSparkles()
@@ -158,7 +162,39 @@ namespace StarlightRiver.Content.Archaeology
 
 			ArtifactSpawnPacket packet = new ArtifactSpawnPacket(this.ID, Position.X, Position.Y, proj.identity, TexturePath);
 			packet.Send();
+		}
+	}
 
+	public class ArtifactManager : ModSystem
+	{
+		public static List<Artifact> artifacts = new();
+		public static bool scanNextFrame;
+
+		public override void Load()
+		{
+			On_WorldGen.KillTile += QueueScan;
+		}
+
+		private void QueueScan(On_WorldGen.orig_KillTile orig, int i, int j, bool fail, bool effectOnly, bool noItem)
+		{
+			orig(i, j, fail, effectOnly, noItem);
+
+			if (!fail && !effectOnly)
+				scanNextFrame = true;
+		}
+
+		public override void PostUpdateEverything()
+		{
+			if (scanNextFrame)
+			{
+				artifacts.ForEach(n => n.CheckOpen());
+				scanNextFrame = false;
+			}
+		}
+
+		public override void ClearWorld()
+		{
+			artifacts.Clear();
 		}
 	}
 }

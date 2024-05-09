@@ -44,6 +44,13 @@ namespace StarlightRiver.Content.Items.Breacher
 			Item.shootSpeed = 17;
 		}
 
+		public override ModItem Clone(Item newEntity)
+		{
+			var clone = base.Clone(newEntity) as Scrapshot;
+			clone.hook = hook;
+			return clone;
+		}
+
 		public override Vector2? HoldoutOffset()
 		{
 			return new Vector2(-15, 0);
@@ -477,7 +484,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(40 * 4), factor => factor * 5, factor => new Color(255, 170, 80) * factor.X * (Projectile.timeLeft / 100f));
+			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => factor * 5, factor => new Color(255, 170, 80) * factor.X * (Projectile.timeLeft / 100f));
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center;

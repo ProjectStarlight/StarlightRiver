@@ -1,4 +1,5 @@
 ﻿using System;
+using Terraria.GameContent.Bestiary;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.SquidBoss
@@ -35,6 +36,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			NPC.noTileCollide = true;
 			NPC.dontTakeDamage = true;
 			NPC.knockBackResist = 0; // Fae Whip fix
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
 		}
 
 		public override void AI()

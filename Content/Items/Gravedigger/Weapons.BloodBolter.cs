@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 	public class BloodBolter : ModItem
 	{
 		// SYNC TODO: a projectile hitting a mob and "killing" them but not having it actually kill is really jank in mp. this probably needs another pass
-		
+
 		public override string Texture => AssetDirectory.GravediggerItem + Name;
 
 		public override void SetStaticDefaults()
@@ -321,7 +321,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override bool CheckActive(NPC npc)
 		{
-			if (markedForDeath && storedBolt != default )
+			if (markedForDeath && storedBolt != default)
 				return false;
 
 			return true;

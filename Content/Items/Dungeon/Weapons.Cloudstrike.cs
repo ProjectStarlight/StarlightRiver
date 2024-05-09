@@ -278,10 +278,10 @@ namespace StarlightRiver.Content.Items.Dungeon
 			if (!initialized)
 			{
 				startPoint = Projectile.Center;
-				
+
 				if (Main.netMode != NetmodeID.Server)
 					ManageCaches();
-				
+
 				initialized = true;
 
 				if (!Branch && !Miniature)
@@ -451,7 +451,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 				return;
 
 			int sparkMult = Miniature ? 6 : 1;
-			trail ??= new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(4), factor => thickness * sparkMult * Main.rand.NextFloat(0.75f, 1.25f) * 16 * (float)Math.Pow(ChargeSqrt, 0.7f), factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => thickness * sparkMult * Main.rand.NextFloat(0.75f, 1.25f) * 16 * (float)Math.Pow(ChargeSqrt, 0.7f), factor =>
 			{
 				if (factor.X > 0.99f)
 					return Color.Transparent;
@@ -462,7 +462,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + oldVel;
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(4), factor => thickness * sparkMult * 3 * (float)Math.Pow(ChargeSqrt, 0.7f) * Main.rand.NextFloat(0.55f, 1.45f), factor =>
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => thickness * sparkMult * 3 * (float)Math.Pow(ChargeSqrt, 0.7f) * Main.rand.NextFloat(0.55f, 1.45f), factor =>
 			{
 				float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
 				return Color.Lerp(baseColor, endColor, EaseFunction.EaseCubicIn.Ease(1 - progress)) * Fade * progress;

@@ -13,6 +13,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override void SetStaticDefaults()
 		{
+			DisplayName.SetDefault("Glocktopus");
 			Tooltip.SetDefault("Converts Musket Balls into Aurora Ink\n" +
 				"Critical hits and kills cause Tentapistols to sprout from your back");
 		}
@@ -292,7 +293,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			BezierCurve curve = GetBezierCurve();
 			int numPoints = 10;
 			Vector2[] chainPositions = curve.GetPoints(numPoints).ToArray();
-			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(40 * 4), factor => 12, factor => lightColor);
+			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => 12, factor => lightColor);
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = cache[9];
@@ -495,7 +496,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 20, new TriangularTip(Tiny ? 1f : 2.5f), factor => (Tiny ? 2f : 4.5f) * (factor * 2f), factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 20, new NoTip(), factor => (Tiny ? 2f : 4.5f) * (factor * 2f), factor =>
 			{
 				if (Projectile.penetrate == 1 && deathTimer / 40f < factor.Y)
 					return Color.Transparent;
