@@ -89,215 +89,9 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 		}
 	}
 
-	class SoilgunGlobalItem : GlobalItem
-	{
-		public TooltipLine ammoTooltip;
-
-		public override bool InstancePerEntity => true;
-
-		public List<int> ValidSoils => new()
-		{
-			ItemID.SandBlock,
-			ItemID.EbonsandBlock,
-			ItemID.PearlsandBlock,
-			ItemID.CrimsandBlock,
-			ItemID.DirtBlock,
-			ItemID.SiltBlock,
-			ItemID.SlushBlock,
-			Mod.Find<ModItem>("VitricSandItem").Type,
-			ItemID.MudBlock
-		};
-
-		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
-		{
-			if (Main.LocalPlayer.HasItem(ModContent.ItemType<Soilgun>()) || Main.LocalPlayer.HasItem(ModContent.ItemType<Earthduster>()))
-			{
-				if (ValidSoils.Contains(item.type))
-				{
-					var tooltip = new TooltipLine(Mod, "SoilgunAmmoTooltip", "This item can be used as ammo for the Soilgun and Earthduster");
-					tooltips.Add(tooltip);
-					tooltip.OverrideColor = new Color(202, 148, 115);
-
-					if (item.type == Mod.Find<ModItem>("VitricSandItem").Type)
-					{
-						var infoTooltip = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of glassy sand, that cause crystals to grow out of enemies\nFor each crystal an enemy has, they take 2 damage per second, plus a base damage of 4, up to a maximum of 10 crystals\nIf an enemy has had 10 crystals on them for more than 4 seconds, all crystals become charged, exploding shorty after");
-						tooltips.Add(infoTooltip);
-						infoTooltip.OverrideColor = new Color(202, 148, 115);
-						return;
-					}
-
-					switch (item.type)
-					{
-						case ItemID.SandBlock: ammoTooltip = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of sand that split into many grains of sand upon death"); break;
-						case ItemID.CrimsandBlock: ammoTooltip = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of Crimsand that steal life from hit enemies"); break;
-						case ItemID.EbonsandBlock: ammoTooltip = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of Ebonsand that apply stacks of Haunted to enemies"); break;
-						case ItemID.PearlsandBlock: ammoTooltip = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of Pearlsand that home in on enemies"); break;
-						case ItemID.DirtBlock: ammoTooltip = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of dirt"); break;
-						case ItemID.SiltBlock: ammoTooltip = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of silt, that spawn coins upon hitting enemies"); break;
-						case ItemID.SlushBlock: ammoTooltip = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of slush that cause hit enemies to have icicles impale them\nHitting and enemy with more than 10 icicles causes all icicles to shatter, causing large amounts of damage"); break;
-						case ItemID.MudBlock: ammoTooltip = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of mud that bounce off tiles and enemies"); break;
-					}
-
-					tooltips.Add(ammoTooltip);
-					ammoTooltip.OverrideColor = new Color(202, 148, 115);
-				}
-			}
-		}
-	}
-
-	//TODO: Port to stackable buffs
-	class SoilgunGlobalNPC : GlobalNPC
-	{
-		public const int MAXHAUNTEDSTACKS = 20;
-
-		public const int MAXVITRICSHARDS = 10;
-
-		public int GlassAmount;
-
-		public int GlassPlayerID;
-
-		public int HauntedStacks;
-
-		public int HauntedTimer;
-
-		public int HauntedSoulDamage;
-
-		public int HauntedSoulOwner;
-
-		public int SpawnHauntedSoulTimer = 60;
-
-		public int ShardAmount;
-
-		public int ShardTimer;
-
-		public int ShardOwner;
-
-		public int HowLongShardHasBeenOnTarget;
-		public override bool InstancePerEntity => true;
-
-		public override void ResetEffects(NPC npc)
-		{
-			if (HauntedTimer > 0)
-			{
-				HauntedTimer--;
-				if (HauntedTimer <= 0)
-				{
-					HauntedTimer = 0;
-					HauntedStacks = 0;
-				}
-			}
-
-			HauntedStacks = Utils.Clamp(HauntedStacks, 0, MAXHAUNTEDSTACKS);
-
-			if (ShardTimer > 0)
-			{
-				ShardTimer--;
-				if (ShardTimer <= 0)
-				{
-					ShardTimer = 0;
-					ShardAmount = 0;
-				}
-			}
-
-			ShardAmount = Utils.Clamp(ShardAmount, 0, MAXVITRICSHARDS);
-		}
-		public override void AI(NPC npc)
-		{
-			if (GlassAmount > 0)
-			{
-				if (Main.rand.NextBool(20 - GlassAmount))
-					Dust.NewDustDirect(npc.position, npc.width, npc.height, DustID.Ice, 0f, 0f, 25, default, Main.rand.NextFloat(0.8f, 1.1f));
-			}
-
-			if (HauntedTimer > 0)
-			{
-				float Rand = MathHelper.Clamp(20 - HauntedStacks, 1f, 20f);
-				if (Main.rand.NextBool((int)Rand))
-				{
-					Dust.NewDustDirect(npc.position, npc.width, npc.height, DustID.Shadowflame, 0f, 0f, 25, default, Main.rand.NextFloat(0.75f, 1.2f));
-					if (Main.rand.NextBool(3))
-						Dust.NewDustDirect(npc.position, npc.width, npc.height, DustID.Shadowflame, 0f, 0f, 0, default, Main.rand.NextFloat(0.1f, 1.5f));
-				}
-
-				if (HauntedStacks == MAXHAUNTEDSTACKS)
-				{
-					if (SpawnHauntedSoulTimer == 60)
-						Helper.PlayPitched("ShadowSpawn", 1f, Main.rand.NextFloat(-0.1f, 0.1f), npc.position);
-
-					if (SpawnHauntedSoulTimer % 5 == 0)
-						CameraSystem.shake += 1;
-
-					SpawnHauntedSoulTimer--;
-					if (SpawnHauntedSoulTimer <= 0)
-					{
-						for (int i = 0; i < 20; i++)
-						{
-							Dust.NewDustPerfect(npc.Top, DustID.Shadowflame, (Vector2.UnitY * Main.rand.NextFloat(-6f, -1)).RotatedByRandom(0.45f), 25, default, Main.rand.NextFloat(1.1f, 1.35f));
-						}
-
-						for (int i = 0; i < 2 + Main.rand.Next(2); i++)
-						{
-							Projectile.NewProjectile(npc.GetSource_FromThis(), npc.Top, (Vector2.UnitY * Main.rand.NextFloat(-8f, -5f)).RotatedByRandom(0.55f), ModContent.ProjectileType<HauntedSoul>(), HauntedSoulDamage, 1f, HauntedSoulOwner, npc.whoAmI);
-						}
-
-						CameraSystem.shake += 5;
-						HauntedStacks = 0;
-						SpawnHauntedSoulTimer = 60;
-					}
-				}
-			}
-
-			if (ShardAmount == MAXVITRICSHARDS)
-				HowLongShardHasBeenOnTarget++;
-
-			if (HowLongShardHasBeenOnTarget > 240 && ShardAmount == MAXVITRICSHARDS)
-			{
-				ShardTimer = 120;
-				for (int i = 0; i < Main.maxProjectiles; i++)
-				{
-					Projectile proj = Main.projectile[i];
-
-					if (proj.active && proj.owner == ShardOwner && proj.type == ModContent.ProjectileType<SoilgunVitricCrystals>() && proj.ModProjectile is SoilgunVitricCrystals crystal && crystal.enemyID == npc.whoAmI)
-					{
-						crystal.exploding = true;
-						proj.timeLeft = 120;
-					}
-				}
-
-				HowLongShardHasBeenOnTarget = 0;
-				npc.AddBuff(BuffID.OnFire, 120);
-			}
-		}
-
-		public override void UpdateLifeRegen(NPC npc, ref int damage)
-		{
-			if (HauntedStacks > 0)
-			{
-				if (npc.lifeRegen > 0)
-					npc.lifeRegen = 0;
-
-				npc.lifeRegen -= HauntedStacks;
-				if (damage < 1)
-					damage = 1;
-			}
-
-			if (ShardAmount > 0)
-			{
-				if (npc.lifeRegen > 0)
-					npc.lifeRegen = 0;
-
-				npc.lifeRegen -= 4 + ShardAmount * 2;
-				if (damage < 1)
-					damage = 1;
-			}
-		}
-	}
-
 	class SoilgunHoldout : ModProjectile
 	{
-		private bool flip;
 		private bool updateVelocity = true;
-		private int oldDir;
 
 		private bool flashed;
 		private int flashTimer;
@@ -359,8 +153,6 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 				ghostProjectile.SetDefaults(projectileID);
 				MaxCharge = CombinedHooks.TotalUseTime(Owner.HeldItem.useTime, Owner, Owner.HeldItem);
 				Projectile.velocity = Owner.DirectionTo(Main.MouseWorld);
-
-				oldDir = Projectile.direction;
 			}
 
 			UpdateHeldProjectile(!Shot);
@@ -374,12 +166,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			{
 				flashTimer = 25;
 				flashed = true;
-			}
-
-			float spinUpTime = (int)(MaxCharge * MathHelper.Lerp(2.5f, 1f, Charge < 75f ? Charge / 75f : 1f)); // the time between shots / time between the sprite frame changes is greater when first starting firing
-
-			if (++Projectile.frameCounter % (int)Utils.Clamp(spinUpTime - 3, 1, 50) == 0)
-				Projectile.frame = ++Projectile.frame % Main.projFrames[Projectile.type];		
+			}	
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -612,28 +399,6 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 		public override bool? CanDamage()
 		{
 			return false;
-		}
-
-		private int ChooseChargeDust()
-		{
-			int VitricSand = Mod.Find<ModItem>("VitricSandItem").Type;
-			if (ammoID == VitricSand)
-			{
-				return ModContent.DustType<VitricSandDust>();
-			}
-
-			return ammoID switch
-			{
-				ItemID.SandBlock => DustID.Sand,
-				ItemID.CrimsandBlock => DustID.CrimsonPlants,
-				ItemID.EbonsandBlock => DustID.Ebonwood,
-				ItemID.PearlsandBlock => DustID.Pearlsand,
-				ItemID.DirtBlock => DustID.Dirt,
-				ItemID.SiltBlock => DustID.Silt,
-				ItemID.SlushBlock => DustID.Slush,
-				ItemID.MudBlock => DustID.Mud,
-				_ => 0,
-			};
 		}
 
 		private bool CheckAmmo(int type, int ammoID)

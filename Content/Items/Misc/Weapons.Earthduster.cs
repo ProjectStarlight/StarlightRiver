@@ -1,11 +1,23 @@
-﻿using StarlightRiver.Content.Items.BaseTypes;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.Dusts;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.Misc.SoilgunFiles;
+using StarlightRiver.Content.Items.UndergroundTemple;
+using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Core.Systems.CameraSystem;
+using StarlightRiver.Core.Systems.ExposureSystem;
+using StarlightRiver.Core.Systems.PixelationSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
+using Terraria.Graphics.Effects;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Misc
@@ -16,16 +28,16 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override List<AmmoStruct> ValidAmmos => new()
 		{
-			new AmmoStruct(ItemID.DirtBlock, ModContent.ProjectileType<SoilgunDirtSoil>(), "", 2),
-			new AmmoStruct(ItemID.SandBlock, ModContent.ProjectileType<SoilgunSandSoil>(), "Deals area of effect damage", 2),
-			new AmmoStruct(ItemID.EbonsandBlock, ModContent.ProjectileType<SoilgunEbonsandSoil>(), "Inflicts weakening debuff", 4),
-			new AmmoStruct(ItemID.PearlsandBlock, ModContent.ProjectileType<SoilgunPearlsandSoil>(), "Homes onto enemies", 15),
-			new AmmoStruct(ItemID.CrimsandBlock, ModContent.ProjectileType<SoilgunCrimsandSoil>(), "Gain regeneration on hit", 4),
-			new AmmoStruct(ItemID.SiltBlock, ModContent.ProjectileType<SoilgunSiltSoil>(), "Extracts some treasure when fired", 3),
-			new AmmoStruct(ItemID.SlushBlock, ModContent.ProjectileType<SoilgunSlushSoil>(), "Inflicts Frostburn", 3),
-			new AmmoStruct(Mod.Find<ModItem>("VitricSandItem").Type, ModContent.ProjectileType<SoilgunVitricSandSoil>(), "Pierces enemies", 8),
-			new AmmoStruct(ItemID.MudBlock, ModContent.ProjectileType<SoilgunMudSoil>(), "Chance to spawn bees on death", 3),
-			new AmmoStruct(ItemID.AshBlock, ModContent.ProjectileType<SoilgunAshSoil>(), "Inflicts On Fire!", 6),
+			new AmmoStruct(ItemID.DirtBlock, ModContent.ProjectileType<EarthdusterDirtShot>(), "", 2),
+			new AmmoStruct(ItemID.SandBlock, ModContent.ProjectileType<EarthdusterSandShot>(), "Deals area of effect damage", 2),
+			new AmmoStruct(ItemID.EbonsandBlock, ModContent.ProjectileType<EarthdusterEbonsandShot>(), "Inflicts weakening debuff", 4),
+			new AmmoStruct(ItemID.PearlsandBlock, ModContent.ProjectileType<EarthdusterPearlsandShot>(), "Homes onto enemies", 15),
+			new AmmoStruct(ItemID.CrimsandBlock, ModContent.ProjectileType<EarthdusterCrimsandShot>(), "Gain regeneration on hit", 4),
+			new AmmoStruct(ItemID.SiltBlock, ModContent.ProjectileType<EarthdusterSiltShot>(), "Extracts some treasure when fired", 3),
+			new AmmoStruct(ItemID.SlushBlock, ModContent.ProjectileType<EarthdusterSlushShot>(), "Inflicts Frostburn", 3),
+			new AmmoStruct(Mod.Find<ModItem>("VitricSandItem").Type, ModContent.ProjectileType<EarthdusterVitricSandShot>(), "Pierces enemies", 8),
+			new AmmoStruct(ItemID.MudBlock, ModContent.ProjectileType<EarthdusterMudShot>(), "Chance to spawn bees on death", 3),
+			new AmmoStruct(ItemID.AshBlock, ModContent.ProjectileType<EarthdusterAshShot>(), "Inflicts On Fire!", 6),
 		};
 
 		public override void SetStaticDefaults()
@@ -39,11 +51,11 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.damage = 6;
 			Item.width = 70;
 			Item.height = 40;
-			Item.useAnimation = Item.useTime = 5;
+			Item.useAnimation = Item.useTime = 4;
 			Item.shoot = ProjectileID.PurificationPowder;
 			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.rare = ItemRarityID.Orange;
-			Item.shootSpeed = 21f;
+			Item.shootSpeed = 15f;
 			Item.noUseGraphic = true;
 			Item.noMelee = true;
 			Item.channel = true;
@@ -55,10 +67,12 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
+			Main.NewText(player.whoAmI);
+
 			var proj = Projectile.NewProjectileDirect(source, position, velocity, ModContent.ProjectileType<EarthdusterHoldout>(), damage, knockback, player.whoAmI);
 
-			if (proj.ModProjectile is EarthdusterHoldout earthduster)
-				earthduster.SoilType = type;
+			(proj.ModProjectile as EarthdusterHoldout).projectileID = type;
+			(proj.ModProjectile as EarthdusterHoldout).ammoID = currentAmmoStruct.ammoID;
 
 			return false;
 		}
@@ -93,64 +107,35 @@ namespace StarlightRiver.Content.Items.Misc
 
 	class EarthdusterHoldout : ModProjectile
 	{
-		public const int MAXSHOTS = 100;
+		public int ammoID;
+		public int projectileID;
 
-		public const int MAXCHARGEDELAY = 30;
+		public Projectile ghostProjectile = new();
 
-		public int SoilType;
-
-		public int shots;
-
-		public int initialShots;
-
-		public float rotTimer;
-
-		public bool charged;
-
-		public bool draw; //only draw two ticks after spawning
-
-		public bool reloading;
-
-		public bool forceReload;
-
-		public Vector2 mouse;
-
-		public ref float ShootDelay => ref Projectile.ai[0];
-
-		public ref float MaxShootDelay => ref Projectile.ai[1];
-
-		public Player Owner => Main.player[Projectile.owner];
-
-		public Earthduster Holdout => Owner.HeldItem.ModItem as Earthduster;
-
-		public Projectile GhostProj = new();
-
+		public bool updateVelocity = true;
+		public ref float Timer => ref Projectile.ai[0];
+		public ref float UseTime => ref Projectile.ai[1];
 		public bool CanHold => Owner.channel && !Owner.CCed && !Owner.noItems;
-
+		public Vector2 ArmPosition => Owner.RotatedRelativePoint(Owner.MountedCenter, true) + new Vector2(28f + MathHelper.Lerp(0f, -12f, EaseBuilder.EaseQuarticIn.Ease(Timer < 150f ? Timer / 150f : 1f)), 16f * Owner.direction).RotatedBy(Projectile.rotation);
+		public Vector2 BarrelPosition => ArmPosition + Projectile.velocity * Projectile.width * 0.5f + new Vector2(-2f, -2f * Owner.direction).RotatedBy(Projectile.rotation);
+		public Player Owner => Main.player[Projectile.owner];
 		public override string Texture => AssetDirectory.MiscItem + Name;
-
-		public override bool? CanDamage()
-		{
-			return false;
-		}
-
 		public override void Load()
 		{
 			GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, Texture + "_Gore1");
 			GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, Texture + "_Gore2");
 		}
-
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Earthduster");
+
+			Main.projFrames[Type] = 3;
 		}
 
 		public override void SetDefaults()
 		{
-			Projectile.DamageType = DamageClass.Ranged;
-
-			Projectile.width = 72;
-			Projectile.height = 62;
+			Projectile.width = 64;
+			Projectile.height = 34;
 			Projectile.friendly = true;
 			Projectile.tileCollide = false;
 			Projectile.ignoreWater = true;
@@ -158,199 +143,133 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void AI()
 		{
-			Vector2 armPos = Owner.RotatedRelativePoint(Owner.MountedCenter, true);
-			armPos += Utils.SafeNormalize(Projectile.velocity, Vector2.UnitX) * 20f;
-			armPos += Vector2.UnitY.RotatedBy(Projectile.velocity.ToRotation()) * -10f * Owner.direction;
-			Vector2 barrelPos = armPos + Projectile.velocity * 25f;
-
-			Vector2 dirtPos = armPos + new Vector2(-30, MathHelper.Lerp(-20f, -10f, shots / (float)MAXSHOTS) * Owner.direction).RotatedBy(Projectile.rotation);
-
-			if (MaxShootDelay == 0f)
+			if (!CanHold)
 			{
-				GhostProj.SetDefaults(Holdout.currentAmmoStruct.projectileID);
-				MaxShootDelay = CombinedHooks.TotalUseTime(Owner.HeldItem.useTime, Owner, Owner.HeldItem);
+				Projectile.Kill();
+				return;
 			}
 
-			if (rotTimer > 0)
-				rotTimer--;
-
-			if (!CanHold && !reloading && !forceReload)
-				forceReload = true;
-
-			if (Holdout != null && Holdout.currentAmmoStruct.projectileID != SoilType)
+			if (Timer == 0f)
 			{
-				GhostProj.SetDefaults(Holdout.currentAmmoStruct.projectileID);
-				SoilType = Holdout.currentAmmoStruct.projectileID;
+				ghostProjectile.SetDefaults(projectileID);
+				Projectile.velocity = Owner.DirectionTo(Main.MouseWorld);
+				UseTime = CombinedHooks.TotalUseTime(Owner.HeldItem.useTime, Owner, Owner.HeldItem);
 			}
 
-			if (shots < MAXSHOTS && !reloading && !forceReload)
+			UpdateHeldProjectile();
+
+			Timer++;
+
+			float spinUpTime = (int)(UseTime * MathHelper.Lerp(3f, 1f, Timer < 150f ? Timer / 150f : 1f)); // the time between shots / time between the sprite frame changes is greater when first starting firing
+
+			if (++Projectile.frameCounter % (int)Utils.Clamp(spinUpTime - 3, 1, 50) == 0)
+				Projectile.frame = ++Projectile.frame % Main.projFrames[Projectile.type];
+
+			if ((int)Timer % spinUpTime == 0)
 			{
-				ShootDelay++;
-
-				if (ShootDelay < MAXCHARGEDELAY && !charged)
-				{
-					if (ShootDelay > 2)
-					{
-						draw = true;
-						for (int i = 0; i < 3; i++)
-						{
-							float lerper = MathHelper.Lerp(50f, 1f, ShootDelay / MAXCHARGEDELAY);
-							Vector2 pos = barrelPos + Main.rand.NextVector2CircularEdge(lerper * 0.5f, lerper).RotatedBy(Projectile.rotation);
-							int dustID = (GhostProj.ModProjectile as SoilProjectile).dustID;
-							Dust.NewDustPerfect(pos, dustID, pos.DirectionTo(barrelPos)).noGravity = true;
-						}
-					}
-				}
-				else if (ShootDelay < (MAXCHARGEDELAY * 1.5f) && !charged)
-				{
-					if (ShootDelay == MAXCHARGEDELAY)
-					{
-						SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = -0.5f }, Owner.Center);
-						if (Main.myPlayer == Projectile.owner)
-						{
-							var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), armPos, Projectile.velocity * 1.5f, ModContent.ProjectileType<EarthdusterRing>(), 0, 0f, Owner.whoAmI, 15f);
-
-							(proj.ModProjectile as EarthdusterRing).trailColorOutline = (GhostProj.ModProjectile as SoilProjectile).Colors["RingOutsideColor"];
-
-							(proj.ModProjectile as EarthdusterRing).trailColor = (GhostProj.ModProjectile as SoilProjectile).Colors["RingInsideColor"];
-						}
-					}
-				}
-				else if (ShootDelay >= MaxShootDelay)
-				{
-					if (!charged)
-						charged = true;
-
-					ShootSoils(barrelPos);
-					shots++;
-					ShootDelay = 0;
-				}
-
-				if (draw)
-				{
-					if (Main.rand.NextBool(20))
-						Dust.NewDustDirect(dirtPos, 20, 5, DustID.Dirt).alpha = 50;
-				}
-			}
-			else
-			{
-				if (!reloading)
-				{
-					if (Main.myPlayer == Projectile.owner)
-						mouse = Owner.DirectionTo(Main.MouseWorld);
-
-					initialShots = shots;
-					ShootDelay = 0;
-					reloading = true;
-				}
-
-				if (++ShootDelay < 60)
-				{
-					float progress = EaseBuilder.EaseCircularInOut.Ease(ShootDelay / 60f);
-					Projectile.velocity = Vector2.One.RotatedBy(mouse.ToRotation() + MathHelper.ToRadians(MathHelper.Lerp(0f, 360f, progress)) - MathHelper.PiOver4);
-
-					shots = (int)MathHelper.Lerp(initialShots, 0, progress);
-
-					if (ShootDelay == 30)
-					{
-						Vector2 pos = armPos + new Vector2(40, 40f * Owner.direction).RotatedBy(Projectile.rotation);
-						Gore.NewGorePerfect(Projectile.GetSource_FromAI(), pos, Projectile.velocity.RotatedByRandom(0.3f) * 5f, Mod.Find<ModGore>(Name + "_Gore" + Main.rand.Next(1, 3)).Type).timeLeft = 180;
-					}
-				}
-				else if (ShootDelay < 65)
-				{
-					if (ShootDelay == 60)
-						Helper.PlayPitched("Guns/PlinkLever", 1f, 1f, Owner.Center);
-
-					armPos -= Utils.SafeNormalize(Projectile.velocity, Vector2.UnitX) * MathHelper.Lerp(0f, 3f, (ShootDelay - 60) / 5f);
-				}
-				else if (ShootDelay < 70)
-				{
-					armPos -= Utils.SafeNormalize(Projectile.velocity, Vector2.UnitX) * 3f;
-				}
-				else if (ShootDelay < 75)
-				{
-					armPos -= Utils.SafeNormalize(Projectile.velocity, Vector2.UnitX) * MathHelper.Lerp(3f, -5f, (ShootDelay - 70) / 5f);
-				}
-				else
-				{
-					armPos -= Utils.SafeNormalize(Projectile.velocity, Vector2.UnitX) * -5f;
-					if (ShootDelay > 85)
-						Projectile.Kill();
-				}
-			}
-
-			if (!reloading)
-				Owner.ChangeDir(Projectile.direction);
-
-			Owner.heldProj = Projectile.whoAmI;
-			Owner.itemTime = 2;
-			Owner.itemAnimation = 2;
-
-			Projectile.timeLeft = 2;
-			Projectile.rotation = Utils.ToRotation(Projectile.velocity) - (Projectile.direction == -1 ? -MathHelper.ToRadians(rotTimer) : MathHelper.ToRadians(rotTimer));
-			Owner.itemRotation = Utils.ToRotation(Projectile.velocity * Projectile.direction);
-
-			Projectile.position = armPos - Projectile.Size * 0.5f;
-
-			Projectile.spriteDirection = Projectile.direction;
-
-			if (Main.myPlayer == Projectile.owner && !reloading)
-			{
-				float interpolant = Utils.GetLerpValue(1f, 5f, Projectile.Distance(Main.MouseWorld), true);
-
-				Vector2 oldVelocity = Projectile.velocity;
-
-				Projectile.velocity = Vector2.One.RotatedBy(Vector2.Lerp(Projectile.velocity, Owner.DirectionTo(Main.MouseWorld), interpolant).ToRotation() - MathHelper.PiOver4);
-				if (Projectile.velocity != oldVelocity)
-				{
-					Projectile.netSpam = 0;
-					Projectile.netUpdate = true;
-				}
+				Shoot();
 			}
 		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			if (!draw)
+			if (Timer <= 2)
 				return false;
 
+			SpriteBatch sb = Main.spriteBatch;
+
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D dirtTex = ModContent.Request<Texture2D>(Texture + "_Dirt").Value;
-			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
+			Texture2D holderTex = ModContent.Request<Texture2D>(Texture + "_AmmoHolder").Value;
 			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
 
-			var offset = Vector2.Lerp(Vector2.Zero, Vector2.UnitY.RotatedBy(Projectile.rotation + (Owner.direction == -1 ? MathHelper.Pi : 0f)) * 13f, shots / (float)MAXSHOTS);
-			Main.spriteBatch.Draw(dirtTex, Projectile.Center + offset - Main.screenPosition, null, lightColor, Projectile.rotation, dirtTex.Size() / 2f, Projectile.scale, Owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
+			Texture2D blockTex = TextureAssets.Item[ammoID].Value;
 
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2f, Projectile.scale, Owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
+			Rectangle frame = tex.Frame(verticalFrames: Main.projFrames[Type], frameY: Projectile.frame);
 
-			var color = Color.Lerp(Color.Transparent, (GhostProj.ModProjectile as SoilProjectile).Colors["RingInsideColor"], shots / (float)MAXSHOTS);
-			//if (reloading)
-			//color = Color.Lerp(GetRingInsideColor(), Color.Transparent, ShootDelay / 90f);
+			SpriteEffects spriteEffects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-			color.A = 0;
+			float rotation = Projectile.rotation + (spriteEffects == SpriteEffects.FlipHorizontally ? MathHelper.Pi : 0f);
 
-			color *= 0.5f;
+			float lerper = Timer < 150f ? Timer / 150f : 1f;
 
-			Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, color, Projectile.rotation, glowTex.Size() / 2f, Projectile.scale, Owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
+			Vector2 off = Main.rand.NextVector2Circular(2.5f * lerper, 0.8f * lerper).RotatedBy(Projectile.rotation);
 
-			Main.spriteBatch.Draw(bloomTex, Projectile.Center + Vector2.One.RotatedBy(Projectile.rotation - MathHelper.PiOver4) * 15f - Main.screenPosition, null, color, Projectile.rotation, bloomTex.Size() / 2f, 0.95f, Owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
+			sb.Draw(tex, Projectile.Center + off - Main.screenPosition, frame, lightColor, rotation, frame.Size() / 2f, Projectile.scale, spriteEffects, 0f);
+
+			sb.Draw(blockTex, Projectile.Center + new Vector2(-17f, 4f * Projectile.direction).RotatedBy(Projectile.rotation) + off - Main.screenPosition, null, lightColor, rotation, blockTex.Size() / 2f, Projectile.scale, spriteEffects, 0f);
+
+			sb.Draw(holderTex, Projectile.Center + off - Main.screenPosition, null, lightColor, rotation, holderTex.Size() / 2f, Projectile.scale, spriteEffects, 0f);
+
+			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () =>
+			{
+				Effect effect = Filters.Scene["ColoredFire"].GetShader().Shader;
+
+				if (effect is null)
+					return;
+
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.EffectMatrix);
+
+				float fadeIn = Timer < 250f ? Timer / 250f : 1f;
+
+				sb.Draw(bloomTex, BarrelPosition - Main.screenPosition, null, new Color(255, 120, 0, 0) * fadeIn * 0.2f, Projectile.rotation - MathHelper.PiOver2, bloomTex.Size() / 2f, 0.75f * fadeIn, 0, 0);
+
+				effect.Parameters["u_time"].SetValue(Timer * 0.01f % 2f);
+				effect.Parameters["primary"].SetValue(new Vector3(1, 0.7f, 0.1f) * fadeIn);
+				effect.Parameters["primaryScaling"].SetValue(new Vector3(1, 1, 1));
+				effect.Parameters["secondary"].SetValue(new Vector3(1f, 0.2f, 0.05f) * fadeIn);
+
+				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value);
+				effect.Parameters["mapTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value);
+
+				effect.CurrentTechnique.Passes[0].Apply();
+
+				sb.Draw(bloomTex, BarrelPosition + new Vector2(-16f * fadeIn, 0f).RotatedBy(Projectile.rotation) - Main.screenPosition, null, Color.White * fadeIn, Projectile.rotation - MathHelper.PiOver2, bloomTex.Size() / 2f, new Vector2(0.3f, 0.3f * fadeIn), 0, 0);
+
+				fadeIn = Timer < 500f ? Timer / 500f : 1f;
+
+				effect.Parameters["u_time"].SetValue(Timer * 0.02f % 2f);
+				effect.Parameters["primary"].SetValue(new Vector3(1, 0.7f, 0.1f) * fadeIn);
+				effect.Parameters["primaryScaling"].SetValue(new Vector3(1, 1, 1));
+				effect.Parameters["secondary"].SetValue(new Vector3(1f, 0.2f, 0.05f) * fadeIn);
+
+				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value);
+				effect.Parameters["mapTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value);
+
+				effect.CurrentTechnique.Passes[0].Apply();
+
+				sb.Draw(bloomTex, BarrelPosition + new Vector2(-16f * fadeIn, 0f).RotatedBy(Projectile.rotation) - Main.screenPosition, null, Color.White * fadeIn, Projectile.rotation - MathHelper.PiOver2, bloomTex.Size() / 2f, new Vector2(0.3f, 0.5f * fadeIn), 0, 0);
+
+				fadeIn = Timer < 750f ? Timer / 750f : 1f;
+
+				effect.Parameters["u_time"].SetValue(Timer * 0.01f % 2f);
+				effect.Parameters["primary"].SetValue(new Vector3(1, 0.7f, 0.1f) * fadeIn);
+				effect.Parameters["primaryScaling"].SetValue(new Vector3(1, 1, 1));
+				effect.Parameters["secondary"].SetValue(new Vector3(1f, 0.2f, 0.05f) * fadeIn);
+
+				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value);
+				effect.Parameters["mapTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value);
+
+				effect.CurrentTechnique.Passes[0].Apply();
+
+				sb.Draw(bloomTex, BarrelPosition + new Vector2(-16f * fadeIn, 0f).RotatedBy(Projectile.rotation) - Main.screenPosition, null, Color.White * fadeIn, Projectile.rotation - MathHelper.PiOver2, bloomTex.Size() / 2f, new Vector2(0.3f, 1f * fadeIn), 0, 0);
+
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.EffectMatrix);
+			});
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+
 			return false;
 		}
 
-		public void ShootSoils(Vector2 position)
+		/// <summary>
+		/// Called when the held projectile should shoot its projectile (in this case, Needle)
+		/// </summary>
+		private void Shoot()
 		{
-			if (Main.myPlayer != Projectile.owner)
-				return;
-
 			Item heldItem = Owner.HeldItem;
-
-			if (Holdout != null && Holdout.ammoItem is null)
-			{
-				Projectile.Kill();
-				return;
-			}
 
 			int damage = Projectile.damage;
 
@@ -358,140 +277,415 @@ namespace StarlightRiver.Content.Items.Misc
 
 			float knockBack = Owner.GetWeaponKnockback(heldItem, heldItem.knockBack);
 
-			Vector2 shootVelocity = Utils.SafeNormalize(Projectile.velocity, Vector2.UnitY) * shootSpeed;
+			Vector2 shootVelocity = Projectile.velocity * shootSpeed;
+
+			Vector2 barrelPos = BarrelPosition + new Vector2(-20f, 0f).RotatedBy(Projectile.rotation);
+			
+			Vector2 off = new Vector2(0f, Main.rand.Next(-8, 8) * Projectile.direction).RotatedBy(Projectile.rotation);
 
 			if (Main.myPlayer == Projectile.owner)
-			{
-				Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), position, shootVelocity.RotatedByRandom(MathHelper.ToRadians(15))
-					* Main.rand.NextFloat(0.9f, 1.1f), SoilType, damage, knockBack, Owner.whoAmI);
+			{				
+				Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), barrelPos + off,
+					shootVelocity.RotatedByRandom(0.05f) * Main.rand.NextFloat(0.9f, 1.1f), projectileID, damage, knockBack, Owner.whoAmI);
 
-				proj.timeLeft = 45;
-				(proj.ModProjectile as SoilProjectile).maxTimeleft = 45f;
+				proj.timeLeft = 300;
+				(proj.ModProjectile as EarthdusterProjectile).maxTimeleft = 300;
 			}
 
-			for (float k = 0; k < 50; k++)
+			Color outColor = (ghostProjectile.ModProjectile as EarthdusterProjectile).Colors["TrailColor"];
+			Color inColor = (ghostProjectile.ModProjectile as EarthdusterProjectile).Colors["TrailInsideColor"];
+
+			Color smokeColor = (ghostProjectile.ModProjectile as EarthdusterProjectile).Colors["SmokeColor"];
+
+			Dust.NewDustPerfect(barrelPos + Projectile.velocity * 20f, ModContent.DustType<PixelatedEmber>(),
+						Projectile.velocity.RotatedByRandom(1f) * Main.rand.NextFloat(1.5f, 3f), 0, smokeColor with { A = 0 }, 0.15f).customData = -Projectile.direction;
+
+			if (Main.rand.NextBool(5))
 			{
-				float rads = 6.28f * (k / 50f);
-				float x = (float)Math.Cos(rads) * 50;
-				float y = (float)Math.Sin(rads) * 25;
-
-				Dust.NewDustPerfect(position, (GhostProj.ModProjectile as SoilProjectile).dustID, new Vector2(x, y).RotatedBy(Projectile.rotation + MathHelper.PiOver2) * 0.055f + Vector2.UnitX.RotatedBy(Projectile.rotation) * 5f, 0, default, 0.85f).noGravity = true;
-			}
-
-			Vector2 ejectPos = position + new Vector2(-35, -5 * Owner.direction).RotatedBy(Projectile.rotation);
-			for (int i = 0; i < 3; i++)
-			{
-				Dust.NewDustPerfect(ejectPos, (GhostProj.ModProjectile as SoilProjectile).dustID, (-Projectile.velocity * Main.rand.NextFloat(1f, 3f) + Vector2.UnitY * -Main.rand.NextFloat(1f, 3f)).RotatedByRandom(0.45f), Main.rand.Next(150), default, 1.25f);
-			}
-
-			shots++;
-			SoundEngine.PlaySound(SoundID.Item11, Projectile.position);
-
-			CameraSystem.shake += 1;
-
-			rotTimer += MaxShootDelay;
-
-			if (Holdout != null)
-			{
-				int type = Holdout.currentAmmoStruct.projectileID; // this code is still bad
-				bool dontConsumeAmmo = false;
-
-				if (Owner.magicQuiver && Holdout.ammoItem.ammo == AmmoID.Arrow && Main.rand.NextBool(5))
-					dontConsumeAmmo = true;
-				if (Owner.ammoBox && Main.rand.NextBool(5))
-					dontConsumeAmmo = true;
-				if (Owner.ammoPotion && Main.rand.NextBool(5))
-					dontConsumeAmmo = true;
-				if (Owner.ammoCost80 && Main.rand.NextBool(5))
-					dontConsumeAmmo = true;
-				if (Owner.ammoCost75 && Main.rand.NextBool(4))
-					dontConsumeAmmo = true;
-				if (type == 85 && Owner.itemAnimation < Owner.itemAnimationMax - 6)
-					dontConsumeAmmo = true;
-				if ((type == 145 || type == 146 || type == 147 || type == 148 || type == 149) && Owner.itemAnimation < Owner.itemAnimationMax - 5)
-					dontConsumeAmmo = true;
-				if (Main.rand.NextFloat() < 0.33f) //33% chance to not consume ammo
-					dontConsumeAmmo = true;
-
-				if (!dontConsumeAmmo)
+				for (int i = 0; i < 2; i++)
 				{
-					Holdout.ammoItem.ModItem?.OnConsumedAsAmmo(Owner.HeldItem, Owner);
-
-					Holdout.OnConsumeAmmo(Holdout.ammoItem, Owner);
-
-					Holdout.ammoItem.stack--;
-					if (Holdout.ammoItem.stack <= 0)
-						Holdout.ammoItem.TurnToAir();
+					Dust.NewDustPerfect(barrelPos + Projectile.velocity * 20f, ModContent.DustType<PixelatedEmber>(),
+						Projectile.velocity.RotatedByRandom(1f) * Main.rand.NextFloat(1.5f, 3f), 0, new Color(255, 100, 20, 0), 0.15f).customData = -Projectile.direction;
 				}
 			}
 
-			if (!Framing.GetTileSafely((int)(Owner.Bottom.X / 16), (int)(Owner.Bottom.Y / 16)).HasTile)
-				Owner.velocity -= Projectile.velocity * 0.75f; //might be too much idk
+			Dust.NewDustPerfect(Projectile.Center + new Vector2(-17f, 4f * Projectile.direction).RotatedBy(Projectile.rotation), (ghostProjectile.ModProjectile as EarthdusterProjectile).dustID,
+				-Projectile.velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(1f, 2f) - Vector2.UnitY * 2f, Main.rand.Next(50, 150), default, 1.2f);
+
+			Dust dust = Dust.NewDustPerfect(BarrelPosition, ModContent.DustType<PixelSmokeColor>(),
+				Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.3f, 2f) + Main.rand.NextVector2Circular(1f, 1f), Main.rand.Next(120, 155), new Color(81, 47, 27), Main.rand.NextFloat(0.05f, 0.10f));
+
+			dust.rotation = Main.rand.NextFloat(6.28f);
+			dust.customData = new Color(105, 67, 44);
+
+			dust = Dust.NewDustPerfect(BarrelPosition, ModContent.DustType<PixelSmokeColor>(),
+				Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(1f, 4f) + Main.rand.NextVector2Circular(1f, 1f), Main.rand.Next(120, 155), new Color(81, 47, 27), Main.rand.NextFloat(0.03f, 0.06f));
+
+			dust.rotation = Main.rand.NextFloat(6.28f);
+			dust.customData = new Color(105, 67, 44);
+
+			dust = Dust.NewDustPerfect(BarrelPosition, ModContent.DustType<PixelSmokeColor>(),
+				Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(2f, 5f) + Main.rand.NextVector2Circular(1f, 1f), Main.rand.Next(120, 150), smokeColor, Main.rand.NextFloat(0.04f, 0.08f));
+
+			dust.rotation = Main.rand.NextFloat(6.28f);
+			dust.customData = smokeColor;
+
+			Dust.NewDustPerfect(BarrelPosition + Projectile.velocity * 20f + off,
+				ModContent.DustType<EarthdusterMuzzleFlashDust>(), Projectile.velocity * 1f, 0, default, Main.rand.NextFloat(0.8f, 1.2f)).rotation = Projectile.velocity.ToRotation();
+		}
+
+		/// <summary>
+		/// Updates the basic variables needed for a held projectile
+		/// </summary>
+		private void UpdateHeldProjectile()
+		{
+			Owner.ChangeDir(Projectile.direction);
+			Owner.heldProj = Projectile.whoAmI;
+			Owner.itemTime = 2;
+			Owner.itemAnimation = 2;
+
+			Projectile.timeLeft = 2;
+			Projectile.rotation = Utils.ToRotation(Projectile.velocity);
+			Owner.itemRotation = Utils.ToRotation(Projectile.velocity * Projectile.direction);
+
+			Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - (Projectile.direction == 1 ? MathHelper.ToRadians(70f) : MathHelper.ToRadians(110f)));
+
+			Projectile.position = ArmPosition - Projectile.Size * 0.5f;
+
+			if (Main.myPlayer == Projectile.owner)
+			{
+				updateVelocity = false;
+
+				float interpolant = Utils.GetLerpValue(5f, 25f, Projectile.Distance(Main.MouseWorld), true);
+
+				Vector2 oldVelocity = Projectile.velocity;
+
+				Projectile.velocity = Vector2.Lerp(Projectile.velocity, Owner.DirectionTo(Main.MouseWorld), 0.2f);
+				if (Projectile.velocity != oldVelocity)
+				{
+					Projectile.netSpam = 0;
+					Projectile.netUpdate = true;
+				}
+			}
+
+			Projectile.spriteDirection = Projectile.direction;
+		}
+
+		private bool CheckAmmo(int type, int ammoID)
+		{
+			bool dontConsumeAmmo = false;
+
+			if (Owner.magicQuiver && ammoID == AmmoID.Arrow && Main.rand.NextBool(5))
+				dontConsumeAmmo = true;
+			if (Owner.ammoBox && Main.rand.NextBool(5))
+				dontConsumeAmmo = true;
+			if (Owner.ammoPotion && Main.rand.NextBool(5))
+				dontConsumeAmmo = true;
+			if (Owner.ammoCost80 && Main.rand.NextBool(5))
+				dontConsumeAmmo = true;
+			if (Owner.ammoCost75 && Main.rand.NextBool(4))
+				dontConsumeAmmo = true;
+			if (type == 85 && Owner.itemAnimation < Owner.itemAnimationMax - 6)
+				dontConsumeAmmo = true;
+			if ((type == 145 || type == 146 || type == 147 || type == 148 || type == 149) && Owner.itemAnimation < Owner.itemAnimationMax - 5)
+				dontConsumeAmmo = true;
+
+			return dontConsumeAmmo;
+		}
+
+		public override bool? CanDamage()
+		{
+			return false;
 		}
 	}
-	public class EarthdusterRing : ModProjectile, IDrawPrimitive
+
+	public abstract class EarthdusterProjectile : ModProjectile
 	{
-		public override string Texture => AssetDirectory.Assets + "Invisible";
-
-		public Color trailColor = Color.White;
-
-		public Color trailColorOutline = Color.Black;
-
 		private List<Vector2> cache;
-
 		private Trail trail;
 		private Trail trail2;
 
-		public int timeLeftStart = 50;
-		private float Progress => 1 - Projectile.timeLeft / (float)timeLeftStart;
+		public int texFrame;
 
-		private float Radius => Projectile.ai[0];
+		public int dustID;
 
-		public override void SetDefaults()
+		public int deathTimer;
+
+		public float maxTimeleft;
+
+		public bool drawTrail = true;
+
+		public Dictionary<string, Color> Colors = new()
 		{
-			Projectile.width = 80;
-			Projectile.height = 80;
-			Projectile.friendly = false;
-			Projectile.tileCollide = false;
-			Projectile.penetrate = -1;
-			Projectile.timeLeft = timeLeftStart;
+			{ "SmokeColor", Color.White },
+			{ "TrailColor", Color.White },
+			{ "TrailInsideColor", Color.White },
+			{ "RingOutsideColor", Color.White },
+			{ "RingInsideColor", Color.White },
+		};
+		public virtual bool gravity => true;
+		public virtual int ClumpType => -1;
+		public float AmmoType => Projectile.ai[0];
+		public ref float Time => ref Projectile.ai[1];
+		public Player Owner => Main.player[Projectile.owner];
+		public override string Texture => AssetDirectory.MiscItem + Name;
+		protected EarthdusterProjectile(Color trailColor, Color trailInsideColor, Color ringOutsideColor, Color ringInsideColor, Color smokeColor, int dustID, int texFrame)
+		{
+			Colors["TrailColor"] = trailColor;
+			Colors["TrailInsideColor"] = trailInsideColor;
+			Colors["RingOutsideColor"] = ringOutsideColor;
+			Colors["RingInsideColor"] = ringInsideColor;
+			Colors["SmokeColor"] = smokeColor;
+
+			this.dustID = dustID;
+			this.texFrame = texFrame;
+		}
+
+		public sealed override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Earthshot");
+		}
+
+		public virtual void SafeSetDefaults() { }
+
+		public sealed override void SetDefaults()
+		{
+			Projectile.penetrate = 2;
+			SafeSetDefaults();
+
+			Projectile.DamageType = DamageClass.Ranged;
+			Projectile.Size = new Vector2(10);
+			Projectile.friendly = true;
+			Projectile.timeLeft = 300;
 			Projectile.extraUpdates = 1;
+
+			Projectile.usesLocalNPCImmunity = true; // the projectile acts as a projectile which can only hit once so local immunity makes it act with vanilla behavior, ex: 5 projectiles can hit at once
+			Projectile.localNPCHitCooldown = 10;
+
+			Projectile.ArmorPenetration = 5;
+
+			ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
+			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 7;
 		}
 
-		public override void SetStaticDefaults()
+		public override bool? CanDamage()
 		{
-			DisplayName.SetDefault("Ring");
+			return Projectile.penetrate >= 2;
 		}
 
-		public override void AI()
+		public override bool ShouldUpdatePosition()
 		{
-			Projectile.velocity *= 0.965f;
-			if (Main.netMode != NetmodeID.Server)
+			return deathTimer <= 0;
+		}
+
+		public virtual void SafeAI() { }
+
+		public sealed override void AI()
+		{
+			if (!Main.dedServ)
 			{
 				ManageCaches();
 				ManageTrail();
 			}
+
+			if (deathTimer > 0)
+			{
+				deathTimer--;
+				if (deathTimer == 1)
+					Projectile.active = false;
+
+				return;
+			}
+
+			SafeAI();
+
+			Time++;
+
+			Projectile.rotation = Projectile.velocity.ToRotation();
+
+			if (Projectile.timeLeft < maxTimeleft - 10 && gravity)
+			{
+				if (Projectile.velocity.Y < 18f)
+				{
+					Projectile.velocity.Y += 0.15f;
+
+					if (Projectile.velocity.Y > 0)
+					{
+						if (Projectile.velocity.Y < 12f)
+							Projectile.velocity.Y *= 1.025f;
+						else
+							Projectile.velocity.Y *= 1.0125f;
+					}
+				}
+			}
+
+			Dust.NewDustPerfect(Projectile.Center + Projectile.velocity, ModContent.DustType<SoilgunSmoke>(),
+				 -Projectile.velocity.RotatedByRandom(0.05f) * 0.05f, 180, Colors["SmokeColor"], Main.rand.NextFloat(0.05f, 0.1f));
+
+			if (Main.rand.NextBool(6))
+				Dust.NewDustPerfect(Projectile.Center, dustID, Vector2.Zero, 150).noGravity = true;
+
+			if (Main.rand.NextBool(4))
+				Dust.NewDustPerfect(Projectile.Center, dustID, Projectile.velocity * 0.5f, 150, default, 1.5f).noGravity = true;
+
+			if (Main.rand.NextBool(20))
+			{
+				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<PixelatedEmber>(),
+						-Projectile.velocity.RotatedByRandom(0.25f) * 0.065f, 0, Colors["SmokeColor"] with { A = 0 }, 0.15f).customData = Main.rand.NextBool() ? -1 : 1;
+			}
+		}
+
+		public virtual void SafeOnKill()
+		{
+
+		}
+
+		public sealed override bool OnTileCollide(Vector2 oldVelocity)
+		{
+			if (deathTimer <= 0)
+			{
+				deathTimer = 10;
+
+				SafeOnKill();
+
+				SoundEngine.PlaySound(SoundID.Dig, Projectile.position);
+
+				for (int i = 0; i < 2; i++)
+				{
+					Dust.NewDustPerfect(Projectile.Center, dustID, Main.rand.NextVector2CircularEdge(10f, 10f) * Main.rand.NextFloat(0.4f, 0.8f),
+						Main.rand.Next(80, 150), default, Main.rand.NextFloat(1f, 1.5f)).noGravity = true;
+
+					Dust dust = Dust.NewDustPerfect(Projectile.Center + Projectile.velocity + Main.rand.NextVector2Circular(20f, 20f),
+						ModContent.DustType<PixelSmokeColor>(), Main.rand.NextVector2CircularEdge(1f, 1f) * Main.rand.NextFloat(0.4f, 0.8f),
+						Main.rand.Next(150, 190), Colors["SmokeColor"], Main.rand.NextFloat(0.05f, 0.1f));
+
+					dust.rotation = Main.rand.NextFloat(6.28f);
+					dust.customData = Colors["SmokeColor"];
+
+					Dust.NewDustPerfect(Projectile.Center, dustID, Projectile.velocity.RotatedByRandom(0.4f) * 0.35f - Vector2.UnitY * 2f,
+						Main.rand.Next(80, 150), default, Main.rand.NextFloat(1f, 1.5f)).noGravity = true;
+
+					Dust.NewDustPerfect(Projectile.Center, dustID, Projectile.velocity.RotatedByRandom(0.4f) * 0.35f - Vector2.UnitY * 2f,
+						Main.rand.Next(80, 150), default, Main.rand.NextFloat(1f, 1.5f));
+				}
+			}
+
+			return false;
+		}
+
+		public virtual void SafeOnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+
+		}
+
+		public sealed override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			if (deathTimer <= 0 && Projectile.penetrate == 2)
+			{
+				SafeOnKill();
+
+				deathTimer = 10;
+			}
+
+			SafeOnHitNPC(target, hit, damageDone);
+
+			SoundEngine.PlaySound(SoundID.Dig, Projectile.position);
+
+			for (int i = 0; i < 2; i++)
+			{
+				Dust.NewDustPerfect(Projectile.Center, dustID, -Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.5f),
+					Main.rand.Next(100), default, Main.rand.NextFloat(1.25f, 2f)).noGravity = true;
+
+				Dust dust = Dust.NewDustPerfect(Projectile.Center + Projectile.velocity + Main.rand.NextVector2Circular(5f, 5f),
+					ModContent.DustType<PixelSmokeColor>(), -Projectile.velocity.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.3f),
+					Main.rand.Next(120, 140), Colors["TrailColor"], Main.rand.NextFloat(0.02f, 0.04f));
+
+				dust.rotation = Main.rand.NextFloat(6.28f);
+				dust.customData = Colors["SmokeColor"];
+			}
+
+			CameraSystem.shake += 1;
 		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
+			DrawPrimitives();
+
+			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "EarthdusterProjectile").Value;
+			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+
+			float lerper = FadeOut();
+
+			Rectangle frame = tex.Frame(verticalFrames: 10, frameY: texFrame);
+
+			Vector2 drawOrigin = frame.Size() / 2f;
+			for (int k = 0; k < Projectile.oldPos.Length; k++)
+			{
+				Vector2 drawPos = Projectile.oldPos[k] + Projectile.Size / 2f - Main.screenPosition;
+				Color color = Projectile.GetAlpha(lightColor) * MathHelper.Lerp(0.5f, 0.15f, k / (float)Projectile.oldPos.Length);
+				Main.EntitySpriteDraw(tex, drawPos, frame, color * lerper, Projectile.rotation, drawOrigin, Projectile.scale * MathHelper.Lerp(1, 0.5f, k / (float)Projectile.oldPos.Length), SpriteEffects.None, 0);
+			}
+
+			Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Colors["RingInsideColor"] with { A = 0 } * lerper, Projectile.rotation, bloomTex.Size() / 2f, Projectile.scale * 0.25f, 0f, 0f);
+
+			Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Colors["RingOutsideColor"] with { A = 0 } * lerper, Projectile.rotation, bloomTex.Size() / 2f, Projectile.scale * 0.15f, 0f, 0f);
+
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frame, lightColor * lerper, Projectile.rotation, frame.Size() / 2f, Projectile.scale, 0f, 0f);
+
+			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("OverPlayers", () =>
+			{
+				Effect effect = Filters.Scene["DistortSprite"].GetShader().Shader;
+
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.EffectMatrix);
+
+				effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.035f);
+				effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.0035f);
+				effect.Parameters["screenPos"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / new Vector2(Main.screenWidth, Main.screenHeight));
+
+				effect.Parameters["offset"].SetValue(new Vector2(0.001f));
+				effect.Parameters["repeats"].SetValue(1);
+				effect.Parameters["uImage1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/SwirlyNoiseLooping").Value);
+				effect.Parameters["uImage2"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/SwirlyNoiseLooping").Value);
+
+				Color color = Colors["TrailColor"] with { A = 0 } * lerper;
+
+				effect.Parameters["uColor"].SetValue(color.ToVector4());
+				effect.Parameters["noiseImage1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "Soilgun_Noise").Value);
+
+				effect.CurrentTechnique.Passes[0].Apply();
+
+				Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, bloomTex.Size() / 2f, Projectile.scale * 0.35f, 0f, 0f);
+
+				color = Colors["TrailInsideColor"] with { A = 0 } * lerper;
+
+				effect.Parameters["uColor"].SetValue(color.ToVector4());
+
+				effect.CurrentTechnique.Passes[0].Apply();
+
+				Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, bloomTex.Size() / 2f, Projectile.scale * 0.25f, 0f, 0f);
+
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			});
+
 			return false;
 		}
 
 		private void ManageCaches()
 		{
-			cache = new List<Vector2>();
-			float radius = Radius;
-			for (int i = 0; i < 33; i++) //TODO: Cache offsets, to improve performance
+			if (cache == null)
 			{
-				double rad = i / 32f * 6.28f;
-				var offset = new Vector2((float)Math.Sin(rad) * 0.3f, (float)Math.Cos(rad));
-				offset *= radius;
-				offset = offset.RotatedBy(Projectile.velocity.ToRotation());
-				cache.Add(Projectile.Center + offset);
+				cache = new List<Vector2>();
+				for (int i = 0; i < 8; i++)
+				{
+					cache.Add(Projectile.Center);
+				}
 			}
 
-			while (cache.Count > 33)
+			cache.Add(Projectile.Center + Projectile.velocity);
+
+			while (cache.Count > 8)
 			{
 				cache.RemoveAt(0);
 			}
@@ -499,35 +693,322 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrail()
 		{
-
-			trail ??= new Trail(Main.instance.GraphicsDevice, 33, new NoTip(), factor => 28 * (1 - Progress), factor => trailColorOutline);
-
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 33, new NoTip(), factor => 10 * (1 - Progress), factor => trailColor);
-			float nextplace = 33f / 32f;
-			var offset = new Vector2((float)Math.Sin(nextplace), (float)Math.Cos(nextplace));
-			offset *= Radius;
+			trail ??= new Trail(Main.instance.GraphicsDevice, 8, new NoTip(), factor => 6f, factor => Colors["TrailColor"] * factor.X * FadeOut());
 
 			trail.Positions = cache.ToArray();
-			trail.NextPosition = Projectile.Center + offset;
+			trail.NextPosition = Projectile.Center;
+
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 8, new NoTip(), factor => 2.5f, factor => Color.Lerp(Colors["TrailInsideColor"], Colors["TrailColor"], 1f - factor.X) * factor.X * FadeOut());
 
 			trail2.Positions = cache.ToArray();
-			trail2.NextPosition = Projectile.Center + offset;
+			trail2.NextPosition = Projectile.Center + Projectile.velocity;
 		}
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Terraria.Graphics.Effects.Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
+			if (!drawTrail)
+				return;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("UnderProjectiles", () =>
+			{
+				Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
-			effect.Parameters["alpha"].SetValue(1);
+				var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+				Matrix view = Main.GameViewMatrix.EffectMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			trail?.Render(effect);
-			trail2?.Render(effect);
+				effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.05f);
+				effect.Parameters["repeats"].SetValue(1);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "GlowTrail").Value);
+
+				trail?.Render(effect);
+				trail2?.Render(effect);
+			});
+		}
+
+		private float FadeOut()
+		{
+			float opacity = 1f;
+
+			if (Projectile.timeLeft < 20)
+				opacity *= Projectile.timeLeft / 20f;
+
+			if (deathTimer > 0)
+				opacity *= deathTimer / 10f;
+
+			return opacity;
+		}
+	}
+
+	public class EarthdusterDirtShot : EarthdusterProjectile
+	{
+		public override int ClumpType => ModContent.ProjectileType<SoilgunDirtClump>();
+		public override string Texture => AssetDirectory.Invisible;
+		public EarthdusterDirtShot() : base(new Color(30, 19, 12), new Color(51, 35, 22), new Color(81, 47, 27), new Color(105, 67, 44), new Color(82, 45, 22), DustID.Dirt, 0) { }
+	}
+
+	public class EarthdusterSandShot : EarthdusterProjectile
+	{
+		public override int ClumpType => ModContent.ProjectileType<SoilgunSandClump>();
+		public override string Texture => AssetDirectory.Invisible;
+		public EarthdusterSandShot() : base(new Color(80, 50, 20), new Color(160, 131, 59), new Color(139, 131, 59), new Color(212, 192, 100), new Color(150, 120, 59), DustID.Sand, 1) { }
+
+		public override void SafeOnKill()
+		{
+			if (Projectile.owner == Main.myPlayer)
+			{
+				Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, Vector2.Zero,
+						ModContent.ProjectileType<SoilgunSandExplosion>(), Projectile.damage / 2, 0f, Owner.whoAmI);
+			}
+		}
+	}
+
+	public class EarthdusterCrimsandShot : EarthdusterProjectile
+	{
+		public override int ClumpType => ModContent.ProjectileType<SoilgunCrimsandClump>();
+		public override string Texture => AssetDirectory.Invisible;
+		public EarthdusterCrimsandShot() : base(new Color(56, 17, 14), new Color(135, 43, 34), new Color(56, 17, 14), new Color(135, 43, 34), new Color(40, 10, 10) * 0.6f, DustID.CrimsonPlants, 3) { }
+
+		public override void SafeOnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			Owner.AddBuff(BuffID.Regeneration, 300);
+		}
+	}
+
+	public class EarthdusterEbonsandShot : EarthdusterProjectile
+	{
+		public override int ClumpType => ModContent.ProjectileType<SoilgunEbonsandClump>();
+		public override string Texture => AssetDirectory.Invisible;
+		public EarthdusterEbonsandShot() : base(new Color(26, 18, 31), new Color(62, 45, 75), new Color(62, 45, 75), new Color(119, 106, 138), new Color(30, 25, 45) * 0.6f, DustID.Ebonwood, 2) { }
+
+		public override void SafeOnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			target.AddBuff(ModContent.BuffType<EbonsandDebuff>(), 300);
+		}
+	}
+
+	public class EarthdusterPearlsandShot : EarthdusterProjectile
+	{
+		private NPC target;
+		public override bool gravity => false;
+		public override int ClumpType => ModContent.ProjectileType<SoilgunPearlsandClump>();
+		public override string Texture => AssetDirectory.Invisible;
+		public EarthdusterPearlsandShot() : base(new Color(87, 77, 106), new Color(174, 168, 186), new Color(87, 77, 106), new Color(246, 235, 228), new Color(120, 110, 140), DustID.Pearlsand, 4) { }
+		public override void SafeAI()
+		{
+			target = Main.npc.Where(n => n.CanBeChasedBy() && n.Distance(Projectile.Center) < 1250f && Collision.CanHitLine(Projectile.Center, 1, 1, n.Center, 1, 1)).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
+
+			if (target != null)
+			{
+				if (!target.active || Projectile.Distance(target.Center) > 1250f)
+				{
+					target = null;
+					return;
+				}
+
+				Projectile.velocity = (Projectile.velocity * 35f + Utils.SafeNormalize(target.Center - Projectile.Center, Vector2.UnitX) * 25f) / 36f;
+			}
+			else
+			{
+				Projectile.velocity *= 0.975f;
+
+				if (Projectile.velocity.Length() < 1f)
+					Projectile.timeLeft -= 2;
+			}
+		}
+	}
+
+	public class EarthdusterVitricSandShot : EarthdusterProjectile
+	{
+		public override int ClumpType => ModContent.ProjectileType<SoilgunVitricSandClump>();
+		public override string Texture => AssetDirectory.Invisible;
+		public EarthdusterVitricSandShot() : base(new Color(87, 129, 140), new Color(99, 183, 173), new Color(87, 129, 140), new Color(171, 230, 167), new Color(86, 57, 47), ModContent.DustType<VitricSandDust>(), 7) { }
+		public override void SafeSetDefaults()
+		{
+			Projectile.penetrate = Main.rand.Next(2, 5);
+
+			Projectile.localNPCHitCooldown = 20;
+			Projectile.usesLocalNPCImmunity = true;
+		}
+	}
+
+	public class EarthdusterSlushShot : EarthdusterProjectile
+	{
+		public override int ClumpType => ModContent.ProjectileType<SoilgunSlushClump>();
+		public override string Texture => AssetDirectory.Invisible;
+		public EarthdusterSlushShot() : base(new Color(27, 40, 51), new Color(62, 95, 104), new Color(27, 40, 51), new Color(164, 182, 180), new Color(77, 106, 113), DustID.Slush, 6) { }
+		public override void SafeOnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			target.AddBuff(BuffID.Frostburn, 300);
+		}
+	}
+
+	public class EarthdusterSiltShot : EarthdusterProjectile
+	{
+		public override int ClumpType => ModContent.ProjectileType<SoilgunSiltClump>();
+		public override string Texture => AssetDirectory.Invisible;
+		public EarthdusterSiltShot() : base(new Color(22, 24, 32), new Color(49, 51, 61), new Color(49, 51, 61), new Color(106, 107, 118), new Color(89, 83, 83), DustID.Silt, 5) { }
+		public override void OnSpawn(IEntitySource source)
+		{
+			// vanilla extracinator code is like a billion lines so i modified it slightly
+			// ore drops and stuff arent able to be got from this, just gems and coins, but like who is actually going to use this seriously idk
+			if (Main.rand.NextBool(5))
+			{
+				int quantity = 2 + Main.rand.Next(50);
+				int type;
+
+				if (Main.rand.NextFloat() < 0.75f) // give the player money 75% of the time
+				{
+					float roll = Main.rand.NextFloat();
+
+					if (roll < 0.0005f)
+					{
+						quantity = Main.rand.Next(3);
+						type = ItemID.PlatinumCoin;
+					}
+					else if (roll < 0.01f)
+					{
+						quantity = Main.rand.Next(10);
+						type = ItemID.GoldCoin;
+					}
+					else if (roll < 0.1f)
+					{
+						type = ItemID.SilverCoin;
+					}
+					else
+					{
+						type = ItemID.CopperCoin;
+					}
+				}
+				else // otherwise give them a random gem
+				{
+					type = Main.rand.Next(new int[] { ItemID.Amethyst, ItemID.Topaz, ItemID.Sapphire, ItemID.Emerald, ItemID.Ruby, ItemID.Diamond, ItemID.Amber });
+					quantity = 1 + Main.rand.Next(3);
+				}
+
+				Item.NewItem(Projectile.GetSource_Loot(), Projectile.getRect(), type, quantity);
+			}
+		}
+	}
+
+	public class EarthdusterMudShot : EarthdusterProjectile
+	{
+		public override int ClumpType => ModContent.ProjectileType<SoilgunMudClump>();
+		public override string Texture => AssetDirectory.Invisible;
+		public EarthdusterMudShot() : base(new Color(30, 21, 24), new Color(23, 68, 9), new Color(73, 57, 63), new Color(111, 83, 89), new Color(73, 57, 63), DustID.Mud, 8) { }
+		public override void SafeOnKill()
+		{
+			if (Main.rand.NextBool(5))
+			{
+				if (Projectile.owner == Main.myPlayer)
+				{
+					Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, Main.rand.NextVector2CircularEdge(6f, 6f),
+							Owner.beeType(), Owner.beeDamage(Projectile.damage), Owner.beeKB(Projectile.knockBack), Owner.whoAmI);
+				}
+			}
+		}
+	}
+
+	public class EarthdusterAshShot : EarthdusterProjectile
+	{
+		public override int ClumpType => ModContent.ProjectileType<SoilgunAshClump>();
+		public override string Texture => AssetDirectory.Invisible;
+		public EarthdusterAshShot() : base(new Color(246, 86, 22), new Color(252, 147, 20), new Color(73, 57, 63), new Color(111, 83, 89), new Color(32, 27, 34) * 0.75f, DustID.Ash, 9) { }
+		public override void SafeOnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			target.AddBuff(BuffID.OnFire, 300);
+		}
+	}
+
+	public class EarthdusterMuzzleFlashDust : ModDust
+	{
+		public override string Texture => AssetDirectory.Invisible;
+
+		public override void OnSpawn(Dust dust)
+		{
+			dust.frame = new Rectangle(0, 0, 4, 4);
+		}
+
+		public override bool Update(Dust dust)
+		{
+			if (dust.customData is null)
+				dust.customData = 0;
+
+			if ((int)dust.customData < 4)
+				dust.customData = (int)dust.customData + 1;
+
+			dust.alpha += 20;
+			dust.alpha = (int)(dust.alpha * 1.05f);
+
+			if (dust.alpha >= 255)
+				dust.active = false;
+
+			Lighting.AddLight(dust.position, new Color(255, 255, 20).ToVector3() * new Vector3(1.5f * 1f - dust.alpha / 255f, 1.5f * 1f - dust.alpha / 255f, 1.5f * 1f - dust.alpha / 255f));
+
+			return false;
+		}
+
+		public override bool PreDraw(Dust dust)
+		{
+			float lerper = 1f - dust.alpha / 255f;
+
+			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.MiscItem + Name).Value;
+			Texture2D texBlur = ModContent.Request<Texture2D>(AssetDirectory.MiscItem + Name + "_Blur").Value;
+			Texture2D texGlow = ModContent.Request<Texture2D>(AssetDirectory.MiscItem + Name + "_Glow").Value;
+			Texture2D texFireGlow = ModContent.Request<Texture2D>(AssetDirectory.MiscItem + Name + "_FireGlow").Value;
+			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+
+			Main.spriteBatch.Draw(bloomTex, dust.position - Main.screenPosition, null, new Color(255, 75, 0, 0) * 0.25f * lerper, dust.rotation, bloomTex.Size() / 2f, dust.scale * 1.25f, 0f, 0f);
+			
+			Rectangle frame = texGlow.Frame(verticalFrames: 3, frameY: (int)Math.Floor((float)(int)dust.customData / 2));
+
+			Main.spriteBatch.Draw(texGlow, dust.position - Main.screenPosition, frame, new Color(255, 75, 0, 0) * lerper, dust.rotation, frame.Size() / 2f, dust.scale, 0f, 0f);
+			
+			frame = tex.Frame(verticalFrames: 3, frameY: (int)Math.Floor((float)(int)dust.customData / 2));
+
+			Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, frame, Color.White * lerper, dust.rotation, frame.Size() / 2f, dust.scale, 0f, 0f);
+			
+			frame = texBlur.Frame(verticalFrames: 3, frameY: (int)Math.Floor((float)(int)dust.customData / 2));
+			
+			Main.spriteBatch.Draw(texBlur, dust.position - Main.screenPosition, frame, Color.White with { A = 0 } * 0.5f * lerper, dust.rotation, frame.Size() / 2f, dust.scale, 0f, 0f);
+			
+			Effect effect = Filters.Scene["ColoredFire"].GetShader().Shader;
+
+			if (effect is null)
+				return false;
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+			effect.Parameters["u_time"].SetValue((float)(Main.timeForVisualEffects * 0.01f % 2f));
+			effect.Parameters["primary"].SetValue(new Vector3(1, 0.7f, 0.1f) * lerper);
+			effect.Parameters["primaryScaling"].SetValue(new Vector3(1, 1, 1));
+			effect.Parameters["secondary"].SetValue(new Vector3(1f, 0.2f, 0.05f) * lerper);
+
+			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value);
+			effect.Parameters["mapTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value);
+
+			effect.CurrentTechnique.Passes[0].Apply();
+
+			Main.spriteBatch.Draw(texFireGlow, dust.position - Main.screenPosition, null, Color.White with { A = 0 } * lerper, dust.rotation - MathHelper.PiOver2, texFireGlow.Size() / 2f, new Vector2(1.5f, 2f * lerper), 0, 0);
+
+			effect.Parameters["u_time"].SetValue((float)(Main.timeForVisualEffects * 0.005f % 2f));
+			effect.Parameters["primary"].SetValue(new Vector3(1, 0.7f, 0.1f) * lerper);
+			effect.Parameters["primaryScaling"].SetValue(new Vector3(1, 1, 1));
+			effect.Parameters["secondary"].SetValue(new Vector3(1f, 0.2f, 0.05f) * lerper);
+
+			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value);
+			effect.Parameters["mapTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value);
+
+			effect.CurrentTechnique.Passes[0].Apply();
+
+			Main.spriteBatch.Draw(texFireGlow, dust.position - Main.screenPosition, null, Color.White with { A = 0 } * lerper, dust.rotation - MathHelper.PiOver2, texFireGlow.Size() / 2f, new Vector2(1f, 3f * lerper), 0, 0);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+
+			return false;
 		}
 	}
 }

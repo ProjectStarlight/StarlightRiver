@@ -24,18 +24,17 @@ namespace StarlightRiver.Core.Systems.PixelationSystem
 
 		public override void PostSetupContent()
 		{
-			// IDK if i need to call GetInstance here
-			ModContent.GetInstance<PixelationSystem>().RegisterScreenTarget("UnderTiles", RenderLayer.UnderTiles);
+			RegisterScreenTarget("UnderTiles", RenderLayer.UnderTiles);
 
-			ModContent.GetInstance<PixelationSystem>().RegisterScreenTarget("UnderNPCs", RenderLayer.UnderNPCs);
+			RegisterScreenTarget("UnderNPCs", RenderLayer.UnderNPCs);
 
-			ModContent.GetInstance<PixelationSystem>().RegisterScreenTarget("UnderProjectiles", RenderLayer.UnderProjectiles);
+			RegisterScreenTarget("UnderProjectiles", RenderLayer.UnderProjectiles);
 			
-			ModContent.GetInstance<PixelationSystem>().RegisterScreenTarget("OverPlayers", RenderLayer.OverPlayers);
+			RegisterScreenTarget("OverPlayers", RenderLayer.OverPlayers);
 
-			ModContent.GetInstance<PixelationSystem>().RegisterScreenTarget("OverWiresUI", RenderLayer.OverWiresUI);
+			RegisterScreenTarget("OverWiresUI", RenderLayer.OverWiresUI);
 
-			ModContent.GetInstance<PixelationSystem>().RegisterScreenTarget("Dusts", RenderLayer.Dusts);
+			RegisterScreenTarget("Dusts", RenderLayer.Dusts);
 		}
 
 		public override void Unload()
