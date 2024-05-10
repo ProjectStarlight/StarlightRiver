@@ -307,7 +307,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			Vector2 targetPos2 = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(savedRot + AttackTimer / 400f * 6.28f) * -550;
 
 			if (AttackTimer < 30)
-				(thinker.ModNPC as TheThinker).ExtraRadius = -100 * AttackTimer / 30f;
+				(thinker.ModNPC as TheThinker).ExtraRadius = -60 * AttackTimer / 30f;
 
 			if (AttackTimer >= 1 && AttackTimer < 400)
 			{
@@ -362,7 +362,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			}
 
 			if (AttackTimer >= 370)
-				(thinker.ModNPC as TheThinker).ExtraRadius = -100 + 100 * (AttackTimer - 370) / 30f;
+				(thinker.ModNPC as TheThinker).ExtraRadius = -60 + 60 * (AttackTimer - 370) / 30f;
 
 			if (AttackTimer >= 400)
 			{

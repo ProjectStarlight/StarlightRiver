@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Biomes;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Physics;
 using StarlightRiver.Core.Systems.BarrierSystem;
 using StarlightRiver.Helpers;
@@ -139,7 +140,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (!reworked)
 				return true;
 
-			GUI.BossBarOverlay.SetTracked(npc);
+			npc.knockBackResist = 0f;
 
 			Timer++;
 			AttackTimer++;
@@ -147,7 +148,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			NPC.crimsonBoss = npc.whoAmI;
 
 			if (State != 5)
-				Lighting.AddLight(npc.Center, new Vector3(0.5f, 0.4f, 0.2f));
+				Lighting.AddLight(npc.Center, State > 2 ? new Vector3(0.5f, 0.4f, 0.2f) : new Vector3(0.5f, 0.5f, 0.5f));
 
 			// If we dont have a thinker, try to find one
 			if (thinker is null)
@@ -174,6 +175,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					Timer = 0;
 				}
 			}
+
+			GUI.BossBarOverlay.SetTracked(thinker);
+			Main.BigBossProgressBar.TryTracking(thinker.whoAmI);
 
 			if (chain != null)
 			{
@@ -242,34 +246,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				// Intro
 				case 1:
 
-					if (Timer == 1)
-						savedPos = npc.Center;
-
-					if (Timer < 120)
-						npc.Center = Vector2.SmoothStep(savedPos, thinker.Center + new Vector2(0, -250), Timer / 120f);
-
-					foreach (Player player in Main.player.Where(n => n.active && Vector2.Distance(n.Center, thinker.Center) < 1500))
-					{
-						player.position += (thinker.Center - player.Center) * 0.1f * (Vector2.Distance(player.Center, thinker.Center) / 1500f);
-					}
-
-					if (Timer == 120)
-					{
-						(thinker.ModNPC as TheThinker)?.CreateArena();
-					}
-
-					if (Timer >= 120)
-					{
-						if (arenaFade < 120)
-							arenaFade++;
-					}
-
-					if (Timer == 240)
-					{
-						State = 2;
-						Timer = 0;
-						AttackTimer = 0;
-					}
+					Intro();
 
 					break;
 
@@ -409,6 +386,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			return false;
 		}
 
+		public override void PostAI(NPC npc)
+		{
+			if (reworked)
+				npc.boss = false;
+		}
+
 		public override bool CanHitPlayer(NPC npc, Player target, ref int cooldownSlot)
 		{
 			return contactDamage && opacity > 0.9f;
@@ -512,15 +495,29 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			if (reworked)
 			{
-				if (State == 2)
+				if (TheBrain.State == 2)
 				{
-					Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/GlowRing").Value;
-					Color color = Color.Gray * Math.Min(1f, Timer / 60f);
-					color.A = 0;
+					Texture2D tex = Assets.Bosses.BrainRedux.ShieldMap.Value;
 
-					spriteBatch.Draw(tex, npc.Center - Main.screenPosition, null, color, 0, tex.Size() / 2f, 0.6f, 0, 0);
+					var effect = Filters.Scene["BrainShield"].GetShader().Shader;
 
-					spriteBatch.Draw(tex, npc.Center - Main.screenPosition, null, color, 0, tex.Size() / 2f, 0.6f + 0.05f * (float)Math.Sin(Main.GameUpdateCount * 0.1f), 0, 0);
+					effect.Parameters["time"]?.SetValue(Main.GameUpdateCount * 0.02f);
+					effect.Parameters["size"]?.SetValue(tex.Size() * 0.6f);
+					effect.Parameters["opacity"]?.SetValue(0.4f);
+					effect.Parameters["pixelRes"]?.SetValue(2f);
+
+					effect.Parameters["drawTexture"]?.SetValue(tex);
+					effect.Parameters["noiseTexture"]?.SetValue(Assets.Noise.SwirlyNoiseLooping.Value);
+					effect.Parameters["pulseTexture"]?.SetValue(Assets.Noise.PerlinNoise.Value);
+					effect.Parameters["edgeTexture"]?.SetValue(Assets.Bosses.BrainRedux.ShieldEdge.Value);
+
+					spriteBatch.End();
+					spriteBatch.Begin(default, BlendState.Additive, default, default, default, effect, Main.Transform);
+
+					spriteBatch.Draw(tex, TheBrain.npc.Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2f, 0.6f, SpriteEffects.FlipVertically, 0);
+
+					spriteBatch.End();
+					spriteBatch.Begin(default, default, default, default, default, default, Main.Transform);
 				}
 			}
 		}

@@ -48,8 +48,8 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
-			WorldGen.TileRunner((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16, 5, 16, ModContent.TileType<GrayMatter>(), true, 1, 0, true);
-			//BrainOfCthulu.SpawnReduxedBrain(Main.MouseWorld);
+			//WorldGen.TileRunner((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16, 5, 16, ModContent.TileType<GrayMatter>(), true, 1, 0, true);
+			BrainOfCthulu.SpawnReduxedBrain(Main.MouseWorld);
 
 			//StarlightEventSequenceSystem.sequence = 0;
 			//player.GetHandler().unlockedAbilities.Clear();

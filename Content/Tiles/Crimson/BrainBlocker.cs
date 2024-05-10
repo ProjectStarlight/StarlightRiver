@@ -32,7 +32,9 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 			var tile = Framing.GetTileSafely(i, j);
 
-			spriteBatch.Draw(tex, (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), new Color(200, 90, 70) * BrainOfCthulu.ArenaOpacity);
+			if (!tile.IsActuated)
+				spriteBatch.Draw(tex, (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), new Color(200, 90, 70) * BrainOfCthulu.ArenaOpacity);
+			
 			return false;
 		}
 	}

@@ -43,6 +43,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			NPC.knockBackResist = 0f;
 			NPC.friendly = false;
 			NPC.noTileCollide = true;
+			NPC.boss = true;
+
+			Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/WhipAndNaenae");
 
 			toRender.Add(this);
 		}
@@ -74,7 +77,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				Player player = Main.player[k];
 
-				if (Vector2.DistanceSquared(player.Center, NPC.Center) <= Math.Pow(200 + ExtraRadius, 2))
+				if (Vector2.DistanceSquared(player.Center, NPC.Center) <= Math.Pow(140 + ExtraRadius, 2))
 					player.AddBuff(ModContent.BuffType<CrimsonHallucination>(), 10);
 			}
 
@@ -88,8 +91,6 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				Timer++;
 				AttackTimer++;
-
-				NPC.dontTakeDamage = false;
 
 				NPC.Center += (home - NPC.Center) * 0.02f;
 
@@ -110,14 +111,18 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					BrainOfCthulu.TheBrain.npc.dontTakeDamage = false;
 				}
 			}
-			else
-			{
-				NPC.dontTakeDamage = true;
-			}
 		}
 
 		public override void ModifyIncomingHit(ref NPC.HitModifiers modifiers)
 		{
+			if (BrainOfCthulu.TheBrain != null && BrainOfCthulu.TheBrain.State == 5)
+				return;
+
+			modifiers.FinalDamage *= 0;
+			NPC.life += 1;
+			modifiers.HideCombatText();
+
+			CombatText.NewText(NPC.Hitbox, Color.Gray, 0);
 		}
 
 		public override bool CheckDead()
@@ -247,10 +252,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				for (int k = 0; k < 8; k++)
 				{
-					sb.Draw(glow, thinker.NPC.Center - Main.screenPosition, null, color, 0, glow.Size() / 2f, (200 + thinker.ExtraRadius) * 4 / glow.Width, 0, 0);
+					sb.Draw(glow, thinker.NPC.Center - Main.screenPosition, null, color, 0, glow.Size() / 2f, (140 + thinker.ExtraRadius) * 4 / glow.Width, 0, 0);
 				}
-				//sb.Draw(glow, thinker.NPC.Center - Main.screenPosition, null, color, 0, glow.Size() / 2f, 6f, 0, 0);
-				//sb.Draw(glow, thinker.NPC.Center - Main.screenPosition, null, color, 0, glow.Size() / 2f, 6f, 0, 0);
 			}
 
 			toRender.RemoveAll(n => n is null || !n.NPC.active);
