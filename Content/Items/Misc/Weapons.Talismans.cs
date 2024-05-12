@@ -28,6 +28,14 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.mana = 4;
 			Item.shootSpeed = 10;
 		}
+
+		public override void AddRecipes()
+		{
+			Recipe.Create(Type, 100)
+				.AddIngredient(ItemID.Silk, 4)
+				.AddIngredient(ItemID.FallenStar, 1)
+				.Register();
+		}
 	}
 
 	internal class TalismansProjectile : BaseTalismanProjectile<TalismansBuff>

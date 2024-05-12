@@ -119,7 +119,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public int triggerAnimTime;
 
-		public static Asset<Texture2D> texture;
+		public Asset<Texture2D> texture;
 
 		public override void Load()
 		{
@@ -144,7 +144,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 					{
 						Vector2 off = new Vector2(rand.Next(npc.width), rand.Next(npc.height));
 						var pos2 = npc.position + off - Main.screenPosition;
-						spriteBatch.Draw(tex, pos2, null, drawColor * (buff.triggerAnimTime / 15f), 0, tex.Size() / 2f, 0.5f + (1 - buff.triggerAnimTime / 15f), 0, 0);
+						spriteBatch.Draw(tex, pos2, null, drawColor * (buff.triggerAnimTime / 15f), 0, tex.Size() / 2f, 1f + (1 - buff.triggerAnimTime / 15f), 0, 0);
 					}
 				}
 				else
@@ -153,7 +153,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 					{
 						Vector2 off = new Vector2(rand.Next(npc.width), rand.Next(npc.height));
 						var pos2 = npc.position + off - Main.screenPosition;
-						spriteBatch.Draw(tex, pos2, null, drawColor, 0, tex.Size() / 2f, 0.5f, 0, 0);
+						spriteBatch.Draw(tex, pos2, null, drawColor, 0, tex.Size() / 2f, 1f, 0, 0);
 					}
 				}
 			}

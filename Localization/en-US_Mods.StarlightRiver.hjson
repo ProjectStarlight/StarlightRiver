@@ -3038,6 +3038,15 @@ Items: {
 			Ignites enemies with 6 stacks
 			'''
 	}
+
+	SpiritSeal: {
+		DisplayName: Spirit Seal
+		Tooltip:
+			'''
+			Sticks to enemies
+			Inflicts shared pain on ALL enemies with any stacks when ONE enemy reaches 7 stacks
+			'''
+	}
 }
 
 Tiles: {
@@ -3895,6 +3904,16 @@ Buffs: {
 	TalismansBuff: {
 		DisplayName: Talismans
 		Description: ""
+	}
+
+	SpiritSealBuff: {
+		DisplayName: Spirit Seal
+		Description: ""
+	}
+
+	SpiritSealDamageShare: {
+		DisplayName: Shared pain
+		Description: Feeling the hurt!
 	}
 }
 
