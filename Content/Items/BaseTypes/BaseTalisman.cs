@@ -106,8 +106,9 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			hitTile = true;
 
 			Projectile.frame = 2;
-			Projectile.velocity *= -0.1f;
+			Projectile.velocity *= -0.05f;
 			Projectile.timeLeft = 60;
+			Projectile.extraUpdates = 2;
 			return false;
 		}
 	}
@@ -115,6 +116,8 @@ namespace StarlightRiver.Content.Items.BaseTypes
 	internal abstract class BaseTalismanBuff : StackableBuff
 	{
 		public int threshold = 5;
+
+		public int triggerAnimTime;
 
 		public static Asset<Texture2D> texture;
 
@@ -128,30 +131,44 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		{
 			if (AnyInflicted(npc))
 			{
-				var buff = GetInstance(npc) as StackableBuff;
+				var buff = GetInstance(npc) as BaseTalismanBuff;
 
 				var tex = texture.Value;
 				var pos = npc.Center + Vector2.UnitY * (npc.height / 2 + 32) * -1 - Main.screenPosition;
-				spriteBatch.Draw(tex, pos, null, Color.White * 0.2f, 0, tex.Size() / 2f, 1, 0, 0);
-				Utils.DrawBorderString(spriteBatch, $"{buff.stacks.Count}/{threshold}", pos + Vector2.UnitY * 10, Color.White, 0.8f, 0.5f, 0.5f);
 
 				var rand = new Random(npc.whoAmI);
 
-				for(int k = 0; k < buff.stacks.Count; k++)
+				if (buff.triggerAnimTime > 0)
 				{
-					Vector2 off = new Vector2(rand.Next(npc.width), rand.Next(npc.height));
-					var pos2 = npc.position + off - Main.screenPosition;
-					spriteBatch.Draw(tex, pos2, null, drawColor, 0, tex.Size() / 2f, 0.5f, 0, 0);
+					for (int k = 0; k < buff.threshold; k++)
+					{
+						Vector2 off = new Vector2(rand.Next(npc.width), rand.Next(npc.height));
+						var pos2 = npc.position + off - Main.screenPosition;
+						spriteBatch.Draw(tex, pos2, null, drawColor * (buff.triggerAnimTime / 15f), 0, tex.Size() / 2f, 0.5f + (1 - buff.triggerAnimTime / 15f), 0, 0);
+					}
+				}
+				else
+				{
+					for (int k = 0; k < buff.stacks.Count; k++)
+					{
+						Vector2 off = new Vector2(rand.Next(npc.width), rand.Next(npc.height));
+						var pos2 = npc.position + off - Main.screenPosition;
+						spriteBatch.Draw(tex, pos2, null, drawColor, 0, tex.Size() / 2f, 0.5f, 0, 0);
+					}
 				}
 			}
 		}
 
 		public override void AnyStacksUpdateNPC(NPC npc)
 		{
+			if (triggerAnimTime > 0)
+				triggerAnimTime--;
+
 			if (stacks.Count >= threshold)
 			{
 				OnMaxStacks(npc);
 
+				triggerAnimTime = 15;
 				for (int k = 0; k < threshold; k++)
 				{
 					stacks.RemoveAt(0);

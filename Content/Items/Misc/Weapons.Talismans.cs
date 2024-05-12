@@ -26,13 +26,38 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.reuseDelay = 20;
 			Item.damage = 5;
 			Item.mana = 4;
-			Item.shootSpeed = 13;
+			Item.shootSpeed = 10;
 		}
 	}
 
 	internal class TalismansProjectile : BaseTalismanProjectile<TalismansBuff>
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
+
+		public override void SetStaticDefaults()
+		{
+			ProjectileID.Sets.TrailCacheLength[Type] = 20;
+			ProjectileID.Sets.TrailingMode[Type] = 2;
+
+			base.SetStaticDefaults();
+		}
+
+		public override bool PreDraw(ref Color lightColor)
+		{
+			if (!hitTile)
+			{
+				for (int k = 0; k < 10; k += 2)
+				{
+					var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Misc/TalismansProjectile").Value;
+					var pos = Projectile.oldPos[k] - Main.screenPosition + new Vector2(14, 11);
+					var frame = new Rectangle(0, Projectile.frame * 22, 28, 22);
+
+					Main.spriteBatch.Draw(tex, pos, frame, lightColor * (1 - k / 10f) * 0.2f, Projectile.oldRot[k], new Vector2(14, 11), 0.8f, 0, 0);
+				}
+			}
+
+			return true;
+		}
 	}
 
 	internal class TalismansBuff : BaseTalismanBuff
