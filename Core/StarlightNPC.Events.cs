@@ -1,4 +1,5 @@
-﻿namespace StarlightRiver.Core
+﻿
+namespace StarlightRiver.Core
 {
 	public partial class StarlightNPC : GlobalNPC
 	{
@@ -78,6 +79,21 @@
 		public override void UpdateLifeRegen(NPC NPC, ref int damage)
 		{
 			UpdateLifeRegenEvent.Invoke(NPC, ref damage);
+		}
+
+		public delegate void PreDrawDelegate(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor);
+		public static event PreDrawDelegate PreDrawEvent;
+		public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+		{
+			PreDrawEvent?.Invoke(npc, spriteBatch, screenPos, drawColor);
+			return true;
+		}
+
+		public delegate void PostDrawDelegate(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor);
+		public static event PostDrawDelegate PostDrawEvent;
+		public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+		{
+			PostDrawEvent?.Invoke(npc, spriteBatch, screenPos, drawColor);
 		}
 
 		public override void Unload()

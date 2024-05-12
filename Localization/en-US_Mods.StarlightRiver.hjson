@@ -3029,6 +3029,15 @@ Items: {
 		DisplayName: Soft Sand
 		Tooltip: ""
 	}
+
+	Talismans: {
+		DisplayName: Talismans
+		Tooltip:
+			'''
+			Sticks to enemies
+			Ignites enemies with 6 stacks
+			'''
+	}
 }
 
 Tiles: {
@@ -3881,6 +3890,11 @@ Buffs: {
 			What lies below?
 			Increased mining speed
 			'''
+	}
+
+	TalismansBuff: {
+		DisplayName: Talismans
+		Description: ""
 	}
 }
 
