@@ -124,6 +124,27 @@ namespace StarlightRiver.Content.Items.Haunted
 		{
 			StarlightNPC.OnHitByItemEvent += ShareItemHit;
 			StarlightNPC.OnHitByProjectileEvent += ShareProjHit;
+			StarlightNPC.PostDrawEvent += DrawPainShare;
+		}
+
+		public override void Update(NPC npc, ref int buffIndex)
+		{
+			Lighting.AddLight(npc.Center, new Vector3(0.4f, 0.5f, 0.25f));
+
+			if (Main.rand.NextBool(5))
+				Dust.NewDustPerfect(npc.Center, ModContent.DustType<Dusts.Cinder>(), Vector2.Zero, 0, new Color(0.5f, 0.8f, 0.05f));
+		}
+
+		private void DrawPainShare(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+		{
+			if (Inflicted(npc))
+			{
+				var tex = Assets.Items.Haunted.SpiritSealBuff.Value;
+				var glow = Assets.Keys.GlowAlpha.Value;
+
+				spriteBatch.Draw(tex, npc.Center - Main.screenPosition, null, new Color(0.4f, 0.5f, 0.25f) * 0.8f, 0, tex.Size() / 2f, 2f + (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.5f, 0, 0);
+				spriteBatch.Draw(glow, npc.Center - Main.screenPosition, null, new Color(0.3f, 0.5f, 0.2f, 0.0f) * 0.8f, 0, glow.Size() / 2f, 0.5f + (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.1f, 0, 0);
+			}
 		}
 
 		private void ShareItemHit(NPC npc, Player player, Item item, NPC.HitInfo hit, int damageDone)
@@ -147,5 +168,6 @@ namespace StarlightRiver.Content.Items.Haunted
 				}
 			}
 		}
+
 	}
 }
