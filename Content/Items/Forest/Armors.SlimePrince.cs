@@ -47,7 +47,7 @@ namespace StarlightRiver.Content.Items.Forest
 
 		public override void UpdateArmorSet(Player player)
 		{
-			player.setBonus = "A slime prince follows you around\nDouble tap DOWN to fuse with the prince\nYou can control the prince during this time\nThe prince takes damage instead of you during this time";
+			player.setBonus = "A slime prince follows you around\nDouble tap DOWN to temporarily merge with the prince, controlling it\nThe prince takes damage instead of you during this time";
 
 			if (player.whoAmI == Main.myPlayer)
 			{

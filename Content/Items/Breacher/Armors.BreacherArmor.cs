@@ -79,7 +79,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public override void UpdateArmorSet(Player Player)
 		{
-			Player.setBonus = "A spotter drone follows you, building energy with kills\nDouble tap DOWN to consume it and call down an orbital strike on an enemy";
+			Player.setBonus = "A spotter drone follows you, charging energy with kills\nDouble tap DOWN to drain it and call down an orbital strike on an enemy";
 
 			if (Player.ownedProjectileCounts[ProjectileType<SpotterDrone>()] < 1 && !Player.dead)
 				Projectile.NewProjectile(Player.GetSource_Accessory(Item), Player.Center, Vector2.Zero, ProjectileType<SpotterDrone>(), (int)(50 * Player.GetDamage(DamageClass.Ranged).Multiplicative), 1.5f, Player.whoAmI);

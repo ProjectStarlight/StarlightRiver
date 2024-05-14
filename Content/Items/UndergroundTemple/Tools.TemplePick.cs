@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Whirlwind Pickaxe");
-			Tooltip.SetDefault("Hold right click to charge up a spinning pickaxe dash, breaking anything in your way");
+			Tooltip.SetDefault("Hold <right> to charge up a spinning pickaxe dash, breaking anything in your way");
 		}
 
 		public override void SetDefaults()

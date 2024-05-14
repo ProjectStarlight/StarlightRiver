@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.Items.Forest
 	{
 		public override string Texture => AssetDirectory.ForestItem + Name;
 
-		public AcornSprout() : base("Acorn Sprout", "Killing summon tagged enemies summons acorns to fall on nearby enemies") { }
+		public AcornSprout() : base("Acorn Sprout", "Killing summon tagged enemies creates acorns to fall on nearby enemies") { }
 
 		public override void SafeSetDefaults()
 		{

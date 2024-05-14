@@ -15,8 +15,8 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Warrior King's Crown");
-			Tooltip.SetDefault("Cursed : All of your summon slots are converted into +2% summoning critical strike chance per slot" +
-				" and all of your sentry slots are converted into +30% summoning damage per slot\n" +
+			Tooltip.SetDefault("Cursed : All summon slots convert to +2% summoning critical strike chance per slot\n" +
+				"All sentry slots convert to +30% summoning damage per slot\n" +
 				"Summoning damage increased by 40%\nCombat mount cooldowns reduced by 30%");
 		}
 
