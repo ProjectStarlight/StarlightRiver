@@ -18,25 +18,23 @@ namespace StarlightRiver.Core.Systems.PixelationSystem
 			if (Main.dedServ)
 				return;
 
-			On_Main.DrawNPCs += DrawNPCTargets;
-			On_Main.DrawSuperSpecialProjectiles += DrawUnderProjectileTargets;
-			On_Main.DrawPlayers_AfterProjectiles += DrawPlayerTargets;
-			On_Main.DrawCachedProjs += DrawOverProjectileTargets;
-		}
+			On_Main.DrawCachedProjs += DrawTargets;
+			On_Main.DrawDust += DrawDustTargets;
+		}		
 
 		public override void PostSetupContent()
 		{
-			// IDK if i need to call GetInstance here
-			ModContent.GetInstance<PixelationSystem>().RegisterScreenTarget("UnderTiles", RenderLayer.UnderTiles);
+			RegisterScreenTarget("UnderTiles", RenderLayer.UnderTiles);
 
-			ModContent.GetInstance<PixelationSystem>().RegisterScreenTarget("UnderProjectiles", RenderLayer.UnderProjectiles);
-			ModContent.GetInstance<PixelationSystem>().RegisterScreenTarget("OverProjectiles", RenderLayer.OverProjectiles);
+			RegisterScreenTarget("UnderNPCs", RenderLayer.UnderNPCs);
 
-			ModContent.GetInstance<PixelationSystem>().RegisterScreenTarget("UnderPlayers", RenderLayer.UnderPlayers);
-			ModContent.GetInstance<PixelationSystem>().RegisterScreenTarget("OverPlayers", RenderLayer.OverPlayers);
+			RegisterScreenTarget("UnderProjectiles", RenderLayer.UnderProjectiles);
+			
+			RegisterScreenTarget("OverPlayers", RenderLayer.OverPlayers);
 
-			ModContent.GetInstance<PixelationSystem>().RegisterScreenTarget("UnderNPCs", RenderLayer.UnderNPCs);
-			ModContent.GetInstance<PixelationSystem>().RegisterScreenTarget("OverNPCs", RenderLayer.OverNPCs);
+			RegisterScreenTarget("OverWiresUI", RenderLayer.OverWiresUI);
+
+			RegisterScreenTarget("Dusts", RenderLayer.Dusts);
 		}
 
 		public override void Unload()
@@ -44,213 +42,93 @@ namespace StarlightRiver.Core.Systems.PixelationSystem
 			if (Main.dedServ)
 				return;
 
-			On_Main.DrawNPCs -= DrawNPCTargets;
-			On_Main.DrawPlayers_AfterProjectiles -= DrawPlayerTargets;
-			On_Main.DrawCachedProjs -= DrawOverProjectileTargets;
-			On_Main.DrawSuperSpecialProjectiles -= DrawUnderProjectileTargets;
+			On_Main.DrawCachedProjs -= DrawTargets;
+			On_Main.DrawDust -= DrawDustTargets;
 		}
 
-		private void DrawPlayerTargets(On_Main.orig_DrawPlayers_AfterProjectiles orig, Main self)
-		{
-			SpriteBatch sb = Main.spriteBatch;
-
-			foreach (PixelationTarget target in pixelationTargets.Where(t => t.Active && t.renderType == RenderLayer.UnderPlayers))
-			{
-				PixelPalette palette = target.palette;
-
-				bool doNotApplyCorrection = palette.NoCorrection || Main.graphics.GraphicsProfile == GraphicsProfile.Reach;
-
-				Effect paletteCorrection = doNotApplyCorrection ? null : Filters.Scene["PaletteCorrection"].GetShader().Shader;
-
-				if (paletteCorrection != null)
-				{
-					paletteCorrection.Parameters["palette"].SetValue(palette.Colors);
-					paletteCorrection.Parameters["colorCount"].SetValue(palette.ColorCount);
-				}
-
-				sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp,
-					DepthStencilState.None, RasterizerState.CullNone, paletteCorrection, Main.GameViewMatrix.EffectMatrix);
-
-				sb.Draw(target.pixelationTarget2.RenderTarget, Vector2.Zero, null, Color.White, 0, new Vector2(0, 0), 2f, SpriteEffects.None, 0);
-
-				sb.End();
-			}
-
-			orig(self);
-
-			foreach (PixelationTarget target in pixelationTargets.Where(t => t.Active && t.renderType == RenderLayer.OverPlayers))
-			{
-				PixelPalette palette = target.palette;
-
-				bool doNotApplyCorrection = palette.NoCorrection || Main.graphics.GraphicsProfile == GraphicsProfile.Reach;
-
-				Effect paletteCorrection = doNotApplyCorrection ? null : Filters.Scene["PaletteCorrection"].GetShader().Shader;
-
-				if (paletteCorrection != null)
-				{
-					paletteCorrection.Parameters["palette"].SetValue(palette.Colors);
-					paletteCorrection.Parameters["colorCount"].SetValue(palette.ColorCount);
-				}
-
-				sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp,
-					DepthStencilState.None, RasterizerState.CullNone, paletteCorrection, Main.GameViewMatrix.EffectMatrix);
-
-				sb.Draw(target.pixelationTarget2.RenderTarget, Vector2.Zero, null, Color.White, 0, new Vector2(0, 0), 2f, SpriteEffects.None, 0);
-
-				sb.End();
-			}
-		}
-
-		private void DrawUnderProjectileTargets(On_Main.orig_DrawSuperSpecialProjectiles orig, Main self, List<int> projCache, bool startSpriteBatch)
-		{
-			SpriteBatch sb = Main.spriteBatch;
-
-			foreach (PixelationTarget target in pixelationTargets.Where(t => t.Active && t.renderType == RenderLayer.UnderProjectiles))
-			{
-				PixelPalette palette = target.palette;
-
-				bool doNotApplyCorrection = palette.NoCorrection || Main.graphics.GraphicsProfile == GraphicsProfile.Reach;
-
-				Effect paletteCorrection = doNotApplyCorrection ? null : Filters.Scene["PaletteCorrection"].GetShader().Shader;
-
-				if (paletteCorrection != null)
-				{
-					paletteCorrection.Parameters["palette"].SetValue(palette.Colors);
-					paletteCorrection.Parameters["colorCount"].SetValue(palette.ColorCount);
-				}
-
-				if (!startSpriteBatch)
-					sb.End();
-
-				sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp,
-					DepthStencilState.None, RasterizerState.CullNone, paletteCorrection, Main.GameViewMatrix.EffectMatrix);
-
-				sb.Draw(target.pixelationTarget2.RenderTarget, Vector2.Zero, null, Color.White, 0, new Vector2(0, 0), 2f, SpriteEffects.None, 0);
-
-				sb.End();
-
-				if (!startSpriteBatch)
-					sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
-			}
-
-			orig(self, projCache, startSpriteBatch);
-		}
-
-		private void DrawOverProjectileTargets(On_Main.orig_DrawCachedProjs orig, Main self, List<int> projCache, bool startSpriteBatch)
+		private void DrawTargets(On_Main.orig_DrawCachedProjs orig, Main self, List<int> projCache, bool startSpriteBatch)
 		{
 			SpriteBatch sb = Main.spriteBatch;
 
 			orig(self, projCache, startSpriteBatch);
 
-			foreach (PixelationTarget target in pixelationTargets.Where(t => t.Active && t.renderType == RenderLayer.OverProjectiles))
-			{
-				PixelPalette palette = target.palette;
-
-				bool doNotApplyCorrection = palette.NoCorrection || Main.graphics.GraphicsProfile == GraphicsProfile.Reach;
-
-				Effect paletteCorrection = doNotApplyCorrection ? null : Filters.Scene["PaletteCorrection"].GetShader().Shader;
-
-				if (paletteCorrection != null)
-				{
-					paletteCorrection.Parameters["palette"].SetValue(palette.Colors);
-					paletteCorrection.Parameters["colorCount"].SetValue(palette.ColorCount);
-				}
-
-				if (!startSpriteBatch)
-					sb.End();
-
-				sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp,
-					DepthStencilState.None, RasterizerState.CullNone, paletteCorrection, Main.GameViewMatrix.EffectMatrix);
-
-				sb.Draw(target.pixelationTarget2.RenderTarget, Vector2.Zero, null, Color.White, 0, new Vector2(0, 0), 2f, SpriteEffects.None, 0);
-
-				sb.End();
-
-				if (!startSpriteBatch)
-					sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
-			}
-		}
-
-		private void DrawNPCTargets(On_Main.orig_DrawNPCs orig, Main self, bool behindTiles)
-		{
-			SpriteBatch sb = Main.spriteBatch;
-
-			if (behindTiles)
+			if (projCache.Equals(Main.instance.DrawCacheProjsBehindNPCsAndTiles))
 			{
 				foreach (PixelationTarget target in pixelationTargets.Where(t => t.Active && t.renderType == RenderLayer.UnderTiles))
 				{
-					PixelPalette palette = target.palette;
-
-					bool doNotApplyCorrection = palette.NoCorrection || Main.graphics.GraphicsProfile == GraphicsProfile.Reach;
-
-					Effect paletteCorrection = doNotApplyCorrection ? null : Filters.Scene["PaletteCorrection"].GetShader().Shader;
-
-					if (paletteCorrection != null)
-					{
-						paletteCorrection.Parameters["palette"].SetValue(palette.Colors);
-						paletteCorrection.Parameters["colorCount"].SetValue(palette.ColorCount);
-					}
-
-					sb.End();
-					sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp,
-						DepthStencilState.None, RasterizerState.CullNone, paletteCorrection, Main.GameViewMatrix.EffectMatrix);
-
-					sb.Draw(target.pixelationTarget2.RenderTarget, Vector2.Zero, null, Color.White, 0, new Vector2(0, 0), 2f, SpriteEffects.None, 0);
-
-					sb.End();
-					sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+					DrawTarget(target, Main.spriteBatch, !startSpriteBatch);
 				}
 			}
 
-			foreach (PixelationTarget target in pixelationTargets.Where(t => t.Active && t.renderType == RenderLayer.UnderNPCs))
+			if (projCache.Equals(Main.instance.DrawCacheProjsBehindNPCs))
 			{
-				PixelPalette palette = target.palette;
-
-				bool doNotApplyCorrection = palette.NoCorrection || Main.graphics.GraphicsProfile == GraphicsProfile.Reach;
-
-				Effect paletteCorrection = doNotApplyCorrection ? null : Filters.Scene["PaletteCorrection"].GetShader().Shader;
-
-				if (paletteCorrection != null)
+				foreach (PixelationTarget target in pixelationTargets.Where(t => t.Active && t.renderType == RenderLayer.UnderNPCs))
 				{
-					paletteCorrection.Parameters["palette"].SetValue(palette.Colors);
-					paletteCorrection.Parameters["colorCount"].SetValue(palette.ColorCount);
+					DrawTarget(target, Main.spriteBatch, !startSpriteBatch);
 				}
-
-				sb.End();
-				sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp,
-					DepthStencilState.None, RasterizerState.CullNone, paletteCorrection, Main.GameViewMatrix.EffectMatrix);
-
-				sb.Draw(target.pixelationTarget2.RenderTarget, Vector2.Zero, null, Color.White, 0, new Vector2(0, 0), 2f, SpriteEffects.None, 0);
-
-				sb.End();
-				sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 
-			orig(self, behindTiles);
-
-			foreach (PixelationTarget target in pixelationTargets.Where(t => t.Active && t.renderType == RenderLayer.OverNPCs))
+			if (projCache.Equals(Main.instance.DrawCacheProjsBehindProjectiles))
 			{
-				PixelPalette palette = target.palette;
-
-				bool doNotApplyCorrection = palette.NoCorrection || Main.graphics.GraphicsProfile == GraphicsProfile.Reach;
-
-				Effect paletteCorrection = doNotApplyCorrection ? null : Filters.Scene["PaletteCorrection"].GetShader().Shader;
-
-				if (paletteCorrection != null)
+				foreach (PixelationTarget target in pixelationTargets.Where(t => t.Active && t.renderType == RenderLayer.UnderProjectiles))
 				{
-					paletteCorrection.Parameters["palette"].SetValue(palette.Colors);
-					paletteCorrection.Parameters["colorCount"].SetValue(palette.ColorCount);
+					DrawTarget(target, Main.spriteBatch, !startSpriteBatch);
 				}
-
-				sb.End();
-				sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp,
-					DepthStencilState.None, RasterizerState.CullNone, paletteCorrection, Main.GameViewMatrix.EffectMatrix);
-
-				sb.Draw(target.pixelationTarget2.RenderTarget, Vector2.Zero, null, Color.White, 0, new Vector2(0, 0), 2f, SpriteEffects.None, 0);
-
-				sb.End();
-				sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			}
+
+			if (projCache.Equals(Main.instance.DrawCacheProjsOverPlayers))
+			{
+				foreach (PixelationTarget target in pixelationTargets.Where(t => t.Active && t.renderType == RenderLayer.OverPlayers))
+				{
+					DrawTarget(target, Main.spriteBatch, !startSpriteBatch);
+				}
+			}
+
+			if (projCache.Equals(Main.instance.DrawCacheProjsOverWiresUI))
+			{
+				foreach (PixelationTarget target in pixelationTargets.Where(t => t.Active && t.renderType == RenderLayer.OverWiresUI))
+				{
+					DrawTarget(target, Main.spriteBatch, !startSpriteBatch);
+				}
+			}
+		}
+
+		private void DrawDustTargets(On_Main.orig_DrawDust orig, Main self)
+		{
+			orig(self);
+
+			foreach (PixelationTarget target in pixelationTargets.Where(t => t.Active && t.renderType == RenderLayer.Dusts))
+			{
+				DrawTarget(target, Main.spriteBatch, false);
+			}
+		}
+
+		private void DrawTarget(PixelationTarget target, SpriteBatch sb, bool endSpriteBatch = true)
+		{
+			PixelPalette palette = target.palette;
+
+			bool doNotApplyCorrection = palette.NoCorrection || Main.graphics.GraphicsProfile == GraphicsProfile.Reach;
+
+			Effect paletteCorrection = doNotApplyCorrection ? null : Filters.Scene["PaletteCorrection"].GetShader().Shader;
+
+			if (paletteCorrection != null)
+			{
+				paletteCorrection.Parameters["palette"].SetValue(palette.Colors);
+				paletteCorrection.Parameters["colorCount"].SetValue(palette.ColorCount);
+			}
+
+			if (endSpriteBatch)
+				sb.End();
+
+			sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp,
+				DepthStencilState.None, RasterizerState.CullNone, paletteCorrection, Main.GameViewMatrix.TransformationMatrix);
+
+			sb.Draw(target.pixelationTarget2.RenderTarget, Vector2.Zero, null, Color.White, 0, new Vector2(0, 0), 2f, SpriteEffects.None, 0);
+
+			sb.End();
+
+			if (endSpriteBatch)
+				sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		/// <summary>
@@ -272,11 +150,11 @@ namespace StarlightRiver.Core.Systems.PixelationSystem
 			Main.QueueMainThreadAction(() => pixelationTargets.Add(new PixelationTarget(id, PixelPalette.From(palettePath), renderType)));
 		}
 
-		public void QueueRenderAction(string id, Action renderAction)
+		public void QueueRenderAction(string id, Action renderAction, int order = 0)
 		{
 			PixelationTarget target = pixelationTargets.Find(t => t.id == id);
 
-			target.pixelationDrawActions.Add(renderAction);
+			target.pixelationDrawActions.Add(new Tuple<Action, int>(renderAction, order));
 			target.renderTimer = 2;
 		}
 	}
@@ -287,7 +165,9 @@ namespace StarlightRiver.Core.Systems.PixelationSystem
 
 		public string id;
 
-		public List<Action> pixelationDrawActions;
+		// list of actions, and their draw order. Default order is zero, but actions with an order of 1 are drawn over 0, etc.
+
+		public List<Tuple<Action, int>> pixelationDrawActions;
 
 		public ScreenTarget pixelationTarget;
 
@@ -301,7 +181,7 @@ namespace StarlightRiver.Core.Systems.PixelationSystem
 
 		public PixelationTarget(string id, PixelPalette palette, RenderLayer renderType)
 		{
-			pixelationDrawActions = new List<Action>();
+			pixelationDrawActions = new List<Tuple<Action, int>>();
 
 			pixelationTarget = new(DrawPixelTarget, () => Active, 1f);
 			pixelationTarget2 = new(DrawPixelTarget2, () => Active, 1.1f);
@@ -333,9 +213,9 @@ namespace StarlightRiver.Core.Systems.PixelationSystem
 			sb.End();
 			sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.GameViewMatrix.EffectMatrix);
 
-			for (int i = 0; i < pixelationDrawActions.Count; i++)
+			foreach (Tuple<Action, int> tuple in pixelationDrawActions.OrderBy(t => t.Item2))
 			{
-				pixelationDrawActions[i].Invoke();
+				tuple.Item1.Invoke();
 			}
 
 			pixelationDrawActions.Clear();
@@ -348,12 +228,11 @@ namespace StarlightRiver.Core.Systems.PixelationSystem
 
 	public enum RenderLayer : int
 	{
-		UnderProjectiles = 0,
-		OverProjectiles = 1,
-		UnderPlayers = 2,
-		OverPlayers = 3,
-		UnderNPCs = 4,
-		OverNPCs = 5,
-		UnderTiles = 6,
+		UnderTiles = 1,
+		UnderNPCs = 2,
+		UnderProjectiles = 3,
+		OverPlayers = 4,	
+		OverWiresUI = 5,
+		Dusts = 6,
 	}
 }
