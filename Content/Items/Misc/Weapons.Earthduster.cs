@@ -107,14 +107,24 @@ namespace StarlightRiver.Content.Items.Misc
 
 	class EarthdusterHoldout : ModProjectile
 	{
+		public const int MAX_SHOTS = 50;
+		public const int MAX_PRESSURE_TIMER = 750;
+
 		public int ammoID;
 		public int projectileID;
+
+		public int shots;
+		public int ventingTimer;
+		public int maxPressureTimer;
 
 		public Projectile ghostProjectile = new();
 
 		public bool updateVelocity = true;
+		public float Pressure => PressureTimer / MAX_PRESSURE_TIMER;
+		public bool MaxPressure => Pressure >= 1f;
 		public ref float Timer => ref Projectile.ai[0];
 		public ref float UseTime => ref Projectile.ai[1];
+		public ref float PressureTimer => ref Projectile.ai[2];
 		public bool CanHold => Owner.channel && !Owner.CCed && !Owner.noItems;
 		public Vector2 ArmPosition => Owner.RotatedRelativePoint(Owner.MountedCenter, true) + new Vector2(28f + MathHelper.Lerp(0f, -12f, EaseBuilder.EaseQuarticIn.Ease(Timer < 150f ? Timer / 150f : 1f)), 16f * Owner.direction).RotatedBy(Projectile.rotation);
 		public Vector2 BarrelPosition => ArmPosition + Projectile.velocity * Projectile.width * 0.5f + new Vector2(-2f, -2f * Owner.direction).RotatedBy(Projectile.rotation);
@@ -156,18 +166,58 @@ namespace StarlightRiver.Content.Items.Misc
 				UseTime = CombinedHooks.TotalUseTime(Owner.HeldItem.useTime, Owner, Owner.HeldItem);
 			}
 
+			if (MaxPressure && maxPressureTimer < 300)
+				maxPressureTimer++;
+
+			if (ventingTimer > 0)
+				ventingTimer--;
+
 			UpdateHeldProjectile();
 
-			Timer++;
+			if (ventingTimer <= 0)
+			{
+				Timer++;
+				if (!MaxPressure)
+					PressureTimer++;
+			}
 
-			float spinUpTime = (int)(UseTime * MathHelper.Lerp(3f, 1f, Timer < 150f ? Timer / 150f : 1f)); // the time between shots / time between the sprite frame changes is greater when first starting firing
+			float spinUpTime = (int)(UseTime * MathHelper.Lerp(5f, 1f, EaseBuilder.EaseCircularOut.Ease(Pressure)));
 
-			if (++Projectile.frameCounter % (int)Utils.Clamp(spinUpTime - 3, 1, 50) == 0)
+			if (maxPressureTimer > 0)
+				spinUpTime = (int)(UseTime * MathHelper.Lerp(1f, 3f, maxPressureTimer / 300f));
+
+			if (++Projectile.frameCounter % (int)Utils.Clamp(spinUpTime - 3, 1, 50) == 0 && ventingTimer <= 0)
 				Projectile.frame = ++Projectile.frame % Main.projFrames[Projectile.type];
 
-			if ((int)Timer % spinUpTime == 0)
+			if ((int)Timer % spinUpTime == 0 && ventingTimer <= 0)
 			{
 				Shoot();
+			}
+
+			if (Main.myPlayer == Projectile.owner)
+			{
+				if (Main.mouseRight && ventingTimer <= 0)
+				{
+					Item heldItem = Owner.HeldItem;
+
+					int damage = Projectile.damage;
+
+					float shootSpeed = heldItem.shootSpeed;
+
+					float knockBack = Owner.GetWeaponKnockback(heldItem, heldItem.knockBack);
+
+					Vector2 shootVelocity = Projectile.velocity * shootSpeed;
+
+					Vector2 barrelPos = BarrelPosition + new Vector2(-20f, 0f).RotatedBy(Projectile.rotation);
+
+					Projectile.NewProjectile(Projectile.GetSource_FromThis(), barrelPos,
+						shootVelocity * 1.5f, (ghostProjectile.ModProjectile as EarthdusterProjectile).ClumpType, damage * 5, knockBack, Owner.whoAmI);
+
+					CameraSystem.shake += 12;
+					ventingTimer = 60;
+					maxPressureTimer = 0;
+					PressureTimer = 0;
+				}			
 			}
 		}
 
@@ -210,49 +260,51 @@ namespace StarlightRiver.Content.Items.Misc
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.EffectMatrix);
 
-				float fadeIn = Timer < 250f ? Timer / 250f : 1f;
+				float fadeIn = PressureTimer < 250f ? PressureTimer / 250f : 1f;
 
-				sb.Draw(bloomTex, BarrelPosition - Main.screenPosition, null, new Color(255, 120, 0, 0) * fadeIn * 0.2f, Projectile.rotation - MathHelper.PiOver2, bloomTex.Size() / 2f, 0.75f * fadeIn, 0, 0);
+				float pressureFade = maxPressureTimer > 0 ? Utils.Clamp(1f - maxPressureTimer / 300f, 0.5f, 1f) : fadeIn;
+
+				sb.Draw(bloomTex, BarrelPosition - Main.screenPosition, null, new Color(255, 120, 0, 0) * pressureFade * 0.2f, Projectile.rotation - MathHelper.PiOver2, bloomTex.Size() / 2f, 0.75f, 0, 0);
 
 				effect.Parameters["u_time"].SetValue(Timer * 0.01f % 2f);
-				effect.Parameters["primary"].SetValue(new Vector3(1, 0.7f, 0.1f) * fadeIn);
+				effect.Parameters["primary"].SetValue(new Vector3(1, 0.7f, 0.1f) * pressureFade);
 				effect.Parameters["primaryScaling"].SetValue(new Vector3(1, 1, 1));
-				effect.Parameters["secondary"].SetValue(new Vector3(1f, 0.2f, 0.05f) * fadeIn);
+				effect.Parameters["secondary"].SetValue(new Vector3(1f, 0.2f, 0.05f) * pressureFade);
 
 				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value);
 				effect.Parameters["mapTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value);
 
 				effect.CurrentTechnique.Passes[0].Apply();
 
-				sb.Draw(bloomTex, BarrelPosition + new Vector2(-16f * fadeIn, 0f).RotatedBy(Projectile.rotation) - Main.screenPosition, null, Color.White * fadeIn, Projectile.rotation - MathHelper.PiOver2, bloomTex.Size() / 2f, new Vector2(0.3f, 0.3f * fadeIn), 0, 0);
+				sb.Draw(bloomTex, BarrelPosition + new Vector2(-16f * fadeIn, 0f).RotatedBy(Projectile.rotation) - Main.screenPosition, null, Color.White * pressureFade, Projectile.rotation - MathHelper.PiOver2, bloomTex.Size() / 2f, new Vector2(0.3f, 0.3f * fadeIn), 0, 0);
 
-				fadeIn = Timer < 500f ? Timer / 500f : 1f;
+				fadeIn = PressureTimer < 500f ? PressureTimer / 500f : 1f;
 
 				effect.Parameters["u_time"].SetValue(Timer * 0.02f % 2f);
-				effect.Parameters["primary"].SetValue(new Vector3(1, 0.7f, 0.1f) * fadeIn);
+				effect.Parameters["primary"].SetValue(new Vector3(1, 0.7f, 0.1f) * pressureFade);
 				effect.Parameters["primaryScaling"].SetValue(new Vector3(1, 1, 1));
-				effect.Parameters["secondary"].SetValue(new Vector3(1f, 0.2f, 0.05f) * fadeIn);
+				effect.Parameters["secondary"].SetValue(new Vector3(1f, 0.2f, 0.05f) * pressureFade);
 
 				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value);
 				effect.Parameters["mapTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value);
 
 				effect.CurrentTechnique.Passes[0].Apply();
 
-				sb.Draw(bloomTex, BarrelPosition + new Vector2(-16f * fadeIn, 0f).RotatedBy(Projectile.rotation) - Main.screenPosition, null, Color.White * fadeIn, Projectile.rotation - MathHelper.PiOver2, bloomTex.Size() / 2f, new Vector2(0.3f, 0.5f * fadeIn), 0, 0);
-
-				fadeIn = Timer < 750f ? Timer / 750f : 1f;
+				sb.Draw(bloomTex, BarrelPosition + new Vector2(-16f * fadeIn, 0f).RotatedBy(Projectile.rotation) - Main.screenPosition, null, Color.White * pressureFade, Projectile.rotation - MathHelper.PiOver2, bloomTex.Size() / 2f, new Vector2(0.3f, 0.5f * fadeIn), 0, 0);
+				
+				fadeIn = Pressure;
 
 				effect.Parameters["u_time"].SetValue(Timer * 0.01f % 2f);
-				effect.Parameters["primary"].SetValue(new Vector3(1, 0.7f, 0.1f) * fadeIn);
+				effect.Parameters["primary"].SetValue(new Vector3(1, 0.7f, 0.1f) * pressureFade);
 				effect.Parameters["primaryScaling"].SetValue(new Vector3(1, 1, 1));
-				effect.Parameters["secondary"].SetValue(new Vector3(1f, 0.2f, 0.05f) * fadeIn);
+				effect.Parameters["secondary"].SetValue(new Vector3(1f, 0.2f, 0.05f) * pressureFade);
 
 				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value);
 				effect.Parameters["mapTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value);
 
 				effect.CurrentTechnique.Passes[0].Apply();
 
-				sb.Draw(bloomTex, BarrelPosition + new Vector2(-16f * fadeIn, 0f).RotatedBy(Projectile.rotation) - Main.screenPosition, null, Color.White * fadeIn, Projectile.rotation - MathHelper.PiOver2, bloomTex.Size() / 2f, new Vector2(0.3f, 1f * fadeIn), 0, 0);
+				sb.Draw(bloomTex, BarrelPosition + new Vector2(-32f * fadeIn, 0f).RotatedBy(Projectile.rotation) - Main.screenPosition, null, Color.White * pressureFade, Projectile.rotation - MathHelper.PiOver2, bloomTex.Size() / 2f, new Vector2(0.3f, 1f * fadeIn), 0, 0);
 
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.EffectMatrix);
@@ -269,6 +321,9 @@ namespace StarlightRiver.Content.Items.Misc
 		/// </summary>
 		private void Shoot()
 		{
+			if (shots < MAX_SHOTS)
+				shots++;
+
 			Item heldItem = Owner.HeldItem;
 
 			int damage = Projectile.damage;
@@ -281,16 +336,19 @@ namespace StarlightRiver.Content.Items.Misc
 
 			Vector2 barrelPos = BarrelPosition + new Vector2(-20f, 0f).RotatedBy(Projectile.rotation);
 			
-			Vector2 off = new Vector2(0f, Main.rand.Next(-8, 8) * Projectile.direction).RotatedBy(Projectile.rotation);
+			Vector2 off = new Vector2(0f, -4f * Projectile.direction).RotatedBy(Projectile.rotation);
 
 			if (Main.myPlayer == Projectile.owner)
-			{				
+			{
 				Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), barrelPos + off,
-					shootVelocity.RotatedByRandom(0.05f) * Main.rand.NextFloat(0.9f, 1.1f), projectileID, damage, knockBack, Owner.whoAmI);
+				shootVelocity.RotatedByRandom(0.05f) * Main.rand.NextFloat(0.9f, 1.1f), projectileID, damage, knockBack, Owner.whoAmI);
 
 				proj.timeLeft = 300;
 				(proj.ModProjectile as EarthdusterProjectile).maxTimeleft = 300;
 			}
+
+			if (CameraSystem.shake < 3)
+				CameraSystem.shake += 2;
 
 			Color outColor = (ghostProjectile.ModProjectile as EarthdusterProjectile).Colors["TrailColor"];
 			Color inColor = (ghostProjectile.ModProjectile as EarthdusterProjectile).Colors["TrailInsideColor"];
@@ -330,8 +388,26 @@ namespace StarlightRiver.Content.Items.Misc
 			dust.rotation = Main.rand.NextFloat(6.28f);
 			dust.customData = smokeColor;
 
+			float lerper = shots / (float)MAX_SHOTS;
+
+			dust = Dust.NewDustPerfect(BarrelPosition, ModContent.DustType<PixelSmokeColor>(),
+				-Vector2.UnitY * Main.rand.NextFloat(1f, 4f), (int)MathHelper.Lerp(255, 160, lerper), new Color(150, 150, 150), Main.rand.NextFloat(0.04f, 0.05f));
+
+			dust.rotation = Main.rand.NextFloat(6.28f);
+			dust.customData = new Color(150, 150, 150);
+			dust.noGravity = true;
+
 			Dust.NewDustPerfect(BarrelPosition + Projectile.velocity * 20f + off,
 				ModContent.DustType<EarthdusterMuzzleFlashDust>(), Projectile.velocity * 1f, 0, default, Main.rand.NextFloat(0.8f, 1.2f)).rotation = Projectile.velocity.ToRotation();
+
+			for (int i = 0; i < 2; i++)
+			{
+				Dust.NewDustPerfect(barrelPos + Projectile.velocity * 20f + off, ModContent.DustType<PixelatedGlow>(),
+					Projectile.velocity.RotatedByRandom(0.25f) * Main.rand.NextFloat(3f, 6f), 0, new Color(255, 100, 20, 0), 0.15f).customData = -Projectile.direction;
+
+				Dust.NewDustPerfect(barrelPos + Projectile.velocity * 20f + off, ModContent.DustType<PixelatedGlow>(),
+					Projectile.velocity.RotatedByRandom(1.5f) * Main.rand.NextFloat(1f, 3f), 0, new Color(255, 100, 20, 0), 0.15f).customData = -Projectile.direction;
+			}
 		}
 
 		/// <summary>
@@ -959,51 +1035,60 @@ namespace StarlightRiver.Content.Items.Misc
 			Texture2D texFireGlow = ModContent.Request<Texture2D>(AssetDirectory.MiscItem + Name + "_FireGlow").Value;
 			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
 
-			Main.spriteBatch.Draw(bloomTex, dust.position - Main.screenPosition, null, new Color(255, 75, 0, 0) * 0.25f * lerper, dust.rotation, bloomTex.Size() / 2f, dust.scale * 1.25f, 0f, 0f);
-			
-			Rectangle frame = texGlow.Frame(verticalFrames: 3, frameY: (int)Math.Floor((float)(int)dust.customData / 2));
+			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () =>
+			{
+				if (dust.customData is null)
+					return;
 
-			Main.spriteBatch.Draw(texGlow, dust.position - Main.screenPosition, frame, new Color(255, 75, 0, 0) * lerper, dust.rotation, frame.Size() / 2f, dust.scale, 0f, 0f);
-			
-			frame = tex.Frame(verticalFrames: 3, frameY: (int)Math.Floor((float)(int)dust.customData / 2));
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.EffectMatrix);
 
-			Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, frame, Color.White * lerper, dust.rotation, frame.Size() / 2f, dust.scale, 0f, 0f);
-			
-			frame = texBlur.Frame(verticalFrames: 3, frameY: (int)Math.Floor((float)(int)dust.customData / 2));
-			
-			Main.spriteBatch.Draw(texBlur, dust.position - Main.screenPosition, frame, Color.White with { A = 0 } * 0.5f * lerper, dust.rotation, frame.Size() / 2f, dust.scale, 0f, 0f);
-			
-			Effect effect = Filters.Scene["ColoredFire"].GetShader().Shader;
+				Main.spriteBatch.Draw(bloomTex, dust.position - Main.screenPosition, null, new Color(255, 75, 0, 0) * 0.25f * lerper, dust.rotation, bloomTex.Size() / 2f, dust.scale * 1.25f, 0f, 0f);
 
-			if (effect is null)
-				return false;
+				Rectangle frame = texGlow.Frame(verticalFrames: 3, frameY: (int)Math.Floor((float)(int)dust.customData / 2));
 
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Draw(texGlow, dust.position - Main.screenPosition, frame, new Color(255, 75, 0, 0) * lerper, dust.rotation, frame.Size() / 2f, dust.scale, 0f, 0f);
 
-			effect.Parameters["u_time"].SetValue((float)(Main.timeForVisualEffects * 0.01f % 2f));
-			effect.Parameters["primary"].SetValue(new Vector3(1, 0.7f, 0.1f) * lerper);
-			effect.Parameters["primaryScaling"].SetValue(new Vector3(1, 1, 1));
-			effect.Parameters["secondary"].SetValue(new Vector3(1f, 0.2f, 0.05f) * lerper);
+				frame = tex.Frame(verticalFrames: 3, frameY: (int)Math.Floor((float)(int)dust.customData / 2));
 
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value);
-			effect.Parameters["mapTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value);
+				Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, frame, Color.White * lerper, dust.rotation, frame.Size() / 2f, dust.scale, 0f, 0f);
 
-			effect.CurrentTechnique.Passes[0].Apply();
+				frame = texBlur.Frame(verticalFrames: 3, frameY: (int)Math.Floor((float)(int)dust.customData / 2));
 
-			Main.spriteBatch.Draw(texFireGlow, dust.position - Main.screenPosition, null, Color.White with { A = 0 } * lerper, dust.rotation - MathHelper.PiOver2, texFireGlow.Size() / 2f, new Vector2(1.5f, 2f * lerper), 0, 0);
+				Main.spriteBatch.Draw(texBlur, dust.position - Main.screenPosition, frame, Color.White with { A = 0 } * 0.5f * lerper, dust.rotation, frame.Size() / 2f, dust.scale, 0f, 0f);
 
-			effect.Parameters["u_time"].SetValue((float)(Main.timeForVisualEffects * 0.005f % 2f));
-			effect.Parameters["primary"].SetValue(new Vector3(1, 0.7f, 0.1f) * lerper);
-			effect.Parameters["primaryScaling"].SetValue(new Vector3(1, 1, 1));
-			effect.Parameters["secondary"].SetValue(new Vector3(1f, 0.2f, 0.05f) * lerper);
+				Effect effect = Filters.Scene["ColoredFire"].GetShader().Shader;
 
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value);
-			effect.Parameters["mapTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value);
+				if (effect is null)
+					return;
 
-			effect.CurrentTechnique.Passes[0].Apply();
+				effect.Parameters["u_time"].SetValue((float)(Main.timeForVisualEffects * 0.01f % 2f));
+				effect.Parameters["primary"].SetValue(new Vector3(1, 0.7f, 0.1f) * lerper);
+				effect.Parameters["primaryScaling"].SetValue(new Vector3(1, 1, 1));
+				effect.Parameters["secondary"].SetValue(new Vector3(1f, 0.2f, 0.05f) * lerper);
 
-			Main.spriteBatch.Draw(texFireGlow, dust.position - Main.screenPosition, null, Color.White with { A = 0 } * lerper, dust.rotation - MathHelper.PiOver2, texFireGlow.Size() / 2f, new Vector2(1f, 3f * lerper), 0, 0);
+				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value);
+				effect.Parameters["mapTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value);
+
+				effect.CurrentTechnique.Passes[0].Apply();
+
+				Main.spriteBatch.Draw(texFireGlow, dust.position - Main.screenPosition, null, Color.White with { A = 0 } * lerper, dust.rotation - MathHelper.PiOver2, texFireGlow.Size() / 2f, new Vector2(1.5f, 2f * lerper), 0, 0);
+
+				effect.Parameters["u_time"].SetValue((float)(Main.timeForVisualEffects * 0.005f % 2f));
+				effect.Parameters["primary"].SetValue(new Vector3(1, 0.7f, 0.1f) * lerper);
+				effect.Parameters["primaryScaling"].SetValue(new Vector3(1, 1, 1));
+				effect.Parameters["secondary"].SetValue(new Vector3(1f, 0.2f, 0.05f) * lerper);
+
+				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value);
+				effect.Parameters["mapTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value);
+
+				effect.CurrentTechnique.Passes[0].Apply();
+
+				Main.spriteBatch.Draw(texFireGlow, dust.position - Main.screenPosition, null, Color.White with { A = 0 } * lerper, dust.rotation - MathHelper.PiOver2, texFireGlow.Size() / 2f, new Vector2(1f, 3f * lerper), 0, 0);
+
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.EffectMatrix);
+			}, 1);
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);

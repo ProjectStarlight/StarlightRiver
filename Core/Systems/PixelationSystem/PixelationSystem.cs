@@ -94,7 +94,7 @@ namespace StarlightRiver.Core.Systems.PixelationSystem
 		}
 
 		private void DrawDustTargets(On_Main.orig_DrawDust orig, Main self)
-		{				
+		{
 			orig(self);
 
 			foreach (PixelationTarget target in pixelationTargets.Where(t => t.Active && t.renderType == RenderLayer.Dusts))
@@ -150,11 +150,11 @@ namespace StarlightRiver.Core.Systems.PixelationSystem
 			Main.QueueMainThreadAction(() => pixelationTargets.Add(new PixelationTarget(id, PixelPalette.From(palettePath), renderType)));
 		}
 
-		public void QueueRenderAction(string id, Action renderAction)
+		public void QueueRenderAction(string id, Action renderAction, int order = 0)
 		{
 			PixelationTarget target = pixelationTargets.Find(t => t.id == id);
 
-			target.pixelationDrawActions.Add(renderAction);
+			target.pixelationDrawActions.Add(new Tuple<Action, int>(renderAction, order));
 			target.renderTimer = 2;
 		}
 	}
@@ -165,7 +165,9 @@ namespace StarlightRiver.Core.Systems.PixelationSystem
 
 		public string id;
 
-		public List<Action> pixelationDrawActions;
+		// list of actions, and their draw order. Default order is zero, but actions with an order of 1 are drawn over 0, etc.
+
+		public List<Tuple<Action, int>> pixelationDrawActions;
 
 		public ScreenTarget pixelationTarget;
 
@@ -179,7 +181,7 @@ namespace StarlightRiver.Core.Systems.PixelationSystem
 
 		public PixelationTarget(string id, PixelPalette palette, RenderLayer renderType)
 		{
-			pixelationDrawActions = new List<Action>();
+			pixelationDrawActions = new List<Tuple<Action, int>>();
 
 			pixelationTarget = new(DrawPixelTarget, () => Active, 1f);
 			pixelationTarget2 = new(DrawPixelTarget2, () => Active, 1.1f);
@@ -211,9 +213,9 @@ namespace StarlightRiver.Core.Systems.PixelationSystem
 			sb.End();
 			sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.GameViewMatrix.EffectMatrix);
 
-			for (int i = 0; i < pixelationDrawActions.Count; i++)
+			foreach (Tuple<Action, int> tuple in pixelationDrawActions.OrderBy(t => t.Item2))
 			{
-				pixelationDrawActions[i].Invoke();
+				tuple.Item1.Invoke();
 			}
 
 			pixelationDrawActions.Clear();
