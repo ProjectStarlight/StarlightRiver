@@ -5,6 +5,8 @@
 - Replaced the broken moonstone menu with a new starlight river menu
 - New Item: Moonstone monolith
  - Crafted with moonstone bars, mimics the moonstone screen effect
+- New Magic Weapon: Talismans
+- New Magic Weapon: Spirit Seal
 
 ## Tweaks
 - Updated the visuals of the starlight river background effect
