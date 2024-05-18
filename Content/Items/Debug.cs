@@ -55,7 +55,11 @@ namespace StarlightRiver.Content.Items
 	"both the mod and base game. Starlight River Master Mode is not intended for a first playthrough. Starlight River Master Mode is not intended to be fair. Starlight River Master Mode is not intended to be fun for everyone. " +
 	"Please remember that the health, both physical and mental, of yourself and those around you is far more important than this game or anything inside of it.");
 
-			UILoader.GetUIState<MessageBox>().AppendButton(Assets.GUI.BackButton, () => store.ignoreMasterWarning = true, "Dont show again");
+			UILoader.GetUIState<MessageBox>().AppendButton(Assets.GUI.BackButton, () =>
+			{
+				store.ignoreMasterWarning = true;
+				UILoader.GetUIState<MessageBox>().Visible = false;
+			}, "Dont show again");
 
 			//StarlightEventSequenceSystem.sequence = 0;
 			//player.GetHandler().unlockedAbilities.Clear();
