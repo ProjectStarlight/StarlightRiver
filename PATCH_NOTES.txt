@@ -10,6 +10,7 @@
 - Updated the visuals of the starlight river background effect
 - Updated Ceiros' arena assets to have better visibility
 - Whirlwind pickaxe acts more like a normal pickaxe and has a sell value. Its spin now damages enemies
+- Technique books can now be shimmered between each other
 
 ## Multiplayer
 - Performance optimizations to player onhits. Most noticeable in Glassweaver gauntlet
