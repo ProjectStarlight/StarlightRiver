@@ -1,7 +1,11 @@
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Events;
+using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Haunted;
+using StarlightRiver.Content.PersistentData;
+using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems;
+using StarlightRiver.Core.Systems.PersistentDataSystem;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items
@@ -46,6 +50,13 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
+			var store = PersistentDataStoreSystem.GetDataStore<TutorialDataStore>();
+			UILoader.GetUIState<MessageBox>().Display("Warning - Master Mode", "Starlight River has unique behavior for its bosses in Master Mode. This behavior is intended to be immensely difficult over anything else, and assumes a high amount of knowldge about " +
+	"both the mod and base game. Starlight River Master Mode is not intended for a first playthrough. Starlight River Master Mode is not intended to be fair. Starlight River Master Mode is not intended to be fun for everyone. " +
+	"Please remember that the health, both physical and mental, of yourself and those around you is far more important than this game or anything inside of it.");
+
+			UILoader.GetUIState<MessageBox>().AppendButton(Assets.GUI.BackButton, () => store.ignoreMasterWarning = true, "Dont show again");
+
 			//StarlightEventSequenceSystem.sequence = 0;
 			//player.GetHandler().unlockedAbilities.Clear();
 			player.GetHandler().InfusionLimit = 0;
