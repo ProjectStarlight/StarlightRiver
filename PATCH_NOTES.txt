@@ -11,6 +11,10 @@
 - Updated Ceiros' arena assets to have better visibility
 - Whirlwind pickaxe acts more like a normal pickaxe and has a sell value. Its spin now damages enemies
 - Technique books can now be shimmered between each other
+- Hotsprings now cure many debuffs
+
+## Configuration
+- Added an option to turn on a numeric indicator for some set bonuses
 
 ## Multiplayer
 - Performance optimizations to player onhits. Most noticeable in Glassweaver gauntlet
