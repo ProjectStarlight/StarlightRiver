@@ -1,7 +1,14 @@
 # Starlight River 0.2.8
 
+## Crimson Biome Content Additions
+- New tile: Gray matter. These mysterious brain blocks emit a hallucinatory aura 
+- New material: Dendrite. This strange mineral is normally indistinguishable from dirt...
+- New hazzard: Bone mines. These invisible explosives lay hidden in the soil below the crimson
+- New weapon: Lobotomizer. This strange spear channels the hallucinations of gray matter
+- New boss: The Thinker. Challenge this strange being deep in the crimson cavern
+
 ## Content
-- Added a prayer for meteor and moonstone which will force the respective ore to generate. Crafted for 5 bamboo at a workbench.
+- Added a prayer for meteor and moonstone which will force the respective ore to generate. Crafted for 5 bamboo at a workbench
 - Replaced the broken moonstone menu with a new starlight river menu
 - New Item: Moonstone monolith
  - Crafted with moonstone bars, mimics the moonstone screen effect
