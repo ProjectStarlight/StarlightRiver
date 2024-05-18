@@ -270,7 +270,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				State == 7 && Main.LocalPlayer.GetHandler().InfusionLimit == 0)
 				&& talkingTo is null)
 			{
-				Texture2D exclaim = Request<Texture2D>("StarlightRiver/Assets/Misc/Exclaim").Value;
+				Texture2D exclaim = Assets.Misc.Exclaim.Value;
 				Vector2 exclaimPos = NPC.Center + Vector2.UnitY * -95 - Main.screenPosition;
 				exclaimPos.Y += (float)Math.Sin(Main.GameUpdateCount * 0.025f) * 5;
 				spriteBatch.Draw(exclaim, exclaimPos, null, Color.White, (float)Math.Sin(Main.GameUpdateCount * 0.05f) * 0.15f, exclaim.Size() / 2f, 1, 0, 0);

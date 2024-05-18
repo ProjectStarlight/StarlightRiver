@@ -64,7 +64,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			Tile tile = Framing.GetTileSafely(i, j);
 			Color color = Helpers.Helper.IndicatorColorProximity(64, 128, new Vector2(i, j) * 16 + Vector2.One * 8);
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "VitricGlassGlow").Value;
+			Texture2D tex = Assets.Tiles.Vitric.VitricGlassGlow.Value;
 
 			spriteBatch.Draw(tex, (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), color);
 		}

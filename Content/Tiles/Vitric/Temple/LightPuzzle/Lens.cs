@@ -55,7 +55,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 				A = 0
 			};
 
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value;
+			Texture2D tex = Assets.GlowTrail.Value;
 
 			Vector2 pos = Center - Main.screenPosition + Vector2.UnitY * -48;
 
@@ -75,7 +75,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 				spriteBatch.Draw(tex, target2, null, color3 * 0.15f, 3.14f - (pos2 - pos).ToRotation(), new Vector2(tex.Width, tex.Height / 2f), 0, 0);
 			}
 
-			Texture2D texMirror = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MirrorOver").Value;
+			Texture2D texMirror = Assets.Tiles.Vitric.MirrorOver.Value;
 			Main.spriteBatch.Draw(texMirror, Center - Main.screenPosition, null, Color.White, rotation - 3.14f - 1.57f / 2, texMirror.Size() / 2, 1, 0, 0);
 		}
 	}

@@ -195,12 +195,12 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D texGlow = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
+			Texture2D tex = Assets.Items.UndergroundTemple.TempleSpearProjectile.Value;
+			Texture2D texGlow = Assets.Items.UndergroundTemple.TempleSpearProjectile_Glow.Value;
 
-			Texture2D starTex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "StarTexture").Value;
+			Texture2D starTex = Assets.StarTexture.Value;
 
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
 
 			float fade = 1f;
 			if (stabbing && Timer > 20f)
@@ -358,9 +358,9 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D starTex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "StarTexture").Value;
+			Texture2D starTex = Assets.StarTexture.Value;
 
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
 
 			DrawLaser(Main.spriteBatch);
 
@@ -413,18 +413,18 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * -0.03f);
 			effect.Parameters["repeats"].SetValue(1);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "GlowTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 
 			trail?.Render(effect);
 			trail2?.Render(effect);
 
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "FireTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
 
 			trail?.Render(effect);
 			trail2?.Render(effect);
 
 			effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.02f);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "EnergyTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
 			trail?.Render(effect);
 			trail2?.Render(effect);
@@ -464,9 +464,9 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D starTex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "StarTexture").Value;
+			Texture2D starTex = Assets.StarTexture.Value;
 
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
 
 			lightColor = new Color(150, 150, 10, 0);
 			lightColor *= Projectile.timeLeft / 1800f;

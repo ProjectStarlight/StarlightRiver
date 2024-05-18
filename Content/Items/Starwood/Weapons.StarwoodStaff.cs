@@ -7,7 +7,7 @@ namespace StarlightRiver.Content.Items.Starwood
 	{
 		public override string Texture => AssetDirectory.StarwoodItem + Name;
 
-		public StarwoodStaff() : base(ModContent.Request<Texture2D>(AssetDirectory.StarwoodItem + "StarwoodStaff_Alt").Value) { }
+		public StarwoodStaff() : base(Assets.Items.Starwood.StarwoodStaff_Alt.Value) { }
 
 		public override void SetStaticDefaults()
 		{

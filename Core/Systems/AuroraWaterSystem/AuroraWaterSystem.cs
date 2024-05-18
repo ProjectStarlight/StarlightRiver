@@ -66,7 +66,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 						if (tileData.HasAuroraWater)
 						{
 							var target = new Rectangle((int)(i * 16 - Main.screenPosition.X) / 2, (int)(j * 16 - Main.screenPosition.Y) / 2, 8, 8);
-							Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Misc/AuroraWater").Value;
+							Texture2D tex = Assets.Misc.AuroraWater.Value;
 							Main.spriteBatch.Draw(tex, target, new Rectangle(tileData.AuroraWaterFrameX * 18, tileData.AuroraWaterFrameY * 18, 16, 16), Color.White);
 						}
 					}
@@ -299,7 +299,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 		{
 			AuroraWaterSystem.DrawToMetaballTarget();
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "MagmaGunProj").Value;
+			Texture2D tex = Assets.Items.Misc.MagmaGunProj.Value;
 
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);

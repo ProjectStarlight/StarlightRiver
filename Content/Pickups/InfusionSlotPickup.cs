@@ -127,7 +127,7 @@ namespace StarlightRiver.Content.Pickups
 			if (timer < 1 || timer > 559)
 				return;
 
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Abilities/BrassSpike").Value;
+			Texture2D tex = Assets.Abilities.BrassSpike.Value;
 			var origin = new Vector2(0, tex.Height / 2);
 
 			float progressFirst = Math.Min(1, timer / 12f);

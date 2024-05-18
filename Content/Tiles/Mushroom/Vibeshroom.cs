@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Tiles.Mushroom
 		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 		{
 			Tile tile = Framing.GetTileSafely(i, j);
-			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Tiles/Mushroom/VibeshroomGlow").Value;
+			Texture2D tex = Assets.Tiles.Mushroom.VibeshroomGlow.Value;
 			Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition + new Vector2((float)Math.Sin(StarlightWorld.visualTimer + i) * 1.5f, (float)Math.Cos(StarlightWorld.visualTimer * 2 + i));
 
 			spriteBatch.Draw(tex, pos, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), Color.White);

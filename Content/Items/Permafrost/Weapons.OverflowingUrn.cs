@@ -64,18 +64,18 @@ namespace StarlightRiver.Content.Items.Permafrost
 			if (Player.HeldItem.type == ModContent.ItemType<OverflowingUrn>())
 			{
 				var item = Player.HeldItem.ModItem as OverflowingUrn;
-				Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "UrnFreezeUnder").Value;
-				Texture2D overlayTex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "UrnFreezeUnder_Overlay").Value;
-				Texture2D icicleTex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "UrnFreezeUnder_Icicle").Value;
-				Texture2D whiteTex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "UrnFreezeUnder_White").Value;
-				Texture2D dividerTex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "UrnFreezeUnder_Divider").Value;
+				Texture2D tex = Assets.Items.Permafrost.UrnFreezeUnder.Value;
+				Texture2D overlayTex = Assets.Items.Permafrost.UrnFreezeUnder_Overlay.Value;
+				Texture2D icicleTex = Assets.Items.Permafrost.UrnFreezeUnder_Icicle.Value;
+				Texture2D whiteTex = Assets.Items.Permafrost.UrnFreezeUnder_White.Value;
+				Texture2D dividerTex = Assets.Items.Permafrost.UrnFreezeUnder_Divider.Value;
 
 				if (item.animationTimer > 0)
 				{
 					if (Player.HasBuff(ModContent.BuffType<UrnFreeze>()))
 					{
-						tex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "UrnFreezeUnder_Overload").Value;
-						overlayTex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "UrnFreezeUnder_Overlay_Overload").Value;
+						tex = Assets.Items.Permafrost.UrnFreezeUnder_Overload.Value;
+						overlayTex = Assets.Items.Permafrost.UrnFreezeUnder_Overlay_Overload.Value;
 					}
 
 					spriteBatch.Draw(tex, Player.Center + Vector2.UnitY * (48 + Player.gfxOffY) - Main.screenPosition, null, Color.White * item.animationTimer, 0, new Vector2(16, 23), item.animationTimer, 0, 0);
@@ -415,7 +415,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		private void DrawWind()
 		{
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Gravedigger/GluttonyBG").Value;
+			Texture2D tex = Assets.Items.Gravedigger.GluttonyBG.Value;
 			Main.spriteBatch.End();
 			Effect effect1 = Filters.Scene["CycloneIce"].GetShader().Shader;
 
@@ -437,7 +437,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			effect1.Parameters["startColor"].SetValue(Color.Cyan.ToVector3());
 			effect1.Parameters["endColor"].SetValue(Color.White.ToVector3());
 			effect1.Parameters["sampleTexture"].SetValue(tex);
-			effect1.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/LaserBallDistort").Value);
+			effect1.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.LaserBallDistort.Value);
 
 			BlendState oldState = Main.graphics.GraphicsDevice.BlendState;
 			Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;

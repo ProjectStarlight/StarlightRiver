@@ -310,9 +310,9 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Effect effect = Filters.Scene["MoonFireAura"].GetShader().Shader;
 			effect.Parameters["time"].SetValue(StarlightWorld.visualTimer * 0.2f);
 			effect.Parameters["fireHeight"].SetValue(0.03f * Charge);
-			effect.Parameters["fnoise"].SetValue(Request<Texture2D>(AssetDirectory.MoonstoneItem + "DatsuzeiFlameMap1").Value);
-			effect.Parameters["fnoise2"].SetValue(Request<Texture2D>(AssetDirectory.MoonstoneItem + "DatsuzeiFlameMap2").Value);
-			effect.Parameters["vnoise"].SetValue(Request<Texture2D>(AssetDirectory.MoonstoneItem + "CrescentQuarterstaffMap").Value);
+			effect.Parameters["fnoise"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap1.Value);
+			effect.Parameters["fnoise2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
+			effect.Parameters["vnoise"].SetValue(Assets.Items.Moonstone.CrescentQuarterstaffMap.Value);
 			effect.CurrentTechnique.Passes[0].Apply();
 
 			spriteBatch.Draw(head, position - Main.screenPosition, null, lightColor, Projectile.rotation + 0.78f, origin, scale, SpriteEffects.None, 0);
@@ -322,9 +322,9 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 			effect.Parameters["time"].SetValue(StarlightWorld.visualTimer * 0.2f);
 			effect.Parameters["fireHeight"].SetValue(0.03f * Charge);
-			effect.Parameters["fnoise"].SetValue(Request<Texture2D>(AssetDirectory.MoonstoneItem + "DatsuzeiFlameMap1").Value);
-			effect.Parameters["fnoise2"].SetValue(Request<Texture2D>(AssetDirectory.MoonstoneItem + "DatsuzeiFlameMap2").Value);
-			effect.Parameters["vnoise"].SetValue(Request<Texture2D>(AssetDirectory.MoonstoneItem + "CrescentQuarterstaffMap").Value);
+			effect.Parameters["fnoise"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap1.Value);
+			effect.Parameters["fnoise2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
+			effect.Parameters["vnoise"].SetValue(Assets.Items.Moonstone.CrescentQuarterstaffMap.Value);
 			effect.CurrentTechnique.Passes[1].Apply();
 
 			spriteBatch.Draw(head, position - Main.screenPosition, null, lightColor, Projectile.rotation + 0.78f, origin, scale, SpriteEffects.None, 0);
@@ -523,7 +523,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 				if (slamCharged)
 				{
 					Terraria.Audio.SoundEngine.PlaySound(SoundID.MaxMana, Projectile.Center);
-					DustHelper.DrawDustImage(StaffEnd + Vector2.One * 4, ModContent.DustType<Dusts.GlowFastDecelerate>(), 0.05f, ModContent.Request<Texture2D>(AssetDirectory.MoonstoneItem + "MoonstoneHamaxe_Crescent").Value, 0.7f, 0, new Color(120, 120, 255));
+					DustHelper.DrawDustImage(StaffEnd + Vector2.One * 4, ModContent.DustType<Dusts.GlowFastDecelerate>(), 0.05f, Assets.Items.Moonstone.MoonstoneHamaxe_Crescent.Value, 0.7f, 0, new Color(120, 120, 255));
 
 					for (int i = 0; i < 64; i++)
 					{
@@ -645,7 +645,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
 				effect.Parameters["repeats"].SetValue(1f);
 				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-				effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
+				effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
 				trail?.Render(effect);
 
@@ -657,8 +657,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 		{
 			if (CurrentAttack == AttackType.Slam && slamCharged)
 			{
-				Texture2D texFlare = ModContent.Request<Texture2D>(AssetDirectory.Assets + "StarTexture").Value;
-				Texture2D texBloom = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+				Texture2D texFlare = Assets.StarTexture.Value;
+				Texture2D texBloom = Assets.Keys.GlowAlpha.Value;
 
 				float flareRotation = MathHelper.SmoothStep(0, MathHelper.TwoPi, timer / 40f);
 				float flareScale = timer < 20 ? MathHelper.SmoothStep(0, 1, timer / 20f) : MathHelper.SmoothStep(1, 0, (timer - 20) / 20f);

@@ -63,8 +63,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				NPC.frame = new Rectangle((int)(NPC.ai[0] / 10) % 6 * 58, 0, 58, 50);
 			}
 
-			Texture2D tex = Request<Texture2D>(AssetDirectory.SquidBoss + "AurorabornGlow").Value;
-			Texture2D tex2 = Request<Texture2D>(AssetDirectory.SquidBoss + "AurorabornGlow2").Value;
+			Texture2D tex = Assets.Bosses.SquidBoss.AurorabornGlow.Value;
+			Texture2D tex2 = Assets.Bosses.SquidBoss.AurorabornGlow2.Value;
 
 			float sin = 1 + (float)Math.Sin(NPC.ai[0] / 10f);
 			float cos = 1 + (float)Math.Cos(NPC.ai[0] / 10f);

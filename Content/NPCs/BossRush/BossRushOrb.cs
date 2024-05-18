@@ -351,8 +351,8 @@ namespace StarlightRiver.Content.NPCs.BossRush
 		private void DrawBubbleCracks(float crackProgress)
 		{
 			Effect crack = Filters.Scene["OnyxCracks"].GetShader().Shader;
-			crack.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.VitricBoss + "CrackMap").Value);
-			crack.Parameters["sampleTexture3"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Glassweaver + "BubbleCrackProgression").Value);
+			crack.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.CrackMap.Value);
+			crack.Parameters["sampleTexture3"].SetValue(Assets.Bosses.GlassMiniboss.BubbleCrackProgression.Value);
 			crack.Parameters["uTime"].SetValue(crackProgress);
 			crack.Parameters["drawColor"].SetValue(Color.White.ToVector4());
 			crack.Parameters["sourceFrame"].SetValue(new Vector4(0, 0, 128, 128));
@@ -427,17 +427,17 @@ namespace StarlightRiver.Content.NPCs.BossRush
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
-			Texture2D smallRing = ModContent.Request<Texture2D>("StarlightRiver/Assets/NPCs/BossRush/ArmillaryRing1").Value;
-			Texture2D mediumRing = ModContent.Request<Texture2D>("StarlightRiver/Assets/NPCs/BossRush/ArmillaryRing2").Value;
-			Texture2D largeRing = ModContent.Request<Texture2D>("StarlightRiver/Assets/NPCs/BossRush/ArmillaryRing3").Value;
+			Texture2D smallRing = Assets.NPCs.BossRush.ArmillaryRing1.Value;
+			Texture2D mediumRing = Assets.NPCs.BossRush.ArmillaryRing2.Value;
+			Texture2D largeRing = Assets.NPCs.BossRush.ArmillaryRing3.Value;
 
 			Main.spriteBatch.Draw(smallRing, originalPos - Main.screenPosition, null, lightColor, -NPC.rotation, smallRing.Size() * 0.5f, 1, SpriteEffects.None, 0);
 			Main.spriteBatch.Draw(mediumRing, originalPos - Main.screenPosition, null, lightColor, NPC.rotation, mediumRing.Size() * 0.5f, 1, SpriteEffects.None, 0);
 			Main.spriteBatch.Draw(largeRing, originalPos - Main.screenPosition, null, lightColor, -NPC.rotation, largeRing.Size() * 0.5f, 1, SpriteEffects.None, 0);
 
-			Texture2D smallRingRunes = ModContent.Request<Texture2D>("StarlightRiver/Assets/NPCs/BossRush/ArmillaryRingRunes1").Value;
-			Texture2D mediumRingRunes = ModContent.Request<Texture2D>("StarlightRiver/Assets/NPCs/BossRush/ArmillaryRingRunes2").Value;
-			Texture2D largeRingRunes = ModContent.Request<Texture2D>("StarlightRiver/Assets/NPCs/BossRush/ArmillaryRingRunes3").Value;
+			Texture2D smallRingRunes = Assets.NPCs.BossRush.ArmillaryRingRunes1.Value;
+			Texture2D mediumRingRunes = Assets.NPCs.BossRush.ArmillaryRingRunes2.Value;
+			Texture2D largeRingRunes = Assets.NPCs.BossRush.ArmillaryRingRunes3.Value;
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
@@ -479,7 +479,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 				{
 					if (bossRushLock.warpAnimationTimer > MAX_SUCC_ANIMATION)
 					{
-						Texture2D distortionMap = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/StarViewWarpMap").Value;
+						Texture2D distortionMap = Assets.Misc.StarViewWarpMap.Value;
 
 						Effect mapEffect = Filters.Scene["StarViewWarp"].GetShader().Shader;
 						mapEffect.Parameters["map"].SetValue(starsMap.RenderTarget);
@@ -524,7 +524,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 			{
 				Texture2D tex = Terraria.GameContent.TextureAssets.MagicPixel.Value;
 
-				Texture2D starView = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/StarView").Value;
+				Texture2D starView = Assets.Misc.StarView.Value;
 
 				float time = Main.GameUpdateCount * 0.05f;
 

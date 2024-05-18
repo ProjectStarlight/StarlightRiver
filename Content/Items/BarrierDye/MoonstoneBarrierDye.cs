@@ -51,8 +51,8 @@ namespace StarlightRiver.Content.Items.BarrierDye
 			effect.Parameters["intensity"].SetValue(10f * MathF.Min(barrier.rechargeAnimationTimer, 1));
 			effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.1f);
 
-			effect.Parameters["noiseTexture1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/MiscNoise3").Value);
-			effect.Parameters["noiseTexture2"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/MiscNoise4").Value);
+			effect.Parameters["noiseTexture1"].SetValue(Assets.Noise.MiscNoise3.Value);
+			effect.Parameters["noiseTexture2"].SetValue(Assets.Noise.MiscNoise4.Value);
 			effect.Parameters["color1"].SetValue(Color.Magenta.ToVector4());
 			effect.Parameters["color2"].SetValue(Color.Cyan.ToVector4());
 			effect.Parameters["opacity"].SetValue(1);

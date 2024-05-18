@@ -260,7 +260,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (BuffPower <= 0)
 				return;
 
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value;
+			Texture2D tex = Assets.FireTrail.Value;
 			var color = new Color(255, 200, 100);
 
 			var source = new Rectangle((int)(Projectile.timeLeft / 50f * tex.Width / 2), 0, tex.Width / 2, tex.Height);
@@ -452,8 +452,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			if (Main.LocalPlayer == Main.player[Projectile.owner])
 			{
-				Texture2D barTex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "SmallBar0").Value;
-				Texture2D barTex2 = ModContent.Request<Texture2D>(AssetDirectory.GUI + "SmallBar1").Value;
+				Texture2D barTex = Assets.GUI.SmallBar0.Value;
+				Texture2D barTex2 = Assets.GUI.SmallBar1.Value;
 
 				Vector2 pos = Main.LocalPlayer.Center - Main.screenPosition + new Vector2(0, -36) - barTex.Size() / 2;
 				var target = new Rectangle((int)pos.X + 1, (int)pos.Y - 2, (int)(ShieldLife / 50f * barTex2.Width), barTex2.Height);

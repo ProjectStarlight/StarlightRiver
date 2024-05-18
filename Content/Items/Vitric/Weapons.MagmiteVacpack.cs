@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (drawInfo.shadow != 0f)
 				return;
 
-			Texture2D tankTexture = ModContent.Request<Texture2D>(AssetDirectory.VitricItem + "MagmiteVacpack_Tank").Value;
+			Texture2D tankTexture = Assets.Items.Vitric.MagmiteVacpack_Tank.Value;
 
 			Player drawplayer = drawInfo.drawPlayer;
 

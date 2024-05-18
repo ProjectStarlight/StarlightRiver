@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.CustomHooks
 		{
 			if (inv[slot].ModItem is CursedAccessory && context == 10)
 			{
-				Texture2D back = ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/CursedBack").Value;
+				Texture2D back = Assets.GUI.CursedBack.Value;
 				Color backcolor = (!Main.expertMode && slot == 8) ? Color.White * 0.25f : Color.White * 0.75f;
 
 				sb.Draw(back, position, null, backcolor, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);

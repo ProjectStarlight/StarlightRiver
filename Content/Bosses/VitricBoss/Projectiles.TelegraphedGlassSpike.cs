@@ -96,7 +96,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			if (Projectile.timeLeft > 180)
 			{
-				Texture2D tex2 = Request<Texture2D>(AssetDirectory.VitricBoss + "RoarLine").Value;
+				Texture2D tex2 = Assets.Bosses.VitricBoss.RoarLine.Value;
 				float alpha2 = (float)Math.Sin((Projectile.timeLeft - 180) / 60f * 3.14f);
 				Color color2 = new Color(255, 180, 80) * alpha2;
 				var source = new Rectangle(0, tex2.Height / 2, tex2.Width, tex2.Height / 2);

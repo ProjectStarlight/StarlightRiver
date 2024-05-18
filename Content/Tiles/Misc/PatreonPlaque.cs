@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Tiles.Misc
 
 		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/MagicPixel").Value;
+			Texture2D tex = Assets.MagicPixel.Value;
 			Vector2 pos = (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 - Main.screenPosition;
 
 			var rect = new Rectangle((int)pos.X - 16, (int)pos.Y - 32, 1130, 1000);

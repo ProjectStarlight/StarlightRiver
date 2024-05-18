@@ -102,10 +102,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			effect.Parameters["repeats"].SetValue(2f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowBottomTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowBottomTrail.Value);
 			trail?.Render(effect);
 
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/LiquidTrailAlt").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.LiquidTrailAlt.Value);
 			trail?.Render(effect);
 		}
 	}

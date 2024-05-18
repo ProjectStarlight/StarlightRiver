@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Pickups
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/StarTexture").Value;
+			Texture2D tex = Assets.StarTexture.Value;
 			float sin = (float)Math.Sin(Main.GameUpdateCount * 0.05f);
 			float sin2 = (float)Math.Sin(Main.GameUpdateCount * 0.05f + 2f);
 
