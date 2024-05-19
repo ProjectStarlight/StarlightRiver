@@ -219,7 +219,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 				var head = Player.armor[0].ModItem as MoonstoneHead;
 				float charge = head.moonCharge / 720f;
 
-				Texture2D texRing = Request<Texture2D>(AssetDirectory.VitricItem + "BossBowRing").Value;
+				Texture2D texRing = Assets.Items.Vitric.BossBowRing.Value;
 				Color color = new Color(130, 110, 225) * (0.5f + charge * 0.5f);
 
 				if (charge <= 180 / 720f)

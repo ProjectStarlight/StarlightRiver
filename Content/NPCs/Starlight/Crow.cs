@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 		public bool visible;
 		public bool leaving;
 
-		public float localTextState;
+		public DialogManager manager;
 
 		public override string Texture => "StarlightRiver/Assets/NPCs/Starlight/Crow";
 
@@ -57,6 +57,8 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			NPC.frame = new Rectangle(0, 0, 0, 0);
 
 			visible = false;
+
+			manager = new("Localization/Dialog/AlicanDialog.json", NPC);
 		}
 
 		public override bool CheckActive()
@@ -86,7 +88,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 				Lighting.AddLight(NPC.Center, new Vector3(0.1f, 0.2f, 0.25f) * 4);
 			}
 
-			if (!InCutscene && !leaving && Main.player.Any(n => n.active && Vector2.Distance(n.Center, NPC.Center) < 400))
+			if (!InCutscene && !leaving && Main.player.Any(n => n.active && Vector2.Distance(n.Center, NPC.Center) < 400 && !n.GetHandler().Unlocked<HintAbility>()))
 			{
 				CutsceneTimer = 0;
 				InCutscene = true;
@@ -94,16 +96,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 
 			if (InCutscene) //handles cutscenes
 			{
-				switch (StarlightEventSequenceSystem.sequence)
-				{
-					case 0:
-						FirstEncounter();
-						break;
-
-					case 1:
-						SecondEncounter();
-						break;
-				}
+				MainAnimation();
 			}
 
 			if (leaving)
@@ -158,7 +151,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 		/// </summary>
 		private void DrawFlashingStar(SpriteBatch spriteBatch, float timer)
 		{
-			Texture2D star = ModContent.Request<Texture2D>("StarlightRiver/Assets/StarTexture").Value;
+			Texture2D star = Assets.StarTexture.Value;
 			Vector2 pos = NPC.Center - Main.screenPosition;
 
 			// Fade in
@@ -232,14 +225,14 @@ namespace StarlightRiver.Content.NPCs.Starlight
 		}
 
 		/// <summary>
-		/// Dictates the NPCs behavior during the first encounter, where the player is given stamina and the hint ability
+		/// Dictates the NPCs behavior during the encounter, where the player is given stamina and the hint ability
 		/// </summary>
-		private void FirstEncounter()
+		private void MainAnimation()
 		{
 			// This should trigger for -every- player
 			if (CutsceneTimer <= 1)
 			{
-				foreach (Player player in Main.player.Where(n => n.active))
+				foreach (Player player in Main.player.Where(n => n.active && !n.GetHandler().Unlocked<HintAbility>()))
 				{
 					player.ActivateCutscene<CrowCutsceneOne>();
 				}
@@ -270,65 +263,13 @@ namespace StarlightRiver.Content.NPCs.Starlight
 
 			if (CutsceneTimer == 360 && !Main.dedServ) // First encounter
 			{
-				if (Main.LocalPlayer.GetHandler().Unlocked<HintAbility>()) // If they already have the ability, special abort dialogue
+				if (Main.LocalPlayer.GetHandler().Unlocked<HintAbility>()) // If they already have the ability, abort
 				{
-					RichTextBox.OpenDialogue(NPC, "Alican", "Oh, strange seeing you again here... Sorry, I thought you were someone else. I must leave to search for them now.");
-
-					RichTextBox.ClearButtons();
-					RichTextBox.AddButton("Bye!", () =>
-					{
-						// Deactivate the cutscene for the local player
-						Main.LocalPlayer.DeactivateCutscene();
-						RichTextBox.CloseDialogue();
-					});
+					Main.LocalPlayer.DeactivateCutscene();
 					return;
 				}
 
-				RichTextBox.OpenDialogue(NPC, "Crow?", GetIntroDialogue());
-				RichTextBox.AddButton("Continue", () =>
-				{
-					localTextState++;
-					RichTextBox.SetData(NPC, "Crow?", GetIntroDialogue());
-
-					if (localTextState == 3)
-						RichTextBox.SetData(NPC, "Alican", GetIntroDialogue());
-					if (localTextState == 4)
-					{
-						RichTextBox.ClearButtons();
-						RichTextBox.AddButton("Accept", () =>
-						{
-							localTextState++;
-							RichTextBox.SetData(NPC, "Alican", GetIntroDialogue());
-							if (localTextState == 5)
-							{
-								RichTextBox.ClearButtons();
-								RichTextBox.AddButton("Accept", () =>
-								{
-									Main.LocalPlayer.GetHandler().Unlock<HintAbility>();
-									Stamina.gainAnimationTimer = 240;
-
-									localTextState++;
-									RichTextBox.SetData(NPC, "Alican", GetIntroDialogue());
-
-									RichTextBox.ClearButtons();
-									RichTextBox.AddButton("Bye?", () =>
-									{
-										Main.LocalPlayer.DeactivateCutscene();
-										RichTextBox.CloseDialogue();
-
-										string message = StarlightRiver.Instance.AbilityKeys.Get<HintAbility>().GetAssignedKeys().Count > 0 ?
-											$"Aim your cursor and press {StarlightRiver.Instance.AbilityKeys.Get<HintAbility>().GetAssignedKeys()[0]} to inspect the world." :
-											"Aim your cursor and press [Please bind a key] to inspect the world.";
-
-										Main.LocalPlayer.GetHandler().GetAbility(out HintAbility hint);
-										UILoader.GetUIState<TextCard>().Display("Starsight", message, hint);
-									});
-								});
-							}
-						});
-
-					}
-				});
+				manager.Start("Intro1");
 			}
 
 			// Stall untill dialogue is done
@@ -337,97 +278,27 @@ namespace StarlightRiver.Content.NPCs.Starlight
 		}
 
 		/// <summary>
-		/// Dictates the NPCs behavior during the second encounter, where the player recieves an infusion slot
+		/// Invoked by dialogue manager to give the player starlight
 		/// </summary>
-		private void SecondEncounter()
+		public void UnlockStarsight()
 		{
-			if (CutsceneTimer == 1)
-				CameraSystem.MoveCameraOut(30, NPC.Center, Vector2.SmoothStep);
-
-			if (CutsceneTimer < 300)
-				SpawnAnimation();
-
-			if (CutsceneTimer == 360) // First encounter
-			{
-				if (Main.LocalPlayer.GetHandler().InfusionLimit >= 1) // If they already have the infusion slot, special abort dialogue
-				{
-					RichTextBox.OpenDialogue(NPC, "Alican", "Oh, strange seeing you again here... Sorry, I thought you were someone else. I must leave to search for them now.");
-
-					RichTextBox.ClearButtons();
-					RichTextBox.AddButton("Bye!", () =>
-					{
-						CameraSystem.ReturnCamera(30, Vector2.SmoothStep);
-						RichTextBox.CloseDialogue();
-						CutsceneTimer = 363;
-					});
-					return;
-				}
-
-				RichTextBox.OpenDialogue(NPC, "Alican", GetInfusionDialogue());
-				RichTextBox.AddButton("What?", () =>
-				{
-					localTextState++;
-					RichTextBox.SetData(NPC, "Alican", GetInfusionDialogue());
-
-					RichTextBox.ClearButtons();
-					RichTextBox.AddButton("Accept", () =>
-					{
-						Main.LocalPlayer.GetHandler().InfusionLimit++;
-
-						localTextState++;
-						RichTextBox.SetData(NPC, "Alican", GetInfusionDialogue());
-
-						RichTextBox.ClearButtons();
-						RichTextBox.AddButton("Goodbye", () =>
-						{
-							CameraSystem.ReturnCamera(30, Vector2.SmoothStep);
-							RichTextBox.CloseDialogue();
-							CutsceneTimer = 363;
-						});
-					});
-
-				});
-			}
-
-			if (CutsceneTimer == 362)
-				CutsceneTimer = 361;
-
-			if (CutsceneTimer >= 362)
-			{
-				Main.playerInventory = true;
-			}
-
-			if (CutsceneTimer == 380)
-				Infusion.gainAnimationTimer = 240;
-
-			if (CutsceneTimer >= 500)
-				Leave();
+			Main.LocalPlayer.GetHandler().Unlock<HintAbility>();
+			Stamina.gainAnimationTimer = 240;
 		}
 
-		private string GetIntroDialogue()
+		/// <summary>
+		/// Invoked by dialogue manager to give the player starsight and display the tutorial
+		/// </summary>
+		public void StarsightTutorial()
 		{
-			return localTextState switch
-			{
-				0 => "The crow-like... creature... gets up off the ground with a triumphant look in its beady eyes, dusting itself off, and then straightening its ruffled feathers.",
-				1 => "\"There you are! I've jumped through seventeen different axons and half the entire Capricorn Tropic trying to find you!\"",
-				2 => "\"Yes, yes, my name is Alican, and I believe we can help each other. You see, I am a Seeker. Of what, exactly, is not free information, but I'll give you a hint.\"",
-				3 => "Alican leans towards you, with its voice reduced to a whisper and a manic glint in its eye.",
-				4 => "\"Mana's not the only thing out there. It's an engine of change, it can blow things up, it can reverse entropy, but it's not all there is. I'm studying *Starlight*. The inverse of mana... the energy of meaning, of memory, of connection. If you let me observe your efforts, I'll teach you how to use it.\"",
-				5 => "\"This is Starsight. The ability to glimpse the weave of fate and meaning, grasping onto but a thin thread. If you encounter something beyond your own understanding, use it to borrow the knowledge you need. I have a feeling you'll be generating a lot of useful data for me...\"",
-				6 => "\"I've got business in the Equatorial Ring, but before I go, one last word of advice... Something lurks beneath the nearby desert. The threads of memory converge in a great tangle - if you wish to understand Starlight, you must confront and decipher whatever's waiting for you there. I'll be watching.\"",
-				_ => "This text should never be seen! Please report to https://github.com/ProjectStarlight/StarlightRiver/issues",
-			};
-		}
+			Main.LocalPlayer.DeactivateCutscene();
 
-		private string GetInfusionDialogue()
-		{
-			return localTextState switch
-			{
-				0 => "Placeholder 1",
-				1 => "Placeholder 2",
-				2 => "Placeholder 3",
-				_ => "This text should never be seen! Please report to https://github.com/ProjectStarlight/StarlightRiver/issues",
-			};
+			string message = StarlightRiver.Instance.AbilityKeys.Get<HintAbility>().GetAssignedKeys().Count > 0 ?
+				$"Aim your cursor and press {StarlightRiver.Instance.AbilityKeys.Get<HintAbility>().GetAssignedKeys()[0]} to inspect the world." :
+				"Aim your cursor and press [Please bind a key] to inspect the world.";
+
+			Main.LocalPlayer.GetHandler().GetAbility(out HintAbility hint);
+			UILoader.GetUIState<TextCard>().Display("Starsight", message, hint);
 		}
 
 		private void SetFrame(int x, int y)

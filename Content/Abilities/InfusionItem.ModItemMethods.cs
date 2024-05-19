@@ -30,6 +30,12 @@ namespace StarlightRiver.Content.Abilities
 			spriteBatch.Draw(mainTex, position, null, Color.White * opacity, 0, mainTex.Size() / 2, scale, 0, 0);
 		}
 
+		public override void UpdateInventory(Player player)
+		{
+			if (ability != null)
+				ability.User = player.GetHandler();
+		}
+
 		public override void Update(ref float gravity, ref float maxFallSpeed)
 		{
 			Color color;

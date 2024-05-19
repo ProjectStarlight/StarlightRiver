@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.WorldBuilding;
 
 namespace StarlightRiver.Helpers
 {
@@ -60,6 +61,10 @@ namespace StarlightRiver.Helpers
 		{
 			//check against protected regions
 			if (ProtectionWorld.ProtectedRegions.Any(n => n.Intersects(area)) && !extraConstraintsOnly)
+				return false;
+
+			//check against vanilla structure map
+			if (!GenVars.structures.CanPlace(area))
 				return false;
 
 			for (int x = 0; x < area.Width; x++)

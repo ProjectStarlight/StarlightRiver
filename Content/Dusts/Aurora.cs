@@ -57,6 +57,15 @@ namespace StarlightRiver.Content.Dusts
 		}
 	}
 
+	class AuroraDecelerating : Aurora
+	{
+		public override bool Update(Dust dust)
+		{
+			dust.velocity *= 0.98f;
+			return base.Update(dust);
+		}
+	}
+
 	class AuroraSuction : Aurora
 	{
 		public override Color? GetAlpha(Dust dust, Color lightColor)

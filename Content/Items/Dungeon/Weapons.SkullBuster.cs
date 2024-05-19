@@ -388,7 +388,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 		public override void OnKill(int timeLeft)
 		{
 			Helper.PlayPitched("Guns/RevolvingReload", 0.6f, 0, Owner.Center);
-			
+
 			if (Owner.whoAmI == Main.myPlayer)
 				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Owner.Center, Vector2.Zero, ModContent.ProjectileType<SkullBusterReload>(), 0, 0, Owner.whoAmI);
 		}
@@ -497,7 +497,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 				CameraSystem.shake += 3;
 
 				// Not a syncable projectile right now, just skip this in multiplayer entirely
-				if (Main.netMode == NetmodeID.SinglePlayer) 
+				if (Main.netMode == NetmodeID.SinglePlayer)
 				{ // SYNC TODO: do something about unsyncable vanilla projectile manipulation, like here and in vitric bow
 					for (int i = 0; i < 3; i++)
 					{
@@ -711,7 +711,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			{
 				// Scale up bomb hitbox to make hitting it easier
 				var targetHitBox = new Rectangle((int)targetBomb.Center.X - 60, (int)targetBomb.Center.Y - 60, 120, 120);
-				
+
 				if (Projectile.Hitbox.Intersects(targetHitBox))
 				{
 					Projectile.velocity = Vector2.Zero;
@@ -743,7 +743,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(40 * 4), factor => factor * 3, factor => new Color(255, 170, 80) * factor.X * (Projectile.timeLeft / 100f));
+			trail ??= new Trail(Main.instance.GraphicsDevice, 15, new NoTip(), factor => factor * 3, factor => new Color(255, 170, 80) * factor.X * (Projectile.timeLeft / 100f));
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center;
@@ -760,7 +760,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
 			effect.Parameters["repeats"].SetValue(2f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 
 			trail?.Render(effect);
 		}

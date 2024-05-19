@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 				Vector2 pos = (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 + Vector2.One * 24;
 				Color lighting = Lighting.GetColor(i, j);
 
-				Texture2D texUnder = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MirrorUnder").Value;
+				Texture2D texUnder = Assets.Tiles.Vitric.MirrorUnder.Value;
 				Main.spriteBatch.Draw(texUnder, pos - Main.screenPosition, null, lighting, 0, texUnder.Size() / 2, 1, 0, 0);
 			}
 		}

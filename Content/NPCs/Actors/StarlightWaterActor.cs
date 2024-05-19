@@ -5,6 +5,7 @@ using StarlightRiver.Content.Items.Vanity;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -38,6 +39,11 @@ namespace StarlightRiver.Content.NPCs.Actors
 			NPC.friendly = true;
 			NPC.aiStyle = -1;
 			NPC.noGravity = true;
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
 		}
 
 		public void ResetConversion()
@@ -365,7 +371,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 				spriteBatch.End();
 				spriteBatch.Begin(default, BlendState.Additive, SamplerMode, default, RasterizerCullMode, default, Main.UIScaleMatrix);
 
-				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
+				Texture2D tex = Assets.Keys.GlowSoft.Value;
 				spriteBatch.Draw(tex, position, null, new Color(130, 200, 255) * (StarwaterConversion.StarwaterGlobalItemGlow + (float)Math.Sin(StarlightWorld.visualTimer) * 0.2f), 0, tex.Size() / 2, 1, 0, 0);
 
 				spriteBatch.End();
@@ -425,7 +431,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 					spriteBatch.End();
 					spriteBatch.Begin(default, BlendState.Additive, SamplerMode, default, RasterizerCullMode, default, Main.GameViewMatrix.TransformationMatrix);
 
-					Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Tiles/Moonstone/GlowSmall").Value;
+					Texture2D tex = Assets.Tiles.Moonstone.GlowSmall.Value;
 
 					float alphaMaster = (float)Math.Sin(starlightWaterActor.transformTimer / 300f * 3.14f);
 
@@ -456,7 +462,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 					spriteBatch.End();
 					spriteBatch.Begin(default, BlendState.Additive, SamplerMode, default, RasterizerCullMode, default, Main.GameViewMatrix.TransformationMatrix);
 
-					Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
+					Texture2D tex = Assets.Keys.GlowSoft.Value;
 					spriteBatch.Draw(tex, Item.Center - Main.screenPosition, null, new Color(100, 150, 255) * (starlightWaterActor.windDown / 240f), 0, tex.Size() / 2, starlightWaterActor.windDown / 240f * 2, 0, 0);
 
 					spriteBatch.End();

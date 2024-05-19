@@ -50,8 +50,8 @@ namespace StarlightRiver.Content.Items.Beach
 				{
 					int prog = Projectile.SentryLifeTime - projectile.timeLeft;
 
-					Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Beach/SaltGear").Value;
-					Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Beach/SaltGearSmall").Value;
+					Texture2D tex = Assets.Items.Beach.SaltGear.Value;
+					Texture2D tex2 = Assets.Items.Beach.SaltGearSmall.Value;
 					var color = new Color(255, 220, 220);
 
 					if (prog > COG_DURATION - 40)

@@ -26,14 +26,14 @@ namespace StarlightRiver.Content.GUI
 		/// <summary>
 		/// Particle system used for the links between infusions and the icons
 		/// </summary>
-		public static ParticleSystem linkParticles = new("StarlightRiver/Assets/Keys/GlowSoft", UpdateLinkDelegate);
+		public static ParticleSystem linkParticles = new("StarlightRiver/Assets/Keys/GlowSoft", UpdateLinkDelegate, ParticleSystem.AnchorOptions.UI);
 
 		/// <summary>
 		/// Particle system used for the gain animation
 		/// </summary>
-		private readonly ParticleSystem gainAnimationParticles = new("StarlightRiver/Assets/GUI/Sparkle", UpdateGainParticles);
+		private readonly ParticleSystem gainAnimationParticles = new("StarlightRiver/Assets/GUI/Sparkle", UpdateGainParticles, ParticleSystem.AnchorOptions.UI);
 
-		private readonly ParticleSystem sparkleParticles = new("StarlightRiver/Assets/GUI/Sparkle", UpdateSparkleParticles);
+		private readonly ParticleSystem sparkleParticles = new("StarlightRiver/Assets/GUI/Sparkle", UpdateSparkleParticles, ParticleSystem.AnchorOptions.UI);
 
 		/// <summary>
 		/// If the gain animation is currently playing
@@ -115,7 +115,7 @@ namespace StarlightRiver.Content.GUI
 				return;
 
 			// We want this to draw under even if in the gain animation
-			Texture2D background = Request<Texture2D>("StarlightRiver/Assets/GUI/Infusions").Value;
+			Texture2D background = Assets.GUI.Infusions.Value;
 			var backgroundColor = Color.Lerp(Color.White, new Color(100, 220, 255), 0.5f + 0.5f * (float)Math.Sin(Main.GameUpdateCount * 0.05f));
 			backgroundColor *= 0.25f + 0.15f * (float)Math.Sin(Main.GameUpdateCount * 0.035f);
 			spriteBatch.Draw(background, new Vector2(infusionElement.Left.Pixels + 2, infusionElement.Top.Pixels), null, backgroundColor);
@@ -139,11 +139,11 @@ namespace StarlightRiver.Content.GUI
 
 			if (mp.InfusionLimit > 0)
 			{
-				Texture2D texture = Request<Texture2D>("StarlightRiver/Assets/GUI/InfusionFrame").Value;
+				Texture2D texture = Assets.GUI.InfusionFrame.Value;
 				var source = new Rectangle(60 * (mp.InfusionLimit - 1), 0, 60, 56);
 				spriteBatch.Draw(texture, new Vector2(infusionElement.Left.Pixels + 2, infusionElement.Top.Pixels), source, Color.White);
 
-				Texture2D textureGlow = Request<Texture2D>("StarlightRiver/Assets/GUI/InfusionFrameFlash").Value;
+				Texture2D textureGlow = Assets.GUI.InfusionFrameFlash.Value;
 				var sourceGlow = new Rectangle(60 * (mp.InfusionLimit - 1), (int)(animationProgress / 4f) * 56, 60, 56);
 				spriteBatch.Draw(textureGlow, new Vector2(infusionElement.Left.Pixels + 6, infusionElement.Top.Pixels), sourceGlow, animationColor * (1 - animationProgress / 40f));
 			}
@@ -170,9 +170,9 @@ namespace StarlightRiver.Content.GUI
 		/// <param name="timer">The timer associated with the animation</param>
 		private void DrawGainAnimation(SpriteBatch spriteBatch, int timer)
 		{
-			Texture2D slotTex = Request<Texture2D>("StarlightRiver/Assets/GUI/InfusionAnimUnder").Value;
-			Texture2D slotTexGlow = Request<Texture2D>("StarlightRiver/Assets/GUI/InfusionGlow").Value;
-			Texture2D star = Request<Texture2D>("StarlightRiver/Assets/Keys/StarAlpha").Value;
+			Texture2D slotTex = Assets.GUI.InfusionAnimUnder.Value;
+			Texture2D slotTexGlow = Assets.GUI.InfusionGlow.Value;
+			Texture2D star = Assets.Keys.StarAlpha.Value;
 			var pos = new Vector2(infusionElement.Left.Pixels + 2, infusionElement.Top.Pixels);
 			var starOff = new Vector2(0, -12);
 
@@ -329,7 +329,7 @@ namespace StarlightRiver.Content.GUI
 
 			if (!Unlocked) //draw a lock instead for locked slots
 			{
-				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/GUI/InfusionLock").Value;
+				Texture2D tex = Assets.GUI.InfusionLock.Value;
 				//spriteBatch.Draw(tex, GetDimensions().Center(), null, Color.White, 0f, tex.Size() / 2, 1, SpriteEffects.None, 0);
 			}
 
@@ -339,7 +339,7 @@ namespace StarlightRiver.Content.GUI
 				spriteBatch.End();
 				spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
 
-				Texture2D glowTex = Request<Texture2D>("StarlightRiver/Assets/Abilities/HexGlow").Value;
+				Texture2D glowTex = Assets.Abilities.HexGlow.Value;
 				float sin = 0.75f + (float)Math.Sin(Main.GameUpdateCount / 20f) * 0.25f;
 				spriteBatch.Draw(glowTex, GetDimensions().Center(), null, equipped.color * sin, 0, glowTex.Size() / 2, 1.2f, 0, 0);
 
@@ -359,14 +359,9 @@ namespace StarlightRiver.Content.GUI
 
 				if (IsMouseHovering && Main.mouseItem.IsAir)
 				{
-					//Grabs the Items tooltip
-					var ToolTip = new System.Text.StringBuilder();
-					for (int k = 0; k < equipped.Item.ToolTip.Lines; k++)
-						ToolTip.AppendLine(equipped.Item.ToolTip.GetLine(k));
-
-					//Draws the name and tooltip at the mouse
-					Utils.DrawBorderStringBig(spriteBatch, equipped.Name, Main.MouseScreen + new Vector2(22, 22), ItemRarity.GetColor(equipped.Item.rare).MultiplyRGB(Main.MouseTextColorReal), 0.39f);
-					Utils.DrawBorderStringBig(spriteBatch, ToolTip.ToString(), Main.MouseScreen + new Vector2(22, 48), Main.MouseTextColorReal, 0.39f);
+					Main.LocalPlayer.mouseInterface = true;
+					Main.HoverItem = equipped.Item.Clone();
+					Main.hoverItemName = "a";
 				}
 			}
 

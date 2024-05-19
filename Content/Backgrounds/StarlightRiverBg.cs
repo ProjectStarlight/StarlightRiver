@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Backgrounds
 
 			starsTarget = new(DrawStars, CheckIsActive, 1f);
 			starsMap = new(DrawMap, CheckIsActive, 1f);
-			stars = new("StarlightRiver/Assets/Misc/DotTell", UpdateStars);
+			stars = new("StarlightRiver/Assets/Misc/StarParticle", UpdateStars, ParticleSystem.AnchorOptions.Screen);
 
 			On_Main.DrawInterface += DrawOverlay;
 		}
@@ -109,7 +109,9 @@ namespace StarlightRiver.Content.Backgrounds
 			sb.End();
 			sb.Begin(default, default, SamplerState.LinearWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise1").Value;
+			Texture2D tex = Assets.Noise.SwirlyNoiseLooping.Value;
+			Texture2D tex2 = Assets.Noise.PerlinNoise.Value;
+			Texture2D tex3 = Assets.Noise.MiscNoise3.Value;
 			var color = new Color(100, 230, 220)
 			{
 				A = 0
@@ -117,23 +119,27 @@ namespace StarlightRiver.Content.Backgrounds
 
 			var target = new Rectangle(0, 0, Main.screenWidth, Main.screenHeight);
 
-			color.G = 160;
+			color.G = 190;
 			color.B = 255;
 			Vector2 offset = Vector2.One * Main.GameUpdateCount * 0.2f + Vector2.One.RotatedBy(Main.GameUpdateCount * 0.01f) * 20;
 			var source = new Rectangle((int)offset.X, (int)offset.Y, tex.Width, tex.Height);
 			sb.Draw(tex, target, source, color * 0.05f);
 
-			color.G = 220;
+			color.R = 150;
+			color.G = 10;
 			color.B = 255;
+			color.A = 0;
 			offset = Vector2.One * Main.GameUpdateCount * 0.4f + Vector2.One.RotatedBy(Main.GameUpdateCount * 0.005f) * 36;
 			source = new Rectangle((int)offset.X, (int)offset.Y, tex.Width, tex.Height);
-			sb.Draw(tex, target, source, color * 0.05f);
+			sb.Draw(tex2, target, source, color * 0.05f);
 
+			color.R = 10;
 			color.G = 255;
 			color.B = 255;
+			color.A = 0;
 			offset = Vector2.One * Main.GameUpdateCount * 0.6f + Vector2.One.RotatedBy(Main.GameUpdateCount * 0.021f) * 15;
 			source = new Rectangle((int)offset.X, (int)offset.Y, tex.Width, tex.Height);
-			sb.Draw(tex, target, source, color * 0.05f);
+			sb.Draw(tex3, target, source, color * 0.05f);
 
 			sb.End();
 			sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
@@ -147,21 +153,41 @@ namespace StarlightRiver.Content.Backgrounds
 		/// <param name="particle"></param>
 		private static void UpdateStars(Particle particle)
 		{
-			particle.Timer--;
-			particle.Position += particle.Velocity;
-
-			if (particle.Type == 0)
+			if (particle.Type == 0) // River
 			{
-				particle.Position.Y += (float)Math.Sin(particle.Timer * 0.015f) * particle.StoredPosition.X;
+				particle.Timer--;
+				particle.Position += particle.Velocity;
+
+				particle.Position.Y = Main.screenHeight / 2f + (float)Math.Sin(particle.Position.X / Main.screenWidth * 6.28f) * Main.screenHeight / 8f + particle.StoredPosition.Y;
 
 				particle.Alpha = starOpacity;
 
 				if (particle.Timer < 30)
 					particle.Alpha = particle.Timer / 30f * starOpacity;
+
+				particle.Rotation += 0.2f * particle.Scale;
 			}
-			else if (particle.Type == 1)
+			else if (particle.Type == 1) // Intro
 			{
+				particle.Timer--;
+				particle.Position += particle.Velocity;
+
 				particle.Scale = (1f - particle.Timer / 60f) * 2f;
+			}
+			else if (particle.Type == 2) // Background
+			{
+				particle.Timer--;
+				particle.StoredPosition += particle.Velocity;
+
+				particle.Rotation += 0.02f;
+
+				if (particle.Timer > 1570)
+					particle.Alpha = (1600 - particle.Timer) / 30f * starOpacity;
+
+				if (particle.Timer < 30)
+					particle.Alpha = particle.Timer / 30f * starOpacity;
+
+				particle.Position = particle.StoredPosition + (particle.StoredPosition - (Main.screenPosition + Main.ScreenSize.ToVector2() / 2f)) * (particle.Scale * 6f - 0.35f * 3f) - Main.screenPosition;
 			}
 		}
 
@@ -176,13 +202,17 @@ namespace StarlightRiver.Content.Backgrounds
 				A = 0
 			};
 
-			if (Main.rand.NextBool(8))
-				stars.AddParticle(new Particle(new Vector2(Main.rand.Next(Main.screenWidth), Main.rand.Next(Main.screenHeight)), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.5f), 0, Main.rand.NextFloat(0.2f), starColor, 1600, Vector2.One * Main.rand.NextFloat(3f), default, 1));
+			if (Main.rand.NextBool(2))
+			{
+				var pos = new Vector2(Main.rand.Next(-Main.screenWidth / 2, (int)(Main.screenWidth * 1.5f)), Main.rand.Next(-Main.screenHeight / 2, (int)(Main.screenHeight * 1.5f)));
+				stars.AddParticle(new Particle(pos, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.25f), 0, Main.rand.NextFloat(0.35f), starColor * 0.8f, 1600, pos + Main.screenPosition, new Rectangle(0, 120, 120, 120), 1, 2));
+			}
 
-			if (Main.rand.NextBool(4))
-				stars.AddParticle(new Particle(new Vector2(0, Main.screenHeight * 0.2f + Main.rand.Next(-100, 200)), new Vector2(Main.rand.NextFloat(5.9f, 6.2f), 1), 0, Main.rand.NextFloat(0.2f), starColor, 600, Vector2.One * Main.rand.NextFloat(1f, 5f), default, 1));
+			float prog = Main.rand.NextFloat();
+			starColor.G = (byte)(150 + prog * 105);
 
-			stars.AddParticle(new Particle(new Vector2(0, Main.screenHeight * 0.2f + Main.rand.Next(100)), new Vector2(Main.rand.NextFloat(5.9f, 6.2f), 1), 0, Main.rand.NextFloat(0.2f), starColor, 600, Vector2.One * Main.rand.NextFloat(3f, 3.3f), default, 1));
+			bool star = Main.rand.NextBool(18);
+			stars.AddParticle(new Particle(new Vector2(0, Main.screenHeight * 0.2f + prog * 0f), new Vector2(3f + prog * 4f, 1), 0, star ? Main.rand.NextFloat(0.2f, 0.3f) : Main.rand.NextFloat(0.05f, 0.1f), starColor * (star ? 1.2f : 1f), 600, Vector2.One * (prog * 110f), new Rectangle(0, star ? 120 : 0, 120, 120), 1));
 		}
 	}
 }

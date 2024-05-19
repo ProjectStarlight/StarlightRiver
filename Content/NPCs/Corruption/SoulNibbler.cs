@@ -122,7 +122,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D texGlow = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
+			Texture2D texGlow = Assets.Keys.GlowAlpha.Value;
 			var frame = new Rectangle(0, (int)(Timer % 30 / 10) * 34, 32, 34);
 
 			var color = new Color(50, 80, 0)
@@ -149,7 +149,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 		{
 			Tile tile = Framing.GetTileSafely(spawnInfo.SpawnTileX, spawnInfo.SpawnTileY);
 
-			return (spawnInfo.Player.ZoneCorrupt && !Main.dayTime) ? 0.4f : 0;
+			return (spawnInfo.Player.ZoneCorrupt && !Main.dayTime) ? 0.1f : 0;
 		}
 	}
 }

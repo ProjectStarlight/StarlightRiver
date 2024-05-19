@@ -303,10 +303,10 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 35, new TriangularTip(40 * 4), factor => factor * 18f, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 35, new NoTip(), factor => factor * 18f, factor =>
 			{
-				if (factor.X >= 0.96f)
-					return Color.White * 0;
+				if (factor.X == 1)
+					return Color.Transparent;
 
 				if (Projectile.timeLeft <= 30 && slammed)
 					return new Color(120, 20 + (int)(100 * factor.X), 255) * MathHelper.Lerp(1f, 0f, 1f - Projectile.timeLeft / 30f) * factor.X;
@@ -317,10 +317,10 @@ namespace StarlightRiver.Content.Items.Moonstone
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 35, new TriangularTip(40 * 4), factor => factor * 10f, factor =>
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 35, new NoTip(), factor => factor * 10f, factor =>
 			{
-				if (factor.X >= 0.96f)
-					return Color.White * 0;
+				if (factor.X == 1)
+					return Color.Transparent;
 
 				if (Projectile.timeLeft <= 30 && slammed)
 					return new Color(120, 20 + (int)(100 * factor.X), 255) * MathHelper.Lerp(0.85f, 0f, 1f - Projectile.timeLeft / 30f) * factor.X;
@@ -347,8 +347,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 			effect.Parameters["time"].SetValue(-Projectile.timeLeft * 0.05f);
 			effect.Parameters["repeats"].SetValue(8f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
-			effect.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Moonstone/DatsuzeiFlameMap2").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+			effect.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
 
 			trail?.Render(effect);
 
@@ -435,9 +435,9 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 40, new TriangularTip(1), factor => 100 * (1 - Progress), factor => new Color(120, 120, 255));
+			trail ??= new Trail(Main.instance.GraphicsDevice, 40, new NoTip(), factor => 100 * (1 - Progress), factor => new Color(120, 120, 255));
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 40, new TriangularTip(1), factor => 35 * (1 - Progress), factor => Color.White);
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 40, new NoTip(), factor => 35 * (1 - Progress), factor => Color.White);
 			float nextplace = 40f / 39f;
 			var offset = new Vector2((float)Math.Sin(nextplace), (float)Math.Cos(nextplace));
 			offset *= Radius;
@@ -458,7 +458,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 			effect.Parameters["alpha"].SetValue(1);
 
 			trail?.Render(effect);

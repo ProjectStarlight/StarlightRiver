@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.ForbiddenWinds;
 using StarlightRiver.Content.NPCs.Vitric.Gauntlet;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
@@ -57,7 +58,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 					spawned--;
 			}
 
-			if (Main.player.Any(n => Vector2.Distance(n.Center, Center) < 300) && (spawnerActive || spawned <= 0))
+			if (Main.player.Any(n => Vector2.Distance(n.Center, Center) < 300 && !n.GetHandler().Unlocked<Dash>()) && (spawnerActive || spawned <= 0))
 			{
 				int nearby = Main.npc.Count(n => n.active && Vector2.Distance(n.Center, Center) < 600);
 
@@ -101,7 +102,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		public override void PostDraw(Color lightColor)
 		{
 			SpriteBatch spriteBatch = Main.spriteBatch;
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "NPCSpawnerGlow").Value;
+			Texture2D tex = Assets.Tiles.Vitric.NPCSpawnerGlow.Value;
 			var frame = new Rectangle(0, (int)(1 + Helpers.Helper.SwoopEase(timer / 60f) * 18f) % 8 * 48, 22, 48);
 			Vector2 pos = Center - Main.screenPosition + new Vector2(0, -12 * timer / 60f);
 
@@ -109,7 +110,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 			spriteBatch.Draw(tex, pos, frame, color, 0, new Vector2(11, 24), 1, 0, 0);
 
-			Texture2D glowTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
+			Texture2D glowTex = Assets.Keys.GlowAlpha.Value;
 			var glowColor = new Color(255, 160, 100)
 			{
 				A = 0

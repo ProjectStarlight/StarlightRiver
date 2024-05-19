@@ -76,21 +76,6 @@ namespace StarlightRiver.Helpers
 			Player.GetModPlayer<StarlightPlayer>().rotation = value;
 		}
 
-		public static bool OnScreen(Vector2 pos)
-		{
-			return pos.X > -16 && pos.X < Main.screenWidth + 16 && pos.Y > -16 && pos.Y < Main.screenHeight + 16;
-		}
-
-		public static bool OnScreen(Rectangle rect)
-		{
-			return rect.Intersects(new Rectangle(0, 0, Main.screenWidth, Main.screenHeight));
-		}
-
-		public static bool OnScreen(Vector2 pos, Vector2 size)
-		{
-			return OnScreen(new Rectangle((int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y));
-		}
-
 		public static Vector3 Vec3(this Vector2 vector)
 		{
 			return new Vector3(vector.X, vector.Y, 0);

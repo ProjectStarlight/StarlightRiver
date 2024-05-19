@@ -81,7 +81,7 @@ namespace StarlightRiver.Content.Items.Vanity
 			if (!SetEquipped)
 				return;
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.VanityItem + "WardenQuestionmark").Value;
+			Texture2D tex = Assets.Items.Vanity.WardenQuestionmark.Value;
 			Player armorOwner = drawInfo.drawPlayer;
 			Vector2 drawPos = armorOwner.MountedCenter - Main.screenPosition - new Vector2(0, 3 - armorOwner.gfxOffY);
 

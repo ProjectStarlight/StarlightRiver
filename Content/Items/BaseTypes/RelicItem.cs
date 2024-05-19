@@ -40,9 +40,9 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			{
 				if (RelicParticleSystem == default)
 				{
-					RelicParticleSystem = new ParticleSystem(AssetDirectory.Keys + "GlowHarshAlpha", UpdateRelic);
-					RelicParticleSystemBehind = new ParticleSystem(AssetDirectory.Keys + "GlowHarshAlpha", UpdateRelic);
-					RelicTooltipParticleSystem = new ParticleSystem(AssetDirectory.Dust + "GoldSparkle", UpdateRelicTooltip);
+					RelicParticleSystem = new ParticleSystem(AssetDirectory.Keys + "GlowHarshAlpha", UpdateRelic, ParticleSystem.AnchorOptions.UI);
+					RelicParticleSystemBehind = new ParticleSystem(AssetDirectory.Keys + "GlowHarshAlpha", UpdateRelic, ParticleSystem.AnchorOptions.UI);
+					RelicTooltipParticleSystem = new ParticleSystem(AssetDirectory.Dust + "GoldSparkle", UpdateRelicTooltip, ParticleSystem.AnchorOptions.UI);
 				}
 			}
 			else

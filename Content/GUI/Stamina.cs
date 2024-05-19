@@ -128,9 +128,9 @@ namespace StarlightRiver.Content.GUI
 		/// <summary>
 		/// Particle system used for the gain animation
 		/// </summary>
-		private readonly ParticleSystem gainAnimationParticles = new("StarlightRiver/Assets/GUI/Sparkle", UpdateGainParticles);
+		private readonly ParticleSystem gainAnimationParticles = new("StarlightRiver/Assets/GUI/Sparkle", UpdateGainParticles, ParticleSystem.AnchorOptions.UI);
 
-		private readonly ParticleSystem sparkleParticles = new("StarlightRiver/Assets/GUI/Sparkle", UpdateSparkleParticles);
+		private readonly ParticleSystem sparkleParticles = new("StarlightRiver/Assets/GUI/Sparkle", UpdateSparkleParticles, ParticleSystem.AnchorOptions.UI);
 
 		/// <summary>
 		/// Draws this stamina bar as either the gain animation or standard depending on the animation state of the Stamina UIState
@@ -166,10 +166,10 @@ namespace StarlightRiver.Content.GUI
 			Player Player = Main.LocalPlayer;
 			AbilityHandler mp = Player.GetHandler();
 
-			Texture2D ornament = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaBarOrnament").Value;
-			Texture2D empty = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaBarEmpty").Value;
-			Texture2D fill = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaBarFill").Value;
-			Texture2D edge = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaBarEdge").Value;
+			Texture2D ornament = Assets.GUI.StaminaBarOrnament.Value;
+			Texture2D empty = Assets.GUI.StaminaBarEmpty.Value;
+			Texture2D fill = Assets.GUI.StaminaBarFill.Value;
+			Texture2D edge = Assets.GUI.StaminaBarEdge.Value;
 
 			Vector2 pos = dimensions.TopLeft();
 
@@ -211,8 +211,8 @@ namespace StarlightRiver.Content.GUI
 			AbilityHandler mp = Player.GetHandler();
 
 			//logic for other UI styles
-			Texture2D emptyTex = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaEmpty").Value;
-			Texture2D fillTex = overrideTexture is null ? Request<Texture2D>("StarlightRiver/Assets/GUI/Stamina").Value : overrideTexture;
+			Texture2D emptyTex = Assets.GUI.StaminaEmpty.Value;
+			Texture2D fillTex = overrideTexture is null ? Assets.GUI.Stamina.Value : overrideTexture;
 
 			int row = 0;
 			for (int k = 0; k <= mp.StaminaMax; k++)
@@ -225,8 +225,8 @@ namespace StarlightRiver.Content.GUI
 
 				if (k >= mp.StaminaMax) //draws the incomplete vessel
 				{
-					Texture2D shard1 = Request<Texture2D>("StarlightRiver/Assets/Abilities/Stamina1").Value;
-					Texture2D shard2 = Request<Texture2D>("StarlightRiver/Assets/Abilities/Stamina2").Value;
+					Texture2D shard1 = Assets.Abilities.Stamina1.Value;
+					Texture2D shard2 = Assets.Abilities.Stamina2.Value;
 
 					if (mp.ShardCount % 3 >= 1)
 						spriteBatch.Draw(shard1, pos, shard1.Frame(), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
@@ -295,9 +295,9 @@ namespace StarlightRiver.Content.GUI
 		/// <param name="timer">The timer associated with the animation</param>
 		private void DrawGainAnimationIcon(SpriteBatch spriteBatch, Rectangle dimensions, int timer)
 		{
-			Texture2D slotTex = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaEmpty").Value;
-			Texture2D slotTexGlow = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaGlowNormal").Value;
-			Texture2D star = Request<Texture2D>("StarlightRiver/Assets/Keys/StarAlpha").Value;
+			Texture2D slotTex = Assets.GUI.StaminaEmpty.Value;
+			Texture2D slotTexGlow = Assets.GUI.StaminaGlowNormal.Value;
+			Texture2D star = Assets.Keys.StarAlpha.Value;
 			Vector2 pos = dimensions.TopLeft();
 
 			// Spawn particles

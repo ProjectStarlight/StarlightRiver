@@ -17,8 +17,6 @@ namespace StarlightRiver.Content.Items.Haunted
 
 		public override string Texture => AssetDirectory.HauntedItem + Name;
 
-		public TaintedGreataxe() : base(ModContent.Request<Texture2D>(AssetDirectory.HauntedItem + "TaintedGreataxe").Value) { }
-
 		public override void Load()
 		{
 			StarlightPlayer.OnHitNPCEvent += OnHitNPC;
@@ -260,7 +258,7 @@ namespace StarlightRiver.Content.Items.Haunted
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D tex = Assets.Items.Haunted.TaintedGreataxeProjectile.Value;
 			SpriteEffects spriteEffects = SpriteEffects.None;
 			if (Embedding)
 				spriteEffects = Projectile.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;

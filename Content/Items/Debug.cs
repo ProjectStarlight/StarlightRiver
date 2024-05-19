@@ -1,7 +1,11 @@
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Events;
+using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Haunted;
+using StarlightRiver.Content.PersistentData;
+using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems;
+using StarlightRiver.Core.Systems.PersistentDataSystem;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items
@@ -38,31 +42,32 @@ namespace StarlightRiver.Content.Items
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
+			int x = StarlightWorld.vitricBiome.X - 37;
+
+			Dust.NewDustPerfect(new Vector2((x + 80) * 16, (StarlightWorld.vitricBiome.Center.Y + 20) * 16), DustID.Firefly);
 
 		}
 
 		public override bool? UseItem(Player player)
 		{
-			for (int x = 0; x < Main.maxTilesX; x++)
+			TutorialDataStore store = PersistentDataStoreSystem.GetDataStore<TutorialDataStore>();
+			UILoader.GetUIState<MessageBox>().Display("Warning - Master Mode", "Starlight River has unique behavior for its bosses in Master Mode. This behavior is intended to be immensely difficult over anything else, and assumes a high amount of knowldge about " +
+	"both the mod and base game. Starlight River Master Mode is not intended for a first playthrough. Starlight River Master Mode is not intended to be fair. Starlight River Master Mode is not intended to be fun for everyone. " +
+	"Please remember that the health, both physical and mental, of yourself and those around you is far more important than this game or anything inside of it.");
+
+			UILoader.GetUIState<MessageBox>().AppendButton(Assets.GUI.BackButton, () =>
 			{
-				for (int y = 0; y < Main.maxTilesY; y++)
-				{
-					Framing.GetTileSafely(x, y).ClearEverything();
-				}
-			}
+				store.ignoreMasterWarning = true;
+				UILoader.GetUIState<MessageBox>().Visible = false;
+			}, "Dont show again");
 
-			StarlightWorld.SpringGen(default, default);
-			return true;
-
-			StarlightEventSequenceSystem.sequence = 0;
-			player.GetHandler().unlockedAbilities.Clear();
+			//StarlightEventSequenceSystem.sequence = 0;
+			//player.GetHandler().unlockedAbilities.Clear();
 			player.GetHandler().InfusionLimit = 0;
 
-			Main.time = 53999;
-			Main.dayTime = true;
-			StarlightEventSequenceSystem.willOccur = true;
-
-			Dust.NewDustPerfect(Main.MouseWorld, ModContent.DustType<EchochainBurstDust>(), Vector2.Zero, 0, default, 1f);
+			//Main.time = 53999;
+			//Main.dayTime = true;
+			//StarlightEventSequenceSystem.willOccur = true;
 
 			return true;
 		}

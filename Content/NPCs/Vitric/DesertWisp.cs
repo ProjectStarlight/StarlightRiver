@@ -118,7 +118,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 			effect.Parameters["time"].SetValue(-Main.GameUpdateCount / 100f);
 			effect.Parameters["repeats"].SetValue(1);
 

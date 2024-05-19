@@ -17,8 +17,8 @@ namespace StarlightRiver.Content.CustomHooks
 			if (Main.dedServ)
 				return;
 
-			ForegroundParticles = new ParticleSystem("StarlightRiver/Assets/GUI/HolyBig", UpdateForegroundBody);
-			BackgroundParticles = new ParticleSystem("StarlightRiver/Assets/GUI/Holy", UpdateBackgroundBody);
+			ForegroundParticles = new ParticleSystem("StarlightRiver/Assets/GUI/HolyBig", UpdateForegroundBody, ParticleSystem.AnchorOptions.World);
+			BackgroundParticles = new ParticleSystem("StarlightRiver/Assets/GUI/Holy", UpdateBackgroundBody, ParticleSystem.AnchorOptions.World);
 
 			On_Main.DrawBackgroundBlackFill += DrawVitricBackground;
 			On_Main.DrawBlack += ForceDrawBlack;
@@ -52,7 +52,7 @@ namespace StarlightRiver.Content.CustomHooks
 		private float NewThreshold(float orig)
 		{
 			if (StarlightWorld.vitricBiome.Intersects(Helper.ScreenTiles))
-				return 0.1f;
+				return 0.01f;
 			else
 				return orig;
 		}
@@ -64,8 +64,8 @@ namespace StarlightRiver.Content.CustomHooks
 
 			float randTime = particle.GetHashCode() % 100 + 200f;
 
-			particle.Position.X = particle.StoredPosition.X - Main.screenPosition.X + GetParallaxOffset(particle.StoredPosition.X, 0.15f) + (float)Math.Sin(particle.Timer / randTime * 6.28f) * 20;
-			particle.Position.Y = particle.StoredPosition.Y - Main.screenPosition.Y + GetParallaxOffsetY(particle.StoredPosition.Y, 0.1f);
+			particle.Position.X = particle.StoredPosition.X + GetParallaxOffset(particle.StoredPosition.X, 0.15f) + (float)Math.Sin(particle.Timer / randTime * 6.28f) * 20;
+			particle.Position.Y = particle.StoredPosition.Y + GetParallaxOffsetY(particle.StoredPosition.Y, 0.1f);
 
 			particle.Color = Color.Lerp(new Color(255, 40, 0), new Color(255, 170, 100), particle.Timer / 1800f) * (0.85f * particle.Timer / 1800f);
 			particle.Scale = particle.Timer / 1800f * 0.55f;
@@ -77,8 +77,8 @@ namespace StarlightRiver.Content.CustomHooks
 			particle.Timer--;
 			particle.StoredPosition += particle.Velocity;
 			float randTime = particle.GetHashCode() % 50 + 100f;
-			particle.Position.X = particle.StoredPosition.X - Main.screenPosition.X + GetParallaxOffset(particle.StoredPosition.X, 0.5f) + (float)Math.Sin(particle.Timer / randTime * 6.28f) * 6;
-			particle.Position.Y = particle.StoredPosition.Y - Main.screenPosition.Y + GetParallaxOffsetY(particle.StoredPosition.Y, 0.2f);
+			particle.Position.X = particle.StoredPosition.X + GetParallaxOffset(particle.StoredPosition.X, 0.5f) + (float)Math.Sin(particle.Timer / randTime * 6.28f) * 6;
+			particle.Position.Y = particle.StoredPosition.Y + GetParallaxOffsetY(particle.StoredPosition.Y, 0.2f);
 			particle.Color = Color.Lerp(Color.Red, new Color(255, 255, 200), particle.Timer / 2400f);
 			particle.Scale = particle.Timer / 2400f;
 			particle.Rotation += 0.02f;
@@ -96,9 +96,6 @@ namespace StarlightRiver.Content.CustomHooks
 			if (Player != null && StarlightWorld.vitricBiome.Intersects(Helper.ScreenTiles))
 			{
 				Vector2 basepoint = (StarlightWorld.vitricBiome != default) ? StarlightWorld.vitricBiome.TopLeft() * 16 + new Vector2(-2000, 0) : Vector2.Zero;
-
-				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 				float x = basepoint.X + GetParallaxOffset(basepoint.X, 0.6f) - Main.screenPosition.X;
 				float y = basepoint.Y + GetParallaxOffsetY(basepoint.Y, 0.2f) - Main.screenPosition.Y;
@@ -125,7 +122,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 					if (k == 1)
 					{
-						DrawLayer(basepoint, Request<Texture2D>("StarlightRiver/Assets/Backgrounds/GlassTowerLoop").Value, k + 1, new Vector2(1304, off - 248), default, false);
+						DrawLayer(basepoint, Assets.Backgrounds.GlassTowerLoop.Value, k + 1, new Vector2(1304, off - 248), default, false);
 					}
 
 					if (k == 0)
@@ -140,8 +137,8 @@ namespace StarlightRiver.Content.CustomHooks
 						if (!Main.dayTime)
 							colorAdd = Math.Min(2, (float)Math.Sin(Main.time / Main.nightLength) * 5.0f);
 
-						DrawLayer(basepoint, Request<Texture2D>("StarlightRiver/Assets/Backgrounds/Glass0Glow").Value, k + 1, Vector2.UnitY * off + Vector2.One * progress * 2, color * (0.45f + (progress + colorAdd) * 0.2f), false);
-						DrawLayer(basepoint, Request<Texture2D>("StarlightRiver/Assets/Backgrounds/Glass0Glow").Value, k + 1, Vector2.UnitY * off + Vector2.One.RotatedBy(MathHelper.PiOver2) * progress * 2, color * (0.45f + (progress + colorAdd) * 0.2f), false);
+						DrawLayer(basepoint, Assets.Backgrounds.Glass0Glow.Value, k + 1, Vector2.UnitY * off + Vector2.One * progress * 2, color * (0.45f + (progress + colorAdd) * 0.2f), false);
+						DrawLayer(basepoint, Assets.Backgrounds.Glass0Glow.Value, k + 1, Vector2.UnitY * off + Vector2.One.RotatedBy(MathHelper.PiOver2) * progress * 2, color * (0.45f + (progress + colorAdd) * 0.2f), false);
 
 						Main.spriteBatch.End();
 						Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
@@ -188,7 +185,12 @@ namespace StarlightRiver.Content.CustomHooks
 			for (int k = 5; k >= 0; k--)
 			{
 				if (k == 3)
+				{
 					BackgroundParticles.DrawParticles(Main.spriteBatch);
+
+					Main.spriteBatch.End();
+					Main.spriteBatch.Begin(SpriteSortMode.Deferred, default, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
+				}
 
 				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Backgrounds/Glass" + k).Value;
 
@@ -222,7 +224,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 					for (float h = 0; h < Main.screenWidth + width; h += width)
 					{
-						Texture2D texGlow = Request<Texture2D>("StarlightRiver/Assets/Backgrounds/Glass0Glow").Value;
+						Texture2D texGlow = Assets.Backgrounds.Glass0Glow.Value;
 						var rect = new Rectangle((int)(h - pos.X), (int)pos.Y, width, Main.screenHeight);
 						Main.spriteBatch.Draw(texGlow, rect, null, color2, 0, Vector2.UnitY + Vector2.One * progress * 2, 0, 0);
 						Main.spriteBatch.Draw(texGlow, rect, null, color2, 0, Vector2.One.RotatedBy(MathHelper.PiOver2) * progress * 2, 0, 0);
@@ -233,7 +235,12 @@ namespace StarlightRiver.Content.CustomHooks
 				}
 
 				if (k == 1)
+				{
 					ForegroundParticles.DrawParticles(Main.spriteBatch);
+
+					Main.spriteBatch.End();
+					Main.spriteBatch.Begin(SpriteSortMode.Deferred, default, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
+				}
 			}
 
 			int screenCenterX = (int)(Main.screenPosition.X + Main.screenWidth / 2);
@@ -250,11 +257,11 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private void DrawTilingBackground()
 		{
-			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Backgrounds/VitricSand").Value;
-			Texture2D texBot = Request<Texture2D>("StarlightRiver/Assets/Backgrounds/VitricSandBottom").Value;
-			Texture2D texTop = Request<Texture2D>("StarlightRiver/Assets/Backgrounds/VitricSandTop").Value;
-			Texture2D texLeft = Request<Texture2D>("StarlightRiver/Assets/Backgrounds/VitricSandLeft").Value;
-			Texture2D texRight = Request<Texture2D>("StarlightRiver/Assets/Backgrounds/VitricSandRight").Value;
+			Texture2D tex = Assets.Backgrounds.VitricSand.Value;
+			Texture2D texBot = Assets.Backgrounds.VitricSandBottom.Value;
+			Texture2D texTop = Assets.Backgrounds.VitricSandTop.Value;
+			Texture2D texLeft = Assets.Backgrounds.VitricSandLeft.Value;
+			Texture2D texRight = Assets.Backgrounds.VitricSandRight.Value;
 
 			var blacklist = new Rectangle(StarlightWorld.vitricBiome.X, StarlightWorld.vitricBiome.Y - 2, StarlightWorld.vitricBiome.Width, StarlightWorld.vitricBiome.Height);
 
@@ -283,7 +290,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private bool CheckBackground(Vector2 pos, Vector2 size, Rectangle biome, bool dontCheckScreen = false)
 		{
-			if (dontCheckScreen || Helper.OnScreen(new Rectangle((int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y)))
+			if (dontCheckScreen || ScreenTracker.OnScreenScreenspace(new Rectangle((int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y)))
 			{
 				if (!Main.BackgroundEnabled)
 					return true;
@@ -314,12 +321,6 @@ namespace StarlightRiver.Content.CustomHooks
 				if (x > -texture.Width && x < Main.screenWidth + 30)
 					Main.spriteBatch.Draw(texture, new Vector2(x, y), null, color, 0f, Vector2.Zero, 1f, flip ? SpriteEffects.FlipVertically : 0, 0);
 			}
-		}
-
-		private static int GetParallaxOffset2(float startpoint, float factor)
-		{
-			float vanillaParallax = 1 - (Main.caveParallax - 0.8f) / 0.2f;
-			return (int)((Main.screenWidth / 2 - startpoint) * factor * vanillaParallax);
 		}
 
 		private static int GetParallaxOffset(float startpoint, float factor)

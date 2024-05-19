@@ -27,6 +27,7 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 	{
 		public static List<Keyword> keywords = new();
 
+		[CloneByReference]
 		public List<Keyword> thisKeywords = new();
 
 		public override bool InstancePerEntity => true;

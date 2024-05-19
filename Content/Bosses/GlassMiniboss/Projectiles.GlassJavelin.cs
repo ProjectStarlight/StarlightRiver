@@ -93,7 +93,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Color hotFade = new Color(255, 255, 255, 128) * Utils.GetLerpValue(50, 80, Projectile.timeLeft, true);
 			Main.EntitySpriteDraw(spear.Value, Projectile.Center - Main.screenPosition, hotFrame, hotFade, Projectile.rotation, spearOrigin, scale, SpriteEffects.None, 0);
 
-			Asset<Texture2D> bloom = Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha");
+			Asset<Texture2D> bloom = Assets.Keys.GlowAlpha;
 			float bloomScale = Utils.GetLerpValue(60, 90, Projectile.timeLeft, true) * Projectile.scale;
 
 			//small spear and bloom

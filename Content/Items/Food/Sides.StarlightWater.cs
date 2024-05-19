@@ -4,7 +4,7 @@ namespace StarlightRiver.Content.Items.Food
 {
 	internal class StarlightWater : Ingredient
 	{
-		public StarlightWater() : base("Regenerate 4 mana per second constantly", 360, IngredientType.Side) { }
+		public StarlightWater() : base("Regenerate 4 mana per second constantly", 900, IngredientType.Side) { }
 
 		public override void SafeSetDefaults()
 		{

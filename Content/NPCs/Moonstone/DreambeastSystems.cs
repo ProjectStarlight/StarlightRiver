@@ -75,7 +75,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			{
 				Effect effect = Filters.Scene["MoonstoneBeastEffect"].GetShader().Shader;
 				effect.Parameters["baseTexture"].SetValue(target);
-				effect.Parameters["distortTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise2").Value);
+				effect.Parameters["distortTexture"].SetValue(Assets.Noise.MiscNoise2.Value);
 				effect.Parameters["size"].SetValue(target.Size());
 				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.005f);
 				effect.Parameters["opacity"].SetValue(lunacy / 100f);
@@ -178,7 +178,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				fullyInsaneTimer = 0;
 
 				if (insaneChargeSound != null)
-				{	
+				{
 					SoundEngine.TryGetActiveSound((SlotId)insaneChargeSound, out ActiveSound sound);
 
 					if (sound != null)
@@ -247,7 +247,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			if (Player.dead)
 				return;
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.MoonstoneNPC + "LunaticEye").Value;
+			Texture2D tex = Assets.NPCs.Moonstone.LunaticEye.Value;
 
 			Vector2 offset = -Vector2.UnitY * (50 + Player.gfxOffY);
 			Rectangle drawRect = new(0, 0, tex.Width, tex.Height / 5);

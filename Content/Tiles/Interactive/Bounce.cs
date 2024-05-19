@@ -41,6 +41,8 @@ namespace StarlightRiver.Content.Tiles.Interactive
 
 	internal class BouncerDummy : Dummy
 	{
+		public override bool DoesCollision => true;
+
 		public BouncerDummy() : base(TileType<Bouncer>(), 16, 16) { }
 
 		public override void Collision(Player Player)
@@ -71,7 +73,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
 
 		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Tiles/Interactive/BouncerGlow").Value;
+			Texture2D tex = Assets.Tiles.Interactive.BouncerGlow.Value;
 			Color color = Helper.IndicatorColorProximity(150, 300, Center);
 			Main.spriteBatch.Draw(tex, position - Vector2.One - Main.screenPosition, color);
 		}

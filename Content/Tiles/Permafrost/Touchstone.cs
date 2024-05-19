@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Terraria.DataStructures;
+using Terraria.GameContent.Bestiary;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
@@ -59,7 +60,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 				float cos1 = 1 + (float)Math.Cos(Main.GameUpdateCount / 10f);
 				auroraColor = new Color(0.5f + cos1 * 0.2f, 0.8f, 0.5f + sin1 * 0.2f);
 
-				Texture2D portalGlow = ModContent.Request<Texture2D>(AssetDirectory.SquidBoss + "PortalGlow").Value;
+				Texture2D portalGlow = Assets.Bosses.SquidBoss.PortalGlow.Value;
 
 				Color portalGlowColor = auroraColor;
 				portalGlowColor.A = 0;
@@ -244,6 +245,11 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			NPC.dontTakeDamage = true;
 		}
 
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
+		}
+
 		public override void AI()
 		{
 			foreach (Player player in Main.player.Where(n => Vector2.Distance(n.Center, NPC.Center) < 1000))
@@ -356,7 +362,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 		protected void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new TriangularTip(40 * 4), factor => factor * 12 * NPC.scale, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 12 * NPC.scale, factor =>
 			{
 				float alpha = factor.X;
 
@@ -379,7 +385,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
+			Texture2D tex = Assets.Keys.GlowSoft.Value;
 
 			float sin1 = 1 + (float)Math.Sin(Main.GameUpdateCount / 10f);
 			float cos1 = 1 + (float)Math.Cos(Main.GameUpdateCount / 10f);
@@ -393,7 +399,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = Terraria.Graphics.Effects.Filters.Scene["CeirosRing"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
@@ -402,10 +408,10 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
 			effect.Parameters["repeats"].SetValue(2f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 			trail?.Render(effect);
 
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
 			trail?.Render(effect);
 		}
 	}

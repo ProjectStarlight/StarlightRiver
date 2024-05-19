@@ -1,4 +1,5 @@
-﻿using Terraria.ID;
+﻿using Terraria.DataStructures;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
@@ -26,7 +27,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			if (closer)
 			{
 				var hitbox = new Rectangle(i * 16, j * 16, 16, 16);
-				Rectangle hidebox = hitbox;
 
 				int speed = (int)Main.LocalPlayer.velocity.Length() * 2;
 
@@ -40,6 +40,15 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				if (colliding)
 				{
 					WorldGen.KillTile(i, j);
+
+					// For a multplayer client, killTile doesn't spawn items so we'll spawn item ourselves and send a packet
+					if (Main.netMode == NetmodeID.MultiplayerClient)
+					{
+						int item = Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ModContent.ItemType<Items.Vitric.VitricOre>(), 1);
+
+						NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item, 1f);
+					}
+
 					Framing.GetTileSafely(i, j).IsActuated = true;
 					NetMessage.SendTileSquare(Main.LocalPlayer.whoAmI, i, j);
 				}
@@ -55,7 +64,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			Tile tile = Framing.GetTileSafely(i, j);
 			Color color = Helpers.Helper.IndicatorColorProximity(64, 128, new Vector2(i, j) * 16 + Vector2.One * 8);
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "VitricGlassGlow").Value;
+			Texture2D tex = Assets.Tiles.Vitric.VitricGlassGlow.Value;
 
 			spriteBatch.Draw(tex, (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), color);
 		}

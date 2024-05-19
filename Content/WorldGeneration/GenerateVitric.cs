@@ -211,6 +211,8 @@ namespace StarlightRiver.Core
 			FinalCleanup();
 
 			vitricBiome.Y -= 8; //Adjust a bit
+
+			GenVars.structures.AddProtectedStructure(vitricBiome, 20);
 		}
 
 		/// <summary>Generates basic biome shape, such as curved walls, noise on floor and ceiling, and spikes on the bottom.</summary>
@@ -567,7 +569,7 @@ namespace StarlightRiver.Core
 
 			ProtectionWorld.ProtectedRegions.Add(new Rectangle(x, vitricBiome.Center.Y - 10, dims.X, dims.Y));
 
-			NPC.NewNPC(new EntitySource_WorldGen(), (x + 80) * 16, vitricBiome.Center.Y * 16, NPCType<Content.Bosses.GlassMiniboss.GlassweaverWaiting>());
+			NPC.NewNPC(new EntitySource_WorldGen(), (x + 80) * 16, (StarlightWorld.vitricBiome.Center.Y + 20) * 16, NPCType<Content.Bosses.GlassMiniboss.GlassweaverWaiting>());
 		}
 
 		private static void GenTemple()
@@ -581,6 +583,21 @@ namespace StarlightRiver.Core
 			StructureHelper.Generator.GenerateStructure("Structures/VitricTempleNew", pos, StarlightRiver.Instance);
 
 			GearPuzzleHandler.PuzzleOriginLocation = pos + new Point16(14, 130);
+		}
+
+		/// <summary>
+		/// Repairs the temple during the game when the glassweaver should move in
+		/// </summary>
+		public static void RepairTemple()
+		{
+			Point16 dimensions = Point16.Zero;
+			StructureHelper.Generator.GetDimensions("Structures/VitricTempleNew", StarlightRiver.Instance, ref dimensions);
+
+			int yOff = 71;
+
+			var pos = new Point16(vitricBiome.Center.X - dimensions.X / 2, vitricBiome.Center.Y - yOff + 8);
+			pos += new Point16(75, 88);
+			StructureHelper.Generator.GenerateStructure("Structures/VitricTempleRepair", pos, StarlightRiver.Instance);
 		}
 
 		/// <summary>Generates decor of every type throughout the biome</summary>

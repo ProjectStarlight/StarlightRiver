@@ -203,12 +203,11 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			//DrawTrail(Main.spriteBatch);
-
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "Glow").Value;
+
+			Texture2D tex = Assets.Items.Moonstone.DianeCrescant.Value;
+			Texture2D glowTex = Assets.Items.Moonstone.DianeCrescantGlow.Value;
 
 			for (int k = AfterimageLength; k > 0; k--)
 			{
@@ -311,10 +310,10 @@ namespace StarlightRiver.Content.Items.Moonstone
 		private void ManageTrail()
 		{
 
-			trail ??= new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(40 * 4), factor => (10 + factor * 25) * MathHelper.Lerp(0.4f, 1f, ChargeRatio), factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 15, new NoTip(), factor => (10 + factor * 25) * MathHelper.Lerp(0.4f, 1f, ChargeRatio), factor =>
 			{
-				if (factor.X >= 0.96f)
-					return Color.White * 0;
+				if (factor.X == 1)
+					return Color.Transparent;
 
 				return new Color(120, 20 + (int)(100 * factor.X), 255) * (float)Math.Sin(factor.X * 3.14f);
 			});
@@ -322,10 +321,10 @@ namespace StarlightRiver.Content.Items.Moonstone
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(40 * 4), factor => (80 + 0 + factor * 0) * MathHelper.Lerp(0.4f, 1f, ChargeRatio), factor =>
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 15, new NoTip(), factor => (80 + 0 + factor * 0) * MathHelper.Lerp(0.4f, 1f, ChargeRatio), factor =>
 			{
-				if (factor.X >= 0.96f)
-					return Color.White * 0;
+				if (factor.X == 1)
+					return Color.Transparent;
 
 				return new Color(100, 20 + (int)(60 * factor.X), 255) * 0.15f * (float)Math.Sin(factor.X * 3.14f);
 			});
@@ -438,8 +437,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
 			effect.Parameters["repeats"].SetValue(8f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
-			effect.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Moonstone/DatsuzeiFlameMap2").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+			effect.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
 
 			trail?.Render(effect);
 

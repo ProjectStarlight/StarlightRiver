@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 		{
 			if (effectTimer > 0)
 			{
-				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Abilities/HintCursor").Value;
+				Texture2D tex = Assets.Abilities.HintCursor.Value;
 				int frame = (int)(effectTimer / 20f * 9);
 				var source = new Rectangle(0, frame * 30, 50, 30);
 				Main.spriteBatch.Draw(tex, Main.MouseScreen + Vector2.One * 8, source, Color.White, 0, new Vector2(25, 15), 1, 0, 0);

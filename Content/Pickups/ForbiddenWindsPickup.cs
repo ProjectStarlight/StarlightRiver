@@ -168,10 +168,10 @@ namespace StarlightRiver.Content.Pickups
 		{
 			if (wide)
 			{
-				trail ??= new Trail(Main.instance.GraphicsDevice, 120, new TriangularTip(40 * 4), factor => Math.Min((float)Math.Sin(factor * 3.14f) * 50, 50), factor =>
+				trail ??= new Trail(Main.instance.GraphicsDevice, 120, new NoTip(), factor => Math.Min((float)Math.Sin(factor * 3.14f) * 50, 50), factor =>
 				{
-					if (factor.X >= 0.95f)
-						return Color.White * 0;
+					if (factor.X == 1)
+						return Color.Transparent;
 
 					int time = Main.LocalPlayer.GetModPlayer<StarlightPlayer>().pickupTimer;
 					float mul = 1;
@@ -187,10 +187,10 @@ namespace StarlightRiver.Content.Pickups
 			}
 			else
 			{
-				trail ??= new Trail(Main.instance.GraphicsDevice, 120, new TriangularTip(40 * 4), factor => Math.Min((float)Math.Sin(factor * 3.14f) * 13, 13), factor =>
+				trail ??= new Trail(Main.instance.GraphicsDevice, 120, new NoTip(), factor => Math.Min((float)Math.Sin(factor * 3.14f) * 13, 13), factor =>
 				{
-					if (factor.X >= 0.95f)
-						return Color.White * 0;
+					if (factor.X == 1)
+						return Color.Transparent;
 
 					int time = Main.LocalPlayer.GetModPlayer<StarlightPlayer>().pickupTimer;
 					float mul = 1;
@@ -226,13 +226,13 @@ namespace StarlightRiver.Content.Pickups
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * -0.01f);
 			effect.Parameters["repeats"].SetValue(4f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
 
 			trail1?.Render(effect);
 			trail2?.Render(effect);
 			trail3?.Render(effect);
 
-			effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 
 			trail4?.Render(effect);
 			trail5?.Render(effect);

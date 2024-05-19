@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 		{
 			Tile tile = Framing.GetTileSafely(i, j);
-			Texture2D tex = Request<Texture2D>(AssetDirectory.OvergrowTile + "Rock2x2Glow").Value;
+			Texture2D tex = Assets.Tiles.Overgrow.Rock2x2Glow.Value;
 			Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition;
 
 			spriteBatch.Draw(tex, pos, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), Color.White);

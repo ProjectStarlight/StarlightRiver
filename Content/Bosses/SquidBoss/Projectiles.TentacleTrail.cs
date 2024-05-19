@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		protected void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new TriangularTip(40 * 4), factor => factor * 42, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 42, factor =>
 			{
 				float alpha = factor.X * 0.5f;
 
@@ -102,10 +102,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			effect.Parameters["repeats"].SetValue(2f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowBottomTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowBottomTrail.Value);
 			trail?.Render(effect);
 
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/LiquidTrailAlt").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.LiquidTrailAlt.Value);
 			trail?.Render(effect);
 		}
 	}

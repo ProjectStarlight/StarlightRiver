@@ -66,7 +66,6 @@ namespace StarlightRiver.Content.CustomHooks
 			foreach (NPC NPC in Main.npc)
 			{
 				if (!NPC.active || NPC.ModNPC == null || NPC.ModNPC is not MovingPlatform || (NPC.ModNPC as MovingPlatform).dontCollide)
-
 					continue;
 
 				var PlayerRect = new Rectangle((int)self.position.X, (int)self.position.Y + self.height, self.width, 1);
@@ -138,22 +137,25 @@ namespace StarlightRiver.Content.CustomHooks
 		private delegate bool GrapplePlatformDelegate(bool fail, Projectile proj);
 		private bool EmitGrapplePlatformDelegate(bool fail, Projectile proj)
 		{
-			if (proj.timeLeft < 36000 - 3)
+			if (proj.timeLeft < 36000 - 3 && proj.TryGetGlobalProjectile(out GrapplingHookGlobal global))
 			{
-				for (int k = 0; k < Main.maxNPCs; k++)
+				NPC n = global.grappledTo;
+				if (n != null && n.active && n.ModNPC is MovingPlatform && !(n.ModNPC as MovingPlatform).dontCollide && n.Hitbox.Intersects(proj.Hitbox))
 				{
-					NPC n = Main.npc[k];
-					if (n.active && n.ModNPC is MovingPlatform && n.Hitbox.Intersects(proj.Hitbox))
+					if (proj.ai[0] != 1)
 					{
-						proj.position += n.velocity;
-
-						if (!proj.tileCollide) //this is kinda hacky but... oh well 
-							Terraria.Audio.SoundEngine.PlaySound(SoundID.Dig, proj.Center);
-
-						proj.tileCollide = true;
-
-						return false;
+						proj.ai[0] = 2;
+						proj.netUpdate = true;
 					}
+
+					proj.position += n.velocity;
+
+					if (!proj.tileCollide) //this is kinda hacky but... oh well 
+						Terraria.Audio.SoundEngine.PlaySound(SoundID.Dig, proj.Center);
+
+					proj.tileCollide = true;
+
+					return false;
 				}
 			}
 
@@ -181,6 +183,39 @@ namespace StarlightRiver.Content.CustomHooks
 			ProjectileLoader.NumGrappleHooks(proj, Player, ref numHooks);
 			if (Player.grapCount > numHooks)
 				Main.projectile[Player.grappling.OrderBy(n => (Main.projectile[n].active ? 0 : 999999) + Main.projectile[n].timeLeft).ToArray()[0]].Kill();
+		}
+	}
+
+	class GrapplingHookGlobal : GlobalProjectile
+	{
+		public NPC grappledTo;
+
+		public override bool InstancePerEntity => true;
+
+		public override bool AppliesToEntity(Projectile entity, bool lateInstantiation)
+		{
+			return entity.aiStyle == 7;
+		}
+
+		public override void PostAI(Projectile projectile)
+		{
+			if (grappledTo is null)
+			{
+				for (int k = 0; k < Main.maxNPCs; k++)
+				{
+					NPC n = Main.npc[k];
+					if (n.active && n.ModNPC is MovingPlatform && !(n.ModNPC as MovingPlatform).dontCollide && n.Hitbox.Intersects(projectile.Hitbox))
+					{
+						if (projectile.ai[0] != 1)
+						{
+							projectile.ai[0] = 2;
+							projectile.netUpdate = true;
+						}
+
+						grappledTo = n;
+					}
+				}
+			}
 		}
 	}
 }

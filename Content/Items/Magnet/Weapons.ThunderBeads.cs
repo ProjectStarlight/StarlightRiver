@@ -201,7 +201,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			if (embedded)
 			{
 				Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
-				Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "Glow").Value;
+				Texture2D bloomTex = Assets.Keys.Glow.Value;
 				for (int i = 0; i < cache.Count - 1; i++)
 				{
 					if (i % 3 != 0)
@@ -239,7 +239,7 @@ namespace StarlightRiver.Content.Items.Magnet
 		private void ManageTrails()
 		{
 			Vector2 endPoint = embedded ? target.Center : cache[segments];
-			trail ??= new Trail(Main.instance.GraphicsDevice, segments + 1, new TriangularTip(4), factor => 16, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, segments + 1, new NoTip(), factor => 16, factor =>
 			{
 				if (factor.X > 0.99f)
 					return Color.Transparent;
@@ -250,7 +250,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = endPoint;
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, segments + 1, new TriangularTip(4), factor => 3 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, segments + 1, new NoTip(), factor => 3 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
 			{
 				float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
 				return Color.Lerp(baseColor, endColor, EaseFunction.EaseCubicIn.Ease(1 - progress)) * fade * progress;
@@ -272,7 +272,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
 			effect.Parameters["repeats"].SetValue(1f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 
 			trail?.Render(effect);
 			trail2?.Render(effect);

@@ -10,7 +10,6 @@ namespace StarlightRiver.Content.Items.BaseTypes
 	{
 		public static readonly Color CurseColor = new(25, 17, 49);
 
-		private readonly Texture2D Glow = null;
 		private static float tooltipProgress;
 
 		public Vector2 drawpos = Vector2.Zero;
@@ -25,8 +24,8 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public static void LoadSystem()
 		{
-			CursedSystem = new ParticleSystem("StarlightRiver/Assets/GUI/WhiteCircle", UpdateCursed);
-			ShardsSystem = new ParticleSystem("StarlightRiver/Assets/GUI/charm", UpdateShards);
+			CursedSystem = new ParticleSystem("StarlightRiver/Assets/GUI/WhiteCircle", UpdateCursed, ParticleSystem.AnchorOptions.UI);
+			ShardsSystem = new ParticleSystem("StarlightRiver/Assets/GUI/charm", UpdateShards, ParticleSystem.AnchorOptions.UI);
 		}
 
 		public static void UnloadSystem()
@@ -35,10 +34,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			ShardsSystem ??= null;
 		}
 
-		protected CursedAccessory(Texture2D glow) : base("Unnamed Cursed Accessory", "You forgot to give this a display name dingus!")
-		{
-			Glow = glow;
-		}
+		protected CursedAccessory() : base("Unnamed Cursed Accessory", "You forgot to give this a display name dingus!") { }
 
 		private static void UpdateShardsBody(Particle particle)
 		{
@@ -85,9 +81,6 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
 		{
-			Color color = Color.White * (float)Math.Sin(StarlightWorld.visualTimer);
-			spriteBatch.Draw(Glow, position, new Rectangle(0, 0, 32, 32), color, 0, origin, scale, SpriteEffects.None, 0);
-
 			Vector2 pos = position + Main.rand.NextVector2Circular(16, 16) + new Vector2(0, 10);
 
 			if (!GoingBoom)
@@ -178,7 +171,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			if (line.Mod == "Terraria" && line.Name == "ItemName")
 			{
 				Effect effect = Filters.Scene["CursedTooltip"].GetShader().Shader;
-				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
+				Texture2D tex = Assets.Keys.Glow.Value;
 
 				if (effect is null)
 					return true;

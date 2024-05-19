@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Packets;
 using System;
+using Terraria.GameContent.Bestiary;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Pickups
@@ -10,7 +11,7 @@ namespace StarlightRiver.Content.Pickups
 		/// <summary>
 		/// Indicates if the pickup should be visible in-world. Should be controlled using clientside vars.
 		/// </summary>
-		private bool Visible => CanPickup(Main.LocalPlayer);
+		protected bool Visible => CanPickup(Main.LocalPlayer);
 
 		public virtual bool Fancy => true;
 
@@ -28,6 +29,11 @@ namespace StarlightRiver.Content.Pickups
 			NPC.noGravity = true;
 			NPC.aiStyle = -1;
 			NPC.friendly = false;
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
 		}
 
 		public virtual void SafeSetDefaults() { }
@@ -155,7 +161,7 @@ namespace StarlightRiver.Content.Pickups
 		{
 			if (Visible)
 			{
-				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/RiftCrafting/Glow0").Value;
+				Texture2D tex = Assets.RiftCrafting.Glow0.Value;
 				Vector2 pos = NPC.Center - Main.screenPosition + new Vector2(0, (float)Math.Sin(StarlightWorld.visualTimer) * 5);
 
 				spriteBatch.Draw(tex, pos, tex.Frame(), GlowColor * 0.3f, 0, tex.Size() / 2, 1, 0, 0);

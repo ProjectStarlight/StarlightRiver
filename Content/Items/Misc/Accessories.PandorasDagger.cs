@@ -119,7 +119,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void PostDraw(Color lightColor)
 		{
-			Texture2D texture = ModContent.Request<Texture2D>(AssetDirectory.Assets + "StarTexture").Value;
+			Texture2D texture = Assets.StarTexture.Value;
 			var color = new Color(220, 205, 140)
 			{
 				A = 0
@@ -148,7 +148,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(2.5f), factor => 4.5f * (factor * 2f), factor => Color.Lerp(new Color(210, 210, 200), new Color(220, 205, 140), factor.X) * 0.8f * factor.X);
+			trail ??= new Trail(Main.instance.GraphicsDevice, 15, new NoTip(), factor => 4.5f * (factor * 2f), factor => Color.Lerp(new Color(210, 210, 200), new Color(220, 205, 140), factor.X) * 0.8f * factor.X);
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
@@ -165,14 +165,14 @@ namespace StarlightRiver.Content.Items.Misc
 			effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.03f);
 			effect.Parameters["repeats"].SetValue(2f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 
 			trail?.Render(effect);
 		}
 
 		public void DrawAdditive(SpriteBatch sb)
 		{
-			Texture2D texture = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowSoft").Value;
+			Texture2D texture = Assets.Keys.GlowSoft.Value;
 			var color = new Color(220, 205, 140);
 			sb.Draw(texture, Projectile.Center - Projectile.velocity - Main.screenPosition, null, color * 0.6f, Projectile.rotation, texture.Size() / 2f, Projectile.scale - 0.35f, SpriteEffects.None, 0);
 			sb.Draw(texture, Projectile.Center - Projectile.velocity - Main.screenPosition, null, color, Projectile.rotation, texture.Size() / 2f, Projectile.scale - 0.45f, SpriteEffects.None, 0);

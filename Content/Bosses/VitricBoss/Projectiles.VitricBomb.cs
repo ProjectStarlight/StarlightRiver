@@ -42,8 +42,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
-			Texture2D tex2 = Request<Texture2D>(AssetDirectory.VitricBoss + "BombTell").Value;
+			Texture2D tex = Assets.Keys.GlowSoft.Value;
+			Texture2D tex2 = Assets.Bosses.VitricBoss.BombTell.Value;
 
 			float bright = (300 - Projectile.timeLeft) / 300f * 0.7f;
 
@@ -137,7 +137,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			{
 				if (Main.netMode != NetmodeID.Server)
 					Gore.NewGore(Projectile.GetSource_Death(), Projectile.Center, Vector2.One.RotatedByRandom(6.28f) * 5, Mod.Find<ModGore>("Mine" + k).Type);
-				
+
 				if (Main.netMode != NetmodeID.MultiplayerClient)
 					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.UnitY.RotatedByRandom(1) * -Main.rand.NextFloat(3, 5), ProjectileType<Items.Vitric.NeedlerEmber>(), 0, 0, 0);
 			}

@@ -26,6 +26,8 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 		public virtual int ParentX => (int)Center.X / 16;
 		public virtual int ParentY => (int)Center.Y / 16;
 
+		public virtual bool DoesCollision => false;
+
 		public Dummy() { }
 
 		public Dummy(int validType, int width, int height)
@@ -165,15 +167,23 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 
 		public void AI()
 		{
-			if (!ValidTile(Parent) && Main.netMode != NetmodeID.MultiplayerClient) //multiplayer clients aren't allowed to kill dummies since they can have unloaded tiles
-				active = false;
-
-			for (int i = 0; i < Main.maxPlayers; i++)
+			//multiplayer clients aren't allowed to kill dummies since they can have unloaded tiles
+			if (!ValidTile(Parent) && active && Main.netMode != NetmodeID.MultiplayerClient)
 			{
-				Player player = Main.player[i];
+				DeleteDummyPacket deletePacket = new DeleteDummyPacket(position.X, position.Y, type);
+				deletePacket.Send(runLocally: true);
+				return;
+			}
 
-				if (Colliding(player))
-					Collision(player);
+			if (DoesCollision)
+			{
+				for (int i = 0; i < Main.maxPlayers; i++)
+				{
+					Player player = Main.player[i];
+
+					if (Colliding(player))
+						Collision(player);
+				}
 			}
 
 			Update();
@@ -182,8 +192,9 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 			cullBox.Inflate(offscreenRadius, offscreenRadius);
 			offscreen = !cullBox.Intersects(new Rectangle((int)Main.screenPosition.X, (int)Main.screenPosition.Y, Main.screenWidth, Main.screenHeight));
 
-			if (netUpdate)
+			if (netUpdate && Main.netMode == NetmodeID.Server)
 			{
+				netUpdate = false;
 				var stream = new MemoryStream();
 				BinaryWriter writer = new BinaryWriter(stream);
 				SendExtraAI(writer);
@@ -228,14 +239,49 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 
 				dummy.ReceiveExtraAI(reader);
 			}
+			else
+			{
+				// this case means a client is receiving an update for a dummy that did not exist before 
+
+				Vector2 spawnPos = new Vector2(x, y) + DummySystem.prototypes[type].Size / 2;
+				Dummy newDummy = DummySystem.NewDummy(type, spawnPos);
+
+				newDummy.position = new Vector2(x, y);
+				newDummy.type = type;
+
+				newDummy.ReceiveExtraAI(reader);
+
+				var key = new Point16((int)(x / 16), (int)(y / 16));
+				DummyTile.dummiesByPosition[key] = newDummy;
+			}
 
 			reader.Dispose();
+		}
+	}
 
-			if (Main.netMode == NetmodeID.Server)
-			{
-				Send(-1, -1, false);
-				return;
-			}
+	/// <summary>
+	/// Multiplayer clients aren't allowed to kill dummies themselves, so the server will tell them when to delete the dummy
+	/// </summary>
+	[Serializable]
+	public class DeleteDummyPacket : Module
+	{
+		public readonly float x;
+		public readonly float y;
+		public readonly int type;
+
+		public DeleteDummyPacket(float x, float y, int type)
+		{
+			this.x = x;
+			this.y = y;
+			this.type = type;
+		}
+
+		protected override void Receive()
+		{
+			Dummy dummy = DummyTile.GetDummy((int)(x / 16), (int)(y / 16), type);
+
+			if (dummy != null)
+				dummy.active = false;
 		}
 	}
 }

@@ -4,15 +4,48 @@ using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
+using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.CustomHooks
 {
-	class AstralMeteor : HookGroup
+	class AstralMeteor : ModSystem
 	{
+		public bool moonstoneForced;
+		public bool meteorForced;
+
 		//Swaps the vanilla meteor events out, could create conflicts if other mods attempt the same but shouldnt be anything fatal
 		public override void Load()
 		{
 			On_WorldGen.meteor += AluminumMeteor;
+		}
+
+		public override void SaveWorldData(TagCompound tag)
+		{
+			tag.Add("moonstoneForced", moonstoneForced);
+			tag.Add("meteorForced", meteorForced);
+		}
+
+		public override void LoadWorldData(TagCompound tag)
+		{
+			moonstoneForced = tag.GetBool("moonstoneForced");
+			meteorForced = tag.GetBool("meteorForced");
+		}
+
+		private bool ShouldBeMoonstone()
+		{
+			if (moonstoneForced)
+			{
+				moonstoneForced = false;
+				return true;
+			}
+
+			if (meteorForced)
+			{
+				meteorForced = false;
+				return false;
+			}
+
+			return Main.rand.NextBool();
 		}
 
 		private bool AluminumMeteor(On_WorldGen.orig_meteor orig, int i, int j, bool ignorePlayers)
@@ -20,7 +53,7 @@ namespace StarlightRiver.Content.CustomHooks
 			CameraSystem.shake += 80;
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode);
 
-			if (Main.rand.Next(3) > 1)
+			if (ShouldBeMoonstone())
 			{
 				var target = new Point16();
 
@@ -56,15 +89,13 @@ namespace StarlightRiver.Content.CustomHooks
 					}
 				}
 
-				if (Main.netMode == NetmodeID.SinglePlayer)
-					Main.NewText("A shard of the moon has landed!", new Color(107, 233, 231));
+				Terraria.Chat.ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("A shard of the moon has landed!"), new Color(107, 233, 231));
 
-				else if (Main.netMode == NetmodeID.Server)
-					Terraria.Chat.ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("A shard of the moon has landed!"), new Color(107, 233, 231));
+				if (Main.netMode == NetmodeID.Server)
+					NetMessage.SendTileSquare(Main.myPlayer, target.X - 30, target.Y - 30, 60, 70, TileChangeType.None);
 
 				return true;
 			}
-
 			else
 			{
 				return orig(i, j, ignorePlayers);

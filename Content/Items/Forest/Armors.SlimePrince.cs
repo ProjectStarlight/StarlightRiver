@@ -9,7 +9,9 @@ namespace StarlightRiver.Content.Items.Forest
 	[AutoloadEquip(EquipType.Head)]
 	public class SlimePrinceHead : ModItem
 	{
+		[CloneByReference]
 		public Projectile prince;
+
 		public Vector2 targetVel;
 		public float accel = 0.06f;
 		public Vector2 targetAccel;
@@ -139,7 +141,7 @@ namespace StarlightRiver.Content.Items.Forest
 					helm.targetAccel = Vector2.Normalize(helm.targetAccel) * 0.99f;
 
 				player.velocity = helm.targetVel;
-				player.fallStart = (int)player.position.Y;
+				player.fallStart = (int)(player.position.Y / 16f);
 			}
 		}
 

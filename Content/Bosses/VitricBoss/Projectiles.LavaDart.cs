@@ -129,7 +129,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			if (timer < 30)
 			{
-				Texture2D tellTex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "Line").Value;
+				Texture2D tellTex = Assets.GUI.Line.Value;
 				float alpha = (float)Math.Sin(timer / 30f * 3.14f);
 
 				for (int k = 0; k < 20; k++)
@@ -174,7 +174,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new TriangularTip(40 * 4), factor => factor * 40, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 40, factor =>
 			{
 				float alpha = 1;
 
@@ -199,7 +199,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
 			effect.Parameters["repeats"].SetValue(2f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
 			trail?.Render(effect);
 		}

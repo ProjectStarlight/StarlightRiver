@@ -78,7 +78,7 @@ namespace StarlightRiver.Content.GUI
 
 			if (!Unlocked)
 			{
-				Texture2D lockTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/BossRushLock").Value;
+				Texture2D lockTex = Assets.GUI.BossRushLock.Value;
 				spriteBatch.Draw(lockTex, dims.Center.ToVector2(), null, Color.White, 0, lockTex.Size() / 2f, 1, 0, 0);
 			}
 

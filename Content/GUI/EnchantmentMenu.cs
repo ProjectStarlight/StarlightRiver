@@ -225,9 +225,9 @@ namespace StarlightRiver.Content.GUI
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
-			Texture2D closedTex = Request<Texture2D>(AssetDirectory.GUI + "EnchantSlotClosed").Value;
-			Texture2D openTex = Request<Texture2D>(AssetDirectory.GUI + "EnchantSlotOpen").Value;
-			Texture2D iconTex = Request<Texture2D>(AssetDirectory.GUI + "EnchantSlotIcon").Value;
+			Texture2D closedTex = Assets.GUI.EnchantSlotClosed.Value;
+			Texture2D openTex = Assets.GUI.EnchantSlotOpen.Value;
+			Texture2D iconTex = Assets.GUI.EnchantSlotIcon.Value;
 
 			leafParticles.DrawParticles(spriteBatch);
 
@@ -347,7 +347,7 @@ namespace StarlightRiver.Content.GUI
 
 		public void DrawAdditive(SpriteBatch spriteBatch) //batched and drawn in parent
 		{
-			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
+			Texture2D tex = Assets.Keys.Glow.Value;
 			Vector2 pos = GetDimensions().Center();
 			float scale = 1 + animationTimer / 30f;
 			float opacity = 1 - animationTimer / 30f;

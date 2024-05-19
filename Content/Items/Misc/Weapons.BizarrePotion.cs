@@ -545,7 +545,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrails()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, TrailLength, new TriangularTip(4), factor => THICKNESS * Main.rand.NextFloat(0.75f, 1.25f) * 16, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, TrailLength, new NoTip(), factor => THICKNESS * Main.rand.NextFloat(0.75f, 1.25f) * 16, factor =>
 			{
 				if (factor.X > 0.99f)
 					return Color.Transparent;
@@ -556,7 +556,7 @@ namespace StarlightRiver.Content.Items.Misc
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, TrailLength, new TriangularTip(4), factor => THICKNESS * 3 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, TrailLength, new NoTip(), factor => THICKNESS * 3 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
 			{
 				float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
 				return Color.Lerp(Color.Yellow, Color.White, EaseFunction.EaseCubicIn.Ease(Math.Min(1.2f - progress, 1))) * progress * Fade;
@@ -565,7 +565,7 @@ namespace StarlightRiver.Content.Items.Misc
 			trail2.Positions = cache2.ToArray();
 			trail2.NextPosition = Projectile.Center + Projectile.velocity;
 
-			trail3 ??= new Trail(Main.instance.GraphicsDevice, TrailLength, new TriangularTip(4), factor => THICKNESS * 2 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
+			trail3 ??= new Trail(Main.instance.GraphicsDevice, TrailLength, new NoTip(), factor => THICKNESS * 2 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
 			{
 				float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
 				return Color.White * progress * Fade;
@@ -586,7 +586,7 @@ namespace StarlightRiver.Content.Items.Misc
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
 			effect.Parameters["repeats"].SetValue(1f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 
 			trail?.Render(effect);
 			trail2?.Render(effect);
