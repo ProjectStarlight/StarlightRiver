@@ -164,7 +164,7 @@ namespace StarlightRiver.Core
 
 			DummyTile.dummiesByPosition.Clear();
 
-			var store = PersistentDataStoreSystem.GetDataStore<TutorialDataStore>();
+			TutorialDataStore store = PersistentDataStoreSystem.GetDataStore<TutorialDataStore>();
 
 			if (Main.masterMode && !BossRushSystem.isBossRush && !store.ignoreMasterWarning)
 			{
