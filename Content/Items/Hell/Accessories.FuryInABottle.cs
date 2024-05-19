@@ -55,8 +55,6 @@ namespace StarlightRiver.Content.Items.Hell
 				}
 			}
 		}
-
-
 	}
 
 	internal class FuryJump : ExtraJump
