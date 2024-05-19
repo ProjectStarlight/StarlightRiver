@@ -18,6 +18,8 @@
 - Updated Ceiros' arena assets to have better visibility
 - Whirlwind pickaxe acts more like a normal pickaxe and has a sell value. Its spin now damages enemies
 - Updated a number of item sprites
+- Updated the visuals of message boxes such as the master mode warning
+- Added a "Do not show again" option to the master mode warning
 - Technique books can now be shimmered between each other
 - Hotsprings now cure many debuffs
 - Exotic timepiece now has a unique gear sprite
