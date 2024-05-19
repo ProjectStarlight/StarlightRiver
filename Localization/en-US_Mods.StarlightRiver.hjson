@@ -3029,6 +3029,15 @@ Items: {
 		DisplayName: Soft Sand
 		Tooltip: ""
 	}
+
+	WildCard: {
+		DisplayName: Wild card
+		Tooltip:
+			'''
+			Cursed : All damage you deal has a randomly assaigned damage type
+			Picks between melee, ranged, magic, and summon damage
+			'''
+	}
 }
 
 Tiles: {
