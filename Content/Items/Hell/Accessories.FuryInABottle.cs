@@ -57,7 +57,7 @@ namespace StarlightRiver.Content.Items.Hell
 				charge = 0;
 
 				Helpers.Helper.PlayPitched("Effects/Bleep", 1, 0, player.Center);
-				for(int k = 0; k < 10; k++)
+				for (int k = 0; k < 10; k++)
 				{
 					Dust.NewDust(player.position, player.width, player.height, ModContent.DustType<Dusts.Cinder>(), 0, -2, 0, Color.Red);
 				}

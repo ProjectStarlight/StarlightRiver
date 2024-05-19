@@ -143,7 +143,7 @@ namespace StarlightRiver.Content.Items.Infernal
 		{
 			bool hit = false;
 
-			for(int k = -2; k <= 2; k++)
+			for (int k = -2; k <= 2; k++)
 			{
 				hit |= Helper.CheckLinearCollision(Projectile.Center, Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation - 0.9f + k * 0.05f) * Length, target.Hitbox, out _);
 			}
@@ -180,7 +180,7 @@ namespace StarlightRiver.Content.Items.Infernal
 		{
 			trail ??= new Trail(Main.instance.GraphicsDevice, 20, new TriangularTip(60), factor => factor * Length * 0.8f, factor =>
 			{
-				var mul = factor.X - (Projectile.timeLeft - (MaxTime - 20)) / 20f;
+				float mul = factor.X - (Projectile.timeLeft - (MaxTime - 20)) / 20f;
 
 				if (mul < 0)
 					mul = 0;
@@ -211,10 +211,10 @@ namespace StarlightRiver.Content.Items.Infernal
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			var spriteBatch = Main.spriteBatch;
+			SpriteBatch spriteBatch = Main.spriteBatch;
 
-			var tex = ModContent.Request<Texture2D>(Texture).Value;
-			var glow = ModContent.Request<Texture2D>(Texture + "Glow").Value;
+			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D glow = ModContent.Request<Texture2D>(Texture + "Glow").Value;
 
 			float opacity = 1f;
 
@@ -289,7 +289,7 @@ namespace StarlightRiver.Content.Items.Infernal
 			if (npc.lifeRegenExpectedLossPerSecond <= 5)
 				npc.lifeRegenExpectedLossPerSecond = 5;
 
-			if(Main.rand.NextBool(4))
+			if (Main.rand.NextBool(4))
 				Dust.NewDust(npc.position, npc.width, npc.height, ModContent.DustType<Dusts.Cinder>(), 0, -1, 0, Color.Orange, 0.5f);
 		}
 	}

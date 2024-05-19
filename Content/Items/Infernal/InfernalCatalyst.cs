@@ -22,11 +22,11 @@ namespace StarlightRiver.Content.Items.Infernal
 		{
 			if (canTransform && Item.lavaWet && Item.Center.Y > (Main.maxTilesY - 200) * 16)
 			{
-				var tile = Framing.GetTileSafely((int)Item.Center.X / 16, (int)Item.Center.Y / 16);
+				Tile tile = Framing.GetTileSafely((int)Item.Center.X / 16, (int)Item.Center.Y / 16);
 
-				for(int k = 0; k <= 7; k++)
+				for (int k = 0; k <= 7; k++)
 				{
-					var check = Framing.GetTileSafely((int)Item.Center.X / 16 + k, (int)Item.Center.Y / 16);
+					Tile check = Framing.GetTileSafely((int)Item.Center.X / 16 + k, (int)Item.Center.Y / 16);
 
 					if (check.HasTile || check.LiquidType != LiquidID.Lava)
 						Item.position.X -= (7 - k) * 16;
@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Items.Infernal
 
 				for (int k = -7; k <= 0; k++)
 				{
-					var check = Framing.GetTileSafely((int)Item.Center.X / 16 + k, (int)Item.Center.Y / 16);
+					Tile check = Framing.GetTileSafely((int)Item.Center.X / 16 + k, (int)Item.Center.Y / 16);
 
 					if (check.HasTile || check.LiquidType != LiquidID.Lava)
 						Item.position.X += (7 - -k) * 16;
@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Items.Infernal
 
 				for (int k = -6; k <= 6; k++)
 				{
-					var check = Framing.GetTileSafely((int)Item.Center.X / 16 + k, (int)Item.Center.Y / 16);
+					Tile check = Framing.GetTileSafely((int)Item.Center.X / 16 + k, (int)Item.Center.Y / 16);
 
 					if (check.HasTile || check.LiquidType != LiquidID.Lava)
 					{
