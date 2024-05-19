@@ -13,6 +13,7 @@
 - Technique books can now be shimmered between each other
 - Hotsprings now cure many debuffs
 - Exotic timepiece now has a unique gear sprite
+- Bricklayers trowel now places blocks in the reverse direction on right click instead of holding shift
 
 ## Configuration
 - Added an option to turn on a numeric indicator for some set bonuses
