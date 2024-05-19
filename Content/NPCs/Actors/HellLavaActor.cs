@@ -233,7 +233,6 @@ namespace StarlightRiver.Content.NPCs.Actors
 				{ ItemID.NightmarePickaxe, ItemType<InfernalHarvest>() },
 				{ ItemID.DeathbringerPickaxe, ItemType<InfernalHarvest>() },
 				{ ItemID.CloudinaBottle, ItemType<FuryInABottle>() },
-				{ ItemID.Muramasa, ItemType<GlowingObsidian>() }
 			};
 		}
 

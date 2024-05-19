@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Hell
 {
@@ -20,6 +21,12 @@ namespace StarlightRiver.Content.Items.Hell
 		{
 			StarlightPlayer.OnHitNPCEvent += GainCharge;
 			StarlightPlayer.OnHitNPCWithProjEvent += GainChargeProj;
+		}
+
+		public override void SafeSetDefaults()
+		{
+			Item.rare = ItemRarityID.Orange;
+			Item.value = Item.sellPrice(0, 1, 0, 0);
 		}
 
 		private void GainCharge(Player player, Item Item, NPC target, NPC.HitInfo hit, int damageDone)
