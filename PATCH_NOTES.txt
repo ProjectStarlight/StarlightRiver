@@ -59,4 +59,4 @@
 ## Other
 *These changes are likely of very little interest to players and are more for other developers*
 - Made a major overhaul to the inner workings of the doalgue system. It is now primarily data driven, and dialogue trees are stored in the localization directory.
-- 
+- Texture management now utilizes the AssGen package, see https://www.nuget.org/packages/AssGen for details.
