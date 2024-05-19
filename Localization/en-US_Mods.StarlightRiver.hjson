@@ -3043,6 +3043,11 @@ Items: {
 		DisplayName: Dendrite Bar
 		Tooltip: This bar might be smarter than you...
 	}
+
+	MindCloak: {
+		DisplayName: Cloak of the Mind
+		Tooltip: Increases to maximum mana also apply to maximum barrier
+	}
 }
 
 Tiles: {
