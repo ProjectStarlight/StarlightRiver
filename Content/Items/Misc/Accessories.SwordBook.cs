@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Items.Misc
 			blackListedSwords = new() { ModContent.ItemType<Moonstone.Moonfury>() };
 
 			ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<SpearBook>();
-	}
+		}
 
 		public override void SafeSetDefaults()
 		{
