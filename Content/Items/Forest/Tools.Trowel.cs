@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Items.Forest
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Bricklayer's Trowel");
-			Tooltip.SetDefault("Extends blocks in a straight line\nDirection is based on your position\nHold SHIFT for reverse direction\n30 block range");
+			Tooltip.SetDefault("Extends blocks in a straight line\nDirection is based on your position\n<right> for reverse direction\n30 block range");
 		}
 
 		public override void SetDefaults()
@@ -29,20 +29,19 @@ namespace StarlightRiver.Content.Items.Forest
 			Item.value = Item.sellPrice(silver: 25);
 		}
 
-		private Point16 FindNextTile(Player Player)
+		private Point16 FindNextTile(Player player, int direction)
 		{
-			if (Math.Abs(Player.tileTargetX - Player.Center.X / 16) > Player.tileRangeX || Math.Abs(Player.tileTargetY - Player.Center.Y / 16) > Player.tileRangeY)
+			if (Math.Abs(Player.tileTargetX - player.Center.X / 16) > Player.tileRangeX || Math.Abs(Player.tileTargetY - player.Center.Y / 16) > Player.tileRangeY)
 				return default;
 
 			Tile tile = Framing.GetTileSafely(Player.tileTargetX, Player.tileTargetY);
-			int direction = Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift) ? -1 : 1;
 
 			for (int k = 0; k < maxRange + Player.tileRangeX - 6; k++)
 			{
 				int nextX = Player.tileTargetX;
 				int nextY = Player.tileTargetY;
 
-				float angle = (new Vector2(Player.tileTargetX, Player.tileTargetY) * 16 + Vector2.One * 8 - Player.Center).ToRotation();
+				float angle = (new Vector2(Player.tileTargetX, Player.tileTargetY) * 16 + Vector2.One * 8 - player.Center).ToRotation();
 				angle = Helpers.Helper.ConvertAngle(angle);
 
 				if (angle < Math.PI / 4 || angle > Math.PI / 4 * 7)
@@ -91,7 +90,7 @@ namespace StarlightRiver.Content.Items.Forest
 			return -1;
 		}
 
-		public override bool? UseItem(Player Player)
+		public override bool? UseItem(Player player)
 		{
 			Tile tile = Framing.GetTileSafely(Player.tileTargetX, Player.tileTargetY);
 			Item Item = null;
@@ -101,18 +100,18 @@ namespace StarlightRiver.Content.Items.Forest
 
 			int itemSubstitution = BlockWandSubstitutions(tile.TileType);//if this block should look for a different item than the one used to place it
 
-			for (int k = 0; k < Player.inventory.Length; k++)  //find the Item to place the tile
+			for (int k = 0; k < player.inventory.Length; k++)  //find the Item to place the tile
 			{
-				Item thisItem = Player.inventory[k];
+				Item thisItem = player.inventory[k];
 
 				if (!thisItem.IsAir && (thisItem.type == itemSubstitution || itemSubstitution == -1 && thisItem.createTile == tile.TileType))
-					Item = Player.inventory[k];
+					Item = player.inventory[k];
 			}
 
 			if (Item is null) //dont bother calculating tile position if we cant place it
 				return true;
 
-			Point16 next = FindNextTile(Player);
+			Point16 next = FindNextTile(player, player.altFunctionUse == 2 ? -1 : 1);
 
 			if (next != default)
 			{
@@ -128,6 +127,11 @@ namespace StarlightRiver.Content.Items.Forest
 			return true;
 		}
 
+		public override bool AltFunctionUse(Player player)
+		{
+			return true;
+		}
+
 		public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
 		{
 			if (Main.LocalPlayer.HeldItem != Item)
@@ -138,7 +142,7 @@ namespace StarlightRiver.Content.Items.Forest
 			if (!tile.HasTile || Main.tileFrameImportant[tile.TileType])
 				return;
 
-			Vector2 pos = FindNextTile(Main.LocalPlayer).ToVector2() * 16 - Main.screenPosition;
+			Vector2 pos = FindNextTile(Main.LocalPlayer, 1).ToVector2() * 16 - Main.screenPosition;
 
 			spriteBatch.Draw(TextureAssets.Tile[tile.TileType].Value, pos, new Rectangle(162, 54, 16, 16), Helpers.Helper.IndicatorColor * 0.5f);
 		}
@@ -149,7 +153,7 @@ namespace StarlightRiver.Content.Items.Forest
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Autotrowel 9000");
-			Tooltip.SetDefault("Extends blocks in a straight line extremely quickly\nDirection is based on your position\nHold SHIFT for reverse direction\n40 block range\n'The perfect tool for every esteemed bridgebuilder!'");
+			Tooltip.SetDefault("Extends blocks in a straight line extremely quickly\nDirection is based on your position\n<right> for reverse direction\n40 block range\n'The perfect tool for every esteemed bridgebuilder!'");
 		}
 
 		public override void SetDefaults()

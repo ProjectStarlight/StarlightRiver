@@ -34,6 +34,11 @@ namespace StarlightRiver.Content.Configs
 		[Tooltip("How keywords should be displayed in tooltips")]
 		public KeywordStyle KeywordStyle = KeywordStyle.Both;
 
+		[Label("Numeric Set Bonus Indicators")]
+		[Tooltip("Adds a numeric display to various armor set bonuses over the player")]
+		[DefaultValue(false)]
+		public bool ObviousArmorCharge;
+
 		[Label("Indicate Items with Added Recipes")]
 		[Tooltip("Displays a star icon in vanilla item tooltips if used in Starlight River crafting recipes")]
 		[DefaultValue(true)]
