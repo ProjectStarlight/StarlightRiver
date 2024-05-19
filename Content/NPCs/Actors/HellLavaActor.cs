@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Items.Infernal;
+﻿using StarlightRiver.Content.Items.Hell;
+using StarlightRiver.Content.Items.Infernal;
 using System;
 using System.Collections.Generic;
 using Terraria.Graphics.Effects;
@@ -230,6 +231,8 @@ namespace StarlightRiver.Content.NPCs.Actors
 			ConversionTable = new()
 			{
 				{ ItemID.NightmarePickaxe, ItemType<InfernalHarvest>() },
+				{ ItemID.DeathbringerPickaxe, ItemType<InfernalHarvest>() },
+				{ ItemID.CloudinaBottle, ItemType<FuryInABottle>() },
 				{ ItemID.Muramasa, ItemType<GlowingObsidian>() }
 			};
 		}

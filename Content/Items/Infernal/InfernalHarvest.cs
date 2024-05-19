@@ -552,7 +552,7 @@ namespace StarlightRiver.Content.Items.Infernal
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * opacity, 0, tex.Size() / 2f, 3, 0, 0);
+			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * opacity, 0, tex.Size() / 2f, 2.5f, 0, 0);
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
