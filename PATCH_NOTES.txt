@@ -19,7 +19,6 @@
 - Whirlwind pickaxe acts more like a normal pickaxe and has a sell value. Its spin now damages enemies
 - Updated a number of item sprites
 
-
 ## Multiplayer
 - Performance optimizations to player onhits. Most noticeable in Glassweaver gauntlet
 - Removed extra unnecesary packets from dummy system
