@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.NPCs.Actors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,6 +68,24 @@ namespace StarlightRiver.Content.Items.Hell
 		public override float GetDurationMultiplier(Player player)
 		{
 			return 0.6f;
+		}
+
+		public override void OnStarted(Player player, ref bool playSound)
+		{
+			playSound = false;
+
+			Projectile.NewProjectile(player.GetSource_FromThis(), player.Center + new Vector2(0, 60), Vector2.Zero, ModContent.ProjectileType<FirePillar>(), 0, 0, Main.myPlayer, 1f);
+
+			Projectile.NewProjectile(player.GetSource_FromThis(), player.Center + new Vector2(-20, 60), Vector2.Zero, ModContent.ProjectileType<FirePillar>(), 0, 0, Main.myPlayer, Main.rand.NextFloat(0.4f, 0.8f));
+			Projectile.NewProjectile(player.GetSource_FromThis(), player.Center + new Vector2(20, 60), Vector2.Zero, ModContent.ProjectileType<FirePillar>(), 0, 0, Main.myPlayer, Main.rand.NextFloat(0.4f, 0.8f));
+
+			for (int k = 0; k < 10; k++)
+			{
+				Dust.NewDustPerfect(player.Center + new Vector2(0, 16), ModContent.DustType<Dusts.Cinder>(), Vector2.UnitY.RotatedByRandom(0.2f) * -Main.rand.NextFloat(8), 0, Color.Lerp(Color.Red, Color.Orange, Main.rand.NextFloat()));
+			}
+
+			Helpers.Helper.PlayPitched("Magic/FireHit", 0.25f, -0.5f, player.Center);
+			Helpers.Helper.PlayPitched("Magic/FireHit", 0.125f, 0.5f, player.Center);
 		}
 	}
 }
