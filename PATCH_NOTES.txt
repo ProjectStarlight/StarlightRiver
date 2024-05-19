@@ -11,6 +11,9 @@
 - Replaced the broken moonstone menu with a new starlight river menu
 - New Item: Moonstone monolith
  - Crafted with moonstone bars, mimics the moonstone screen effect
+- New Item: Infernal Catalyst, drops from demons, allows for a new crafting method
+- New Weapon: Infernal Harvest, swing a ginormous magical scythe to leech mana, then throw it to unleash a burning trail
+- New Accessory: Fury in a Bottle, a double jump which recharges as you deal damage
 - 3 Starlight vessel shards have been hidden around the world, allowing you to increase your maximum starlight when collected
 
 ## Tweaks
@@ -20,8 +23,6 @@
 - Updated a number of item sprites
 - Updated the visuals of message boxes such as the master mode warning
 - Added a "Do not show again" option to the master mode warning
-
->>>>>>> master
 
 ## Multiplayer
 - Performance optimizations to player onhits. Most noticeable in Glassweaver gauntlet
