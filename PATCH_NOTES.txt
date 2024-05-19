@@ -30,6 +30,7 @@
 - Prevented the alican cutscene from occuring if all players have starsight
 - Prevented the alican cutscene from occuring for players that already have starsight
 - Fixed a number of entities which should not appear in the bestiary having a slot
+- Fixed the prep station being 1 tile too wide
 
 ## Balance
 - Warrior kings crown scaling changed (200% increased damage base => 40% increased damage base, 20% damage per slot => 30% damage per slot)
