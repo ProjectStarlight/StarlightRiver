@@ -48,6 +48,8 @@ namespace StarlightRiver.Content.Tiles.Crimson
 			DustType = Terraria.ID.DustID.Blood;
 			RegisterItemDrop(ModContent.ItemType<DendriteItem>());
 
+			MinPick = 65;
+
 			AddMapEntry(new Color(165, 180, 191));
 		}
 	}
