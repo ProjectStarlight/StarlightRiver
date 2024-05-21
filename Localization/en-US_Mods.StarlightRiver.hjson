@@ -3048,6 +3048,11 @@ Items: {
 		DisplayName: Cloak of the Mind
 		Tooltip: Increases to maximum mana also apply to maximum barrier
 	}
+
+	MyelinSheath: {
+		DisplayName: Myelin Sheath
+		Tooltip: Swords perform a powerful mind slash after not attacking for 5 seconds
+	}
 }
 
 Tiles: {
