@@ -11,15 +11,21 @@ namespace StarlightRiver.Content.GUI.Config
 	{
 		public override ref Vector2 modifying => ref ModContent.GetInstance<GUIConfig>().AbilityIconPosition;
 
-		public override void Update(GameTime gameTime)
+		public override void PostDraw(SpriteBatch spriteBatch, Rectangle preview)
 		{
-			base.Update(gameTime);
+			var mouseOver = preview.Contains(Main.MouseScreen.ToPoint());
+			var flashColor = !mouseOver ? Color.White : Color.Lerp(Color.Orange, Color.White, 0.5f + (float)Math.Sin(Main.timeForVisualEffects * 0.2f) * 0.5f);
 
-			var dims = GetDimensions().ToRectangle();
+			var tex = Assets.GUI.Infusions.Value;
+			spriteBatch.Draw(tex, preview.TopLeft() + modifying / Main.ScreenSize.ToVector2() * preview.Size(), null, flashColor, 0, tex.Size() / 2f, preview.Width / (float)Main.screenWidth, 0, 0);
 
-			if (dims.Contains(Main.MouseScreen.ToPoint()) && Main.mouseLeft)
+			if (mouseOver)
 			{
 				Main.playerInventory = true;
+				typeof(Main).GetMethod("DrawInventory", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).Invoke(Main.instance, new object[] { });
+
+				Main.graphics.GraphicsDevice.ScissorRectangle = new Rectangle(0, 0, Main.screenWidth, Main.screenHeight);
+				spriteBatch.Draw(tex, modifying, null, flashColor, 0, tex.Size() / 2f, 1f, 0, 0);
 			}
 		}
 	}

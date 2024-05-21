@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.GUI.Config
 	internal abstract class BaseUIRepositionElement : ConfigElement
 	{
 		public abstract ref Vector2 modifying { get; }
-		
+
 		public BaseUIRepositionElement()
 		{
 			Width.Set(0, 1f);
@@ -53,17 +53,10 @@ namespace StarlightRiver.Content.GUI.Config
 			spriteBatch.Draw(Assets.MagicPixel.Value, preview, new Color(0.2f, 0.2f, 0.2f));
 			spriteBatch.Draw(Main.screenTarget, preview, Color.White * 0.25f);
 
-			var flashColor = !mouseOver ? Color.White : Color.Lerp(Color.Orange, Color.White, 0.5f + (float)Math.Sin(Main.timeForVisualEffects * 0.2f) * 0.5f);
-
-			var tex = Assets.GUI.Infusions.Value;
-			spriteBatch.Draw(tex, preview.TopLeft() + modifying / Main.ScreenSize.ToVector2() * preview.Size(), null, flashColor, 0, tex.Size() / 2f, preview.Width / (float)Main.screenWidth, 0, 0);
-
-			if (mouseOver)
-			{
-				Main.graphics.GraphicsDevice.ScissorRectangle = new Rectangle(0, 0, Main.screenWidth, Main.screenHeight);
-				spriteBatch.Draw(tex, modifying, null, flashColor, 0, tex.Size() / 2f, 1f, 0, 0);
-			}
+			PostDraw(spriteBatch, preview);
 		}
+
+		public virtual void PostDraw(SpriteBatch spriteBatch, Rectangle preview) { }
 
 		public override void Update(GameTime gameTime)
 		{
