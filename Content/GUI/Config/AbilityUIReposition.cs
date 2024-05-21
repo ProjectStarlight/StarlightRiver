@@ -21,8 +21,11 @@ namespace StarlightRiver.Content.GUI.Config
 
 			if (mouseOver)
 			{
-				Main.playerInventory = true;
-				typeof(Main).GetMethod("DrawInventory", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).Invoke(Main.instance, new object[] { });
+				if (!Main.gameMenu)
+				{
+					Main.playerInventory = true;
+					typeof(Main).GetMethod("DrawInventory", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).Invoke(Main.instance, new object[] { });
+				}
 
 				Main.graphics.GraphicsDevice.ScissorRectangle = new Rectangle(0, 0, Main.screenWidth, Main.screenHeight);
 				spriteBatch.Draw(tex, modifying, null, flashColor, 0, tex.Size() / 2f, 1f, 0, 0);
