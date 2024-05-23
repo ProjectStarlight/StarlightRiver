@@ -13,10 +13,10 @@ namespace StarlightRiver.Content.GUI.Config
 
 		public override void PostDraw(SpriteBatch spriteBatch, Rectangle preview)
 		{
-			var mouseOver = preview.Contains(Main.MouseScreen.ToPoint());
-			var flashColor = !mouseOver ? Color.White : Color.Lerp(Color.Orange, Color.White, 0.5f + (float)Math.Sin(Main.timeForVisualEffects * 0.2f) * 0.5f);
+			bool mouseOver = preview.Contains(Main.MouseScreen.ToPoint());
+			Color flashColor = !mouseOver ? Color.White : Color.Lerp(Color.Orange, Color.White, 0.5f + (float)Math.Sin(Main.timeForVisualEffects * 0.2f) * 0.5f);
 
-			var tex = Assets.GUI.Infusions.Value;
+			Texture2D tex = Assets.GUI.Infusions.Value;
 			spriteBatch.Draw(tex, preview.TopLeft() + modifying / Main.ScreenSize.ToVector2() * preview.Size(), null, flashColor, 0, tex.Size() / 2f, preview.Width / (float)Main.screenWidth, 0, 0);
 
 			if (mouseOver)

@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.GUI
 
 		public override void SafeUpdate(GameTime gameTime)
 		{
-			var configPos = GetInstance<GUIConfig>().AbilityIconPosition;
+			Vector2 configPos = GetInstance<GUIConfig>().AbilityIconPosition;
 
 			if (!Main.gameMenu && Elements.Count == 0 && Main.LocalPlayer.GetHandler() != null || shouldReset || configPos != lastConfigPos)
 			{

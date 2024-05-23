@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Configs
 	{
 		public override ConfigScope Mode => ConfigScope.ClientSide;
 
-		static readonly Vector2 defaultAbilityIconPosition = new Vector2(100, 300);
+		static readonly Vector2 defaultAbilityIconPosition = new(100, 300);
 
 		[Label("Overhead Starlight Display")]
 		[DrawTicks]

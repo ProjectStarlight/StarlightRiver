@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.GUI.Config
 			Recalculate();
 			var dims = GetDimensions().ToRectangle();
 
-			var ratio = Main.screenHeight / (float)Main.screenWidth;
+			float ratio = Main.screenHeight / (float)Main.screenWidth;
 			Height.Set(dims.Width * ratio + 128, 0);
 			Recalculate();
 		}
@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.GUI.Config
 			Recalculate();
 			var dims = GetDimensions().ToRectangle();
 
-			var ratio = Main.screenHeight / (float)Main.screenWidth;
+			float ratio = Main.screenHeight / (float)Main.screenWidth;
 			Height.Set(dims.Width * ratio + 24 + 16 * ratio, 0);
 			Recalculate();
 
@@ -41,11 +41,11 @@ namespace StarlightRiver.Content.GUI.Config
 			Utils.DrawBorderString(spriteBatch, Label, dims.TopLeft() + Vector2.One * 8, Color.White, 0.8f);
 			Utils.DrawBorderString(spriteBatch, $"{Math.Round(modifying.X)}, {Math.Round(modifying.Y)}", dims.TopRight() + new Vector2(-8, 8), Color.White, 0.8f, 1f);
 
-			var preview = dims;
+			Rectangle preview = dims;
 			preview.Y += 24;
 			preview.Inflate(-16, (int)(-16 * ratio));
 
-			var mouseOver = preview.Contains(Main.MouseScreen.ToPoint());
+			bool mouseOver = preview.Contains(Main.MouseScreen.ToPoint());
 
 			preview.Inflate(4, 4);
 			Helpers.UIHelper.DrawBox(spriteBatch, preview, mouseOver ? Color.Orange : Color.DarkGray);
@@ -62,9 +62,9 @@ namespace StarlightRiver.Content.GUI.Config
 		public override void Update(GameTime gameTime)
 		{
 			var dims = GetDimensions().ToRectangle();
-			var ratio = Main.screenHeight / (float)Main.screenWidth;
+			float ratio = Main.screenHeight / (float)Main.screenWidth;
 
-			var preview = dims;
+			Rectangle preview = dims;
 			preview.Inflate(-16, (int)(-16 * ratio / 2));
 			preview.Y += 32;
 			preview.Height -= 32;
