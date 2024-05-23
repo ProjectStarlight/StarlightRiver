@@ -77,7 +77,7 @@ namespace StarlightRiver.Content.GUI.Config
 			{
 				Vector2 relativePos = Main.MouseScreen - preview.TopLeft();
 				modifying = relativePos / preview.Size() * Main.ScreenSize.ToVector2();
-				MemberInfo.SetValue(Item, modifying);
+				SetObject(modifying);
 			}
 		}
 	}
