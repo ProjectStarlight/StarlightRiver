@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			NPC.DeathSound = SoundID.NPCDeath1;
 			NPC.knockBackResist = 0;
 
-			manager = new("Localization/Dialog/GlassweaverDialog.json", NPC);
+			manager = new("GlassweaverDialog.json", NPC);
 		}
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
