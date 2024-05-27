@@ -342,6 +342,8 @@ namespace StarlightRiver.Content.NPCs.Actors
 	{
 		public StarlightWaterActor starlightWaterActor = null;
 
+		public override bool InstancePerEntity => true;
+
 		public override bool OnPickup(Item item, Player player) //completely stops conversion on pickup since this cant be detected by the WaterActor
 		{
 			if (starlightWaterActor != null)
@@ -353,8 +355,6 @@ namespace StarlightRiver.Content.NPCs.Actors
 
 			return base.OnPickup(item, player);
 		}
-
-		public override bool InstancePerEntity => true;
 
 		public override GlobalItem Clone(Item item, Item itemClone)
 		{
