@@ -3048,6 +3048,16 @@ Mods: {
 				DisplayName: Soft Sand
 				Tooltip: ""
 			}
+
+			GatheringWindsItem: {
+				DisplayName: Gathering Winds
+				Tooltip:
+					'''
+					Forbidden Winds Infusion
+					Hold the dash key to hover and charge up a dash
+					Drain 1 starlight/s while charging
+					'''
+			}
 		}
 
 		Tiles: {
