@@ -10,9 +10,14 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 {
-	class StellarRush : Dash
+	class StellarRush : Dash, IOrderedLoadable
 	{
 		public override float ActivationCostDefault => 1.5f;
+
+		public void Load()
+		{
+			StarlightPlayer.PostUpdateEvent += UpdatePlayerFrame;
+		}
 
 		public override void OnActivate()
 		{
@@ -85,6 +90,20 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 					cache[i] += swirlOff2 * 0.05f;
 					cache[i] += Vector2.Normalize(cache[23] - cache[0]) * 1f;
 				}
+			}
+		}
+
+		new public void UpdatePlayerFrame(Player Player)
+		{
+			if (Player.GetHandler().ActiveAbility is StellarRush)
+			{
+				var dash = Player.GetHandler().ActiveAbility as Dash;
+
+				Player.bodyFrame = new Rectangle(0, 56 * 3, 40, 56);
+				Player.UpdateRotation(dash.Time / (float)dash.maxTime * 6.28f);
+
+				if (dash.Time == dash.maxTime || Player.dead)
+					Player.UpdateRotation(0);
 			}
 		}
 
