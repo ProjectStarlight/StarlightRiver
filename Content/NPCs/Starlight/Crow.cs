@@ -58,7 +58,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 
 			visible = false;
 
-			manager = new("Localization/Dialog/AlicanDialog.json", NPC);
+			manager = new("AlicanDialog.json", NPC);
 		}
 
 		public override bool CheckActive()

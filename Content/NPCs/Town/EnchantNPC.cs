@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.NPCs.Town
 			NPC.dontTakeDamage = true;
 			NPC.dontCountMe = true;
 
-			manager = new("Localization/Dialog/TestDialog.json", NPC);
+			manager = new("TestDialog.json", NPC);
 		}
 
 		public override string GetChat()
