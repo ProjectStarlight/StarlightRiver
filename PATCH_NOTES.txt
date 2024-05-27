@@ -30,6 +30,7 @@
 
 ## Configuration
 - Added an option to turn on a numeric indicator for some set bonuses
+- Added an option to move the ability UI in the inventory
 
 ## Multiplayer
 - Performance optimizations to player onhits. Most noticeable in Glassweaver gauntlet
