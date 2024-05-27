@@ -155,7 +155,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 					Terraria.Audio.SoundEngine.PlaySound(SoundID.Item104.WithPitchOffset(-1f + charge / 300f), Player.Center);
 				}
 			}	
-			else
+			else if (charge > 30)
 			{
 				if (Time % 2 == 0)
 				{
@@ -218,6 +218,9 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
 		public override void DrawPrimitives()
 		{
+			if (charge < 30)
+				return;
+
 			Main.spriteBatch.End();
 
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
@@ -385,7 +388,8 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 		{
 			Recipe recipe = CreateRecipe();
 			recipe.AddIngredient<BasicInfusion>(1);
-			recipe.AddIngredient<StaminaGel>(25);
+			recipe.AddIngredient(ItemID.Cloud, 15);
+			recipe.AddIngredient(ItemID.AnkletoftheWind, 1);
 			recipe.AddTile(ModContent.TileType<MainForge>());
 			recipe.Register();
 		}
