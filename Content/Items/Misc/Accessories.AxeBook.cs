@@ -31,6 +31,12 @@ namespace StarlightRiver.Content.Items.Misc
 			StarlightItem.AltFunctionUseEvent -= AllowRightClick;
 		}
 
+		public override void SetStaticDefaults()
+		{
+			base.SetStaticDefaults();
+			ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<SwordBook>();
+		}
+
 		public override void SafeSetDefaults()
 		{
 			Item.rare = Terraria.ID.ItemRarityID.Orange;

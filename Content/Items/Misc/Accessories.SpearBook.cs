@@ -65,6 +65,12 @@ namespace StarlightRiver.Content.Items.Misc
 			spearList.Clear();
 		}
 
+		public override void SetStaticDefaults()
+		{
+			base.SetStaticDefaults();
+			ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<AxeBook>();
+		}
+
 		public override void SafeSetDefaults()
 		{
 			Item.rare = ItemRarityID.Orange;
