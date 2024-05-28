@@ -3058,6 +3058,16 @@ Mods: {
 					Drain 1 starlight/s while charging
 					'''
 			}
+
+			WellspringItem: {
+				DisplayName: Wellspring
+				Tooltip:
+					'''
+					Starsight Infusion
+					Creates a restorative wellspring when using starsight on the air
+					Spend 1 starlight to do this
+					'''
+			}
 		}
 
 		Tiles: {
