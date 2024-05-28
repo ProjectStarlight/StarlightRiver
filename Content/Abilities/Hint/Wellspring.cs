@@ -5,6 +5,7 @@ using StarlightRiver.Content.Abilities.Infusions;
 using StarlightRiver.Content.Backgrounds;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.Misc;
+using StarlightRiver.Content.Tiles.Underground;
 using StarlightRiver.Content.Tiles.Vitric.Temple;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
@@ -261,14 +262,15 @@ namespace StarlightRiver.Content.Abilities.Hint
 			Item.height = 14;
 			Item.rare = ItemRarityID.Green;
 
-			color = new Color(100, 200, 250);
+			color = new Color(80, 250, 250);
 		}
 
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();
 			recipe.AddIngredient<BasicInfusion>(1);
-			recipe.AddIngredient<StaminaGel>(25);
+			recipe.AddIngredient(ItemID.HealingPotion, 10);
+			recipe.AddIngredient(ItemID.ManaPotion, 10);
 			recipe.AddTile(ModContent.TileType<MainForge>());
 			recipe.Register();
 		}
