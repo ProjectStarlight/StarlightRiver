@@ -20,28 +20,21 @@ namespace StarlightRiver.Content.Items.Forest
 
 		public override void Load()
 		{
-			StarlightPlayer.OnHitNPCWithProjEvent += SpawnAcorn;
-			StarlightPlayer.OnHitNPCEvent += SpawnAcorn2;
+			StarlightPlayer.OnHitNPCEvent += SpawnAcornItem;
+			StarlightPlayer.OnHitNPCWithProjEvent += SpawnAcornProjectile;
 		}
 
-		private void SpawnAcorn2(Player player, Item Item, NPC target, NPC.HitInfo hit, int damageDone)
+		private void SpawnAcornItem(Player player, Item Item, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (!Equipped(player))
-				return;
-
-			if (target.life - damageDone <= 0)
-			{
-				if (player.MinionAttackTargetNPC == target.whoAmI)
-				{
-					foreach (NPC NPC in Main.npc.Where(n => n.active && n.chaseable && Vector2.DistanceSquared(n.Center, target.Center) < Math.Pow(240, 2)))
-					{
-						Projectile.NewProjectile(player.GetSource_Accessory(Item), player.Center, Vector2.Zero, ModContent.ProjectileType<Acorn>(), 5, 1, player.whoAmI, NPC.whoAmI);
-					}
-				}
-			}
+			AcornCheck(player, target, damageDone);
 		}
 
-		private void SpawnAcorn(Player player, Projectile proj, NPC target, NPC.HitInfo info, int damageDone)
+		private void SpawnAcornProjectile(Player player, Projectile proj, NPC target, NPC.HitInfo info, int damageDone)
+		{
+			AcornCheck(player, target, damageDone);
+		}
+
+		private void AcornCheck(Player player, NPC target, int damageDone)
 		{
 			if (!Equipped(player))
 				return;

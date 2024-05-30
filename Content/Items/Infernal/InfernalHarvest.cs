@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -162,6 +163,8 @@ namespace StarlightRiver.Content.Items.Infernal
 			Helper.PlayPitched("Impacts/GoreLight", 0.25f, 0.5f, target.Center);
 
 			Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.GlowLineFast>(), Vector2.UnitX.RotatedBy(Projectile.rotation - 1.57f) * 15 * direction, 0, new Color(255, 80, 0), 2.5f);
+
+			Owner.GetModPlayer<StarlightPlayer>().SetHitPacketStatus(shouldRunProjMethods: true);
 		}
 
 		public override bool PreDraw(ref Color lightColor)

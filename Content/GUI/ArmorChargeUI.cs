@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.GUI
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
-			if (message != "" && ModContent.GetInstance<GUIConfig>().ObviousArmorCharge)
+			if (!string.IsNullOrEmpty(message) && ModContent.GetInstance<GUIConfig>().ObviousArmorCharge)
 				Utils.DrawBorderString(spriteBatch, message, Main.LocalPlayer.Center - Main.screenPosition + new Vector2(0, -48), Color.White, 0.8f, 0.5f, 0.5f);
 
 			message = "";
