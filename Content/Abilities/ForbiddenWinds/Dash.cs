@@ -218,7 +218,8 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 14, new NoTip(), factor => Math.Min(factor * 50, 40), factor =>
+			if (trail is null || trail.IsDisposed)
+trail = new Trail(Main.instance.GraphicsDevice, 14, new NoTip(), factor => Math.Min(factor * 50, 40), factor =>
 			{
 				if (factor.X == 1)
 					return Color.Transparent;
