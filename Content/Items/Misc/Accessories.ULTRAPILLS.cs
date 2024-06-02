@@ -239,7 +239,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 20, new RoundedTip(2), factor => 4.5f * factor, factor => Color.Lerp(new Color(50, 10, 10), new Color(35, 1, 1), factor.X));
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 20, new RoundedTip(2), factor => 4.5f * factor, factor => Color.Lerp(new Color(50, 10, 10), new Color(35, 1, 1), factor.X));
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center;

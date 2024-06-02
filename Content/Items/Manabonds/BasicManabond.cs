@@ -133,21 +133,24 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 12, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				float alpha = 1;
+				trail = new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 12, factor =>
+							{
+								float alpha = 1;
 
-				if (factor.X > 0.8f)
-					alpha = 1 + (factor.X - 0.8f) * 30;
+								if (factor.X > 0.8f)
+									alpha = 1 + (factor.X - 0.8f) * 30;
 
-				if (factor.X == 1)
-					return Color.Transparent;
+								if (factor.X == 1)
+									return Color.Transparent;
 
-				if (Projectile.timeLeft < 15)
-					alpha *= Projectile.timeLeft / 15f;
+								if (Projectile.timeLeft < 15)
+									alpha *= Projectile.timeLeft / 15f;
 
-				return new Color(40, 50 + (int)(factor.X * 100), 255) * factor.X * alpha;
-			});
+								return new Color(40, 50 + (int)(factor.X * 100), 255) * factor.X * alpha;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;

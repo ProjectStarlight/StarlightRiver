@@ -224,15 +224,18 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		private void ManageTrail(ref Trail localTrail, ref List<Vector2> localCache, float rotationStart)
 		{
-			localTrail ??= new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new NoTip(), factor => MathHelper.Lerp(10, 40, factor), factor =>
+			if (localTrail is null || localTrail.IsDisposed)
 			{
-				float rotProg = 0.6f + (float)Math.Sin(timer / 50f + rotationStart - 0.5f) * 0.4f;
+				localTrail = new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new NoTip(), factor => MathHelper.Lerp(10, 40, factor), factor =>
+							{
+								float rotProg = 0.6f + (float)Math.Sin(timer / 50f + rotationStart - 0.5f) * 0.4f;
 
-				if (factor.X > 0.95f)
-					return Color.Transparent;
+								if (factor.X > 0.95f)
+									return Color.Transparent;
 
-				return new Color(255, 80 - (byte)(factor.X * 70), 80 + (byte)(rotProg * 20)) * rotProg;
-			});
+								return new Color(255, 80 - (byte)(factor.X * 70), 80 + (byte)(rotProg * 20)) * rotProg;
+							});
+			}
 
 			localTrail.Positions = localCache.ToArray();
 			localTrail.NextPosition = Projectile.Center + direction * RANGE;
@@ -443,7 +446,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new NoTip(), factor => 20, factor => Color.Red);
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new NoTip(), factor => 20, factor => Color.Red);
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
