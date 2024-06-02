@@ -1,5 +1,6 @@
 ﻿using NetEasy;
 using StarlightRiver.Content.CustomHooks;
+using StarlightRiver.Content.GUI;
 using StarlightRiver.Core.Systems.BarrierSystem;
 using System;
 using System.Collections.Generic;
@@ -108,6 +109,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 				moonFlash--;
 
 			Lighting.AddLight(player.Center + new Vector2(0, -16), new Vector3(0.55f, 0.5f, 0.9f) * moonCharge / 720f * 0.5f);
+
+			ArmorChargeUI.SetMessage($"{Math.Truncate(moonCharge / 720f * 100)}%");
 
 			if (spearOn)
 			{

@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Abilities;
 using System.Linq;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Buffs
 {
@@ -21,6 +22,12 @@ namespace StarlightRiver.Content.Buffs
 				Player.lifeRegen += 50;
 				Player.manaRegen += 50;
 				Player.GetHandler().StaminaRegenRate += 1;
+
+				for (int k = 0; k < Player.MaxBuffs; k++)
+				{
+					if (!BuffID.Sets.NurseCannotRemoveDebuff[Player.buffType[k]])
+						Player.DelBuff(k);
+				}
 			}
 		}
 
