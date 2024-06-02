@@ -33,8 +33,9 @@
 
 			dust.alpha += 16;
 
-			if (dust.alpha > 255)
+			if (dust.alpha >= 255)
 				dust.active = false;
+
 			return false;
 		}
 	}

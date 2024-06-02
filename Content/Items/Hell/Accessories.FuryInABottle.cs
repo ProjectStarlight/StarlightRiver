@@ -35,6 +35,9 @@ namespace StarlightRiver.Content.Items.Hell
 			{
 				var instance = GetEquippedInstance(player) as FuryInABottle;
 				instance.charge += damageDone;
+
+				if (Main.netMode == NetmodeID.MultiplayerClient)
+					player.GetModPlayer<StarlightPlayer>().SetHitPacketStatus(shouldRunProjMethods: false);
 			}
 		}
 
@@ -44,6 +47,9 @@ namespace StarlightRiver.Content.Items.Hell
 			{
 				var instance = GetEquippedInstance(player) as FuryInABottle;
 				instance.charge += damageDone;
+
+				if (Main.netMode == NetmodeID.MultiplayerClient)
+					player.GetModPlayer<StarlightPlayer>().SetHitPacketStatus(shouldRunProjMethods: false);
 			}
 		}
 
