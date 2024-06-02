@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Configs;
 using StarlightRiver.Core.Loaders.UILoading;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,8 @@ namespace StarlightRiver.Content.GUI
 		public static Ability activeAbility;
 		public static bool shouldReset = false;
 		public static Dictionary<Type, Vector2> abilityIconPositions = new(); //to easily communicate ability icon positions to other UI
+
+		private Vector2 lastConfigPos;
 
 		public override bool Visible => Main.playerInventory && Main.LocalPlayer.chest == -1 && Main.npcShop == 0;
 
@@ -30,7 +33,9 @@ namespace StarlightRiver.Content.GUI
 
 		public override void SafeUpdate(GameTime gameTime)
 		{
-			if (!Main.gameMenu && Elements.Count == 0 && Main.LocalPlayer.GetHandler() != null || shouldReset)
+			Vector2 configPos = GetInstance<GUIConfig>().AbilityIconPosition;
+
+			if (!Main.gameMenu && Elements.Count == 0 && Main.LocalPlayer.GetHandler() != null || shouldReset || configPos != lastConfigPos)
 			{
 				RemoveAllChildren();
 				abilityIconPositions.Clear();
@@ -40,10 +45,11 @@ namespace StarlightRiver.Content.GUI
 				for (int k = 0; k < abilities.Length; k++)
 				{
 					Ability ability = abilities[k];
-					Vector2 pos = new Vector2(100, 300) + new Vector2(-60, 0).RotatedBy(-k / (float)(abilities.Length - 1) * 3.14f);
+					Vector2 pos = configPos + new Vector2(-60, 0).RotatedBy(-k / (float)(abilities.Length - 1) * 3.14f);
 					AddAbility(ability, pos);
 				}
 
+				lastConfigPos = configPos;
 				shouldReset = false;
 			}
 		}

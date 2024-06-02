@@ -40,7 +40,7 @@ namespace StarlightRiver.Core
 					{
 						for (int y = 10; y < Main.worldSurface; y++)
 						{
-							if (Main.tile[k, y].TileType == TileID.Grass && Helper.CheckAirRectangle(new Point16(k, y - 2), new Point16(1, 2)))
+							if (Main.tile[k, y].HasTile && Main.tile[k, y].BlockType == BlockType.Solid && Main.tile[k, y].TileType == TileID.Grass && Helper.CheckAirRectangle(new Point16(k, y - 2), new Point16(1, 2)))
 							{
 								Helper.PlaceMultitile(new Point16(k, y - 2), TileType<CommonVegetables>());
 								k += 2;

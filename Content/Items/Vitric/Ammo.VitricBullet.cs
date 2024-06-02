@@ -267,32 +267,6 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 		}
 
-		/*public override bool PreDraw(ref Color lightColor) //this drawcode draws offset and weird so if someone better with custom drawing could fix dis plz <3
-        {
-            Main.instance.LoadProjectile(Projectile.type);
-            Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
-
-            SpriteEffects spriteEffects = Projectile.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-
-            int frameHeight = texture.Height / Main.projFrames[Projectile.type];
-            int startY = frameHeight * Projectile.frame;
-
-            Rectangle frameRect = new Rectangle(0, startY, texture.Width, frameHeight);
-
-            Color drawColor = Projectile.GetAlpha(lightColor) * (1 - (Projectile.alpha / 255));
-
-            float rotationOffset = -1.25f;
-
-            Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, frameRect, drawColor, Projectile.rotation + rotationOffset, texture.Size() / 2f,
-                Projectile.scale * 0.55f, spriteEffects, 0);
-
-            rotationOffset = -0.75f;
-
-            Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, frameRect, drawColor, Projectile.rotation + rotationOffset, texture.Size() / 2f,
-                Projectile.scale * 0.65f, spriteEffects, 0);
-            return true;
-        }*/
-
 		public override void SendExtraAI(BinaryWriter writer)
 		{
 			writer.WritePackedVector2(offset);
