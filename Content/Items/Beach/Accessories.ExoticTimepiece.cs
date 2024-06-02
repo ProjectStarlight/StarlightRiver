@@ -36,6 +36,17 @@ namespace StarlightRiver.Content.Items.Beach
 			Item.value = Item.sellPrice(gold: 3);
 		}
 
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			var cogs = GetEquippedInstance(player, ModContent.ItemType<SaltCogs>()) as SaltCogs;
+
+			if (cogs.isChild)
+			{
+				cogs.cogTex = Assets.Items.Beach.ExoticGear;
+				cogs.smallCogTex = Assets.Items.Beach.ExoticGearSmall;
+			}
+		}
+
 		private float PlaceSpeed(Item item, Player player)
 		{
 			if (Equipped(player) && item.sentry)

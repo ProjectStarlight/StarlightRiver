@@ -10,7 +10,15 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 {
 	public class WarriorKingsCrown : CursedAccessory
 	{
+		public int lastMinions;
+		public int lastTurrets;
+
 		public override string Texture => AssetDirectory.ArtifactItem + Name;
+
+		public override void Load()
+		{
+			StarlightPlayer.PostUpdateEquipsEvent += RecordStats;
+		}
 
 		public override void SetStaticDefaults()
 		{
@@ -20,20 +28,29 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 				"Summoning damage increased by 40%\nCombat mount cooldowns reduced by 30%");
 		}
 
-		public override void SafeUpdateAccessory(Player Player, bool hideVisual)
-		{
-			Player.GetCritChance(DamageClass.Summon) += Player.maxMinions * 2;
-			Player.GetDamage(DamageClass.Summon) += Player.maxTurrets * 0.3f;
-			Player.GetDamage(DamageClass.Summon) += 0.4f;
-			Player.GetModPlayer<CombatMountPlayer>().combatMountCooldownMultiplier += 0.3f;
-
-			Player.maxMinions = 0;
-			Player.maxTurrets = 0;
-		}
-
 		public override void SafeSetDefaults()
 		{
 			Item.value = Item.sellPrice(gold: 5);
+		}
+
+		private void RecordStats(StarlightPlayer player)
+		{
+			if (Equipped(player.Player))
+			{
+				(GetEquippedInstance(player.Player) as WarriorKingsCrown).lastMinions = player.Player.maxMinions;
+				(GetEquippedInstance(player.Player) as WarriorKingsCrown).lastTurrets = player.Player.maxTurrets;
+			}
+		}
+
+		public override void SafeUpdateAccessory(Player player, bool hideVisual)
+		{
+			player.GetCritChance(DamageClass.Summon) += lastMinions * 2;
+			player.GetDamage(DamageClass.Summon) += lastTurrets * 0.3f;
+			player.GetDamage(DamageClass.Summon) += 0.4f;
+			player.GetModPlayer<CombatMountPlayer>().combatMountCooldownMultiplier += 0.3f;
+
+			player.maxMinions = 0;
+			player.maxTurrets = 0;
 		}
 	}
 }

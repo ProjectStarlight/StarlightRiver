@@ -58,6 +58,7 @@ namespace StarlightRiver.Content.Items
 			UILoader.GetUIState<MessageBox>().AppendButton(Assets.GUI.BackButton, () =>
 			{
 				store.ignoreMasterWarning = true;
+				store.ForceSave();
 				UILoader.GetUIState<MessageBox>().Visible = false;
 			}, "Dont show again");
 

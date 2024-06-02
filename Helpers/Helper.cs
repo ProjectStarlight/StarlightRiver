@@ -163,6 +163,12 @@ namespace StarlightRiver.Helpers
 		{
 			intersectPoint = Vector2.Zero;
 
+			if (StarlightRiver.debugMode)
+			{
+				for (int k = 0; k < 20; k++)
+					Dust.NewDustPerfect(Vector2.Lerp(point1, point2, k / 20f), DustID.MagicMirror, Vector2.Zero, 0, default, 0.5f);
+			}
+
 			return
 				LinesIntersect(point1, point2, hitbox.TopLeft(), hitbox.TopRight(), out intersectPoint) ||
 				LinesIntersect(point1, point2, hitbox.TopLeft(), hitbox.BottomLeft(), out intersectPoint) ||
