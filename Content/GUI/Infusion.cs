@@ -76,8 +76,8 @@ namespace StarlightRiver.Content.GUI
 
 			const float width = 20;
 			const float height = 22;
-			const float topSlotLeft = 90;
-			const float topSlotTop = 276;
+			float topSlotLeft = configPos.X - 10;
+			float topSlotTop = configPos.Y - 24;
 
 			int targetSlot = 0;
 			void InitSlot(float left, float top)

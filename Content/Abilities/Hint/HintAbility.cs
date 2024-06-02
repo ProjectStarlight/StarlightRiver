@@ -12,6 +12,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 	{
 		public static int effectTimer;
 		public static string hintToDisplay;
+		public static bool shouldDisplay;
 
 		public override string Name => "Starsight";
 		public override string Tooltip => "Pull a strand of meaning from the memory of the world, allowing you to reveal secrets, hidden knowledge, and messages left by ancient scholars. NEWBLOCK " +
@@ -70,6 +71,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 		public override void OnActivate()
 		{
 			effectTimer = 20;
+			bool defaultHint = true;
 			hintToDisplay = "Nothing interesting here...";
 
 			Vector2 pos = Main.MouseWorld;
@@ -103,6 +105,8 @@ namespace StarlightRiver.Content.Abilities.Hint
 						else
 							hintToDisplay = $"It's just a {npc.FullName}.";
 					}
+
+					defaultHint = false;
 				}
 			}
 
@@ -120,6 +124,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 					if (proj.ModProjectile is IHintable hintable)
 					{
 						hintToDisplay = hintable.GetHint();
+						defaultHint = false;
 						return;
 					}
 				}
@@ -133,12 +138,29 @@ namespace StarlightRiver.Content.Abilities.Hint
 			if (modTile is IHintable hintableT)
 			{
 				hintToDisplay = hintableT.GetHint();
+				defaultHint = false;
 				return;
 			}
 
 			// Else use a default hint for solid tiles
 			if (tile.HasTile && Main.tileSolid[tile.TileType])
+			{
 				hintToDisplay = $"It's just some {ProcessName(TileID.Search.GetName(tile.TileType))}...";
+				defaultHint = false;
+			}
+
+			shouldDisplay = OnHint(pos, defaultHint);
+		}
+
+		/// <summary>
+		/// Actions that should be taken when a hint is taken. Returns if the hint should be shown or not
+		/// </summary>
+		/// <param name="pos"></param>
+		/// <param name="defaultHint"></param>
+		/// <returns></returns>
+		public virtual bool OnHint(Vector2 pos, bool defaultHint)
+		{
+			return true;
 		}
 
 		private string ProcessName(string input)
@@ -150,11 +172,14 @@ namespace StarlightRiver.Content.Abilities.Hint
 
 		public override void UpdateActive()
 		{
-			int i = Projectile.NewProjectile(Player.GetSource_FromThis(), Main.MouseWorld + Vector2.UnitY * -32, Vector2.Zero, ModContent.ProjectileType<HintText>(), 0, 0, Main.myPlayer);
-			var proj = Main.projectile[i].ModProjectile as HintText;
+			if (shouldDisplay)
+			{
+				int i = Projectile.NewProjectile(Player.GetSource_FromThis(), Main.MouseWorld + Vector2.UnitY * -32, Vector2.Zero, ModContent.ProjectileType<HintText>(), 0, 0, Main.myPlayer);
+				var proj = Main.projectile[i].ModProjectile as HintText;
 
-			if (proj != null)
-				proj.text = hintToDisplay;
+				if (proj != null)
+					proj.text = hintToDisplay;
+			}
 
 			Deactivate();
 		}

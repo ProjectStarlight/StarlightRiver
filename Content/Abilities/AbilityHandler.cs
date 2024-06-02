@@ -252,7 +252,7 @@ namespace StarlightRiver.Content.Abilities
 				}
 			}
 
-			return true;
+			return infusions.Count(n => n != null) < InfusionLimit;
 		}
 
 		/// <summary>
