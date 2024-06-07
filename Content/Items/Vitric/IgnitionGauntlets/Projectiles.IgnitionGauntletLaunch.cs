@@ -72,18 +72,13 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 		{
 			orig(self);
 
-			//putting this here so I dont have to load another detour to get it to load in front of the fist
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-
-			Main.spriteBatch.End();
-
-			Color color = Color.OrangeRed;
-			color.A = 0;
-
 			foreach (Projectile Projectile in Main.projectile)
 			{
 				if (Projectile.active && Projectile.type == ModContent.ProjectileType<IgnitionGauntletLaunch>() && Main.player[Projectile.owner].GetModPlayer<IgnitionPlayer>().loadedCharge > 15)
 				{
+					Color color = Color.OrangeRed;
+					color.A = 0;
+
 					Player player = Main.player[Projectile.owner];
 					Texture2D starTex = ModContent.Request<Texture2D>(Texture + "_Star").Value;
 

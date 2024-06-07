@@ -343,15 +343,19 @@ namespace StarlightRiver.Content.Items.Permafrost
 		private void ManageTrail()
 		{
 
-			trail ??= new Trail(Main.instance.GraphicsDevice, 129, new NoTip(), factor => 34 * (1 - Progress) * radiusMult, factor => new Color(181, 0, 252));
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 129, new NoTip(), factor => 34 * (1 - Progress) * radiusMult, factor => new Color(181, 0, 252));
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 129, new NoTip(), factor => 30 * (1 - Progress) * radiusMult, factor =>
+			if (trail2 is null || trail2.IsDisposed)
 			{
-				float sin = 1 + (float)Math.Sin(Projectile.timeLeft * 0.4f + Projectile.ai[0] * 0.6f + factor.X * 6.28f);
-				float cos = 1 + (float)Math.Cos(Projectile.timeLeft * 0.4f + Projectile.ai[0] * 0.6f + factor.X * 6.28f);
-				return new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
-				;
-			});
+				trail2 = new Trail(Main.instance.GraphicsDevice, 129, new NoTip(), factor => 30 * (1 - Progress) * radiusMult, factor =>
+							{
+								float sin = 1 + (float)Math.Sin(Projectile.timeLeft * 0.4f + Projectile.ai[0] * 0.6f + factor.X * 6.28f);
+								float cos = 1 + (float)Math.Cos(Projectile.timeLeft * 0.4f + Projectile.ai[0] * 0.6f + factor.X * 6.28f);
+								return new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
+								;
+							});
+			}
 
 			float nextplace = 33f / 32f;
 			var offset = new Vector2((float)Math.Sin(nextplace), (float)Math.Cos(nextplace));
@@ -446,20 +450,26 @@ namespace StarlightRiver.Content.Items.Permafrost
 		private void ManageTrail()
 		{
 
-			trail ??= new Trail(Main.instance.GraphicsDevice, 129, new NoTip(), factor => 20 * (1 - Progress), factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				float sin = 1 + (float)Math.Sin(Projectile.timeLeft * 0.4f + Projectile.ai[0] * 0.6f + factor.X * 6.28f);
-				float cos = 1 + (float)Math.Cos(Projectile.timeLeft * 0.4f + Projectile.ai[0] * 0.6f + factor.X * 6.28f);
-				return new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
-			});
+				trail = new Trail(Main.instance.GraphicsDevice, 129, new NoTip(), factor => 20 * (1 - Progress), factor =>
+							{
+								float sin = 1 + (float)Math.Sin(Projectile.timeLeft * 0.4f + Projectile.ai[0] * 0.6f + factor.X * 6.28f);
+								float cos = 1 + (float)Math.Cos(Projectile.timeLeft * 0.4f + Projectile.ai[0] * 0.6f + factor.X * 6.28f);
+								return new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
+							});
+			}
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 129, new NoTip(), factor => 10 * (1 - Progress), factor =>
+			if (trail2 is null || trail2.IsDisposed)
 			{
-				float sin = 1 + (float)Math.Sin(Projectile.timeLeft * 0.4f + Projectile.ai[0] * 0.6f + factor.X * 6.28f);
-				float cos = 1 + (float)Math.Cos(Projectile.timeLeft * 0.4f + Projectile.ai[0] * 0.6f + factor.X * 6.28f);
-				return new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
-				;
-			});
+				trail2 = new Trail(Main.instance.GraphicsDevice, 129, new NoTip(), factor => 10 * (1 - Progress), factor =>
+							{
+								float sin = 1 + (float)Math.Sin(Projectile.timeLeft * 0.4f + Projectile.ai[0] * 0.6f + factor.X * 6.28f);
+								float cos = 1 + (float)Math.Cos(Projectile.timeLeft * 0.4f + Projectile.ai[0] * 0.6f + factor.X * 6.28f);
+								return new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
+								;
+							});
+			}
 
 			float nextplace = 33f / 32f;
 			var offset = new Vector2((float)Math.Sin(nextplace), (float)Math.Cos(nextplace));

@@ -618,8 +618,10 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 100, new NoTip(), factor => factor * MathHelper.Lerp(11, 22, factor), factor => Color.Cyan);
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 100, new NoTip(), factor => factor * MathHelper.Lerp(6, 12, factor), factor => Color.White);
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 100, new NoTip(), factor => factor * MathHelper.Lerp(11, 22, factor), factor => Color.Cyan);
+			if (trail2 is null || trail2.IsDisposed)
+				trail2 = new Trail(Main.instance.GraphicsDevice, 100, new NoTip(), factor => factor * MathHelper.Lerp(6, 12, factor), factor => Color.White);
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center;
@@ -742,8 +744,10 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 33, new NoTip(), factor => 38 * (1 - Progress), factor => Color.Cyan);
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 33, new NoTip(), factor => 20 * (1 - Progress), factor => Color.White);
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 33, new NoTip(), factor => 38 * (1 - Progress), factor => Color.Cyan);
+			if (trail2 is null || trail2.IsDisposed)
+				trail2 = new Trail(Main.instance.GraphicsDevice, 33, new NoTip(), factor => 20 * (1 - Progress), factor => Color.White);
 
 			float nextplace = 33f / 32f;
 			var offset = new Vector2((float)Math.Sin(nextplace), (float)Math.Cos(nextplace));

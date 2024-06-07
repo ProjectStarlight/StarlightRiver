@@ -897,12 +897,14 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => factor * 3.5f, factor => new Color(255, 255, 255) * factor.X * (Projectile.timeLeft / 80f));
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => factor * 3.5f, factor => new Color(255, 255, 255) * factor.X * (Projectile.timeLeft / 80f));
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center;
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => factor * 6f, factor => new Color(190, 40, 40) * factor.X * (Projectile.timeLeft / 80f));
+			if (trail2 is null || trail2.IsDisposed)
+				trail2 = new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => factor * 6f, factor => new Color(190, 40, 40) * factor.X * (Projectile.timeLeft / 80f));
 
 			trail2.Positions = cache.ToArray();
 			trail2.NextPosition = Projectile.Center;
@@ -1007,9 +1009,11 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 40, new NoTip(), factor => 25 * (1 - Progress), factor => new Color(180, 50, 50));
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 40, new NoTip(), factor => 25 * (1 - Progress), factor => new Color(180, 50, 50));
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 40, new NoTip(), factor => 20 * (1 - Progress), factor => new Color(255, 50, 50));
+			if (trail2 is null || trail2.IsDisposed)
+				trail2 = new Trail(Main.instance.GraphicsDevice, 40, new NoTip(), factor => 20 * (1 - Progress), factor => new Color(255, 50, 50));
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = cache[39];

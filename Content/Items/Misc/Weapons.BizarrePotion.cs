@@ -545,31 +545,40 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrails()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, TrailLength, new NoTip(), factor => THICKNESS * Main.rand.NextFloat(0.75f, 1.25f) * 16, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X > 0.99f)
-					return Color.Transparent;
+				trail = new Trail(Main.instance.GraphicsDevice, TrailLength, new NoTip(), factor => THICKNESS * Main.rand.NextFloat(0.75f, 1.25f) * 16, factor =>
+							{
+								if (factor.X > 0.99f)
+									return Color.Transparent;
 
-				return Color.Yellow * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X) * Fade;
-			});
+								return Color.Yellow * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X) * Fade;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, TrailLength, new NoTip(), factor => THICKNESS * 3 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
+			if (trail2 is null || trail2.IsDisposed)
 			{
-				float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
-				return Color.Lerp(Color.Yellow, Color.White, EaseFunction.EaseCubicIn.Ease(Math.Min(1.2f - progress, 1))) * progress * Fade;
-			});
+				trail2 = new Trail(Main.instance.GraphicsDevice, TrailLength, new NoTip(), factor => THICKNESS * 3 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
+							{
+								float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
+								return Color.Lerp(Color.Yellow, Color.White, EaseFunction.EaseCubicIn.Ease(Math.Min(1.2f - progress, 1))) * progress * Fade;
+							});
+			}
 
 			trail2.Positions = cache2.ToArray();
 			trail2.NextPosition = Projectile.Center + Projectile.velocity;
 
-			trail3 ??= new Trail(Main.instance.GraphicsDevice, TrailLength, new NoTip(), factor => THICKNESS * 2 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
+			if (trail3 is null || trail3.IsDisposed)
 			{
-				float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
-				return Color.White * progress * Fade;
-			});
+				trail3 = new Trail(Main.instance.GraphicsDevice, TrailLength, new NoTip(), factor => THICKNESS * 2 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
+							{
+								float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
+								return Color.White * progress * Fade;
+							});
+			}
 
 			trail3.Positions = cache2.ToArray();
 			trail3.NextPosition = Projectile.Center + Projectile.velocity;

@@ -390,12 +390,14 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 21, new NoTip(), factor => 6f, factor => new Color(255, 255, 100) * TrailFade());
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 21, new NoTip(), factor => 6f, factor => new Color(255, 255, 100) * TrailFade());
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity + new Vector2(100, 0f).RotatedBy(parent.rotation - MathHelper.PiOver2);
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 21, new NoTip(), factor => 3.5f, factor => new Color(255, 255, 255) * TrailFade());
+			if (trail2 is null || trail2.IsDisposed)
+				trail2 = new Trail(Main.instance.GraphicsDevice, 21, new NoTip(), factor => 3.5f, factor => new Color(255, 255, 255) * TrailFade());
 
 			trail2.Positions = cache.ToArray();
 			trail2.NextPosition = Projectile.Center + Projectile.velocity + new Vector2(100, 0f).RotatedBy(parent.rotation - MathHelper.PiOver2);

@@ -114,13 +114,16 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 24, new NoTip(), factor => (float)Math.Sin(factor * 3.14f) * 60, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X == 1)
-					return Color.Transparent;
+				trail = new Trail(Main.instance.GraphicsDevice, 24, new NoTip(), factor => (float)Math.Sin(factor * 3.14f) * 60, factor =>
+							{
+								if (factor.X == 1)
+									return Color.Transparent;
 
-				return new Color(50, 100 + (int)(factor.X * 150), 255) * (float)Math.Sin(factor.X * 3.14f) * (float)Math.Sin(EffectTimer / 45f * 3.14f) * 0.15f;
-			});
+								return new Color(50, 100 + (int)(factor.X * 150), 255) * (float)Math.Sin(factor.X * 3.14f) * (float)Math.Sin(EffectTimer / 45f * 3.14f) * 0.15f;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Player.Center + Player.velocity * 6;

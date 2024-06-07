@@ -245,17 +245,20 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 32, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				float alpha = factor.X * Projectile.Opacity;
+				trail = new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 32, factor =>
+							{
+								float alpha = factor.X * Projectile.Opacity;
 
-				if (factor.X == 1)
-					alpha = 0;
+								if (factor.X == 1)
+									alpha = 0;
 
-				var color = new Color(78, 87, 191);
+								var color = new Color(78, 87, 191);
 
-				return color * alpha;
-			});
+								return color * alpha;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;

@@ -743,7 +743,8 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 15, new NoTip(), factor => factor * 3, factor => new Color(255, 170, 80) * factor.X * (Projectile.timeLeft / 100f));
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 15, new NoTip(), factor => factor * 3, factor => new Color(255, 170, 80) * factor.X * (Projectile.timeLeft / 100f));
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center;

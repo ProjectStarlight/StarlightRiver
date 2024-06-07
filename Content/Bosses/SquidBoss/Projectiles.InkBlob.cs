@@ -136,25 +136,28 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		protected void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 16, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				float alpha = factor.X;
+				trail = new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 16, factor =>
+							{
+								float alpha = factor.X;
 
-				if (factor.X == 1)
-					alpha = 0;
+								if (factor.X == 1)
+									alpha = 0;
 
-				if (Projectile.timeLeft < 20)
-					alpha *= Projectile.timeLeft / 20f;
+								if (Projectile.timeLeft < 20)
+									alpha *= Projectile.timeLeft / 20f;
 
-				float sin = 1 + (float)Math.Sin(factor.X * 10);
-				float cos = 1 + (float)Math.Cos(factor.X * 10);
-				Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
+								float sin = 1 + (float)Math.Sin(factor.X * 10);
+								float cos = 1 + (float)Math.Cos(factor.X * 10);
+								Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
 
-				if (Main.masterMode)
-					color = new Color(1, 0.25f + sin * 0.25f, 0.25f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
+								if (Main.masterMode)
+									color = new Color(1, 0.25f + sin * 0.25f, 0.25f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
 
-				return color * alpha;
-			});
+								return color * alpha;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;

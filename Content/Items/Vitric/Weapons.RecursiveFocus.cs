@@ -751,58 +751,70 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 26, new NoTip(), factor => MultiMode ? 3 : 4 * 1 + Stage, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (trailFade < 15)
-					return Color.Lerp(Color.Transparent, new Color(255, 165, 115), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
+				trail = new Trail(Main.instance.GraphicsDevice, 26, new NoTip(), factor => MultiMode ? 3 : 4 * 1 + Stage, factor =>
+							{
+								if (trailFade < 15)
+									return Color.Lerp(Color.Transparent, new Color(255, 165, 115), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
 
-				if (pulseTimer > 0)
-					return Color.Lerp(Color.White, new Color(255, 165, 115), 1f - pulseTimer / 15f) * 0.6f;
+								if (pulseTimer > 0)
+									return Color.Lerp(Color.White, new Color(255, 165, 115), 1f - pulseTimer / 15f) * 0.6f;
 
-				return new Color(255, 165, 115) * 0.6f;
-			});
+								return new Color(255, 165, 115) * 0.6f;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = cache[25];
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 26, new NoTip(), factor => MultiMode ? 3 : 4 * 1 + Stage, factor =>
+			if (trail2 is null || trail2.IsDisposed)
 			{
-				if (trailFade < 15)
-					return Color.Lerp(Color.Transparent, new Color(255, 150, 50), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
+				trail2 = new Trail(Main.instance.GraphicsDevice, 26, new NoTip(), factor => MultiMode ? 3 : 4 * 1 + Stage, factor =>
+							{
+								if (trailFade < 15)
+									return Color.Lerp(Color.Transparent, new Color(255, 150, 50), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
 
-				if (pulseTimer > 0)
-					return Color.Lerp(new Color(255, 165, 115), new Color(255, 150, 50), 1f - pulseTimer / 15f) * 0.6f;
+								if (pulseTimer > 0)
+									return Color.Lerp(new Color(255, 165, 115), new Color(255, 150, 50), 1f - pulseTimer / 15f) * 0.6f;
 
-				return new Color(255, 150, 50) * 0.6f;
-			});
+								return new Color(255, 150, 50) * 0.6f;
+							});
+			}
 
 			trail2.Positions = cache.ToArray();
 			trail2.NextPosition = cache[25];
 
-			trail3 ??= new Trail(Main.instance.GraphicsDevice, 26, new NoTip(), factor => MultiMode ? 5 : 7 * 1 + Stage, factor =>
+			if (trail3 is null || trail3.IsDisposed)
 			{
-				if (trailFade < 15)
-					return Color.Lerp(Color.Transparent, new Color(255, 165, 115), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
+				trail3 = new Trail(Main.instance.GraphicsDevice, 26, new NoTip(), factor => MultiMode ? 5 : 7 * 1 + Stage, factor =>
+							{
+								if (trailFade < 15)
+									return Color.Lerp(Color.Transparent, new Color(255, 165, 115), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
 
-				if (pulseTimer > 0)
-					return Color.Lerp(Color.White, new Color(255, 165, 115), 1f - pulseTimer / 15f) * 0.6f;
+								if (pulseTimer > 0)
+									return Color.Lerp(Color.White, new Color(255, 165, 115), 1f - pulseTimer / 15f) * 0.6f;
 
-				return new Color(255, 165, 115) * 0.6f;
-			});
+								return new Color(255, 165, 115) * 0.6f;
+							});
+			}
 
 			trail3.Positions = cache.ToArray();
 			trail3.NextPosition = cache[25];
 
-			trail4 ??= new Trail(Main.instance.GraphicsDevice, 26, new NoTip(), factor => MultiMode ? 5 : 7 * 1 + Stage, factor =>
+			if (trail4 is null || trail4.IsDisposed)
 			{
-				if (trailFade < 15)
-					return Color.Lerp(Color.Transparent, new Color(255, 150, 50), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
+				trail4 = new Trail(Main.instance.GraphicsDevice, 26, new NoTip(), factor => MultiMode ? 5 : 7 * 1 + Stage, factor =>
+							{
+								if (trailFade < 15)
+									return Color.Lerp(Color.Transparent, new Color(255, 150, 50), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
 
-				if (pulseTimer > 0)
-					return Color.Lerp(new Color(255, 165, 115), new Color(255, 150, 50), 1f - pulseTimer / 15f) * 0.6f;
+								if (pulseTimer > 0)
+									return Color.Lerp(new Color(255, 165, 115), new Color(255, 150, 50), 1f - pulseTimer / 15f) * 0.6f;
 
-				return new Color(255, 150, 50) * 0.6f;
-			});
+								return new Color(255, 150, 50) * 0.6f;
+							});
+			}
 
 			trail4.Positions = cache.ToArray();
 			trail4.NextPosition = cache[25];

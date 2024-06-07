@@ -105,7 +105,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D tex = Assets.Bosses.VitricBoss.VitricBossPlatform.Value;
 
 			if (dontCollide)
 				drawColor *= 0.25f;

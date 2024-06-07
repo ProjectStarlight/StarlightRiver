@@ -303,30 +303,36 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 35, new NoTip(), factor => factor * 18f, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X == 1)
-					return Color.Transparent;
+				trail = new Trail(Main.instance.GraphicsDevice, 35, new NoTip(), factor => factor * 18f, factor =>
+							{
+								if (factor.X == 1)
+									return Color.Transparent;
 
-				if (Projectile.timeLeft <= 30 && slammed)
-					return new Color(120, 20 + (int)(100 * factor.X), 255) * MathHelper.Lerp(1f, 0f, 1f - Projectile.timeLeft / 30f) * factor.X;
+								if (Projectile.timeLeft <= 30 && slammed)
+									return new Color(120, 20 + (int)(100 * factor.X), 255) * MathHelper.Lerp(1f, 0f, 1f - Projectile.timeLeft / 30f) * factor.X;
 
-				return new Color(120, 20 + (int)(100 * factor.X), 255) * factor.X;
-			});
+								return new Color(120, 20 + (int)(100 * factor.X), 255) * factor.X;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 35, new NoTip(), factor => factor * 10f, factor =>
+			if (trail2 is null || trail2.IsDisposed)
 			{
-				if (factor.X == 1)
-					return Color.Transparent;
+				trail2 = new Trail(Main.instance.GraphicsDevice, 35, new NoTip(), factor => factor * 10f, factor =>
+							{
+								if (factor.X == 1)
+									return Color.Transparent;
 
-				if (Projectile.timeLeft <= 30 && slammed)
-					return new Color(120, 20 + (int)(100 * factor.X), 255) * MathHelper.Lerp(0.85f, 0f, 1f - Projectile.timeLeft / 30f) * factor.X;
+								if (Projectile.timeLeft <= 30 && slammed)
+									return new Color(120, 20 + (int)(100 * factor.X), 255) * MathHelper.Lerp(0.85f, 0f, 1f - Projectile.timeLeft / 30f) * factor.X;
 
-				return new Color(120, 20 + (int)(60 * factor.X), 255) * factor.X;
-			});
+								return new Color(120, 20 + (int)(60 * factor.X), 255) * factor.X;
+							});
+			}
 
 			trail2.Positions = cache.ToArray();
 			trail2.NextPosition = Projectile.Center + Projectile.velocity;
@@ -435,9 +441,11 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 40, new NoTip(), factor => 100 * (1 - Progress), factor => new Color(120, 120, 255));
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 40, new NoTip(), factor => 100 * (1 - Progress), factor => new Color(120, 120, 255));
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 40, new NoTip(), factor => 35 * (1 - Progress), factor => Color.White);
+			if (trail2 is null || trail2.IsDisposed)
+				trail2 = new Trail(Main.instance.GraphicsDevice, 40, new NoTip(), factor => 35 * (1 - Progress), factor => Color.White);
 			float nextplace = 40f / 39f;
 			var offset = new Vector2((float)Math.Sin(nextplace), (float)Math.Cos(nextplace));
 			offset *= Radius;

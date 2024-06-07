@@ -382,9 +382,11 @@ namespace StarlightRiver.Content.Items.Hell
 			if (Main.netMode == NetmodeID.Server)
 				return;
 
-			trail ??= new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new NoTip(), factor => trailWidth * 3f, factor => TrailColor);
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new NoTip(), factor => trailWidth * 3f, factor => TrailColor);
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new NoTip(), factor => trailWidth * 1.5f, factor => Color.White * 0.75f);
+			if (trail2 is null || trail2.IsDisposed)
+				trail2 = new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new NoTip(), factor => trailWidth * 1.5f, factor => Color.White * 0.75f);
 
 			trail.Positions = cache.ToArray();
 			trail2.Positions = cache.ToArray();

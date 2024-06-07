@@ -369,13 +369,16 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => (float)Math.Min(factor, Progress) * Length * 1.25f, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X == 1)
-					return Color.Transparent;
+				trail = new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => (float)Math.Min(factor, Progress) * Length * 1.25f, factor =>
+							{
+								if (factor.X == 1)
+									return Color.Transparent;
 
-				return GetSwingColor(factor.X);
-			});
+								return GetSwingColor(factor.X);
+							});
+			}
 
 			if (cache != null)
 			{
@@ -594,13 +597,16 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => (float)Math.Min(factor, Progress) * 64, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X == 1)
-					return Color.Transparent;
+				trail = new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => (float)Math.Min(factor, Progress) * 64, factor =>
+							{
+								if (factor.X == 1)
+									return Color.Transparent;
 
-				return GetSwingColor();
-			});
+								return GetSwingColor();
+							});
+			}
 
 			if (cache != null)
 				trail.Positions = cache.ToArray();

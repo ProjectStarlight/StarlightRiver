@@ -313,11 +313,14 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => 4, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				Color trailColor = Color.White;
-				return trailColor * 0.3f;
-			});
+				trail = new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => 4, factor =>
+							{
+								Color trailColor = Color.White;
+								return trailColor * 0.3f;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;

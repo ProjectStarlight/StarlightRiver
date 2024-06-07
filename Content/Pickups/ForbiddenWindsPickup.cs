@@ -168,41 +168,47 @@ namespace StarlightRiver.Content.Pickups
 		{
 			if (wide)
 			{
-				trail ??= new Trail(Main.instance.GraphicsDevice, 120, new NoTip(), factor => Math.Min((float)Math.Sin(factor * 3.14f) * 50, 50), factor =>
+				if (trail is null || trail.IsDisposed)
 				{
-					if (factor.X == 1)
-						return Color.Transparent;
+					trail = new Trail(Main.instance.GraphicsDevice, 120, new NoTip(), factor => Math.Min((float)Math.Sin(factor * 3.14f) * 50, 50), factor =>
+									{
+										if (factor.X == 1)
+											return Color.Transparent;
 
-					int time = Main.LocalPlayer.GetModPlayer<StarlightPlayer>().pickupTimer;
-					float mul = 1;
+										int time = Main.LocalPlayer.GetModPlayer<StarlightPlayer>().pickupTimer;
+										float mul = 1;
 
-					if (time < 100)
-						mul = (time - 30) / 70f;
+										if (time < 100)
+											mul = (time - 30) / 70f;
 
-					if (time > 600)
-						mul = 1 - (time - 600) / 20f;
+										if (time > 600)
+											mul = 1 - (time - 600) / 20f;
 
-					return new Color(140, 150 + (int)(105 * factor.X), 255) * (float)Math.Sin(factor.X * 3.14f) * mul * 0.06f;
-				});
+										return new Color(140, 150 + (int)(105 * factor.X), 255) * (float)Math.Sin(factor.X * 3.14f) * mul * 0.06f;
+									});
+				}
 			}
 			else
 			{
-				trail ??= new Trail(Main.instance.GraphicsDevice, 120, new NoTip(), factor => Math.Min((float)Math.Sin(factor * 3.14f) * 13, 13), factor =>
+				if (trail is null || trail.IsDisposed)
 				{
-					if (factor.X == 1)
-						return Color.Transparent;
+					trail = new Trail(Main.instance.GraphicsDevice, 120, new NoTip(), factor => Math.Min((float)Math.Sin(factor * 3.14f) * 13, 13), factor =>
+									{
+										if (factor.X == 1)
+											return Color.Transparent;
 
-					int time = Main.LocalPlayer.GetModPlayer<StarlightPlayer>().pickupTimer;
-					float mul = 1;
+										int time = Main.LocalPlayer.GetModPlayer<StarlightPlayer>().pickupTimer;
+										float mul = 1;
 
-					if (time < 100)
-						mul = (time - 30) / 70f;
+										if (time < 100)
+											mul = (time - 30) / 70f;
 
-					if (time > 600)
-						mul = 1 - (time - 600) / 20f;
+										if (time > 600)
+											mul = 1 - (time - 600) / 20f;
 
-					return new Color(140, 150 + (int)(105 * factor.X), 255) * (float)Math.Sin(factor.X * 3.14f) * mul;
-				});
+										return new Color(140, 150 + (int)(105 * factor.X), 255) * (float)Math.Sin(factor.X * 3.14f) * mul;
+									});
+				}
 			}
 
 			trail.Positions = cache.ToArray();

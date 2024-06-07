@@ -293,7 +293,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 			BezierCurve curve = GetBezierCurve();
 			int numPoints = 10;
 			Vector2[] chainPositions = curve.GetPoints(numPoints).ToArray();
-			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => 12, factor => lightColor);
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => 12, factor => lightColor);
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = cache[9];
@@ -496,20 +497,23 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 20, new NoTip(), factor => (Tiny ? 2f : 4.5f) * (factor * 2f), factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (Projectile.penetrate == 1 && deathTimer / 40f < factor.Y)
-					return Color.Transparent;
+				trail = new Trail(Main.instance.GraphicsDevice, 20, new NoTip(), factor => (Tiny ? 2f : 4.5f) * (factor * 2f), factor =>
+							{
+								if (Projectile.penetrate == 1 && deathTimer / 40f < factor.Y)
+									return Color.Transparent;
 
-				float sin = 1 + (float)Math.Sin(factor.X * 10);
-				float cos = 1 + (float)Math.Cos(factor.X * 10);
-				var color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
+								float sin = 1 + (float)Math.Sin(factor.X * 10);
+								float cos = 1 + (float)Math.Cos(factor.X * 10);
+								var color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
 
-				if (Main.masterMode)
-					color = new Color(1, 0.25f + sin * 0.25f, 0.25f);
+								if (Main.masterMode)
+									color = new Color(1, 0.25f + sin * 0.25f, 0.25f);
 
-				return Color.Lerp(Color.Transparent, color, FadeInTimer / 15f);
-			});
+								return Color.Lerp(Color.Transparent, color, FadeInTimer / 15f);
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;

@@ -450,7 +450,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 15, new NoTip(), factor => MathHelper.Lerp(1f, 0.35f, factor) * width * MathHelper.Lerp(0.2f, 1, Projectile.timeLeft / 90.0f), factor => Color.Lerp(Color.Magenta, Color.White, Projectile.timeLeft / 90.0f));
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 15, new NoTip(), factor => MathHelper.Lerp(1f, 0.35f, factor) * width * MathHelper.Lerp(0.2f, 1, Projectile.timeLeft / 90.0f), factor => Color.Lerp(Color.Magenta, Color.White, Projectile.timeLeft / 90.0f));
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;

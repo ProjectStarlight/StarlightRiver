@@ -493,9 +493,11 @@ namespace StarlightRiver.Content.Items.Misc
 		private void ManageTrail()
 		{
 
-			trail ??= new Trail(Main.instance.GraphicsDevice, 33, new NoTip(), factor => 28 * (1 - Progress), factor => trailColorOutline);
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 33, new NoTip(), factor => 28 * (1 - Progress), factor => trailColorOutline);
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 33, new NoTip(), factor => 10 * (1 - Progress), factor => trailColor);
+			if (trail2 is null || trail2.IsDisposed)
+				trail2 = new Trail(Main.instance.GraphicsDevice, 33, new NoTip(), factor => 10 * (1 - Progress), factor => trailColor);
 			float nextplace = 33f / 32f;
 			var offset = new Vector2((float)Math.Sin(nextplace), (float)Math.Cos(nextplace));
 			offset *= Radius;

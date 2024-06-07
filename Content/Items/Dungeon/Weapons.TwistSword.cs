@@ -382,13 +382,16 @@ namespace StarlightRiver.Content.Items.Dungeon
 			float y = (float)Math.Sin(-rot) * 40;
 			var off = new Vector2(x, y);
 
-			trail ??= new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => factor * 25, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X == 1)
-					return Color.Transparent;
+				trail = new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => factor * 25, factor =>
+							{
+								if (factor.X == 1)
+									return Color.Transparent;
 
-				return new Color(50, 30 + (int)(100 * factor.X), 255) * factor.X;
-			});
+								return new Color(50, 30 + (int)(100 * factor.X), 255) * factor.X;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity + off;

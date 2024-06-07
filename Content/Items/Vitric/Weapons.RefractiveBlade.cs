@@ -276,13 +276,16 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => factor * (50 + 40 * Timer / maxTime), factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X == 1)
-					return Color.Transparent;
+				trail = new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => factor * (50 + 40 * Timer / maxTime), factor =>
+							{
+								if (factor.X == 1)
+									return Color.Transparent;
 
-				return new Color(255, 120 + (int)(factor.X * 70), 80) * (factor.X * SinProgress);
-			});
+								return new Color(255, 120 + (int)(factor.X * 70), 80) * (factor.X * SinProgress);
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Vector2.Lerp(Projectile.Center, Owner.Center, 0.15f) + Projectile.velocity;

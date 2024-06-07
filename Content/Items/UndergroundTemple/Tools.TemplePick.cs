@@ -241,13 +241,16 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 		private void ManageTrail(ref Trail trail, List<Vector2> cache)
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 120, new NoTip(), factor => 5, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X == 1)
-					return Color.Transparent;
+				trail = new Trail(Main.instance.GraphicsDevice, 120, new NoTip(), factor => 5, factor =>
+							{
+								if (factor.X == 1)
+									return Color.Transparent;
 
-				return new Color(155, 155, 155) * (float)Math.Sin(factor.X * 3.14f) * 0.15f * radius;
-			});
+								return new Color(155, 155, 155) * (float)Math.Sin(factor.X * 3.14f) * 0.15f * radius;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center;

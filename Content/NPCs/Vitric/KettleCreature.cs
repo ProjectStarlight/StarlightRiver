@@ -269,18 +269,21 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 40, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				float alpha = 1;
+				trail = new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 40, factor =>
+							{
+								float alpha = 1;
 
-				if (factor.X > 0.99f)
-					return Color.Transparent;
+								if (factor.X > 0.99f)
+									return Color.Transparent;
 
-				if (Projectile.timeLeft < 20)
-					alpha = Projectile.timeLeft / 20f;
+								if (Projectile.timeLeft < 20)
+									alpha = Projectile.timeLeft / 20f;
 
-				return new Color(255, 175 + (int)((float)Math.Sin(factor.X * 3.14f * 5) * 25), 100) * factor.X * alpha;
-			});
+								return new Color(255, 175 + (int)((float)Math.Sin(factor.X * 3.14f * 5) * 25), 100) * factor.X * alpha;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;

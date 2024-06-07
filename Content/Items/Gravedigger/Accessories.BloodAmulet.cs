@@ -179,7 +179,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new NoTip(), factor => 20 * factor * fade, factor => Color.Lerp(Color.Black, Color.Red, factor.X));
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new NoTip(), factor => 20 * factor * fade, factor => Color.Lerp(Color.Black, Color.Red, factor.X));
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
