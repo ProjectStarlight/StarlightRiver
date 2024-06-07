@@ -17,7 +17,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-	internal class VitricBossAltar : DummyTile, IHintable
+	internal class VitricBossAltar : DummyTile, ICustomHintable
 	{
 		public override int DummyType => DummySystem.DummyType<VitricBossAltarDummy>();
 
@@ -108,7 +108,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				(Dummy(i, j) as VitricBossAltarDummy).boss = Main.npc[n];
 		}
 
-		public string GetHint()
+		public string GetCustomKey()
 		{
 			Tile tile = Framing.GetTileSafely((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
 

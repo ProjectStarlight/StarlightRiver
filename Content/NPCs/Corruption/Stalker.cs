@@ -5,7 +5,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Corruption
 {
-	class Stalker : ModNPC, IHintable
+	class Stalker : ModNPC, ICustomHintable
 	{
 		public override string Texture => AssetDirectory.Assets + "NPCs/Corruption/" + Name;
 
@@ -100,7 +100,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 
 			return false;
 		}
-		public string GetHint()
+		public string GetCustomKey()
 		{
 			return "Theres... nothing there. An illusion.";
 		}

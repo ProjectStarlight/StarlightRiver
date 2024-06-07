@@ -7,7 +7,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Interactive
 {
-	internal class StaminaGem : DummyTile, IHintable
+	internal class StaminaGem : DummyTile, ICustomHintable
 	{
 		public override int DummyType => DummySystem.DummyType<StaminaGemDummy>();
 
@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
 			g = 0.144f * 1.1f;
 			b = 0.071f * 1.1f;
 		}
-		public string GetHint()
+		public string GetCustomKey()
 		{
 			return "A reactive crystal. Releases energy after contact with Starlight.";
 		}

@@ -11,7 +11,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.NPCs.Moonstone
 {
-	internal class Dreambeast : ModNPC, IHintable, IDrawAdditive
+	internal class Dreambeast : ModNPC, ICustomHintable, IDrawAdditive
 	{
 		public enum AIState : int
 		{
@@ -899,7 +899,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 		#endregion Drawing
 
-		public string GetHint()
+		public string GetCustomKey()
 		{
 			return "It's not real. It's not real. It's not real. IT'S NOT REAL. IT'S NOT REAL. IT'S NOT REAL.";
 		}

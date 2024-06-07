@@ -14,7 +14,7 @@ using static Terraria.ModLoader.ModContent;
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
 	[AutoloadBossHead]
-	public partial class Glassweaver : ModNPC, IHintable
+	public partial class Glassweaver : ModNPC, ICustomHintable
 	{
 		public static readonly Color GlowDustOrange = new(6255, 108, 0);
 		public static readonly Color GlassColor = new(60, 170, 205);
@@ -516,7 +516,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			return false;
 		}
-		public string GetHint()
+		public string GetCustomKey()
 		{
 			return "Now he's getting serious.";
 		}

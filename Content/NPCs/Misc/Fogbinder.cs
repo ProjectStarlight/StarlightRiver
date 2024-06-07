@@ -10,7 +10,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Misc
 {
-	class Fogbinder : ModNPC, IHintable
+	class Fogbinder : ModNPC, ICustomHintable
 	{
 		private class BindedNPC //I made it a class instead of a struct so that I can consistantly pass by reference
 		{
@@ -239,7 +239,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 				}
 			}
 		}
-		public string GetHint()
+		public string GetCustomKey()
 		{
 			return "Disrupted with prolonged contact...";
 		}

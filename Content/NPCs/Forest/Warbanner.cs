@@ -11,7 +11,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Forest
 {
-	class Warbanner : ModNPC, IDrawAdditive, IHintable
+	class Warbanner : ModNPC, IDrawAdditive, ICustomHintable
 	{
 		public enum BehaviorStates
 		{
@@ -343,7 +343,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 			}
 		}
 
-		public string GetHint()
+		public string GetCustomKey()
 		{
 			return "It somehow bolsters nearby foes...";
 		}

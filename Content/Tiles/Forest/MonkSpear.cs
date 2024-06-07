@@ -8,7 +8,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Forest
 {
-	class MonkSpear : DummyTile, IHintable
+	class MonkSpear : DummyTile, ICustomHintable
 	{
 		public override int DummyType => DummySystem.DummyType<MonkSpearDummy>();
 
@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 		{
 			Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemType<MonkSpade>());
 		}
-		public string GetHint()
+		public string GetCustomKey()
 		{
 			return "The air here is still, yet the ribbon rides an unseen breeze...";
 		}

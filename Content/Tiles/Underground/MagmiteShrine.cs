@@ -7,7 +7,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
-	class MagmiteShrine : ModTile, IHintable
+	class MagmiteShrine : ModTile, ICustomHintable
 	{
 		public override string Texture => "StarlightRiver/Assets/Tiles/Underground/" + Name;
 
@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 		{
 			(r, g, b) = (0.1f, 0.08f, 0.025f);
 		}
-		public string GetHint()
+		public string GetCustomKey()
 		{
 			return "A shrine - obviously, to Their Greatness the Magmite. The lil goober's eyes seem to follow you, and heart-shaped runes dance across its pedestal.";
 		}

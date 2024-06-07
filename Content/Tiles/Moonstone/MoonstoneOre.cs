@@ -5,7 +5,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Moonstone
 {
-	public class MoonstoneOre : ModTile, IHintable
+	public class MoonstoneOre : ModTile, ICustomHintable
 	{
 		public override string Texture => AssetDirectory.MoonstoneTile + Name;
 
@@ -146,7 +146,7 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 			player.AddBuff(BuffType<Buffs.Dreamwarp>(), 240);
 		}
 
-		public string GetHint()
+		public string GetCustomKey()
 		{
 			return "This ore is full of Starlight, but... wrong. Twisted.";
 		}

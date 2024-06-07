@@ -12,7 +12,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.NPCs.Starlight
 {
-	class Crow : ModNPC, IHintable
+	class Crow : ModNPC, ICustomHintable
 	{
 		public bool visible;
 		public bool leaving;
@@ -333,7 +333,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			}
 		}
 
-		public string GetHint()
+		public string GetCustomKey()
 		{
 			return "What does he want with me?";
 		}

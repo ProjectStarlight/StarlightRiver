@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 		public override void OnActivate()
 		{
 			effectTimer = 20;
-			hintToDisplay = "Nothing interesting here...";
+			hintToDisplay = null;
 
 			Vector2 pos = Main.MouseWorld;
 
@@ -84,25 +84,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 				if (box.Contains(pos.ToPoint()))
 				{
 					NPC npc = Main.npc[k];
-
-					// if there is a custom hint, use that and return
-					if (npc.ModNPC is IHintable hintable)
-					{
-						hintToDisplay = hintable.GetHint();
-						return;
-					}
-					else // else use a default hint
-					{
-						if (npc.FullName == "")
-							return;
-
-						if (npc.friendly)
-							hintToDisplay = $"It's my good friend, {npc.FullName}!";
-						else if (npc.boss)
-							hintToDisplay = $"Thats {npc.FullName}! Focus!";
-						else
-							hintToDisplay = $"It's just a {npc.FullName}.";
-					}
+					hintToDisplay ??= HintLoader.GetNPCEntry(npc);
 				}
 			}
 
@@ -115,30 +97,18 @@ namespace StarlightRiver.Content.Abilities.Hint
 				if (box.Contains(pos.ToPoint()))
 				{
 					Projectile proj = Main.projectile[k];
-
-					// We only check for custom hints here
-					if (proj.ModProjectile is IHintable hintable)
-					{
-						hintToDisplay = hintable.GetHint();
-						return;
-					}
+					hintToDisplay ??= HintLoader.GetProjectileEntry(proj);
 				}
 			}
 
 			// Check tiles
 			Tile tile = Framing.GetTileSafely((int)pos.X / 16, (int)pos.Y / 16);
-			ModTile modTile = ModContent.GetModTile(tile.TileType);
+			hintToDisplay ??= HintLoader.GetTileEntry(tile);
 
-			// If there is a custom hint use that
-			if (modTile is IHintable hintableT)
-			{
-				hintToDisplay = hintableT.GetHint();
-				return;
-			}
+			// Fallback
 
-			// Else use a default hint for solid tiles
-			if (tile.HasTile && Main.tileSolid[tile.TileType])
-				hintToDisplay = $"It's just some {ProcessName(TileID.Search.GetName(tile.TileType))}...";
+			if (String.IsNullOrEmpty(hintToDisplay))
+				hintToDisplay = "UNKNOWN";
 		}
 
 		private string ProcessName(string input)

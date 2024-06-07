@@ -8,7 +8,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Overgrow
 {
-	internal class Crusher : ModNPC, IHintable
+	internal class Crusher : ModNPC, ICustomHintable
 	{
 		public Tile Parent;
 
@@ -112,7 +112,7 @@ namespace StarlightRiver.Content.NPCs.Overgrow
 			for (int k = 1; k <= count; k++)
 				spriteBatch.Draw(tex2, NPC.position - screenPos + new Vector2(8, -48 - k * 28), drawColor);
 		}
-		public string GetHint()
+		public string GetCustomKey()
 		{
 			return "Watch your step.";
 		}

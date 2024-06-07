@@ -11,7 +11,7 @@ using Terraria.ObjectData;
 
 namespace StarlightRiver.Content.Tiles.Desert
 {
-	public class AnkhChest : DummyTile, IHintable
+	public class AnkhChest : DummyTile, ICustomHintable
 	{
 		public override string Texture => AssetDirectory.DesertTile + Name;
 
@@ -237,7 +237,7 @@ namespace StarlightRiver.Content.Tiles.Desert
 			}
 		}
 
-		public string GetHint()
+		public string GetCustomKey()
 		{
 			return "Starlight-infused crystals encrust the chests' lock... Perhaps equally powerful starlight could break them off";
 		}

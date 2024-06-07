@@ -9,7 +9,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.UndergroundTemple
 {
-	class JarTall : DummyTile, IHintable
+	class JarTall : DummyTile, ICustomHintable
 	{
 		public override int DummyType => DummySystem.DummyType<JarDummy>();
 
@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 			return false;
 		}
 
-		public string GetHint()
+		public string GetCustomKey()
 		{
 			return "A huge vial of pure starlight -- It's reinforced the glass itself over the centuries. Maybe a powerful starlight force could shatter it.";
 		}

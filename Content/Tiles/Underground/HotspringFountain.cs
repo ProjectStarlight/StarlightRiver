@@ -10,7 +10,7 @@ using Terraria.ObjectData;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
-	class HotspringFountain : DummyTile, IHintable
+	class HotspringFountain : DummyTile, ICustomHintable
 	{
 		public override int DummyType => DummySystem.DummyType<HotspringFountainDummy>();
 
@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 			}
 		}
 
-		public string GetHint()
+		public string GetCustomKey()
 		{
 			return "The waters around this spring calm your mind, heal your body, and soothe your soul. A brief reprieve, if only for a moment.";
 		}

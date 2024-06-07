@@ -1,0 +1,14 @@
+{
+  "Npc": {
+    "Default": "This is known as {0}."
+  },
+
+  "Projectile": {
+
+  },
+
+  "Tile": {
+    "Default": "It's just some {0}...",
+    "Terraria/Dirt":  "Soil of a typical composition."
+  }
+}

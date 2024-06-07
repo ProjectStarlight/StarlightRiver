@@ -10,7 +10,7 @@ using static Terraria.ModLoader.ModContent;
 namespace StarlightRiver.Content.NPCs.Vitric
 {
 
-	internal class CoolmiteSmol : CoolmitePassive, IHintable
+	internal class CoolmiteSmol : CoolmitePassive, ICustomHintable
 	{
 		protected override int Offset => 4;
 		protected override float Size => 0.8f;
@@ -92,13 +92,13 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			return false;
 		}
 
-		new public string GetHint()
+		new public string GetCustomKey()
 		{
 			return "Even smoller in crystal!";
 		}
 	}
 
-	internal class CoolmiteLarge : CoolmitePassive, IHintable
+	internal class CoolmiteLarge : CoolmitePassive, ICustomHintable
 	{
 		protected override int Offset => 10;
 		protected override float Size => 1.2f;
@@ -199,7 +199,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			base.OnKill();
 		}
 
-		new public string GetHint()
+		new public string GetCustomKey()
 		{
 			return "Even more mesmerizing in crystal!";
 		}

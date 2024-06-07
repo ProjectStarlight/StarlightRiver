@@ -12,7 +12,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
-	class GlassweaverWaiting : ModNPC, IHintable
+	class GlassweaverWaiting : ModNPC, ICustomHintable
 	{
 		public const int FRAME_WIDTH = 124;
 
@@ -293,7 +293,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			State = tag.GetAsInt("State");
 		}
 
-		public string GetHint()
+		public string GetCustomKey()
 		{
 			return "Is this... creature... really what 'lurks beneath the desert?'";
 		}

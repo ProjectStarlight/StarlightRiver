@@ -10,7 +10,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.CrashTech
 {
-	class CrashPod : DummyTile, IHintable
+	class CrashPod : DummyTile, ICustomHintable
 	{
 		public override string Texture => "StarlightRiver/Assets/Tiles/CrashTech/CrashPod";
 
@@ -72,7 +72,7 @@ namespace StarlightRiver.Content.Tiles.CrashTech
 			return false;
 		}
 
-		public string GetHint()
+		public string GetCustomKey()
 		{
 			return "A fallen droppod, made of metal rich in binding Starlight. You'd have to use a Starlight power of equal strength...";
 		}

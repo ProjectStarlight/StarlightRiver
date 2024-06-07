@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 		}
 	}
 
-	class DynamicGearDummy : GearTileDummy, IHintable
+	class DynamicGearDummy : GearTileDummy, ICustomHintable
 	{
 		public DynamicGearDummy() : base(ModContent.TileType<DynamicGear>()) { }
 
@@ -127,7 +127,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
-		public string GetHint()
+		public string GetCustomKey()
 		{
 			return "A magical gear that can change its shape...";
 		}

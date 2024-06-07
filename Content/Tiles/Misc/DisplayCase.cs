@@ -7,7 +7,7 @@ using Terraria.ObjectData;
 
 namespace StarlightRiver.Content.Tiles.Misc
 {
-	class DisplayCase : ModTile, IHintable
+	class DisplayCase : ModTile, ICustomHintable
 	{
 		public override string Texture => "StarlightRiver/Assets/Tiles/Misc/DisplayCase";
 
@@ -88,7 +88,7 @@ namespace StarlightRiver.Content.Tiles.Misc
 			return (Main.GameUpdateCount + off * 3) % 300 / 300f;
 		}
 
-		public string GetHint()
+		public string GetCustomKey()
 		{
 			return "The contents are shiny... but the glass is infused with starlight. A starlight power of equal strength may shatter it...";
 		}

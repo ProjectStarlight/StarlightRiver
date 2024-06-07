@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Tiles.Mushroom
 		}
 	}
 
-	class JellyShroomDummy : Dummy, IHintable
+	class JellyShroomDummy : Dummy, ICustomHintable
 	{
 		public float timer;
 		public float bounceState;
@@ -112,7 +112,7 @@ namespace StarlightRiver.Content.Tiles.Mushroom
 			spriteBatch.Draw(tex, target, null, color, 0, tex.Size() / 2, 0, 0);
 		}
 
-		public string GetHint()
+		public string GetCustomKey()
 		{
 			return "This mushroom is different. And bouncy.";
 		}

@@ -3,7 +3,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 {
-	class LightGoal : ModTile, IHintable
+	class LightGoal : ModTile, ICustomHintable
 	{
 		public override string Texture => AssetDirectory.VitricTile + "VitricGlass";
 
@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 			TileID.Sets.DrawsWalls[Type] = true;
 		}
 
-		public string GetHint()
+		public string GetCustomKey()
 		{
 			return "Maybe if a light were pointed at this crystal...";
 		}

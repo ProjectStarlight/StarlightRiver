@@ -4,7 +4,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-	internal class VitricSpike : ModTile, IHintable
+	internal class VitricSpike : ModTile, ICustomHintable
 	{
 		public override string Texture => AssetDirectory.VitricTile + Name;
 
@@ -71,7 +71,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				}
 			}
 		}
-		public string GetHint()
+		public string GetCustomKey()
 		{
 			return "Dangerous.";
 		}

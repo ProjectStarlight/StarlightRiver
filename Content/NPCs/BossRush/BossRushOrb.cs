@@ -14,7 +14,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.NPCs.BossRush
 {
-	internal class BossRushOrb : ModNPC, ILoadable, IHintable
+	internal class BossRushOrb : ModNPC, ILoadable, ICustomHintable
 	{
 		const float MAX_CRACK_ANIMATION = 300;
 		const float MAX_SUCC_ANIMATION = 300;
@@ -583,7 +583,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 				particle.Alpha = mag;
 		}
 
-		public string GetHint()
+		public string GetCustomKey()
 		{
 			return "I SEE YOU.";
 		}

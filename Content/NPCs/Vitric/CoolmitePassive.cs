@@ -7,7 +7,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric
 {
-	internal class CoolmitePassive : MagmitePassive, IHintable
+	internal class CoolmitePassive : MagmitePassive, ICustomHintable
 	{
 		bool melting = false;
 		int meltingTimer = 0;
@@ -120,7 +120,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			}
 		}
 
-		new public string GetHint()
+		new public string GetCustomKey()
 		{
 			return "Even cuter in crystal!";
 		}

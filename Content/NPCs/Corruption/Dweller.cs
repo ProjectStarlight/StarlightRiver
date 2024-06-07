@@ -12,7 +12,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Corruption
 {
-	class Dweller : ModNPC, IHintable
+	class Dweller : ModNPC, ICustomHintable
 	{
 		public enum States
 		{
@@ -285,7 +285,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 			}
 		}
 
-		public string GetHint()
+		public string GetCustomKey()
 		{
 			return "There's something here.";
 		}
