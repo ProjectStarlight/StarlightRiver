@@ -109,7 +109,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 					key = $"{modTile.Mod.Name}/{modTile.Name}";
 			}
 
-			if (hints.Projectile.ContainsKey(key))
+			if (hints.Tile.ContainsKey(key))
 				return hints.Tile[key];
 
 			if (tile.HasTile && Main.tileSolid[tile.TileType])
