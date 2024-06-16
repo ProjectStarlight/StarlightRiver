@@ -1,14 +1,8 @@
 ﻿using Humanizer;
-using StarlightRiver.Content.Keys;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Terraria;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Abilities.Hint
@@ -59,13 +53,15 @@ namespace StarlightRiver.Content.Abilities.Hint
 			string key;
 
 			if (npc.ModNPC is ICustomHintable hintable)
+			{
 				key = hintable.GetCustomKey();
+			}
 			else
 			{
 				if (npc.ModNPC is null)
 					key = $"Terraria/{NPCID.Search.GetName(npc.type)}";
 				else
-					key = $"{npc.ModNPC.Mod.Name}/{npc.ModNPC.Name}";			
+					key = $"{npc.ModNPC.Mod.Name}/{npc.ModNPC.Name}";
 			}
 
 			if (hints.Npc.ContainsKey(key))
@@ -79,7 +75,9 @@ namespace StarlightRiver.Content.Abilities.Hint
 			string key;
 
 			if (proj.ModProjectile is ICustomHintable hintable)
+			{
 				key = hintable.GetCustomKey();
+			}
 			else
 			{
 				if (proj.ModProjectile is null)
@@ -97,10 +95,12 @@ namespace StarlightRiver.Content.Abilities.Hint
 		public static string? GetTileEntry(Tile tile)
 		{
 			string key;
-			var modTile = ModContent.GetModTile(tile.TileType);
+			ModTile modTile = ModContent.GetModTile(tile.TileType);
 
 			if (modTile is ICustomHintable hintable)
+			{
 				key = hintable.GetCustomKey();
+			}
 			else
 			{
 				if (modTile is null)
@@ -114,7 +114,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 
 			if (tile.HasTile && Main.tileSolid[tile.TileType])
 				return hints.Tile["Default"].FormatWith(ProcessName(TileID.Search.GetName(tile.TileType)));
-		
+
 			return null;
 		}
 

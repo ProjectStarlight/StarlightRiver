@@ -9,6 +9,21 @@
 
   "Tile": {
     "Default": "It's just some {0}...",
-    "Terraria/Dirt":  "Soil of a typical composition."
+    "Terraria/Dirt": "Soil of a typical composition.",
+    "StarlightRiver/AnkhChest": "A storage device sealed with a crystaline lock. A starlight-infused dash can shatter it.",
+    "StarlightRiver/AuroraIce": "Solidified aurora lights. Capable of harvest with common instruments.",
+    "StarlightRiver/Bouncer": "A regenerating crystal which interacts kinetically with starlight-infused dashes.",
+    "StarlightRiver/CrashPod": "A metallic container from an unknown cosmic origin. A starlight-infused dash can breach it's hull.",
+    "StarlightRiver/DashBarrier": "Weak stone held together with magic. A starlight-infused dash will destroy it effortlessly.",
+    "StarlightRiver/DesertMonolith": "Large sandstone monoliths carved with the markings of a subteranian civilization. Indicative of subteranian ruins.",
+    "StarlightRiver/DesertMonolithFlipped": "Large sandstone monoliths carved with the markings of a subteranian civilization. Indicative of subteranian ruins.",
+    "StarlightRiver/DisplayCase": "Ornamental fixture designed to secure powerful artifacts. A starlight-infused dash can overcome the aracane seal.",
+    "StarlightRiver/HotspringFountain": "A source of water with healing properties.",
+    "StarlightRiver/JarTall": "A jar containing liquified starlight. A starlight-infused dash can shatter the glass.",
+    "StarlightRiver/Jellyshroom": "A species of fungus with a spring-like head. Capable of propeling a human.",
+    "StarlightRiver/LightGoal": "Crystal used for focusing light. Pointing concentrated light at this will amplify it enough to melt glass.",
+    "StarlightRiver/MainForge": "A ceraming forge designed to work glass using concentrated light. Capable of forging powerful artifacts.",
+    "StarlightRiver/ManabondTile": "A magical scroll which can impart the usage of magic to simpler creatures.",
+    "StarlightRiver/MoonstoneOre": "Metallic stone of unknown origin. Has luminescent and hallucinogenic properties."
   }
 }

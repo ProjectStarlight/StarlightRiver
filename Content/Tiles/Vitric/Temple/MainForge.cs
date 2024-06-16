@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		}
 	}
 
-	class MainForgeDummy : Dummy, ICustomHintable
+	class MainForgeDummy : Dummy
 	{
 		public float power = 0;
 
@@ -188,10 +188,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 				return 52 - 60;
 			else
 				return 52 - 60 + Helpers.Helper.BezierEase((input - 0.8f) / 0.2f) * 60;
-		}
-		public string GetCustomKey()
-		{
-			return "An ancient forge, powered by concentrated light...";
 		}
 	}
 

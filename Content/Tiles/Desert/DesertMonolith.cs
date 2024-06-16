@@ -6,7 +6,7 @@ using Terraria.ObjectData;
 
 namespace StarlightRiver.Content.Tiles.Desert
 {
-	internal class DesertMonolith : ModTile, ICustomHintable
+	internal class DesertMonolith : ModTile
 	{
 		public override string Texture => AssetDirectory.DesertTile + Name;
 
@@ -100,11 +100,6 @@ namespace StarlightRiver.Content.Tiles.Desert
 				flat.Slope = SlopeType.Solid;
 				flat.IsHalfBlock = false;
 			}
-		}
-
-		public string GetCustomKey()
-		{
-			return "These towering monoliths withstood the test of time...";
 		}
 	}
 

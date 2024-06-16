@@ -8,7 +8,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Interactive
 {
-	internal class Bouncer : DummyTile, ICustomHintable
+	internal class Bouncer : DummyTile
 	{
 		public override int DummyType => DummySystem.DummyType<BouncerDummy>();
 
@@ -17,11 +17,6 @@ namespace StarlightRiver.Content.Tiles.Interactive
 		public override void SetStaticDefaults()
 		{
 			QuickBlock.QuickSetFurniture(this, 1, 1, DustType<Dusts.GlassNoGravity>(), SoundID.Shatter, false, new Color(115, 182, 158));
-		}
-
-		public string GetCustomKey()
-		{
-			return "A reactive crystal. It... kinetically interacts with Starlight.";
 		}
 	}
 

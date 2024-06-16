@@ -10,7 +10,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
-	public abstract class ShrineTile : DummyTile, ICustomHintable
+	public abstract class ShrineTile : DummyTile
 	{
 		public abstract string GetCustomKey();
 		public abstract int ShrineTileWidth { get; }
