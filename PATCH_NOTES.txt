@@ -49,6 +49,7 @@
 - Fixed acorn sprout only triggering for minion kills
 - Fixed vegetables being able to generate on thin air
 - Fixed warrior kings crown not counting all slots properly
+- Fixed teh food cooldown debuff being able to be removed by the nurse, allowing infinite food stacking
 
 ## Balance
 - Warrior kings crown scaling changed (200% increased damage base => 40% increased damage base, 20% damage per slot => 30% damage per slot)
