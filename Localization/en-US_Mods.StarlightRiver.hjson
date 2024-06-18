@@ -2,11 +2,89 @@ Keybinds: {
 }
 
 Items: {
-	StellarRushItem: {
+	TestWhip: {
+		DisplayName: "[PH]Test Whip"
+		Tooltip:
+			'''
+			[PH]Whip Infusion
+			No effect
+			'''
+	}
+
+	TestWhipImprint: {
+		DisplayName: "[PH]Test Whip"
+		Tooltip: No effect
+	}
+
+	Astral: {
+		DisplayName: Comet Rush I
+		Tooltip:
+			'''
+			Forbidden Winds Infusion
+			Dash farther and carry more speed
+			Increases starlight cost to 1.3
+			'''
+	}
+
+	Astral2: {
+		DisplayName: Comet Rush II
+		Tooltip:
+			'''
+			Forbidden Winds Infusion
+			Dash farther and carry even more speed
+			Increases starlight cost to 1.6
+			'''
+	}
+
+	Astral3: {
+		DisplayName: Comet Rush III
+		Tooltip:
+			'''
+			Forbidden Winds Infusion
+			Dash farther and carry the most speed
+			Increases starlight cost to 2
+			'''
+	}
+
+	AstralImprint: {
+		DisplayName: Comet Rush
+		Tooltip: Dash farther and carry more speed
+	}
+
+	Blink: {
+		DisplayName: Blink
+		Tooltip:
+			'''
+			Forbidden Winds Infusion
+			Instantly teleport a short distance ahead, avoiding enemies and their attacks
+			'''
+	}
+
+	BlinkImprint: {
+		DisplayName: Blink
+		Tooltip: Instantly teleport a short distance ahead, avoiding enemies and their attacks
+	}
+
+	Pulse: {
+		DisplayName: Pulse
+		Tooltip:
+			'''
+			Forbidden Winds Infusion
+			Dash is replaced by a short, frequent, and potent burst of speed
+			Decreases starlight cost by 0.25
+			'''
+	}
+
+	PulseImprint: {
+		DisplayName: Pulse
+		Tooltip: Dash is replaced by a short, frequent, and potent burst of speed
 	}
 
 	BasicInfusion: {
 	}
+
+	CauldronItem.DisplayName: Cauldron Item
+	MixingStick.DisplayName: Mixing Stick
 
 	ArtilleryLicense: {
 	}
@@ -119,9 +197,6 @@ Items: {
 	RainTotemArtifactItem: {
 	}
 
-	WarriorKingsCrown: {
-	}
-
 	WindTotemArtifactItem: {
 	}
 
@@ -130,6 +205,8 @@ Items: {
 
 	DebugStick: {
 	}
+
+	DefiledAnkh.DisplayName: Defiled Ankh
 
 	Sandscript: {
 	}
@@ -152,6 +229,8 @@ Items: {
 	StoneOfTheDrowned: {
 	}
 
+	ThousandthDegree.DisplayName: Thousandth Degree
+
 	TwistSword: {
 	}
 
@@ -161,8 +240,62 @@ Items: {
 	ReplicantCells: {
 	}
 
+	BlackPepper.DisplayName: Black Pepper
+	BrusselSprouts.DisplayName: Brussel Sprouts
+	Butter.DisplayName: Butter
+	Cabbage.DisplayName: Cabbage
+	Carrot.DisplayName: Carrot
+	Cashews.DisplayName: Cashews
+	Cherry.DisplayName: Cherry
+	ChocolateGlaze.DisplayName: Chocolate Glaze
+	CoffeeBeans.DisplayName: Coffee Beans
+	CrimsonSteak.DisplayName: Crimson Steak
+	DicedMushrooms.DisplayName: Diced Mushrooms
+	Dough.DisplayName: Dough
+	Dressing.DisplayName: Dressing
+	EaterSteak.DisplayName: Eater Steak
+	Entrails.DisplayName: Entrails
+	Eye.DisplayName: Eye
+	FaceSteak.DisplayName: Face Steak
+	Flour.DisplayName: Flour
+	Gelatine.DisplayName: Gelatine
+	GelBerry.DisplayName: Gel Berry
+	GiantMushroom.DisplayName: Giant Mushroom
+	HealthExtract.DisplayName: Health Extract
+	HoneySyrup.DisplayName: Honey Syrup
+	IvySalad.DisplayName: Ivy Salad
+	JumboShrimp.DisplayName: Jumbo Shrimp
+	Lettuce.DisplayName: Lettuce
+	MahoganyRoot.DisplayName: Mahogany Root
+	ManaExtract.DisplayName: Mana Extract
+
 	Meal: {
 	}
+
+	Milk.DisplayName: Milk
+	Rabbit.DisplayName: Rabbit
+	RocketFuel.DisplayName: Rocket Fuel
+	SeaSalt.DisplayName: Sea Salt
+	SkySprinkles.DisplayName: Sky Sprinkles
+	BlastoffShake.DisplayName: Blastoff Shake
+	BrandedCoffee.DisplayName: Branded Coffee
+	ButterPancakes.DisplayName: Butter Pancakes
+	CherryBrownie.DisplayName: Cherry Brownie
+	CreamySoup.DisplayName: Creamy Soup
+	CrimsonKebab.DisplayName: Crimson Kebab
+	JungleSalad.DisplayName: Jungle Salad
+	MushroomSteak.DisplayName: Mushroom Steak
+	Salad.DisplayName: Salad
+	ShrimpSandwich.DisplayName: Shrimp Sandwich
+	Slimejelly.DisplayName: Slimejelly
+	SupportCookies.DisplayName: Support Cookies
+	StarlightWater.DisplayName: Starlight Water
+	Sugar.DisplayName: Sugar
+	TableSalt.DisplayName: Table Salt
+	Toast.DisplayName: Toast
+	VertebrateNuggets.DisplayName: Vertebrate Nuggets
+	Vinegar.DisplayName: Vinegar
+	WhippedCream.DisplayName: Whipped Cream
 
 	AcornSprout: {
 	}
@@ -206,8 +339,13 @@ Items: {
 	GeoEmerald: {
 	}
 
+	GeomancerHood.Tooltip: ""
+
 	GeomancerItemDummy: {
 	}
+
+	GeomancerPants.Tooltip: ""
+	GeomancerRobe.Tooltip: ""
 
 	GeoRuby: {
 	}
@@ -263,11 +401,15 @@ Items: {
 	PoltergeistLegs: {
 	}
 
+	TaintedGreataxe.DisplayName: Tainted Greataxe
+
 	VengefulSpirit: {
 	}
 
 	CharonsObol: {
 	}
+
+	Corpseflower.DisplayName: Corpseflower
 
 	ManEaterPot: {
 	}
@@ -371,6 +513,8 @@ Items: {
 	DullBlade: {
 	}
 
+	Earthduster.DisplayName: Earthduster
+
 	ElectroArrow: {
 	}
 
@@ -400,6 +544,8 @@ Items: {
 
 	Guillotine: {
 	}
+
+	Gunchucks.Tooltip: ""
 
 	GunstrapBoots: {
 	}
@@ -431,6 +577,8 @@ Items: {
 	LostCollar: {
 	}
 
+	Magebane.DisplayName: Magebane
+
 	MagmaGun: {
 	}
 
@@ -460,6 +608,8 @@ Items: {
 
 	ShockAbsorber: {
 	}
+
+	Sling.DisplayName: Sling
 
 	Soilgun: {
 	}
@@ -518,6 +668,8 @@ Items: {
 	MoonstoneChest: {
 	}
 
+	MoonstoneHamaxe.DisplayName: Moonstone Hamaxe
+
 	MoonstoneHead: {
 	}
 
@@ -529,6 +681,8 @@ Items: {
 
 	StarlightShuriken: {
 	}
+
+	Shaker.Tooltip: ""
 
 	PalestoneNail: {
 	}
@@ -557,6 +711,8 @@ Items: {
 	OverflowingUrn: {
 	}
 
+	SquidBossBag.Tooltip: ""
+
 	SquidBossSpawn: {
 	}
 
@@ -568,6 +724,8 @@ Items: {
 
 	TentacleHook: {
 	}
+
+	Tentalance.DisplayName: Tentalance
 
 	WaterStaff: {
 	}
@@ -680,11 +838,12 @@ Items: {
 	CurseRemover: {
 	}
 
-	MeteorForcer: {
-	}
-
-	MoonstoneForcer: {
-	}
+	AncientStarwoodBoots.Tooltip: ""
+	AncientStarwoodChest.Tooltip: ""
+	AncientStarwoodHat.Tooltip: ""
+	MechaChest.Tooltip: ""
+	MechaHead.Tooltip: ""
+	MechaLegs.Tooltip: ""
 
 	WardenHat: {
 	}
@@ -704,8 +863,7 @@ Items: {
 	ForgeMap: {
 	}
 
-	GlassArrowhead: {
-	}
+	GlassIdol.DisplayName: Glass Idol
 
 	GlassIdolEndless: {
 	}
@@ -725,11 +883,15 @@ Items: {
 	MagmiteBottle: {
 	}
 
+	MagmiteVacpack.DisplayName: Magmite Vacpack
+
 	Needler: {
 	}
 
 	PhoenixStorm: {
 	}
+
+	RecursiveFocus.DisplayName: Recursive Focus
 
 	RefractiveBlade: {
 	}
@@ -748,6 +910,8 @@ Items: {
 
 	TempleKey: {
 	}
+
+	VitricBossBag.Tooltip: ""
 
 	VitricBow: {
 	}
@@ -809,19 +973,9 @@ Items: {
 	CookStationItem: {
 	}
 
-	BonemineItem: {
-		DisplayName: Bone mine
-		Tooltip: Doyoyouuyuuhuyhh *BRRPT* *Anyuerism*
-	}
-
-	DendriteItem: {
-		DisplayName: Dendrite
-		Tooltip: Doyoyouuyuuhuyhh *BRRPT* *Anyuerism*
-	}
-
-	GrayMatterItem: {
-		DisplayName: Gray Matter
-		Tooltip: You can see it thinking
+	InfuserItem: {
+		DisplayName: "[PH]Infuser"
+		Tooltip: Used to imprint infusions
 	}
 
 	AnkhChestItem: {
@@ -831,9 +985,6 @@ Items: {
 	}
 
 	DesertMonolithItem: {
-	}
-
-	CommonVegetablesItem: {
 	}
 
 	ForestBerryBushItem: {
@@ -879,9 +1030,6 @@ Items: {
 	}
 
 	RatTentItem: {
-	}
-
-	MoonstoneMonolithItem: {
 	}
 
 	JellyShroomItem: {
@@ -1076,9 +1224,6 @@ Items: {
 	OldCeirosShrineItem: {
 	}
 
-	SoundPuzzleDoorItem: {
-	}
-
 	TallWindowCrystalItem: {
 	}
 
@@ -1160,9 +1305,6 @@ Items: {
 	VitricOreItem: {
 	}
 
-	VitricPylonItem: {
-	}
-
 	VitricRockItem: {
 	}
 
@@ -1182,6 +1324,12 @@ Items: {
 	}
 
 	GlassweaverBossBarrierItem: {
+	}
+
+	CombatShrineBarrierItem: {
+	}
+
+	EvasionShrineBarrierItem: {
 	}
 
 	VitricBathtub: {
@@ -1235,21 +1383,6 @@ Items: {
 	VitricDoorClosed: {
 	}
 
-	CombatShrineBarrierItem: {
-	}
-
-	EvasionShrineBarrierItem: {
-	}
-
-	TempleBrickItem: {
-	}
-
-	AuroracleRelicItem: {
-	}
-
-	CeirosRelicItem: {
-	}
-
 	TempleChairItem: {
 	}
 
@@ -1289,6 +1422,9 @@ Items: {
 	TempleThingamajigItem: {
 	}
 
+	TempleBrickItem: {
+	}
+
 	VitricBoss1Item: {
 	}
 
@@ -1302,6 +1438,11 @@ Items: {
 	}
 
 	MinibossItem: {
+	}
+
+	OvergrowItem: {
+		DisplayName: Music Box (Overgrow)
+		Tooltip: ""
 	}
 
 	AuroracleItem: {
@@ -1348,19 +1489,238 @@ Items: {
 
 	VitricSandPlainItem: {
 	}
+
+	BaseBarrierDye: {
+		DisplayName: Base Barrier Dye
+		Tooltip: ""
+	}
+
+	ExampleCombatMountItem: {
+		DisplayName: Example Combat Mount Item
+		Tooltip: ""
+	}
+
+	MonkSpade: {
+		DisplayName: Monk Spade
+		Tooltip: ""
+	}
+
+	RainbowCycleDye: {
+		DisplayName: Rainbow Cycle Dye
+		Tooltip: ""
+	}
+
+	RainbowCycleDye2: {
+		DisplayName: Rainbow Cycle Dye2
+		Tooltip: ""
+	}
+
+	FaeHover: {
+		DisplayName: Fae Hover
+		Tooltip: ""
+	}
+
+	GenericHover: {
+		DisplayName: Generic Hover
+		Tooltip: ""
+	}
+
+	WindsHover: {
+		DisplayName: Winds Hover
+		Tooltip: ""
+	}
+
+	StaminaPickup: {
+		DisplayName: Stamina Pickup
+		Tooltip: ""
+	}
+
+	GlassArrowhead: {
+	}
+
+	ForestBerries: {
+		DisplayName: Forest Berries
+		Tooltip: ""
+	}
+
+	MaterialIndicatorIcon: {
+		DisplayName: Material Indicator Icon
+		Tooltip: ""
+	}
+
+	RedLaserPointer: {
+		DisplayName: Red Laser Pointer
+		Tooltip: ""
+	}
+
+	OrangeLaserPointer: {
+		DisplayName: Orange Laser Pointer
+		Tooltip: ""
+	}
+
+	YellowLaserPointer: {
+		DisplayName: Yellow Laser Pointer
+		Tooltip: ""
+	}
+
+	GreenLaserPointer: {
+		DisplayName: Green Laser Pointer
+		Tooltip: ""
+	}
+
+	BlueLaserPointer: {
+		DisplayName: Blue Laser Pointer
+		Tooltip: ""
+	}
+
+	PurpleLaserPointer: {
+		DisplayName: Purple Laser Pointer
+		Tooltip: ""
+	}
+
+	WhiteLaserPointer: {
+		DisplayName: White Laser Pointer
+		Tooltip: ""
+	}
+
+	PinkLaserPointer: {
+		DisplayName: Pink Laser Pointer
+		Tooltip: ""
+	}
+}
+
+Projectiles: {
+	CauldronDummy.DisplayName: ""
+	Whirl.DisplayName: Whirl
+	CrashPodDummy.DisplayName: ""
+	AnkhChestDummy.DisplayName: ""
+	TwistSwordTileProj.DisplayName: ""
+	MonkSpearDummy.DisplayName: ""
+	BouncerDummy.DisplayName: ""
+	StaminaGemDummy.DisplayName: ""
+	StaminaOrbDummy.DisplayName: ""
+	LootBubbleDummy.DisplayName: ""
+	JellyShroomDummy.DisplayName: ""
+	BossWindowDummy.DisplayName: ""
+	NoxiousNodeDummy.DisplayName: ""
+	WindowSmallDummy.DisplayName: ""
+	BossGateDummy.DisplayName: ""
+	CombatShrineDummy.DisplayName: ""
+	EvasionShrineDummy.DisplayName: ""
+	HotspringFountainDummy.DisplayName: ""
+	WitShrineDummy.DisplayName: ""
+	DashBarrierDummy.DisplayName: ""
+	JarDummy.DisplayName: ""
+	VerletBannerDummy.DisplayName: ""
+	ForgeActorDummy.DisplayName: ""
+	RedBannerShortDummy.DisplayName: ""
+	CrystalSlimeSpawnerDummy.DisplayName: ""
+	DashableDoorDummy.DisplayName: ""
+	DynamicGearDummy.DisplayName: ""
+	GearPuzzleOriginDummy.DisplayName: ""
+	ObjectiveGearDummy.DisplayName: ""
+	LightActorDummy.DisplayName: ""
+	LensDummy.DisplayName: ""
+	ReflectorDummy.DisplayName: ""
+	LowWindBannerDummy.DisplayName: ""
+	MainForgeDummy.DisplayName: ""
+	NPCSpawnerDummy.DisplayName: ""
+	OldCeirosShrineDummy.DisplayName: ""
+	TallWindowCrystalDummy.DisplayName: ""
+	TallWindowDummy.DisplayName: ""
+	TallWindowLavaDummy.DisplayName: ""
+	TutorialDoor1Dummy.DisplayName: ""
+	TutorialDoor2Dummy.DisplayName: ""
+	WindsRoomActorDummy.DisplayName: ""
+	VitricBannerSmallDummy.DisplayName: ""
+	VitricBossAltarDummy.DisplayName: ""
+	VitricGiantDummy.DisplayName: ""
+	VitricLargeDummy.DisplayName: ""
+	VitricMediumDummy.DisplayName: ""
+	VitricOreDummy.DisplayName: ""
+	VitricOreFloatDummy.DisplayName: ""
+	VitricSmallDummy.DisplayName: ""
+	VitricBannerDummy.DisplayName: ""
+	HintText.DisplayName: Hint Text
+	BurningGround.DisplayName: Burning Ground
+	GlassJavelin.DisplayName: Glass Javelin
+	GlassweaverDoor.DisplayName: Glassweaver Door
+	Glint.DisplayName: Glint
+	AuroraWaterSplash.DisplayName: Aurora Water Splash
+	DoorBomb.DisplayName: Door Bomb
+	Laser.DisplayName: Laser
+	CrystalWave.DisplayName: Crystal Wave
+	FireCone.DisplayName: Fire Cone
+	FireRingHostile.DisplayName: Fire Ring Hostile
+	FireRing.DisplayName: Fire Ring
+	GlassVolley.DisplayName: Glass Volley
+	GlassVolleyShard.DisplayName: Glass Volley Shard
+	SpikeMine.DisplayName: Spike Mine
+	VitricBomb.DisplayName: Vitric Bomb
+	LightningNode.DisplayName: Lightning Node
+	ScrapshotHook.DisplayName: Scrapshot Hook
+	AztecDeathSaxophoneSoundwave.DisplayName: Aztec Death Saxophone Soundwave
+	SandSlash.DisplayName: Sand Slash
+	TwistSwordProjectile.DisplayName: Twist Sword Projectile
+	Acorn.DisplayName: Acorn
+	MonkSpadeProjectile.DisplayName: Monk Spade Projectile
+	SlimeThorn.DisplayName: Slime Thorn
+	GeoAmethystProj.DisplayName: Geo Amethyst Proj
+	GeoDiamondProj.DisplayName: Geo Diamond Proj
+	GeoEmeraldProj.DisplayName: Geo Emerald Proj
+	GeoRubyProj.DisplayName: Geo Ruby Proj
+	GeoSapphireProj.DisplayName: Geo Sapphire Proj
+	GeoTopazProj.DisplayName: Geo Topaz Proj
+	ThunderbussBall.DisplayName: Thunderbuss Ball
+	AxeBookProjectile.DisplayName: Axe Book Projectile
+	BizarreLightning.DisplayName: Bizarre Lightning
+	BizarreLightningOrb.DisplayName: Bizarre Lightning Orb
+	BizarrePotionPoisonCloud.DisplayName: Bizarre Potion Poison Cloud
+	FryingPanThrownProj.DisplayName: Frying Pan Thrown Proj
+	GuillotineVFX.DisplayName: Guillotine V F X
+	HolyAmuletOrb.DisplayName: Holy Amulet Orb
+	SorcerwrenchProjectile.DisplayName: Sorcerwrench Projectile
+	SpearBookProjectile.DisplayName: Spear Book Projectile
+	SwordBookParry.DisplayName: Sword Book Parry
+	SwordBookProjectile.DisplayName: Sword Book Projectile
+	ThrownAxeProjectile.DisplayName: Thrown Axe Projectile
+	UltrapillBlood.DisplayName: Ultrapill Blood
+	DatsuzeiProjectile.DisplayName: Datsuzei Projectile
+	StarGlaive.DisplayName: Star Glaive
+	StarShuriken.DisplayName: Star Shuriken
+	AuroraThroneMountMinion.DisplayName: Aurora Throne Mount Minion
+	FrostballProjectile.DisplayName: Frostball Projectile
+	FrostExplosion.DisplayName: Frost Explosion
+	TentalanceProjectile.DisplayName: Tentalance Projectile
+	StarwoodSlingshotProj.DisplayName: Starwood Slingshot Proj
+	TemplePickProjectile.DisplayName: Temple Pick Projectile
+	TempleSpearLight.DisplayName: Temple Spear Light
+	LaserPointerProjectile.DisplayName: Laser Pointer Projectile
+	CoachGunUpgradeExplosion.DisplayName: Coach Gun Upgrade Explosion
+	MagmaBottleBurn.DisplayName: Magma Bottle Burn
+	MagmiteBombProjectile.DisplayName: Magmite Bomb Projectile
+	MagmiteBottleProjectile.DisplayName: Magmite Bottle Projectile
+	RefractiveBladeLaser.DisplayName: Refractive Blade Laser
+	RefractiveBladeProj.DisplayName: Refractive Blade Proj
+	VitricBowProjectile.DisplayName: Vitric Bow Projectile
+	VitricBowShard.DisplayName: Vitric Bow Shard
+	BossRushOrbGoreProjectile.DisplayName: Boss Rush Orb Gore Projectile
+	ConstructSpawner.DisplayName: Construct Spawner
+	GauntletSpawner.DisplayName: Gauntlet Spawner
+	SpawnEgg.DisplayName: Spawn Egg
 }
 
 Tiles: {
+	Infuser.MapEntry: Infuser
+	Overgrow.MapEntry: Music Box
+	BossGate.MapEntry: ""
+	VitricGiantCrystal.MapEntry: Vitric Giant Crystal
+	VitricLargeCrystal.MapEntry: Vitric Large Crystal
+	VitricMediumCrystal.MapEntry: Vitric Medium Crystal
+	VitricSmallCrystal.MapEntry: Vitric Small Crystal
 }
 
-Projectiles.VeinSpear.DisplayName: Vein Spear
-
 Biomes: {
-	GraymatterBiome: {
-		DisplayName: Graymatter Biome
-		TownNPCDialogueName: the Graymatter Biome
-	}
-
 	HotspringBiome: {
 	}
 
@@ -1387,8 +1747,64 @@ Biomes: {
 }
 
 NPCs: {
-	BrainPlatform.DisplayName: ""
-	HorrifyingVisage.DisplayName: Horrifying Visage
+	GlassweaverWaiting: {
+		TownNPCMood: {
+			Content: I am content.
+			NoHome: I hate not having a home.
+			FarFromHome: I am too far from home.
+			LoveSpace: I love having so much space.
+			DislikeCrowded: I dislike how crowded I am.
+			HateCrowded: I hate how crowded I am.
+			LikeNPC_Princess: I like {NPCName}.
+			Princess_LovesNPC: I like {NPCName}.
+		}
+	}
+
+	ArenaBlocker.DisplayName: Arena Blocker
+	Auroraborn.DisplayName: Auroraborn
+	Auroraling.DisplayName: Auroraling
+	Tentacle.DisplayName: Tentacle
+	TentacleHurtbox.DisplayName: Tentacle Hurtbox
+	StarlightWaterActor.DisplayName: Starlight Water Actor
+	GravityOrbTest.DisplayName: Gravity Orb Test
+	BossRushGoal.DisplayName: Boss Rush Goal
+	Dweller.DisplayName: Dweller
+	Stalker.DisplayName: Stalker
+	Dreambeast.DisplayName: Dreambeast
+	WaterCube.DisplayName: Water Cube
+
+	EnchantNPC: {
+		DisplayName: Enchant N P C
+
+		TownNPCMood: {
+			Content: I am content.
+			NoHome: I hate not having a home.
+			FarFromHome: I am too far from home.
+			LoveSpace: I love having so much space.
+			DislikeCrowded: I dislike how crowded I am.
+			HateCrowded: I hate how crowded I am.
+			LikeNPC_Princess: I like {NPCName}.
+			Princess_LovesNPC: I like {NPCName}.
+		}
+	}
+
+	Voidsmith: {
+		DisplayName: Voidsmith
+
+		TownNPCMood: {
+			Content: I am content.
+			NoHome: I hate not having a home.
+			FarFromHome: I am too far from home.
+			LoveSpace: I love having so much space.
+			DislikeCrowded: I dislike how crowded I am.
+			HateCrowded: I hate how crowded I am.
+			LikeNPC_Princess: I like {NPCName}.
+			Princess_LovesNPC: I like {NPCName}.
+		}
+	}
+
+	DesertWisp2.DisplayName: Desert Wisp2
+	StaminaShardPickup.DisplayName: Stamina Shard Pickup
 }
 
 Buffs: {
@@ -1399,14 +1815,6 @@ Buffs: {
 	}
 
 	CoughDropsBuff: {
-	}
-
-	CrimsonHallucination: {
-		DisplayName: Hallucinating
-		Description: Is any of this real?
-	}
-
-	Dreamwarp: {
 	}
 
 	FerrofluidDraftBuff: {
@@ -1576,23 +1984,165 @@ Buffs: {
 }
 
 Prefixes: {
+	Feral.DisplayName: Feral
+	Jumpy.DisplayName: Jumpy
+	Tanklike.DisplayName: Tanklike
 }
 
-Compat: {
-	BossChecklist: {
-		Auroracle: {
-			SpawnInfo: Drop a Suspicious Looking Offering into the prismatic waters of the Permafrost Shrine, accessed only through the coldest caves.
-			Despawn: The frozen cathedral falls silent.
+Configs: {
+	AudioConfig: {
+		DisplayName: Audio Config
+
+		InvSounds: {
+			Label: Custom Inventory Sounds
+			Tooltip: If custom inventory sounds should play for all Items, select few, or none.
+		}
+	}
+
+	CustomSounds: {
+		Tooltip: ""
+		All.Label: All
+		Specific.Label: Specific
+		None.Label: None
+	}
+
+	GraphicsConfig: {
+		DisplayName: Graphics Config
+
+		ScreenshakeMult: {
+			Label: Screenshake
+			Tooltip: Modifies the intensity of screen shake effects
 		}
 
-		Glassweaver: {
-			SpawnInfo: Challenge the glassweaver in his forge, near the edge of the Vitric Desert.
-			Despawn: The Glassweaver claims victory.
+		LightingPollRate: {
+			Label: Lighting Buffer Poll Rate
+			Tooltip:
+				'''
+				Changes how often the lighting buffer polls for data. 
+				Higher values increase performance but make lighting update slower on some objects. 
+				Lower values result in smoother moving light but may hurt performance.
+				'''
 		}
 
-		Ceiros: {
-			SpawnInfo: Use a Glass Idol at the altar atop the Vitric Temple, after breaking the crystal covering it using Forbidden Winds.
-			Despawn: The Vitric Forge falls silent. The Glassweaver is dissapointed.
+		ScrollingLightingPoll: {
+			Label: Scrolling Lighting Buffer Building
+			Tooltip:
+				'''
+				Causes the lighting buffer to be built over its poll rate instead of all at once. 
+				May help normalize lag spikes but cause strange lighting artifacts.
+				'''
 		}
+
+		ParticlesActive: {
+			Label: Extra Particles
+			Tooltip:
+				'''
+				Enables/Disables special particles. 
+				Disable this if you have performance issues.
+				'''
+		}
+
+		HighQualityLighting: {
+			Label: High quality lit textures
+			Tooltip:
+				'''
+				Enables/Disables fancy lighting on large textures. 
+				Disable this if you have performance issues.
+				'''
+		}
+
+		ReflectionConfig: {
+			Label: Background Reflections
+			Tooltip:
+				'''
+				Configures what is rendered for background reflections. 
+				Disable this if you have performance issues.
+				'''
+		}
+	}
+
+	ReflectionSubConfig: {
+		Tooltip: ""
+
+		ReflectionsOn: {
+			Label: Background Reflections
+			Tooltip:
+				'''
+				This will Enable/Disable the background reflections system entirely. 
+				If this is off, the other settings in this block are ignored. 
+				Disable this if you have performance issues.
+				'''
+		}
+
+		PlayerReflectionsOn: {
+			Label: Reflect Players
+			Tooltip:
+				'''
+				This will Enable/Disable reflecting Players.
+				 low performance impact.
+				'''
+		}
+
+		NpcReflectionsOn: {
+			Label: Reflect NPCs
+			Tooltip:
+				'''
+				This will Enable/Disable reflecting NPCs.
+				 low performance impact.
+				'''
+		}
+
+		ProjReflectionsOn: {
+			Label: Reflect Projectiles
+			Tooltip:
+				'''
+				This will Enable/Disable reflecting Projectiles.
+				 high performance impact.
+				'''
+		}
+
+		DustReflectionsOn: {
+			Label: Reflect Particles
+			Tooltip:
+				'''
+				This will Enable/Disable reflecting Particles, gores and dusts.
+				 high performance impact.
+				'''
+		}
+	}
+
+	GUIConfig: {
+		DisplayName: G U I Config
+
+		OverheadStaminaState: {
+			Label: Overhead Starlight Display
+			Tooltip: When/If the overhead starlight meter should display
+		}
+
+		KeywordStyle: {
+			Label: Keyword Style
+			Tooltip: How keywords should be displayed in tooltips
+		}
+
+		AddMaterialIndicator: {
+			Label: Indicate Items with Added Recipes
+			Tooltip: Displays a star icon in vanilla item tooltips if used in Starlight River crafting recipes
+		}
+	}
+
+	OverlayState: {
+		Tooltip: ""
+		AlwaysOn.Label: Always On
+		WhileNotFull.Label: While Not Full
+		WhileUsing.Label: While Using
+		Never.Label: Never
+	}
+
+	KeywordStyle: {
+		Tooltip: ""
+		Colors.Label: Colors
+		Brackets.Label: Brackets
+		Both.Label: Both
+		Neither.Label: Neither
 	}
 }

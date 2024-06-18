@@ -28,7 +28,7 @@ namespace StarlightRiver.Core
 
 		public int pickupTimer = 0; //TODO: Move this into its own thing eventually
 		public int maxPickupTimer = 0;
-		public NPC pickupTarget;
+		public Dummy pickupTarget;
 		public Vector2 oldPickupPos;
 
 		public bool inTutorial;
