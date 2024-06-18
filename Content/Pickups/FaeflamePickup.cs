@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Pickups
 
 		public override Color GlowColor => new(255, 255, 130);
 
-		public FaeflamePickup() : base(TileType<FaeflamePickupTile>()) {}
+		public FaeflamePickup() : base(TileType<FaeflamePickupTile>()) { }
 
 		public override bool CanPickup(Player Player)
 		{
