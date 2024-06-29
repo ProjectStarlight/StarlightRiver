@@ -1,7 +1,10 @@
-﻿using StarlightRiver.Content.NPCs.BaseTypes;
+﻿using StarlightRiver.Content.Items.Moonstone;
+using StarlightRiver.Content.Items.Underground;
+using StarlightRiver.Content.NPCs.BaseTypes;
 using System.Linq;
 using System.Reflection;
 using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.Graphics.Light;
 using Terraria.ID;
 
@@ -75,6 +78,11 @@ namespace StarlightRiver.Content.NPCs.Underground
 
 			if (Main.rand.NextBool(5))
 				Dust.NewDustPerfect(NPC.Center + Main.rand.NextVector2Circular(7, 7), DustID.t_Slime, Vector2.UnitY, 180, new Color(95, 85, 80), Main.rand.NextFloat(0.5f, 1.0f));
+		}
+
+		public override void ModifyNPCLoot(NPCLoot npcLoot)
+		{
+			npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<GloomGel>(), 1, 1, 3));
 		}
 
 		private void Gloomify(On_LightingEngine.orig_ProcessBlur orig, LightingEngine self)

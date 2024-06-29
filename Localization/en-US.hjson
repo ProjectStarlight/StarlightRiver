@@ -3048,6 +3048,16 @@ Mods: {
 				DisplayName: Soft Sand
 				Tooltip: ""
 			}
+
+			GloomGel: {
+				DisplayName: Gloom Gel
+				Tooltip: ""
+			}
+
+			GlorchItem: {
+				DisplayName: Glorch
+				Tooltip: Does a lamp give off light... or suck up the dark?
+			}
 		}
 
 		Tiles: {
