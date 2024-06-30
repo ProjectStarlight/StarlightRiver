@@ -25,5 +25,14 @@ namespace StarlightRiver.Content.Items.Underground
 			if (player.HeldItem.DamageType == DamageClass.Melee && player.HeldItem.damage > 0)
 				player.GetDamage(DamageClass.Melee) += player.HeldItem.useTime / 60f * 0.5f;
 		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.FeralClaws, 1);
+			recipe.AddIngredient(ModContent.ItemType<GloomGel>(), 25);
+			recipe.AddTile(TileID.WorkBenches);
+			recipe.Register();
+		}
 	}
 }
