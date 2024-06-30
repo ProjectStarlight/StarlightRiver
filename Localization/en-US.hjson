@@ -3048,6 +3048,25 @@ Mods: {
 				DisplayName: Soft Sand
 				Tooltip: ""
 			}
+
+			GloomGel: {
+				DisplayName: Gloom Gel
+				Tooltip: ""
+			}
+
+			GlorchItem: {
+				DisplayName: Glorch
+				Tooltip: Does a lamp give off light... or suck up the dark?
+			}
+
+			GloomGauntlet: {
+				Tooltip:
+					'''
+					Gain melee damage based on the speed of your held weapon
+					Slower weapons grant more damage
+					'''
+				DisplayName: Gloom Gauntlet
+			}
 		}
 
 		Tiles: {
@@ -3235,10 +3254,10 @@ Mods: {
 			VitricSand.MapEntry: ""
 			VitricSoftSand.MapEntry: ""
 			VitricSandPlain.MapEntry: ""
-			// VitricGiantCrystal.MapEntry: ""
-			// VitricLargeCrystal.MapEntry: ""
-			// VitricMediumCrystal.MapEntry: ""
 			// VitricSmallCrystal.MapEntry: ""
+			// VitricMediumCrystal.MapEntry: ""
+			// VitricLargeCrystal.MapEntry: ""
+			// VitricGiantCrystal.MapEntry: ""
 		}
 
 		Projectiles: {
