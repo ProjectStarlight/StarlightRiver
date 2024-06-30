@@ -115,7 +115,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 	public class GlorchItem : QuickTileItem
 	{
-		public GlorchItem() : base("Glorch", "Does a lamp give off light... or suck up the dark?", "Glorch", ItemRarityID.Blue, "StarlightRiver/Assets/Tiles/Underground/") { }
+		public GlorchItem() : base("Glorch", "Does a lamp give off light... or suck up the dark?\nReduces light nearby", "Glorch", ItemRarityID.Blue, "StarlightRiver/Assets/Tiles/Underground/") { }
 
 		public override void AddRecipes()
 		{

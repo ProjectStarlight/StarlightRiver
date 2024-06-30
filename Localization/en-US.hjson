@@ -3058,6 +3058,15 @@ Mods: {
 				DisplayName: Glorch
 				Tooltip: Does a lamp give off light... or suck up the dark?
 			}
+
+			GloomGauntlet: {
+				DisplayName: Gloom Gauntlet
+				Tooltip:
+					'''
+					Gain melee damage based on the speed of your held weapon
+					Slower weapons grant more damage
+					'''
+			}
 		}
 
 		Tiles: {
