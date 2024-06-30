@@ -80,8 +80,6 @@ namespace StarlightRiver.Content.Tiles.Underground
 			object engine = typeof(Lighting).GetField("NewEngine", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
 			var map = typeof(LightingEngine).GetField("_workingLightMap", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(engine) as LightMap;
 
-			
-
 			foreach (Point16 point in darkPoints)
 			{
 				float limit = point.Y < Main.worldSurface ? 0.6f : 0f;
@@ -100,9 +98,9 @@ namespace StarlightRiver.Content.Tiles.Underground
 							if (thisx > 0 && thisx < map.Width && thisy > 0 && thisy < map.Height)
 							{
 								Vector3 current = map[thisx, thisy];
-	
+
 								if (current.Length() > limit)
-								map[thisx, thisy] -= current * (1f - len / 7f) * 0.5f * (current.Length() - limit);
+									map[thisx, thisy] -= current * (1f - len / 7f) * 0.5f * (current.Length() - limit);
 							}
 						}
 					}

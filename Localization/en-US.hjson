@@ -3060,12 +3060,12 @@ Mods: {
 			}
 
 			GloomGauntlet: {
-				DisplayName: Gloom Gauntlet
 				Tooltip:
 					'''
 					Gain melee damage based on the speed of your held weapon
 					Slower weapons grant more damage
 					'''
+				DisplayName: Gloom Gauntlet
 			}
 		}
 
@@ -3254,10 +3254,10 @@ Mods: {
 			VitricSand.MapEntry: ""
 			VitricSoftSand.MapEntry: ""
 			VitricSandPlain.MapEntry: ""
-			// VitricGiantCrystal.MapEntry: ""
-			// VitricLargeCrystal.MapEntry: ""
-			// VitricMediumCrystal.MapEntry: ""
 			// VitricSmallCrystal.MapEntry: ""
+			// VitricMediumCrystal.MapEntry: ""
+			// VitricLargeCrystal.MapEntry: ""
+			// VitricGiantCrystal.MapEntry: ""
 		}
 
 		Projectiles: {
