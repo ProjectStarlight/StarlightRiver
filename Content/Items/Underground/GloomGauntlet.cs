@@ -24,8 +24,6 @@ namespace StarlightRiver.Content.Items.Underground
 		{
 			if (player.HeldItem.DamageType == DamageClass.Melee && player.HeldItem.damage > 0)
 				player.GetDamage(DamageClass.Melee) += player.HeldItem.useTime / 60f * 0.5f;
-
-			Main.NewText(player.GetDamage(DamageClass.Melee).Additive);
 		}
 	}
 }
