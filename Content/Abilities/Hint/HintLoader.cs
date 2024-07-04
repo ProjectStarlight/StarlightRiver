@@ -131,5 +131,6 @@ namespace StarlightRiver.Content.Abilities.Hint
 		public Dictionary<string, string> Npc { get; set; }
 		public Dictionary<string, string> Projectile { get; set; }
 		public Dictionary<string, string> Tile { get; set; }
+		public Dictionary<string, string> AirHints { get; set; }
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.Hint;
 using StarlightRiver.Content.Foregrounds;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Vitric;
@@ -358,9 +359,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			BossRushDataStore.DefeatBoss(BossrushUnlockFlag.Ceiros);
 			StarlightWorld.Flag(WorldFlags.VitricBossDowned);
 
-			foreach (Player Player in Main.player.Where(n => n.active && arena.Contains(n.Center.ToPoint())))
+			foreach (Player player in Main.player.Where(n => n.active && arena.Contains(n.Center.ToPoint())))
 			{
-				Player.GetModPlayer<MedalPlayer>().ProbeMedal("Ceiros");
+				player.GetModPlayer<MedalPlayer>().ProbeMedal("Ceiros");
+				player.GetModPlayer<HintPlayer>().SetHintState("PostCeiros");
 			}
 
 			body.SpawnGores2();

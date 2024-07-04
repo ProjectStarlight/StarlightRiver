@@ -105,10 +105,14 @@ namespace StarlightRiver.Content.Abilities.Hint
 			Tile tile = Framing.GetTileSafely((int)pos.X / 16, (int)pos.Y / 16);
 			hintToDisplay ??= HintLoader.GetTileEntry(tile);
 
-			// Fallback
-
-			if (String.IsNullOrEmpty(hintToDisplay))
-				hintToDisplay = "UNKNOWN";
+			// Fallback to air hint
+			if (string.IsNullOrEmpty(hintToDisplay))
+			{
+				if (HintLoader.hints.AirHints.ContainsKey(Player.GetModPlayer<HintPlayer>().AirHintState))
+					hintToDisplay = HintLoader.hints.AirHints[Player.GetModPlayer<HintPlayer>().AirHintState];
+				else
+					hintToDisplay = HintLoader.hints.AirHints["Default"];
+			}
 		}
 
 		private string ProcessName(string input)

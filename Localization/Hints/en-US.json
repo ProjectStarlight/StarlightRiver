@@ -88,5 +88,14 @@
     "StarlightRiver/VitricOre": "Glass crystal made of weapons and tool grade crystal. Can be broken down to usable size with a starlight-infused dash.",
     "StarlightRiver/VitricOreFloat": "Glass crystal made of weapons and tool grade crystal. Can be broken down to usable size with a starlight-infused dash.",
     "StarlightRiver/VitricSpike": "Glass crystal in a dangerous formation. Contact will result in pain."
+  },
+
+  "AirHints": {
+    "Default": "You have encountered a bug. Please report it to the developers.",
+    "PreGlassweaver": "Previous direction indicates you should search below subterranian desert areas.",
+    "PreWinds": "The temple within the vitric desert contains important starlight energies in it's deepest compartment.",
+    "PreCeiros": "An offering of high-grade glass crystal will draw out a guardian on top of the vitric temple. Previous direction indicates you need to destroy this.",
+    "PostCeiros": "Directions complete. You should report back to the ancient glassweaver.",
+    "PostGlassweaverMove": "The way forward is unclear."
   }
 }

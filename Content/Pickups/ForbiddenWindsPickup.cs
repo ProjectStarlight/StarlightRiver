@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
+using StarlightRiver.Content.Abilities.Hint;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems;
@@ -138,6 +139,8 @@ namespace StarlightRiver.Content.Pickups
 		public override void PickupEffects(Player player)
 		{
 			player.GetHandler().Unlock<Dash>();
+
+			player.GetModPlayer<HintPlayer>().SetHintState("PreCeiros");
 
 			player.GetModPlayer<StarlightPlayer>().maxPickupTimer = 650;
 			player.GetModPlayer<StarlightPlayer>().inTutorial = true;
