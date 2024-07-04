@@ -27,6 +27,9 @@
 - Hotsprings now cure many debuffs
 - Exotic timepiece now has a unique gear sprite
 - Bricklayers trowel now places blocks in the reverse direction on right click instead of holding shift
+- Many starsight hints have been rewritten to be more consistent and helpful
+- Starsight now gives a general hint at progression when not aimed at anything, instead of saying nothing is there
+- Some starsight entries for common vanilla objects have been added to make it feel more present, especially early on
 
 ## Configuration
 - Added an option to turn on a numeric indicator for some set bonuses
@@ -76,3 +79,4 @@
 *These changes are likely of very little interest to players and are more for other developers*
 - Made a major overhaul to the inner workings of the doalgue system. It is now primarily data driven, and dialogue trees are stored in the localization directory.
 - Texture management now utilizes the AssGen package, see https://www.nuget.org/packages/AssGen for details.
+- Starsight hints are now data driven and localizable
