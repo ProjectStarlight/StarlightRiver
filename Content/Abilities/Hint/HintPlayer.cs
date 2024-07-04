@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 {
 	internal class HintPlayer : ModPlayer
 	{
-		public static readonly Dictionary<string, float> sequences = new Dictionary<string, float>()
+		public static readonly Dictionary<string, float> sequences = new()
 		{
 			{ "Default", -1},
 			{ "PreGlassweaver", 0},
@@ -31,8 +31,8 @@ namespace StarlightRiver.Content.Abilities.Hint
 		/// <param name="state">The state key to try to assaign</param>
 		public void SetHintState(string state)
 		{
-			var proposed = sequences[state];
-			var current = sequences[AirHintState];
+			float proposed = sequences[state];
+			float current = sequences[AirHintState];
 
 			if (proposed >= current)
 				AirHintState = state;
@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 			tag["AirHintState"] = AirHintState;
 		}
 
-		public override void LoadData(TagCompound tag) 
+		public override void LoadData(TagCompound tag)
 		{
 			AirHintState = tag.GetString("AirHintState");
 		}
