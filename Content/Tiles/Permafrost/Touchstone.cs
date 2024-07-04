@@ -17,7 +17,7 @@ using static Terraria.GameContent.Animations.Actions.NPCs;
 
 namespace StarlightRiver.Content.Tiles.Permafrost
 {
-	class Touchstone : ModTile, ICustomHintable
+	class Touchstone : ModTile
 	{
 		public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/Touchstone";
 
@@ -159,11 +159,6 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			Player.cursorItemIconID = ModContent.ItemType<Items.Hovers.GenericHover>();
 			Player.noThrow = 2;
 			Player.cursorItemIconEnabled = true;
-		}
-
-		public string GetCustomKey()
-		{
-			return "Full of Starlight, seemingly with a mind of its own...";
 		}
 	}
 

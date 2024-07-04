@@ -6,7 +6,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
-	internal class TentacleHurtbox : ModNPC, ICustomHintable
+	internal class TentacleHurtbox : ModNPC
 	{
 		public static Tentacle tentacleToAssign;
 
@@ -91,11 +91,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
 			tentacle = Main.npc[reader.ReadInt32()].ModNPC as Tentacle;
-		}
-
-		public string GetCustomKey()
-		{
-			return "Its protecting the main body!";
 		}
 	}
 }

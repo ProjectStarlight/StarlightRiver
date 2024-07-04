@@ -8,7 +8,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Overgrow
 {
-	internal class Crusher : ModNPC, ICustomHintable
+	internal class Crusher : ModNPC
 	{
 		public Tile Parent;
 
@@ -111,10 +111,6 @@ namespace StarlightRiver.Content.NPCs.Overgrow
 			int count = NPC.ai[0] < 10 ? (int)NPC.ai[0] / 3 : NPC.ai[0] > 40 ? (60 - (int)NPC.ai[0]) / 4 : 3;
 			for (int k = 1; k <= count; k++)
 				spriteBatch.Draw(tex2, NPC.position - screenPos + new Vector2(8, -48 - k * 28), drawColor);
-		}
-		public string GetCustomKey()
-		{
-			return "Watch your step.";
 		}
 	}
 }

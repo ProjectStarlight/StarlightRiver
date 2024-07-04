@@ -20,7 +20,7 @@ using static Terraria.ModLoader.ModContent;
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
 	[AutoloadBossHead]
-	public sealed partial class VitricBoss : ModNPC, ICustomHintable
+	public sealed partial class VitricBoss : ModNPC
 	{
 		public Vector2 startPos;
 		public Vector2 endPos;
@@ -857,12 +857,5 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				arena = new Rectangle((int)homePos.X + 8 - arenaWidth / 2, (int)homePos.Y - 32 - arenaHeight / 2, arenaWidth, arenaHeight);
 		}
 		#endregion Networking
-
-		#region Hint
-		public string GetCustomKey()
-		{
-			return "Glassweaver mentioned a 'Sentinel'... Focus!";
-		}
-		#endregion Hint
 	}
 }

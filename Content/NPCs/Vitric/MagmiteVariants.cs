@@ -10,7 +10,7 @@ using static Terraria.ModLoader.ModContent;
 namespace StarlightRiver.Content.NPCs.Vitric
 {
 
-	internal class MagmiteSmol : MagmitePassive, ICustomHintable
+	internal class MagmiteSmol : MagmitePassive
 	{
 		protected override int Offset => 4;
 		protected override float Size => 0.8f;
@@ -91,14 +91,9 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			spriteBatch.Draw(Request<Texture2D>(Texture).Value, pos, NPC.frame, Color.White * (1 - NPC.shimmerTransparency), 0, new Vector2(originX, 10), 1, NPC.spriteDirection == -1 ? 0 : SpriteEffects.FlipHorizontally, 0);
 			return false;
 		}
-
-		new public string GetCustomKey()
-		{
-			return "Smol!";
-		}
 	}
 
-	internal class MagmiteLarge : MagmitePassive, ICustomHintable
+	internal class MagmiteLarge : MagmitePassive
 	{
 		protected override int Offset => 10;
 		protected override float Size => 1.25f;
@@ -197,11 +192,6 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			}
 
 			base.OnKill();
-		}
-
-		new public string GetCustomKey()
-		{
-			return "Magnificent!";
 		}
 	}
 

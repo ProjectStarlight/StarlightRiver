@@ -9,7 +9,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric
 {
-	internal class MagmitePassive : ModNPC, ICustomHintable
+	internal class MagmitePassive : ModNPC
 	{
 		public int maxLifeTime = 450; // how many ticks before the magmite starts searching for lava to kill itself :))
 
@@ -289,12 +289,6 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			}
 
 			return lavaPos;
-		}
-
-		public string GetCustomKey()
-		{
-			return "Cute!";
-
 		}
 	}
 

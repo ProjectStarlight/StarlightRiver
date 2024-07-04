@@ -11,7 +11,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Forest
 {
-	class Warbanner : ModNPC, IDrawAdditive, ICustomHintable
+	class Warbanner : ModNPC, IDrawAdditive
 	{
 		public enum BehaviorStates
 		{
@@ -341,11 +341,6 @@ namespace StarlightRiver.Content.NPCs.Forest
 					Gore.NewGore(NPC.GetSource_Death(), NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), Vector2.Zero, goreType);
 				}
 			}
-		}
-
-		public string GetCustomKey()
-		{
-			return "It somehow bolsters nearby foes...";
 		}
 	}
 

@@ -9,7 +9,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
-	internal class NPCSpawner : DummyTile, ICustomHintable
+	internal class NPCSpawner : DummyTile
 	{
 		public override string Texture => AssetDirectory.VitricTile + Name;
 
@@ -18,11 +18,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		public override void SetStaticDefaults()
 		{
 			this.QuickSetFurniture(2, 3, 0, SoundID.Tink, new Color(255, 255, 255));
-		}
-
-		public string GetCustomKey()
-		{
-			return "Dangerous.";
 		}
 	}
 
