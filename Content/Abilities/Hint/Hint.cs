@@ -103,7 +103,9 @@ namespace StarlightRiver.Content.Abilities.Hint
 
 			// Check tiles
 			Tile tile = Framing.GetTileSafely((int)pos.X / 16, (int)pos.Y / 16);
-			hintToDisplay ??= HintLoader.GetTileEntry(tile);
+
+			if (tile.HasTile)
+				hintToDisplay ??= HintLoader.GetTileEntry(tile);
 
 			// Fallback to air hint
 			if (string.IsNullOrEmpty(hintToDisplay))

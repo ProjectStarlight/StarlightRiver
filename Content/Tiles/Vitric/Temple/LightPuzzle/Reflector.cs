@@ -12,7 +12,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 {
-	class Reflector : DummyTile, ICustomHintable
+	class Reflector : DummyTile
 	{
 		public override int DummyType => DummySystem.DummyType<ReflectorDummy>();
 
@@ -47,10 +47,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 			}
 
 			return true;
-		}
-		public string GetCustomKey()
-		{
-			return "Sandstone blocks the lens, but these relics should be a good way to redirect the light...";
 		}
 	}
 

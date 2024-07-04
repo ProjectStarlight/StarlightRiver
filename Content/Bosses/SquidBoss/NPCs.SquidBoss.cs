@@ -19,7 +19,7 @@ using static Terraria.ModLoader.ModContent;
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
 	[AutoloadBossHead]
-	public partial class SquidBoss : ModNPC, IUnderwater, ICustomHintable
+	public partial class SquidBoss : ModNPC, IUnderwater
 	{
 		public enum AIStates
 		{
@@ -972,11 +972,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			spawnPoint = reader.ReadVector2();
 			savedPoint = reader.ReadVector2();
 			platformOrder = reader.ReadByte();
-		}
-
-		public string GetCustomKey()
-		{
-			return "Vulnerable only when its shielding tentacles are destroyed...";
 		}
 	}
 }
