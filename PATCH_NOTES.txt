@@ -14,6 +14,9 @@
 - New Item: Infernal Catalyst, drops from demons, allows for a new crafting method
 - New Weapon: Infernal Harvest, swing a ginormous magical scythe to leech mana, then throw it to unleash a burning trail
 - New Accessory: Fury in a Bottle, a double jump which recharges as you deal damage
+- Added gloom gel, dropped from gloom slimes
+- Added gloom gauntlet, crafted with feral claws and gloom gel
+- Added glorches, crafted with wood and gloom gel
 - 3 Starlight vessel shards have been hidden around the world, allowing you to increase your maximum starlight when collected
 
 ## Tweaks
@@ -56,6 +59,7 @@
 - Warrior kings crown scaling changed (200% increased damage base => 40% increased damage base, 20% damage per slot => 30% damage per slot)
 - Jetwelder no longer generates scrap from statue-spawned enemies or target dummies
 - Decreased the spawn rate of gloom slimes and soul nibblers
+- Gloom slimes now darken the area around themselves instead of inflicting blindess
 
 ## Optimization
 - Made improvements to dummy tile collision checks
