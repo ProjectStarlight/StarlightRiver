@@ -71,8 +71,8 @@ namespace StarlightRiver.Content.Abilities.Hint
 		public override void OnActivate()
 		{
 			effectTimer = 20;
-			bool defaultHint = true;
-			hintToDisplay = "Nothing interesting here...";
+
+			hintToDisplay = null;
 
 			Vector2 pos = Main.MouseWorld;
 
@@ -86,27 +86,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 				if (box.Contains(pos.ToPoint()))
 				{
 					NPC npc = Main.npc[k];
-
-					// if there is a custom hint, use that and return
-					if (npc.ModNPC is IHintable hintable)
-					{
-						hintToDisplay = hintable.GetHint();
-						return;
-					}
-					else // else use a default hint
-					{
-						if (npc.FullName == "")
-							return;
-
-						if (npc.friendly)
-							hintToDisplay = $"It's my good friend, {npc.FullName}!";
-						else if (npc.boss)
-							hintToDisplay = $"Thats {npc.FullName}! Focus!";
-						else
-							hintToDisplay = $"It's just a {npc.FullName}.";
-					}
-
-					defaultHint = false;
+					hintToDisplay ??= HintLoader.GetNPCEntry(npc);
 				}
 			}
 
@@ -119,48 +99,24 @@ namespace StarlightRiver.Content.Abilities.Hint
 				if (box.Contains(pos.ToPoint()))
 				{
 					Projectile proj = Main.projectile[k];
-
-					// We only check for custom hints here
-					if (proj.ModProjectile is IHintable hintable)
-					{
-						hintToDisplay = hintable.GetHint();
-						defaultHint = false;
-						return;
-					}
+					hintToDisplay ??= HintLoader.GetProjectileEntry(proj);
 				}
 			}
 
 			// Check tiles
 			Tile tile = Framing.GetTileSafely((int)pos.X / 16, (int)pos.Y / 16);
-			ModTile modTile = ModContent.GetModTile(tile.TileType);
 
-			// If there is a custom hint use that
-			if (modTile is IHintable hintableT)
+			if (tile.HasTile)
+				hintToDisplay ??= HintLoader.GetTileEntry(tile);
+
+			// Fallback to air hint
+			if (string.IsNullOrEmpty(hintToDisplay))
 			{
-				hintToDisplay = hintableT.GetHint();
-				defaultHint = false;
-				return;
+				if (HintLoader.hints.AirHints.ContainsKey(Player.GetModPlayer<HintPlayer>().AirHintState))
+					hintToDisplay = HintLoader.hints.AirHints[Player.GetModPlayer<HintPlayer>().AirHintState];
+				else
+					hintToDisplay = HintLoader.hints.AirHints["Default"];
 			}
-
-			// Else use a default hint for solid tiles
-			if (tile.HasTile && Main.tileSolid[tile.TileType])
-			{
-				hintToDisplay = $"It's just some {ProcessName(TileID.Search.GetName(tile.TileType))}...";
-				defaultHint = false;
-			}
-
-			shouldDisplay = OnHint(pos, defaultHint);
-		}
-
-		/// <summary>
-		/// Actions that should be taken when a hint is taken. Returns if the hint should be shown or not
-		/// </summary>
-		/// <param name="pos"></param>
-		/// <param name="defaultHint"></param>
-		/// <returns></returns>
-		public virtual bool OnHint(Vector2 pos, bool defaultHint)
-		{
-			return true;
 		}
 
 		private string ProcessName(string input)

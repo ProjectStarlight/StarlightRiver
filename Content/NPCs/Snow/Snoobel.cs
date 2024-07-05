@@ -11,7 +11,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Snow
 {
-	internal class Snoobel : ModNPC, IHintable
+	internal class Snoobel : ModNPC
 	{
 		private enum AiStates
 		{
@@ -464,10 +464,6 @@ namespace StarlightRiver.Content.NPCs.Snow
 			trunkChain.forceGravity = new Vector2(0, 0.1f);
 			trunkChain.useEndPoint = false;
 			currentPhase = (int)AiStates.Walking;
-		}
-		public string GetHint()
-		{
-			return "Extremely ugly. so Fucking ugly.";
 		}
 	}
 

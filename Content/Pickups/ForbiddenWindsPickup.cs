@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
+using StarlightRiver.Content.Abilities.Hint;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Tiles.Overgrow;
 using StarlightRiver.Core.Loaders.UILoading;
@@ -15,7 +16,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Pickups
 {
-	internal class ForbiddenWindsPickup : AbilityPickup, IDrawPrimitive, IHintable
+	internal class ForbiddenWindsPickup : AbilityPickup, IDrawPrimitive
 	{
 		private List<Vector2> cache1;
 		private List<Vector2> cache2;
@@ -137,6 +138,8 @@ namespace StarlightRiver.Content.Pickups
 		public override void PickupEffects(Player player)
 		{
 			player.GetHandler().Unlock<Dash>();
+
+			player.GetModPlayer<HintPlayer>().SetHintState("PreCeiros");
 
 			player.GetModPlayer<StarlightPlayer>().maxPickupTimer = 650;
 			player.GetModPlayer<StarlightPlayer>().inTutorial = true;
