@@ -10,37 +10,44 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 	class DynamicGear : GearTile
 	{
 		public override int DummyType => DummySystem.DummyType<DynamicGearDummy>();
+	}
 
-		public override void MouseOver(int i, int j)
+	class DynamicGearDummy : GearTileDummy, IHintable
+	{
+		public DynamicGearDummy() : base(ModContent.TileType<DynamicGear>()) { }
+
+		public override Rectangle? GetClickbox()
+		{
+			var box = Hitbox;
+			var mag = 16 + GearSize * 8;
+			box.Inflate(mag, mag);
+			return box;
+		}
+
+		public override void RightClick(int i, int j)
+		{
+			var dummy = this;
+			var entity = TileEntity.ByPosition[new Point16((int)dummy.Center.X / 16, (int)dummy.Center.Y / 16)] as GearTileEntity;
+
+			if (entity is null)
+				return;
+
+			if (dummy is null || dummy.gearAnimation > 0)
+				return;
+
+			GearPuzzleClickPacket gearPacket = new GearPuzzleClickPacket((int)dummy.Center.X / 16, (int)dummy.Center.Y / 16, type);
+			gearPacket.Send();
+
+			return;
+		}
+
+		public override void RightClickHover(int i, int j)
 		{
 			Player Player = Main.LocalPlayer;
 			Player.cursorItemIconID = ModContent.ItemType<GearTilePlacer>();
 			Player.noThrow = 2;
 			Player.cursorItemIconEnabled = true;
 		}
-
-		public override bool RightClick(int i, int j)
-		{
-			var dummy = Dummy(i, j) as GearTileDummy;
-
-			var entity = TileEntity.ByPosition[new Point16(i, j)] as GearTileEntity;
-
-			if (entity is null)
-				return false;
-
-			if (dummy is null || dummy.gearAnimation > 0)
-				return false;
-
-			GearPuzzleClickPacket gearPacket = new GearPuzzleClickPacket(i, j, DummyType);
-			gearPacket.Send();
-
-			return true;
-		}
-	}
-
-	class DynamicGearDummy : GearTileDummy, IHintable
-	{
-		public DynamicGearDummy() : base(ModContent.TileType<DynamicGear>()) { }
 
 		public override void Update()
 		{

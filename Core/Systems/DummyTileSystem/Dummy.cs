@@ -45,6 +45,7 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 		public void Load(Mod mod)
 		{
 			OnLoad(mod);
+			On_Player.TileInteractionsCheck += RightClickDummies;
 		}
 
 		public void PostLoad()
@@ -137,6 +138,31 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 			return MemberwiseClone() as Dummy;
 		}
 
+		/// <summary>
+		/// Allows for interactions when this dummy is right clicked. See GetClickbox to set up a right click hitbox.
+		/// </summary>
+		public virtual void RightClick(int i, int j)
+		{
+
+		}
+
+		/// <summary>
+		/// Allows for behavior when the cursor is hovered over the clickbox of this dummy. See GetClickbox to set up a right click hitbox.
+		/// </summary>
+		public virtual void RightClickHover(int i, int j)
+		{
+
+		}
+
+		/// <summary>
+		/// Gets the right clicking hitbox for this dummy
+		/// </summary>
+		/// <returns>The rectangle representing the hitbox, or null indicating that this should not be considered. Returns null by default.</returns>
+		public virtual Rectangle? GetClickbox()
+		{
+			return null;
+		}
+
 		public void SendExtraAI(BinaryWriter writer)
 		{
 			// These three get ready earlier on to identify the dummy
@@ -170,7 +196,7 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 			//multiplayer clients aren't allowed to kill dummies since they can have unloaded tiles
 			if (!ValidTile(Parent) && active && Main.netMode != NetmodeID.MultiplayerClient)
 			{
-				DeleteDummyPacket deletePacket = new DeleteDummyPacket(position.X, position.Y, type);
+				var deletePacket = new DeleteDummyPacket(position.X, position.Y, type);
 				deletePacket.Send(runLocally: true);
 				return;
 			}
@@ -196,7 +222,7 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 			{
 				netUpdate = false;
 				var stream = new MemoryStream();
-				BinaryWriter writer = new BinaryWriter(stream);
+				var writer = new BinaryWriter(stream);
 				SendExtraAI(writer);
 				new DummyPacket(stream.ToArray()).Send(-1, -1, false);
 
@@ -208,6 +234,28 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 		{
 			Collision(target);
 			return false;
+		}
+
+		private void RightClickDummies(On_Player.orig_TileInteractionsCheck orig, Player self, int myX, int myY)
+		{
+			foreach (Dummy dummy in DummySystem.dummies)
+			{
+				Rectangle? box = dummy.GetClickbox();
+				if (box != null && box.Value.Contains(new Point(myX * 16, myY * 16)))
+				{
+					dummy.RightClickHover(myX, myY);
+
+					if (self.tileInteractAttempted && !self.tileInteractionHappened)
+					{
+						dummy.RightClick(myX, myY);
+						self.tileInteractionHappened = true;
+					}
+
+					return;
+				}
+			}
+
+			orig(self, myX, myY);
 		}
 	}
 
