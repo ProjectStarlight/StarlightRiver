@@ -18,15 +18,15 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 		public override Rectangle? GetClickbox()
 		{
-			var box = Hitbox;
-			var mag = 16 + GearSize * 8;
+			Rectangle box = Hitbox;
+			int mag = 16 + GearSize * 8;
 			box.Inflate(mag, mag);
 			return box;
 		}
 
 		public override void RightClick(int i, int j)
 		{
-			var dummy = this;
+			DynamicGearDummy dummy = this;
 			var entity = TileEntity.ByPosition[new Point16((int)dummy.Center.X / 16, (int)dummy.Center.Y / 16)] as GearTileEntity;
 
 			if (entity is null)

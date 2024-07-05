@@ -27,6 +27,7 @@
 - Hotsprings now cure many debuffs
 - Exotic timepiece now has a unique gear sprite
 - Bricklayers trowel now places blocks in the reverse direction on right click instead of holding shift
+- Made the right click hitboxes for the vitric temple puzzles match the sprites better
 
 ## Configuration
 - Added an option to turn on a numeric indicator for some set bonuses

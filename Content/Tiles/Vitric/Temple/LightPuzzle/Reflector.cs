@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 
 		public override Rectangle? GetClickbox()
 		{
-			var box = Hitbox;
+			Rectangle box = Hitbox;
 			box.Inflate(16, 16);
 			return box;
 		}
