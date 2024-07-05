@@ -30,9 +30,13 @@
 - Hotsprings now cure many debuffs
 - Exotic timepiece now has a unique gear sprite
 - Bricklayers trowel now places blocks in the reverse direction on right click instead of holding shift
+<<<<<<< HEAD
 - Many starsight hints have been rewritten to be more consistent and helpful
 - Starsight now gives a general hint at progression when not aimed at anything, instead of saying nothing is there
 - Some starsight entries for common vanilla objects have been added to make it feel more present, especially early on
+=======
+- Made the right click hitboxes for the vitric temple puzzles match the sprites better
+>>>>>>> clickbox
 
 ## Configuration
 - Added an option to turn on a numeric indicator for some set bonuses

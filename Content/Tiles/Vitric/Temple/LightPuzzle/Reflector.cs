@@ -27,27 +27,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 		{
 			return true;
 		}
-
-		public override void MouseOver(int i, int j)
-		{
-			Player Player = Main.LocalPlayer;
-			Player.cursorItemIconID = ModContent.ItemType<GearTilePlacer>();
-			Player.noThrow = 2;
-			Player.cursorItemIconEnabled = true;
-		}
-
-		public override bool RightClick(int i, int j)
-		{
-			var dummy = Dummy(i, j) as ReflectorDummy;
-
-			if (dummy != null)
-			{
-				dummy.DeactivateDownstream();
-				dummy.rotating = true;
-			}
-
-			return true;
-		}
 	}
 
 	class ReflectorDummy : Dummy, IDrawAdditive
@@ -66,6 +45,27 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 		public override void SafeSetDefaults()
 		{
 			frame = Main.rand.Next(5);
+		}
+
+		public override Rectangle? GetClickbox()
+		{
+			Rectangle box = Hitbox;
+			box.Inflate(16, 16);
+			return box;
+		}
+
+		public override void RightClick(int i, int j)
+		{
+			DeactivateDownstream();
+			rotating = true;
+		}
+
+		public override void RightClickHover(int i, int j)
+		{
+			Player Player = Main.LocalPlayer;
+			Player.cursorItemIconID = ModContent.ItemType<GearTilePlacer>();
+			Player.noThrow = 2;
+			Player.cursorItemIconEnabled = true;
 		}
 
 		public override void Update()
