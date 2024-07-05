@@ -42,6 +42,8 @@ namespace StarlightRiver.Content.Items
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
+			player.GetHandler().StaminaMaxBonus = 1000;
+
 			int x = StarlightWorld.vitricBiome.X - 37;
 
 			Dust.NewDustPerfect(new Vector2((x + 80) * 16, (StarlightWorld.vitricBiome.Center.Y + 20) * 16), DustID.Firefly);

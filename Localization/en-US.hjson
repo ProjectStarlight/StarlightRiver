@@ -3048,6 +3048,26 @@ Mods: {
 				DisplayName: Soft Sand
 				Tooltip: ""
 			}
+
+			GatheringWindsItem: {
+				DisplayName: Gathering Winds
+				Tooltip:
+					'''
+					Forbidden Winds Infusion
+					Hold the dash key to hover and charge up a dash
+					Drain 1 starlight/s while charging
+					'''
+			}
+
+			WellspringItem: {
+				DisplayName: Wellspring
+				Tooltip:
+					'''
+					Starsight Infusion
+					Creates a restorative wellspring when using starsight on the air
+					Spend 1 starlight to do this
+					'''
+			}
 		}
 
 		Tiles: {

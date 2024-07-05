@@ -150,7 +150,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
 		public void UpdatePlayerFrame(Player Player)
 		{
-			if (Player.GetHandler().ActiveAbility is Dash)
+			if (Player.GetHandler().ActiveAbility is Dash && !Player.GetHandler().ActiveAbility.GetType().IsSubclassOf(typeof(Dash)))
 			{
 				var dash = Player.GetHandler().ActiveAbility as Dash;
 
