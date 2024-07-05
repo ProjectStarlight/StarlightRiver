@@ -408,7 +408,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		private void ManageTrails()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 120, new NoTip(), factor => 174 * WindStrength + 0.9f * freezeTimer, factor => Lighting.GetColor(Projectile.Center.ToTileCoordinates()));
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 120, new NoTip(), factor => 174 * WindStrength + 0.9f * freezeTimer, factor => Lighting.GetColor(Projectile.Center.ToTileCoordinates()));
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center;
 		}

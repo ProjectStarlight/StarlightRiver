@@ -426,13 +426,16 @@ namespace StarlightRiver.Content.Items.Haunted
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => 12.5f, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X >= 0.85f)
-					return Color.Transparent;
+				trail = new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => 12.5f, factor =>
+							{
+								if (factor.X >= 0.85f)
+									return Color.Transparent;
 
-				return new Color(100, 200, 10) * 0.3f * factor.X;
-			});
+								return new Color(100, 200, 10) * 0.3f * factor.X;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = cache[9];
