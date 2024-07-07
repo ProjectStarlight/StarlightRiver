@@ -17,7 +17,6 @@
 - Added gloom gel, dropped from gloom slimes
 - Added gloom gauntlet, crafted with feral claws and gloom gel
 - Added glorches, crafted with wood and gloom gel
-- 3 Starlight vessel shards have been hidden around the world, allowing you to increase your maximum starlight when collected
 
 ## Tweaks
 - Updated the visuals of the starlight river background effect
