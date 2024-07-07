@@ -143,7 +143,6 @@ namespace StarlightRiver.Core
 			primitives = new Primitives(device, maxPointCount * 2 + this.tip.ExtraVertices, 6 * (maxPointCount - 1) + this.tip.ExtraIndices);
 
 			ModContent.GetInstance<TrailManager>().managed.Add(this);
-			Main.NewText($"Created trail {GetHashCode()}");
 		}
 
 		private void GenerateMesh(out VertexPositionColorTexture[] vertices, out short[] indices, out int nextAvailableIndex)
@@ -476,10 +475,7 @@ namespace StarlightRiver.Core
 				trail.stayAlive--;
 
 				if (trail.stayAlive <= 0)
-				{
 					trail.Dispose();
-					Main.NewText($"Disposed trail {trail.GetHashCode()}");
-				}
 			}
 
 			managed.RemoveAll(n => n.IsDisposed);

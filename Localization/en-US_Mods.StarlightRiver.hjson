@@ -3929,6 +3929,14 @@ Projectiles: {
 	TableSaltProjectile.DisplayName: Table Salt
 	Dart.DisplayName: Cursed Dart
 	SawbladeSmall.DisplayName: Cursed Sawblade
+	GatheringWindsWhirl.DisplayName: Gathering Winds Whirl
+	WellspringProjectile.DisplayName: Wellspring Projectile
+	BurnTrail.DisplayName: Burn Trail
+	GlowingObsidianSlash.DisplayName: Glowing Obsidian Slash
+	GlowingObsidianSpike.DisplayName: Glowing Obsidian Spike
+	InfernalHarvestFree.DisplayName: Infernal Harvest Free
+	InfernalHarvestPaid.DisplayName: Infernal Harvest Paid
+	FirePillar.DisplayName: Fire Pillar
 }
 
 Tiles: {
@@ -4274,6 +4282,7 @@ NPCs: {
 	Snake.DisplayName: Sandviper
 	BerrySlime.DisplayName: Slimeberry
 	TouchstoneWisp.DisplayName: Aurora Spirit
+	HellLavaActor.DisplayName: Hell Lava Actor
 }
 
 Buffs: {
@@ -4316,6 +4325,8 @@ Buffs: {
 	}
 
 	Full: {
+		DisplayName: Full
+		Description: Mods.StarlightRiver.Buffs.Full.Description
 	}
 
 	HotspringHeal: {
@@ -4743,6 +4754,16 @@ Configs: {
 		AddMaterialIndicator: {
 			Label: Indicate Items with Added Recipes
 			Tooltip: Displays a star icon in vanilla item tooltips if used in Starlight River crafting recipes
+		}
+
+		ObviousArmorCharge: {
+			Label: Numeric Set Bonus Indicators
+			Tooltip: Adds a numeric display to various armor set bonuses over the player
+		}
+
+		AbilityIconPosition: {
+			Label: Ability icon positon
+			Tooltip: Where the ability icons should be shown while the inventory is open
 		}
 	}
 
