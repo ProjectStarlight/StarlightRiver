@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 	{
 		public static int effectTimer;
 		public static string hintToDisplay;
-		public static bool shouldDisplay;
+		public static bool defaultHint;
 
 		public override string Name => "Starsight";
 		public override string Tooltip => "Pull a strand of meaning from the memory of the world, allowing you to reveal secrets, hidden knowledge, and messages left by ancient scholars. NEWBLOCK " +
@@ -73,6 +73,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 			effectTimer = 20;
 
 			hintToDisplay = null;
+			defaultHint = false;
 
 			Vector2 pos = Main.MouseWorld;
 
@@ -116,19 +117,25 @@ namespace StarlightRiver.Content.Abilities.Hint
 					hintToDisplay = HintLoader.hints.AirHints[Player.GetModPlayer<HintPlayer>().AirHintState];
 				else
 					hintToDisplay = HintLoader.hints.AirHints["Default"];
+
+				defaultHint = true;
 			}
 		}
 
-		private string ProcessName(string input)
+		/// <summary>
+		/// Actions that should be taken when a hint is taken. Returns if the hint should be shown or not
+		/// </summary>
+		/// <param name="pos"></param>
+		/// <param name="defaultHint"></param>
+		/// <returns></returns>
+		public virtual bool OnHint(Vector2 pos, bool defaultHint)
 		{
-			input = Regex.Replace(input, "(.*)/(.*)", "$2");
-			input = Regex.Replace(input, "([a-z])([A-Z])", "$1 $2");
-			return input;
+			return true;
 		}
 
 		public override void UpdateActive()
 		{
-			if (shouldDisplay)
+			if (OnHint(Main.MouseWorld, defaultHint))
 			{
 				int i = Projectile.NewProjectile(Player.GetSource_FromThis(), Main.MouseWorld + Vector2.UnitY * -32, Vector2.Zero, ModContent.ProjectileType<HintText>(), 0, 0, Main.myPlayer);
 				var proj = Main.projectile[i].ModProjectile as HintText;
