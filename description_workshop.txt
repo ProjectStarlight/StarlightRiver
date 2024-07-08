@@ -12,7 +12,6 @@ You can treat this as, by all intents and purposes, a playable release build. Ju
 
 [h3]Warning:[/h3]
 Like all content mods, Starlight River is best experienced as the main focus of a modpack. Do not report balance inconsistencies or progression skips when played with other large mods.
-Starlight River does not support multiplayer. It is technically playable, but extremely buggy.
 This is an open alpha release. Everything here is subject to change. 
 [url=https://github.com/ProjectStarlight/StarlightRiver/issues]Report issues, bugs, etc here[/url]
 [url=https://discord.gg/starlightriver]Join our Discord server for help and spoilers here[/url]
