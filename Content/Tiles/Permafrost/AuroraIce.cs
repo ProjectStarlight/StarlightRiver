@@ -8,7 +8,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Permafrost
 {
-	class AuroraIce : ModTile, IHintable
+	class AuroraIce : ModTile
 	{
 		public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/AuroraIce";
 
@@ -165,11 +165,6 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 		bool CheckIce(int x, int y)
 		{
 			return Framing.GetTileSafely(x, y).TileType == TileID.IceBlock;
-		}
-
-		public string GetHint()
-		{
-			return "It fades away when you look at it...";
 		}
 	}
 }

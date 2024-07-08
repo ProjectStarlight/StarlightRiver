@@ -623,7 +623,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 16, new NoTip(), factor => 50f * Charge, factor => new Color(78, 87, 191) * Charge * 0.7f * factor.X);
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 16, new NoTip(), factor => 50f * Charge, factor => new Color(78, 87, 191) * Charge * 0.7f * factor.X);
 
 			trail.Positions = cache.ToArray();
 

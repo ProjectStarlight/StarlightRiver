@@ -74,13 +74,16 @@ namespace StarlightRiver.Content.Abilities
 
 			for (int i = 0; i < mp.InfusionLimit; i++)
 			{
-				if (mp.GetInfusion(i) == null || i == mp.InfusionLimit - 1)
+				if (mp.GetInfusion(i) == null)
 				{
 					mp.SetInfusion(Item.Clone().ModItem as InfusionItem, i);
 					Item.TurnToAir();
+
 					return;
 				}
 			}
+
+			Item.stack = 1;
 		}
 	}
 }

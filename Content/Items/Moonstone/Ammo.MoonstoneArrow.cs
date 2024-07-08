@@ -137,10 +137,12 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 15, new RoundedTip(12), factor => (10 + factor * 25) * TRAIL_WIDTH, factor => new Color(120, 20 + (int)(100 * factor.X), 255) * factor.X * charge);
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 15, new RoundedTip(12), factor => (10 + factor * 25) * TRAIL_WIDTH, factor => new Color(120, 20 + (int)(100 * factor.X), 255) * factor.X * charge);
 			trail.Positions = cache.ToArray();
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 15, new RoundedTip(6), factor => (80 + 0 + factor * 0) * TRAIL_WIDTH, factor => new Color(100, 20 + (int)(60 * factor.X), 255) * factor.X * 0.15f * charge);
+			if (trail2 is null || trail2.IsDisposed)
+				trail2 = new Trail(Main.instance.GraphicsDevice, 15, new RoundedTip(6), factor => (80 + 0 + factor * 0) * TRAIL_WIDTH, factor => new Color(100, 20 + (int)(60 * factor.X), 255) * factor.X * 0.15f * charge);
 			trail2.Positions = cache.ToArray();
 
 			if (Projectile.velocity.Length() > 1)

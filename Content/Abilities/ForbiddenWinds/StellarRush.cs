@@ -10,9 +10,14 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 {
-	class StellarRush : Dash
+	class StellarRush : Dash, IOrderedLoadable
 	{
 		public override float ActivationCostDefault => 1.5f;
+
+		public void Load()
+		{
+			StarlightPlayer.PostUpdateEvent += UpdatePlayerFrame;
+		}
 
 		public override void OnActivate()
 		{
@@ -88,6 +93,20 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 			}
 		}
 
+		new public void UpdatePlayerFrame(Player Player)
+		{
+			if (Player.GetHandler().ActiveAbility is StellarRush)
+			{
+				var dash = Player.GetHandler().ActiveAbility as Dash;
+
+				Player.bodyFrame = new Rectangle(0, 56 * 3, 40, 56);
+				Player.UpdateRotation(dash.Time / (float)dash.maxTime * 6.28f);
+
+				if (dash.Time == dash.maxTime || Player.dead)
+					Player.UpdateRotation(0);
+			}
+		}
+
 		private void ManageCaches()
 		{
 			if (Time == 25)
@@ -114,13 +133,16 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 24, new NoTip(), factor => (float)Math.Sin(factor * 3.14f) * 60, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X == 1)
-					return Color.Transparent;
+				trail = new Trail(Main.instance.GraphicsDevice, 24, new NoTip(), factor => (float)Math.Sin(factor * 3.14f) * 60, factor =>
+							{
+								if (factor.X == 1)
+									return Color.Transparent;
 
-				return new Color(50, 100 + (int)(factor.X * 150), 255) * (float)Math.Sin(factor.X * 3.14f) * (float)Math.Sin(EffectTimer / 45f * 3.14f) * 0.15f;
-			});
+								return new Color(50, 100 + (int)(factor.X * 150), 255) * (float)Math.Sin(factor.X * 3.14f) * (float)Math.Sin(EffectTimer / 45f * 3.14f) * 0.15f;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Player.Center + Player.velocity * 6;

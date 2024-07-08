@@ -150,7 +150,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
 		public void UpdatePlayerFrame(Player Player)
 		{
-			if (Player.GetHandler().ActiveAbility is Dash)
+			if (Player.GetHandler().ActiveAbility is Dash && !Player.GetHandler().ActiveAbility.GetType().IsSubclassOf(typeof(Dash)))
 			{
 				var dash = Player.GetHandler().ActiveAbility as Dash;
 
@@ -218,13 +218,16 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 14, new NoTip(), factor => Math.Min(factor * 50, 40), factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X == 1)
-					return Color.Transparent;
+				trail = new Trail(Main.instance.GraphicsDevice, 14, new NoTip(), factor => Math.Min(factor * 50, 40), factor =>
+							{
+								if (factor.X == 1)
+									return Color.Transparent;
 
-				return new Color(140, 150 + (int)(105 * factor.X), 255) * factor.X * (float)Math.Sin(EffectTimer / 45f * 3.14f);
-			});
+								return new Color(140, 150 + (int)(105 * factor.X), 255) * factor.X * (float)Math.Sin(EffectTimer / 45f * 3.14f);
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Player.Center + Player.velocity * 6;

@@ -115,7 +115,7 @@ namespace StarlightRiver.Core
 			if (Main.dedServ)
 				return;
 
-			if (GetInstance<GraphicsConfig>().ParticlesActive && effect != null)
+			if (GetInstance<GraphicsConfig>().ParticlesActive && particles.Count > 0 && effect != null)
 			{
 				spriteBatch.End();
 

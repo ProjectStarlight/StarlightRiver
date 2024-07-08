@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.Hint;
 using StarlightRiver.Content.Foregrounds;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Vitric;
@@ -20,7 +21,7 @@ using static Terraria.ModLoader.ModContent;
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
 	[AutoloadBossHead]
-	public sealed partial class VitricBoss : ModNPC, IHintable
+	public sealed partial class VitricBoss : ModNPC
 	{
 		public Vector2 startPos;
 		public Vector2 endPos;
@@ -358,9 +359,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			BossRushDataStore.DefeatBoss(BossrushUnlockFlag.Ceiros);
 			StarlightWorld.Flag(WorldFlags.VitricBossDowned);
 
-			foreach (Player Player in Main.player.Where(n => n.active && arena.Contains(n.Center.ToPoint())))
+			foreach (Player player in Main.player.Where(n => n.active && arena.Contains(n.Center.ToPoint())))
 			{
-				Player.GetModPlayer<MedalPlayer>().ProbeMedal("Ceiros");
+				player.GetModPlayer<MedalPlayer>().ProbeMedal("Ceiros");
+				player.GetModPlayer<HintPlayer>().SetHintState("PostCeiros");
 			}
 
 			body.SpawnGores2();
@@ -857,12 +859,5 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				arena = new Rectangle((int)homePos.X + 8 - arenaWidth / 2, (int)homePos.Y - 32 - arenaHeight / 2, arenaWidth, arenaHeight);
 		}
 		#endregion Networking
-
-		#region Hint
-		public string GetHint()
-		{
-			return "Glassweaver mentioned a 'Sentinel'... Focus!";
-		}
-		#endregion Hint
 	}
 }

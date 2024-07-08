@@ -244,7 +244,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 60, new NoTip(), factor => 15, factor => GetColor(factor.X) * factor.X * (float)Math.Sin(Math.Max(0, Projectile.timeLeft - 30) / 90f * 3.14f));
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 60, new NoTip(), factor => 15, factor => GetColor(factor.X) * factor.X * (float)Math.Sin(Math.Max(0, Projectile.timeLeft - 30) / 90f * 3.14f));
 
 			var realCache = new Vector2[60];
 

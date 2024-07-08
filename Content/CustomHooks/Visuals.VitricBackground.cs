@@ -12,6 +12,16 @@ namespace StarlightRiver.Content.CustomHooks
 		internal static ParticleSystem ForegroundParticles;
 		internal static ParticleSystem BackgroundParticles;
 
+		internal static Asset<Texture2D>[] textures =
+		{
+			Assets.Backgrounds.Glass0,
+			Assets.Backgrounds.Glass1,
+			Assets.Backgrounds.Glass2,
+			Assets.Backgrounds.Glass3,
+			Assets.Backgrounds.Glass4,
+			Assets.Backgrounds.Glass5
+		};
+
 		public override void Load()
 		{
 			if (Main.dedServ)
@@ -118,7 +128,7 @@ namespace StarlightRiver.Content.CustomHooks
 					if (k == 5)
 						off = 100;
 
-					DrawLayer(basepoint, Request<Texture2D>("StarlightRiver/Assets/Backgrounds/Glass" + k).Value, k + 1, Vector2.UnitY * off, default, false); //the crystal layers and front sand
+					DrawLayer(basepoint, textures[k].Value, k + 1, Vector2.UnitY * off, default, false); //the crystal layers and front sand
 
 					if (k == 1)
 					{
@@ -192,7 +202,7 @@ namespace StarlightRiver.Content.CustomHooks
 					Main.spriteBatch.Begin(SpriteSortMode.Deferred, default, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
 				}
 
-				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Backgrounds/Glass" + k).Value;
+				Texture2D tex = textures[k].Value;
 
 				float heightRatio = Main.screenHeight / (float)Main.screenWidth;
 				int width = (int)(tex.Width * heightRatio);

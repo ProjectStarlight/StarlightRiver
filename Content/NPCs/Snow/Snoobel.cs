@@ -11,7 +11,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Snow
 {
-	internal class Snoobel : ModNPC, IHintable
+	internal class Snoobel : ModNPC
 	{
 		private enum AiStates
 		{
@@ -255,7 +255,8 @@ namespace StarlightRiver.Content.NPCs.Snow
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, NUM_SEGMENTS, new NoTip(), factor => 7, factor => Lighting.GetColor((int)(NPC.Center.X / 16), (int)(NPC.Center.Y / 16)));
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, NUM_SEGMENTS, new NoTip(), factor => 7, factor => Lighting.GetColor((int)(NPC.Center.X / 16), (int)(NPC.Center.Y / 16)));
 
 			List<Vector2> positions = cache;
 			trail.NextPosition = positions[NUM_SEGMENTS - 1];
@@ -463,10 +464,6 @@ namespace StarlightRiver.Content.NPCs.Snow
 			trunkChain.forceGravity = new Vector2(0, 0.1f);
 			trunkChain.useEndPoint = false;
 			currentPhase = (int)AiStates.Walking;
-		}
-		public string GetHint()
-		{
-			return "Extremely ugly. so Fucking ugly.";
 		}
 	}
 

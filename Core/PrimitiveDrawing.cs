@@ -76,6 +76,8 @@ namespace StarlightRiver.Core
 
 	public class Trail : IDisposable
 	{
+		public int stayAlive = 10;
+
 		private readonly Primitives primitives;
 
 		private readonly int maxPointCount;
@@ -85,6 +87,8 @@ namespace StarlightRiver.Core
 		private readonly TrailWidthFunction trailWidthFunction;
 
 		private readonly TrailColorFunction trailColorFunction;
+
+		public bool IsDisposed { get; private set; }
 
 		/// <summary>
 		/// Array of positions that define the trail. NOTE: Positions[Positions.Length - 1] is assumed to be the start (e.g. Projectile.Center) and Positions[0] is assumed to be the end.
@@ -137,6 +141,8 @@ namespace StarlightRiver.Core
              */
 
 			primitives = new Primitives(device, maxPointCount * 2 + this.tip.ExtraVertices, 6 * (maxPointCount - 1) + this.tip.ExtraIndices);
+
+			ModContent.GetInstance<TrailManager>().managed.Add(this);
 		}
 
 		private void GenerateMesh(out VertexPositionColorTexture[] vertices, out short[] indices, out int nextAvailableIndex)
@@ -252,11 +258,14 @@ namespace StarlightRiver.Core
 			SetupMeshes();
 
 			primitives.Render(effect);
+
+			stayAlive = 10; //Set stayalive to 10 frames as we render again, we will dispose this trail if it fails to render for 10 frames
 		}
 
 		public void Dispose()
 		{
 			primitives?.Dispose();
+			IsDisposed = true;
 		}
 	}
 
@@ -452,6 +461,24 @@ namespace StarlightRiver.Core
 			}
 
 			indices = indicesTemp.ToArray();
+		}
+	}
+
+	public class TrailManager : ModSystem
+	{
+		public List<Trail> managed = new();
+
+		public override void PostUpdateEverything()
+		{
+			foreach (Trail trail in managed)
+			{
+				trail.stayAlive--;
+
+				if (trail.stayAlive <= 0)
+					trail.Dispose();
+			}
+
+			managed.RemoveAll(n => n.IsDisposed);
 		}
 	}
 }

@@ -12,7 +12,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 {
-	class Reflector : DummyTile, IHintable
+	class Reflector : DummyTile
 	{
 		public override int DummyType => DummySystem.DummyType<ReflectorDummy>();
 
@@ -26,31 +26,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 		public override bool SpawnConditions(int i, int j)
 		{
 			return true;
-		}
-
-		public override void MouseOver(int i, int j)
-		{
-			Player Player = Main.LocalPlayer;
-			Player.cursorItemIconID = ModContent.ItemType<GearTilePlacer>();
-			Player.noThrow = 2;
-			Player.cursorItemIconEnabled = true;
-		}
-
-		public override bool RightClick(int i, int j)
-		{
-			var dummy = Dummy(i, j) as ReflectorDummy;
-
-			if (dummy != null)
-			{
-				dummy.DeactivateDownstream();
-				dummy.rotating = true;
-			}
-
-			return true;
-		}
-		public string GetHint()
-		{
-			return "Sandstone blocks the lens, but these relics should be a good way to redirect the light...";
 		}
 	}
 
@@ -70,6 +45,27 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 		public override void SafeSetDefaults()
 		{
 			frame = Main.rand.Next(5);
+		}
+
+		public override Rectangle? GetClickbox()
+		{
+			Rectangle box = Hitbox;
+			box.Inflate(16, 16);
+			return box;
+		}
+
+		public override void RightClick(int i, int j)
+		{
+			DeactivateDownstream();
+			rotating = true;
+		}
+
+		public override void RightClickHover(int i, int j)
+		{
+			Player Player = Main.LocalPlayer;
+			Player.cursorItemIconID = ModContent.ItemType<GearTilePlacer>();
+			Player.noThrow = 2;
+			Player.cursorItemIconEnabled = true;
 		}
 
 		public override void Update()

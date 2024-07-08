@@ -14,7 +14,9 @@
 - New Item: Infernal Catalyst, drops from demons, allows for a new crafting method
 - New Weapon: Infernal Harvest, swing a ginormous magical scythe to leech mana, then throw it to unleash a burning trail
 - New Accessory: Fury in a Bottle, a double jump which recharges as you deal damage
-- 3 Starlight vessel shards have been hidden around the world, allowing you to increase your maximum starlight when collected
+- Added gloom gel, dropped from gloom slimes
+- Added gloom gauntlet, crafted with feral claws and gloom gel
+- Added glorches, crafted with wood and gloom gel
 
 ## Tweaks
 - Updated the visuals of the starlight river background effect
@@ -27,6 +29,11 @@
 - Hotsprings now cure many debuffs
 - Exotic timepiece now has a unique gear sprite
 - Bricklayers trowel now places blocks in the reverse direction on right click instead of holding shift
+- Many starsight hints have been rewritten to be more consistent and helpful
+- Starsight now gives a general hint at progression when not aimed at anything, instead of saying nothing is there
+- Some starsight entries for common vanilla objects have been added to make it feel more present, especially early on
+- Made the right click hitboxes for the vitric temple puzzles match the sprites better
+
 
 ## Configuration
 - Added an option to turn on a numeric indicator for some set bonuses
@@ -50,11 +57,13 @@
 - Fixed vegetables being able to generate on thin air
 - Fixed warrior kings crown not counting all slots properly
 - Fixed the food cooldown debuff being able to be removed by the nurse, allowing infinite food stacking
+- Fixed an issue where abilities could not be picked up in godmode
 
 ## Balance
 - Warrior kings crown scaling changed (200% increased damage base => 40% increased damage base, 20% damage per slot => 30% damage per slot)
 - Jetwelder no longer generates scrap from statue-spawned enemies or target dummies
 - Decreased the spawn rate of gloom slimes and soul nibblers
+- Gloom slimes now darken the area around themselves instead of inflicting blindess
 
 ## Optimization
 - Made improvements to dummy tile collision checks
@@ -77,3 +86,4 @@
 *These changes are likely of very little interest to players and are more for other developers*
 - Made a major overhaul to the inner workings of the doalgue system. It is now primarily data driven, and dialogue trees are stored in the localization directory.
 - Texture management now utilizes the AssGen package, see https://www.nuget.org/packages/AssGen for details.
+- Starsight hints are now data driven and localizable

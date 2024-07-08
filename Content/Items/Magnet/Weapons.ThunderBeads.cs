@@ -239,22 +239,28 @@ namespace StarlightRiver.Content.Items.Magnet
 		private void ManageTrails()
 		{
 			Vector2 endPoint = embedded ? target.Center : cache[segments];
-			trail ??= new Trail(Main.instance.GraphicsDevice, segments + 1, new NoTip(), factor => 16, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X > 0.99f)
-					return Color.Transparent;
+				trail = new Trail(Main.instance.GraphicsDevice, segments + 1, new NoTip(), factor => 16, factor =>
+							{
+								if (factor.X > 0.99f)
+									return Color.Transparent;
 
-				return new Color(160, 220, 255) * fade * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X);
-			});
+								return new Color(160, 220, 255) * fade * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X);
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = endPoint;
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, segments + 1, new NoTip(), factor => 3 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
+			if (trail2 is null || trail2.IsDisposed)
 			{
-				float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
-				return Color.Lerp(baseColor, endColor, EaseFunction.EaseCubicIn.Ease(1 - progress)) * fade * progress;
-			});
+				trail2 = new Trail(Main.instance.GraphicsDevice, segments + 1, new NoTip(), factor => 3 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
+							{
+								float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
+								return Color.Lerp(baseColor, endColor, EaseFunction.EaseCubicIn.Ease(1 - progress)) * fade * progress;
+							});
+			}
 
 			trail2.Positions = cache2.ToArray();
 			trail2.NextPosition = endPoint;
