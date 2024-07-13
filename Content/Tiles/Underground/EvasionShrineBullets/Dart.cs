@@ -193,15 +193,15 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
-			writer.WritePackedVector2(midPoint);
-			writer.WritePackedVector2(endPoint);
+			writer.WriteVector2(midPoint);
+			writer.WriteVector2(endPoint);
 			writer.Write(duration);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
-			midPoint = reader.ReadPackedVector2();
-			endPoint = reader.ReadPackedVector2();
+			midPoint = reader.ReadVector2();
+			endPoint = reader.ReadVector2();
 			duration = reader.ReadInt32();
 		}
 	}

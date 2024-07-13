@@ -828,9 +828,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			writer.Write(altAttack);
 			writer.Write(lockedRotation);
 
-			writer.WritePackedVector2(startPos);
-			writer.WritePackedVector2(endPos);
-			writer.WritePackedVector2(homePos);
+			writer.WriteVector2(startPos);
+			writer.WriteVector2(endPos);
+			writer.WriteVector2(homePos);
 
 			writer.Write(NPC.dontTakeDamage);
 			writer.Write(NPC.defense);
@@ -846,9 +846,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			altAttack = reader.ReadBoolean();
 			lockedRotation = reader.ReadSingle();
 
-			startPos = reader.ReadPackedVector2();
-			endPos = reader.ReadPackedVector2();
-			homePos = reader.ReadPackedVector2();
+			startPos = reader.ReadVector2();
+			endPos = reader.ReadVector2();
+			homePos = reader.ReadVector2();
 
 			NPC.dontTakeDamage = reader.ReadBoolean();
 			NPC.defense = reader.ReadInt32();

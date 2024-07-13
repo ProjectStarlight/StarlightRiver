@@ -477,14 +477,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		public override void SafeSendExtraAI(BinaryWriter writer)
 		{
-			writer.WritePackedVector2(posToBe);
-			writer.WritePackedVector2(oldPos);
+			writer.WriteVector2(posToBe);
+			writer.WriteVector2(oldPos);
 		}
 
 		public override void SafeReceiveExtraAI(BinaryReader reader)
 		{
-			posToBe = reader.ReadPackedVector2();
-			oldPos = reader.ReadPackedVector2();
+			posToBe = reader.ReadVector2();
+			oldPos = reader.ReadVector2();
 		}
 	}
 

@@ -386,7 +386,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			// Sort of sloppy making the assumption that only 1 packet is ever sent for state 1 and that its near enough to the transition
 			if (AIState == 1)
 			{
-				writer.WritePackedVector2(offset);
+				writer.WriteVector2(offset);
 				writer.Write(pointOnChain);
 				writer.Write(animating);
 				writer.Write(initializeAnimation);
@@ -405,7 +405,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			// Sort of sloppy making the assumption that only 1 packet is ever sent for state 1 and that its near enough to the transition
 			if (AIState == 1)
 			{
-				offset = reader.ReadPackedVector2();
+				offset = reader.ReadVector2();
 				pointOnChain = reader.ReadInt32();
 				animating = reader.ReadBoolean();
 				initializeAnimation = reader.ReadBoolean();

@@ -1,5 +1,8 @@
 # Starlight River 0.2.8.1
 
+## Multiplayer
+- Various packet fixes for NPCs and projectiles in huge worlds
+
 ## Fixes
 - Fixed the vitric pylon's debug item being sold by NPCs
 - Fixed the auroracle arena not being created in multiplayer
