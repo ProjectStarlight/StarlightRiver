@@ -32,14 +32,14 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		{
 			writer.Write(NPC.noGravity);
 			writer.Write(NPC.target);
-			writer.WritePackedVector2(NPC.velocity);
+			writer.WriteVector2(NPC.velocity);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
 			NPC.noGravity = reader.ReadBoolean();
 			NPC.target = reader.ReadInt32();
-			NPC.velocity = reader.ReadPackedVector2();
+			NPC.velocity = reader.ReadVector2();
 		}
 
 		public override void SetDefaults()

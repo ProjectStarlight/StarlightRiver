@@ -341,14 +341,14 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
-			writer.WritePackedVector2(moveTarget);
+			writer.WriteVector2(moveTarget);
 			writer.Write(attackVariant);
 			writer.Write(NPC.direction);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
-			moveTarget = reader.ReadPackedVector2();
+			moveTarget = reader.ReadVector2();
 			attackVariant = reader.ReadBoolean();
 			NPC.direction = reader.ReadInt32();
 		}
