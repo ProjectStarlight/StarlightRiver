@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 	{
 		public override bool OnHint(Vector2 pos, bool defaultHint)
 		{
-			var tile = Framing.GetTileSafely(pos / 16);
+			Tile tile = Framing.GetTileSafely(pos / 16);
 			if (defaultHint && !tile.HasTile && Player.GetHandler().Stamina > 2f)
 			{
 				Player.GetHandler().Stamina -= 1.75f;
@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 			{
 				if (proj.type == Type)
 				{
-					var glow = Assets.Keys.GlowAlpha.Value;
+					Texture2D glow = Assets.Keys.GlowAlpha.Value;
 
 					float alpha = 1f;
 
@@ -90,7 +90,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 
 		private bool AnyWellsprings()
 		{
-			var value = anySprings > 0;
+			bool value = anySprings > 0;
 			anySprings--;
 			return value;
 		}
@@ -131,7 +131,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 
 			if (Main.rand.NextBool(10))
 			{
-				var d = Dust.NewDust(Projectile.position, 32, 32, ModContent.DustType<Dusts.Aurora>(), 0, -1, 0, new Color(200, 220, 255), 1);
+				int d = Dust.NewDust(Projectile.position, 32, 32, ModContent.DustType<Dusts.Aurora>(), 0, -1, 0, new Color(200, 220, 255), 1);
 				Main.dust[d].customData = Main.rand.NextFloat(0.3f, 0.6f);
 			}
 		}
@@ -140,7 +140,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 		{
 			foreach (Player player in Main.ActivePlayers)
 			{
-				var dist = Vector2.Distance(player.Center, Projectile.Center);
+				float dist = Vector2.Distance(player.Center, Projectile.Center);
 				if (dist < 256)
 				{
 					DrawLine(Main.spriteBatch, player.Center);
