@@ -119,6 +119,10 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 			if (Main.dedServ)
 				return;
 
+			// Added safety guard here since this seems to be able to be inconsistent?
+			if (tileLightingTarget.RenderTarget is null)
+				return;
+
 			if (lightingQuadBuffer == null)
 				SetupLightingQuadBuffer(); //a bit hacky, but if we do this on load we can end up with black textures for full screen users, and full screen does not fire set display mode events
 
