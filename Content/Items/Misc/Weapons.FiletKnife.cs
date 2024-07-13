@@ -106,7 +106,6 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool OnPickup(Player player)
 		{
-			Main.NewText("onpickuped");
 			player.Heal(10);
 
 			player.AddBuff(ModContent.BuffType<FiletFrenzyBuff>(), 600);
