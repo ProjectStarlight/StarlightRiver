@@ -1,1 +1,8 @@
 # Starlight River 0.2.8.1
+
+## Fixes
+- Fixed the vitric pylon's debug item being sold by NPCs
+- Fixed the auroracle arena not being created in multiplayer
+- Fixed cutaways not allaigning themselves correctly after leaving a multiplayer game
+- Fixed incorrect textures on ceiros' platforms
+- Fixed a crash that could occur related to lighting
