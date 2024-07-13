@@ -147,7 +147,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				// Remove invalid platforms from tracked platforms
 				platforms.RemoveAll(n => !n.active || !(n.ModNPC is IcePlatform || n.ModNPC is IcePlatformSmall || n.ModNPC is GoldPlatform || n.ModNPC is EscapePlatform));
 
-				if (platforms.Count < 16 && Main.netMode != NetmodeID.MultiplayerClient) // respawn platforms if not present
+				if (platforms.Count < 16) // respawn platforms if not present
 				{
 					RegeneratePlatforms();
 				}

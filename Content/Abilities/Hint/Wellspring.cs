@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 			{
 				Player.GetHandler().Stamina -= 1.75f;
 
-				foreach(Projectile proj in Main.ActiveProjectiles)
+				foreach (Projectile proj in Main.ActiveProjectiles)
 				{
 					if (proj.type == ModContent.ProjectileType<WellspringProjectile>() && proj.owner == Player.whoAmI && proj.timeLeft > 20)
 						proj.timeLeft = 20;
@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 
 		private void DrawWellspringMaps(SpriteBatch sb)
 		{
-			foreach(Projectile proj in Main.ActiveProjectiles)
+			foreach (Projectile proj in Main.ActiveProjectiles)
 			{
 				if (proj.type == Type)
 				{
@@ -119,7 +119,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 
 			Projectile.velocity *= 0.9f;
 
-			foreach(Player player in Main.ActivePlayers)
+			foreach (Player player in Main.ActivePlayers)
 			{
 				if (Projectile.timeLeft % 30 == 0 && Vector2.Distance(player.Center, Projectile.Center) < 256)
 				{

@@ -2,3 +2,10 @@
 
 ## Multiplayer
 - Various packet fixes for NPCs and projectiles in huge worlds
+
+## Fixes
+- Fixed the vitric pylon's debug item being sold by NPCs
+- Fixed the auroracle arena not being created in multiplayer
+- Fixed cutaways not allaigning themselves correctly after leaving a multiplayer game
+- Fixed incorrect textures on ceiros' platforms
+- Fixed a crash that could occur related to lighting

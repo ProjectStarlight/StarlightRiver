@@ -73,10 +73,10 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 				// NPC Collision to break defense
 				Rectangle box = Player.Hitbox;
 				box.Inflate(32, 32);
-				foreach(NPC npc in Main.ActiveNPCs)
+				foreach (NPC npc in Main.ActiveNPCs)
 				{
 					if (box.Intersects(npc.Hitbox) && !npc.dontTakeDamage && !npc.immortal)
-					{				
+					{
 						Player.immune = true;
 						Player.immuneTime = 10;
 						Player.velocity *= -0.5f;
@@ -154,7 +154,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 					Terraria.Audio.SoundEngine.PlaySound(SoundID.Item45.WithPitchOffset(-1f + charge / 300f), Player.Center);
 					Terraria.Audio.SoundEngine.PlaySound(SoundID.Item104.WithPitchOffset(-1f + charge / 300f), Player.Center);
 				}
-			}	
+			}
 			else if (charge > 30)
 			{
 				if (Time % 2 == 0)
@@ -287,7 +287,6 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 				Projectile.timeLeft = 20;
 			else if (Projectile.timeLeft > 10)
 				Projectile.timeLeft = 10;
-			
 
 			if (!Main.dedServ)
 			{
