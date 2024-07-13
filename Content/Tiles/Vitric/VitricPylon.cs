@@ -62,6 +62,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			ModContent.GetInstance<VitricPylonEntity>().Kill(i, j);
 		}
 
+		public override NPCShop.Entry GetNPCShopEntry()
+		{
+			return null;
+		}
+
 		public override bool ValidTeleportCheck_NPCCount(TeleportPylonInfo pylonInfo, int defaultNecessaryNPCCount)
 		{
 			return true;
