@@ -71,7 +71,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 				Player.maxFallSpeed = Math.Max(Player.maxFallSpeed, 12 + charge / 6f);
 
 				// NPC Collision to break defense
-				var box = Player.Hitbox;
+				Rectangle box = Player.Hitbox;
 				box.Inflate(32, 32);
 				foreach(NPC npc in Main.ActiveNPCs)
 				{

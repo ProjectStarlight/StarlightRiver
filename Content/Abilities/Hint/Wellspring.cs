@@ -147,10 +147,10 @@ namespace StarlightRiver.Content.Abilities.Hint
 				}
 			}
 
-			var tex = Assets.Abilities.HintCursor.Value;
-			var glow = Assets.Keys.GlowAlpha.Value;
-			var star = Assets.StarTexture.Value;
-			var ring = Assets.Misc.GlowRing.Value;
+			Texture2D tex = Assets.Abilities.HintCursor.Value;
+			Texture2D glow = Assets.Keys.GlowAlpha.Value;
+			Texture2D star = Assets.StarTexture.Value;
+			Texture2D ring = Assets.Misc.GlowRing.Value;
 			var frame = new Rectangle(0, 120, 50, 30);
 
 			float alpha = 1f;
