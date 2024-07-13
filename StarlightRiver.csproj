@@ -17,6 +17,7 @@
     <None Remove="OldPatchNotes\0.2.0\0.2.2.txt" />
     <None Remove="OldPatchNotes\0.2.0\0.2.4.txt" />
     <None Remove="OldPatchNotes\0.2.0\0.2.6.txt" />
+    <None Remove="OldPatchNotes\0.2.0\0.2.8.txt" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="NetEasy">
