@@ -71,12 +71,12 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
-			writer.WritePackedVector2(NPC.velocity);
+			writer.WriteVector2(NPC.velocity);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
-			NPC.velocity = reader.ReadPackedVector2();
+			NPC.velocity = reader.ReadVector2();
 		}
 
 		public override bool PreAI()

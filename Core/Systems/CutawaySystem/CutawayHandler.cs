@@ -78,6 +78,11 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 			}
 		}
 
+		public override void OnWorldLoad()
+		{
+			created = false;
+		}
+
 		public override void OnWorldUnload()
 		{
 			created = false;
