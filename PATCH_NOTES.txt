@@ -15,3 +15,5 @@
 - Fixed a crash that could occur related to lighting
 - Fixed certain boss arenas not properly blocking you in with frameskip on off or subtle
 - Fixed auroracle not spawning in multiplayer
+- Fixed inconsistent door behavior with shrines in multiplayer
+- Fixed the auroracle arena background not showing if reflections are disabled on world load
