@@ -13,3 +13,5 @@
 - Fixed cutaways not allaigning themselves correctly after leaving a multiplayer game
 - Fixed incorrect textures on ceiros' platforms
 - Fixed a crash that could occur related to lighting
+- Fixed certain boss arenas not properly blocking you in with frameskip on off or subtle
+- Fixed auroracle not spawning in multiplayer
