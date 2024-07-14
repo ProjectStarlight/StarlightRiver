@@ -226,8 +226,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 						if (Item.type == ItemType<SquidBossSpawn>() && WaterLevel == 150 && !Main.npc.Any(n => n.active && n.ModNPC is SquidBoss)) //ready to spawn another squid              
 						{
-							if (Main.netMode != NetmodeID.MultiplayerClient)
-								NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y + 630, NPCType<SquidBoss>());
+							NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y + 630, NPCType<SquidBoss>());
 
 							Item.active = false;
 							Item.TurnToAir();
