@@ -316,24 +316,30 @@ namespace StarlightRiver.Content.Items.Desert
 				mult = 1f - (Projectile.timeLeft - maxTimeleft * 0.5f) / maxTimeleft * 0.5f;
 			}
 
-			trail ??= new Trail(Main.instance.GraphicsDevice, 20, new NoTip(), factor => 30f * factor, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X >= 0.85f)
-					return Color.Transparent;
+				trail = new Trail(Main.instance.GraphicsDevice, 20, new NoTip(), factor => 30f * factor, factor =>
+							{
+								if (factor.X >= 0.85f)
+									return Color.Transparent;
 
-				return Color.Lerp(new Color(30, 230, 200), new Color(230, 170, 100), 1f - Projectile.timeLeft / maxTimeleft) * factor.X * (float)Math.Sin(Projectile.timeLeft / maxTimeleft) * mult * 0.5f;
-			});
+								return Color.Lerp(new Color(30, 230, 200), new Color(230, 170, 100), 1f - Projectile.timeLeft / maxTimeleft) * factor.X * (float)Math.Sin(Projectile.timeLeft / maxTimeleft) * mult * 0.5f;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 20, new NoTip(), factor => 20f, factor =>
+			if (trail2 is null || trail2.IsDisposed)
 			{
-				if (factor.X >= 0.85f)
-					return Color.Transparent;
+				trail2 = new Trail(Main.instance.GraphicsDevice, 20, new NoTip(), factor => 20f, factor =>
+							{
+								if (factor.X >= 0.85f)
+									return Color.Transparent;
 
-				return Color.Lerp(new Color(30, 230, 200), new Color(230, 170, 100), 1f - Projectile.timeLeft / maxTimeleft) * factor.X * (float)Math.Sin(Projectile.timeLeft / maxTimeleft) * mult * 0.5f;
-			});
+								return Color.Lerp(new Color(30, 230, 200), new Color(230, 170, 100), 1f - Projectile.timeLeft / maxTimeleft) * factor.X * (float)Math.Sin(Projectile.timeLeft / maxTimeleft) * mult * 0.5f;
+							});
+			}
 
 			trail2.Positions = cache.ToArray();
 			trail2.NextPosition = Projectile.Center + Projectile.velocity;

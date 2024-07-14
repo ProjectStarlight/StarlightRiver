@@ -158,15 +158,18 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 30, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				float alpha = 1;
+				trail = new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 30, factor =>
+							{
+								float alpha = 1;
 
-				if (Projectile.timeLeft < 20)
-					alpha = Projectile.timeLeft / 20f;
+								if (Projectile.timeLeft < 20)
+									alpha = Projectile.timeLeft / 20f;
 
-				return new Color(50 + (int)(factor.X * 150), 80, 255) * (float)Math.Sin(factor.X * 3.14f) * alpha;
-			});
+								return new Color(50 + (int)(factor.X * 150), 80, 255) * (float)Math.Sin(factor.X * 3.14f) * alpha;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
@@ -190,15 +193,15 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
-			writer.WritePackedVector2(midPoint);
-			writer.WritePackedVector2(endPoint);
+			writer.WriteVector2(midPoint);
+			writer.WriteVector2(endPoint);
 			writer.Write(duration);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
-			midPoint = reader.ReadPackedVector2();
-			endPoint = reader.ReadPackedVector2();
+			midPoint = reader.ReadVector2();
+			endPoint = reader.ReadVector2();
 			duration = reader.ReadInt32();
 		}
 	}

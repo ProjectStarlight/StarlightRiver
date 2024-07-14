@@ -1,8 +1,11 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
+using StarlightRiver.Content.Abilities.Hint;
 using StarlightRiver.Content.GUI;
+using StarlightRiver.Content.Tiles.Overgrow;
 using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems;
+using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -13,7 +16,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Pickups
 {
-	internal class ForbiddenWindsPickup : AbilityPickup, IDrawPrimitive, IHintable
+	internal class ForbiddenWindsPickup : AbilityPickup, IDrawPrimitive
 	{
 		private List<Vector2> cache1;
 		private List<Vector2> cache2;
@@ -29,30 +32,27 @@ namespace StarlightRiver.Content.Pickups
 		private Vector2 point2;
 		private Vector2 point3;
 
-		public override string Texture => "StarlightRiver/Assets/Abilities/ForbiddenWinds";
+		public override Asset<Texture2D> Texture => Assets.Abilities.ForbiddenWinds;
 
 		public override Color GlowColor => new(160, 230, 255);
+
+		public ForbiddenWindsPickup() : base(TileType<ForbiddenWindsPickupTile>()) { }
 
 		public override bool CanPickup(Player Player)
 		{
 			return !Player.GetHandler().Unlocked<Dash>();
 		}
 
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("Forbidden Winds");
-		}
-
 		public override void Visuals()
 		{
 			float sin = 0.2f + Math.Abs((float)Math.Sin(StarlightWorld.visualTimer));
-			Dust.NewDustPerfect(new Vector2(NPC.Center.X + (float)Math.Sin(StarlightWorld.visualTimer) * 30, NPC.Center.Y - 20 + (float)Math.Cos(StarlightWorld.visualTimer) * 10), DustType<Content.Dusts.Glow>(), Vector2.Zero, 0, new Color(100, 200, 255) * sin, 0.25f);
+			Dust.NewDustPerfect(new Vector2(Center.X + (float)Math.Sin(StarlightWorld.visualTimer) * 30, Center.Y - 20 + (float)Math.Cos(StarlightWorld.visualTimer) * 10), DustType<Content.Dusts.Glow>(), Vector2.Zero, 0, new Color(100, 200, 255) * sin, 0.25f);
 
 			float sin2 = 0.2f + Math.Abs((float)Math.Cos(StarlightWorld.visualTimer));
-			Dust.NewDustPerfect(new Vector2(NPC.Center.X + (float)Math.Cos(StarlightWorld.visualTimer) * 25, NPC.Center.Y + (float)Math.Sin(StarlightWorld.visualTimer) * 6), DustType<Content.Dusts.Glow>(), Vector2.Zero, 0, new Color(100, 200, 255) * sin2, 0.25f);
+			Dust.NewDustPerfect(new Vector2(Center.X + (float)Math.Cos(StarlightWorld.visualTimer) * 25, Center.Y + (float)Math.Sin(StarlightWorld.visualTimer) * 6), DustType<Content.Dusts.Glow>(), Vector2.Zero, 0, new Color(100, 200, 255) * sin2, 0.25f);
 
 			float sin3 = 0.2f + Math.Abs((float)Math.Sin(StarlightWorld.visualTimer));
-			Dust.NewDustPerfect(new Vector2(NPC.Center.X + (float)Math.Sin(StarlightWorld.visualTimer + 2) * 15, NPC.Center.Y + 20 + (float)Math.Cos(StarlightWorld.visualTimer + 2) * 4), DustType<Content.Dusts.Glow>(), Vector2.Zero, 0, new Color(100, 200, 255) * sin3, 0.2f);
+			Dust.NewDustPerfect(new Vector2(Center.X + (float)Math.Sin(StarlightWorld.visualTimer + 2) * 15, Center.Y + 20 + (float)Math.Cos(StarlightWorld.visualTimer + 2) * 4), DustType<Content.Dusts.Glow>(), Vector2.Zero, 0, new Color(100, 200, 255) * sin3, 0.2f);
 		}
 
 		public override void PickupVisuals(int timer)
@@ -139,6 +139,8 @@ namespace StarlightRiver.Content.Pickups
 		{
 			player.GetHandler().Unlock<Dash>();
 
+			player.GetModPlayer<HintPlayer>().SetHintState("PreCeiros");
+
 			player.GetModPlayer<StarlightPlayer>().maxPickupTimer = 650;
 			player.GetModPlayer<StarlightPlayer>().inTutorial = true;
 			player.AddBuff(BuffID.Featherfall, 660);
@@ -152,7 +154,7 @@ namespace StarlightRiver.Content.Pickups
 
 				for (int i = 0; i < 120; i++)
 				{
-					cache.Add(NPC.Center + new Vector2(0, 100));
+					cache.Add(Center + new Vector2(0, 100));
 				}
 			}
 
@@ -168,52 +170,55 @@ namespace StarlightRiver.Content.Pickups
 		{
 			if (wide)
 			{
-				trail ??= new Trail(Main.instance.GraphicsDevice, 120, new NoTip(), factor => Math.Min((float)Math.Sin(factor * 3.14f) * 50, 50), factor =>
+				if (trail is null || trail.IsDisposed)
 				{
-					if (factor.X == 1)
-						return Color.Transparent;
+					trail = new Trail(Main.instance.GraphicsDevice, 120, new NoTip(), factor => Math.Min((float)Math.Sin(factor * 3.14f) * 50, 50), factor =>
+									{
+										if (factor.X == 1)
+											return Color.Transparent;
 
-					int time = Main.LocalPlayer.GetModPlayer<StarlightPlayer>().pickupTimer;
-					float mul = 1;
+										int time = Main.LocalPlayer.GetModPlayer<StarlightPlayer>().pickupTimer;
+										float mul = 1;
 
-					if (time < 100)
-						mul = (time - 30) / 70f;
+										if (time < 100)
+											mul = (time - 30) / 70f;
 
-					if (time > 600)
-						mul = 1 - (time - 600) / 20f;
+										if (time > 600)
+											mul = 1 - (time - 600) / 20f;
 
-					return new Color(140, 150 + (int)(105 * factor.X), 255) * (float)Math.Sin(factor.X * 3.14f) * mul * 0.06f;
-				});
+										return new Color(140, 150 + (int)(105 * factor.X), 255) * (float)Math.Sin(factor.X * 3.14f) * mul * 0.06f;
+									});
+				}
 			}
 			else
 			{
-				trail ??= new Trail(Main.instance.GraphicsDevice, 120, new NoTip(), factor => Math.Min((float)Math.Sin(factor * 3.14f) * 13, 13), factor =>
+				if (trail is null || trail.IsDisposed)
 				{
-					if (factor.X == 1)
-						return Color.Transparent;
+					trail = new Trail(Main.instance.GraphicsDevice, 120, new NoTip(), factor => Math.Min((float)Math.Sin(factor * 3.14f) * 13, 13), factor =>
+									{
+										if (factor.X == 1)
+											return Color.Transparent;
 
-					int time = Main.LocalPlayer.GetModPlayer<StarlightPlayer>().pickupTimer;
-					float mul = 1;
+										int time = Main.LocalPlayer.GetModPlayer<StarlightPlayer>().pickupTimer;
+										float mul = 1;
 
-					if (time < 100)
-						mul = (time - 30) / 70f;
+										if (time < 100)
+											mul = (time - 30) / 70f;
 
-					if (time > 600)
-						mul = 1 - (time - 600) / 20f;
+										if (time > 600)
+											mul = 1 - (time - 600) / 20f;
 
-					return new Color(140, 150 + (int)(105 * factor.X), 255) * (float)Math.Sin(factor.X * 3.14f) * mul;
-				});
+										return new Color(140, 150 + (int)(105 * factor.X), 255) * (float)Math.Sin(factor.X * 3.14f) * mul;
+									});
+				}
 			}
 
 			trail.Positions = cache.ToArray();
-			trail.NextPosition = NPC.Center;
+			trail.NextPosition = Center;
 		}
 
 		public void DrawPrimitives()
 		{
-			//if (Main.LocalPlayer.GetModPlayer<StarlightPlayer>().PickupTimer < 420)
-			//return;
-
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
 			if (effect is null)
@@ -239,15 +244,23 @@ namespace StarlightRiver.Content.Pickups
 			trail6?.Render(effect);
 		}
 
+		public override void PostDraw(Color lightColor)
+		{
+			base.PostDraw(lightColor);
+			DrawPrimitives();
+		}
+
 		public string GetHint()
 		{
 			return "A dense conflux of Starlight energy... could this be the tangle Alican mentioned?";
 		}
 	}
 
-	public class ForbiddenWindsPickupTile : AbilityPickupTile
+	public class ForbiddenWindsPickupTile : DummyTile
 	{
-		public override int PickupType => NPCType<ForbiddenWindsPickup>();
+		public override int DummyType => DummySystem.DummyType<ForbiddenWindsPickup>();
+
+		public override string Texture => AssetDirectory.Invisible;
 	}
 
 	[SLRDebug]

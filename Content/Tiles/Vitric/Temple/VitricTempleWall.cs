@@ -7,9 +7,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
 	class VitricTempleWall : ModWall
 	{
-		public static Texture2D CustomTexture = Assets.Tiles.Vitric.VitricTempleWall.Value;
-		public static Texture2D CustomBackTexture = Assets.Tiles.Vitric.VitricTempleWallEdge.Value;
-
 		public override string Texture => AssetDirectory.VitricTile + "VitricTempleWall";
 
 		public override void SetStaticDefaults()
@@ -33,9 +30,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			Lighting.GetCornerColors(i, j, out VertexColors vertices);
 
 			if (!(frame2.Intersects(new Rectangle(36, 36, 36 * 3, 36)) || frame2.Intersects(new Rectangle(36 * 6, 36, 36 * 3, 36 * 2)) || frame2.Intersects(new Rectangle(36 * 10, 0, 36 * 2, 36 * 3))))
-				Main.tileBatch.Draw(CustomBackTexture, new Vector2(i * 16 - (int)Main.screenPosition.X + Main.offScreenRange - 8, j * 16 - (int)Main.screenPosition.Y + Main.offScreenRange - 8), frame2, vertices, Vector2.Zero, 1f, SpriteEffects.None);
+				Main.tileBatch.Draw(Assets.Tiles.Vitric.VitricTempleWallEdge.Value, new Vector2(i * 16 - (int)Main.screenPosition.X + Main.offScreenRange - 8, j * 16 - (int)Main.screenPosition.Y + Main.offScreenRange - 8), frame2, vertices, Vector2.Zero, 1f, SpriteEffects.None);
 
-			Main.tileBatch.Draw(CustomTexture, new Vector2(i * 16 - (int)Main.screenPosition.X + Main.offScreenRange, j * 16 - (int)Main.screenPosition.Y + Main.offScreenRange), frame, vertices, Vector2.Zero, 1f, SpriteEffects.None);
+			Main.tileBatch.Draw(Assets.Tiles.Vitric.VitricTempleWall.Value, new Vector2(i * 16 - (int)Main.screenPosition.X + Main.offScreenRange, j * 16 - (int)Main.screenPosition.Y + Main.offScreenRange), frame, vertices, Vector2.Zero, 1f, SpriteEffects.None);
 
 			return false;
 		}

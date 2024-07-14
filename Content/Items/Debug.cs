@@ -42,6 +42,8 @@ namespace StarlightRiver.Content.Items
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
+			player.GetHandler().StaminaMaxBonus = 1000;
+
 			int x = StarlightWorld.vitricBiome.X - 37;
 
 			Dust.NewDustPerfect(new Vector2((x + 80) * 16, (StarlightWorld.vitricBiome.Center.Y + 20) * 16), DustID.Firefly);
@@ -50,12 +52,9 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
-			//WorldGen.TileRunner((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16, 5, 16, ModContent.TileType<GrayMatter>(), true, 1, 0, true);
-			BrainOfCthulu.SpawnReduxedBrain(Main.MouseWorld);
-
 			//StarlightEventSequenceSystem.sequence = 0;
-			//player.GetHandler().unlockedAbilities.Clear();
-			//player.GetHandler().InfusionLimit = 0;
+			player.GetHandler().unlockedAbilities.Clear();
+			player.GetHandler().InfusionLimit = 0;
 
 			//Main.time = 53999;
 			//Main.dayTime = true;

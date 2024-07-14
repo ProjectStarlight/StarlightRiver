@@ -1,12 +1,11 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Configs;
 using StarlightRiver.Core.Loaders.UILoading;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria.GameContent.UI;
 using Terraria.ID;
 using Terraria.UI;
-using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.GUI
 {
@@ -17,6 +16,8 @@ namespace StarlightRiver.Content.GUI
 
 		private readonly InfusionSlot[] slots = new InfusionSlot[InfusionSlots];
 		private readonly SmartUIElement infusionElement = new();
+
+		private Vector2 lastConfigPos;
 
 		/// <summary>
 		/// The timer controlling the gain animation
@@ -67,13 +68,16 @@ namespace StarlightRiver.Content.GUI
 			infusionElement.Width.Set(64, 0);
 			infusionElement.Height.Set(58, 0);
 			// Calculating these instead of using magic numbers.
-			infusionElement.Left.Set(100 - infusionElement.Width.Pixels / 2, 0);
-			infusionElement.Top.Set(300 - infusionElement.Height.Pixels / 2, 0);
+
+			Vector2 configPos = ModContent.GetInstance<GUIConfig>().AbilityIconPosition;
+
+			infusionElement.Left.Set(configPos.X - infusionElement.Width.Pixels / 2, 0);
+			infusionElement.Top.Set(configPos.Y - infusionElement.Height.Pixels / 2, 0);
 
 			const float width = 20;
 			const float height = 22;
-			const float topSlotLeft = 90;
-			const float topSlotTop = 276;
+			float topSlotLeft = configPos.X - 10;
+			float topSlotTop = configPos.Y - 24;
 
 			int targetSlot = 0;
 			void InitSlot(float left, float top)
@@ -107,6 +111,18 @@ namespace StarlightRiver.Content.GUI
 			particle.Position += Vector2.Normalize(particle.StoredPosition - particle.Position);
 			particle.Alpha = (float)Math.Sin(particle.Timer / particle.Velocity.X * 3.14f);
 			particle.Timer--;
+		}
+
+		public override void SafeUpdate(GameTime gameTime)
+		{
+			Vector2 configPos = ModContent.GetInstance<GUIConfig>().AbilityIconPosition;
+
+			if (configPos != lastConfigPos)
+			{
+				RemoveAllChildren();
+				OnInitialize();
+				lastConfigPos = configPos;
+			}
 		}
 
 		public override void Draw(SpriteBatch spriteBatch)

@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public override int ShrineTileHeight => COMBAT_SHRINE_TILE_HEIGHT;
 
-		public override string GetHint()
+		public override string GetCustomKey()
 		{
 			return "A shrine - to which deity, you do not know, though it wields a blade. The statue's eyes seem to follow you, and strange runes dance across its pedestal.";
 		}

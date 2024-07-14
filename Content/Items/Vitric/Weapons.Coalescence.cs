@@ -468,12 +468,12 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
-			writer.WritePackedVector2(targetPoint);
+			writer.WriteVector2(targetPoint);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
-			targetPoint = reader.ReadPackedVector2();
+			targetPoint = reader.ReadVector2();
 		}
 
 		public void DrawAdditive(SpriteBatch spriteBatch)

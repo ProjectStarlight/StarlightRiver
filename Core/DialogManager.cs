@@ -2,43 +2,67 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace StarlightRiver.Core
 {
 	internal class DialogManager
 	{
 		/// <summary>
-		/// Path to the dialog file
+		/// Key for the dialog file
 		/// </summary>
-		readonly string path;
+		readonly string fileKey;
 
 		/// <summary>
 		/// Dictionary of dialog entries indexed by their key
 		/// </summary>
-		readonly Dictionary<string, Entry> entries = new();
+		readonly Dictionary<string, Entry> entries = [];
 
 		/// <summary>
 		/// The NPC which has this dialog
 		/// </summary>
 		readonly NPC talkingTo;
 
+		private string lastLocale;
+
 		/// <summary>
 		/// Initialize a dialogue manager. This will load the dialog from the JSON data file for use.
 		/// Dialog files have a small set of special keys, "Start" is the first entry to be automatically
 		/// opened on interaction, "End" will end the dialogue when a button with that as its key is pressed.
 		/// </summary>
-		/// <param name="pathToFile">The path to the dialog file</param>
+		/// <param name="key">The name to the dialog file. Localization subdirectory is automatically applied</param>
 		/// <param name="talkingTo">The NPC which is bound to this dialog manager. Note that this NPCs ModNPC field is used for code key invocations.</param>
-		public DialogManager(string pathToFile, NPC talkingTo)
+		public DialogManager(string key, NPC talkingTo)
 		{
-			path = pathToFile;
+			BuildForCurrentLocale(key);
+			lastLocale = LanguageManager.Instance.ActiveCulture.Name;
 
-			Stream stream = StarlightRiver.Instance.GetFileStream(pathToFile);
+			fileKey = key;
+			this.talkingTo = talkingTo;
+		}
+
+		/// <summary>
+		/// Constructs the dialog dictionary for the current locale
+		/// </summary>
+		/// <param name="key">The file name to try and find</param>
+		/// <exception cref="FileNotFoundException"></exception>
+		public void BuildForCurrentLocale(string key)
+		{
+			string activeExtension = LanguageManager.Instance.ActiveCulture.Name;
+			string path = Path.Combine("Localization", "Dialog", activeExtension, key);
+
+			// Fall back to english if not found
+			if (!StarlightRiver.Instance.FileExists(path))
+				path = Path.Combine("Localization", "Dialog", "en-US", key);
+
+			// Throw if we cant find english either
+			if (!StarlightRiver.Instance.FileExists(path))
+				throw new FileNotFoundException($"Could not find the dialog file {path}.");
+
+			Stream stream = StarlightRiver.Instance.GetFileStream(path);
+
+			entries.Clear();
 
 			List<Entry> entryList = JsonSerializer.Deserialize<List<Entry>>(stream);
 			foreach (Entry entry in entryList)
@@ -47,8 +71,6 @@ namespace StarlightRiver.Core
 			}
 
 			stream.Close();
-
-			this.talkingTo = talkingTo;
 		}
 
 		/// <summary>
@@ -58,9 +80,18 @@ namespace StarlightRiver.Core
 		/// <param name="key">The key of the entry to show</param>
 		public void ActivateEntry(string key)
 		{
+			// First check if we need to reload the locale
+			string activeExtension = LanguageManager.Instance.ActiveCulture.Name;
+			if (activeExtension != lastLocale)
+			{
+				BuildForCurrentLocale(fileKey);
+				lastLocale = activeExtension;
+			}
+
+			// Check if desired key exists
 			if (!entries.ContainsKey(key))
 			{
-				Main.NewText($"Failed to get dialogue '{key}' for dialouge '{path}'!", Color.Red);
+				Main.NewText($"Failed to get dialogue '{key}' for dialouge '{fileKey}'!", Color.Red);
 				return;
 			}
 
@@ -98,7 +129,7 @@ namespace StarlightRiver.Core
 		{
 			if (!entries.ContainsKey(key))
 			{
-				Main.NewText($"Failed to get dialogue '{key}' for dialouge '{path}'!", Color.Red);
+				Main.NewText($"Failed to get dialogue '{key}' for dialouge '{fileKey}'!", Color.Red);
 				return;
 			}
 

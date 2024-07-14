@@ -1,79 +1,19 @@
-# Starlight River 0.2.8
-
-## Crimson Biome Content Additions
-- New tile: Gray matter. These mysterious brain blocks emit a hallucinatory aura 
-- New material: Dendrite. This strange mineral is normally indistinguishable from dirt...
-- New hazzard: Bone mines. These invisible explosives lay hidden in the soil below the crimson
-- New weapon: Lobotomizer. This strange spear channels the hallucinations of gray matter
-- New boss: The Thinker. Challenge this strange being deep in the crimson cavern
-
-## Story Updates
-- Glassweaver now has unique dialogue after defeating Ceiros
-- Glassweaver will now move into the vitric temple after speaking to him after ceiros is defeated
-- Glassweaver will now build a pylon in the vitric temple after moving in
-- Glassweaver will now unlock a new system after talking to him in the vitric temple
-
-## Content
-- Added a prayer for meteor and moonstone which will force the respective ore to generate. Crafted for 5 bamboo at a workbench
-- Replaced the broken moonstone menu with a new starlight river menu
-- New Item: Moonstone monolith
- - Crafted with moonstone bars, mimics the moonstone screen effect
-- 3 Starlight vessel shards have been hidden around the world, allowing you to increase your maximum starlight when collected
+# Starlight River 0.2.8.1
 
 ## Tweaks
-- Updated the visuals of the starlight river background effect
-- Updated Ceiros' arena assets to have better visibility
-- Whirlwind pickaxe acts more like a normal pickaxe and has a sell value. Its spin now damages enemies
-- Updated a number of item sprites
-- Updated the visuals of message boxes such as the master mode warning
-- Added a "Do not show again" option to the master mode warning
-- Technique books can now be shimmered between each other
-- Hotsprings now cure many debuffs
-- Exotic timepiece now has a unique gear sprite
-- Bricklayers trowel now places blocks in the reverse direction on right click instead of holding shift
-
-## Configuration
-- Added an option to turn on a numeric indicator for some set bonuses
+- Filet knife no longer gives Well Fed buff
 
 ## Multiplayer
-- Performance optimizations to player onhits. Most noticeable in Glassweaver gauntlet
-- Removed extra unnecesary packets from dummy system
-- Fixed missing graphics device for whirlwind pickaxe
+- Fixes for filet knife
+- Various packet fixes for NPCs and projectiles in huge worlds
 
 ## Fixes
-- Fixed drawblack in vitric biome (no more visible black squares)
-- Fixed a broken tooltip on the overflowing urn
-- Fixed a broken tooltip on the electro arrow
-- Made world generation properly integrate the vanilla structure map. This should prevent collisions between the mods structures and vanilla structures, as well as other mods that respect this map.
-- Prevented the alican cutscene from occuring if all players have starsight
-- Prevented the alican cutscene from occuring for players that already have starsight
-- Fixed a number of entities which should not appear in the bestiary having a slot
-- Fixed the prep station being 1 tile too wide
-- Fixed acorn sprout only triggering for minion kills
-
-## Balance
-- Warrior kings crown scaling changed (200% increased damage base => 40% increased damage base, 20% damage per slot => 30% damage per slot)
-- Jetwelder no longer generates scrap from statue-spawned enemies or target dummies
-- Decreased the spawn rate of gloom slimes and soul nibblers
-
-## Optimization
-- Made improvements to dummy tile collision checks
-- Made improvements to various metaball systems culling logic
-- Made improvements to blocker tile detection
-- Made improvements to the vitric biome's lighting
-- Lighting buffer will no longer populate when uneeded
-- Lighting buffer population now takes advantage of parallel processing
-- Background particles now render as a single mesh and update in parallel
-- Made improvements for vitric temple wall rendering
-- Made improvements to moving platform grappling hook detection
-- Made large improvements to artifact logic
-- Made improvements to various onscreen checks
-- Made improvements to various aspects of glassweaver's fight
-- Made improvements to various persistent entities while offscreen
-- Removed some lingering redundant code paths
-- Massive improvements to memory usage related to textures
-
-## Other
-*These changes are likely of very little interest to players and are more for other developers*
-- Made a major overhaul to the inner workings of the doalgue system. It is now primarily data driven, and dialogue trees are stored in the localization directory.
-- Texture management now utilizes the AssGen package, see https://www.nuget.org/packages/AssGen for details.
+- Fixed the vitric pylon's debug item being sold by NPCs
+- Fixed the auroracle arena not being created in multiplayer
+- Fixed cutaways not allaigning themselves correctly after leaving a multiplayer game
+- Fixed incorrect textures on ceiros' platforms
+- Fixed a crash that could occur related to lighting
+- Fixed certain boss arenas not properly blocking you in with frameskip on off or subtle
+- Fixed auroracle not spawning in multiplayer
+- Fixed inconsistent door behavior with shrines in multiplayer
+- Fixed the auroracle arena background not showing if reflections are disabled on world load

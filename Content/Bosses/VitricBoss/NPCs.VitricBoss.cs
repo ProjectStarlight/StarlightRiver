@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.Hint;
 using StarlightRiver.Content.Foregrounds;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Vitric;
@@ -20,7 +21,7 @@ using static Terraria.ModLoader.ModContent;
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
 	[AutoloadBossHead]
-	public sealed partial class VitricBoss : ModNPC, IHintable
+	public sealed partial class VitricBoss : ModNPC
 	{
 		public Vector2 startPos;
 		public Vector2 endPos;
@@ -358,9 +359,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			BossRushDataStore.DefeatBoss(BossrushUnlockFlag.Ceiros);
 			StarlightWorld.Flag(WorldFlags.VitricBossDowned);
 
-			foreach (Player Player in Main.player.Where(n => n.active && arena.Contains(n.Center.ToPoint())))
+			foreach (Player player in Main.player.Where(n => n.active && arena.Contains(n.Center.ToPoint())))
 			{
-				Player.GetModPlayer<MedalPlayer>().ProbeMedal("Ceiros");
+				player.GetModPlayer<MedalPlayer>().ProbeMedal("Ceiros");
+				player.GetModPlayer<HintPlayer>().SetHintState("PostCeiros");
 			}
 
 			body.SpawnGores2();
@@ -826,9 +828,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			writer.Write(altAttack);
 			writer.Write(lockedRotation);
 
-			writer.WritePackedVector2(startPos);
-			writer.WritePackedVector2(endPos);
-			writer.WritePackedVector2(homePos);
+			writer.WriteVector2(startPos);
+			writer.WriteVector2(endPos);
+			writer.WriteVector2(homePos);
 
 			writer.Write(NPC.dontTakeDamage);
 			writer.Write(NPC.defense);
@@ -844,9 +846,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			altAttack = reader.ReadBoolean();
 			lockedRotation = reader.ReadSingle();
 
-			startPos = reader.ReadPackedVector2();
-			endPos = reader.ReadPackedVector2();
-			homePos = reader.ReadPackedVector2();
+			startPos = reader.ReadVector2();
+			endPos = reader.ReadVector2();
+			homePos = reader.ReadVector2();
 
 			NPC.dontTakeDamage = reader.ReadBoolean();
 			NPC.defense = reader.ReadInt32();
@@ -857,12 +859,5 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				arena = new Rectangle((int)homePos.X + 8 - arenaWidth / 2, (int)homePos.Y - 32 - arenaHeight / 2, arenaWidth, arenaHeight);
 		}
 		#endregion Networking
-
-		#region Hint
-		public string GetHint()
-		{
-			return "Glassweaver mentioned a 'Sentinel'... Focus!";
-		}
-		#endregion Hint
 	}
 }

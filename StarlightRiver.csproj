@@ -1,46 +1,46 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<Import Project="..\tModLoader.targets" />
-	<PropertyGroup>
-		<AssemblyName>StarlightRiver</AssemblyName>
-		<TargetFramework>net8.0</TargetFramework>
-		<LangVersion>latest</LangVersion>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='{{Debug}}|AnyCPU'">
-		<NoWarn>1701;1702;MSB3270</NoWarn>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-		<NoWarn>1701;1702;MSB3270</NoWarn>
-	</PropertyGroup>
-	<ItemGroup>
-		<None Remove="AssGenConfig.txt" />
-		<None Remove="effects\compile\BrainShield.fx" />
-		<None Remove="OldPatchNotes\0.2.0\0.2.2.txt" />
-		<None Remove="OldPatchNotes\0.2.0\0.2.4.txt" />
-		<None Remove="OldPatchNotes\0.2.0\0.2.6.txt" />
-	</ItemGroup>
-	<ItemGroup>
-		<Reference Include="NetEasy">
-			<HintPath>lib\NetEasy_v0.1.8.dll</HintPath>
-		</Reference>
-		<Reference Include="ProjectStarlight.Interchange">
-			<HintPath>lib\ProjectStarlight.Interchange.dll</HintPath>
-		</Reference>
-		<Reference Include="StructureHelper">
-			<HintPath>lib\StructureHelper.dll</HintPath>
-		</Reference>
-		<Reference Include="System.Windows.Forms">
-			<HintPath>C:\Windows\Microsoft.NET\assembly\GAC_MSIL\System.Windows.Forms\v4.0_4.0.0.0__b77a5c561934e089\System.Windows.Forms.dll</HintPath>
-		</Reference>
+  <Import Project="..\tModLoader.targets" />
+  <PropertyGroup>
+    <AssemblyName>StarlightRiver</AssemblyName>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='{{Debug}}|AnyCPU'">
+    <NoWarn>1701;1702;MSB3270</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <NoWarn>1701;1702;MSB3270</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="AssGenConfig.txt" />
+    <None Remove="OldPatchNotes\0.2.0\0.2.2.txt" />
+    <None Remove="OldPatchNotes\0.2.0\0.2.4.txt" />
+    <None Remove="OldPatchNotes\0.2.0\0.2.6.txt" />
+    <None Remove="OldPatchNotes\0.2.0\0.2.8.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="NetEasy">
+      <HintPath>lib\NetEasy_v0.1.8.dll</HintPath>
+    </Reference>
+    <Reference Include="ProjectStarlight.Interchange">
+      <HintPath>lib\ProjectStarlight.Interchange.dll</HintPath>
+    </Reference>
+    <Reference Include="StructureHelper">
+      <HintPath>lib\StructureHelper.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <HintPath>C:\Windows\Microsoft.NET\assembly\GAC_MSIL\System.Windows.Forms\v4.0_4.0.0.0__b77a5c561934e089\System.Windows.Forms.dll</HintPath>
+    </Reference>
 
-		<PackageReference Include="AssGen" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Version="1.0.1" />
-		<AdditionalFiles Include="**/*.png" />
-
-	</ItemGroup>
-	<ItemGroup>
-		<Folder Include="Assets\Healthbars\" />
-		<Folder Include="Content\NPCs\Vitric\GlassTrial\" />
-		<Folder Include="Content\WorldGeneration\NewFolder1\" />
-	</ItemGroup>
+    <PackageReference Include="AssGen" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Version="1.0.1" />
+    <AdditionalFiles Include="**/*.png" />
+    
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets\Healthbars\" />
+    <Folder Include="Content\NPCs\Vitric\GlassTrial\" />
+    <Folder Include="Localization\Hints\" />
+  </ItemGroup>
 
 </Project>

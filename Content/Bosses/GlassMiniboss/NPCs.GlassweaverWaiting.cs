@@ -1,10 +1,12 @@
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
+using StarlightRiver.Content.Abilities.Hint;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Content.Packets;
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
+using Terraria;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
@@ -12,7 +14,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
-	class GlassweaverWaiting : ModNPC, IHintable
+	class GlassweaverWaiting : ModNPC
 	{
 		public const int FRAME_WIDTH = 124;
 
@@ -50,7 +52,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			NPC.DeathSound = SoundID.NPCDeath1;
 			NPC.knockBackResist = 0;
 
-			manager = new("Localization/Dialog/GlassweaverDialog.json", NPC);
+			manager = new("GlassweaverDialog.json", NPC);
 		}
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
@@ -193,7 +195,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			State = 5;
 
 			if (!Helpers.Helper.HasItem(Main.LocalPlayer, ItemType<TempleEntranceKey>(), 1))
+			{
 				Main.LocalPlayer.QuickSpawnItem(NPC.GetSource_FromThis(), ItemType<TempleEntranceKey>());
+				Main.LocalPlayer.GetModPlayer<HintPlayer>().SetHintState("PreWinds");
+			}
 		}
 
 		/// <summary>
@@ -213,6 +218,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Infusion.gainAnimationTimer = 240;
 
 			Main.LocalPlayer.QuickSpawnItem(NPC.GetSource_FromThis(), ItemType<StellarRushItem>());
+			Main.LocalPlayer.GetModPlayer<HintPlayer>().SetHintState("PostGlassweaverMove");
 		}
 
 		public override string GetChat()
@@ -291,11 +297,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		public override void LoadData(TagCompound tag)
 		{
 			State = tag.GetAsInt("State");
-		}
-
-		public string GetHint()
-		{
-			return "Is this... creature... really what 'lurks beneath the desert?'";
 		}
 	}
 }

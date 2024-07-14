@@ -353,14 +353,14 @@ namespace StarlightRiver.Content.Items.Haunted
 		public override void SendExtraAI(BinaryWriter writer)
 		{
 			writer.Write(stickyAI);
-			writer.WritePackedVector2(offset);
+			writer.WriteVector2(offset);
 			writer.Write(enemyWhoAmI);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
 			stickyAI = reader.ReadBoolean();
-			offset = reader.ReadPackedVector2();
+			offset = reader.ReadVector2();
 			enemyWhoAmI = reader.ReadInt32();
 		}
 

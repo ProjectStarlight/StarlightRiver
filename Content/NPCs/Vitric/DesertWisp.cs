@@ -106,7 +106,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			if (NPC.oldPos[119] == Vector2.Zero || trail is null)
+			if (NPC.oldPos[119] == Vector2.Zero || trail is null || trail.IsDisposed)
 				return;
 
 			trail.Positions = NPC.oldPos;
