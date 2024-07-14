@@ -1,6 +1,10 @@
 # Starlight River 0.2.8.1
 
+## Tweaks
+- Filet knife no longer gives Well Fed buff
+
 ## Multiplayer
+- Fixes for filet knife
 - Various packet fixes for NPCs and projectiles in huge worlds
 
 ## Fixes
