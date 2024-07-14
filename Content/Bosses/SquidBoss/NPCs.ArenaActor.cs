@@ -95,7 +95,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			if ((int)(VisualTimerA * 1 / 0.04f) % 60 == 0)
 				NPC.netUpdate = true;
 
-			var anyoneInside = false;
+			bool anyoneInside = false;
 			foreach (Player player in Main.ActivePlayers)
 			{
 				if (player.InModBiome<PermafrostTempleBiome>())
