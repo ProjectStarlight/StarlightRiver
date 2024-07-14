@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 	{
 		public static int effectTimer;
 		public static string hintToDisplay;
-		public static bool shouldDisplay;
+		public static bool defaultHint;
 
 		public override string Name => "Starsight";
 		public override string Tooltip => "Pull a strand of meaning from the memory of the world, allowing you to reveal secrets, hidden knowledge, and messages left by ancient scholars. NEWBLOCK " +
@@ -71,8 +71,9 @@ namespace StarlightRiver.Content.Abilities.Hint
 		public override void OnActivate()
 		{
 			effectTimer = 20;
-			bool defaultHint = true;
-			hintToDisplay = "Nothing interesting here...";
+
+			hintToDisplay = null;
+			defaultHint = false;
 
 			Vector2 pos = Main.MouseWorld;
 
@@ -86,27 +87,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 				if (box.Contains(pos.ToPoint()))
 				{
 					NPC npc = Main.npc[k];
-
-					// if there is a custom hint, use that and return
-					if (npc.ModNPC is IHintable hintable)
-					{
-						hintToDisplay = hintable.GetHint();
-						return;
-					}
-					else // else use a default hint
-					{
-						if (npc.FullName == "")
-							return;
-
-						if (npc.friendly)
-							hintToDisplay = $"It's my good friend, {npc.FullName}!";
-						else if (npc.boss)
-							hintToDisplay = $"Thats {npc.FullName}! Focus!";
-						else
-							hintToDisplay = $"It's just a {npc.FullName}.";
-					}
-
-					defaultHint = false;
+					hintToDisplay ??= HintLoader.GetNPCEntry(npc);
 				}
 			}
 
@@ -119,37 +100,26 @@ namespace StarlightRiver.Content.Abilities.Hint
 				if (box.Contains(pos.ToPoint()))
 				{
 					Projectile proj = Main.projectile[k];
-
-					// We only check for custom hints here
-					if (proj.ModProjectile is IHintable hintable)
-					{
-						hintToDisplay = hintable.GetHint();
-						defaultHint = false;
-						return;
-					}
+					hintToDisplay ??= HintLoader.GetProjectileEntry(proj);
 				}
 			}
 
 			// Check tiles
 			Tile tile = Framing.GetTileSafely((int)pos.X / 16, (int)pos.Y / 16);
-			ModTile modTile = ModContent.GetModTile(tile.TileType);
 
-			// If there is a custom hint use that
-			if (modTile is IHintable hintableT)
+			if (tile.HasTile)
+				hintToDisplay ??= HintLoader.GetTileEntry(tile);
+
+			// Fallback to air hint
+			if (string.IsNullOrEmpty(hintToDisplay))
 			{
-				hintToDisplay = hintableT.GetHint();
-				defaultHint = false;
-				return;
-			}
+				if (HintLoader.hints.AirHints.ContainsKey(Player.GetModPlayer<HintPlayer>().AirHintState))
+					hintToDisplay = HintLoader.hints.AirHints[Player.GetModPlayer<HintPlayer>().AirHintState];
+				else
+					hintToDisplay = HintLoader.hints.AirHints["Default"];
 
-			// Else use a default hint for solid tiles
-			if (tile.HasTile && Main.tileSolid[tile.TileType])
-			{
-				hintToDisplay = $"It's just some {ProcessName(TileID.Search.GetName(tile.TileType))}...";
-				defaultHint = false;
+				defaultHint = true;
 			}
-
-			shouldDisplay = OnHint(pos, defaultHint);
 		}
 
 		/// <summary>
@@ -163,16 +133,9 @@ namespace StarlightRiver.Content.Abilities.Hint
 			return true;
 		}
 
-		private string ProcessName(string input)
-		{
-			input = Regex.Replace(input, "(.*)/(.*)", "$2");
-			input = Regex.Replace(input, "([a-z])([A-Z])", "$1 $2");
-			return input;
-		}
-
 		public override void UpdateActive()
 		{
-			if (shouldDisplay)
+			if (OnHint(Main.MouseWorld, defaultHint))
 			{
 				int i = Projectile.NewProjectile(Player.GetSource_FromThis(), Main.MouseWorld + Vector2.UnitY * -32, Vector2.Zero, ModContent.ProjectileType<HintText>(), 0, 0, Main.myPlayer);
 				var proj = Main.projectile[i].ModProjectile as HintText;

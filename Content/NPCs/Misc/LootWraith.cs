@@ -370,14 +370,16 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, NUM_SEGMENTS, new NoTip(), factor => 7, factor => Lighting.GetColor((int)(NPC.Center.X / 16), (int)(NPC.Center.Y / 16)) * MathF.Sqrt(1 - factor.X));
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, NUM_SEGMENTS, new NoTip(), factor => 7, factor => Lighting.GetColor((int)(NPC.Center.X / 16), (int)(NPC.Center.Y / 16)) * MathF.Sqrt(1 - factor.X));
 
 			List<Vector2> positions = cache;
 			trail.NextPosition = NPC.Center;
 
 			trail.Positions = positions.ToArray();
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, NUM_SEGMENTS, new NoTip(), factor => 7, factor => Color.White * chargeupCounter * MathF.Sqrt(1 - factor.X));
+			if (trail2 is null || trail2.IsDisposed)
+				trail2 = new Trail(Main.instance.GraphicsDevice, NUM_SEGMENTS, new NoTip(), factor => 7, factor => Color.White * chargeupCounter * MathF.Sqrt(1 - factor.X));
 
 			trail2.NextPosition = NPC.Center;
 

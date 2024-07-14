@@ -17,7 +17,7 @@ using static Terraria.GameContent.Animations.Actions.NPCs;
 
 namespace StarlightRiver.Content.Tiles.Permafrost
 {
-	class Touchstone : ModTile, IHintable
+	class Touchstone : ModTile
 	{
 		public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/Touchstone";
 
@@ -159,11 +159,6 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			Player.cursorItemIconID = ModContent.ItemType<Items.Hovers.GenericHover>();
 			Player.noThrow = 2;
 			Player.cursorItemIconEnabled = true;
-		}
-
-		public string GetHint()
-		{
-			return "Full of Starlight, seemingly with a mind of its own...";
 		}
 	}
 
@@ -362,22 +357,25 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 		protected void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 12 * NPC.scale, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				float alpha = factor.X;
+				trail = new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 12 * NPC.scale, factor =>
+							{
+								float alpha = factor.X;
 
-				if (factor.X == 1)
-					alpha = 0;
+								if (factor.X == 1)
+									alpha = 0;
 
-				if (NPC.timeLeft < 20)
-					alpha *= NPC.timeLeft / 20f;
+								if (NPC.timeLeft < 20)
+									alpha *= NPC.timeLeft / 20f;
 
-				float sin = 1 + (float)Math.Sin(factor.X * 10);
-				float cos = 1 + (float)Math.Cos(factor.X * 10);
-				Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * (NPC.timeLeft < 30 ? (NPC.timeLeft / 30f) : 1);
+								float sin = 1 + (float)Math.Sin(factor.X * 10);
+								float cos = 1 + (float)Math.Cos(factor.X * 10);
+								Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * (NPC.timeLeft < 30 ? (NPC.timeLeft / 30f) : 1);
 
-				return color * alpha * NPC.Opacity;
-			});
+								return color * alpha * NPC.Opacity;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = NPC.Center + NPC.velocity;

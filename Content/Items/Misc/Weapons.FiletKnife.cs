@@ -2,7 +2,10 @@
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -45,8 +48,6 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (hit.Crit)
 			{
-				Helper.PlayPitched("Impacts/StabTiny", 0.8f, Main.rand.NextFloat(-0.3f, 0.3f), target.Center);
-
 				int itemType = Main.rand.Next(3) switch
 				{
 					0 => ModContent.ItemType<FiletGiblet1>(),
@@ -59,7 +60,13 @@ namespace StarlightRiver.Content.Items.Misc
 				if (target.GetGlobalNPC<FiletNPC>().DOT < 3) //TODO: Port to a proper stacking buff system later
 					target.GetGlobalNPC<FiletNPC>().DOT += 1;
 
-				Projectile.NewProjectile(player.GetSource_ItemUse(Item), target.Center, Vector2.Zero, ModContent.ProjectileType<FiletSlash>(), 0, 0, player.whoAmI, target.whoAmI);
+				if (Main.netMode == NetmodeID.Server)
+					return; //Server should only spawn the item + apply DOT and then stop before sounds and dust
+
+				Helper.PlayPitched("Impacts/StabTiny", 0.8f, Main.rand.NextFloat(-0.3f, 0.3f), target.Center);
+
+				if (Main.myPlayer == player.whoAmI)
+					Projectile.NewProjectile(player.GetSource_ItemUse(Item), target.Center, Vector2.Zero, ModContent.ProjectileType<FiletSlash>(), 0, 0, player.whoAmI, target.whoAmI);
 
 				var direction = Vector2.Normalize(target.Center - player.Center);
 
@@ -68,6 +75,9 @@ namespace StarlightRiver.Content.Items.Misc
 					Dust.NewDustPerfect(target.Center, DustID.Blood, direction.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f) + 3.14f) * Main.rand.NextFloat(0f, 6f), 0, default, 1.5f);
 					Dust.NewDustPerfect(target.Center, DustID.Blood, direction.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f) - 1.57f) * Main.rand.NextFloat(0f, 3f), 0, default, 0.8f);
 				}
+
+				player.TryGetModPlayer(out StarlightPlayer starlightPlayer);
+				starlightPlayer.SetHitPacketStatus(shouldRunProjMethods: true);
 			}
 		}
 	}
@@ -96,11 +106,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool OnPickup(Player player)
 		{
-			int healAmount = (int)MathHelper.Min(player.statLifeMax2 - player.statLife, 10);
-			player.HealEffect(10);
-			player.statLife += healAmount;
+			player.Heal(10);
 
-			player.AddBuff(BuffID.WellFed, 18000);
 			player.AddBuff(ModContent.BuffType<FiletFrenzyBuff>(), 600);
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab, player.position);
 			return false;
@@ -117,11 +124,26 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool InstancePerEntity => true;
 
-		public override void SetDefaults(NPC NPC)
+		public override void OnSpawn(NPC npc, IEntitySource source)
 		{
-			if (NPC.type == NPCID.BloodZombie && Main.rand.NextBool(50))
+			if (npc.type == NPCID.BloodZombie && Main.rand.NextBool(50))
 				hasSword = true;
-			base.SetDefaults(NPC);
+		}
+
+		public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
+		{
+			if (npc.type == NPCID.BloodZombie)
+			{
+				binaryWriter.Write(hasSword);
+			}
+		}
+
+		public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
+		{
+			if (npc.type == NPCID.BloodZombie)
+			{
+				hasSword = binaryReader.ReadBoolean();	
+			}
 		}
 
 		public override bool PreDraw(NPC NPC, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -211,6 +233,9 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void AI()
 		{
+			if (Main.netMode == NetmodeID.Server)
+				return; // Pretty much a pure visual effect projectile no need for server to do any of this.
+
 			effect ??= new BasicEffect(Main.instance.GraphicsDevice)
 			{
 				VertexColorEnabled = true

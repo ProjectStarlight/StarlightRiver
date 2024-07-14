@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 			(shrineDummy as EvasionShrineDummy).lives = 4;
 		}
 
-		public override string GetHint()
+		public override string GetCustomKey()
 		{
 			return "A shrine - to which deity, you do not know, though it wields a bow. The statue's eyes seem to follow you, and strange runes dance across its pedestal.";
 		}

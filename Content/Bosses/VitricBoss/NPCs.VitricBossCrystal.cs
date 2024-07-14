@@ -116,14 +116,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
-			writer.WritePackedVector2(StartPos);
-			writer.WritePackedVector2(TargetPos);
+			writer.WriteVector2(StartPos);
+			writer.WriteVector2(TargetPos);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
-			StartPos = reader.ReadPackedVector2();
-			TargetPos = reader.ReadPackedVector2();
+			StartPos = reader.ReadVector2();
+			TargetPos = reader.ReadVector2();
 		}
 
 		public override void AI()
@@ -483,7 +483,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			{
 				GraphicsDevice graphics = Main.graphics.GraphicsDevice;
 
-				trail ??= new Trail(graphics, 20, new NoTip(), ArcWidth, ArcColor);
+				if (trail is null || trail.IsDisposed)
+					trail = new Trail(graphics, 20, new NoTip(), ArcWidth, ArcColor);
 
 				var positions = new Vector2[20];
 

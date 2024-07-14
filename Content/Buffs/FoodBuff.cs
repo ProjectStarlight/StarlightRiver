@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Items.Food;
 using System.Linq;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Buffs
 {
@@ -30,6 +31,11 @@ namespace StarlightRiver.Content.Buffs
 	public class Full : SmartBuff
 	{
 		public Full() : base("Stuffed", "Cannot consume any more rich food", true) { }
+
+		public override void SetStaticDefaults()
+		{
+			BuffID.Sets.NurseCannotRemoveDebuff[Type] = true;
+		}
 
 		public override string Texture => AssetDirectory.Buffs + "Full";
 	}

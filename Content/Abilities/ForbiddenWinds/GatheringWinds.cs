@@ -201,7 +201,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
 		private void ManageTrail()
 		{
-			if (trail is null || maxTime != trail.Positions.Count())
+			if (trail is null || trail.IsDisposed || maxTime != trail.Positions.Count())
 			{
 				trail = new Trail(Main.instance.GraphicsDevice, maxTime, new NoTip(), factor => Math.Min(factor * 50, 40), factor =>
 				{

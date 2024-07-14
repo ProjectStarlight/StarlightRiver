@@ -158,7 +158,7 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
-			writer.WritePackedVector2(endPoint);
+			writer.WriteVector2(endPoint);
 			writer.Write(timeToRise);
 			writer.Write(timeToRetract);
 			writer.Write(teleTime);
@@ -167,7 +167,7 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
-			endPoint = reader.ReadPackedVector2();
+			endPoint = reader.ReadVector2();
 			timeToRise = reader.ReadInt32();
 			timeToRetract = reader.ReadInt32();
 			teleTime = reader.ReadInt32();
