@@ -3573,6 +3573,46 @@ Items: {
 		DisplayName: Ceiros Relic
 		Tooltip: ""
 	}
+
+	Lobotomizer: {
+		DisplayName: Lobotomizer
+		Tooltip:
+			'''
+			Right click to throw a hallucinatory spear
+			Attacks faster while hallucinating
+			Longer reach while not hallucinating
+			'''
+	}
+
+	MindCloak: {
+		DisplayName: Cloak of the Mind
+		Tooltip: Increases to maximum mana also apply to maximum {{barrier}}
+	}
+
+	MyelinSheath: {
+		DisplayName: Myelin Sheath
+		Tooltip: Swords perform a powerful mind slash after not attacking for 2 seconds
+	}
+
+	DendriteBar: {
+		DisplayName: Dendrite Bar
+		Tooltip: This bar might be smarter than you...
+	}
+
+	BonemineItem: {
+		DisplayName: Bone mine
+		Tooltip: Doyoyouuyuuhuyhh *BRRPT* *Anyuerism*
+	}
+
+	DendriteItem: {
+		DisplayName: Dendrite
+		Tooltip: Doyoyouuyuuhuyhh *BRRPT* *Anyuerism*
+	}
+
+	GrayMatterItem: {
+		DisplayName: Gray Matter
+		Tooltip: You can see it thinking
+	}
 }
 
 Projectiles: {
@@ -3937,6 +3977,7 @@ Projectiles: {
 	InfernalHarvestFree.DisplayName: Infernal Harvest Free
 	InfernalHarvestPaid.DisplayName: Infernal Harvest Paid
 	FirePillar.DisplayName: Fire Pillar
+	VeinSpear.DisplayName: Vein Spear
 }
 
 Tiles: {
@@ -4166,6 +4207,11 @@ Biomes: {
 		DisplayName: Evasion Shrine Biome
 		TownNPCDialogueName: the Evasion Shrine Biome
 	}
+
+	GraymatterBiome: {
+		DisplayName: Graymatter Biome
+		TownNPCDialogueName: the Graymatter Biome
+	}
 }
 
 NPCs: {
@@ -4283,6 +4329,9 @@ NPCs: {
 	BerrySlime.DisplayName: Slimeberry
 	TouchstoneWisp.DisplayName: Aurora Spirit
 	HellLavaActor.DisplayName: Hell Lava Actor
+	BrainPlatform.DisplayName: ""
+	HorrifyingVisage.DisplayName: Horrifying Visage
+	TestCollider.DisplayName: ""
 }
 
 Buffs: {
@@ -4596,6 +4645,11 @@ Buffs: {
 	GlowingObsidianFire: {
 		DisplayName: Infernal flames
 		Description: Burning up!
+	}
+
+	CrimsonHallucination: {
+		DisplayName: Hallucinating
+		Description: Is any of this real?
 	}
 }
 

@@ -26,9 +26,9 @@ namespace StarlightRiver.Content.CustomHooks
 
 		public void DrawScreenspace()
 		{		
-			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, null, null, null, Main.GameViewMatrix.ZoomMatrix);
+			//Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, null, null, null, Main.GameViewMatrix.ZoomMatrix);
 			DrawScreenspaceEvent?.Invoke(Main.spriteBatch);
-			Main.spriteBatch.End();
+			//Main.spriteBatch.End();
 		}
 	}
 }
