@@ -142,7 +142,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (npc.type == NPCID.BloodZombie)
 			{
-				hasSword = binaryReader.ReadBoolean();	
+				hasSword = binaryReader.ReadBoolean();
 			}
 		}
 
