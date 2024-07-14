@@ -674,7 +674,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
-			writer.WritePackedVector2(mousePos);
+			writer.WriteVector2(mousePos);
 			writer.Write(oldRotation);
 			writer.Write(followPlayer);
 			writer.Write(Projectile.timeLeft);
@@ -682,7 +682,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
-			mousePos = reader.ReadPackedVector2();
+			mousePos = reader.ReadVector2();
 			oldRotation = reader.ReadSingle();
 			followPlayer = reader.ReadBoolean();
 			Projectile.timeLeft = reader.ReadInt32();

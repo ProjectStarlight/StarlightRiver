@@ -116,14 +116,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
-			writer.WritePackedVector2(StartPos);
-			writer.WritePackedVector2(TargetPos);
+			writer.WriteVector2(StartPos);
+			writer.WriteVector2(TargetPos);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
-			StartPos = reader.ReadPackedVector2();
-			TargetPos = reader.ReadPackedVector2();
+			StartPos = reader.ReadVector2();
+			TargetPos = reader.ReadVector2();
 		}
 
 		public override void AI()

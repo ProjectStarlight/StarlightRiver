@@ -541,7 +541,7 @@ namespace StarlightRiver.Content.Items.Haunted
 		public override void SendExtraAI(BinaryWriter writer)
 		{
 			writer.Write(embedded);
-			writer.WritePackedVector2(enemyOffset);
+			writer.WriteVector2(enemyOffset);
 
 			if (embeddedTarget != null)
 				writer.Write(embeddedTarget.whoAmI);
@@ -552,7 +552,7 @@ namespace StarlightRiver.Content.Items.Haunted
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
 			embedded = reader.ReadBoolean();
-			enemyOffset = reader.ReadPackedVector2();
+			enemyOffset = reader.ReadVector2();
 			int embeddedTargetId = reader.ReadInt32();
 
 			if (embeddedTargetId >= 0)

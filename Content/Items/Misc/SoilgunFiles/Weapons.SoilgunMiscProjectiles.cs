@@ -692,13 +692,13 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
-			writer.WritePackedVector2(offset);
+			writer.WriteVector2(offset);
 			writer.Write(enemyID);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
-			offset = reader.ReadPackedVector2();
+			offset = reader.ReadVector2();
 			enemyID = reader.ReadInt32();
 		}
 	}
