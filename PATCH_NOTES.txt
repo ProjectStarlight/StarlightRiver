@@ -1,19 +1,4 @@
-# Starlight River 0.2.8.1
-
-## Tweaks
-- Filet knife no longer gives Well Fed buff
-
-## Multiplayer
-- Fixes for filet knife
-- Various packet fixes for NPCs and projectiles in huge worlds
+# Starlight River 0.2.8.2
 
 ## Fixes
-- Fixed the vitric pylon's debug item being sold by NPCs
-- Fixed the auroracle arena not being created in multiplayer
-- Fixed cutaways not allaigning themselves correctly after leaving a multiplayer game
-- Fixed incorrect textures on ceiros' platforms
-- Fixed a crash that could occur related to lighting
-- Fixed certain boss arenas not properly blocking you in with frameskip on off or subtle
-- Fixed auroracle not spawning in multiplayer
-- Fixed inconsistent door behavior with shrines in multiplayer
-- Fixed the auroracle arena background not showing if reflections are disabled on world load
+- Fixed random invalid memory access crashes
