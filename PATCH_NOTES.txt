@@ -2,3 +2,5 @@
 
 ## Fixes
 - Fixed random invalid memory access crashes
+- Performance improvements and deadzone fixes for moving platform grappling hooking
+- Moving platforms now treat queen slime hook normally
