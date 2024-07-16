@@ -252,7 +252,7 @@ namespace StarlightRiver.Core
 
 		public void Render(Effect effect)
 		{
-			if (Positions == null && !(primitives?.IsDisposed ?? true))
+			if (Positions == null || (primitives?.IsDisposed ?? true) || IsDisposed)
 				return;
 
 			SetupMeshes();
@@ -470,15 +470,15 @@ namespace StarlightRiver.Core
 
 		public override void PostUpdateEverything()
 		{
-			//foreach (Trail trail in managed)
-			//{
-			//	trail.stayAlive--;
+			foreach (Trail trail in managed)
+			{
+				trail.stayAlive--;
 
-			//	if (trail.stayAlive <= 0)
-			//		trail.Dispose();
-			//}
+				if (trail.stayAlive <= 0)
+					trail.Dispose();
+			}
 
-			//managed.RemoveAll(n => n.IsDisposed);
+			managed.RemoveAll(n => n.IsDisposed);
 		}
 	}
 }
