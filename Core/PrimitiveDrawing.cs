@@ -252,7 +252,7 @@ namespace StarlightRiver.Core
 
 		public void Render(Effect effect)
 		{
-			if (Positions == null && !(primitives?.IsDisposed ?? true))
+			if (Positions == null || (primitives?.IsDisposed ?? true) || IsDisposed)
 				return;
 
 			SetupMeshes();
