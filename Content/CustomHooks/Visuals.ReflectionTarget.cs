@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Configs;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Configs;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
 using System.Reflection;
@@ -129,6 +130,11 @@ namespace StarlightRiver.Content.CustomHooks
 		{
 			canUseTarget = false;
 
+			Vector2 storedZoom = Main.GameViewMatrix.Zoom;
+			Main.GameViewMatrix.Zoom = new Vector2(1, 1);
+			SpriteEffects storedSpriteEffects = Main.GameViewMatrix.Effects;
+			Main.GameViewMatrix.Effects = SpriteEffects.None;
+
 			ReflectionSubConfig reflectionConfig = ModContent.GetInstance<GraphicsConfig>().ReflectionConfig;
 
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
@@ -186,6 +192,9 @@ namespace StarlightRiver.Content.CustomHooks
 
 			Overlays.Scene.Draw(sb, RenderLayers.Entities, true);
 
+			Main.GameViewMatrix.Zoom = storedZoom;
+			Main.GameViewMatrix.Effects = storedSpriteEffects;
+
 			canUseTarget = true;
 		}
 
@@ -200,8 +209,14 @@ namespace StarlightRiver.Content.CustomHooks
 
 			if (ReflectionTarget.applyWallReflectionsThisFrame)
 			{
-				DrawReflection(Main.spriteBatch, screenPos: Vector2.Zero, normalMap: reflectionNormalMapTarget.RenderTarget, flatOffset: new Vector2(-0.0075f, 0.016f), offsetScale: 0.05f, tintColor: Color.White, restartSpriteBatch: true);
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+				DrawReflection(Main.spriteBatch, screenPos: Vector2.Zero, normalMap: reflectionNormalMapTarget.RenderTarget, flatOffset: new Vector2(-0.0075f, 0.016f), offsetScale: 0.05f, tintColor: Color.White, restartSpriteBatch: false);
 				ReflectionTarget.applyWallReflectionsThisFrame = false;
+				
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 
@@ -218,7 +233,7 @@ namespace StarlightRiver.Content.CustomHooks
 				if (restartSpriteBatch)
 				{
 					spriteBatch.End();
-					spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+					spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, RasterizerState.CullNone, default);
 				}
 
 				var data = new DrawData(normalMap, screenPos, sourceRect, new Color(255, 255, 255, 0));
@@ -258,7 +273,7 @@ namespace StarlightRiver.Content.CustomHooks
 				return;
 
 			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, SamplerState.PointClamp, default, RasterizerState.CullNone, Filters.Scene["ReflectionMapper"].GetShader().Shader, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, SamplerState.PointClamp, default, RasterizerState.CullNone, Filters.Scene["ReflectionMapper"].GetShader().Shader);
 
 			shader.Parameters["uColor"].SetValue(new Vector3(0.5f, 0.5f, 1f));
 			shader.Parameters["uIntensity"].SetValue(0.5f);
