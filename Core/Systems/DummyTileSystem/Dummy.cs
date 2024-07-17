@@ -45,7 +45,6 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 		public void Load(Mod mod)
 		{
 			OnLoad(mod);
-			On_Player.TileInteractionsCheck += RightClickDummies;
 		}
 
 		public void PostLoad()
@@ -234,28 +233,6 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 		{
 			Collision(target);
 			return false;
-		}
-
-		private void RightClickDummies(On_Player.orig_TileInteractionsCheck orig, Player self, int myX, int myY)
-		{
-			foreach (Dummy dummy in DummySystem.dummies)
-			{
-				Rectangle? box = dummy.GetClickbox();
-				if (box != null && box.Value.Contains(new Point(myX * 16, myY * 16)))
-				{
-					dummy.RightClickHover(myX, myY);
-
-					if (self.tileInteractAttempted && !self.tileInteractionHappened)
-					{
-						dummy.RightClick(myX, myY);
-						self.tileInteractionHappened = true;
-					}
-
-					return;
-				}
-			}
-
-			orig(self, myX, myY);
 		}
 	}
 
