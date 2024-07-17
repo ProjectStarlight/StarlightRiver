@@ -1,8 +1,12 @@
 # Starlight River 0.2.8.2
 
+## Config
+- Removed the 'Scrolling lighting buffer' option as it caused crashes and did not improve performance
+
 ## Fixes
 - Fixed random invalid memory access crashes
 - Performance improvements and deadzone fixes for moving platform grappling hooking
 - Moving platforms now treat queen slime hook normally
 - Fixes for inverted gravity rendering
+
 
