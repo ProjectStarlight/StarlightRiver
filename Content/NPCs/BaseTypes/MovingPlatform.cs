@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 {
 	internal abstract class MovingPlatform : ModNPC
 	{
-		Vector2 prevPos;
+		public Vector2 prevPos;
 
 		public bool beingStoodOn;
 
@@ -78,7 +78,7 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 
 			if (!dontCollide)
 			{
-				float yDistTraveled = NPC.position.Y - prevPos.Y;
+				float yDistTraveled = NPC.position.Y - NPC.oldPosition.Y;
 
 				if (NPC.velocity != Vector2.Zero && NPC.velocity.Y < -1f && yDistTraveled < NPC.velocity.Y * 1.5 && yDistTraveled > NPC.velocity.Y * 6)
 				{
@@ -110,7 +110,7 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 				}
 			}
 
-			prevPos = NPC.position;
+			prevPos = NPC.oldPosition;
 			beingStoodOn = false;
 		}
 	}
@@ -173,10 +173,15 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 				if (npc.ModNPC == null || npc.ModNPC is not MovingPlatform || (npc.ModNPC as MovingPlatform).dontCollide)
 					continue;
 
+				var plat = npc.ModNPC as MovingPlatform;
+
 				var PlayerRect = new Rectangle((int)self.position.X, (int)self.position.Y + self.height, self.width, 1);
 				var NPCRect = new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, 8 + (self.velocity.Y > 0 ? (int)self.velocity.Y : 0));
+				var NPCOldRect = new Rectangle((int)plat.prevPos.X, (int)plat.prevPos.Y, npc.width, 8 + (self.velocity.Y > 0 ? (int)self.velocity.Y : 0));
 
-				if (PlayerRect.Intersects(NPCRect) && self.position.Y <= npc.position.Y)
+				Main.NewText(npc.position - plat.prevPos);
+
+				if ((PlayerRect.Intersects(NPCRect) || PlayerRect.Intersects(NPCOldRect)) && self.position.Y <= npc.position.Y)
 				{
 					if (!self.justJumped && self.velocity.Y >= 0)
 					{

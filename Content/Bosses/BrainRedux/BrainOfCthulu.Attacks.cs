@@ -18,6 +18,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (AttackTimer == 31)
 			{
+				ThisThinker.platformRadiusTarget = 400;
+				ThisThinker.platformRotationTarget = 0.2f;
+
 				for (int k = 0; k < neurisms.Count; k++)
 				{
 					float rot = k / (float)neurisms.Count * 6.28f;
@@ -69,6 +72,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (AttackTimer == 1)
 			{
+				ThisThinker.platformRadiusTarget = 550;
+				ThisThinker.platformRotationTarget = 0f;
+
 				savedRot = Main.rand.NextFloat(6.28f);
 				npc.netUpdate = true;
 			}
@@ -155,6 +161,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (AttackTimer == 1)
 			{
+				ThisThinker.platformRadiusTarget = 400;
+				ThisThinker.platformRotationTarget = 0.4f;
+
 				npc.TargetClosest();
 			}
 
@@ -200,6 +209,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (AttackTimer == 1)
 			{
+				ThisThinker.platformRadiusTarget = 600;
+				ThisThinker.platformRotationTarget = -0.2f;
+
 				npc.TargetClosest();
 			}
 

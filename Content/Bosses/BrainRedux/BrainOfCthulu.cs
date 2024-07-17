@@ -42,6 +42,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		private List<Vector2> cache;
 		private Trail trail;
 
+		public TheThinker ThisThinker => thinker?.ModNPC as TheThinker;
+
 		public ref float Timer => ref npc.ai[0];
 		public ref float State => ref npc.ai[1];
 		public ref float AttackTimer => ref npc.ai[2];

@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.Items.Hell;
 using StarlightRiver.Content.Tiles.Crimson;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,20 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public bool active = false;
 		public List<Point16> tilesChanged = new();
 		public Vector2 home;
+
+		public float platformRadius = 550;
+		public float platformRotation = 0;
+
+		public float platformRadiusTarget = 550;
+		public float platformRotationTarget = 0;
+
+		private float lastRadius = -1;
+		private float lastRotation = -1;
+
+		private int radTimer;
+		private int rotTimer;
+
+		public List<NPC> platforms = new();
 
 		public ref float ExtraRadius => ref NPC.ai[0];
 
@@ -84,6 +99,62 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (active && (NPC.crimsonBoss < 0 || !Main.npc[NPC.crimsonBoss].active))
 			{
 				ResetArena();
+			}
+
+			if (platforms.Count > 0)
+			{
+				// Radius ease
+				if (lastRadius == -1)
+				{
+					if (platformRadius != platformRadiusTarget)
+					{
+						lastRadius = platformRadius;
+						radTimer = 0;
+					}
+				}	
+				else if (radTimer <= 60)
+				{
+					radTimer++;
+					platformRadius = lastRadius + (platformRadiusTarget - lastRadius) * Helpers.Helper.BezierEase(radTimer / 60f);
+				}
+				else
+				{
+					lastRadius = -1;
+				}
+
+				// Rotation ease
+				if (lastRotation == -1)
+				{
+					if (platformRotation != platformRotationTarget)
+					{
+						lastRotation = platformRotation;
+						rotTimer = 0;
+					}
+				}
+				else if (rotTimer <= 60)
+				{
+					rotTimer++;
+					platformRotation = lastRotation + (platformRotationTarget - lastRotation) * Helpers.Helper.BezierEase(rotTimer / 60f);
+				}
+				else
+				{
+					lastRotation = -1;
+				}
+
+				// Set final positions for this frame
+				for (int k = 0; k < platforms.Count; k++)
+				{
+					float prog = k / (float)platforms.Count;
+
+					if (platforms[k].active && platforms[k].type == ModContent.NPCType<BrainPlatform>())
+					{
+						var target = home + Vector2.UnitX.RotatedBy(prog * 6.28f + platformRotation) * platformRadius;
+						platforms[k].velocity = target - platforms[k].Center;
+						//platforms[k].Center = target;
+					}
+					else
+					{/*TODO: Restore platforms logic*/ }					
+				}
 			}
 
 			// Attacks
@@ -180,17 +251,13 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				}
 			}
 
-			for (int k = 0; k < 14; k++)
+			for (int k = 0; k < 12; k++)
 			{
-				float off = 1 - k / 13f * 2f;
-				Vector2 pos = NPC.Center + Vector2.UnitY * off * 750;
+				Vector2 pos = NPC.Center + Vector2.UnitX.RotatedBy(k / 12f * 6.28f) * 550;
 				int i = NPC.NewNPC(null, (int)pos.X, (int)pos.Y, ModContent.NPCType<BrainPlatform>());
 
-				float a = off * 750f;
-				float h = 750f;
-
-				Main.npc[i].width = (int)((float)Math.Sqrt(Math.Pow(h, 2) - Math.Pow(a, 2)) * 2);
 				Main.npc[i].Center = pos;
+				platforms.Add(Main.npc[i]);
 			}
 
 			active = true;
