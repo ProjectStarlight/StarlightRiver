@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override void SafeSetDefaults()
 		{
-			NPC.width = 400;
+			NPC.width = 260;
 			NPC.height = 12;
 		}
 	}
