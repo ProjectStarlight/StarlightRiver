@@ -87,3 +87,37 @@
 - Made a major overhaul to the inner workings of the doalgue system. It is now primarily data driven, and dialogue trees are stored in the localization directory.
 - Texture management now utilizes the AssGen package, see https://www.nuget.org/packages/AssGen for details.
 - Starsight hints are now data driven and localizable
+
+# Starlight River 0.2.8.1
+
+## Tweaks
+- Filet knife no longer gives Well Fed buff
+
+## Multiplayer
+- Fixes for filet knife
+- Various packet fixes for NPCs and projectiles in huge worlds
+
+## Fixes
+- Fixed the vitric pylon's debug item being sold by NPCs
+- Fixed the auroracle arena not being created in multiplayer
+- Fixed cutaways not allaigning themselves correctly after leaving a multiplayer game
+- Fixed incorrect textures on ceiros' platforms
+- Fixed a crash that could occur related to lighting
+- Fixed certain boss arenas not properly blocking you in with frameskip on off or subtle
+- Fixed auroracle not spawning in multiplayer
+- Fixed inconsistent door behavior with shrines in multiplayer
+- Fixed the auroracle arena background not showing if reflections are disabled on world load
+
+# Starlight River 0.2.8.2
+
+## Config
+- Removed the 'Scrolling lighting buffer' option as it caused crashes and did not improve performance
+
+## Fixes
+- Fixed random invalid memory access crashes
+- Performance improvements and deadzone fixes for moving platform grappling hooking
+- Moving platforms now treat queen slime hook normally
+- Fixes for inverted gravity rendering
+
+
+

@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Buffs
 
 				for (int k = 0; k < Player.MaxBuffs; k++)
 				{
-					if (!BuffID.Sets.NurseCannotRemoveDebuff[Player.buffType[k]])
+					if (!BuffID.Sets.NurseCannotRemoveDebuff[Player.buffType[k]] && Main.debuff[Player.buffType[k]])
 						Player.DelBuff(k);
 				}
 			}
