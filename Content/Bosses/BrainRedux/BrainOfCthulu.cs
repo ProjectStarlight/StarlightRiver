@@ -557,12 +557,15 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		protected void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, chain.segmentCount, new NoTip(), factor => 10, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				int index = (int)(factor.X * chain.segmentCount);
-				index = Math.Clamp(index, 0, chain.segmentCount - 1);
-				return Lighting.GetColor((chain.ropeSegments[index].posNow / 16).ToPoint());
+				trail = new Trail(Main.instance.GraphicsDevice, chain.segmentCount, new NoTip(), factor => 10, factor =>
+				{
+					int index = (int)(factor.X * chain.segmentCount);
+					index = Math.Clamp(index, 0, chain.segmentCount - 1);
+					return Lighting.GetColor((chain.ropeSegments[index].posNow / 16).ToPoint());
 				});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = npc.Center;

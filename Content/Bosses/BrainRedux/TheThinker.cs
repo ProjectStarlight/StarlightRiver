@@ -58,9 +58,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			NPC.knockBackResist = 0f;
 			NPC.friendly = false;
 			NPC.noTileCollide = true;
-			NPC.boss = true;
 
-			Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/WhipAndNaenae");
+			NPC.boss = true;
 
 			toRender.Add(this);
 		}
@@ -81,7 +80,13 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (BrainOfCthulu.TheBrain is null)
 			{
+				NPC.boss = false;
 				NPC.Center += (home - NPC.Center) * 0.02f;
+			}
+			else
+			{
+				NPC.boss = true;
+				Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/WhipAndNaenae");
 			}
 
 			GraymatterBiome.forceGrayMatter = true;
@@ -148,9 +153,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 					if (platforms[k].active && platforms[k].type == ModContent.NPCType<BrainPlatform>())
 					{
-						var target = home + Vector2.UnitX.RotatedBy(prog * 6.28f + platformRotation) * platformRadius;
+						var rot = prog * 6.28f + platformRotation;
+						var targetX = (float)Math.Cos(rot) * platformRadius * 0.95f;
+						var targetY = (float)Math.Sin(rot) * platformRadius;
+						var target = home + new Vector2(targetX, targetY);
+
 						platforms[k].velocity = target - platforms[k].Center;
-						//platforms[k].Center = target;
 					}
 					else
 					{/*TODO: Restore platforms logic*/ }					

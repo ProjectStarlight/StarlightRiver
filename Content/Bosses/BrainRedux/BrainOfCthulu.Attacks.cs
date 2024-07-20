@@ -85,14 +85,14 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				{
 					for (int k = 0; k < 9; k++)
 					{
-						Projectile.NewProjectile(null, npc.Center, Vector2.UnitX.RotatedBy(savedRot + k / 9f * 6.28f) * 0.5f, ModContent.ProjectileType<VeinSpear>(), 25, 0, Main.myPlayer);
+						Projectile.NewProjectile(null, thinker.Center, Vector2.UnitX.RotatedBy(savedRot + k / 9f * 6.28f) * 0.5f, ModContent.ProjectileType<VeinSpear>(), 25, 0, Main.myPlayer);
 					}
 				}
 				else if (Main.expertMode)
 				{
 					for (int k = 0; k < 5; k++)
 					{
-						Projectile.NewProjectile(null, npc.Center, Vector2.UnitX.RotatedBy(savedRot + k / 5f * 6.28f) * 0.5f, ModContent.ProjectileType<VeinSpear>(), 25, 0, Main.myPlayer);
+						Projectile.NewProjectile(null, thinker.Center, Vector2.UnitX.RotatedBy(savedRot + k / 5f * 6.28f) * 0.5f, ModContent.ProjectileType<VeinSpear>(), 25, 0, Main.myPlayer);
 					}
 				}
 			}
@@ -311,6 +311,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			if (AttackTimer == 1)
 			{
+				ThisThinker.platformRadiusTarget = 600;
+				ThisThinker.platformRotationTarget -= 0.2f;
+
 				savedRot = Main.rand.Next(4) * (6.28f / 4f);
 				npc.netUpdate = true;
 			}
@@ -394,6 +397,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (AttackTimer == 60)
 			{
+				ThisThinker.platformRadiusTarget = 400;
+				ThisThinker.platformRotationTarget -= 0.2f;
+
 				int random = Main.rand.Next(10);
 				savedPos = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(random / 10f * 6.28f) * 590;
 
@@ -452,6 +458,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public void TeleportHunt()
 		{
+			if (AttackTimer == 1)
+			{
+				ThisThinker.platformRadiusTarget = 550;
+				ThisThinker.platformRotationTarget -= 0.2f;
+			}
+
 			if (AttackTimer <= 120)
 			{
 				thinker.Center += ((thinker.ModNPC as TheThinker).home - thinker.Center) * 0.03f;
@@ -468,6 +480,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (motionTime == 30)
 			{
+				ThisThinker.platformRadiusTarget -= 40;
+				ThisThinker.platformRotationTarget -= 0.1f;
+
 				npc.TargetClosest();
 
 				npc.Center = Main.player[npc.target].Center + Vector2.UnitX.RotatedByRandom(6.28f) * 150;
@@ -556,6 +571,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (AttackTimer == 60)
 			{
+				ThisThinker.platformRadiusTarget = 400;
+				ThisThinker.platformRotationTarget -= 0.2f;
+
 				int random = Main.rand.Next(4);
 				savedPos = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(random / 4f * 6.28f) * 590;
 

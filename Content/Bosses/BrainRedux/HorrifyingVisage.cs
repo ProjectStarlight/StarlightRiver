@@ -26,6 +26,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			NPC.noGravity = true;
 			NPC.aiStyle = -1;
 			NPC.chaseable = false;
+			NPC.knockBackResist = 0f;
 		}
 
 		public override void AI()

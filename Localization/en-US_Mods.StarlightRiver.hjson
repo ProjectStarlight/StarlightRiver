@@ -3978,6 +3978,11 @@ Projectiles: {
 	InfernalHarvestPaid.DisplayName: Infernal Harvest Paid
 	FirePillar.DisplayName: Fire Pillar
 	VeinSpear.DisplayName: Vein Spear
+	GraySlash.DisplayName: Gray Slash
+	LobotomizerFastProjectile.DisplayName: Lobotomizer Fast Projectile
+	LobotomizerHallucination.DisplayName: Lobotomizer Hallucination
+	LobotomizerProjectile.DisplayName: Lobotomizer Projectile
+	MyelinSlash.DisplayName: Myelin Slash
 }
 
 Tiles: {
@@ -4332,6 +4337,8 @@ NPCs: {
 	BrainPlatform.DisplayName: ""
 	HorrifyingVisage.DisplayName: Horrifying Visage
 	TestCollider.DisplayName: ""
+	Neurysm.DisplayName: Neurysm
+	TheThinker.DisplayName: The Thinker
 }
 
 Buffs: {
