@@ -13,18 +13,8 @@ namespace StarlightRiver.Content.Tiles.Blockers
 
 		public void Load()
 		{
-			BlockerTileSystem.LoadBarrier("VitricBossBarrier", () =>
-			{
-				bool set = ceirosBlockers;
-				ceirosBlockers = false;
-				return set;
-			});
-			BlockerTileSystem.LoadBarrier("GlassweaverBossBarrier", () =>
-			{
-				bool set = glassweaverBlockers;
-				glassweaverBlockers = false;
-				return set;
-			});
+			BlockerTileSystem.LoadBarrier("VitricBossBarrier", () => NPC.AnyNPCs(ModContent.NPCType<VitricBoss>()));
+			BlockerTileSystem.LoadBarrier("GlassweaverBossBarrier", () => NPC.AnyNPCs(ModContent.NPCType<Glassweaver>()));
 		}
 
 		public void Unload() { }

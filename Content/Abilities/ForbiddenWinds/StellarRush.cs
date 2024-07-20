@@ -75,12 +75,15 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 			}
 		}
 
-		public override void UpdateFixed()
+		public override void SafeUpdateFixed()
 		{
-			base.UpdateFixed();
-
 			if (cache is null)
 				return;
+
+			if (EffectTimer > 0)
+			{
+				EffectTimer--;
+			}
 
 			if (EffectTimer < 44 - 24)
 			{

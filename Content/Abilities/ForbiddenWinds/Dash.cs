@@ -162,7 +162,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 			}
 		}
 
-		public override void UpdateFixed()
+		public override void SafeUpdateFixed()
 		{
 			if (EffectTimer > 0 && cache != null)
 			{
@@ -170,8 +170,6 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 					ManageTrail();
 				EffectTimer--;
 			}
-
-			base.UpdateFixed();
 		}
 
 		public override void CooldownFinish()

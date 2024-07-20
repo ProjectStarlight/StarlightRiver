@@ -164,7 +164,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 			}
 		}
 
-		public override void UpdateFixed()
+		public override void SafeUpdateFixed()
 		{
 			if (EffectTimer > 0)
 				EffectTimer--;

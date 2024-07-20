@@ -1,4 +1,5 @@
 using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.ForbiddenWinds;
 using StarlightRiver.Content.Events;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Haunted;
@@ -53,8 +54,8 @@ namespace StarlightRiver.Content.Items
 		public override bool? UseItem(Player player)
 		{
 			//StarlightEventSequenceSystem.sequence = 0;
-			player.GetHandler().unlockedAbilities.Clear();
-			player.GetHandler().InfusionLimit = 0;
+			player.GetHandler().unlockedAbilities.Add(typeof(Dash), new Dash());
+			player.GetHandler().InfusionLimit = 1;
 
 			//Main.time = 53999;
 			//Main.dayTime = true;
