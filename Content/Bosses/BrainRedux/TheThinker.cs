@@ -2,6 +2,7 @@
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Items.Hell;
 using StarlightRiver.Content.Tiles.Crimson;
+using StarlightRiver.Core.Systems.LightingSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -82,16 +83,22 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				NPC.boss = false;
 				NPC.Center += (home - NPC.Center) * 0.02f;
+
+				if (ExtraRadius > -140)
+					ExtraRadius--;
 			}
 			else
 			{
 				NPC.boss = true;
 				Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/WhipAndNaenae");
+
+				if (ExtraRadius < 0)
+					ExtraRadius++;
 			}
 
 			GraymatterBiome.forceGrayMatter = true;
 
-			Lighting.AddLight(NPC.Center, new Vector3(1f, 0.2f, 0.2f));
+			Lighting.AddLight(NPC.Center, new Vector3(1f, 0.9f, 0.8f));
 
 			for (int k = 0; k < Main.maxPlayers; k++)
 			{
@@ -298,6 +305,16 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			return Helpers.Helper.CheckCircularCollision(NPC.Center, 64, target.Hitbox);
 		}
 
+		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+		{
+			var tex = Assets.Bosses.BrainRedux.ShellBack.Value;
+			Vector2 pos = NPC.Center - Main.screenPosition - tex.Size() / 2f;
+
+			LightingBufferRenderer.DrawWithLighting(pos, tex);
+
+			return false;
+		}
+
 		public override void SaveData(TagCompound tag)
 		{
 			tag.Add("active", active);
@@ -340,7 +357,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			foreach (TheThinker thinker in toRender)
 			{
-				sb.Draw(tex, thinker.NPC.Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2f, 1, 0, 0);
+				//sb.Draw(tex, thinker.NPC.Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2f, 1, 0, 0);
 			}
 		}
 	}
