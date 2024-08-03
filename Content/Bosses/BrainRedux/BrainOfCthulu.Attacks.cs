@@ -215,7 +215,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				npc.TargetClosest();
 			}
 
-			if (AttackTimer >= 1 && AttackTimer < 600)
+			if (AttackTimer > 1 && AttackTimer < 600)
 			{
 				npc.Center += (targetPos - npc.Center) * 0.05f;
 			}

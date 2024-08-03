@@ -33,11 +33,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (Projectile.timeLeft == 270)
 				Projectile.velocity *= 50f;
 
-			foreach (Player player in Main.player)
-			{
-				if (!player.active)
-					continue;
+			if (BrainOfCthulu.TheBrain?.thinker is null)
+				return;
 
+			foreach (Player player in Main.ActivePlayers)
+			{
 				if (Helpers.Helper.CheckLinearCollision(BrainOfCthulu.TheBrain.thinker.Center, Projectile.Center, player.Hitbox, out Vector2 collision))
 				{
 					player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " played the idiot harp..."), 25, 0);

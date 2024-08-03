@@ -101,7 +101,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			Timer++;
 
-			NPC.realLife = BrainOfCthulu.TheBrain.thinker.whoAmI;
+			NPC.realLife = BrainOfCthulu.TheBrain?.thinker?.whoAmI ?? NPC.realLife;
 			NPC.life = NPC.lifeMax;
 
 			if (TellTime > 0)

@@ -1,6 +1,6 @@
-﻿using StarlightRiver.Content.Biomes;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Buffs;
-using StarlightRiver.Content.Items.Hell;
 using StarlightRiver.Content.Tiles.Crimson;
 using StarlightRiver.Core.Systems.LightingSystem;
 using System;
@@ -14,10 +14,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 {
 	internal class TheThinker : ModNPC
 	{
-		public static readonly List<TheThinker> toRender = new();
+		public static readonly List<TheThinker> toRender = [];
+		public static Effect bodyShader;
 
 		public bool active = false;
-		public List<Point16> tilesChanged = new();
+		public List<Point16> tilesChanged = [];
 		public Vector2 home;
 
 		public float platformRadius = 550;
@@ -32,13 +33,15 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		private int radTimer;
 		private int rotTimer;
 
-		public List<NPC> platforms = new();
+		public List<NPC> platforms = [];
 
 		public ref float ExtraRadius => ref NPC.ai[0];
 
 		public ref float Timer => ref NPC.ai[1];
 		public ref float AttackTimer => ref NPC.ai[2];
 		public ref float AttackState => ref NPC.ai[3];
+
+		public int hurtRadius => Main.masterMode ? 750 : 800;
 
 		public override string Texture => AssetDirectory.BrainRedux + Name;
 
@@ -90,10 +93,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			else
 			{
 				NPC.boss = true;
-				Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/WhipAndNaenae");
-
-				if (ExtraRadius < 0)
-					ExtraRadius++;
+				Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/Moonstone");
 			}
 
 			GraymatterBiome.forceGrayMatter = true;
@@ -123,7 +123,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						lastRadius = platformRadius;
 						radTimer = 0;
 					}
-				}	
+				}
 				else if (radTimer <= 60)
 				{
 					radTimer++;
@@ -160,15 +160,35 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 					if (platforms[k].active && platforms[k].type == ModContent.NPCType<BrainPlatform>())
 					{
-						var rot = prog * 6.28f + platformRotation;
-						var targetX = (float)Math.Cos(rot) * platformRadius * 0.95f;
-						var targetY = (float)Math.Sin(rot) * platformRadius;
-						var target = home + new Vector2(targetX, targetY);
+						float rot = prog * 6.28f + platformRotation;
+						float targetX = (float)Math.Cos(rot) * platformRadius * 0.95f;
+						float targetY = (float)Math.Sin(rot) * platformRadius;
+						Vector2 target = home + new Vector2(targetX, targetY);
 
 						platforms[k].velocity = target - platforms[k].Center;
 					}
 					else
-					{/*TODO: Restore platforms logic*/ }					
+					{/*TODO: Restore platforms logic*/ }
+				}
+			}
+
+			// Grow radius when first phase
+			if (BrainOfCthulu.TheBrain != null && BrainOfCthulu.TheBrain.State == 2)
+			{
+				if (ExtraRadius < 0)
+					ExtraRadius++;
+			}
+
+			// Spike logic
+			if (BrainOfCthulu.TheBrain != null && BrainOfCthulu.TheBrain.State >= 2)
+			{
+				foreach (Player player in Main.ActivePlayers)
+				{
+					if (Vector2.Distance(player.Center, home) > hurtRadius && !player.immune)
+					{
+						player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " was calcified"), 50, 0);
+						player.velocity += Vector2.Normalize(home - player.Center) * 28 * new Vector2(0.5f, 1f);
+					}
 				}
 			}
 
@@ -296,6 +316,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				npc.active = false;
 			}
 
+			platforms.Clear();
+
 			tilesChanged.Clear();
 			active = false;
 		}
@@ -307,10 +329,52 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			var tex = Assets.Bosses.BrainRedux.ShellBack.Value;
-			Vector2 pos = NPC.Center - Main.screenPosition - tex.Size() / 2f;
+			Texture2D tex = Assets.Bosses.BrainRedux.ShellBack.Value;
+			Vector2 pos = home - Main.screenPosition - tex.Size() / 2f;
 
 			LightingBufferRenderer.DrawWithLighting(pos, tex);
+
+			if (active)
+			{
+				var spike = Assets.Misc.SpikeTell.Value;
+				var solid = Assets.Bosses.BrainRedux.ShellSpike.Value;
+
+				for (int k = 0; k < 36; k++)
+				{
+					var rot = k / 36f * 6.28f;
+					Vector2 edge = home + Vector2.UnitX.RotatedBy(rot) * (hurtRadius + 50);
+					spriteBatch.Draw(spike, edge - Main.screenPosition, new Rectangle(spike.Width / 2, 0, spike.Width / 2, spike.Height), new Color(255, 50, 80, 0) * 0.25f, rot - 1.57f, new Vector2(spike.Width / 4f, spike.Height), 1.5f, 0, 0);
+					spriteBatch.Draw(solid, edge - Main.screenPosition, null, new Color(Lighting.GetSubLight(edge)), rot - 1.57f / 2f, solid.Size(), 1f, 0, 0);
+				}
+
+				for (int k = 0; k < 36; k++)
+				{
+					var rot = (k + 0.5f) / 36f * 6.28f;
+					var sin = (float)Math.Sin(Main.GameUpdateCount * 0.01f + k);
+					Vector2 edge = home + Vector2.UnitX.RotatedBy(rot) * (hurtRadius + 90 + sin * 40);
+					spriteBatch.Draw(spike, edge - Main.screenPosition, new Rectangle(spike.Width / 2, 0, spike.Width / 2, spike.Height), new Color(255, 50, 80, 0) * 0.25f * (1f - sin + 0.5f), rot - 1.57f, new Vector2(spike.Width / 4f, spike.Height), 1.5f, 0, 0);
+					spriteBatch.Draw(solid, edge - Main.screenPosition, null, new Color(Lighting.GetSubLight(edge)), rot - 1.57f / 2f, solid.Size(), 1f, 0, 0);
+				}
+
+				for (int k = 0; k < 72; k++)
+				{
+					var rot = k / 72f * 6.28f;
+					Vector2 edge = home + Vector2.UnitX.RotatedBy(rot) * (hurtRadius + 50);
+					spriteBatch.Draw(solid, edge - Main.screenPosition, null, Lighting.GetColor((edge / 16).ToPoint()), rot + 1.57f / 2f, solid.Size() / 2f , 1.5f, 0, 0);
+				}
+				for (int k = 0; k < 72; k++)
+				{
+					var rot = k / 72f * 6.28f;
+					Vector2 edge = home + Vector2.UnitX.RotatedBy(rot) * (hurtRadius + 70);
+					spriteBatch.Draw(solid, edge - Main.screenPosition, null, Lighting.GetColor((edge / 16).ToPoint()), rot + 1.57f / 2f + 3.14f, solid.Size() / 2f, 1.5f, 0, 0);
+				}
+				for (int k = 0; k < 72; k++)
+				{
+					var rot = k / 72f * 6.28f;
+					Vector2 edge = home + Vector2.UnitX.RotatedBy(rot) * (hurtRadius + 90);
+					spriteBatch.Draw(solid, edge - Main.screenPosition, null, Lighting.GetColor((edge / 16).ToPoint()), rot + 1.57f / 2f, solid.Size() / 2f, 1.5f, 0, 0);
+				}
+			}
 
 			return false;
 		}
@@ -353,11 +417,28 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		private void DrawMe(SpriteBatch sb)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			if (bodyShader is null)
+				bodyShader = Terraria.Graphics.Effects.Filters.Scene["ThinkerBody"].GetShader().Shader;
 
 			foreach (TheThinker thinker in toRender)
 			{
-				//sb.Draw(tex, thinker.NPC.Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2f, 1, 0, 0);
+				bodyShader.Parameters["u_resolution"].SetValue(Assets.Bosses.BrainRedux.Heart.Size());
+				bodyShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f);
+
+				bodyShader.Parameters["mainbody_t"].SetValue(Assets.Bosses.BrainRedux.Heart.Value);
+				bodyShader.Parameters["linemap_t"].SetValue(Assets.Bosses.BrainRedux.HeartLine.Value);
+				bodyShader.Parameters["noisemap_t"].SetValue(Assets.Noise.PerlinNoise.Value);
+				bodyShader.Parameters["overlay_t"].SetValue(Assets.Bosses.BrainRedux.HeartOver.Value);
+				bodyShader.Parameters["normal_t"].SetValue(Assets.Bosses.BrainRedux.HeartNormal.Value);
+
+				sb.End();
+				sb.Begin(default, default, SamplerState.PointWrap, default, default, bodyShader, Main.GameViewMatrix.TransformationMatrix);
+
+				Texture2D tex = Assets.Bosses.BrainRedux.Heart.Value;
+				sb.Draw(tex, thinker.NPC.Center - Main.screenPosition, null, Color.White, thinker.NPC.rotation, tex.Size() / 2f, thinker.NPC.scale, 0, 0);
+
+				sb.End();
+				sb.Begin(default, default, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 	}

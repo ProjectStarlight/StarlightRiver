@@ -157,7 +157,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				float dist = float.PositiveInfinity;
 
-				foreach (NPC n in Main.npc)
+				foreach (NPC n in Main.ActiveNPCs)
 				{
 					if (n.active && n.type == ModContent.NPCType<TheThinker>())
 					{
@@ -171,7 +171,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				}
 
 				// If the nearest thinker is too far away, flee.
-				if (dist > Math.Pow(2000, 2))
+				if (thinker is null || dist > Math.Pow(2000, 2))
 				{
 					State = -1;
 					Timer = 0;

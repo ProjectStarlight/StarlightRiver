@@ -179,8 +179,6 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 				var NPCRect = new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, 8 + (self.velocity.Y > 0 ? (int)self.velocity.Y : 0));
 				var NPCOldRect = new Rectangle((int)plat.prevPos.X, (int)plat.prevPos.Y, npc.width, 8 + (self.velocity.Y > 0 ? (int)self.velocity.Y : 0));
 
-				Main.NewText(npc.position - plat.prevPos);
-
 				if ((PlayerRect.Intersects(NPCRect) || PlayerRect.Intersects(NPCOldRect)) && self.position.Y <= npc.position.Y)
 				{
 					if (!self.justJumped && self.velocity.Y >= 0)
