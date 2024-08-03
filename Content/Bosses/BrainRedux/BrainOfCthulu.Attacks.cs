@@ -478,7 +478,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				opacity = 1f - motionTime / 30f;
 			}
 
-			if (motionTime == 30)
+			if (motionTime == 30 && AttackTimer < 150 * 5)
 			{
 				ThisThinker.platformRadiusTarget -= 40;
 				ThisThinker.platformRotationTarget -= 0.1f;

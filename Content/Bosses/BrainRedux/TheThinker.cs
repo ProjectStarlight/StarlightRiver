@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
+using Terraria.ID;
 using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Bosses.BrainRedux
@@ -41,7 +42,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public ref float AttackTimer => ref NPC.ai[2];
 		public ref float AttackState => ref NPC.ai[3];
 
-		public int hurtRadius => Main.masterMode ? 750 : 800;
+		public int hurtRadius => Main.masterMode ? 700 : 750;
 
 		public override string Texture => AssetDirectory.BrainRedux + Name;
 
@@ -93,7 +94,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			else
 			{
 				NPC.boss = true;
-				Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/Moonstone");
+				Music = MusicID.Boss4;
 			}
 
 			GraymatterBiome.forceGrayMatter = true;
@@ -356,6 +357,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					spriteBatch.Draw(solid, edge - Main.screenPosition, null, new Color(Lighting.GetSubLight(edge)), rot - 1.57f / 2f, solid.Size(), 1f, 0, 0);
 				}
 
+				// TODO: Replace this with a mesh render mapping a texture to it
 				for (int k = 0; k < 72; k++)
 				{
 					var rot = k / 72f * 6.28f;
