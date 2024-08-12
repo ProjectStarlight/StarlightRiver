@@ -19,7 +19,6 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public static Effect bodyShader;
 
 		public bool active = false;
-		public List<Point16> tilesChanged = [];
 		public Vector2 home;
 
 		public float platformRadius = 550;
@@ -74,7 +73,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
 			{
 				BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.TheCrimson,
-				new FlavorTextBestiaryInfoElement("An incredibly dense collection of gray matter, this strange entity sits waiting for it's second half to emerge from hiding. Despite what it is, the Brain of Cthulhu seems to act rather mindlessly without this... thing... to think for it...")
+				new FlavorTextBestiaryInfoElement("")
 			});
 		}
 
@@ -249,11 +248,16 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			return true;
 		}
 
+		/// <summary>
+		/// Create the arena by toggling tiles as appropriate and add the arena record to the arena handler
+		/// </summary>
 		public void CreateArena()
 		{
-			for (int x = -60; x <= 60; x++)
+			List<Point16> tilesChanged = new();
+
+			for (int x = -54; x <= 54; x++)
 			{
-				for (int y = -60; y <= 60; y++)
+				for (int y = -54; y <= 54; y++)
 				{
 					var off = new Vector2(x, y);
 					float dist = off.LengthSquared();
@@ -271,7 +275,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						}
 					}
 
-					if (dist > Math.Pow(50, 2) && dist <= Math.Pow(60, 2))
+					if (dist > Math.Pow(50, 2) && dist <= Math.Pow(54, 2))
 					{
 						Tile tile = Main.tile[(int)home.X / 16 + x, (int)home.Y / 16 + y];
 
@@ -289,7 +293,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			for (int k = 0; k < 12; k++)
 			{
-				Vector2 pos = NPC.Center + Vector2.UnitX.RotatedBy(k / 12f * 6.28f) * 550;
+				Vector2 pos = home + Vector2.UnitX.RotatedBy(k / 12f * 6.28f) * 550;
 				int i = NPC.NewNPC(null, (int)pos.X, (int)pos.Y, ModContent.NPCType<BrainPlatform>());
 
 				Main.npc[i].Center = pos;
@@ -297,30 +301,16 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			}
 
 			active = true;
+
+			ModContent.GetInstance<ThinkerArenaSafetySystem>().records.Add(new(NPC, home, tilesChanged));
 		}
 
+		/// <summary>
+		/// Tell the arena handler to reset the arena and remove its record from the save/load safety
+		/// </summary>
 		public void ResetArena()
 		{
-			foreach (Point16 point in tilesChanged)
-			{
-				Tile tile = Main.tile[(int)home.X / 16 + point.X, (int)home.Y / 16 + point.Y];
-
-				if (tile.IsActuated)
-					tile.IsActuated = false;
-
-				if (tile.TileType == ModContent.TileType<BrainBlocker>())
-					tile.HasTile = false;
-			}
-
-			foreach (NPC npc in Main.npc.Where(n => n.active && n.type == ModContent.NPCType<BrainPlatform>()))
-			{
-				npc.active = false;
-			}
-
-			platforms.Clear();
-
-			tilesChanged.Clear();
-			active = false;
+			ModContent.GetInstance<ThinkerArenaSafetySystem>().ResetArena(NPC);
 		}
 
 		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
@@ -384,14 +374,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public override void SaveData(TagCompound tag)
 		{
 			tag.Add("active", active);
-			tag.Add("tiles", tilesChanged);
 			tag.Add("home", home);
 		}
 
 		public override void LoadData(TagCompound tag)
 		{
 			active = tag.GetBool("active");
-			tilesChanged = tag.GetList<Point16>("tiles") as List<Point16>;
 			home = tag.Get<Vector2>("home");
 		}
 
