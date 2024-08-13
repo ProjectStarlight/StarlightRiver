@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			return new TagCompound()
 			{
 				["Pos"] = arenaPos,
-				["Tiles"] = changedTiles.Select(n => n.ToVector2())
+				["Tiles"] = changedTiles.Select(n => n.ToVector2()).ToList()
 			};
 		}
 

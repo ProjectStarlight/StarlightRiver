@@ -93,7 +93,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			else
 			{
 				NPC.boss = true;
-				Music = MusicID.Boss4;
+				Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/TheThinker");
 			}
 
 			GraymatterBiome.forceGrayMatter = true;
