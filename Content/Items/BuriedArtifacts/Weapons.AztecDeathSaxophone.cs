@@ -151,7 +151,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 		{
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 			Texture2D texGlow = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
-			Texture2D glowTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D glowTex = Assets.Keys.GlowAlpha.Value;
 
 			spriteBatch.Draw(tex, position, frame, drawColor, 0f, origin, scale, 0f, 0f);
 
@@ -286,7 +286,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 			Texture2D texGlow = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
-			Texture2D glowTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D glowTex = Assets.Keys.GlowAlpha.Value;
 
 			SpriteEffects flip = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : 0f;
 

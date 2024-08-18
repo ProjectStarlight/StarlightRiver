@@ -8,7 +8,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Interactive
 {
-	internal class Bouncer : DummyTile, IHintable
+	internal class Bouncer : DummyTile
 	{
 		public override int DummyType => DummySystem.DummyType<BouncerDummy>();
 
@@ -17,11 +17,6 @@ namespace StarlightRiver.Content.Tiles.Interactive
 		public override void SetStaticDefaults()
 		{
 			QuickBlock.QuickSetFurniture(this, 1, 1, DustType<Dusts.GlassNoGravity>(), SoundID.Shatter, false, new Color(115, 182, 158));
-		}
-
-		public string GetHint()
-		{
-			return "A reactive crystal. It... kinetically interacts with Starlight.";
 		}
 	}
 
@@ -73,7 +68,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
 
 		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Tiles/Interactive/BouncerGlow").Value;
+			Texture2D tex = Assets.Tiles.Interactive.BouncerGlow.Value;
 			Color color = Helper.IndicatorColorProximity(150, 300, Center);
 			Main.spriteBatch.Draw(tex, position - Vector2.One - Main.screenPosition, color);
 		}

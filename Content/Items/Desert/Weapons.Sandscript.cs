@@ -268,9 +268,9 @@ namespace StarlightRiver.Content.Items.Desert
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D starTex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "StarTexture").Value;
+			Texture2D starTex = Assets.StarTexture.Value;
 
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
 
 			float mult = 0f;
 			if (Projectile.timeLeft > maxTimeleft * 0.6f)
@@ -316,24 +316,30 @@ namespace StarlightRiver.Content.Items.Desert
 				mult = 1f - (Projectile.timeLeft - maxTimeleft * 0.5f) / maxTimeleft * 0.5f;
 			}
 
-			trail ??= new Trail(Main.instance.GraphicsDevice, 20, new NoTip(), factor => 30f * factor, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X >= 0.85f)
-					return Color.Transparent;
+				trail = new Trail(Main.instance.GraphicsDevice, 20, new NoTip(), factor => 30f * factor, factor =>
+							{
+								if (factor.X >= 0.85f)
+									return Color.Transparent;
 
-				return Color.Lerp(new Color(30, 230, 200), new Color(230, 170, 100), 1f - Projectile.timeLeft / maxTimeleft) * factor.X * (float)Math.Sin(Projectile.timeLeft / maxTimeleft) * mult * 0.5f;
-			});
+								return Color.Lerp(new Color(30, 230, 200), new Color(230, 170, 100), 1f - Projectile.timeLeft / maxTimeleft) * factor.X * (float)Math.Sin(Projectile.timeLeft / maxTimeleft) * mult * 0.5f;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 20, new NoTip(), factor => 20f, factor =>
+			if (trail2 is null || trail2.IsDisposed)
 			{
-				if (factor.X >= 0.85f)
-					return Color.Transparent;
+				trail2 = new Trail(Main.instance.GraphicsDevice, 20, new NoTip(), factor => 20f, factor =>
+							{
+								if (factor.X >= 0.85f)
+									return Color.Transparent;
 
-				return Color.Lerp(new Color(30, 230, 200), new Color(230, 170, 100), 1f - Projectile.timeLeft / maxTimeleft) * factor.X * (float)Math.Sin(Projectile.timeLeft / maxTimeleft) * mult * 0.5f;
-			});
+								return Color.Lerp(new Color(30, 230, 200), new Color(230, 170, 100), 1f - Projectile.timeLeft / maxTimeleft) * factor.X * (float)Math.Sin(Projectile.timeLeft / maxTimeleft) * mult * 0.5f;
+							});
+			}
 
 			trail2.Positions = cache.ToArray();
 			trail2.NextPosition = Projectile.Center + Projectile.velocity;
@@ -350,11 +356,11 @@ namespace StarlightRiver.Content.Items.Desert
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount);
 			effect.Parameters["repeats"].SetValue(1f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 
 			trail?.Render(effect);
 
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/LiquidTrailAlt").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.LiquidTrailAlt.Value);
 			trail2?.Render(effect);
 		}
 

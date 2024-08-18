@@ -321,7 +321,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			if (Timer < RAISE_TIME + 10)
 				DrawGroundTell();
 
-			Asset<Texture2D> bloom = Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha");
+			Asset<Texture2D> bloom = Assets.Keys.GlowAlpha;
 
 			if (Timer > RAISE_TIME - 10)
 			{
@@ -381,7 +381,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		private void DrawGroundTell()
 		{
-			Asset<Texture2D> tellTex = Request<Texture2D>(AssetDirectory.MiscTextures + "SpikeTell");
+			Asset<Texture2D> tellTex = Assets.Misc.SpikeTell;
 			Rectangle frame = tellTex.Frame(2, 1, 1);
 			Rectangle frameGlow = tellTex.Frame(2, 1, 1);
 			Vector2 tellOrigin = frame.Size() * new Vector2(0.5f, 0.928f);

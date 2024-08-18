@@ -142,14 +142,14 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
-			Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
+			Texture2D tex = Assets.Keys.Glow.Value;
+			Texture2D tex2 = Assets.Keys.GlowSoft.Value;
 			spriteBatch.Draw(tex2, Projectile.Center - Main.screenPosition, null, new Color(255, 220, 20), 0, tex2.Size() / 2, 1.4f, 0, 0);
 			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 0.8f, 0, 0);
 
 			if (State == 1 && Projectile.timeLeft <= 15)
 			{
-				Texture2D tex3 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Dusts/Aurora").Value;
+				Texture2D tex3 = Assets.Dusts.Aurora.Value;
 				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 100 + (int)(Projectile.timeLeft / 15f * 155), 50) * (Projectile.timeLeft / 15f), 0, tex.Size() / 2, (15 - Projectile.timeLeft) * 0.6f, 0, 0);
 				spriteBatch.Draw(tex3, Projectile.Center - Main.screenPosition, null, new Color(255, 100 + (int)(Projectile.timeLeft / 15f * 155), 50) * (Projectile.timeLeft / 15f) * 1.5f, 0, tex3.Size() / 2, (15 - Projectile.timeLeft) * 0.4f, 0, 0);
 			}
@@ -177,24 +177,27 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 21, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				float alpha = 1;
+				trail = new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 21, factor =>
+							{
+								float alpha = 1;
 
-				if (factor.X > 0.8f)
-					alpha = 1 + (factor.X - 0.8f) * 30;
+								if (factor.X > 0.8f)
+									alpha = 1 + (factor.X - 0.8f) * 30;
 
-				if (factor.X == 1)
-					return Color.Transparent;
+								if (factor.X == 1)
+									return Color.Transparent;
 
-				if (Projectile.timeLeft < 15)
-					alpha *= Projectile.timeLeft / 15f;
+								if (Projectile.timeLeft < 15)
+									alpha *= Projectile.timeLeft / 15f;
 
-				if (Projectile.timeLeft > 110)
-					alpha *= 1 - (Projectile.timeLeft - 110) / 10f;
+								if (Projectile.timeLeft > 110)
+									alpha *= 1 - (Projectile.timeLeft - 110) / 10f;
 
-				return new Color(255, 50 + (int)(factor.X * 160), 30) * factor.X * alpha;
-			});
+								return new Color(255, 50 + (int)(factor.X * 160), 30) * factor.X * alpha;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
@@ -213,11 +216,11 @@ namespace StarlightRiver.Content.Items.Manabonds
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 
 			effect.Parameters["opacity"].SetValue(0.25f);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 			trail?.Render(effect);
 
 			effect.Parameters["opacity"].SetValue(1f);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
 			trail?.Render(effect);
 		}
 	}

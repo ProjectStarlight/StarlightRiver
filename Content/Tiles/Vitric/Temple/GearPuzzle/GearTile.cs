@@ -386,9 +386,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 		public override void Update()
 		{
-			if (GearEntity is null)
-				return;
-
 			if (gearAnimation > 0)
 				gearAnimation--;
 
@@ -409,11 +406,11 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 		{
 			Texture2D tex = GearSize switch
 			{
-				0 => ModContent.Request<Texture2D>(AssetDirectory.Invisible).Value,
-				1 => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearSmall").Value,
-				2 => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearMid").Value,
-				3 => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearLarge").Value,
-				_ => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearSmall").Value,
+				0 => Assets.Invisible.Value,
+				1 => Assets.Tiles.Vitric.MagicalGearSmall.Value,
+				2 => Assets.Tiles.Vitric.MagicalGearMid.Value,
+				3 => Assets.Tiles.Vitric.MagicalGearLarge.Value,
+				_ => Assets.Tiles.Vitric.MagicalGearSmall.Value,
 			};
 			Main.spriteBatch.Draw(tex, Center - Main.screenPosition, null, Color.White * 0.75f, Rotation, tex.Size() / 2, 1, 0, 0);
 		}

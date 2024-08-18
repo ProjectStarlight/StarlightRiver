@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			if (Equipped(player))
 			{
-				Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "SquidFinsBack").Value;
+				Texture2D tex = Assets.Items.Permafrost.SquidFinsBack.Value;
 				SpriteEffects effects = player.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 				var offset = new Vector2(-7 * player.direction, player.gfxOffY);
 

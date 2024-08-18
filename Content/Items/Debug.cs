@@ -1,7 +1,12 @@
 using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.ForbiddenWinds;
 using StarlightRiver.Content.Events;
+using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Haunted;
+using StarlightRiver.Content.PersistentData;
+using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems;
+using StarlightRiver.Core.Systems.PersistentDataSystem;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items
@@ -38,6 +43,8 @@ namespace StarlightRiver.Content.Items
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
+			player.GetHandler().StaminaMaxBonus = 1000;
+
 			int x = StarlightWorld.vitricBiome.X - 37;
 
 			Dust.NewDustPerfect(new Vector2((x + 80) * 16, (StarlightWorld.vitricBiome.Center.Y + 20) * 16), DustID.Firefly);
@@ -46,13 +53,13 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
-			StarlightEventSequenceSystem.sequence = 0;
-			player.GetHandler().unlockedAbilities.Clear();
-			player.GetHandler().InfusionLimit = 0;
+			//StarlightEventSequenceSystem.sequence = 0;
+			player.GetHandler().unlockedAbilities.Add(typeof(Dash), new Dash());
+			player.GetHandler().InfusionLimit = 1;
 
-			Main.time = 53999;
-			Main.dayTime = true;
-			StarlightEventSequenceSystem.willOccur = true;
+			//Main.time = 53999;
+			//Main.dayTime = true;
+			//StarlightEventSequenceSystem.willOccur = true;
 
 			return true;
 		}

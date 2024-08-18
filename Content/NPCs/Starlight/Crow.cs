@@ -12,7 +12,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.NPCs.Starlight
 {
-	class Crow : ModNPC, IHintable
+	class Crow : ModNPC
 	{
 		public bool visible;
 		public bool leaving;
@@ -58,7 +58,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 
 			visible = false;
 
-			manager = new("Localization/Dialog/AlicanDialog.json", NPC);
+			manager = new("AlicanDialog.json", NPC);
 		}
 
 		public override bool CheckActive()
@@ -151,7 +151,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 		/// </summary>
 		private void DrawFlashingStar(SpriteBatch spriteBatch, float timer)
 		{
-			Texture2D star = ModContent.Request<Texture2D>("StarlightRiver/Assets/StarTexture").Value;
+			Texture2D star = Assets.StarTexture.Value;
 			Vector2 pos = NPC.Center - Main.screenPosition;
 
 			// Fade in
@@ -331,11 +331,6 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			{
 				DrawFlashingStar(spriteBatch, CutsceneTimer);
 			}
-		}
-
-		public string GetHint()
-		{
-			return "What does he want with me?";
 		}
 	}
 }

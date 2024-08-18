@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 		{
 			if (i + 1 > Main.screenPosition.X / 16 && i - 1 < Main.screenPosition.X / 16 + Main.screenWidth / 16 && j + 1 > Main.screenPosition.Y / 16 && j - 1 < Main.screenPosition.Y / 16 + Main.screenHeight / 16)
 			{
-				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Tiles/Forest/LeafWallFlow").Value;
+				Texture2D tex = Assets.Tiles.Forest.LeafWallFlow.Value;
 				var rand = new Random(i * j % 192372);
 
 				float offset = i * j % 6.28f + (float)rand.NextDouble() / 8f;
@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 				if (rand.Next(7) == 0)
 				{
-					Texture2D tex2 = Request<Texture2D>("StarlightRiver/Assets/Tiles/Forest/LeafWallFlower").Value;
+					Texture2D tex2 = Assets.Tiles.Forest.LeafWallFlower.Value;
 					spriteBatch.Draw(tex2, (new Vector2(i + 0.5f, j + 0.5f) + Helper.TileAdj) * 16 + new Vector2(1, 0.5f) * sin * 1.8f - Main.screenPosition,
 						new Rectangle(i * j % 4 * 10, 0, 8, 8), Lighting.GetColor(i, j), offset + sin * 0.07f, new Vector2(4, 4), 1, 0, 0);
 				}

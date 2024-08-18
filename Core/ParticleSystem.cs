@@ -38,7 +38,7 @@ namespace StarlightRiver.Core
 			if (Main.dedServ)
 				return;
 
-			this.texture = Request<Texture2D>(texture, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+			this.texture = Request<Texture2D>(texture, AssetRequestMode.ImmediateLoad).Value;
 			updateFunction = updateDelegate;
 			anchorType = anchor;
 			this.maxParticles = maxParticles;
@@ -78,7 +78,7 @@ namespace StarlightRiver.Core
 
 					Rectangle plane = new Rectangle(0, 0, frame.Width, frame.Height);
 					plane.Offset(particle.Position.ToPoint());
-          
+
 					plane.Width = (int)(plane.Width * particle.Scale);
 					plane.Height = (int)(plane.Height * particle.Scale);
 
@@ -115,7 +115,7 @@ namespace StarlightRiver.Core
 			if (Main.dedServ)
 				return;
 
-			if (GetInstance<GraphicsConfig>().ParticlesActive && effect != null)
+			if (GetInstance<GraphicsConfig>().ParticlesActive && particles.Count > 0 && effect != null)
 			{
 				spriteBatch.End();
 

@@ -119,6 +119,10 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 			if (Main.dedServ)
 				return;
 
+			// Added safety guard here since this seems to be able to be inconsistent?
+			if (tileLightingTarget.RenderTarget is null)
+				return;
+
 			if (lightingQuadBuffer == null)
 				SetupLightingQuadBuffer(); //a bit hacky, but if we do this on load we can end up with black textures for full screen users, and full screen does not fire set display mode events
 
@@ -155,26 +159,8 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 			{
 				refreshTimer++;
 
-				if (Config.ScrollingLightingPoll)
-				{
-					int progress = refreshTimer % Config.LightingPollRate;
-
-					PopulateTileTextureScrolling((Main.screenPosition / 16).ToPoint16().ToVector2() * 16 - Vector2.One * PADDING * 16,
-						(int)(progress / (float)Config.LightingPollRate * tileLightingTarget.RenderTarget.Height),
-						(int)((progress + 1) / (float)Config.LightingPollRate * tileLightingTarget.RenderTarget.Height));
-
-					if (refreshTimer % Config.LightingPollRate == 0)
-					{
-						var colorData = new Color[tileLightingTarget.RenderTarget.Width * tileLightingTarget.RenderTarget.Height];
-						tileLightingTempTarget.RenderTarget.GetData(colorData);
-						tileLightingTarget.RenderTarget.SetData(colorData);
-					}
-				}
-				else
-				{
-					if (Config.LightingPollRate != 0 && refreshTimer % Config.LightingPollRate == 0)
-						PopulateTileTexture((Main.screenPosition / 16).ToPoint16().ToVector2() * 16 - Vector2.One * PADDING * 16);
-				}
+				if (Config.LightingPollRate != 0 && refreshTimer % Config.LightingPollRate == 0)
+					PopulateTileTexture((Main.screenPosition / 16).ToPoint16().ToVector2() * 16 - Vector2.One * PADDING * 16);
 
 				PopulateScreenTexture();
 			}

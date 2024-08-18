@@ -52,6 +52,23 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 				return true;
 			}
 
+			Tile tile2 = Framing.GetTileSafely(i, j);
+			while (tile2.TileFrameX >= 16)
+			{
+				i--;
+				tile2 = Framing.GetTileSafely(i, j);
+			}
+
+			while (tile2.TileFrameY > 0)
+			{
+				j--;
+				tile2 = Framing.GetTileSafely(i, j);
+			}
+
+			SoundPuzzle.SoundPuzzleHandler.lastTries.Add(tile2.TileFrameX);
+			Helpers.Helper.PlayPitched("GlassMiniboss/GlassBounce", 1f, -1f + tile2.TileFrameX * 0.5f, new Vector2(i, j) * 16);
+			(GetDummy<OldCeirosShrineDummy>(i, j) as OldCeirosShrineDummy).echoTimer = 30;
+
 			return false;
 		}
 
@@ -73,12 +90,17 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 	class OldCeirosShrineDummy : Dummy, IDrawAdditive
 	{
+		public int echoTimer = 0;
+
 		public OldCeirosShrineDummy() : base(TileType<OldCeirosShrine>(), 16, 16) { }
 
 		public override void Update()
 		{
 			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
 				return;
+
+			if (echoTimer > 0)
+				echoTimer--;
 
 			if (Main.rand.NextBool(20))
 			{
@@ -97,6 +119,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			Vector2 pos = position - Main.screenPosition + new Vector2(32, -32 + sin * 4);
 
 			Main.spriteBatch.Draw(tex, pos, null, Color.White, 0, tex.Size() / 2, 1, 0, 0);
+
+			Main.spriteBatch.Draw(tex, pos, null, Color.White * (echoTimer / 30f), 0, tex.Size() / 2, 1 + (2 - echoTimer / 30f * 2), 0, 0);
 		}
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
@@ -104,7 +128,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
 				return;
 
-			Texture2D texGlow = Request<Texture2D>(AssetDirectory.VitricBoss + "LongGlow").Value;
+			Texture2D texGlow = Assets.Bosses.VitricBoss.LongGlow.Value;
 			Vector2 pos = position - Main.screenPosition + new Vector2(33, 10);
 
 			float sin = (float)Math.Sin(Main.GameUpdateCount / 18f);

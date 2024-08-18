@@ -451,22 +451,28 @@ namespace StarlightRiver.Content.Items.Dungeon
 				return;
 
 			int sparkMult = Miniature ? 6 : 1;
-			trail ??= new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => thickness * sparkMult * Main.rand.NextFloat(0.75f, 1.25f) * 16 * (float)Math.Pow(ChargeSqrt, 0.7f), factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X > 0.99f)
-					return Color.Transparent;
+				trail = new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => thickness * sparkMult * Main.rand.NextFloat(0.75f, 1.25f) * 16 * (float)Math.Pow(ChargeSqrt, 0.7f), factor =>
+							{
+								if (factor.X > 0.99f)
+									return Color.Transparent;
 
-				return new Color(160, 220, 255) * Fade * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X);
-			});
+								return new Color(160, 220, 255) * Fade * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X);
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + oldVel;
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => thickness * sparkMult * 3 * (float)Math.Pow(ChargeSqrt, 0.7f) * Main.rand.NextFloat(0.55f, 1.45f), factor =>
+			if (trail2 is null || trail2.IsDisposed)
 			{
-				float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
-				return Color.Lerp(baseColor, endColor, EaseFunction.EaseCubicIn.Ease(1 - progress)) * Fade * progress;
-			});
+				trail2 = new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => thickness * sparkMult * 3 * (float)Math.Pow(ChargeSqrt, 0.7f) * Main.rand.NextFloat(0.55f, 1.45f), factor =>
+							{
+								float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
+								return Color.Lerp(baseColor, endColor, EaseFunction.EaseCubicIn.Ease(1 - progress)) * Fade * progress;
+							});
+			}
 
 			trail2.Positions = cache2.ToArray();
 			trail2.NextPosition = Projectile.Center;
@@ -500,7 +506,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
 			effect.Parameters["repeats"].SetValue(1f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 
 			trail?.Render(effect);
 			trail2?.Render(effect);
@@ -522,7 +528,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			if (Branch)
 				return;
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
+			Texture2D tex = Assets.Keys.GlowSoft.Value;
 
 			Color color = new Color(200, 230, 255) * Fade;
 			for (int i = 0; i < ChargeSqrt; i++)
@@ -668,7 +674,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
-			writer.WritePackedVector2(mousePos);
+			writer.WriteVector2(mousePos);
 			writer.Write(oldRotation);
 			writer.Write(followPlayer);
 			writer.Write(Projectile.timeLeft);
@@ -676,7 +682,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
-			mousePos = reader.ReadPackedVector2();
+			mousePos = reader.ReadVector2();
 			oldRotation = reader.ReadSingle();
 			followPlayer = reader.ReadBoolean();
 			Projectile.timeLeft = reader.ReadInt32();

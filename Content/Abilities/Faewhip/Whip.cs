@@ -279,9 +279,11 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 			if (!Active || !CustomHooks.PlayerTarget.canUseTarget)
 				return;
 
-			trail ??= new Trail(Main.graphics.GraphicsDevice, 100, new NoTip(), n => 10 + n * 0, n => new Color(255, 255, 150) * (endRooted ? Math.Min(n.X * 5f, 1) : (float)Math.Sin(n.X * 3.14f)));
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.graphics.GraphicsDevice, 100, new NoTip(), n => 10 + n * 0, n => new Color(255, 255, 150) * (endRooted ? Math.Min(n.X * 5f, 1) : (float)Math.Sin(n.X * 3.14f)));
 
-			glowTrail ??= new Trail(Main.graphics.GraphicsDevice, 100, new NoTip(), n => 18 + n * 0, n => new Color(255, 150, 50) * 0.1f * (endRooted ? Math.Min(n.X * 5f, 1) : (float)Math.Sin(n.X * 3.14f)));
+			if (glowTrail is null || glowTrail.IsDisposed)
+				glowTrail = new Trail(Main.graphics.GraphicsDevice, 100, new NoTip(), n => 18 + n * 0, n => new Color(255, 150, 50) * 0.1f * (endRooted ? Math.Min(n.X * 5f, 1) : (float)Math.Sin(n.X * 3.14f)));
 
 			trail.Positions = trailPoints;
 			glowTrail.Positions = trailPoints;
@@ -298,8 +300,8 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 			{
 				spriteBatch.End();
 
-				Texture2D tex0 = Request<Texture2D>("StarlightRiver/Assets/EnergyTrail", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
-				Texture2D tex1 = Request<Texture2D>("StarlightRiver/Assets/GlowTrail", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+				Texture2D tex0 = Assets.EnergyTrail.Value;
+				Texture2D tex1 = Assets.GlowTrail.Value;
 
 				var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
 				Matrix view = Main.GameViewMatrix.TransformationMatrix;
@@ -335,8 +337,8 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 				spriteBatch.End();
 				spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
-				Texture2D endTex = Request<Texture2D>("StarlightRiver/Assets/Abilities/" + (endRooted ? "WhipEndRoot" : "WhipEndGrab")).Value;
-				Texture2D endGlow = Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
+				Texture2D endTex = endRooted ? Assets.Abilities.WhipEndRoot.Value : Assets.Abilities.WhipEndGrab.Value;
+				Texture2D endGlow = Assets.Keys.GlowSoft.Value;
 
 				spriteBatch.Draw(endTex, tipsPosition - Main.screenPosition, null, new Color(255, 190, 100), Main.GameUpdateCount * 0.1f, endTex.Size() / 2, endScale * 0.75f, 0, 0);
 				spriteBatch.Draw(endGlow, tipsPosition - Main.screenPosition, null, new Color(255, 190, 100), 0, endGlow.Size() / 2, endScale, 0, 0);

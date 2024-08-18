@@ -322,8 +322,8 @@ namespace StarlightRiver.Content.Items.Forest
 			{
 				float fill = life / (float)MAX_LIFE;
 
-				Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "SmallBar1").Value;
-				Texture2D tex2 = ModContent.Request<Texture2D>(AssetDirectory.GUI + "SmallBar0").Value;
+				Texture2D tex = Assets.GUI.SmallBar1.Value;
+				Texture2D tex2 = Assets.GUI.SmallBar0.Value;
 
 				var pos = (Projectile.Center + new Vector2(-tex.Width / 2, -50) + Vector2.UnitY * Projectile.height / 2f - Main.screenPosition).ToPoint();
 

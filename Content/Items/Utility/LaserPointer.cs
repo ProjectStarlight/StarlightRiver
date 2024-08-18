@@ -159,7 +159,7 @@ namespace StarlightRiver.Content.Items.Utility
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			Texture2D texBeam = ModContent.Request<Texture2D>(AssetDirectory.Assets + "GlowTrail").Value;
+			Texture2D texBeam = Assets.GlowTrail.Value;
 
 			var origin = new Vector2(0, texBeam.Height / 2);
 
@@ -173,7 +173,7 @@ namespace StarlightRiver.Content.Items.Utility
 			for (int i = 0; i < width; i += 10)
 				Lighting.AddLight(pos + Vector2.UnitX.RotatedBy(LaserRotation) * i + Main.screenPosition, color.ToVector3() * height * 0.030f);
 
-			Texture2D impactTex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
+			Texture2D impactTex = Assets.Keys.GlowSoft.Value;
 			spriteBatch.Draw(impactTex, endPoint - Main.screenPosition, null, color, 0, impactTex.Size() / 2, 0.5f, 0, 0);
 		}
 

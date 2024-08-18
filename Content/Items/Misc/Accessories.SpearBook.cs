@@ -65,6 +65,12 @@ namespace StarlightRiver.Content.Items.Misc
 			spearList.Clear();
 		}
 
+		public override void SetStaticDefaults()
+		{
+			base.SetStaticDefaults();
+			ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<AxeBook>();
+		}
+
 		public override void SafeSetDefaults()
 		{
 			Item.rare = ItemRarityID.Orange;
@@ -643,13 +649,16 @@ namespace StarlightRiver.Content.Items.Misc
 			// first trail
 			if (motion == Motion.Swing || motion == Motion.Slash)
 			{
-				trail ??= new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new NoTip(), factor => (float)Math.Min(factor, progress) * length * 0.75f, factor =>
+				if (trail is null || trail.IsDisposed)
 				{
-					if (factor.X == 1)
-						return Color.Transparent;
+					trail = new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new NoTip(), factor => (float)Math.Min(factor, progress) * length * 0.75f, factor =>
+									{
+										if (factor.X == 1)
+											return Color.Transparent;
 
-					return trailColor * (float)Math.Min(factor.X, progress) * 0.5f * (float)Math.Sin(progress * 3.14f) * 2;
-				});
+										return trailColor * (float)Math.Min(factor.X, progress) * 0.5f * (float)Math.Sin(progress * 3.14f) * 2;
+									});
+				}
 
 				var realCache = new Vector2[TRAILLENGTH];
 
@@ -665,23 +674,29 @@ namespace StarlightRiver.Content.Items.Misc
 				// repeat for second trail (only when it is needed for second slash or stab)
 				if (motion == Motion.Stab)
 				{
-					trail2 ??= new Trail(Main.instance.GraphicsDevice, TRAIL2LENGTH, new NoTip(), factor => (1f - (float)Math.Pow(2 * factor - 1, 2)) * length * 0.5f, factor =>
+					if (trail2 is null || trail2.IsDisposed)
 					{
-						if (factor.X == 1)
-							return Color.Transparent;
+						trail2 = new Trail(Main.instance.GraphicsDevice, TRAIL2LENGTH, new NoTip(), factor => (1f - (float)Math.Pow(2 * factor - 1, 2)) * length * 0.5f, factor =>
+											{
+												if (factor.X == 1)
+													return Color.Transparent;
 
-						return trailColor * (float)Math.Min(factor.X, progress) * 0.5f * (float)Math.Sin(progress * 3.14f) * 4;
-					});
+												return trailColor * (float)Math.Min(factor.X, progress) * 0.5f * (float)Math.Sin(progress * 3.14f) * 4;
+											});
+					}
 				}
 				else
 				{
-					trail2 ??= new Trail(Main.instance.GraphicsDevice, TRAIL2LENGTH, new NoTip(), factor => (float)Math.Min(factor, progress) * length * 0.75f, factor =>
+					if (trail2 is null || trail2.IsDisposed)
 					{
-						if (factor.X == 1)
-							return Color.Transparent;
+						trail2 = new Trail(Main.instance.GraphicsDevice, TRAIL2LENGTH, new NoTip(), factor => (float)Math.Min(factor, progress) * length * 0.75f, factor =>
+											{
+												if (factor.X == 1)
+													return Color.Transparent;
 
-						return trailColor * (float)Math.Min(factor.X, progress) * 1.5f * (float)Math.Sin(progress * 3.14f);
-					});
+												return trailColor * (float)Math.Min(factor.X, progress) * 1.5f * (float)Math.Sin(progress * 3.14f);
+											});
+					}
 				}
 
 				var realCache2 = new Vector2[TRAIL2LENGTH];
@@ -706,8 +721,8 @@ namespace StarlightRiver.Content.Items.Misc
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
 			effect.Parameters["repeats"].SetValue(8f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
-			effect.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Moonstone/DatsuzeiFlameMap2").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+			effect.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
 
 			if (motion != Motion.Stab)
 				trail?.Render(effect);

@@ -8,7 +8,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Overgrow
 {
-	internal class Crusher : ModNPC, IHintable
+	internal class Crusher : ModNPC
 	{
 		public Tile Parent;
 
@@ -103,18 +103,14 @@ namespace StarlightRiver.Content.NPCs.Overgrow
 		}
 		public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/NPCs/Overgrow/CrusherGlow").Value;
-			Texture2D tex2 = Request<Texture2D>("StarlightRiver/Assets/NPCs/Overgrow/CrusherTile").Value;
+			Texture2D tex = Assets.NPCs.Overgrow.CrusherGlow.Value;
+			Texture2D tex2 = Assets.NPCs.Overgrow.CrusherTile.Value;
 
 			spriteBatch.Draw(tex, NPC.Center - screenPos + new Vector2(0, -24), tex.Bounds, Color.White * 0.8f, 0, tex.Size() / 2, 1.2f + (float)Math.Sin(NPC.ai[0] / 80f * 6.28f) * 0.2f, 0, 0);
 
 			int count = NPC.ai[0] < 10 ? (int)NPC.ai[0] / 3 : NPC.ai[0] > 40 ? (60 - (int)NPC.ai[0]) / 4 : 3;
 			for (int k = 1; k <= count; k++)
 				spriteBatch.Draw(tex2, NPC.position - screenPos + new Vector2(8, -48 - k * 28), drawColor);
-		}
-		public string GetHint()
-		{
-			return "Watch your step.";
 		}
 	}
 }

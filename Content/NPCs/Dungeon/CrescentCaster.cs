@@ -11,7 +11,7 @@ using Terraria.ModLoader.Utilities;
 
 namespace StarlightRiver.Content.NPCs.Dungeon
 {
-	internal class CrescentCaster : ModNPC, IDrawPrimitive, IHintable
+	internal class CrescentCaster : ModNPC, IDrawPrimitive
 	{
 		private const float ACCELERATION = 0.15f;
 		private const float MAXSPEED = 2;
@@ -300,7 +300,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
 			effect.Parameters["repeats"].SetValue(1f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 
 			foreach (CrescentCasterBolt bolt in Bolts)
 			{
@@ -416,10 +416,6 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 			}
 
 			return true;
-		}
-		public string GetHint()
-		{
-			return "It somehow shields nearby foes...";
 		}
 	}
 

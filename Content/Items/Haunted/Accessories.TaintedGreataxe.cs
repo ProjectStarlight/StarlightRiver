@@ -258,7 +258,7 @@ namespace StarlightRiver.Content.Items.Haunted
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D tex = Assets.Items.Haunted.TaintedGreataxeProjectile.Value;
 			SpriteEffects spriteEffects = SpriteEffects.None;
 			if (Embedding)
 				spriteEffects = Projectile.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
@@ -353,14 +353,14 @@ namespace StarlightRiver.Content.Items.Haunted
 		public override void SendExtraAI(BinaryWriter writer)
 		{
 			writer.Write(stickyAI);
-			writer.WritePackedVector2(offset);
+			writer.WriteVector2(offset);
 			writer.Write(enemyWhoAmI);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
 			stickyAI = reader.ReadBoolean();
-			offset = reader.ReadPackedVector2();
+			offset = reader.ReadVector2();
 			enemyWhoAmI = reader.ReadInt32();
 		}
 

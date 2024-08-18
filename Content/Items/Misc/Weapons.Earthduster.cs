@@ -317,7 +317,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 			Texture2D dirtTex = ModContent.Request<Texture2D>(Texture + "_Dirt").Value;
 			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
 
 			var offset = Vector2.Lerp(Vector2.Zero, Vector2.UnitY.RotatedBy(Projectile.rotation + (Owner.direction == -1 ? MathHelper.Pi : 0f)) * 13f, shots / (float)MAXSHOTS);
 			Main.spriteBatch.Draw(dirtTex, Projectile.Center + offset - Main.screenPosition, null, lightColor, Projectile.rotation, dirtTex.Size() / 2f, Projectile.scale, Owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
@@ -493,9 +493,11 @@ namespace StarlightRiver.Content.Items.Misc
 		private void ManageTrail()
 		{
 
-			trail ??= new Trail(Main.instance.GraphicsDevice, 33, new NoTip(), factor => 28 * (1 - Progress), factor => trailColorOutline);
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 33, new NoTip(), factor => 28 * (1 - Progress), factor => trailColorOutline);
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 33, new NoTip(), factor => 10 * (1 - Progress), factor => trailColor);
+			if (trail2 is null || trail2.IsDisposed)
+				trail2 = new Trail(Main.instance.GraphicsDevice, 33, new NoTip(), factor => 10 * (1 - Progress), factor => trailColor);
 			float nextplace = 33f / 32f;
 			var offset = new Vector2((float)Math.Sin(nextplace), (float)Math.Cos(nextplace));
 			offset *= Radius;
@@ -516,7 +518,7 @@ namespace StarlightRiver.Content.Items.Misc
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 			effect.Parameters["alpha"].SetValue(1);
 
 			trail?.Render(effect);

@@ -167,12 +167,14 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 40, new NoTip(), factor => 25f, factor => new Color(0, 165 + (int)(100 * (float)Math.Sin(TimeFade * 3.14f)), 225) * (float)Math.Sin(TimeFade * 3.14f) * 0.5f);
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 40, new NoTip(), factor => 25f, factor => new Color(0, 165 + (int)(100 * (float)Math.Sin(TimeFade * 3.14f)), 225) * (float)Math.Sin(TimeFade * 3.14f) * 0.5f);
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = cache[39];
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 40, new NoTip(), factor => 15f, factor => new Color(100, 150 + (int)(100 * (float)Math.Sin(TimeFade * 3.14f)), 255) * (float)Math.Sin(TimeFade * 3.14f) * 0.5f);
+			if (trail2 is null || trail2.IsDisposed)
+				trail2 = new Trail(Main.instance.GraphicsDevice, 40, new NoTip(), factor => 15f, factor => new Color(100, 150 + (int)(100 * (float)Math.Sin(TimeFade * 3.14f)), 255) * (float)Math.Sin(TimeFade * 3.14f) * 0.5f);
 
 			trail2.Positions = cache.ToArray();
 			trail2.NextPosition = cache[39];
@@ -192,12 +194,12 @@ namespace StarlightRiver.Content.Items.Permafrost
 			effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.01f);
 			effect.Parameters["repeats"].SetValue(5f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
 			trail?.Render(effect);
 			trail2?.Render(effect);
 
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/LightningTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.LightningTrail.Value);
 
 			trail2?.Render(effect);
 		}

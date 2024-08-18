@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.ExposureSystem;
+﻿using StarlightRiver.Content.GUI;
+using StarlightRiver.Core.Systems.ExposureSystem;
 using Terraria.Audio;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
@@ -54,6 +55,12 @@ namespace StarlightRiver.Content.Items.Forest
 				// If the prince is invalid, we need to spawn a new prince
 				if (prince is null || !prince.active || prince.type != ProjectileType<SlimePrinceMinion>() || prince.owner != player.whoAmI)
 					prince = Projectile.NewProjectileDirect(player.GetSource_FromThis(), player.Center, Vector2.Zero, ProjectileType<SlimePrinceMinion>(), 17, 0, player.whoAmI);
+
+				var thisPrince = prince.ModProjectile as SlimePrinceMinion;
+				if (thisPrince != null)
+				{
+					ArmorChargeUI.SetMessage($"{thisPrince.life}/{SlimePrinceMinion.MAX_LIFE}");
+				}
 			}
 		}
 

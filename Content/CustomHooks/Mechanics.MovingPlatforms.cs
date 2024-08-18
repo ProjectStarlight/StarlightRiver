@@ -1,8 +1,10 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using StarlightRiver.Content.NPCs.BaseTypes;
+using System.IO;
 using System.Linq;
 using Terraria.ID;
+using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.CustomHooks
 {
@@ -23,42 +25,39 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private void PlatformCollision(On_Player.orig_SlopingCollision orig, Player self, bool fallThrough, bool ignorePlats)
 		{
+			if (self.grapCount == 1)
+			{
+				//if the Player is using a single grappling hook we can check if they are colliding with it and its embedded in the moving platform, while its changing Y position so we can give the Player their jump back
+				foreach (int eachGrappleIndex in self.grappling)
+				{
+					if (eachGrappleIndex < 0 || eachGrappleIndex > Main.maxProjectiles)//somehow this can be invalid at this point?
+						continue;
 
-			if (self.GetModPlayer<StarlightPlayer>().platformTimer > 0)
+					Projectile grappleHookProj = Main.projectile[eachGrappleIndex];
+					if (grappleHookProj.TryGetGlobalProjectile(out GrapplingHookGlobal globalGrappleProj))
+					{
+						NPC target = globalGrappleProj.grappledTo;
+
+						if (target is not null && target.active && grappleHookProj.active && self.Hitbox.Intersects(grappleHookProj.Hitbox))
+						{
+							self.position = grappleHookProj.position + new Vector2(grappleHookProj.width / 2 - self.width / 2, grappleHookProj.height / 2 - self.height / 2);
+							self.position += target.velocity;
+							self.velocity.Y = 0;
+							self.jump = 0;
+							self.fallStart = (int)(self.position.Y / 16f);
+						}
+					}
+				}
+			}
+
+			if (self.GoingDownWithGrapple)
 			{
 				orig(self, fallThrough, ignorePlats);
 				return;
 			}
 
-			if (self.GoingDownWithGrapple)
+			if (self.GetModPlayer<StarlightPlayer>().platformTimer > 0)
 			{
-				if (self.grapCount == 1)
-				{
-					//if the Player is using a single grappling hook we can check if they are colliding with it and its embedded in the moving platform, while its changing Y position so we can give the Player their jump back
-					foreach (int eachGrappleIndex in self.grappling)
-					{
-						if (eachGrappleIndex < 0 || eachGrappleIndex > Main.maxProjectiles)//somehow this can be invalid at this point?
-							continue;
-
-						Projectile grappleHookProj = Main.projectile[eachGrappleIndex];
-
-						foreach (NPC NPC in Main.npc)
-						{
-							if (!NPC.active || NPC.ModNPC == null || !(NPC.ModNPC is MovingPlatform))
-								continue;
-
-							if (grappleHookProj.active && NPC.Hitbox.Intersects(grappleHookProj.Hitbox) && self.Hitbox.Intersects(grappleHookProj.Hitbox))
-							{
-								self.position = grappleHookProj.position + new Vector2(grappleHookProj.width / 2 - self.width / 2, grappleHookProj.height / 2 - self.height / 2);
-								self.position += NPC.velocity;
-								self.velocity.Y = 0;
-								self.jump = 0;
-								self.fallStart = (int)(self.position.Y / 16f);
-							}
-						}
-					}
-				}
-
 				orig(self, fallThrough, ignorePlats);
 				return;
 			}
@@ -71,28 +70,7 @@ namespace StarlightRiver.Content.CustomHooks
 				var PlayerRect = new Rectangle((int)self.position.X, (int)self.position.Y + self.height, self.width, 1);
 				var NPCRect = new Rectangle((int)NPC.position.X, (int)NPC.position.Y, NPC.width, 8 + (self.velocity.Y > 0 ? (int)self.velocity.Y : 0));
 
-				if (self.grapCount == 1 && NPC.velocity.Y != 0)
-				{
-					//if the Player is using a single grappling hook we can check if they are colliding with it and its embedded in the moving platform, while its changing Y position so we can give the Player their jump back
-					foreach (int eachGrappleIndex in self.grappling)
-					{
-						if (eachGrappleIndex < 0 || eachGrappleIndex > Main.maxProjectiles)//somehow this can be invalid at this point?
-							continue;
-
-						Projectile grappleHookProj = Main.projectile[eachGrappleIndex];
-						if (grappleHookProj.active && NPC.Hitbox.Intersects(grappleHookProj.Hitbox) && self.Hitbox.Intersects(grappleHookProj.Hitbox))
-						{
-							self.position = grappleHookProj.position + new Vector2(grappleHookProj.width / 2 - self.width / 2, grappleHookProj.height / 2 - self.height / 2);
-							self.position += NPC.velocity;
-							self.velocity.Y = 0;
-							self.jump = 0;
-							self.fallStart = (int)(self.position.Y / 16f);
-
-							(NPC.ModNPC as MovingPlatform).beingStoodOn = true;
-						}
-					}
-				}
-				else if (PlayerRect.Intersects(NPCRect) && self.position.Y <= NPC.position.Y)
+				if (PlayerRect.Intersects(NPCRect) && self.position.Y <= NPC.position.Y)
 				{
 					if (!self.justJumped && self.velocity.Y >= 0)
 					{
@@ -142,12 +120,6 @@ namespace StarlightRiver.Content.CustomHooks
 				NPC n = global.grappledTo;
 				if (n != null && n.active && n.ModNPC is MovingPlatform && !(n.ModNPC as MovingPlatform).dontCollide && n.Hitbox.Intersects(proj.Hitbox))
 				{
-					if (proj.ai[0] != 1)
-					{
-						proj.ai[0] = 2;
-						proj.netUpdate = true;
-					}
-
 					proj.position += n.velocity;
 
 					if (!proj.tileCollide) //this is kinda hacky but... oh well 
@@ -197,22 +169,43 @@ namespace StarlightRiver.Content.CustomHooks
 			return entity.aiStyle == 7;
 		}
 
+		public override void SendExtraAI(Projectile projectile, BitWriter bitWriter, BinaryWriter binaryWriter)
+		{
+			int grappleIndex = -1;
+			if (grappledTo != null)
+				grappleIndex = grappledTo.whoAmI;
+
+			if (projectile.ai[0] == 2)
+				binaryWriter.Write(grappleIndex);
+		}
+
+		public override void ReceiveExtraAI(Projectile projectile, BitReader bitReader, BinaryReader binaryReader)
+		{
+			if (projectile.ai[0] == 2)
+			{
+				int grappledIndex = binaryReader.ReadInt32();
+				
+				if (grappledIndex != -1)
+					grappledTo = Main.npc[grappledIndex];
+			}
+		}
+
 		public override void PostAI(Projectile projectile)
 		{
-			if (grappledTo is null)
+			if (grappledTo is null && projectile.ai[0] == 0 && projectile.owner == Main.myPlayer && projectile.timeLeft < 36000 - 3)
 			{
 				for (int k = 0; k < Main.maxNPCs; k++)
 				{
 					NPC n = Main.npc[k];
 					if (n.active && n.ModNPC is MovingPlatform && !(n.ModNPC as MovingPlatform).dontCollide && n.Hitbox.Intersects(projectile.Hitbox))
 					{
-						if (projectile.ai[0] != 1)
-						{
-							projectile.ai[0] = 2;
-							projectile.netUpdate = true;
-						}
-
+						projectile.ai[0] = 2;
 						grappledTo = n;
+
+						if (projectile.type == ProjectileID.QueenSlimeHook)
+							Main.player[projectile.owner].DoQueenSlimeHookTeleport(projectile.Center);
+
+						projectile.netUpdate = true;
 					}
 				}
 			}

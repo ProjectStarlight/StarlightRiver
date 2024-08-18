@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.GUI
 		public override void Draw(SpriteBatch spriteBatch)
 		{
 			var pos = new Vector2(480, 24);
-			Texture2D tex = Request<Texture2D>(AssetDirectory.GUI + "MountAbilitySlot").Value;
+			Texture2D tex = Assets.GUI.MountAbilitySlot.Value;
 
 			Texture2D icon1 = Request<Texture2D>(ModPlayer.activeMount.PrimaryIconTexture).Value;
 			Texture2D icon2 = Request<Texture2D>(ModPlayer.activeMount.SecondaryIconTexture).Value;

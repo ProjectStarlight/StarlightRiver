@@ -31,6 +31,12 @@ namespace StarlightRiver.Content.Items.Misc
 			StarlightItem.AltFunctionUseEvent -= AllowRightClick;
 		}
 
+		public override void SetStaticDefaults()
+		{
+			base.SetStaticDefaults();
+			ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<SwordBook>();
+		}
+
 		public override void SafeSetDefaults()
 		{
 			Item.rare = Terraria.ID.ItemRarityID.Orange;
@@ -363,13 +369,16 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => (float)Math.Min(factor, Progress) * Length * 1.25f, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X == 1)
-					return Color.Transparent;
+				trail = new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => (float)Math.Min(factor, Progress) * Length * 1.25f, factor =>
+							{
+								if (factor.X == 1)
+									return Color.Transparent;
 
-				return GetSwingColor(factor.X);
-			});
+								return GetSwingColor(factor.X);
+							});
+			}
 
 			if (cache != null)
 			{
@@ -395,8 +404,8 @@ namespace StarlightRiver.Content.Items.Misc
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
 			effect.Parameters["repeats"].SetValue(2f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
-			effect.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/MagicPixel").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
+			effect.Parameters["sampleTexture2"].SetValue(Assets.MagicPixel.Value);
 
 			trail?.Render(effect);
 		}
@@ -588,13 +597,16 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => (float)Math.Min(factor, Progress) * 64, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X == 1)
-					return Color.Transparent;
+				trail = new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => (float)Math.Min(factor, Progress) * 64, factor =>
+							{
+								if (factor.X == 1)
+									return Color.Transparent;
 
-				return GetSwingColor();
-			});
+								return GetSwingColor();
+							});
+			}
 
 			if (cache != null)
 				trail.Positions = cache.ToArray();
@@ -611,8 +623,8 @@ namespace StarlightRiver.Content.Items.Misc
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
 			effect.Parameters["repeats"].SetValue(2f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
-			effect.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/MagicPixel").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
+			effect.Parameters["sampleTexture2"].SetValue(Assets.MagicPixel.Value);
 
 			trail?.Render(effect);
 		}

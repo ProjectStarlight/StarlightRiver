@@ -87,7 +87,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 		{
-			Texture2D lavaFadeTex = Request<Texture2D>(AssetDirectory.VitricTile + "VitricLavaFade").Value;
+			Texture2D lavaFadeTex = Assets.Tiles.Vitric.VitricLavaFade.Value;
 
 			if (Main.tile[i, j].TileType == Type)
 			{

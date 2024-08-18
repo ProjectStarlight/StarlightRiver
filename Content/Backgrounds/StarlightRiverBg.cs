@@ -109,9 +109,9 @@ namespace StarlightRiver.Content.Backgrounds
 			sb.End();
 			sb.Begin(default, default, SamplerState.LinearWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/SwirlyNoiseLooping").Value;
-			Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/PerlinNoise").Value;
-			Texture2D tex3 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value;
+			Texture2D tex = Assets.Noise.SwirlyNoiseLooping.Value;
+			Texture2D tex2 = Assets.Noise.PerlinNoise.Value;
+			Texture2D tex3 = Assets.Noise.MiscNoise3.Value;
 			var color = new Color(100, 230, 220)
 			{
 				A = 0
