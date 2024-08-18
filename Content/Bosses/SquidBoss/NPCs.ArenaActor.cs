@@ -95,6 +95,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			// Force to correct position
 			NPC.Center = new Vector2(StarlightWorld.squidBossArena.Center.X * 16 + 8, StarlightWorld.squidBossArena.Center.Y * 16 + 56 * 16);
+			NPC.velocity *= 0;
 
 			if ((int)(VisualTimerA * 1 / 0.04f) % 60 == 0)
 				NPC.netUpdate = true;
