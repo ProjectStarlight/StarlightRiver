@@ -6,14 +6,14 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.Bosses.BrainRedux
 {
-	internal partial class BrainOfCthulu
+	internal partial class DeadBrain
 	{
 		#region Phase 1
 		public void ShrinkingCircle()
 		{
 			if (AttackTimer < 60)
 			{
-				npc.Center += (thinker.Center + new Vector2(100, -250) - npc.Center) * 0.08f;
+				NPC.Center += (thinker.Center + new Vector2(100, -250) - NPC.Center) * 0.08f;
 			}
 
 			if (AttackTimer == 31)
@@ -67,7 +67,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			if (AttackTimer < 60)
 			{
-				npc.Center += (thinker.Center + new Vector2(-100, -250) - npc.Center) * 0.08f;
+				NPC.Center += (thinker.Center + new Vector2(-100, -250) - NPC.Center) * 0.08f;
 			}
 
 			if (AttackTimer == 1)
@@ -76,7 +76,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				ThisThinker.platformRotationTarget += 0.2f;
 
 				savedRot = Main.rand.NextFloat(6.28f);
-				npc.netUpdate = true;
+				NPC.netUpdate = true;
 			}
 
 			if (AttackTimer == 60)
@@ -154,7 +154,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public void Ram()
 		{
-			Vector2 relativePos = Main.player[npc.target].Center - thinker.Center;
+			Vector2 relativePos = Main.player[NPC.target].Center - thinker.Center;
 			Vector2 targetPos = thinker.Center + relativePos.RotatedBy(3.14f);
 
 			float chargeTime = Main.masterMode ? 60f : Main.expertMode ? 75f : 90f;
@@ -164,32 +164,32 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				ThisThinker.platformRadiusTarget = 400;
 				ThisThinker.platformRotationTarget += 0.2f;
 
-				npc.TargetClosest();
+				NPC.TargetClosest();
 			}
 
 			if (AttackTimer >= 1 && AttackTimer < 120)
 			{
-				npc.Center += (targetPos - npc.Center) * 0.05f;
+				NPC.Center += (targetPos - NPC.Center) * 0.05f;
 			}
 
 			if (AttackTimer == 120)
 			{
 				savedPos = thinker.Center + relativePos;
-				savedPos2 = npc.Center;
+				savedPos2 = NPC.Center;
 
-				SoundEngine.PlaySound(SoundID.NPCDeath10.WithPitchOffset(0.5f), npc.Center);
+				SoundEngine.PlaySound(SoundID.NPCDeath10.WithPitchOffset(0.5f), NPC.Center);
 			}
 
 			if (AttackTimer > 120)
 			{
 				contactDamage = true;
 				float prog = Helpers.Helper.SwoopEase((AttackTimer - 120) / chargeTime);
-				npc.Center = Vector2.Lerp(savedPos2, savedPos, prog);
+				NPC.Center = Vector2.Lerp(savedPos2, savedPos, prog);
 
-				var d = Dust.NewDustPerfect(npc.Center, ModContent.DustType<BloodMetaballDust>(), Vector2.UnitY.RotatedByRandom(1) * Main.rand.NextFloat(-5, -3));
+				var d = Dust.NewDustPerfect(NPC.Center, ModContent.DustType<BloodMetaballDust>(), Vector2.UnitY.RotatedByRandom(1) * Main.rand.NextFloat(-5, -3));
 				d.customData = 1f;
 
-				Dust.NewDustPerfect(npc.Center, DustID.Blood, Vector2.UnitY.RotatedByRandom(6.28f) * Main.rand.NextFloat(1, 5));
+				Dust.NewDustPerfect(NPC.Center, DustID.Blood, Vector2.UnitY.RotatedByRandom(6.28f) * Main.rand.NextFloat(1, 5));
 			}
 
 			if (AttackTimer > 120 + chargeTime)
@@ -201,7 +201,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public void Spawn()
 		{
-			Vector2 relativePos = Main.player[npc.target].Center - thinker.Center;
+			Vector2 relativePos = Main.player[NPC.target].Center - thinker.Center;
 			Vector2 targetPos = thinker.Center + relativePos.RotatedBy(3.14f);
 
 			float radiusMax = Main.masterMode ? 700 : Main.expertMode ? 200 : 100;
@@ -212,12 +212,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				ThisThinker.platformRadiusTarget = 600;
 				ThisThinker.platformRotationTarget += 0.2f;
 
-				npc.TargetClosest();
+				NPC.TargetClosest();
 			}
 
 			if (AttackTimer > 1 && AttackTimer < 600)
 			{
-				npc.Center += (targetPos - npc.Center) * 0.05f;
+				NPC.Center += (targetPos - NPC.Center) * 0.05f;
 			}
 
 			if (AttackTimer == 1)
@@ -264,16 +264,16 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (AttackTimer % 40 == 0 && Main.npc.Count(n => n.active && n.type == Terraria.ID.NPCID.Creeper) < 10)
 			{
-				int i = NPC.NewNPC(npc.GetSource_FromThis(), (int)npc.Center.X, (int)npc.Center.Y, Terraria.ID.NPCID.Creeper);
+				int i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, Terraria.ID.NPCID.Creeper);
 
 				//TODO: Multiplayer compat
 				Main.npc[i].lifeMax = 30;
 				Main.npc[i].life = 30;
 				Main.npc[i].SpawnedFromStatue = true;
-				Main.npc[i].velocity += npc.Center.DirectionTo(Main.player[npc.target].Center) * 30;
+				Main.npc[i].velocity += NPC.Center.DirectionTo(Main.player[NPC.target].Center) * 30;
 				Main.npc[i].GetGlobalNPC<Creeper>().reworked = true;
 
-				SoundEngine.PlaySound(SoundID.NPCDeath13, npc.Center);
+				SoundEngine.PlaySound(SoundID.NPCDeath13, NPC.Center);
 			}
 
 			if (AttackTimer > 600)
@@ -288,17 +288,17 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			if (AttackTimer < 120)
 			{
-				if (npc.rotation > 0)
-					npc.rotation -= 0.02f;
+				if (NPC.rotation > 0)
+					NPC.rotation -= 0.02f;
 
-				npc.position.Y -= 1.8f;
+				NPC.position.Y -= 1.8f;
 			}
 
 			if (AttackTimer > 90 && AttackTimer < 120)
 				opacity = 1f - (AttackTimer - 90) / 30f;
 
 			if (AttackTimer == 120)
-				npc.Center = thinker.Center + new Vector2(0, -200);
+				NPC.Center = thinker.Center + new Vector2(0, -200);
 
 			if (AttackTimer > 120 && AttackTimer < 150)
 				opacity = (AttackTimer - 120) / 30f;
@@ -315,7 +315,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				ThisThinker.platformRotationTarget -= 0.2f;
 
 				savedRot = Main.rand.Next(4) * (6.28f / 4f);
-				npc.netUpdate = true;
+				NPC.netUpdate = true;
 			}
 
 			Vector2 targetPos = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(savedRot + AttackTimer / 400f * 6.28f) * 550;
@@ -328,7 +328,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				float speed = Math.Min(0.05f, AttackTimer / 100f * 0.05f);
 
-				npc.Center += (targetPos - npc.Center) * speed;
+				NPC.Center += (targetPos - NPC.Center) * speed;
 				thinker.Center += (targetPos2 - thinker.Center) * speed;
 
 				if (AttackTimer >= 60)
@@ -342,7 +342,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						if (k % 2 == 0)
 							neurisms[k].Center = thinker.Center + Vector2.UnitX.RotatedBy(rot) * rad;
 						else
-							neurisms[k].Center = npc.Center + Vector2.UnitX.RotatedBy(rot) * rad;
+							neurisms[k].Center = NPC.Center + Vector2.UnitX.RotatedBy(rot) * rad;
 					}
 				}
 			}
@@ -413,8 +413,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					}
 				}
 
-				npc.chaseable = false;
-				npc.Center = savedPos;
+				NPC.chaseable = false;
+				NPC.Center = savedPos;
 			}
 
 			if (AttackTimer > 60 && AttackTimer <= 90)
@@ -434,7 +434,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			// Timeout
 			if (AttackTimer == 509)
 			{
-				SoundEngine.PlaySound(SoundID.NPCDeath10.WithPitchOffset(0.5f), npc.Center);
+				SoundEngine.PlaySound(SoundID.NPCDeath10.WithPitchOffset(0.5f), NPC.Center);
 
 				foreach (NPC npc in Main.npc.Where(n => n.active && n.ModNPC is HorrifyingVisage))
 					npc.ai[1] = 1;
@@ -451,7 +451,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (AttackTimer == 600)
 			{
-				npc.chaseable = true;
+				NPC.chaseable = true;
 				AttackTimer = 0;
 			}
 		}
@@ -483,12 +483,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				ThisThinker.platformRadiusTarget -= 40;
 				ThisThinker.platformRotationTarget -= 0.1f;
 
-				npc.TargetClosest();
+				NPC.TargetClosest();
 
-				npc.Center = Main.player[npc.target].Center + Vector2.UnitX.RotatedByRandom(6.28f) * 150;
+				NPC.Center = Main.player[NPC.target].Center + Vector2.UnitX.RotatedByRandom(6.28f) * 150;
 
-				savedPos = npc.Center;
-				savedPos2 = savedPos + savedPos.DirectionTo(Main.player[npc.target].Center) * 500;
+				savedPos = NPC.Center;
+				savedPos2 = savedPos + savedPos.DirectionTo(Main.player[NPC.target].Center) * 500;
 			}
 
 			if (motionTime > 30 && motionTime <= 60)
@@ -498,19 +498,19 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (motionTime > 30 && motionTime <= 90)
 			{
-				npc.Center = Vector2.SmoothStep(savedPos, savedPos + savedPos.DirectionTo(savedPos2) * -100f, (motionTime - 30) / 60f);
+				NPC.Center = Vector2.SmoothStep(savedPos, savedPos + savedPos.DirectionTo(savedPos2) * -100f, (motionTime - 30) / 60f);
 			}
 
 			if (motionTime == 90)
 			{
-				savedPos = npc.Center;
-				SoundEngine.PlaySound(SoundID.NPCDeath10.WithPitchOffset(0.5f), npc.Center);
+				savedPos = NPC.Center;
+				SoundEngine.PlaySound(SoundID.NPCDeath10.WithPitchOffset(0.5f), NPC.Center);
 			}
 
 			if (motionTime >= 90)
 			{
 				contactDamage = true;
-				npc.Center = Vector2.Lerp(savedPos, savedPos2, Helpers.Helper.SwoopEase((motionTime - 90) / 60f));
+				NPC.Center = Vector2.Lerp(savedPos, savedPos2, Helpers.Helper.SwoopEase((motionTime - 90) / 60f));
 			}
 
 			// Similar neirusm pattern to spawning in phase 1
@@ -587,8 +587,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					}
 				}
 
-				npc.chaseable = false;
-				npc.Center = savedPos;
+				NPC.chaseable = false;
+				NPC.Center = savedPos;
 			}
 
 			if (AttackTimer > 60 && AttackTimer <= 90)
@@ -651,7 +651,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			// Timeout
 			if (AttackTimer == 509)
 			{
-				SoundEngine.PlaySound(SoundID.NPCDeath10.WithPitchOffset(0.5f), npc.Center);
+				SoundEngine.PlaySound(SoundID.NPCDeath10.WithPitchOffset(0.5f), NPC.Center);
 
 				foreach (NPC npc in Main.npc.Where(n => n.active && n.ModNPC is HorrifyingVisage))
 					npc.ai[1] = 1;
@@ -682,7 +682,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					}
 				});
 
-				npc.chaseable = true;
+				NPC.chaseable = true;
 				AttackTimer = 0;
 			}
 		}

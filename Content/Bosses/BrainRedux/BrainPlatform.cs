@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			var target = new Rectangle((int)(NPC.position.X - Main.screenPosition.X), (int)(NPC.position.Y - Main.screenPosition.Y), NPC.width, NPC.height);
 			//spriteBatch.Draw(tex, target, Color.White);
 
-			LightingBufferRenderer.DrawWithLighting(target, tex, new Rectangle(0, 0, NPC.width, NPC.height), Color.White * BrainOfCthulu.ArenaOpacity, Vector2.One);
+			LightingBufferRenderer.DrawWithLighting(target, tex, new Rectangle(0, 0, NPC.width, NPC.height), Color.White * DeadBrain.ArenaOpacity, Vector2.One);
 
 			return false;
 		}

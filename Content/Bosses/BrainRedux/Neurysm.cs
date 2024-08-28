@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public float tellLen;
 		public float hurtTime;
 
-		public bool Dead => (BrainOfCthulu.TheBrain?.State ?? 0) >= 3;
+		public bool Dead => (DeadBrain.TheBrain?.State ?? 0) >= 3;
 
 		public ref float Timer => ref NPC.ai[0];
 		public ref float State => ref NPC.ai[1];
@@ -101,7 +101,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			Timer++;
 
-			NPC.realLife = BrainOfCthulu.TheBrain?.thinker?.whoAmI ?? NPC.realLife;
+			NPC.realLife = DeadBrain.TheBrain?.thinker?.whoAmI ?? NPC.realLife;
 			NPC.life = NPC.lifeMax;
 
 			if (TellTime > 0)
@@ -115,7 +115,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			else if (State == 2)
 				opacity = Timer / 30f;
 
-			if (BrainOfCthulu.TheBrain is null)
+			if (DeadBrain.TheBrain is null)
 			{
 				State = 1;
 
@@ -181,9 +181,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				}
 			}
 
-			if (hurtTime > 0 && NPC.crimsonBoss > 0)
+			if (hurtTime > 0 && DeadBrain.TheBrain != null && DeadBrain.TheBrain.NPC.active)
 			{
-				NPC brain = Main.npc[NPC.crimsonBoss];
+				NPC brain = DeadBrain.TheBrain.NPC;
 
 				float len = Vector2.Distance(NPC.Center, brain.Center);
 				float rot = NPC.Center.DirectionTo(brain.Center).ToRotation();

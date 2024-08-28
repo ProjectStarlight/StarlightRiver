@@ -33,12 +33,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (Projectile.timeLeft == 270)
 				Projectile.velocity *= 50f;
 
-			if (BrainOfCthulu.TheBrain?.thinker is null)
+			if (DeadBrain.TheBrain?.thinker is null)
 				return;
 
 			foreach (Player player in Main.ActivePlayers)
 			{
-				if (Helpers.Helper.CheckLinearCollision(BrainOfCthulu.TheBrain.thinker.Center, Projectile.Center, player.Hitbox, out Vector2 collision))
+				if (Helpers.Helper.CheckLinearCollision(DeadBrain.TheBrain.thinker.Center, Projectile.Center, player.Hitbox, out Vector2 collision))
 				{
 					player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " played the idiot harp..."), 25, 0);
 				}
@@ -78,16 +78,16 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			glowColor.A = 0;
 
 			var gSource = new Rectangle(0, 0, glow.Width, glow.Height);
-			var gTarget = new Rectangle((int)(Projectile.Center.X - Main.screenPosition.X), (int)(Projectile.Center.Y - Main.screenPosition.Y), (int)Vector2.Distance(BrainOfCthulu.TheBrain.thinker.Center, Projectile.Center), 100);
+			var gTarget = new Rectangle((int)(Projectile.Center.X - Main.screenPosition.X), (int)(Projectile.Center.Y - Main.screenPosition.Y), (int)Vector2.Distance(DeadBrain.TheBrain.thinker.Center, Projectile.Center), 100);
 			var gOrigin = new Vector2(0, glow.Height / 2f);
 
-			spriteBatch.Draw(glow, gTarget, gSource, glowColor, (Projectile.Center - BrainOfCthulu.TheBrain.thinker.Center).ToRotation() - 3.14f, gOrigin, 0, 0);
+			spriteBatch.Draw(glow, gTarget, gSource, glowColor, (Projectile.Center - DeadBrain.TheBrain.thinker.Center).ToRotation() - 3.14f, gOrigin, 0, 0);
 
-			for (float k = 0; k <= 1; k += 1 / (Vector2.Distance(BrainOfCthulu.TheBrain.thinker.Center, Projectile.Center) / 16))
+			for (float k = 0; k <= 1; k += 1 / (Vector2.Distance(DeadBrain.TheBrain.thinker.Center, Projectile.Center) / 16))
 			{
-				Vector2 pos = Vector2.Lerp(Projectile.Center, BrainOfCthulu.TheBrain.thinker.Center, k) - Main.screenPosition;
+				Vector2 pos = Vector2.Lerp(Projectile.Center, DeadBrain.TheBrain.thinker.Center, k) - Main.screenPosition;
 
-				spriteBatch.Draw(chainTex, pos, null, new Color(220, 60, 70) * opacity, (Projectile.Center - BrainOfCthulu.TheBrain.thinker.Center).ToRotation() + 1.58f, chainTex.Size() / 2, 1, 0, 0);
+				spriteBatch.Draw(chainTex, pos, null, new Color(220, 60, 70) * opacity, (Projectile.Center - DeadBrain.TheBrain.thinker.Center).ToRotation() + 1.58f, chainTex.Size() / 2, 1, 0, 0);
 			}
 
 			if (Projectile.timeLeft > 270)

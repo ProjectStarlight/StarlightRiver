@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace StarlightRiver.Content.Bosses.BrainRedux
 {
-	internal partial class BrainOfCthulu
+	internal partial class DeadBrain
 	{
 		public void Intro()
 		{
 			if (Timer == 1)
-				savedPos = npc.Center;
+				savedPos = NPC.Center;
 
 			if (Timer < 120)
-				npc.Center = Vector2.SmoothStep(savedPos, thinker.Center + new Vector2(0, -250), Timer / 120f);
+				NPC.Center = Vector2.SmoothStep(savedPos, thinker.Center + new Vector2(0, -250), Timer / 120f);
 
 			foreach (Player player in Main.player.Where(n => n.active && Vector2.Distance(n.Center, thinker.Center) < 1500))
 			{

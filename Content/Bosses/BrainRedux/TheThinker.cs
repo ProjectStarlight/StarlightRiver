@@ -82,7 +82,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (home == default)
 				home = NPC.Center;
 
-			if (BrainOfCthulu.TheBrain is null)
+			if (DeadBrain.TheBrain is null)
 			{
 				NPC.boss = false;
 				NPC.Center += (home - NPC.Center) * 0.02f;
@@ -108,7 +108,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					player.AddBuff(ModContent.BuffType<CrimsonHallucination>(), 10);
 			}
 
-			if (active && (NPC.crimsonBoss < 0 || !Main.npc[NPC.crimsonBoss].active))
+			if (active && (DeadBrain.TheBrain is null || !DeadBrain.TheBrain.NPC.active))
 			{
 				ResetArena();
 			}
@@ -173,14 +173,14 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			}
 
 			// Grow radius when first phase
-			if (BrainOfCthulu.TheBrain != null && BrainOfCthulu.TheBrain.State == 2)
+			if (DeadBrain.TheBrain != null && DeadBrain.TheBrain.State == 2)
 			{
 				if (ExtraRadius < 0)
 					ExtraRadius++;
 			}
 
 			// Spike logic
-			if (BrainOfCthulu.TheBrain != null && BrainOfCthulu.TheBrain.State >= 2)
+			if (DeadBrain.TheBrain != null && DeadBrain.TheBrain.State >= 2)
 			{
 				foreach (Player player in Main.ActivePlayers)
 				{
@@ -193,7 +193,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			}
 
 			// Attacks
-			if (BrainOfCthulu.TheBrain != null && BrainOfCthulu.TheBrain.State == 5)
+			if (DeadBrain.TheBrain != null && DeadBrain.TheBrain.State == 5)
 			{
 				Timer++;
 				AttackTimer++;
@@ -208,20 +208,20 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				if (Timer >= 1200)
 				{
-					BrainOfCthulu.TheBrain.State = 3;
-					BrainOfCthulu.TheBrain.AttackState = -1;
-					BrainOfCthulu.TheBrain.AttackTimer = 1;
-					BrainOfCthulu.TheBrain.npc.life = BrainOfCthulu.TheBrain.npc.lifeMax;
-					BrainOfCthulu.TheBrain.npc.noGravity = true;
-					BrainOfCthulu.TheBrain.npc.noTileCollide = true;
-					BrainOfCthulu.TheBrain.npc.dontTakeDamage = false;
+					DeadBrain.TheBrain.State = 3;
+					DeadBrain.TheBrain.AttackState = -1;
+					DeadBrain.TheBrain.AttackTimer = 1;
+					DeadBrain.TheBrain.NPC.life = DeadBrain.TheBrain.NPC.lifeMax;
+					DeadBrain.TheBrain.NPC.noGravity = true;
+					DeadBrain.TheBrain.NPC.noTileCollide = true;
+					DeadBrain.TheBrain.NPC.dontTakeDamage = false;
 				}
 			}
 		}
 
 		public override void ModifyIncomingHit(ref NPC.HitModifiers modifiers)
 		{
-			if (BrainOfCthulu.TheBrain != null && BrainOfCthulu.TheBrain.State == 5)
+			if (DeadBrain.TheBrain != null && DeadBrain.TheBrain.State == 5)
 				return;
 
 			modifiers.FinalDamage *= 0;

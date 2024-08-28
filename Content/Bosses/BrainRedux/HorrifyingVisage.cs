@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			Texture2D tex = Terraria.GameContent.TextureAssets.Npc[NPCID.BrainofCthulhu].Value;
+			Texture2D tex = Assets.Bosses.BrainRedux.DeadBrain.Value;
 
 			var frame = new Rectangle(0, 182 * 4 + 182 * (int)(Timer / 10f % 4), 200, 182);
 			float opacity = Math.Min(1f, Timer / 30f);
