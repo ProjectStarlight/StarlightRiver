@@ -7,7 +7,7 @@ namespace StarlightRiver.Content.Buffs
 	{
 		public override string Texture => AssetDirectory.Buffs + "StaticShock";
 
-		public StaticShock() : base("Static Shock", "Lowered Defense", true) { }
+		public StaticShock() : base("Static Shock", "Your defense is greatly lowered!", true) { }
 
 		public override void Update(NPC npc, ref int buffIndex)
 		{
