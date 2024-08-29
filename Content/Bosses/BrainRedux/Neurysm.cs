@@ -131,7 +131,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			float speed = Vector2.Distance(NPC.position, NPC.oldPosition);
 
 			if (speed > 2f)
-				Dust.NewDustPerfect(NPC.Center, DustID.Blood);
+				Dust.NewDustPerfect(NPC.Center, DustID.Blood, Vector2.UnitY.RotatedByRandom(1f) * Main.rand.NextFloat(2, 5));
 
 			if (speed < 20f)
 				Lighting.AddLight(NPC.Center, new Vector3(0.5f, 0.3f, 0.35f) * (0.5f + speed * 0.025f));
@@ -142,27 +142,37 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			return opacity > 0;
 		}
 
+		public Color Rainbow(float offset)
+		{
+			return new Color(
+				1f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f + offset) * 0.5f, 
+				1f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f + 1 + offset) * 0.5f, 
+				1f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f + 2 + offset) * 0.5f);
+		}
+
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D tex = Assets.Bosses.BrainRedux.Neurysm.Value;
 
-			Color glowColor = Dead ? new Color(25, 40, 6) : new Color(255, 10, 12);
+			Color glowColor = Dead ? new Color(25, 40, 6) : Rainbow(0 + NPC.whoAmI);
 
-			Color trailOne = Dead ? new Color(100, 180, 30) : new Color(255, 50, 70);
-			Color trailTwo = Dead ? new Color(50, 70, 20) : new Color(100, 0, 20);
+			Color trailOne = Dead ? new Color(100, 180, 30) : Rainbow(0 + NPC.whoAmI);
+			Color trailTwo = Dead ? new Color(50, 70, 20) : Rainbow(1.5f + NPC.whoAmI);
 
 			if (opacity >= 0.05f)
 			{
 				for (int k = 0; k < 20; k++)
 				{
+					Texture2D trail = Assets.Bosses.BrainRedux.NeurysmTrail.Value;
+
 					Vector2 pos = NPC.oldPos[k] + NPC.Size / 2f;
 					Color col = Color.Lerp(trailOne, trailTwo, k / 20f) * opacity * (1f - k / 20f) * 0.25f;
-					spriteBatch.Draw(tex, pos - Main.screenPosition, null, col, NPC.rotation, tex.Size() / 2f, 1 - k / 20f, 0, 0);
+					spriteBatch.Draw(trail, pos - Main.screenPosition, null, col, NPC.rotation, tex.Size() / 2f, 1 - k / 20f, 0, 0);
 				}
 
 				float speed = Vector2.Distance(NPC.position, NPC.oldPos[1]);
 
-				Texture2D glow = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
+				Texture2D glow = Assets.Keys.GlowAlpha.Value;
 				Color col2 = glowColor * (speed / 10f) * opacity;
 				col2.A = 0;
 
@@ -188,7 +198,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				float len = Vector2.Distance(NPC.Center, brain.Center);
 				float rot = NPC.Center.DirectionTo(brain.Center).ToRotation();
 
-				Texture2D tell = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrailNoEnd").Value;
+				Texture2D tell = Assets.GlowTrailNoEnd.Value;
 				var source = new Rectangle(0, 0, tell.Width, tell.Height);
 				var target = new Rectangle((int)(NPC.Center.X - Main.screenPosition.X), (int)(NPC.Center.Y - Main.screenPosition.Y), (int)len, 24);
 				var origin = new Vector2(0, 12);
@@ -200,7 +210,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (TellTime > 0)
 			{
-				Texture2D tell = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrailNoEnd").Value;
+				Texture2D tell = Assets.GlowTrailNoEnd.Value;
 				var source = new Rectangle(0, 0, tell.Width, tell.Height);
 				var target = new Rectangle((int)(NPC.Center.X - Main.screenPosition.X), (int)(NPC.Center.Y - Main.screenPosition.Y), (int)tellLen, 24);
 				var origin = new Vector2(0, 12);

@@ -2,6 +2,7 @@
 using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Physics;
 using StarlightRiver.Core.Systems.BarrierSystem;
+using StarlightRiver.Core.Systems.PixelationSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -204,10 +205,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					NPC.lifeMax = life;
 					NPC.life = life;
 
-					int barrier = Main.masterMode ? 400 : Main.expertMode ? 200 : 100;
+					//int barrier = Main.masterMode ? 400 : Main.expertMode ? 200 : 100;
 
-					NPC.GetGlobalNPC<BarrierNPC>().maxBarrier = barrier;
-					NPC.GetGlobalNPC<BarrierNPC>().barrier = barrier;
+					//NPC.GetGlobalNPC<BarrierNPC>().maxBarrier = barrier;
+					//NPC.GetGlobalNPC<BarrierNPC>().barrier = barrier;
 
 					Timer = 0;
 					State = 1;
@@ -430,7 +431,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (State == 2 && chain != null)
 			{
-				DrawPrimitives();
+				ModContent.GetInstance<PixelationSystem>().QueueRenderAction("UnderNPCs", DrawPrimitives);
 			}
 
 			if (opacity >= 1)
@@ -510,11 +511,20 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			if (trail is null || trail.IsDisposed)
 			{
-				trail = new Trail(Main.instance.GraphicsDevice, chain.segmentCount, new NoTip(), factor => 10, factor =>
+				trail = new Trail(Main.instance.GraphicsDevice, chain.segmentCount, new NoTip(), factor =>
 				{
+					float sin = (float)Math.Sin((factor * 3f + Main.GameUpdateCount / 30f) * 3.14f) - 0.4f;
+					float floored = Math.Max(0, sin);
+					return 32 + floored * 16;
+				}, 
+				factor =>
+				{
+					float sin = (float)Math.Sin((factor.X * 3f + Main.GameUpdateCount / 30f) * 3.14f) - 0.4f;
+					float floored = Math.Max(0, sin);
+
 					int index = (int)(factor.X * chain.segmentCount);
 					index = Math.Clamp(index, 0, chain.segmentCount - 1);
-					return Lighting.GetColor((chain.ropeSegments[index].posNow / 16).ToPoint());
+					return Lighting.GetColor((chain.ropeSegments[index].posNow / 16).ToPoint()) * (1 + floored);
 				});
 			}
 
@@ -524,17 +534,17 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = Filters.Scene["RepeatingChain"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(0f);
-			effect.Parameters["repeats"].SetValue(0f);
+			effect.Parameters["alpha"].SetValue(1f);
+			effect.Parameters["repeats"].SetValue(10f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.Bosses.BrainRedux.DeadTeather.Value);
 			trail?.Render(effect);
 		}
 

@@ -85,7 +85,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				npc.active = false;
 			}
 
-			var thinker = record.thinker.ModNPC as TheThinker;
+			var thinker = record.thinker?.ModNPC as TheThinker;
 
 			if (thinker != null)
 			{

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarlightRiver.Content.Biomes;
+using System;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -9,6 +10,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public bool hit;
 
 		public override string Texture => AssetDirectory.BrainRedux + Name;
+
+		public override void Load()
+		{
+			GraymatterBiome.onDrawHallucinationMap += DrawAura;
+		}
 
 		public override void SetStaticDefaults()
 		{
@@ -60,6 +66,33 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			}
 
 			return false;
+		}
+
+		private void DrawAura(SpriteBatch batch)
+		{
+			foreach(Projectile proj in Main.ActiveProjectiles)
+			{
+				if (proj.type == Projectile.type)
+				{
+					SpriteBatch spriteBatch = Main.spriteBatch;
+
+					Texture2D glow = Assets.GlowTrailNoEnd.Value;
+
+					float opacity = 1f;
+
+					if (proj.timeLeft <= 30)
+						opacity = proj.timeLeft / 30f;
+
+					Color glowColor = Color.White * opacity;
+					glowColor.A = 0;
+
+					var gSource = new Rectangle(0, 0, glow.Width, glow.Height);
+					var gTarget = new Rectangle((int)(proj.Center.X - Main.screenPosition.X), (int)(proj.Center.Y - Main.screenPosition.Y), (int)Vector2.Distance(DeadBrain.TheBrain.thinker.Center, proj.Center), 250);
+					var gOrigin = new Vector2(0, glow.Height / 2f);
+
+					spriteBatch.Draw(glow, gTarget, gSource, glowColor, (proj.Center - DeadBrain.TheBrain.thinker.Center).ToRotation() - 3.14f, gOrigin, 0, 0);
+				}
+			}
 		}
 
 		public override bool PreDraw(ref Color lightColor)

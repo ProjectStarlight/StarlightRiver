@@ -131,6 +131,10 @@ namespace StarlightRiver.Content.Biomes
 				shader.Parameters["over"].SetValue(overHallucinationMap.RenderTarget);
 				shader.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
 				shader.Parameters["screensize"].SetValue(noise.Size() / new Vector2(Main.screenWidth, Main.screenHeight));
+				shader.Parameters["screenpos"].SetValue(-Main.screenPosition / Main.ScreenSize.ToVector2());
+
+				shader.Parameters["distortionpow"].SetValue(0.1f);
+				shader.Parameters["chromepow"].SetValue(1.25f);
 
 				spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default, shader);
 
