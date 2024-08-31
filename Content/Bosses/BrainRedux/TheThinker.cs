@@ -3,6 +3,7 @@ using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Tiles.Crimson;
 using StarlightRiver.Core.Systems.LightingSystem;
+using StarlightRiver.Core.Systems.PixelationSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Bosses.BrainRedux
 {
-	internal class TheThinker : ModNPC
+	internal partial class TheThinker : ModNPC
 	{
 		public static readonly List<TheThinker> toRender = [];
 		public static Effect bodyShader;
@@ -47,8 +48,13 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override void Load()
 		{
-			GraymatterBiome.onDrawHallucinationMap += DrawAura;
-			GraymatterBiome.onDrawOverHallucinationMap += DrawMe;
+			GraymatterBiome.onDrawHallucinationMap += DrawGrayAura;
+			GraymatterBiome.onDrawOverHallucinationMap += DrawShadedBody;
+		}
+
+		public override void SetStaticDefaults()
+		{
+			ModContent.GetInstance<PixelationSystem>().RegisterScreenTarget("ThinkerArena", "StarlightRiver/Assets/Bosses/BrainRedux/ShellColors", RenderLayer.OverPlayers);
 		}
 
 		public override void SetDefaults()
@@ -62,6 +68,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			NPC.knockBackResist = 0f;
 			NPC.friendly = false;
 			NPC.noTileCollide = true;
+			NPC.hide = true;
 
 			NPC.boss = true;
 
@@ -318,59 +325,6 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			return Helpers.Helper.CheckCircularCollision(NPC.Center, 64, target.Hitbox);
 		}
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
-		{
-			Texture2D tex = Assets.Bosses.BrainRedux.ShellBack.Value;
-			Vector2 pos = home - Main.screenPosition - tex.Size() / 2f;
-
-			LightingBufferRenderer.DrawWithLighting(pos, tex);
-
-			if (active)
-			{
-				var spike = Assets.Misc.SpikeTell.Value;
-				var solid = Assets.Bosses.BrainRedux.ShellSpike.Value;
-
-				for (int k = 0; k < 36; k++)
-				{
-					var rot = k / 36f * 6.28f;
-					Vector2 edge = home + Vector2.UnitX.RotatedBy(rot) * (hurtRadius + 50);
-					spriteBatch.Draw(spike, edge - Main.screenPosition, new Rectangle(spike.Width / 2, 0, spike.Width / 2, spike.Height), new Color(255, 50, 80, 0) * 0.25f, rot - 1.57f, new Vector2(spike.Width / 4f, spike.Height), 1.5f, 0, 0);
-					spriteBatch.Draw(solid, edge - Main.screenPosition, null, new Color(Lighting.GetSubLight(edge)), rot - 1.57f / 2f, solid.Size(), 1f, 0, 0);
-				}
-
-				for (int k = 0; k < 36; k++)
-				{
-					var rot = (k + 0.5f) / 36f * 6.28f;
-					var sin = (float)Math.Sin(Main.GameUpdateCount * 0.01f + k);
-					Vector2 edge = home + Vector2.UnitX.RotatedBy(rot) * (hurtRadius + 90 + sin * 40);
-					spriteBatch.Draw(spike, edge - Main.screenPosition, new Rectangle(spike.Width / 2, 0, spike.Width / 2, spike.Height), new Color(255, 50, 80, 0) * 0.25f * (1f - sin + 0.5f), rot - 1.57f, new Vector2(spike.Width / 4f, spike.Height), 1.5f, 0, 0);
-					spriteBatch.Draw(solid, edge - Main.screenPosition, null, new Color(Lighting.GetSubLight(edge)), rot - 1.57f / 2f, solid.Size(), 1f, 0, 0);
-				}
-
-				// TODO: Replace this with a mesh render mapping a texture to it
-				for (int k = 0; k < 72; k++)
-				{
-					var rot = k / 72f * 6.28f;
-					Vector2 edge = home + Vector2.UnitX.RotatedBy(rot) * (hurtRadius + 50);
-					spriteBatch.Draw(solid, edge - Main.screenPosition, null, Lighting.GetColor((edge / 16).ToPoint()), rot + 1.57f / 2f, solid.Size() / 2f , 1.5f, 0, 0);
-				}
-				for (int k = 0; k < 72; k++)
-				{
-					var rot = k / 72f * 6.28f;
-					Vector2 edge = home + Vector2.UnitX.RotatedBy(rot) * (hurtRadius + 70);
-					spriteBatch.Draw(solid, edge - Main.screenPosition, null, Lighting.GetColor((edge / 16).ToPoint()), rot + 1.57f / 2f + 3.14f, solid.Size() / 2f, 1.5f, 0, 0);
-				}
-				for (int k = 0; k < 72; k++)
-				{
-					var rot = k / 72f * 6.28f;
-					Vector2 edge = home + Vector2.UnitX.RotatedBy(rot) * (hurtRadius + 90);
-					spriteBatch.Draw(solid, edge - Main.screenPosition, null, Lighting.GetColor((edge / 16).ToPoint()), rot + 1.57f / 2f, solid.Size() / 2f, 1.5f, 0, 0);
-				}
-			}
-
-			return false;
-		}
-
 		public override void SaveData(TagCompound tag)
 		{
 			tag.Add("active", active);
@@ -386,50 +340,6 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
 		{
 			return false;
-		}
-
-		private void DrawAura(SpriteBatch sb)
-		{
-			Texture2D glow = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
-			Color color = Color.White;
-			color.A = 0;
-
-			foreach (TheThinker thinker in toRender)
-			{
-				for (int k = 0; k < 8; k++)
-				{
-					sb.Draw(glow, thinker.NPC.Center - Main.screenPosition, null, color, 0, glow.Size() / 2f, (140 + thinker.ExtraRadius) * 4 / glow.Width, 0, 0);
-				}
-			}
-
-			toRender.RemoveAll(n => n is null || !n.NPC.active);
-		}
-
-		private void DrawMe(SpriteBatch sb)
-		{
-			if (bodyShader is null)
-				bodyShader = Terraria.Graphics.Effects.Filters.Scene["ThinkerBody"].GetShader().Shader;
-
-			foreach (TheThinker thinker in toRender)
-			{
-				bodyShader.Parameters["u_resolution"].SetValue(Assets.Bosses.BrainRedux.Heart.Size());
-				bodyShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f);
-
-				bodyShader.Parameters["mainbody_t"].SetValue(Assets.Bosses.BrainRedux.Heart.Value);
-				bodyShader.Parameters["linemap_t"].SetValue(Assets.Bosses.BrainRedux.HeartLine.Value);
-				bodyShader.Parameters["noisemap_t"].SetValue(Assets.Noise.PerlinNoise.Value);
-				bodyShader.Parameters["overlay_t"].SetValue(Assets.Bosses.BrainRedux.HeartOver.Value);
-				bodyShader.Parameters["normal_t"].SetValue(Assets.Bosses.BrainRedux.HeartNormal.Value);
-
-				sb.End();
-				sb.Begin(default, default, SamplerState.PointWrap, default, default, bodyShader, Main.GameViewMatrix.TransformationMatrix);
-
-				Texture2D tex = Assets.Bosses.BrainRedux.Heart.Value;
-				sb.Draw(tex, thinker.NPC.Center - Main.screenPosition, null, Color.White, thinker.NPC.rotation, tex.Size() / 2f, thinker.NPC.scale, 0, 0);
-
-				sb.End();
-				sb.Begin(default, default, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.TransformationMatrix);
-			}
 		}
 	}
 }
