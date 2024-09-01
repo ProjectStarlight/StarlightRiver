@@ -181,7 +181,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 		public override void ReceiveExtraAI(Projectile projectile, BitReader bitReader, BinaryReader binaryReader)
 		{
-			if (projectile.ai[0] == 2)
+			if (projectile != null && projectile.ai != null && projectile.ai.Count > 0 && projectile.ai[0] == 2)
 			{
 				int grappledIndex = binaryReader.ReadInt32();
 				
