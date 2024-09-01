@@ -1,10 +1,14 @@
-﻿namespace StarlightRiver.Core.Systems.InstancedBuffSystem
+﻿using ReLogic.Graphics;
+using System;
+using Terraria.DataStructures;
+
+namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 {
 	/// <summary>
 	/// This class is to be used for buffs which require instanced data per enttiy it is inflicted on. For example, a different DoT value to apply.
 	/// To inflict an instanced buff, call BuffInflictor.Inflict.
 	/// </summary>
-	internal abstract class InstancedBuff : ILoadable
+	public abstract class InstancedBuff : ILoadable
 	{
 		/// <summary>
 		/// The numeric ID of the backing traditional buff to indicate this buffs inflicted status
@@ -38,7 +42,7 @@
 
 		public void Load(Mod mod)
 		{
-			mod.AddContent(new InstancedBuffBacker(Name, DisplayName, Texture, Tooltip, Debuff));
+			mod.AddContent(new InstancedBuffBacker(Name, DisplayName, Texture, Tooltip, Debuff, this));
 			Load();
 		}
 
@@ -122,18 +126,20 @@
 		public string texture;
 		public string tooltip;
 		public bool debuff;
+		public InstancedBuff prototype;
 
 		public override string Name => name;
 
 		public override string Texture => texture;
 
-		public InstancedBuffBacker(string name, string displayName, string texture, string tooltip, bool debuff) : base()
+		public InstancedBuffBacker(string name, string displayName, string texture, string tooltip, bool debuff, InstancedBuff prototype) : base()
 		{
 			this.name = name;
 			this.displayName = displayName;
 			this.texture = texture;
 			this.tooltip = tooltip;
 			this.debuff = debuff;
+			this.prototype = prototype;
 		}
 
 		public override void SetStaticDefaults()
@@ -142,6 +148,18 @@
 			Description.SetDefault(tooltip);
 
 			Main.debuff[Type] = debuff;
+		}
+
+		public override void PostDraw(SpriteBatch spriteBatch, int buffIndex, BuffDrawParams drawParams)
+		{
+			if (prototype.GetInstance(Main.LocalPlayer) is StackableBuff stackable)
+			{
+				DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
+				string message = $"x{stackable.stacks.Count}";
+				Vector2 dims = font.MeasureString(message) * 0.8f;
+				float opacity = Math.Min(1f, stackable.stacks.Count / 100f);
+				spriteBatch.DrawString(font, message, drawParams.Position + new Vector2(16, 54), Color.Lerp(drawParams.DrawColor, new Color(255, 150, 150), opacity), 0f, dims / 2f, 0.8f + opacity * 0.25f, 0, 0);
+			}
 		}
 	}
 }

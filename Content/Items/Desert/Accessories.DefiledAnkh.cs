@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems.BarrierSystem;
+using StarlightRiver.Core.Systems.InoculationSystem;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Desert
@@ -43,7 +44,7 @@ namespace StarlightRiver.Content.Items.Desert
 				player.buffImmune[BuffID.Frozen] = true;
 				player.buffImmune[BuffID.Webbed] = true;
 
-				player.GetModPlayer<DoTResistancePlayer>().DoTResist += 1;
+				player.GetModPlayer<InoculationPlayer>().DoTResist += 1;
 			}
 		}
 	}

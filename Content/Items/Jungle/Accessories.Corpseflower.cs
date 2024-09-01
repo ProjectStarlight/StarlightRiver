@@ -113,10 +113,13 @@ namespace StarlightRiver.Content.Items.Jungle
 		private void ApplyDoTColor(int i, int whoAmI)
 		{
 			CorpseflowerBuff buff = InstancedBuffNPC.GetInstance<CorpseflowerBuff>(Main.npc[whoAmI]);
-			if (buff is null || i < 0 || Main.dedServ) // WEIRD ass bug with ceiros that caused index out of bounds. Tested with other enemies, just happens with ceiros. This seems to fix it tho 
+			if (buff is null || i < 0 || i >= Main.combatText.Length || Main.dedServ) // WEIRD ass bug with ceiros that caused index out of bounds. Tested with other enemies, just happens with ceiros. This seems to fix it tho 
 				return;
 
-			maxTimeLefts[i] = Main.combatText[i].lifeTime;
+			if (maxTimeLefts is null)
+				return;
+
+			maxTimeLefts[i] = Main.combatText[i]?.lifeTime ?? 10;
 		}
 
 		#endregion IL
