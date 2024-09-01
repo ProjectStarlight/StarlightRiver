@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -23,6 +24,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			NPC.knockBackResist = 3f;
 			NPC.HitSound = SoundID.NPCHit1;
 			NPC.DeathSound = SoundID.NPCDeath1;
+		}
+
+		public override void OnSpawn(IEntitySource source)
+		{
+			NPC.velocity += Vector2.UnitY.RotatedByRandom(1) * 20;
 		}
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
@@ -91,8 +97,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				NPC.frame = new Rectangle(26 * ((int)(NPC.ai[0] / 5) % 3), 0, 26, 30);
 			}
 
-			Texture2D tex = Request<Texture2D>(AssetDirectory.SquidBoss + "AuroralingGlow").Value;
-			Texture2D tex2 = Request<Texture2D>(AssetDirectory.SquidBoss + "AuroralingGlow2").Value;
+			Texture2D tex = Assets.Bosses.SquidBoss.AuroralingGlow.Value;
+			Texture2D tex2 = Assets.Bosses.SquidBoss.AuroralingGlow2.Value;
 
 			float sin = 1 + (float)Math.Sin(NPC.ai[0] / 10f);
 			float cos = 1 + (float)Math.Cos(NPC.ai[0] / 10f);

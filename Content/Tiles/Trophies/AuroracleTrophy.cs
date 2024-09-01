@@ -18,9 +18,9 @@ namespace StarlightRiver.Content.Tiles.Trophies
 
 			if (tile.TileFrameX == 2 * 18 && tile.TileFrameY == 2 * 18)
 			{
-				Texture2D headBlob = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyOver").Value;
-				Texture2D headBlobGlow = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyOverGlow").Value;
-				Texture2D headBlobSpecular = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyOverSpecular").Value;
+				Texture2D headBlob = Assets.Bosses.SquidBoss.BodyOver.Value;
+				Texture2D headBlobGlow = Assets.Bosses.SquidBoss.BodyOverGlow.Value;
+				Texture2D headBlobSpecular = Assets.Bosses.SquidBoss.BodyOverSpecular.Value;
 
 				Texture2D tex2 = Request<Texture2D>(AssetDirectory.TrophyTile + Name + "Glow2").Value;
 

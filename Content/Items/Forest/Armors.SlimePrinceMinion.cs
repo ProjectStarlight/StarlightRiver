@@ -275,7 +275,7 @@ namespace StarlightRiver.Content.Items.Forest
 			effect.Parameters["alpha"].SetValue(0.5f);
 
 			sb.End();
-			sb.Begin(default, default, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			// Drawing behavior for normal, non-fused
 			if (State < 2)
@@ -297,7 +297,7 @@ namespace StarlightRiver.Content.Items.Forest
 			}
 
 			sb.End();
-			sb.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			return false;
 		}
@@ -322,8 +322,8 @@ namespace StarlightRiver.Content.Items.Forest
 			{
 				float fill = life / (float)MAX_LIFE;
 
-				Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "SmallBar1").Value;
-				Texture2D tex2 = ModContent.Request<Texture2D>(AssetDirectory.GUI + "SmallBar0").Value;
+				Texture2D tex = Assets.GUI.SmallBar1.Value;
+				Texture2D tex2 = Assets.GUI.SmallBar0.Value;
 
 				var pos = (Projectile.Center + new Vector2(-tex.Width / 2, -50) + Vector2.UnitY * Projectile.height / 2f - Main.screenPosition).ToPoint();
 

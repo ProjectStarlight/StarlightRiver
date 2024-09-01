@@ -223,7 +223,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			{
 				if (Main.netMode != NetmodeID.Server)
 				{
-					BossBarOverlay.SetTracked(NPC, ", Shattered Sentinel", Request<Texture2D>(AssetDirectory.VitricBoss + "GUI/HealthBar").Value);
+					BossBarOverlay.SetTracked(NPC, ", Shattered Sentinel", Assets.Bosses.VitricBoss.GUI.HealthBar.Value);
 					BossBarOverlay.visible = true;
 				}
 
@@ -349,10 +349,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 				swooshes = new List<VitricBossSwoosh>()
 						{
-						new VitricBossSwoosh(new Vector2(-16, -40), 10, this),
-						new VitricBossSwoosh(new Vector2(16, -40), 10, this),
-						new VitricBossSwoosh(new Vector2(-46, -34), 14, this),
-						new VitricBossSwoosh(new Vector2(46, -34), 14, this)
+						new(new Vector2(-16, -40), 10, this),
+						new(new Vector2(16, -40), 10, this),
+						new(new Vector2(-46, -34), 14, this),
+						new(new Vector2(46, -34), 14, this)
 						};
 			}
 

@@ -122,7 +122,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "Guillotine").Value;
+			Texture2D tex = Assets.Items.Misc.Guillotine.Value;
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * (Projectile.timeLeft / 45f), 0, tex.Size() / 2f, (1 - Projectile.timeLeft / 45f) * 3f, 0, 0);
 
 			return false;

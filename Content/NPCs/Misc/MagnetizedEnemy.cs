@@ -75,9 +75,9 @@ namespace StarlightRiver.Content.NPCs.Misc
 				Vector2 dir = Main.rand.NextFloat(6.28f).ToRotationVector2();
 				Vector2 offset = Main.rand.NextBool(4) ? dir * Main.rand.NextFloat(30) : new Vector2(Main.rand.Next(-35, 35), npc.height / 2);
 
-				float smalLCharge = 0.5f;
+				float smallCharge = 0.5f;
 
-				var proj = Projectile.NewProjectileDirect(npc.GetSource_FromAI(), npc.Center + offset, dir.RotatedBy(Main.rand.NextFloat(-1, 1)) * 5, ModContent.ProjectileType<CloudstrikeShot>(), 0, 0, chargedPlayer.whoAmI, smalLCharge, 2);
+				var proj = Projectile.NewProjectileDirect(npc.GetSource_FromAI(), npc.Center + offset, dir.RotatedBy(Main.rand.NextFloat(-1, 1)) * 5, ModContent.ProjectileType<CloudstrikeShot>(), 0, 0, chargedPlayer.whoAmI, smallCharge, 2);
 				var mp = proj.ModProjectile as CloudstrikeShot;
 				mp.velocityMult = Main.rand.Next(1, 4);
 
@@ -205,22 +205,28 @@ namespace StarlightRiver.Content.NPCs.Misc
 		private void ManageTrails()
 		{
 			Vector2 endPoint = cache[SEGMENTS];
-			trail ??= new Trail(Main.instance.GraphicsDevice, SEGMENTS + 1, new TriangularTip(4), factor => 16 * Math.Max(fade, 1) * MathHelper.Lerp(1, 0.25f, flashOpacity), factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X > 0.99f)
-					return Color.Transparent;
+				trail = new Trail(Main.instance.GraphicsDevice, SEGMENTS + 1, new NoTip(), factor => 16 * Math.Max(fade, 1) * MathHelper.Lerp(1, 0.25f, flashOpacity), factor =>
+							{
+								if (factor.X > 0.99f)
+									return Color.Transparent;
 
-				return Color.Lerp(new Color(160, 220, 255) * ((fade - 0.5f) * 0.3f) * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X), Color.White, flashOpacity * 0.5f);
-			});
+								return Color.Lerp(new Color(160, 220, 255) * ((fade - 0.5f) * 0.3f) * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X), Color.White, flashOpacity * 0.5f);
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = endPoint;
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, SEGMENTS + 1, new TriangularTip(4), factor => 3 * (fade > 1 ? Main.rand.NextFloat(0.55f, 1.45f) : 1) * Math.Max(fade, 1), factor =>
+			if (trail2 is null || trail2.IsDisposed)
 			{
-				float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
-				return Color.Lerp(Color.Lerp(baseColor, endColor, EaseFunction.EaseCubicIn.Ease(1 - progress)), Color.White, flashOpacity) * ((fade - 0.5f) * 0.3f) * progress;
-			});
+				trail2 = new Trail(Main.instance.GraphicsDevice, SEGMENTS + 1, new NoTip(), factor => 3 * (fade > 1 ? Main.rand.NextFloat(0.55f, 1.45f) : 1) * Math.Max(fade, 1), factor =>
+							{
+								float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
+								return Color.Lerp(Color.Lerp(baseColor, endColor, EaseFunction.EaseCubicIn.Ease(1 - progress)), Color.White, flashOpacity) * ((fade - 0.5f) * 0.3f) * progress;
+							});
+			}
 
 			trail2.Positions = cache2.ToArray();
 			trail2.NextPosition = endPoint;
@@ -238,12 +244,12 @@ namespace StarlightRiver.Content.NPCs.Misc
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
 			effect.Parameters["repeats"].SetValue(1f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 
 			trail?.Render(effect);
 			trail2?.Render(effect);
 
-			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 

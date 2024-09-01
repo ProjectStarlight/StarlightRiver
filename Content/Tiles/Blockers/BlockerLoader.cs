@@ -6,6 +6,9 @@ namespace StarlightRiver.Content.Tiles.Blockers
 {
 	internal class BlockerLoader : IOrderedLoadable
 	{
+		public static bool ceirosBlockers;
+		public static bool glassweaverBlockers;
+
 		public float Priority => 1f;
 
 		public void Load()

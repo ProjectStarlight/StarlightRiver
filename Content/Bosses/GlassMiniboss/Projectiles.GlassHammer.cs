@@ -1,4 +1,5 @@
 using ReLogic.Content;
+using StarlightRiver.Content.Packets;
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using System.Collections.Generic;
@@ -283,6 +284,12 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		{
 			if (Timer >= RAISE_TIME)
 			{
+				if (Main.LocalPlayer.whoAmI == target.whoAmI)
+				{
+					PlayerHitPacket hitPacket = new PlayerHitPacket(Projectile.identity, target.whoAmI, info.Damage, Projectile.type);
+					hitPacket.Send(-1, Main.LocalPlayer.whoAmI, false);
+				}
+
 				target.Center -= new Vector2(0, 8).RotatedBy(Projectile.rotation);
 				target.velocity.Y -= 0.5f;
 				target.velocity.X *= 0.6f;
@@ -314,7 +321,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			if (Timer < RAISE_TIME + 10)
 				DrawGroundTell();
 
-			Asset<Texture2D> bloom = Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha");
+			Asset<Texture2D> bloom = Assets.Keys.GlowAlpha;
 
 			if (Timer > RAISE_TIME - 10)
 			{
@@ -374,7 +381,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		private void DrawGroundTell()
 		{
-			Asset<Texture2D> tellTex = Request<Texture2D>(AssetDirectory.MiscTextures + "SpikeTell");
+			Asset<Texture2D> tellTex = Assets.Misc.SpikeTell;
 			Rectangle frame = tellTex.Frame(2, 1, 1);
 			Rectangle frameGlow = tellTex.Frame(2, 1, 1);
 			Vector2 tellOrigin = frame.Size() * new Vector2(0.5f, 0.928f);

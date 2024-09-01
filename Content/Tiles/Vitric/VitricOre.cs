@@ -10,7 +10,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-	internal class VitricOre : DummyTile, IHintable
+	internal class VitricOre : DummyTile
 	{
 		public override int DummyType => DummySystem.DummyType<VitricOreDummy>();
 
@@ -77,13 +77,9 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		{
 			return false;
 		}
-		public string GetHint()
-		{
-			return "A crystal, infused with binding Starlight. You'd have to use a Starlight power of equal strength...";
-		}
 	}
 
-	internal class VitricOreFloat : DummyTile, IHintable
+	internal class VitricOreFloat : DummyTile
 	{
 		public override int DummyType => DummySystem.DummyType<VitricOreFloatDummy>();
 
@@ -122,14 +118,12 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		{
 			return false;
 		}
-		public string GetHint()
-		{
-			return "A crystal, infused with binding Starlight. You'd have to use a Starlight power of equal strength...";
-		}
 	}
 
 	internal class VitricOreDummy : Dummy
 	{
+		public override bool DoesCollision => true;
+
 		public string Texture => AssetDirectory.VitricTile + "VitricOreGlow";
 
 		public VitricOreDummy() : base(TileType<VitricOre>(), 32, 48) { }
@@ -171,6 +165,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 	internal class VitricOreFloatDummy : Dummy
 	{
+		public override bool DoesCollision => true;
+
 		public string Texture => AssetDirectory.VitricTile + "VitricOreFloatGlow";
 
 		public VitricOreFloatDummy() : base(TileType<VitricOreFloat>(), 32, 32) { }
@@ -197,7 +193,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = Request<Texture2D>(AssetDirectory.VitricTile + "VitricOreFloatGlow").Value;
+			Texture2D tex = Assets.Tiles.Vitric.VitricOreFloatGlow.Value;
 			Color color = Helper.IndicatorColorProximity(150, 300, Center);
 
 			Main.spriteBatch.Draw(tex, position - new Vector2(1, 1) - Main.screenPosition, color);

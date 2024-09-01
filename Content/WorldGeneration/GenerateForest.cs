@@ -36,6 +36,18 @@ namespace StarlightRiver.Core
 						}
 					}
 
+					else if (WorldGen.genRand.NextBool(12)) //Veggies
+					{
+						for (int y = 10; y < Main.worldSurface; y++)
+						{
+							if (Main.tile[k, y].HasTile && Main.tile[k, y].BlockType == BlockType.Solid && Main.tile[k, y].TileType == TileID.Grass && Helper.CheckAirRectangle(new Point16(k, y - 2), new Point16(1, 2)))
+							{
+								Helper.PlaceMultitile(new Point16(k, y - 2), TileType<CommonVegetables>());
+								k += 2;
+							}
+						}
+					}
+
 					else if (WorldGen.genRand.NextBool(50)) //Palestone
 					{
 						for (int y = 10; y < Main.worldSurface; y++)

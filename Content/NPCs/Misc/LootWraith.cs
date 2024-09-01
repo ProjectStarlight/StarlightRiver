@@ -288,7 +288,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 			}
 			// Not sure if the below commented out code is needed.
 			//Main.spriteBatch.End();
-			//Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			//Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 			return false;
 		}
 
@@ -370,14 +370,16 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, NUM_SEGMENTS, new TriangularTip(1), factor => 7, factor => Lighting.GetColor((int)(NPC.Center.X / 16), (int)(NPC.Center.Y / 16)) * MathF.Sqrt(1 - factor.X));
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, NUM_SEGMENTS, new NoTip(), factor => 7, factor => Lighting.GetColor((int)(NPC.Center.X / 16), (int)(NPC.Center.Y / 16)) * MathF.Sqrt(1 - factor.X));
 
 			List<Vector2> positions = cache;
 			trail.NextPosition = NPC.Center;
 
 			trail.Positions = positions.ToArray();
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, NUM_SEGMENTS, new TriangularTip(1), factor => 7, factor => Color.White * chargeupCounter * MathF.Sqrt(1 - factor.X));
+			if (trail2 is null || trail2.IsDisposed)
+				trail2 = new Trail(Main.instance.GraphicsDevice, NUM_SEGMENTS, new NoTip(), factor => 7, factor => Color.White * chargeupCounter * MathF.Sqrt(1 - factor.X));
 
 			trail2.NextPosition = NPC.Center;
 
@@ -417,7 +419,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(Texture + "_Chain_White").Value);
 
-			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		private List<Vector2> GetChainPoints()

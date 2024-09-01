@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override string Texture => AssetDirectory.MiscItem + "AxeBook";
 
-		public AxeBook() : base("Tiger Technique", "Teaches you the Art of Axes, granting all axe weapons a new combo attack\nThe final strike will rend enemies' armor\n<right> to throw your axe") { }
+		public AxeBook() : base("Tiger Technique", "Teaches you the Art of Axes, granting all axe weapons a new combo attack\nThe final strike will {{rend}} enemies' armor\n<right> to throw your axe") { }
 
 		public override void Load()
 		{
@@ -29,6 +29,12 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			StarlightItem.CanUseItemEvent -= OverrideAxeEffects;
 			StarlightItem.AltFunctionUseEvent -= AllowRightClick;
+		}
+
+		public override void SetStaticDefaults()
+		{
+			base.SetStaticDefaults();
+			ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<SwordBook>();
 		}
 
 		public override void SafeSetDefaults()
@@ -133,11 +139,6 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override string Texture => AssetDirectory.Invisible;
 
-		public override void Load()
-		{
-			StarlightPlayer.PostUpdateEvent += DoSwingAnimation;
-		}
-
 		public override void SetDefaults()
 		{
 			Projectile.friendly = true;
@@ -189,15 +190,6 @@ namespace StarlightRiver.Content.Items.Misc
 				Terraria.Audio.SoundEngine.PlaySound(Item.UseSound.Value, Owner.MountedCenter);
 		}
 
-		private void DoSwingAnimation(Player player)
-		{
-			Projectile instance = Main.projectile.FirstOrDefault(n => n.ModProjectile is AxeBookProjectile && n.owner == player.whoAmI);
-			var modProj = instance?.ModProjectile as AxeBookProjectile;
-
-			if (modProj != null && instance.active)
-				player.bodyFrame = new Rectangle(0, (int)(1 + modProj.Progress * 4) * 56, 40, 56);
-		}
-
 		public override void AI()
 		{
 			Projectile.Center = Owner.Center;
@@ -208,6 +200,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 			Owner.itemAnimation = Owner.itemTime = Projectile.timeLeft; //lock inventory while this is active
 			Owner.itemAnimationMax = 0; //make sure the regular weapon holdout doesn't render (makes an invisible super axe so you need to disable onhit elsewhere)
+
+			Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation + 1.57f * 2.5f);
 
 			// Cut trees
 			if (Progress > 0 && !hitTree)
@@ -375,13 +369,16 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(40 * 4), factor => (float)Math.Min(factor, Progress) * Length * 1.25f, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X >= 0.98f)
-					return Color.White * 0;
+				trail = new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => (float)Math.Min(factor, Progress) * Length * 1.25f, factor =>
+							{
+								if (factor.X == 1)
+									return Color.Transparent;
 
-				return GetSwingColor(factor.X);
-			});
+								return GetSwingColor(factor.X);
+							});
+			}
 
 			if (cache != null)
 			{
@@ -407,8 +404,8 @@ namespace StarlightRiver.Content.Items.Misc
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
 			effect.Parameters["repeats"].SetValue(2f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
-			effect.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/MagicPixel").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
+			effect.Parameters["sampleTexture2"].SetValue(Assets.MagicPixel.Value);
 
 			trail?.Render(effect);
 		}
@@ -600,13 +597,16 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(40 * 4), factor => (float)Math.Min(factor, Progress) * 64, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X >= 0.98f)
-					return Color.White * 0;
+				trail = new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => (float)Math.Min(factor, Progress) * 64, factor =>
+							{
+								if (factor.X == 1)
+									return Color.Transparent;
 
-				return GetSwingColor();
-			});
+								return GetSwingColor();
+							});
+			}
 
 			if (cache != null)
 				trail.Positions = cache.ToArray();
@@ -623,8 +623,8 @@ namespace StarlightRiver.Content.Items.Misc
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
 			effect.Parameters["repeats"].SetValue(2f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
-			effect.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/MagicPixel").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
+			effect.Parameters["sampleTexture2"].SetValue(Assets.MagicPixel.Value);
 
 			trail?.Render(effect);
 		}

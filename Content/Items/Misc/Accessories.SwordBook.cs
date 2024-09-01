@@ -40,6 +40,8 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			base.SetStaticDefaults();
 			blackListedSwords = new() { ModContent.ItemType<Moonstone.Moonfury>() };
+
+			ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<SpearBook>();
 		}
 
 		public override void SafeSetDefaults()
@@ -145,8 +147,6 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void Load()
 		{
-			StarlightPlayer.PostUpdateEvent += DoSwingAnimation;
-
 			// We cache the MethodInfo of the methods we need to simulate vanilla effects here
 			playerItemCheckEmitUseVisuals_Info = typeof(Player).GetMethod("ItemCheck_EmitUseVisuals", BindingFlags.NonPublic | BindingFlags.Instance);
 			playerItemCheckEmitUseVisuals = (Func<Player, Item, Rectangle, Rectangle>)Delegate.CreateDelegate(
@@ -196,39 +196,6 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 		}
 
-		/// <summary>
-		/// Handles the player's body animation for the sword swings
-		/// </summary>
-		/// <param name="Player">The player to animate</param>
-		private void DoSwingAnimation(Player Player)
-		{
-			Projectile instance = Main.projectile.FirstOrDefault(n => n.ModProjectile is SwordBookProjectile && n.owner == Player.whoAmI);
-
-			if (instance != null && instance.active)
-			{
-				var mp = instance.ModProjectile as SwordBookProjectile;
-
-				switch (mp.ComboState)
-				{
-					case 0:
-						Player.bodyFrame = Player.bodyFrame = new Rectangle(0, 56 * (int)(3 + mp.Progress), 40, 56);
-						break;
-
-					case 1:
-						Player.bodyFrame = Player.bodyFrame = new Rectangle(0, 56 * (int)(4 - mp.Progress * 4), 40, 56);
-						break;
-
-					case 2:
-						Player.bodyFrame = Player.bodyFrame = new Rectangle(0, 56 * (int)(3 + mp.Progress), 40, 56);
-						break;
-
-					case 3:
-						Player.bodyFrame = Player.bodyFrame = new Rectangle(0, 56 * (int)(mp.Progress * 4), 40, 56);
-						break;
-				}
-			}
-		}
-
 		private void PlaySwingSound()
 		{
 			if (!hasDoneSwingSound && Main.netMode != NetmodeID.Server)
@@ -256,6 +223,8 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.Center = Owner.Center;
 			Owner.direction = Direction;
 			Owner.heldProj = Projectile.whoAmI;
+
+			Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation + 1.57f * 2.5f);
 
 			SpawnLogic();
 
@@ -436,13 +405,16 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(40 * 4), factor => (float)Math.Min(factor, Progress) * length * 0.75f, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X >= 0.98f)
-					return Color.White * 0;
+				trail = new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => (float)Math.Min(factor, Progress) * length * 0.75f, factor =>
+							{
+								if (factor.X == 1)
+									return Color.Transparent;
 
-				return trailColor * (float)Math.Min(factor.X, Progress) * 0.5f * (float)Math.Sin(Progress * 3.14f);
-			});
+								return trailColor * (float)Math.Min(factor.X, Progress) * 0.5f * (float)Math.Sin(Progress * 3.14f);
+							});
+			}
 
 			var realCache = new Vector2[50];
 
@@ -465,8 +437,8 @@ namespace StarlightRiver.Content.Items.Misc
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
 			effect.Parameters["repeats"].SetValue(8f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
-			effect.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Moonstone/DatsuzeiFlameMap2").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+			effect.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
 
 			trail?.Render(effect);
 		}

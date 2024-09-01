@@ -8,7 +8,9 @@ namespace StarlightRiver.Content.Metaballs
 {
 	internal class BloodMetaballs : MetaballActor
 	{
-		public override bool Active => Main.dust.Any(x => x.active && x.type == DustType);
+		public static bool Visible = false;
+
+		public override bool Active => Visible;
 
 		public override Color OutlineColor => new(173, 19, 19);
 
@@ -20,7 +22,7 @@ namespace StarlightRiver.Content.Metaballs
 		{
 			Effect borderNoise = Filters.Scene["BorderNoise"].GetShader().Shader;
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Dust + "BloodLine").Value;
+			Texture2D tex = Assets.Dusts.BloodLine.Value;
 
 			if (borderNoise is null)
 				return;
@@ -48,6 +50,9 @@ namespace StarlightRiver.Content.Metaballs
 		{
 			var sourceRect = new Rectangle(0, 0, target.Width, target.Height);
 			LightingBufferRenderer.DrawWithLighting(sourceRect, target, sourceRect, InteriorColor, new Vector2(2, 2));
+
+			Visible = false;
+
 			return false;
 		}
 	}

@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.ExposureSystem;
+﻿using StarlightRiver.Content.GUI;
+using StarlightRiver.Core.Systems.ExposureSystem;
 using Terraria.Audio;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
@@ -9,7 +10,9 @@ namespace StarlightRiver.Content.Items.Forest
 	[AutoloadEquip(EquipType.Head)]
 	public class SlimePrinceHead : ModItem
 	{
+		[CloneByReference]
 		public Projectile prince;
+
 		public Vector2 targetVel;
 		public float accel = 0.06f;
 		public Vector2 targetAccel;
@@ -52,6 +55,12 @@ namespace StarlightRiver.Content.Items.Forest
 				// If the prince is invalid, we need to spawn a new prince
 				if (prince is null || !prince.active || prince.type != ProjectileType<SlimePrinceMinion>() || prince.owner != player.whoAmI)
 					prince = Projectile.NewProjectileDirect(player.GetSource_FromThis(), player.Center, Vector2.Zero, ProjectileType<SlimePrinceMinion>(), 17, 0, player.whoAmI);
+
+				var thisPrince = prince.ModProjectile as SlimePrinceMinion;
+				if (thisPrince != null)
+				{
+					ArmorChargeUI.SetMessage($"{thisPrince.life}/{SlimePrinceMinion.MAX_LIFE}");
+				}
 			}
 		}
 
@@ -139,7 +148,7 @@ namespace StarlightRiver.Content.Items.Forest
 					helm.targetAccel = Vector2.Normalize(helm.targetAccel) * 0.99f;
 
 				player.velocity = helm.targetVel;
-				player.fallStart = (int)player.position.Y;
+				player.fallStart = (int)(player.position.Y / 16f);
 			}
 		}
 
@@ -238,7 +247,7 @@ namespace StarlightRiver.Content.Items.Forest
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Slime Prince's Tassets");
-			Tooltip.SetDefault("Minions inflict 5% exposure");
+			Tooltip.SetDefault("Minions inflict 5% {{exposure}}");
 		}
 
 		public override void SetDefaults()

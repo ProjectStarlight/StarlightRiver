@@ -13,6 +13,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override void SetStaticDefaults()
 		{
+			DisplayName.SetDefault("Glocktopus");
 			Tooltip.SetDefault("Converts Musket Balls into Aurora Ink\n" +
 				"Critical hits and kills cause Tentapistols to sprout from your back");
 		}
@@ -292,7 +293,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 			BezierCurve curve = GetBezierCurve();
 			int numPoints = 10;
 			Vector2[] chainPositions = curve.GetPoints(numPoints).ToArray();
-			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(40 * 4), factor => 12, factor => lightColor);
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => 12, factor => lightColor);
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = cache[9];
@@ -308,11 +310,11 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			Effect effect = Filters.Scene["AlphaTextureTrail"].GetShader().Shader;
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "Octogun_Tentacle").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.Items.Permafrost.Octogun_Tentacle.Value);
 			effect.Parameters["alpha"].SetValue(Projectile.timeLeft < 10 ? MathHelper.Lerp(1, 0, 1f - Projectile.timeLeft / 10f) : 1);
 
 			trail?.Render(effect);
-			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		private BezierCurve GetBezierCurve()
@@ -436,8 +438,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 		public override void PostDraw(Color lightColor)
 		{
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
+			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Texture2D tex = Assets.Keys.GlowSoft.Value;
 			float sin = 1 + (float)Math.Sin(Projectile.timeLeft * 10);
 			float cos = 1 + (float)Math.Cos(Projectile.timeLeft * 10);
 			var color = Color.Lerp(Color.Transparent, Main.masterMode ? new Color(1, 0.25f + sin * 0.25f, 0f) : new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f), FadeInTimer / 15f);
@@ -451,7 +453,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			}
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		private void KillEffects()
@@ -495,20 +497,23 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 20, new TriangularTip(Tiny ? 1f : 2.5f), factor => (Tiny ? 2f : 4.5f) * (factor * 2f), factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (Projectile.penetrate == 1 && deathTimer / 40f < factor.Y)
-					return Color.Transparent;
+				trail = new Trail(Main.instance.GraphicsDevice, 20, new NoTip(), factor => (Tiny ? 2f : 4.5f) * (factor * 2f), factor =>
+							{
+								if (Projectile.penetrate == 1 && deathTimer / 40f < factor.Y)
+									return Color.Transparent;
 
-				float sin = 1 + (float)Math.Sin(factor.X * 10);
-				float cos = 1 + (float)Math.Cos(factor.X * 10);
-				var color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
+								float sin = 1 + (float)Math.Sin(factor.X * 10);
+								float cos = 1 + (float)Math.Cos(factor.X * 10);
+								var color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
 
-				if (Main.masterMode)
-					color = new Color(1, 0.25f + sin * 0.25f, 0.25f);
+								if (Main.masterMode)
+									color = new Color(1, 0.25f + sin * 0.25f, 0.25f);
 
-				return Color.Lerp(Color.Transparent, color, FadeInTimer / 15f);
-			});
+								return Color.Lerp(Color.Transparent, color, FadeInTimer / 15f);
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
@@ -526,12 +531,12 @@ namespace StarlightRiver.Content.Items.Permafrost
 			effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.02f);
 			effect.Parameters["repeats"].SetValue(2f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 			trail?.Render(effect);
 
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
 			trail?.Render(effect);
-			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 }

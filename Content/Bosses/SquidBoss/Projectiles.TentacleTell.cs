@@ -33,12 +33,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			endPoint = endPointToAssign;
 		}
 
-		public override void AI()
-		{
-			if (Projectile.timeLeft >= 59)
-				Projectile.netUpdate = true;
-		}
-
 		public override bool PreDraw(ref Color lightColor)
 		{
 			return false;
@@ -47,8 +41,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
 			Texture2D top = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D body = ModContent.Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleTellBody").Value;
-			Texture2D glow = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value;
+			Texture2D body = Assets.Bosses.SquidBoss.TentacleTellBody.Value;
+			Texture2D glow = Assets.GlowTrail.Value;
 			Texture2D flat = Terraria.GameContent.TextureAssets.MagicPixel.Value;
 
 			float timer = 60 - Projectile.timeLeft;

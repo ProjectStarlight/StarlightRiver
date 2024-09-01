@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (drawInfo.shadow != 0f)
 				return;
 
-			Texture2D tankTexture = ModContent.Request<Texture2D>(AssetDirectory.VitricItem + "MagmiteVacpack_Tank").Value;
+			Texture2D tankTexture = Assets.Items.Vitric.MagmiteVacpack_Tank.Value;
 
 			Player drawplayer = drawInfo.drawPlayer;
 
@@ -410,14 +410,14 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SendExtraAI(BinaryWriter writer)
 		{
 			writer.Write(stuck);
-			writer.WritePackedVector2(offset);
+			writer.WriteVector2(offset);
 			writer.Write(enemyID);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
 			stuck = reader.ReadBoolean();
-			offset = reader.ReadPackedVector2();
+			offset = reader.ReadVector2();
 			enemyID = reader.ReadInt32();
 		}
 	}

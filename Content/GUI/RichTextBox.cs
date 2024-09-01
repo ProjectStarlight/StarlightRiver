@@ -17,11 +17,12 @@ namespace StarlightRiver.Content.GUI
 
 		public static Vector2 position;
 
-		private static float opacity;
+		private static float opacity = 1f;
 
-		public static int boxTimer;
+		public static int boxTimer = 0;
 
-		private static int textTimer;
+		private static int textTimer = 0;
+		private static int titleTimer = 0;
 
 		private static float widthOff = 0;
 
@@ -50,10 +51,19 @@ namespace StarlightRiver.Content.GUI
 			{
 				boxTimer++;
 			}
-			else if (textTimer < message.Length)
+			else
 			{
-				Terraria.Audio.SoundEngine.PlaySound(Terraria.ID.SoundID.MenuTick);
-				textTimer++;
+				if (textTimer < message.Length)
+				{
+					Terraria.Audio.SoundEngine.PlaySound(Terraria.ID.SoundID.MenuTick);
+					textTimer++;
+				}
+
+				if (titleTimer < title.Length)
+				{
+					Terraria.Audio.SoundEngine.PlaySound(Terraria.ID.SoundID.MenuTick);
+					titleTimer++;
+				}
 			}
 
 			Vector2 target = talking.Center + new Vector2(0, 50 + talking.height * 0.5f);
@@ -143,14 +153,14 @@ namespace StarlightRiver.Content.GUI
 
 			// Title bar
 			DrawBox(spriteBatch, titleRect);
-			Utils.DrawBorderString(spriteBatch, title[..Math.Min(title.Length, textTimer)], new Vector2((int)position.X, (int)position.Y - 18), Color.White, 1, 0.5f, 0.5f);
+			Utils.DrawBorderString(spriteBatch, title[..Math.Min(title.Length, titleTimer)], new Vector2((int)position.X, (int)position.Y - 18), Color.White, 1, 0.5f, 0.5f);
 
 			base.Draw(spriteBatch);
 		}
 
 		public static void DrawBox(SpriteBatch sb, Rectangle target)
 		{
-			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/GUI/FancyBoxCustom").Value;
+			Texture2D tex = Assets.GUI.FancyBoxCustom.Value;
 			Color color = Color.White * 0.8f * opacity;
 
 			if (target.Width < 12 || target.Height < 12)
@@ -224,6 +234,9 @@ namespace StarlightRiver.Content.GUI
 		public static void SetData(NPC NPC, string newTitle, string newMessage)
 		{
 			textTimer = 0;
+
+			if (newTitle != title)
+				titleTimer = 0;
 
 			talking = NPC;
 			title = newTitle;

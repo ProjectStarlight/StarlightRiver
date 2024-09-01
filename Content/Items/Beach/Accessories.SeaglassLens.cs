@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.Beach
 
 		public override void Load()
 		{
-			StarlightProjectile.OnHitNPCEvent += BonusDamage;
+			StarlightProjectile.ModifyHitNPCEvent += BonusDamage;
 		}
 
 		public override void SafeSetDefaults()
@@ -20,12 +20,12 @@ namespace StarlightRiver.Content.Items.Beach
 			Item.value = Item.sellPrice(silver: 50);
 		}
 
-		private void BonusDamage(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone)
+		private void BonusDamage(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers)
 		{
 			Player owner = Main.player[projectile.owner];
 
 			if (owner == Main.LocalPlayer && Equipped(owner) && projectile.DamageType == DamageClass.Summon && Main.rand.NextBool(10))
-				target.SimpleStrikeNPC(damageDone / 2, hit.HitDirection, true);
+				modifiers.SetCrit();
 		}
 
 		public override void AddRecipes()

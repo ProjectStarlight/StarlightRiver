@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.GUI
 
 				int resistPercent = (int)Math.Round(ResistPlayer.DoTResist * 100, MidpointRounding.AwayFromZero);
 				DoTResistPanel.value = $"{resistPercent}%";
-				Main.hoverItemName += $"\n{resistPercent}% Inoculation";
+				Main.hoverItemName += $"\n{resistPercent}% {{Inoculation}}";
 			}
 			else if (Timer > 0)
 			{

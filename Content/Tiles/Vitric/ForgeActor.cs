@@ -41,23 +41,26 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 			Vector2 pos = position - new Vector2(567, 400) - Main.screenPosition;
 
-			Texture2D backdrop = Request<Texture2D>(AssetDirectory.Glassweaver + "Backdrop").Value;
-			Texture2D farBackdrop = Request<Texture2D>(AssetDirectory.Glassweaver + "FarBackdrop").Value;
+			Texture2D backdrop = Assets.Bosses.GlassMiniboss.Backdrop.Value;
+			Texture2D farBackdrop = Assets.Bosses.GlassMiniboss.FarBackdrop.Value;
 
-			Texture2D backdropGlow = Request<Texture2D>(AssetDirectory.Glassweaver + "BackdropGlow").Value;
-			Texture2D farBackdropGlow = Request<Texture2D>(AssetDirectory.Glassweaver + "FarBackdropGlow").Value;
+			Texture2D backdropGlow = Assets.Bosses.GlassMiniboss.BackdropGlow.Value;
+			Texture2D farBackdropGlow = Assets.Bosses.GlassMiniboss.FarBackdropGlow.Value;
 
-			Texture2D backdropBlack = Request<Texture2D>(AssetDirectory.Glassweaver + "BackdropBlack").Value;
+			Texture2D backdropBlack = Assets.Bosses.GlassMiniboss.BackdropBlack.Value;
 
 			Vector2 parallaxOffset = new Vector2(Main.screenPosition.X + Main.screenWidth / 2f - position.X, 0) * 0.15f;
 
 			var frame = new Rectangle(0, 0, backdrop.Width, backdrop.Height);
 
-			Main.spriteBatch.Draw(farBackdrop, pos + parallaxOffset, frame, new Color(170, 140 + (int)(Math.Sin(Main.GameUpdateCount * 0.04f) * 15), 90));
-			Main.spriteBatch.Draw(farBackdropGlow, pos + parallaxOffset, frame, Color.White);
+			if (CutawayHandler.forgeOverlay?.fadeTime < 1)
+			{
+				Main.spriteBatch.Draw(farBackdrop, pos + parallaxOffset, frame, new Color(170, 140 + (int)(Math.Sin(Main.GameUpdateCount * 0.04f) * 15), 90));
+				Main.spriteBatch.Draw(farBackdropGlow, pos + parallaxOffset, frame, Color.White);
+			}
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			LightingBufferRenderer.DrawWithLighting(pos, backdrop, frame);
 			Main.spriteBatch.Draw(backdropGlow, pos, frame, Color.White);

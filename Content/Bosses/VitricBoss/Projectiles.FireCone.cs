@@ -106,7 +106,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		{
 			if (Timer < 66) //draws the proejctile's tell ~1 second before it goes off
 			{
-				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/ConeTell").Value;
+				Texture2D tex = Assets.Bosses.VitricBoss.ConeTell.Value;
 				float alpha = (Timer * 2 / 33 - (float)Math.Pow(Timer, 2) / 1086) * 0.5f;
 				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), new Color(255, 170, 100) * alpha, Projectile.rotation - 1.57f, new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
 			}
@@ -118,7 +118,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			if (Timer >= 66) //draws the proejctile
 			{
-				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/LavaBurst").Value;
+				Texture2D tex = Assets.Bosses.VitricBoss.LavaBurst.Value;
 				var frame = new Rectangle(0, tex.Height / 7 * (int)((Timer - 66) / 4), tex.Width, tex.Height / 7);
 				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frame, Color.White, Projectile.rotation - 1.57f, new Vector2(tex.Width / 2, tex.Height / 7), 2, 0, 0);
 			}

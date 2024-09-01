@@ -76,21 +76,6 @@ namespace StarlightRiver.Helpers
 			Player.GetModPlayer<StarlightPlayer>().rotation = value;
 		}
 
-		public static bool OnScreen(Vector2 pos)
-		{
-			return pos.X > -16 && pos.X < Main.screenWidth + 16 && pos.Y > -16 && pos.Y < Main.screenHeight + 16;
-		}
-
-		public static bool OnScreen(Rectangle rect)
-		{
-			return rect.Intersects(new Rectangle(0, 0, Main.screenWidth, Main.screenHeight));
-		}
-
-		public static bool OnScreen(Vector2 pos, Vector2 size)
-		{
-			return OnScreen(new Rectangle((int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y));
-		}
-
 		public static Vector3 Vec3(this Vector2 vector)
 		{
 			return new Vector3(vector.X, vector.Y, 0);
@@ -177,6 +162,12 @@ namespace StarlightRiver.Helpers
 		public static bool CheckLinearCollision(Vector2 point1, Vector2 point2, Rectangle hitbox, out Vector2 intersectPoint)
 		{
 			intersectPoint = Vector2.Zero;
+
+			if (StarlightRiver.debugMode)
+			{
+				for (int k = 0; k < 20; k++)
+					Dust.NewDustPerfect(Vector2.Lerp(point1, point2, k / 20f), DustID.MagicMirror, Vector2.Zero, 0, default, 0.5f);
+			}
 
 			return
 				LinesIntersect(point1, point2, hitbox.TopLeft(), hitbox.TopRight(), out intersectPoint) ||

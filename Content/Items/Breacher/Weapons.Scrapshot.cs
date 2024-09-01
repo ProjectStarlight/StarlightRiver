@@ -44,6 +44,13 @@ namespace StarlightRiver.Content.Items.Breacher
 			Item.shootSpeed = 17;
 		}
 
+		public override ModItem Clone(Item newEntity)
+		{
+			var clone = base.Clone(newEntity) as Scrapshot;
+			clone.hook = hook;
+			return clone;
+		}
+
 		public override Vector2? HoldoutOffset()
 		{
 			return new Vector2(-15, 0);
@@ -390,8 +397,8 @@ namespace StarlightRiver.Content.Items.Breacher
 			if (struck)
 				return false;
 
-			Texture2D chainTex1 = ModContent.Request<Texture2D>(AssetDirectory.BreacherItem + "ScrapshotHookChain1").Value;
-			Texture2D chainTex2 = ModContent.Request<Texture2D>(AssetDirectory.BreacherItem + "ScrapshotHookChain2").Value;
+			Texture2D chainTex1 = Assets.Items.Breacher.ScrapshotHookChain1.Value;
+			Texture2D chainTex2 = Assets.Items.Breacher.ScrapshotHookChain2.Value;
 			Player Player = Main.player[Projectile.owner];
 
 			float dist = Vector2.Distance(Player.Center, Projectile.Center);
@@ -477,7 +484,8 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(40 * 4), factor => factor * 5, factor => new Color(255, 170, 80) * factor.X * (Projectile.timeLeft / 100f));
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => factor * 5, factor => new Color(255, 170, 80) * factor.X * (Projectile.timeLeft / 100f));
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center;
@@ -494,7 +502,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
 			effect.Parameters["repeats"].SetValue(2f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 
 			trail?.Render(effect);
 		}

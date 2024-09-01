@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Items.BarrierDye
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Sentinel's Tincture");
-			Tooltip.SetDefault("Causes barrier effect to mimic the shield of the Shattered Sentinel\nEquipable\nVanity Item");
+			Tooltip.SetDefault("Causes {{barrier}} effect to mimic the shield of the Shattered Sentinel\nEquipable\nVanity Item");
 		}
 
 		public override void SetDefaults()
@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Items.BarrierDye
 			Vector2 pos = CustomHooks.PlayerTarget.getPositionOffset(Player.whoAmI);
 
 			Effect effect = Terraria.Graphics.Effects.Filters.Scene["MoltenFormAndColor"].GetShader().Shader;
-			effect.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/ShieldMap").Value);
+			effect.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.ShieldMap.Value);
 			effect.Parameters["uTime"].SetValue(barrier.rechargeAnimationTimer * 2 + (barrier.rechargeAnimationTimer >= 1 ? Main.GameUpdateCount / 30f % 2f : 0));
 			effect.Parameters["sourceFrame"].SetValue(new Vector4((int)pos.X - 30, (int)pos.Y - 60, 60, 120));
 			effect.Parameters["texSize"].SetValue(tex.Size());
@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.Items.BarrierDye
 			spriteBatch.Draw(tex, CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI), CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI), Color.White);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		public override void AddRecipes()

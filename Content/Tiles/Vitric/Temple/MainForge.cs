@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		}
 	}
 
-	class MainForgeDummy : Dummy, IHintable
+	class MainForgeDummy : Dummy
 	{
 		public float power = 0;
 
@@ -103,8 +103,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 			TempleTileUtils.DrawBackground(spriteBatch, bgTarget);
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MainForgeOver").Value;
-			Texture2D texHammer = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MainForgeHammer").Value;
+			Texture2D tex = Assets.Tiles.Vitric.MainForgeOver.Value;
+			Texture2D texHammer = Assets.Tiles.Vitric.MainForgeHammer.Value;
 
 			var offset = new Vector2(0, HammerFunction(timer * 0.01f));
 
@@ -113,17 +113,17 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			LightingBufferRenderer.DrawWithLighting(pos + offset, texHammer, Color.White);
 			LightingBufferRenderer.DrawWithLighting(pos, tex, Color.White);
 
-			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
-			Texture2D texGlow = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MainForgeGlow").Value;
+			Texture2D texGlow = Assets.Tiles.Vitric.MainForgeGlow.Value;
 			spriteBatch.Draw(texGlow, pos, Color.White);
 		}
 
 		public void DrawLaser(SpriteBatch spriteBatch)
 		{
-			Texture2D texBeam = ModContent.Request<Texture2D>(AssetDirectory.MiscTextures + "BeamCore").Value;
-			Texture2D texBeam2 = ModContent.Request<Texture2D>(AssetDirectory.MiscTextures + "BeamTrail").Value;
-			Texture2D texDark = ModContent.Request<Texture2D>(AssetDirectory.MiscTextures + "GradientBlack").Value;
+			Texture2D texBeam = Assets.Misc.BeamCore.Value;
+			Texture2D texBeam2 = Assets.Misc.BeamTrail.Value;
+			Texture2D texDark = Assets.Misc.GradientBlack.Value;
 
 			var origin = new Vector2(0, texBeam.Height / 2);
 			var origin2 = new Vector2(0, texBeam2.Height / 2);
@@ -142,7 +142,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			effect.Parameters["uColor"].SetValue(color.ToVector3());
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			float height = texBeam.Height / 2f * (0.5f + puzzleProg * 0.5f);
 			int width = (int)(centerPos - endpoint).Length();
@@ -170,9 +170,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
-			Texture2D glowTex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "GlowTrail").Value;
+			Texture2D glowTex = Assets.GlowTrail.Value;
 
 			color.A = 0;
 			spriteBatch.Draw(glowTex, target, source, color * 0.95f, rot, new Vector2(0, glowTex.Height / 2), 0, 0);
@@ -189,10 +189,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			else
 				return 52 - 60 + Helpers.Helper.BezierEase((input - 0.8f) / 0.2f) * 60;
 		}
-		public string GetHint()
-		{
-			return "An ancient forge, powered by concentrated light...";
-		}
 	}
 
 	[SLRDebug]
@@ -200,6 +196,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	{
 		public override string Texture => AssetDirectory.Debug;
 
-		public MainForgeItem() : base("Main forge", "Debug item", "MainForge") { }
+		public MainForgeItem() : base("Main forge", "{{Debug}} item", "MainForge") { }
 	}
 }

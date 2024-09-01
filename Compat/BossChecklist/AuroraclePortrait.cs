@@ -23,7 +23,7 @@ namespace StarlightRiver.Compat.BossChecklist
 			n.Color = Color.Lerp(new Color(r, g, b), Color.White, 0.25f) * (n.Timer / 300f) * a;
 
 			n.Timer--;
-		});
+		}, ParticleSystem.AnchorOptions.UI);
 
 		public static void DrawAuroraclePortrait(SpriteBatch spriteBatch, Rectangle rect, Color color)
 		{
@@ -32,11 +32,11 @@ namespace StarlightRiver.Compat.BossChecklist
 
 			//float sin = 0.8f + (float)Math.Sin(Main.GameUpdateCount / 100f) * 0.1f;
 
-			Texture2D body = ModContent.Request<Texture2D>("StarlightRiver/Assets/BossChecklist/SquidBoss").Value;
-			Texture2D glow = ModContent.Request<Texture2D>("StarlightRiver/Assets/BossChecklist/SquidBossGlow").Value;
-			Texture2D blur = ModContent.Request<Texture2D>("StarlightRiver/Assets/BossChecklist/SquidBossGlowBlur").Value;
-			Texture2D specular = ModContent.Request<Texture2D>("StarlightRiver/Assets/BossChecklist/SquidBossSpecular").Value;
-			Texture2D circleGlow = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
+			Texture2D body = Assets.BossChecklist.SquidBoss.Value;
+			Texture2D glow = Assets.BossChecklist.SquidBossGlow.Value;
+			Texture2D blur = Assets.BossChecklist.SquidBossGlowBlur.Value;
+			Texture2D specular = Assets.BossChecklist.SquidBossSpecular.Value;
+			Texture2D circleGlow = Assets.Keys.Glow.Value;
 
 			spriteBatch.Draw(circleGlow, rect, null, Color.Black * 0.6f, 0, Vector2.UnitY * 2, 0, 0);
 
@@ -51,7 +51,7 @@ namespace StarlightRiver.Compat.BossChecklist
 			spriteBatch.Draw(glow, rect.Center(), null, glowColor, 0, glow.Size() / 2, 1, 0, 0);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.UIScaleMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
 
 			spriteBatch.Draw(blur, rect.Center(), null, glowColor * 0.55f, 0, blur.Size() / 2, 1, 0, 0);
 			spriteBatch.Draw(blur, rect.Center(), null, glowColor * 0.3f, 0, blur.Size() / 2, 1.05f, 0, 0);
@@ -59,12 +59,12 @@ namespace StarlightRiver.Compat.BossChecklist
 			auroracleSystem.DrawParticles(spriteBatch);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
 
 			spriteBatch.Draw(body, rect.Center(), null, color, 0, body.Size() / 2, 1, 0, 0);
 			spriteBatch.Draw(specular, rect.Center(), null, Color.White, 0, specular.Size() / 2, 1, 0, 0);
 
-			auroracleSystem.SetTexture(ModContent.Request<Texture2D>("StarlightRiver/Assets/Dusts/Aurora").Value);
+			auroracleSystem.SetTexture(Assets.Dusts.Aurora.Value);
 		}
 	}
 }

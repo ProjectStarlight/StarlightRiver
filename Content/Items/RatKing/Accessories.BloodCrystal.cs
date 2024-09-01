@@ -11,8 +11,6 @@ namespace StarlightRiver.Content.Items.RatKing
 	{
 		public override string Texture => AssetDirectory.RatKingItem + Name;
 
-		public BloodCrystal() : base(ModContent.Request<Texture2D>(AssetDirectory.RatKingItem + "BloodCrystal").Value) { }
-
 		public override void Load()
 		{
 			StarlightNPC.OnHitByItemEvent += InflictItem;
@@ -24,7 +22,7 @@ namespace StarlightRiver.Content.Items.RatKing
 			DisplayName.SetDefault("Blood Crystal");
 			Tooltip.SetDefault(
 				"Inflict blood resonance for every debuff on an enemy when you hit them\n" +
-				"Cursed : Inflict an equal amount of blood resonance on yourself\n" +
+				"Inflict an equal amount of blood resonance on yourself\n" +
 				"Blood resonance decreases inoculation by 3% per stack\n" +
 				"You take 5 damage per second while you have blood resonance");
 		}

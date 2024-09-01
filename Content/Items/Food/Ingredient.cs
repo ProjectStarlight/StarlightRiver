@@ -36,9 +36,14 @@ namespace StarlightRiver.Content.Items.Food
 
 		public override string Texture => AssetDirectory.FoodItem + Name;
 
-		public override void AddRecipes() //this is dumb, too bad!
+		public virtual void SafeAddRecipes() { }
+
+		public sealed override void AddRecipes() //this is dumb, too bad!
 		{
-			ChefBag.ingredientTypes.Add(Item.type);
+			SafeAddRecipes();
+
+			if (ThisType != IngredientType.Bonus)
+				ChefBag.ingredientTypes.Add(Item.type);
 		}
 
 		protected bool Active(Player player)
@@ -56,7 +61,7 @@ namespace StarlightRiver.Content.Items.Food
 		/// <summary>
 		/// The passive effects of a food item while the buff is active
 		/// </summary>
-		/// <param name="Player">The palyer eating the food</param>
+		/// <param name="Player">The player eating the food</param>
 		/// <param name="multiplier">The power which should be applied to numeric effects</param>
 		public virtual void BuffEffects(Player Player, float multiplier) { }
 
@@ -109,7 +114,15 @@ namespace StarlightRiver.Content.Items.Food
 
 			if (ThisType != IngredientType.Bonus)
 			{
-				var fullLine = new TooltipLine(Mod, "StarlightRiver: Fullness", "adds " + Fill / 60 + " seconds duration to food")
+				int timeMinutes = Fill / 3600;
+				int timeSeconds = Fill % 3600 / 60;
+
+				if (timeMinutes == 0 && timeSeconds == 0)//leaves out time text completely if added duration is zero
+					return;
+
+				//it may be a good idea in the future to 
+				string timeText = (timeMinutes == 0 ? "" : $"{timeMinutes} minutes ") + (timeSeconds == 0 ? "" : $"{timeSeconds} seconds ");
+				var fullLine = new TooltipLine(Mod, "StarlightRiver: Fullness", "Adds " + timeText + "duration to food")
 				{
 					OverrideColor = new Color(110, 235, 255)
 				};

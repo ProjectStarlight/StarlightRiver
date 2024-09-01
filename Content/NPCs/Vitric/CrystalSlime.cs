@@ -4,6 +4,7 @@ using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Helpers;
+using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
@@ -39,6 +40,11 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			NPC.knockBackResist = 0.6f;
 			NPC.aiStyle = 1;
 			NPC.immortal = true;
+		}
+
+		public override void OnSpawn(IEntitySource source)
+		{
+			Shield = 1; // make sure it spawns with a shield even if the spawnNPC doesn't include the shield value
 		}
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
@@ -150,8 +156,8 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		{
 			if (Shield == 1)
 			{
-				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/NPCs/Vitric/Crystal").Value;
-				Texture2D texGlow = Request<Texture2D>("StarlightRiver/Assets/NPCs/Vitric/CrystalGlow").Value;
+				Texture2D tex = Assets.NPCs.Vitric.Crystal.Value;
+				Texture2D texGlow = Assets.NPCs.Vitric.CrystalGlow.Value;
 				Color color = Helper.IndicatorColor;
 
 				spriteBatch.Draw(tex, NPC.Center - screenPos, null, drawColor, NPC.rotation, tex.Size() / 2f, NPC.scale, 0, 0);

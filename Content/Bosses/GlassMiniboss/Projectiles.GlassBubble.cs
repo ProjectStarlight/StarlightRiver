@@ -1,4 +1,5 @@
 using ReLogic.Content;
+using StarlightRiver.Content.Packets;
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using System.IO;
@@ -202,6 +203,12 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		{
 			if (State == 1)
 			{
+				if (Main.LocalPlayer.whoAmI == target.whoAmI)
+				{
+					PlayerHitPacket hitPacket = new PlayerHitPacket(Projectile.identity, target.whoAmI, info.Damage, Projectile.type);
+					hitPacket.Send(-1, Main.LocalPlayer.whoAmI, false);
+				}
+
 				if (Timer < CRACK_TIME)
 					Timer = CRACK_TIME;
 
@@ -212,8 +219,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					Projectile.velocity = Projectile.DirectionFrom(target.Center) * 1.77f;
 					hits += 30;
 				}
-
-				Projectile.netUpdate = true;
 			}
 		}
 
@@ -261,26 +266,26 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			float crackProgress = (float)Math.Pow(Utils.GetLerpValue(CRACK_TIME - 10, CRACK_TIME + 105, Timer, true), 2);
 
 			Effect crack = Terraria.Graphics.Effects.Filters.Scene["MagmaCracks"].GetShader().Shader;
-			crack.Parameters["sampleTexture2"].SetValue(Request<Texture2D>(AssetDirectory.Glassweaver + "BubbleCrackMap").Value);
-			crack.Parameters["sampleTexture3"].SetValue(Request<Texture2D>(AssetDirectory.Glassweaver + "BubbleCrackProgression").Value);
+			crack.Parameters["sampleTexture2"].SetValue(Assets.Bosses.GlassMiniboss.BubbleCrackMap.Value);
+			crack.Parameters["sampleTexture3"].SetValue(Assets.Bosses.GlassMiniboss.BubbleCrackProgression.Value);
 			crack.Parameters["uTime"].SetValue(crackProgress);
 			crack.Parameters["drawColor"].SetValue((Color.LightGoldenrodYellow * crackProgress * 1.5f).ToVector4());
 			crack.Parameters["sourceFrame"].SetValue(new Vector4(0, 0, 128, 128));
 			crack.Parameters["texSize"].SetValue(Request<Texture2D>(Texture).Value.Size());
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, RasterizerState.CullNone, crack, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, crack, Main.GameViewMatrix.TransformationMatrix);
 
 			Main.EntitySpriteDraw(Request<Texture2D>(Texture).Value, Projectile.Center - Main.screenPosition, null, Color.Black, Projectile.rotation, Request<Texture2D>(Texture).Size() * 0.5f, Projectile.scale, SpriteEffects.None, 0);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.AlphaBlend, default, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, BlendState.AlphaBlend, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		private void DrawBloom()
 		{
-			Asset<Texture2D> bloomTex = Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha");
-			Asset<Texture2D> shineTex = Request<Texture2D>(AssetDirectory.Glassweaver + "BubbleBloom");
+			Asset<Texture2D> bloomTex = Assets.Keys.GlowAlpha;
+			Asset<Texture2D> shineTex = Assets.Bosses.GlassMiniboss.BubbleBloom;
 
 			float colLerp = Utils.GetLerpValue(150, 190, Timer, true) * Utils.GetLerpValue(CRACK_TIME + 120, CRACK_TIME, Timer, true);
 			var shine = Color.Lerp(Color.PaleGoldenrod, Glassweaver.GlassColor * 0.3f, colLerp);
@@ -314,7 +319,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		private void DrawVignette()
 		{
 			float fade = Utils.GetLerpValue(20, 250, Timer, true) * Utils.GetLerpValue(CRACK_TIME + 105, CRACK_TIME + 90, Timer, true);
-			Asset<Texture2D> dark = Request<Texture2D>(AssetDirectory.MiscTextures + "GradientBlack");
+			Asset<Texture2D> dark = Assets.Misc.GradientBlack;
 
 			for (int i = 0; i < 8; i++)
 			{
@@ -413,7 +418,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			var hotFade = new Color(255, 255, 255, 128);
 			Main.EntitySpriteDraw(fragment.Value, Projectile.Center - Main.screenPosition, hotFrame, hotFade, Projectile.rotation, hotFrame.Size() * 0.5f, Projectile.scale, 0, 0);
 
-			Asset<Texture2D> fragGlow = Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha");
+			Asset<Texture2D> fragGlow = Assets.Keys.GlowAlpha;
 			Color glowFade = Color.OrangeRed;
 			glowFade.A = 0;
 			Main.EntitySpriteDraw(fragGlow.Value, Projectile.Center - Main.screenPosition, null, glowFade, Projectile.rotation, fragGlow.Size() * 0.5f, Projectile.scale, 0, 0);

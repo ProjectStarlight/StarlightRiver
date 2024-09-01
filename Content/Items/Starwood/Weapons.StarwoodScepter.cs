@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Items.Starwood
 	{
 		public override string Texture => AssetDirectory.StarwoodItem + Name;
 
-		public StarwoodScepter() : base(ModContent.Request<Texture2D>(AssetDirectory.StarwoodItem + "StarwoodScepter_Alt").Value) { }
+		public StarwoodScepter() : base(Assets.Items.Starwood.StarwoodScepter_Alt.Value) { }
 
 		public override void SetStaticDefaults()
 		{
@@ -194,7 +194,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
 			for (int i = 0; i < target.buffType.Length; i++)
 			{
-				if (BuffID.Sets.IsAnNPCWhipDebuff[target.buffType[i]])
+				if (BuffID.Sets.IsATagBuff[target.buffType[i]])
 					hasTag = true;
 			}
 
@@ -220,7 +220,7 @@ namespace StarlightRiver.Content.Items.Starwood
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
 			Texture2D blurTex = ModContent.Request<Texture2D>(Texture + "_Blur").Value;
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
 
 			if (HasEmpoweredStar)
 				return false;
@@ -687,7 +687,7 @@ namespace StarlightRiver.Content.Items.Starwood
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
 			Texture2D blurTex = ModContent.Request<Texture2D>(Texture + "_Blur").Value;
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
 
 			lightColor = Color.White;
 

@@ -132,12 +132,12 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
+			Texture2D tex = Assets.Keys.GlowAlpha.Value;
 
 			Effect effect = StarlightRiver.Instance.Assets.Request<Effect>("Effects/FrostAura").Value;
 
 			effect.Parameters["drawTexture"].SetValue(tex);
-			effect.Parameters["noiseTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/SwirlyNoiseLooping").Value);
+			effect.Parameters["noiseTexture"].SetValue(Assets.Noise.SwirlyNoiseLooping.Value);
 
 			effect.Parameters["time"].SetValue(visualTimer / 250f);
 			effect.Parameters["incolor"].SetValue(GetAuroraColor(0).ToVector3() * AuroraPercent);
@@ -145,16 +145,16 @@ namespace StarlightRiver.Content.Items.Permafrost
 			effect.Parameters["height"].SetValue(2);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * AuroraPercent, 0, tex.Size() / 2f, 1.6f * AuroraPercent, 0, 0);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			for (int k = 0; k < 3; k++)
 			{
-				Texture2D texStar = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/StarAlpha").Value;
+				Texture2D texStar = Assets.Keys.StarAlpha.Value;
 
 				Color color = GetAuroraColor(k / 3f * 1.5f) * AuroraPercent;
 				color.A = 0;

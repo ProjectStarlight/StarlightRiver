@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
@@ -9,6 +10,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 {
 	class LavaDart : ModProjectile, IDrawPrimitive
 	{
+		public static Vector2 midPointToAssign;
+		public static Vector2 endPointToAssign;
+
 		private List<Vector2> cache;
 		private Trail trail;
 
@@ -50,21 +54,26 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			return false;
 		}
 
+		public override void OnSpawn(IEntitySource source)
+		{
+			midPoint = midPointToAssign;
+			endPoint = endPointToAssign;
+
+			setStartAndDist();
+		}
+
+		private void setStartAndDist()
+		{
+			startPoint = Projectile.Center;
+			Projectile.timeLeft = (int)Duration + 30;
+
+			dist1 = ApproximateSplineLength(30, startPoint, midPoint - startPoint, midPoint, endPoint - startPoint);
+			dist2 = ApproximateSplineLength(30, midPoint, endPoint - startPoint, endPoint, endPoint - midPoint);
+		}
+
 		public override void AI()
 		{
 			Projectile.rotation = Projectile.velocity.ToRotation();
-
-			if (startPoint == Vector2.Zero)
-			{
-				startPoint = Projectile.Center;
-				Projectile.timeLeft = (int)Duration + 30;
-
-				dist1 = ApproximateSplineLength(30, startPoint, midPoint - startPoint, midPoint, endPoint - startPoint);
-				dist2 = ApproximateSplineLength(30, midPoint, endPoint - startPoint, endPoint, endPoint - midPoint);
-
-				if (Main.netMode == NetmodeID.Server)
-					Projectile.netUpdate = true;
-			}
 
 			float timer = Duration + 30 - Projectile.timeLeft;
 
@@ -120,7 +129,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			if (timer < 30)
 			{
-				Texture2D tellTex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "Line").Value;
+				Texture2D tellTex = Assets.GUI.Line.Value;
 				float alpha = (float)Math.Sin(timer / 30f * 3.14f);
 
 				for (int k = 0; k < 20; k++)
@@ -130,17 +139,17 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
-			writer.WritePackedVector2(midPoint);
-			writer.WritePackedVector2(endPoint);
+			writer.WriteVector2(midPoint);
+			writer.WriteVector2(endPoint);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
-			midPoint = reader.ReadPackedVector2();
-			endPoint = reader.ReadPackedVector2();
+			midPoint = reader.ReadVector2();
+			endPoint = reader.ReadVector2();
 
-			dist1 = ApproximateSplineLength(30, startPoint, midPoint - startPoint, midPoint, endPoint - startPoint);
-			dist2 = ApproximateSplineLength(30, midPoint, endPoint - startPoint, endPoint, endPoint - midPoint);
+			if (startPoint == Vector2.Zero)
+				setStartAndDist();
 		}
 
 		private void ManageCaches()
@@ -165,15 +174,18 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new TriangularTip(40 * 4), factor => factor * 40, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				float alpha = 1;
+				trail = new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 40, factor =>
+							{
+								float alpha = 1;
 
-				if (Projectile.timeLeft < 20)
-					alpha = Projectile.timeLeft / 20f;
+								if (Projectile.timeLeft < 20)
+									alpha = Projectile.timeLeft / 20f;
 
-				return new Color(255, 175 + (int)((float)Math.Sin(factor.X * 3.14f * 5) * 25), 100) * (float)Math.Sin(factor.X * 3.14f) * alpha;
-			});
+								return new Color(255, 175 + (int)((float)Math.Sin(factor.X * 3.14f * 5) * 25), 100) * (float)Math.Sin(factor.X * 3.14f) * alpha;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
@@ -190,7 +202,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
 			effect.Parameters["repeats"].SetValue(2f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
 			trail?.Render(effect);
 		}

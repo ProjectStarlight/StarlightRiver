@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
+using static Humanizer.In;
 
 namespace StarlightRiver.Content.Items.Gravedigger
 {
@@ -48,7 +49,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		private void SpawnBolts(Player player)
 		{
-			while ((GetEquippedInstance(player) as BloodAmulet).storedDamage > 25)
+			while ((GetEquippedInstance(player) as BloodAmulet).storedDamage > 25 && Main.myPlayer == player.whoAmI)
 			{
 				(GetEquippedInstance(player) as BloodAmulet).storedDamage -= 25;
 				Projectile.NewProjectile(player.GetSource_Accessory(Item), player.Center, Main.rand.NextVector2Circular(10, 10), ModContent.ProjectileType<BloodAmuletBolt>(), 25, 0, player.whoAmI);
@@ -77,15 +78,9 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public bool dropHeart = false;
 
-		public override void OnHitByItem(NPC npc, Player player, Item item, NPC.HitInfo hit, int damageDone)
+		public override void OnKill(NPC npc)
 		{
-			if (dropHeart && npc.life <= 0)
-				Item.NewItem(npc.GetSource_Loot(), npc.Center, ItemID.Heart);
-		}
-
-		public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
-		{
-			if (dropHeart && npc.life <= 0)
+			if (dropHeart)
 				Item.NewItem(npc.GetSource_Loot(), npc.Center, ItemID.Heart);
 		}
 	}
@@ -96,6 +91,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		private List<Vector2> cache;
 		private Trail trail;
+
+		public Player Owner => Main.player[Projectile.owner];
 
 		public override string Texture => AssetDirectory.Assets + "Invisible";
 
@@ -112,6 +109,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Projectile.height = 20;
 			Projectile.friendly = true;
 			Projectile.penetrate = -1;
+			Projectile.usesLocalNPCImmunity = true;
+			Projectile.localNPCHitCooldown = -1;
 			Projectile.timeLeft = 450;
 			Projectile.tileCollide = false;
 			Projectile.ignoreWater = true;
@@ -121,13 +120,21 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		public override void AI()
 		{
 			Movement();
-			ManageCaches();
-			ManageTrail();
+
+			if (Main.netMode != NetmodeID.Server)
+			{
+				ManageCaches();
+				ManageTrail();
+			}
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			target.GetGlobalNPC<BloodAmuletGNPC>().dropHeart = true;
+			Owner.TryGetModPlayer(out StarlightPlayer starlightPlayer);
+			starlightPlayer.SetHitPacketStatus(shouldRunProjMethods: true); //only server can spawn items
+
+			if (target.active)
+				target.GetGlobalNPC<BloodAmuletGNPC>().dropHeart = true;
 
 			Projectile.friendly = false;
 
@@ -172,7 +179,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new TriangularTip(1), factor => 20 * factor * fade, factor => Color.Lerp(Color.Black, Color.Red, factor.X));
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new NoTip(), factor => 20 * factor * fade, factor => Color.Lerp(Color.Black, Color.Red, factor.X));
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
@@ -189,7 +197,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount);
 			effect.Parameters["repeats"].SetValue(2f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
 
 			trail?.Render(effect);
 		}

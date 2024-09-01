@@ -7,7 +7,7 @@ namespace StarlightRiver.Content.Buffs
 {
 	class Overcharge : SmartBuff
 	{
-		public Overcharge() : base("Dreamwarp", "Greatly reduced armor", true) { }
+		public Overcharge() : base("Overcharge", "Greatly reduced armor", true) { }
 
 		public override string Texture => AssetDirectory.Buffs + "Overcharge";
 

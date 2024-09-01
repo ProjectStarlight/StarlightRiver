@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Refractive Blade");
-			Tooltip.SetDefault("Hold <right> to charge a laser\nEnemies struck by the laser have 25% increased melee Exposure");
+			Tooltip.SetDefault("Hold <right> to charge a laser\nEnemies struck by the laser have 25% increased melee {{Exposure}}");
 		}
 
 		public override void SetDefaults()
@@ -276,13 +276,16 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(40 * 4), factor => factor * (50 + 40 * Timer / maxTime), factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X >= 0.8f)
-					return Color.White * 0;
+				trail = new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => factor * (50 + 40 * Timer / maxTime), factor =>
+							{
+								if (factor.X == 1)
+									return Color.Transparent;
 
-				return new Color(255, 120 + (int)(factor.X * 70), 80) * (factor.X * SinProgress);
-			});
+								return new Color(255, 120 + (int)(factor.X * 70), 80) * (factor.X * SinProgress);
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Vector2.Lerp(Projectile.Center, Owner.Center, 0.15f) + Projectile.velocity;
@@ -299,7 +302,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount);
 			effect.Parameters["repeats"].SetValue(2f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
 			trail?.Render(effect);
 		}
@@ -469,7 +472,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		private void DrawRing(SpriteBatch sb, Vector2 pos, float w, float h, float rotation, float prog, Color color)
 		{
-			Texture2D texRing = Request<Texture2D>(AssetDirectory.VitricItem + "BossBowRing").Value;
+			Texture2D texRing = Assets.Items.Vitric.BossBowRing.Value;
 			Effect effect = Filters.Scene["BowRing"].GetShader().Shader;
 
 			effect.Parameters["uTime"].SetValue(rotation);
@@ -479,13 +482,13 @@ namespace StarlightRiver.Content.Items.Vitric
 			effect.Parameters["uOpacity"].SetValue(prog);
 
 			sb.End();
-			sb.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			Rectangle target = toRect(pos, (int)(10 * (w + prog)), (int)(30 * (h + prog)));
 			sb.Draw(texRing, target, null, color * prog, Projectile.rotation - 1.57f / 2, texRing.Size() / 2, 0, 0);
 
 			sb.End();
-			sb.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		private Rectangle toRect(Vector2 pos, int w, int h)
@@ -501,9 +504,9 @@ namespace StarlightRiver.Content.Items.Vitric
 			int sin = (int)(Math.Sin(StarlightWorld.visualTimer * 3) * 40f); //Just a copy/paste of the boss laser. Need to tune this later
 			var color = new Color(255, 160 + sin, 40 + sin / 2);
 
-			Texture2D texBeam = Request<Texture2D>(AssetDirectory.MiscTextures + "BeamCore").Value;
-			Texture2D texBeam2 = Request<Texture2D>(AssetDirectory.MiscTextures + "BeamTrail").Value;
-			Texture2D texDark = Request<Texture2D>(AssetDirectory.MiscTextures + "GradientBlack").Value;
+			Texture2D texBeam = Assets.Misc.BeamCore.Value;
+			Texture2D texBeam2 = Assets.Misc.BeamTrail.Value;
+			Texture2D texDark = Assets.Misc.GradientBlack.Value;
 
 			var origin = new Vector2(0, texBeam.Height / 2);
 			var origin2 = new Vector2(0, texBeam2.Height / 2);
@@ -513,7 +516,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			effect.Parameters["uColor"].SetValue(color.ToVector3());
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			float height = texBeam.Height / 4f;
 			int width = (int)(Projectile.Center - endPoint).Length() - 76;
@@ -546,7 +549,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			float opacity = height / (texBeam.Height / 2f) * 0.75f;
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			if (Owner == Main.LocalPlayer)
 			{
@@ -555,11 +558,11 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
-			Texture2D impactTex = Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
-			Texture2D impactTex2 = Request<Texture2D>(AssetDirectory.GUI + "ItemGlow").Value;
-			Texture2D glowTex = Request<Texture2D>(AssetDirectory.Assets + "GlowTrail").Value;
+			Texture2D impactTex = Assets.Keys.GlowSoft.Value;
+			Texture2D impactTex2 = Assets.GUI.ItemGlow.Value;
+			Texture2D glowTex = Assets.GlowTrail.Value;
 
 			spriteBatch.Draw(glowTex, target, source, color * 0.95f, LaserRotation, new Vector2(0, glowTex.Height / 2), 0, 0);
 

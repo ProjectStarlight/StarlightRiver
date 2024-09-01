@@ -147,7 +147,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 					if (tile.TileType == 85 && tile.HasTile && tile2.TileType == 85 && tile2.HasTile)
 					{
-						Texture2D tex = Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+						Texture2D tex = Assets.Keys.GlowAlpha.Value;
 						Vector2 drawPos = new Vector2(i + 1, j + 1) * 16;
 
 						Color color = Color.White * Progress * 0.3f;
@@ -282,7 +282,7 @@ namespace StarlightRiver.Content.Items.Misc
 				cache.Add(Projectile.Center + direction * i);
 			}
 
-			trail = new Trail(Main.instance.GraphicsDevice, 20 + widthExtra * 2, new TriangularTip((int)(32 * 0.6f)),
+			trail = new Trail(Main.instance.GraphicsDevice, 20 + widthExtra * 2, new NoTip(),
 				factor => 10 * (1 - Math.Abs(1 - factor - Projectile.timeLeft / (float)(BASE_TIMELEFT + 5))) * (Projectile.timeLeft / (float)BASE_TIMELEFT),
 				factor => Color.Lerp(Color.Red, Color.DarkRed, factor.X) * 0.8f)
 			{

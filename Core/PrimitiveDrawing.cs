@@ -21,8 +21,8 @@ namespace StarlightRiver.Core
 			{
 				Main.QueueMainThreadAction(() =>
 				{
-					vertexBuffer = new DynamicVertexBuffer(device, typeof(VertexPositionColorTexture), maxVertices, BufferUsage.None);
-					indexBuffer = new DynamicIndexBuffer(device, IndexElementSize.SixteenBits, maxIndices, BufferUsage.None);
+					vertexBuffer = new DynamicVertexBuffer(device, typeof(VertexPositionColorTexture), maxVertices, BufferUsage.WriteOnly);
+					indexBuffer = new DynamicIndexBuffer(device, IndexElementSize.SixteenBits, maxIndices, BufferUsage.WriteOnly);
 				});
 			}
 		}
@@ -76,6 +76,8 @@ namespace StarlightRiver.Core
 
 	public class Trail : IDisposable
 	{
+		public int stayAlive = 10;
+
 		private readonly Primitives primitives;
 
 		private readonly int maxPointCount;
@@ -85,6 +87,8 @@ namespace StarlightRiver.Core
 		private readonly TrailWidthFunction trailWidthFunction;
 
 		private readonly TrailColorFunction trailColorFunction;
+
+		public bool IsDisposed { get; private set; }
 
 		/// <summary>
 		/// Array of positions that define the trail. NOTE: Positions[Positions.Length - 1] is assumed to be the start (e.g. Projectile.Center) and Positions[0] is assumed to be the end.
@@ -137,6 +141,8 @@ namespace StarlightRiver.Core
              */
 
 			primitives = new Primitives(device, maxPointCount * 2 + this.tip.ExtraVertices, 6 * (maxPointCount - 1) + this.tip.ExtraIndices);
+
+			ModContent.GetInstance<TrailManager>().managed.Add(this);
 		}
 
 		private void GenerateMesh(out VertexPositionColorTexture[] vertices, out short[] indices, out int nextAvailableIndex)
@@ -246,17 +252,20 @@ namespace StarlightRiver.Core
 
 		public void Render(Effect effect)
 		{
-			if (Positions == null && !(primitives?.IsDisposed ?? true))
+			if (Positions == null || (primitives?.IsDisposed ?? true) || IsDisposed)
 				return;
 
 			SetupMeshes();
 
 			primitives.Render(effect);
+
+			stayAlive = 10; //Set stayalive to 10 frames as we render again, we will dispose this trail if it fails to render for 10 frames
 		}
 
 		public void Dispose()
 		{
 			primitives?.Dispose();
+			IsDisposed = true;
 		}
 	}
 
@@ -315,9 +324,9 @@ namespace StarlightRiver.Core
 
 			vertices = new VertexPositionColorTexture[]
 			{
-				new VertexPositionColorTexture(a.Vec3(), colorA, texCoordA),
-				new VertexPositionColorTexture(b.Vec3(), colorB, texCoordB),
-				new VertexPositionColorTexture(c.Vec3(), colorC, texCoordC)
+				new(a.Vec3(), colorA, texCoordA),
+				new(b.Vec3(), colorB, texCoordB),
+				new(c.Vec3(), colorC, texCoordC)
 			};
 
 			indices = new short[]
@@ -452,6 +461,24 @@ namespace StarlightRiver.Core
 			}
 
 			indices = indicesTemp.ToArray();
+		}
+	}
+
+	public class TrailManager : ModSystem
+	{
+		public List<Trail> managed = new();
+
+		public override void PostUpdateEverything()
+		{
+			foreach (Trail trail in managed)
+			{
+				trail.stayAlive--;
+
+				if (trail.stayAlive <= 0)
+					trail.Dispose();
+			}
+
+			managed.RemoveAll(n => n.IsDisposed);
 		}
 	}
 }

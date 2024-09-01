@@ -27,10 +27,12 @@ namespace StarlightRiver.Content.Tiles.Mushroom
 		}
 	}
 
-	class JellyShroomDummy : Dummy, IHintable
+	class JellyShroomDummy : Dummy
 	{
 		public float timer;
 		public float bounceState;
+
+		public override bool DoesCollision => true;
 
 		public JellyShroomDummy() : base(TileType<JellyShroom>(), 7 * 16, 2 * 16) { }
 
@@ -77,11 +79,11 @@ namespace StarlightRiver.Content.Tiles.Mushroom
 
 		public override void PostDraw(Color lightColor)
 		{
-			Texture2D back = Request<Texture2D>("StarlightRiver/Assets/Tiles/Mushroom/JellyShroomBack").Value;
-			Texture2D blob0 = Request<Texture2D>("StarlightRiver/Assets/Tiles/Mushroom/JellyShroom0").Value;
-			Texture2D blob1 = Request<Texture2D>("StarlightRiver/Assets/Tiles/Mushroom/JellyShroom1").Value;
-			Texture2D blob2 = Request<Texture2D>("StarlightRiver/Assets/Tiles/Mushroom/JellyShroom2").Value;
-			Texture2D blob3 = Request<Texture2D>("StarlightRiver/Assets/Tiles/Mushroom/JellyShroom3").Value;
+			Texture2D back = Assets.Tiles.Mushroom.JellyShroomBack.Value;
+			Texture2D blob0 = Assets.Tiles.Mushroom.JellyShroom0.Value;
+			Texture2D blob1 = Assets.Tiles.Mushroom.JellyShroom1.Value;
+			Texture2D blob2 = Assets.Tiles.Mushroom.JellyShroom2.Value;
+			Texture2D blob3 = Assets.Tiles.Mushroom.JellyShroom3.Value;
 
 			Vector2 pos = position - Main.screenPosition;
 
@@ -108,11 +110,6 @@ namespace StarlightRiver.Content.Tiles.Mushroom
 
 			Color color = bounceState == 0 ? Color.White : Color.Lerp(new Color(255, 100, 100), Color.White, timer / 90f);
 			spriteBatch.Draw(tex, target, null, color, 0, tex.Size() / 2, 0, 0);
-		}
-
-		public string GetHint()
-		{
-			return "This mushroom is different. And bouncy.";
 		}
 	}
 

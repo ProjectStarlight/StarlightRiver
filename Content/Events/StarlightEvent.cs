@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Abilities.Hint;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.Hint;
 using StarlightRiver.Content.Backgrounds;
 using StarlightRiver.Content.Bosses.VitricBoss;
 using StarlightRiver.Content.NPCs.Starlight;
@@ -30,6 +31,11 @@ namespace StarlightRiver.Content.Events
 				occuring = false;
 				willOccur = false;
 				return;
+			}
+
+			if (willOccur && sequence == 0 && !Main.player.Any(n => n.active && !n.GetHandler().Unlocked<HintAbility>()))
+			{
+				willOccur = false;
 			}
 
 			// Handles the fade effects
@@ -67,7 +73,12 @@ namespace StarlightRiver.Content.Events
 					NPC.NewNPC(null, Main.spawnTileX * 16, sequence == 0 ? Main.spawnTileY * 16 - 240 : Main.spawnTileY * 16 - 120, ModContent.NPCType<Crow>());
 
 				bool talking = Main.npc.Any(n => n.active && n.type == ModContent.NPCType<Crow>() && (n.ModNPC as Crow).InCutscene);
+
 				Main.bloodMoon = false;
+				Terraria.GameContent.Events.LanternNight.WorldClear();
+
+				foreach (Cloud cloud in Main.cloud)
+					cloud.active = false;
 
 				if (Main.time == 600 && !talking)
 				{
@@ -117,8 +128,8 @@ namespace StarlightRiver.Content.Events
 		{
 			if (Active)
 			{
-				tileColor = Color.Lerp(tileColor, new Color(2, 50, 62), fadeTimer / 300f);
-				backgroundColor = Color.Lerp(backgroundColor, new Color(2, 50, 62), fadeTimer / 300f);
+				tileColor = Color.Lerp(tileColor, new Color(2, 36, 62), fadeTimer / 300f);
+				backgroundColor = Color.Lerp(backgroundColor, new Color(2, 36, 62), fadeTimer / 300f);
 			}
 		}
 
@@ -185,7 +196,7 @@ namespace StarlightRiver.Content.Events
 		{
 			if (IsSceneEffectActive(Main.LocalPlayer))
 			{
-				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/SwirlyNoiseLooping").Value;
+				Texture2D tex = Assets.Noise.SwirlyNoiseLooping.Value;
 
 				sb.End();
 				sb.Begin(default, default, SamplerState.PointWrap, default, default);
@@ -200,7 +211,7 @@ namespace StarlightRiver.Content.Events
 
 					if (mn != null)
 					{
-						Texture2D glowTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowBlack").Value;
+						Texture2D glowTex = Assets.Keys.GlowBlack.Value;
 
 						float opacity = Math.Min(1f, mn.CutsceneTimer / 140f);
 						Color color = Color.Black * opacity;
@@ -230,7 +241,7 @@ namespace StarlightRiver.Content.Events
 				mapEffect.Parameters["map"].SetValue(starsMap.RenderTarget);
 				mapEffect.Parameters["background"].SetValue(starsTarget.RenderTarget);
 
-				spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, mapEffect, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, mapEffect, Main.GameViewMatrix.TransformationMatrix);
 
 				spriteBatch.Draw(starsMap.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
 
@@ -238,8 +249,8 @@ namespace StarlightRiver.Content.Events
 
 				spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default);
 
-				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/SwirlyNoiseLooping").Value;
-				spriteBatch.Draw(tex, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), new Rectangle((int)Main.GameUpdateCount / 3, 0, tex.Width, tex.Height), Color.Cyan * (StarlightEventSequenceSystem.fadeTimer / 300f) * 0.2f);
+				Texture2D tex = Assets.Noise.SwirlyNoiseLooping.Value;
+				spriteBatch.Draw(tex, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), new Rectangle((int)Main.GameUpdateCount / 3, 0, tex.Width, tex.Height), new Color(50, 200, 255) * (StarlightEventSequenceSystem.fadeTimer / 300f) * 0.2f);
 
 				spriteBatch.End();
 			}
@@ -247,7 +258,7 @@ namespace StarlightRiver.Content.Events
 
 		private void TriggerEventActivation(NPC NPC) //TODO: This might be worth moving elsewhere? This is a bit hidden away here
 		{
-			if (NPC.boss && StarlightEventSequenceSystem.sequence <= 0) //First visit is after any boss
+			if (NPC.boss && StarlightEventSequenceSystem.sequence <= 0 && Main.player.Any(n => n.active && !n.GetHandler().Unlocked<HintAbility>())) //First visit is after any boss
 				StarlightEventSequenceSystem.willOccur = true;
 
 			if (NPC.type == ModContent.NPCType<VitricBoss>() && StarlightEventSequenceSystem.sequence == 1 && false) //Second visit is after ceiros

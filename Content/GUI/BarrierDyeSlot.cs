@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.GUI
 			Item Item = mp.barrierDyeItem;
 
 			Texture2D tex = TextureAssets.InventoryBack8.Value;
-			Texture2D texSlot = ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/BarrierDyeSlot").Value;
+			Texture2D texSlot = Assets.GUI.BarrierDyeSlot.Value;
 
 			spriteBatch.Draw(tex, GetDimensions().Center(), null, Color.White * 0.8f, 0, tex.Size() / 2, 0.85f, 0, 0);
 			spriteBatch.Draw(texSlot, GetDimensions().Center(), null, Color.White * 0.4f, 0, texSlot.Size() / 2, 0.85f, 0, 0);

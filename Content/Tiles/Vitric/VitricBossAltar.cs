@@ -17,7 +17,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-	internal class VitricBossAltar : DummyTile, IHintable
+	internal class VitricBossAltar : DummyTile
 	{
 		public override int DummyType => DummySystem.DummyType<VitricBossAltarDummy>();
 
@@ -107,22 +107,12 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			if (NPC.type == NPCType<VitricBoss>())
 				(Dummy(i, j) as VitricBossAltarDummy).boss = Main.npc[n];
 		}
-
-		public string GetHint()
-		{
-			Tile tile = Framing.GetTileSafely((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
-
-			if (tile.TileFrameX < 90)
-				return "An altar, encased in crystal rich with binding Starlight. You'd have to use a Starlight power of equal strength...";
-			else
-				return "An altar awaiting an offering...";
-		}
 	}
 
 	[SLRDebug]
 	class VitricBossAltarItem : QuickTileItem
 	{
-		public VitricBossAltarItem() : base("Vitric Boss Altar Item", "Debug Item", "VitricBossAltar", 1, AssetDirectory.Debug, true) { }
+		public VitricBossAltarItem() : base("Vitric Boss Altar Item", "{{{{Debug}}}} Item", "VitricBossAltar", 1, AssetDirectory.Debug, true) { }
 	}
 
 	internal class VitricBossAltarDummy : Dummy
@@ -134,6 +124,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public float barrierTimer;
 		public float cutsceneTimer;
+
+		public override bool DoesCollision => true;
 
 		public VitricBossAltarDummy() : base(TileType<VitricBossAltar>(), 80, 112) { }
 
@@ -283,7 +275,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			cutsceneTimer++;
 
 			//controls the drawing of the barriers
-			if (barrierTimer < 120 && boss != null && boss.active)
+			if (barrierTimer < 120 && ShouldBarrierBeUp())
 			{
 				barrierTimer++;
 
@@ -299,13 +291,29 @@ namespace StarlightRiver.Content.Tiles.Vitric
 					}
 				}
 			}
-			else if (barrierTimer > 0 && (boss == null || !boss.active))
+			else if (barrierTimer > 0 && !ShouldBarrierBeUp())
 			{
 				barrierTimer--;
 			}
 		}
 
-		private bool checkIfDrawReflection()
+		private bool ShouldBarrierBeUp()
+		{
+			if (boss != null && boss.active)
+				return true;
+
+			NPC left = Main.npc.FirstOrDefault(n => n.ModNPC is VitricBackdropLeft);
+			if (left?.ModNPC != null && (left.ModNPC as VitricBackdropLeft).State >= 3)
+				return true;
+
+			NPC right = Main.npc.FirstOrDefault(n => n.ModNPC is VitricBackdropRight);
+			if (right?.ModNPC != null && (left.ModNPC as VitricBackdropRight).State >= 3)
+				return true;
+
+			return false;
+		}
+
+		private bool ShouldDrawReflection()
 		{
 			var parentPos = new Point16((int)position.X / 16, (int)position.Y / 16);
 			Tile parent = Framing.GetTileSafely(parentPos.X, parentPos.Y);
@@ -322,27 +330,27 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 			if (parent.TileFrameX >= 90 && !NPC.AnyNPCs(NPCType<VitricBoss>()))
 			{
-				Texture2D texSkull = Request<Texture2D>("StarlightRiver/Assets/Symbol").Value;
+				Texture2D texSkull = Assets.Symbol.Value;
 				spriteBatch.Draw(texSkull, Center - Main.screenPosition, null, new Color(255, 100, 100) * (1 - Vector2.Distance(Main.LocalPlayer.Center, Center) / 200f), 0, texSkull.Size() / 2, 1, 0, 0);
 			}
 
 			else if (parent.TileFrameX < 90 && ReflectionTarget.canUseTarget)
 			{
-				if (checkIfDrawReflection())
+				if (ShouldDrawReflection())
 				{
-					ReflectionTarget.DrawReflection(spriteBatch, screenPos: position - Main.screenPosition, normalMap: Request<Texture2D>(AssetDirectory.VitricTile + "VitricBossAltarReflectionMap").Value, flatOffset: new Vector2(-0.0075f, 0.011f), tintColor: new Color(150, 150, 255, 200), offsetScale: 0.05f);
+					ReflectionTarget.DrawReflection(spriteBatch, screenPos: position - Main.screenPosition, normalMap: Assets.Tiles.Vitric.VitricBossAltarReflectionMap.Value, flatOffset: new Vector2(-0.0075f, 0.011f), tintColor: new Color(150, 150, 255, 200), offsetScale: 0.05f);
 					ReflectionTarget.isDrawReflectablesThisFrame = true;
 				}
 
-				Texture2D glow = Request<Texture2D>(AssetDirectory.VitricTile + "VitricBossAltarGlow").Value;
+				Texture2D glow = Assets.Tiles.Vitric.VitricBossAltarGlow.Value;
 				spriteBatch.Draw(glow, position - Main.screenPosition + new Vector2(-1, 7), glow.Frame(), Helper.IndicatorColorProximity(300, 600, Center), 0, Vector2.Zero, 1, 0, 0);
 			}
 
 			//Barriers
 			Vector2 center = Center + new Vector2(0, 56);
-			Texture2D tex = Request<Texture2D>(AssetDirectory.VitricBoss + "VitricBossBarrier").Value;
-			Texture2D tex2 = Request<Texture2D>(AssetDirectory.VitricBoss + "VitricBossBarrier2").Value;
-			Texture2D texTop = Request<Texture2D>(AssetDirectory.VitricBoss + "VitricBossBarrierTop").Value;
+			Texture2D tex = Assets.Bosses.VitricBoss.VitricBossBarrier.Value;
+			Texture2D tex2 = Assets.Bosses.VitricBoss.VitricBossBarrier2.Value;
+			Texture2D texTop = Assets.Bosses.VitricBoss.VitricBossBarrierTop.Value;
 			//Color color = new Color(180, 225, 255);
 
 			int off = (int)(barrierTimer / 120f * tex.Height);

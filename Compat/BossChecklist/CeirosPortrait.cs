@@ -14,7 +14,7 @@ namespace StarlightRiver.Compat.BossChecklist
 			n.Color = Color.Lerp(Color.Red, Color.Yellow, n.Timer / 100f) * (float)Math.Sin(n.Timer / 100f * 3.14f);
 
 			n.Timer--;
-		});
+		}, ParticleSystem.AnchorOptions.UI);
 
 		public static void DrawCeirosPortrait(SpriteBatch spriteBatch, Rectangle rect, Color color)
 		{
@@ -23,23 +23,23 @@ namespace StarlightRiver.Compat.BossChecklist
 
 			float sin = 0.6f + (float)Math.Sin(Main.GameUpdateCount / 100f) * 0.2f;
 
-			Texture2D tex0 = ModContent.Request<Texture2D>("StarlightRiver/Assets/BossChecklist/VitricBoss").Value;
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/BossChecklist/VitricBossGlow").Value;
-			Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
+			Texture2D tex0 = Assets.BossChecklist.VitricBoss.Value;
+			Texture2D tex = Assets.BossChecklist.VitricBossGlow.Value;
+			Texture2D tex2 = Assets.Keys.Glow.Value;
 			spriteBatch.Draw(tex2, rect, null, Color.Black * 0.6f, 0, Vector2.UnitY * 2, 0, 0);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.UIScaleMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
 
 			spriteBatch.Draw(tex, rect.Center(), null, Color.White * sin, 0, tex.Size() / 2, 1, 0, 0);
 			ceirosSystem.DrawParticles(spriteBatch);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
 
 			spriteBatch.Draw(tex0, rect.Center(), null, color, 0, tex0.Size() / 2, 1, 0, 0);
 
-			ceirosSystem.SetTexture(ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value);
+			ceirosSystem.SetTexture(Assets.Keys.GlowSoft.Value);
 		}
 	}
 }

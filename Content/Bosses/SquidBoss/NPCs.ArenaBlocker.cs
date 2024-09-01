@@ -1,4 +1,5 @@
 ﻿using System;
+using Terraria.GameContent.Bestiary;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.SquidBoss
@@ -37,6 +38,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			NPC.knockBackResist = 0; // Fae Whip fix
 		}
 
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
+		}
+
 		public override void AI()
 		{
 			if (!NPC.AnyNPCs(NPCType<SquidBoss>()))
@@ -59,9 +65,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		{
 			if (Timer > 150)
 			{
-				Texture2D top = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleTop").Value;
-				Texture2D glow = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleGlow").Value;
-				Texture2D body = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleBody").Value;
+				Texture2D top = Assets.Bosses.SquidBoss.TentacleTop.Value;
+				Texture2D glow = Assets.Bosses.SquidBoss.TentacleGlow.Value;
+				Texture2D body = Assets.Bosses.SquidBoss.TentacleBody.Value;
 
 				for (int k = 0; k < Timer - top.Height; k += body.Height + 2)
 				{

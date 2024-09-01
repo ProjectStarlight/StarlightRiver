@@ -65,7 +65,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 
 			if (Main.gameMenu && Main.menuMode == MenuID.FancyUI && Main.MenuUI.CurrentState is UIWorldSelect)
 			{
-				Main.spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
 
 				UILoader.GetUIState<BossRushButton>().UserInterface.Update(gameTime);
 				UILoader.GetUIState<BossRushButton>().Draw(Main.spriteBatch);

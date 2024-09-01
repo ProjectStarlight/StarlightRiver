@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using StarlightRiver.Content.CustomHooks;
+using System.Collections.Generic;
+using System.IO;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -49,8 +51,8 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 			Item.height = 32;
 			Item.value = Item.buyPrice(gold: 30);
 			Item.rare = ItemRarityID.Green;
-			Item.useTime = 10;
-			Item.useAnimation = 10;
+			Item.useTime = 30;
+			Item.useAnimation = 30;
 			Item.useStyle = ItemUseStyleID.Swing;
 			Item.DamageType = DamageClass.Summon;
 			Item.damage = 12;
@@ -60,6 +62,16 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 			Item.sentry = true;
 			Item.mana = 20;
 			Item.noMelee = true;
+		}
+
+		public override void NetSend(BinaryWriter writer)
+		{
+			writer.Write(dealerName);
+		}
+
+		public override void NetReceive(BinaryReader reader)
+		{
+			dealerName = reader.ReadString();
 		}
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
@@ -130,6 +142,14 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 		/// <param name="spriteBatch"></param>
 		private void DrawRadial(Player player, SpriteBatch spriteBatch)
 		{
+			// Only draw radial menu for player wielding this 
+			if (player.whoAmI != Main.myPlayer)
+				return;
+
+			// Don't draw radial menu for render target
+			if (!PlayerTarget.canUseTarget)
+				return;
+
 			// Get the held instance, if it exists
 			var held = player.HeldItem.ModItem as DefenseSystem;
 
@@ -354,7 +374,13 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 
 		public override void Fire(Vector2 target)
 		{
-			Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + Vector2.UnitY * -10, target * 14, ProjectileID.Bullet, 29, 1, Projectile.owner);
+			if (Main.myPlayer == Owner.whoAmI)
+			{
+				int projId = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + Vector2.UnitY * -10, target * 14, ProjectileID.Bullet, 29, 1, Projectile.owner);
+				Projectile bullet = Main.projectile[projId];
+				bullet.DamageType = DamageClass.Summon; //not synced but hopefully doesn't matter? otherwise we need some other solution
+			}
+
 			SoundEngine.PlaySound(SoundID.Item11, Projectile.Center);
 		}
 	}
@@ -368,9 +394,14 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 
 		public override void Fire(Vector2 target)
 		{
-			for (int k = 0; k < 6; k++)
+			if (Main.myPlayer == Owner.whoAmI)
 			{
-				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + Vector2.UnitY * -10, target.RotatedByRandom(0.3f) * Main.rand.NextFloat(6, 8), ProjectileID.Bullet, 11, 1, Projectile.owner);
+				for (int k = 0; k < 6; k++)
+				{
+					int projId = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + Vector2.UnitY * -10, target.RotatedByRandom(0.3f) * Main.rand.NextFloat(6, 8), ProjectileID.Bullet, 11, 1, Projectile.owner);
+					Projectile bullet = Main.projectile[projId];
+					bullet.DamageType = DamageClass.Summon; //not synced but hopefully doesn't matter? otherwise we need some other solution
+				}
 			}
 
 			SoundEngine.PlaySound(SoundID.Item36, Projectile.Center);
@@ -386,7 +417,13 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 
 		public override void Fire(Vector2 target)
 		{
-			Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + Vector2.UnitY * -10, target.RotatedByRandom(0.05f) * 8, ProjectileID.Bullet, 7, 1, Projectile.owner);
+			if (Main.myPlayer == Owner.whoAmI)
+			{
+				int projId = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + Vector2.UnitY * -10, target.RotatedByRandom(0.05f) * 8, ProjectileID.Bullet, 7, 1, Projectile.owner);
+				Projectile bullet = Main.projectile[projId];
+				bullet.DamageType = DamageClass.Summon; //not synced but hopefully doesn't matter? otherwise we need some other solution
+			}
+
 			SoundEngine.PlaySound(SoundID.Item11, Projectile.Center);
 		}
 	}

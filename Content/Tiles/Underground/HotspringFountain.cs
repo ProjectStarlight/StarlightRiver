@@ -10,7 +10,7 @@ using Terraria.ObjectData;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
-	class HotspringFountain : DummyTile, IHintable
+	class HotspringFountain : DummyTile
 	{
 		public override int DummyType => DummySystem.DummyType<HotspringFountainDummy>();
 
@@ -39,11 +39,6 @@ namespace StarlightRiver.Content.Tiles.Underground
 				if (frame > 3)
 					frame = 0;
 			}
-		}
-
-		public string GetHint()
-		{
-			return "The waters around this spring calm your mind, heal your body, and soothe your soul. A brief reprieve, if only for a moment.";
 		}
 	}
 
@@ -122,7 +117,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public void DrawMap(SpriteBatch spriteBatch)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
+			Texture2D tex = Assets.Keys.Glow.Value;
 			spriteBatch.Draw(tex, Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, scale: 24f, 0, 0);
 		}
 	}

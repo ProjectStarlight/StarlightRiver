@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
 	abstract class TallWindowDummyBase : Dummy
 	{
-		public virtual string TextureOver => AssetDirectory.VitricTile + "TallWindowOver";
+		public virtual Asset<Texture2D> TextureOver => Assets.Tiles.Vitric.TallWindowOver;
 
 		public TallWindowDummyBase(int type) : base(type, 16, 16) { }
 
@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		{
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
-			Texture2D tex = Request<Texture2D>(TextureOver).Value;
+			Texture2D tex = TextureOver.Value;
 			Vector2 pos = Center - Main.screenPosition - Vector2.One * 8;
 
 			var bgTarget = new Rectangle(6, 32, 84, 256);
@@ -37,12 +37,12 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 			LightingBufferRenderer.DrawWithLighting(pos, tex, Color.White);
 
-			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		public void RedrawWall(int i, int j)
 		{
-			Texture2D tex = Request<Texture2D>(AssetDirectory.VitricTile + "VitricTempleWall").Value;
+			Texture2D tex = Assets.Tiles.Vitric.VitricTempleWall.Value;
 			var target = new Vector2(i * 16 - Main.screenPosition.X, j * 16 - Main.screenPosition.Y);
 			var source = new Rectangle(i % 14 * 16, j % 25 * 16, 16, 16);
 
@@ -78,7 +78,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	[SLRDebug]
 	class TallWindowItem : QuickTileItem
 	{
-		public TallWindowItem() : base("Window Actor", "Debug Item", "TallWindow", 0, AssetDirectory.VitricTile + "WindsRoomOrnamentLeft", true) { }
+		public TallWindowItem() : base("Window Actor", "{{Debug}} Item", "TallWindow", 0, AssetDirectory.VitricTile + "WindsRoomOrnamentLeft", true) { }
 	}
 
 	class TallWindowDummy : TallWindowDummyBase
@@ -94,14 +94,14 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	[SLRDebug]
 	class TallWindowLavaItem : QuickTileItem
 	{
-		public TallWindowLavaItem() : base("Lava Window Actor", "Debug Item", "TallWindowLava", 0, AssetDirectory.VitricTile + "WindsRoomOrnamentLeft", true) { }
+		public TallWindowLavaItem() : base("Lava Window Actor", "{{Debug}} Item", "TallWindowLava", 0, AssetDirectory.VitricTile + "WindsRoomOrnamentLeft", true) { }
 	}
 
 	class TallWindowLavaDummy : TallWindowDummyBase
 	{
 		public TallWindowLavaDummy() : base(ModContent.TileType<TallWindowLava>()) { }
 
-		public override string TextureOver => AssetDirectory.VitricTile + "TallWindowOverLava";
+		public override Asset<Texture2D> TextureOver => Assets.Tiles.Vitric.TallWindowOverLava;
 
 		public override void PostDraw(Color lightColor)
 		{
@@ -112,7 +112,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
-			Texture2D tex = Request<Texture2D>(TextureOver + "Glow").Value;
+			Texture2D tex = Assets.Tiles.Vitric.TallWindowOverLavaGlow.Value;
 			Vector2 pos = Center - Main.screenPosition - Vector2.One * 8;
 			float sin = 0.5f + (float)Math.Sin(Main.GameUpdateCount * 0.05f + position.X * 1 / 16f) * 0.25f;
 
@@ -128,13 +128,13 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	[SLRDebug]
 	class TallWindowCrystalItem : QuickTileItem
 	{
-		public TallWindowCrystalItem() : base("Crystal Window Actor", "Debug Item", "TallWindowCrystal", 0, AssetDirectory.VitricTile + "WindsRoomOrnamentLeft", true) { }
+		public TallWindowCrystalItem() : base("Crystal Window Actor", "{{Debug}} Item", "TallWindowCrystal", 0, AssetDirectory.VitricTile + "WindsRoomOrnamentLeft", true) { }
 	}
 
 	class TallWindowCrystalDummy : TallWindowDummyBase
 	{
 		public TallWindowCrystalDummy() : base(ModContent.TileType<TallWindowCrystal>()) { }
 
-		public override string TextureOver => AssetDirectory.VitricTile + "TallWindowOverCrystal";
+		public override Asset<Texture2D> TextureOver => Assets.Tiles.Vitric.TallWindowOverCrystal;
 	}
 }

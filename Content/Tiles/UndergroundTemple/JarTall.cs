@@ -9,7 +9,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.UndergroundTemple
 {
-	class JarTall : DummyTile, IHintable
+	class JarTall : DummyTile
 	{
 		public override int DummyType => DummySystem.DummyType<JarDummy>();
 
@@ -49,8 +49,8 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 				if (dummy is null)
 					return;
 
-				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Tiles/UndergroundTemple/JarTallGlow").Value;
-				Texture2D tex2 = Request<Texture2D>("StarlightRiver/Assets/Tiles/UndergroundTemple/JarTallGlow2").Value;
+				Texture2D tex = Assets.Tiles.UndergroundTemple.JarTallGlow.Value;
+				Texture2D tex2 = Assets.Tiles.UndergroundTemple.JarTallGlow2.Value;
 
 				spriteBatch.End();
 				spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default);
@@ -68,15 +68,12 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 		{
 			return false;
 		}
-
-		public string GetHint()
-		{
-			return "A huge vial of pure starlight -- It's reinforced the glass itself over the centuries. Maybe a powerful starlight force could shatter it.";
-		}
 	}
 
 	internal class JarDummy : Dummy, IDrawAdditive
 	{
+		public override bool DoesCollision => true;
+
 		public JarDummy() : base(TileType<JarTall>(), 32, 64) { }
 
 		public override void Update()
@@ -112,7 +109,7 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
+			Texture2D tex = Assets.Keys.Glow.Value;
 			spriteBatch.Draw(tex, Center - Main.screenPosition + Vector2.UnitY * 16, tex.Frame(), new Color(91, 211, 233) * 0.7f, 0, tex.Size() / 2, 0.8f, 0, 0);
 		}
 	}
@@ -122,6 +119,6 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 	{
 		public override string Texture => AssetDirectory.Debug;
 
-		public JarTallItem() : base("Stamina Jar Placer (Tall)", "Debug Item", "JarTall", -12) { }
+		public JarTallItem() : base("Stamina Jar Placer (Tall)", "{{Debug}} Item", "JarTall", -12) { }
 	}
 }

@@ -143,6 +143,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 	class DashableDoorDummy : Dummy
 	{
+		public override bool DoesCollision => true;
+
 		public DashableDoorDummy() : base(TileType<DashableDoor>(), 16 * 3, 16 * 13) { }
 
 		public override void OnSpawn()
@@ -172,14 +174,14 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public override void PostDraw(Color lightColor)
 		{
-			Main.spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricTile + "TutorialDoor2").Value, position + Vector2.UnitX * 8 - Main.screenPosition, lightColor);
-			Main.spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricTile + "TutorialDoor2Glow").Value, position + Vector2.UnitX * 8 - Main.screenPosition, Helper.IndicatorColor);
+			Main.spriteBatch.Draw(Assets.Tiles.Vitric.TutorialDoor2.Value, position + Vector2.UnitX * 8 - Main.screenPosition, lightColor);
+			Main.spriteBatch.Draw(Assets.Tiles.Vitric.TutorialDoor2Glow.Value, position + Vector2.UnitX * 8 - Main.screenPosition, Helper.IndicatorColor);
 		}
 	}
 
 	[SLRDebug]
 	class DashableDoorItem : QuickTileItem
 	{
-		public DashableDoorItem() : base("DashableDoor", "Debug Item", "DashableDoor", 1, AssetDirectory.Debug, true) { }
+		public DashableDoorItem() : base("DashableDoor", "{{Debug}} Item", "DashableDoor", 1, AssetDirectory.Debug, true) { }
 	}
 }

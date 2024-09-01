@@ -425,7 +425,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 		{
 			if (CurrentCharge >= MaxCharge && DrawWhiteTimer > 0)
 			{
-				Texture2D texture = ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "Soilgun_White").Value;
+				Texture2D texture = Assets.Items.Misc.Soilgun_White.Value;
 				SpriteEffects spriteEffects = Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
 				float progress = 1 - DrawWhiteTimer / 30f;

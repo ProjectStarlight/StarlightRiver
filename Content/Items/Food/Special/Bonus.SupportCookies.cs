@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Items.Food.Special
 			ModContent.ItemType<Dough>(),
 			ModContent.ItemType<HealthExtract>(),
 			ModContent.ItemType<ManaExtract>(),
-			ModContent.ItemType<TableSalt>()
+			ModContent.ItemType<Sugar>()
 			);
 		}
 

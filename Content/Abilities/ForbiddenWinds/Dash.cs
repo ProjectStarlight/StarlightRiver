@@ -11,13 +11,12 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 {
 	public class Dash : CooldownAbility, IOrderedLoadable
 	{
-		public const int DEFAULT_TIME = 15;
-
 		public int Time;
+		public int maxTime = 15;
 		public int EffectTimer;
 
-		private List<Vector2> cache;
-		private Trail trail;
+		protected List<Vector2> cache;
+		protected Trail trail;
 
 		public override string Name => "Forbidden Winds";
 		public override string Tooltip => "Channel Starlight to recreate the strange energies fueling the bellows of the Vitric Forges, launching yourself with the winds of memory and shattering the ties of connection within any object you strike. NEWBLOCK " +
@@ -67,7 +66,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 		{
 			Boost = 0.25f;
 			Speed = 28;
-			Time = DEFAULT_TIME;
+			Time = maxTime = 15;
 			CooldownBonus = 0;
 		}
 
@@ -151,19 +150,19 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
 		public void UpdatePlayerFrame(Player Player)
 		{
-			if (Player.GetHandler().ActiveAbility is Dash)
+			if (Player.GetHandler().ActiveAbility is Dash && !Player.GetHandler().ActiveAbility.GetType().IsSubclassOf(typeof(Dash)))
 			{
 				var dash = Player.GetHandler().ActiveAbility as Dash;
 
 				Player.bodyFrame = new Rectangle(0, 56 * 3, 40, 56);
-				Player.UpdateRotation(dash.Time / 15f * 6.28f);
+				Player.UpdateRotation(dash.Time / (float)dash.maxTime * 6.28f);
 
-				if (dash.Time == 15 || Player.dead)
+				if (dash.Time == dash.maxTime || Player.dead)
 					Player.UpdateRotation(0);
 			}
 		}
 
-		public override void UpdateFixed()
+		public override void SafeUpdateFixed()
 		{
 			if (EffectTimer > 0 && cache != null)
 			{
@@ -171,8 +170,6 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 					ManageTrail();
 				EffectTimer--;
 			}
-
-			base.UpdateFixed();
 		}
 
 		public override void CooldownFinish()
@@ -196,7 +193,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
 		private void ManageCaches()
 		{
-			if (Time == 14)
+			if (Time == 15)
 				cache?.Clear();
 
 			if (cache == null || cache.Count < 14)
@@ -219,19 +216,22 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 14, new TriangularTip(40 * 4), factor => Math.Min(factor * 50, 40), factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X >= 0.80f)
-					return Color.White * 0;
+				trail = new Trail(Main.instance.GraphicsDevice, 14, new NoTip(), factor => Math.Min(factor * 50, 40), factor =>
+							{
+								if (factor.X == 1)
+									return Color.Transparent;
 
-				return new Color(140, 150 + (int)(105 * factor.X), 255) * factor.X * (float)Math.Sin(EffectTimer / 45f * 3.14f);
-			});
+								return new Color(140, 150 + (int)(105 * factor.X), 255) * factor.X * (float)Math.Sin(EffectTimer / 45f * 3.14f);
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Player.Center + Player.velocity * 6;
 		}
 
-		public void DrawPrimitives()
+		public virtual void DrawPrimitives()
 		{
 			Main.spriteBatch.End();
 
@@ -244,11 +244,11 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.01f);
 			effect.Parameters["repeats"].SetValue(1f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
 
 			trail?.Render(effect);
 
-			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 }

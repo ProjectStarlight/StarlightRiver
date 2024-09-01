@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public HolyAmulet() : base("Holy Amulet", "Releases bursts of homing holy energy for every 25 HP you heal") { }
+		public HolyAmulet() : base("Holy Amulet", "Releases bursts of homing holy energy for every 25 life you heal") { }
 
 		public override void Load()
 		{
@@ -203,14 +203,17 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, oldPositionCacheLength, new TriangularTip(trailMaxWidth * 4), factor => factor * trailMaxWidth, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				// 1 = full opacity, 0 = transparent.
-				float normalisedAlpha = 1 - Projectile.alpha / 255f;
+				trail = new Trail(Main.instance.GraphicsDevice, oldPositionCacheLength, new NoTip(), factor => factor * trailMaxWidth, factor =>
+							{
+								// 1 = full opacity, 0 = transparent.
+								float normalisedAlpha = 1 - Projectile.alpha / 255f;
 
-				// Scales opacity with the Projectile alpha as well as the distance from the beginning of the trail.
-				return Color.Crimson * normalisedAlpha * factor.X;
-			});
+								// Scales opacity with the Projectile alpha as well as the distance from the beginning of the trail.
+								return Color.Crimson * normalisedAlpha * factor.X;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;

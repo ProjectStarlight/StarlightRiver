@@ -2,7 +2,9 @@
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.PersistentData;
+using StarlightRiver.Content.Tiles.Blockers;
 using StarlightRiver.Core.Loaders.UILoading;
+using StarlightRiver.Core.Systems.BossRushSystem;
 using System;
 using System.IO;
 using System.Linq;
@@ -12,7 +14,7 @@ using static Terraria.ModLoader.ModContent;
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
 	[AutoloadBossHead]
-	public partial class Glassweaver : ModNPC, IHintable
+	public partial class Glassweaver : ModNPC
 	{
 		public static readonly Color GlowDustOrange = new(6255, 108, 0);
 		public static readonly Color GlassColor = new(60, 170, 205);
@@ -133,6 +135,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void AI()
 		{
+			BlockerLoader.glassweaverBlockers = true;
+
 			AttackTimer++;
 
 			if (summonAnimTime > 0)
@@ -322,6 +326,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 						NPC.active = false;
 					}
 
+					BossRushSystem.ForceFail();
+
 					break;
 			}
 
@@ -335,14 +341,14 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
-			writer.WritePackedVector2(moveTarget);
+			writer.WriteVector2(moveTarget);
 			writer.Write(attackVariant);
 			writer.Write(NPC.direction);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
-			moveTarget = reader.ReadPackedVector2();
+			moveTarget = reader.ReadVector2();
 			attackVariant = reader.ReadBoolean();
 			NPC.direction = reader.ReadInt32();
 		}
@@ -509,10 +515,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			spriteBatch.Draw(weaverGlow.Value, NPC.Center + drawPos, frame, glowColor, NPC.rotation, origin, NPC.scale, GetSpriteEffects(), 0);
 
 			return false;
-		}
-		public string GetHint()
-		{
-			return "Now he's getting serious.";
 		}
 	}
 }

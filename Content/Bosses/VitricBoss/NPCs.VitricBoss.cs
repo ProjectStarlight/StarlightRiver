@@ -1,8 +1,11 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.Hint;
 using StarlightRiver.Content.Foregrounds;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Content.PersistentData;
+using StarlightRiver.Content.Tiles.Blockers;
+using StarlightRiver.Core.Systems.BossRushSystem;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -18,7 +21,7 @@ using static Terraria.ModLoader.ModContent;
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
 	[AutoloadBossHead]
-	public sealed partial class VitricBoss : ModNPC, IHintable
+	public sealed partial class VitricBoss : ModNPC
 	{
 		public Vector2 startPos;
 		public Vector2 endPos;
@@ -35,6 +38,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		public int lastTwistState;
 		public int twistTarget;
 		public int shieldShaderTimer;
+
+		public int fleeTimer;
 
 		public bool rotationLocked;
 		public float lockedRotation;
@@ -129,10 +134,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			{
 				swooshes = new List<VitricBossSwoosh>()
 				{
-				new VitricBossSwoosh(new Vector2(-16, -40), 6, this),
-				new VitricBossSwoosh(new Vector2(16, -40), 6, this),
-				new VitricBossSwoosh(new Vector2(-46, -34), 10, this),
-				new VitricBossSwoosh(new Vector2(46, -34), 10, this)
+				new(new Vector2(-16, -40), 6, this),
+				new(new Vector2(16, -40), 6, this),
+				new(new Vector2(-46, -34), 10, this),
+				new(new Vector2(46, -34), 10, this)
 				};
 
 				body = new BodyHandler(this);
@@ -233,12 +238,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			swooshes.ForEach(n => n.Draw());
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			swooshes.ForEach(n => n.DrawAdditive(spriteBatch));
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			body.DrawBody(spriteBatch);
 
@@ -251,8 +256,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			if (Phase == (int)AIStates.Dying) //death
 			{
 				Effect effect = Terraria.Graphics.Effects.Filters.Scene["MagmaCracks"].GetShader().Shader;
-				effect.Parameters["sampleTexture2"].SetValue(Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/CrackMap").Value);
-				effect.Parameters["sampleTexture3"].SetValue(Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/ProgressionMap").Value);
+				effect.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.CrackMap.Value);
+				effect.Parameters["sampleTexture3"].SetValue(Assets.Bosses.VitricBoss.ProgressionMap.Value);
 				effect.Parameters["uTime"].SetValue((GlobalTimer - 160) / 600f);
 				effect.Parameters["drawColor"].SetValue(new Color(Lighting.GetSubLight(NPC.Center)).ToVector4());
 
@@ -260,17 +265,17 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				effect.Parameters["texSize"].SetValue(Request<Texture2D>(Texture).Value.Size());
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 
 				spriteBatch.Draw(Request<Texture2D>(Texture).Value, NPC.Center - screenPos + PainOffset, NPC.frame, new Color(Lighting.GetSubLight(NPC.Center)), NPC.rotation, NPC.frame.Size() / 2, NPC.scale, effects, 0);
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 				spriteBatch.Draw(Request<Texture2D>(Texture + "Godray").Value, NPC.Center - screenPos + PainOffset + new Vector2(NPC.spriteDirection == 1 ? 20 : -20, -30), null, new Color(255, 175, 100) * ((GlobalTimer - 160) / 600f), NPC.rotation, Request<Texture2D>(Texture + "Godray").Value.Size() / 2, NPC.scale, effects, 0);
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 
 			return false;
@@ -280,22 +285,22 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		{
 			if (Phase == (int)AIStates.FirstPhase && NPC.dontTakeDamage) //draws the NPC's shield when immune and in the first phase
 			{
-				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/Shield").Value;
+				Texture2D tex = Assets.Bosses.VitricBoss.Shield.Value;
 				SpriteEffects effects = NPC.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : 0;
 
 				Effect effect = Terraria.Graphics.Effects.Filters.Scene["MoltenForm"].GetShader().Shader;
-				effect.Parameters["sampleTexture2"].SetValue(Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/ShieldMap").Value);
+				effect.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.ShieldMap.Value);
 				effect.Parameters["uTime"].SetValue(2 - shieldShaderTimer / 120f * 2);
 				effect.Parameters["sourceFrame"].SetValue(new Vector4(NPC.frame.X, NPC.frame.Y, NPC.frame.Width, NPC.frame.Height));
 				effect.Parameters["texSize"].SetValue(tex.Size());
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 
 				spriteBatch.Draw(tex, NPC.Center - screenPos + PainOffset, NPC.frame, Color.White, NPC.rotation, NPC.frame.Size() / 2, NPC.scale, effects, 0);
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 
@@ -305,8 +310,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
-			Texture2D tex = Request<Texture2D>(AssetDirectory.VitricBoss + "VitricBossBarUnder").Value;
-			Texture2D texOver = Request<Texture2D>(AssetDirectory.VitricBoss + "VitricBossBarOver").Value;
+			Texture2D tex = Assets.Bosses.VitricBoss.VitricBossBarUnder.Value;
+			Texture2D texOver = Assets.Bosses.VitricBoss.VitricBossBarOver.Value;
 			float progress = (float)NPC.life / NPC.lifeMax;
 
 			var target = new Rectangle((int)(position.X - Main.screenPosition.X) + 2, (int)(position.Y - Main.screenPosition.Y), (int)(progress * tex.Width - 4), tex.Height);
@@ -354,9 +359,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			BossRushDataStore.DefeatBoss(BossrushUnlockFlag.Ceiros);
 			StarlightWorld.Flag(WorldFlags.VitricBossDowned);
 
-			foreach (Player Player in Main.player.Where(n => n.active && arena.Contains(n.Center.ToPoint())))
+			foreach (Player player in Main.player.Where(n => n.active && arena.Contains(n.Center.ToPoint())))
 			{
-				Player.GetModPlayer<MedalPlayer>().ProbeMedal("Ceiros");
+				player.GetModPlayer<MedalPlayer>().ProbeMedal("Ceiros");
+				player.GetModPlayer<HintPlayer>().SetHintState("PostCeiros");
 			}
 
 			body.SpawnGores2();
@@ -489,6 +495,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public override void AI()
 		{
+			BlockerLoader.ceirosBlockers = true;
+
 			if (arena == new Rectangle())
 				arena = new Rectangle((int)NPC.Center.X + 8 - arenaWidth / 2, (int)NPC.Center.Y - 832 - arenaHeight / 2, arenaWidth, arenaHeight);
 
@@ -518,7 +526,13 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			//Main AI
 			Lighting.AddLight(NPC.Center, new Vector3(1, 0.8f, 0.4f)); //glow
 
+			// Handles fleeing logic. To make sure we dont force a client into having a fleeing boss too early we give the boss a 1 second "charge" to flee
 			if (Phase != (int)AIStates.Leaving && Phase != (int)AIStates.Dying && arena != new Rectangle() && !Main.player.Any(n => n.active && !n.dead && arena.Contains(n.Center.ToPoint()))) //if no valid players are detected
+				fleeTimer++;
+			else
+				fleeTimer = 0;
+
+			if (fleeTimer > 60)
 			{
 				GlobalTimer = 0;
 				Phase = (int)AIStates.Leaving; //begone thot!
@@ -722,6 +736,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 							NPC.active = false; //arena reset
 					}
 
+					BossRushSystem.ForceFail();
+
 					break;
 
 				case (int)AIStates.Dying:
@@ -812,9 +828,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			writer.Write(altAttack);
 			writer.Write(lockedRotation);
 
-			writer.WritePackedVector2(startPos);
-			writer.WritePackedVector2(endPos);
-			writer.WritePackedVector2(homePos);
+			writer.WriteVector2(startPos);
+			writer.WriteVector2(endPos);
+			writer.WriteVector2(homePos);
 
 			writer.Write(NPC.dontTakeDamage);
 			writer.Write(NPC.defense);
@@ -830,9 +846,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			altAttack = reader.ReadBoolean();
 			lockedRotation = reader.ReadSingle();
 
-			startPos = reader.ReadPackedVector2();
-			endPos = reader.ReadPackedVector2();
-			homePos = reader.ReadPackedVector2();
+			startPos = reader.ReadVector2();
+			endPos = reader.ReadVector2();
+			homePos = reader.ReadVector2();
 
 			NPC.dontTakeDamage = reader.ReadBoolean();
 			NPC.defense = reader.ReadInt32();
@@ -843,12 +859,5 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				arena = new Rectangle((int)homePos.X + 8 - arenaWidth / 2, (int)homePos.Y - 32 - arenaHeight / 2, arenaWidth, arenaHeight);
 		}
 		#endregion Networking
-
-		#region Hint
-		public string GetHint()
-		{
-			return "Glassweaver mentioned a 'Sentinel'... Focus!";
-		}
-		#endregion Hint
 	}
 }

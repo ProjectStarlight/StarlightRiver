@@ -123,9 +123,9 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			// Draw is called for each mount texture we provide, so we check drawType to avoid duplicate draws.
 			if (drawType == 0)
 			{
-				Texture2D platformTex = ModContent.Request<Texture2D>(AssetDirectory.SteampunkItem + "CogwheelMount").Value;
-				Texture2D wheelTex = ModContent.Request<Texture2D>(AssetDirectory.SteampunkItem + "CogwheelMount_Wheel").Value;
-				Texture2D baseTex = ModContent.Request<Texture2D>(AssetDirectory.SteampunkItem + "CogwheelMount_Base").Value;
+				Texture2D platformTex = Assets.Items.SteampunkSet.CogwheelMount.Value;
+				Texture2D wheelTex = Assets.Items.SteampunkSet.CogwheelMount_Wheel.Value;
+				Texture2D baseTex = Assets.Items.SteampunkSet.CogwheelMount_Base.Value;
 				Vector2 drawPos = drawPosition;
 				playerDrawData.Add(new DrawData(baseTex, drawPos + new Vector2(0, 17 + (int)(2 * Math.Sin(((CogWheelSpecificData)drawPlayer.mount._mountSpecificData).rotation * 2))), new Rectangle(0, 0, platformTex.Width, platformTex.Height), drawColor, drawPlayer.fullRotation, baseTex.Size() / 2 / new Vector2(1, 3) + new Vector2(0, 17), drawScale, SpriteEffects.None, 0));
 				playerDrawData.Add(new DrawData(wheelTex, drawPos + new Vector2(0, 17 + (int)(1 * Math.Sin(((CogWheelSpecificData)drawPlayer.mount._mountSpecificData).rotation * 2))), new Rectangle(0, 0, wheelTex.Width, wheelTex.Height), drawColor, ((CogWheelSpecificData)drawPlayer.mount._mountSpecificData).rotation, wheelTex.Size() / 2, drawScale, SpriteEffects.None, 0));
@@ -206,6 +206,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			{
 				direction = new Vector2(0, -1);
 				dustPos = Player.Center + new Vector2(Player.direction * 15, 45 + Player.velocity.Y * 2);
+				Player.fallStart = (int)(Player.position.Y / 16f);
 			}
 
 			if (Player.velocity.X == 0 && climbing || Player.velocity.Y == 0)

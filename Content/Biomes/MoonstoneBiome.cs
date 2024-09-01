@@ -50,6 +50,7 @@ namespace StarlightRiver.Content.Biomes
 		public ScreenTarget backgroundTarget;
 
 		public int moonstoneBlockCount;
+		public bool overrideVFXActive = false;
 
 		private float opacity = 0;
 		private float distortion = 0;
@@ -92,7 +93,7 @@ namespace StarlightRiver.Content.Biomes
 
 		public override void PostUpdateEverything()
 		{
-			if (moonstoneBlockCount < 150)
+			if (moonstoneBlockCount < 150 && !overrideVFXActive)
 			{
 				if (distortion > 0)
 					distortion -= 0.005f;
@@ -103,11 +104,16 @@ namespace StarlightRiver.Content.Biomes
 			else
 			{
 				if (distortion < 1)
-					distortion += 0.001f;
+					distortion += 0.001f * (overrideVFXActive ? 5 : 1);
 
 				if (opacity < 1)
-					opacity += 0.001f;
+					opacity += 0.001f * (overrideVFXActive ? 10 : 1);
 			}
+		}
+
+		public override void ResetNearbyTileEffects()
+		{
+			overrideVFXActive = false;
 		}
 
 		private void DistortBG(On_Main.orig_DrawSurfaceBG orig, Main self)
@@ -120,8 +126,8 @@ namespace StarlightRiver.Content.Biomes
 				effect.Parameters["intensity"].SetValue(0.01f * distortion);
 				effect.Parameters["repeats"].SetValue(2);
 				effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.003f);
-				effect.Parameters["noiseTexture1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/SwirlyNoiseLooping").Value);
-				effect.Parameters["noiseTexture2"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/MiscNoise1").Value);
+				effect.Parameters["noiseTexture1"].SetValue(Assets.Noise.SwirlyNoiseLooping.Value);
+				effect.Parameters["noiseTexture2"].SetValue(Assets.Noise.MiscNoise1.Value);
 				effect.Parameters["screenPosition"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / backgroundTarget.RenderTarget.Size());
 				effect.Parameters["distortionColor1"].SetValue(Color.DarkBlue.ToVector3());
 				effect.Parameters["distortionColor2"].SetValue(new Color(120, 65, 120).ToVector3());
@@ -150,7 +156,7 @@ namespace StarlightRiver.Content.Biomes
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
 			sb.End();
-			sb.Begin(default, default, default, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 			particleSystem.DrawParticles(sb);
 			particleSystemMedium.DrawParticles(sb);
@@ -161,10 +167,8 @@ namespace StarlightRiver.Content.Biomes
 		{
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
-			//Main.NewText("Drawing to target!");
-
 			sb.End();
-			sb.Begin(default, default, default, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 			drawingBGtarget = true;
 
@@ -186,8 +190,8 @@ namespace StarlightRiver.Content.Biomes
 			effect.Parameters["intensity"].SetValue(10f);
 			effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.1f);
 
-			effect.Parameters["noiseTexture1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/MiscNoise3").Value);
-			effect.Parameters["noiseTexture2"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/MiscNoise4").Value);
+			effect.Parameters["noiseTexture1"].SetValue(Assets.Noise.MiscNoise3.Value);
+			effect.Parameters["noiseTexture2"].SetValue(Assets.Noise.MiscNoise4.Value);
 			effect.Parameters["color1"].SetValue(Color.Magenta.ToVector4());
 			effect.Parameters["color2"].SetValue(Color.Cyan.ToVector4());
 			effect.Parameters["opacity"].SetValue(1f);
@@ -197,7 +201,7 @@ namespace StarlightRiver.Content.Biomes
 			effect.Parameters["screenPosition"].SetValue(Main.screenPosition);
 			effect.Parameters["drawOriginal"].SetValue(false);
 
-			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect);
+			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect);
 
 			Main.spriteBatch.Draw(target.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
 
@@ -220,12 +224,12 @@ namespace StarlightRiver.Content.Biomes
 			}
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default);
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default);
 
 			Main.spriteBatch.Draw(target.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White * 0.9f);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		protected void UpdateMoonParticles(Particle particle)

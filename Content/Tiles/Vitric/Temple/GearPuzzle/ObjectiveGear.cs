@@ -32,16 +32,18 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 		public override void PostDraw(Color lightColor)
 		{
-			Texture2D pegTex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "GearPeg").Value;
+			Texture2D pegTex = Assets.Tiles.Vitric.GearPeg.Value;
 			Main.spriteBatch.Draw(pegTex, Center - Main.screenPosition, null, lightColor, 0, pegTex.Size() / 2, 1, 0, 0);
+
 			Texture2D tex = GearSize switch
 			{
-				0 => ModContent.Request<Texture2D>(AssetDirectory.Invisible).Value,
-				1 => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "CeramicGearSmall").Value,
-				2 => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "CeramicGearMid").Value,
-				3 => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "CeramicGearLarge").Value,
-				_ => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "CeramicGearSmall").Value,
+				0 => Assets.Invisible.Value,
+				1 => Assets.Tiles.Vitric.CeramicGearSmall.Value,
+				2 => Assets.Tiles.Vitric.CeramicGearMid.Value,
+				3 => Assets.Tiles.Vitric.CeramicGearLarge.Value,
+				_ => Assets.Tiles.Vitric.CeramicGearSmall.Value,
 			};
+
 			Main.spriteBatch.Draw(tex, Center - Main.screenPosition, null, lightColor, Rotation, tex.Size() / 2, 1, 0, 0);
 		}
 	}
@@ -49,6 +51,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 	[SLRDebug]
 	class ObjectiveGearItem : QuickTileItem
 	{
-		public ObjectiveGearItem() : base("Gear puzzle Point", "Debug Item", "ObjectiveGear", 8, AssetDirectory.VitricTile + "GearPeg", true) { }
+		public ObjectiveGearItem() : base("Gear puzzle Point", "{{Debug}} Item", "ObjectiveGear", 8, AssetDirectory.VitricTile + "GearPeg", true) { }
 	}
 }

@@ -4,13 +4,12 @@ namespace StarlightRiver.Content.Items.Food
 {
 	internal class Milk : Ingredient
 	{
-		public Milk() : base("+8 defense", 240, IngredientType.Side) { }
+		public Milk() : base("+8 defense", 1800, IngredientType.Side) { }
 
 		public override void SafeSetDefaults()
 		{
 			Item.rare = ItemRarityID.Blue;
-
-			Item.value = Item.sellPrice(silver: 10);
+			Item.value = Item.buyPrice(silver: 25);
 		}
 
 		public override void BuffEffects(Player Player, float multiplier)

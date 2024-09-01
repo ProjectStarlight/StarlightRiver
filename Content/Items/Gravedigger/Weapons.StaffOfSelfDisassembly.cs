@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Staff of Self-Disassembly");
-			Tooltip.SetDefault("Reserve 40 life to summon a Flesh Horror\n" +
+			Tooltip.SetDefault("{{Reserve}} 40 life to summon a Flesh Horror\n" +
 				"Horrors grant increased life regeneration\n" +
 				"Life regeneration boost is increased when Horrors strike an enemy");
 
@@ -260,8 +260,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 			//the lines connecting back to the owner
 			Texture2D tex = Terraria.GameContent.TextureAssets.MagicPixel.Value;
-			Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value;
-			Texture2D tex3 = ModContent.Request<Texture2D>("StarlightRiver/Assets/MotionTrail").Value;
+			Texture2D tex2 = Assets.EnergyTrail.Value;
+			Texture2D tex3 = Assets.MotionTrail.Value;
 
 			float strength = (0.2f + (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.05f) * (healPower * 2);
 
@@ -287,7 +287,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Main.spriteBatch.Draw(tex3, target3, source2, new Color(255, 80, 80) * strength, rot - 1.57f, new Vector2(0, 0), 0, 0);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D mainTex = ModContent.Request<Texture2D>(Texture).Value; //the actual sprite of the minion
 

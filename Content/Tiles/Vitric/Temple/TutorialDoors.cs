@@ -32,6 +32,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	{
 		public float progress;
 
+		public override bool DoesCollision => true;
+
 		public TutorialDoor1Dummy() : base(TileType<TutorialDoor1>(), 16 * 2, 16 * 13) { }
 
 		public override void Update()
@@ -62,7 +64,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 			if (progress > 0)
 			{
-				Texture2D tex = Request<Texture2D>(AssetDirectory.VitricTile + "TutorialDoor1").Value;
+				Texture2D tex = Assets.Tiles.Vitric.TutorialDoor1.Value;
 				int off = (int)(tex.Height * progress);
 				Vector2 pos = position - Main.screenPosition;
 				var source = new Rectangle(0, 0, tex.Width, off);
@@ -75,7 +77,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	[SLRDebug]
 	class TutorialDoor1Item : QuickTileItem
 	{
-		public TutorialDoor1Item() : base("TutorialDoor1", "Debug Item", "TutorialDoor1", 1, AssetDirectory.Debug, true) { }
+		public TutorialDoor1Item() : base("TutorialDoor1", "{{Debug}} Item", "TutorialDoor1", 1, AssetDirectory.Debug, true) { }
 	}
 
 	class TutorialDoor2 : DummyTile
@@ -99,6 +101,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 	class TutorialDoor2Dummy : Dummy
 	{
+		public override bool DoesCollision => true;
+
 		public TutorialDoor2Dummy() : base(TileType<TutorialDoor2>(), 16 * 2, 16 * 13) { }
 
 		public bool ShouldBeOn(Player player)
@@ -138,8 +142,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 			if (ShouldBeOn(Player))
 			{
-				Main.spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricTile + "TutorialDoor2").Value, position - Main.screenPosition, lightColor);
-				Main.spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricTile + "TutorialDoor2Glow").Value, position - Main.screenPosition, Helper.IndicatorColor);
+				Main.spriteBatch.Draw(Assets.Tiles.Vitric.TutorialDoor2.Value, position - Main.screenPosition, lightColor);
+				Main.spriteBatch.Draw(Assets.Tiles.Vitric.TutorialDoor2Glow.Value, position - Main.screenPosition, Helper.IndicatorColor);
 			}
 		}
 	}
@@ -147,6 +151,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	[SLRDebug]
 	class TutorialDoor2Item : QuickTileItem
 	{
-		public TutorialDoor2Item() : base("TutorialDoor2", "Debug Item", "TutorialDoor2", 1, AssetDirectory.Debug, true) { }
+		public TutorialDoor2Item() : base("TutorialDoor2", "{{Debug}} Item", "TutorialDoor2", 1, AssetDirectory.Debug, true) { }
 	}
 }

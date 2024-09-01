@@ -11,7 +11,7 @@ using Terraria.ModLoader.Utilities;
 
 namespace StarlightRiver.Content.NPCs.Dungeon
 {
-	internal class CrescentCaster : ModNPC, IDrawPrimitive, IHintable
+	internal class CrescentCaster : ModNPC, IDrawPrimitive
 	{
 		private const float ACCELERATION = 0.15f;
 		private const float MAXSPEED = 2;
@@ -300,7 +300,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
 			effect.Parameters["repeats"].SetValue(1f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 
 			foreach (CrescentCasterBolt bolt in Bolts)
 			{
@@ -417,10 +417,6 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 
 			return true;
 		}
-		public string GetHint()
-		{
-			return "It somehow shields nearby foes...";
-		}
 	}
 
 	public class CrescentCasterBolt
@@ -458,7 +454,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 			{
 				GraphicsDevice device = Main.graphics.GraphicsDevice;
 
-				trail = new Trail(device, 15, new TriangularTip(4), factor => 16, factor =>
+				trail = new Trail(device, 15, new NoTip(), factor => 16, factor =>
 				{
 					if (factor.X > 0.99f)
 						return Color.Transparent;
@@ -466,7 +462,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 					return new Color(160, 220, 255) * fade * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X) * DistanceFade;
 				});
 
-				trail2 = new Trail(device, 15, new TriangularTip(4), factor => 3 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
+				trail2 = new Trail(device, 15, new NoTip(), factor => 3 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
 				{
 					float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
 					return Color.Lerp(baseColor, endColor, EaseFunction.EaseCubicIn.Ease(1 - progress)) * fade * progress * DistanceFade;

@@ -93,7 +93,7 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 			Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, new Color(100, 0, 255) * Alpha, Projectile.rotation, glowTex.Size() / 2, 1, 0, 0);
 
 			float dist = Vector2.Distance(Projectile.Center, startPoint);
-			Texture2D bodyTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Underground/SpearBody").Value;
+			Texture2D bodyTex = Assets.Tiles.Underground.SpearBody.Value;
 
 			for (int k = bodyTex.Height; k < dist; k += bodyTex.Height)
 			{
@@ -107,14 +107,14 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			int timer = timeToRise + timeToRetract + teleTime + holdTime - Projectile.timeLeft;
 
 			if (timer > teleTime)
 			{
-				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Moonstone/GlowSmall").Value;
-				Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
+				Texture2D tex = Assets.Tiles.Moonstone.GlowSmall.Value;
+				Texture2D tex2 = Assets.Keys.GlowSoft.Value;
 
 				float opacity;
 
@@ -135,7 +135,7 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 			}
 			else
 			{
-				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value;
+				Texture2D tex = Assets.GlowTrail.Value;
 				float opacity = (float)Math.Sin(timer / (float)teleTime * 3.14f) * 0.5f;
 
 				Vector2 pos = Projectile.Center - Main.screenPosition;
@@ -151,14 +151,14 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			return true;
 		}
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
-			writer.WritePackedVector2(endPoint);
+			writer.WriteVector2(endPoint);
 			writer.Write(timeToRise);
 			writer.Write(timeToRetract);
 			writer.Write(teleTime);
@@ -167,7 +167,7 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
-			endPoint = reader.ReadPackedVector2();
+			endPoint = reader.ReadVector2();
 			timeToRise = reader.ReadInt32();
 			timeToRetract = reader.ReadInt32();
 			teleTime = reader.ReadInt32();

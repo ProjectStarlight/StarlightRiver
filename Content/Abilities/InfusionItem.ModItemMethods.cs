@@ -30,6 +30,12 @@ namespace StarlightRiver.Content.Abilities
 			spriteBatch.Draw(mainTex, position, null, Color.White * opacity, 0, mainTex.Size() / 2, scale, 0, 0);
 		}
 
+		public override void UpdateInventory(Player player)
+		{
+			if (ability != null)
+				ability.User = player.GetHandler();
+		}
+
 		public override void Update(ref float gravity, ref float maxFallSpeed)
 		{
 			Color color;
@@ -68,13 +74,16 @@ namespace StarlightRiver.Content.Abilities
 
 			for (int i = 0; i < mp.InfusionLimit; i++)
 			{
-				if (mp.GetInfusion(i) == null || i == mp.InfusionLimit - 1)
+				if (mp.GetInfusion(i) == null)
 				{
 					mp.SetInfusion(Item.Clone().ModItem as InfusionItem, i);
 					Item.TurnToAir();
+
 					return;
 				}
 			}
+
+			Item.stack = 1;
 		}
 	}
 }

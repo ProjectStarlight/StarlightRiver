@@ -59,8 +59,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			if (stopDrawingBody && index > 0)
 				return;
 
-			Texture2D tex = Request<Texture2D>(AssetDirectory.VitricBoss + "VitricBossBody").Value;
-			Texture2D glowTex = Request<Texture2D>(AssetDirectory.VitricBoss + "VitricBossBodyGlow").Value;
+			Texture2D tex = Assets.Bosses.VitricBoss.VitricBossBody.Value;
+			Texture2D glowTex = Assets.Bosses.VitricBoss.VitricBossBodyGlow.Value;
 
 			float rot = 0;
 
@@ -155,7 +155,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			if (index == 0)
 				return;
 
-			Texture2D tex = Request<Texture2D>(AssetDirectory.VitricBoss + "VitricBossBodyShield").Value;
+			Texture2D tex = Assets.Bosses.VitricBoss.VitricBossBodyShield.Value;
 
 			float rot = (chain.ropeSegments[index].posNow - chain.ropeSegments[index - 1].posNow).ToRotation() - (float)Math.PI / 2;
 			Rectangle source = index switch
@@ -197,18 +197,18 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				source.X += 114;
 
 			Effect effect = Terraria.Graphics.Effects.Filters.Scene["MoltenForm"].GetShader().Shader;
-			effect.Parameters["sampleTexture2"].SetValue(Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/ShieldMap").Value);
+			effect.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.ShieldMap.Value);
 			effect.Parameters["uTime"].SetValue(2 - parent.shieldShaderTimer / 120f * 2);
 			effect.Parameters["sourceFrame"].SetValue(new Vector4(source.X, source.Y, source.Width, source.Height));
 			effect.Parameters["texSize"].SetValue(tex.Size());
 
 			sb.End();
-			sb.Begin(default, BlendState.NonPremultiplied, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			sb.Draw(tex, pos - Main.screenPosition, source, Lighting.GetColor((int)pos.X / 16, (int)pos.Y / 16), rot, source.Size() / 2, 1, flip, 0);
 
 			sb.End();
-			sb.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		public void UpdateBody()

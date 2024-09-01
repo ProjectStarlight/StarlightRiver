@@ -5,6 +5,7 @@ using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Content.Items.Permafrost;
 using StarlightRiver.Content.NPCs.BaseTypes;
 using StarlightRiver.Content.PersistentData;
+using StarlightRiver.Core.Systems.BossRushSystem;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -18,7 +19,7 @@ using static Terraria.ModLoader.ModContent;
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
 	[AutoloadBossHead]
-	public partial class SquidBoss : ModNPC, IUnderwater, IHintable
+	public partial class SquidBoss : ModNPC, IUnderwater
 	{
 		public enum AIStates
 		{
@@ -95,7 +96,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			NPC.Center += Main.screenPosition - screenPos;
 			NPC.ai[1]++;
 
-			Texture2D body = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyUnder").Value;
+			Texture2D body = Assets.Bosses.SquidBoss.BodyUnder.Value;
 			spriteBatch.Draw(body, NPC.Center - Main.screenPosition, NPC.frame, Color.White, NPC.rotation, NPC.frame.Size() / 2, 1, 0, 0);
 
 			DrawHeadBlobs(spriteBatch);
@@ -227,13 +228,13 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer)
 		{
-			Texture2D ring = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyRing").Value;
-			Texture2D ringGlow = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyRingGlow").Value;
-			Texture2D ringSpecular = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyRingSpecular").Value;
-			Texture2D ringBlur = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyRingBlur").Value;
+			Texture2D ring = Assets.Bosses.SquidBoss.BodyRing.Value;
+			Texture2D ringGlow = Assets.Bosses.SquidBoss.BodyRingGlow.Value;
+			Texture2D ringSpecular = Assets.Bosses.SquidBoss.BodyRingSpecular.Value;
+			Texture2D ringBlur = Assets.Bosses.SquidBoss.BodyRingBlur.Value;
 
-			Texture2D body = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyUnder").Value;
-			Texture2D bodyGlow = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyGlow").Value;
+			Texture2D body = Assets.Bosses.SquidBoss.BodyUnder.Value;
+			Texture2D bodyGlow = Assets.Bosses.SquidBoss.BodyGlow.Value;
 
 			for (int k = 3; k > 0; k--) //handles the drawing of the jelly rings under the boss.
 			{
@@ -292,10 +293,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		private void DrawHeadBlobs(SpriteBatch spriteBatch)
 		{
-			Texture2D headBlob = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyOver").Value;
-			Texture2D headBlobGlow = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyOverGlow").Value;
-			Texture2D headBlobSpecular = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyOverSpecular").Value;
-			Texture2D headBlobBlur = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyBlur").Value;
+			Texture2D headBlob = Assets.Bosses.SquidBoss.BodyOver.Value;
+			Texture2D headBlobGlow = Assets.Bosses.SquidBoss.BodyOverGlow.Value;
+			Texture2D headBlobSpecular = Assets.Bosses.SquidBoss.BodyOverSpecular.Value;
+			Texture2D headBlobBlur = Assets.Bosses.SquidBoss.BodyBlur.Value;
 
 			for (int k = 0; k < 5; k++) //draws the head blobs
 			{
@@ -533,7 +534,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 				FindEssentialNPCs();
 
-				BossBarOverlay.SetTracked(NPC, ", The Venerated", Request<Texture2D>(AssetDirectory.GUI + "BossBarFrame").Value);
+				BossBarOverlay.SetTracked(NPC, ", The Venerated", Assets.GUI.BossBarFrame.Value);
 			}
 
 			if (Phase == (int)AIStates.SpawnAnimation)
@@ -818,7 +819,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 				if (GlobalTimer == 240) //roar and activate
 				{
-					NPC.dontTakeDamage = false;
 					CameraSystem.shake += 40;
 					Terraria.Audio.SoundEngine.PlaySound(SoundID.Roar, NPC.Center);
 				}
@@ -828,6 +828,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 				if (GlobalTimer > 240) //following unless using ink attack
 				{
+					NPC.dontTakeDamage = false;
+
 					if (AttackPhase != 3)
 					{
 						Vector2 moveTarget = Main.player[NPC.target].Center;
@@ -881,6 +883,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 				if (AttackTimer > 80)
 					NPC.active = false;
+
+				BossRushSystem.ForceFail();
 			}
 		}
 
@@ -955,6 +959,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public override void SendExtraAI(System.IO.BinaryWriter writer)
 		{
 			writer.Write(variantAttack);
+			writer.Write(NPC.dontTakeDamage);
 			writer.WriteVector2(spawnPoint);
 			writer.WriteVector2(savedPoint);
 			writer.Write(platformOrder);
@@ -963,14 +968,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public override void ReceiveExtraAI(System.IO.BinaryReader reader)
 		{
 			variantAttack = reader.ReadBoolean();
+			NPC.dontTakeDamage = reader.ReadBoolean();
 			spawnPoint = reader.ReadVector2();
 			savedPoint = reader.ReadVector2();
 			platformOrder = reader.ReadByte();
-		}
-
-		public string GetHint()
-		{
-			return "Vulnerable only when its shielding tentacles are destroyed...";
 		}
 	}
 }

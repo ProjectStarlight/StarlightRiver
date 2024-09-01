@@ -218,28 +218,32 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			{
 				NPC.Kill();
 
-				for (int n = 0; n < 100; n++)
+				if (Main.netMode != NetmodeID.Server)
 				{
-					var off = new Vector2(Main.rand.Next(-50, 50), Main.rand.Next(80, 120));
-					Dust.NewDustPerfect(NPC.Center + off, DustType<Dusts.Stamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6) + Vector2.UnitY * -8, 0, Color.White, 2);
-				}
+					//possible todo: replace this with a projectile or something that spawns on death to ensure all clients get this? will randomly skip for clients that run behind and get the inactive status first
+					for (int n = 0; n < 100; n++)
+					{
+						var off = new Vector2(Main.rand.Next(-50, 50), Main.rand.Next(80, 120));
+						Dust.NewDustPerfect(NPC.Center + off, DustType<Dusts.Stamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6) + Vector2.UnitY * -8, 0, Color.White, 2);
+					}
 
-				for (int n = 0; n < 100; n++)
-				{
-					var off = new Vector2(Main.rand.Next(-50, 50), Main.rand.Next(80, 120));
-					Vector2 vel = Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6);
-					var color = Color.Lerp(new Color(255, 100, 0) * 0.5f, Color.White, Main.rand.NextFloat(0.7f));
-					Dust.NewDustPerfect(NPC.Center + off + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(30), DustType<Dusts.Ink>(), vel, 0, color, Main.rand.NextFloat(1, 2.4f));
-				}
+					for (int n = 0; n < 100; n++)
+					{
+						var off = new Vector2(Main.rand.Next(-50, 50), Main.rand.Next(80, 120));
+						Vector2 vel = Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6);
+						var color = Color.Lerp(new Color(255, 100, 0) * 0.5f, Color.White, Main.rand.NextFloat(0.7f));
+						Dust.NewDustPerfect(NPC.Center + off + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(30), DustType<Dusts.Ink>(), vel, 0, color, Main.rand.NextFloat(1, 2.4f));
+					}
 
-				for (int k = 0; k <= 5; k++)
-				{
-					Gore.NewGore(NPC.GetSource_Death(), NPC.Center + Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(60), Vector2.One.RotatedByRandom(6.28f) * 6, StarlightRiver.Instance.Find<ModGore>("SquidGore" + k).Type);
-				}
+					for (int k = 0; k <= 5; k++)
+					{
+						Gore.NewGore(NPC.GetSource_Death(), NPC.Center + Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(60), Vector2.One.RotatedByRandom(6.28f) * 6, StarlightRiver.Instance.Find<ModGore>("SquidGore" + k).Type);
+					}
 
-				for (int k = 0; k < 10; k++)
-				{
-					Gore.NewGore(NPC.GetSource_Death(), NPC.Center + Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(60), Vector2.One.RotatedByRandom(6.28f) * 6, StarlightRiver.Instance.Find<ModGore>("SquidGoreTentacle").Type);
+					for (int k = 0; k < 10; k++)
+					{
+						Gore.NewGore(NPC.GetSource_Death(), NPC.Center + Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(60), Vector2.One.RotatedByRandom(6.28f) * 6, StarlightRiver.Instance.Find<ModGore>("SquidGoreTentacle").Type);
+					}
 				}
 			}
 		}

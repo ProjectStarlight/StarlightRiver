@@ -209,4 +209,53 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			}
 		}
 	}
+
+	class EscapePlatform : MovingPlatform, IUnderwater
+	{
+		public ref float HomeYPosition => ref NPC.ai[0];
+
+		public override string Texture => AssetDirectory.SquidBoss + "GoldPlatform";
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+		{
+			return false;
+		}
+
+		public void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer)
+		{
+			float opacity = dontCollide ? 0.25f : 1f;
+			spriteBatch.Draw(ModContent.Request<Texture2D>(Texture).Value, NPC.position - Main.screenPosition, Lighting.GetColor((int)NPC.Center.X / 16, (int)NPC.Center.Y / 16) * opacity);
+		}
+
+		public override void SafeSetDefaults()
+		{
+			NPC.width = 200;
+			NPC.height = 20;
+		}
+
+		public override void SafeAI()
+		{
+			dontCollide = NPC.AnyNPCs(ModContent.NPCType<SquidBoss>());
+
+			if (HomeYPosition == 0)
+				HomeYPosition = NPC.position.Y;
+
+			if (beingStoodOn)
+			{
+				if (NPC.velocity.Y > -3f)
+					NPC.velocity.Y -= 0.02f;
+
+				if (NPC.position.Y - HomeYPosition < -1640)
+					NPC.velocity.Y = 0;
+			}
+			else if (NPC.position.Y < HomeYPosition)
+			{
+				NPC.velocity.Y = 6;
+			}
+			else
+			{
+				NPC.velocity.Y = 0;
+			}
+		}
+	}
 }

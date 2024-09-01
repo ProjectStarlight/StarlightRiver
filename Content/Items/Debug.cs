@@ -1,7 +1,12 @@
 using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.ForbiddenWinds;
 using StarlightRiver.Content.Events;
+using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Haunted;
+using StarlightRiver.Content.PersistentData;
+using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems;
+using StarlightRiver.Core.Systems.PersistentDataSystem;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items
@@ -38,31 +43,23 @@ namespace StarlightRiver.Content.Items
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
+			player.GetHandler().StaminaMaxBonus = 1000;
+
+			int x = StarlightWorld.vitricBiome.X - 37;
+
+			Dust.NewDustPerfect(new Vector2((x + 80) * 16, (StarlightWorld.vitricBiome.Center.Y + 20) * 16), DustID.Firefly);
 
 		}
 
 		public override bool? UseItem(Player player)
 		{
-			for (int x = 0; x < Main.maxTilesX; x++)
-			{
-				for (int y = 0; y < Main.maxTilesY; y++)
-				{
-					Framing.GetTileSafely(x, y).ClearEverything();
-				}
-			}
+			//StarlightEventSequenceSystem.sequence = 0;
+			player.GetHandler().unlockedAbilities.Add(typeof(Dash), new Dash());
+			player.GetHandler().InfusionLimit = 1;
 
-			StarlightWorld.SpringGen(default, default);
-			return true;
-
-			StarlightEventSequenceSystem.sequence = 0;
-			player.GetHandler().unlockedAbilities.Clear();
-			player.GetHandler().InfusionLimit = 0;
-
-			Main.time = 53999;
-			Main.dayTime = true;
-			StarlightEventSequenceSystem.willOccur = true;
-
-			Dust.NewDustPerfect(Main.MouseWorld, ModContent.DustType<EchochainBurstDust>(), Vector2.Zero, 0, default, 1f);
+			//Main.time = 53999;
+			//Main.dayTime = true;
+			//StarlightEventSequenceSystem.willOccur = true;
 
 			return true;
 		}
@@ -75,7 +72,7 @@ namespace StarlightRiver.Content.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Debug Mode");
-			Tooltip.SetDefault("Enables debug mode");
+			Tooltip.SetDefault("Enables {{Debug}} mode");
 		}
 
 		public override void SetDefaults()

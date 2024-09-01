@@ -191,8 +191,8 @@ namespace StarlightRiver.Content.Items.Dungeon
 			if (drawPlayer != null && !drawPlayer.HeldItem.IsAir && drawPlayer.HeldItem.type == ItemType<TwistSword>() && PlayerTarget.canUseTarget)
 			{
 				int charge = (drawPlayer.HeldItem.ModItem as TwistSword).charge;
-				Texture2D tex = Request<Texture2D>(AssetDirectory.GUI + "SmallBar1").Value;
-				Texture2D tex2 = Request<Texture2D>(AssetDirectory.GUI + "SmallBar0").Value;
+				Texture2D tex = Assets.GUI.SmallBar1.Value;
+				Texture2D tex2 = Assets.GUI.SmallBar0.Value;
 				var pos = (drawPlayer.Center + new Vector2(-tex.Width / 2, -40) + Vector2.UnitY * drawPlayer.gfxOffY - Main.screenPosition).ToPoint();
 				var target = new Rectangle(pos.X, pos.Y, (int)(charge / 600f * tex.Width), tex.Height);
 				var source = new Rectangle(0, 0, (int)(charge / 600f * tex.Width), tex.Height);
@@ -340,7 +340,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			float rot = Rotation % 80 / 80f * 6.28f;
 			float x = (float)Math.Cos(-rot) * 120;
 
-			Texture2D tex = Request<Texture2D>(Texture).Value;
+			Texture2D tex = Assets.Items.Dungeon.TwistSwordProjectile.Value;
 			Player owner = Main.player[Projectile.owner];
 
 			var target = new Rectangle((int)(owner.Center.X - Main.screenPosition.X), (int)(owner.Center.Y - Main.screenPosition.Y), (int)Math.Abs(x / 120f * tex.Size().Length()), 40);
@@ -382,13 +382,16 @@ namespace StarlightRiver.Content.Items.Dungeon
 			float y = (float)Math.Sin(-rot) * 40;
 			var off = new Vector2(x, y);
 
-			trail ??= new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(40 * 4), factor => factor * 25, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X >= 0.98f)
-					return Color.White * 0;
+				trail = new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => factor * 25, factor =>
+							{
+								if (factor.X == 1)
+									return Color.Transparent;
 
-				return new Color(50, 30 + (int)(100 * factor.X), 255) * factor.X;
-			});
+								return new Color(50, 30 + (int)(100 * factor.X), 255) * factor.X;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity + off;
@@ -405,7 +408,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount);
 			effect.Parameters["repeats"].SetValue(2f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/ShadowTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.ShadowTrail.Value);
 
 			trail?.Render(effect);
 		}

@@ -224,15 +224,18 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		private void ManageTrail(ref Trail localTrail, ref List<Vector2> localCache, float rotationStart)
 		{
-			localTrail ??= new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new TriangularTip(1), factor => MathHelper.Lerp(10, 40, factor), factor =>
+			if (localTrail is null || localTrail.IsDisposed)
 			{
-				float rotProg = 0.6f + (float)Math.Sin(timer / 50f + rotationStart - 0.5f) * 0.4f;
+				localTrail = new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new NoTip(), factor => MathHelper.Lerp(10, 40, factor), factor =>
+							{
+								float rotProg = 0.6f + (float)Math.Sin(timer / 50f + rotationStart - 0.5f) * 0.4f;
 
-				if (factor.X > 0.95f)
-					return Color.Transparent;
+								if (factor.X > 0.95f)
+									return Color.Transparent;
 
-				return new Color(255, 80 - (byte)(factor.X * 70), 80 + (byte)(rotProg * 20)) * rotProg;
-			});
+								return new Color(255, 80 - (byte)(factor.X * 70), 80 + (byte)(rotProg * 20)) * rotProg;
+							});
+			}
 
 			localTrail.Positions = localCache.ToArray();
 			localTrail.NextPosition = Projectile.Center + direction * RANGE;
@@ -249,8 +252,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			effect.Parameters["time"].SetValue(0.05f * Main.GameUpdateCount);
 			effect.Parameters["repeats"].SetValue(3f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
-			effect.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/LaserBallDistort").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
+			effect.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.LaserBallDistort.Value);
 
 			effect.Parameters["row"].SetValue(0);
 			trail?.Render(effect);
@@ -325,7 +328,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Gravedigger/GluttonyBG").Value;
+			Texture2D tex = Assets.Items.Gravedigger.GluttonyBG.Value;
 			float prog = Helper.SwoopEase(Math.Min(1, timer / 80f));
 
 			Effect effect1 = Filters.Scene["Cyclone"].GetShader().Shader;
@@ -339,18 +342,18 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			effect1.Parameters["Resolution"].SetValue(tex.Size());
 			effect1.Parameters["mainColor"].SetValue(new Vector3(0.8f, 0.03f, 0.18f));
 
-			effect1.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/LaserBallDistort").Value);
+			effect1.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.LaserBallDistort.Value);
 
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.Black * prog * 0.8f, Projectile.rotation + 1.57f + 0.1f, new Vector2(tex.Width / 2, tex.Height), prog * 0.55f, 0, 0);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect1, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect1, Main.GameViewMatrix.TransformationMatrix);
 
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(220, 50, 90) * prog, Projectile.rotation + 1.57f + 0.1f, new Vector2(tex.Width / 2, tex.Height), prog * 0.55f, 0, 0);
 			//spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			return false;
 		}
@@ -358,7 +361,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
 			float prog = Helper.SwoopEase(Math.Min(1, timer / 50f));
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.VitricBoss + "ConeTell").Value;
+			Texture2D tex = Assets.Bosses.VitricBoss.ConeTell.Value;
 			//spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 60, 80) * prog * 0.4f, Projectile.rotation + 1.57f + 0.1f, new Vector2(tex.Width / 2, tex.Height), prog * 0.55f, 0, 0);
 		}
 	}
@@ -443,7 +446,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new TriangularTip(1), factor => 20, factor => Color.Red);
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new NoTip(), factor => 20, factor => Color.Red);
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;

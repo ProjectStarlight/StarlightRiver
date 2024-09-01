@@ -11,7 +11,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Forest
 {
-	class Warbanner : ModNPC, IDrawAdditive, IHintable
+	class Warbanner : ModNPC, IDrawAdditive
 	{
 		public enum BehaviorStates
 		{
@@ -67,32 +67,35 @@ namespace StarlightRiver.Content.NPCs.Forest
 			NPC.chaseable = true;
 			NPC.value = 100;
 
-			chain = new RectangularBanner(15, false, NPC.Center + Vector2.UnitY * -40, 8)
+			if (Main.netMode != NetmodeID.Server)
 			{
-				constraintRepetitions = 2,
-				drag = 1.2f,
-				forceGravity = new Vector2(0f, 0.55f),
-				scale = 16f,
-				parent = NPC
-			};
+				chain = new RectangularBanner(15, false, NPC.Center + Vector2.UnitY * -40, 8)
+				{
+					constraintRepetitions = 2,
+					drag = 1.2f,
+					forceGravity = new Vector2(0f, 0.55f),
+					scale = 16f,
+					parent = NPC
+				};
 
-			miniChain0 = new RectangularBanner(10, false, NPC.Center + new Vector2(22, -48), 8)
-			{
-				constraintRepetitions = 2,
-				drag = 1.35f,
-				forceGravity = new Vector2(0f, 0.55f),
-				scale = 4f,
-				parent = NPC
-			};
+				miniChain0 = new RectangularBanner(10, false, NPC.Center + new Vector2(22, -48), 8)
+				{
+					constraintRepetitions = 2,
+					drag = 1.35f,
+					forceGravity = new Vector2(0f, 0.55f),
+					scale = 4f,
+					parent = NPC
+				};
 
-			miniChain1 = new RectangularBanner(10, false, NPC.Center + new Vector2(-22, -48), 8)
-			{
-				constraintRepetitions = 2,
-				drag = 1.35f,
-				forceGravity = new Vector2(0f, 0.55f),
-				scale = 4f,
-				parent = NPC
-			};
+				miniChain1 = new RectangularBanner(10, false, NPC.Center + new Vector2(-22, -48), 8)
+				{
+					constraintRepetitions = 2,
+					drag = 1.35f,
+					forceGravity = new Vector2(0f, 0.55f),
+					scale = 4f,
+					parent = NPC
+				};
+			}
 		}
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
@@ -294,8 +297,8 @@ namespace StarlightRiver.Content.NPCs.Forest
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			Texture2D auraTex = Request<Texture2D>("StarlightRiver/Assets/Misc/GlowRingTransparent").Value;
-			Texture2D ballTex = Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
+			Texture2D auraTex = Assets.Misc.GlowRingTransparent.Value;
+			Texture2D ballTex = Assets.Keys.GlowSoft.Value;
 			float maxScale = auraTex.Width / MAX_BUFF_RADIUS;
 
 			spriteBatch.Draw(auraTex, NPC.Center - Main.screenPosition, null, Color.Red * VFXAlpha * 0.4f, 0, auraTex.Size() / 2, VFXAlpha * maxScale, 0, 0);
@@ -338,11 +341,6 @@ namespace StarlightRiver.Content.NPCs.Forest
 					Gore.NewGore(NPC.GetSource_Death(), NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), Vector2.Zero, goreType);
 				}
 			}
-		}
-
-		public string GetHint()
-		{
-			return "It somehow bolsters nearby foes...";
 		}
 	}
 

@@ -4,7 +4,7 @@ namespace StarlightRiver.Content.Items.Food
 {
 	internal class MahoganyRoot : Ingredient
 	{
-		public MahoganyRoot() : base("+12 defense", 560, IngredientType.Main) { }
+		public MahoganyRoot() : base("+12 defense", 3600 * 5, IngredientType.Main) { }
 
 		public override void SafeSetDefaults()
 		{

@@ -34,6 +34,9 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			Item.channel = true;
 			Item.UseSound = SoundID.Item1;
 			Item.DamageType = DamageClass.Melee;
+			Item.useTurn = true;
+			Item.knockBack = 3f;
+			Item.value = Item.sellPrice(0, 0, 30, 0);
 		}
 
 		public override bool AltFunctionUse(Player Player)
@@ -95,7 +98,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 				if (!Main.mouseRight && !Spinning(Player) && charge == 120)
 				{
 					direction = Main.MouseWorld.X > Player.Center.X ? 1 : -1;
-					Projectile.NewProjectile(Item.GetSource_FromThis(), Player.Center, Vector2.Zero, ProjectileType<TemplePickProjectile>(), 0, 0, Player.whoAmI, 80, direction);
+					Projectile.NewProjectile(Item.GetSource_FromThis(), Player.Center, Vector2.Zero, ProjectileType<TemplePickProjectile>(), Item.damage * 2, Item.knockBack * 2, Player.whoAmI, 80, direction);
 
 					charge = 0;
 				}
@@ -118,6 +121,8 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 		public override void SetDefaults()
 		{
+			Projectile.width = 170;
+			Projectile.height = 60;
 			Projectile.friendly = true;
 			Projectile.penetrate = -1;
 			Projectile.timeLeft = 999;
@@ -136,6 +141,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			Projectile.Center = Player.Center;
 
 			Player.velocity.X = Direction * 8;
+			Projectile.velocity.X = Direction; // Just for knockback direction
 			Player.UpdateRotation(Timer / 20f * 6.28f);
 
 			if (Timer % 4 == 0)
@@ -192,8 +198,12 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 		public override void AI()
 		{
 			Projectile.Center = Main.player[Projectile.owner].Center;
-			ManageCache(ref cache);
-			ManageTrail(ref trail, cache);
+
+			if (!Main.dedServ)
+			{
+				ManageCache(ref cache);
+				ManageTrail(ref trail, cache);
+			}
 		}
 
 		private void ManageCache(ref List<Vector2> cache)
@@ -231,13 +241,16 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 		private void ManageTrail(ref Trail trail, List<Vector2> cache)
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 120, new TriangularTip(40 * 4), factor => 5, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X >= 0.95f)
-					return Color.White * 0;
+				trail = new Trail(Main.instance.GraphicsDevice, 120, new NoTip(), factor => 5, factor =>
+							{
+								if (factor.X == 1)
+									return Color.Transparent;
 
-				return new Color(155, 155, 155) * (float)Math.Sin(factor.X * 3.14f) * 0.15f * radius;
-			});
+								return new Color(155, 155, 155) * (float)Math.Sin(factor.X * 3.14f) * 0.15f * radius;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center;
@@ -257,7 +270,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * -0.01f);
 			effect.Parameters["repeats"].SetValue(1f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/GlowTrailNoEnd").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrailNoEnd.Value);
 
 			trail?.Render(effect);
 		}

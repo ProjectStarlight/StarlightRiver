@@ -25,11 +25,12 @@ namespace StarlightRiver.Content.Items.Manabonds
 			{
 				mp.mana -= 12;
 
-				Shock.parentToAssign = minion;
-				Shock.initialTargetToAssign = mp.target;
-				Projectile.NewProjectileDirect(minion.GetSource_FromThis(), minion.Center, Vector2.Zero, ModContent.ProjectileType<Shock>(), 12, 0.25f, minion.owner);
-
-				Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_LightningBugZap, minion.Center);
+				if (Main.myPlayer == minion.owner)
+				{
+					Shock.parentToAssign = minion;
+					Shock.initialTargetToAssign = mp.target;
+					Projectile.NewProjectileDirect(minion.GetSource_FromThis(), minion.Center, Vector2.Zero, ModContent.ProjectileType<Shock>(), 12, 0.25f, minion.owner);
+				}
 			}
 		}
 
@@ -52,6 +53,8 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 		public readonly List<Vector2> nodes = new();
 		public readonly List<NPC> targets = new();
+
+		private bool spawnSoundPerformed = false;
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -83,6 +86,12 @@ namespace StarlightRiver.Content.Items.Manabonds
 			if (parent is null)
 				return;
 
+			if (!spawnSoundPerformed)
+			{
+				spawnSoundPerformed = true;
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_LightningBugZap, Projectile.Center);
+			}
+
 			if (Projectile.timeLeft == 14)
 			{
 				for (int k = 0; k < 2; k++)
@@ -93,32 +102,40 @@ namespace StarlightRiver.Content.Items.Manabonds
 						targets.Add(target);
 				}
 
-				foreach (NPC npc in targets)
+				if (Main.myPlayer == Projectile.owner)
 				{
-					npc.SimpleStrikeNPC(Projectile.damage, 0, false, 0, Projectile.DamageType, true);
-					npc.AddBuff(ModContent.BuffType<Buffs.Overcharge>(), 60);
+					foreach (NPC npc in targets)
+					{
+						npc.SimpleStrikeNPC(Projectile.damage, 0, false, 0, Projectile.DamageType, true);
+						npc.AddBuff(ModContent.BuffType<Buffs.Overcharge>(), 60);
+					}
 				}
 			}
 
-			if (Main.GameUpdateCount % 2 == 0) //rebuild electricity nodes
+			if (Main.netMode != NetmodeID.Server && Main.GameUpdateCount % 2 == 0) //rebuild electricity nodes
 			{
-				nodes.Clear();
+				RebuildElectricNodes();
+			}
+		}
 
-				for (int i = 0; i < targets.Count; i++)
+		private void RebuildElectricNodes()
+		{
+			nodes.Clear();
+
+			for (int i = 0; i < targets.Count; i++)
+			{
+				Vector2 point1 = i == 0 ? parent.Center : targets[i - 1].Center;
+				Vector2 point2 = targets[i].Center;
+
+				int nodeCount = (int)Vector2.Distance(point1, point2) / 45;
+
+				for (int k = 1; k < nodeCount; k++)
 				{
-					Vector2 point1 = i == 0 ? parent.Center : targets[i - 1].Center;
-					Vector2 point2 = targets[i].Center;
-
-					int nodeCount = (int)Vector2.Distance(point1, point2) / 45;
-
-					for (int k = 1; k < nodeCount; k++)
-					{
-						nodes.Add(Vector2.Lerp(point1, point2, k / (float)nodeCount) +
-							(k == nodes.Count - 1 ? Vector2.Zero : Vector2.Normalize(point1 - point2).RotatedBy(1.57f) * (Main.rand.NextFloat(2) - 1) * 14));
-					}
-
-					nodes.Add(point2);
+					nodes.Add(Vector2.Lerp(point1, point2, k / (float)nodeCount) +
+						(k == nodes.Count - 1 ? Vector2.Zero : Vector2.Normalize(point1 - point2).RotatedBy(1.57f) * (Main.rand.NextFloat(2) - 1) * 14));
 				}
+
+				nodes.Add(point2);
 			}
 		}
 
@@ -164,7 +181,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 			if (point1 == Vector2.Zero || point2 == Vector2.Zero)
 				return;
 
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value;
+			Texture2D tex = Assets.GlowTrail.Value;
 
 			Color color = new Color(200, 230, 255) * (Projectile.timeLeft <= 5 ? Projectile.timeLeft / 5f : 1);
 
@@ -186,8 +203,8 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 			foreach (NPC target in targets)
 			{
-				Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Dusts/Aurora").Value;
-				Texture2D tex3 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
+				Texture2D tex2 = Assets.Dusts.Aurora.Value;
+				Texture2D tex3 = Assets.Keys.GlowSoft.Value;
 
 				sb.Draw(tex2, target.Center - Main.screenPosition, null, color, 0, tex2.Size() / 2f, 0.3f, 0, 0);
 				sb.Draw(tex3, target.Center - Main.screenPosition, null, color, 0, tex3.Size() / 2f, 0.5f, 0, 0);

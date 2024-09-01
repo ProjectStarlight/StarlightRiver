@@ -383,10 +383,10 @@ namespace StarlightRiver.Content.Items.Haunted
 
 			DrawPrimitives(spriteBatch);
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.HauntedItem + "EchochainWhipChain").Value;
-			Texture2D texGlow = ModContent.Request<Texture2D>(AssetDirectory.HauntedItem + "EchochainWhipChain_Glow").Value;
-			Texture2D texBlur = ModContent.Request<Texture2D>(AssetDirectory.HauntedItem + "EchochainWhipChain_Blur").Value;
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D tex = Assets.Items.Haunted.EchochainWhipChain.Value;
+			Texture2D texGlow = Assets.Items.Haunted.EchochainWhipChain_Glow.Value;
+			Texture2D texBlur = Assets.Items.Haunted.EchochainWhipChain_Blur.Value;
+			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
 			Vector2 chainStart = start.npc.Center;
 			Vector2 chainEnd = end.npc.Center;
 
@@ -426,13 +426,16 @@ namespace StarlightRiver.Content.Items.Haunted
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(0), factor => 12.5f, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X >= 0.85f)
-					return Color.Transparent;
+				trail = new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => 12.5f, factor =>
+							{
+								if (factor.X >= 0.85f)
+									return Color.Transparent;
 
-				return new Color(100, 200, 10) * 0.3f * factor.X;
-			});
+								return new Color(100, 200, 10) * 0.3f * factor.X;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = cache[9];
@@ -450,13 +453,13 @@ namespace StarlightRiver.Content.Items.Haunted
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * -0.025f);
 			effect.Parameters["repeats"].SetValue(1f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
 
 			trail?.Render(effect);
 
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
 			effect.Parameters["repeats"].SetValue(2f);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
 			trail?.Render(effect);
 

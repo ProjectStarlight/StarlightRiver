@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -48,6 +49,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			NPC.dontCountMe = true;
 			NPC.hide = true;
 			NPC.damage = 0;
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
 		}
 
 		public override void DrawBehind(int index)
@@ -171,11 +177,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 								target.rocketTime = target.rocketTimeMax;
 								target.wingTime = target.wingTimeMax;
-								target.canJumpAgain_Cloud = true;
-								target.canJumpAgain_Blizzard = true;
-								target.canJumpAgain_Sandstorm = true;
-								target.canJumpAgain_Fart = true;
-								target.canJumpAgain_Sail = true;
+								target.RefreshExtraJumps();
 							}
 
 							var topColission = new Rectangle((int)NPC.position.X, (int)NPC.position.Y - 840, NPC.width, NPC.height);
@@ -230,7 +232,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 				float maxOffset = Main.masterMode ? 64 : 32;
 				float off = Math.Min((NPC.ai[0] - 120) / 30f * maxOffset, maxOffset);
-				Texture2D tex = Request<Texture2D>(AssetDirectory.VitricBoss + "CrystalWaveHot").Value;
+				Texture2D tex = Assets.Bosses.VitricBoss.CrystalWaveHot.Value;
 
 				for (int k = 0; k < NPC.width; k += 18)
 				{
@@ -239,7 +241,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 					if (eggIndex == k)//ugly but I this way its only checked once
 					{
-						Texture2D eggTex = Request<Texture2D>(AssetDirectory.VitricBoss + "MagMegg").Value;
+						Texture2D eggTex = Assets.Bosses.VitricBoss.MagMegg.Value;
 						spriteBatch.Draw(eggTex, pos, null, Color.White, 0.1f * ((float)rand.NextDouble() - 0.5f), default, 1, default, default);
 						spriteBatch.Draw(eggTex, pos2, null, Color.White, 0.1f * ((float)rand.NextDouble() - 0.5f), default, 1, default, default);
 					}
@@ -259,7 +261,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 						if (eggIndex == k)//ugly but I this way its only checked once
 						{
-							Texture2D eggTex = Request<Texture2D>(AssetDirectory.VitricBoss + "MagMegg").Value;
+							Texture2D eggTex = Assets.Bosses.VitricBoss.MagMegg.Value;
 							spriteBatch.Draw(eggTex, pos, null, Color.White, 1.57f + 0.1f * ((float)rand.NextDouble() - 0.5f), default, 1, default, default);
 							spriteBatch.Draw(eggTex, pos2, null, Color.White, 1.57f + 0.1f * ((float)rand.NextDouble() - 0.5f), default, 1, default, default);
 						}
@@ -275,7 +277,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			Texture2D tex = Request<Texture2D>(AssetDirectory.VitricBoss + "LongGlow").Value;
+			Texture2D tex = Assets.Bosses.VitricBoss.LongGlow.Value;
 
 			if (NPC.ai[1] == 2)
 			{

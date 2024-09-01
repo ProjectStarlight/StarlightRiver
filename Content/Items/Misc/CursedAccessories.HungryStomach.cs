@@ -9,11 +9,10 @@ namespace StarlightRiver.Content.Items.Misc
 	internal class HungryStomach : CursedAccessory
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
-		public HungryStomach() : base(Request<Texture2D>(AssetDirectory.MiscItem + "HungryStomachGlow").Value) { }
 
 		public override void SetStaticDefaults()
 		{
-			Tooltip.SetDefault("Restore Starlight by damaging foes\nMelee weapons restore twice as much\nCursed: Disables natural Starlight regeneration");
+			Tooltip.SetDefault("Restore {{Starlight}} by damaging foes\nMelee weapons restore twice as much\nDisables natural {{Starlight}} regeneration");
 			DisplayName.SetDefault("Hungry Stomach");
 		}
 
@@ -46,7 +45,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SafeUpdateAccessory(Player Player, bool hideVisual)
 		{
-			GUI.StaminaBar.overrideTexture = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaBlood").Value;
+			GUI.StaminaBar.overrideTexture = Assets.GUI.StaminaBlood.Value;
 		}
 
 		private void DisableRegen(StarlightPlayer Player)

@@ -31,6 +31,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 		{
 			base.Update();
 
+			if (GearEntity is null)
+				return;
+
 			GearSize = 3;
 			Engaged = true;
 			RotationVelocity = 2;
@@ -46,10 +49,10 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
 				return;
 
-			Texture2D bgTex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "OriginGearBase").Value;
+			Texture2D bgTex = Assets.Tiles.Vitric.OriginGearBase.Value;
 			Main.EntitySpriteDraw(bgTex, Center - Main.screenPosition, null, lightColor, 0, new Vector2(bgTex.Width / 2, 4), 1, 0, 0);
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "OriginGear").Value;
+			Texture2D tex = Assets.Tiles.Vitric.OriginGear.Value;
 
 			Main.EntitySpriteDraw(tex, Center - Main.screenPosition, null, lightColor, Rotation, tex.Size() / 2, 1, 0, 0);
 
@@ -64,6 +67,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 	[SLRDebug]
 	class GearPuzzleOriginPlacer : QuickTileItem
 	{
-		public GearPuzzleOriginPlacer() : base("Gear puzzle origin", "Debug Item", "GearPuzzleOrigin", 8, AssetDirectory.VitricTile + "OriginGearBase", true) { }
+		public GearPuzzleOriginPlacer() : base("Gear puzzle origin", "{{Debug}} Item", "GearPuzzleOrigin", 8, AssetDirectory.VitricTile + "OriginGearBase", true) { }
 	}
 }

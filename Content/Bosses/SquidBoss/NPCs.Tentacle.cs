@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using Terraria.DataStructures;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -9,6 +10,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 {
 	public class Tentacle : ModNPC, IUnderwater
 	{
+		private const int MAX_SPLASH_COOLDOWN = 40;
 		public static Vector2 movementTargetToAssign;
 		public static int offsetFromParentBodyToAssign;
 		public static int parentIdToAssign;
@@ -23,6 +25,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public int downwardDrawDistance = 28;
 
 		private NPC hurtboxActor;
+
+		private int splashCooldown = 0;
 
 		public SquidBoss Parent { get; set; }
 
@@ -67,6 +71,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			NPC.knockBackResist = 0f;
 			NPC.HitSound = SoundID.NPCHit1;
 			NPC.dontTakeDamage = true;
+			NPC.netAlways = true;
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
 		}
 
 		public override void OnSpawn(IEntitySource source)
@@ -140,10 +150,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		private void DrawLowerLayer(SpriteBatch spriteBatch, Color auroraColor, Color glowColor)
 		{
-			Texture2D top = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleTop").Value;
-			Texture2D glow = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleGlow").Value;
-			Texture2D glow2 = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleGlow2").Value;
-			Texture2D body = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleBody").Value;
+			Texture2D top = Assets.Bosses.SquidBoss.TentacleTop.Value;
+			Texture2D glow = Assets.Bosses.SquidBoss.TentacleGlow.Value;
+			Texture2D glow2 = Assets.Bosses.SquidBoss.TentacleGlow2.Value;
+			Texture2D body = Assets.Bosses.SquidBoss.TentacleBody.Value;
 
 			int extraLength = (int)(Math.Abs(offsetFromParentBody) * 0.15f);
 			int maxSegments = downwardDrawDistance + extraLength;
@@ -169,8 +179,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				{
 					if (shouldDrawPortal && maxSegments >= 40 + extraLength)
 					{
-						Texture2D portal = Request<Texture2D>(AssetDirectory.SquidBoss + "Portal").Value;
-						Texture2D portalGlow = Request<Texture2D>(AssetDirectory.SquidBoss + "PortalGlow").Value;
+						Texture2D portal = Assets.Bosses.SquidBoss.Portal.Value;
+						Texture2D portalGlow = Assets.Bosses.SquidBoss.PortalGlow.Value;
 						var target = new Rectangle((int)posStill.X, (int)posStill.Y, (int)(0.8f * Math.Min(portal.Width, (int)((downwardDrawDistance - 28) / 24f * portal.Width))), (int)(portal.Height * 0.6f));
 						var target2 = new Rectangle((int)posStill.X, (int)posStill.Y + 6, (int)(Math.Min(portalGlow.Width, (int)((downwardDrawDistance - 28) / 24f * portalGlow.Width)) * 0.8f), (int)(portalGlow.Height * 0.6f));
 						spriteBatch.Draw(portal, target, null, auroraColor * 0.6f, 0, portal.Size() / 2, 0, 0);
@@ -198,17 +208,17 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		private void DrawUpperLayer(SpriteBatch spriteBatch, Color auroraColor, Color glowColor)
 		{
-			Texture2D top = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleTop").Value;
-			Texture2D glow = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleGlow").Value;
-			Texture2D glow2 = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleGlow2").Value;
-			Texture2D glowBlur = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleGlowBlur").Value;
-			Texture2D body = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleBody").Value;
-			Texture2D ring = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleRing").Value;
+			Texture2D top = Assets.Bosses.SquidBoss.TentacleTop.Value;
+			Texture2D glow = Assets.Bosses.SquidBoss.TentacleGlow.Value;
+			Texture2D glow2 = Assets.Bosses.SquidBoss.TentacleGlow2.Value;
+			Texture2D glowBlur = Assets.Bosses.SquidBoss.TentacleGlowBlur.Value;
+			Texture2D body = Assets.Bosses.SquidBoss.TentacleBody.Value;
+			Texture2D ring = Assets.Bosses.SquidBoss.TentacleRing.Value;
 
 			if (shouldDrawPortal)
 			{
-				Texture2D portal = Request<Texture2D>(AssetDirectory.SquidBoss + "Portal").Value;
-				Texture2D portalGlow = Request<Texture2D>(AssetDirectory.SquidBoss + "PortalGlow").Value;
+				Texture2D portal = Assets.Bosses.SquidBoss.Portal.Value;
+				Texture2D portalGlow = Assets.Bosses.SquidBoss.PortalGlow.Value;
 				var target = new Rectangle((int)(basePoint.X - Main.screenPosition.X), (int)(basePoint.Y - Main.screenPosition.Y), Math.Min(portal.Width, (int)((downwardDrawDistance - 28) / 24f * portal.Width)), portal.Height);
 				var target2 = new Rectangle((int)(basePoint.X - Main.screenPosition.X), (int)(basePoint.Y - Main.screenPosition.Y) - 12, Math.Min(portalGlow.Width, (int)((downwardDrawDistance - 28) / 24f * portalGlow.Width)), portalGlow.Height);
 
@@ -341,27 +351,32 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				return;
 			}
 
-			if (hurtboxActor is null || !hurtboxActor.active)
+			if (Main.netMode != NetmodeID.MultiplayerClient && (hurtboxActor is null || !hurtboxActor.active))
 			{
-				int i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<TentacleHurtbox>());
-				hurtboxActor = Main.npc[i];
-
 				TentacleHurtbox.tentacleToAssign = this;
+				int i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<TentacleHurtbox>());
+				hurtboxActor = Main.npc[i]; //doesn't actually need to be synced since this just controls the hurtbox spawning failsafe
 			}
 
-			if ((State == 0 || State == 1) && Timer == 0)
+			if ((State == 0 || State == 1) && Timer == 0 && Main.netMode != NetmodeID.MultiplayerClient)
 			{
 				basePoint = NPC.Center;
 				NPC.netUpdate = true;
 			}
 
-			if (NPC.oldPos[0].Y > Arena.WaterLevelWorld && NPC.position.Y <= Arena.WaterLevelWorld || NPC.oldPos[0].Y + NPC.height <= Arena.WaterLevelWorld && NPC.position.Y + NPC.height > Arena.WaterLevelWorld)
+			splashCooldown--;
+
+			if ((NPC.oldPos[0].Y > Arena.WaterLevelWorld && NPC.position.Y <= Arena.WaterLevelWorld || NPC.oldPos[0].Y + NPC.height <= Arena.WaterLevelWorld && NPC.position.Y + NPC.height > Arena.WaterLevelWorld) && splashCooldown <= 0)
 			{
+				splashCooldown = MAX_SPLASH_COOLDOWN;
+
 				float tentacleSin = (float)Math.Sin(Timer / 20f) * stalkWaviness;
 
 				Helpers.Helper.PlayPitched("SquidBoss/LightSplash", 0.5f, 0, NPC.Center);
 				Helpers.Helper.PlayPitched("Magic/WaterWoosh", 0.8f, 0, NPC.Center);
-				Projectile.NewProjectile(NPC.GetSource_FromThis(), new Vector2(NPC.Center.X + tentacleSin * 30, Arena.WaterLevelWorld - 41), Vector2.Zero, ProjectileType<AuroraWaterSplash>(), 0, 0, Main.myPlayer);
+
+				if (Main.netMode != NetmodeID.MultiplayerClient)
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), new Vector2(NPC.Center.X + tentacleSin * 30, Arena.WaterLevelWorld - 41), Vector2.Zero, ProjectileType<AuroraWaterSplash>(), 0, 0, Main.myPlayer);
 
 				for (int k = 0; k < 10; k++)
 				{

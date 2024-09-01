@@ -32,13 +32,26 @@ namespace StarlightRiver.Content.Packets
 
 		protected override void Receive()
 		{
-			ModTileEntity artifactEntity = TileEntity.ByID[artifactId] as ModTileEntity;
+			if (TileEntity.ByID.ContainsKey(artifactId))
+			{
+				Artifact artifactEntity = TileEntity.ByID[artifactId] as Artifact;
 
-			artifactEntity.Kill(x, y);
+				if (artifactEntity != null)
+				{
+					artifactEntity.Kill(x, y);
+					ArtifactManager.artifacts.Remove(artifactEntity);
+				}
+			}
+
 			ModContent.GetInstance<ArchaeologyMapLayer>().CalculateDrawables();
 
-			ArtifactItemProj proj = Main.projectile.FirstOrDefault(n => n.identity == projectileIdentity).ModProjectile as ArtifactItemProj;
-			proj.itemTexture = texturePath;
+			Projectile proj = Main.projectile.FirstOrDefault(n => n.identity == projectileIdentity);
+
+			if (proj is not null && proj.ModProjectile is not null)
+			{
+				ArtifactItemProj artifactProj = proj.ModProjectile as ArtifactItemProj;
+				artifactProj.itemTexture = texturePath;
+			}
 		}
 	}
 }

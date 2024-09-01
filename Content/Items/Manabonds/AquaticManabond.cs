@@ -22,7 +22,9 @@ namespace StarlightRiver.Content.Items.Manabonds
 			if (mp.timer % 50 == 0 && mp.mana >= 8 && mp.target != null)
 			{
 				mp.mana -= 8;
-				Projectile.NewProjectile(minion.GetSource_FromThis(), minion.Center, minion.Center.DirectionTo(mp.target.Center) * 6, ModContent.ProjectileType<AquaticBolt>(), 24, 1f, minion.owner);
+
+				if (Main.myPlayer == minion.owner)
+					Projectile.NewProjectile(minion.GetSource_FromThis(), minion.Center, minion.Center.DirectionTo(mp.target.Center) * 6, ModContent.ProjectileType<AquaticBolt>(), 24, 1f, minion.owner);
 			}
 		}
 
@@ -73,14 +75,17 @@ namespace StarlightRiver.Content.Items.Manabonds
 					Projectile.timeLeft = 15;
 			}
 
-			for (int k = 0; k < 3; k++)
+			if (Main.netMode != NetmodeID.Server)
 			{
-				var d = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(5, 5), DustID.DungeonWater, Vector2.Zero, 0, default, Main.rand.NextFloat(1f, 1.5f));
-				d.noGravity = true;
-			}
+				for (int k = 0; k < 3; k++)
+				{
+					var d = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(5, 5), DustID.DungeonWater, Vector2.Zero, 0, default, Main.rand.NextFloat(1f, 1.5f));
+					d.noGravity = true;
+				}
 
-			ManageCaches();
-			ManageTrail();
+				ManageCaches();
+				ManageTrail();
+			}
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
@@ -115,8 +120,8 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Dusts/Aurora").Value;
-			Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
+			Texture2D tex = Assets.Dusts.Aurora.Value;
+			Texture2D tex2 = Assets.Keys.GlowSoft.Value;
 			spriteBatch.Draw(tex2, Projectile.Center - Main.screenPosition, null, new Color(40, 90, 255), 0, tex2.Size() / 2, 0.6f, 0, 0);
 			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(60, 95, 255), Main.GameUpdateCount * 0.15f, tex.Size() / 2, 0.4f, 0, 0);
 			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(90, 145, 255), Main.GameUpdateCount * -0.25f, tex.Size() / 2, 0.3f, 0, 0);
@@ -144,18 +149,21 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new TriangularTip(40 * 4), factor => factor * 8, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				float alpha = 1;
+				trail = new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 8, factor =>
+							{
+								float alpha = 1;
 
-				if (factor.X >= 0.99f)
-					alpha = 0;
+								if (factor.X == 1)
+									return Color.Transparent;
 
-				if (Projectile.timeLeft < 15)
-					alpha *= Projectile.timeLeft / 15f;
+								if (Projectile.timeLeft < 15)
+									alpha *= Projectile.timeLeft / 15f;
 
-				return new Color(40, 40 + (int)(factor.X * 50), 255) * factor.X * alpha;
-			});
+								return new Color(40, 40 + (int)(factor.X * 50), 255) * factor.X * alpha;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
@@ -173,7 +181,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 			effect.Parameters["repeats"].SetValue(2f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/ShadowTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.ShadowTrail.Value);
 			trail?.Render(effect);
 		}
 	}

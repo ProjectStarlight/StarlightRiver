@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Terraria.DataStructures;
+using Terraria.GameContent.Bestiary;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
@@ -16,7 +17,7 @@ using static Terraria.GameContent.Animations.Actions.NPCs;
 
 namespace StarlightRiver.Content.Tiles.Permafrost
 {
-	class Touchstone : ModTile, IHintable
+	class Touchstone : ModTile
 	{
 		public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/Touchstone";
 
@@ -59,7 +60,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 				float cos1 = 1 + (float)Math.Cos(Main.GameUpdateCount / 10f);
 				auroraColor = new Color(0.5f + cos1 * 0.2f, 0.8f, 0.5f + sin1 * 0.2f);
 
-				Texture2D portalGlow = ModContent.Request<Texture2D>(AssetDirectory.SquidBoss + "PortalGlow").Value;
+				Texture2D portalGlow = Assets.Bosses.SquidBoss.PortalGlow.Value;
 
 				Color portalGlowColor = auroraColor;
 				portalGlowColor.A = 0;
@@ -159,11 +160,6 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			Player.noThrow = 2;
 			Player.cursorItemIconEnabled = true;
 		}
-
-		public string GetHint()
-		{
-			return "Full of Starlight, seemingly with a mind of its own...";
-		}
 	}
 
 	internal sealed class TouchstoneTileEntity : ModTileEntity
@@ -242,6 +238,11 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			NPC.lifeMax = 10;
 			NPC.noGravity = true;
 			NPC.dontTakeDamage = true;
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
 		}
 
 		public override void AI()
@@ -356,22 +357,25 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 		protected void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new TriangularTip(40 * 4), factor => factor * 12 * NPC.scale, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				float alpha = factor.X;
+				trail = new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 12 * NPC.scale, factor =>
+							{
+								float alpha = factor.X;
 
-				if (factor.X == 1)
-					alpha = 0;
+								if (factor.X == 1)
+									alpha = 0;
 
-				if (NPC.timeLeft < 20)
-					alpha *= NPC.timeLeft / 20f;
+								if (NPC.timeLeft < 20)
+									alpha *= NPC.timeLeft / 20f;
 
-				float sin = 1 + (float)Math.Sin(factor.X * 10);
-				float cos = 1 + (float)Math.Cos(factor.X * 10);
-				Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * (NPC.timeLeft < 30 ? (NPC.timeLeft / 30f) : 1);
+								float sin = 1 + (float)Math.Sin(factor.X * 10);
+								float cos = 1 + (float)Math.Cos(factor.X * 10);
+								Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * (NPC.timeLeft < 30 ? (NPC.timeLeft / 30f) : 1);
 
-				return color * alpha * NPC.Opacity;
-			});
+								return color * alpha * NPC.Opacity;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = NPC.Center + NPC.velocity;
@@ -379,7 +383,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
+			Texture2D tex = Assets.Keys.GlowSoft.Value;
 
 			float sin1 = 1 + (float)Math.Sin(Main.GameUpdateCount / 10f);
 			float cos1 = 1 + (float)Math.Cos(Main.GameUpdateCount / 10f);
@@ -393,7 +397,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = Terraria.Graphics.Effects.Filters.Scene["CeirosRing"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
@@ -402,10 +406,10 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
 			effect.Parameters["repeats"].SetValue(2f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 			trail?.Render(effect);
 
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
 			trail?.Render(effect);
 		}
 	}
