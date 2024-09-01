@@ -11,9 +11,9 @@ namespace StarlightRiver.Content.Items.Beach
 
 		public ExoticTimepiece() : base("Exotic Timepiece",
 			"Your sentries fire faster and shock nearby enemies when placed\n" +
-			"Your minions and sentries occasionally deal extra damage\n" +
-			"This extra damage counts as a critical strike\n" +
-			"200% increased sentry placement speed")
+			"Your minions and sentries occasionally critically strike\n" +
+			"200% increased sentry placement speed\n" +
+			"'So complicated that you're not even sure how you built it'")
 		{ }
 
 		public override List<int> ChildTypes =>

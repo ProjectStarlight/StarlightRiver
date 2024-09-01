@@ -99,7 +99,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Death Saxophone"); //TODO: better name?
-			Tooltip.SetDefault("Take damage and kill foes with other weapons to charge the saxophone\nOnce charged, use it to unleash a high-damage roar of primal death"); //TODO: make this not a skippzz tooltip :)
+			Tooltip.SetDefault("Take damage and kill foes with other weapons to charge the saxophone\nOnce charged, use it to unleash a high-damage death roar"); //TODO: make this not a skippzz tooltip :)
 		}
 
 		public override void SetDefaults()
