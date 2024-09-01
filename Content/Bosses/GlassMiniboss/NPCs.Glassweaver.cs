@@ -305,6 +305,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					{
 						NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<GlassweaverWaiting>(), 0, 0, 3);
 						NPC.active = false;
+
+						StarlightWorld.Flag(WorldFlags.GlassweaverDowned);
 					}
 
 					break;
