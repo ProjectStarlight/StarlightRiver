@@ -64,9 +64,8 @@ namespace StarlightRiver.Content.Items.Hell
 		{
 			if (Equipped(player))
 			{
-				var tex = Assets.Misc.GlowRing.Value;
-				spriteBatch.Draw(tex, player.Center + Vector2.UnitY * player.gfxOffY - Main.screenPosition, null, new Color(150, 50, 255, 0) * 0.15f, 0f, tex.Size() / 2f, 600f / tex.Width, 0, 0);
-				spriteBatch.Draw(tex, player.Center + Vector2.UnitY * player.gfxOffY - Main.screenPosition, null, new Color(100, 50, 255, 0) * 0.1f, 0f, tex.Size() / 2f, 600f / tex.Width + (float)Math.Sin(Main.GameUpdateCount * 0.02f * 6.28f) * 0.04f, 0, 0);
+				var tex = Assets.Items.Hell.ChainRing.Value;
+				spriteBatch.Draw(tex, player.Center + Vector2.UnitY * player.gfxOffY - Main.screenPosition, null, new Color(200, 200, 255, 0) * 0.2f, Main.GameUpdateCount * 0.002f, tex.Size() / 2f, 600f / tex.Width, 0, 0);
 
 				var glow = Assets.Keys.GlowAlpha.Value;
 				spriteBatch.Draw(glow, player.Center + Vector2.UnitY * player.gfxOffY - Main.screenPosition, null, new Color(150, 50, 255, 0) * 0.1f, 0f, glow.Size() / 2f, 800f / glow.Width, 0, 0);
@@ -77,22 +76,22 @@ namespace StarlightRiver.Content.Items.Hell
 				{
 					float rot = (k / 5f * 3.14f - Main.GameUpdateCount / 480f * 3.14f) % 3.14f;
 					Vector2 pos = player.Center + Vector2.UnitY * player.gfxOffY - Main.screenPosition + Vector2.UnitY.RotatedBy(rot) * -285;
-					spriteBatch.Draw(tex2, pos, null, new Color(150, 50, 255, 0) * 0.2f * (float)Math.Sin(-rot), 0f, tex2.Size() / 2f, 80f / tex2.Width, 0, 0);
+					spriteBatch.Draw(tex2, pos, null, new Color(150, 50, 255, 0) * 0.3f * (float)Math.Sin(-rot), 0f, tex2.Size() / 2f, 60f / tex2.Width, 0, 0);
 
 					rot = (k / 5f * 3.14f + (Main.GameUpdateCount + 160) / 480f * 3.14f) % 3.14f;
 					pos = player.Center + Vector2.UnitY * player.gfxOffY - Main.screenPosition + Vector2.UnitY.RotatedBy(rot) * -285;
-					spriteBatch.Draw(tex2, pos, null, new Color(150, 50, 255, 0) * 0.2f * (float)Math.Sin(rot), 0f, tex2.Size() / 2f, 80f / tex2.Width, 0, 0);
+					spriteBatch.Draw(tex2, pos, null, new Color(150, 50, 255, 0) * 0.3f * (float)Math.Sin(rot), 0f, tex2.Size() / 2f, 60f / tex2.Width, 0, 0);
 				}
 
 				for (int k = 0; k < 9; k++)
 				{
 					float rot = (k / 8f * 3.14f - Main.GameUpdateCount / 1020f * 3.14f) % 3.14f;
 					Vector2 pos = player.Center + Vector2.UnitY * player.gfxOffY - Main.screenPosition + Vector2.UnitY.RotatedBy(rot) * -285;
-					spriteBatch.Draw(tex2, pos, null, new Color(150, 50, 255, 0) * 0.15f * (float)Math.Sin(-rot), 0f, tex2.Size() / 2f, 60f / tex2.Width, 0, 0);
+					spriteBatch.Draw(tex2, pos, null, new Color(150, 50, 255, 0) * 0.25f * (float)Math.Sin(-rot), 0f, tex2.Size() / 2f, 40f / tex2.Width, 0, 0);
 
 					rot = (k / 8f * 3.14f + (Main.GameUpdateCount + 560) / 1020f * 3.14f) % 3.14f;
 					pos = player.Center + Vector2.UnitY * player.gfxOffY - Main.screenPosition + Vector2.UnitY.RotatedBy(rot) * -285;
-					spriteBatch.Draw(tex2, pos, null, new Color(150, 50, 255, 0) * 0.15f * (float)Math.Sin(rot), 0f, tex2.Size() / 2f, 60f / tex2.Width, 0, 0);
+					spriteBatch.Draw(tex2, pos, null, new Color(150, 50, 255, 0) * 0.25f * (float)Math.Sin(rot), 0f, tex2.Size() / 2f, 40f / tex2.Width, 0, 0);
 				}
 			}
 		}
