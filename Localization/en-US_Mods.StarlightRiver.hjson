@@ -3287,10 +3287,10 @@ Tiles: {
 	VitricSand.MapEntry: ""
 	VitricSoftSand.MapEntry: ""
 	VitricSandPlain.MapEntry: ""
-	// VitricGiantCrystal.MapEntry: ""
-	// VitricLargeCrystal.MapEntry: ""
-	// VitricMediumCrystal.MapEntry: ""
 	// VitricSmallCrystal.MapEntry: ""
+	// VitricMediumCrystal.MapEntry: ""
+	// VitricLargeCrystal.MapEntry: ""
+	// VitricGiantCrystal.MapEntry: ""
 }
 
 Projectiles: {
