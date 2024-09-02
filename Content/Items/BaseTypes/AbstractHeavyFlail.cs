@@ -220,9 +220,34 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			return false;
 		}
 
+		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+		{
+			projHitbox.Inflate(30, 30);
+
+			if (targetHitbox.Intersects(projHitbox))
+				return true;
+
+			for (int k = 0; k < chainPos.Count; k += 4)
+			{
+				if (k < chainPos.Count)
+				{
+					var hitbox = new Rectangle((int)chainPos[k].X - 4, (int)chainPos[k].Y - 4, 8, 8);
+
+					if (hitbox.Intersects(projHitbox))
+						return true;
+				}
+			}
+
+			return false;
+		}
+
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			OnImpact(false);
+			Rectangle ball = Projectile.Hitbox;
+			ball.Inflate(30, 30);
+
+			if (ball.Intersects(target.Hitbox))
+				OnImpact(false);
 		}
 
 		public override bool PreDraw(ref Color lightColor)
