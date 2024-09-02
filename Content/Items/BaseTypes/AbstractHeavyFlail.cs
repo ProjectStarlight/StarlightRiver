@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			Item.useAnimation = 10;
 			Item.useTime = 10;
 			Item.channel = true;
-			Item.shootSpeed = 10;
+			Item.shootSpeed = 12;
 			Item.noMelee = true;
 			Item.noUseGraphic = true;
 			Item.useStyle = ItemUseStyleID.Swing;
@@ -63,8 +63,8 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		public override void SetDefaults()
 		{
 			Projectile.friendly = true;
-			Projectile.width = 32;
-			Projectile.height = 32;
+			Projectile.width = 2;
+			Projectile.height = 2;
 			Projectile.tileCollide = true;
 			Projectile.timeLeft = 180;
 			Projectile.penetrate = -1;
@@ -101,6 +101,12 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			{
 				int segments = (int)(Length / ChainAsset.Width());
 
+				if (segments <= 2)
+				{
+					State = 4;
+					return;
+				}
+
 				for (int k = 0; k < segments; k++)
 				{
 					chainPos.Add(Vector2.Lerp(Owner.Center, Projectile.Center, k / (float)segments));
@@ -111,45 +117,49 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			}
 			else if (State == 2 || State == 3) // Swinging
 			{
+				// Accelerate if we're not past the far point yet
 				if (State == 2 && Projectile.Center.X > Owner.Center.X - Length * 0.9f || State == 3 && Projectile.Center.X < Owner.Center.X + Length * 0.9f)
 				{
 					if (Timer < 60)
 						Timer++;
 				}
-				else
+				else // We're past the far point
 				{
 					slowing = true;
 				}
 
+				// Set velocity based on if were past the far point or not
 				if (!slowing)
 					Projectile.velocity = Projectile.DirectionTo(Owner.Center).RotatedBy(1.57f * (State == 2 ? 1 : -1)) * (Timer / 60f) * 46.7f;
 				else
 					Projectile.velocity.X *= 0.8f;
 
+				// Update chains
 				for (int k = 0; k < chainPos.Count; k++)
 				{
 					chainTarget[k] = Vector2.Lerp(Owner.Center, Projectile.Center, k / (float)chainPos.Count);
 					chainTarget[k] += Projectile.velocity * (float)Math.Sin(k / (float)chainPos.Count * 3.14f) * Length / 150f;
 				}
 
+				// Correct distance
 				if (Vector2.Distance(Owner.Center, Projectile.Center) > Length)
 					Projectile.Center = Owner.Center + Owner.Center.DirectionTo(Projectile.Center) * Length;
 
+				// Force side switch if going too far
 				if (State == 2 && slowing && Math.Abs(Projectile.velocity.X) < 0.01f)
 					SwitchSides();
 
 				if (State == 3 && slowing && Math.Abs(Projectile.velocity.X) < 0.01f)
 					SwitchSides();
 
+				// Set player animations
 				Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Owner.Center.DirectionTo(chainPos[1]).ToRotation() - 1.57f);
 				Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Quarter, Owner.Center.DirectionTo(chainPos[1]).ToRotation() - 1.57f - 0.1f);
 				Owner.direction = Projectile.Center.X > Owner.Center.X ? 1 : -1;
 			}
 			else if (State == 4) // Retract
 			{
-				Projectile.rotation += Projectile.velocity.X * 0.0625f;
-				Projectile.velocity.X *= 0.99f;
-				Projectile.velocity.Y += 0.6f;
+				Projectile.Center = chainPos.Count > 0 ? chainPos[^1] : Owner.Center;
 
 				for (int k = 0; k < chainPos.Count; k++)
 				{
@@ -160,6 +170,10 @@ namespace StarlightRiver.Content.Items.BaseTypes
 				{
 					chainPos.RemoveAt(chainPos.Count - 1);
 					chainTarget.RemoveAt(chainTarget.Count - 1);
+				}
+				else
+				{
+					Projectile.timeLeft = 0;
 				}
 			}
 

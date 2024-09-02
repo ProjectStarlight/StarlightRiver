@@ -1,9 +1,12 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Items.Gravedigger;
+using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Forest
 {
@@ -40,7 +43,17 @@ namespace StarlightRiver.Content.Items.Forest
 
 		public override void OnImpact(bool wasTile)
 		{
-			Main.NewText("Thunk!");
+			Helpers.Helper.PlayPitched("Impacts/StoneStrike", 1, 0, Projectile.Center);
+
+			if (Owner == Main.LocalPlayer)
+				CameraSystem.shake += 10;
+
+			for(int k = 0; k < 32; k++)
+			{
+				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Stone);
+			}
+
+			Projectile.NewProjectile(null, Projectile.Center + Vector2.UnitY * 8, Vector2.Zero, ModContent.ProjectileType<GravediggerSlam>(), 0, 0);
 		}
 	}
 }
