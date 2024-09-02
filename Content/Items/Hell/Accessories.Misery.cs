@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.Items.Hell
 			if (Equipped(player))
 			{
 				var tex = Assets.Items.Hell.ChainRing.Value;
-				spriteBatch.Draw(tex, player.Center + Vector2.UnitY * player.gfxOffY - Main.screenPosition, null, new Color(200, 200, 255, 0) * 0.2f, Main.GameUpdateCount * 0.002f, tex.Size() / 2f, 600f / tex.Width, 0, 0);
+				spriteBatch.Draw(tex, player.Center + Vector2.UnitY * player.gfxOffY - Main.screenPosition, null, new Color(200, 200, 255, 0) * 0.2f, Main.GameUpdateCount * 0.002f, tex.Size() / 2f, 620f / tex.Width, 0, 0);
 
 				var glow = Assets.Keys.GlowAlpha.Value;
 				spriteBatch.Draw(glow, player.Center + Vector2.UnitY * player.gfxOffY - Main.screenPosition, null, new Color(150, 50, 255, 0) * 0.1f, 0f, glow.Size() / 2f, 800f / glow.Width, 0, 0);
