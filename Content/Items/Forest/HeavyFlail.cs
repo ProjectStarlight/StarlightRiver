@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.Gravedigger;
+using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using System.Collections.Generic;
@@ -22,16 +23,20 @@ namespace StarlightRiver.Content.Items.Forest
 			Tooltip.SetDefault("Hold to swing a monstrous ball of metal\n`We've got the biggest balls of them all!`");
 		}
 
-		public override bool? UseItem(Player player)
+		public override void SetDefaults()
 		{
-			return true;
-			for (int k = 100; k < 500; k += 100)
-			{
-				int i = Projectile.NewProjectile(null, player.Center, player.Center.DirectionTo(Main.MouseWorld) * k * 0.1f, ModContent.ProjectileType<HeavyFlailProjectile>(), 1, 1, player.whoAmI);
-				(Main.projectile[i].ModProjectile as HeavyFlailProjectile).MaxLength = k;
-			}
+			base.SetDefaults();
+			Item.rare = ItemRarityID.Blue;
+			Item.damage = 16;
+		}
 
-			return true;
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddRecipeGroup(RecipeGroupID.IronBar, 20);
+			recipe.AddIngredient(ItemID.Mace, 1);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 
