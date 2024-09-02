@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.Hell
 {
 	internal class Misery : CursedAccessory
 	{
-		private List<NPC> seenNpcs = new();
+		private readonly List<NPC> seenNpcs = new();
 		private int lastPlayerDefense;
 		private float lastPlayerInnoc;
 
@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Items.Hell
 
 		public override void SafeUpdateAccessory(Player Player, bool hideVisual)
 		{
-			foreach(NPC npc in Main.ActiveNPCs)
+			foreach (NPC npc in Main.ActiveNPCs)
 			{
 				if (!npc.friendly && Vector2.Distance(npc.Center, Player.Center) <= 300)
 				{
@@ -64,13 +64,13 @@ namespace StarlightRiver.Content.Items.Hell
 		{
 			if (Equipped(player))
 			{
-				var tex = Assets.Items.Hell.ChainRing.Value;
+				Texture2D tex = Assets.Items.Hell.ChainRing.Value;
 				spriteBatch.Draw(tex, player.Center + Vector2.UnitY * player.gfxOffY - Main.screenPosition, null, new Color(200, 200, 255, 0) * 0.2f, Main.GameUpdateCount * 0.002f, tex.Size() / 2f, 620f / tex.Width, 0, 0);
 
-				var glow = Assets.Keys.GlowAlpha.Value;
+				Texture2D glow = Assets.Keys.GlowAlpha.Value;
 				spriteBatch.Draw(glow, player.Center + Vector2.UnitY * player.gfxOffY - Main.screenPosition, null, new Color(150, 50, 255, 0) * 0.1f, 0f, glow.Size() / 2f, 800f / glow.Width, 0, 0);
 
-				var tex2 = Assets.Misc.DotTell.Value;
+				Texture2D tex2 = Assets.Misc.DotTell.Value;
 
 				for (int k = 0; k < 6; k++)
 				{
