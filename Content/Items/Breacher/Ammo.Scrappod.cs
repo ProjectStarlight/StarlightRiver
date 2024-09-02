@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Scrap Pod");
-			Tooltip.SetDefault("Shatters into scrapnel after reaching the mouse cursor");
+			Tooltip.SetDefault("Shatters into scrapnel after reaching your cursor");
 		}
 
 		public override void SetDefaults()
