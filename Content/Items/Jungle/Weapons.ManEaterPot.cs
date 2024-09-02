@@ -15,9 +15,9 @@ namespace StarlightRiver.Content.Items.Jungle
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Man Eater Pot");
-			Tooltip.SetDefault("Causes man eaters to sprout from your head\n" +
-				"These man eaters will consume heart pickups to empower themselves\n" +
-				"Consumed heart pickups heal you after a delay");
+			Tooltip.SetDefault("Causes Man Eaters to sprout from your head\n" +
+				"These Man Eaters will consume heart pickups to empower themselves\n" +
+				"Consumed heart pickups are delayed and heal you for less");
 
 			ItemID.Sets.GamepadWholeScreenUseRange[Item.type] = true; // This lets the Player target anywhere on the whole screen while using a controller.
 			ItemID.Sets.LockOnIgnoresCollision[Item.type] = true;

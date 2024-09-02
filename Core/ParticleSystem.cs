@@ -38,7 +38,7 @@ namespace StarlightRiver.Core
 			if (Main.dedServ)
 				return;
 
-			this.texture = Request<Texture2D>(texture, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+			this.texture = Request<Texture2D>(texture, AssetRequestMode.ImmediateLoad).Value;
 			updateFunction = updateDelegate;
 			anchorType = anchor;
 			this.maxParticles = maxParticles;
@@ -115,7 +115,7 @@ namespace StarlightRiver.Core
 			if (Main.dedServ)
 				return;
 
-			if (GetInstance<GraphicsConfig>().ParticlesActive && effect != null)
+			if (GetInstance<GraphicsConfig>().ParticlesActive && particles.Count > 0 && effect != null)
 			{
 				spriteBatch.End();
 

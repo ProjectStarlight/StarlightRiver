@@ -657,11 +657,11 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.04f);
 			effect.Parameters["repeats"].SetValue(1);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
 			trail?.Render(effect);
 
-			effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
 
 			trail?.Render(effect);
 			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
@@ -729,7 +729,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 13, new NoTip(), factor => 7, factor => new Color(255, 100, 65) * 0.5f * factor.X);
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 13, new NoTip(), factor => 7, factor => new Color(255, 100, 65) * 0.5f * factor.X);
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;

@@ -261,13 +261,13 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			for (int i = 1; i <= 5; i++)
 			{
-				Texture2D tex = Request<Texture2D>(Texture + "_Segment" + i.ToString()).Value;
+				Texture2D tex = Request<Texture2D>(Texture + "_Segment" + i.ToString()).Value; //TODO: Make this a spritesheet
 				float progress = MathHelper.Clamp(scaleFactor * 5 - i, 0, 1);
 
 				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2, progress * crystalScales[i - 1], SpriteEffects.None, 0f);
 			}
 
-			Texture2D glowTex = Request<Texture2D>(Texture + "_Glow").Value;
+			Texture2D glowTex = Assets.Items.Misc.GeodeBowGrowth_Glow.Value;
 			Color color = Color.White * 0.8f * Projectile.scale;
 			color.A = 0;
 
@@ -450,7 +450,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 15, new NoTip(), factor => MathHelper.Lerp(1f, 0.35f, factor) * width * MathHelper.Lerp(0.2f, 1, Projectile.timeLeft / 90.0f), factor => Color.Lerp(Color.Magenta, Color.White, Projectile.timeLeft / 90.0f));
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 15, new NoTip(), factor => MathHelper.Lerp(1f, 0.35f, factor) * width * MathHelper.Lerp(0.2f, 1, Projectile.timeLeft / 90.0f), factor => Color.Lerp(Color.Magenta, Color.White, Projectile.timeLeft / 90.0f));
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
@@ -465,7 +466,7 @@ namespace StarlightRiver.Content.Items.Misc
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 			effect.Parameters["alpha"].SetValue(1);
 			BlendState oldState = Main.graphics.GraphicsDevice.BlendState;
 			Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;

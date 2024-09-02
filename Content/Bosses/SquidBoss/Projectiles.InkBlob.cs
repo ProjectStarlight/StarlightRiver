@@ -136,25 +136,28 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		protected void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 16, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				float alpha = factor.X;
+				trail = new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 16, factor =>
+							{
+								float alpha = factor.X;
 
-				if (factor.X == 1)
-					alpha = 0;
+								if (factor.X == 1)
+									alpha = 0;
 
-				if (Projectile.timeLeft < 20)
-					alpha *= Projectile.timeLeft / 20f;
+								if (Projectile.timeLeft < 20)
+									alpha *= Projectile.timeLeft / 20f;
 
-				float sin = 1 + (float)Math.Sin(factor.X * 10);
-				float cos = 1 + (float)Math.Cos(factor.X * 10);
-				Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
+								float sin = 1 + (float)Math.Sin(factor.X * 10);
+								float cos = 1 + (float)Math.Cos(factor.X * 10);
+								Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
 
-				if (Main.masterMode)
-					color = new Color(1, 0.25f + sin * 0.25f, 0.25f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
+								if (Main.masterMode)
+									color = new Color(1, 0.25f + sin * 0.25f, 0.25f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
 
-				return color * alpha;
-			});
+								return color * alpha;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
@@ -162,7 +165,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
+			Texture2D tex = Assets.Keys.GlowSoft.Value;
 			Color color = new Color(0.7f, 0.8f, 0.5f) * EaseFunction.EaseCubicOut.Ease(MathHelper.Max(0, (Projectile.timeLeft - 90) / 30f));
 
 			for (int i = 0; i < 3; i++)
@@ -182,10 +185,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
 			effect.Parameters["repeats"].SetValue(2f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 			trail?.Render(effect);
 
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
 			trail?.Render(effect);
 		}
 	}

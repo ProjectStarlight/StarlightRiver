@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Effect borderNoise = Filters.Scene["BorderNoise"].GetShader().Shader;
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "MagmaGunProj").Value;
+			Texture2D tex = Assets.Items.Misc.MagmaGunProj.Value;
 
 			if (borderNoise is null)
 				return;
@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.Items.Misc
 			magmaNoise.Parameters["offset"].SetValue(2 * Main.screenPosition / new Vector2(Main.screenWidth, Main.screenHeight));
 			magmaNoise.Parameters["codedColor"].SetValue(Color.White.ToVector4());
 			magmaNoise.Parameters["newColor"].SetValue(new Color(255, 70, 10).ToVector4());
-			magmaNoise.Parameters["distort"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/ShaderNoiseLooping").Value);
+			magmaNoise.Parameters["distort"].SetValue(Assets.Noise.ShaderNoiseLooping.Value);
 
 			magmaNoise.CurrentTechnique.Passes[0].Apply();
 			spriteBatch.Draw(target, Vector2.Zero, null, Color.White, 0, new Vector2(0, 0), 2f, SpriteEffects.None, 0);

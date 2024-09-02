@@ -302,7 +302,7 @@ namespace StarlightRiver.Content.Items.Hell
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D bloom = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D bloom = Assets.Keys.GlowAlpha.Value;
 			Color bloomColor = TrailColor;
 			bloomColor.A = 0;
 
@@ -318,7 +318,7 @@ namespace StarlightRiver.Content.Items.Hell
 				return false;
 
 			Color coinColor = bouncedOff ? lightColor : Color.White;
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D tex = Assets.Items.Hell.CharonsObol.Value;
 			int frameHeight = tex.Height / Main.projFrames[Projectile.type];
 			var frameBox = new Rectangle(0, frameHeight * Projectile.frame, tex.Width, frameHeight);
 
@@ -327,7 +327,7 @@ namespace StarlightRiver.Content.Items.Hell
 			if (flashTimer <= 0)
 				return false;
 
-			Texture2D whiteTex = ModContent.Request<Texture2D>(AssetDirectory.HellItem + "ObolFlash").Value;
+			Texture2D whiteTex = Assets.Items.Hell.ObolFlash.Value;
 			Main.spriteBatch.Draw(whiteTex, Projectile.Center - Main.screenPosition, frameBox, Color.White * (flashTimer / 15f), Projectile.rotation, frameBox.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
 
 			return false;
@@ -382,9 +382,11 @@ namespace StarlightRiver.Content.Items.Hell
 			if (Main.netMode == NetmodeID.Server)
 				return;
 
-			trail ??= new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new NoTip(), factor => trailWidth * 3f, factor => TrailColor);
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new NoTip(), factor => trailWidth * 3f, factor => TrailColor);
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new NoTip(), factor => trailWidth * 1.5f, factor => Color.White * 0.75f);
+			if (trail2 is null || trail2.IsDisposed)
+				trail2 = new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new NoTip(), factor => trailWidth * 1.5f, factor => Color.White * 0.75f);
 
 			trail.Positions = cache.ToArray();
 			trail2.Positions = cache.ToArray();
@@ -405,7 +407,7 @@ namespace StarlightRiver.Content.Items.Hell
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 			effect.Parameters["alpha"].SetValue(trailWidth / 4f);
 
 			trail?.Render(effect);

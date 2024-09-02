@@ -202,9 +202,9 @@ namespace StarlightRiver.Content.Items.Starwood
 			Projectile.netUpdate = true;
 		}
 
-		private Texture2D GlowingTrail => Request<Texture2D>(AssetDirectory.StarwoodItem + "StarwoodBoomerangGlowTrail").Value;
-		private Texture2D GlowingTexture => Request<Texture2D>(AssetDirectory.StarwoodItem + "StarwoodBoomerangGlow").Value;
-		private Texture2D AuraTexture => Request<Texture2D>(AssetDirectory.StarwoodItem + "Glow").Value;
+		private Texture2D GlowingTrail => Assets.Items.Starwood.StarwoodBoomerangGlowTrail.Value;
+		private Texture2D GlowingTexture => Assets.Items.Starwood.StarwoodBoomerangGlow.Value;
+		private Texture2D AuraTexture => Assets.Items.Starwood.Glow.Value;
 
 		public override bool PreDraw(ref Color lightColor)
 		{
@@ -258,7 +258,7 @@ namespace StarlightRiver.Content.Items.Starwood
 				}
 			}
 
-			Texture2D tex2 = Request<Texture2D>(AssetDirectory.StarwoodItem + "Glow2").Value;//a
+			Texture2D tex2 = Assets.Items.Starwood.Glow2.Value;//a
 			spriteBatch.Draw(tex2, Projectile.Center - Main.screenPosition, tex2.Frame(), new Color(255, 255, 200, 75) * (Projectile.ai[1] / CHARGE_TIME), 0, tex2.Size() * 0.5f, (-chargeMult + 1) * 1.2f, 0, 0);
 		}
 

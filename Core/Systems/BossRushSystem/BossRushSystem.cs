@@ -495,8 +495,8 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 				return;
 
 			Texture2D tex = Terraria.GameContent.TextureAssets.MagicPixel.Value;
-			Texture2D gradV = ModContent.Request<Texture2D>("StarlightRiver/Assets/GradientV").Value;
-			Texture2D gradH = ModContent.Request<Texture2D>("StarlightRiver/Assets/GradientH").Value;
+			Texture2D gradV = Assets.GradientV.Value;
+			Texture2D gradH = Assets.GradientH.Value;
 
 			Color color = Color.White;
 			color.A = 0;

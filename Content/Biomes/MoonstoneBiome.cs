@@ -126,8 +126,8 @@ namespace StarlightRiver.Content.Biomes
 				effect.Parameters["intensity"].SetValue(0.01f * distortion);
 				effect.Parameters["repeats"].SetValue(2);
 				effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.003f);
-				effect.Parameters["noiseTexture1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/SwirlyNoiseLooping").Value);
-				effect.Parameters["noiseTexture2"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/MiscNoise1").Value);
+				effect.Parameters["noiseTexture1"].SetValue(Assets.Noise.SwirlyNoiseLooping.Value);
+				effect.Parameters["noiseTexture2"].SetValue(Assets.Noise.MiscNoise1.Value);
 				effect.Parameters["screenPosition"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / backgroundTarget.RenderTarget.Size());
 				effect.Parameters["distortionColor1"].SetValue(Color.DarkBlue.ToVector3());
 				effect.Parameters["distortionColor2"].SetValue(new Color(120, 65, 120).ToVector3());
@@ -167,8 +167,6 @@ namespace StarlightRiver.Content.Biomes
 		{
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
-			//Main.NewText("Drawing to target!");
-
 			sb.End();
 			sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
@@ -192,8 +190,8 @@ namespace StarlightRiver.Content.Biomes
 			effect.Parameters["intensity"].SetValue(10f);
 			effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.1f);
 
-			effect.Parameters["noiseTexture1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/MiscNoise3").Value);
-			effect.Parameters["noiseTexture2"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/MiscNoise4").Value);
+			effect.Parameters["noiseTexture1"].SetValue(Assets.Noise.MiscNoise3.Value);
+			effect.Parameters["noiseTexture2"].SetValue(Assets.Noise.MiscNoise4.Value);
 			effect.Parameters["color1"].SetValue(Color.Magenta.ToVector4());
 			effect.Parameters["color2"].SetValue(Color.Cyan.ToVector4());
 			effect.Parameters["opacity"].SetValue(1f);

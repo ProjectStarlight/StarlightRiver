@@ -9,7 +9,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
-	internal class NPCSpawner : DummyTile, IHintable
+	internal class NPCSpawner : DummyTile
 	{
 		public override string Texture => AssetDirectory.VitricTile + Name;
 
@@ -18,11 +18,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		public override void SetStaticDefaults()
 		{
 			this.QuickSetFurniture(2, 3, 0, SoundID.Tink, new Color(255, 255, 255));
-		}
-
-		public string GetHint()
-		{
-			return "Dangerous.";
 		}
 	}
 
@@ -102,7 +97,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		public override void PostDraw(Color lightColor)
 		{
 			SpriteBatch spriteBatch = Main.spriteBatch;
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "NPCSpawnerGlow").Value;
+			Texture2D tex = Assets.Tiles.Vitric.NPCSpawnerGlow.Value;
 			var frame = new Rectangle(0, (int)(1 + Helpers.Helper.SwoopEase(timer / 60f) * 18f) % 8 * 48, 22, 48);
 			Vector2 pos = Center - Main.screenPosition + new Vector2(0, -12 * timer / 60f);
 
@@ -110,7 +105,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 			spriteBatch.Draw(tex, pos, frame, color, 0, new Vector2(11, 24), 1, 0, 0);
 
-			Texture2D glowTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
+			Texture2D glowTex = Assets.Keys.GlowAlpha.Value;
 			var glowColor = new Color(255, 160, 100)
 			{
 				A = 0

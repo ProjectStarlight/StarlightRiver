@@ -40,6 +40,8 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			base.SetStaticDefaults();
 			blackListedSwords = new() { ModContent.ItemType<Moonstone.Moonfury>() };
+
+			ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<SpearBook>();
 		}
 
 		public override void SafeSetDefaults()
@@ -403,13 +405,16 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => (float)Math.Min(factor, Progress) * length * 0.75f, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X == 1)
-					return Color.Transparent;
+				trail = new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => (float)Math.Min(factor, Progress) * length * 0.75f, factor =>
+							{
+								if (factor.X == 1)
+									return Color.Transparent;
 
-				return trailColor * (float)Math.Min(factor.X, Progress) * 0.5f * (float)Math.Sin(Progress * 3.14f);
-			});
+								return trailColor * (float)Math.Min(factor.X, Progress) * 0.5f * (float)Math.Sin(Progress * 3.14f);
+							});
+			}
 
 			var realCache = new Vector2[50];
 
@@ -432,8 +437,8 @@ namespace StarlightRiver.Content.Items.Misc
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
 			effect.Parameters["repeats"].SetValue(8f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
-			effect.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Moonstone/DatsuzeiFlameMap2").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+			effect.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
 
 			trail?.Render(effect);
 		}

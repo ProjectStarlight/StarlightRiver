@@ -352,7 +352,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				Rectangle frame = glob.Frame(1, 3, 0, Projectile.frame);
 				var origin = new Vector2(frame.Height * 0.5f);
 
-				Asset<Texture2D> bloom = Request<Texture2D>(AssetDirectory.Glassweaver + "BubbleBloom");
+				Asset<Texture2D> bloom = Assets.Bosses.GlassMiniboss.BubbleBloom;
 				Color bloomFade = Color.OrangeRed;
 				bloomFade.A = 0;
 

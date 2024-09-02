@@ -769,12 +769,14 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 8, new NoTip(), factor => 6f, factor => Colors["TrailColor"] * factor.X * FadeOut());
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 8, new NoTip(), factor => 6f, factor => Colors["TrailColor"] * factor.X * FadeOut());
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center;
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 8, new NoTip(), factor => 2.5f, factor => Color.Lerp(Colors["TrailInsideColor"], Colors["TrailColor"], 1f - factor.X) * factor.X * FadeOut());
+			if (trail2 is null || trail.IsDisposed)
+				trail2 = new Trail(Main.instance.GraphicsDevice, 8, new NoTip(), factor => 2.5f, factor => Color.Lerp(Colors["TrailInsideColor"], Colors["TrailColor"], 1f - factor.X) * factor.X * FadeOut());
 
 			trail2.Positions = cache.ToArray();
 			trail2.NextPosition = Projectile.Center + Projectile.velocity;
@@ -796,7 +798,7 @@ namespace StarlightRiver.Content.Items.Misc
 				effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.05f);
 				effect.Parameters["repeats"].SetValue(1);
 				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "GlowTrail").Value);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 
 				trail?.Render(effect);
 				trail2?.Render(effect);

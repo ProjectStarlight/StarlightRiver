@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
-			Texture2D bloom = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D bloom = Assets.Keys.GlowAlpha.Value;
 			Color gold = Color.Orange;
 			gold.A = 0;
 

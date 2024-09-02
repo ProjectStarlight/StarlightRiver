@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Whirlwind Pickaxe");
-			Tooltip.SetDefault("Hold right click to charge up a spinning pickaxe dash, breaking anything in your way");
+			Tooltip.SetDefault("Hold <right> to charge up a spinning pickaxe dash, breaking anything in your way");
 		}
 
 		public override void SetDefaults()
@@ -241,13 +241,16 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 		private void ManageTrail(ref Trail trail, List<Vector2> cache)
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 120, new NoTip(), factor => 5, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X == 1)
-					return Color.Transparent;
+				trail = new Trail(Main.instance.GraphicsDevice, 120, new NoTip(), factor => 5, factor =>
+							{
+								if (factor.X == 1)
+									return Color.Transparent;
 
-				return new Color(155, 155, 155) * (float)Math.Sin(factor.X * 3.14f) * 0.15f * radius;
-			});
+								return new Color(155, 155, 155) * (float)Math.Sin(factor.X * 3.14f) * 0.15f * radius;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center;
@@ -267,7 +270,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * -0.01f);
 			effect.Parameters["repeats"].SetValue(1f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/GlowTrailNoEnd").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrailNoEnd.Value);
 
 			trail?.Render(effect);
 		}

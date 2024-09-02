@@ -223,7 +223,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			{
 				if (Main.netMode != NetmodeID.Server)
 				{
-					BossBarOverlay.SetTracked(NPC, ", Shattered Sentinel", Request<Texture2D>(AssetDirectory.VitricBoss + "GUI/HealthBar").Value);
+					BossBarOverlay.SetTracked(NPC, ", Shattered Sentinel", Assets.Bosses.VitricBoss.GUI.HealthBar.Value);
 					BossBarOverlay.visible = true;
 				}
 

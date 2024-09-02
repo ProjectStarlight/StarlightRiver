@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			fireEffect.Parameters["time"].SetValue(-Main.GameUpdateCount / 45f);
 			fireEffect.Parameters["upscale"].SetValue(matrix);
-			fireEffect.Parameters["sampleTexture"].SetValue(Request<Texture2D>(AssetDirectory.Assets + "FireTrail").Value);
+			fireEffect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
 
 			chain.DrawStrip(PrepareStrip, fireEffect);
 			chain.UpdateChain(parent.NPC.Center + parent.PainOffset + Vector2.UnitX * -parent.twistTarget * 18 + position.RotatedBy(parent.NPC.rotation));
@@ -97,7 +97,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public void DrawAdditive(SpriteBatch sb)
 		{
-			Texture2D tex = Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
+			Texture2D tex = Assets.Keys.GlowSoft.Value;
 
 			for (int k = 0; k < chain.segmentCount; k++)
 			{

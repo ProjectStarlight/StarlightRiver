@@ -251,7 +251,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			Texture2D baseTex = ModContent.Request<Texture2D>(Texture + "Base").Value;
 			Texture2D crystalTex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
 
 			Texture2D crystalTexOrange = ModContent.Request<Texture2D>(Texture + "_Orange").Value;
 			Texture2D baseTexOrange = ModContent.Request<Texture2D>(Texture + "Base_Orange").Value;
@@ -575,7 +575,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			Texture2D baseTex = ModContent.Request<Texture2D>(crystal.Texture + "Base").Value;
 			Texture2D crystalTex = ModContent.Request<Texture2D>(crystal.Texture).Value;
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
 
 			Texture2D crystalTexOrange = ModContent.Request<Texture2D>(crystal.Texture + "_Orange").Value;
 			Texture2D baseTexOrange = ModContent.Request<Texture2D>(crystal.Texture + "Base_Orange").Value;
@@ -606,8 +606,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
 				effect.Parameters["offset"].SetValue(new Vector2(0.001f));
 				effect.Parameters["repeats"].SetValue(1);
-				effect.Parameters["uImage1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/SwirlyNoiseLooping").Value);
-				effect.Parameters["uImage2"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.VitricBoss + "LaserBallDistort").Value);
+				effect.Parameters["uImage1"].SetValue(Assets.Noise.SwirlyNoiseLooping.Value);
+				effect.Parameters["uImage2"].SetValue(Assets.Bosses.VitricBoss.LaserBallDistort.Value);
 
 				Color color = new Color(255, 165, 115, 0) * 0.4f * fadeIn * (MultiMode ? 1f : (TimeSpentOnTarget / 540f));
 				if (pulseTimer > 0)
@@ -617,7 +617,7 @@ namespace StarlightRiver.Content.Items.Vitric
 					color *= 0.25f;
 
 				effect.Parameters["uColor"].SetValue(color.ToVector4());
-				effect.Parameters["noiseImage1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "MagicPixel").Value);
+				effect.Parameters["noiseImage1"].SetValue(Assets.MagicPixel.Value);
 
 				effect.CurrentTechnique.Passes[0].Apply();
 
@@ -751,58 +751,70 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 26, new NoTip(), factor => MultiMode ? 3 : 4 * 1 + Stage, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (trailFade < 15)
-					return Color.Lerp(Color.Transparent, new Color(255, 165, 115), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
+				trail = new Trail(Main.instance.GraphicsDevice, 26, new NoTip(), factor => MultiMode ? 3 : 4 * 1 + Stage, factor =>
+							{
+								if (trailFade < 15)
+									return Color.Lerp(Color.Transparent, new Color(255, 165, 115), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
 
-				if (pulseTimer > 0)
-					return Color.Lerp(Color.White, new Color(255, 165, 115), 1f - pulseTimer / 15f) * 0.6f;
+								if (pulseTimer > 0)
+									return Color.Lerp(Color.White, new Color(255, 165, 115), 1f - pulseTimer / 15f) * 0.6f;
 
-				return new Color(255, 165, 115) * 0.6f;
-			});
+								return new Color(255, 165, 115) * 0.6f;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = cache[25];
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 26, new NoTip(), factor => MultiMode ? 3 : 4 * 1 + Stage, factor =>
+			if (trail2 is null || trail2.IsDisposed)
 			{
-				if (trailFade < 15)
-					return Color.Lerp(Color.Transparent, new Color(255, 150, 50), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
+				trail2 = new Trail(Main.instance.GraphicsDevice, 26, new NoTip(), factor => MultiMode ? 3 : 4 * 1 + Stage, factor =>
+							{
+								if (trailFade < 15)
+									return Color.Lerp(Color.Transparent, new Color(255, 150, 50), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
 
-				if (pulseTimer > 0)
-					return Color.Lerp(new Color(255, 165, 115), new Color(255, 150, 50), 1f - pulseTimer / 15f) * 0.6f;
+								if (pulseTimer > 0)
+									return Color.Lerp(new Color(255, 165, 115), new Color(255, 150, 50), 1f - pulseTimer / 15f) * 0.6f;
 
-				return new Color(255, 150, 50) * 0.6f;
-			});
+								return new Color(255, 150, 50) * 0.6f;
+							});
+			}
 
 			trail2.Positions = cache.ToArray();
 			trail2.NextPosition = cache[25];
 
-			trail3 ??= new Trail(Main.instance.GraphicsDevice, 26, new NoTip(), factor => MultiMode ? 5 : 7 * 1 + Stage, factor =>
+			if (trail3 is null || trail3.IsDisposed)
 			{
-				if (trailFade < 15)
-					return Color.Lerp(Color.Transparent, new Color(255, 165, 115), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
+				trail3 = new Trail(Main.instance.GraphicsDevice, 26, new NoTip(), factor => MultiMode ? 5 : 7 * 1 + Stage, factor =>
+							{
+								if (trailFade < 15)
+									return Color.Lerp(Color.Transparent, new Color(255, 165, 115), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
 
-				if (pulseTimer > 0)
-					return Color.Lerp(Color.White, new Color(255, 165, 115), 1f - pulseTimer / 15f) * 0.6f;
+								if (pulseTimer > 0)
+									return Color.Lerp(Color.White, new Color(255, 165, 115), 1f - pulseTimer / 15f) * 0.6f;
 
-				return new Color(255, 165, 115) * 0.6f;
-			});
+								return new Color(255, 165, 115) * 0.6f;
+							});
+			}
 
 			trail3.Positions = cache.ToArray();
 			trail3.NextPosition = cache[25];
 
-			trail4 ??= new Trail(Main.instance.GraphicsDevice, 26, new NoTip(), factor => MultiMode ? 5 : 7 * 1 + Stage, factor =>
+			if (trail4 is null || trail4.IsDisposed)
 			{
-				if (trailFade < 15)
-					return Color.Lerp(Color.Transparent, new Color(255, 150, 50), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
+				trail4 = new Trail(Main.instance.GraphicsDevice, 26, new NoTip(), factor => MultiMode ? 5 : 7 * 1 + Stage, factor =>
+							{
+								if (trailFade < 15)
+									return Color.Lerp(Color.Transparent, new Color(255, 150, 50), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
 
-				if (pulseTimer > 0)
-					return Color.Lerp(new Color(255, 165, 115), new Color(255, 150, 50), 1f - pulseTimer / 15f) * 0.6f;
+								if (pulseTimer > 0)
+									return Color.Lerp(new Color(255, 165, 115), new Color(255, 150, 50), 1f - pulseTimer / 15f) * 0.6f;
 
-				return new Color(255, 150, 50) * 0.6f;
-			});
+								return new Color(255, 150, 50) * 0.6f;
+							});
+			}
 
 			trail4.Positions = cache.ToArray();
 			trail4.NextPosition = cache[25];
@@ -822,14 +834,14 @@ namespace StarlightRiver.Content.Items.Vitric
 			effect.Parameters["time"].SetValue(lifetime * -0.02f);
 			effect.Parameters["repeats"].SetValue(1);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 
 			if (HasTarget && TimeSpentOnTarget > 2)
 			{
 				trail?.Render(effect);
 				trail2?.Render(effect);
 
-				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
+				effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
 
 				trail?.Render(effect);
 				trail3?.Render(effect);

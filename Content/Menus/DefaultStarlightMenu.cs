@@ -28,9 +28,9 @@ namespace StarlightRiver.Content.Menus
 			sb.End();
 			sb.Begin(default, default, SamplerState.LinearWrap, default, RasterizerState.CullNone, default, Main.UIScaleMatrix);
 
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/SwirlyNoiseLooping").Value;
-			Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/PerlinNoise").Value;
-			Texture2D tex3 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value;
+			Texture2D tex = Assets.Noise.SwirlyNoiseLooping.Value;
+			Texture2D tex2 = Assets.Noise.PerlinNoise.Value;
+			Texture2D tex3 = Assets.Noise.MiscNoise3.Value;
 			var color = new Color(100, 230, 220)
 			{
 				A = 0
@@ -143,17 +143,17 @@ namespace StarlightRiver.Content.Menus
 			Vector2 pos2 = Main.ScreenSize.ToVector2() / 2f;
 			Color color = new Color(40, 50, 65);
 
-			Texture2D smallRing = ModContent.Request<Texture2D>("StarlightRiver/Assets/NPCs/BossRush/ArmillaryRing1").Value;
-			Texture2D mediumRing = ModContent.Request<Texture2D>("StarlightRiver/Assets/NPCs/BossRush/ArmillaryRing2").Value;
-			Texture2D largeRing = ModContent.Request<Texture2D>("StarlightRiver/Assets/NPCs/BossRush/ArmillaryRing3").Value;
+			Texture2D smallRing = Assets.NPCs.BossRush.ArmillaryRing1.Value;
+			Texture2D mediumRing = Assets.NPCs.BossRush.ArmillaryRing2.Value;
+			Texture2D largeRing = Assets.NPCs.BossRush.ArmillaryRing3.Value;
 
 			spriteBatch.Draw(smallRing, pos2, null, color, -timer * 0.005f, smallRing.Size() * 0.5f, 2, SpriteEffects.None, 0);
 			spriteBatch.Draw(mediumRing, pos2, null, color, timer * 0.005f, mediumRing.Size() * 0.5f, 2, SpriteEffects.None, 0);
 			spriteBatch.Draw(largeRing, pos2, null, color, -timer * 0.005f, largeRing.Size() * 0.5f, 2, SpriteEffects.None, 0);
 
-			Texture2D smallRingRunes = ModContent.Request<Texture2D>("StarlightRiver/Assets/NPCs/BossRush/ArmillaryRingRunes1").Value;
-			Texture2D mediumRingRunes = ModContent.Request<Texture2D>("StarlightRiver/Assets/NPCs/BossRush/ArmillaryRingRunes2").Value;
-			Texture2D largeRingRunes = ModContent.Request<Texture2D>("StarlightRiver/Assets/NPCs/BossRush/ArmillaryRingRunes3").Value;
+			Texture2D smallRingRunes = Assets.NPCs.BossRush.ArmillaryRingRunes1.Value;
+			Texture2D mediumRingRunes = Assets.NPCs.BossRush.ArmillaryRingRunes2.Value;
+			Texture2D largeRingRunes = Assets.NPCs.BossRush.ArmillaryRingRunes3.Value;
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.UIScaleMatrix);

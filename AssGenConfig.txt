@@ -1,0 +1,1 @@
+AssetRoot:StarlightRiver\Assets

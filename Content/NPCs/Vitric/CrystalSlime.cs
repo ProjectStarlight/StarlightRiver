@@ -156,8 +156,8 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		{
 			if (Shield == 1)
 			{
-				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/NPCs/Vitric/Crystal").Value;
-				Texture2D texGlow = Request<Texture2D>("StarlightRiver/Assets/NPCs/Vitric/CrystalGlow").Value;
+				Texture2D tex = Assets.NPCs.Vitric.Crystal.Value;
+				Texture2D texGlow = Assets.NPCs.Vitric.CrystalGlow.Value;
 				Color color = Helper.IndicatorColor;
 
 				spriteBatch.Draw(tex, NPC.Center - screenPos, null, drawColor, NPC.rotation, tex.Size() / 2f, NPC.scale, 0, 0);

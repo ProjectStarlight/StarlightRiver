@@ -421,8 +421,8 @@ namespace StarlightRiver.Content.Items.Haunted
 		{
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 			Texture2D texGlow = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
-			Texture2D starTex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "StarTexture").Value;
+			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D starTex = Assets.StarTexture.Value;
 
 			Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, new Color(70, 200, 100, 0) * 0.25f, Projectile.rotation + MathHelper.ToRadians(rotTimer), bloomTex.Size() / 2f, 1f, 0f, 0f);
 
@@ -441,13 +441,13 @@ namespace StarlightRiver.Content.Items.Haunted
 
 			effect.Parameters["offset"].SetValue(new Vector2(0.001f));
 			effect.Parameters["repeats"].SetValue(2);
-			effect.Parameters["uImage1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/SwirlyNoiseLooping").Value);
-			effect.Parameters["uImage2"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/PerlinNoise").Value);
+			effect.Parameters["uImage1"].SetValue(Assets.Noise.SwirlyNoiseLooping.Value);
+			effect.Parameters["uImage2"].SetValue(Assets.Noise.PerlinNoise.Value);
 
 			Color color = new Color(70, 200, 100, 0) * 0.4f * Utils.Clamp((float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f), 0.5f, 1f);
 
 			effect.Parameters["uColor"].SetValue(color.ToVector4());
-			effect.Parameters["noiseImage1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/PerlinNoise").Value);
+			effect.Parameters["noiseImage1"].SetValue(Assets.Noise.PerlinNoise.Value);
 
 			effect.CurrentTechnique.Passes[0].Apply();
 
@@ -541,7 +541,7 @@ namespace StarlightRiver.Content.Items.Haunted
 		public override void SendExtraAI(BinaryWriter writer)
 		{
 			writer.Write(embedded);
-			writer.WritePackedVector2(enemyOffset);
+			writer.WriteVector2(enemyOffset);
 
 			if (embeddedTarget != null)
 				writer.Write(embeddedTarget.whoAmI);
@@ -552,7 +552,7 @@ namespace StarlightRiver.Content.Items.Haunted
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
 			embedded = reader.ReadBoolean();
-			enemyOffset = reader.ReadPackedVector2();
+			enemyOffset = reader.ReadVector2();
 			int embeddedTargetId = reader.ReadInt32();
 
 			if (embeddedTargetId >= 0)

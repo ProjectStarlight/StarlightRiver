@@ -287,7 +287,8 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 13, new NoTip(), factor => 8, factor => Colors["TrailColor"] * factor.X * FadeOut());
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 13, new NoTip(), factor => 8, factor => Colors["TrailColor"] * factor.X * FadeOut());
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
@@ -314,7 +315,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 				effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.05f);
 				effect.Parameters["repeats"].SetValue(1);
 				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "GlowTrail").Value);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail);
 
 				trail?.Render(effect);
 				trail2?.Render(effect);

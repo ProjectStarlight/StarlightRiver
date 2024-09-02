@@ -133,7 +133,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		private void ManageTrail(ref Trail trail, List<Vector2> cache, int width)
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 40, new NoTip(), factor => width, factor => new Color(255, 100 + (int)(100 * (float)Math.Sin(TimeFade * 3.14f)), 65) * (float)Math.Sin(TimeFade * 3.14f) * 0.5f);
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 40, new NoTip(), factor => width, factor => new Color(255, 100 + (int)(100 * (float)Math.Sin(TimeFade * 3.14f)), 65) * (float)Math.Sin(TimeFade * 3.14f) * 0.5f);
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = cache[39];
@@ -150,11 +151,11 @@ namespace StarlightRiver.Content.Items.Vitric
 			effect.Parameters["time"].SetValue(Projectile.timeLeft * 0.01f);
 			effect.Parameters["repeats"].SetValue(6);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
 			trail?.Render(effect);
 
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
 
 			trail?.Render(effect);
 		}

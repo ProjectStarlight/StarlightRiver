@@ -62,14 +62,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			if (Timer < 120)
 			{
 				float alpha = Math.Min(Timer / 20f, 1);
-				Texture2D tex = Request<Texture2D>(AssetDirectory.VitricBoss + "SpikeSource").Value;
+				Texture2D tex = Assets.Bosses.VitricBoss.SpikeSource.Value;
 				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * alpha, 0, tex.Size() / 2, 1, 0, 0);
 			}
 
 			if (Timer > 90)
 			{
-				Texture2D spike = Request<Texture2D>(AssetDirectory.VitricBoss + "BossSpike").Value;
-				Texture2D glow = Request<Texture2D>(AssetDirectory.VitricBoss + "BossSpikeGlow").Value;
+				Texture2D spike = Assets.Bosses.VitricBoss.BossSpike.Value;
+				Texture2D glow = Assets.Bosses.VitricBoss.BossSpikeGlow.Value;
 
 				var rand = new Random(Projectile.GetHashCode());
 
@@ -91,7 +91,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			if (Timer < 120)
 			{
 				float alpha = Math.Min(Timer / 90f, 1);
-				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
+				Texture2D tex = Assets.Keys.GlowSoft.Value;
 				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 200, 100) * alpha, 0, tex.Size() / 2, 1, 0, 0);
 			}
 
@@ -99,10 +99,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			{
 				float alpha = (float)Math.Sin((Timer - 90) / 40f * 3.14f);
 
-				Texture2D texShine = Request<Texture2D>("StarlightRiver/Assets/Keys/Shine").Value;
+				Texture2D texShine = Assets.Keys.Shine.Value;
 				Vector2 pos = Projectile.Center - Main.screenPosition;
 
-				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/GUI/ItemGlow").Value;
+				Texture2D tex = Assets.GUI.ItemGlow.Value;
 				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 200, 50) * alpha * 0.5f, Main.GameUpdateCount / 20f, tex.Size() / 2, alpha * 1.5f, 0, 0);
 				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * alpha * 0.5f, Main.GameUpdateCount / 22f, tex.Size() / 2, alpha * 1.1f, 0, 0);
 			}

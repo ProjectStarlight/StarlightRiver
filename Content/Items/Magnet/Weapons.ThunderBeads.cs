@@ -201,7 +201,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			if (embedded)
 			{
 				Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
-				Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "Glow").Value;
+				Texture2D bloomTex = Assets.Keys.Glow.Value;
 				for (int i = 0; i < cache.Count - 1; i++)
 				{
 					if (i % 3 != 0)
@@ -239,22 +239,28 @@ namespace StarlightRiver.Content.Items.Magnet
 		private void ManageTrails()
 		{
 			Vector2 endPoint = embedded ? target.Center : cache[segments];
-			trail ??= new Trail(Main.instance.GraphicsDevice, segments + 1, new NoTip(), factor => 16, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X > 0.99f)
-					return Color.Transparent;
+				trail = new Trail(Main.instance.GraphicsDevice, segments + 1, new NoTip(), factor => 16, factor =>
+							{
+								if (factor.X > 0.99f)
+									return Color.Transparent;
 
-				return new Color(160, 220, 255) * fade * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X);
-			});
+								return new Color(160, 220, 255) * fade * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X);
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = endPoint;
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, segments + 1, new NoTip(), factor => 3 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
+			if (trail2 is null || trail2.IsDisposed)
 			{
-				float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
-				return Color.Lerp(baseColor, endColor, EaseFunction.EaseCubicIn.Ease(1 - progress)) * fade * progress;
-			});
+				trail2 = new Trail(Main.instance.GraphicsDevice, segments + 1, new NoTip(), factor => 3 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
+							{
+								float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
+								return Color.Lerp(baseColor, endColor, EaseFunction.EaseCubicIn.Ease(1 - progress)) * fade * progress;
+							});
+			}
 
 			trail2.Positions = cache2.ToArray();
 			trail2.NextPosition = endPoint;
@@ -272,7 +278,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
 			effect.Parameters["repeats"].SetValue(1f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 
 			trail?.Render(effect);
 			trail2?.Render(effect);

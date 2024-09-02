@@ -320,7 +320,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		private void DrawPredictor(Vector2 screenPos)
 		{
-			Texture2D predictorTex = Request<Texture2D>(AssetDirectory.Keys + "Shine").Value;
+			Texture2D predictorTex = Assets.Keys.Shine.Value;
 			float rot = bowArmRotation + 1.57f;
 
 			float charge = EaseFunction.EaseQuadInOut.Ease(MathHelper.Clamp(BowFrameCounter / 100f, 0, 1));
@@ -338,7 +338,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		private void DrawLaserArrow(Vector2 screenPos)
 		{
-			Texture2D arrowTex = Request<Texture2D>(AssetDirectory.GauntletNpc + "PelterConstructArrowLarge").Value;
+			Texture2D arrowTex = Assets.NPCs.Vitric.Gauntlet.PelterConstructArrowLarge.Value;
 
 			float rot = bowArmRotation;
 			Vector2 pos = BowPos + bowArmRotation.ToRotationVector2() * 25 - screenPos;
@@ -477,14 +477,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		public override void SafeSendExtraAI(BinaryWriter writer)
 		{
-			writer.WritePackedVector2(posToBe);
-			writer.WritePackedVector2(oldPos);
+			writer.WriteVector2(posToBe);
+			writer.WriteVector2(oldPos);
 		}
 
 		public override void SafeReceiveExtraAI(BinaryReader reader)
 		{
-			posToBe = reader.ReadPackedVector2();
-			oldPos = reader.ReadPackedVector2();
+			posToBe = reader.ReadVector2();
+			oldPos = reader.ReadVector2();
 		}
 	}
 
@@ -530,11 +530,11 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.04f);
 			effect.Parameters["repeats"].SetValue((int)Projectile.ai[0] / 5);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
 			trail?.Render(effect);
 
-			effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
 
 			trail?.Render(effect);
 			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
@@ -619,7 +619,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, (int)Projectile.ai[0], new NoTip(), factor => 14 * fade, factor => new Color(255, 100, 65) * 0.5f * (float)Math.Sqrt(factor.X));
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, (int)Projectile.ai[0], new NoTip(), factor => 14 * fade, factor => new Color(255, 100, 65) * 0.5f * (float)Math.Sqrt(factor.X));
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
@@ -627,7 +628,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		public void DrawAdditive(SpriteBatch sb)
 		{
-			Texture2D tex = Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
+			Texture2D tex = Assets.Keys.GlowSoft.Value;
 
 			Color color = Color.OrangeRed;
 			for (int i = 0; i < 6; i++)

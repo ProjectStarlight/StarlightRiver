@@ -171,7 +171,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			if (line.Mod == "Terraria" && line.Name == "ItemName")
 			{
 				Effect effect = Filters.Scene["CursedTooltip"].GetShader().Shader;
-				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
+				Texture2D tex = Assets.Keys.Glow.Value;
 
 				if (effect is null)
 					return true;

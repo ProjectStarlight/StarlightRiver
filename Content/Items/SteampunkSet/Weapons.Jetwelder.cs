@@ -598,8 +598,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			if (Player.HeldItem.type != ModContent.ItemType<Jetwelder>() || Player.whoAmI != Main.myPlayer)
 				return;
 
-			Texture2D barTex = ModContent.Request<Texture2D>(AssetDirectory.SteampunkItem + "JetwelderBar").Value;
-			Texture2D glowTex = ModContent.Request<Texture2D>(AssetDirectory.SteampunkItem + "JetwelderBar_Glow").Value;
+			Texture2D barTex = Assets.Items.SteampunkSet.JetwelderBar.Value;
+			Texture2D glowTex = Assets.Items.SteampunkSet.JetwelderBar_Glow.Value;
 
 			Vector2 drawPos = Player.MountedCenter - Main.screenPosition - new Vector2(0, 40 - Player.gfxOffY);
 

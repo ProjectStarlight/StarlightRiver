@@ -132,12 +132,12 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
+			Texture2D tex = Assets.Keys.GlowAlpha.Value;
 
 			Effect effect = StarlightRiver.Instance.Assets.Request<Effect>("Effects/FrostAura").Value;
 
 			effect.Parameters["drawTexture"].SetValue(tex);
-			effect.Parameters["noiseTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/SwirlyNoiseLooping").Value);
+			effect.Parameters["noiseTexture"].SetValue(Assets.Noise.SwirlyNoiseLooping.Value);
 
 			effect.Parameters["time"].SetValue(visualTimer / 250f);
 			effect.Parameters["incolor"].SetValue(GetAuroraColor(0).ToVector3() * AuroraPercent);
@@ -154,7 +154,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			for (int k = 0; k < 3; k++)
 			{
-				Texture2D texStar = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/StarAlpha").Value;
+				Texture2D texStar = Assets.Keys.StarAlpha.Value;
 
 				Color color = GetAuroraColor(k / 3f * 1.5f) * AuroraPercent;
 				color.A = 0;

@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.NPCs.Town
 			NPC.dontTakeDamage = true;
 			NPC.dontCountMe = true;
 
-			manager = new("Localization/Dialog/TestDialog.json", NPC);
+			manager = new("TestDialog.json", NPC);
 		}
 
 		public override string GetChat()
@@ -90,10 +90,10 @@ namespace StarlightRiver.Content.NPCs.Town
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) //Temporary solution untill this can be drawn by the structure
 		{
-			spriteBatch.Draw(ModContent.Request<Texture2D>(AssetDirectory.GUI + "EnchantOver").Value, NPC.Center + new Vector2(0, -300) - Main.screenPosition, null, Color.White, 0, Vector2.One * 160, 1, 0, 0);
+			spriteBatch.Draw(Assets.GUI.EnchantOver.Value, NPC.Center + new Vector2(0, -300) - Main.screenPosition, null, Color.White, 0, Vector2.One * 160, 1, 0, 0);
 
 			if (!enchanting)
-				spriteBatch.Draw(ModContent.Request<Texture2D>(AssetDirectory.GUI + "EnchantSlotClosed").Value, NPC.Center + new Vector2(0, -500) - Main.screenPosition, new Rectangle(0, 0, 34, 34), Color.White, 0, Vector2.One * 17, 1, 0, 0);
+				spriteBatch.Draw(Assets.GUI.EnchantSlotClosed.Value, NPC.Center + new Vector2(0, -500) - Main.screenPosition, new Rectangle(0, 0, 34, 34), Color.White, 0, Vector2.One * 17, 1, 0, 0);
 
 			return true;
 		}

@@ -260,8 +260,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 			//the lines connecting back to the owner
 			Texture2D tex = Terraria.GameContent.TextureAssets.MagicPixel.Value;
-			Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value;
-			Texture2D tex3 = ModContent.Request<Texture2D>("StarlightRiver/Assets/MotionTrail").Value;
+			Texture2D tex2 = Assets.EnergyTrail.Value;
+			Texture2D tex3 = Assets.MotionTrail.Value;
 
 			float strength = (0.2f + (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.05f) * (healPower * 2);
 

@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Scrap Pod");
-			Tooltip.SetDefault("Shatters into scrapnel after reaching the mouse cursor");
+			Tooltip.SetDefault("Shatters into scrapnel after reaching your cursor");
 		}
 
 		public override void SetDefaults()
@@ -110,7 +110,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			SpriteEffects spriteEffects = Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-			Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D texture = Assets.Items.Breacher.ScrappodProjectile.Value;
 
 			int frameHeight = texture.Height / Main.projFrames[Projectile.type];
 			int startY = frameHeight * Projectile.frame;

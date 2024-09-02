@@ -275,14 +275,14 @@ namespace StarlightRiver.Content.Items.Breacher
 		public override void SendExtraAI(BinaryWriter writer)
 		{
 			writer.Write(stuck);
-			writer.WritePackedVector2(offset);
+			writer.WriteVector2(offset);
 			writer.Write(enemyID);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
 			stuck = reader.ReadBoolean();
-			offset = reader.ReadPackedVector2();
+			offset = reader.ReadVector2();
 			enemyID = reader.ReadInt32();
 		}
 
@@ -416,7 +416,8 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 20, new NoTip(), factor => factor * 6, factor => new Color(255, 50, 180));
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 20, new NoTip(), factor => factor * 6, factor => new Color(255, 50, 180));
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
@@ -431,7 +432,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 			effect.Parameters["progress"].SetValue(MathHelper.Lerp(Projectile.timeLeft / 60f, 0, 0.3f));
 
 			trail?.Render(effect);

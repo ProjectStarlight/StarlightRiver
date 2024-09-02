@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.NPCs.Permafrost
 
 		public void DrawToTarget(SpriteBatch spriteBatch)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/MagicPixel").Value;
+			Texture2D tex = Assets.MagicPixel.Value;
 			Vector2 pos = (NPC.position - Main.screenPosition) / 2f;
 			var target = new Rectangle((int)pos.X, (int)pos.Y, NPC.width / 2, NPC.height / 2);
 

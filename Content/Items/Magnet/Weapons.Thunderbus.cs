@@ -454,7 +454,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			if (point1 == Vector2.Zero || point2 == Vector2.Zero)
 				return;
 
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value;
+			Texture2D tex = Assets.GlowTrail.Value;
 
 			for (int k = 1; k < nodes.Count; k++)
 			{
@@ -494,13 +494,16 @@ namespace StarlightRiver.Content.Items.Magnet
 
 		private void ManageTrails()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => 40 + power, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X > 0.99f)
-					return Color.Transparent;
+				trail = new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => 40 + power, factor =>
+							{
+								if (factor.X > 0.99f)
+									return Color.Transparent;
 
-				return new Color(160, 220, 255) * 0.05f * (Projectile.extraUpdates == 0 ? Projectile.timeLeft / 15f : 1);
-			});
+								return new Color(160, 220, 255) * 0.05f * (Projectile.extraUpdates == 0 ? Projectile.timeLeft / 15f : 1);
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center;
@@ -517,7 +520,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
 			effect.Parameters["repeats"].SetValue(1f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 
 			trail?.Render(effect);
 		}
@@ -698,8 +701,8 @@ namespace StarlightRiver.Content.Items.Magnet
 			float scale = 0;
 			float opacity = 1;
 
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
-			Texture2D texRing = ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/BombTell").Value;
+			Texture2D tex = Assets.Keys.GlowSoft.Value;
+			Texture2D texRing = Assets.Bosses.VitricBoss.BombTell.Value;
 
 			if (Projectile.timeLeft <= 30)
 			{
@@ -753,32 +756,38 @@ namespace StarlightRiver.Content.Items.Magnet
 
 		private void ManageTrails()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => 10 + factor * 4 + (Projectile.timeLeft <= 30 ? Helper.SwoopEase(1 - Projectile.timeLeft / 30f) * 30 : 0), factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X > 0.95f)
-					return Color.Transparent;
+				trail = new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => 10 + factor * 4 + (Projectile.timeLeft <= 30 ? Helper.SwoopEase(1 - Projectile.timeLeft / 30f) * 30 : 0), factor =>
+							{
+								if (factor.X > 0.95f)
+									return Color.Transparent;
 
-				float mul = 1;
-				if (Projectile.timeLeft < 30)
-					mul = Helper.SwoopEase(Projectile.timeLeft / 30f);
+								float mul = 1;
+								if (Projectile.timeLeft < 30)
+									mul = Helper.SwoopEase(Projectile.timeLeft / 30f);
 
-				return new Color(100, 220, 255) * factor.X * (0.5f + (float)Math.Sin(Main.GameUpdateCount * 0.15f) * 0.25f) * mul;
-			});
+								return new Color(100, 220, 255) * factor.X * (0.5f + (float)Math.Sin(Main.GameUpdateCount * 0.15f) * 0.25f) * mul;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Vector2.UnitX.RotatedBy(Main.GameUpdateCount * 0.1f + 11 / 10f * 3) * 60;
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => 10 + factor * 4 + (Projectile.timeLeft <= 30 ? Helper.SwoopEase(1 - Projectile.timeLeft / 30f) * 30 : 0), factor =>
+			if (trail2 is null || trail2.IsDisposed)
 			{
-				if (factor.X > 0.95f)
-					return Color.Transparent;
+				trail2 = new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => 10 + factor * 4 + (Projectile.timeLeft <= 30 ? Helper.SwoopEase(1 - Projectile.timeLeft / 30f) * 30 : 0), factor =>
+							{
+								if (factor.X > 0.95f)
+									return Color.Transparent;
 
-				float mul = 1;
-				if (Projectile.timeLeft < 30)
-					mul = Helper.SwoopEase(Projectile.timeLeft / 30f);
+								float mul = 1;
+								if (Projectile.timeLeft < 30)
+									mul = Helper.SwoopEase(Projectile.timeLeft / 30f);
 
-				return new Color(100, 220, 255) * factor.X * (0.5f + (float)Math.Cos(Main.GameUpdateCount * 0.15f + 3.14f) * 0.25f) * mul;
-			});
+								return new Color(100, 220, 255) * factor.X * (0.5f + (float)Math.Cos(Main.GameUpdateCount * 0.15f + 3.14f) * 0.25f) * mul;
+							});
+			}
 
 			trail2.Positions = cache2.ToArray();
 			trail2.NextPosition = Projectile.Center + Vector2.UnitY.RotatedBy(Main.GameUpdateCount * 0.1f + 11 / 10f * 3) * 60;
@@ -795,7 +804,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
 			effect.Parameters["repeats"].SetValue(1f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/LightningTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.LightningTrail.Value);
 
 			trail?.Render(effect);
 			trail2?.Render(effect);

@@ -137,10 +137,12 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 15, new RoundedTip(12), factor => (10 + factor * 25) * TRAIL_WIDTH, factor => new Color(120, 20 + (int)(100 * factor.X), 255) * factor.X * charge);
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 15, new RoundedTip(12), factor => (10 + factor * 25) * TRAIL_WIDTH, factor => new Color(120, 20 + (int)(100 * factor.X), 255) * factor.X * charge);
 			trail.Positions = cache.ToArray();
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 15, new RoundedTip(6), factor => (80 + 0 + factor * 0) * TRAIL_WIDTH, factor => new Color(100, 20 + (int)(60 * factor.X), 255) * factor.X * 0.15f * charge);
+			if (trail2 is null || trail2.IsDisposed)
+				trail2 = new Trail(Main.instance.GraphicsDevice, 15, new RoundedTip(6), factor => (80 + 0 + factor * 0) * TRAIL_WIDTH, factor => new Color(100, 20 + (int)(60 * factor.X), 255) * factor.X * 0.15f * charge);
 			trail2.Positions = cache.ToArray();
 
 			if (Projectile.velocity.Length() > 1)
@@ -161,8 +163,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
 			effect.Parameters["repeats"].SetValue(8f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
-			effect.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Moonstone/DatsuzeiFlameMap2").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+			effect.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
 
 			trail?.Render(effect);
 
@@ -173,8 +175,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = Request<Texture2D>(Texture).Value;
-			Texture2D whiteTex = Request<Texture2D>(Texture + "_White").Value;
+			Texture2D tex = Assets.Items.Moonstone.MoonstoneArrow.Value;
+			Texture2D whiteTex = Assets.Items.Moonstone.MoonstoneArrow_White.Value;
 
 			var glowColor = new Color(100, 20, 255, 0);
 

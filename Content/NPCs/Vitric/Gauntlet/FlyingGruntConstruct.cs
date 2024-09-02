@@ -534,8 +534,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			//frames are being used like cursed timers, maybe TODO: rework this
 			writer.Write(xFrame);
 			writer.Write(yFrame);
-			writer.WritePackedVector2(movementTarget);
-			writer.WritePackedVector2(oldPosition);
+			writer.WriteVector2(movementTarget);
+			writer.WriteVector2(oldPosition);
 
 			brownianMotionRandSeed = Main.rand.Next(int.MaxValue);
 			brownianRand = new(brownianMotionRandSeed);
@@ -547,8 +547,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		{
 			xFrame = reader.ReadInt32();
 			yFrame = reader.ReadInt32();
-			movementTarget = reader.ReadPackedVector2();
-			oldPosition = reader.ReadPackedVector2();
+			movementTarget = reader.ReadVector2();
+			oldPosition = reader.ReadVector2();
 			brownianMotionRandSeed = reader.ReadInt32();
 
 			brownianRand = new(brownianMotionRandSeed);

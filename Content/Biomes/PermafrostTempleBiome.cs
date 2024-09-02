@@ -9,8 +9,6 @@ namespace StarlightRiver.Content.Biomes
 		/// </summary>
 		public bool oldSmartCursor = false;
 
-		public static bool anyoneInside = false;
-
 		public override int Music => MusicLoader.GetMusicSlot("StarlightRiver/Sounds/Music/SquidArena");
 
 		public override SceneEffectPriority Priority => SceneEffectPriority.BiomeHigh;
@@ -32,8 +30,6 @@ namespace StarlightRiver.Content.Biomes
 				Main.SmartCursorWanted_Mouse = false;
 				Main.SmartCursorWanted_GamePad = false; // Is this ever even used?
 			}
-
-			anyoneInside = true;
 		}
 
 		public override void OnEnter(Player player)
@@ -49,8 +45,6 @@ namespace StarlightRiver.Content.Biomes
 				Main.SmartCursorWanted_Mouse = oldSmartCursor;
 				Main.SmartCursorWanted_GamePad = oldSmartCursor; // Is this ever even used?
 			}
-
-			anyoneInside = false;
 		}
 	}
 }

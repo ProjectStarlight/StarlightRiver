@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.GUI;
 using StarlightRiver.Helpers;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -71,6 +72,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			if (player.whoAmI != Main.myPlayer)
 				return;
+
+			ArmorChargeUI.SetMessage($"{shardCount}/3");
 
 			if (shardCount < 3 && !loaded)
 			{

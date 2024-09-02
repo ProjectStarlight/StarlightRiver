@@ -19,8 +19,8 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public StoneOfTheDrowned() : base("Stone of the Drowned",
 			"+30 {{barrier}}\n" +
-			"Increases your max number of minions by 2 when you have no {{barrier}}\n" +
-			"Automatically re-summons two slots worth of minions when you reach 0 {{barrier}}")
+			"Increases your max minions by 2 when you have no {{barrier}}\n" +
+			"Re-summons two slots worth of minions when you reach 0 {{barrier}}")
 		{ }
 
 		public override void Load()

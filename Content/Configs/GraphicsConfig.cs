@@ -22,11 +22,6 @@ namespace StarlightRiver.Content.Configs
 		[DefaultValue(5f)]
 		public int LightingPollRate = 5;
 
-		[Label("Scrolling Lighting Buffer Building")]
-		[Tooltip("Causes the lighting buffer to be built over its poll rate instead of all at once. \nMay help normalize lag spikes but cause strange lighting artifacts.")]
-		[DefaultValue(false)]
-		public bool ScrollingLightingPoll = false;
-
 		[Label("Extra Particles")]
 		[Tooltip("Enables/Disables special particles. \nDisable this if you have performance issues.")]
 		[DefaultValue(true)]

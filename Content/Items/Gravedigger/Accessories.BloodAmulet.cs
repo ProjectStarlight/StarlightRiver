@@ -179,7 +179,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new NoTip(), factor => 20 * factor * fade, factor => Color.Lerp(Color.Black, Color.Red, factor.X));
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new NoTip(), factor => 20 * factor * fade, factor => Color.Lerp(Color.Black, Color.Red, factor.X));
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
@@ -196,7 +197,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount);
 			effect.Parameters["repeats"].SetValue(2f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
 
 			trail?.Render(effect);
 		}

@@ -313,11 +313,14 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => 4, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				Color trailColor = Color.White;
-				return trailColor * 0.3f;
-			});
+				trail = new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => 4, factor =>
+							{
+								Color trailColor = Color.White;
+								return trailColor * 0.3f;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
@@ -333,7 +336,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/MotionTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.MotionTrail.Value);
 
 			trail?.Render(effect);
 

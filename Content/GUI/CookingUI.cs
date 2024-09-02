@@ -189,7 +189,7 @@ namespace StarlightRiver.Content.GUI
 
 				if (lineCount > 5)
 				{
-					Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/GUI/Arrow").Value;
+					Texture2D tex = Assets.GUI.Arrow.Value;
 
 					spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Rectangle((int)Basepos.X + 352, (int)Basepos.Y + 60, 4, 80), new Color(20, 20, 10) * 0.5f);
 					spriteBatch.Draw(tex, Basepos + new Vector2(354, 60 + scrollStart / (float)(lineCount - 5) * 80), null, Color.White, 0, tex.Size() / 2, 1, 0, 0);
@@ -301,12 +301,12 @@ namespace StarlightRiver.Content.GUI
 				}
 			}
 
-			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/GUI/CookSlotY").Value;
+			Texture2D tex = Assets.GUI.CookSlotY.Value;
 			switch (Type)
 			{
-				case IngredientType.Main: tex = Request<Texture2D>("StarlightRiver/Assets/GUI/CookSlotY").Value; break;
-				case IngredientType.Side: tex = Request<Texture2D>("StarlightRiver/Assets/GUI/CookSlotG").Value; break;
-				case IngredientType.Seasoning: tex = Request<Texture2D>("StarlightRiver/Assets/GUI/CookSlotB").Value; break;
+				case IngredientType.Main: tex = Assets.GUI.CookSlotY.Value; break;
+				case IngredientType.Side: tex = Assets.GUI.CookSlotG.Value; break;
+				case IngredientType.Seasoning: tex = Assets.GUI.CookSlotB.Value; break;
 			}
 
 			spriteBatch.Draw(tex, GetDimensions().Position(), tex.Frame(), Color.White, 0, Vector2.Zero, 1, 0, 0);
