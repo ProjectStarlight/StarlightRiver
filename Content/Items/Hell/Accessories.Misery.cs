@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Items.Hell
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Misery's Company");
-			Tooltip.SetDefault("Nearby enemies have defense and innoculation equal to yours");
+			Tooltip.SetDefault("Nearby enemies have defense and inoculation equal to yours");
 		}
 
 		private void RecordStats(StarlightPlayer player)
