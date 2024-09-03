@@ -1,8 +1,10 @@
-﻿using System;
+﻿using StarlightRiver.Content.Prefixes.Accessory.Cursed;
+using System;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
+using Terraria.Utilities;
 
 namespace StarlightRiver.Content.Items.BaseTypes
 {
@@ -54,6 +56,12 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			particle.Scale *= 0.97f;
 			particle.Position += particle.Velocity;
 			particle.Timer--;
+		}
+
+		public override int ChoosePrefix(UnifiedRandom rand)
+		{
+			var pool = CursedPrefixPool.GetCursedPrefixes();
+			return pool[rand.Next(pool.Count)];
 		}
 
 		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
