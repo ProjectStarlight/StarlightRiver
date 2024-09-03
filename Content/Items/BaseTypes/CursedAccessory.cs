@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public override int ChoosePrefix(UnifiedRandom rand)
 		{
-			var pool = CursedPrefixPool.GetCursedPrefixes();
+			System.Collections.Generic.List<int> pool = CursedPrefixPool.GetCursedPrefixes();
 			return pool[rand.Next(pool.Count)];
 		}
 

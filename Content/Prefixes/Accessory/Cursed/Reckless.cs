@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Prefixes.Accessory.Cursed
 			tooltips.Add(new TooltipLine(StarlightRiver.Instance, "RecklessTip2", "-4 defense")
 			{
 				IsModifier = true,
-				IsModifierBad = true		
+				IsModifierBad = true
 			});
 		}
 	}

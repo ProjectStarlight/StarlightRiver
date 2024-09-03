@@ -10,7 +10,7 @@ using Terraria.UI;
 
 namespace StarlightRiver.Content.Items.Utility
 {
-	class CursedDrop: ModItem
+	class CursedDrop : ModItem
 	{
 		public static float tooltipProgress;
 
@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Items.Utility
 		{
 			if (Main.mouseRight && Main.mouseItem.type == ModContent.ItemType<CursedDrop>() && inv.accessory && !(inv.ModItem is CursedAccessory))
 			{
-				var pool = CursedPrefixPool.GetCursedPrefixes();
+				List<int> pool = CursedPrefixPool.GetCursedPrefixes();
 				inv.prefix = pool[Main.rand.Next(pool.Count)];
 
 				SoundEngine.PlaySound(SoundID.NPCHit55.WithPitchOffset(0.2f));
@@ -62,14 +62,14 @@ namespace StarlightRiver.Content.Items.Utility
 			else
 			{
 				orig(ref inv, context);
-			}	
+			}
 		}
 
 		private void ApplyDrop2(On_ItemSlot.orig_RightClick_ItemArray_int_int orig, Item[] inv, int context, int slot)
 		{
 			if (Main.mouseRight && Main.mouseItem.type == ModContent.ItemType<CursedDrop>() && inv[slot].accessory && !(inv[slot].ModItem is CursedAccessory))
 			{
-				var pool = CursedPrefixPool.GetCursedPrefixes();
+				List<int> pool = CursedPrefixPool.GetCursedPrefixes();
 				inv[slot].prefix = pool[Main.rand.Next(pool.Count)];
 
 				SoundEngine.PlaySound(SoundID.NPCHit55.WithPitchOffset(0.2f));
