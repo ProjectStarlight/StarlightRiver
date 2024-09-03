@@ -30,14 +30,14 @@ namespace StarlightRiver.Content.Prefixes.Accessory.Cursed
 
 		public override void Update(Item Item, Player Player)
 		{
-			Player.GetModPlayer<BarrierPlayer>().maxBarrier += 30;
+			Player.GetModPlayer<BarrierPlayer>().maxBarrier += 40;
 			Player.GetModPlayer<BarrierPlayer>().barrierDamageReduction += 0.05f;
-			Player.statDefense -= 10;
+			Player.statDefense -= 6;
 		}
 
 		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
 		{
-			tooltips.Add(new TooltipLine(StarlightRiver.Instance, "EldritchTip1", "+30 {{Barrier}}")
+			tooltips.Add(new TooltipLine(StarlightRiver.Instance, "EldritchTip1", "+40 {{Barrier}}")
 			{
 				IsModifier = true
 			});
@@ -47,7 +47,7 @@ namespace StarlightRiver.Content.Prefixes.Accessory.Cursed
 				IsModifier = true
 			});
 
-			tooltips.Add(new TooltipLine(StarlightRiver.Instance, "EldritchTip3", "-10 defense")
+			tooltips.Add(new TooltipLine(StarlightRiver.Instance, "EldritchTip3", "-6 defense")
 			{
 				IsModifier = true,
 				IsModifierBad = true
