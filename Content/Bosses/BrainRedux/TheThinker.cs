@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override void SetStaticDefaults()
 		{
-			ModContent.GetInstance<PixelationSystem>().RegisterScreenTarget("ThinkerArena", "StarlightRiver/Assets/Bosses/BrainRedux/ShellColors", RenderLayer.OverPlayers);
+			//ModContent.GetInstance<PixelationSystem>().RegisterScreenTarget("ThinkerArena", "StarlightRiver/Assets/Bosses/BrainRedux/ShellColors", RenderLayer.OverPlayers);
 		}
 
 		public override void SetDefaults()
