@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarlightRiver.Core.Systems.FoliageLayerSystem;
+using System;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
@@ -48,11 +49,13 @@ namespace StarlightRiver.Content.Tiles.Forest
 			if (right && !up && down)
 			{
 				Texture2D tex = ModContent.Request<Texture2D>(Texture + "Top").Value;
-				Vector2 pos = (new Vector2(i + 1, j) + Helpers.Helper.TileAdj) * 16;
+
+				Vector2 pos = new Vector2(i + 1, j) * 16;
+				pos += Helpers.Helper.TileAdj * 16;
 
 				Color color = Lighting.GetColor(i, j);
 
-				spriteBatch.Draw(tex, pos - Main.screenPosition, null, color, GetLeafSway(3, 0.05f, 0.008f), new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
+				//spriteBatch.Draw(tex, pos - Main.screenPosition, null, color, GetLeafSway(3, 0.05f, 0.008f), new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
 
 				Texture2D tex2 = ModContent.Request<Texture2D>(AssetDirectory.ForestTile + "Godray").Value;
 				var godrayColor = new Color();
@@ -121,8 +124,12 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 				Color color = Lighting.GetColor(i, j);
 
-				spriteBatch.Draw(tex, pos + new Vector2(50, 40) - Main.screenPosition, null, color.MultiplyRGB(Color.Gray), GetLeafSway(0, 0.05f, 0.01f), new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
-				spriteBatch.Draw(tex, pos + new Vector2(-30, 80) - Main.screenPosition, null, color.MultiplyRGB(Color.DarkGray), GetLeafSway(2, 0.025f, 0.012f), new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
+				//spriteBatch.Draw(tex, pos + new Vector2(50, 40) - Main.screenPosition, null, color.MultiplyRGB(Color.Gray), GetLeafSway(0, 0.05f, 0.01f), new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
+				//spriteBatch.Draw(tex, pos + new Vector2(-30, 80) - Main.screenPosition, null, color.MultiplyRGB(Color.DarkGray), GetLeafSway(2, 0.025f, 0.012f), new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
+
+				FoliageLayerSystem.data.Add(new(tex, pos - Main.screenPosition, null, color, GetLeafSway(3, 0.05f, 0.008f), new Vector2(tex.Width / 2, tex.Height), 1, 0, 0));
+				FoliageLayerSystem.data.Add(new(tex, pos + new Vector2(50, 40) - Main.screenPosition, null, color.MultiplyRGB(Color.Gray), GetLeafSway(0, 0.05f, 0.01f), new Vector2(tex.Width / 2, tex.Height), 1, 0, 0));
+				FoliageLayerSystem.data.Add(new(tex, pos + new Vector2(-30, 80) - Main.screenPosition, null, color.MultiplyRGB(Color.DarkGray), GetLeafSway(2, 0.025f, 0.012f), new Vector2(tex.Width / 2, tex.Height), 1, 0, 0));
 			}
 
 			return true;
