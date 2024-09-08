@@ -49,7 +49,11 @@ namespace StarlightRiver.Content.Tiles.BaseTypes
 		public override bool RightClick(int i, int j)
 		{
 			var tile = Framing.GetTileSafely(i, j);
-			tile.TileFrameX++;
+
+			if (Main.LocalPlayer.controlDown)
+				tile.TileFrameY++;
+			else
+				tile.TileFrameX++;
 
 			return true;
 		}
