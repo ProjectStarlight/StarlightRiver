@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.FoliageLayerSystem;
+﻿using StarlightRiver.Core.Systems.DummyTileSystem;
+using StarlightRiver.Core.Systems.FoliageLayerSystem;
 using System;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -8,9 +9,11 @@ using Terraria.ObjectData;
 
 namespace StarlightRiver.Content.Tiles.Forest
 {
-	internal class ThickTree : ModTile
+	internal class ThickTree : DummyTile
 	{
 		public override string Texture => AssetDirectory.ForestTile + Name;
+
+		public override int DummyType => DummySystem.DummyType<ThickTreeDummy>();
 
 		public override void SetStaticDefaults()
 		{
@@ -24,9 +27,13 @@ namespace StarlightRiver.Content.Tiles.Forest
 			RegisterItemDrop(ItemID.Wood);
 		}
 
-		private float GetLeafSway(float offset, float magnitude, float speed)
+		public override bool SpawnConditions(int i, int j)
 		{
-			return (float)Math.Sin(Main.GameUpdateCount * speed + offset) * magnitude;
+			bool right = Framing.GetTileSafely(i + 1, j).TileType == ModContent.TileType<ThickTree>();
+			bool up = Framing.GetTileSafely(i, j - 1).TileType == ModContent.TileType<ThickTree>();
+			bool down = Framing.GetTileSafely(i, j + 1).TileType == ModContent.TileType<ThickTree>();
+
+			return right && !up && down;
 		}
 
 		public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
@@ -51,11 +58,9 @@ namespace StarlightRiver.Content.Tiles.Forest
 				Texture2D tex = ModContent.Request<Texture2D>(Texture + "Top").Value;
 
 				Vector2 pos = new Vector2(i + 1, j) * 16;
-				pos += Helpers.Helper.TileAdj * 16;
-
 				Color color = Lighting.GetColor(i, j);
 
-				//spriteBatch.Draw(tex, pos - Main.screenPosition, null, color, GetLeafSway(3, 0.05f, 0.008f), new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
+				pos += Helpers.Helper.TileAdj * 16;
 
 				Texture2D tex2 = ModContent.Request<Texture2D>(AssetDirectory.ForestTile + "Godray").Value;
 				var godrayColor = new Color();
@@ -123,19 +128,12 @@ namespace StarlightRiver.Content.Tiles.Forest
 				Vector2 pos = (new Vector2(i + 1, j) + Helpers.Helper.TileAdj) * 16;
 
 				Color color = Lighting.GetColor(i, j);
-
-				//spriteBatch.Draw(tex, pos + new Vector2(50, 40) - Main.screenPosition, null, color.MultiplyRGB(Color.Gray), GetLeafSway(0, 0.05f, 0.01f), new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
-				//spriteBatch.Draw(tex, pos + new Vector2(-30, 80) - Main.screenPosition, null, color.MultiplyRGB(Color.DarkGray), GetLeafSway(2, 0.025f, 0.012f), new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
-
-				FoliageLayerSystem.data.Add(new(tex, pos - Main.screenPosition, null, color, GetLeafSway(3, 0.05f, 0.008f), new Vector2(tex.Width / 2, tex.Height), 1, 0, 0));
-				FoliageLayerSystem.data.Add(new(tex, pos + new Vector2(50, 40) - Main.screenPosition, null, color.MultiplyRGB(Color.Gray), GetLeafSway(0, 0.05f, 0.01f), new Vector2(tex.Width / 2, tex.Height), 1, 0, 0));
-				FoliageLayerSystem.data.Add(new(tex, pos + new Vector2(-30, 80) - Main.screenPosition, null, color.MultiplyRGB(Color.DarkGray), GetLeafSway(2, 0.025f, 0.012f), new Vector2(tex.Width / 2, tex.Height), 1, 0, 0));
 			}
 
 			return true;
 		}
 
-		public override void NearbyEffects(int i, int j, bool closer)
+		public override void SafeNearbyEffects(int i, int j, bool closer)
 		{
 			bool left = Framing.GetTileSafely(i - 1, j).TileType == ModContent.TileType<ThickTree>();
 			bool right = Framing.GetTileSafely(i + 1, j).TileType == ModContent.TileType<ThickTree>();
@@ -204,6 +202,40 @@ namespace StarlightRiver.Content.Tiles.Forest
 			tile.TileFrameY = y;
 
 			return false;
+		}
+	}
+
+	class ThickTreeDummy : Dummy
+	{
+		public ThickTreeDummy() : base(ModContent.TileType<ThickTree>(), 1, 1) { }
+
+		public override bool ValidTile(Tile tile)
+		{
+			int i = ParentX;
+			int j = ParentY;
+
+			bool right = Framing.GetTileSafely(i + 1, j).TileType == ModContent.TileType<ThickTree>();
+			bool up = Framing.GetTileSafely(i, j - 1).TileType == ModContent.TileType<ThickTree>();
+			bool down = Framing.GetTileSafely(i, j + 1).TileType == ModContent.TileType<ThickTree>();
+
+			return right && !up && down;
+		}
+
+		private float GetLeafSway(float offset, float magnitude, float speed)
+		{
+			return (float)Math.Sin(Main.GameUpdateCount * speed + offset) * magnitude;
+		}
+
+		public override void PostDraw(Color lightColor)
+		{
+			Texture2D tex = Assets.Tiles.Forest.ThickTreeTop.Value;
+
+			Vector2 pos = Center;
+			Color color = lightColor;
+
+			FoliageLayerSystem.data.Add(new(tex, pos, null, color, GetLeafSway(3, 0.05f, 0.008f), new Vector2(tex.Width / 2, tex.Height), 1, 0, 0));
+			FoliageLayerSystem.data.Add(new(tex, pos + new Vector2(50, 40), null, color.MultiplyRGB(Color.Gray), GetLeafSway(0, 0.05f, 0.01f), new Vector2(tex.Width / 2, tex.Height), 1, 0, 0));
+			FoliageLayerSystem.data.Add(new(tex, pos + new Vector2(-30, 80), null, color.MultiplyRGB(Color.DarkGray), GetLeafSway(2, 0.025f, 0.012f), new Vector2(tex.Width / 2, tex.Height), 1, 0, 0));
 		}
 	}
 

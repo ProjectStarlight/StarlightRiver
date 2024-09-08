@@ -4124,6 +4124,7 @@ Tiles: {
 	VitricSand.MapEntry: ""
 	VitricSoftSand.MapEntry: ""
 	VitricSandPlain.MapEntry: ""
+	ChainVine.MapEntry: ""
 }
 
 Biomes: {

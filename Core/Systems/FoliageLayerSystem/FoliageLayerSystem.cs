@@ -20,15 +20,8 @@ namespace StarlightRiver.Core.Systems.FoliageLayerSystem
 			AlphaDestinationBlend = Blend.One
 		};
 
-		public override void Load()
+		public override void PostDrawTiles()
 		{
-			On_Main.DrawTileEntities += DrawFoliage;
-		}
-
-		private void DrawFoliage(On_Main.orig_DrawTileEntities orig, Main self, bool solidLayer, bool overRenderTargets, bool intoRenderTargets)
-		{
-			orig(self, solidLayer, overRenderTargets, intoRenderTargets);
-
 			DrawBlacks(Main.spriteBatch);
 			DrawReals(Main.spriteBatch);
 
@@ -43,6 +36,7 @@ namespace StarlightRiver.Core.Systems.FoliageLayerSystem
 			{
 				DrawData black = data;
 				black.color = Color.Black;
+				black.position -= Main.screenPosition;
 				black.Draw(spriteBatch);
 			}
 
@@ -55,7 +49,9 @@ namespace StarlightRiver.Core.Systems.FoliageLayerSystem
 
 			foreach (DrawData data in data)
 			{
-				data.Draw(spriteBatch);
+				DrawData posed = data;
+				posed.position -= Main.screenPosition;
+				posed.Draw(spriteBatch);
 			}
 
 			spriteBatch.End();
