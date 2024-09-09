@@ -3613,6 +3613,36 @@ Items: {
 		DisplayName: Gray Matter
 		Tooltip: You can see it thinking
 	}
+
+	GraymatterDeco1x4Item: {
+		DisplayName: Gray Nerve (1x4)
+		Tooltip: ""
+	}
+
+	GraymatterDeco2x3Item: {
+		DisplayName: Gray Nerve (2x3)
+		Tooltip: ""
+	}
+
+	GraymatterDeco2x2Item: {
+		DisplayName: Gray Nerve (2x2)
+		Tooltip: ""
+	}
+
+	GraymatterDeco1x2Item: {
+		DisplayName: Gray Nerve (1x2)
+		Tooltip: ""
+	}
+
+	GraymatterDeco3x3Item: {
+		DisplayName: Gray Nerve (3x3)
+		Tooltip: ""
+	}
+
+	GraymatterDeco1x1Item: {
+		DisplayName: Gray Nerve (1x1)
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -4170,6 +4200,12 @@ Tiles: {
 	VitricSand.MapEntry: ""
 	VitricSoftSand.MapEntry: ""
 	VitricSandPlain.MapEntry: ""
+	GraymatterDeco1x4.MapEntry: ""
+	GraymatterDeco2x3.MapEntry: ""
+	GraymatterDeco2x2.MapEntry: ""
+	GraymatterDeco1x2.MapEntry: ""
+	GraymatterDeco3x3.MapEntry: ""
+	GraymatterDeco1x1.MapEntry: ""
 }
 
 Biomes: {

@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Buffs;
+using System.Collections.Generic;
 using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Tiles.Crimson
@@ -11,12 +12,17 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 	internal class GrayMatter : ModTile
 	{
+		/// <summary>
+		/// List of tiles with graymatter emissions. This isnt the most elegant solution and should probably go elsewhere? TODO: Migrate this somewhere
+		/// </summary>
+		public static List<int> grayEmissionTypes = new();
+
 		public override string Texture => "StarlightRiver/Assets/Tiles/Crimson/" + Name;
 
 		public override void Load()
 		{
 			GraymatterBiome.onDrawHallucinationMap += DrawTileMap;
-			GraymatterBiome.onDrawOverPerTile += DrawRealVersion;
+			GraymatterBiome.onDrawOverPerTile += DrawRealVersion;		
 		}
 
 		public override void SetStaticDefaults()
@@ -34,6 +40,7 @@ namespace StarlightRiver.Content.Tiles.Crimson
 			RegisterItemDrop(ModContent.ItemType<GrayMatterItem>());
 
 			AddMapEntry(new Color(167, 180, 191));
+			grayEmissionTypes.Add(Type);
 		}
 
 		private void DrawTileMap(SpriteBatch spriteBatch)
@@ -50,7 +57,8 @@ namespace StarlightRiver.Content.Tiles.Crimson
 				{
 					Point16 target = pos + new Point16(x, y);
 
-					if (Framing.GetTileSafely(target).TileType == ModContent.TileType<GrayMatter>())
+					var tileType = Framing.GetTileSafely(target).TileType;
+					if (grayEmissionTypes.Contains(tileType))
 					{
 						Vector2 drawPos = target.ToVector2() * 16 + Vector2.One * 8 - Main.screenPosition;
 						Color color = Color.White;
@@ -62,7 +70,8 @@ namespace StarlightRiver.Content.Tiles.Crimson
 						{
 							for (int y2 = -1; y2 <= 1; y2++)
 							{
-								if (Framing.GetTileSafely(target + new Point16(x2, y2)).TileType == ModContent.TileType<GrayMatter>())
+								var adjTileType = Framing.GetTileSafely(target + new Point16(x2, y2)).TileType;
+								if (grayEmissionTypes.Contains(adjTileType))
 									color *= 0.82f;
 							}
 						}
@@ -79,10 +88,18 @@ namespace StarlightRiver.Content.Tiles.Crimson
 			var target = new Point16(x, y);
 			Tile tile = Framing.GetTileSafely(target);
 
-			if (tile.TileType == ModContent.TileType<GrayMatter>())
+			if (grayEmissionTypes.Contains(tile.TileType))
 			{
-				Texture2D tex = Assets.Tiles.Crimson.GrayMatterOver.Value;
-				spriteBatch.Draw(tex, target.ToVector2() * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), Color.White);
+				if (tile.TileType == ModContent.TileType<GrayMatter>())
+				{
+					Texture2D tex = Assets.Tiles.Crimson.GrayMatterOver.Value;
+					spriteBatch.Draw(tex, target.ToVector2() * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), Color.White);
+				}
+				else
+				{
+					Texture2D tex = Terraria.GameContent.TextureAssets.Tile[tile.TileType].Value;
+					spriteBatch.Draw(tex, target.ToVector2() * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), Color.White);
+				}
 			}
 		}
 
