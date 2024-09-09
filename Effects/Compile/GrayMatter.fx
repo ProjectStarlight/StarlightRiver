@@ -24,6 +24,11 @@ sampler2D InputLayer3 = sampler_state
     texture = <over>;
 };
 
+float GetLuminance(float3 color)
+{
+    return dot(color, float3(0.299, 0.587, 0.114));
+}
+
 float time;
 float2 screensize;
 float2 screenpos;
@@ -46,7 +51,7 @@ float4 main(float2 uv : TEXCOORD0) : COLOR0
     st += push * distortionpow * light;
     float3 final = tex2D(InputLayer0,st).xyz;
     
-    float gray = (final.r + final.g + final.b) / 3.0;
+    float gray = GetLuminance(final);
     float power = min(1.0, tex2D(InputLayer1,st).x * 1.5 + push * 1.5);
     float3 grayscale = float3(gray, gray, gray) * power + final * (1.0 - power);
     final = grayscale;
