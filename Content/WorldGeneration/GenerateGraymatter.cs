@@ -54,12 +54,42 @@ namespace StarlightRiver.Core
 
 						if (!failedGray)
 						{
-							WorldGen.TileRunner(k - 5, y, 5, 16, ModContent.TileType<GrayMatter>(), true, 1, 0, true);
+							WorldGen.TileRunner(k - 2, y, 3, 25, ModContent.TileType<GrayMatter>(), true, 1f, 0, true);
+
+							GrayMatterSpike(k, y);
+
+							if (WorldGen.genRand.NextBool())
+								GrayMatterSpike(k + WorldGen.genRand.Next(-2, 3), y);
+
 							k += 30;
 						}
 					}
 				}
+			}
+		}
 
+		private void GrayMatterSpike(int x, int y)
+		{
+			int maxDown = WorldGen.genRand.Next(3, 6);
+			for (int down = 0; down < maxDown; down++)
+			{
+				WorldGen.PlaceTile(x, y, ModContent.TileType<GrayMatter>(), true, true);
+				y++;
+			}
+
+			int maxSide = WorldGen.genRand.Next(2, 3);
+			int dir = WorldGen.genRand.NextBool() ? -1 : 1;
+			for (int side = 0; side < maxSide; side++)
+			{
+				WorldGen.PlaceTile(x, y, ModContent.TileType<GrayMatter>(), true, true);
+				x += dir;
+			}
+
+			maxDown = WorldGen.genRand.Next(2, 4);
+			for (int down = 0; down < maxDown; down++)
+			{
+				WorldGen.PlaceTile(x, y, ModContent.TileType<GrayMatter>(), true, true);
+				y++;
 			}
 		}
 	}

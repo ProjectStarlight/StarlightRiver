@@ -2,6 +2,8 @@
 using StarlightRiver.Content.Buffs;
 using System.Collections.Generic;
 using Terraria.DataStructures;
+using Terraria.GameContent.Drawing;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Crimson
 {
@@ -29,7 +31,7 @@ namespace StarlightRiver.Content.Tiles.Crimson
 		{
 			Main.tileSolid[Type] = true;
 			Main.tileMergeDirt[Type] = true;
-			Main.tileBlockLight[Type] = true;
+			Main.tileBlockLight[Type] = false;
 			Main.tileLighted[Type] = true;
 
 			HitSound = Terraria.ID.SoundID.NPCHit1;
@@ -93,7 +95,8 @@ namespace StarlightRiver.Content.Tiles.Crimson
 				if (tile.TileType == ModContent.TileType<GrayMatter>())
 				{
 					Texture2D tex = Assets.Tiles.Crimson.GrayMatterOver.Value;
-					spriteBatch.Draw(tex, target.ToVector2() * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), Color.White);
+					//var light = Lighting.GetColor(x, y);
+					spriteBatch.Draw(tex, target.ToVector2() * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), Color.White * 0.1f);
 				}
 				else
 				{
@@ -105,7 +108,7 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 		{
-			(r, g, b) = (0.7f, 0.7f, 0.7f);
+			//(r, g, b) = (0.3f, 0.3f, 0.3f);
 		}
 
 		public override void FloorVisuals(Player player)

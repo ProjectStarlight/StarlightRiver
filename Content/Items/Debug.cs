@@ -57,15 +57,52 @@ namespace StarlightRiver.Content.Items
 		public override bool? UseItem(Player player)
 		{
 			//StarlightEventSequenceSystem.sequence = 0;
-			player.GetHandler().unlockedAbilities.Add(typeof(Dash), new Dash());
-			player.GetHandler().InfusionLimit = 1;
+			//player.GetHandler().unlockedAbilities.Add(typeof(Dash), new Dash());
+			//player.GetHandler().InfusionLimit = 1;
 
 			//Main.time = 53999;
 			//Main.dayTime = true;
 			//StarlightEventSequenceSystem.willOccur = true;
 
+			int k = (int)(Main.MouseWorld.X / 16);
+			int y = (int)(Main.MouseWorld.Y / 16);
+
+			WorldGen.TileRunner(k - 2, y, 3, 25, ModContent.TileType<GrayMatter>(), true, 1f, 0, true);
+
+			GrayMatterSpike(k, y);
+
+			if (WorldGen.genRand.NextBool())
+				GrayMatterSpike(k + WorldGen.genRand.Next(-2, 3), y);
+
+			k += 30;
+
 
 			return true;
+		}
+
+		private void GrayMatterSpike(int x, int y)
+		{
+			int maxDown = WorldGen.genRand.Next(3, 7);
+			for (int down = 0; down < maxDown; down++)
+			{
+				WorldGen.PlaceTile(x, y, ModContent.TileType<GrayMatter>(), true, true);
+				y++;
+			}
+
+			int maxSide = WorldGen.genRand.Next(2, 3);
+			int dir = WorldGen.genRand.NextBool() ? -1 : 1;
+			for (int side = 0; side < maxSide; side++)
+			{
+				WorldGen.PlaceTile(x, y, ModContent.TileType<GrayMatter>(), true, true);
+				x += dir;
+			}
+
+			maxDown = WorldGen.genRand.Next(2, 4);
+			for (int down = 0; down < maxDown; down++)
+			{
+				WorldGen.PlaceTile(x, y, ModContent.TileType<GrayMatter>(), true, true);
+				y++;
+			}
 		}
 	}
 

@@ -39,8 +39,11 @@ float4 main(float2 uv : TEXCOORD0) : COLOR0
     float distort = sin( min(1.0, tex2D(InputLayer1,st).x) * 3.14 ) * 0.1;
     float noise = tex2D(InputLayer2, (ns +  time * 0.1)).x;
     
+    float3 sample = tex2D(InputLayer0, st).xyz;
+    float light = min(1.0, (sample.r + sample.g + sample.b) / 3.0 * 10.0);
+    
     float push = noise * distort;
-    st += push * distortionpow;
+    st += push * distortionpow * light;
     float3 final = tex2D(InputLayer0,st).xyz;
     
     float gray = (final.r + final.g + final.b) / 3.0;
@@ -49,8 +52,9 @@ float4 main(float2 uv : TEXCOORD0) : COLOR0
     final = grayscale;
     
     float3 chrome = float3(tex2D(InputLayer2, (ns +  time * 0.1)).x, tex2D(InputLayer2, (ns +  time * 0.2)).x, tex2D(InputLayer2, (ns +  time * 0.3)).x);
-    final += push * chrome * chromepow;    
-    final += push;   
+
+    final += light * (push * chrome * chromepow);
+    final += light * push;
     
     float4 overlay = tex2D(InputLayer3,st);
     overlay.a *= power;
