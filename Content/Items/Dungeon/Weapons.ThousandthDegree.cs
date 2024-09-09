@@ -8,7 +8,6 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace StarlightRiver.Content.Items.Dungeon
 {
