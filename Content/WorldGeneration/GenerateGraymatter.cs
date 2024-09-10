@@ -71,34 +71,39 @@ namespace StarlightRiver.Core
 			if (WorldGen.genRand.NextBool())
 				GrayMatterSpike(x + WorldGen.genRand.Next(-2, 3), y);
 
-			for(int k = -5; k < 5; k++)
+			for (int k = x - 5; k < x + 5; k++)
 			{
-				for(int j = y - 10; j < y + 10; j++)
+				for (int j = y - 10; j < y + 10; j++)
 				{
 					var tile = Framing.GetTileSafely(k, j);
-					if (tile.HasTile && tile.TileType == ModContent.TileType<GrayMatter>())
+					if (tile.HasTile && tile.TileType == ModContent.TileType<GrayMatter>() && Helpers.Helper.CheckAirRectangle(new Point16(k, j - 4), new Point16(1, 4)))
 					{
 						if (WorldGen.genRand.NextBool(3))
 						{
-							switch(Main.rand.Next(3))
+							switch (Main.rand.Next(3))
 							{
 								case 0: Helpers.Helper.PlaceMultitile(new Point16(k, j - 4), StarlightRiver.Instance.Find<ModTile>("GraymatterDeco1x4").Type); break;
 								case 1: Helpers.Helper.PlaceMultitile(new Point16(k, j - 2), StarlightRiver.Instance.Find<ModTile>("GraymatterDeco1x2").Type); break;
 								case 2: Helpers.Helper.PlaceMultitile(new Point16(k, j - 1), StarlightRiver.Instance.Find<ModTile>("GraymatterDeco1x1").Type); break;
-							}				
+							}
+							k++;
 						}
-						else if (WorldGen.genRand.NextBool(3) && Framing.GetTileSafely(k+1, j).HasTile && !Framing.GetTileSafely(k+1, j-1).HasTile)
+						else if (WorldGen.genRand.NextBool(3) && Framing.GetTileSafely(k + 1, j).HasTile && Helpers.Helper.CheckAirRectangle(new Point16(k, j - 4), new Point16(2, 4)))
 						{
 							switch (Main.rand.Next(3))
 							{
 								case 0: Helpers.Helper.PlaceMultitile(new Point16(k, j - 3), StarlightRiver.Instance.Find<ModTile>("GraymatterDeco2x3").Type); break;
 								case 1: Helpers.Helper.PlaceMultitile(new Point16(k, j - 2), StarlightRiver.Instance.Find<ModTile>("GraymatterDeco2x2").Type); break;
 							}
+							k += 2;
 						}
-						else if (Framing.GetTileSafely(k + 1, j).HasTile && !Framing.GetTileSafely(k+1, j - 1).HasTile && Framing.GetTileSafely(k + 2, j).HasTile && !Framing.GetTileSafely(k+2, j - 1).HasTile)
+						else if (Framing.GetTileSafely(k + 1, j).HasTile && Framing.GetTileSafely(k + 2, j).HasTile && Helpers.Helper.CheckAirRectangle(new Point16(k, j - 4), new Point16(3, 4)))
 						{
 							Helpers.Helper.PlaceMultitile(new Point16(k, j - 3), StarlightRiver.Instance.Find<ModTile>("GraymatterDeco3x3").Type);
+							k += 3;
 						}
+
+						continue;
 					}
 				}
 			}
@@ -129,4 +134,3 @@ namespace StarlightRiver.Core
 			}
 		}
 	}
-}
