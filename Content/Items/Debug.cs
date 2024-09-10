@@ -1,15 +1,14 @@
 using StarlightRiver.Content.Abilities;
-
-using StarlightRiver.Content.Bosses.BrainRedux;
-
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
-
 using StarlightRiver.Content.Events;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Haunted;
+using StarlightRiver.Content.PersistentData;
 using StarlightRiver.Content.Tiles.Crimson;
+using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.PersistentDataSystem;
+using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items
@@ -56,6 +55,7 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
+			GrayBlob((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
 			//StarlightEventSequenceSystem.sequence = 0;
 			//player.GetHandler().unlockedAbilities.Add(typeof(Dash), new Dash());
 			//player.GetHandler().InfusionLimit = 1;
@@ -64,25 +64,59 @@ namespace StarlightRiver.Content.Items
 			//Main.dayTime = true;
 			//StarlightEventSequenceSystem.willOccur = true;
 
-			int k = (int)(Main.MouseWorld.X / 16);
-			int y = (int)(Main.MouseWorld.Y / 16);
+			return true;
+		}
 
-			WorldGen.TileRunner(k - 2, y, 3, 25, ModContent.TileType<GrayMatter>(), true, 1f, 0, true);
+		private void GrayBlob(int x, int y)
+		{
+			WorldGen.TileRunner(x - 2, y, 3, 25, ModContent.TileType<GrayMatter>(), true, 1f, 0, true);
 
-			GrayMatterSpike(k, y);
+			GrayMatterSpike(x, y);
 
 			if (WorldGen.genRand.NextBool())
-				GrayMatterSpike(k + WorldGen.genRand.Next(-2, 3), y);
+				GrayMatterSpike(x + WorldGen.genRand.Next(-2, 3), y);
 
-			k += 30;
+			for (int k = x-5; k < x+5; k++)
+			{
+				for (int j = y - 10; j < y + 10; j++)
+				{
+					var tile = Framing.GetTileSafely(k, j);
+					if (tile.HasTile && tile.TileType == ModContent.TileType<GrayMatter>() && Helpers.Helper.CheckAirRectangle(new Point16(k, j - 4), new Point16(1, 4)))
+					{
+						if (WorldGen.genRand.NextBool(3))
+						{
+							switch (Main.rand.Next(3))
+							{
+								case 0: Helpers.Helper.PlaceMultitile(new Point16(k, j - 4), StarlightRiver.Instance.Find<ModTile>("GraymatterDeco1x4").Type); break;
+								case 1: Helpers.Helper.PlaceMultitile(new Point16(k, j - 2), StarlightRiver.Instance.Find<ModTile>("GraymatterDeco1x2").Type); break;
+								case 2: Helpers.Helper.PlaceMultitile(new Point16(k, j - 1), StarlightRiver.Instance.Find<ModTile>("GraymatterDeco1x1").Type); break;
+							}
+							k++;
+						}
+						else if (WorldGen.genRand.NextBool(3) && Framing.GetTileSafely(k + 1, j).HasTile && Helpers.Helper.CheckAirRectangle(new Point16(k, j - 4), new Point16(2, 4)))
+						{
+							switch (Main.rand.Next(3))
+							{
+								case 0: Helpers.Helper.PlaceMultitile(new Point16(k, j - 3), StarlightRiver.Instance.Find<ModTile>("GraymatterDeco2x3").Type); break;
+								case 1: Helpers.Helper.PlaceMultitile(new Point16(k, j - 2), StarlightRiver.Instance.Find<ModTile>("GraymatterDeco2x2").Type); break;
+							}
+							k += 2;
+						}
+						else if (Framing.GetTileSafely(k + 1, j).HasTile && Framing.GetTileSafely(k + 2, j).HasTile && Helpers.Helper.CheckAirRectangle(new Point16(k, j - 4), new Point16(3, 4)))
+						{
+							Helpers.Helper.PlaceMultitile(new Point16(k, j - 3), StarlightRiver.Instance.Find<ModTile>("GraymatterDeco3x3").Type);
+							k += 3;
+						}
 
-
-			return true;
+						continue;
+					}
+				}
+			}
 		}
 
 		private void GrayMatterSpike(int x, int y)
 		{
-			int maxDown = WorldGen.genRand.Next(3, 7);
+			int maxDown = WorldGen.genRand.Next(3, 6);
 			for (int down = 0; down < maxDown; down++)
 			{
 				WorldGen.PlaceTile(x, y, ModContent.TileType<GrayMatter>(), true, true);

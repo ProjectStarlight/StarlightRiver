@@ -54,14 +54,50 @@ namespace StarlightRiver.Core
 
 						if (!failedGray)
 						{
-							WorldGen.TileRunner(k - 2, y, 3, 25, ModContent.TileType<GrayMatter>(), true, 1f, 0, true);
-
-							GrayMatterSpike(k, y);
-
-							if (WorldGen.genRand.NextBool())
-								GrayMatterSpike(k + WorldGen.genRand.Next(-2, 3), y);
-
+							GrayBlob(k, y);
 							k += 30;
+						}
+					}
+				}
+			}
+		}
+
+		private void GrayBlob(int x, int y)
+		{
+			WorldGen.TileRunner(x - 2, y, 3, 25, ModContent.TileType<GrayMatter>(), true, 1f, 0, true);
+
+			GrayMatterSpike(x, y);
+
+			if (WorldGen.genRand.NextBool())
+				GrayMatterSpike(x + WorldGen.genRand.Next(-2, 3), y);
+
+			for(int k = -5; k < 5; k++)
+			{
+				for(int j = y - 10; j < y + 10; j++)
+				{
+					var tile = Framing.GetTileSafely(k, j);
+					if (tile.HasTile && tile.TileType == ModContent.TileType<GrayMatter>())
+					{
+						if (WorldGen.genRand.NextBool(3))
+						{
+							switch(Main.rand.Next(3))
+							{
+								case 0: Helpers.Helper.PlaceMultitile(new Point16(k, j - 4), StarlightRiver.Instance.Find<ModTile>("GraymatterDeco1x4").Type); break;
+								case 1: Helpers.Helper.PlaceMultitile(new Point16(k, j - 2), StarlightRiver.Instance.Find<ModTile>("GraymatterDeco1x2").Type); break;
+								case 2: Helpers.Helper.PlaceMultitile(new Point16(k, j - 1), StarlightRiver.Instance.Find<ModTile>("GraymatterDeco1x1").Type); break;
+							}				
+						}
+						else if (WorldGen.genRand.NextBool(3) && Framing.GetTileSafely(k+1, j).HasTile && !Framing.GetTileSafely(k+1, j-1).HasTile)
+						{
+							switch (Main.rand.Next(3))
+							{
+								case 0: Helpers.Helper.PlaceMultitile(new Point16(k, j - 3), StarlightRiver.Instance.Find<ModTile>("GraymatterDeco2x3").Type); break;
+								case 1: Helpers.Helper.PlaceMultitile(new Point16(k, j - 2), StarlightRiver.Instance.Find<ModTile>("GraymatterDeco2x2").Type); break;
+							}
+						}
+						else if (Framing.GetTileSafely(k + 1, j).HasTile && !Framing.GetTileSafely(k+1, j - 1).HasTile && Framing.GetTileSafely(k + 2, j).HasTile && !Framing.GetTileSafely(k+2, j - 1).HasTile)
+						{
+							Helpers.Helper.PlaceMultitile(new Point16(k, j - 3), StarlightRiver.Instance.Find<ModTile>("GraymatterDeco3x3").Type);
 						}
 					}
 				}

@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Buffs;
+using System;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
@@ -79,7 +80,7 @@ namespace StarlightRiver.Content.Tiles.Crimson
 						}
 
 						// Draw to map
-						spriteBatch.Draw(glow, drawPos, null, color, 0, glow.Size() / 2f, 1.7f, 0, 0);
+						spriteBatch.Draw(glow, drawPos, null, color, 0, glow.Size() / 2f, 1.3f + 0.4f * MathF.Sin(Main.GameUpdateCount * 0.05f + (target.X ^ target.Y)), 0, 0);
 					}
 				}
 			}
