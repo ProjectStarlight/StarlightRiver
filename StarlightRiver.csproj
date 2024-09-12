@@ -42,5 +42,8 @@
     <Folder Include="Content\NPCs\Vitric\GlassTrial\" />
     <Folder Include="Localization\Hints\" />
   </ItemGroup>
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="EasyXnb.exe" WorkingDirectory="Effects\Compile\" />
+  </Target>
 
 </Project>
