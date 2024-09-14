@@ -17,7 +17,7 @@
     <Message Importance="normal" Text="Building shaders..." />
     <Message Importance="normal" Text="@(ShaderFile) was modified." />
 
-    <Exec Command="EasyXnb.exe" WorkingDirectory="Effects\Compile\" />
+    <Exec Command="EasyXnb.exe" WorkingDirectory="Effects\EasyXnb\" />
 
     <Message Importance="normal" Text="Finished building shaders." />
   </Target>
