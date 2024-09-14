@@ -17,10 +17,13 @@
     <Message Importance="normal" Text="Building shaders..." />
     <Message Importance="normal" Text="@(ShaderFile) was modified." />
 
+    <!--Turns all .fx files into .xnb files.-->
     <Exec Command="EasyXnb.exe" WorkingDirectory="Effects\EasyXnb\" />
 
+    <!--Only copies .xnb files corresponding to modified .fx files into DestinationFolder.-->
     <Copy SourceFiles="@(ShaderFile->'Effects\EasyXnb\%(Filename).xnb')" DestinationFolder="$(DestinationFolder)"/>
 
+    <!--Removes intermediate .xnb files from EasyXnb directory.-->
     <ItemGroup>
       <TemporaryShaderFiles Include="Effects\EasyXnb\*.xnb"/>
     </ItemGroup>
