@@ -19,6 +19,13 @@
 
     <Exec Command="EasyXnb.exe" WorkingDirectory="Effects\EasyXnb\" />
 
+    <Copy SourceFiles="@(ShaderFile->'Effects\EasyXnb\%(Filename).xnb')" DestinationFolder="$(DestinationFolder)"/>
+
+    <ItemGroup>
+      <TemporaryShaderFiles Include="Effects\EasyXnb\*.xnb"/>
+    </ItemGroup>
+    <Delete Files="@(TemporaryShaderFiles)" />
+
     <Message Importance="normal" Text="Finished building shaders." />
   </Target>
 </Project>
