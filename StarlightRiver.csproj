@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\tModLoader.targets" />
+  <Import Project="Shader.targets" />
   <PropertyGroup>
     <AssemblyName>StarlightRiver</AssemblyName>
     <TargetFramework>net8.0</TargetFramework>
@@ -42,8 +43,5 @@
     <Folder Include="Content\NPCs\Vitric\GlassTrial\" />
     <Folder Include="Localization\Hints\" />
   </ItemGroup>
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="EasyXnb.exe" WorkingDirectory="Effects\Compile\" />
-  </Target>
 
 </Project>
