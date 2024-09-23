@@ -479,8 +479,8 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = Assets.Items.Dungeon.ThousandthDegreeProjectile.Value;
-			Texture2D texGlow = Assets.Items.Dungeon.ThousandthDegreeProjectile_Glowy.Value;
+			Texture2D tex = Assets.Items.Dungeon.ThousandthDegreeProjectileFired.Value;
+			Texture2D texGlow = Assets.Items.Dungeon.ThousandthDegreeProjectileFired_Glowy.Value;
 			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
 			var bloomColor = Color.Lerp(Color.Transparent, new Color(255, 50, 15, 0), inputHeat / MAXHEAT);
 			DrawPrimitives();
