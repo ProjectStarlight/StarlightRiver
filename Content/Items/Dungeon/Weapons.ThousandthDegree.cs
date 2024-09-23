@@ -479,13 +479,13 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = Assets.Items.Dungeon.ThousandthDegreeProjectileFired.Value;
-			Texture2D texGlow = Assets.Items.Dungeon.ThousandthDegreeProjectileFired_Glowy.Value;
+			Texture2D wheelTex = Assets.Items.Dungeon.ThousandthDegreeProjectileFired.Value;
+			Texture2D wheelTexGlow = Assets.Items.Dungeon.ThousandthDegreeProjectileFired_Glowy.Value;
 			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
 			var bloomColor = Color.Lerp(Color.Transparent, new Color(255, 50, 15, 0), inputHeat / MAXHEAT);
 			DrawPrimitives();
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, tex.Size() / 2f, Projectile.scale, 0, 0f);
-			Main.spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, bloomColor, Projectile.rotation, texGlow.Size() / 2f, Projectile.scale, 0, 0f);
+			Main.spriteBatch.Draw(wheelTex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, wheelTex.Size() / 2f, Projectile.scale, 0, 0f);
+			Main.spriteBatch.Draw(wheelTexGlow, Projectile.Center - Main.screenPosition, null, bloomColor, Projectile.rotation, wheelTexGlow.Size() / 2f, Projectile.scale, 0, 0f);
 			for (int i = 0; i < 3; i++)
 			{
 				Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, bloomColor, Projectile.rotation, bloomTex.Size() / 2f, 0.85f, 0, 0f);
