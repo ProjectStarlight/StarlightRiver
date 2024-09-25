@@ -62,13 +62,13 @@ namespace StarlightRiver.Core
 				}
 			}
 
-			int centerX = iceLeft + (iceRight - iceLeft) / 2;
-			int centerY = (int)GenVars.worldSurfaceHigh + (iceBottom - (int)GenVars.worldSurfaceHigh) / 2;
+			int centerX = (iceLeft + iceRight) / 2;
+			int centerY = (iceBottom + (int)GenVars.worldSurfaceHigh) / 2;
 
 		TryToGenerateArena:
 
 			if (centerX < iceLeft || centerX > iceRight - 109)
-				centerX = iceLeft + (iceRight - iceLeft) / 2;
+				centerX = (iceLeft + iceRight) / 2;
 
 			for (int x1 = 0; x1 < 109; x1++)
 			{
@@ -115,7 +115,7 @@ namespace StarlightRiver.Core
 					}
 				}
 
-				int iceCenter = iceLeft + (iceRight - iceLeft) / 2;
+				int iceCenter = (iceLeft + iceRight) / 2;
 				int xTarget = iceCenter + WorldGen.genRand.Next(-100, 100);
 
 				oldPos = PlaceShrine(new Point16(xTarget, yTarget), Main.rand.Next(1, 4), oldPos) * 16;
@@ -131,7 +131,7 @@ namespace StarlightRiver.Core
 
 				if (Main.tile[centerX, y].HasTile && Main.tileSolid[Main.tile[centerX, y].TileType])
 				{
-					centerX += centerX > (iceLeft + (iceRight - iceLeft) / 2) ? -10 : 10;
+					centerX += centerX > ((iceLeft + iceRight) / 2) ? -10 : 10;
 					continue;
 				}
 			}
