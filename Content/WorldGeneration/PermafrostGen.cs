@@ -78,7 +78,8 @@ namespace StarlightRiver.Core
 
 					if (tile.TileType == TileID.BlueDungeonBrick || tile.TileType == TileID.GreenDungeonBrick || tile.TileType == TileID.PinkDungeonBrick)
 					{
-						centerX += Main.rand.Next(-1, 2) * 109;
+						bool shiftLeft = Main.rand.NextBool();
+						centerX += 109 * (shiftLeft ? -1 : 1);
 						goto TryToGenerateArena;
 					}
 				}
