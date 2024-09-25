@@ -62,30 +62,30 @@ namespace StarlightRiver.Core
 				}
 			}
 
-			int center = iceLeft + (iceRight - iceLeft) / 2;
+			int centerX = iceLeft + (iceRight - iceLeft) / 2;
 			int centerY = (int)GenVars.worldSurfaceHigh + (iceBottom - (int)GenVars.worldSurfaceHigh) / 2;
 
 		TryToGenerateArena:
 
-			if (center < iceLeft || center > iceRight - 109)
-				center = iceLeft + (iceRight - iceLeft) / 2;
+			if (centerX < iceLeft || centerX > iceRight - 109)
+				centerX = iceLeft + (iceRight - iceLeft) / 2;
 
 			for (int x1 = 0; x1 < 109; x1++)
 			{
 				for (int y1 = 0; y1 < 180; y1++)
 				{
-					Tile tile = Framing.GetTileSafely(center - 40 + x1, centerY + 100 + y1);
+					Tile tile = Framing.GetTileSafely(centerX - 40 + x1, centerY + 100 + y1);
 
 					if (tile.TileType == TileID.BlueDungeonBrick || tile.TileType == TileID.GreenDungeonBrick || tile.TileType == TileID.PinkDungeonBrick)
 					{
-						center += Main.rand.Next(-1, 2) * 109;
+						centerX += Main.rand.Next(-1, 2) * 109;
 						goto TryToGenerateArena;
 					}
 				}
 			}
 
-			squidBossArena = new Rectangle(center - 40, centerY + 100, 109, 180);
-			StructureHelper.Generator.GenerateStructure("Structures/SquidBossArena", new Point16(center - 40, centerY + 100), Mod);
+			squidBossArena = new Rectangle(centerX - 40, centerY + 100, 109, 180);
+			StructureHelper.Generator.GenerateStructure("Structures/SquidBossArena", new Point16(centerX - 40, centerY + 100), Mod);
 
 			GenVars.structures.AddProtectedStructure(squidBossArena, 20);
 
@@ -123,15 +123,15 @@ namespace StarlightRiver.Core
 
 			for (int y = 40; y < Main.maxTilesY - 200; y++)
 			{
-				if (Main.tile[center, y].HasTile && (Main.tile[center, y].TileType == TileID.SnowBlock || Main.tile[center, y].TileType == TileID.IceBlock))
+				if (Main.tile[centerX, y].HasTile && (Main.tile[centerX, y].TileType == TileID.SnowBlock || Main.tile[centerX, y].TileType == TileID.IceBlock))
 				{
-					PlaceShrine(new Point16(center, y - 24), 0, oldPos);
+					PlaceShrine(new Point16(centerX, y - 24), 0, oldPos);
 					break;
 				}
 
-				if (Main.tile[center, y].HasTile && Main.tileSolid[Main.tile[center, y].TileType])
+				if (Main.tile[centerX, y].HasTile && Main.tileSolid[Main.tile[centerX, y].TileType])
 				{
-					center += center > (iceLeft + (iceRight - iceLeft) / 2) ? -10 : 10;
+					centerX += centerX > (iceLeft + (iceRight - iceLeft) / 2) ? -10 : 10;
 					continue;
 				}
 			}
