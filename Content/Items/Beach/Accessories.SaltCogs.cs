@@ -13,10 +13,11 @@ namespace StarlightRiver.Content.Items.Beach
 
 		public override string Texture => AssetDirectory.Assets + "Items/Beach/" + Name;
 
-		public SaltCogs() : base("Salt Cogs", 
+		public SaltCogs() : base("Salt Cogs",
 			"Your sentries fire twice as fast for two seconds after being placed\n" +
 			"100% increased sentry placement speed\n" +
-			"'Not edible. Probably.'") { }
+			"'Not edible. Probably.'")
+		{ }
 
 		public override void Load()
 		{
