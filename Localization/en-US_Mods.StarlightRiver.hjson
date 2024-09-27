@@ -3573,6 +3573,16 @@ Items: {
 		DisplayName: Ceiros Relic
 		Tooltip: ""
 	}
+
+	CursedDrop: {
+		DisplayName: Drop of darkness
+		Tooltip:
+			'''
+			Reforges an accessory with a cursed prefix
+			Right Click an accessory while holding this on your cursor to use
+			Reforge the item at the goblin tinkerer to remove it
+			'''
+	}
 }
 
 Projectiles: {
@@ -4614,6 +4624,14 @@ Prefixes: {
 	StaminaPrefix2.DisplayName: Shining
 	StaminaPrefix3.DisplayName: Glowing
 	StaminaPrefix4.DisplayName: Radiant
+	Carnal.DisplayName: Carnal
+	Crystalline.DisplayName: Crystalline
+	Eldritch.DisplayName: Eldritch
+	Ephemeral.DisplayName: Ephemeral
+	Occult.DisplayName: Occult
+	Reckless.DisplayName: Reckless
+	Sapping.DisplayName: Sapping
+	Unfaithful.DisplayName: Unfaithful
 }
 
 Configs: {
