@@ -1,8 +1,7 @@
-# Starlight River 0.2.8.3
+# Starlight River 0.2.8.4
 
 ## Fixes
-- Fixed an issue where players could still phase through boss arenas
-- Fixed stellar rush causing a softlock
-- Fixed hotsprings removing buffs
-
-
+- Fixed auroracle's arena being able to be moved
+- Fixed glassweaver's downed flag not triggering properly
+- Fixed various typos in dialogue and tooltips
+- Fixed the thousandth degree using an incorrect sprite
