@@ -4206,6 +4206,7 @@ Tiles: {
 	GraymatterDeco1x2.MapEntry: ""
 	GraymatterDeco3x3.MapEntry: ""
 	GraymatterDeco1x1.MapEntry: ""
+	EyeBoulder.MapEntry: ""
 }
 
 Biomes: {
