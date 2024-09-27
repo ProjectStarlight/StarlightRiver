@@ -16,12 +16,6 @@ namespace StarlightRiver.Content.Items.Utility
 
 		public override string Texture => AssetDirectory.Assets + "Items/Utility/" + Name;
 
-		public override void Load()
-		{
-			On_ItemSlot.RightClick_refItem_int += ApplyDrop;
-			On_ItemSlot.RightClick_ItemArray_int_int += ApplyDrop2;
-		}
-
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Drop of darkness");
@@ -34,59 +28,6 @@ namespace StarlightRiver.Content.Items.Utility
 			Item.height = 32;
 			Item.maxStack = 9999;
 			Item.rare = ItemRarityID.LightRed;
-		}
-
-		public override void ModifyTooltips(List<TooltipLine> tooltips)
-		{
-			tooltips.Remove(tooltips.FirstOrDefault(n => n.Mod == "Terraria" && n.Name == "Equipable"));
-		}
-
-		private void ApplyDrop(On_ItemSlot.orig_RightClick_refItem_int orig, ref Item inv, int context)
-		{
-			if (Main.mouseRight && Main.mouseItem.type == ModContent.ItemType<CursedDrop>() && inv.accessory && !(inv.ModItem is CursedAccessory))
-			{
-				List<int> pool = CursedPrefixPool.GetCursedPrefixes();
-				inv.prefix = pool[Main.rand.Next(pool.Count)];
-
-				SoundEngine.PlaySound(SoundID.NPCHit55.WithPitchOffset(0.2f));
-				SoundEngine.PlaySound(SoundID.Item123.WithPitchOffset(0.2f));
-
-				for (int k = 0; k <= 50; k++)
-					CursedAccessory.CursedSystem.AddParticle(new Particle(Main.MouseScreen, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.75f), 0, 1, new(25, 17, 49), 60, Vector2.Zero));
-
-				Main.mouseItem.stack--;
-
-				if (Main.mouseItem.stack <= 0)
-					Main.mouseItem.TurnToAir();
-			}
-			else
-			{
-				orig(ref inv, context);
-			}
-		}
-
-		private void ApplyDrop2(On_ItemSlot.orig_RightClick_ItemArray_int_int orig, Item[] inv, int context, int slot)
-		{
-			if (Main.mouseRight && Main.mouseItem.type == ModContent.ItemType<CursedDrop>() && inv[slot].accessory && !(inv[slot].ModItem is CursedAccessory))
-			{
-				List<int> pool = CursedPrefixPool.GetCursedPrefixes();
-				inv[slot].prefix = pool[Main.rand.Next(pool.Count)];
-
-				SoundEngine.PlaySound(SoundID.NPCHit55.WithPitchOffset(0.2f));
-				SoundEngine.PlaySound(SoundID.Item123.WithPitchOffset(0.2f));
-
-				for (int k = 0; k <= 50; k++)
-					CursedAccessory.CursedSystem.AddParticle(new Particle(Main.MouseScreen, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.75f), 0, 1, new(25, 17, 49), 60, Vector2.Zero));
-
-				Main.mouseItem.stack--;
-
-				if (Main.mouseItem.stack <= 0)
-					Main.mouseItem.TurnToAir();
-			}
-			else
-			{
-				orig(inv, context, slot);
-			}
 		}
 
 		// Copied from cursed acc, TODO: should really set up a rarity for this...
@@ -130,6 +71,41 @@ namespace StarlightRiver.Content.Items.Utility
 			}
 
 			return base.PreDrawTooltipLine(line, ref yOffset);
+		}
+	}
+
+	class CurseDropApply : GlobalItem
+	{
+		public override bool AppliesToEntity(Item entity, bool lateInstantiation)
+		{
+			return entity.accessory && entity.ModItem is not CursedAccessory;
+		}
+
+		public override bool CanRightClick(Item item)
+		{
+			return Main.mouseItem.type == ModContent.ItemType<CursedDrop>();
+		}
+
+		public override void RightClick(Item item, Player player)
+		{
+			if (Main.mouseItem.type == ModContent.ItemType<CursedDrop>())
+			{
+				List<int> pool = CursedPrefixPool.GetCursedPrefixes();
+				item.prefix = pool[Main.rand.Next(pool.Count)];
+
+				SoundEngine.PlaySound(SoundID.NPCHit55.WithPitchOffset(0.2f));
+				SoundEngine.PlaySound(SoundID.Item123.WithPitchOffset(0.2f));
+
+				for (int k = 0; k <= 50; k++)
+					CursedAccessory.CursedSystem.AddParticle(new Particle(Main.MouseScreen, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.75f), 0, 1, new(25, 17, 49), 60, Vector2.Zero));
+
+				Main.mouseItem.stack--;
+
+				if (Main.mouseItem.stack <= 0)
+					Main.mouseItem.TurnToAir();
+
+				item.stack++;
+			}
 		}
 	}
 }
