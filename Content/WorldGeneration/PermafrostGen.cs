@@ -39,7 +39,7 @@ namespace StarlightRiver.Core
 				}
 			}
 
-			iceTop = (int)GenVars.worldSurfaceHigh + (iceBottom - (int)GenVars.worldSurfaceHigh) / 2;
+			iceTop = (int)(iceBottom + GenVars.worldSurfaceHigh) / 2;
 
 			for (int x = 0; x < Main.maxTilesX; x++) //Find the ice biome since vanilla dosent track it
 			{
@@ -79,9 +79,8 @@ namespace StarlightRiver.Core
 			}
 
 			int centerX = (iceLeft + iceRight) / 2;
-			int centerY = (int)GenVars.worldSurfaceHigh + (iceBottom - (int)GenVars.worldSurfaceHigh) / 2;
+			int centerY = (int)(iceBottom + GenVars.worldSurfaceHigh) / 2;
 
-			
 			bool TryToGenerateArena(out int xPosition)
 			{
 				int arenaWidth = 109;
