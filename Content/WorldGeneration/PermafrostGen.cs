@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Tiles.Permafrost;
+﻿using log4net.Repository.Hierarchy;
+using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Core.Systems.AuroraWaterSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -25,7 +26,8 @@ namespace StarlightRiver.Core
 
 			for (int x = 0; x < Main.maxTilesX; x++) //Find the ice biome since vanilla dosent track it
 			{
-				if (x >= iceLeft) continue;
+				if (x >= iceLeft) 
+					continue;
 
 				for (int y = 0; y < Main.maxTilesY; y++)
 				{
@@ -38,7 +40,8 @@ namespace StarlightRiver.Core
 
 			for (int x = Main.maxTilesX - 1; x > 0; x--)
 			{
-				if (x <= iceRight) continue;
+				if (x <= iceRight) 
+					continue;
 
 				for (int y = 0; y < Main.maxTilesY; y++)
 				{
@@ -59,25 +62,29 @@ namespace StarlightRiver.Core
 			}
 
 			int centerX = (iceLeft + iceRight) / 2;
-			int centerY = (iceBottom + (int)GenVars.worldSurfaceHigh) / 2;
+			int centerY = (int)GenVars.worldSurfaceHigh + (iceBottom - (int)GenVars.worldSurfaceHigh) / 2;
 
-		TryToGenerateArena:
-
-			if (centerX < iceLeft || centerX > iceRight - 109)
-				centerX = (iceLeft + iceRight) / 2;
-
-			for (int x1 = 0; x1 < 109; x1++)
+			int retries = 0;
+			while (retries < 100)
 			{
-				for (int y1 = 0; y1 < 180; y1++)
-				{
-					Tile tile = Framing.GetTileSafely(centerX - 40 + x1, centerY + 100 + y1);
+				retries++;
 
-					if (tile.TileType == TileID.BlueDungeonBrick || tile.TileType == TileID.GreenDungeonBrick || tile.TileType == TileID.PinkDungeonBrick)
-					{
-						bool shiftLeft = Main.rand.NextBool();
-						centerX += 109 * (shiftLeft ? -1 : 1);
-						goto TryToGenerateArena;
-					}
+				if (retries >= 100)
+					throw new Exception("Could not place a required structure: Auroracle Arena");
+
+				if (centerX < iceLeft || centerX > iceRight - 109)
+					centerX = (iceLeft + iceRight) / 2;
+
+				if (!WorldGenHelper.IsRectangleSafe(new Rectangle(centerX - 40, centerY + 100, 109, 180)))
+				{
+					centerX = WorldGen.genRand.Next(iceLeft, iceRight - 109);
+					centerY = (int)GenVars.worldSurfaceHigh + (int)((iceBottom - (int)GenVars.worldSurfaceHigh) * WorldGen.genRand.NextFloat(0.5f, 0.8f));
+					StarlightRiver.Instance.Logger.Info($"World generation attempting to place Auroracle Arena at {centerX}, {centerY} failed, retries left: {100 - retries}");
+					continue;
+				}
+				else
+				{
+					break;
 				}
 			}
 
@@ -115,7 +122,24 @@ namespace StarlightRiver.Core
 				int iceCenter = (iceLeft + iceRight) / 2;
 				int xTarget = iceCenter + WorldGen.genRand.Next(-100, 100);
 
-				oldPos = PlaceShrine(new Point16(xTarget, yTarget), Main.rand.Next(1, 4), oldPos) * 16;
+				int retries2 = 0;
+				while (retries2 < 100)
+				{
+					retries2++;
+
+					if (!Helpers.WorldGenHelper.IsRectangleSafe(new Rectangle(xTarget, yTarget, 32, 32)))
+					{
+						xTarget = iceCenter + WorldGen.genRand.Next(-100, 100);
+						yTarget = (int)Helper.LerpFloat(squidBossArena.Y, (float)GenVars.worldSurfaceHigh, fraction) + WorldGen.genRand.Next(-40, 40);
+						continue;
+					}
+					else
+					{
+						oldPos = PlaceShrine(new Point16(xTarget, yTarget), Main.rand.Next(1, 4), oldPos) * 16;
+						break;
+					}
+				}
+				// We can continue after a fail here and just skip a shrine, its not ideal as it decreases loot but its better than failing the seed
 			}
 
 			for (int y = 40; y < Main.maxTilesY - 200; y++)
@@ -289,4 +313,4 @@ namespace StarlightRiver.Core
 			}
 		}
 	}
-}
+} 
