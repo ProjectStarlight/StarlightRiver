@@ -19,36 +19,32 @@ namespace StarlightRiver.Core
 		{
 			progress.Message = "Permafrost generation";
 
-			int iceLeft = 0;
+			int iceLeft = Main.maxTilesX;
 			int iceRight = 0;
 			int iceBottom = 0;
 
 			for (int x = 0; x < Main.maxTilesX; x++) //Find the ice biome since vanilla dosent track it
 			{
-				if (iceLeft != 0)
-					break;
+				if (x >= iceLeft) continue;
 
 				for (int y = 0; y < Main.maxTilesY; y++)
 				{
 					if (Main.tile[x, y].TileType == TileID.IceBlock)
 					{
 						iceLeft = x;
-						break;
 					}
 				}
 			}
 
 			for (int x = Main.maxTilesX - 1; x > 0; x--)
 			{
-				if (iceRight != 0)
-					break;
+				if (x <= iceRight) continue;
 
 				for (int y = 0; y < Main.maxTilesY; y++)
 				{
 					if (Main.tile[x, y].TileType == TileID.IceBlock)
 					{
 						iceRight = x;
-						break;
 					}
 				}
 			}
