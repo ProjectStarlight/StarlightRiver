@@ -3,6 +3,7 @@ using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Core.Systems.AuroraWaterSystem;
 using StarlightRiver.Helpers;
 using System;
+using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.IO;
@@ -23,13 +24,29 @@ namespace StarlightRiver.Core
 			int iceLeft = Main.maxTilesX;
 			int iceRight = 0;
 			int iceBottom = 0;
+			int iceTop;
+
+			for (int x = 0; x < Main.maxTilesX; x++)
+			{
+				for (int y = Main.maxTilesY - 1; y > 0; y--)
+				{
+					if (y < iceBottom) continue;
+					
+					if (Main.tile[x, y].TileType == TileID.IceBlock)
+					{
+						iceBottom = y;
+					}
+				}
+			}
+
+			iceTop = (int)GenVars.worldSurfaceHigh + (iceBottom - (int)GenVars.worldSurfaceHigh) / 2;
 
 			for (int x = 0; x < Main.maxTilesX; x++) //Find the ice biome since vanilla dosent track it
 			{
 				if (x >= iceLeft) 
 					continue;
 
-				for (int y = 0; y < Main.maxTilesY; y++)
+				for (int y = iceTop; y < Main.maxTilesY; y++)
 				{
 					if (Main.tile[x, y].TileType == TileID.IceBlock)
 					{
@@ -43,7 +60,7 @@ namespace StarlightRiver.Core
 				if (x <= iceRight) 
 					continue;
 
-				for (int y = 0; y < Main.maxTilesY; y++)
+				for (int y = iceTop; y < Main.maxTilesY; y++)
 				{
 					if (Main.tile[x, y].TileType == TileID.IceBlock)
 					{
@@ -64,27 +81,81 @@ namespace StarlightRiver.Core
 			int centerX = (iceLeft + iceRight) / 2;
 			int centerY = (int)GenVars.worldSurfaceHigh + (iceBottom - (int)GenVars.worldSurfaceHigh) / 2;
 
-			int retries = 0;
-			while (retries < 100)
+			
+			bool TryToGenerateArena(out int xPosition)
 			{
-				retries++;
+				int arenaWidth = 109;
+				int stepSpacing = 20;
+				int stepsToLeft = (centerX - iceLeft) / stepSpacing;
+				int stepsToRight = (iceRight - centerX) / stepSpacing;
+				int startX = centerX - stepsToLeft * stepSpacing;
 
-				if (retries >= 100)
-					throw new Exception("Could not place a required structure: Auroracle Arena");
+				int spotsToCheck = stepsToLeft + 1 + stepsToRight;
 
-				if (centerX < iceLeft || centerX > iceRight - 109)
-					centerX = (iceLeft + iceRight) / 2;
-
-				if (!WorldGenHelper.IsRectangleSafe(new Rectangle(centerX - 40, centerY + 100, 109, 180)))
+				int[] randomIndices = new int[spotsToCheck];
+				for (int i = 0; i < spotsToCheck; i++)
 				{
-					centerX = WorldGen.genRand.Next(iceLeft, iceRight - 109);
-					centerY = (int)GenVars.worldSurfaceHigh + (int)((iceBottom - (int)GenVars.worldSurfaceHigh) * WorldGen.genRand.NextFloat(0.5f, 0.8f));
-					StarlightRiver.Instance.Logger.Info($"World generation attempting to place Auroracle Arena at {centerX}, {centerY} failed, retries left: {100 - retries}");
-					continue;
+					randomIndices[i] = i;
 				}
-				else
+				randomIndices = Helper.RandomizeList(randomIndices.ToList()).ToArray();
+
+				for (int i = 0; i < spotsToCheck; i++)
 				{
-					break;
+					int spotIndex = randomIndices[i];
+					int xPos = startX + spotIndex * stepSpacing;
+
+					bool invalidLocation = false;
+					for (int x1 = 0; x1 < arenaWidth; x1++)
+					{
+						for (int y1 = 0; y1 < 180; y1++)
+						{
+							Tile tile = Framing.GetTileSafely(xPos - 40 + x1, centerY + 100 + y1);
+
+							if (tile.TileType == TileID.BlueDungeonBrick || tile.TileType == TileID.GreenDungeonBrick || tile.TileType == TileID.PinkDungeonBrick)
+							{
+								invalidLocation = true;
+								break;
+							}
+						}
+
+						if (invalidLocation) break;
+					}
+
+					if (invalidLocation) continue;
+
+					xPosition = xPos;
+					return true;
+				}
+
+				xPosition = centerX;
+				return false;
+			}
+
+			if (!TryToGenerateArena(out centerX))
+			{
+				// Try shotgun approach
+				int retries = 0;
+				while (retries < 100)
+				{
+					retries++;
+
+					if (retries >= 100)
+						throw new Exception("Could not place a required structure: Auroracle Arena");
+
+					if (centerX < iceLeft || centerX > iceRight - 109)
+						centerX = (iceLeft + iceRight) / 2;
+
+					if (!WorldGenHelper.IsRectangleSafe(new Rectangle(centerX - 40, centerY + 100, 109, 180)))
+					{
+						centerX = WorldGen.genRand.Next(iceLeft, iceRight - 109);
+						centerY = (int)GenVars.worldSurfaceHigh + (int)((iceBottom - (int)GenVars.worldSurfaceHigh) * WorldGen.genRand.NextFloat(0.5f, 0.8f));
+						StarlightRiver.Instance.Logger.Info($"World generation attempting to place Auroracle Arena at {centerX}, {centerY} failed, retries left: {100 - retries}");
+						continue;
+					}
+					else
+					{
+						break;
+					}
 				}
 			}
 
