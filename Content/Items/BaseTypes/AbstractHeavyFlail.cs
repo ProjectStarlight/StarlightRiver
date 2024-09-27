@@ -34,8 +34,8 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		public abstract Asset<Texture2D> ChainAsset { get; }
 		protected static Asset<Texture2D> BallAsset;
 
-		List<Vector2> chainPos = [];
-		List<Vector2> chainTarget = [];
+		readonly List<Vector2> chainPos = [];
+		readonly List<Vector2> chainTarget = [];
 
 		protected bool slowing;
 

@@ -53,7 +53,7 @@ namespace StarlightRiver.Content.Items.Forest
 			if (Owner == Main.LocalPlayer)
 				CameraSystem.shake += 10;
 
-			for(int k = 0; k < 32; k++)
+			for (int k = 0; k < 32; k++)
 			{
 				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Stone);
 			}
