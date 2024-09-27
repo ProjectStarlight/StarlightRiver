@@ -5,3 +5,4 @@
 - Fixed glassweaver's downed flag not triggering properly
 - Fixed various typos in dialogue and tooltips
 - Fixed the thousandth degree using an incorrect sprite
+- Improved the consistency of generating auroracles arena in a safe place
