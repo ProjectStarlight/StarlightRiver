@@ -30,8 +30,9 @@ namespace StarlightRiver.Core
 			{
 				for (int y = Main.maxTilesY - 1; y > 0; y--)
 				{
-					if (y < iceBottom) continue;
-					
+					if (y < iceBottom)
+						continue;
+
 					if (Main.tile[x, y].TileType == TileID.IceBlock)
 					{
 						iceBottom = y;
@@ -43,7 +44,7 @@ namespace StarlightRiver.Core
 
 			for (int x = 0; x < Main.maxTilesX; x++) //Find the ice biome since vanilla dosent track it
 			{
-				if (x >= iceLeft) 
+				if (x >= iceLeft)
 					continue;
 
 				for (int y = iceTop; y < Main.maxTilesY; y++)
@@ -57,7 +58,7 @@ namespace StarlightRiver.Core
 
 			for (int x = Main.maxTilesX - 1; x > 0; x--)
 			{
-				if (x <= iceRight) 
+				if (x <= iceRight)
 					continue;
 
 				for (int y = iceTop; y < Main.maxTilesY; y++)
@@ -96,6 +97,7 @@ namespace StarlightRiver.Core
 				{
 					randomIndices[i] = i;
 				}
+
 				randomIndices = Helper.RandomizeList(randomIndices.ToList()).ToArray();
 
 				for (int i = 0; i < spotsToCheck; i++)
@@ -117,10 +119,12 @@ namespace StarlightRiver.Core
 							}
 						}
 
-						if (invalidLocation) break;
+						if (invalidLocation)
+							break;
 					}
 
-					if (invalidLocation) continue;
+					if (invalidLocation)
+						continue;
 
 					xPosition = xPos;
 					return true;
@@ -383,4 +387,4 @@ namespace StarlightRiver.Core
 			}
 		}
 	}
-} 
+}
