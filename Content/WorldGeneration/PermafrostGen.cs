@@ -98,7 +98,7 @@ namespace StarlightRiver.Core
 					randomIndices[i] = i;
 				}
 
-				randomIndices = Helper.RandomizeList(randomIndices.ToList()).ToArray();
+				randomIndices = Helper.RandomizeList(randomIndices.ToList(), WorldGen.genRand).ToArray();
 
 				for (int i = 0; i < spotsToCheck; i++)
 				{
