@@ -258,7 +258,7 @@ namespace StarlightRiver.Core
 		/// <param name="center">Where to place the ore, in tile coordinates</param>
 		private void PlaceOre(Point16 center)
 		{
-			int radius = Main.rand.Next(2, 5);
+			int radius = WorldGen.genRand.Next(2, 5);
 
 			int frameStartX = radius == 4 ? 5 : radius == 3 ? 2 : 0;
 			int frameStartY = radius == 4 ? 0 : radius == 3 ? 1 : 2;
