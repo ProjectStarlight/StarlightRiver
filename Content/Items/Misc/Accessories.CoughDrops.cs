@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Items.BaseTypes;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -21,7 +22,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void DelBuff(On_Player.orig_DelBuff orig, Player self, int buffId)
 		{
-			if (Main.debuff[self.buffType[buffId]] && Equipped(self))
+			int buffType = self.buffType[buffId];
+			if (Main.debuff[buffType] && !Main.buffNoTimeDisplay[buffType] && Equipped(self))
 				self.AddBuff(ModContent.BuffType<CoughDropsBuff>(), 180);
 
 			orig(self, buffId);
