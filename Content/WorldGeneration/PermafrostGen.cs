@@ -86,6 +86,7 @@ namespace StarlightRiver.Core
 			{
 				int arenaWidth = 109;
 				int stepSpacing = 20;
+				int arenaHeight = 180;
 				int stepsToLeft = (centerX - iceLeft) / stepSpacing;
 				int stepsToRight = (iceRight - centerX) / stepSpacing;
 				int startX = centerX - stepsToLeft * stepSpacing;
@@ -98,7 +99,7 @@ namespace StarlightRiver.Core
 					randomIndices[i] = i;
 				}
 
-				randomIndices = Helper.RandomizeList(randomIndices.ToList()).ToArray();
+				randomIndices = Helper.RandomizeList(randomIndices.ToList(), WorldGen.genRand).ToArray();
 
 				for (int i = 0; i < spotsToCheck; i++)
 				{
@@ -108,7 +109,7 @@ namespace StarlightRiver.Core
 					bool invalidLocation = false;
 					for (int x1 = 0; x1 < arenaWidth; x1++)
 					{
-						for (int y1 = 0; y1 < 180; y1++)
+						for (int y1 = 0; y1 < arenaHeight; y1++)
 						{
 							Tile tile = Framing.GetTileSafely(xPos - 40 + x1, centerY + 100 + y1);
 
@@ -262,7 +263,7 @@ namespace StarlightRiver.Core
 		/// <param name="center">Where to place the ore, in tile coordinates</param>
 		private void PlaceOre(Point16 center)
 		{
-			int radius = Main.rand.Next(2, 5);
+			int radius = WorldGen.genRand.Next(2, 5);
 
 			int frameStartX = radius == 4 ? 5 : radius == 3 ? 2 : 0;
 			int frameStartY = radius == 4 ? 0 : radius == 3 ? 1 : 2;
