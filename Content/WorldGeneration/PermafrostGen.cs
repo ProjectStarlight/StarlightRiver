@@ -86,6 +86,7 @@ namespace StarlightRiver.Core
 			{
 				int arenaWidth = 109;
 				int stepSpacing = 20;
+				int arenaHeight = 180;
 				int stepsToLeft = (centerX - iceLeft) / stepSpacing;
 				int stepsToRight = (iceRight - centerX) / stepSpacing;
 				int startX = centerX - stepsToLeft * stepSpacing;
@@ -108,7 +109,7 @@ namespace StarlightRiver.Core
 					bool invalidLocation = false;
 					for (int x1 = 0; x1 < arenaWidth; x1++)
 					{
-						for (int y1 = 0; y1 < 180; y1++)
+						for (int y1 = 0; y1 < arenaHeight; y1++)
 						{
 							Tile tile = Framing.GetTileSafely(xPos - 40 + x1, centerY + 100 + y1);
 
