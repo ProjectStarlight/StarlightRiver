@@ -94,7 +94,7 @@ namespace StarlightRiver.Content.Items.Haunted
 			if (player == Main.LocalPlayer && sleepTimer == 1 && minions.Count > 0) //warning message
 			{
 				AdvancedPopupRequest request = default;
-				var message = minionBoredomMessages[Main.rand.Next(minionBoredomMessages.Length)];
+				(string singular, string plural) message = minionBoredomMessages[Main.rand.Next(minionBoredomMessages.Length)];
 				request.Text = message.plural.Replace("_", "haunted weapons");
 				if (minions.Count == 1)
 					request.Text = message.singular.Replace("_", (minions.First().ModProjectile as PoltergeistMinion).Item.Name);
