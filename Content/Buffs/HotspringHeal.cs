@@ -13,6 +13,7 @@ namespace StarlightRiver.Content.Buffs
 			DisplayName.SetDefault("Refreshing Dip");
 			Description.SetDefault("The hot springs restore your body and mind");
 			Main.debuff[Type] = true;
+			BuffID.Sets.NurseCannotRemoveDebuff[Type] = true;
 		}
 
 		public override void Update(Player Player, ref int buffIndex)
