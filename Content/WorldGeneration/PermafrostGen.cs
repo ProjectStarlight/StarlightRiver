@@ -1,7 +1,9 @@
-﻿using StarlightRiver.Content.Tiles.Permafrost;
+﻿using log4net.Repository.Hierarchy;
+using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Core.Systems.AuroraWaterSystem;
 using StarlightRiver.Helpers;
 using System;
+using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.IO;
@@ -19,36 +21,51 @@ namespace StarlightRiver.Core
 		{
 			progress.Message = "Permafrost generation";
 
-			int iceLeft = 0;
+			int iceLeft = Main.maxTilesX;
 			int iceRight = 0;
 			int iceBottom = 0;
+			int iceTop;
+
+			for (int x = 0; x < Main.maxTilesX; x++)
+			{
+				for (int y = Main.maxTilesY - 1; y > 0; y--)
+				{
+					if (y < iceBottom)
+						continue;
+
+					if (Main.tile[x, y].TileType == TileID.IceBlock)
+					{
+						iceBottom = y;
+					}
+				}
+			}
+
+			iceTop = (int)(iceBottom + GenVars.worldSurfaceHigh) / 2;
 
 			for (int x = 0; x < Main.maxTilesX; x++) //Find the ice biome since vanilla dosent track it
 			{
-				if (iceLeft != 0)
-					break;
+				if (x >= iceLeft)
+					continue;
 
-				for (int y = 0; y < Main.maxTilesY; y++)
+				for (int y = iceTop; y < Main.maxTilesY; y++)
 				{
 					if (Main.tile[x, y].TileType == TileID.IceBlock)
 					{
 						iceLeft = x;
-						break;
 					}
 				}
 			}
 
 			for (int x = Main.maxTilesX - 1; x > 0; x--)
 			{
-				if (iceRight != 0)
-					break;
+				if (x <= iceRight)
+					continue;
 
-				for (int y = 0; y < Main.maxTilesY; y++)
+				for (int y = iceTop; y < Main.maxTilesY; y++)
 				{
 					if (Main.tile[x, y].TileType == TileID.IceBlock)
 					{
 						iceRight = x;
-						break;
 					}
 				}
 			}
@@ -62,30 +79,92 @@ namespace StarlightRiver.Core
 				}
 			}
 
-			int center = iceLeft + (iceRight - iceLeft) / 2;
-			int centerY = (int)GenVars.worldSurfaceHigh + (iceBottom - (int)GenVars.worldSurfaceHigh) / 2;
+			int centerX = (iceLeft + iceRight) / 2;
+			int centerY = (int)(iceBottom + GenVars.worldSurfaceHigh) / 2;
 
-		TryToGenerateArena:
-
-			if (center < iceLeft || center > iceRight - 109)
-				center = iceLeft + (iceRight - iceLeft) / 2;
-
-			for (int x1 = 0; x1 < 109; x1++)
+			bool TryToGenerateArena(out int xPosition)
 			{
-				for (int y1 = 0; y1 < 180; y1++)
-				{
-					Tile tile = Framing.GetTileSafely(center - 40 + x1, centerY + 100 + y1);
+				int arenaWidth = 109;
+				int stepSpacing = 20;
+				int arenaHeight = 180;
+				int stepsToLeft = (centerX - iceLeft) / stepSpacing;
+				int stepsToRight = (iceRight - centerX) / stepSpacing;
+				int startX = centerX - stepsToLeft * stepSpacing;
 
-					if (tile.TileType == TileID.BlueDungeonBrick || tile.TileType == TileID.GreenDungeonBrick || tile.TileType == TileID.PinkDungeonBrick)
+				int spotsToCheck = stepsToLeft + 1 + stepsToRight;
+
+				int[] randomIndices = new int[spotsToCheck];
+				for (int i = 0; i < spotsToCheck; i++)
+				{
+					randomIndices[i] = i;
+				}
+
+				randomIndices = Helper.RandomizeList(randomIndices.ToList(), WorldGen.genRand).ToArray();
+
+				for (int i = 0; i < spotsToCheck; i++)
+				{
+					int spotIndex = randomIndices[i];
+					int xPos = startX + spotIndex * stepSpacing;
+
+					bool invalidLocation = false;
+					for (int x1 = 0; x1 < arenaWidth; x1++)
 					{
-						center += Main.rand.Next(-1, 2) * 109;
-						goto TryToGenerateArena;
+						for (int y1 = 0; y1 < arenaHeight; y1++)
+						{
+							Tile tile = Framing.GetTileSafely(xPos - 40 + x1, centerY + 100 + y1);
+
+							if (tile.TileType == TileID.BlueDungeonBrick || tile.TileType == TileID.GreenDungeonBrick || tile.TileType == TileID.PinkDungeonBrick)
+							{
+								invalidLocation = true;
+								break;
+							}
+						}
+
+						if (invalidLocation)
+							break;
+					}
+
+					if (invalidLocation)
+						continue;
+
+					xPosition = xPos;
+					return true;
+				}
+
+				xPosition = centerX;
+				return false;
+			}
+
+			if (!TryToGenerateArena(out centerX))
+			{
+				// Try shotgun approach
+				int retries = 0;
+				while (retries < 100)
+				{
+					retries++;
+
+					if (retries >= 100)
+						throw new Exception("Could not place a required structure: Auroracle Arena");
+
+					if (centerX < iceLeft || centerX > iceRight - 109)
+						centerX = (iceLeft + iceRight) / 2;
+
+					if (!WorldGenHelper.IsRectangleSafe(new Rectangle(centerX - 40, centerY + 100, 109, 180)))
+					{
+						centerX = WorldGen.genRand.Next(iceLeft, iceRight - 109);
+						centerY = (int)GenVars.worldSurfaceHigh + (int)((iceBottom - (int)GenVars.worldSurfaceHigh) * WorldGen.genRand.NextFloat(0.5f, 0.8f));
+						StarlightRiver.Instance.Logger.Info($"World generation attempting to place Auroracle Arena at {centerX}, {centerY} failed, retries left: {100 - retries}");
+						continue;
+					}
+					else
+					{
+						break;
 					}
 				}
 			}
 
-			squidBossArena = new Rectangle(center - 40, centerY + 100, 109, 180);
-			StructureHelper.Generator.GenerateStructure("Structures/SquidBossArena", new Point16(center - 40, centerY + 100), Mod);
+			squidBossArena = new Rectangle(centerX - 40, centerY + 100, 109, 180);
+			StructureHelper.Generator.GenerateStructure("Structures/SquidBossArena", new Point16(centerX - 40, centerY + 100), Mod);
 
 			GenVars.structures.AddProtectedStructure(squidBossArena, 20);
 
@@ -115,23 +194,40 @@ namespace StarlightRiver.Core
 					}
 				}
 
-				int iceCenter = iceLeft + (iceRight - iceLeft) / 2;
+				int iceCenter = (iceLeft + iceRight) / 2;
 				int xTarget = iceCenter + WorldGen.genRand.Next(-100, 100);
 
-				oldPos = PlaceShrine(new Point16(xTarget, yTarget), Main.rand.Next(1, 4), oldPos) * 16;
+				int retries2 = 0;
+				while (retries2 < 100)
+				{
+					retries2++;
+
+					if (!Helpers.WorldGenHelper.IsRectangleSafe(new Rectangle(xTarget, yTarget, 32, 32)))
+					{
+						xTarget = iceCenter + WorldGen.genRand.Next(-100, 100);
+						yTarget = (int)Helper.LerpFloat(squidBossArena.Y, (float)GenVars.worldSurfaceHigh, fraction) + WorldGen.genRand.Next(-40, 40);
+						continue;
+					}
+					else
+					{
+						oldPos = PlaceShrine(new Point16(xTarget, yTarget), Main.rand.Next(1, 4), oldPos) * 16;
+						break;
+					}
+				}
+				// We can continue after a fail here and just skip a shrine, its not ideal as it decreases loot but its better than failing the seed
 			}
 
 			for (int y = 40; y < Main.maxTilesY - 200; y++)
 			{
-				if (Main.tile[center, y].HasTile && (Main.tile[center, y].TileType == TileID.SnowBlock || Main.tile[center, y].TileType == TileID.IceBlock))
+				if (Main.tile[centerX, y].HasTile && (Main.tile[centerX, y].TileType == TileID.SnowBlock || Main.tile[centerX, y].TileType == TileID.IceBlock))
 				{
-					PlaceShrine(new Point16(center, y - 24), 0, oldPos);
+					PlaceShrine(new Point16(centerX, y - 24), 0, oldPos);
 					break;
 				}
 
-				if (Main.tile[center, y].HasTile && Main.tileSolid[Main.tile[center, y].TileType])
+				if (Main.tile[centerX, y].HasTile && Main.tileSolid[Main.tile[centerX, y].TileType])
 				{
-					center += center > (iceLeft + (iceRight - iceLeft) / 2) ? -10 : 10;
+					centerX += centerX > ((iceLeft + iceRight) / 2) ? -10 : 10;
 					continue;
 				}
 			}
@@ -167,7 +263,7 @@ namespace StarlightRiver.Core
 		/// <param name="center">Where to place the ore, in tile coordinates</param>
 		private void PlaceOre(Point16 center)
 		{
-			int radius = Main.rand.Next(2, 5);
+			int radius = WorldGen.genRand.Next(2, 5);
 
 			int frameStartX = radius == 4 ? 5 : radius == 3 ? 2 : 0;
 			int frameStartY = radius == 4 ? 0 : radius == 3 ? 1 : 2;
