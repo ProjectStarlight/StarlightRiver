@@ -3573,6 +3573,15 @@ Items: {
 		DisplayName: Ceiros Relic
 		Tooltip: ""
 	}
+
+	HeavyFlail: {
+		DisplayName: Heavy Flail
+		Tooltip:
+			'''
+			Hold to swing a monstrous ball of metal
+			`We've got the biggest balls of them all!`
+			'''
+	}
 }
 
 Projectiles: {
