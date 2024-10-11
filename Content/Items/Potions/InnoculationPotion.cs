@@ -1,4 +1,6 @@
-﻿namespace StarlightRiver.Content.Items.Potions
+﻿using StarlightRiver.Core.Systems.InoculationSystem;
+
+namespace StarlightRiver.Content.Items.Potions
 {
 	class InoculationPotion : ModItem
 	{
@@ -35,7 +37,7 @@
 
 		public override void Update(Player Player, ref int buffIndex)
 		{
-			Player.GetModPlayer<DoTResistancePlayer>().DoTResist += 0.3f;
+			Player.GetModPlayer<InoculationPlayer>().DoTResist += 0.3f;
 		}
 	}
 }

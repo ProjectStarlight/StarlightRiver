@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core.Systems.InoculationSystem;
 
 namespace StarlightRiver.Content.Items.EvilBiomes
 {
@@ -15,7 +16,7 @@ namespace StarlightRiver.Content.Items.EvilBiomes
 
 		public override void SafeUpdateEquip(Player Player)
 		{
-			Player.GetModPlayer<DoTResistancePlayer>().DoTResist += 0.15f;
+			Player.GetModPlayer<InoculationPlayer>().DoTResist += 0.15f;
 
 			if (Player.lifeRegenTime % 5 == 0)
 				Player.lifeRegenTime++;

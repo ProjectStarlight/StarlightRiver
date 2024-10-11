@@ -1,8 +1,8 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.Gravedigger;
 using StarlightRiver.Content.Items.Misc;
-using System;
-using System.Linq;
+using StarlightRiver.Core.Systems.InoculationSystem;
+using StarlightRiver.Core.Systems.InstancedBuffSystem;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.RatKing
@@ -11,10 +11,20 @@ namespace StarlightRiver.Content.Items.RatKing
 	{
 		public override string Texture => AssetDirectory.RatKingItem + Name;
 
+		public override void Load()
+		{
+			StarlightNPC.OnHitByItemEvent += InflictItem;
+			StarlightNPC.OnHitByProjectileEvent += InflictProj;
+		}
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Blood Crystal");
-			Tooltip.SetDefault("Cursed : Debuffs you inflict are also inflicted onto you \nAll debuffs you inflict stack and last longer");
+			Tooltip.SetDefault(
+				"Inflict blood resonance for every debuff on an enemy when you hit them\n" +
+				"Inflict an equal amount of blood resonance on yourself\n" +
+				"Blood resonance decreases inoculation by 3% per stack\n" +
+				"You take 5 damage per second while you have blood resonance");
 		}
 
 		public override void SafeSetDefaults()
@@ -22,9 +32,36 @@ namespace StarlightRiver.Content.Items.RatKing
 			Item.value = Item.sellPrice(0, 3, 0, 0);
 		}
 
-		public override void SafeUpdateEquip(Player Player)
+		private void InflictItem(NPC npc, Player player, Item item, NPC.HitInfo hit, int damageDone)
 		{
-			Player.GetModPlayer<BloodCrystalPlayer>().equipped = true;
+			if (Equipped(player))
+			{
+				for (int k = 0; k < npc.buffTime.Length; k++)
+				{
+					if (npc.buffTime[k] > 0)
+					{
+						BuffInflictor.Inflict<BloodCrystalBuff>(npc, 420);
+						BuffInflictor.Inflict<BloodCrystalBuff>(player, 420);
+					}
+				}
+			}
+		}
+
+		private void InflictProj(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
+		{
+			Player player = Main.player[projectile.owner];
+
+			if (Equipped(player))
+			{
+				for (int k = 0; k < npc.buffTime.Length; k++)
+				{
+					if (npc.buffTime[k] > 0)
+					{
+						BuffInflictor.Inflict<BloodCrystalBuff>(npc, 420);
+						BuffInflictor.Inflict<BloodCrystalBuff>(player, 420);
+					}
+				}
+			}
 		}
 
 		public override void AddRecipes()
@@ -38,58 +75,49 @@ namespace StarlightRiver.Content.Items.RatKing
 		}
 	}
 
-	class BloodCrystalComparer : IOrderedLoadable
+	public class BloodCrystalBuff : StackableBuff
 	{
-		public float Priority => 1.4f;
+		public override string Name => "BloodCrystalBuff";
 
-		public void Load()
-		{
-			StatusTrackingNPC.buffCompareEffects += buffCompareEffects;
-		}
+		public override string DisplayName => "Blood Resonance";
 
-		public void Unload()
-		{
-			StatusTrackingNPC.buffCompareEffects -= buffCompareEffects;
-		}
+		public override string Tooltip => "Inoculation is decreased";
 
-		private void buffCompareEffects(Player player, NPC NPC, int[] storedBuffs, int[] buffType, int[] storedTimes, int[] buffTime)
+		public override string Texture => AssetDirectory.Buffs + Name;
+
+		public override bool Debuff => true;
+
+		public override BuffStack GenerateDefaultStack(int duration)
 		{
-			if (player.GetModPlayer<BloodCrystalPlayer>().equipped)
+			var stack = new BuffStack
 			{
-				for (int i = 0; i < 5; i++)
-				{
-					if (!storedBuffs.Contains(buffType[i]))
-					{
-						player.AddBuff(buffType[i], buffTime[i] / 4);
-						buffTime[i] = (int)(buffTime[i] * 1.25f);
-					}
-					else
-					{
-						int storedIndex;
-						for (storedIndex = 0; storedIndex < 5; storedIndex++)
-						{
-							if (storedBuffs[storedIndex] == buffType[i])
-								break;
-						}
-
-						if (storedTimes[storedIndex] != buffTime[i] && storedTimes[storedIndex] - 1 != buffTime[i])
-						{
-							buffTime[i] = storedTimes[storedIndex] + (int)(buffTime[i] * 0.25f);
-							player.AddBuff(buffType[i], buffTime[i] / 4);
-						}
-					}
-				}
-			}
+				duration = duration
+			};
+			return stack;
 		}
-	}
 
-	public class BloodCrystalPlayer : ModPlayer
-	{
-		public bool equipped = false;
-
-		public override void ResetEffects()
+		public override void PerStackEffectsNPC(NPC npc, BuffStack stack)
 		{
-			equipped = false;
+			npc.GetGlobalNPC<InoculationNPC>().DoTResist -= 0.03f;
+		}
+
+		public override void PerStackEffectsPlayer(Player player, BuffStack stack)
+		{
+			player.GetModPlayer<InoculationPlayer>().DoTResist -= 0.03f;
+		}
+
+		public override void AnyStacksUpdatePlayer(Player player)
+		{
+			player.lifeRegen -= 10;
+		}
+
+		public override void AnyStacksUpdateNPC(NPC npc)
+		{
+			if (Main.rand.NextBool(30))
+			{
+				var d = Dust.NewDustPerfect(npc.Center, ModContent.DustType<Dusts.Aurora>(), Vector2.Zero, 0, new Color(255, 100, 100) * 0.25f, 1);
+				d.customData = stacks.Count * 0.1f;
+			}
 		}
 	}
 }
