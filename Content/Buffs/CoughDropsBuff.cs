@@ -9,6 +9,7 @@ namespace StarlightRiver.Content.Buffs
 		public override void Update(Player Player, ref int buffIndex)
 		{
 			Player.maxRunSpeed += 2;
+			Player.GetDamage(DamageClass.Generic) += 0.15f;
 		}
 	}
 }
