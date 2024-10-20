@@ -18,6 +18,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public NPC thinker;
 
 		public List<NPC> neurisms = [];
+		public NPC weakpoint;
 		public Vector2 savedPos;
 		public Vector2 savedPos2;
 		public Vector2 lastPos;
@@ -197,6 +198,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						neurisms.Add(Main.npc[i]);
 					}
 
+					int weakpointIndex = NPC.NewNPC(null, (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<WeakPoint>(), 0);
+					weakpoint = Main.npc[weakpointIndex];
+
 					attackQueue.Add(Main.rand.Next(4));
 
 					for (int k = 0; k < 3; k++)
@@ -233,6 +237,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				// First phase
 				case 2:
+
+					weakpoint.Center = chain.ropeSegments[chain.ropeSegments.Count / 3].posNow;
 
 					if (thinker.life <= thinker.lifeMax / 2f)
 						thinker.life = (int)(thinker.lifeMax / 2f);
@@ -557,7 +563,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				trail = new Trail(Main.instance.GraphicsDevice, chain.segmentCount, new NoTip(), factor =>
 				{
 					float sin = (float)Math.Sin((factor * 3f + Main.GameUpdateCount / 30f) * 3.14f) - 0.4f;
+
+					if (factor > 0.30f && factor < 0.36f)
+						sin *= 1.5f;
+
 					float floored = Math.Max(0, sin);
+
 					return 32 + floored * 16;
 				},
 				factor =>
@@ -567,7 +578,20 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 					int index = (int)(factor.X * chain.segmentCount);
 					index = Math.Clamp(index, 0, chain.segmentCount - 1);
-					return Lighting.GetColor((chain.ropeSegments[index].posNow / 16).ToPoint()) * (1 + floored);
+
+					var glowColor = new Color(
+						0.5f + 0.2f * MathF.Sin((Main.GameUpdateCount + factor.X) * 6.28f),
+						0.5f + 0.2f * MathF.Sin((Main.GameUpdateCount + factor.X + 0.3f) * 6.28f),
+						0.5f + 0.2f * MathF.Sin((Main.GameUpdateCount + factor.X + 0.6f) * 6.28f),
+						0);
+
+					var lightColor = Lighting.GetColor((chain.ropeSegments[index].posNow / 16).ToPoint());
+					var color = Color.Lerp(lightColor, glowColor, floored * 0.75f) * (1 + floored);
+
+					if (factor.X > 0.30f && factor.X < 0.36f)
+						color = Color.Lerp(color, new Color(255, 80, 40), 0.7f + MathF.Sin(Main.GameUpdateCount * 0.1f) * 0.3f);
+
+					return color;
 				});
 			}
 

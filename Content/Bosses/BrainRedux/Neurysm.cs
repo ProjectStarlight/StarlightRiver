@@ -101,7 +101,6 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			Timer++;
 
-			NPC.realLife = DeadBrain.TheBrain?.thinker?.whoAmI ?? NPC.realLife;
 			NPC.life = NPC.lifeMax;
 
 			if (TellTime > 0)
@@ -121,11 +120,6 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				if (Timer > 60)
 					NPC.active = false;
-			}
-			else
-			{
-				if (Dead)
-					NPC.realLife = -1;
 			}
 
 			float speed = Vector2.Distance(NPC.position, NPC.oldPosition);
