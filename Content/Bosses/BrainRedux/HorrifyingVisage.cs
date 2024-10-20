@@ -1,4 +1,6 @@
-﻿using System;
+﻿using StarlightRiver.Core.Systems.PixelationSystem;
+using StarlightRiver.Core;
+using System;
 using Terraria.Audio;
 using Terraria.ID;
 
@@ -80,7 +82,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (opacity >= 1)
 			{
-				Main.spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, frame, drawColor * opacity, 0, frame.Size() / 2f, 1f, 0, 0);
+				DeadBrain.DrawBrainSegments(spriteBatch, NPC, NPC.Center - Main.screenPosition, drawColor, NPC.rotation, NPC.scale, opacity);
 			}
 			else
 			{
@@ -88,7 +90,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				{
 					float rot = k / 6f * 6.28f + opacity * 3.14f;
 					Vector2 offset = Vector2.UnitX.RotatedBy(rot) * (1 - opacity) * 64;
-					Main.spriteBatch.Draw(tex, NPC.Center + offset - Main.screenPosition, frame, drawColor * opacity * 0.2f, 0, frame.Size() / 2f, 1f, 0, 0);
+
+					DeadBrain.DrawBrainSegments(spriteBatch, NPC, NPC.Center + offset - Main.screenPosition, drawColor, NPC.rotation, NPC.scale, opacity * 0.2f);
 				}
 			}
 

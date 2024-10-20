@@ -1,16 +1,15 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Biomes;
+﻿using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Physics;
-using StarlightRiver.Core.Systems.BarrierSystem;
+using StarlightRiver.Core.DrawingRigs;
 using StarlightRiver.Core.Systems.PixelationSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Bosses.BrainRedux
 {
@@ -18,9 +17,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 	{
 		public NPC thinker;
 
-		public List<NPC> neurisms = new();
+		public List<NPC> neurisms = [];
 		public Vector2 savedPos;
 		public Vector2 savedPos2;
+		public Vector2 lastPos;
 		public float savedRot;
 		public bool contactDamage = false;
 
@@ -30,11 +30,13 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		private float arenaFade;
 
-		public List<int> attackQueue = new();
+		public List<int> attackQueue = [];
 
 		public VerletChain chain;
 		private List<Vector2> cache;
 		private Trail trail;
+
+		private static StaticRig rig;
 
 		public ref float Timer => ref NPC.ai[0];
 		public ref float State => ref NPC.ai[1];
@@ -54,6 +56,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			GraymatterBiome.onDrawHallucinationMap += DrawTether;
 			GraymatterBiome.onDrawOverHallucinationMap += DrawPrediction;
+
+			Stream stream = StarlightRiver.Instance.GetFileStream("Assets/Bosses/BrainRedux/DeadBrainRig.json");
+			rig = JsonSerializer.Deserialize<StaticRig>(stream);
+			stream.Close();
 		}
 
 		private void DrawPrediction(SpriteBatch obj)
@@ -112,11 +118,14 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			NPC.CloneDefaults(NPCID.BrainofCthulhu);
 			NPC.boss = false;
 			NPC.aiStyle = -1;
+
 			chain = new VerletChain(40, true, NPC.Center, 10);
 		}
 
 		public override void AI()
 		{
+			lastPos = NPC.Center;
+
 			NPC.knockBackResist = 0f;
 
 			Timer++;
@@ -364,7 +373,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public override bool? CanBeHitByItem(Player player, Item item)
 		{
 			if (opacity < 0.5f)
-				return false; 
+				return false;
 
 			return base.CanBeHitByItem(player, item);
 		}
@@ -407,7 +416,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				Main.BestiaryTracker.Kills.RegisterKill(thinker);
 			}
-		}	
+		}
 
 		public override void FindFrame(int frameHeight)
 		{
@@ -425,10 +434,43 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			return base.DrawHealthBar(hbPosition, ref scale, ref position);
 		}
 
+		public static void DrawBrainSegments(SpriteBatch spriteBatch, NPC npc, Vector2 center, Color color, float rotation, float scale, float opacity, Vector2 oldCenter = default)
+		{
+			Texture2D tex = Assets.Bosses.BrainRedux.BrainChunk.Value;
+			Texture2D texGlow = Assets.Bosses.BrainRedux.BrainChunkGlow.Value;
+
+			foreach (StaticRigPoint point in rig.Points)
+			{
+				float magnitude = 0.1f;
+				float speed = 100f + (8 - point.Frame) * 15;
+				float offset = 1f + MathF.Sin((Main.GameUpdateCount + point.Frame * 10) * (1f / speed) * 6.28f) * magnitude;
+
+				float rotOffset = MathF.Sin((Main.GameUpdateCount + point.Frame * 16) * (0.4f / speed) * 6.28f) * 0.1f;
+
+				Vector2 velOffset;
+				if (oldCenter != default)
+					velOffset = (center - (oldCenter - Main.screenPosition)) * -0.35f * point.Frame;
+				else
+					velOffset = Vector2.Zero;
+
+				if (velOffset.Length() > 32)
+					velOffset = Vector2.Normalize(velOffset) * 32;
+
+				var frame = new Rectangle(0, 76 * point.Frame, 80, 76);
+				spriteBatch.Draw(tex, center + (point.Pos - new Vector2(44, 40)) * offset + velOffset, frame, color * opacity, rotation + rotOffset, new Vector2(40, 38), scale, 0, 0);
+
+				var glowColor = new Color(
+					0.5f + 0.2f * MathF.Sin((Main.GameUpdateCount + point.Frame * 10) * (1f / speed) * 6.28f),
+					0.5f + 0.2f * MathF.Sin((Main.GameUpdateCount + point.Frame * 10 + 30) * (1f / speed) * 6.28f),
+					0.5f + 0.2f * MathF.Sin((Main.GameUpdateCount + point.Frame * 10 + 60) * (1f / speed) * 6.28f),
+					0);
+
+				spriteBatch.Draw(texGlow, center + (point.Pos - new Vector2(44, 40)) * offset + velOffset, frame, glowColor * opacity, rotation + rotOffset, new Vector2(40, 38), scale, 0, 0);
+			}
+		}
+
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			Texture2D tex = Assets.Bosses.BrainRedux.DeadBrain.Value;
-
 			if (State == 2 && chain != null)
 			{
 				ModContent.GetInstance<PixelationSystem>().QueueRenderAction("UnderNPCs", DrawPrimitives);
@@ -436,7 +478,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (opacity >= 1)
 			{
-				Main.spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, NPC.frame, drawColor * opacity, NPC.rotation, NPC.frame.Size() / 2f, NPC.scale, 0, 0);
+				DrawBrainSegments(spriteBatch, NPC, NPC.Center - Main.screenPosition, drawColor, NPC.rotation, NPC.scale, opacity, lastPos);
 			}
 			else
 			{
@@ -444,7 +486,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				{
 					float rot = k / 6f * 6.28f + opacity * 3.14f;
 					Vector2 offset = Vector2.UnitX.RotatedBy(rot) * (1 - opacity) * 64;
-					spriteBatch.Draw(tex, NPC.Center + offset - Main.screenPosition, NPC.frame, drawColor * opacity * 0.2f, NPC.rotation, NPC.frame.Size() / 2f, NPC.scale, 0, 0);
+
+					DrawBrainSegments(spriteBatch, NPC, NPC.Center + offset - Main.screenPosition, drawColor, NPC.rotation, NPC.scale, opacity * 0.2f, lastPos);
 				}
 			}
 
@@ -457,7 +500,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				Texture2D tex = Assets.Bosses.BrainRedux.ShieldMap.Value;
 
-				var effect = Filters.Scene["BrainShield"].GetShader().Shader;
+				Effect effect = Filters.Scene["BrainShield"].GetShader().Shader;
 
 				effect.Parameters["time"]?.SetValue(Main.GameUpdateCount * 0.02f);
 				effect.Parameters["size"]?.SetValue(tex.Size() * 0.6f);
@@ -491,7 +534,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			if (cache == null)
 			{
-				cache = new List<Vector2>();
+				cache = [];
 
 				for (int i = 0; i < chain.segmentCount; i++)
 				{
@@ -516,7 +559,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					float sin = (float)Math.Sin((factor * 3f + Main.GameUpdateCount / 30f) * 3.14f) - 0.4f;
 					float floored = Math.Max(0, sin);
 					return 32 + floored * 16;
-				}, 
+				},
 				factor =>
 				{
 					float sin = (float)Math.Sin((factor.X * 3f + Main.GameUpdateCount / 30f) * 3.14f) - 0.4f;
