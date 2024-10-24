@@ -48,11 +48,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				spriteBatch.Draw(solid, edge - Main.screenPosition, null, new Color(Lighting.GetSubLight(edge)), rot - 1.57f / 2f, solid.Size(), 1f, 0, 0);
 			}
 
-			/*ModContent.GetInstance<PixelationSystem>().QueueRenderAction("ThinkerArena", () =>
-			{
-				ManageArenaTrail();
-				DrawArenaEdgeTrail();
-			});*/
+			ManageArenaTrail();
+			DrawArenaEdgeTrail();
 		}
 
 		protected void ManageArenaTrail()

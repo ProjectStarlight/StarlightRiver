@@ -69,6 +69,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				TheBrain.PreDraw(obj, Main.screenPosition, Lighting.GetColor((TheBrain.NPC.Center / 16).ToPoint()));
 
+				/*
 				if (TheBrain.State == 2)
 				{
 					Vector2 pos = TheBrain.NPC.Center - Main.screenPosition;
@@ -82,7 +83,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 					Texture2D tex2 = ModContent.Request<Texture2D>(AssetDirectory.BrainRedux + $"Indicator{TheBrain.AttackState}").Value;
 					obj.Draw(tex2, pos + new Vector2(0, -100), null, Color.White, 0, tex2.Size() / 2f, 1.5f, 0, 0);
-				}
+				}*/
 			}
 		}
 
@@ -112,6 +113,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					SpawnReduxedBrain(pos + new Vector2(0, 200));
 				}
 			}
+		}
+
+		public override void SetStaticDefaults()
+		{
+			NPCID.Sets.TrailCacheLength[Type] = 30;
+			NPCID.Sets.TrailingMode[Type] = 1;
 		}
 
 		public override void SetDefaults()
@@ -201,14 +208,14 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					int weakpointIndex = NPC.NewNPC(null, (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<WeakPoint>(), 0);
 					weakpoint = Main.npc[weakpointIndex];
 
-					attackQueue.Add(Main.rand.Next(4));
+					attackQueue.Add(Main.rand.Next(5));
 
 					for (int k = 0; k < 3; k++)
 					{
-						int next = Main.rand.Next(4);
+						int next = Main.rand.Next(5);
 
 						while (next == attackQueue.Last())
-							next = Main.rand.Next(4);
+							next = Main.rand.Next(5);
 
 						attackQueue.Add(next);
 					}
@@ -248,10 +255,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						AttackState = attackQueue[0];
 						attackQueue.RemoveAt(0);
 
-						int next = Main.rand.Next(4);
+						int next = Main.rand.Next(5);
 
 						while (next == attackQueue.Last())
-							next = Main.rand.Next(4);
+							next = Main.rand.Next(5);
 
 						attackQueue.Add(next);
 
@@ -302,6 +309,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 							break;
 						case 3:
 							Spawn();
+							break;
+						case 4:
+							Choice();
 							break;
 					}
 
@@ -480,6 +490,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (State == 2 && chain != null)
 			{
 				ModContent.GetInstance<PixelationSystem>().QueueRenderAction("UnderNPCs", DrawPrimitives);
+			}
+
+			if (State == 2 && AttackState == 2)
+			{
+				DrawRamGraphics(spriteBatch);
 			}
 
 			if (opacity >= 1)

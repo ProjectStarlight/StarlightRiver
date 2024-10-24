@@ -42,11 +42,14 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (DeadBrain.TheBrain?.thinker is null)
 				return;
 
-			foreach (Player player in Main.ActivePlayers)
+			if (Vector2.Distance(DeadBrain.TheBrain.thinker.Center, Projectile.Center) > 32)
 			{
-				if (Helpers.Helper.CheckLinearCollision(DeadBrain.TheBrain.thinker.Center, Projectile.Center, player.Hitbox, out Vector2 collision))
+				foreach (Player player in Main.ActivePlayers)
 				{
-					player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " played the idiot harp..."), 25, 0);
+					if (Helpers.Helper.CheckLinearCollision(DeadBrain.TheBrain.thinker.Center, Projectile.Center, player.Hitbox, out Vector2 collision))
+					{
+						player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " played the idiot harp..."), 25, 0);
+					}
 				}
 			}
 		}

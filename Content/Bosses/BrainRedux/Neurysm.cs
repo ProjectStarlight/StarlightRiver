@@ -76,25 +76,20 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override void OnHitByProjectile(Projectile projectile, NPC.HitInfo hit, int damageDone)
 		{
-			if (!Dead)
-				hurtTime = 15;
+
 		}
 
 		public override void OnHitByItem(Player player, Item item, NPC.HitInfo hit, int damageDone)
 		{
-			if (!Dead)
-				hurtTime = 15;
+
 		}
 
 		public override void ModifyIncomingHit(ref NPC.HitModifiers modifiers)
 		{
-			if (Dead)
-			{
-				modifiers.FinalDamage *= 0;
-				modifiers.HideCombatText();
+			modifiers.FinalDamage *= 0;
+			modifiers.HideCombatText();
 
-				CombatText.NewText(NPC.Hitbox, Color.Gray, 0);
-			}
+			CombatText.NewText(NPC.Hitbox, Color.Gray, 0);
 		}
 
 		public override void AI()

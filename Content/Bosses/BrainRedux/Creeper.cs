@@ -23,6 +23,25 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (reworked)
 			{
 				Lighting.AddLight(npc.Center, new Vector3(0.45f, 0.3f, 0.1f));
+
+				if (npc.ai[0] == 0)
+					npc.ai[0] = Main.rand.NextFloat() * 6.28f;
+
+				npc.lifeMax = 11;
+
+				if (npc.life > npc.lifeMax)
+					npc.life = npc.lifeMax;
+
+				npc.TargetClosest();
+				npc.ai[0]++;
+
+				if (npc.target != -1)
+				{
+					npc.velocity = Vector2.Normalize(npc.Center - Main.player[npc.target].Center) * -3;
+					npc.velocity += Vector2.One.RotatedBy(npc.ai[0] * 0.05f);
+				}
+
+				return false;
 			}
 
 			return true;

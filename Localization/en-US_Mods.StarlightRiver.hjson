@@ -4013,6 +4013,7 @@ Projectiles: {
 	LobotomizerHallucination.DisplayName: Lobotomizer Hallucination
 	LobotomizerProjectile.DisplayName: Lobotomizer Projectile
 	MyelinSlash.DisplayName: Myelin Slash
+	BrainBolt.DisplayName: Brain Bolt
 }
 
 Tiles: {

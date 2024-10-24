@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Dusts;
+﻿using StarlightRiver.Content.Bosses.SquidBoss;
+using StarlightRiver.Content.Dusts;
 using System;
 using System.Linq;
 using Terraria.Audio;
@@ -34,7 +35,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (AttackTimer >= 61)
 			{
 				float timer = Helpers.Helper.BezierEase((AttackTimer - 60) / 180f);
-				float totalRot = Main.masterMode ? 3f : Main.expertMode ? 2.4f : 2f;
+				float totalRot = Main.masterMode ? 2.4f : Main.expertMode ? 2f : 1.6f;
 
 				for (int k = 0; k < neurisms.Count; k++)
 				{
@@ -43,6 +44,14 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					neurisms[k].Center = thinker.Center + Vector2.UnitX.RotatedBy(rot) * (750 - timer * 675f);
 					(neurisms[k].ModNPC as Neurysm).State = 0;
 					(neurisms[k].ModNPC as Neurysm).Timer = 0;
+				}
+			}
+
+			if (AttackTimer == 160 && Main.masterMode)
+			{
+				for(int k = 0; k < 12; k++)
+				{
+					Projectile.NewProjectile(null, thinker.Center, Vector2.UnitX.RotatedBy(k / 12f * 6.28f) * 4, ModContent.ProjectileType<BrainBolt>(), 25, 0, Main.myPlayer, 200);
 				}
 			}
 
@@ -94,6 +103,14 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					{
 						Projectile.NewProjectile(null, thinker.Center, Vector2.UnitX.RotatedBy(savedRot + k / 5f * 6.28f) * 0.5f, ModContent.ProjectileType<VeinSpear>(), 25, 0, Main.myPlayer);
 					}
+				}
+			}
+
+			if (AttackTimer == 75 && Main.masterMode)
+			{
+				for (int k = 0; k < 9; k++)
+				{
+					Projectile.NewProjectile(null, thinker.Center, Vector2.UnitX.RotatedBy(savedRot + (k + 0.5f) / 9f * 6.28f) * 4, ModContent.ProjectileType<BrainBolt>(), 25, 0, Main.myPlayer, 200);
 				}
 			}
 
@@ -167,35 +184,68 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				NPC.TargetClosest();
 			}
 
-			if (AttackTimer >= 1 && AttackTimer < 120)
+			if (AttackTimer >= 1 && AttackTimer < 140)
 			{
-				NPC.Center += (targetPos - NPC.Center) * 0.05f;
+				float speed = 0.05f;
+
+				if (AttackTimer > 110)
+					speed *= (1f - (AttackTimer - 110) / 30f);
+
+				NPC.Center += (targetPos - NPC.Center) * speed;
 			}
 
-			if (AttackTimer == 120)
+			if (AttackTimer == 140)
 			{
 				savedPos = thinker.Center + relativePos;
-				savedPos2 = NPC.Center;
+			}
 
+			if (AttackTimer > 140 && AttackTimer < 160)
+			{
+				NPC.Center += Vector2.Normalize(NPC.Center - savedPos) * 20 * (1f - (AttackTimer - 140) / 20f);
+			}
+
+			if (AttackTimer == 160)
+			{
+				savedPos2 = NPC.Center;
 				SoundEngine.PlaySound(SoundID.NPCDeath10.WithPitchOffset(0.5f), NPC.Center);
 			}
 
-			if (AttackTimer > 120)
+			if (AttackTimer > 160)
 			{
 				contactDamage = true;
-				float prog = Helpers.Helper.SwoopEase((AttackTimer - 120) / chargeTime);
+				float prog = Helpers.Helper.SwoopEase((AttackTimer - 160) / chargeTime);
 				NPC.Center = Vector2.Lerp(savedPos2, savedPos, prog);
-
-				var d = Dust.NewDustPerfect(NPC.Center, ModContent.DustType<BloodMetaballDust>(), Vector2.UnitY.RotatedByRandom(1) * Main.rand.NextFloat(-5, -3));
-				d.customData = 1f;
-
-				Dust.NewDustPerfect(NPC.Center, DustID.Blood, Vector2.UnitY.RotatedByRandom(6.28f) * Main.rand.NextFloat(1, 5));
 			}
 
-			if (AttackTimer > 120 + chargeTime)
+			if (AttackTimer > 160 + chargeTime)
 			{
 				contactDamage = false;
 				AttackTimer = 0;
+			}
+		}
+
+		public void DrawRamGraphics(SpriteBatch spriteBatch)
+		{
+			float chargeTime = Main.masterMode ? 60f : Main.expertMode ? 75f : 90f;
+
+			if (AttackTimer > 100 && AttackTimer < 140)
+			{
+				float prog = (AttackTimer - 100) / 40f;
+
+				for(int k = 0; k < 6; k++)
+				{
+					Vector2 pos = NPC.Center + Vector2.UnitX.RotatedBy(k / 6f * 6.28f + prog * 3.14f) * (1f - prog) * 128;
+					DrawBrainSegments(spriteBatch, NPC, pos - Main.screenPosition, new Color(255, 100, 100), NPC.rotation, NPC.scale, 0.5f * prog, lastPos);
+				}
+			}
+
+			if (AttackTimer > 160)
+			{
+				for (int k = 0; k < 10; k++)
+				{
+					Vector2 pos = NPC.oldPos[k] + NPC.Size / 2f;
+					DrawBrainSegments(spriteBatch, NPC, pos - Main.screenPosition, new Color(255, 100, 100), NPC.rotation, NPC.scale, (k / 30f) * (1f - (AttackTimer - 160) / chargeTime), lastPos);
+				}
 			}
 		}
 
@@ -246,6 +296,14 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				}
 			}
 
+			if (AttackTimer == 560 && Main.masterMode)
+			{
+				neurisms.ForEach(n =>
+				{
+					Projectile.NewProjectile(null, n.Center, Vector2.Normalize(thinker.Center - n.Center) * Vector2.Distance(n.Center, thinker.Center) / 45f, ModContent.ProjectileType<BrainBolt>(), 25, 0, Main.myPlayer, 45);
+				});
+			}
+
 			if (AttackTimer == 570)
 			{
 				neurisms.ForEach(n =>
@@ -277,6 +335,137 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			}
 
 			if (AttackTimer > 600)
+			{
+				AttackTimer = 0;
+			}
+		}
+
+		public void Choice()
+		{
+			if (AttackTimer == 1)
+			{
+				savedPos = Main.rand.NextBool() ? thinker.Center + new Vector2(-325, 0) : thinker.Center + new Vector2(325, 0);
+				ThisThinker.platformRadiusTarget = 400;
+				ThisThinker.platformRotationTarget += 0.2f;
+			}
+
+			if (AttackTimer < 60)
+			{
+				NPC.Center += (savedPos - NPC.Center) * 0.08f;
+			}
+
+			if (AttackTimer == 60)
+			{
+				Projectile.NewProjectile(null, thinker.Center, Vector2.UnitY * 0.5f, ModContent.ProjectileType<VeinSpear>(), 25, 0, Main.myPlayer);
+				Projectile.NewProjectile(null, thinker.Center, Vector2.UnitY * -0.5f, ModContent.ProjectileType<VeinSpear>(), 25, 0, Main.myPlayer);
+			}
+
+			Vector2 relativePos = NPC.Center - thinker.Center;
+			Vector2 oppPos = thinker.Center + relativePos.RotatedBy(3.14f);
+
+			for (int k = 0; k < neurisms.Count; k++)
+			{
+				float lerp = k / (neurisms.Count - 1f);
+
+				if (AttackTimer == 60 + k * 20)
+				{
+					neurisms[k].Center = oppPos + Vector2.UnitX * (-300 + lerp * 600) + Vector2.UnitY * 750;
+					(neurisms[k].ModNPC as Neurysm).State = 2;
+					(neurisms[k].ModNPC as Neurysm).Timer = 0;
+					(neurisms[k].ModNPC as Neurysm).TellTime = 30;
+					(neurisms[k].ModNPC as Neurysm).tellDirection = 1.57f;
+					(neurisms[k].ModNPC as Neurysm).tellLen = 1500;
+				}
+
+				if (AttackTimer >= 90 + k * 20 && AttackTimer <= 210 + k * 20)
+				{
+					Vector2 start = oppPos + Vector2.UnitX * (-300 + lerp * 600) + Vector2.UnitY * 750;
+					Vector2 target = oppPos + Vector2.UnitX * (-300 + lerp * 600) + Vector2.UnitY * -750;
+
+					float prog = Helpers.Helper.BezierEase((AttackTimer - (90 + k * 20)) / 120f);
+
+					neurisms[k].Center = Vector2.Lerp(start, target, prog);
+					(neurisms[k].ModNPC as Neurysm).State = 0;
+					(neurisms[k].ModNPC as Neurysm).Timer = 0;
+				}
+
+				if (AttackTimer == 210 + k * 20)
+				{
+					neurisms[k].velocity *= 0;
+					(neurisms[k].ModNPC as Neurysm).State = 1;
+					(neurisms[k].ModNPC as Neurysm).Timer = 0;
+				}
+			}
+
+			for(int k = 1; k < 6; k++)
+			{
+				if (AttackTimer == 120 + k * 10)
+					Projectile.NewProjectile(null, thinker.Center, Vector2.Normalize(NPC.Center - thinker.Center).RotatedBy((-0.5f + k / 6f) * 3.14f) * 0.5f, ModContent.ProjectileType<VeinSpear>(), 25, 0, Main.myPlayer);
+			}
+
+			int secondPartBase = 210 + neurisms.Count * 20;
+
+			if (AttackTimer >= secondPartBase)
+			{
+
+				if (AttackTimer == secondPartBase)
+				{
+					savedPos = Main.rand.NextBool() ? thinker.Center + new Vector2(0, -325) : thinker.Center + new Vector2(0, 325);
+				}
+
+				if (AttackTimer < secondPartBase + 60)
+				{
+					NPC.Center += (savedPos - NPC.Center) * 0.08f;
+				}
+
+				if (AttackTimer == secondPartBase + 60)
+				{
+					Projectile.NewProjectile(null, thinker.Center, Vector2.UnitX * 0.5f, ModContent.ProjectileType<VeinSpear>(), 25, 0, Main.myPlayer);
+					Projectile.NewProjectile(null, thinker.Center, Vector2.UnitX * -0.5f, ModContent.ProjectileType<VeinSpear>(), 25, 0, Main.myPlayer);
+				}
+
+				for (int k = 0; k < neurisms.Count; k += 2)
+				{
+					float lerp = k / (neurisms.Count - 1f);
+
+					if (AttackTimer == secondPartBase + 60 + k * 20)
+					{
+						neurisms[k].Center = oppPos + Vector2.UnitY * (-300 + lerp * 600) + Vector2.UnitX * 750;
+						(neurisms[k].ModNPC as Neurysm).State = 2;
+						(neurisms[k].ModNPC as Neurysm).Timer = 0;
+						(neurisms[k].ModNPC as Neurysm).TellTime = 30;
+						(neurisms[k].ModNPC as Neurysm).tellDirection = 0f;
+						(neurisms[k].ModNPC as Neurysm).tellLen = 1500;
+					}
+
+					if (AttackTimer >= secondPartBase + 90 + k * 20 && AttackTimer <= secondPartBase + 210 + k * 20)
+					{
+						Vector2 start = oppPos + Vector2.UnitY * (-300 + lerp * 600) + Vector2.UnitX * 750;
+						Vector2 target = oppPos + Vector2.UnitY * (-300 + lerp * 600) + Vector2.UnitX * -750;
+
+						float prog = Helpers.Helper.BezierEase((AttackTimer - (secondPartBase + 90 + k * 20)) / 120f);
+
+						neurisms[k].Center = Vector2.Lerp(start, target, prog);
+						(neurisms[k].ModNPC as Neurysm).State = 0;
+						(neurisms[k].ModNPC as Neurysm).Timer = 0;
+					}
+
+					if (AttackTimer == secondPartBase + 210 + k * 20)
+					{
+						neurisms[k].velocity *= 0;
+						(neurisms[k].ModNPC as Neurysm).State = 1;
+						(neurisms[k].ModNPC as Neurysm).Timer = 0;
+					}
+				}
+
+				for (int k = 1; k < 6; k++)
+				{
+					if (AttackTimer == secondPartBase + 120 + k * 10)
+						Projectile.NewProjectile(null, thinker.Center, Vector2.Normalize(NPC.Center - thinker.Center).RotatedBy((-0.5f + k / 6f) * 3.14f) * 0.5f, ModContent.ProjectileType<VeinSpear>(), 25, 0, Main.myPlayer);
+				}
+			}
+
+			if (AttackTimer >= secondPartBase + 450)
 			{
 				AttackTimer = 0;
 			}
