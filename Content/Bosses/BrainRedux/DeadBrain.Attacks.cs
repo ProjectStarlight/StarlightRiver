@@ -184,7 +184,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				NPC.TargetClosest();
 			}
 
-			if (AttackTimer >= 1 && AttackTimer < 140)
+			if (AttackTimer > 1 && AttackTimer < 140)
 			{
 				float speed = 0.05f;
 

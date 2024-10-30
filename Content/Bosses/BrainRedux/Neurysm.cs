@@ -104,10 +104,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (hurtTime > 0)
 				hurtTime--;
 
+			float prog = Math.Min(1, Timer / 30f);
+
 			if (State == 1)
-				opacity = 1 - Timer / 30f;
+				opacity = 1 - prog;
 			else if (State == 2)
-				opacity = Timer / 30f;
+				opacity = prog;
 
 			if (DeadBrain.TheBrain is null)
 			{
@@ -148,6 +150,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			Color trailOne = Dead ? new Color(100, 180, 30) : Rainbow(0 + NPC.whoAmI);
 			Color trailTwo = Dead ? new Color(50, 70, 20) : Rainbow(1.5f + NPC.whoAmI);
 
+			float prog = Math.Min(1, Timer / 30f);
+
 			if (opacity >= 0.05f)
 			{
 				for (int k = 0; k < 20; k++)
@@ -160,9 +164,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				}
 
 				float speed = Vector2.Distance(NPC.position, NPC.oldPos[1]);
+				float glowPower = Math.Max(speed / 10f, 0.4f);
 
 				Texture2D glow = Assets.Keys.GlowAlpha.Value;
-				Color col2 = glowColor * (speed / 10f) * opacity;
+				Color col2 = glowColor * glowPower * opacity;
 				col2.A = 0;
 
 				if (State == 0)
@@ -173,8 +178,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				{
 					for (int k = 0; k < 6; k++)
 					{
-						float rot = State == 1 ? k / 6f * 6.28f + Timer / 30f * 3.14f : k / 6f * 6.28f + (1 - Timer / 30f) * 3.14f;
-						Vector2 offset = State == 1 ? Vector2.UnitX.RotatedBy(rot) * Timer / 30f * 32 : Vector2.UnitX.RotatedBy(rot) * (1 - Timer / 30f) * 32;
+						float rot = State == 1 ? k / 6f * 6.28f + prog * 3.14f : k / 6f * 6.28f + (1 - prog) * 3.14f;
+						Vector2 offset = State == 1 ? Vector2.UnitX.RotatedBy(rot) * prog * 32 : Vector2.UnitX.RotatedBy(rot) * (1 - prog) * 32;
 						spriteBatch.Draw(glow, NPC.Center + offset - Main.screenPosition, null, col2 * 0.2f, NPC.rotation, glow.Size() / 2f, 1f, 0, 0);
 					}
 				}
@@ -209,15 +214,15 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				spriteBatch.Draw(tell, target, source, color, tellDirection + 3.14f, origin, 0, 0);
 			}
 
-			if (State == 0)
-				spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, drawColor, NPC.rotation, tex.Size() / 2f, 1, 0, 0);
+			//if (State == 0)
+			spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, drawColor * opacity, NPC.rotation, tex.Size() / 2f, 1, 0, 0);
 
 			if (State == 1)
 			{
 				for (int k = 0; k < 6; k++)
 				{
-					float rot = k / 6f * 6.28f + Timer / 30f * 3.14f;
-					Vector2 offset = Vector2.UnitX.RotatedBy(rot) * Timer / 30f * 32;
+					float rot = k / 6f * 6.28f + prog * 3.14f;
+					Vector2 offset = Vector2.UnitX.RotatedBy(rot) * prog * 32;
 					spriteBatch.Draw(tex, NPC.Center + offset - Main.screenPosition, null, drawColor * opacity * 0.2f, NPC.rotation, tex.Size() / 2f, 1, 0, 0);
 				}
 			}
@@ -226,8 +231,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				for (int k = 0; k < 6; k++)
 				{
-					float rot = k / 6f * 6.28f + (1 - Timer / 30f) * 3.14f;
-					Vector2 offset = Vector2.UnitX.RotatedBy(rot) * (1 - Timer / 30f) * 32;
+					float rot = k / 6f * 6.28f + (1 - prog) * 3.14f;
+					Vector2 offset = Vector2.UnitX.RotatedBy(rot) * (1 - prog) * 32;
 					spriteBatch.Draw(tex, NPC.Center + offset - Main.screenPosition, null, drawColor * opacity * 0.2f, NPC.rotation, tex.Size() / 2f, 1, 0, 0);
 				}
 			}

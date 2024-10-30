@@ -107,6 +107,14 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			Lighting.AddLight(NPC.Center, new Vector3(1f, 0.9f, 0.8f));
 
+			if (DeadBrain.ArenaOpacity > 0.1f)
+			{
+				for (int k = 0; k < 200; k++)
+				{
+					Lighting.AddLight(NPC.Center + Vector2.UnitX.RotatedBy(k / 200f * 6.28f) * hurtRadius, new Vector3(0.4f, 0.1f, 0.15f) * DeadBrain.ArenaOpacity);
+				}
+			}
+
 			for (int k = 0; k < Main.maxPlayers; k++)
 			{
 				Player player = Main.player[k];
@@ -252,7 +260,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override bool NeedSaving()
 		{
-			return true;
+			return false;
 		}
 
 		/// <summary>

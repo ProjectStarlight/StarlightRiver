@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 		{
-			(r, g, b) = (0.7f * DeadBrain.ArenaOpacity, 0.4f * DeadBrain.ArenaOpacity, 0.2f * DeadBrain.ArenaOpacity);
+			//(r, g, b) = (0.7f * DeadBrain.ArenaOpacity, 0.4f * DeadBrain.ArenaOpacity, 0.2f * DeadBrain.ArenaOpacity);
 		}
 
 		public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
@@ -32,8 +32,8 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 			var tile = Framing.GetTileSafely(i, j);
 
-			if (!tile.IsActuated)
-				spriteBatch.Draw(tex, (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), new Color(200, 90, 70) * DeadBrain.ArenaOpacity);
+			//if (!tile.IsActuated)
+				//spriteBatch.Draw(tex, (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), new Color(200, 90, 70) * DeadBrain.ArenaOpacity);
 			
 			return false;
 		}

@@ -34,10 +34,18 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public List<int> attackQueue = [];
 
 		public VerletChain chain;
+		public Vector2 chainTarget;
+
 		private List<Vector2> cache;
 		private Trail trail;
 
+		// chunk animation inputs
 		private static StaticRig rig;
+		public float extraChunkRadius;
+		public float staggeredExtraChunkRadius;
+
+		// shield shader inputs
+		public float shieldOpacity = 0f;
 
 		public ref float Timer => ref NPC.ai[0];
 		public ref float State => ref NPC.ai[1];
@@ -61,6 +69,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			Stream stream = StarlightRiver.Instance.GetFileStream("Assets/Bosses/BrainRedux/DeadBrainRig.json");
 			rig = JsonSerializer.Deserialize<StaticRig>(stream);
 			stream.Close();
+		}
+
+		private bool IsInArena(Player player)
+		{
+			return Vector2.Distance(player.Center, thinker.Center) < ThisThinker.hurtRadius + 20;
 		}
 
 		private void DrawPrediction(SpriteBatch obj)
@@ -140,7 +153,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			AttackTimer++;
 
 			if (State != 5)
-				Lighting.AddLight(NPC.Center, State > 2 ? new Vector3(0.5f, 0.4f, 0.2f) : new Vector3(0.5f, 0.5f, 0.5f));
+				Lighting.AddLight(NPC.Center, State > 2 ? new Vector3(0.5f, 0.4f, 0.2f) : new Vector3(0.5f, 0.5f, 0.5f) * (shieldOpacity / 0.4f));
 
 			// If we dont have a thinker, try to find one
 			if (thinker is null)
@@ -168,9 +181,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				}
 			}
 
+			if (chainTarget == default)
+				chainTarget = thinker.Center;
+
 			if (chain != null)
 			{
-				chain.startPoint = NPC.Center + Vector2.UnitY * 90;
+				chain.startPoint = chainTarget;
 				chain.endPoint = thinker.Center;
 				chain.useEndPoint = true;
 				chain.drag = 1.1f;
@@ -246,6 +262,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				// First phase
 				case 2:
 
+					chainTarget = NPC.Center + Vector2.UnitY * 90;
 					weakpoint.Center = chain.ropeSegments[chain.ropeSegments.Count / 3].posNow;
 
 					if (thinker.life <= thinker.lifeMax / 2f)
@@ -467,6 +484,14 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				float speed = 100f + (8 - point.Frame) * 15;
 				float offset = 1f + MathF.Sin((Main.GameUpdateCount + point.Frame * 10) * (1f / speed) * 6.28f) * magnitude;
 
+				float chunkOpacity = 1f;
+				if (npc.ModNPC is DeadBrain deadBrain)
+				{
+					float extra = deadBrain.extraChunkRadius + deadBrain.staggeredExtraChunkRadius * point.Frame;
+					offset += extra;
+					chunkOpacity *= 1f - extra / 5f;
+				}
+
 				float rotOffset = MathF.Sin((Main.GameUpdateCount + point.Frame * 16) * (0.4f / speed) * 6.28f) * 0.1f;
 
 				Vector2 velOffset;
@@ -479,7 +504,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					velOffset = Vector2.Normalize(velOffset) * 32;
 
 				var frame = new Rectangle(0, 76 * point.Frame, 80, 76);
-				spriteBatch.Draw(tex, center + (point.Pos - new Vector2(44, 40)) * offset + velOffset, frame, color * opacity, rotation + rotOffset, new Vector2(40, 38), scale, 0, 0);
+				spriteBatch.Draw(tex, center + (point.Pos - new Vector2(44, 40)) * offset + velOffset, frame, color * opacity * chunkOpacity, rotation + rotOffset, new Vector2(40, 38), scale, 0, 0);
 
 				var glowColor = new Color(
 					0.5f + 0.2f * MathF.Sin((Main.GameUpdateCount + point.Frame * 10) * (1f / speed) * 6.28f),
@@ -487,13 +512,16 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					0.5f + 0.2f * MathF.Sin((Main.GameUpdateCount + point.Frame * 10 + 60) * (1f / speed) * 6.28f),
 					0);
 
-				spriteBatch.Draw(texGlow, center + (point.Pos - new Vector2(44, 40)) * offset + velOffset, frame, glowColor * opacity, rotation + rotOffset, new Vector2(40, 38), scale, 0, 0);
+				if (npc.ModNPC is DeadBrain deadBrain2)
+					glowColor *= deadBrain2.shieldOpacity / 0.4f;
+
+				spriteBatch.Draw(texGlow, center + (point.Pos - new Vector2(44, 40)) * offset + velOffset, frame, glowColor * opacity * chunkOpacity, rotation + rotOffset, new Vector2(40, 38), scale, 0, 0);
 			}
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			if (State == 2 && chain != null)
+			if (State <= 2 && chain != null)
 			{
 				DrawPrimitives();
 			}
@@ -523,7 +551,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			if (State == 2)
+			if (State <= 2)
 			{
 				Texture2D tex = Assets.Bosses.BrainRedux.ShieldMap.Value;
 
@@ -531,7 +559,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				effect.Parameters["time"]?.SetValue(Main.GameUpdateCount * 0.02f);
 				effect.Parameters["size"]?.SetValue(tex.Size() * 0.6f);
-				effect.Parameters["opacity"]?.SetValue(0.4f);
+				effect.Parameters["opacity"]?.SetValue(shieldOpacity);
 				effect.Parameters["pixelRes"]?.SetValue(2f);
 
 				effect.Parameters["drawTexture"]?.SetValue(tex);

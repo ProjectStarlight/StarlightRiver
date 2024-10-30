@@ -38,14 +38,14 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				float rot = k / 36f * 6.28f;
 				Vector2 edge = home + Vector2.UnitX.RotatedBy(rot) * (hurtRadius + 50 + offset);
-				spriteBatch.Draw(spike, edge - Main.screenPosition, new Rectangle(spike.Width / 2, 0, spike.Width / 2, spike.Height), new Color(255, 50, 80, 0) * 0.25f, rot - 1.57f, new Vector2(spike.Width / 4f, spike.Height), 1.5f, 0, 0);
-				spriteBatch.Draw(solid, edge - Main.screenPosition, null, new Color(Lighting.GetSubLight(edge)), rot - 1.57f / 2f, solid.Size(), 1f, 0, 0);
+				spriteBatch.Draw(spike, edge - Main.screenPosition, new Rectangle(spike.Width / 2, 0, spike.Width / 2, spike.Height), new Color(255, 50, 80, 0) * 0.25f * DeadBrain.ArenaOpacity, rot - 1.57f, new Vector2(spike.Width / 4f, spike.Height), 1.5f, 0, 0);
+				spriteBatch.Draw(solid, edge - Main.screenPosition, null, new Color(Lighting.GetSubLight(edge)) * DeadBrain.ArenaOpacity, rot - 1.57f / 2f, solid.Size(), 1f, 0, 0);
 
 				rot = (k + 0.5f) / 36f * 6.28f;
 				float sin = (float)Math.Sin(Main.GameUpdateCount * 0.01f + k);
 				edge = home + Vector2.UnitX.RotatedBy(rot) * (hurtRadius + 90 + sin * 20 + offset);
-				spriteBatch.Draw(spike, edge - Main.screenPosition, new Rectangle(spike.Width / 2, 0, spike.Width / 2, spike.Height), new Color(255, 50, 80, 0) * 0.25f * (1f - sin + 0.5f), rot - 1.57f, new Vector2(spike.Width / 4f, spike.Height), 1.5f, 0, 0);
-				spriteBatch.Draw(solid, edge - Main.screenPosition, null, new Color(Lighting.GetSubLight(edge)), rot - 1.57f / 2f, solid.Size(), 1f, 0, 0);
+				spriteBatch.Draw(spike, edge - Main.screenPosition, new Rectangle(spike.Width / 2, 0, spike.Width / 2, spike.Height), new Color(255, 50, 80, 0) * 0.25f * (1f - sin + 0.5f) * DeadBrain.ArenaOpacity, rot - 1.57f, new Vector2(spike.Width / 4f, spike.Height), 1.5f, 0, 0);
+				spriteBatch.Draw(solid, edge - Main.screenPosition, null, new Color(Lighting.GetSubLight(edge)) * DeadBrain.ArenaOpacity, rot - 1.57f / 2f, solid.Size(), 1f, 0, 0);
 			}
 
 			ManageArenaTrail();
@@ -73,7 +73,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				arenaTrail = new Trail(Main.instance.GraphicsDevice, 73, new NoTip(), factor => 56, factor =>
 				{
 					int index = (int)(factor.X * 72);
-					return new Color(Lighting.GetSubLight(arenaCache[index]));
+					return new Color(Lighting.GetSubLight(arenaCache[index])) * DeadBrain.ArenaOpacity;
 				});
 			}
 
