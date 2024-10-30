@@ -143,8 +143,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					arenaFade++;
 			}
 
-			if (Timer == 460)
-				CameraSystem.ReturnCamera(30);
+			if (Timer == 500)
+				CameraSystem.ReturnCamera(40);
 
 			if (Timer == 540)
 			{
