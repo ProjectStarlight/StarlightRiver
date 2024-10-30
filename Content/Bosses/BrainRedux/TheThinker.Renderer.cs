@@ -130,6 +130,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			foreach (TheThinker thinker in toRender)
 			{
+				thinker.DrawUnderShell();
+
 				bodyShader.Parameters["u_resolution"].SetValue(Assets.Bosses.BrainRedux.Heart.Size());
 				bodyShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f);
 

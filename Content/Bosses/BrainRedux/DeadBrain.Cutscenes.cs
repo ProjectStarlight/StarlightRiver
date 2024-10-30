@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarlightRiver.Core.Systems.CameraSystem;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -37,6 +38,15 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				State = 2;
 				Timer = 0;
 				AttackTimer = 0;
+			}
+		}
+
+		public void FirstPhaseTransition()
+		{
+			if (Timer == 1)
+			{
+				savedPos = NPC.Center;
+				CameraSystem.DoPanAnimation(120, NPC.Center);
 			}
 		}
 	}

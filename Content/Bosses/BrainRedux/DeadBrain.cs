@@ -127,7 +127,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			NPC.boss = false;
 			NPC.aiStyle = -1;
 
-			chain = new VerletChain(40, true, NPC.Center, 10);
+			chain = new VerletChain(100, true, NPC.Center, 4);
 		}
 
 		public override void AI()
@@ -175,6 +175,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				chain.useEndPoint = true;
 				chain.drag = 1.1f;
 				chain.forceGravity = Vector2.UnitY * 1f;
+				chain.constraintRepetitions = 30;
 				chain.UpdateChain();
 			}
 
@@ -407,6 +408,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			hurtLastFrame = true;
 		}
 
+		public override bool CheckActive()
+		{
+			return false;
+		}
+
 		public override bool CheckDead()
 		{
 			NPC.life = 1;
@@ -489,7 +495,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			if (State == 2 && chain != null)
 			{
-				ModContent.GetInstance<PixelationSystem>().QueueRenderAction("UnderNPCs", DrawPrimitives);
+				DrawPrimitives();
 			}
 
 			if (State == 2 && AttackState == 2)
@@ -532,11 +538,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				effect.Parameters["noiseTexture"]?.SetValue(Assets.Noise.SwirlyNoiseLooping.Value);
 				effect.Parameters["pulseTexture"]?.SetValue(Assets.Noise.PerlinNoise.Value);
 				effect.Parameters["edgeTexture"]?.SetValue(Assets.Bosses.BrainRedux.ShieldEdge.Value);
+				effect.Parameters["outTexture"]?.SetValue(Assets.Bosses.BrainRedux.ShieldMapOut.Value);
 
 				spriteBatch.End();
 				spriteBatch.Begin(default, BlendState.Additive, default, default, default, effect, Main.Transform);
 
-				spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2f, 0.6f, SpriteEffects.FlipVertically, 0);
+				spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2f, 0.58f, SpriteEffects.FlipVertically, 0);
 
 				spriteBatch.End();
 				spriteBatch.Begin(default, default, default, default, default, default, Main.Transform);
@@ -627,6 +634,15 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 
 			effect.Parameters["sampleTexture"].SetValue(Assets.Bosses.BrainRedux.DeadTeather.Value);
+			trail?.Render(effect);
+
+			effect = Filters.Scene["MyelinChain"].GetShader().Shader;
+
+			effect.Parameters["alpha"].SetValue(1f);
+			effect.Parameters["repeats"].SetValue(7f);
+			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+
+			effect.Parameters["sampleTexture"].SetValue(Assets.Bosses.BrainRedux.DeadTetherOver.Value);
 			trail?.Render(effect);
 		}
 

@@ -360,7 +360,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				Projectile.NewProjectile(null, thinker.Center, Vector2.UnitY * -0.5f, ModContent.ProjectileType<VeinSpear>(), 25, 0, Main.myPlayer);
 			}
 
-			Vector2 relativePos = NPC.Center - thinker.Center;
+			Vector2 relativePos = savedPos - thinker.Center;
 			Vector2 oppPos = thinker.Center + relativePos.RotatedBy(3.14f);
 
 			for (int k = 0; k < neurisms.Count; k++)
@@ -415,7 +415,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				if (AttackTimer < secondPartBase + 60)
 				{
-					NPC.Center += (savedPos - NPC.Center) * 0.08f;
+					// Extra offset here since being straight above/below looks weird
+					NPC.Center += ((savedPos + Vector2.UnitX * 200) - NPC.Center) * 0.08f;
 				}
 
 				if (AttackTimer == secondPartBase + 60)
@@ -461,7 +462,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				for (int k = 1; k < 6; k++)
 				{
 					if (AttackTimer == secondPartBase + 120 + k * 10)
-						Projectile.NewProjectile(null, thinker.Center, Vector2.Normalize(NPC.Center - thinker.Center).RotatedBy((-0.5f + k / 6f) * 3.14f) * 0.5f, ModContent.ProjectileType<VeinSpear>(), 25, 0, Main.myPlayer);
+						Projectile.NewProjectile(null, thinker.Center, Vector2.Normalize(savedPos - thinker.Center).RotatedBy((-0.5f + k / 6f) * 3.14f) * 0.5f, ModContent.ProjectileType<VeinSpear>(), 25, 0, Main.myPlayer);
 				}
 			}
 

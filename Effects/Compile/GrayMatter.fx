@@ -61,7 +61,7 @@ float4 main(float2 uv : TEXCOORD0) : COLOR0
     final += light * (push * chrome * chromepow);
     final += light * push;
     
-    float4 overlay = tex2D(InputLayer3,st);
+    float4 overlay = tex2D(InputLayer3,uv);
     overlay.a *= power;
     final.rgb = overlay.rgb * overlay.a + final.rgb * (1.0 - overlay.a);
     
