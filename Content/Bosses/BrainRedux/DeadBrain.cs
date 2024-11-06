@@ -489,7 +489,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				{
 					float extra = deadBrain.extraChunkRadius + deadBrain.staggeredExtraChunkRadius * point.Frame;
 					offset += extra;
-					chunkOpacity *= 1f - extra / 5f;
+					chunkOpacity *= 1f - extra / 2f;
 				}
 
 				float rotOffset = MathF.Sin((Main.GameUpdateCount + point.Frame * 16) * (0.4f / speed) * 6.28f) * 0.1f;

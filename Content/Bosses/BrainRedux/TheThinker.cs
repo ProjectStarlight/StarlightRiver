@@ -111,7 +111,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				for (int k = 0; k < 200; k++)
 				{
-					Lighting.AddLight(NPC.Center + Vector2.UnitX.RotatedBy(k / 200f * 6.28f) * hurtRadius, new Vector3(0.4f, 0.1f, 0.15f) * DeadBrain.ArenaOpacity);
+					Lighting.AddLight(NPC.Center + Vector2.UnitX.RotatedBy(k / 200f * 6.28f) * hurtRadius, new Vector3(0.4f, 0.1f, 0.12f) * DeadBrain.ArenaOpacity);
 				}
 			}
 
@@ -181,6 +181,14 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						Vector2 target = home + new Vector2(targetX, targetY);
 
 						platforms[k].velocity = target - platforms[k].Center;
+
+						if (platforms[k].ModNPC is BrainPlatform bp)
+						{
+							float rotAim = prog * 6.28f + platformRotationTarget;
+							float aimX = (float)Math.Cos(rot) * platformRadiusTarget * 0.95f;
+							float aimY = (float)Math.Sin(rot) * platformRadiusTarget;
+							bp.targetPos = home + new Vector2(aimX, aimY);
+						}
 					}
 					else
 					{/*TODO: Restore platforms logic*/ }

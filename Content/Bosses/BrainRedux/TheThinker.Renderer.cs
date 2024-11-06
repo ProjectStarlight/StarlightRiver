@@ -1,6 +1,4 @@
-﻿using StarlightRiver.Core;
-using StarlightRiver.Core.Systems.LightingSystem;
-using StarlightRiver.Core.Systems.PixelationSystem;
+﻿using StarlightRiver.Core.Systems.LightingSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -37,16 +35,21 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				offset += (float)Math.Cos(k / 36f * 6.28f * 6 + Main.GameUpdateCount * 0.04f) * 15;
 
 				float rot = k / 36f * 6.28f;
-				Vector2 edge = home + Vector2.UnitX.RotatedBy(rot) * (hurtRadius + 50 + offset);
-				spriteBatch.Draw(spike, edge - Main.screenPosition, new Rectangle(spike.Width / 2, 0, spike.Width / 2, spike.Height), new Color(255, 50, 80, 0) * 0.25f * DeadBrain.ArenaOpacity, rot - 1.57f, new Vector2(spike.Width / 4f, spike.Height), 1.5f, 0, 0);
-				spriteBatch.Draw(solid, edge - Main.screenPosition, null, new Color(Lighting.GetSubLight(edge)) * DeadBrain.ArenaOpacity, rot - 1.57f / 2f, solid.Size(), 1f, 0, 0);
+				Vector2 edge = home + Vector2.UnitX.RotatedBy(rot) * (hurtRadius + 70 + offset);
+				spriteBatch.Draw(spike, edge - Main.screenPosition, new Rectangle(spike.Width / 2, 0, spike.Width / 2, spike.Height), new Color(255, 50, 60, 0) * 0.25f * DeadBrain.ArenaOpacity, rot - 1.57f, new Vector2(spike.Width / 4f, spike.Height), 1.5f, 0, 0);
+				spriteBatch.Draw(solid, edge - Main.screenPosition, new Rectangle(0, 0, 58, 60), new Color(Lighting.GetSubLight(edge)) * DeadBrain.ArenaOpacity, rot - 1.57f / 2f, new Vector2(58, 60), 1f, 0, 0);
 
+				offset = (float)Math.Sin((k + 0.5) / 36f * 6.28f * 8 + Main.GameUpdateCount * 0.025f) * 15;
+				offset += (float)Math.Cos((k + 0.5) / 36f * 6.28f * 6 + Main.GameUpdateCount * 0.04f) * 15;
 				rot = (k + 0.5f) / 36f * 6.28f;
 				float sin = (float)Math.Sin(Main.GameUpdateCount * 0.01f + k);
-				edge = home + Vector2.UnitX.RotatedBy(rot) * (hurtRadius + 90 + sin * 20 + offset);
-				spriteBatch.Draw(spike, edge - Main.screenPosition, new Rectangle(spike.Width / 2, 0, spike.Width / 2, spike.Height), new Color(255, 50, 80, 0) * 0.25f * (1f - sin + 0.5f) * DeadBrain.ArenaOpacity, rot - 1.57f, new Vector2(spike.Width / 4f, spike.Height), 1.5f, 0, 0);
-				spriteBatch.Draw(solid, edge - Main.screenPosition, null, new Color(Lighting.GetSubLight(edge)) * DeadBrain.ArenaOpacity, rot - 1.57f / 2f, solid.Size(), 1f, 0, 0);
+				edge = home + Vector2.UnitX.RotatedBy(rot) * (hurtRadius + 80 + sin * 10 + offset);
+				spriteBatch.Draw(spike, edge - Main.screenPosition, new Rectangle(spike.Width / 2, 0, spike.Width / 2, spike.Height), new Color(255, 50, 60, 0) * 0.25f * (1f - sin + 0.5f) * DeadBrain.ArenaOpacity, rot - 1.57f, new Vector2(spike.Width / 4f, spike.Height), 1.5f, 0, 0);
+				spriteBatch.Draw(solid, edge - Main.screenPosition, new Rectangle(58, 0, 58, 60), new Color(Lighting.GetSubLight(edge)) * DeadBrain.ArenaOpacity, rot - 1.57f / 2f, new Vector2(58, 60), 1f, 0, 0);
 			}
+
+			spriteBatch.End();
+			spriteBatch.Begin();
 
 			ManageArenaTrail();
 			DrawArenaEdgeTrail();
