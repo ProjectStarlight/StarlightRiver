@@ -129,7 +129,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (Timer == 270)
 			{
 				if (Main.netMode != NetmodeID.Server)
-					UILoader.GetUIState<TextCard>().Display(thinker.FullName, Main.rand.NextBool(10000) ? "Thinking of you <3" : "& the Dead Brain", null, 270, 1.25f); //intro text
+					TextCard.Display(thinker.FullName, Main.rand.NextBool(10000) ? "Thinking of you <3" : "& the Dead Brain", 270, 1.25f); //intro text
 			}
 
 			if (Timer == 200)
