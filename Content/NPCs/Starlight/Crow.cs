@@ -297,8 +297,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 				$"Aim your cursor and press {StarlightRiver.Instance.AbilityKeys.Get<HintAbility>().GetAssignedKeys()[0]} to inspect the world." :
 				"Aim your cursor and press [Please bind a key] to inspect the world.";
 
-			Main.LocalPlayer.GetHandler().GetAbility(out HintAbility hint);
-			UILoader.GetUIState<TextCard>().Display("Starsight", message, hint);
+			TextCard.Display("Starsight", message, () => Main.LocalPlayer.GetModPlayer<AbilityHandler>().ActiveAbility is HintAbility);
 		}
 
 		private void SetFrame(int x, int y)

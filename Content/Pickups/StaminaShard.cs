@@ -64,9 +64,9 @@ namespace StarlightRiver.Content.Pickups
 			ah.Shards.Add(Parent.TileFrameX);
 
 			if (ah.ShardCount % 3 == 0)
-				UILoader.GetUIState<TextCard>().Display("Starlight Vessel", "Your maximum starlight has increased by 1", null, 240, 1f);
+				TextCard.Display("Starlight Vessel", "Your maximum starlight has increased by 1", 240, 1f);
 			else
-				UILoader.GetUIState<TextCard>().Display("Starlight Vessel Shard", "Collect " + (3 - ah.ShardCount % 3) + " more to increase your maximum starlight", null, 240, 1f);
+				TextCard.Display("Starlight Vessel Shard", "Collect " + (3 - ah.ShardCount % 3) + " more to increase your maximum starlight", 240, 1f);
 
 			Player.GetModPlayer<StarlightPlayer>().maxPickupTimer = 1;
 		}
