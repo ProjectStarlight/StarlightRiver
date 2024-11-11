@@ -80,7 +80,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			if (TheBrain != null)
 			{
-				TheBrain.PreDraw(obj, Main.screenPosition, Lighting.GetColor((TheBrain.NPC.Center / 16).ToPoint()));
+				TheBrain.weakpoint?.ModNPC?.PreDraw(obj, Main.screenPosition, Color.White);
+				//TheBrain.PreDraw(obj, Main.screenPosition, Lighting.GetColor((TheBrain.NPC.Center / 16).ToPoint()));
 
 				/*
 				if (TheBrain.State == 2)
@@ -256,6 +257,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				case 1:
 
 					Intro();
+					weakpoint.Center = chain.ropeSegments[chain.ropeSegments.Count / 3].posNow;
 
 					break;
 
@@ -619,7 +621,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 					float floored = Math.Max(0, sin);
 
-					return 32 + floored * 16;
+					return 32 + floored * 24;
 				},
 				factor =>
 				{
@@ -636,10 +638,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						0);
 
 					var lightColor = Lighting.GetColor((chain.ropeSegments[index].posNow / 16).ToPoint());
-					var color = Color.Lerp(lightColor, glowColor, floored * 0.75f) * (1 + floored);
-
-					if (factor.X > 0.30f && factor.X < 0.36f)
-						color = Color.Lerp(color, new Color(255, 80, 40), 0.7f + MathF.Sin(Main.GameUpdateCount * 0.1f) * 0.3f);
+					var color = Color.Lerp(lightColor, glowColor, floored * 0.95f) * (1 + floored);
 
 					return color;
 				});
@@ -662,15 +661,6 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 
 			effect.Parameters["sampleTexture"].SetValue(Assets.Bosses.BrainRedux.DeadTeather.Value);
-			trail?.Render(effect);
-
-			effect = Filters.Scene["MyelinChain"].GetShader().Shader;
-
-			effect.Parameters["alpha"].SetValue(1f);
-			effect.Parameters["repeats"].SetValue(7f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-
-			effect.Parameters["sampleTexture"].SetValue(Assets.Bosses.BrainRedux.DeadTetherOver.Value);
 			trail?.Render(effect);
 		}
 
