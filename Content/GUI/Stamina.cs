@@ -311,7 +311,7 @@ namespace StarlightRiver.Content.GUI
 
 					gainAnimationParticles.AddParticle(
 						new Particle(
-								position: pos + Vector2.One * 12 + Vector2.One.RotatedBy(rot) * Main.rand.NextFloat(80, 150),
+								position: pos + Vector2.One.RotatedBy(rot) * Main.rand.NextFloat(80, 150),
 								velocity: Vector2.One.RotatedBy(rot + 1.57f) * 3.5f,
 								rotation: 0,
 								scale: Main.rand.NextFloat(0.5f, 1f),

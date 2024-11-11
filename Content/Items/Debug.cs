@@ -55,10 +55,9 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
-			GrayBlob((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
-			//StarlightEventSequenceSystem.sequence = 0;
-			//player.GetHandler().unlockedAbilities.Add(typeof(Dash), new Dash());
-			//player.GetHandler().InfusionLimit = 1;
+			TextCard.Display("Blorgus", "schmungus!", () => Main.LocalPlayer.velocity.Y < 0);
+			player.GetHandler().unlockedAbilities.Clear();
+			player.GetHandler().InfusionLimit = 1;
 
 			//Main.time = 53999;
 			//Main.dayTime = true;
