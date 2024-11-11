@@ -58,7 +58,33 @@ namespace StarlightRiver.Content.Items.Forest
 				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Stone);
 			}
 
-			Projectile.NewProjectile(null, Projectile.Center + Vector2.UnitY * 8, Vector2.Zero, ModContent.ProjectileType<GravediggerSlam>(), 0, 0);
+			Projectile.NewProjectile(null, Projectile.Center + Vector2.UnitY * 8, Vector2.Zero, ModContent.ProjectileType<HeavyFlailCrack>(), 0, 0);
+		}
+	}
+
+	internal class HeavyFlailCrack : ModProjectile, IDrawOverTiles
+	{
+		public override string Texture => AssetDirectory.Invisible;
+
+		public override void SetDefaults()
+		{
+			Projectile.tileCollide = false;
+			Projectile.penetrate = -1;
+			Projectile.timeLeft = 200;
+		}
+
+		public override bool PreDraw(ref Color lightColor)
+		{
+			return false;
+		}
+
+		public void DrawOverTiles(SpriteBatch spriteBatch)
+		{
+			Color color = Color.White;
+			color *= Projectile.timeLeft > 100 ? 1f : Projectile.timeLeft / 100f;
+			var tex = Assets.Misc.PixelCrack.Value;
+
+			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, color, 0, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
 		}
 	}
 }
