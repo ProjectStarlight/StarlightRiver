@@ -54,6 +54,7 @@ namespace StarlightRiver.Content.Items
 		public override bool? UseItem(Player player)
 		{
 			//StarlightEventSequenceSystem.sequence = 0;
+			TextCard.Display("Blorgus", "schmungus!", () => Main.LocalPlayer.velocity.Y < 0);
 			player.GetHandler().unlockedAbilities.Clear();
 			player.GetHandler().InfusionLimit = 1;
 
