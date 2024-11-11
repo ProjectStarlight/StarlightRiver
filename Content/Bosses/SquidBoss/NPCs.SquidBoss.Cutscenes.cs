@@ -55,7 +55,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			if (GlobalTimer == 100 && !Main.dedServ)
 			{
 				string title = Main.rand.NextBool(10000) ? "Jammed Mod" : "The Venerated";
-				UILoader.GetUIState<TextCard>().Display("Auroracle", title, null, 440);
+				TextCard.Display("Auroracle", title, 440);
 				CameraSystem.DoPanAnimation(440, NPC.Center + new Vector2(0, -600));
 			}
 

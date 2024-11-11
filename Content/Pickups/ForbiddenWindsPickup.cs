@@ -124,8 +124,7 @@ namespace StarlightRiver.Content.Pickups
 					"Press W/A/S/D + " + StarlightRiver.Instance.AbilityKeys.Get<Dash>().GetAssignedKeys()[0] + " to dash." :
 					"Press W/A/S/D + [Please Bind a Key] to dash.";
 
-				Main.LocalPlayer.GetHandler().GetAbility<Dash>(out Dash dash);
-				UILoader.GetUIState<TextCard>().Display("Forbidden Winds", message, dash);
+				TextCard.Display("Forbidden Winds", message, () => Main.LocalPlayer.GetModPlayer<AbilityHandler>().ActiveAbility is Dash);
 
 				Filters.Scene.Activate("Shockwave", Player.Center).GetShader().UseProgress(0f).UseIntensity(0);
 				Filters.Scene.Deactivate("Shockwave");
