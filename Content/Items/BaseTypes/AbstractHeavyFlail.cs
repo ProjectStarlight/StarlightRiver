@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 	internal abstract class AbstractHeavyFlailProjectile : ModProjectile
 	{
 		public abstract Asset<Texture2D> ChainAsset { get; }
-		protected static Asset<Texture2D> BallAsset;
+		protected Asset<Texture2D> BallAsset;
 
 		readonly List<Vector2> chainPos = [];
 		readonly List<Vector2> chainTarget = [];
@@ -40,9 +40,14 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		protected bool slowing;
 
 		/// <summary>
-		/// The maximum length this flail can extend out to if it has room
+		/// The maximum length this flail can extend out to if it has room.
 		/// </summary>
 		public virtual int MaxLength { get; set; } = 200;
+
+		/// <summary>
+		/// The amount of times alternate chain styles should be repeated at the end of the chain.
+		/// </summary>
+		public virtual int AlternateStyleRepeats => 3;
 
 		public ref float Timer => ref Projectile.ai[0];
 		public ref float State => ref Projectile.ai[1];
@@ -55,11 +60,6 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		/// </summary>
 		public virtual void OnImpact(bool wasTile) { }
 
-		public override void SetStaticDefaults()
-		{
-			BallAsset = ModContent.Request<Texture2D>(Texture);
-		}
-
 		public override void SetDefaults()
 		{
 			Projectile.friendly = true;
@@ -68,6 +68,8 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			Projectile.tileCollide = true;
 			Projectile.timeLeft = 180;
 			Projectile.penetrate = -1;
+
+			BallAsset = ModContent.Request<Texture2D>(Texture);
 		}
 
 		public override void AI()
@@ -252,6 +254,8 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public override bool PreDraw(ref Color lightColor)
 		{
+			int extraStyles = (ChainAsset.Height() - 44) / 22;
+
 			if (State == 0)
 			{
 				int max = (int)(Vector2.Distance(Owner.Center, Projectile.Center) / ChainAsset.Width());
@@ -259,15 +263,36 @@ namespace StarlightRiver.Content.Items.BaseTypes
 				for (int k = 0; k < max; k++)
 				{
 					var pos = Vector2.Lerp(Projectile.Center, Owner.Center, k / (float)max);
-					Main.EntitySpriteDraw(ChainAsset.Value, pos - Main.screenPosition, null, new Color(Lighting.GetSubLight(pos)), Owner.Center.DirectionTo(pos).ToRotation() - 1.57f, ChainAsset.Size() / 2f, 1f, 0, 0);
+					Rectangle source = new Rectangle(0, 0, 8, 22);
+
+					if (k > 1)
+					{
+						source.Y += 22;
+
+						if (extraStyles > 0 && (k + 3) >= (max - extraStyles * AlternateStyleRepeats))
+							source.Y += 22 * (extraStyles - (max - (k + 3)) / AlternateStyleRepeats);
+					}
+
+					Main.EntitySpriteDraw(ChainAsset.Value, pos - Main.screenPosition, source, new Color(Lighting.GetSubLight(pos)), Owner.Center.DirectionTo(pos).ToRotation() - 1.57f, new Vector2(4, 11), 1f, 0, 0);
 				}
 			}
 
-			for (int k = 0; k < chainPos.Count; k++)
+			for (int k = 1; k < chainPos.Count; k++)
 			{
-				Vector2 prev = k > 0 ? chainPos[k - 1] : Owner.Center;
+				Vector2 prev = chainPos[k - 1];
 				Vector2 curr = chainPos[k];
-				Main.EntitySpriteDraw(ChainAsset.Value, curr - Main.screenPosition, null, new Color(Lighting.GetSubLight(curr)), curr.DirectionTo(prev).ToRotation() - 1.57f, ChainAsset.Size() / 2f, 1f, 0, 0);
+
+				Rectangle source = new Rectangle(0, 0, 8, 22);
+
+				if (k > 1)
+				{
+					source.Y += 22;
+
+					if (extraStyles > 0 && (k + 3) >= (chainPos.Count - extraStyles * AlternateStyleRepeats))
+						source.Y += 22 * (extraStyles - (chainPos.Count - (k + 3)) / AlternateStyleRepeats);
+				}
+
+				Main.EntitySpriteDraw(ChainAsset.Value, curr - Main.screenPosition, source, new Color(Lighting.GetSubLight(curr)), curr.DirectionTo(prev).ToRotation() - 1.57f, new Vector2(4, 11), 1f, 0, 0);
 			}
 
 			Vector2 ballPos = Projectile.oldPosition + Projectile.Size / 2f;
