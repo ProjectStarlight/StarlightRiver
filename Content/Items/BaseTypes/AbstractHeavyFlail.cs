@@ -235,7 +235,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 				{
 					var hitbox = new Rectangle((int)chainPos[k].X - 4, (int)chainPos[k].Y - 4, 8, 8);
 
-					if (hitbox.Intersects(projHitbox))
+					if (hitbox.Intersects(targetHitbox))
 						return true;
 				}
 			}
@@ -262,7 +262,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 				for (int k = 0; k < max; k++)
 				{
-					var pos = Vector2.Lerp(Projectile.Center, Owner.Center, k / (float)max);
+					var pos = Vector2.Lerp(Owner.Center, Projectile.Center, k / (float)max);
 					Rectangle source = new Rectangle(0, 0, 8, 22);
 
 					if (k > 1)

@@ -48,24 +48,37 @@ namespace StarlightRiver.Content.Items.Snow
 
 		public override int MaxLength => 160;
 
+		public override void AI()
+		{
+			base.AI();
+
+			for (int k = 0; k < 2; k++)
+			{
+				Dust.NewDust(Projectile.Center - Vector2.One * 20, 40, 40, DustID.IceTorch);
+			}
+		}
+
 		public override void OnImpact(bool wasTile)
 		{
-			Helpers.Helper.PlayPitched("Magic/FrostHit", 1, 0, Projectile.Center);
-
-			if (Owner == Main.LocalPlayer)
-				CameraSystem.shake += 8;
-
-			for (int k = 0; k < 50; k++)
+			if (wasTile)
 			{
-				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Ice);
-			}
+				Helpers.Helper.PlayPitched("Magic/FrostHit", 1, 0, Projectile.Center);
 
-			for (int k = 0; k < 3; k++)
-			{
-				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.One.RotatedByRandom(6.28f) * 5, ModContent.ProjectileType<FrostFlailShard>(), Projectile.damage / 2, 0, Projectile.owner);
-			}
+				if (Owner == Main.LocalPlayer)
+					CameraSystem.shake += 8;
 
-			Projectile.NewProjectile(null, Projectile.Center + Vector2.UnitY * 8, Vector2.Zero, ModContent.ProjectileType<HeavyFlailCrack>(), 0, 0);
+				for (int k = 0; k < 50; k++)
+				{
+					Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Ice);
+				}
+
+				for (int k = 0; k < 3; k++)
+				{
+					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.One.RotatedByRandom(6.28f) * 3, ModContent.ProjectileType<FrostFlailShard>(), Projectile.damage / 2, 0, Projectile.owner);
+				}
+
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + Vector2.UnitY * 8, Vector2.Zero, ModContent.ProjectileType<HeavyFlailCrack>(), 0, 0);
+			}
 		}
 	}
 
@@ -81,17 +94,32 @@ namespace StarlightRiver.Content.Items.Snow
 			Projectile.timeLeft = 120;
 			Projectile.friendly = true;
 			Projectile.aiStyle = -1;
-			Projectile.penetrate = 3;
+			Projectile.penetrate = 15;
+		}
+
+		public override void AI()
+		{
+			Projectile.velocity.Y += 0.4f;
+			Projectile.rotation += Projectile.velocity.X * 0.1f;
+
+			Projectile.velocity.X *= 0.99f;
+
+			if (Projectile.timeLeft < 30)
+				Projectile.alpha = (int)((1 - Projectile.timeLeft / 30f) * 255);
+
+			if (Main.rand.NextBool(5))
+				Dust.NewDust(Projectile.position, 18, 18, DustID.IceTorch);
+
+			if (Main.rand.NextBool(15))
+				Dust.NewDust(Projectile.position, 18, 18, DustID.Ice);
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
-			Projectile.penetrate -= 1;
-
 			if (Projectile.penetrate <= 0)
 					return true;
 
-			Projectile.velocity += oldVelocity * -0.8f;
+			Projectile.velocity.Y += oldVelocity.Y * -0.8f;
 
 			return false;
 		}
