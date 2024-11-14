@@ -316,7 +316,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 		public override void ModifyNPCLoot(NPCLoot npcLoot)
 		{
-			npcLoot.Add(ItemDropRule.Common(ItemType<VengefulSpirit>(), 1, 2, 4));
+			npcLoot.Add(ItemDropRule.Common(ItemType<VengefulSpirit>(), 1, 4, 6));
 		}
 
 		private void UpdateChain()
