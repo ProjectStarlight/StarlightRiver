@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Items.Snow
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Heavy Flail");
+			DisplayName.SetDefault("Frost Flail");
 			Tooltip.SetDefault("Hold to swing a monstrous ball of ice\nCreates icy shards on impact, inflicting frostburn");
 		}
 
