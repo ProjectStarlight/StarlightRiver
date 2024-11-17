@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Bosses.SquidBoss;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.Dusts;
 using System;
 using System.Linq;
@@ -670,8 +671,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (motionTime == 30 && AttackTimer < 150 * 5)
 			{
-				ThisThinker.platformRadiusTarget -= 40;
-				ThisThinker.platformRotationTarget -= 0.1f;
+				// Cant do this on the last one or else the platforms may try to move again too early
+				if (AttackTimer < 150 * 4)
+				{
+					ThisThinker.platformRadiusTarget -= 40;
+					ThisThinker.platformRotationTarget -= 0.1f;
+				}
 
 				NPC.TargetClosest();
 
@@ -686,9 +691,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				opacity = (motionTime - 30) / 30f;
 			}
 
-			if (motionTime > 30 && motionTime <= 90)
+			if (motionTime > 60 && motionTime <= 90)
 			{
-				NPC.Center = Vector2.SmoothStep(savedPos, savedPos + savedPos.DirectionTo(savedPos2) * -100f, (motionTime - 30) / 60f);
+				NPC.Center += Vector2.Normalize(NPC.Center - savedPos2) * 7 * (1f - (motionTime - 60) / 30f); 
+				//Vector2.Normalize( * -100f, (motionTime - 30) / 60f);
 			}
 
 			if (motionTime == 90)
@@ -747,6 +753,31 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				contactDamage = false;
 				AttackTimer = 0;
+			}
+		}
+
+		public void DrawHuntGraphics(SpriteBatch spriteBatch)
+		{
+			float motionTime = AttackTimer % 150;
+
+			if (motionTime > 60 && motionTime < 90)
+			{
+				float prog = (motionTime - 60) / 30f;
+
+				for (int k = 0; k < 6; k++)
+				{
+					Vector2 pos = NPC.Center + Vector2.UnitX.RotatedBy(k / 6f * 6.28f + prog * 3.14f) * (1f - prog) * 128;
+					DrawBrainSegments(spriteBatch, NPC, pos - Main.screenPosition, new Color(255, 50, 70), NPC.rotation, NPC.scale, 0.5f * prog, lastPos);
+				}
+			}
+
+			if (motionTime > 90)
+			{
+				for (int k = 0; k < 10; k++)
+				{
+					Vector2 pos = NPC.oldPos[k] + NPC.Size / 2f;
+					DrawBrainSegments(spriteBatch, NPC, pos - Main.screenPosition, new Color(255, 50, 70), NPC.rotation, NPC.scale, (k / 30f) * (1f - (motionTime - 90) / 60f), lastPos);
+				}
 			}
 		}
 

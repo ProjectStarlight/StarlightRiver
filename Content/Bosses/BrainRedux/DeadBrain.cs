@@ -17,8 +17,16 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 	{
 		public NPC thinker;
 
+		/// <summary>
+		/// List of the atttacking minions
+		/// </summary>
 		public List<NPC> neurisms = [];
+
+		/// <summary>
+		/// The weakpoint NPC to be damaged during the first phase
+		/// </summary>
 		public NPC weakpoint;
+
 		public Vector2 savedPos;
 		public Vector2 savedPos2;
 		public Vector2 lastPos;
@@ -33,11 +41,23 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public List<int> attackQueue = [];
 
-		public VerletChain chain;
-		public Vector2 chainTarget;
+		public VerletChain attachedChain;
+		public Vector2 attachedChainEndpoint;
+		private List<Vector2> attachedChainCache;
+		private Trail attachedChainTrail;
 
-		private List<Vector2> cache;
-		private Trail trail;
+		// The two seperate chains to be drawn after teh main one is snapped
+		// there isnt really a good way to "split" a chain in two so we just disable
+		// that one and enable these two.
+		public VerletChain chainSplitBrainAttached;
+		private List<Vector2> chainSplitBrainAttachedCache;
+		private Trail chainSplitBrainAttachedTrail;
+
+		public VerletChain chainSplitThinkerAttached;
+		private List<Vector2> chainSplitThinkerAttachedCache;
+		private Trail chainSplitThinkerAttachedTrail;
+
+		private bool chainsSplit = false;
 
 		// chunk animation inputs
 		private static StaticRig rig;
@@ -47,84 +67,171 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		// shield shader inputs
 		public float shieldOpacity = 0f;
 
+		// Phase enum and state variables
+		public enum Phases : int
+		{
+			Fleeing = -1,
+			Setup = 0,
+			SpawnAnim = 1,
+			FirstPhase = 2,
+			FirstToSecond = 3,
+			SecondPhase = 4,
+			TempDead = 5
+		}
+
 		public ref float Timer => ref NPC.ai[0];
-		public ref float State => ref NPC.ai[1];
+
+		public Phases Phase
+		{
+			get => (Phases)NPC.ai[1];
+			set => NPC.ai[1] = (float)value;
+		}
+
 		public ref float AttackTimer => ref NPC.ai[2];
 		public ref float AttackState => ref NPC.ai[3];
 
+
+
+		// Why is this tracked here and not on the thinker entity? I have no idea. TODO: Change that?
 		public static float ArenaOpacity => TheBrain?.arenaFade / 120f ?? 0f;
 
 		public TheThinker ThisThinker => thinker?.ModNPC as TheThinker;
+
+		// TODO: This really should get replaced with a more robust sytem to tie a brain to a thinker... 
 		public static DeadBrain TheBrain => Main.npc.FirstOrDefault(n => n != null && n.active && n.type == ModContent.NPCType<DeadBrain>())?.ModNPC as DeadBrain;
 
 		public override string Texture => AssetDirectory.BrainRedux + "DeadBrain";
 
 		public override void Load()
 		{
-			On_WorldGen.CheckOrb += SpecialSpawn;
-
-			GraymatterBiome.onDrawHallucinationMap += DrawTether;
-			GraymatterBiome.onDrawOverHallucinationMap += DrawPrediction;
+			GraymatterBiome.onDrawHallucinationMap += DrawGraymatterLink;
+			GraymatterBiome.onDrawOverHallucinationMap += DrawOverGraymatter;
 
 			Stream stream = StarlightRiver.Instance.GetFileStream("Assets/Bosses/BrainRedux/DeadBrainRig.json");
 			rig = JsonSerializer.Deserialize<StaticRig>(stream);
 			stream.Close();
 		}
 
+		/// <summary>
+		/// Returns if the given player is able to be targeted by the boss, being inside of its arena
+		/// </summary>
+		/// <param name="player">The player to check for</param>
+		/// <returns>If the player is a valid target by virtue of being inside of the arena</returns>
 		private bool IsInArena(Player player)
 		{
 			return Vector2.Distance(player.Center, thinker.Center) < ThisThinker.hurtRadius + 20;
 		}
 
-		private void DrawPrediction(SpriteBatch obj)
+		private void DrawOverGraymatter(SpriteBatch obj)
 		{
 			if (TheBrain != null)
 			{
+				//TODO: The weak point entity really sohuld make its own hook and draw this there...
 				TheBrain.weakpoint?.ModNPC?.PreDraw(obj, Main.screenPosition, Color.White);
-				//TheBrain.PreDraw(obj, Main.screenPosition, Lighting.GetColor((TheBrain.NPC.Center / 16).ToPoint()));
 
-				/*
-				if (TheBrain.State == 2)
-				{
-					Vector2 pos = TheBrain.NPC.Center - Main.screenPosition;
-
-					for (int k = 0; k < TheBrain.attackQueue.Count; k++)
-					{
-						int attack = TheBrain.attackQueue[k];
-						Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.BrainRedux + $"Indicator{attack}").Value;
-						obj.Draw(tex, pos + new Vector2(-100 + k * 66, -50), null, Color.White, 0, tex.Size() / 2f, 1, 0, 0);
-					}
-
-					Texture2D tex2 = ModContent.Request<Texture2D>(AssetDirectory.BrainRedux + $"Indicator{TheBrain.AttackState}").Value;
-					obj.Draw(tex2, pos + new Vector2(0, -100), null, Color.White, 0, tex2.Size() / 2f, 1.5f, 0, 0);
-				}*/
+				// If doing a clones attack, highlight the real one
+				if (TheBrain.Phase == Phases.SecondPhase && (TheBrain.AttackState == 1 || TheBrain.AttackState == 3))
+					TheBrain.PreDraw(obj, Main.screenPosition, Lighting.GetColor((TheBrain.NPC.Center / 16).ToPoint()));
 			}
 		}
 
-		private void SpecialSpawn(On_WorldGen.orig_CheckOrb orig, int i, int j, int type)
+		/// <summary>
+		/// Initialize the chains for this instance of the boss, to be called on SetDefaults
+		/// </summary>
+		public void InitChains()
 		{
-			Tile tile = Framing.GetTileSafely(i, j);
+			attachedChain = new VerletChain(100, true, NPC.Center, 4);
+			chainSplitBrainAttached = new VerletChain(33, true, NPC.Center, 4);
+			
+			// This wants to start at the thinker center but we handle that in update, since if we set it here
+			// we get issues on mod load when the prototype calls SetDefaults
+			chainSplitThinkerAttached = new VerletChain(66, true, NPC.Center, 4);
+		}
 
-			orig(i, j, type);
-
-			if (WorldGen.crimson && WorldGen.shadowOrbCount >= 2 && WorldGen.destroyObject)
+		/// <summary>
+		/// This handles all the logic needed to properly update the visual verlet chains representing the teather
+		/// between the brain and the thinker. It handles the "linking" chain and the two child chains that become
+		/// visible one that one "splits"
+		/// </summary>
+		private void UpdateChains()
+		{
+			// Update the attached chain, this always happens since its always visible in either the form
+			// of the flesh teather or the graymatter link
+			if (attachedChain != null)
 			{
-				Vector2 pos = new Vector2(i, j) * 16;
+				attachedChain.startPoint = attachedChainEndpoint;
+				attachedChain.endPoint = thinker.Center;
+				attachedChain.useEndPoint = true;
+				attachedChain.drag = 1.1f;
+				attachedChain.forceGravity = Vector2.UnitY * 1f;
+				attachedChain.constraintRepetitions = 30;
+				attachedChain.UpdateChain();
+			}
 
-				if (Main.npc.Any(n => n.active && n.type == ModContent.NPCType<TheThinker>() && Vector2.Distance(n.Center, pos) < 1000))
+			if (!chainsSplit) // During the first phase, set these to match the attached chain so it wont look strange when they swap out
+			{
+				if (attachedChain != null && chainSplitBrainAttached != null)
 				{
-					for (int k = 0; k < Main.maxNPCs; k++)
+					chainSplitBrainAttached.UpdateChain();
+					for (int k = 0; k < chainSplitBrainAttached.ropeSegments.Count; k++)
 					{
-						NPC npc = Main.npc[k];
-
-						if (npc.active && npc.type == NPCID.BrainofCthulhu)
-							npc.active = false;
-
-						if (npc.active && npc.type == NPCID.Creeper)
-							npc.active = false;
+						// This one copies from the back since its start is the end of the full chain
+						chainSplitBrainAttached.ropeSegments[k].posOld = attachedChain.ropeSegments[^(k + 1)].posNow;
+						chainSplitBrainAttached.ropeSegments[k].posNow = attachedChain.ropeSegments[^(k + 1)].posNow;
 					}
 
-					SpawnReduxedBrain(pos + new Vector2(0, 200));
+					chainSplitBrainAttached.startPoint = NPC.Center;
+				}
+
+				if (attachedChain != null && chainSplitThinkerAttached != null)
+				{
+					chainSplitThinkerAttached.UpdateChain();
+					for (int k = 0; k < chainSplitThinkerAttached.ropeSegments.Count; k++)
+					{
+						chainSplitThinkerAttached.ropeSegments[k].posOld = attachedChain.ropeSegments[k].posNow;
+						chainSplitThinkerAttached.ropeSegments[k].posNow = attachedChain.ropeSegments[k].posNow;
+					}
+
+					chainSplitThinkerAttached.startPoint = thinker?.Center ?? Vector2.Zero;
+				}
+			}
+			else // For everything after the first phase, update the seperated chains on their own
+			{
+				if (chainSplitBrainAttached != null)
+				{
+					chainSplitBrainAttached.startPoint = NPC.Center + Vector2.UnitY * 90;
+					chainSplitBrainAttached.useEndPoint = false;
+					chainSplitBrainAttached.drag = 1.1f;
+					chainSplitBrainAttached.forceGravity = Vector2.UnitY * 1f;
+					chainSplitBrainAttached.constraintRepetitions = 30;
+					chainSplitBrainAttached.UpdateChain();
+
+					chainSplitBrainAttached.IterateRope(a => chainSplitBrainAttached.ropeSegments[a].posNow.X += (float)Math.Sin(Main.GameUpdateCount * 0.15f) * 0.1f);
+
+					Lighting.AddLight(chainSplitBrainAttached.ropeSegments.Last().posNow, Color.Red.ToVector3() * 0.45f);
+					for (int k = 0; k < 5; k++)
+					{
+						Dust.NewDust(chainSplitBrainAttached.ropeSegments.Last().posNow, 8, 8, DustID.Blood);
+					}
+				}
+
+				if (chainSplitThinkerAttached != null)
+				{
+					chainSplitThinkerAttached.startPoint = ThisThinker.home;
+					chainSplitThinkerAttached.useEndPoint = false;
+					chainSplitThinkerAttached.drag = 1.1f;
+					chainSplitThinkerAttached.forceGravity = Vector2.UnitY * 1f;
+					chainSplitThinkerAttached.constraintRepetitions = 30;
+
+					chainSplitThinkerAttached.IterateRope(a => chainSplitThinkerAttached.ropeSegments[a].posNow.X += (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.3f);
+
+					chainSplitThinkerAttached.UpdateChain();
+
+					Lighting.AddLight(chainSplitThinkerAttached.ropeSegments.Last().posNow, Color.Red.ToVector3() * 0.45f);
+					for (int k = 0; k < 5; k++)
+					{
+						Dust.NewDust(chainSplitThinkerAttached.ropeSegments.Last().posNow, 8, 8, DustID.Blood);
+					}
 				}
 			}
 		}
@@ -141,7 +248,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			NPC.boss = false;
 			NPC.aiStyle = -1;
 
-			chain = new VerletChain(100, true, NPC.Center, 4);
+			InitChains();
 		}
 
 		public override void AI()
@@ -153,8 +260,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			Timer++;
 			AttackTimer++;
 
-			if (State != 5)
-				Lighting.AddLight(NPC.Center, State > 2 ? new Vector3(0.5f, 0.4f, 0.2f) : new Vector3(0.5f, 0.5f, 0.5f) * (shieldOpacity / 0.4f));
+			// Emit light if not in the dead state
+			if (Phase != Phases.TempDead)
+				Lighting.AddLight(NPC.Center, Phase > Phases.FirstPhase ? new Vector3(0.5f, 0.4f, 0.2f) : new Vector3(0.5f, 0.5f, 0.5f) * (shieldOpacity / 0.4f));
 
 			// If we dont have a thinker, try to find one
 			if (thinker is null)
@@ -177,24 +285,16 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				// If the nearest thinker is too far away, flee.
 				if (thinker is null || dist > Math.Pow(2000, 2))
 				{
-					State = -1;
+					Phase = Phases.Fleeing;
 					Timer = 0;
 				}
 			}
 
-			if (chainTarget == default)
-				chainTarget = thinker.Center;
+			// Reset the endpoint for the attached chain to the thinker if its the default
+			if (attachedChainEndpoint == default)
+				attachedChainEndpoint = thinker.Center;
 
-			if (chain != null)
-			{
-				chain.startPoint = chainTarget;
-				chain.endPoint = thinker.Center;
-				chain.useEndPoint = true;
-				chain.drag = 1.1f;
-				chain.forceGravity = Vector2.UnitY * 1f;
-				chain.constraintRepetitions = 30;
-				chain.UpdateChain();
-			}
+			UpdateChains();
 
 			if (!Main.dedServ)
 			{
@@ -202,10 +302,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				ManageTrail();
 			}
 
-			switch (State)
+			switch (Phase)
 			{
 				// Fleeing
-				case -1:
+				case Phases.Fleeing:
 					NPC.position.Y += 10;
 
 					if (Timer > 60)
@@ -249,23 +349,21 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					//NPC.GetGlobalNPC<BarrierNPC>().barrier = barrier;
 
 					Timer = 0;
-					State = 1;
+					Phase = Phases.SpawnAnim;
 
 					break;
 
-				// Intro
-				case 1:
+				case Phases.SpawnAnim:
 
 					Intro();
-					weakpoint.Center = chain.ropeSegments[chain.ropeSegments.Count / 3].posNow;
+					weakpoint.Center = attachedChain.ropeSegments[attachedChain.ropeSegments.Count / 3].posNow;
 
 					break;
 
-				// First phase
-				case 2:
+				case Phases.FirstPhase:
 
-					chainTarget = NPC.Center + Vector2.UnitY * 90;
-					weakpoint.Center = chain.ropeSegments[chain.ropeSegments.Count / 3].posNow;
+					attachedChainEndpoint = NPC.Center + Vector2.UnitY * 90;
+					weakpoint.Center = attachedChain.ropeSegments[attachedChain.ropeSegments.Count / 3].posNow;
 
 					if (thinker.life <= thinker.lifeMax / 2f)
 						thinker.life = (int)(thinker.lifeMax / 2f);
@@ -285,13 +383,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						// Transition check
 						if (thinker.life <= thinker.lifeMax / 2f)
 						{
-							State = 3;
+							Phase = Phases.FirstToSecond;
 							Timer = 0;
 							AttackState = 0;
-
-							// Set new trail
-							if (!Main.dedServ)
-								trail = new Trail(Main.instance.GraphicsDevice, chain.segmentCount, new NoTip(), factor => 30, factor => Color.White * opacity * 0.4f);
 
 							// Reset attack queue
 							attackQueue.Clear();
@@ -337,8 +431,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 					break;
 
-				// Second phase
-				case 3:
+				case Phases.FirstToSecond:
+					FirstPhaseTransition();
+					break;
+				
+				case Phases.SecondPhase:
 
 					NPC.dontTakeDamage = false;
 					NPC.immortal = false;
@@ -379,8 +476,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 					break;
 
-				// Temporarily dead
-				case 5:
+				case Phases.TempDead:
 
 					NPC.noGravity = false;
 					NPC.noTileCollide = false;
@@ -435,7 +531,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public override bool CheckDead()
 		{
 			NPC.life = 1;
-			State = 5;
+			Phase = Phases.TempDead;
 
 			(thinker.ModNPC as TheThinker).Timer = 0;
 			(thinker.ModNPC as TheThinker).AttackTimer = 0;
@@ -461,7 +557,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override void FindFrame(int frameHeight)
 		{
-			if (State >= 3)
+			if (Phase >= Phases.SecondPhase)
 				NPC.frame = new Rectangle(0, 182 * 4 + 182 * (int)(Timer / 10f % 4), 200, 182);
 			else
 				NPC.frame = new Rectangle(0, 182 * (int)(Timer / 6f % 4), 200, 182);
@@ -469,7 +565,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
 		{
-			if (State == 3 && (AttackState == 1 || AttackState == 3))
+			if (Phase == Phases.SecondPhase && (AttackState == 1 || AttackState == 3))
 				return false;
 
 			return base.DrawHealthBar(hbPosition, ref scale, ref position);
@@ -516,6 +612,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				if (npc.ModNPC is DeadBrain deadBrain2)
 					glowColor *= deadBrain2.shieldOpacity / 0.4f;
+				else 
+					glowColor *= 0;
 
 				spriteBatch.Draw(texGlow, center + (point.Pos - new Vector2(44, 40)) * offset + velOffset, frame, glowColor * opacity * chunkOpacity, rotation + rotOffset, new Vector2(40, 38), scale, 0, 0);
 			}
@@ -523,15 +621,14 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			if (State <= 2 && chain != null)
-			{
-				DrawPrimitives();
-			}
+			if (attachedChain != null && chainSplitBrainAttached != null && chainSplitThinkerAttached != null)
+				DrawFleshyChainTrails();
 
-			if (State == 2 && AttackState == 2)
-			{
+			if (Phase == Phases.FirstPhase && AttackState == 2)
 				DrawRamGraphics(spriteBatch);
-			}
+
+			if (Phase == Phases.SecondPhase && AttackState == 2)
+				DrawHuntGraphics(spriteBatch);
 
 			if (opacity >= 1)
 			{
@@ -553,7 +650,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			if (State <= 2)
+			if (Phase <= Phases.FirstToSecond)
 			{
 				Texture2D tex = Assets.Bosses.BrainRedux.ShieldMap.Value;
 
@@ -580,75 +677,112 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			}
 		}
 
-		private void DrawTether(SpriteBatch batch)
+		private void DrawGraymatterLink(SpriteBatch batch)
 		{
-			if (State == 3 && chain != null)
+			if (Phase == Phases.SecondPhase && attachedChain != null)
 			{
-				DrawPrimitivesGray();
+				DrawGraymatterChainTrails();
 			}
 		}
 
+		/// <summary>
+		/// Builds all appropriate caches based on the phase
+		/// </summary>
 		protected void ManageCaches()
 		{
-			if (cache == null)
+			attachedChain.UpdateCacheFromChain(ref attachedChainCache);
+
+			if (chainsSplit)
 			{
-				cache = [];
-
-				for (int i = 0; i < chain.segmentCount; i++)
-				{
-					cache.Add(chain.ropeSegments[i].posNow);
-				}
+				chainSplitBrainAttached.UpdateCacheFromChain(ref chainSplitBrainAttachedCache);
+				chainSplitThinkerAttached.UpdateCacheFromChain(ref chainSplitThinkerAttachedCache);
 			}
-
-			for (int i = 0; i < chain.segmentCount - 1; i++)
-			{
-				cache[i] = chain.ropeSegments[i].posNow;
-			}
-
-			cache[chain.segmentCount - 1] = chain.endPoint;
 		}
 
+		/// <summary>
+		/// Initialize the trail for the attached chain, this may be called more than once if the trail is ever disposed early
+		/// to reclaim resources due to being off-screen for a time.
+		/// </summary>
+		protected void InitAttachedChainTrail()
+		{
+			attachedChainTrail = new Trail(Main.instance.GraphicsDevice, attachedChain.segmentCount, new NoTip(), factor =>
+			{
+				float sin = (float)Math.Sin((factor * 3f + Main.GameUpdateCount / 30f) * 3.14f) - 0.4f;
+
+				if (factor > 0.30f && factor < 0.36f)
+					sin *= 1.5f;
+
+				float floored = Math.Max(0, sin);
+
+				return 32 + floored * 24;
+			},
+			factor =>
+			{
+				float sin = (float)Math.Sin((factor.X * 3f + Main.GameUpdateCount / 30f) * 3.14f) - 0.4f;
+				float floored = Math.Max(0, sin);
+
+				int index = (int)(factor.X * attachedChain.segmentCount);
+				index = Math.Clamp(index, 0, attachedChain.segmentCount - 1);
+
+				var glowColor = new Color(
+					0.5f + 0.2f * MathF.Sin((Main.GameUpdateCount + factor.X) * 6.28f),
+					0.5f + 0.2f * MathF.Sin((Main.GameUpdateCount + factor.X + 0.3f) * 6.28f),
+					0.5f + 0.2f * MathF.Sin((Main.GameUpdateCount + factor.X + 0.6f) * 6.28f),
+					0);
+
+				var lightColor = Lighting.GetColor((attachedChain.ropeSegments[index].posNow / 16).ToPoint());
+				var color = Color.Lerp(lightColor, glowColor, floored * 0.95f) * (1 + floored);
+				return color;
+			});
+		}
+
+		/// <summary>
+		/// Initializes one of the dangling split chains' trail
+		/// </summary>
+		/// <param name="chain">The chain to create a trail for</param>
+		/// <param name="toInit">The trail to populate</param>
+		protected void InitSplitChainTrail(VerletChain chain, ref Trail toInit)
+		{
+			toInit = new Trail(Main.instance.GraphicsDevice, chain.segmentCount, new NoTip(), factor => 32,
+			factor =>
+			{
+				int index = (int)(factor.X * chain.segmentCount);
+				index = Math.Clamp(index, 0, chain.segmentCount - 1);
+
+				return Lighting.GetColor((chain.ropeSegments[index].posNow / 16).ToPoint()) * opacity;
+			});
+		}
+
+		/// <summary>
+		/// Performs all trail updates to prepare for rendering based on phase
+		/// </summary>
 		protected void ManageTrail()
 		{
-			if (trail is null || trail.IsDisposed)
+			if (attachedChainTrail is null || attachedChainTrail.IsDisposed)
+				InitAttachedChainTrail();
+
+			attachedChainTrail.Positions = attachedChainCache.ToArray();
+			attachedChainTrail.NextPosition = NPC.Center;
+
+			if (chainsSplit)
 			{
-				trail = new Trail(Main.instance.GraphicsDevice, chain.segmentCount, new NoTip(), factor =>
-				{
-					float sin = (float)Math.Sin((factor * 3f + Main.GameUpdateCount / 30f) * 3.14f) - 0.4f;
+				if (chainSplitBrainAttachedTrail is null || chainSplitBrainAttachedTrail.IsDisposed)
+					InitSplitChainTrail(chainSplitBrainAttached, ref chainSplitBrainAttachedTrail);
 
-					if (factor > 0.30f && factor < 0.36f)
-						sin *= 1.5f;
+				if (chainSplitThinkerAttachedTrail is null || chainSplitThinkerAttachedTrail.IsDisposed)
+					InitSplitChainTrail(chainSplitThinkerAttached, ref chainSplitThinkerAttachedTrail);
 
-					float floored = Math.Max(0, sin);
-
-					return 32 + floored * 24;
-				},
-				factor =>
-				{
-					float sin = (float)Math.Sin((factor.X * 3f + Main.GameUpdateCount / 30f) * 3.14f) - 0.4f;
-					float floored = Math.Max(0, sin);
-
-					int index = (int)(factor.X * chain.segmentCount);
-					index = Math.Clamp(index, 0, chain.segmentCount - 1);
-
-					var glowColor = new Color(
-						0.5f + 0.2f * MathF.Sin((Main.GameUpdateCount + factor.X) * 6.28f),
-						0.5f + 0.2f * MathF.Sin((Main.GameUpdateCount + factor.X + 0.3f) * 6.28f),
-						0.5f + 0.2f * MathF.Sin((Main.GameUpdateCount + factor.X + 0.6f) * 6.28f),
-						0);
-
-					var lightColor = Lighting.GetColor((chain.ropeSegments[index].posNow / 16).ToPoint());
-					var color = Color.Lerp(lightColor, glowColor, floored * 0.95f) * (1 + floored);
-
-					return color;
-				});
+				chainSplitBrainAttachedTrail.Positions = chainSplitBrainAttachedCache.ToArray();
+				chainSplitThinkerAttachedTrail.Positions = chainSplitThinkerAttachedCache.ToArray();
 			}
-
-			trail.Positions = cache.ToArray();
-			trail.NextPosition = NPC.Center;
 		}
 
-		public void DrawPrimitives()
+		/// <summary>
+		/// Renders a trail using the repeating chain shader with the fleshy teather texture
+		/// </summary>
+		/// <param name="trail">The trail to render</param>
+		/// /// <param name="repeats">The amount of times the flesh chain should repeat over the course of the trail</param>
+		private void DrawFleshyTrail(Trail trail, float repeats)
 		{
 			Effect effect = Filters.Scene["RepeatingChain"].GetShader().Shader;
 
@@ -657,14 +791,33 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["alpha"].SetValue(1f);
-			effect.Parameters["repeats"].SetValue(10f);
+			effect.Parameters["repeats"].SetValue(repeats);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 
 			effect.Parameters["sampleTexture"].SetValue(Assets.Bosses.BrainRedux.DeadTeather.Value);
 			trail?.Render(effect);
 		}
 
-		public void DrawPrimitivesGray()
+		/// <summary>
+		/// Renders all of the "fleshy" trails
+		/// </summary>
+		public void DrawFleshyChainTrails()
+		{
+			if (!chainsSplit)
+			{
+				DrawFleshyTrail(attachedChainTrail, 10f);
+			}
+			else
+			{
+				DrawFleshyTrail(chainSplitBrainAttachedTrail, 3.3f);
+				DrawFleshyTrail(chainSplitThinkerAttachedTrail, 6.6f);
+			}
+		}
+
+		/// <summary>
+		/// Renders all of the graymatter trails
+		/// </summary>
+		public void DrawGraymatterChainTrails()
 		{
 			Effect effect = Filters.Scene["LightningTrail"].GetShader().Shader;
 
@@ -677,7 +830,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			effect.Parameters["transformMatrix"]?.SetValue(world * view * projection);
 
 			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/WavyTrail").Value);
-			trail?.Render(effect);
+			attachedChainTrail?.Render(effect);
 		}
 
 		public override void SendExtraAI(BinaryWriter binaryWriter)

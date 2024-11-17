@@ -111,7 +111,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				for (int k = 0; k < 200; k++)
 				{
-					Lighting.AddLight(NPC.Center + Vector2.UnitX.RotatedBy(k / 200f * 6.28f) * hurtRadius, new Vector3(0.4f, 0.1f, 0.12f) * DeadBrain.ArenaOpacity);
+					Lighting.AddLight(home + Vector2.UnitX.RotatedBy(k / 200f * 6.28f) * hurtRadius, new Vector3(0.4f, 0.1f, 0.12f) * DeadBrain.ArenaOpacity);
 				}
 			}
 
@@ -196,14 +196,14 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			}
 
 			// Grow radius when first phase
-			if (DeadBrain.TheBrain != null && DeadBrain.TheBrain.State == 2)
+			if (DeadBrain.TheBrain != null && DeadBrain.TheBrain.Phase == DeadBrain.Phases.FirstPhase)
 			{
 				if (ExtraRadius < 0)
 					ExtraRadius++;
 			}
 
 			// Spike logic
-			if (DeadBrain.TheBrain != null && DeadBrain.TheBrain.State >= 2)
+			if (DeadBrain.TheBrain != null && DeadBrain.TheBrain.Phase >= DeadBrain.Phases.FirstPhase)
 			{
 				foreach (Player player in Main.ActivePlayers)
 				{
@@ -216,7 +216,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			}
 
 			// Attacks
-			if (DeadBrain.TheBrain != null && DeadBrain.TheBrain.State == 5)
+			if (DeadBrain.TheBrain != null && DeadBrain.TheBrain.Phase == DeadBrain.Phases.TempDead)
 			{
 				Timer++;
 				AttackTimer++;
@@ -231,7 +231,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				if (Timer >= 1200)
 				{
-					DeadBrain.TheBrain.State = 3;
+					DeadBrain.TheBrain.Phase = DeadBrain.Phases.SecondPhase;
 					DeadBrain.TheBrain.AttackState = -1;
 					DeadBrain.TheBrain.AttackTimer = 1;
 					DeadBrain.TheBrain.NPC.life = DeadBrain.TheBrain.NPC.lifeMax;
@@ -244,7 +244,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override void ModifyIncomingHit(ref NPC.HitModifiers modifiers)
 		{
-			if (DeadBrain.TheBrain != null && DeadBrain.TheBrain.State == 5)
+			if (DeadBrain.TheBrain != null && DeadBrain.TheBrain.Phase == DeadBrain.Phases.TempDead)
 				return;
 
 			modifiers.FinalDamage *= 0;

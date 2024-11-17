@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public float tellLen;
 		public float hurtTime;
 
-		public bool Dead => (DeadBrain.TheBrain?.State ?? 0) >= 3;
+		public bool AlternateAppearance => (DeadBrain.TheBrain?.Phase ?? 0) >= DeadBrain.Phases.SecondPhase;
 
 		public ref float Timer => ref NPC.ai[0];
 		public ref float State => ref NPC.ai[1];
@@ -145,10 +145,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			Texture2D tex = Assets.Bosses.BrainRedux.Neurysm.Value;
 
-			Color glowColor = Dead ? new Color(25, 40, 6) : Rainbow(0 + NPC.whoAmI);
+			Color glowColor = AlternateAppearance ? new Color(25, 40, 6) : Rainbow(0 + NPC.whoAmI);
 
-			Color trailOne = Dead ? new Color(100, 180, 30) : Rainbow(0 + NPC.whoAmI);
-			Color trailTwo = Dead ? new Color(50, 70, 20) : Rainbow(1.5f + NPC.whoAmI);
+			Color trailOne = AlternateAppearance ? new Color(100, 180, 30) : Rainbow(0 + NPC.whoAmI);
+			Color trailTwo = AlternateAppearance ? new Color(50, 70, 20) : Rainbow(1.5f + NPC.whoAmI);
 
 			float prog = Math.Min(1, Timer / 30f);
 

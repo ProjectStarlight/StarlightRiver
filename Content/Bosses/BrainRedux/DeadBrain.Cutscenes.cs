@@ -22,13 +22,13 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			// Lighting at chain end
 			if (Timer <= 480)
-				Lighting.AddLight(chainTarget, new Vector3(0.8f, 0.5f, 0.2f));
+				Lighting.AddLight(attachedChainEndpoint, new Vector3(0.8f, 0.5f, 0.2f));
 
 			if (Timer == 1)
 			{
 				NPC.Center = thinker.Center + Vector2.UnitY.RotatedBy(-0.5f) * ThisThinker.hurtRadius;
 				savedPos = NPC.Center;
-				chainTarget = thinker.Center;
+				attachedChainEndpoint = thinker.Center;
 
 				if (IsInArena(Main.LocalPlayer))
 				{
@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (Timer > 100 && Timer < 120)
 			{
-				chainTarget = Vector2.Lerp(thinker.Center, NPC.Center + Vector2.UnitY * 90, (Timer - 100) / 20f);
+				attachedChainEndpoint = Vector2.Lerp(thinker.Center, NPC.Center + Vector2.UnitY * 90, (Timer - 100) / 20f);
 			}
 
 			if (Timer == 120)
@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			// Chain needs to be linked after this point
 			if (Timer >= 120)
-				chainTarget = NPC.Center + Vector2.UnitY * 90;
+				attachedChainEndpoint = NPC.Center + Vector2.UnitY * 90;
 
 			// Move brain into position
 			if (Timer > 160 && Timer < 360)
@@ -148,7 +148,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (Timer == 540)
 			{
-				State = 2;
+				Phase = Phases.FirstPhase;
 				Timer = 0;
 				AttackTimer = 0;
 			}
@@ -159,7 +159,58 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (Timer == 1)
 			{
 				savedPos = NPC.Center;
-				CameraSystem.DoPanAnimation(120, NPC.Center);
+				CameraSystem.MoveCameraOut(30, savedPos);
+			}
+
+			// Explode the weakpoint
+			if (Timer == 60)
+			{
+				for(int k = 0; k < 120; k++)
+				{
+					Dust.NewDust(weakpoint.position, weakpoint.width, weakpoint.height, DustID.Blood);
+
+					if (Main.rand.NextBool(3))
+						Dust.NewDust(weakpoint.position, weakpoint.width, weakpoint.height, DustID.FireworksRGB, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(-5, 5), 0, new Color(1f, 0.5f, 0.6f));
+				}
+
+				Helpers.Helper.PlayPitched("Impacts/GoreHeavy", 1f, -0.25f, weakpoint.Center);
+
+				weakpoint.active = false;
+				weakpoint = null;
+
+				chainsSplit = true;
+			}
+
+			// Shield sound
+			if (Timer == 120)
+				Helpers.Helper.PlayPitched("Magic/Shadow1", 0.7f, -0.25f, NPC.Center);
+
+			// Dust for shield
+			if (Timer > 100 && Timer < 140)
+			{
+				for (int k = 0; k < 5; k++)
+				{
+					var color = new Color(Main.rand.NextFloat(0.5f, 1f), Main.rand.NextFloat(0.5f, 1f), Main.rand.NextFloat(0.5f, 1f));
+					var rot = Main.rand.NextFloat(6.28f);
+
+					Dust.NewDustPerfect(NPC.Center + Vector2.One.RotatedBy(rot) * 90, ModContent.DustType<Dusts.GlowLineFast>(), Vector2.One.RotatedBy(rot) * Main.rand.NextFloat(8), 0, color, Main.rand.NextFloat(0.5f, 1f));
+				}
+			}
+
+			// Shield opacity decrease
+			if (Timer > 120 && Timer <= 150)
+				shieldOpacity = 1 - (Timer - 120) / 30f;
+
+			if (Timer == 150)
+			{
+				CameraSystem.ReturnCamera(30);
+			}
+
+			if (Timer == 200)
+			{
+				Phase = Phases.SecondPhase;
+				Timer = 0;
+				AttackTimer = 0;
 			}
 		}
 	}

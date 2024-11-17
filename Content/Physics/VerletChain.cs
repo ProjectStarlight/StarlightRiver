@@ -484,5 +484,29 @@ namespace StarlightRiver.Content.Physics
 
 			return ret;
 		}
+
+		/// <summary>
+		/// Popualtes a list of vectors to be used as a trails position cache from this verlet chain
+		/// </summary>
+		/// <param name="cache">The cache to populate</param>
+		public void UpdateCacheFromChain(ref List<Vector2> cache)
+		{
+			if (cache is null)
+			{
+				cache = [];
+				for (int k = 0; k < segmentCount; k++)
+				{
+					cache.Add(ropeSegments[k].posNow);
+				}
+			}
+
+			for (int k = 0; k < segmentCount; k++)
+			{
+				cache[k] = ropeSegments[k].posNow;
+			}
+
+			if (useEndPoint)
+				cache[segmentCount - 1] = endPoint;
+		}
 	}
 }
