@@ -538,6 +538,21 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				}
 			}
 
+			if (Main.expertMode && AttackTimer > 60 && AttackTimer % 60 == 0)
+			{
+				Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, NPC.Center.DirectionTo(ThisThinker.home) * 8, ModContent.ProjectileType<BrainBolt>(), 50, 1, Main.myPlayer, 160, 0, 30);
+
+				if (Main.masterMode)
+				{
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, NPC.Center.DirectionTo(ThisThinker.home).RotatedBy(0.5f) * 8, ModContent.ProjectileType<BrainBolt>(), 50, 1, Main.myPlayer, 160, 0, 30);
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, NPC.Center.DirectionTo(ThisThinker.home).RotatedBy(-0.5f) * 8, ModContent.ProjectileType<BrainBolt>(), 50, 1, Main.myPlayer, 160, 0, 30);
+
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), thinker.Center, thinker.Center.DirectionTo(ThisThinker.home) * 8, ModContent.ProjectileType<BrainBolt>(), 50, 1, Main.myPlayer, 160, 0, 30);
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), thinker.Center, thinker.Center.DirectionTo(ThisThinker.home).RotatedBy(0.5f) * 8, ModContent.ProjectileType<BrainBolt>(), 50, 1, Main.myPlayer, 160, 0, 30);
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), thinker.Center, thinker.Center.DirectionTo(ThisThinker.home).RotatedBy(-0.5f) * 8, ModContent.ProjectileType<BrainBolt>(), 50, 1, Main.myPlayer, 160, 0, 30);
+				}
+			}
+
 			if (AttackTimer == 60)
 			{
 				contactDamage = true;

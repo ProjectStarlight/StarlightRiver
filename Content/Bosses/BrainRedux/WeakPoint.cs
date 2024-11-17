@@ -60,9 +60,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			NPC.realLife = DeadBrain.TheBrain?.thinker?.whoAmI ?? NPC.realLife;
 
-			float r = 0.85f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f) * 0.5f;
-			float g = 0.85f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f + 2f) * 0.5f;
-			float b = 0.85f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f + 4f) * 0.5f;
+			float r = 0.89f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f) * 0.3f;
+			float g = 0.89f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f + 2f) * 0.3f;
+			float b = 0.89f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f + 4f) * 0.3f;
 			var color = new Color(r, g, b);
 
 			if (DeadBrain.TheBrain?.thinker?.life <= DeadBrain.TheBrain?.thinker?.lifeMax / 2f)
@@ -80,9 +80,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			var tex = Assets.Bosses.BrainRedux.Neurysm.Value;
 			var glow = Assets.Keys.GlowAlpha.Value;
 
-			float r = 0.85f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f) * 0.5f;
-			float g = 0.85f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f + 2f) * 0.5f;
-			float b = 0.85f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f + 4f) * 0.5f;
+			float r = 0.89f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f) * 0.3f;
+			float g = 0.89f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f + 2f) * 0.3f;
+			float b = 0.89f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f + 4f) * 0.3f;
 			var color = new Color(r, g, b);
 
 			var glowColor = color;
