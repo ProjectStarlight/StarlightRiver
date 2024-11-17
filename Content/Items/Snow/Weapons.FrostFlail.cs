@@ -67,9 +67,14 @@ namespace StarlightRiver.Content.Items.Snow
 				if (Owner == Main.LocalPlayer)
 					CameraSystem.shake += 8;
 
-				for (int k = 0; k < 50; k++)
+				for (int k = 0; k < 30; k++)
 				{
 					Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Ice);
+				}
+
+				for (int k = 0; k < 10; k++)
+				{
+					Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.SnowSpray, 0, -1);
 				}
 
 				for (int k = 0; k < 3; k++)
@@ -77,8 +82,38 @@ namespace StarlightRiver.Content.Items.Snow
 					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.One.RotatedByRandom(6.28f) * 3, ModContent.ProjectileType<FrostFlailShard>(), Projectile.damage / 2, 0, Projectile.owner);
 				}
 
-				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + Vector2.UnitY * 8, Vector2.Zero, ModContent.ProjectileType<HeavyFlailCrack>(), 0, 0);
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + Vector2.UnitY * 8, Vector2.Zero, ModContent.ProjectileType<FrostFlailCrack>(), 0, 0);
 			}
+		}
+	}
+
+	internal class FrostFlailCrack : ModProjectile, IDrawOverTiles
+	{
+		public override string Texture => AssetDirectory.Invisible;
+
+		public override void SetDefaults()
+		{
+			Projectile.tileCollide = false;
+			Projectile.penetrate = -1;
+			Projectile.timeLeft = 200;
+		}
+
+		public override bool PreDraw(ref Color lightColor)
+		{
+			return false;
+		}
+
+		public void DrawOverTiles(SpriteBatch spriteBatch)
+		{		
+			float prog = Projectile.timeLeft > 100 ? 1f : Projectile.timeLeft / 100f;
+
+			Color color = Color.Lerp(new Color(150, 240, 255), new Color(50, 80, 150), prog);
+			color *= prog;
+			color.A = 0;
+			var tex = Assets.Misc.AlphaCrack.Value;
+
+			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, color, 0, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
+			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0) * prog * 0.25f, 0, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
 		}
 	}
 
@@ -107,11 +142,8 @@ namespace StarlightRiver.Content.Items.Snow
 			if (Projectile.timeLeft < 30)
 				Projectile.alpha = (int)((1 - Projectile.timeLeft / 30f) * 255);
 
-			if (Main.rand.NextBool(5))
+			if (Main.rand.NextBool(10))
 				Dust.NewDust(Projectile.position, 18, 18, DustID.IceTorch);
-
-			if (Main.rand.NextBool(15))
-				Dust.NewDust(Projectile.position, 18, 18, DustID.Ice);
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
