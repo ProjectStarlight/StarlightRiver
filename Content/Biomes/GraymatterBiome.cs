@@ -213,11 +213,11 @@ namespace StarlightRiver.Content.Biomes
 		{
 			thinkerPositions = tag.GetList<Vector2>("ThinkerPositions") as List<Vector2>;
 
-			foreach (Vector2 pos in thinkerPositions)
+			/*foreach (Vector2 pos in thinkerPositions)
 			{
 				if (!Main.npc.Any(n => n.active && n.type == ModContent.NPCType<TheThinker>() && Vector2.Distance(n.Center, pos) < 64))
 					NPC.NewNPC(null, (int)pos.X * 16, (int)pos.Y * 16, ModContent.NPCType<TheThinker>());
-			}
+			}*/
 		}
 	}
 }

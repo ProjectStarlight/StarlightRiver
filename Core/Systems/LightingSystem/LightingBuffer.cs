@@ -7,7 +7,7 @@ using static StarlightRiver.Helpers.DrawHelper;
 
 namespace StarlightRiver.Core.Systems.LightingSystem
 {
-	public class LightingBuffer
+	public class LightingBuffer : ILoadable
 	{
 		const int PADDING = 20;
 
@@ -16,9 +16,9 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 
 		public static VertexBuffer lightingQuadBuffer;
 
-		public static ScreenTarget screenLightingTarget = new(DrawFinalTarget, () => bufferNeedsPopulated, 0.2f);
-		public static ScreenTarget tileLightingTarget = new(null, () => bufferNeedsPopulated, 0.1f, ResizeTile);
-		public static ScreenTarget tileLightingTempTarget = new(null, () => bufferNeedsPopulated, 0, ResizeTileTemp);
+		public static ScreenTarget screenLightingTarget;
+		public static ScreenTarget tileLightingTarget;
+		public static ScreenTarget tileLightingTempTarget;
 
 		public static Vector2 tileLightingCenter;
 
@@ -30,6 +30,18 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 		static int YMax => (int)(Main.screenHeight / 16 + PADDING * 2 * Factor);
 
 		private static GraphicsConfig Config => ModContent.GetInstance<GraphicsConfig>();
+
+		public void Load(Mod mod)
+		{
+			screenLightingTarget = new(DrawFinalTarget, () => bufferNeedsPopulated, 0.2f);
+			tileLightingTarget = new(null, () => bufferNeedsPopulated, 0.1f, ResizeTile);
+			tileLightingTempTarget = new(null, () => bufferNeedsPopulated, 0, ResizeTileTemp);
+		}
+
+		public void Unload()
+		{
+
+		}
 
 		private static void SetupLightingQuadBuffer()
 		{
