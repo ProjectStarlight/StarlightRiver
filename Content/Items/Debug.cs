@@ -1,3 +1,4 @@
+using ReLogic.Graphics;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
 using StarlightRiver.Content.Bosses.BrainRedux;
@@ -12,8 +13,11 @@ using StarlightRiver.Content.Tiles.Crimson;
 using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.PersistentDataSystem;
+using Steamworks;
+using System;
 using Terraria.DataStructures;
 using Terraria.ID;
+using static System.Net.WebRequestMethods;
 
 namespace StarlightRiver.Content.Items
 {
@@ -102,6 +106,40 @@ namespace StarlightRiver.Content.Items
 	{
 		public override string Texture => AssetDirectory.Assets + "Items/DebugStick";
 
+		public static bool betaActive = false;
+
+		public override void Load()
+		{
+			On_Main.DoDraw += DrawBeta;
+		}
+
+		private void DrawBeta(On_Main.orig_DoDraw orig, Main self, GameTime gameTime)
+		{
+			orig(self, gameTime);
+
+			Main.spriteBatch.Begin();
+
+			var font = Terraria.GameContent.FontAssets.ItemStack.Value;		
+
+			for (int k = 0; k < Main.screenHeight; k += 64)
+			{
+				var message = "| ALPHA BUILD -- DOES NOT REPRESENT FINAL PRODUCT ";
+				if (k % 3 == 1)
+					message = "| Starlight River Discord: https://discord.gg/starlight-river-616385262347485257 ";
+				if (k % 3 == 2)
+					message = "| Starlight River Github: https://github.com/ProjectStarlight/StarlightRiver ";
+
+				for (float x = -Main.screenHeight; x < Main.screenWidth; x += font.MeasureString(message).X)
+				Main.spriteBatch.DrawString(font, message, new Vector2(x + (k^(k*k)) % 600, k), Color.White * 0.1f, default, default, 1f, default, default);
+
+				Utils.DrawBorderStringBig(Main.spriteBatch, $"STARLIGHT RIVER ALPHA TEST -- THINKER BOSS FIGHT TEST 1", new Vector2(Main.screenWidth / 2, 16), Color.White, 0.6f, 0.5f);
+				Utils.DrawBorderStringBig(Main.spriteBatch, $"ALPHA BUILD DOES NOT REPRESENT FINAL PRODUCT", new Vector2(Main.screenWidth / 2, 48), Color.White, 0.6f, 0.5f);
+				Utils.DrawBorderStringBig(Main.spriteBatch, $"YOUR ID: {SteamFriends.GetPersonaName()} ({SteamUser.GetSteamID().m_SteamID})", new Vector2(Main.screenWidth / 2, 80), Color.Gray, 0.6f, 0.5f);
+			}
+
+			Main.spriteBatch.End();
+		}
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Thinker Test");
@@ -128,6 +166,8 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
+			betaActive = true;
+
 			foreach (var item in player.inventory)
 			{
 				item.TurnToAir();
