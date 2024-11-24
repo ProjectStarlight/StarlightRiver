@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			Texture2D tex = Assets.Bosses.BrainRedux.ShellBack.Value;
 			Vector2 pos = home - Main.screenPosition - tex.Size() / 2f;
 
-			LightingBufferRenderer.DrawWithLighting(pos, tex);
+			LightingBufferRenderer.DrawWithLighting(pos, tex, Color.Gray);
 		}
 
 		public void DrawArena(SpriteBatch spriteBatch)
@@ -112,7 +112,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		private void DrawGrayAura(SpriteBatch sb)
 		{
-			Texture2D glow = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
+			Texture2D glow = Assets.Keys.GlowAlpha.Value;
 			Color color = Color.White;
 			color.A = 0;
 
@@ -131,9 +131,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			bodyShader ??= Terraria.Graphics.Effects.Filters.Scene["ThinkerBody"].GetShader().Shader;
 
+			Texture2D glow = Assets.Keys.Glow.Value;
+
 			foreach (TheThinker thinker in toRender)
 			{
-				thinker.DrawUnderShell();
+				sb.Draw(glow, thinker.NPC.Center - Main.screenPosition, null, Color.Black * 0.5f, thinker.NPC.rotation, glow.Size() / 2f, thinker.NPC.scale * 2.5f, 0, 0);
 
 				bodyShader.Parameters["u_resolution"].SetValue(Assets.Bosses.BrainRedux.Heart.Size());
 				bodyShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f);

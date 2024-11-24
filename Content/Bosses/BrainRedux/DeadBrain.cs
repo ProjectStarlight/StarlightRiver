@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Biomes;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Physics;
 using StarlightRiver.Core.DrawingRigs;
 using StarlightRiver.Core.Systems.PixelationSystem;
@@ -132,7 +133,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				// If doing a clones attack, highlight the real one
 				if (TheBrain.Phase == Phases.SecondPhase && (TheBrain.AttackState == 1 || TheBrain.AttackState == 3))
-					TheBrain.PreDraw(obj, Main.screenPosition, Lighting.GetColor((TheBrain.NPC.Center / 16).ToPoint()));
+					TheBrain.DrawBrain(obj, Lighting.GetColor((TheBrain.NPC.Center / 16).ToPoint()), true);
 			}
 		}
 
@@ -626,10 +627,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			}
 		}
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+		private void DrawBrain(SpriteBatch spriteBatch, Color drawColor, bool isOverlay)
 		{
 			if (attachedChain != null && chainSplitBrainAttached != null && chainSplitThinkerAttached != null)
-				DrawFleshyChainTrails();
+				DrawFleshyChainTrails(isOverlay);
 
 			if (Phase == Phases.FirstPhase && AttackState == 2)
 				DrawRamGraphics(spriteBatch);
@@ -651,6 +652,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					DrawBrainSegments(spriteBatch, NPC, NPC.Center + offset - Main.screenPosition, drawColor, NPC.rotation, NPC.scale, opacity * 0.2f, lastPos);
 				}
 			}
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+		{
+			DrawBrain(spriteBatch, drawColor, false);
 
 			return false;
 		}
@@ -808,7 +814,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		/// <summary>
 		/// Renders all of the "fleshy" trails
 		/// </summary>
-		public void DrawFleshyChainTrails()
+		public void DrawFleshyChainTrails(bool isOverlay)
 		{
 			if (!chainsSplit)
 			{
@@ -817,7 +823,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			else
 			{
 				DrawFleshyTrail(chainSplitBrainAttachedTrail, 3.3f);
-				DrawFleshyTrail(chainSplitThinkerAttachedTrail, 6.6f);
+
+				if (!isOverlay)
+					DrawFleshyTrail(chainSplitThinkerAttachedTrail, 6.6f);
 			}
 		}
 
