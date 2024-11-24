@@ -247,6 +247,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			// Attacks
 			if (DeadBrain.TheBrain != null && DeadBrain.TheBrain.Phase == DeadBrain.Phases.TempDead)
 			{
+				NPC.immortal = false;
+
 				Timer++;
 				AttackTimer++;
 
@@ -285,8 +287,18 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					SpawnBlock();
 				}
 
-				if (Timer > 100 && Timer < 900 && Timer % 30 == 0)
+				if (Timer > 100 && Timer < 900 && Timer % 60 == 0)
 					SpawnProjectile();
+
+				if (Main.expertMode && Timer > 100 && Timer < 1100 && Timer % 300 == 0)
+				{
+					for (int k = 0; k < 8; k++)
+					{
+						float rot = k / 8f * 6.28f;
+						rot += Timer / 200f;
+						Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.One.RotatedBy(rot) * 3, ModContent.ProjectileType<BrainBolt>(), 10, 1, Main.myPlayer, 240, 0, 10);
+					}
+				}
 
 				if (Timer > 1140)
 					ExtraRadius -= 10;
@@ -334,8 +346,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (direction == -1 || direction > 3)
 				direction = Main.rand.Next(4);
 
-			if (offset == -99 || offset < -4 || offset > 4)
-				offset = Main.rand.Next(-4, 5);
+			if (offset == -99 || offset < -3 || offset > 3)
+				offset = Main.rand.Next(-3, 4);
 
 			while (Math.Abs(offset) <= 1)
 			{
@@ -370,22 +382,22 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (direction == -1 || direction > 3)
 				direction = Main.rand.Next(4);
 
-			if (offset == -99 || offset < -4 || offset > 4)
-				offset = Main.rand.Next(-4, 5);
+			if (offset == -99 || offset < -3 || offset > 3)
+				offset = Main.rand.Next(-3, 4);
 
 			switch (direction)
 			{
 				case 0:
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), (int)home.X - 800, (int)home.Y + offset * 194, 6, 0, ModContent.ProjectileType<BrainBolt>(), 30, 1, Main.myPlayer, 280, 0, 90);
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), (int)home.X - 800, (int)home.Y + offset * 194, 5, 0, ModContent.ProjectileType<HallucinationHazard>(), 30, 1, Main.myPlayer);
 					break;
 				case 1:
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), (int)home.X + 800, (int)home.Y + offset * 194, -6, 0, ModContent.ProjectileType<BrainBolt>(), 30, 1, Main.myPlayer, 280, 0, 90);
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), (int)home.X + 800, (int)home.Y + offset * 194, -5, 0, ModContent.ProjectileType<HallucinationHazard>(), 30, 1, Main.myPlayer);
 					break;
 				case 2:
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), (int)home.X + offset * 194, (int)home.Y - 800, 0, 6, ModContent.ProjectileType<BrainBolt>(), 30, 1, Main.myPlayer, 280, 0, 90);
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), (int)home.X + offset * 194, (int)home.Y - 800, 0, 5, ModContent.ProjectileType<HallucinationHazard>(), 30, 1, Main.myPlayer);
 					break;
 				case 3:
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), (int)home.X + offset * 194, (int)home.Y + 800, 0, -6, ModContent.ProjectileType<BrainBolt>(), 30, 1, Main.myPlayer, 280, 0, 90);
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), (int)home.X + offset * 194, (int)home.Y + 800, 0, -5, ModContent.ProjectileType<HallucinationHazard>(), 30, 1, Main.myPlayer);
 					break;
 			}
 		}

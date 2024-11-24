@@ -3619,6 +3619,7 @@ Projectiles: {
 	Dart.DisplayName: Cursed Dart
 	SawbladeSmall.DisplayName: Cursed Sawblade
 	Spear.DisplayName: Cursed Spear
+	HallucinationHazard.DisplayName: Cruel thought
 }
 
 Biomes: {
