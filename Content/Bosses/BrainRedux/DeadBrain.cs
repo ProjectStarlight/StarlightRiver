@@ -345,7 +345,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						attackQueue.Add(next);
 					}
 
-					int life = Main.masterMode ? 1000 : Main.expertMode ? 800 : 600;
+					int life = Main.masterMode ? 1600 : Main.expertMode ? 1250 : 1000;
 
 					NPC.lifeMax = life;
 					NPC.life = life;

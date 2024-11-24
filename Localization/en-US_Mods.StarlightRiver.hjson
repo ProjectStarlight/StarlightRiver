@@ -3183,6 +3183,11 @@ Items: {
 		DisplayName: Soft Sand
 		Tooltip: ""
 	}
+
+	BrainSpawner: {
+		DisplayName: Thinker Test
+		Tooltip: Equips you with gear and spawns the thinker
+	}
 }
 
 Tiles: {

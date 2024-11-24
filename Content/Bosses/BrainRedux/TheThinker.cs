@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			NPC.width = 128;
 			NPC.height = 128;
 			NPC.damage = 10;
-			NPC.lifeMax = 4000;
+			NPC.lifeMax = 5000;
 			NPC.knockBackResist = 0f;
 			NPC.friendly = false;
 			NPC.noTileCollide = true;
@@ -75,6 +75,15 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			NPC.boss = true;
 
 			toRender.Add(this);
+		}
+
+		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
+		{
+			if (Main.expertMode)
+				NPC.lifeMax = 7500;
+
+			if (Main.masterMode)
+				NPC.lifeMax = 9000;
 		}
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)

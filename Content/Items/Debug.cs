@@ -1,8 +1,12 @@
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
+using StarlightRiver.Content.Bosses.BrainRedux;
 using StarlightRiver.Content.Events;
 using StarlightRiver.Content.GUI;
+using StarlightRiver.Content.Items.Dungeon;
 using StarlightRiver.Content.Items.Haunted;
+using StarlightRiver.Content.Items.UndergroundTemple;
+using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Content.PersistentData;
 using StarlightRiver.Content.Tiles.Crimson;
 using StarlightRiver.Core.Loaders.UILoading;
@@ -65,78 +69,6 @@ namespace StarlightRiver.Content.Items
 
 			return true;
 		}
-
-		private void GrayBlob(int x, int y)
-		{
-			WorldGen.TileRunner(x - 2, y, 3, 25, ModContent.TileType<GrayMatter>(), true, 1f, 0, true);
-
-			GrayMatterSpike(x, y);
-
-			if (WorldGen.genRand.NextBool())
-				GrayMatterSpike(x + WorldGen.genRand.Next(-2, 3), y);
-
-			for (int k = x-5; k < x+5; k++)
-			{
-				for (int j = y - 10; j < y + 10; j++)
-				{
-					var tile = Framing.GetTileSafely(k, j);
-					if (tile.HasTile && tile.TileType == ModContent.TileType<GrayMatter>() && Helpers.Helper.CheckAirRectangle(new Point16(k, j - 4), new Point16(1, 4)))
-					{
-						if (WorldGen.genRand.NextBool(3))
-						{
-							switch (Main.rand.Next(3))
-							{
-								case 0: Helpers.Helper.PlaceMultitile(new Point16(k, j - 4), StarlightRiver.Instance.Find<ModTile>("GraymatterDeco1x4").Type); break;
-								case 1: Helpers.Helper.PlaceMultitile(new Point16(k, j - 2), StarlightRiver.Instance.Find<ModTile>("GraymatterDeco1x2").Type); break;
-								case 2: Helpers.Helper.PlaceMultitile(new Point16(k, j - 1), StarlightRiver.Instance.Find<ModTile>("GraymatterDeco1x1").Type); break;
-							}
-							k++;
-						}
-						else if (WorldGen.genRand.NextBool(3) && Framing.GetTileSafely(k + 1, j).HasTile && Helpers.Helper.CheckAirRectangle(new Point16(k, j - 4), new Point16(2, 4)))
-						{
-							switch (Main.rand.Next(3))
-							{
-								case 0: Helpers.Helper.PlaceMultitile(new Point16(k, j - 3), StarlightRiver.Instance.Find<ModTile>("GraymatterDeco2x3").Type); break;
-								case 1: Helpers.Helper.PlaceMultitile(new Point16(k, j - 2), StarlightRiver.Instance.Find<ModTile>("GraymatterDeco2x2").Type); break;
-							}
-							k += 2;
-						}
-						else if (Framing.GetTileSafely(k + 1, j).HasTile && Framing.GetTileSafely(k + 2, j).HasTile && Helpers.Helper.CheckAirRectangle(new Point16(k, j - 4), new Point16(3, 4)))
-						{
-							Helpers.Helper.PlaceMultitile(new Point16(k, j - 3), StarlightRiver.Instance.Find<ModTile>("GraymatterDeco3x3").Type);
-							k += 3;
-						}
-
-						continue;
-					}
-				}
-			}
-		}
-
-		private void GrayMatterSpike(int x, int y)
-		{
-			int maxDown = WorldGen.genRand.Next(3, 6);
-			for (int down = 0; down < maxDown; down++)
-			{
-				WorldGen.PlaceTile(x, y, ModContent.TileType<GrayMatter>(), true, true);
-				y++;
-			}
-
-			int maxSide = WorldGen.genRand.Next(2, 3);
-			int dir = WorldGen.genRand.NextBool() ? -1 : 1;
-			for (int side = 0; side < maxSide; side++)
-			{
-				WorldGen.PlaceTile(x, y, ModContent.TileType<GrayMatter>(), true, true);
-				x += dir;
-			}
-
-			maxDown = WorldGen.genRand.Next(2, 4);
-			for (int down = 0; down < maxDown; down++)
-			{
-				WorldGen.PlaceTile(x, y, ModContent.TileType<GrayMatter>(), true, true);
-				y++;
-			}
-		}
 	}
 
 	class DebugModerEnabler : ModItem
@@ -165,4 +97,86 @@ namespace StarlightRiver.Content.Items
 			return true;
 		}
 	}
+
+	class BrainSpawner : ModItem
+	{
+		public override string Texture => AssetDirectory.Assets + "Items/DebugStick";
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Thinker Test");
+			Tooltip.SetDefault("Equips you with gear and spawns the thinker");
+		}
+
+		public override void SetDefaults()
+		{
+			Item.damage = 10;
+			Item.DamageType = DamageClass.Melee;
+			Item.width = 38;
+			Item.height = 40;
+			Item.useTime = 18;
+
+			Item.useAnimation = 18;
+			Item.useStyle = ItemUseStyleID.Swing;
+			Item.knockBack = 5f;
+			Item.value = 1000;
+			Item.rare = ItemRarityID.LightRed;
+			Item.autoReuse = true;
+			Item.UseSound = SoundID.Item18;
+			Item.useTurn = true;
+		}
+
+		public override bool? UseItem(Player player)
+		{
+			foreach (var item in player.inventory)
+			{
+				item.TurnToAir();
+			}
+
+			foreach(var item in player.armor)
+			{
+				item.TurnToAir();
+			}
+
+			foreach(var npc in Main.npc)
+			{
+				npc.active = false;
+			}
+
+			player.armor[0].SetDefaults(ItemID.MoltenHelmet);
+			player.armor[1].SetDefaults(ItemID.MoltenBreastplate);
+			player.armor[2].SetDefaults(ItemID.MoltenGreaves);
+
+			player.armor[3].SetDefaults(ItemID.FrostsparkBoots);
+			player.armor[4].SetDefaults(ItemID.CreativeWings);
+			player.armor[5].SetDefaults(ItemID.ObsidianShield);
+			player.armor[6].SetDefaults(ModContent.ItemType<WardedMail>());
+			player.armor[7].SetDefaults(ModContent.ItemType<TempleRune>());
+
+			player.inventory[0].SetDefaults(ItemID.Minishark);
+			player.inventory[1].SetDefaults(ItemID.DemonScythe);
+			player.inventory[2].SetDefaults(ModContent.ItemType<CoachGunUpgrade>());
+			player.inventory[3].SetDefaults(ModContent.ItemType<ThousandthDegree>());
+			player.inventory[9].SetDefaults(Item.type);
+			player.inventory[10].SetDefaults(ItemID.HealingPotion);
+			player.inventory[10].stack = 9999;
+			player.inventory[11].SetDefaults(ItemID.ManaPotion);
+			player.inventory[11].stack = 9999;
+			player.inventory[54].SetDefaults(ItemID.EndlessMusketPouch);
+
+			player.statLifeMax = 400;
+			player.statManaMax = 200;
+
+			player.statLife = player.statLifeMax;
+			player.statMana = player.statManaMax;
+
+			player.Center = new Vector2(Main.maxTilesX * 8, Main.maxTilesY * 8);
+
+			NPC.NewNPC(null, (int)player.Center.X, (int)player.Center.Y - 200, ModContent.NPCType<TheThinker>());
+			NPC.NewNPC(null, (int)player.Center.X, (int)player.Center.Y - 200, ModContent.NPCType<DeadBrain>());
+
+			return true;
+		}
+	}
+
 }
