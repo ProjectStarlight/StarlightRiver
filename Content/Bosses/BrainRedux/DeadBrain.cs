@@ -13,6 +13,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.Bosses.BrainRedux
 {
+	[AutoloadBossHead]
 	internal partial class DeadBrain : ModNPC
 	{
 		public NPC thinker;
@@ -263,6 +264,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			// Emit light if not in the dead state
 			if (Phase != Phases.TempDead)
 				Lighting.AddLight(NPC.Center, Phase > Phases.FirstPhase ? new Vector3(0.5f, 0.4f, 0.2f) : new Vector3(0.5f, 0.5f, 0.5f) * (shieldOpacity / 0.4f));
+
+			if (Phase == Phases.SecondPhase)
+			{
+				NPC.boss = true;
+				Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/JungleBloody");
+			}
 
 			// If we dont have a thinker, try to find one
 			if (thinker is null)

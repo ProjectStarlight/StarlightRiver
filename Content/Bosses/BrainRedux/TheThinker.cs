@@ -1,14 +1,18 @@
 ﻿using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Tiles.Crimson;
+using StarlightRiver.Core.Systems.MusicFilterSystem;
 using System;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
+using Terraria.ID;
 using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Bosses.BrainRedux
 {
+	[AutoloadBossHead]
 	internal partial class TheThinker : ModNPC
 	{
 		public static readonly List<TheThinker> toRender = [];
@@ -82,10 +86,23 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			});
 		}
 
+		public void SwitchBossBar(NPC npc)
+		{
+			Main.BigBossProgressBar.TryTracking(npc.whoAmI);
+			BossBarOverlay.SetTracked(npc);
+		}
+
 		public override void AI()
 		{
 			if (home == default)
 				home = NPC.Center;
+
+			if (!BossBarOverlay.visible && Main.netMode != NetmodeID.Server)
+			{
+				//in case the player joined late or something for the hp bar
+				BossBarOverlay.SetTracked(NPC);
+				BossBarOverlay.visible = true;
+			}
 
 			if (DeadBrain.TheBrain is null)
 			{
@@ -99,6 +116,20 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				NPC.boss = true;
 				Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/TheThinker");
+
+				if(DeadBrain.TheBrain.Phase >= DeadBrain.Phases.SecondPhase)
+				{
+					Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/JungleBloody");
+				}
+
+				if (DeadBrain.TheBrain.Phase == DeadBrain.Phases.SecondPhase)
+				{
+					SwitchBossBar(DeadBrain.TheBrain.NPC);
+				}
+				else
+				{
+					SwitchBossBar(NPC);
+				}
 			}
 
 			GraymatterBiome.forceGrayMatter = true;
@@ -227,6 +258,19 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					radTransitionTime = 240;
 				}
 
+				if (Timer < 60)
+				{
+					MusicFilterSystem.globalPitchModifier = Timer / 60f * -0.5f;
+				}
+				else if (Timer >= 60 && Timer < 1100)
+				{
+					MusicFilterSystem.globalPitchModifier = -0.5f;
+				}
+				else if (Timer >= 1100)
+				{
+					MusicFilterSystem.globalPitchModifier = -0.5f + (Timer - 1100) / 100f * 0.5f;
+				}
+
 				if (ExtraRadius < 600 && Timer <= 1140)
 					ExtraRadius += 4f;
 
@@ -272,6 +316,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					DeadBrain.TheBrain.NPC.dontTakeDamage = false;
 				}
 			}
+			else
+			{
+				NPC.immortal = true;
+			}
 		}
 
 		/// <summary>
@@ -297,19 +345,19 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			switch (direction)
 			{
 				case 0:
-					n = NPC.NewNPC(NPC.GetSource_FromThis(), (int)home.X - 800, (int)home.Y + offset * 194, ModContent.NPCType<HallucinationBlock>());
+					n = NPC.NewNPC(NPC.GetSource_FromThis(), (int)home.X - 776, (int)home.Y + offset * 194, ModContent.NPCType<HallucinationBlock>());
 					Main.npc[n].velocity.X = 3;
 					break;
 				case 1:
-					n = NPC.NewNPC(NPC.GetSource_FromThis(), (int)home.X + 800, (int)home.Y + offset * 194, ModContent.NPCType<HallucinationBlock>());
+					n = NPC.NewNPC(NPC.GetSource_FromThis(), (int)home.X + 776, (int)home.Y + offset * 194, ModContent.NPCType<HallucinationBlock>());
 					Main.npc[n].velocity.X = -3;
 					break;
 				case 2:
-					n = NPC.NewNPC(NPC.GetSource_FromThis(), (int)home.X + offset * 194, (int)home.Y - 800, ModContent.NPCType<HallucinationBlock>());
+					n = NPC.NewNPC(NPC.GetSource_FromThis(), (int)home.X + offset * 194, (int)home.Y - 776, ModContent.NPCType<HallucinationBlock>());
 					Main.npc[n].velocity.Y = 3;
 					break;
 				case 3:
-					n = NPC.NewNPC(NPC.GetSource_FromThis(), (int)home.X + offset * 194, (int)home.Y + 800, ModContent.NPCType<HallucinationBlock>());
+					n = NPC.NewNPC(NPC.GetSource_FromThis(), (int)home.X + offset * 194, (int)home.Y + 776, ModContent.NPCType<HallucinationBlock>());
 					Main.npc[n].velocity.Y = -3;
 					break;
 			}
@@ -347,8 +395,6 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (DeadBrain.TheBrain != null && DeadBrain.TheBrain.Phase == DeadBrain.Phases.TempDead)
 				return;
 
-			modifiers.FinalDamage *= 0;
-			NPC.life += 1;
 			modifiers.HideCombatText();
 
 			CombatText.NewText(NPC.Hitbox, Color.Gray, 0);
@@ -455,7 +501,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
 		{
-			return false;
+			return DeadBrain.TheBrain != null && DeadBrain.TheBrain.Phase == DeadBrain.Phases.TempDead;
 		}
 	}
 }
