@@ -3725,6 +3725,7 @@ NPCs: {
 	Snake.DisplayName: Sandviper
 	BerrySlime.DisplayName: Slimeberry
 	TouchstoneWisp.DisplayName: Aurora Spirit
+	HallucinationBlock.DisplayName: ""
 }
 
 Buffs: {

@@ -20,6 +20,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			NPC.width = 260;
 			NPC.height = 12;
+			NPC.noTileCollide = true;
 		}
 
 		public override void SafeAI()

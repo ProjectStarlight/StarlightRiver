@@ -1,15 +1,10 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Biomes;
+﻿using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Tiles.Crimson;
-using StarlightRiver.Core.Systems.LightingSystem;
-using StarlightRiver.Core.Systems.PixelationSystem;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
-using Terraria.ID;
 using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Bosses.BrainRedux
@@ -27,6 +22,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public float platformRadiusTarget = 550;
 		public float platformRotationTarget = 0;
+
+		public int radTransitionTime = 60;
+		public int rotTransitionTime = 60;
 
 		private float lastRadius = -1;
 		private float lastRotation = -1;
@@ -139,10 +137,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						radTimer = 0;
 					}
 				}
-				else if (radTimer <= 60)
+				else if (radTimer <= radTransitionTime)
 				{
 					radTimer++;
-					platformRadius = lastRadius + (platformRadiusTarget - lastRadius) * Helpers.Helper.BezierEase(radTimer / 60f);
+					platformRadius = lastRadius + (platformRadiusTarget - lastRadius) * Helpers.Helper.BezierEase(radTimer / (float)radTransitionTime);
 				}
 				else
 				{
@@ -158,10 +156,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						rotTimer = 0;
 					}
 				}
-				else if (rotTimer <= 60)
+				else if (rotTimer <= rotTransitionTime)
 				{
 					rotTimer++;
-					platformRotation = lastRotation + (platformRotationTarget - lastRotation) * Helpers.Helper.BezierEase(rotTimer / 60f);
+					platformRotation = lastRotation + (platformRotationTarget - lastRotation) * Helpers.Helper.BezierEase(rotTimer / (float)rotTransitionTime);
 				}
 				else
 				{
@@ -223,11 +221,45 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				NPC.Center += (home - NPC.Center) * 0.02f;
 
+				if (Timer == 1)
+				{
+					platformRadiusTarget = 1000;
+					radTransitionTime = 240;
+				}
+
 				if (ExtraRadius < 600 && Timer <= 1140)
 					ExtraRadius += 4f;
 
+				if (Timer == 1)
+				{
+					SpawnBlock(3, -2);
+					SpawnBlock(3, 2);
+				}
+
+				if (Timer % (194 / 3) == 0)
+				{
+					SpawnBlock();
+				}
+
+				if (Timer > 100 && Timer < 900 && Timer % 30 == 0)
+					SpawnProjectile();
+
 				if (Timer > 1140)
 					ExtraRadius -= 10;
+
+				if (Timer == 1200)
+				{
+					platformRadiusTarget = 400;
+					radTransitionTime = 60;
+
+					foreach(NPC npc in Main.ActiveNPCs)
+					{
+						if (npc.ModNPC is HallucinationBlock hb)
+						{
+							hb.Timer = 500;
+						}
+					}
+				}
 
 				if (Timer >= 1200)
 				{
@@ -239,6 +271,74 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					DeadBrain.TheBrain.NPC.noTileCollide = true;
 					DeadBrain.TheBrain.NPC.dontTakeDamage = false;
 				}
+			}
+		}
+
+		/// <summary>
+		/// Spawns a cube traveling in the given direction and at the given offset (in cube sizes) from the center.
+		/// </summary>
+		/// <param name="direction">0 = left to right, 1 = right to left, 2 = top to bottom, 3 = bottom to top</param>
+		/// <param name="offset">offset in cube sizes from the center, 0 is at the center</param>
+		public void SpawnBlock(int direction = -1, int offset = -99)
+		{
+			int n;
+
+			if (direction == -1 || direction > 3)
+				direction = Main.rand.Next(4);
+
+			if (offset == -99 || offset < -4 || offset > 4)
+				offset = Main.rand.Next(-4, 5);
+
+			while (Math.Abs(offset) <= 1)
+			{
+				offset = Main.rand.Next(-4, 5);
+			}
+
+			switch (direction)
+			{
+				case 0:
+					n = NPC.NewNPC(NPC.GetSource_FromThis(), (int)home.X - 800, (int)home.Y + offset * 194, ModContent.NPCType<HallucinationBlock>());
+					Main.npc[n].velocity.X = 3;
+					break;
+				case 1:
+					n = NPC.NewNPC(NPC.GetSource_FromThis(), (int)home.X + 800, (int)home.Y + offset * 194, ModContent.NPCType<HallucinationBlock>());
+					Main.npc[n].velocity.X = -3;
+					break;
+				case 2:
+					n = NPC.NewNPC(NPC.GetSource_FromThis(), (int)home.X + offset * 194, (int)home.Y - 800, ModContent.NPCType<HallucinationBlock>());
+					Main.npc[n].velocity.Y = 3;
+					break;
+				case 3:
+					n = NPC.NewNPC(NPC.GetSource_FromThis(), (int)home.X + offset * 194, (int)home.Y + 800, ModContent.NPCType<HallucinationBlock>());
+					Main.npc[n].velocity.Y = -3;
+					break;
+			}
+		}
+
+		public void SpawnProjectile(int direction = -1, int offset = -99)
+		{
+			int n;
+
+			if (direction == -1 || direction > 3)
+				direction = Main.rand.Next(4);
+
+			if (offset == -99 || offset < -4 || offset > 4)
+				offset = Main.rand.Next(-4, 5);
+
+			switch (direction)
+			{
+				case 0:
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), (int)home.X - 800, (int)home.Y + offset * 194, 6, 0, ModContent.ProjectileType<BrainBolt>(), 30, 1, Main.myPlayer, 280, 0, 90);
+					break;
+				case 1:
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), (int)home.X + 800, (int)home.Y + offset * 194, -6, 0, ModContent.ProjectileType<BrainBolt>(), 30, 1, Main.myPlayer, 280, 0, 90);
+					break;
+				case 2:
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), (int)home.X + offset * 194, (int)home.Y - 800, 0, 6, ModContent.ProjectileType<BrainBolt>(), 30, 1, Main.myPlayer, 280, 0, 90);
+					break;
+				case 3:
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), (int)home.X + offset * 194, (int)home.Y + 800, 0, -6, ModContent.ProjectileType<BrainBolt>(), 30, 1, Main.myPlayer, 280, 0, 90);
+					break;
 			}
 		}
 
@@ -276,7 +376,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		/// </summary>
 		public void CreateArena()
 		{
-			List<Point16> tilesChanged = new();
+			List<Point16> tilesChanged = [];
 
 			for (int x = -54; x <= 54; x++)
 			{

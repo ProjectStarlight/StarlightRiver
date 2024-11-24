@@ -27,8 +27,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			Projectile.width = 8;
 			Projectile.height = 8;
 			Projectile.aiStyle = -1;
-			Projectile.timeLeft = 200;
+			Projectile.timeLeft = 9999;
 			Projectile.hostile = true;
+			Projectile.tileCollide = false;
 		}
 
 		public override void AI()

@@ -147,7 +147,8 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 						if (target is not null && target.active && grappleHookProj.active && self.Hitbox.Intersects(grappleHookProj.Hitbox))
 						{
 							self.position = grappleHookProj.position + new Vector2(grappleHookProj.width / 2 - self.width / 2, grappleHookProj.height / 2 - self.height / 2);
-							self.position += target.velocity;
+							self.position.Y += target.velocity.Y;
+							self.velocity.X += target.velocity.X;
 							self.velocity.Y = 0;
 							self.jump = 0;
 							self.fallStart = (int)(self.position.Y / 16f);
