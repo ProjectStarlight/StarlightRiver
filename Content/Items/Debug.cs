@@ -117,6 +117,9 @@ namespace StarlightRiver.Content.Items
 		{
 			orig(self, gameTime);
 
+			if (!betaActive)
+				return;
+
 			Main.spriteBatch.Begin();
 
 			var font = Terraria.GameContent.FontAssets.ItemStack.Value;		
