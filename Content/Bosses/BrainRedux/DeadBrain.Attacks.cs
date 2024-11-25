@@ -195,7 +195,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				NPC.Center += (targetPos - NPC.Center) * speed;
 			}
 
-			if (AttackTimer == 140)
+			if (AttackTimer == 130)
 			{
 				savedPos = thinker.Center + relativePos;
 			}
@@ -236,8 +236,25 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				for(int k = 0; k < 6; k++)
 				{
 					Vector2 pos = NPC.Center + Vector2.UnitX.RotatedBy(k / 6f * 6.28f + prog * 3.14f) * (1f - prog) * 128;
-					DrawBrainSegments(spriteBatch, NPC, pos - Main.screenPosition, new Color(255, 100, 100), NPC.rotation, NPC.scale, 0.5f * prog, lastPos);
+					DrawBrainSegments(spriteBatch, NPC, pos - Main.screenPosition, new Color(255, 100, 100), NPC.rotation, NPC.scale, 0.35f * prog, lastPos);
 				}
+			}
+
+			if (AttackTimer > 130 && AttackTimer < 160)
+			{
+				float rot = NPC.Center.DirectionTo(savedPos).ToRotation();
+				var tellTex = Assets.Misc.DirectionalBeam.Value;
+				var pos = Vector2.Lerp(NPC.Center, savedPos, 0.2f);
+				var target = new Rectangle((int)pos.X, (int)pos.Y, 900, 50);
+				target.Offset((-Main.screenPosition).ToPoint());
+
+				spriteBatch.Draw(tellTex, target, null, new Color(160, 30, 30, 0) * (float)Math.Sin((AttackTimer - 140) / 30f * 3.14f), rot, new Vector2(0, tellTex.Height / 2), 0, 0);
+
+				target = new Rectangle((int)pos.X, (int)pos.Y, 900, 250);
+				target.Offset((-Main.screenPosition).ToPoint());
+
+				spriteBatch.Draw(tellTex, target, null, new Color(60, 10, 10, 0) * (float)Math.Sin((AttackTimer - 140) / 30f * 3.14f), rot, new Vector2(0, tellTex.Height / 2), 0, 0);
+
 			}
 
 			if (AttackTimer > 160)
@@ -782,8 +799,24 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				for (int k = 0; k < 6; k++)
 				{
 					Vector2 pos = NPC.Center + Vector2.UnitX.RotatedBy(k / 6f * 6.28f + prog * 3.14f) * (1f - prog) * 128;
-					DrawBrainSegments(spriteBatch, NPC, pos - Main.screenPosition, new Color(255, 50, 70), NPC.rotation, NPC.scale, 0.5f * prog, lastPos);
+					DrawBrainSegments(spriteBatch, NPC, pos - Main.screenPosition, new Color(255, 50, 70), NPC.rotation, NPC.scale, 0.35f * prog, lastPos);
 				}
+			}
+
+			if (motionTime > 50 && motionTime < 80)
+			{
+				float rot = NPC.Center.DirectionTo(savedPos2).ToRotation();
+				var tellTex = Assets.Misc.DirectionalBeam.Value;
+				var pos = Vector2.Lerp(NPC.Center, savedPos2, 0.2f);
+				var target = new Rectangle((int)pos.X, (int)pos.Y, 900, 50);
+				target.Offset((-Main.screenPosition).ToPoint());
+
+				spriteBatch.Draw(tellTex, target, null, new Color(160, 30, 30, 0) * (float)Math.Sin((motionTime - 50) / 30f * 3.14f), rot, new Vector2(0, tellTex.Height / 2), 0, 0);
+
+				target = new Rectangle((int)pos.X, (int)pos.Y, 900, 250);
+				target.Offset((-Main.screenPosition).ToPoint());
+
+				spriteBatch.Draw(tellTex, target, null, new Color(60, 10, 10, 0) * (float)Math.Sin((motionTime - 50) / 30f * 3.14f), rot, new Vector2(0, tellTex.Height / 2), 0, 0);
 			}
 
 			if (motionTime > 90)
