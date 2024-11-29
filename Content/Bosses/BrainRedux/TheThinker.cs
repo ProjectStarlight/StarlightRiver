@@ -128,7 +128,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				if(DeadBrain.TheBrain.Phase >= DeadBrain.Phases.SecondPhase)
 				{
-					Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/JungleBloody");
+					Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/TheThinker");
 				}
 
 				if (DeadBrain.TheBrain.Phase == DeadBrain.Phases.SecondPhase)
@@ -184,6 +184,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				}
 				else
 				{
+					platformRadiusTarget = platformRadius;
 					lastRadius = -1;
 				}
 
@@ -203,6 +204,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				}
 				else
 				{
+					platformRotationTarget = platformRotation;
 					lastRotation = -1;
 				}
 
@@ -223,9 +225,20 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						if (platforms[k].ModNPC is BrainPlatform bp)
 						{
 							float rotAim = prog * 6.28f + platformRotationTarget;
-							float aimX = (float)Math.Cos(rot) * platformRadiusTarget * 0.95f;
-							float aimY = (float)Math.Sin(rot) * platformRadiusTarget;
+							float aimX = (float)Math.Cos(rotAim) * platformRadiusTarget * 0.95f;
+							float aimY = (float)Math.Sin(rotAim) * platformRadiusTarget;
 							bp.targetPos = home + new Vector2(aimX, aimY);
+
+							Main.NewText(rotTimer);
+							if (rotTimer <= rotTransitionTime)
+							{
+								float rotProg = rotTimer / (float)rotTransitionTime;
+								bp.glow = MathF.Min(1, MathF.Sin(rotProg * 3.14f) * 2);
+							}
+							else
+							{
+								bp.glow = 0;
+							}
 						}
 					}
 					else
@@ -245,7 +258,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				foreach (Player player in Main.ActivePlayers)
 				{
-					if (Vector2.Distance(player.Center, home) > hurtRadius && !player.immune)
+					var dist = Vector2.Distance(player.Center, home);
+
+					if (dist > hurtRadius && dist < (hurtRadius + 200) && !player.immune)
 					{
 						player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " was calcified"), 50, 0);
 						player.velocity += Vector2.Normalize(home - player.Center) * 28 * new Vector2(0.5f, 1f);
@@ -305,7 +320,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					{
 						float rot = k / 8f * 6.28f;
 						rot += Timer / 200f;
-						Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.One.RotatedBy(rot) * 3, ModContent.ProjectileType<BrainBolt>(), 10, 1, Main.myPlayer, 240, 0, 10);
+						Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.One.RotatedBy(rot) * 3, ModContent.ProjectileType<BrainBolt>(), DeadBrain.TheBrain.BrainBoltDamage, 1, Main.myPlayer, 240, 0, 10);
 					}
 				}
 

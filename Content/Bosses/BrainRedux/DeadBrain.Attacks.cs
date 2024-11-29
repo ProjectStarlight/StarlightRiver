@@ -52,7 +52,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				for(int k = 0; k < 12; k++)
 				{
-					Projectile.NewProjectile(null, thinker.Center, Vector2.UnitX.RotatedBy(k / 12f * 6.28f) * 4, ModContent.ProjectileType<BrainBolt>(), 25, 0, Main.myPlayer, 200);
+					Projectile.NewProjectile(null, thinker.Center, Vector2.UnitX.RotatedBy(k / 12f * 6.28f) * 4, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 0, Main.myPlayer, 200);
 				}
 			}
 
@@ -95,14 +95,14 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				{
 					for (int k = 0; k < 9; k++)
 					{
-						Projectile.NewProjectile(null, thinker.Center, Vector2.UnitX.RotatedBy(savedRot + k / 9f * 6.28f) * 0.5f, ModContent.ProjectileType<VeinSpear>(), 25, 0, Main.myPlayer);
+						Projectile.NewProjectile(null, thinker.Center, Vector2.UnitX.RotatedBy(savedRot + k / 9f * 6.28f) * 0.5f, ModContent.ProjectileType<VeinSpear>(), VeinSpearDamage, 0, Main.myPlayer);
 					}
 				}
 				else if (Main.expertMode)
 				{
 					for (int k = 0; k < 5; k++)
 					{
-						Projectile.NewProjectile(null, thinker.Center, Vector2.UnitX.RotatedBy(savedRot + k / 5f * 6.28f) * 0.5f, ModContent.ProjectileType<VeinSpear>(), 25, 0, Main.myPlayer);
+						Projectile.NewProjectile(null, thinker.Center, Vector2.UnitX.RotatedBy(savedRot + k / 5f * 6.28f) * 0.5f, ModContent.ProjectileType<VeinSpear>(), VeinSpearDamage, 0, Main.myPlayer);
 					}
 				}
 			}
@@ -111,7 +111,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				for (int k = 0; k < 9; k++)
 				{
-					Projectile.NewProjectile(null, thinker.Center, Vector2.UnitX.RotatedBy(savedRot + (k + 0.5f) / 9f * 6.28f) * 4, ModContent.ProjectileType<BrainBolt>(), 25, 0, Main.myPlayer, 200);
+					Projectile.NewProjectile(null, thinker.Center, Vector2.UnitX.RotatedBy(savedRot + (k + 0.5f) / 9f * 6.28f) * 4, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 0, Main.myPlayer, 200);
 				}
 			}
 
@@ -318,7 +318,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				neurisms.ForEach(n =>
 				{
-					Projectile.NewProjectile(null, n.Center, Vector2.Normalize(thinker.Center - n.Center) * Vector2.Distance(n.Center, thinker.Center) / 45f, ModContent.ProjectileType<BrainBolt>(), 25, 0, Main.myPlayer, 45);
+					Projectile.NewProjectile(null, n.Center, Vector2.Normalize(thinker.Center - n.Center) * Vector2.Distance(n.Center, thinker.Center) / 45f, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 0, Main.myPlayer, 45);
 				});
 			}
 
@@ -374,8 +374,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (AttackTimer == 60)
 			{
-				Projectile.NewProjectile(null, thinker.Center, Vector2.UnitY * 0.5f, ModContent.ProjectileType<VeinSpear>(), 25, 0, Main.myPlayer);
-				Projectile.NewProjectile(null, thinker.Center, Vector2.UnitY * -0.5f, ModContent.ProjectileType<VeinSpear>(), 25, 0, Main.myPlayer);
+				Projectile.NewProjectile(null, thinker.Center, Vector2.UnitY * 0.5f, ModContent.ProjectileType<VeinSpear>(), VeinSpearDamage, 0, Main.myPlayer);
+				Projectile.NewProjectile(null, thinker.Center, Vector2.UnitY * -0.5f, ModContent.ProjectileType<VeinSpear>(), VeinSpearDamage, 0, Main.myPlayer);
 			}
 
 			Vector2 relativePos = savedPos - thinker.Center;
@@ -418,7 +418,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			for(int k = 1; k < 6; k++)
 			{
 				if (AttackTimer == 120 + k * 10)
-					Projectile.NewProjectile(null, thinker.Center, Vector2.Normalize(NPC.Center - thinker.Center).RotatedBy((-0.5f + k / 6f) * 3.14f) * 0.5f, ModContent.ProjectileType<VeinSpear>(), 25, 0, Main.myPlayer);
+					Projectile.NewProjectile(null, thinker.Center, Vector2.Normalize(NPC.Center - thinker.Center).RotatedBy((-0.5f + k / 6f) * 3.14f) * 0.5f, ModContent.ProjectileType<VeinSpear>(), VeinSpearDamage, 0, Main.myPlayer);
 			}
 
 			int secondPartBase = 210 + neurisms.Count * 20;
@@ -439,8 +439,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				if (AttackTimer == secondPartBase + 60)
 				{
-					Projectile.NewProjectile(null, thinker.Center, Vector2.UnitX * 0.5f, ModContent.ProjectileType<VeinSpear>(), 25, 0, Main.myPlayer);
-					Projectile.NewProjectile(null, thinker.Center, Vector2.UnitX * -0.5f, ModContent.ProjectileType<VeinSpear>(), 25, 0, Main.myPlayer);
+					Projectile.NewProjectile(null, thinker.Center, Vector2.UnitX * 0.5f, ModContent.ProjectileType<VeinSpear>(), VeinSpearDamage, 0, Main.myPlayer);
+					Projectile.NewProjectile(null, thinker.Center, Vector2.UnitX * -0.5f, ModContent.ProjectileType<VeinSpear>(), VeinSpearDamage, 0, Main.myPlayer);
 				}
 
 				for (int k = 0; k < neurisms.Count; k += 2)
@@ -557,16 +557,16 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (Main.expertMode && AttackTimer > 60 && AttackTimer % 60 == 0)
 			{
-				Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, NPC.Center.DirectionTo(ThisThinker.home) * 8, ModContent.ProjectileType<BrainBolt>(), 50, 1, Main.myPlayer, 160, 0, 30);
+				Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, NPC.Center.DirectionTo(ThisThinker.home) * 8, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 160, 0, 30);
 
 				if (Main.masterMode)
 				{
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, NPC.Center.DirectionTo(ThisThinker.home).RotatedBy(0.5f) * 8, ModContent.ProjectileType<BrainBolt>(), 50, 1, Main.myPlayer, 160, 0, 30);
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, NPC.Center.DirectionTo(ThisThinker.home).RotatedBy(-0.5f) * 8, ModContent.ProjectileType<BrainBolt>(), 50, 1, Main.myPlayer, 160, 0, 30);
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, NPC.Center.DirectionTo(ThisThinker.home).RotatedBy(0.5f) * 8, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 160, 0, 30);
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, NPC.Center.DirectionTo(ThisThinker.home).RotatedBy(-0.5f) * 8, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 160, 0, 30);
 
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), thinker.Center, thinker.Center.DirectionTo(ThisThinker.home) * 8, ModContent.ProjectileType<BrainBolt>(), 50, 1, Main.myPlayer, 160, 0, 30);
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), thinker.Center, thinker.Center.DirectionTo(ThisThinker.home).RotatedBy(0.5f) * 8, ModContent.ProjectileType<BrainBolt>(), 50, 1, Main.myPlayer, 160, 0, 30);
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), thinker.Center, thinker.Center.DirectionTo(ThisThinker.home).RotatedBy(-0.5f) * 8, ModContent.ProjectileType<BrainBolt>(), 50, 1, Main.myPlayer, 160, 0, 30);
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), thinker.Center, thinker.Center.DirectionTo(ThisThinker.home) * 8, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 160, 0, 30);
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), thinker.Center, thinker.Center.DirectionTo(ThisThinker.home).RotatedBy(0.5f) * 8, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 160, 0, 30);
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), thinker.Center, thinker.Center.DirectionTo(ThisThinker.home).RotatedBy(-0.5f) * 8, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 160, 0, 30);
 				}
 			}
 
@@ -622,7 +622,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				ThisThinker.platformRadiusTarget = 400;
 				ThisThinker.platformRotationTarget -= 0.2f;
+			}
 
+			if (AttackTimer == 90)
+			{
 				int random = Main.rand.Next(10);
 				savedPos = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(random / 10f * 6.28f) * 590;
 
@@ -640,8 +643,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				NPC.Center = savedPos;
 			}
 
-			if (AttackTimer > 60 && AttackTimer <= 90)
-				opacity = (AttackTimer - 60) / 30f;
+			if (AttackTimer > 90 && AttackTimer <= 120)
+				opacity = (AttackTimer - 90) / 30f;
 
 			if (AttackTimer <= 120)
 			{

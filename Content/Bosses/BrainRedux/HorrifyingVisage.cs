@@ -11,6 +11,7 @@ using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Content.Bosses.BrainRedux
 {
+	[AutoloadBossHead]
 	internal class HorrifyingVisage : ModNPC
 	{
 		public VerletChain chain;
@@ -22,6 +23,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public ref float Decay => ref NPC.ai[2];
 
 		public override string Texture => AssetDirectory.Invisible;
+		public override string BossHeadTexture => AssetDirectory.BrainRedux + "DeadBrain_Head_Boss";
 
 		public override void SetStaticDefaults()
 		{

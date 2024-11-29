@@ -48,7 +48,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				{
 					if (Helpers.Helper.CheckLinearCollision(DeadBrain.TheBrain.thinker.Center, Projectile.Center, player.Hitbox, out Vector2 collision))
 					{
-						player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " played the idiot harp..."), 25, 0);
+						var mult = Main.masterMode ? 6 : Main.expertMode ? 4 : 1;
+						player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " played the idiot harp..."), Projectile.damage * mult, 0);
 					}
 				}
 			}

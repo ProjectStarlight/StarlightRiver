@@ -17,6 +17,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 	[AutoloadBossHead]
 	internal partial class DeadBrain : ModNPC
 	{
+		/// <summary>
+		/// The thinker NPC this brain is tied to
+		/// </summary>
 		public NPC thinker;
 
 		/// <summary>
@@ -68,6 +71,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		// shield shader inputs
 		public float shieldOpacity = 0f;
+
+		public int BrainBoltDamage => Helper.GetProjectileDamage(80, 60, 40);
+		public int VeinSpearDamage => Helper.GetProjectileDamage(200, 120, 80);
 
 		// Phase enum and state variables
 		public enum Phases : int

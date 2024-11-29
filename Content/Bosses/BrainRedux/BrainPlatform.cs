@@ -7,6 +7,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 	internal class BrainPlatform : MovingPlatform
 	{
 		public Vector2 targetPos;
+		public float glow = 0;
 
 		public override string Texture => "StarlightRiver/Assets/MagicPixel";
 
@@ -25,9 +26,13 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override void SafeAI()
 		{
-			Lighting.AddLight(NPC.Center, new Vector3(0.4f, 0.1f, 0.12f) * DeadBrain.ArenaOpacity);
-			Lighting.AddLight(NPC.Center + Vector2.UnitX * 80, new Vector3(0.4f, 0.1f, 0.12f) * DeadBrain.ArenaOpacity);
-			Lighting.AddLight(NPC.Center - Vector2.UnitX * 80, new Vector3(0.4f, 0.1f, 0.12f) * DeadBrain.ArenaOpacity);
+			var lightColor = new Vector3(0.4f, 0.1f, 0.12f) * DeadBrain.ArenaOpacity;
+
+			lightColor += new Vector3(0.8f, 0.4f, 0.4f) * glow * 0.1f;
+
+			Lighting.AddLight(NPC.Center, lightColor);
+			Lighting.AddLight(NPC.Center + Vector2.UnitX * 80, lightColor);
+			Lighting.AddLight(NPC.Center - Vector2.UnitX * 80, lightColor);
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -37,7 +42,21 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			Texture2D tex = Assets.Bosses.BrainRedux.BrainPlatform.Value;
 			LightingBufferRenderer.DrawWithLighting(NPC.position - Main.screenPosition, tex, tex.Bounds, Color.White * DeadBrain.ArenaOpacity, Vector2.One);
 
+			var glowTex = Assets.Bosses.BrainRedux.BrainPlatformGlow.Value;
+			var glowTex2 = Assets.Keys.GlowAlpha.Value;
+			var glowColor = new Color(255, 100, 100, 0) * glow * 0.25f;
+
+			var target = NPC.Hitbox;
+			target.Offset((-Main.screenPosition).ToPoint());
+			target.Height = tex.Height;
+
+			spriteBatch.Draw(glowTex2, target, null, glowColor, 0, default, 0, 0);
+
+			spriteBatch.Draw(glowTex, targetPos - NPC.Size / 2f - Main.screenPosition, glowColor);
+			target = new Rectangle((int)(targetPos.X - NPC.width / 2 - Main.screenPosition.X), (int)(targetPos.Y - NPC.height / 2 - Main.screenPosition.Y), tex.Width, tex.Height);
+			spriteBatch.Draw(glowTex2, target, null, glowColor, 0, default, 0, 0);
+
 			return false;
 		}
-	}
+	}	
 }
