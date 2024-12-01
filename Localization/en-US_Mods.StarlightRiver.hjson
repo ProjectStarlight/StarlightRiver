@@ -3592,6 +3592,8 @@ Items: {
 		DisplayName: The Thinker Relic
 		Tooltip: ""
 	}
+
+	ThinkerBossBag.DisplayName: Treasure Bag (The Thinker)
 }
 
 Tiles: {

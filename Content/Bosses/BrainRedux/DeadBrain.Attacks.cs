@@ -195,6 +195,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				NPC.Center += (targetPos - NPC.Center) * speed;
 			}
 
+			if (AttackTimer == 70)
+			{
+				SoundEngine.PlaySound(SoundID.Zombie62.WithPitchOffset(-0.5f), NPC.Center);
+			}
+
 			if (AttackTimer == 130)
 			{
 				savedPos = thinker.Center + relativePos;
@@ -719,6 +724,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				savedPos = NPC.Center;
 				savedPos2 = savedPos + savedPos.DirectionTo(Main.player[NPC.target].Center) * 500;
+
+				SoundEngine.PlaySound(SoundID.Zombie62.WithPitchOffset(-0.5f), NPC.Center);
 			}
 
 			if (motionTime > 30 && motionTime <= 60)
