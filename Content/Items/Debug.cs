@@ -117,6 +117,8 @@ namespace StarlightRiver.Content.Items
 		{
 			orig(self, gameTime);
 
+			return;
+
 			if (!betaActive)
 				return;
 
@@ -196,11 +198,11 @@ namespace StarlightRiver.Content.Items
 			player.armor[6].SetDefaults(ModContent.ItemType<WardedMail>());
 			player.armor[7].SetDefaults(ModContent.ItemType<TempleRune>());
 
-			player.inventory[0].SetDefaults(ItemID.Minishark);
+			player.inventory[0].SetDefaults(ItemID.Zenith);
 			player.inventory[1].SetDefaults(ItemID.DemonScythe);
 			player.inventory[2].SetDefaults(ModContent.ItemType<CoachGunUpgrade>());
 			player.inventory[3].SetDefaults(ModContent.ItemType<ThousandthDegree>());
-			player.inventory[9].SetDefaults(Item.type);
+			player.inventory[9].SetDefaults(ModContent.ItemType<BrainSpawner>());
 			player.inventory[10].SetDefaults(ItemID.HealingPotion);
 			player.inventory[10].stack = 9999;
 			player.inventory[11].SetDefaults(ItemID.ManaPotion);

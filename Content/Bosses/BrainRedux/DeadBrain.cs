@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using Terraria.GameContent.Bestiary;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
@@ -269,6 +270,15 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			NPC.life = life;
 		}
 
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
+			{
+				BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.TheCrimson,
+				new FlavorTextBestiaryInfoElement("The corpse of the Brain of Cthulhu, re-animated by it's strongest thoughts and wills.")
+			});
+		}
+
 		public override void AI()
 		{
 			lastPos = NPC.Center;
@@ -283,10 +293,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				Lighting.AddLight(NPC.Center, Phase > Phases.FirstPhase ? new Vector3(0.5f, 0.4f, 0.2f) : new Vector3(0.5f, 0.5f, 0.5f) * (shieldOpacity / 0.4f));
 
 			if (Phase == Phases.SecondPhase)
-			{
 				NPC.boss = true;
-				Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/JungleBloody");
-			}
 
 			// If we dont have a thinker, try to find one
 			if (thinker is null)
@@ -535,6 +542,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						opacity += 0.01f;
 
 					break;
+
+				case Phases.ReallyDead:
+					Death();
+					break;
 			}
 
 			hurtLastFrame = false;
@@ -590,14 +601,6 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			return false;
 		}
 
-		public override void OnKill()
-		{
-			for (int k = 0; k < 10; k++)
-			{
-				Main.BestiaryTracker.Kills.RegisterKill(thinker);
-			}
-		}
-
 		public override void FindFrame(int frameHeight)
 		{
 			if (Phase >= Phases.SecondPhase)
@@ -608,6 +611,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
 		{
+			// Prevent the health bar from being drawn in the clone phases
 			if (Phase == Phases.SecondPhase && (AttackState == 1 || AttackState == 3))
 				return false;
 
@@ -691,6 +695,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
+			if (NPC.IsABestiaryIconDummy)
+			{
+				DrawBrainSegments(spriteBatch, NPC, NPC.Center - screenPos, Color.White, 0, 1, 1);
+				return false;
+			}
+
 			DrawBrain(spriteBatch, drawColor, false);
 
 			return false;
@@ -702,7 +712,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				Texture2D tex = Assets.Bosses.BrainRedux.ShieldMap.Value;
 
-				Effect effect = Filters.Scene["BrainShield"].GetShader().Shader;
+				Effect effect = Terraria.Graphics.Effects.Filters.Scene["BrainShield"].GetShader().Shader;
 
 				effect.Parameters["time"]?.SetValue(Main.GameUpdateCount * 0.02f);
 				effect.Parameters["size"]?.SetValue(tex.Size() * 0.6f);
@@ -832,7 +842,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		/// /// <param name="repeats">The amount of times the flesh chain should repeat over the course of the trail</param>
 		private void DrawFleshyTrail(Trail trail, float repeats)
 		{
-			Effect effect = Filters.Scene["RepeatingChain"].GetShader().Shader;
+			Effect effect = Terraria.Graphics.Effects.Filters.Scene["RepeatingChain"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
@@ -869,7 +879,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		/// </summary>
 		public void DrawGraymatterChainTrails()
 		{
-			Effect effect = Filters.Scene["LightningTrail"].GetShader().Shader;
+			Effect effect = Terraria.Graphics.Effects.Filters.Scene["LightningTrail"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;

@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.GUI;
+﻿using StarlightRiver.Content.Dusts;
+using StarlightRiver.Content.GUI;
 using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Bosses.BrainRedux
@@ -17,6 +19,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			// Magnetize the players into the fight here
 			foreach (Player player in Main.player.Where(n => n.active && Vector2.Distance(n.Center, thinker.Center) < 1500))
 			{
+				player.immuneTime = 30;
+				player.immune = true;
+
 				player.position += (thinker.Center - player.Center) * 0.1f * (Vector2.Distance(player.Center, thinker.Center) / 1500f);
 			}
 
@@ -212,6 +217,76 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				Timer = 0;
 				AttackTimer = 0;
 			}
+		}
+
+		public void Death()
+		{
+			foreach (Player player in Main.ActivePlayers)
+			{
+				if (IsInArena(player))
+				{
+					player.immuneTime = 300;
+					player.immune = true;
+
+					player.position += (thinker.Center - player.Center) * 0.1f * (Vector2.Distance(player.Center, thinker.Center) / 1500f);
+				}
+			}
+
+			if (Timer == 1)
+			{
+				if (IsInArena(Main.LocalPlayer))
+				{
+					CameraSystem.MoveCameraOut(90, thinker.Center);
+					ZoomHandler.SetZoomAnimation(1.5f, 90);
+				}
+
+				ThisThinker.ExtraRadius = 0;
+			}
+
+			if (Timer == 30)
+			{
+				foreach(NPC npc in Main.ActiveNPCs)
+				{
+					if (npc.type == ModContent.NPCType<HallucinationBlock>())
+						npc.active = false;
+				}
+
+				foreach (Projectile proj in Main.ActiveProjectiles)
+				{
+					if (proj.type == ModContent.ProjectileType<HallucinationHazard>())
+						proj.active = false;
+				}
+			}
+
+			if (Timer == 300)
+			{
+				foreach (Player player in Main.ActivePlayers)
+				{
+					if (IsInArena(player))
+						player.Center = thinker.Center;
+				}
+
+				CameraSystem.ReturnCamera(180);
+				ZoomHandler.SetZoomAnimation(1f, 180);
+
+				for (int k = 0; k < 50; k++)
+				{
+					Dust.NewDustPerfect(thinker.Center, ModContent.DustType<GraymatterDust>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(9), 0, default, Main.rand.NextFloat(1f, 4f));
+				}
+
+				Helpers.Helper.PlayPitched("Impacts/AirstrikeImpact", 1, 0, thinker.Center);
+
+				ThisThinker.platforms.ForEach(n => n.active = false);
+
+				thinker.immortal = false;
+				thinker.dontTakeDamage = false;
+				thinker.SimpleStrikeNPC(999999, 0);
+
+				neurisms.ForEach(n => n.active = false);
+			}
+
+			if (Timer == 330)
+				NPC.active = false;
 		}
 	}
 }

@@ -1,6 +1,6 @@
 ﻿namespace StarlightRiver.Content.Tiles.Trophies
 {
-	class CeirosTrophy : ModTile
+	class ThinkerTrophy : ModTile
 	{
 		public override string Texture => AssetDirectory.TrophyTile + Name;
 
@@ -10,8 +10,8 @@
 		}
 	}
 
-	class CeirosTrophyItem : QuickTileItem
+	class ThinkerTrophyItem : QuickTileItem
 	{
-		public CeirosTrophyItem() : base("Ceiros Trophy", "", "CeirosTrophy", 1, AssetDirectory.TrophyTile) { }
+		public ThinkerTrophyItem() : base("Thinker Trophy", "", "ThinkerTrophy", 1, AssetDirectory.TrophyTile) { }
 	}
 }

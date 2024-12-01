@@ -1,12 +1,15 @@
 ﻿using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.GUI;
+using StarlightRiver.Content.Items.Crimson;
+using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Content.Tiles.Crimson;
 using StarlightRiver.Core.Systems.MusicFilterSystem;
 using System;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 
@@ -64,11 +67,6 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			GraymatterBiome.onDrawOverHallucinationMap += DrawShadedBody;
 		}
 
-		public override void SetStaticDefaults()
-		{
-			//ModContent.GetInstance<PixelationSystem>().RegisterScreenTarget("ThinkerArena", "StarlightRiver/Assets/Bosses/BrainRedux/ShellColors", RenderLayer.OverPlayers);
-		}
-
 		public override void SetDefaults()
 		{
 			NPC.noGravity = true;
@@ -101,7 +99,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
 			{
 				BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.TheCrimson,
-				new FlavorTextBestiaryInfoElement("")
+				new FlavorTextBestiaryInfoElement("The strongest thoughts and wills of the enigmatic Brain of Cthulhu have escaped after it's death, growing and forming it's own physical form. It desperately attempts to restore it's progenitor, while wielding it's progress against those that attempt to interfere.")
 			});
 		}
 
@@ -448,9 +446,23 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override bool CheckDead()
 		{
-			NPC.Center = home;
-			ThisBrain.Phase = DeadBrain.Phases.ReallyDead;
-			return false;
+			if (ThisBrain.Phase != DeadBrain.Phases.ReallyDead)
+			{
+				NPC.Center = home;
+
+				ThisBrain.Phase = DeadBrain.Phases.ReallyDead;
+				ThisBrain.Timer = 0;
+
+				NPC.immortal = true;
+				NPC.dontTakeDamage = true;
+				NPC.life = 1;
+				return false;
+			}
+			else
+			{
+				ResetArena();
+				return true;
+			}
 		}
 
 		public override bool CheckActive()
@@ -552,6 +564,26 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
 		{
 			return ThisBrain != null && ThisBrain.Phase == DeadBrain.Phases.TempDead;
+		}
+
+		public override void ModifyNPCLoot(NPCLoot npcLoot)
+		{
+			npcLoot.Add(ItemDropRule.BossBag(ModContent.ItemType<VitricBossBag>()));
+
+			npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<ImaginaryTissue>(), 1, 30, 40));
+			npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<DendriteItem>(), 1, 80, 120));
+
+			npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<Tiles.Trophies.ThinkerTrophyItem>(), 10, 1, 1));
+
+			npcLoot.Add(ItemDropRule.MasterModeCommonDrop(Mod.Find<ModItem>("ThinkerRelicItem").Type));
+		}
+
+		public override void OnKill()
+		{
+			for (int k = 0; k < 10; k++)
+			{
+				Main.BestiaryTracker.Kills.RegisterKill(brain);
+			}
 		}
 	}
 }

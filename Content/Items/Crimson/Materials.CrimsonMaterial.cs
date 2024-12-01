@@ -18,4 +18,11 @@ namespace StarlightRiver.Content.Items.Vitric
 			.Register();
 		}
 	}
+
+	public class ImaginaryTissue : QuickMaterial
+	{
+		public override string Texture => AssetDirectory.CrimsonItem + Name;
+
+		public ImaginaryTissue() : base("Imaginary Tissue", "As long as you focus on it, its real", 9999, 10000, 4) { }
+	}
 }

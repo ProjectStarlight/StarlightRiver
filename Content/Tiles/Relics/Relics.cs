@@ -17,6 +17,7 @@ namespace StarlightRiver.Content.Tiles.Relics
 		{
 			LoadRelic("Auroracle", "Auroracle Relic");
 			LoadRelic("Ceiros", "Ceiros Relic");
+			LoadRelic("Thinker", "The Thinker Relic");
 		}
 
 		private void LoadRelic(string name, string displayName)

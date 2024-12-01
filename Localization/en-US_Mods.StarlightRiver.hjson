@@ -3577,6 +3577,21 @@ Items: {
 		DisplayName: Pink Laser Pointer
 		Tooltip: ""
 	}
+
+	ImaginaryTissue: {
+		DisplayName: Imaginary Tissue
+		Tooltip: As long as you focus on it, its real
+	}
+
+	ThinkerTrophyItem: {
+		DisplayName: Thinker Trophy
+		Tooltip: ""
+	}
+
+	ThinkerRelicItem: {
+		DisplayName: The Thinker Relic
+		Tooltip: ""
+	}
 }
 
 Tiles: {
@@ -3773,6 +3788,7 @@ Tiles: {
 	VitricLargeCrystal.MapEntry: Vitric Large Crystal
 	VitricMediumCrystal.MapEntry: Vitric Medium Crystal
 	VitricSmallCrystal.MapEntry: Vitric Small Crystal
+	ThinkerTrophy.MapEntry: Trophy
 }
 
 Projectiles: {

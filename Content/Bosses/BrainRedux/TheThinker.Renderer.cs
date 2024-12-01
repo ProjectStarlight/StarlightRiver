@@ -105,6 +105,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
+			if (NPC.IsABestiaryIconDummy)
+			{
+				DrawBestiary(spriteBatch, screenPos);
+				return false;
+			}
+
 			DrawUnderShell();
 
 			if (active)
@@ -156,8 +162,34 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				sb.Draw(tex, thinker.NPC.Center - Main.screenPosition, null, Color.White, thinker.NPC.rotation, tex.Size() / 2f, thinker.NPC.scale, 0, 0);
 
 				sb.End();
-				sb.Begin(default, default, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				sb.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 			}
+		}
+
+		private void DrawBestiary(SpriteBatch sb, Vector2 screenPos)
+		{
+			bodyShader ??= Terraria.Graphics.Effects.Filters.Scene["ThinkerBody"].GetShader().Shader;
+
+			Texture2D glow = Assets.Keys.Glow.Value;
+
+			sb.Draw(glow, NPC.Center - screenPos, null, Color.Black * 0.5f, NPC.rotation, glow.Size() / 2f, 2.5f, 0, 0);
+
+			bodyShader.Parameters["u_resolution"].SetValue(Assets.Bosses.BrainRedux.Heart.Size());
+			bodyShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f);
+
+			bodyShader.Parameters["mainbody_t"].SetValue(Assets.Bosses.BrainRedux.Heart.Value);
+			bodyShader.Parameters["linemap_t"].SetValue(Assets.Bosses.BrainRedux.HeartLine.Value);
+			bodyShader.Parameters["noisemap_t"].SetValue(Assets.Noise.PerlinNoise.Value);
+			bodyShader.Parameters["overlay_t"].SetValue(Assets.Bosses.BrainRedux.HeartOver.Value);
+			bodyShader.Parameters["normal_t"].SetValue(Assets.Bosses.BrainRedux.HeartNormal.Value);
+
+			var oldScissor = Main.graphics.GraphicsDevice.ScissorRectangle;
+
+			bodyShader.CurrentTechnique.Passes[0].Apply();
+
+			Texture2D tex = Assets.Bosses.BrainRedux.Heart.Value;
+			sb.Draw(tex, NPC.Center - screenPos, null, Color.White, NPC.rotation, tex.Size() / 2f, 1, 0, 0);
+
 		}
 	}
 }
