@@ -81,6 +81,15 @@ namespace StarlightRiver.Content.Items.Crimson
 
 			return true;
 		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ModContent.ItemType<DendriteBar>(), 12);
+			recipe.AddIngredient(ModContent.ItemType<ImaginaryTissue>(), 6);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+		}
 	}
 
 	class MyelinSlash : ModProjectile

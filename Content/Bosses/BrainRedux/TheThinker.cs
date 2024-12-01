@@ -568,14 +568,16 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override void ModifyNPCLoot(NPCLoot npcLoot)
 		{
-			npcLoot.Add(ItemDropRule.BossBag(ModContent.ItemType<VitricBossBag>()));
-
-			npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<ImaginaryTissue>(), 1, 30, 40));
-			npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<DendriteItem>(), 1, 80, 120));
+			npcLoot.Add(ItemDropRule.BossBag(ModContent.ItemType<ThinkerBossBag>()));
 
 			npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<Tiles.Trophies.ThinkerTrophyItem>(), 10, 1, 1));
 
 			npcLoot.Add(ItemDropRule.MasterModeCommonDrop(Mod.Find<ModItem>("ThinkerRelicItem").Type));
+
+			LeadingConditionRule notExpertRule = new LeadingConditionRule(new Conditions.NotExpert());
+
+			notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<ImaginaryTissue>(), 1, 30, 40));
+			notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<DendriteItem>(), 1, 80, 120));
 		}
 
 		public override void OnKill()

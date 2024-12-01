@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Content.Projectiles;
 using System;
 using Terraria.DataStructures;
@@ -90,6 +91,16 @@ namespace StarlightRiver.Content.Items.Crimson
 			}
 
 			return true;
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ModContent.ItemType<DendriteBar>(), 10);
+			recipe.AddIngredient(ModContent.ItemType<ImaginaryTissue>(), 5);
+			recipe.AddIngredient(ItemID.TheRottedFork);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 
