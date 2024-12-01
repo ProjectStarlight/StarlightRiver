@@ -6,6 +6,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 {
 	internal class WeakPoint : ModNPC
 	{
+		public NPC thinker;
+
 		public override string Texture => AssetDirectory.Invisible;
 
 		public override void SetStaticDefaults()
@@ -58,14 +60,14 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override void AI()
 		{
-			NPC.realLife = DeadBrain.TheBrain?.thinker?.whoAmI ?? NPC.realLife;
+			NPC.realLife = thinker?.whoAmI ?? NPC.realLife;
 
 			float r = 0.89f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f) * 0.3f;
 			float g = 0.89f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f + 2f) * 0.3f;
 			float b = 0.89f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f + 4f) * 0.3f;
 			var color = new Color(r, g, b);
 
-			if (DeadBrain.TheBrain?.thinker?.life <= DeadBrain.TheBrain?.thinker?.lifeMax / 2f)
+			if (thinker?.life <= thinker?.lifeMax / 2f)
 			{
 				float t = Main.GameUpdateCount * 0.02f;
 				var heartBeat = Heartbeat(t * 1.5f) * 0.35f;
@@ -91,7 +93,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			float t = Main.GameUpdateCount * 0.02f;
 			float heartBeat = Heartbeat(t) * 0.25f;
 
-			if (DeadBrain.TheBrain?.thinker?.life <= DeadBrain.TheBrain?.thinker?.lifeMax / 2f)
+			if (thinker?.life <= thinker?.lifeMax / 2f)
 			{
 				heartBeat = Heartbeat(t * 1.5f) * 0.35f;
 				color = new Color(255, 60, 75) * (heartBeat + 0.65f);

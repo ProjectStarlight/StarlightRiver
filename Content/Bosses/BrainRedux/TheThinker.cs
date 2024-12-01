@@ -15,6 +15,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 	[AutoloadBossHead]
 	internal partial class TheThinker : ModNPC
 	{
+		/// <summary>
+		/// The brain this thinker is tied to, if any
+		/// </summary>
+		public NPC brain;
+
 		public static readonly List<TheThinker> toRender = [];
 		public static Effect bodyShader;
 
@@ -47,6 +52,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public int hurtRadius => Main.masterMode ? 700 : 750;
 
 		public override string Texture => AssetDirectory.BrainRedux + Name;
+
+		/// <summary>
+		/// Helper function to get the dead brain that this thinker is linked to
+		/// </summary>
+		private DeadBrain ThisBrain => brain?.ModNPC as DeadBrain;
 
 		public override void Load()
 		{
@@ -113,7 +123,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				BossBarOverlay.visible = true;
 			}
 
-			if (DeadBrain.TheBrain is null)
+			if (ThisBrain is null)
 			{
 				NPC.boss = false;
 				NPC.Center += (home - NPC.Center) * 0.02f;
@@ -126,14 +136,14 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				NPC.boss = true;
 				Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/TheThinker");
 
-				if(DeadBrain.TheBrain.Phase >= DeadBrain.Phases.SecondPhase)
+				if(ThisBrain.Phase >= DeadBrain.Phases.SecondPhase)
 				{
 					Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/TheThinker");
 				}
 
-				if (DeadBrain.TheBrain.Phase == DeadBrain.Phases.SecondPhase)
+				if (ThisBrain.Phase == DeadBrain.Phases.SecondPhase)
 				{
-					SwitchBossBar(DeadBrain.TheBrain.NPC);
+					SwitchBossBar(ThisBrain.NPC);
 				}
 				else
 				{
@@ -145,11 +155,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			Lighting.AddLight(NPC.Center, new Vector3(1f, 0.9f, 0.8f));
 
-			if (DeadBrain.ArenaOpacity > 0.1f)
+			if (ArenaOpacity > 0.1f)
 			{
 				for (int k = 0; k < 200; k++)
 				{
-					Lighting.AddLight(home + Vector2.UnitX.RotatedBy(k / 200f * 6.28f) * hurtRadius, new Vector3(0.4f, 0.1f, 0.12f) * DeadBrain.ArenaOpacity);
+					Lighting.AddLight(home + Vector2.UnitX.RotatedBy(k / 200f * 6.28f) * hurtRadius, new Vector3(0.4f, 0.1f, 0.12f) * ArenaOpacity);
 				}
 			}
 
@@ -161,7 +171,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					player.AddBuff(ModContent.BuffType<CrimsonHallucination>(), 10);
 			}
 
-			if (active && (DeadBrain.TheBrain is null || !DeadBrain.TheBrain.NPC.active))
+			if (active && (ThisBrain is null || !ThisBrain.NPC.active))
 			{
 				ResetArena();
 			}
@@ -247,14 +257,14 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			}
 
 			// Grow radius when first phase
-			if (DeadBrain.TheBrain != null && DeadBrain.TheBrain.Phase == DeadBrain.Phases.FirstPhase)
+			if (ThisBrain != null && ThisBrain.Phase == DeadBrain.Phases.FirstPhase)
 			{
 				if (ExtraRadius < 0)
 					ExtraRadius++;
 			}
 
 			// Spike logic
-			if (DeadBrain.TheBrain != null && DeadBrain.TheBrain.Phase >= DeadBrain.Phases.FirstPhase)
+			if (ThisBrain != null && ThisBrain.Phase >= DeadBrain.Phases.FirstPhase)
 			{
 				foreach (Player player in Main.ActivePlayers)
 				{
@@ -269,7 +279,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			}
 
 			// Attacks
-			if (DeadBrain.TheBrain != null && DeadBrain.TheBrain.Phase == DeadBrain.Phases.TempDead)
+			if (ThisBrain != null && ThisBrain.Phase == DeadBrain.Phases.TempDead)
 			{
 				NPC.immortal = false;
 
@@ -320,7 +330,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					{
 						float rot = k / 8f * 6.28f;
 						rot += Timer / 200f;
-						Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.One.RotatedBy(rot) * 3, ModContent.ProjectileType<BrainBolt>(), DeadBrain.TheBrain.BrainBoltDamage, 1, Main.myPlayer, 240, 0, 10);
+						Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.One.RotatedBy(rot) * 3, ModContent.ProjectileType<BrainBolt>(), ThisBrain.BrainBoltDamage, 1, Main.myPlayer, 240, 0, 10);
 					}
 				}
 
@@ -343,13 +353,13 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				if (Timer >= 1200)
 				{
-					DeadBrain.TheBrain.Phase = DeadBrain.Phases.SecondPhase;
-					DeadBrain.TheBrain.AttackState = -1;
-					DeadBrain.TheBrain.AttackTimer = 1;
-					DeadBrain.TheBrain.NPC.life = DeadBrain.TheBrain.NPC.lifeMax;
-					DeadBrain.TheBrain.NPC.noGravity = true;
-					DeadBrain.TheBrain.NPC.noTileCollide = true;
-					DeadBrain.TheBrain.NPC.dontTakeDamage = false;
+					ThisBrain.Phase = DeadBrain.Phases.SecondPhase;
+					ThisBrain.AttackState = -1;
+					ThisBrain.AttackTimer = 1;
+					ThisBrain.NPC.life = ThisBrain.NPC.lifeMax;
+					ThisBrain.NPC.noGravity = true;
+					ThisBrain.NPC.noTileCollide = true;
+					ThisBrain.NPC.dontTakeDamage = false;
 				}
 			}
 			else
@@ -428,7 +438,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override void ModifyIncomingHit(ref NPC.HitModifiers modifiers)
 		{
-			if (DeadBrain.TheBrain != null && DeadBrain.TheBrain.Phase == DeadBrain.Phases.TempDead)
+			if (ThisBrain != null && ThisBrain.Phase == DeadBrain.Phases.TempDead)
 				return;
 
 			modifiers.HideCombatText();
@@ -439,7 +449,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public override bool CheckDead()
 		{
 			NPC.Center = home;
-			ResetArena();
+			ThisBrain.Phase = DeadBrain.Phases.ReallyDead;
 			return false;
 		}
 
@@ -501,7 +511,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				Vector2 pos = home + Vector2.UnitX.RotatedBy(k / 12f * 6.28f) * 550;
 				int i = NPC.NewNPC(null, (int)pos.X, (int)pos.Y, ModContent.NPCType<BrainPlatform>());
 
-				Main.npc[i].Center = pos;
+				var newPlat = Main.npc[i];
+
+				newPlat.Center = pos;
+				(newPlat.ModNPC as BrainPlatform).thinker = NPC;
+
 				platforms.Add(Main.npc[i]);
 			}
 
@@ -537,7 +551,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
 		{
-			return DeadBrain.TheBrain != null && DeadBrain.TheBrain.Phase == DeadBrain.Phases.TempDead;
+			return ThisBrain != null && ThisBrain.Phase == DeadBrain.Phases.TempDead;
 		}
 	}
 }

@@ -139,8 +139,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (Timer >= 220)
 			{
-				if (arenaFade < 120)
-					arenaFade++;
+				if (ThisThinker.arenaFade < 120)
+					ThisThinker.arenaFade++;
 			}
 
 			if (Timer == 500)

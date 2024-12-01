@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public float opacity;
 
-		private float arenaFade;
+		public float arenaFade;
 
 		public List<int> attackQueue = [];
 
@@ -84,7 +84,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			FirstPhase = 2,
 			FirstToSecond = 3,
 			SecondPhase = 4,
-			TempDead = 5
+			TempDead = 5,
+			ReallyDead = 6
 		}
 
 		public ref float Timer => ref NPC.ai[0];
@@ -98,15 +99,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public ref float AttackTimer => ref NPC.ai[2];
 		public ref float AttackState => ref NPC.ai[3];
 
-
-
-		// Why is this tracked here and not on the thinker entity? I have no idea. TODO: Change that?
-		public static float ArenaOpacity => TheBrain?.arenaFade / 120f ?? 0f;
-
-		public TheThinker ThisThinker => thinker?.ModNPC as TheThinker;
-
-		// TODO: This really should get replaced with a more robust sytem to tie a brain to a thinker... 
-		public static DeadBrain TheBrain => Main.npc.FirstOrDefault(n => n != null && n.active && n.type == ModContent.NPCType<DeadBrain>())?.ModNPC as DeadBrain;
+		/// <summary>
+		/// Helper property to obtain the specific ModNPC instance of the linked thinker
+		/// </summary>
+		private TheThinker ThisThinker => thinker?.ModNPC as TheThinker;
 
 		public override string Texture => AssetDirectory.BrainRedux + "DeadBrain";
 
@@ -132,14 +128,20 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		private void DrawOverGraymatter(SpriteBatch obj)
 		{
-			if (TheBrain != null)
+			foreach (NPC npc in Main.ActiveNPCs)
 			{
-				//TODO: The weak point entity really sohuld make its own hook and draw this there...
-				TheBrain.weakpoint?.ModNPC?.PreDraw(obj, Main.screenPosition, Color.White);
+				if (npc.ModNPC is DeadBrain brain)
+				{
+					if (brain != null)
+					{
+						//TODO: The weak point entity really sohuld make its own hook and draw this there...
+						brain.weakpoint?.ModNPC?.PreDraw(obj, Main.screenPosition, Color.White);
 
-				// If doing a clones attack, highlight the real one
-				if (TheBrain.Phase == Phases.SecondPhase && (TheBrain.AttackState == 1 || TheBrain.AttackState == 3))
-					TheBrain.DrawBrain(obj, Lighting.GetColor((TheBrain.NPC.Center / 16).ToPoint()), true);
+						// If doing a clones attack, highlight the real one
+						if (brain.Phase == Phases.SecondPhase && (brain.AttackState == 1 || brain.AttackState == 3))
+							brain.DrawBrain(obj, Lighting.GetColor((brain.NPC.Center / 16).ToPoint()), true);
+					}
+				}
 			}
 		}
 
@@ -259,6 +261,14 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			InitChains();
 		}
 
+		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
+		{
+			int life = Main.masterMode ? 1600 : Main.expertMode ? 1250 : 1000;
+
+			NPC.lifeMax = life;
+			NPC.life = life;
+		}
+
 		public override void AI()
 		{
 			lastPos = NPC.Center;
@@ -304,6 +314,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				}
 			}
 
+			// If we found a thinker, link it
+			if (thinker != null)
+				ThisThinker.brain = NPC;
+
 			// Reset the endpoint for the attached chain to the thinker if its the default
 			if (attachedChainEndpoint == default)
 				attachedChainEndpoint = thinker.Center;
@@ -333,13 +347,38 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 					for (int k = 0; k < 10; k++)
 					{
+						// Spawn minion
 						int i = NPC.NewNPC(null, (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<Neurysm>(), 0, 1, 60);
 						neurisms.Add(Main.npc[i]);
+
+						// Link minion
+						var neurism = Main.npc[i].ModNPC as Neurysm;
+
+						// Safety check, if its not a minion go back and try again
+						if (neurism is null)
+						{
+							Main.npc[i].active = false;
+							k--;
+							continue;
+						}
+						else
+						{
+							// Link
+							neurism.brain = NPC;
+						}
 					}
 
+					// Spawn the weakpoint NPC
 					int weakpointIndex = NPC.NewNPC(null, (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<WeakPoint>(), 0);
 					weakpoint = Main.npc[weakpointIndex];
 
+					if(weakpoint.ModNPC is WeakPoint wp)
+					{
+						// Link the weakpoint to the appropriate thinker
+						wp.thinker = thinker;
+					}
+
+					// populate the attack queue
 					attackQueue.Add(Main.rand.Next(5));
 
 					for (int k = 0; k < 3; k++)
@@ -351,16 +390,6 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 						attackQueue.Add(next);
 					}
-
-					int life = Main.masterMode ? 1600 : Main.expertMode ? 1250 : 1000;
-
-					NPC.lifeMax = life;
-					NPC.life = life;
-
-					//int barrier = Main.masterMode ? 400 : Main.expertMode ? 200 : 100;
-
-					//NPC.GetGlobalNPC<BarrierNPC>().maxBarrier = barrier;
-					//NPC.GetGlobalNPC<BarrierNPC>().barrier = barrier;
 
 					Timer = 0;
 					Phase = Phases.SpawnAnim;

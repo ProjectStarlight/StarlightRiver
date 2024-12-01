@@ -6,12 +6,25 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 {
 	internal class Neurysm : ModNPC
 	{
+		/// <summary>
+		/// The dead brain this minion is attached to
+		/// </summary>
+		public NPC brain;
+
 		public float opacity;
 		public float tellDirection;
 		public float tellLen;
 		public float hurtTime;
 
-		public bool AlternateAppearance => (DeadBrain.TheBrain?.Phase ?? 0) >= DeadBrain.Phases.SecondPhase;
+		/// <summary>
+		/// If this minion should use colored or red trails
+		/// </summary>
+		public bool AlternateAppearance => (ThisBrain?.Phase ?? 0) >= DeadBrain.Phases.SecondPhase;
+
+		/// <summary>
+		/// Helper property to get the ModNPC instance of the tied brain
+		/// </summary>
+		private DeadBrain ThisBrain => brain?.ModNPC as DeadBrain;
 
 		public ref float Timer => ref NPC.ai[0];
 		public ref float State => ref NPC.ai[1];
@@ -74,16 +87,6 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			return opacity > 0.5f ? null : false;
 		}
 
-		public override void OnHitByProjectile(Projectile projectile, NPC.HitInfo hit, int damageDone)
-		{
-
-		}
-
-		public override void OnHitByItem(Player player, Item item, NPC.HitInfo hit, int damageDone)
-		{
-
-		}
-
 		public override void ModifyIncomingHit(ref NPC.HitModifiers modifiers)
 		{
 			modifiers.FinalDamage *= 0;
@@ -111,7 +114,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			else if (State == 2)
 				opacity = prog;
 
-			if (DeadBrain.TheBrain is null)
+			if (ThisBrain is null)
 			{
 				State = 1;
 
@@ -185,9 +188,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				}
 			}
 
-			if (hurtTime > 0 && DeadBrain.TheBrain != null && DeadBrain.TheBrain.NPC.active)
+			if (hurtTime > 0 && ThisBrain != null && ThisBrain.NPC.active)
 			{
-				NPC brain = DeadBrain.TheBrain.NPC;
+				NPC brain = ThisBrain.NPC;
 
 				float len = Vector2.Distance(NPC.Center, brain.Center);
 				float rot = NPC.Center.DirectionTo(brain.Center).ToRotation();

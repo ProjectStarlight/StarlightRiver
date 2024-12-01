@@ -6,8 +6,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 {
 	internal class BrainPlatform : MovingPlatform
 	{
+		public NPC thinker;
 		public Vector2 targetPos;
 		public float glow = 0;
+
+		public TheThinker ThisThinker => thinker?.ModNPC as TheThinker;
 
 		public override string Texture => "StarlightRiver/Assets/MagicPixel";
 
@@ -26,7 +29,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override void SafeAI()
 		{
-			var lightColor = new Vector3(0.4f, 0.1f, 0.12f) * DeadBrain.ArenaOpacity;
+			var lightColor = new Vector3(0.4f, 0.1f, 0.12f) * ThisThinker.ArenaOpacity;
 
 			lightColor += new Vector3(0.8f, 0.4f, 0.4f) * glow * 0.1f;
 
@@ -40,7 +43,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			float dist = Vector2.Distance(NPC.Center, targetPos);
 
 			Texture2D tex = Assets.Bosses.BrainRedux.BrainPlatform.Value;
-			LightingBufferRenderer.DrawWithLighting(NPC.position - Main.screenPosition, tex, tex.Bounds, Color.White * DeadBrain.ArenaOpacity, Vector2.One);
+			LightingBufferRenderer.DrawWithLighting(NPC.position - Main.screenPosition, tex, tex.Bounds, Color.White * ThisThinker.ArenaOpacity, Vector2.One);
 
 			var glowTex = Assets.Bosses.BrainRedux.BrainPlatformGlow.Value;
 			var glowTex2 = Assets.Keys.GlowAlpha.Value;
