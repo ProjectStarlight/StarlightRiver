@@ -392,7 +392,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				if (AttackTimer == 60 + k * 20)
 				{
-					neurisms[k].Center = oppPos + Vector2.UnitX * (-300 + lerp * 600) + Vector2.UnitY * 750;
+					neurisms[k].Center = NPC.Center + Vector2.UnitX * (-300 + lerp * 600) + Vector2.UnitY * 750;
 					(neurisms[k].ModNPC as Neurysm).State = 2;
 					(neurisms[k].ModNPC as Neurysm).Timer = 0;
 					(neurisms[k].ModNPC as Neurysm).TellTime = 30;
@@ -402,8 +402,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				if (AttackTimer >= 90 + k * 20 && AttackTimer <= 210 + k * 20)
 				{
-					Vector2 start = oppPos + Vector2.UnitX * (-300 + lerp * 600) + Vector2.UnitY * 750;
-					Vector2 target = oppPos + Vector2.UnitX * (-300 + lerp * 600) + Vector2.UnitY * -750;
+					Vector2 start = NPC.Center + Vector2.UnitX * (-300 + lerp * 600) + Vector2.UnitY * 750;
+					Vector2 target = NPC.Center + Vector2.UnitX * (-300 + lerp * 600) + Vector2.UnitY * -750;
 
 					float prog = Helpers.Helper.BezierEase((AttackTimer - (90 + k * 20)) / 120f);
 
@@ -423,7 +423,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			for(int k = 1; k < 6; k++)
 			{
 				if (AttackTimer == 120 + k * 10)
-					Projectile.NewProjectile(null, thinker.Center, Vector2.Normalize(NPC.Center - thinker.Center).RotatedBy((-0.5f + k / 6f) * 3.14f) * 0.5f, ModContent.ProjectileType<VeinSpear>(), VeinSpearDamage, 0, Main.myPlayer, thinker.whoAmI);
+					Projectile.NewProjectile(null, thinker.Center, Vector2.Normalize(oppPos - thinker.Center).RotatedBy((-0.5f + k / 6f) * 3.14f) * 0.5f, ModContent.ProjectileType<VeinSpear>(), VeinSpearDamage, 0, Main.myPlayer, thinker.whoAmI);
 			}
 
 			int secondPartBase = 210 + neurisms.Count * 20;
@@ -439,7 +439,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				if (AttackTimer < secondPartBase + 60)
 				{
 					// Extra offset here since being straight above/below looks weird
-					NPC.Center += ((savedPos + Vector2.UnitX * 200) - NPC.Center) * 0.08f;
+					NPC.Center += (savedPos + Vector2.UnitX * 200 - NPC.Center) * 0.08f;
 				}
 
 				if (AttackTimer == secondPartBase + 60)
@@ -454,7 +454,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 					if (AttackTimer == secondPartBase + 60 + k * 20)
 					{
-						neurisms[k].Center = oppPos + Vector2.UnitY * (-300 + lerp * 600) + Vector2.UnitX * 750;
+						neurisms[k].Center = NPC.Center + Vector2.UnitY * (-300 + lerp * 600) + Vector2.UnitX * 750;
 						(neurisms[k].ModNPC as Neurysm).State = 2;
 						(neurisms[k].ModNPC as Neurysm).Timer = 0;
 						(neurisms[k].ModNPC as Neurysm).TellTime = 30;
@@ -464,8 +464,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 					if (AttackTimer >= secondPartBase + 90 + k * 20 && AttackTimer <= secondPartBase + 210 + k * 20)
 					{
-						Vector2 start = oppPos + Vector2.UnitY * (-300 + lerp * 600) + Vector2.UnitX * 750;
-						Vector2 target = oppPos + Vector2.UnitY * (-300 + lerp * 600) + Vector2.UnitX * -750;
+						Vector2 start = NPC.Center + Vector2.UnitY * (-300 + lerp * 600) + Vector2.UnitX * 750;
+						Vector2 target = NPC.Center + Vector2.UnitY * (-300 + lerp * 600) + Vector2.UnitX * -750;
 
 						float prog = Helpers.Helper.BezierEase((AttackTimer - (secondPartBase + 90 + k * 20)) / 120f);
 
@@ -486,6 +486,24 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				{
 					if (AttackTimer == secondPartBase + 120 + k * 10)
 						Projectile.NewProjectile(null, thinker.Center, Vector2.Normalize(savedPos - thinker.Center).RotatedBy((-0.5f + k / 6f) * 3.14f) * 0.5f, ModContent.ProjectileType<VeinSpear>(), 25, 0, Main.myPlayer, thinker.whoAmI);
+				}
+
+				if (AttackTimer == secondPartBase + 60)
+				{
+					for (int k = 0; k <= 7; k++)
+						Projectile.NewProjectile(null, thinker.Center, Vector2.Normalize(savedPos - thinker.Center).RotatedBy(1.57f + k / 7f * 3.14f) * 2.5f, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 420, 0, 20);
+				}
+
+				if (AttackTimer == secondPartBase + 120)
+				{
+					for (int k = 0; k <= 4; k++)
+						Projectile.NewProjectile(null, thinker.Center, Vector2.Normalize(savedPos - thinker.Center).RotatedBy(1.57f + k / 4f * 3.14f) * 2.5f, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 420, 0, 20);
+				}
+
+				if (AttackTimer == secondPartBase + 180)
+				{
+					for (int k = 0; k <= 7; k++)
+						Projectile.NewProjectile(null, thinker.Center, Vector2.Normalize(savedPos - thinker.Center).RotatedBy(1.57f + k / 7f * 3.14f) * 2.5f, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 420, 0, 20);
 				}
 			}
 
