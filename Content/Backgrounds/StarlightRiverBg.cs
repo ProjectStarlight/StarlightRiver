@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Backgrounds
 			starsMap = new(DrawMap, CheckIsActive, 1f);
 			stars = new("StarlightRiver/Assets/Misc/StarParticle", UpdateStars, ParticleSystem.AnchorOptions.Screen);
 
-			Screenspace.DrawScreenspaceEvent += DrawOverlay;
+			Screenspace.passes.Add(new(1, DrawOverlay, CheckIsActive));
 		}
 
 		public override void Unload()
@@ -67,8 +67,12 @@ namespace StarlightRiver.Content.Backgrounds
 		/// <param name="starsMap"></param>
 		/// <param name="starsTarget"></param>
 		public static event DrawOverlayDelegate DrawOverlayEvent;
-		public void DrawOverlay(SpriteBatch spriteBatch)
+		public void DrawOverlay(SpriteBatch spriteBatch, Texture2D screen)
 		{
+			spriteBatch.Begin();
+			spriteBatch.Draw(screen, Vector2.Zero, Color.White);
+			spriteBatch.End();
+
 			if (DrawOverlayEvent != null)
 			{
 				foreach (DrawOverlayDelegate del in DrawOverlayEvent.GetInvocationList())

@@ -4162,6 +4162,11 @@ Biomes: {
 		DisplayName: Evasion Shrine Biome
 		TownNPCDialogueName: the Evasion Shrine Biome
 	}
+
+	BossRushBiome: {
+		DisplayName: Boss rush
+		TownNPCDialogueName: the Boss Rush Biome
+	}
 }
 
 NPCs: {

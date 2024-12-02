@@ -10,6 +10,7 @@ using System.Linq;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ModLoader.IO;
+using Terraria.WorldBuilding;
 
 namespace StarlightRiver.Content.Biomes
 {
@@ -52,7 +53,7 @@ namespace StarlightRiver.Content.Biomes
 			hallucinationMap = new(DrawHallucinationMap, () => IsBiomeActive(Main.LocalPlayer), 1);
 			overHallucinationMap = new(DrawOverHallucinationMap, () => IsBiomeActive(Main.LocalPlayer), 1.1f);
 
-			Screenspace.DrawScreenspaceEvent += DrawAuras;
+			Screenspace.passes.Add(new(0, DrawAuras, () => IsBiomeActive(Main.LocalPlayer)));
 		}
 
 		public override bool IsBiomeActive(Player player)
@@ -118,14 +119,14 @@ namespace StarlightRiver.Content.Biomes
 			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default);
 		}
 
-		private void DrawAuras(SpriteBatch spriteBatch)
+		private void DrawAuras(SpriteBatch spriteBatch, Texture2D screen)
 		{
 			if (IsBiomeActive(Main.LocalPlayer))
 			{
 				Effect shader = Filters.Scene["GrayMatter"].GetShader().Shader;
 				Texture2D noise = ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/SwirlyNoiseLooping").Value;
 
-				shader.Parameters["background"].SetValue(Main.screenTarget);
+				shader.Parameters["background"].SetValue(screen);
 				shader.Parameters["map"].SetValue(hallucinationMap.RenderTarget);
 				shader.Parameters["noise"].SetValue(noise);
 				shader.Parameters["over"].SetValue(overHallucinationMap.RenderTarget);
@@ -138,7 +139,7 @@ namespace StarlightRiver.Content.Biomes
 
 				spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default, shader);
 
-				spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+				spriteBatch.Draw(screen, Vector2.Zero, Color.White);
 
 				spriteBatch.End();
 			}

@@ -117,8 +117,6 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			Texture2D texOver = Assets.GUI.SmallBar1.Value;
 			float progress = (NPC.life - NPC.lifeMax / 2f) / (NPC.lifeMax / 2f);
 
-			Main.NewText($"{progress}");
-
 			int w = (int)(progress * texOver.Width - 4);
 
 			if (w < 2)

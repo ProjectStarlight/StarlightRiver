@@ -3,6 +3,7 @@ using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Crimson;
 using StarlightRiver.Content.Items.Vitric;
+using StarlightRiver.Content.PersistentData;
 using StarlightRiver.Content.Tiles.Crimson;
 using StarlightRiver.Core.Systems.MusicFilterSystem;
 using System;
@@ -237,7 +238,6 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 							float aimY = (float)Math.Sin(rotAim) * platformRadiusTarget;
 							bp.targetPos = home + new Vector2(aimX, aimY);
 
-							Main.NewText(rotTimer);
 							if (rotTimer <= rotTransitionTime)
 							{
 								float rotProg = rotTimer / (float)rotTransitionTime;
@@ -460,6 +460,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			}
 			else
 			{
+				BossRushDataStore.DefeatBoss(BossrushUnlockFlag.Thinker);
 				ResetArena();
 				return true;
 			}

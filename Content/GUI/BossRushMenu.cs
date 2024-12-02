@@ -58,6 +58,7 @@ namespace StarlightRiver.Content.GUI
 			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Auroracle, "Auroracle", "StarlightRiver/Assets/Bosses/SquidBoss/SquidBoss_Head_Boss", 40));
 			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Glassweaver, "Glassweaver", "StarlightRiver/Assets/Bosses/GlassMiniboss/Glassweaver_Head_Boss", 70));
 			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Ceiros, "Ceiros", "StarlightRiver/Assets/Bosses/VitricBoss/VitricBoss_Head_Boss", 100));
+			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Thinker, "The Thinker", "StarlightRiver/Assets/Bosses/BrainRedux/TheThinker_Head_Boss", 130));
 
 			Append(button);
 		}
@@ -151,7 +152,7 @@ namespace StarlightRiver.Content.GUI
 
 			Utils.DrawSplicedPanel(spriteBatch, background, dims.X, dims.Y, dims.Width, dims.Height, 10, 10, 10, 10, color);
 			spriteBatch.Draw(icon, dims.TopLeft() + new Vector2(10, 10), null, (Unlocked ? Color.White : Color.Black) * opacity, 0, icon.Size() / 2f, 1, 0, 0);
-			Utils.DrawBorderString(spriteBatch, Unlocked ? name : "???", dims.TopLeft() + new Vector2(icon.Width + 10, 4), (Unlocked ? Color.White : Color.Gray) * opacity, 0.8f);
+			Utils.DrawBorderString(spriteBatch, Unlocked ? name : "???", dims.TopLeft() + new Vector2(icon.Width + 2, 4), (Unlocked ? Color.White : Color.Gray) * opacity, 0.8f);
 		}
 	}
 
