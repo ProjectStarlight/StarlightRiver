@@ -89,7 +89,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				float prog = (Timer - 90) / 30f;
 				NPC.scale = 1f + (float)Math.Sin(prog * 3.14f) * 0.25f;
 
-				GrayAuraRadius += 3f;
+				GrayAuraRadius += 2f;
 
 				for (int k = 0; k < 5; k++)
 				{
