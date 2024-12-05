@@ -24,36 +24,41 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		/// </summary>
 		public NPC brain;
 
+		/// <summary>
+		/// List of entities to render by the rendering hook, since it needs to feed into the graymatter screen map
+		/// </summary>
 		public static readonly List<TheThinker> toRender = [];
 		public static Effect bodyShader;
 
 		public bool active = false;
 		public Vector2 home;
 
+		// Fields related to the platforms movement
 		public float platformRadius = 550;
 		public float platformRotation = 0;
 
 		public float platformRadiusTarget = 550;
 		public float platformRotationTarget = 0;
 
-		public int radTransitionTime = 60;
-		public int rotTransitionTime = 60;
+		public int platformRadiusTransitionTime = 60;
+		public int platformRotationTransitionTime = 60;
 
-		private float lastRadius = -1;
-		private float lastRotation = -1;
+		private float lastPlatformRadius = -1;
+		private float lastPlatformRotation = -1;
 
-		private int radTimer;
-		private int rotTimer;
+		private int platformRadiusTimer;
+		private int platformRotationTimer;
 
 		public List<NPC> platforms = [];
 
-		public ref float ExtraRadius => ref NPC.ai[0];
-
+		public ref float ExtraGrayAuraRadius => ref NPC.ai[0];
 		public ref float Timer => ref NPC.ai[1];
 		public ref float AttackTimer => ref NPC.ai[2];
 		public ref float AttackState => ref NPC.ai[3];
 
-		public int hurtRadius => Main.masterMode ? 700 : 750;
+		public bool Open => StarlightWorld.HasFlag(WorldFlags.ThinkerBossOpen);
+
+		public int ArenaRadius => Main.masterMode ? 700 : 750;
 
 		public override string Texture => AssetDirectory.BrainRedux + Name;
 
@@ -104,6 +109,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			});
 		}
 
+		/// <summary>
+		/// Attempts to switch the boss bar to the specified entity, for when we need to swap between this and the brain
+		/// </summary>
+		/// <param name="npc">The entity to track</param>
 		public void SwitchBossBar(NPC npc)
 		{
 			Main.BigBossProgressBar.TryTracking(npc.whoAmI);
@@ -115,20 +124,22 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (home == default)
 				home = NPC.Center;
 
-			if (!BossBarOverlay.visible && Main.netMode != NetmodeID.Server)
-			{
-				//in case the player joined late or something for the hp bar
-				BossBarOverlay.SetTracked(NPC);
-				BossBarOverlay.visible = true;
-			}
+			if (Open)
+				Lighting.AddLight(NPC.Center, new Vector3(1f, 0.9f, 0.8f));
 
 			if (ThisBrain is null)
 			{
 				NPC.boss = false;
+				Music = default;
 				NPC.Center += (home - NPC.Center) * 0.02f;
 
-				if (ExtraRadius > -140)
-					ExtraRadius--;
+				if (ExtraGrayAuraRadius > -140)
+				{
+					GraymatterBiome.forceGrayMatter = true;
+					ExtraGrayAuraRadius--;
+				}
+
+				return;
 			}
 			else
 			{
@@ -152,13 +163,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			GraymatterBiome.forceGrayMatter = true;
 
-			Lighting.AddLight(NPC.Center, new Vector3(1f, 0.9f, 0.8f));
-
 			if (ArenaOpacity > 0.1f)
 			{
 				for (int k = 0; k < 200; k++)
 				{
-					Lighting.AddLight(home + Vector2.UnitX.RotatedBy(k / 200f * 6.28f) * hurtRadius, new Vector3(0.4f, 0.1f, 0.12f) * ArenaOpacity);
+					Lighting.AddLight(home + Vector2.UnitX.RotatedBy(k / 200f * 6.28f) * ArenaRadius, new Vector3(0.4f, 0.1f, 0.12f) * ArenaOpacity);
 				}
 			}
 
@@ -166,7 +175,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				Player player = Main.player[k];
 
-				if (Vector2.DistanceSquared(player.Center, NPC.Center) <= Math.Pow(140 + ExtraRadius, 2))
+				if (Vector2.DistanceSquared(player.Center, NPC.Center) <= Math.Pow(140 + ExtraGrayAuraRadius, 2))
 					player.AddBuff(ModContent.BuffType<CrimsonHallucination>(), 10);
 			}
 
@@ -178,43 +187,43 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (platforms.Count > 0)
 			{
 				// Radius ease
-				if (lastRadius == -1)
+				if (lastPlatformRadius == -1)
 				{
 					if (platformRadius != platformRadiusTarget)
 					{
-						lastRadius = platformRadius;
-						radTimer = 0;
+						lastPlatformRadius = platformRadius;
+						platformRadiusTimer = 0;
 					}
 				}
-				else if (radTimer <= radTransitionTime)
+				else if (platformRadiusTimer <= platformRadiusTransitionTime)
 				{
-					radTimer++;
-					platformRadius = lastRadius + (platformRadiusTarget - lastRadius) * Helpers.Helper.BezierEase(radTimer / (float)radTransitionTime);
+					platformRadiusTimer++;
+					platformRadius = lastPlatformRadius + (platformRadiusTarget - lastPlatformRadius) * Helpers.Helper.BezierEase(platformRadiusTimer / (float)platformRadiusTransitionTime);
 				}
 				else
 				{
 					platformRadiusTarget = platformRadius;
-					lastRadius = -1;
+					lastPlatformRadius = -1;
 				}
 
 				// Rotation ease
-				if (lastRotation == -1)
+				if (lastPlatformRotation == -1)
 				{
 					if (platformRotation != platformRotationTarget)
 					{
-						lastRotation = platformRotation;
-						rotTimer = 0;
+						lastPlatformRotation = platformRotation;
+						platformRotationTimer = 0;
 					}
 				}
-				else if (rotTimer <= rotTransitionTime)
+				else if (platformRotationTimer <= platformRotationTransitionTime)
 				{
-					rotTimer++;
-					platformRotation = lastRotation + (platformRotationTarget - lastRotation) * Helpers.Helper.BezierEase(rotTimer / (float)rotTransitionTime);
+					platformRotationTimer++;
+					platformRotation = lastPlatformRotation + (platformRotationTarget - lastPlatformRotation) * Helpers.Helper.BezierEase(platformRotationTimer / (float)platformRotationTransitionTime);
 				}
 				else
 				{
 					platformRotationTarget = platformRotation;
-					lastRotation = -1;
+					lastPlatformRotation = -1;
 				}
 
 				// Set final positions for this frame
@@ -238,9 +247,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 							float aimY = (float)Math.Sin(rotAim) * platformRadiusTarget;
 							bp.targetPos = home + new Vector2(aimX, aimY);
 
-							if (rotTimer <= rotTransitionTime)
+							if (platformRotationTimer <= platformRotationTransitionTime)
 							{
-								float rotProg = rotTimer / (float)rotTransitionTime;
+								float rotProg = platformRotationTimer / (float)platformRotationTransitionTime;
 								bp.glow = MathF.Min(1, MathF.Sin(rotProg * 3.14f) * 2);
 							}
 							else
@@ -257,8 +266,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			// Grow radius when first phase
 			if (ThisBrain != null && ThisBrain.Phase == DeadBrain.Phases.FirstPhase)
 			{
-				if (ExtraRadius < 0)
-					ExtraRadius++;
+				if (ExtraGrayAuraRadius < 0)
+					ExtraGrayAuraRadius++;
 			}
 
 			// Spike logic
@@ -268,7 +277,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				{
 					var dist = Vector2.Distance(player.Center, home);
 
-					if (dist > hurtRadius && dist < (hurtRadius + 200) && !player.immune)
+					if (dist > ArenaRadius && dist < (ArenaRadius + 200) && !player.immune)
 					{
 						player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " was calcified"), 50, 0);
 						player.velocity += Vector2.Normalize(home - player.Center) * 28 * new Vector2(0.5f, 1f);
@@ -289,7 +298,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				if (Timer == 1)
 				{
 					platformRadiusTarget = 1000;
-					radTransitionTime = 240;
+					platformRadiusTransitionTime = 240;
 				}
 
 				if (Timer < 60)
@@ -305,8 +314,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					MusicFilterSystem.globalPitchModifier = -0.5f + (Timer - 1100) / 100f * 0.5f;
 				}
 
-				if (ExtraRadius < 600 && Timer <= 1140)
-					ExtraRadius += 4f;
+				if (ExtraGrayAuraRadius < 600 && Timer <= 1140)
+					ExtraGrayAuraRadius += 4f;
 
 				if (Timer == 1)
 				{
@@ -333,12 +342,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				}
 
 				if (Timer > 1140)
-					ExtraRadius -= 10;
+					ExtraGrayAuraRadius -= 10;
 
 				if (Timer == 1200)
 				{
 					platformRadiusTarget = 400;
-					radTransitionTime = 60;
+					platformRadiusTransitionTime = 60;
 
 					foreach(NPC npc in Main.ActiveNPCs)
 					{
@@ -434,6 +443,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			}
 		}
 
+		public override void OnHitByProjectile(Projectile projectile, NPC.HitInfo hit, int damageDone)
+		{
+			base.OnHitByProjectile(projectile, hit, damageDone);
+		}
+
 		public override void ModifyIncomingHit(ref NPC.HitModifiers modifiers)
 		{
 			if (ThisBrain != null && ThisBrain.Phase == DeadBrain.Phases.TempDead)
@@ -467,11 +481,6 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		}
 
 		public override bool CheckActive()
-		{
-			return false;
-		}
-
-		public override bool NeedSaving()
 		{
 			return false;
 		}

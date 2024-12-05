@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (Timer == 1)
 			{
-				NPC.Center = thinker.Center + Vector2.UnitY.RotatedBy(-0.5f) * ThisThinker.hurtRadius;
+				NPC.Center = thinker.Center + Vector2.UnitY.RotatedBy(-0.5f) * ThisThinker.ArenaRadius;
 				savedPos = NPC.Center;
 				attachedChainEndpoint = thinker.Center;
 
@@ -240,7 +240,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					ZoomHandler.SetZoomAnimation(1.5f, 90);
 				}
 
-				ThisThinker.ExtraRadius = 0;
+				ThisThinker.ExtraGrayAuraRadius = 0;
 			}
 
 			if (Timer == 30)

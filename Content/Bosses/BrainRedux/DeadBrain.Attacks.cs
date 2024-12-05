@@ -553,7 +553,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			Vector2 targetPos2 = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(savedRot + AttackTimer / 400f * 6.28f) * -550;
 
 			if (AttackTimer < 30)
-				(thinker.ModNPC as TheThinker).ExtraRadius = -60 * AttackTimer / 30f;
+				(thinker.ModNPC as TheThinker).ExtraGrayAuraRadius = -60 * AttackTimer / 30f;
 
 			if (AttackTimer >= 1 && AttackTimer < 400)
 			{
@@ -623,7 +623,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			}
 
 			if (AttackTimer >= 370)
-				(thinker.ModNPC as TheThinker).ExtraRadius = -60 + 60 * (AttackTimer - 370) / 30f;
+				(thinker.ModNPC as TheThinker).ExtraGrayAuraRadius = -60 + 60 * (AttackTimer - 370) / 30f;
 
 			if (AttackTimer >= 400)
 			{
@@ -639,7 +639,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				opacity = 1f - AttackTimer / 30f;
 
 			if (AttackTimer > 30 && AttackTimer < 60)
-				(thinker.ModNPC as TheThinker).ExtraRadius = 100 * (AttackTimer - 30) / 30f;
+				(thinker.ModNPC as TheThinker).ExtraGrayAuraRadius = 100 * (AttackTimer - 30) / 30f;
 
 			if (AttackTimer == 60)
 			{
@@ -696,7 +696,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			}
 
 			if (AttackTimer > 540 && AttackTimer < 570)
-				(thinker.ModNPC as TheThinker).ExtraRadius = 100 - 100 * (AttackTimer - 540) / 30f;
+				(thinker.ModNPC as TheThinker).ExtraGrayAuraRadius = 100 - 100 * (AttackTimer - 540) / 30f;
 
 			if (AttackTimer == 600)
 			{
@@ -864,7 +864,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				opacity = 1f - AttackTimer / 30f;
 
 			if (AttackTimer > 30 && AttackTimer < 60)
-				(thinker.ModNPC as TheThinker).ExtraRadius = 100 * (AttackTimer - 30) / 30f;
+				(thinker.ModNPC as TheThinker).ExtraGrayAuraRadius = 100 * (AttackTimer - 30) / 30f;
 
 			if (AttackTimer == 60)
 			{
@@ -964,7 +964,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			}
 
 			if (AttackTimer > 540 && AttackTimer < 570)
-				(thinker.ModNPC as TheThinker).ExtraRadius = 100 - 100 * (AttackTimer - 540) / 30f;
+				(thinker.ModNPC as TheThinker).ExtraGrayAuraRadius = 100 - 100 * (AttackTimer - 540) / 30f;
 
 			if (AttackTimer == 600)
 			{

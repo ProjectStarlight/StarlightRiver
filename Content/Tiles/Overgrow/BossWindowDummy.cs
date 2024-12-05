@@ -101,7 +101,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 				}
 			}
 
-			if (StarlightWorld.HasFlag(WorldFlags.OvergrowBossFree) && timer <= 360)
+			if (timer <= 360)
 				timer++;
 		}
 

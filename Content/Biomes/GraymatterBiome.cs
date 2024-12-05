@@ -1,8 +1,8 @@
 ﻿using ReLogic.Utilities;
 using StarlightRiver.Content.Bosses.BrainRedux;
 using StarlightRiver.Content.Buffs;
-using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Tiles.Crimson;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
 using System.Collections.Generic;
@@ -149,7 +149,6 @@ namespace StarlightRiver.Content.Biomes
 	internal class GraymatterBiomeSystem : ModSystem
 	{
 		public bool anyTiles;
-		public bool reset;
 
 		public List<Vector2> thinkerPositions = new();
 
@@ -178,7 +177,6 @@ namespace StarlightRiver.Content.Biomes
 
 		public override void ClearWorld()
 		{
-			reset = false;
 			TheThinker.toRender.Clear();
 		}
 
@@ -193,32 +191,15 @@ namespace StarlightRiver.Content.Biomes
 			GraymatterBiome.forceGrayMatter = false;
 		}
 
-		public override void PostUpdateEverything()
-		{
-			if (!reset)
-			{
-				for (int k = 0; k < Main.maxNPCs; k++)
-				{
-					if (Main.npc[k].ModNPC is TheThinker thinker)
-					{
-						if (thinker.active)
-							thinker.ResetArena();
-					}
-				}
-
-				reset = true;
-			}
-		}
-
 		public override void LoadWorldData(TagCompound tag)
 		{
 			thinkerPositions = tag.GetList<Vector2>("ThinkerPositions") as List<Vector2>;
 
-			/*foreach (Vector2 pos in thinkerPositions)
+			foreach (Vector2 pos in thinkerPositions)
 			{
 				if (!Main.npc.Any(n => n.active && n.type == ModContent.NPCType<TheThinker>() && Vector2.Distance(n.Center, pos) < 64))
 					NPC.NewNPC(null, (int)pos.X * 16, (int)pos.Y * 16, ModContent.NPCType<TheThinker>());
-			}*/
+			}
 		}
 	}
 }

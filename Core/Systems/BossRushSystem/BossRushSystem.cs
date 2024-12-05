@@ -366,8 +366,6 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		/// <param name="totalWeight"></param>
 		public override void ModifyWorldGenTasks(List<GenPass> tasks, ref double totalWeight)
 		{
-			isBossRush = true;
-
 			if (!isBossRush)
 				return;
 

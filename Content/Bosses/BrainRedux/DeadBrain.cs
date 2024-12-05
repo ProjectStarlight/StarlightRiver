@@ -124,7 +124,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		/// <returns>If the player is a valid target by virtue of being inside of the arena</returns>
 		private bool IsInArena(Player player)
 		{
-			return Vector2.Distance(player.Center, thinker.Center) < ThisThinker.hurtRadius + 20;
+			return Vector2.Distance(player.Center, thinker.Center) < ThisThinker.ArenaRadius + 20;
 		}
 
 		private void DrawOverGraymatter(SpriteBatch obj)
@@ -339,7 +339,6 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			switch (Phase)
 			{
-				// Fleeing
 				case Phases.Fleeing:
 					NPC.position.Y += 10;
 
@@ -348,8 +347,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 					break;
 
-				// Setup
-				case 0:
+				case Phases.Setup:
 					opacity = 1;
 
 					for (int k = 0; k < 10; k++)

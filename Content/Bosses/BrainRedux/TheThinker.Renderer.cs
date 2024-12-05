@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				offset += (float)Math.Cos(k / 36f * 6.28f * 6 + Main.GameUpdateCount * 0.04f) * 15;
 
 				float rot = k / 36f * 6.28f;
-				Vector2 edge = home + Vector2.UnitX.RotatedBy(rot) * (hurtRadius + 70 + offset);
+				Vector2 edge = home + Vector2.UnitX.RotatedBy(rot) * (ArenaRadius + 70 + offset);
 				spriteBatch.Draw(spike, edge - Main.screenPosition, new Rectangle(spike.Width / 2, 0, spike.Width / 2, spike.Height), new Color(255, 50, 60, 0) * 0.25f * ArenaOpacity, rot - 1.57f, new Vector2(spike.Width / 4f, spike.Height), 1.5f, 0, 0);
 				spriteBatch.Draw(solid, edge - Main.screenPosition, new Rectangle(0, 0, 58, 60), new Color(Lighting.GetSubLight(edge)) * ArenaOpacity, rot - 1.57f / 2f, new Vector2(58, 60), 1f, 0, 0);
 
@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				offset += (float)Math.Cos((k + 0.5) / 36f * 6.28f * 6 + Main.GameUpdateCount * 0.04f) * 15;
 				rot = (k + 0.5f) / 36f * 6.28f;
 				float sin = (float)Math.Sin(Main.GameUpdateCount * 0.01f + k);
-				edge = home + Vector2.UnitX.RotatedBy(rot) * (hurtRadius + 80 + sin * 10 + offset);
+				edge = home + Vector2.UnitX.RotatedBy(rot) * (ArenaRadius + 80 + sin * 10 + offset);
 				spriteBatch.Draw(spike, edge - Main.screenPosition, new Rectangle(spike.Width / 2, 0, spike.Width / 2, spike.Height), new Color(255, 50, 60, 0) * 0.25f * (1f - sin + 0.5f) * ArenaOpacity, rot - 1.57f, new Vector2(spike.Width / 4f, spike.Height), 1.5f, 0, 0);
 				spriteBatch.Draw(solid, edge - Main.screenPosition, new Rectangle(58, 0, 58, 60), new Color(Lighting.GetSubLight(edge)) * ArenaOpacity, rot - 1.57f / 2f, new Vector2(58, 60), 1f, 0, 0);
 			}
@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				float offset = (float)Math.Sin(k / 72f * 6.28f * 8 + Main.GameUpdateCount * 0.025f) * 15;
 				offset += (float)Math.Cos(k / 72f * 6.28f * 6 + Main.GameUpdateCount * 0.04f) * 15;
 
-				arenaCache[k] = home + Vector2.UnitX.RotatedBy(rot) * (hurtRadius + 70 + offset);
+				arenaCache[k] = home + Vector2.UnitX.RotatedBy(rot) * (ArenaRadius + 70 + offset);
 			}
 
 			arenaCache[72] = arenaCache[0];
@@ -111,6 +111,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				return false;
 			}
 
+			if (!Open)
+				return false;
+
 			DrawUnderShell();
 
 			if (active)
@@ -129,7 +132,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				for (int k = 0; k < 8; k++)
 				{
-					sb.Draw(glow, thinker.NPC.Center - Main.screenPosition, null, color, 0, glow.Size() / 2f, (140 + thinker.ExtraRadius) * 4 / glow.Width, 0, 0);
+					sb.Draw(glow, thinker.NPC.Center - Main.screenPosition, null, color, 0, glow.Size() / 2f, (140 + thinker.ExtraGrayAuraRadius) * 4 / glow.Width, 0, 0);
 				}
 			}
 
@@ -138,7 +141,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		private void DrawShadedBody(SpriteBatch sb)
 		{
-			bodyShader ??= Terraria.Graphics.Effects.Filters.Scene["ThinkerBody"].GetShader().Shader;
+			bodyShader ??= Filters.Scene["ThinkerBody"].GetShader().Shader;
 
 			Texture2D glow = Assets.Keys.Glow.Value;
 
@@ -168,7 +171,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		private void DrawBestiary(SpriteBatch sb, Vector2 screenPos)
 		{
-			bodyShader ??= Terraria.Graphics.Effects.Filters.Scene["ThinkerBody"].GetShader().Shader;
+			bodyShader ??= Filters.Scene["ThinkerBody"].GetShader().Shader;
 
 			Texture2D glow = Assets.Keys.Glow.Value;
 
