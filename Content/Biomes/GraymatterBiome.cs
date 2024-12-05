@@ -53,7 +53,7 @@ namespace StarlightRiver.Content.Biomes
 			hallucinationMap = new(DrawHallucinationMap, () => IsBiomeActive(Main.LocalPlayer), 1);
 			overHallucinationMap = new(DrawOverHallucinationMap, () => IsBiomeActive(Main.LocalPlayer), 1.1f);
 
-			Screenspace.passes.Add(new(0, DrawAuras, () => IsBiomeActive(Main.LocalPlayer)));
+			ScreenspaceShaderSystem.AddScreenspacePass(new(0, DrawAuras, () => IsBiomeActive(Main.LocalPlayer)));
 		}
 
 		public override bool IsBiomeActive(Player player)

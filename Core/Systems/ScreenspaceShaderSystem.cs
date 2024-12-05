@@ -6,12 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StarlightRiver.Content.CustomHooks
+namespace StarlightRiver.Core.Systems
 {
-	internal class Screenspace : ModSystem
+	internal class ScreenspaceShaderSystem : ModSystem
 	{
-		public static RenderTarget2D screenspaceTarget;
-		public static List<ScreenspacePass> passes = new();
+		private static RenderTarget2D screenspaceTarget;
+		private static readonly List<ScreenspacePass> passes = new();
+
+		private static bool tooLate;
 
 		public override void Load()
 		{
@@ -19,8 +21,21 @@ namespace StarlightRiver.Content.CustomHooks
 			Main.OnResolutionChanged += ResizeScreens;
 		}
 
+		/// <summary>
+		/// Called to add a screenspace pass to the collection of passes to apply. Should be called only in Load hooks.
+		/// </summary>
+		/// <param name="pass">The screenspace pass to add</param>
+		public static void AddScreenspacePass(ScreenspacePass pass)
+		{
+			if (!tooLate)
+				passes.Add(pass);
+			else
+				throw new Exception("Attempted to add a screenspace pass too late! Make sure all passes are added in Load hooks.");
+		}
+
 		public override void PostSetupContent()
 		{
+			tooLate = true;
 			passes.Sort();
 		}
 
@@ -52,9 +67,7 @@ namespace StarlightRiver.Content.CustomHooks
 				return;
 
 			if (screenspaceTarget is null || screenspaceTarget.IsDisposed)
-			{
 				screenspaceTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-			}
 
 			RenderTarget2D lastTex = Main.screenTarget;
 			RenderTarget2D targetTex = screenspaceTarget;
@@ -78,12 +91,39 @@ namespace StarlightRiver.Content.CustomHooks
 		}
 	}
 
+	/// <summary>
+	/// A screenspace drawing pass, to be added to the ScreenspaceShaderSystem ModSystem's passes list to create a screenspace shader pass.
+	/// This allows for multiple screenspace shaders to stack with each other.
+	/// </summary>
 	internal class ScreenspacePass : IComparable
 	{
-		int priority;
+		/// <summary>
+		/// The priority of this pass. A lower priority will draw first and feed into higher priority passes. For example, if a pass 
+		/// with a priority of zero makes the screen grayscale, a priority 1 pass will have a grayscale screen passed to it as the
+		/// screen texture.
+		/// </summary>
+		public int priority;
+
+		/// <summary>
+		/// The actual drawing function to execute. Anything drawn here is saved to the texture passed to the next pass
+		/// </summary>
 		public Action<SpriteBatch, Texture2D> drawFunction;
+
+		/// <summary>
+		/// A function to determine if this pass should be active/used
+		/// </summary>
 		public Func<bool> active;
 
+		/// <summary>
+		/// Initialize a screenspace pass to be added to ScreenspaceShaderSystem.passes. You must add it yourself after initialization.
+		/// </summary>
+		/// <param name="priority">
+		/// The priority of this pass. A lower priority will draw first and feed into higher priority passes. For example, if a pass 
+		/// with a priority of zero makes the screen grayscale, a priority 1 pass will have a grayscale screen passed to it as the
+		/// screen texture.
+		/// </param>
+		/// <param name="drawFunction">The actual drawing function to execute. Anything drawn here is saved to the texture passed to the next pass</param>
+		/// <param name="active">A function to determine if this pass should be active/used</param>
 		public ScreenspacePass(int priority, Action<SpriteBatch, Texture2D> drawFunction, Func<bool> active)
 		{
 			this.priority = priority;

@@ -1,4 +1,4 @@
-﻿using StarlightRiver.Content.CustomHooks;
+﻿using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
 
@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Backgrounds
 			starsMap = new(DrawMap, CheckIsActive, 1f);
 			stars = new("StarlightRiver/Assets/Misc/StarParticle", UpdateStars, ParticleSystem.AnchorOptions.Screen);
 
-			Screenspace.passes.Add(new(1, DrawOverlay, CheckIsActive));
+			ScreenspaceShaderSystem.AddScreenspacePass(new(1, DrawOverlay, CheckIsActive));
 		}
 
 		public override void Unload()

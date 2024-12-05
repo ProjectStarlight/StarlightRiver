@@ -117,11 +117,6 @@ namespace StarlightRiver.Content.Items
 		{
 			orig(self, gameTime);
 
-			return;
-
-			if (!betaActive)
-				return;
-
 			Main.spriteBatch.Begin();
 
 			var font = Terraria.GameContent.FontAssets.ItemStack.Value;		
@@ -137,7 +132,7 @@ namespace StarlightRiver.Content.Items
 				for (float x = -Main.screenHeight; x < Main.screenWidth; x += font.MeasureString(message).X)
 				Main.spriteBatch.DrawString(font, message, new Vector2(x + (k^(k*k)) % 600, k), Color.White * 0.1f, default, default, 1f, default, default);
 
-				Utils.DrawBorderStringBig(Main.spriteBatch, $"STARLIGHT RIVER ALPHA TEST -- THINKER BOSS FIGHT TEST 1", new Vector2(Main.screenWidth / 2, 16), Color.White, 0.6f, 0.5f);
+				Utils.DrawBorderStringBig(Main.spriteBatch, $"STARLIGHT RIVER ALPHA TEST -- THINKER BOSS FIGHT TEST 2", new Vector2(Main.screenWidth / 2, 16), Color.White, 0.6f, 0.5f);
 				Utils.DrawBorderStringBig(Main.spriteBatch, $"ALPHA BUILD DOES NOT REPRESENT FINAL PRODUCT", new Vector2(Main.screenWidth / 2, 48), Color.White, 0.6f, 0.5f);
 				Utils.DrawBorderStringBig(Main.spriteBatch, $"YOUR ID: {SteamFriends.GetPersonaName()} ({SteamUser.GetSteamID().m_SteamID})", new Vector2(Main.screenWidth / 2, 80), Color.Gray, 0.6f, 0.5f);
 			}
@@ -173,47 +168,10 @@ namespace StarlightRiver.Content.Items
 		{
 			betaActive = true;
 
-			foreach (var item in player.inventory)
-			{
-				item.TurnToAir();
-			}
-
-			foreach(var item in player.armor)
-			{
-				item.TurnToAir();
-			}
-
 			foreach(var npc in Main.npc)
 			{
 				npc.active = false;
 			}
-
-			player.armor[0].SetDefaults(ItemID.MoltenHelmet);
-			player.armor[1].SetDefaults(ItemID.MoltenBreastplate);
-			player.armor[2].SetDefaults(ItemID.MoltenGreaves);
-
-			player.armor[3].SetDefaults(ItemID.FrostsparkBoots);
-			player.armor[4].SetDefaults(ItemID.CreativeWings);
-			player.armor[5].SetDefaults(ItemID.ObsidianShield);
-			player.armor[6].SetDefaults(ModContent.ItemType<WardedMail>());
-			player.armor[7].SetDefaults(ModContent.ItemType<TempleRune>());
-
-			player.inventory[0].SetDefaults(ItemID.Zenith);
-			player.inventory[1].SetDefaults(ItemID.DemonScythe);
-			player.inventory[2].SetDefaults(ModContent.ItemType<CoachGunUpgrade>());
-			player.inventory[3].SetDefaults(ModContent.ItemType<ThousandthDegree>());
-			player.inventory[9].SetDefaults(ModContent.ItemType<BrainSpawner>());
-			player.inventory[10].SetDefaults(ItemID.HealingPotion);
-			player.inventory[10].stack = 9999;
-			player.inventory[11].SetDefaults(ItemID.ManaPotion);
-			player.inventory[11].stack = 9999;
-			player.inventory[54].SetDefaults(ItemID.EndlessMusketPouch);
-
-			player.statLifeMax = 400;
-			player.statManaMax = 200;
-
-			player.statLife = player.statLifeMax;
-			player.statMana = player.statManaMax;
 
 			player.Center = new Vector2(Main.maxTilesX * 8, Main.maxTilesY * 8);
 
