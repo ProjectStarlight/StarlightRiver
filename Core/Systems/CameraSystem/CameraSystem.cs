@@ -81,6 +81,32 @@ namespace StarlightRiver.Core.Systems.CameraSystem
 			MoveModifier.EaseFunction = ease ?? Vector2.SmoothStep;
 		}
 
+		/// <summary>
+		/// Teleports the camera instantaneously
+		/// </summary>
+		/// <param name="target">The position to teleport to</param>
+		public static void TeleportCamera(Vector2 target)
+		{
+			MoveModifier.Timer = 0;
+			MoveModifier.MovementDuration = 1;
+			MoveModifier.Target = target;
+			MoveModifier.Returning = false;
+
+			MoveModifier.EaseFunction = (p1, p2, x) => x > 0 ? p2 : p1;
+		}
+
+		/// <summary>
+		/// Return the camera to normal instantaneously
+		/// </summary>
+		public static void TeleportCameraBack()
+		{
+			MoveModifier.Timer = 0;
+			MoveModifier.MovementDuration = 1;
+			MoveModifier.Returning = true;
+
+			MoveModifier.EaseFunction = (p1, p2, x) => x > 0 ? p2 : p1;
+		}
+
 		public override void PostUpdateEverything()
 		{
 			if (shake > 120 * ModContent.GetInstance<Content.Configs.GraphicsConfig>().ScreenshakeMult) //clamp screenshake to (120 * config) to prevent utter chaos

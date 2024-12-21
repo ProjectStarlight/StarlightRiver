@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			Texture2D tex = Assets.Bosses.BrainRedux.ShellBack.Value;
 			Vector2 pos = home - Main.screenPosition - tex.Size() / 2f;
 
-			LightingBufferRenderer.DrawWithLighting(pos, tex, Color.Gray);
+			LightingBufferRenderer.DrawWithLighting(pos, tex, Color.White);
 		}
 
 		public void DrawArena(SpriteBatch spriteBatch)
@@ -141,6 +141,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		private void DrawShadedBody(SpriteBatch sb)
 		{
+			if (!Open)
+				return;
+
 			bodyShader ??= Filters.Scene["ThinkerBody"].GetShader().Shader;
 
 			Texture2D glow = Assets.Keys.Glow.Value;

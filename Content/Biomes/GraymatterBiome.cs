@@ -177,6 +177,7 @@ namespace StarlightRiver.Content.Biomes
 
 		public override void ClearWorld()
 		{
+			thinkerPositions.Clear();
 			TheThinker.toRender.Clear();
 		}
 

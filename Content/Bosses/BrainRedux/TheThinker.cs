@@ -109,6 +109,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			});
 		}
 
+		public override void BossHeadSlot(ref int index)
+		{
+			index = active ? index : -1;
+		}
+
 		/// <summary>
 		/// Attempts to switch the boss bar to the specified entity, for when we need to swap between this and the brain
 		/// </summary>
@@ -443,9 +448,19 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			}
 		}
 
-		public override void OnHitByProjectile(Projectile projectile, NPC.HitInfo hit, int damageDone)
+		public override bool? CanBeHitByItem(Player player, Item item)
 		{
-			base.OnHitByProjectile(projectile, hit, damageDone);
+			return active ? null : false;
+		}
+
+		public override bool? CanBeHitByProjectile(Projectile projectile)
+		{
+			return active ? null : false;
+		}
+
+		public override bool CanBeHitByNPC(NPC attacker)
+		{
+			return active;
 		}
 
 		public override void ModifyIncomingHit(ref NPC.HitModifiers modifiers)
