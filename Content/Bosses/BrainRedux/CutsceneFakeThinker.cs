@@ -1,12 +1,10 @@
 ﻿using StarlightRiver.Content.Biomes;
 using StarlightRiver.Core.Systems.CameraSystem;
+using StarlightRiver.Core.Systems.CutsceneSystem;
 using StarlightRiver.Core.Systems.LightingSystem;
 using StarlightRiver.Helpers;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Content.Bosses.BrainRedux
@@ -65,16 +63,19 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (Timer == 1)
 			{
-				if (Vector2.Distance(Main.LocalPlayer.Center, homePos) < 3000)
+				foreach (Player player in Main.player.Where(n => Vector2.Distance(n.Center, NPC.Center) < 4000))
+					player.ActivateCutscene<ThinkerOpenCutscene>();
+
+				if (Main.LocalPlayer.InCutscene<ThinkerOpenCutscene>())
 				{
 					CameraSystem.MoveCameraOut(30, homePos + Vector2.UnitY * -100);
 					ZoomHandler.SetZoomAnimation(1.5f, 30);
 				}
 
-				for(int k = 0; k < 50; k++)
+				for (int k = 0; k < 50; k++)
 				{
 					var color = new Color(Main.rand.NextFloat(0.2f, 1f), Main.rand.NextFloat(0.2f, 1f), Main.rand.NextFloat(0.2f, 1f));
-					var rot = Main.rand.NextFloat(6.28f);
+					float rot = Main.rand.NextFloat(6.28f);
 
 					Dust.NewDustPerfect(NPC.Center + Vector2.One.RotatedBy(rot) * 20, ModContent.DustType<Dusts.Cinder>(), Vector2.One.RotatedBy(rot) * Main.rand.NextFloat(3), 0, color, Main.rand.NextFloat(1f, 3f));
 				}
@@ -98,7 +99,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				for (int k = 0; k < 5; k++)
 				{
 					var color = new Color(Main.rand.NextFloat(0.5f, 1f), Main.rand.NextFloat(0.5f, 1f), Main.rand.NextFloat(0.5f, 1f));
-					var rot = Main.rand.NextFloat(6.28f);
+					float rot = Main.rand.NextFloat(6.28f);
 
 					Dust.NewDustPerfect(NPC.Center + Vector2.One.RotatedBy(rot) * 45, ModContent.DustType<Dusts.GlowLineFast>(), Vector2.One.RotatedBy(rot) * Main.rand.NextFloat(8), 0, color, Main.rand.NextFloat(0.5f, 1f));
 					Dust.NewDustPerfect(NPC.Center + Vector2.One.RotatedBy(rot) * GrayAuraRadius / 2f, ModContent.DustType<Dusts.GraymatterDust>(), Vector2.One.RotatedBy(rot) * Main.rand.NextFloat(8), 0, color, Main.rand.NextFloat(0.5f, 2f));
@@ -107,7 +108,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (Timer > 130 && GrayAuraRadius > 10)
 			{
-				var rot = Main.rand.NextFloat(6.28f);
+				float rot = Main.rand.NextFloat(6.28f);
 				Dust.NewDustPerfect(NPC.Center + Vector2.One.RotatedBy(rot) * GrayAuraRadius / 2f, ModContent.DustType<Dusts.GraymatterDust>(), Vector2.One.RotatedBy(rot) * Main.rand.NextFloat(1), 0, Color.White, Main.rand.NextFloat(0.5f, 1f));
 			}
 
@@ -122,33 +123,39 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				NPC.velocity.Y -= 0.25f;
 			}
 
+			// Calculates how long we need to show every thinker spawn position
 			int locationsToShow = ModContent.GetInstance<GraymatterBiomeSystem>().thinkerPositions.Count;
 			int timePerLocation = 270;
 			int durationToShowAll = locationsToShow * timePerLocation;
 
 			if (Timer >= 240 && Timer < 240 + durationToShowAll)
 			{
+				// Automatically generates a timer for each "visit" to the thinker spawn positions
 				float currTime = (Timer - 240) % timePerLocation;
 				int locationIndex = (int)((Timer - 240) / timePerLocation);
 
 				Vector2 location = ModContent.GetInstance<GraymatterBiomeSystem>().thinkerPositions[locationIndex] * 16;
 
-				if (currTime < 30)
+				// Camera FX only if the local player is in the cutscene
+				if (Main.LocalPlayer.InCutscene<ThinkerOpenCutscene>())
 				{
-					Fadeout.color = Color.Black;
-					Fadeout.opacity = currTime / 30f;
-				}
+					if (currTime < 30)
+					{
+						Fadeout.color = Color.Black;
+						Fadeout.opacity = currTime / 30f;
+					}
 
-				if (currTime == 30)
-				{
-					CameraSystem.TeleportCamera(location);
-					GrayAuraRadius = 140;
-				}
+					if (currTime == 30)
+					{
+						CameraSystem.TeleportCamera(location);
+						GrayAuraRadius = 140;
+					}
 
-				if (currTime > 30 && currTime < 90)
-				{
-					Fadeout.color = Color.Black;
-					Fadeout.opacity = 1f - (currTime - 30) / 60f;
+					if (currTime > 30 && currTime < 90)
+					{
+						Fadeout.color = Color.Black;
+						Fadeout.opacity = 1f - (currTime - 30) / 60f;
+					}
 				}
 
 				if (currTime == 60)
@@ -168,24 +175,37 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				}
 			}
 
-			if (Timer > 240 + durationToShowAll)
+			// Camera FX only if the local player is in the cutscene. returning
+			if (Main.LocalPlayer.InCutscene<ThinkerOpenCutscene>())
 			{
-				Fadeout.color = Color.Black;
-				Fadeout.opacity = (Timer - (240 + durationToShowAll)) / 30f;
-			}
+				if (Timer > 240 + durationToShowAll)
+				{
+					Fadeout.color = Color.Black;
+					Fadeout.opacity = (Timer - (240 + durationToShowAll)) / 30f;
+				}
 
-			if (Timer == 270 + durationToShowAll)
-				CameraSystem.TeleportCameraBack();
+				if (Timer == 270 + durationToShowAll)
+				{
+					StarlightWorld.Flag(WorldFlags.ThinkerBossOpen);
+					CameraSystem.TeleportCameraBack();
+				}
 
-			if (Timer > 270 + durationToShowAll)
-			{
-				Fadeout.color = Color.Black;
-				Fadeout.opacity = 1f - (Timer - (270 + durationToShowAll)) / 30f;
+				if (Timer > 270 + durationToShowAll)
+				{
+					Fadeout.color = Color.Black;
+					Fadeout.opacity = 1f - (Timer - (270 + durationToShowAll)) / 30f;
+				}
 			}
 
 			if (Timer == 300 + durationToShowAll)
 			{
 				StarlightWorld.Flag(WorldFlags.ThinkerBossOpen);
+
+				if (Main.LocalPlayer.InCutscene<ThinkerOpenCutscene>())
+					Main.LocalPlayer.DeactivateCutscene();
+
+				Main.NewText("The thinkers are thinking...", Color.Yellow);
+
 				NPC.active = false;
 			}
 		}
@@ -201,8 +221,6 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (Timer > 240)
 				shellOpacity = 0.01f + 1f - GrayAuraRadius / 140f;
-
-			Main.NewText(shellOpacity);
 
 			Texture2D tex = Assets.Bosses.BrainRedux.ShellBack.Value;
 			Vector2 pos = NPC.Center - Main.screenPosition - tex.Size() / 2f;

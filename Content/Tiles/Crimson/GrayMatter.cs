@@ -48,6 +48,9 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 		private void DrawTileMap(SpriteBatch spriteBatch)
 		{
+			if (!StarlightWorld.HasFlag(WorldFlags.ThinkerBossOpen))
+				return;
+
 			Texture2D glow = Assets.Keys.GlowAlpha.Value;
 			var pos = (Main.screenPosition / 16).ToPoint16();
 
@@ -114,7 +117,8 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 		public override void FloorVisuals(Player player)
 		{
-			player.AddBuff(ModContent.BuffType<CrimsonHallucination>(), 10);
+			if (StarlightWorld.HasFlag(WorldFlags.ThinkerBossOpen))
+				player.AddBuff(ModContent.BuffType<CrimsonHallucination>(), 10);
 		}
 	}
 }

@@ -13,6 +13,12 @@ namespace StarlightRiver.Core.Systems
 		private static RenderTarget2D screenspaceTarget;
 		private static readonly List<ScreenspacePass> passes = new();
 
+		/// <summary>
+		/// The final texture that was rendered to the screen. Useful if you need to re-draw it over the UI later
+		/// for some of the other UI fadeout tricks we've had to do.
+		/// </summary>
+		public static RenderTarget2D finalScreenTexture;
+
 		private static bool tooLate;
 
 		public override void Load()
@@ -88,6 +94,8 @@ namespace StarlightRiver.Core.Systems
 			Main.spriteBatch.Begin();
 			Main.spriteBatch.Draw(lastTex, Vector2.Zero, Color.White);
 			Main.spriteBatch.End();
+
+			finalScreenTexture = lastTex;
 		}
 	}
 

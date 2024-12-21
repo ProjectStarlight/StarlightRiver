@@ -11,11 +11,30 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 	internal class Dendrite : ModTile
 	{
+		public static int hintTicker = 0;
+
 		public override string Texture => "StarlightRiver/Assets/Tiles/Crimson/" + Name;
 
 		public override void Load()
 		{
 			GraymatterBiome.onDrawOverPerTile += DrawRealVersion;
+		}
+
+		public override bool CanKillTile(int i, int j, ref bool blockDamaged)
+		{
+			if (StarlightWorld.HasFlag(WorldFlags.ThinkerBossOpen))
+			{
+				return true;
+			}
+			else
+			{
+				hintTicker++;
+
+				if (hintTicker % 10 == 0)
+					Main.NewText("This dirt seems unnaturally resilient...", Color.LightGray);
+
+				return false;
+			}
 		}
 
 		private void DrawRealVersion(SpriteBatch spriteBatch, int x, int y)
@@ -45,7 +64,7 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 			HitSound = Terraria.ID.SoundID.Tink;
 
-			DustType = Terraria.ID.DustID.Blood;
+			DustType = Terraria.ID.DustID.Dirt;
 			RegisterItemDrop(ModContent.ItemType<DendriteItem>());
 
 			MinPick = 65;
