@@ -3594,6 +3594,15 @@ Items: {
 	}
 
 	ThinkerBossBag.DisplayName: Treasure Bag (The Thinker)
+
+	BearPoker: {
+		DisplayName: Bear Poker
+		Tooltip:
+			'''
+			This needle is sharp enough to penetrate a thinker's cocoon
+			This is a terrible idea
+			'''
+	}
 }
 
 Tiles: {

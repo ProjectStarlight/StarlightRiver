@@ -86,6 +86,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				if (proj.type == Projectile.type)
 				{
+					var mp = proj.ModProjectile as VeinSpear;
 					SpriteBatch spriteBatch = Main.spriteBatch;
 
 					Texture2D glow = Assets.GlowTrailNoEnd.Value;
@@ -99,10 +100,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					glowColor.A = 0;
 
 					var gSource = new Rectangle(0, 0, glow.Width, glow.Height);
-					var gTarget = new Rectangle((int)(proj.Center.X - Main.screenPosition.X), (int)(proj.Center.Y - Main.screenPosition.Y), (int)Vector2.Distance(Thinker.Center, proj.Center), 250);
+					var gTarget = new Rectangle((int)(proj.Center.X - Main.screenPosition.X), (int)(proj.Center.Y - Main.screenPosition.Y), (int)Vector2.Distance(mp.Thinker.Center, proj.Center), 250);
 					var gOrigin = new Vector2(0, glow.Height / 2f);
 
-					spriteBatch.Draw(glow, gTarget, gSource, glowColor, (proj.Center - Thinker.Center).ToRotation() - 3.14f, gOrigin, 0, 0);
+					spriteBatch.Draw(glow, gTarget, gSource, glowColor, (proj.Center - mp.Thinker.Center).ToRotation() - 3.14f, gOrigin, 0, 0);
 				}
 			}
 		}
