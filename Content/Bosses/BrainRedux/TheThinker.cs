@@ -455,7 +455,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override bool? CanBeHitByProjectile(Projectile projectile)
 		{
-			if (Open && projectile.Hitbox.Intersects(NPC.Hitbox) && projectile.type == ModContent.ProjectileType<BearPokerProjectile>())
+			if (Open && !active && projectile.Hitbox.Intersects(NPC.Hitbox) && projectile.ModProjectile is BearPokerProjectile)
 			{
 				DeadBrain.SpawnReduxedBrain(NPC.Center);
 				return true;

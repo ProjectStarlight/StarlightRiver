@@ -3603,6 +3603,15 @@ Items: {
 			This is a terrible idea
 			'''
 	}
+
+	BearPokerEndless: {
+		DisplayName: Bear Poker
+		Tooltip:
+			'''
+			This needle is sharp enough to penetrate a thinker's cocoon
+			This is a terrible idea
+			'''
+	}
 }
 
 Tiles: {
