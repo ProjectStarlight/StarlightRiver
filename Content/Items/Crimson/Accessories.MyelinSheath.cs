@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Items.Crimson
 		public override void SafeUpdateEquip(Player Player)
 		{
 			if (cooldown > 0)
-				cooldown --;
+				cooldown--;
 		}
 
 		private bool OverrideSwordEffects(Item item, Player player)
@@ -209,7 +209,7 @@ namespace StarlightRiver.Content.Items.Crimson
 			{
 				if (proj.type == Type)
 				{
-					var tex = Assets.Slash.Value;
+					Texture2D tex = Assets.Slash.Value;
 					batch.Draw(tex, proj.Center - Main.screenPosition, null, new Color(1f, 1f, 1f, 0) * (proj.timeLeft / 60f), proj.rotation, tex.Size() / 2f, 0.75f, 0, 0);
 
 					Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
@@ -293,10 +293,11 @@ namespace StarlightRiver.Content.Items.Crimson
 				alpha *= Projectile.timeLeft / 60f;
 
 				return Color.White * alpha;
-			});
-
-			trail.Positions = cache.ToArray();
-			trail.NextPosition = Projectile.Center + Projectile.velocity;
+			})
+			{
+				Positions = cache.ToArray(),
+				NextPosition = Projectile.Center + Projectile.velocity
+			};
 		}
 	}
 }

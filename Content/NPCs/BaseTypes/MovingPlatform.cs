@@ -297,7 +297,7 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 			if (projectile.ai[0] == 2)
 			{
 				int grappledIndex = binaryReader.ReadInt32();
-				
+
 				if (grappledIndex != -1)
 					grappledTo = Main.npc[grappledIndex];
 			}

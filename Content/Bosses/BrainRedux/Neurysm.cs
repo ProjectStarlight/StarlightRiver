@@ -139,8 +139,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public Color Rainbow(float offset)
 		{
 			return new Color(
-				1f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f + offset) * 0.5f, 
-				1f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f + 1 + offset) * 0.5f, 
+				1f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f + offset) * 0.5f,
+				1f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f + 1 + offset) * 0.5f,
 				1f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f + 2 + offset) * 0.5f);
 		}
 

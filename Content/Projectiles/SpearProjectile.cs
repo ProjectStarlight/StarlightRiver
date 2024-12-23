@@ -119,7 +119,7 @@ namespace StarlightRiver.Content.Projectiles
 			if (Projectile.timeLeft > RealDuration - fadeDuration)
 				opacity = (RealDuration - Projectile.timeLeft) / (float)fadeDuration;
 
-			var tex = TextureAssets.Projectile[Projectile.type].Value;
+			Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY), tex.Frame(), lightColor * opacity, Projectile.rotation, origin, Projectile.scale, 0, 0);
 			return false;
 		}

@@ -1,13 +1,6 @@
 ﻿using StarlightRiver.Content.CustomHooks;
-using StarlightRiver.Content.Dusts;
-using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Content.Items.Vitric;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -15,7 +8,7 @@ namespace StarlightRiver.Content.Items.Crimson
 {
 	internal class MirageBow : ModItem
 	{
-		int cloneCooldown = 0;
+		private int cloneCooldown = 0;
 
 		public override string Texture => AssetDirectory.Debug;
 
@@ -37,7 +30,7 @@ namespace StarlightRiver.Content.Items.Crimson
 			Item.knockBack = 1;
 			Item.rare = ItemRarityID.Orange;
 			Item.value = Item.sellPrice(0, 5, 0, 0);
-			Item.shoot = 10;
+			Item.shoot = ProjectileID.PurificationPowder;
 			Item.shootSpeed = 5f;
 			Item.autoReuse = true;
 			Item.useAmmo = AmmoID.Arrow;
@@ -52,7 +45,7 @@ namespace StarlightRiver.Content.Items.Crimson
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
-			var clone = Main.projectile.FirstOrDefault(n => n.active && n.type == ModContent.ProjectileType<MirageBowClone>() && n.owner == player.whoAmI);
+			Projectile clone = Main.projectile.FirstOrDefault(n => n.active && n.type == ModContent.ProjectileType<MirageBowClone>() && n.owner == player.whoAmI);
 
 			if (clone is null)
 				return true;
@@ -64,7 +57,7 @@ namespace StarlightRiver.Content.Items.Crimson
 
 		private void SpawnOnCrit(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			var owner = Main.player[projectile.owner];
+			Player owner = Main.player[projectile.owner];
 
 			if (owner.active && owner.HeldItem.type == ModContent.ItemType<MirageBow>() && hit.Crit)
 			{
@@ -108,18 +101,19 @@ namespace StarlightRiver.Content.Items.Crimson
 
 		public override void AI()
 		{
-			var owner = Main.player[Projectile.owner];
+			Player owner = Main.player[Projectile.owner];
+
 			if (owner.HeldItem.type != ModContent.ItemType<MirageBow>())
-			{
 				Projectile.timeLeft = 30;
-			}
 
 			if (owner == Main.LocalPlayer)
 			{
-				var relative = owner.Center - Main.MouseWorld;
-				var target = Main.MouseWorld + relative.RotatedBy(3.14f);
+				Vector2 relative = owner.Center - Main.MouseWorld;
+				Vector2 target = Main.MouseWorld + relative.RotatedBy(3.14f);
 
 				Projectile.Center += (target - Projectile.Center) * 0.1f;
+
+				Projectile.netUpdate = true;
 			}
 		}
 
@@ -133,13 +127,12 @@ namespace StarlightRiver.Content.Items.Crimson
 			if (!PlayerTarget.canUseTarget)
 				return false;
 
-			var owner = Main.player[Projectile.owner];
-			var source = PlayerTarget.getPlayerTargetSourceRectangle(Projectile.owner);
+			Player owner = Main.player[Projectile.owner];
+			Rectangle source = PlayerTarget.getPlayerTargetSourceRectangle(Projectile.owner);
 
-			var alpha = Projectile.timeLeft < 30 ? Projectile.timeLeft / 30f * 0.5f : 0.5f;
+			float alpha = Projectile.timeLeft < 30 ? Projectile.timeLeft / 30f * 0.5f : 0.5f;
 
 			Main.spriteBatch.Draw(PlayerTarget.Target, Projectile.Center - Main.screenPosition, source, Color.White * alpha, owner.fullRotation, source.Size() / 2f, 1, SpriteEffects.FlipHorizontally, 0);
-			
 
 			return false;
 		}

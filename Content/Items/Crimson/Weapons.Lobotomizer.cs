@@ -169,7 +169,7 @@ namespace StarlightRiver.Content.Items.Crimson
 
 			tex = Assets.StarTexture.Value;
 
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0) * opacity * (flashTime), Projectile.rotation - 1.57f + Projectile.timeLeft * 0.1f, tex.Size() / 2f, 0.2f + prog * 0.5f, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0) * opacity * flashTime, Projectile.rotation - 1.57f + Projectile.timeLeft * 0.1f, tex.Size() / 2f, 0.2f + prog * 0.5f, 0, 0);
 
 			Lighting.AddLight(Projectile.Center, Color.White.ToVector3() * 0.4f);
 		}
@@ -235,7 +235,7 @@ namespace StarlightRiver.Content.Items.Crimson
 
 			tex = Assets.StarTexture.Value;
 
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0) * opacity * (flashTime), Projectile.rotation - 1.57f + Projectile.ai[2] + Projectile.timeLeft * 0.2f, tex.Size() / 2f, 0.1f + prog * 0.3f, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0) * opacity * flashTime, Projectile.rotation - 1.57f + Projectile.ai[2] + Projectile.timeLeft * 0.2f, tex.Size() / 2f, 0.1f + prog * 0.3f, 0, 0);
 		}
 	}
 
@@ -308,7 +308,7 @@ namespace StarlightRiver.Content.Items.Crimson
 				Projectile.Center = embedded.Center + savedOff;
 			}
 
-			var maxRad = State == 1 ? 300 : 200;
+			int maxRad = State == 1 ? 300 : 200;
 
 			if (State > 0 && Radius < maxRad && Projectile.timeLeft > 30)
 				Radius += 10;
@@ -324,7 +324,7 @@ namespace StarlightRiver.Content.Items.Crimson
 
 		public void Impact()
 		{
-			for(int k = 0; k < 10; k++)
+			for (int k = 0; k < 10; k++)
 			{
 				Dust.NewDustPerfect(Projectile.Center, DustID.Dirt);
 			}
@@ -349,7 +349,7 @@ namespace StarlightRiver.Content.Items.Crimson
 		{
 			Texture2D tex = Assets.Items.Crimson.LobotomizerFastProjectile.Value;
 			float opacity = Projectile.timeLeft > 30f ? 1f : (Radius / 300f);
-			var pos = Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation) * tex.Width / 2f - Main.screenPosition;
+			Vector2 pos = Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation) * tex.Width / 2f - Main.screenPosition;
 
 			Main.spriteBatch.Draw(tex, pos, tex.Frame(), new Color(255, 255, 255, 0) * opacity, Projectile.rotation, tex.Size() / 2f, Projectile.scale, 0, 0);
 			return false;

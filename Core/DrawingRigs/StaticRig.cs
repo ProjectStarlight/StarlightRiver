@@ -17,6 +17,6 @@ namespace StarlightRiver.Core.DrawingRigs
 		public int Y { get; set; }
 		public int Frame { get; set; }
 
-		public Vector2 Pos => new Vector2(X, Y);
+		public Vector2 Pos => new(X, Y);
 	}
 }

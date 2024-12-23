@@ -25,10 +25,10 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 				if (npc.ModNPC == null || npc.ModNPC is not SquareCollider || (npc.ModNPC as SquareCollider).dontCollide)
 					continue;
 
-				var nextPlayer = self.Hitbox;
+				Rectangle nextPlayer = self.Hitbox;
 				nextPlayer.Offset(self.velocity.ToPoint());
 
-				var nextBox = npc.Hitbox;
+				Rectangle nextBox = npc.Hitbox;
 				nextBox.Offset(npc.velocity.ToPoint());
 
 				var PlayerRect = new Rectangle((int)self.position.X, (int)self.position.Y + self.height, self.width, 1);
@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			spriteBatch.Draw(Assets.MagicPixel.Value, NPC.position - Main.screenPosition, null, Color.White, 0, Vector2.Zero, Assets.MagicPixel.Width()/500f, 0, 0);
+			spriteBatch.Draw(Assets.MagicPixel.Value, NPC.position - Main.screenPosition, null, Color.White, 0, Vector2.Zero, Assets.MagicPixel.Width() / 500f, 0, 0);
 
 			return false;
 		}

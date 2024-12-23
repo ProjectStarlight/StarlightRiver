@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (AttackTimer == 160 && Main.masterMode)
 			{
-				for(int k = 0; k < 12; k++)
+				for (int k = 0; k < 12; k++)
 				{
 					Projectile.NewProjectile(null, thinker.Center, Vector2.UnitX.RotatedBy(k / 12f * 6.28f) * 4, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 0, Main.myPlayer, 200);
 				}
@@ -190,7 +190,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				float speed = 0.05f;
 
 				if (AttackTimer > 110)
-					speed *= (1f - (AttackTimer - 110) / 30f);
+					speed *= 1f - (AttackTimer - 110) / 30f;
 
 				NPC.Center += (targetPos - NPC.Center) * speed;
 			}
@@ -238,7 +238,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				float prog = (AttackTimer - 100) / 40f;
 
-				for(int k = 0; k < 6; k++)
+				for (int k = 0; k < 6; k++)
 				{
 					Vector2 pos = NPC.Center + Vector2.UnitX.RotatedBy(k / 6f * 6.28f + prog * 3.14f) * (1f - prog) * 128;
 					DrawBrainSegments(spriteBatch, NPC, pos - Main.screenPosition, new Color(255, 100, 100), NPC.rotation, NPC.scale, 0.35f * prog, lastPos);
@@ -248,7 +248,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (AttackTimer > 130 && AttackTimer < 160)
 			{
 				float rot = NPC.Center.DirectionTo(savedPos).ToRotation();
-				var tellTex = Assets.Misc.DirectionalBeam.Value;
+				Texture2D tellTex = Assets.Misc.DirectionalBeam.Value;
 				var pos = Vector2.Lerp(NPC.Center, savedPos, 0.2f);
 				var target = new Rectangle((int)pos.X, (int)pos.Y, 900, 50);
 				target.Offset((-Main.screenPosition).ToPoint());
@@ -267,7 +267,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				for (int k = 0; k < 10; k++)
 				{
 					Vector2 pos = NPC.oldPos[k] + NPC.Size / 2f;
-					DrawBrainSegments(spriteBatch, NPC, pos - Main.screenPosition, new Color(255, 100, 100), NPC.rotation, NPC.scale, (k / 30f) * (1f - (AttackTimer - 160) / chargeTime), lastPos);
+					DrawBrainSegments(spriteBatch, NPC, pos - Main.screenPosition, new Color(255, 100, 100), NPC.rotation, NPC.scale, k / 30f * (1f - (AttackTimer - 160) / chargeTime), lastPos);
 				}
 			}
 		}
@@ -321,10 +321,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (AttackTimer == 560 && Main.masterMode)
 			{
-				neurisms.ForEach(n =>
-				{
-					Projectile.NewProjectile(null, n.Center, Vector2.Normalize(thinker.Center - n.Center) * Vector2.Distance(n.Center, thinker.Center) / 45f, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 0, Main.myPlayer, 45);
-				});
+				neurisms.ForEach(n => Projectile.NewProjectile(null, n.Center, Vector2.Normalize(thinker.Center - n.Center) * Vector2.Distance(n.Center, thinker.Center) / 45f, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 0, Main.myPlayer, 45));
 			}
 
 			if (AttackTimer == 570)
@@ -420,7 +417,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				}
 			}
 
-			for(int k = 1; k < 6; k++)
+			for (int k = 1; k < 6; k++)
 			{
 				if (AttackTimer == 120 + k * 10)
 					Projectile.NewProjectile(null, thinker.Center, Vector2.Normalize(oppPos - thinker.Center).RotatedBy((-0.5f + k / 6f) * 3.14f) * 0.5f, ModContent.ProjectileType<VeinSpear>(), VeinSpearDamage, 0, Main.myPlayer, thinker.whoAmI);
@@ -753,7 +750,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (motionTime > 60 && motionTime <= 90)
 			{
-				NPC.Center += Vector2.Normalize(NPC.Center - savedPos2) * 7 * (1f - (motionTime - 60) / 30f); 
+				NPC.Center += Vector2.Normalize(NPC.Center - savedPos2) * 7 * (1f - (motionTime - 60) / 30f);
 				//Vector2.Normalize( * -100f, (motionTime - 30) / 60f);
 			}
 
@@ -834,7 +831,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (motionTime > 50 && motionTime < 80)
 			{
 				float rot = NPC.Center.DirectionTo(savedPos2).ToRotation();
-				var tellTex = Assets.Misc.DirectionalBeam.Value;
+				Texture2D tellTex = Assets.Misc.DirectionalBeam.Value;
 				var pos = Vector2.Lerp(NPC.Center, savedPos2, 0.2f);
 				var target = new Rectangle((int)pos.X, (int)pos.Y, 900, 50);
 				target.Offset((-Main.screenPosition).ToPoint());
@@ -852,7 +849,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				for (int k = 0; k < 10; k++)
 				{
 					Vector2 pos = NPC.oldPos[k] + NPC.Size / 2f;
-					DrawBrainSegments(spriteBatch, NPC, pos - Main.screenPosition, new Color(255, 50, 70), NPC.rotation, NPC.scale, (k / 30f) * (1f - (motionTime - 90) / 60f), lastPos);
+					DrawBrainSegments(spriteBatch, NPC, pos - Main.screenPosition, new Color(255, 50, 70), NPC.rotation, NPC.scale, k / 30f * (1f - (motionTime - 90) / 60f), lastPos);
 				}
 			}
 		}

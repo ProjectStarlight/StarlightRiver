@@ -189,7 +189,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			bodyShader.Parameters["overlay_t"].SetValue(Assets.Bosses.BrainRedux.HeartOver.Value);
 			bodyShader.Parameters["normal_t"].SetValue(Assets.Bosses.BrainRedux.HeartNormal.Value);
 
-			var oldScissor = Main.graphics.GraphicsDevice.ScissorRectangle;
+			Rectangle oldScissor = Main.graphics.GraphicsDevice.ScissorRectangle;
 
 			bodyShader.CurrentTechnique.Passes[0].Apply();
 

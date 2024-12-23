@@ -98,7 +98,7 @@ namespace StarlightRiver.Content.Items.Crimson
 			if (Main.myPlayer == Projectile.owner)
 				Item.NewItem(Projectile.GetSource_FromThis(), Projectile.Center, ModContent.ItemType<BearPoker>());
 
-			for(int k = 0; k < 20; k++)
+			for (int k = 0; k < 20; k++)
 			{
 				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Stone);
 			}

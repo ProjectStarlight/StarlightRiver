@@ -151,7 +151,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				NPC.boss = true;
 				Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/TheThinker");
 
-				if(ThisBrain.Phase >= DeadBrain.Phases.SecondPhase)
+				if (ThisBrain.Phase >= DeadBrain.Phases.SecondPhase)
 				{
 					Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/TheThinker");
 				}
@@ -280,7 +280,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				foreach (Player player in Main.ActivePlayers)
 				{
-					var dist = Vector2.Distance(player.Center, home);
+					float dist = Vector2.Distance(player.Center, home);
 
 					if (dist > ArenaRadius && dist < (ArenaRadius + 200) && !player.immune)
 					{
@@ -354,7 +354,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					platformRadiusTarget = 400;
 					platformRadiusTransitionTime = 60;
 
-					foreach(NPC npc in Main.ActiveNPCs)
+					foreach (NPC npc in Main.ActiveNPCs)
 					{
 						if (npc.ModNPC is HallucinationBlock hb)
 						{
@@ -554,7 +554,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				Vector2 pos = home + Vector2.UnitX.RotatedBy(k / 12f * 6.28f) * 550;
 				int i = NPC.NewNPC(null, (int)pos.X, (int)pos.Y, ModContent.NPCType<BrainPlatform>());
 
-				var newPlat = Main.npc[i];
+				NPC newPlat = Main.npc[i];
 
 				newPlat.Center = pos;
 				(newPlat.ModNPC as BrainPlatform).thinker = NPC;
