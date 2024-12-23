@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.Misc;
+using StarlightRiver.Content.Items.Vitric;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -78,6 +79,16 @@ namespace StarlightRiver.Content.Items.Crimson
 					moditem.cloneCooldown = 60 * 8;
 				}
 			}
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ModContent.ItemType<DendriteBar>(), 10);
+			recipe.AddIngredient(ModContent.ItemType<ImaginaryTissue>(), 5);
+			recipe.AddIngredient(ItemID.TendonBow);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 
