@@ -91,7 +91,7 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 
 				item.GetGlobalItem<TooltipPanelItem>().drawQueue.Add(new(new Vector2(width + 20, height + 20), (pos) =>
 				{
-					Utils.DrawInvBG(Main.spriteBatch, new Rectangle((int)pos.X - 10, (int)pos.Y - 10, (int)width + 20, (int)height + 20), new Color(35, 35, 35) * 0.925f);
+					Utils.DrawInvBG(Main.spriteBatch, new Rectangle((int)pos.X - 10, (int)pos.Y - 10, (int)width + 20, (int)height + 20), new Color(25, 20, 55) * 0.925f);
 
 					foreach (BuffTooltip keyword in thisBuffTips)
 					{
