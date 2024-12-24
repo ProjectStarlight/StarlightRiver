@@ -42,24 +42,8 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 			{
 				float width;
 				float height = -16;
-				Vector2 pos;
 
 				ReLogic.Graphics.DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
-
-				if (Main.MouseScreen.X < Main.screenWidth / 2)
-				{
-					string widest = lines.OrderBy(n => ChatManager.GetStringSize(font, n.Text, Vector2.One).X).Last().Text;
-					width = ChatManager.GetStringSize(font, widest, Vector2.One).X;
-
-					pos = new Vector2(x, y) + new Vector2(width + 30, 0);
-				}
-				else
-				{
-					Keyword widest = thisKeywords.OrderBy(n => ChatManager.GetStringSize(font, n.Description, Vector2.One).X * 0.8f).Last();
-					width = ChatManager.GetStringSize(font, widest.Description, Vector2.One).X + 20;
-
-					pos = new Vector2(x, y) - new Vector2(width + 30, 0);
-				}
 
 				Keyword widestName = thisKeywords.OrderBy(n => ChatManager.GetStringSize(font, n.Name + ":", Vector2.One).X).Last();
 				Keyword widestDesc = thisKeywords.OrderBy(n => ChatManager.GetStringSize(font, n.Description, Vector2.One).X).Last();
@@ -75,15 +59,18 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 					height += 0.8f * ChatManager.GetStringSize(font, keyword.Description, Vector2.One).Y + 16;
 				}
 
-				Utils.DrawInvBG(Main.spriteBatch, new Rectangle((int)pos.X - 10, (int)pos.Y - 10, (int)width + 20, (int)height + 20), new Color(25, 20, 55) * 0.925f);
-
-				foreach (Keyword keyword in thisKeywords)
+				item.GetGlobalItem<TooltipPanelItem>().drawQueue.Add(new(new Vector2(width + 20, height + 20), (pos) =>
 				{
-					Utils.DrawBorderString(Main.spriteBatch, BuildKeyword(keyword) + ":", pos, Color.White);
-					pos.Y += ChatManager.GetStringSize(font, keyword.Name, Vector2.One).Y;
-					Utils.DrawBorderString(Main.spriteBatch, "[c/AAAAAA: " + keyword.Description.Replace("\n", "]\n [c/AAAAAA:") + "]", pos, Color.White, 0.8f);
-					pos.Y += 0.8f * ChatManager.GetStringSize(font, keyword.Description, Vector2.One).Y + 16;
-				}
+					Utils.DrawInvBG(Main.spriteBatch, new Rectangle((int)pos.X - 10, (int)pos.Y - 10, (int)width + 20, (int)height + 20), new Color(25, 20, 55) * 0.925f);
+
+					foreach (Keyword keyword in thisKeywords)
+					{
+						Utils.DrawBorderString(Main.spriteBatch, BuildKeyword(keyword) + ":", pos, Color.White);
+						pos.Y += ChatManager.GetStringSize(font, keyword.Name, Vector2.One).Y;
+						Utils.DrawBorderString(Main.spriteBatch, "[c/AAAAAA: " + keyword.Description.Replace("\n", "]\n [c/AAAAAA:") + "]", pos, Color.White, 0.8f);
+						pos.Y += 0.8f * ChatManager.GetStringSize(font, keyword.Description, Vector2.One).Y + 16;
+					}
+				}, 0));
 			}
 
 			return true;
@@ -133,6 +120,9 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 				string keyString = match.Groups[1].Value;
 
 				Keyword keyword = KeywordLoader.keywords.FirstOrDefault(n => string.Equals(n.Name, keyString, StringComparison.OrdinalIgnoreCase));
+
+				if (keyword is null)
+					return "UNKNOWN KEYWORD";
 
 				if (!thisKeywords.Contains(keyword))
 					thisKeywords.Add(keyword);

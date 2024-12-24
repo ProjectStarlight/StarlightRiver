@@ -72,25 +72,8 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 			{
 				float width;
 				float height = -16;
-				Vector2 pos;
 
 				ReLogic.Graphics.DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
-
-				if (Main.MouseScreen.X < Main.screenWidth / 2)
-				{
-					string widest = lines.OrderBy(n => ChatManager.GetStringSize(font, n.Text, Vector2.One).X).Last().Text;
-					width = ChatManager.GetStringSize(font, widest, Vector2.One).X;
-
-					pos = new Vector2(x, y) + new Vector2(width + item.GetGlobalItem<KeywordScanner>().keywordPanelWidth + 30, 0);
-					int a = 1;
-				}
-				else
-				{
-					BuffTooltip widest = thisBuffTips.OrderBy(n => ChatManager.GetStringSize(font, n.description, Vector2.One).X).Last();
-					width = ChatManager.GetStringSize(font, widest.description, Vector2.One).X + 20;
-
-					pos = new Vector2(x, y) - new Vector2(width + item.GetGlobalItem<KeywordScanner>().keywordPanelWidth + 30, 0);
-				}
 
 				BuffTooltip widestName = thisBuffTips.OrderBy(n => ChatManager.GetStringSize(font, "      " + n.name + ":", Vector2.One).X).Last();
 				BuffTooltip widestDesc = thisBuffTips.OrderBy(n => ChatManager.GetStringSize(font, n.description, Vector2.One).X).Last();
@@ -106,20 +89,23 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 					height += 0.8f * ChatManager.GetStringSize(font, keyword.description, Vector2.One).Y + 16;
 				}
 
-				Utils.DrawInvBG(Main.spriteBatch, new Rectangle((int)pos.X - 10, (int)pos.Y - 10, (int)width + 20, (int)height + 20), new Color(35, 35, 35) * 0.925f);
-
-				foreach (BuffTooltip keyword in thisBuffTips)
+				item.GetGlobalItem<TooltipPanelItem>().drawQueue.Add(new(new Vector2(width + 20, height + 20), (pos) =>
 				{
-					Main.spriteBatch.Draw(keyword.icon.Value, pos, Color.White);
-					Utils.DrawBorderString(Main.spriteBatch, "      " + BuildKeyword(keyword) + ":", pos, Color.White);
+					Utils.DrawInvBG(Main.spriteBatch, new Rectangle((int)pos.X - 10, (int)pos.Y - 10, (int)width + 20, (int)height + 20), new Color(35, 35, 35) * 0.925f);
 
-					var max = keyword.cap == -1 ? "Infinite" : $"{keyword.cap}";
-					Utils.DrawBorderString(Main.spriteBatch, $"Max stacks: {max}", pos + new Vector2(42, 20), Color.Gray, 0.7f);
+					foreach (BuffTooltip keyword in thisBuffTips)
+					{
+						Main.spriteBatch.Draw(keyword.icon.Value, pos, Color.White);
+						Utils.DrawBorderString(Main.spriteBatch, "      " + BuildKeyword(keyword) + ":", pos, Color.White);
 
-					pos.Y += ChatManager.GetStringSize(font, keyword.name, Vector2.One).Y + 8;
-					Utils.DrawBorderString(Main.spriteBatch, "[c/AAAAAA: " + keyword.description.Replace("\n", "]\n [c/AAAAAA:") + "]", pos, Color.White, 0.8f);
-					pos.Y += 0.8f * ChatManager.GetStringSize(font, keyword.description, Vector2.One).Y + 16;
-				}
+						var max = keyword.cap == -1 ? "Infinite" : $"{keyword.cap}";
+						Utils.DrawBorderString(Main.spriteBatch, $"Max stacks: {max}", pos + new Vector2(42, 20), Color.Gray, 0.7f);
+
+						pos.Y += ChatManager.GetStringSize(font, keyword.name, Vector2.One).Y + 8;
+						Utils.DrawBorderString(Main.spriteBatch, "[c/AAAAAA: " + keyword.description.Replace("\n", "]\n [c/AAAAAA:") + "]", pos, Color.White, 0.8f);
+						pos.Y += 0.8f * ChatManager.GetStringSize(font, keyword.description, Vector2.One).Y + 16;
+					}
+				}, 1));
 			}
 
 			return true;
