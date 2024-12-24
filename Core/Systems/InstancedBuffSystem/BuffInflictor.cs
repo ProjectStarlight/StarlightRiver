@@ -52,6 +52,10 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		{
 			var instance = InstancedBuffNPC.GetInstance<T>(npc) as StackableBuff; //If possible, get the existing instancedBuff instance for this stackable buff
 
+			//If we have too many stacks already, abort
+			if (instance.MaxStacks != -1 && instance.stacks.Count >= instance.MaxStacks)
+				return;
+
 			if (instance is null)
 			{
 				InflictInner<T>(npc, duration); //If not found, inflict it and get it
@@ -72,6 +76,10 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		private static void InflictStackInner<T>(Player player, int duration, BuffStack premadeStack) where T : InstancedBuff, new()
 		{
 			var instance = InstancedBuffPlayer.GetInstance<T>(player) as StackableBuff; //If possible, get the existing instancedBuff instance for this stackable buff
+
+			//If we have too many stacks already, abort
+			if (instance.MaxStacks != -1 && instance.stacks.Count >= instance.MaxStacks)
+				return;
 
 			if (instance is null)
 			{

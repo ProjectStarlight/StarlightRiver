@@ -1,0 +1,142 @@
+[
+  {
+    "Name": "Sweltered",
+    "Description": "Deals 20 DPS.",
+    "R": 255,
+    "G": 100,
+    "B": 35
+  },
+  {
+    "Name": "Shredded",
+    "Description": "Inflicted enemies have their defense decreased by 2 and take 2 DoT per stack. Caps at 5 stacks.",
+    "R": 90,
+    "G": 20,
+    "B": 20
+  },
+  {
+    "Name": "Vulnerability",
+    "Description": "Increases the amount of damage a target takes by their Vulnerability stacks.",
+    "R": 150,
+    "G": 30,
+    "B": 30
+  },
+  {
+    "Name": "Exposure",
+    "Description": "Multiplies the amount of damage a target takes by their Exposure value before consuming the effect.",
+    "R": 175,
+    "G": 35,
+    "B": 35
+  },
+  {
+    "Name": "Focused",
+    "Description": "Afflicted enemies have double the chance to be critically striked, however you cannot critically strike any other enemy besides the Focused enemy.",
+    "R": 85,
+    "G": 220,
+    "B": 55
+  },
+  {
+    "Name": "Haunted",
+    "Description": "Afflicted enemies take 1 DPS per Haunted stack. When an enemy has 20 Haunted stacks, they will cause haunted apparitions to exorcise from them, removing all their Haunted stacks.",
+    "R": 180,
+    "G": 0,
+    "B": 255
+  },
+  {
+    "Name": "Volatile",
+    "Description": "Afflicted enemies take 7% more damage and deal 3% more damage for every stack of Volatile. Caps at 5 stacks.",
+    "R": 220,
+    "G": 205,
+    "B": 140
+  },
+  {
+    "Name": "Grazes",
+    "Description": "Occur when an enemies projectile barely misses you. Grazes have a cooldown of 2 seconds by default.",
+    "R": 135,
+    "G": 235,
+    "B": 255
+  },
+  {
+    "Name": "Barrier",
+    "Description": "Provides significant damage reduction while active. When you resist damage this way, the amount you would have taken is subtracted from your barrier. Your barrier recovers after a brief period of not taking damage.",
+    "R": 100,
+    "G": 255,
+    "B": 255
+  },
+  {
+    "Name": "Starlight",
+    "Description": "Consumed to cast Abilities. The mystical energy of the mind that governs meaning, memory, and connection, and allows its wielders to accomplish great feats by bringing their will into reality.",
+    "R": 170,
+    "G": 240,
+    "B": 255
+  },
+  {
+    "Name": "Cursed",
+    "Description": "This item comes with a build-defining boon and a crippling flaw. Curses can usually be worked around, and sometimes even turned in your favor.",
+    "R": 200,
+    "G": 100,
+    "B": 255
+  },
+  {
+    "Name": "Inoculation",
+    "Description": "Reduces the amount of damage over time you take from debuffs.",
+    "R": 170,
+    "G": 255,
+    "B": 150
+  },
+  {
+    "Name": "Reserve",
+    "Description": "A resource with an amount reserved cannot go above it's maximum minus it's reserved amount.",
+    "R": 180,
+    "G": 180,
+    "B": 200
+  },
+  {
+    "Name": "Rend",
+    "Description": "Permanently decreases defense by the specified amount, stacking additively.",
+    "R": 255,
+    "G": 100,
+    "B": 80
+  },
+  {
+    "Name": "Overcharged",
+    "Description": "Decreases enemy defense and causes them to constantly create shocking sparks, damaging nearby enemies.",
+    "R": 0,
+    "G": 255,
+    "B": 255
+  },
+  {
+    "Name": "Artifact",
+    "Description": "A buried piece of treasure, identified by the sparkles that appear when shining light over the blocks it's buried within.",
+    "R": 255,
+    "G": 210,
+    "B": 100
+  },
+  {
+    "Name": "Bloodfrenzy",
+    "Description": "Grants a boost to attack speed, but a decrease to critical strike chance.",
+    "R": 200,
+    "G": 30,
+    "B": 30
+  },
+  {
+    "Name": "Reaping",
+    "Description": "Consumes stacks of a specified effect to increase the stats of a given move or grant you a different effect.",
+    "R": 220,
+    "G": 170,
+    "B": 220
+  },
+  {
+    "Name": "Dreamfire",
+    "Description": "Consumed when an enemy is struck with Moonfury to boost the damage of said strike.",
+    "R": 170,
+    "G": 160,
+    "B": 255
+  },
+  {
+    "Name": "Debug",
+    "Description": "Not intended for use in normal gameplay, and should only be obtainable via cheats or inventory editors. Please submit a bug report at https://github.com/ProjectStarlight/StarlightRiver/issues if you believe you recieved this item in error.",
+    "R": 255,
+    "G": 0,
+    "B": 0
+  }
+]
