@@ -80,6 +80,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override string Tooltip => "You're bleeding out!";
 
+		public override int MaxStacks => 5;
+
 		public override BuffStack GenerateDefaultStack(int duration)
 		{
 			return new BuffStack()

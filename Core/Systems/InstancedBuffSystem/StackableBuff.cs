@@ -9,10 +9,25 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 	/// </summary>
 	internal abstract class StackableBuff : InstancedBuff
 	{
+		public static Dictionary<int, int> maxStacksByType = new();
+
 		/// <summary>
 		/// A list of instances of stacks for this buff
 		/// </summary>
 		public List<BuffStack> stacks = new();
+
+		/// <summary>
+		/// The maximum amount of stacks of this buff that can be on a given entity. -1 represents unlimited stacks.
+		/// </summary>
+		public virtual int MaxStacks => -1;
+
+		public sealed override void Load()
+		{
+			maxStacksByType[BackingType] = MaxStacks;
+			SafeLoad();
+		}
+
+		public virtual void SafeLoad() { }
 
 		public virtual void PerStackEffectsNPC(NPC npc, BuffStack stack) { }
 

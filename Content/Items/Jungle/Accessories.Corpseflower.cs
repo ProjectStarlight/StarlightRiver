@@ -233,7 +233,7 @@ namespace StarlightRiver.Content.Items.Jungle
 
 		public override string Tooltip => "You have been cursed by the corpseflower"; //idk man
 
-		public override void Load()
+		public override void SafeLoad()
 		{
 			StarlightNPC.UpdateLifeRegenEvent += StarlightNPC_UpdateLifeRegenEvent;
 			StarlightNPC.ResetEffectsEvent += ResetDamage;
