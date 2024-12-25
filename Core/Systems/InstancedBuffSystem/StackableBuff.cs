@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 {
@@ -119,6 +120,37 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		}
 
 		public abstract BuffStack GenerateDefaultStack(int duration);
+
+		public sealed override void NetSend(BinaryWriter writer)
+		{
+			writer.Write(stacks.Count);
+
+			for(int k = 0; k < stacks.Count; k++)
+			{
+				stacks[k].NetSend(writer);
+			}
+
+			SendCustomData(writer);
+		}
+
+		public override void NetReceive(BinaryReader reader)
+		{
+			int stacksFromNet = reader.ReadInt32();
+			stacks.Clear();
+
+			for(int k = 0; k < stacksFromNet; k++)
+			{
+				var newStack = new BuffStack();
+				newStack.NetReceive(reader);
+				stacks.Add(newStack);
+			}
+
+			RecieveCustomData(reader);
+		}
+
+		public virtual void SendCustomData(BinaryWriter writer) { }
+
+		public virtual void RecieveCustomData(BinaryReader reader) { }
 	}
 
 	/// <summary>
@@ -126,7 +158,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 	/// To inflict an instanced buff, call BuffInflictor.Inflict or BuffInflictor.InflictStack.
 	/// </summary>
 	/// <typeparam name="T">The type of stack this buff uses. The default is the parent class BuffStack, which contains only a duration. You can create custom stack types by extending this class.</typeparam>
-	internal abstract class StackableBuff<T> : StackableBuff where T : BuffStack
+	internal abstract class StackableBuff<T> : StackableBuff where T : BuffStack, new()
 	{
 		/// <summary>
 		/// Used to define the effects that should occur per-stack for NPCs
@@ -198,6 +230,21 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		{
 			return GenerateDefaultStackTyped(duration);
 		}
+
+		public sealed override void NetReceive(BinaryReader reader)
+		{
+			int stacksFromNet = reader.ReadInt32();
+			stacks.Clear();
+
+			for (int k = 0; k < stacksFromNet; k++)
+			{
+				var newStack = new T();
+				newStack.NetReceive(reader);
+				stacks.Add(newStack);
+			}
+
+			RecieveCustomData(reader);
+		}
 	}
 
 	/// <summary>
@@ -206,5 +253,27 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 	public class BuffStack
 	{
 		public int duration;
+
+		public void NetSend(BinaryWriter writer)
+		{
+			writer.Write(duration);
+			SendCustomData(writer);
+		}
+
+		public void NetReceive(BinaryReader reader)
+		{
+			duration = reader.ReadInt32();
+			ReceiveCustomData(reader);
+		}
+
+		public virtual void SendCustomData(BinaryWriter writer)
+		{
+
+		}
+
+		public virtual void ReceiveCustomData(BinaryReader reader)
+		{
+
+		}
 	}
 }

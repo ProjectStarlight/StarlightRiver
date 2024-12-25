@@ -5,6 +5,7 @@ using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems.InstancedBuffSystem;
 using StarlightRiver.Helpers;
 using System;
+using System.IO;
 using System.Reflection;
 using Terraria.ID;
 using Terraria.Localization;
@@ -218,6 +219,16 @@ namespace StarlightRiver.Content.Items.Jungle
 	class CorpseflowerStack : BuffStack
 	{
 		public int damage;
+
+		public override void SendCustomData(BinaryWriter writer)
+		{
+			writer.Write(damage);
+		}
+
+		public override void ReceiveCustomData(BinaryReader reader)
+		{
+			damage = reader.ReadInt32();
+		}
 	}
 
 	class CorpseflowerBuff : StackableBuff<CorpseflowerStack>

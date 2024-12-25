@@ -1,4 +1,10 @@
-﻿namespace StarlightRiver.Core.Systems.InstancedBuffSystem
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using Terraria;
+using Terraria.ID;
+
+namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 {
 	/// <summary>
 	/// This class is to be used for buffs which require instanced data per enttiy it is inflicted on. For example, a different DoT value to apply.
@@ -7,12 +13,17 @@
 	internal abstract class InstancedBuff : ILoadable
 	{
 		/// <summary>
+		/// Stores the prototypes of all instanced buffs, indexed by their Name property
+		/// </summary>
+		public static Dictionary<string, InstancedBuff> prototypes = new();
+
+		/// <summary>
 		/// The numeric ID of the backing traditional buff to indicate this buffs inflicted status
 		/// </summary>
 		public int BackingType => StarlightRiver.Instance.Find<ModBuff>(Name).Type;
 
 		/// <summary>
-		/// The internal name of the backing ModBuff
+		/// The internal name of the instanced buff and the backing ModBuff
 		/// </summary>
 		public abstract string Name { get; }
 
@@ -39,7 +50,26 @@
 		public void Load(Mod mod)
 		{
 			mod.AddContent(new InstancedBuffBacker(Name, DisplayName, Texture, Tooltip, Debuff));
+			prototypes[Name] = this;
 			Load();
+		}
+
+		/// <summary>
+		/// Tries to get the prototype of an instanced buff
+		/// </summary>
+		/// <param name="name">The internal name of the buff to get</param>
+		/// <param name="prototype">The prototype if it exists</param>
+		/// <returns>If the prototype exists or not</returns>
+		public static bool TryGetPrototype(string name, out InstancedBuff prototype)
+		{
+			if (prototypes.TryGetValue(name, out var proto))
+			{
+				prototype = proto;
+				return true;
+			}
+
+			prototype = null;
+			return false;
 		}
 
 		/// <summary>
@@ -109,6 +139,57 @@
 		/// </summary>
 		/// <param name="npc"></param>
 		public virtual void UpdateNPC(NPC npc) { }
+
+		/// <summary>
+		/// Send data to sync this buff instance here
+		/// </summary>
+		public virtual void NetSend(BinaryWriter writer) { }
+
+		/// <summary>
+		/// Recieve data to sync this buff instance here
+		/// </summary>
+		public virtual void NetReceive(BinaryReader reader) { }
+
+		public void NetSync(int whoAmI, bool isPlayer)
+		{
+			if (Main.netMode == NetmodeID.SinglePlayer)
+				return;
+
+			var stream = new MemoryStream();
+			BinaryWriter writer = new BinaryWriter(stream);
+			NetSend(writer);
+
+			writer.Flush();
+			writer.Close();
+
+			if (isPlayer)
+			{
+				var player = Main.player[whoAmI];
+				var buffIndex = player.FindBuffIndex(BackingType);
+
+				if (buffIndex == -1)
+					return;
+
+				InstancedBuffPacket packet = new(Name, whoAmI, isPlayer, player.buffTime[buffIndex], stream.ToArray());
+				packet.Send();
+			}
+			else
+			{
+				var npc = Main.npc[whoAmI];
+				var buffIndex = npc.FindBuffIndex(BackingType);
+
+				if (buffIndex == -1)
+					return;
+
+				InstancedBuffPacket packet = new(Name, whoAmI, isPlayer, npc.buffTime[buffIndex], stream.ToArray());
+				packet.Send();
+			}		
+		}
+
+		public InstancedBuff Clone()
+		{
+			return MemberwiseClone() as InstancedBuff;
+		}
 	}
 
 	/// <summary>
