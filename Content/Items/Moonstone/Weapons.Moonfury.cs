@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Moonfury");
-			Tooltip.SetDefault("Call down a shard of moonstone, inflicting {{Dreamfire}} on struck enemies");
+			Tooltip.SetDefault("Call down a shard of moonstone, inflicting {{BUFF:MoonfuryDebuff}}");
 		}
 
 		public override void SetDefaults()
@@ -408,7 +408,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 	{
 		public override string Texture => AssetDirectory.Debug;
 
-		public MoonfuryDebuff() : base("Dreamfire", "Next Moonfury hit has increased damage", false) { }
+		public MoonfuryDebuff() : base("Dreamfire", "The next Moonfury hit has increased damage", true) { }
 
 		public override void Update(NPC NPC, ref int buffIndex)
 		{

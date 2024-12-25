@@ -8,7 +8,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public BarbedKnife() : base("Barbed Knife", "Critical strikes apply a bleeding debuff that stacks up to five times") { }
+		public BarbedKnife() : base("Barbed Knife", "Critical strikes apply {{BUFF:BarbedKnifeBleed}}") { }
 
 		public override void SafeSetDefaults()
 		{

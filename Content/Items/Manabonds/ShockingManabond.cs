@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 	{
 		public override string Texture => AssetDirectory.ManabondItem + Name;
 
-		public ShockingManabond() : base("Shocking Manabond", "Your minions can store 40 mana\nYour minions siphon 6 mana per second from you untill full\nYour minions spend 12 mana to attack with chain lightning occasionally\nChain lightning inflicts overcharged, decreasing defense") { }
+		public ShockingManabond() : base("Shocking Manabond", "Your minions can store 40 mana\nYour minions siphon 6 mana per second from you untill full\nYour minions spend 12 mana to attack with chain lightning occasionally\nChain lightning inflicts {{BUFF:Overcharge}}") { }
 
 		public override void SafeSetDefaults()
 		{

@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		{
 			DisplayName.SetDefault("Radcula's Rapier");
 			Tooltip.SetDefault("Rapidly stabs enemies, inflicting a stacking bleed\n" +
-				"Press <right> to teleport to the cursor, {{Reaping}} bleed stacks of enemies in the way for high damage and lifesteal\n" +
+				"Press <right> to teleport to the cursor, passing through bleeding enemies deals extra damage and heals you\n" +
 				"Striking multiple enemies with the teleport lowers its cooldown");
 		}
 

@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			DisplayName.SetDefault("Filet Knife");
 			Tooltip.SetDefault("Critical strikes carve chunks of flesh from enemies\n" +
-			"Devour chunks to heal and gain Bloodfrenzy");
+			"Devour chunks to heal and gain {{BUFF:FiletFrenzyBuff}}");
 		}
 
 		public override void SetDefaults()
@@ -298,7 +298,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.Debug;
 
-		public FiletFrenzyBuff() : base("Blood Frenzy", "Increased melee speed, but decreased crit rate on Filet Knife", false, false) { }
+		public FiletFrenzyBuff() : base("Blood Frenzy", "Increased melee speed\nthe Filet Knife cannot critically hit enemies", false, false) { }
 
 		public override void Update(Player Player, ref int buffIndex)
 		{
