@@ -41,7 +41,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 					if (!proto.AnyInflicted(player))
 						BuffInflictor.InflictFromNet(player, durationRemaining, buffName);
 
-					proto.GetInstance(player).NetReceive(new BinaryReader(new MemoryStream(buffSpecificData)));
+					proto.GetInstance(player)?.NetReceive(new BinaryReader(new MemoryStream(buffSpecificData)));
 				}
 				else
 				{
@@ -50,7 +50,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 					if (!proto.AnyInflicted(npc))
 						BuffInflictor.InflictFromNet(npc, durationRemaining, buffName);
 
-					proto.GetInstance(npc).NetReceive(new BinaryReader(new MemoryStream(buffSpecificData)));
+					proto.GetInstance(npc)?.NetReceive(new BinaryReader(new MemoryStream(buffSpecificData)));
 				}
 
 				if (Main.netMode == NetmodeID.Server)
