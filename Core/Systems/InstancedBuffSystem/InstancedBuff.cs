@@ -170,7 +170,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 				if (buffIndex == -1)
 					return;
 
-				InstancedBuffPacket packet = new(Name, whoAmI, isPlayer, player.buffTime[buffIndex], stream.ToArray());
+				InstancedBuffPacket packet = new(Main.myPlayer, Name, whoAmI, isPlayer, player.buffTime[buffIndex], stream.ToArray());
 				packet.Send();
 			}
 			else
@@ -181,7 +181,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 				if (buffIndex == -1)
 					return;
 
-				InstancedBuffPacket packet = new(Name, whoAmI, isPlayer, npc.buffTime[buffIndex], stream.ToArray());
+				InstancedBuffPacket packet = new(Main.myPlayer, Name, whoAmI, isPlayer, npc.buffTime[buffIndex], stream.ToArray());
 				packet.Send();
 			}		
 		}
