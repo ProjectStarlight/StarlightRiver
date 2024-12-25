@@ -8,6 +8,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 	{
 		public static void InflictFromNet(Player player, int duration, string type)
 		{
+			Main.NewText($"InflictFromNet: {duration}, {type}");
 			InstancedBuffPlayer mp = player.GetModPlayer<InstancedBuffPlayer>();
 
 			if (InstancedBuff.TryGetPrototype(type, out var proto))
@@ -22,6 +23,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 
 		public static void InflictFromNet(NPC npc, int duration, string type)
 		{
+			Main.NewText($"InflictFromNet: {duration}, {type}");
 			InstancedBuffNPC gn = npc.GetGlobalNPC<InstancedBuffNPC>();
 
 			if (InstancedBuff.TryGetPrototype(type, out var proto))
