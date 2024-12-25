@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Terraria.ID;
 
 namespace StarlightRiver.Core.Systems.KeywordSystem
 {
@@ -16,7 +17,8 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 
 		public override void Load()
 		{
-			LoadFromFile();
+			if (!Main.dedServ)
+				LoadFromFile();
 		}
 
 		public override void PostUpdateEverything()

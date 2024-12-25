@@ -89,7 +89,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 			var instance = InstancedBuffNPC.GetInstance<T>(npc) as StackableBuff; //If possible, get the existing instancedBuff instance for this stackable buff
 
 			//If we have too many stacks already, abort
-			if (instance.MaxStacks != -1 && instance.stacks.Count >= instance.MaxStacks)
+			if (instance != null && instance.MaxStacks != -1 && instance.stacks.Count >= instance.MaxStacks)
 				return;
 
 			if (instance is null)
@@ -116,7 +116,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 			var instance = InstancedBuffPlayer.GetInstance<T>(player) as StackableBuff; //If possible, get the existing instancedBuff instance for this stackable buff
 
 			//If we have too many stacks already, abort
-			if (instance.MaxStacks != -1 && instance.stacks.Count >= instance.MaxStacks)
+			if (instance != null && instance.MaxStacks != -1 && instance.stacks.Count >= instance.MaxStacks)
 				return;
 
 			if (instance is null)

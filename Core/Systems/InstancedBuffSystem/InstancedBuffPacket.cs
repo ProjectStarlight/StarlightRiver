@@ -5,21 +5,24 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria.ID;
 using UwUPnP;
 
 namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 {
 	[Serializable]
-	internal class InstancedBuffPacket : Module
+	public class InstancedBuffPacket : Module
 	{
+		private readonly int fromWho;
 		private readonly string buffName;
 		private readonly int whoAmI;
 		private readonly bool isPlayer;
 		private readonly int durationRemaining;
 		private readonly byte[] buffSpecificData;
 
-		public InstancedBuffPacket(string buffName, int whoAmI, bool isPlayer, int durationRemaining, byte[] buffSpecificData)
+		public InstancedBuffPacket(int fromWho, string buffName, int whoAmI, bool isPlayer, int durationRemaining, byte[] buffSpecificData)
 		{
+			this.fromWho = fromWho;
 			this.buffName = buffName;
 			this.whoAmI = whoAmI;
 			this.isPlayer = isPlayer;
@@ -49,6 +52,9 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 
 					proto.GetInstance(npc).NetReceive(new BinaryReader(new MemoryStream(buffSpecificData)));
 				}
+
+				if (Main.netMode == NetmodeID.Server)
+					Send(-1, fromWho, false);
 			}
 		}
 	}
