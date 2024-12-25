@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Prefixes.Accessory.Cursed;
 using System;
+using System.Collections.Generic;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
@@ -210,5 +211,13 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 			return base.PreDrawTooltipLine(line, ref yOffset);
 		}
+
+		public sealed override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			SafeModifyTooltips(tooltips);
+			tooltips.Add(new(Mod, "CursedAccessoryLine", "{{Cursed}} item"));
+		}
+
+		public virtual void SafeModifyTooltips(List<TooltipLine> tooltips) { }
 	}
 }

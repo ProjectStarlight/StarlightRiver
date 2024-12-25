@@ -316,7 +316,7 @@ Items: {
 		DisplayName: Warrior King's Crown
 		Tooltip:
 			'''
-			Cursed : All summon slots convert to +2% summoning critical strike chance per slot
+			All summon slots convert to +2% summoning critical strike chance per slot
 			All sentry slots convert to +30% summoning damage per slot
 			Summoning damage increased by 40%
 			Combat mount cooldowns reduced by 30%
@@ -361,7 +361,7 @@ Items: {
 	DefiledAnkh: {
 		Tooltip:
 			'''
-			Cursed : Your {{Barrier}} protects against 25% less damage
+			Your {{Barrier}} protects against 25% less damage
 			+100% {{Inoculation}} and immunity to most debuffs while {{Barrier}} is active
 			+40 max {{Barrier}}
 			'''
@@ -1011,7 +1011,7 @@ Items: {
 	TaintedGreataxe: {
 		Tooltip:
 			'''
-			Cursed : Landing a Critical Strike will inflict {{Focused}} on a new, different enemy
+			Landing a Critical Strike will inflict {{Focused}} on a new, different enemy
 			<right> on the Greataxe whilst it is Embedded to release it
 			'''
 		DisplayName: Tainted Greataxe
@@ -1198,7 +1198,7 @@ Items: {
 		Tooltip:
 			'''
 			Resource potions are more effective when their respective resource is lower 
-			Cursed : Potion sickness effects last 15 seconds longer
+			Potion sickness effects last 15 seconds longer
 			'''
 	}
 
@@ -1278,7 +1278,7 @@ Items: {
 		DisplayName: Causal Mirror
 		Tooltip:
 			'''
-			Cursed : Your DoT and regeneration effects are inverted.
+			Your DoT and regeneration effects are inverted.
 			Regenerate life when you would take damage-over-time.
 			Take damage-over-time when you would regenerate life.
 			This includes natural regeneration!
@@ -1525,14 +1525,14 @@ Items: {
 			+40% {{Inoculation}}
 			Debuffs you inflict are inflicted on yourself
 			+5% movement and attack speed per debuff affecting you
-			Cursed : Lose all debuff immunities
+			Lose all debuff immunities
 			'''
 	}
 
 	Magebane: {
 		Tooltip:
 			'''
-			Cursed : You can not drink mana potions or other mana-replenishing items
+			You can not drink mana potions or other mana-replenishing items
 			Magic attacks have a 25% chance to leech a large portion of their damage as mana
 			'''
 		DisplayName: Magebane
@@ -1948,7 +1948,7 @@ Items: {
 		DisplayName: Blood Crystal
 		Tooltip:
 			'''
-			Cursed : Debuffs you inflict are also inflicted onto you 
+			Debuffs you inflict are also inflicted onto you 
 			All debuffs you inflict stack and last longer
 			'''
 	}
