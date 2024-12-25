@@ -4,6 +4,7 @@ using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems.InstancedBuffSystem;
 using StarlightRiver.Helpers;
 using System;
+using System.IO;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Misc
@@ -207,5 +208,15 @@ namespace StarlightRiver.Content.Items.Misc
 		public override bool Debuff => true;
 
 		public override string Tooltip => "You cant see, loser!";
+
+		public override void NetSend(BinaryWriter writer)
+		{
+			writer.Write(lastInflicted.whoAmI);
+		}
+
+		public override void NetReceive(BinaryReader reader)
+		{
+			lastInflicted = Main.player[reader.ReadInt32()];
+		}
 	}
 }
