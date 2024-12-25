@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Items.RatKing
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Blood Crystal");
-			Tooltip.SetDefault("Cursed : Debuffs you inflict are also inflicted onto you \nAll debuffs you inflict stack and last longer");
+			Tooltip.SetDefault("Debuffs you inflict are also inflicted onto you \nAll debuffs you inflict stack and last longer");
 		}
 
 		public override void SafeSetDefaults()
