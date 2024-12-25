@@ -89,7 +89,7 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 			if (thisKeywords.Count > 0 && keywordPanelWidth == 0)
 				CalculateWidth();
 
-			if (thisKeywords.Count > 0 && !Main.LocalPlayer.controlUp)
+			if (thisKeywords.Count > 0 && !Main.LocalPlayer.controlUp && !tooltips.Any(n => n.Mod == Mod.Name && n.Name == "KeywordInfo"))
 				tooltips.Add(new TooltipLine(Mod, "KeywordInfo", "[c/AAAAAA:Press UP for more info]"));
 		}
 
