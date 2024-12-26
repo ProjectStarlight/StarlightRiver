@@ -78,7 +78,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool Debuff => true;
 
-		public override string Tooltip => "You're bleeding out!";
+		public override string Tooltip => "Deals 8 damage per second";
 
 		public override int MaxStacks => 5;
 
@@ -92,7 +92,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void PerStackEffectsNPC(NPC npc, BuffStack stack)
 		{
-			npc.lifeRegen -= 15;
+			npc.lifeRegen -= 16;
 		}
 
 		public override void AnyStacksUpdateNPC(NPC npc)

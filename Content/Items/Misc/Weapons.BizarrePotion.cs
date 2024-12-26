@@ -6,6 +6,7 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -28,7 +29,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Bizarre Potion");
-			Tooltip.SetDefault("Throws a random volatile potion with random - usually explosive - effects");
+			Tooltip.SetDefault("Throws a random volatile potion with random effects\nMay inflict {{BUFF:BizarrePotionPoisonDebuff}}");
 		}
 
 		public override void SetDefaults()
@@ -826,42 +827,18 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 	}
 
-	// TODO: Port to... buff?
-	public class BizarrePotionGNPC : GlobalNPC
-	{
-		public override bool InstancePerEntity => true;
-
-		public bool infected = false;
-
-		public override void ResetEffects(NPC npc)
-		{
-			infected = false;
-		}
-
-		public override void UpdateLifeRegen(NPC npc, ref int damage)
-		{
-			if (infected)
-			{
-				if (npc.lifeRegen > 0)
-					npc.lifeRegen = 0;
-
-				npc.lifeRegen -= 24;
-
-				if (damage < 3)
-					damage = 3;
-			}
-		}
-	}
-
 	class BizarrePotionPoisonDebuff : SmartBuff
 	{
 		public override string Texture => AssetDirectory.Debug;
 
-		public BizarrePotionPoisonDebuff() : base("Bizarre Poison", "You poisoned", true) { }
+		public BizarrePotionPoisonDebuff() : base("Bizarre Poison", "Deals 12 damage per second", true) { }
 
-		public override void Update(NPC NPC, ref int buffIndex)
+		public override void Update(NPC npc, ref int buffIndex)
 		{
-			NPC.GetGlobalNPC<BizarrePotionGNPC>().infected = true;
+			npc.lifeRegen -= 24;
+
+			if (npc.lifeRegenCount < 3)
+				npc.lifeRegenCount = 3;
 		}
 	}
 }
