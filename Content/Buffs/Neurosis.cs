@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Buffs
 
 		public override string DisplayName => "Neurosis";
 
-		public override string Tooltip => "Decreases damage by 2%";
+		public override string Tooltip => "Decreases damage dealt by 2%";
 
 		public override string Texture => AssetDirectory.Debug;
 
@@ -40,13 +40,6 @@ namespace StarlightRiver.Content.Buffs
 				Damage = (int)(Damage * mult);				
 			}
 
-			if (spawnSource is EntitySource_Parent source2 && source2.Entity is Player player && InstancedBuffPlayer.GetInstance<Neurosis>(player) != null)
-			{
-				var instance = InstancedBuffPlayer.GetInstance<Neurosis>(player);
-				var mult = 1 - instance.stacks.Count * 0.02f;
-				Damage = (int)(Damage * mult);
-			}
-
 			return orig(spawnSource, X, Y, SpeedX, SpeedY, Type, Damage, KnockBack, Owner, ai0, ai1, ai2);
 		}
 
@@ -55,13 +48,6 @@ namespace StarlightRiver.Content.Buffs
 			if (spawnSource is EntitySource_Parent source && source.Entity is NPC npc && InstancedBuffNPC.GetInstance<Neurosis>(npc) != null)
 			{
 				var instance = InstancedBuffNPC.GetInstance<Neurosis>(npc);
-				var mult = 1 - instance.stacks.Count * 0.02f;
-				Damage = (int)(Damage * mult);
-			}
-
-			if (spawnSource is EntitySource_Parent source2 && source2.Entity is Player player && InstancedBuffPlayer.GetInstance<Neurosis>(player) != null)
-			{
-				var instance = InstancedBuffPlayer.GetInstance<Neurosis>(player);
 				var mult = 1 - instance.stacks.Count * 0.02f;
 				Damage = (int)(Damage * mult);
 			}
@@ -75,6 +61,11 @@ namespace StarlightRiver.Content.Buffs
 
 			if (instance != null)
 				modifiers.FinalDamage *= 1 - instance.stacks.Count * 0.02f; 
+		}
+
+		public override void PerStackEffectsPlayer(Player player, BuffStack stack)
+		{
+			player.GetDamage(DamageClass.Generic) -= 0.02f;
 		}
 
 		public override BuffStack GenerateDefaultStack(int duration)

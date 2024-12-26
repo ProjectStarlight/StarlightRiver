@@ -12,11 +12,7 @@ using uint16_t = System.UInt16;
 using int32_t = System.Int32;
 using uint32_t = System.UInt32;
 using int64_t = System.Int64;
-using int8_t = System.SByte;
-using uint16_t = System.UInt16;
-using uint32_t = System.UInt32;
 using uint64_t = System.UInt64;
-using uint8_t = System.Byte;
 
 using FAudioThread = System.IntPtr;
 using FAudioMutex = System.IntPtr;
@@ -1018,5 +1014,4 @@ unsafe struct FACTCue
 	/* Timer */
 	public uint32_t start;
 	public uint32_t elapsed;
-}
 }

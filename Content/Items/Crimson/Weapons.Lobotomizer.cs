@@ -1,6 +1,8 @@
 ﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Content.Projectiles;
+using StarlightRiver.Core.Systems.InstancedBuffSystem;
 using System;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -14,7 +16,7 @@ namespace StarlightRiver.Content.Items.Crimson
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Lobotomizer");
-			Tooltip.SetDefault("Right click to throw a hallucinatory spear\nAttacks faster while hallucinating\nLonger reach while not hallucinating");
+			Tooltip.SetDefault("Right click to throw a hallucinatory spear\nAttacks faster and inflicts {{BUFF:Psychosis}} while hallucinating\nHas longer reach and inflicts {{BUFF:Neurosis}} while not hallucinating");
 		}
 
 		public override void SetDefaults()
@@ -138,6 +140,11 @@ namespace StarlightRiver.Content.Items.Crimson
 			return prog < 0.4f || prog > 0.7f ? null : false;
 		}
 
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			BuffInflictor.Inflict<Neurosis>(target, 300);
+		}
+
 		public override void SafeAI()
 		{
 			GraymatterBiome.forceGrayMatter = true;
@@ -201,6 +208,11 @@ namespace StarlightRiver.Content.Items.Crimson
 			origin = new Vector2(0, 15);
 
 			fadeDuration = 10;
+		}
+
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			BuffInflictor.Inflict<Psychosis>(target, 300);
 		}
 
 		public override void SafeAI()

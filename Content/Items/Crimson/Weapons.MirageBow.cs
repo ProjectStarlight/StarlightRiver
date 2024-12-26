@@ -12,6 +12,12 @@ namespace StarlightRiver.Content.Items.Crimson
 
 		public override string Texture => AssetDirectory.Debug;
 
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Mirage bow");
+			Tooltip.SetDefault("Critical strikes spawn a mirrored clone opposite your cursor\nThe clone lasts for 5 seconds");
+		}
+
 		public override void Load()
 		{
 			StarlightProjectile.OnHitNPCEvent += SpawnOnCrit;
