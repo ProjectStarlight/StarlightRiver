@@ -60,7 +60,7 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 			float thisY = 0;
 			foreach (var panel in drawQueue)
 			{
-				if (xConsumed + panel.size.X < tooltipWidth)
+				if (xConsumed + panel.size.X < tooltipWidth || xConsumed == 0)
 				{			
 					panel.pos = new Vector2(tooltipRect.X + xConsumed, tooltipRect.Y + tooltipHeight + 25 + yConsumed);
 
@@ -84,10 +84,11 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 			{
 				xConsumed = 0;
 				yConsumed = 0;
+				thisY = 0;
 
 				foreach (var panel in drawQueue)
 				{
-					if (xConsumed + panel.size.X < tooltipWidth)
+					if (xConsumed + panel.size.X < tooltipWidth || xConsumed == 0)
 					{
 						panel.pos = new Vector2(tooltipRect.X + xConsumed, tooltipRect.Y - 4 - panel.size.Y - yConsumed);
 

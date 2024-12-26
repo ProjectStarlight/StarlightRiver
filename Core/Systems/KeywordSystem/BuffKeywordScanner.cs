@@ -113,6 +113,10 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 
 		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
 		{
+			// Auto tooltip for items which grant buffs
+			if (item.buffType != 0)
+				tooltips.Add(new(Mod, "AutoBuffTooltip", $"Grants {{{{BUFF:{BuffID.Search.GetName(item.buffType)}}}}}"));
+
 			foreach (TooltipLine line in tooltips)
 			{
 				if (line.Name == "ItemName")
