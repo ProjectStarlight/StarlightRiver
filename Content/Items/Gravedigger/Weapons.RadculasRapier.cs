@@ -20,7 +20,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		{
 			DisplayName.SetDefault("Radcula's Rapier");
 			Tooltip.SetDefault("Rapidly stabs enemies, inflicting {{BUFF:RadculasRapierBleed}}\n" +
-				"Press <right> to teleport to the cursor, passing through bleeding enemies deals extra damage and heals you\n" +
+				"Press <right> to dash towards the cursor\n" +
+				"dashing through bleeding enemies consumes the bleed to deal extra damage and heal you\n" +
 				"Striking multiple enemies with the teleport lowers its cooldown");
 		}
 
@@ -215,16 +216,13 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		{
 			npc.lifeRegen -= 2;
 
-			if (npc.lifeRegenCount < 2)
-				npc.lifeRegenCount = 2;
-
 			if (lastHitPos == default)
 				lastHitPos = npc.Center;
 
-			if (Main.rand.NextBool())
+			if (Main.rand.NextBool(5))
 				Dust.NewDustPerfect(npc.Center + npc.DirectionTo(lastHitPos) * (npc.width / 2), DustID.Blood, npc.DirectionTo(lastHitPos).RotatedByRandom(0.35f) * Main.rand.NextFloat(1f, 5f), 0, default, 1.25f);
 
-			if (Main.rand.NextBool(3))
+			if (Main.rand.NextBool(15))
 				Dust.NewDustPerfect(npc.Center + npc.DirectionTo(lastHitPos) * (npc.width / 2), ModContent.DustType<Dusts.GraveBlood>(), npc.DirectionTo(lastHitPos).RotatedByRandom(0.35f) * Main.rand.NextFloat(1f, 5f), 0, default, 1.25f);
 		}
 
@@ -418,7 +416,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			hitNPCs.Add(target);
 			CameraSystem.shake += 1;
 
-			BuffInflictor.Inflict<RadculasRapierBleed>(target, 180);
+			BuffInflictor.Inflict<RadculasRapierBleed>(target, 300);
 
 			var buff = InstancedBuffNPC.GetInstance<RadculasRapierBleed>(target);
 

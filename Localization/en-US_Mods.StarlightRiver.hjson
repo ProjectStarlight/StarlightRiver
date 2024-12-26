@@ -3979,6 +3979,11 @@ Buffs: {
 			Increased mining speed
 			'''
 	}
+
+	RadculasRapierBleed: {
+		DisplayName: Vampiric Bleeding
+		Description: Deals 1 damage per second
+	}
 }
 
 Prefixes: {

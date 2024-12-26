@@ -836,9 +836,6 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void Update(NPC npc, ref int buffIndex)
 		{
 			npc.lifeRegen -= 24;
-
-			if (npc.lifeRegenCount < 3)
-				npc.lifeRegenCount = 3;
 		}
 	}
 }
