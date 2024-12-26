@@ -76,7 +76,7 @@ namespace StarlightRiver.Content.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Debug Mode");
-			Tooltip.SetDefault("Enables {{Debug}} mode");
+			Tooltip.SetDefault("{{Inoculation}} is a keyword\n{{Barrier}} is too\nHere is a really long line so that we can test the wrapping logic of the tooltip panels! I hope this is long enough.\n{{BUFF:OnFire}} {{BUFF:PlexusChaliceBuff}} {{BUFF:BarbedKnifeBleed}}");
 		}
 
 		public override void SetDefaults()

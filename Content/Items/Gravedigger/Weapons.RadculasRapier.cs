@@ -1,8 +1,10 @@
 ﻿using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Core.Systems.CameraSystem;
+using StarlightRiver.Core.Systems.InstancedBuffSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -17,8 +19,9 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Radcula's Rapier");
-			Tooltip.SetDefault("Rapidly stabs enemies, inflicting a stacking bleed\n" +
-				"Press <right> to teleport to the cursor, {{Reaping}} bleed stacks of enemies in the way for high damage and lifesteal\n" +
+			Tooltip.SetDefault("Rapidly stabs enemies, inflicting {{BUFF:RadculasRapierBleed}}\n" +
+				"Press <right> to dash towards the cursor\n" +
+				"dashing through bleeding enemies consumes the bleed to deal extra damage and heal you\n" +
 				"Striking multiple enemies with the teleport lowers its cooldown");
 		}
 
@@ -186,44 +189,58 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		}
 	}
 
-	class RadculasRapierNPC : GlobalNPC //TODO: transfer this to stackable buffs
+	class RadculasRapierBleed : StackableBuff
 	{
-		public override bool InstancePerEntity => true;
+		public override string Name => "RadculasRapierBleed";
 
-		public int duration;
+		public override string DisplayName => "Vampiric Bleeding";
+
+		public override string Tooltip => "Deals 1 damage per second";
+
+		public override string Texture => AssetDirectory.Debug;
+
+		public override bool Debuff => true;
+
+		public override int MaxStacks => 10;
 
 		public Vector2 lastHitPos;
 
-		public bool inflicted => duration > 0;
-
-		public override void ResetEffects(NPC npc)
+		public override BuffStack GenerateDefaultStack(int duration)
 		{
-			duration = Utils.Clamp(--duration, 0, 600);
+			var stack = new BuffStack();
+			stack.duration = duration;
+			return stack;
 		}
 
-		public override void AI(NPC npc)
+		public override void PerStackEffectsNPC(NPC npc, BuffStack stack)
 		{
-			if (inflicted)
-			{
-				if (Main.rand.NextBool())
-					Dust.NewDustPerfect(npc.Center + npc.DirectionTo(lastHitPos) * (npc.width / 2), DustID.Blood, npc.DirectionTo(lastHitPos).RotatedByRandom(0.35f) * Main.rand.NextFloat(1f, 5f), 0, default, 1.25f);
+			npc.lifeRegen -= 2;
 
-				if (Main.rand.NextBool(3))
-					Dust.NewDustPerfect(npc.Center + npc.DirectionTo(lastHitPos) * (npc.width / 2), ModContent.DustType<Dusts.GraveBlood>(), npc.DirectionTo(lastHitPos).RotatedByRandom(0.35f) * Main.rand.NextFloat(1f, 5f), 0, default, 1.25f);
-			}
+			if (lastHitPos == default)
+				lastHitPos = npc.Center;
+
+			if (Main.rand.NextBool(5))
+				Dust.NewDustPerfect(npc.Center + npc.DirectionTo(lastHitPos) * (npc.width / 2), DustID.Blood, npc.DirectionTo(lastHitPos).RotatedByRandom(0.35f) * Main.rand.NextFloat(1f, 5f), 0, default, 1.25f);
+
+			if (Main.rand.NextBool(15))
+				Dust.NewDustPerfect(npc.Center + npc.DirectionTo(lastHitPos) * (npc.width / 2), ModContent.DustType<Dusts.GraveBlood>(), npc.DirectionTo(lastHitPos).RotatedByRandom(0.35f) * Main.rand.NextFloat(1f, 5f), 0, default, 1.25f);
 		}
 
-		public override void UpdateLifeRegen(NPC npc, ref int damage)
+		public override void PerStackEffectsPlayer(Player player, BuffStack stack)
 		{
-			if (inflicted)
-			{
-				if (npc.lifeRegen > 0)
-					npc.lifeRegen = 0;
+			player.lifeRegen -= 2;
+		}
 
-				npc.lifeRegen -= 20;
+		public override void SendCustomData(BinaryWriter writer)
+		{
+			writer.Write(lastHitPos.X);
+			writer.Write(lastHitPos.Y);
+		}
 
-				damage = 2;
-			}
+		public override void RecieveCustomData(BinaryReader reader)
+		{
+			lastHitPos.X = reader.ReadSingle();
+			lastHitPos.Y = reader.ReadSingle();
 		}
 	}
 
@@ -399,8 +416,12 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			hitNPCs.Add(target);
 			CameraSystem.shake += 1;
 
-			target.GetGlobalNPC<RadculasRapierNPC>().duration += 30;
-			target.GetGlobalNPC<RadculasRapierNPC>().lastHitPos = Owner.Center;
+			BuffInflictor.Inflict<RadculasRapierBleed>(target, 300);
+
+			var buff = InstancedBuffNPC.GetInstance<RadculasRapierBleed>(target);
+
+			if (buff != null)
+				buff.lastHitPos = Owner.Center;
 
 			Vector2 pos = Owner.Center - (Owner.Center - target.Center);
 
@@ -709,13 +730,11 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
-			modifiers.SourceDamage *= (int)Math.Round(MathHelper.Lerp(1, 3, target.GetGlobalNPC<RadculasRapierNPC>().duration / 600f));
+			modifiers.SourceDamage *= (int)Math.Round(MathHelper.Lerp(1, 3, (InstancedBuffNPC.GetInstance<RadculasRapierBleed>(target)?.stacks.Count ?? 0) / 10f));
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			RadculasRapierNPC gNPC = target.GetGlobalNPC<RadculasRapierNPC>();
-
 			if (hitNPCs.Count <= 0)
 				Helper.PlayPitched("Impacts/GoreHeavy", 1.5f, Main.rand.NextFloat(-0.3f, 0.3f), Owner.Center);
 
@@ -745,12 +764,15 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				}
 			}
 
-			if (gNPC.duration > 0)
+			if (InstancedBuffNPC.GetInstance<RadculasRapierBleed>(target) != null)
 			{
-				int healAmount = (int)Math.Round(MathHelper.Lerp(1, 5, gNPC.duration / 600f));
+				int healAmount = (int)Math.Round(MathHelper.Lerp(1, 5, (InstancedBuffNPC.GetInstance<RadculasRapierBleed>(target)?.stacks.Count ?? 0) / 10f));
 
 				Owner.Heal(healAmount);
-				gNPC.duration = 0;
+				InstancedBuffNPC.GetInstance<RadculasRapierBleed>(target).stacks.Clear();
+
+				if (Main.netMode == NetmodeID.MultiplayerClient)
+					InstancedBuffNPC.GetInstance<RadculasRapierBleed>(target).NetSync(Main.myPlayer, false);
 			}
 		}
 
