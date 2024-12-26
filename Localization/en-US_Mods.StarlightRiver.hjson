@@ -3272,6 +3272,16 @@ Items: {
 			Enemies with defense take 2 additional damage per defense
 			'''
 	}
+
+	PsychoticManabond: {
+		DisplayName: Psychotic Manabond
+		Tooltip:
+			'''
+			Your minions can store 40 mana
+			Your minions siphon 6 mana per second from you untill full
+			Your minions spend 40 mana to emit an aura inflicting {{BUFF:Psychosis}}
+			'''
+	}
 }
 
 Tiles: {
