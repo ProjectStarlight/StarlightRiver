@@ -639,10 +639,10 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void AI()
 		{
-			IEnumerable<NPC> targets = Main.npc.Where(x => x.active && !x.townNPC && !x.immortal && !x.dontTakeDamage && x.Distance(Projectile.Center) < 73);
+			IEnumerable<NPC> targets = Main.npc.Where(x => x.active && !x.townNPC && !x.immortal && !x.dontTakeDamage && x.Distance(Projectile.Center) < 125);
 			foreach (NPC target in targets)
 			{
-				target.AddBuff(ModContent.BuffType<BizarrePotionPoisonDebuff>(), 2);
+				target.AddBuff(ModContent.BuffType<BizarrePotionPoisonDebuff>(), 120);
 			}
 		}
 	}
