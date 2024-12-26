@@ -3262,6 +3262,16 @@ Items: {
 		DisplayName: Soft Sand
 		Tooltip: ""
 	}
+
+	MindCrusher: {
+		DisplayName: Mind crusher
+		Tooltip:
+			'''
+			Click and hold to create a growing circle
+			Release to crush all enemies inside the circle
+			Enemies with defense take 2 additional damage per defense
+			'''
+	}
 }
 
 Tiles: {
@@ -3455,6 +3465,10 @@ Tiles: {
 	VitricSand.MapEntry: ""
 	VitricSoftSand.MapEntry: ""
 	VitricSandPlain.MapEntry: ""
+	// VitricGiantCrystal.MapEntry: ""
+	// VitricLargeCrystal.MapEntry: ""
+	// VitricMediumCrystal.MapEntry: ""
+	// VitricSmallCrystal.MapEntry: ""
 }
 
 Projectiles: {
