@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Items.Manabonds;
+using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Core.Systems.InstancedBuffSystem;
 using System;
 using System.Collections.Generic;
@@ -34,6 +35,16 @@ namespace StarlightRiver.Content.Items.Crimson
 					Projectile.NewProjectile(minion.GetSource_FromThis(), minion.Center, Vector2.Zero, ModContent.ProjectileType<PsychosisAura>(), 1, 0, minion.owner, minion.identity);
 				}
 			}
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ModContent.ItemType<DendriteBar>(), 10);
+			recipe.AddIngredient(ModContent.ItemType<ImaginaryTissue>(), 5);
+			recipe.AddIngredient(ModContent.ItemType<BasicManabond>(), 1);
+			recipe.AddTile(TileID.Bookcases);
+			recipe.Register();
 		}
 	}
 
