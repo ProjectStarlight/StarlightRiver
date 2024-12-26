@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Content.Projectiles;
 using StarlightRiver.Core.Systems.InstancedBuffSystem;
 using System;
@@ -49,6 +50,16 @@ namespace StarlightRiver.Content.Items.Crimson
 		public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
 		{
 			position = Main.MouseWorld;
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ModContent.ItemType<DendriteBar>(), 10);
+			recipe.AddIngredient(ModContent.ItemType<ImaginaryTissue>(), 5);
+			recipe.AddIngredient(ItemID.CrimsonRod);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 
