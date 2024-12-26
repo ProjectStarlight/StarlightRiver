@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using Terraria;
 using Terraria.GameContent.Bestiary;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -394,6 +395,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 							next = Main.rand.Next(5);
 
 						attackQueue.Add(next);
+					}
+
+					// qualify players for the medal
+					foreach (Player Player in Main.player.Where(n => n.active && Vector2.Distance(n.Center, ThisThinker.home) <= ThisThinker.ArenaRadius))
+					{
+						Player.GetModPlayer<MedalPlayer>().QualifyForMedal("TheThinker", 2);
 					}
 
 					Timer = 0;
