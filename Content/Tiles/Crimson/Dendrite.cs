@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 			MinPick = 65;
 
-			AddMapEntry(new Color(165, 180, 191));
+			AddMapEntry(new Color(151, 107, 75));
 		}
 	}
 }
