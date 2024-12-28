@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override void SafeAI()
 		{
-			var lightColor = new Vector3(0.4f, 0.1f, 0.12f) * ThisThinker.ArenaOpacity;
+			Vector3 lightColor = new Vector3(0.4f, 0.1f, 0.12f) * ThisThinker.ArenaOpacity;
 
 			lightColor += new Vector3(0.8f, 0.4f, 0.4f) * glow * 0.1f;
 
@@ -45,11 +45,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			Texture2D tex = Assets.Bosses.BrainRedux.BrainPlatform.Value;
 			LightingBufferRenderer.DrawWithLighting(NPC.position - Main.screenPosition, tex, tex.Bounds, Color.White * ThisThinker.ArenaOpacity, Vector2.One);
 
-			var glowTex = Assets.Bosses.BrainRedux.BrainPlatformGlow.Value;
-			var glowTex2 = Assets.Keys.GlowAlpha.Value;
-			var glowColor = new Color(255, 100, 100, 0) * glow * 0.25f;
+			Texture2D glowTex = Assets.Bosses.BrainRedux.BrainPlatformGlow.Value;
+			Texture2D glowTex2 = Assets.Keys.GlowAlpha.Value;
+			Color glowColor = new Color(255, 100, 100, 0) * glow * 0.25f;
 
-			var target = NPC.Hitbox;
+			Rectangle target = NPC.Hitbox;
 			target.Offset((-Main.screenPosition).ToPoint());
 			target.Height = tex.Height;
 
@@ -61,5 +61,5 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			return false;
 		}
-	}	
+	}
 }

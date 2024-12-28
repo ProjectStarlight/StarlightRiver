@@ -1,9 +1,11 @@
 ﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Core.Systems.BarrierSystem;
 using StarlightRiver.Core.Systems.CameraSystem;
+using StarlightRiver.Core.Systems.InstancedBuffSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -25,7 +27,7 @@ namespace StarlightRiver.Content.Items.Crimson
 
 		public override string Texture => AssetDirectory.CrimsonItem + Name;
 
-		public MyelinSheath() : base("Myelin Sheath", "Swords perform a powerful mind slash after not attacking for 2 seconds") { }
+		public MyelinSheath() : base("Myelin Sheath", "Swords perform a powerful mind slash after not attacking for 2 seconds\nThe mind slash inflicts 5 stacks of either {{BUFF:Neurosis}} or {{BUFF:Psychosis}}") { }
 
 		public override void Load()
 		{
@@ -45,7 +47,7 @@ namespace StarlightRiver.Content.Items.Crimson
 		public override void SafeUpdateEquip(Player Player)
 		{
 			if (cooldown > 0)
-				cooldown --;
+				cooldown--;
 		}
 
 		private bool OverrideSwordEffects(Item item, Player player)
@@ -209,7 +211,7 @@ namespace StarlightRiver.Content.Items.Crimson
 			{
 				if (proj.type == Type)
 				{
-					var tex = Assets.Slash.Value;
+					Texture2D tex = Assets.Slash.Value;
 					batch.Draw(tex, proj.Center - Main.screenPosition, null, new Color(1f, 1f, 1f, 0) * (proj.timeLeft / 60f), proj.rotation, tex.Size() / 2f, 0.75f, 0, 0);
 
 					Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
@@ -253,7 +255,20 @@ namespace StarlightRiver.Content.Items.Crimson
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			base.OnHitNPC(target, hit, damageDone);
+			if (Main.rand.NextBool())
+			{
+				for(int k = 0; k < 5; k++)
+				{
+					BuffInflictor.Inflict<Neurosis>(target, 1200);
+				}
+			}
+			else
+			{
+				for (int k = 0; k < 5; k++)
+				{
+					BuffInflictor.Inflict<Psychosis>(target, 1200);
+				}
+			}
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -293,10 +308,11 @@ namespace StarlightRiver.Content.Items.Crimson
 				alpha *= Projectile.timeLeft / 60f;
 
 				return Color.White * alpha;
-			});
-
-			trail.Positions = cache.ToArray();
-			trail.NextPosition = Projectile.Center + Projectile.velocity;
+			})
+			{
+				Positions = cache.ToArray(),
+				NextPosition = Projectile.Center + Projectile.velocity
+			};
 		}
 	}
 }

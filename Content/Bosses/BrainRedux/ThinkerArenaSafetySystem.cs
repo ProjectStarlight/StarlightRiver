@@ -1,13 +1,13 @@
-﻿using System;
+﻿using StarlightRiver.Content.Tiles.Crimson;
+using StructureHelper;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Terraria.ModLoader.IO;
-using System.Linq;
 using Terraria.DataStructures;
-using StructureHelper;
-using StarlightRiver.Content.Tiles.Crimson;
+using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Bosses.BrainRedux
 {
@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				if (record.thinker is null || !record.thinker.active || record.thinker.type != ModContent.NPCType<TheThinker>())
 				{
-					ResetArena(record);				
+					ResetArena(record);
 					break;
 				}
 			}
@@ -100,7 +100,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			if (records.Any(n => n.thinker == thinker))
 			{
-				var record = records.First(n => n.thinker == thinker);
+				ThinkerRecord record = records.First(n => n.thinker == thinker);
 				ResetArena(record);
 			}
 		}

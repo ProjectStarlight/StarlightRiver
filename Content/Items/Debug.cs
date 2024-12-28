@@ -76,7 +76,7 @@ namespace StarlightRiver.Content.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Debug Mode");
-			Tooltip.SetDefault("Enables {{Debug}} mode");
+			Tooltip.SetDefault("{{Inoculation}} is a keyword\n{{Barrier}} is too\nHere is a really long line so that we can test the wrapping logic of the tooltip panels! I hope this is long enough.\n{{BUFF:OnFire}} {{BUFF:PlexusChaliceBuff}} {{BUFF:BarbedKnifeBleed}}");
 		}
 
 		public override void SetDefaults()
@@ -115,18 +115,18 @@ namespace StarlightRiver.Content.Items
 
 			Main.spriteBatch.Begin();
 
-			var font = Terraria.GameContent.FontAssets.ItemStack.Value;		
+			DynamicSpriteFont font = Terraria.GameContent.FontAssets.ItemStack.Value;
 
 			for (int k = 0; k < Main.screenHeight; k += 64)
 			{
-				var message = "| ALPHA BUILD -- DOES NOT REPRESENT FINAL PRODUCT ";
+				string message = "| ALPHA BUILD -- DOES NOT REPRESENT FINAL PRODUCT ";
 				if (k % 3 == 1)
 					message = "| Starlight River Discord: https://discord.gg/starlight-river-616385262347485257 ";
 				if (k % 3 == 2)
 					message = "| Starlight River Github: https://github.com/ProjectStarlight/StarlightRiver ";
 
 				for (float x = -Main.screenHeight; x < Main.screenWidth; x += font.MeasureString(message).X)
-				Main.spriteBatch.DrawString(font, message, new Vector2(x + (k^(k*k)) % 600, k), Color.White * 0.1f, default, default, 1f, default, default);
+					Main.spriteBatch.DrawString(font, message, new Vector2(x + (k ^ (k * k)) % 600, k), Color.White * 0.1f, default, default, 1f, default, default);
 
 				Utils.DrawBorderStringBig(Main.spriteBatch, $"STARLIGHT RIVER ALPHA TEST -- THINKER BOSS FIGHT TEST 2", new Vector2(Main.screenWidth / 2, 16), Color.White, 0.6f, 0.5f);
 				Utils.DrawBorderStringBig(Main.spriteBatch, $"ALPHA BUILD DOES NOT REPRESENT FINAL PRODUCT", new Vector2(Main.screenWidth / 2, 48), Color.White, 0.6f, 0.5f);
@@ -164,7 +164,7 @@ namespace StarlightRiver.Content.Items
 		{
 			betaActive = true;
 
-			foreach(var npc in Main.npc)
+			foreach (NPC npc in Main.npc)
 			{
 				npc.active = false;
 			}
@@ -177,5 +177,4 @@ namespace StarlightRiver.Content.Items
 			return true;
 		}
 	}
-
 }

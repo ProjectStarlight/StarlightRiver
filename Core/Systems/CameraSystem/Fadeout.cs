@@ -30,7 +30,7 @@ namespace StarlightRiver.Core.Systems.CameraSystem
 			{
 				Main.spriteBatch.Begin();
 
-				var tex = Terraria.GameContent.TextureAssets.MagicPixel.Value;
+				Texture2D tex = Terraria.GameContent.TextureAssets.MagicPixel.Value;
 				Main.spriteBatch.Draw(tex, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), color * opacity);
 
 				Main.spriteBatch.End();

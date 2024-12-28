@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Items.Utility
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Drop of darkness");
-			Tooltip.SetDefault("Reforges an accessory with a cursed prefix\nRight Click an accessory while holding this on your cursor to use\nReforge the item at the goblin tinkerer to remove it");
+			Tooltip.SetDefault("Reforges an accessory with a {{cursed}} prefix\nRight Click an accessory while holding this on your cursor to use\nReforge the item at the goblin tinkerer to remove it");
 		}
 
 		public override void SetDefaults()

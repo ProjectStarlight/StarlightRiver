@@ -71,14 +71,14 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			// Move brain into position
 			if (Timer > 160 && Timer < 360)
 			{
-				var prog = (Timer - 160) / 200f;
+				float prog = (Timer - 160) / 200f;
 				prog = Helpers.Helper.BezierEase(prog);
 				NPC.Center = Vector2.Lerp(savedPos, thinker.Center + new Vector2(200, -200), Helpers.Helper.SwoopEase(prog));
 			}
 
 			if (Timer > 160 && Timer <= 240)
 			{
-				var prog = 1f - (Timer - 160) / 80f;
+				float prog = 1f - (Timer - 160) / 80f;
 				extraChunkRadius = prog * 2;
 				staggeredExtraChunkRadius = prog;
 			}
@@ -100,7 +100,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			// Neurysms
 			if (Timer > 280 && Timer <= 440)
-			{		
+			{
 				for (int k = 0; k < neurisms.Count; k++)
 				{
 					float lerp = k / (neurisms.Count - 1f);
@@ -117,7 +117,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					{
 						float prog = Helpers.Helper.BezierEase((Timer - 360) / 60f);
 						var center = Vector2.Lerp(thinker.Center, NPC.Center, prog);
-						neurisms[k].Center = center + Vector2.UnitX.RotatedBy(rot + prog * 1.57f) * (200 - (70f * prog));
+						neurisms[k].Center = center + Vector2.UnitX.RotatedBy(rot + prog * 1.57f) * (200 - 70f * prog);
 						(neurisms[k].ModNPC as Neurysm).State = 0;
 						(neurisms[k].ModNPC as Neurysm).Timer = 0;
 					}
@@ -170,7 +170,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			// Explode the weakpoint
 			if (Timer == 60)
 			{
-				for(int k = 0; k < 120; k++)
+				for (int k = 0; k < 120; k++)
 				{
 					Dust.NewDust(weakpoint.position, weakpoint.width, weakpoint.height, DustID.Blood);
 
@@ -196,7 +196,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				for (int k = 0; k < 5; k++)
 				{
 					var color = new Color(Main.rand.NextFloat(0.5f, 1f), Main.rand.NextFloat(0.5f, 1f), Main.rand.NextFloat(0.5f, 1f));
-					var rot = Main.rand.NextFloat(6.28f);
+					float rot = Main.rand.NextFloat(6.28f);
 
 					Dust.NewDustPerfect(NPC.Center + Vector2.One.RotatedBy(rot) * 90, ModContent.DustType<Dusts.GlowLineFast>(), Vector2.One.RotatedBy(rot) * Main.rand.NextFloat(8), 0, color, Main.rand.NextFloat(0.5f, 1f));
 				}
@@ -245,7 +245,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (Timer == 30)
 			{
-				foreach(NPC npc in Main.ActiveNPCs)
+				foreach (NPC npc in Main.ActiveNPCs)
 				{
 					if (npc.type == ModContent.NPCType<HallucinationBlock>())
 						npc.active = false;

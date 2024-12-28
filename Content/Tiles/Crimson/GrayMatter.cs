@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Tiles.Crimson
 		public override void Load()
 		{
 			GraymatterBiome.onDrawHallucinationMap += DrawTileMap;
-			GraymatterBiome.onDrawOverPerTile += DrawRealVersion;		
+			GraymatterBiome.onDrawOverPerTile += DrawRealVersion;
 		}
 
 		public override void SetStaticDefaults()
@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Tiles.Crimson
 				{
 					Point16 target = pos + new Point16(x, y);
 
-					var tileType = Framing.GetTileSafely(target).TileType;
+					ushort tileType = Framing.GetTileSafely(target).TileType;
 					if (grayEmissionTypes.Contains(tileType))
 					{
 						Vector2 drawPos = target.ToVector2() * 16 + Vector2.One * 8 - Main.screenPosition;
@@ -76,7 +76,7 @@ namespace StarlightRiver.Content.Tiles.Crimson
 						{
 							for (int y2 = -1; y2 <= 1; y2++)
 							{
-								var adjTileType = Framing.GetTileSafely(target + new Point16(x2, y2)).TileType;
+								ushort adjTileType = Framing.GetTileSafely(target + new Point16(x2, y2)).TileType;
 								if (grayEmissionTypes.Contains(adjTileType))
 									color *= 0.82f;
 							}

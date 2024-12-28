@@ -59,7 +59,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			Projectile.position += Projectile.velocity.RotatedBy(1.57f) * (float)Math.Sin(Projectile.timeLeft / Projectile.ai[2] * 3.14f * 3) * 0.75f;
 
 			float sin = 1 + (float)Math.Sin(Projectile.ai[1]);
-			var color = new Color(1, 0f, 0.1f + sin * 0.1f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
+			Color color = new Color(1, 0f, 0.1f + sin * 0.1f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
 
 			Lighting.AddLight(Projectile.Center, color.ToVector3() * 0.5f);
 
@@ -130,7 +130,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					float r = 0.85f + (float)Math.Sin(Main.GameUpdateCount * 0.1f + factor.X * 6.28f) * 0.5f;
 					float g = 0.85f + (float)Math.Sin(Main.GameUpdateCount * 0.1f + factor.X * 6.28f + 2f) * 0.5f;
 					float b = 0.85f + (float)Math.Sin(Main.GameUpdateCount * 0.1f + factor.X * 6.28f + 4f) * 0.5f;
-					var color = new Color(r, g, b) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
+					Color color = new Color(r, g, b) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
 
 					return color * alpha;
 				});

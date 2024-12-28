@@ -153,7 +153,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			attachedChain = new VerletChain(100, true, NPC.Center, 4);
 			chainSplitBrainAttached = new VerletChain(33, true, NPC.Center, 4);
-			
+
 			// This wants to start at the thinker center but we handle that in update, since if we set it here
 			// we get issues on mod load when the prototype calls SetDefaults
 			chainSplitThinkerAttached = new VerletChain(66, true, NPC.Center, 4);
@@ -377,7 +377,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					int weakpointIndex = NPC.NewNPC(null, (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<WeakPoint>(), 0);
 					weakpoint = Main.npc[weakpointIndex];
 
-					if(weakpoint.ModNPC is WeakPoint wp)
+					if (weakpoint.ModNPC is WeakPoint wp)
 					{
 						// Link the weakpoint to the appropriate thinker
 						wp.thinker = thinker;
@@ -482,7 +482,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				case Phases.FirstToSecond:
 					FirstPhaseTransition();
 					break;
-				
+
 				case Phases.SecondPhase:
 
 					NPC.dontTakeDamage = false;
@@ -657,7 +657,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				if (npc.ModNPC is DeadBrain deadBrain2)
 					glowColor *= deadBrain2.shieldOpacity / 0.4f;
-				else 
+				else
 					glowColor *= 0;
 
 				spriteBatch.Draw(texGlow, center + (point.Pos - new Vector2(44, 40)) * offset + velOffset, frame, glowColor * opacity * chunkOpacity, rotation + rotOffset, new Vector2(40, 38), scale, 0, 0);
@@ -786,8 +786,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					0.5f + 0.2f * MathF.Sin((Main.GameUpdateCount + factor.X + 0.6f) * 6.28f),
 					0);
 
-				var lightColor = Lighting.GetColor((attachedChain.ropeSegments[index].posNow / 16).ToPoint());
-				var color = Color.Lerp(lightColor, glowColor, floored * 0.95f) * (1 + floored);
+				Color lightColor = Lighting.GetColor((attachedChain.ropeSegments[index].posNow / 16).ToPoint());
+				Color color = Color.Lerp(lightColor, glowColor, floored * 0.95f) * (1 + floored);
 				return color;
 			});
 		}

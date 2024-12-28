@@ -22,11 +22,11 @@ namespace StarlightRiver.Content.Dusts
 		{
 			if (grayDustVisibleTimer > 0)
 			{
-				foreach(Dust dust in Main.dust)
+				foreach (Dust dust in Main.dust)
 				{
 					if (dust.active && dust.type == Type)
 					{
-						var tex = Assets.Keys.GlowAlpha.Value;
+						Texture2D tex = Assets.Keys.GlowAlpha.Value;
 						spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, new Color(255, 255, 255, 0), dust.rotation, tex.Size() / 2f, dust.scale, 0, 0);
 					}
 				}

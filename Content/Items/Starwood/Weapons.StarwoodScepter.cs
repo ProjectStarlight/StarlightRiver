@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Items.Starwood
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Starwood Scepter");
-			Tooltip.SetDefault("Summons two halves of a sentient star\nThe stars drop mana stars when hitting summon tagged enemies");
+			Tooltip.SetDefault("Summons two halves of a sentient star\nThe stars inflict {{BUFF:StarstruckDebuff}}\nThe stars drop mana stars when hitting summon tagged enemies");
 
 			ItemID.Sets.GamepadWholeScreenUseRange[Item.type] = true; // This lets the Player target anywhere on the whole screen while using a controller.
 			ItemID.Sets.LockOnIgnoresCollision[Item.type] = true;
@@ -799,25 +799,12 @@ namespace StarlightRiver.Content.Items.Starwood
 	{
 		public override string Texture => AssetDirectory.Debug;
 
-		public StarstruckDebuff() : base("Starstruck", "Reach for the stars", true) { }
-
-		public override void Load()
-		{
-			StarlightNPC.UpdateLifeRegenEvent += ApplyDot;
-		}
-
-		private void ApplyDot(NPC npc, ref int damage)
-		{
-			if (Inflicted(npc))
-			{
-				npc.lifeRegen -= 16;
-				if (damage < 1)
-					damage = 1;
-			}
-		}
+		public StarstruckDebuff() : base("Starstruck", "Deals 8 damage per second", true) { }
 
 		public override void Update(NPC npc, ref int buffIndex)
 		{
+			npc.lifeRegen -= 16;
+
 			if (Main.rand.NextBool(7))
 				Dust.NewDustPerfect(npc.Center + Main.rand.NextVector2Circular(npc.width, npc.height), ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(5f, 5f), 100, new Color(255, 255, 0), 0.5f);
 

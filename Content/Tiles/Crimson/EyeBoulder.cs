@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Tiles.Crimson
 		public override void SetStaticDefaults()
 		{
 			var anchor = new AnchorData(AnchorType.SolidTile, 3, 0);
-			QuickBlock.QuickSetFurniture(this, 3, 2, DustID.Blood, SoundID.NPCHit1, true, Color.Wheat, false, false, "", anchor, variants:2);
+			QuickBlock.QuickSetFurniture(this, 3, 2, DustID.Blood, SoundID.NPCHit1, true, Color.Wheat, false, false, "", anchor, variants: 2);
 		}
 	}
 
@@ -31,10 +31,10 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 		public override void PostDraw(Color lightColor)
 		{
-			var pupil = Assets.Tiles.Crimson.EyeBoulderPupil.Value;
+			Texture2D pupil = Assets.Tiles.Crimson.EyeBoulderPupil.Value;
 
-			var angle = Center.AngleTo(Main.LocalPlayer.Center);
-			var dist = Vector2.Distance(Main.LocalPlayer.Center, Center);
+			float angle = Center.AngleTo(Main.LocalPlayer.Center);
+			float dist = Vector2.Distance(Main.LocalPlayer.Center, Center);
 			Vector2 pos = Center + Vector2.UnitY * 2 + new Vector2(MathF.Cos(angle), MathF.Sin(angle) * 0.7f) * 7;
 			Rectangle frame = new(Parent.TileFrameX < 54 ? 0 : 12, dist < 32 ? 24 : dist < 120 ? 12 : 0, 12, 12);
 

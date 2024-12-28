@@ -44,7 +44,7 @@ namespace StarlightRiver.Core
 					{
 						for (int up = 1; up < 10; up++)
 						{
-							var check = Main.tile[k, y - up];
+							Tile check = Main.tile[k, y - up];
 							if (check.HasTile && Main.tileSolid[check.TileType])
 							{
 								failedGray = true;
@@ -75,7 +75,7 @@ namespace StarlightRiver.Core
 			{
 				for (int j = y - 10; j < y + 10; j++)
 				{
-					var tile = Framing.GetTileSafely(k, j);
+					Tile tile = Framing.GetTileSafely(k, j);
 					if (tile.HasTile && tile.TileType == ModContent.TileType<GrayMatter>() && Helpers.Helper.CheckAirRectangle(new Point16(k, j - 4), new Point16(1, 4)))
 					{
 						if (WorldGen.genRand.NextBool(3))
@@ -86,6 +86,7 @@ namespace StarlightRiver.Core
 								case 1: Helpers.Helper.PlaceMultitile(new Point16(k, j - 2), StarlightRiver.Instance.Find<ModTile>("GraymatterDeco1x2").Type); break;
 								case 2: Helpers.Helper.PlaceMultitile(new Point16(k, j - 1), StarlightRiver.Instance.Find<ModTile>("GraymatterDeco1x1").Type); break;
 							}
+
 							k++;
 						}
 						else if (WorldGen.genRand.NextBool(3) && Framing.GetTileSafely(k + 1, j).HasTile && Helpers.Helper.CheckAirRectangle(new Point16(k, j - 4), new Point16(2, 4)))
@@ -95,6 +96,7 @@ namespace StarlightRiver.Core
 								case 0: Helpers.Helper.PlaceMultitile(new Point16(k, j - 3), StarlightRiver.Instance.Find<ModTile>("GraymatterDeco2x3").Type); break;
 								case 1: Helpers.Helper.PlaceMultitile(new Point16(k, j - 2), StarlightRiver.Instance.Find<ModTile>("GraymatterDeco2x2").Type); break;
 							}
+
 							k += 2;
 						}
 						else if (Framing.GetTileSafely(k + 1, j).HasTile && Framing.GetTileSafely(k + 2, j).HasTile && Helpers.Helper.CheckAirRectangle(new Point16(k, j - 4), new Point16(3, 4)))

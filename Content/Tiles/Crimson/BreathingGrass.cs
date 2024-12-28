@@ -17,10 +17,10 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 		{
-			var tex = Assets.Tiles.Crimson.BreathingGrass.Value;
+			Texture2D tex = Assets.Tiles.Crimson.BreathingGrass.Value;
 			Vector2 pos = (new Vector2(i, j + 1) + Helpers.Helper.TileAdj) * 16;
 			Vector2 logicPos = new Vector2(i, j + 1) * 16;
-			var color = Lighting.GetColor(i, j); // make sure we only get lighting once since thats expensive
+			Color color = Lighting.GetColor(i, j); // make sure we only get lighting once since thats expensive
 
 			int seed = (i ^ i * i) / 2;
 
@@ -31,14 +31,14 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 				float breath = (float)Math.Sin((Main.GameUpdateCount + seed % 90) / (60 * 6f) * 6.28f);
 				float sway = (float)Math.Sin((Main.GameUpdateCount + seed % (60 * 3)) / (60 * 9f) * 6.28f);
-				 
+
 				pos.X += offset;
 				logicPos.X += offset;
 				pos.Y += 2;
 
 				float baseLen = 2;
-				var dist = Math.Abs(logicPos.X - Main.LocalPlayer.Center.X);
-				var yDist = Math.Abs(logicPos.Y - Main.LocalPlayer.Center.Y);
+				float dist = Math.Abs(logicPos.X - Main.LocalPlayer.Center.X);
+				float yDist = Math.Abs(logicPos.Y - Main.LocalPlayer.Center.Y);
 
 				float mag = (float)Math.Sin((dist - 20) / 140f * 3.14f) * (1f - yDist / 100f);
 
@@ -55,7 +55,7 @@ namespace StarlightRiver.Content.Tiles.Crimson
 					Rectangle source = new(k * 8, variant * 6, 6, 4);
 					Vector2 origin = new Vector2(0, 2);
 					float rot = -1.57f + sway * (0.2f + k * (0.04f + breath * 0.02f));
-					float len = (baseLen) * scale;
+					float len = baseLen * scale;
 
 					spriteBatch.Draw(tex, lastPos - Main.screenPosition, source, color, rot, origin, scale, 0, 0);
 

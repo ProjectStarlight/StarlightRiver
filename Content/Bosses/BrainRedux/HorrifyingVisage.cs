@@ -1,13 +1,13 @@
-﻿using StarlightRiver.Core.Systems.PixelationSystem;
+﻿using StarlightRiver.Content.Physics;
 using StarlightRiver.Core;
+using StarlightRiver.Core.Systems.PixelationSystem;
+using StarlightRiver.Helpers;
 using System;
-using Terraria.Audio;
-using Terraria.ID;
-using StarlightRiver.Content.Physics;
 using System.Collections.Generic;
 using System.Linq;
-using StarlightRiver.Helpers;
+using Terraria.Audio;
 using Terraria.Graphics.Effects;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Bosses.BrainRedux
 {

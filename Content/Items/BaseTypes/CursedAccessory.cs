@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Prefixes.Accessory.Cursed;
 using System;
+using System.Collections.Generic;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
@@ -200,7 +201,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 				Utils.DrawBorderString(Main.spriteBatch, line.Text, new Vector2(line.X, line.Y), Color.Lerp(Color.White, new Color(180, 100, 225), tooltipProgress), 1.1f);
 
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
+				Main.spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
 
 				if (tooltipProgress < 1)
 					tooltipProgress += 0.05f;
@@ -210,5 +211,13 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 			return base.PreDrawTooltipLine(line, ref yOffset);
 		}
+
+		public sealed override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			SafeModifyTooltips(tooltips);
+			tooltips.Add(new(Mod, "CursedAccessoryLine", "{{Cursed}} item"));
+		}
+
+		public virtual void SafeModifyTooltips(List<TooltipLine> tooltips) { }
 	}
 }

@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				{
 					if (Helpers.Helper.CheckLinearCollision(Thinker.Center, Projectile.Center, player.Hitbox, out Vector2 collision))
 					{
-						var mult = Main.masterMode ? 6 : Main.expertMode ? 4 : 1;
+						int mult = Main.masterMode ? 6 : Main.expertMode ? 4 : 1;
 						player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " played the idiot harp..."), Projectile.damage * mult, 0);
 					}
 				}
@@ -82,7 +82,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		private void DrawAura(SpriteBatch batch)
 		{
-			foreach(Projectile proj in Main.ActiveProjectiles)
+			foreach (Projectile proj in Main.ActiveProjectiles)
 			{
 				if (proj.type == Projectile.type)
 				{

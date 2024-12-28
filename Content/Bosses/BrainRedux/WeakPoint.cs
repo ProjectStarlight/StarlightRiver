@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (thinker?.life <= thinker?.lifeMax / 2f)
 			{
 				float t = Main.GameUpdateCount * 0.02f;
-				var heartBeat = Heartbeat(t * 1.5f) * 0.35f;
+				float heartBeat = Heartbeat(t * 1.5f) * 0.35f;
 				color = new Color(255, 60, 75) * (heartBeat + 0.65f);
 			}
 
@@ -79,15 +79,15 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			var tex = Assets.Bosses.BrainRedux.Neurysm.Value;
-			var glow = Assets.Keys.GlowAlpha.Value;
+			Texture2D tex = Assets.Bosses.BrainRedux.Neurysm.Value;
+			Texture2D glow = Assets.Keys.GlowAlpha.Value;
 
 			float r = 0.89f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f) * 0.3f;
 			float g = 0.89f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f + 2f) * 0.3f;
 			float b = 0.89f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f + 4f) * 0.3f;
 			var color = new Color(r, g, b);
 
-			var glowColor = color;
+			Color glowColor = color;
 			glowColor.A = 0;
 
 			float t = Main.GameUpdateCount * 0.02f;

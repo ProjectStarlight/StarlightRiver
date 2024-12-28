@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 		public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 		{
-			var tile = Framing.GetTileSafely(i, j);
+			Tile tile = Framing.GetTileSafely(i, j);
 
 			if (Framing.GetTileSafely(i - 1, j).IsSquareSolidTile())
 				tile.TileFrameY = 18;
