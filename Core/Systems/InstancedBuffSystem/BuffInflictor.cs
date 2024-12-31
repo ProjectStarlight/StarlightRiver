@@ -11,7 +11,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 			Main.NewText($"InflictFromNet: {duration}, {type}");
 			InstancedBuffPlayer mp = player.GetModPlayer<InstancedBuffPlayer>();
 
-			if (InstancedBuff.TryGetPrototype(type, out var proto))
+			if (InstancedBuff.TryGetPrototype(type, out InstancedBuff proto))
 			{
 				if (mp.buffInstances.Any(n => n.Name == proto.Name))
 					mp.buffInstances.RemoveAll(n => n.Name == proto.Name);
@@ -26,7 +26,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 			Main.NewText($"InflictFromNet: {duration}, {type}");
 			InstancedBuffNPC gn = npc.GetGlobalNPC<InstancedBuffNPC>();
 
-			if (InstancedBuff.TryGetPrototype(type, out var proto))
+			if (InstancedBuff.TryGetPrototype(type, out InstancedBuff proto))
 			{
 				if (gn.buffInstances.Any(n => n.Name == proto.Name))
 					gn.buffInstances.RemoveAll(n => n.Name == proto.Name);

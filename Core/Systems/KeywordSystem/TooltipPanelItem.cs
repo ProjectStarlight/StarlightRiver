@@ -14,7 +14,7 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 		public Vector2 pos;
 		public float priority;
 
-		Action<Vector2> draw;
+		readonly Action<Vector2> draw;
 
 		public PanelDraw(Vector2 size, Action<Vector2> draw, float priority)
 		{
@@ -45,8 +45,8 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 			ReLogic.Graphics.DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
 
 			string WidestTooltip = lines.OrderBy(n => ChatManager.GetStringSize(font, n.Text, Vector2.One).X).Last().Text;
-			var tooltipWidth = ChatManager.GetStringSize(font, WidestTooltip, Vector2.One).X;
-			var tooltipHeight = lines.Sum(n => ChatManager.GetStringSize(font, WidestTooltip, Vector2.One).Y);
+			float tooltipWidth = ChatManager.GetStringSize(font, WidestTooltip, Vector2.One).X;
+			float tooltipHeight = lines.Sum(n => ChatManager.GetStringSize(font, WidestTooltip, Vector2.One).Y);
 
 			Rectangle tooltipRect = new Rectangle(lines.First().X, lines.First().Y, (int)tooltipWidth, (int)tooltipHeight);
 			tooltipRect.Inflate(5, 5);
@@ -58,10 +58,10 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 			float yConsumed = 0;
 
 			float thisY = 0;
-			foreach (var panel in drawQueue)
+			foreach (PanelDraw panel in drawQueue)
 			{
 				if (xConsumed + panel.size.X < tooltipWidth || xConsumed == 0)
-				{			
+				{
 					panel.pos = new Vector2(tooltipRect.X + xConsumed, tooltipRect.Y + tooltipHeight + 25 + yConsumed);
 
 					if (panel.size.Y > thisY)
@@ -76,7 +76,7 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 
 					panel.pos = new Vector2(tooltipRect.X + xConsumed, tooltipRect.Y + tooltipHeight + 25 + yConsumed);
 					thisY = panel.size.Y;
-				}	
+				}
 			}
 
 			// We went off the bottom, try to flip it around
@@ -86,7 +86,7 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 				yConsumed = 0;
 				thisY = 0;
 
-				foreach (var panel in drawQueue)
+				foreach (PanelDraw panel in drawQueue)
 				{
 					if (xConsumed + panel.size.X < tooltipWidth || xConsumed == 0)
 					{
@@ -108,7 +108,7 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 				}
 			}
 
-			foreach (var panel in drawQueue)
+			foreach (PanelDraw panel in drawQueue)
 			{
 				panel.Draw();
 			}

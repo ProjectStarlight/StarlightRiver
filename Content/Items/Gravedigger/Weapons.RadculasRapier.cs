@@ -207,8 +207,10 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override BuffStack GenerateDefaultStack(int duration)
 		{
-			var stack = new BuffStack();
-			stack.duration = duration;
+			var stack = new BuffStack
+			{
+				duration = duration
+			};
 			return stack;
 		}
 
@@ -418,7 +420,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 			BuffInflictor.Inflict<RadculasRapierBleed>(target, 300);
 
-			var buff = InstancedBuffNPC.GetInstance<RadculasRapierBleed>(target);
+			RadculasRapierBleed buff = InstancedBuffNPC.GetInstance<RadculasRapierBleed>(target);
 
 			if (buff != null)
 				buff.lastHitPos = Owner.Center;

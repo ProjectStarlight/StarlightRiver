@@ -53,7 +53,7 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 			// Wrap descriptions after loading to prevent having to do this when displaying them
 			ReLogic.Graphics.DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
 
-			foreach (var item in keywords)
+			foreach (Keyword item in keywords)
 			{
 				item.Description = Helpers.Helper.WrapString(item.Description, 200, font, 0.8f);
 			}

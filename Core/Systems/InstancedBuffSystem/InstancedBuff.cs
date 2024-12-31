@@ -62,7 +62,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		/// <returns>If the prototype exists or not</returns>
 		public static bool TryGetPrototype(string name, out InstancedBuff prototype)
 		{
-			if (prototypes.TryGetValue(name, out var proto))
+			if (prototypes.TryGetValue(name, out InstancedBuff proto))
 			{
 				prototype = proto;
 				return true;
@@ -164,8 +164,8 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 
 			if (isPlayer)
 			{
-				var player = Main.player[whoAmI];
-				var buffIndex = player.FindBuffIndex(BackingType);
+				Player player = Main.player[whoAmI];
+				int buffIndex = player.FindBuffIndex(BackingType);
 
 				if (buffIndex == -1)
 					return;
@@ -175,15 +175,15 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 			}
 			else
 			{
-				var npc = Main.npc[whoAmI];
-				var buffIndex = npc.FindBuffIndex(BackingType);
+				NPC npc = Main.npc[whoAmI];
+				int buffIndex = npc.FindBuffIndex(BackingType);
 
 				if (buffIndex == -1)
 					return;
 
 				InstancedBuffPacket packet = new(Main.myPlayer, Name, whoAmI, isPlayer, npc.buffTime[buffIndex], stream.ToArray());
 				packet.Send(255, Main.myPlayer, false);
-			}		
+			}
 		}
 
 		public InstancedBuff Clone()
