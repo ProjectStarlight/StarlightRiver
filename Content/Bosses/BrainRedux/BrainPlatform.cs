@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			float dist = Vector2.Distance(NPC.Center, targetPos);
 
 			Texture2D tex = Assets.Bosses.BrainRedux.BrainPlatform.Value;
-			LightingBufferRenderer.DrawWithLighting(NPC.position - Main.screenPosition, tex, tex.Bounds, Color.White * ThisThinker.ArenaOpacity, Vector2.One);
+			LightingBufferRenderer.DrawWithLighting(NPC.position - Main.screenPosition, tex, tex.Bounds, Color.White * (ThisThinker?.ArenaOpacity ?? 1f), Vector2.One);
 
 			Texture2D glowTex = Assets.Bosses.BrainRedux.BrainPlatformGlow.Value;
 			Texture2D glowTex2 = Assets.Keys.GlowAlpha.Value;
