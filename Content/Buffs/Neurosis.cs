@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Buffs
 
 		public override string Tooltip => "Decreases damage dealt by 2%";
 
-		public override string Texture => AssetDirectory.Debug;
+		public override string Texture => AssetDirectory.Buffs + Name;
 
 		public override bool Debuff => true;
 
