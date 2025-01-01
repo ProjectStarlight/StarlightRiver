@@ -25,12 +25,6 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 			Tile tile = Framing.GetTileSafely(i, j);
 
-<<<<<<< HEAD
-=======
-			//if (!tile.IsActuated)
-			//spriteBatch.Draw(tex, (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), new Color(200, 90, 70) * DeadBrain.ArenaOpacity);
-
->>>>>>> eb3c8d12fce82701d2256b77c498d5fb1b231b54
 			return false;
 		}
 	}

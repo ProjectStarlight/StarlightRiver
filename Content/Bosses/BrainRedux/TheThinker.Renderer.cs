@@ -157,7 +157,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				bodyShader.Parameters["mainbody_t"].SetValue(Assets.Bosses.BrainRedux.Heart.Value);
 				bodyShader.Parameters["linemap_t"].SetValue(Assets.Bosses.BrainRedux.HeartLine.Value);
-				bodyShader.Parameters["noisemap_t"].SetValue(Assets.Noise.PerlinNoise.Value);
+				bodyShader.Parameters["noisemap_t"].SetValue(Assets.Noise.ShaderNoise.Value);
 				bodyShader.Parameters["overlay_t"].SetValue(Assets.Bosses.BrainRedux.HeartOver.Value);
 				bodyShader.Parameters["normal_t"].SetValue(Assets.Bosses.BrainRedux.HeartNormal.Value);
 
@@ -185,7 +185,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			bodyShader.Parameters["mainbody_t"].SetValue(Assets.Bosses.BrainRedux.Heart.Value);
 			bodyShader.Parameters["linemap_t"].SetValue(Assets.Bosses.BrainRedux.HeartLine.Value);
-			bodyShader.Parameters["noisemap_t"].SetValue(Assets.Noise.PerlinNoise.Value);
+			bodyShader.Parameters["noisemap_t"].SetValue(Assets.Noise.ShaderNoise.Value);
 			bodyShader.Parameters["overlay_t"].SetValue(Assets.Bosses.BrainRedux.HeartOver.Value);
 			bodyShader.Parameters["normal_t"].SetValue(Assets.Bosses.BrainRedux.HeartNormal.Value);
 
