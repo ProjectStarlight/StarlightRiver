@@ -82,7 +82,7 @@ namespace StarlightRiver.Content.GUI
 				EndurancePanel.value = $"{(int)Math.Round(player.endurance * 100, MidpointRounding.AwayFromZero)}%";
 				EndurancePanel.magnitude = player.endurance * 2f;
 
-				var barrierPlayer = player.GetModPlayer<BarrierPlayer>();
+				BarrierPlayer barrierPlayer = player.GetModPlayer<BarrierPlayer>();
 				BarrierPanel.value = $"{barrierPlayer.maxBarrier}";
 				BarrierPanel.magnitude = barrierPlayer.maxBarrier / 500f;
 				BarrierPanel.extraInfo =
@@ -145,7 +145,7 @@ namespace StarlightRiver.Content.GUI
 			if (ParentState is null || ExtraDefenseStats.Timer == 0)
 				return;
 
-			var timer = ExtraDefenseStats.Timer - offsetPosition * 4;
+			int timer = ExtraDefenseStats.Timer - offsetPosition * 4;
 
 			if (timer > 25)
 				timer = 25;
@@ -214,7 +214,7 @@ namespace StarlightRiver.Content.GUI
 				Vector2 vector = new Vector2(inventoryX - 10 - 47 - 47 - 14, inventoryY + TextureAssets.InventoryBack.Height() * 0.5f);
 				Main.spriteBatch.Draw(Assets.GUI.DefenseFlash.Value, vector, null, Color.White * flash, 0f, TextureAssets.Extra[58].Value.Size() / 2f, Main.inventoryScale, SpriteEffects.None, 0f);
 
-				if(Utils.CenteredRectangle(vector, TextureAssets.Extra[58].Value.Size()).Contains(new Point(Main.mouseX, Main.mouseY)) && !PlayerInput.IgnoreMouseInterface)
+				if (Utils.CenteredRectangle(vector, TextureAssets.Extra[58].Value.Size()).Contains(new Point(Main.mouseX, Main.mouseY)) && !PlayerInput.IgnoreMouseInterface)
 					Main.hoverItemName += "\nClick for defensive stats";
 			}
 		}
