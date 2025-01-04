@@ -37,6 +37,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public Vector2 savedPos2;
 		public Vector2 lastPos;
 		public float savedRot;
+		public int[] safeMineIndicides = new int[4];
 		public bool contactDamage = false;
 
 		public bool hurtLastFrame;
@@ -493,10 +494,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						AttackState = attackQueue[0];
 						attackQueue.RemoveAt(0);
 
-						int next = Main.rand.Next(4);
+						int next = Main.rand.Next(5);
 
 						while (next == attackQueue.Last())
-							next = Main.rand.Next(4);
+							next = Main.rand.Next(5);
 
 						attackQueue.Add(next);
 
@@ -519,6 +520,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 							break;
 						case 3:
 							Clones2();
+							break;
+						case 4:
+							MindMines();
 							break;
 					}
 
