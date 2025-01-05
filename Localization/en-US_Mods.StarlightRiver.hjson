@@ -42,12 +42,19 @@ Items: {
 		Tooltip: Used to create infusions
 	}
 
-	CauldronItem.Tooltip: Places an Alchemic Cauldron
-	MixingStick.Tooltip:
-		'''
-		Mixing Stick
-		Use this to finalize alchemy recipes to craft them.
-		'''
+	CauldronItem: {
+		Tooltip: Places an Alchemic Cauldron
+		DisplayName: Cauldron Item
+	}
+
+	MixingStick: {
+		Tooltip:
+			'''
+			Mixing Stick
+			Use this to finalize alchemy recipes to craft them.
+			'''
+		DisplayName: Mixing Stick
+	}
 
 	ArtilleryLicense: {
 		DisplayName: Artillery License
@@ -378,7 +385,10 @@ Items: {
 			'''
 	}
 
-	ThinkerBossBag.DisplayName: Treasure Bag (The Thinker)
+	ThinkerBossBag: {
+		DisplayName: Treasure Bag (The Thinker)
+		Tooltip: ""
+	}
 
 	DebugModerEnabler: {
 		DisplayName: Debug Mode
@@ -396,12 +406,15 @@ Items: {
 		Tooltip: Has whatever effects are needed
 	}
 
-	DefiledAnkh.Tooltip:
-		'''
-		Your {{Barrier}} protects against 25% less damage
-		+100% {{Inoculation}} and immunity to most debuffs while {{Barrier}} is active
-		+40 max {{Barrier}}
-		'''
+	DefiledAnkh: {
+		Tooltip:
+			'''
+			Your {{Barrier}} protects against 25% less damage
+			+100% {{Inoculation}} and immunity to most debuffs while {{Barrier}} is active
+			+40 max {{Barrier}}
+			'''
+		DisplayName: Defiled Ankh
+	}
 
 	Sandscript: {
 		DisplayName: Sandscript
@@ -466,12 +479,15 @@ Items: {
 			'''
 	}
 
-	ThousandthDegree.Tooltip:
-		'''
-		Melts through enemies to build up heat
-		Releasing launches the blazing wheel
-		'Rip and tear'
-		'''
+	ThousandthDegree: {
+		Tooltip:
+			'''
+			Melts through enemies to build up heat
+			Releasing launches the blazing wheel
+			'Rip and tear'
+			'''
+		DisplayName: Thousandth Degree
+	}
 
 	TwistSword: {
 		DisplayName: Twisted Greatsword
@@ -501,64 +517,270 @@ Items: {
 			'''
 	}
 
-	BlackPepper.Tooltip: "\n\n"
-	BrusselSprouts.Tooltip: "\n\n"
-	Butter.Tooltip: "\n\n"
-	Cabbage.Tooltip: "\n\n"
-	Carrot.Tooltip: "\n\n"
-	Cashews.Tooltip: "\n\n"
-	Cherry.Tooltip: "\n\n"
-	ChocolateGlaze.Tooltip: "\n\n"
-	CoffeeBeans.Tooltip: "\n\n"
-	CrimsonSteak.Tooltip: "\n\n"
-	DicedMushrooms.Tooltip: "\n\n"
-	Dough.Tooltip: "\n\n"
-	Dressing.Tooltip: "\n\n"
-	EaterSteak.Tooltip: "\n\n"
-	Entrails.Tooltip: "\n\n"
-	Eye.Tooltip: "\n\n"
-	FaceSteak.Tooltip: "\n\n"
-	Flour.Tooltip: "\n\n"
-	Gelatine.Tooltip: "\n\n"
-	GelBerry.Tooltip: "\n\n"
-	GiantMushroom.Tooltip: "\n\n"
-	HealthExtract.Tooltip: "\n\n"
-	HoneySyrup.Tooltip: "\n\n"
-	IvySalad.Tooltip: "\n\n"
-	JumboShrimp.Tooltip: "\n\n"
-	Lettuce.Tooltip: "\n\n"
-	MahoganyRoot.Tooltip: "\n\n"
-	ManaExtract.Tooltip: "\n\n"
+	BlackPepper: {
+		Tooltip: "\n\n"
+		DisplayName: Black Pepper
+	}
+
+	BrusselSprouts: {
+		Tooltip: "\n\n"
+		DisplayName: Brussel Sprouts
+	}
+
+	Butter: {
+		Tooltip: "\n\n"
+		DisplayName: Butter
+	}
+
+	Cabbage: {
+		Tooltip: "\n\n"
+		DisplayName: Cabbage
+	}
+
+	Carrot: {
+		Tooltip: "\n\n"
+		DisplayName: Carrot
+	}
+
+	Cashews: {
+		Tooltip: "\n\n"
+		DisplayName: Cashews
+	}
+
+	Cherry: {
+		Tooltip: "\n\n"
+		DisplayName: Cherry
+	}
+
+	ChocolateGlaze: {
+		Tooltip: "\n\n"
+		DisplayName: Chocolate Glaze
+	}
+
+	CoffeeBeans: {
+		Tooltip: "\n\n"
+		DisplayName: Coffee Beans
+	}
+
+	CrimsonSteak: {
+		Tooltip: "\n\n"
+		DisplayName: Crimson Steak
+	}
+
+	DicedMushrooms: {
+		Tooltip: "\n\n"
+		DisplayName: Diced Mushrooms
+	}
+
+	Dough: {
+		Tooltip: "\n\n"
+		DisplayName: Dough
+	}
+
+	Dressing: {
+		Tooltip: "\n\n"
+		DisplayName: Dressing
+	}
+
+	EaterSteak: {
+		Tooltip: "\n\n"
+		DisplayName: Eater Steak
+	}
+
+	Entrails: {
+		Tooltip: "\n\n"
+		DisplayName: Entrails
+	}
+
+	Eye: {
+		Tooltip: "\n\n"
+		DisplayName: Eye
+	}
+
+	FaceSteak: {
+		Tooltip: "\n\n"
+		DisplayName: Face Steak
+	}
+
+	Flour: {
+		Tooltip: "\n\n"
+		DisplayName: Flour
+	}
+
+	Gelatine: {
+		Tooltip: "\n\n"
+		DisplayName: Gelatine
+	}
+
+	GelBerry: {
+		Tooltip: "\n\n"
+		DisplayName: Gel Berry
+	}
+
+	GiantMushroom: {
+		Tooltip: "\n\n"
+		DisplayName: Giant Mushroom
+	}
+
+	HealthExtract: {
+		Tooltip: "\n\n"
+		DisplayName: Health Extract
+	}
+
+	HoneySyrup: {
+		Tooltip: "\n\n"
+		DisplayName: Honey Syrup
+	}
+
+	IvySalad: {
+		Tooltip: "\n\n"
+		DisplayName: Ivy Salad
+	}
+
+	JumboShrimp: {
+		Tooltip: "\n\n"
+		DisplayName: Jumbo Shrimp
+	}
+
+	Lettuce: {
+		Tooltip: "\n\n"
+		DisplayName: Lettuce
+	}
+
+	MahoganyRoot: {
+		Tooltip: "\n\n"
+		DisplayName: Mahogany Root
+	}
+
+	ManaExtract: {
+		Tooltip: "\n\n"
+		DisplayName: Mana Extract
+	}
 
 	Meal: {
 		DisplayName: Meal
 		Tooltip: Rich food that provides these buffs:
 	}
 
-	Milk.Tooltip: "\n\n"
-	Rabbit.Tooltip: "\n\n"
-	RocketFuel.Tooltip: "\n\n"
-	SeaSalt.Tooltip: "\n\n"
-	SkySprinkles.Tooltip: "\n\n"
-	BlastoffShake.Tooltip: "\n\n"
-	BrandedCoffee.Tooltip: "\n\n"
-	ButterPancakes.Tooltip: "\n\n"
-	CherryBrownie.Tooltip: "\n\n"
-	CreamySoup.Tooltip: "\n\n"
-	CrimsonKebab.Tooltip: "\n\n"
-	JungleSalad.Tooltip: "\n\n"
-	MushroomSteak.Tooltip: "\n\n"
-	Salad.Tooltip: "\n\n"
-	ShrimpSandwich.Tooltip: "\n\n"
-	Slimejelly.Tooltip: "\n\n"
-	SupportCookies.Tooltip: "\n\n"
-	StarlightWater.Tooltip: "\n\n"
-	Sugar.Tooltip: "\n\n"
-	TableSalt.Tooltip: "\n\n"
-	Toast.Tooltip: "\n\n"
-	VertebrateNuggets.Tooltip: "\n\n"
-	Vinegar.Tooltip: "\n\n"
-	WhippedCream.Tooltip: "\n\n"
+	Milk: {
+		Tooltip: "\n\n"
+		DisplayName: Milk
+	}
+
+	Rabbit: {
+		Tooltip: "\n\n"
+		DisplayName: Rabbit
+	}
+
+	RocketFuel: {
+		Tooltip: "\n\n"
+		DisplayName: Rocket Fuel
+	}
+
+	SeaSalt: {
+		Tooltip: "\n\n"
+		DisplayName: Sea Salt
+	}
+
+	SkySprinkles: {
+		Tooltip: "\n\n"
+		DisplayName: Sky Sprinkles
+	}
+
+	BlastoffShake: {
+		Tooltip: "\n\n"
+		DisplayName: Blastoff Shake
+	}
+
+	BrandedCoffee: {
+		Tooltip: "\n\n"
+		DisplayName: Branded Coffee
+	}
+
+	ButterPancakes: {
+		Tooltip: "\n\n"
+		DisplayName: Butter Pancakes
+	}
+
+	CherryBrownie: {
+		Tooltip: "\n\n"
+		DisplayName: Cherry Brownie
+	}
+
+	CreamySoup: {
+		Tooltip: "\n\n"
+		DisplayName: Creamy Soup
+	}
+
+	CrimsonKebab: {
+		Tooltip: "\n\n"
+		DisplayName: Crimson Kebab
+	}
+
+	JungleSalad: {
+		Tooltip: "\n\n"
+		DisplayName: Jungle Salad
+	}
+
+	MushroomSteak: {
+		Tooltip: "\n\n"
+		DisplayName: Mushroom Steak
+	}
+
+	Salad: {
+		Tooltip: "\n\n"
+		DisplayName: Salad
+	}
+
+	ShrimpSandwich: {
+		Tooltip: "\n\n"
+		DisplayName: Shrimp Sandwich
+	}
+
+	Slimejelly: {
+		Tooltip: "\n\n"
+		DisplayName: Slimejelly
+	}
+
+	SupportCookies: {
+		Tooltip: "\n\n"
+		DisplayName: Support Cookies
+	}
+
+	StarlightWater: {
+		Tooltip: "\n\n"
+		DisplayName: Starlight Water
+	}
+
+	Sugar: {
+		Tooltip: "\n\n"
+		DisplayName: Sugar
+	}
+
+	TableSalt: {
+		Tooltip: "\n\n"
+		DisplayName: Table Salt
+	}
+
+	Toast: {
+		Tooltip: "\n\n"
+		DisplayName: Toast
+	}
+
+	VertebrateNuggets: {
+		Tooltip: "\n\n"
+		DisplayName: Vertebrate Nuggets
+	}
+
+	Vinegar: {
+		Tooltip: "\n\n"
+		DisplayName: Vinegar
+	}
+
+	WhippedCream: {
+		Tooltip: "\n\n"
+		DisplayName: Whipped Cream
+	}
 
 	AcornSprout: {
 		DisplayName: Acorn Sprout
@@ -675,7 +897,10 @@ Items: {
 		Tooltip: You shouldn't see this
 	}
 
-	GeomancerHood.DisplayName: Geomancer's Hood
+	GeomancerHood: {
+		DisplayName: Geomancer's Hood
+		Tooltip: ""
+	}
 
 	GeomancerItemDummy: {
 		DisplayName: Effects of different gems:
@@ -690,8 +915,15 @@ Items: {
 			'''
 	}
 
-	GeomancerPants.DisplayName: Geomancer's Greaves
-	GeomancerRobe.DisplayName: Geomancer's Cowl
+	GeomancerPants: {
+		DisplayName: Geomancer's Greaves
+		Tooltip: ""
+	}
+
+	GeomancerRobe: {
+		DisplayName: Geomancer's Cowl
+		Tooltip: ""
+	}
 
 	GeoRuby: {
 		DisplayName: Ruby
@@ -825,11 +1057,14 @@ Items: {
 		Tooltip: +40 maximum mana
 	}
 
-	TaintedGreataxe.Tooltip:
-		'''
-		Landing a Critical Strike will inflict {{Focused}} on a new, different enemy
-		<right> on the Greataxe whilst it is Embedded to release it
-		'''
+	TaintedGreataxe: {
+		Tooltip:
+			'''
+			Landing a Critical Strike will inflict {{Focused}} on a new, different enemy
+			<right> on the Greataxe whilst it is Embedded to release it
+			'''
+		DisplayName: Tainted Greataxe
+	}
 
 	VengefulSpirit: {
 		DisplayName: Vengeful Spirit
@@ -884,12 +1119,15 @@ Items: {
 			'''
 	}
 
-	Corpseflower.Tooltip:
-		'''
-		All damage dealt is converted into stacks of {{BUFF:CorpseflowerBuff}}
-		Base damage is decreased
-		You are unable to critically strike
-		'''
+	Corpseflower: {
+		Tooltip:
+			'''
+			All damage dealt is converted into stacks of {{BUFF:CorpseflowerBuff}}
+			Base damage is decreased
+			You are unable to critically strike
+			'''
+		DisplayName: Corpseflower
+	}
 
 	ManEaterPot: {
 		DisplayName: Man Eater Pot
@@ -1171,12 +1409,15 @@ Items: {
 		Tooltip: Ancient and heavily worn, but still solid. You could forge this into something useful...
 	}
 
-	Earthduster.Tooltip:
-		'''
-		Hold <left> to fire a rapid stream of earth
-		Can use many different blocks as ammo, each with unique effects
-		33% chance to not consume ammo
-		'''
+	Earthduster: {
+		Tooltip:
+			'''
+			Hold <left> to fire a rapid stream of earth
+			Can use many different blocks as ammo, each with unique effects
+			33% chance to not consume ammo
+			'''
+		DisplayName: Earthduster
+	}
 
 	ElectroArrow: {
 		DisplayName: Electro Arrow
@@ -1256,7 +1497,10 @@ Items: {
 			'''
 	}
 
-	Gunchucks.DisplayName: Gunchucks
+	Gunchucks: {
+		DisplayName: Gunchucks
+		Tooltip: ""
+	}
 
 	GunstrapBoots: {
 		DisplayName: Gunstrap Boots
@@ -1346,11 +1590,14 @@ Items: {
 			'''
 	}
 
-	Magebane.Tooltip:
-		'''
-		You can not drink mana potions or other mana-replenishing items
-		Magic attacks have a 25% chance to leech a large portion of their damage as mana
-		'''
+	Magebane: {
+		Tooltip:
+			'''
+			You can not drink mana potions or other mana-replenishing items
+			Magic attacks have a 25% chance to leech a large portion of their damage as mana
+			'''
+		DisplayName: Magebane
+	}
 
 	MagmaGun: {
 		DisplayName: Pyroclastic Flow
@@ -1415,14 +1662,17 @@ Items: {
 			'''
 	}
 
-	Sling.Tooltip:
-		'''
-		Sling seeds, stones, and mushrooms at your enemies
-		Seeds have increased velocity
-		Stones have less velocity but deal more damage and knockback
-		Mushrooms deal less damage but inflict Poisoned
-		75% chance to not consume ammo
-		'''
+	Sling: {
+		Tooltip:
+			'''
+			Sling seeds, stones, and mushrooms at your enemies
+			Seeds have increased velocity
+			Stones have less velocity but deal more damage and knockback
+			Mushrooms deal less damage but inflict Poisoned
+			75% chance to not consume ammo
+			'''
+		DisplayName: Sling
+	}
 
 	Soilgun: {
 		DisplayName: Soilgun
@@ -1565,7 +1815,10 @@ Items: {
 		Tooltip: +35 {{Barrier}}
 	}
 
-	MoonstoneHamaxe.Tooltip: Press <right> to charge up a slam that destroys a large area of walls
+	MoonstoneHamaxe: {
+		Tooltip: Press <right> to charge up a slam that destroys a large area of walls
+		DisplayName: Moonstone Hamaxe
+	}
 
 	MoonstoneHead: {
 		DisplayName: Moonstone Helmet
@@ -1600,7 +1853,10 @@ Items: {
 			'''
 	}
 
-	Shaker.DisplayName: The Shaker
+	Shaker: {
+		DisplayName: The Shaker
+		Tooltip: ""
+	}
 
 	PalestoneNail: {
 		DisplayName: Palenail
@@ -1669,7 +1925,10 @@ Items: {
 			'''
 	}
 
-	SquidBossBag.DisplayName: Treasure Bag (Auroracle)
+	SquidBossBag: {
+		DisplayName: Treasure Bag (Auroracle)
+		Tooltip: ""
+	}
 
 	SquidBossSpawn: {
 		DisplayName: Suspicious Looking Offering
@@ -1695,11 +1954,14 @@ Items: {
 		Tooltip: Move your mouse to hook around objects
 	}
 
-	Tentalance.Tooltip:
-		'''
-		Launches a shimmering tentacle lance
-		Charge to fire up to 4 more lances at once
-		'''
+	Tentalance: {
+		Tooltip:
+			'''
+			Launches a shimmering tentacle lance
+			Charge to fire up to 4 more lances at once
+			'''
+		DisplayName: Tentalance
+	}
 
 	WaterStaff: {
 		DisplayName: Staff of the Waves
@@ -2012,12 +2274,35 @@ Items: {
 		Tooltip: Guarantees a moonstone will be the next celestial object to fall
 	}
 
-	AncientStarwoodBoots.DisplayName: Ancient Starwood Leggings
-	AncientStarwoodChest.DisplayName: Ancient Starwood Robes
-	AncientStarwoodHat.DisplayName: Ancient Starwood Hat
-	MechaChest.DisplayName: Mecha Chest
-	MechaHead.DisplayName: Mecha Helmet
-	MechaLegs.DisplayName: Mecha Legs
+	AncientStarwoodBoots: {
+		DisplayName: Ancient Starwood Leggings
+		Tooltip: ""
+	}
+
+	AncientStarwoodChest: {
+		DisplayName: Ancient Starwood Robes
+		Tooltip: ""
+	}
+
+	AncientStarwoodHat: {
+		DisplayName: Ancient Starwood Hat
+		Tooltip: ""
+	}
+
+	MechaChest: {
+		DisplayName: Mecha Chest
+		Tooltip: ""
+	}
+
+	MechaHead: {
+		DisplayName: Mecha Helmet
+		Tooltip: ""
+	}
+
+	MechaLegs: {
+		DisplayName: Mecha Legs
+		Tooltip: ""
+	}
 
 	WardenHat: {
 		DisplayName: Warden Hat
@@ -2076,7 +2361,10 @@ Items: {
 		Tooltip: Critical strikes cause arrows to shatter into glass shards
 	}
 
-	GlassIdol.Tooltip: Used to worship a powerful guardian.
+	GlassIdol: {
+		Tooltip: Used to worship a powerful guardian.
+		DisplayName: Glass Idol
+	}
 
 	GlassIdolEndless: {
 		DisplayName: Gilded Glass Idol
@@ -2127,7 +2415,10 @@ Items: {
 		Tooltip: Why would you do this to him?!
 	}
 
-	MagmiteVacpack.Tooltip: Blasts out Magmites that stick to enemies and increase summon tag damage
+	MagmiteVacpack: {
+		Tooltip: Blasts out Magmites that stick to enemies and increase summon tag damage
+		DisplayName: Magmite Vacpack
+	}
 
 	Needler: {
 		DisplayName: Needler
@@ -2143,12 +2434,15 @@ Items: {
 		Tooltip: Summons a storm of phoenixes that periodically swoop in on enemies
 	}
 
-	RecursiveFocus.Tooltip:
-		'''
-		Summons an infernal crystal
-		The infernal crystal locks onto enemies, ramping up damage over time
-		Press <right> to cause the crystal to target multiple enemies, at the cost of causing all beams to not ramp up, dealing less damage
-		'''
+	RecursiveFocus: {
+		Tooltip:
+			'''
+			Summons an infernal crystal
+			The infernal crystal locks onto enemies, ramping up damage over time
+			Press <right> to cause the crystal to target multiple enemies, at the cost of causing all beams to not ramp up, dealing less damage
+			'''
+		DisplayName: Recursive Focus
+	}
 
 	RefractiveBlade: {
 		DisplayName: Refractive Blade
@@ -2188,7 +2482,10 @@ Items: {
 		Tooltip: Opens a door inside the Vitric Forge.
 	}
 
-	VitricBossBag.DisplayName: Treasure Bag (Ceiros)
+	VitricBossBag: {
+		DisplayName: Treasure Bag (Ceiros)
+		Tooltip: ""
+	}
 
 	VitricBow: {
 		DisplayName: Ancient Vitric Bow
@@ -3282,6 +3579,101 @@ Items: {
 			Your minions spend 40 mana to emit an aura inflicting {{BUFF:Psychosis}}
 			'''
 	}
+
+	BaseBarrierDye: {
+		DisplayName: Base Barrier Dye
+		Tooltip: ""
+	}
+
+	ExampleCombatMountItem: {
+		DisplayName: Example Combat Mount Item
+		Tooltip: ""
+	}
+
+	MonkSpade: {
+		DisplayName: Monk Spade
+		Tooltip: ""
+	}
+
+	RainbowCycleDye: {
+		DisplayName: Rainbow Cycle Dye
+		Tooltip: ""
+	}
+
+	RainbowCycleDye2: {
+		DisplayName: Rainbow Cycle Dye2
+		Tooltip: ""
+	}
+
+	FaeHover: {
+		DisplayName: Fae Hover
+		Tooltip: ""
+	}
+
+	GenericHover: {
+		DisplayName: Generic Hover
+		Tooltip: ""
+	}
+
+	WindsHover: {
+		DisplayName: Winds Hover
+		Tooltip: ""
+	}
+
+	StaminaPickup: {
+		DisplayName: Stamina Pickup
+		Tooltip: ""
+	}
+
+	ForestBerries: {
+		DisplayName: Forest Berries
+		Tooltip: ""
+	}
+
+	MaterialIndicatorIcon: {
+		DisplayName: Material Indicator Icon
+		Tooltip: ""
+	}
+
+	RedLaserPointer: {
+		DisplayName: Red Laser Pointer
+		Tooltip: ""
+	}
+
+	OrangeLaserPointer: {
+		DisplayName: Orange Laser Pointer
+		Tooltip: ""
+	}
+
+	YellowLaserPointer: {
+		DisplayName: Yellow Laser Pointer
+		Tooltip: ""
+	}
+
+	GreenLaserPointer: {
+		DisplayName: Green Laser Pointer
+		Tooltip: ""
+	}
+
+	BlueLaserPointer: {
+		DisplayName: Blue Laser Pointer
+		Tooltip: ""
+	}
+
+	PurpleLaserPointer: {
+		DisplayName: Purple Laser Pointer
+		Tooltip: ""
+	}
+
+	WhiteLaserPointer: {
+		DisplayName: White Laser Pointer
+		Tooltip: ""
+	}
+
+	PinkLaserPointer: {
+		DisplayName: Pink Laser Pointer
+		Tooltip: ""
+	}
 }
 
 Tiles: {
@@ -3475,10 +3867,10 @@ Tiles: {
 	VitricSand.MapEntry: ""
 	VitricSoftSand.MapEntry: ""
 	VitricSandPlain.MapEntry: ""
-	// VitricGiantCrystal.MapEntry: ""
-	// VitricLargeCrystal.MapEntry: ""
-	// VitricMediumCrystal.MapEntry: ""
-	// VitricSmallCrystal.MapEntry: ""
+	VitricGiantCrystal.MapEntry: Vitric Giant Crystal
+	VitricLargeCrystal.MapEntry: Vitric Large Crystal
+	VitricMediumCrystal.MapEntry: Vitric Medium Crystal
+	VitricSmallCrystal.MapEntry: Vitric Small Crystal
 }
 
 Projectiles: {
@@ -3494,6 +3886,7 @@ Projectiles: {
 	GlassSword.DisplayName: Glass Sword
 	LavaLob.DisplayName: Hot Lob
 	Whirlwind.DisplayName: Spinning Blades
+	Whirl.DisplayName: Whirl
 	InkBlob.DisplayName: Rainbow Ink
 	InkBlobGravity.DisplayName: Rainbow Ink
 	SpewBlob.DisplayName: Aurora Shard
@@ -3720,6 +4113,94 @@ Projectiles: {
 	Dart.DisplayName: Cursed Dart
 	SawbladeSmall.DisplayName: Cursed Sawblade
 	Spear.DisplayName: Cursed Spear
+	GatheringWindsWhirl.DisplayName: Gathering Winds Whirl
+	HintText.DisplayName: Hint Text
+	WellspringProjectile.DisplayName: Wellspring Projectile
+	FakeMindMine.DisplayName: Fake Mind Mine
+	ThinkerMindMine.DisplayName: Thinker Mind Mine
+	BurningGround.DisplayName: Burning Ground
+	GlassJavelin.DisplayName: Glass Javelin
+	GlassweaverDoor.DisplayName: Glassweaver Door
+	Glint.DisplayName: Glint
+	AuroraWaterSplash.DisplayName: Aurora Water Splash
+	DoorBomb.DisplayName: Door Bomb
+	Laser.DisplayName: Laser
+	CrystalWave.DisplayName: Crystal Wave
+	FireCone.DisplayName: Fire Cone
+	FireRingHostile.DisplayName: Fire Ring Hostile
+	FireRing.DisplayName: Fire Ring
+	GlassVolley.DisplayName: Glass Volley
+	GlassVolleyShard.DisplayName: Glass Volley Shard
+	SpikeMine.DisplayName: Spike Mine
+	VitricBomb.DisplayName: Vitric Bomb
+	ScrapshotHook.DisplayName: Scrapshot Hook
+	AztecDeathSaxophoneSoundwave.DisplayName: Aztec Death Saxophone Soundwave
+	BearPokerEndlessProjectile.DisplayName: Bear Poker Endless Projectile
+	BearPokerProjectile.DisplayName: Bear Poker Projectile
+	GraySlash.DisplayName: Gray Slash
+	LobotomizerFastProjectile.DisplayName: Lobotomizer Fast Projectile
+	LobotomizerHallucination.DisplayName: Lobotomizer Hallucination
+	LobotomizerProjectile.DisplayName: Lobotomizer Projectile
+	MindCursherProjectile.DisplayName: Mind Cursher Projectile
+	MirageBowClone.DisplayName: Mirage Bow Clone
+	MyelinSlash.DisplayName: Myelin Slash
+	PsychosisAura.DisplayName: Psychosis Aura
+	SandSlash.DisplayName: Sand Slash
+	TwistSwordProjectile.DisplayName: Twist Sword Projectile
+	Acorn.DisplayName: Acorn
+	HeavyFlailCrack.DisplayName: Heavy Flail Crack
+	HeavyFlailProjectile.DisplayName: Heavy Flail Projectile
+	MonkSpadeProjectile.DisplayName: Monk Spade Projectile
+	SlimeThorn.DisplayName: Slime Thorn
+	GeoAmethystProj.DisplayName: Geo Amethyst Proj
+	GeoDiamondProj.DisplayName: Geo Diamond Proj
+	GeoEmeraldProj.DisplayName: Geo Emerald Proj
+	GeoRubyProj.DisplayName: Geo Ruby Proj
+	GeoSapphireProj.DisplayName: Geo Sapphire Proj
+	GeoTopazProj.DisplayName: Geo Topaz Proj
+	BurnTrail.DisplayName: Burn Trail
+	GlowingObsidianSlash.DisplayName: Glowing Obsidian Slash
+	GlowingObsidianSpike.DisplayName: Glowing Obsidian Spike
+	InfernalHarvestFree.DisplayName: Infernal Harvest Free
+	InfernalHarvestPaid.DisplayName: Infernal Harvest Paid
+	ThunderbussBall.DisplayName: Thunderbuss Ball
+	AxeBookProjectile.DisplayName: Axe Book Projectile
+	BizarreLightning.DisplayName: Bizarre Lightning
+	BizarreLightningOrb.DisplayName: Bizarre Lightning Orb
+	BizarrePotionPoisonCloud.DisplayName: Bizarre Potion Poison Cloud
+	FryingPanThrownProj.DisplayName: Frying Pan Thrown Proj
+	GuillotineVFX.DisplayName: Guillotine V F X
+	HolyAmuletOrb.DisplayName: Holy Amulet Orb
+	SorcerwrenchProjectile.DisplayName: Sorcerwrench Projectile
+	SpearBookProjectile.DisplayName: Spear Book Projectile
+	SwordBookParry.DisplayName: Sword Book Parry
+	SwordBookProjectile.DisplayName: Sword Book Projectile
+	ThrownAxeProjectile.DisplayName: Thrown Axe Projectile
+	UltrapillBlood.DisplayName: Ultrapill Blood
+	DatsuzeiProjectile.DisplayName: Datsuzei Projectile
+	StarGlaive.DisplayName: Star Glaive
+	StarShuriken.DisplayName: Star Shuriken
+	AuroraThroneMountMinion.DisplayName: Aurora Throne Mount Minion
+	FrostballProjectile.DisplayName: Frostball Projectile
+	FrostExplosion.DisplayName: Frost Explosion
+	TentalanceProjectile.DisplayName: Tentalance Projectile
+	StarwoodSlingshotProj.DisplayName: Starwood Slingshot Proj
+	TemplePickProjectile.DisplayName: Temple Pick Projectile
+	TempleSpearLight.DisplayName: Temple Spear Light
+	LaserPointerProjectile.DisplayName: Laser Pointer Projectile
+	CoachGunUpgradeExplosion.DisplayName: Coach Gun Upgrade Explosion
+	MagmaBottleBurn.DisplayName: Magma Bottle Burn
+	MagmiteBombProjectile.DisplayName: Magmite Bomb Projectile
+	MagmiteBottleProjectile.DisplayName: Magmite Bottle Projectile
+	RefractiveBladeLaser.DisplayName: Refractive Blade Laser
+	RefractiveBladeProj.DisplayName: Refractive Blade Proj
+	VitricBowProjectile.DisplayName: Vitric Bow Projectile
+	VitricBowShard.DisplayName: Vitric Bow Shard
+	FirePillar.DisplayName: Fire Pillar
+	BossRushOrbGoreProjectile.DisplayName: Boss Rush Orb Gore Projectile
+	ConstructSpawner.DisplayName: Construct Spawner
+	GauntletSpawner.DisplayName: Gauntlet Spawner
+	SpawnEgg.DisplayName: Spawn Egg
 }
 
 Biomes: {
@@ -3832,6 +4313,42 @@ NPCs: {
 	Snake.DisplayName: Sandviper
 	BerrySlime.DisplayName: Slimeberry
 	TouchstoneWisp.DisplayName: Aurora Spirit
+	BrainPlatform.DisplayName: Brain Platform
+	CutsceneFakeThinker.DisplayName: Cutscene Fake Thinker
+	DeadBrain.DisplayName: Dead Brain
+	Neurysm.DisplayName: Neurysm
+	TheThinker.DisplayName: The Thinker
+	WeakPoint.DisplayName: Weak Point
+	ArenaBlocker.DisplayName: Arena Blocker
+	Auroraborn.DisplayName: Auroraborn
+	Auroraling.DisplayName: Auroraling
+	Tentacle.DisplayName: Tentacle
+	TentacleHurtbox.DisplayName: Tentacle Hurtbox
+	HellLavaActor.DisplayName: Hell Lava Actor
+	StarlightWaterActor.DisplayName: Starlight Water Actor
+	GravityOrbTest.DisplayName: Gravity Orb Test
+	BossRushGoal.DisplayName: Boss Rush Goal
+	Dweller.DisplayName: Dweller
+	Stalker.DisplayName: Stalker
+	Dreambeast.DisplayName: Dreambeast
+	WaterCube.DisplayName: Water Cube
+
+	EnchantNPC: {
+		DisplayName: Enchant N P C
+
+		TownNPCMood: {
+			Content: I am content.
+			NoHome: I hate not having a home.
+			FarFromHome: I am too far from home.
+			LoveSpace: I love having so much space.
+			DislikeCrowded: I dislike how crowded I am.
+			HateCrowded: I hate how crowded I am.
+			LikeNPC_Princess: I like {NPCName}.
+			Princess_LovesNPC: I like {NPCName}.
+		}
+	}
+
+	DesertWisp2.DisplayName: Desert Wisp2
 }
 
 Buffs: {
@@ -4169,6 +4686,11 @@ Buffs: {
 			Increased mining speed
 			'''
 	}
+
+	Full: {
+		DisplayName: Full
+		Description: Mods.StarlightRiver.Buffs.Full.Description
+	}
 }
 
 Prefixes: {
@@ -4191,4 +4713,166 @@ Prefixes: {
 	StaminaPrefix2.DisplayName: Shining
 	StaminaPrefix3.DisplayName: Glowing
 	StaminaPrefix4.DisplayName: Radiant
+	Feral.DisplayName: Feral
+	Jumpy.DisplayName: Jumpy
+	Tanklike.DisplayName: Tanklike
+}
+
+Configs: {
+	AudioConfig: {
+		DisplayName: Audio Config
+
+		InvSounds: {
+			Label: Custom Inventory Sounds
+			Tooltip: If custom inventory sounds should play for all Items, select few, or none.
+		}
+	}
+
+	CustomSounds: {
+		Tooltip: ""
+		All.Label: All
+		Specific.Label: Specific
+		None.Label: None
+	}
+
+	GraphicsConfig: {
+		DisplayName: Graphics Config
+
+		ScreenshakeMult: {
+			Label: Screenshake
+			Tooltip: Modifies the intensity of screen shake effects
+		}
+
+		LightingPollRate: {
+			Label: Lighting Buffer Poll Rate
+			Tooltip:
+				'''
+				Changes how often the lighting buffer polls for data. 
+				Higher values increase performance but make lighting update slower on some objects. 
+				Lower values result in smoother moving light but may hurt performance.
+				'''
+		}
+
+		ParticlesActive: {
+			Label: Extra Particles
+			Tooltip:
+				'''
+				Enables/Disables special particles. 
+				Disable this if you have performance issues.
+				'''
+		}
+
+		HighQualityLighting: {
+			Label: High quality lit textures
+			Tooltip:
+				'''
+				Enables/Disables fancy lighting on large textures. 
+				Disable this if you have performance issues.
+				'''
+		}
+
+		ReflectionConfig: {
+			Label: Background Reflections
+			Tooltip:
+				'''
+				Configures what is rendered for background reflections. 
+				Disable this if you have performance issues.
+				'''
+		}
+	}
+
+	ReflectionSubConfig: {
+		Tooltip: ""
+
+		ReflectionsOn: {
+			Label: Background Reflections
+			Tooltip:
+				'''
+				This will Enable/Disable the background reflections system entirely. 
+				If this is off, the other settings in this block are ignored. 
+				Disable this if you have performance issues.
+				'''
+		}
+
+		PlayerReflectionsOn: {
+			Label: Reflect Players
+			Tooltip:
+				'''
+				This will Enable/Disable reflecting Players.
+				 low performance impact.
+				'''
+		}
+
+		NpcReflectionsOn: {
+			Label: Reflect NPCs
+			Tooltip:
+				'''
+				This will Enable/Disable reflecting NPCs.
+				 low performance impact.
+				'''
+		}
+
+		ProjReflectionsOn: {
+			Label: Reflect Projectiles
+			Tooltip:
+				'''
+				This will Enable/Disable reflecting Projectiles.
+				 high performance impact.
+				'''
+		}
+
+		DustReflectionsOn: {
+			Label: Reflect Particles
+			Tooltip:
+				'''
+				This will Enable/Disable reflecting Particles, gores and dusts.
+				 high performance impact.
+				'''
+		}
+	}
+
+	GUIConfig: {
+		DisplayName: G U I Config
+
+		OverheadStaminaState: {
+			Label: Overhead Starlight Display
+			Tooltip: When/If the overhead starlight meter should display
+		}
+
+		KeywordStyle: {
+			Label: Keyword Style
+			Tooltip: How keywords should be displayed in tooltips
+		}
+
+		ObviousArmorCharge: {
+			Label: Numeric Set Bonus Indicators
+			Tooltip: Adds a numeric display to various armor set bonuses over the player
+		}
+
+		AddMaterialIndicator: {
+			Label: Indicate Items with Added Recipes
+			Tooltip: Displays a star icon in vanilla item tooltips if used in Starlight River crafting recipes
+		}
+
+		AbilityIconPosition: {
+			Label: Ability icon positon
+			Tooltip: Where the ability icons should be shown while the inventory is open
+		}
+	}
+
+	OverlayState: {
+		Tooltip: ""
+		AlwaysOn.Label: Always On
+		WhileNotFull.Label: While Not Full
+		WhileUsing.Label: While Using
+		Never.Label: Never
+	}
+
+	KeywordStyle: {
+		Tooltip: ""
+		Colors.Label: Colors
+		Brackets.Label: Brackets
+		Both.Label: Both
+		Neither.Label: Neither
+	}
 }

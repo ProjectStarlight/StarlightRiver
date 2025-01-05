@@ -6,6 +6,7 @@ using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
@@ -106,12 +107,11 @@ namespace StarlightRiver.Content.Biomes
 			int width = Main.screenWidth / 16 + 1;
 			int height = Main.screenHeight / 16 + 1;
 
-			for (int x = 0; x < width; x++)
+			for (int x = pos.X; x < pos.X + width; x++)
 			{
-				for (int y = 0; y < height; y++)
+				for (int y = pos.Y; y < pos.Y + height; y++)
 				{
-					Point16 target = pos + new Point16(x, y);
-					onDrawOverPerTile.Invoke(spriteBatch, target.X, target.Y);
+					onDrawOverPerTile.Invoke(spriteBatch, x, y);
 				}
 			}
 

@@ -12,6 +12,9 @@ namespace StarlightRiver.Content.NPCs.Underground
 {
 	internal class GloomSlime : Swarmer
 	{
+		public static FieldInfo engineInfo;
+		public static FieldInfo mapInfo;
+
 		public ref float Timer => ref NPC.ai[0];
 
 		public override string Texture => "StarlightRiver/Assets/NPCs/Underground/" + Name;
@@ -89,14 +92,20 @@ namespace StarlightRiver.Content.NPCs.Underground
 		{
 			orig(self);
 
-			object engine = typeof(Lighting).GetField("NewEngine", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
-			var map = typeof(LightingEngine).GetField("_workingLightMap", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(engine) as LightMap;
+			if (engineInfo is null)
+			{
+				engineInfo = typeof(Lighting).GetField("NewEngine", BindingFlags.Static | BindingFlags.NonPublic);
+				mapInfo = typeof(LightingEngine).GetField("_workingLightMap", BindingFlags.Instance | BindingFlags.NonPublic);
+			}
+
+			object engine = engineInfo.GetValue(null);
+			var map = mapInfo.GetValue(engine) as LightMap;
 
 			Main.GetAreaToLight(out int x, out int _, out int y, out int _);
 
 			foreach (NPC NPC in Main.ActiveNPCs)
 			{
-				if (NPC.ModNPC is GloomSlime)
+				if (NPC.type == Type)
 				{
 					for (int x2 = -8; x2 < 8; x2++)
 					{

@@ -21,10 +21,6 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 		public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-
-			Tile tile = Framing.GetTileSafely(i, j);
-
 			return false;
 		}
 	}

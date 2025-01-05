@@ -26,13 +26,12 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 		private void DrawRealVersion(SpriteBatch spriteBatch, int x, int y)
 		{
-			var target = new Point16(x, y);
-			Tile tile = Framing.GetTileSafely(target);
+			Tile tile = Framing.GetTileSafely(x, y);
 
-			if (tile.TileType == ModContent.TileType<Bonemine>())
+			if (tile.TileType == Type)
 			{
-				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Symbol").Value;
-				spriteBatch.Draw(tex, target.ToVector2() * 16 + Vector2.One * 8 - Main.screenPosition, null, Color.Red * 0.8f, 0, tex.Size() / 2f, 1, 0, 0);
+				Texture2D tex = Assets.Symbol.Value;
+				spriteBatch.Draw(tex, new Vector2(x, y) * 16 + Vector2.One * 8 - Main.screenPosition, null, Color.Red * 0.8f, 0, tex.Size() / 2f, 1, 0, 0);
 			}
 		}
 
