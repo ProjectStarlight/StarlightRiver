@@ -111,8 +111,6 @@ namespace StarlightRiver.Content.Items
 		{
 			orig(self, gameTime);
 
-			return;
-
 			Main.spriteBatch.Begin();
 
 			DynamicSpriteFont font = Terraria.GameContent.FontAssets.ItemStack.Value;
@@ -128,7 +126,7 @@ namespace StarlightRiver.Content.Items
 				for (float x = -Main.screenHeight; x < Main.screenWidth; x += font.MeasureString(message).X)
 					Main.spriteBatch.DrawString(font, message, new Vector2(x + (k ^ (k * k)) % 600, k), Color.White * 0.1f, default, default, 1f, default, default);
 
-				Utils.DrawBorderStringBig(Main.spriteBatch, $"STARLIGHT RIVER ALPHA TEST -- THINKER BOSS FIGHT TEST 2", new Vector2(Main.screenWidth / 2, 16), Color.White, 0.6f, 0.5f);
+				Utils.DrawBorderStringBig(Main.spriteBatch, $"STARLIGHT RIVER ALPHA TEST -- THINKER BOSS FIGHT TEST 3", new Vector2(Main.screenWidth / 2, 16), Color.White, 0.6f, 0.5f);
 				Utils.DrawBorderStringBig(Main.spriteBatch, $"ALPHA BUILD DOES NOT REPRESENT FINAL PRODUCT", new Vector2(Main.screenWidth / 2, 48), Color.White, 0.6f, 0.5f);
 				Utils.DrawBorderStringBig(Main.spriteBatch, $"YOUR ID: {SteamFriends.GetPersonaName()} ({SteamUser.GetSteamID().m_SteamID})", new Vector2(Main.screenWidth / 2, 80), Color.Gray, 0.6f, 0.5f);
 			}
