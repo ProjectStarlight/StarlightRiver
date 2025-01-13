@@ -225,7 +225,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 			overchargeDrainRate = 60;
 
 			rechargeDelay = 300;
-			rechargeRate = 6;
+			rechargeRate = 10;
 
 			barrierDamageReduction = 0.5f;
 
