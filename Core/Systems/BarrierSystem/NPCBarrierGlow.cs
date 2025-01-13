@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.LightingSystem;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core.Systems.LightingSystem;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
 using Terraria.Graphics.Effects;
@@ -65,11 +66,11 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 
 		private void DrawBarrierOverlay(On_Main.orig_DrawNPCs orig, Main self, bool behindTiles)
 		{
-			if (anyEnemiesWithBarrier)
-				DrawNPCTarget(behindTiles ? NPCTargetBehindTiles.RenderTarget : NPCTarget.RenderTarget);
-
 			if (!behindTiles)
 				oldScreenPos = Main.screenPosition;
+
+			if (anyEnemiesWithBarrier)
+				DrawNPCTarget(behindTiles ? NPCTargetBehindTiles.RenderTarget : NPCTarget.RenderTarget);
 
 			orig(self, behindTiles);
 		}
@@ -82,6 +83,8 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 			if (Main.dedServ || spriteBatch == null || target == null || gd == null)
 				return;
 
+			LightingBuffer.bufferNeedsPopulated = true;
+
 			Vector2 translation = Main.screenPosition - oldScreenPos;
 			translation *= Main.GameViewMatrix.Zoom;
 
@@ -91,7 +94,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, translationMatrix);
 
 			float sin = (float)Math.Sin(Main.timeForVisualEffects * 0.06f);
-			float opacity = (1.5f - sin * 0.5f) * 0.3f;
+			float opacity = (1.3f - sin * 0.3f) * 0.25f;
 
 			Effect effect = Filters.Scene["NPCBarrier"].GetShader().Shader;
 			effect.Parameters["barrierColor"].SetValue(BarrierColor.ToVector4() * opacity);
@@ -102,7 +105,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 			for (int i = 0; i < 8; i++)
 			{
 				float angle = i / 8f * MathHelper.TwoPi;
-				float distance = 4 + 2 * sin;
+				float distance = 4 + 1 * sin;
 
 				Vector2 offset = angle.ToRotationVector2() * distance;
 				spriteBatch.Draw(target, new Rectangle((int)offset.X, (int)offset.Y, Main.screenWidth, Main.screenHeight), Color.White);
