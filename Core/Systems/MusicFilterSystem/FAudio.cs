@@ -1,4 +1,5 @@
 ﻿#pragma warning disable format
+#pragma warning disable IDE0044
 
 using System;
 using System.Collections.Generic;
@@ -1010,4 +1011,5 @@ namespace FAudioINTERNAL
 	}
 
 #pragma warning restore format
+#pragma warning restore IDE0044
 }
