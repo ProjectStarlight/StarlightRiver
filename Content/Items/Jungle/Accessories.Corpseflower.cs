@@ -5,6 +5,7 @@ using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems.InstancedBuffSystem;
 using StarlightRiver.Helpers;
 using System;
+using System.IO;
 using System.Reflection;
 using Terraria.ID;
 using Terraria.Localization;
@@ -43,7 +44,7 @@ namespace StarlightRiver.Content.Items.Jungle
 
 		public override void SetStaticDefaults()
 		{
-			Tooltip.SetDefault("All damage dealt is converted into damage over time\nDamage is initially decreased, but can stack\nYou are unable to critically strike");
+			Tooltip.SetDefault("All damage dealt is converted into stacks of {{BUFF:CorpseflowerBuff}}\nBase damage is decreased\nYou are unable to critically strike");
 
 			ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.NaturesGift;
 			ItemID.Sets.ShimmerTransformToItem[ItemID.NaturesGift] = Type;
@@ -218,6 +219,16 @@ namespace StarlightRiver.Content.Items.Jungle
 	class CorpseflowerStack : BuffStack
 	{
 		public int damage;
+
+		public override void SendCustomData(BinaryWriter writer)
+		{
+			writer.Write(damage);
+		}
+
+		public override void ReceiveCustomData(BinaryReader reader)
+		{
+			damage = reader.ReadInt32();
+		}
 	}
 
 	class CorpseflowerBuff : StackableBuff<CorpseflowerStack>
@@ -225,15 +236,15 @@ namespace StarlightRiver.Content.Items.Jungle
 		public int totalDamage;
 		public override string Name => "CorpseflowerBuff";
 
-		public override string DisplayName => "Corpseflowered";
+		public override string DisplayName => "Corpseflower Curse";
 
 		public override string Texture => AssetDirectory.JungleItem + Name;
 
 		public override bool Debuff => true;
 
-		public override string Tooltip => "You have been cursed by the corpseflower"; //idk man
+		public override string Tooltip => "Deals damage over time based on the damage of the hit inflicting it";
 
-		public override void Load()
+		public override void SafeLoad()
 		{
 			StarlightNPC.UpdateLifeRegenEvent += StarlightNPC_UpdateLifeRegenEvent;
 			StarlightNPC.ResetEffectsEvent += ResetDamage;

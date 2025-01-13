@@ -8,7 +8,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public CoughDrops() : base("Cough Drops", "When debuffs wear off, gain a temporary speed and damage boost") { }
+		public CoughDrops() : base("Cough Drops", "When debuffs wear off, gain {{BUFF:CoughDropsBuff}}") { }
 
 		public override void Load()
 		{
