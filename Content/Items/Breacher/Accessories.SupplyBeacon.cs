@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Supply Beacon");
-			Tooltip.SetDefault("Taking over 50 damage summons a supply drop \nStand near the supply drop to buff either damage, regeneration, or defense \n10 second cooldown");
+			Tooltip.SetDefault("Taking over 50 damage summons a supply drop \nStand near the supply drop to gain {{BUFF:SupplyBeaconDefense, {{BUFF:SupplyBeaconHeal}}, or {{BUFF:SupplyBeaconDamage}} \n10 second cooldown");
 		}
 
 		public override void SetDefaults()
@@ -319,7 +319,7 @@ namespace StarlightRiver.Content.Items.Breacher
 	{
 		public override string Texture => AssetDirectory.Buffs + Name;
 
-		public SupplyBeaconDefense() : base("Supply Beacon", "Defense increased", false) { }
+		public SupplyBeaconDefense() : base("Supplied Defense", "Defense increased by 15", false) { }
 
 		public override void SafeSetDefaults()
 		{
@@ -338,7 +338,7 @@ namespace StarlightRiver.Content.Items.Breacher
 	{
 		public override string Texture => AssetDirectory.Buffs + Name;
 
-		public SupplyBeaconHeal() : base("Supply Beacon", "Regeneration increased", false) { }
+		public SupplyBeaconHeal() : base("Supplied Healing", "Life and mana regeneration increased by 10", false) { }
 
 		public override void SafeSetDefaults()
 		{
@@ -358,7 +358,7 @@ namespace StarlightRiver.Content.Items.Breacher
 	{
 		public override string Texture => AssetDirectory.Buffs + Name;
 
-		public SupplyBeaconDamage() : base("Supply Beacon", "Damage increased", false) { }
+		public SupplyBeaconDamage() : base("Supplied Damage", "Damage increased by 20%", false) { }
 
 		public override void SafeSetDefaults()
 		{

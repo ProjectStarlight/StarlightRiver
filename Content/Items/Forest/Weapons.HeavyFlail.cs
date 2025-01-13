@@ -85,7 +85,7 @@ namespace StarlightRiver.Content.Items.Forest
 		{
 			Color color = Color.White;
 			color *= Projectile.timeLeft > 100 ? 1f : Projectile.timeLeft / 100f;
-			var tex = Assets.Misc.PixelCrack.Value;
+			Texture2D tex = Assets.Misc.PixelCrack.Value;
 
 			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, color, 0, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
 		}
