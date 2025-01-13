@@ -4,18 +4,15 @@ using StarlightRiver.Core.Loaders.UILoading;
 using System;
 using System.Collections.Generic;
 using Terraria.UI;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.GUI
 {
 	public class TextCard : SmartUIState
 	{
-		private Ability abilityToAnnounce;
-		private bool usedAnnouncedAbility = false;
-
 		private string title;
 		private string message;
-		private string subMessage;
 
 		private float textScale = 1;
 		private string texturePath = "StarlightRiver/Assets/GUI/DefaultCard";
@@ -24,6 +21,11 @@ namespace StarlightRiver.Content.GUI
 		private int timer = 0;
 		private int tempTime = 0;
 		private int tempTimeMax = 0;
+
+		private Func<bool> endCondition;
+		private bool ended;
+
+		private bool UsesEndCondition => tempTimeMax == 0 && endCondition != null;
 
 		private Texture2D Texture => Request<Texture2D>(texturePath).Value;
 
@@ -37,19 +39,27 @@ namespace StarlightRiver.Content.GUI
 			texturePath = path;
 		}
 
-		public void Display(string title, string message, Ability ability = null, int time = 0, float scale = 1, bool titleFirst = false, string subMessage = "")
+		public static void Display(string title, string message, int time, float scale = 1, bool reversed = false)
 		{
-			abilityToAnnounce = ability;
+			UILoader.GetUIState<TextCard>().DisplayInner(title, message, time, scale, reversed);
+		}
+
+		public static void Display(string title, string message, Func<bool> endCondition, float scale = 1, bool reversed = false)
+		{
+			UILoader.GetUIState<TextCard>().DisplayInner(title, message, 0, scale, reversed);
+			UILoader.GetUIState<TextCard>().endCondition = endCondition;
+		}
+
+		private void DisplayInner(string title, string message, int time = 0, float scale = 1, bool reversed = false)
+		{
 			this.title = title;
 			this.message = message;
 			Visible = true;
-			usedAnnouncedAbility = false;
 			tempTimeMax = time;
 			tempTime = 0;
 			timer = 1;
 			textScale = scale;
-			reverse = titleFirst;
-			this.subMessage = subMessage;
+			reverse = reversed;
 		}
 
 		public override void Draw(SpriteBatch spriteBatch)
@@ -67,9 +77,10 @@ namespace StarlightRiver.Content.GUI
 			Color barColor = Color.White * Math.Clamp(timer / 45f, 0f, 1f);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.AlphaBlend, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
+			spriteBatch.Begin(default, BlendState.AlphaBlend, SamplerState.LinearWrap, default, default, default, Main.UIScaleMatrix);
 
-			spriteBatch.Draw(Assets.Keys.Glow.Value, new Rectangle(startX - (int)(Longest * 2 * slide2), startY - (int)(25 * textScale), (int)(Longest * 4 * slide2), (int)(150 * textScale)), Color.Black * 0.6f * Math.Clamp(timer / 60f, 0f, 1f));
+			var glowTex = Assets.Keys.Glow.Value;
+			spriteBatch.Draw(glowTex, new Rectangle(startX - (int)(Longest * 2 * slide2), startY - (int)(15 * textScale), (int)(Longest * 4 * slide2), (int)(120 * textScale)), new Rectangle(5, 5, glowTex.Width - 10, glowTex.Height - 10), Color.Black * 0.6f * Math.Clamp(timer / 60f, 0f, 1f));
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
@@ -90,23 +101,12 @@ namespace StarlightRiver.Content.GUI
 			spriteBatch.Draw(Texture, new Vector2(startX - (int)(Longest * 1.2f * slide) - 46, startY + (int)(75 * textScale) - 34), new Rectangle(0, 0, 46, 46), barColor);
 			spriteBatch.Draw(Texture, new Rectangle(startX + (int)(Longest * 1.2f * slide), startY + (int)(75 * textScale) - 34, 46, 46), new Rectangle(46, 0, 46, 46), barColor);
 
-			if (subMessage != "")
+			if (UsesEndCondition)
 			{
-				string[] lines = subMessage.Split('\n');
-				for (int k = 0; k < lines.Length; k++)
-				{
-					string message = lines[k];
-					Utils.DrawBorderStringBig(spriteBatch, message, new Vector2(startX, startY + (int)(95 * textScale + k * 20 * textScale)), textColor, textScale * 0.4f, 0.5f, 0);
-				}
-				//spriteBatch.DrawString(Terraria.GameContent.FontAssets.DeathText.Value, SubMessage, , textColor, 0f, new Vector2(0.5f, 0), 0.4f * textScale, 0, 0);
-			}
+				if (endCondition())
+					ended = true;
 
-			if (abilityToAnnounce != null)
-			{
-				if (abilityToAnnounce.Active)
-					usedAnnouncedAbility = true;
-
-				if (usedAnnouncedAbility)
+				if (ended)
 					timer--;
 				else if (timer < 120)
 					timer++;
@@ -133,7 +133,8 @@ namespace StarlightRiver.Content.GUI
 		{
 			Visible = false;
 			textScale = 1;
-			abilityToAnnounce = null;
+			endCondition = null;
+			ended = false;
 			SetTexture("StarlightRiver/Assets/GUI/DefaultCard");
 		}
 	}
