@@ -48,17 +48,20 @@ namespace StarlightRiver.Content.Items.Forest
 
 		public override void OnImpact(bool wasTile)
 		{
-			Helpers.Helper.PlayPitched("Impacts/StoneStrike", 1, 0, Projectile.Center);
-
-			if (Owner == Main.LocalPlayer)
-				CameraSystem.shake += 10;
-
-			for (int k = 0; k < 32; k++)
+			if (wasTile)
 			{
-				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Stone);
-			}
+				Helpers.Helper.PlayPitched("Impacts/StoneStrike", 1, 0, Projectile.Center);
 
-			Projectile.NewProjectile(null, Projectile.Center + Vector2.UnitY * 8, Vector2.Zero, ModContent.ProjectileType<HeavyFlailCrack>(), 0, 0);
+				if (Owner == Main.LocalPlayer)
+					CameraSystem.shake += 10;
+
+				for (int k = 0; k < 32; k++)
+				{
+					Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Stone);
+				}
+
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + Vector2.UnitY * 8, Vector2.Zero, ModContent.ProjectileType<HeavyFlailCrack>(), 0, 0);
+			}
 		}
 	}
 
@@ -82,7 +85,7 @@ namespace StarlightRiver.Content.Items.Forest
 		{
 			Color color = Color.White;
 			color *= Projectile.timeLeft > 100 ? 1f : Projectile.timeLeft / 100f;
-			var tex = Assets.Misc.PixelCrack.Value;
+			Texture2D tex = Assets.Misc.PixelCrack.Value;
 
 			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, color, 0, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
 		}

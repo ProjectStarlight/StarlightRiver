@@ -79,7 +79,7 @@ namespace StarlightRiver.Content.GUI
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.AlphaBlend, SamplerState.LinearWrap, default, default, default, Main.UIScaleMatrix);
 
-			var glowTex = Assets.Keys.Glow.Value;
+			Texture2D glowTex = Assets.Keys.Glow.Value;
 			spriteBatch.Draw(glowTex, new Rectangle(startX - (int)(Longest * 2 * slide2), startY - (int)(15 * textScale), (int)(Longest * 4 * slide2), (int)(120 * textScale)), new Rectangle(5, 5, glowTex.Width - 10, glowTex.Height - 10), Color.Black * 0.6f * Math.Clamp(timer / 60f, 0f, 1f));
 
 			spriteBatch.End();
