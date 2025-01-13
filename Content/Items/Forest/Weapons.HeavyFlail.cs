@@ -48,17 +48,20 @@ namespace StarlightRiver.Content.Items.Forest
 
 		public override void OnImpact(bool wasTile)
 		{
-			Helpers.Helper.PlayPitched("Impacts/StoneStrike", 1, 0, Projectile.Center);
-
-			if (Owner == Main.LocalPlayer)
-				CameraSystem.shake += 10;
-
-			for (int k = 0; k < 32; k++)
+			if (wasTile)
 			{
-				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Stone);
-			}
+				Helpers.Helper.PlayPitched("Impacts/StoneStrike", 1, 0, Projectile.Center);
 
-			Projectile.NewProjectile(null, Projectile.Center + Vector2.UnitY * 8, Vector2.Zero, ModContent.ProjectileType<HeavyFlailCrack>(), 0, 0);
+				if (Owner == Main.LocalPlayer)
+					CameraSystem.shake += 10;
+
+				for (int k = 0; k < 32; k++)
+				{
+					Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Stone);
+				}
+
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + Vector2.UnitY * 8, Vector2.Zero, ModContent.ProjectileType<HeavyFlailCrack>(), 0, 0);
+			}
 		}
 	}
 
