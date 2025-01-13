@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Items.Potions
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault(prefix + " Barrier Potion");
-			Tooltip.SetDefault($"Grants {amount} {{barrier}}\nGreatly reduces overcharge {{barrier}} loss for {duration / 60} seconds");
+			Tooltip.SetDefault($"Grants {amount} {{barrier}}\nGrants {{BUFF:ShieldDegenReduction}} for {duration / 60} seconds\nInflicts {{Buff:PotionSickness}} for 20 seconds\nInflicts {{BUFF:NoShieldPot}} for 60 seconds");
 		}
 
 		public override void SetDefaults()
@@ -119,7 +119,7 @@ namespace StarlightRiver.Content.Items.Potions
 
 	public class ShieldDegenReduction : SmartBuff
 	{
-		public ShieldDegenReduction() : base("Barrier Affinity", "Barrier sticks to you better", false) { }
+		public ShieldDegenReduction() : base("Barrier Affinity", "Barrier over your maximum drains much slower", false) { }
 
 		public override string Texture => AssetDirectory.PotionsItem + Name;
 
