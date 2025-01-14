@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				}
 
 				if (Main.masterMode)
-					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ProjectileType<NPCs.Vitric.SnakeSpit>(), Projectile.damage, 1, Projectile.owner);
+					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ProjectileType<NPCs.Vitric.SnakeSpit>(), VitricBoss.ShardSpitDamage, 1, Projectile.owner);
 			}
 		}
 

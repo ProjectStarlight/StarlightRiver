@@ -20,7 +20,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 
 		public int timeSinceLastHit = 1;
 		public int rechargeDelay = 300;
-		public int rechargeRate = 6;
+		public int rechargeRate = 10;
 
 		public float barrierDamageReduction = 0.5f;
 
@@ -225,7 +225,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 			overchargeDrainRate = 60;
 
 			rechargeDelay = 300;
-			rechargeRate = 6;
+			rechargeRate = 10;
 
 			barrierDamageReduction = 0.5f;
 

@@ -59,7 +59,7 @@ namespace StarlightRiver.Content.Items.Potions
 
 	public class LesserBarrierPotion : BarrierPotion
 	{
-		public LesserBarrierPotion() : base(40, 180, "Lesser") { }
+		public LesserBarrierPotion() : base(100, 300, "Lesser") { }
 
 		public override void AddRecipes()
 		{
@@ -74,7 +74,7 @@ namespace StarlightRiver.Content.Items.Potions
 
 	public class RegularBarrierPotion : BarrierPotion
 	{
-		public RegularBarrierPotion() : base(80, 240, "") { }
+		public RegularBarrierPotion() : base(150, 420, "") { }
 
 		public override void AddRecipes()
 		{
@@ -89,7 +89,7 @@ namespace StarlightRiver.Content.Items.Potions
 
 	public class GreaterBarrierPotion : BarrierPotion
 	{
-		public GreaterBarrierPotion() : base(120, 300, "Greater") { }
+		public GreaterBarrierPotion() : base(200, 600, "Greater") { }
 
 		public override void AddRecipes()
 		{
@@ -125,7 +125,7 @@ namespace StarlightRiver.Content.Items.Potions
 
 		public override void Update(Player Player, ref int buffIndex)
 		{
-			Player.GetModPlayer<BarrierPlayer>().overchargeDrainRate -= 50;
+			Player.GetModPlayer<BarrierPlayer>().overchargeDrainRate -= 55;
 		}
 	}
 }
