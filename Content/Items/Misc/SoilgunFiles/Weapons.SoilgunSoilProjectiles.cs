@@ -315,7 +315,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 				effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.05f);
 				effect.Parameters["repeats"].SetValue(1);
 				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 
 				trail?.Render(effect);
 				trail2?.Render(effect);

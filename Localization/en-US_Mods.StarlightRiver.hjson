@@ -3937,6 +3937,29 @@ Projectiles: {
 	InfernalHarvestFree.DisplayName: Infernal Harvest Free
 	InfernalHarvestPaid.DisplayName: Infernal Harvest Paid
 	FirePillar.DisplayName: Fire Pillar
+	EarthdusterAshShot.DisplayName: Earthshot
+	EarthdusterCrimsandShot.DisplayName: Earthshot
+	EarthdusterDirtShot.DisplayName: Earthshot
+	EarthdusterEbonsandShot.DisplayName: Earthshot
+	EarthdusterMudShot.DisplayName: Earthshot
+	EarthdusterPearlsandShot.DisplayName: Earthshot
+	EarthdusterSandShot.DisplayName: Earthshot
+	EarthdusterSiltShot.DisplayName: Earthshot
+	EarthdusterSlushShot.DisplayName: Earthshot
+	EarthdusterVitricSandShot.DisplayName: Earthshot
+	SoilgunAshClump.DisplayName: Soil
+	SoilgunAshSoil.DisplayName: Soil
+	SoilgunCrimsandClump.DisplayName: Soil
+	SoilgunDirtClump.DisplayName: Soil
+	SoilgunEbonsandClump.DisplayName: Soil
+	SoilgunMudClump.DisplayName: Soil
+	SoilgunPearlsandClump.DisplayName: Soil
+	SoilgunSandClump.DisplayName: Soil
+	SoilgunSandExplosion.DisplayName: Sand
+	SoilgunSiltClump.DisplayName: Soil
+	SoilgunSlushClump.DisplayName: Soil
+	SoilgunVitricSandClump.DisplayName: Soil
+	NeedlerHoldout.DisplayName: Needler
 }
 
 Tiles: {
@@ -4596,6 +4619,11 @@ Buffs: {
 	GlowingObsidianFire: {
 		DisplayName: Infernal flames
 		Description: Burning up!
+	}
+
+	EbonsandDebuff: {
+		DisplayName: Weakened
+		Description: Damage taken increased by 15%
 	}
 }
 

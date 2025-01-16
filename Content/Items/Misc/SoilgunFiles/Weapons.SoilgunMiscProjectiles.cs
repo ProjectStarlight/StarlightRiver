@@ -1,4 +1,4 @@
-using StarlightRiver.Core.Systems.CameraSystem;
+/*using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -702,4 +702,4 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			enemyID = reader.ReadInt32();
 		}
 	}
-}
+}*/

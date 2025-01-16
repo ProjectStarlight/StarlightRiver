@@ -1,6 +1,7 @@
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Core.Systems.CameraSystem;
+using StarlightRiver.Core.Systems.PixelationSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -85,8 +86,6 @@ namespace StarlightRiver.Content.Items.Dungeon
 				justAltUsed = false;
 			}
 
-			shootRotation = (Player.Center - Main.MouseWorld).ToRotation();
-			shootDirection = (Main.MouseWorld.X < Player.Center.X) ? -1 : 1;
 			cooldown--;
 		}
 
@@ -94,6 +93,9 @@ namespace StarlightRiver.Content.Items.Dungeon
 		{
 			if (Player.altFunctionUse == 2 && cooldown > 0)
 				return false;
+
+			shootRotation = (Player.Center - Main.MouseWorld).ToRotation();
+			shootDirection = (Main.MouseWorld.X < Player.Center.X) ? -1 : 1;
 
 			return base.CanUseItem(Player);
 		}
@@ -223,11 +225,13 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 				Vector2 barrelPos = position + new Vector2(50f, -10f * player.direction).RotatedBy(rot);
 
-				for (int k = 0; k < 10; k++)
+				for (int k = 0; k < 7; k++)
 				{
-					Dust.NewDustPerfect(barrelPos, ModContent.DustType<GlowFastDecelerate>(), velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.4f), 0, new Color(0, 110, 255), Main.rand.NextFloat(0.2f, 0.5f));
+					Dust.NewDustPerfect(barrelPos + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<PixelatedEmber>(), velocity.RotatedByRandom(0.5f).RotatedByRandom(0.5f) * Main.rand.NextFloat(0.25f), 0, new Color(255, 125, 0, 0), 0.15f).customData = -player.direction;
 
-					Dust.NewDustPerfect(barrelPos, ModContent.DustType<GlowFastDecelerate>(), velocity.RotatedByRandom(1f) * Main.rand.NextFloat(0.2f), 0, new Color(0, 110, 255), Main.rand.NextFloat(0.5f, 0.75f));
+					Dust.NewDustPerfect(barrelPos, ModContent.DustType<PixelatedGlow>(), velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.4f), 0, new Color(0, 110, 255, 0), Main.rand.NextFloat(0.2f, 0.5f));
+
+					Dust.NewDustPerfect(barrelPos, ModContent.DustType<PixelatedGlow>(), velocity.RotatedByRandom(1f) * Main.rand.NextFloat(0.2f), 0, new Color(0, 110, 255, 0), Main.rand.NextFloat(0.5f, 0.75f));
 				}
 
 				for (int i = 0; i < 2; i++)
@@ -992,8 +996,10 @@ namespace StarlightRiver.Content.Items.Dungeon
 			float lerper = 1f - dust.alpha / 255f;
 
 			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "SmokeAlpha_" + dust.customData).Value;
-
-			Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, dust.color * lerper, dust.rotation, tex.Size() / 2f, dust.scale, 0f, 0f);
+			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () =>
+			{
+				Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, dust.color * lerper, dust.rotation, tex.Size() / 2f, dust.scale, 0f, 0f);
+			});
 
 			return false;
 		}

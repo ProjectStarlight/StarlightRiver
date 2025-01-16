@@ -649,7 +649,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
 				Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-				Matrix view = Main.GameViewMatrix.ZoomMatrix;
+				Matrix view = Main.GameViewMatrix.EffectMatrix;
 				Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 				effect.Parameters["transformMatrix"].SetValue(world * view * projection);

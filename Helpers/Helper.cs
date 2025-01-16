@@ -622,7 +622,7 @@ namespace StarlightRiver.Helpers
 					finalPosition -= Vector2.UnitY * 2f;
 			}
 
-			player.itemLocation = finalPosition;
+			player.itemLocation = finalPosition + new Vector2(spriteSize.X * 0.5f, 0f);
 		}
 	}
 }
