@@ -996,10 +996,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			float lerper = 1f - dust.alpha / 255f;
 
 			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "SmokeAlpha_" + dust.customData).Value;
-			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () =>
-			{
-				Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, dust.color * lerper, dust.rotation, tex.Size() / 2f, dust.scale, 0f, 0f);
-			});
+			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () => Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, dust.color * lerper, dust.rotation, tex.Size() / 2f, dust.scale, 0f, 0f));
 
 			return false;
 		}

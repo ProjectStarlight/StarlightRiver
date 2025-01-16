@@ -1331,8 +1331,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool Update(Dust dust)
 		{
-			if (dust.customData is null)
-				dust.customData = 0;
+			dust.customData ??= 0;
 
 			if ((int)dust.customData < 4)
 				dust.customData = (int)dust.customData + 1;

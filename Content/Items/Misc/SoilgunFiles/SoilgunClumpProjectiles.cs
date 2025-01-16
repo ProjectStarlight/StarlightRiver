@@ -278,7 +278,6 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
-
 			return false;
 		}
 
@@ -535,7 +534,6 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 				for (int i = 0; i < 12; i++)
 				{
 					Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(20f, 20f), DustID.Honey2, Main.rand.NextVector2Circular(5f, 5f), Main.rand.Next(150)).noGravity = true;
-
 
 					Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(20f, 20f), DustID.Honey2, Main.rand.NextVector2Circular(5f, 5f), 150);
 				}

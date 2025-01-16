@@ -487,18 +487,14 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		private void ManageTrail()
 		{
-			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(190), factor => factor * 4.5f, factor =>
-			{
-				return Color.Lerp(new Color(255, 100, 20), new Color(35, 70, 120), EaseBuilder.EaseQuarticOut.Ease(1f - factor.X)) * (1f - stuckTimer / 10f);
-			});
+			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(190), factor => factor * 4.5f, factor =>
+			Color.Lerp(new Color(255, 100, 20), new Color(35, 70, 120), EaseBuilder.EaseQuarticOut.Ease(1f - factor.X)) * (1f - stuckTimer / 10f));
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
 
-			trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(190), factor => factor * 4f, factor =>
-			{
-				return Color.Lerp(new Color(255, 130, 20), new Color(50, 100, 170), EaseBuilder.EaseQuarticOut.Ease(1f - factor.X)) * (1f - stuckTimer / 10f);
-			});
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(190), factor => factor * 4f, factor =>
+			Color.Lerp(new Color(255, 130, 20), new Color(50, 100, 170), EaseBuilder.EaseQuarticOut.Ease(1f - factor.X)) * (1f - stuckTimer / 10f));
 
 			trail2.Positions = cache.ToArray();
 			trail2.NextPosition = Projectile.Center + Projectile.velocity;
