@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 				Dust.NewDustPerfect(Center + Vector2.UnitY * -20, ModContent.DustType<Dusts.Mist>(), new Vector2(0.2f, -Main.rand.NextFloat(0.7f, 1.6f)), Main.rand.Next(50, 70), Color.White, Main.rand.NextFloat(0.2f, 0.5f));
 
 			foreach (Player player in Main.player.Where(n => n.wet && Vector2.Distance(n.Center, Center) < 30 * 16))
-				player.AddBuff(ModContent.BuffType<HotspringHeal>(), 10);
+				player.AddBuff(ModContent.BuffType<HotspringHeal>(), 180);
 
 			for (int x = -30; x < 30; x += 1)
 			{

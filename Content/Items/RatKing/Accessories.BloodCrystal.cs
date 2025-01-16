@@ -21,10 +21,8 @@ namespace StarlightRiver.Content.Items.RatKing
 		{
 			DisplayName.SetDefault("Blood Crystal");
 			Tooltip.SetDefault(
-				"Inflict blood resonance for every debuff on an enemy when you hit them\n" +
-				"Inflict an equal amount of blood resonance on yourself\n" +
-				"Blood resonance decreases inoculation by 3% per stack\n" +
-				"You take 5 damage per second while you have blood resonance");
+				"Inflict {{BUFF:BloodCrystalBuff}} for every debuff on an enemy when you hit them\n" +
+				"Inflict an equal amount of {{BUFF:BloodCrystalBuff}} on yourself\n");
 		}
 
 		public override void SafeSetDefaults()
@@ -81,7 +79,7 @@ namespace StarlightRiver.Content.Items.RatKing
 
 		public override string DisplayName => "Blood Resonance";
 
-		public override string Tooltip => "Inoculation is decreased";
+		public override string Tooltip => "Decreases innoculation by 3%, deals 5 damage per second regardless of stacks";
 
 		public override string Texture => AssetDirectory.Buffs + Name;
 

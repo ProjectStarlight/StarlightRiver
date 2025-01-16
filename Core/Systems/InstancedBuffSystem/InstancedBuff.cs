@@ -1,6 +1,10 @@
-﻿using ReLogic.Graphics;
+using ReLogic.Graphics;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using Terraria;
 using Terraria.DataStructures;
+using Terraria.ID;
 
 namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 {
@@ -11,12 +15,17 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 	public abstract class InstancedBuff : ILoadable
 	{
 		/// <summary>
+		/// Stores the prototypes of all instanced buffs, indexed by their Name property
+		/// </summary>
+		public static Dictionary<string, InstancedBuff> prototypes = new();
+
+		/// <summary>
 		/// The numeric ID of the backing traditional buff to indicate this buffs inflicted status
 		/// </summary>
 		public int BackingType => StarlightRiver.Instance.Find<ModBuff>(Name).Type;
 
 		/// <summary>
-		/// The internal name of the backing ModBuff
+		/// The internal name of the instanced buff and the backing ModBuff
 		/// </summary>
 		public abstract string Name { get; }
 
@@ -42,8 +51,28 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 
 		public void Load(Mod mod)
 		{
-			mod.AddContent(new InstancedBuffBacker(Name, DisplayName, Texture, Tooltip, Debuff, this));
+			mod.AddContent(new InstancedBuffBacker(Name, DisplayName, Texture, Tooltip, Debuff));
+			prototypes[Name] = this;
+
 			Load();
+		}
+
+		/// <summary>
+		/// Tries to get the prototype of an instanced buff
+		/// </summary>
+		/// <param name="name">The internal name of the buff to get</param>
+		/// <param name="prototype">The prototype if it exists</param>
+		/// <returns>If the prototype exists or not</returns>
+		public static bool TryGetPrototype(string name, out InstancedBuff prototype)
+		{
+			if (prototypes.TryGetValue(name, out InstancedBuff proto))
+			{
+				prototype = proto;
+				return true;
+			}
+
+			prototype = null;
+			return false;
 		}
 
 		/// <summary>
@@ -113,6 +142,57 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		/// </summary>
 		/// <param name="npc"></param>
 		public virtual void UpdateNPC(NPC npc) { }
+
+		/// <summary>
+		/// Send data to sync this buff instance here
+		/// </summary>
+		public virtual void NetSend(BinaryWriter writer) { }
+
+		/// <summary>
+		/// Recieve data to sync this buff instance here
+		/// </summary>
+		public virtual void NetReceive(BinaryReader reader) { }
+
+		public void NetSync(int whoAmI, bool isPlayer)
+		{
+			if (Main.netMode == NetmodeID.SinglePlayer)
+				return;
+
+			var stream = new MemoryStream();
+			BinaryWriter writer = new BinaryWriter(stream);
+			NetSend(writer);
+
+			writer.Flush();
+			writer.Close();
+
+			if (isPlayer)
+			{
+				Player player = Main.player[whoAmI];
+				int buffIndex = player.FindBuffIndex(BackingType);
+
+				if (buffIndex == -1)
+					return;
+
+				InstancedBuffPacket packet = new(Main.myPlayer, Name, whoAmI, isPlayer, player.buffTime[buffIndex], stream.ToArray());
+				packet.Send(255, Main.myPlayer, false);
+			}
+			else
+			{
+				NPC npc = Main.npc[whoAmI];
+				int buffIndex = npc.FindBuffIndex(BackingType);
+
+				if (buffIndex == -1)
+					return;
+
+				InstancedBuffPacket packet = new(Main.myPlayer, Name, whoAmI, isPlayer, npc.buffTime[buffIndex], stream.ToArray());
+				packet.Send(255, Main.myPlayer, false);
+			}
+		}
+
+		public InstancedBuff Clone()
+		{
+			return MemberwiseClone() as InstancedBuff;
+		}
 	}
 
 	/// <summary>
@@ -126,20 +206,18 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		public string texture;
 		public string tooltip;
 		public bool debuff;
-		public InstancedBuff prototype;
 
 		public override string Name => name;
 
 		public override string Texture => texture;
 
-		public InstancedBuffBacker(string name, string displayName, string texture, string tooltip, bool debuff, InstancedBuff prototype) : base()
+		public InstancedBuffBacker(string name, string displayName, string texture, string tooltip, bool debuff) : base()
 		{
 			this.name = name;
 			this.displayName = displayName;
 			this.texture = texture;
 			this.tooltip = tooltip;
 			this.debuff = debuff;
-			this.prototype = prototype;
 		}
 
 		public override void SetStaticDefaults()
@@ -152,13 +230,16 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 
 		public override void PostDraw(SpriteBatch spriteBatch, int buffIndex, BuffDrawParams drawParams)
 		{
-			if (prototype.GetInstance(Main.LocalPlayer) is StackableBuff stackable)
+			if (InstancedBuff.TryGetPrototype(name, out InstancedBuff prototype))
 			{
-				DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
-				string message = $"x{stackable.stacks.Count}";
-				Vector2 dims = font.MeasureString(message) * 0.8f;
-				float opacity = Math.Min(1f, stackable.stacks.Count / 100f);
-				spriteBatch.DrawString(font, message, drawParams.Position + new Vector2(16, 54), Color.Lerp(drawParams.DrawColor, new Color(255, 150, 150), opacity), 0f, dims / 2f, 0.8f + opacity * 0.25f, 0, 0);
+				if (prototype is StackableBuff stackable)
+				{
+					DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
+					string message = $"x{stackable.stacks.Count}";
+					Vector2 dims = font.MeasureString(message) * 0.8f;
+					float opacity = Math.Min(1f, stackable.stacks.Count / 100f);
+					spriteBatch.DrawString(font, message, drawParams.Position + new Vector2(16, 54), Color.Lerp(drawParams.DrawColor, new Color(255, 150, 150), opacity), 0f, dims / 2f, 0.8f + opacity * 0.25f, 0, 0);
+				}
 			}
 		}
 	}

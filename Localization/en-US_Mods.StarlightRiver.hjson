@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Keybinds: {
 	Starsight.DisplayName: Starsight
 	"Forbidden Winds.DisplayName": Forbidden  Winds
@@ -3957,3 +3958,5 @@ Prefixes: {
 	StaminaPrefix3.DisplayName: Glowing
 	StaminaPrefix4.DisplayName: Radiant
 }
+=======
+>>>>>>> master

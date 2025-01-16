@@ -205,7 +205,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				case (int)Phases.ReturnToForeground:
 
 					if (AttackTimer == 1 && Main.netMode != NetmodeID.Server) // Only display in singelplayer or multiplayer client
-						UILoader.GetUIState<TextCard>().Display("Glassweaver", "Worker of the Anvil", null, 240, 1.2f, false);
+						TextCard.Display("Glassweaver", "Worker of the Anvil", 240, 1.2f);
 
 					JumpBackAnimation();
 

@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public PandorasDagger() : base("Pandora's Dagger", "Grazes release Discordant Bolts, inflicting stacks of Volatile") { }
+		public PandorasDagger() : base("Pandora's Dagger", "When you {{Graze}} projectiles, you release Discordant Bolts, inflicting stacks of Volatile") { }
 
 		public override void SafeSetDefaults()
 		{

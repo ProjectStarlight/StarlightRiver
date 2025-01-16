@@ -1,7 +1,10 @@
 ﻿using StarlightRiver.Content.Items.Gravedigger;
 using StarlightRiver.Core.Systems.InoculationSystem;
+﻿using Mono.Cecil;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -13,6 +16,17 @@ namespace StarlightRiver.Content.Items.Haunted
 		public List<Projectile> minions = new();
 		public int timer;
 		public int sleepTimer;
+		public (string singular, string plural)[] minionBoredomMessages =
+		{
+			("Your _ seems bored...", "Your _ seem bored..."),
+			("Your _ lost interest...", "Your _ lost interest..."),
+			("Your _ is hanging limply...", "Your _ are hanging limply..."),
+			("Looks like your _ isn't feeling it...", "Looks like your _ aren't feeling it..."),
+			("Your _ is clearly unimpressed...", "Your _ are clearly unimpressed..."),
+			("It seems the magic is just gone for your _...", "It seems the magic is just gone for your _..."),
+			("Looks like your _ is totally checked out...", "Looks like your _ are totally checked out..."),
+			("Your _ is hovering aimlessly...", "Your _ are hovering aimlessly..."),
+		};
 
 		public override string Texture => AssetDirectory.HauntedItem + Name;
 
@@ -79,7 +93,17 @@ namespace StarlightRiver.Content.Items.Haunted
 			}
 
 			if (player == Main.LocalPlayer && sleepTimer == 1 && minions.Count > 0) //warning message
-				Main.NewText("Your haunted weapons seem bored...", new Color(200, 120, 255));
+			{
+				AdvancedPopupRequest request = default;
+				(string messageSingular, string messagePlural) = minionBoredomMessages[Main.rand.Next(minionBoredomMessages.Length)];
+				request.Text = messagePlural.Replace("_", "haunted weapons");
+				if (minions.Count == 1)
+					request.Text = messageSingular.Replace("_", (minions.First().ModProjectile as PoltergeistMinion).Item.Name);
+				request.DurationInFrames = 180;
+				request.Color = new Color(200, 120, 255);
+				request.Velocity = new Vector2(0f, -4f);
+				PopupText.NewText(request, player.Top);
+			}
 
 			if (sleepTimer > 0) //decrement sleep timer
 				sleepTimer--;
@@ -116,6 +140,7 @@ namespace StarlightRiver.Content.Items.Haunted
 
 					helm.minions.Add(proj);
 					helm.sleepTimer = 1200;
+					SoundEngine.PlaySound(item.UseSound.Value with { Pitch = item.UseSound.Value.Pitch - 0.3f});
 				}
 			}
 

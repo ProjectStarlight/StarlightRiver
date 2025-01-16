@@ -1,8 +1,11 @@
-﻿using System;
+﻿using StarlightRiver.Content.Prefixes.Accessory.Cursed;
+using System;
+using System.Collections.Generic;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
+using Terraria.Utilities;
 
 namespace StarlightRiver.Content.Items.BaseTypes
 {
@@ -24,7 +27,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public static void LoadSystem()
 		{
-			CursedSystem = new ParticleSystem("StarlightRiver/Assets/GUI/WhiteCircle", UpdateCursed, ParticleSystem.AnchorOptions.UI);
+			CursedSystem = new ParticleSystem("StarlightRiver/Assets/Keys/GlowAlpha", UpdateCursed, ParticleSystem.AnchorOptions.UI);
 			ShardsSystem = new ParticleSystem("StarlightRiver/Assets/GUI/charm", UpdateShards, ParticleSystem.AnchorOptions.UI);
 		}
 
@@ -50,10 +53,17 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			if (particle.Rotation == 1)
 				particle.Velocity *= 0.92f;
 
+			particle.Color.A = 0;
 			particle.Alpha = particle.Timer * 0.053f - 0.00088f * (float)Math.Pow(particle.Timer, 2);
 			particle.Scale *= 0.97f;
 			particle.Position += particle.Velocity;
 			particle.Timer--;
+		}
+
+		public override int ChoosePrefix(UnifiedRandom rand)
+		{
+			System.Collections.Generic.List<int> pool = CursedPrefixPool.GetCursedPrefixes();
+			return pool[rand.Next(pool.Count)];
 		}
 
 		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
@@ -81,12 +91,12 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
 		{
-			Vector2 pos = position + Main.rand.NextVector2Circular(16, 16) + new Vector2(0, 10);
+			Vector2 pos = position - origin * scale + new Vector2(0, 10) + Main.rand.NextVector2Circular(16, 16) + frame.Size() / 2f * scale;
 
 			if (!GoingBoom)
 				CursedSystem.AddParticle(new Particle(pos, new Vector2(0, -0.4f), 0, 0.5f, CurseColor, 60, Vector2.Zero));
 
-			drawpos = position + frame.Size() / 4;
+			drawpos = pos;
 
 			if (GoingBoom && boomTimer < 60)
 			{
@@ -191,7 +201,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 				Utils.DrawBorderString(Main.spriteBatch, line.Text, new Vector2(line.X, line.Y), Color.Lerp(Color.White, new Color(180, 100, 225), tooltipProgress), 1.1f);
 
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
+				Main.spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
 
 				if (tooltipProgress < 1)
 					tooltipProgress += 0.05f;
@@ -201,5 +211,13 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 			return base.PreDrawTooltipLine(line, ref yOffset);
 		}
+
+		public sealed override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			SafeModifyTooltips(tooltips);
+			tooltips.Add(new(Mod, "CursedAccessoryLine", "{{Cursed}} item"));
+		}
+
+		public virtual void SafeModifyTooltips(List<TooltipLine> tooltips) { }
 	}
 }

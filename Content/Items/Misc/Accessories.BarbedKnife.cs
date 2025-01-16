@@ -8,7 +8,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public BarbedKnife() : base("Barbed Knife", "Critical strikes apply a bleeding debuff that stacks up to five times") { }
+		public BarbedKnife() : base("Barbed Knife", "Critical strikes apply {{BUFF:BarbedKnifeBleed}}") { }
 
 		public override void SafeSetDefaults()
 		{
@@ -78,7 +78,9 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool Debuff => true;
 
-		public override string Tooltip => "You're bleeding out!";
+		public override string Tooltip => "Deals 8 damage per second";
+
+		public override int MaxStacks => 5;
 
 		public override BuffStack GenerateDefaultStack(int duration)
 		{
@@ -90,7 +92,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void PerStackEffectsNPC(NPC npc, BuffStack stack)
 		{
-			npc.lifeRegen -= 15;
+			npc.lifeRegen -= 16;
 		}
 
 		public override void AnyStacksUpdateNPC(NPC npc)
