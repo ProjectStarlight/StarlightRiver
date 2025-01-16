@@ -28,11 +28,13 @@ namespace StarlightRiver.Core.Systems.InoculationSystem
 		{
 			if (npc.lifeRegen < 0)
 				npc.lifeRegen = (int)(npc.lifeRegen * (1.0f - npc.GetGlobalNPC<InoculationNPC>().DoTResist));
+
+			npc.GetGlobalNPC<InoculationNPC>().DoTResist = 0;
 		}
 
 		public override void ResetEffects(NPC npc)
 		{
-			DoTResist = 0;
+			
 		}
 	}
 }
