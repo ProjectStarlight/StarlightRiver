@@ -735,10 +735,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "SmokeAlpha_" + dust.customData).Value;
 
-			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () =>
-			{
-				Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, Color.Lerp(dust.color, new Color(255, 255, 255, 0), EaseBuilder.EaseQuinticIn.Ease(1f - lerper)) * lerper, dust.rotation, tex.Size() / 2f, dust.scale, 0f, 0f);
-			});
+			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () => Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, Color.Lerp(dust.color, new Color(255, 255, 255, 0), EaseBuilder.EaseQuinticIn.Ease(1f - lerper)) * lerper, dust.rotation, tex.Size() / 2f, dust.scale, 0f, 0f));
 
 			return false;
 		}
