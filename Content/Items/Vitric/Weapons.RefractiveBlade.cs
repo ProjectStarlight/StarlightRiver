@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Refractive Blade");
-			Tooltip.SetDefault("Hold <right> to charge a laser\nEnemies struck by the laser have 25% increased melee {{Exposure}}");
+			Tooltip.SetDefault("Hold <right> to charge a laser\nThe laser inflicts {{BUFF:RefractiveBladeBuff}}, increasing their melee {{Exposure}}");
 		}
 
 		public override void SetDefaults()
@@ -588,7 +588,7 @@ namespace StarlightRiver.Content.Items.Vitric
 	{
 		public override string Texture => AssetDirectory.Buffs + "RefractiveBladeBuff";
 
-		public RefractiveBladeBuff() : base("Melting", "Taking additional melee damage!", true) { }
+		public RefractiveBladeBuff() : base("Melting", "Effected entities have 25% exposure to melee damage, and take an additional 50% more damage from the refractive blade", true) { }
 
 		public override void Load()
 		{
@@ -603,7 +603,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void Update(Player player, ref int buffIndex)
 		{
-			player.GetModPlayer<ExposurePlayer>().exposureMult += 0.5f;
+			player.GetModPlayer<ExposurePlayer>().exposureMult += 0.25f;
 		}
 
 		private void IncreaseRefractiveDamages(NPC NPC, Projectile Projectile, ref NPC.HitModifiers modifiers)

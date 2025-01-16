@@ -31,7 +31,9 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Magmatic Coach Gun");
-			Tooltip.SetDefault("Press <right> to throw out crystal bombs, which explode in chain reactions \nFiring at a bomb detonates it prematurely for more violent results\n'How does he manage to corenuke like that?'");
+			Tooltip.SetDefault("Press <right> to throw out crystal bombs, which explode in chain reactions \n" +
+				"Firing at a bomb detonates it and inflicts {{BUFF:SwelteredDeBuff}}\n" +
+				"'How does he manage to corenuke like that?'");
 		}
 
 		public override void SetDefaults()
@@ -524,7 +526,7 @@ namespace StarlightRiver.Content.Items.Vitric
 	{
 		public override string Texture => AssetDirectory.Debug;
 
-		public SwelteredDeBuff() : base("Sweltered", "Damage taken increased by 35%", false) { }
+		public SwelteredDeBuff() : base("Sweltered", "Deals 10 damage per second\nDamage taken increased by 35%", true) { }
 
 		public override void Update(NPC npc, ref int buffIndex)
 		{

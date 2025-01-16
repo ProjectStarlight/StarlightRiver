@@ -54,7 +54,8 @@ namespace StarlightRiver.Content.Items
 		public override bool? UseItem(Player player)
 		{
 			//StarlightEventSequenceSystem.sequence = 0;
-			player.GetHandler().unlockedAbilities.Add(typeof(Dash), new Dash());
+			TextCard.Display("Blorgus", "schmungus!", () => Main.LocalPlayer.velocity.Y < 0);
+			player.GetHandler().unlockedAbilities.Clear();
 			player.GetHandler().InfusionLimit = 1;
 
 			//Main.time = 53999;
@@ -72,7 +73,7 @@ namespace StarlightRiver.Content.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Debug Mode");
-			Tooltip.SetDefault("Enables {{Debug}} mode");
+			Tooltip.SetDefault("{{Inoculation}} is a keyword\n{{Barrier}} is too\nHere is a really long line so that we can test the wrapping logic of the tooltip panels! I hope this is long enough.\n{{BUFF:OnFire}} {{BUFF:PlexusChaliceBuff}} {{BUFF:BarbedKnifeBleed}}");
 		}
 
 		public override void SetDefaults()

@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Items.Desert
 
 		public override void SetStaticDefaults()
 		{
-			Tooltip.SetDefault("Cursed : Your {{Barrier}} protects against 25% less damage\n+100% {{Inoculation}} and immunity to most debuffs while {{Barrier}} is active" +
+			Tooltip.SetDefault("Your {{Barrier}} protects against 25% less damage\n+100% {{Inoculation}} and immunity to most debuffs while {{Barrier}} is active" +
 				"\n+40 max {{Barrier}}");
 		}
 

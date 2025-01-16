@@ -51,21 +51,21 @@ namespace StarlightRiver.Content.Prefixes.Accessory
 
 	internal class LayeredPrefix : BarrierPrefix
 	{
-		public LayeredPrefix() : base(4, "Layered", "+4 Barrier") { }
+		public LayeredPrefix() : base(4, "Layered", "+4 {{Barrier}}") { }
 	}
 
 	internal class DefensivePrefix : BarrierPrefix
 	{
-		public DefensivePrefix() : base(8, "Defensive", "+8 Barrier") { }
+		public DefensivePrefix() : base(8, "Defensive", "+8 {{Barrier}}") { }
 	}
 
 	internal class PlatedPrefix : BarrierPrefix
 	{
-		public PlatedPrefix() : base(12, "Plated", "+12 Barrier") { }
+		public PlatedPrefix() : base(12, "Plated", "+12 {{Barrier}}") { }
 	}
 
 	internal class ReinforcedPrefix : BarrierPrefix
 	{
-		public ReinforcedPrefix() : base(16, "Reinforced", "+16 Barrier") { }
+		public ReinforcedPrefix() : base(16, "Reinforced", "+16 {{Barrier}}") { }
 	}
 }
