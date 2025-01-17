@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems.BarrierSystem;
+using StarlightRiver.Core.Systems.InoculationSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +31,7 @@ namespace StarlightRiver.Content.Prefixes.Accessory.Cursed
 
 		public override void Update(Item Item, Player Player)
 		{
-			Player.GetModPlayer<DoTResistancePlayer>().DoTResist += 0.08f;
+			Player.GetModPlayer<InoculationPlayer>().DoTResist += 0.08f;
 			Player.statLifeMax2 += 10;
 			Player.GetModPlayer<CritMultiPlayer>().AllCritMult -= 0.2f;
 		}

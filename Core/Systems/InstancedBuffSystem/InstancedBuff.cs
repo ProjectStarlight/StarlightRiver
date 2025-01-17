@@ -1,7 +1,9 @@
-﻿using System;
+using ReLogic.Graphics;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace StarlightRiver.Core.Systems.InstancedBuffSystem
@@ -10,7 +12,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 	/// This class is to be used for buffs which require instanced data per enttiy it is inflicted on. For example, a different DoT value to apply.
 	/// To inflict an instanced buff, call BuffInflictor.Inflict.
 	/// </summary>
-	internal abstract class InstancedBuff : ILoadable
+	public abstract class InstancedBuff : ILoadable
 	{
 		/// <summary>
 		/// Stores the prototypes of all instanced buffs, indexed by their Name property
@@ -51,6 +53,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		{
 			mod.AddContent(new InstancedBuffBacker(Name, DisplayName, Texture, Tooltip, Debuff));
 			prototypes[Name] = this;
+
 			Load();
 		}
 
@@ -223,6 +226,22 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 			Description.SetDefault(tooltip);
 
 			Main.debuff[Type] = debuff;
+		}
+
+		public override void PostDraw(SpriteBatch spriteBatch, int buffIndex, BuffDrawParams drawParams)
+		{
+			if (InstancedBuff.TryGetPrototype(name, out InstancedBuff prototype))
+			{
+				if (prototype is StackableBuff)
+				{
+					StackableBuff stackable = prototype.GetInstance(Main.LocalPlayer) as StackableBuff;
+					DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
+					string message = $"x{stackable.stacks.Count}";
+					Vector2 dims = font.MeasureString(message) * 0.8f;
+					float opacity = Math.Min(1f, stackable.stacks.Count / 100f);
+					spriteBatch.DrawString(font, message, drawParams.Position + new Vector2(16, 54), Color.Lerp(drawParams.DrawColor, new Color(255, 150, 150), opacity), 0f, dims / 2f, 0.8f + opacity * 0.25f, 0, 0);
+				}
+			}
 		}
 	}
 }

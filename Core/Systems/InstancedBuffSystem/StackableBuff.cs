@@ -8,7 +8,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 	/// This class is to be used for buffs which require handling stacks with seperate data, such as seperate durations or magnitudes.
 	/// To inflict an instanced buff, call BuffInflictor.Inflict or BuffInflictor.InflictStack.
 	/// </summary>
-	internal abstract class StackableBuff : InstancedBuff
+	public abstract class StackableBuff : InstancedBuff
 	{
 		public static Dictionary<int, int> maxStacksByType = new();
 
@@ -158,6 +158,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 	/// To inflict an instanced buff, call BuffInflictor.Inflict or BuffInflictor.InflictStack.
 	/// </summary>
 	/// <typeparam name="T">The type of stack this buff uses. The default is the parent class BuffStack, which contains only a duration. You can create custom stack types by extending this class.</typeparam>
+
 	internal abstract class StackableBuff<T> : StackableBuff where T : BuffStack, new()
 	{
 		/// <summary>
