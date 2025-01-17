@@ -104,13 +104,13 @@ namespace StarlightRiver.Content.Items.Snow
 		}
 
 		public void DrawOverTiles(SpriteBatch spriteBatch)
-		{		
+		{
 			float prog = Projectile.timeLeft > 100 ? 1f : Projectile.timeLeft / 100f;
 
 			Color color = Color.Lerp(new Color(150, 240, 255), new Color(50, 80, 150), prog);
 			color *= prog;
 			color.A = 0;
-			var tex = Assets.Misc.AlphaCrack.Value;
+			Texture2D tex = Assets.Misc.AlphaCrack.Value;
 
 			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, color, 0, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
 			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0) * prog * 0.25f, 0, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
@@ -149,7 +149,7 @@ namespace StarlightRiver.Content.Items.Snow
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
 			if (Projectile.penetrate <= 0)
-					return true;
+				return true;
 
 			Projectile.velocity.Y += oldVelocity.Y * -0.8f;
 

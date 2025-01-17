@@ -1,7 +1,7 @@
-using StarlightRiver.Core.Systems.InoculationSystem;
-﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems.BarrierSystem;
+using StarlightRiver.Core.Systems.InoculationSystem;
 using System;
 using System.Collections.Generic;
 using Terraria.GameContent;

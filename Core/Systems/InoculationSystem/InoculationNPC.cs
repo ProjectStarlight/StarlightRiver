@@ -34,7 +34,7 @@ namespace StarlightRiver.Core.Systems.InoculationSystem
 
 		public override void ResetEffects(NPC npc)
 		{
-			
+
 		}
 	}
 }

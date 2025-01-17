@@ -1,6 +1,6 @@
-﻿using StarlightRiver.Content.Items.Gravedigger;
-using StarlightRiver.Core.Systems.InoculationSystem;
 ﻿using Mono.Cecil;
+using StarlightRiver.Content.Items.Gravedigger;
+using StarlightRiver.Core.Systems.InoculationSystem;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.Audio;
@@ -140,7 +140,7 @@ namespace StarlightRiver.Content.Items.Haunted
 
 					helm.minions.Add(proj);
 					helm.sleepTimer = 1200;
-					SoundEngine.PlaySound(item.UseSound.Value with { Pitch = item.UseSound.Value.Pitch - 0.3f});
+					SoundEngine.PlaySound(item.UseSound.Value with { Pitch = item.UseSound.Value.Pitch - 0.3f });
 				}
 			}
 
