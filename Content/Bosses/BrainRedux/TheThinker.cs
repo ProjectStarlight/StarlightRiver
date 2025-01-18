@@ -29,6 +29,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		/// </summary>
 		public static readonly List<TheThinker> toRender = [];
 		public static Effect bodyShader;
+		public static Effect petalShader;
 
 		public bool active = false;
 		public Vector2 home;

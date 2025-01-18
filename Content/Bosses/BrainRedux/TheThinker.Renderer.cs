@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.LightingSystem;
+﻿using StarlightRiver.Content.Dusts;
+using StarlightRiver.Core.Systems.LightingSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -150,6 +151,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			foreach (TheThinker thinker in toRender)
 			{
+				thinker.DrawFlower(sb, 1);
+				continue;
+
 				sb.Draw(glow, thinker.NPC.Center - Main.screenPosition, null, Color.Black * 0.5f, thinker.NPC.rotation, glow.Size() / 2f, thinker.NPC.scale * 2.5f, 0, 0);
 
 				bodyShader.Parameters["u_resolution"].SetValue(Assets.Bosses.BrainRedux.Heart.Size());
@@ -170,6 +174,71 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				sb.End();
 				sb.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 			}
+		}
+
+		private void DrawFlower(SpriteBatch spriteBatch, float scale)
+		{
+			petalShader ??= Filters.Scene["ThinkerPetal"].GetShader().Shader;
+
+			petalShader.Parameters["u_resolution"].SetValue(Assets.Bosses.BrainRedux.PetalSmall.Size());
+			petalShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f);
+
+			petalShader.Parameters["mainbody_t"].SetValue(Assets.GlowTrail.Value);
+			petalShader.Parameters["linemap_t"].SetValue(Assets.GlowTopTrail.Value);
+			petalShader.Parameters["noisemap_t"].SetValue(Assets.Noise.ShaderNoise.Value);
+			petalShader.Parameters["overlay_t"].SetValue(Assets.Bosses.BrainRedux.HeartOver.Value);
+
+			Texture2D glow = Assets.Keys.Glow.Value;
+			spriteBatch.Draw(glow, NPC.Center - Main.screenPosition, null, Color.Black * 0.5f, NPC.rotation, glow.Size() / 2f, NPC.scale * 5.5f, 0, 0);
+
+			spriteBatch.End();
+			spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointWrap, default, default, petalShader, Main.GameViewMatrix.TransformationMatrix);
+
+			Texture2D bigPetal = Assets.Bosses.BrainRedux.PetalBig.Value;
+			Texture2D smallPetal = Assets.Bosses.BrainRedux.PetalSmall.Value;
+
+			var bigOrigin = new Vector2(0, bigPetal.Height / 2f);
+			var smallOrigin = new Vector2(0, smallPetal.Height / 2f);
+
+			Vector2 pos = NPC.Center - Main.screenPosition;
+
+			petalShader.Parameters["u_resolution"].SetValue(Assets.Bosses.BrainRedux.Frond.Size());
+			petalShader.Parameters["u_color"].SetValue(new Vector3(0.5f, 0.35f, 0.2f));
+			petalShader.Parameters["u_fade"].SetValue(new Vector3(0.01f, 0.1f, 0.01f));
+
+			for (int k = 0; k < 10; k++)
+			{
+				petalShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f + k * 0.1f);
+				float rot = k / 10f * 6.28f + (k % 2 == 0 ? 0.1f : -0.1f) - 0.17f;
+				spriteBatch.Draw(Assets.Bosses.BrainRedux.Frond.Value, pos + Vector2.UnitX.RotatedBy(rot) * 42 * scale, null, Color.White, rot, bigOrigin, scale * new Vector2(1, 0.5f), 0, 0);
+			}
+
+			petalShader.Parameters["u_resolution"].SetValue(Assets.Bosses.BrainRedux.PetalSmall.Size());
+			petalShader.Parameters["u_color"].SetValue(new Vector3(0.4f, 0.6f, 0.4f));
+			petalShader.Parameters["u_fade"].SetValue(new Vector3(0.1f, 0.2f, 0.4f));
+
+			for (int k = 0; k < 5; k++)
+			{
+				petalShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * -0.01f + k * 0.2f);
+				float finalScale = scale + (float)Math.Sin(Main.GameUpdateCount * 0.1f + k * 0.25f) * 0.05f;
+				float rot = k / 5f * 6.28f;
+				spriteBatch.Draw(smallPetal, pos + Vector2.UnitX.RotatedBy(rot) * 48 * scale, null, Color.White, rot, smallOrigin, finalScale, 0, 0);
+			}
+
+			petalShader.Parameters["u_resolution"].SetValue(Assets.Bosses.BrainRedux.PetalBig.Size());
+			petalShader.Parameters["u_color"].SetValue(new Vector3(0.7f, 0.3f, 0.3f));
+			petalShader.Parameters["u_fade"].SetValue(new Vector3(0.3f, 0.5f, 0.3f));
+
+			for (int k = 0; k < 5; k++)
+			{
+				petalShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f + k * 0.2f);
+				float finalScale = scale + (float)Math.Sin(Main.GameUpdateCount * 0.1f + k * -0.25f) * 0.1f;
+				float rot = k / 5f * 6.28f + 6.28f / 10f;
+				spriteBatch.Draw(bigPetal, pos + Vector2.UnitX.RotatedBy(rot) * 32 * scale, null, Color.White, rot, bigOrigin, finalScale, 0, 0);
+			}
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		private void DrawBestiary(SpriteBatch sb, Vector2 screenPos)
