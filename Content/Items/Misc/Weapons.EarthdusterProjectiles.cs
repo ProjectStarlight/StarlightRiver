@@ -535,5 +535,4 @@ namespace StarlightRiver.Content.Items.Misc
 			target.AddBuff(BuffID.OnFire, 300);
 		}
 	}
-
 }
