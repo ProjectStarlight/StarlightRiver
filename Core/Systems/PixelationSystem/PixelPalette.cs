@@ -18,8 +18,6 @@ namespace StarlightRiver.Core.Systems.PixelationSystem
 		public PixelPalette()
 		{
 			NoCorrection = true;
-			Colors = new Vector3[0];
-			ColorCount = 0;
 		}
 
 		public PixelPalette(params Vector3[] colors)
