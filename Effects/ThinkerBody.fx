@@ -1,3 +1,5 @@
+float3 u_color;
+float3 u_fade;
 float2 u_resolution;
 float u_time;
 
@@ -21,8 +23,10 @@ sampler2D normal = sampler_state { texture = <normal_t>; AddressU = wrap; Addres
 
 float3 rainbow(float2 st, float time)
 {
-    float3 col = float3(0.7 + 0.3 * abs(sin(st.x + time)), 0.3 + 0.5*abs(sin(st.y + time + 2.0)), 0.3 + 0.3*abs(sin(st.x + st.y + time + 4.0)));
-	return col;
+    float3 col = float3(u_color.r + u_fade.r * abs(sin(st.x + time)),
+                        u_color.g + u_fade.g * abs(sin(st.y + time + 2.0)),
+                        u_color.b + u_fade.b * abs(sin(st.x + st.y + time + 4.0)));
+    return col;
 }
 
 float4 PixelShaderFunction(float2 uv : TEXCOORD0) : COLOR0

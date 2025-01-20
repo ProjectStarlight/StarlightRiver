@@ -1,8 +1,10 @@
-﻿using StarlightRiver.Content.Dusts;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Dusts;
 using StarlightRiver.Core.Systems.LightingSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Content.Bosses.BrainRedux
@@ -140,114 +142,48 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			toRender.RemoveAll(n => n is null || !n.NPC.active);
 		}
 
+		/// <summary>
+		/// Draws ALL thinkers that are ready to render
+		/// </summary>
+		/// <param name="sb"></param>
 		private void DrawShadedBody(SpriteBatch sb)
 		{
 			if (!Open)
 				return;
 
-			bodyShader ??= Filters.Scene["ThinkerBody"].GetShader().Shader;
-
-			Texture2D glow = Assets.Keys.Glow.Value;
-
 			foreach (TheThinker thinker in toRender)
 			{
-				thinker.DrawFlower(sb, 1);
-				continue;
+				var time = Main.GameUpdateCount % 600;
+				var timeToPass = 0f;
 
-				sb.Draw(glow, thinker.NPC.Center - Main.screenPosition, null, Color.Black * 0.5f, thinker.NPC.rotation, glow.Size() / 2f, thinker.NPC.scale * 2.5f, 0, 0);
+				if (time < 150)
+					timeToPass = 0;
+				else if (time < 300)
+					timeToPass = time - 150;
+				else if (time < 450)
+					timeToPass = 150;
+				else
+					timeToPass = 150 - (time - 450);
 
-				bodyShader.Parameters["u_resolution"].SetValue(Assets.Bosses.BrainRedux.Heart.Size());
-				bodyShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f);
-
-				bodyShader.Parameters["mainbody_t"].SetValue(Assets.Bosses.BrainRedux.Heart.Value);
-				bodyShader.Parameters["linemap_t"].SetValue(Assets.Bosses.BrainRedux.HeartLine.Value);
-				bodyShader.Parameters["noisemap_t"].SetValue(Assets.Noise.ShaderNoise.Value);
-				bodyShader.Parameters["overlay_t"].SetValue(Assets.Bosses.BrainRedux.HeartOver.Value);
-				bodyShader.Parameters["normal_t"].SetValue(Assets.Bosses.BrainRedux.HeartNormal.Value);
-
-				sb.End();
-				sb.Begin(default, default, SamplerState.PointWrap, default, default, bodyShader, Main.GameViewMatrix.TransformationMatrix);
-
-				Texture2D tex = Assets.Bosses.BrainRedux.Heart.Value;
-				sb.Draw(tex, thinker.NPC.Center - Main.screenPosition, null, Color.White, thinker.NPC.rotation, tex.Size() / 2f, thinker.NPC.scale, 0, 0);
-
-				sb.End();
-				sb.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				thinker.DrawHeartToFlower(sb, timeToPass, Main.screenPosition);
 			}
 		}
 
-		private void DrawFlower(SpriteBatch spriteBatch, float scale)
+		/// <summary>
+		/// Renders the normal "heart" appearance of the thinker
+		/// </summary>
+		/// <param name="spriteBatch"></param>
+		/// <param name="scale"></param>
+		private void DrawHeart(SpriteBatch spriteBatch, float scale, Vector2 screenPos)
 		{
-			petalShader ??= Filters.Scene["ThinkerPetal"].GetShader().Shader;
-
-			petalShader.Parameters["u_resolution"].SetValue(Assets.Bosses.BrainRedux.PetalSmall.Size());
-			petalShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f);
-
-			petalShader.Parameters["mainbody_t"].SetValue(Assets.GlowTrail.Value);
-			petalShader.Parameters["linemap_t"].SetValue(Assets.GlowTopTrail.Value);
-			petalShader.Parameters["noisemap_t"].SetValue(Assets.Noise.ShaderNoise.Value);
-			petalShader.Parameters["overlay_t"].SetValue(Assets.Bosses.BrainRedux.HeartOver.Value);
-
 			Texture2D glow = Assets.Keys.Glow.Value;
-			spriteBatch.Draw(glow, NPC.Center - Main.screenPosition, null, Color.Black * 0.5f, NPC.rotation, glow.Size() / 2f, NPC.scale * 5.5f, 0, 0);
 
-			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointWrap, default, default, petalShader, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Draw(glow, NPC.Center - screenPos, null, Color.Black * 0.5f, NPC.rotation, glow.Size() / 2f, NPC.scale * 2.8f, 0, 0);
 
-			Texture2D bigPetal = Assets.Bosses.BrainRedux.PetalBig.Value;
-			Texture2D smallPetal = Assets.Bosses.BrainRedux.PetalSmall.Value;
+			// need a scissor enabled rasterizer to be able to draw in bestiary
+			var rasterizer = new RasterizerState() { ScissorTestEnable = true };
 
-			var bigOrigin = new Vector2(0, bigPetal.Height / 2f);
-			var smallOrigin = new Vector2(0, smallPetal.Height / 2f);
-
-			Vector2 pos = NPC.Center - Main.screenPosition;
-
-			petalShader.Parameters["u_resolution"].SetValue(Assets.Bosses.BrainRedux.Frond.Size());
-			petalShader.Parameters["u_color"].SetValue(new Vector3(0.5f, 0.35f, 0.2f));
-			petalShader.Parameters["u_fade"].SetValue(new Vector3(0.01f, 0.1f, 0.01f));
-
-			for (int k = 0; k < 10; k++)
-			{
-				petalShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f + k * 0.1f);
-				float rot = k / 10f * 6.28f + (k % 2 == 0 ? 0.1f : -0.1f) - 0.17f;
-				spriteBatch.Draw(Assets.Bosses.BrainRedux.Frond.Value, pos + Vector2.UnitX.RotatedBy(rot) * 42 * scale, null, Color.White, rot, bigOrigin, scale * new Vector2(1, 0.5f), 0, 0);
-			}
-
-			petalShader.Parameters["u_resolution"].SetValue(Assets.Bosses.BrainRedux.PetalSmall.Size());
-			petalShader.Parameters["u_color"].SetValue(new Vector3(0.4f, 0.6f, 0.4f));
-			petalShader.Parameters["u_fade"].SetValue(new Vector3(0.1f, 0.2f, 0.4f));
-
-			for (int k = 0; k < 5; k++)
-			{
-				petalShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * -0.01f + k * 0.2f);
-				float finalScale = scale + (float)Math.Sin(Main.GameUpdateCount * 0.1f + k * 0.25f) * 0.05f;
-				float rot = k / 5f * 6.28f;
-				spriteBatch.Draw(smallPetal, pos + Vector2.UnitX.RotatedBy(rot) * 48 * scale, null, Color.White, rot, smallOrigin, finalScale, 0, 0);
-			}
-
-			petalShader.Parameters["u_resolution"].SetValue(Assets.Bosses.BrainRedux.PetalBig.Size());
-			petalShader.Parameters["u_color"].SetValue(new Vector3(0.7f, 0.3f, 0.3f));
-			petalShader.Parameters["u_fade"].SetValue(new Vector3(0.3f, 0.5f, 0.3f));
-
-			for (int k = 0; k < 5; k++)
-			{
-				petalShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f + k * 0.2f);
-				float finalScale = scale + (float)Math.Sin(Main.GameUpdateCount * 0.1f + k * -0.25f) * 0.1f;
-				float rot = k / 5f * 6.28f + 6.28f / 10f;
-				spriteBatch.Draw(bigPetal, pos + Vector2.UnitX.RotatedBy(rot) * 32 * scale, null, Color.White, rot, bigOrigin, finalScale, 0, 0);
-			}
-
-			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
-		}
-
-		private void DrawBestiary(SpriteBatch sb, Vector2 screenPos)
-		{
 			bodyShader ??= Filters.Scene["ThinkerBody"].GetShader().Shader;
-
-			Texture2D glow = Assets.Keys.Glow.Value;
-
-			sb.Draw(glow, NPC.Center - screenPos, null, Color.Black * 0.5f, NPC.rotation, glow.Size() / 2f, 2.5f, 0, 0);
 
 			bodyShader.Parameters["u_resolution"].SetValue(Assets.Bosses.BrainRedux.Heart.Size());
 			bodyShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f);
@@ -257,14 +193,162 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			bodyShader.Parameters["noisemap_t"].SetValue(Assets.Noise.ShaderNoise.Value);
 			bodyShader.Parameters["overlay_t"].SetValue(Assets.Bosses.BrainRedux.HeartOver.Value);
 			bodyShader.Parameters["normal_t"].SetValue(Assets.Bosses.BrainRedux.HeartNormal.Value);
+			bodyShader.Parameters["u_color"].SetValue(new Vector3(0.7f, 0.3f, 0.3f) * scale);
+			bodyShader.Parameters["u_fade"].SetValue(Vector3.Lerp(new Vector3(0.0f, 0.2f, 0.4f), new Vector3(0.3f, 0.5f, 0.3f), scale)); // Lerp here so this is the same as the flower core at 0 scale
 
-			Rectangle oldScissor = Main.graphics.GraphicsDevice.ScissorRectangle;
-
-			bodyShader.CurrentTechnique.Passes[0].Apply();
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, rasterizer, bodyShader, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D tex = Assets.Bosses.BrainRedux.Heart.Value;
-			sb.Draw(tex, NPC.Center - screenPos, null, Color.White, NPC.rotation, tex.Size() / 2f, 1, 0, 0);
+			spriteBatch.Draw(tex, NPC.Center - screenPos, null, Color.White, NPC.rotation, tex.Size() / 2f, NPC.scale, 0, 0);
 
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+		}
+
+		/// <summary>
+		/// Renders the final phase flower appearance for this thinker
+		/// </summary>
+		/// <param name="spriteBatch"></param>
+		/// <param name="scale">progress into the expansion animation, to be able to run forwards or backwards</param>
+		private void DrawFlower(SpriteBatch spriteBatch, float scale, Vector2 screenPos)
+		{
+			petalShader ??= Filters.Scene["ThinkerPetal"].GetShader().Shader;
+			bodyShader ??= Filters.Scene["ThinkerBody"].GetShader().Shader;
+
+			petalShader.Parameters["u_resolution"].SetValue(Assets.Bosses.BrainRedux.PetalSmall.Size());
+			petalShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f);
+
+			petalShader.Parameters["mainbody_t"].SetValue(Assets.GlowTrail.Value);
+			petalShader.Parameters["linemap_t"].SetValue(Assets.GlowTopTrail.Value);
+			petalShader.Parameters["noisemap_t"].SetValue(Assets.Noise.ShaderNoise.Value);
+			petalShader.Parameters["overlay_t"].SetValue(Assets.Bosses.BrainRedux.HeartOver.Value);
+
+			Vector2 pos = NPC.Center - screenPos;
+
+			Texture2D glow = Assets.Keys.Glow.Value;
+			spriteBatch.Draw(glow, pos, null, Color.Black * 0.5f * scale, NPC.rotation, glow.Size() / 2f, NPC.scale * 5.5f, 0, 0);
+
+			// need a scissor enabled rasterizer to be able to draw in bestiary
+			var rasterizer = new RasterizerState() { ScissorTestEnable = true };
+
+			spriteBatch.End();
+			spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointWrap, default, rasterizer, petalShader, Main.GameViewMatrix.TransformationMatrix);
+
+			Texture2D bigPetal = Assets.Bosses.BrainRedux.PetalBig.Value;
+			Texture2D smallPetal = Assets.Bosses.BrainRedux.PetalSmall.Value;
+
+			var bigOrigin = new Vector2(0, bigPetal.Height / 2f);
+			var smallOrigin = new Vector2(0, smallPetal.Height / 2f);
+			float baseRot = Main.GameUpdateCount * 0.01f;
+
+			petalShader.Parameters["u_resolution"].SetValue(Assets.Bosses.BrainRedux.Frond.Size());
+			petalShader.Parameters["u_color"].SetValue(new Vector3(0.5f, 0.35f, 0.2f));
+			petalShader.Parameters["u_fade"].SetValue(new Vector3(0.01f, 0.1f, 0.01f));
+
+			for (int k = 0; k < 10; k++)
+			{
+				petalShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f + k * 0.1f);
+				float thisScale = Helper.SwoopEase(Math.Clamp((scale - 0.3f) / 0.7f, 0, 1));
+				float rot = baseRot + k / 10f * 6.28f + (k % 2 == 0 ? 0.1f : -0.1f) - 0.17f;
+				spriteBatch.Draw(Assets.Bosses.BrainRedux.Frond.Value, pos + Vector2.UnitX.RotatedBy(rot) * 42 * thisScale * NPC.scale, null, Color.White, rot, bigOrigin, thisScale * NPC.scale * new Vector2(1, 0.5f), 0, 0);
+			}
+
+			petalShader.Parameters["u_resolution"].SetValue(Assets.Bosses.BrainRedux.PetalSmall.Size());
+			petalShader.Parameters["u_color"].SetValue(new Vector3(0.4f, 0.6f, 0.4f));
+			petalShader.Parameters["u_fade"].SetValue(new Vector3(0.1f, 0.2f, 0.4f));
+
+			for (int k = 0; k < 5; k++)
+			{
+				petalShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * -0.01f + k * 0.2f);
+				float thisScale = Helper.SwoopEase(Math.Clamp((scale - 0.15f) / 0.7f, 0, 1));
+				float finalScale = thisScale + (float)Math.Sin(Main.GameUpdateCount * 0.1f + k * 0.25f) * 0.025f;
+				float rot = baseRot + k / 5f * 6.28f;
+				spriteBatch.Draw(smallPetal, pos + Vector2.UnitX.RotatedBy(rot) * 48 * thisScale * NPC.scale, null, Color.White, rot, smallOrigin, finalScale * NPC.scale, 0, 0);
+			}
+
+			petalShader.Parameters["u_resolution"].SetValue(Assets.Bosses.BrainRedux.PetalBig.Size());
+			petalShader.Parameters["u_color"].SetValue(new Vector3(0.7f, 0.3f, 0.3f));
+			petalShader.Parameters["u_fade"].SetValue(new Vector3(0.3f, 0.5f, 0.3f));
+
+			for (int k = 0; k < 5; k++)
+			{
+				petalShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f + k * 0.2f);
+				float thisScale = Helper.SwoopEase(Math.Clamp(scale / 0.7f, 0, 1));
+				float finalScale = thisScale + (float)Math.Sin(Main.GameUpdateCount * 0.1f + k * -0.25f) * 0.05f;
+				float rot = baseRot + k / 5f * 6.28f + 6.28f / 10f;
+				spriteBatch.Draw(bigPetal, pos + Vector2.UnitX.RotatedBy(rot) * 32 * thisScale * NPC.scale, null, Color.White, rot, bigOrigin, finalScale * NPC.scale, 0, 0);
+			}
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, default, default, rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+
+			spriteBatch.Draw(glow, pos, null, Color.Black * (0.5f + 0.4f * scale), NPC.rotation, glow.Size() / 2f, NPC.scale * 2.8f, 0, 0);
+
+			bodyShader.Parameters["u_resolution"].SetValue(Assets.Bosses.BrainRedux.FlowerCore.Size());
+			bodyShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f);
+
+			bodyShader.Parameters["mainbody_t"].SetValue(Assets.Bosses.BrainRedux.FlowerCore.Value);
+			bodyShader.Parameters["linemap_t"].SetValue(Assets.GUI.RingGlow.Value);
+			bodyShader.Parameters["noisemap_t"].SetValue(Assets.Noise.ShaderNoise.Value);
+			bodyShader.Parameters["overlay_t"].SetValue(Assets.Bosses.BrainRedux.HeartOver.Value);
+			bodyShader.Parameters["normal_t"].SetValue(Assets.Bosses.BrainRedux.FlowerCoreNormal.Value);
+			bodyShader.Parameters["u_color"].SetValue(new Vector3(0.9f, 0.7f, 0.2f) * Math.Min(scale / 0.2f, 1));
+			bodyShader.Parameters["u_fade"].SetValue(new Vector3(0.0f, 0.2f, 0.4f));
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, rasterizer, bodyShader, Main.GameViewMatrix.TransformationMatrix);
+
+			Texture2D coreTex = Assets.Bosses.BrainRedux.FlowerCore.Value;
+			spriteBatch.Draw(coreTex, pos, null, Color.White, NPC.rotation, coreTex.Size() / 2f, NPC.scale, 0, 0);
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+		}
+
+		/// <summary>
+		/// Draws the transition animation from heart to flower.
+		/// </summary>
+		/// <param name="spriteBatch"></param>
+		/// <param name="progress">progress from 0 to 150, in frames. This can be reversed to do this animation backwards</param>
+		private void DrawHeartToFlower(SpriteBatch spriteBatch, float progress, Vector2 screenPos)
+		{
+			if (progress < 60)
+			{
+				DrawHeart(spriteBatch, 1 - progress / 60f, screenPos);
+			}
+			else
+			{
+				DrawFlower(spriteBatch, (progress - 60f) / 90f, screenPos);
+			}
+		}
+
+		/// <summary>
+		/// Drawing specific to the bestiary
+		/// </summary>
+		/// <param name="sb"></param>
+		/// <param name="screenPos"></param>
+		private void DrawBestiary(SpriteBatch sb, Vector2 screenPos)
+		{
+			var time = Main.GameUpdateCount % 600;
+			var timeToPass = 0f;
+
+			if (time < 150)
+				timeToPass = 0;
+			else if (time < 300)
+				timeToPass = time - 150;
+			else if (time < 450)
+				timeToPass = 150;
+			else
+				timeToPass = 150 - (time - 450);
+
+			if (time > 190 && time <= 260)
+				NPC.scale = 1f - Helper.BezierEase((time - 190) / 70f) * 0.4f;
+
+			if (time > 500 && time < 550)
+				NPC.scale = 0.6f + Helper.BezierEase((time - 500) / 50f) * 0.4f;
+
+			DrawHeartToFlower(sb, timeToPass, screenPos);
 		}
 	}
 }

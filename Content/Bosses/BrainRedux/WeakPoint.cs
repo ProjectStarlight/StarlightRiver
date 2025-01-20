@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override void SetStaticDefaults()
 		{
-
+			DisplayName.SetDefault("The Linker");
 		}
 
 		public override void SetDefaults()

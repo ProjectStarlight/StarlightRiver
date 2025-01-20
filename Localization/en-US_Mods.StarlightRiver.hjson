@@ -3847,6 +3847,7 @@ NPCs: {
 	Snake.DisplayName: Sandviper
 	BerrySlime.DisplayName: Slimeberry
 	TouchstoneWisp.DisplayName: Aurora Spirit
+	WeakPoint.DisplayName: The Linker
 }
 
 Buffs: {
