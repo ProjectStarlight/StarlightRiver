@@ -25,17 +25,19 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			new AmmoStruct(ItemID.PearlsandBlock, ModContent.ProjectileType<SoilgunPearlsandSoil>(), "Homes onto enemies", 15),
 			new AmmoStruct(ItemID.CrimsandBlock, ModContent.ProjectileType<SoilgunCrimsandSoil>(), "Gain regeneration on hit", 4),		
 			new AmmoStruct(ItemID.SiltBlock, ModContent.ProjectileType<SoilgunSiltSoil>(), "Extracts some treasure when fired", 3),
-			new AmmoStruct(ItemID.SlushBlock, ModContent.ProjectileType<SoilgunSlushSoil>(), "Inflicts Frostburn", 3),
+			new AmmoStruct(ItemID.SlushBlock, ModContent.ProjectileType<SoilgunSlushSoil>(), "Inflicts {{BUFF:Frostburn}}", 3),
 			new AmmoStruct(Mod.Find<ModItem>("VitricSandItem").Type, ModContent.ProjectileType<SoilgunVitricSandSoil>(), "Pierces enemies", 8),
 			new AmmoStruct(ItemID.MudBlock, ModContent.ProjectileType<SoilgunMudSoil>(), "Chance to spawn bees on death", 3),
-			new AmmoStruct(ItemID.AshBlock, ModContent.ProjectileType<SoilgunAshSoil>(), "Inflicts On Fire!", 6),
+			new AmmoStruct(ItemID.AshBlock, ModContent.ProjectileType<SoilgunAshSoil>(), "Inflicts {{BUFF:OnFire}}", 6),
 		};
 
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Soilgun");
-			Tooltip.SetDefault("Hold <left> to charge up a volley of soil\nRelease to fire the soil\n" +
-				"Fully charge to fire a high velocity clump of soil\n'Soiled it! SOILED IT!'");
+			Tooltip.SetDefault("Hold <left> to charge up a volley of soil\n" +
+				"Release to fire the soil\n" +
+				"Fully charge to fire a high velocity clump of soil\n" +
+				"'Soiled it! SOILED IT!'");
 		}
 
 		public override void SafeSetDefaults()
@@ -92,12 +94,14 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 	class SoilgunHoldout : ModProjectile
 	{
 		private bool updateVelocity = true;
-
 		private bool flashed;
-		private int flashTimer;
 
+		private int flashTimer;
 		public int ammoID;
 		public int projectileID;
+
+		public Vector2 ArmOffset;
+		public Vector2 BarrelOffset;
 
 		public Projectile ghostProjectile = new();
 
@@ -106,9 +110,10 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 		public float ChargeProgress => Charge / MaxCharge;
 		public ref float Charge => ref Projectile.ai[1];
 		public ref float MaxCharge => ref Projectile.ai[2];
-		public Vector2 ArmOffset;
-		public Vector2 ArmPosition => Owner.RotatedRelativePoint(Owner.MountedCenter, true) + Vector2.Lerp(Vector2.Zero, new Vector2(-6f, 0f), EaseBuilder.EaseCircularInOut.Ease(ChargeProgress < 0.35f ? ChargeProgress / 0.35f : 1f)).RotatedBy(Projectile.rotation) + new Vector2(18f, -4f * Owner.direction).RotatedBy(Projectile.velocity.ToRotation()) + ArmOffset;
-		public Vector2 BarrelOffset;
+		public Vector2 ArmPosition => Owner.RotatedRelativePoint(Owner.MountedCenter, true)
+			+ Vector2.Lerp(Vector2.Zero, new Vector2(-6f, 0f), EaseBuilder.EaseCircularInOut.Ease(ChargeProgress < 0.35f ? ChargeProgress / 0.35f : 1f)).RotatedBy(Projectile.rotation)
+			+ new Vector2(18f, -4f * Owner.direction).RotatedBy(Projectile.velocity.ToRotation()) + ArmOffset;
+
 		public Vector2 BarrelPosition => ArmPosition + Projectile.velocity * Projectile.width * 0.5f + BarrelOffset;
 		public Player Owner => Main.player[Projectile.owner];		
 		public override string Texture => AssetDirectory.MiscItem + "Soilgun";

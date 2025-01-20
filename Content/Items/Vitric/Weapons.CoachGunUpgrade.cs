@@ -124,27 +124,9 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (justAltUsed)
 				return;
 
-			if (Item.noUseGraphic) // the item draws wrong for the first frame it is drawn when you switch directions for some odd reason, this plus setting it to true in shoot makes it not draw for the first frame.
-				Item.noUseGraphic = false;
+			Vector2 itemPosition = Helper.SetGunUseStyle(player, Item, shootDirection, -6f, new Vector2(68f, 22f), new Vector2(-48f, 0f));
 
 			float animProgress = 1f - player.itemTime / (float)player.itemTimeMax;
-
-			if (Main.myPlayer == player.whoAmI)
-				player.direction = shootDirection;
-
-			float itemRotation = player.compositeFrontArm.rotation + 1.5707964f * player.gravDir;
-			Vector2 itemPosition = player.MountedCenter;
-
-			if (animProgress < 0.05f)
-			{
-				float lerper = animProgress / 0.05f;
-				itemPosition += itemRotation.ToRotationVector2() * MathHelper.Lerp(0f, -6f, EaseBuilder.EaseCircularOut.Ease(lerper));
-			}
-			else
-			{
-				float lerper = (animProgress - 0.05f) / 0.95f;
-				itemPosition += itemRotation.ToRotationVector2() * MathHelper.Lerp(-6f, 0f, EaseBuilder.EaseBackInOut.Ease(lerper));
-			}
 
 			if (animProgress >= 0.35f)
 			{
@@ -154,11 +136,6 @@ namespace StarlightRiver.Content.Items.Vitric
 				if (Main.rand.NextBool(20))
 					Dust.NewDustPerfect(itemPosition + new Vector2(55f, -2f * player.direction).RotatedBy(player.compositeFrontArm.rotation + 1.5707964f * player.gravDir), ModContent.DustType<CoachGunUpgradeSmokeDust>(), Vector2.Zero, 150, new Color(255, 150, 50), 0.075f).noGravity = true;
 			}
-
-			Vector2 itemSize = new Vector2(68f, 22f);
-			Vector2 itemOrigin = new Vector2(-48f, 0f);
-
-			Helper.CleanHoldStyle(player, itemRotation, itemPosition, itemSize, new Vector2?(itemOrigin), false, false, true);
 		}
 
 		public override void UseItemFrame(Player player)
@@ -166,31 +143,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (justAltUsed)
 				return;
 
-			if (Main.myPlayer == player.whoAmI)
-				player.direction = shootDirection;
-
-			float animProgress = 1f - player.itemTime / (float)player.itemTimeMax;
-			float rotation = shootRotation * player.gravDir + 1.5707964f;
-
-			if (animProgress < 0.05f)
-			{
-				float lerper = animProgress / 0.05f;
-				rotation += MathHelper.Lerp(0f, -.2f, EaseBuilder.EaseCircularOut.Ease(lerper)) * player.direction;
-			}
-			else
-			{
-				float lerper = (animProgress - 0.05f) / 0.95f;
-				rotation += MathHelper.Lerp(-.2f, 0, EaseBuilder.EaseBackInOut.Ease(lerper)) * player.direction;
-			}
-
-			Player.CompositeArmStretchAmount stretch = Player.CompositeArmStretchAmount.Full;
-			if (animProgress < 0.5f)
-				stretch = Player.CompositeArmStretchAmount.None;
-			else if (animProgress < 0.75f)
-				stretch = Player.CompositeArmStretchAmount.ThreeQuarters;
-
-			player.SetCompositeArmFront(true, stretch, rotation);
-			player.SetCompositeArmBack(true, stretch, rotation + MathHelper.ToRadians(25f) * player.direction);
+			Helper.SetGunUseItemFrame(player, shootDirection, shootRotation, -0.2f, true);
 		}
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -406,7 +359,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			SpriteEffects spriteEffects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-			Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D texture = Assets.Bosses.VitricBoss.VitricBomb.Value;
 
 			int frameHeight = texture.Height / Main.projFrames[Projectile.type];
 			int startY = frameHeight * Projectile.frame;
@@ -565,10 +518,10 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			float lerper = 1f - dust.alpha / 255f;
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.VitricItem + Name).Value;
-			Texture2D texBlur = ModContent.Request<Texture2D>(AssetDirectory.VitricItem + Name + "_Blur").Value;
-			Texture2D texGlow = ModContent.Request<Texture2D>(AssetDirectory.VitricItem + Name + "_Glow").Value;
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D tex = Assets.Items.Vitric.CoachGunUpgradeMuzzleFlashDust.Value;
+			Texture2D texBlur = Assets.Items.Vitric.CoachGunUpgradeMuzzleFlashDust_Blur.Value;
+			Texture2D texGlow = Assets.Items.Vitric.CoachGunUpgradeMuzzleFlashDust_Glow.Value;
+			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
 
 			Main.spriteBatch.Draw(bloomTex, dust.position - Main.screenPosition, null, new Color(255, 75, 0, 0) * 0.25f * lerper, dust.rotation, bloomTex.Size() / 2f, dust.scale * 1.25f, 0f, 0f);
 
@@ -589,7 +542,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void OnSpawn(Dust dust)
 		{
 			dust.frame = new Rectangle(0, 0, 4, 4);
-			dust.customData = 1 + Main.rand.Next(2);
+			dust.customData = 1 + Main.rand.Next(3);
 			dust.rotation = Main.rand.NextFloat(6.28f);
 		}
 
@@ -635,7 +588,12 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			float lerper = 1f - dust.alpha / 255f;
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "SmokeTransparent_" + dust.customData).Value;
+			Texture2D tex = Assets.SmokeTransparent_1.Value;
+			if ((int)dust.customData == 2)
+				tex = Assets.SmokeTransparent_2.Value;
+			if ((int)dust.customData == 3)
+				tex = Assets.SmokeTransparent_3.Value;
+
 			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () => Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null,
 				Color.Lerp(dust.color, Color.Black, 1f - lerper) * lerper, dust.rotation, tex.Size() / 2f, dust.scale, 0f, 0f));
 

@@ -68,60 +68,12 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public override void UseStyle(Player player, Rectangle heldItemFrame)
 		{
-			if (Item.noUseGraphic) // the item draws wrong for the first frame it is drawn when you switch directions for some odd reason, this plus setting it to true in shoot makes it not draw for the first frame.
-				Item.noUseGraphic = false;
-
-			float animProgress = 1f - player.itemTime / (float)player.itemTimeMax;
-
-			if (Main.myPlayer == player.whoAmI)
-				player.direction = shootDirection;		
-
-			float itemRotation = player.compositeFrontArm.rotation + 1.5707964f * player.gravDir;
-			Vector2 itemPosition = player.MountedCenter;
-
-			if (animProgress < 0.05f)
-			{
-				float lerper = animProgress / 0.05f;
-				itemPosition += itemRotation.ToRotationVector2() * MathHelper.Lerp(0f, -4f, EaseBuilder.EaseCircularOut.Ease(lerper));
-			}
-			else
-			{
-				float lerper = (animProgress - 0.05f) / 0.95f;
-				itemPosition += itemRotation.ToRotationVector2() * MathHelper.Lerp(-4f, 0f, EaseBuilder.EaseBackInOut.Ease(lerper));
-			}
-
-			Vector2 itemSize = new Vector2(34f, 26f);
-			Vector2 itemOrigin = new Vector2(-20f, 4f);
-
-			Helper.CleanHoldStyle(player, itemRotation, itemPosition, itemSize, new Vector2?(itemOrigin), false, false, true);
+			Helper.SetGunUseStyle(player, Item, shootDirection, -4f, new Vector2(34f, 26f), new Vector2(-20f, 4f));
 		}
 
 		public override void UseItemFrame(Player player)
 		{
-			if (Main.myPlayer == player.whoAmI)
-				player.direction = shootDirection;
-
-			float animProgress = 1f - player.itemTime / (float)player.itemTimeMax;
-			float rotation = shootRotation * player.gravDir + 1.5707964f;
-
-			if (animProgress < 0.05f)
-			{
-				float lerper = animProgress / 0.1f;
-				rotation += MathHelper.Lerp(0f, -.35f, EaseBuilder.EaseCircularOut.Ease(lerper)) * player.direction;
-			}
-			else
-			{
-				float lerper = (animProgress - 0.1f) / 0.9f;
-				rotation += MathHelper.Lerp(-.35f, 0, EaseBuilder.EaseBackInOut.Ease(lerper)) * player.direction;
-			}
-
-			Player.CompositeArmStretchAmount stretch = Player.CompositeArmStretchAmount.Full;
-			if (animProgress < 0.5f)
-				stretch = Player.CompositeArmStretchAmount.None;
-			else if (animProgress < 0.75f)
-				stretch = Player.CompositeArmStretchAmount.ThreeQuarters;
-
-			player.SetCompositeArmFront(true, stretch, rotation);
+			Helper.SetGunUseItemFrame(player, shootDirection, shootRotation, -0.35f);
 		}
 
 		public override bool Shoot(Player Player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -466,11 +418,11 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			float lerper = 1f - dust.alpha / 255f;
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.BreacherItem  + Name).Value;
-			Texture2D texBlur = ModContent.Request<Texture2D>(AssetDirectory.BreacherItem + Name + "_Blur").Value;
-			Texture2D texGlow = ModContent.Request<Texture2D>(AssetDirectory.BreacherItem + Name + "_Glow").Value;
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
-			Texture2D starTex = ModContent.Request<Texture2D>(AssetDirectory.BreacherItem + "SupplyBeaconProj_Star").Value;
+			Texture2D tex = Assets.Items.Breacher.FlareBreacherMuzzleFlashDust.Value;
+			Texture2D texBlur = Assets.Items.Breacher.FlareBreacherMuzzleFlashDust_Blur.Value;
+			Texture2D texGlow = Assets.Items.Breacher.FlareBreacherMuzzleFlashDust_Glow.Value;
+			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D starTex = Assets.Items.Breacher.SupplyBeaconProj_Star.Value;
 
 			Color color = Color.Lerp(new Color(255, 50, 200, 0), new Color(50, 230, 255, 0), EaseBuilder.EaseCircularInOut.Ease(1f - lerper));
 
@@ -531,8 +483,8 @@ namespace StarlightRiver.Content.Items.Breacher
 
 			float lerper = 1f - dust.alpha / 255f;
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.BreacherItem + "SupplyBeaconProj_Star").Value; // star texture
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D tex = Assets.Items.Breacher.SupplyBeaconProj_Star.Value;
+			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
 
 			Main.spriteBatch.Draw(bloomTex, dust.position + new Vector2(0f, player.gfxOffY) - Main.screenPosition, null, Color.Lerp(Color.White with { A = 0 }, dust.color, 1f - lerper) * 0.5f, 0f, bloomTex.Size() / 2f, dust.scale * 2f * lerper, 0f, 0f);
 
@@ -549,7 +501,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		public override void OnSpawn(Dust dust)
 		{
 			dust.frame = new Rectangle(0, 0, 4, 4);
-			dust.customData = 1 + Main.rand.Next(2);
+			dust.customData = 1 + Main.rand.Next(3);
 			dust.rotation = Main.rand.NextFloat(6.28f);
 		}
 
@@ -595,7 +547,11 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			float lerper = 1f - dust.alpha / 255f;
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "SmokeTransparent_" + dust.customData).Value;
+			Texture2D tex = Assets.SmokeTransparent_1.Value;
+			if ((int)dust.customData == 2)
+				tex = Assets.SmokeTransparent_2.Value;
+			if ((int)dust.customData == 3)
+				tex = Assets.SmokeTransparent_3.Value;
 
 			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () => Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, Color.Lerp(dust.color, new Color(50, 50, 50), EaseBuilder.EaseCircularIn.Ease(1f - lerper)) * lerper, dust.rotation, tex.Size() / 2f, dust.scale, 0f, 0f));
 

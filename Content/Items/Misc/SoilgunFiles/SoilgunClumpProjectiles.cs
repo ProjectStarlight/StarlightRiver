@@ -37,6 +37,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			{ "RingInsideColor", Color.White },
 		}; 
 		public virtual bool gravity => true;
+		public virtual int TextureID => ItemID.DirtBlock;
 		public float AmmoType => Projectile.ai[0];
 		public ref float Time => ref Projectile.ai[1];
 		public Player Owner => Main.player[Projectile.owner];
@@ -216,9 +217,12 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 		public override bool PreDraw(ref Color lightColor)
 		{
 			DrawPrimitives();
+			Texture2D tex = Terraria.GameContent.TextureAssets.Item[TextureID].Value;
+			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
 
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			// just gonna hardcode this since its the only exception
+			if (Projectile.ModProjectile is SoilgunVitricSandSoil)
+				tex = Assets.Tiles.Vitric.VitricSandItem.Value;
 
 			float opacity = FadeOut();
 
@@ -353,13 +357,13 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 	public class SoilgunDirtClump : SoilClumpProjectile
 	{
-		public override string Texture => "Terraria/Images/Item_" + ItemID.DirtBlock;
+		public override int TextureID => ItemID.DirtBlock;
 		public SoilgunDirtClump() : base(new Color(30, 19, 12), new Color(30, 19, 12), new Color(81, 47, 27), new Color(105, 67, 44), new Color(82, 45, 22), DustID.Dirt) { }
 	}
 
 	public class SoilgunSandClump : SoilClumpProjectile
 	{
-		public override string Texture => "Terraria/Images/Item_" + ItemID.SandBlock;
+		public override int TextureID => ItemID.SandBlock;
 		public SoilgunSandClump() : base(new Color(80, 50, 20), new Color(160, 131, 59), new Color(139, 131, 59), new Color(212, 192, 100), new Color(150, 120, 59), DustID.Sand) { }
 		
 		public override void SafeOnKill()
@@ -376,7 +380,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 	public class SoilgunCrimsandClump : SoilClumpProjectile
 	{
-		public override string Texture => "Terraria/Images/Item_" + ItemID.CrimsandBlock;
+		public override int TextureID => ItemID.CrimsandBlock;
 		public SoilgunCrimsandClump() : base(new Color(56, 17, 14), new Color(135, 43, 34), new Color(56, 17, 14), new Color(135, 43, 34), new Color(40, 10, 10) * 0.6f, DustID.CrimsonPlants) { }
 		
 		public override void SafeOnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -387,7 +391,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 	public class SoilgunEbonsandClump : SoilClumpProjectile
 	{
-		public override string Texture => "Terraria/Images/Item_" + ItemID.EbonsandBlock;
+		public override int TextureID => ItemID.EbonsandBlock;
 		public SoilgunEbonsandClump() : base(new Color(26, 18, 31), new Color(62, 45, 75), new Color(62, 45, 75), new Color(119, 106, 138), new Color(30, 25, 45) * 0.6f, DustID.Ebonwood) { }
 		
 		public override void SafeOnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -400,7 +404,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 	{
 		private NPC target;
 		public override bool gravity => false;
-		public override string Texture => "Terraria/Images/Item_" + ItemID.PearlsandBlock;
+		public override int TextureID => ItemID.PearlsandBlock;
 		public SoilgunPearlsandClump() : base(new Color(87, 77, 106), new Color(174, 168, 186), new Color(87, 77, 106), new Color(246, 235, 228), new Color(120, 110, 140), DustID.Pearlsand) { }
 		public override void SafeAI()
 		{
@@ -428,7 +432,6 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 	public class SoilgunVitricSandClump : SoilClumpProjectile
 	{
-		public override string Texture => AssetDirectory.VitricTile + "VitricSandItem";		
 		public SoilgunVitricSandClump() : base(new Color(87, 129, 140), new Color(99, 183, 173), new Color(87, 129, 140), new Color(171, 230, 167), new Color(86, 57, 47), ModContent.DustType<VitricSandDust>()) { }
 
 		public override void SafeSetDefaults()
@@ -442,7 +445,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 	public class SoilgunSlushClump : SoilClumpProjectile
 	{
-		public override string Texture => "Terraria/Images/Item_" + ItemID.SlushBlock;
+		public override int TextureID => ItemID.SlushBlock;
 		public SoilgunSlushClump() : base(new Color(27, 40, 51), new Color(62, 95, 104), new Color(27, 40, 51), new Color(164, 182, 180), new Color(77, 106, 113), DustID.Slush) { }
 
 		public override void SafeOnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -453,7 +456,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 	public class SoilgunSiltClump : SoilClumpProjectile
 	{
-		public override string Texture => "Terraria/Images/Item_" + ItemID.SiltBlock;
+		public override int TextureID => ItemID.SiltBlock;
 		public SoilgunSiltClump() : base(new Color(22, 24, 32), new Color(49, 51, 61), new Color(49, 51, 61), new Color(106, 107, 118), new Color(89, 83, 83), DustID.Silt) { }
 
 		public override void OnSpawn(IEntitySource source)
@@ -502,7 +505,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 	public class SoilgunMudClump : SoilClumpProjectile
 	{
 		private bool spawnBee;
-		public override string Texture => "Terraria/Images/Item_" + ItemID.MudBlock;
+		public override int TextureID => ItemID.MudBlock;
 		public SoilgunMudClump() : base(new Color(30, 21, 24), new Color(23, 68, 9), new Color(73, 57, 63), new Color(111, 83, 89), new Color(73, 57, 63), DustID.Mud) { }
 
 		public override void SafeSetDefaults()
@@ -543,7 +546,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 	public class SoilgunAshClump : SoilClumpProjectile
 	{
-		public override string Texture => "Terraria/Images/Item_" + ItemID.AshBlock;
+		public override int TextureID => ItemID.AshBlock;
 		public SoilgunAshClump() : base(new Color(246, 86, 22), new Color(252, 147, 20), new Color(73, 57, 63), new Color(111, 83, 89), new Color(32, 27, 34) * 0.75f, DustID.Ash) { }
 
 		public override void SafeOnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
