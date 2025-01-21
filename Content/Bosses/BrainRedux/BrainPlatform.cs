@@ -16,6 +16,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override void SetStaticDefaults()
 		{
+			DisplayName.SetDefault("");
 			NPCID.Sets.TrailCacheLength[Type] = 30;
 			NPCID.Sets.TrailingMode[Type] = 1;
 		}

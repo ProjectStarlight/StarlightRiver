@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
+using static tModPorter.ProgressUpdate;
 
 namespace StarlightRiver.Content.Bosses.BrainRedux
 {
@@ -153,19 +154,16 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			foreach (TheThinker thinker in toRender)
 			{
-				var time = Main.GameUpdateCount % 600;
-				var timeToPass = 0f;
+				if (thinker.ThisBrain?.Phase == DeadBrain.Phases.ReallyDead)
+				{
+					thinker.DrawFlowerToDead(sb, thinker.ThisBrain.Timer);
+					continue;
+				}
 
-				if (time < 150)
-					timeToPass = 0;
-				else if (time < 300)
-					timeToPass = time - 150;
-				else if (time < 450)
-					timeToPass = 150;
+				if (thinker.bloomProgress == 0)
+					thinker.DrawHeart(sb, 1, Main.screenPosition);
 				else
-					timeToPass = 150 - (time - 450);
-
-				thinker.DrawHeartToFlower(sb, timeToPass, Main.screenPosition);
+					thinker.DrawHeartToFlower(sb, thinker.bloomProgress, Main.screenPosition);
 			}
 		}
 
@@ -304,6 +302,113 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+		}
+
+		/// <summary>
+		/// Used in the death animation only
+		/// </summary>
+		/// <param name="spriteBatch"></param>
+		private void DrawDeadFlower(SpriteBatch spriteBatch)
+		{
+			Vector2 pos = NPC.Center - Main.screenPosition;
+
+			Texture2D glow = Assets.Keys.Glow.Value;
+			spriteBatch.Draw(glow, pos, null, Color.Black * 0.5f, NPC.rotation, glow.Size() / 2f, NPC.scale * 5.5f, 0, 0);
+
+			Texture2D bigPetal = Assets.Bosses.BrainRedux.PetalBig.Value;
+			Texture2D smallPetal = Assets.Bosses.BrainRedux.PetalSmall.Value;
+
+			var bigOrigin = new Vector2(0, bigPetal.Height / 2f);
+			var smallOrigin = new Vector2(0, smallPetal.Height / 2f);
+			float baseRot = flowerRotationOnDeath;
+
+			for (int k = 0; k < 10; k++)
+			{
+				float rot = baseRot + k / 10f * 6.28f + (k % 2 == 0 ? 0.1f : -0.1f) - 0.17f;
+				spriteBatch.Draw(Assets.Bosses.BrainRedux.Frond.Value, pos + Vector2.UnitX.RotatedBy(rot) * 42 * NPC.scale, null, Color.White, rot, bigOrigin, NPC.scale * new Vector2(1, 0.5f), 0, 0);
+			}
+
+			for (int k = 0; k < 5; k++)
+			{
+				float rot = baseRot + k / 5f * 6.28f;
+				spriteBatch.Draw(smallPetal, pos + Vector2.UnitX.RotatedBy(rot) * 48 * NPC.scale, null, Color.White, rot, smallOrigin, NPC.scale, 0, 0);
+			}
+
+			for (int k = 0; k < 5; k++)
+			{
+				float rot = baseRot + k / 5f * 6.28f + 6.28f / 10f;
+				spriteBatch.Draw(bigPetal, pos + Vector2.UnitX.RotatedBy(rot) * 32 * NPC.scale, null, Color.White, rot, bigOrigin, NPC.scale, 0, 0);
+			}
+
+			spriteBatch.Draw(glow, pos, null, Color.Black * 0.9f, NPC.rotation, glow.Size() / 2f, NPC.scale * 2.8f, 0, 0);
+
+			Texture2D coreTex = Assets.Bosses.BrainRedux.FlowerCore.Value;
+			spriteBatch.Draw(coreTex, pos, null, Color.White, NPC.rotation, coreTex.Size() / 2f, NPC.scale, 0, 0);
+		}
+
+		private void DrawFlowerToDead(SpriteBatch spriteBatch, float progress)
+		{
+			if (progress < 75)
+			{
+				DrawFlower(spriteBatch, 1, Main.screenPosition);
+			}
+			else
+			{
+				if (progress == 75)
+					flowerRotationOnDeath = Main.GameUpdateCount * 0.01f;
+
+				DrawDeadFlower(spriteBatch);
+			}
+
+			if (progress > 60 && progress < 90)
+			{
+				float flashTime = (progress - 60) / 30f;
+
+				var glow = Assets.Keys.Glow.Value;
+				var star = Assets.StarTexture.Value;
+
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, SamplerState.LinearWrap, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+
+				spriteBatch.Draw(glow, NPC.Center - Main.screenPosition, null, new Color(255, 220, 200, 255) * MathF.Sin(flashTime * 3.14f), 0, glow.Size() / 2f, flashTime * 25, 0, 0);
+				spriteBatch.Draw(star, NPC.Center - Main.screenPosition, null, new Color(255, 255, 220, 0) * MathF.Sin(flashTime * 3.14f), 0, star.Size() / 2f, flashTime * new Vector2(6, 35), 0, 0);
+
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			}
+
+			if (progress == 299)
+			{
+				float baseRot = flowerRotationOnDeath;
+
+				Texture2D bigPetal = Assets.Bosses.BrainRedux.PetalBig.Value;
+				Texture2D smallPetal = Assets.Bosses.BrainRedux.PetalSmall.Value;
+				Texture2D frond = Assets.Bosses.BrainRedux.Frond.Value;
+
+				var bigOrigin = new Vector2(0, bigPetal.Height / 2f);
+				var smallOrigin = new Vector2(0, smallPetal.Height / 2f);
+
+				for (int k = 0; k < 10; k++) // Frond
+				{
+					float rot = baseRot + k / 10f * 6.28f + (k % 2 == 0 ? 0.1f : -0.1f) - 0.17f;
+					var gore = Gore.NewGorePerfect(null, NPC.Center - frond.Size() / 2f + Vector2.UnitX.RotatedBy(rot) * (32 + frond.Width / 2) * NPC.scale, Vector2.UnitX.RotatedBy(rot) * 0.9f, StarlightRiver.Instance.Find<ModGore>("Frond").Type);
+					gore.rotation = rot;
+				}
+
+				for (int k = 0; k < 5; k++) // Small
+				{
+					float rot = baseRot + k / 5f * 6.28f;
+					var gore = Gore.NewGorePerfect(null, NPC.Center - smallPetal.Size() / 2f + Vector2.UnitX.RotatedBy(rot) * (48 + smallPetal.Width / 2) * NPC.scale, Vector2.UnitX.RotatedBy(rot) * 0.7f, StarlightRiver.Instance.Find<ModGore>("PetalSmall").Type);
+					gore.rotation = rot;
+				}
+
+				for (int k = 0; k < 5; k++) // Large
+				{
+					float rot = baseRot + k / 5f * 6.28f + 6.28f / 10f;
+					var gore = Gore.NewGorePerfect(null, NPC.Center - bigPetal.Size() / 2f + Vector2.UnitX.RotatedBy(rot) * (32 + bigPetal.Width / 2) * NPC.scale, Vector2.UnitX.RotatedBy(rot) * 0.5f, StarlightRiver.Instance.Find<ModGore>("PetalBig").Type);
+					gore.rotation = rot;
+				}
+			}
 		}
 
 		/// <summary>

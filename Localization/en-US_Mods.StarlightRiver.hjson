@@ -3848,6 +3848,7 @@ NPCs: {
 	BerrySlime.DisplayName: Slimeberry
 	TouchstoneWisp.DisplayName: Aurora Spirit
 	WeakPoint.DisplayName: The Linker
+	BrainPlatform.DisplayName: ""
 }
 
 Buffs: {
