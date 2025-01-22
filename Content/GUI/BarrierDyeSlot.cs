@@ -4,6 +4,7 @@ using StarlightRiver.Core.Systems.BarrierSystem;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using Terraria.GameContent;
+using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.UI;
@@ -16,6 +17,7 @@ namespace StarlightRiver.Content.GUI
 		private int topPos = 430;
 
 		private readonly BarrierDyeSlotElement slot = new();
+		private readonly UIImageButton visibility = new(Terraria.GameContent.TextureAssets.InventoryTickOn);
 
 		public override bool Visible => Main.playerInventory && Main.EquipPageSelected == 2;
 
@@ -29,6 +31,16 @@ namespace StarlightRiver.Content.GUI
 			slot.Left.Set(leftPos, 1);
 			slot.Top.Set(topPos, 0);
 			Append(slot);
+
+			visibility.Left.Set(leftPos + 33, 1);
+			visibility.Top.Set(topPos - 2, 0);
+			visibility.SetVisibility(0.7f, 0.7f);
+			visibility.OnLeftClick += (a, b) => 
+			{
+				var mp = Main.LocalPlayer.GetModPlayer<BarrierPlayer>();
+				mp.hideBarrierEffects = !mp.hideBarrierEffects;
+			};
+			Append(visibility);
 		}
 
 		public override void Draw(SpriteBatch spriteBatch)
@@ -53,6 +65,19 @@ namespace StarlightRiver.Content.GUI
 
 				Recalculate();
 			}
+		}
+
+		public override void SafeUpdate(GameTime gameTime)
+		{
+			if (slot.IsMouseHovering || visibility.IsMouseHovering)
+				Main.LocalPlayer.mouseInterface = true;
+
+			var mp = Main.LocalPlayer.GetModPlayer<BarrierPlayer>();
+
+			if (mp.hideBarrierEffects)
+				visibility.SetImage(TextureAssets.InventoryTickOff);
+			else
+				visibility.SetImage(TextureAssets.InventoryTickOn);
 		}
 	}
 
