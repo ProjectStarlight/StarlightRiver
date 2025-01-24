@@ -63,6 +63,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 			Projectile.tileCollide = false;
 			Projectile.penetrate = -1;
 			Projectile.hostile = false;
+			Projectile.usesLocalNPCImmunity = true;
 		}
 
 		public override void OnSpawn(IEntitySource source)

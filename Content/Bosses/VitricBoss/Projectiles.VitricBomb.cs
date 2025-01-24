@@ -155,7 +155,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			if (Main.masterMode && Main.netMode != NetmodeID.MultiplayerClient)
 			{
 				for (int k = 0; k < 8; k++)
-					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.UnitX.RotatedBy(k / 8f * 6.28f) * 18, ProjectileType<TelegraphedGlassSpike>(), 20, 1, Main.myPlayer);
+					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.UnitX.RotatedBy(k / 8f * 6.28f) * 18, ProjectileType<TelegraphedGlassSpike>(), VitricBoss.ShardSpitDamage, 1, Main.myPlayer);
 			}
 		}
 	}

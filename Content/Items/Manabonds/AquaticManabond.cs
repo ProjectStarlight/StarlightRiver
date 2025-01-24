@@ -19,12 +19,12 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 		public override void MinionAI(Projectile minion, ManabondProjectile mp)
 		{
-			if (mp.timer % 50 == 0 && mp.mana >= 8 && mp.target != null)
+			if (mp.timer % 40 == 0 && mp.mana >= 8 && mp.target != null)
 			{
 				mp.mana -= 8;
 
 				if (Main.myPlayer == minion.owner)
-					Projectile.NewProjectile(minion.GetSource_FromThis(), minion.Center, minion.Center.DirectionTo(mp.target.Center) * 6, ModContent.ProjectileType<AquaticBolt>(), 24, 1f, minion.owner);
+					Projectile.NewProjectile(minion.GetSource_FromThis(), minion.Center, minion.Center.DirectionTo(mp.target.Center) * 6, ModContent.ProjectileType<AquaticBolt>(), 26, 1f, minion.owner);
 			}
 		}
 
@@ -63,6 +63,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 			Projectile.timeLeft = 600;
 			Projectile.penetrate = 4;
 			Projectile.hostile = false;
+			Projectile.usesLocalNPCImmunity = true;
 		}
 
 		public override void AI()
