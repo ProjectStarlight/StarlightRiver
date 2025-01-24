@@ -35,9 +35,9 @@ namespace StarlightRiver.Content.GUI
 			visibility.Left.Set(leftPos + 33, 1);
 			visibility.Top.Set(topPos - 2, 0);
 			visibility.SetVisibility(0.7f, 0.7f);
-			visibility.OnLeftClick += (a, b) => 
+			visibility.OnLeftClick += (a, b) =>
 			{
-				var mp = Main.LocalPlayer.GetModPlayer<BarrierPlayer>();
+				BarrierPlayer mp = Main.LocalPlayer.GetModPlayer<BarrierPlayer>();
 				mp.hideBarrierEffects = !mp.hideBarrierEffects;
 			};
 			Append(visibility);
@@ -72,7 +72,7 @@ namespace StarlightRiver.Content.GUI
 			if (slot.IsMouseHovering || visibility.IsMouseHovering)
 				Main.LocalPlayer.mouseInterface = true;
 
-			var mp = Main.LocalPlayer.GetModPlayer<BarrierPlayer>();
+			BarrierPlayer mp = Main.LocalPlayer.GetModPlayer<BarrierPlayer>();
 
 			if (mp.hideBarrierEffects)
 				visibility.SetImage(TextureAssets.InventoryTickOff);
