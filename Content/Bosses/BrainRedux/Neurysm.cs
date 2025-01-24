@@ -144,14 +144,22 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				1f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f + 2 + offset) * 0.5f);
 		}
 
+		public Color RedRainbow(float offset)
+		{
+			return new Color(
+				0.7f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f + offset) * 0.06f,
+				0.3f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f + 2 + offset) * 0.1f,
+				0.3f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f + 4 + offset) * 0.06f);
+		}
+
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
 			Texture2D tex = Assets.Bosses.BrainRedux.Neurysm.Value;
 
-			Color glowColor = AlternateAppearance ? new Color(25, 40, 6) : Rainbow(0 + NPC.whoAmI);
+			Color glowColor = AlternateAppearance ? RedRainbow(0 + NPC.whoAmI) : Rainbow(0 + NPC.whoAmI);
 
-			Color trailOne = AlternateAppearance ? new Color(100, 180, 30) : Rainbow(0 + NPC.whoAmI);
-			Color trailTwo = AlternateAppearance ? new Color(50, 70, 20) : Rainbow(1.5f + NPC.whoAmI);
+			Color trailOne = AlternateAppearance ? RedRainbow(0 + NPC.whoAmI) : Rainbow(0 + NPC.whoAmI);
+			Color trailTwo = AlternateAppearance ? RedRainbow(0 + NPC.whoAmI) : Rainbow(1.5f + NPC.whoAmI);
 
 			float prog = Math.Min(1, Timer / 30f);
 
@@ -170,12 +178,14 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				float glowPower = Math.Max(speed / 10f, 0.4f);
 
 				Texture2D glow = Assets.Keys.GlowAlpha.Value;
+				Texture2D glow2 = Assets.Bosses.BrainRedux.NeurysmTrail.Value;
 				Color col2 = glowColor * glowPower * opacity;
 				col2.A = 0;
 
 				if (State == 0)
 				{
 					spriteBatch.Draw(glow, NPC.Center - Main.screenPosition, null, col2, NPC.rotation, glow.Size() / 2f, 1f, 0, 0);
+					spriteBatch.Draw(glow2, NPC.Center - Main.screenPosition, null, col2 * 2.5f, NPC.rotation, glow2.Size() / 2f, 1.1f, 0, 0);
 				}
 				else
 				{

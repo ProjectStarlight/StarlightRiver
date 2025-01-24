@@ -48,7 +48,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			Texture2D glowTex = Assets.Bosses.BrainRedux.BrainPlatformGlow.Value;
 			Texture2D glowTex2 = Assets.Keys.GlowAlpha.Value;
-			Color glowColor = new Color(255, 100, 100, 0) * glow * 0.25f;
+			Color glowColor = new Color(255, 100, 100, 0) * glow * 0.15f;
 
 			Rectangle target = NPC.Hitbox;
 			target.Offset((-Main.screenPosition).ToPoint());

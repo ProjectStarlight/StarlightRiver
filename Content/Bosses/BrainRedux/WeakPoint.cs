@@ -62,9 +62,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			NPC.realLife = thinker?.whoAmI ?? NPC.realLife;
 
-			float r = 0.89f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f) * 0.3f;
-			float g = 0.89f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f + 2f) * 0.3f;
-			float b = 0.89f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f + 4f) * 0.3f;
+			float r = 0.7f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f) * 0.03f;
+			float g = 0.3f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f + 2f) * 0.05f;
+			float b = 0.3f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f + 4f) * 0.03f;
 			var color = new Color(r, g, b);
 
 			if (thinker?.life <= thinker?.lifeMax / 2f)
@@ -81,10 +81,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			Texture2D tex = Assets.Bosses.BrainRedux.Neurysm.Value;
 			Texture2D glow = Assets.Keys.GlowAlpha.Value;
+			var star = Assets.StarTexture.Value;
 
-			float r = 0.89f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f) * 0.3f;
-			float g = 0.89f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f + 2f) * 0.3f;
-			float b = 0.89f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f + 4f) * 0.3f;
+			float r = 0.7f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f) * 0.03f;
+			float g = 0.3f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f + 2f) * 0.05f;
+			float b = 0.3f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f + 4f) * 0.03f;
 			var color = new Color(r, g, b);
 
 			Color glowColor = color;
@@ -102,6 +103,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			}
 
 			spriteBatch.Draw(glow, NPC.Center - Main.screenPosition, null, glowColor, 0, glow.Size() / 2f, 1 + heartBeat, 0, 0);
+			spriteBatch.Draw(glow, NPC.Center - Main.screenPosition, null, glowColor, 0, glow.Size() / 2f, 0.8f + heartBeat, 0, 0);
+			spriteBatch.Draw(star, NPC.Center - Main.screenPosition, null, glowColor * 1.5f, Main.GameUpdateCount * 0.1f, star.Size() / 2f, 0.22f + heartBeat, 0, 0);
+			spriteBatch.Draw(star, NPC.Center - Main.screenPosition, null, glowColor * 1.5f, Main.GameUpdateCount * -0.15f, star.Size() / 2f, 0.18f + heartBeat, 0, 0);
 			spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, color, 0, tex.Size() / 2f, 1 + heartBeat, 0, 0);
 
 			return false;
@@ -119,7 +123,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			int w = (int)(progress * texOver.Width - 4);
 
-			if (w < 2)
+			if (w < 2 && thinker?.life > thinker?.lifeMax / 2f)
 				w = 2;
 
 			var target = new Rectangle((int)(position.X - Main.screenPosition.X) + 2, (int)(position.Y - Main.screenPosition.Y) - 2, w, texOver.Height);
