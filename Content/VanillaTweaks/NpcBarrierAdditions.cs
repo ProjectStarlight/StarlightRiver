@@ -14,12 +14,12 @@ namespace StarlightRiver.Content.VanillaTweaks
 		{
 			if (entity.type == type)
 			{
-				var barrierGlobal = entity.GetGlobalNPC<BarrierNPC>();
+				BarrierNPC barrierGlobal = entity.GetGlobalNPC<BarrierNPC>();
 				barrierGlobal.maxBarrier = Main.masterMode ? master : Main.expertMode ? expert : normal;
 				barrierGlobal.barrier = barrierGlobal.maxBarrier;
 
 				// Automatic adjustments to lower other defenses to compensate
-				entity.defense = entity.defense / 2;
+				entity.defense /= 2;
 				entity.lifeMax = (int)(entity.lifeMax * 0.8f);
 			}
 		}
