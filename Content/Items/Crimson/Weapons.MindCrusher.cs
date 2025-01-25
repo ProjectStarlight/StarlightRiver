@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.Items.Crimson
 
 	internal class MindCursherProjectile : ModProjectile
 	{
-		private int largest = 250;
+		private readonly int largest = 250;
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -125,7 +125,7 @@ namespace StarlightRiver.Content.Items.Crimson
 			if (Radius <= 0)
 			{
 				Projectile.timeLeft = 0;
-				for(int k = 0; k < 50; k++)
+				for (int k = 0; k < 50; k++)
 				{
 					var color = new Color(Main.rand.NextFloat(0.5f, 1f), Main.rand.NextFloat(0.5f, 1f), Main.rand.NextFloat(0.5f, 1f));
 					float rot = Main.rand.NextFloat(6.28f);

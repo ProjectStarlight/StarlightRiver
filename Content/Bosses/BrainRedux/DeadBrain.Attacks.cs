@@ -1018,7 +1018,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				safeMineIndicides = new int[4];
 
-				for(int k = 0; k < safeMineIndicides.Length; k++)
+				for (int k = 0; k < safeMineIndicides.Length; k++)
 				{
 					safeMineIndicides[k] = Main.rand.Next(10, 30);
 				}
@@ -1054,9 +1054,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				float index = thisTimer / 90f * 45;
 
-				var pos = sunflower(45, (int)index, ThisThinker.home);
+				Vector2 pos = sunflower(45, (int)index, ThisThinker.home);
 
-				if(safeMineIndicides.Contains((int)index))
+				if (safeMineIndicides.Contains((int)index))
 					Projectile.NewProjectile(NPC.GetSource_FromThis(), pos, Vector2.Zero, ModContent.ProjectileType<FakeMindMine>(), Helpers.Helper.GetProjectileDamage(200, 150, 100), 1, Main.myPlayer);
 				else
 					Projectile.NewProjectile(NPC.GetSource_FromThis(), pos, Vector2.Zero, ModContent.ProjectileType<ThinkerMindMine>(), Helpers.Helper.GetProjectileDamage(200, 150, 100), 1, Main.myPlayer);

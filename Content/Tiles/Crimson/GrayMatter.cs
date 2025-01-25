@@ -64,7 +64,7 @@ namespace StarlightRiver.Content.Tiles.Crimson
 				for (int y = pos.Y; y < pos.Y + height; y++)
 				{
 					Point16 target = new Point16(x, y);
-					var tile = Main.tile[target];
+					Tile tile = Main.tile[target];
 
 					if (grayEmissionTypes.Contains(tile.TileType))
 					{
@@ -77,8 +77,6 @@ namespace StarlightRiver.Content.Tiles.Crimson
 					}
 				}
 			}
-
-
 		}
 
 		private void DrawRealVersion(SpriteBatch spriteBatch, int x, int y)

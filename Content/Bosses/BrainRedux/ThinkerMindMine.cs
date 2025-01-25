@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public override void AI()
 		{
 			pulseAccum += 1 + (300 - Projectile.timeLeft) / 100f;
-			pulse = (pulseAccum * 0.0025f) + 0.5f + MathF.Sin(pulseAccum * 0.1f) * (0.5f + pulseAccum * 0.0001f);
+			pulse = pulseAccum * 0.0025f + 0.5f + MathF.Sin(pulseAccum * 0.1f) * (0.5f + pulseAccum * 0.0001f);
 
 			Lighting.AddLight(Projectile.Center, new Vector3(1, 0.2f, 0.2f) * (1f - Projectile.timeLeft / 300f));
 
@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					Gore.NewGore(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.One.RotatedByRandom(6.28f) * 2, Main.rand.Next(392, 396));
 				}
 
-				for(int k = 0; k < 80; k++)
+				for (int k = 0; k < 80; k++)
 				{
 					Dust.NewDustPerfect(Projectile.Center, DustID.Blood, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(8), 0, default, 1 + Main.rand.NextFloat(2));
 				}
@@ -68,12 +68,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				if (Projectile.timeLeft > 270)
 					opacity = 1 - (Projectile.timeLeft - 270) / 30f;
 
-				var tex = Assets.Bosses.BrainRedux.ThinkerMindMine.Value;
+				Texture2D tex = Assets.Bosses.BrainRedux.ThinkerMindMine.Value;
 
-				var pulse2 = (pulseAccum * 0.0025f) + 0.5f + MathF.Sin(pulseAccum * 0.12f + 0.5f) * (0.5f + pulseAccum * 0.0001f);
-				var scale = new Vector2(1f + pulse * 0.1f, 1f + pulse2 * 0.1f) * opacity;
+				float pulse2 = pulseAccum * 0.0025f + 0.5f + MathF.Sin(pulseAccum * 0.12f + 0.5f) * (0.5f + pulseAccum * 0.0001f);
+				Vector2 scale = new Vector2(1f + pulse * 0.1f, 1f + pulse2 * 0.1f) * opacity;
 
-				var scaleAdj = tex.Size() - tex.Size() * scale;
+				Vector2 scaleAdj = tex.Size() - tex.Size() * scale;
 				LightingBufferRenderer.DrawWithLighting(Projectile.position - Main.screenPosition + Vector2.One * 75 - tex.Size() / 2f + scaleAdj / 2, tex, Color.White * opacity, scale);
 
 				if (Projectile.timeLeft < 90)
@@ -81,8 +81,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			}
 			else
 			{
-				var flash = Assets.StarTexture.Value;
-				var flash2 = Assets.Keys.GlowAlpha.Value;
+				Texture2D flash = Assets.StarTexture.Value;
+				Texture2D flash2 = Assets.Keys.GlowAlpha.Value;
 				Main.spriteBatch.Draw(flash2, Projectile.Center - Main.screenPosition, null, new Color(255, 70, 70, 0) * (Projectile.timeLeft / 20f), 0f, flash2.Size() / 2f, 3f - Projectile.timeLeft / 20f * 9, 0, 0);
 				Main.spriteBatch.Draw(flash, Projectile.Center - Main.screenPosition, null, new Color(255, 120, 120, 0) * (Projectile.timeLeft / 20f), 0f, flash.Size() / 2f, 3f - Projectile.timeLeft / 20f * 3, 0, 0);
 			}
@@ -121,7 +121,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public override void AI()
 		{
 			pulseAccum += 1 + (300 - Projectile.timeLeft) / 100f;
-			pulse = (pulseAccum * 0.0025f) + 0.5f + MathF.Sin(pulseAccum * 0.1f) * (0.5f + pulseAccum * 0.0001f);
+			pulse = pulseAccum * 0.0025f + 0.5f + MathF.Sin(pulseAccum * 0.1f) * (0.5f + pulseAccum * 0.0001f);
 
 			Lighting.AddLight(Projectile.Center, new Vector3(1, 0.2f, 0.2f) * (1f - Projectile.timeLeft / 300f));
 		}
@@ -136,17 +136,17 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					if (proj.timeLeft > 270)
 						opacity = 1 - (proj.timeLeft - 270) / 30f;
 
-					var pulse = 0.25f * MathF.Sin(Main.GameUpdateCount * 0.25f) * 0.25f;
-					var pulse2 = 0.25f * MathF.Sin(0.5f + Main.GameUpdateCount * 0.25f) * 0.25f;
+					float pulse = 0.25f * MathF.Sin(Main.GameUpdateCount * 0.25f) * 0.25f;
+					float pulse2 = 0.25f * MathF.Sin(0.5f + Main.GameUpdateCount * 0.25f) * 0.25f;
 
-					var tex = Assets.Misc.Exclaim.Value;
+					Texture2D tex = Assets.Misc.Exclaim.Value;
 					batch.Draw(tex, proj.Center - Main.screenPosition, null, Color.White * opacity, 0, tex.Size() / 2f, 1f + pulse, 0, 0);
 
-					var arrow = Assets.Bosses.BrainRedux.TellArrow.Value;
+					Texture2D arrow = Assets.Bosses.BrainRedux.TellArrow.Value;
 
 					Color color = new Color(255, 60, 60, 255) * opacity;
 
-					for(int k = 0; k < 4; k++)
+					for (int k = 0; k < 4; k++)
 					{
 						float rot = k / 4f * 6.28f;
 						batch.Draw(arrow, proj.Center - Main.screenPosition + Vector2.UnitX.RotatedBy(rot) * -(54 + pulse * 80), null, color * (0.75f + pulse), rot, arrow.Size() / 2f, 1f + pulse, 0, 0);
@@ -167,12 +167,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (Projectile.timeLeft > 270)
 				opacity = 1 - (Projectile.timeLeft - 270) / 30f;
 
-			var tex = Assets.Bosses.BrainRedux.ThinkerMindMine.Value;
+			Texture2D tex = Assets.Bosses.BrainRedux.ThinkerMindMine.Value;
 
-			var pulse2 = (pulseAccum * 0.0025f) + 0.5f + MathF.Sin(pulseAccum * 0.12f + 0.5f) * (0.5f + pulseAccum * 0.0001f);
-			var scale = new Vector2(1f + pulse * 0.1f, 1f + pulse2 * 0.1f) * opacity;
+			float pulse2 = pulseAccum * 0.0025f + 0.5f + MathF.Sin(pulseAccum * 0.12f + 0.5f) * (0.5f + pulseAccum * 0.0001f);
+			Vector2 scale = new Vector2(1f + pulse * 0.1f, 1f + pulse2 * 0.1f) * opacity;
 
-			var scaleAdj = tex.Size() - tex.Size() * scale;
+			Vector2 scaleAdj = tex.Size() - tex.Size() * scale;
 			LightingBufferRenderer.DrawWithLighting(Projectile.position - Main.screenPosition + Vector2.One * 75 - tex.Size() / 2f + scaleAdj / 2, tex, Color.White * opacity, scale);
 
 			if (Projectile.timeLeft < 90)

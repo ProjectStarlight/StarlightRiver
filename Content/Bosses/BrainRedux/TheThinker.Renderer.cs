@@ -364,8 +364,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				float flashTime = (progress - 60) / 30f;
 
-				var glow = Assets.Keys.Glow.Value;
-				var star = Assets.StarTexture.Value;
+				Texture2D glow = Assets.Keys.Glow.Value;
+				Texture2D star = Assets.StarTexture.Value;
 
 				spriteBatch.End();
 				spriteBatch.Begin(default, default, SamplerState.LinearWrap, default, default, default, Main.GameViewMatrix.TransformationMatrix);
@@ -435,8 +435,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		/// <param name="screenPos"></param>
 		private void DrawBestiary(SpriteBatch sb, Vector2 screenPos)
 		{
-			var time = Main.GameUpdateCount % 600;
-			var timeToPass = 0f;
+			uint time = Main.GameUpdateCount % 600;
+			float timeToPass = 0f;
 
 			if (time < 150)
 				timeToPass = 0;

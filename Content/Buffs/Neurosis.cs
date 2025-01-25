@@ -35,9 +35,9 @@ namespace StarlightRiver.Content.Buffs
 		{
 			if (spawnSource is EntitySource_Parent source && source.Entity is NPC npc && InstancedBuffNPC.GetInstance<Neurosis>(npc) != null)
 			{
-				var instance = InstancedBuffNPC.GetInstance<Neurosis>(npc);
-				var mult = 1 - instance.stacks.Count * 0.02f;
-				Damage = (int)(Damage * mult);				
+				Neurosis instance = InstancedBuffNPC.GetInstance<Neurosis>(npc);
+				float mult = 1 - instance.stacks.Count * 0.02f;
+				Damage = (int)(Damage * mult);
 			}
 
 			return orig(spawnSource, X, Y, SpeedX, SpeedY, Type, Damage, KnockBack, Owner, ai0, ai1, ai2);
@@ -47,8 +47,8 @@ namespace StarlightRiver.Content.Buffs
 		{
 			if (spawnSource is EntitySource_Parent source && source.Entity is NPC npc && InstancedBuffNPC.GetInstance<Neurosis>(npc) != null)
 			{
-				var instance = InstancedBuffNPC.GetInstance<Neurosis>(npc);
-				var mult = 1 - instance.stacks.Count * 0.02f;
+				Neurosis instance = InstancedBuffNPC.GetInstance<Neurosis>(npc);
+				float mult = 1 - instance.stacks.Count * 0.02f;
 				Damage = (int)(Damage * mult);
 			}
 
@@ -57,10 +57,10 @@ namespace StarlightRiver.Content.Buffs
 
 		private void WeakenDamage(NPC NPC, Player target, ref Player.HurtModifiers modifiers)
 		{
-			var instance = InstancedBuffNPC.GetInstance<Neurosis>(NPC);
+			Neurosis instance = InstancedBuffNPC.GetInstance<Neurosis>(NPC);
 
 			if (instance != null)
-				modifiers.FinalDamage *= 1 - instance.stacks.Count * 0.02f; 
+				modifiers.FinalDamage *= 1 - instance.stacks.Count * 0.02f;
 		}
 
 		public override void PerStackEffectsPlayer(Player player, BuffStack stack)
@@ -70,8 +70,10 @@ namespace StarlightRiver.Content.Buffs
 
 		public override BuffStack GenerateDefaultStack(int duration)
 		{
-			var stack = new BuffStack();
-			stack.duration = duration;
+			var stack = new BuffStack
+			{
+				duration = duration
+			};
 			return stack;
 		}
 	}

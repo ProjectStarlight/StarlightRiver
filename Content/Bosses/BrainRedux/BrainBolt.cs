@@ -74,8 +74,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			var glow = Assets.Keys.GlowAlpha.Value;
-			var star = Assets.StarTexture.Value;
+			Texture2D glow = Assets.Keys.GlowAlpha.Value;
+			Texture2D star = Assets.StarTexture.Value;
 
 			float r = 0.7f + (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.03f;
 			float g = 0.3f + (float)Math.Sin(Main.GameUpdateCount * 0.1f + 2f) * 0.05f;
