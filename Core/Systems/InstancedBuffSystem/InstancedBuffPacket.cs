@@ -32,11 +32,11 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 
 		protected override void Receive()
 		{
-			if (InstancedBuff.TryGetPrototype(buffName, out var proto))
+			if (InstancedBuff.TryGetPrototype(buffName, out InstancedBuff proto))
 			{
 				if (isPlayer)
 				{
-					var player = Main.player[whoAmI];
+					Player player = Main.player[whoAmI];
 
 					if (!proto.AnyInflicted(player))
 						BuffInflictor.InflictFromNet(player, durationRemaining, buffName);
@@ -45,7 +45,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 				}
 				else
 				{
-					var npc = Main.npc[whoAmI];
+					NPC npc = Main.npc[whoAmI];
 
 					if (!proto.AnyInflicted(npc))
 						BuffInflictor.InflictFromNet(npc, durationRemaining, buffName);

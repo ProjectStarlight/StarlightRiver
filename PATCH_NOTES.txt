@@ -1,8 +1,60 @@
-# Starlight River 0.2.8.4
+﻿# Starlight River 0.3.0
+
+## Flagship Content
+- Added a new optional boss, The Thinker! This boss can be challenged in a crimson world at any point after the Brain of Cthulhu has been defeated, but is intended for players that have atleast visited the dungeon.
+- After defeating the Brain of Cthulhu, some strange bits of material will activate in the crimson. Will you be able to use it to your advantage, or simply go mad?
+
+## Content
+- Added the heavy flail and frost flail, melee weapons with a heavy overhead swing
+
+- The following are spoilers for the crimson biome
+||- Added gray maatter to the crimson, which emits a hallucinatory and causes hallucinations when stood on
+- Added dendrite to the crimson, a sneaky ore only visible if you are hallucinating
+||
+- The following are spoilers for The Thinker
+||- Added the bear poker, which can be used to spawn The Thinker
+- Added the lobotolizer, a spear which can throw a hallucinatory copy of itself to engage a more offensive attack mode
+- Added the mirage bow, which creates a copy of its user on critical hits reflected across their mouse
+- Added the mind crusher, a charged magic weapon which creates a growing bubble that can be collapsed for bonus damage againsted armored targets
+- Added the myelin sheath, which allows swords to create a crippling projectile on their first strike
+- Added the psychotic manabond, which drains your mana to have your minions emit a damaging aura
+||
+
+## Gameplay features
+- Added a pool of unique 'cursed' prefixes for accessories, with up and downsides. All cursed accessories now only pull from this pool.
+- You can gamble on applying one of these cursed prefixes to a normal item with a Drop of Darkness.
+
+## UI
+- Updated the defensive stat UI to better show various features of the mod and vanilla. You can click the defense icon in the inventory to expand the new UI
+- Added a button to the barrier tincture slot to hide the barrier effect
+- Added a popout tooltip for buffs similar to keywords. Various item's tooltips have been updated to utilize this.
+- The keyword popout tooltip has been updated slightly
+
+## Balance
+- ↑ Base barrier recharge rate has increased from 6 to 10
+- ↑ Facet and lattice damage 47 => 45, crit 10% => 19%, max buff multiplier 3x => 3.5x
+- ↑ Coalescence damage 44 => 50
+- ↑ Refractive blade laser damage 5% of base => 25% of base
+- ↑ Phoeenix storm damage 40 => 60
+- ↑ Starwood boomerang charge time 0.8s => 0.5s
+- ↑ Aquatic manabond damage 24 => 26, fire rate 1/0.8s => 1/0.63s
+- ↑ Aquamarine pendant max barrier 15 => 20, now has +4 barrier recharge rate
+- ↑ Barrier potion restoration (lesser/normal/greater) 40/80/120 => 100/150/200, buff duration 3s/4s/5s => 5s/7s/10s
+- = Man eater pot now uses local immunity
+- = All manabonds now use local immunity
+- ↓ Corpseflower damage penalty 55% => 65%
+- ↓ Druidic manabond now requires beeswax (queen bee drop) to craft
+- Various boss damage values have been normalized across difficulties. In general, bosses should hit a bit harder on normal mode, a bit less on expert, and much less on master as compared to before
+- Various enemies throughout the game have had barrier added to them, and their life and defense decresed to make up for it. This should diversify combat a little bit. Notable inclusions are "caster" type enemies, demons, and the nebular branch of the lunar events.
+- When holding an uncharged magnet, charged enemies spawn twice as often as previously
+- Loot wraiths are more common
+- Living blood drops more often
 
 ## Fixes
-- Fixed auroracle's arena being able to be moved
-- Fixed glassweaver's downed flag not triggering properly
-- Fixed various typos in dialogue and tooltips
-- Fixed the thousandth degree using an incorrect sprite
-- Improved the consistency of generating auroracles arena in a safe place
+- Fixed an issue where all stackable buffs failed to sync in multiplayer
+- Fixed an issue where the cough drops did not grant a damage increase like the tooltip stated
+- Fixed the text card popup when gaining an ability not dissappearing sometimes
+
+## Boring programmer stuff
+- Keywords now utilize localization and are data driven similar to dialogue and hints
+- Untied the text cards from the ability system to unwind a longstanding issue with it persisting after the intended period

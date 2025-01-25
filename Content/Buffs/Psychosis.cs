@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Buffs
 
 		public override string Tooltip => "Deals 4 damage per second and increases expsoure by 1%";
 
-		public override string Texture => AssetDirectory.Debug;
+		public override string Texture => AssetDirectory.Buffs + Name;
 
 		public override bool Debuff => true;
 

@@ -7,7 +7,7 @@ namespace StarlightRiver.Content.Items.Starwood
 {
 	public class StarwoodBoomerangProjectile : ModProjectile, IDrawAdditive
 	{
-		private const int CHARGE_TIME = 50; //how long it takes to charge up
+		private const int CHARGE_TIME = 30; //how long it takes to charge up
 
 		private float chargeMult; //multiplier used during charge up, used both in ai and for drawing (goes from 0 to 1)
 

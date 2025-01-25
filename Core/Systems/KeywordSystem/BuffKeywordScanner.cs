@@ -23,7 +23,7 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 
 			public BuffTooltip(int fromType)
 			{
-				var font = Terraria.GameContent.FontAssets.MouseText.Value;
+				ReLogic.Graphics.DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
 
 				name = Lang.GetBuffName(fromType);
 				description = Helpers.Helper.WrapString(Lang.GetBuffDescription(fromType), 200, font, 1);
@@ -98,7 +98,7 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 						Main.spriteBatch.Draw(keyword.icon.Value, pos, Color.White);
 						Utils.DrawBorderString(Main.spriteBatch, "      " + BuildKeyword(keyword) + ":", pos, Color.White);
 
-						var max = keyword.cap == -1 ? "∞" : $"{keyword.cap}";
+						string max = keyword.cap == -1 ? "∞" : $"{keyword.cap}";
 						Utils.DrawBorderString(Main.spriteBatch, $"Max stacks: {max}", pos + new Vector2(42, 20), Color.Gray, 0.7f);
 
 						pos.Y += ChatManager.GetStringSize(font, keyword.name, Vector2.One).Y + 8;

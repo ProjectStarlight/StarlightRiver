@@ -1,7 +1,11 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.Xna.Framework.Graphics.PackedVector;
+using rail;
 using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.Dusts;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.ID;
@@ -979,6 +983,97 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				NPC.chaseable = true;
 				AttackTimer = 0;
 			}
+		}
+
+		public void MindMines()
+		{
+			// Determines the points based on the sunflower algorithm for the mine distribution
+			static Vector2 sunflower(int n, int index, Vector2 center)
+			{
+				float phi = (1 + MathF.Sqrt(5)) / 2;//golden ratio
+				float angle_stride = 360 * phi;
+
+				static float radius(float k, float n, float b)
+				{
+					return k > n - b ? 1 : MathF.Sqrt(k - 0.5f) / MathF.Sqrt(n - (b + 1) / 2);
+				}
+
+				int b = (int)(1 * MathF.Sqrt(n));
+
+				float r = radius(index, n, b) * 700;
+				float theta = index * angle_stride;
+				float x = !float.IsNaN(r * MathF.Cos(theta)) ? r * MathF.Cos(theta) : 0;
+				float y = !float.IsNaN(r * MathF.Sin(theta)) ? r * MathF.Sin(theta) : 0;
+
+				return center + new Vector2(x, y);
+			}
+
+			if (AttackTimer > 30 && AttackTimer < 60)
+				(thinker.ModNPC as TheThinker).ExtraGrayAuraRadius = 100 * (AttackTimer - 30) / 30f;
+
+			if (AttackTimer == 60)
+			{
+				ThisThinker.platformRadiusTarget = 450;
+				ThisThinker.platformRotationTarget -= 0.2f;
+
+				safeMineIndicides = new int[4];
+
+				for(int k = 0; k < safeMineIndicides.Length; k++)
+				{
+					safeMineIndicides[k] = Main.rand.Next(10, 30);
+				}
+
+				savedPos = sunflower(45, safeMineIndicides[0], ThisThinker.home);
+			}
+
+			if (AttackTimer > 90 && AttackTimer < 400)
+			{
+				Vector2 targetPos;
+
+				if (AttackTimer <= 300)
+					targetPos = ThisThinker.home + -Vector2.UnitY.RotatedBy((AttackTimer - 90) / 210f * 6.28f) * 300;
+				else
+					targetPos = ThisThinker.home + -Vector2.UnitY * 300;
+
+				ThisThinker.NPC.Center += (targetPos - ThisThinker.NPC.Center) * 0.05f;
+			}
+
+			if (AttackTimer == 199)
+			{
+				savedPos2 = NPC.Center;
+			}
+
+			if (AttackTimer > 200 && AttackTimer < 260)
+			{
+				NPC.Center = Vector2.SmoothStep(savedPos2, savedPos, (AttackTimer - 200) / 60f);
+			}
+
+			if (AttackTimer > 90 && AttackTimer % 2 == 0 && AttackTimer <= 180)
+			{
+				float thisTimer = AttackTimer - 90;
+
+				float index = thisTimer / 90f * 45;
+
+				var pos = sunflower(45, (int)index, ThisThinker.home);
+
+				if(safeMineIndicides.Contains((int)index))
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), pos, Vector2.Zero, ModContent.ProjectileType<FakeMindMine>(), Helpers.Helper.GetProjectileDamage(200, 150, 100), 1, Main.myPlayer);
+				else
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), pos, Vector2.Zero, ModContent.ProjectileType<ThinkerMindMine>(), Helpers.Helper.GetProjectileDamage(200, 150, 100), 1, Main.myPlayer);
+			}
+
+			if (AttackTimer > 300 && AttackTimer <= 400)
+			{
+				(thinker.ModNPC as TheThinker).ExtraGrayAuraRadius = 100 * (1 - (AttackTimer - 300) / 100f);
+			}
+
+			if (AttackTimer > 400)
+			{
+				ThisThinker.NPC.Center += (ThisThinker.home - ThisThinker.NPC.Center) * 0.075f;
+			}
+
+			if (AttackTimer >= 500)
+				AttackTimer = 0;
 		}
 		#endregion
 	}

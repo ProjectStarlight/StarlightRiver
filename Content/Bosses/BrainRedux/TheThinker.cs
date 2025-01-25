@@ -29,6 +29,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		/// </summary>
 		public static readonly List<TheThinker> toRender = [];
 		public static Effect bodyShader;
+		public static Effect petalShader;
+
+		public int bloomProgress;
+		public float flowerRotationOnDeath;
 
 		public bool active = false;
 		public Vector2 home;
@@ -69,6 +73,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override void Load()
 		{
+			GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.BrainRedux + "PetalBig");
+			GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.BrainRedux + "PetalSmall");
+			GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.BrainRedux + "Frond");
+
 			GraymatterBiome.onDrawHallucinationMap += DrawGrayAura;
 			GraymatterBiome.onDrawOverHallucinationMap += DrawShadedBody;
 		}
@@ -298,6 +306,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				Timer++;
 				AttackTimer++;
 
+				if (bloomProgress < 150)
+					bloomProgress++;
+
 				NPC.Center += (home - NPC.Center) * 0.02f;
 
 				if (Timer == 1)
@@ -376,6 +387,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			}
 			else
 			{
+				if (bloomProgress > 0)
+					bloomProgress--;
+
 				NPC.immortal = true;
 			}
 		}

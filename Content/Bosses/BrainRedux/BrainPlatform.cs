@@ -16,6 +16,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override void SetStaticDefaults()
 		{
+			DisplayName.SetDefault("");
 			NPCID.Sets.TrailCacheLength[Type] = 30;
 			NPCID.Sets.TrailingMode[Type] = 1;
 		}
@@ -43,11 +44,15 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			float dist = Vector2.Distance(NPC.Center, targetPos);
 
 			Texture2D tex = Assets.Bosses.BrainRedux.BrainPlatform.Value;
+<<<<<<< HEAD
 			LightingBufferRenderer.DrawWithLighting(NPC.position - Main.screenPosition, tex, tex.Bounds, Color.White * (ThisThinker?.ArenaOpacity ?? 1), Vector2.One);
+=======
+			LightingBufferRenderer.DrawWithLighting(NPC.position - Main.screenPosition, tex, tex.Bounds, Color.White * (ThisThinker?.ArenaOpacity ?? 1f), Vector2.One);
+>>>>>>> da3bd840809bbdd11d4c4189decdf49388c5737a
 
 			Texture2D glowTex = Assets.Bosses.BrainRedux.BrainPlatformGlow.Value;
 			Texture2D glowTex2 = Assets.Keys.GlowAlpha.Value;
-			Color glowColor = new Color(255, 100, 100, 0) * glow * 0.25f;
+			Color glowColor = new Color(255, 100, 100, 0) * glow * 0.15f;
 
 			Rectangle target = NPC.Hitbox;
 			target.Offset((-Main.screenPosition).ToPoint());

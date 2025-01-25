@@ -125,7 +125,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		{
 			writer.Write(stacks.Count);
 
-			for(int k = 0; k < stacks.Count; k++)
+			for (int k = 0; k < stacks.Count; k++)
 			{
 				stacks[k].NetSend(writer);
 			}
@@ -138,7 +138,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 			int stacksFromNet = reader.ReadInt32();
 			stacks.Clear();
 
-			for(int k = 0; k < stacksFromNet; k++)
+			for (int k = 0; k < stacksFromNet; k++)
 			{
 				var newStack = new BuffStack();
 				newStack.NetReceive(reader);

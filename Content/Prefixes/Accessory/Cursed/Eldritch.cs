@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Prefixes.Accessory.Cursed
 
 		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
 		{
-			tooltips.Add(new TooltipLine(StarlightRiver.Instance, "EldritchTip1", "+40 {{Barrier}}")
+			tooltips.Add(new TooltipLine(StarlightRiver.Instance, "EldritchTip1", "+40 maximum {{Barrier}}")
 			{
 				IsModifier = true
 			});

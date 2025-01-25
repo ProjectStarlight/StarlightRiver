@@ -121,7 +121,7 @@ Items: {
 		DisplayName: Seaglass Ring
 		Tooltip:
 			'''
-			+30 {{barrier}}
+			+30 maximum {{barrier}}
 			{{Barrier}} recharge starts slightly faster
 			'The battering waves have not diminished its shine'
 			'''
@@ -360,6 +360,17 @@ Items: {
 		Tooltip: Increases to maximum mana also apply to maximum {{barrier}}
 	}
 
+	MindCrusher: {
+		DisplayName: Mind crusher
+		Tooltip:
+			'''
+			Click and hold to create a growing circle
+			Release to crush all enemies inside the circle
+			Enemies with defense take 2 additional damage per defense
+			Inflicts 5 stacks of {{BUFF:Neurosis}}
+			'''
+	}
+
 	MirageBow: {
 		DisplayName: Mirage bow
 		Tooltip:
@@ -375,6 +386,16 @@ Items: {
 			'''
 			Swords perform a powerful mind slash after not attacking for 2 seconds
 			The mind slash inflicts 5 stacks of either {{BUFF:Neurosis}} or {{BUFF:Psychosis}}
+			'''
+	}
+
+	PsychoticManabond: {
+		DisplayName: Psychotic Manabond
+		Tooltip:
+			'''
+			Your minions can store 40 mana
+			Your minions siphon 6 mana per second from you untill full
+			Your minions spend 6 mana per second to emit an aura inflicting {{BUFF:Psychosis}}
 			'''
 	}
 
@@ -400,7 +421,7 @@ Items: {
 		'''
 		Your {{Barrier}} protects against 25% less damage
 		+100% {{Inoculation}} and immunity to most debuffs while {{Barrier}} is active
-		+40 max {{Barrier}}
+		+40 maximum {{Barrier}}
 		'''
 
 	Sandscript: {
@@ -417,7 +438,7 @@ Items: {
 		Tooltip:
 			'''
 			{{Barrier}} negates 15% more damage 
-			+20 {{Barrier}} 
+			+20 maximum {{Barrier}} 
 			'Its depths shimmer like waves'
 			'''
 	}
@@ -460,7 +481,7 @@ Items: {
 		DisplayName: Stone of the Drowned
 		Tooltip:
 			'''
-			+30 {{barrier}}
+			+30 maximum {{barrier}}
 			Increases your max minions by 2 when you have no {{barrier}}
 			Re-summons two slots worth of minions when you reach 0 {{barrier}}
 			'''
@@ -486,9 +507,9 @@ Items: {
 		DisplayName: Warded Mail
 		Tooltip:
 			'''
-			{{Barrier}} damage is applied to attackers as thorns 
-			+{{Barrier}} negates 10% more damage 
-			+40 {{barrier}}
+			{{Barrier}} damage is applied to attackers as thorns
+			+40 maximum {{barrier}}
+			+{{Barrier}} negates 10% more damage
 			'''
 	}
 
@@ -681,12 +702,12 @@ Items: {
 		DisplayName: Effects of different gems:
 		Tooltip:
 			'''
-			[i/s1:5682]: Critical strikes partially ignore armor, with increased chance for missing enemy HP 
-			[i/s1:5690]: +100 barrier. Gain a shield that points to your cursor and blocks attacks, consuming {{barrier}} 
-			[i/s1:5683]: Immediately heal 20 hp. Hits have a chance to create a 5 HP life heart 
-			[i/s1:5689]: Immediately refill mana. Hits have a chance to create 1 to 3 mana stars 
-			[i/s1:5681]: All strikes inflict Toxic Amethyst, a stacking poison debuff 
-			[i/s1:5688]: Hits have a chance to summon a Ruby Dagger to seek the struck enemy for 20% of the hit's damage
+			[i/s1:5684]: Critical strikes partially ignore armor, with increased chance for missing enemy HP 
+			[i/s1:5692]: +100 maximum barrier. Gain a shield that points to your cursor and blocks attacks, consuming {{barrier}} 
+			[i/s1:5685]: Immediately heal 20 hp. Hits have a chance to create a 5 HP life heart 
+			[i/s1:5691]: Immediately refill mana. Hits have a chance to create 1 to 3 mana stars 
+			[i/s1:5683]: All strikes inflict Toxic Amethyst, a stacking poison debuff 
+			[i/s1:5690]: Hits have a chance to summon a Ruby Dagger to seek the struck enemy for 20% of the hit's damage
 			'''
 	}
 
@@ -887,7 +908,7 @@ Items: {
 	Corpseflower.Tooltip:
 		'''
 		All damage dealt is converted into stacks of {{BUFF:CorpseflowerBuff}}
-		Base damage is decreased
+		Base damage is decreased by 65%
 		You are unable to critically strike
 		'''
 
@@ -1071,7 +1092,7 @@ Items: {
 		DisplayName: Amulet of the Bloodless Warrior
 		Tooltip:
 			'''
-			+100 {{Barrier}}
+			+100 maximum {{Barrier}}
 			{{Barrier}} absorbs ALL damage, but recharges slower
 			You are unaffected by damage over time
 			You have 0 life. Healing grants a decaying damage boost instead of life
@@ -1479,7 +1500,7 @@ Items: {
 		Tooltip:
 			'''
 			{{Barrier}} damage is applied to attackers as thorns 
-			+20 {{barrier}}
+			+20 maximum {{barrier}}
 			'''
 	}
 
@@ -1541,7 +1562,7 @@ Items: {
 		Tooltip:
 			'''
 			Consuming mana charges a Crescent Guardian, blitzing nearby enemies when fully charged
-			+20 {{barrier}}
+			+20 maximum {{barrier}}
 			'''
 	}
 
@@ -1562,7 +1583,7 @@ Items: {
 
 	MoonstoneChest: {
 		DisplayName: Moonstone Chestpiece
-		Tooltip: +35 {{Barrier}}
+		Tooltip: +35 maximum {{Barrier}}
 	}
 
 	MoonstoneHamaxe.Tooltip: Press <right> to charge up a slam that destroys a large area of walls
@@ -1572,7 +1593,7 @@ Items: {
 		Tooltip:
 			'''
 			2% increased melee critical strike chance
-			+20 {{Barrier}}
+			+20 maximum {{Barrier}}
 			'''
 	}
 
@@ -1581,7 +1602,7 @@ Items: {
 		Tooltip:
 			'''
 			Improved acceleration
-			 +25 {{Barrier}}
+			 +25 maximum {{Barrier}}
 			'''
 	}
 
@@ -1715,8 +1736,8 @@ Items: {
 		DisplayName: Greater Barrier Potion
 		Tooltip:
 			'''
-			Grants 120 {barrier}
-			Grants {BUFF:ShieldDegenReduction} for 5 seconds
+			Grants 200 {barrier}
+			Grants {BUFF:ShieldDegenReduction} for 10 seconds
 			Inflicts {Buff:PotionSickness} for 20 seconds
 			Inflicts {BUFF:NoShieldPot} for 60 seconds
 			'''
@@ -1731,8 +1752,8 @@ Items: {
 		DisplayName: Lesser Barrier Potion
 		Tooltip:
 			'''
-			Grants 40 {barrier}
-			Grants {BUFF:ShieldDegenReduction} for 3 seconds
+			Grants 100 {barrier}
+			Grants {BUFF:ShieldDegenReduction} for 5 seconds
 			Inflicts {Buff:PotionSickness} for 20 seconds
 			Inflicts {BUFF:NoShieldPot} for 60 seconds
 			'''
@@ -1742,8 +1763,8 @@ Items: {
 		DisplayName: " Barrier Potion"
 		Tooltip:
 			'''
-			Grants 80 {barrier}
-			Grants {BUFF:ShieldDegenReduction} for 4 seconds
+			Grants 150 {barrier}
+			Grants {BUFF:ShieldDegenReduction} for 7 seconds
 			Inflicts {Buff:PotionSickness} for 20 seconds
 			Inflicts {BUFF:NoShieldPot} for 60 seconds
 			'''
@@ -1762,8 +1783,18 @@ Items: {
 		DisplayName: Aquamarine Pendant
 		Tooltip:
 			'''
-			+15 {{Barrier}} 
+			+20 maximum {{barrier}}
+			+4 {{Barrier}} recharge per second
 			Losing all of your {{barrier}} releases ice shards
+			'''
+	}
+
+	FrostFlail: {
+		DisplayName: Frost Flail
+		Tooltip:
+			'''
+			Hold to swing a monstrous ball of ice
+			Creates icy shards on impact, inflicting frostburn
 			'''
 	}
 
@@ -1957,7 +1988,7 @@ Items: {
 
 	TempleRune: {
 		DisplayName: Rune of Warding
-		Tooltip: +50 {{barrier}}
+		Tooltip: +50 maximum {{barrier}}
 	}
 
 	TempleSpear: {
@@ -2140,7 +2171,11 @@ Items: {
 
 	PhoenixStorm: {
 		DisplayName: Phoenix Storm
-		Tooltip: Summons a storm of phoenixes that periodically swoop in on enemies
+		Tooltip:
+			'''
+			Summons a storm of phoenixes that periodically swoop in on enemies
+			Inflicts {{BUFF:OnFire}}
+			'''
 	}
 
 	RecursiveFocus.Tooltip:
@@ -2943,16 +2978,6 @@ Items: {
 		Tooltip: ""
 	}
 
-	CombatShrineBarrierItem: {
-		DisplayName: CombatShrineBarrierItem
-		Tooltip: "{{Debug}} item"
-	}
-
-	EvasionShrineBarrierItem: {
-		DisplayName: EvasionShrineBarrierItem
-		Tooltip: "{{Debug}} item"
-	}
-
 	VitricBathtub: {
 		DisplayName: Vitric Bathtub
 		Tooltip: ""
@@ -3036,6 +3061,16 @@ Items: {
 	VitricDoorClosed: {
 		DisplayName: Vitric Door
 		Tooltip: ""
+	}
+
+	CombatShrineBarrierItem: {
+		DisplayName: CombatShrineBarrierItem
+		Tooltip: "{{Debug}} item"
+	}
+
+	EvasionShrineBarrierItem: {
+		DisplayName: EvasionShrineBarrierItem
+		Tooltip: "{{Debug}} item"
 	}
 
 	VitricBossBarrierItem: {
@@ -3261,26 +3296,6 @@ Items: {
 	VitricSandPlainItem: {
 		DisplayName: Soft Sand
 		Tooltip: ""
-	}
-
-	MindCrusher: {
-		DisplayName: Mind crusher
-		Tooltip:
-			'''
-			Click and hold to create a growing circle
-			Release to crush all enemies inside the circle
-			Enemies with defense take 2 additional damage per defense
-			'''
-	}
-
-	PsychoticManabond: {
-		DisplayName: Psychotic Manabond
-		Tooltip:
-			'''
-			Your minions can store 40 mana
-			Your minions siphon 6 mana per second from you untill full
-			Your minions spend 40 mana to emit an aura inflicting {{BUFF:Psychosis}}
-			'''
 	}
 }
 
@@ -3832,6 +3847,8 @@ NPCs: {
 	Snake.DisplayName: Sandviper
 	BerrySlime.DisplayName: Slimeberry
 	TouchstoneWisp.DisplayName: Aurora Spirit
+	WeakPoint.DisplayName: The Linker
+	BrainPlatform.DisplayName: ""
 }
 
 Buffs: {

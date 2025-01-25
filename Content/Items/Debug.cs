@@ -111,27 +111,13 @@ namespace StarlightRiver.Content.Items
 		{
 			orig(self, gameTime);
 
-			return;
-
 			Main.spriteBatch.Begin();
 
 			DynamicSpriteFont font = Terraria.GameContent.FontAssets.ItemStack.Value;
 
-			for (int k = 0; k < Main.screenHeight; k += 64)
-			{
-				string message = "| ALPHA BUILD -- DOES NOT REPRESENT FINAL PRODUCT ";
-				if (k % 3 == 1)
-					message = "| Starlight River Discord: https://discord.gg/starlight-river-616385262347485257 ";
-				if (k % 3 == 2)
-					message = "| Starlight River Github: https://github.com/ProjectStarlight/StarlightRiver ";
-
-				for (float x = -Main.screenHeight; x < Main.screenWidth; x += font.MeasureString(message).X)
-					Main.spriteBatch.DrawString(font, message, new Vector2(x + (k ^ (k * k)) % 600, k), Color.White * 0.1f, default, default, 1f, default, default);
-
-				Utils.DrawBorderStringBig(Main.spriteBatch, $"STARLIGHT RIVER ALPHA TEST -- THINKER BOSS FIGHT TEST 2", new Vector2(Main.screenWidth / 2, 16), Color.White, 0.6f, 0.5f);
-				Utils.DrawBorderStringBig(Main.spriteBatch, $"ALPHA BUILD DOES NOT REPRESENT FINAL PRODUCT", new Vector2(Main.screenWidth / 2, 48), Color.White, 0.6f, 0.5f);
-				Utils.DrawBorderStringBig(Main.spriteBatch, $"YOUR ID: {SteamFriends.GetPersonaName()} ({SteamUser.GetSteamID().m_SteamID})", new Vector2(Main.screenWidth / 2, 80), Color.Gray, 0.6f, 0.5f);
-			}
+			Utils.DrawBorderStringBig(Main.spriteBatch, $"STARLIGHT RIVER ALPHA TEST -- THINKER BOSS FIGHT TEST 4", new Vector2(Main.screenWidth / 2, 16), Color.White, 0.6f, 0.5f);
+			Utils.DrawBorderStringBig(Main.spriteBatch, $"ALPHA BUILD DOES NOT REPRESENT FINAL PRODUCT", new Vector2(Main.screenWidth / 2, 48), Color.White, 0.6f, 0.5f);
+			Utils.DrawBorderStringBig(Main.spriteBatch, $"YOUR ID: {SteamFriends.GetPersonaName()} ({SteamUser.GetSteamID().m_SteamID})", new Vector2(Main.screenWidth / 2, 80), Color.Gray, 0.6f, 0.5f);
 
 			Main.spriteBatch.End();
 		}
@@ -139,7 +125,7 @@ namespace StarlightRiver.Content.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Thinker Test");
-			Tooltip.SetDefault("Equips you with gear and spawns the thinker");
+			Tooltip.SetDefault("Teleports you and spawns the thinker");
 		}
 
 		public override void SetDefaults()

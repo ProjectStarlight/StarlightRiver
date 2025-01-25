@@ -39,13 +39,12 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 		private void DrawRealVersion(SpriteBatch spriteBatch, int x, int y)
 		{
-			var target = new Point16(x, y);
-			Tile tile = Framing.GetTileSafely(target);
+			Tile tile = Framing.GetTileSafely(x, y);
 
-			if (tile.TileType == ModContent.TileType<Dendrite>())
+			if (tile.TileType == Type)
 			{
 				Texture2D tex = Assets.Tiles.Crimson.DendriteReal.Value;
-				spriteBatch.Draw(tex, target.ToVector2() * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), Color.White * 0.8f);
+				spriteBatch.Draw(tex, new Vector2(x, y) * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), Color.White * 0.8f);
 			}
 		}
 
@@ -69,7 +68,7 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 			MinPick = 65;
 
-			AddMapEntry(new Color(165, 180, 191));
+			AddMapEntry(new Color(151, 107, 75));
 		}
 	}
 }
