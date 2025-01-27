@@ -74,7 +74,7 @@ namespace StarlightRiver.Content.Items.Crimson
 		{
 			GraymatterBiome.forceGrayMatter = true;
 
-			var parent = Main.projectile.FirstOrDefault(n => n.active && n.identity == Following);
+			Projectile parent = Main.projectile.FirstOrDefault(n => n.active && n.identity == Following);
 
 			if (parent is null)
 			{

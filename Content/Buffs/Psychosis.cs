@@ -24,8 +24,10 @@ namespace StarlightRiver.Content.Buffs
 
 		public override BuffStack GenerateDefaultStack(int duration)
 		{
-			var stack = new BuffStack();
-			stack.duration = duration;
+			var stack = new BuffStack
+			{
+				duration = duration
+			};
 			return stack;
 		}
 

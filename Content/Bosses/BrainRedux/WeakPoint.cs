@@ -81,7 +81,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			Texture2D tex = Assets.Bosses.BrainRedux.Neurysm.Value;
 			Texture2D glow = Assets.Keys.GlowAlpha.Value;
-			var star = Assets.StarTexture.Value;
+			Texture2D star = Assets.StarTexture.Value;
 
 			float r = 0.7f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f) * 0.03f;
 			float g = 0.3f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f + 2f) * 0.05f;

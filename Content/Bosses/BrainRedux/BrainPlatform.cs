@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override void SafeAI()
 		{
-			Vector3 lightColor = new Vector3(0.4f, 0.1f, 0.12f) * ThisThinker.ArenaOpacity;
+			Vector3 lightColor = new Vector3(0.4f, 0.1f, 0.12f) * (ThisThinker?.ArenaOpacity ?? 1);
 
 			lightColor += new Vector3(0.8f, 0.4f, 0.4f) * glow * 0.1f;
 
@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			float dist = Vector2.Distance(NPC.Center, targetPos);
 
 			Texture2D tex = Assets.Bosses.BrainRedux.BrainPlatform.Value;
-			LightingBufferRenderer.DrawWithLighting(NPC.position - Main.screenPosition, tex, tex.Bounds, Color.White * (ThisThinker?.ArenaOpacity ?? 1f), Vector2.One);
+			LightingBufferRenderer.DrawWithLighting(NPC.position - Main.screenPosition, tex, tex.Bounds, Color.White * (ThisThinker?.ArenaOpacity ?? 1), Vector2.One);
 
 			Texture2D glowTex = Assets.Bosses.BrainRedux.BrainPlatformGlow.Value;
 			Texture2D glowTex2 = Assets.Keys.GlowAlpha.Value;

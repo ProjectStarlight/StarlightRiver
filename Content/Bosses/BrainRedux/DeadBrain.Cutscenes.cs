@@ -283,6 +283,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				thinker.SimpleStrikeNPC(999999, 0);
 
 				neurisms.ForEach(n => n.active = false);
+
+				foreach (Player Player in Main.player.Where(n => n.active && Vector2.Distance(n.Center, ThisThinker.home) <= ThisThinker.ArenaRadius))
+				{
+					Player.GetModPlayer<MedalPlayer>().ProbeMedal("TheThinker");
+				}
 			}
 
 			if (Timer == 330)
