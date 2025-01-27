@@ -11,6 +11,17 @@ namespace StarlightRiver.Content.Buffs
 
 		public override string Texture => AssetDirectory.Buffs + "Overcharge";
 
+		public override void Load()
+		{
+			StarlightNPC.ModifyIncomingHitEvent += ReduceDefense;
+		}
+
+		private void ReduceDefense(NPC npc, ref NPC.HitModifiers modifiers)
+		{
+			if (Inflicted(npc))
+				modifiers.Defense.Base /= 4;
+		}
+
 		public override void Update(Player Player, ref int buffIndex)
 		{
 			Player.statDefense /= 4;
@@ -26,8 +37,6 @@ namespace StarlightRiver.Content.Buffs
 
 		public override void Update(NPC NPC, ref int buffIndex)
 		{
-			NPC.defense /= 4;
-
 			if (Main.rand.NextBool(10))
 			{
 				Vector2 pos = NPC.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(NPC.width);

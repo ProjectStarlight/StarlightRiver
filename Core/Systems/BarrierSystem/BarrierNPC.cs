@@ -23,6 +23,11 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 
 		public override bool InstancePerEntity => true;
 
+		public override void Load()
+		{
+			StarlightNPC.PostDrawHealthBarEvent += DrawBarrierBar;
+		}
+
 		public override void ResetEffects(NPC npc)
 		{
 			if (maxBarrier != 0)
@@ -112,37 +117,33 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 			}
 		}
 
-		public override bool? DrawHealthBar(NPC NPC, byte hbPosition, ref float scale, ref Vector2 position)
+		private void DrawBarrierBar(NPC NPC, byte hbPosition, float scale, Vector2 position)
 		{
-			if (barrier > 0)
+			var mp = NPC.GetGlobalNPC<BarrierNPC>();
+
+			if (mp.barrier > 0)
 			{
 				float bright = Lighting.Brightness((int)NPC.Center.X / 16, (int)NPC.Center.Y / 16);
 
-				Main.instance.DrawHealthBar((int)position.X, (int)position.Y, NPC.life, NPC.lifeMax, bright, scale);
-
 				Texture2D tex = Assets.GUI.ShieldBar1.Value;
 
-				float factor = Math.Min(barrier / (float)lastNonZeroBarrier, 1);
+				float factor = Math.Min(mp.barrier / (float)mp.lastNonZeroBarrier, 1);
 
 				var source = new Rectangle(0, 0, (int)(factor * tex.Width), tex.Height);
 				var target = new Rectangle((int)(position.X - Main.screenPosition.X), (int)(position.Y - Main.screenPosition.Y), (int)(factor * tex.Width * scale), (int)(tex.Height * scale));
 
 				Main.spriteBatch.Draw(tex, target, source, Color.White * bright * 1.5f, 0, new Vector2(tex.Width / 2, 0), 0, 0);
 
-				if (barrier < lastNonZeroBarrier)
+				if (mp.barrier < mp.lastNonZeroBarrier)
 				{
 					Texture2D texLine = Assets.GUI.ShieldBarLine.Value;
 
 					var sourceLine = new Rectangle((int)(tex.Width * factor), 0, 2, tex.Height);
-					var targetLine = new Rectangle((int)(position.X - Main.screenPosition.X) + (int)(tex.Width * factor), (int)(position.Y - Main.screenPosition.Y), (int)(2 * scale), (int)(tex.Height * scale));
+					var targetLine = new Rectangle((int)(position.X - Main.screenPosition.X) + (int)(tex.Width * factor * scale), (int)(position.Y - Main.screenPosition.Y), (int)(2 * scale), (int)(tex.Height * scale));
 
 					Main.spriteBatch.Draw(texLine, targetLine, sourceLine, Color.White * bright * 2, 0, new Vector2(tex.Width / 2, 0), 0, 0);
 				}
-
-				return false;
 			}
-
-			return base.DrawHealthBar(NPC, hbPosition, ref scale, ref position);
 		}
 	}
 }
