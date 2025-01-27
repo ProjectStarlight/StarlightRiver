@@ -82,7 +82,7 @@ namespace StarlightRiver.Core.Systems
 				var source = new Rectangle(0, 0, (int)(factor * tex.Width), tex.Height);
 				var target = new Rectangle((int)(position.X - Main.screenPosition.X), (int)(position.Y - Main.screenPosition.Y), (int)(factor * tex.Width * scale), (int)(tex.Height * scale));
 
-				Main.spriteBatch.Draw(tex, target, source, Color.White * bright * 1.5f, 0, new Vector2(tex.Width / 2, 0), 0, 0);
+				Main.spriteBatch.Draw(tex, target, source, Color.White * bright, 0, new Vector2(tex.Width / 2, 0), 0, 0);
 
 				if (effectiveDefense < maxDef)
 				{
@@ -113,7 +113,7 @@ namespace StarlightRiver.Core.Systems
 					source = new Rectangle(0, 0, (int)(factor * tex.Width), tex.Height);
 					target = new Rectangle((int)(position.X - Main.screenPosition.X), (int)(position.Y - Main.screenPosition.Y) + (int)(4 * scale), (int)(factor * tex.Width * scale), (int)(tex.Height * scale));
 
-					Main.spriteBatch.Draw(tex, target, source, Color.White * bright * 1.5f, 0, new Vector2(tex.Width / 2, 0), 0, 0);
+					Main.spriteBatch.Draw(tex, target, source, Color.White * bright, 0, new Vector2(tex.Width / 2, 0), 0, 0);
 
 					if (overblow < mp.maxOverblow)
 					{

@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
+using System;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 
@@ -23,22 +24,22 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void Load()
 		{
-			StarlightNPC.ModifyHitByItemEvent += GrowFrogItem;
-			StarlightNPC.ModifyHitByProjectileEvent += GrowFrogProjectile;
+			StarlightNPC.OnHitByItemEvent += GrowFrogItem;
+			StarlightNPC.OnHitByProjectileEvent += GrowFrogProjectile;
 
 			StarlightNPC.ModifyNPCLootEvent += Drop;
 		}
 
-		private void GrowFrogItem(NPC NPC, Player Player, Item Item, ref NPC.HitModifiers hit)
+		private void GrowFrogItem(NPC npc, Player player, Item item, NPC.HitInfo hit, int damageDone)
 		{
-			if (Equipped(Player))
-				TrySummonFrog(NPC);
+			if (Equipped(player))
+				TrySummonFrog(npc);
 		}
 
-		private void GrowFrogProjectile(NPC NPC, Projectile Projectile, ref NPC.HitModifiers hit)
+		private void GrowFrogProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
 		{
-			if (Equipped(Main.player[Projectile.owner]))
-				TrySummonFrog(NPC);
+			if (Equipped(Main.player[projectile.owner]))
+				TrySummonFrog(npc);
 		}
 
 		private void Drop(NPC npc, NPCLoot npcloot)

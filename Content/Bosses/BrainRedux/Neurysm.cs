@@ -91,7 +91,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			modifiers.FinalDamage *= 0;
 			modifiers.HideCombatText();
+		}
 
+		public override void HitEffect(NPC.HitInfo hit)
+		{
 			CombatText.NewText(NPC.Hitbox, Color.Gray, 0);
 		}
 

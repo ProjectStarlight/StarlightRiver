@@ -489,6 +489,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				return;
 
 			modifiers.HideCombatText();
+		}
+
+		public override void HitEffect(NPC.HitInfo hit)
+		{
+			if (ThisBrain != null && ThisBrain.Phase == DeadBrain.Phases.TempDead)
+				return;
 
 			CombatText.NewText(NPC.Hitbox, Color.Gray, 0);
 		}

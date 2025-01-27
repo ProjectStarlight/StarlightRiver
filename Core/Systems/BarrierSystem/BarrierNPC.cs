@@ -44,6 +44,15 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 		{
 			//We need to use the backdoor here because we need to know the final damage to correctly subtract from barrier!
 			modifiers.ModifyHitInfo += (ref NPC.HitInfo n) => ModifyDamage(npc, ref n);
+		}
+
+		public override void OnHitByItem(NPC npc, Player player, Item item, NPC.HitInfo hit, int damageDone)
+		{
+			timeSinceLastHit = 0;
+		}
+
+		public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
+		{
 			timeSinceLastHit = 0;
 		}
 

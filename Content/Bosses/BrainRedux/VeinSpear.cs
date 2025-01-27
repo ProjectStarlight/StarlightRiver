@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			}
 		}
 
-		public override void ModifyHitPlayer(Player target, ref Player.HurtModifiers modifiers)
+		public override void OnHitPlayer(Player target, Player.HurtInfo info)
 		{
 			target.AddBuff(BuffID.Bleeding, 300);
 		}

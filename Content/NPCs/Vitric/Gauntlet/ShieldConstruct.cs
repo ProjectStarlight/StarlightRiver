@@ -6,6 +6,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
+using Terraria.WorldBuilding;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
@@ -241,21 +242,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 			if (Math.Sign(NPC.Center.DirectionTo(player.Center).X) == NPC.spriteDirection)
 			{
-				SoundEngine.PlaySound(SoundID.Item27 with { Pitch = 0.1f }, NPC.Center);
-
 				if (Guarding || stacked)
 				{
 					modifiers.FinalDamage -= int.MaxValue;
-					CombatText.NewText(NPC.Hitbox, Color.OrangeRed, "Blocked!");
 				}
 				else
 				{
 					modifiers.FinalDamage *= 0.4f;
 				}
-			}
-			else
-			{
-				SoundEngine.PlaySound(SoundID.Item27 with { Pitch = -0.3f }, NPC.Center);
 			}
 		}
 
@@ -266,26 +260,31 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 			if (Math.Sign(NPC.Center.DirectionTo(Target.Center).X) == NPC.spriteDirection)
 			{
-				SoundEngine.PlaySound(SoundID.Item27 with { Pitch = -0.6f }, NPC.Center);
-
 				if (Guarding || stacked)
 				{
 					modifiers.FinalDamage -= int.MaxValue;
-					CombatText.NewText(NPC.Hitbox, Color.OrangeRed, "Blocked!");
 				}
 				else
 				{
 					modifiers.FinalDamage *= 0.4f;
 				}
 			}
-			else
-			{
-				SoundEngine.PlaySound(SoundID.Item27 with { Pitch = -0.3f }, NPC.Center);
-			}
 		}
 
 		public override void HitEffect(NPC.HitInfo hit)
 		{
+			if (Math.Sign(NPC.Center.DirectionTo(Target.Center).X) == NPC.spriteDirection)
+			{
+				SoundEngine.PlaySound(SoundID.Item27 with { Pitch = -0.6f }, NPC.Center);
+
+				if (Guarding || stacked)
+					CombatText.NewText(NPC.Hitbox, Color.OrangeRed, "Blocked!");
+			}
+			else
+			{
+				SoundEngine.PlaySound(SoundID.Item27 with { Pitch = -0.3f }, NPC.Center);
+			}
+
 			if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
 			{
 				for (int i = 0; i < 12; i++)
