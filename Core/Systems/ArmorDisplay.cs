@@ -95,17 +95,17 @@ namespace StarlightRiver.Core.Systems
 					tex = Assets.GUI.OverDefBar.Value;
 					var overblow = mp.currentAnim - 1;
 
-					if (overblow > maxOverblow)
-						maxOverblow = overblow;
+					if (overblow > mp.maxOverblow)
+						mp.maxOverblow = overblow;
 
-					factor = Math.Min(overblow / maxOverblow, 1);
+					factor = Math.Min(overblow / mp.maxOverblow, 1);
 
 					source = new Rectangle(0, 0, (int)(factor * tex.Width), tex.Height);
 					target = new Rectangle((int)(position.X - Main.screenPosition.X), (int)(position.Y - Main.screenPosition.Y) + (int)(4 * scale), (int)(factor * tex.Width * scale), (int)(tex.Height * scale));
 
 					Main.spriteBatch.Draw(tex, target, source, Color.White * bright * 1.5f, 0, new Vector2(tex.Width / 2, 0), 0, 0);
 
-					if (overblow < maxOverblow)
+					if (overblow < mp.maxOverblow)
 					{
 						Texture2D texLine = Assets.GUI.OverDefBarLine.Value;
 
