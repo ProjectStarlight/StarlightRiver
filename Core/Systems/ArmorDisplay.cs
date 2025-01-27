@@ -15,6 +15,7 @@ namespace StarlightRiver.Core.Systems
 	internal class ArmorDisplay : GlobalNPC
 	{
 		public float currentAnim;
+		public float maxOverblow;
 
 		public override bool InstancePerEntity => true;
 
@@ -89,9 +90,30 @@ namespace StarlightRiver.Core.Systems
 				}
 
 				// If they have MORE defense...
-				if (effectiveDefense > maxDef)
+				if (mp.currentAnim > 1)
 				{
+					tex = Assets.GUI.OverDefBar.Value;
+					var overblow = mp.currentAnim - 1;
 
+					if (overblow > maxOverblow)
+						maxOverblow = overblow;
+
+					factor = Math.Min(overblow / maxOverblow, 1);
+
+					source = new Rectangle(0, 0, (int)(factor * tex.Width), tex.Height);
+					target = new Rectangle((int)(position.X - Main.screenPosition.X), (int)(position.Y - Main.screenPosition.Y) + (int)(4 * scale), (int)(factor * tex.Width * scale), (int)(tex.Height * scale));
+
+					Main.spriteBatch.Draw(tex, target, source, Color.White * bright * 1.5f, 0, new Vector2(tex.Width / 2, 0), 0, 0);
+
+					if (overblow < maxOverblow)
+					{
+						Texture2D texLine = Assets.GUI.OverDefBarLine.Value;
+
+						var sourceLine = new Rectangle((int)(tex.Width * factor), 0, 2, tex.Height);
+						var targetLine = new Rectangle((int)(position.X - Main.screenPosition.X) + (int)(tex.Width * factor * scale), (int)(position.Y - Main.screenPosition.Y) + (int)(4 * scale), (int)(2 * scale), (int)(tex.Height * scale));
+
+						Main.spriteBatch.Draw(texLine, targetLine, sourceLine, Color.White * bright * 2, 0, new Vector2(tex.Width / 2, 0), 0, 0);
+					}
 				}
 			}
 		}

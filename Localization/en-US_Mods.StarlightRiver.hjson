@@ -3689,6 +3689,11 @@ Items: {
 		DisplayName: Pink Laser Pointer
 		Tooltip: ""
 	}
+
+	MindbreakerPickaxe: {
+		DisplayName: Mindbreaker Pickaxe
+		Tooltip: Can mine gray matter
+	}
 }
 
 Tiles: {
