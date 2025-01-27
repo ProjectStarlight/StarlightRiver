@@ -65,6 +65,11 @@ namespace StarlightRiver.Core.Systems
 
 				Texture2D tex = Assets.GUI.DefBar1.Value;
 
+				if (NPC.defDefense > 10)
+					tex = Assets.GUI.DefBar2.Value;
+				if(NPC.defDefense > 40)
+					tex = Assets.GUI.DefBar3.Value;
+
 				// Effective defense calculation taken from tmod stat modifiers for defense in damage calculations
 				float armorPenetration = effectiveDefense * Math.Clamp(modifiers.ScalingArmorPenetration.Value, 0, 1) + modifiers.ArmorPenetration.Value;
 				effectiveDefense = Math.Max(effectiveDefense - armorPenetration, 0);
@@ -82,6 +87,11 @@ namespace StarlightRiver.Core.Systems
 				if (effectiveDefense < maxDef)
 				{
 					Texture2D texLine = Assets.GUI.DefBarLine.Value;
+
+					if (NPC.defDefense > 10)
+						texLine = Assets.GUI.DefBar2Line.Value;
+					if (NPC.defDefense > 40)
+						texLine = Assets.GUI.DefBar3Line.Value;
 
 					var sourceLine = new Rectangle((int)(tex.Width * factor), 0, 2, tex.Height);
 					var targetLine = new Rectangle((int)(position.X - Main.screenPosition.X) + (int)(tex.Width * factor * scale), (int)(position.Y - Main.screenPosition.Y), (int)(2 * scale), (int)(tex.Height * scale));
