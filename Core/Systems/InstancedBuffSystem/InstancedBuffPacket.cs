@@ -54,7 +54,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 				}
 
 				if (Main.netMode == NetmodeID.Server)
-					Send(-1, fromWho, false);
+					Send(-1, -1, false);
 			}
 		}
 	}
