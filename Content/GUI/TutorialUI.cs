@@ -10,8 +10,6 @@ namespace StarlightRiver.Content.GUI
 	public class TutorialUI : SmartUIState
 	{
 		private static readonly TutorialBox mainBox = new();
-		private static readonly TutorialButton nextButton = new();
-		private static readonly TutorialButton prevButton = new();
 
 		/// <summary>
 		/// The current tutorial being displayed, if any
@@ -41,23 +39,6 @@ namespace StarlightRiver.Content.GUI
 			mainBox.Left.Set(-250, 0.5f);
 			mainBox.Top.Set(-250, 0.5f);
 			Append(mainBox);
-
-			prevButton.Left.Set(-250, 0.5f);
-			prevButton.OnLeftClick += (a, b) =>
-			{
-				if (tutorialPosition > 0)
-					SetPage(tutorialPosition - 1);
-			};
-			prevButton.text = "Previous";
-			Append(prevButton);
-
-			nextButton.Left.Set(250 - 128, 0.5f);
-			nextButton.OnLeftClick += (a, b) =>
-			{
-				SetPage(tutorialPosition + 1);
-			};
-			nextButton.visible = true;
-			Append(nextButton);
 		}
 
 		public override void SafeUpdate(GameTime gameTime)
@@ -85,14 +66,15 @@ namespace StarlightRiver.Content.GUI
 			{
 				var screen = currentTutorial.Screens[index];
 				mainBox.SetContents(screen.Text, screen.image);
-				nextButton.ShoveUnderBox(mainBox);
-				prevButton.ShoveUnderBox(mainBox);
-
-				nextButton.text = tutorialPosition == currentTutorial.Screens.Count - 1 ? "Finish" : "Next";
-				prevButton.visible = tutorialPosition != 0;
 
 				UILoader.GetUIState<TutorialUI>().Recalculate();
 			}
+		}
+
+		public override void SafeClick(UIMouseEvent evt)
+		{
+			if (fadeOpacity >= 1)
+				SetPage(tutorialPosition + 1);
 		}
 
 		public static void StartTutorial(Tutorial tutorial)
@@ -147,13 +129,16 @@ namespace StarlightRiver.Content.GUI
 		{
 			var dims = GetDimensions().ToRectangle();
 
+			var frameBox = dims;
+			frameBox.Inflate(dims.Width / 2, dims.Height / 2);
+			var glow = Assets.Keys.Glow.Value;
+
+			spriteBatch.Draw(glow, frameBox, Color.Black * 0.8f * Opacity);
+			//UIHelper.DrawBox(spriteBatch, frameBox, new Color(0.15f, 0.2f, 0.5f) * 0.8f * Opacity);
+
 			var font = Terraria.GameContent.FontAssets.DeathText.Value;
 			var titlePos = dims.Center.ToVector2() - Vector2.UnitY * (dims.Height / 2 + 32);
 			ChatManager.DrawColorCodedString(spriteBatch, font, Title, titlePos, Color.White * Opacity, 0, font.MeasureString(Title) * 0.5f, Vector2.One * 0.8f);
-
-			var frameBox = dims;
-			frameBox.Inflate(8, 8);
-			UIHelper.DrawBox(spriteBatch, frameBox, new Color(0.15f, 0.2f, 0.5f) * 0.8f * Opacity);
 
 			int startY = 8;
 
@@ -162,45 +147,13 @@ namespace StarlightRiver.Content.GUI
 				var imageRect = new Rectangle(dims.X + 8, dims.Y + 8, 484, image.Height());
 				var frameRect = new Rectangle(dims.X + 4, dims.Y + 4, 492, image.Height() + 8);
 
-				UIHelper.DrawBox(spriteBatch, frameRect, new Color(0.2f, 0.25f, 0.55f) * Opacity);
+				//UIHelper.DrawBox(spriteBatch, frameRect, new Color(0.2f, 0.25f, 0.55f) * Opacity);
 				spriteBatch.Draw(image.Value, imageRect, Color.White * Opacity);
 
 				startY += image.Height() + 24;
 			}
 
 			Utils.DrawBorderString(spriteBatch, message, dims.TopLeft() + new Vector2(8, startY), Color.LightGray * Opacity, 0.9f);
-
-			base.Draw(spriteBatch);
-		}
-	}
-
-	public class TutorialButton : SmartUIElement
-	{
-		public string text;
-		public bool visible;
-
-		public float Opacity => TutorialUI.fadeOpacity;
-
-		public TutorialButton()
-		{
-			Height.Set(32, 0);
-			Width.Set(128, 0);
-		}
-
-		public void ShoveUnderBox(TutorialBox box)
-		{
-			var dims = box.GetDimensions().ToRectangle();
-			Top.Set(dims.Y + dims.Height + 16, 0);
-		}
-
-		public override void Draw(SpriteBatch spriteBatch)
-		{
-			if (!visible)
-				return;
-
-			var dims = GetDimensions().ToRectangle();
-			UIHelper.DrawBox(spriteBatch, dims, new Color(0.15f, 0.2f, 0.5f) * 0.8f * Opacity);
-			Utils.DrawBorderString(spriteBatch, text, dims.Center.ToVector2(), Color.LightGray * Opacity, 1f, 0.5f ,0.35f);
 
 			base.Draw(spriteBatch);
 		}
