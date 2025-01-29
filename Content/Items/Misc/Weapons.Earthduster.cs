@@ -31,14 +31,14 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			new AmmoStruct(ItemID.DirtBlock, ModContent.ProjectileType<EarthdusterDirtShot>(), "", 2),
 			new AmmoStruct(ItemID.SandBlock, ModContent.ProjectileType<EarthdusterSandShot>(), "Deals area of effect damage", 2),
-			new AmmoStruct(ItemID.EbonsandBlock, ModContent.ProjectileType<EarthdusterEbonsandShot>(), "Inflicts weakening debuff", 4),
+			new AmmoStruct(ItemID.EbonsandBlock, ModContent.ProjectileType<EarthdusterEbonsandShot>(), "Inflicts {{BUFF:EbonsandDebuff}}", 4),
 			new AmmoStruct(ItemID.PearlsandBlock, ModContent.ProjectileType<EarthdusterPearlsandShot>(), "Homes onto enemies", 15),
 			new AmmoStruct(ItemID.CrimsandBlock, ModContent.ProjectileType<EarthdusterCrimsandShot>(), "Gain regeneration on hit", 4),
 			new AmmoStruct(ItemID.SiltBlock, ModContent.ProjectileType<EarthdusterSiltShot>(), "Extracts some treasure when fired", 3),
-			new AmmoStruct(ItemID.SlushBlock, ModContent.ProjectileType<EarthdusterSlushShot>(), "Inflicts Frostburn", 3),
+			new AmmoStruct(ItemID.SlushBlock, ModContent.ProjectileType<EarthdusterSlushShot>(), "Inflicts {{BUFF:Frostburn}}", 3),
 			new AmmoStruct(Mod.Find<ModItem>("VitricSandItem").Type, ModContent.ProjectileType<EarthdusterVitricSandShot>(), "Pierces enemies", 8),
 			new AmmoStruct(ItemID.MudBlock, ModContent.ProjectileType<EarthdusterMudShot>(), "Chance to spawn bees on death", 3),
-			new AmmoStruct(ItemID.AshBlock, ModContent.ProjectileType<EarthdusterAshShot>(), "Inflicts On Fire!", 6),
+			new AmmoStruct(ItemID.AshBlock, ModContent.ProjectileType<EarthdusterAshShot>(), "Inflicts {{BUFF:OnFire}}", 6),
 		};
 
 		public override void SetStaticDefaults()

@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 		{
 			new AmmoStruct(ItemID.DirtBlock, ModContent.ProjectileType<SoilgunDirtSoil>(), "", 2),
 			new AmmoStruct(ItemID.SandBlock, ModContent.ProjectileType<SoilgunSandSoil>(), "Deals area of effect damage", 2),
-			new AmmoStruct(ItemID.EbonsandBlock, ModContent.ProjectileType<SoilgunEbonsandSoil>(), "Inflicts weakening debuff", 4),
+			new AmmoStruct(ItemID.EbonsandBlock, ModContent.ProjectileType<SoilgunEbonsandSoil>(), "Inflicts {{BUFF:EbonsandDebuff}}", 4),
 			new AmmoStruct(ItemID.PearlsandBlock, ModContent.ProjectileType<SoilgunPearlsandSoil>(), "Homes onto enemies", 15),
 			new AmmoStruct(ItemID.CrimsandBlock, ModContent.ProjectileType<SoilgunCrimsandSoil>(), "Gain regeneration on hit", 4),		
 			new AmmoStruct(ItemID.SiltBlock, ModContent.ProjectileType<SoilgunSiltSoil>(), "Extracts some treasure when fired", 3),
