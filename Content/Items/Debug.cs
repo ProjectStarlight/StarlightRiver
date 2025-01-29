@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
-			StarlightWorld.FlipFlag(WorldFlags.ThinkerBossOpen);
+			TutorialManager.ActivateTutorial("Example");
 
 			return true;
 		}

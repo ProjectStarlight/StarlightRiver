@@ -60,7 +60,7 @@ namespace StarlightRiver.Core
 			if (!StarlightRiver.Instance.FileExists(path))
 				throw new FileNotFoundException($"Could not find the dialog file {path}.");
 
-			Stream stream = StarlightRiver.Instance.GetFileStream(path);
+			using Stream stream = StarlightRiver.Instance.GetFileStream(path);
 
 			entries.Clear();
 
@@ -69,8 +69,6 @@ namespace StarlightRiver.Core
 			{
 				entries.Add(entry.Key, entry);
 			}
-
-			stream.Close();
 		}
 
 		/// <summary>
