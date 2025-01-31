@@ -3891,6 +3891,7 @@ Tiles: {
 	VitricLargeCrystal.MapEntry: Vitric Large Crystal
 	VitricMediumCrystal.MapEntry: Vitric Medium Crystal
 	VitricSmallCrystal.MapEntry: Vitric Small Crystal
+	BigSpike.MapEntry: ""
 }
 
 Projectiles: {
