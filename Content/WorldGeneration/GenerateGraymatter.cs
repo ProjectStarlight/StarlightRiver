@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Tiles.Crimson;
+﻿using StarlightRiver.Content.Noise;
+using StarlightRiver.Content.Tiles.Crimson;
 using StarlightRiver.Content.Tiles.Forest;
 using StarlightRiver.Content.Tiles.Palestone;
 using StarlightRiver.Helpers;
@@ -13,15 +14,57 @@ namespace StarlightRiver.Core
 {
 	public partial class StarlightWorld : ModSystem
 	{
-		private void GraymatterGen(GenerationProgress progress, GameConfiguration configuration)
+		public void GraymatterGen(GenerationProgress progress, GameConfiguration configuration)
 		{
 			if (!WorldGen.crimson)
 				return;
 
 			progress.Message = "Thinking really hard...";
+
+			var noise = new FastNoiseLite();
+			noise.SetNoiseType(FastNoiseLite.NoiseType.Perlin);
+			noise.SetFractalType(FastNoiseLite.FractalType.FBm);
+			noise.SetFrequency(0.05f);
+
+			// Surface decorations
 			for (int k = 60; k < Main.maxTilesX - 60; k++)
 			{
-				if (WorldGen.genRand.NextBool(15)) //Dendrite
+				for (int y = 10; y < Main.worldSurface; y++)
+				{
+					if (Main.tile[k, y].TileType == TileID.CrimsonGrass)
+					{
+						if (CrimsonGrassPatch(k, y, 3, 2) && WorldGen.genRand.NextBool(16))
+						{
+							Helpers.Helper.PlaceMultitile(new Point16(k, y - 2), ModContent.TileType<EyeBoulder>());
+
+							k += 6;
+							y = 10;
+						}
+
+						if (WorldGen.genRand.NextBool(20))
+						{
+							WorldGen.PlaceTile(k, y-1, ModContent.TileType<BigSpike>());
+
+							k += 5;
+							y = 10;
+						}	
+
+						if (noise.GetNoise(k * 5, 0.5f) > 0f)
+						{
+							WorldGen.PlaceTile(k, y - 1, ModContent.TileType<BreathingGrass>());
+							k += 1;
+							y = 10;
+						}
+					}
+
+				}
+
+			}
+
+			// Dendrite
+			for (int k = 60; k < Main.maxTilesX - 60; k++)
+			{
+				if (WorldGen.genRand.NextBool(15))
 				{
 					for (int y = 10; y < Main.worldSurface; y++)
 					{
@@ -34,6 +77,7 @@ namespace StarlightRiver.Core
 				}
 			}
 
+			// Graymatter blobs
 			for (int k = 60; k < Main.maxTilesX - 60; k += 15 + WorldGen.genRand.Next(5) * 15)
 			{
 				bool failedGray = false;
@@ -64,7 +108,49 @@ namespace StarlightRiver.Core
 
 		private void GrayBlob(int x, int y)
 		{
-			WorldGen.TileRunner(x - 2, y, 3, 25, ModContent.TileType<GrayMatter>(), true, 1f, 0, true);
+			bool oldMud = GenVars.mudWall;
+			GenVars.mudWall = false;
+
+			//WorldGen.TileRunner(x - 2, y, 3, 25, ModContent.TileType<GrayMatter>(), true, 1f, 0, true);
+
+			var noise = new FastNoiseLite();
+			noise.SetNoiseType(FastNoiseLite.NoiseType.Perlin);
+			noise.SetFractalType(FastNoiseLite.FractalType.FBm);
+			noise.SetFrequency(1f);
+
+			var len = WorldGen.genRand.Next(7, 12);
+			var thisY = y;
+
+			for (int k = 0; k < len; k++)
+			{
+				var scan = Framing.GetTileSafely(x - len / 2 + k, thisY);
+				var scan2 = Framing.GetTileSafely(x - len / 2 + k, thisY - 1);
+
+				if (!scan.HasTile || !Main.tileSolid[scan.TileType])
+					thisY++;
+				else if (scan2.HasTile && Main.tileSolid[scan2.TileType])
+					thisY--;
+
+				var target = new Point16(x - len / 2 + k, thisY);
+				{
+					WorldGen.PlaceTile(target.X, target.Y, ModContent.TileType<GrayMatter>(), true, true);
+					WorldGen.SlopeTile(target.X, target.Y);
+				}
+
+				if (k > 1 && k < len - 1)
+				{
+					WorldGen.PlaceTile(target.X, target.Y - 1, ModContent.TileType<GrayMatter>(), true, true);
+					WorldGen.SlopeTile(target.X, target.Y - 1);
+				}
+
+				if (k > 3 && k < len - 3 && noise.GetNoise(k * 100, 0.5f) > 0f)
+				{
+					WorldGen.PlaceTile(target.X, target.Y - 2, ModContent.TileType<GrayMatter>(), true, true);
+					WorldGen.SlopeTile(target.X, target.Y - 2);
+				}
+			}
+
+			GenVars.mudWall = oldMud;
 
 			GrayMatterSpike(x, y);
 
@@ -134,6 +220,25 @@ namespace StarlightRiver.Core
 				WorldGen.PlaceTile(x, y, ModContent.TileType<GrayMatter>(), true, true);
 				y++;
 			}
+		}
+
+		private bool CrimsonGrassPatch(int x, int y, int length, int airHeight)
+		{
+			bool safe = true;
+
+			for(int k = 0; k < length; k++)
+			{
+				var grassCheck = Framing.GetTileSafely(x + k, y);
+				safe &= grassCheck.HasTile && grassCheck.TileType == TileID.CrimsonGrass;
+
+				for(int i = 1; i < airHeight; i++)
+				{
+					var airCheck = Framing.GetTileSafely(x + k, y - i);
+					safe &= !airCheck.HasTile || Main.tileCut[airCheck.TileType];
+				}
+			}
+
+			return safe;
 		}
 	}
 }

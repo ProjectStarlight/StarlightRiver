@@ -24,8 +24,6 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 		public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 		{
-			bool[,] occlusions = new bool[3, 3];
-
 			Vector2 final = Vector2.Zero;
 
 			for (int x = 0; x < 3; x++)
@@ -52,7 +50,7 @@ namespace StarlightRiver.Content.Tiles.Crimson
 				return true;
 			}
 
-			tile.TileFrameX = (short)(angle * 100);
+			tile.TileFrameX = (short)(angle % 6.28f * 100);
 			tile.TileFrameY = (short)Main.rand.Next(6);
 
 			return true;

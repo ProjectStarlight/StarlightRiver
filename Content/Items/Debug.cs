@@ -8,6 +8,7 @@ using StarlightRiver.Content.Items.Dungeon;
 using StarlightRiver.Content.Items.Haunted;
 using StarlightRiver.Content.Items.UndergroundTemple;
 using StarlightRiver.Content.Items.Vitric;
+using StarlightRiver.Content.Noise;
 using StarlightRiver.Content.PersistentData;
 using StarlightRiver.Content.Tiles.Crimson;
 using StarlightRiver.Core.Loaders.UILoading;
@@ -17,6 +18,7 @@ using Steamworks;
 using System;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.WorldBuilding;
 using static System.Net.WebRequestMethods;
 
 namespace StarlightRiver.Content.Items
@@ -64,6 +66,55 @@ namespace StarlightRiver.Content.Items
 		public override bool? UseItem(Player player)
 		{
 			StarlightWorld.FlipFlag(WorldFlags.ThinkerBossOpen);
+			//GrayBlob((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
+
+			return true;
+		}
+	}
+
+	class DebugStick2 : ModItem
+	{
+		public override string Texture => AssetDirectory.Assets + "Items/DebugStick";
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Debug Stick 2");
+			Tooltip.SetDefault("Has whatever effects are needed");
+		}
+
+		public override void SetDefaults()
+		{
+			Item.damage = 10;
+			Item.DamageType = DamageClass.Melee;
+			Item.width = 38;
+			Item.height = 40;
+			Item.useTime = 18;
+
+			Item.useAnimation = 18;
+			Item.useStyle = ItemUseStyleID.Swing;
+			Item.knockBack = 5f;
+			Item.value = 1000;
+			Item.rare = ItemRarityID.LightRed;
+			Item.autoReuse = true;
+			Item.UseSound = SoundID.Item18;
+			Item.useTurn = true;
+			Item.accessory = true;
+		}
+
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+			player.GetHandler().StaminaMaxBonus = 1000;
+
+			int x = StarlightWorld.vitricBiome.X - 37;
+
+			Dust.NewDustPerfect(new Vector2((x + 80) * 16, (StarlightWorld.vitricBiome.Center.Y + 20) * 16), DustID.Firefly);
+
+		}
+
+		public override bool? UseItem(Player player)
+		{
+			StarlightWorld.FlipFlag(WorldFlags.ThinkerBossOpen);
+			ModContent.GetInstance<StarlightWorld>().GraymatterGen(new GenerationProgress(), null);
 
 			return true;
 		}
@@ -110,6 +161,7 @@ namespace StarlightRiver.Content.Items
 		private void DrawBeta(On_Main.orig_DoDraw orig, Main self, GameTime gameTime)
 		{
 			orig(self, gameTime);
+			return;
 
 			Main.spriteBatch.Begin();
 

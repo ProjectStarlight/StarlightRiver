@@ -3694,6 +3694,11 @@ Items: {
 		DisplayName: Mindbreaker Pickaxe
 		Tooltip: Can mine gray matter
 	}
+
+	DebugStick2: {
+		DisplayName: Debug Stick 2
+		Tooltip: Has whatever effects are needed
+	}
 }
 
 Tiles: {

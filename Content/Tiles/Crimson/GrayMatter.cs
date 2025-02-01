@@ -36,6 +36,8 @@ namespace StarlightRiver.Content.Tiles.Crimson
 			Main.tileMergeDirt[Type] = true;
 			Main.tileBlockLight[Type] = false;
 			Main.tileLighted[Type] = true;
+			Main.tileMerge[Type][TileID.CrimsonGrass] = true;
+			Main.tileMerge[TileID.CrimsonGrass][Type] = true;
 
 			HitSound = Terraria.ID.SoundID.NPCHit1;
 			DustType = Terraria.ID.DustID.Blood;
