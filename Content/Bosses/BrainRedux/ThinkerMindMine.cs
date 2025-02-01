@@ -15,6 +15,14 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public float pulse;
 		public float pulseAccum;
 
+		public int ThinkerWhoAmI
+		{
+			get => (int)Projectile.ai[0];
+			set => Projectile.ai[0] = value;
+		}
+
+		public NPC Thinker => Main.npc[ThinkerWhoAmI];
+
 		public override string Texture => AssetDirectory.BrainRedux + Name;
 
 		public override void SetDefaults()
@@ -38,6 +46,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			pulse = pulseAccum * 0.0025f + 0.5f + MathF.Sin(pulseAccum * 0.1f) * (0.5f + pulseAccum * 0.0001f);
 
 			Lighting.AddLight(Projectile.Center, new Vector3(1, 0.2f, 0.2f) * (1f - Projectile.timeLeft / 300f));
+
+			if (Thinker?.ModNPC is TheThinker think)
+			{
+				if (think.ShouldBeAttacking && Projectile.timeLeft > 19)
+					Projectile.timeLeft = 19;
+			}
 
 			if (Projectile.timeLeft == 20)
 			{
@@ -96,6 +110,14 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public float pulse;
 		public float pulseAccum;
 
+		public int ThinkerWhoAmI
+		{
+			get => (int)Projectile.ai[0];
+			set => Projectile.ai[0] = value;
+		}
+
+		public NPC Thinker => Main.npc[ThinkerWhoAmI];
+
 		public override string Texture => AssetDirectory.BrainRedux + "ThinkerMindMine";
 
 		public override void Load()
@@ -124,6 +146,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			pulse = pulseAccum * 0.0025f + 0.5f + MathF.Sin(pulseAccum * 0.1f) * (0.5f + pulseAccum * 0.0001f);
 
 			Lighting.AddLight(Projectile.Center, new Vector3(1, 0.2f, 0.2f) * (1f - Projectile.timeLeft / 300f));
+
+			if (Thinker?.ModNPC is TheThinker think)
+			{
+				if (think.ShouldBeAttacking && Projectile.timeLeft > 30)
+					Projectile.timeLeft = 30;
+			}
 		}
 
 		private void DrawActiveMines(SpriteBatch batch)

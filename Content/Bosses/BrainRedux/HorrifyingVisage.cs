@@ -4,6 +4,7 @@ using StarlightRiver.Core.Systems.PixelationSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Text;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.Graphics.Effects;
@@ -17,6 +18,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public VerletChain chain;
 		private List<Vector2> chainCache;
 		private Trail chainTrail;
+
+		public NPC thinker;
 
 		public ref float Timer => ref NPC.ai[0];
 		public ref float State => ref NPC.ai[1];
@@ -68,6 +71,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			}
 
 			Lighting.AddLight(NPC.Center, new Vector3(0.5f, 0.4f, 0.2f));
+
+			if (thinker?.ModNPC is TheThinker think)
+			{
+				if (think.ShouldBeAttacking && Timer < 540)
+					Timer = 540;
+			}
 
 			if (Timer > 540)
 				Decay++;

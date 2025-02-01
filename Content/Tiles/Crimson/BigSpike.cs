@@ -67,10 +67,10 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 			Texture2D tex = Assets.Tiles.Crimson.BigSpike.Value;
 			var source = new Rectangle(0, Parent.TileFrameY * 120, 160, 120);
-			var origin = new Vector2(48, 120 - 48);
+			var origin = new Vector2(48, 120 - 64);
 			var pos = Center - Main.screenPosition;
 
-			LightingBufferRenderer.DrawWithLighting(tex, pos, source, Color.White, angle, origin, 1f);
+			LightingBufferRenderer.DrawWithLighting(tex, pos, source, Color.White, angle - 0.25f, origin, 1f);
 
 			if (StarlightRiver.debugMode)
 			{

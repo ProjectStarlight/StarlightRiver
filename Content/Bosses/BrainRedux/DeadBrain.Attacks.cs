@@ -660,6 +660,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						Vector2 pos = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(k / 10f * 6.28f) * 590;
 						int i = NPC.NewNPC(null, (int)pos.X, (int)pos.Y, ModContent.NPCType<HorrifyingVisage>());
 						Main.npc[i].Center = pos;
+
+						if (Main.npc[i].ModNPC is HorrifyingVisage hv)
+							hv.thinker = thinker;
 					}
 				}
 
@@ -882,6 +885,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						Vector2 pos = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(k / 4f * 6.28f) * 590;
 						int i = NPC.NewNPC(null, (int)pos.X, (int)pos.Y, ModContent.NPCType<HorrifyingVisage>());
 						Main.npc[i].Center = pos;
+
+						if (Main.npc[i].ModNPC is HorrifyingVisage hv)
+							hv.thinker = thinker;
 					}
 				}
 
@@ -1057,9 +1063,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				Vector2 pos = sunflower(45, (int)index, ThisThinker.home);
 
 				if (safeMineIndicides.Contains((int)index))
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), pos, Vector2.Zero, ModContent.ProjectileType<FakeMindMine>(), Helpers.Helper.GetProjectileDamage(200, 150, 100), 1, Main.myPlayer);
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), pos, Vector2.Zero, ModContent.ProjectileType<FakeMindMine>(), Helpers.Helper.GetProjectileDamage(200, 150, 100), 1, Main.myPlayer, thinker.whoAmI);
 				else
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), pos, Vector2.Zero, ModContent.ProjectileType<ThinkerMindMine>(), Helpers.Helper.GetProjectileDamage(200, 150, 100), 1, Main.myPlayer);
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), pos, Vector2.Zero, ModContent.ProjectileType<ThinkerMindMine>(), Helpers.Helper.GetProjectileDamage(200, 150, 100), 1, Main.myPlayer, thinker.whoAmI);
 			}
 
 			if (AttackTimer > 300 && AttackTimer <= 400)

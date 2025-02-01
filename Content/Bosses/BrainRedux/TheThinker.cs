@@ -62,6 +62,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public bool Open => StarlightWorld.HasFlag(WorldFlags.ThinkerBossOpen);
 
+		public bool ShouldBeAttacking => ThisBrain != null && ThisBrain.Phase == DeadBrain.Phases.TempDead;
+
 		public int ArenaRadius => Main.masterMode ? 700 : 750;
 
 		public override string Texture => AssetDirectory.BrainRedux + Name;
@@ -299,7 +301,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			}
 
 			// Attacks
-			if (ThisBrain != null && ThisBrain.Phase == DeadBrain.Phases.TempDead)
+			if (ShouldBeAttacking)
 			{
 				NPC.immortal = false;
 
