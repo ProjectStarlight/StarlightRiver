@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
@@ -8,7 +9,8 @@ namespace StarlightRiver.Core.Systems.FoliageLayerSystem
 {
 	internal class FoliageLayerSystem : ModSystem
 	{
-		public static List<DrawData> data = [];
+		public static List<DrawData> overTilesData = [];
+		public static List<DrawData> underTilesData = [];
 
 		public static BlendState CeilBlend = new()
 		{
@@ -20,41 +22,65 @@ namespace StarlightRiver.Core.Systems.FoliageLayerSystem
 			AlphaDestinationBlend = Blend.One
 		};
 
-		public override void PostDrawTiles()
+		public override void Load()
 		{
-			DrawBlacks(Main.spriteBatch);
-			DrawReals(Main.spriteBatch);
-
-			data.Clear();
+			On_Main.DoDraw_WallsTilesNPCs += DrawUnderTileLayer;
 		}
 
-		private void DrawBlacks(SpriteBatch spriteBatch)
+		private void DrawUnderTileLayer(On_Main.orig_DoDraw_WallsTilesNPCs orig, Main self)
 		{
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			if (underTilesData.Count > 0)
+			{
+				DrawBlacks(Main.spriteBatch, underTilesData);
+				Main.spriteBatch.End();
 
-			foreach (DrawData data in data)
+				Main.spriteBatch.Begin(default, CeilBlend, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				DrawReals(Main.spriteBatch, underTilesData);
+				Main.spriteBatch.End();
+
+				Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+
+				underTilesData.Clear();
+			}
+
+			orig(self);
+		}
+
+		public override void PostDrawTiles()
+		{
+			if (overTilesData.Count > 0)
+			{
+				Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				DrawBlacks(Main.spriteBatch, overTilesData);
+				Main.spriteBatch.End();
+
+				Main.spriteBatch.Begin(default, CeilBlend, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				DrawReals(Main.spriteBatch, overTilesData);
+				Main.spriteBatch.End();
+
+				overTilesData.Clear();
+			}
+		}
+
+		private void DrawBlacks(SpriteBatch spriteBatch, List<DrawData> datas)
+		{
+			foreach (DrawData data in datas)
 			{
 				DrawData black = data;
 				black.color = Color.Black;
 				black.position -= Main.screenPosition;
 				black.Draw(spriteBatch);
 			}
-
-			spriteBatch.End();
 		}
 
-		private void DrawReals(SpriteBatch spriteBatch)
+		private void DrawReals(SpriteBatch spriteBatch, List<DrawData> datas)
 		{
-			spriteBatch.Begin(default, CeilBlend, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
-
-			foreach (DrawData data in data)
+			foreach (DrawData data in datas)
 			{
 				DrawData posed = data;
 				posed.position -= Main.screenPosition;
 				posed.Draw(spriteBatch);
 			}
-
-			spriteBatch.End();
 		}
 	}
 }

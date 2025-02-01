@@ -233,9 +233,9 @@ namespace StarlightRiver.Content.Tiles.Forest
 			Vector2 pos = Center;
 			Color color = lightColor;
 
-			FoliageLayerSystem.data.Add(new(tex, pos, null, color, GetLeafSway(3, 0.05f, 0.008f), new Vector2(tex.Width / 2, tex.Height), 1, 0, 0));
-			FoliageLayerSystem.data.Add(new(tex, pos + new Vector2(50, 40), null, color.MultiplyRGB(Color.Gray), GetLeafSway(0, 0.05f, 0.01f), new Vector2(tex.Width / 2, tex.Height), 1, 0, 0));
-			FoliageLayerSystem.data.Add(new(tex, pos + new Vector2(-30, 80), null, color.MultiplyRGB(Color.DarkGray), GetLeafSway(2, 0.025f, 0.012f), new Vector2(tex.Width / 2, tex.Height), 1, 0, 0));
+			FoliageLayerSystem.overTilesData.Add(new(tex, pos, null, color, GetLeafSway(3, 0.05f, 0.008f), new Vector2(tex.Width / 2, tex.Height), 1, 0, 0));
+			FoliageLayerSystem.overTilesData.Add(new(tex, pos + new Vector2(50, 40), null, color.MultiplyRGB(Color.Gray), GetLeafSway(0, 0.05f, 0.01f), new Vector2(tex.Width / 2, tex.Height), 1, 0, 0));
+			FoliageLayerSystem.overTilesData.Add(new(tex, pos + new Vector2(-30, 80), null, color.MultiplyRGB(Color.DarkGray), GetLeafSway(2, 0.025f, 0.012f), new Vector2(tex.Width / 2, tex.Height), 1, 0, 0));
 		}
 	}
 

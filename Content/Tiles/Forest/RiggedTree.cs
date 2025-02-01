@@ -1,11 +1,18 @@
-﻿using StarlightRiver.Core.Systems.DummyTileSystem;
+﻿using log4net.Core;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core.DrawingRigs;
+using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.Systems.FoliageLayerSystem;
+using StarlightRiver.Core.Systems.LightingSystem;
 using System;
+using System.IO;
+using System.Text.Json;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ObjectData;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TreeView;
 
 namespace StarlightRiver.Content.Tiles.Forest
 {
@@ -46,6 +53,12 @@ namespace StarlightRiver.Content.Tiles.Forest
 				Main.instance.TilesRenderer.AddSpecialLegacyPoint(new Point(i, j));
 		}
 
+		private float Sway(Vector2 worldPos, float magnitude)
+		{
+			float windDir = Main.windSpeedCurrent > 0 ? 1 : -1;
+			return (float)Math.Sin(Main.GameUpdateCount * 0.07f + worldPos.X * 0.01f * -windDir) * magnitude * Main.windSpeedCurrent;
+		}
+
 		public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch)
 		{
 			bool left = Framing.GetTileSafely(i - 1, j).TileType == ModContent.TileType<RiggedTree>();
@@ -58,7 +71,9 @@ namespace StarlightRiver.Content.Tiles.Forest
 				Texture2D tex = Assets.Tiles.Forest.Branches.Value;
 
 				Vector2 pos = new Vector2(i + 1, j) * 16;
-				Color color = Lighting.GetColor(i, j);
+				Vector2 origin = pos;
+
+				var branchRot = Main.windSpeedCurrent * 0.05f + Sway(pos, 0.02f);
 
 				pos += Helpers.Helper.TileAdj * 16;
 
@@ -84,41 +99,23 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 				godrayColor.A = 0;
 
-				pos += new Vector2(0, -100);
+				pos += new Vector2(-80, -400);
 
 				int daySeed = i + (int)Main.GetMoonPhase();
 
 				if (daySeed % 3 == 0)
-					spriteBatch.Draw(tex2, pos - Main.screenPosition, null, godrayColor, godrayRot, Vector2.Zero, 0.85f, 0, 0);
+					spriteBatch.Draw(tex2, pos.RotatedBy(branchRot, origin) - Main.screenPosition, null, godrayColor, godrayRot, Vector2.Zero, 1.05f, 0, 0);
 
 				pos += new Vector2(-60, 80);
 
 				if (daySeed % 5 == 0)
-					spriteBatch.Draw(tex2, pos - Main.screenPosition, null, godrayColor, godrayRot, Vector2.Zero, 0.65f, 0, 0);
+					spriteBatch.Draw(tex2, pos.RotatedBy(branchRot, origin) - Main.screenPosition, null, godrayColor, godrayRot, Vector2.Zero, 0.75f, 0, 0);
 
 				pos += new Vector2(150, -60);
 
 				if (daySeed % 7 == 0)
-					spriteBatch.Draw(tex2, pos - Main.screenPosition, null, godrayColor, godrayRot, Vector2.Zero, 0.75f, 0, 0);
+					spriteBatch.Draw(tex2, pos.RotatedBy(branchRot, origin) - Main.screenPosition, null, godrayColor, godrayRot, Vector2.Zero, 1.35f, 0, 0);
 			}
-		}
-
-		public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
-		{
-			/*bool left = Framing.GetTileSafely(i - 1, j).TileType == ModContent.TileType<RiggedTree>();
-			bool right = Framing.GetTileSafely(i + 1, j).TileType == ModContent.TileType<RiggedTree>();
-			bool up = Framing.GetTileSafely(i, j - 1).TileType == ModContent.TileType<RiggedTree>();
-			bool down = Framing.GetTileSafely(i, j + 1).TileType == ModContent.TileType<RiggedTree>();
-
-			if (right && !up && down)
-			{
-				Texture2D tex = ModContent.Request<Texture2D>(Texture + "Top").Value;
-				Vector2 pos = (new Vector2(i + 1, j) + Helpers.Helper.TileAdj) * 16;
-
-				Color color = Lighting.GetColor(i, j);
-			}*/
-
-			return true;
 		}
 
 		public override void SafeNearbyEffects(int i, int j, bool closer)
@@ -128,12 +125,12 @@ namespace StarlightRiver.Content.Tiles.Forest
 			bool up = Framing.GetTileSafely(i, j - 1).TileType == ModContent.TileType<RiggedTree>();
 			bool down = Framing.GetTileSafely(i, j + 1).TileType == ModContent.TileType<RiggedTree>();
 
-			if (Main.rand.NextBool(20) && right && !up && down)
+			if (Main.rand.NextBool(10) && right && !up && down)
 			{
 				if (Main.dayTime && !Main.raining && Main.time > 10000 && Main.time < 44000)
 				{
 					float godrayRot = (float)Main.time / 54000f * 3.14f;
-					Dust.NewDustPerfect(new Vector2(i, j) * 16 + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(100), ModContent.DustType<Dusts.GoldSlowFade>(), Vector2.UnitX.RotatedBy(godrayRot) * Main.rand.NextFloat(0.25f, 0.5f), 255, default, 0.75f);
+					Dust.NewDustPerfect(new Vector2(i, j) * 16 - Vector2.UnitY * 400 + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(200), ModContent.DustType<Dusts.GoldSlowFade>(), Vector2.UnitX.RotatedBy(godrayRot) * Main.rand.NextFloat(0.25f, 0.5f), 255, default, 0.75f);
 				}
 			}
 		}
@@ -194,7 +191,16 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 	class RiggedTreeDummy : Dummy
 	{
+		public static StaticRig treeRig;
+
 		public RiggedTreeDummy() : base(ModContent.TileType<RiggedTree>(), 1, 1) { }
+
+		public override void OnLoad(Mod mod)
+		{
+			Stream stream = StarlightRiver.Instance.GetFileStream("Assets/Tiles/Forest/TreeRig.json");
+			treeRig = JsonSerializer.Deserialize<StaticRig>(stream);
+			stream.Close();
+		}
 
 		public override bool ValidTile(Tile tile)
 		{
@@ -208,27 +214,61 @@ namespace StarlightRiver.Content.Tiles.Forest
 			return right && !up && down;
 		}
 
-		private float GetLeafSway(float offset, float magnitude, float speed)
+		private float Sway(Vector2 worldPos, float magnitude)
 		{
-			return (float)Math.Sin(Main.GameUpdateCount * speed + offset) * magnitude;
+			float windDir = Main.windSpeedCurrent > 0 ? 1 : -1;
+			return (float)Math.Sin(Main.GameUpdateCount * 0.07f + worldPos.X * 0.01f * -windDir) * magnitude * Main.windSpeedCurrent;
+		}
+
+		public override void DrawBehindTiles()
+		{
+			Texture2D branches = Assets.Tiles.Forest.Branches.Value;
+			Vector2 branchOrigin = new Vector2(branches.Width / 2 - 16, branches.Height);
+			float windDir = Main.windSpeedCurrent > 0 ? 1 : -1;
+			var branchRot = Main.windSpeedCurrent * 0.05f + Sway(Center, 0.02f);
+
+			LightingBufferRenderer.DrawWithLighting(branches, Center - Main.screenPosition, null, Color.White, branchRot, branchOrigin, 1);
 		}
 
 		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = Assets.Tiles.Forest.Branches.Value;
+			Texture2D leaves = Assets.Tiles.Forest.Leaves.Value;
 
-			Vector2 pos = Center;
-			Color color = lightColor;
+			Vector2 pos = Center - new Vector2(280, 630);
+			float windDir = Main.windSpeedCurrent > 0 ? 1 : -1;
 
-			FoliageLayerSystem.data.Add(new(tex, pos, null, color, GetLeafSway(3, 0.05f, 0.008f), new Vector2(tex.Width / 2, tex.Height), 1, 0, 0));
-			FoliageLayerSystem.data.Add(new(tex, pos + new Vector2(50, 40), null, color.MultiplyRGB(Color.Gray), GetLeafSway(0, 0.05f, 0.01f), new Vector2(tex.Width / 2, tex.Height), 1, 0, 0));
-			FoliageLayerSystem.data.Add(new(tex, pos + new Vector2(-30, 80), null, color.MultiplyRGB(Color.DarkGray), GetLeafSway(2, 0.025f, 0.012f), new Vector2(tex.Width / 2, tex.Height), 1, 0, 0));
+			var branchRot = Main.windSpeedCurrent * 0.05f + Sway(Center, 0.02f);
+
+			foreach (var point in treeRig.Points)
+			{
+				Vector2 pointPos = pos + new Vector2(point.X, point.Y) * 2;
+				Rectangle source = new Rectangle(0, point.Frame * 82, 82, 82);
+				Vector2 origin = Vector2.One * 41;
+				float weight = point.Frame % 2 == 0 ? 6 : 4;
+
+				pointPos = pointPos.RotatedBy(branchRot, Center);
+				float rot = Sway(pointPos, 0.1f);
+				pointPos.X += Sway(pointPos, weight);
+
+				if (point.Frame < 2)
+					FoliageLayerSystem.overTilesData.Add(new(leaves, pointPos, source, Lighting.GetColor((pointPos / 16).ToPoint()), rot, origin, 1, 0, 0));
+				else
+					FoliageLayerSystem.underTilesData.Add(new(leaves, pointPos, source, Lighting.GetColor((pointPos / 16).ToPoint()), rot, origin, 1, 0, 0));
+			}
+
+			if (StarlightRiver.debugMode)
+			{
+				var box = Hitbox;
+				box.Inflate(8, 8);
+				box.Offset((-Main.screenPosition).ToPoint());
+				Main.spriteBatch.Draw(Assets.MagicPixel.Value, box, Color.Red);
+			}
 		}
 	}
 
 	class RiggedTreeBase : ModTile
 	{
-		public override string Texture => AssetDirectory.ForestTile + Name;
+		public override string Texture => AssetDirectory.ForestTile + "ThickTreeBase";
 
 		public override void SetStaticDefaults()
 		{
