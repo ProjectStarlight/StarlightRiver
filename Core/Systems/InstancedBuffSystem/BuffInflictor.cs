@@ -1,9 +1,43 @@
 ﻿using System.Linq;
+using Terraria;
+using Terraria.ID;
 
 namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 {
 	internal static class BuffInflictor
 	{
+		public static void InflictFromNet(Player player, int duration, string type)
+		{
+			StarlightRiver.Instance.Logger.Info($"InflictFromNet: {duration}, {type}");
+			InstancedBuffPlayer mp = player.GetModPlayer<InstancedBuffPlayer>();
+
+			if (InstancedBuff.TryGetPrototype(type, out InstancedBuff proto))
+			{
+				if (mp.buffInstances.Any(n => n.Name == proto.Name))
+					mp.buffInstances.RemoveAll(n => n.Name == proto.Name);
+
+				mp.buffInstances.Add(proto.Clone());
+				player.AddBuff(proto.BackingType, duration);
+				StarlightRiver.Instance.Logger.Info($"InflictFromNet: complete!");
+			}
+		}
+
+		public static void InflictFromNet(NPC npc, int duration, string type)
+		{
+			StarlightRiver.Instance.Logger.Info($"InflictFromNet: {duration}, {type}");
+			InstancedBuffNPC gn = npc.GetGlobalNPC<InstancedBuffNPC>();
+
+			if (InstancedBuff.TryGetPrototype(type, out InstancedBuff proto))
+			{
+				if (gn.buffInstances.Any(n => n.Name == proto.Name))
+					gn.buffInstances.RemoveAll(n => n.Name == proto.Name);
+
+				gn.buffInstances.Add(proto.Clone());
+				npc.AddBuff(proto.BackingType, duration);
+				StarlightRiver.Instance.Logger.Info($"InflictFromNet: complete!");
+			}
+		}
+
 		private static void InflictInner<T>(Player player, int duration, T premadeInstance = null) where T : InstancedBuff, new()
 		{
 			InstancedBuffPlayer mp = player.GetModPlayer<InstancedBuffPlayer>();
@@ -12,7 +46,9 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 			{
 				if (mp.buffInstances.Any(n => n is T)) //If an instance already exists, let the backer get re-inflicted and stop
 				{
+					premadeInstance = InstancedBuffPlayer.GetInstance<T>(player);
 					player.AddBuff(premadeInstance.BackingType, duration);
+					premadeInstance.NetSync(player.whoAmI, true);
 					return;
 				}
 
@@ -24,6 +60,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 
 			mp.buffInstances.Add(premadeInstance); //Add the new instance
 			player.AddBuff(premadeInstance.BackingType, duration); //Inflict the backer
+			premadeInstance.NetSync(player.whoAmI, true);
 		}
 
 		private static void InflictInner<T>(NPC npc, int duration, T premadeInstance = null) where T : InstancedBuff, new()
@@ -34,7 +71,9 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 			{
 				if (gn.buffInstances.Any(n => n is T)) //If an instance already exists, let the backer get re-inflicted and stop
 				{
+					premadeInstance = InstancedBuffNPC.GetInstance<T>(npc);
 					npc.AddBuff(premadeInstance.BackingType, duration);
+					premadeInstance.NetSync(npc.whoAmI, false);
 					return;
 				}
 
@@ -46,11 +85,16 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 
 			gn.buffInstances.Add(premadeInstance); //Add the new instance
 			npc.AddBuff(premadeInstance.BackingType, duration); //Inflict the backer
+			premadeInstance.NetSync(npc.whoAmI, false);
 		}
 
 		private static void InflictStackInner<T>(NPC npc, int duration, BuffStack premadeStack) where T : InstancedBuff, new()
 		{
 			var instance = InstancedBuffNPC.GetInstance<T>(npc) as StackableBuff; //If possible, get the existing instancedBuff instance for this stackable buff
+
+			//If we have too many stacks already, abort
+			if (instance != null && instance.MaxStacks != -1 && instance.stacks.Count >= instance.MaxStacks)
+				return;
 
 			if (instance is null)
 			{
@@ -67,11 +111,17 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 
 			if (index != -1)
 				npc.buffTime[index] = instance.GetDuration();
+
+			instance.NetSync(npc.whoAmI, false);
 		}
 
 		private static void InflictStackInner<T>(Player player, int duration, BuffStack premadeStack) where T : InstancedBuff, new()
 		{
 			var instance = InstancedBuffPlayer.GetInstance<T>(player) as StackableBuff; //If possible, get the existing instancedBuff instance for this stackable buff
+
+			//If we have too many stacks already, abort
+			if (instance != null && instance.MaxStacks != -1 && instance.stacks.Count >= instance.MaxStacks)
+				return;
 
 			if (instance is null)
 			{
@@ -88,6 +138,8 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 
 			if (index != -1)
 				player.buffTime[index] = instance.GetDuration();
+
+			instance.NetSync(player.whoAmI, true);
 		}
 
 		/// <summary>
@@ -128,7 +180,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		/// <param name="npc">The NPC to inflict this buff on</param>
 		/// <param name="duration">The duration of the stack to inflict</param>
 		/// <param name="premadeStack">If you wish to inflict a specific stack</param>
-		public static void InflictStack<A, B>(NPC npc, int duration, B premadeStack = null) where A : StackableBuff<B>, new() where B : BuffStack
+		public static void InflictStack<A, B>(NPC npc, int duration, B premadeStack = null) where A : StackableBuff<B>, new() where B : BuffStack, new()
 		{
 			InflictStackInner<A>(npc, duration, premadeStack);
 		}
@@ -141,7 +193,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		/// <param name="player">The player to inflict this buff on</param>
 		/// <param name="duration">The duration of the stack to inflict</param>
 		/// <param name="premadeStack">If you wish to inflict a specific stack</param>
-		public static void InflictStack<A, B>(Player player, int duration, B premadeStack = null) where A : StackableBuff<B>, new() where B : BuffStack
+		public static void InflictStack<A, B>(Player player, int duration, B premadeStack = null) where A : StackableBuff<B>, new() where B : BuffStack, new()
 		{
 			InflictStackInner<A>(player, duration, premadeStack);
 		}

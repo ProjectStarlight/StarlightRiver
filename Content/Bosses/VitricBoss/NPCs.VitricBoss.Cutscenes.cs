@@ -42,10 +42,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				startPos = NPC.Center;
 
 				if (IsInsideArena())
-				{
-					StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
 					CameraSystem.DoPanAnimation(650, NPC.Center + new Vector2(0, -600));
-				}
 
 				Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/VitricBossAmbient");
 
@@ -65,9 +62,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			{
 				if (IsInsideArena())
 				{
-					StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
 					CameraSystem.shake += 10;
-
 					ZoomHandler.SetZoomAnimation(1.1f, 60);
 				}
 
@@ -129,7 +124,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			if (checkSpecificTime(454))
 			{
 				if (Main.netMode != NetmodeID.Server)
-					UILoader.GetUIState<TextCard>().Display(NPC.FullName, Main.rand.NextBool(10000) ? "Glass tax returns" : "Shattered Sentinel", null, 310, 1.25f); //intro text
+					TextCard.Display(NPC.FullName, Main.rand.NextBool(10000) ? "Glass tax returns" : "Shattered Sentinel", 310, 1.25f); //intro text
 
 				if (IsInsideArena())
 				{

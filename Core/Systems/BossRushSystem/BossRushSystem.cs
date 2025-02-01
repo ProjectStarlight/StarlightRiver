@@ -1,4 +1,5 @@
 using StarlightRiver.Content.Backgrounds;
+using StarlightRiver.Content.Bosses.BrainRedux;
 using StarlightRiver.Content.Bosses.GlassMiniboss;
 using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.Bosses.VitricBoss;
@@ -11,6 +12,7 @@ using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.Systems.PersistentDataSystem;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -24,6 +26,12 @@ using Terraria.WorldBuilding;
 
 namespace StarlightRiver.Core.Systems.BossRushSystem
 {
+	internal enum VisibleShape
+	{
+		rectangle = 0,
+		circle = 1
+	}
+
 	internal class BossRushSystem : ModSystem
 	{
 		public const float MAX_DEATH_FADEOUT = 330f;
@@ -48,6 +56,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		public static int transitionTimer = 0;
 		public static int deathFadeoutTimer = 0;
 		public static Rectangle visibleArea = new(0, 0, 0, 0);
+		public static VisibleShape visibleShape = VisibleShape.rectangle;
 
 		public static List<BossRushStage> stages;
 
@@ -253,6 +262,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 						Main.LocalPlayer.GetModPlayer<MedalPlayer>().QualifyForMedal("BossRush", 999);
 
 						visibleArea = new Rectangle((int)a.X, (int)a.Y, 500, 360);
+						visibleShape = VisibleShape.rectangle;
 						HushArmorSystem.DPSTarget = 75;
 					},
 					a => _ = a,
@@ -265,9 +275,13 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 					new Vector2(500, 1600),
 					a =>
 					{
+						StarlightWorld.squidBossArena = new Rectangle((int)a.X / 16, (int)a.Y / 16, 109, 180);
+						NPC.NewNPC(new EntitySource_WorldEvent(), StarlightWorld.squidBossArena.Center.X * 16 + 8, StarlightWorld.squidBossArena.Center.Y * 16 + 56 * 16, ModContent.NPCType<ArenaActor>());
+
 						Item.NewItem(null, a + new Vector2(800, 2700), ModContent.ItemType<SquidBossSpawn>());
 
 						visibleArea = new Rectangle((int)a.X, (int)a.Y + 120, 1748, 2800);
+						visibleShape = VisibleShape.rectangle;
 						HushArmorSystem.DPSTarget = 120;
 					},
 					a => StarlightWorld.squidBossArena = new Rectangle(a.X, a.Y, 109, 180)),
@@ -285,6 +299,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 						NPC.NewNPC(null, (int)a.X + 600, (int)a.Y + 24 * 16, ModContent.NPCType<Glassweaver>());
 
 						visibleArea = new Rectangle((int)a.X, (int)a.Y + 32, 1200 - 16, 532);
+						visibleShape = VisibleShape.rectangle;
 						HushArmorSystem.DPSTarget = 175;
 					},
 					a => StarlightWorld.vitricBiome = new Rectangle(a.X + 37, a.Y - 68, 400, 140)),
@@ -312,20 +327,39 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 						ModContent.GetInstance<VitricBossAltar>().SpawnBoss(dummy.ParentX - 2, dummy.ParentY - 3, Main.LocalPlayer);
 
 						visibleArea = new Rectangle((int)a.X + 1040, (int)a.Y + 60, 1520, 1064);
+						visibleShape = VisibleShape.rectangle;
 						HushArmorSystem.DPSTarget = 215;
 					},
 					a => _ = a),
 
 				new(
-					"Structures/BossRushEnd",
-					ModContent.NPCType<BossRushGoal>(),
-					new Vector2(50, 200),
+					"Structures/ThinkerBossRushArena",
+					ModContent.NPCType<TheThinker>(),
+					new Vector2(16 * 55, 16 * 70),
 					a =>
 					{
-						NPC.NewNPC(null, (int)a.X + 250, (int)a.Y + 200, ModContent.NPCType<BossRushGoal>());
+						NPC.NewNPC(null, (int)a.X + 16 * 60 - 8, (int)a.Y + 16 * 60 - 8, ModContent.NPCType<TheThinker>());
+						NPC.NewNPC(null, (int)a.X + 16 * 60, (int)a.Y + 16 * 45, ModContent.NPCType<DeadBrain>());
 
-						visibleArea = new Rectangle((int)a.X, (int)a.Y, 500, 360);
-						HushArmorSystem.DPSTarget = 75;
+						visibleArea = new Rectangle((int)a.X, (int)a.Y, 1920, 1920);
+						visibleShape = VisibleShape.circle;
+						HushArmorSystem.DPSTarget = 300;
+
+						StarlightWorld.Flag(WorldFlags.ThinkerBossOpen);
+					},
+					a => _ = a),
+
+				new(
+					"Structures/ArmillarySphereRoom",
+					ModContent.NPCType<BossRushGoal>(),
+					new Vector2(252, 720),
+					a =>
+					{
+						NPC.NewNPC(null, (int)a.X + 952, (int)a.Y + 720, ModContent.NPCType<BossRushGoal>());
+
+						visibleArea = new Rectangle((int)a.X, (int)a.Y, 2000, 1064);
+						visibleShape = VisibleShape.rectangle;
+						HushArmorSystem.DPSTarget = 2;
 					},
 					a => _ = a),
 			};
@@ -341,7 +375,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			if (!isBossRush)
 				return;
 
-			//tasks.Clear();
+			tasks.Clear();
 			tasks.Add(new PassLegacy("Boss rush arena clear", (a, b) =>
 			{
 				for (int x = 0; x < Main.maxTilesX; x++)
@@ -519,17 +553,30 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 
 			if (currentStage != 0)
 			{
-				sb.Draw(tex, new Rectangle(0, 0, (int)pos.X, Main.screenHeight), Color.White);
-				sb.Draw(gradV, new Rectangle((int)pos.X, 0, 80, Main.screenHeight), color);
+				switch (visibleShape)
+				{
+					case VisibleShape.rectangle:
+						sb.Draw(tex, new Rectangle(0, 0, (int)pos.X, Main.screenHeight), Color.White);
+						sb.Draw(gradV, new Rectangle((int)pos.X, 0, 80, Main.screenHeight), color);
 
-				sb.Draw(tex, new Rectangle((int)(pos.X + visibleArea.Width), 0, Main.screenWidth - (int)(pos.X + visibleArea.Width), Main.screenHeight), Color.White);
-				sb.Draw(gradV, new Rectangle((int)(pos.X + visibleArea.Width - 80), 0, 80, Main.screenHeight), null, color, default, default, SpriteEffects.FlipHorizontally, 0);
+						sb.Draw(tex, new Rectangle((int)(pos.X + visibleArea.Width), 0, Main.screenWidth - (int)(pos.X + visibleArea.Width), Main.screenHeight), Color.White);
+						sb.Draw(gradV, new Rectangle((int)(pos.X + visibleArea.Width - 80), 0, 80, Main.screenHeight), null, color, default, default, SpriteEffects.FlipHorizontally, 0);
 
-				sb.Draw(tex, new Rectangle(0, 0, Main.screenWidth, (int)pos.Y), Color.White);
-				sb.Draw(gradH, new Rectangle(0, (int)pos.Y, Main.screenWidth, 80), null, color, default, default, SpriteEffects.FlipVertically, 0);
+						sb.Draw(tex, new Rectangle(0, 0, Main.screenWidth, (int)pos.Y), Color.White);
+						sb.Draw(gradH, new Rectangle(0, (int)pos.Y, Main.screenWidth, 80), null, color, default, default, SpriteEffects.FlipVertically, 0);
 
-				sb.Draw(tex, new Rectangle(0, (int)(pos.Y + visibleArea.Height), Main.screenWidth, Main.screenHeight - (int)(pos.Y + visibleArea.Height)), Color.White);
-				sb.Draw(gradH, new Rectangle(0, (int)(pos.Y + visibleArea.Height - 80), Main.screenWidth, 80), color);
+						sb.Draw(tex, new Rectangle(0, (int)(pos.Y + visibleArea.Height), Main.screenWidth, Main.screenHeight - (int)(pos.Y + visibleArea.Height)), Color.White);
+						sb.Draw(gradH, new Rectangle(0, (int)(pos.Y + visibleArea.Height - 80), Main.screenWidth, 80), color);
+						break;
+
+					case VisibleShape.circle:
+						Texture2D circle = Assets.Keys.GlowLarge.Value;
+						Rectangle target = visibleArea;
+						target.Offset((-Main.screenPosition).ToPoint());
+						sb.Draw(tex, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+						sb.Draw(circle, target, Color.Black * (1f - opacity));
+						break;
+				}
 			}
 		}
 

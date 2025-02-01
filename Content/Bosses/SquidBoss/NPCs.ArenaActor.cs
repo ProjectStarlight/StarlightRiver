@@ -463,7 +463,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			spriteBatch.End(); //we have to restart the SB here anyways, so lets use it to draw our BG with primitives
 
 			Texture2D backdrop = Assets.Bosses.SquidBoss.Window.Value;
-			LightingBufferRenderer.DrawWithLighting(NPC.Center - backdrop.Size() / 2 + new Vector2(0, -886) - Main.screenPosition, backdrop);
+			LightingBufferRenderer.DrawWithLighting(backdrop, NPC.Center - backdrop.Size() / 2 + new Vector2(0, -886) - Main.screenPosition, Color.White);
 
 			Vector2 shinePos = NPC.Center - backdrop.Size() / 2 + new Vector2(0, 1760 - WaterLevel) - Main.screenPosition;
 			DrawShine(new Rectangle((int)shinePos.X, (int)shinePos.Y, backdrop.Width, 240));

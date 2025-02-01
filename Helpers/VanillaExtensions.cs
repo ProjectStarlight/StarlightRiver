@@ -55,5 +55,10 @@ namespace StarlightRiver.Helpers
 			NPC.frame.X = x;
 			NPC.frame.Y = y;
 		}
+
+		public static bool IsSquareSolidTile(this Tile tile)
+		{
+			return tile.HasTile && Main.tileSolid[tile.TileType] && !tile.IsActuated && !tile.IsHalfBlock && tile.Slope == Terraria.ID.SlopeType.Solid;
+		}
 	}
 }

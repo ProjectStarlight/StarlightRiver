@@ -129,7 +129,13 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			{
 				modifiers.FinalDamage -= int.MaxValue;
 				modifiers.HideCombatText();
+			}
+		}
 
+		public override void HitEffect(NPC.HitInfo hit)
+		{
+			if (Shield == 1)
+			{
 				badHits++;
 				CombatText.NewText(NPC.Hitbox, new Color(200, 255, 255), badHits > 20 ? "Dash into me first!" : "Blocked!");
 			}

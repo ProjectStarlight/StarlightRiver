@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 		public override string Texture => AssetDirectory.JungleItem + Name;
 
 		public StoneOfTheDrowned() : base("Stone of the Drowned",
-			"+30 {{barrier}}\n" +
+			"+30 maximum {{barrier}}\n" +
 			"Increases your max minions by 2 when you have no {{barrier}}\n" +
 			"Re-summons two slots worth of minions when you reach 0 {{barrier}}")
 		{ }

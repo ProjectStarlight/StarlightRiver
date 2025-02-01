@@ -128,7 +128,7 @@ namespace StarlightRiver.Core
 				Texture2D tex = TextureAssets.Tile[t.TileType].Value;
 				Rectangle frame = tex.Frame(variantCount, 1, t.TileFrameX - 1);
 				Vector2 pos = position - Main.screenPosition + DrawOffset - new Vector2(frame.Width * 0.5f, frame.Height);
-				LightingBufferRenderer.DrawWithLighting(pos, tex, frame, DrawColor);
+				LightingBufferRenderer.DrawWithLighting(tex, pos, frame, DrawColor);
 			}
 		}
 	}

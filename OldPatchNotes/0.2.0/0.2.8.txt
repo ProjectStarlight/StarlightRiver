@@ -119,5 +119,23 @@
 - Moving platforms now treat queen slime hook normally
 - Fixes for inverted gravity rendering
 
+# Starlight River 0.2.8.3
+
+## Fixes
+- Fixed an issue where players could still phase through boss arenas
+- Fixed stellar rush causing a softlock
+- Fixed hotsprings removing buffs
+
+# Starlight River 0.2.8.4
+
+## Fixes
+- Fixed auroracle's arena being able to be moved
+- Fixed glassweaver's downed flag not triggering properly
+- Fixed various typos in dialogue and tooltips
+- Fixed the thousandth degree using an incorrect sprite
+- Improved the consistency of generating auroracles arena in a safe place
+
+
+
 
 

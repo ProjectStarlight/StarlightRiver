@@ -9,7 +9,8 @@ namespace StarlightRiver.Content.PersistentData
 	{
 		Auroracle = 1,
 		Glassweaver = 2,
-		Ceiros = 4
+		Ceiros = 4,
+		Thinker = 8,
 	}
 
 	internal class BossRushDataStore : PersistentDataStore
@@ -23,7 +24,7 @@ namespace StarlightRiver.Content.PersistentData
 		/// <summary>
 		/// If the boss rush should be unlocked or not
 		/// </summary>
-		public static bool UnlockedBossRush => ((int)PersistentDataStoreSystem.GetDataStore<BossRushDataStore>().flags & 0b111) == 0b111;
+		public static bool UnlockedBossRush => ((int)PersistentDataStoreSystem.GetDataStore<BossRushDataStore>().flags & 0b1111) == 0b1111;
 
 		/// <summary>
 		/// Returns if a given boss is recorded as being beaten or not

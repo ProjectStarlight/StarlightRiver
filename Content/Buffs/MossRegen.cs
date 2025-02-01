@@ -2,7 +2,7 @@
 {
 	public class MossRegen : SmartBuff
 	{
-		public MossRegen() : base("Mending Moss", "Regenerating life quickly!", false) { }
+		public MossRegen() : base("Mending Moss", "+10 life regeneration", false) { }
 
 		public override string Texture => AssetDirectory.Buffs + "MossRegen";
 

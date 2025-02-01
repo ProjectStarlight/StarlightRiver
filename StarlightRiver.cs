@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Terraria.ID;
 
 namespace StarlightRiver
 {
@@ -137,6 +138,12 @@ namespace StarlightRiver
 
 					((IPostLoadable)toLoad).PostLoad();
 				}
+			}
+
+
+			for(int k = 0; k < NPCID.Count; k++)
+			{
+
 			}
 		}
 

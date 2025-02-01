@@ -37,6 +37,7 @@ namespace StarlightRiver.Core
 		public const string AluminumItem = Assets + "Items/AstralMeteor/";
 		public const string MoonstoneItem = Assets + "Items/Moonstone/";
 		public const string CaveTempleItem = Assets + "Items/UndergroundTemple/";
+		public const string CrimsonItem = Assets + "Items/Crimson/";
 		public const string DungeonItem = Assets + "Items/Dungeon/";
 		public const string HellItem = Assets + "Items/Hell/";
 		public const string JungleItem = Assets + "Items/Jungle/";
@@ -141,6 +142,8 @@ namespace StarlightRiver.Core
 		public const string DesertItem = Assets + "Items/Desert/";
 
 		public const string EvilBiomesItem = Assets + "Items/EvilBiomes/";
+
+		public const string BrainRedux = Assets + "Bosses/BrainRedux/";
 
 		//structures
 		public const string StructureFolder = "Structures/";

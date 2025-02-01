@@ -6,7 +6,6 @@
 
 		public override void SetStaticDefaults()
 		{
-			//this.QuickSetFurniture(3, 3, 7, SoundID.Dig, false, new Color(120, 85, 60), false, false, "Trophy");
 			this.QuickSetPainting(3, 3, 7, new Color(120, 85, 60), "Trophy");
 		}
 	}
