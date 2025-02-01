@@ -3696,8 +3696,8 @@ Items: {
 	}
 
 	DebugStick2: {
-		DisplayName: Debug Stick 2
 		Tooltip: Has whatever effects are needed
+		DisplayName: Debug Stick 2
 	}
 }
 

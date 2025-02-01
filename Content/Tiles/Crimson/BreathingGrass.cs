@@ -13,10 +13,34 @@ namespace StarlightRiver.Content.Tiles.Crimson
 		public override void SetStaticDefaults()
 		{
 			Main.tileSolid[Type] = false;
+			Main.tileFrameImportant[Type] = true;
+		}
+
+		public override void NearbyEffects(int i, int j, bool closer)
+		{
+			Vector2 logicPos = new Vector2(i, j + 1) * 16;
+
+			float dist = Math.Abs(logicPos.X - Main.LocalPlayer.Center.X);
+			float yDist = Math.Abs(logicPos.Y - Main.LocalPlayer.Center.Y);
+
+			var tile = Framing.GetTileSafely(i, j);
+
+			if (tile.TileFrameX != dist)
+				tile.TileFrameX += (short)((dist - tile.TileFrameX) * 0.1f);
+
+			if (tile.TileFrameY != yDist)
+				tile.TileFrameY += (short)((yDist - tile.TileFrameY) * 0.1f);
+
+			if (tile.TileFrameX > 160)
+				tile.TileFrameX = 160;
+
+			if (tile.TileFrameY > 160)
+				tile.TileFrameY = 160;
 		}
 
 		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 		{
+			var tile = Framing.GetTileSafely(i, j);
 			Texture2D tex = Assets.Tiles.Crimson.BreathingGrass.Value;
 			Vector2 pos = (new Vector2(i, j + 1) + Helpers.Helper.TileAdj) * 16;
 			Vector2 logicPos = new Vector2(i, j + 1) * 16;
@@ -37,8 +61,8 @@ namespace StarlightRiver.Content.Tiles.Crimson
 				pos.Y += 2;
 
 				float baseLen = 2;
-				float dist = Math.Abs(logicPos.X - Main.LocalPlayer.Center.X);
-				float yDist = Math.Abs(logicPos.Y - Main.LocalPlayer.Center.Y);
+				float dist = tile.TileFrameX;
+				float yDist = tile.TileFrameY;
 
 				float mag = (float)Math.Sin((dist - 20) / 140f * 3.14f) * (1f - yDist / 100f);
 
