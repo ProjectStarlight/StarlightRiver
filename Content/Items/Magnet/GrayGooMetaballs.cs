@@ -91,7 +91,7 @@ namespace StarlightRiver.Content.Items.Magnet
 		public override bool PostDraw(SpriteBatch spriteBatch, Texture2D target)
 		{
 			var sourceRect = new Rectangle(0, 0, target.Width, target.Height);
-			LightingBufferRenderer.DrawWithLighting(sourceRect, target, sourceRect, InteriorColor, new Vector2(2, 2));
+			LightingBufferRenderer.DrawWithLighting(target, Vector2.Zero, sourceRect, InteriorColor, 0, Vector2.Zero, 2f);
 
 			visible = false;
 			return false;

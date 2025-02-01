@@ -227,7 +227,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			Color color = Color.White;
 			color.A = (byte)(shellOpacity * 255);
 
-			LightingBufferRenderer.DrawWithLighting(pos, tex, color * shellOpacity);
+			LightingBufferRenderer.DrawWithLighting(tex, pos, color * shellOpacity);
 
 			return false;
 		}

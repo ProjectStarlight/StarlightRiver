@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
-			LightingBufferRenderer.DrawWithLighting(pos, backdrop, frame);
+			LightingBufferRenderer.DrawWithLighting(backdrop, pos, frame, Color.White);
 			Main.spriteBatch.Draw(backdropGlow, pos, frame, Color.White);
 
 			float fade = 1 - CutawayHandler.forgeOverlay?.fadeTime ?? 0;

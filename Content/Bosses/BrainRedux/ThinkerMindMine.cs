@@ -74,7 +74,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				Vector2 scale = new Vector2(1f + pulse * 0.1f, 1f + pulse2 * 0.1f) * opacity;
 
 				Vector2 scaleAdj = tex.Size() - tex.Size() * scale;
-				LightingBufferRenderer.DrawWithLighting(Projectile.position - Main.screenPosition + Vector2.One * 75 - tex.Size() / 2f + scaleAdj / 2, tex, Color.White * opacity, scale);
+				LightingBufferRenderer.DrawWithLighting(tex, Projectile.position - Main.screenPosition + Vector2.One * 75 - tex.Size() / 2f + scaleAdj / 2, null, Color.White * opacity, 0f, Vector2.Zero, scale);
 
 				if (Projectile.timeLeft < 90)
 					Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 40, 40, 0) * MathF.Sin(Projectile.timeLeft / 90f * 6.28f) * 0.5f * opacity, 0f, tex.Size() / 2f, scale, 0, 0);
@@ -173,7 +173,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			Vector2 scale = new Vector2(1f + pulse * 0.1f, 1f + pulse2 * 0.1f) * opacity;
 
 			Vector2 scaleAdj = tex.Size() - tex.Size() * scale;
-			LightingBufferRenderer.DrawWithLighting(Projectile.position - Main.screenPosition + Vector2.One * 75 - tex.Size() / 2f + scaleAdj / 2, tex, Color.White * opacity, scale);
+			LightingBufferRenderer.DrawWithLighting(tex, Projectile.position - Main.screenPosition + Vector2.One * 75 - tex.Size() / 2f + scaleAdj / 2, null, Color.White * opacity, 0, Vector2.Zero, scale);
 
 			if (Projectile.timeLeft < 90)
 				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 40, 40, 0) * MathF.Sin(Projectile.timeLeft / 90f * 6.28f) * 0.5f * opacity, 0f, tex.Size() / 2f, scale, 0, 0);

@@ -116,7 +116,7 @@ namespace StarlightRiver.Content.Tiles.Crimson
 			var origin = new Vector2(48, 120 - 48);
 			var pos = Center - Main.screenPosition;
 
-			LightingBufferRenderer.DrawWithLighting(pos, tex, source, Color.White, Vector2.One, origin, angle);
+			LightingBufferRenderer.DrawWithLighting(tex, pos, source, Color.White, angle, origin, 1f);
 
 			var arrow = Assets.MagicPixel.Value;
 			Main.spriteBatch.Draw(arrow, new Rectangle((int)pos.X, (int)pos.Y, 100, 2), source, Color.LimeGreen, angle - 1.57f / 2f, origin, 0, 0);

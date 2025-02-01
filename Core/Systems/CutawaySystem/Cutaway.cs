@@ -32,7 +32,7 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 			bounds.Offset((-Main.screenPosition).ToPoint());
 
 			if (ScreenTracker.OnScreenScreenspace(bounds))
-				LightingBufferRenderer.DrawWithLighting(pos - Main.screenPosition, tex, Color.White * opacity);
+				LightingBufferRenderer.DrawWithLighting(tex, pos - Main.screenPosition, Color.White * opacity);
 
 			if (Fade)
 				fadeTime -= 0.025f;

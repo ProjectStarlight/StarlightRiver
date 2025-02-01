@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			Texture2D tex = Assets.Bosses.BrainRedux.ShellBack.Value;
 			Vector2 pos = home - Main.screenPosition - tex.Size() / 2f;
 
-			LightingBufferRenderer.DrawWithLighting(pos, tex, Color.White);
+			LightingBufferRenderer.DrawWithLighting(tex, pos, Color.White);
 		}
 
 		public void DrawArena(SpriteBatch spriteBatch)
