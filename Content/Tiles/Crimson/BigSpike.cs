@@ -12,64 +12,6 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 		public override int DummyType => DummySystem.DummyType<BigSpikeDummy>();
 
-		static readonly (int dx, int dy)[] directions = new (int, int)[]
-		{
-			(-1, -1), (0, -1), (1, -1),
-			(-1,  0),         (1,  0),
-			(-1,  1), (0,  1), (1,  1)
-		};
-
-		static readonly float[] angles = new float[]
-		{
-			(float)(Math.PI * 5 / 4), (float)(Math.PI * 3 / 2), (float)(Math.PI * 7 / 4),
-			(float)Math.PI,         float.NaN,     0f,
-			(float)(Math.PI * 3 / 4), (float)(Math.PI / 2),     (float)(Math.PI / 4)
-		};
-
-		public static float GetArrowDirection(bool[,] grid)
-		{
-			int[] openCounts = new int[8];
-
-			for (int i = 0; i < directions.Length; i++)
-			{
-				int dx = directions[i].dx;
-				int dy = directions[i].dy;
-				int count = 0;
-
-				for (int step = 1; step < 3; step++)
-				{
-					int x = 1 + dx * step;
-					int y = 1 + dy * step;
-
-					if (x < 0 || x >= 3 || y < 0 || y >= 3 || grid[x, y])
-						break;
-
-					count++;
-				}
-
-				openCounts[i] = count;
-			}
-
-			int bestIndex = -1;
-			int maxOpen = 0;
-
-			for (int i = 0; i < openCounts.Length; i++)
-			{
-				if (openCounts[i] > maxOpen)
-				{
-					maxOpen = openCounts[i];
-					bestIndex = i;
-				}
-			}
-
-			if (bestIndex == -1)
-			{
-				return float.NaN;
-			}
-
-			return angles[bestIndex];
-		}
-
 		public override void SetStaticDefaults()
 		{
 			QuickBlock.QuickSetFurniture(this, 1, 1, DustID.Bone, SoundID.NPCHit10, new Color(60, 40, 20));
@@ -84,17 +26,25 @@ namespace StarlightRiver.Content.Tiles.Crimson
 		{
 			bool[,] occlusions = new bool[3, 3];
 
+			Vector2 final = Vector2.Zero;
+
 			for (int x = 0; x < 3; x++)
 			{
 				for (int y = 0; y < 3; y++)
 				{
+					if (x == 1 && y == 1)
+						continue;
+
 					Tile scan = Framing.GetTileSafely(i - 1 + x, j - 1 + y);
-					occlusions[x, y] = scan.HasTile && Main.tileSolid[scan.TileType];
+					bool occluded = scan.HasTile && Main.tileSolid[scan.TileType];
+
+					if (!occluded)
+						final += Vector2.Normalize(new Vector2(x - 1, y - 1));
 				}
 			}
 
 			Tile tile = Framing.GetTileSafely(i, j);
-			float angle = GetArrowDirection(occlusions);
+			float angle = final.ToRotation();
 
 			if (float.IsNaN(angle))
 			{
@@ -103,6 +53,7 @@ namespace StarlightRiver.Content.Tiles.Crimson
 			}
 
 			tile.TileFrameX = (short)(angle * 100);
+			tile.TileFrameY = (short)Main.rand.Next(6);
 
 			return true;
 		}
@@ -123,8 +74,11 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 			LightingBufferRenderer.DrawWithLighting(tex, pos, source, Color.White, angle, origin, 1f);
 
-			var arrow = Assets.MagicPixel.Value;
-			Main.spriteBatch.Draw(arrow, new Rectangle((int)pos.X, (int)pos.Y, 100, 2), source, Color.LimeGreen, angle - 1.57f / 2f, origin, 0, 0);
+			if (StarlightRiver.debugMode)
+			{
+				var arrow = Assets.MagicPixel.Value;
+				Main.spriteBatch.Draw(arrow, new Rectangle((int)pos.X, (int)pos.Y, 100, 2), source, Color.LimeGreen, angle - 1.57f / 2f, origin, 0, 0);
+			}
 		}
 	}
 }
