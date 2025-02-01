@@ -228,17 +228,17 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 
 		public static void DrawWithLighting(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color)
 		{
-			DrawWithLighting(texture, new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height), sourceRectangle, color, 0, Vector2.Zero, Vector2.One);
+			DrawWithLighting(texture, new Rectangle((int)position.X, (int)position.Y, sourceRectangle?.Width ?? texture.Width, sourceRectangle?.Height ?? texture.Height), sourceRectangle, color, 0, Vector2.Zero, Vector2.One);
 		}
 
 		public static void DrawWithLighting(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color, float rotation, Vector2 origin, float scale)
 		{
-			DrawWithLighting(texture, new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height), sourceRectangle, color, rotation, origin, Vector2.One * scale);
+			DrawWithLighting(texture, new Rectangle((int)position.X, (int)position.Y, sourceRectangle?.Width ?? texture.Width, sourceRectangle?.Height ?? texture.Height), sourceRectangle, color, rotation, origin, Vector2.One * scale);
 		}
 
 		public static void DrawWithLighting(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color, float rotation, Vector2 origin, Vector2 scale)
 		{
-			DrawWithLighting(texture, new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height), sourceRectangle, color, rotation, origin, scale);
+			DrawWithLighting(texture, new Rectangle((int)position.X, (int)position.Y, sourceRectangle?.Width ?? texture.Width, sourceRectangle?.Height ?? texture.Height), sourceRectangle, color, rotation, origin, scale);
 		}
 
 		public static void DrawWithLighting(Texture2D texture, Rectangle destinationRectangle, Color color)

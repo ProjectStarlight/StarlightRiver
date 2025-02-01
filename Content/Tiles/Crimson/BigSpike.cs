@@ -75,6 +75,11 @@ namespace StarlightRiver.Content.Tiles.Crimson
 			QuickBlock.QuickSetFurniture(this, 1, 1, DustID.Bone, SoundID.NPCHit10, new Color(60, 40, 20));
 		}
 
+		public override bool SpawnConditions(int i, int j)
+		{
+			return true;
+		}
+
 		public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 		{
 			bool[,] occlusions = new bool[3, 3];
