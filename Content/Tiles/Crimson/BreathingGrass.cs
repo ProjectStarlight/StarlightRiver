@@ -20,8 +20,8 @@ namespace StarlightRiver.Content.Tiles.Crimson
 		{
 			Vector2 logicPos = new Vector2(i, j + 1) * 16;
 
-			float dist = Math.Abs(logicPos.X - Main.LocalPlayer.Center.X);
-			float yDist = Math.Abs(logicPos.Y - Main.LocalPlayer.Center.Y);
+			float dist = Vector2.Distance(logicPos, Main.LocalPlayer.Center);
+			float yDist = Main.LocalPlayer.Center.X > logicPos.X ? 600 : 0;
 
 			var tile = Framing.GetTileSafely(i, j);
 
@@ -29,13 +29,16 @@ namespace StarlightRiver.Content.Tiles.Crimson
 				tile.TileFrameX += (short)((dist - tile.TileFrameX) * 0.1f);
 
 			if (tile.TileFrameY != yDist)
-				tile.TileFrameY += (short)((yDist - tile.TileFrameY) * 0.1f);
+				tile.TileFrameY += (short)((yDist - tile.TileFrameY) * 0.02f);
 
 			if (tile.TileFrameX > 160)
 				tile.TileFrameX = 160;
 
-			if (tile.TileFrameY > 160)
-				tile.TileFrameY = 160;
+			if (tile.TileFrameY > 600)
+				tile.TileFrameY = 600;
+
+			if (tile.TileFrameY < 0)
+				tile.TileFrameY = 0;
 		}
 
 		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
@@ -62,14 +65,14 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 				float baseLen = 2;
 				float dist = tile.TileFrameX;
-				float yDist = tile.TileFrameY;
+				float swayOff = (tile.TileFrameY - 300) * 0.01f;
 
-				float mag = (float)Math.Sin((dist - 20) / 140f * 3.14f) * (1f - yDist / 100f);
+				float mag = (float)Math.Sin((dist - 20) / 140f * 3.14f);
 
-				if (dist < 160 && dist > 20 && yDist < 100)
+				if (dist < 160 && dist > 20)
 				{
 					baseLen += 4 * mag;
-					sway += (logicPos.X < Main.LocalPlayer.Center.X ? 3 : -3) * mag;
+					sway += swayOff * mag;
 				}
 
 				Vector2 lastPos = pos;
