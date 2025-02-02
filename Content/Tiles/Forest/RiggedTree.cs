@@ -12,6 +12,7 @@ using Terraria.Enums;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ObjectData;
+using Terraria.Utilities;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TreeView;
 
 namespace StarlightRiver.Content.Tiles.Forest
@@ -168,6 +169,8 @@ namespace StarlightRiver.Content.Tiles.Forest
 			bool up = Framing.GetTileSafely(i, j - 1).TileType == ModContent.TileType<RiggedTree>();
 			bool down = Framing.GetTileSafely(i, j + 1).TileType == ModContent.TileType<RiggedTree>();
 
+			bool farUp = Framing.GetTileSafely(i, j - 4).TileType == ModContent.TileType<RiggedTree>();
+
 			if (up || down)
 			{
 				if (right)
@@ -177,6 +180,9 @@ namespace StarlightRiver.Content.Tiles.Forest
 					x = 18;
 
 				y = (short)(j % 2 * 18);
+
+				if (!farUp)
+					y += 36;
 
 				x += (short)(36 * Main.rand.Next(4));
 			}
@@ -227,7 +233,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 			float windDir = Main.windSpeedCurrent > 0 ? 1 : -1;
 			var branchRot = Main.windSpeedCurrent * 0.05f + Sway(Center, 0.02f);
 
-			LightingBufferRenderer.DrawWithLighting(branches, Center - Main.screenPosition, null, Color.White, branchRot, branchOrigin, 1);
+			LightingBufferRenderer.DrawWithLighting(branches, Center - Main.screenPosition + Vector2.UnitY * 2, null, Color.White, branchRot, branchOrigin, 1);
 		}
 
 		public override void PostDraw(Color lightColor)
@@ -238,11 +244,12 @@ namespace StarlightRiver.Content.Tiles.Forest
 			float windDir = Main.windSpeedCurrent > 0 ? 1 : -1;
 
 			var branchRot = Main.windSpeedCurrent * 0.05f + Sway(Center, 0.02f);
+			var leafRand = new UnifiedRandom((int)Center.X ^ (int)Center.Y);
 
 			foreach (var point in treeRig.Points)
 			{
 				Vector2 pointPos = pos + new Vector2(point.X, point.Y) * 2;
-				Rectangle source = new Rectangle(0, point.Frame * 82, 82, 82);
+				Rectangle source = new Rectangle(leafRand.NextBool() ? 82 : 0, point.Frame * 82, 82, 82);
 				Vector2 origin = Vector2.One * 41;
 				float weight = point.Frame % 2 == 0 ? 6 : 4;
 
