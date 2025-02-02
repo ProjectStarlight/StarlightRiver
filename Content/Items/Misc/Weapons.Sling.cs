@@ -14,9 +14,9 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override List<AmmoStruct> ValidAmmos => new()
 		{
-			new AmmoStruct(ItemID.Seed, ModContent.ProjectileType<SlingSeedProjectile>(), shootspeed: -5f), //seed projectile has 1 extra update, so shootspeed is decreased to compensate, effective shootspeed is around 20
-            new AmmoStruct(ItemID.StoneBlock, ModContent.ProjectileType<SlingStoneProjectile>(), 5, -4f, 2.5f),
-			new AmmoStruct(ItemID.Mushroom, ModContent.ProjectileType<SlingMushroomProjectile>(), -2)
+			new AmmoStruct(ItemID.Seed, ModContent.ProjectileType<SlingSeedProjectile>(), "Flies faster and further", shootspeed: -5f), //seed projectile has 1 extra update, so shootspeed is decreased to compensate, effective shootspeed is around 20
+            new AmmoStruct(ItemID.StoneBlock, ModContent.ProjectileType<SlingStoneProjectile>(), "Slower velocity but hits harder", 5, -4f, 2.5f),
+			new AmmoStruct(ItemID.Mushroom, ModContent.ProjectileType<SlingMushroomProjectile>(), "Weaker damage but inflicts Poisoned", -2)
 		};
 
 		public override bool SafeCanUseItem(Player player)
@@ -48,9 +48,6 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			Tooltip.SetDefault("Sling seeds, stones, and mushrooms at your enemies\n" +
-				"Seeds have increased velocity\n" +
-				"Stones have less velocity but deal more damage and knockback\n" +
-				"Mushrooms deal less damage but inflict Poisoned\n" +
 				"75% chance to not consume ammo");
 		}
 
@@ -91,7 +88,7 @@ namespace StarlightRiver.Content.Items.Misc
 			player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, rotation - (player.direction == 1 ? MathHelper.ToRadians(120f) : MathHelper.ToRadians(60f)));
 			var itemSize = new Vector2(22);
 			var itemOrigin = new Vector2(-6f, 0f);
-			HoldStyleAdjustments(player, rotation, itemPosition, itemSize, itemOrigin, true, false, true);
+			Helper.CleanHoldStyle(player, rotation, itemPosition, itemSize, itemOrigin, true, false, true);
 		}
 
 		public override void UseStyle(Player player, Rectangle heldItemFrame)
@@ -114,37 +111,6 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.NewProjectileDirect(source, player.Center, Vector2.Zero, ModContent.ProjectileType<SlingHeldProjectile>(), damage, knockback, player.whoAmI,
 				currentAmmoStruct.projectileID, Item.shootSpeed + currentAmmoStruct.shootSpeed);
 			return false;
-		}
-
-		public void HoldStyleAdjustments(Player player, float desiredRotation, Vector2 desiredPosition, Vector2 spriteSize, Vector2? rotationOriginFromCenter = null, bool noSandstorm = false, bool flipAngle = false, bool stepDisplace = true)
-		{
-			if (noSandstorm)
-				player.sandStorm = false;
-
-			if (rotationOriginFromCenter == null)
-				rotationOriginFromCenter = new Vector2?(Vector2.Zero);
-
-			Vector2 origin = rotationOriginFromCenter.Value;
-			origin.X *= player.direction;
-			origin.Y *= player.gravDir;
-			player.itemRotation = desiredRotation;
-
-			if (flipAngle)
-				player.itemRotation *= player.direction;
-			else if (player.direction < 0)
-				player.itemRotation += 3.1415927f;
-
-			Vector2 consistentAnchor = player.itemRotation.ToRotationVector2() * (spriteSize.X / -2f - 10f) * player.direction - origin.RotatedBy(player.itemRotation, default);
-			Vector2 offsetAgain = spriteSize * -0.5f;
-			Vector2 finalPosition = desiredPosition + offsetAgain + consistentAnchor;
-			if (stepDisplace)
-			{
-				int frame = player.bodyFrame.Y / player.bodyFrame.Height;
-				if (frame > 6 && frame < 10 || frame > 13 && frame < 17)
-					finalPosition -= Vector2.UnitY * 2f;
-			}
-
-			player.itemLocation = finalPosition;
 		}
 	}
 

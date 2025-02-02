@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void SetDefaults()
 		{
-			Item.damage = 44;
+			Item.damage = 50;
 			Item.DamageType = DamageClass.Magic;
 			Item.width = 16;
 			Item.height = 64;

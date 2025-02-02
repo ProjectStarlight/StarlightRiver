@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Items.Jungle
 
 		public override void SetStaticDefaults()
 		{
-			Tooltip.SetDefault("All damage dealt is converted into stacks of {{BUFF:CorpseflowerBuff}}\nBase damage is decreased\nYou are unable to critically strike");
+			Tooltip.SetDefault("All damage dealt is converted into stacks of {{BUFF:CorpseflowerBuff}}\nBase damage is decreased by 65%\nYou are unable to critically strike");
 
 			ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.NaturesGift;
 			ItemID.Sets.ShimmerTransformToItem[ItemID.NaturesGift] = Type;
@@ -174,7 +174,7 @@ namespace StarlightRiver.Content.Items.Jungle
 		{
 			if (Equipped(player))
 			{
-				BuffInflictor.InflictStack<CorpseflowerBuff, CorpseflowerStack>(target, 600, new CorpseflowerStack() { duration = 600, damage = Utils.Clamp((int)(damageDone * 0.45f), 1, damageDone) });
+				BuffInflictor.InflictStack<CorpseflowerBuff, CorpseflowerStack>(target, 600, new CorpseflowerStack() { duration = 600, damage = Utils.Clamp((int)(damageDone * 0.35f), 1, damageDone) });
 
 				if (Main.myPlayer == player.whoAmI)
 				{
@@ -191,7 +191,7 @@ namespace StarlightRiver.Content.Items.Jungle
 		{
 			if (Equipped(player))
 			{
-				BuffInflictor.InflictStack<CorpseflowerBuff, CorpseflowerStack>(target, 600, new CorpseflowerStack() { duration = 600, damage = Utils.Clamp((int)(damageDone * 0.45f), 1, damageDone) });
+				BuffInflictor.InflictStack<CorpseflowerBuff, CorpseflowerStack>(target, 600, new CorpseflowerStack() { duration = 600, damage = Utils.Clamp((int)(damageDone * 0.35f), 1, damageDone) });
 
 				if (Main.myPlayer == player.whoAmI)
 				{
