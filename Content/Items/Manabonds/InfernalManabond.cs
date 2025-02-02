@@ -64,6 +64,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 			Projectile.tileCollide = true;
 			Projectile.penetrate = -1;
 			Projectile.hostile = false;
+			Projectile.usesLocalNPCImmunity = true;
 		}
 
 		public override void AI()

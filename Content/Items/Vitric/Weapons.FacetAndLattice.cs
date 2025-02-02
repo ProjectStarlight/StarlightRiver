@@ -26,8 +26,8 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetDefaults()
 		{
 			Item.DamageType = DamageClass.Melee;
-			Item.damage = 37;
-			Item.crit = 6;
+			Item.damage = 45;
+			Item.crit = 15;
 			Item.useTime = 30;
 			Item.useAnimation = 30;
 			Item.width = 32;
@@ -198,7 +198,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 				Terraria.Audio.SoundEngine.PlaySound(slot2, Projectile.Center);
 
-				modifiers.FinalDamage *= 1 + BuffPower / 25f;
+				modifiers.FinalDamage *= 1 + BuffPower / 20f;
 				modifiers.Knockback *= 3;
 
 				for (int k = 0; k < 20; k++)

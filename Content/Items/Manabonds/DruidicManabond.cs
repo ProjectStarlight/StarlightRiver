@@ -36,6 +36,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 			recipe.AddIngredient(ModContent.ItemType<BasicManabond>(), 1);
 			recipe.AddIngredient(ItemID.JungleSpores, 15);
 			recipe.AddIngredient(ItemID.Stinger, 5);
+			recipe.AddIngredient(ItemID.BeeWax, 5);
 			recipe.AddTile(TileID.Bookcases);
 			recipe.Register();
 		}
@@ -60,6 +61,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 			Projectile.friendly = true;
 			Projectile.DamageType = DamageClass.Summon;
 			Projectile.hostile = false;
+			Projectile.usesLocalNPCImmunity = true;
 		}
 
 		public override void AI()

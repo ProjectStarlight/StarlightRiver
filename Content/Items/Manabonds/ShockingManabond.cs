@@ -68,6 +68,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 			Projectile.timeLeft = 15;
 			Projectile.tileCollide = false;
 			Projectile.hostile = false;
+			Projectile.usesLocalNPCImmunity = true;
 		}
 
 		public override void SetStaticDefaults()
