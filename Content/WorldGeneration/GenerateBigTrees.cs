@@ -15,14 +15,14 @@ namespace StarlightRiver.Core
 			progress.Message = "Planting big trees...";
 			for (int k = 60; k < Main.maxTilesX - 60; k++)
 			{
-				if (k > Main.maxTilesX / 3 && k < Main.maxTilesX / 3 * 2 && WorldGen.genRand.NextBool(9)) //inner part of the world
+				if (k > Main.maxTilesX / 3 && k < Main.maxTilesX / 3 * 2 && WorldGen.genRand.NextBool(11)) //inner part of the world
 				{
 					for (int y = 10; y < Main.worldSurface; y++)
 					{
 						if (IsGround(k - 1, y, 4))
 						{
-							PlaceTree(k, y, WorldGen.genRand.Next(20, 35));
-							k += 6;
+							PlaceTree(k, y, WorldGen.genRand.Next(8, 25));
+							k += WorldGen.genRand.Next(8, 16);
 
 							break;
 						}
@@ -77,13 +77,13 @@ namespace StarlightRiver.Core
 				}
 			}
 
-			Helper.PlaceMultitile(new Point16(tx - 1, ty - 3), TileType<ThickTreeBase>());
+			Helper.PlaceMultitile(new Point16(tx - 1, ty - 3), TileType<RiggedTreeBase>());
 
 			for (int x = 0; x < 2; x++)
 			{
 				for (int y = 0; y < height; y++)
 				{
-					WorldGen.PlaceTile(tx + x, ty - (y + 4), TileType<ThickTree>(), true, true);
+					WorldGen.PlaceTile(tx + x, ty - (y + 4), TileType<RiggedTree>(), true, true);
 				}
 			}
 
