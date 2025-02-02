@@ -20,12 +20,13 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 
 		public int timeSinceLastHit = 1;
 		public int rechargeDelay = 300;
-		public int rechargeRate = 6;
+		public int rechargeRate = 10;
 
 		public float barrierDamageReduction = 0.5f;
 
 		public float rechargeAnimationTimer;
 		public Item barrierDyeItem;
+		public bool hideBarrierEffects;
 
 		public bool sendUpdatePacket = false; // set this to true whenever something else happens that would desync shield values, for example: onhit effects
 
@@ -53,13 +54,13 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 
 		private void PostDrawBarrierFX(Player Player, SpriteBatch spriteBatch)
 		{
-			if (!Main.gameMenu)
+			if (!Main.gameMenu && !Player.GetModPlayer<BarrierPlayer>().hideBarrierEffects)
 				Player.GetModPlayer<BarrierPlayer>().Dye?.PostDrawEffects(spriteBatch, Player);
 		}
 
 		private void PreDrawBarrierFX(Player Player, SpriteBatch spriteBatch)
 		{
-			if (!Main.gameMenu)
+			if (!Main.gameMenu && !Player.GetModPlayer<BarrierPlayer>().hideBarrierEffects)
 				Player.GetModPlayer<BarrierPlayer>().Dye?.PreDrawEffects(spriteBatch, Player);
 		}
 
@@ -209,11 +210,13 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 		public override void SaveData(TagCompound tag)
 		{
 			tag["DyeItem"] = barrierDyeItem;
+			tag["Hide"] = hideBarrierEffects;
 		}
 
 		public override void LoadData(TagCompound tag)
 		{
 			barrierDyeItem = tag.Get<Item>("DyeItem");
+			hideBarrierEffects = tag.GetBool("Hide");
 		}
 
 		public override void ResetEffects()
@@ -225,7 +228,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 			overchargeDrainRate = 60;
 
 			rechargeDelay = 300;
-			rechargeRate = 6;
+			rechargeRate = 10;
 
 			barrierDamageReduction = 0.5f;
 

@@ -70,9 +70,9 @@ namespace StarlightRiver.Content.Items.BarrierDye
 
 			float sin = (float)Math.Sin(Main.GameUpdateCount / 10f);
 
-			for (int k = 0; k < 8; k++)
+			for (int k = 0; k < 4; k++)
 			{
-				Vector2 dir = Vector2.UnitX.RotatedBy(k / 8f * 6.28f) * (5.5f + sin * 3.2f);
+				Vector2 dir = Vector2.UnitX.RotatedBy(k / 4f * 6.28f) * (3.5f + sin * 1f);
 				Color color = new Color(100, 255, 255) * (opacity - sin * 0.1f) * 0.9f;
 
 				spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(player.whoAmI) + Vector2.UnitY * player.gfxOffY + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(player.whoAmI), color);

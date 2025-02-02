@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (player.altFunctionUse == 2)
 			{
 				if (!Main.projectile.Any(n => n.active && n.type == ProjectileType<RefractiveBladeLaser>() && n.owner == player.whoAmI))
-					Projectile.NewProjectile(source, position, velocity, ProjectileType<RefractiveBladeLaser>(), (int)(damage * 0.05f), knockback, player.whoAmI, 0, 120);
+					Projectile.NewProjectile(source, position, velocity, ProjectileType<RefractiveBladeLaser>(), (int)(damage * 0.25f), knockback, player.whoAmI, 0, 120);
 
 				return false;
 			}
