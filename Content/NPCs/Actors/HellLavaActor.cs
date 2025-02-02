@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Items.Hell;
+﻿using ReLogic.Peripherals.RGB;
+using StarlightRiver.Content.Items.Hell;
 using StarlightRiver.Content.Items.Infernal;
 using System;
 using System.Collections.Generic;
@@ -233,6 +234,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 				{ ItemID.NightmarePickaxe, ItemType<InfernalHarvest>() },
 				{ ItemID.DeathbringerPickaxe, ItemType<InfernalHarvest>() },
 				{ ItemID.CloudinaBottle, ItemType<FuryInABottle>() },
+				{ ItemID.GuideVoodooDoll, ItemType<Misery>() },
 			};
 		}
 

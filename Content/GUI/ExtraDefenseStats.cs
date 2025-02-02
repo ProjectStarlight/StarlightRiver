@@ -1,6 +1,7 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems.BarrierSystem;
+using StarlightRiver.Core.Systems.InoculationSystem;
 using System;
 using System.Collections.Generic;
 using Terraria.GameContent;
@@ -94,7 +95,7 @@ namespace StarlightRiver.Content.GUI
 				LifePanel.magnitude = player.statLifeMax2 / 800f;
 				LifePanel.extraInfo = $"Regen: {player.lifeRegen / 2f}/s";
 
-				DoTResistancePlayer ResistPlayer = player.GetModPlayer<DoTResistancePlayer>();
+				InoculationPlayer ResistPlayer = player.GetModPlayer<InoculationPlayer>();
 				DoTResistPanel.value = $"{(int)Math.Round(ResistPlayer.DoTResist * 100, MidpointRounding.AwayFromZero)}%";
 				DoTResistPanel.magnitude = ResistPlayer.DoTResist;
 			}

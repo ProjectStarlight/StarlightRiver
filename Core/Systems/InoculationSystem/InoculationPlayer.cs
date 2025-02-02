@@ -2,9 +2,9 @@
 using MonoMod.Cil;
 using System;
 
-namespace StarlightRiver.Core
+namespace StarlightRiver.Core.Systems.InoculationSystem
 {
-	class DoTResistancePlayer : ModPlayer
+	class InoculationPlayer : ModPlayer
 	{
 		public float DoTResist = 0;
 
@@ -19,13 +19,13 @@ namespace StarlightRiver.Core
 
 			c.TryGotoNext(MoveType.After, n => n.MatchCall(typeof(PlayerLoader), "UpdateBadLifeRegen"));
 			c.Emit(OpCodes.Ldarg, 0);
-			c.EmitDelegate<Action<Player>>(ReduceDoT);
+			c.EmitDelegate(ReduceDoT);
 		}
 
 		public static void ReduceDoT(Player Player)
 		{
 			if (Player.lifeRegen < 0)
-				Player.lifeRegen = (int)(Player.lifeRegen * (1.0f - Player.GetModPlayer<DoTResistancePlayer>().DoTResist));
+				Player.lifeRegen = (int)(Player.lifeRegen * (1.0f - Player.GetModPlayer<InoculationPlayer>().DoTResist));
 		}
 
 		public override void ResetEffects()

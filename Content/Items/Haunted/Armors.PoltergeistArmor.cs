@@ -1,5 +1,6 @@
 ﻿using Mono.Cecil;
 using StarlightRiver.Content.Items.Gravedigger;
+using StarlightRiver.Core.Systems.InoculationSystem;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.Audio;
@@ -201,7 +202,7 @@ namespace StarlightRiver.Content.Items.Haunted
 		public override void UpdateEquip(Player Player)
 		{
 			Player.GetDamage(DamageClass.Magic) += 0.05f;
-			Player.GetModPlayer<DoTResistancePlayer>().DoTResist += 0.15f;
+			Player.GetModPlayer<InoculationPlayer>().DoTResist += 0.15f;
 		}
 
 		public override void AddRecipes()
