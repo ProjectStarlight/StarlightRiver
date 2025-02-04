@@ -77,16 +77,6 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			return opacity > 0.5f;
 		}
 
-		public override bool? CanBeHitByItem(Player player, Item item)
-		{
-			return opacity > 0.5f ? null : false;
-		}
-
-		public override bool? CanBeHitByProjectile(Projectile projectile)
-		{
-			return opacity > 0.5f ? null : false;
-		}
-
 		public override void ModifyIncomingHit(ref NPC.HitModifiers modifiers)
 		{
 			modifiers.FinalDamage *= 0;
@@ -124,6 +114,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				if (Timer > 60)
 					NPC.active = false;
 			}
+
+			NPC.dontTakeDamage = opacity <= 0.5f;
 
 			float speed = Vector2.Distance(NPC.position, NPC.oldPosition);
 
