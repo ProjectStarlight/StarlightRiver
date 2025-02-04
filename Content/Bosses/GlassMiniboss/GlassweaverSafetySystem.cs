@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Terraria.ID;
 using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
@@ -49,6 +50,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		/// </summary>
 		public static void DoGlassweaverScan()
 		{
+			// Skip if the MP client, the server takes care of this
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+				return;
+
 			// Skip these checks if the boss fight is active
 			if (NPC.AnyNPCs(ModContent.NPCType<Glassweaver>()))
 				return;
@@ -58,7 +63,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			if (glassWeaver is null)
 			{
-				NPC.NewNPC(null, (int)IntendedGlassweaverLocation.X, (int)IntendedGlassweaverLocation.Y, ModContent.NPCType<GlassweaverFriendly>(), 0, 0, IntendedGlassweaverPhase);
+				int i = NPC.NewNPC(null, (int)IntendedGlassweaverLocation.X, (int)IntendedGlassweaverLocation.Y, ModContent.NPCType<GlassweaverFriendly>(), 0, 0, IntendedGlassweaverPhase);
+				Main.npc[i].netUpdate = true;
 			}
 			else if (glassWeaver.ModNPC is GlassweaverFriendly gw)
 			{
@@ -67,6 +73,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 				if (Vector2.DistanceSquared(glassWeaver.Center, IntendedGlassweaverLocation) > 64)
 					glassWeaver.Center = IntendedGlassweaverLocation;
+
+				glassWeaver.netUpdate = true;
 			}
 			else
 			{
