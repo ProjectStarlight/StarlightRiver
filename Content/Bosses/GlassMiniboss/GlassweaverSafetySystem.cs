@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
 	internal class GlassweaverSafetySystem : ModSystem
 	{
-		int scanTimer = 0;
+		private static int scanTimer = 0;
 
 		private static int intendedGlassweaverPhase;
 
@@ -45,26 +45,41 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			// Every minute we scan for a glassweaver. If there isnt one, or he is malformed, we spawn or correct him.
 			if (scanTimer % 3600 == 0)
+				DoGlassweaverScan();
+		}
+
+		/// <summary>
+		/// Performs a safety check for the glassweaver to ensure he exists in the correct location and state,
+		/// and if not attempts to correct him.
+		/// </summary>
+		public static void DoGlassweaverScan()
+		{
+			// Skip these checks if the boss fight is active
+			if (NPC.AnyNPCs(ModContent.NPCType<Glassweaver>()))
+				return;
+
+			// Otherwise try to spawn/correct him as needed
+			var glassWeaver = Main.npc.FirstOrDefault(n => n.active && n.type == ModContent.NPCType<GlassweaverFriendly>());
+
+			if (glassWeaver is null)
 			{
-				// Skip these checks if the boss fight is active
-				if (NPC.AnyNPCs(ModContent.NPCType<Glassweaver>()))
-					return;
+				NPC.NewNPC(null, (int)IntendedGlassweaverLocation.X, (int)IntendedGlassweaverLocation.Y, ModContent.NPCType<GlassweaverFriendly>(), 0, 0, IntendedGlassweaverPhase);
+			}
+			else if (glassWeaver.ModNPC is GlassweaverFriendly gw)
+			{
+				if (gw.State != intendedGlassweaverPhase)
+					gw.State = intendedGlassweaverPhase;
 
-				// Otherwise try to spawn/correct him as needed
-				var glassWeaver = Main.npc.FirstOrDefault(n => n.active && n.type == ModContent.NPCType<GlassweaverFriendly>());
+				if (Vector2.DistanceSquared(glassWeaver.Center, IntendedGlassweaverLocation) > 64)
+					glassWeaver.Center = IntendedGlassweaverLocation;
+			}
+			else
+			{
+				StarlightRiver.Instance.Logger.Warn("The glassweaver's ModNPC is not of the type for the glassweaver, something horrible has happened! Please report this to https://github.com/ProjectStarlight/StarlightRiver/issues");
+				Main.NewText("The glassweaver's ModNPC is not of the type for the glassweaver, something horrible has happened! Please report this to https://github.com/ProjectStarlight/StarlightRiver/issues", Color.Red);
 
-				if (glassWeaver is null)
-				{
-					NPC.NewNPC(null, (int)IntendedGlassweaverLocation.X, (int)IntendedGlassweaverLocation.Y, ModContent.NPCType<GlassweaverFriendly>(), 0, 0, IntendedGlassweaverPhase);
-				}
-				else
-				{
-					if (glassWeaver.ModNPC is GlassweaverFriendly gw && gw.State != intendedGlassweaverPhase)
-						gw.State = intendedGlassweaverPhase;
-
-					if (Vector2.DistanceSquared(glassWeaver.Center, IntendedGlassweaverLocation) > 64)
-						glassWeaver.Center = IntendedGlassweaverLocation;
-				}
+				glassWeaver.active = false;
+				scanTimer = 3599;
 			}
 		}
 
@@ -81,6 +96,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		public override void LoadWorldData(TagCompound tag)
 		{
 			intendedGlassweaverPhase = tag.GetInt("IntendedPhase");
+
+			DoGlassweaverScan(); // Scan on load
 		}
 	}
 }
