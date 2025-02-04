@@ -1,9 +1,4 @@
-﻿using StarlightRiver.Content.Bosses.VitricBoss;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
@@ -59,7 +54,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				return;
 
 			// Otherwise try to spawn/correct him as needed
-			var glassWeaver = Main.npc.FirstOrDefault(n => n.active && n.type == ModContent.NPCType<GlassweaverFriendly>());
+			NPC glassWeaver = Main.npc.FirstOrDefault(n => n.active && n.type == ModContent.NPCType<GlassweaverFriendly>());
 
 			if (glassWeaver is null)
 			{
