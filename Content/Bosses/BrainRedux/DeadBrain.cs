@@ -40,6 +40,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public float savedRot;
 		public int[] safeMineIndicides = new int[4];
 		public bool contactDamage = false;
+		public float contactDamageOpacity;
 
 		public bool hurtLastFrame;
 
@@ -289,6 +290,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			Timer++;
 			AttackTimer++;
+
+			if (contactDamage && contactDamageOpacity < 1)
+				contactDamageOpacity += 0.05f;
+
+			if (!contactDamage && contactDamageOpacity > 0)
+				contactDamageOpacity -= 0.05f;
 
 			// Emit light if not in the dead state
 			if (Phase != Phases.TempDead)
@@ -679,6 +686,15 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			if (attachedChain != null && chainSplitBrainAttached != null && chainSplitThinkerAttached != null)
 				DrawFleshyChainTrails(isOverlay);
+
+			if (contactDamageOpacity > 0)
+			{
+				for (int k = 0; k < 10; k++)
+				{
+					Vector2 pos = NPC.oldPos[k] + NPC.Size / 2f;
+					DrawBrainSegments(spriteBatch, NPC, pos - Main.screenPosition, new Color(255, 100, 100), NPC.rotation, NPC.scale, k / 30f * contactDamageOpacity, lastPos);
+				}
+			}
 
 			if (Phase == Phases.FirstPhase && AttackState == 2)
 				DrawRamGraphics(spriteBatch);

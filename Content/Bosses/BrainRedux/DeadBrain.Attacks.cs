@@ -17,9 +17,61 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		#region Phase 1
 		public void ShrinkingCircle()
 		{
-			if (AttackTimer < 60)
+			if (AttackTimer == 1)
+				NPC.TargetClosest();
+
+			if (AttackTimer < 60 && !Main.expertMode)
 			{
 				NPC.Center += (thinker.Center + new Vector2(250, -250) - NPC.Center) * 0.08f;
+			}
+
+			// Do an additional slam on expert or higher
+			if (Main.expertMode)
+			{
+				if (AttackTimer < 120)
+				{
+					var target = Main.player[NPC.target].Center + new Vector2(0, -500);
+
+					if (target.Y > ThisThinker.home.Y)
+						target.Y = ThisThinker.home.Y;
+
+					float speed = AttackTimer < 100 ? 1 : (AttackTimer - 100) / 20f;
+
+					NPC.Center += (target - NPC.Center) * 0.1f * speed;
+				}
+
+				if (AttackTimer == 120)
+				{
+					SoundEngine.PlaySound(SoundID.Zombie62.WithPitchOffset(-0.25f), NPC.Center);
+				}
+
+				if (AttackTimer == 180)
+				{
+					savedPos = NPC.Center;
+				}
+
+				if (AttackTimer > 180 && AttackTimer < 220)
+				{
+					contactDamage = true;
+					NPC.Center = Vector2.Lerp(savedPos, savedPos + new Vector2(0, -80), Helpers.Helper.BezierEase((AttackTimer - 180) / 40f));
+				}
+
+				if (AttackTimer == 200)
+				{
+					SoundEngine.PlaySound(SoundID.DeerclopsScream.WithPitchOffset(-0.1f), NPC.Center);
+					savedPos = NPC.Center;
+				}
+
+				if (AttackTimer > 220 && AttackTimer < 240)
+				{
+					contactDamage = true;
+					NPC.Center = Vector2.Lerp(savedPos, savedPos + new Vector2(0, 1000), Helpers.Helper.BezierEase((AttackTimer - 220) / 20f));
+				}
+
+				if (AttackTimer == 240)
+				{
+					contactDamage = false;
+				}
 			}
 
 			if (AttackTimer == 31)
@@ -264,15 +316,6 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				spriteBatch.Draw(tellTex, target, null, new Color(60, 10, 10, 0) * (float)Math.Sin((AttackTimer - 140) / 30f * 3.14f), rot, new Vector2(0, tellTex.Height / 2), 0, 0);
 
-			}
-
-			if (AttackTimer > 160)
-			{
-				for (int k = 0; k < 10; k++)
-				{
-					Vector2 pos = NPC.oldPos[k] + NPC.Size / 2f;
-					DrawBrainSegments(spriteBatch, NPC, pos - Main.screenPosition, new Color(255, 100, 100), NPC.rotation, NPC.scale, k / 30f * (1f - (AttackTimer - 160) / chargeTime), lastPos);
-				}
 			}
 		}
 
@@ -849,15 +892,6 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				target.Offset((-Main.screenPosition).ToPoint());
 
 				spriteBatch.Draw(tellTex, target, null, new Color(60, 10, 10, 0) * (float)Math.Sin((motionTime - 50) / 30f * 3.14f), rot, new Vector2(0, tellTex.Height / 2), 0, 0);
-			}
-
-			if (motionTime > 90)
-			{
-				for (int k = 0; k < 10; k++)
-				{
-					Vector2 pos = NPC.oldPos[k] + NPC.Size / 2f;
-					DrawBrainSegments(spriteBatch, NPC, pos - Main.screenPosition, new Color(255, 50, 70), NPC.rotation, NPC.scale, k / 30f * (1f - (motionTime - 90) / 60f), lastPos);
-				}
 			}
 		}
 

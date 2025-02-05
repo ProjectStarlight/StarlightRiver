@@ -599,7 +599,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
 		{
-			return Helpers.Helper.CheckCircularCollision(NPC.Center, 64, target.Hitbox);
+			return Helpers.Helper.CheckCircularCollision(NPC.Center, 45, target.Hitbox);
 		}
 
 		public override void SaveData(TagCompound tag)
