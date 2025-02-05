@@ -3153,6 +3153,31 @@ Items: {
 		DisplayName: Soft Sand
 		Tooltip: ""
 	}
+
+	IceTempleShinglesItem: {
+		DisplayName: Aurora Temple Shingles
+		Tooltip: ""
+	}
+
+	IceTempleBricksItem: {
+		DisplayName: Coldstone Bricks
+		Tooltip: ""
+	}
+
+	IceTempleCobblesItem: {
+		DisplayName: Coldstone Cobbles
+		Tooltip: ""
+	}
+
+	IceTempleStuccoItem: {
+		DisplayName: Frozen Stucco
+		Tooltip: ""
+	}
+
+	IceTempleStonesItem: {
+		DisplayName: Frozen Stones
+		Tooltip: ""
+	}
 }
 
 Tiles: {
@@ -3337,6 +3362,19 @@ Tiles: {
 	VitricSand.MapEntry: ""
 	VitricSoftSand.MapEntry: ""
 	VitricSandPlain.MapEntry: ""
+	// VitricGiantCrystal.MapEntry: ""
+	// VitricLargeCrystal.MapEntry: ""
+	// VitricMediumCrystal.MapEntry: ""
+	// VitricSmallCrystal.MapEntry: ""
+	IceTempleShingles.MapEntry: ""
+	IceTempleBricks.MapEntry: ""
+	IceTempleCobbles.MapEntry: ""
+	IceTempleStucco.MapEntry: ""
+	IceTempleStones.MapEntry: ""
+	// VitricGiantCrystal.MapEntry: ""
+	// VitricLargeCrystal.MapEntry: ""
+	// VitricMediumCrystal.MapEntry: ""
+	// VitricSmallCrystal.MapEntry: ""
 }
 
 Projectiles: {
@@ -3575,6 +3613,29 @@ Projectiles: {
 	Dart.DisplayName: Cursed Dart
 	SawbladeSmall.DisplayName: Cursed Sawblade
 	Spear.DisplayName: Cursed Spear
+	EarthdusterAshShot.DisplayName: Earthshot
+	EarthdusterCrimsandShot.DisplayName: Earthshot
+	EarthdusterDirtShot.DisplayName: Earthshot
+	EarthdusterEbonsandShot.DisplayName: Earthshot
+	EarthdusterMudShot.DisplayName: Earthshot
+	EarthdusterPearlsandShot.DisplayName: Earthshot
+	EarthdusterSandShot.DisplayName: Earthshot
+	EarthdusterSiltShot.DisplayName: Earthshot
+	EarthdusterSlushShot.DisplayName: Earthshot
+	EarthdusterVitricSandShot.DisplayName: Earthshot
+	SoilgunAshClump.DisplayName: Soil
+	SoilgunAshSoil.DisplayName: Soil
+	SoilgunCrimsandClump.DisplayName: Soil
+	SoilgunDirtClump.DisplayName: Soil
+	SoilgunEbonsandClump.DisplayName: Soil
+	SoilgunMudClump.DisplayName: Soil
+	SoilgunPearlsandClump.DisplayName: Soil
+	SoilgunSandClump.DisplayName: Soil
+	SoilgunSandExplosion.DisplayName: Sand
+	SoilgunSiltClump.DisplayName: Soil
+	SoilgunSlushClump.DisplayName: Soil
+	SoilgunVitricSandClump.DisplayName: Soil
+	NeedlerHoldout.DisplayName: Needler
 }
 
 Biomes: {
@@ -4000,6 +4061,11 @@ Buffs: {
 			What lies below?
 			Increased mining speed
 			'''
+	}
+
+	EbonsandDebuff: {
+		DisplayName: Weakened
+		Description: Damage taken increased by 15%
 	}
 }
 
