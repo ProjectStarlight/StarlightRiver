@@ -503,7 +503,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override bool CheckDead()
 		{
-			if (ThisBrain.Phase != DeadBrain.Phases.ReallyDead)
+			if (ThisBrain != null && ThisBrain.Phase != DeadBrain.Phases.ReallyDead)
 			{
 				NPC.Center = home;
 

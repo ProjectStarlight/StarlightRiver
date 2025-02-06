@@ -41,6 +41,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public int[] safeMineIndicides = new int[4];
 		public bool contactDamage = false;
 		public float contactDamageOpacity;
+		public float chargeAnimation;
 
 		public bool hurtLastFrame;
 
@@ -436,10 +437,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						AttackState = attackQueue[0];
 						attackQueue.RemoveAt(0);
 
-						int next = Main.rand.Next(5);
+						int next = Main.rand.Next(6);
 
 						while (next == attackQueue.Last())
-							next = Main.rand.Next(5);
+							next = Main.rand.Next(6);
 
 						attackQueue.Add(next);
 
@@ -489,6 +490,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 							break;
 						case 4:
 							Choice();
+							break;
+						case 5:
+							ChoiceAlt();
 							break;
 					}
 
@@ -687,12 +691,28 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (attachedChain != null && chainSplitBrainAttached != null && chainSplitThinkerAttached != null)
 				DrawFleshyChainTrails(isOverlay);
 
+			// Draws a trail while the brain has contact damage, and a red glow around it
 			if (contactDamageOpacity > 0)
 			{
 				for (int k = 0; k < 10; k++)
 				{
 					Vector2 pos = NPC.oldPos[k] + NPC.Size / 2f;
-					DrawBrainSegments(spriteBatch, NPC, pos - Main.screenPosition, new Color(255, 100, 100), NPC.rotation, NPC.scale, k / 30f * contactDamageOpacity, lastPos);
+					DrawBrainSegments(spriteBatch, NPC, pos - Main.screenPosition, new Color(255, 100, 100), NPC.rotation, NPC.scale, (1f - k / 10f) * contactDamageOpacity * 0.5f * opacity, lastPos);
+				}
+
+				for(int k = 0; k < 4; k++)
+				{
+					Vector2 pos = NPC.Center + Vector2.UnitX.RotatedBy(k / 4f * 6.28f) * 8;
+					DrawBrainSegments(spriteBatch, NPC, pos - Main.screenPosition, new Color(255, 150, 150), NPC.rotation, NPC.scale, contactDamageOpacity * opacity, lastPos);
+				}
+			}
+
+			if (chargeAnimation > 0)
+			{
+				for (int k = 0; k < 6; k++)
+				{
+					Vector2 pos = NPC.Center + Vector2.UnitX.RotatedBy(k / 6f * 6.28f + chargeAnimation * 3.14f) * (1f - chargeAnimation) * 128;
+					DrawBrainSegments(spriteBatch, NPC, pos - Main.screenPosition, new Color(255, 100, 100), NPC.rotation, NPC.scale, 0.35f * chargeAnimation * opacity, lastPos);
 				}
 			}
 
@@ -749,6 +769,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				effect.Parameters["pulseTexture"]?.SetValue(Assets.Noise.PerlinNoise.Value);
 				effect.Parameters["edgeTexture"]?.SetValue(Assets.Bosses.BrainRedux.ShieldEdge.Value);
 				effect.Parameters["outTexture"]?.SetValue(Assets.Bosses.BrainRedux.ShieldMapOut.Value);
+				effect.Parameters["color"].SetValue(Vector3.Lerp(Vector3.One, new Vector3(1, 0.5f, 0.5f), contactDamageOpacity));
 
 				spriteBatch.End();
 				spriteBatch.Begin(default, BlendState.Additive, default, default, default, effect, Main.Transform);

@@ -164,6 +164,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (Timer == 1)
 			{
 				savedPos = NPC.Center;
+				contactDamage = false;
+				chargeAnimation = 0;
 				CameraSystem.MoveCameraOut(30, savedPos);
 			}
 

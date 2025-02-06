@@ -74,11 +74,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (thinker?.ModNPC is TheThinker think)
 			{
-				if (think.ShouldBeAttacking && Timer < 540)
-					Timer = 540;
+				if (think.ShouldBeAttacking && Timer < 440)
+					Timer = 440;
 			}
 
-			if (Timer > 540)
+			if (Timer > 340)
 				Decay++;
 
 			if (State == 1)

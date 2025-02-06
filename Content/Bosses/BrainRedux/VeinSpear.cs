@@ -15,6 +15,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			set => Projectile.ai[0] = value;
 		}
 
+		public ref float Lifetime => ref Projectile.ai[1];
+
 		public NPC Thinker => Main.npc[ThinkerWhoAmI];
 
 		public override string Texture => AssetDirectory.BrainRedux + Name;
@@ -35,7 +37,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			Projectile.width = 16;
 			Projectile.height = 16;
 			Projectile.penetrate = -1;
-			Projectile.timeLeft = 300;
+			Projectile.timeLeft = 99999;
 			Projectile.tileCollide = true;
 			Projectile.ignoreWater = true;
 		}
@@ -44,7 +46,16 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			Projectile.rotation = Projectile.velocity.ToRotation();
 
-			if (Projectile.timeLeft == 270)
+			if (Lifetime == 0)
+				Lifetime = 300; // Enforce this as the default
+
+			if (Lifetime < 60)
+				Lifetime = 60; // Enforce this as the minimum
+
+			if (Projectile.timeLeft >= 90000)
+				Projectile.timeLeft = (int)Lifetime;
+
+			if (Projectile.timeLeft == (int)Lifetime - 30)
 				Projectile.velocity *= 50f;
 
 			if (Thinker is null)
@@ -136,13 +147,13 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				spriteBatch.Draw(chainTex, pos, null, new Color(220, 60, 70) * opacity, (Projectile.Center - Thinker.Center).ToRotation() + 1.58f, chainTex.Size() / 2, 1, 0, 0);
 			}
 
-			if (Projectile.timeLeft > 270)
+			if (Projectile.timeLeft > Lifetime - 30)
 			{
 				Texture2D tell = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrailNoEnd").Value;
 				var source = new Rectangle(0, 0, tell.Width, tell.Height);
 				var target = new Rectangle((int)(Projectile.Center.X - Main.screenPosition.X), (int)(Projectile.Center.Y - Main.screenPosition.Y), 500, 24);
 				var origin = new Vector2(0, 12);
-				Color color = new Color(255, 40, 40) * (float)Math.Sin((Projectile.timeLeft - 270) / 30f * 3.14f) * 0.5f;
+				Color color = new Color(255, 40, 40) * (float)Math.Sin((Projectile.timeLeft - (Lifetime - 30)) / 30f * 3.14f) * 0.5f;
 				color.A = 0;
 
 				spriteBatch.Draw(tell, target, source, color, Projectile.rotation, origin, 0, 0);

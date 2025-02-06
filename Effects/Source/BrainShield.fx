@@ -57,6 +57,7 @@ float time;
 float2 size;
 float opacity;
 float pixelRes;
+float3 color;
 
 float4 MainPS(float2 st : TEXCOORD) : COLOR
 {
@@ -79,6 +80,7 @@ float4 MainPS(float2 st : TEXCOORD) : COLOR
     noise.g = 0.5 * tex2D(noiseSampler, st + 0.2 + float2(0, time * -0.17)).x;
     noise.b = 0.5 * tex2D(noiseSampler, st + 0.4 + float2(time * -0.13, 0)).x;
     noise.rgb += (noise.r + noise.g + noise.b) / 3.0 * 1.5;
+    noise.rgb *= color;
 
     float3 map = tex2D(drawSampler, oldst).xyz;
     float3 outline = tex2D(outSampler, oldst).xyz;

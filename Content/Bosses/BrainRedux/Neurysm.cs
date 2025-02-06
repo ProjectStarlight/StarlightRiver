@@ -16,6 +16,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public float tellLen;
 		public float hurtTime;
 
+		public Vector2 tellStart;
+
 		/// <summary>
 		/// If this minion should use colored or red trails
 		/// </summary>
@@ -86,6 +88,15 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public override void HitEffect(NPC.HitInfo hit)
 		{
 			CombatText.NewText(NPC.Hitbox, Color.Gray, 0);
+		}
+
+		public void DoTell(float length, float rotation)
+		{
+			tellStart = NPC.Center;
+
+			TellTime = 60;
+			tellLen = length;
+			tellDirection = rotation;
 		}
 
 		public override void AI()
@@ -193,33 +204,34 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				}
 			}
 
-			if (hurtTime > 0 && ThisBrain != null && ThisBrain.NPC.active)
-			{
-				NPC brain = ThisBrain.NPC;
-
-				float len = Vector2.Distance(NPC.Center, brain.Center);
-				float rot = NPC.Center.DirectionTo(brain.Center).ToRotation();
-
-				Texture2D tell = Assets.GlowTrailNoEnd.Value;
-				var source = new Rectangle(0, 0, tell.Width, tell.Height);
-				var target = new Rectangle((int)(NPC.Center.X - Main.screenPosition.X), (int)(NPC.Center.Y - Main.screenPosition.Y), (int)len, 24);
-				var origin = new Vector2(0, 12);
-				Color color = Color.Gray * (hurtTime / 15f) * 0.5f;
-				color.A = 0;
-
-				spriteBatch.Draw(tell, target, source, color, rot, origin, 0, 0);
-			}
-
 			if (TellTime > 0)
 			{
 				Texture2D tell = Assets.GlowTrailNoEnd.Value;
 				var source = new Rectangle(0, 0, tell.Width, tell.Height);
-				var target = new Rectangle((int)(NPC.Center.X - Main.screenPosition.X), (int)(NPC.Center.Y - Main.screenPosition.Y), (int)tellLen, 24);
-				var origin = new Vector2(0, 12);
-				Color color = new Color(160, 40, 40) * (float)Math.Sin(TellTime / 30f * 3.14f) * 0.5f;
+				var target = new Rectangle((int)(NPC.Center.X - Main.screenPosition.X), (int)(NPC.Center.Y - Main.screenPosition.Y), (int)tellLen, 64);
+				var origin = new Vector2(0, tell.Height / 2f);
+				float opacity = (float)Math.Sin(TellTime / 60f * 3.14f) * 0.5f;
+				Color color = new Color(160, 90, 40) * opacity * 0.2f;
 				color.A = 0;
 
 				spriteBatch.Draw(tell, target, source, color, tellDirection + 3.14f, origin, 0, 0);
+
+				for (int k = 0; k < tellLen; k += 48)
+				{
+					Texture2D trail = Assets.Bosses.SquidBoss.SqueezeTellArrow.Value;
+					Vector2 pos = Vector2.Lerp(tellStart, tellStart + Vector2.UnitX.RotatedBy(tellDirection + 3.14f) * tellLen, k / tellLen) - Main.screenPosition;
+
+					float progTell = 1f - k / tellLen;
+					float minTell = progTell * 30;
+					float maxTell = 30 + minTell;
+
+					float thisOpacity = 0.25f;
+
+					if (TellTime > minTell && TellTime < maxTell)
+						thisOpacity += 0.25f * MathF.Sin((TellTime - minTell) / 30f * 3.14f);
+
+					spriteBatch.Draw(trail, pos, null, new Color(255, 180, 80, 0) * opacity * thisOpacity, tellDirection + 3.14f, trail.Size() / 2f, thisOpacity * 2, 0, 0);
+				}
 			}
 
 			//if (State == 0)
