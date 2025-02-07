@@ -149,10 +149,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				NPC.Center += (home - NPC.Center) * 0.02f;
 
 				if (ExtraGrayAuraRadius > -140)
-				{
-					GraymatterBiome.forceGrayMatter = true;
-					ExtraGrayAuraRadius--;
-				}
+					ExtraGrayAuraRadius = -140;
 
 				return;
 			}
@@ -164,6 +161,15 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				if (ThisBrain.Phase >= DeadBrain.Phases.SecondPhase)
 				{
 					Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/TheThinker");
+				}
+
+				if (ThisBrain.Phase == DeadBrain.Phases.FirstPhase && NPC.life > NPC.lifeMax / 2 - 1)
+				{
+					BossBarOverlay.forceInvulnerabilityVisuals = false;
+				}
+				else
+				{
+					BossBarOverlay.forceInvulnerabilityVisuals = null;
 				}
 
 				if (ThisBrain.Phase == DeadBrain.Phases.SecondPhase)

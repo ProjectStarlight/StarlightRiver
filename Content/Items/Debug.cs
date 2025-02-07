@@ -161,13 +161,12 @@ namespace StarlightRiver.Content.Items
 		private void DrawBeta(On_Main.orig_DoDraw orig, Main self, GameTime gameTime)
 		{
 			orig(self, gameTime);
-			return;
 
 			Main.spriteBatch.Begin();
 
 			DynamicSpriteFont font = Terraria.GameContent.FontAssets.ItemStack.Value;
 
-			Utils.DrawBorderStringBig(Main.spriteBatch, $"STARLIGHT RIVER ALPHA TEST -- THINKER BOSS FIGHT TEST 4", new Vector2(Main.screenWidth / 2, 16), Color.White, 0.6f, 0.5f);
+			Utils.DrawBorderStringBig(Main.spriteBatch, $"STARLIGHT RIVER ALPHA TEST -- THINKER BOSS FIGHT TEST 5", new Vector2(Main.screenWidth / 2, 16), Color.White, 0.6f, 0.5f);
 			Utils.DrawBorderStringBig(Main.spriteBatch, $"ALPHA BUILD DOES NOT REPRESENT FINAL PRODUCT", new Vector2(Main.screenWidth / 2, 48), Color.White, 0.6f, 0.5f);
 			Utils.DrawBorderStringBig(Main.spriteBatch, $"YOUR ID: {SteamFriends.GetPersonaName()} ({SteamUser.GetSteamID().m_SteamID})", new Vector2(Main.screenWidth / 2, 80), Color.Gray, 0.6f, 0.5f);
 

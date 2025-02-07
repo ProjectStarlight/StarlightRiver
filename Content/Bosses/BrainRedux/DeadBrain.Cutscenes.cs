@@ -37,12 +37,28 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				if (IsInArena(Main.LocalPlayer))
 				{
-					CameraSystem.MoveCameraOut(90, thinker.Center);
-					ZoomHandler.SetZoomAnimation(1.5f, 90);
+					CameraSystem.MoveCameraOut(60, thinker.Center);
+					ZoomHandler.SetZoomAnimation(1.5f, 60);
 				}
+
+				ThisThinker.shellFrame = 1;
+
+				for (int k = 0; k < 30; k++)
+				{
+					Dust.NewDustPerfect(ThisThinker.NPC.Center, DustID.Stone, Vector2.UnitX.RotatedBy(0.5f).RotatedByRandom(1f) * Main.rand.NextFloat(10), 0, default, 4);
+					Dust.NewDustPerfect(ThisThinker.NPC.Center, DustID.Stone, Vector2.UnitX.RotatedBy(-2.5f).RotatedByRandom(0.6f) * Main.rand.NextFloat(10), 0, default, 3);
+					Dust.NewDustPerfect(ThisThinker.NPC.Center, ModContent.DustType<Dusts.GraymatterDust>(), Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), 0, default, Main.rand.NextFloat(0.5f, 1f));
+				}
+
+				Helpers.Helper.PlayPitched("Impacts/StoneStrike", 1, 2f, ThisThinker.NPC.Center);
 
 				extraChunkRadius = 2;
 				staggeredExtraChunkRadius = 1;
+			}
+
+			if (Timer < 100)
+			{
+				ThisThinker.ExtraGrayAuraRadius = -140 + 140 * (Timer / 100f);
 			}
 
 			if (Timer == 100)
@@ -214,6 +230,19 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			}
 
 			if (Timer == 200)
+			{
+				ThisThinker.shellFrame = 2;
+
+				for (int k = 0; k < 30; k++)
+				{
+					Dust.NewDustPerfect(ThisThinker.NPC.Center, DustID.Stone, Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), 0, default, 4);
+					Dust.NewDustPerfect(ThisThinker.NPC.Center, ModContent.DustType<Dusts.GraymatterDust>(), Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), 0, default, Main.rand.NextFloat(0.8f, 1f));
+				}
+
+				Helpers.Helper.PlayPitched("Impacts/StoneStrike", 1, 2f, ThisThinker.NPC.Center);
+			}
+
+			if (Timer == 260)
 			{
 				Phase = Phases.SecondPhase;
 				Timer = 0;

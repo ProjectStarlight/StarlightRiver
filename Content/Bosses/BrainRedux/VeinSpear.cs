@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Biomes;
 using System;
+using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -40,6 +41,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			Projectile.timeLeft = 99999;
 			Projectile.tileCollide = true;
 			Projectile.ignoreWater = true;
+			Projectile.hide = true;
 		}
 
 		public override void AI()
@@ -117,6 +119,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					spriteBatch.Draw(glow, gTarget, gSource, glowColor, (proj.Center - mp.Thinker.Center).ToRotation() - 3.14f, gOrigin, 0, 0);
 				}
 			}
+		}
+
+		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
+		{
+			behindNPCs.Add(index);
 		}
 
 		public override bool PreDraw(ref Color lightColor)

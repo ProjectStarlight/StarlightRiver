@@ -18,6 +18,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public float arenaFade;
 		public float ArenaOpacity => arenaFade / 120f;
 
+		public int shellFrame = 0;
+
 		public override void DrawBehind(int index)
 		{
 			Main.instance.DrawCacheNPCProjectiles.Add(index);
@@ -26,9 +28,14 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public void DrawUnderShell()
 		{
 			Texture2D tex = Assets.Bosses.BrainRedux.ShellBack.Value;
+			Texture2D texOver = Assets.Bosses.BrainRedux.ShellFront.Value;
+
 			Vector2 pos = home - Main.screenPosition - tex.Size() / 2f;
 
-			LightingBufferRenderer.DrawWithLighting(tex, pos, Color.White);
+			Rectangle frame = new Rectangle(0, texOver.Height / 3 * shellFrame, texOver.Width, texOver.Height / 3);
+
+			LightingBufferRenderer.DrawWithLighting(tex, pos, Color.Gray);
+			LightingBufferRenderer.DrawWithLighting(texOver, pos, frame, Color.White);
 		}
 
 		public void DrawArena(SpriteBatch spriteBatch)
@@ -193,6 +200,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			bodyShader.Parameters["normal_t"].SetValue(Assets.Bosses.BrainRedux.HeartNormal.Value);
 			bodyShader.Parameters["u_color"].SetValue(new Vector3(0.7f, 0.3f, 0.3f) * scale);
 			bodyShader.Parameters["u_fade"].SetValue(Vector3.Lerp(new Vector3(0.0f, 0.2f, 0.4f), new Vector3(0.3f, 0.5f, 0.3f), scale)); // Lerp here so this is the same as the flower core at 0 scale
+			bodyShader.Parameters["mask_t"].SetValue(shellFrame != 1 ? Assets.MagicPixel.Value : Assets.Bosses.BrainRedux.CrackMask.Value);
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, rasterizer, bodyShader, Main.GameViewMatrix.TransformationMatrix);
@@ -293,6 +301,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			bodyShader.Parameters["normal_t"].SetValue(Assets.Bosses.BrainRedux.FlowerCoreNormal.Value);
 			bodyShader.Parameters["u_color"].SetValue(new Vector3(0.9f, 0.7f, 0.2f) * Math.Min(scale / 0.2f, 1));
 			bodyShader.Parameters["u_fade"].SetValue(new Vector3(0.0f, 0.2f, 0.4f));
+			bodyShader.Parameters["mask_t"].SetValue(Assets.MagicPixel.Value);
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, rasterizer, bodyShader, Main.GameViewMatrix.TransformationMatrix);

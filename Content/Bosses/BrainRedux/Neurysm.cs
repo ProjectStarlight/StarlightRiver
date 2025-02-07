@@ -200,6 +200,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						float rot = State == 1 ? k / 6f * 6.28f + prog * 3.14f : k / 6f * 6.28f + (1 - prog) * 3.14f;
 						Vector2 offset = State == 1 ? Vector2.UnitX.RotatedBy(rot) * prog * 32 : Vector2.UnitX.RotatedBy(rot) * (1 - prog) * 32;
 						spriteBatch.Draw(glow, NPC.Center + offset - Main.screenPosition, null, col2 * 0.2f, NPC.rotation, glow.Size() / 2f, 1f, 0, 0);
+						spriteBatch.Draw(glow2, NPC.Center + offset - Main.screenPosition, null, col2 * 0.425f, NPC.rotation, glow2.Size() / 2f, 1.1f, 0, 0);
 					}
 				}
 			}

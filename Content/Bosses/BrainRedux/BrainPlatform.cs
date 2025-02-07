@@ -39,6 +39,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			Lighting.AddLight(NPC.Center - Vector2.UnitX * 80, lightColor);
 		}
 
+		public override void DrawBehind(int index)
+		{
+			//Main.instance.DrawCacheNPCsMoonMoon.Add(index);
+		}
+
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
 			float dist = Vector2.Distance(NPC.Center, targetPos);

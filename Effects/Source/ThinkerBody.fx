@@ -21,6 +21,9 @@ sampler2D shading = sampler_state { texture = <shading_t>; AddressU = wrap; Addr
 texture normal_t;
 sampler2D normal = sampler_state { texture = <normal_t>; AddressU = wrap; AddressV = wrap; };
 
+texture mask_t;
+sampler2D maskTex = sampler_state { texture = <mask_t>; AddressU = wrap; AddressV = wrap; };
+
 float3 rainbow(float2 st, float time)
 {
     float3 col = float3(u_color.r + u_fade.r * abs(sin(st.x + time)),
@@ -70,7 +73,7 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0) : COLOR0
     color = color - fmod(color, 0.2);
     color += over * rainbow(st, u_time);
     
-    return float4(color, length(color));
+    return float4(color, length(color)) * tex2D(maskTex, uv).r;
 }
 
 technique Technique1

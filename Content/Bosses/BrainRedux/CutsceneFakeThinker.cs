@@ -268,6 +268,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			bodyShader.Parameters["noisemap_t"].SetValue(Assets.Noise.ShaderNoise.Value);
 			bodyShader.Parameters["overlay_t"].SetValue(Assets.Bosses.BrainRedux.HeartOver.Value);
 			bodyShader.Parameters["normal_t"].SetValue(Assets.Bosses.BrainRedux.HeartNormal.Value);
+			bodyShader.Parameters["mask_t"].SetValue(Assets.MagicPixel.Value);
 
 			sb.End();
 			sb.Begin(default, default, SamplerState.PointWrap, default, default, bodyShader, Main.GameViewMatrix.TransformationMatrix);

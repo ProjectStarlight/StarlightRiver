@@ -688,7 +688,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		private void DrawBrain(SpriteBatch spriteBatch, Color drawColor, bool isOverlay)
 		{
-			if (attachedChain != null && chainSplitBrainAttached != null && chainSplitThinkerAttached != null)
+			if (attachedChain != null && chainSplitBrainAttached != null && chainSplitThinkerAttached != null && (Phase > Phases.SpawnAnim || Timer > 100))
 				DrawFleshyChainTrails(isOverlay);
 
 			// Draws a trail while the brain has contact damage, and a red glow around it
