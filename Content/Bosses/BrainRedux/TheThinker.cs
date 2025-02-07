@@ -142,6 +142,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (Open)
 				Lighting.AddLight(NPC.Center, new Vector3(1f, 0.9f, 0.8f));
 
+			if (pulseTime > 0)
+				pulseTime--;
+
 			if (ThisBrain is null)
 			{
 				NPC.boss = false;
@@ -163,7 +166,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/TheThinker");
 				}
 
-				if (ThisBrain.Phase == DeadBrain.Phases.FirstPhase && NPC.life > NPC.lifeMax / 2 - 1)
+				if (ThisBrain.Phase == DeadBrain.Phases.FirstPhase && NPC.life > NPC.lifeMax / 2)
 				{
 					BossBarOverlay.forceInvulnerabilityVisuals = false;
 				}

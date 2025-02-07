@@ -15,10 +15,13 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		private List<Vector2> arenaCache;
 		private Trail arenaTrail;
 
-		public float arenaFade;
-		public float ArenaOpacity => arenaFade / 120f;
-
 		public int shellFrame = 0;
+
+		public int pulseTime;
+		public float arenaFade;
+
+		public float pulseProg => pulseTime > 25 ? 1f - (pulseTime - 25) / 5f : pulseTime / 25f;
+		public float ArenaOpacity => arenaFade / 120f;
 
 		public override void DrawBehind(int index)
 		{
@@ -203,10 +206,16 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			bodyShader.Parameters["mask_t"].SetValue(shellFrame != 1 ? Assets.MagicPixel.Value : Assets.Bosses.BrainRedux.CrackMask.Value);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, rasterizer, bodyShader, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointWrap, default, rasterizer, bodyShader, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D tex = Assets.Bosses.BrainRedux.Heart.Value;
 			spriteBatch.Draw(tex, NPC.Center - screenPos, null, Color.White, NPC.rotation, tex.Size() / 2f, NPC.scale, 0, 0);
+
+			if (pulseTime > 0)
+			{
+				bodyShader.Parameters["u_color"].SetValue(new Vector3(0.7f, 0.3f, 0.3f) * pulseProg);
+				spriteBatch.Draw(tex, NPC.Center - screenPos, null, Color.White, NPC.rotation, tex.Size() / 2f, NPC.scale + pulseProg * 0.3f, 0, 0);
+			}
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);

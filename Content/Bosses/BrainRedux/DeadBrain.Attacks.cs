@@ -148,7 +148,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				if (AttackTimer < 60)
 				{
-					NPC.Center += (thinker.Center + new Vector2(-500, 0) - NPC.Center) * 0.08f;
+					NPC.Center += (thinker.Center + new Vector2(-470, 0) - NPC.Center) * 0.08f;
 				}
 
 				if (AttackTimer > 140 && AttackTimer < 180)
@@ -166,7 +166,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				if (AttackTimer > 180)
 				{
 					var rot = Helpers.Helper.BezierEase((AttackTimer - 180) / 180f) * 6.28f;
-					NPC.Center = thinker.Center + new Vector2(-500, 0).RotatedBy(rot);
+					NPC.Center = thinker.Center + new Vector2(-470, 0).RotatedBy(rot);
 				}
 
 				if (AttackTimer == 360)
@@ -571,18 +571,24 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (AttackTimer == 60)
 			{
+				ThisThinker.pulseTime = 30;
+
 				for (int k = 0; k <= 7; k++)
 					Projectile.NewProjectile(null, thinker.Center, Vector2.Normalize(savedPos - thinker.Center).RotatedBy(1.57f + k / 7f * 3.14f) * 4.5f, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 210, 0, 20);
 			}
 
 			if (AttackTimer == 120)
 			{
+				ThisThinker.pulseTime = 30;
+
 				for (int k = 0; k <= 4; k++)
 					Projectile.NewProjectile(null, thinker.Center, Vector2.Normalize(savedPos - thinker.Center).RotatedBy(1.57f + k / 4f * 3.14f) * 4.5f, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 210, 0, 20);
 			}
 
 			if (AttackTimer == 180)
 			{
+				ThisThinker.pulseTime = 30;
+
 				for (int k = 0; k <= 7; k++)
 					Projectile.NewProjectile(null, thinker.Center, Vector2.Normalize(savedPos - thinker.Center).RotatedBy(1.57f + k / 7f * 3.14f) * 4.5f, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 210, 0, 20);
 			}
@@ -761,10 +767,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				thinker.Center += ((thinker.ModNPC as TheThinker).home - thinker.Center) * 0.03f;
 			}
 
-			if (AttackTimer > 90 && AttackTimer < 310)
+			if (AttackTimer > 90 && AttackTimer < 410)
 			{
 				if (hurtLastFrame)
-					AttackTimer = 310;
+					AttackTimer = 410;
 			}
 
 			// Bullet hell for expert and above
@@ -772,6 +778,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				if (AttackTimer == 140)
 				{
+					ThisThinker.pulseTime = 30;
+
 					for (int k = 0; k < 12; k++)
 					{
 						Projectile.NewProjectile(null, thinker.Center, Vector2.UnitX.RotatedBy(k / 12f * 6.28f) * 4, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 0, Main.myPlayer, 200, 0, 20);
@@ -780,6 +788,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				if (AttackTimer == 200)
 				{
+					ThisThinker.pulseTime = 30;
+
 					for (int k = 0; k < 12; k++)
 					{
 						Projectile.NewProjectile(null, thinker.Center, Vector2.UnitX.RotatedBy((k + 0.5f) / 12f * 6.28f) * 4, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 0, Main.myPlayer, 200, 0, 20);

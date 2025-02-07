@@ -550,6 +550,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 					NPC.noGravity = false;
 					NPC.noTileCollide = false;
+					contactDamage = false;
+					chargeAnimation = 0;
 
 					if (NPC.velocity.Y > 0)
 						NPC.rotation += 0.01f;
