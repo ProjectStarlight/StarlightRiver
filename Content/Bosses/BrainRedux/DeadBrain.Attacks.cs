@@ -671,12 +671,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				if (Main.masterMode)
 				{
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, NPC.Center.DirectionTo(ThisThinker.home).RotatedBy(0.1f) * 8, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 160, 0, 30);
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, NPC.Center.DirectionTo(ThisThinker.home).RotatedBy(-0.1f) * 8, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 160, 0, 30);
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, NPC.Center.DirectionTo(ThisThinker.home).RotatedBy(0.4f) * 8, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 80, 0, 30);
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, NPC.Center.DirectionTo(ThisThinker.home).RotatedBy(-0.4f) * 8, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 80, 0, 30);
 
 					Projectile.NewProjectile(NPC.GetSource_FromThis(), thinker.Center, thinker.Center.DirectionTo(ThisThinker.home) * 8, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 160, 1, 30);
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), thinker.Center, thinker.Center.DirectionTo(ThisThinker.home).RotatedBy(0.1f) * 8, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 160, 1, 30);
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), thinker.Center, thinker.Center.DirectionTo(ThisThinker.home).RotatedBy(-0.1f) * 8, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 160, 1, 30);
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), thinker.Center, thinker.Center.DirectionTo(ThisThinker.home).RotatedBy(0.4f) * 8, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 80, 1, 30);
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), thinker.Center, thinker.Center.DirectionTo(ThisThinker.home).RotatedBy(-0.4f) * 8, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 80, 1, 30);
 				}
 			}
 
