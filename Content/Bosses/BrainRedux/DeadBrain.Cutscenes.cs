@@ -203,8 +203,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				savedPos = NPC.Center;
 				contactDamage = false;
 				chargeAnimation = 0;
+				NPC.velocity *= 0;
 				CameraSystem.MoveCameraOut(30, savedPos);
 			}
+
+			NPC.Center = savedPos;
 
 			// Explode the weakpoint
 			if (Timer == 60)

@@ -469,6 +469,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 							{
 								creeper.active = false;
 							}
+
+							return;
 						}
 
 						NPC.netUpdate = true;
