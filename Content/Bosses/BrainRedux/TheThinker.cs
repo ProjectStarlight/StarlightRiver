@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Crimson;
 using StarlightRiver.Content.Items.Vitric;
@@ -61,6 +62,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public ref float AttackState => ref NPC.ai[3];
 
 		public bool Open => StarlightWorld.HasFlag(WorldFlags.ThinkerBossOpen);
+		public bool FightActive => ThisBrain != null;
 
 		public bool ShouldBeAttacking => ThisBrain != null && ThisBrain.Phase == DeadBrain.Phases.TempDead;
 
@@ -145,11 +147,17 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (pulseTime > 0)
 				pulseTime--;
 
-			if (ThisBrain is null)
+			if (!FightActive)
 			{
 				NPC.boss = false;
 				Music = default;
 				NPC.Center += (home - NPC.Center) * 0.02f;
+
+				// Dust towards assembling brain
+				if (Main.rand.NextBool(7))
+				{
+					SplineGlow.Spawn(NPC.Center, NPC.Center + new Vector2(Main.rand.NextFloat(-150, 150), Main.rand.Next(100, 150)), NPC.Center + new Vector2(0, 250) + Main.rand.NextVector2Circular(100, 100), Main.rand.Next(120, 240), Main.rand.NextFloat(0.1f, 0.25f), new Color(155, Main.rand.Next(20, 50), 50));
+				}
 
 				if (ExtraGrayAuraRadius > -140)
 					ExtraGrayAuraRadius = -140;
@@ -482,7 +490,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			if (Open && !active && projectile.Hitbox.Intersects(NPC.Hitbox) && projectile.ModProjectile is BearPokerProjectile)
 			{
-				DeadBrain.SpawnReduxedBrain(NPC.Center);
+				DeadBrain.SpawnReduxedBrain(NPC.Center + new Vector2(0, 200));
 				return true;
 			}
 

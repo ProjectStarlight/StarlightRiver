@@ -1,4 +1,6 @@
-﻿using StarlightRiver.Helpers;
+﻿using StarlightRiver.Content.Buffs;
+using StarlightRiver.Core.Systems.InstancedBuffSystem;
+using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using Terraria.Graphics.Effects;
@@ -14,6 +16,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		private Vector2 initialPosition;
 
 		private bool initialized = false;
+
+		private float WiggleProgress;
+
+		public ref float Lifetime => ref Projectile.ai[0];
+		public ref float IsBlue => ref Projectile.ai[1];
+		public ref float WigglePeriod => ref Projectile.ai[2];
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -43,24 +51,24 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				Helpers.Helper.PlayPitched("Magic/Shadow1", 0.1f, 0.5f, Projectile.Center);
 			}
 
-			if (Projectile.ai[2] == 0)
+			if (WigglePeriod == 0)
 			{
-				Projectile.ai[2] = Main.rand.Next(30, 90);
+				WigglePeriod = Main.rand.Next(30, 90);
 				Projectile.netUpdate = true;
 			}
 
-			if (Projectile.timeLeft > Projectile.ai[0])
-				Projectile.timeLeft = (int)Projectile.ai[0];
+			if (Projectile.timeLeft > Lifetime)
+				Projectile.timeLeft = (int)Lifetime;
 
-			Projectile.scale -= 1 / Projectile.ai[0];
+			Projectile.scale -= 1 / Lifetime;
 
-			Projectile.ai[1] += 0.1f;
+			WiggleProgress += 0.1f;
 			Projectile.rotation += Main.rand.NextFloat(0.2f);
 			Projectile.scale = 0.5f;
 
-			Projectile.position += Projectile.velocity.RotatedBy(1.57f) * (float)Math.Sin(Projectile.timeLeft / Projectile.ai[2] * 3.14f * 3) * 0.75f;
+			Projectile.position += Projectile.velocity.RotatedBy(1.57f) * (float)Math.Sin(Projectile.timeLeft / WigglePeriod * 3.14f * 3) * 0.75f;
 
-			float sin = 1 + (float)Math.Sin(Projectile.ai[1]);
+			float sin = 1 + (float)Math.Sin(WiggleProgress);
 			Color color = new Color(1, 0f, 0.1f + sin * 0.1f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
 
 			Lighting.AddLight(Projectile.Center, color.ToVector3() * 0.5f);
@@ -72,15 +80,41 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			}
 		}
 
+		public override void ModifyHitPlayer(Player target, ref Player.HurtModifiers modifiers)
+		{
+			if (IsBlue == 1)
+				modifiers.FinalDamage *= 0.5f;
+		}
+
+		public override void OnHitPlayer(Player target, Player.HurtInfo info)
+		{
+			if (IsBlue == 1)
+				BuffInflictor.Inflict<Neurosis>(target, Main.masterMode ? 18000 : Main.expertMode ? 6000 : 3000);
+			else
+				BuffInflictor.Inflict<Psychosis>(target, Main.masterMode ? 3000 : Main.expertMode ? 360 : 120);
+		}
+
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D glow = Assets.Keys.GlowAlpha.Value;
 			Texture2D star = Assets.StarTexture.Value;
 
-			float r = 0.7f + (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.03f;
-			float g = 0.3f + (float)Math.Sin(Main.GameUpdateCount * 0.1f + 2f) * 0.05f;
-			float b = 0.3f + (float)Math.Sin(Main.GameUpdateCount * 0.1f + 4f) * 0.03f;
-			Color color = new Color(r, g, b, 0) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
+			Color color;
+
+			if (IsBlue == 1)
+			{
+				float r = 0.2f + (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.03f;
+				float g = 0.3f + (float)Math.Sin(Main.GameUpdateCount * 0.1f + 2f) * 0.05f;
+				float b = 0.7f + (float)Math.Sin(Main.GameUpdateCount * 0.1f + 4f) * 0.03f;
+				color = new Color(r, g, b, 0) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
+			}
+			else
+			{
+				float r = 0.7f + (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.03f;
+				float g = 0.3f + (float)Math.Sin(Main.GameUpdateCount * 0.1f + 2f) * 0.05f;
+				float b = 0.3f + (float)Math.Sin(Main.GameUpdateCount * 0.1f + 4f) * 0.03f;
+				color = new Color(r, g, b, 0) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
+			}
 
 			Main.spriteBatch.Draw(glow, Projectile.Center - Main.screenPosition, null, color * 0.5f, 0, glow.Size() / 2f, 0.5f, 0, 0);
 			Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, color, Main.GameUpdateCount * 0.1f, star.Size() / 2f, 0.25f, 0, 0);
@@ -141,10 +175,22 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 					alpha *= factor.X;
 
-					float r = 0.7f + (float)Math.Sin(Main.GameUpdateCount * 0.1f + factor.X * 6.28f) * 0.03f;
-					float g = 0.3f + (float)Math.Sin(Main.GameUpdateCount * 0.1f + factor.X * 6.28f + 2f) * 0.05f;
-					float b = 0.3f + (float)Math.Sin(Main.GameUpdateCount * 0.1f + factor.X * 6.28f + 4f) * 0.03f;
-					Color color = new Color(r, g, b) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
+					Color color;
+
+					if (IsBlue == 1)
+					{
+						float r = 0.2f + (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.03f;
+						float g = 0.3f + (float)Math.Sin(Main.GameUpdateCount * 0.1f + 2f) * 0.05f;
+						float b = 0.7f + (float)Math.Sin(Main.GameUpdateCount * 0.1f + 4f) * 0.03f;
+						color = new Color(r, g, b, 0) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
+					}
+					else
+					{
+						float r = 0.7f + (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.03f;
+						float g = 0.3f + (float)Math.Sin(Main.GameUpdateCount * 0.1f + 2f) * 0.05f;
+						float b = 0.3f + (float)Math.Sin(Main.GameUpdateCount * 0.1f + 4f) * 0.03f;
+						color = new Color(r, g, b, 0) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
+					}
 
 					return color * alpha;
 				});

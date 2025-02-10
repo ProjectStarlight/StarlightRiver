@@ -640,7 +640,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			return base.DrawHealthBar(hbPosition, ref scale, ref position);
 		}
 
-		public static void DrawBrainSegments(SpriteBatch spriteBatch, NPC npc, Vector2 center, Color color, float rotation, float scale, float opacity, Vector2 oldCenter = default)
+		public static void DrawBrainSegments(SpriteBatch spriteBatch, NPC npc, Vector2 center, Color color, float rotation, float scale, float opacity, Vector2 oldCenter = default, float radiusOverride = -1)
 		{
 			Texture2D tex = Assets.Bosses.BrainRedux.BrainChunk.Value;
 			Texture2D texGlow = Assets.Bosses.BrainRedux.BrainChunkGlow.Value;
@@ -651,15 +651,30 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				float speed = 100f + (8 - point.Frame) * 15;
 				float offset = 1f + MathF.Sin((Main.GameUpdateCount + point.Frame * 10) * (1f / speed) * 6.28f) * magnitude;
 
-				float chunkOpacity = 1f;
-				if (npc.ModNPC is DeadBrain deadBrain)
+				float rotOffset = MathF.Sin((Main.GameUpdateCount + point.Frame * 16) * (0.4f / speed) * 6.28f) * 0.1f;
+
+				if (npc.ModNPC is DeadBrain deadBrain && radiusOverride == -1)
 				{
-					float extra = deadBrain.extraChunkRadius + deadBrain.staggeredExtraChunkRadius * point.Frame;
+					float extra = deadBrain.extraChunkRadius;
+
 					offset += extra;
-					chunkOpacity *= 1f - extra / 2f;
+
+					if (extra > 0.2f)
+						rotOffset += (extra - 0.2f) * 0.5f * (point.Frame % 2 == 0 ? -1 : 1);
+
+					if (extra > 0.8f)
+						rotOffset += (extra - 0.8f) * 2.5f * (point.Frame % 2 == 0 ? 1 : -1);
 				}
 
-				float rotOffset = MathF.Sin((Main.GameUpdateCount + point.Frame * 16) * (0.4f / speed) * 6.28f) * 0.1f;
+				if (radiusOverride != -1)
+				{
+					offset += radiusOverride;
+
+					if (radiusOverride > 0.2f)
+						rotOffset += (radiusOverride - 0.2f) * 0.5f * (point.Frame % 2 == 0 ? -1 : 1);
+				}
+
+
 
 				Vector2 velOffset;
 				if (oldCenter != default)
@@ -671,7 +686,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					velOffset = Vector2.Normalize(velOffset) * 32;
 
 				var frame = new Rectangle(0, 76 * point.Frame, 80, 76);
-				spriteBatch.Draw(tex, center + (point.Pos - new Vector2(44, 40)) * offset + velOffset, frame, color * opacity * chunkOpacity, rotation + rotOffset, new Vector2(40, 38), scale, 0, 0);
+				spriteBatch.Draw(tex, center + (point.Pos - new Vector2(44, 40)) * offset + velOffset, frame, color * opacity, rotation + rotOffset, new Vector2(40, 38), scale, 0, 0);
 
 				var glowColor = new Color(
 					0.5f + 0.2f * MathF.Sin((Main.GameUpdateCount + point.Frame * 10) * (1f / speed) * 6.28f),
@@ -684,7 +699,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				else
 					glowColor *= 0;
 
-				spriteBatch.Draw(texGlow, center + (point.Pos - new Vector2(44, 40)) * offset + velOffset, frame, glowColor * opacity * chunkOpacity, rotation + rotOffset, new Vector2(40, 38), scale, 0, 0);
+				spriteBatch.Draw(texGlow, center + (point.Pos - new Vector2(44, 40)) * offset + velOffset, frame, glowColor * opacity, rotation + rotOffset, new Vector2(40, 38), scale, 0, 0);
 			}
 		}
 

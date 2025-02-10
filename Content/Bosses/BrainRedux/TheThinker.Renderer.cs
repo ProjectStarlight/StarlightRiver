@@ -23,6 +23,26 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public float pulseProg => pulseTime > 25 ? 1f - (pulseTime - 25) / 5f : pulseTime / 25f;
 		public float ArenaOpacity => arenaFade / 120f;
 
+		public float FakeBrainRadius
+		{
+			get
+			{
+				var rad = 0.8f;
+
+				if (Main.GameUpdateCount % 300 > 200)
+				{
+					rad = 0.8f - 0.4f * Helpers.Helper.BezierEase((Main.GameUpdateCount % 300 - 200) / 80f);
+				}
+
+				if (Main.GameUpdateCount % 300 > 280)
+				{
+					rad = 0.4f + 0.4f * Helpers.Helper.SwoopEase((Main.GameUpdateCount % 300 - 280) / 20f);
+				}
+
+				return rad;
+			}
+		}
+
 		public override void DrawBehind(int index)
 		{
 			Main.instance.DrawCacheNPCProjectiles.Add(index);
@@ -39,6 +59,15 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			LightingBufferRenderer.DrawWithLighting(tex, pos, Color.Gray);
 			LightingBufferRenderer.DrawWithLighting(texOver, pos, frame, Color.White);
+
+			if (!FightActive)
+			{
+				var target = NPC.Center + new Vector2(0, 200);
+
+				DeadBrain.DrawBrainSegments(Main.spriteBatch, NPC, target - Main.screenPosition, Lighting.GetColor((target / 16).ToPoint()), 0, 1, 1, radiusOverride: FakeBrainRadius);
+
+				Lighting.AddLight(target, new Vector3(0.5f, 0.35f, 0.35f));
+			}
 		}
 
 		public void DrawArena(SpriteBatch spriteBatch)

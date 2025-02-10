@@ -1,4 +1,6 @@
 ﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Buffs;
+using StarlightRiver.Core.Systems.InstancedBuffSystem;
 using System;
 using System.Collections.Generic;
 using Terraria.DataStructures;
@@ -71,6 +73,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					{
 						int mult = Main.masterMode ? 6 : Main.expertMode ? 4 : 1;
 						player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " played the idiot harp..."), Projectile.damage * mult, 0);
+						BuffInflictor.Inflict<Neurosis>(player, Main.masterMode ? 18000 : Main.expertMode ? 3000 : 1500);
 					}
 				}
 			}

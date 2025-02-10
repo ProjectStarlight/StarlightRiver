@@ -2,6 +2,7 @@ using ReLogic.Graphics;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
 using StarlightRiver.Content.Bosses.BrainRedux;
+using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Events;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Dungeon;
@@ -113,8 +114,22 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
-			StarlightWorld.FlipFlag(WorldFlags.ThinkerBossOpen);
-			ModContent.GetInstance<StarlightWorld>().GraymatterGen(new GenerationProgress(), null);
+			//StarlightWorld.FlipFlag(WorldFlags.ThinkerBossOpen);
+			//ModContent.GetInstance<StarlightWorld>().GraymatterGen(new GenerationProgress(), null);
+
+			SplineGlow.Spawn(player.Center, Vector2.Lerp(player.Center, Main.MouseWorld, 0.5f) + Vector2.UnitX.RotatedByRandom(6.28f) * 50, Main.MouseWorld, 120, 1, Color.Teal);
+
+			/*for(int x = -100; x < 100; x++)
+			{
+				for(int y = -100; y < 100; y++)
+				{
+					var tile = Framing.GetTileSafely(x + (int)(Main.MouseWorld.X / 16), y + (int)(Main.MouseWorld.Y / 16));
+					tile.IsActuated = false;
+
+					if (tile.TileType == ModContent.TileType<BrainBlocker>())
+						tile.HasTile = false;
+				}
+			}*/
 
 			return true;
 		}

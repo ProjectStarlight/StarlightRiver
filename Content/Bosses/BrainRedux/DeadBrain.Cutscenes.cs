@@ -31,8 +31,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (Timer == 1)
 			{
-				NPC.Center = thinker.Center + Vector2.UnitY.RotatedBy(-0.5f) * ThisThinker.ArenaRadius;
-				savedPos = NPC.Center;
+				NPC.Center = thinker.Center + new Vector2(0, 200);
 				attachedChainEndpoint = thinker.Center;
 
 				if (IsInArena(Main.LocalPlayer))
@@ -52,8 +51,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				Helpers.Helper.PlayPitched("Impacts/StoneStrike", 1, 2f, ThisThinker.NPC.Center);
 
-				extraChunkRadius = 2;
-				staggeredExtraChunkRadius = 1;
+				extraChunkRadius = ThisThinker.FakeBrainRadius;
+			}
+
+			if (Timer < 60)
+			{
+				extraChunkRadius += (0.8f - extraChunkRadius) * 0.002f;
 			}
 
 			if (Timer < 100)
@@ -68,6 +71,20 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					CameraSystem.MoveCameraOut(30, NPC.Center);
 					ZoomHandler.SetZoomAnimation(1.2f, 30);
 				}
+			}
+
+			if (Timer < 120)
+			{
+				NPC.position += new Vector2(0.25f, 0.04f * Timer);
+
+				if (Timer > 60)
+					extraChunkRadius = 0.8f + 0.2f * ((Timer - 60) / 60f);
+			}
+
+			if (Timer > 120 && Timer < 160)
+			{
+				NPC.position += new Vector2(0.25f, 20f * MathF.Sin((Timer - 120) / 40f * 6.28f)) * (1f - (Timer - 120) / 40f);
+				savedPos = NPC.Center;
 			}
 
 			if (Timer > 100 && Timer < 120)
@@ -95,8 +112,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (Timer > 160 && Timer <= 240)
 			{
 				float prog = 1f - (Timer - 160) / 80f;
-				extraChunkRadius = prog * 2;
-				staggeredExtraChunkRadius = prog;
+				extraChunkRadius = prog;
 			}
 
 			// Move camera to follow
@@ -107,6 +123,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					CameraSystem.MoveCameraOut(200, thinker.Center, (a, b, c) => Vector2.Lerp(a, b, Helpers.Helper.SwoopEase(c)));
 					ZoomHandler.SetZoomAnimation(Main.GameZoomTarget, 200);
 				}
+			}
+
+			if (Timer < 430)
+			{
+				Lighting.AddLight(NPC.Center, new Vector3(0.5f, 0.35f, 0.35f));
 			}
 
 			if (Timer > 430 && Timer < 480)
