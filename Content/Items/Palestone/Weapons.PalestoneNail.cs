@@ -56,13 +56,13 @@ namespace StarlightRiver.Content.Items.Palestone
 		{
 			Recipe recipe = CreateRecipe();
 
-			recipe.AddIngredient(ItemID.SilverBar, 12);
+			recipe.AddIngredient(ItemID.DemoniteBar, 12);
 			recipe.AddIngredient<PalestoneItem>(25);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
 
 			recipe = CreateRecipe();
-			recipe.AddIngredient(ItemID.TungstenBar, 12);
+			recipe.AddIngredient(ItemID.CrimtaneBar, 12);
 			recipe.AddIngredient<PalestoneItem>(25);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
