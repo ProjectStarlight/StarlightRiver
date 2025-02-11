@@ -136,7 +136,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 							if (Main.masterMode && i % 3 != 0)
 								LavaLob.staticScaleToSet = 0.5f;
 
-							Projectile.NewProjectile(Projectile.GetSource_FromThis(), lobPos, Vector2.Zero, ProjectileType<LavaLob>(), 10, 0.2f, Owner: -1, -44 - i, lobVel);
+							Projectile.NewProjectile(Projectile.GetSource_FromThis(), lobPos, Vector2.Zero, ProjectileType<LavaLob>(), Glassweaver.SmallProjectileDamage, 0.2f, Owner: -1, -44 - i, lobVel);
 						}
 
 						Projectile.netUpdate = true;

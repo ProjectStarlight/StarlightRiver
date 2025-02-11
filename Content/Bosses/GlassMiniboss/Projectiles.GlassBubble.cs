@@ -153,7 +153,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				for (int i = 0; i < shardCount; i++)
 				{
 					Vector2 velocity = new Vector2(0, Main.rand.NextFloat(0.9f, 1.1f) * 3).RotatedBy(MathHelper.TwoPi / shardCount * i);
-					Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, velocity.RotatedByRandom(0.1f), ProjectileType<GlassBubbleFragment>(), Projectile.damage / 2, 2f, Main.myPlayer);
+					Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, velocity.RotatedByRandom(0.1f), ProjectileType<GlassBubbleFragment>(), Glassweaver.SmallProjectileDamage, 2f, Main.myPlayer);
 				}
 			}
 
