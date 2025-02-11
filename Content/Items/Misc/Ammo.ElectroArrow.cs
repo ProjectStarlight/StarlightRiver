@@ -156,7 +156,7 @@ namespace StarlightRiver.Content.Items.Misc
 			spritebatch.Draw(tex, target, null, new Color(50, 150, 200, 0) * 0.45f * Projectile.Opacity, rot, new Vector2(0, tex.Height / 2f), 0, 0);
 			spritebatch.Draw(tex, target2, null, new Color(30, 100, 200, 0) * 0.25f * Projectile.Opacity, rot, new Vector2(0, tex.Height / 2f), 0, 0);
 
-			UnifiedRandom rand = new UnifiedRandom((int)Main.GameUpdateCount / 3 ^ 901273125);
+			UnifiedRandom rand = new UnifiedRandom((int)Main.GameUpdateCount / 3 ^ 901273125 + Projectile.whoAmI ^ 917232);
 
 			float lastOffset = 0;
 
@@ -202,6 +202,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
+			Helpers.Helper.PlayPitched("Magic/LightningShortest1", 0.6f, Main.rand.NextFloat(-0.2f, 0.4f), Projectile.Center);
+
 			hitNPCs.Add(target);
 
 			CheckAboutNPC(target, 3);
