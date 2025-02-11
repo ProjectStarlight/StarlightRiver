@@ -103,40 +103,26 @@ namespace StarlightRiver.Content.Items.Misc
 					Projectile.timeLeft = 15;
 
 				Projectile.Opacity = MathF.Sin(Projectile.timeLeft / 15f * 3.14f);
+
+				for (int k = 0; k < hitNPCs.Count; k++)
+				{
+					Vector2 start = k == 0 ? savedPos : hitNPCs[k - 1].Center;
+					Vector2 end = hitNPCs[k].Center;
+
+					var vel = end.DirectionTo(start).RotatedBy(Main.rand.NextBool() ? 0.5f : -0.5f) * Main.rand.NextFloat(2f, 8f);
+					Dust.NewDustPerfect(Vector2.Lerp(start, end, Main.rand.NextFloat()), ModContent.DustType<Dusts.GlowLineFast>(), vel, 0, new Color(50, 80, 200), Main.rand.NextFloat(0.4f, 0.5f));
+
+					if (Main.rand.NextBool(3))
+					{
+						vel = end.DirectionTo(start).RotatedBy(Main.rand.NextBool() ? 0.3f : -0.3f) * Main.rand.NextFloat(6f, 12f);
+						Dust.NewDustPerfect(Vector2.Lerp(start, end, Main.rand.NextFloat()), ModContent.DustType<Dusts.GlowLineFast>(), vel, 0, new Color(150, 200, 255), Main.rand.NextFloat(0.5f, 0.7f));
+					}
+				}
 			}
 
 			if (Projectile.timeLeft == 1)
 				PreKill(Projectile.timeLeft);
 		}
-
-		/*public void DrawAdditive(SpriteBatch sb)
-		{
-			Vector2 point1 = savedPos;
-			Vector2 point2 = Projectile.Center;
-
-			if (point1 == Vector2.Zero || point2 == Vector2.Zero)
-				return;
-
-			Texture2D tex = Assets.GlowTrail.Value;
-
-			for (int k = 1; k < nodes.Count; k++)
-			{
-				Vector2 prevPos = k == 1 ? point1 : nodes[k - 1];
-
-				var target = new Rectangle((int)(prevPos.X - Main.screenPosition.X), (int)(prevPos.Y - Main.screenPosition.Y), (int)Vector2.Distance(nodes[k], prevPos) + 1, 10);
-				var origin = new Vector2(0, tex.Height / 2);
-				float rot = (nodes[k] - prevPos).ToRotation();
-				Color color = new Color(200, 230, 255) * (Projectile.extraUpdates == 0 ? Projectile.timeLeft / 15f : 1);
-
-				sb.Draw(tex, target, null, color, rot, origin, 0, 0);
-
-				if (Main.rand.NextBool(30))
-					Dust.NewDustPerfect(prevPos + new Vector2(0, 32), DustType<Dusts.GlowLine>(), Vector2.Normalize(nodes[k] - prevPos) * Main.rand.NextFloat(-6, -4), 0, new Color(100, 150, 200), 0.5f);
-			}
-
-			Color glowColor = new Color(100, 150, 200) * 0.45f * (Projectile.extraUpdates == 0 ? Projectile.timeLeft / 15f : 1);
-			sb.Draw(tex, new Rectangle((int)(point1.X - Main.screenPosition.X), (int)(point1.Y - Main.screenPosition.Y), (int)Vector2.Distance(point1, point2), 100), null, glowColor, (point2 - point1).ToRotation(), new Vector2(0, tex.Height / 2), 0, 0);
-		}*/
 
 		public override void PostDraw(Color lightColor)
 		{
