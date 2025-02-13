@@ -144,7 +144,7 @@ namespace StarlightRiver.Core
 		{
 			for (int y = (int)(Main.worldSurface * 0.35f); y < Main.rockLayer; y++)
 			{
-				if (Main.tile[x, y].TileType == TileID.Grass)
+				if (Main.tile[x, y].HasTile && Main.tile[x, y].TileType == TileID.Grass)
 					return true;
 			}
 
