@@ -38,6 +38,9 @@
 - Fixed an issue where the cough drops did not grant a damage increase like the tooltip stated
 - Fixed the text card popup when gaining an ability not dissappearing sometimes
 - Made the glassweaver respawn himself better if he somehow goes missing
+- Fixed cutaways drawing in subworlds where they should not exist
+- Fixed the cooking station requiring one more free tile than it should to place
+- Fixed some forest props being able to generate mid-air
 
 ## Boring programmer stuff
 - Keywords now utilize localization and are data driven similar to dialogue and hints
