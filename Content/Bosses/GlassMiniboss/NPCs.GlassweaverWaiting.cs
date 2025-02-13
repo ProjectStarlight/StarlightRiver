@@ -14,7 +14,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
-	class GlassweaverWaiting : ModNPC
+	class GlassweaverFriendly : ModNPC
 	{
 		public const int FRAME_WIDTH = 124;
 
@@ -74,7 +74,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			VisualTimer++;
 
 			if (State < 0 || State > 7)
-				State = StarlightWorld.HasFlag(WorldFlags.GlassweaverDowned) ? 3 : 0;
+				State = GlassweaverSafetySystem.IntendedGlassweaverPhase;
+
+			GlassweaverSafetySystem.IntendedGlassweaverPhase = (int)State;
 
 			if (Main.netMode != NetmodeID.Server) // Client based stuff
 			{
