@@ -139,10 +139,6 @@ namespace StarlightRiver.Core
 			permafrostCenter = tag.GetInt("PermafrostCenter");
 
 			flags = (WorldFlags)tag.GetInt(nameof(flags));
-
-			// Handle quest NPC fallback, we may want to abstract this out somehow in the future...
-			if (!Main.npc.Any(n => n.active && n.type == NPCType<GlassweaverWaiting>()))
-				NPC.NewNPC(null, (int)GlassweaverWaiting.ArenaPos.X, (int)GlassweaverWaiting.ArenaPos.Y, NPCType<GlassweaverWaiting>(), 0, 0, StarlightWorld.HasFlag(WorldFlags.GlassweaverDowned) ? 3 : 2);
 		}
 
 		public override void Unload()

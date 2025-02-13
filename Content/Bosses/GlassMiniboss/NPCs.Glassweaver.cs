@@ -4,6 +4,7 @@ using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.PersistentData;
 using StarlightRiver.Content.Tiles.Blockers;
 using StarlightRiver.Core.Loaders.UILoading;
+using StarlightRiver.Core.Systems.BarrierSystem;
 using StarlightRiver.Core.Systems.BossRushSystem;
 using System;
 using System.IO;
@@ -43,6 +44,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		public Rectangle Arena => new((int)arenaPos.X - 35 * 16, (int)arenaPos.Y - 30 * 16, 70 * 16, 30 * 16);
 
 		public override string Texture => AssetDirectory.Glassweaver + Name;
+
+		public static int SmallProjectileDamage => Helpers.Helper.GetProjectileDamage(100, 50, 30);
+		public static int LargeProjectileDamage => Helpers.Helper.GetProjectileDamage(180, 90, 60);
 
 		//Phase tracking utils
 		public enum Phases
@@ -89,17 +93,20 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		{
 			NPC.width = 82;
 			NPC.height = 75;
-			NPC.lifeMax = 2300;
+			NPC.lifeMax = 2500;
 			NPC.damage = 20;
 			NPC.aiStyle = -1;
 			NPC.noGravity = true;
 			NPC.knockBackResist = 0;
 			NPC.boss = true;
-			NPC.defense = 14;
+			NPC.defense = 10;
 			NPC.HitSound = SoundID.NPCHit52;
 			Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/GlassWeaver");
 			NPC.dontTakeDamage = true;
 			NPC.npcSlots = 10;
+
+			NPC.GetGlobalNPC<BarrierNPC>().maxBarrier = 500;
+			NPC.GetGlobalNPC<BarrierNPC>().barrier = 500;
 		}
 
 		private SpriteEffects GetSpriteEffects()
@@ -119,7 +126,16 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 		{
-			NPC.lifeMax = (int)(2800 * bossAdjustment);
+			NPC.lifeMax = 3000;
+			NPC.GetGlobalNPC<BarrierNPC>().maxBarrier = 650;
+			NPC.GetGlobalNPC<BarrierNPC>().barrier = 650;
+
+			if (Main.masterMode)
+			{
+				NPC.lifeMax = 4000;
+				NPC.GetGlobalNPC<BarrierNPC>().maxBarrier = 900;
+				NPC.GetGlobalNPC<BarrierNPC>().barrier = 900;
+			}
 		}
 
 		public override bool CheckDead()
@@ -303,7 +319,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 					if (Math.Abs(NPC.Center.X - arenaPos.X) < 5)
 					{
-						NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<GlassweaverWaiting>(), 0, 0, 3);
+						NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<GlassweaverFriendly>(), 0, 0, 3);
 						NPC.active = false;
 
 						StarlightWorld.Flag(WorldFlags.GlassweaverDowned);
@@ -324,7 +340,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 					if (Math.Abs(NPC.Center.X - arenaPos.X) < 5)
 					{
-						NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<GlassweaverWaiting>(), 0, 0, StarlightWorld.HasFlag(WorldFlags.DesertOpen) ? 4 : 2);
+						NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<GlassweaverFriendly>(), 0, 0, StarlightWorld.HasFlag(WorldFlags.DesertOpen) ? 4 : 2);
 						NPC.active = false;
 					}
 
