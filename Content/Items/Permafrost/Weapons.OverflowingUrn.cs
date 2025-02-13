@@ -50,6 +50,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Item.noMelee = true;
 			Item.noUseGraphic = true;
 			Item.autoReuse = true;
+			Item.rare = ItemRarityID.Green;
 
 			Item.value = Item.sellPrice(gold: 2);
 		}
@@ -352,13 +353,21 @@ namespace StarlightRiver.Content.Items.Permafrost
 			if (!windBlowing)
 				return false;
 
-			if (base.CanHitNPC(target) == true && Helper.CheckConicalCollision(Projectile.Center, 500, rot, 0.3f, target.Hitbox))
-			{
-				target.AddBuff(ModContent.BuffType<Buffs.PrismaticDrown>(), 20);
-				target.velocity += Vector2.Normalize(target.Center - Projectile.Center) * 0.4f * target.knockBackResist;
-			}
+			return null;
+		}
 
-			return base.CanHitNPC(target);
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			target.AddBuff(ModContent.BuffType<Buffs.PrismaticDrown>(), 20);
+			target.velocity += Vector2.Normalize(target.Center - Projectile.Center) * 0.4f * target.knockBackResist;
+		}
+
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+		{
+			modifiers.DisableCrit();
+			modifiers.FinalDamage *= 0;
+			modifiers.DisableKnockback();
+			modifiers.HideCombatText();
 		}
 
 		public override bool PreDraw(ref Color lightColor)

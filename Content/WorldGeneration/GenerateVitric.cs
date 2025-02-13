@@ -562,10 +562,10 @@ namespace StarlightRiver.Core
 		private static void GenForge()
 		{
 			int x = vitricBiome.X - 37;
-			StructureHelper.Generator.GenerateStructure("Structures/VitricForge", new Point16(x, vitricBiome.Center.Y - 10), StarlightRiver.Instance);
+			StructureHelper.Generator.GenerateMultistructureSpecific("Structures/VitricForge", new Point16(x, vitricBiome.Center.Y - 10), StarlightRiver.Instance, Main.masterMode ? 2 : Main.expertMode ? 1 : 0);
 
 			var dims = new Point16();
-			StructureHelper.Generator.GetDimensions("Structures/VitricForge", StarlightRiver.Instance, ref dims);
+			StructureHelper.Generator.GetMultistructureDimensions("Structures/VitricForge", StarlightRiver.Instance, 0, ref dims);
 
 			ProtectionWorld.ProtectedRegions.Add(new Rectangle(x, vitricBiome.Center.Y - 10, dims.X, dims.Y));
 

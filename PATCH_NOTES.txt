@@ -23,11 +23,17 @@
 - ↑ Aquatic manabond damage 24 => 26, fire rate 1/0.8s => 1/0.63s
 - ↑ Aquamarine pendant max barrier 15 => 20, now has +4 barrier recharge rate
 - ↑ Barrier potion restoration (lesser/normal/greater) 40/80/120 => 100/150/200, buff duration 3s/4s/5s => 5s/7s/10s
+- ↑ Electro arrows can now hit up to 4 targets, chain randomly instead of failing to chain if targets are already debuffed, and have refreshed audiovisual effects
 - = Man eater pot now uses local immunity
 - = All manabonds now use local immunity
 - ↓ Corpseflower damage penalty 55% => 65%
 - ↓ Druidic manabond now requires beeswax (queen bee drop) to craft
+- ↓ Palestone nail now requires demonite/crimtane bars to craft instead of silver/tungsten
+- ↓ Overflowing urn no longer deals direct hits in addition to its debuff damage (This is technically a bugfix but its so drastic for balance it belongs here)
+- Glassweaver's forge will now have some mildly dangerous crystal growth on the ceiling in expert and quite dangerous crystal growth in expert. Put those grappling hooks away.
 - Various boss damage values have been normalized across difficulties. In general, bosses should hit a bit harder on normal mode, a bit less on expert, and much less on master as compared to before
+- Glassweaver is a slight exception to this as his direct attack damage was quite low previously, he should be much tougher on normal, a bit tougher on expert, and a wee smidge tougher on master
+- Glassweaver now has proper master mode HP scaling, and has a bit of barrier on all difficulties to make him last a bit longer on his own.
 - Various enemies throughout the game have had barrier added to them, and their life and defense decresed to make up for it. This should diversify combat a little bit. Notable inclusions are "caster" type enemies, demons, and the nebular branch of the lunar events.
 - When holding an uncharged magnet, charged enemies spawn twice as often as previously
 - Loot wraiths are more common

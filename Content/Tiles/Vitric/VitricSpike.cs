@@ -15,6 +15,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			TileID.Sets.TouchDamageImmediate[Type] = 5;//vanilla contact damage
 			TileID.Sets.DrawsWalls[Type] = true;
 			Main.tileMerge[Type][Mod.Find<ModTile>("VitricSand").Type] = true;
+			Main.tileMerge[Type][Mod.Find<ModTile>("AncientSandstone").Type] = true;
+			Main.tileMerge[Type][Mod.Find<ModTile>("AncientSandstoneTile").Type] = true;
 			Main.tileMerge[Type][TileType<VitricGiantCrystal>()] = true;
 			Main.tileMerge[Type][TileType<VitricMediumCrystal>()] = true;
 			Main.tileMerge[Type][TileType<VitricLargeCrystal>()] = true;
