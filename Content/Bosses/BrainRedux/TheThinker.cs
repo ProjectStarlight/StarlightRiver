@@ -6,6 +6,7 @@ using StarlightRiver.Content.Items.Crimson;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Content.PersistentData;
 using StarlightRiver.Content.Tiles.Crimson;
+using StarlightRiver.Core.Systems.BarrierSystem;
 using StarlightRiver.Core.Systems.MusicFilterSystem;
 using System;
 using System.Collections.Generic;
@@ -92,7 +93,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			NPC.width = 128;
 			NPC.height = 128;
 			NPC.damage = 10;
-			NPC.lifeMax = 5000;
+			NPC.lifeMax = 5500;
 			NPC.knockBackResist = 0f;
 			NPC.friendly = false;
 			NPC.noTileCollide = true;
@@ -106,10 +107,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 		{
 			if (Main.expertMode)
-				NPC.lifeMax = 7500;
+				NPC.lifeMax = 7000;
 
 			if (Main.masterMode)
-				NPC.lifeMax = 9000;
+				NPC.lifeMax = 9500;
 		}
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
@@ -320,7 +321,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			// Attacks
 			if (ShouldBeAttacking)
 			{
-				NPC.immortal = false;
+				
 
 				Timer++;
 				AttackTimer++;
@@ -334,6 +335,19 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				{
 					platformRadiusTarget = 1000;
 					platformRadiusTransitionTime = 240;
+
+					NPC.GetGlobalNPC<BarrierNPC>().maxBarrier = Main.masterMode ? 750 : Main.expertMode ? 600 : 500;				
+				}
+
+				if (Timer < 60)
+				{
+					var maxBarrier = Main.masterMode ? 750 : Main.expertMode ? 600 : 500;
+					NPC.GetGlobalNPC<BarrierNPC>().barrier = (int)(Timer / 60f * maxBarrier);
+				}
+
+				if (Timer == 60)
+				{
+					NPC.immortal = false;
 				}
 
 				if (Timer < 60)
@@ -377,7 +391,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				}
 
 				if (Timer > 1140)
+				{
 					ExtraGrayAuraRadius -= 10;
+					NPC.GetGlobalNPC<BarrierNPC>().maxBarrier = 0;
+				}
 
 				if (Timer == 1200)
 				{
@@ -398,7 +415,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					ThisBrain.Phase = DeadBrain.Phases.SecondPhase;
 					ThisBrain.AttackState = -1;
 					ThisBrain.AttackTimer = 1;
-					ThisBrain.NPC.life = ThisBrain.NPC.lifeMax;
+					ThisBrain.NPC.life = ThisBrain.NPC.lifeMax / 3;
 					ThisBrain.NPC.noGravity = true;
 					ThisBrain.NPC.noTileCollide = true;
 					ThisBrain.NPC.dontTakeDamage = false;

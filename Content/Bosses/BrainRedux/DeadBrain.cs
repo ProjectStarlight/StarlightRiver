@@ -268,7 +268,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 		{
-			int life = Main.masterMode ? 1600 : Main.expertMode ? 1250 : 1000;
+			int life = Main.masterMode ? 3600 : Main.expertMode ? 2250 : 1500;
 
 			NPC.lifeMax = life;
 			NPC.life = life;

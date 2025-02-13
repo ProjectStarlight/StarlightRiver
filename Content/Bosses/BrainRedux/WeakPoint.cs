@@ -45,6 +45,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			return false;
 		}
 
+		public override void ModifyIncomingHit(ref NPC.HitModifiers modifiers)
+		{
+			modifiers.FinalDamage *= 1.5f;
+		}
+
 		public float Heartbeat(float t)
 		{
 			float omega = 2 * MathF.PI;
