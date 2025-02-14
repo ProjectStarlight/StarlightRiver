@@ -14,6 +14,7 @@ namespace StarlightRiver.Content.Backgrounds
 		public static ParticleSystem stars;
 
 		public static float starOpacity = 1;
+		public static float timer = 0;
 
 		public override void Load()
 		{
@@ -22,6 +23,10 @@ namespace StarlightRiver.Content.Backgrounds
 
 			starsTarget = new(DrawStars, CheckIsActive, 1f);
 			starsMap = new(DrawMap, CheckIsActive, 1f);
+
+			starsTarget.allowOnMenu = true;
+			starsMap.allowOnMenu = true;
+
 			stars = new("StarlightRiver/Assets/Misc/StarParticle", UpdateStars, ParticleSystem.AnchorOptions.Screen);
 
 			ScreenspaceShaderSystem.AddScreenspacePass(new(1, DrawOverlay, CheckIsActive));
@@ -106,11 +111,13 @@ namespace StarlightRiver.Content.Backgrounds
 		/// <param name="sb"></param>
 		public static void DrawStars(SpriteBatch sb)
 		{
+			var wantedMatrix = Main.gameMenu ? Main.UIScaleMatrix : Main.GameViewMatrix.TransformationMatrix;
+
 			Texture2D texB = Terraria.GameContent.TextureAssets.MagicPixel.Value;
 			sb.Draw(texB, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.Black);
 
 			sb.End();
-			sb.Begin(default, default, SamplerState.LinearWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(default, default, SamplerState.LinearWrap, default, RasterizerState.CullNone, default, wantedMatrix);
 
 			Texture2D tex = Assets.Noise.SwirlyNoiseLooping.Value;
 			Texture2D tex2 = Assets.Noise.PerlinNoise.Value;
@@ -124,7 +131,7 @@ namespace StarlightRiver.Content.Backgrounds
 
 			color.G = 190;
 			color.B = 255;
-			Vector2 offset = Vector2.One * Main.GameUpdateCount * 0.2f + Vector2.One.RotatedBy(Main.GameUpdateCount * 0.01f) * 20;
+			Vector2 offset = Vector2.One * timer * 0.2f + Vector2.One.RotatedBy(timer * 0.01f) * 20;
 			var source = new Rectangle((int)offset.X, (int)offset.Y, tex.Width, tex.Height);
 			sb.Draw(tex, target, source, color * 0.05f);
 
@@ -132,7 +139,7 @@ namespace StarlightRiver.Content.Backgrounds
 			color.G = 10;
 			color.B = 255;
 			color.A = 0;
-			offset = Vector2.One * Main.GameUpdateCount * 0.4f + Vector2.One.RotatedBy(Main.GameUpdateCount * 0.005f) * 36;
+			offset = Vector2.One * timer * 0.4f + Vector2.One.RotatedBy(timer * 0.005f) * 36;
 			source = new Rectangle((int)offset.X, (int)offset.Y, tex.Width, tex.Height);
 			sb.Draw(tex2, target, source, color * 0.05f);
 
@@ -140,12 +147,12 @@ namespace StarlightRiver.Content.Backgrounds
 			color.G = 255;
 			color.B = 255;
 			color.A = 0;
-			offset = Vector2.One * Main.GameUpdateCount * 0.6f + Vector2.One.RotatedBy(Main.GameUpdateCount * 0.021f) * 15;
+			offset = Vector2.One * timer * 0.6f + Vector2.One.RotatedBy(timer * 0.021f) * 15;
 			source = new Rectangle((int)offset.X, (int)offset.Y, tex.Width, tex.Height);
 			sb.Draw(tex3, target, source, color * 0.05f);
 
 			sb.End();
-			sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, wantedMatrix);
 
 			stars.DrawParticles(sb);
 		}
@@ -199,6 +206,8 @@ namespace StarlightRiver.Content.Backgrounds
 			if (!CheckIsActive() || Main.dedServ)
 				return;
 
+			timer++;
+
 			// star particles
 			var starColor = new Color(150, Main.rand.Next(150, 255), 255)
 			{
@@ -216,6 +225,12 @@ namespace StarlightRiver.Content.Backgrounds
 
 			bool star = Main.rand.NextBool(18);
 			stars.AddParticle(new Particle(new Vector2(0, Main.screenHeight * 0.2f + prog * 0f), new Vector2(3f + prog * 4f, 1), 0, star ? Main.rand.NextFloat(0.2f, 0.3f) : Main.rand.NextFloat(0.05f, 0.1f), starColor * (star ? 1.2f : 1f), 600, Vector2.One * (prog * 110f), new Rectangle(0, star ? 120 : 0, 120, 120), 1));
+		}
+
+		public override void PostUpdateTime()
+		{
+			if (Main.gameMenu)
+				PostUpdateEverything();
 		}
 	}
 }

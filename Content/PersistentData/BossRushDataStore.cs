@@ -46,6 +46,12 @@ namespace StarlightRiver.Content.PersistentData
 			PersistentDataStoreSystem.GetDataStore<BossRushDataStore>().ForceSave();
 		}
 
+		public static void ResetBoss(BossrushUnlockFlag flag)
+		{
+			PersistentDataStoreSystem.GetDataStore<BossRushDataStore>().flags &= ~flag;
+			PersistentDataStoreSystem.GetDataStore<BossRushDataStore>().ForceSave();
+		}
+
 		public override void SaveGlobal(TagCompound tag)
 		{
 			tag["flags"] = (int)flags;

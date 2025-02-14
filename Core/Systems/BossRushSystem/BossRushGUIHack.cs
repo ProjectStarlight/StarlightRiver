@@ -1,5 +1,9 @@
-﻿using StarlightRiver.Content.GUI;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Backgrounds;
+using StarlightRiver.Content.GUI;
+using StarlightRiver.Content.PersistentData;
 using StarlightRiver.Core.Loaders.UILoading;
+using System;
 using Terraria.Audio;
 using Terraria.GameContent.UI.States;
 using Terraria.ID;
@@ -17,10 +21,34 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			On_Main.DrawMenu += DrawBossMenu;
 			On_Main.Update += UpdateBossMenu;
 			On_Main.DrawInterface_35_YouDied += DrawDeadBossMenu;
+
+			StarlightRiverBackground.CheckIsActiveEvent += () => inMenu;
+			StarlightRiverBackground.DrawMapEvent += DrawMenuMap;
+		}
+
+		private void DrawMenuMap(SpriteBatch batch)
+		{
+			if (inMenu)
+			{
+				batch.End();
+				batch.Begin(default, default, SamplerState.LinearWrap, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+
+				BossRushMenu.DrawMap(batch);
+			}
 		}
 
 		private void UpdateBossMenu(On_Main.orig_Update orig, Main self, GameTime gameTime)
 		{
+			if (inMenu && BossRushDataStore.UnlockedBossRush)
+			{
+				ModContent.GetInstance<StarlightRiverBackground>().PostUpdateEverything();
+				BossRushMenu.timer++;
+			}
+			else
+			{
+				BossRushMenu.timer = 0;
+			}
+
 			if (Main.gameMenu && Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape))
 			{
 				if (inMenu)
@@ -65,13 +93,16 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 
 			if (Main.gameMenu && Main.menuMode == MenuID.FancyUI && Main.MenuUI.CurrentState is UIWorldSelect)
 			{
-				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
+				Main.spriteBatch.Begin(default, default, SamplerState.LinearWrap, default, default, default, Main.UIScaleMatrix);
 
 				UILoader.GetUIState<BossRushButton>().UserInterface.Update(gameTime);
 				UILoader.GetUIState<BossRushButton>().Draw(Main.spriteBatch);
 
-				Main.DrawCursor(Main.DrawThickCursor());
+				Main.spriteBatch.End();
 
+				// The things I do for consistency
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
+				Main.DrawCursor(Main.DrawThickCursor());
 				Main.spriteBatch.End();
 			}
 		}

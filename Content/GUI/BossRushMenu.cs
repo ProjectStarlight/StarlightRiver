@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.PersistentData;
+﻿using StarlightRiver.Content.Backgrounds;
+using StarlightRiver.Content.PersistentData;
 using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems.BossRushSystem;
 using StarlightRiver.Core.Systems.PersistentDataSystem;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameContent.UI.States;
+using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.UI;
@@ -16,8 +18,6 @@ namespace StarlightRiver.Content.GUI
 	internal class BossRushButton : SmartUIState
 	{
 		public UIText button;
-
-		public bool Unlocked => BossRushDataStore.UnlockedBossRush;
 
 		public override bool Visible => Main.gameMenu && Main.menuMode == MenuID.FancyUI && Main.MenuUI.CurrentState is UIWorldSelect;
 
@@ -38,27 +38,9 @@ namespace StarlightRiver.Content.GUI
 
 			button.OnLeftClick += (a, b) =>
 			{
-				if (Unlocked)
-				{
-					BossRushGUIHack.inMenu = true;
-					SoundEngine.PlaySound(SoundID.MenuOpen);
-
-					foreach (UIElement element in Children)
-					{
-						if (element is BossRushUnlockInfo info)
-							info.animationTimer = 0;
-					}
-				}
-				else
-				{
-					SoundEngine.PlaySound(SoundID.Unlock);
-				}
+				BossRushGUIHack.inMenu = true;
+				SoundEngine.PlaySound(SoundID.MenuOpen);
 			};
-
-			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Auroracle, "Auroracle", "StarlightRiver/Assets/Bosses/SquidBoss/SquidBoss_Head_Boss", 40));
-			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Glassweaver, "Glassweaver", "StarlightRiver/Assets/Bosses/GlassMiniboss/Glassweaver_Head_Boss", 70));
-			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Ceiros, "Ceiros", "StarlightRiver/Assets/Bosses/VitricBoss/VitricBoss_Head_Boss", 100));
-			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Thinker, "The Thinker", "StarlightRiver/Assets/Bosses/BrainRedux/TheThinker_Head_Boss", 130));
 
 			Append(button);
 		}
@@ -68,20 +50,14 @@ namespace StarlightRiver.Content.GUI
 			var dims = button.GetDimensions().ToRectangle();
 
 			Texture2D background = Main.Assets.Request<Texture2D>("Images/UI/CharCreation/PanelGrayscale").Value;
-			float opacity = Unlocked ? (button.IsMouseHovering ? 1 : 0.75f) : 0.75f;
-			Color color = (Unlocked ? new Color(73, 94, 171) : new Color(80, 80, 80)) * opacity;
+			float opacity = button.IsMouseHovering ? 1 : 0.75f;
+			Color color = new Color(73, 94, 171) * opacity;
 
-			button.TextColor = Unlocked ? (button.IsMouseHovering ? Color.Yellow : Color.White) : new Color(80, 80, 80);
+			button.TextColor = button.IsMouseHovering ? Color.Yellow : Color.White;
 
 			Utils.DrawSplicedPanel(spriteBatch, background, dims.X, dims.Y, dims.Width, dims.Height, 10, 10, 10, 10, color);
 
 			base.Draw(spriteBatch);
-
-			if (!Unlocked)
-			{
-				Texture2D lockTex = Assets.GUI.BossRushLock.Value;
-				spriteBatch.Draw(lockTex, dims.Center.ToVector2(), null, Color.White, 0, lockTex.Size() / 2f, 1, 0, 0);
-			}
 
 			Recalculate();
 		}
@@ -92,73 +68,96 @@ namespace StarlightRiver.Content.GUI
 		public BossrushUnlockFlag flag;
 
 		public string name;
-		public string texture;
+		public string hint;
+		public Asset<Texture2D> texture;
+		public int seed;
 
-		public int animationTimer;
-		public int yOffsetTarget;
-		public int yOffset;
+		public float radiusTarget;
+		public float rotTarget;
+
+		public bool clicked;
 
 		public bool Unlocked => BossRushDataStore.DownedBoss(flag);
 
-		public BossRushUnlockInfo(BossrushUnlockFlag flag, string name, string texture, int yOffsetTarget)
+		public BossRushUnlockInfo(BossrushUnlockFlag flag, string name, string hint, Asset<Texture2D> texture, float radiusTarget, float rotTarget)
 		{
 			this.flag = flag;
 			this.name = name;
+			this.hint = Helpers.Helper.WrapString(hint, 300, Terraria.GameContent.FontAssets.ItemStack.Value, 0.8f);
 			this.texture = texture;
-			this.yOffsetTarget = yOffsetTarget;
+			this.radiusTarget = radiusTarget;
+			this.rotTarget = rotTarget;
 
-			Left.Set(360, 0.5f);
-			Top.Set(240, 0);
-			Width.Set(100, 0);
-			Height.Set(16, 0);
+			this.seed = Main.rand.Next(60);
+
+			Width.Set(48, 0);
+			Height.Set(48, 0);
 		}
 
 		public override void SafeUpdate(GameTime gameTime)
 		{
-			var parent = Parent as BossRushButton;
+			Left.Set(MathF.Cos(rotTarget) * radiusTarget - 24, 0.5f);
+			Top.Set(MathF.Sin(rotTarget) * radiusTarget - 24, 0.5f);
 
-			if (parent is null)
-				return;
+			if (IsMouseHovering && Main.mouseLeft && !clicked)
+			{
+				clicked = true;
 
-			if (parent.button.IsMouseHovering && animationTimer < 30)
-				animationTimer++;
+				if (!Unlocked)
+					BossRushDataStore.DefeatBoss(flag);
+				else
+					BossRushDataStore.ResetBoss(flag);
+			}
 
-			if (!parent.button.IsMouseHovering && animationTimer > 0)
-				animationTimer--;
-
-			yOffset = (int)(Ease(animationTimer / 30f) * yOffsetTarget);
-		}
-
-		public float Ease(float input)
-		{
-			float c1 = 1.70158f;
-			float c3 = c1 + 1;
-
-			return 1 + c3 * (float)Math.Pow(input - 1, 3) + c1 * (float)Math.Pow(input - 1, 2);
+			if (clicked && Main.mouseLeftRelease)
+				clicked = false;
 		}
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
 			var dims = GetDimensions().ToRectangle();
-			dims.Inflate(10, 4);
 
-			dims.Offset(new Point(0, yOffset));
+			Texture2D background = Assets.NPCs.BossRush.ArmillarySlot.Value;
+			Texture2D icon = texture.Value;
 
-			Texture2D background = Main.Assets.Request<Texture2D>("Images/UI/CharCreation/PanelGrayscale").Value;
-			Texture2D icon = ModContent.Request<Texture2D>(texture).Value;
-
-			float opacity = Ease(animationTimer / 30f);
+			float opacity = 1;// Ease(animationTimer / 30f);
 			Color color = (Unlocked ? new Color(73, 94, 171) : new Color(80, 80, 80)) * 0.75f * opacity;
 
-			Utils.DrawSplicedPanel(spriteBatch, background, dims.X, dims.Y, dims.Width, dims.Height, 10, 10, 10, 10, color);
-			spriteBatch.Draw(icon, dims.TopLeft() + new Vector2(10, 10), null, (Unlocked ? Color.White : Color.Black) * opacity, 0, icon.Size() / 2f, 1, 0, 0);
-			Utils.DrawBorderString(spriteBatch, Unlocked ? name : "???", dims.TopLeft() + new Vector2(icon.Width + 2, 4), (Unlocked ? Color.White : Color.Gray) * opacity, 0.8f);
+			float time = BossRushMenu.timer + seed * 4;
+			Vector2 pos = dims.Center() + new Vector2(MathF.Cos(time / 60f * 6.28f * 0.24f), MathF.Sin(time / 60f * 6.28f * 0.3f)) * 6 * BossRushMenu.Fade;
+
+			spriteBatch.Draw(background, pos, null, Color.White * opacity, 0, background.Size() / 2f, 1, 0, 0);
+			spriteBatch.Draw(icon, pos, null, (Unlocked ? Color.White : Color.Black) * opacity, 0, icon.Size() / 2f, 1, 0, 0);
+		}
+
+		public void DrawText(SpriteBatch spriteBatch)
+		{
+			var dims = GetDimensions().ToRectangle();
+			float opacity = 1;// Ease(animationTimer / 30f);
+
+			float time = BossRushMenu.timer + seed * 4;
+			Vector2 pos = dims.Center() + new Vector2(MathF.Cos(time / 60f * 6.28f * 0.24f), MathF.Sin(time / 60f * 6.28f * 0.3f)) * 6 * BossRushMenu.Fade;
+
+			Utils.DrawBorderString(spriteBatch, Unlocked ? name + " ✔" : "???", pos + new Vector2(0, 32), (Unlocked ? new Color(200, 255, 200) : Color.Gray) * opacity, 0.8f, 0.5f, 0);
+
+			if (IsMouseHovering)
+				Utils.DrawBorderString(spriteBatch, Unlocked ? "Boss defeated" : hint, Main.MouseScreen + new Vector2(16, 16), (Unlocked ? new Color(200, 255, 200) : Color.White) * opacity, 0.8f);
 		}
 	}
 
 	internal class BossRushMenu : SmartUIState
 	{
 		public UIText button;
+
+		public static int difficulty;
+
+		public static int timer;
+		public static float Fade => timer < 180 ? timer / 180f : 1;
+
+		public bool Unlocked => BossRushDataStore.UnlockedBossRush;
+
+		public static Color DifficultyColor => difficulty == 2 ? Color.Red : difficulty == 1 ? Color.Orange : Color.SkyBlue;
+		public static string DifficultyString => difficulty == 2 ? "Master!" : difficulty == 1 ? "Expert" : "Classic";
 
 		public override bool Visible => BossRushGUIHack.inMenu;
 
@@ -169,6 +168,7 @@ namespace StarlightRiver.Content.GUI
 
 		public override void OnInitialize()
 		{
+			/*
 			var normal = new BossRushChoice("Boss Rush",
 				" - Fight all Starlight River bosses in order! NEWBLOCK" +
 				" - Normal difficulty NEWBLOCK" +
@@ -197,8 +197,27 @@ namespace StarlightRiver.Content.GUI
 				" - 3x Score multiplier", 2);
 			master.Left.Set(-150, 0.75f);
 			master.Top.Set(-300, 0.5f);
-			Append(master);
+			Append(master);*/
 
+			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Auroracle, "Auroracle", "Found by following the wisps in the ice biome", Assets.Bosses.SquidBoss.SquidBoss_Head_Boss, 220, -1.57f - 1f));
+			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Glassweaver, "Glassweaver", "Guards his forge deep below the desert", Assets.Bosses.GlassMiniboss.Glassweaver_Head_Boss, 220, -1.57f - 0.33f));
+			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Ceiros, "Ceiros", "Guards a temple deep below the desert", Assets.Bosses.VitricBoss.VitricBoss_Head_Boss, 220, -1.57f + 0.33f));
+			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Thinker, "The Thinker", "Born from the Brain of Cthulhu into the crimson caverns", Assets.Bosses.BrainRedux.TheThinker_Head_Boss, 220, -1.57f + 1f));
+
+			var difficulty = new BossRushDifficultySwitcher();
+			difficulty.Width.Set(140, 0);
+			difficulty.Height.Set(36, 0);
+			difficulty.Left.Set(-70, 0.5f);
+			difficulty.Top.Set(180, 0.5f);
+			Append(difficulty);
+
+			var start = new BossRushStart();
+			start.Width.Set(140, 0);
+			start.Height.Set(36, 0);
+			start.Left.Set(-70, 0.5f);
+			start.Top.Set(220, 0.5f);
+			Append(start);
+			
 			button = new UIText("Back");
 			button.Left.Set(-70, 0.5f);
 			button.Top.Set(320, 0.5f);
@@ -220,9 +239,61 @@ namespace StarlightRiver.Content.GUI
 			Append(button);
 		}
 
+		public static void DrawMap(SpriteBatch spriteBatch)
+		{
+			if (BossRushDataStore.UnlockedBossRush)
+			{
+				float scale = 1f + 0.05f * MathF.Sin(timer / 120f * 6.28f);
+
+				spriteBatch.Draw(Assets.Keys.GlowAlpha.Value, Main.ScreenSize.ToVector2() / 2f * (1f / Main.UIScale), null, new Color(1f, 1f, 1f, 0) * Fade, 0, Assets.Keys.GlowAlpha.Size() / 2f, 12 * scale, 0, 0);
+				spriteBatch.Draw(Assets.Keys.GlowHarshAlpha.Value, Main.ScreenSize.ToVector2() / 2f * (1f / Main.UIScale), null, new Color(1f, 1f, 1f, 0) * Fade, 0, Assets.Keys.GlowHarshAlpha.Size() / 2f, 20 * scale, 0, 0);
+
+				foreach (UIElement element in UILoader.GetUIState<BossRushMenu>().Children)
+				{
+					if (element is BossRushUnlockInfo info)
+						spriteBatch.Draw(Assets.Keys.GlowAlpha.Value, element.GetDimensions().Center(), null, new Color(1f, 1f, 1f, 0) * 0.5f * Fade, 0, Assets.Keys.GlowAlpha.Size() / 2f, 2 * scale, 0, 0);
+				}
+			}
+		}
+
 		public override void Draw(SpriteBatch spriteBatch)
 		{
 			var dims = button.GetDimensions().ToRectangle();
+
+			Effect mapEffect = Filters.Scene["StarMap"].GetShader().Shader;
+			mapEffect.Parameters["map"].SetValue(StarlightRiverBackground.starsMap.RenderTarget);
+			mapEffect.Parameters["background"].SetValue(StarlightRiverBackground.starsTarget.RenderTarget);
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, SamplerState.LinearWrap, default, RasterizerState.CullNone, mapEffect, Main.UIScaleMatrix);
+
+			spriteBatch.Draw(StarlightRiverBackground.starsMap.RenderTarget, Vector2.Zero, null, new Color(1f, 1f, 1f, 1));
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default, default, Main.UIScaleMatrix);
+
+			var ring3 = Assets.NPCs.BossRush.ArmillaryRing3.Value;
+			var ring2 = Assets.NPCs.BossRush.ArmillaryRing2.Value;
+			var ring1 = Assets.NPCs.BossRush.ArmillaryRing1.Value;
+			var orb = Assets.NPCs.BossRush.BossRushOrb.Value;
+
+			var runes3 = Assets.NPCs.BossRush.ArmillaryRingRunes3.Value;
+			var runes2 = Assets.NPCs.BossRush.ArmillaryRingRunes2.Value;
+			var runes1 = Assets.NPCs.BossRush.ArmillaryRingRunes1.Value;
+
+			float rotProgress = Unlocked ? timer * (0.02f + difficulty * 0.01f) * Fade : 0;
+
+			spriteBatch.Draw(ring3, GetDimensions().Center(), null, Color.White, rotProgress * 0.5f, ring3.Size() / 2f, 1, 0, 0);
+			spriteBatch.Draw(ring2, GetDimensions().Center(), null, Color.White, rotProgress * -0.75f, ring2.Size() / 2f, 1, 0, 0);
+			spriteBatch.Draw(ring1, GetDimensions().Center(), null, Color.White, rotProgress, ring1.Size() / 2f, 1, 0, 0);
+			spriteBatch.Draw(orb, GetDimensions().Center(), null, Color.White, 0, orb.Size() / 2f, 1, 0, 0);
+
+			if (Unlocked)
+			{
+				spriteBatch.Draw(runes3, GetDimensions().Center(), null, DifficultyColor * Fade, rotProgress * 0.5f, runes3.Size() / 2f, 1, 0, 0);
+				spriteBatch.Draw(runes2, GetDimensions().Center(), null, DifficultyColor * Fade, rotProgress * -0.75f, runes2.Size() / 2f, 1, 0, 0);
+				spriteBatch.Draw(runes1, GetDimensions().Center(), null, DifficultyColor * Fade, rotProgress, runes1.Size() / 2f, 1, 0, 0);
+			}
 
 			Texture2D background = Main.Assets.Request<Texture2D>("Images/UI/CharCreation/PanelGrayscale").Value;
 			float opacity = button.IsMouseHovering ? 1 : 0.75f;
@@ -230,86 +301,123 @@ namespace StarlightRiver.Content.GUI
 
 			button.TextColor = button.IsMouseHovering ? Color.Yellow : Color.White;
 
+			base.Draw(spriteBatch);
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, SamplerState.LinearWrap, default, default, default, Main.UIScaleMatrix);
+
+			Utils.DrawSplicedPanel(spriteBatch, background, dims.X, dims.Y, dims.Width, dims.Height, 10, 10, 10, 10, color);
+
+			foreach(UIElement element in Children)
+			{
+				if (element is BossRushUnlockInfo info)
+					info.DrawText(spriteBatch);
+
+				if (element is BossRushDifficultySwitcher diff)
+					diff.DrawText(spriteBatch);
+
+				if (element is BossRushStart start)
+					start.DrawText(spriteBatch);
+			}
+
+			Recalculate();
+		}
+	}
+
+	internal class BossRushStart : SmartUIElement
+	{
+		public bool Unlocked => BossRushDataStore.UnlockedBossRush;
+
+		public override void SafeClick(UIMouseEvent evt)
+		{
+			if (Unlocked)
+			{
+				BossRushSystem.isBossRush = true;
+				BossRushSystem.bossRushDifficulty = BossRushMenu.difficulty;
+
+				BossRushSystem.Reset();
+
+				Main.mapEnabled = false;
+
+				var temp = new WorldFileData(ModLoader.ModPath + "/BossRushWorld.wld", false);
+				temp.SetAsActive();
+
+				BossRushGUIHack.inMenu = false;
+
+				Main.ActiveWorldFileData = temp;
+				WorldGen.playWorld();
+
+				Main.MenuUI.SetState(null);
+			}
+		}
+
+		public override void Draw(SpriteBatch spriteBatch)
+		{
+			var dims = GetDimensions().ToRectangle();
+
+			Texture2D background = Main.Assets.Request<Texture2D>("Images/UI/CharCreation/PanelGrayscale").Value;
+			float opacity = Unlocked ? (IsMouseHovering ? 1 : 0.75f) : 0.75f;
+			Color color = (Unlocked ? new Color(73, 94, 171) : new Color(80, 80, 80)) * opacity;
+
+			Utils.DrawSplicedPanel(spriteBatch, background, dims.X, dims.Y, dims.Width, dims.Height, 10, 10, 10, 10, color);
+
+			base.Draw(spriteBatch);
+
+			if (!Unlocked)
+			{
+				Texture2D lockTex = Assets.GUI.BossRushLock.Value;
+				spriteBatch.Draw(lockTex, dims.Center.ToVector2(), null, Color.White, 0, lockTex.Size() / 2f, 1, 0, 0);
+			}
+
+			Recalculate();
+		}
+
+		public void DrawText(SpriteBatch spriteBatch)
+		{
+			if (Unlocked)
+			{
+				var dims = GetDimensions().ToRectangle();
+
+				var textColor = Unlocked ? (IsMouseHovering ? Color.Yellow : Color.White) : new Color(80, 80, 80);
+				Utils.DrawBorderString(spriteBatch, "Start", dims.Center(), textColor, 1, 0.5f, 0.4f);
+			}
+		}
+	}
+
+	internal class BossRushDifficultySwitcher : SmartUIElement
+	{
+		public bool Unlocked => BossRushDataStore.UnlockedBossRush;
+
+		public override void SafeClick(UIMouseEvent evt)
+		{
+			if (Unlocked)
+			{
+				BossRushMenu.difficulty++;
+				BossRushMenu.difficulty %= 3;
+			}
+		}
+
+		public override void Draw(SpriteBatch spriteBatch)
+		{
+			var dims = GetDimensions().ToRectangle();
+
+			Texture2D background = Main.Assets.Request<Texture2D>("Images/UI/CharCreation/PanelGrayscale").Value;
+			float opacity = Unlocked ? (IsMouseHovering ? 1 : 0.75f) : 0.75f;
+			Color color = (Unlocked ? new Color(73, 94, 171) : new Color(80, 80, 80)) * opacity;
+
 			Utils.DrawSplicedPanel(spriteBatch, background, dims.X, dims.Y, dims.Width, dims.Height, 10, 10, 10, 10, color);
 
 			base.Draw(spriteBatch);
 
 			Recalculate();
 		}
-	}
 
-	internal class BossRushChoice : UIElement
-	{
-		public string name;
-
-		public string rules;
-
-		public int difficulty;
-
-		public BossRushChoice(string name, string rules, int difficulty)
+		public void DrawText(SpriteBatch spriteBatch)
 		{
-			Width.Set(300, 0);
-			Height.Set(600, 0);
+			var dims = GetDimensions().ToRectangle();
 
-			this.name = name;
-			this.rules = rules;
-			this.difficulty = difficulty;
-		}
-
-		public override void Draw(SpriteBatch spriteBatch)
-		{
-			CalculatedStyle dims = GetDimensions();
-			Vector2 pos = dims.Position();
-
-			Texture2D background = Main.Assets.Request<Texture2D>("Images/UI/CharCreation/PanelGrayscale").Value;
-			float opacity = IsMouseHovering ? 1 : 0.75f;
-
-			Utils.DrawSplicedPanel(spriteBatch, background, (int)dims.X, (int)dims.Y, (int)dims.Width, (int)dims.Height, 10, 10, 10, 10, new Color(73, 94, 171) * opacity);
-
-			Utils.DrawSplicedPanel(spriteBatch, background, (int)dims.X + 10, (int)dims.Y + 140, (int)dims.Width - 20, 360, 10, 10, 10, 10, Color.Black * 0.2f);
-			Utils.DrawSplicedPanel(spriteBatch, background, (int)dims.X + 10, (int)dims.Y + 520, (int)dims.Width - 20, 60, 10, 10, 10, 10, Color.Black * 0.2f);
-
-			Utils.DrawBorderStringBig(spriteBatch, name, pos + new Vector2(dims.Width / 2f, 20), Color.White, 1, 0.5f);
-
-			ReLogic.Graphics.DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
-			string rulesWrapped = Helpers.Helper.WrapString(rules, 240, font, 0.8f);
-
-			Utils.DrawBorderString(spriteBatch, rulesWrapped, pos + new Vector2(dims.Width / 2f, 160), Color.White, 0.8f, 0.5f);
-
-			int sourceScore =
-				difficulty == 0 ? PersistentDataStoreSystem.GetDataStore<BossRushDataStore>().normalScore :
-				difficulty == 1 ? PersistentDataStoreSystem.GetDataStore<BossRushDataStore>().expertScore :
-				difficulty == 2 ? PersistentDataStoreSystem.GetDataStore<BossRushDataStore>().masterScore :
-				0;
-
-			string scoreString = sourceScore > 0 ? $"Score: {sourceScore}" : "No score!";
-			Color scoreColor = sourceScore > 0 ? Color.Yellow : Color.Gray;
-			Utils.DrawBorderStringBig(spriteBatch, scoreString, pos + new Vector2(dims.Width / 2f, 536), scoreColor, 0.5f, 0.5f);
-		}
-
-		public override void MouseOver(UIMouseEvent evt)
-		{
-			SoundEngine.PlaySound(SoundID.MenuTick);
-		}
-
-		public override void LeftClick(UIMouseEvent evt)
-		{
-			BossRushSystem.isBossRush = true;
-			BossRushSystem.bossRushDifficulty = difficulty;
-
-			BossRushSystem.Reset();
-
-			Main.mapEnabled = false;
-
-			var temp = new WorldFileData(ModLoader.ModPath + "/BossRushWorld.wld", false);
-			temp.SetAsActive();
-
-			BossRushGUIHack.inMenu = false;
-
-			Main.ActiveWorldFileData = temp;
-			WorldGen.playWorld();
-
-			Main.MenuUI.SetState(null);
+			var textColor = Unlocked ? BossRushMenu.DifficultyColor : new Color(80, 80, 80);
+			Utils.DrawBorderString(spriteBatch, Unlocked ? BossRushMenu.DifficultyString : "Locked", dims.Center(), textColor, 1, 0.5f, 0.4f);
 		}
 	}
 }

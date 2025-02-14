@@ -457,11 +457,20 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 				if (currentStage == 0)
 					transitionTimer = 180;
 
+				if (currentStage == -1)
+					transitionTimer = 0;
+
 				currentStage++;
 			}
 
+			if (currentStage == 0 && !NPC.AnyNPCs(trackedBossType))
+			{
+				CurrentStage?.EnterArena(Main.LocalPlayer);
+				CurrentStage?.BeginFight();
+			}
+
 			// transition animation
-			if (transitionTimer > 0)
+			if (currentStage > 0 && transitionTimer > 0)
 			{
 				Main.LocalPlayer.immune = true; //so we dont die during transitions
 				Main.LocalPlayer.immuneTime = 2;
