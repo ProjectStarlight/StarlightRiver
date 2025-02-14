@@ -120,14 +120,15 @@ namespace StarlightRiver.Content.GUI
 			Texture2D background = Assets.NPCs.BossRush.ArmillarySlot.Value;
 			Texture2D icon = texture.Value;
 
-			float opacity = 1;// Ease(animationTimer / 30f);
-			Color color = (Unlocked ? new Color(73, 94, 171) : new Color(80, 80, 80)) * 0.75f * opacity;
+			Color color = (Unlocked ? new Color(73, 94, 171) : new Color(80, 80, 80)) * 0.75f;
 
 			float time = BossRushMenu.timer + seed * 4;
 			Vector2 pos = dims.Center() + new Vector2(MathF.Cos(time / 60f * 6.28f * 0.24f), MathF.Sin(time / 60f * 6.28f * 0.3f)) * 6 * BossRushMenu.Fade;
 
-			spriteBatch.Draw(background, pos, null, Color.White * opacity, 0, background.Size() / 2f, 1, 0, 0);
-			spriteBatch.Draw(icon, pos, null, (Unlocked ? Color.White : Color.Black) * opacity, 0, icon.Size() / 2f, 1, 0, 0);
+			Color litColor = Color.Lerp(Main.tileColor, Color.White, 0.5f);
+
+			spriteBatch.Draw(background, pos, null, litColor, 0, background.Size() / 2f, 1, 0, 0);
+			spriteBatch.Draw(icon, pos, null, Unlocked ? Color.White : Color.Black, 0, icon.Size() / 2f, 1, 0, 0);
 		}
 
 		public void DrawText(SpriteBatch spriteBatch)
@@ -168,37 +169,6 @@ namespace StarlightRiver.Content.GUI
 
 		public override void OnInitialize()
 		{
-			/*
-			var normal = new BossRushChoice("Boss Rush",
-				" - Fight all Starlight River bosses in order! NEWBLOCK" +
-				" - Normal difficulty NEWBLOCK" +
-				" - Full heal between bosses", 0);
-			normal.Left.Set(-150, 0.25f);
-			normal.Top.Set(-300, 0.5f);
-			Append(normal);
-
-			var expert = new BossRushChoice("Boss Blitz",
-				" - Fight all Starlight River bosses in order! NEWBLOCK" +
-				" - Expert difficulty NEWBLOCK" +
-				" - Heal 200 life between bosses NEWBLOCK" +
-				" - Game moves at 1.25x speed NEWBLOCK" +
-				" - 2x Score multiplier", 1);
-			expert.Left.Set(-150, 0.5f);
-			expert.Top.Set(-300, 0.5f);
-			Append(expert);
-
-			var master = new BossRushChoice("Starlight\nShowdown",
-				" - Theoretically Possible! NEWBLOCK" +
-				" - Master difficulty NEWBLOCK" +
-				" - No healing between bosses NEWBLOCK" +
-				" - Game moves at 1.5x speed NEWBLOCK" +
-				" - Healing potions disabled NEWBLOCK" +
-				" - Teleportation disabled NEWBLOCK" +
-				" - 3x Score multiplier", 2);
-			master.Left.Set(-150, 0.75f);
-			master.Top.Set(-300, 0.5f);
-			Append(master);*/
-
 			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Auroracle, "Auroracle", "Found by following the wisps in the ice biome", Assets.Bosses.SquidBoss.SquidBoss_Head_Boss, 220, -1.57f - 1f));
 			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Glassweaver, "Glassweaver", "Guards his forge deep below the desert", Assets.Bosses.GlassMiniboss.Glassweaver_Head_Boss, 220, -1.57f - 0.33f));
 			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Ceiros, "Ceiros", "Guards a temple deep below the desert", Assets.Bosses.VitricBoss.VitricBoss_Head_Boss, 220, -1.57f + 0.33f));
@@ -283,10 +253,12 @@ namespace StarlightRiver.Content.GUI
 
 			float rotProgress = Unlocked ? timer * (0.02f + difficulty * 0.01f) * Fade : 0;
 
-			spriteBatch.Draw(ring3, GetDimensions().Center(), null, Color.White, rotProgress * 0.5f, ring3.Size() / 2f, 1, 0, 0);
-			spriteBatch.Draw(ring2, GetDimensions().Center(), null, Color.White, rotProgress * -0.75f, ring2.Size() / 2f, 1, 0, 0);
-			spriteBatch.Draw(ring1, GetDimensions().Center(), null, Color.White, rotProgress, ring1.Size() / 2f, 1, 0, 0);
-			spriteBatch.Draw(orb, GetDimensions().Center(), null, Color.White, 0, orb.Size() / 2f, 1, 0, 0);
+			Color litColor = Color.Lerp(Main.tileColor, Color.White, 0.5f);
+
+			spriteBatch.Draw(ring3, GetDimensions().Center(), null, litColor, rotProgress * 0.5f, ring3.Size() / 2f, 1, 0, 0);
+			spriteBatch.Draw(ring2, GetDimensions().Center(), null, litColor, rotProgress * -0.75f, ring2.Size() / 2f, 1, 0, 0);
+			spriteBatch.Draw(ring1, GetDimensions().Center(), null, litColor, rotProgress, ring1.Size() / 2f, 1, 0, 0);
+			spriteBatch.Draw(orb, GetDimensions().Center(), null, litColor, 0, orb.Size() / 2f, 1, 0, 0);
 
 			if (Unlocked)
 			{

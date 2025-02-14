@@ -21,9 +21,23 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			On_Main.DrawMenu += DrawBossMenu;
 			On_Main.Update += UpdateBossMenu;
 			On_Main.DrawInterface_35_YouDied += DrawDeadBossMenu;
+			On_Main.UpdateAudio_DecideOnNewMusic += MenuMusic;
 
 			StarlightRiverBackground.CheckIsActiveEvent += () => inMenu;
 			StarlightRiverBackground.DrawMapEvent += DrawMenuMap;
+		}
+
+		private void MenuMusic(On_Main.orig_UpdateAudio_DecideOnNewMusic orig, Main self)
+		{
+			orig(self);
+
+			if (inMenu)
+			{
+				if (BossRushDataStore.UnlockedBossRush)
+					Main.newMusic = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/OminousIdle");
+				else
+					Main.newMusic = MusicID.Monsoon;
+			}
 		}
 
 		private void DrawMenuMap(SpriteBatch batch)

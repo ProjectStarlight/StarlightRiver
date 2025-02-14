@@ -177,7 +177,9 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 			}
 
 			if (firstResizeTime == 20)
-				ResizeScreens(new Vector2(Main.screenWidth, Main.screenHeight));				
+				ResizeScreens(new Vector2(Main.screenWidth, Main.screenHeight));
+
+			orig();
 		}
 	}
 }
