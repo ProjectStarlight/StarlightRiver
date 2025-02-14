@@ -181,9 +181,9 @@ namespace StarlightRiver.Content.Items
 
 			DynamicSpriteFont font = Terraria.GameContent.FontAssets.ItemStack.Value;
 
-			Utils.DrawBorderStringBig(Main.spriteBatch, $"STARLIGHT RIVER ALPHA TEST -- THINKER BOSS FIGHT TEST 5", new Vector2(Main.screenWidth / 2, 16), Color.White, 0.6f, 0.5f);
+			Utils.DrawBorderStringBig(Main.spriteBatch, $"STARLIGHT RIVER ALPHA TEST -- THINKER BOSS FIGHT TEST 6", new Vector2(Main.screenWidth / 2, 16), Color.White, 0.6f, 0.5f);
 			Utils.DrawBorderStringBig(Main.spriteBatch, $"ALPHA BUILD DOES NOT REPRESENT FINAL PRODUCT", new Vector2(Main.screenWidth / 2, 48), Color.White, 0.6f, 0.5f);
-			Utils.DrawBorderStringBig(Main.spriteBatch, $"YOUR ID: {SteamFriends.GetPersonaName()} ({SteamUser.GetSteamID().m_SteamID})", new Vector2(Main.screenWidth / 2, 80), Color.Gray, 0.6f, 0.5f);
+			Utils.DrawBorderStringBig(Main.spriteBatch, $"Things to test: Thinker HP/barrier changes, New Electro arrows\nGlassweaver HP/barrier and damage changes, glassweaver expert/master worldgen\nTry to get a world stuck without a glassweaver for >1 minute (softlock)\nPlease tell me if you notice startup/load time being faster also\nI think I did something that should improve that alot", new Vector2(Main.screenWidth / 2, 86), new Color(255, 255, 0), 0.4f, 0.5f);
 
 			Main.spriteBatch.End();
 		}
