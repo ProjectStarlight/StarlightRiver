@@ -240,6 +240,10 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 				if (prototype is StackableBuff)
 				{
 					StackableBuff stackable = prototype.GetInstance(Main.LocalPlayer) as StackableBuff;
+
+					if (stackable is null)
+						return;
+
 					DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
 					string message = $"x{stackable.stacks.Count}";
 					Vector2 dims = font.MeasureString(message) * 0.8f;

@@ -292,6 +292,8 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 					new Vector2(600, 24 * 16),
 					a =>
 					{
+						StructureHelper.Generator.GenerateMultistructureSpecific("Structures/VitricForge", (a / 16).ToPoint16(), StarlightRiver.Instance, Main.masterMode ? 2 : Main.expertMode ? 1 : 0);
+
 						StarlightWorld.vitricBiome = new Rectangle((int)(a.X + 37 * 16) / 16, (int)(a.Y - 68 * 16) / 16, 400, 140);
 						CutawaySystem.CutawayHandler.CreateCutaways();
 						CutawaySystem.CutawayHandler.forgeOverlay.pos = StarlightWorld.GlassweaverArena.TopLeft() + new Vector2(-2, 2) * 16;
