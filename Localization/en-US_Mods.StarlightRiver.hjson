@@ -3702,6 +3702,15 @@ Items: {
 		DisplayName: Pink Laser Pointer
 		Tooltip: ""
 	}
+
+	NeuralFeather: {
+		DisplayName: Neural Feather
+		Tooltip:
+			'''
+			Your arrows explode after a brief duration
+			The explosion inflicts {{BUFF:Psychosis}}
+			'''
+	}
 }
 
 Tiles: {
