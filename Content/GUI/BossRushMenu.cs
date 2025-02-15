@@ -146,6 +146,83 @@ namespace StarlightRiver.Content.GUI
 		}
 	}
 
+	internal class BossRushRelicToggle : SmartUIElement
+	{
+		public Func<bool> active;
+		public string name;
+		public string hint;
+		public Asset<Texture2D> texture;
+		public int seed;
+
+		public float radiusTarget;
+		public float rotTarget;
+
+		public bool clicked;
+
+		public BossRushRelicToggle(Func<bool> active, string name, string hint, Asset<Texture2D> texture, float radiusTarget, float rotTarget)
+		{
+			this.active = active;
+			this.name = name;
+			this.hint = Helpers.Helper.WrapString(hint, 300, Terraria.GameContent.FontAssets.ItemStack.Value, 0.8f);
+			this.texture = texture;
+			this.radiusTarget = radiusTarget;
+			this.rotTarget = rotTarget;
+
+			this.seed = Main.rand.Next(60);
+
+			Width.Set(48, 0);
+			Height.Set(48, 0);
+		}
+
+		public override void SafeUpdate(GameTime gameTime)
+		{
+			Left.Set(MathF.Cos(rotTarget) * radiusTarget - 24, 0.5f);
+			Top.Set(MathF.Sin(rotTarget) * radiusTarget - 24, 0.5f);
+		}
+
+		public override void Draw(SpriteBatch spriteBatch)
+		{
+			if (!BossRushDataStore.UnlockedBossRush)
+				return;
+
+			var dims = GetDimensions().ToRectangle();
+
+			Texture2D background = Assets.NPCs.BossRush.ArmillarySlot.Value;
+			Texture2D icon = texture.Value;
+
+			Color color = new Color(73, 94, 171) * 0.75f;
+
+			float time = BossRushMenu.timer + seed * 4;
+			Vector2 pos = dims.Center();
+
+			Color litColor = Color.Lerp(Main.tileColor, Color.White, 0.5f);
+
+			spriteBatch.Draw(icon, pos, null, litColor, 0, icon.Size() / 2f, 1, 0, 0);
+
+			if (active())
+			{
+				var glow = Assets.Keys.GlowAlpha.Value;
+				spriteBatch.Draw(glow, pos, null, new Color(100, 200, 255, 0), 0, glow.Size() / 2f, 0.8f, 0, 0);
+			}
+		}
+
+		public void DrawText(SpriteBatch spriteBatch)
+		{
+			if (!BossRushDataStore.UnlockedBossRush)
+				return;
+
+			var dims = GetDimensions().ToRectangle();
+
+			float time = BossRushMenu.timer + seed * 4;
+			Vector2 pos = dims.Center();
+
+			Utils.DrawBorderString(spriteBatch, name, pos + new Vector2(0, 32), active() ? new Color(100, 230, 255) : Color.Gray, 0.8f, 0.5f, 0);
+
+			if (IsMouseHovering)
+				Utils.DrawBorderString(spriteBatch, hint, Main.MouseScreen + new Vector2(16, 16), Color.White, 0.8f);
+		}
+	}
+
 	internal class BossRushMenu : SmartUIState
 	{
 		public UIText button;
@@ -169,11 +246,6 @@ namespace StarlightRiver.Content.GUI
 
 		public override void OnInitialize()
 		{
-			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Auroracle, "Auroracle", "Found by following the wisps in the ice biome", Assets.Bosses.SquidBoss.SquidBoss_Head_Boss, 220, -1.57f - 1f));
-			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Glassweaver, "Glassweaver", "Guards his forge deep below the desert", Assets.Bosses.GlassMiniboss.Glassweaver_Head_Boss, 220, -1.57f - 0.33f));
-			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Ceiros, "Ceiros", "Guards a temple deep below the desert", Assets.Bosses.VitricBoss.VitricBoss_Head_Boss, 220, -1.57f + 0.33f));
-			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Thinker, "The Thinker", "Born from the Brain of Cthulhu into the crimson caverns", Assets.Bosses.BrainRedux.TheThinker_Head_Boss, 220, -1.57f + 1f));
-
 			var difficulty = new BossRushDifficultySwitcher();
 			difficulty.Width.Set(140, 0);
 			difficulty.Height.Set(36, 0);
@@ -187,7 +259,7 @@ namespace StarlightRiver.Content.GUI
 			start.Left.Set(-70, 0.5f);
 			start.Top.Set(220, 0.5f);
 			Append(start);
-			
+
 			button = new UIText("Back");
 			button.Left.Set(-70, 0.5f);
 			button.Top.Set(320, 0.5f);
@@ -207,6 +279,19 @@ namespace StarlightRiver.Content.GUI
 			};
 
 			Append(button);
+
+			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Auroracle, "Auroracle", "Found by following the wisps in the ice biome", Assets.Bosses.SquidBoss.SquidBoss_Head_Boss, 220, -1.57f - 1f));
+			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Glassweaver, "Glassweaver", "Guards his forge deep below the desert", Assets.Bosses.GlassMiniboss.Glassweaver_Head_Boss, 220, -1.57f - 0.33f));
+			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Ceiros, "Ceiros", "Guards a temple deep below the desert", Assets.Bosses.VitricBoss.VitricBoss_Head_Boss, 220, -1.57f + 0.33f));
+			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Thinker, "The Thinker", "Born from the Brain of Cthulhu into the crimson caverns", Assets.Bosses.BrainRedux.TheThinker_Head_Boss, 220, -1.57f + 1f));
+
+			var speedRelic = new BossRushRelicToggle(() => BossRushSpeedupAddon.active, "Speed Relic", "Makes the game move 33% faster", Assets.NPCs.BossRush.SpeedRelic, 240, 1.57f - 0.66f);
+			speedRelic.OnLeftClick += (a, b) => BossRushSpeedupAddon.active = !BossRushSpeedupAddon.active;
+			Append(speedRelic);
+
+			var frailRelic = new BossRushRelicToggle(() => BossRushFrailtyAddon.active, "Frailty Relic", "Causes you to die from a single hit", Assets.NPCs.BossRush.FrailRelic, 240, 1.57f + 0.66f);
+			frailRelic.OnLeftClick += (a, b) => BossRushFrailtyAddon.active = !BossRushFrailtyAddon.active;
+			Append(frailRelic);
 		}
 
 		public static void DrawMap(SpriteBatch spriteBatch)
@@ -220,7 +305,7 @@ namespace StarlightRiver.Content.GUI
 
 				foreach (UIElement element in UILoader.GetUIState<BossRushMenu>().Children)
 				{
-					if (element is BossRushUnlockInfo info)
+					if (element is BossRushUnlockInfo)
 						spriteBatch.Draw(Assets.Keys.GlowAlpha.Value, element.GetDimensions().Center(), null, new Color(1f, 1f, 1f, 0) * 0.5f * Fade, 0, Assets.Keys.GlowAlpha.Size() / 2f, 2 * scale, 0, 0);
 				}
 			}
@@ -228,6 +313,9 @@ namespace StarlightRiver.Content.GUI
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
+			//RemoveAllChildren();
+			//OnInitialize();
+
 			var dims = button.GetDimensions().ToRectangle();
 
 			Effect mapEffect = Filters.Scene["StarMap"].GetShader().Shader;
@@ -290,6 +378,9 @@ namespace StarlightRiver.Content.GUI
 
 				if (element is BossRushStart start)
 					start.DrawText(spriteBatch);
+
+				if (element is BossRushRelicToggle toggle)
+					toggle.DrawText(spriteBatch);
 			}
 
 			Recalculate();

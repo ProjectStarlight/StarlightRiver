@@ -51,8 +51,6 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		public static int timeScore;
 		public static int scoreMult;
 
-		public static int speedupTimer;
-
 		public static int transitionTimer = 0;
 		public static int deathFadeoutTimer = 0;
 		public static Rectangle visibleArea = new(0, 0, 0, 0);
@@ -71,7 +69,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			StarlightRiverBackground.DrawMapEvent += DrawMap;
 			StarlightRiverBackground.DrawOverlayEvent += DrawOverlay;
 			StarlightRiverBackground.CheckIsActiveEvent += () => isBossRush;
-			On_Main.DoUpdate += Speedup;
+
 			On_NPC.UpdateNPC += DisableWhenDead;
 
 			File.WriteAllBytes(Path.Combine(ModLoader.ModPath, "BossRushWorld.wld"), Mod.GetFileBytes("Worlds/BossRushWorld.wld"));
@@ -207,38 +205,6 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			{
 				if (Main.debuff[Main.LocalPlayer.buffType[k]])
 					Main.LocalPlayer.buffTime[k] = 0;
-			}
-		}
-
-		/// <summary>
-		/// This handles the speedup rules of the boss rush. IE that blitz should be 1.25x gamespeed and showdown 1.5x
-		/// </summary>
-		/// <param name="orig"></param>
-		/// <param name="self"></param>
-		/// <param name="gameTime"></param>
-		private void Speedup(On_Main.orig_DoUpdate orig, Main self, ref GameTime gameTime)
-		{
-			orig(self, ref gameTime);
-
-			if (!isBossRush || Main.gameMenu) //dont do anything outside of bossrush but the normal update
-				return;
-
-			speedupTimer++; //track this seperately since gameTime would get sped up
-
-			if (Main.expertMode) //1.25x on expert
-			{
-				if (speedupTimer % 4 == 0)
-					orig(self, ref gameTime);
-
-				return;
-			}
-
-			if (Main.masterMode) //1.5x on master
-			{
-				if (speedupTimer % 2 == 0)
-					orig(self, ref gameTime);
-
-				return;
 			}
 		}
 
