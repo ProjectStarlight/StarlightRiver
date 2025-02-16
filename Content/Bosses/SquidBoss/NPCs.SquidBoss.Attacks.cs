@@ -458,11 +458,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				tentacleL.stalkWaviness = timer * 0.45f;
 				tentacleR.stalkWaviness = timer * 0.45f;
 
-				tentacleL.basePoint.X = Helpers.StarlightMathHelper.LerpFloat(tentacleL.movementTarget.X, OrderedPlatforms[0].Center.X - 100, timer);
-				tentacleR.basePoint.X = Helpers.StarlightMathHelper.LerpFloat(tentacleR.movementTarget.X, OrderedPlatforms[0].Center.X + 100, timer);
+				tentacleL.basePoint.X = MathHelper.Lerp(tentacleL.movementTarget.X, OrderedPlatforms[0].Center.X - 100, timer);
+				tentacleR.basePoint.X = MathHelper.Lerp(tentacleR.movementTarget.X, OrderedPlatforms[0].Center.X + 100, timer);
 
-				tentacleL.NPC.Center = new Vector2(Helpers.StarlightMathHelper.LerpFloat(tentacleL.movementTarget.X, OrderedPlatforms[0].Center.X - 100, timer), tentacleL.NPC.Center.Y);
-				tentacleR.NPC.Center = new Vector2(Helpers.StarlightMathHelper.LerpFloat(tentacleR.movementTarget.X, OrderedPlatforms[0].Center.X + 100, timer), tentacleR.NPC.Center.Y);
+				tentacleL.NPC.Center = new Vector2(MathHelper.Lerp(tentacleL.movementTarget.X, OrderedPlatforms[0].Center.X - 100, timer), tentacleL.NPC.Center.Y);
+				tentacleR.NPC.Center = new Vector2(MathHelper.Lerp(tentacleR.movementTarget.X, OrderedPlatforms[0].Center.X + 100, timer), tentacleR.NPC.Center.Y);
 			}
 
 			if (AttackTimer == 260)

@@ -167,8 +167,8 @@ namespace StarlightRiver.Content.Items.Starwood
 				{
 					if (Projectile.owner == Main.myPlayer)
 					{
-						Vector2 velocity = direction * StarlightMathHelper.LerpFloat(MIN_VELOCITY, MAX_VELOCITY, charge);
-						int damage = (int)StarlightMathHelper.LerpFloat(MIN_DAMAGE, MAX_DAMAGE, charge);
+						Vector2 velocity = direction * MathHelper.Lerp(MIN_VELOCITY, MAX_VELOCITY, charge);
+						int damage = (int)MathHelper.Lerp(MIN_DAMAGE, MAX_DAMAGE, charge);
 						StarwoodSlingshotStar.frameToAssign = (int)(charge * 5) - 1;
 
 						if ((int)(charge * 5) == 0)
@@ -211,7 +211,7 @@ namespace StarlightRiver.Content.Items.Starwood
 					if (charge > i + 0.33f || charge >= 1)
 						offset2 = Vector2.Zero;
 					else
-						offset2 *= StarlightMathHelper.LerpFloat(0, 7, (float)Math.Sqrt((0.33f - (charge - i)) * 3));
+						offset2 *= MathHelper.Lerp(0, 7, (float)Math.Sqrt((0.33f - (charge - i)) * 3));
 
 					Texture2D fragmenttexture = Assets.Items.Starwood.StarwoodSlingshotParts.Value;
 					var frame2 = new Rectangle(0, (int)(i * 5 * 24), 22, 24);

@@ -72,12 +72,12 @@ namespace StarlightRiver.Content.GUI
 			// Calculate bounding
 			position = absolutePosition / Main.UIScale;
 
-			int mainWidth = (int)Helpers.StarlightMathHelper.LerpFloat(0, 520, Helpers.Eases.BezierEase(Math.Max(0, (boxTimer - 30) / 30f)));
+			int mainWidth = (int)MathHelper.Lerp(0, 520, Helpers.Eases.BezierEase(Math.Max(0, (boxTimer - 30) / 30f)));
 
-			int iconSize = (int)Helpers.StarlightMathHelper.LerpFloat(0, 100, Helpers.Eases.BezierEase(Math.Min(1, boxTimer / 30f)));
+			int iconSize = (int)MathHelper.Lerp(0, 100, Helpers.Eases.BezierEase(Math.Min(1, boxTimer / 30f)));
 
 			float titleWidth = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(title).X;
-			int titleSize = (int)Helpers.StarlightMathHelper.LerpFloat(0, titleWidth + 40, Helpers.Eases.BezierEase(boxTimer / 60f));
+			int titleSize = (int)MathHelper.Lerp(0, titleWidth + 40, Helpers.Eases.BezierEase(boxTimer / 60f));
 
 			var mainRect = new Rectangle(50 + (int)position.X - 260, (int)position.Y, mainWidth, (int)Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(message).Y + 20);
 			var iconRect = new Rectangle(-52 + (int)position.X - 260, (int)position.Y, iconSize, iconSize);
@@ -147,7 +147,7 @@ namespace StarlightRiver.Content.GUI
 
 			if (!Main.screenTarget.IsDisposed && icon != null)
 			{
-				int iconInnerSize = (int)Helpers.StarlightMathHelper.LerpFloat(0, 88, Helpers.Eases.BezierEase(Math.Min(1, boxTimer / 30f)));
+				int iconInnerSize = (int)MathHelper.Lerp(0, 88, Helpers.Eases.BezierEase(Math.Min(1, boxTimer / 30f)));
 				spriteBatch.Draw(icon, new Rectangle(-46 + (int)position.X - 260, (int)position.Y + 6, iconInnerSize, iconInnerSize), iconFrame, Color.White * opacity, 0, Vector2.Zero, 0, 0);
 			}
 
@@ -289,7 +289,7 @@ namespace StarlightRiver.Content.GUI
 				Main.LocalPlayer.mouseInterface = true;
 
 			CalculatedStyle dims = GetDimensions();
-			int mainBoxWidth = (int)Helpers.StarlightMathHelper.LerpFloat(0, dims.Width, Helpers.Eases.BezierEase(boxTimer / 30f));
+			int mainBoxWidth = (int)MathHelper.Lerp(0, dims.Width, Helpers.Eases.BezierEase(boxTimer / 30f));
 
 			RichTextBox.DrawBox(spriteBatch, new Rectangle((int)dims.X, (int)dims.Y, mainBoxWidth, (int)dims.Height));
 

@@ -113,7 +113,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (State == 1 && Main.myPlayer == Owner.whoAmI) //loaded
 			{
 
-				rotTarget = StarlightMathHelper.LerpFloat(Projectile.rotation, (Owner.Center - Main.MouseWorld).ToRotation() + 1.57f, Math.Min(1, timer / 30f));
+				rotTarget = MathHelper.Lerp(Projectile.rotation, (Owner.Center - Main.MouseWorld).ToRotation() + 1.57f, Math.Min(1, timer / 30f));
 
 				if (Math.Abs(rotTarget - prevRotTarget) > 0.1f)
 				{

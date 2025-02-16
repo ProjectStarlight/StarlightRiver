@@ -174,7 +174,7 @@ namespace StarlightRiver.Core
 			for (int k = 1; k <= 3; k++)
 			{
 				float fraction = k / 4f;
-				int yTarget = (int)StarlightMathHelper.LerpFloat(squidBossArena.Y, (float)GenVars.worldSurfaceHigh, fraction);
+				int yTarget = (int)MathHelper.Lerp(squidBossArena.Y, (float)GenVars.worldSurfaceHigh, fraction);
 
 				for (int x = 0; x < Main.maxTilesX; x++)
 				{
@@ -205,7 +205,7 @@ namespace StarlightRiver.Core
 					if (!Helpers.WorldGenHelper.IsRectangleSafe(new Rectangle(xTarget, yTarget, 32, 32)))
 					{
 						xTarget = iceCenter + WorldGen.genRand.Next(-100, 100);
-						yTarget = (int)StarlightMathHelper.LerpFloat(squidBossArena.Y, (float)GenVars.worldSurfaceHigh, fraction) + WorldGen.genRand.Next(-40, 40);
+						yTarget = (int)MathHelper.Lerp(squidBossArena.Y, (float)GenVars.worldSurfaceHigh, fraction) + WorldGen.genRand.Next(-40, 40);
 						continue;
 					}
 					else

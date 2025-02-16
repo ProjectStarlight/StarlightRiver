@@ -9,19 +9,6 @@ namespace StarlightRiver.Helpers
 	public static class StarlightMathHelper
 	{
 		/// <summary>
-		/// Returns a value interpolated between two numbers given a progress from 0 to 1
-		/// </summary>
-		/// <param name="min"></param>
-		/// <param name="max"></param>
-		/// <param name="val"></param>
-		/// <returns></returns>
-		public static float LerpFloat(float min, float max, float val)
-		{
-			float difference = max - min;
-			return min + difference * val;
-		}
-
-		/// <summary>
 		/// Helper to get the desired number to pass as projectile damage for the resultant values for
 		/// each difficulty. Normally the game applies multipliers to projectile values making them hard
 		/// to predict for a given difficulty.

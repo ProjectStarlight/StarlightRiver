@@ -294,7 +294,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 						if (oldPlayer == new Vector2(x, y))
 							color2 = Color.Transparent;
 
-						float combinedAlpha = Helpers.StarlightMathHelper.LerpFloat(color.A / 255f, color2.A / 255f, PlayerTimer / 30f);
+						float combinedAlpha = MathHelper.Lerp(color.A / 255f, color2.A / 255f, PlayerTimer / 30f);
 						var colorCombined = Color.Lerp(color2, color, 1 - PlayerTimer / 30f);
 
 						for (int k = 0; k < 5; k++)
