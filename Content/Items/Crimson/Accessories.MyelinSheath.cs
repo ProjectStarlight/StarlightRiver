@@ -87,7 +87,13 @@ namespace StarlightRiver.Content.Items.Crimson
 		public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 		{
 			var over = Assets.Items.Crimson.MyelinSheathOver.Value;
-			spriteBatch.Draw(over, position, frame, Color.Red, 0, origin, scale, 0, 0);
+
+			Color glowColor = new Color(
+				1.3f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f) * 0.5f,
+				1.3f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f + 1) * 0.5f,
+				1.3f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f + 2) * 0.5f);
+
+			spriteBatch.Draw(over, position, frame, glowColor, 0, origin, scale, 0, 0);
 		}
 
 		public override void AddRecipes()
