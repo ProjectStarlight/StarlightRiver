@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Items.Crimson
 	{
 		private int cloneCooldown = 0;
 
-		public override string Texture => AssetDirectory.Debug;
+		public override string Texture => AssetDirectory.CrimsonItem + Name;
 
 		public override void Load()
 		{
