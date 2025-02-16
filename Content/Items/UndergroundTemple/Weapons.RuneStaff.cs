@@ -125,7 +125,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 					}
 				}
 
-				Helpers.Helper.PlayPitched("Magic/HolyCastShort", 1f, 1f, starPos);
+				Helpers.SoundHelper.PlayPitched("Magic/HolyCastShort", 1f, 1f, starPos);
 
 				Owner.CheckMana(15, true);
 
@@ -184,7 +184,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 				if (PingTimer >= 120)
 				{
-					Helpers.Helper.PlayPitched("Effects/BleepLouder", 1.25f, MathHelper.Lerp(0.75f, 2.5f, TreasureLerp), starPos);
+					Helpers.SoundHelper.PlayPitched("Effects/BleepLouder", 1.25f, MathHelper.Lerp(0.75f, 2.5f, TreasureLerp), starPos);
 					PingTimer = 0;
 					playedSound = false;
 				}

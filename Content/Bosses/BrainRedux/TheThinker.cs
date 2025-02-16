@@ -231,7 +231,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				else if (platformRadiusTimer <= platformRadiusTransitionTime)
 				{
 					platformRadiusTimer++;
-					platformRadius = lastPlatformRadius + (platformRadiusTarget - lastPlatformRadius) * Helpers.Helper.BezierEase(platformRadiusTimer / (float)platformRadiusTransitionTime);
+					platformRadius = lastPlatformRadius + (platformRadiusTarget - lastPlatformRadius) * Helpers.Eases.BezierEase(platformRadiusTimer / (float)platformRadiusTransitionTime);
 				}
 				else
 				{
@@ -251,7 +251,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				else if (platformRotationTimer <= platformRotationTransitionTime)
 				{
 					platformRotationTimer++;
-					platformRotation = lastPlatformRotation + (platformRotationTarget - lastPlatformRotation) * Helpers.Helper.BezierEase(platformRotationTimer / (float)platformRotationTransitionTime);
+					platformRotation = lastPlatformRotation + (platformRotationTarget - lastPlatformRotation) * Helpers.Eases.BezierEase(platformRotationTimer / (float)platformRotationTransitionTime);
 				}
 				else
 				{
@@ -321,7 +321,6 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			// Attacks
 			if (ShouldBeAttacking)
 			{
-				
 
 				Timer++;
 				AttackTimer++;
@@ -336,12 +335,12 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					platformRadiusTarget = 1000;
 					platformRadiusTransitionTime = 240;
 
-					NPC.GetGlobalNPC<BarrierNPC>().maxBarrier = Main.masterMode ? 750 : Main.expertMode ? 600 : 500;				
+					NPC.GetGlobalNPC<BarrierNPC>().maxBarrier = Main.masterMode ? 750 : Main.expertMode ? 600 : 500;
 				}
 
 				if (Timer < 60)
 				{
-					var maxBarrier = Main.masterMode ? 750 : Main.expertMode ? 600 : 500;
+					int maxBarrier = Main.masterMode ? 750 : Main.expertMode ? 600 : 500;
 					NPC.GetGlobalNPC<BarrierNPC>().barrier = (int)(Timer / 60f * maxBarrier);
 				}
 
@@ -633,7 +632,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
 		{
-			return Helpers.Helper.CheckCircularCollision(NPC.Center, 45, target.Hitbox);
+			return Helpers.CollisionHelper.CheckCircularCollision(NPC.Center, 45, target.Hitbox);
 		}
 
 		public override void SaveData(TagCompound tag)

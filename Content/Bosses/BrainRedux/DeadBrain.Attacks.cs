@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				if (AttackTimer < 180)
 				{
-					var target = Main.player[NPC.target].Center + new Vector2(0, -500);
+					Vector2 target = Main.player[NPC.target].Center + new Vector2(0, -500);
 
 					if (target.Y > ThisThinker.home.Y)
 						target.Y = ThisThinker.home.Y;
@@ -59,7 +59,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				if (AttackTimer > 180 && AttackTimer < 220)
 				{
 					contactDamage = true;
-					NPC.Center = Vector2.Lerp(savedPos, savedPos + new Vector2(0, -80), Helpers.Helper.BezierEase((AttackTimer - 180) / 40f));
+					NPC.Center = Vector2.Lerp(savedPos, savedPos + new Vector2(0, -80), Helpers.Eases.BezierEase((AttackTimer - 180) / 40f));
 				}
 
 				if (AttackTimer == 220)
@@ -71,7 +71,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				if (AttackTimer > 220 && AttackTimer < 260)
 				{
 					contactDamage = true;
-					NPC.Center = Vector2.Lerp(savedPos, savedPos + new Vector2(0, 900), Helpers.Helper.BezierEase((AttackTimer - 220) / 40f));
+					NPC.Center = Vector2.Lerp(savedPos, savedPos + new Vector2(0, 900), Helpers.Eases.BezierEase((AttackTimer - 220) / 40f));
 				}
 
 				if (AttackTimer == 260)
@@ -97,7 +97,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (AttackTimer >= 61)
 			{
-				float timer = Helpers.Helper.BezierEase((AttackTimer - 60) / 180f);
+				float timer = Helpers.Eases.BezierEase((AttackTimer - 60) / 180f);
 				float totalRot = Main.masterMode ? 2.4f : Main.expertMode ? 2f : 1.6f;
 
 				for (int k = 0; k < neurisms.Count; k++)
@@ -165,7 +165,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				if (AttackTimer > 180)
 				{
-					var rot = Helpers.Helper.BezierEase((AttackTimer - 180) / 180f) * 6.28f;
+					float rot = Helpers.Eases.BezierEase((AttackTimer - 180) / 180f) * 6.28f;
 					NPC.Center = thinker.Center + new Vector2(-470, 0).RotatedBy(rot);
 				}
 
@@ -238,7 +238,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 					float offset = (float)Math.Sqrt(Math.Pow(h, 2) - Math.Pow(a, 2));
 
-					float prog = Helpers.Helper.BezierEase((AttackTimer - (60 + k * 20)) / 120f);
+					float prog = Helpers.Eases.BezierEase((AttackTimer - (60 + k * 20)) / 120f);
 
 					offset *= 1 - prog * 2;
 
@@ -324,7 +324,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			// Charge
 			if (AttackTimer > 160)
 			{
-				float prog = Helpers.Helper.SwoopEase((AttackTimer - 160) / chargeTime);
+				float prog = Helpers.Eases.SwoopEase((AttackTimer - 160) / chargeTime);
 				NPC.Center = Vector2.Lerp(savedPos2, savedPos, prog);
 			}
 
@@ -396,7 +396,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				for (int k = 0; k < neurisms.Count; k++)
 				{
 					float radius = k / (float)neurisms.Count * radiusMax;
-					float rot = k * 2 / (float)neurisms.Count * 6.28f + Helpers.Helper.BezierEase((AttackTimer - 30) / 540f) * speed * (k % 2 == 0 ? 1 : -1);
+					float rot = k * 2 / (float)neurisms.Count * 6.28f + Helpers.Eases.BezierEase((AttackTimer - 30) / 540f) * speed * (k % 2 == 0 ? 1 : -1);
 
 					neurisms[k].Center = thinker.Center + Vector2.UnitX.RotatedBy(rot) * (750 - radius);
 					(neurisms[k].ModNPC as Neurysm).State = 0;
@@ -485,7 +485,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					Vector2 start = NPC.Center + Vector2.UnitX * (-300 + lerp * 650) + Vector2.UnitY * 750;
 					Vector2 target = NPC.Center + Vector2.UnitX * (-300 + lerp * 650) + Vector2.UnitY * -750;
 
-					float prog = Helpers.Helper.BezierEase((AttackTimer - (90 + k * 15)) / 120f);
+					float prog = Helpers.Eases.BezierEase((AttackTimer - (90 + k * 15)) / 120f);
 
 					neurisms[k].Center = Vector2.Lerp(start, target, prog);
 					(neurisms[k].ModNPC as Neurysm).State = 0;
@@ -548,7 +548,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					Vector2 start = NPC.Center + Vector2.UnitY * (-300 + lerp * 600) + Vector2.UnitX * 750;
 					Vector2 target = NPC.Center + Vector2.UnitY * (-300 + lerp * 600) + Vector2.UnitX * -750;
 
-					float prog = Helpers.Helper.BezierEase((AttackTimer - (90 + k * 15)) / 120f);
+					float prog = Helpers.Eases.BezierEase((AttackTimer - (90 + k * 15)) / 120f);
 
 					neurisms[k].Center = Vector2.Lerp(start, target, prog);
 					(neurisms[k].ModNPC as Neurysm).State = 0;
@@ -883,7 +883,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (motionTime >= 90)
 			{
 				contactDamage = true;
-				NPC.Center = Vector2.Lerp(savedPos, savedPos2, Helpers.Helper.SwoopEase((motionTime - 90) / 60f));
+				NPC.Center = Vector2.Lerp(savedPos, savedPos2, Helpers.Eases.SwoopEase((motionTime - 90) / 60f));
 			}
 
 			// Similar neirusm pattern to spawning in phase 1
@@ -905,8 +905,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				for (int k = 0; k < neurisms.Count; k++)
 				{
-					float radius = Helpers.Helper.BezierEase((AttackTimer - 30) / (150 * 5 - 30)) * radiusMax;
-					float rot = k / (float)neurisms.Count * 6.28f + Helpers.Helper.BezierEase((AttackTimer - 30) / (150 * 5 - 30)) * 6;
+					float radius = Helpers.Eases.BezierEase((AttackTimer - 30) / (150 * 5 - 30)) * radiusMax;
+					float rot = k / (float)neurisms.Count * 6.28f + Helpers.Eases.BezierEase((AttackTimer - 30) / (150 * 5 - 30)) * 6;
 
 					neurisms[k].Center = (thinker.ModNPC as TheThinker).home + Vector2.UnitX.RotatedBy(rot) * (750 - radius);
 					(neurisms[k].ModNPC as Neurysm).State = 0;
@@ -1022,7 +1022,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (AttackTimer >= 61 && AttackTimer < 240)
 			{
-				float timer = Helpers.Helper.BezierEase((AttackTimer - 60) / 180f);
+				float timer = Helpers.Eases.BezierEase((AttackTimer - 60) / 180f);
 				float totalRot = Main.masterMode ? 2f : Main.expertMode ? 1.5f : 1f;
 
 				for (int k = 0; k < neurisms.Count; k++)
@@ -1167,9 +1167,9 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				Vector2 pos = sunflower(45, (int)index, ThisThinker.home);
 
 				if (safeMineIndicides.Contains((int)index))
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), pos, Vector2.Zero, ModContent.ProjectileType<FakeMindMine>(), Helpers.Helper.GetProjectileDamage(200, 150, 100), 1, Main.myPlayer, thinker.whoAmI);
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), pos, Vector2.Zero, ModContent.ProjectileType<FakeMindMine>(), Helpers.StarlightMathHelper.GetProjectileDamage(200, 150, 100), 1, Main.myPlayer, thinker.whoAmI);
 				else
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), pos, Vector2.Zero, ModContent.ProjectileType<ThinkerMindMine>(), Helpers.Helper.GetProjectileDamage(200, 150, 100), 1, Main.myPlayer, thinker.whoAmI);
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), pos, Vector2.Zero, ModContent.ProjectileType<ThinkerMindMine>(), Helpers.StarlightMathHelper.GetProjectileDamage(200, 150, 100), 1, Main.myPlayer, thinker.whoAmI);
 			}
 
 			if (AttackTimer > 300 && AttackTimer <= 400)

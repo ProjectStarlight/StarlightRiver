@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
 		{
-			Helper.PlayPitched("Guns/RebarLauncher", 0.6f, 0);
+			SoundHelper.PlayPitched("Guns/RebarLauncher", 0.6f, 0);
 			CameraSystem.shake += 6;
 			direction = velocity;
 			position += velocity * 0.9f;
@@ -401,7 +401,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		{
 			Effect effect = Filters.Scene["RebarTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

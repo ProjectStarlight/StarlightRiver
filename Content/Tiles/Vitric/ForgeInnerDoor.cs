@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 		{
-			Vector2 pos = (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 - Main.screenPosition;
+			Vector2 pos = new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange - Main.screenPosition;
 			Texture2D tex = Assets.Tiles.Vitric.ForgeInnerDoorGlow.Value;
 			Tile tile = Framing.GetTileSafely(i, j);
 			var source = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16);

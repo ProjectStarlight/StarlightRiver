@@ -355,7 +355,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 						if (!playedSound)
 						{
 							afterImages.Add(new afterImageStruct(Projectile.Center, Projectile.rotation, 15));
-							Helper.PlayPitched("Magic/ShurikenThrow", 1f, Main.rand.NextFloat(-0.3f, 0.3f), Owner.Center);
+							SoundHelper.PlayPitched("Magic/ShurikenThrow", 1f, Main.rand.NextFloat(-0.3f, 0.3f), Owner.Center);
 							playedSound = true;
 						}
 
@@ -432,9 +432,9 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.GlowFastDecelerate>(), Projectile.Center.DirectionTo(Owner.Center).RotatedByRandom(0.35f) * Main.rand.NextFloat(0.5f, 2f), 0, new Color(150, 0, 0, 100), 0.55f);
 			}
 
-			if (Helper.IsFleshy(target))
+			if (NPCHelper.IsFleshy(target))
 			{
-				Helper.PlayPitched("Impale", 1, Main.rand.NextFloat(0.6f, 0.9f), Projectile.Center);
+				SoundHelper.PlayPitched("Impale", 1, Main.rand.NextFloat(0.6f, 0.9f), Projectile.Center);
 
 				for (int k = 0; k < 5; k++)
 				{
@@ -445,7 +445,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			}
 			else
 			{
-				Helper.PlayPitched("Impacts/Clink", 1, Main.rand.NextFloat(0.1f, 0.3f), Projectile.Center);
+				SoundHelper.PlayPitched("Impacts/Clink", 1, Main.rand.NextFloat(0.1f, 0.3f), Projectile.Center);
 
 				for (int k = 0; k < 5; k++)
 				{
@@ -683,9 +683,9 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 			mp.teleportTimer = 60;
 
-			Helper.PlayPitched("Magic/ShurikenThrow", 1f, Main.rand.NextFloat(-0.3f, 0.3f), Owner.Center);
+			SoundHelper.PlayPitched("Magic/ShurikenThrow", 1f, Main.rand.NextFloat(-0.3f, 0.3f), Owner.Center);
 
-			Helper.PlayPitched("Effects/HeavyWhooshShort", 1.5f, Main.rand.NextFloat(-0.3f, 0.3f), Owner.Center);
+			SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 1.5f, Main.rand.NextFloat(-0.3f, 0.3f), Owner.Center);
 
 			CameraSystem.shake += 15;
 
@@ -738,7 +738,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (hitNPCs.Count <= 0)
-				Helper.PlayPitched("Impacts/GoreHeavy", 1.5f, Main.rand.NextFloat(-0.3f, 0.3f), Owner.Center);
+				SoundHelper.PlayPitched("Impacts/GoreHeavy", 1.5f, Main.rand.NextFloat(-0.3f, 0.3f), Owner.Center);
 
 			hitNPCs.Add(target);
 
@@ -749,7 +749,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.GlowFastDecelerate>(), target.Center.DirectionTo(originalPos).RotatedByRandom(0.55f) * Main.rand.NextFloat(2f, 5f), 0, new Color(150, 0, 0, 100), 1f);
 			}
 
-			if (Helper.IsFleshy(target))
+			if (NPCHelper.IsFleshy(target))
 			{
 				for (int k = 0; k < 15; k++)
 				{
@@ -796,7 +796,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				Dust.NewDustPerfect(pos + Main.rand.NextVector2Circular(1f, 1f), ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(2f, 2f), 0, new Color(200, 0, 0, 100), 0.35f);
 			}
 
-			Helper.PlayPitched("Impacts/Clink", 1f, Main.rand.NextFloat(-0.3f, 0.3f), Owner.Center);
+			SoundHelper.PlayPitched("Impacts/Clink", 1f, Main.rand.NextFloat(-0.3f, 0.3f), Owner.Center);
 		}
 
 		public override bool PreDraw(ref Color lightColor)

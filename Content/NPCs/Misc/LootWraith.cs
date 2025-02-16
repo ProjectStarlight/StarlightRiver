@@ -178,7 +178,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 						if (NPC.Distance(ChainStart) > 100)
 						{
-							Helper.PlayPitched("Impacts/GlassExplodeShort", 1, Main.rand.NextFloat(0.1f, 0.3f), NPC.Center);
+							SoundHelper.PlayPitched("Impacts/GlassExplodeShort", 1, Main.rand.NextFloat(0.1f, 0.3f), NPC.Center);
 							chargeupCounter = 0;
 							NPC.damage = 25;
 							NPC.dontTakeDamage = false;
@@ -394,7 +394,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 			Main.spriteBatch.End();
 			Effect effect = Terraria.Graphics.Effects.Filters.Scene["RepeatingChain"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.ZoomMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

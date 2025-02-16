@@ -272,7 +272,7 @@ namespace StarlightRiver.Content.GUI
 			Utils.DrawBorderStringBig(spriteBatch, name, pos + new Vector2(dims.Width / 2f, 20), Color.White, 1, 0.5f);
 
 			ReLogic.Graphics.DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
-			string rulesWrapped = Helpers.Helper.WrapString(rules, 240, font, 0.8f);
+			string rulesWrapped = Helpers.LocalizationHelper.WrapString(rules, 240, font, 0.8f);
 
 			Utils.DrawBorderString(spriteBatch, rulesWrapped, pos + new Vector2(dims.Width / 2f, 160), Color.White, 0.8f, 0.5f);
 

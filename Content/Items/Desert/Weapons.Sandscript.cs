@@ -263,7 +263,7 @@ namespace StarlightRiver.Content.Items.Desert
 				Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Sand>(), target.Center.DirectionTo(Owner.Center) * Main.rand.NextFloat(5f) + Main.rand.NextVector2Circular(3f, 3f), 140, default, 0.6f).noGravity = false;
 			}
 
-			Helper.PlayPitched("Impacts/StoneStrikeLight", 1f, Main.rand.NextFloat(0.6f, 1.0f), Projectile.Center); // [PH] for egshels
+			SoundHelper.PlayPitched("Impacts/StoneStrikeLight", 1f, Main.rand.NextFloat(0.6f, 1.0f), Projectile.Center); // [PH] for egshels
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -349,7 +349,7 @@ namespace StarlightRiver.Content.Items.Desert
 		{
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

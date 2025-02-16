@@ -131,7 +131,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 					if ((int)Timer == 260 && Main.netMode != NetmodeID.Server) //Shield hits the ground
 					{
-						Helper.PlayPitched("GlassMiniboss/GlassSmash", 0.5f, 0.3f, NPC.Center);
+						SoundHelper.PlayPitched("GlassMiniboss/GlassSmash", 0.5f, 0.3f, NPC.Center);
 						CameraSystem.shake += 4;
 
 						for (int i = 0; i < 10; i++)
@@ -160,7 +160,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 					}
 
 					if ((int)Timer == 421)
-						Helper.PlayPitched("StoneSlide", 0.5f, -1f, NPC.Center);
+						SoundHelper.PlayPitched("StoneSlide", 0.5f, -1f, NPC.Center);
 
 					if ((int)Timer == 464 && Main.netMode != NetmodeID.Server) //Shield exits the ground
 					{
@@ -435,7 +435,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				NPC.velocity.X *= 1.05f;
 
 				if (NPC.velocity.Y == 0)
-					NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Bottom, stackPartnerBelow.Top + new Vector2(directionToPartner * 15, 0), 0.3f, 120, 850);
+					NPC.velocity = GeometryHelper.GetArcVel(NPC.Bottom, stackPartnerBelow.Top + new Vector2(directionToPartner * 15, 0), 0.3f, 120, 850);
 
 				if (NPC.velocity.Y > 0 && Collision.CheckAABBvAABBCollision(NPC.position, NPC.Size, stackPartnerBelow.position, stackPartnerBelow.Size))
 				{

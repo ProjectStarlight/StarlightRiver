@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Items.Crimson
 
 		public override void PostAI(Projectile projectile)
 		{
-			var owner = Main.player[projectile.owner];
+			Player owner = Main.player[projectile.owner];
 
 			if (SmartAccessory.GetEquippedInstance(owner, ModContent.ItemType<NeuralFeather>()) != null)
 			{
@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.Items.Crimson
 
 		public override void OnKill(Projectile projectile, int timeLeft)
 		{
-			var owner = Main.player[projectile.owner];
+			Player owner = Main.player[projectile.owner];
 
 			if (SmartAccessory.GetEquippedInstance(owner, ModContent.ItemType<NeuralFeather>()) != null)
 			{
@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.Items.Crimson
 
 				foreach (NPC npc in Main.npc)
 				{
-					if (npc.active && npc.CanBeChasedBy(this) && !npc.friendly && Helpers.Helper.CheckCircularCollision(projectile.Center, 32, npc.Hitbox))
+					if (npc.active && npc.CanBeChasedBy(this) && !npc.friendly && Helpers.CollisionHelper.CheckCircularCollision(projectile.Center, 32, npc.Hitbox))
 					{
 						BuffInflictor.Inflict<Psychosis>(npc, 180);
 					}

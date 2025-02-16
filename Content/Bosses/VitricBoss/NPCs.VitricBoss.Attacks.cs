@@ -10,9 +10,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 {
 	public sealed partial class VitricBoss : ModNPC
 	{
-		public static int ShardSpitDamage => Helpers.Helper.GetProjectileDamage(35, 70, 100);
-		public static int ConeRingDamage => Helpers.Helper.GetProjectileDamage(40, 80, 120);
-		public static int LaserDamage => Helpers.Helper.GetProjectileDamage(60, 120, 999999);
+		public static int ShardSpitDamage => Helpers.StarlightMathHelper.GetProjectileDamage(35, 70, 100);
+		public static int ConeRingDamage => Helpers.StarlightMathHelper.GetProjectileDamage(40, 80, 120);
+		public static int LaserDamage => Helpers.StarlightMathHelper.GetProjectileDamage(60, 120, 999999);
 
 		public int BrokenCount => crystals.Count(n => n.ai[0] == 3);
 
@@ -85,7 +85,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 					var possibleLocations = new List<Vector2>(crystalLocations);
 					possibleLocations.ForEach(n => n += new Vector2(0, -48));
-					possibleLocations = Helper.RandomizeList(possibleLocations, Main.rand);
+					possibleLocations = ListHelper.RandomizeList(possibleLocations, Main.rand);
 					for (int k = 0; k < crystals.Count; k++)
 					{
 						NPC crystalNpc = crystals[k];
@@ -143,7 +143,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			}
 
 			if (AttackTimer % 110 == 25)
-				Helper.PlayPitched("VitricBoss/ceiroslidopensmall", 0.5f, Main.rand.NextFloat(0.1f, 1), NPC.Center);
+				SoundHelper.PlayPitched("VitricBoss/ceiroslidopensmall", 0.5f, Main.rand.NextFloat(0.1f, 1), NPC.Center);
 
 			if (AttackTimer > 110 && AttackTimer % 110 > 10 && AttackTimer % 110 <= 90)
 			{
@@ -193,7 +193,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				}
 
 				if (AttackTimer == 360)
-					Helper.PlayPitched("VitricBoss/RingIdle", 0.075f, -0.2f, NPC.Center);
+					SoundHelper.PlayPitched("VitricBoss/RingIdle", 0.075f, -0.2f, NPC.Center);
 
 				if (AttackTimer >= 360 && AttackTimer < 840) //come back in
 				{
@@ -242,7 +242,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					NPC crystal = crystals[favoriteCrystal];
 					float crystalDist = Vector2.Distance(crystal.Center, NPC.Center); //distance from the boss to the ring
 					float crystalOff = (crystal.Center - NPC.Center).ToRotation() % 6.28f; //crystal's rotation
-					float angleDiff = Helper.CompareAngle(angleOff, crystalOff);
+					float angleDiff = GeometryHelper.CompareAngle(angleOff, crystalOff);
 
 					// if the Player's distance from the boss is within 2 Player widths of the ring and if the Player isnt in the gab where they would be safe
 					if (dist > minCageBounceDist && dist <= crystalDist + Player.width && dist >= crystalDist - Player.width && !(angleDiff > 0 && angleDiff < 1.57f))
@@ -379,7 +379,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		{
 			var points = new List<Vector2>();
 			crystalLocations.ForEach(n => points.Add(n + new Vector2(0, -100)));
-			Helper.RandomizeList<Vector2>(points, bossRand);
+			ListHelper.RandomizeList<Vector2>(points, bossRand);
 
 			for (int k = 0; k < 1 + crystals.Count(n => n.ai[0] == 3) + (Main.expertMode ? 1 : 0); k++)
 			{
@@ -490,7 +490,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 						}
 
 						if (timer == 80)
-							Helper.PlayPitched("VitricBoss/ceiroslidopensmall", 0.5f, bossRand.NextFloat(0.3f, 1), NPC.Center);
+							SoundHelper.PlayPitched("VitricBoss/ceiroslidopensmall", 0.5f, bossRand.NextFloat(0.3f, 1), NPC.Center);
 
 						if (timer > 60 && timer < 140)
 						{
@@ -620,7 +620,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				NPC.Center = Vector2.SmoothStep(startPos, homePos, timer / 60f);
 
 				if (timer == 60)
-					Helper.PlayPitched("VitricBoss/ceiroslidopen", 0.5f, 0.5f, NPC.Center);
+					SoundHelper.PlayPitched("VitricBoss/ceiroslidopen", 0.5f, 0.5f, NPC.Center);
 
 				if (timer > 60 && timer < 120)
 				{
@@ -643,7 +643,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				}
 
 				if (timer == 150)
-					Helper.PlayPitched("VitricBoss/ceiroslidclose", 0.5f, 0.5f, NPC.Center);
+					SoundHelper.PlayPitched("VitricBoss/ceiroslidclose", 0.5f, 0.5f, NPC.Center);
 
 				if (timer > 150 && timer < 210)
 				{
@@ -705,7 +705,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					NPC.netUpdate = true;
 				}
 
-				Helper.PlayPitched("VitricBoss/ceiroslidopendelayed", 0.5f, bossRand.NextFloat(0.3f, 1), NPC.Center);
+				SoundHelper.PlayPitched("VitricBoss/ceiroslidopendelayed", 0.5f, bossRand.NextFloat(0.3f, 1), NPC.Center);
 			}
 
 			if (AttackTimer >= 90 * 4 - 1)
@@ -738,7 +738,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			if (AttackTimer < 240)
 			{
 				float rad = AttackTimer / 240f * 390;
-				float rot = Helpers.Helper.BezierEase(AttackTimer / 240f) * 6.28f;
+				float rot = Helpers.Eases.BezierEase(AttackTimer / 240f) * 6.28f;
 				NPC.Center = homePos + new Vector2(0, -rad).RotatedBy(favoriteCrystal == 0 ? rot : -rot);
 
 				if (Main.expertMode && AttackTimer % 45 == 0)
@@ -831,7 +831,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			lockedRotation = 0f;
 
 			if (AttackTimer == 30)
-				Helper.PlayPitched("VitricBoss/ceiroslidopen", 0.5f, 0.3f, NPC.Center);
+				SoundHelper.PlayPitched("VitricBoss/ceiroslidopen", 0.5f, 0.3f, NPC.Center);
 
 			if (AttackTimer < 30)
 			{
@@ -865,7 +865,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			}
 
 			if (AttackTimer == 40)
-				Helper.PlayPitched("VitricBoss/ceiroslidclose", 0.5f, 0.7f, NPC.Center);
+				SoundHelper.PlayPitched("VitricBoss/ceiroslidclose", 0.5f, 0.7f, NPC.Center);
 
 			if (AttackTimer > 60 && AttackTimer <= 90)
 			{
@@ -893,7 +893,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				NPC.Center = Vector2.SmoothStep(startPos, arena.Center(), AttackTimer / 60f);
 
 			if (AttackTimer == 120)
-				Helper.PlayPitched("VitricBoss/ceiroslidopen", 0.5f, 0.5f, NPC.Center);
+				SoundHelper.PlayPitched("VitricBoss/ceiroslidopen", 0.5f, 0.5f, NPC.Center);
 
 			if (AttackTimer > 120 && AttackTimer < 180)
 			{
@@ -943,7 +943,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			}
 
 			if (AttackTimer == 495)
-				Helper.PlayPitched("VitricBoss/ceiroslidclose", 0.5f, 0.7f, NPC.Center);
+				SoundHelper.PlayPitched("VitricBoss/ceiroslidclose", 0.5f, 0.7f, NPC.Center);
 
 			if (AttackTimer > 495)
 			{
@@ -979,14 +979,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				NPC.Center = Vector2.SmoothStep(startPos, homePos + new Vector2(0, -100), AttackTimer / 60f);
 
 			if (AttackTimer == 90)
-				Helper.PlayPitched("VitricBoss/ceiroslidclose", 0.5f, 0.7f, NPC.Center);
+				SoundHelper.PlayPitched("VitricBoss/ceiroslidclose", 0.5f, 0.7f, NPC.Center);
 
 			if (AttackTimer > 90)
 			{
 				float LaserTimer = AttackTimer - 90;
 
 				if (LaserTimer == 60)
-					Helper.PlayPitched("VitricBoss/LaserCharge", 0.7f, 0, NPC.Center);
+					SoundHelper.PlayPitched("VitricBoss/LaserCharge", 0.7f, 0, NPC.Center);
 
 				if (LaserTimer < 60)
 				{

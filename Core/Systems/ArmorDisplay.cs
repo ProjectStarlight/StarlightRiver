@@ -31,7 +31,7 @@ namespace StarlightRiver.Core.Systems
 
 		public override void AI(NPC npc)
 		{
-			var modifiers = npc.GetIncomingStrikeModifiers(DamageClass.Generic, 0);
+			NPC.HitModifiers modifiers = npc.GetIncomingStrikeModifiers(DamageClass.Generic, 0);
 			float effectiveDefense = Math.Max(modifiers.Defense.ApplyTo(0), 0);
 			float armorPenetration = effectiveDefense * Math.Clamp(modifiers.ScalingArmorPenetration.Value, 0, 1) + modifiers.ArmorPenetration.Value;
 			effectiveDefense = Math.Max(effectiveDefense - armorPenetration, 0);
@@ -50,8 +50,8 @@ namespace StarlightRiver.Core.Systems
 
 		public void DrawArmorDisplay(NPC NPC, byte hbPosition, float scale, Vector2 position)
 		{
-			var mp = NPC.GetGlobalNPC<ArmorDisplay>();
-			var modifiers = NPC.GetIncomingStrikeModifiers(DamageClass.Generic, 0);
+			ArmorDisplay mp = NPC.GetGlobalNPC<ArmorDisplay>();
+			NPC.HitModifiers modifiers = NPC.GetIncomingStrikeModifiers(DamageClass.Generic, 0);
 			float effectiveDefense = Math.Max(modifiers.Defense.ApplyTo(0), 0);
 
 			if (effectiveDefense > 0 || mp.currentAnim > 0)
@@ -67,7 +67,7 @@ namespace StarlightRiver.Core.Systems
 
 				if (NPC.defDefense > 10)
 					tex = Assets.GUI.DefBar2.Value;
-				if(NPC.defDefense > 40)
+				if (NPC.defDefense > 40)
 					tex = Assets.GUI.DefBar3.Value;
 
 				// Effective defense calculation taken from tmod stat modifiers for defense in damage calculations
@@ -103,7 +103,7 @@ namespace StarlightRiver.Core.Systems
 				if (mp.currentAnim > 1)
 				{
 					tex = Assets.GUI.OverDefBar.Value;
-					var overblow = mp.currentAnim - 1;
+					float overblow = mp.currentAnim - 1;
 
 					if (overblow > mp.maxOverblow)
 						mp.maxOverblow = overblow;

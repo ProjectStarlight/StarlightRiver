@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 		public int dustID;
 
 		public int deathTimer;
-	
+
 		public bool drawTrail = true;
 
 		public Dictionary<string, Color> Colors = new()
@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			{ "TrailInsideColor", Color.White },
 			{ "RingOutsideColor", Color.White },
 			{ "RingInsideColor", Color.White },
-		}; 
+		};
 		public virtual bool gravity => true;
 		public virtual int TextureID => ItemID.DirtBlock;
 		public float AmmoType => Projectile.ai[0];
@@ -96,7 +96,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 				deathTimer--;
 				if (deathTimer == 1)
 					Projectile.active = false;
-			}		
+			}
 
 			SafeAI();
 
@@ -192,7 +192,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 				deathTimer = 10;
 
 				SafeOnKill();
-			}			
+			}
 
 			return false;
 		}
@@ -209,10 +209,10 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 				SafeOnKill();
 
 				deathTimer = 10;
-			}				
+			}
 
 			SafeOnHitNPC(target, hit, damageDone);
-		}			
+		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
@@ -326,7 +326,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			{
 				Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-				var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 				Matrix view = Main.GameViewMatrix.EffectMatrix;
 				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
@@ -365,7 +365,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 	{
 		public override int TextureID => ItemID.SandBlock;
 		public SoilgunSandClump() : base(new Color(80, 50, 20), new Color(160, 131, 59), new Color(139, 131, 59), new Color(212, 192, 100), new Color(150, 120, 59), DustID.Sand) { }
-		
+
 		public override void SafeOnKill()
 		{
 			base.SafeOnKill();
@@ -382,7 +382,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 	{
 		public override int TextureID => ItemID.CrimsandBlock;
 		public SoilgunCrimsandClump() : base(new Color(56, 17, 14), new Color(135, 43, 34), new Color(56, 17, 14), new Color(135, 43, 34), new Color(40, 10, 10) * 0.6f, DustID.CrimsonPlants) { }
-		
+
 		public override void SafeOnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			Owner.AddBuff(BuffID.Regeneration, 600);
@@ -393,7 +393,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 	{
 		public override int TextureID => ItemID.EbonsandBlock;
 		public SoilgunEbonsandClump() : base(new Color(26, 18, 31), new Color(62, 45, 75), new Color(62, 45, 75), new Color(119, 106, 138), new Color(30, 25, 45) * 0.6f, DustID.Ebonwood) { }
-		
+
 		public override void SafeOnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			target.AddBuff(ModContent.BuffType<EbonsandDebuff>(), 600);

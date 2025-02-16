@@ -48,7 +48,7 @@ namespace StarlightRiver.Content.Tiles.BaseTypes
 
 		public override bool RightClick(int i, int j)
 		{
-			var tile = Framing.GetTileSafely(i, j);
+			Tile tile = Framing.GetTileSafely(i, j);
 
 			if (Main.LocalPlayer.controlDown)
 				tile.TileFrameY++;
@@ -99,24 +99,24 @@ namespace StarlightRiver.Content.Tiles.BaseTypes
 
 		public override void PostDraw(Color lightColor)
 		{
-			chain?.IterateRope(k => parentSingleton.PerPointDraw(Main.spriteBatch, chain.ropeSegments[k].posNow, k == chain.segmentCount - 1 ? chain.ropeSegments[k].posNow : chain.ropeSegments[k+1].posNow));
+			chain?.IterateRope(k => parentSingleton.PerPointDraw(Main.spriteBatch, chain.ropeSegments[k].posNow, k == chain.segmentCount - 1 ? chain.ropeSegments[k].posNow : chain.ropeSegments[k + 1].posNow));
 
 			if (StarlightRiver.debugMode)
 			{
 				chain?.IterateRope(k =>
 				{
-					var pos = chain.ropeSegments[k].posNow;
+					Vector2 pos = chain.ropeSegments[k].posNow;
 					Vector2 lerped = Vector2.Lerp(Center, endPoint, k / (float)chain.segmentCount);
 					Main.instance.TilesRenderer.Wind.GetWindTime((int)pos.X / 16, (int)pos.Y / 16, 20, out int windTimeLeft, out int directionX, out int directionY);
-					var wind = new Vector2(directionX, directionY) * (windTimeLeft / 20f) * 2f;
+					Vector2 wind = new Vector2(directionX, directionY) * (windTimeLeft / 20f) * 2f;
 					wind.X += Main.windSpeedCurrent * (Math.Abs(pos.Y - lerped.Y) / 180f);
 
-					var tex = Assets.MagicPixel.Value;
+					Texture2D tex = Assets.MagicPixel.Value;
 					Main.spriteBatch.Draw(tex, new Rectangle((int)(pos.X - Main.screenPosition.X), (int)(pos.Y - Main.screenPosition.Y), (int)(wind.Length() * 64f), 1), null, new Color(0.5f + wind.X, 0.5f + wind.Y, 0), wind.ToRotation(), Vector2.Zero, 0, 0);
 
 					if (k > 0)
 					{
-						var dist = Vector2.Distance(chain.ropeSegments[k].posNow, chain.ropeSegments[k - 1].posNow) / parentSingleton.segmentLength;
+						float dist = Vector2.Distance(chain.ropeSegments[k].posNow, chain.ropeSegments[k - 1].posNow) / parentSingleton.segmentLength;
 						var color = new Color(Math.Abs(dist - 1), 0f, 0f);
 						Main.spriteBatch.Draw(tex, new Rectangle((int)(pos.X - Main.screenPosition.X), (int)(pos.Y - Main.screenPosition.Y), 4, 4), null, color, 0f, Vector2.One * 2, 0, 0);
 					}
@@ -133,10 +133,10 @@ namespace StarlightRiver.Content.Tiles.BaseTypes
 
 			chain?.IterateRope(k =>
 			{
-				var pos = chain.ropeSegments[k].posNow;
+				Vector2 pos = chain.ropeSegments[k].posNow;
 				Vector2 lerped = Vector2.Lerp(Center, endPoint, k / (float)chain.segmentCount);
 				Main.instance.TilesRenderer.Wind.GetWindTime((int)pos.X / 16, (int)pos.Y / 16, 20, out int windTimeLeft, out int directionX, out int directionY);
-				var wind = new Vector2(directionX, directionY) * (windTimeLeft / 20f) * 2f;
+				Vector2 wind = new Vector2(directionX, directionY) * (windTimeLeft / 20f) * 2f;
 				wind.X += Main.windSpeedCurrent * (Math.Abs(pos.Y - lerped.Y) / 180f);
 
 				chain.ropeSegments[k].posNow += wind;

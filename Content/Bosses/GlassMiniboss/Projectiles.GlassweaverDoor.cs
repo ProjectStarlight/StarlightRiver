@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				{
 					closed = true;
 					CameraSystem.shake += 9;
-					Helpers.Helper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0.3f, Projectile.Center);
+					Helpers.SoundHelper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0.3f, Projectile.Center);
 
 					var dustPos = new Vector2(Projectile.Center.X, Projectile.Center.Y - Projectile.height);
 					for (int i = 0; i < 15; i++)

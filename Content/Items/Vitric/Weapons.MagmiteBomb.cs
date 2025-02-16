@@ -188,7 +188,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			CameraSystem.shake += 6;
 
 			SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/FireHit"), Projectile.Center);
-			Helper.PlayPitched("Magic/FireCast", 0.2f, Main.rand.NextFloat(-0.1f, 0.1f));
+			SoundHelper.PlayPitched("Magic/FireCast", 0.2f, Main.rand.NextFloat(-0.1f, 0.1f));
 
 			for (int k = 0; k < 60; k++)
 			{
@@ -205,7 +205,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				for (int y = -10; y < 10; y++)
 				{
 					Tile tile = Main.tile[(int)Projectile.Center.X / 16 + x, (int)Projectile.Center.Y / 16 + y];
-					if (tile.HasTile && Main.tileSolid[tile.TileType] && Helpers.Helper.IsEdgeTile((int)Projectile.Center.X / 16 + x, (int)Projectile.Center.Y / 16 + y))
+					if (tile.HasTile && Main.tileSolid[tile.TileType] && Helpers.WorldGenHelper.IsEdgeTile((int)Projectile.Center.X / 16 + x, (int)Projectile.Center.Y / 16 + y))
 					{
 						Vector2 pos = new Vector2((int)Projectile.Center.X / 16 + x, (int)Projectile.Center.Y / 16 + y) * 16 + Vector2.One * 8;
 
@@ -281,7 +281,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

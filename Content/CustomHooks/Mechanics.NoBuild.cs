@@ -71,11 +71,26 @@ namespace StarlightRiver.Content.CustomHooks
 
 	public class ProtectionGlobalItem : GlobalItem
 	{
-		public static List<int> blacklist = [ ItemID.WaterBucket, ItemID.LavaBucket, ItemID.HoneyBucket, ItemID.BottomlessBucket,
-														ItemID.Wrench, ItemID.BlueWrench, ItemID.GreenWrench, ItemID.YellowWrench, ItemID.MulticolorWrench,
-														ItemID.ActuationRod, ItemID.Actuator, ItemID.WireKite, ItemID.WireCutter, ItemID.WireBulb,
-														ItemID.Paintbrush, ItemID.PaintRoller, ItemID.PaintScraper,
-														ItemID.SpectrePaintbrush, ItemID.SpectrePaintRoller, ItemID.SpectrePaintScraper
+		public static List<int> blacklist = [ItemID.WaterBucket,
+			ItemID.LavaBucket,
+			ItemID.HoneyBucket,
+			ItemID.BottomlessBucket,
+			ItemID.Wrench,
+			ItemID.BlueWrench,
+			ItemID.GreenWrench,
+			ItemID.YellowWrench,
+			ItemID.MulticolorWrench,
+			ItemID.ActuationRod,
+			ItemID.Actuator,
+			ItemID.WireKite,
+			ItemID.WireCutter,
+			ItemID.WireBulb,
+			ItemID.Paintbrush,
+			ItemID.PaintRoller,
+			ItemID.PaintScraper,
+			ItemID.SpectrePaintbrush,
+			ItemID.SpectrePaintRoller,
+			ItemID.SpectrePaintScraper
 		];
 
 		public static List<int> whitelist = [ItemID.AcornAxe];

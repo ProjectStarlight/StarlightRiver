@@ -172,7 +172,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 				if (colliding)
 				{
-					Helper.PlayPitched("Magic/AuroraBell", ChargeRatio, Main.rand.NextFloat(-0.1f, 0.1f) + (1 - ChargeRatio) * 0.8f, Projectile.Center);
+					SoundHelper.PlayPitched("Magic/AuroraBell", ChargeRatio, Main.rand.NextFloat(-0.1f, 0.1f) + (1 - ChargeRatio) * 0.8f, Projectile.Center);
 					Core.Systems.CameraSystem.CameraSystem.shake += 7;
 
 					DistortionPointHandler.AddPoint(Projectile.Center, (float)Math.Pow(ChargeRatio, 0.7f), 0,
@@ -372,7 +372,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		{
 			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
@@ -486,7 +486,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		{
 			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

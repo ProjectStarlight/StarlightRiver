@@ -128,6 +128,7 @@ namespace StarlightRiver.Content.Dusts
 				total += Vector2.Distance(prevPoint, testPoint);
 				prevPoint = testPoint;
 			}
+
 			return total;
 		}
 
@@ -148,7 +149,7 @@ namespace StarlightRiver.Content.Dusts
 
 				if (dust.fadeIn > data.duration - 20)
 				{
-					var ttd = dust.fadeIn - (data.duration - 20);
+					float ttd = dust.fadeIn - (data.duration - 20);
 					dust.alpha = (int)(ttd / 20f * 255);
 				}
 
@@ -244,8 +245,7 @@ namespace StarlightRiver.Content.Dusts
 
 		public override bool Update(Dust dust)
 		{
-			if (dust.customData is null)
-				dust.customData = new object[] { 0, false };
+			dust.customData ??= new object[] { 0, false };
 
 			if (dust.customData is int)
 				dust.customData = new object[] { dust.customData, false };

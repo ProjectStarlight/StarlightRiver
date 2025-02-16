@@ -5,7 +5,19 @@ namespace StarlightRiver.Helpers
 {
 	public static class DustHelper
 	{
-		public static void DrawDustImage(Vector2 position, int dustType, float size, Texture2D tex, float dustSize = 1f, int Alpha = 0, Color? color = null, bool noGravity = true, float rot = 0.34f)
+		/// <summary>
+		/// Spawns dust in a pattern determined by a Texture
+		/// </summary>
+		/// <param name="position"></param>
+		/// <param name="dustType"></param>
+		/// <param name="size"></param>
+		/// <param name="tex"></param>
+		/// <param name="dustSize"></param>
+		/// <param name="Alpha"></param>
+		/// <param name="color"></param>
+		/// <param name="noGravity"></param>
+		/// <param name="rot"></param>
+		public static void SpawnImagePattern(Vector2 position, int dustType, float size, Texture2D tex, float dustSize = 1f, int Alpha = 0, Color? color = null, bool noGravity = true, float rot = 0.34f)
 		{
 			if (Main.netMode != NetmodeID.Server)
 			{
@@ -32,7 +44,21 @@ namespace StarlightRiver.Helpers
 			}
 		}
 
-		public static void DrawStar(Vector2 position, int dustType, float pointAmount = 5, float mainSize = 1, float dustDensity = 1, float dustSize = 1f, float pointDepthMult = 1f, float pointDepthMultOffset = 0.5f, float randomAmount = 0, float rotationAmount = -1, Color? color = null)
+		/// <summary>
+		/// Spawns dust in a star pattern
+		/// </summary>
+		/// <param name="position"></param>
+		/// <param name="dustType"></param>
+		/// <param name="pointAmount"></param>
+		/// <param name="mainSize"></param>
+		/// <param name="dustDensity"></param>
+		/// <param name="dustSize"></param>
+		/// <param name="pointDepthMult"></param>
+		/// <param name="pointDepthMultOffset"></param>
+		/// <param name="randomAmount"></param>
+		/// <param name="rotationAmount"></param>
+		/// <param name="color"></param>
+		public static void SpawnStarPattern(Vector2 position, int dustType, float pointAmount = 5, float mainSize = 1, float dustDensity = 1, float dustSize = 1f, float pointDepthMult = 1f, float pointDepthMultOffset = 0.5f, float randomAmount = 0, float rotationAmount = -1, Color? color = null)
 		{
 			float rot;
 
@@ -59,30 +85,44 @@ namespace StarlightRiver.Helpers
 			}
 		}
 
-		public static void DrawCircle(Vector2 position, int dustType, float mainSize = 1, float RatioX = 1, float RatioY = 1, float dustDensity = 1, float dustSize = 1f, float randomAmount = 0, float rotationAmount = 0)
+		/// <summary>
+		/// Spawns dust in a lightning bolt pattern between two points
+		/// </summary>
+		/// <param name="point1"></param>
+		/// <param name="point2"></param>
+		/// <param name="dusttype"></param>
+		/// <param name="scale"></param>
+		/// <param name="armLength"></param>
+		/// <param name="color"></param>
+		/// <param name="frequency"></param>
+		public static void SpawnElectricityPattern(Vector2 point1, Vector2 point2, int dusttype, float scale = 1, int armLength = 30, Color color = default, float frequency = 0.05f)
 		{
-			float rot;
+			int nodeCount = (int)Vector2.Distance(point1, point2) / armLength;
+			var nodes = new Vector2[nodeCount + 1];
 
-			if (rotationAmount < 0)
-				rot = Main.rand.NextFloat(0, (float)Math.PI * 2);
-			else
-				rot = rotationAmount;
+			nodes[nodeCount] = point2; //adds the end as the last point
 
-			float density = 1 / dustDensity * 0.1f;
-
-			for (float k = 0; k < 6.28f; k += density)
+			for (int k = 1; k < nodes.Length; k++)
 			{
-				float rand = 0;
+				//Sets all intermediate nodes to their appropriate randomized dot product positions
+				nodes[k] = Vector2.Lerp(point1, point2, k / (float)nodeCount) +
+					(k == nodes.Length - 1 ? Vector2.Zero : Vector2.Normalize(point1 - point2).RotatedBy(1.58f) * Main.rand.NextFloat(-armLength / 2, armLength / 2));
 
-				if (randomAmount > 0)
-					rand = Main.rand.NextFloat(-0.01f, 0.01f) * randomAmount;
-
-				float x = (float)Math.Cos(k + rand) * RatioX;
-				float y = (float)Math.Sin(k + rand) * RatioY;
-				Dust.NewDustPerfect(position, dustType, new Vector2(x, y).RotatedBy(rot) * mainSize, 0, default, dustSize);
+				//Spawns the dust between each node
+				Vector2 prevPos = k == 1 ? point1 : nodes[k - 1];
+				for (float i = 0; i < 1; i += frequency)
+				{
+					Dust.NewDustPerfect(Vector2.Lerp(prevPos, nodes[k], i), dusttype, Vector2.Zero, 0, color, scale);
+				}
 			}
 		}
 
+		/// <summary>
+		/// Gets the type of dust that a tile would emit
+		/// </summary>
+		/// <param name="tile"></param>
+		/// <param name="dusttype"></param>
+		/// <returns></returns>
 		public static int TileDust(Tile tile, ref int dusttype)
 		{
 			switch (tile.TileType)
@@ -111,7 +151,6 @@ namespace StarlightRiver.Helpers
 			}
 
 			return dusttype;
-
 		}
 	}
 }

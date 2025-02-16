@@ -154,7 +154,7 @@ namespace StarlightRiver.Core
 				int x = genRand.NextBool(2) ? genRand.Next(vitricBiome.X + SLOPE_OFFSET + 20, vitricBiome.Center.X - 61) : genRand.Next(vitricBiome.Center.X + 62, vitricBiome.Right - SLOPE_OFFSET - 20);
 				int y = maxCeilingDepth + 20 + genRand.Next((int)(vitricBiome.Height / 3.2f));
 
-				if (Helper.ScanForTypeDown(x, y, instance.Find<ModTile>("VitricSand").Type, 120))
+				if (WorldGenHelper.ScanForTypeDown(x, y, instance.Find<ModTile>("VitricSand").Type, 120))
 				{
 					y = FindType(x, y, vitricBiome.Bottom + 20, instance.Find<ModTile>("VitricSand").Type);
 				}
@@ -520,7 +520,7 @@ namespace StarlightRiver.Core
 				Point16 size = ruinedHouseSizes[ty];
 				int y = FindType(x, vitricBiome.Y + 38 + genRand.Next((int)(vitricBiome.Height / 3.2f)), -1, ValidGround) + genRand.Next(2);
 
-				if ((x < vitricBiome.X + vitricBiome.Width / 2 - 71 || x > vitricBiome.X + vitricBiome.Width / 2 + 70) && Helper.CheckAirRectangle(new Point16(x, y - size.Y), new Point16(size.X, size.Y - 3)) && //ScanRectangle(x, y, size.X, size.Y) < 10
+				if ((x < vitricBiome.X + vitricBiome.Width / 2 - 71 || x > vitricBiome.X + vitricBiome.Width / 2 + 70) && WorldGenHelper.CheckAirRectangle(new Point16(x, y - size.Y), new Point16(size.X, size.Y - 3)) && //ScanRectangle(x, y, size.X, size.Y) < 10
 					ValidGround.Any(v => v == Main.tile[x + 1, y].TileType) && ValidGround.Any(v => v == Main.tile[x + size.X - 1, y].TileType))
 				{
 					StructureHelper.Generator.GenerateStructure("Structures/Vitric/VitricTempleRuins_" + ty, new Point16(x, y - size.Y), StarlightRiver.Instance);
@@ -643,16 +643,16 @@ namespace StarlightRiver.Core
 
 		private static void GenerateDeco(int x, int y, int w, int h, int type, int variants)
 		{
-			if (ValidGround.Any(x1 => x1 == Main.tile[x, y].TileType) && Helper.CheckAirRectangle(new Point16(x, y - h), new Point16(w, h)) && ValidGround.Any(x1 => x1 == Main.tile[x, y].TileType))
-				Helper.PlaceMultitile(new Point16(x, y - h), type, genRand.Next(variants));
+			if (ValidGround.Any(x1 => x1 == Main.tile[x, y].TileType) && WorldGenHelper.CheckAirRectangle(new Point16(x, y - h), new Point16(w, h)) && ValidGround.Any(x1 => x1 == Main.tile[x, y].TileType))
+				WorldGenHelper.PlaceMultitile(new Point16(x, y - h), type, genRand.Next(variants));
 
 			KillTile(x, y - h, true);
 		}
 
 		private static void GenerateDecoInverted(int x, int y, int w, int h, int type, int variants)
 		{
-			if (ValidGround.Any(x1 => x1 == Main.tile[x, y].TileType) && Helper.CheckAirRectangle(new Point16(x, y + 1), new Point16(w, h)) && ValidGround.Any(x1 => x1 == Main.tile[x, y].TileType))
-				Helper.PlaceMultitile(new Point16(x, y + 1), type, genRand.Next(variants));
+			if (ValidGround.Any(x1 => x1 == Main.tile[x, y].TileType) && WorldGenHelper.CheckAirRectangle(new Point16(x, y + 1), new Point16(w, h)) && ValidGround.Any(x1 => x1 == Main.tile[x, y].TileType))
+				WorldGenHelper.PlaceMultitile(new Point16(x, y + 1), type, genRand.Next(variants));
 
 			KillTile(x, y + 1, true);
 		}
@@ -895,7 +895,7 @@ namespace StarlightRiver.Core
 
 					// Success! Halve the spawnAttempts count so we don't spam crystals.
 					PlaceTile(cX + 1, cY, Framing.GetTileSafely(cX, cY).TileType, true, true);
-					Helper.PlaceMultitile(new Point16(cX, cY - 3), TileType<VitricOre>(), Main.rand.Next(3));
+					WorldGenHelper.PlaceMultitile(new Point16(cX, cY - 3), TileType<VitricOre>(), Main.rand.Next(3));
 					spawnAttempts /= 2;
 				}
 			}
@@ -958,7 +958,7 @@ namespace StarlightRiver.Core
 
 			for (int i = -wid; i < wid + 1; ++i) //Checks for crystals. If there's a crystal, kill this pillar before it gens
 			{
-				if (Helper.ScanForTypeDown(x + i, y, TileType<VitricLargeCrystal>(), 100) || Helper.ScanForTypeDown(x + i, y, TileType<VitricSmallCrystal>(), 100))
+				if (WorldGenHelper.ScanForTypeDown(x + i, y, TileType<VitricLargeCrystal>(), 100) || WorldGenHelper.ScanForTypeDown(x + i, y, TileType<VitricSmallCrystal>(), 100))
 					return false; //Crystal found, can't place here
 
 				if (GetHeight(x + i) - 30 > GetHeight(x - wid) || GetHeight(x + i) - 30 > GetHeight(x + wid))

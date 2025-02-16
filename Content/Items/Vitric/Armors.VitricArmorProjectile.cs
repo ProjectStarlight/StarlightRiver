@@ -82,8 +82,8 @@ namespace StarlightRiver.Content.Items.Vitric
 			posTarget = Owner.Center + flippedOffset + Vector2.UnitY * Owner.gfxOffY;
 			Projectile.Center += (posTarget - Projectile.Center) * 0.18f;
 
-			if (Helper.CompareAngle(Projectile.rotation, rotTarget) > 0.1f)
-				Projectile.rotation += Helper.CompareAngle(Projectile.rotation, rotTarget) * 0.1f;
+			if (GeometryHelper.CompareAngle(Projectile.rotation, rotTarget) > 0.1f)
+				Projectile.rotation += GeometryHelper.CompareAngle(Projectile.rotation, rotTarget) * 0.1f;
 			else
 				Projectile.rotation = rotTarget;
 
@@ -113,7 +113,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (State == 1 && Main.myPlayer == Owner.whoAmI) //loaded
 			{
 
-				rotTarget = Helper.LerpFloat(Projectile.rotation, (Owner.Center - Main.MouseWorld).ToRotation() + 1.57f, Math.Min(1, timer / 30f));
+				rotTarget = StarlightMathHelper.LerpFloat(Projectile.rotation, (Owner.Center - Main.MouseWorld).ToRotation() + 1.57f, Math.Min(1, timer / 30f));
 
 				if (Math.Abs(rotTarget - prevRotTarget) > 0.1f)
 				{
@@ -167,7 +167,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2, Projectile.scale, 0, 0);
 
 			if (State == 0)
-				spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, Helper.MoltenVitricGlow(timer / 30f * 110), Projectile.rotation, texGlow.Size() / 2, Projectile.scale, 0, 0);
+				spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, CommonVisualEffects.HeatedToCoolColor(timer / 30f * 110), Projectile.rotation, texGlow.Size() / 2, Projectile.scale, 0, 0);
 
 			if (State == 1)
 				spriteBatch.Draw(texHot, Projectile.Center - Main.screenPosition, null, Color.White * Math.Min(1, timer / 30f), Projectile.rotation, texHot.Size() / 2, Projectile.scale, 0, 0);
@@ -282,7 +282,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

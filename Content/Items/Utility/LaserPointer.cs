@@ -140,7 +140,7 @@ namespace StarlightRiver.Content.Items.Utility
 			{
 				Vector2 posCheck = Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * k * 8;
 
-				if (Helper.PointInTile(posCheck) || k == 159)
+				if (CollisionHelper.PointInTile(posCheck) || k == 159)
 				{
 					endPoint = posCheck;
 					break;

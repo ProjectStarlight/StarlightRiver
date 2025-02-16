@@ -237,7 +237,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					if (NPC.friendly && state != 0)
 					{
 						if (altTimer > 0 && altTimer <= 90)
-							NPC.Center = Vector2.Lerp(StartPos, TargetPos, Helper.SwoopEase(altTimer / 90f));
+							NPC.Center = Vector2.Lerp(StartPos, TargetPos, Eases.SwoopEase(altTimer / 90f));
 
 						if (altTimer == 90)
 						{
@@ -410,7 +410,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		{
 			Texture2D tex = Request<Texture2D>(Texture + "Glow").Value; //glowy outline
 			if (state == 0)
-				spriteBatch.Draw(tex, NPC.Center - screenPos, tex.Frame(), Helper.IndicatorColor, NPC.rotation, tex.Frame().Size() / 2, NPC.scale, 0, 0);
+				spriteBatch.Draw(tex, NPC.Center - screenPos, tex.Frame(), CommonVisualEffects.IndicatorColor, NPC.rotation, tex.Frame().Size() / 2, NPC.scale, 0, 0);
 
 			if (phase == 3 && timer < 30)
 			{
@@ -498,7 +498,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 				Effect effect = Terraria.Graphics.Effects.Filters.Scene["CeirosRing"].GetShader().Shader;
 
-				var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 				Matrix view = Main.GameViewMatrix.TransformationMatrix;
 				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

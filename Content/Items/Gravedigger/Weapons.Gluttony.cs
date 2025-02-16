@@ -142,7 +142,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 				if (timer > 10 && Main.rand.NextBool(4))
 				{
-					float prog = Helper.SwoopEase(Math.Min(1, timer / 50f));
+					float prog = Eases.SwoopEase(Math.Min(1, timer / 50f));
 					float dustRot = Projectile.rotation + 0.1f + Main.rand.NextFloat(-0.3f, 0.3f);
 					Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(dustRot) * 300 * prog + new Vector2(0, 48), ModContent.DustType<Dusts.GlowLine>(), Vector2.UnitX.RotatedBy(dustRot) * Main.rand.NextFloat(-9.5f, -8f), 0, new Color(255, 40, 80) * 0.8f, 0.8f);
 				}
@@ -190,7 +190,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			localCache = new List<Vector2>();
 
 			float rotation = timer / 50f + rotationStart;
-			float prog = Helper.SwoopEase(Math.Min(1, timer / 80f));
+			float prog = Eases.SwoopEase(Math.Min(1, timer / 80f));
 
 			for (int i = 0; i < TRAILLENGTH; i++)
 			{
@@ -245,7 +245,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		{
 			Effect effect = Filters.Scene["GluttonyTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
@@ -329,7 +329,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D tex = Assets.Items.Gravedigger.GluttonyBG.Value;
-			float prog = Helper.SwoopEase(Math.Min(1, timer / 80f));
+			float prog = Eases.SwoopEase(Math.Min(1, timer / 80f));
 
 			Effect effect1 = Filters.Scene["Cyclone"].GetShader().Shader;
 			effect1.Parameters["NoiseOffset"].SetValue(Vector2.One * Main.GameUpdateCount * -0.02f);
@@ -360,7 +360,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			float prog = Helper.SwoopEase(Math.Min(1, timer / 50f));
+			float prog = Eases.SwoopEase(Math.Min(1, timer / 50f));
 			Texture2D tex = Assets.Bosses.VitricBoss.ConeTell.Value;
 			//spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 60, 80) * prog * 0.4f, Projectile.rotation + 1.57f + 0.1f, new Vector2(tex.Width / 2, tex.Height), prog * 0.55f, 0, 0);
 		}
@@ -457,7 +457,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		{
 			Effect effect = Filters.Scene["GhoulTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

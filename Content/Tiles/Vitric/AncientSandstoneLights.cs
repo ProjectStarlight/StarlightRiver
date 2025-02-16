@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default);
 
-			Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 + Vector2.One * 8 - Main.screenPosition;
+			Vector2 pos = new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange + Vector2.One * 8 - Main.screenPosition;
 
 			for (int k = 0; k < 3; k++)
 			{

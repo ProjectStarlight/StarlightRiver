@@ -179,7 +179,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 				}
 				else if (warpAnimationTimer == MAX_SUCC_ANIMATION)
 				{
-					Helper.PlayPitched("BossRush/ArmillaryExplode", 1, 0f, NPC.Center);
+					SoundHelper.PlayPitched("BossRush/ArmillaryExplode", 1, 0f, NPC.Center);
 					Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/OminousIdle");
 				}
 
@@ -216,15 +216,15 @@ namespace StarlightRiver.Content.NPCs.BossRush
 
 				if (crackAnimationTimer == 0)
 				{
-					Helper.PlayPitched("BossRush/ArmillaryCrack1", 1, 0f, NPC.Center);
+					SoundHelper.PlayPitched("BossRush/ArmillaryCrack1", 1, 0f, NPC.Center);
 				}
 				else if (crackAnimationTimer == 165)
 				{
-					Helper.PlayPitched("BossRush/ArmillaryCrack2", 1, 0f, NPC.Center);
+					SoundHelper.PlayPitched("BossRush/ArmillaryCrack2", 1, 0f, NPC.Center);
 				}
 				else if (crackAnimationTimer == 255)
 				{
-					Helper.PlayPitched("BossRush/ArmillaryBreak", 1, 0f, NPC.Center);
+					SoundHelper.PlayPitched("BossRush/ArmillaryBreak", 1, 0f, NPC.Center);
 					Music = MusicLoader.GetMusicSlot(Mod, "ThisSoundDoesNotExist");
 				}
 

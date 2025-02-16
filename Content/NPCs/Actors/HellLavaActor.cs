@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 					Projectile.NewProjectile(item.GetSource_FromThis(), item.Center + new Vector2(10, 20), Vector2.Zero, ProjectileType<FirePillar>(), 0, 0, Main.myPlayer, 1.25f);
 					Projectile.NewProjectile(item.GetSource_FromThis(), item.Center + new Vector2(-5, 20), Vector2.Zero, ProjectileType<FirePillar>(), 0, 0, Main.myPlayer, 1.5f);
 
-					Helpers.Helper.PlayPitched("Magic/FireHit", 1, -0.25f, item.Center);
+					Helpers.SoundHelper.PlayPitched("Magic/FireHit", 1, -0.25f, item.Center);
 
 					Fadeout = 1;
 				}

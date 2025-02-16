@@ -256,7 +256,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 						if (pointOnChain == 7 && !playedWhoosh)
 						{
-							Helper.PlayPitched("Effects/HeavyWhoosh", 0.5f, -0.05f, NPC.Center);
+							SoundHelper.PlayPitched("Effects/HeavyWhoosh", 0.5f, -0.05f, NPC.Center);
 							playedWhoosh = true;
 						}
 

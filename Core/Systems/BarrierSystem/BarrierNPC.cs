@@ -128,7 +128,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 
 		private void DrawBarrierBar(NPC NPC, byte hbPosition, float scale, Vector2 position)
 		{
-			var mp = NPC.GetGlobalNPC<BarrierNPC>();
+			BarrierNPC mp = NPC.GetGlobalNPC<BarrierNPC>();
 
 			if (mp.barrier > 0)
 			{

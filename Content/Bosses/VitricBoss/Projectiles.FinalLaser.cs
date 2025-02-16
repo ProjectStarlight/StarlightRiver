@@ -111,7 +111,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				}
 
 				if (LaserTimer == 135)
-					Helpers.Helper.PlayPitched("VitricBoss/LaserFire", 1.0f, 0, Projectile.Center);
+					Helpers.SoundHelper.PlayPitched("VitricBoss/LaserFire", 1.0f, 0, Projectile.Center);
 
 				if (LaserTimer > 150) //laser is actually active
 				{
@@ -136,7 +136,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					{
 						Player Player = Main.player[k];
 
-						if (Player.active && !Player.dead && Helpers.Helper.CheckLinearCollision(Projectile.Center, endpoint, Player.Hitbox, out Vector2 point))
+						if (Player.active && !Player.dead && Helpers.CollisionHelper.CheckLinearCollision(Projectile.Center, endpoint, Player.Hitbox, out Vector2 point))
 						{
 							Player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByCustomReason(Player.name + " was reduced to ash"), Projectile.damage, 0, false, false, -1, false);
 							endpoint = point;

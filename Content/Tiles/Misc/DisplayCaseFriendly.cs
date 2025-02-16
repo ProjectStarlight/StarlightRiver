@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Tiles.Misc
 			}
 			else
 			{
-				Helpers.Helper.NewItemSpecific(Main.LocalPlayer.Center, entity.containedItem.Clone());
+				Helpers.ItemHelper.NewItemSpecific(Main.LocalPlayer.Center, entity.containedItem.Clone());
 				entity.containedItem = null;
 			}
 
@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Tiles.Misc
 			Item.NewItem(new EntitySource_TileBreak(i, j), i, j, 1, 1, ModContent.ItemType<DisplayCaseFriendlyItem>());
 
 			if (entity.containedItem != null && !entity.containedItem.IsAir)
-				Helpers.Helper.NewItemSpecific(new Vector2(i, j), entity.containedItem.Clone());
+				Helpers.ItemHelper.NewItemSpecific(new Vector2(i, j), entity.containedItem.Clone());
 
 		}
 	}

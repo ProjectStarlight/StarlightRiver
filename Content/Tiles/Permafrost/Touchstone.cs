@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 					float sin = (float)Math.Sin(Main.GameUpdateCount * 0.05f + k * 0.5f);
 					var target = new Rectangle((i + 1) * 16, (int)((j + 4.5f) * 16), (int)(portalGlow.Width * (1.2f - k * 0.2f + 0.05f * sin)), (int)(portalGlow.Height * (0.1f + 0.15f * k + 0.05f * sin)));
 
-					target.Offset((-Main.screenPosition + Helper.TileAdj * 16).ToPoint());
+					target.Offset((-Main.screenPosition + Vector2.One * Main.offScreenRange).ToPoint());
 
 					spriteBatch.Draw(portalGlow, target, null, portalGlowColor * 0.4f, 0, new Vector2(portalGlow.Width / 2, portalGlow.Height), 0, 0);
 				}
@@ -399,7 +399,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 		{
 			Effect effect = Terraria.Graphics.Effects.Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

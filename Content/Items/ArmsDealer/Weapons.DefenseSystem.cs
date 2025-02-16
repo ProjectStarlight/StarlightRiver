@@ -165,7 +165,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 				_ => 0
 			};
 
-			held.radialRotation += Helpers.Helper.RotationDifference(rotTarget, held.radialRotation) * 0.1f;
+			held.radialRotation += Helpers.GeometryHelper.RotationDifference(rotTarget, held.radialRotation) * 0.1f;
 			held.radialRotation %= 6.28f;
 
 			// Draw all 3 guns
@@ -315,7 +315,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 					Dust.NewDustPerfect(Projectile.Center + Vector2.UnitY * 24, ModContent.DustType<Dusts.BuzzSpark>(), Main.rand.NextVector2Circular(3, 3), 0, Color.Yellow);
 				}
 
-				Helpers.Helper.PlayPitched("Impacts/StabTiny", 0.5f, 0, Projectile.Center);
+				Helpers.SoundHelper.PlayPitched("Impacts/StabTiny", 0.5f, 0, Projectile.Center);
 
 				Placed = 1;
 			}
@@ -336,7 +336,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 
 				// Rotate the gun to aim it
 				float targetAngle = (target.Center - (Projectile.Center + Vector2.UnitY * -10)).ToRotation();
-				gunRotation += Helpers.Helper.CompareAngle(targetAngle, gunRotation) * 0.075f;
+				gunRotation += Helpers.GeometryHelper.CompareAngle(targetAngle, gunRotation) * 0.075f;
 
 				// If the delay time has passed, fire a shot and reset
 				if (Timer >= delay)

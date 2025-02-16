@@ -80,7 +80,7 @@ namespace StarlightRiver.Content.Items.Vitric
 					for (int y = -8; y < 8; y++)
 					{
 						Tile tile = Main.tile[(int)Projectile.Center.X / 16 + x, (int)Projectile.Center.Y / 16 + y];
-						if (tile.HasTile && Main.tileSolid[tile.TileType] && Helpers.Helper.IsEdgeTile((int)Projectile.Center.X / 16 + x, (int)Projectile.Center.Y / 16 + y))
+						if (tile.HasTile && Main.tileSolid[tile.TileType] && Helpers.WorldGenHelper.IsEdgeTile((int)Projectile.Center.X / 16 + x, (int)Projectile.Center.Y / 16 + y))
 						{
 							Vector2 pos = new Vector2((int)Projectile.Center.X / 16 + x, (int)Projectile.Center.Y / 16 + y) * 16 + Vector2.One * 8;
 

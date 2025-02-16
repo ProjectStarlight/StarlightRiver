@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		private Trail trail;
 
 		public float TimeFade => 1 - Projectile.timeLeft / 20f;
-		public float Radius => Helper.BezierEase((20 - Projectile.timeLeft) / 20f) * Projectile.ai[0];
+		public float Radius => Eases.BezierEase((20 - Projectile.timeLeft) / 20f) * Projectile.ai[0];
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -47,7 +47,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
-			return Helper.CheckCircularCollision(Projectile.Center, (int)Radius + 20, targetHitbox);
+			return CollisionHelper.CheckCircularCollision(Projectile.Center, (int)Radius + 20, targetHitbox);
 		}
 
 		public override void OnHitPlayer(Player target, Player.HurtInfo info)
@@ -108,7 +108,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		{
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

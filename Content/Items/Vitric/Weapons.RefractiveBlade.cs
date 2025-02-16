@@ -133,7 +133,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				StoredAngle = Projectile.velocity.ToRotation();
 				Projectile.velocity *= 0;
 
-				Helper.PlayPitched("Effects/FancySwoosh", 1, Combo);
+				SoundHelper.PlayPitched("Effects/FancySwoosh", 1, Combo);
 
 				switch (Combo)
 				{
@@ -150,9 +150,9 @@ namespace StarlightRiver.Content.Items.Vitric
 				}
 			}
 
-			float targetAngle = StoredAngle + (-(maxAngle / 2) + Helper.BezierEase(Timer / maxTime) * maxAngle) * Owner.direction * direction;
+			float targetAngle = StoredAngle + (-(maxAngle / 2) + Eases.BezierEase(Timer / maxTime) * maxAngle) * Owner.direction * direction;
 
-			Projectile.Center = Owner.Center + Vector2.UnitX.RotatedBy(targetAngle) * (70 + (float)Math.Sin(Helper.BezierEase(Timer / maxTime) * 3.14f) * 40);
+			Projectile.Center = Owner.Center + Vector2.UnitX.RotatedBy(targetAngle) * (70 + (float)Math.Sin(Eases.BezierEase(Timer / maxTime) * 3.14f) * 40);
 			Projectile.rotation = targetAngle + 1.57f * 0.5f;
 
 			if (Main.netMode != NetmodeID.Server)
@@ -195,11 +195,11 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			target.immune[Projectile.owner] = 10; //equivalent to normal pierce iframes but explicit for multiPlayer compatibility
 
-			Helper.CheckLinearCollision(Owner.Center, Projectile.Center, target.Hitbox, out Vector2 hitPoint); //here to get the point of impact, ideally we dont have to do this twice but for some reasno colliding hook dosent have an actual NPC ref, soo...
+			CollisionHelper.CheckLinearCollision(Owner.Center, Projectile.Center, target.Hitbox, out Vector2 hitPoint); //here to get the point of impact, ideally we dont have to do this twice but for some reasno colliding hook dosent have an actual NPC ref, soo...
 
-			if (Helper.IsFleshy(target))
+			if (NPCHelper.IsFleshy(target))
 			{
-				Helper.PlayPitched("Impacts/FireBladeStab", 0.3f, -0.2f, Projectile.Center);
+				SoundHelper.PlayPitched("Impacts/FireBladeStab", 0.3f, -0.2f, Projectile.Center);
 
 				for (int k = 0; k < 20; k++)
 				{
@@ -212,7 +212,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			else
 			{
-				Helper.PlayPitched("Impacts/Clink", 0.5f, 0, Projectile.Center);
+				SoundHelper.PlayPitched("Impacts/Clink", 0.5f, 0, Projectile.Center);
 
 				for (int k = 0; k < 30; k++)
 				{
@@ -223,7 +223,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
-			if (Helper.CheckLinearCollision(Owner.Center, Projectile.Center, targetHitbox, out Vector2 hitPoint))
+			if (CollisionHelper.CheckLinearCollision(Owner.Center, Projectile.Center, targetHitbox, out Vector2 hitPoint))
 				return true;
 
 			return false;
@@ -245,8 +245,8 @@ namespace StarlightRiver.Content.Items.Vitric
 			Texture2D tex = Request<Texture2D>(Texture).Value;
 			Texture2D texGlow = Request<Texture2D>(Texture + "Glow").Value;
 
-			float targetAngle = StoredAngle + (-(maxAngle / 2) + Helper.BezierEase(Timer / maxTime) * maxAngle) * Owner.direction * direction;
-			Vector2 pos = Owner.Center + Vector2.UnitX.RotatedBy(targetAngle) * ((float)Math.Sin(Helper.BezierEase(Timer / maxTime) * 3.14f) * 20) - Main.screenPosition;
+			float targetAngle = StoredAngle + (-(maxAngle / 2) + Eases.BezierEase(Timer / maxTime) * maxAngle) * Owner.direction * direction;
+			Vector2 pos = Owner.Center + Vector2.UnitX.RotatedBy(targetAngle) * ((float)Math.Sin(Eases.BezierEase(Timer / maxTime) * 3.14f) * 20) - Main.screenPosition;
 
 			Main.spriteBatch.Draw(tex, pos, null, lightColor, Projectile.rotation, new Vector2(0, tex.Height), 1.1f, 0, 0);
 			Main.spriteBatch.Draw(texGlow, pos, null, Color.White, Projectile.rotation, new Vector2(0, texGlow.Height), 1.1f, 0, 0);
@@ -295,7 +295,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
@@ -346,7 +346,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				cPlayer.mouseRotationListener = true;
 
 			float targetRot = (cPlayer.mouseWorld - Owner.Center).ToRotation();
-			float diff = Helper.CompareAngle(LaserRotation, targetRot);
+			float diff = GeometryHelper.CompareAngle(LaserRotation, targetRot);
 			float maxRot = firing ? 0.02f : 0.08f;
 			LaserRotation -= MathHelper.Clamp(diff, -maxRot, maxRot);
 
@@ -356,7 +356,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				LaserRotation = targetRot;
 
 			if (Charge == 1)
-				Helper.PlayPitched("Magic/RefractiveCharge", 0.7f, 0, Projectile.Center);
+				SoundHelper.PlayPitched("Magic/RefractiveCharge", 0.7f, 0, Projectile.Center);
 
 			if (Charge >= 12 || firing)
 			{
@@ -364,7 +364,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 			else
 			{
-				Projectile.rotation = LaserRotation + 1.57f / 2 + Helper.BezierEase(Charge / 12f) * 6.28f;
+				Projectile.rotation = LaserRotation + 1.57f / 2 + Eases.BezierEase(Charge / 12f) * 6.28f;
 				Projectile.scale = 0.5f + Charge / 12f * 0.5f;
 			}
 
@@ -383,7 +383,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 
 			if (Charge >= 30 && !firing)
-				Helper.PlayPitched("Magic/RefractiveLaser", 0.6f, -0.2f, Projectile.Center);
+				SoundHelper.PlayPitched("Magic/RefractiveLaser", 0.6f, -0.2f, Projectile.Center);
 
 			firing = true;
 
@@ -391,7 +391,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			{
 				Vector2 posCheck = Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * k * 8;
 
-				if (Helper.PointInTile(posCheck) || k == 79)
+				if (CollisionHelper.PointInTile(posCheck) || k == 79)
 				{
 					endPoint = posCheck;
 					break;
@@ -417,7 +417,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
-			if (LaserTimer > 0 && Helper.CheckLinearCollision(Owner.Center, endPoint, targetHitbox, out Vector2 colissionPoint))
+			if (LaserTimer > 0 && CollisionHelper.CheckLinearCollision(Owner.Center, endPoint, targetHitbox, out Vector2 colissionPoint))
 			{
 				Dust.NewDustPerfect(colissionPoint, DustType<Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 150, 100), Main.rand.NextFloat());
 				return true;
@@ -441,8 +441,8 @@ namespace StarlightRiver.Content.Items.Vitric
 			spriteBatch.Draw(Request<Texture2D>(Texture).Value, Owner.Center - Main.screenPosition, null, lightColor, Projectile.rotation, new Vector2(0, Request<Texture2D>(Texture).Value.Height), Projectile.scale, 0, 0);
 			spriteBatch.Draw(Request<Texture2D>(Texture + "Glow").Value, Owner.Center - Main.screenPosition, null, Color.White, Projectile.rotation, new Vector2(0, Request<Texture2D>(Texture).Value.Height), Projectile.scale, 0, 0);
 
-			float prog1 = Helper.SwoopEase((Charge - 12) / 23f);
-			float prog2 = Helper.SwoopEase((Charge - 17) / 18f);
+			float prog1 = Eases.SwoopEase((Charge - 12) / 23f);
+			float prog2 = Eases.SwoopEase((Charge - 17) / 18f);
 
 			float pow = 0;
 

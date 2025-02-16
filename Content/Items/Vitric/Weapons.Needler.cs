@@ -74,11 +74,11 @@ namespace StarlightRiver.Content.Items.Vitric
 			recipe.Register();
 		}
 	}
-	
+
 	public class NeedlerHoldout : ModProjectile
 	{
 		public bool updateVelocity = true;
-		public ref float Timer => ref Projectile.ai[0];	
+		public ref float Timer => ref Projectile.ai[0];
 		public ref float UseTime => ref Projectile.ai[1];
 		public bool CanHold => Owner.channel && !Owner.CCed && !Owner.noItems;
 		public Vector2 ArmPosition => Owner.RotatedRelativePoint(Owner.MountedCenter, true) + new Vector2(16f, -4f * Owner.direction).RotatedBy(Projectile.velocity.ToRotation());
@@ -174,7 +174,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
-			
+
 			return false;
 		}
 
@@ -183,7 +183,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		/// </summary>
 		private void Shoot()
 		{
-			Helper.PlayPitched("Guns/SMG2", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
+			SoundHelper.PlayPitched("Guns/SMG2", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
 
 			if (Main.myPlayer == Projectile.owner)
 				Projectile.NewProjectile(Projectile.GetSource_FromThis(), BarrelPosition, Projectile.velocity.RotatedByRandom(0.15f) * Owner.HeldItem.shootSpeed, ModContent.ProjectileType<NeedlerProj>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
@@ -305,7 +305,6 @@ namespace StarlightRiver.Content.Items.Vitric
 					}
 
 					NPC target = Main.npc[enemyID];
-					
 
 					if (!target.active)
 						Projectile.Kill();
@@ -384,16 +383,15 @@ namespace StarlightRiver.Content.Items.Vitric
 					target.GetGlobalNPC<NeedlerNPC>().ProcExplode(Projectile.Center, Projectile.damage, Projectile.owner);
 			}
 
-			if (Helper.IsFleshy(target))
+			if (NPCHelper.IsFleshy(target))
 			{
-				Helper.PlayPitched("Impacts/StabFleshy", 0.25f, Main.rand.NextFloat(-0.05f, 0.05f), Projectile.Center);
+				SoundHelper.PlayPitched("Impacts/StabFleshy", 0.25f, Main.rand.NextFloat(-0.05f, 0.05f), Projectile.Center);
 			}
 			else
 			{
-				Helper.PlayPitched("Impacts/StabTiny", 0.25f, Main.rand.NextFloat(-0.05f, 0.05f), Projectile.Center);
+				SoundHelper.PlayPitched("Impacts/StabTiny", 0.25f, Main.rand.NextFloat(-0.05f, 0.05f), Projectile.Center);
 			}
 
-			
 			for (int i = 0; i < 2; i++)
 			{
 				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<PixelatedGlow>(),
@@ -425,7 +423,7 @@ namespace StarlightRiver.Content.Items.Vitric
 						velo, 0, new Color(255, 100, 20, 0), 0.05f);
 				}
 
-				Helper.PlayPitched("Impacts/IceHit", 0.75f, Main.rand.NextFloat(-0.05f, 0.05f), Projectile.Center);
+				SoundHelper.PlayPitched("Impacts/IceHit", 0.75f, Main.rand.NextFloat(-0.05f, 0.05f), Projectile.Center);
 			}
 
 			return false;
@@ -506,11 +504,11 @@ namespace StarlightRiver.Content.Items.Vitric
 			{
 				Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-				Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+				Matrix world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 
 				// !!! IMPORTANT WHEN PIXELIZING, MAKE SURE TO USE Main.GameViewMatrix.EffectMatrix IMPORTANT !!!
 
-				Matrix view = Main.GameViewMatrix.EffectMatrix; 
+				Matrix view = Main.GameViewMatrix.EffectMatrix;
 				Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
@@ -570,7 +568,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				float rot = Main.rand.NextFloat(0, 6.28f);
 
 				//Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedBy(rot) * Radius, ModContent.DustType<PixelatedGlow>(),
-					//Vector2.One.RotatedBy(rot) * 0.5f, 0, Color.Lerp(new Color(255, 200, 50, 0), new Color(255, 50, 20, 0), EaseBuilder.EaseQuinticOut.Ease(Progress)), Main.rand.NextFloat(0.2f, 0.3f));
+				//Vector2.One.RotatedBy(rot) * 0.5f, 0, Color.Lerp(new Color(255, 200, 50, 0), new Color(255, 50, 20, 0), EaseBuilder.EaseQuinticOut.Ease(Progress)), Main.rand.NextFloat(0.2f, 0.3f));
 
 				Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedBy(rot) * Radius, DustID.Torch,
 					Vector2.One.RotatedBy(rot) * 0.5f, 0, default, Main.rand.NextFloat(1.5f, 3f)).noGravity = true;
@@ -644,7 +642,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			{
 				Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-				Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+				Matrix world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 				Matrix view = Main.GameViewMatrix.EffectMatrix;
 				Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
@@ -702,7 +700,7 @@ namespace StarlightRiver.Content.Items.Vitric
 	{
 		public int explodeTimer;
 		public int explodePlayerID = -1; // simple for projectile ownership
-		private int explodeDamage;		
+		private int explodeDamage;
 		public override bool InstancePerEntity => true;
 		public override void AI(NPC npc)
 		{

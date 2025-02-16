@@ -370,13 +370,13 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			for (int k = 0; k < Main.rand.Next(30, 40); k++)
 			{
 				float rot = Main.rand.NextFloat(6.28f);
-				Helper.NewItemPerfect(NPC.Center + Vector2.UnitX.RotatedBy(rot) * 120, Vector2.UnitX.RotatedBy(rot) * Main.rand.NextFloat(5, 20), ItemType<VitricOre>());
+				ItemHelper.NewItemPerfect(NPC.Center + Vector2.UnitX.RotatedBy(rot) * 120, Vector2.UnitX.RotatedBy(rot) * Main.rand.NextFloat(5, 20), ItemType<VitricOre>());
 			}
 
 			for (int k = 0; k < Main.rand.Next(15, 25); k++)
 			{
 				float rot = Main.rand.NextFloat(6.28f);
-				Helper.NewItemPerfect(NPC.Center + Vector2.UnitX.RotatedBy(rot) * 120, Vector2.UnitX.RotatedBy(rot) * Main.rand.NextFloat(5, 20), ItemType<SandstoneChunk>());
+				ItemHelper.NewItemPerfect(NPC.Center + Vector2.UnitX.RotatedBy(rot) * 120, Vector2.UnitX.RotatedBy(rot) * Main.rand.NextFloat(5, 20), ItemType<SandstoneChunk>());
 			}
 		}
 
@@ -386,7 +386,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				return;
 
 			if (pain > 0)
-				painDirection += Helper.CompareAngle((NPC.Center - player.Center).ToRotation(), painDirection) * Math.Min(damageDone / 200f, 0.5f);
+				painDirection += GeometryHelper.CompareAngle((NPC.Center - player.Center).ToRotation(), painDirection) * Math.Min(damageDone / 200f, 0.5f);
 			else
 				painDirection = (NPC.Center - player.Center).ToRotation();
 
@@ -402,7 +402,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				return;
 
 			if (pain > 0)
-				painDirection += Helper.CompareAngle((NPC.Center - projectile.Center).ToRotation(), painDirection) * Math.Min(damageDone / 200f, 0.5f);
+				painDirection += GeometryHelper.CompareAngle((NPC.Center - projectile.Center).ToRotation(), painDirection) * Math.Min(damageDone / 200f, 0.5f);
 			else
 				painDirection = (NPC.Center - projectile.Center).ToRotation();
 
@@ -809,9 +809,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					speed *= 2;
 
 				if (twistTarget == 1)
-					NPC.rotation += Helper.CompareAngle(targetRot, NPC.rotation) * speed;
+					NPC.rotation += GeometryHelper.CompareAngle(targetRot, NPC.rotation) * speed;
 				if (twistTarget == -1)
-					NPC.rotation += Helper.CompareAngle(targetRot + 3.14f, NPC.rotation) * speed;
+					NPC.rotation += GeometryHelper.CompareAngle(targetRot + 3.14f, NPC.rotation) * speed;
 			}
 			else
 			{

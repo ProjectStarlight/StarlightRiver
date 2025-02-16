@@ -78,7 +78,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Main.spriteBatch.End();
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
@@ -148,7 +148,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		private Trail trail;
 
 		public float TimeFade => 1 - Projectile.timeLeft / 20f;
-		public float Radius => Helper.BezierEase((20 - Projectile.timeLeft) / 20f) * Projectile.ai[0];
+		public float Radius => Eases.BezierEase((20 - Projectile.timeLeft) / 20f) * Projectile.ai[0];
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -184,7 +184,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
-			return Helper.CheckCircularCollision(Projectile.Center, (int)Radius + 75, targetHitbox);
+			return CollisionHelper.CheckCircularCollision(Projectile.Center, (int)Radius + 75, targetHitbox);
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -233,7 +233,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

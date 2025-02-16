@@ -181,7 +181,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 
 			if (positionTargets.Count > 0)
 			{
-				float xPositionToBe = Helper.Centeroid(positionTargets).X; //Calculate middle of valid enemies
+				float xPositionToBe = GeometryHelper.Centeroid(positionTargets).X; //Calculate middle of valid enemies
 
 				if (Math.Abs(xPositionToBe - NPC.Center.X) > 20)
 					direction = Math.Sign(xPositionToBe - NPC.Center.X);
@@ -293,7 +293,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 		{
 			Effect effect = Terraria.Graphics.Effects.Filters.Scene["LightningTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

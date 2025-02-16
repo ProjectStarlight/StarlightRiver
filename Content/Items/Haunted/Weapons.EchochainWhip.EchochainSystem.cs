@@ -93,7 +93,7 @@ namespace StarlightRiver.Content.Items.Haunted
 
 				Dust.NewDustPerfect(n.Center, ModContent.DustType<EchochainBurstDust>(), Vector2.Zero, 0, default, Main.rand.NextFloat(0.5f, 0.75f));
 
-				Helper.PlayPitched("Magic/Shadow1", 0.5f, 0f, npc.Center);
+				SoundHelper.PlayPitched("Magic/Shadow1", 0.5f, 0f, npc.Center);
 				CameraSystem.shake += 2;
 			}, true);
 
@@ -140,7 +140,7 @@ namespace StarlightRiver.Content.Items.Haunted
 
 				Dust.NewDustPerfect(n.Center, ModContent.DustType<EchochainBurstDust>(), Vector2.Zero, 0, default, Main.rand.NextFloat(0.5f, 0.75f));
 
-				Helper.PlayPitched("Magic/Shadow1", 0.5f, 0f, npc.Center);
+				SoundHelper.PlayPitched("Magic/Shadow1", 0.5f, 0f, npc.Center);
 
 			}, true);
 
@@ -446,7 +446,7 @@ namespace StarlightRiver.Content.Items.Haunted
 			spriteBatch.End();
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.ZoomMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

@@ -163,7 +163,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			{
 				var toCheck = Vector2.Lerp(NPC.Center, Target.Center, k / checks);
 
-				if (Helpers.Helper.PointInTile(toCheck))
+				if (Helpers.CollisionHelper.PointInTile(toCheck))
 					return false;
 			}
 

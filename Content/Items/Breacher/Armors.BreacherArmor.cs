@@ -393,7 +393,7 @@ namespace StarlightRiver.Content.Items.Breacher
 						if (Main.myPlayer == Projectile.owner)
 							Projectile.netUpdate = true;
 
-						Helper.PlayPitched("Effects/Scan", 0.5f, 0);
+						SoundHelper.PlayPitched("Effects/Scan", 0.5f, 0);
 						target = testtarget;
 						ScanTimer--;
 						rotations = new List<float>();
@@ -442,7 +442,7 @@ namespace StarlightRiver.Content.Items.Breacher
 					CameraSystem.shake = (int)MathHelper.Lerp(0, 2, 1 - (float)ScanTimer / 150f);
 
 				if (ScanTimer == 125)
-					Helper.PlayPitched("AirstrikeIncoming", 0.6f, 0);
+					SoundHelper.PlayPitched("AirstrikeIncoming", 0.6f, 0);
 
 				ScanTimer--;
 			}
@@ -457,7 +457,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			}
 
 			if (ScanTimer == 100)
-				Helper.PlayPitched("Effects/ScanComplete", 0.5f, 0);
+				SoundHelper.PlayPitched("Effects/ScanComplete", 0.5f, 0);
 
 			if (ScanTimer > 100)
 			{
@@ -634,7 +634,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
@@ -648,7 +648,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		private void Explode(NPC target)
 		{
-			Helper.PlayPitched("Impacts/AirstrikeImpact", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
+			SoundHelper.PlayPitched("Impacts/AirstrikeImpact", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
 
 			for (int i = 0; i < 5; i++)
 			{
@@ -764,7 +764,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

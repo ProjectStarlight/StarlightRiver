@@ -154,9 +154,9 @@ namespace StarlightRiver.Content.Items.Misc
 				}
 
 				if (currentAttack == PanAttack.Crit)
-					Helper.PlayPitched("Effects/HeavyWhoosh", 0.7f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
+					SoundHelper.PlayPitched("Effects/HeavyWhoosh", 0.7f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 				else
-					Helper.PlayPitched("Effects/HeavyWhooshShort", 0.7f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
+					SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 0.7f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 
 				startRotation = endRotation;
 
@@ -279,7 +279,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			struckNPCs.Add(target);
-			Helper.PlayPitched("Impacts/PanBonkSmall", 0.5f, Main.rand.NextFloat(-0.2f, 0.2f), target.Center);
+			SoundHelper.PlayPitched("Impacts/PanBonkSmall", 0.5f, Main.rand.NextFloat(-0.2f, 0.2f), target.Center);
 			CameraSystem.shake += 2;
 		}
 
@@ -449,7 +449,7 @@ namespace StarlightRiver.Content.Items.Misc
 		private void Bonk(Vector2 position)
 		{
 			Projectile.friendly = false;
-			Helper.PlayPitched("Impacts/PanBonkBig", 0.7f, Main.rand.NextFloat(-0.2f, 0.2f), position);
+			SoundHelper.PlayPitched("Impacts/PanBonkBig", 0.7f, Main.rand.NextFloat(-0.2f, 0.2f), position);
 
 			CameraSystem.shake += 10;
 			for (int j = 0; j < 17; j++)

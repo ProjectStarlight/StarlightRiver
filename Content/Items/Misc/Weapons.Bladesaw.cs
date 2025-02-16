@@ -256,7 +256,7 @@ namespace StarlightRiver.Content.Items.Misc
 			for (int i = 0; i < (target.type == NPCID.Bunny ? 35 : 5); i++)
 			{
 				Vector2 directionTo = target.DirectionTo(Owner.Center);
-				if (!Helper.IsFleshy(target))
+				if (!NPCHelper.IsFleshy(target))
 				{
 					Dust.NewDustPerfect(target.Center + directionTo * 10 + new Vector2(0, 35), DustType<Dusts.BuzzSpark>(), directionTo.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f) + 3.14f) * -Main.rand.NextFloat(0.5f, 5f), 0, new Color(255, 230, 60) * 0.8f, 1.6f);
 				}
@@ -275,7 +275,7 @@ namespace StarlightRiver.Content.Items.Misc
 				Dust.NewDustPerfect(target.Center + directionTo * 10, DustType<Dusts.BuzzsawSteam>(), Vector2.UnitY * -2f, 25, default, 0.5f);
 			}
 
-			Helper.PlayPitched("Impacts/StabTiny", 1.2f, Main.rand.NextFloat(-0.3f, 0.3f), target.Center);
+			SoundHelper.PlayPitched("Impacts/StabTiny", 1.2f, Main.rand.NextFloat(-0.3f, 0.3f), target.Center);
 			CameraSystem.shake += 2;
 
 			ShreddedNPC globalNPC = target.GetGlobalNPC<ShreddedNPC>();

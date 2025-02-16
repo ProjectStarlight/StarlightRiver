@@ -183,8 +183,8 @@ namespace StarlightRiver.Content.Items.Misc
 			if (pitch >= 1)
 				pitch = 1;
 
-			Helper.PlayPitched("Effects/HeavyWhoosh", 1, pitch, Owner.MountedCenter);
-			Helper.PlayPitched("GlassMiniboss/GlassShatter", 1, pitch, Owner.MountedCenter);
+			SoundHelper.PlayPitched("Effects/HeavyWhoosh", 1, pitch, Owner.MountedCenter);
+			SoundHelper.PlayPitched("GlassMiniboss/GlassShatter", 1, pitch, Owner.MountedCenter);
 
 			if (Item.UseSound.HasValue)
 				Terraria.Audio.SoundEngine.PlaySound(Item.UseSound.Value, Owner.MountedCenter);
@@ -289,7 +289,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Vector2 start = Owner.Center;
 			Vector2 end = Owner.Center + Vector2.UnitX.RotatedBy(rot) * (Length * Projectile.scale + holdOut) * 1.15f;
 
-			if (freeze <= 1 && Helper.CheckLinearCollision(start, end, targetHitbox, out Vector2 colissionPoint))
+			if (freeze <= 1 && CollisionHelper.CheckLinearCollision(start, end, targetHitbox, out Vector2 colissionPoint))
 			{
 				for (int k = 0; k < 20; k++)
 				{
@@ -309,7 +309,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			Helper.PlayPitched(Helper.IsFleshy(target) ? "Impacts/GoreLight" : "Impacts/Clink", 1, -Main.rand.NextFloat(0.25f), Owner.Center);
+			SoundHelper.PlayPitched(NPCHelper.IsFleshy(target) ? "Impacts/GoreLight" : "Impacts/Clink", 1, -Main.rand.NextFloat(0.25f), Owner.Center);
 			CameraSystem.shake += 4;
 
 			if (ComboState == 2 && target.defense > 0)
@@ -397,7 +397,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
@@ -480,7 +480,7 @@ namespace StarlightRiver.Content.Items.Misc
 				storedScale = Projectile.scale;
 
 			if (Projectile.timeLeft % 40 == 0 && Projectile.friendly)
-				Helper.PlayPitched("Effects/HeavyWhoosh", 0.45f, 0.5f, Projectile.Center);
+				SoundHelper.PlayPitched("Effects/HeavyWhoosh", 0.45f, 0.5f, Projectile.Center);
 
 			if (Progress < 0.2f)
 			{
@@ -530,7 +530,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
-			return Helper.CheckCircularCollision(Projectile.Center, (int)(Length * Projectile.scale) / 2, targetHitbox);
+			return CollisionHelper.CheckCircularCollision(Projectile.Center, (int)(Length * Projectile.scale) / 2, targetHitbox);
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -545,7 +545,7 @@ namespace StarlightRiver.Content.Items.Misc
 				}
 			}
 
-			Helper.PlayPitched(Helper.IsFleshy(target) ? "Impacts/GoreLight" : "Impacts/Clink", 1, -Main.rand.NextFloat(0.25f), Owner.Center);
+			SoundHelper.PlayPitched(NPCHelper.IsFleshy(target) ? "Impacts/GoreLight" : "Impacts/Clink", 1, -Main.rand.NextFloat(0.25f), Owner.Center);
 			CameraSystem.shake += 4;
 
 			target.velocity += Vector2.Normalize(target.Center - Projectile.Center) * Projectile.knockBack * 2 * target.knockBackResist;
@@ -616,7 +616,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

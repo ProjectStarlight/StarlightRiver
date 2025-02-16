@@ -27,16 +27,16 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			get
 			{
-				var rad = 0.8f;
+				float rad = 0.8f;
 
 				if (Main.GameUpdateCount % 300 > 200)
 				{
-					rad = 0.8f - 0.4f * Helpers.Helper.BezierEase((Main.GameUpdateCount % 300 - 200) / 80f);
+					rad = 0.8f - 0.4f * Helpers.Eases.BezierEase((Main.GameUpdateCount % 300 - 200) / 80f);
 				}
 
 				if (Main.GameUpdateCount % 300 > 280)
 				{
-					rad = 0.4f + 0.4f * Helpers.Helper.SwoopEase((Main.GameUpdateCount % 300 - 280) / 20f);
+					rad = 0.4f + 0.4f * Helpers.Eases.SwoopEase((Main.GameUpdateCount % 300 - 280) / 20f);
 				}
 
 				return rad;
@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (!FightActive)
 			{
-				var target = NPC.Center + new Vector2(0, 200);
+				Vector2 target = NPC.Center + new Vector2(0, 200);
 
 				DeadBrain.DrawBrainSegments(Main.spriteBatch, NPC, target - Main.screenPosition, Lighting.GetColor((target / 16).ToPoint()), 0, 1, 1, radiusOverride: FakeBrainRadius);
 
@@ -134,7 +134,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			Effect effect = Filters.Scene["RepeatingChain"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
@@ -293,7 +293,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			for (int k = 0; k < 10; k++)
 			{
 				petalShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f + k * 0.1f);
-				float thisScale = Helper.SwoopEase(Math.Clamp((scale - 0.3f) / 0.7f, 0, 1));
+				float thisScale = Eases.SwoopEase(Math.Clamp((scale - 0.3f) / 0.7f, 0, 1));
 				float rot = baseRot + k / 10f * 6.28f + (k % 2 == 0 ? 0.1f : -0.1f) - 0.17f;
 				spriteBatch.Draw(Assets.Bosses.BrainRedux.Frond.Value, pos + Vector2.UnitX.RotatedBy(rot) * 42 * thisScale * NPC.scale, null, Color.White, rot, bigOrigin, thisScale * NPC.scale * new Vector2(1, 0.5f), 0, 0);
 			}
@@ -305,7 +305,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			for (int k = 0; k < 5; k++)
 			{
 				petalShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * -0.01f + k * 0.2f);
-				float thisScale = Helper.SwoopEase(Math.Clamp((scale - 0.15f) / 0.7f, 0, 1));
+				float thisScale = Eases.SwoopEase(Math.Clamp((scale - 0.15f) / 0.7f, 0, 1));
 				float finalScale = thisScale + (float)Math.Sin(Main.GameUpdateCount * 0.1f + k * 0.25f) * 0.025f;
 				float rot = baseRot + k / 5f * 6.28f;
 				spriteBatch.Draw(smallPetal, pos + Vector2.UnitX.RotatedBy(rot) * 48 * thisScale * NPC.scale, null, Color.White, rot, smallOrigin, finalScale * NPC.scale, 0, 0);
@@ -318,7 +318,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			for (int k = 0; k < 5; k++)
 			{
 				petalShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f + k * 0.2f);
-				float thisScale = Helper.SwoopEase(Math.Clamp(scale / 0.7f, 0, 1));
+				float thisScale = Eases.SwoopEase(Math.Clamp(scale / 0.7f, 0, 1));
 				float finalScale = thisScale + (float)Math.Sin(Main.GameUpdateCount * 0.1f + k * -0.25f) * 0.05f;
 				float rot = baseRot + k / 5f * 6.28f + 6.28f / 10f;
 				spriteBatch.Draw(bigPetal, pos + Vector2.UnitX.RotatedBy(rot) * 32 * thisScale * NPC.scale, null, Color.White, rot, bigOrigin, finalScale * NPC.scale, 0, 0);
@@ -495,10 +495,10 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				timeToPass = 150 - (time - 450);
 
 			if (time > 190 && time <= 260)
-				NPC.scale = 1f - Helper.BezierEase((time - 190) / 70f) * 0.4f;
+				NPC.scale = 1f - Eases.BezierEase((time - 190) / 70f) * 0.4f;
 
 			if (time > 500 && time < 550)
-				NPC.scale = 0.6f + Helper.BezierEase((time - 500) / 50f) * 0.4f;
+				NPC.scale = 0.6f + Eases.BezierEase((time - 500) / 50f) * 0.4f;
 
 			DrawHeartToFlower(sb, timeToPass, screenPos);
 		}

@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			if (proj.CountsAsClass(DamageClass.Melee) && info.Crit && instance.cooldown <= 0)
 			{
-				Helper.PlayPitched("Magic/FrostHit", 0.75f, Main.rand.NextFloat(-0.05f, 0.05f), target.Center);
+				SoundHelper.PlayPitched("Magic/FrostHit", 0.75f, Main.rand.NextFloat(-0.05f, 0.05f), target.Center);
 				Projectile.NewProjectile(player.GetSource_OnHit(target), target.Center, Vector2.Zero, ModContent.ProjectileType<FrostExplosion>(), (int)(damageDone * 0.75f), info.Knockback * 0.25f, player.whoAmI);
 				instance.cooldown = 60;
 			}
@@ -58,7 +58,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			if (Item.CountsAsClass(DamageClass.Melee) && info.Crit && instance.cooldown <= 0)
 			{
-				Helper.PlayPitched("Magic/FrostHit", 0.75f, Main.rand.NextFloat(-0.05f, 0.05f), target.Center);
+				SoundHelper.PlayPitched("Magic/FrostHit", 0.75f, Main.rand.NextFloat(-0.05f, 0.05f), target.Center);
 				Projectile.NewProjectile(player.GetSource_OnHit(target), target.Center, Vector2.Zero, ModContent.ProjectileType<FrostExplosion>(), (int)(damageDone * 0.75f), info.Knockback * 0.25f, player.whoAmI);
 				instance.cooldown = 60;
 			}
@@ -134,7 +134,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
-			return Helper.CheckCircularCollision(Projectile.Center, (int)Radius + 50, targetHitbox);
+			return CollisionHelper.CheckCircularCollision(Projectile.Center, (int)Radius + 50, targetHitbox);
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -187,7 +187,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

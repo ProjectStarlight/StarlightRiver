@@ -162,7 +162,7 @@ namespace StarlightRiver.Content.Items.Misc
 					Projectile.NewProjectile(Terraria.Entity.InheritSource(Projectile), Projectile.Center + direction * 25, direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f)) * Main.rand.NextFloat(15, 20), Ammo, Projectile.damage, Projectile.knockBack, Owner.whoAmI);
 				}
 
-				Helper.PlayPitched("Guns/Scrapshot", 0.4f, 0, Projectile.Center);
+				SoundHelper.PlayPitched("Guns/Scrapshot", 0.4f, 0, Projectile.Center);
 
 				float spread = 0.4f;
 

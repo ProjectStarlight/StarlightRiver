@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Tiles.Misc
 			Vector2 vel = (-Vector2.UnitY * 8).RotatedBy(Main.rand.NextFloat(-1f, 1f));
 			Main.npc[NPC.NewNPC(new EntitySource_WorldEvent(), i * 16, j * 16, Main.rand.NextBool(350) ? NPCID.GoldMouse : NPCID.Mouse)].velocity = vel;
 
-			Helper.PlayPitched(SoundID.NPCDeath4, 0.3f, Main.rand.NextFloat(-0.1f, 0.1f));
+			SoundHelper.PlayPitched(SoundID.NPCDeath4, 0.3f, Main.rand.NextFloat(-0.1f, 0.1f));
 			return true;
 		}
 

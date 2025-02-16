@@ -27,7 +27,7 @@ namespace StarlightRiver.Core
 		public static readonly EaseFunction EaseCircularIn = new PolynomialEase((float x) => 1f - (float)Math.Sqrt(1.0 - Math.Pow(x, 2)));
 		public static readonly EaseFunction EaseCircularOut = new PolynomialEase((float x) => (float)Math.Sqrt(1.0 - Math.Pow(x - 1.0, 2)));
 		public static readonly EaseFunction EaseCircularInOut = new PolynomialEase((float x) => (x < 0.5f) ? (1f - (float)Math.Sqrt(1.0 - Math.Pow(x * 2, 2))) * 0.5f : (float)((Math.Sqrt(1.0 - Math.Pow(-2 * x + 2, 2)) + 1) * 0.5));
-		
+
 		public static readonly EaseFunction EaseBackIn = new PolynomialEase((float x) =>
 		{
 			float c1 = 1.70158f;
@@ -86,7 +86,7 @@ namespace StarlightRiver.Core
 
 		public CubicBezierEase(float p1x, float p1y, float p2x, float p2y)
 		{
-			fun = Helper.CubicBezier(p1x, p1y, p2x, p2y);
+			fun = Eases.CubicBezier(p1x, p1y, p2x, p2y);
 		}
 
 		public override float Ease(float time)

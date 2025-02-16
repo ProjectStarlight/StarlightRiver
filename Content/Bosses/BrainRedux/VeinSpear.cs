@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				foreach (Player player in Main.ActivePlayers)
 				{
-					if (Helpers.Helper.CheckLinearCollision(Thinker.Center, Projectile.Center, player.Hitbox, out Vector2 collision))
+					if (Helpers.CollisionHelper.CheckLinearCollision(Thinker.Center, Projectile.Center, player.Hitbox, out Vector2 collision))
 					{
 						int mult = Main.masterMode ? 6 : Main.expertMode ? 4 : 1;
 						player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " played the idiot harp..."), Projectile.damage * mult, 0);
@@ -90,7 +90,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				hit = true;
 				Projectile.velocity *= 0;
-				Helpers.Helper.PlayPitched("Impacts/StabFleshy", 1f, -0.5f, Projectile.Center);
+				Helpers.SoundHelper.PlayPitched("Impacts/StabFleshy", 1f, -0.5f, Projectile.Center);
 			}
 
 			return false;

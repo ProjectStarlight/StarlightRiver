@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					Dust.NewDustPerfect(ThisThinker.NPC.Center, ModContent.DustType<Dusts.GraymatterDust>(), Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), 0, default, Main.rand.NextFloat(0.5f, 1f));
 				}
 
-				Helpers.Helper.PlayPitched("Impacts/StoneStrike", 1, 2f, ThisThinker.NPC.Center);
+				Helpers.SoundHelper.PlayPitched("Impacts/StoneStrike", 1, 2f, ThisThinker.NPC.Center);
 
 				extraChunkRadius = ThisThinker.FakeBrainRadius;
 			}
@@ -94,7 +94,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (Timer == 120)
 			{
-				Helpers.Helper.PlayPitched("Impacts/StabFleshy", 1f, -0.8f, NPC.Center);
+				Helpers.SoundHelper.PlayPitched("Impacts/StabFleshy", 1f, -0.8f, NPC.Center);
 			}
 
 			// Chain needs to be linked after this point
@@ -105,8 +105,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (Timer > 160 && Timer < 360)
 			{
 				float prog = (Timer - 160) / 200f;
-				prog = Helpers.Helper.BezierEase(prog);
-				NPC.Center = Vector2.Lerp(savedPos, thinker.Center + new Vector2(200, -200), Helpers.Helper.SwoopEase(prog));
+				prog = Helpers.Eases.BezierEase(prog);
+				NPC.Center = Vector2.Lerp(savedPos, thinker.Center + new Vector2(200, -200), Helpers.Eases.SwoopEase(prog));
 			}
 
 			if (Timer > 160 && Timer <= 240)
@@ -120,7 +120,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			{
 				if (IsInArena(Main.LocalPlayer))
 				{
-					CameraSystem.MoveCameraOut(200, thinker.Center, (a, b, c) => Vector2.Lerp(a, b, Helpers.Helper.SwoopEase(c)));
+					CameraSystem.MoveCameraOut(200, thinker.Center, (a, b, c) => Vector2.Lerp(a, b, Helpers.Eases.SwoopEase(c)));
 					ZoomHandler.SetZoomAnimation(Main.GameZoomTarget, 200);
 				}
 			}
@@ -132,7 +132,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (Timer > 430 && Timer < 480)
 			{
-				shieldOpacity = Helpers.Helper.SwoopEase((Timer - 430) / 50f) * 0.4f;
+				shieldOpacity = Helpers.Eases.SwoopEase((Timer - 430) / 50f) * 0.4f;
 			}
 
 			// Neurysms
@@ -152,7 +152,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 					if (Timer >= 360 && Timer <= 420)
 					{
-						float prog = Helpers.Helper.BezierEase((Timer - 360) / 60f);
+						float prog = Helpers.Eases.BezierEase((Timer - 360) / 60f);
 						var center = Vector2.Lerp(thinker.Center, NPC.Center, prog);
 						neurisms[k].Center = center + Vector2.UnitX.RotatedBy(rot + prog * 1.57f) * (200 - 70f * prog);
 						(neurisms[k].ModNPC as Neurysm).State = 0;
@@ -220,7 +220,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						Dust.NewDust(weakpoint.position, weakpoint.width, weakpoint.height, DustID.FireworksRGB, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(-5, 5), 0, new Color(1f, 0.5f, 0.6f));
 				}
 
-				Helpers.Helper.PlayPitched("Impacts/GoreHeavy", 1f, -0.25f, weakpoint.Center);
+				Helpers.SoundHelper.PlayPitched("Impacts/GoreHeavy", 1f, -0.25f, weakpoint.Center);
 
 				weakpoint.active = false;
 				weakpoint = null;
@@ -230,7 +230,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			// Shield sound
 			if (Timer == 120)
-				Helpers.Helper.PlayPitched("Magic/Shadow1", 0.7f, -0.25f, NPC.Center);
+				Helpers.SoundHelper.PlayPitched("Magic/Shadow1", 0.7f, -0.25f, NPC.Center);
 
 			// Dust for shield
 			if (Timer > 100 && Timer < 140)
@@ -263,7 +263,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					Dust.NewDustPerfect(ThisThinker.NPC.Center, ModContent.DustType<Dusts.GraymatterDust>(), Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), 0, default, Main.rand.NextFloat(0.8f, 1f));
 				}
 
-				Helpers.Helper.PlayPitched("Impacts/StoneStrike", 1, 2f, ThisThinker.NPC.Center);
+				Helpers.SoundHelper.PlayPitched("Impacts/StoneStrike", 1, 2f, ThisThinker.NPC.Center);
 			}
 
 			if (Timer == 260)
@@ -329,7 +329,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					Dust.NewDustPerfect(thinker.Center, ModContent.DustType<GraymatterDust>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(9), 0, default, Main.rand.NextFloat(1f, 4f));
 				}
 
-				Helpers.Helper.PlayPitched("Impacts/AirstrikeImpact", 1, 0, thinker.Center);
+				Helpers.SoundHelper.PlayPitched("Impacts/AirstrikeImpact", 1, 0, thinker.Center);
 
 				ThisThinker.platforms.ForEach(n => n.active = false);
 

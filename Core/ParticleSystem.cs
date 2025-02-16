@@ -87,10 +87,10 @@ namespace StarlightRiver.Core
 					float w = frame.Width / (float)texture.Width;
 					float h = frame.Height / (float)texture.Height;
 
-					verticies[4 * k + 0] = new(plane.TopLeft().RotatedBy(particle.Rotation, plane.Center.ToVector2()).Vec3(), particle.Color * particle.Alpha, new Vector2(x, y));
-					verticies[4 * k + 1] = new(plane.TopRight().RotatedBy(particle.Rotation, plane.Center.ToVector2()).Vec3(), particle.Color * particle.Alpha, new Vector2(x + w, y));
-					verticies[4 * k + 2] = new(plane.BottomLeft().RotatedBy(particle.Rotation, plane.Center.ToVector2()).Vec3(), particle.Color * particle.Alpha, new Vector2(x, y + h));
-					verticies[4 * k + 3] = new(plane.BottomRight().RotatedBy(particle.Rotation, plane.Center.ToVector2()).Vec3(), particle.Color * particle.Alpha, new Vector2(x + w, y + h));
+					verticies[4 * k + 0] = new(plane.TopLeft().RotatedBy(particle.Rotation, plane.Center.ToVector2()).ToVector3(), particle.Color * particle.Alpha, new Vector2(x, y));
+					verticies[4 * k + 1] = new(plane.TopRight().RotatedBy(particle.Rotation, plane.Center.ToVector2()).ToVector3(), particle.Color * particle.Alpha, new Vector2(x + w, y));
+					verticies[4 * k + 2] = new(plane.BottomLeft().RotatedBy(particle.Rotation, plane.Center.ToVector2()).ToVector3(), particle.Color * particle.Alpha, new Vector2(x, y + h));
+					verticies[4 * k + 3] = new(plane.BottomRight().RotatedBy(particle.Rotation, plane.Center.ToVector2()).ToVector3(), particle.Color * particle.Alpha, new Vector2(x + w, y + h));
 
 					indicies[6 * k + 0] = (short)(4 * k + 0);
 					indicies[6 * k + 1] = (short)(4 * k + 1);
@@ -133,7 +133,7 @@ namespace StarlightRiver.Core
 				};
 
 				Vector2 offset = anchorType == AnchorOptions.World ? Main.screenPosition : Vector2.Zero;
-				effect.World = Matrix.CreateTranslation(-offset.Vec3());
+				effect.World = Matrix.CreateTranslation(-offset.ToVector3());
 				effect.View = anchorType == AnchorOptions.UI ? Matrix.Identity : zoom;
 				effect.Projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

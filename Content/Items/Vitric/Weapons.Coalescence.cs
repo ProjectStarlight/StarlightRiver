@@ -132,7 +132,7 @@ namespace StarlightRiver.Content.Items.Vitric
 					if (Main.myPlayer == Projectile.owner)
 						Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.UnitX, ProjectileType<VitricBowShard>(), (int)(Projectile.damage * damageMult), 1, Projectile.owner, 0, 1);
 
-					Helper.PlayPitched("ImpactHeal", 0.6f, -0.2f);
+					SoundHelper.PlayPitched("ImpactHeal", 0.6f, -0.2f);
 				}
 
 				if (Main.myPlayer == Projectile.owner)
@@ -236,7 +236,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (input < start)
 				return 0;
 
-			return MathHelper.Clamp(Helper.BezierEase((input - start) / (end - start)), 0, 1);
+			return MathHelper.Clamp(Eases.BezierEase((input - start) / (end - start)), 0, 1);
 		}
 
 		private Vector2 PosRing(Vector2 center, float w, float h, float rot)
@@ -267,7 +267,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		private float TargetRotation => (targetPoint - startCenter).ToRotation();
 		private float TargetDistance => Vector2.Distance(targetPoint, startPoint);
 
-		Vector2 Midpoint => startPoint + Vector2.UnitX.RotatedBy(storedRotation - Helper.CompareAngle(storedRotation, TargetRotation) * 0.5f) * TargetDistance / 2f;
+		Vector2 Midpoint => startPoint + Vector2.UnitX.RotatedBy(storedRotation - GeometryHelper.CompareAngle(storedRotation, TargetRotation) * 0.5f) * TargetDistance / 2f;
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -457,7 +457,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 				if (mi.manaCharge >= 5)
 				{
-					Helper.PlayPitched("Magic/HolyCastShort", 1, 0, Projectile.Center);
+					SoundHelper.PlayPitched("Magic/HolyCastShort", 1, 0, Projectile.Center);
 
 					var d = Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Aurora>(), Vector2.Zero, 0, new Color(50, 150, 255), 1);
 					d.customData = 3f;

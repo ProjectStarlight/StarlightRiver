@@ -322,7 +322,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				{
 					NPC.velocity.X = NPC.spriteDirection * 17;
 					NPC.velocity.Y = -3;
-					Helper.PlayPitched("Effects/HeavyWhooshShort", Main.rand.NextFloat(0.2f, 0.3f), Main.rand.NextFloat(0.5f, 0.8f), NPC.Center);
+					SoundHelper.PlayPitched("Effects/HeavyWhooshShort", Main.rand.NextFloat(0.2f, 0.3f), Main.rand.NextFloat(0.5f, 0.8f), NPC.Center);
 				}
 			}
 		}
@@ -391,7 +391,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 					if (Math.Abs(NPC.Center.X - partner.Center.X) < 110 && !comboJumped)
 					{
-						NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Bottom, partner.Top + new Vector2(partner.spriteDirection * 15, 0), 0.1f, 120, 350);
+						NPC.velocity = GeometryHelper.GetArcVel(NPC.Bottom, partner.Top + new Vector2(partner.spriteDirection * 15, 0), 0.1f, 120, 350);
 						comboJumped = true;
 
 					}
@@ -412,7 +412,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 							{
 								comboDirection = NPC.spriteDirection;
 								partner.velocity.X = -1 * comboDirection;
-								NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Center, Target.Center + new Vector2(NPC.spriteDirection * 15, 0), 0.2f, 120, 250);
+								NPC.velocity = GeometryHelper.GetArcVel(NPC.Center, Target.Center + new Vector2(NPC.spriteDirection * 15, 0), 0.2f, 120, 250);
 								NPC.velocity.X *= 2f;
 								unboundRotation = -6.28f * NPC.spriteDirection * 0.95f;
 								comboJumpedTwice = true;

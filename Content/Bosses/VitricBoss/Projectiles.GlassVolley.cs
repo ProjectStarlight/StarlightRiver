@@ -90,7 +90,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			Projectile.rotation = Projectile.velocity.ToRotation() + 1.58f;
 
-			Color color2 = Helpers.Helper.MoltenVitricGlow(MathHelper.Min(600 - Projectile.timeLeft, 120));
+			Color color2 = Helpers.CommonVisualEffects.HeatedToCoolColor(MathHelper.Min(600 - Projectile.timeLeft, 120));
 			var color = Color.Lerp(new Color(100, 145, 200), color2, color2.R / 255f);
 
 			if (Main.rand.NextBool(5))
@@ -114,7 +114,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Color color = Helpers.Helper.MoltenVitricGlow(MathHelper.Min(600 - Projectile.timeLeft, 120));
+			Color color = Helpers.CommonVisualEffects.HeatedToCoolColor(MathHelper.Min(600 - Projectile.timeLeft, 120));
 
 			Texture2D glow = Assets.Keys.GlowSoft.Value;
 
@@ -128,7 +128,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			Texture2D tell = Assets.Keys.GlowHarsh.Value;
 			Texture2D trail = Assets.GlowTrailOneEnd.Value;
-			float tellLength = Helpers.Helper.BezierEase(1 - (Projectile.timeLeft - 570) / 30f) * 18f;
+			float tellLength = Helpers.Eases.BezierEase(1 - (Projectile.timeLeft - 570) / 30f) * 18f;
 
 			color = Color.Lerp(new Color(150, 225, 255), color, color.R / 255f);
 			color.A = 0;

@@ -158,22 +158,22 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			if (timer > 40 && timer < 120)
 			{
 				float prog = (timer - 40) / 80f;
-				float opacity = Helpers.Helper.BezierEase(prog);
+				float opacity = Helpers.Eases.BezierEase(prog);
 
-				Color starColor = new Color(150, 220, 255) * Helpers.Helper.SwoopEase(prog);
+				Color starColor = new Color(150, 220, 255) * Helpers.Eases.SwoopEase(prog);
 				starColor.A = 0;
 
-				Color whiteColor = Color.White * Helpers.Helper.SwoopEase(prog);
+				Color whiteColor = Color.White * Helpers.Eases.SwoopEase(prog);
 				whiteColor.A = 0;
 
-				spriteBatch.Draw(star, pos, star.Frame(), starColor, 0, star.Size() / 2f, Helpers.Helper.SwoopEase(prog) * 1.5f, SpriteEffects.None, 0);
-				spriteBatch.Draw(star, pos, star.Frame(), whiteColor, 0, star.Size() / 2f, Helpers.Helper.SwoopEase(prog), SpriteEffects.None, 0);
+				spriteBatch.Draw(star, pos, star.Frame(), starColor, 0, star.Size() / 2f, Helpers.Eases.SwoopEase(prog) * 1.5f, SpriteEffects.None, 0);
+				spriteBatch.Draw(star, pos, star.Frame(), whiteColor, 0, star.Size() / 2f, Helpers.Eases.SwoopEase(prog), SpriteEffects.None, 0);
 			}
 
 			// Hold
 			if (timer >= 120 && timer <= 140)
 			{
-				float colorProg = Helpers.Helper.BezierEase((timer - 120) / 20f);
+				float colorProg = Helpers.Eases.BezierEase((timer - 120) / 20f);
 				var color = Color.Lerp(new Color(50, 120, 255), Color.White, colorProg);
 
 				Color starColor = Color.Lerp(new Color(150, 220, 255), Color.White, colorProg) * (1 - colorProg);

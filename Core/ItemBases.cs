@@ -56,7 +56,7 @@ namespace StarlightRiver.Core
 			if (Main.player[Projectile.owner].direction != 1)
 				spriteEffect = SpriteEffects.FlipVertically;
 
-			Vector2 pos = (Main.player[Projectile.owner].Center - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY)).PointAccur() + offset + direction * distance;
+			Vector2 pos = (Main.player[Projectile.owner].Center - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY)).Round() + offset + direction * distance;
 			Main.spriteBatch.Draw(tex, pos, null, lightColor, direction.ToRotation(), tex.Size() * 0.5f, Projectile.scale, spriteEffect, 0);
 
 			return SafePreDraw(Main.spriteBatch, lightColor);

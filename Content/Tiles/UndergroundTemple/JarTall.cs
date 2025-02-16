@@ -58,8 +58,8 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 				spriteBatch.End();
 				spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default);
 
-				spriteBatch.Draw(tex, (Helper.TileAdj + new Vector2(i, j)) * 16 - Main.screenPosition, Color.White);
-				spriteBatch.Draw(tex2, (Helper.TileAdj + new Vector2(i, j)) * 16 + new Vector2(-2, 0) - Main.screenPosition, Helper.IndicatorColorProximity(150, 300, dummy.Center));
+				spriteBatch.Draw(tex, new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange - Main.screenPosition, Color.White);
+				spriteBatch.Draw(tex2, new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange + new Vector2(-2, 0) - Main.screenPosition, CommonVisualEffects.IndicatorColorProximity(150, 300, dummy.Center));
 
 			}
 		}

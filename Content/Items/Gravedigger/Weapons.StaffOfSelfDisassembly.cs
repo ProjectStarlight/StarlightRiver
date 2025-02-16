@@ -213,7 +213,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				Projectile.velocity *= 0;
 
 				Vector2 diff = Vector2.Normalize(target - targetNPC.Center).RotatedBy(randomRot);
-				Projectile.Center = Vector2.Lerp(target, targetNPC.Center + diff * 200f, Helpers.Helper.SwoopEase(Timer / 60f));
+				Projectile.Center = Vector2.Lerp(target, targetNPC.Center + diff * 200f, Helpers.Eases.SwoopEase(Timer / 60f));
 			}
 
 			if (Timer == 60) //Dash!
@@ -248,7 +248,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				}
 			}
 
-			Helpers.Helper.PlayPitched("Impacts/ArrowFleshy", 1, Main.rand.NextFloat(-0.4f, 0.2f), Projectile.Center);
+			Helpers.SoundHelper.PlayPitched("Impacts/ArrowFleshy", 1, Main.rand.NextFloat(-0.4f, 0.2f), Projectile.Center);
 		}
 
 		public override bool PreDraw(ref Color lightColor)

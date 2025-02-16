@@ -73,7 +73,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 				for (int i = 0; i < 2; i++)
 				{
-					rotation += Helpers.Helper.RotationDifference(velocity.ToRotation(), rotation) * 0.175f;
+					rotation += Helpers.GeometryHelper.RotationDifference(velocity.ToRotation(), rotation) * 0.175f;
 					velocity = Vector2.UnitX.RotatedBy(rotation) * velocity.Length();
 
 					Vector2 direction = velocity.RotatedByRandom(0.1f);

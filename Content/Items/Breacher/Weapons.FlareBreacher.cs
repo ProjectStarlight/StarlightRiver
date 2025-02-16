@@ -68,12 +68,12 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public override void UseStyle(Player player, Rectangle heldItemFrame)
 		{
-			Helper.SetGunUseStyle(player, Item, shootDirection, -4f, new Vector2(34f, 26f), new Vector2(-20f, 4f));
+			CommonGunAnimations.SetGunUseStyle(player, Item, shootDirection, -4f, new Vector2(34f, 26f), new Vector2(-20f, 4f));
 		}
 
 		public override void UseItemFrame(Player player)
 		{
-			Helper.SetGunUseItemFrame(player, shootDirection, shootRotation, -0.35f);
+			CommonGunAnimations.SetGunUseItemFrame(player, shootDirection, shootRotation, -0.35f);
 		}
 
 		public override bool Shoot(Player Player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -92,7 +92,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			Dust.NewDustPerfect(barrelPos + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<FlareBreacherSmokeDust>(), velocity * 0.025f, 50, new Color(255, 50, 200), 0.1f);
 
 			Dust.NewDustPerfect(barrelPos + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<FlareBreacherSmokeDust>(), velocity * 0.05f, 150, new Color(255, 50, 200), 0.2f);
-			
+
 			Dust.NewDustPerfect(barrelPos + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<FlareBreacherSmokeDust>(), velocity * 0.05f, 150, new Color(100, 100, 100), 0.2f);
 
 			Dust.NewDustPerfect(barrelPos, ModContent.DustType<FlareBreacherStarDust>(), Vector2.Zero, 0, new Color(30, 230, 255, 0), 0.35f).customData = Player;
@@ -101,7 +101,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 			Dust.NewDustPerfect(flashPos, ModContent.DustType<FlareBreacherMuzzleFlashDust>(), Vector2.Zero, 0, default, 0.75f).rotation = velocity.ToRotation();
 
-			Helper.PlayPitched("Guns/FlareFire", 0.6f, Main.rand.NextFloat(-0.1f, 0.1f), position);
+			SoundHelper.PlayPitched("Guns/FlareFire", 0.6f, Main.rand.NextFloat(-0.1f, 0.1f), position);
 			CameraSystem.shake += 1;
 			Item.noUseGraphic = true;
 
@@ -174,7 +174,7 @@ namespace StarlightRiver.Content.Items.Breacher
 					if (!red)
 					{
 						red = true;
-						Helper.PlayPitched("Effects/Bleep", 1, 1 - explosionTimer / 100f, Projectile.Center);
+						SoundHelper.PlayPitched("Effects/Bleep", 1, 1 - explosionTimer / 100f, Projectile.Center);
 						blinkCounter = 0;
 					}
 					else
@@ -256,7 +256,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		private void Explode(NPC target)
 		{
-			Helper.PlayPitched("Guns/FlareBoom", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
+			SoundHelper.PlayPitched("Guns/FlareBoom", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 
 			if (!target.immortal && !target.dontTakeDamage)
 				target.SimpleStrikeNPC(Projectile.damage, 0);
@@ -382,7 +382,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			Effect effect = Filters.Scene["ShrapnelTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

@@ -320,7 +320,7 @@ namespace StarlightRiver.Content.Items.Misc
 					Dust.NewDustPerfect(Projectile.Center + new Vector2(0f, 40f), ModContent.DustType<Dusts.BuzzSpark>(), Projectile.velocity.RotatedByRandom(MathHelper.ToRadians(15f)) * Main.rand.NextFloat(-0.4f, -0.1f), 0, new Color(255, 255, 60) * 0.8f, 1.1f);
 				}
 
-				Helper.PlayPitched("Impacts/Clink", 0.50f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
+				SoundHelper.PlayPitched("Impacts/Clink", 0.50f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
 
 				catchDelay = 15;
 
@@ -341,7 +341,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (Overheated && !exploding && !exploded)
 			{
-				Helper.PlayPitched("Magic/FireCast", 0.75f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
+				SoundHelper.PlayPitched("Magic/FireCast", 0.75f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 				ShootDelay = 0;
 				Projectile.friendly = false;
 				Projectile.velocity *= -0.25f;
@@ -509,11 +509,11 @@ namespace StarlightRiver.Content.Items.Misc
 
 			updateVelo = true;
 
-			Helper.PlayPitched("Guns/RifleLight", 0.35f, Main.rand.NextFloat(-0.1f, 0.1f), pos);
+			SoundHelper.PlayPitched("Guns/RifleLight", 0.35f, Main.rand.NextFloat(-0.1f, 0.1f), pos);
 
 			if (shots >= 25)
 			{
-				Helper.PlayPitched("Guns/dry_fire", 0.7f, Main.rand.NextFloat(-0.1f, 0.1f), pos);
+				SoundHelper.PlayPitched("Guns/dry_fire", 0.7f, Main.rand.NextFloat(-0.1f, 0.1f), pos);
 
 				if (Main.rand.NextBool(3))
 					Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.Smoke>(), Vector2.UnitY * -2 + Projectile.rotation.ToRotationVector2() * Main.rand.NextFloat(1f, 5), 0, new Color(100, 55, 50) * 0.5f, Main.rand.NextFloat(0.35f, 0.5f));
@@ -730,7 +730,7 @@ namespace StarlightRiver.Content.Items.Misc
 					if (++explodingTimer >= 45)
 					{
 						ImpactSMGPlayer mp = Owner.GetModPlayer<ImpactSMGPlayer>();
-						Helper.PlayPitched("Magic/FireHit", 0.75f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
+						SoundHelper.PlayPitched("Magic/FireHit", 0.75f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 						CameraSystem.shake += 10 + mp.stacks;
 
 						for (int i = 0; i < 20 + mp.stacks * 6; i++)
@@ -914,7 +914,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
@@ -1026,7 +1026,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

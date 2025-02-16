@@ -67,7 +67,7 @@ namespace StarlightRiver.Content.Items.Crimson
 							return false;
 
 						Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, player.Center.DirectionTo(Main.MouseWorld), ModContent.ProjectileType<MyelinSlash>(), item.damage, item.knockBack, player.whoAmI);
-						Helper.PlayPitched("Effects/HeavyWhoosh", 0.3f, 1.6f, player.Center);
+						SoundHelper.PlayPitched("Effects/HeavyWhoosh", 0.3f, 1.6f, player.Center);
 
 						return false;
 					}
@@ -161,7 +161,7 @@ namespace StarlightRiver.Content.Items.Crimson
 
 			if (Projectile.timeLeft == 25)
 			{
-				Helper.PlayPitched("Effects/FancySwoosh", 0.7f, 0.5f, Projectile.Center);
+				SoundHelper.PlayPitched("Effects/FancySwoosh", 0.7f, 0.5f, Projectile.Center);
 			}
 
 			Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation);
@@ -216,7 +216,7 @@ namespace StarlightRiver.Content.Items.Crimson
 
 					Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-					var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+					var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 					Matrix view = Main.GameViewMatrix.TransformationMatrix;
 					var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

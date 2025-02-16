@@ -96,7 +96,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 				int index = target.FindBuffIndex(ModContent.BuffType<MoonfuryDebuff>());
 				target.DelBuff(index);
 
-				Helper.PlayPitched("Magic/Shadow1", 1, Main.rand.NextFloat(-0.1f, 0.1f));
+				SoundHelper.PlayPitched("Magic/Shadow1", 1, Main.rand.NextFloat(-0.1f, 0.1f));
 				modifiers.FlatBonusDamage += 20;
 				modifiers.FlatBonusDamage += (int)(target.defense / 5f);
 				Projectile.NewProjectile(player.GetSource_ItemUse(Item), target.Center, Vector2.Zero, ModContent.ProjectileType<MoonfuryRing>(), 0, 0, player.whoAmI);
@@ -265,7 +265,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		{
 			Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
@@ -391,7 +391,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		{
 			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

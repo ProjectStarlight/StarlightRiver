@@ -143,7 +143,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			if (!empowered)
 				direction = direction.RotatedBy((Target.Center.X - NPC.Center.X) * -0.0003f);
 
-			float rotDifference = Helper.RotationDifference(direction.ToRotation(), bowArmRotation);
+			float rotDifference = GeometryHelper.RotationDifference(direction.ToRotation(), bowArmRotation);
 
 			if (!empowered || BowFrameCounter < 75)
 				bowArmRotation = MathHelper.Lerp(bowArmRotation, bowArmRotation + rotDifference, 0.1f);
@@ -155,7 +155,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			if (NPC.spriteDirection == 1)
 				headRotation = bowRotation / 2;
 			else
-				headRotation = Helper.RotationDifference(bowRotation, 3.14f) / 2;
+				headRotation = GeometryHelper.RotationDifference(bowRotation, 3.14f) / 2;
 
 			float distance = posToBe.X - oldPos.X;
 			float progress = (NPC.Center.X - oldPos.X) / distance;
@@ -523,7 +523,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			Main.spriteBatch.End();
 			Effect effect = Terraria.Graphics.Effects.Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
@@ -589,7 +589,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				{
 					ManageCaches();
 					SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/FireHit"), Projectile.Center);
-					Helper.PlayPitched("Impacts/AirstrikeImpact", 0.3f, Main.rand.NextFloat(-0.1f, 0.1f));
+					SoundHelper.PlayPitched("Impacts/AirstrikeImpact", 0.3f, Main.rand.NextFloat(-0.1f, 0.1f));
 
 					SpawnParticles();
 				}

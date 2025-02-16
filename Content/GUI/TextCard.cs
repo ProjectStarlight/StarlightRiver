@@ -71,8 +71,8 @@ namespace StarlightRiver.Content.GUI
 			int Longest = MessageLength > TitleLength ? MessageLength : TitleLength;
 			int startY = Main.screenHeight / 5;
 			int startX = Main.screenWidth / 2;
-			float slide = 0.2f + Helpers.Helper.BezierEase(Math.Clamp(timer / 60f, 0f, 1f)) * 0.8f;
-			float slide2 = 0.4f + Helpers.Helper.BezierEase(Math.Clamp(timer / 60f, 0f, 1f)) * 0.6f;
+			float slide = 0.2f + Helpers.Eases.BezierEase(Math.Clamp(timer / 60f, 0f, 1f)) * 0.8f;
+			float slide2 = 0.4f + Helpers.Eases.BezierEase(Math.Clamp(timer / 60f, 0f, 1f)) * 0.6f;
 			Color textColor = Color.White * ((timer - 60) / 60f);
 			Color barColor = Color.White * Math.Clamp(timer / 45f, 0f, 1f);
 

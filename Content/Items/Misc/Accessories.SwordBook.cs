@@ -208,7 +208,7 @@ namespace StarlightRiver.Content.Items.Misc
 				if (pitch >= 1)
 					pitch = 1;
 
-				Helper.PlayPitched("Effects/HeavyWhooshShort", 1, pitch, Owner.Center);
+				SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 1, pitch, Owner.Center);
 
 				if (itemSnapshot.UseSound.HasValue)
 					Terraria.Audio.SoundEngine.PlaySound(itemSnapshot.UseSound.Value, Owner.Center);
@@ -278,7 +278,7 @@ namespace StarlightRiver.Content.Items.Misc
 						lifeSpan += 20;
 					}
 
-					Projectile.rotation = BaseAngle + Direction + Helpers.Helper.BezierEase(Progress) * 6.28f * Direction;
+					Projectile.rotation = BaseAngle + Direction + Helpers.Eases.BezierEase(Progress) * 6.28f * Direction;
 					holdOut = Progress * 32;
 
 					float rot = Projectile.rotation + (Direction == 1 ? 0 : -(float)Math.PI / 2f);
@@ -333,7 +333,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Vector2 start = Owner.Center;
 			Vector2 end = Owner.Center + Vector2.UnitX.RotatedBy(rot) * (length + holdOut);
 
-			if (Helpers.Helper.CheckLinearCollision(start, end, targetHitbox, out Vector2 colissionPoint))
+			if (Helpers.CollisionHelper.CheckLinearCollision(start, end, targetHitbox, out Vector2 colissionPoint))
 			{
 				for (int k = 0; k < 20; k++)
 				{
@@ -358,7 +358,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			Helpers.Helper.PlayPitched(Helpers.Helper.IsFleshy(target) ? "Impacts/StabFleshy" : "Impacts/Clink", 1, Main.rand.NextFloat(), Owner.Center);
+			Helpers.SoundHelper.PlayPitched(Helpers.NPCHelper.IsFleshy(target) ? "Impacts/StabFleshy" : "Impacts/Clink", 1, Main.rand.NextFloat(), Owner.Center);
 			CameraSystem.shake += 3;
 
 			// Simulate on-hit effects
@@ -430,7 +430,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
@@ -518,13 +518,13 @@ namespace StarlightRiver.Content.Items.Misc
 					{
 						Vector2 first = Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation + 1.57f) * length / 2;
 						Vector2 second = Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation - 1.57f) * length / 2;
-						bool colliding = Helper.CheckLinearCollision(first, second, proj.Hitbox, out Vector2 collisionPoint);
+						bool colliding = CollisionHelper.CheckLinearCollision(first, second, proj.Hitbox, out Vector2 collisionPoint);
 
 						var normal = Vector2.Normalize(Projectile.Center - Owner.Center);
 
 						first = Projectile.Center + normal * 16 + Vector2.UnitX.RotatedBy(Projectile.rotation + 1.57f) * length / 2;
 						second = Projectile.Center + normal * 16 + Vector2.UnitX.RotatedBy(Projectile.rotation - 1.57f) * length / 2;
-						colliding |= Helper.CheckLinearCollision(first, second, proj.Hitbox, out Vector2 collisionPoint2);
+						colliding |= CollisionHelper.CheckLinearCollision(first, second, proj.Hitbox, out Vector2 collisionPoint2);
 
 						if (!colliding)
 							continue;

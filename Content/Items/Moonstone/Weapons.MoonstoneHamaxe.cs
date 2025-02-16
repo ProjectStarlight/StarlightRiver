@@ -175,7 +175,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 					if (Charge == (MAXCHARGE - 1))
 					{
 						//DustHelper.DrawStar(owner.Center + Projectile.rotation.ToRotationVector2() * 40f, ModContent.DustType<Dusts.GlowFastDecelerate>(), pointAmount: 5, mainSize: 1.5f, dustDensity: 0.7f, pointDepthMult: 0.3f, rotationAmount: Projectile.rotation, dustSize: 0.5f, color: new Color(120, 120, 255));
-						DustHelper.DrawDustImage(Owner.Center + Projectile.rotation.ToRotationVector2() * 40f, ModContent.DustType<Dusts.GlowFastDecelerate>(), 0.05f,
+						DustHelper.SpawnImagePattern(Owner.Center + Projectile.rotation.ToRotationVector2() * 40f, ModContent.DustType<Dusts.GlowFastDecelerate>(), 0.05f,
 							ModContent.Request<Texture2D>(Texture + "_Crescent").Value, 0.7f, 0, new Color(120, 120, 255));
 						SoundEngine.PlaySound(SoundID.MaxMana, Projectile.Center);
 						flashTimer = 15;
@@ -346,7 +346,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Main.spriteBatch.End();
 			Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
@@ -461,7 +461,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		{
 			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

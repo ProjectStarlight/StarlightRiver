@@ -95,12 +95,12 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 				if (gearAnimation > 20)
 				{
-					float progress = Helpers.Helper.BezierEase((gearAnimation - 20) / 20f);
+					float progress = Helpers.Eases.BezierEase((gearAnimation - 20) / 20f);
 					Main.spriteBatch.Draw(texOld, Center - Main.screenPosition, null, Color.White * 0.75f * progress, 0, texOld.Size() / 2, progress, 0, 0);
 				}
 				else
 				{
-					float progress = Helpers.Helper.SwoopEase(1 - gearAnimation / 20f);
+					float progress = Helpers.Eases.SwoopEase(1 - gearAnimation / 20f);
 					Main.spriteBatch.Draw(tex, Center - Main.screenPosition, null, Color.White * 0.75f * progress, 0, tex.Size() / 2, progress, 0, 0);
 				}
 

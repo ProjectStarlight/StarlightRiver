@@ -304,7 +304,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			Helper.PlayPitched(Helpers.Helper.IsFleshy(target) ? "Impacts/StabFleshy" : "Impacts/Clink", 1, Main.rand.NextFloat(), Owner.Center);
+			SoundHelper.PlayPitched(Helpers.NPCHelper.IsFleshy(target) ? "Impacts/StabFleshy" : "Impacts/Clink", 1, Main.rand.NextFloat(), Owner.Center);
 
 			// cooldown for screenshake to avoid spazzing out
 			// flurry duplicates also do not have screenshake for the same reason
@@ -435,7 +435,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.spriteDirection = Owner.direction;
 
 			if (Timer == 0)
-				Helper.PlayPitched("Effects/HeavyWhooshShort", 0.8f, 0.8f, Projectile.Center);
+				SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 0.8f, 0.8f, Projectile.Center);
 
 			if (progress > 1)
 				Projectile.Kill();
@@ -456,7 +456,7 @@ namespace StarlightRiver.Content.Items.Misc
 				motion = Motion.None;
 
 			if (Timer == 0)
-				Helper.PlayPitched("Effects/HeavyWhooshShort", 0.5f, 1.2f, Projectile.Center);
+				SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 0.5f, 1.2f, Projectile.Center);
 
 			if (progress > 1)
 				Projectile.Kill();
@@ -495,11 +495,11 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 
 			if (Timer == 0)
-				Helper.PlayPitched("Effects/HeavyWhooshShort", 0.7f, 1.2f, Projectile.Center);
+				SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 0.7f, 1.2f, Projectile.Center);
 
 			if (progress == 0.5f)
 			{
-				Helper.PlayPitched("Effects/HeavyWhooshShort", 0.7f, 1.1f, Projectile.Center);
+				SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 0.7f, 1.1f, Projectile.Center);
 				Projectile.ResetLocalNPCHitImmunity();
 			}
 
@@ -521,7 +521,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.spriteDirection = Owner.direction;
 
 			if (Timer == 0)
-				Helper.PlayPitched("Effects/HeavyWhooshShort", 0.8f, 0.7f, Projectile.Center);
+				SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 0.8f, 0.7f, Projectile.Center);
 
 			if (progress > 1)
 				Projectile.Kill();
@@ -552,7 +552,7 @@ namespace StarlightRiver.Content.Items.Misc
 				Projectile.Opacity = MathHelper.SmoothStep(1, 0, (Timer - 125) / 20);
 
 			if (Timer == 65)
-				Helper.PlayPitched("Effects/HeavyWhooshShort", 1, 0.5f, Projectile.Center);
+				SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 1, 0.5f, Projectile.Center);
 
 			if (Timer == 85)
 				CameraSystem.shake += 2;
@@ -714,7 +714,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

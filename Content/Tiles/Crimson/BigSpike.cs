@@ -68,13 +68,13 @@ namespace StarlightRiver.Content.Tiles.Crimson
 			Texture2D tex = Assets.Tiles.Crimson.BigSpike.Value;
 			var source = new Rectangle(0, Parent.TileFrameY * 120, 160, 120);
 			var origin = new Vector2(48, 120 - 64);
-			var pos = Center - Main.screenPosition;
+			Vector2 pos = Center - Main.screenPosition;
 
 			LightingBufferRenderer.DrawWithLighting(tex, pos, source, Color.White, angle - 0.25f, origin, 1f);
 
 			if (StarlightRiver.debugMode)
 			{
-				var arrow = Assets.MagicPixel.Value;
+				Texture2D arrow = Assets.MagicPixel.Value;
 				Main.spriteBatch.Draw(arrow, new Rectangle((int)pos.X, (int)pos.Y, 100, 2), source, Color.LimeGreen, angle - 1.57f / 2f, origin, 0, 0);
 			}
 		}

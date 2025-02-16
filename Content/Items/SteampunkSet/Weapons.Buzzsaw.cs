@@ -201,7 +201,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		{
 			for (int i = 0; i < 2; i++)
 			{
-				if (!Helper.IsFleshy(target))
+				if (!NPCHelper.IsFleshy(target))
 				{
 					for (int k = 0; k < 10; k++)
 					{
@@ -384,13 +384,13 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			for (int i = 0; i < 2; i++)
 			{
 
-				if (!Helper.IsFleshy(target))
+				if (!NPCHelper.IsFleshy(target))
 				{
 					Dust.NewDustPerfect(Projectile.Center + direction * 10 + new Vector2(0, 35), ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f) + 1.57f) * Main.rand.Next(15, 20), 0, new Color(255, 230, 60) * 0.8f, 1.6f);
 				}
 				else
 				{
-					Helper.PlayPitched("Impacts/StabTiny", 0.8f, Main.rand.NextFloat(-0.3f, 0.3f), target.Center);
+					SoundHelper.PlayPitched("Impacts/StabTiny", 0.8f, Main.rand.NextFloat(-0.3f, 0.3f), target.Center);
 
 					for (int j = 0; j < 2; j++)
 					{
@@ -475,7 +475,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			if (Main.myPlayer == Projectile.owner)
 			{
 				Vector2 direction = target.Center - Projectile.Center;
-				if (Helper.IsFleshy(target))
+				if (NPCHelper.IsFleshy(target))
 				{
 					int bloodID = ModContent.ProjectileType<BuzzsawBlood1>();
 					int spriteDirection = Math.Sign(direction.X);

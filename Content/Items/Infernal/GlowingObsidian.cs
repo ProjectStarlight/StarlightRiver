@@ -52,7 +52,7 @@ namespace StarlightRiver.Content.Items.Infernal
 			if (combo > 2)
 				combo = 0;
 
-			Helpers.Helper.PlayPitched("Impacts/FireBladeStab", 1, 0.4f + combo * 0.2f);
+			Helpers.SoundHelper.PlayPitched("Impacts/FireBladeStab", 1, 0.4f + combo * 0.2f);
 
 			return null;
 		}
@@ -145,7 +145,7 @@ namespace StarlightRiver.Content.Items.Infernal
 
 			for (int k = -2; k <= 2; k++)
 			{
-				hit |= Helper.CheckLinearCollision(Projectile.Center, Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation - 0.9f + k * 0.05f) * Length, target.Hitbox, out _);
+				hit |= CollisionHelper.CheckLinearCollision(Projectile.Center, Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation - 0.9f + k * 0.05f) * Length, target.Hitbox, out _);
 			}
 
 			return hit ? null : false;
@@ -231,7 +231,7 @@ namespace StarlightRiver.Content.Items.Infernal
 		{
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

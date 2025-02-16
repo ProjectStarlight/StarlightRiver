@@ -64,9 +64,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			float rotation = (chain.ropeSegments[0].ScreenPos - chain.ropeSegments[1].ScreenPos).ToRotation() + (float)Math.PI / 2;
 
-			verticies[0] = new VertexPositionColorTexture((chain.ropeSegments[0].ScreenPos + offset + Vector2.UnitY.RotatedBy(rotation - Math.PI / 4) * -5).Vec3().ScreenCoord(), chain.ropeSegments[0].color, new Vector2(0, 0.2f));
-			verticies[1] = new VertexPositionColorTexture((chain.ropeSegments[0].ScreenPos + offset + Vector2.UnitY.RotatedBy(rotation + Math.PI / 4) * -5).Vec3().ScreenCoord(), chain.ropeSegments[0].color, new Vector2(0, 0.8f));
-			verticies[2] = new VertexPositionColorTexture((chain.ropeSegments[1].ScreenPos + offset).Vec3().ScreenCoord(), chain.ropeSegments[1].color, new Vector2(0, 0.5f));
+			verticies[0] = new VertexPositionColorTexture((chain.ropeSegments[0].ScreenPos + offset + Vector2.UnitY.RotatedBy(rotation - Math.PI / 4) * -5).ToVector3().ToScreenspaceCoord(), chain.ropeSegments[0].color, new Vector2(0, 0.2f));
+			verticies[1] = new VertexPositionColorTexture((chain.ropeSegments[0].ScreenPos + offset + Vector2.UnitY.RotatedBy(rotation + Math.PI / 4) * -5).ToVector3().ToScreenspaceCoord(), chain.ropeSegments[0].color, new Vector2(0, 0.8f));
+			verticies[2] = new VertexPositionColorTexture((chain.ropeSegments[1].ScreenPos + offset).ToVector3().ToScreenspaceCoord(), chain.ropeSegments[1].color, new Vector2(0, 0.5f));
 
 			for (int k = 1; k < chain.segmentCount - 1; k++)
 			{
@@ -76,9 +76,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 				int point = k * 9 - 6;
 
-				verticies[point] = new VertexPositionColorTexture((chain.ropeSegments[k].ScreenPos + offset + Vector2.UnitY.RotatedBy(rotation2 - Math.PI / 4) * -(chain.segmentCount - k) * scale).Vec3().ScreenCoord(), chain.ropeSegments[k].color, new Vector2(progress, 0.2f));
-				verticies[point + 1] = new VertexPositionColorTexture((chain.ropeSegments[k].ScreenPos + offset + Vector2.UnitY.RotatedBy(rotation2 + Math.PI / 4) * -(chain.segmentCount - k) * scale).Vec3().ScreenCoord(), chain.ropeSegments[k].color, new Vector2(progress, 0.8f));
-				verticies[point + 2] = new VertexPositionColorTexture((chain.ropeSegments[k + 1].ScreenPos + offset).Vec3().ScreenCoord(), chain.ropeSegments[k + 1].color, new Vector2(progress + 1 / 3f, 0.5f));
+				verticies[point] = new VertexPositionColorTexture((chain.ropeSegments[k].ScreenPos + offset + Vector2.UnitY.RotatedBy(rotation2 - Math.PI / 4) * -(chain.segmentCount - k) * scale).ToVector3().ToScreenspaceCoord(), chain.ropeSegments[k].color, new Vector2(progress, 0.2f));
+				verticies[point + 1] = new VertexPositionColorTexture((chain.ropeSegments[k].ScreenPos + offset + Vector2.UnitY.RotatedBy(rotation2 + Math.PI / 4) * -(chain.segmentCount - k) * scale).ToVector3().ToScreenspaceCoord(), chain.ropeSegments[k].color, new Vector2(progress, 0.8f));
+				verticies[point + 2] = new VertexPositionColorTexture((chain.ropeSegments[k + 1].ScreenPos + offset).ToVector3().ToScreenspaceCoord(), chain.ropeSegments[k + 1].color, new Vector2(progress + 1 / 3f, 0.5f));
 
 				int extra = k == 1 ? 0 : 6;
 				verticies[point + 3] = verticies[point];

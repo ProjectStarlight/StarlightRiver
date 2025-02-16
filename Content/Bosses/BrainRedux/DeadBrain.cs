@@ -77,8 +77,8 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		// shield shader inputs
 		public float shieldOpacity = 0f;
 
-		public int BrainBoltDamage => Helper.GetProjectileDamage(80, 60, 40);
-		public int VeinSpearDamage => Helper.GetProjectileDamage(200, 120, 80);
+		public int BrainBoltDamage => StarlightMathHelper.GetProjectileDamage(80, 60, 40);
+		public int VeinSpearDamage => StarlightMathHelper.GetProjectileDamage(200, 120, 80);
 
 		// Phase enum and state variables
 		public enum Phases : int
@@ -676,8 +676,6 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 						rotOffset += (radiusOverride - 0.2f) * 0.5f * (point.Frame % 2 == 0 ? -1 : 1);
 				}
 
-
-
 				Vector2 velOffset;
 				if (oldCenter != default)
 					velOffset = (center - (oldCenter - Main.screenPosition)) * -0.35f * point.Frame;
@@ -719,7 +717,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					DrawBrainSegments(spriteBatch, NPC, pos - Main.screenPosition, new Color(255, 100, 100), NPC.rotation, NPC.scale, (1f - k / 10f) * contactDamageOpacity * 0.5f * opacity, lastPos);
 				}
 
-				for(int k = 0; k < 4; k++)
+				for (int k = 0; k < 4; k++)
 				{
 					Vector2 pos = NPC.Center + Vector2.UnitX.RotatedBy(k / 4f * 6.28f) * 8;
 					DrawBrainSegments(spriteBatch, NPC, pos - Main.screenPosition, new Color(255, 150, 150), NPC.rotation, NPC.scale, contactDamageOpacity * opacity, lastPos);
@@ -909,7 +907,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			Effect effect = Terraria.Graphics.Effects.Filters.Scene["RepeatingChain"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
@@ -946,7 +944,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			Effect effect = Terraria.Graphics.Effects.Filters.Scene["LightningTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

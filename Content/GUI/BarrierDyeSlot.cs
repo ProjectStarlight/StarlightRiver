@@ -115,7 +115,7 @@ namespace StarlightRiver.Content.GUI
 					Main.HoverItem = Item.Clone();
 					Main.hoverItemName = Item.Name;
 
-					if (Main.keyState.PressingShift() && Helper.getFreeInventorySlot(Main.LocalPlayer) != -1)
+					if (Main.keyState.PressingShift() && InventoryHelper.getFreeInventorySlot(Main.LocalPlayer) != -1)
 						Main.cursorOverride = 7;
 				}
 				else
@@ -138,7 +138,7 @@ namespace StarlightRiver.Content.GUI
 			//shift left click means they want to quick place into inventory
 			if (PlayerInput.Triggers.Current.SmartSelect)
 			{
-				int invSlot = Helper.getFreeInventorySlot(Main.LocalPlayer);
+				int invSlot = InventoryHelper.getFreeInventorySlot(Main.LocalPlayer);
 
 				if (!Item.IsAir && invSlot != -1)
 				{

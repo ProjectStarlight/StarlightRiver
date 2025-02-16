@@ -92,19 +92,19 @@ namespace StarlightRiver.Content.Items.Dungeon
 		{
 			if (charge == 1)
 			{
-				Helper.PlayPitched("Magic/LightningShortest" + (1 + charge % 4).ToString(), 0.2f, Main.rand.NextFloat(0f, 0.2f), player.Center);
+				SoundHelper.PlayPitched("Magic/LightningShortest" + (1 + charge % 4).ToString(), 0.2f, Main.rand.NextFloat(0f, 0.2f), player.Center);
 			}
 			else if (charge == MAXCHARGE)
 			{
 				damage = (int)(damage * 1.5f);
 				//Full charge attack sound here
-				Helper.PlayPitched("Magic/LightningExplode", 0.4f, 0f, player.Center);
+				SoundHelper.PlayPitched("Magic/LightningExplode", 0.4f, 0f, player.Center);
 			}
 			else
 			{
 				//staggered attack sound here
 
-				Helper.PlayPitched("Magic/LightningExplodeShallow", 0.4f, MathHelper.Clamp(1.0f - charge * 0.01f, 0f, 1.0f), player.Center);
+				SoundHelper.PlayPitched("Magic/LightningExplodeShallow", 0.4f, MathHelper.Clamp(1.0f - charge * 0.01f, 0f, 1.0f), player.Center);
 				//MathHelper.Clamp(1.1f - (0.01f * (120.0f / charge)), 0.0f, 1.0f)
 			}
 
@@ -130,14 +130,14 @@ namespace StarlightRiver.Content.Items.Dungeon
 				if (charge == MAXCHARGE)
 				{
 					//REACHING FULL CHARGE SOUND HERE
-					Helper.PlayPitched("Magic/LightningChargeReady", 0.6f, 0f, Player.Center);
+					SoundHelper.PlayPitched("Magic/LightningChargeReady", 0.6f, 0f, Player.Center);
 					for (int i = 0; i < 12; i++)
 						CreateStatic(Item, charge, Player, true);
 				}
 
 				if (counter % 3 == 0) //change the 10 to the number of ticks you want the sound to loop on
 				{
-					Helper.PlayPitched("Magic/LightningChargeShort", (float)Math.Pow(charge / 200f, 2) * 2, MathHelper.Clamp(0.1f + charge / 120f, 0, 1), Player.Center);
+					SoundHelper.PlayPitched("Magic/LightningChargeShort", (float)Math.Pow(charge / 200f, 2) * 2, MathHelper.Clamp(0.1f + charge / 120f, 0, 1), Player.Center);
 				}
 			}
 
@@ -499,7 +499,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 			Effect effect = Filters.Scene["LightningTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

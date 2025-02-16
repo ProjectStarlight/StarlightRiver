@@ -115,7 +115,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 			State = 1;
 			Projectile.friendly = false;
 
-			Helper.PlayPitched("Magic/FireHit", 0.25f, Main.rand.NextFloat(-0.2f, 0.2f), Projectile.Center);
+			SoundHelper.PlayPitched("Magic/FireHit", 0.25f, Main.rand.NextFloat(-0.2f, 0.2f), Projectile.Center);
 
 			var d = Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Aurora>(), Main.rand.NextVector2Circular(2, 2), 0, new Color(255, 200, 30));
 			d.customData = 1.8f;
@@ -208,7 +208,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 		{
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

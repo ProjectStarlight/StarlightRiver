@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.Items.Snow
 		{
 			if (wasTile)
 			{
-				Helpers.Helper.PlayPitched("Magic/FrostHit", 1, 0, Projectile.Center);
+				Helpers.SoundHelper.PlayPitched("Magic/FrostHit", 1, 0, Projectile.Center);
 
 				if (Owner == Main.LocalPlayer)
 					CameraSystem.shake += 8;

@@ -17,7 +17,7 @@ namespace StarlightRiver.Core
 				if (WorldGen.InWorld(x, y) &&
 					WorldGenHelper.IsRectangleSafe(new Rectangle(x, y, 40, 40), TempleCondition) &&
 					(Framing.GetTileSafely(x, y).TileType == TileID.Stone || Framing.GetTileSafely(x, y).TileType == TileID.Dirt) &&
-					Helper.CheckAnyAirRectangle(new Point16(x, y), new Point16(10, 10)))
+					WorldGenHelper.CheckAnyAirRectangle(new Point16(x, y), new Point16(10, 10)))
 				{
 					StructureHelper.Generator.GenerateMultistructureRandom("Structures/UndergroundTemples", new Point16(x, y), StarlightRiver.Instance);
 				}

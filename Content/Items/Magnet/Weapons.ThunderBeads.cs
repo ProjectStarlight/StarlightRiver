@@ -159,7 +159,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			}
 			else
 			{
-				Helper.PlayPitched("Magic/LightningShortest1", 0.5f, Main.rand.NextFloat(0f, 0.2f), target.Center);
+				SoundHelper.PlayPitched("Magic/LightningShortest1", 0.5f, Main.rand.NextFloat(0f, 0.2f), target.Center);
 				fade = 1;
 
 				for (int i = 2; i < cache.Count - 2; i++)
@@ -271,7 +271,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			Main.spriteBatch.End();
 			Effect effect = Filters.Scene["LightningTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

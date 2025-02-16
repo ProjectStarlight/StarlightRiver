@@ -330,7 +330,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
-			return Helper.CheckCircularCollision(Projectile.Center, (int)Radius, targetHitbox);
+			return CollisionHelper.CheckCircularCollision(Projectile.Center, (int)Radius, targetHitbox);
 		}
 
 		public override bool PreDraw(ref Color lightColor)

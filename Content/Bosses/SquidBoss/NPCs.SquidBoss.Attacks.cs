@@ -8,8 +8,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 {
 	public partial class SquidBoss : ModNPC
 	{
-		public static int BlobDamage => Helpers.Helper.GetProjectileDamage(30, 60, 90);
-		public static int LaserDamage => Helpers.Helper.GetProjectileDamage(150, 200, 999999);
+		public static int BlobDamage => Helpers.StarlightMathHelper.GetProjectileDamage(30, 60, 90);
+		public static int LaserDamage => Helpers.StarlightMathHelper.GetProjectileDamage(150, 200, 999999);
 
 		private void RandomizeTarget()
 		{
@@ -125,7 +125,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 					SpawnTell(tentacle.movementTarget + new Vector2(0, -64), tentacle.basePoint);
 
-					Helpers.Helper.PlayPitched("SquidBoss/LightSwoosh", 1, 0, tentacle.NPC.Center);
+					Helpers.SoundHelper.PlayPitched("SquidBoss/LightSwoosh", 1, 0, tentacle.NPC.Center);
 				}
 
 				if (AttackTimer > k * 100 && AttackTimer < k * 100 + 50)
@@ -191,7 +191,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 					CameraSystem.shake += 20; //TODO: Find the right player instances
 
-					Helpers.Helper.PlayPitched("ArenaHit", 0.5f, 1f, tentacles[k].Center);
+					Helpers.SoundHelper.PlayPitched("ArenaHit", 0.5f, 1f, tentacles[k].Center);
 				}
 
 				if (AttackTimer > k * 100 + 70 && AttackTimer < k * 100 + 300) //retracting
@@ -255,7 +255,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				}
 
 				if (AttackTimer % delay == 0)
-					Helpers.Helper.PlayPitched("SquidBoss/MagicSplash", 1.25f, 0.25f, NPC.Center);
+					Helpers.SoundHelper.PlayPitched("SquidBoss/MagicSplash", 1.25f, 0.25f, NPC.Center);
 			}
 
 			if (AttackTimer == 240)
@@ -283,14 +283,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, 100), new Vector2(0, -15).RotatedBy(0.25f), ModContent.ProjectileType<InkBlobGravity>(), BlobDamage, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
 				}
 
-				Helpers.Helper.PlayPitched("SquidBoss/MagicSplash", 1.5f, 0f, NPC.Center);
+				Helpers.SoundHelper.PlayPitched("SquidBoss/MagicSplash", 1.5f, 0f, NPC.Center);
 
 				savedPoint = NPC.Center;
 			}
 
 			if (AttackTimer > 80 && AttackTimer <= 130)
 			{
-				float prog = Helpers.Helper.SwoopEase((AttackTimer - 80) / 50f);
+				float prog = Helpers.Eases.SwoopEase((AttackTimer - 80) / 50f);
 				NPC.Center = Vector2.Lerp(savedPoint, spawnPoint + new Vector2(0, -200), prog);
 			}
 
@@ -317,7 +317,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					}
 				}
 
-				Helpers.Helper.PlayPitched("SquidBoss/MagicSplash", 1.5f, 0f, NPC.Center);
+				Helpers.SoundHelper.PlayPitched("SquidBoss/MagicSplash", 1.5f, 0f, NPC.Center);
 
 				savedPoint = spawnPoint + new Vector2(0, -250);
 			}
@@ -425,7 +425,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			if (AttackTimer == 100)
 			{
-				Helpers.Helper.PlayPitched("ArenaHit", 0.75f, 1f, NPC.Center);
+				Helpers.SoundHelper.PlayPitched("ArenaHit", 0.75f, 1f, NPC.Center);
 
 				tentacleL.zSpin = 0;
 				tentacleR.zSpin = 0;
@@ -453,16 +453,16 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			if (AttackTimer > 130 && AttackTimer < 380) //move in to crush
 			{
-				float timer = Helpers.Helper.BezierEase((AttackTimer - 130) / 250f);
+				float timer = Helpers.Eases.BezierEase((AttackTimer - 130) / 250f);
 
 				tentacleL.stalkWaviness = timer * 0.45f;
 				tentacleR.stalkWaviness = timer * 0.45f;
 
-				tentacleL.basePoint.X = Helpers.Helper.LerpFloat(tentacleL.movementTarget.X, OrderedPlatforms[0].Center.X - 100, timer);
-				tentacleR.basePoint.X = Helpers.Helper.LerpFloat(tentacleR.movementTarget.X, OrderedPlatforms[0].Center.X + 100, timer);
+				tentacleL.basePoint.X = Helpers.StarlightMathHelper.LerpFloat(tentacleL.movementTarget.X, OrderedPlatforms[0].Center.X - 100, timer);
+				tentacleR.basePoint.X = Helpers.StarlightMathHelper.LerpFloat(tentacleR.movementTarget.X, OrderedPlatforms[0].Center.X + 100, timer);
 
-				tentacleL.NPC.Center = new Vector2(Helpers.Helper.LerpFloat(tentacleL.movementTarget.X, OrderedPlatforms[0].Center.X - 100, timer), tentacleL.NPC.Center.Y);
-				tentacleR.NPC.Center = new Vector2(Helpers.Helper.LerpFloat(tentacleR.movementTarget.X, OrderedPlatforms[0].Center.X + 100, timer), tentacleR.NPC.Center.Y);
+				tentacleL.NPC.Center = new Vector2(Helpers.StarlightMathHelper.LerpFloat(tentacleL.movementTarget.X, OrderedPlatforms[0].Center.X - 100, timer), tentacleL.NPC.Center.Y);
+				tentacleR.NPC.Center = new Vector2(Helpers.StarlightMathHelper.LerpFloat(tentacleR.movementTarget.X, OrderedPlatforms[0].Center.X + 100, timer), tentacleR.NPC.Center.Y);
 			}
 
 			if (AttackTimer == 260)
@@ -635,8 +635,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 					if (AttackTimer > 100 + k * 20 && AttackTimer < 280 + k * 20)
 					{
-						tentacle.basePoint = spawnPoint + Vector2.UnitX * (-0.5f + Helpers.Helper.BezierEase((AttackTimer - (100 + k * 20)) / 180f)) * 1200;
-						tentacle.NPC.Center = spawnPoint + Vector2.UnitX.RotatedBy(Helpers.Helper.BezierEase((AttackTimer - (100 + k * 20)) / 180f) * 3.14f) * -890;
+						tentacle.basePoint = spawnPoint + Vector2.UnitX * (-0.5f + Helpers.Eases.BezierEase((AttackTimer - (100 + k * 20)) / 180f)) * 1200;
+						tentacle.NPC.Center = spawnPoint + Vector2.UnitX.RotatedBy(Helpers.Eases.BezierEase((AttackTimer - (100 + k * 20)) / 180f) * 3.14f) * -890;
 						tentacle.NPC.netUpdate = true;
 					}
 
@@ -670,7 +670,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				ManualAnimate(1, (int)(AttackTimer % 100 / 15 * 4));
 
 			if (AttackTimer % 100 == 40)
-				Helpers.Helper.PlayPitched("Magic/FrostCast", 1, 0.5f, NPC.Center);
+				Helpers.SoundHelper.PlayPitched("Magic/FrostCast", 1, 0.5f, NPC.Center);
 
 			if (AttackTimer % 100 == 0 && Main.netMode != NetmodeID.MultiplayerClient)
 			{
@@ -773,7 +773,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			if (AttackTimer < 60) //move to left of the arena
 			{
 				NPC.Center = Vector2.SmoothStep(savedPoint, spawnPoint + (variantAttack ? new Vector2(-800, -500) : new Vector2(800, -500)), AttackTimer / 60f);
-				NPC.rotation = 3.14f * Helpers.Helper.BezierEase(AttackTimer / 60f);
+				NPC.rotation = 3.14f * Helpers.Eases.BezierEase(AttackTimer / 60f);
 
 				foreach (NPC npc in tentacles)
 				{
@@ -803,7 +803,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			if (AttackTimer > 90 && AttackTimer < 90 + laserTime) //lasering
 			{
 				if (AttackTimer % 10 == 0)
-					Helpers.Helper.PlayPitched("Magic/LightningShortest1", 1, 0, NPC.Center);
+					Helpers.SoundHelper.PlayPitched("Magic/LightningShortest1", 1, 0, NPC.Center);
 
 				NPC.Center = Vector2.SmoothStep(savedPoint, spawnPoint + (variantAttack ? new Vector2(800, -500) : new Vector2(-800, -500)), (AttackTimer - 90) / laserTime);
 			}
@@ -814,7 +814,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			if (AttackTimer > 120 + laserTime && AttackTimer < 180 + laserTime) //return to center of arena
 			{
 				if (AttackTimer < 150 + laserTime)
-					NPC.rotation = 3.14f - 3.14f * Helpers.Helper.BezierEase((AttackTimer - (120 + laserTime)) / 30f);
+					NPC.rotation = 3.14f - 3.14f * Helpers.Eases.BezierEase((AttackTimer - (120 + laserTime)) / 30f);
 
 				NPC.Center = Vector2.SmoothStep(savedPoint, spawnPoint + new Vector2(0, -500), (AttackTimer - (laserTime + 120)) / 60f);
 			}
@@ -885,7 +885,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				for (int k = 1; k <= 2; k++) //tentacles
 				{
 					var tentacle = tentacles[k].ModNPC as Tentacle;
-					float prog = Helpers.Helper.BezierEase((AttackTimer - 60) / 60f);
+					float prog = Helpers.Eases.BezierEase((AttackTimer - 60) / 60f);
 					tentacles[k].Center = tentacle.basePoint + (tentacle.NPC.Center - tentacle.basePoint).RotatedBy(prog * (k == 1 ? 0.4f : -0.4f));
 				}
 			}
@@ -895,7 +895,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			if (AttackTimer == 150) //spawn Projectiles
 			{
-				Helpers.Helper.PlayPitched("SquidBoss/MagicSplash", 1.5f, 0f, NPC.Center);
+				Helpers.SoundHelper.PlayPitched("SquidBoss/MagicSplash", 1.5f, 0f, NPC.Center);
 
 				if (Main.netMode != NetmodeID.MultiplayerClient)
 				{
@@ -908,7 +908,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			if (AttackTimer == 180 && Main.masterMode) //spawn Projectiles
 			{
-				Helpers.Helper.PlayPitched("SquidBoss/MagicSplash", 1.5f, 0f, NPC.Center);
+				Helpers.SoundHelper.PlayPitched("SquidBoss/MagicSplash", 1.5f, 0f, NPC.Center);
 
 				if (Main.netMode != NetmodeID.MultiplayerClient)
 				{
@@ -936,7 +936,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				for (int k = 1; k <= 2; k++) //tentacles
 				{
 					var tentacle = tentacles[k].ModNPC as Tentacle;
-					float prog = Helpers.Helper.BezierEase((AttackTimer - 240) / 60f);
+					float prog = Helpers.Eases.BezierEase((AttackTimer - 240) / 60f);
 
 					tentacles[k].Center = Vector2.SmoothStep(tentacle.movementTarget, tentacle.basePoint, prog);
 					tentacles[k].Center = tentacle.basePoint + (tentacle.NPC.Center - tentacle.basePoint).RotatedBy(prog * (k == 1 ? -0.4f : 0.4f));
@@ -1059,7 +1059,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 						NetMessage.SendData(MessageID.SyncNPC, number: tentacle.NPC.whoAmI);
 					}
 
-					Helpers.Helper.PlayPitched("SquidBoss/LightSwoosh", 1, 0, tentacle.NPC.Center);
+					Helpers.SoundHelper.PlayPitched("SquidBoss/LightSwoosh", 1, 0, tentacle.NPC.Center);
 				}
 
 				if (AttackTimer > k * 80 + 30 && AttackTimer < k * 80 + 90) //shooting up, first 30 frames are for tell
@@ -1119,7 +1119,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 						NetMessage.SendData(MessageID.SyncNPC, number: tentacle.NPC.whoAmI);
 					}
 
-					Helpers.Helper.PlayPitched("SquidBoss/LightSwoosh", 1, 0, tentacle.NPC.Center);
+					Helpers.SoundHelper.PlayPitched("SquidBoss/LightSwoosh", 1, 0, tentacle.NPC.Center);
 				}
 
 				if (AttackTimer > 400 && AttackTimer <= 420)
@@ -1216,7 +1216,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			{
 				if (AttackTimer == 64)
 				{
-					Helpers.Helper.PlayPitched("SquidBoss/MagicSplash", 1.5f, 0f, NPC.Center);
+					Helpers.SoundHelper.PlayPitched("SquidBoss/MagicSplash", 1.5f, 0f, NPC.Center);
 
 					for (float k = 0; k <= 3.14f; k += 2.14f / 3f)
 					{

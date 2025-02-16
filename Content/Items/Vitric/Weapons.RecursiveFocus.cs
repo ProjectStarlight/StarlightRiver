@@ -186,7 +186,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			{
 				SwitchCooldown = 240f;
 				SwitchTimer = 60f;
-				Helper.PlayPitched("Magic/FireCast", 1f, 0f, Projectile.Center);
+				SoundHelper.PlayPitched("Magic/FireCast", 1f, 0f, Projectile.Center);
 			}
 
 			if (SwitchTimer > 0)
@@ -204,7 +204,7 @@ namespace StarlightRiver.Content.Items.Vitric
 					else
 						Projectile.ai[0] = 1f;
 
-					Helper.PlayPitched("Magic/FireHit", 1f, 0f, Projectile.Center);
+					SoundHelper.PlayPitched("Magic/FireHit", 1f, 0f, Projectile.Center);
 
 					for (int i = 0; i < 20; i++)
 					{
@@ -450,7 +450,7 @@ namespace StarlightRiver.Content.Items.Vitric
 						}
 					}
 
-					Helper.PlayPitched("Magic/RefractiveCharge", 1f, 0f, Projectile.Center);
+					SoundHelper.PlayPitched("Magic/RefractiveCharge", 1f, 0f, Projectile.Center);
 
 					crystal.pulseTimer = 15;
 				}
@@ -825,7 +825,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			spriteBatch.End();
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.ZoomMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

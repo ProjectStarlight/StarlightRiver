@@ -119,7 +119,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 				Projectile.friendly = true;
 
-				Helpers.Helper.PlayPitched("Effects/HeavyWhooshShort", 1f, Main.rand.NextFloat(-0.05f, 0.05f), Owner.Center);
+				Helpers.SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 1f, Main.rand.NextFloat(-0.05f, 0.05f), Owner.Center);
 
 				for (int i = 0; i < 15; i++)
 				{
@@ -131,7 +131,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 					var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<TempleSpearLaser>(), Projectile.damage * 2, 0f, Projectile.owner, ai0: Projectile.identity);
 					(proj.ModProjectile as TempleSpearLaser).parent = Projectile;
 
-					Helper.PlayPitched("Effects/FancySwoosh", 1f, 0.2f, Owner.Center);
+					SoundHelper.PlayPitched("Effects/FancySwoosh", 1f, 0.2f, Owner.Center);
 				}
 			}
 
@@ -408,7 +408,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			spriteBatch.End();
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

@@ -117,7 +117,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 				if (attackCounter % attackCycleLength == 300)
 				{
-					Helper.PlayPitched("Magic/LightningExplode", 0.4f, 0f, npc.Center);
+					SoundHelper.PlayPitched("Magic/LightningExplode", 0.4f, 0f, npc.Center);
 
 					if (cache != null)
 					{
@@ -237,7 +237,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 			Main.spriteBatch.End();
 			Effect effect = Filters.Scene["LightningTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

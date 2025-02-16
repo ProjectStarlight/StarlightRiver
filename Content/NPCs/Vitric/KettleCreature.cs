@@ -167,7 +167,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		private readonly KettleCreature parent;
 		private NPC ParentNPC => parent.NPC;
 
-		public bool FootOnGround => Helper.PointInTile(foot);
+		public bool FootOnGround => CollisionHelper.PointInTile(foot);
 
 		public KettleLimb(KettleCreature parent, Vector2 attachOff)
 		{
@@ -293,7 +293,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		{
 			Effect effect = Terraria.Graphics.Effects.Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

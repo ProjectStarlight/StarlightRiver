@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 		{
 			Tile tile = Framing.GetTileSafely(i, j);
 			Texture2D tex = Assets.Tiles.Overgrow.Rock2x2Glow.Value;
-			Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition;
+			Vector2 pos = new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange - Main.screenPosition;
 
 			spriteBatch.Draw(tex, pos, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), Color.White);
 			Lighting.AddLight(new Vector2(i, j) * 16, new Vector3(110, 200, 225) * 0.0015f);

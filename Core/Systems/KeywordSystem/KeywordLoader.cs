@@ -55,7 +55,7 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 
 			foreach (Keyword item in keywords)
 			{
-				item.Description = Helpers.Helper.WrapString(item.Description, 200, font, 0.8f);
+				item.Description = Helpers.LocalizationHelper.WrapString(item.Description, 200, font, 0.8f);
 			}
 		}
 	}

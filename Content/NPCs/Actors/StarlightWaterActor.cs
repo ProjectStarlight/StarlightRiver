@@ -140,7 +140,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 					if (Item.TryGetGlobalItem(out TransformableItem GlobalItem))//sometimes this can return null
 					{
 						//in water, active & not empty, within range
-						if (Item.wet && Item.active && !Item.IsAir && Helpers.Helper.CheckCircularCollision(NPC.Center, ITEM_RANGE, Item.Hitbox))
+						if (Item.wet && Item.active && !Item.IsAir && Helpers.CollisionHelper.CheckCircularCollision(NPC.Center, ITEM_RANGE, Item.Hitbox))
 						{
 							//if item has a valid type to convert to and isnt being used by another WaterActor
 							int ConversionType = StarwaterConversion.GetConversionType(Item);
