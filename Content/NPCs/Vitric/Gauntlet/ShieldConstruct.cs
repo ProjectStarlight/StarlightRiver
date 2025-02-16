@@ -120,12 +120,12 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				{
 					if (Timer < 250) //Shield Raising, preparing to slam
 					{
-						shieldAnimationProgress = EaseFunction.EaseCubicInOut.Ease((Timer - 200) / 50f);
+						shieldAnimationProgress = Eases.EaseCubicInOut((Timer - 200) / 50f);
 						shieldOffset = up * shieldAnimationProgress;
 					}
 					else if (Timer <= 260) //Shield lowering towards the ground
 					{
-						shieldAnimationProgress = EaseFunction.EaseQuarticIn.Ease((Timer - 250) / 10f);
+						shieldAnimationProgress = Eases.EaseQuarticIn((Timer - 250) / 10f);
 						shieldOffset = Vector2.Lerp(up, down, shieldAnimationProgress);
 					}
 
@@ -145,17 +145,17 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				{
 					if (Timer < 464) //Shield slowly sliding out of the ground
 					{
-						shieldAnimationProgress = EaseFunction.EaseQuadIn.Ease((Timer - 400) / 64f);
+						shieldAnimationProgress = Eases.EaseQuadIn((Timer - 400) / 64f);
 						shieldOffset = Vector2.Lerp(down, new Vector2(0, 4), shieldAnimationProgress);
 					}
 					else if (Timer < 470) //Shield jolts out of the ground
 					{
-						shieldAnimationProgress = EaseFunction.EaseQuadOut.Ease((Timer - 464) / 6f);
+						shieldAnimationProgress = Eases.EaseQuadOut((Timer - 464) / 6f);
 						shieldOffset = Vector2.Lerp(new Vector2(0, 4), up, shieldAnimationProgress);
 					}
 					else //Shield lowers back into place
 					{
-						shieldAnimationProgress = EaseFunction.EaseQuinticInOut.Ease((Timer - 470) / 30f);
+						shieldAnimationProgress = Eases.EaseQuinticInOut((Timer - 470) / 30f);
 						shieldOffset = up * (1 - shieldAnimationProgress);
 					}
 

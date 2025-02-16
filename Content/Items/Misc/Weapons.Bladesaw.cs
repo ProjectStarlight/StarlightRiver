@@ -197,12 +197,12 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.Center = Owner.Center + direction * 45;
 
 			if (pauseTimer <= 0)
-				Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.Lerp(2f * SwingDirection, -2f * SwingDirection, EaseBuilder.EaseCircularInOut.Ease(1 - Projectile.timeLeft / maxTimeLeft));
+				Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.Lerp(2f * SwingDirection, -2f * SwingDirection, Eases.EaseCircularInOut(1 - Projectile.timeLeft / maxTimeLeft));
 
 			Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.PiOver2);
 
 			if (pauseTimer <= 0)
-				Projectile.scale = 1f + (float)Math.Sin(EaseBuilder.EaseCircularInOut.Ease(1 - Projectile.timeLeft / maxTimeLeft) * MathHelper.Pi) * 0.4f * 0.4f;
+				Projectile.scale = 1f + (float)Math.Sin(Eases.EaseCircularInOut(1 - Projectile.timeLeft / maxTimeLeft) * MathHelper.Pi) * 0.4f * 0.4f;
 
 			Owner.heldProj = Projectile.whoAmI;
 
@@ -307,7 +307,7 @@ namespace StarlightRiver.Content.Items.Misc
 			for (int k = 10; k > 0; k--)
 			{
 				float progress = 1 - (float)((10 - k) / (float)10);
-				Color color = Color.Lerp(lightColor, new Color(255, 96, 0), hitAmount / 6f) * EaseFunction.EaseQuarticOut.Ease(progress) * 0.1f;
+				Color color = Color.Lerp(lightColor, new Color(255, 96, 0), hitAmount / 6f) * Eases.EaseQuarticOut(progress) * 0.1f;
 				if (Projectile.timeLeft < 20)
 					color = Color.Lerp(color, Color.Transparent, 1f - Projectile.timeLeft / 20f);
 				color.A = 0;

@@ -238,7 +238,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		private Player Owner => Main.player[Projectile.owner];
 
-		private float Fade => Projectile.extraUpdates == 0 ? EaseFunction.EaseCubicOut.Ease(Projectile.timeLeft / 25f) : 1;
+		private float Fade => Projectile.extraUpdates == 0 ? Eases.EaseCubicOut(Projectile.timeLeft / 25f) : 1;
 
 		private bool Miniature => Projectile.ai[1] == 2; //If this is true, it's a spark created around the Player
 		private bool Branch => Projectile.ai[1] == 1; //If this is true, it's a branch of the main stream. This means it has a smaller starting ball + can't make further branches
@@ -458,7 +458,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 								if (factor.X > 0.99f)
 									return Color.Transparent;
 
-								return new Color(160, 220, 255) * Fade * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X);
+								return new Color(160, 220, 255) * Fade * 0.1f * Eases.EaseCubicOut(1 - factor.X);
 							});
 			}
 
@@ -469,8 +469,8 @@ namespace StarlightRiver.Content.Items.Dungeon
 			{
 				trail2 = new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => thickness * sparkMult * 3 * (float)Math.Pow(ChargeSqrt, 0.7f) * Main.rand.NextFloat(0.55f, 1.45f), factor =>
 							{
-								float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
-								return Color.Lerp(baseColor, endColor, EaseFunction.EaseCubicIn.Ease(1 - progress)) * Fade * progress;
+								float progress = Eases.EaseCubicOut(1 - factor.X);
+								return Color.Lerp(baseColor, endColor, Eases.EaseCubicIn(1 - progress)) * Fade * progress;
 							});
 			}
 

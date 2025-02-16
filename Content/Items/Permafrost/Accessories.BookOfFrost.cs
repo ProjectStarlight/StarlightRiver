@@ -82,7 +82,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		private Trail trail2;
 
 		public float TimeFade => 1 - Projectile.timeLeft / 20f;
-		public float Radius => EaseBuilder.EaseCubicOut.Ease(1 - Projectile.timeLeft / 20f) * 55f;
+		public float Radius => Eases.EaseCubicOut(1 - Projectile.timeLeft / 20f) * 55f;
 
 		public override string Texture => AssetDirectory.Invisible;
 

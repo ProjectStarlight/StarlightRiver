@@ -133,7 +133,7 @@ namespace StarlightRiver.Content.Items.Misc
 			ThrowOutAI();
 
 			float progress = Timer / SwingTime;
-			progress = EaseFunction.EaseQuadOut.Ease(progress);
+			progress = Eases.EaseQuadOut(progress);
 
 			if (progress > FireTime && !shot)
 			{
@@ -191,7 +191,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.rotation = Projectile.AngleFrom(Owner.Center);
 			Vector2 position = Owner.MountedCenter;
 			float progress = ++Timer / SwingTime; //How far the Projectile is through its swing
-			progress = EaseFunction.EaseQuadOut.Ease(progress);
+			progress = Eases.EaseQuadOut(progress);
 
 			Projectile.Center = position + GetSwingPosition(progress);
 			Projectile.direction = Projectile.spriteDirection = -Owner.direction * (Flip ? -1 : 1);
@@ -236,7 +236,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			float progress = Timer / SwingTime;
 
-			progress = EaseFunction.EaseQuadOut.Ease(progress);
+			progress = Eases.EaseQuadOut(progress);
 
 			float angleMaxDeviation = MathHelper.Pi * 0.85f;
 			float angleOffset = Owner.direction * (Flip ? -1 : 1) * MathHelper.Lerp(angleMaxDeviation, -angleMaxDeviation / 4, progress);

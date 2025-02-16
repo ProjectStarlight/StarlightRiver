@@ -301,7 +301,7 @@ namespace StarlightRiver.Content.Items.Misc
 			for (int k = 16; k > 0; k--)
 			{
 				float progress = 1 - (float)((16 - k) / (float)16);
-				Color color = lightColor * EaseFunction.EaseQuarticOut.Ease(progress) * 0.1f;
+				Color color = lightColor * Eases.EaseQuarticOut(progress) * 0.1f;
 
 				if (k > 0 && k < oldRotation.Count)
 					Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, color, oldRotation[k] + 0.78f, origin, Projectile.scale * scaleVec, effects, 0f);
@@ -356,11 +356,11 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			return currentAttack switch
 			{
-				PanAttack.Down => EaseFunction.EaseCircularInOut.Ease(input),
-				PanAttack.FirstUp => EaseFunction.EaseCircularInOut.Ease(input),
-				PanAttack.Spin => EaseFunction.EaseCircularInOut.Ease(input),
-				PanAttack.SecondUp => EaseFunction.EaseCircularInOut.Ease(input),
-				PanAttack.Crit => EaseFunction.EaseQuadInOut.Ease(input),
+				PanAttack.Down => Eases.EaseCircularInOut(input),
+				PanAttack.FirstUp => Eases.EaseCircularInOut(input),
+				PanAttack.Spin => Eases.EaseCircularInOut(input),
+				PanAttack.SecondUp => Eases.EaseCircularInOut(input),
+				PanAttack.Crit => Eases.EaseQuadInOut(input),
 				_ => input,
 			};
 		}
@@ -422,7 +422,7 @@ namespace StarlightRiver.Content.Items.Misc
 			for (int k = 8; k > 0; k--)
 			{
 				float progress = 1 - (float)((8 - k) / (float)8);
-				Color color = lightColor * EaseFunction.EaseQuarticOut.Ease(progress) * 0.2f;
+				Color color = lightColor * Eases.EaseQuarticOut(progress) * 0.2f;
 
 				if (k > 0 && k < oldRotation.Count)
 					Main.spriteBatch.Draw(tex, oldPosition[k] - Main.screenPosition, null, color, oldRotation[k], origin, Projectile.scale, effects, 0f);

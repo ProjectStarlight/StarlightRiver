@@ -529,13 +529,13 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ChargedStab()
 		{
-			var StabEase = new EaseBuilder();
-			StabEase.AddPoint(new Vector2(0, 0.6f), EaseFunction.EaseQuinticOut);
-			StabEase.AddPoint(new Vector2(60, 0.3f), EaseFunction.EaseQuinticOut);
-			StabEase.AddPoint(new Vector2(65, 0.3f), EaseFunction.EaseQuinticOut);
-			StabEase.AddPoint(new Vector2(95, 0.9f), EaseFunction.EaseQuinticOut);
-			StabEase.AddPoint(new Vector2(125, 0.9f), EaseFunction.EaseQuinticOut);
-			StabEase.AddPoint(new Vector2(145, 0.5f), EaseFunction.EaseQuinticOut);
+			var StabEase = new ModularEaseFunction();
+			StabEase.AddPoint(new Vector2(0, 0.6f), Eases.EaseQuinticOut);
+			StabEase.AddPoint(new Vector2(60, 0.3f), Eases.EaseQuinticOut);
+			StabEase.AddPoint(new Vector2(65, 0.3f), Eases.EaseQuinticOut);
+			StabEase.AddPoint(new Vector2(95, 0.9f), Eases.EaseQuinticOut);
+			StabEase.AddPoint(new Vector2(125, 0.9f), Eases.EaseQuinticOut);
+			StabEase.AddPoint(new Vector2(145, 0.5f), Eases.EaseQuinticOut);
 
 			Projectile.rotation = TargetAngle;
 			holdout = StabEase.Ease(Timer);

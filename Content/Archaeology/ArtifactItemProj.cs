@@ -22,9 +22,9 @@ namespace StarlightRiver.Content.Archaeology
 		public float fadeIn;
 		public bool spawnedDust = false;
 
-		public float Fade => EaseFunction.EaseCircularOut.Ease(fadeIn) * EaseFunction.EaseCircularOut.Ease((float)Math.Min(Projectile.timeLeft / 30f - 0.15f, 1));
+		public float Fade => Eases.EaseCircularOut(fadeIn) * Eases.EaseCircularOut((float)Math.Min(Projectile.timeLeft / 30f - 0.15f, 1));
 
-		public float Rotation => 1000 * EaseFunction.EaseCircularIn.Ease(1 - Progress);
+		public float Rotation => 1000 * Eases.EaseCircularIn(1 - Progress);
 
 		public float Progress => Projectile.timeLeft / 93f;
 

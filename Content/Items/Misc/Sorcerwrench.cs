@@ -243,7 +243,7 @@ namespace StarlightRiver.Content.Items.Misc
 				}
 
 				float opacity = (DESTRUCTION_TIME - Projectile.timeLeft) / (float)DESTRUCTION_TIME;
-				opacity = EaseFunction.EaseQuadIn.Ease(opacity);
+				opacity = Eases.EaseQuadIn(opacity);
 
 				foreach (Vector2 position in tilesToDestroy)
 				{
@@ -428,7 +428,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public void DrawOverTiles(SpriteBatch spriteBatch)
 		{
 			float opacity = (DESTRUCTION_TIME - Projectile.timeLeft) / (float)DESTRUCTION_TIME;
-			opacity = EaseFunction.EaseQuadIn.Ease(opacity);
+			opacity = Eases.EaseQuadIn(opacity);
 
 			Color color = Color.Lerp(Color.Salmon, Color.White, opacity) * opacity;
 
@@ -454,7 +454,7 @@ namespace StarlightRiver.Content.Items.Misc
 			dust.noGravity = true;
 			dust.scale *= Main.rand.NextFloat(0.8f, 2f);
 			dust.frame = new Rectangle(0, 0, 34, 36);
-			dust.color = Color.Lerp(Color.White, Color.Salmon, EaseFunction.EaseQuadIn.Ease(Main.rand.NextFloat() / 2));
+			dust.color = Color.Lerp(Color.White, Color.Salmon, Eases.EaseQuadIn(Main.rand.NextFloat() / 2));
 		}
 
 		public override Color? GetAlpha(Dust dust, Color lightColor)
@@ -500,7 +500,7 @@ namespace StarlightRiver.Content.Items.Misc
 			dust.scale *= Main.rand.NextFloat(0.2f, 0.4f);
 			dust.noLight = false;
 			dust.frame = new Rectangle(0, 0, 100, 100);
-			dust.color = Color.Lerp(Color.White, Color.Salmon, EaseFunction.EaseQuadIn.Ease(Main.rand.NextFloat()));
+			dust.color = Color.Lerp(Color.White, Color.Salmon, Eases.EaseQuadIn(Main.rand.NextFloat()));
 			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
 		}
 

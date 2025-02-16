@@ -324,9 +324,9 @@ namespace StarlightRiver.Content.Items.Haunted
 				{
 					DoIdleMovement();
 
-					rotTimer += (int)MathHelper.Lerp(1f, 50f, EaseFunction.EaseCubicIn.Ease(AttackTimer / 45f));
+					rotTimer += (int)MathHelper.Lerp(1f, 50f, Eases.EaseCubicIn(AttackTimer / 45f));
 
-					float lerper = MathHelper.Lerp(30f, 2f, EaseFunction.EaseCubicIn.Ease(AttackTimer / 45f));
+					float lerper = MathHelper.Lerp(30f, 2f, Eases.EaseCubicIn(AttackTimer / 45f));
 					if (Main.rand.NextBool(3))
 						Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2CircularEdge(lerper, lerper), ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(0.25f, 0.25f), 0, new Color(70, 200, 100), 0.5f);
 				}

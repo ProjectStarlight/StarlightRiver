@@ -251,7 +251,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 							pointOnChain++;
 
 						Vector2 pos = curvePositions[pointOnChain];
-						NPC.velocity = NPC.DirectionTo(pos) * (15f * EaseBuilder.EaseCircularInOut.Ease(pointOnChain / 14f));
+						NPC.velocity = NPC.DirectionTo(pos) * (15f * Eases.EaseCircularInOut(pointOnChain / 14f));
 						NPC.rotation += 0.55f;
 
 						if (pointOnChain == 7 && !playedWhoosh)
@@ -288,8 +288,8 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			{
 				float progress = (float)((NPC.oldPos.Length - k) / (float)NPC.oldPos.Length);
 				Vector2 drawPos = NPC.oldPos[k] - screenPos + origin + new Vector2(0f, NPC.gfxOffY);
-				Color color = new Color(100, 60, 255) * EaseFunction.EaseQuarticOut.Ease(progress);
-				Main.EntitySpriteDraw(texture, drawPos, null, color, NPC.rotation, origin, NPC.scale * EaseFunction.EaseQuadOut.Ease(progress), SpriteEffects.None, 0);
+				Color color = new Color(100, 60, 255) * Eases.EaseQuarticOut(progress);
+				Main.EntitySpriteDraw(texture, drawPos, null, color, NPC.rotation, origin, NPC.scale * Eases.EaseQuadOut(progress), SpriteEffects.None, 0);
 			}
 
 			Main.spriteBatch.End();
@@ -297,7 +297,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 			Main.spriteBatch.Draw(texture, NPC.Center - screenPos, null, Color.White, NPC.rotation, texture.Size() / 2f, NPC.scale, SpriteEffects.None, 0f);
 
-			Color glowColor = new Color(150, 120, 255, 0) * Math.Clamp(EaseFunction.EaseQuadOut.Ease((float)Math.Sin((double)(Main.GlobalTimeWrappedHourly * 2f))), 0.25f, 1f);
+			Color glowColor = new Color(150, 120, 255, 0) * Math.Clamp(Eases.EaseQuadOut((float)Math.Sin((double)(Main.GlobalTimeWrappedHourly * 2f))), 0.25f, 1f);
 			Main.spriteBatch.Draw(glowTex, NPC.Center - screenPos, null, glowColor, NPC.rotation, glowTex.Size() / 2, NPC.scale, SpriteEffects.None, 0f);
 
 			if (flashTimer > 0)

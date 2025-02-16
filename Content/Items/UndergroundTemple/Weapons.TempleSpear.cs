@@ -145,7 +145,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 				if (Timer < 15) // Pullback
 				{
-					float lerper = EaseBuilder.EaseQuinticOut.Ease(Timer / 15f);
+					float lerper = Eases.EaseQuinticOut(Timer / 15f);
 					offset = Vector2.Lerp(new Vector2(100, 0), new Vector2(50, 0), lerper);
 
 					if (Timer > 1)
@@ -177,12 +177,12 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 				if (Timer < 10)
 				{
-					float lerper = EaseBuilder.EaseQuinticOut.Ease(Timer / 10f);
+					float lerper = Eases.EaseQuinticOut(Timer / 10f);
 					offset = Vector2.Lerp(new Vector2(50, 0), new Vector2(110, 0), lerper);
 				}
 				else if (Timer < 35f)
 				{
-					float lerper = EaseBuilder.EaseQuinticIn.Ease((Timer - 10f) / 25f);
+					float lerper = Eases.EaseQuinticIn((Timer - 10f) / 25f);
 					offset = Vector2.Lerp(new Vector2(110, 0), new Vector2(40, 0), lerper);
 				}
 			}

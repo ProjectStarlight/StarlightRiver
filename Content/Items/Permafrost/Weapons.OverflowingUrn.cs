@@ -382,7 +382,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			float rot = 0f;
 
 			Vector2 rotationVector = (Projectile.rotation + 1.57f).ToRotationVector2();
-			Vector2 capPos = Projectile.Center - Main.screenPosition + new Vector2(0, Owner.gfxOffY) + rotationVector * -(20 * (capLeaving ? EaseFunction.EaseCubicIn.Ease(1 - capOpacity) : EaseFunction.EaseCubicOut.Ease(1 - capOpacity)));
+			Vector2 capPos = Projectile.Center - Main.screenPosition + new Vector2(0, Owner.gfxOffY) + rotationVector * -(20 * (capLeaving ? Eases.EaseCubicIn(1 - capOpacity) : Eases.EaseCubicOut(1 - capOpacity)));
 			Vector2 urnPos = Projectile.Center - Main.screenPosition + new Vector2(0, Owner.gfxOffY);
 
 			if (!capLeaving)

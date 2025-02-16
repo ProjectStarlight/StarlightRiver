@@ -348,7 +348,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 					{
 						float lerper = stabTimer / (totalTime * 0.5f);
 
-						offset = Vector2.Lerp(new Vector2(75, 0), stabVec, EaseFunction.EaseCircularOut.Ease(lerper)).RotatedBy(Projectile.rotation - MathHelper.PiOver2);
+						offset = Vector2.Lerp(new Vector2(75, 0), stabVec, Eases.EaseCircularOut(lerper)).RotatedBy(Projectile.rotation - MathHelper.PiOver2);
 					}
 					else
 					{
@@ -361,7 +361,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 						float lerper = (stabTimer - totalTime * 0.5f) / (float)(totalTime * 0.5f);
 
-						offset = Vector2.Lerp(stabVec, new Vector2(75, 0), EaseFunction.EaseCircularOut.Ease(lerper)).RotatedBy(Projectile.rotation - MathHelper.PiOver2);
+						offset = Vector2.Lerp(stabVec, new Vector2(75, 0), Eases.EaseCircularOut(lerper)).RotatedBy(Projectile.rotation - MathHelper.PiOver2);
 					}
 				}
 				else
@@ -576,7 +576,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 			if (Projectile.timeLeft < 25 && Projectile.timeLeft > 15)
 			{
-				float progress = EaseFunction.EaseQuinticInOut.Ease(1f - (Projectile.timeLeft - 15) / 10f);
+				float progress = Eases.EaseQuinticInOut(1f - (Projectile.timeLeft - 15) / 10f);
 				Projectile.rotation = MathHelper.Lerp(0, 3.5f * Projectile.direction, progress);
 			}
 			else if (Projectile.timeLeft <= 15)
@@ -587,12 +587,12 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				if (Projectile.timeLeft > 5f)
 				{
 					progress = 1f - (Projectile.timeLeft - 5f) / 10f;
-					offset = Vector2.Lerp(new Vector2(0, 0), new Vector2(-30, 0), EaseFunction.EaseQuinticOut.Ease(progress)).RotatedBy(Projectile.rotation - MathHelper.PiOver2);
+					offset = Vector2.Lerp(new Vector2(0, 0), new Vector2(-30, 0), Eases.EaseQuinticOut(progress)).RotatedBy(Projectile.rotation - MathHelper.PiOver2);
 				}
 				else
 				{
 					progress = 1f - Projectile.timeLeft / 5f;
-					offset = Vector2.Lerp(new Vector2(-30, 0), new Vector2(10, 0), EaseFunction.EaseQuinticInOut.Ease(progress)).RotatedBy(Projectile.rotation - MathHelper.PiOver2);
+					offset = Vector2.Lerp(new Vector2(-30, 0), new Vector2(10, 0), Eases.EaseQuinticInOut(progress)).RotatedBy(Projectile.rotation - MathHelper.PiOver2);
 				}
 			}
 

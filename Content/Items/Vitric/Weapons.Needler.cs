@@ -145,7 +145,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			SpriteEffects spriteEffects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-			Vector2 position = Projectile.Center + Vector2.Lerp(Vector2.Zero, new Vector2(-4f * Owner.direction, 0f), EaseBuilder.EaseCircularIn.Ease(Timer < 75f ? Timer / 75f : 1f)).RotatedBy(Projectile.rotation) - Main.screenPosition;
+			Vector2 position = Projectile.Center + Vector2.Lerp(Vector2.Zero, new Vector2(-4f * Owner.direction, 0f), Eases.EaseCircularIn(Timer < 75f ? Timer / 75f : 1f)).RotatedBy(Projectile.rotation) - Main.screenPosition;
 
 			Main.spriteBatch.Draw(tex, position, frame, lightColor, Projectile.rotation, frame.Size() / 2f, Projectile.scale, spriteEffects, 0f);
 
@@ -486,13 +486,13 @@ namespace StarlightRiver.Content.Items.Vitric
 		private void ManageTrail()
 		{
 			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(190), factor => factor * 4.5f, factor =>
-			Color.Lerp(new Color(255, 100, 20), new Color(35, 70, 120), EaseBuilder.EaseQuarticOut.Ease(1f - factor.X)) * (1f - stuckTimer / 10f));
+			Color.Lerp(new Color(255, 100, 20), new Color(35, 70, 120), Eases.EaseQuarticOut(1f - factor.X)) * (1f - stuckTimer / 10f));
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
 
 			trail2 ??= new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(190), factor => factor * 4f, factor =>
-			Color.Lerp(new Color(255, 130, 20), new Color(50, 100, 170), EaseBuilder.EaseQuarticOut.Ease(1f - factor.X)) * (1f - stuckTimer / 10f));
+			Color.Lerp(new Color(255, 130, 20), new Color(50, 100, 170), Eases.EaseQuarticOut(1f - factor.X)) * (1f - stuckTimer / 10f));
 
 			trail2.Positions = cache.ToArray();
 			trail2.NextPosition = Projectile.Center + Projectile.velocity;
@@ -534,7 +534,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override string Texture => AssetDirectory.Invisible;
 		private float Progress => Utils.Clamp(1 - Projectile.timeLeft / 30f, 0f, 1f);
 
-		private float Radius => Projectile.ai[0] * EaseBuilder.EaseQuinticOut.Ease(Progress);
+		private float Radius => Projectile.ai[0] * Eases.EaseQuinticOut(Progress);
 
 		public override void SetDefaults()
 		{
@@ -568,7 +568,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				float rot = Main.rand.NextFloat(0, 6.28f);
 
 				//Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedBy(rot) * Radius, ModContent.DustType<PixelatedGlow>(),
-				//Vector2.One.RotatedBy(rot) * 0.5f, 0, Color.Lerp(new Color(255, 200, 50, 0), new Color(255, 50, 20, 0), EaseBuilder.EaseQuinticOut.Ease(Progress)), Main.rand.NextFloat(0.2f, 0.3f));
+				//Vector2.One.RotatedBy(rot) * 0.5f, 0, Color.Lerp(new Color(255, 200, 50, 0), new Color(255, 50, 20, 0), Eases.EaseQuinticOut(Progress)), Main.rand.NextFloat(0.2f, 0.3f));
 
 				Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedBy(rot) * Radius, DustID.Torch,
 					Vector2.One.RotatedBy(rot) * 0.5f, 0, default, Main.rand.NextFloat(1.5f, 3f)).noGravity = true;
@@ -622,9 +622,9 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 40, new TriangularTip(1), factor => 40 * (1f - Progress), factor => Color.Lerp(new Color(255, 180, 20), new Color(255, 20, 20), EaseBuilder.EaseQuinticInOut.Ease(Progress)));
+			trail ??= new Trail(Main.instance.GraphicsDevice, 40, new TriangularTip(1), factor => 40 * (1f - Progress), factor => Color.Lerp(new Color(255, 180, 20), new Color(255, 20, 20), Eases.EaseQuinticInOut(Progress)));
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 40, new TriangularTip(1), factor => 30 * (1f - Progress), factor => Color.Lerp(new Color(255, 255, 255), new Color(255, 180, 20), EaseBuilder.EaseQuinticInOut.Ease(Progress)));
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 40, new TriangularTip(1), factor => 30 * (1f - Progress), factor => Color.Lerp(new Color(255, 255, 255), new Color(255, 180, 20), Eases.EaseQuinticInOut(Progress)));
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = cache[39];
@@ -714,7 +714,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 				if (explodeTimer <= 30)
 				{
-					float lerper = EaseBuilder.EaseQuinticOut.Ease(explodeTimer / 30f);
+					float lerper = Eases.EaseQuinticOut(explodeTimer / 30f);
 
 					if (explodeTimer >= 10)
 					{
@@ -744,9 +744,9 @@ namespace StarlightRiver.Content.Items.Vitric
 			{
 				float lerper = explodeTimer / 20f;
 
-				Main.spriteBatch.Draw(starTex, npc.Center - Main.screenPosition, null, new Color(255, 50, 20, 0), 1.7f * EaseBuilder.EaseQuadIn.Ease(lerper), starTex.Size() / 2f, 3f * lerper, 0f, 0f);
+				Main.spriteBatch.Draw(starTex, npc.Center - Main.screenPosition, null, new Color(255, 50, 20, 0), 1.7f * Eases.EaseQuadIn(lerper), starTex.Size() / 2f, 3f * lerper, 0f, 0f);
 
-				Main.spriteBatch.Draw(starTex, npc.Center - Main.screenPosition, null, new Color(255, 200, 100, 0), 1.7f * EaseBuilder.EaseQuadIn.Ease(lerper), starTex.Size() / 2f, 2.8f * lerper, 0f, 0f);
+				Main.spriteBatch.Draw(starTex, npc.Center - Main.screenPosition, null, new Color(255, 200, 100, 0), 1.7f * Eases.EaseQuadIn(lerper), starTex.Size() / 2f, 2.8f * lerper, 0f, 0f);
 
 				Main.spriteBatch.Draw(bloomTex, npc.Center - Main.screenPosition, null, new Color(255, 50, 20, 0), 1f * lerper, bloomTex.Size() / 2f, 2f * (1f - lerper), 0f, 0f);
 

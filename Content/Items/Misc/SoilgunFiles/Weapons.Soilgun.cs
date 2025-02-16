@@ -111,7 +111,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 		public ref float Charge => ref Projectile.ai[1];
 		public ref float MaxCharge => ref Projectile.ai[2];
 		public Vector2 ArmPosition => Owner.RotatedRelativePoint(Owner.MountedCenter, true)
-			+ Vector2.Lerp(Vector2.Zero, new Vector2(-6f, 0f), EaseBuilder.EaseCircularInOut.Ease(ChargeProgress < 0.35f ? ChargeProgress / 0.35f : 1f)).RotatedBy(Projectile.rotation)
+			+ Vector2.Lerp(Vector2.Zero, new Vector2(-6f, 0f), Eases.EaseCircularInOut(ChargeProgress < 0.35f ? ChargeProgress / 0.35f : 1f)).RotatedBy(Projectile.rotation)
 			+ new Vector2(18f, -4f * Owner.direction).RotatedBy(Projectile.velocity.ToRotation()) + ArmOffset;
 
 		public Vector2 BarrelPosition => ArmPosition + Projectile.velocity * Projectile.width * 0.5f + BarrelOffset;
@@ -204,7 +204,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 				float progress = 1f - Projectile.timeLeft / 45f;
 
 				if (Projectile.timeLeft < 8f)
-					fade = EaseBuilder.EaseCircularIn.Ease(Projectile.timeLeft / 8f);
+					fade = Eases.EaseCircularIn(Projectile.timeLeft / 8f);
 
 				color *= 1f - progress;
 
@@ -216,16 +216,16 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 				{
 					float lerper = progress / 0.1f;
 
-					position += Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(0f, recoilDist, EaseBuilder.EaseCircularOut.Ease(lerper));
+					position += Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(0f, recoilDist, Eases.EaseCircularOut(lerper));
 
-					rotation += MathHelper.Lerp(0f, recoilRot * Projectile.direction, EaseBuilder.EaseQuinticOut.Ease(lerper));
+					rotation += MathHelper.Lerp(0f, recoilRot * Projectile.direction, Eases.EaseQuinticOut(lerper));
 				}
 				else
 				{
 					float lerper = (progress - 0.1f) / 0.9f;
-					position += Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(recoilDist, 0f, EaseBuilder.EaseBackOut.Ease(lerper));
+					position += Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(recoilDist, 0f, Eases.EaseBackOut(lerper));
 
-					rotation += MathHelper.Lerp(recoilRot * Projectile.direction, 0f, EaseBuilder.EaseBackOut.Ease(lerper));
+					rotation += MathHelper.Lerp(recoilRot * Projectile.direction, 0f, Eases.EaseBackOut(lerper));
 				}
 			}
 
@@ -241,7 +241,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 			if (flashTimer > 0)
 			{
-				rotation = 2f * EaseBuilder.EaseCircularInOut.Ease(flashTimer / 25f);
+				rotation = 2f * Eases.EaseCircularInOut(flashTimer / 25f);
 
 				Main.spriteBatch.Draw(starTex, BarrelPosition - Main.screenPosition,
 					null, color * (flashTimer / 25f), rotation, starTex.Size() / 2f, Projectile.scale * 0.55f, 0f, 0f);

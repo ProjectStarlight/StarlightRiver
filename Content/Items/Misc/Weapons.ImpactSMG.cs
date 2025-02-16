@@ -614,12 +614,12 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (throwTimer < 10)
 			{
-				float progress = EaseFunction.EaseCircularInOut.Ease(throwTimer / 10f);
+				float progress = Eases.EaseCircularInOut(throwTimer / 10f);
 				Projectile.velocity = Vector2.One.RotatedBy(mousePos.ToRotation() + MathHelper.Lerp(0f, -1.85f, progress) * Owner.direction - MathHelper.PiOver4);
 			}
 			else if (throwTimer < 20)
 			{
-				float progress = EaseFunction.EaseCircularInOut.Ease((throwTimer - 10f) / 10f);
+				float progress = Eases.EaseCircularInOut((throwTimer - 10f) / 10f);
 				Projectile.velocity = Vector2.One.RotatedBy(mousePos.ToRotation() + MathHelper.Lerp(-1.85f, 0.35f, progress) * Owner.direction - MathHelper.PiOver4);
 			}
 			else
@@ -691,12 +691,12 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (throwTimer < 20)
 			{
-				float progress = EaseFunction.EaseCircularInOut.Ease(throwTimer / 20f);
+				float progress = Eases.EaseCircularInOut(throwTimer / 20f);
 				Projectile.velocity = Vector2.One.RotatedBy(mousePos.ToRotation() + MathHelper.Lerp(0f, -1.85f, progress) * Owner.direction - MathHelper.PiOver4);
 			}
 			else if (throwTimer < 30)
 			{
-				float progress = EaseFunction.EaseCircularInOut.Ease((throwTimer - 20f) / 10f);
+				float progress = Eases.EaseCircularInOut((throwTimer - 20f) / 10f);
 				Projectile.velocity = Vector2.One.RotatedBy(mousePos.ToRotation() + MathHelper.Lerp(-1.85f, 0.35f, progress) * Owner.direction - MathHelper.PiOver4);
 			}
 			else

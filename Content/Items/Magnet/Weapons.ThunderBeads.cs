@@ -246,7 +246,7 @@ namespace StarlightRiver.Content.Items.Magnet
 								if (factor.X > 0.99f)
 									return Color.Transparent;
 
-								return new Color(160, 220, 255) * fade * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X);
+								return new Color(160, 220, 255) * fade * 0.1f * Eases.EaseCubicOut(1 - factor.X);
 							});
 			}
 
@@ -257,8 +257,8 @@ namespace StarlightRiver.Content.Items.Magnet
 			{
 				trail2 = new Trail(Main.instance.GraphicsDevice, segments + 1, new NoTip(), factor => 3 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
 							{
-								float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
-								return Color.Lerp(baseColor, endColor, EaseFunction.EaseCubicIn.Ease(1 - progress)) * fade * progress;
+								float progress = Eases.EaseCubicOut(1 - factor.X);
+								return Color.Lerp(baseColor, endColor, Eases.EaseCubicIn(1 - progress)) * fade * progress;
 							});
 			}
 

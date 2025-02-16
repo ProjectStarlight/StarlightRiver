@@ -136,7 +136,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public ref float UseTime => ref Projectile.ai[1];
 		public ref float PressureTimer => ref Projectile.ai[2];
 		public bool CanHold => Owner.channel && !Owner.CCed && !Owner.noItems;
-		public Vector2 ArmPosition => Owner.RotatedRelativePoint(Owner.MountedCenter, true) + new Vector2(28f + MathHelper.Lerp(0f, -12f, EaseBuilder.EaseQuarticIn.Ease(Timer < 150f ? Timer / 150f : 1f)), 16f * Owner.direction).RotatedBy(Projectile.rotation);
+		public Vector2 ArmPosition => Owner.RotatedRelativePoint(Owner.MountedCenter, true) + new Vector2(28f + MathHelper.Lerp(0f, -12f, Eases.EaseQuarticIn(Timer < 150f ? Timer / 150f : 1f)), 16f * Owner.direction).RotatedBy(Projectile.rotation);
 		public Vector2 BarrelPosition => ArmPosition + Projectile.velocity * Projectile.width * 0.5f + new Vector2(-2f, -2f * Owner.direction).RotatedBy(Projectile.rotation);
 		public Player Owner => Main.player[Projectile.owner];
 		public override string Texture => AssetDirectory.MiscItem + Name;
@@ -226,7 +226,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 				PressureTimer = MathHelper.Lerp(oldPressureTimer, newPressureTimer, lerper);
 
-				Vector2 firePos = BarrelPosition + Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(0f, -15f, EaseBuilder.EaseCircularOut.Ease(lerper));
+				Vector2 firePos = BarrelPosition + Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(0f, -15f, Eases.EaseCircularOut(lerper));
 
 				Lighting.AddLight(firePos, new Color(255, 255, 20).ToVector3() * new Vector3(1.5f * (1f - lerper), 1.5f * (1f - lerper), 1.5f * (1f - lerper)));
 
@@ -246,11 +246,11 @@ namespace StarlightRiver.Content.Items.Misc
 					dust2.customData = new Color(150, 150, 150);
 					dust2.noGravity = true;
 
-					Vector2 pos = firePos + Main.rand.NextVector2Circular(150f, 150f) * EaseBuilder.EaseCircularInOut.Ease(1f - lerper);
+					Vector2 pos = firePos + Main.rand.NextVector2Circular(150f, 150f) * Eases.EaseCircularInOut(1f - lerper);
 
 					Dust.NewDustPerfect(pos, ModContent.DustType<PixelatedImpactLineDust>(), pos.DirectionTo(firePos) * 1.5f, 0, new Color(255, 100, 20, 0), 0.075f);
 
-					pos = firePos + Main.rand.NextVector2Circular(150f, 150f) * EaseBuilder.EaseCircularInOut.Ease(1f - lerper);
+					pos = firePos + Main.rand.NextVector2Circular(150f, 150f) * Eases.EaseCircularInOut(1f - lerper);
 
 					Dust.NewDustPerfect(pos, ModContent.DustType<PixelatedGlow>(), pos.DirectionTo(firePos) * 1.5f, 0, new Color(255, 100, 20, 0), 0.2f);
 				}
@@ -381,7 +381,7 @@ namespace StarlightRiver.Content.Items.Misc
 				return;
 			}
 
-			float spinUpTime = (int)(UseTime * MathHelper.Lerp(5f, 1f, EaseBuilder.EaseCircularOut.Ease(Pressure)));
+			float spinUpTime = (int)(UseTime * MathHelper.Lerp(5f, 1f, Eases.EaseCircularOut(Pressure)));
 
 			if (maxPressureTimer > 0)
 				spinUpTime = (int)(UseTime * MathHelper.Lerp(1f, 3f, maxPressureTimer / 300f));
@@ -460,16 +460,16 @@ namespace StarlightRiver.Content.Items.Misc
 				{
 					float interpolant = progress / 0.1f;
 
-					position += Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(0f, -15f * recoilStrength, EaseBuilder.EaseCircularOut.Ease(interpolant));
+					position += Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(0f, -15f * recoilStrength, Eases.EaseCircularOut(interpolant));
 
-					rotation += MathHelper.Lerp(0f, -0.5f * Projectile.direction, EaseBuilder.EaseQuinticOut.Ease(interpolant));
+					rotation += MathHelper.Lerp(0f, -0.5f * Projectile.direction, Eases.EaseQuinticOut(interpolant));
 				}
 				else
 				{
 					float interpolant = (progress - 0.1f) / 0.9f;
-					position += Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(-15f * recoilStrength, 0f, EaseBuilder.EaseBackOut.Ease(interpolant));
+					position += Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(-15f * recoilStrength, 0f, Eases.EaseBackOut(interpolant));
 
-					rotation += MathHelper.Lerp(-0.5f * Projectile.direction, 0f, EaseBuilder.EaseBackOut.Ease(interpolant));
+					rotation += MathHelper.Lerp(-0.5f * Projectile.direction, 0f, Eases.EaseBackOut(interpolant));
 				}
 			}
 
@@ -477,7 +477,7 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				float progress = 1f - rightClickAnimationTimer / 35f;
 
-				position += Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(0f, -15f, EaseBuilder.EaseCircularOut.Ease(progress));
+				position += Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(0f, -15f, Eases.EaseCircularOut(progress));
 			}
 
 			float lerper = Timer < 150f ? Timer / 150f : 1f;
@@ -506,9 +506,9 @@ namespace StarlightRiver.Content.Items.Misc
 				{
 					float progress = 1f - rightClickAnimationTimer / 35f;
 
-					position += Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(0f, -15f, EaseBuilder.EaseCircularOut.Ease(progress));
+					position += Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(0f, -15f, Eases.EaseCircularOut(progress));
 
-					firePos += Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(0f, -15f, EaseBuilder.EaseCircularOut.Ease(progress));
+					firePos += Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(0f, -15f, Eases.EaseCircularOut(progress));
 				}
 
 				float fadeIn = PressureTimer < 250f ? PressureTimer / 250f : 1f;
@@ -572,7 +572,7 @@ namespace StarlightRiver.Content.Items.Misc
 				{
 					float progress = 1f - rightClickAnimationTimer / 35f;
 
-					firePos += Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(0f, -15f, EaseBuilder.EaseCircularOut.Ease(progress));
+					firePos += Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(0f, -15f, Eases.EaseCircularOut(progress));
 				}
 
 				float interpolant = (Pressure - 0.5f) / 0.5f;
@@ -594,7 +594,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (pressureFlashTimer > 0)
 			{
-				rotation = 2f * EaseBuilder.EaseCircularInOut.Ease(pressureFlashTimer / 20f);
+				rotation = 2f * Eases.EaseCircularInOut(pressureFlashTimer / 20f);
 
 				Main.spriteBatch.Draw(starTex, position + new Vector2(-17f, 4f * Projectile.direction).RotatedBy(Projectile.rotation) + off,
 					null, color * (pressureFlashTimer / 20f), rotation, starTex.Size() / 2f, Projectile.scale * 0.55f, 0f, 0f);

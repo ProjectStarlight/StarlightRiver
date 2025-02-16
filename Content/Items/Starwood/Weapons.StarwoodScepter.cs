@@ -361,7 +361,7 @@ namespace StarlightRiver.Content.Items.Starwood
 					rotationalVelocity = Vector2.Lerp(rotationalVelocity, Projectile.DirectionTo(otherProj.Center), 0.15f);
 					Projectile.rotation = rotationalVelocity.ToRotation();
 
-					Projectile.Center = Vector2.Lerp(Projectile.Center, otherProj.Center, EaseBuilder.EaseCubicIn.Ease((empowermentTimer - 25f) / 45f));
+					Projectile.Center = Vector2.Lerp(Projectile.Center, otherProj.Center, Eases.EaseCubicIn((empowermentTimer - 25f) / 45f));
 				}
 
 				if (Main.rand.NextBool(5))
@@ -609,7 +609,7 @@ namespace StarlightRiver.Content.Items.Starwood
 					if (AttackTimer < 15f)
 					{
 						Projectile.velocity *= 0.94f;
-						Projectile.rotation += MathHelper.Lerp(0.05f, 1f, EaseBuilder.EaseCircularIn.Ease(AttackTimer / 15f));
+						Projectile.rotation += MathHelper.Lerp(0.05f, 1f, Eases.EaseCircularIn(AttackTimer / 15f));
 					}
 					else
 					{

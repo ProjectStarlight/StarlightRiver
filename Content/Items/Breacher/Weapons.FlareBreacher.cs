@@ -424,7 +424,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
 			Texture2D starTex = Assets.Items.Breacher.SupplyBeaconProj_Star.Value;
 
-			Color color = Color.Lerp(new Color(255, 50, 200, 0), new Color(50, 230, 255, 0), EaseBuilder.EaseCircularInOut.Ease(1f - lerper));
+			Color color = Color.Lerp(new Color(255, 50, 200, 0), new Color(50, 230, 255, 0), Eases.EaseCircularInOut(1f - lerper));
 
 			Main.spriteBatch.Draw(bloomTex, dust.position - Main.screenPosition, null, color * 0.25f * lerper, dust.rotation, bloomTex.Size() / 2f, dust.scale * 1.25f, 0f, 0f);
 
@@ -434,7 +434,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 			Main.spriteBatch.Draw(texBlur, dust.position - Main.screenPosition, null, color * 0.5f * lerper, dust.rotation, texBlur.Size() / 2f, dust.scale, 0f, 0f);
 
-			Main.spriteBatch.Draw(starTex, dust.position - Main.screenPosition, null, color * lerper, dust.rotation, starTex.Size() / 2f, dust.scale * 0.75f * EaseBuilder.EaseCircularInOut.Ease(lerper), 0f, 0f);
+			Main.spriteBatch.Draw(starTex, dust.position - Main.screenPosition, null, color * lerper, dust.rotation, starTex.Size() / 2f, dust.scale * 0.75f * Eases.EaseCircularInOut(lerper), 0f, 0f);
 
 			return false;
 		}
@@ -553,7 +553,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			if ((int)dust.customData == 3)
 				tex = Assets.SmokeTransparent_3.Value;
 
-			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () => Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, Color.Lerp(dust.color, new Color(50, 50, 50), EaseBuilder.EaseCircularIn.Ease(1f - lerper)) * lerper, dust.rotation, tex.Size() / 2f, dust.scale, 0f, 0f));
+			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () => Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, Color.Lerp(dust.color, new Color(50, 50, 50), Eases.EaseCircularIn(1f - lerper)) * lerper, dust.rotation, tex.Size() / 2f, dust.scale, 0f, 0f));
 
 			return false;
 		}

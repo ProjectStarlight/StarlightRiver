@@ -181,7 +181,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 						flashTimer = 15;
 					}
 
-					Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.Lerp(0, -3f * Projectile.direction, EaseBuilder.EaseCubicInOut.Ease(Charge / MAXCHARGE));
+					Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.Lerp(0, -3f * Projectile.direction, Eases.EaseCubicInOut(Charge / MAXCHARGE));
 					Charge++;
 				}
 
@@ -195,7 +195,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 				if (SwingTimer < MAXSWINGTIME)
 				{
 					Projectile.timeLeft = 2;
-					Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.Lerp(MathHelper.Lerp(0, -3f * Projectile.direction, Charge / MAXCHARGE), 2f * Projectile.direction, EaseBuilder.EaseCubicInOut.Ease(SwingTimer / MAXSWINGTIME));
+					Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.Lerp(MathHelper.Lerp(0, -3f * Projectile.direction, Charge / MAXCHARGE), 2f * Projectile.direction, Eases.EaseCubicInOut(SwingTimer / MAXSWINGTIME));
 					SwingTimer++;
 				}
 
@@ -373,7 +373,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		protected float Progress => 1 - Projectile.timeLeft / 25f;
 
-		protected virtual float Radius => Projectile.ai[0] * EaseBuilder.EaseCircularInOut.Ease(Progress);
+		protected virtual float Radius => Projectile.ai[0] * Eases.EaseCircularInOut(Progress);
 
 		public override string Texture => AssetDirectory.Invisible;
 

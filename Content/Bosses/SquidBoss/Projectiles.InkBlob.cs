@@ -166,7 +166,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
 			Texture2D tex = Assets.Keys.GlowSoft.Value;
-			Color color = new Color(0.7f, 0.8f, 0.5f) * EaseFunction.EaseCubicOut.Ease(MathHelper.Max(0, (Projectile.timeLeft - 90) / 30f));
+			Color color = new Color(0.7f, 0.8f, 0.5f) * Eases.EaseCubicOut(MathHelper.Max(0, (Projectile.timeLeft - 90) / 30f));
 
 			for (int i = 0; i < 3; i++)
 			{

@@ -295,7 +295,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			if (Projectile.frame < 18)
 				origin = Vector2.Lerp(startOrigin, midOrigin, Projectile.frame / 18f);
 			else
-				origin = Vector2.Lerp(midOrigin, endOrigin, EaseFunction.EaseQuadOut.Ease((Projectile.frame - 18) / 4f));
+				origin = Vector2.Lerp(midOrigin, endOrigin, Eases.EaseQuadOut((Projectile.frame - 18) / 4f));
 
 			SpriteEffects effects = SpriteEffects.None;
 			float rot = direction.ToRotation();
@@ -647,7 +647,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 				{
 					float rot = i / 4f * 6.28f;
 
-					float ease = EaseFunction.EaseQuinticIn.Ease(CrosshairSin);
+					float ease = Eases.EaseQuinticIn(CrosshairSin);
 					Vector2 origin = crosshairTex.Size() * (1.75f + 0.25f * (float)Math.Cos(ease * 3.14f));
 					Main.spriteBatch.Draw(crosshairTex, Projectile.Center - Main.screenPosition, null, Color.Red * CrosshairSin, crosshairRotation + rot, origin, 1, SpriteEffects.None, 0f);
 				}

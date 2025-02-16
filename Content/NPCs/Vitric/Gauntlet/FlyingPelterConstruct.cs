@@ -323,7 +323,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			Texture2D predictorTex = Assets.Keys.Shine.Value;
 			float rot = bowArmRotation + 1.57f;
 
-			float charge = EaseFunction.EaseQuadInOut.Ease(MathHelper.Clamp(BowFrameCounter / 100f, 0, 1));
+			float charge = Eases.EaseQuadInOut(MathHelper.Clamp(BowFrameCounter / 100f, 0, 1));
 			float opacity = (float)Math.Sqrt(charge);
 
 			if (BowFrameCounter > 100)

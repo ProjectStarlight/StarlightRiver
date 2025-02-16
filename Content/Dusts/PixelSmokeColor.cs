@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Dusts
 			if (pair[0] is Color color_)
 				fadeColor = color_;
 
-			Color color = Color.Lerp(dust.color, fadeColor ?? Color.Black, EaseBuilder.EaseQuinticInOut.Ease(1f - lerper));
+			Color color = Color.Lerp(dust.color, fadeColor ?? Color.Black, Eases.EaseQuinticInOut(1f - lerper));
 
 			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "SmokeTransparent_" + variant).Value;
 			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () =>

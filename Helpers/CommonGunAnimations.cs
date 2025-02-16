@@ -70,12 +70,12 @@ namespace StarlightRiver.Helpers
 			if (animProgress < animationRatio.Value.X)
 			{
 				float lerper = animProgress / animationRatio.Value.X;
-				itemPosition += itemRotation.ToRotationVector2() * MathHelper.Lerp(0f, recoil, EaseBuilder.EaseCircularOut.Ease(lerper));
+				itemPosition += itemRotation.ToRotationVector2() * MathHelper.Lerp(0f, recoil, Eases.EaseCircularOut(lerper));
 			}
 			else
 			{
 				float lerper = (animProgress - animationRatio.Value.X) / animationRatio.Value.Y;
-				itemPosition += itemRotation.ToRotationVector2() * MathHelper.Lerp(recoil, 0f, EaseBuilder.EaseBackInOut.Ease(lerper));
+				itemPosition += itemRotation.ToRotationVector2() * MathHelper.Lerp(recoil, 0f, Eases.EaseBackInOut(lerper));
 			}
 
 			CleanHoldStyle(player, itemRotation, itemPosition, itemSize, new Vector2?(itemOrigin), false, false, true);
@@ -105,12 +105,12 @@ namespace StarlightRiver.Helpers
 			if (animProgress < animationRatio.Value.X)
 			{
 				float lerper = animProgress / animationRatio.Value.X;
-				rotation += MathHelper.Lerp(0f, recoil, EaseBuilder.EaseCircularOut.Ease(lerper)) * player.direction;
+				rotation += MathHelper.Lerp(0f, recoil, Eases.EaseCircularOut(lerper)) * player.direction;
 			}
 			else
 			{
 				float lerper = (animProgress - animationRatio.Value.X) / animationRatio.Value.Y;
-				rotation += MathHelper.Lerp(recoil, 0, EaseBuilder.EaseBackInOut.Ease(lerper)) * player.direction;
+				rotation += MathHelper.Lerp(recoil, 0, Eases.EaseBackInOut(lerper)) * player.direction;
 			}
 
 			Player.CompositeArmStretchAmount stretch = Player.CompositeArmStretchAmount.Full;

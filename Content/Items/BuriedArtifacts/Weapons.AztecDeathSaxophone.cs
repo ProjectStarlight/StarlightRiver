@@ -304,7 +304,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 	{
 		public float Radius => 50 * Projectile.scale;
 
-		public float RadiusIncrease => 0.15f + 0.35f * EaseBuilder.EaseCircularInOut.Ease(Projectile.timeLeft / 45f);
+		public float RadiusIncrease => 0.15f + 0.35f * Eases.EaseCircularInOut(Projectile.timeLeft / 45f);
 		public override string Texture => AssetDirectory.ArtifactItem + Name;
 
 		public override void SetDefaults()
