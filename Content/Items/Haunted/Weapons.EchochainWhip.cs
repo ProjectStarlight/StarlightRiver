@@ -290,14 +290,14 @@ namespace StarlightRiver.Content.Items.Haunted
 
 			if (progress < 0.25f)
 			{
-				handRotation = MathHelper.Lerp(-1f, -3f, EaseBuilder.EaseCircularInOut.Ease(1f - (DeathTimer - 22.5f) / 7.5f)) * Owner.direction;
+				handRotation = MathHelper.Lerp(-1f, -3f, Eases.EaseCircularInOut(1f - (DeathTimer - 22.5f) / 7.5f)) * Owner.direction;
 			}
 			else
 			{
-				handRotation = MathHelper.Lerp(-3f, -0.5f, EaseBuilder.EaseQuarticIn.Ease(1f - DeathTimer / 22.5f)) * Owner.direction;
+				handRotation = MathHelper.Lerp(-3f, -0.5f, Eases.EaseQuarticIn(1f - DeathTimer / 22.5f)) * Owner.direction;
 				if (progress >= 0.9f && !playedSound)
 				{
-					Helper.PlayPitched("Effects/HeavyWhooshShort", 1f, 0f, Owner.Center);
+					SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 1f, 0f, Owner.Center);
 
 					CameraSystem.shake += 6;
 					playedSound = true;
@@ -316,7 +316,7 @@ namespace StarlightRiver.Content.Items.Haunted
 				DeathTimer = 30f;
 				oldMouse = OwnerMouse;
 				CameraSystem.shake += 4;
-				Helper.PlayPitched("Effects/HeavyWhoosh", 1f, 0f, Owner.Center);
+				SoundHelper.PlayPitched("Effects/HeavyWhoosh", 1f, 0f, Owner.Center);
 
 				for (int i = 0; i < Main.rand.Next(2, 4); i++)
 				{
@@ -485,13 +485,13 @@ namespace StarlightRiver.Content.Items.Haunted
 
 			if (progress < 0.25f)
 			{
-				Projectile.Center = Vector2.Lerp(tilePosition + new Vector2(0f, -25f), target.Center + tilePosition.DirectionTo(target.Center) * 50f, EaseBuilder.EaseQuarticInOut.Ease(StabTimer / (maxStabTimer * 0.25f)));
+				Projectile.Center = Vector2.Lerp(tilePosition + new Vector2(0f, -25f), target.Center + tilePosition.DirectionTo(target.Center) * 50f, Eases.EaseQuarticInOut(StabTimer / (maxStabTimer * 0.25f)));
 
 				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(1f, 1f), 0, new Color(150, 255, 25), 0.65f);
 			}
 			else
 			{
-				Projectile.Center = Vector2.Lerp(Projectile.Center, tilePosition + new Vector2(0f, target.height > 25 ? -target.height : -25f), EaseBuilder.EaseQuarticIn.Ease((StabTimer - maxStabTimer * 0.25f) / (maxStabTimer * 0.75f)));
+				Projectile.Center = Vector2.Lerp(Projectile.Center, tilePosition + new Vector2(0f, target.height > 25 ? -target.height : -25f), Eases.EaseQuarticIn((StabTimer - maxStabTimer * 0.25f) / (maxStabTimer * 0.75f)));
 
 				if (target.knockBackResist > 0f)
 					target.Center = Projectile.Center - tilePosition.DirectionTo(target.Center) * 50f * (1f - progress);
@@ -510,7 +510,7 @@ namespace StarlightRiver.Content.Items.Haunted
 						Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(5f, 5f), 0, new Color(150, 255, 25), 0.65f);
 					}
 
-					if (Helper.IsFleshy(target))
+					if (NPCHelper.IsFleshy(target))
 					{
 						for (int i = 0; i < 15; i++)
 						{
@@ -542,7 +542,7 @@ namespace StarlightRiver.Content.Items.Haunted
 				Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), tilePosition.DirectionTo(target.Center).RotatedByRandom(0.5f) * Main.rand.NextFloat(15f), 0, new Color(150, 255, 25), 0.65f);
 			}
 
-			if (Helper.IsFleshy(target))
+			if (NPCHelper.IsFleshy(target))
 			{
 				for (int i = 0; i < 15; i++)
 				{
@@ -554,7 +554,7 @@ namespace StarlightRiver.Content.Items.Haunted
 
 			target.velocity += tilePosition.DirectionTo(target.Center) * 5f * target.knockBackResist;
 
-			Helper.PlayPitched("Impacts/StabTiny", 1f, 0f, Projectile.Center);
+			SoundHelper.PlayPitched("Impacts/StabTiny", 1f, 0f, Projectile.Center);
 		}
 
 		public override void Kill(int timeLeft)

@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 		private List<Vector2> cache;
 		private Trail trail;
 		private Trail trail2;
-	
+
 		public int dustID;
 
 		public int deathTimer;
@@ -142,7 +142,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 		public virtual void SafeOnKill()
 		{
-			
+
 		}
 
 		public sealed override bool OnTileCollide(Vector2 oldVelocity)
@@ -191,7 +191,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 				SafeOnKill();
 
 				deathTimer = 10;
-			}				
+			}
 
 			SafeOnHitNPC(target, hit, damageDone);
 
@@ -299,7 +299,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			trail2.NextPosition = Projectile.Center + Projectile.velocity;
 		}
 
-		public void DrawPrimitives()	
+		public void DrawPrimitives()
 		{
 			if (!drawTrail)
 				return;
@@ -308,7 +308,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			{
 				Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-				var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 				Matrix view = Main.GameViewMatrix.EffectMatrix;
 				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
@@ -420,7 +420,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 		public EbonsandDebuff() : base("Weakened", "Damage taken increased by 15%", false) { }
 
 		public override void Update(NPC npc, ref int buffIndex)
-		{ 
+		{
 			npc.GetGlobalNPC<ExposureNPC>().ExposureMultAll += 0.15f;
 
 			if (Main.rand.NextBool(10))
@@ -448,7 +448,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 				{
 					target = null;
 					return;
-				}					
+				}
 
 				Projectile.velocity = (Projectile.velocity * 35f + Utils.SafeNormalize(target.Center - Projectile.Center, Vector2.UnitX) * 25f) / 36f;
 			}
@@ -458,7 +458,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 				if (Projectile.velocity.Length() < 1f)
 					Projectile.timeLeft--;
-			}		
+			}
 		}
 	}
 
@@ -548,9 +548,9 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 				{
 					Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, Main.rand.NextVector2CircularEdge(6f, 6f),
 							Owner.beeType(), Owner.beeDamage(Projectile.damage), Owner.beeKB(Projectile.knockBack), Owner.whoAmI);
-				}	
+				}
 			}
-		}			
+		}
 	}
 
 	public class SoilgunAshSoil : SoilProjectile

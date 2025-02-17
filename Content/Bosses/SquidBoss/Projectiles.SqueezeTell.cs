@@ -62,8 +62,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			for (int k = 1; k < 9; k++)
 			{
-				Vector2 posL = Projectile.Center + new Vector2(-220 + Helpers.Helper.BezierEase(timer) * 40, k * 100) - Main.screenPosition;
-				Vector2 posR = Projectile.Center + new Vector2(220 - Helpers.Helper.BezierEase(timer) * 40, k * 100) - Main.screenPosition;
+				Vector2 posL = Projectile.Center + new Vector2(-220 + Helpers.Eases.BezierEase(timer) * 40, k * 100) - Main.screenPosition;
+				Vector2 posR = Projectile.Center + new Vector2(220 - Helpers.Eases.BezierEase(timer) * 40, k * 100) - Main.screenPosition;
 
 				for (int i = 0; i < 6; i++)
 				{

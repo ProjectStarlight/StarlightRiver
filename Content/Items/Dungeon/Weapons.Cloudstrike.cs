@@ -92,19 +92,19 @@ namespace StarlightRiver.Content.Items.Dungeon
 		{
 			if (charge == 1)
 			{
-				Helper.PlayPitched("Magic/LightningShortest" + (1 + charge % 4).ToString(), 0.2f, Main.rand.NextFloat(0f, 0.2f), player.Center);
+				SoundHelper.PlayPitched("Magic/LightningShortest" + (1 + charge % 4).ToString(), 0.2f, Main.rand.NextFloat(0f, 0.2f), player.Center);
 			}
 			else if (charge == MAXCHARGE)
 			{
 				damage = (int)(damage * 1.5f);
 				//Full charge attack sound here
-				Helper.PlayPitched("Magic/LightningExplode", 0.4f, 0f, player.Center);
+				SoundHelper.PlayPitched("Magic/LightningExplode", 0.4f, 0f, player.Center);
 			}
 			else
 			{
 				//staggered attack sound here
 
-				Helper.PlayPitched("Magic/LightningExplodeShallow", 0.4f, MathHelper.Clamp(1.0f - charge * 0.01f, 0f, 1.0f), player.Center);
+				SoundHelper.PlayPitched("Magic/LightningExplodeShallow", 0.4f, MathHelper.Clamp(1.0f - charge * 0.01f, 0f, 1.0f), player.Center);
 				//MathHelper.Clamp(1.1f - (0.01f * (120.0f / charge)), 0.0f, 1.0f)
 			}
 
@@ -130,14 +130,14 @@ namespace StarlightRiver.Content.Items.Dungeon
 				if (charge == MAXCHARGE)
 				{
 					//REACHING FULL CHARGE SOUND HERE
-					Helper.PlayPitched("Magic/LightningChargeReady", 0.6f, 0f, Player.Center);
+					SoundHelper.PlayPitched("Magic/LightningChargeReady", 0.6f, 0f, Player.Center);
 					for (int i = 0; i < 12; i++)
 						CreateStatic(Item, charge, Player, true);
 				}
 
 				if (counter % 3 == 0) //change the 10 to the number of ticks you want the sound to loop on
 				{
-					Helper.PlayPitched("Magic/LightningChargeShort", (float)Math.Pow(charge / 200f, 2) * 2, MathHelper.Clamp(0.1f + charge / 120f, 0, 1), Player.Center);
+					SoundHelper.PlayPitched("Magic/LightningChargeShort", (float)Math.Pow(charge / 200f, 2) * 2, MathHelper.Clamp(0.1f + charge / 120f, 0, 1), Player.Center);
 				}
 			}
 
@@ -238,7 +238,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		private Player Owner => Main.player[Projectile.owner];
 
-		private float Fade => Projectile.extraUpdates == 0 ? EaseFunction.EaseCubicOut.Ease(Projectile.timeLeft / 25f) : 1;
+		private float Fade => Projectile.extraUpdates == 0 ? Eases.EaseCubicOut(Projectile.timeLeft / 25f) : 1;
 
 		private bool Miniature => Projectile.ai[1] == 2; //If this is true, it's a spark created around the Player
 		private bool Branch => Projectile.ai[1] == 1; //If this is true, it's a branch of the main stream. This means it has a smaller starting ball + can't make further branches
@@ -458,7 +458,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 								if (factor.X > 0.99f)
 									return Color.Transparent;
 
-								return new Color(160, 220, 255) * Fade * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X);
+								return new Color(160, 220, 255) * Fade * 0.1f * Eases.EaseCubicOut(1 - factor.X);
 							});
 			}
 
@@ -469,8 +469,8 @@ namespace StarlightRiver.Content.Items.Dungeon
 			{
 				trail2 = new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => thickness * sparkMult * 3 * (float)Math.Pow(ChargeSqrt, 0.7f) * Main.rand.NextFloat(0.55f, 1.45f), factor =>
 							{
-								float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
-								return Color.Lerp(baseColor, endColor, EaseFunction.EaseCubicIn.Ease(1 - progress)) * Fade * progress;
+								float progress = Eases.EaseCubicOut(1 - factor.X);
+								return Color.Lerp(baseColor, endColor, Eases.EaseCubicIn(1 - progress)) * Fade * progress;
 							});
 			}
 
@@ -499,7 +499,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 			Effect effect = Filters.Scene["LightningTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

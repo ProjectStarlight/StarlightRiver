@@ -196,7 +196,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		{
 			State = 5;
 
-			if (!Helpers.Helper.HasItem(Main.LocalPlayer, ItemType<TempleEntranceKey>(), 1))
+			if (!Helpers.InventoryHelper.HasItem(Main.LocalPlayer, ItemType<TempleEntranceKey>(), 1))
 			{
 				Main.LocalPlayer.QuickSpawnItem(NPC.GetSource_FromThis(), ItemType<TempleEntranceKey>());
 				Main.LocalPlayer.GetModPlayer<HintPlayer>().SetHintState("PreWinds");

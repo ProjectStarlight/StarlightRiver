@@ -149,7 +149,7 @@ namespace StarlightRiver.Content.Items.Breacher
 				}
 			}
 			//maybe better sound here
-			Helper.PlayPitched("Guns/Scrapshot", 0.2f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
+			SoundHelper.PlayPitched("Guns/Scrapshot", 0.2f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
 			Projectile.Kill();
 		}
 	}

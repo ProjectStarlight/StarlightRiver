@@ -100,9 +100,9 @@ namespace StarlightRiver.Content.Items.Vitric
 			//Player.velocity += Vector2.Normalize(Player.Center - Main.MouseWorld) * 10;
 
 			if (Player.GetModPlayer<ControlsPlayer>().mouseRight)
-				Helper.PlayPitched(SoundID.DD2_CrystalCartImpact, 1f, 0, Player.position);
+				SoundHelper.PlayPitched(SoundID.DD2_CrystalCartImpact, 1f, 0, Player.position);
 			else
-				Helper.PlayPitched(SoundID.DD2_MonkStaffSwing, 1f, 0, Player.position);
+				SoundHelper.PlayPitched(SoundID.DD2_MonkStaffSwing, 1f, 0, Player.position);
 
 			return true;
 		}
@@ -212,9 +212,9 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (Main.myPlayer == Projectile.owner)
 				Projectile.netUpdate = true;
 
-			if (Helper.IsFleshy(target))
+			if (NPCHelper.IsFleshy(target))
 			{
-				Helper.PlayPitched("Impale", 1, Main.rand.NextFloat(0.6f, 0.9f), Projectile.Center);
+				SoundHelper.PlayPitched("Impale", 1, Main.rand.NextFloat(0.6f, 0.9f), Projectile.Center);
 
 				for (int k = 0; k < 20; k++)
 				{
@@ -223,7 +223,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 			else
 			{
-				Helper.PlayPitched("Impacts/Clink", 1, Main.rand.NextFloat(0.1f, 0.3f), Projectile.Center);
+				SoundHelper.PlayPitched("Impacts/Clink", 1, Main.rand.NextFloat(0.1f, 0.3f), Projectile.Center);
 
 				for (int k = 0; k < 15; k++)
 				{

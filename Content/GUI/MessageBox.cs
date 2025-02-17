@@ -67,7 +67,7 @@ namespace StarlightRiver.Content.GUI
 		public override void Draw(SpriteBatch spriteBatch)
 		{
 			DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
-			string message = Helpers.Helper.WrapString(Message, 360, font, 0.9f);
+			string message = Helpers.LocalizationHelper.WrapString(Message, 360, font, 0.9f);
 			Texture2D backdrop = Terraria.GameContent.TextureAssets.MagicPixel.Value;
 			float height = font.MeasureString(message).Y + 64;
 

@@ -114,7 +114,7 @@ namespace StarlightRiver.Core
 
 		private void DoGrazeEffects()
 		{
-			Helper.PlayPitched("ProjectileImpact1", 0.8f, Main.rand.NextFloat(-0.05f, 0.05f), Player.position);
+			SoundHelper.PlayPitched("ProjectileImpact1", 0.8f, Main.rand.NextFloat(-0.05f, 0.05f), Player.position);
 
 			for (int i = 0; i < 10; i++)
 			{

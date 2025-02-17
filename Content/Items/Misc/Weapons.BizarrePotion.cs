@@ -345,7 +345,7 @@ namespace StarlightRiver.Content.Items.Misc
 			CameraSystem.shake += 8;
 
 			SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/FireHit"), Projectile.Center);
-			Helper.PlayPitched("Impacts/AirstrikeImpact", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
+			SoundHelper.PlayPitched("Impacts/AirstrikeImpact", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
 
 			for (int i = 0; i < 4; i++)
 			{
@@ -433,7 +433,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.Assets + "Keys/GlowSoft";
 
-		private float Fade => EaseFunction.EaseCubicOut.Ease(Projectile.timeLeft / 30f);
+		private float Fade => Eases.EaseCubicOut(Projectile.timeLeft / 30f);
 
 		public override void SetDefaults()
 		{
@@ -468,7 +468,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private int TrailLength => (int)MathHelper.Clamp((int)(Projectile.ai[1] / 15), 2, 100);
 
-		private float Fade => Projectile.extraUpdates == 0 ? EaseFunction.EaseCubicOut.Ease(Projectile.timeLeft / (float)FADE_TIME) : 1;
+		private float Fade => Projectile.extraUpdates == 0 ? Eases.EaseCubicOut(Projectile.timeLeft / (float)FADE_TIME) : 1;
 
 		private List<Vector2> cache;
 		private List<Vector2> cache2;
@@ -553,7 +553,7 @@ namespace StarlightRiver.Content.Items.Misc
 								if (factor.X > 0.99f)
 									return Color.Transparent;
 
-								return Color.Yellow * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X) * Fade;
+								return Color.Yellow * 0.1f * Eases.EaseCubicOut(1 - factor.X) * Fade;
 							});
 			}
 
@@ -564,8 +564,8 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				trail2 = new Trail(Main.instance.GraphicsDevice, TrailLength, new NoTip(), factor => THICKNESS * 3 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
 							{
-								float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
-								return Color.Lerp(Color.Yellow, Color.White, EaseFunction.EaseCubicIn.Ease(Math.Min(1.2f - progress, 1))) * progress * Fade;
+								float progress = Eases.EaseCubicOut(1 - factor.X);
+								return Color.Lerp(Color.Yellow, Color.White, Eases.EaseCubicIn(Math.Min(1.2f - progress, 1))) * progress * Fade;
 							});
 			}
 
@@ -576,7 +576,7 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				trail3 = new Trail(Main.instance.GraphicsDevice, TrailLength, new NoTip(), factor => THICKNESS * 2 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
 							{
-								float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
+								float progress = Eases.EaseCubicOut(1 - factor.X);
 								return Color.White * progress * Fade;
 							});
 			}
@@ -589,7 +589,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Effect effect = Filters.Scene["LightningTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

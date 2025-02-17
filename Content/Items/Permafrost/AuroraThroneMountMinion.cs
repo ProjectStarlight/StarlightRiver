@@ -71,8 +71,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 				Dust.NewDustPerfect(Projectile.Center + sparkOff * 5, DustType<Dusts.Cinder>(), sparkOff, 0, rainbowColor, 1);
 			}
 
-			Helpers.Helper.PlayPitched("SquidBoss/LightSplash", 0.6f, 1f, Projectile.Center);
-			Helpers.Helper.PlayPitched("JellyBounce", 1f, 1f, Projectile.Center);
+			Helpers.SoundHelper.PlayPitched("SquidBoss/LightSplash", 0.6f, 1f, Projectile.Center);
+			Helpers.SoundHelper.PlayPitched("JellyBounce", 1f, 1f, Projectile.Center);
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)

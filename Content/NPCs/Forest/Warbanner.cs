@@ -188,7 +188,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 
 						if (toCheck is null || !toCheck.active || Vector2.Distance(NPC.Center, toCheck.Center) > (targets.Count > 1 ? MAX_BUFF_RADIUS : 2500)) //remove invalid targets
 							targets.Remove(toCheck);
-						else if (Helper.CheckCircularCollision(NPC.Center, (int)BuffRadius, toCheck.Hitbox))
+						else if (CollisionHelper.CheckCircularCollision(NPC.Center, (int)BuffRadius, toCheck.Hitbox))
 							toCheck.AddBuff(BuffType<Rage>(), 2);
 					}
 
@@ -199,7 +199,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 						return;
 					}
 
-					Vector2 target = Helper.Centeroid(targets) + new Vector2(0, -100);
+					Vector2 target = GeometryHelper.Centeroid(targets) + new Vector2(0, -100);
 
 					if (Vector2.Distance(NPC.Center, target) > 32)
 						NPC.velocity += Vector2.Normalize(NPC.Center - target) * -0.12f; //accelerate towards the centeroid of it's supported NPCs

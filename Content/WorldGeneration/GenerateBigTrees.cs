@@ -77,7 +77,7 @@ namespace StarlightRiver.Core
 				}
 			}
 
-			Helper.PlaceMultitile(new Point16(tx - 1, ty - 3), TileType<RiggedTreeBase>());
+			WorldGenHelper.PlaceMultitile(new Point16(tx - 1, ty - 3), TileType<RiggedTreeBase>());
 
 			for (int x = 0; x < 2; x++)
 			{

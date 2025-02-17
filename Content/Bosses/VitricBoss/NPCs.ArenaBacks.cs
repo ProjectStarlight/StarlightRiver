@@ -123,7 +123,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				if (Timer == Risetime - 1) //hitting the top
 				{
 					CameraSystem.shake += 18;
-					Helper.PlayPitched("ArenaHit", 0.2f, 0, NPC.Center);
+					SoundHelper.PlayPitched("ArenaHit", 0.2f, 0, NPC.Center);
 				}
 
 				if (Timer > Risetime)
@@ -161,7 +161,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				}
 
 				if (Timer <= Risetime + 120) //when starting moving
-					shake = (int)(Helper.BezierEase(120 - (Timer - Risetime)) * 5); //this should work?
+					shake = (int)(Eases.BezierEase(120 - (Timer - Risetime)) * 5); //this should work?
 
 				if (Timer == Risetime + 120)
 				{

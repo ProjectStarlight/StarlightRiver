@@ -6,7 +6,6 @@ using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using StarlightRiver.Helpers;
 using System;
 using Terraria.Graphics.Effects;
-using static StarlightRiver.Helpers.DrawHelper;
 
 namespace StarlightRiver.Core.Systems.LightingSystem
 {
@@ -198,13 +197,13 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 
 			ApplyEffect.Parameters["sampleTrans"].SetValue(Matrix.CreateScale(0.5f * 1 / Main.GameViewMatrix.TransformationMatrix.M11, -0.5f * 1 / Main.GameViewMatrix.TransformationMatrix.M11, 1f) * Matrix.CreateTranslation(0.5f, 0.5f, 0));
 
-			verticies[0] = new VertexPositionTexture(new Vector3(ConvertVec2(destinationRectangle.TopLeft().RotatedBy(rotation, screenOrigin)), 0), sourceToUse.TopLeft() / texture.Size());
-			verticies[1] = new VertexPositionTexture(new Vector3(ConvertVec2(destinationRectangle.TopRight().RotatedBy(rotation, screenOrigin)), 0), sourceToUse.TopRight() / texture.Size());
-			verticies[2] = new VertexPositionTexture(new Vector3(ConvertVec2(destinationRectangle.BottomLeft().RotatedBy(rotation, screenOrigin)), 0), sourceToUse.BottomLeft() / texture.Size());
+			verticies[0] = new VertexPositionTexture(new Vector3(destinationRectangle.TopLeft().RotatedBy(rotation, screenOrigin), 0).ToScreenspaceCoord(), sourceToUse.TopLeft() / texture.Size());
+			verticies[1] = new VertexPositionTexture(new Vector3(destinationRectangle.TopRight().RotatedBy(rotation, screenOrigin), 0).ToScreenspaceCoord(), sourceToUse.TopRight() / texture.Size());
+			verticies[2] = new VertexPositionTexture(new Vector3(destinationRectangle.BottomLeft().RotatedBy(rotation, screenOrigin), 0).ToScreenspaceCoord(), sourceToUse.BottomLeft() / texture.Size());
 
-			verticies[3] = new VertexPositionTexture(new Vector3(ConvertVec2(destinationRectangle.TopRight().RotatedBy(rotation, screenOrigin)), 0), sourceToUse.TopRight() / texture.Size());
-			verticies[4] = new VertexPositionTexture(new Vector3(ConvertVec2(destinationRectangle.BottomRight().RotatedBy(rotation, screenOrigin)), 0), sourceToUse.BottomRight() / texture.Size());
-			verticies[5] = new VertexPositionTexture(new Vector3(ConvertVec2(destinationRectangle.BottomLeft().RotatedBy(rotation, screenOrigin)), 0), sourceToUse.BottomLeft() / texture.Size());
+			verticies[3] = new VertexPositionTexture(new Vector3(destinationRectangle.TopRight().RotatedBy(rotation, screenOrigin), 0).ToScreenspaceCoord(), sourceToUse.TopRight() / texture.Size());
+			verticies[4] = new VertexPositionTexture(new Vector3(destinationRectangle.BottomRight().RotatedBy(rotation, screenOrigin), 0).ToScreenspaceCoord(), sourceToUse.BottomRight() / texture.Size());
+			verticies[5] = new VertexPositionTexture(new Vector3(destinationRectangle.BottomLeft().RotatedBy(rotation, screenOrigin), 0).ToScreenspaceCoord(), sourceToUse.BottomLeft() / texture.Size());
 
 			buffer.SetData(verticies);
 

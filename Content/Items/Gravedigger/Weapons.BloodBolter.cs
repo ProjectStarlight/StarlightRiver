@@ -184,7 +184,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
-			if (target.active && !target.boss && target.knockBackResist != 0 && Helper.IsFleshy(target))
+			if (target.active && !target.boss && target.knockBackResist != 0 && NPCHelper.IsFleshy(target))
 			{
 				modifiers.SetMaxDamage(target.life - 1); // Cap damage to not kill NPC outright, we'll assume 1 off lethal is a blood bolter "kill"
 				Owner.TryGetModPlayer(out StarlightPlayer starlightPlayer);
@@ -197,7 +197,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (target.life <= 1 && target.active && !target.boss && target.knockBackResist != 0 && Helper.IsFleshy(target))
+			if (target.life <= 1 && target.active && !target.boss && target.knockBackResist != 0 && NPCHelper.IsFleshy(target))
 				BloodBolterGNPC.MarkForDeath(target, Projectile);
 		}
 
@@ -251,7 +251,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			{
 				hasDoneVisuals = true;
 
-				Helper.PlayPitched("Impacts/GoreHeavy", 0.5f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
+				SoundHelper.PlayPitched("Impacts/GoreHeavy", 0.5f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 				CameraSystem.shake += 8;
 				Vector2 goreVelocity = new Vector2(GoreX, GoreY);
 				Vector2 direction = -Vector2.Normalize(goreVelocity);
@@ -329,7 +329,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public static void MarkForDeath(NPC target, Projectile bolt)
 		{
-			Helper.PlayPitched("Impale", 0.5f, Main.rand.NextFloat(-0.1f, 0.1f), target.Center);
+			SoundHelper.PlayPitched("Impale", 0.5f, Main.rand.NextFloat(-0.1f, 0.1f), target.Center);
 			target.life = 1;
 			target.immortal = true;
 			target.noTileCollide = false;

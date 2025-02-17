@@ -114,7 +114,7 @@ namespace StarlightRiver.Content.Items.Breacher
 				owner.TryGetModPlayer(out ControlsPlayer controlsPlayer);
 				controlsPlayer.mouseRotationListener = true;
 
-				float rotDifference = Helper.RotationDifference(Projectile.DirectionTo(controlsPlayer.mouseWorld).ToRotation(), Projectile.rotation);
+				float rotDifference = GeometryHelper.RotationDifference(Projectile.DirectionTo(controlsPlayer.mouseWorld).ToRotation(), Projectile.rotation);
 
 				Projectile.rotation = MathHelper.Lerp(Projectile.rotation, Projectile.rotation + rotDifference, 0.07f);
 			}
@@ -259,7 +259,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 					var additionalCheck = new Rectangle((int)(laserEndpoint.X - 15), (int)(laserEndpoint.Y - 15), 30, 30);
 
-					float superAngle = MathHelper.Lerp(Projectile.rotation, Projectile.rotation + Helper.RotationDifference(proj.rotation, Projectile.rotation), 0.5f);
+					float superAngle = MathHelper.Lerp(Projectile.rotation, Projectile.rotation + GeometryHelper.RotationDifference(proj.rotation, Projectile.rotation), 0.5f);
 
 					for (int projIndex2 = 0; projIndex2 < Main.projectile.Length; projIndex2++)
 					{
@@ -281,7 +281,7 @@ namespace StarlightRiver.Content.Items.Breacher
 						{
 							mp2.superLaserContributer = true;
 							mp2.laserEndpoint = laserEndpoint;
-							superAngle = MathHelper.Lerp(superAngle, superAngle + Helper.RotationDifference(proj2.rotation, superAngle), 1.0f / superCharge);
+							superAngle = MathHelper.Lerp(superAngle, superAngle + GeometryHelper.RotationDifference(proj2.rotation, superAngle), 1.0f / superCharge);
 							superCharge++;
 						}
 					}
@@ -347,7 +347,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			spriteBatch.End();
 			Effect effect = Filters.Scene["BreachLaser"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
@@ -372,7 +372,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			Effect effect = Filters.Scene["BreachLaser"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

@@ -120,7 +120,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 				if (helm.loaded && helm.shardCount > 0)
 				{
-					Helper.PlayPitched("Magic/FireHit", 1, 0, Player.Center);
+					SoundHelper.PlayPitched("Magic/FireHit", 1, 0, Player.Center);
 					type = ProjectileType<VitricArmorProjectile>();
 					speed = 10;
 					damage.Base = weapon.damage + 100;

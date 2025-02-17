@@ -189,7 +189,7 @@ namespace StarlightRiver.Content.GUI
 
 			if (animationTimer <= 90)
 			{
-				float rot = animationTimer / 90f * ((float)Math.PI / 3 + (float)Math.PI / 1.5f * slotIndex) * Helpers.Helper.BezierEase(animationTimer / 90f);
+				float rot = animationTimer / 90f * ((float)Math.PI / 3 + (float)Math.PI / 1.5f * slotIndex) * Helpers.Eases.BezierEase(animationTimer / 90f);
 				SetCenter(EnchantmentMenu.CenterPoint - Vector2.UnitY.RotatedBy(rot) * rad);
 			}
 			else

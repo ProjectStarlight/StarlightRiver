@@ -214,7 +214,7 @@ namespace StarlightRiver.Content.Items.Misc
 					}
 				}
 
-				Helper.PlaceMultitile(new Point16(i + offsetX, j - offsetY - 1), ModContent.TileType<ThickTreeSapling>());
+				WorldGenHelper.PlaceMultitile(new Point16(i + offsetX, j - offsetY - 1), ModContent.TileType<ThickTreeSapling>());
 			}
 
 			return true;

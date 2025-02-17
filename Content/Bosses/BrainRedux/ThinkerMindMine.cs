@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 					Dust.NewDustPerfect(Projectile.Center, DustID.Blood, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(8), 0, default, 1 + Main.rand.NextFloat(2));
 				}
 
-				Helpers.Helper.PlayPitched("Impacts/GoreHeavy", 0.1f, Main.rand.NextFloat(-0.5f, 0f), Projectile.Center);
+				Helpers.SoundHelper.PlayPitched("Impacts/GoreHeavy", 0.1f, Main.rand.NextFloat(-0.5f, 0f), Projectile.Center);
 			}
 		}
 

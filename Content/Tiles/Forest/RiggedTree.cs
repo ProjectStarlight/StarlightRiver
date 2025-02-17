@@ -74,9 +74,9 @@ namespace StarlightRiver.Content.Tiles.Forest
 				Vector2 pos = new Vector2(i + 1, j) * 16;
 				Vector2 origin = pos;
 
-				var branchRot = Main.windSpeedCurrent * 0.05f + Sway(pos, 0.02f);
+				float branchRot = Main.windSpeedCurrent * 0.05f + Sway(pos, 0.02f);
 
-				pos += Helpers.Helper.TileAdj * 16;
+				pos += Vector2.One * Main.offScreenRange;
 
 				Texture2D tex2 = Assets.Tiles.Forest.Godray.Value;
 				var godrayColor = new Color();
@@ -231,7 +231,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 			Texture2D branches = Assets.Tiles.Forest.Branches.Value;
 			Vector2 branchOrigin = new Vector2(branches.Width / 2 - 16, branches.Height);
 			float windDir = Main.windSpeedCurrent > 0 ? 1 : -1;
-			var branchRot = Main.windSpeedCurrent * 0.05f + Sway(Center, 0.02f);
+			float branchRot = Main.windSpeedCurrent * 0.05f + Sway(Center, 0.02f);
 
 			LightingBufferRenderer.DrawWithLighting(branches, Center - Main.screenPosition + Vector2.UnitY * 2, null, Color.White, branchRot, branchOrigin, 1);
 		}
@@ -243,10 +243,10 @@ namespace StarlightRiver.Content.Tiles.Forest
 			Vector2 pos = Center - new Vector2(280, 630);
 			float windDir = Main.windSpeedCurrent > 0 ? 1 : -1;
 
-			var branchRot = Main.windSpeedCurrent * 0.05f + Sway(Center, 0.02f);
+			float branchRot = Main.windSpeedCurrent * 0.05f + Sway(Center, 0.02f);
 			var leafRand = new UnifiedRandom((int)Center.X ^ (int)Center.Y);
 
-			foreach (var point in treeRig.Points)
+			foreach (StaticRigPoint point in treeRig.Points)
 			{
 				Vector2 pointPos = pos + new Vector2(point.X, point.Y) * 2;
 				Rectangle source = new Rectangle(leafRand.NextBool() ? 82 : 0, point.Frame * 82, 82, 82);
@@ -265,7 +265,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 			if (StarlightRiver.debugMode)
 			{
-				var box = Hitbox;
+				Rectangle box = Hitbox;
 				box.Inflate(8, 8);
 				box.Offset((-Main.screenPosition).ToPoint());
 				Main.spriteBatch.Draw(Assets.MagicPixel.Value, box, Color.Red);

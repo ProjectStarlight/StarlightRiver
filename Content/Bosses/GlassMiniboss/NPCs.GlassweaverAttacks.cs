@@ -95,7 +95,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			}
 
 			if (AttackTimer == timeStart + 3 && !spin && !disableJumpSound)
-				Helpers.Helper.PlayPitched("GlassMiniboss/RippedSoundJump", 1f, 0.7f, NPC.Center);
+				Helpers.SoundHelper.PlayPitched("GlassMiniboss/RippedSoundJump", 1f, 0.7f, NPC.Center);
 
 			if (progress <= 0.6f)
 				moveStart.X += NPC.velocity.X * 0.15f;
@@ -111,7 +111,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		private void SpinJumpToTarget(int timeStart, int timeEnd, float totalRotations = 5, int direction = 1)
 		{
 			JumpToTarget(timeStart, timeEnd, 0.4f, true);
-			float progress = Helpers.Helper.BezierEase(Utils.GetLerpValue(timeStart, timeEnd, AttackTimer, true));
+			float progress = Helpers.Eases.BezierEase(Utils.GetLerpValue(timeStart, timeEnd, AttackTimer, true));
 			NPC.rotation = MathHelper.WrapAngle(progress * MathHelper.TwoPi * totalRotations) * NPC.direction * direction;
 		}
 
@@ -164,7 +164,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			if (AttackTimer == slashTimes[0] || AttackTimer == slashTimes[1] || AttackTimer == slashTimes[2] - 1)
 			{
-				Helpers.Helper.PlayPitched("GlassMiniboss/GlassSlash", 1f, 0.1f, NPC.Center);
+				Helpers.SoundHelper.PlayPitched("GlassMiniboss/GlassSlash", 1f, 0.1f, NPC.Center);
 
 				if (Main.masterMode && Main.netMode != NetmodeID.MultiplayerClient) //Projectile swords on master mode
 					Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.UnitX * NPC.direction * 15, ProjectileType<GlassBubbleFragment>(), SmallProjectileDamage, 1, Owner: -1);
@@ -197,7 +197,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				NPC.velocity.Y -= 9f;
 				if (Main.netMode != NetmodeID.MultiplayerClient)
 					spearIndex = Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ProjectileType<GlassSpear>(), LargeProjectileDamage, 0.2f, Owner: -1, 0, NPC.whoAmI);
-				Helpers.Helper.PlayPitched("GlassMiniboss/RippedSoundJump", 1f, 0.7f, NPC.Center);
+				Helpers.SoundHelper.PlayPitched("GlassMiniboss/RippedSoundJump", 1f, 0.7f, NPC.Center);
 			}
 
 			if (AttackTimer == 5 && Main.netMode != NetmodeID.MultiplayerClient)
@@ -265,7 +265,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					spearIndex = Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ProjectileType<GlassSpear>(), LargeProjectileDamage, 0.2f, Owner: -1, 0, NPC.whoAmI);
 				}
 
-				Helpers.Helper.PlayPitched("GlassMiniboss/RippedSoundJump", 1f, 0.7f, NPC.Center);
+				Helpers.SoundHelper.PlayPitched("GlassMiniboss/RippedSoundJump", 1f, 0.7f, NPC.Center);
 			}
 
 			if (AttackTimer == 5 && Main.netMode != NetmodeID.MultiplayerClient)
@@ -572,7 +572,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 				if (Main.netMode != NetmodeID.Server)
 				{
-					Helpers.Helper.PlayPitched("GlassMiniboss/GlassBounce", 1f, 0f, NPC.Center);
+					Helpers.SoundHelper.PlayPitched("GlassMiniboss/GlassBounce", 1f, 0f, NPC.Center);
 					CameraSystem.shake += 5;
 					for (int i = 0; i < 30; i++)
 					{

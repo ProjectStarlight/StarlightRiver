@@ -119,12 +119,12 @@ namespace StarlightRiver.Content.Items.Haunted
 				CameraSystem.shake += 8;
 			}
 
-			bool fleshy = Helpers.Helper.IsFleshy(npc);
+			bool fleshy = Helpers.NPCHelper.IsFleshy(npc);
 
-			Helpers.Helper.PlayPitched("Impacts/GoreLight", 1f, Main.rand.NextFloat(-0.1f, 0.1f), npc.Center);
+			Helpers.SoundHelper.PlayPitched("Impacts/GoreLight", 1f, Main.rand.NextFloat(-0.1f, 0.1f), npc.Center);
 
 			if (!fleshy)
-				Helpers.Helper.PlayPitched("Impacts/Clink", 1f, Main.rand.NextFloat(-0.1f, 0.1f), npc.Center);
+				Helpers.SoundHelper.PlayPitched("Impacts/Clink", 1f, Main.rand.NextFloat(-0.1f, 0.1f), npc.Center);
 
 			for (int i = 0; i < 15; i++)
 			{
@@ -324,9 +324,9 @@ namespace StarlightRiver.Content.Items.Haunted
 				{
 					DoIdleMovement();
 
-					rotTimer += (int)MathHelper.Lerp(1f, 50f, EaseFunction.EaseCubicIn.Ease(AttackTimer / 45f));
+					rotTimer += (int)MathHelper.Lerp(1f, 50f, Eases.EaseCubicIn(AttackTimer / 45f));
 
-					float lerper = MathHelper.Lerp(30f, 2f, EaseFunction.EaseCubicIn.Ease(AttackTimer / 45f));
+					float lerper = MathHelper.Lerp(30f, 2f, Eases.EaseCubicIn(AttackTimer / 45f));
 					if (Main.rand.NextBool(3))
 						Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2CircularEdge(lerper, lerper), ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(0.25f, 0.25f), 0, new Color(70, 200, 100), 0.5f);
 				}
@@ -345,7 +345,7 @@ namespace StarlightRiver.Content.Items.Haunted
 					{
 						Projectile.velocity += Projectile.DirectionTo(Target.Center) * 22f;
 
-						Helpers.Helper.PlayPitched("Effects/HeavyWhooshShort", 0.65f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
+						Helpers.SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 0.65f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 					}
 
 					Vector2 direction = Target.Center - Projectile.Center;
@@ -381,14 +381,14 @@ namespace StarlightRiver.Content.Items.Haunted
 				Projectile.netUpdate = true;
 			}
 
-			Helpers.Helper.PlayPitched("Impacts/StabTiny", 1f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
+			Helpers.SoundHelper.PlayPitched("Impacts/StabTiny", 1f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 
 			for (int i = 0; i < 6; i++)
 			{
 				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(2f, 2f), ModContent.DustType<Dusts.GlowFastDecelerate>(),
 					-Projectile.velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.5f), 0, new Color(70, 200, 100), 0.5f);
 
-				if (Helpers.Helper.IsFleshy(target))
+				if (Helpers.NPCHelper.IsFleshy(target))
 				{
 					Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(3f, 3f), DustID.Blood,
 						-Projectile.velocity.RotatedByRandom(0.75f) * Main.rand.NextFloat(0.25f), Main.rand.Next(100), default, 2.5f).noGravity = true;

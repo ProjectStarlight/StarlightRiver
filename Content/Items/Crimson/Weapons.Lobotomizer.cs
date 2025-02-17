@@ -151,8 +151,8 @@ namespace StarlightRiver.Content.Items.Crimson
 
 			if (Projectile.timeLeft == RealDuration)
 			{
-				Helpers.Helper.PlayPitched("Effects/HeavyWhoosh", 1f, -0.5f + Main.rand.NextFloat(0.3f), Projectile.Center);
-				Helpers.Helper.PlayPitched("Effects/HeavyWhooshShort", 1f, 1f + Main.rand.NextFloat(0.2f), Projectile.Center);
+				Helpers.SoundHelper.PlayPitched("Effects/HeavyWhoosh", 1f, -0.5f + Main.rand.NextFloat(0.3f), Projectile.Center);
+				Helpers.SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 1f, 1f + Main.rand.NextFloat(0.2f), Projectile.Center);
 			}
 		}
 
@@ -222,7 +222,7 @@ namespace StarlightRiver.Content.Items.Crimson
 
 			if (Projectile.timeLeft == RealDuration)
 			{
-				Helpers.Helper.PlayPitched("Effects/HeavyWhooshShort", 1f, 0.4f + Main.rand.NextFloat(0.6f), Projectile.Center);
+				Helpers.SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 1f, 0.4f + Main.rand.NextFloat(0.6f), Projectile.Center);
 			}
 		}
 
@@ -341,7 +341,7 @@ namespace StarlightRiver.Content.Items.Crimson
 				Dust.NewDustPerfect(Projectile.Center, DustID.Dirt);
 			}
 
-			Helpers.Helper.PlayPitched("Impacts/StabTiny", 1f, -0.5f, Projectile.Center);
+			Helpers.SoundHelper.PlayPitched("Impacts/StabTiny", 1f, -0.5f, Projectile.Center);
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)

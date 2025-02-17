@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 		const float MAX_CRACK_ANIMATION = 300;
 		const float MAX_SUCC_ANIMATION = 300;
 
-		public static EaseBuilder VoidEase;
+		public static ModularEaseFunction VoidEase;
 
 		public static List<BossRushOrb> activeBossRushLocks = new();
 
@@ -48,12 +48,12 @@ namespace StarlightRiver.Content.NPCs.BossRush
 			StarlightRiverBackground.DrawOverlayEvent += DrawOverlay;
 			StarlightRiverBackground.CheckIsActiveEvent += () => activeBossRushLocks.Count > 0;
 
-			VoidEase = new EaseBuilder();
-			VoidEase.AddPoint(new Vector2(0, 0.25f), EaseFunction.EaseCubicIn);
-			VoidEase.AddPoint(new Vector2(45, 1f), new CubicBezierEase(0.2f, 1.5f, .8f, 1.5f));
-			VoidEase.AddPoint(new Vector2(75, 0.4f), new CubicBezierEase(0.15f, 0.6f, .5f, 1f));
-			VoidEase.AddPoint(new Vector2(MAX_SUCC_ANIMATION, 0.1f), new CubicBezierEase(0.15f, 0.6f, .5f, 1f));
-			VoidEase.AddPoint(new Vector2(MAX_SUCC_ANIMATION + 20, 2f), EaseFunction.EaseCubicInOut);
+			VoidEase = new ModularEaseFunction();
+			VoidEase.AddPoint(new Vector2(0, 0.25f), Eases.EaseCubicIn);
+			VoidEase.AddPoint(new Vector2(45, 1f), new CubicBezierEase(0.2f, 1.5f, .8f, 1.5f).Ease);
+			VoidEase.AddPoint(new Vector2(75, 0.4f), new CubicBezierEase(0.15f, 0.6f, .5f, 1f).Ease);
+			VoidEase.AddPoint(new Vector2(MAX_SUCC_ANIMATION, 0.1f), new CubicBezierEase(0.15f, 0.6f, .5f, 1f).Ease);
+			VoidEase.AddPoint(new Vector2(MAX_SUCC_ANIMATION + 20, 2f), Eases.EaseCubicInOut);
 		}
 
 		public override void SetStaticDefaults()
@@ -179,7 +179,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 				}
 				else if (warpAnimationTimer == MAX_SUCC_ANIMATION)
 				{
-					Helper.PlayPitched("BossRush/ArmillaryExplode", 1, 0f, NPC.Center);
+					SoundHelper.PlayPitched("BossRush/ArmillaryExplode", 1, 0f, NPC.Center);
 					Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/OminousIdle");
 				}
 
@@ -216,15 +216,15 @@ namespace StarlightRiver.Content.NPCs.BossRush
 
 				if (crackAnimationTimer == 0)
 				{
-					Helper.PlayPitched("BossRush/ArmillaryCrack1", 1, 0f, NPC.Center);
+					SoundHelper.PlayPitched("BossRush/ArmillaryCrack1", 1, 0f, NPC.Center);
 				}
 				else if (crackAnimationTimer == 165)
 				{
-					Helper.PlayPitched("BossRush/ArmillaryCrack2", 1, 0f, NPC.Center);
+					SoundHelper.PlayPitched("BossRush/ArmillaryCrack2", 1, 0f, NPC.Center);
 				}
 				else if (crackAnimationTimer == 255)
 				{
-					Helper.PlayPitched("BossRush/ArmillaryBreak", 1, 0f, NPC.Center);
+					SoundHelper.PlayPitched("BossRush/ArmillaryBreak", 1, 0f, NPC.Center);
 					Music = MusicLoader.GetMusicSlot(Mod, "ThisSoundDoesNotExist");
 				}
 

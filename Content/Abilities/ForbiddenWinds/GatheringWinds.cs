@@ -84,7 +84,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 						if (npc.defense > 0)
 						{
 							npc.defense = 0;
-							Helpers.Helper.PlayPitched("World/HeavyClose", 1f, 0.5f, Player.Center);
+							Helpers.SoundHelper.PlayPitched("World/HeavyClose", 1f, 0.5f, Player.Center);
 							SoundEngine.PlaySound(npc.HitSound, Player.Center);
 
 							CombatText.NewText(npc.Hitbox, Color.White, "Defense shattered!");
@@ -225,7 +225,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
@@ -349,7 +349,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 			if (effect is null)
 				return;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Tiles.Misc
 		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 		{
 			Texture2D tex = Assets.MagicPixel.Value;
-			Vector2 pos = (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 - Main.screenPosition;
+			Vector2 pos = new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange - Main.screenPosition;
 
 			var rect = new Rectangle((int)pos.X - 16, (int)pos.Y - 32, 1130, 1000);
 
@@ -30,10 +30,10 @@ namespace StarlightRiver.Content.Tiles.Misc
 			Utils.DrawBorderStringBig(spriteBatch, "This temple stands by the efforts of the weavers of starlight engraved here:", pos + new Vector2(550, 0), Color.White, 0.6f, 0.5f, 0.5f);
 
 			Utils.DrawBorderStringBig(spriteBatch, "Starlit Travelers", pos + new Vector2(200, 80), Color.White, 1, 0.5f, 0.5f);
-			Utils.DrawBorderString(spriteBatch, Helpers.Helper.WrapString(PATRONS, 400, Terraria.GameContent.FontAssets.MouseText.Value, 1), pos + new Vector2(0, 120), Color.White);
+			Utils.DrawBorderString(spriteBatch, Helpers.LocalizationHelper.WrapString(PATRONS, 400, Terraria.GameContent.FontAssets.MouseText.Value, 1), pos + new Vector2(0, 120), Color.White);
 
 			Utils.DrawBorderStringBig(spriteBatch, "Starlit Scholars", pos + new Vector2(800, 80), Color.Gold, 1, 0.5f, 0.5f);
-			Utils.DrawBorderString(spriteBatch, Helpers.Helper.WrapString(SUPER_PATRONS, 400, Terraria.GameContent.FontAssets.MouseText.Value, 1), pos + new Vector2(600, 120), Color.Gold);
+			Utils.DrawBorderString(spriteBatch, Helpers.LocalizationHelper.WrapString(SUPER_PATRONS, 400, Terraria.GameContent.FontAssets.MouseText.Value, 1), pos + new Vector2(600, 120), Color.Gold);
 		}
 	}
 }

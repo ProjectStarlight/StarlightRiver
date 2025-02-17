@@ -48,7 +48,7 @@ namespace StarlightRiver.Content.GUI
 
 			spriteBatch.Draw(panel, pos, panel.Frame(), Color.White * 0.8f, 0, Vector2.Zero, 1, 0, 0);
 			if (activeQuest != null)
-				Utils.DrawBorderString(spriteBatch, Helper.WrapString(activeQuest.questTip, 320, FontAssets.DeathText.Value, 0.6f), pos + new Vector2(10, 10), Color.White, 0.6f);
+				Utils.DrawBorderString(spriteBatch, LocalizationHelper.WrapString(activeQuest.questTip, 320, FontAssets.DeathText.Value, 0.6f), pos + new Vector2(10, 10), Color.White, 0.6f);
 
 			Recalculate();
 			base.Draw(spriteBatch);
@@ -159,13 +159,13 @@ namespace StarlightRiver.Content.GUI
 
 			foreach (Loot loot in Quest.Requirements)
 			{
-				if (!Helper.HasItem(Main.LocalPlayer, loot.type, loot.count))
+				if (!InventoryHelper.HasItem(Main.LocalPlayer, loot.type, loot.count))
 					return;
 			}
 
 			foreach (Loot loot in Quest.Requirements)
 			{
-				Helper.TryTakeItem(Main.LocalPlayer, loot.type, loot.count);
+				InventoryHelper.TryTakeItem(Main.LocalPlayer, loot.type, loot.count);
 			}
 
 			NPCUpgradeSystem.townUpgrades[Quest.NPCName] = !NPCUpgradeSystem.townUpgrades[Quest.NPCName];

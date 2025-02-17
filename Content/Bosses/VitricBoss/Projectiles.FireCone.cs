@@ -96,7 +96,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		{
 			if (Timer > 70 && Timer < 78)
 			{
-				return Helper.CheckConicalCollision(Projectile.Center, (int)((Timer - 70) / 8f * 700), Projectile.rotation, 0.2f, targetHitbox);
+				return CollisionHelper.CheckConicalCollision(Projectile.Center, (int)((Timer - 70) / 8f * 700), Projectile.rotation, 0.2f, targetHitbox);
 			}
 
 			return false;

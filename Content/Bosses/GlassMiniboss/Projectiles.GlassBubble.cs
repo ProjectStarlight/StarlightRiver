@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		{
 			if (!isLoaded)
 			{
-				Helpers.Helper.PlayPitched("GlassMiniboss/WeavingSuper", 1f, 0f, Projectile.Center);
+				Helpers.SoundHelper.PlayPitched("GlassMiniboss/WeavingSuper", 1f, 0f, Projectile.Center);
 				isLoaded = true;
 			}
 
@@ -123,7 +123,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				}
 
 				if (Timer == CRACK_TIME + 30)
-					Helpers.Helper.PlayPitched("GlassMiniboss/GlassExplode", 1.1f, 0f, Projectile.Center);
+					Helpers.SoundHelper.PlayPitched("GlassMiniboss/GlassExplode", 1.1f, 0f, Projectile.Center);
 			}
 			else if (Timer > 360)
 			{
@@ -180,7 +180,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		{
 			if (Timer < CRACK_TIME + 100 && State == 1)
 			{
-				Helpers.Helper.PlayPitched("GlassMiniboss/GlassBounce", 0.9f, 0.2f + Main.rand.NextFloat(-0.2f, 0.4f), Projectile.Center);
+				Helpers.SoundHelper.PlayPitched("GlassMiniboss/GlassBounce", 0.9f, 0.2f + Main.rand.NextFloat(-0.2f, 0.4f), Projectile.Center);
 				CameraSystem.shake += 4;
 
 				if (Math.Abs(Projectile.velocity.X - oldVelocity.X) > 0)
@@ -214,7 +214,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 				if (hits == 0 && Timer < CRACK_TIME + 100)
 				{
-					Helpers.Helper.PlayPitched("GlassMiniboss/GlassBounce", 0.9f, 0.1f, Projectile.Center);
+					Helpers.SoundHelper.PlayPitched("GlassMiniboss/GlassBounce", 0.9f, 0.1f, Projectile.Center);
 					CameraSystem.shake += 3;
 					Projectile.velocity = Projectile.DirectionFrom(target.Center) * 1.77f;
 					hits += 30;
@@ -308,7 +308,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				{
 					float rotation = MathHelper.TwoPi / shardCount * i;
 					Asset<Texture2D> tell = TextureAssets.Extra[98];
-					float tellLength = Helpers.Helper.BezierEase((Timer - CRACK_TIME) / 130f) * 12f;
+					float tellLength = Helpers.Eases.BezierEase((Timer - CRACK_TIME) / 130f) * 12f;
 					Color tellFade = Color.OrangeRed * ((Timer - CRACK_TIME) / 130f) * 0.5f;
 					tellFade.A = 0;
 					Main.EntitySpriteDraw(tell.Value, Projectile.Center - Main.screenPosition, null, tellFade, rotation, tell.Size() * new Vector2(0.5f, 0.6f), new Vector2(0.4f, tellLength), SpriteEffects.None, 0);
@@ -399,7 +399,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Projectile.tileCollide = false;
 			Projectile.timeLeft = 10;
 
-			Helpers.Helper.PlayPitched("GlassMiniboss/GlassShatter", 1f, 0.2f, Projectile.Center);
+			Helpers.SoundHelper.PlayPitched("GlassMiniboss/GlassShatter", 1f, 0.2f, Projectile.Center);
 
 			for (int i = 0; i < 30; i++)
 				Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Cinder>(), Main.rand.NextVector2Circular(2, 2), 0, Color.DarkOrange, Main.rand.NextFloat(0.5f));

@@ -321,26 +321,23 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				);
 
 			applyEffect.Parameters["drawSize"].SetValue(target.Size());
-			applyEffect.Parameters["colorSampleY"].SetValue(1 - (0.5f + DrawHelper.ConvertY(WaterLevelWorld - Main.screenPosition.Y) / 2f));
+			applyEffect.Parameters["colorSampleY"].SetValue(1 - (0.5f + ConvertY(WaterLevelWorld - Main.screenPosition.Y) / 2f));
 			applyEffect.Parameters["time"].SetValue((float)Main.timeForVisualEffects / 75f);
 
 			applyEffect.Parameters["draw"].SetValue(Assets.Bosses.SquidBoss.WaterOver.Value);
 			applyEffect.Parameters["distort"].SetValue(Assets.Bosses.SquidBoss.WaterDistort.Value);
 			applyEffect.Parameters["light"].SetValue(LightingBuffer.screenLightingTarget.RenderTarget);
 			applyEffect.Parameters["screenWidth"].SetValue(Main.screenWidth);
-			applyEffect.Parameters["xOff"].SetValue(0.5f + DrawHelper.ConvertX(target.X) / 2f);
+			applyEffect.Parameters["xOff"].SetValue(0.5f + ConvertX(target.X) / 2f);
 			applyEffect.Parameters["zoom"].SetValue(zoom);
 
-			//var verticies = new VertexPositionColorTexture[6];
-			//var buffer = new VertexBuffer(Main.instance.GraphicsDevice, typeof(VertexPositionColorTexture), 6, BufferUsage.WriteOnly);
+			verticies[0] = new VertexPositionColorTexture(new Vector3(target.X, target.Y, 0).ToScreenspaceCoord(), Color.White, Vector2.Zero);
+			verticies[1] = new VertexPositionColorTexture(new Vector3(target.X + target.Width, target.Y, 0).ToScreenspaceCoord(), Color.White, Vector2.UnitX);
+			verticies[2] = new VertexPositionColorTexture(new Vector3(target.X, target.Y + target.Height, 0).ToScreenspaceCoord(), Color.White, Vector2.UnitY);
 
-			verticies[0] = new VertexPositionColorTexture(new Vector3(DrawHelper.ConvertX(target.X), DrawHelper.ConvertY(target.Y), 0), Color.White, Vector2.Zero);
-			verticies[1] = new VertexPositionColorTexture(new Vector3(DrawHelper.ConvertX(target.X + target.Width), DrawHelper.ConvertY(target.Y), 0), Color.White, Vector2.UnitX);
-			verticies[2] = new VertexPositionColorTexture(new Vector3(DrawHelper.ConvertX(target.X), DrawHelper.ConvertY(target.Y + target.Height), 0), Color.White, Vector2.UnitY);
-
-			verticies[3] = new VertexPositionColorTexture(new Vector3(DrawHelper.ConvertX(target.X + target.Width), DrawHelper.ConvertY(target.Y), 0), Color.White, Vector2.UnitX);
-			verticies[4] = new VertexPositionColorTexture(new Vector3(DrawHelper.ConvertX(target.X + target.Width), DrawHelper.ConvertY(target.Y + target.Height), 0), Color.White, Vector2.One);
-			verticies[5] = new VertexPositionColorTexture(new Vector3(DrawHelper.ConvertX(target.X), DrawHelper.ConvertY(target.Y + target.Height), 0), Color.White, Vector2.UnitY);
+			verticies[3] = new VertexPositionColorTexture(new Vector3(target.X + target.Width, target.Y, 0).ToScreenspaceCoord(), Color.White, Vector2.UnitX);
+			verticies[4] = new VertexPositionColorTexture(new Vector3(target.X + target.Width, target.Y + target.Height, 0).ToScreenspaceCoord(), Color.White, Vector2.One);
+			verticies[5] = new VertexPositionColorTexture(new Vector3(target.X, target.Y + target.Height, 0).ToScreenspaceCoord(), Color.White, Vector2.UnitY);
 
 			buffer.SetData(verticies);
 
@@ -353,6 +350,16 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			}
 
 			Main.instance.GraphicsDevice.SetVertexBuffer(null);
+		}
+
+		private float ConvertX(float input)
+		{
+			return input / (Main.screenWidth * 0.5f) - 1;
+		}
+
+		private float ConvertY(float input)
+		{
+			return -1 * (input / (Main.screenHeight * 0.5f) - 1);
 		}
 
 		private static void UpdateBubblesBody(Particle particle)

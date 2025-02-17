@@ -83,8 +83,8 @@ namespace StarlightRiver.Content.Items.Haunted
 
 				Projectile.Center += (targetPos - Projectile.Center) * 0.05f;
 
-				if (Math.Abs(Helper.CompareAngle(targetRotation, Projectile.rotation)) > 0.1f)
-					Projectile.rotation += Helper.CompareAngle(targetRotation, Projectile.rotation) * 0.05f;
+				if (Math.Abs(GeometryHelper.CompareAngle(targetRotation, Projectile.rotation)) > 0.1f)
+					Projectile.rotation += GeometryHelper.CompareAngle(targetRotation, Projectile.rotation) * 0.05f;
 				else
 					Projectile.rotation = targetRotation;
 

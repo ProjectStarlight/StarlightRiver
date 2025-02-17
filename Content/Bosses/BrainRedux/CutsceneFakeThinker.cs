@@ -83,11 +83,11 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			if (Timer > 30 && Timer <= 90)
 			{
-				NPC.Center = Vector2.Lerp(homePos, homePos + Vector2.UnitY * -200, Helpers.Helper.SwoopEase((Timer - 30) / 60f));
+				NPC.Center = Vector2.Lerp(homePos, homePos + Vector2.UnitY * -200, Helpers.Eases.SwoopEase((Timer - 30) / 60f));
 			}
 
 			if (Timer == 75)
-				Helpers.Helper.PlayPitched("Magic/FireCast", 1, -0.5f, NPC.Center);
+				Helpers.SoundHelper.PlayPitched("Magic/FireCast", 1, -0.5f, NPC.Center);
 
 			if (Timer > 90 && Timer < 120)
 			{
@@ -166,7 +166,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 				if (currTime > 60 && currTime < 150)
 				{
-					NPC.Center = Vector2.Lerp(location + new Vector2(0, -800), location, Helper.SwoopEase((currTime - 60) / 90f));
+					NPC.Center = Vector2.Lerp(location + new Vector2(0, -800), location, Eases.SwoopEase((currTime - 60) / 90f));
 				}
 
 				if (currTime > 180 && currTime < 210)

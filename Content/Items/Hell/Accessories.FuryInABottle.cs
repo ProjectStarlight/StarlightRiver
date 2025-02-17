@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.Items.Hell
 				player.GetJumpState<FuryJump>().Available = true;
 				charge = 0;
 
-				Helpers.Helper.PlayPitched("Effects/Bleep", 1, 0, player.Center);
+				Helpers.SoundHelper.PlayPitched("Effects/Bleep", 1, 0, player.Center);
 				for (int k = 0; k < 10; k++)
 				{
 					Dust.NewDust(player.position, player.width, player.height, ModContent.DustType<Dusts.Cinder>(), 0, -2, 0, Color.Red);
@@ -97,8 +97,8 @@ namespace StarlightRiver.Content.Items.Hell
 				Dust.NewDustPerfect(player.Center + new Vector2(0, 16), ModContent.DustType<Dusts.Cinder>(), Vector2.UnitY.RotatedByRandom(0.2f) * -Main.rand.NextFloat(8), 0, Color.Lerp(Color.Red, Color.Orange, Main.rand.NextFloat()));
 			}
 
-			Helpers.Helper.PlayPitched("Magic/FireHit", 0.25f, -0.5f, player.Center);
-			Helpers.Helper.PlayPitched("Magic/FireHit", 0.125f, 0.5f, player.Center);
+			Helpers.SoundHelper.PlayPitched("Magic/FireHit", 0.25f, -0.5f, player.Center);
+			Helpers.SoundHelper.PlayPitched("Magic/FireHit", 0.125f, 0.5f, player.Center);
 		}
 	}
 }

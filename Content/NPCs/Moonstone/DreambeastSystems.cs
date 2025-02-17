@@ -162,9 +162,9 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			}
 
 			if (fullyInsaneTimer == 1)
-				insaneChargeSound = Helpers.Helper.PlayPitched("Magic/MysticCast", 1, -0.2f);
+				insaneChargeSound = Helpers.SoundHelper.PlayPitched("Magic/MysticCast", 1, -0.2f);
 			else if (fullyInsaneTimer == 90)
-				Helpers.Helper.PlayPitched("Magic/HolyCastShort", 1, 0.2f);
+				Helpers.SoundHelper.PlayPitched("Magic/HolyCastShort", 1, 0.2f);
 
 			if (lunacy < 100)
 				awarded = false;

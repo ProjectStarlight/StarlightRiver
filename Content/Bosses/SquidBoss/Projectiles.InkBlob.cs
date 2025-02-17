@@ -166,7 +166,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
 			Texture2D tex = Assets.Keys.GlowSoft.Value;
-			Color color = new Color(0.7f, 0.8f, 0.5f) * EaseFunction.EaseCubicOut.Ease(MathHelper.Max(0, (Projectile.timeLeft - 90) / 30f));
+			Color color = new Color(0.7f, 0.8f, 0.5f) * Eases.EaseCubicOut(MathHelper.Max(0, (Projectile.timeLeft - 90) / 30f));
 
 			for (int i = 0; i < 3; i++)
 			{
@@ -178,7 +178,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		{
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

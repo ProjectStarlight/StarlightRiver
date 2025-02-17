@@ -228,7 +228,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 				}
 			}
 
-			Helper.PlayPitched("Impacts/FireBladeStab", 0.25f, Main.rand.NextFloat(-0.05f, 0.05f), wheelPos);
+			SoundHelper.PlayPitched("Impacts/FireBladeStab", 0.25f, Main.rand.NextFloat(-0.05f, 0.05f), wheelPos);
 			CameraSystem.shake += 1;
 			target.AddBuff(BuffID.OnFire, 240);
 			target.AddBuff(BuffID.OnFire3, 240);
@@ -311,7 +311,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 				Dust.NewDustPerfect(wheelPos, DustID.Torch, velo.RotatedByRandom(0.65f) * Main.rand.NextFloat(6f, 8f), 0, default, 1.35f);
 			}
 
-			Helper.PlayPitched("Magic/FireHit", 0.45f, 0, wheelPos);
+			SoundHelper.PlayPitched("Magic/FireHit", 0.45f, 0, wheelPos);
 			CameraSystem.shake += 4;
 		}
 	}
@@ -498,7 +498,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			target.AddBuff(BuffID.OnFire, 240);
 			target.AddBuff(BuffID.OnFire3, 240);
 
-			Helper.PlayPitched("Impacts/FireBladeStab", 0.2f, Main.rand.NextFloat(-0.05f, 0.05f), Projectile.Center);
+			SoundHelper.PlayPitched("Impacts/FireBladeStab", 0.2f, Main.rand.NextFloat(-0.05f, 0.05f), Projectile.Center);
 		}
 
 		public override void Kill(int timeLeft)
@@ -718,7 +718,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			Main.spriteBatch.End();
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

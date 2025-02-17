@@ -423,7 +423,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			}
 
 			if (AttackTimer == TelegraphTime)
-				Helper.PlayPitched("VitricBoss/CeirosRoar", 0.8f, 0.5f, NPC.Center);
+				SoundHelper.PlayPitched("VitricBoss/CeirosRoar", 0.8f, 0.5f, NPC.Center);
 
 			// Funny animation numbers
 			if (AttackTimer == TelegraphTime || AttackTimer == TelegraphTime + 2 || AttackTimer == TelegraphTime + 5 || AttackTimer == TelegraphTime + 12 || AttackTimer == TelegraphTime + 40)
@@ -499,7 +499,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 			// Orb sfx begins
 			if (AttackTimer == TelegraphTime + 45)
-				Helper.PlayPitched("VitricBoss/LaserCharge", 0.5f, 0.4f, NPC.Center);
+				SoundHelper.PlayPitched("VitricBoss/LaserCharge", 0.5f, 0.4f, NPC.Center);
 
 			// Dreambeast orb charging
 			if (AttackTimer > TelegraphTime + 45 && AttackTimer < TelegraphTime + 200)
@@ -531,8 +531,8 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			// When the dreambeast bites down on the orb
 			if (AttackTimer == TelegraphTime + 240)
 			{
-				Helper.PlayPitched("VitricBoss/CeirosPillarImpact", 0.5f, 0.5f, NPC.Center);
-				Helper.PlayPitched("Magic/HolyCastShort", 1.2f, 0f, NPC.Center);
+				SoundHelper.PlayPitched("VitricBoss/CeirosPillarImpact", 0.5f, 0.5f, NPC.Center);
+				SoundHelper.PlayPitched("Magic/HolyCastShort", 1.2f, 0f, NPC.Center);
 
 				// Crunch frame
 				frameCounter = 5;
@@ -843,9 +843,9 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 				float rotation = (chain.ropeSegments[0].ScreenPos - chain.ropeSegments[1].ScreenPos).ToRotation() + (float)Math.PI / 2;
 
-				verticies[0] = new VertexPositionColorTexture((chain.ropeSegments[0].ScreenPos + offset + Vector2.UnitY.RotatedBy(rotation - Math.PI / 4) * -5).Vec3().ScreenCoord(), chain.ropeSegments[0].color * NPC.Opacity, new Vector2(0, 0.2f));
-				verticies[1] = new VertexPositionColorTexture((chain.ropeSegments[0].ScreenPos + offset + Vector2.UnitY.RotatedBy(rotation + Math.PI / 4) * -5).Vec3().ScreenCoord(), chain.ropeSegments[0].color * NPC.Opacity, new Vector2(0, 0.8f));
-				verticies[2] = new VertexPositionColorTexture((chain.ropeSegments[1].ScreenPos + offset).Vec3().ScreenCoord(), chain.ropeSegments[1].color, new Vector2(0, 0.5f));
+				verticies[0] = new VertexPositionColorTexture((chain.ropeSegments[0].ScreenPos + offset + Vector2.UnitY.RotatedBy(rotation - Math.PI / 4) * -5).ToVector3().ToScreenspaceCoord(), chain.ropeSegments[0].color * NPC.Opacity, new Vector2(0, 0.2f));
+				verticies[1] = new VertexPositionColorTexture((chain.ropeSegments[0].ScreenPos + offset + Vector2.UnitY.RotatedBy(rotation + Math.PI / 4) * -5).ToVector3().ToScreenspaceCoord(), chain.ropeSegments[0].color * NPC.Opacity, new Vector2(0, 0.8f));
+				verticies[2] = new VertexPositionColorTexture((chain.ropeSegments[1].ScreenPos + offset).ToVector3().ToScreenspaceCoord(), chain.ropeSegments[1].color, new Vector2(0, 0.5f));
 
 				for (int k = 1; k < chain.segmentCount - 1; k++)
 				{
@@ -855,9 +855,9 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 					int point = k * 9 - 6;
 
-					verticies[point] = new VertexPositionColorTexture((chain.ropeSegments[k].ScreenPos + offset + Vector2.UnitY.RotatedBy(rotation2 - Math.PI / 4) * -(chain.segmentCount - k) * scale).Vec3().ScreenCoord(), chain.ropeSegments[k].color * NPC.Opacity, new Vector2(progress, 0.2f));
-					verticies[point + 1] = new VertexPositionColorTexture((chain.ropeSegments[k].ScreenPos + offset + Vector2.UnitY.RotatedBy(rotation2 + Math.PI / 4) * -(chain.segmentCount - k) * scale).Vec3().ScreenCoord(), chain.ropeSegments[k].color * NPC.Opacity, new Vector2(progress, 0.8f));
-					verticies[point + 2] = new VertexPositionColorTexture((chain.ropeSegments[k + 1].ScreenPos + offset).Vec3().ScreenCoord(), chain.ropeSegments[k + 1].color * NPC.Opacity, new Vector2(progress + 1 / 3f, 0.5f));
+					verticies[point] = new VertexPositionColorTexture((chain.ropeSegments[k].ScreenPos + offset + Vector2.UnitY.RotatedBy(rotation2 - Math.PI / 4) * -(chain.segmentCount - k) * scale).ToVector3().ToScreenspaceCoord(), chain.ropeSegments[k].color * NPC.Opacity, new Vector2(progress, 0.2f));
+					verticies[point + 1] = new VertexPositionColorTexture((chain.ropeSegments[k].ScreenPos + offset + Vector2.UnitY.RotatedBy(rotation2 + Math.PI / 4) * -(chain.segmentCount - k) * scale).ToVector3().ToScreenspaceCoord(), chain.ropeSegments[k].color * NPC.Opacity, new Vector2(progress, 0.8f));
+					verticies[point + 2] = new VertexPositionColorTexture((chain.ropeSegments[k + 1].ScreenPos + offset).ToVector3().ToScreenspaceCoord(), chain.ropeSegments[k + 1].color * NPC.Opacity, new Vector2(progress + 1 / 3f, 0.5f));
 
 					int extra = k == 1 ? 0 : 6;
 					verticies[point + 3] = verticies[point];

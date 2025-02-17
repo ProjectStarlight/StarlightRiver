@@ -88,7 +88,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			foreach (Player player in Main.player)
 			{
-				if (Helpers.Helper.CheckCircularCollision(Projectile.Center, AuroraRadius, player.Hitbox))
+				if (Helpers.CollisionHelper.CheckCircularCollision(Projectile.Center, AuroraRadius, player.Hitbox))
 					player.lifeRegen += auroraPower;
 			}
 		}

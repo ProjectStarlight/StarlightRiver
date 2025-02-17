@@ -83,7 +83,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (Projectile.timeLeft > 50)
 				Projectile.velocity = Vector2.SmoothStep(Vector2.Zero, savedVelocity, (30 - (Projectile.timeLeft - 50)) / 30f);
 
-			Color color = Helpers.Helper.MoltenVitricGlow(MathHelper.Min(200 - Projectile.timeLeft, 120));
+			Color color = Helpers.CommonVisualEffects.HeatedToCoolColor(MathHelper.Min(200 - Projectile.timeLeft, 120));
 
 			if (Projectile.timeLeft < 45)
 			{
@@ -108,7 +108,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void Kill(int timeLeft)
 		{
-			Color color = Helpers.Helper.MoltenVitricGlow(MathHelper.Min(200 - Projectile.timeLeft, 120));
+			Color color = Helpers.CommonVisualEffects.HeatedToCoolColor(MathHelper.Min(200 - Projectile.timeLeft, 120));
 
 			for (int k = 0; k <= 10; k++)
 			{
@@ -122,7 +122,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override bool PreDraw(ref Color lightColor)
 		{
 			SpriteBatch spriteBatch = Main.spriteBatch;
-			Color color = Helpers.Helper.MoltenVitricGlow(MathHelper.Min(200 - Projectile.timeLeft, 120));
+			Color color = Helpers.CommonVisualEffects.HeatedToCoolColor(MathHelper.Min(200 - Projectile.timeLeft, 120));
 
 			spriteBatch.Draw(Assets.Bosses.VitricBoss.GlassSpike.Value, Projectile.Center - Main.screenPosition, new Rectangle(0, 0, 22, 22), lightColor, Projectile.rotation, Vector2.One * 11, Projectile.scale, 0, 0);
 			spriteBatch.Draw(Assets.Bosses.VitricBoss.GlassSpike.Value, Projectile.Center - Main.screenPosition, new Rectangle(0, 22, 22, 22), color, Projectile.rotation, Vector2.One * 11, Projectile.scale, 0, 0);
@@ -134,7 +134,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			Texture2D tex = Assets.Bosses.VitricBoss.GlassSpikeGlow.Value;
 			float alpha = Projectile.timeLeft > 160 ? 1 - (Projectile.timeLeft - 160) / 20f : 1;
-			Color color = Helpers.Helper.MoltenVitricGlow(MathHelper.Min(200 - Projectile.timeLeft, 120)) * alpha;
+			Color color = Helpers.CommonVisualEffects.HeatedToCoolColor(MathHelper.Min(200 - Projectile.timeLeft, 120)) * alpha;
 
 			spriteBatch.Draw(tex, Projectile.Center + Vector2.Normalize(Projectile.velocity) * -40 - Main.screenPosition, tex.Frame(),
 				color * (Projectile.timeLeft / 140f), Projectile.rotation + 3.14f, tex.Size() / 2, 1.8f, 0, 0);

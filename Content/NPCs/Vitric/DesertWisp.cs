@@ -113,7 +113,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 			Effect effect = Terraria.Graphics.Effects.Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-screenPos.Vec3());
+			var world = Matrix.CreateTranslation(-screenPos.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

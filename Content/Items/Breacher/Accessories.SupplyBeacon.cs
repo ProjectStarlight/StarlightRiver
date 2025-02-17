@@ -71,7 +71,7 @@ namespace StarlightRiver.Content.Items.Breacher
 					damageTicker = 0;
 					cooldown = 600;
 					launchCounter = 125;
-					Helper.PlayPitched("AirstrikeIncoming", 0.6f, 0);
+					SoundHelper.PlayPitched("AirstrikeIncoming", 0.6f, 0);
 				}
 			}
 		}
@@ -301,7 +301,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

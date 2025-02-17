@@ -45,8 +45,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override string Texture => AssetDirectory.Glassweaver + Name;
 
-		public static int SmallProjectileDamage => Helpers.Helper.GetProjectileDamage(100, 50, 30);
-		public static int LargeProjectileDamage => Helpers.Helper.GetProjectileDamage(180, 90, 60);
+		public static int SmallProjectileDamage => Helpers.StarlightMathHelper.GetProjectileDamage(100, 50, 30);
+		public static int LargeProjectileDamage => Helpers.StarlightMathHelper.GetProjectileDamage(180, 90, 60);
 
 		//Phase tracking utils
 		public enum Phases
@@ -233,7 +233,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					NPC.rotation = MathHelper.Lerp(NPC.rotation, 0, 0.33f);
 
 					if (NPC.velocity.Y > 0f && NPC.collideY && !disableJumpSound)
-						Helpers.Helper.PlayPitched("GlassMiniboss/RippedSoundJump", 1f, -0.1f, NPC.Center);
+						Helpers.SoundHelper.PlayPitched("GlassMiniboss/RippedSoundJump", 1f, -0.1f, NPC.Center);
 
 					if (AttackTimer == 1)
 					{

@@ -20,7 +20,7 @@ namespace StarlightRiver.Core.Systems.PixelationSystem
 
 			On_Main.DrawCachedProjs += DrawTargets;
 			On_Main.DrawDust += DrawDustTargets;
-		}		
+		}
 
 		public override void PostSetupContent()
 		{
@@ -29,7 +29,7 @@ namespace StarlightRiver.Core.Systems.PixelationSystem
 			RegisterScreenTarget("UnderNPCs", RenderLayer.UnderNPCs);
 
 			RegisterScreenTarget("UnderProjectiles", RenderLayer.UnderProjectiles);
-			
+
 			RegisterScreenTarget("OverPlayers", RenderLayer.OverPlayers);
 
 			RegisterScreenTarget("OverWiresUI", RenderLayer.OverWiresUI);
@@ -231,7 +231,7 @@ namespace StarlightRiver.Core.Systems.PixelationSystem
 		UnderTiles = 1,
 		UnderNPCs = 2,
 		UnderProjectiles = 3,
-		OverPlayers = 4,	
+		OverPlayers = 4,
 		OverWiresUI = 5,
 		Dusts = 6,
 	}

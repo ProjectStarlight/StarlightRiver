@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Items.Utility
 				if ((bag.ModItem as ChefBag).InsertItem(Item))
 				{
 					CombatText.NewText(Player.Hitbox, Microsoft.Xna.Framework.Color.White, "Ingredient added to chefs bag");
-					Helpers.Helper.PlayPitched("Effects/PickupGeneric", 1, 0.5f, Player.Center);
+					Helpers.SoundHelper.PlayPitched("Effects/PickupGeneric", 1, 0.5f, Player.Center);
 
 					return false;
 				}

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace StarlightRiver.Helpers
 {
-	internal static class UIHelper
+	public static class UIHelper
 	{
 		public static void DrawBox(SpriteBatch sb, Rectangle target, Color color)
 		{

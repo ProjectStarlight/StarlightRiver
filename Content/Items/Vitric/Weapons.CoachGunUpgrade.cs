@@ -124,7 +124,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (justAltUsed)
 				return;
 
-			Vector2 itemPosition = Helper.SetGunUseStyle(player, Item, shootDirection, -6f, new Vector2(68f, 22f), new Vector2(-48f, 0f));
+			Vector2 itemPosition = CommonGunAnimations.SetGunUseStyle(player, Item, shootDirection, -6f, new Vector2(68f, 22f), new Vector2(-48f, 0f));
 
 			float animProgress = 1f - player.itemTime / (float)player.itemTimeMax;
 
@@ -132,7 +132,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			{
 				float lerper = (animProgress - 0.35f) / 0.65f;
 				Dust.NewDustPerfect(itemPosition + new Vector2(55f, -2f * player.direction).RotatedBy(player.compositeFrontArm.rotation + 1.5707964f * player.gravDir), DustID.Wraith, Vector2.UnitY * -2f, (int)MathHelper.Lerp(210f, 200f, lerper), default, MathHelper.Lerp(0.75f, 1f, lerper)).noGravity = true;
-			
+
 				if (Main.rand.NextBool(20))
 					Dust.NewDustPerfect(itemPosition + new Vector2(55f, -2f * player.direction).RotatedBy(player.compositeFrontArm.rotation + 1.5707964f * player.gravDir), ModContent.DustType<CoachGunUpgradeSmokeDust>(), Vector2.Zero, 150, new Color(255, 150, 50), 0.075f).noGravity = true;
 			}
@@ -143,7 +143,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (justAltUsed)
 				return;
 
-			Helper.SetGunUseItemFrame(player, shootDirection, shootRotation, -0.2f, true);
+			CommonGunAnimations.SetGunUseItemFrame(player, shootDirection, shootRotation, -0.2f, true);
 		}
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -192,8 +192,8 @@ namespace StarlightRiver.Content.Items.Vitric
 					Dust.NewDustPerfect(shellPos + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<PixelatedGlow>(), new Vector2(player.direction * -1, -0.5f).RotatedByRandom(0.4f) * Main.rand.NextFloat(4f), 0, new Color(255, 150, 0, 0), 0.35f);
 				}
 
-				Helper.PlayPitched("Guns/PlinkLever", 0.45f, Main.rand.NextFloat(-0.1f, 0.1f), position);
-				Helper.PlayPitched("Guns/RifleLight", 0.75f, Main.rand.NextFloat(-0.1f, 0.1f), position);
+				SoundHelper.PlayPitched("Guns/PlinkLever", 0.45f, Main.rand.NextFloat(-0.1f, 0.1f), position);
+				SoundHelper.PlayPitched("Guns/RifleLight", 0.75f, Main.rand.NextFloat(-0.1f, 0.1f), position);
 				Projectile.NewProjectileDirect(source, position, velocity * 1.4f, type, damage, knockback, player.whoAmI).GetGlobalProjectile<CoachGunUpgradeGlobalProj>().ShotFromGun = true;
 
 				CameraSystem.shake += 1;
@@ -317,7 +317,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void OnKill(int timeLeft)
 		{
-			Helper.PlayPitched("GlassMiniboss/GlassSmash", 0.5f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
+			SoundHelper.PlayPitched("GlassMiniboss/GlassSmash", 0.5f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
 
 			for (int i = 1; i < 5; i++)
 			{
@@ -379,7 +379,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
-			Helper.PlayPitched("GlassMiniboss/GlassBounce", 0.15f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
+			SoundHelper.PlayPitched("GlassMiniboss/GlassBounce", 0.15f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
 
 			if (Math.Abs(Projectile.velocity.X - oldVelocity.X) > float.Epsilon)
 				Projectile.velocity.X = -oldVelocity.X;

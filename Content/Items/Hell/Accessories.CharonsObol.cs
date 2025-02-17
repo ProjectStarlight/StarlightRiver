@@ -260,7 +260,7 @@ namespace StarlightRiver.Content.Items.Hell
 			Projectile.penetrate++;
 
 			CameraSystem.shake += 3;
-			Helper.PlayPitched("Impacts/Ricochet", 0.2f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
+			SoundHelper.PlayPitched("Impacts/Ricochet", 0.2f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 			ManageCaches();
 			Projectile.velocity = Vector2.Zero;
 			disappeared = true;
@@ -335,7 +335,7 @@ namespace StarlightRiver.Content.Items.Hell
 
 		private void PickTarget()
 		{
-			Projectile closestCoin = Main.projectile.Where(n => n.active && n != Projectile && !n.friendly && n.ModProjectile is ObolProj modProj2 && !modProj2.disappeared && !modProj2.bouncedOff && !modProj2.embedded && n.Distance(Projectile.Center) < 1000 && Helper.ClearPath(n.Center, Projectile.Center)).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
+			Projectile closestCoin = Main.projectile.Where(n => n.active && n != Projectile && !n.friendly && n.ModProjectile is ObolProj modProj2 && !modProj2.disappeared && !modProj2.bouncedOff && !modProj2.embedded && n.Distance(Projectile.Center) < 1000 && CollisionHelper.ClearPath(n.Center, Projectile.Center)).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
 
 			if (closestCoin != default)
 			{
@@ -344,7 +344,7 @@ namespace StarlightRiver.Content.Items.Hell
 			}
 			else
 			{
-				NPC closestNPC = Main.npc.Where(n => n.active && n.CanBeChasedBy() && !n.friendly && Helper.ClearPath(n.Center, Projectile.Center)).OrderBy(n => n.lifeMax).LastOrDefault();
+				NPC closestNPC = Main.npc.Where(n => n.active && n.CanBeChasedBy() && !n.friendly && CollisionHelper.ClearPath(n.Center, Projectile.Center)).OrderBy(n => n.lifeMax).LastOrDefault();
 
 				if (closestNPC != default)
 				{
@@ -402,7 +402,7 @@ namespace StarlightRiver.Content.Items.Hell
 		{
 			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

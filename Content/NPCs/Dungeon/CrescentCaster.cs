@@ -181,7 +181,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 
 			if (positionTargets.Count > 0)
 			{
-				float xPositionToBe = Helper.Centeroid(positionTargets).X; //Calculate middle of valid enemies
+				float xPositionToBe = GeometryHelper.Centeroid(positionTargets).X; //Calculate middle of valid enemies
 
 				if (Math.Abs(xPositionToBe - NPC.Center.X) > 20)
 					direction = Math.Sign(xPositionToBe - NPC.Center.X);
@@ -293,7 +293,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 		{
 			Effect effect = Terraria.Graphics.Effects.Filters.Scene["LightningTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
@@ -459,13 +459,13 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 					if (factor.X > 0.99f)
 						return Color.Transparent;
 
-					return new Color(160, 220, 255) * fade * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X) * DistanceFade;
+					return new Color(160, 220, 255) * fade * 0.1f * Eases.EaseCubicOut(1 - factor.X) * DistanceFade;
 				});
 
 				trail2 = new Trail(device, 15, new NoTip(), factor => 3 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
 				{
-					float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
-					return Color.Lerp(baseColor, endColor, EaseFunction.EaseCubicIn.Ease(1 - progress)) * fade * progress * DistanceFade;
+					float progress = Eases.EaseCubicOut(1 - factor.X);
+					return Color.Lerp(baseColor, endColor, Eases.EaseCubicIn(1 - progress)) * fade * progress * DistanceFade;
 				});
 
 				UpdateTrailPoints();

@@ -384,7 +384,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 					if (Math.Abs(NPC.Center.X - shielderPartner.Center.X) < 110 && !shielderComboJumped)
 					{
-						NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Bottom, shielderPartner.Top + new Vector2(shielderPartner.spriteDirection * 15, 0), 0.1f, 120, 350);
+						NPC.velocity = GeometryHelper.GetArcVel(NPC.Bottom, shielderPartner.Top + new Vector2(shielderPartner.spriteDirection * 15, 0), 0.1f, 120, 350);
 						shielderComboJumped = true;
 					}
 
@@ -553,7 +553,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		private void RotateBodyParts(Vector2 direction)
 		{
-			float rotDifference = Helper.RotationDifference(direction.ToRotation(), bowArmRotation);
+			float rotDifference = GeometryHelper.RotationDifference(direction.ToRotation(), bowArmRotation);
 
 			bowArmRotation = MathHelper.Lerp(bowArmRotation, bowArmRotation + rotDifference, 0.1f);
 			bowRotation = BackArmPos.DirectionTo(BowPos).ToRotation();
@@ -563,7 +563,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			if (NPC.spriteDirection == 1)
 				headRotation = bowRotation / 2;
 			else
-				headRotation = Helper.RotationDifference(bowRotation, 3.14f) / 2;
+				headRotation = GeometryHelper.RotationDifference(bowRotation, 3.14f) / 2;
 		}
 
 		public override void DrawHealingGlow(SpriteBatch spriteBatch)
@@ -650,7 +650,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			Main.spriteBatch.End();
 			Effect effect = Terraria.Graphics.Effects.Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

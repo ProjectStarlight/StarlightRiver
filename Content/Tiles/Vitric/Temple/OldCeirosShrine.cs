@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			}
 
 			SoundPuzzle.SoundPuzzleHandler.lastTries.Add(tile2.TileFrameX);
-			Helpers.Helper.PlayPitched("GlassMiniboss/GlassBounce", 1f, -1f + tile2.TileFrameX * 0.5f, new Vector2(i, j) * 16);
+			Helpers.SoundHelper.PlayPitched("GlassMiniboss/GlassBounce", 1f, -1f + tile2.TileFrameX * 0.5f, new Vector2(i, j) * 16);
 			(GetDummy<OldCeirosShrineDummy>(i, j) as OldCeirosShrineDummy).echoTimer = 30;
 
 			return false;
@@ -79,7 +79,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			if (tile.TileFrameX < 16 && tile.TileFrameY == 0)
 			{
 				Texture2D tileTex = TextureAssets.Tile[tile.TileType].Value;
-				spriteBatch.Draw(tileTex, (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(0, 0, 16, 16), Lighting.GetColor(i, j));
+				spriteBatch.Draw(tileTex, new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange - Main.screenPosition, new Rectangle(0, 0, 16, 16), Lighting.GetColor(i, j));
 
 				return false;
 			}

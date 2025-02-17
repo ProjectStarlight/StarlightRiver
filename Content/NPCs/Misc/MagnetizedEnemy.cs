@@ -113,11 +113,11 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 				flashOpacityPreEase = MathHelper.Clamp(flashOpacityPreEase, 0, 1);
 
-				flashOpacity = EaseFunction.EaseCircularIn.Ease(flashOpacityPreEase);
+				flashOpacity = Eases.EaseCircularIn(flashOpacityPreEase);
 
 				if (attackCounter % attackCycleLength == 300)
 				{
-					Helper.PlayPitched("Magic/LightningExplode", 0.4f, 0f, npc.Center);
+					SoundHelper.PlayPitched("Magic/LightningExplode", 0.4f, 0f, npc.Center);
 
 					if (cache != null)
 					{
@@ -212,7 +212,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 								if (factor.X > 0.99f)
 									return Color.Transparent;
 
-								return Color.Lerp(new Color(160, 220, 255) * ((fade - 0.5f) * 0.3f) * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X), Color.White, flashOpacity * 0.5f);
+								return Color.Lerp(new Color(160, 220, 255) * ((fade - 0.5f) * 0.3f) * 0.1f * Eases.EaseCubicOut(1 - factor.X), Color.White, flashOpacity * 0.5f);
 							});
 			}
 
@@ -223,8 +223,8 @@ namespace StarlightRiver.Content.NPCs.Misc
 			{
 				trail2 = new Trail(Main.instance.GraphicsDevice, SEGMENTS + 1, new NoTip(), factor => 3 * (fade > 1 ? Main.rand.NextFloat(0.55f, 1.45f) : 1) * Math.Max(fade, 1), factor =>
 							{
-								float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
-								return Color.Lerp(Color.Lerp(baseColor, endColor, EaseFunction.EaseCubicIn.Ease(1 - progress)), Color.White, flashOpacity) * ((fade - 0.5f) * 0.3f) * progress;
+								float progress = Eases.EaseCubicOut(1 - factor.X);
+								return Color.Lerp(Color.Lerp(baseColor, endColor, Eases.EaseCubicIn(1 - progress)), Color.White, flashOpacity) * ((fade - 0.5f) * 0.3f) * progress;
 							});
 			}
 
@@ -237,7 +237,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 			Main.spriteBatch.End();
 			Effect effect = Filters.Scene["LightningTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		public override void PostDraw(Color lightColor)
 		{
 			Texture2D tex = Request<Texture2D>(Texture + "Glow").Value;
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), Helper.IndicatorColor, 0, tex.Size() / 2, 1, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), CommonVisualEffects.IndicatorColor, 0, tex.Size() / 2, 1, 0, 0);
 		}
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
@@ -112,7 +112,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			{
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.Center);
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_KoboldExplosion, Projectile.Center);
-				Helper.PlayPitched("Magic/FireHit", 0.5f, 0, Projectile.Center);
+				SoundHelper.PlayPitched("Magic/FireHit", 0.5f, 0, Projectile.Center);
 
 				for (int k = 0; k < 80; k++)
 				{

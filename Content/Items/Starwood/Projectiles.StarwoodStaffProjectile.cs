@@ -161,7 +161,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
 		public override void Kill(int timeLeft)
 		{
-			Helpers.DustHelper.DrawStar(Projectile.Center, dustType, pointAmount: 5, mainSize: 2f * ScaleMult, dustDensity: 1f, pointDepthMult: 0.3f);
+			Helpers.DustHelper.SpawnStarPattern(Projectile.Center, dustType, pointAmount: 5, mainSize: 2f * ScaleMult, dustDensity: 1f, pointDepthMult: 0.3f);
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item10, Projectile.Center);
 
 			for (int k = 0; k < 50; k++)

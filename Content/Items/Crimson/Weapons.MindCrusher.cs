@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Items.Crimson
 {
 	internal class MindCrusher : ModItem
 	{
-		public override string Texture => AssetDirectory.Debug;
+		public override string Texture => AssetDirectory.CrimsonItem + Name;
 
 		public override void SetStaticDefaults()
 		{
@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Items.Crimson
 			Item.height = 32;
 			Item.useTime = 40;
 			Item.useAnimation = 40;
-			Item.useStyle = ItemUseStyleID.HoldUp;
+			Item.useStyle = ItemUseStyleID.RaiseLamp;
 			Item.noMelee = true;
 			Item.knockBack = 1;
 			Item.rare = ItemRarityID.Orange;
@@ -40,9 +40,15 @@ namespace StarlightRiver.Content.Items.Crimson
 			Item.useTurn = true;
 			Item.channel = true;
 			Item.mana = 100;
+			Item.noUseGraphic = true;
 		}
 
 		public override bool CanUseItem(Player player)
+		{
+			return !Main.projectile.Any(n => n.active && n.owner == player.whoAmI && n.type == Item.shoot);
+		}
+
+		public override bool CanShoot(Player player)
 		{
 			return !Main.projectile.Any(n => n.active && n.owner == player.whoAmI && n.type == Item.shoot);
 		}
@@ -97,6 +103,7 @@ namespace StarlightRiver.Content.Items.Crimson
 			{
 				if (player.channel)
 				{
+					player.itemAnimation = 40;
 					Projectile.timeLeft = 300;
 
 					int oldWidth = Projectile.width;
@@ -136,6 +143,13 @@ namespace StarlightRiver.Content.Items.Crimson
 			}
 
 			Lighting.AddLight(Projectile.Center, Color.White.ToVector3() * 1.5f);
+
+			Color glowColor = new Color(
+				1.3f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f) * 0.5f,
+				1.3f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f + 1) * 0.5f,
+				1.3f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f + 2) * 0.5f);
+
+			Lighting.AddLight(player.Center, glowColor.ToVector3() * 0.5f);
 		}
 
 		public override bool? CanHitNPC(NPC target)
@@ -146,7 +160,7 @@ namespace StarlightRiver.Content.Items.Crimson
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (target.defense > 0)
-				modifiers.FinalDamage += target.defense * 2;
+				modifiers.FinalDamage.Flat += target.defense * 2;
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -161,6 +175,24 @@ namespace StarlightRiver.Content.Items.Crimson
 		{
 			Texture2D tex = Assets.Misc.GlowRing.Value;
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0) * 0.1f, 0, tex.Size() / 2f, Radius * 2f / tex.Width, 0, 0);
+
+			// Draw the held item for the player
+			var held = Assets.Items.Crimson.MindCrusher.Value;
+			var heldGlow = Assets.Items.Crimson.MindCrusherGlow.Value;
+
+			var owner = Projectile.Owner();
+			Vector2 holdPos = owner.Center + new Vector2(16 * owner.direction, owner.gfxOffY);
+
+			int frame = Radius < 20 ? 0 : 1 + (int)(Main.GameUpdateCount / 10 % 2);
+			Rectangle glowSource = new Rectangle(heldGlow.Width / 3 * frame, 0, heldGlow.Width / 3, heldGlow.Width);
+
+			Color glowColor = new Color(
+				1.3f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f) * 0.5f,
+				1.3f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f + 1) * 0.5f,
+				1.3f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f + 2) * 0.5f);
+
+			Main.spriteBatch.Draw(held, holdPos - Main.screenPosition, null, Lighting.GetColor((owner.Center / 16).ToPoint()), 0, held.Size() / 2f, 1, 0, 0);
+			Main.spriteBatch.Draw(heldGlow, holdPos - Main.screenPosition, glowSource, glowColor, 0, held.Size() / 2f, 1, 0, 0);
 		}
 
 		private void DrawHallucinations(SpriteBatch batch)

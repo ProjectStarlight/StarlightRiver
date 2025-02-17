@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 				Vector2 pos = new Vector2(i + 1, j) * 16;
 				Color color = Lighting.GetColor(i, j);
 
-				pos += Helpers.Helper.TileAdj * 16;
+				pos += Vector2.One * Main.offScreenRange;
 
 				Texture2D tex2 = ModContent.Request<Texture2D>(AssetDirectory.ForestTile + "Godray").Value;
 				var godrayColor = new Color();
@@ -105,7 +105,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 			if (!up && !down)
 			{
 				Texture2D sideTex = Terraria.GameContent.TextureAssets.TreeTop[0].Value;
-				Vector2 sidePos = (new Vector2(i + 1, j) + Helpers.Helper.TileAdj) * 16;
+				Vector2 sidePos = new Vector2(i + 1, j) * 16 + Vector2.One * Main.offScreenRange;
 
 				if (left)
 					spriteBatch.Draw(sideTex, sidePos + new Vector2(20, 0) - Main.screenPosition, null, Color.White, 0, Vector2.Zero, 1, 0, 0);
@@ -125,7 +125,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 			if (right && !up && down)
 			{
 				Texture2D tex = ModContent.Request<Texture2D>(Texture + "Top").Value;
-				Vector2 pos = (new Vector2(i + 1, j) + Helpers.Helper.TileAdj) * 16;
+				Vector2 pos = new Vector2(i + 1, j) * 16 + Vector2.One * Main.offScreenRange;
 
 				Color color = Lighting.GetColor(i, j);
 			}

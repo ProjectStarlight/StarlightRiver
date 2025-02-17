@@ -50,13 +50,13 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				SetFrameY(0);
 				lastTwistState = 0;
 
-				Helper.PlayPitched("VitricBoss/CeirosEarthquake", 0.4f, 0, NPC.Center);
-				Helper.PlayPitched("VitricBoss/CeirosRumble", 0.4f, 0, NPC.Center);
+				SoundHelper.PlayPitched("VitricBoss/CeirosEarthquake", 0.4f, 0, NPC.Center);
+				SoundHelper.PlayPitched("VitricBoss/CeirosRumble", 0.4f, 0, NPC.Center);
 			}
 
 			if (checkSpecificTime(90))
-				//Helper.PlayPitched("VitricBoss/StoneBreak", 0.25f, 0.3f, NPC.Center);
-				Helper.PlayPitched("VitricBoss/ceiroslidclose", 0.35f, 0.4f, NPC.Center);
+				//SoundHelper.PlayPitched("VitricBoss/StoneBreak", 0.25f, 0.3f, NPC.Center);
+				SoundHelper.PlayPitched("VitricBoss/ceiroslidclose", 0.35f, 0.4f, NPC.Center);
 
 			if (checkSpecificTime(120))
 			{
@@ -74,8 +74,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			}
 
 			if (checkSpecificTime(210))
-				//Helper.PlayPitched("VitricBoss/ceiroslidclose", 0.35f, 0.2f, NPC.Center);
-				Helper.PlayPitched("VitricBoss/StoneBreak", 0.35f, 0.2f, NPC.Center);
+				//SoundHelper.PlayPitched("VitricBoss/ceiroslidclose", 0.35f, 0.2f, NPC.Center);
+				SoundHelper.PlayPitched("VitricBoss/StoneBreak", 0.35f, 0.2f, NPC.Center);
 
 			if (checkSpecificTime(240))
 			{
@@ -95,8 +95,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			}
 
 			if (checkSpecificTime(330))
-				//Helper.PlayPitched("VitricBoss/ceiroslidclose", 0.5f, 0.1f, NPC.Center);
-				Helper.PlayPitched("VitricBoss/StoneBreak", 0.5f, 0, NPC.Center);
+				//SoundHelper.PlayPitched("VitricBoss/ceiroslidclose", 0.5f, 0.1f, NPC.Center);
+				SoundHelper.PlayPitched("VitricBoss/StoneBreak", 0.5f, 0, NPC.Center);
 
 			if (checkSpecificTime(360))
 			{
@@ -117,8 +117,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			if (checkSpecificTime(424))
 			{
-				Helper.PlayPitched("VitricBoss/StoneBreak", 0.7f, 0, NPC.Center);
-				Helper.PlayPitched("VitricBoss/StoneBreakTwo", 0.7f, 0, NPC.Center);
+				SoundHelper.PlayPitched("VitricBoss/StoneBreak", 0.7f, 0, NPC.Center);
+				SoundHelper.PlayPitched("VitricBoss/StoneBreakTwo", 0.7f, 0, NPC.Center);
 			}
 
 			if (checkSpecificTime(454))
@@ -191,7 +191,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			}
 
 			if (checkSpecificTime(610))
-				Helper.PlayPitched("VitricBoss/CeirosRoar", 1, 0, NPC.Center);
+				SoundHelper.PlayPitched("VitricBoss/CeirosRoar", 1, 0, NPC.Center);
 
 			if (checkSpecificTime(620))
 			{
@@ -206,7 +206,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			}
 
 			if (checkSpecificTime(690))
-				Helper.PlayPitched("VitricBoss/ceiroslidclose", 1, 0, NPC.Center);
+				SoundHelper.PlayPitched("VitricBoss/ceiroslidclose", 1, 0, NPC.Center);
 
 			if (GlobalTimer > 690 && GlobalTimer < 750)
 			{
@@ -304,7 +304,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			}
 
 			if (checkSpecificTime(325))
-				Helper.PlayPitched("VitricBoss/StoneBreakTwo", 0.7f, 0, NPC.Center);
+				SoundHelper.PlayPitched("VitricBoss/StoneBreakTwo", 0.7f, 0, NPC.Center);
 
 			if (GlobalTimer >= 340 && GlobalTimer < 370)
 			{

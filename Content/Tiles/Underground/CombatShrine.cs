@@ -293,7 +293,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 				float rad = -32;
 
 				if (state >= maxWaves + 2)
-					rad += Helpers.Helper.BezierEase((timer - waveTime) / 128f) * 32;
+					rad += Helpers.Eases.BezierEase((timer - waveTime) / 128f) * 32;
 
 				for (int k = 0; k < Math.Min(state - 2, maxWaves - 1); k++)
 				{
@@ -371,7 +371,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 			Projectile.scale = projScale;
 
 			if (Projectile.timeLeft == 70)
-				Helpers.Helper.PlayPitched("ShadowSpawn", 0.4f, 1, Projectile.Center);
+				Helpers.SoundHelper.PlayPitched("ShadowSpawn", 0.4f, 1, Projectile.Center);
 
 			if (Projectile.timeLeft == 30 && Main.netMode != NetmodeID.MultiplayerClient)
 			{
@@ -386,18 +386,18 @@ namespace StarlightRiver.Content.Tiles.Underground
 			Texture2D tex = Assets.GUI.ItemGlow.Value;
 			Texture2D texRing = Assets.GUI.RingGlow.Value;
 
-			float bright = Helpers.Helper.BezierEase(1 - (Projectile.timeLeft - 60) / 120f);
+			float bright = Helpers.Eases.BezierEase(1 - (Projectile.timeLeft - 60) / 120f);
 
 			if (Projectile.timeLeft < 20)
 				bright = Projectile.timeLeft / 20f;
 
-			float starScale = Helpers.Helper.BezierEase(1 - (Projectile.timeLeft - 90) / 30f);
+			float starScale = Helpers.Eases.BezierEase(1 - (Projectile.timeLeft - 90) / 30f);
 
 			if (Projectile.timeLeft <= 90)
 				starScale = 0.3f + Projectile.timeLeft / 90f * 0.7f;
 
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.Red * bright, Helpers.Helper.BezierEase(Projectile.timeLeft / 160f) * 6.28f, tex.Size() / 2, starScale * 0.3f * Projectile.scale, 0, 0);
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * bright, Helpers.Helper.BezierEase(Projectile.timeLeft / 160f) * 6.28f, tex.Size() / 2, starScale * 0.2f * Projectile.scale, 0, 0);
+			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.Red * bright, Helpers.Eases.BezierEase(Projectile.timeLeft / 160f) * 6.28f, tex.Size() / 2, starScale * 0.3f * Projectile.scale, 0, 0);
+			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * bright, Helpers.Eases.BezierEase(Projectile.timeLeft / 160f) * 6.28f, tex.Size() / 2, starScale * 0.2f * Projectile.scale, 0, 0);
 
 			float ringBright = 1;
 			if (Projectile.timeLeft > 100)
@@ -406,7 +406,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 			float ringScale = 1 + (Projectile.timeLeft - 50) / 70f * 0.3f;
 
 			if (Projectile.timeLeft <= 50)
-				ringScale = Helpers.Helper.BezierEase((Projectile.timeLeft - 20) / 30f);
+				ringScale = Helpers.Eases.BezierEase((Projectile.timeLeft - 20) / 30f);
 
 			spriteBatch.Draw(texRing, Projectile.Center - Main.screenPosition, null, Color.Red * ringBright * 0.8f, Projectile.timeLeft / 60f * 6.28f, texRing.Size() / 2, ringScale * 0.2f * Projectile.scale, 0, 0);
 			spriteBatch.Draw(texRing, Projectile.Center - Main.screenPosition, null, Color.White * ringBright * 0.5f, Projectile.timeLeft / 60f * 6.28f, texRing.Size() / 2, ringScale * 0.195f * Projectile.scale, 0, 0);

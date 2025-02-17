@@ -343,7 +343,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		{
 			float rot = (Projectile.rotation + 1.57f * 3) % 6.28f - 3.14f;
 
-			return Helper.CheckConicalCollision(Projectile.Center, 500, rot, 0.3f, targetHitbox);
+			return CollisionHelper.CheckConicalCollision(Projectile.Center, 500, rot, 0.3f, targetHitbox);
 		}
 
 		public override bool? CanHitNPC(NPC target)
@@ -382,7 +382,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			float rot = 0f;
 
 			Vector2 rotationVector = (Projectile.rotation + 1.57f).ToRotationVector2();
-			Vector2 capPos = Projectile.Center - Main.screenPosition + new Vector2(0, Owner.gfxOffY) + rotationVector * -(20 * (capLeaving ? EaseFunction.EaseCubicIn.Ease(1 - capOpacity) : EaseFunction.EaseCubicOut.Ease(1 - capOpacity)));
+			Vector2 capPos = Projectile.Center - Main.screenPosition + new Vector2(0, Owner.gfxOffY) + rotationVector * -(20 * (capLeaving ? Eases.EaseCubicIn(1 - capOpacity) : Eases.EaseCubicOut(1 - capOpacity)));
 			Vector2 urnPos = Projectile.Center - Main.screenPosition + new Vector2(0, Owner.gfxOffY);
 
 			if (!capLeaving)
@@ -429,7 +429,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Main.spriteBatch.End();
 			Effect effect1 = Filters.Scene["CycloneIce"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

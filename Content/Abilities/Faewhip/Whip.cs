@@ -71,7 +71,7 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 				Dust.NewDustPerfect(Player.Center + new Vector2(0, 60) + vel * 64, DustType<Dusts.GlowLine>(), vel * Main.rand.NextFloat(5, 15), 1, new Color(255, 190, 50), 1.0f);
 			}
 
-			Helper.PlayPitched("Magic/HolyCastShort", 1, 1, Player.Center);
+			SoundHelper.PlayPitched("Magic/HolyCastShort", 1, 1, Player.Center);
 		}
 
 		public override void UpdateActive()
@@ -230,7 +230,7 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 
 					Player.velocity.Y -= 0.43f;
 
-					Player.velocity += (Main.MouseWorld - tipsPosition) * -(0.05f - Helper.BezierEase(Player.velocity.Length() / 24f) * 0.025f);
+					Player.velocity += (Main.MouseWorld - tipsPosition) * -(0.05f - Eases.BezierEase(Player.velocity.Length() / 24f) * 0.025f);
 
 					if (Player.velocity.Length() > 18)
 						Player.velocity = Vector2.Normalize(Player.velocity) * 17.99f;
@@ -303,7 +303,7 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 				Texture2D tex0 = Assets.EnergyTrail.Value;
 				Texture2D tex1 = Assets.GlowTrail.Value;
 
-				var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 				Matrix view = Main.GameViewMatrix.TransformationMatrix;
 				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

@@ -328,20 +328,20 @@ namespace StarlightRiver.Content.GUI
 			if (timer > 40 && timer < 120)
 			{
 				float prog = (timer - 40) / 80f;
-				float opacity = Helpers.Helper.BezierEase(prog);
+				float opacity = Helpers.Eases.BezierEase(prog);
 
 				spriteBatch.Draw(slotTexGlow, pos + slotTexGlow.Size() / 2f, slotTexGlow.Frame(), new Color(50, 120, 255) * opacity, 0, slotTexGlow.Size() / 2f, opacity, SpriteEffects.None, 0);
 
-				Color starColor = new Color(150, 220, 255) * Helpers.Helper.SwoopEase(prog);
+				Color starColor = new Color(150, 220, 255) * Helpers.Eases.SwoopEase(prog);
 				starColor.A = 0;
 
-				spriteBatch.Draw(star, pos + slotTexGlow.Size() / 2f, star.Frame(), starColor, 0, star.Size() / 2f, Helpers.Helper.SwoopEase(prog), SpriteEffects.None, 0);
+				spriteBatch.Draw(star, pos + slotTexGlow.Size() / 2f, star.Frame(), starColor, 0, star.Size() / 2f, Helpers.Eases.SwoopEase(prog), SpriteEffects.None, 0);
 			}
 
 			// Hold
 			if (timer >= 120 && timer <= 140)
 			{
-				float colorProg = Helpers.Helper.BezierEase((timer - 120) / 20f);
+				float colorProg = Helpers.Eases.BezierEase((timer - 120) / 20f);
 				var color = Color.Lerp(new Color(50, 120, 255), Color.White, colorProg);
 
 				spriteBatch.Draw(slotTexGlow, pos, slotTexGlow.Frame(), color, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
@@ -356,7 +356,7 @@ namespace StarlightRiver.Content.GUI
 			if (timer > 140 && timer < 170)
 			{
 				float prog = (timer - 140) / 30f;
-				float opacity = 1 - Helpers.Helper.BezierEase(prog);
+				float opacity = 1 - Helpers.Eases.BezierEase(prog);
 
 				spriteBatch.Draw(slotTex, pos, slotTex.Frame(), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 				spriteBatch.Draw(slotTexGlow, pos, slotTexGlow.Frame(), Color.White * opacity, 0, Vector2.Zero, 1, SpriteEffects.None, 0);

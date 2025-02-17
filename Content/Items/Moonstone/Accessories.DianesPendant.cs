@@ -212,10 +212,10 @@ namespace StarlightRiver.Content.Items.Moonstone
 			for (int k = AfterimageLength; k > 0; k--)
 			{
 				float progress = 1 - (float)((AfterimageLength - k) / (float)AfterimageLength);
-				Color color = new Color(100, 60, 255) * EaseFunction.EaseQuarticOut.Ease(progress) * MathHelper.Lerp(0.45f, 0.75f, ChargeRatio);
+				Color color = new Color(100, 60, 255) * Eases.EaseQuarticOut(progress) * MathHelper.Lerp(0.45f, 0.75f, ChargeRatio);
 
 				if (k > 0 && k < oldRotation.Count)
-					Main.spriteBatch.Draw(tex, oldPosition[k] - Main.screenPosition, null, color, oldRotation[k], tex.Size() / 2, Projectile.scale * EaseFunction.EaseQuadOut.Ease(progress), SpriteEffects.None, 0f);
+					Main.spriteBatch.Draw(tex, oldPosition[k] - Main.screenPosition, null, color, oldRotation[k], tex.Size() / 2, Projectile.scale * Eases.EaseQuadOut(progress), SpriteEffects.None, 0f);
 			}
 
 			Main.spriteBatch.End();
@@ -436,7 +436,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			spriteBatch.End();
 			Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

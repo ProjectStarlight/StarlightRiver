@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.GUI
 		public static void SetTooltip(string newTooltip)
 		{
 			ReLogic.Graphics.DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
-			tooltip = Helpers.Helper.WrapString(newTooltip, 200, font, 1);
+			tooltip = Helpers.LocalizationHelper.WrapString(newTooltip, 200, font, 1);
 		}
 
 		/// <summary>

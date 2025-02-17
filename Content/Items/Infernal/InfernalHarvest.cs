@@ -47,16 +47,16 @@ namespace StarlightRiver.Content.Items.Infernal
 				Projectile.NewProjectile(Item.GetSource_FromThis(), position, velocity, type, damage, knockback, player.whoAmI, 0, combo);
 				combo *= -1;
 
-				Helper.PlayPitched("Effects/HeavyWhoosh", 0.8f, -0.1f + Main.rand.NextFloat(-0.1f, 0.1f), player.Center);
-				Helper.PlayPitched("Effects/FancySwoosh", 0.8f, 0f, player.Center);
+				SoundHelper.PlayPitched("Effects/HeavyWhoosh", 0.8f, -0.1f + Main.rand.NextFloat(-0.1f, 0.1f), player.Center);
+				SoundHelper.PlayPitched("Effects/FancySwoosh", 0.8f, 0f, player.Center);
 			}
 			else if (player.CheckMana(90, true))
 			{
 				player.manaRegenDelay = 35;
 				Projectile.NewProjectile(Item.GetSource_FromThis(), position, velocity * 24, ModContent.ProjectileType<InfernalHarvestPaid>(), damage * 3, knockback, player.whoAmI, 0, velocity.X > 0 ? -1 : 1);
 
-				Helper.PlayPitched("Effects/FancySwoosh", 0.8f, 0.2f, player.Center);
-				Helper.PlayPitched("Magic/FireHit", 0.6f, -0.1f, player.Center);
+				SoundHelper.PlayPitched("Effects/FancySwoosh", 0.8f, 0.2f, player.Center);
+				SoundHelper.PlayPitched("Magic/FireHit", 0.6f, -0.1f, player.Center);
 			}
 
 			return false;
@@ -142,9 +142,9 @@ namespace StarlightRiver.Content.Items.Infernal
 			Vector2 perp = Vector2.UnitX.RotatedBy(Projectile.rotation + 1.57f);
 
 			bool hit = target.immune[0] <= 0 && Timer < 60 && (
-				Helper.CheckLinearCollision(Projectile.Center, Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation) * SCYTHE_LENGTH, target.Hitbox, out _) ||
-				Helper.CheckLinearCollision(Projectile.Center + perp * 10, Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation) * SCYTHE_LENGTH + perp * 10, target.Hitbox, out _) ||
-				Helper.CheckLinearCollision(Projectile.Center + perp * -10, Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation) * SCYTHE_LENGTH + perp * -10, target.Hitbox, out _));
+				CollisionHelper.CheckLinearCollision(Projectile.Center, Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation) * SCYTHE_LENGTH, target.Hitbox, out _) ||
+				CollisionHelper.CheckLinearCollision(Projectile.Center + perp * 10, Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation) * SCYTHE_LENGTH + perp * 10, target.Hitbox, out _) ||
+				CollisionHelper.CheckLinearCollision(Projectile.Center + perp * -10, Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation) * SCYTHE_LENGTH + perp * -10, target.Hitbox, out _));
 
 			return hit ? null : false;
 		}
@@ -159,8 +159,8 @@ namespace StarlightRiver.Content.Items.Infernal
 				Owner.ManaEffect(amount);
 			}
 
-			Helper.PlayPitched("Impacts/StabFleshy", 0.9f, 0f, target.Center);
-			Helper.PlayPitched("Impacts/GoreLight", 0.25f, 0.5f, target.Center);
+			SoundHelper.PlayPitched("Impacts/StabFleshy", 0.9f, 0f, target.Center);
+			SoundHelper.PlayPitched("Impacts/GoreLight", 0.25f, 0.5f, target.Center);
 
 			Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.GlowLineFast>(), Vector2.UnitX.RotatedBy(Projectile.rotation - 1.57f) * 15 * direction, 0, new Color(255, 80, 0), 2.5f);
 
@@ -280,7 +280,7 @@ namespace StarlightRiver.Content.Items.Infernal
 		{
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
@@ -394,8 +394,8 @@ namespace StarlightRiver.Content.Items.Infernal
 		{
 			Projectile.damage -= 7;
 
-			Helper.PlayPitched("Impacts/StabFleshy", 0.9f, -0.2f, target.Center);
-			Helper.PlayPitched("Impacts/GoreLight", 0.25f, 0.2f, target.Center);
+			SoundHelper.PlayPitched("Impacts/StabFleshy", 0.9f, -0.2f, target.Center);
+			SoundHelper.PlayPitched("Impacts/GoreLight", 0.25f, 0.2f, target.Center);
 
 			Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.GlowLineFast>(), Vector2.UnitX.RotatedBy(Projectile.rotation - 1.57f) * 15, 0, new Color(255, 80, 0), 2.5f);
 		}
@@ -474,7 +474,7 @@ namespace StarlightRiver.Content.Items.Infernal
 		{
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

@@ -298,7 +298,7 @@ namespace StarlightRiver.Content.Items.Haunted
 		{
 			if (!stickyAI && target.life > 0)
 			{
-				if (Helper.IsFleshy(target))
+				if (NPCHelper.IsFleshy(target))
 				{
 					for (int i = 0; i < 55; i++)
 					{
@@ -312,7 +312,7 @@ namespace StarlightRiver.Content.Items.Haunted
 						Dust.NewDustDirect(Projectile.position, 12, 12, ModContent.DustType<Dusts.Glow>(), velocity.X, velocity.Y, 0, new Color(85, 220, 55), 0.85f);
 					}
 
-					Helper.PlayPitched("Impacts/GoreHeavy", 0.85f, Main.rand.NextFloat(-0.05f, 0.05f), Projectile.position);
+					SoundHelper.PlayPitched("Impacts/GoreHeavy", 0.85f, Main.rand.NextFloat(-0.05f, 0.05f), Projectile.position);
 				}
 				else
 				{
@@ -322,7 +322,7 @@ namespace StarlightRiver.Content.Items.Haunted
 						Dust.NewDustDirect(Projectile.position, 12, 12, ModContent.DustType<Dusts.Glow>(), velocity.X, velocity.Y, 0, new Color(85, 220, 55), 0.85f);
 					}
 
-					Helper.PlayPitched("Impacts/Clink", 0.7f, Main.rand.NextFloat(-0.05f, 0.05f), Projectile.position);
+					SoundHelper.PlayPitched("Impacts/Clink", 0.7f, Main.rand.NextFloat(-0.05f, 0.05f), Projectile.position);
 				}
 
 				for (int i = 0; i < 15; i++)

@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		{
 			var aim = Vector2.Normalize(velocity);
 
-			Helper.PlayPitched("Magic/ShurikenThrow", 0.7f, (3 - amountToThrow) / 3f * 0.6f, player.Center);
+			SoundHelper.PlayPitched("Magic/ShurikenThrow", 0.7f, (3 - amountToThrow) / 3f * 0.6f, player.Center);
 
 			if (amountToThrow == 1)
 			{
@@ -114,7 +114,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override void AI()
 		{
 			if (creator is null && Projectile.timeLeft == 149)
-				Helper.PlayPitched("Magic/ShurikenThrow", 0.7f, 0, Projectile.Center);
+				SoundHelper.PlayPitched("Magic/ShurikenThrow", 0.7f, 0, Projectile.Center);
 
 			color = ThrownCount == 3 ? new Color(100, 210, 255) : new Color(150, 150, 255);
 
@@ -234,7 +234,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		{
 			Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
@@ -307,7 +307,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			{
 				if (BounceSoundCooldown <= 0)
 				{
-					Helper.PlayPitched("Magic/ShurikenBounce", 0.35f, 0, Projectile.Center);
+					SoundHelper.PlayPitched("Magic/ShurikenBounce", 0.35f, 0, Projectile.Center);
 					BounceSoundCooldown = 15;
 				}
 
@@ -380,7 +380,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		{
 			Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

@@ -211,7 +211,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 			Effect effect = Terraria.Graphics.Effects.Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
@@ -390,7 +390,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 			if (NPC.collideY || slamTimer > 60)
 			{
-				Helper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0.3f, NPC.Center);
+				SoundHelper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0.3f, NPC.Center);
 
 				for (int k = 0; k < 16; k++)
 				{
@@ -424,7 +424,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 			if (slamTimer > 90)
 			{
-				Helper.PlayPitched("StoneSlide", 1f, -1f, NPC.Center);
+				SoundHelper.PlayPitched("StoneSlide", 1f, -1f, NPC.Center);
 				risingPos = NPC.Center;
 				posAbovePlayer = Target.Center - new Vector2(0, Main.rand.Next(300, 400));
 				phase = Phase.rising;

@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		{
 			if (dying)
 			{
-				Helper.PlayPitched("Magic/FireHit", 0.3f, 0.3f, NPC.Center);
+				SoundHelper.PlayPitched("Magic/FireHit", 0.3f, 0.3f, NPC.Center);
 				for (int i = 0; i < 8; i++)
 				{
 					var dust = Dust.NewDustDirect(NPC.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<CoachGunDust>());
@@ -142,7 +142,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				if (magmaCharge > 1.75f)
 				{
 					SoundEngine.PlaySound(SoundID.Item45, NPC.Center);
-					Vector2 projVel = ArcVelocityHelper.GetArcVel(NPC.Center, Target.Center, 0.2f, 100, 400, 12);
+					Vector2 projVel = GeometryHelper.GetArcVel(NPC.Center, Target.Center, 0.2f, 100, 400, 12);
 					NPC.velocity = projVel * -1;
 					magmaCharge = 0;
 					chargingMagma = false;

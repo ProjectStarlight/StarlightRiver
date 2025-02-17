@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Tiles.Crimson
 			float dist = Vector2.Distance(logicPos, Main.LocalPlayer.Center);
 			float yDist = Main.LocalPlayer.Center.X > logicPos.X ? 600 : 0;
 
-			var tile = Framing.GetTileSafely(i, j);
+			Tile tile = Framing.GetTileSafely(i, j);
 
 			if (tile.TileFrameX != dist)
 				tile.TileFrameX += (short)((dist - tile.TileFrameX) * 0.1f);
@@ -43,9 +43,9 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 		{
-			var tile = Framing.GetTileSafely(i, j);
+			Tile tile = Framing.GetTileSafely(i, j);
 			Texture2D tex = Assets.Tiles.Crimson.BreathingGrass.Value;
-			Vector2 pos = (new Vector2(i, j + 1) + Helpers.Helper.TileAdj) * 16;
+			Vector2 pos = new Vector2(i, j + 1) * 16 + Vector2.One * Main.offScreenRange;
 			Vector2 logicPos = new Vector2(i, j + 1) * 16;
 			Color color = Lighting.GetColor(i, j); // make sure we only get lighting once since thats expensive
 

@@ -2,6 +2,7 @@ global using Microsoft.Xna.Framework;
 global using Microsoft.Xna.Framework.Graphics;
 global using ReLogic.Content;
 global using StarlightRiver.Core;
+global using StarlightRiver.Helpers;
 global using Terraria;
 global using Terraria.Localization;
 global using Terraria.ModLoader;
@@ -140,8 +141,7 @@ namespace StarlightRiver
 				}
 			}
 
-
-			for(int k = 0; k < NPCID.Count; k++)
+			for (int k = 0; k < NPCID.Count; k++)
 			{
 
 			}

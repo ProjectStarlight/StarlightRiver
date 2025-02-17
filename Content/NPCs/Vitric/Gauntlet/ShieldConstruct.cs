@@ -120,18 +120,18 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				{
 					if (Timer < 250) //Shield Raising, preparing to slam
 					{
-						shieldAnimationProgress = EaseFunction.EaseCubicInOut.Ease((Timer - 200) / 50f);
+						shieldAnimationProgress = Eases.EaseCubicInOut((Timer - 200) / 50f);
 						shieldOffset = up * shieldAnimationProgress;
 					}
 					else if (Timer <= 260) //Shield lowering towards the ground
 					{
-						shieldAnimationProgress = EaseFunction.EaseQuarticIn.Ease((Timer - 250) / 10f);
+						shieldAnimationProgress = Eases.EaseQuarticIn((Timer - 250) / 10f);
 						shieldOffset = Vector2.Lerp(up, down, shieldAnimationProgress);
 					}
 
 					if ((int)Timer == 260 && Main.netMode != NetmodeID.Server) //Shield hits the ground
 					{
-						Helper.PlayPitched("GlassMiniboss/GlassSmash", 0.5f, 0.3f, NPC.Center);
+						SoundHelper.PlayPitched("GlassMiniboss/GlassSmash", 0.5f, 0.3f, NPC.Center);
 						CameraSystem.shake += 4;
 
 						for (int i = 0; i < 10; i++)
@@ -145,22 +145,22 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				{
 					if (Timer < 464) //Shield slowly sliding out of the ground
 					{
-						shieldAnimationProgress = EaseFunction.EaseQuadIn.Ease((Timer - 400) / 64f);
+						shieldAnimationProgress = Eases.EaseQuadIn((Timer - 400) / 64f);
 						shieldOffset = Vector2.Lerp(down, new Vector2(0, 4), shieldAnimationProgress);
 					}
 					else if (Timer < 470) //Shield jolts out of the ground
 					{
-						shieldAnimationProgress = EaseFunction.EaseQuadOut.Ease((Timer - 464) / 6f);
+						shieldAnimationProgress = Eases.EaseQuadOut((Timer - 464) / 6f);
 						shieldOffset = Vector2.Lerp(new Vector2(0, 4), up, shieldAnimationProgress);
 					}
 					else //Shield lowers back into place
 					{
-						shieldAnimationProgress = EaseFunction.EaseQuinticInOut.Ease((Timer - 470) / 30f);
+						shieldAnimationProgress = Eases.EaseQuinticInOut((Timer - 470) / 30f);
 						shieldOffset = up * (1 - shieldAnimationProgress);
 					}
 
 					if ((int)Timer == 421)
-						Helper.PlayPitched("StoneSlide", 0.5f, -1f, NPC.Center);
+						SoundHelper.PlayPitched("StoneSlide", 0.5f, -1f, NPC.Center);
 
 					if ((int)Timer == 464 && Main.netMode != NetmodeID.Server) //Shield exits the ground
 					{
@@ -435,7 +435,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				NPC.velocity.X *= 1.05f;
 
 				if (NPC.velocity.Y == 0)
-					NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Bottom, stackPartnerBelow.Top + new Vector2(directionToPartner * 15, 0), 0.3f, 120, 850);
+					NPC.velocity = GeometryHelper.GetArcVel(NPC.Bottom, stackPartnerBelow.Top + new Vector2(directionToPartner * 15, 0), 0.3f, 120, 850);
 
 				if (NPC.velocity.Y > 0 && Collision.CheckAABBvAABBCollision(NPC.position, NPC.Size, stackPartnerBelow.position, stackPartnerBelow.Size))
 				{

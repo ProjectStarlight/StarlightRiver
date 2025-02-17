@@ -253,7 +253,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 						Main.musicFade[Main.curMusic] = 1 - (cutsceneTimer - 120) / 120f;
 
 					if (cutsceneTimer == 180)
-						Helper.PlayPitched("ArenaRise", 0.5f, -0.1f, Center);
+						SoundHelper.PlayPitched("ArenaRise", 0.5f, -0.1f, Center);
 				}
 
 				cutsceneTimer++;
@@ -287,7 +287,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 					if (barrierTimer == 119) //hitting the top
 					{
 						CameraSystem.shake += 15;
-						Helper.PlayPitched("VitricBoss/CeirosPillarImpact", 0.5f, 0, Center);
+						SoundHelper.PlayPitched("VitricBoss/CeirosPillarImpact", 0.5f, 0, Center);
 					}
 				}
 			}
@@ -343,7 +343,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				}
 
 				Texture2D glow = Assets.Tiles.Vitric.VitricBossAltarGlow.Value;
-				spriteBatch.Draw(glow, position - Main.screenPosition + new Vector2(-1, 7), glow.Frame(), Helper.IndicatorColorProximity(300, 600, Center), 0, Vector2.Zero, 1, 0, 0);
+				spriteBatch.Draw(glow, position - Main.screenPosition + new Vector2(-1, 7), glow.Frame(), CommonVisualEffects.IndicatorColorProximity(300, 600, Center), 0, Vector2.Zero, 1, 0, 0);
 			}
 
 			//Barriers

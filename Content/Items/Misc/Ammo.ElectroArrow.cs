@@ -109,7 +109,7 @@ namespace StarlightRiver.Content.Items.Misc
 					Vector2 start = k == 0 ? savedPos : hitNPCs[k - 1].Center;
 					Vector2 end = hitNPCs[k].Center;
 
-					var vel = end.DirectionTo(start).RotatedBy(Main.rand.NextBool() ? 0.5f : -0.5f) * Main.rand.NextFloat(2f, 8f);
+					Vector2 vel = end.DirectionTo(start).RotatedBy(Main.rand.NextBool() ? 0.5f : -0.5f) * Main.rand.NextFloat(2f, 8f);
 					Dust.NewDustPerfect(Vector2.Lerp(start, end, Main.rand.NextFloat()), ModContent.DustType<Dusts.GlowLineFast>(), vel, 0, new Color(50, 80, 200), Main.rand.NextFloat(0.4f, 0.5f));
 
 					if (Main.rand.NextBool(3))
@@ -133,10 +133,7 @@ namespace StarlightRiver.Content.Items.Misc
 					Vector2 start = k == 0 ? savedPos : hitNPCs[k - 1].Center;
 					Vector2 end = hitNPCs[k].Center;
 
-					ModContent.GetInstance<PixelationSystem>().QueueRenderAction("UnderProjectiles", () =>
-					{
-						DrawLightning(Main.spriteBatch, start, end);
-					});
+					ModContent.GetInstance<PixelationSystem>().QueueRenderAction("UnderProjectiles", () => DrawLightning(Main.spriteBatch, start, end));
 				}
 			}
 		}
@@ -202,7 +199,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			Helpers.Helper.PlayPitched("Magic/LightningShortest1", 0.6f, Main.rand.NextFloat(-0.2f, 0.4f), Projectile.Center);
+			Helpers.SoundHelper.PlayPitched("Magic/LightningShortest1", 0.6f, Main.rand.NextFloat(-0.2f, 0.4f), Projectile.Center);
 
 			hitNPCs.Add(target);
 
@@ -225,7 +222,7 @@ namespace StarlightRiver.Content.Items.Misc
 				return;
 
 			Random rng = new Random();
-			var indicies = Enumerable.Range(0, Main.maxNPCs + 1).OrderBy(_ => rng.Next()).ToArray();
+			int[] indicies = Enumerable.Range(0, Main.maxNPCs + 1).OrderBy(_ => rng.Next()).ToArray();
 
 			for (int k = 0; k < indicies.Length; k++)
 			{

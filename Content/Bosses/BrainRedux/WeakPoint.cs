@@ -84,7 +84,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			if (thinker.ModNPC is TheThinker think && think.brain.ModNPC is DeadBrain brain && brain.Phase == DeadBrain.Phases.SpawnAnim && brain.Timer <= 100)
+			if (thinker?.ModNPC is TheThinker think && think.brain.ModNPC is DeadBrain brain && brain.Phase == DeadBrain.Phases.SpawnAnim && brain.Timer <= 100)
 				return false;
 
 			Texture2D tex = Assets.Bosses.BrainRedux.Neurysm.Value;

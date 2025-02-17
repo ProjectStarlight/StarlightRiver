@@ -80,7 +80,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			if (activationTimer > 0 && !Main.playerInventory)
 			{
 				int activationTimerNoCurve = Datsuzei.activationTimer;
-				float activationTimer = Helper.BezierEase(Math.Min(1, activationTimerNoCurve / 60f));
+				float activationTimer = Eases.BezierEase(Math.Min(1, activationTimerNoCurve / 60f));
 
 				var hideTarget = new Rectangle(20, 20, 446, 52);
 
@@ -224,7 +224,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
-			Helper.PlayPitched("Magic/HolyCastShort", 1, comboState / 4f, player.Center);
+			SoundHelper.PlayPitched("Magic/HolyCastShort", 1, comboState / 4f, player.Center);
 
 			switch (comboState)
 			{
@@ -337,8 +337,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 					if (Timer == 1)
 					{
-						Helper.PlayPitched("Impacts/Clink", 1, 0, Projectile.Center);
-						Helper.PlayPitched("Magic/MysticCast", 1, -0.2f, Projectile.Center);
+						SoundHelper.PlayPitched("Impacts/Clink", 1, 0, Projectile.Center);
+						SoundHelper.PlayPitched("Magic/MysticCast", 1, -0.2f, Projectile.Center);
 
 						for (int k = 0; k < 40; k++)
 						{
@@ -376,7 +376,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 					if (Timer == 1)
 						storedRotation = Projectile.velocity.ToRotation();
 
-					float rot = storedRotation + (-1.5f + Helper.BezierEase(Timer / 40f) * 3f);
+					float rot = storedRotation + (-1.5f + Eases.BezierEase(Timer / 40f) * 3f);
 					Projectile.Center = Owner.Center + Vector2.UnitX.RotatedBy(rot) * (-30 + (float)Math.Sin(Timer / 40f * 3.14f) * 100);
 					Projectile.rotation = rot;
 
@@ -387,7 +387,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 					if (Timer == 1)
 						storedRotation = Projectile.velocity.ToRotation();
 
-					rot = storedRotation + (1f - Helper.BezierEase(Timer / 30f) * 2f);
+					rot = storedRotation + (1f - Eases.BezierEase(Timer / 30f) * 2f);
 					Projectile.Center = Owner.Center + Vector2.UnitX.RotatedBy(rot) * (-30 + (float)Math.Sin(Timer / 30f * 3.14f) * 100);
 					Projectile.rotation = rot;
 
@@ -431,7 +431,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			Helper.PlayPitched("Magic/FireHit", 0.5f, 1f, target.Center);
+			SoundHelper.PlayPitched("Magic/FireHit", 0.5f, 1f, target.Center);
 
 			for (int k = 0; k < 40; k++)
 			{
@@ -568,7 +568,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 			Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

@@ -73,7 +73,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 			if (rotating) // this rotation is all done client side and then updated to other clients when key is released in one packet
 			{
 				if (Vector2.Distance(Main.MouseWorld, Center) > 48)
-					rotation += Helper.CompareAngle((Main.MouseWorld - Center).ToRotation(), rotation) * 0.1f;
+					rotation += GeometryHelper.CompareAngle((Main.MouseWorld - Center).ToRotation(), rotation) * 0.1f;
 
 				if (rotateAnimation < 15)
 					rotateAnimation++;
@@ -116,7 +116,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 					LightPuzzleHandler.solved = true;
 				}
 
-				if (Helper.PointInTile(posCheck) || k == 159)
+				if (CollisionHelper.PointInTile(posCheck) || k == 159)
 				{
 					endPoint = posCheck;
 					break;
@@ -181,7 +181,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 			for (int k = 0; k < 30; k++)
 			{
 				float rot = k / 30f * 6.28f;
-				float rotOpacity = 1.0f - Math.Abs(Helper.CompareAngle(rot, rotation)) / 6.28f;
+				float rotOpacity = 1.0f - Math.Abs(GeometryHelper.CompareAngle(rot, rotation)) / 6.28f;
 				Color color = new Color(100, 220, 255) * rotOpacity * opacity;
 				spriteBatch.Draw(tickTexture, Center - Main.screenPosition + Vector2.UnitX.RotatedBy(rot) * 32, null, color, rot + 1.57f, tickTexture.Size() / 2, 0.5f + rotOpacity * 0.5f, 0, 0);
 			}

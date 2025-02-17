@@ -157,10 +157,10 @@ namespace StarlightRiver.Content.Items.Moonstone
 		private Vector2 StaffEnd => Player.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, ArmRotation) + Vector2.UnitX.RotatedBy(Projectile.rotation) * length * Projectile.scale;
 		private float MeleeSpeed => Player.GetTotalAttackSpeed(DamageClass.Melee);
 
-		private readonly static Func<float, float> StabEase = Helper.CubicBezier(0.09f, 0.71f, 0.08f, 1.62f);
-		private readonly static Func<float, float> SpinEase = Helper.CubicBezier(0.6f, -0.3f, .3f, 1f);
-		private readonly static Func<float, float> UppercutEase = Helper.CubicBezier(0.6f, -0.3f, 0.5f, 0.8f);
-		private readonly static Func<float, float> SlamEase = Helper.CubicBezier(0.5f, -1.6f, 0.9f, -1.6f);
+		private readonly static Func<float, float> StabEase = Eases.CubicBezier(0.09f, 0.71f, 0.08f, 1.62f);
+		private readonly static Func<float, float> SpinEase = Eases.CubicBezier(0.6f, -0.3f, .3f, 1f);
+		private readonly static Func<float, float> UppercutEase = Eases.CubicBezier(0.6f, -0.3f, 0.5f, 0.8f);
+		private readonly static Func<float, float> SlamEase = Eases.CubicBezier(0.5f, -1.6f, 0.9f, -1.6f);
 
 		public override string Texture => AssetDirectory.MoonstoneItem + Name;
 
@@ -380,7 +380,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			if (timer == 0)
 			{
 				Projectile.ResetLocalNPCHitImmunity();
-				Helper.PlayPitched("Effects/HeavyWhooshShort", 0.3f, Main.rand.NextFloat(-0.1f, 0.1f));
+				SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 0.3f, Main.rand.NextFloat(-0.1f, 0.1f));
 			}
 
 			if (timer > 15 / MeleeSpeed)
@@ -404,7 +404,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 				Projectile.ResetLocalNPCHitImmunity();
 
 			if ((timer == (int)(25 / MeleeSpeed) || timer == (int)(50 / MeleeSpeed)) && freezeTimer < 0)
-				Helper.PlayPitched("Effects/HeavyWhoosh", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
+				SoundHelper.PlayPitched("Effects/HeavyWhoosh", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
 
 			if (timer > 90 / MeleeSpeed)
 				curAttackDone = true;
@@ -423,7 +423,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			if (timer == 0)
 			{
 				Projectile.ResetLocalNPCHitImmunity();
-				Helper.PlayPitched("Effects/HeavyWhooshShort", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
+				SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
 			}
 
 			if (timer > 20 / MeleeSpeed)
@@ -523,7 +523,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 				if (slamCharged)
 				{
 					Terraria.Audio.SoundEngine.PlaySound(SoundID.MaxMana, Projectile.Center);
-					DustHelper.DrawDustImage(StaffEnd + Vector2.One * 4, ModContent.DustType<Dusts.GlowFastDecelerate>(), 0.05f, Assets.Items.Moonstone.MoonstoneHamaxe_Crescent.Value, 0.7f, 0, new Color(120, 120, 255));
+					DustHelper.SpawnImagePattern(StaffEnd + Vector2.One * 4, ModContent.DustType<Dusts.GlowFastDecelerate>(), 0.05f, Assets.Items.Moonstone.MoonstoneHamaxe_Crescent.Value, 0.7f, 0, new Color(120, 120, 255));
 
 					for (int i = 0; i < 64; i++)
 					{
@@ -639,7 +639,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 				Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-				var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 				Matrix view = Main.GameViewMatrix.TransformationMatrix;
 				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

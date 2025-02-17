@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
 		public override bool Colliding(Player player)
 		{
-			return Helpers.Helper.CheckCircularCollision(Center, 128, player.Hitbox);
+			return Helpers.CollisionHelper.CheckCircularCollision(Center, 128, player.Hitbox);
 		}
 
 		public override void Collision(Player Player)
@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
 		public void Kill()
 		{
-			Helpers.Helper.PlayPitched("Effects/Splat", 1, 0, Center);
+			Helpers.SoundHelper.PlayPitched("Effects/Splat", 1, 0, Center);
 
 			for (int k = 0; k < 50; k++)
 			{
@@ -101,7 +101,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 			if (DetachedLife <= 0)
 			{
 				Texture2D glowTex = Assets.Tiles.Overgrow.NoxiousNodeGlow.Value;
-				Main.spriteBatch.Draw(glowTex, pos, null, Helpers.Helper.IndicatorColorProximity(400, 512, Center), rotation, glowTex.Size() / 2, 1, 0, 0);
+				Main.spriteBatch.Draw(glowTex, pos, null, Helpers.CommonVisualEffects.IndicatorColorProximity(400, 512, Center), rotation, glowTex.Size() / 2, 1, 0, 0);
 			}
 		}
 
@@ -118,7 +118,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 					DetachedLife = 120;
 					WorldGen.KillTile(ParentX, ParentY);
 					velocity = (Main.MouseWorld - Center) * 0.1f;
-					Helpers.Helper.PlayPitched("Effects/PickupHerbs", 1, -0.5f, Center);
+					Helpers.SoundHelper.PlayPitched("Effects/PickupHerbs", 1, -0.5f, Center);
 					CameraSystem.shake += 10;
 				}
 			}

@@ -29,7 +29,7 @@
 
 			float? originalScale = dust.customData as float?;
 
-			float scale = MathHelper.Lerp(originalScale.Value, originalScale.Value * 5f, EaseBuilder.EaseCircularInOut.Ease(1f - lerper));
+			float scale = MathHelper.Lerp(originalScale.Value, originalScale.Value * 5f, Eases.EaseCircularInOut(1f - lerper));
 
 			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Dust + Name).Value;
 			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
@@ -76,7 +76,7 @@
 
 			float? originalScale = dust.customData as float?;
 
-			float scale = MathHelper.Lerp(originalScale.Value, originalScale.Value * 1.25f, EaseBuilder.EaseCircularInOut.Ease(1f - lerper));
+			float scale = MathHelper.Lerp(originalScale.Value, originalScale.Value * 1.25f, Eases.EaseCircularInOut(1f - lerper));
 
 			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Dust + Name).Value;
 			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;

@@ -151,7 +151,7 @@ namespace StarlightRiver.Content.GUI
 			if (timer > 25)
 				timer = 25;
 
-			float progress = Helpers.Helper.SwoopEase(timer / 25f);
+			float progress = Helpers.Eases.SwoopEase(timer / 25f);
 			var pos = Vector2.Lerp(ParentState.basePos, endPos, progress);
 
 			Left.Set(pos.X - 46, 0);

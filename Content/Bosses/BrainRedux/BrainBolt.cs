@@ -48,7 +48,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				initialPosition = Projectile.Center;
 				Projectile.netUpdate = true;
 
-				Helpers.Helper.PlayPitched("Magic/Shadow1", 0.1f, 0.5f, Projectile.Center);
+				Helpers.SoundHelper.PlayPitched("Magic/Shadow1", 0.1f, 0.5f, Projectile.Center);
 			}
 
 			if (WigglePeriod == 0)
@@ -204,7 +204,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 		{
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

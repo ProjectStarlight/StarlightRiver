@@ -202,7 +202,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 				return false;
 
 			int end = Math.Min((int)Timer, text.Length);
-			string toDraw = Helpers.Helper.WrapString(text[..end], 400, FontAssets.ItemStack.Value, Projectile.scale);
+			string toDraw = Helpers.LocalizationHelper.WrapString(text[..end], 400, FontAssets.ItemStack.Value, Projectile.scale);
 
 			float opacity = 1f;
 			int full = text.Length * 3;

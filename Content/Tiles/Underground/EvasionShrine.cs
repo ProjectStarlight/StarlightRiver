@@ -121,7 +121,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 							attackOrder.Add(k);
 						}
 
-						attackOrder = Helpers.Helper.RandomizeList<int>(attackOrder);
+						attackOrder = Helpers.ListHelper.RandomizeList<int>(attackOrder);
 					}
 
 					if (state > maxAttacks) // --- !  WIN CONDITION  ! ---

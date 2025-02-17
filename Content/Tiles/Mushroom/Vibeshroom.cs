@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.Tiles.Mushroom
 		{
 			Tile tile = Framing.GetTileSafely(i, j);
 			Texture2D tex = Assets.Tiles.Mushroom.VibeshroomGlow.Value;
-			Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition + new Vector2((float)Math.Sin(StarlightWorld.visualTimer + i) * 1.5f, (float)Math.Cos(StarlightWorld.visualTimer * 2 + i));
+			Vector2 pos = new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange - Main.screenPosition + new Vector2((float)Math.Sin(StarlightWorld.visualTimer + i) * 1.5f, (float)Math.Cos(StarlightWorld.visualTimer * 2 + i));
 
 			spriteBatch.Draw(tex, pos, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), Color.White);
 		}

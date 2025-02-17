@@ -1,8 +1,12 @@
-﻿using StarlightRiver.Content.Biomes;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Items.Vitric;
+using System;
 using System.Linq;
+using Terraria;
 using Terraria.DataStructures;
+using Terraria.Graphics.Effects;
 using Terraria.ID;
 namespace StarlightRiver.Content.Items.Crimson
 {
@@ -10,7 +14,7 @@ namespace StarlightRiver.Content.Items.Crimson
 	{
 		private int cloneCooldown = 0;
 
-		public override string Texture => AssetDirectory.Debug;
+		public override string Texture => AssetDirectory.CrimsonItem + Name;
 
 		public override void Load()
 		{
@@ -19,10 +23,11 @@ namespace StarlightRiver.Content.Items.Crimson
 
 		public override void SetDefaults()
 		{
-			Item.damage = 15;
+			Item.damage = 24;
+			Item.crit = 10;
 			Item.DamageType = DamageClass.Ranged;
-			Item.width = 16;
-			Item.height = 64;
+			Item.width = 32;
+			Item.height = 52;
 			Item.useTime = 24;
 			Item.useAnimation = 24;
 			Item.useStyle = ItemUseStyleID.Shoot;
@@ -31,10 +36,12 @@ namespace StarlightRiver.Content.Items.Crimson
 			Item.rare = ItemRarityID.Orange;
 			Item.value = Item.sellPrice(0, 5, 0, 0);
 			Item.shoot = ProjectileID.PurificationPowder;
-			Item.shootSpeed = 5f;
+			Item.shootSpeed = 10f;
 			Item.autoReuse = true;
 			Item.useAmmo = AmmoID.Arrow;
 			Item.useTurn = true;
+			Item.noUseGraphic = true;
+			Item.UseSound = SoundID.Item5;
 		}
 
 		public override void UpdateInventory(Player player)
@@ -45,6 +52,10 @@ namespace StarlightRiver.Content.Items.Crimson
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
+			// spawn held
+			if (!Main.projectile.Any(n => n.active && n.type == ModContent.ProjectileType<MirageBowHeld>() && n.owner == player.whoAmI))
+				Projectile.NewProjectile(Item.GetSource_FromThis(), player.Center, Vector2.Zero, ModContent.ProjectileType<MirageBowHeld>(), 0, 0, player.whoAmI);
+
 			Projectile clone = Main.projectile.FirstOrDefault(n => n.active && n.type == ModContent.ProjectileType<MirageBowClone>() && n.owner == player.whoAmI);
 
 			if (clone is null)
@@ -73,6 +84,50 @@ namespace StarlightRiver.Content.Items.Crimson
 			}
 		}
 
+		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		{
+			var tex = Assets.Items.Crimson.MirageBow.Value;
+
+			Effect effect = Filters.Scene["MirageItemFilter"].GetShader().Shader;
+
+			effect.Parameters["u_color"].SetValue(Vector3.One);
+			effect.Parameters["u_fade"].SetValue(Vector3.One);
+			effect.Parameters["u_resolution"].SetValue(tex.Size());
+			effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.1f);
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, BlendState.Additive, SamplerState.LinearClamp, default, default, effect, Main.UIScaleMatrix);
+
+			spriteBatch.Draw(tex, position, frame, drawColor, 0, origin, scale, 0, 0);
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, SamplerState.LinearClamp, default, default, default, Main.UIScaleMatrix);
+
+			return false;
+		}
+
+		public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
+		{
+			var tex = Assets.Items.Crimson.MirageBow.Value;
+
+			Effect effect = Filters.Scene["MirageItemFilter"].GetShader().Shader;
+
+			effect.Parameters["u_color"].SetValue(Vector3.One);
+			effect.Parameters["u_fade"].SetValue(Vector3.One);
+			effect.Parameters["u_resolution"].SetValue(tex.Size());
+			effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.05f);
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, BlendState.Additive, SamplerState.LinearClamp, default, default, effect, Main.UIScaleMatrix);
+
+			spriteBatch.Draw(tex, Item.Center - Main.screenPosition, null, Color.White, rotation, Item.Size / 2f, scale, 0, 0);
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, SamplerState.LinearClamp, default, default, default, Main.UIScaleMatrix);
+
+			return false;
+		}
+
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();
@@ -81,6 +136,67 @@ namespace StarlightRiver.Content.Items.Crimson
 			recipe.AddIngredient(ItemID.TendonBow);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
+		}
+	}
+
+	internal class MirageBowHeld : ModProjectile
+	{
+		public override string Texture => AssetDirectory.Invisible;
+
+		public override void SetDefaults()
+		{
+			Projectile.width = 1;
+			Projectile.height = 1;
+			Projectile.tileCollide = false;
+			Projectile.penetrate = -1;
+			Projectile.timeLeft = 10;
+		}
+
+		public override void AI()
+		{
+			var owner = Projectile.Owner();
+
+			if (owner.itemAnimation == owner.itemAnimationMax)
+				Projectile.rotation = Projectile.Center.DirectionTo(Main.MouseWorld).ToRotation();
+
+			if (owner.itemAnimation > 0)
+				Projectile.timeLeft = 10;
+
+			owner.direction = Projectile.rotation.ToRotationVector2().X > 0 ? 1 : -1;
+
+			Projectile.Center = owner.Center + Vector2.UnitY * owner.gfxOffY;
+			owner.heldProj = Projectile.whoAmI;
+
+			Color glowColor = new Color(
+				1.3f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f) * 0.5f,
+				1.3f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f + 1) * 0.5f,
+				1.3f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f + 2) * 0.5f);
+
+			Lighting.AddLight(owner.Center, glowColor.ToVector3() * 0.5f);
+		}
+
+		public override bool PreDraw(ref Color lightColor)
+		{
+			var tex = Assets.Items.Crimson.MirageBow.Value;
+			var origin = new Vector2(0, tex.Height / 2);
+			var direction = Projectile.rotation.ToRotationVector2().X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
+
+			Effect effect = Filters.Scene["MirageItemFilter"].GetShader().Shader;
+
+			effect.Parameters["u_color"].SetValue(Vector3.One);
+			effect.Parameters["u_fade"].SetValue(Vector3.One);
+			effect.Parameters["u_resolution"].SetValue(tex.Size());
+			effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.1f);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, default, effect, Main.UIScaleMatrix);
+
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, origin, 1, direction, 0);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
+
+			return false;
 		}
 	}
 
@@ -116,6 +232,9 @@ namespace StarlightRiver.Content.Items.Crimson
 			if (owner.HeldItem.type != ModContent.ItemType<MirageBow>())
 				Projectile.timeLeft = 30;
 
+			if (owner.itemAnimation == owner.itemAnimationMax)
+				Projectile.rotation = Projectile.Center.DirectionTo(Main.MouseWorld).ToRotation();
+
 			if (owner == Main.LocalPlayer)
 			{
 				Vector2 relative = owner.Center - Main.MouseWorld;
@@ -141,6 +260,25 @@ namespace StarlightRiver.Content.Items.Crimson
 			float alpha = Projectile.timeLeft < 30 ? Projectile.timeLeft / 30f * 0.5f : 0.5f;
 
 			Main.spriteBatch.Draw(PlayerTarget.Target, Projectile.Center - Main.screenPosition, source, Color.White * alpha, owner.fullRotation, source.Size() / 2f + new Vector2(-owner.width, owner.height) / 2f, 1, SpriteEffects.FlipHorizontally, 0);
+
+			var tex = Assets.Items.Crimson.MirageBow.Value;
+			var origin = new Vector2(0, tex.Height / 2);
+			var direction = Projectile.rotation.ToRotationVector2().X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
+
+			Effect effect = Filters.Scene["MirageItemFilter"].GetShader().Shader;
+
+			effect.Parameters["u_color"].SetValue(Vector3.One);
+			effect.Parameters["u_fade"].SetValue(Vector3.One);
+			effect.Parameters["u_resolution"].SetValue(tex.Size());
+			effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.1f);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, default, effect, Main.UIScaleMatrix);
+
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * alpha, Projectile.rotation, origin, 1, direction, 0);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
 
 			return false;
 		}

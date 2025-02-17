@@ -120,7 +120,7 @@ namespace StarlightRiver.Content.Items.Starwood
 						}
 						else if (Projectile.ai[1] == CHARGE_TIME - 5) //sfx
 						{
-							Helpers.DustHelper.DrawStar(Projectile.Center, dustType, pointAmount: 5, mainSize: 2.25f * ScaleMult, dustDensity: 2, pointDepthMult: 0.3f);
+							Helpers.DustHelper.SpawnStarPattern(Projectile.Center, dustType, pointAmount: 5, mainSize: 2.25f * ScaleMult, dustDensity: 2, pointDepthMult: 0.3f);
 							Lighting.AddLight(Projectile.Center, lightColor * 2);
 							SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/MagicAttack"), Projectile.Center);
 

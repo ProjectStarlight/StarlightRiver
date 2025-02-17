@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			{
 				Vector2 cameraPos = alican.Center;
 
-				while (!Helpers.Helper.PointInTile(cameraPos))
+				while (!Helpers.CollisionHelper.PointInTile(cameraPos))
 				{
 					cameraPos.Y += 4;
 				}

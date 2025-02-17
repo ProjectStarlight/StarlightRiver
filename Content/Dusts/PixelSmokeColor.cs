@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Dusts
 			{
 				object[] pair = [dust.customData, 1 + Main.rand.Next(3)];
 				dust.customData = pair;
-			}			
+			}
 
 			dust.velocity.Y -= 0.015f;
 			dust.position += dust.velocity;
@@ -47,10 +47,9 @@ namespace StarlightRiver.Content.Dusts
 			int variant = (int)pair[1];
 
 			if (pair[0] is Color color_)
-				fadeColor = color_;	
-			
-			
-			Color color = Color.Lerp(dust.color, fadeColor ?? Color.Black, EaseBuilder.EaseQuinticInOut.Ease(1f - lerper));
+				fadeColor = color_;
+
+			Color color = Color.Lerp(dust.color, fadeColor ?? Color.Black, Eases.EaseQuinticInOut(1f - lerper));
 
 			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "SmokeTransparent_" + variant).Value;
 			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () =>

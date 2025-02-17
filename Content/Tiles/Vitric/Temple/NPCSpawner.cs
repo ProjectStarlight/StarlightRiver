@@ -98,7 +98,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		{
 			SpriteBatch spriteBatch = Main.spriteBatch;
 			Texture2D tex = Assets.Tiles.Vitric.NPCSpawnerGlow.Value;
-			var frame = new Rectangle(0, (int)(1 + Helpers.Helper.SwoopEase(timer / 60f) * 18f) % 8 * 48, 22, 48);
+			var frame = new Rectangle(0, (int)(1 + Helpers.Eases.SwoopEase(timer / 60f) * 18f) % 8 * 48, 22, 48);
 			Vector2 pos = Center - Main.screenPosition + new Vector2(0, -12 * timer / 60f);
 
 			var color = Color.Lerp(lightColor, Color.White, timer / 60f);
