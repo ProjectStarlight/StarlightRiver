@@ -11,7 +11,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		public override void SetDefaults()
 		{
 			Projectile.hostile = true;
-			Projectile.damage = 1;
 			Projectile.height = 32;
 			Projectile.width = 1;
 			Projectile.timeLeft = 2;

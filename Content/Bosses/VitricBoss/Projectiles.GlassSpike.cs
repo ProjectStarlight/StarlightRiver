@@ -18,7 +18,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			Projectile.timeLeft = 180;
 			Projectile.tileCollide = true;
 			Projectile.ignoreWater = true;
-			Projectile.damage = 5;
 		}
 
 		public override void SetStaticDefaults()
