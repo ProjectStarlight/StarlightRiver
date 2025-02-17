@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		public ref float State => ref NPC.ai[1];
 		public ref float TellTime => ref NPC.ai[3];
 
-		public override string Texture => AssetDirectory.BrainRedux + Name;
+		public override string Texture => AssetDirectory.TheThinkerBoss + Name;
 
 		public override void SetStaticDefaults()
 		{
@@ -160,7 +160,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			Texture2D tex = Assets.Bosses.BrainRedux.Neurysm.Value;
+			Texture2D tex = Assets.Bosses.TheThinkerBoss.Neurysm.Value;
 
 			Color glowColor = AlternateAppearance ? RedRainbow(0 + NPC.whoAmI) : Rainbow(0 + NPC.whoAmI);
 
@@ -173,7 +173,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			{
 				for (int k = 0; k < 20; k++)
 				{
-					Texture2D trail = Assets.Bosses.BrainRedux.NeurysmTrail.Value;
+					Texture2D trail = Assets.Bosses.TheThinkerBoss.NeurysmTrail.Value;
 
 					Vector2 pos = NPC.oldPos[k] + NPC.Size / 2f;
 					Color col = Color.Lerp(trailOne, trailTwo, k / 20f) * opacity * (1f - k / 20f) * 0.25f;
@@ -184,7 +184,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				float glowPower = Math.Max(speed / 10f, 0.4f);
 
 				Texture2D glow = Assets.Keys.GlowAlpha.Value;
-				Texture2D glow2 = Assets.Bosses.BrainRedux.NeurysmTrail.Value;
+				Texture2D glow2 = Assets.Bosses.TheThinkerBoss.NeurysmTrail.Value;
 				Color col2 = glowColor * glowPower * opacity;
 				col2.A = 0;
 

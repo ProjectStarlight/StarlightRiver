@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		public ref float Decay => ref NPC.ai[2];
 
 		public override string Texture => AssetDirectory.Invisible;
-		public override string BossHeadTexture => AssetDirectory.BrainRedux + "DeadBrain_Head_Boss";
+		public override string BossHeadTexture => AssetDirectory.TheThinkerBoss + "DeadBrain_Head_Boss";
 
 		public override void SetStaticDefaults()
 		{
@@ -147,7 +147,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			effect.Parameters["repeats"].SetValue(3.3f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 
-			effect.Parameters["sampleTexture"].SetValue(Assets.Bosses.BrainRedux.DeadTeather.Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.Bosses.TheThinkerBoss.DeadTeather.Value);
 			chainTrail?.Render(effect);
 		}
 

@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 		public NPC Thinker => Main.npc[ThinkerWhoAmI];
 
-		public override string Texture => AssetDirectory.BrainRedux + Name;
+		public override string Texture => AssetDirectory.TheThinkerBoss + Name;
 
 		public override void SetDefaults()
 		{
@@ -82,7 +82,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				if (Projectile.timeLeft > 270)
 					opacity = 1 - (Projectile.timeLeft - 270) / 30f;
 
-				Texture2D tex = Assets.Bosses.BrainRedux.ThinkerMindMine.Value;
+				Texture2D tex = Assets.Bosses.TheThinkerBoss.ThinkerMindMine.Value;
 
 				float pulse2 = pulseAccum * 0.0025f + 0.5f + MathF.Sin(pulseAccum * 0.12f + 0.5f) * (0.5f + pulseAccum * 0.0001f);
 				Vector2 scale = new Vector2(1f + pulse * 0.1f, 1f + pulse2 * 0.1f) * opacity;
@@ -118,7 +118,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 		public NPC Thinker => Main.npc[ThinkerWhoAmI];
 
-		public override string Texture => AssetDirectory.BrainRedux + "ThinkerMindMine";
+		public override string Texture => AssetDirectory.TheThinkerBoss + "ThinkerMindMine";
 
 		public override void Load()
 		{
@@ -170,7 +170,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					Texture2D tex = Assets.Misc.Exclaim.Value;
 					batch.Draw(tex, proj.Center - Main.screenPosition, null, Color.White * opacity, 0, tex.Size() / 2f, 1f + pulse, 0, 0);
 
-					Texture2D arrow = Assets.Bosses.BrainRedux.TellArrow.Value;
+					Texture2D arrow = Assets.Bosses.TheThinkerBoss.TellArrow.Value;
 
 					Color color = new Color(255, 60, 60, 255) * opacity;
 
@@ -195,7 +195,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			if (Projectile.timeLeft > 270)
 				opacity = 1 - (Projectile.timeLeft - 270) / 30f;
 
-			Texture2D tex = Assets.Bosses.BrainRedux.ThinkerMindMine.Value;
+			Texture2D tex = Assets.Bosses.TheThinkerBoss.ThinkerMindMine.Value;
 
 			float pulse2 = pulseAccum * 0.0025f + 0.5f + MathF.Sin(pulseAccum * 0.12f + 0.5f) * (0.5f + pulseAccum * 0.0001f);
 			Vector2 scale = new Vector2(1f + pulse * 0.1f, 1f + pulse2 * 0.1f) * opacity;

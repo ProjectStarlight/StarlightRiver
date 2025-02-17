@@ -109,14 +109,14 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		/// </summary>
 		private TheThinker ThisThinker => thinker?.ModNPC as TheThinker;
 
-		public override string Texture => AssetDirectory.BrainRedux + "DeadBrain";
+		public override string Texture => AssetDirectory.TheThinkerBoss + "DeadBrain";
 
 		public override void Load()
 		{
 			GraymatterBiome.onDrawHallucinationMap += DrawGraymatterLink;
 			GraymatterBiome.onDrawOverHallucinationMap += DrawOverGraymatter;
 
-			Stream stream = StarlightRiver.Instance.GetFileStream("Assets/Bosses/BrainRedux/DeadBrainRig.json");
+			Stream stream = StarlightRiver.Instance.GetFileStream("Assets/Bosses/TheThinkerBoss/DeadBrainRig.json");
 			rig = JsonSerializer.Deserialize<StaticRig>(stream);
 			stream.Close();
 		}
@@ -644,8 +644,8 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 		public static void DrawBrainSegments(SpriteBatch spriteBatch, NPC npc, Vector2 center, Color color, float rotation, float scale, float opacity, Vector2 oldCenter = default, float radiusOverride = -1)
 		{
-			Texture2D tex = Assets.Bosses.BrainRedux.BrainChunk.Value;
-			Texture2D texGlow = Assets.Bosses.BrainRedux.BrainChunkGlow.Value;
+			Texture2D tex = Assets.Bosses.TheThinkerBoss.BrainChunk.Value;
+			Texture2D texGlow = Assets.Bosses.TheThinkerBoss.BrainChunkGlow.Value;
 
 			foreach (StaticRigPoint point in rig.Points)
 			{
@@ -772,7 +772,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		{
 			if (Phase <= Phases.FirstToSecond)
 			{
-				Texture2D tex = Assets.Bosses.BrainRedux.ShieldMap.Value;
+				Texture2D tex = Assets.Bosses.TheThinkerBoss.ShieldMap.Value;
 
 				Effect effect = Terraria.Graphics.Effects.Filters.Scene["BrainShield"].GetShader().Shader;
 
@@ -784,8 +784,8 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				effect.Parameters["drawTexture"]?.SetValue(tex);
 				effect.Parameters["noiseTexture"]?.SetValue(Assets.Noise.SwirlyNoiseLooping.Value);
 				effect.Parameters["pulseTexture"]?.SetValue(Assets.Noise.PerlinNoise.Value);
-				effect.Parameters["edgeTexture"]?.SetValue(Assets.Bosses.BrainRedux.ShieldEdge.Value);
-				effect.Parameters["outTexture"]?.SetValue(Assets.Bosses.BrainRedux.ShieldMapOut.Value);
+				effect.Parameters["edgeTexture"]?.SetValue(Assets.Bosses.TheThinkerBoss.ShieldEdge.Value);
+				effect.Parameters["outTexture"]?.SetValue(Assets.Bosses.TheThinkerBoss.ShieldMapOut.Value);
 				effect.Parameters["color"].SetValue(Vector3.Lerp(Vector3.One, new Vector3(1, 0.5f, 0.5f), contactDamageOpacity));
 
 				spriteBatch.End();
@@ -915,7 +915,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			effect.Parameters["repeats"].SetValue(repeats);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 
-			effect.Parameters["sampleTexture"].SetValue(Assets.Bosses.BrainRedux.DeadTeather.Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.Bosses.TheThinkerBoss.DeadTeather.Value);
 			trail?.Render(effect);
 		}
 

@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 		public int ArenaRadius => Main.masterMode ? 700 : 750;
 
-		public override string Texture => AssetDirectory.BrainRedux + Name;
+		public override string Texture => AssetDirectory.TheThinkerBoss + Name;
 
 		/// <summary>
 		/// Helper function to get the dead brain that this thinker is linked to
@@ -78,9 +78,9 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 		public override void Load()
 		{
-			GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.BrainRedux + "PetalBig");
-			GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.BrainRedux + "PetalSmall");
-			GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.BrainRedux + "Frond");
+			GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.TheThinkerBoss + "PetalBig");
+			GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.TheThinkerBoss + "PetalSmall");
+			GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.TheThinkerBoss + "Frond");
 
 			GraymatterBiome.onDrawHallucinationMap += DrawGrayAura;
 			GraymatterBiome.onDrawOverHallucinationMap += DrawShadedBody;

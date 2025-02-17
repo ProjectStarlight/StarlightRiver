@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 		public NPC Thinker => Main.npc[ThinkerWhoAmI];
 
-		public override string Texture => AssetDirectory.BrainRedux + Name;
+		public override string Texture => AssetDirectory.TheThinkerBoss + Name;
 
 		public override void Load()
 		{
@@ -133,7 +133,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		{
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
-			Texture2D chainTex = ModContent.Request<Texture2D>(AssetDirectory.BrainRedux + "VeinSpearChain").Value;
+			Texture2D chainTex = ModContent.Request<Texture2D>(AssetDirectory.TheThinkerBoss + "VeinSpearChain").Value;
 			Texture2D glow = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrailNoEnd").Value;
 
 			float opacity = 1f;

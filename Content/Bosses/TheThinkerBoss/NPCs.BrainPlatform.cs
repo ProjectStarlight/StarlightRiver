@@ -48,10 +48,10 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		{
 			float dist = Vector2.Distance(NPC.Center, targetPos);
 
-			Texture2D tex = Assets.Bosses.BrainRedux.BrainPlatform.Value;
+			Texture2D tex = Assets.Bosses.TheThinkerBoss.BrainPlatform.Value;
 			LightingBufferRenderer.DrawWithLighting(tex, NPC.position - Main.screenPosition, tex.Bounds, Color.White * (ThisThinker?.ArenaOpacity ?? 1));
 
-			Texture2D glowTex = Assets.Bosses.BrainRedux.BrainPlatformGlow.Value;
+			Texture2D glowTex = Assets.Bosses.TheThinkerBoss.BrainPlatformGlow.Value;
 			Texture2D glowTex2 = Assets.Keys.GlowAlpha.Value;
 			Color glowColor = new Color(255, 100, 100, 0) * glow * 0.15f;
 

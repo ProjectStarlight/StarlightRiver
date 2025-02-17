@@ -283,7 +283,7 @@ namespace StarlightRiver.Content.GUI
 			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Auroracle, "Auroracle", "Found by following the wisps in the ice biome", Assets.Bosses.SquidBoss.SquidBoss_Head_Boss, 220, -1.57f - 1f));
 			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Glassweaver, "Glassweaver", "Guards his forge deep below the desert", Assets.Bosses.GlassMiniboss.Glassweaver_Head_Boss, 220, -1.57f - 0.33f));
 			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Ceiros, "Ceiros", "Guards a temple deep below the desert", Assets.Bosses.VitricBoss.VitricBoss_Head_Boss, 220, -1.57f + 0.33f));
-			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Thinker, "The Thinker", "Born from the Brain of Cthulhu into the crimson caverns", Assets.Bosses.BrainRedux.TheThinker_Head_Boss, 220, -1.57f + 1f));
+			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Thinker, "The Thinker", "Born from the Brain of Cthulhu into the crimson caverns", Assets.Bosses.TheThinkerBoss.TheThinker_Head_Boss, 220, -1.57f + 1f));
 
 			var speedRelic = new BossRushRelicToggle(() => BossRushSpeedupAddon.active, "Speed Relic", "Makes the game move 33% faster", Assets.NPCs.BossRush.SpeedRelic, 240, 1.57f - 0.66f);
 			speedRelic.OnLeftClick += (a, b) => BossRushSpeedupAddon.active = !BossRushSpeedupAddon.active;

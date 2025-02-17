@@ -59,13 +59,13 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				float alpha = block.Timer < 30 ? block.Timer / 30f : block.Timer > 500 ? 1f - (block.Timer - 500) / 60f : 1;
 				shader.Parameters["u_alpha"].SetValue(alpha);
 
-				shader.Parameters["mainbody_t"].SetValue(Assets.Bosses.BrainRedux.HallucinationBlock.Value);
+				shader.Parameters["mainbody_t"].SetValue(Assets.Bosses.TheThinkerBoss.HallucinationBlock.Value);
 				shader.Parameters["noisemap_t"].SetValue(Assets.Noise.ShaderNoise.Value);
 
 				sb.End();
 				sb.Begin(default, BlendState.AlphaBlend, SamplerState.PointWrap, default, default, shader, Main.GameViewMatrix.TransformationMatrix);
 
-				Texture2D tex = Assets.Bosses.BrainRedux.HallucinationBlock.Value;
+				Texture2D tex = Assets.Bosses.TheThinkerBoss.HallucinationBlock.Value;
 				sb.Draw(tex, block.NPC.Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2f, block.NPC.scale, 0, 0);
 
 				sb.End();

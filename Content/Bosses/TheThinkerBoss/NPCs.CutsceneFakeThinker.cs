@@ -222,7 +222,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			if (Timer > 240)
 				shellOpacity = 0.01f + 1f - GrayAuraRadius / 140f;
 
-			Texture2D tex = Assets.Bosses.BrainRedux.ShellBack.Value;
+			Texture2D tex = Assets.Bosses.TheThinkerBoss.ShellBack.Value;
 			Vector2 pos = NPC.Center - Main.screenPosition - tex.Size() / 2f;
 			Color color = Color.White;
 			color.A = (byte)(shellOpacity * 255);
@@ -260,20 +260,20 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 			sb.Draw(glow, thinker.NPC.Center - Main.screenPosition, null, Color.Black * 0.5f, thinker.NPC.rotation, glow.Size() / 2f, thinker.NPC.scale * 2.5f, 0, 0);
 
-			bodyShader.Parameters["u_resolution"].SetValue(Assets.Bosses.BrainRedux.Heart.Size());
+			bodyShader.Parameters["u_resolution"].SetValue(Assets.Bosses.TheThinkerBoss.Heart.Size());
 			bodyShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f);
 
-			bodyShader.Parameters["mainbody_t"].SetValue(Assets.Bosses.BrainRedux.Heart.Value);
-			bodyShader.Parameters["linemap_t"].SetValue(Assets.Bosses.BrainRedux.HeartLine.Value);
+			bodyShader.Parameters["mainbody_t"].SetValue(Assets.Bosses.TheThinkerBoss.Heart.Value);
+			bodyShader.Parameters["linemap_t"].SetValue(Assets.Bosses.TheThinkerBoss.HeartLine.Value);
 			bodyShader.Parameters["noisemap_t"].SetValue(Assets.Noise.ShaderNoise.Value);
-			bodyShader.Parameters["overlay_t"].SetValue(Assets.Bosses.BrainRedux.HeartOver.Value);
-			bodyShader.Parameters["normal_t"].SetValue(Assets.Bosses.BrainRedux.HeartNormal.Value);
+			bodyShader.Parameters["overlay_t"].SetValue(Assets.Bosses.TheThinkerBoss.HeartOver.Value);
+			bodyShader.Parameters["normal_t"].SetValue(Assets.Bosses.TheThinkerBoss.HeartNormal.Value);
 			bodyShader.Parameters["mask_t"].SetValue(Assets.MagicPixel.Value);
 
 			sb.End();
 			sb.Begin(default, default, SamplerState.PointWrap, default, default, bodyShader, Main.GameViewMatrix.TransformationMatrix);
 
-			Texture2D tex = Assets.Bosses.BrainRedux.Heart.Value;
+			Texture2D tex = Assets.Bosses.TheThinkerBoss.Heart.Value;
 			sb.Draw(tex, thinker.NPC.Center - Main.screenPosition, null, Color.White, thinker.NPC.rotation, tex.Size() / 2f, thinker.NPC.scale, 0, 0);
 
 			sb.End();

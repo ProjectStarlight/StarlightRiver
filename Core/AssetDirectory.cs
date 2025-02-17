@@ -143,7 +143,7 @@ namespace StarlightRiver.Core
 
 		public const string EvilBiomesItem = Assets + "Items/EvilBiomes/";
 
-		public const string BrainRedux = Assets + "Bosses/BrainRedux/";
+		public const string TheThinkerBoss = Assets + "Bosses/TheThinkerBoss/";
 
 		//structures
 		public const string StructureFolder = "Structures/";
