@@ -2,7 +2,9 @@
 using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Items.Vitric;
+using System;
 using System.Linq;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -21,10 +23,11 @@ namespace StarlightRiver.Content.Items.Crimson
 
 		public override void SetDefaults()
 		{
-			Item.damage = 15;
+			Item.damage = 24;
+			Item.crit = 10;
 			Item.DamageType = DamageClass.Ranged;
-			Item.width = 16;
-			Item.height = 64;
+			Item.width = 32;
+			Item.height = 52;
 			Item.useTime = 24;
 			Item.useAnimation = 24;
 			Item.useStyle = ItemUseStyleID.Shoot;
@@ -38,6 +41,7 @@ namespace StarlightRiver.Content.Items.Crimson
 			Item.useAmmo = AmmoID.Arrow;
 			Item.useTurn = true;
 			Item.noUseGraphic = true;
+			Item.UseSound = SoundID.Item5;
 		}
 
 		public override void UpdateInventory(Player player)
@@ -102,6 +106,28 @@ namespace StarlightRiver.Content.Items.Crimson
 			return false;
 		}
 
+		public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
+		{
+			var tex = Assets.Items.Crimson.MirageBow.Value;
+
+			Effect effect = Filters.Scene["MirageItemFilter"].GetShader().Shader;
+
+			effect.Parameters["u_color"].SetValue(Vector3.One);
+			effect.Parameters["u_fade"].SetValue(Vector3.One);
+			effect.Parameters["u_resolution"].SetValue(tex.Size());
+			effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.05f);
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, BlendState.Additive, SamplerState.LinearClamp, default, default, effect, Main.UIScaleMatrix);
+
+			spriteBatch.Draw(tex, Item.Center - Main.screenPosition, null, Color.White, rotation, Item.Size / 2f, scale, 0, 0);
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, SamplerState.LinearClamp, default, default, default, Main.UIScaleMatrix);
+
+			return false;
+		}
+
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();
@@ -130,18 +156,30 @@ namespace StarlightRiver.Content.Items.Crimson
 		{
 			var owner = Projectile.Owner();
 
+			if (owner.itemAnimation == owner.itemAnimationMax)
+				Projectile.rotation = Projectile.Center.DirectionTo(Main.MouseWorld).ToRotation();
+
 			if (owner.itemAnimation > 0)
 				Projectile.timeLeft = 10;
 
+			owner.direction = Projectile.rotation.ToRotationVector2().X > 0 ? 1 : -1;
+
 			Projectile.Center = owner.Center + Vector2.UnitY * owner.gfxOffY;
 			owner.heldProj = Projectile.whoAmI;
+
+			Color glowColor = new Color(
+				1.3f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f) * 0.5f,
+				1.3f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f + 1) * 0.5f,
+				1.3f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f + 2) * 0.5f);
+
+			Lighting.AddLight(owner.Center, glowColor.ToVector3() * 0.5f);
 		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
 			var tex = Assets.Items.Crimson.MirageBow.Value;
 			var origin = new Vector2(0, tex.Height / 2);
-			var rotation = Projectile.Center.DirectionTo(Main.MouseWorld).ToRotation();
+			var direction = Projectile.rotation.ToRotationVector2().X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
 
 			Effect effect = Filters.Scene["MirageItemFilter"].GetShader().Shader;
 
@@ -153,7 +191,7 @@ namespace StarlightRiver.Content.Items.Crimson
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, default, effect, Main.UIScaleMatrix);
 
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, rotation, origin, 1, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, origin, 1, direction, 0);
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
@@ -194,6 +232,9 @@ namespace StarlightRiver.Content.Items.Crimson
 			if (owner.HeldItem.type != ModContent.ItemType<MirageBow>())
 				Projectile.timeLeft = 30;
 
+			if (owner.itemAnimation == owner.itemAnimationMax)
+				Projectile.rotation = Projectile.Center.DirectionTo(Main.MouseWorld).ToRotation();
+
 			if (owner == Main.LocalPlayer)
 			{
 				Vector2 relative = owner.Center - Main.MouseWorld;
@@ -222,7 +263,7 @@ namespace StarlightRiver.Content.Items.Crimson
 
 			var tex = Assets.Items.Crimson.MirageBow.Value;
 			var origin = new Vector2(0, tex.Height / 2);
-			var rotation = Projectile.Center.DirectionTo(Main.MouseWorld).ToRotation();
+			var direction = Projectile.rotation.ToRotationVector2().X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
 
 			Effect effect = Filters.Scene["MirageItemFilter"].GetShader().Shader;
 
@@ -234,7 +275,7 @@ namespace StarlightRiver.Content.Items.Crimson
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, default, effect, Main.UIScaleMatrix);
 
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, rotation, origin, 1, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * alpha, Projectile.rotation, origin, 1, direction, 0);
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);

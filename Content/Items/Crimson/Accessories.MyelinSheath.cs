@@ -93,6 +93,8 @@ namespace StarlightRiver.Content.Items.Crimson
 				1.3f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f + 1) * 0.5f,
 				1.3f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f + 2) * 0.5f);
 
+			glowColor *= 0.5f + MathF.Sin(Main.GameUpdateCount * 0.02f) * 0.5f;
+
 			spriteBatch.Draw(over, position, frame, glowColor, 0, origin, scale, 0, 0);
 		}
 
