@@ -313,7 +313,38 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				}
 			}
 
+			if (Timer == 1 || Timer == 90 || Timer == 120 || Timer == 150 || Timer == 180 || Timer == 210)
+			{
+				SoundHelper.PlayPitched("MagicAttack", 1, 1f - Timer / 300f, thinker.Center);
+				CameraSystem.shake += 20;
+
+				for (int k = 0; k < 30; k++)
+				{
+					Dust.NewDustPerfect(thinker.Center, ModContent.DustType<Dusts.PixelatedEmber>(), Main.rand.NextVector2Circular(10, 10));
+					Dust.NewDustPerfect(thinker.Center, ModContent.DustType<Dusts.PixelatedImpactLineDust>(), Main.rand.NextVector2Circular(30, 30));
+				}
+			}
+
+			if (Timer < 300)
+			{
+				ThisThinker.ExtraGrayAuraRadius = 600 - Timer / 300f * 750;
+			}
+
 			if (Timer == 300)
+			{
+				SoundHelper.PlayPitched("MagicAttack", 1, -0.5f, thinker.Center);
+				CameraSystem.shake += 30;
+
+				for (int k = 0; k < 30; k++)
+				{
+					var color = new Color(Main.rand.NextFloat(0.5f, 1f), Main.rand.NextFloat(0.5f, 1f), Main.rand.NextFloat(0.5f, 1f), 0);
+
+					Dust.NewDustPerfect(thinker.Center, ModContent.DustType<Dusts.PixelatedEmber>(), Main.rand.NextVector2Circular(20, 20) * Main.rand.NextFloat(), 0, color, Main.rand.NextFloat(1, 1.25f));
+					Dust.NewDustPerfect(thinker.Center, ModContent.DustType<Dusts.PixelatedImpactLineDust>(), Main.rand.NextVector2Circular(30, 30), 0, color);
+				}
+			}
+
+			if (Timer == 360)
 			{
 				foreach (Player player in Main.ActivePlayers)
 				{
@@ -324,12 +355,13 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				CameraSystem.ReturnCamera(180);
 				ZoomHandler.SetZoomAnimation(1f, 180);
 
-				for (int k = 0; k < 50; k++)
+				for(int k = 0; k < 50; k++)
 				{
-					Dust.NewDustPerfect(thinker.Center, ModContent.DustType<GraymatterDust>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(9), 0, default, Main.rand.NextFloat(1f, 4f));
+					Dust.NewDustPerfect(ThisThinker.NPC.Center, DustID.Stone, Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(14), 0, default, Main.rand.NextFloat(2, 4));
 				}
 
-				Helpers.SoundHelper.PlayPitched("Impacts/AirstrikeImpact", 1, 0, thinker.Center);
+				SoundHelper.PlayPitched("Effects/Splat", 0.7f, 0.5f, thinker.Center);
+				Helpers.SoundHelper.PlayPitched("Impacts/StoneStrike", 1, 2f, ThisThinker.NPC.Center);
 
 				ThisThinker.platforms.ForEach(n => n.active = false);
 
@@ -345,7 +377,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				}
 			}
 
-			if (Timer == 330)
+			if (Timer == 360)
 				NPC.active = false;
 		}
 	}

@@ -66,7 +66,12 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
-			StarlightWorld.FlipFlag(WorldFlags.ThinkerBossOpen);
+			NPC.NewNPC(null, (int)player.Center.X, (int)player.Center.Y - 600, ModContent.NPCType<TheThinker>());
+			NPC.NewNPC(null, (int)player.Center.X, (int)player.Center.Y - 600, ModContent.NPCType<DeadBrain>());
+
+
+
+			//StarlightWorld.FlipFlag(WorldFlags.ThinkerBossOpen);
 			//GrayBlob((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
 
 			return true;
@@ -119,7 +124,7 @@ namespace StarlightRiver.Content.Items
 
 			SplineGlow.Spawn(player.Center, Vector2.Lerp(player.Center, Main.MouseWorld, 0.5f) + Vector2.UnitX.RotatedByRandom(6.28f) * 50, Main.MouseWorld, 120, 1, Color.Teal);
 
-			/*for(int x = -100; x < 100; x++)
+			for(int x = -100; x < 100; x++)
 			{
 				for(int y = -100; y < 100; y++)
 				{
@@ -129,7 +134,7 @@ namespace StarlightRiver.Content.Items
 					if (tile.TileType == ModContent.TileType<BrainBlocker>())
 						tile.HasTile = false;
 				}
-			}*/
+			}
 
 			return true;
 		}
