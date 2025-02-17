@@ -56,9 +56,18 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		public void Generate(ref Vector2 pos)
 		{
 			var dims = new Point16();
-			StructureHelper.Generator.GetDimensions(structurePath, StarlightRiver.Instance, ref dims);
 
-			StructureHelper.Generator.GenerateStructure(structurePath, pos.ToPoint16(), StarlightRiver.Instance);
+			if (StructureHelper.Generator.IsMultistructure(structurePath, StarlightRiver.Instance) == true)
+			{
+				StructureHelper.Generator.GenerateMultistructureSpecific(structurePath, pos.ToPoint16(), StarlightRiver.Instance, 0);
+				StructureHelper.Generator.GetMultistructureDimensions(structurePath, StarlightRiver.Instance, 0, ref dims);
+			}
+			else
+			{
+				StructureHelper.Generator.GenerateStructure(structurePath, pos.ToPoint16(), StarlightRiver.Instance);
+				StructureHelper.Generator.GetDimensions(structurePath, StarlightRiver.Instance, ref dims);
+			}
+
 			actualPosition = pos * 16;
 
 			onGenerate(pos.ToPoint16());

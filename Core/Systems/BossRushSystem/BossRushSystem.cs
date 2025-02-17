@@ -51,8 +51,6 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		public static int timeScore;
 		public static int scoreMult;
 
-		public static int speedupTimer;
-
 		public static int transitionTimer = 0;
 		public static int deathFadeoutTimer = 0;
 		public static Rectangle visibleArea = new(0, 0, 0, 0);
@@ -71,7 +69,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			StarlightRiverBackground.DrawMapEvent += DrawMap;
 			StarlightRiverBackground.DrawOverlayEvent += DrawOverlay;
 			StarlightRiverBackground.CheckIsActiveEvent += () => isBossRush;
-			On_Main.DoUpdate += Speedup;
+
 			On_NPC.UpdateNPC += DisableWhenDead;
 
 			File.WriteAllBytes(Path.Combine(ModLoader.ModPath, "BossRushWorld.wld"), Mod.GetFileBytes("Worlds/BossRushWorld.wld"));
@@ -211,38 +209,6 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		}
 
 		/// <summary>
-		/// This handles the speedup rules of the boss rush. IE that blitz should be 1.25x gamespeed and showdown 1.5x
-		/// </summary>
-		/// <param name="orig"></param>
-		/// <param name="self"></param>
-		/// <param name="gameTime"></param>
-		private void Speedup(On_Main.orig_DoUpdate orig, Main self, ref GameTime gameTime)
-		{
-			orig(self, ref gameTime);
-
-			if (!isBossRush || Main.gameMenu) //dont do anything outside of bossrush but the normal update
-				return;
-
-			speedupTimer++; //track this seperately since gameTime would get sped up
-
-			if (Main.expertMode) //1.25x on expert
-			{
-				if (speedupTimer % 4 == 0)
-					orig(self, ref gameTime);
-
-				return;
-			}
-
-			if (Main.masterMode) //1.5x on master
-			{
-				if (speedupTimer % 2 == 0)
-					orig(self, ref gameTime);
-
-				return;
-			}
-		}
-
-		/// <summary>
 		/// The actual stages are populated here. The first and last stages are bumpers for the DPS evaluation and ending item respectively.
 		/// </summary>
 		public override void PostAddRecipes()
@@ -292,6 +258,8 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 					new Vector2(600, 24 * 16),
 					a =>
 					{
+						StructureHelper.Generator.GenerateMultistructureSpecific("Structures/VitricForge", (a / 16).ToPoint16(), StarlightRiver.Instance, Main.masterMode ? 2 : Main.expertMode ? 1 : 0);
+
 						StarlightWorld.vitricBiome = new Rectangle((int)(a.X + 37 * 16) / 16, (int)(a.Y - 68 * 16) / 16, 400, 140);
 						CutawaySystem.CutawayHandler.CreateCutaways();
 						CutawaySystem.CutawayHandler.forgeOverlay.pos = StarlightWorld.GlassweaverArena.TopLeft() + new Vector2(-2, 2) * 16;
@@ -457,11 +425,20 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 				if (currentStage == 0)
 					transitionTimer = 180;
 
+				if (currentStage == -1)
+					transitionTimer = 0;
+
 				currentStage++;
 			}
 
+			if (currentStage == 0 && !NPC.AnyNPCs(trackedBossType))
+			{
+				CurrentStage?.EnterArena(Main.LocalPlayer);
+				CurrentStage?.BeginFight();
+			}
+
 			// transition animation
-			if (transitionTimer > 0)
+			if (currentStage > 0 && transitionTimer > 0)
 			{
 				Main.LocalPlayer.immune = true; //so we dont die during transitions
 				Main.LocalPlayer.immuneTime = 2;
