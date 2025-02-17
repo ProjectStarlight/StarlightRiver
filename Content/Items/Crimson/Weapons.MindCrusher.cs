@@ -177,10 +177,10 @@ namespace StarlightRiver.Content.Items.Crimson
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0) * 0.1f, 0, tex.Size() / 2f, Radius * 2f / tex.Width, 0, 0);
 
 			// Draw the held item for the player
-			var held = Assets.Items.Crimson.MindCrusher.Value;
-			var heldGlow = Assets.Items.Crimson.MindCrusherGlow.Value;
+			Texture2D held = Assets.Items.Crimson.MindCrusher.Value;
+			Texture2D heldGlow = Assets.Items.Crimson.MindCrusherGlow.Value;
 
-			var owner = Projectile.Owner();
+			Player owner = Projectile.Owner();
 			Vector2 holdPos = owner.Center + new Vector2(16 * owner.direction, owner.gfxOffY);
 
 			int frame = Radius < 20 ? 0 : 1 + (int)(Main.GameUpdateCount / 10 % 2);

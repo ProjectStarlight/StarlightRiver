@@ -201,7 +201,7 @@ namespace StarlightRiver.Content.GUI
 
 			if (active())
 			{
-				var glow = Assets.Keys.GlowAlpha.Value;
+				Texture2D glow = Assets.Keys.GlowAlpha.Value;
 				spriteBatch.Draw(glow, pos, null, new Color(100, 200, 255, 0), 0, glow.Size() / 2f, 0.8f, 0, 0);
 			}
 		}
@@ -330,14 +330,14 @@ namespace StarlightRiver.Content.GUI
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default, default, Main.UIScaleMatrix);
 
-			var ring3 = Assets.NPCs.BossRush.ArmillaryRing3.Value;
-			var ring2 = Assets.NPCs.BossRush.ArmillaryRing2.Value;
-			var ring1 = Assets.NPCs.BossRush.ArmillaryRing1.Value;
-			var orb = Assets.NPCs.BossRush.BossRushOrb.Value;
+			Texture2D ring3 = Assets.NPCs.BossRush.ArmillaryRing3.Value;
+			Texture2D ring2 = Assets.NPCs.BossRush.ArmillaryRing2.Value;
+			Texture2D ring1 = Assets.NPCs.BossRush.ArmillaryRing1.Value;
+			Texture2D orb = Assets.NPCs.BossRush.BossRushOrb.Value;
 
-			var runes3 = Assets.NPCs.BossRush.ArmillaryRingRunes3.Value;
-			var runes2 = Assets.NPCs.BossRush.ArmillaryRingRunes2.Value;
-			var runes1 = Assets.NPCs.BossRush.ArmillaryRingRunes1.Value;
+			Texture2D runes3 = Assets.NPCs.BossRush.ArmillaryRingRunes3.Value;
+			Texture2D runes2 = Assets.NPCs.BossRush.ArmillaryRingRunes2.Value;
+			Texture2D runes1 = Assets.NPCs.BossRush.ArmillaryRingRunes1.Value;
 
 			float rotProgress = Unlocked ? timer * (0.02f + difficulty * 0.01f) * Fade : 0;
 
@@ -368,7 +368,7 @@ namespace StarlightRiver.Content.GUI
 
 			Utils.DrawSplicedPanel(spriteBatch, background, dims.X, dims.Y, dims.Width, dims.Height, 10, 10, 10, 10, color);
 
-			foreach(UIElement element in Children)
+			foreach (UIElement element in Children)
 			{
 				if (element is BossRushUnlockInfo info)
 					info.DrawText(spriteBatch);
@@ -441,7 +441,7 @@ namespace StarlightRiver.Content.GUI
 			{
 				var dims = GetDimensions().ToRectangle();
 
-				var textColor = Unlocked ? (IsMouseHovering ? Color.Yellow : Color.White) : new Color(80, 80, 80);
+				Color textColor = Unlocked ? (IsMouseHovering ? Color.Yellow : Color.White) : new Color(80, 80, 80);
 				Utils.DrawBorderString(spriteBatch, "Start", dims.Center(), textColor, 1, 0.5f, 0.4f);
 			}
 		}
@@ -479,7 +479,7 @@ namespace StarlightRiver.Content.GUI
 		{
 			var dims = GetDimensions().ToRectangle();
 
-			var textColor = Unlocked ? BossRushMenu.DifficultyColor : new Color(80, 80, 80);
+			Color textColor = Unlocked ? BossRushMenu.DifficultyColor : new Color(80, 80, 80);
 			Utils.DrawBorderString(spriteBatch, Unlocked ? BossRushMenu.DifficultyString : "Locked", dims.Center(), textColor, 1, 0.5f, 0.4f);
 		}
 	}

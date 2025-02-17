@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 		{
-			var tex = Assets.Items.Crimson.ImaginaryTissue.Value;
+			Texture2D tex = Assets.Items.Crimson.ImaginaryTissue.Value;
 
 			Effect effect = Filters.Scene["MirageItemFilter"].GetShader().Shader;
 
@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
 		{
-			var tex = Assets.Items.Crimson.ImaginaryTissue.Value;
+			Texture2D tex = Assets.Items.Crimson.ImaginaryTissue.Value;
 
 			Effect effect = Filters.Scene["MirageItemFilter"].GetShader().Shader;
 

@@ -161,7 +161,7 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 			}
 
 			if (firstResizeTime == 20)
-				ResizeScreens(new Vector2(Main.screenWidth, Main.screenHeight));			
+				ResizeScreens(new Vector2(Main.screenWidth, Main.screenHeight));
 		}
 
 		private void MenuUpdate(On_Main.orig_UpdateMenu orig)

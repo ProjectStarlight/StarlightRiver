@@ -16,8 +16,8 @@ namespace StarlightRiver.Helpers
 
 		public static float EaseQuadInOut(float x)
 		{
-			return (x < 0.5f) ? 
-				2f * (float)Math.Pow(x, 2) : 
+			return (x < 0.5f) ?
+				2f * (float)Math.Pow(x, 2) :
 				-2f * (float)Math.Pow(x, 2) + 4f * x - 1f;
 		}
 
@@ -33,8 +33,8 @@ namespace StarlightRiver.Helpers
 
 		public static float EaseCubicInOut(float x)
 		{
-			return (x < 0.5f) ? 
-				4f * (float)Math.Pow(x, 3) : 
+			return (x < 0.5f) ?
+				4f * (float)Math.Pow(x, 3) :
 				4f * (float)Math.Pow(x, 3) - 12f * (float)Math.Pow(x, 2) + 12f * x - 3f;
 		}
 
@@ -50,8 +50,8 @@ namespace StarlightRiver.Helpers
 
 		public static float EaseQuarticInOut(float x)
 		{
-			return (x < 0.5f) ? 
-				8f * (float)Math.Pow(x, 4) : 
+			return (x < 0.5f) ?
+				8f * (float)Math.Pow(x, 4) :
 				-8f * (float)Math.Pow(x, 4) + 32f * (float)Math.Pow(x, 3) - 48f * (float)Math.Pow(x, 2) + 32f * x - 7f;
 		}
 
@@ -67,8 +67,8 @@ namespace StarlightRiver.Helpers
 
 		public static float EaseQuinticInOut(float x)
 		{
-			return (x < 0.5f) ? 
-				16f * (float)Math.Pow(x, 5) : 
+			return (x < 0.5f) ?
+				16f * (float)Math.Pow(x, 5) :
 				16f * (float)Math.Pow(x, 5) - 80f * (float)Math.Pow(x, 4) + 160f * (float)Math.Pow(x, 3) - 160f * (float)Math.Pow(x, 2) + 80f * x - 15f;
 		}
 
@@ -84,7 +84,7 @@ namespace StarlightRiver.Helpers
 
 		public static float EaseCircularInOut(float x)
 		{
-			return (x < 0.5f) ? 
+			return (x < 0.5f) ?
 				(1f - (float)Math.Sqrt(1.0 - Math.Pow(x * 2, 2))) * 0.5f :
 				(float)((Math.Sqrt(1.0 - Math.Pow(-2 * x + 2, 2)) + 1) * 0.5);
 		}

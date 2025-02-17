@@ -355,7 +355,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 				CameraSystem.ReturnCamera(180);
 				ZoomHandler.SetZoomAnimation(1f, 180);
 
-				for(int k = 0; k < 50; k++)
+				for (int k = 0; k < 50; k++)
 				{
 					Dust.NewDustPerfect(ThisThinker.NPC.Center, DustID.Stone, Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(14), 0, default, Main.rand.NextFloat(2, 4));
 				}

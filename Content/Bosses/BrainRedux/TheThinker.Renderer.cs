@@ -173,7 +173,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 
 			foreach (TheThinker thinker in toRender)
 			{
-				var rad = 140 + thinker.ExtraGrayAuraRadius;
+				float rad = 140 + thinker.ExtraGrayAuraRadius;
 
 				if (rad >= 1)
 				{
@@ -427,7 +427,7 @@ namespace StarlightRiver.Content.Bosses.BrainRedux
 			if (progress > 210)
 				DrawExtraPetals(spriteBatch, 2.0f, Math.Min(1, (progress - 210) / 30f) * 0.2f * scaleMult, new Vector3(0.0f, 0.1f, 0.8f), 0);
 
-			return;		
+			return;
 		}
 
 		/// <summary>

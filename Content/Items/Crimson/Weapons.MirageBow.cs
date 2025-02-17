@@ -86,7 +86,7 @@ namespace StarlightRiver.Content.Items.Crimson
 
 		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 		{
-			var tex = Assets.Items.Crimson.MirageBow.Value;
+			Texture2D tex = Assets.Items.Crimson.MirageBow.Value;
 
 			Effect effect = Filters.Scene["MirageItemFilter"].GetShader().Shader;
 
@@ -108,7 +108,7 @@ namespace StarlightRiver.Content.Items.Crimson
 
 		public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
 		{
-			var tex = Assets.Items.Crimson.MirageBow.Value;
+			Texture2D tex = Assets.Items.Crimson.MirageBow.Value;
 
 			Effect effect = Filters.Scene["MirageItemFilter"].GetShader().Shader;
 
@@ -154,7 +154,7 @@ namespace StarlightRiver.Content.Items.Crimson
 
 		public override void AI()
 		{
-			var owner = Projectile.Owner();
+			Player owner = Projectile.Owner();
 
 			if (owner.itemAnimation == owner.itemAnimationMax)
 				Projectile.rotation = Projectile.Center.DirectionTo(Main.MouseWorld).ToRotation();
@@ -177,9 +177,9 @@ namespace StarlightRiver.Content.Items.Crimson
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			var tex = Assets.Items.Crimson.MirageBow.Value;
+			Texture2D tex = Assets.Items.Crimson.MirageBow.Value;
 			var origin = new Vector2(0, tex.Height / 2);
-			var direction = Projectile.rotation.ToRotationVector2().X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
+			SpriteEffects direction = Projectile.rotation.ToRotationVector2().X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
 
 			Effect effect = Filters.Scene["MirageItemFilter"].GetShader().Shader;
 
@@ -261,9 +261,9 @@ namespace StarlightRiver.Content.Items.Crimson
 
 			Main.spriteBatch.Draw(PlayerTarget.Target, Projectile.Center - Main.screenPosition, source, Color.White * alpha, owner.fullRotation, source.Size() / 2f + new Vector2(-owner.width, owner.height) / 2f, 1, SpriteEffects.FlipHorizontally, 0);
 
-			var tex = Assets.Items.Crimson.MirageBow.Value;
+			Texture2D tex = Assets.Items.Crimson.MirageBow.Value;
 			var origin = new Vector2(0, tex.Height / 2);
-			var direction = Projectile.rotation.ToRotationVector2().X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
+			SpriteEffects direction = Projectile.rotation.ToRotationVector2().X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
 
 			Effect effect = Filters.Scene["MirageItemFilter"].GetShader().Shader;
 

@@ -69,8 +69,6 @@ namespace StarlightRiver.Content.Items
 			NPC.NewNPC(null, (int)player.Center.X, (int)player.Center.Y - 600, ModContent.NPCType<TheThinker>());
 			NPC.NewNPC(null, (int)player.Center.X, (int)player.Center.Y - 600, ModContent.NPCType<DeadBrain>());
 
-
-
 			//StarlightWorld.FlipFlag(WorldFlags.ThinkerBossOpen);
 			//GrayBlob((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
 
@@ -124,11 +122,11 @@ namespace StarlightRiver.Content.Items
 
 			SplineGlow.Spawn(player.Center, Vector2.Lerp(player.Center, Main.MouseWorld, 0.5f) + Vector2.UnitX.RotatedByRandom(6.28f) * 50, Main.MouseWorld, 120, 1, Color.Teal);
 
-			for(int x = -100; x < 100; x++)
+			for (int x = -100; x < 100; x++)
 			{
-				for(int y = -100; y < 100; y++)
+				for (int y = -100; y < 100; y++)
 				{
-					var tile = Framing.GetTileSafely(x + (int)(Main.MouseWorld.X / 16), y + (int)(Main.MouseWorld.Y / 16));
+					Tile tile = Framing.GetTileSafely(x + (int)(Main.MouseWorld.X / 16), y + (int)(Main.MouseWorld.Y / 16));
 					tile.IsActuated = false;
 
 					if (tile.TileType == ModContent.TileType<BrainBlocker>())

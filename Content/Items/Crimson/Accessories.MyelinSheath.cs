@@ -86,7 +86,7 @@ namespace StarlightRiver.Content.Items.Crimson
 
 		public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 		{
-			var over = Assets.Items.Crimson.MyelinSheathOver.Value;
+			Texture2D over = Assets.Items.Crimson.MyelinSheathOver.Value;
 
 			Color glowColor = new Color(
 				1.3f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f) * 0.5f,

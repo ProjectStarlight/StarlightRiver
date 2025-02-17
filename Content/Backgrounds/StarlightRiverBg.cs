@@ -111,7 +111,7 @@ namespace StarlightRiver.Content.Backgrounds
 		/// <param name="sb"></param>
 		public static void DrawStars(SpriteBatch sb)
 		{
-			var wantedMatrix = Main.gameMenu ? Main.UIScaleMatrix : Main.GameViewMatrix.TransformationMatrix;
+			Matrix wantedMatrix = Main.gameMenu ? Main.UIScaleMatrix : Main.GameViewMatrix.TransformationMatrix;
 
 			Texture2D texB = Terraria.GameContent.TextureAssets.MagicPixel.Value;
 			sb.Draw(texB, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.Black);
