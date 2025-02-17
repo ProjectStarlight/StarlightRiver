@@ -179,14 +179,13 @@ namespace StarlightRiver.Content.Items
 		private void DrawBeta(On_Main.orig_DoDraw orig, Main self, GameTime gameTime)
 		{
 			orig(self, gameTime);
-			return;
 			Main.spriteBatch.Begin();
 
 			DynamicSpriteFont font = Terraria.GameContent.FontAssets.ItemStack.Value;
 
-			Utils.DrawBorderStringBig(Main.spriteBatch, $"STARLIGHT RIVER ALPHA TEST -- THINKER BOSS FIGHT TEST 6", new Vector2(Main.screenWidth / 2, 16), Color.White, 0.6f, 0.5f);
-			Utils.DrawBorderStringBig(Main.spriteBatch, $"ALPHA BUILD DOES NOT REPRESENT FINAL PRODUCT", new Vector2(Main.screenWidth / 2, 48), Color.White, 0.6f, 0.5f);
-			Utils.DrawBorderStringBig(Main.spriteBatch, $"Things to test: Thinker HP/barrier changes, New Electro arrows\nGlassweaver HP/barrier and damage changes, glassweaver expert/master worldgen\nTry to get a world stuck without a glassweaver for >1 minute (softlock)\nPlease tell me if you notice startup/load time being faster also\nI think I did something that should improve that alot", new Vector2(Main.screenWidth / 2, 86), new Color(255, 255, 0), 0.4f, 0.5f);
+			Utils.DrawBorderStringBig(Main.spriteBatch, $"STARLIGHT RIVER ALPHA TEST -- THINKER BOSS FIGHT TEST", new Vector2(Main.screenWidth / 2, 16), Color.White, 0.4f, 0.5f);
+			Utils.DrawBorderStringBig(Main.spriteBatch, $"ALPHA BUILD DOES NOT REPRESENT FINAL PRODUCT", new Vector2(Main.screenWidth / 2, 48), Color.White, 0.4f, 0.5f);
+			Utils.DrawBorderStringBig(Main.spriteBatch, $"Things to test: Nothing in specific? Thinker death animation and boss rush ig?", new Vector2(Main.screenWidth / 2, 86), new Color(255, 255, 200), 0.3f, 0.5f);
 
 			Main.spriteBatch.End();
 		}

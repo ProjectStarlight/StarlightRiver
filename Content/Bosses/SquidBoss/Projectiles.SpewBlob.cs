@@ -21,7 +21,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			Projectile.aiStyle = -1;
 			Projectile.timeLeft = 300;
 			Projectile.hostile = true;
-			Projectile.damage = 20;
 			Projectile.extraUpdates = 1;
 		}
 
