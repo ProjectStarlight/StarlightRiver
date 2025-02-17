@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Bosses.BrainRedux
+namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 {
 	internal class ThinkerMindMine : ModProjectile
 	{

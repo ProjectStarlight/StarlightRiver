@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Bosses.BrainRedux
+namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 {
 	class BrainBolt : ModProjectile, IDrawPrimitive
 	{

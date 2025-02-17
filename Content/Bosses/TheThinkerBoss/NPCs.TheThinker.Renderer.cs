@@ -8,7 +8,7 @@ using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using static tModPorter.ProgressUpdate;
 
-namespace StarlightRiver.Content.Bosses.BrainRedux
+namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 {
 	internal partial class TheThinker
 	{

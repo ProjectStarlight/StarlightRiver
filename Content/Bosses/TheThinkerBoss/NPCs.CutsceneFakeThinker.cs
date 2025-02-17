@@ -7,7 +7,7 @@ using System;
 using System.Linq;
 using Terraria.Graphics.Effects;
 
-namespace StarlightRiver.Content.Bosses.BrainRedux
+namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 {
 	internal class CutsceneFakeThinker : ModNPC
 	{

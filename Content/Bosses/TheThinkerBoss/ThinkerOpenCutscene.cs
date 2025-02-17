@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StarlightRiver.Content.Bosses.BrainRedux
+namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 {
 	internal class ThinkerOpenCutscene : Cutscene
 	{

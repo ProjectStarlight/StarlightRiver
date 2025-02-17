@@ -2,7 +2,7 @@
 using StarlightRiver.Core.Systems.LightingSystem;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Bosses.BrainRedux
+namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 {
 	internal class BrainPlatform : MovingPlatform
 	{

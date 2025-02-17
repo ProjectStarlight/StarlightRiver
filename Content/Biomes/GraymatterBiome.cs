@@ -1,5 +1,5 @@
 ﻿using ReLogic.Utilities;
-using StarlightRiver.Content.Bosses.BrainRedux;
+using StarlightRiver.Content.Bosses.TheThinkerBoss;
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Tiles.Crimson;
 using StarlightRiver.Core.Systems;

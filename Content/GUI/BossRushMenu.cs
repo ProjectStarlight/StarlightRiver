@@ -83,7 +83,7 @@ namespace StarlightRiver.Content.GUI
 		{
 			this.flag = flag;
 			this.name = name;
-			this.hint = Helpers.Helper.WrapString(hint, 300, Terraria.GameContent.FontAssets.ItemStack.Value, 0.8f);
+			this.hint = LocalizationHelper.WrapString(hint, 300, Terraria.GameContent.FontAssets.ItemStack.Value, 0.8f);
 			this.texture = texture;
 			this.radiusTarget = radiusTarget;
 			this.rotTarget = rotTarget;
@@ -163,7 +163,7 @@ namespace StarlightRiver.Content.GUI
 		{
 			this.active = active;
 			this.name = name;
-			this.hint = Helpers.Helper.WrapString(hint, 300, Terraria.GameContent.FontAssets.ItemStack.Value, 0.8f);
+			this.hint = LocalizationHelper.WrapString(hint, 300, Terraria.GameContent.FontAssets.ItemStack.Value, 0.8f);
 			this.texture = texture;
 			this.radiusTarget = radiusTarget;
 			this.rotTarget = rotTarget;

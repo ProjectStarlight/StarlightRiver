@@ -1,7 +1,7 @@
 using ReLogic.Graphics;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
-using StarlightRiver.Content.Bosses.BrainRedux;
+using StarlightRiver.Content.Bosses.TheThinkerBoss;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Events;
 using StarlightRiver.Content.GUI;

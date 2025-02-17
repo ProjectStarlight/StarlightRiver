@@ -1,5 +1,5 @@
 using StarlightRiver.Content.Backgrounds;
-using StarlightRiver.Content.Bosses.BrainRedux;
+using StarlightRiver.Content.Bosses.TheThinkerBoss;
 using StarlightRiver.Content.Bosses.GlassMiniboss;
 using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.Bosses.VitricBoss;

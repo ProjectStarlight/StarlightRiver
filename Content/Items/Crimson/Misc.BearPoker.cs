@@ -1,5 +1,5 @@
 ﻿using StarlightRiver.Content.Biomes;
-using StarlightRiver.Content.Bosses.BrainRedux;
+using StarlightRiver.Content.Bosses.TheThinkerBoss;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Content.Projectiles;
 using System;

@@ -1,4 +1,4 @@
-﻿using StarlightRiver.Content.Bosses.BrainRedux;
+﻿using StarlightRiver.Content.Bosses.TheThinkerBoss;
 
 namespace StarlightRiver.Content.Tiles.Crimson
 {

@@ -2,7 +2,7 @@
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Bosses.BrainRedux
+namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 {
 	internal class Neurysm : ModNPC
 	{

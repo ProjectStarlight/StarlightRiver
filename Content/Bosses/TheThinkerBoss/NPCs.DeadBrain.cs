@@ -14,7 +14,7 @@ using Terraria.GameContent.Bestiary;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Bosses.BrainRedux
+namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 {
 	[AutoloadBossHead]
 	internal partial class DeadBrain : ModNPC

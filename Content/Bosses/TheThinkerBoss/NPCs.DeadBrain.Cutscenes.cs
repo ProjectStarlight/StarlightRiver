@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Bosses.BrainRedux
+namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 {
 	internal partial class DeadBrain
 	{

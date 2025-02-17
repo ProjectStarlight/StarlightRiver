@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Bosses.BrainRedux
+namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 {
 	internal class VeinSpear : ModProjectile
 	{

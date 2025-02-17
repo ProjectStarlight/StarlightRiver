@@ -10,7 +10,7 @@ using System.Linq;
 using Terraria.Audio;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Bosses.BrainRedux
+namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 {
 	internal partial class DeadBrain
 	{
