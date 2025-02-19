@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Dusts;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems.CameraSystem;
@@ -9,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 {
@@ -42,11 +44,18 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 				ThisThinker.shellFrame = 1;
 
+				Gore.NewGorePerfect(NPC.GetSource_FromThis(), thinker.Center, Vector2.UnitX.RotatedBy(0.5f).RotatedByRandom(1f) * 8, StarlightRiver.Instance.Find<ModGore>("ThinkerShellGore1").Type);
+				Gore.NewGorePerfect(NPC.GetSource_FromThis(), thinker.Center, Vector2.UnitX.RotatedBy(0.5f).RotatedByRandom(1f) * 8, StarlightRiver.Instance.Find<ModGore>("ThinkerShellGore2").Type);
+
+				Gore.NewGorePerfect(NPC.GetSource_FromThis(), thinker.Center, Vector2.UnitX.RotatedBy(-2.5f).RotatedByRandom(0.6f) * 8, StarlightRiver.Instance.Find<ModGore>("ThinkerShellGore3").Type);
+				Gore.NewGorePerfect(NPC.GetSource_FromThis(), thinker.Center, Vector2.UnitX.RotatedBy(-2.5f).RotatedByRandom(0.6f) * 8, StarlightRiver.Instance.Find<ModGore>("ThinkerShellGore4").Type);
+
 				for (int k = 0; k < 30; k++)
 				{
-					Dust.NewDustPerfect(ThisThinker.NPC.Center, DustID.Stone, Vector2.UnitX.RotatedBy(0.5f).RotatedByRandom(1f) * Main.rand.NextFloat(10), 0, default, 4);
-					Dust.NewDustPerfect(ThisThinker.NPC.Center, DustID.Stone, Vector2.UnitX.RotatedBy(-2.5f).RotatedByRandom(0.6f) * Main.rand.NextFloat(10), 0, default, 3);
-					Dust.NewDustPerfect(ThisThinker.NPC.Center, ModContent.DustType<Dusts.GraymatterDust>(), Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), 0, default, Main.rand.NextFloat(0.5f, 1f));
+					Dust.NewDustPerfect(ThisThinker.NPC.Center, DustID.Stone, Vector2.UnitX.RotatedBy(0.5f).RotatedByRandom(1f) * Main.rand.NextFloat(10), 0, default, 1);
+					Dust.NewDustPerfect(ThisThinker.NPC.Center, DustID.Stone, Vector2.UnitX.RotatedBy(-2.5f).RotatedByRandom(0.6f) * Main.rand.NextFloat(10), 0, default, 0.8f);
+
+					Dust.NewDustPerfect(ThisThinker.NPC.Center, ModContent.DustType<Dusts.GraymatterDust>(), Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), 0, default, Main.rand.NextFloat(1.5f, 2f));
 				}
 
 				Helpers.SoundHelper.PlayPitched("Impacts/StoneStrike", 1, 2f, ThisThinker.NPC.Center);
@@ -257,9 +266,14 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			{
 				ThisThinker.shellFrame = 2;
 
+				for (int k = 5; k < 13; k++)
+				{
+					Gore.NewGorePerfect(NPC.GetSource_FromThis(), thinker.Center, Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(5, 7), StarlightRiver.Instance.Find<ModGore>("ThinkerShellGore" + k).Type);
+				}
+
 				for (int k = 0; k < 30; k++)
 				{
-					Dust.NewDustPerfect(ThisThinker.NPC.Center, DustID.Stone, Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), 0, default, 4);
+					Dust.NewDustPerfect(ThisThinker.NPC.Center, DustID.Stone, Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), 0, default, 2.2f);
 					Dust.NewDustPerfect(ThisThinker.NPC.Center, ModContent.DustType<Dusts.GraymatterDust>(), Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), 0, default, Main.rand.NextFloat(0.8f, 1f));
 				}
 
@@ -355,9 +369,14 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				CameraSystem.ReturnCamera(180);
 				ZoomHandler.SetZoomAnimation(1f, 180);
 
+				for (int k = 1; k < 13; k++)
+				{
+					Gore.NewGorePerfect(NPC.GetSource_FromThis(), thinker.Center, Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(5, 7), StarlightRiver.Instance.Find<ModGore>("ThinkerShellGore" + k).Type);
+				}
+
 				for (int k = 0; k < 50; k++)
 				{
-					Dust.NewDustPerfect(ThisThinker.NPC.Center, DustID.Stone, Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(14), 0, default, Main.rand.NextFloat(2, 4));
+					Dust.NewDustPerfect(ThisThinker.NPC.Center, DustID.Stone, Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(14), 0, default, Main.rand.NextFloat(2, 2.2f));
 				}
 
 				SoundHelper.PlayPitched("Effects/Splat", 0.7f, 0.5f, thinker.Center);

@@ -100,7 +100,7 @@ namespace StarlightRiver.Content.Tiles.Crimson
 		public override void FloorVisuals(Player player)
 		{
 			if (StarlightWorld.HasFlag(WorldFlags.ThinkerBossOpen))
-				player.AddBuff(ModContent.BuffType<CrimsonHallucination>(), 10);
+				player.AddBuff(ModContent.BuffType<CrimsonHallucination>(), 180);
 		}
 	}
 }

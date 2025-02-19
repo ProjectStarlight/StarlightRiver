@@ -142,6 +142,7 @@ namespace StarlightRiver.Core
 		public const string DesertItem = Assets + "Items/Desert/";
 
 		public const string EvilBiomesItem = Assets + "Items/EvilBiomes/";
+		public const string CrimsonNPCs = Assets + "NPCs/Crimson/";
 
 		public const string TheThinkerBoss = Assets + "Bosses/TheThinkerBoss/";
 

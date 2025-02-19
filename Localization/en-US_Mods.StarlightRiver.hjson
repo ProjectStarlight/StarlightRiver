@@ -4260,6 +4260,7 @@ Projectiles: {
 	ConstructSpawner.DisplayName: Construct Spawner
 	GauntletSpawner.DisplayName: Gauntlet Spawner
 	SpawnEgg.DisplayName: Spawn Egg
+	MirageBowHeld.DisplayName: Mirage Bow Held
 }
 
 Biomes: {
@@ -4408,6 +4409,7 @@ NPCs: {
 	}
 
 	DesertWisp2.DisplayName: Desert Wisp2
+	Depressor.DisplayName: Depressor
 }
 
 Buffs: {
