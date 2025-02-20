@@ -126,7 +126,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					NPC.active = false;
 			}
 
-			NPC.dontTakeDamage = opacity <= 0.5f;
+			NPC.immortal = true;
 
 			float speed = Vector2.Distance(NPC.position, NPC.oldPosition);
 

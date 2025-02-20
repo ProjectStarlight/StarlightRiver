@@ -391,6 +391,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					{
 						// Link the weakpoint to the appropriate thinker
 						wp.thinker = thinker;
+						weakpoint.dontTakeDamage = true;
 					}
 
 					// populate the attack queue
@@ -428,6 +429,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 					attachedChainEndpoint = NPC.Center + Vector2.UnitY * 90;
 					weakpoint.Center = attachedChain.ropeSegments[attachedChain.ropeSegments.Count / 3].posNow;
+					weakpoint.dontTakeDamage = false;
 
 					if (thinker.life <= thinker.lifeMax / 2f)
 						thinker.life = (int)(thinker.lifeMax / 2f);
