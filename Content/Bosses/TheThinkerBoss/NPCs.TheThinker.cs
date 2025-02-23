@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Biomes;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.GUI;
@@ -30,8 +31,6 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		/// List of entities to render by the rendering hook, since it needs to feed into the graymatter screen map
 		/// </summary>
 		public static readonly List<TheThinker> toRender = [];
-		public static Effect bodyShader;
-		public static Effect petalShader;
 
 		public int bloomProgress;
 		public float flowerRotationOnDeath;
@@ -84,6 +83,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 			GraymatterBiome.onDrawHallucinationMap += DrawGrayAura;
 			GraymatterBiome.onDrawOverHallucinationMap += DrawShadedBody;
+			On_Main.DrawPlayers_BehindNPCs += DrawBackgrounds;
 		}
 
 		public override void SetDefaults()
@@ -200,7 +200,16 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			{
 				for (int k = 0; k < 200; k++)
 				{
-					Lighting.AddLight(home + Vector2.UnitX.RotatedBy(k / 200f * 6.28f) * ArenaRadius, new Vector3(0.4f, 0.1f, 0.12f) * ArenaOpacity);
+					Lighting.AddLight(home + Vector2.UnitX.RotatedBy(k / 200f * 6.28f) * (ArenaRadius - 10), new Vector3(0.6f, 0.2f, 0.24f) * ArenaOpacity);
+				}
+
+				if (ArenaOpacity < 1f)
+				{
+					float rad = 100 + 800 * ArenaOpacity;
+					for (int k = 0; k < 200; k++)
+					{
+						Lighting.AddLight(home + Vector2.UnitX.RotatedBy(k / 200f * 6.28f) * rad, new Vector3(0.6f, 0.3f * (1 - ArenaOpacity * 2f), 0f) * MathF.Sin(ArenaOpacity * 3.14f));
+					}
 				}
 			}
 
@@ -568,9 +577,9 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		{
 			List<Point16> tilesChanged = [];
 
-			for (int x = -54; x <= 54; x++)
+			for (int x = -51; x <= 51; x++)
 			{
-				for (int y = -54; y <= 54; y++)
+				for (int y = -51; y <= 51; y++)
 				{
 					var off = new Vector2(x, y);
 					float dist = off.LengthSquared();
@@ -588,7 +597,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 						}
 					}
 
-					if (dist > Math.Pow(50, 2) && dist <= Math.Pow(54, 2))
+					if (dist > Math.Pow(50, 2) && dist <= Math.Pow(51, 2))
 					{
 						Tile tile = Main.tile[(int)home.X / 16 + x, (int)home.Y / 16 + y];
 

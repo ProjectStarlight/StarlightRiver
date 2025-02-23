@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Dusts;
+using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Core.Systems.LightingSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -12,6 +13,10 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 {
 	internal partial class TheThinker
 	{
+		public static Effect bodyShader;
+		public static Effect petalShader;
+		public static Effect backgroundShader;
+
 		private List<Vector2> arenaCache;
 		private Trail arenaTrail;
 
@@ -48,6 +53,46 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			Main.instance.DrawCacheNPCProjectiles.Add(index);
 		}
 
+		private void DrawBackgrounds(On_Main.orig_DrawPlayers_BehindNPCs orig, Main self)
+		{
+			orig(self);
+
+			foreach (TheThinker thinker in toRender)
+			{
+				thinker.DrawBackground(Main.spriteBatch);
+			}
+		}
+
+		public void DrawBackground(SpriteBatch spriteBatch)
+		{
+			Texture2D tex = Assets.Bosses.TheThinkerBoss.ThinkerBackground.Value;
+			backgroundShader ??= Filters.Scene["ThinkerBackground"].GetShader().Shader;
+
+			backgroundShader.Parameters["u_screenSize"].SetValue(Main.ScreenSize.ToVector2());
+			backgroundShader.Parameters["u_resolution"].SetValue(Assets.Bosses.TheThinkerBoss.ThinkerBackground.Size());
+			backgroundShader.Parameters["u_time"].SetValue(ArenaOpacity);
+			backgroundShader.Parameters["u_color"].SetValue(new Vector3(0.7f, 0.7f, 0.7f));
+			backgroundShader.Parameters["u_sampleTopLeft"].SetValue(home - tex.Size() / 2f - Main.screenPosition);
+
+			backgroundShader.Parameters["mainbody_t"].SetValue(Assets.Bosses.TheThinkerBoss.ThinkerBackground.Value);
+			backgroundShader.Parameters["noise_t"].SetValue(Assets.Noise.ShaderNoiseLooping.Value);
+			backgroundShader.Parameters["light_t"].SetValue(LightingBuffer.screenLightingTarget.RenderTarget);
+
+			LightingBuffer.bufferNeedsPopulated = true;
+
+			spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+
+			var fade = Assets.Keys.GlowLarge.Value;
+			spriteBatch.Draw(fade, home - Main.screenPosition, null, Color.Black * 0.3f, 0, fade.Size() / 2f, 2000f / fade.Width, 0, 0);
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default, backgroundShader, Main.GameViewMatrix.TransformationMatrix);
+
+			spriteBatch.Draw(tex, home - Main.screenPosition, null, Color.White, 0, tex.Size() / 2f, 1, 0, 0);
+
+			spriteBatch.End();
+		}
+
 		public void DrawUnderShell()
 		{
 			Texture2D tex = Assets.Bosses.TheThinkerBoss.ShellBack.Value;
@@ -81,7 +126,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				offset += (float)Math.Cos(k / 36f * 6.28f * 6 + Main.GameUpdateCount * 0.04f) * 15;
 
 				float rot = k / 36f * 6.28f;
-				Vector2 edge = home + Vector2.UnitX.RotatedBy(rot) * (ArenaRadius + 70 + offset);
+				Vector2 edge = home + Vector2.UnitX.RotatedBy(rot) * (ArenaRadius + 50 + offset);
 				spriteBatch.Draw(spike, edge - Main.screenPosition, new Rectangle(spike.Width / 2, 0, spike.Width / 2, spike.Height), new Color(255, 50, 60, 0) * 0.25f * ArenaOpacity, rot - 1.57f, new Vector2(spike.Width / 4f, spike.Height), 1.5f, 0, 0);
 				spriteBatch.Draw(solid, edge - Main.screenPosition, new Rectangle(0, 0, 58, 60), new Color(Lighting.GetSubLight(edge)) * ArenaOpacity, rot - 1.57f / 2f, new Vector2(58, 60), 1f, 0, 0);
 
@@ -89,7 +134,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				offset += (float)Math.Cos((k + 0.5) / 36f * 6.28f * 6 + Main.GameUpdateCount * 0.04f) * 15;
 				rot = (k + 0.5f) / 36f * 6.28f;
 				float sin = (float)Math.Sin(Main.GameUpdateCount * 0.01f + k);
-				edge = home + Vector2.UnitX.RotatedBy(rot) * (ArenaRadius + 80 + sin * 10 + offset);
+				edge = home + Vector2.UnitX.RotatedBy(rot) * (ArenaRadius + 60 + sin * 8 + offset);
 				spriteBatch.Draw(spike, edge - Main.screenPosition, new Rectangle(spike.Width / 2, 0, spike.Width / 2, spike.Height), new Color(255, 50, 60, 0) * 0.25f * (1f - sin + 0.5f) * ArenaOpacity, rot - 1.57f, new Vector2(spike.Width / 4f, spike.Height), 1.5f, 0, 0);
 				spriteBatch.Draw(solid, edge - Main.screenPosition, new Rectangle(58, 0, 58, 60), new Color(Lighting.GetSubLight(edge)) * ArenaOpacity, rot - 1.57f / 2f, new Vector2(58, 60), 1f, 0, 0);
 			}
@@ -109,10 +154,10 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			for (int k = 0; k < 72; k++)
 			{
 				float rot = k / 72f * 6.28f;
-				float offset = (float)Math.Sin(k / 72f * 6.28f * 8 + Main.GameUpdateCount * 0.025f) * 15;
-				offset += (float)Math.Cos(k / 72f * 6.28f * 6 + Main.GameUpdateCount * 0.04f) * 15;
+				float offset = (float)Math.Sin(k / 72f * 6.28f * 8 + Main.GameUpdateCount * 0.025f) * 12;
+				offset += (float)Math.Cos(k / 72f * 6.28f * 6 + Main.GameUpdateCount * 0.04f) * 12;
 
-				arenaCache[k] = home + Vector2.UnitX.RotatedBy(rot) * (ArenaRadius + 70 + offset);
+				arenaCache[k] = home + Vector2.UnitX.RotatedBy(rot) * (ArenaRadius + 50 + offset);
 			}
 
 			arenaCache[72] = arenaCache[0];

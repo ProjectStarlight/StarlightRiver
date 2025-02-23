@@ -107,11 +107,13 @@ namespace StarlightRiver.Content.Items
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			player.GetHandler().StaminaMaxBonus = 1000;
+			//player.GetHandler().StaminaMaxBonus = 1000;
 
-			int x = StarlightWorld.vitricBiome.X - 37;
+			//int x = StarlightWorld.vitricBiome.X - 37;
 
-			Dust.NewDustPerfect(new Vector2((x + 80) * 16, (StarlightWorld.vitricBiome.Center.Y + 20) * 16), DustID.Firefly);
+			//Dust.NewDustPerfect(new Vector2((x + 80) * 16, (StarlightWorld.vitricBiome.Center.Y + 20) * 16), DustID.Firefly);
+
+			Lighting.AddLight(Main.MouseWorld, new Vector3(0, 1, 0));
 
 		}
 

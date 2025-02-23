@@ -43,6 +43,12 @@
 
 	</ItemGroup>
 	<ItemGroup>
+	  <AdditionalFiles Remove="effects\source\ThinkerBackground.fx" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ShaderFile Remove="effects\source\ThinkerBackground.fx" />
+	</ItemGroup>
+	<ItemGroup>
 		<Folder Include="Assets\Healthbars\" />
 		<Folder Include="Content\NPCs\Vitric\GlassTrial\" />
 		<Folder Include="Localization\Hints\" />

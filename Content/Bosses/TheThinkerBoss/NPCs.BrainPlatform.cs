@@ -30,13 +30,11 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 		public override void SafeAI()
 		{
-			Vector3 lightColor = new Vector3(0.4f, 0.1f, 0.12f) * (ThisThinker?.ArenaOpacity ?? 1);
-
-			lightColor += new Vector3(0.8f, 0.4f, 0.4f) * glow * 0.1f;
+			Vector3 lightColor = new Vector3(0.4f, 0.2f, 0.24f) * (ThisThinker?.ArenaOpacity ?? 1);
 
 			Lighting.AddLight(NPC.Center, lightColor);
-			Lighting.AddLight(NPC.Center + Vector2.UnitX * 80, lightColor);
-			Lighting.AddLight(NPC.Center - Vector2.UnitX * 80, lightColor);
+			Lighting.AddLight(NPC.Center + Vector2.UnitX * 80, lightColor * 0.5f);
+			Lighting.AddLight(NPC.Center - Vector2.UnitX * 80, lightColor * 0.5f);
 		}
 
 		public override void DrawBehind(int index)
