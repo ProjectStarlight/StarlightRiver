@@ -327,6 +327,9 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				}
 			}
 
+			if (Timer > 120 && Timer < 240)
+				ThisThinker.arenaFade = 120 - (Timer - 120);
+
 			if (Timer == 1 || Timer == 90 || Timer == 120 || Timer == 150 || Timer == 180 || Timer == 210)
 			{
 				SoundHelper.PlayPitched("MagicAttack", 1, 1f - Timer / 300f, thinker.Center);

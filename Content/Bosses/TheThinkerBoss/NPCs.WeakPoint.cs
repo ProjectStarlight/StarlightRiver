@@ -26,6 +26,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			NPC.aiStyle = -1;
 			NPC.knockBackResist = 0f;
 			NPC.defense = 3;
+			NPC.hide = true;
 
 			NPC.HitSound = SoundID.NPCDeath12.WithPitchOffset(-0.25f);
 		}
@@ -80,6 +81,11 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			}
 
 			Lighting.AddLight(NPC.Center, color.ToVector3() * 0.5f);
+		}
+
+		public override void DrawBehind(int index)
+		{
+			Main.instance.DrawCacheNPCProjectiles.Add(index);
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)

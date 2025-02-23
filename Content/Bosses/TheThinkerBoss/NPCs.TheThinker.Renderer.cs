@@ -83,7 +83,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
 			var fade = Assets.Keys.GlowLarge.Value;
-			spriteBatch.Draw(fade, home - Main.screenPosition, null, Color.Black * 0.3f, 0, fade.Size() / 2f, 2000f / fade.Width, 0, 0);
+			spriteBatch.Draw(fade, home - Main.screenPosition, null, Color.Black * 0.3f * ArenaOpacity, 0, fade.Size() / 2f, 2000f / fade.Width, 0, 0);
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default, backgroundShader, Main.GameViewMatrix.TransformationMatrix);

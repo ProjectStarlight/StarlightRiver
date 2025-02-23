@@ -175,7 +175,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			if (attachedChain != null)
 			{
 				attachedChain.startPoint = attachedChainEndpoint;
-				attachedChain.endPoint = thinker.Center;
+				attachedChain.endPoint = thinker.Center + new Vector2(0, 40);
 				attachedChain.useEndPoint = true;
 				attachedChain.drag = 1.1f;
 				attachedChain.forceGravity = Vector2.UnitY * 1f;
@@ -262,6 +262,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			NPC.CloneDefaults(NPCID.BrainofCthulhu);
 			NPC.boss = false;
 			NPC.aiStyle = -1;
+			NPC.hide = true;
 
 			InitChains();
 		}
@@ -363,7 +364,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					for (int k = 0; k < 10; k++)
 					{
 						// Spawn minion
-						int i = NPC.NewNPC(null, (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<Neurysm>(), 0, 1, 60);
+						int i = NPC.NewNPC(null, (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<Neurysm>(), NPC.whoAmI, 1, 60);
 						neurisms.Add(Main.npc[i]);
 
 						// Link minion
@@ -384,7 +385,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					}
 
 					// Spawn the weakpoint NPC
-					int weakpointIndex = NPC.NewNPC(null, (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<WeakPoint>(), 0);
+					int weakpointIndex = NPC.NewNPC(null, (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<WeakPoint>(), NPC.whoAmI);
 					weakpoint = Main.npc[weakpointIndex];
 
 					if (weakpoint.ModNPC is WeakPoint wp)
@@ -633,6 +634,11 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				NPC.frame = new Rectangle(0, 182 * 4 + 182 * (int)(Timer / 10f % 4), 200, 182);
 			else
 				NPC.frame = new Rectangle(0, 182 * (int)(Timer / 6f % 4), 200, 182);
+		}
+
+		public override void DrawBehind(int index)
+		{
+			Main.instance.DrawCacheNPCProjectiles.Add(index);
 		}
 
 		public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
@@ -983,15 +989,6 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			{
 				attackQueue.Add(binaryReader.ReadInt32());
 			}
-		}
-
-		/// <summary>
-		/// Spawns the reworked brain at the desired location
-		/// </summary>
-		/// <param name="position">Where to spawn the reworked brain</param>
-		public static void SpawnReduxedBrain(Vector2 position)
-		{
-			int i = NPC.NewNPC(null, (int)position.X, (int)position.Y, ModContent.NPCType<DeadBrain>());
 		}
 	}
 }

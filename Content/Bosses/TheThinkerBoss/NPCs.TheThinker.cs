@@ -515,7 +515,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		{
 			if (Open && !active && projectile.Hitbox.Intersects(NPC.Hitbox) && projectile.ModProjectile is BearPokerProjectile)
 			{
-				DeadBrain.SpawnReduxedBrain(NPC.Center + new Vector2(0, 200));
+				NPC.NewNPC(null, (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<DeadBrain>(), NPC.whoAmI);
 				return true;
 			}
 
