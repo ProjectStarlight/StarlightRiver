@@ -54,6 +54,8 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		private int platformRadiusTimer;
 		private int platformRotationTimer;
 
+		private int intendedBarrier;
+
 		public List<NPC> platforms = [];
 
 		public ref float ExtraGrayAuraRadius => ref NPC.ai[0];
@@ -98,8 +100,9 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			NPC.friendly = false;
 			NPC.noTileCollide = true;
 			NPC.hide = true;
-
 			NPC.boss = true;
+
+			intendedBarrier = Main.masterMode ? 750 : Main.expertMode ? 600 : 500;
 
 			toRender.Add(this);
 		}
@@ -111,6 +114,9 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 			if (Main.masterMode)
 				NPC.lifeMax = 9500;
+
+			NPC.lifeMax = StarlightMathHelper.GetScaledBossLife(NPC.lifeMax, balance, numPlayers);
+			intendedBarrier = StarlightMathHelper.GetScaledBossLife(intendedBarrier, balance, numPlayers);
 		}
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
@@ -344,13 +350,12 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					platformRadiusTarget = 1000;
 					platformRadiusTransitionTime = 240;
 
-					NPC.GetGlobalNPC<BarrierNPC>().maxBarrier = Main.masterMode ? 750 : Main.expertMode ? 600 : 500;
+					NPC.GetGlobalNPC<BarrierNPC>().maxBarrier = intendedBarrier;
 				}
 
 				if (Timer < 60)
 				{
-					int maxBarrier = Main.masterMode ? 750 : Main.expertMode ? 600 : 500;
-					NPC.GetGlobalNPC<BarrierNPC>().barrier = (int)(Timer / 60f * maxBarrier);
+					NPC.GetGlobalNPC<BarrierNPC>().barrier = (int)(Timer / 60f * intendedBarrier);
 				}
 
 				if (Timer == 60)

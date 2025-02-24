@@ -270,6 +270,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 		{
 			int life = Main.masterMode ? 3600 : Main.expertMode ? 2250 : 1500;
+			life = StarlightMathHelper.GetScaledBossLife(life, balance, numPlayers);
 
 			NPC.lifeMax = life;
 			NPC.life = life;
