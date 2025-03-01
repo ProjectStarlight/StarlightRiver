@@ -1,7 +1,10 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+<Target Name="CollectShaderFiles" BeforeTargets="BuildShaders">
   <ItemGroup>
     <ShaderFile Include="**\*.fx" />
   </ItemGroup>
+</Target>
 
   <PropertyGroup>
     <!--TODO: Pass path to EasyXnb as CLI argument.-->

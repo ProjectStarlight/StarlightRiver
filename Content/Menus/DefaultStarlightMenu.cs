@@ -12,6 +12,9 @@ namespace StarlightRiver.Content.Menus
 
 		public static float starOpacity = 1;
 
+		public float activationTimer;
+		public Vector2 targetPos;
+
 		public override string DisplayName => "Starlight";
 		public override int Music => MusicLoader.GetMusicSlot(Mod, "Sounds/Music/StarBird");
 
@@ -113,57 +116,113 @@ namespace StarlightRiver.Content.Menus
 		{
 			logoScale = 1.0f;
 			Main.dayTime = false;
+			Main.time = 10000;
 
 			timer++;
 
-			// star particles
-			var starColor = new Color(150, Main.rand.Next(150, 255), 255)
-			{
-				A = 0
-			};
+			if (Main.menuMode == 0 && activationTimer < 1)
+				activationTimer += 0.05f;
 
-			if (Main.rand.NextBool(2))
+			if (Main.menuMode != 0 && activationTimer > 0)
+				activationTimer -= 0.05f;
+
+			targetPos += (targetPos - Main.MouseScreen) * -0.05f;
+
+			if (Main.mouseX < Main.screenWidth / 2)
 			{
-				var pos = new Vector2(Main.rand.Next(0, (int)(Main.screenWidth * 2.5f)), Main.rand.Next(-Main.screenHeight / 2, (int)(Main.screenHeight * 1.5f)));
-				stars.AddParticle(new Particle(pos, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.25f), 0, Main.rand.NextFloat(0.35f), starColor * 0.8f, 1600, pos + Main.screenPosition, new Rectangle(0, 120, 120, 120), 1, 2));
+				StarlightRiverBackground.forceActive = true;
+
+				var tex = StarlightRiverBackground.starsTarget.RenderTarget;
+				spriteBatch.Draw(tex, Main.ScreenSize.ToVector2() / 2f, null, Color.White, 0, tex.Size() / 2f, Main.UIScale, 0, 0);
+
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+
+				Vector2 pos2 = Main.ScreenSize.ToVector2() / 2f;
+				Vector2 mouseOff = activationTimer * (targetPos - Main.ScreenSize.ToVector2() / 2f);
+
+				Color back = new Color(40, 50, 65);
+				Color front = new Color(80, 85, 90);
+
+				Color color1 = Color.Lerp(back, front, 0.3f * activationTimer);
+				Color color2 = Color.Lerp(back, front, 0.65f * activationTimer);
+				Color color3 = Color.Lerp(back, front, 1f * activationTimer);
+
+				Texture2D smallRing = Assets.NPCs.BossRush.ArmillaryRing1.Value;
+				Texture2D mediumRing = Assets.NPCs.BossRush.ArmillaryRing2.Value;
+				Texture2D largeRing = Assets.NPCs.BossRush.ArmillaryRing3.Value;
+
+				Texture2D smallRingRunes = Assets.NPCs.BossRush.ArmillaryRingRunes1.Value;
+				Texture2D mediumRingRunes = Assets.NPCs.BossRush.ArmillaryRingRunes2.Value;
+				Texture2D largeRingRunes = Assets.NPCs.BossRush.ArmillaryRingRunes3.Value;
+
+				spriteBatch.Draw(smallRing, pos2 + mouseOff * 0.1f, null, color1, -timer * 0.005f, smallRing.Size() * 0.5f, 2, SpriteEffects.None, 0);
+				spriteBatch.Draw(smallRingRunes, pos2 + mouseOff * 0.1f, null, new Color(0.1f, 1f, 1f) * (0.5f + (float)Math.Sin(timer * 0.05f) * 0.4f), -timer * 0.005f, smallRingRunes.Size() * 0.5f, 2, SpriteEffects.None, 0);
+
+				spriteBatch.Draw(mediumRing, pos2 + mouseOff * 0.2f, null, color2, timer * 0.005f, mediumRing.Size() * 0.5f, 2, SpriteEffects.None, 0);
+				spriteBatch.Draw(mediumRingRunes, pos2 + mouseOff * 0.2f, null, new Color(0.1f, 0.8f, 1f) * (0.5f + (float)Math.Sin((timer + 15) * 0.05f) * 0.4f), timer * 0.005f, mediumRingRunes.Size() * 0.5f, 2, SpriteEffects.None, 0);
+
+				spriteBatch.Draw(largeRing, pos2 + mouseOff * 0.3f, null, color3, -timer * 0.005f, largeRing.Size() * 0.5f, 2, SpriteEffects.None, 0);
+				spriteBatch.Draw(largeRingRunes, pos2 + mouseOff * 0.3f, null, new Color(0.1f, 0.6f, 1f) * (0.5f + (float)Math.Sin((timer + 30) * 0.05f) * 0.4f), -timer * 0.005f, largeRingRunes.Size() * 0.5f, 2, SpriteEffects.None, 0);
+
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, SamplerState.LinearClamp, default, default, default, Main.UIScaleMatrix);
+
+				Utils.DrawBorderStringBig(spriteBatch, "NEW", Vector2.One * 32, Color.LimeGreen);
 			}
+			else
+			{
+				// star particles
+				var starColor = new Color(150, Main.rand.Next(150, 255), 255)
+				{
+					A = 0
+				};
 
-			float prog = Main.rand.NextFloat();
-			starColor.G = (byte)(150 + prog * 105);
+				if (Main.rand.NextBool(2))
+				{
+					var pos = new Vector2(Main.rand.Next(0, (int)(Main.screenWidth * 2.5f)), Main.rand.Next(-Main.screenHeight / 2, (int)(Main.screenHeight * 1.5f)));
+					stars.AddParticle(new Particle(pos, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.25f), 0, Main.rand.NextFloat(0.35f), starColor * 0.8f, 1600, pos + Main.screenPosition, new Rectangle(0, 120, 120, 120), 1, 2));
+				}
 
-			bool star = Main.rand.NextBool(18);
-			stars.AddParticle(new Particle(new Vector2(0, Main.screenHeight * 0.2f + prog * 0f), new Vector2(3f + prog * 4f, 1), 0, star ? Main.rand.NextFloat(0.2f, 0.3f) : Main.rand.NextFloat(0.05f, 0.1f), starColor * (star ? 1.2f : 1f), 600, Vector2.One * (prog * 110f), new Rectangle(0, star ? 120 : 0, 120, 120), 1));
+				float prog = Main.rand.NextFloat();
+				starColor.G = (byte)(150 + prog * 105);
 
-			DrawStars(spriteBatch);
+				bool star = Main.rand.NextBool(18);
+				stars.AddParticle(new Particle(new Vector2(0, Main.screenHeight * 0.2f + prog * 0f), new Vector2(3f + prog * 4f, 1), 0, star ? Main.rand.NextFloat(0.2f, 0.3f) : Main.rand.NextFloat(0.05f, 0.1f), starColor * (star ? 1.2f : 1f), 600, Vector2.One * (prog * 110f), new Rectangle(0, star ? 120 : 0, 120, 120), 1));
 
-			// Rings
-			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+				DrawStars(spriteBatch);
 
-			Vector2 pos2 = Main.ScreenSize.ToVector2() / 2f;
-			Color color = new Color(40, 50, 65);
+				// Rings
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
 
-			Texture2D smallRing = Assets.NPCs.BossRush.ArmillaryRing1.Value;
-			Texture2D mediumRing = Assets.NPCs.BossRush.ArmillaryRing2.Value;
-			Texture2D largeRing = Assets.NPCs.BossRush.ArmillaryRing3.Value;
+				Vector2 pos2 = Main.ScreenSize.ToVector2() / 2f;
+				Color color = new Color(40, 50, 65);
 
-			spriteBatch.Draw(smallRing, pos2, null, color, -timer * 0.005f, smallRing.Size() * 0.5f, 2, SpriteEffects.None, 0);
-			spriteBatch.Draw(mediumRing, pos2, null, color, timer * 0.005f, mediumRing.Size() * 0.5f, 2, SpriteEffects.None, 0);
-			spriteBatch.Draw(largeRing, pos2, null, color, -timer * 0.005f, largeRing.Size() * 0.5f, 2, SpriteEffects.None, 0);
+				Texture2D smallRing = Assets.NPCs.BossRush.ArmillaryRing1.Value;
+				Texture2D mediumRing = Assets.NPCs.BossRush.ArmillaryRing2.Value;
+				Texture2D largeRing = Assets.NPCs.BossRush.ArmillaryRing3.Value;
 
-			Texture2D smallRingRunes = Assets.NPCs.BossRush.ArmillaryRingRunes1.Value;
-			Texture2D mediumRingRunes = Assets.NPCs.BossRush.ArmillaryRingRunes2.Value;
-			Texture2D largeRingRunes = Assets.NPCs.BossRush.ArmillaryRingRunes3.Value;
+				spriteBatch.Draw(smallRing, pos2, null, color, -timer * 0.005f, smallRing.Size() * 0.5f, 2, SpriteEffects.None, 0);
+				spriteBatch.Draw(mediumRing, pos2, null, color, timer * 0.005f, mediumRing.Size() * 0.5f, 2, SpriteEffects.None, 0);
+				spriteBatch.Draw(largeRing, pos2, null, color, -timer * 0.005f, largeRing.Size() * 0.5f, 2, SpriteEffects.None, 0);
 
-			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+				Texture2D smallRingRunes = Assets.NPCs.BossRush.ArmillaryRingRunes1.Value;
+				Texture2D mediumRingRunes = Assets.NPCs.BossRush.ArmillaryRingRunes2.Value;
+				Texture2D largeRingRunes = Assets.NPCs.BossRush.ArmillaryRingRunes3.Value;
 
-			spriteBatch.Draw(smallRingRunes, pos2, null, Color.Cyan * (0.5f + (float)Math.Sin(timer * 0.05f) * 0.2f), -timer * 0.005f, smallRingRunes.Size() * 0.5f, 2, SpriteEffects.None, 0);
-			spriteBatch.Draw(mediumRingRunes, pos2, null, Color.Cyan * (0.5f + (float)Math.Sin((timer + 15) * 0.05f) * 0.2f), timer * 0.005f, mediumRingRunes.Size() * 0.5f, 2, SpriteEffects.None, 0);
-			spriteBatch.Draw(largeRingRunes, pos2, null, Color.Cyan * (0.5f + (float)Math.Sin((timer + 30) * 0.05f) * 0.2f), -timer * 0.005f, largeRingRunes.Size() * 0.5f, 2, SpriteEffects.None, 0);
+				spriteBatch.End();
+				spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
 
-			spriteBatch.End();
-			spriteBatch.Begin(default, default, SamplerState.LinearClamp, default, default, default, Main.UIScaleMatrix);
+				spriteBatch.Draw(smallRingRunes, pos2, null, Color.Cyan * (0.5f + (float)Math.Sin(timer * 0.05f) * 0.2f), -timer * 0.005f, smallRingRunes.Size() * 0.5f, 2, SpriteEffects.None, 0);
+				spriteBatch.Draw(mediumRingRunes, pos2, null, Color.Cyan * (0.5f + (float)Math.Sin((timer + 15) * 0.05f) * 0.2f), timer * 0.005f, mediumRingRunes.Size() * 0.5f, 2, SpriteEffects.None, 0);
+				spriteBatch.Draw(largeRingRunes, pos2, null, Color.Cyan * (0.5f + (float)Math.Sin((timer + 30) * 0.05f) * 0.2f), -timer * 0.005f, largeRingRunes.Size() * 0.5f, 2, SpriteEffects.None, 0);
+
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, SamplerState.LinearClamp, default, default, default, Main.UIScaleMatrix);
+
+				Utils.DrawBorderStringBig(spriteBatch, "OLD", Vector2.One * 32, Color.Red);
+			}
 
 			return false;
 		}

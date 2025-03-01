@@ -3711,6 +3711,11 @@ Items: {
 			The explosion inflicts {{BUFF:Psychosis}}
 			'''
 	}
+
+	StarlightPylonItem: {
+		DisplayName: Starlight Pylon
+		Tooltip: You shouldn't have this!
+	}
 }
 
 Tiles: {
@@ -3912,6 +3917,7 @@ Tiles: {
 	VitricLargeCrystal.MapEntry: Vitric Large Crystal
 	VitricMediumCrystal.MapEntry: Vitric Medium Crystal
 	VitricSmallCrystal.MapEntry: Vitric Small Crystal
+	StarlightPylon.MapEntry: Starlight Pylon
 }
 
 Projectiles: {

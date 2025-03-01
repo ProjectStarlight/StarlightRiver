@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Backgrounds;
+using StarlightRiver.Content.Menus;
 using StarlightRiver.Content.PersistentData;
 using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems.BossRushSystem;
@@ -322,13 +323,17 @@ namespace StarlightRiver.Content.GUI
 			mapEffect.Parameters["map"].SetValue(StarlightRiverBackground.starsMap.RenderTarget);
 			mapEffect.Parameters["background"].SetValue(StarlightRiverBackground.starsTarget.RenderTarget);
 
-			spriteBatch.End();
-			spriteBatch.Begin(default, default, SamplerState.LinearWrap, default, RasterizerState.CullNone, mapEffect, Main.UIScaleMatrix);
+			// We wont draw the river again if its on the menu that already draws it
+			if (!ModContent.GetInstance<DefaultStarlightMenu>().IsSelected)
+			{
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, SamplerState.LinearWrap, default, RasterizerState.CullNone, mapEffect, Main.UIScaleMatrix);
 
-			spriteBatch.Draw(StarlightRiverBackground.starsMap.RenderTarget, Vector2.Zero, null, new Color(1f, 1f, 1f, 1));
+				spriteBatch.Draw(StarlightRiverBackground.starsMap.RenderTarget, Vector2.Zero, null, new Color(1f, 1f, 1f, 1));
 
-			spriteBatch.End();
-			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default, default, Main.UIScaleMatrix);
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default, default, Main.UIScaleMatrix);
+			}
 
 			Texture2D ring3 = Assets.NPCs.BossRush.ArmillaryRing3.Value;
 			Texture2D ring2 = Assets.NPCs.BossRush.ArmillaryRing2.Value;

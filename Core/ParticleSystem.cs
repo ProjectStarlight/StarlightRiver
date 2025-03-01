@@ -1,7 +1,9 @@
-﻿using ReLogic.Threading;
+﻿using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Threading;
 using StarlightRiver.Content.Configs;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
+using Terraria.Graphics.Effects;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Core
@@ -136,6 +138,47 @@ namespace StarlightRiver.Core
 				effect.World = Matrix.CreateTranslation(-offset.ToVector3());
 				effect.View = anchorType == AnchorOptions.UI ? Matrix.Identity : zoom;
 				effect.Projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+				foreach (EffectPass pass in effect.CurrentTechnique.Passes)
+				{
+					pass.Apply();
+					Main.instance.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, vertexBuffer.VertexCount, 0, indexBuffer.IndexCount / 3);
+				}
+
+				Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, default, zoom);
+
+				particles.RemoveAll(n => n is null || n.Timer <= 0);
+			}
+		}
+
+		public void DrawParticlesWithEffect(SpriteBatch spriteBatch, Effect effect)
+		{
+			if (Main.dedServ)
+				return;
+
+			if (GetInstance<GraphicsConfig>().ParticlesActive && particles.Count > 0 && effect != null)
+			{
+				spriteBatch.End();
+
+				PopulateBuffers();
+
+				Main.instance.GraphicsDevice.SetVertexBuffer(vertexBuffer);
+				Main.instance.GraphicsDevice.Indices = indexBuffer;
+				//Main.instance.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+				Matrix zoom = anchorType switch
+				{
+					AnchorOptions.World => Main.GameViewMatrix.TransformationMatrix,
+					AnchorOptions.Screen => Matrix.Identity,
+					AnchorOptions.UI => Main.UIScaleMatrix,
+					_ => default
+				};
+
+				Vector2 offset = anchorType == AnchorOptions.World ? Main.screenPosition : Vector2.Zero;
+
+				effect.Parameters["World"].SetValue(Matrix.CreateTranslation(-offset.ToVector3()));
+				effect.Parameters["View"].SetValue(anchorType == AnchorOptions.UI ? Matrix.Identity : zoom);
+				effect.Parameters["Projection"].SetValue(Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1));
+				effect.Parameters["texture0"].SetValue(texture);
 
 				foreach (EffectPass pass in effect.CurrentTechnique.Passes)
 				{

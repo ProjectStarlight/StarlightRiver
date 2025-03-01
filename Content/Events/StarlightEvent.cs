@@ -186,7 +186,7 @@ namespace StarlightRiver.Content.Events
 		{
 			base.Load();
 			StarlightNPC.OnKillEvent += TriggerEventActivation;
-			On_Main.DrawStarsInBackground += DrawRiver;
+			On_Main.DrawBackgroundBlackFill += DrawRiver;
 			StarlightRiverBackground.CheckIsActiveEvent += () => IsSceneEffectActive(Main.LocalPlayer);
 			StarlightRiverBackground.DrawMapEvent += DrawOverlayMap;
 			StarlightRiverBackground.DrawOverlayEvent += DrawOverlay;
@@ -196,39 +196,28 @@ namespace StarlightRiver.Content.Events
 		{
 			if (IsSceneEffectActive(Main.LocalPlayer))
 			{
-				Texture2D tex = Assets.Noise.SwirlyNoiseLooping.Value;
+				Texture2D tex = Assets.Noise.PerlinNoise.Value;
 
 				sb.End();
 				sb.Begin(default, default, SamplerState.PointWrap, default, default);
 
-				sb.Draw(tex, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), new Rectangle((int)Main.GameUpdateCount / 3, 0, tex.Width, tex.Height), Color.White * (StarlightEventSequenceSystem.fadeTimer / 300f) * 0.5f);
+				sb.Draw(tex, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), new Rectangle((int)Main.GameUpdateCount / 3, 0, tex.Width, tex.Height), Color.White * (StarlightEventSequenceSystem.fadeTimer / 300f) * 0.2f);
 
-				NPC crow = Main.npc.FirstOrDefault(n => n.active && n.type == ModContent.NPCType<Crow>());
+				Texture2D glowTex = Assets.Keys.Glow.Value;
 
-				if (crow != null && crow.ModNPC != null)
-				{
-					var mn = crow.ModNPC as Crow;
+				float opacity = 1f;
+				Color color = Color.Black * opacity;
 
-					if (mn != null)
-					{
-						Texture2D glowTex = Assets.Keys.GlowBlack.Value;
-
-						float opacity = Math.Min(1f, mn.CutsceneTimer / 140f);
-						Color color = Color.Black * opacity;
-						//color.A = 0;
-
-						sb.Draw(glowTex, new Vector2(Main.screenWidth / 2, Main.screenHeight / 2), null, color, 0, glowTex.Size() / 2f, opacity * 12f, 0, 0);
-					}
-				}
+				sb.Draw(glowTex, new Vector2(Main.screenWidth / 2, Main.screenHeight / 2), null, color, 0, glowTex.Size() / 2f, opacity * 10f, 0, 0);
 			}
 		}
 
-		private void DrawRiver(On_Main.orig_DrawStarsInBackground orig, Main self, Main.SceneArea sceneArea, bool artificial)
+		private void DrawRiver(On_Main.orig_DrawBackgroundBlackFill orig, Main self)
 		{
+			orig(self);
+
 			if (IsSceneEffectActive(Main.LocalPlayer))
 				Main.spriteBatch.Draw(StarlightRiverBackground.starsTarget.RenderTarget, Vector2.Zero, Color.White * (StarlightEventSequenceSystem.fadeTimer / 300f));
-
-			orig(self, sceneArea, artificial);
 		}
 
 		private void DrawOverlay(GameTime gameTime, ScreenTarget starsMap, ScreenTarget starsTarget)
@@ -244,13 +233,6 @@ namespace StarlightRiver.Content.Events
 				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, mapEffect, Main.GameViewMatrix.TransformationMatrix);
 
 				spriteBatch.Draw(starsMap.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
-
-				spriteBatch.End();
-
-				spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default);
-
-				Texture2D tex = Assets.Noise.SwirlyNoiseLooping.Value;
-				spriteBatch.Draw(tex, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), new Rectangle((int)Main.GameUpdateCount / 3, 0, tex.Width, tex.Height), new Color(50, 200, 255) * (StarlightEventSequenceSystem.fadeTimer / 300f) * 0.2f);
 
 				spriteBatch.End();
 			}

@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Events;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.CustomHooks

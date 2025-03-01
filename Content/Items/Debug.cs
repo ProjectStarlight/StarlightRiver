@@ -66,11 +66,17 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
-			NPC.NewNPC(null, (int)player.Center.X, (int)player.Center.Y - 600, ModContent.NPCType<TheThinker>());
-			NPC.NewNPC(null, (int)player.Center.X, (int)player.Center.Y - 600, ModContent.NPCType<DeadBrain>());
+			//NPC.NewNPC(null, (int)player.Center.X, (int)player.Center.Y - 600, ModContent.NPCType<TheThinker>());
+			//NPC.NewNPC(null, (int)player.Center.X, (int)player.Center.Y - 600, ModContent.NPCType<DeadBrain>());
 
 			//StarlightWorld.FlipFlag(WorldFlags.ThinkerBossOpen);
 			//GrayBlob((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
+
+			Main.LocalPlayer.GetHandler().Lock<Abilities.Hint.HintAbility>();
+			StarlightEventSequenceSystem.sequence = 0;
+			StarlightEventSequenceSystem.willOccur = true;
+			Main.time = 210000;
+			Main.dayTime = true;
 
 			return true;
 		}
@@ -185,9 +191,9 @@ namespace StarlightRiver.Content.Items
 
 			DynamicSpriteFont font = Terraria.GameContent.FontAssets.ItemStack.Value;
 
-			Utils.DrawBorderStringBig(Main.spriteBatch, $"STARLIGHT RIVER ALPHA TEST -- THINKER BOSS FIGHT TEST", new Vector2(Main.screenWidth / 2, 16), Color.White, 0.4f, 0.5f);
-			Utils.DrawBorderStringBig(Main.spriteBatch, $"ALPHA BUILD DOES NOT REPRESENT FINAL PRODUCT", new Vector2(Main.screenWidth / 2, 48), Color.White, 0.4f, 0.5f);
-			Utils.DrawBorderStringBig(Main.spriteBatch, $"Things to test: Nothing in specific? Thinker death animation and boss rush ig?", new Vector2(Main.screenWidth / 2, 86), new Color(255, 255, 200), 0.3f, 0.5f);
+			//Utils.DrawBorderStringBig(Main.spriteBatch, $"STARLIGHT RIVER ALPHA TEST -- THINKER BOSS FIGHT TEST", new Vector2(Main.screenWidth / 2, 16), Color.White, 0.4f, 0.5f);
+			//Utils.DrawBorderStringBig(Main.spriteBatch, $"ALPHA BUILD DOES NOT REPRESENT FINAL PRODUCT", new Vector2(Main.screenWidth / 2, 48), Color.White, 0.4f, 0.5f);
+			//Utils.DrawBorderStringBig(Main.spriteBatch, $"Things to test: Health scaling, spawn animation", new Vector2(Main.screenWidth / 2, 86), new Color(255, 255, 200), 0.3f, 0.5f);
 
 			Main.spriteBatch.End();
 		}
