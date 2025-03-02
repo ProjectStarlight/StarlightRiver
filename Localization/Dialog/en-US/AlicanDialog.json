@@ -1,8 +1,8 @@
 ﻿[
   {
     "Key": "Intro1",
-    "Title": "Crow?",
-    "Body": "The crow-like... creature... gets up off the ground with a triumphant look in its beady eyes, dusting itself off, and then straightening its ruffled feathers.",
+    "Title": "Alican",
+    "Body": "NEW INTRO 1",
     "Buttons": [
       {
         "Key": "Intro2",
@@ -12,8 +12,8 @@
   },
   {
     "Key": "Intro2",
-    "Title": "Crow?",
-    "Body": "\"There you are! I've jumped through seventeen different axons and half the entire Capricorn Tropic trying to find you!\"",
+    "Title": "Alican",
+    "Body": "NEW INTRO 2",
     "Buttons": [
       {
         "Key": "Intro3",
@@ -24,7 +24,7 @@
   {
     "Key": "Intro3",
     "Title": "Alican",
-    "Body": "\"Yes, yes, my name is Alican, and I believe we can help each other. You see, I am a Seeker. Of what, exactly, is not free information, but I'll give you a hint.\"",
+    "Body": "NEW INTRO 3",
     "Buttons": [
       {
         "Key": "Intro4",
@@ -35,7 +35,7 @@
   {
     "Key": "Intro4",
     "Title": "Alican",
-    "Body": "Alican leans towards you, with its voice reduced to a whisper and a manic glint in its eye.",
+    "Body": "NEW INTRO 4",
     "Buttons": [
       {
         "Key": "Intro5",
@@ -46,7 +46,7 @@
   {
     "Key": "Intro5",
     "Title": "Alican",
-    "Body": "\"Mana's not the only thing out there. It's an engine of change, it can blow things up, it can reverse entropy, but it's not all there is. I'm studying *Starlight*. The inverse of mana... the energy of meaning, of memory, of connection. If you let me observe your efforts, I'll teach you how to use it.\"",
+    "Body": "NEW INTRO 5",
     "Buttons": [
       {
         "Key": "Intro6",
@@ -57,7 +57,7 @@
   {
     "Key": "Intro6",
     "Title": "Alican",
-    "Body": "\"This is Starsight. The ability to glimpse the weave of fate and meaning, grasping onto but a thin thread. If you encounter something beyond your own understanding, use it to borrow the knowledge you need. I have a feeling you'll be generating a lot of useful data for me...\"",
+    "Body": "NEW INTRO 6",
     "Buttons": [
       {
         "Key": "Intro7",
@@ -69,12 +69,12 @@
   {
     "Key": "Intro7",
     "Title": "Alican",
-    "Body": "\"I've got business in the Equatorial Ring, but before I go, one last word of advice... Something lurks beneath the nearby desert. The threads of memory converge in a great tangle - if you wish to understand Starlight, you must confront and decipher whatever's waiting for you there. I'll be watching.\"",
+    "Body": "NEW INTRO 7",
     "Buttons": [
       {
         "Key": "End",
         "Code": "StarsightTutorial",
-        "Text": "Bye?"
+        "Text": "Goodbye!"
       }
     ]
   }

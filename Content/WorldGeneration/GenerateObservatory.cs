@@ -31,7 +31,7 @@ namespace StarlightRiver.Core
 						if (WorldGenHelper.GetElevationDeviation(new Point16(x, y), observatorySize.Y, 20, 5, true) < 5)
 						{
 							StructureHelper.Generator.GenerateStructure("Structures/Observatory", new Point16(x, y - 20), Mod);
-							ModContent.GetInstance<ObservatorySystem>().observatoryRoom = new Rectangle(x, y-20, 15, 6);
+							ModContent.GetInstance<ObservatorySystem>().observatoryRoom = new Rectangle(x+5, y-20, 15, 6);
 							generated = true;
 							break;
 						}

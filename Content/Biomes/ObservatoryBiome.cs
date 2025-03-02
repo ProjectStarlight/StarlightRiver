@@ -35,6 +35,10 @@ namespace StarlightRiver.Content.Biomes
 			// TODO: Add check
 			var biomeCondition = player.Hitbox.Intersects(ModContent.GetInstance<ObservatorySystem>().ObservatoryRoomWorld);
 
+			var structRect = ModContent.GetInstance<ObservatorySystem>().MainStructureWorld;
+			if (player.Hitbox.Intersects(structRect))
+				fade = 1f - (player.Center.Y - structRect.Y) / structRect.Height;
+
 			if (biomeCondition && fade < 1)
 				fade += 0.02f;
 
@@ -90,7 +94,9 @@ namespace StarlightRiver.Content.Biomes
 
 		public override bool IsBiomeActive(Player player)
 		{
-			return player.Hitbox.Intersects(ModContent.GetInstance<ObservatorySystem>().ObservatoryRoomWorld) || fade > 0;
+			return player.Hitbox.Intersects(ModContent.GetInstance<ObservatorySystem>().ObservatoryRoomWorld) ||
+				player.Hitbox.Intersects(ModContent.GetInstance<ObservatorySystem>().MainStructureWorld) ||
+				fade > 0;
 		}
 	}
 
@@ -99,6 +105,7 @@ namespace StarlightRiver.Content.Biomes
 		public Rectangle observatoryRoom;
 
 		public Rectangle ObservatoryRoomWorld => new(observatoryRoom.X * 16, observatoryRoom.Y * 16, observatoryRoom.Width * 16, observatoryRoom.Height * 16);
+		public Rectangle MainStructureWorld => new(observatoryRoom.X * 16, observatoryRoom.Y * 16 + 7 * 16, observatoryRoom.Width * 16, observatoryRoom.Height * 16 * 2);
 
 		public override void ModifySunLightColor(ref Color tileColor, ref Color backgroundColor)
 		{

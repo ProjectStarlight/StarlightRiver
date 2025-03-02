@@ -12,6 +12,7 @@ using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Content.Noise;
 using StarlightRiver.Content.PersistentData;
 using StarlightRiver.Content.Tiles.Crimson;
+using StarlightRiver.Content.Tiles.Forest;
 using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.PersistentDataSystem;
@@ -129,10 +130,10 @@ namespace StarlightRiver.Content.Items
 				for (int y = -100; y < 100; y++)
 				{
 					Tile tile = Framing.GetTileSafely(x + (int)(Main.MouseWorld.X / 16), y + (int)(Main.MouseWorld.Y / 16));
-					tile.IsActuated = false;
+					//tile.IsActuated = false;
 
-					if (tile.TileType == ModContent.TileType<BrainBlocker>())
-						tile.HasTile = false;
+					if (tile.TileType == ModContent.TileType<ThickTree>())
+						tile.TileType = (ushort)ModContent.TileType<RiggedTree>();
 				}
 			}*/
 

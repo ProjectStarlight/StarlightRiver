@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Tiles.Permafrost;
+﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Tiles.Permafrost;
 using Terraria.DataStructures;
 
 namespace StarlightRiver.Core.Systems.CutawaySystem
@@ -10,6 +11,7 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 		public static Cutaway cathedralOverlay;
 		public static Cutaway forgeOverlay;
 		public static Cutaway templeOverlay;
+		public static Cutaway observatoryOverlay;
 
 		public static void CreateCutaways()
 		{
@@ -20,14 +22,14 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 				return;
 
 			// Auroracle temple overlay
-			cathedralOverlay = new Cutaway(ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/SquidBoss/CathedralOver", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value, StarlightWorld.squidBossArena.TopLeft() * 16)
+			cathedralOverlay = new Cutaway(ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/SquidBoss/CathedralOver", AssetRequestMode.ImmediateLoad).Value, StarlightWorld.squidBossArena.TopLeft() * 16)
 			{
 				Inside = CheckForSquidArena
 			};
 			CutawayHook.NewCutaway(cathedralOverlay);
 
 			// Glassweaver forge overlay
-			forgeOverlay = new Cutaway(ModContent.Request<Texture2D>("StarlightRiver/Assets/Overlay/ForgeOverlay", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value, StarlightWorld.GlassweaverArena.TopLeft() + new Vector2(-2, 2) * 16)
+			forgeOverlay = new Cutaway(ModContent.Request<Texture2D>("StarlightRiver/Assets/Overlay/ForgeOverlay", AssetRequestMode.ImmediateLoad).Value, StarlightWorld.GlassweaverArena.TopLeft() + new Vector2(-2, 2) * 16)
 			{
 				Inside = (n) =>
 				{
@@ -44,11 +46,18 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 			StructureHelper.Generator.GetDimensions("Structures/VitricTempleNew", StarlightRiver.Instance, ref dimensions);
 			Vector2 templePos = new Vector2(StarlightWorld.vitricBiome.Center.X - dimensions.X / 2, StarlightWorld.vitricBiome.Center.Y - 1) * 16;
 			templePos.Y -= 9;
-			templeOverlay = new Cutaway(ModContent.Request<Texture2D>("StarlightRiver/Assets/Overlay/TempleOverlay", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value, templePos)
+			templeOverlay = new Cutaway(ModContent.Request<Texture2D>("StarlightRiver/Assets/Overlay/TempleOverlay", AssetRequestMode.ImmediateLoad).Value, templePos)
 			{
-				Inside = (n) => n.InModBiome<Content.Biomes.VitricTempleBiome>()
+				Inside = (n) => n.InModBiome<VitricTempleBiome>()
 			};
 			CutawayHook.NewCutaway(templeOverlay);
+
+			// Observatory overlay
+			observatoryOverlay = new Cutaway(ModContent.Request<Texture2D>("StarlightRiver/Assets/Overlay/ObservatoryOverlay", AssetRequestMode.ImmediateLoad).Value, ModContent.GetInstance<ObservatorySystem>().ObservatoryRoomWorld.TopLeft() + new Vector2(0, 6) * 16)
+			{
+				Inside = (n) => ModContent.GetInstance<ObservatorySystem>().MainStructureWorld.Intersects(n.Hitbox)
+			};
+			CutawayHook.NewCutaway(observatoryOverlay);
 		}
 
 		/// <summary>

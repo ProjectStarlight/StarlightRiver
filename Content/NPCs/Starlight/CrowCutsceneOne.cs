@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 	{
 		public override void InCutscene(Player player)
 		{
-			NPC alican = Main.npc.FirstOrDefault(n => n.active && n.type == ModContent.NPCType<Crow>());
+			NPC alican = Main.npc.FirstOrDefault(n => n.active && n.type == ModContent.NPCType<Alican>());
 
 			// Abort if we cant find bird
 			if (alican is null)
