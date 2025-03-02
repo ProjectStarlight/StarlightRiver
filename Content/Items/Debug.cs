@@ -72,12 +72,6 @@ namespace StarlightRiver.Content.Items
 			//StarlightWorld.FlipFlag(WorldFlags.ThinkerBossOpen);
 			//GrayBlob((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
 
-			Main.LocalPlayer.GetHandler().Lock<Abilities.Hint.HintAbility>();
-			StarlightEventSequenceSystem.sequence = 0;
-			StarlightEventSequenceSystem.willOccur = true;
-			Main.time = 210000;
-			Main.dayTime = true;
-
 			return true;
 		}
 	}
@@ -128,7 +122,7 @@ namespace StarlightRiver.Content.Items
 			//StarlightWorld.FlipFlag(WorldFlags.ThinkerBossOpen);
 			//ModContent.GetInstance<StarlightWorld>().GraymatterGen(new GenerationProgress(), null);
 
-			SplineGlow.Spawn(player.Center, Vector2.Lerp(player.Center, Main.MouseWorld, 0.5f) + Vector2.UnitX.RotatedByRandom(6.28f) * 50, Main.MouseWorld, 120, 1, Color.Teal);
+			/*SplineGlow.Spawn(player.Center, Vector2.Lerp(player.Center, Main.MouseWorld, 0.5f) + Vector2.UnitX.RotatedByRandom(6.28f) * 50, Main.MouseWorld, 120, 1, Color.Teal);
 
 			for (int x = -100; x < 100; x++)
 			{
@@ -140,7 +134,12 @@ namespace StarlightRiver.Content.Items
 					if (tile.TileType == ModContent.TileType<BrainBlocker>())
 						tile.HasTile = false;
 				}
-			}
+			}*/
+
+			//Point16 target = new Point16((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
+			//Main.NewText($"Deviation at {target} along width 10: {WorldGenHelper.GetElevationDeviation(target, 10, 20, 10, true)}");
+
+			ModContent.GetInstance<StarlightWorld>().ObservatoryGen(null, null);
 
 			return true;
 		}

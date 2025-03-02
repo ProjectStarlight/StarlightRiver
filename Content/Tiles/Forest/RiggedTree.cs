@@ -1,6 +1,4 @@
-﻿using log4net.Core;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core.DrawingRigs;
+﻿using StarlightRiver.Core.DrawingRigs;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.Systems.FoliageLayerSystem;
 using StarlightRiver.Core.Systems.LightingSystem;
@@ -10,10 +8,8 @@ using System.Text.Json;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ObjectData;
 using Terraria.Utilities;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TreeView;
 
 namespace StarlightRiver.Content.Tiles.Forest
 {
@@ -79,24 +75,19 @@ namespace StarlightRiver.Content.Tiles.Forest
 				pos += Vector2.One * Main.offScreenRange;
 
 				Texture2D tex2 = Assets.Tiles.Forest.Godray.Value;
-				var godrayColor = new Color();
-				float godrayRot = 0;
+				Color godrayColor = Lighting.GetColor(i, j - 20) * 0.5f;
+				float godrayRot;
 
 				if (Main.dayTime)
 				{
-					godrayColor = new Color(255, 255, 200) * 0.5f;
 					godrayColor *= (float)Math.Pow(Math.Sin(Main.time / 54000f * 3.14f), 3);
 					godrayRot = -0.5f * 1.57f + (float)Main.time / 54000f * 3.14f;
 				}
 				else
 				{
-					godrayColor = new Color(200, 210, 255) * 0.5f;
-					godrayColor *= (float)Math.Pow(Math.Sin(Main.time / 24000f * 3.14f), 3) * 0.25f;
+					godrayColor *= (float)Math.Pow(Math.Sin(Main.time / 24000f * 3.14f), 3);
 					godrayRot = -0.5f * 1.57f + (float)Main.time / 24000f * 3.14f;
 				}
-
-				if (Main.raining)
-					godrayColor *= 1 - Main.cloudAlpha * 2;
 
 				godrayColor.A = 0;
 
@@ -105,17 +96,17 @@ namespace StarlightRiver.Content.Tiles.Forest
 				int daySeed = i + (int)Main.GetMoonPhase();
 
 				if (daySeed % 3 == 0)
-					spriteBatch.Draw(tex2, pos.RotatedBy(branchRot, origin) - Main.screenPosition, null, godrayColor, godrayRot, Vector2.Zero, 1.05f, 0, 0);
+					spriteBatch.Draw(tex2, pos.RotatedBy(branchRot, origin) - Main.screenPosition, null, godrayColor, godrayRot, Vector2.Zero, new Vector2(1.05f, 1.2f), 0, 0);
 
 				pos += new Vector2(-60, 80);
 
 				if (daySeed % 5 == 0)
-					spriteBatch.Draw(tex2, pos.RotatedBy(branchRot, origin) - Main.screenPosition, null, godrayColor, godrayRot, Vector2.Zero, 0.75f, 0, 0);
+					spriteBatch.Draw(tex2, pos.RotatedBy(branchRot, origin) - Main.screenPosition, null, godrayColor, godrayRot, Vector2.Zero, new Vector2(0.75f, 1.2f), 0, 0);
 
 				pos += new Vector2(150, -60);
 
 				if (daySeed % 7 == 0)
-					spriteBatch.Draw(tex2, pos.RotatedBy(branchRot, origin) - Main.screenPosition, null, godrayColor, godrayRot, Vector2.Zero, 1.35f, 0, 0);
+					spriteBatch.Draw(tex2, pos.RotatedBy(branchRot, origin) - Main.screenPosition, null, godrayColor, godrayRot, Vector2.Zero, new Vector2(1.35f, 1.4f), 0, 0);
 			}
 		}
 
@@ -128,7 +119,8 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 			if (Main.rand.NextBool(10) && right && !up && down)
 			{
-				if (Main.dayTime && !Main.raining && Main.time > 10000 && Main.time < 44000)
+				Color godrayColor = Lighting.GetColor(i, j - 20);
+				if (Main.dayTime && !Main.raining && Main.time > 10000 && Main.time < 44000 && godrayColor.ToVector3().Length() > 1f)
 				{
 					float godrayRot = (float)Main.time / 54000f * 3.14f;
 					Dust.NewDustPerfect(new Vector2(i, j) * 16 - Vector2.UnitY * 400 + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(200), ModContent.DustType<Dusts.GoldSlowFade>(), Vector2.UnitX.RotatedBy(godrayRot) * Main.rand.NextFloat(0.25f, 0.5f), 255, default, 0.75f);
@@ -229,7 +221,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 		public override void DrawBehindTiles()
 		{
 			Texture2D branches = Assets.Tiles.Forest.Branches.Value;
-			Vector2 branchOrigin = new Vector2(branches.Width / 2 - 16, branches.Height);
+			var branchOrigin = new Vector2(branches.Width / 2 - 16, branches.Height);
 			float windDir = Main.windSpeedCurrent > 0 ? 1 : -1;
 			float branchRot = Main.windSpeedCurrent * 0.05f + Sway(Center, 0.02f);
 
@@ -249,7 +241,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 			foreach (StaticRigPoint point in treeRig.Points)
 			{
 				Vector2 pointPos = pos + new Vector2(point.X, point.Y) * 2;
-				Rectangle source = new Rectangle(leafRand.NextBool() ? 82 : 0, point.Frame * 82, 82, 82);
+				var source = new Rectangle(leafRand.NextBool() ? 82 : 0, point.Frame * 82, 82, 82);
 				Vector2 origin = Vector2.One * 41;
 				float weight = point.Frame % 2 == 0 ? 6 : 4;
 

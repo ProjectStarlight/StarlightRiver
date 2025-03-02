@@ -14,8 +14,8 @@ namespace StarlightRiver.Helpers
 		/// <summary>
 		/// Common tiles that would set off that world generation shouldn't occur there
 		/// </summary>
-		public static readonly List<int> invalidTypes = new()
-		{
+		public static readonly List<int> invalidTypes =
+		[
 			TileID.BlueDungeonBrick,
 			TileID.GreenDungeonBrick,
 			TileID.PinkDungeonBrick,
@@ -28,13 +28,13 @@ namespace StarlightRiver.Helpers
 			TileID.Containers2,
 			StarlightRiver.Instance.Find<ModTile>("AncientSandstone").Type,
 			StarlightRiver.Instance.Find<ModTile>("AuroraBrick").Type,
-		};
+		];
 
 		/// <summary>
 		/// Common walls that would set off that world generation shouldnt occur there
 		/// </summary>
-		public static readonly List<int> invalidWalls = new()
-		{
+		public static readonly List<int> invalidWalls =
+		[
 			WallID.BlueDungeon,
 			WallID.BlueDungeonSlabUnsafe,
 			WallID.BlueDungeonTileUnsafe,
@@ -49,7 +49,7 @@ namespace StarlightRiver.Helpers
 			WallID.CrimstoneUnsafe,
 			StarlightRiver.Instance.Find<ModWall>("VitricTempleWall").Type,
 			StarlightRiver.Instance.Find<ModWall>("AuroraBrickWall").Type,
-		};
+		];
 
 		/// <summary>
 		/// Checks if an area of the world is most likely safe to generate a structure. By default checks against a reasonable blacklist including dungeon tiles and chests, and makes sure it is not inside a protected region.
@@ -248,20 +248,79 @@ namespace StarlightRiver.Helpers
 		/// <param name="start"></param>
 		/// <param name="MaxScan"></param>
 		/// <returns></returns>
-		public static bool AirScanUp(Vector2 start, int MaxScan)
+		public static bool AirScanUp(Point16 start, int MaxScan)
 		{
 			if (start.Y - MaxScan < 0)
 				return false;
 
-			bool clear = true;
-
 			for (int k = 1; k <= MaxScan; k++)
 			{
-				if (Main.tile[(int)start.X, (int)start.Y - k].HasTile)
-					clear = false;
+				if (Main.tile[start.X, start.Y - k].HasTile)
+					return false;
 			}
 
-			return clear;
+			return true;
+		}
+
+		/// <summary>
+		/// Checks that all tiles above the given point are non-solid. Like a less strict AirScanUp.
+		/// </summary>
+		/// <param name="start"></param>
+		/// <param name="MaxScan"></param>
+		/// <returns></returns>
+		public static bool NonSolidScanUp(Point16 start, int maxScan)
+		{
+			if (start.Y - maxScan < 0)
+				return false;
+
+			for (int k = 1; k <= maxScan; k++)
+			{
+				if (Main.tile[start.X, start.Y - k].HasTile && Main.tileSolid[Main.tile[start.X, start.Y - k].TileType])
+					return false;
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		/// Gets the greatest difference from the start point's surface level, determined
+		/// by having the provided amount of air above itself.
+		/// </summary>
+		/// <param name="start">The coordinate to start looking at. This assumes it has air above it.</param>
+		/// <param name="width">The width to scan over</param>
+		/// <param name="neededAir">The amount of air above a tile needed for it to count as a surface</param>
+		/// <param name="max">The max deviation to check for. If this is exceeded it automatically returns this value</param>
+		/// <param name="lenient">Allows non-solid tiles to not count against elevation</param>
+		/// <returns>The greatest aboslute value difference between surface tiles across the width, or the provided max</returns>
+		public static int GetElevationDeviation(Point16 start, int width, int neededAir, int max, bool lenient)
+		{
+			int maxDeviation = 0;
+
+			for (int k = 1; k < width; k++)
+			{
+				int thisMinDeviation = max;
+
+				for (int i = -max; i < max; i++)
+				{
+					int thisX = start.X + k;
+					int thisY = start.Y + i;
+
+					Tile thisTile = Main.tile[thisX, thisY];
+
+					if (thisTile.HasTile && Main.tileSolid[thisTile.TileType])
+					{
+						bool scan = lenient ? NonSolidScanUp(new Point16(thisX, thisY), neededAir) : AirScanUp(new Point16(thisX, thisY), neededAir);
+
+						if (scan && Math.Abs(i) < thisMinDeviation)
+							thisMinDeviation = Math.Abs(i);
+					}
+				}
+
+				if (thisMinDeviation > maxDeviation)
+					maxDeviation = thisMinDeviation;
+			}
+
+			return maxDeviation;
 		}
 	}
 }

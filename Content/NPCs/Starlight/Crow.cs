@@ -243,10 +243,10 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			{
 				Leave();
 
-				StarlightEventSequenceSystem.willOccur = false;
-				StarlightEventSequenceSystem.occuring = false;
+				//StarlightEventSequenceSystem.willOccur = false;
+				//StarlightEventSequenceSystem.occuring = false;
 
-				StarlightEventSequenceSystem.sequence++;
+				//StarlightEventSequenceSystem.sequence++;
 
 				NetMessage.SendData(MessageID.WorldData);
 

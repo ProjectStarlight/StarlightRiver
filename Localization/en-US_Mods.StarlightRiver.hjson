@@ -4319,6 +4319,11 @@ Biomes: {
 		DisplayName: Evasion Shrine Biome
 		TownNPCDialogueName: the Evasion Shrine Biome
 	}
+
+	ObservatoryBiome: {
+		DisplayName: Observatory Biome
+		TownNPCDialogueName: the Observatory Biome
+	}
 }
 
 NPCs: {

@@ -35,7 +35,7 @@ namespace StarlightRiver.Core
 					{
 						break;
 					}
-					else if (tile.HasTile && tile.TileType == TileID.Grass && WorldGenHelper.AirScanUp(new Vector2(x, y - 1), 10) && WorldGen.genRand.NextBool(20))
+					else if (tile.HasTile && tile.TileType == TileID.Grass && WorldGenHelper.AirScanUp(new Point16(x, y - 1), 10) && WorldGen.genRand.NextBool(20))
 					{
 						var dims = new Point16();
 
@@ -96,7 +96,7 @@ namespace StarlightRiver.Core
 					{
 						break;
 					}
-					else if (tile.HasTile && tile.Slope == SlopeType.Solid && !tile.IsHalfBlock && tile.TileType == TileID.Sand && WorldGenHelper.AirScanUp(new Vector2(x, y - 1), 10) && WorldGen.genRand.NextBool(20))
+					else if (tile.HasTile && tile.Slope == SlopeType.Solid && !tile.IsHalfBlock && tile.TileType == TileID.Sand && WorldGenHelper.AirScanUp(new Point16(x, y - 1), 10) && WorldGen.genRand.NextBool(20))
 					{
 						Tile newTile = Framing.GetTileSafely(x, y - 1);
 						newTile.ClearEverything();
