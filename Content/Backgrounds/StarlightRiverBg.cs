@@ -151,8 +151,8 @@ namespace StarlightRiver.Content.Backgrounds
 			color.G = 190;
 			color.B = 255;
 			Vector2 offset = Vector2.UnitX * timer * 0.2f;
-			offset.X += 0.05f * Main.screenPosition.X % target.Width;
-			offset.Y += 0.05f * Main.screenPosition.Y % target.Height;
+			//offset.X += 0.05f * Main.screenPosition.X % target.Width;
+			//offset.Y += 0.05f * Main.screenPosition.Y % target.Height;
 			var source = new Rectangle((int)offset.X, (int)offset.Y, tex2.Width, tex2.Height);
 			sb.Draw(tex2, target, source, color * 0.05f);
 
@@ -161,8 +161,8 @@ namespace StarlightRiver.Content.Backgrounds
 			color.B = 255;
 			color.A = 0;
 			offset = Vector2.UnitX * timer * 0.3f;
-			offset.X += 0.1f * Main.screenPosition.X % target.Width;
-			offset.Y += 0.1f * Main.screenPosition.Y % target.Height;
+			//offset.X += 0.1f * Main.screenPosition.X % target.Width;
+			//offset.Y += 0.1f * Main.screenPosition.Y % target.Height;
 			source = new Rectangle((int)offset.X, (int)offset.Y, tex2.Width, tex2.Height);
 			sb.Draw(tex2, target, source, color * 0.05f);
 
@@ -171,8 +171,8 @@ namespace StarlightRiver.Content.Backgrounds
 			color.B = 255;
 			color.A = 0;
 			offset = Vector2.UnitX * timer * 0.4f;
-			offset.X += 0.15f * Main.screenPosition.X % target.Width;
-			offset.Y += 0.15f * Main.screenPosition.Y % target.Height;
+			//offset.X += 0.15f * Main.screenPosition.X % target.Width;
+			//offset.Y += 0.15f * Main.screenPosition.Y % target.Height;
 			source = new Rectangle((int)offset.X, (int)offset.Y, tex2.Width, tex2.Height);
 			sb.Draw(tex2, target, source, color * 0.05f);
 
@@ -231,7 +231,7 @@ namespace StarlightRiver.Content.Backgrounds
 				particle.Timer--;
 				particle.Position += particle.Velocity;
 
-				particle.Scale = (1f - particle.Timer / 60f) * 2f;
+				particle.Scale = (1f - particle.Timer / 60f) * 1f;
 			}
 			else if (particle.Type == 2) // Background
 			{
@@ -243,10 +243,12 @@ namespace StarlightRiver.Content.Backgrounds
 				particle.Alpha = 0.5f + 0.5f * (particle.Scale / 0.35f);
 
 				if (particle.Timer > 1570)
-					particle.Alpha = (1600 - particle.Timer) / 30f * starOpacity * particle.Alpha;
+					particle.Alpha = (1600 - particle.Timer) / 30f * particle.Alpha;
 
 				if (particle.Timer < 30)
-					particle.Alpha = particle.Timer / 30f * starOpacity * particle.Alpha;
+					particle.Alpha = particle.Timer / 30f * particle.Alpha;
+
+				particle.Alpha *= starOpacity;
 
 				particle.Position = particle.StoredPosition + (particle.StoredPosition - (Main.screenPosition + Main.ScreenSize.ToVector2() / 2f)) * (particle.Scale * 6f - 0.35f * 3f) - Main.screenPosition;
 			}

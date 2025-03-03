@@ -154,11 +154,11 @@ namespace StarlightRiver.Content.NPCs.BossRush
 
 				warpAnimationTimer++;
 
-				if (warpAnimationTimer > MAX_SUCC_ANIMATION && warpAnimationTimer < MAX_SUCC_ANIMATION + 240)
+				if (warpAnimationTimer > MAX_SUCC_ANIMATION && warpAnimationTimer < MAX_SUCC_ANIMATION + 180)
 				{
 					float bgStarOpacity = Math.Min((warpAnimationTimer - MAX_SUCC_ANIMATION - 120) / 60f, 1);
 
-					var starColor = new Color(150, Main.rand.Next(150, 255), 255)
+					var starColor = new Color(50, Main.rand.Next(150, 255), 255)
 					{
 						A = 0
 					};
@@ -168,10 +168,10 @@ namespace StarlightRiver.Content.NPCs.BossRush
 						Vector2 direction = Vector2.One.RotateRandom(MathHelper.TwoPi) * Main.rand.NextFloat(0.9f, 1.1f);
 
 						Vector2 pos = originalPos - Main.screenPosition + direction * 20;
-						StarlightRiverBackground.stars.AddParticle(new Particle(pos, direction * 30 * (0.6f + (1 - bgStarOpacity) * 0.2f), 0, 0, starColor, 60, Vector2.One * Main.rand.NextFloat(3f, 3.3f), new Rectangle(0, 0, 120, 120), 1, 1));
+						StarlightRiverBackground.stars.AddParticle(new Particle(pos, direction * 30 * (0.6f + (1 - bgStarOpacity) * 0.2f), 0, 0, starColor, 60, Vector2.One * Main.rand.NextFloat(1f, 3.3f), new Rectangle(0, 0, 120, 120), 1, 1));
 					}
 
-					StarlightRiverBackground.starOpacity = bgStarOpacity;
+					StarlightRiverBackground.starOpacity = 0;
 				}
 				else if (warpAnimationTimer < MAX_SUCC_ANIMATION)
 				{
@@ -187,12 +187,12 @@ namespace StarlightRiver.Content.NPCs.BossRush
 
 				Lighting.AddLight(NPC.Center, new Vector3(5, 5, 10));
 
-				if (warpAnimationTimer > 600)
+				if (warpAnimationTimer > 360)
 					NPC.Kill();
 			}
 			else if (isPlayingCrack)
 			{
-				CameraSystem.DoPanAnimation(900, originalPos);
+				CameraSystem.DoPanAnimation(760, originalPos);
 
 				if (CrackAnimationProgress >= 1)
 					isPlayingWarp = true;

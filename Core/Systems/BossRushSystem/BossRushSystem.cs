@@ -445,6 +445,16 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 
 				Main.LocalPlayer.fallStart = (int)Main.LocalPlayer.position.Y; //prevent fall damage
 
+				float opacity = 1;
+				if (transitionTimer > 210)
+					opacity = 1 - (transitionTimer - 210) / 30f;
+				else if (transitionTimer > 120 && transitionTimer <= 210)
+					opacity = 1;
+				else if (transitionTimer - 90 <= 30)
+					opacity = (transitionTimer - 90) / 30f;
+
+				StarlightRiverBackground.starOpacity = Math.Min(1f, 1f - opacity);
+
 				if (transitionTimer == 130)
 				{
 					if (currentStage >= stages.Count)
