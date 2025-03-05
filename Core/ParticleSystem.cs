@@ -67,6 +67,8 @@ namespace StarlightRiver.Core
 
 			FastParallel.For(0, particles.Count, (from, to, context) =>
 			{
+				Rectangle plane = default;
+
 				for (int k = from; k < to; k++)
 				{
 					Particle particle = particles[k];
@@ -76,21 +78,32 @@ namespace StarlightRiver.Core
 
 					Rectangle frame = particle.Frame != default ? particle.Frame : texture.Frame();
 
-					Rectangle plane = new Rectangle(0, 0, frame.Width, frame.Height);
-					plane.Offset((particle.Position - plane.Size() / 2f * particle.Scale).ToPoint());
+					plane.X = (int)(particle.Position.X - frame.Width / 2f * particle.Scale);
+					plane.Y = (int)(particle.Position.Y - frame.Height / 2f * particle.Scale);
 
-					plane.Width = (int)(plane.Width * particle.Scale);
-					plane.Height = (int)(plane.Height * particle.Scale);
+					plane.Width = (int)(frame.Width * particle.Scale);
+					plane.Height = (int)(frame.Height * particle.Scale);
 
 					float x = frame.X / (float)texture.Width;
 					float y = frame.Y / (float)texture.Height;
 					float w = frame.Width / (float)texture.Width;
 					float h = frame.Height / (float)texture.Height;
 
-					verticies[4 * k + 0] = new(plane.TopLeft().RotatedBy(particle.Rotation, plane.Center.ToVector2()).ToVector3(), particle.Color * particle.Alpha, new Vector2(x, y));
-					verticies[4 * k + 1] = new(plane.TopRight().RotatedBy(particle.Rotation, plane.Center.ToVector2()).ToVector3(), particle.Color * particle.Alpha, new Vector2(x + w, y));
-					verticies[4 * k + 2] = new(plane.BottomLeft().RotatedBy(particle.Rotation, plane.Center.ToVector2()).ToVector3(), particle.Color * particle.Alpha, new Vector2(x, y + h));
-					verticies[4 * k + 3] = new(plane.BottomRight().RotatedBy(particle.Rotation, plane.Center.ToVector2()).ToVector3(), particle.Color * particle.Alpha, new Vector2(x + w, y + h));
+					verticies[4 * k + 0].Position = plane.TopLeft().RotatedBy(particle.Rotation, plane.Center.ToVector2()).ToVector3();
+					verticies[4 * k + 0].Color = particle.Color * particle.Alpha;
+					verticies[4 * k + 0].TextureCoordinate = new Vector2(x, y);
+
+					verticies[4 * k + 1].Position = plane.TopRight().RotatedBy(particle.Rotation, plane.Center.ToVector2()).ToVector3();
+					verticies[4 * k + 1].Color = particle.Color * particle.Alpha;
+					verticies[4 * k + 1].TextureCoordinate = new Vector2(x + w, y);
+
+					verticies[4 * k + 2].Position = plane.BottomLeft().RotatedBy(particle.Rotation, plane.Center.ToVector2()).ToVector3();
+					verticies[4 * k + 2].Color = particle.Color * particle.Alpha;
+					verticies[4 * k + 2].TextureCoordinate = new Vector2(x, y + h);
+
+					verticies[4 * k + 3].Position = plane.BottomRight().RotatedBy(particle.Rotation, plane.Center.ToVector2()).ToVector3();
+					verticies[4 * k + 3].Color = particle.Color * particle.Alpha;
+					verticies[4 * k + 3].TextureCoordinate = new Vector2(x + w, y + h);
 
 					indicies[6 * k + 0] = (short)(4 * k + 0);
 					indicies[6 * k + 1] = (short)(4 * k + 1);
@@ -103,7 +116,7 @@ namespace StarlightRiver.Core
 
 			for (int k = particles.Count * 4; k < maxParticles * 4; k++)
 			{
-				verticies[k] = new();
+				verticies[k] = default;
 			}
 
 			vertexBuffer?.SetData(verticies);
