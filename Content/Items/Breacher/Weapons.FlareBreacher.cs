@@ -92,7 +92,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			Dust.NewDustPerfect(barrelPos + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<FlareBreacherSmokeDust>(), velocity * 0.025f, 50, new Color(255, 50, 200), 0.1f);
 
 			Dust.NewDustPerfect(barrelPos + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<FlareBreacherSmokeDust>(), velocity * 0.05f, 150, new Color(255, 50, 200), 0.2f);
-			
+
 			Dust.NewDustPerfect(barrelPos + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<FlareBreacherSmokeDust>(), velocity * 0.05f, 150, new Color(100, 100, 100), 0.2f);
 
 			Dust.NewDustPerfect(barrelPos, ModContent.DustType<FlareBreacherStarDust>(), Vector2.Zero, 0, new Color(30, 230, 255, 0), 0.35f).customData = Player;

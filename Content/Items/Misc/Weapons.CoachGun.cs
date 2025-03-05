@@ -184,7 +184,7 @@ namespace StarlightRiver.Content.Items.Misc
 				Vector2 shellPos = player.Center + new Vector2(10f, -4f * player.direction).RotatedBy(velocity.ToRotation());
 
 				Gore.NewGoreDirect(source, shellPos, new Vector2(player.direction * -1, -0.5f) * 2, Mod.Find<ModGore>("CoachGunCasing").Type, 1f).timeLeft = 60;
-				
+
 				Dust.NewDustPerfect(shellPos + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<CoachGunSmokeDust>(), new Vector2(player.direction * -1, -0.5f), 150, new Color(255, 255, 255, 0), 0.05f);
 
 				for (int i = 0; i < 3; i++)

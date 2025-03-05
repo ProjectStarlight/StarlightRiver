@@ -74,7 +74,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 				justAltUsed = true;
 
 				if (cooldown > 0)
-					return;				
+					return;
 			}
 			else
 			{
@@ -171,7 +171,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 				Vector2 ejectPos = position + new Vector2(10f, -20f * player.direction).RotatedBy(rot);
 
 				Gore.NewGoreDirect(source, ejectPos, -velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.1f, 0.25f), Mod.Find<ModGore>("CoachGunCasing").Type, 1f).timeLeft = 60;
-				
+
 				for (int i = 0; i < 5; i++)
 				{
 					Dust.NewDustPerfect(ejectPos, DustID.Smoke, -velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.1f, 0.25f), 150, default, 1.2f).noGravity = true;
@@ -200,7 +200,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 				Dust.NewDustPerfect(barrelPos + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<SkullBusterSmokeDust>(), velocity * 0.025f, 180, new Color(200, 200, 255, 0), 0.175f);
 
 				Dust.NewDustPerfect(barrelPos + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<SkullBusterSmokeDust>(), velocity * Main.rand.NextFloat(0.075f, 0.125f) - Vector2.UnitY * Main.rand.NextFloat(0.5f, 1.5f), 150, new Color(200, 200, 200, 0), 0.125f).noGravity = true;
-				
+
 				Dust.NewDustPerfect(barrelPos + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<SkullBusterSmokeDust>(), velocity * Main.rand.NextFloat(0.075f, 0.125f) - Vector2.UnitY * Main.rand.NextFloat(0.5f, 2f), 150, new Color(200, 200, 200, 0), 0.1f).noGravity = true;
 
 				Projectile.NewProjectileDirect(player.GetSource_ItemUse(Item), player.Center + offset * 43, velocity * 2, type, damage, knockback, player.whoAmI);
