@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using StarlightRiver.Content.Dusts;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.CustomHooks
 {
@@ -46,51 +49,21 @@ namespace StarlightRiver.Content.CustomHooks
 			Main.QueueMainThreadAction(() => Target = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight));
 
 			On_Main.CheckMonoliths += DrawTargets;
-			On_Lighting.GetColor_int_int += getColorOverride;
-			On_Lighting.GetColor_Point += getColorOverride;
-			On_Lighting.GetColor_int_int_Color += getColorOverride;
-			On_Lighting.GetColor_Point_Color += GetColorOverride;
-			On_Lighting.GetColorClamped += GetColorOverride;
+			On_Lighting.GetColorClamped += WhiteForPlayer;
+			On_Player.GetHairColor += WhiteHair;
 		}
 
-		private Color GetColorOverride(On_Lighting.orig_GetColorClamped orig, int x, int y, Color oldColor)
+		private Color WhiteHair(On_Player.orig_GetHairColor orig, Player self, bool useLighting)
 		{
-			if (canUseTarget)
-				return orig.Invoke(x, y, oldColor);
-
-			return orig.Invoke(x + (int)((oldPos.X - positionOffset.X) / 16), y + (int)((oldPos.Y - positionOffset.Y) / 16), oldColor);
+			return orig(self, useLighting & canUseTarget);
 		}
 
-		private Color GetColorOverride(On_Lighting.orig_GetColor_Point_Color orig, Point point, Color originalColor)
+		private Color WhiteForPlayer(On_Lighting.orig_GetColorClamped orig, int x, int y, Color oldColor)
 		{
 			if (canUseTarget)
-				return orig.Invoke(point, originalColor);
-
-			return orig.Invoke(new Point(point.X + (int)((oldPos.X - positionOffset.X) / 16), point.Y + (int)((oldPos.Y - positionOffset.Y) / 16)), originalColor);
-		}
-
-		public Color getColorOverride(On_Lighting.orig_GetColor_Point orig, Point point)
-		{
-			if (canUseTarget)
-				return orig.Invoke(point);
-
-			return orig.Invoke(new Point(point.X + (int)((oldPos.X - positionOffset.X) / 16), point.Y + (int)((oldPos.Y - positionOffset.Y) / 16)));
-		}
-
-		public Color getColorOverride(On_Lighting.orig_GetColor_int_int orig, int x, int y)
-		{
-			if (canUseTarget)
-				return orig.Invoke(x, y);
-
-			return orig.Invoke(x + (int)((oldPos.X - positionOffset.X) / 16), y + (int)((oldPos.Y - positionOffset.Y) / 16));
-		}
-
-		public Color getColorOverride(On_Lighting.orig_GetColor_int_int_Color orig, int x, int y, Color c)
-		{
-			if (canUseTarget)
-				return orig.Invoke(x, y, c);
-
-			return orig.Invoke(x + (int)((oldPos.X - positionOffset.X) / 16), y + (int)((oldPos.Y - positionOffset.Y) / 16), c);
+				return orig(x, y, oldColor);
+			else
+				return oldColor;
 		}
 
 		public static Rectangle getPlayerTargetSourceRectangle(int whoAmI)

@@ -22,6 +22,7 @@ namespace StarlightRiver.Content.CustomHooks
 			Assets.Backgrounds.Glass5
 		};
 
+		public bool biomeOnScreen;
 		public static Rectangle ScreenTiles => new((int)Main.screenPosition.X / 16, (int)Main.screenPosition.Y / 16, Main.screenWidth / 16, Main.screenHeight / 16);
 
 		public override void Load()
@@ -45,7 +46,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private void ForceDrawBlack(On_Main.orig_DrawBlack orig, Main self, bool force)
 		{
-			if (StarlightWorld.vitricBiome.Intersects(ScreenTiles))
+			if (biomeOnScreen)
 				orig(self, true);
 			else
 				orig(self, force);
@@ -103,9 +104,11 @@ namespace StarlightRiver.Content.CustomHooks
 			if (Main.gameMenu || Main.dedServ)
 				return;
 
-			Player Player = Main.LocalPlayer;
+			biomeOnScreen = StarlightWorld.vitricBiome.Intersects(ScreenTiles);
 
-			if (Player != null && StarlightWorld.vitricBiome.Intersects(ScreenTiles))
+			Player player = Main.LocalPlayer;
+
+			if (player != null && biomeOnScreen)
 			{
 				Vector2 basepoint = (StarlightWorld.vitricBiome != default) ? StarlightWorld.vitricBiome.TopLeft() * 16 + new Vector2(-2000, 0) : Vector2.Zero;
 

@@ -1,6 +1,5 @@
 ﻿using ReLogic.Threading;
 using StarlightRiver.Content.Configs;
-using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using static Terraria.ModLoader.ModContent;
 
@@ -17,7 +16,7 @@ namespace StarlightRiver.Core
 
 		public delegate void Update(Particle particle);
 
-		private readonly List<Particle> particles = new();
+		private readonly List<Particle> particles = [];
 		private Texture2D texture;
 		private readonly Update updateFunction;
 
@@ -73,44 +72,46 @@ namespace StarlightRiver.Core
 				{
 					Particle particle = particles[k];
 
-					if (!Main.gameInactive)
-						updateFunction(particle);
+					updateFunction(particle);
 
-					Rectangle frame = particle.Frame != default ? particle.Frame : texture.Frame();
+					plane.X = (int)(particle.Position.X - particle.Frame.Width / 2f * particle.Scale);
+					plane.Y = (int)(particle.Position.Y - particle.Frame.Height / 2f * particle.Scale);
 
-					plane.X = (int)(particle.Position.X - frame.Width / 2f * particle.Scale);
-					plane.Y = (int)(particle.Position.Y - frame.Height / 2f * particle.Scale);
+					plane.Width = (int)(particle.Frame.Width * particle.Scale);
+					plane.Height = (int)(particle.Frame.Height * particle.Scale);
 
-					plane.Width = (int)(frame.Width * particle.Scale);
-					plane.Height = (int)(frame.Height * particle.Scale);
+					float x = particle.Frame.X / (float)texture.Width;
+					float y = particle.Frame.Y / (float)texture.Height;
+					float w = particle.Frame.Width / (float)texture.Width;
+					float h = particle.Frame.Height / (float)texture.Height;
 
-					float x = frame.X / (float)texture.Width;
-					float y = frame.Y / (float)texture.Height;
-					float w = frame.Width / (float)texture.Width;
-					float h = frame.Height / (float)texture.Height;
+					var center = plane.Center.ToVector2();
+					Color color = particle.Color * particle.Alpha;
+					int baseIdx = 4 * k;
+					int baseIndexIdx = 6 * k;
 
-					verticies[4 * k + 0].Position = plane.TopLeft().RotatedBy(particle.Rotation, plane.Center.ToVector2()).ToVector3();
-					verticies[4 * k + 0].Color = particle.Color * particle.Alpha;
-					verticies[4 * k + 0].TextureCoordinate = new Vector2(x, y);
+					verticies[baseIdx + 0].Position = plane.TopLeft().RotatedBy(particle.Rotation, center).ToVector3();
+					verticies[baseIdx + 0].Color = color;
+					verticies[baseIdx + 0].TextureCoordinate = new Vector2(x, y);
 
-					verticies[4 * k + 1].Position = plane.TopRight().RotatedBy(particle.Rotation, plane.Center.ToVector2()).ToVector3();
-					verticies[4 * k + 1].Color = particle.Color * particle.Alpha;
-					verticies[4 * k + 1].TextureCoordinate = new Vector2(x + w, y);
+					verticies[baseIdx + 1].Position = plane.TopRight().RotatedBy(particle.Rotation, center).ToVector3();
+					verticies[baseIdx + 1].Color = color;
+					verticies[baseIdx + 1].TextureCoordinate = new Vector2(x + w, y);
 
-					verticies[4 * k + 2].Position = plane.BottomLeft().RotatedBy(particle.Rotation, plane.Center.ToVector2()).ToVector3();
-					verticies[4 * k + 2].Color = particle.Color * particle.Alpha;
-					verticies[4 * k + 2].TextureCoordinate = new Vector2(x, y + h);
+					verticies[baseIdx + 2].Position = plane.BottomLeft().RotatedBy(particle.Rotation, center).ToVector3();
+					verticies[baseIdx + 2].Color = color;
+					verticies[baseIdx + 2].TextureCoordinate = new Vector2(x, y + h);
 
-					verticies[4 * k + 3].Position = plane.BottomRight().RotatedBy(particle.Rotation, plane.Center.ToVector2()).ToVector3();
-					verticies[4 * k + 3].Color = particle.Color * particle.Alpha;
-					verticies[4 * k + 3].TextureCoordinate = new Vector2(x + w, y + h);
+					verticies[baseIdx + 3].Position = plane.BottomRight().RotatedBy(particle.Rotation, center).ToVector3();
+					verticies[baseIdx + 3].Color = color;
+					verticies[baseIdx + 3].TextureCoordinate = new Vector2(x + w, y + h);
 
-					indicies[6 * k + 0] = (short)(4 * k + 0);
-					indicies[6 * k + 1] = (short)(4 * k + 1);
-					indicies[6 * k + 2] = (short)(4 * k + 2);
-					indicies[6 * k + 3] = (short)(4 * k + 1);
-					indicies[6 * k + 4] = (short)(4 * k + 3);
-					indicies[6 * k + 5] = (short)(4 * k + 2);
+					indicies[baseIndexIdx + 0] = (short)(baseIdx + 0);
+					indicies[baseIndexIdx + 1] = (short)(baseIdx + 1);
+					indicies[baseIndexIdx + 2] = (short)(baseIdx + 2);
+					indicies[baseIndexIdx + 3] = (short)(baseIdx + 1);
+					indicies[baseIndexIdx + 4] = (short)(baseIdx + 3);
+					indicies[baseIndexIdx + 5] = (short)(baseIdx + 2);
 				}
 			});
 
@@ -132,7 +133,8 @@ namespace StarlightRiver.Core
 			{
 				spriteBatch.End();
 
-				PopulateBuffers();
+				if (!Main.gameInactive)
+					PopulateBuffers();
 
 				Main.instance.GraphicsDevice.SetVertexBuffer(vertexBuffer);
 				Main.instance.GraphicsDevice.Indices = indexBuffer;
@@ -168,7 +170,12 @@ namespace StarlightRiver.Core
 				return;
 
 			if (GetInstance<GraphicsConfig>().ParticlesActive && !Main.gameInactive && particles.Count < maxParticles)
+			{
+				if (particle.Frame == default)
+					particle.Frame = texture.Frame();
+
 				particles.Add(particle);
+			}
 		}
 
 		public void ClearParticles()
@@ -195,7 +202,7 @@ namespace StarlightRiver.Core
 		internal int Type;
 		internal Rectangle Frame;
 
-		public Particle(Vector2 position, Vector2 velocity, float rotation, float scale, Color color, int timer, Vector2 storedPosition, Rectangle frame = new Rectangle(), float alpha = 1, int type = 0)
+		public Particle(Vector2 position, Vector2 velocity, float rotation, float scale, Color color, int timer, Vector2 storedPosition, Rectangle frame = default, float alpha = 1, int type = 0)
 		{
 			Position = position;
 			Velocity = velocity;
