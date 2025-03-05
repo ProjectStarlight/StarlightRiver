@@ -156,6 +156,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				NPC.damage = 60;
 				NPC.defense = 14;
 			}
+
+			NPC.lifeMax = StarlightMathHelper.GetScaledBossLife(NPC.lifeMax, balance, numPlayers);
 		}
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)

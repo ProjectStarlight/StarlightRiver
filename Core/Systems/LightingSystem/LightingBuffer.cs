@@ -26,6 +26,9 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 
 		private static int refreshTimer;
 
+		private static Color[] tileLightingBuffer;
+		private static Effect upscaleEffect;
+
 		static float Factor => Main.screenHeight / (float)Main.screenWidth;
 
 		static int XMax => Main.screenWidth / 16 + PADDING * 2;
@@ -77,7 +80,11 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 		{
 			GettingColors = true;
 
-			var tileLightingBuffer = new Color[tileLightingTarget.RenderTarget.Width * tileLightingTarget.RenderTarget.Height];
+			if (tileLightingBuffer is null || tileLightingBuffer.Length != tileLightingTarget.RenderTarget.Width * tileLightingTarget.RenderTarget.Height)
+				tileLightingBuffer = new Color[tileLightingTarget.RenderTarget.Width * tileLightingTarget.RenderTarget.Height];
+
+			int xTile = (int)start.X / 16;
+			int yTile = (int)start.Y / 16;
 
 			FastParallel.For(0, tileLightingTarget.RenderTarget.Width * tileLightingTarget.RenderTarget.Height, (from, to, context) =>
 			{
@@ -85,7 +92,7 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 				{
 					int x = k % tileLightingTarget.RenderTarget.Width;
 					int y = k / tileLightingTarget.RenderTarget.Width;
-					tileLightingBuffer[k] = Lighting.GetColor((int)start.X / 16 + x, (int)start.Y / 16 + y);
+					tileLightingBuffer[k] = Lighting.GetColor(xTile + x, yTile + y);
 				}
 			});
 
@@ -113,7 +120,7 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 			if (lightingQuadBuffer == null)
 				SetupLightingQuadBuffer(); //a bit hacky, but if we do this on load we can end up with black textures for full screen users, and full screen does not fire set display mode events
 
-			Effect upscaleEffect = Filters.Scene["LightShader"].GetShader().Shader;
+			upscaleEffect ??= Filters.Scene["LightShader"].GetShader().Shader;
 
 			if (upscaleEffect is null)
 				return;
@@ -147,7 +154,7 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 				refreshTimer++;
 
 				if (Config.LightingPollRate != 0 && refreshTimer % Config.LightingPollRate == 0)
-					PopulateTileTexture((Main.screenPosition / 16).ToPoint16().ToVector2() * 16 - Vector2.One * PADDING * 16);
+					PopulateTileTexture((Main.screenPosition / 16).Round() * 16 - Vector2.One * PADDING * 16);
 
 				PopulateScreenTexture();
 			}

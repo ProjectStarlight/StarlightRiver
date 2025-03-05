@@ -36,7 +36,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public List<NPC> tentacles = new(); //the tentacle NPCs which this boss controls
 		public List<NPC> platforms = new(); //the big platforms the boss' arena has
 		public bool variantAttack;
-		public int baseLife;
 		public NPC arenaActor;
 		private NPC arenaBlocker;
 		Vector2 spawnPoint;
@@ -149,14 +148,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			NPC.knockBackResist = 0;
 			NPC.dontTakeDamage = true;
 			NPC.npcSlots = 10;
-
-			baseLife = 2000;
 		}
 
 		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 		{
 			NPC.lifeMax = Main.masterMode ? 8000 : 6000;
-			baseLife = Main.masterMode ? 4000 : 3000;
+			NPC.lifeMax = StarlightMathHelper.GetScaledBossLife(NPC.lifeMax, balance, numPlayers);
 		}
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)

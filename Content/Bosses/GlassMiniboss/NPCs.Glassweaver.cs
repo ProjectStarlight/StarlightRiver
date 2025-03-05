@@ -128,14 +128,16 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		{
 			NPC.lifeMax = 3000;
 			NPC.GetGlobalNPC<BarrierNPC>().maxBarrier = 650;
-			NPC.GetGlobalNPC<BarrierNPC>().barrier = 650;
 
 			if (Main.masterMode)
 			{
 				NPC.lifeMax = 4000;
 				NPC.GetGlobalNPC<BarrierNPC>().maxBarrier = 900;
-				NPC.GetGlobalNPC<BarrierNPC>().barrier = 900;
 			}
+
+			NPC.lifeMax = StarlightMathHelper.GetScaledBossLife(NPC.lifeMax, balance, numPlayers);
+			NPC.GetGlobalNPC<BarrierNPC>().maxBarrier = StarlightMathHelper.GetScaledBossLife(NPC.GetGlobalNPC<BarrierNPC>().maxBarrier, balance, numPlayers);
+			NPC.GetGlobalNPC<BarrierNPC>().barrier = NPC.GetGlobalNPC<BarrierNPC>().maxBarrier;
 		}
 
 		public override bool CheckDead()

@@ -187,7 +187,7 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 						if ((npc.ModNPC as MovingPlatform).CanFallThrough && self.GetModPlayer<StarlightPlayer>().platformTimer > 0)
 							continue;
 
-						if (fallThrough)
+						if ((npc.ModNPC as MovingPlatform).CanFallThrough && fallThrough)
 							self.GetModPlayer<StarlightPlayer>().platformTimer = 10;
 
 						self.gfxOffY = npc.gfxOffY;
