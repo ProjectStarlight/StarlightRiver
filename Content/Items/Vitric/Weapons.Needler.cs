@@ -567,9 +567,6 @@ namespace StarlightRiver.Content.Items.Vitric
 			{
 				float rot = Main.rand.NextFloat(0, 6.28f);
 
-				//Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedBy(rot) * Radius, ModContent.DustType<PixelatedGlow>(),
-				//Vector2.One.RotatedBy(rot) * 0.5f, 0, Color.Lerp(new Color(255, 200, 50, 0), new Color(255, 50, 20, 0), Eases.EaseQuinticOut(Progress)), Main.rand.NextFloat(0.2f, 0.3f));
-
 				Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedBy(rot) * Radius, DustID.Torch,
 					Vector2.One.RotatedBy(rot) * 0.5f, 0, default, Main.rand.NextFloat(1.5f, 3f)).noGravity = true;
 
