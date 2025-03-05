@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			new AmmoStruct(ItemID.SandBlock, ModContent.ProjectileType<SoilgunSandSoil>(), "Deals area of effect damage", 2),
 			new AmmoStruct(ItemID.EbonsandBlock, ModContent.ProjectileType<SoilgunEbonsandSoil>(), "Inflicts {{BUFF:EbonsandDebuff}}", 4),
 			new AmmoStruct(ItemID.PearlsandBlock, ModContent.ProjectileType<SoilgunPearlsandSoil>(), "Homes onto enemies", 15),
-			new AmmoStruct(ItemID.CrimsandBlock, ModContent.ProjectileType<SoilgunCrimsandSoil>(), "Gain regeneration on hit", 4),		
+			new AmmoStruct(ItemID.CrimsandBlock, ModContent.ProjectileType<SoilgunCrimsandSoil>(), "Gain regeneration on hit", 4),
 			new AmmoStruct(ItemID.SiltBlock, ModContent.ProjectileType<SoilgunSiltSoil>(), "Extracts some treasure when fired", 3),
 			new AmmoStruct(ItemID.SlushBlock, ModContent.ProjectileType<SoilgunSlushSoil>(), "Inflicts {{BUFF:Frostburn}}", 3),
 			new AmmoStruct(Mod.Find<ModItem>("VitricSandItem").Type, ModContent.ProjectileType<SoilgunVitricSandSoil>(), "Pierces enemies", 8),
@@ -115,7 +115,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			+ new Vector2(18f, -4f * Owner.direction).RotatedBy(Projectile.velocity.ToRotation()) + ArmOffset;
 
 		public Vector2 BarrelPosition => ArmPosition + Projectile.velocity * Projectile.width * 0.5f + BarrelOffset;
-		public Player Owner => Main.player[Projectile.owner];		
+		public Player Owner => Main.player[Projectile.owner];
 		public override string Texture => AssetDirectory.MiscItem + "Soilgun";
 
 		public override void SetStaticDefaults()
@@ -150,7 +150,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 					Projectile.timeLeft = 45;
 					updateVelocity = false;
 					Shot = true;
-				}				
+				}
 			}
 
 			if (Charge == 0f)
@@ -166,12 +166,12 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			{
 				Charge++;
 			}
-			
+
 			if (Charge >= MaxCharge && !flashed)
 			{
 				flashTimer = 25;
 				flashed = true;
-			}	
+			}
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -236,14 +236,14 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			Main.spriteBatch.Draw(texGlow, position, null, color * fade * ChargeProgress, rotation, texGlow.Size() / 2f, Projectile.scale, spriteEffects, 0f);
 
 			Main.spriteBatch.Draw(tex, position, null, lightColor * fade, rotation, tex.Size() / 2f, Projectile.scale, spriteEffects, 0f);
-			
+
 			Main.spriteBatch.Draw(texBlur, position, null, new Color(255, 255, 255, 0) * fade * ChargeProgress, rotation, texBlur.Size() / 2f, Projectile.scale, spriteEffects, 0f);
 
 			if (flashTimer > 0)
 			{
 				rotation = 2f * EaseBuilder.EaseCircularInOut.Ease(flashTimer / 25f);
 
-				Main.spriteBatch.Draw(starTex, BarrelPosition - Main.screenPosition, 
+				Main.spriteBatch.Draw(starTex, BarrelPosition - Main.screenPosition,
 					null, color * (flashTimer / 25f), rotation, starTex.Size() / 2f, Projectile.scale * 0.55f, 0f, 0f);
 
 				Main.spriteBatch.Draw(starTex, BarrelPosition - Main.screenPosition,
@@ -274,7 +274,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			if (Main.myPlayer == Projectile.owner)
 			{
 				if (ChargeProgress >= 1f)
-				{ 
+				{
 					Projectile.NewProjectile(Projectile.GetSource_FromThis(), BarrelPosition,
 							shootVelocity * 1f, (ghostProjectile.ModProjectile as SoilProjectile).ClumpType, damage * 5, knockBack, Owner.whoAmI);
 				}
@@ -290,7 +290,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 						proj.timeLeft = (int)MathHelper.Lerp(15f, 30f, ChargeProgress);
 						(proj.ModProjectile as SoilProjectile).maxTimeleft = MathHelper.Lerp(15f, 30f, ChargeProgress);
 					}
-				}			
+				}
 			}
 
 			Color outColor = (ghostProjectile.ModProjectile as SoilProjectile).Colors["TrailColor"];
@@ -331,7 +331,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 					Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(5f, 7.5f) + Main.rand.NextVector2Circular(1f, 1f), Main.rand.Next(70, 100), smokeColor, Main.rand.NextFloat(0.05f, 0.095f));
 
 				dust.rotation = Main.rand.NextFloat(6.28f);
-				dust.customData = smokeColor;			
+				dust.customData = smokeColor;
 			}
 
 			CameraSystem.shake += (int)MathHelper.Lerp(3, 8, ChargeProgress);

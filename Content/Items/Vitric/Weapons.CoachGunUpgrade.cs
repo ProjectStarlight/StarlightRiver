@@ -132,7 +132,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			{
 				float lerper = (animProgress - 0.35f) / 0.65f;
 				Dust.NewDustPerfect(itemPosition + new Vector2(55f, -2f * player.direction).RotatedBy(player.compositeFrontArm.rotation + 1.5707964f * player.gravDir), DustID.Wraith, Vector2.UnitY * -2f, (int)MathHelper.Lerp(210f, 200f, lerper), default, MathHelper.Lerp(0.75f, 1f, lerper)).noGravity = true;
-			
+
 				if (Main.rand.NextBool(20))
 					Dust.NewDustPerfect(itemPosition + new Vector2(55f, -2f * player.direction).RotatedBy(player.compositeFrontArm.rotation + 1.5707964f * player.gravDir), ModContent.DustType<CoachGunUpgradeSmokeDust>(), Vector2.Zero, 150, new Color(255, 150, 50), 0.075f).noGravity = true;
 			}
