@@ -32,6 +32,9 @@ namespace StarlightRiver.Helpers
 		/// <returns></returns>
 		public static int GetScaledBossLife(int life, float vanillaFactor, int playerCount)
 		{
+			if (playerCount <= 1)
+				return life;
+
 			return (int) (life * Math.Min(0.95f * playerCount, 0.1f * Math.Pow(playerCount, 1.5f) + 0.9f * vanillaFactor));
 		}
 	}
