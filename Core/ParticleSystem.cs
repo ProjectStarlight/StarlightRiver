@@ -1,8 +1,6 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Threading;
+﻿using ReLogic.Threading;
 using StarlightRiver.Content.Configs;
 using System.Collections.Generic;
-using Terraria.Graphics.Effects;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Core
@@ -18,19 +16,24 @@ namespace StarlightRiver.Core
 
 		public delegate void Update(Particle particle);
 
-		private readonly List<Particle> particles = [];
+		private readonly List<Particle> particles = new();
+		private readonly Queue<Particle> pool = new();
+
 		private Texture2D texture;
 		private readonly Update updateFunction;
 
 		private readonly AnchorOptions anchorType;
 
 		private readonly int maxParticles;
+		private int lastParticleCount;
 
 		private DynamicVertexBuffer vertexBuffer;
 		private DynamicIndexBuffer indexBuffer;
 
-		readonly VertexPositionColorTexture[] verticies;
-		readonly short[] indicies;
+		private readonly VertexPositionColorTexture[] verticies;
+		private readonly short[] indicies;
+
+		private bool buffersNeedUpdated;
 
 		private BasicEffect effect;
 
@@ -61,6 +64,9 @@ namespace StarlightRiver.Core
 			});
 		}
 
+		/// <summary>
+		/// Rebuilds the Vertex and Index buffers for this particle system when it updates
+		/// </summary>
 		public void PopulateBuffers()
 		{
 			if (Main.dedServ)
@@ -73,8 +79,6 @@ namespace StarlightRiver.Core
 				for (int k = from; k < to; k++)
 				{
 					Particle particle = particles[k];
-
-					updateFunction(particle);
 
 					plane.X = (int)(particle.Position.X - particle.Frame.Width / 2f * particle.Scale);
 					plane.Y = (int)(particle.Position.Y - particle.Frame.Height / 2f * particle.Scale);
@@ -117,15 +121,23 @@ namespace StarlightRiver.Core
 				}
 			});
 
-			for (int k = particles.Count * 4; k < maxParticles * 4; k++)
+			for (int k = particles.Count * 4; k < lastParticleCount * 4; k++)
 			{
 				verticies[k] = default;
 			}
 
+			lastParticleCount = particles.Count;
+
 			vertexBuffer?.SetData(verticies);
 			indexBuffer?.SetData(indicies);
+
+			buffersNeedUpdated = false;
 		}
 
+		/// <summary>
+		/// Renders your particles with a BasicEffect
+		/// </summary>
+		/// <param name="spriteBatch">The current spriteBatch instance</param>
 		public void DrawParticles(SpriteBatch spriteBatch)
 		{
 			if (Main.dedServ)
@@ -135,7 +147,7 @@ namespace StarlightRiver.Core
 			{
 				spriteBatch.End();
 
-				if (!Main.gameInactive)
+				if (buffersNeedUpdated)
 					PopulateBuffers();
 
 				Main.instance.GraphicsDevice.SetVertexBuffer(vertexBuffer);
@@ -150,6 +162,7 @@ namespace StarlightRiver.Core
 				};
 
 				Vector2 offset = anchorType == AnchorOptions.World ? Main.screenPosition : Vector2.Zero;
+
 				effect.World = Matrix.CreateTranslation(-offset.ToVector3());
 				effect.View = anchorType == AnchorOptions.UI ? Matrix.Identity : zoom;
 				effect.Projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
@@ -161,11 +174,14 @@ namespace StarlightRiver.Core
 				}
 
 				Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, default, zoom);
-
-				particles.RemoveAll(n => n is null || n.Timer <= 0);
 			}
 		}
 
+		/// <summary>
+		/// Renders your particles with a custom shader. This shader must accept 4 parameters, World, View, Projection, and texture0.
+		/// </summary>
+		/// <param name="spriteBatch">The current spriteBatch instance</param>
+		/// <param name="effect">The custom effect to use to render your particles</param>
 		public void DrawParticlesWithEffect(SpriteBatch spriteBatch, Effect effect)
 		{
 			if (Main.dedServ)
@@ -175,11 +191,12 @@ namespace StarlightRiver.Core
 			{
 				spriteBatch.End();
 
-				PopulateBuffers();
+				if (buffersNeedUpdated)
+					PopulateBuffers();
 
 				Main.instance.GraphicsDevice.SetVertexBuffer(vertexBuffer);
 				Main.instance.GraphicsDevice.Indices = indexBuffer;
-				//Main.instance.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+
 				Matrix zoom = anchorType switch
 				{
 					AnchorOptions.World => Main.GameViewMatrix.TransformationMatrix,
@@ -202,30 +219,73 @@ namespace StarlightRiver.Core
 				}
 
 				Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, default, zoom);
-
-				particles.RemoveAll(n => n is null || n.Timer <= 0);
 			}
 		}
 
-		public void AddParticle(Particle particle)
+		/// <summary>
+		/// Updates all particles in this system, needed to make your update function take effect
+		/// </summary>
+		public void UpdateParticles()
 		{
-			if (Main.dedServ)
+			int activeCount = 0;
+
+			for (int k = 0; k < particles.Count; k++)
+			{
+				Particle particle = particles[k];
+				updateFunction(particle);
+
+				if (particle.Timer <= 0)
+				{
+					pool.Enqueue(particle);
+					continue;
+				}
+
+				particles[activeCount++] = particle;
+			}
+
+			particles.RemoveRange(activeCount, particles.Count - activeCount);
+			buffersNeedUpdated = true;
+		}
+
+		/// <summary>
+		/// Spawns a particle into this particle system, drawing first from the pool if possible
+		/// </summary>
+		/// <param name="position"></param>
+		/// <param name="velocity"></param>
+		/// <param name="rotation"></param>
+		/// <param name="scale"></param>
+		/// <param name="color"></param>
+		/// <param name="timer"></param>
+		/// <param name="storedPosition"></param>
+		/// <param name="frame"></param>
+		/// <param name="alpha"></param>
+		/// <param name="type"></param>
+		public void AddParticle(Vector2 position, Vector2 velocity, float rotation, float scale, Color color, int timer, Vector2 storedPosition, Rectangle frame = default, float alpha = 1, int type = 0)
+		{
+			if (Main.dedServ || !GetInstance<GraphicsConfig>().ParticlesActive || particles.Count > maxParticles)
 				return;
 
-			if (GetInstance<GraphicsConfig>().ParticlesActive && !Main.gameInactive && particles.Count < maxParticles)
-			{
-				if (particle.Frame == default)
-					particle.Frame = texture.Frame();
+			Particle particle = pool.Count > 0 ? pool.Dequeue() : new();
 
-				particles.Add(particle);
-			}
+			if (frame == default)
+				frame = texture.Frame();
+
+			particle.SetData(position, velocity, rotation, scale, color, timer, storedPosition, frame, alpha, type);
+			particles.Add(particle);
 		}
 
+		/// <summary>
+		/// Removes all particles from this system forcibly, resetting the pool
+		/// </summary>
 		public void ClearParticles()
 		{
 			particles.Clear();
 		}
 
+		/// <summary>
+		/// Changes the texture used by all particles in this system
+		/// </summary>
+		/// <param name="texture">The new texture to use</param>
 		public void SetTexture(Texture2D texture)
 		{
 			this.texture = texture;
@@ -245,7 +305,26 @@ namespace StarlightRiver.Core
 		internal int Type;
 		internal Rectangle Frame;
 
+		public Particle()
+		{
+
+		}
+
 		public Particle(Vector2 position, Vector2 velocity, float rotation, float scale, Color color, int timer, Vector2 storedPosition, Rectangle frame = default, float alpha = 1, int type = 0)
+		{
+			Position = position;
+			Velocity = velocity;
+			Rotation = rotation;
+			Scale = scale;
+			Color = color;
+			Timer = timer;
+			StoredPosition = storedPosition;
+			Frame = frame;
+			Alpha = alpha;
+			Type = type;
+		}
+
+		public void SetData(Vector2 position, Vector2 velocity, float rotation, float scale, Color color, int timer, Vector2 storedPosition, Rectangle frame = default, float alpha = 1, int type = 0)
 		{
 			Position = position;
 			Velocity = velocity;

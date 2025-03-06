@@ -15,14 +15,14 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public override bool InstancePerEntity => true;
 
-		private static ParticleSystem.Update UpdateRelic => UpdateRelicBody;
+		/*private static ParticleSystem.Update UpdateRelic => UpdateRelicBody;
 
 		private static ParticleSystem.Update UpdateRelicTooltip => UpdateRelicTooltipBody;
 
 		public ParticleSystem RelicParticleSystem = default;
 		public ParticleSystem RelicParticleSystemBehind = default;
 
-		public ParticleSystem RelicTooltipParticleSystem = default;
+		public ParticleSystem RelicTooltipParticleSystem = default;*/
 
 		public Color RelicColor(int offset)
 		{
@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public override void UpdateInventory(Item item, Player player)
 		{
-			if (isRelic)
+			/*if (isRelic)
 			{
 				if (RelicParticleSystem == default)
 				{
@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 				RelicParticleSystem = default;
 				RelicParticleSystemBehind = default;
 				RelicTooltipParticleSystem = default;
-			}
+			}*/
 		}
 
 		public override bool PreDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
@@ -78,11 +78,11 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			int fadeTime = Main.rand.Next(100, 130);
 			if (Main.rand.NextBool(18))
 			{
-				RelicParticleSystem?.AddParticle(new Particle(frontPos, new Vector2(0, 0), 0, particleScale, color, 200, new Vector2(fadeTime, sin), default, 0));
-				RelicParticleSystemBehind?.AddParticle(new Particle(backPos, new Vector2(0, 0), 0, particleScale * backScale, colorBehind, 200, new Vector2(fadeTime, sin), default, 0));
+				//RelicParticleSystem?.AddParticle(frontPos, new Vector2(0, 0), 0, particleScale, color, 200, new Vector2(fadeTime, sin), default, 0);
+				//RelicParticleSystemBehind?.AddParticle(backPos, new Vector2(0, 0), 0, particleScale * backScale, colorBehind, 200, new Vector2(fadeTime, sin), default, 0);
 			}
 
-			RelicParticleSystemBehind?.DrawParticles(spriteBatch);
+			//RelicParticleSystemBehind?.DrawParticles(spriteBatch);
 
 			return base.PreDrawInInventory(item, spriteBatch, position, frame, drawColor, ItemColor, origin, scale);
 		}
@@ -95,10 +95,10 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			float scale = Main.UIScale;
 			Vector2 position = new Vector2(line.OriginalX + 7, line.OriginalY + 7) + (line.Font.MeasureString(line.Text) - new Vector2(14, 14)) * scale * new Vector2(Main.rand.NextFloat(), Main.rand.NextFloat());
 
-			if (tooltipSparkleCounter++ % 14 == 0)
-				RelicTooltipParticleSystem?.AddParticle(new Particle(position, Vector2.Zero, 0, Main.UIScale * Main.rand.NextFloat(0.85f, 1.15f), Color.White, 20, Vector2.Zero, new Rectangle(0, 0, 14, 14)));
+			//if (tooltipSparkleCounter++ % 14 == 0)
+				//RelicTooltipParticleSystem?.AddParticle(position, Vector2.Zero, 0, Main.UIScale * Main.rand.NextFloat(0.85f, 1.15f), Color.White, 20, Vector2.Zero, new Rectangle(0, 0, 14, 14));
 
-			RelicTooltipParticleSystem?.DrawParticles(Main.spriteBatch);
+			//RelicTooltipParticleSystem?.DrawParticles(Main.spriteBatch);
 
 			return base.PreDrawTooltipLine(item, line, ref yOffset);
 		}
@@ -108,7 +108,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			if (!isRelic)
 				return;
 
-			RelicParticleSystem?.DrawParticles(spriteBatch);
+			//RelicParticleSystem?.DrawParticles(spriteBatch);
 		}
 
 		public override GlobalItem Clone(Item item, Item itemClone)

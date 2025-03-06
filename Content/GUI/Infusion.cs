@@ -140,9 +140,12 @@ namespace StarlightRiver.Content.GUI
 			{
 				gainAnimationTimer--;
 				DrawGainAnimation(spriteBatch, 240 - gainAnimationTimer);
+
+				gainAnimationParticles.UpdateParticles();
+				gainAnimationParticles.DrawParticles(spriteBatch);
 			}
 
-			gainAnimationParticles.DrawParticles(spriteBatch);
+			sparkleParticles.UpdateParticles();
 			sparkleParticles.DrawParticles(spriteBatch);
 
 			if (InGainAnimation)
@@ -169,6 +172,7 @@ namespace StarlightRiver.Content.GUI
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
 
+			linkParticles.UpdateParticles();
 			linkParticles.DrawParticles(spriteBatch);
 
 			spriteBatch.End();
@@ -202,7 +206,6 @@ namespace StarlightRiver.Content.GUI
 					float rot = Main.rand.NextFloat(6.28f);
 
 					gainAnimationParticles.AddParticle(
-						new Particle(
 								position: pos + new Vector2(30, 18) + Vector2.One.RotatedBy(rot) * Main.rand.NextFloat(80, 150),
 								velocity: Vector2.One.RotatedBy(rot + 1.57f) * 3.5f,
 								rotation: 0,
@@ -211,7 +214,6 @@ namespace StarlightRiver.Content.GUI
 								timer: 80,
 								storedPosition: pos + new Vector2(30, 18),
 								alpha: 0
-							)
 						);
 				}
 			}
@@ -257,7 +259,6 @@ namespace StarlightRiver.Content.GUI
 			if (timer >= 90 && Main.rand.NextBool(4))
 			{
 				sparkleParticles.AddParticle(
-					new Particle(
 						position: pos + new Vector2(Main.rand.Next(60), Main.rand.Next(60)),
 						velocity: Vector2.UnitY * Main.rand.NextFloat(0.2f),
 						rotation: 0,
@@ -265,7 +266,7 @@ namespace StarlightRiver.Content.GUI
 						color: new Color(255, 50, 50),
 						timer: 90,
 						storedPosition: new Vector2(Main.rand.NextFloat(0.4f, 0.7f), 0),
-						frame: new Rectangle(0, 0, 15, 15))
+						frame: new Rectangle(0, 0, 15, 15)
 					);
 			}
 
@@ -367,7 +368,7 @@ namespace StarlightRiver.Content.GUI
 					Vector2 targetPos = AbilityInventory.abilityIconPositions.ContainsKey(equipped.AbilityType) ? AbilityInventory.abilityIconPositions[equipped.AbilityType] : Vector2.Zero;
 					Vector2 startPos = GetDimensions().Center();
 					float dist = Vector2.Distance(targetPos, startPos);
-					Infusion.linkParticles.AddParticle(new Particle(startPos, Vector2.UnitX * dist, 0, Main.rand.NextFloat(0.2f, 0.25f), equipped.color, (int)dist, targetPos));
+					Infusion.linkParticles.AddParticle(startPos, Vector2.UnitX * dist, 0, Main.rand.NextFloat(0.2f, 0.25f), equipped.color, (int)dist, targetPos);
 				}
 
 				//Draws the Item itself

@@ -96,6 +96,9 @@ namespace StarlightRiver.Content.NPCs.BossRush
 			{
 				NPC.velocity = Vector2.Zero;
 
+				starlight.UpdateParticles();
+				starlightLines.UpdateParticles();
+
 				if (warpAnimationTimer == 0)
 				{
 					for (int i = 0; i < 100; i++)
@@ -142,12 +145,12 @@ namespace StarlightRiver.Content.NPCs.BossRush
 						{
 							A = 0
 						};
-						starlight.AddParticle(new Particle(pos, Vector2.Zero, 0, Main.rand.NextFloat(0.2f), starColor, 600, Vector2.One * Main.rand.NextFloat(3f), default, 1));
+						starlight.AddParticle(pos, Vector2.Zero, 0, Main.rand.NextFloat(0.2f), starColor, 600, Vector2.One * Main.rand.NextFloat(3f), default, 1);
 
 						if (Main.rand.NextBool())
 						{
 							pos = originalPos + Vector2.One.RotatedByRandom(MathHelper.TwoPi) * Main.screenWidth / 2 * (Main.rand.NextFloat() + 0.7f);
-							starlightLines.AddParticle(new Particle(pos, Vector2.Zero, 0, Main.rand.NextFloat(0.5f), starColor, 600, Vector2.One * Main.rand.NextFloat(3f), default, 1));
+							starlightLines.AddParticle(pos, Vector2.Zero, 0, Main.rand.NextFloat(0.5f), starColor, 600, Vector2.One * Main.rand.NextFloat(3f), default, 1);
 						}
 					}
 				}
@@ -168,7 +171,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 						Vector2 direction = Vector2.One.RotateRandom(MathHelper.TwoPi) * Main.rand.NextFloat(0.9f, 1.1f);
 
 						Vector2 pos = originalPos - Main.screenPosition + direction * 20;
-						StarlightRiverBackground.stars.AddParticle(new Particle(pos, direction * 30 * (0.6f + (1 - bgStarOpacity) * 0.2f), 0, 0, starColor, 60, Vector2.One * Main.rand.NextFloat(1f, 3.3f), new Rectangle(0, 0, 120, 120), 1, 1));
+						StarlightRiverBackground.stars.AddParticle(pos, direction * 30 * (0.6f + (1 - bgStarOpacity) * 0.2f), 0, 0, starColor, 60, Vector2.One * Main.rand.NextFloat(1f, 3.3f), new Rectangle(0, 0, 120, 120), 1, 1);
 					}
 
 					StarlightRiverBackground.starOpacity = 0;

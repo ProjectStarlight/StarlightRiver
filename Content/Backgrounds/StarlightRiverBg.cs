@@ -59,9 +59,7 @@ namespace StarlightRiver.Content.Backgrounds
 			if (CheckIsActive != null)
 			{
 				if (forceActive)
-				{
 					return true;
-				}
 
 				bool isActive = false;
 				foreach (CheckIsActiveDelegate del in CheckIsActiveEvent.GetInvocationList())
@@ -276,7 +274,7 @@ namespace StarlightRiver.Content.Backgrounds
 					A = 0
 				};
 
-				stars.AddParticle(new Particle(pos, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.05f, 0.2f) * (scale / 0.35f), 0, scale, color * 0.8f, 1600, pos + Main.screenPosition, new Rectangle(0, 120, 120, 120), 1, 2));
+				stars.AddParticle(pos, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.05f, 0.2f) * (scale / 0.35f), 0, scale, color * 0.8f, 1600, pos + Main.screenPosition, new Rectangle(0, 120, 120, 120), 1, 2);
 			}
 
 			if (Main.rand.NextBool(2, 3))
@@ -297,8 +295,12 @@ namespace StarlightRiver.Content.Backgrounds
 					partColor *= 1.5f;
 				}
 
-				stars.AddParticle(new Particle(new Vector2(0, Main.screenHeight * 0.2f + prog * 0f), new Vector2(Main.rand.NextFloat(1f, 5f) + prog * 4f, 1), 0, partScale, partColor, 600, Vector2.One * (-70 + prog * 140f), new Rectangle(0, star ? 120 : 0, 120, 120), 1f));
+				stars.AddParticle(new Vector2(0, Main.screenHeight * 0.2f + prog * 0f), new Vector2(Main.rand.NextFloat(1f, 5f) + prog * 4f, 1), 0, partScale, partColor, 600, Vector2.One * (-70 + prog * 140f), new Rectangle(0, star ? 120 : 0, 120, 120), 1f);
 			}
+
+			stars.UpdateParticles();
+
+			forceActive = false;
 		}
 
 		private void UpdateOnMenu(On_Main.orig_UpdateMenu orig)

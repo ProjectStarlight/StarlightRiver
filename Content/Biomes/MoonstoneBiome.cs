@@ -109,6 +109,13 @@ namespace StarlightRiver.Content.Biomes
 				if (opacity < 1)
 					opacity += 0.001f * (overrideVFXActive ? 10 : 1);
 			}
+
+			if (opacity > 0)
+			{
+				particleSystem.UpdateParticles();
+				particleSystemMedium.UpdateParticles();
+				particleSystemLarge.UpdateParticles();
+			}
 		}
 
 		public override void ResetNearbyTileEffects()
@@ -207,20 +214,20 @@ namespace StarlightRiver.Content.Biomes
 
 			if (Main.rand.NextBool(150))
 			{
-				particleSystem.AddParticle(new Particle(Vector2.Zero, Main.rand.NextVector2Circular(0.35f, 0.35f), 0, Main.rand.NextFloat(0.8f, 1.2f), Color.White,
-					2000, new Vector2(Main.screenPosition.X + Main.rand.Next(Main.screenWidth), Main.screenPosition.Y + Main.rand.Next(Main.screenHeight)), new Rectangle(0, 32 * Main.rand.Next(6), 32, 32)));
+				particleSystem.AddParticle(Vector2.Zero, Main.rand.NextVector2Circular(0.35f, 0.35f), 0, Main.rand.NextFloat(0.8f, 1.2f), Color.White,
+					2000, new Vector2(Main.screenPosition.X + Main.rand.Next(Main.screenWidth), Main.screenPosition.Y + Main.rand.Next(Main.screenHeight)), new Rectangle(0, 32 * Main.rand.Next(6), 32, 32));
 			}
 
 			if (Main.rand.NextBool(300))
 			{
-				particleSystemMedium.AddParticle(new Particle(Vector2.Zero, Main.rand.NextVector2Circular(0.25f, 0.25f), 0, Main.rand.NextFloat(0.8f, 1.2f), Color.White,
-					2000, new Vector2(Main.screenPosition.X + Main.rand.Next(Main.screenWidth), Main.screenPosition.Y + Main.rand.Next(Main.screenHeight)), new Rectangle(0, 46 * Main.rand.Next(4), 50, 46)));
+				particleSystemMedium.AddParticle(Vector2.Zero, Main.rand.NextVector2Circular(0.25f, 0.25f), 0, Main.rand.NextFloat(0.8f, 1.2f), Color.White,
+					2000, new Vector2(Main.screenPosition.X + Main.rand.Next(Main.screenWidth), Main.screenPosition.Y + Main.rand.Next(Main.screenHeight)), new Rectangle(0, 46 * Main.rand.Next(4), 50, 46));
 			}
 
 			if (Main.rand.NextBool(600))
 			{
-				particleSystemLarge.AddParticle(new Particle(Vector2.Zero, Main.rand.NextVector2Circular(0.2f, 0.2f), 0, Main.rand.NextFloat(0.8f, 1.2f), Color.White,
-					2000, new Vector2(Main.screenPosition.X + Main.rand.Next(Main.screenWidth), Main.screenPosition.Y + Main.rand.Next(Main.screenHeight)), new Rectangle(0, 60 * Main.rand.Next(4), 50, 60)));
+				particleSystemLarge.AddParticle(Vector2.Zero, Main.rand.NextVector2Circular(0.2f, 0.2f), 0, Main.rand.NextFloat(0.8f, 1.2f), Color.White,
+					2000, new Vector2(Main.screenPosition.X + Main.rand.Next(Main.screenWidth), Main.screenPosition.Y + Main.rand.Next(Main.screenHeight)), new Rectangle(0, 60 * Main.rand.Next(4), 50, 60));
 			}
 
 			Main.spriteBatch.End();

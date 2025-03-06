@@ -160,7 +160,6 @@ namespace StarlightRiver.Content.Items.Moonstone
 					for (int k = 0; k < 3; k++)
 					{
 						sparkles.AddParticle(
-							new Particle(
 								new Vector2(111 + backTex.Width * activationTimer, 20 + Main.rand.Next(backTex.Height)),
 								new Vector2(Main.rand.NextFloat(-0.6f, -0.3f), Main.rand.NextFloat(3f)),
 								Main.rand.NextFloat(6.28f),
@@ -168,14 +167,13 @@ namespace StarlightRiver.Content.Items.Moonstone
 								Color.White,
 								60,
 								new Vector2(Main.rand.NextFloat(0.15f, 0.2f), Main.rand.NextFloat(6.28f)),
-								new Rectangle(0, 0, 100, 100)));
+								new Rectangle(0, 0, 100, 100));
 					}
 				}
 
 				if (Main.rand.NextBool(4))
 				{
 					sparkles.AddParticle(
-						new Particle(
 							new Vector2(111, 20) + new Vector2(Main.rand.Next(backTex.Width),
 							Main.rand.Next(backTex.Height)),
 							new Vector2(0, Main.rand.NextFloat(0.4f)),
@@ -184,7 +182,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 							new Color(255, 230, 0),
 							120,
 							new Vector2(Main.rand.NextFloat(0.05f, 0.15f), 0.02f),
-							new Rectangle(0, 0, 100, 100)));
+							new Rectangle(0, 0, 100, 100));
 				}
 			}
 		}
@@ -265,6 +263,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 				if (activationTimer < 120)
 					activationTimer++;
+
+				sparkles?.UpdateParticles();
 			}
 		}
 

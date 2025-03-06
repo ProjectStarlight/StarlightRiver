@@ -174,6 +174,9 @@ namespace StarlightRiver.Content.GUI
 		{
 			Main.LocalPlayer.mouseInterface = true;
 
+			slotParticles.UpdateParticles();
+			leafParticles.UpdateParticles();
+
 			if (EnchantmentMenu.active && animationTimer < 180)
 				animationTimer++;
 			if (!EnchantmentMenu.active)
@@ -264,13 +267,13 @@ namespace StarlightRiver.Content.GUI
 					spriteBatch.Draw(PopupTexture, GetDimensions().Center(), PopupTexture.Frame(), Color.White, 0, PopupTexture.Frame().Size() / 2, scale, 0, 0);
 
 					Vector2 pos = GetDimensions().Center() + Vector2.UnitY * 45 + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5);
-					slotParticles.AddParticle(new Particle(pos, Vector2.UnitY * -Main.rand.NextFloat(0.4f, 0.6f), 0, Main.rand.NextFloat(0.6f, 1.2f), ItemRarity.GetColor(Item.rare) * 0.8f, 1, Vector2.Zero));
+					slotParticles.AddParticle(pos, Vector2.UnitY * -Main.rand.NextFloat(0.4f, 0.6f), 0, Main.rand.NextFloat(0.6f, 1.2f), ItemRarity.GetColor(Item.rare) * 0.8f, 1, Vector2.Zero);
 				}
 
 				if (Main.rand.NextBool(20))
 				{
 					Vector2 pos = GetDimensions().Center() + Vector2.UnitY.RotatedByRandom(1f) * (35 + Main.rand.NextFloat(5));
-					leafParticles.AddParticle(new Particle(pos, new Vector2(Main.rand.NextFloat(500), Main.rand.NextFloat(0.4f, 0.8f)), 0, Main.rand.NextFloat(0.5f, 0.7f), Color.White, 120, pos));
+					leafParticles.AddParticle(pos, new Vector2(Main.rand.NextFloat(500), Main.rand.NextFloat(0.4f, 0.8f)), 0, Main.rand.NextFloat(0.5f, 0.7f), Color.White, 120, pos);
 				}
 			}
 
@@ -287,7 +290,7 @@ namespace StarlightRiver.Content.GUI
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_DarkMageHealImpact);
 
 				for (int k = 0; k < 50; k++)
-					slotParticles.AddParticle(new Particle(GetDimensions().Center() + Vector2.UnitY * 45, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(8), 0, Main.rand.NextFloat(0.4f, 0.6f), ItemRarity.GetColor(Item.rare), 1, Vector2.One));
+					slotParticles.AddParticle(GetDimensions().Center() + Vector2.UnitY * 45, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(8), 0, Main.rand.NextFloat(0.4f, 0.6f), ItemRarity.GetColor(Item.rare), 1, Vector2.One);
 			}
 
 			else if (!Item.IsAir && Main.mouseItem.IsAir)

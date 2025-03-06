@@ -7,7 +7,9 @@ namespace StarlightRiver.Content.Items.Misc
 {
 	internal class MagmaMetaballs : MetaballActor
 	{
-		public override bool Active => Main.projectile.Any(n => n.active && (n.type == ModContent.ProjectileType<MagmaGunPhantomProj>() || n.type == ModContent.ProjectileType<ArrowMagma>()));
+		public static int activeTime;
+
+		public override bool Active => activeTime > 0;
 
 		public override Color OutlineColor => new(255, 254, 255);
 
@@ -52,6 +54,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+		
+			activeTime--;
 		}
 
 		public override bool PostDraw(SpriteBatch spriteBatch, Texture2D target)

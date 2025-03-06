@@ -133,14 +133,16 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 				if (target.drawFunct is null) //allows for RTs which dont draw in the default loop, like the lighting tile buffers
 					continue;
 
-				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default);
-				Main.graphics.GraphicsDevice.SetRenderTarget(target.RenderTarget);
-				Main.graphics.GraphicsDevice.Clear(Color.Transparent);
-
 				if (target.activeFunct())
+				{
+					Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default);
+					Main.graphics.GraphicsDevice.SetRenderTarget(target.RenderTarget);
+					Main.graphics.GraphicsDevice.Clear(Color.Transparent);
+
 					target.drawFunct(Main.spriteBatch);
 
-				Main.spriteBatch.End();
+					Main.spriteBatch.End();
+				}
 			}
 
 			Main.graphics.GraphicsDevice.SetRenderTargets(bindings);

@@ -28,9 +28,10 @@ namespace StarlightRiver.Compat.BossChecklist
 		public static void DrawAuroraclePortrait(SpriteBatch spriteBatch, Rectangle rect, Color color)
 		{
 			if (Main.rand.NextBool(3))
-				auroracleSystem.AddParticle(new Particle(rect.Center() + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(120), Vector2.UnitY * -Main.rand.NextFloat(), Main.rand.NextFloat(6.28f), Main.rand.NextFloat(0.25f, 0.45f), new Color(200, 200, 0), 300, Vector2.Zero, new Rectangle(0, 0, 100, 100)));
+				auroracleSystem.AddParticle(rect.Center() + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(120), Vector2.UnitY * -Main.rand.NextFloat(), Main.rand.NextFloat(6.28f), Main.rand.NextFloat(0.25f, 0.45f), new Color(200, 200, 0), 300, Vector2.Zero, new Rectangle(0, 0, 100, 100));
 
-			//float sin = 0.8f + (float)Math.Sin(Main.GameUpdateCount / 100f) * 0.1f;
+			// Have to call this in draw unfortunately.
+			auroracleSystem.UpdateParticles();
 
 			Texture2D body = Assets.BossChecklist.SquidBoss.Value;
 			Texture2D glow = Assets.BossChecklist.SquidBossGlow.Value;

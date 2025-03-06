@@ -88,6 +88,23 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			return false;
 		}
 
+		private void DoParticleUpdates()
+		{
+			if (Main.rand.NextBool(4))
+				bubblesSystem.AddParticle(Vector2.Zero, new Vector2(Main.rand.NextFloat(6.28f), -Main.rand.NextFloat(0.6f, 1.2f)), 0, Main.rand.NextFloat(0.4f, 0.8f), Color.White * Main.rand.NextFloat(0.2f, 0.4f), 700, NPC.Center + new Vector2(Main.rand.Next(-600, 600), 500), new Rectangle(0, Main.rand.Next(3) * 16, 16, 16));
+
+			if (Main.rand.NextBool(4))
+				bubblesSystem.AddParticle(Vector2.Zero, new Vector2(Main.rand.NextFloat(6.28f), -Main.rand.NextFloat(0.6f, 1.2f)), 0, Main.rand.NextFloat(0.4f, 0.8f), Color.White * Main.rand.NextFloat(0.2f, 0.4f), 700, NPC.Center + new Vector2(Main.rand.Next(-600, 600), Main.rand.Next(-1200, -600)), new Rectangle(0, Main.rand.Next(3) * 16, 16, 16));
+
+			if (Main.rand.NextBool(20))
+				bubblesSystem.AddParticle(Vector2.Zero, new Vector2(Main.rand.NextFloat(6.28f), -Main.rand.NextFloat(1.6f, 2.2f)), 0, Main.rand.NextFloat(1.0f, 1.4f), Color.White * Main.rand.NextFloat(0.4f, 0.5f), 700, NPC.Center + new Vector2(Main.rand.Next(-600, 600), 500), new Rectangle(0, Main.rand.Next(3) * 16, 16, 16));
+
+			if (Main.rand.NextBool(20))
+				bubblesSystem.AddParticle(Vector2.Zero, new Vector2(Main.rand.NextFloat(6.28f), -Main.rand.NextFloat(1.6f, 2.2f)), 0, Main.rand.NextFloat(1.0f, 1.4f), Color.White * Main.rand.NextFloat(0.4f, 0.5f), 700, NPC.Center + new Vector2(Main.rand.Next(-600, 600), Main.rand.Next(-1200, -600)), new Rectangle(0, Main.rand.Next(3) * 16, 16, 16));
+
+			bubblesSystem.UpdateParticles();
+		}
+
 		public override void AI()
 		{
 			VisualTimerA += 0.04f; //used as timers for visuals
@@ -97,14 +114,19 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			NPC.Center = new Vector2(StarlightWorld.squidBossArena.Center.X * 16 + 8, StarlightWorld.squidBossArena.Center.Y * 16 + 56 * 16);
 			NPC.velocity *= 0;
 
-			if ((int)(VisualTimerA * 1 / 0.04f) % 60 == 0)
-				NPC.netUpdate = true;
-
 			bool anyoneInside = false;
 			foreach (Player player in Main.ActivePlayers)
 			{
 				if (player.InModBiome<PermafrostTempleBiome>())
 					anyoneInside = true;
+			}
+
+			if (anyoneInside)
+			{
+				DoParticleUpdates();
+
+				if ((int)(VisualTimerA * 1 / 0.04f) % 60 == 0)
+					NPC.netUpdate = true;
 			}
 
 			if (anyoneInside && !NPC.AnyNPCs(NPCType<SquidBoss>()))
@@ -454,18 +476,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			}
 
 			bubblesSystem.DrawParticles(spriteBatch);
-
-			if (Main.rand.NextBool(4))
-				bubblesSystem.AddParticle(new Particle(Vector2.Zero, new Vector2(Main.rand.NextFloat(6.28f), -Main.rand.NextFloat(0.6f, 1.2f)), 0, Main.rand.NextFloat(0.4f, 0.8f), Color.White * Main.rand.NextFloat(0.2f, 0.4f), 700, pos + new Vector2(Main.rand.Next(-600, 600), 500), new Rectangle(0, Main.rand.Next(3) * 16, 16, 16)));
-
-			if (Main.rand.NextBool(4))
-				bubblesSystem.AddParticle(new Particle(Vector2.Zero, new Vector2(Main.rand.NextFloat(6.28f), -Main.rand.NextFloat(0.6f, 1.2f)), 0, Main.rand.NextFloat(0.4f, 0.8f), Color.White * Main.rand.NextFloat(0.2f, 0.4f), 700, pos + new Vector2(Main.rand.Next(-600, 600), Main.rand.Next(-1200, -600)), new Rectangle(0, Main.rand.Next(3) * 16, 16, 16)));
-
-			if (Main.rand.NextBool(20))
-				bubblesSystem.AddParticle(new Particle(Vector2.Zero, new Vector2(Main.rand.NextFloat(6.28f), -Main.rand.NextFloat(1.6f, 2.2f)), 0, Main.rand.NextFloat(1.0f, 1.4f), Color.White * Main.rand.NextFloat(0.4f, 0.5f), 700, pos + new Vector2(Main.rand.Next(-600, 600), 500), new Rectangle(0, Main.rand.Next(3) * 16, 16, 16)));
-
-			if (Main.rand.NextBool(20))
-				bubblesSystem.AddParticle(new Particle(Vector2.Zero, new Vector2(Main.rand.NextFloat(6.28f), -Main.rand.NextFloat(1.6f, 2.2f)), 0, Main.rand.NextFloat(1.0f, 1.4f), Color.White * Main.rand.NextFloat(0.4f, 0.5f), 700, pos + new Vector2(Main.rand.Next(-600, 600), Main.rand.Next(-1200, -600)), new Rectangle(0, Main.rand.Next(3) * 16, 16, 16)));
 
 			spriteBatch.End(); //we have to restart the SB here anyways, so lets use it to draw our BG with primitives
 

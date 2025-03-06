@@ -417,6 +417,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool PreDraw(ref Color lightColor)
 		{
+			MagmaMetaballs.activeTime = 6;
+
 			foreach (MagmaGlob glob in Globs)
 			{
 				if (glob.active)
@@ -517,6 +519,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool Update(Dust dust)
 		{
+			MagmaMetaballs.activeTime = 6;
+
 			dust.position += dust.velocity;
 
 			if (dust.noGravity)
