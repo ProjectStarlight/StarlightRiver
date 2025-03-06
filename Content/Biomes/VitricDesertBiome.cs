@@ -30,6 +30,9 @@ namespace StarlightRiver.Content.Biomes
 			Assets.Backgrounds.Glass5
 		};
 
+		private static Vector2 parallaxOrigin;
+		private static float vanillaParallax;
+
 		public override string BestiaryIcon => AssetDirectory.Biomes + "VitricDesertIcon";
 
 		public override int Music => MusicLoader.GetMusicSlot("StarlightRiver/Sounds/Music/GlassPassive");
@@ -188,11 +191,16 @@ namespace StarlightRiver.Content.Biomes
 
 			float randTime = particle.Type + 200f;
 			float prog = particle.Timer / 1800f;
+			float alpha = 0.85f * prog;
 
-			particle.Position.X = particle.StoredPosition.X + GetParallaxOffset(particle.StoredPosition.X, 0.15f) + (float)Math.Sin(particle.Timer / randTime * 6.28f) * 20;
+			particle.Position.X = particle.StoredPosition.X + GetParallaxOffset(particle.StoredPosition.X, 0.15f) + MathF.Sin(particle.Timer / randTime * 6.28f) * 20;
 			particle.Position.Y = particle.StoredPosition.Y + GetParallaxOffsetY(particle.StoredPosition.Y, 0.1f);
 
-			particle.Color = Color.Lerp(new Color(255, 40, 0), new Color(255, 170, 100), prog) * (0.85f * prog);
+			//particle.Color = Color.Lerp(new Color(255, 40, 0), new Color(255, 170, 100), prog) * (0.85f * prog);
+			particle.Color.R = (byte)(255 * alpha);
+			particle.Color.G = (byte)((40 + 130 * prog) * alpha);
+			particle.Color.B = (byte)(100 * prog * alpha);
+
 			particle.Scale = prog * 0.55f;
 			particle.Rotation += 0.015f;
 		}
@@ -209,10 +217,14 @@ namespace StarlightRiver.Content.Biomes
 			float randTime = particle.Type + 100f;
 			float prog = particle.Timer / 2400f;
 
-			particle.Position.X = particle.StoredPosition.X + GetParallaxOffset(particle.StoredPosition.X, 0.5f) + (float)Math.Sin(particle.Timer / randTime * 6.28f) * 6;
+			particle.Position.X = particle.StoredPosition.X + GetParallaxOffset(particle.StoredPosition.X, 0.5f) + MathF.Sin(particle.Timer / randTime * 6.28f) * 6;
 			particle.Position.Y = particle.StoredPosition.Y + GetParallaxOffsetY(particle.StoredPosition.Y, 0.2f);
 
-			particle.Color = Color.Lerp(Color.Red, new Color(255, 255, 200), prog);
+			//particle.Color = Color.Lerp(Color.Red, new Color(255, 255, 200), prog);
+			particle.Color.R = 255;
+			particle.Color.G = (byte)(255 * prog);
+			particle.Color.B = (byte)(200 * prog);
+
 			particle.Scale = prog;
 			particle.Rotation += 0.02f;
 		}
@@ -229,6 +241,9 @@ namespace StarlightRiver.Content.Biomes
 			// If we're in an invalid state to draw, such as on the menu, are a dedserv, or are not in the biome, dont!
 			if (Main.gameMenu || Main.dedServ || !onScreen)
 				return;
+
+			parallaxOrigin = Main.screenPosition + Main.ScreenSize.ToVector2() / 2f;
+			vanillaParallax = 1 - (Main.caveParallax - 0.8f) / 0.2f;
 
 			Vector2 basepoint = (StarlightWorld.vitricBiome != default) ? StarlightWorld.vitricBiome.TopLeft() * 16 + new Vector2(-2000, 0) : Vector2.Zero;
 
@@ -435,13 +450,12 @@ namespace StarlightRiver.Content.Biomes
 
 		private static int GetParallaxOffset(float startpoint, float factor)
 		{
-			float vanillaParallax = 1 - (Main.caveParallax - 0.8f) / 0.2f;
-			return (int)((Main.screenPosition.X + Main.screenWidth / 2 - startpoint) * factor * vanillaParallax);
+			return (int)((parallaxOrigin.X - startpoint) * factor * vanillaParallax);
 		}
 
 		private static int GetParallaxOffsetY(float startpoint, float factor)
 		{
-			return (int)((Main.screenPosition.Y + Main.screenHeight / 2 - startpoint) * factor);
+			return (int)((parallaxOrigin.Y - startpoint) * factor);
 		}
 	}
 }

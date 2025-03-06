@@ -227,6 +227,9 @@ namespace StarlightRiver.Core
 		/// </summary>
 		public void UpdateParticles()
 		{
+			if (Main.dedServ || !GetInstance<GraphicsConfig>().ParticlesActive || particles.Count <= 0)
+				return;
+
 			int activeCount = 0;
 
 			for (int k = 0; k < particles.Count; k++)

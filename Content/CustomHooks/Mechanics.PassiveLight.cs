@@ -31,33 +31,24 @@ namespace StarlightRiver.Content.CustomHooks
 		{
 			orig(self, x, y, out outputColor);
 
-			if (inSquidBiome)
-			{
-				if (squidDomeRect.Contains(x, y))
-					outputColor += new Vector3(0.15f, 0.175f, 0.25f) * 1.25f;
-			}
+			if (inSquidBiome && squidDomeRect.Contains(x, y))
+				outputColor += new Vector3(0.15f, 0.175f, 0.25f) * 1.25f;
 
 			// If the tile is in the vitric biome and doesn't block light, emit light.
-			if (VitricDesertBiome.onScreen && StarlightWorld.vitricBiome.Contains(x, y) && vitricReady)
+			if (!VitricDesertBiome.onScreen || !vitricReady || !StarlightWorld.vitricBiome.Contains(x, y))
+				return;
+
+			Tile tile = Main.tile[x, y];
+			bool canLight = !tile.HasTile || !Main.tileBlockLight[tile.TileType] || tile.Slope != SlopeType.Solid || tile.IsHalfBlock;
+
+			if (canLight && Main.wallLight[tile.WallType] && !Main.tileLighted[tile.TileType])
 			{
-				Tile tile = Main.tile[x, y];
-				bool tileBlock = tile.HasTile && Main.tileBlockLight[tile.TileType] && !(tile.Slope != SlopeType.Solid || tile.IsHalfBlock);
-				bool wallBlock = Main.wallLight[tile.WallType];
-				bool lava = tile.LiquidType == LiquidID.Lava;
-				bool lit = Main.tileLighted[tile.TileType];
-
-				if (vitricLava && lava)
-				{
-					outputColor = new Vector3(1, 0, 0);
-					return;
-				}
-
-				if (!tileBlock && wallBlock && !lava && !lit)
-				{
-					int yOff = y - StarlightWorld.vitricBiome.Y;
-					outputColor = preComputedVitricColors[yOff];
-				}
+				int yOff = y - StarlightWorld.vitricBiome.Y;
+				outputColor = preComputedVitricColors[yOff];
 			}
+
+			if (vitricLava && tile.LiquidType == LiquidID.Lava)
+				outputColor = new Vector3(1, 0.5f, 0);
 		}
 
 		public override void PostUpdateEverything()
