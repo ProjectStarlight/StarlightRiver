@@ -219,6 +219,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			{
 				new(
 					"Structures/ArmillarySphereRoom",
+					false,
 					ModContent.NPCType<BossRushOrb>(),
 					new Vector2(952, 720),
 					a =>
@@ -239,6 +240,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 
 				new(
 					"Structures/SquidBossArena",
+					false,
 					ModContent.NPCType<SquidBoss>(),
 					new Vector2(500, 1600),
 					a =>
@@ -256,11 +258,12 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 
 				new(
 					"Structures/VitricForge",
+					true,
 					ModContent.NPCType<Glassweaver>(),
 					new Vector2(600, 24 * 16),
 					a =>
 					{
-						StructureHelper.Generator.GenerateMultistructureSpecific("Structures/VitricForge", (a / 16).ToPoint16(), StarlightRiver.Instance, Main.masterMode ? 2 : Main.expertMode ? 1 : 0);
+						StructureHelper.API.MultiStructureGenerator.GenerateMultistructureSpecific("Structures/VitricForge", Main.masterMode ? 2 : Main.expertMode ? 1 : 0, (a / 16).ToPoint16(), StarlightRiver.Instance);
 
 						StarlightWorld.vitricBiome = new Rectangle((int)(a.X + 37 * 16) / 16, (int)(a.Y - 68 * 16) / 16, 400, 140);
 						CutawaySystem.CutawayHandler.CreateCutaways();
@@ -276,6 +279,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 
 				new(
 					"Structures/VitricTempleNew",
+					false,
 					ModContent.NPCType<VitricBoss>(),
 					new Vector2(1600, 1000),
 					a =>
@@ -304,6 +308,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 
 				new(
 					"Structures/ThinkerBossRushArena",
+					false,
 					ModContent.NPCType<TheThinker>(),
 					new Vector2(16 * 55, 16 * 70),
 					a =>
@@ -321,6 +326,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 
 				new(
 					"Structures/ArmillarySphereRoom",
+					false,
 					ModContent.NPCType<BossRushGoal>(),
 					new Vector2(252, 720),
 					a =>

@@ -15,9 +15,7 @@ namespace StarlightRiver.Core
 	{
 		public void ObservatoryGen(GenerationProgress progress, GameConfiguration configuration)
 		{
-			Point16 observatorySize = new Point16();
-			StructureHelper.Generator.GetDimensions("Structures/Observatory", Mod, ref observatorySize);
-
+			Point16 observatorySize = StructureHelper.API.Generator.GetStructureDimensions("Structures/Observatory", Mod);
 			bool generated = false;
 
 			for (int x = Main.maxTilesX / 3; x < Main.maxTilesX / 3 * 2; x++)
@@ -30,7 +28,7 @@ namespace StarlightRiver.Core
 					{
 						if (WorldGenHelper.GetElevationDeviation(new Point16(x, y), observatorySize.Y, 20, 5, true) < 5)
 						{
-							StructureHelper.Generator.GenerateStructure("Structures/Observatory", new Point16(x, y - 20), Mod);
+							StructureHelper.API.Generator.GenerateStructure("Structures/Observatory", new Point16(x, y - 20), Mod);
 							ModContent.GetInstance<ObservatorySystem>().observatoryRoom = new Rectangle(x+5, y-20, 15, 6);
 							generated = true;
 							break;

@@ -44,7 +44,7 @@ namespace StarlightRiver.Core
 						while (selection == lastForestVariant)
 							selection = WorldGen.genRand.Next(7);
 
-						StructureHelper.Generator.GetMultistructureDimensions("Structures/ForestStructures", Mod, selection, ref dims);
+						dims = StructureHelper.API.MultiStructureGenerator.GetStructureDimensions("Structures/ForestStructures", Mod, selection);
 
 						int off = 3;
 
@@ -71,7 +71,7 @@ namespace StarlightRiver.Core
 							if (!valid)
 								continue;
 
-							StructureHelper.Generator.GenerateMultistructureSpecific("Structures/ForestStructures", new Point16(x, y - dims.Y + off), Mod, selection);
+							StructureHelper.API.MultiStructureGenerator.GenerateMultistructureSpecific("Structures/ForestStructures", selection, new Point16(x, y - dims.Y + off), Mod);
 							lastForestVariant = selection;
 						}
 

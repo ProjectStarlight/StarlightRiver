@@ -164,7 +164,7 @@ namespace StarlightRiver.Core
 			}
 
 			squidBossArena = new Rectangle(centerX - 40, centerY + 100, 109, 180);
-			StructureHelper.Generator.GenerateStructure("Structures/SquidBossArena", new Point16(centerX - 40, centerY + 100), Mod);
+			StructureHelper.API.Generator.GenerateStructure("Structures/SquidBossArena", new Point16(centerX - 40, centerY + 100), Mod);
 
 			GenVars.structures.AddProtectedStructure(squidBossArena, 20);
 
@@ -369,23 +369,16 @@ namespace StarlightRiver.Core
 				case 4: touchstonePos = topLeft + new Point16(13, 16); break;
 			}
 
-			bool genned = StructureHelper.Generator.GenerateMultistructureSpecific("Structures/TouchstoneAltar", topLeft, Mod, variant);
+			StructureHelper.API.MultiStructureGenerator.GenerateMultistructureSpecific("Structures/TouchstoneAltar", variant, topLeft, Mod);
 
-			if (genned)
-			{
-				var te = TileEntity.ByPosition[touchstonePos] as TouchstoneTileEntity;
+			var te = TileEntity.ByPosition[touchstonePos] as TouchstoneTileEntity;
 
-				if (te is null)
-					return touchstonePos.ToVector2();
-
-				te.targetPoint = targetPoint;
-
+			if (te is null)
 				return touchstonePos.ToVector2();
-			}
-			else
-			{
-				throw new Exception("Failed to generate an altar...");
-			}
+
+			te.targetPoint = targetPoint;
+
+			return touchstonePos.ToVector2();
 		}
 	}
 }

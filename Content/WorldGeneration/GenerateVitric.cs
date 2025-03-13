@@ -523,7 +523,7 @@ namespace StarlightRiver.Core
 				if ((x < vitricBiome.X + vitricBiome.Width / 2 - 71 || x > vitricBiome.X + vitricBiome.Width / 2 + 70) && WorldGenHelper.CheckAirRectangle(new Point16(x, y - size.Y), new Point16(size.X, size.Y - 3)) && //ScanRectangle(x, y, size.X, size.Y) < 10
 					ValidGround.Any(v => v == Main.tile[x + 1, y].TileType) && ValidGround.Any(v => v == Main.tile[x + size.X - 1, y].TileType))
 				{
-					StructureHelper.Generator.GenerateStructure("Structures/Vitric/VitricTempleRuins_" + ty, new Point16(x, y - size.Y), StarlightRiver.Instance);
+					StructureHelper.API.Generator.GenerateStructure("Structures/Vitric/VitricTempleRuins_" + ty, new Point16(x, y - size.Y), StarlightRiver.Instance);
 				}
 				else
 				{
@@ -562,10 +562,9 @@ namespace StarlightRiver.Core
 		private static void GenForge()
 		{
 			int x = vitricBiome.X - 37;
-			StructureHelper.Generator.GenerateMultistructureSpecific("Structures/VitricForge", new Point16(x, vitricBiome.Center.Y - 10), StarlightRiver.Instance, Main.masterMode ? 2 : Main.expertMode ? 1 : 0);
+			StructureHelper.API.MultiStructureGenerator.GenerateMultistructureSpecific("Structures/VitricForge", Main.masterMode ? 2 : Main.expertMode ? 1 : 0, new Point16(x, vitricBiome.Center.Y - 10), StarlightRiver.Instance);
 
-			var dims = new Point16();
-			StructureHelper.Generator.GetMultistructureDimensions("Structures/VitricForge", StarlightRiver.Instance, 0, ref dims);
+			var dims = StructureHelper.API.MultiStructureGenerator.GetStructureDimensions("Structures/VitricForge", StarlightRiver.Instance, 0);
 
 			ProtectionWorld.ProtectedRegions.Add(new Rectangle(x, vitricBiome.Center.Y - 10, dims.X, dims.Y));
 
@@ -574,13 +573,12 @@ namespace StarlightRiver.Core
 
 		private static void GenTemple()
 		{
-			Point16 dimensions = Point16.Zero;
-			StructureHelper.Generator.GetDimensions("Structures/VitricTempleNew", StarlightRiver.Instance, ref dimensions);
+			Point16 dimensions = StructureHelper.API.Generator.GetStructureDimensions("Structures/VitricTempleNew", StarlightRiver.Instance);
 
 			int yOff = 71;
 
 			var pos = new Point16(vitricBiome.Center.X - dimensions.X / 2, vitricBiome.Center.Y - yOff);
-			StructureHelper.Generator.GenerateStructure("Structures/VitricTempleNew", pos, StarlightRiver.Instance);
+			StructureHelper.API.Generator.GenerateStructure("Structures/VitricTempleNew", pos, StarlightRiver.Instance);
 
 			GearPuzzleHandler.PuzzleOriginLocation = pos + new Point16(14, 130);
 		}
@@ -590,14 +588,13 @@ namespace StarlightRiver.Core
 		/// </summary>
 		public static void RepairTemple()
 		{
-			Point16 dimensions = Point16.Zero;
-			StructureHelper.Generator.GetDimensions("Structures/VitricTempleNew", StarlightRiver.Instance, ref dimensions);
+			Point16 dimensions = StructureHelper.API.Generator.GetStructureDimensions("Structures/VitricTempleNew", StarlightRiver.Instance);
 
 			int yOff = 71;
 
 			var pos = new Point16(vitricBiome.Center.X - dimensions.X / 2, vitricBiome.Center.Y - yOff + 8);
 			pos += new Point16(75, 88);
-			StructureHelper.Generator.GenerateStructure("Structures/VitricTempleRepair", pos, StarlightRiver.Instance);
+			StructureHelper.API.Generator.GenerateStructure("Structures/VitricTempleRepair", pos, StarlightRiver.Instance);
 		}
 
 		/// <summary>Generates decor of every type throughout the biome</summary>
@@ -856,7 +853,7 @@ namespace StarlightRiver.Core
 
 					if (ValidGround.Any(v => v == Main.tile[cX + 1, cY].TileType) && ValidGround.Any(v => v == Main.tile[cX + 2, cY].TileType) && ScanRectangle(cX, cY - 6, 4, 6) < 3)
 					{
-						StructureHelper.Generator.GenerateStructure(
+						StructureHelper.API.Generator.GenerateStructure(
 							AssetDirectory.VitricCrystalStructs + "VitricMediumCrystal_" + genRand.Next(2),
 							new Point16(cX, cY - 6),
 							StarlightRiver.Instance
@@ -918,7 +915,7 @@ namespace StarlightRiver.Core
 
 			if (ScanRectangleStrict(x, y - 17, 10, 17) <= 0 && ScanRectangle(x, y, 17, 1) == 17)
 			{
-				StructureHelper.Generator.GenerateStructure(AssetDirectory.VitricCrystalStructs + "VitricGiantCrystal_" + genRand.Next(2), new Point16(x, cY - 17), StarlightRiver.Instance);
+				StructureHelper.API.Generator.GenerateStructure(AssetDirectory.VitricCrystalStructs + "VitricGiantCrystal_" + genRand.Next(2), new Point16(x, cY - 17), StarlightRiver.Instance);
 				return true;
 			}
 

@@ -14,6 +14,10 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		/// </summary>
 		readonly string structurePath;
 		/// <summary>
+		/// If the structure is a multi structure or not
+		/// </summary>
+		readonly bool isMulti;
+		/// <summary>
 		/// The boss of this stage. If there are no NPCs of this type alive, the stage is considered complete
 		/// </summary>
 		readonly int bossType;
@@ -39,9 +43,10 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		/// </summary>
 		public Vector2 actualPosition;
 
-		public BossRushStage(string structurePath, int bossType, Vector2 spawnOffset, Action<Vector2> spawnBoss, Action<Point16> onGenerate, int marginRight = 0)
+		public BossRushStage(string structurePath, bool isMulti, int bossType, Vector2 spawnOffset, Action<Vector2> spawnBoss, Action<Point16> onGenerate, int marginRight = 0)
 		{
 			this.structurePath = structurePath;
+			this.isMulti = isMulti;
 			this.bossType = bossType;
 			this.spawnOffset = spawnOffset;
 			this.spawnBoss = spawnBoss;
@@ -57,15 +62,15 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		{
 			var dims = new Point16();
 
-			if (StructureHelper.Generator.IsMultistructure(structurePath, StarlightRiver.Instance) == true)
+			if (isMulti)
 			{
-				StructureHelper.Generator.GenerateMultistructureSpecific(structurePath, pos.ToPoint16(), StarlightRiver.Instance, 0);
-				StructureHelper.Generator.GetMultistructureDimensions(structurePath, StarlightRiver.Instance, 0, ref dims);
+				StructureHelper.API.MultiStructureGenerator.GenerateMultistructureSpecific(structurePath, 0, pos.ToPoint16(), StarlightRiver.Instance);
+				dims = StructureHelper.API.MultiStructureGenerator.GetStructureDimensions(structurePath, StarlightRiver.Instance, 0);
 			}
 			else
 			{
-				StructureHelper.Generator.GenerateStructure(structurePath, pos.ToPoint16(), StarlightRiver.Instance);
-				StructureHelper.Generator.GetDimensions(structurePath, StarlightRiver.Instance, ref dims);
+				StructureHelper.API.Generator.GenerateStructure(structurePath, pos.ToPoint16(), StarlightRiver.Instance);
+				dims = StructureHelper.API.Generator.GetStructureDimensions(structurePath, StarlightRiver.Instance);
 			}
 
 			actualPosition = pos * 16;

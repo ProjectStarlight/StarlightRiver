@@ -42,8 +42,7 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 			CutawayHook.NewCutaway(forgeOverlay);
 
 			// Vitric temple overlay
-			Point16 dimensions = Point16.Zero;
-			StructureHelper.Generator.GetDimensions("Structures/VitricTempleNew", StarlightRiver.Instance, ref dimensions);
+			Point16 dimensions = StructureHelper.API.Generator.GetStructureDimensions("Structures/VitricTempleNew", StarlightRiver.Instance);
 			Vector2 templePos = new Vector2(StarlightWorld.vitricBiome.Center.X - dimensions.X / 2, StarlightWorld.vitricBiome.Center.Y - 1) * 16;
 			templePos.Y -= 9;
 			templeOverlay = new Cutaway(ModContent.Request<Texture2D>("StarlightRiver/Assets/Overlay/TempleOverlay", AssetRequestMode.ImmediateLoad).Value, templePos)
