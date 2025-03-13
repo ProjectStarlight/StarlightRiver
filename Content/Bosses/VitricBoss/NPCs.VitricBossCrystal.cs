@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Foregrounds;
 using StarlightRiver.Content.Packets;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -465,18 +466,22 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				spriteBatch.Draw(texGlow2, NPC.Center - Main.screenPosition, null, color * progress, 0, texGlow2.Size() / 2, progress * 1.0f, default, default);
 				spriteBatch.Draw(texGlow2, NPC.Center - Main.screenPosition, null, color * progress * 1.2f, 0, texGlow2.Size() / 2, progress * 1.6f, default, default);
 
-				Effect effect1 = Terraria.Graphics.Effects.Filters.Scene["SunPlasma"].GetShader().Shader;
-				effect1.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.LaserBallMap.Value);
-				effect1.Parameters["sampleTexture3"].SetValue(Assets.Bosses.VitricBoss.LaserBallDistort.Value);
-				effect1.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.01f);
+				Effect effect1 = ShaderLoader.GetShader("SunPlasma").Value;
 
-				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect1, Main.GameViewMatrix.TransformationMatrix);
+				if (effect1 != null)
+				{
+					effect1.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.LaserBallMap.Value);
+					effect1.Parameters["sampleTexture3"].SetValue(Assets.Bosses.VitricBoss.LaserBallDistort.Value);
+					effect1.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.01f);
 
-				spriteBatch.Draw(ballTex, NPC.Center - Main.screenPosition, null, Color.White * progress, 0, ballTex.Size() / 2, progress * 1.7f, 0, 0);
+					spriteBatch.End();
+					spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect1, Main.GameViewMatrix.TransformationMatrix);
 
-				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+					spriteBatch.Draw(ballTex, NPC.Center - Main.screenPosition, null, Color.White * progress, 0, ballTex.Size() / 2, progress * 1.7f, 0, 0);
+
+					spriteBatch.End();
+					spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				}
 			}
 
 			if (shouldDrawArc)
@@ -496,20 +501,23 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 				trail.Positions = positions;
 
-				Effect effect = Terraria.Graphics.Effects.Filters.Scene["CeirosRing"].GetShader().Shader;
+				Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-				Matrix view = Main.GameViewMatrix.TransformationMatrix;
-				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+				if (effect != null)
+				{
+					var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+					Matrix view = Main.GameViewMatrix.TransformationMatrix;
+					var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-				effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
-				effect.Parameters["time"].SetValue(Main.GameUpdateCount / 80f);
-				effect.Parameters["repeats"].SetValue((1 - (Parent.AttackTimer - 360) / 480) * 4);
+					effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+					effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
+					effect.Parameters["time"].SetValue(Main.GameUpdateCount / 80f);
+					effect.Parameters["repeats"].SetValue((1 - (Parent.AttackTimer - 360) / 480) * 4);
 
-				effect.CurrentTechnique.Passes[0].Apply();
+					effect.CurrentTechnique.Passes[0].Apply();
 
-				trail.Render(effect);
+					trail.Render(effect);
+				}
 
 				if (Parent.AttackTimer >= 760)
 					shouldDrawArc = false;

@@ -1,4 +1,6 @@
-﻿using StarlightRiver.Helpers;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core.Loaders;
+using StarlightRiver.Helpers;
 using System;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
@@ -71,19 +73,23 @@ namespace StarlightRiver.Content.Items.Moonstone
 			spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, color * Projectile.scale * Projectile.Opacity, 0, texGlow.Size() / 2, Projectile.scale / 2, default, default);
 			spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, color * Projectile.scale * 1.2f * Projectile.Opacity, 0, texGlow.Size() / 2, Projectile.scale * 0.8f, default, default);
 
-			Effect effect1 = Filters.Scene["CrescentOrb"].GetShader().Shader;
-			effect1.Parameters["sampleTexture"].SetValue(Assets.Items.Moonstone.CrescentQuarterstaffMap.Value);
-			effect1.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.LaserBallDistort.Value);
-			effect1.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.01f);
-			effect1.Parameters["opacity"].SetValue(Projectile.Opacity);
+			Effect effect1 = ShaderLoader.GetShader("CrescentOrb").Value;
 
-			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect1, Main.GameViewMatrix.TransformationMatrix);
+			if (effect1 != null)
+			{
+				effect1.Parameters["sampleTexture"].SetValue(Assets.Items.Moonstone.CrescentQuarterstaffMap.Value);
+				effect1.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.LaserBallDistort.Value);
+				effect1.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.01f);
+				effect1.Parameters["opacity"].SetValue(Projectile.Opacity);
 
-			spriteBatch.Draw(TextureAssets.Projectile[Projectile.type].Value, Projectile.Center - Main.screenPosition, null, Color.White * Projectile.scale, Projectile.rotation, Vector2.One * 32, Projectile.scale, 0, 0);
+				spriteBatch.End();
+				spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect1, Main.GameViewMatrix.TransformationMatrix);
 
-			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Draw(TextureAssets.Projectile[Projectile.type].Value, Projectile.Center - Main.screenPosition, null, Color.White * Projectile.scale, Projectile.rotation, Vector2.One * 32, Projectile.scale, 0, 0);
+
+				spriteBatch.End();
+				spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 
 			Texture2D tex = Assets.Keys.Glow.Value;
 			var glowColor = new Color(78, 87, 191);

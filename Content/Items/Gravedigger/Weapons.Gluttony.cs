@@ -1,5 +1,7 @@
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Core;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -243,28 +245,31 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["GluttonyTrail"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("GluttonyTrail").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(0.05f * Main.GameUpdateCount);
-			effect.Parameters["repeats"].SetValue(3f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
-			effect.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.LaserBallDistort.Value);
+				effect.Parameters["time"].SetValue(0.05f * Main.GameUpdateCount);
+				effect.Parameters["repeats"].SetValue(3f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
+				effect.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.LaserBallDistort.Value);
 
-			effect.Parameters["row"].SetValue(0);
-			trail?.Render(effect);
-			effect.Parameters["row"].SetValue(0.2f);
-			trail2?.Render(effect);
-			effect.Parameters["row"].SetValue(0.4f);
-			trail3?.Render(effect);
-			effect.Parameters["row"].SetValue(0.6f);
-			trail4?.Render(effect);
-			effect.Parameters["row"].SetValue(0.8f);
-			trail5?.Render(effect);
+				effect.Parameters["row"].SetValue(0);
+				trail?.Render(effect);
+				effect.Parameters["row"].SetValue(0.2f);
+				trail2?.Render(effect);
+				effect.Parameters["row"].SetValue(0.4f);
+				trail3?.Render(effect);
+				effect.Parameters["row"].SetValue(0.6f);
+				trail4?.Render(effect);
+				effect.Parameters["row"].SetValue(0.8f);
+				trail5?.Render(effect);
+			}
 		}
 
 		private void UpdateTargets(Player Player)
@@ -331,29 +336,33 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Texture2D tex = Assets.Items.Gravedigger.GluttonyBG.Value;
 			float prog = Eases.SwoopEase(Math.Min(1, timer / 80f));
 
-			Effect effect1 = Filters.Scene["Cyclone"].GetShader().Shader;
-			effect1.Parameters["NoiseOffset"].SetValue(Vector2.One * Main.GameUpdateCount * -0.02f);
-			effect1.Parameters["brightness"].SetValue(10);
-			effect1.Parameters["MainScale"].SetValue(1.0f);
-			effect1.Parameters["CenterPoint"].SetValue(new Vector2(0.5f, 1f));
-			effect1.Parameters["TrailDirection"].SetValue(new Vector2(0, -1));
-			effect1.Parameters["width"].SetValue(0.85f);
-			effect1.Parameters["distort"].SetValue(0.75f);
-			effect1.Parameters["Resolution"].SetValue(tex.Size());
-			effect1.Parameters["mainColor"].SetValue(new Vector3(0.8f, 0.03f, 0.18f));
+			Effect effect1 = ShaderLoader.GetShader("Cyclone").Value;
 
-			effect1.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.LaserBallDistort.Value);
+			if (effect1 != null)
+			{
+				effect1.Parameters["NoiseOffset"].SetValue(Vector2.One * Main.GameUpdateCount * -0.02f);
+				effect1.Parameters["brightness"].SetValue(10);
+				effect1.Parameters["MainScale"].SetValue(1.0f);
+				effect1.Parameters["CenterPoint"].SetValue(new Vector2(0.5f, 1f));
+				effect1.Parameters["TrailDirection"].SetValue(new Vector2(0, -1));
+				effect1.Parameters["width"].SetValue(0.85f);
+				effect1.Parameters["distort"].SetValue(0.75f);
+				effect1.Parameters["Resolution"].SetValue(tex.Size());
+				effect1.Parameters["mainColor"].SetValue(new Vector3(0.8f, 0.03f, 0.18f));
 
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.Black * prog * 0.8f, Projectile.rotation + 1.57f + 0.1f, new Vector2(tex.Width / 2, tex.Height), prog * 0.55f, 0, 0);
+				effect1.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.LaserBallDistort.Value);
 
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect1, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.Black * prog * 0.8f, Projectile.rotation + 1.57f + 0.1f, new Vector2(tex.Width / 2, tex.Height), prog * 0.55f, 0, 0);
 
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(220, 50, 90) * prog, Projectile.rotation + 1.57f + 0.1f, new Vector2(tex.Width / 2, tex.Height), prog * 0.55f, 0, 0);
-			//spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect1, Main.GameViewMatrix.TransformationMatrix);
 
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(220, 50, 90) * prog, Projectile.rotation + 1.57f + 0.1f, new Vector2(tex.Width / 2, tex.Height), prog * 0.55f, 0, 0);
+				//spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 
 			return false;
 		}
@@ -455,16 +464,19 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["GhoulTrail"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("GhoulTrail").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(TextureAssets.Projectile[Projectile.type].Value);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(TextureAssets.Projectile[Projectile.type].Value);
 
-			trail?.Render(effect);
+				trail?.Render(effect);
+			}
 		}
 	}
 

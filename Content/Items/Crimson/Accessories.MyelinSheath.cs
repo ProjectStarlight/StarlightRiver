@@ -3,6 +3,7 @@ using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Content.Items.Vitric;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.BarrierSystem;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.InstancedBuffSystem;
@@ -221,24 +222,28 @@ namespace StarlightRiver.Content.Items.Crimson
 
 		private void DrawSlashes(SpriteBatch batch)
 		{
-			foreach (Projectile proj in Main.ActiveProjectiles)
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
+
+			if (effect != null)
 			{
-				if (proj.type == Type)
+				Texture2D tex = Assets.Slash.Value;
+
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.03f);
+				effect.Parameters["repeats"].SetValue(1f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
+
+				foreach (Projectile proj in Main.ActiveProjectiles)
 				{
-					Texture2D tex = Assets.Slash.Value;
-					batch.Draw(tex, proj.Center - Main.screenPosition, null, new Color(1f, 1f, 1f, 0) * (proj.timeLeft / 60f), proj.rotation, tex.Size() / 2f, 0.75f, 0, 0);
-
-					Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
-
-					var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-					Matrix view = Main.GameViewMatrix.TransformationMatrix;
-					var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
-
-					effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.03f);
-					effect.Parameters["repeats"].SetValue(1f);
-					effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-					effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
-					(proj.ModProjectile as GraySlash)?.trail?.Render(effect);
+					if (proj.type == Type)
+					{
+						batch.Draw(tex, proj.Center - Main.screenPosition, null, new Color(1f, 1f, 1f, 0) * (proj.timeLeft / 60f), proj.rotation, tex.Size() / 2f, 0.75f, 0, 0);
+						(proj.ModProjectile as GraySlash)?.trail?.Render(effect);
+					}
 				}
 			}
 		}

@@ -5,6 +5,7 @@ using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Content.PersistentData;
 using StarlightRiver.Content.Tiles.Blockers;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.BossRushSystem;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
@@ -257,27 +258,31 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			if (Phase == (int)AIStates.Dying) //death
 			{
-				Effect effect = Terraria.Graphics.Effects.Filters.Scene["MagmaCracks"].GetShader().Shader;
-				effect.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.CrackMap.Value);
-				effect.Parameters["sampleTexture3"].SetValue(Assets.Bosses.VitricBoss.ProgressionMap.Value);
-				effect.Parameters["uTime"].SetValue((GlobalTimer - 160) / 600f);
-				effect.Parameters["drawColor"].SetValue(new Color(Lighting.GetSubLight(NPC.Center)).ToVector4());
+				Effect effect = ShaderLoader.GetShader("MagmaCracks").Value;
 
-				effect.Parameters["sourceFrame"].SetValue(new Vector4(NPC.frame.X, NPC.frame.Y, NPC.frame.Width, NPC.frame.Height));
-				effect.Parameters["texSize"].SetValue(Request<Texture2D>(Texture).Value.Size());
+				if (effect != null)
+				{
+					effect.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.CrackMap.Value);
+					effect.Parameters["sampleTexture3"].SetValue(Assets.Bosses.VitricBoss.ProgressionMap.Value);
+					effect.Parameters["uTime"].SetValue((GlobalTimer - 160) / 600f);
+					effect.Parameters["drawColor"].SetValue(new Color(Lighting.GetSubLight(NPC.Center)).ToVector4());
 
-				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+					effect.Parameters["sourceFrame"].SetValue(new Vector4(NPC.frame.X, NPC.frame.Y, NPC.frame.Width, NPC.frame.Height));
+					effect.Parameters["texSize"].SetValue(Request<Texture2D>(Texture).Value.Size());
 
-				spriteBatch.Draw(Request<Texture2D>(Texture).Value, NPC.Center - screenPos + PainOffset, NPC.frame, new Color(Lighting.GetSubLight(NPC.Center)), NPC.rotation, NPC.frame.Size() / 2, NPC.scale, effects, 0);
+					spriteBatch.End();
+					spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 
-				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+					spriteBatch.Draw(Request<Texture2D>(Texture).Value, NPC.Center - screenPos + PainOffset, NPC.frame, new Color(Lighting.GetSubLight(NPC.Center)), NPC.rotation, NPC.frame.Size() / 2, NPC.scale, effects, 0);
 
-				spriteBatch.Draw(Request<Texture2D>(Texture + "Godray").Value, NPC.Center - screenPos + PainOffset + new Vector2(NPC.spriteDirection == 1 ? 20 : -20, -30), null, new Color(255, 175, 100) * ((GlobalTimer - 160) / 600f), NPC.rotation, Request<Texture2D>(Texture + "Godray").Value.Size() / 2, NPC.scale, effects, 0);
+					spriteBatch.End();
+					spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
-				spriteBatch.End();
-				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+					spriteBatch.Draw(Request<Texture2D>(Texture + "Godray").Value, NPC.Center - screenPos + PainOffset + new Vector2(NPC.spriteDirection == 1 ? 20 : -20, -30), null, new Color(255, 175, 100) * ((GlobalTimer - 160) / 600f), NPC.rotation, Request<Texture2D>(Texture + "Godray").Value.Size() / 2, NPC.scale, effects, 0);
+
+					spriteBatch.End();
+					spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				}
 			}
 
 			return false;
@@ -290,19 +295,23 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				Texture2D tex = Assets.Bosses.VitricBoss.Shield.Value;
 				SpriteEffects effects = NPC.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : 0;
 
-				Effect effect = Terraria.Graphics.Effects.Filters.Scene["MoltenForm"].GetShader().Shader;
-				effect.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.ShieldMap.Value);
-				effect.Parameters["uTime"].SetValue(2 - shieldShaderTimer / 120f * 2);
-				effect.Parameters["sourceFrame"].SetValue(new Vector4(NPC.frame.X, NPC.frame.Y, NPC.frame.Width, NPC.frame.Height));
-				effect.Parameters["texSize"].SetValue(tex.Size());
+				Effect effect = ShaderLoader.GetShader("MoltenForm").Value;
 
-				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+				if (effect != null)
+				{
+					effect.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.ShieldMap.Value);
+					effect.Parameters["uTime"].SetValue(2 - shieldShaderTimer / 120f * 2);
+					effect.Parameters["sourceFrame"].SetValue(new Vector4(NPC.frame.X, NPC.frame.Y, NPC.frame.Width, NPC.frame.Height));
+					effect.Parameters["texSize"].SetValue(tex.Size());
 
-				spriteBatch.Draw(tex, NPC.Center - screenPos + PainOffset, NPC.frame, Color.White, NPC.rotation, NPC.frame.Size() / 2, NPC.scale, effects, 0);
+					spriteBatch.End();
+					spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 
-				spriteBatch.End();
-				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+					spriteBatch.Draw(tex, NPC.Center - screenPos + PainOffset, NPC.frame, Color.White, NPC.rotation, NPC.frame.Size() / 2, NPC.scale, effects, 0);
+
+					spriteBatch.End();
+					spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				}
 			}
 		}
 

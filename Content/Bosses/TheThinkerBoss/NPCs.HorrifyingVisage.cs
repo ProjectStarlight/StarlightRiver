@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Physics;
 using StarlightRiver.Core;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.PixelationSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -137,18 +138,21 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		/// </summary>
 		private void DrawTrail()
 		{
-			Effect effect = Filters.Scene["RepeatingChain"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("RepeatingChain").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["alpha"].SetValue(1f);
-			effect.Parameters["repeats"].SetValue(3.3f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["alpha"].SetValue(1f);
+				effect.Parameters["repeats"].SetValue(3.3f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 
-			effect.Parameters["sampleTexture"].SetValue(Assets.Bosses.TheThinkerBoss.DeadTeather.Value);
-			chainTrail?.Render(effect);
+				effect.Parameters["sampleTexture"].SetValue(Assets.Bosses.TheThinkerBoss.DeadTeather.Value);
+				chainTrail?.Render(effect);
+			}
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)

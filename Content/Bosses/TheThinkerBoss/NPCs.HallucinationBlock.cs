@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.NPCs.BaseTypes;
+using StarlightRiver.Core.Loaders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,6 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 {
 	internal class HallucinationBlock : SquareCollider
 	{
-		public static Effect shader;
 		public static List<HallucinationBlock> toRender = new();
 
 		public ref float Timer => ref NPC.ai[0];
@@ -50,26 +50,29 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 		private void DrawHallucionatoryBlocks(SpriteBatch sb)
 		{
-			shader ??= Terraria.Graphics.Effects.Filters.Scene["HallucionationBlockShader"].GetShader().Shader;
+			var shader = ShaderLoader.GetShader("HallucionationBlockShader").Value;
 
-			foreach (HallucinationBlock block in toRender)
+			if (shader != null)
 			{
-				shader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f);
+				foreach (HallucinationBlock block in toRender)
+				{
+					shader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f);
 
-				float alpha = block.Timer < 30 ? block.Timer / 30f : block.Timer > 500 ? 1f - (block.Timer - 500) / 60f : 1;
-				shader.Parameters["u_alpha"].SetValue(alpha);
+					float alpha = block.Timer < 30 ? block.Timer / 30f : block.Timer > 500 ? 1f - (block.Timer - 500) / 60f : 1;
+					shader.Parameters["u_alpha"].SetValue(alpha);
 
-				shader.Parameters["mainbody_t"].SetValue(Assets.Bosses.TheThinkerBoss.HallucinationBlock.Value);
-				shader.Parameters["noisemap_t"].SetValue(Assets.Noise.ShaderNoise.Value);
+					shader.Parameters["mainbody_t"].SetValue(Assets.Bosses.TheThinkerBoss.HallucinationBlock.Value);
+					shader.Parameters["noisemap_t"].SetValue(Assets.Noise.ShaderNoise.Value);
 
-				sb.End();
-				sb.Begin(default, BlendState.AlphaBlend, SamplerState.PointWrap, default, default, shader, Main.GameViewMatrix.TransformationMatrix);
+					sb.End();
+					sb.Begin(default, BlendState.AlphaBlend, SamplerState.PointWrap, default, default, shader, Main.GameViewMatrix.TransformationMatrix);
 
-				Texture2D tex = Assets.Bosses.TheThinkerBoss.HallucinationBlock.Value;
-				sb.Draw(tex, block.NPC.Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2f, block.NPC.scale, 0, 0);
+					Texture2D tex = Assets.Bosses.TheThinkerBoss.HallucinationBlock.Value;
+					sb.Draw(tex, block.NPC.Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2f, block.NPC.scale, 0, 0);
 
-				sb.End();
-				sb.Begin(default, default, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+					sb.End();
+					sb.Begin(default, default, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				}
 			}
 
 			toRender.Clear();

@@ -2,6 +2,7 @@ using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Items.Permafrost;
 using StarlightRiver.Content.Tiles.Permafrost;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CutawaySystem;
 using StarlightRiver.Core.Systems.LightingSystem;
 using StarlightRiver.Helpers;
@@ -326,52 +327,53 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			if (Main.dedServ || !ScreenTracker.OnScreenScreenspace(target))
 				return;
 
-			//these should only initialize on the client!!!
+			var applyEffect = Main.dedServ ? null : ShaderLoader.GetShader("WaterShine").Value;
 
-			applyEffect ??= Main.dedServ ? null : applyEffect = Terraria.Graphics.Effects.Filters.Scene["WaterShine"].GetShader().Shader;
-
-			buffer ??= new VertexBuffer(Main.instance.GraphicsDevice, typeof(VertexPositionColorTexture), 6, BufferUsage.WriteOnly);
-
-			verticies ??= new VertexPositionColorTexture[6];
-
-			var zoom = new Matrix
-				(
-					Main.GameViewMatrix.TransformationMatrix.M11, 0, 0, 0,
-					0, Main.GameViewMatrix.TransformationMatrix.M22, 0, 0,
-					0, 0, 1, 0,
-					0, 0, 0, 1
-				);
-
-			applyEffect.Parameters["drawSize"].SetValue(target.Size());
-			applyEffect.Parameters["colorSampleY"].SetValue(1 - (0.5f + ConvertY(WaterLevelWorld - Main.screenPosition.Y) / 2f));
-			applyEffect.Parameters["time"].SetValue((float)Main.timeForVisualEffects / 75f);
-
-			applyEffect.Parameters["draw"].SetValue(Assets.Bosses.SquidBoss.WaterOver.Value);
-			applyEffect.Parameters["distort"].SetValue(Assets.Bosses.SquidBoss.WaterDistort.Value);
-			applyEffect.Parameters["light"].SetValue(LightingBuffer.screenLightingTarget.RenderTarget);
-			applyEffect.Parameters["screenWidth"].SetValue(Main.screenWidth);
-			applyEffect.Parameters["xOff"].SetValue(0.5f + ConvertX(target.X) / 2f);
-			applyEffect.Parameters["zoom"].SetValue(zoom);
-
-			verticies[0] = new VertexPositionColorTexture(new Vector3(target.X, target.Y, 0).ToScreenspaceCoord(), Color.White, Vector2.Zero);
-			verticies[1] = new VertexPositionColorTexture(new Vector3(target.X + target.Width, target.Y, 0).ToScreenspaceCoord(), Color.White, Vector2.UnitX);
-			verticies[2] = new VertexPositionColorTexture(new Vector3(target.X, target.Y + target.Height, 0).ToScreenspaceCoord(), Color.White, Vector2.UnitY);
-
-			verticies[3] = new VertexPositionColorTexture(new Vector3(target.X + target.Width, target.Y, 0).ToScreenspaceCoord(), Color.White, Vector2.UnitX);
-			verticies[4] = new VertexPositionColorTexture(new Vector3(target.X + target.Width, target.Y + target.Height, 0).ToScreenspaceCoord(), Color.White, Vector2.One);
-			verticies[5] = new VertexPositionColorTexture(new Vector3(target.X, target.Y + target.Height, 0).ToScreenspaceCoord(), Color.White, Vector2.UnitY);
-
-			buffer.SetData(verticies);
-
-			Main.instance.GraphicsDevice.SetVertexBuffer(buffer);
-
-			foreach (EffectPass pass in applyEffect.CurrentTechnique.Passes)
+			if (applyEffect != null)
 			{
-				pass.Apply();
-				Main.instance.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
-			}
+				buffer ??= new VertexBuffer(Main.instance.GraphicsDevice, typeof(VertexPositionColorTexture), 6, BufferUsage.WriteOnly);
 
-			Main.instance.GraphicsDevice.SetVertexBuffer(null);
+				verticies ??= new VertexPositionColorTexture[6];
+
+				var zoom = new Matrix
+					(
+						Main.GameViewMatrix.TransformationMatrix.M11, 0, 0, 0,
+						0, Main.GameViewMatrix.TransformationMatrix.M22, 0, 0,
+						0, 0, 1, 0,
+						0, 0, 0, 1
+					);
+
+				applyEffect.Parameters["drawSize"].SetValue(target.Size());
+				applyEffect.Parameters["colorSampleY"].SetValue(1 - (0.5f + ConvertY(WaterLevelWorld - Main.screenPosition.Y) / 2f));
+				applyEffect.Parameters["time"].SetValue((float)Main.timeForVisualEffects / 75f);
+
+				applyEffect.Parameters["draw"].SetValue(Assets.Bosses.SquidBoss.WaterOver.Value);
+				applyEffect.Parameters["distort"].SetValue(Assets.Bosses.SquidBoss.WaterDistort.Value);
+				applyEffect.Parameters["light"].SetValue(LightingBuffer.screenLightingTarget.RenderTarget);
+				applyEffect.Parameters["screenWidth"].SetValue(Main.screenWidth);
+				applyEffect.Parameters["xOff"].SetValue(0.5f + ConvertX(target.X) / 2f);
+				applyEffect.Parameters["zoom"].SetValue(zoom);
+
+				verticies[0] = new VertexPositionColorTexture(new Vector3(target.X, target.Y, 0).ToScreenspaceCoord(), Color.White, Vector2.Zero);
+				verticies[1] = new VertexPositionColorTexture(new Vector3(target.X + target.Width, target.Y, 0).ToScreenspaceCoord(), Color.White, Vector2.UnitX);
+				verticies[2] = new VertexPositionColorTexture(new Vector3(target.X, target.Y + target.Height, 0).ToScreenspaceCoord(), Color.White, Vector2.UnitY);
+
+				verticies[3] = new VertexPositionColorTexture(new Vector3(target.X + target.Width, target.Y, 0).ToScreenspaceCoord(), Color.White, Vector2.UnitX);
+				verticies[4] = new VertexPositionColorTexture(new Vector3(target.X + target.Width, target.Y + target.Height, 0).ToScreenspaceCoord(), Color.White, Vector2.One);
+				verticies[5] = new VertexPositionColorTexture(new Vector3(target.X, target.Y + target.Height, 0).ToScreenspaceCoord(), Color.White, Vector2.UnitY);
+
+				buffer.SetData(verticies);
+
+				Main.instance.GraphicsDevice.SetVertexBuffer(buffer);
+
+				foreach (EffectPass pass in applyEffect.CurrentTechnique.Passes)
+				{
+					pass.Apply();
+					Main.instance.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
+				}
+
+				Main.instance.GraphicsDevice.SetVertexBuffer(null);
+			}
 		}
 
 		private float ConvertX(float input)

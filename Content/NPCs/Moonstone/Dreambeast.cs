@@ -1,5 +1,7 @@
-﻿using StarlightRiver.Content.Abilities;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Physics;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -676,23 +678,27 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 				if (AppearVisible)
 				{
-					Effect effect = Filters.Scene["MoonstoneRunes"].GetShader().Shader;
-					effect.Parameters["intensity"].SetValue(50f * MathF.Min(1 - NPC.Opacity, 1));
-					effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.1f);
+					Effect effect = ShaderLoader.GetShader("MoonstoneRunes").Value;
 
-					effect.Parameters["noiseTexture1"].SetValue(Assets.Noise.MiscNoise3.Value);
-					effect.Parameters["noiseTexture2"].SetValue(Assets.Noise.MiscNoise4.Value);
-					effect.Parameters["color1"].SetValue(Color.Lerp(Color.Magenta, Color.Gray, (NPC.Opacity - 0.9f) * 10).ToVector4());
-					effect.Parameters["color2"].SetValue(Color.Lerp(Color.Cyan, Color.Gray, (NPC.Opacity - 0.9f) * 10).ToVector4());
-					effect.Parameters["opacity"].SetValue(NPC.Opacity);
+					if (effect != null)
+					{
+						effect.Parameters["intensity"].SetValue(50f * MathF.Min(1 - NPC.Opacity, 1));
+						effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.1f);
 
-					effect.Parameters["screenWidth"].SetValue(tex.Width);
-					effect.Parameters["screenHeight"].SetValue(tex.Height);
-					effect.Parameters["screenPosition"].SetValue(NPC.position);
-					effect.Parameters["drawOriginal"].SetValue(false);
+						effect.Parameters["noiseTexture1"].SetValue(Assets.Noise.MiscNoise3.Value);
+						effect.Parameters["noiseTexture2"].SetValue(Assets.Noise.MiscNoise4.Value);
+						effect.Parameters["color1"].SetValue(Color.Lerp(Color.Magenta, Color.Gray, (NPC.Opacity - 0.9f) * 10).ToVector4());
+						effect.Parameters["color2"].SetValue(Color.Lerp(Color.Cyan, Color.Gray, (NPC.Opacity - 0.9f) * 10).ToVector4());
+						effect.Parameters["opacity"].SetValue(NPC.Opacity);
 
-					spriteBatch.End();
-					spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect);
+						effect.Parameters["screenWidth"].SetValue(tex.Width);
+						effect.Parameters["screenHeight"].SetValue(tex.Height);
+						effect.Parameters["screenPosition"].SetValue(NPC.position);
+						effect.Parameters["drawOriginal"].SetValue(false);
+
+						spriteBatch.End();
+						spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect);
+					}
 				}
 
 				spriteBatch.Draw(tex, (NPC.Center - Main.screenPosition) / 2, NPC.frame, Color.White * NPC.Opacity, Rotation + (NPC.direction == -1 ? MathHelper.Pi : 0), new Vector2(122, 99), 0.5f, NPC.direction == -1 ? SpriteEffects.FlipHorizontally : 0, 0);
@@ -701,17 +707,21 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				{
 					float opacity = 1 - (float)Math.Pow(2 * NPC.Opacity - 1, 2);
 
-					Effect effect = Filters.Scene["MoonstoneBeastEffect"].GetShader().Shader;
-					effect.Parameters["baseTexture"].SetValue(tex);
-					effect.Parameters["distortTexture"].SetValue(Assets.Noise.MiscNoise2.Value);
-					effect.Parameters["size"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
-					effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.005f);
-					effect.Parameters["opacity"].SetValue(opacity);
-					effect.Parameters["noiseSampleSize"].SetValue(new Vector2(800, 800));
-					effect.Parameters["noisePower"].SetValue(100f);
+					Effect effect = ShaderLoader.GetShader("MoonstoneBeastEffect").Value;
 
-					spriteBatch.End();
-					spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect);
+					if (effect != null)
+					{
+						effect.Parameters["baseTexture"].SetValue(tex);
+						effect.Parameters["distortTexture"].SetValue(Assets.Noise.MiscNoise2.Value);
+						effect.Parameters["size"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+						effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.005f);
+						effect.Parameters["opacity"].SetValue(opacity);
+						effect.Parameters["noiseSampleSize"].SetValue(new Vector2(800, 800));
+						effect.Parameters["noisePower"].SetValue(100f);
+
+						spriteBatch.End();
+						spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect);
+					}
 				}
 
 				// Draw afterimages when teleporting
@@ -736,9 +746,11 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			// Tentacles
 			if (AppearVisible && hasLoaded && NPC.Opacity > 0)
 			{
-				Effect shadowEffect = Filters.Scene["FireShader"].GetShader().Shader;
+				Effect shadowEffect = ShaderLoader.GetShader("FireShader").Value;
 
-				var matrix = new Matrix
+				if (shadowEffect != null)
+				{
+					var matrix = new Matrix
 				(
 					Main.GameViewMatrix.TransformationMatrix.M11, 0, 0, 0,
 					0, Main.GameViewMatrix.TransformationMatrix.M22, 0, 0,
@@ -746,13 +758,14 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 					0, 0, 0, 1
 				);
 
-				shadowEffect.Parameters["time"].SetValue(-Main.GameUpdateCount / 45f);
-				shadowEffect.Parameters["upscale"].SetValue(matrix);
-				shadowEffect.Parameters["sampleTexture"].SetValue(Assets.ShadowTrail.Value);
+					shadowEffect.Parameters["time"].SetValue(-Main.GameUpdateCount / 45f);
+					shadowEffect.Parameters["upscale"].SetValue(matrix);
+					shadowEffect.Parameters["sampleTexture"].SetValue(Assets.ShadowTrail.Value);
 
-				foreach (VerletChain chain in chains)
-				{
-					chain.DrawStrip(PrepareStrip(chain), shadowEffect);
+					foreach (VerletChain chain in chains)
+					{
+						chain.DrawStrip(PrepareStrip(chain), shadowEffect);
+					}
 				}
 			}
 
@@ -769,20 +782,24 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			// Draw Moonball
 			if (AppearVisible && Phase == AIState.Shoot && projChargeTime > 0)
 			{
-				Effect effect = Filters.Scene["CrescentOrb"].GetShader().Shader;
-				effect.Parameters["sampleTexture"].SetValue(Assets.Items.Moonstone.CrescentQuarterstaffMap.Value);
-				effect.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.LaserBallDistort.Value);
-				effect.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.01f);
-				effect.Parameters["opacity"].SetValue(1);
+				Effect effect = ShaderLoader.GetShader("CrescentOrb").Value;
 
-				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+				if (effect != null)
+				{
+					effect.Parameters["sampleTexture"].SetValue(Assets.Items.Moonstone.CrescentQuarterstaffMap.Value);
+					effect.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.LaserBallDistort.Value);
+					effect.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.01f);
+					effect.Parameters["opacity"].SetValue(1);
 
-				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+					spriteBatch.End();
+					spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 
-				Texture2D orb = Assets.Items.Moonstone.CrescentOrb.Value;
-				spriteBatch.Draw(orb, OrbPos - Main.screenPosition, null, Color.White * (projChargeTime / 30f), Main.GameUpdateCount * 0.01f, orb.Size() / 2, projChargeTime / 150f, 0, 0);
+					spriteBatch.End();
+					spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+
+					Texture2D orb = Assets.Items.Moonstone.CrescentOrb.Value;
+					spriteBatch.Draw(orb, OrbPos - Main.screenPosition, null, Color.White * (projChargeTime / 30f), Main.GameUpdateCount * 0.01f, orb.Size() / 2, projChargeTime / 150f, 0, 0);
+				}
 			}
 
 			spriteBatch.End();
@@ -804,27 +821,31 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 				Texture2D mirageTex = Assets.NPCs.Moonstone.Dreambeast.Value;
 
-				Effect effect = Filters.Scene["MoonstoneRunes"].GetShader().Shader;
-				effect.Parameters["intensity"].SetValue(50f * MathF.Min(1 - mirageOpacity, 1));
-				effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.1f);
+				Effect effect = ShaderLoader.GetShader("MoonstoneRunes").Value;
 
-				effect.Parameters["noiseTexture1"].SetValue(Assets.Noise.MiscNoise3.Value);
-				effect.Parameters["noiseTexture2"].SetValue(Assets.Noise.MiscNoise4.Value);
-				effect.Parameters["color1"].SetValue(Color.Lerp(Color.Magenta, Color.Gray, (mirageOpacity - 0.9f) * 10).ToVector4());
-				effect.Parameters["color2"].SetValue(Color.Lerp(Color.Cyan, Color.Gray, (mirageOpacity - 0.9f) * 10).ToVector4());
-				effect.Parameters["opacity"].SetValue(mirageOpacity);
+				if (effect != null)
+				{
+					effect.Parameters["intensity"].SetValue(50f * MathF.Min(1 - mirageOpacity, 1));
+					effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.1f);
 
-				effect.Parameters["screenWidth"].SetValue(mirageTex.Width);
-				effect.Parameters["screenHeight"].SetValue(mirageTex.Height);
-				effect.Parameters["screenPosition"].SetValue(NPC.position);
-				effect.Parameters["drawOriginal"].SetValue(false);
+					effect.Parameters["noiseTexture1"].SetValue(Assets.Noise.MiscNoise3.Value);
+					effect.Parameters["noiseTexture2"].SetValue(Assets.Noise.MiscNoise4.Value);
+					effect.Parameters["color1"].SetValue(Color.Lerp(Color.Magenta, Color.Gray, (mirageOpacity - 0.9f) * 10).ToVector4());
+					effect.Parameters["color2"].SetValue(Color.Lerp(Color.Cyan, Color.Gray, (mirageOpacity - 0.9f) * 10).ToVector4());
+					effect.Parameters["opacity"].SetValue(mirageOpacity);
 
-				spriteBatch.Draw(mirageTex, NPC.Center + NPC.netOffset - Main.screenPosition, NPC.frame, Color.White * mirageOpacity, Rotation + (NPC.direction == -1 ? MathHelper.Pi : 0), new Vector2(122, 99), 1, NPC.direction == -1 ? SpriteEffects.FlipHorizontally : 0, 0);
+					effect.Parameters["screenWidth"].SetValue(mirageTex.Width);
+					effect.Parameters["screenHeight"].SetValue(mirageTex.Height);
+					effect.Parameters["screenPosition"].SetValue(NPC.position);
+					effect.Parameters["drawOriginal"].SetValue(false);
 
-				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect);
+					spriteBatch.Draw(mirageTex, NPC.Center + NPC.netOffset - Main.screenPosition, NPC.frame, Color.White * mirageOpacity, Rotation + (NPC.direction == -1 ? MathHelper.Pi : 0), new Vector2(122, 99), 1, NPC.direction == -1 ? SpriteEffects.FlipHorizontally : 0, 0);
 
-				spriteBatch.Draw(mirageTex, NPC.Center + NPC.netOffset - Main.screenPosition, NPC.frame, Color.White * mirageOpacity, Rotation + (NPC.direction == -1 ? MathHelper.Pi : 0), new Vector2(122, 99), 1, NPC.direction == -1 ? SpriteEffects.FlipHorizontally : 0, 0);
+					spriteBatch.End();
+					spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect);
+
+					spriteBatch.Draw(mirageTex, NPC.Center + NPC.netOffset - Main.screenPosition, NPC.frame, Color.White * mirageOpacity, Rotation + (NPC.direction == -1 ? MathHelper.Pi : 0), new Vector2(122, 99), 1, NPC.direction == -1 ? SpriteEffects.FlipHorizontally : 0, 0);
+				}
 			}
 
 			spriteBatch.End();

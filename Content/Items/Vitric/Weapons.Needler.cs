@@ -1,5 +1,6 @@
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.UndergroundTemple;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.PixelationSystem;
 using StarlightRiver.Helpers;
@@ -149,31 +150,34 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			Main.spriteBatch.Draw(tex, position, frame, lightColor, Projectile.rotation, frame.Size() / 2f, Projectile.scale, spriteEffects, 0f);
 
-			Effect effect = Filters.Scene["DistortSprite"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("DistortSprite").Value;
 
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+			if (effect != null)
+			{
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
-			effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.035f);
-			effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.0035f);
-			effect.Parameters["screenPos"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / new Vector2(Main.screenWidth, Main.screenHeight));
+				effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.035f);
+				effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.0035f);
+				effect.Parameters["screenPos"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / new Vector2(Main.screenWidth, Main.screenHeight));
 
-			effect.Parameters["offset"].SetValue(new Vector2(0.001f));
-			effect.Parameters["repeats"].SetValue(1);
-			effect.Parameters["uImage1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/SwirlyNoiseLooping").Value);
-			effect.Parameters["uImage2"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.VitricBoss + "LaserBallDistort").Value);
+				effect.Parameters["offset"].SetValue(new Vector2(0.001f));
+				effect.Parameters["repeats"].SetValue(1);
+				effect.Parameters["uImage1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/SwirlyNoiseLooping").Value);
+				effect.Parameters["uImage2"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.VitricBoss + "LaserBallDistort").Value);
 
-			Color color = new Color(255, 50, 20, 0) * (Timer < 35f ? Timer / 35f : 1f) * 0.55f;
+				Color color = new Color(255, 50, 20, 0) * (Timer < 35f ? Timer / 35f : 1f) * 0.55f;
 
-			effect.Parameters["uColor"].SetValue(color.ToVector4());
-			effect.Parameters["noiseImage1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/SwirlyNoiseLooping").Value);
+				effect.Parameters["uColor"].SetValue(color.ToVector4());
+				effect.Parameters["noiseImage1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/SwirlyNoiseLooping").Value);
 
-			effect.CurrentTechnique.Passes[0].Apply();
+				effect.CurrentTechnique.Passes[0].Apply();
 
-			Main.spriteBatch.Draw(itemTexGlow, position, null, Color.White, Projectile.rotation, itemTexGlow.Size() / 2f, Projectile.scale, spriteEffects, 0f);
+				Main.spriteBatch.Draw(itemTexGlow, position, null, Color.White, Projectile.rotation, itemTexGlow.Size() / 2f, Projectile.scale, spriteEffects, 0f);
 
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 
 			return false;
 		}
@@ -502,25 +506,28 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("UnderTiles", () =>
 			{
-				Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+				Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-				Matrix world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				if (effect != null)
+				{
+					Matrix world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 
-				// !!! IMPORTANT WHEN PIXELIZING, MAKE SURE TO USE Main.GameViewMatrix.EffectMatrix IMPORTANT !!!
+					// !!! IMPORTANT WHEN PIXELIZING, MAKE SURE TO USE Main.GameViewMatrix.EffectMatrix IMPORTANT !!!
 
-				Matrix view = Main.GameViewMatrix.EffectMatrix;
-				Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+					Matrix view = Main.GameViewMatrix.EffectMatrix;
+					Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
-				effect.Parameters["repeats"].SetValue(1f);
-				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "GlowTrail").Value);
-				trail?.Render(effect);
+					effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
+					effect.Parameters["repeats"].SetValue(1f);
+					effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+					effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "GlowTrail").Value);
+					trail?.Render(effect);
 
-				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "FireTrail").Value);
+					effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "FireTrail").Value);
 
-				trail?.Render(effect);
-				trail2?.Render(effect);
+					trail?.Render(effect);
+					trail2?.Render(effect);
+				}
 			});
 		}
 	}
@@ -637,23 +644,26 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("UnderProjectiles", () =>
 			{
-				Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+				Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-				Matrix world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-				Matrix view = Main.GameViewMatrix.EffectMatrix;
-				Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+				if (effect != null)
+				{
+					Matrix world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+					Matrix view = Main.GameViewMatrix.EffectMatrix;
+					Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-				effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.01f);
-				effect.Parameters["repeats"].SetValue(5f);
-				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "FireTrail").Value);
+					effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+					effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.01f);
+					effect.Parameters["repeats"].SetValue(5f);
+					effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "FireTrail").Value);
 
-				trail?.Render(effect);
-				trail2?.Render(effect);
+					trail?.Render(effect);
+					trail2?.Render(effect);
 
-				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "EnergyTrail").Value);
+					effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "EnergyTrail").Value);
 
-				trail2?.Render(effect);
+					trail2?.Render(effect);
+				}
 			});
 		}
 	}

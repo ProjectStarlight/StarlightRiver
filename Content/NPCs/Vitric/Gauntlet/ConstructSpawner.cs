@@ -1,4 +1,6 @@
-﻿using StarlightRiver.Content.Dusts;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Dusts;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using System.Linq;
@@ -99,18 +101,21 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 			Texture2D tex = ModContent.Request<Texture2D>((fakeNPC.ModNPC as VitricConstructNPC).PreviewTexturePath).Value;
 
-			Effect trailEffect = Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect trailEffect = ShaderLoader.GetShader("CeirosRing").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (trailEffect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			trailEffect.Parameters["time"].SetValue(Projectile.timeLeft * -0.04f);
-			trailEffect.Parameters["repeats"].SetValue(1);
-			trailEffect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			trailEffect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
+				trailEffect.Parameters["time"].SetValue(Projectile.timeLeft * -0.04f);
+				trailEffect.Parameters["repeats"].SetValue(1);
+				trailEffect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				trailEffect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
-			trail?.Render(trailEffect);
+				trail?.Render(trailEffect);
+			}
 
 			Texture2D glowTex = Assets.Keys.GlowAlpha.Value;
 			var color = new Color(255, 160, 100, 0);
@@ -121,31 +126,34 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, color * ((25 - Timer) / 25f), 0, glowTex.Size() / 2, 0.75f, 0, 0);
 			Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, color * 2 * ((25 - Timer) / 25f), 0, glowTex.Size() / 2, 0.25f, 0, 0);
 
-			Effect effect = Filters.Scene["MoltenForm"].GetShader().Shader;
-			effect.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.ShieldMap.Value);
-			effect.Parameters["uTime"].SetValue(Timer / 70f * 2);
-			effect.Parameters["sourceFrame"].SetValue(new Vector4(0, 0, fakeNPC.frame.Width, fakeNPC.frame.Height));
-			effect.Parameters["texSize"].SetValue(tex.Size());
-
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
-
-			SpriteEffects spriteEffects = SpriteEffects.None;
-			Vector2 drawOffset = (fakeNPC.ModNPC as VitricConstructNPC).PreviewOffset;
-
-			if (nearestPlayer is null)
-				return false;
-
-			if (nearestPlayer.Center.X < Projectile.Center.X)
+			Effect effect = ShaderLoader.GetShader("MoltenForm").Value;
+			if (effect != null)
 			{
-				drawOffset.X *= -1;
-				spriteEffects = SpriteEffects.FlipHorizontally;
+				effect.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.ShieldMap.Value);
+				effect.Parameters["uTime"].SetValue(Timer / 70f * 2);
+				effect.Parameters["sourceFrame"].SetValue(new Vector4(0, 0, fakeNPC.frame.Width, fakeNPC.frame.Height));
+				effect.Parameters["texSize"].SetValue(tex.Size());
+
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+
+				SpriteEffects spriteEffects = SpriteEffects.None;
+				Vector2 drawOffset = (fakeNPC.ModNPC as VitricConstructNPC).PreviewOffset;
+
+				if (nearestPlayer is null)
+					return false;
+
+				if (nearestPlayer.Center.X < Projectile.Center.X)
+				{
+					drawOffset.X *= -1;
+					spriteEffects = SpriteEffects.FlipHorizontally;
+				}
+
+				Main.spriteBatch.Draw(tex, drawOffset + Projectile.Center - Main.screenPosition, null, Color.White, 0, new Vector2(tex.Width / 2, tex.Height - 5), 1, spriteEffects, 0);
+
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			}
-
-			Main.spriteBatch.Draw(tex, drawOffset + Projectile.Center - Main.screenPosition, null, Color.White, 0, new Vector2(tex.Width / 2, tex.Height - 5), 1, spriteEffects, 0);
-
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			return false;
 		}

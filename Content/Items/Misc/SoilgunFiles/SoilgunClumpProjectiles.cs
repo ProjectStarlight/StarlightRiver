@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Dusts;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.PixelationSystem;
 using StarlightRiver.Helpers;
@@ -241,41 +242,44 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("OverPlayers", () =>
 			{
-				Effect effect = Filters.Scene["DistortSprite"].GetShader().Shader;
+				Effect effect = ShaderLoader.GetShader("DistortSprite").Value;
 
-				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.EffectMatrix);
+				if (effect != null)
+				{
+					Main.spriteBatch.End();
+					Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.EffectMatrix);
 
-				effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.035f);
-				effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.0035f);
-				effect.Parameters["screenPos"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / new Vector2(Main.screenWidth, Main.screenHeight));
+					effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.035f);
+					effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.0035f);
+					effect.Parameters["screenPos"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / new Vector2(Main.screenWidth, Main.screenHeight));
 
-				effect.Parameters["offset"].SetValue(new Vector2(0.001f));
-				effect.Parameters["repeats"].SetValue(1);
-				effect.Parameters["uImage1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/SwirlyNoiseLooping").Value);
-				effect.Parameters["uImage2"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/SwirlyNoiseLooping").Value);
+					effect.Parameters["offset"].SetValue(new Vector2(0.001f));
+					effect.Parameters["repeats"].SetValue(1);
+					effect.Parameters["uImage1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/SwirlyNoiseLooping").Value);
+					effect.Parameters["uImage2"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/SwirlyNoiseLooping").Value);
 
-				Color color = Colors["TrailColor"] with { A = 0 } * opacity;
+					Color color = Colors["TrailColor"] with { A = 0 } * opacity;
 
-				effect.Parameters["uColor"].SetValue(color.ToVector4());
-				effect.Parameters["noiseImage1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "Soilgun_Noise").Value);
+					effect.Parameters["uColor"].SetValue(color.ToVector4());
+					effect.Parameters["noiseImage1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "Soilgun_Noise").Value);
 
-				effect.CurrentTechnique.Passes[0].Apply();
+					effect.CurrentTechnique.Passes[0].Apply();
 
-				Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, bloomTex.Size() / 2f, Projectile.scale * 1f, 0f, 0f);
+					Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, bloomTex.Size() / 2f, Projectile.scale * 1f, 0f, 0f);
 
-				color = Colors["TrailInsideColor"] with { A = 0 } * opacity;
+					color = Colors["TrailInsideColor"] with { A = 0 } * opacity;
 
-				effect.Parameters["uColor"].SetValue(color.ToVector4());
+					effect.Parameters["uColor"].SetValue(color.ToVector4());
 
-				effect.CurrentTechnique.Passes[0].Apply();
+					effect.CurrentTechnique.Passes[0].Apply();
 
-				Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, bloomTex.Size() / 2f, Projectile.scale * 0.5f, 0f, 0f);
+					Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, bloomTex.Size() / 2f, Projectile.scale * 0.5f, 0f, 0f);
 
-				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.EffectMatrix);
+					Main.spriteBatch.End();
+					Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.EffectMatrix);
 
-				Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, color * opacity, Projectile.rotation, bloomTex.Size() / 2f, Projectile.scale * 0.5f, 0f, 0f);
+					Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, color * opacity, Projectile.rotation, bloomTex.Size() / 2f, Projectile.scale * 0.5f, 0f, 0f);
+				}
 
 			});
 
@@ -324,25 +328,28 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("UnderProjectiles", () =>
 			{
-				Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+				Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-				Matrix view = Main.GameViewMatrix.EffectMatrix;
-				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+				if (effect != null)
+				{
+					var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+					Matrix view = Main.GameViewMatrix.EffectMatrix;
+					var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-				effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.05f);
-				effect.Parameters["repeats"].SetValue(1);
-				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "GlowTrail").Value);
+					effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.05f);
+					effect.Parameters["repeats"].SetValue(1);
+					effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+					effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "GlowTrail").Value);
 
-				trail?.Render(effect);
-				trail2?.Render(effect);
+					trail?.Render(effect);
+					trail2?.Render(effect);
 
-				effect.Parameters["repeats"].SetValue(2);
-				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "FireTrail").Value);
+					effect.Parameters["repeats"].SetValue(2);
+					effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "FireTrail").Value);
 
-				trail?.Render(effect);
-				trail?.Render(effect);
+					trail?.Render(effect);
+					trail?.Render(effect);
+				}
 			});
 		}
 

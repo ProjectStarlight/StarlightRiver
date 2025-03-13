@@ -1,5 +1,6 @@
 using ReLogic.Content;
 using StarlightRiver.Content.Packets;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using System.IO;
@@ -265,21 +266,25 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		{
 			float crackProgress = (float)Math.Pow(Utils.GetLerpValue(CRACK_TIME - 10, CRACK_TIME + 105, Timer, true), 2);
 
-			Effect crack = Terraria.Graphics.Effects.Filters.Scene["MagmaCracks"].GetShader().Shader;
-			crack.Parameters["sampleTexture2"].SetValue(Assets.Bosses.GlassMiniboss.BubbleCrackMap.Value);
-			crack.Parameters["sampleTexture3"].SetValue(Assets.Bosses.GlassMiniboss.BubbleCrackProgression.Value);
-			crack.Parameters["uTime"].SetValue(crackProgress);
-			crack.Parameters["drawColor"].SetValue((Color.LightGoldenrodYellow * crackProgress * 1.5f).ToVector4());
-			crack.Parameters["sourceFrame"].SetValue(new Vector4(0, 0, 128, 128));
-			crack.Parameters["texSize"].SetValue(Request<Texture2D>(Texture).Value.Size());
+			Effect crack = ShaderLoader.GetShader("MagmaCracks").Value;
 
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, crack, Main.GameViewMatrix.TransformationMatrix);
+			if (crack != null)
+			{
+				crack.Parameters["sampleTexture2"].SetValue(Assets.Bosses.GlassMiniboss.BubbleCrackMap.Value);
+				crack.Parameters["sampleTexture3"].SetValue(Assets.Bosses.GlassMiniboss.BubbleCrackProgression.Value);
+				crack.Parameters["uTime"].SetValue(crackProgress);
+				crack.Parameters["drawColor"].SetValue((Color.LightGoldenrodYellow * crackProgress * 1.5f).ToVector4());
+				crack.Parameters["sourceFrame"].SetValue(new Vector4(0, 0, 128, 128));
+				crack.Parameters["texSize"].SetValue(Request<Texture2D>(Texture).Value.Size());
 
-			Main.EntitySpriteDraw(Request<Texture2D>(Texture).Value, Projectile.Center - Main.screenPosition, null, Color.Black, Projectile.rotation, Request<Texture2D>(Texture).Size() * 0.5f, Projectile.scale, SpriteEffects.None, 0);
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, crack, Main.GameViewMatrix.TransformationMatrix);
 
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.AlphaBlend, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+				Main.EntitySpriteDraw(Request<Texture2D>(Texture).Value, Projectile.Center - Main.screenPosition, null, Color.Black, Projectile.rotation, Request<Texture2D>(Texture).Size() * 0.5f, Projectile.scale, SpriteEffects.None, 0);
+
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, BlendState.AlphaBlend, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+			}
 		}
 
 		private void DrawBloom()

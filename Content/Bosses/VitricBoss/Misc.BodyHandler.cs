@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Physics;
+using StarlightRiver.Core.Loaders;
 using System;
 using System.Collections.Generic;
 using static Terraria.ModLoader.ModContent;
@@ -196,19 +197,23 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			if (shouldBeTwistFrame)
 				source.X += 114;
 
-			Effect effect = Terraria.Graphics.Effects.Filters.Scene["MoltenForm"].GetShader().Shader;
-			effect.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.ShieldMap.Value);
-			effect.Parameters["uTime"].SetValue(2 - parent.shieldShaderTimer / 120f * 2);
-			effect.Parameters["sourceFrame"].SetValue(new Vector4(source.X, source.Y, source.Width, source.Height));
-			effect.Parameters["texSize"].SetValue(tex.Size());
+			Effect effect = ShaderLoader.GetShader("MoltenForm").Value;
 
-			sb.End();
-			sb.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+			if (effect != null)
+			{
+				effect.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.ShieldMap.Value);
+				effect.Parameters["uTime"].SetValue(2 - parent.shieldShaderTimer / 120f * 2);
+				effect.Parameters["sourceFrame"].SetValue(new Vector4(source.X, source.Y, source.Width, source.Height));
+				effect.Parameters["texSize"].SetValue(tex.Size());
 
-			sb.Draw(tex, pos - Main.screenPosition, source, Lighting.GetColor((int)pos.X / 16, (int)pos.Y / 16), rot, source.Size() / 2, 1, flip, 0);
+				sb.End();
+				sb.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 
-			sb.End();
-			sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				sb.Draw(tex, pos - Main.screenPosition, source, Lighting.GetColor((int)pos.X / 16, (int)pos.Y / 16), rot, source.Size() / 2, 1, flip, 0);
+
+				sb.End();
+				sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 		}
 
 		public void UpdateBody()

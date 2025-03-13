@@ -1,6 +1,7 @@
 ﻿using NetEasy;
 using StarlightRiver.Content.Buffs.Summon;
 using StarlightRiver.Content.Items.BarrierDye;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.BarrierSystem;
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
@@ -430,33 +431,36 @@ namespace StarlightRiver.Content.Items.Haunted
 
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation + MathHelper.ToRadians(rotTimer), tex.Size() / 2f, Projectile.scale, 0f, 0f);
 
-			Effect effect = Filters.Scene["DistortSprite"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("DistortSprite").Value;
 
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+			if (effect != null)
+			{
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
-			effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.005f);
-			effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.005f);
-			effect.Parameters["screenPos"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / new Vector2(Main.screenWidth, Main.screenHeight));
+				effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.005f);
+				effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.005f);
+				effect.Parameters["screenPos"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / new Vector2(Main.screenWidth, Main.screenHeight));
 
-			effect.Parameters["offset"].SetValue(new Vector2(0.001f));
-			effect.Parameters["repeats"].SetValue(2);
-			effect.Parameters["uImage1"].SetValue(Assets.Noise.SwirlyNoiseLooping.Value);
-			effect.Parameters["uImage2"].SetValue(Assets.Noise.PerlinNoise.Value);
+				effect.Parameters["offset"].SetValue(new Vector2(0.001f));
+				effect.Parameters["repeats"].SetValue(2);
+				effect.Parameters["uImage1"].SetValue(Assets.Noise.SwirlyNoiseLooping.Value);
+				effect.Parameters["uImage2"].SetValue(Assets.Noise.PerlinNoise.Value);
 
-			Color color = new Color(70, 200, 100, 0) * 0.4f * Utils.Clamp((float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f), 0.5f, 1f);
+				Color color = new Color(70, 200, 100, 0) * 0.4f * Utils.Clamp((float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f), 0.5f, 1f);
 
-			effect.Parameters["uColor"].SetValue(color.ToVector4());
-			effect.Parameters["noiseImage1"].SetValue(Assets.Noise.PerlinNoise.Value);
+				effect.Parameters["uColor"].SetValue(color.ToVector4());
+				effect.Parameters["noiseImage1"].SetValue(Assets.Noise.PerlinNoise.Value);
 
-			effect.CurrentTechnique.Passes[0].Apply();
+				effect.CurrentTechnique.Passes[0].Apply();
 
-			Main.spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, new Color(70, 200, 100, 0), Projectile.rotation + MathHelper.ToRadians(rotTimer), texGlow.Size() / 2f, Projectile.scale * 1.5f, 0f, 0f);
+				Main.spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, new Color(70, 200, 100, 0), Projectile.rotation + MathHelper.ToRadians(rotTimer), texGlow.Size() / 2f, Projectile.scale * 1.5f, 0f, 0f);
 
-			Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, new Color(70, 200, 100, 0), Projectile.rotation + MathHelper.ToRadians(rotTimer), bloomTex.Size() / 2f, 1f, 0f, 0f);
+				Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, new Color(70, 200, 100, 0), Projectile.rotation + MathHelper.ToRadians(rotTimer), bloomTex.Size() / 2f, 1f, 0f, 0f);
 
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 
 			return false;
 		}

@@ -1,6 +1,7 @@
 using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.NPCs.Permafrost;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.MetaballSystem;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
@@ -330,7 +331,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 				return;
 			}
 
-			Effect shader = Terraria.Graphics.Effects.Filters.Scene["AuroraWaterShader"].GetShader().Shader;
+			Effect shader = ShaderLoader.GetShader("AuroraWaterShader").Value;
 
 			if (shader is null)
 			{

@@ -96,19 +96,23 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 			float sin = (float)Math.Sin(Main.timeForVisualEffects * 0.06f);
 			float opacity = (1.3f - sin * 0.3f) * 0.25f;
 
-			Effect effect = Filters.Scene["NPCBarrier"].GetShader().Shader;
-			effect.Parameters["barrierColor"].SetValue(BarrierColor.ToVector4() * opacity);
-			effect.Parameters["lightingTexture"].SetValue(LightingBuffer.screenLightingTarget.RenderTarget);
+			Effect effect = ShaderLoader.GetShader("NPCBarrier").Value;
 
-			effect.CurrentTechnique.Passes[0].Apply();
-
-			for (int i = 0; i < 8; i++)
+			if (effect != null)
 			{
-				float angle = i / 8f * MathHelper.TwoPi;
-				float distance = 4 + 1 * sin;
+				effect.Parameters["barrierColor"].SetValue(BarrierColor.ToVector4() * opacity);
+				effect.Parameters["lightingTexture"].SetValue(LightingBuffer.screenLightingTarget.RenderTarget);
 
-				Vector2 offset = angle.ToRotationVector2() * distance;
-				spriteBatch.Draw(target, new Rectangle((int)offset.X, (int)offset.Y, Main.screenWidth, Main.screenHeight), Color.White);
+				effect.CurrentTechnique.Passes[0].Apply();
+
+				for (int i = 0; i < 8; i++)
+				{
+					float angle = i / 8f * MathHelper.TwoPi;
+					float distance = 4 + 1 * sin;
+
+					Vector2 offset = angle.ToRotationVector2() * distance;
+					spriteBatch.Draw(target, new Rectangle((int)offset.X, (int)offset.Y, Main.screenWidth, Main.screenHeight), Color.White);
+				}
 			}
 
 			spriteBatch.End();

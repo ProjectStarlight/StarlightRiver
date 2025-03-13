@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Physics;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -258,21 +259,25 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (trail == null || trail == default)
 				return;
+		
+			Effect effect = ShaderLoader.GetShader("OrbitalStrikeTrail").Value;
 
-			Main.spriteBatch.End();
-			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
+			if (effect != null)
+			{
+				Main.spriteBatch.End();
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
-			effect.Parameters["alpha"].SetValue(1);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+				effect.Parameters["alpha"].SetValue(1);
 
-			trail?.Render(effect);
+				trail?.Render(effect);
 
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 		}
 
 		private float TotalLength(List<Vector2> points)

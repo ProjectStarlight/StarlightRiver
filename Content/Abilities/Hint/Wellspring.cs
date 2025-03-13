@@ -7,6 +7,7 @@ using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Content.Tiles.Underground;
 using StarlightRiver.Content.Tiles.Vitric.Temple;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
 using System.Collections.Generic;
@@ -77,15 +78,19 @@ namespace StarlightRiver.Content.Abilities.Hint
 
 		private void DrawWellsprings(GameTime gameTime, ScreenTarget starsMap, ScreenTarget starsTarget)
 		{
-			Effect mapEffect = Filters.Scene["StarMap"].GetShader().Shader;
-			mapEffect.Parameters["map"].SetValue(starsMap.RenderTarget);
-			mapEffect.Parameters["background"].SetValue(starsTarget.RenderTarget);
+			Effect mapEffect = ShaderLoader.GetShader("StarMap").Value;
 
-			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, mapEffect, Main.GameViewMatrix.TransformationMatrix);
+			if (mapEffect != null)
+			{
+				mapEffect.Parameters["map"].SetValue(starsMap.RenderTarget);
+				mapEffect.Parameters["background"].SetValue(starsTarget.RenderTarget);
 
-			Main.spriteBatch.Draw(starsMap.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), new Color(1f, 1f, 1f, 0));
+				Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, mapEffect, Main.GameViewMatrix.TransformationMatrix);
 
-			Main.spriteBatch.End();
+				Main.spriteBatch.Draw(starsMap.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), new Color(1f, 1f, 1f, 0));
+
+				Main.spriteBatch.End();
+			}
 		}
 
 		private bool AnyWellsprings()

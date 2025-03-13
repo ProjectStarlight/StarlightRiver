@@ -218,7 +218,7 @@ namespace StarlightRiver.Content.Pickups
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
 			if (effect is null)
 				return;

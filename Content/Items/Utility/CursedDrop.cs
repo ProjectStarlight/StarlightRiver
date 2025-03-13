@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Prefixes.Accessory.Cursed;
+using StarlightRiver.Core.Loaders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,7 +42,7 @@ namespace StarlightRiver.Content.Items.Utility
 		{
 			if (line.Mod == "Terraria" && line.Name == "ItemName")
 			{
-				Effect effect = Filters.Scene["CursedTooltip"].GetShader().Shader;
+				Effect effect = ShaderLoader.GetShader("CursedTooltip").Value;
 				Texture2D tex = Assets.Keys.Glow.Value;
 
 				if (effect is null)

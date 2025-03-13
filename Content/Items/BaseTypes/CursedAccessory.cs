@@ -140,11 +140,12 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		{
 			if (line.Mod == "Terraria" && line.Name == "ItemName")
 			{
-				Effect effect = Filters.Scene["CursedTooltip"].GetShader().Shader;
-				Texture2D tex = Assets.Keys.Glow.Value;
-
+				Effect effect = ShaderLoader.GetShader("CursedTooltip").Value;
+				
 				if (effect is null)
 					return true;
+
+				Texture2D tex = Assets.Keys.Glow.Value;
 
 				effect.Parameters["speed"].SetValue(1);
 				effect.Parameters["power"].SetValue(0.011f * tooltipProgress);

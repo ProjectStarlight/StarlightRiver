@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.Gravedigger;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -307,30 +308,34 @@ namespace StarlightRiver.Content.Items.Moonstone
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
-			Effect effect = Filters.Scene["MoonFireAura"].GetShader().Shader;
-			effect.Parameters["time"].SetValue(StarlightWorld.visualTimer * 0.2f);
-			effect.Parameters["fireHeight"].SetValue(0.03f * Charge);
-			effect.Parameters["fnoise"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap1.Value);
-			effect.Parameters["fnoise2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
-			effect.Parameters["vnoise"].SetValue(Assets.Items.Moonstone.CrescentQuarterstaffMap.Value);
-			effect.CurrentTechnique.Passes[0].Apply();
+			Effect effect = ShaderLoader.GetShader("MoonFireAura").Value;
 
-			spriteBatch.Draw(head, position - Main.screenPosition, null, lightColor, Projectile.rotation + 0.78f, origin, scale, SpriteEffects.None, 0);
+			if (effect != null)
+			{
+				effect.Parameters["time"].SetValue(StarlightWorld.visualTimer * 0.2f);
+				effect.Parameters["fireHeight"].SetValue(0.03f * Charge);
+				effect.Parameters["fnoise"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap1.Value);
+				effect.Parameters["fnoise2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
+				effect.Parameters["vnoise"].SetValue(Assets.Items.Moonstone.CrescentQuarterstaffMap.Value);
+				effect.CurrentTechnique.Passes[0].Apply();
 
-			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Draw(head, position - Main.screenPosition, null, lightColor, Projectile.rotation + 0.78f, origin, scale, SpriteEffects.None, 0);
 
-			effect.Parameters["time"].SetValue(StarlightWorld.visualTimer * 0.2f);
-			effect.Parameters["fireHeight"].SetValue(0.03f * Charge);
-			effect.Parameters["fnoise"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap1.Value);
-			effect.Parameters["fnoise2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
-			effect.Parameters["vnoise"].SetValue(Assets.Items.Moonstone.CrescentQuarterstaffMap.Value);
-			effect.CurrentTechnique.Passes[1].Apply();
+				spriteBatch.End();
+				spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
-			spriteBatch.Draw(head, position - Main.screenPosition, null, lightColor, Projectile.rotation + 0.78f, origin, scale, SpriteEffects.None, 0);
+				effect.Parameters["time"].SetValue(StarlightWorld.visualTimer * 0.2f);
+				effect.Parameters["fireHeight"].SetValue(0.03f * Charge);
+				effect.Parameters["fnoise"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap1.Value);
+				effect.Parameters["fnoise2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
+				effect.Parameters["vnoise"].SetValue(Assets.Items.Moonstone.CrescentQuarterstaffMap.Value);
+				effect.CurrentTechnique.Passes[1].Apply();
 
-			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Draw(head, position - Main.screenPosition, null, lightColor, Projectile.rotation + 0.78f, origin, scale, SpriteEffects.None, 0);
+
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 
 			DrawPrimitives();
 
@@ -635,22 +640,25 @@ namespace StarlightRiver.Content.Items.Moonstone
 		{
 			if (CurrentAttack == AttackType.Slam && slamCharged)
 			{
-				Main.spriteBatch.End();
+				Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-				Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+				if (effect != null)
+				{
+					Main.spriteBatch.End();
 
-				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-				Matrix view = Main.GameViewMatrix.TransformationMatrix;
-				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+					var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+					Matrix view = Main.GameViewMatrix.TransformationMatrix;
+					var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
-				effect.Parameters["repeats"].SetValue(1f);
-				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-				effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
+					effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
+					effect.Parameters["repeats"].SetValue(1f);
+					effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+					effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
-				trail?.Render(effect);
+					trail?.Render(effect);
 
-				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+					Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				}
 			}
 		}
 

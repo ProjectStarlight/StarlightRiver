@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.CustomHooks;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.InstancedBuffSystem;
 using StarlightRiver.Helpers;
@@ -478,36 +479,40 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				fade = Projectile.timeLeft / 5f;
 
 			Color color = new Color(100, 0, 0, 0) * fade;
-			Effect effect = Terraria.Graphics.Effects.Filters.Scene["AlphaDistort"].GetShader().Shader;
-			effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.1f);
-			effect.Parameters["power"].SetValue(0.2f);
-			effect.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X / Main.screenWidth * 0.5f, 0));
-			effect.Parameters["speed"].SetValue(10f);
-			for (int i = 0; i < afterImages.Count; i++) //idk how performance intensive reapplying this shader is
+			Effect effect = ShaderLoader.GetShader("AlphaDistort").Value;
+
+			if (effect != null)
 			{
-				afterImageStruct afterImage = afterImages[i];
+				effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.1f);
+				effect.Parameters["power"].SetValue(0.2f);
+				effect.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X / Main.screenWidth * 0.5f, 0));
+				effect.Parameters["speed"].SetValue(10f);
+				for (int i = 0; i < afterImages.Count; i++) //idk how performance intensive reapplying this shader is
+				{
+					afterImageStruct afterImage = afterImages[i];
 
-				float opacity = MathHelper.Lerp(0.5f, 0f, 1f - afterImage.time / 15f);
+					float opacity = MathHelper.Lerp(0.5f, 0f, 1f - afterImage.time / 15f);
 
-				effect.Parameters["opacity"].SetValue(opacity * fade);
-				effect.Parameters["drawColor"].SetValue(Color.Lerp(new Color(50, 0, 150, 0), new Color(200, 0, 0, 0), 1f - afterImage.time / 15f).ToVector4());
-				effect.CurrentTechnique.Passes[0].Apply();
+					effect.Parameters["opacity"].SetValue(opacity * fade);
+					effect.Parameters["drawColor"].SetValue(Color.Lerp(new Color(50, 0, 150, 0), new Color(200, 0, 0, 0), 1f - afterImage.time / 15f).ToVector4());
+					effect.CurrentTechnique.Passes[0].Apply();
 
-				Main.spriteBatch.Draw(texGlow, afterImage.pos - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY) + new Vector2(-55, 0).RotatedBy(afterImage.rot - MathHelper.PiOver2), null, color * opacity, afterImage.rot, texGlow.Size() / 2f, Projectile.scale, 0f, 0f);
+					Main.spriteBatch.Draw(texGlow, afterImage.pos - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY) + new Vector2(-55, 0).RotatedBy(afterImage.rot - MathHelper.PiOver2), null, color * opacity, afterImage.rot, texGlow.Size() / 2f, Projectile.scale, 0f, 0f);
 
-				Main.spriteBatch.Draw(texGlow, afterImage.pos - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY) + new Vector2(-55, 0).RotatedBy(Projectile.rotation - MathHelper.PiOver2), null, color * opacity, afterImage.rot, texGlow.Size() / 2f, Projectile.scale, 0f, 0f);
+					Main.spriteBatch.Draw(texGlow, afterImage.pos - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY) + new Vector2(-55, 0).RotatedBy(Projectile.rotation - MathHelper.PiOver2), null, color * opacity, afterImage.rot, texGlow.Size() / 2f, Projectile.scale, 0f, 0f);
 
-				effect.Parameters["drawColor"].SetValue((new Color(255, 255, 255, 0) * 0.25f).ToVector4());
-				effect.CurrentTechnique.Passes[0].Apply();
+					effect.Parameters["drawColor"].SetValue((new Color(255, 255, 255, 0) * 0.25f).ToVector4());
+					effect.CurrentTechnique.Passes[0].Apply();
 
-				Main.spriteBatch.Draw(tex, afterImage.pos - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY) + off, null, Color.White * 0.25f * opacity, afterImage.rot, Vector2.Zero, Projectile.scale, 0f, 0f);
+					Main.spriteBatch.Draw(tex, afterImage.pos - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY) + off, null, Color.White * 0.25f * opacity, afterImage.rot, Vector2.Zero, Projectile.scale, 0f, 0f);
+				}
+
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix); //also dont know if this spritebatch reset is needed
+
+				Main.spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY) + new Vector2(-55, 0).RotatedBy(Projectile.rotation - MathHelper.PiOver2), null, color, Projectile.rotation, texGlow.Size() / 2f, Projectile.scale, 0, 0);
+				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY) + off, null, Color.White * fade, Projectile.rotation, Vector2.Zero, Projectile.scale, 0, 0);
 			}
-
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix); //also dont know if this spritebatch reset is needed
-
-			Main.spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY) + new Vector2(-55, 0).RotatedBy(Projectile.rotation - MathHelper.PiOver2), null, color, Projectile.rotation, texGlow.Size() / 2f, Projectile.scale, 0, 0);
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY) + off, null, Color.White * fade, Projectile.rotation, Vector2.Zero, Projectile.scale, 0, 0);
 
 			return false;
 		}

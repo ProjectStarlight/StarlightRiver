@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.CutsceneSystem;
 using StarlightRiver.Core.Systems.LightingSystem;
@@ -252,32 +253,35 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			if (ThisThinker is null)
 				return;
 
-			bodyShader ??= Filters.Scene["ThinkerBody"].GetShader().Shader;
+			var bodyShader = ShaderLoader.GetShader("ThinkerBody").Value;
 
-			Texture2D glow = Assets.Keys.Glow.Value;
+			if (bodyShader != null)
+			{
+				Texture2D glow = Assets.Keys.Glow.Value;
 
-			CutsceneFakeThinker thinker = ThisThinker;
+				CutsceneFakeThinker thinker = ThisThinker;
 
-			sb.Draw(glow, thinker.NPC.Center - Main.screenPosition, null, Color.Black * 0.5f, thinker.NPC.rotation, glow.Size() / 2f, thinker.NPC.scale * 2.5f, 0, 0);
+				sb.Draw(glow, thinker.NPC.Center - Main.screenPosition, null, Color.Black * 0.5f, thinker.NPC.rotation, glow.Size() / 2f, thinker.NPC.scale * 2.5f, 0, 0);
 
-			bodyShader.Parameters["u_resolution"].SetValue(Assets.Bosses.TheThinkerBoss.Heart.Size());
-			bodyShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f);
+				bodyShader.Parameters["u_resolution"].SetValue(Assets.Bosses.TheThinkerBoss.Heart.Size());
+				bodyShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f);
 
-			bodyShader.Parameters["mainbody_t"].SetValue(Assets.Bosses.TheThinkerBoss.Heart.Value);
-			bodyShader.Parameters["linemap_t"].SetValue(Assets.Bosses.TheThinkerBoss.HeartLine.Value);
-			bodyShader.Parameters["noisemap_t"].SetValue(Assets.Noise.ShaderNoise.Value);
-			bodyShader.Parameters["overlay_t"].SetValue(Assets.Bosses.TheThinkerBoss.HeartOver.Value);
-			bodyShader.Parameters["normal_t"].SetValue(Assets.Bosses.TheThinkerBoss.HeartNormal.Value);
-			bodyShader.Parameters["mask_t"].SetValue(Assets.MagicPixel.Value);
+				bodyShader.Parameters["mainbody_t"].SetValue(Assets.Bosses.TheThinkerBoss.Heart.Value);
+				bodyShader.Parameters["linemap_t"].SetValue(Assets.Bosses.TheThinkerBoss.HeartLine.Value);
+				bodyShader.Parameters["noisemap_t"].SetValue(Assets.Noise.ShaderNoise.Value);
+				bodyShader.Parameters["overlay_t"].SetValue(Assets.Bosses.TheThinkerBoss.HeartOver.Value);
+				bodyShader.Parameters["normal_t"].SetValue(Assets.Bosses.TheThinkerBoss.HeartNormal.Value);
+				bodyShader.Parameters["mask_t"].SetValue(Assets.MagicPixel.Value);
 
-			sb.End();
-			sb.Begin(default, default, SamplerState.PointWrap, default, default, bodyShader, Main.GameViewMatrix.TransformationMatrix);
+				sb.End();
+				sb.Begin(default, default, SamplerState.PointWrap, default, default, bodyShader, Main.GameViewMatrix.TransformationMatrix);
 
-			Texture2D tex = Assets.Bosses.TheThinkerBoss.Heart.Value;
-			sb.Draw(tex, thinker.NPC.Center - Main.screenPosition, null, Color.White, thinker.NPC.rotation, tex.Size() / 2f, thinker.NPC.scale, 0, 0);
+				Texture2D tex = Assets.Bosses.TheThinkerBoss.Heart.Value;
+				sb.Draw(tex, thinker.NPC.Center - Main.screenPosition, null, Color.White, thinker.NPC.rotation, tex.Size() / 2f, thinker.NPC.scale, 0, 0);
 
-			sb.End();
-			sb.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				sb.End();
+				sb.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 		}
 	}
 }

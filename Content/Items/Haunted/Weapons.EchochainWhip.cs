@@ -1,4 +1,5 @@
 ﻿using ReLogic.Content;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -166,74 +167,77 @@ namespace StarlightRiver.Content.Items.Haunted
 			if (DeathTimer > 0)
 				fadeOut = DeathTimer / 30f;
 
-			Effect effect = Filters.Scene["DistortSprite"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("DistortSprite").Value;
 
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
-
-			effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.005f);
-			effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.005f);
-			effect.Parameters["screenPos"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / new Vector2(Main.screenWidth, Main.screenHeight));
-
-			effect.Parameters["offset"].SetValue(new Vector2(0.001f));
-			effect.Parameters["repeats"].SetValue(2);
-			effect.Parameters["uImage1"].SetValue(Assets.Noise.SwirlyNoiseLooping.Value);
-			effect.Parameters["uImage2"].SetValue(Assets.Noise.PerlinNoise.Value);
-			effect.Parameters["noiseImage1"].SetValue(Assets.Noise.PerlinNoise.Value);
-
-			Color color = new Color(150, 255, 25, 0) * 0.5f * fadeOut;
-			effect.Parameters["uColor"].SetValue(color.ToVector4());
-
-			effect.CurrentTechnique.Passes[0].Apply();
-
-			Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.White, 0f, bloomTex.Size() / 2f, 0.65f, 0f, 0f);
-			Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.White, 0f, bloomTex.Size() / 2f, 0.45f, 0f, 0f);
-
-			color = new Color(200, 255, 200, 0) * 0.5f * fadeOut;
-			effect.Parameters["uColor"].SetValue(color.ToVector4());
-
-			effect.CurrentTechnique.Passes[0].Apply();
-
-			Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.White, 0f, bloomTex.Size() / 2f, 0.25f, 0f, 0f);
-
-			Vector2 pos = Owner.GetBackHandPosition(Player.CompositeArmStretchAmount.Full, handRotation) - Main.screenPosition;
-
-			color = new Color(150, 255, 25, 0) * 0.5f * fadeOut;
-			effect.Parameters["uColor"].SetValue(color.ToVector4());
-
-			effect.CurrentTechnique.Passes[0].Apply();
-
-			Main.spriteBatch.Draw(bloomTex, pos, null, Color.White, 0f, bloomTex.Size() / 2f, 0.65f, 0f, 0f);
-			Main.spriteBatch.Draw(bloomTex, pos, null, Color.White, 0f, bloomTex.Size() / 2f, 0.45f, 0f, 0f);
-
-			color = new Color(200, 255, 200, 0) * 0.5f * fadeOut;
-			effect.Parameters["uColor"].SetValue(color.ToVector4());
-
-			effect.CurrentTechnique.Passes[0].Apply();
-
-			Main.spriteBatch.Draw(bloomTex, pos, null, Color.White, 0f, bloomTex.Size() / 2f, 0.25f, 0f, 0f);
-
-			float mult = MathHelper.Lerp(0.15f, 0.05f, (float)Math.Sin(Main.GlobalTimeWrappedHourly));
-
-			color = new Color(150, 255, 25, 0) * mult * fadeOut;
-			effect.Parameters["uColor"].SetValue(color.ToVector4());
-
-			effect.CurrentTechnique.Passes[0].Apply();
-
-			for (int i = 0; i < tiles.Length; i++)
+			if (effect != null)
 			{
-				if (tiles[i] != null)
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+
+				effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.005f);
+				effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.005f);
+				effect.Parameters["screenPos"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / new Vector2(Main.screenWidth, Main.screenHeight));
+
+				effect.Parameters["offset"].SetValue(new Vector2(0.001f));
+				effect.Parameters["repeats"].SetValue(2);
+				effect.Parameters["uImage1"].SetValue(Assets.Noise.SwirlyNoiseLooping.Value);
+				effect.Parameters["uImage2"].SetValue(Assets.Noise.PerlinNoise.Value);
+				effect.Parameters["noiseImage1"].SetValue(Assets.Noise.PerlinNoise.Value);
+
+				Color color = new Color(150, 255, 25, 0) * 0.5f * fadeOut;
+				effect.Parameters["uColor"].SetValue(color.ToVector4());
+
+				effect.CurrentTechnique.Passes[0].Apply();
+
+				Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.White, 0f, bloomTex.Size() / 2f, 0.65f, 0f, 0f);
+				Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.White, 0f, bloomTex.Size() / 2f, 0.45f, 0f, 0f);
+
+				color = new Color(200, 255, 200, 0) * 0.5f * fadeOut;
+				effect.Parameters["uColor"].SetValue(color.ToVector4());
+
+				effect.CurrentTechnique.Passes[0].Apply();
+
+				Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.White, 0f, bloomTex.Size() / 2f, 0.25f, 0f, 0f);
+
+				Vector2 pos = Owner.GetBackHandPosition(Player.CompositeArmStretchAmount.Full, handRotation) - Main.screenPosition;
+
+				color = new Color(150, 255, 25, 0) * 0.5f * fadeOut;
+				effect.Parameters["uColor"].SetValue(color.ToVector4());
+
+				effect.CurrentTechnique.Passes[0].Apply();
+
+				Main.spriteBatch.Draw(bloomTex, pos, null, Color.White, 0f, bloomTex.Size() / 2f, 0.65f, 0f, 0f);
+				Main.spriteBatch.Draw(bloomTex, pos, null, Color.White, 0f, bloomTex.Size() / 2f, 0.45f, 0f, 0f);
+
+				color = new Color(200, 255, 200, 0) * 0.5f * fadeOut;
+				effect.Parameters["uColor"].SetValue(color.ToVector4());
+
+				effect.CurrentTechnique.Passes[0].Apply();
+
+				Main.spriteBatch.Draw(bloomTex, pos, null, Color.White, 0f, bloomTex.Size() / 2f, 0.25f, 0f, 0f);
+
+				float mult = MathHelper.Lerp(0.15f, 0.05f, (float)Math.Sin(Main.GlobalTimeWrappedHourly));
+
+				color = new Color(150, 255, 25, 0) * mult * fadeOut;
+				effect.Parameters["uColor"].SetValue(color.ToVector4());
+
+				effect.CurrentTechnique.Passes[0].Apply();
+
+				for (int i = 0; i < tiles.Length; i++)
 				{
-					Vector2 drawPos = new Vector2(tiles[i].Value.X * 16, tiles[i].Value.Y * 16) - Main.screenPosition + new Vector2(5f);
+					if (tiles[i] != null)
+					{
+						Vector2 drawPos = new Vector2(tiles[i].Value.X * 16, tiles[i].Value.Y * 16) - Main.screenPosition + new Vector2(5f);
 
-					Main.spriteBatch.Draw(bloomTex, drawPos, null, Color.White, 0f, bloomTex.Size() / 2f, 0.65f, 0f, 0f);
-					Main.spriteBatch.Draw(bloomTex, drawPos, null, Color.White, 0f, bloomTex.Size() / 2f, 0.45f, 0f, 0f);
-					Main.spriteBatch.Draw(bloomTex, drawPos, null, Color.White, 0f, bloomTex.Size() / 2f, 0.25f, 0f, 0f);
+						Main.spriteBatch.Draw(bloomTex, drawPos, null, Color.White, 0f, bloomTex.Size() / 2f, 0.65f, 0f, 0f);
+						Main.spriteBatch.Draw(bloomTex, drawPos, null, Color.White, 0f, bloomTex.Size() / 2f, 0.45f, 0f, 0f);
+						Main.spriteBatch.Draw(bloomTex, drawPos, null, Color.White, 0f, bloomTex.Size() / 2f, 0.25f, 0f, 0f);
+					}
 				}
-			}
 
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 
 			return false;
 		}

@@ -3,6 +3,7 @@
 //General cleanup of post-shape stuff
 
 using StarlightRiver.Content.Tiles.Moonstone;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
 using System.Reflection;
@@ -129,28 +130,32 @@ namespace StarlightRiver.Content.Biomes
 			{
 				Main.spriteBatch.End();
 
-				Effect effect = Filters.Scene["MoonstoneDistortion"].GetShader().Shader;
-				effect.Parameters["intensity"].SetValue(0.01f * distortion);
-				effect.Parameters["repeats"].SetValue(2);
-				effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.003f);
-				effect.Parameters["noiseTexture1"].SetValue(Assets.Noise.SwirlyNoiseLooping.Value);
-				effect.Parameters["noiseTexture2"].SetValue(Assets.Noise.MiscNoise1.Value);
-				effect.Parameters["screenPosition"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / backgroundTarget.RenderTarget.Size());
-				effect.Parameters["distortionColor1"].SetValue(Color.DarkBlue.ToVector3());
-				effect.Parameters["distortionColor2"].SetValue(new Color(120, 65, 120).ToVector3());
-				effect.Parameters["colorIntensity"].SetValue(0.03f * distortion);
-				effect.Parameters["color"].SetValue(false);
+				Effect effect = ShaderLoader.GetShader("MoonstoneDistortion").Value;
 
-				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
-				Main.spriteBatch.Draw(backgroundTarget.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
-				Main.spriteBatch.End();
+				if (effect != null)
+				{
+					effect.Parameters["intensity"].SetValue(0.01f * distortion);
+					effect.Parameters["repeats"].SetValue(2);
+					effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.003f);
+					effect.Parameters["noiseTexture1"].SetValue(Assets.Noise.SwirlyNoiseLooping.Value);
+					effect.Parameters["noiseTexture2"].SetValue(Assets.Noise.MiscNoise1.Value);
+					effect.Parameters["screenPosition"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / backgroundTarget.RenderTarget.Size());
+					effect.Parameters["distortionColor1"].SetValue(Color.DarkBlue.ToVector3());
+					effect.Parameters["distortionColor2"].SetValue(new Color(120, 65, 120).ToVector3());
+					effect.Parameters["colorIntensity"].SetValue(0.03f * distortion);
+					effect.Parameters["color"].SetValue(false);
 
-				effect.Parameters["color"].SetValue(true);
+					Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
+					Main.spriteBatch.Draw(backgroundTarget.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+					Main.spriteBatch.End();
 
-				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
-				Main.spriteBatch.Draw(backgroundTarget.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
-				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone);
+					effect.Parameters["color"].SetValue(true);
+
+					Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
+					Main.spriteBatch.Draw(backgroundTarget.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+					Main.spriteBatch.End();
+					Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone);
+				}
 			}
 			else
 			{
@@ -193,44 +198,49 @@ namespace StarlightRiver.Content.Biomes
 				return;
 
 			Main.spriteBatch.End();
-			Effect effect = Filters.Scene["MoonstoneRunes"].GetShader().Shader;
-			effect.Parameters["intensity"].SetValue(10f);
-			effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.1f);
+			Effect effect = ShaderLoader.GetShader("MoonstoneRunes").Value;
 
-			effect.Parameters["noiseTexture1"].SetValue(Assets.Noise.MiscNoise3.Value);
-			effect.Parameters["noiseTexture2"].SetValue(Assets.Noise.MiscNoise4.Value);
-			effect.Parameters["color1"].SetValue(Color.Magenta.ToVector4());
-			effect.Parameters["color2"].SetValue(Color.Cyan.ToVector4());
-			effect.Parameters["opacity"].SetValue(1f);
-
-			effect.Parameters["screenWidth"].SetValue(Main.screenWidth);
-			effect.Parameters["screenHeight"].SetValue(Main.screenHeight);
-			effect.Parameters["screenPosition"].SetValue(Main.screenPosition);
-			effect.Parameters["drawOriginal"].SetValue(false);
-
-			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect);
-
-			Main.spriteBatch.Draw(target.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
-
-			if (Main.rand.NextBool(150))
+			if (effect != null)
 			{
-				particleSystem.AddParticle(Vector2.Zero, Main.rand.NextVector2Circular(0.35f, 0.35f), 0, Main.rand.NextFloat(0.8f, 1.2f), Color.White,
-					2000, new Vector2(Main.screenPosition.X + Main.rand.Next(Main.screenWidth), Main.screenPosition.Y + Main.rand.Next(Main.screenHeight)), new Rectangle(0, 32 * Main.rand.Next(6), 32, 32));
+				effect.Parameters["intensity"].SetValue(10f);
+				effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.1f);
+
+				effect.Parameters["noiseTexture1"].SetValue(Assets.Noise.MiscNoise3.Value);
+				effect.Parameters["noiseTexture2"].SetValue(Assets.Noise.MiscNoise4.Value);
+				effect.Parameters["color1"].SetValue(Color.Magenta.ToVector4());
+				effect.Parameters["color2"].SetValue(Color.Cyan.ToVector4());
+				effect.Parameters["opacity"].SetValue(1f);
+
+				effect.Parameters["screenWidth"].SetValue(Main.screenWidth);
+				effect.Parameters["screenHeight"].SetValue(Main.screenHeight);
+				effect.Parameters["screenPosition"].SetValue(Main.screenPosition);
+				effect.Parameters["drawOriginal"].SetValue(false);
+
+				Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect);
+
+				Main.spriteBatch.Draw(target.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+
+				if (Main.rand.NextBool(150))
+				{
+					particleSystem.AddParticle(Vector2.Zero, Main.rand.NextVector2Circular(0.35f, 0.35f), 0, Main.rand.NextFloat(0.8f, 1.2f), Color.White,
+						2000, new Vector2(Main.screenPosition.X + Main.rand.Next(Main.screenWidth), Main.screenPosition.Y + Main.rand.Next(Main.screenHeight)), new Rectangle(0, 32 * Main.rand.Next(6), 32, 32));
+				}
+
+				if (Main.rand.NextBool(300))
+				{
+					particleSystemMedium.AddParticle(Vector2.Zero, Main.rand.NextVector2Circular(0.25f, 0.25f), 0, Main.rand.NextFloat(0.8f, 1.2f), Color.White,
+						2000, new Vector2(Main.screenPosition.X + Main.rand.Next(Main.screenWidth), Main.screenPosition.Y + Main.rand.Next(Main.screenHeight)), new Rectangle(0, 46 * Main.rand.Next(4), 50, 46));
+				}
+
+				if (Main.rand.NextBool(600))
+				{
+					particleSystemLarge.AddParticle(Vector2.Zero, Main.rand.NextVector2Circular(0.2f, 0.2f), 0, Main.rand.NextFloat(0.8f, 1.2f), Color.White,
+						2000, new Vector2(Main.screenPosition.X + Main.rand.Next(Main.screenWidth), Main.screenPosition.Y + Main.rand.Next(Main.screenHeight)), new Rectangle(0, 60 * Main.rand.Next(4), 50, 60));
+				}
+
+				Main.spriteBatch.End();
 			}
 
-			if (Main.rand.NextBool(300))
-			{
-				particleSystemMedium.AddParticle(Vector2.Zero, Main.rand.NextVector2Circular(0.25f, 0.25f), 0, Main.rand.NextFloat(0.8f, 1.2f), Color.White,
-					2000, new Vector2(Main.screenPosition.X + Main.rand.Next(Main.screenWidth), Main.screenPosition.Y + Main.rand.Next(Main.screenHeight)), new Rectangle(0, 46 * Main.rand.Next(4), 50, 46));
-			}
-
-			if (Main.rand.NextBool(600))
-			{
-				particleSystemLarge.AddParticle(Vector2.Zero, Main.rand.NextVector2Circular(0.2f, 0.2f), 0, Main.rand.NextFloat(0.8f, 1.2f), Color.White,
-					2000, new Vector2(Main.screenPosition.X + Main.rand.Next(Main.screenWidth), Main.screenPosition.Y + Main.rand.Next(Main.screenHeight)), new Rectangle(0, 60 * Main.rand.Next(4), 50, 60));
-			}
-
-			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default);
 
 			Main.spriteBatch.Draw(target.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White * 0.9f);

@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Terraria.Graphics.Effects;
 using StarlightRiver.Content.Bestiary;
 using Terraria.ModLoader.IO;
+using StarlightRiver.Core.Loaders;
 
 namespace StarlightRiver.Content.Biomes
 {
@@ -80,15 +81,19 @@ namespace StarlightRiver.Content.Biomes
 			{
 				SpriteBatch spriteBatch = Main.spriteBatch;
 
-				Effect mapEffect = Filters.Scene["StarMap"].GetShader().Shader;
-				mapEffect.Parameters["map"].SetValue(starsMap.RenderTarget);
-				mapEffect.Parameters["background"].SetValue(starsTarget.RenderTarget);
+				Effect mapEffect = ShaderLoader.GetShader("StarMap").Value;
 
-				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, mapEffect, Main.GameViewMatrix.TransformationMatrix);
+				if (mapEffect != null)
+				{
+					mapEffect.Parameters["map"].SetValue(starsMap.RenderTarget);
+					mapEffect.Parameters["background"].SetValue(starsTarget.RenderTarget);
 
-				spriteBatch.Draw(starsMap.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+					spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, mapEffect, Main.GameViewMatrix.TransformationMatrix);
 
-				spriteBatch.End();
+					spriteBatch.Draw(starsMap.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+
+					spriteBatch.End();
+				}
 			}
 		}
 

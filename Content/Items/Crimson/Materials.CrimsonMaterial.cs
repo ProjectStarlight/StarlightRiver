@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Items.Moonstone;
 using StarlightRiver.Content.Tiles.Crimson;
+using StarlightRiver.Core.Loaders;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
@@ -30,20 +31,23 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			Texture2D tex = Assets.Items.Crimson.ImaginaryTissue.Value;
 
-			Effect effect = Filters.Scene["MirageItemFilter"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("MirageItemFilter").Value;
 
-			effect.Parameters["u_color"].SetValue(Vector3.One);
-			effect.Parameters["u_fade"].SetValue(Vector3.One);
-			effect.Parameters["u_resolution"].SetValue(tex.Size());
-			effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.05f);
+			if (effect != null)
+			{
+				effect.Parameters["u_color"].SetValue(Vector3.One);
+				effect.Parameters["u_fade"].SetValue(Vector3.One);
+				effect.Parameters["u_resolution"].SetValue(tex.Size());
+				effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.05f);
 
-			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, SamplerState.LinearClamp, default, default, effect, Main.UIScaleMatrix);
+				spriteBatch.End();
+				spriteBatch.Begin(default, BlendState.Additive, SamplerState.LinearClamp, default, default, effect, Main.UIScaleMatrix);
 
-			spriteBatch.Draw(tex, position, frame, drawColor, 0, origin, scale, 0, 0);
+				spriteBatch.Draw(tex, position, frame, drawColor, 0, origin, scale, 0, 0);
 
-			spriteBatch.End();
-			spriteBatch.Begin(default, default, SamplerState.LinearClamp, default, default, default, Main.UIScaleMatrix);
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, SamplerState.LinearClamp, default, default, default, Main.UIScaleMatrix);
+			}
 
 			return false;
 		}
@@ -52,20 +56,23 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			Texture2D tex = Assets.Items.Crimson.ImaginaryTissue.Value;
 
-			Effect effect = Filters.Scene["MirageItemFilter"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("MirageItemFilter").Value;
 
-			effect.Parameters["u_color"].SetValue(Vector3.One);
-			effect.Parameters["u_fade"].SetValue(Vector3.One);
-			effect.Parameters["u_resolution"].SetValue(tex.Size());
-			effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.05f);
+			if (effect != null)
+			{
+				effect.Parameters["u_color"].SetValue(Vector3.One);
+				effect.Parameters["u_fade"].SetValue(Vector3.One);
+				effect.Parameters["u_resolution"].SetValue(tex.Size());
+				effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.05f);
 
-			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, SamplerState.LinearClamp, default, default, effect, Main.UIScaleMatrix);
+				spriteBatch.End();
+				spriteBatch.Begin(default, BlendState.Additive, SamplerState.LinearClamp, default, default, effect, Main.UIScaleMatrix);
 
-			spriteBatch.Draw(tex, Item.Center - Main.screenPosition, null, Color.White, rotation, tex.Size() / 2f, scale, 0, 0);
+				spriteBatch.Draw(tex, Item.Center - Main.screenPosition, null, Color.White, rotation, tex.Size() / 2f, scale, 0, 0);
 
-			spriteBatch.End();
-			spriteBatch.Begin(default, default, SamplerState.LinearClamp, default, default, default, Main.UIScaleMatrix);
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, SamplerState.LinearClamp, default, default, default, Main.UIScaleMatrix);
+			}
 
 			return false;
 		}

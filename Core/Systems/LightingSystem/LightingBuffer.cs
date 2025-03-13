@@ -1,11 +1,7 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Mono.Cecil;
-using ReLogic.Threading;
+﻿using ReLogic.Threading;
 using StarlightRiver.Content.Configs;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
-using StarlightRiver.Helpers;
-using System;
-using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Core.Systems.LightingSystem
 {
@@ -27,7 +23,6 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 		private static int refreshTimer;
 
 		private static Color[] tileLightingBuffer;
-		private static Effect upscaleEffect;
 
 		static float Factor => Main.screenHeight / (float)Main.screenWidth;
 
@@ -120,7 +115,7 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 			if (lightingQuadBuffer == null)
 				SetupLightingQuadBuffer(); //a bit hacky, but if we do this on load we can end up with black textures for full screen users, and full screen does not fire set display mode events
 
-			upscaleEffect ??= Filters.Scene["LightShader"].GetShader().Shader;
+			Effect upscaleEffect = ShaderLoader.GetShader("LightShader").Value;
 
 			if (upscaleEffect is null)
 				return;
@@ -165,8 +160,6 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 
 	public static class LightingBufferRenderer
 	{
-		private static readonly Effect ApplyEffect = Main.dedServ ? null : Filters.Scene["LightApply"].GetShader().Shader;
-
 		private static readonly VertexPositionTexture[] verticies = new VertexPositionTexture[6];
 
 		private static readonly VertexBuffer buffer = new(Main.instance.GraphicsDevice, typeof(VertexPositionTexture), 6, BufferUsage.WriteOnly);
@@ -196,35 +189,40 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 				0, 0, 0, 1
 			);
 
-			ApplyEffect.Parameters["zoom"].SetValue(zoom);
-			ApplyEffect.Parameters["drawColor"].SetValue(color.ToVector4());
+			Effect ApplyEffect = ShaderLoader.GetShader("LightApply").Value;
 
-			ApplyEffect.Parameters["targetTexture"].SetValue(texture);
-			ApplyEffect.Parameters["sampleTexture"].SetValue(LightingBuffer.screenLightingTarget.RenderTarget);
-
-			ApplyEffect.Parameters["sampleTrans"].SetValue(Matrix.CreateScale(0.5f * 1 / Main.GameViewMatrix.TransformationMatrix.M11, -0.5f * 1 / Main.GameViewMatrix.TransformationMatrix.M11, 1f) * Matrix.CreateTranslation(0.5f, 0.5f, 0));
-
-			verticies[0] = new VertexPositionTexture(new Vector3(destinationRectangle.TopLeft().RotatedBy(rotation, screenOrigin), 0).ToScreenspaceCoord(), sourceToUse.TopLeft() / texture.Size());
-			verticies[1] = new VertexPositionTexture(new Vector3(destinationRectangle.TopRight().RotatedBy(rotation, screenOrigin), 0).ToScreenspaceCoord(), sourceToUse.TopRight() / texture.Size());
-			verticies[2] = new VertexPositionTexture(new Vector3(destinationRectangle.BottomLeft().RotatedBy(rotation, screenOrigin), 0).ToScreenspaceCoord(), sourceToUse.BottomLeft() / texture.Size());
-
-			verticies[3] = new VertexPositionTexture(new Vector3(destinationRectangle.TopRight().RotatedBy(rotation, screenOrigin), 0).ToScreenspaceCoord(), sourceToUse.TopRight() / texture.Size());
-			verticies[4] = new VertexPositionTexture(new Vector3(destinationRectangle.BottomRight().RotatedBy(rotation, screenOrigin), 0).ToScreenspaceCoord(), sourceToUse.BottomRight() / texture.Size());
-			verticies[5] = new VertexPositionTexture(new Vector3(destinationRectangle.BottomLeft().RotatedBy(rotation, screenOrigin), 0).ToScreenspaceCoord(), sourceToUse.BottomLeft() / texture.Size());
-
-			buffer.SetData(verticies);
-
-			Main.instance.GraphicsDevice.SetVertexBuffer(buffer);
-
-			Main.instance.GraphicsDevice.BlendState = BlendState.AlphaBlend;
-
-			foreach (EffectPass pass in ApplyEffect.CurrentTechnique.Passes)
+			if (ApplyEffect != null)
 			{
-				pass.Apply();
-				Main.instance.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
-			}
+				ApplyEffect.Parameters["zoom"].SetValue(zoom);
+				ApplyEffect.Parameters["drawColor"].SetValue(color.ToVector4());
 
-			Main.instance.GraphicsDevice.SetVertexBuffer(null);
+				ApplyEffect.Parameters["targetTexture"].SetValue(texture);
+				ApplyEffect.Parameters["sampleTexture"].SetValue(LightingBuffer.screenLightingTarget.RenderTarget);
+
+				ApplyEffect.Parameters["sampleTrans"].SetValue(Matrix.CreateScale(0.5f * 1 / Main.GameViewMatrix.TransformationMatrix.M11, -0.5f * 1 / Main.GameViewMatrix.TransformationMatrix.M11, 1f) * Matrix.CreateTranslation(0.5f, 0.5f, 0));
+
+				verticies[0] = new VertexPositionTexture(new Vector3(destinationRectangle.TopLeft().RotatedBy(rotation, screenOrigin), 0).ToScreenspaceCoord(), sourceToUse.TopLeft() / texture.Size());
+				verticies[1] = new VertexPositionTexture(new Vector3(destinationRectangle.TopRight().RotatedBy(rotation, screenOrigin), 0).ToScreenspaceCoord(), sourceToUse.TopRight() / texture.Size());
+				verticies[2] = new VertexPositionTexture(new Vector3(destinationRectangle.BottomLeft().RotatedBy(rotation, screenOrigin), 0).ToScreenspaceCoord(), sourceToUse.BottomLeft() / texture.Size());
+
+				verticies[3] = new VertexPositionTexture(new Vector3(destinationRectangle.TopRight().RotatedBy(rotation, screenOrigin), 0).ToScreenspaceCoord(), sourceToUse.TopRight() / texture.Size());
+				verticies[4] = new VertexPositionTexture(new Vector3(destinationRectangle.BottomRight().RotatedBy(rotation, screenOrigin), 0).ToScreenspaceCoord(), sourceToUse.BottomRight() / texture.Size());
+				verticies[5] = new VertexPositionTexture(new Vector3(destinationRectangle.BottomLeft().RotatedBy(rotation, screenOrigin), 0).ToScreenspaceCoord(), sourceToUse.BottomLeft() / texture.Size());
+
+				buffer.SetData(verticies);
+
+				Main.instance.GraphicsDevice.SetVertexBuffer(buffer);
+
+				Main.instance.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+
+				foreach (EffectPass pass in ApplyEffect.CurrentTechnique.Passes)
+				{
+					pass.Apply();
+					Main.instance.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
+				}
+
+				Main.instance.GraphicsDevice.SetVertexBuffer(null);
+			}
 		}
 
 		public static void DrawWithLighting(Texture2D texture, Vector2 position, Color color)

@@ -100,7 +100,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 			var target = new Rectangle(0, 0, 400, 200);
 			target.Offset((NPC.Center + new Vector2(-200, -196) - Main.screenPosition).ToPoint());
 
-			Effect effect = Filters.Scene["ColoredFire"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("ColoredFire").Value;
 
 			if (effect is null)
 				return;
@@ -158,7 +158,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 
 			var frame = new Rectangle(59, 0, 59, 120);
 
-			Effect effect = Filters.Scene["ColoredFire"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("ColoredFire").Value;
 
 			if (effect is null)
 				return false;

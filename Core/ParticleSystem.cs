@@ -184,7 +184,7 @@ namespace StarlightRiver.Core
 		/// <param name="effect">The custom effect to use to render your particles</param>
 		public void DrawParticlesWithEffect(SpriteBatch spriteBatch, Effect effect)
 		{
-			if (Main.dedServ)
+			if (Main.dedServ || effect is null)
 				return;
 
 			if (GetInstance<GraphicsConfig>().ParticlesActive && particles.Count > 0 && effect != null)

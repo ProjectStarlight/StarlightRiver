@@ -2,6 +2,7 @@
 using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Physics;
 using StarlightRiver.Core.DrawingRigs;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.PixelationSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -783,27 +784,30 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			{
 				Texture2D tex = Assets.Bosses.TheThinkerBoss.ShieldMap.Value;
 
-				Effect effect = Terraria.Graphics.Effects.Filters.Scene["BrainShield"].GetShader().Shader;
+				Effect effect = ShaderLoader.GetShader("BrainShield").Value;
 
-				effect.Parameters["time"]?.SetValue(Main.GameUpdateCount * 0.02f);
-				effect.Parameters["size"]?.SetValue(tex.Size() * 0.6f);
-				effect.Parameters["opacity"]?.SetValue(shieldOpacity);
-				effect.Parameters["pixelRes"]?.SetValue(2f);
+				if (effect != null)
+				{
+					effect.Parameters["time"]?.SetValue(Main.GameUpdateCount * 0.02f);
+					effect.Parameters["size"]?.SetValue(tex.Size() * 0.6f);
+					effect.Parameters["opacity"]?.SetValue(shieldOpacity);
+					effect.Parameters["pixelRes"]?.SetValue(2f);
 
-				effect.Parameters["drawTexture"]?.SetValue(tex);
-				effect.Parameters["noiseTexture"]?.SetValue(Assets.Noise.SwirlyNoiseLooping.Value);
-				effect.Parameters["pulseTexture"]?.SetValue(Assets.Noise.PerlinNoise.Value);
-				effect.Parameters["edgeTexture"]?.SetValue(Assets.Bosses.TheThinkerBoss.ShieldEdge.Value);
-				effect.Parameters["outTexture"]?.SetValue(Assets.Bosses.TheThinkerBoss.ShieldMapOut.Value);
-				effect.Parameters["color"].SetValue(Vector3.Lerp(Vector3.One, new Vector3(1, 0.5f, 0.5f), contactDamageOpacity));
+					effect.Parameters["drawTexture"]?.SetValue(tex);
+					effect.Parameters["noiseTexture"]?.SetValue(Assets.Noise.SwirlyNoiseLooping.Value);
+					effect.Parameters["pulseTexture"]?.SetValue(Assets.Noise.PerlinNoise.Value);
+					effect.Parameters["edgeTexture"]?.SetValue(Assets.Bosses.TheThinkerBoss.ShieldEdge.Value);
+					effect.Parameters["outTexture"]?.SetValue(Assets.Bosses.TheThinkerBoss.ShieldMapOut.Value);
+					effect.Parameters["color"].SetValue(Vector3.Lerp(Vector3.One, new Vector3(1, 0.5f, 0.5f), contactDamageOpacity));
 
-				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, default, default, default, effect, Main.Transform);
+					spriteBatch.End();
+					spriteBatch.Begin(default, BlendState.Additive, default, default, default, effect, Main.Transform);
 
-				spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2f, 0.58f, SpriteEffects.FlipVertically, 0);
+					spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2f, 0.58f, SpriteEffects.FlipVertically, 0);
 
-				spriteBatch.End();
-				spriteBatch.Begin(default, default, default, default, default, default, Main.Transform);
+					spriteBatch.End();
+					spriteBatch.Begin(default, default, default, default, default, default, Main.Transform);
+				}
 			}
 		}
 
@@ -914,18 +918,21 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		/// /// <param name="repeats">The amount of times the flesh chain should repeat over the course of the trail</param>
 		private void DrawFleshyTrail(Trail trail, float repeats)
 		{
-			Effect effect = Terraria.Graphics.Effects.Filters.Scene["RepeatingChain"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("RepeatingChain").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["alpha"].SetValue(1f);
-			effect.Parameters["repeats"].SetValue(repeats);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["alpha"].SetValue(1f);
+				effect.Parameters["repeats"].SetValue(repeats);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 
-			effect.Parameters["sampleTexture"].SetValue(Assets.Bosses.TheThinkerBoss.DeadTeather.Value);
-			trail?.Render(effect);
+				effect.Parameters["sampleTexture"].SetValue(Assets.Bosses.TheThinkerBoss.DeadTeather.Value);
+				trail?.Render(effect);
+			}
 		}
 
 		/// <summary>
@@ -951,18 +958,21 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		/// </summary>
 		public void DrawGraymatterChainTrails()
 		{
-			Effect effect = Terraria.Graphics.Effects.Filters.Scene["LightningTrail"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("LightningTrail").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"]?.SetValue(Main.GameUpdateCount * 0.025f);
-			effect.Parameters["repeats"]?.SetValue(2f);
-			effect.Parameters["transformMatrix"]?.SetValue(world * view * projection);
+				effect.Parameters["time"]?.SetValue(Main.GameUpdateCount * 0.025f);
+				effect.Parameters["repeats"]?.SetValue(2f);
+				effect.Parameters["transformMatrix"]?.SetValue(world * view * projection);
 
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/WavyTrail").Value);
-			attachedChainTrail?.Render(effect);
+				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/WavyTrail").Value);
+				attachedChainTrail?.Render(effect);
+			}
 		}
 
 		public override void SendExtraAI(BinaryWriter binaryWriter)

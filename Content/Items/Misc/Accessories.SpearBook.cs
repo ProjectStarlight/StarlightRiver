@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -363,11 +364,15 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (CurrentAttack == AttackType.Slash)
 			{
-				Effect effect = Filters.Scene["SpearDepth"].GetShader().Shader;
-				effect.Parameters["rotation"].SetValue(progressAngle);
-				effect.Parameters["xRotation"].SetValue(xRotation);
-				effect.Parameters["holdout"].SetValue(holdout);
-				effect.CurrentTechnique.Passes[0].Apply();
+				Effect effect = ShaderLoader.GetShader("SpearDepth").Value;
+
+				if (effect != null)
+				{
+					effect.Parameters["rotation"].SetValue(progressAngle);
+					effect.Parameters["xRotation"].SetValue(xRotation);
+					effect.Parameters["holdout"].SetValue(holdout);
+					effect.CurrentTechnique.Passes[0].Apply();
+				}
 			}
 
 			Main.spriteBatch.Draw(texture, Projectile.Center - Main.screenPosition, default, lightColor * Projectile.Opacity, Projectile.rotation + rotationOffset + slashRotationOffset, origin, Projectile.scale, effects, 0);
@@ -712,24 +717,27 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("DatsuzeiTrail").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
-
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
-			effect.Parameters["repeats"].SetValue(8f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
-			effect.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
-
-			if (motion != Motion.Stab)
-				trail?.Render(effect);
-
-			if (motion == Motion.Slash2 || motion == Motion.Stab)
+			if (effect != null)
 			{
-				trail2?.Render(effect);
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
+				effect.Parameters["repeats"].SetValue(8f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+				effect.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
+
+				if (motion != Motion.Stab)
+					trail?.Render(effect);
+
+				if (motion == Motion.Slash2 || motion == Motion.Stab)
+				{
+					trail2?.Render(effect);
+				}
 			}
 		}
 

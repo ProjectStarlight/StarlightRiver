@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Bosses.TheThinkerBoss;
 using StarlightRiver.Content.Items.Food.Special;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.BossRushSystem;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
@@ -21,8 +22,6 @@ namespace StarlightRiver.Content.Backgrounds
 		public static float timer = 0;
 		public static float yOrigin = 0;
 		public static bool forceActive;
-
-		public static Effect riverBodyShader;
 
 		public override void Load()
 		{
@@ -174,32 +173,35 @@ namespace StarlightRiver.Content.Backgrounds
 			source = new Rectangle((int)offset.X, (int)offset.Y, tex2.Width, tex2.Height);
 			sb.Draw(tex2, target, source, color * 0.05f);
 
-			riverBodyShader ??= Filters.Scene["RiverBody"].GetShader().Shader;
+			var riverBodyShader = ShaderLoader.GetShader("RiverBody").Value;
 
-			riverBodyShader.Parameters["body"].SetValue(Assets.EnergyTrail.Value);
-			riverBodyShader.Parameters["mask"].SetValue(Assets.FireTrail.Value);
-			riverBodyShader.Parameters["u_amplitude"].SetValue(Main.screenHeight / 8f);
-			riverBodyShader.Parameters["u_offset"].SetValue(0.5f + Main.screenPosition.X * 0.2f / target.Width);
+			if (riverBodyShader != null)
+			{
+				riverBodyShader.Parameters["body"].SetValue(Assets.EnergyTrail.Value);
+				riverBodyShader.Parameters["mask"].SetValue(Assets.FireTrail.Value);
+				riverBodyShader.Parameters["u_amplitude"].SetValue(Main.screenHeight / 8f);
+				riverBodyShader.Parameters["u_offset"].SetValue(0.5f + Main.screenPosition.X * 0.2f / target.Width);
 
-			sb.End();
-			sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap, default, RasterizerState.CullNone, riverBodyShader, wantedMatrix);
+				sb.End();
+				sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap, default, RasterizerState.CullNone, riverBodyShader, wantedMatrix);
 
-			float yOff = (Main.screenPosition.Y - yOrigin) * -0.2f;
+				float yOff = (Main.screenPosition.Y - yOrigin) * -0.2f;
 
-			riverBodyShader.Parameters["u_time"].SetValue(timer * 0.0045f);
-			riverBodyShader.Parameters["u_alpha"].SetValue(starOpacity * 0.3f);
-			riverBodyShader.Parameters["u_resolution"].SetValue(new Vector2(Main.screenWidth, 700));
-			sb.Draw(Assets.ShadowTrail.Value, new Rectangle(0, (int)yOff + Main.screenHeight / 2 - 350, target.Width, 700), Color.White);
+				riverBodyShader.Parameters["u_time"].SetValue(timer * 0.0045f);
+				riverBodyShader.Parameters["u_alpha"].SetValue(starOpacity * 0.3f);
+				riverBodyShader.Parameters["u_resolution"].SetValue(new Vector2(Main.screenWidth, 700));
+				sb.Draw(Assets.ShadowTrail.Value, new Rectangle(0, (int)yOff + Main.screenHeight / 2 - 350, target.Width, 700), Color.White);
 
-			riverBodyShader.Parameters["u_time"].SetValue(timer * 0.003f);
-			riverBodyShader.Parameters["u_alpha"].SetValue(starOpacity * 0.6f);
-			riverBodyShader.Parameters["u_resolution"].SetValue(new Vector2(Main.screenWidth, 500));
-			sb.Draw(Assets.ShadowTrail.Value, new Rectangle(0, (int)yOff + Main.screenHeight / 2 - 250, target.Width, 500), Color.White);
+				riverBodyShader.Parameters["u_time"].SetValue(timer * 0.003f);
+				riverBodyShader.Parameters["u_alpha"].SetValue(starOpacity * 0.6f);
+				riverBodyShader.Parameters["u_resolution"].SetValue(new Vector2(Main.screenWidth, 500));
+				sb.Draw(Assets.ShadowTrail.Value, new Rectangle(0, (int)yOff + Main.screenHeight / 2 - 250, target.Width, 500), Color.White);
 
-			sb.End();
-			sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, wantedMatrix);
+				sb.End();
+				sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, wantedMatrix);
+			}
 
-			stars.DrawParticlesWithEffect(sb, Filters.Scene["GlowingCustomParticle"].GetShader().Shader);
+			stars.DrawParticlesWithEffect(sb, ShaderLoader.GetShader("GlowingCustomParticle").Value);
 		}
 
 		/// <summary>

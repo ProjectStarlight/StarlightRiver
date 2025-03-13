@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Helpers;
+﻿using StarlightRiver.Core.Loaders;
+using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using Terraria.Audio;
 using Terraria.Graphics.Effects;
@@ -265,7 +266,7 @@ namespace StarlightRiver.Content.Items.Forest
 			Main.spriteBatch.Draw(texWing, Projectile.Center + new Vector2(36 + wingOff, 0) - Main.screenPosition, wingFrame, lightColor, Projectile.rotation, new Vector2(30, 23), Projectile.scale, SpriteEffects.FlipHorizontally, 0);
 
 			// Draw body with shader
-			Effect effect = Filters.Scene["PrinceSlime"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("PrinceSlime").Value;
 
 			if (effect is null)
 				return false;

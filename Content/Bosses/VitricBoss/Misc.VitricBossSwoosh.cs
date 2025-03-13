@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Physics;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Helpers;
 using System;
 using Terraria.Graphics.Effects;
@@ -10,7 +11,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 	{
 		readonly VitricBoss parent;
 		readonly VerletChain chain;
-		readonly Effect fireEffect;
+
 		Vector2 position;
 
 		public VitricBossSwoosh(Vector2 offset, int length, VitricBoss parent)
@@ -20,8 +21,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			if (!Main.dedServ)
 			{
-				fireEffect = Filters.Scene["FireShader"].GetShader().Shader;
-
 				chain = new VerletChain(length, true, parent.NPC.Center + position, 8)
 				{
 					constraintRepetitions = 2,
@@ -47,13 +46,18 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				0, 0, 0, 1
 			);
 
-			fireEffect.Parameters["time"].SetValue(-Main.GameUpdateCount / 45f);
-			fireEffect.Parameters["upscale"].SetValue(matrix);
-			fireEffect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
+			var fireEffect = ShaderLoader.GetShader("FireShader").Value;
 
-			chain.DrawStrip(PrepareStrip, fireEffect);
-			chain.UpdateChain(parent.NPC.Center + parent.PainOffset + Vector2.UnitX * -parent.twistTarget * 18 + position.RotatedBy(parent.NPC.rotation));
-			chain.IterateRope(WindForce);
+			if (fireEffect != null)
+			{
+				fireEffect.Parameters["time"].SetValue(-Main.GameUpdateCount / 45f);
+				fireEffect.Parameters["upscale"].SetValue(matrix);
+				fireEffect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
+
+				chain.DrawStrip(PrepareStrip, fireEffect);
+				chain.UpdateChain(parent.NPC.Center + parent.PainOffset + Vector2.UnitX * -parent.twistTarget * 18 + position.RotatedBy(parent.NPC.rotation));
+				chain.IterateRope(WindForce);
+			}
 		}
 
 		public VertexBuffer PrepareStrip(Vector2 offset)

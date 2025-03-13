@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.Haunted;
 using StarlightRiver.Content.Physics;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -391,35 +392,39 @@ namespace StarlightRiver.Content.NPCs.Misc
 			if (trail == null || trail == default)
 				return;
 
-			Main.spriteBatch.End();
-			Effect effect = Terraria.Graphics.Effects.Filters.Scene["RepeatingChain"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("RepeatingChain").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				Main.spriteBatch.End();
 
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(Texture + "_Chain").Value);
-			effect.Parameters["flip"].SetValue(false);
-			effect.Parameters["alpha"].SetValue(1);
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.ZoomMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			List<Vector2> points;
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(Texture + "_Chain").Value);
+				effect.Parameters["flip"].SetValue(false);
+				effect.Parameters["alpha"].SetValue(1);
 
-			if (cache == null)
-				points = GetChainPoints();
-			else
-				points = trail.Positions.ToList();
+				List<Vector2> points;
 
-			effect.Parameters["repeats"].SetValue(TotalLength(points) / 20f);
+				if (cache == null)
+					points = GetChainPoints();
+				else
+					points = trail.Positions.ToList();
 
-			BlendState oldState = Main.graphics.GraphicsDevice.BlendState;
-			Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
-			trail?.Render(effect);
-			Main.graphics.GraphicsDevice.BlendState = oldState;
+				effect.Parameters["repeats"].SetValue(TotalLength(points) / 20f);
 
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(Texture + "_Chain_White").Value);
+				BlendState oldState = Main.graphics.GraphicsDevice.BlendState;
+				Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
+				trail?.Render(effect);
+				Main.graphics.GraphicsDevice.BlendState = oldState;
 
-			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(Texture + "_Chain_White").Value);
+
+				Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 		}
 
 		private List<Vector2> GetChainPoints()

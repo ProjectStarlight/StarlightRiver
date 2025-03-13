@@ -1,5 +1,7 @@
-﻿using StarlightRiver.Content.Abilities;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Backgrounds;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.BossRushSystem;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
@@ -353,21 +355,25 @@ namespace StarlightRiver.Content.NPCs.BossRush
 
 		private void DrawBubbleCracks(float crackProgress)
 		{
-			Effect crack = Filters.Scene["OnyxCracks"].GetShader().Shader;
-			crack.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.CrackMap.Value);
-			crack.Parameters["sampleTexture3"].SetValue(Assets.Bosses.GlassMiniboss.BubbleCrackProgression.Value);
-			crack.Parameters["uTime"].SetValue(crackProgress);
-			crack.Parameters["drawColor"].SetValue(Color.White.ToVector4());
-			crack.Parameters["sourceFrame"].SetValue(new Vector4(0, 0, 128, 128));
-			crack.Parameters["texSize"].SetValue(ModContent.Request<Texture2D>(Texture).Value.Size());
+			Effect crack = ShaderLoader.GetShader("OnyxCracks").Value;
 
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, crack, Main.GameViewMatrix.TransformationMatrix);
+			if (crack != null)
+			{
+				crack.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.CrackMap.Value);
+				crack.Parameters["sampleTexture3"].SetValue(Assets.Bosses.GlassMiniboss.BubbleCrackProgression.Value);
+				crack.Parameters["uTime"].SetValue(crackProgress);
+				crack.Parameters["drawColor"].SetValue(Color.White.ToVector4());
+				crack.Parameters["sourceFrame"].SetValue(new Vector4(0, 0, 128, 128));
+				crack.Parameters["texSize"].SetValue(ModContent.Request<Texture2D>(Texture).Value.Size());
 
-			Main.EntitySpriteDraw(ModContent.Request<Texture2D>(Texture).Value, NPC.Center + vibratePos - Main.screenPosition, null, Color.White, 0, ModContent.Request<Texture2D>(Texture).Size() * 0.5f, NPC.scale, SpriteEffects.None, 0);
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, crack, Main.GameViewMatrix.TransformationMatrix);
 
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+				Main.EntitySpriteDraw(ModContent.Request<Texture2D>(Texture).Value, NPC.Center + vibratePos - Main.screenPosition, null, Color.White, 0, ModContent.Request<Texture2D>(Texture).Size() * 0.5f, NPC.scale, SpriteEffects.None, 0);
+
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+			}
 		}
 
 		private void DrawGlow(float crackProgress)
@@ -387,23 +393,27 @@ namespace StarlightRiver.Content.NPCs.BossRush
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
-			Effect curve = Filters.Scene["GodrayCurve"].GetShader().Shader;
-			curve.Parameters["color"].SetValue(color.ToVector4() * crackProgress * 0.25f * (0.2f + CrackAnimationProgress * 0.8f));
-			curve.Parameters["intensity"].SetValue(0.5f);
-			curve.CurrentTechnique.Passes[0].Apply();
+			Effect curve = ShaderLoader.GetShader("GodrayCurve").Value;
 
-			Texture2D godrayThin = ModContent.Request<Texture2D>(Texture + "GodrayThin").Value;
-			Main.spriteBatch.Draw(godrayThin, NPC.Center + vibratePos - Main.screenPosition, null, Color.White, 0, godrayThin.Size() * 0.5f, NPC.scale, SpriteEffects.None, 0);
+			if (curve != null)
+			{
+				curve.Parameters["color"].SetValue(color.ToVector4() * crackProgress * 0.25f * (0.2f + CrackAnimationProgress * 0.8f));
+				curve.Parameters["intensity"].SetValue(0.5f);
+				curve.CurrentTechnique.Passes[0].Apply();
 
-			curve.Parameters["color"].SetValue(color.ToVector4() * (crackProgress - 0.2f) * 0.25f * (0.2f + CrackAnimationProgress * 0.8f));
-			curve.Parameters["intensity"].SetValue(0.4f);
-			curve.CurrentTechnique.Passes[0].Apply();
+				Texture2D godrayThin = ModContent.Request<Texture2D>(Texture + "GodrayThin").Value;
+				Main.spriteBatch.Draw(godrayThin, NPC.Center + vibratePos - Main.screenPosition, null, Color.White, 0, godrayThin.Size() * 0.5f, NPC.scale, SpriteEffects.None, 0);
 
-			Texture2D godrayThick = ModContent.Request<Texture2D>(Texture + "GodrayThick").Value;
-			Main.spriteBatch.Draw(godrayThick, NPC.Center + vibratePos - Main.screenPosition, null, Color.White, 0, godrayThick.Size() * 0.5f, NPC.scale, SpriteEffects.None, 0);
+				curve.Parameters["color"].SetValue(color.ToVector4() * (crackProgress - 0.2f) * 0.25f * (0.2f + CrackAnimationProgress * 0.8f));
+				curve.Parameters["intensity"].SetValue(0.4f);
+				curve.CurrentTechnique.Passes[0].Apply();
 
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+				Texture2D godrayThick = ModContent.Request<Texture2D>(Texture + "GodrayThick").Value;
+				Main.spriteBatch.Draw(godrayThick, NPC.Center + vibratePos - Main.screenPosition, null, Color.White, 0, godrayThick.Size() * 0.5f, NPC.scale, SpriteEffects.None, 0);
+
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+			}
 		}
 
 		private void DrawCollapse(float delay, float scale, float rotation)
@@ -484,36 +494,44 @@ namespace StarlightRiver.Content.NPCs.BossRush
 					{
 						Texture2D distortionMap = Assets.Misc.StarViewWarpMap.Value;
 
-						Effect mapEffect = Filters.Scene["StarViewWarp"].GetShader().Shader;
-						mapEffect.Parameters["map"].SetValue(starsMap.RenderTarget);
-						mapEffect.Parameters["distortionMap"].SetValue(distortionMap);
-						mapEffect.Parameters["background"].SetValue(starsTarget.RenderTarget);
+						Effect mapEffect = ShaderLoader.GetShader("StarViewWarp").Value;
 
-						Vector2 pos = bossRushLock.originalPos - Main.screenPosition;
+						if (mapEffect != null)
+						{
+							mapEffect.Parameters["map"].SetValue(starsMap.RenderTarget);
+							mapEffect.Parameters["distortionMap"].SetValue(distortionMap);
+							mapEffect.Parameters["background"].SetValue(starsTarget.RenderTarget);
 
-						float intensity = (bossRushLock.warpAnimationTimer - MAX_SUCC_ANIMATION) / 45;
+							Vector2 pos = bossRushLock.originalPos - Main.screenPosition;
 
-						mapEffect.Parameters["uIntensity"].SetValue(intensity);
-						mapEffect.Parameters["uTargetPosition"].SetValue(pos);
-						mapEffect.Parameters["uResolution"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+							float intensity = (bossRushLock.warpAnimationTimer - MAX_SUCC_ANIMATION) / 45;
 
-						Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, mapEffect, Main.GameViewMatrix.TransformationMatrix);
+							mapEffect.Parameters["uIntensity"].SetValue(intensity);
+							mapEffect.Parameters["uTargetPosition"].SetValue(pos);
+							mapEffect.Parameters["uResolution"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
 
-						Main.spriteBatch.Draw(starsMap.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+							Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, mapEffect, Main.GameViewMatrix.TransformationMatrix);
 
-						Main.spriteBatch.End();
+							Main.spriteBatch.Draw(starsMap.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+
+							Main.spriteBatch.End();
+						}
 					}
 					else
 					{
-						Effect mapEffect = Filters.Scene["StarMap"].GetShader().Shader;
-						mapEffect.Parameters["map"].SetValue(starsMap.RenderTarget);
-						mapEffect.Parameters["background"].SetValue(starsTarget.RenderTarget);
+						Effect mapEffect = ShaderLoader.GetShader("StarMap").Value;
 
-						Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, mapEffect, Main.GameViewMatrix.TransformationMatrix);
+						if (mapEffect != null)
+						{
+							mapEffect.Parameters["map"].SetValue(starsMap.RenderTarget);
+							mapEffect.Parameters["background"].SetValue(starsTarget.RenderTarget);
 
-						Main.spriteBatch.Draw(starsMap.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+							Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, mapEffect, Main.GameViewMatrix.TransformationMatrix);
 
-						Main.spriteBatch.End();
+							Main.spriteBatch.Draw(starsMap.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+
+							Main.spriteBatch.End();
+						}
 					}
 				}
 			}
@@ -539,25 +557,27 @@ namespace StarlightRiver.Content.NPCs.BossRush
 					time = bossRushLock.freezeTimer;
 				}
 
-				Effect wobble = Filters.Scene["StarViewWobble"].GetShader().Shader;
-				wobble.Parameters["uTime"].SetValue(time);
-				wobble.Parameters["uIntensity"].SetValue(1f);
-				// wobble.Parameters["bobbleAngle"].SetValue(bossRushLock.bobbleDirection.ToRotation());
-				// wobble.Parameters["bobbleMag"].SetValue(bossRushLock.bobbleDirection.Length());
+				Effect wobble = ShaderLoader.GetShader("StarViewWobble").Value;
 
-				Vector2 pos = bossRushLock.originalPos - Main.screenPosition;
+				if (wobble != null)
+				{
+					wobble.Parameters["uTime"].SetValue(time);
+					wobble.Parameters["uIntensity"].SetValue(1f);
 
-				Color color = Color.White;
-				color.A = 0;
+					Vector2 pos = bossRushLock.originalPos - Main.screenPosition;
 
-				int starViewWidth = (int)(600 * bossRushLock.starViewScale);
+					Color color = Color.White;
+					color.A = 0;
 
-				sb.End();
-				sb.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, wobble, Main.GameViewMatrix.TransformationMatrix);
-				sb.Draw(starView, new Rectangle((int)pos.X - starViewWidth / 2, (int)pos.Y - starViewWidth / 2, starViewWidth, starViewWidth), color);
+					int starViewWidth = (int)(600 * bossRushLock.starViewScale);
 
-				sb.End();
-				sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+					sb.End();
+					sb.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, wobble, Main.GameViewMatrix.TransformationMatrix);
+					sb.Draw(starView, new Rectangle((int)pos.X - starViewWidth / 2, (int)pos.Y - starViewWidth / 2, starViewWidth, starViewWidth), color);
+
+					sb.End();
+					sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				}
 			}
 		}
 

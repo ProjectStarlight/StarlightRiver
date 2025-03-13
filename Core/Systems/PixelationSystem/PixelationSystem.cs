@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.ScreenTargetSystem;
+﻿using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -109,23 +110,23 @@ namespace StarlightRiver.Core.Systems.PixelationSystem
 
 			bool doNotApplyCorrection = palette.NoCorrection || Main.graphics.GraphicsProfile == GraphicsProfile.Reach;
 
-			Effect paletteCorrection = doNotApplyCorrection ? null : Filters.Scene["PaletteCorrection"].GetShader().Shader;
+			Effect paletteCorrection = doNotApplyCorrection ? null : ShaderLoader.GetShader("PaletteCorrection").Value;
 
 			if (paletteCorrection != null)
 			{
 				paletteCorrection.Parameters["palette"].SetValue(palette.Colors);
 				paletteCorrection.Parameters["colorCount"].SetValue(palette.ColorCount);
-			}
 
-			if (endSpriteBatch)
+				if (endSpriteBatch)
+					sb.End();
+
+				sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp,
+					DepthStencilState.None, RasterizerState.CullNone, paletteCorrection, Main.GameViewMatrix.TransformationMatrix);
+
+				sb.Draw(target.pixelationTarget2.RenderTarget, Vector2.Zero, null, Color.White, 0, new Vector2(0, 0), 2f, SpriteEffects.None, 0);
+
 				sb.End();
-
-			sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp,
-				DepthStencilState.None, RasterizerState.CullNone, paletteCorrection, Main.GameViewMatrix.TransformationMatrix);
-
-			sb.Draw(target.pixelationTarget2.RenderTarget, Vector2.Zero, null, Color.White, 0, new Vector2(0, 0), 2f, SpriteEffects.None, 0);
-
-			sb.End();
+			}
 
 			if (endSpriteBatch)
 				sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);

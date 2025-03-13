@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Helpers;
+﻿using StarlightRiver.Core.Loaders;
+using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -206,23 +207,26 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
-			effect.Parameters["repeats"].SetValue(2f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
+				effect.Parameters["repeats"].SetValue(2f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 
-			effect.Parameters["opacity"].SetValue(0.25f);
-			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
-			trail?.Render(effect);
+				effect.Parameters["opacity"].SetValue(0.25f);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+				trail?.Render(effect);
 
-			effect.Parameters["opacity"].SetValue(1f);
-			effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
-			trail?.Render(effect);
+				effect.Parameters["opacity"].SetValue(1f);
+				effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
+				trail?.Render(effect);
+			}
 		}
 	}
 }

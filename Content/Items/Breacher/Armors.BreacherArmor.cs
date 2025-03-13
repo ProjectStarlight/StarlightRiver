@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Dusts;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using StarlightRiver.Helpers;
@@ -632,18 +633,21 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("OrbitalStrikeTrail").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
-			effect.Parameters["alpha"].SetValue(Alpha);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+				effect.Parameters["alpha"].SetValue(Alpha);
 
-			trail?.Render(effect);
-			trail2?.Render(effect);
+				trail?.Render(effect);
+				trail2?.Render(effect);
+			}
 		}
 
 		private void Explode(NPC target)
@@ -762,18 +766,21 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("OrbitalStrikeTrail").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
-			effect.Parameters["alpha"].SetValue(1);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+				effect.Parameters["alpha"].SetValue(1);
 
-			trail?.Render(effect);
-			trail2?.Render(effect);
+				trail?.Render(effect);
+				trail2?.Render(effect);
+			}
 		}
 	}
 
@@ -893,33 +900,37 @@ namespace StarlightRiver.Content.Items.Breacher
 			if (Main.dedServ || spriteBatch == null || NPCTarget == null || gD == null)
 				return;
 
-			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null);
+			Effect effect = ShaderLoader.GetShader("BreacherScan").Value;
 
-			Effect effect = Filters.Scene["BreacherScan"].GetShader().Shader;
-			effect.Parameters["uImageSize0"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
-			effect.Parameters["alpha"].SetValue(alpha);
-			effect.Parameters["red"].SetValue(new Color(1, 0.1f, 0.1f, 1).ToVector4());
-			effect.Parameters["red2"].SetValue(new Color(1, 0.1f, 0.1f, 0.9f).ToVector4());
-
-			float flickerTime = 100 - alpha * 100;
-
-			if (flickerTime > 0 && flickerTime < 16)
+			if (effect != null)
 			{
-				float flickerTime2 = (float)(flickerTime / 20f);
-				float whiteness = 1.5f - (flickerTime2 * flickerTime2 / 2 + 2f * flickerTime2);
-				effect.Parameters["whiteness"].SetValue(whiteness);
-			}
-			else
-			{
-				effect.Parameters["whiteness"].SetValue(0);
-			}
+				spriteBatch.End();
+				spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null);
 
-			effect.CurrentTechnique.Passes[0].Apply();
-			spriteBatch.Draw(NPCTarget.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+				effect.Parameters["uImageSize0"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+				effect.Parameters["alpha"].SetValue(alpha);
+				effect.Parameters["red"].SetValue(new Color(1, 0.1f, 0.1f, 1).ToVector4());
+				effect.Parameters["red2"].SetValue(new Color(1, 0.1f, 0.1f, 0.9f).ToVector4());
 
-			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				float flickerTime = 100 - alpha * 100;
+
+				if (flickerTime > 0 && flickerTime < 16)
+				{
+					float flickerTime2 = (float)(flickerTime / 20f);
+					float whiteness = 1.5f - (flickerTime2 * flickerTime2 / 2 + 2f * flickerTime2);
+					effect.Parameters["whiteness"].SetValue(whiteness);
+				}
+				else
+				{
+					effect.Parameters["whiteness"].SetValue(0);
+				}
+
+				effect.CurrentTechnique.Passes[0].Apply();
+				spriteBatch.Draw(NPCTarget.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 		}
 	}
 }

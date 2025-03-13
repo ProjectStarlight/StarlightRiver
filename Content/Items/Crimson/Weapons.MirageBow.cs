@@ -2,6 +2,7 @@
 using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Items.Vitric;
+using StarlightRiver.Core.Loaders;
 using System;
 using System.Linq;
 using Terraria;
@@ -88,20 +89,23 @@ namespace StarlightRiver.Content.Items.Crimson
 		{
 			Texture2D tex = Assets.Items.Crimson.MirageBow.Value;
 
-			Effect effect = Filters.Scene["MirageItemFilter"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("MirageItemFilter").Value;
 
-			effect.Parameters["u_color"].SetValue(Vector3.One);
-			effect.Parameters["u_fade"].SetValue(Vector3.One);
-			effect.Parameters["u_resolution"].SetValue(tex.Size());
-			effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.1f);
+			if (effect != null)
+			{
+				effect.Parameters["u_color"].SetValue(Vector3.One);
+				effect.Parameters["u_fade"].SetValue(Vector3.One);
+				effect.Parameters["u_resolution"].SetValue(tex.Size());
+				effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.1f);
 
-			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, SamplerState.LinearClamp, default, default, effect, Main.UIScaleMatrix);
+				spriteBatch.End();
+				spriteBatch.Begin(default, BlendState.Additive, SamplerState.LinearClamp, default, default, effect, Main.UIScaleMatrix);
 
-			spriteBatch.Draw(tex, position, frame, drawColor, 0, origin, scale, 0, 0);
+				spriteBatch.Draw(tex, position, frame, drawColor, 0, origin, scale, 0, 0);
 
-			spriteBatch.End();
-			spriteBatch.Begin(default, default, SamplerState.LinearClamp, default, default, default, Main.UIScaleMatrix);
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, SamplerState.LinearClamp, default, default, default, Main.UIScaleMatrix);
+			}
 
 			return false;
 		}
@@ -110,20 +114,23 @@ namespace StarlightRiver.Content.Items.Crimson
 		{
 			Texture2D tex = Assets.Items.Crimson.MirageBow.Value;
 
-			Effect effect = Filters.Scene["MirageItemFilter"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("MirageItemFilter").Value;
 
-			effect.Parameters["u_color"].SetValue(Vector3.One);
-			effect.Parameters["u_fade"].SetValue(Vector3.One);
-			effect.Parameters["u_resolution"].SetValue(tex.Size());
-			effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.05f);
+			if (effect != null)
+			{
+				effect.Parameters["u_color"].SetValue(Vector3.One);
+				effect.Parameters["u_fade"].SetValue(Vector3.One);
+				effect.Parameters["u_resolution"].SetValue(tex.Size());
+				effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.05f);
 
-			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, SamplerState.LinearClamp, default, default, effect, Main.UIScaleMatrix);
+				spriteBatch.End();
+				spriteBatch.Begin(default, BlendState.Additive, SamplerState.LinearClamp, default, default, effect, Main.UIScaleMatrix);
 
-			spriteBatch.Draw(tex, Item.Center - Main.screenPosition, null, Color.White, rotation, Item.Size / 2f, scale, 0, 0);
+				spriteBatch.Draw(tex, Item.Center - Main.screenPosition, null, Color.White, rotation, Item.Size / 2f, scale, 0, 0);
 
-			spriteBatch.End();
-			spriteBatch.Begin(default, default, SamplerState.LinearClamp, default, default, default, Main.UIScaleMatrix);
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, SamplerState.LinearClamp, default, default, default, Main.UIScaleMatrix);
+			}
 
 			return false;
 		}
@@ -181,20 +188,23 @@ namespace StarlightRiver.Content.Items.Crimson
 			var origin = new Vector2(0, tex.Height / 2);
 			SpriteEffects direction = Projectile.rotation.ToRotationVector2().X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
 
-			Effect effect = Filters.Scene["MirageItemFilter"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("MirageItemFilter").Value;
 
-			effect.Parameters["u_color"].SetValue(Vector3.One);
-			effect.Parameters["u_fade"].SetValue(Vector3.One);
-			effect.Parameters["u_resolution"].SetValue(tex.Size());
-			effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.1f);
+			if (effect != null)
+			{
+				effect.Parameters["u_color"].SetValue(Vector3.One);
+				effect.Parameters["u_fade"].SetValue(Vector3.One);
+				effect.Parameters["u_resolution"].SetValue(tex.Size());
+				effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.1f);
 
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, default, effect, Main.UIScaleMatrix);
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, default, effect, Main.UIScaleMatrix);
 
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, origin, 1, direction, 0);
+				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, origin, 1, direction, 0);
 
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
+			}
 
 			return false;
 		}
@@ -265,20 +275,23 @@ namespace StarlightRiver.Content.Items.Crimson
 			var origin = new Vector2(0, tex.Height / 2);
 			SpriteEffects direction = Projectile.rotation.ToRotationVector2().X > 0 ? SpriteEffects.None : SpriteEffects.FlipVertically;
 
-			Effect effect = Filters.Scene["MirageItemFilter"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("MirageItemFilter").Value;
 
-			effect.Parameters["u_color"].SetValue(Vector3.One);
-			effect.Parameters["u_fade"].SetValue(Vector3.One);
-			effect.Parameters["u_resolution"].SetValue(tex.Size());
-			effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.1f);
+			if (effect != null)
+			{
+				effect.Parameters["u_color"].SetValue(Vector3.One);
+				effect.Parameters["u_fade"].SetValue(Vector3.One);
+				effect.Parameters["u_resolution"].SetValue(tex.Size());
+				effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.1f);
 
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, default, effect, Main.UIScaleMatrix);
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, default, effect, Main.UIScaleMatrix);
 
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * alpha, Projectile.rotation, origin, 1, direction, 0);
+				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * alpha, Projectile.rotation, origin, 1, direction, 0);
 
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
+			}
 
 			return false;
 		}

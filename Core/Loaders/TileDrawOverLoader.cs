@@ -56,7 +56,7 @@ namespace StarlightRiver.Core.Loaders
 			if (tileTarget is null || projTarget is null)
 				return;
 
-			overTilesEffect ??= Filters.Scene["OverTileShader"].GetShader().Shader;
+			overTilesEffect ??= ShaderLoader.GetShader("OverTileShader").Value;
 
 			if (overTilesEffect is null)
 				return;

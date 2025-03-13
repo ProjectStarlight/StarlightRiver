@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Backgrounds;
 using StarlightRiver.Content.Menus;
 using StarlightRiver.Content.PersistentData;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems.BossRushSystem;
 using StarlightRiver.Core.Systems.PersistentDataSystem;
@@ -314,12 +315,13 @@ namespace StarlightRiver.Content.GUI
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
-			//RemoveAllChildren();
-			//OnInitialize();
-
 			var dims = button.GetDimensions().ToRectangle();
 
-			Effect mapEffect = Filters.Scene["StarMap"].GetShader().Shader;
+			Effect mapEffect = ShaderLoader.GetShader("StarMap").Value;
+
+			if (mapEffect is null)
+				return;
+
 			mapEffect.Parameters["map"].SetValue(StarlightRiverBackground.starsMap.RenderTarget);
 			mapEffect.Parameters["background"].SetValue(StarlightRiverBackground.starsTarget.RenderTarget);
 

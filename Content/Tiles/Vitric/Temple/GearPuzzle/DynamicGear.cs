@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Packets;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using Terraria.DataStructures;
@@ -119,19 +120,24 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 					3 => Assets.Tiles.Vitric.CrystalGearLarge.Value,
 					_ => Assets.Tiles.Vitric.CrystalGearSmall.Value,
 				};
-				Effect effect = Terraria.Graphics.Effects.Filters.Scene["MoltenForm"].GetShader().Shader;
-				effect.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.ShieldMap.Value);
-				effect.Parameters["uTime"].SetValue(GearPuzzleHandler.solveTimer / 180f * 2);
-				effect.Parameters["sourceFrame"].SetValue(new Vector4(0, 0, tex.Width, tex.Height));
-				effect.Parameters["texSize"].SetValue(tex.Size());
 
-				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+				Effect effect = ShaderLoader.GetShader("MoltenForm").Value;
 
-				Main.spriteBatch.Draw(tex, Center - Main.screenPosition, null, Color.White, Rotation, tex.Size() / 2, 1, 0, 0);
+				if (effect != null)
+				{
+					effect.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.ShieldMap.Value);
+					effect.Parameters["uTime"].SetValue(GearPuzzleHandler.solveTimer / 180f * 2);
+					effect.Parameters["sourceFrame"].SetValue(new Vector4(0, 0, tex.Width, tex.Height));
+					effect.Parameters["texSize"].SetValue(tex.Size());
 
-				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+					Main.spriteBatch.End();
+					Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+
+					Main.spriteBatch.Draw(tex, Center - Main.screenPosition, null, Color.White, Rotation, tex.Size() / 2, 1, 0, 0);
+
+					Main.spriteBatch.End();
+					Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				}
 			}
 		}
 	}

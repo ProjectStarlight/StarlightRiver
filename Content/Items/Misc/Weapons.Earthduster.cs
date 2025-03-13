@@ -5,6 +5,7 @@ using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.Misc.SoilgunFiles;
 using StarlightRiver.Content.Items.UndergroundTemple;
 using StarlightRiver.Content.Items.Vitric;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.ExposureSystem;
 using StarlightRiver.Core.Systems.PixelationSystem;
@@ -492,7 +493,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () =>
 			{
-				Effect effect = Filters.Scene["ColoredFireAlpha"].GetShader().Shader;
+				Effect effect = ShaderLoader.GetShader("ColoredFireAlpha").Value;
 
 				if (effect is null)
 					return;
@@ -857,7 +858,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 				Main.spriteBatch.Draw(texBlur, dust.position - Main.screenPosition, frame, Color.White with { A = 0 } * 0.5f * lerper, dust.rotation, frame.Size() / 2f, dust.scale, 0f, 0f);
 
-				Effect effect = Filters.Scene["ColoredFireAlpha"].GetShader().Shader;
+				Effect effect = ShaderLoader.GetShader("ColoredFireAlpha").Value;
 
 				if (effect is null)
 					return;

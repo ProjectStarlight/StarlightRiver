@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.BuriedArtifacts;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -459,21 +460,24 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("OrbitalStrikeTrail").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
-			effect.Parameters["alpha"].SetValue(1);
-			BlendState oldState = Main.graphics.GraphicsDevice.BlendState;
-			Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+				effect.Parameters["alpha"].SetValue(1);
+				BlendState oldState = Main.graphics.GraphicsDevice.BlendState;
+				Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
 
-			trail?.Render(effect);
+				trail?.Render(effect);
 
-			Main.graphics.GraphicsDevice.BlendState = oldState;
+				Main.graphics.GraphicsDevice.BlendState = oldState;
+			}
 		}
 	}
 

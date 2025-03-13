@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarlightRiver.Core.Loaders;
+using System;
 using System.IO;
 using static Terraria.ModLoader.ModContent;
 
@@ -168,18 +169,22 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, color * Projectile.scale, 0, texGlow.Size() / 2, Projectile.scale * 1.0f, default, default);
 			spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, color * Projectile.scale * 1.2f, 0, texGlow.Size() / 2, Projectile.scale * 1.6f, default, default);
 
-			Effect effect1 = Terraria.Graphics.Effects.Filters.Scene["SunPlasma"].GetShader().Shader;
-			effect1.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.LaserBallMap.Value);
-			effect1.Parameters["sampleTexture3"].SetValue(Assets.Bosses.VitricBoss.LaserBallDistort.Value);
-			effect1.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.01f);
+			Effect effect1 = ShaderLoader.GetShader("SunPlasma").Value;
 
-			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect1, Main.GameViewMatrix.TransformationMatrix);
+			if (effect1 != null)
+			{
+				effect1.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.LaserBallMap.Value);
+				effect1.Parameters["sampleTexture3"].SetValue(Assets.Bosses.VitricBoss.LaserBallDistort.Value);
+				effect1.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.01f);
 
-			spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricBoss + Name).Value, Projectile.Center - Main.screenPosition, null, Color.White * Projectile.scale, 0, Projectile.Size / 2, Projectile.scale * 1.7f, 0, 0);
+				spriteBatch.End();
+				spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect1, Main.GameViewMatrix.TransformationMatrix);
 
-			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricBoss + Name).Value, Projectile.Center - Main.screenPosition, null, Color.White * Projectile.scale, 0, Projectile.Size / 2, Projectile.scale * 1.7f, 0, 0);
+
+				spriteBatch.End();
+				spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 
 			if (LaserTimer > 30 && LaserTimer <= 120) //tell line
 			{

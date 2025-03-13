@@ -1,8 +1,7 @@
-﻿using StarlightRiver.Core.Systems.DummyTileSystem;
-using StarlightRiver.Helpers;
+﻿using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using Terraria.GameInput;
-using Terraria.Graphics.Effects;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Abilities.Faewhip
@@ -20,7 +19,6 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 		public Trail trail;
 		public Trail glowTrail;
 		public Vector2[] trailPoints = new Vector2[100];
-		public Effect effect;
 
 		public Vector2 tipsPosition; //where the "tip" of the whip is in the world
 		public bool attached; //if the whip is attached to anything
@@ -51,7 +49,6 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 		{
 			trail = null;
 			glowTrail = null;
-			effect = null;
 			endScale = 0;
 
 			Player.mount.Dismount(Player);
@@ -294,9 +291,9 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 				trailPoints[k] = pos;
 			}
 
-			effect ??= Filters.Scene["WhipAbility"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("WhipAbility").Value;
 
-			if (startPoint != Vector2.Zero)
+			if (startPoint != Vector2.Zero && effect != null)
 			{
 				spriteBatch.End();
 

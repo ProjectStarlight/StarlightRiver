@@ -1,5 +1,6 @@
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Dusts;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.ExposureSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -293,18 +294,21 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount);
-			effect.Parameters["repeats"].SetValue(2f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount);
+				effect.Parameters["repeats"].SetValue(2f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
-			trail?.Render(effect);
+				trail?.Render(effect);
+			}
 		}
 	}
 
@@ -473,22 +477,25 @@ namespace StarlightRiver.Content.Items.Vitric
 		private void DrawRing(SpriteBatch sb, Vector2 pos, float w, float h, float rotation, float prog, Color color)
 		{
 			Texture2D texRing = Assets.Items.Vitric.BossBowRing.Value;
-			Effect effect = Filters.Scene["BowRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("BowRing").Value;
 
-			effect.Parameters["uTime"].SetValue(rotation);
-			effect.Parameters["cosine"].SetValue((float)Math.Cos(rotation));
-			effect.Parameters["uColor"].SetValue(color.ToVector3());
-			effect.Parameters["uImageSize1"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
-			effect.Parameters["uOpacity"].SetValue(prog);
+			if (effect != null)
+			{
+				effect.Parameters["uTime"].SetValue(rotation);
+				effect.Parameters["cosine"].SetValue((float)Math.Cos(rotation));
+				effect.Parameters["uColor"].SetValue(color.ToVector3());
+				effect.Parameters["uImageSize1"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+				effect.Parameters["uOpacity"].SetValue(prog);
 
-			sb.End();
-			sb.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+				sb.End();
+				sb.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 
-			Rectangle target = toRect(pos, (int)(10 * (w + prog)), (int)(30 * (h + prog)));
-			sb.Draw(texRing, target, null, color * prog, Projectile.rotation - 1.57f / 2, texRing.Size() / 2, 0, 0);
+				Rectangle target = toRect(pos, (int)(10 * (w + prog)), (int)(30 * (h + prog)));
+				sb.Draw(texRing, target, null, color * prog, Projectile.rotation - 1.57f / 2, texRing.Size() / 2, 0, 0);
 
-			sb.End();
-			sb.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				sb.End();
+				sb.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 		}
 
 		private Rectangle toRect(Vector2 pos, int w, int h)

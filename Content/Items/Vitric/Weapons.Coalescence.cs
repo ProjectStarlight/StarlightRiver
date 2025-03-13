@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Helpers;
+﻿using StarlightRiver.Core.Loaders;
+using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -205,7 +206,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		private void DrawRing(SpriteBatch sb, Vector2 pos, float w, float h, float rotation, float prog, Color color) //optimization nightmare. Figure out smth later
 		{
 			Texture2D texRing = Request<Texture2D>(AssetDirectory.VitricItem + "BossBowRing", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
-			Effect effect = Filters.Scene["BowRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("BowRing").Value;
 
 			if (effect is null)
 				return;

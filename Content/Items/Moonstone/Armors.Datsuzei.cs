@@ -1,4 +1,6 @@
-﻿using StarlightRiver.Core.Systems.CameraSystem;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 
 using System;
@@ -119,22 +121,27 @@ namespace StarlightRiver.Content.Items.Moonstone
 				sparkles.DrawParticles(Main.spriteBatch);
 
 				//the shader for the flames
-				Effect effect1 = Filters.Scene["MagicalFlames"].GetShader().Shader;
-				effect1.Parameters["sampleTexture1"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap1.Value);
-				effect1.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
-				effect1.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.008f);
-
 				if (activationTimerNoCurve > 85)
 				{
-					Main.spriteBatch.End();
-					Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, effect1, Main.UIScaleMatrix);
+					Effect effect1 = ShaderLoader.GetShader("MagicalFlames").Value;
 
-					Texture2D spearTex = Assets.Items.Moonstone.DatsuzeiHotbarSprite.Value;
-					Main.spriteBatch.Draw(spearTex, target.Center() + new Vector2(0, -40), null, Color.White, 0, spearTex.Size() / 2, 1, 0, 0);
+					if (effect1 != null)
+					{
+						effect1.Parameters["sampleTexture1"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap1.Value);
+						effect1.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
+						effect1.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.008f);
+
+
+						Main.spriteBatch.End();
+						Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, effect1, Main.UIScaleMatrix);
+
+						Texture2D spearTex = Assets.Items.Moonstone.DatsuzeiHotbarSprite.Value;
+						Main.spriteBatch.Draw(spearTex, target.Center() + new Vector2(0, -40), null, Color.White, 0, spearTex.Size() / 2, 1, 0, 0);
+
+						Main.spriteBatch.End();
+						Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
+					}
 				}
-
-				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
 
 				if (activationTimerNoCurve >= 80)
 				{
@@ -566,26 +573,29 @@ namespace StarlightRiver.Content.Items.Moonstone
 			if (ComboState == -1)
 				return;
 
-			Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("DatsuzeiTrail").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
-			effect.Parameters["repeats"].SetValue(8f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
-			effect.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
+				effect.Parameters["repeats"].SetValue(8f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+				effect.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
 
-			trail?.Render(effect);
+				trail?.Render(effect);
 
-			if (ComboState == 3)
-				trailBack?.Render(effect);
+				if (ComboState == 3)
+					trailBack?.Render(effect);
 
-			effect.Parameters["sampleTexture2"].SetValue(TextureAssets.MagicPixel.Value);
+				effect.Parameters["sampleTexture2"].SetValue(TextureAssets.MagicPixel.Value);
 
-			trail2?.Render(effect);
+				trail2?.Render(effect);
+			}
 		}
 	}
 }

@@ -2,6 +2,7 @@
 using StarlightRiver.Content.Bosses.TheThinkerBoss;
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Tiles.Crimson;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
@@ -123,25 +124,29 @@ namespace StarlightRiver.Content.Biomes
 		{
 			if (IsBiomeActive(Main.LocalPlayer))
 			{
-				Effect shader = Filters.Scene["GrayMatter"].GetShader().Shader;
-				Texture2D noise = ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/SwirlyNoiseLooping").Value;
+				Effect shader = ShaderLoader.GetShader("GrayMatter").Value;
 
-				shader.Parameters["background"].SetValue(screen);
-				shader.Parameters["map"].SetValue(hallucinationMap.RenderTarget);
-				shader.Parameters["noise"].SetValue(noise);
-				shader.Parameters["over"].SetValue(overHallucinationMap.RenderTarget);
-				shader.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
-				shader.Parameters["screensize"].SetValue(noise.Size() / new Vector2(Main.screenWidth, Main.screenHeight));
-				shader.Parameters["screenpos"].SetValue(-Main.screenPosition / Main.ScreenSize.ToVector2());
+				if (shader != null)
+				{
+					Texture2D noise = Assets.Noise.SwirlyNoiseLooping.Value;
 
-				shader.Parameters["distortionpow"].SetValue(0.1f);
-				shader.Parameters["chromepow"].SetValue(1.25f);
+					shader.Parameters["background"].SetValue(screen);
+					shader.Parameters["map"].SetValue(hallucinationMap.RenderTarget);
+					shader.Parameters["noise"].SetValue(noise);
+					shader.Parameters["over"].SetValue(overHallucinationMap.RenderTarget);
+					shader.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
+					shader.Parameters["screensize"].SetValue(noise.Size() / new Vector2(Main.screenWidth, Main.screenHeight));
+					shader.Parameters["screenpos"].SetValue(-Main.screenPosition / Main.ScreenSize.ToVector2());
 
-				spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default, shader);
+					shader.Parameters["distortionpow"].SetValue(0.1f);
+					shader.Parameters["chromepow"].SetValue(1.25f);
 
-				spriteBatch.Draw(screen, Vector2.Zero, Color.White);
+					spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default, shader);
 
-				spriteBatch.End();
+					spriteBatch.Draw(screen, Vector2.Zero, Color.White);
+
+					spriteBatch.End();
+				}
 			}
 		}
 	}

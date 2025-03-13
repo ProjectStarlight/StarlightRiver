@@ -1,3 +1,4 @@
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -27,7 +28,7 @@ namespace StarlightRiver.Content.Physics
 
 		private void DrawVerletBanners(On_Main.orig_DrawProjectiles orig, Main self)
 		{
-			Effect shader = Filters.Scene["Outline"].GetShader().Shader;
+			Effect shader = ShaderLoader.GetShader("Outline").Value;
 
 			if (shader is null)
 				return;
@@ -35,7 +36,7 @@ namespace StarlightRiver.Content.Physics
 			shader.Parameters["resolution"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
 			shader.Parameters["outlineColor"].SetValue(new Vector3(0, 0, 0));
 
-			Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, Filters.Scene["Outline"].GetShader().Shader, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, shader, Main.GameViewMatrix.TransformationMatrix);
 
 			VerletChain.DrawStripsPixelated(Main.spriteBatch);
 

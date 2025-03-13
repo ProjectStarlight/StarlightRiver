@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.CustomHooks;
+using StarlightRiver.Core.Loaders;
 using System;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -119,34 +120,38 @@ namespace StarlightRiver.Content.Items.Breacher
 			if (Main.dedServ || spriteBatch == null || gD == null || target == null)
 				return;
 
-			Effect effect = Filters.Scene["BreacherScan"].GetShader().Shader;
-			effect.Parameters["uImageSize0"].SetValue(new Vector2(PlayerTarget.sheetSquareX, PlayerTarget.sheetSquareY));
-			effect.Parameters["alpha"].SetValue((float)Math.Pow(shieldTimer / 200f, 0.25f));
+			Effect effect = ShaderLoader.GetShader("BreacherScan").Value;
 
-			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
-
-			if (flickerTime > 0 && flickerTime < 16)
+			if (effect != null)
 			{
-				float flickerTime2 = (float)(flickerTime / 20f);
-				float whiteness = 1.5f - (flickerTime2 * flickerTime2 / 2 + 2f * flickerTime2);
-				effect.Parameters["whiteness"].SetValue(whiteness);
+				effect.Parameters["uImageSize0"].SetValue(new Vector2(PlayerTarget.sheetSquareX, PlayerTarget.sheetSquareY));
+				effect.Parameters["alpha"].SetValue((float)Math.Pow(shieldTimer / 200f, 0.25f));
+
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+
+				if (flickerTime > 0 && flickerTime < 16)
+				{
+					float flickerTime2 = (float)(flickerTime / 20f);
+					float whiteness = 1.5f - (flickerTime2 * flickerTime2 / 2 + 2f * flickerTime2);
+					effect.Parameters["whiteness"].SetValue(whiteness);
+				}
+				else
+				{
+					effect.Parameters["whiteness"].SetValue(0);
+				}
+
+				Color color = Color.Cyan;
+				effect.Parameters["red"].SetValue(color.ToVector4());
+				color.A = 230;
+				effect.Parameters["red2"].SetValue(color.ToVector4());
+
+				effect.CurrentTechnique.Passes[0].Apply();
+				spriteBatch.Draw(target, PlayerTarget.getPlayerTargetPosition(drawPlayer.whoAmI), PlayerTarget.getPlayerTargetSourceRectangle(drawPlayer.whoAmI), Color.White);
+
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			}
-			else
-			{
-				effect.Parameters["whiteness"].SetValue(0);
-			}
-
-			Color color = Color.Cyan;
-			effect.Parameters["red"].SetValue(color.ToVector4());
-			color.A = 230;
-			effect.Parameters["red2"].SetValue(color.ToVector4());
-
-			effect.CurrentTechnique.Passes[0].Apply();
-			spriteBatch.Draw(target, PlayerTarget.getPlayerTargetPosition(drawPlayer.whoAmI), PlayerTarget.getPlayerTargetSourceRectangle(drawPlayer.whoAmI), Color.White);
-
-			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 }

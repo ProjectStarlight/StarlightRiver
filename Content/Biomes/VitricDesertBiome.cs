@@ -10,6 +10,8 @@ using StarlightRiver.Core.Systems.LightingSystem;
 using System;
 using StarlightRiver.Content.Waters;
 using Terraria.Graphics.Effects;
+using StarlightRiver.Core.Loaders;
+using Terraria.Graphics.Shaders;
 
 namespace StarlightRiver.Content.Biomes
 {
@@ -56,6 +58,8 @@ namespace StarlightRiver.Content.Biomes
 			On_Main.DrawBackgroundBlackFill += DrawVitricBackground;
 			On_Main.DrawBlack += ForceDrawBlack;
 			IL_Main.DrawBlack += ChangeBlackThreshold;
+
+			Filters.Scene["GradientDistortion"] = new Filter(new ScreenShaderData(ShaderLoader.GetShader("GradientDistortion"), "GradientDistortion" + "Pass"), EffectPriority.High);
 		}
 
 		public override void SetStaticDefaults()
