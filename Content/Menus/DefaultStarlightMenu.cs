@@ -15,6 +15,11 @@ namespace StarlightRiver.Content.Menus
 		public override string DisplayName => "Starlight";
 		public override int Music => MusicLoader.GetMusicSlot(Mod, "Sounds/Music/StarBird");
 
+		public override void Update(bool isOnTitleScreen)
+		{
+			StarlightRiverBackground.forceActiveTimer = 15;
+		}
+
 		public override bool PreDrawLogo(SpriteBatch spriteBatch, ref Vector2 logoDrawCenter, ref float logoRotation, ref float logoScale, ref Color drawColor)
 		{
 			logoScale = 1.0f;
@@ -31,8 +36,6 @@ namespace StarlightRiver.Content.Menus
 
 			targetPos += (targetPos - Main.MouseScreen) * -0.05f;
 			targetPos2 += (targetPos2 - Main.MouseScreen) * -0.01f;
-
-			StarlightRiverBackground.forceActive = true;
 
 			var tex = StarlightRiverBackground.starsTarget.RenderTarget;
 			spriteBatch.Draw(tex, Main.ScreenSize.ToVector2() / 2f, null, Color.White, 0, tex.Size() / 2f, Main.UIScale, 0, 0);

@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Backgrounds
 		public static float starOpacity = 1;
 		public static float timer = 0;
 		public static float yOrigin = 0;
-		public static bool forceActive;
+		public static int forceActiveTimer;
 
 		public override void Load()
 		{
@@ -57,7 +57,7 @@ namespace StarlightRiver.Content.Backgrounds
 		{
 			if (CheckIsActive != null)
 			{
-				if (forceActive)
+				if (forceActiveTimer > 0)
 					return true;
 
 				bool isActive = false;
@@ -302,7 +302,7 @@ namespace StarlightRiver.Content.Backgrounds
 
 			stars.UpdateParticles();
 
-			forceActive = false;
+			forceActiveTimer--;
 		}
 
 		private void UpdateOnMenu(On_Main.orig_UpdateMenu orig)
