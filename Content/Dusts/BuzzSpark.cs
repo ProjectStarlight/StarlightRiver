@@ -1,4 +1,6 @@
-﻿namespace StarlightRiver.Content.Dusts
+﻿using StarlightRiver.Core.Loaders;
+
+namespace StarlightRiver.Content.Dusts
 {
 	class BuzzSpark : ModDust
 	{
@@ -15,7 +17,7 @@
 			dust.noLight = false;
 			dust.frame = new Rectangle(0, 0, 5, 50);
 
-			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/ShrinkingDust").Value), "ShrinkingDustPass");
+			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("ShrinkingDust"), "ShrinkingDustPass");
 		}
 
 		public override bool Update(Dust dust)

@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Biomes;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Helpers;
 using System;
 using Terraria.GameContent.Bestiary;

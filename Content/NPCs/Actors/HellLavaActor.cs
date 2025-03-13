@@ -1,6 +1,7 @@
 ﻿using ReLogic.Peripherals.RGB;
 using StarlightRiver.Content.Items.Hell;
 using StarlightRiver.Content.Items.Infernal;
+using StarlightRiver.Core.Loaders;
 using System;
 using System.Collections.Generic;
 using Terraria.Graphics.Effects;

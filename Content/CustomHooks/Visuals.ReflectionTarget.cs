@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 			DrawWallReflectionNormalMapEvent += drawGlassWallReflectionNormalMap;
 
-			GameShaders.Misc[simpleReflectionShaderPath] = new MiscShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/SimpleReflection").Value), "TileReflectionPass");
+			GameShaders.Misc[simpleReflectionShaderPath] = new MiscShaderData(ShaderLoader.GetShader("SimpleReflection"), "TileReflectionPass");
 		}
 
 		public override void Unload()

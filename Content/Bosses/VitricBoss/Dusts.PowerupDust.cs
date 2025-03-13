@@ -1,4 +1,6 @@
-﻿namespace StarlightRiver.Content.Bosses.VitricBoss
+﻿using StarlightRiver.Core.Loaders;
+
+namespace StarlightRiver.Content.Bosses.VitricBoss
 {
 	class PowerupDust : ModDust
 	{
@@ -25,7 +27,7 @@
 			dust.scale *= 0.3f;
 			dust.frame = new Rectangle(0, 0, 64, 64);
 
-			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
+			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
 		}
 
 		public override bool Update(Dust dust)

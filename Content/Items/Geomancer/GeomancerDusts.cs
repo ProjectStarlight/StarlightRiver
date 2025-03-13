@@ -1,4 +1,5 @@
-﻿using Terraria.Graphics.Shaders;
+﻿using StarlightRiver.Core.Loaders;
+using Terraria.Graphics.Shaders;
 
 namespace StarlightRiver.Content.Items.Geomancer
 {
@@ -13,7 +14,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 			dust.noLight = false;
 			dust.frame = new Rectangle(0, 0, 64, 64);
 			dust.velocity *= 2;
-			dust.shader = new ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
+			dust.shader = new ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
 			dust.alpha = Main.rand.Next(100);
 		}
 

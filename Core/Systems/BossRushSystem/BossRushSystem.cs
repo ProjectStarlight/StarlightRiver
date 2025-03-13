@@ -24,6 +24,7 @@ using Terraria.IO;
 using Terraria.ModLoader.IO;
 using Terraria.WorldBuilding;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core.Loaders;
 
 namespace StarlightRiver.Core.Systems.BossRushSystem
 {

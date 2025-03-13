@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarlightRiver.Core.Loaders;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
@@ -501,7 +502,7 @@ namespace StarlightRiver.Content.Items.Misc
 			dust.noLight = false;
 			dust.frame = new Rectangle(0, 0, 100, 100);
 			dust.color = Color.Lerp(Color.White, Color.Salmon, Eases.EaseQuadIn(Main.rand.NextFloat()));
-			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
+			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
 		}
 
 		public override Color? GetAlpha(Dust dust, Color lightColor)

@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.NPCs.Actors;
+using StarlightRiver.Core.Loaders;
 using System;
 
 namespace StarlightRiver.Content.Dusts
@@ -15,7 +16,7 @@ namespace StarlightRiver.Content.Dusts
 			dust.frame = new Rectangle(0, 0, 100, 100);
 			dust.scale = 0;
 
-			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
+			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
 			dust.shader.UseColor(Color.Transparent);
 		}
 

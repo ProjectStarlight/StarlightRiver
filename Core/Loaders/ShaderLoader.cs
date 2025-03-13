@@ -40,12 +40,21 @@ namespace StarlightRiver.Core.Loaders
 
 		public static Asset<Effect> GetShader(string key)
 		{
-			return shaders[key].Value;
+			if (shaders.ContainsKey(key))
+			{
+				return shaders[key].Value;
+			}
+			else
+			{
+				LoadShader(key, $"Effects/{key}");
+				return shaders[key].Value;
+			}
 		}
 
 		public static void LoadShader(string name, string path)
 		{
-			shaders.Add(name, new(() => StarlightRiver.Instance.Assets.Request<Effect>(path)));
+			if (!shaders.ContainsKey(name))
+				shaders.Add(name, new(() => StarlightRiver.Instance.Assets.Request<Effect>(path)));
 		}
 	}
 }
