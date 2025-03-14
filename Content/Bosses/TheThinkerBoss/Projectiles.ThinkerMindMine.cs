@@ -96,7 +96,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			else
 			{
 				Texture2D flash = Assets.StarTexture.Value;
-				Texture2D flash2 = Assets.Keys.GlowAlpha.Value;
+				Texture2D flash2 = Assets.Masks.GlowAlpha.Value;
 				Main.spriteBatch.Draw(flash2, Projectile.Center - Main.screenPosition, null, new Color(255, 70, 70, 0) * (Projectile.timeLeft / 20f), 0f, flash2.Size() / 2f, 3f - Projectile.timeLeft / 20f * 9, 0, 0);
 				Main.spriteBatch.Draw(flash, Projectile.Center - Main.screenPosition, null, new Color(255, 120, 120, 0) * (Projectile.timeLeft / 20f), 0f, flash.Size() / 2f, 3f - Projectile.timeLeft / 20f * 3, 0, 0);
 			}

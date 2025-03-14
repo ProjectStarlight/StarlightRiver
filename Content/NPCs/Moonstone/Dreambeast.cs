@@ -772,7 +772,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			// Draw flash
 			if (AppearVisible && flashTime > 0 && !Mirage)
 			{
-				Texture2D flashTex = Assets.Keys.GlowAlpha.Value;
+				Texture2D flashTex = Assets.Masks.GlowAlpha.Value;
 				Color color = Color.White * (1 - flashTime / 30f);
 				color.A = 0;
 
@@ -805,7 +805,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
-			Texture2D tex = Assets.Keys.Glow.Value;
+			Texture2D tex = Assets.Masks.Glow.Value;
 			var glowColor = new Color(78, 87, 191);
 			spriteBatch.Draw(tex, OrbPos - Main.screenPosition, tex.Frame(), glowColor * Math.Min(projChargeTime / 30f, 1), 0, tex.Size() / 2, 1.8f * projChargeTime / 150f, 0, 0);
 
@@ -899,7 +899,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 		// Draw tentacle glowy bits
 		public void DrawAdditive(SpriteBatch sb)
 		{
-			Texture2D tex = Assets.Keys.GlowSoft.Value;
+			Texture2D tex = Assets.Masks.GlowSoft.Value;
 
 			if (hasLoaded)
 			{

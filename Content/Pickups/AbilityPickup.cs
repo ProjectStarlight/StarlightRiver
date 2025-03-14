@@ -101,7 +101,7 @@ namespace StarlightRiver.Content.Pickups
 				Tile a = Parent;
 				int b = width;
 				Texture2D tex = Texture.Value;
-				Texture2D glow = Assets.Keys.GlowAlpha.Value;
+				Texture2D glow = Assets.Masks.GlowAlpha.Value;
 
 				Vector2 pos = Center - Main.screenPosition + new Vector2(0, (float)Math.Sin(StarlightWorld.visualTimer) * 5);
 				Main.spriteBatch.Draw(tex, pos, tex.Frame(), Color.White, 0, tex.Size() / 2, 1, 0, 0);

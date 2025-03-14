@@ -161,7 +161,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			if (parent is null)
 				return;
 
-			Texture2D texGlow = Assets.Keys.Glow.Value;
+			Texture2D texGlow = Assets.Masks.Glow.Value;
 
 			int sin = (int)(Math.Sin(StarlightWorld.visualTimer * 3) * 40f);
 			var color = new Color(255, 160 + sin, 40 + sin / 2);
@@ -264,7 +264,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				spriteBatch.End();
 				spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
-				Texture2D impactTex = Assets.Keys.GlowSoft.Value;
+				Texture2D impactTex = Assets.Masks.GlowSoft.Value;
 				Texture2D impactTex2 = Assets.GUI.ItemGlow.Value;
 				Texture2D glowTex = Assets.GlowTrail.Value;
 

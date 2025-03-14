@@ -406,7 +406,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
 			Texture2D whiteTex = ModContent.Request<Texture2D>(Texture + "_White").Value;
 			Texture2D flareTex = ModContent.Request<Texture2D>(Texture + "Flare").Value;
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 			Texture2D glowMap = ModContent.Request<Texture2D>(Texture + "_GlowMap").Value;
 			Texture2D bloomMap = ModContent.Request<Texture2D>(Texture + "_BloomMap").Value;
 			Texture2D starTex = Assets.StarTexture.Value;

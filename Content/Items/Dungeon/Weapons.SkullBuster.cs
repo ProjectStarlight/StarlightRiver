@@ -890,7 +890,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			Texture2D tex = Assets.Items.Dungeon.SkullBusterMuzzleFlashDust.Value;
 			Texture2D texBlur = Assets.Items.Dungeon.SkullBusterMuzzleFlashDust_Blur.Value;
 			Texture2D texGlow = Assets.Items.Dungeon.SkullBusterMuzzleFlashDust_Glow.Value;
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			int frame = 0;
 			if (lerper < 0.5f)

@@ -32,7 +32,7 @@
 			float scale = MathHelper.Lerp(originalScale.Value, originalScale.Value * 5f, Eases.EaseCircularInOut(1f - lerper));
 
 			Texture2D tex = Assets.Dusts.EchochainBurstDust.Value;
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			Main.spriteBatch.Draw(bloomTex, dust.position - Main.screenPosition, null, new Color(135, 255, 10, 0) * 0.25f * lerper, 0f, bloomTex.Size() / 2f, scale * 20f, 0f, 0f);
 
@@ -79,7 +79,7 @@
 			float scale = MathHelper.Lerp(originalScale.Value, originalScale.Value * 1.25f, Eases.EaseCircularInOut(1f - lerper));
 
 			Texture2D tex = Assets.Dusts.EchochainChainDust.Value;
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, Color.White * lerper, dust.rotation, tex.Size() / 2f, scale, 0f, 0f);
 			Main.spriteBatch.Draw(bloomTex, dust.position - Main.screenPosition, null, new Color(130, 255, 50, 0) * 0.5f * lerper, 0f, bloomTex.Size() / 2f, scale * 0.5f, 0f, 0f);

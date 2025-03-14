@@ -55,7 +55,7 @@ namespace StarlightRiver.Content.Tiles.Crimson
 			if (!StarlightWorld.HasFlag(WorldFlags.ThinkerBossOpen))
 				return;
 
-			Texture2D glow = Assets.Keys.GlowAlpha.Value;
+			Texture2D glow = Assets.Masks.GlowAlpha.Value;
 			var pos = (Main.screenPosition / 16).ToPoint16();
 
 			int width = Main.screenWidth / 16 + 1;

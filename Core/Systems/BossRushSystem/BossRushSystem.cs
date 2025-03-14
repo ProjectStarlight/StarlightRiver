@@ -569,7 +569,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 						break;
 
 					case VisibleShape.circle:
-						Texture2D circle = Assets.Keys.GlowLarge.Value;
+						Texture2D circle = Assets.Masks.GlowLarge.Value;
 						Rectangle target = visibleArea;
 						target.Offset((-Main.screenPosition).ToPoint());
 						sb.Draw(tex, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);

@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			LightingBufferRenderer.DrawWithLighting(tex, NPC.position - Main.screenPosition, tex.Bounds, Color.White * (ThisThinker?.ArenaOpacity ?? 1));
 
 			Texture2D glowTex = Assets.Bosses.TheThinkerBoss.BrainPlatformGlow.Value;
-			Texture2D glowTex2 = Assets.Keys.GlowAlpha.Value;
+			Texture2D glowTex2 = Assets.Masks.GlowAlpha.Value;
 			Color glowColor = new Color(255, 100, 100, 0) * glow * 0.15f;
 
 			Rectangle target = NPC.Hitbox;

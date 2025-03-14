@@ -705,7 +705,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			float scale = 0;
 			float opacity = 1;
 
-			Texture2D tex = Assets.Keys.GlowSoft.Value;
+			Texture2D tex = Assets.Masks.GlowSoft.Value;
 			Texture2D texRing = Assets.Bosses.VitricBoss.BombTell.Value;
 
 			if (Projectile.timeLeft <= 30)

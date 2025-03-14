@@ -311,7 +311,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			Texture2D tex = Assets.Keys.GlowSoft.Value;
+			Texture2D tex = Assets.Masks.GlowSoft.Value;
 			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 150, 50), 0, tex.Size() / 2, 1, 0, 0);
 			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 0.8f, 0, 0);
 		}

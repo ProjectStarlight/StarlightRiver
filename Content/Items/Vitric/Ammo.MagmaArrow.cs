@@ -158,7 +158,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = Assets.Keys.GlowHarshAlpha.Value;
+			Texture2D tex = Assets.Masks.GlowHarshAlpha.Value;
 			Color color = Color.Orange;
 			color.A = 0;
 			color *= 0.2f;

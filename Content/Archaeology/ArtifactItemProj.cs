@@ -87,8 +87,8 @@ namespace StarlightRiver.Content.Archaeology
 			Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D mainTex = texture.Value;
-			Texture2D glowTex = Assets.Keys.Glow.Value;
-			Texture2D beamTex = Assets.Keys.Shine.Value;
+			Texture2D glowTex = Assets.Masks.Glow.Value;
+			Texture2D beamTex = Assets.Masks.Shine.Value;
 
 			Vector2 pos = Projectile.Center + mainTex.Size() / 2 - Main.screenPosition;
 			Main.spriteBatch.Draw(glowTex, pos, null, glowColor * (0.9f + (float)Math.Sin(Main.GameUpdateCount / 25f) * 0.1f), 0f, glowTex.Size() / 2, mainTex.Size() / glowTex.Size() * 1.4f * Fade, SpriteEffects.None, 0f);

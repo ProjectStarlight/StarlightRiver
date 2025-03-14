@@ -201,7 +201,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 			Texture2D starTex = Assets.StarTexture.Value;
 
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			float fade = 1f;
 			if (stabbing && Timer > 20f)
@@ -361,7 +361,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 		{
 			Texture2D starTex = Assets.StarTexture.Value;
 
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			DrawLaser(Main.spriteBatch);
 
@@ -473,7 +473,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 		{
 			Texture2D starTex = Assets.StarTexture.Value;
 
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			lightColor = new Color(150, 150, 10, 0);
 			lightColor *= Projectile.timeLeft / 1800f;

@@ -105,7 +105,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 			spriteBatch.Draw(tex, pos, frame, color, 0, new Vector2(11, 24), 1, 0, 0);
 
-			Texture2D glowTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D glowTex = Assets.Masks.GlowAlpha.Value;
 			var glowColor = new Color(255, 160, 100)
 			{
 				A = 0

@@ -190,7 +190,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			Texture2D tex = Assets.Keys.GlowSoft.Value;
+			Texture2D tex = Assets.Masks.GlowSoft.Value;
 			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, color * 0.5f, Projectile.rotation, tex.Size() / 2, Projectile.scale, 0, 0);
 		}
 
@@ -339,7 +339,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			Texture2D tex = Assets.Keys.GlowSoft.Value;
+			Texture2D tex = Assets.Masks.GlowSoft.Value;
 			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, color * 0.5f, Projectile.rotation, tex.Size() / 2, Projectile.scale * 1.5f, 0, 0);
 		}
 

@@ -267,7 +267,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 				spriteBatch.End();
 				spriteBatch.Begin(default, BlendState.Additive, SamplerMode, default, RasterizerCullMode, default, Main.UIScaleMatrix);
 
-				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
+				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Masks/GlowSoft").Value;
 				spriteBatch.Draw(tex, position, null, new Color(255, 140, 60) * (HellLavaConversion.HellLavaItemGlow + (float)Math.Sin(StarlightWorld.visualTimer) * 0.2f), 0, tex.Size() / 2, 1, 0, 0);
 
 				spriteBatch.End();
@@ -301,7 +301,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 				spriteBatch.End();
 				spriteBatch.Begin(default, BlendState.Additive, SamplerMode, default, RasterizerCullMode, default, Main.GameViewMatrix.TransformationMatrix);
 
-				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
+				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Masks/GlowSoft").Value;
 				spriteBatch.Draw(tex, Item.Center - Main.screenPosition, null, new Color(255, 140, 60), 0, tex.Size() / 2, 1, 0, 0);
 
 				spriteBatch.End();

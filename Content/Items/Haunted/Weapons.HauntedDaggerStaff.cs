@@ -422,7 +422,7 @@ namespace StarlightRiver.Content.Items.Haunted
 		{
 			Texture2D tex = Assets.Items.Haunted.HauntedDaggerProjectile.Value;
 			Texture2D texGlow = Assets.Items.Haunted.HauntedDaggerProjectile_Glow.Value;
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 			Texture2D starTex = Assets.StarTexture.Value;
 
 			Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, new Color(70, 200, 100, 0) * 0.25f, Projectile.rotation + MathHelper.ToRadians(rotTimer), bloomTex.Size() / 2f, 1f, 0f, 0f);

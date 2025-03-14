@@ -183,7 +183,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				float speed = Vector2.Distance(NPC.position, NPC.oldPos[1]);
 				float glowPower = Math.Max(speed / 10f, 0.4f);
 
-				Texture2D glow = Assets.Keys.GlowAlpha.Value;
+				Texture2D glow = Assets.Masks.GlowAlpha.Value;
 				Texture2D glow2 = Assets.Bosses.TheThinkerBoss.NeurysmTrail.Value;
 				Color col2 = glowColor * glowPower * opacity;
 				col2.A = 0;

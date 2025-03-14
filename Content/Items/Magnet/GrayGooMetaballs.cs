@@ -29,8 +29,8 @@ namespace StarlightRiver.Content.Items.Magnet
 			if (borderNoise is null)
 				return;
 
-			Texture2D tex = Assets.Keys.GlowVerySoft.Value;
-			Texture2D harshTex = Assets.Keys.GlowHarsh.Value;
+			Texture2D tex = Assets.Masks.GlowVerySoft.Value;
+			Texture2D harshTex = Assets.Masks.GlowHarsh.Value;
 
 			borderNoise.Parameters["offset"].SetValue((float)Main.time / 100f);
 

@@ -138,7 +138,7 @@ namespace StarlightRiver.Content.NPCs.Underground
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D texGlow = Assets.Keys.GlowAlpha.Value;
+			Texture2D texGlow = Assets.Masks.GlowAlpha.Value;
 			var frame = new Rectangle(0, (Timer % 20) < 10 ? 14 : 0, 14, 14);
 
 			spriteBatch.Draw(texGlow, NPC.Center - Main.screenPosition, null, new Color(0.1f, 0.1f, 0.1f, 0f) * 0.5f, NPC.rotation, texGlow.Size() / 2f, NPC.scale, 0, 0);

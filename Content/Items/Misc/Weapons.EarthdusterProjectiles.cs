@@ -226,7 +226,7 @@ namespace StarlightRiver.Content.Items.Misc
 			DrawPrimitives();
 
 			Texture2D tex = Assets.Items.Misc.EarthdusterProjectile.Value;
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			float lerper = FadeOut();
 

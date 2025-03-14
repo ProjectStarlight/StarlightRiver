@@ -350,7 +350,7 @@ namespace StarlightRiver.Content.GUI
 
 		public void DrawAdditive(SpriteBatch spriteBatch) //batched and drawn in parent
 		{
-			Texture2D tex = Assets.Keys.Glow.Value;
+			Texture2D tex = Assets.Masks.Glow.Value;
 			Vector2 pos = GetDimensions().Center();
 			float scale = 1 + animationTimer / 30f;
 			float opacity = 1 - animationTimer / 30f;

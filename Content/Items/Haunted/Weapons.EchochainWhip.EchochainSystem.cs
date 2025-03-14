@@ -387,7 +387,7 @@ namespace StarlightRiver.Content.Items.Haunted
 			Texture2D tex = Assets.Items.Haunted.EchochainWhipChain.Value;
 			Texture2D texGlow = Assets.Items.Haunted.EchochainWhipChain_Glow.Value;
 			Texture2D texBlur = Assets.Items.Haunted.EchochainWhipChain_Blur.Value;
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 			Vector2 chainStart = start.npc.Center;
 			Vector2 chainEnd = end.npc.Center;
 

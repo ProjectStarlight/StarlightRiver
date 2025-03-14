@@ -161,7 +161,7 @@ namespace StarlightRiver.Content.Items.Haunted
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			float fadeOut = 1f;
 			if (DeathTimer > 0)
@@ -584,7 +584,7 @@ namespace StarlightRiver.Content.Items.Haunted
 			Texture2D tex = Assets.Items.Haunted.EchochainWhipChain.Value;
 			Texture2D texGlow = Assets.Items.Haunted.EchochainWhipChain_Glow.Value;
 			Texture2D texBlur = Assets.Items.Haunted.EchochainWhipChain_Blur.Value;
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			Vector2 chainEnd = tilePosition;
 			Vector2 chainStart = Projectile.Center;
@@ -678,7 +678,7 @@ namespace StarlightRiver.Content.Items.Haunted
 		{
 			Texture2D texBlur = Assets.Items.Haunted.EchochainWhipProjectile_TipBlur.Value;
 			Texture2D texGlow = Assets.Items.Haunted.EchochainWhipProjectile_TipGlow.Value;
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 			Texture2D texture = Assets.Items.Haunted.EchochainWhipProjectile.Value;
 
 			Rectangle whipFrame = texture.Frame(1, 5, 0, 0);

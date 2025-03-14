@@ -238,7 +238,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			if (ThisThinker is null)
 				return;
 
-			Texture2D glow = Assets.Keys.GlowAlpha.Value;
+			Texture2D glow = Assets.Masks.GlowAlpha.Value;
 			Color color = Color.White;
 			color.A = 0;
 
@@ -257,7 +257,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 			if (bodyShader != null)
 			{
-				Texture2D glow = Assets.Keys.Glow.Value;
+				Texture2D glow = Assets.Masks.Glow.Value;
 
 				CutsceneFakeThinker thinker = ThisThinker;
 

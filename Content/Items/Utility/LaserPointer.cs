@@ -173,7 +173,7 @@ namespace StarlightRiver.Content.Items.Utility
 			for (int i = 0; i < width; i += 10)
 				Lighting.AddLight(pos + Vector2.UnitX.RotatedBy(LaserRotation) * i + Main.screenPosition, color.ToVector3() * height * 0.030f);
 
-			Texture2D impactTex = Assets.Keys.GlowSoft.Value;
+			Texture2D impactTex = Assets.Masks.GlowSoft.Value;
 			spriteBatch.Draw(impactTex, endPoint - Main.screenPosition, null, color, 0, impactTex.Size() / 2, 0.5f, 0, 0);
 		}
 

@@ -673,7 +673,7 @@ namespace StarlightRiver.Content.Items.Palestone
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D texGlow = Assets.Keys.GlowAlpha.Value;
+			Texture2D texGlow = Assets.Masks.GlowAlpha.Value;
 
 			SpriteEffects flip = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : 0f;
 			if (Down && parent != null)

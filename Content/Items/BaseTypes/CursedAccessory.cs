@@ -145,7 +145,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 				if (effect is null)
 					return true;
 
-				Texture2D tex = Assets.Keys.Glow.Value;
+				Texture2D tex = Assets.Masks.Glow.Value;
 
 				effect.Parameters["speed"].SetValue(1);
 				effect.Parameters["power"].SetValue(0.011f * tooltipProgress);
@@ -189,7 +189,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public override void Load()
 		{
-			CursedSystem = new ParticleSystem("StarlightRiver/Assets/Keys/GlowAlpha", UpdateCursedBody, ParticleSystem.AnchorOptions.UI);
+			CursedSystem = new ParticleSystem("StarlightRiver/Assets/Masks/GlowAlpha", UpdateCursedBody, ParticleSystem.AnchorOptions.UI);
 			ShardsSystem = new ParticleSystem("StarlightRiver/Assets/GUI/charm", UpdateShardsBody, ParticleSystem.AnchorOptions.UI);
 		}
 

@@ -335,7 +335,7 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 				spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 				Texture2D endTex = endRooted ? Assets.Abilities.WhipEndRoot.Value : Assets.Abilities.WhipEndGrab.Value;
-				Texture2D endGlow = Assets.Keys.GlowSoft.Value;
+				Texture2D endGlow = Assets.Masks.GlowSoft.Value;
 
 				spriteBatch.Draw(endTex, tipsPosition - Main.screenPosition, null, new Color(255, 190, 100), Main.GameUpdateCount * 0.1f, endTex.Size() / 2, endScale * 0.75f, 0, 0);
 				spriteBatch.Draw(endGlow, tipsPosition - Main.screenPosition, null, new Color(255, 190, 100), 0, endGlow.Size() / 2, endScale, 0, 0);

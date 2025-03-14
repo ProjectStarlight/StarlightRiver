@@ -205,7 +205,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 			foreach (NPC target in targets)
 			{
 				Texture2D tex2 = Assets.Dusts.Aurora.Value;
-				Texture2D tex3 = Assets.Keys.GlowSoft.Value;
+				Texture2D tex3 = Assets.Masks.GlowSoft.Value;
 
 				sb.Draw(tex2, target.Center - Main.screenPosition, null, color, 0, tex2.Size() / 2f, 0.3f, 0, 0);
 				sb.Draw(tex3, target.Center - Main.screenPosition, null, color, 0, tex3.Size() / 2f, 0.5f, 0, 0);

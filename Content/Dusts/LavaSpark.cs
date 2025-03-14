@@ -5,7 +5,7 @@ namespace StarlightRiver.Content.Dusts
 {
 	public class LavaSpark : ModDust
 	{
-		public override string Texture => "StarlightRiver/Assets/Keys/GlowSoft";
+		public override string Texture => "StarlightRiver/Assets/Masks/GlowSoft";
 
 		public override void OnSpawn(Dust dust)
 		{

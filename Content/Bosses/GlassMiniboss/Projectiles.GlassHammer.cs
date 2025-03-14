@@ -321,7 +321,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			if (Timer < RAISE_TIME + 10)
 				DrawGroundTell();
 
-			Asset<Texture2D> bloom = Assets.Keys.GlowAlpha;
+			Asset<Texture2D> bloom = Assets.Masks.GlowAlpha;
 
 			if (Timer > RAISE_TIME - 10)
 			{

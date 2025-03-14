@@ -667,7 +667,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			if (CurrentAttack == AttackType.Slam && slamCharged)
 			{
 				Texture2D texFlare = Assets.StarTexture.Value;
-				Texture2D texBloom = Assets.Keys.GlowAlpha.Value;
+				Texture2D texBloom = Assets.Masks.GlowAlpha.Value;
 
 				float flareRotation = MathHelper.SmoothStep(0, MathHelper.TwoPi, timer / 40f);
 				float flareScale = timer < 20 ? MathHelper.SmoothStep(0, 1, timer / 20f) : MathHelper.SmoothStep(1, 0, (timer - 20) / 20f);

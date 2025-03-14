@@ -117,7 +117,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				trail?.Render(trailEffect);
 			}
 
-			Texture2D glowTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D glowTex = Assets.Masks.GlowAlpha.Value;
 			var color = new Color(255, 160, 100, 0);
 
 			Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, color * (1 - Timer / 25f), 0, glowTex.Size() / 2, Timer * 0.1f, 0, 0);

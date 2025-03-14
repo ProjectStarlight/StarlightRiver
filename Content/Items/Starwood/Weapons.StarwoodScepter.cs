@@ -220,7 +220,7 @@ namespace StarlightRiver.Content.Items.Starwood
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
 			Texture2D blurTex = ModContent.Request<Texture2D>(Texture + "_Blur").Value;
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			if (HasEmpoweredStar)
 				return false;
@@ -687,7 +687,7 @@ namespace StarlightRiver.Content.Items.Starwood
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
 			Texture2D blurTex = ModContent.Request<Texture2D>(Texture + "_Blur").Value;
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			lightColor = Color.White;
 

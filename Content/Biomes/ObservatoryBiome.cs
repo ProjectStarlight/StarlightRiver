@@ -58,7 +58,7 @@ namespace StarlightRiver.Content.Biomes
 
 				sb.Draw(tex, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), new Rectangle((int)Main.GameUpdateCount / 3, 0, tex.Width, tex.Height), Color.White * fade * 0.2f);
 
-				Texture2D glowTex = Assets.Keys.Glow.Value;
+				Texture2D glowTex = Assets.Masks.Glow.Value;
 
 				float opacity = fade;
 				Color color = Color.Black * opacity;

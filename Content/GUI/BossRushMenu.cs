@@ -203,7 +203,7 @@ namespace StarlightRiver.Content.GUI
 
 			if (active())
 			{
-				Texture2D glow = Assets.Keys.GlowAlpha.Value;
+				Texture2D glow = Assets.Masks.GlowAlpha.Value;
 				spriteBatch.Draw(glow, pos, null, new Color(100, 200, 255, 0), 0, glow.Size() / 2f, 0.8f, 0, 0);
 			}
 		}
@@ -302,13 +302,13 @@ namespace StarlightRiver.Content.GUI
 			{
 				float scale = 1f + 0.05f * MathF.Sin(timer / 120f * 6.28f);
 
-				spriteBatch.Draw(Assets.Keys.GlowAlpha.Value, Main.ScreenSize.ToVector2() / 2f * (1f / Main.UIScale), null, new Color(1f, 1f, 1f, 0) * Fade, 0, Assets.Keys.GlowAlpha.Size() / 2f, 12 * scale, 0, 0);
-				spriteBatch.Draw(Assets.Keys.GlowHarshAlpha.Value, Main.ScreenSize.ToVector2() / 2f * (1f / Main.UIScale), null, new Color(1f, 1f, 1f, 0) * Fade, 0, Assets.Keys.GlowHarshAlpha.Size() / 2f, 20 * scale, 0, 0);
+				spriteBatch.Draw(Assets.Masks.GlowAlpha.Value, Main.ScreenSize.ToVector2() / 2f * (1f / Main.UIScale), null, new Color(1f, 1f, 1f, 0) * Fade, 0, Assets.Masks.GlowAlpha.Size() / 2f, 12 * scale, 0, 0);
+				spriteBatch.Draw(Assets.Masks.GlowHarshAlpha.Value, Main.ScreenSize.ToVector2() / 2f * (1f / Main.UIScale), null, new Color(1f, 1f, 1f, 0) * Fade, 0, Assets.Masks.GlowHarshAlpha.Size() / 2f, 20 * scale, 0, 0);
 
 				foreach (UIElement element in UILoader.GetUIState<BossRushMenu>().Children)
 				{
 					if (element is BossRushUnlockInfo)
-						spriteBatch.Draw(Assets.Keys.GlowAlpha.Value, element.GetDimensions().Center(), null, new Color(1f, 1f, 1f, 0) * 0.5f * Fade, 0, Assets.Keys.GlowAlpha.Size() / 2f, 2 * scale, 0, 0);
+						spriteBatch.Draw(Assets.Masks.GlowAlpha.Value, element.GetDimensions().Center(), null, new Color(1f, 1f, 1f, 0) * 0.5f * Fade, 0, Assets.Masks.GlowAlpha.Size() / 2f, 2 * scale, 0, 0);
 				}
 			}
 		}

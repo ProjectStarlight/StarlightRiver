@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Items.Utility
 			if (line.Mod == "Terraria" && line.Name == "ItemName")
 			{
 				Effect effect = ShaderLoader.GetShader("CursedTooltip").Value;
-				Texture2D tex = Assets.Keys.Glow.Value;
+				Texture2D tex = Assets.Masks.Glow.Value;
 
 				if (effect is null)
 					return true;

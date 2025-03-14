@@ -271,7 +271,7 @@ namespace StarlightRiver.Content.Items.Desert
 		{
 			Texture2D starTex = Assets.StarTexture.Value;
 
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			float mult = 0f;
 			if (Projectile.timeLeft > maxTimeleft * 0.6f)

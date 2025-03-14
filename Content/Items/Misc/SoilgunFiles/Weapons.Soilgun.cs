@@ -183,7 +183,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			Texture2D texGlow = Assets.Items.Misc.Soilgun_Glow.Value;
 			Texture2D texBlur = Assets.Items.Misc.Soilgun_Blur.Value;
 			Texture2D starTex = Assets.StarTexture_Alt.Value;
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			float fade = 0f;
 			if (Charge < 8f)

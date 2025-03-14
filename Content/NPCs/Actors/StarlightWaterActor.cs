@@ -371,7 +371,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 				spriteBatch.End();
 				spriteBatch.Begin(default, BlendState.Additive, SamplerMode, default, RasterizerCullMode, default, Main.UIScaleMatrix);
 
-				Texture2D tex = Assets.Keys.GlowSoft.Value;
+				Texture2D tex = Assets.Masks.GlowSoft.Value;
 				spriteBatch.Draw(tex, position, null, new Color(130, 200, 255) * (StarwaterConversion.StarwaterGlobalItemGlow + (float)Math.Sin(StarlightWorld.visualTimer) * 0.2f), 0, tex.Size() / 2, 1, 0, 0);
 
 				spriteBatch.End();
@@ -462,7 +462,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 					spriteBatch.End();
 					spriteBatch.Begin(default, BlendState.Additive, SamplerMode, default, RasterizerCullMode, default, Main.GameViewMatrix.TransformationMatrix);
 
-					Texture2D tex = Assets.Keys.GlowSoft.Value;
+					Texture2D tex = Assets.Masks.GlowSoft.Value;
 					spriteBatch.Draw(tex, Item.Center - Main.screenPosition, null, new Color(100, 150, 255) * (starlightWaterActor.windDown / 240f), 0, tex.Size() / 2, starlightWaterActor.windDown / 240f * 2, 0, 0);
 
 					spriteBatch.End();

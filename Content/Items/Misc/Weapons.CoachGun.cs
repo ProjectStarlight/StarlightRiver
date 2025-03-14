@@ -620,7 +620,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Texture2D tex = Assets.Items.Misc.CoachGunMuzzleFlashDust.Value;
 			Texture2D texBlur = Assets.Items.Misc.CoachGunMuzzleFlashDust_Blur.Value;
 			Texture2D texGlow = Assets.Items.Misc.CoachGunMuzzleFlashDust_Glow.Value;
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			int frame = 0;
 			if (lerper < 0.5f)

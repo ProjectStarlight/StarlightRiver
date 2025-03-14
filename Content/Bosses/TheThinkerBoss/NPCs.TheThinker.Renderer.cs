@@ -81,7 +81,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 				spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
-				var fade = Assets.Keys.GlowLarge.Value;
+				var fade = Assets.Masks.GlowLarge.Value;
 				spriteBatch.Draw(fade, home - Main.screenPosition, null, Color.Black * 0.3f * ArenaOpacity, 0, fade.Size() / 2f, 2000f / fade.Width, 0, 0);
 
 				spriteBatch.End();
@@ -212,7 +212,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 		private void DrawGrayAura(SpriteBatch sb)
 		{
-			Texture2D glow = Assets.Keys.GlowAlpha.Value;
+			Texture2D glow = Assets.Masks.GlowAlpha.Value;
 			Color color = Color.White;
 			color.A = 0;
 
@@ -263,7 +263,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		/// <param name="scale"></param>
 		private void DrawHeart(SpriteBatch spriteBatch, float scale, Vector2 screenPos)
 		{
-			Texture2D glow = Assets.Keys.Glow.Value;
+			Texture2D glow = Assets.Masks.Glow.Value;
 
 			spriteBatch.Draw(glow, NPC.Center - screenPos, null, Color.Black * 0.5f, NPC.rotation, glow.Size() / 2f, NPC.scale * 2.8f, 0, 0);
 
@@ -325,7 +325,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 				Vector2 pos = NPC.Center - screenPos;
 
-				Texture2D glow = Assets.Keys.Glow.Value;
+				Texture2D glow = Assets.Masks.Glow.Value;
 				spriteBatch.Draw(glow, pos, null, Color.Black * 0.5f * scale, NPC.rotation, glow.Size() / 2f, NPC.scale * 5.5f, 0, 0);
 
 				// need a scissor enabled rasterizer to be able to draw in bestiary

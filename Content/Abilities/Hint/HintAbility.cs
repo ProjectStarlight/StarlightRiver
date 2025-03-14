@@ -19,7 +19,11 @@ namespace StarlightRiver.Content.Abilities.Hint
 			"Most things can be investigated - treasures, lore, and enemy weaknesses all lie in plain sight to those who can see with the eyes of a star.";
 
 		public override float ActivationCostDefault => 0.25f;
-		public override string Texture => "StarlightRiver/Assets/Abilities/Hint";
+
+		public override Asset<Texture2D> Texture => Assets.Abilities.Hint;
+		public override Asset<Texture2D> PreviewTexture => Assets.Abilities.HintPreview;
+		public override Asset<Texture2D> PreviewTextureOff => Assets.Abilities.HintPreviewOff;
+
 		public override Color Color => new(68, 76, 220);
 
 		public override int CooldownMax => 60;

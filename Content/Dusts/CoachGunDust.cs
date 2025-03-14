@@ -188,7 +188,7 @@ namespace StarlightRiver.Content.Dusts
 
 	class CoachGunDustGlow : ModDust
 	{
-		public override string Texture => "StarlightRiver/Assets/Keys/GlowVerySoft";
+		public override string Texture => "StarlightRiver/Assets/Masks/GlowVerySoft";
 
 		public override Color? GetAlpha(Dust dust, Color lightColor)
 		{
@@ -237,7 +237,7 @@ namespace StarlightRiver.Content.Dusts
 
 	class CoachGunSparks : ModDust
 	{
-		public override string Texture => "StarlightRiver/Assets/Keys/GlowVerySoft";
+		public override string Texture => "StarlightRiver/Assets/Masks/GlowVerySoft";
 
 		public override void OnSpawn(Dust dust)
 		{

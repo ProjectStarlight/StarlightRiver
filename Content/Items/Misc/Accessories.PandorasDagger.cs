@@ -177,7 +177,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public void DrawAdditive(SpriteBatch sb)
 		{
-			Texture2D texture = Assets.Keys.GlowSoft.Value;
+			Texture2D texture = Assets.Masks.GlowSoft.Value;
 			var color = new Color(220, 205, 140);
 			sb.Draw(texture, Projectile.Center - Projectile.velocity - Main.screenPosition, null, color * 0.6f, Projectile.rotation, texture.Size() / 2f, Projectile.scale - 0.35f, SpriteEffects.None, 0);
 			sb.Draw(texture, Projectile.Center - Projectile.velocity - Main.screenPosition, null, color, Projectile.rotation, texture.Size() / 2f, Projectile.scale - 0.45f, SpriteEffects.None, 0);

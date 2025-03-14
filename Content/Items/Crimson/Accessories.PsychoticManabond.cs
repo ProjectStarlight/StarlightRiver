@@ -110,7 +110,7 @@ namespace StarlightRiver.Content.Items.Crimson
 			{
 				if (proj.type == Type)
 				{
-					Texture2D tex = Assets.Keys.GlowAlpha.Value;
+					Texture2D tex = Assets.Masks.GlowAlpha.Value;
 					batch.Draw(tex, proj.Center - Main.screenPosition, null, new Color(255, 255, 255, 0), 0, tex.Size() / 2f, 64 * 5f / tex.Width, 0, 0);
 				}
 			}

@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		{
 			Projectile.Opacity = Projectile.timeLeft > 10 ? 1 : Projectile.timeLeft / 10f;
 
-			Texture2D texGlow = Assets.Keys.Glow.Value;
+			Texture2D texGlow = Assets.Masks.Glow.Value;
 
 			int sin = (int)(Math.Sin(StarlightWorld.visualTimer * 3) * 40f);
 			var color = new Color(72 + sin, 30 + sin / 2, 127);
@@ -91,7 +91,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 				spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 
-			Texture2D tex = Assets.Keys.Glow.Value;
+			Texture2D tex = Assets.Masks.Glow.Value;
 			var glowColor = new Color(78, 87, 191);
 			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), glowColor * Projectile.Opacity * 0.8f, 0, tex.Size() / 2, 2.5f * Projectile.scale * Projectile.Opacity, 0, 0);
 		}

@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.GUI
 		/// <summary>
 		/// Particle system used for the links between infusions and the icons
 		/// </summary>
-		public static ParticleSystem linkParticles = new("StarlightRiver/Assets/Keys/GlowSoft", UpdateLinkDelegate, ParticleSystem.AnchorOptions.UI);
+		public static ParticleSystem linkParticles = new("StarlightRiver/Assets/Masks/GlowSoft", UpdateLinkDelegate, ParticleSystem.AnchorOptions.UI);
 
 		/// <summary>
 		/// Particle system used for the gain animation
@@ -192,7 +192,7 @@ namespace StarlightRiver.Content.GUI
 		{
 			Texture2D slotTex = Assets.GUI.InfusionAnimUnder.Value;
 			Texture2D slotTexGlow = Assets.GUI.InfusionGlow.Value;
-			Texture2D star = Assets.Keys.StarAlpha.Value;
+			Texture2D star = Assets.Masks.StarAlpha.Value;
 			var pos = new Vector2(infusionElement.Left.Pixels + 2, infusionElement.Top.Pixels);
 			var starOff = new Vector2(0, -12);
 

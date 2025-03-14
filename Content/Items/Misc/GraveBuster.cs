@@ -147,7 +147,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 					if (tile.TileType == 85 && tile.HasTile && tile2.TileType == 85 && tile2.HasTile)
 					{
-						Texture2D tex = Assets.Keys.GlowAlpha.Value;
+						Texture2D tex = Assets.Masks.GlowAlpha.Value;
 						Vector2 drawPos = new Vector2(i + 1, j + 1) * 16;
 
 						Color color = Color.White * Progress * 0.3f;

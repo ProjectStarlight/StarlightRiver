@@ -132,7 +132,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = Assets.Keys.GlowAlpha.Value;
+			Texture2D tex = Assets.Masks.GlowAlpha.Value;
 
 			Effect effect = StarlightRiver.Instance.Assets.Request<Effect>("Effects/FrostAura").Value;
 
@@ -154,7 +154,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			for (int k = 0; k < 3; k++)
 			{
-				Texture2D texStar = Assets.Keys.StarAlpha.Value;
+				Texture2D texStar = Assets.Masks.StarAlpha.Value;
 
 				Color color = GetAuroraColor(k / 3f * 1.5f) * AuroraPercent;
 				color.A = 0;

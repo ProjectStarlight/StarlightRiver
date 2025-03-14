@@ -82,7 +82,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
 		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = Assets.Keys.GlowAlpha.Value;
+			Texture2D tex = Assets.Masks.GlowAlpha.Value;
 			Vector2 pos = Center - Main.screenPosition;
 			Color color = new Color(20, 230, 255) * (0.15f + 0.05f * (float)Math.Sin(Main.GameUpdateCount * 0.02f));
 			Color color2 = new Color(20, 255, 220) * (0.15f + 0.05f * (float)Math.Sin(Main.GameUpdateCount * 0.05f));

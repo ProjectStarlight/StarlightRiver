@@ -152,7 +152,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 		{
 			Texture2D tex = Assets.Items.BuriedArtifacts.AztecDeathSaxophone.Value;
 			Texture2D texGlow = Assets.Items.BuriedArtifacts.AztecDeathSaxophone_Glow.Value;
-			Texture2D glowTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D glowTex = Assets.Masks.GlowAlpha.Value;
 
 			spriteBatch.Draw(tex, position, frame, drawColor, 0f, origin, scale, 0f, 0f);
 
@@ -287,7 +287,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 
 			Texture2D tex = Assets.Items.BuriedArtifacts.AztecDeathSaxophoneHoldout.Value;
 			Texture2D texGlow = Assets.Items.BuriedArtifacts.AztecDeathSaxophoneHoldout_Glow.Value;
-			Texture2D glowTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D glowTex = Assets.Masks.GlowAlpha.Value;
 
 			SpriteEffects flip = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : 0f;
 

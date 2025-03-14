@@ -193,7 +193,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		{
 			Texture2D tex = Request<Texture2D>(Texture).Value;
 			Texture2D glowTex = Request<Texture2D>(Texture + "_Glow").Value;
-			Texture2D magmaTex = Assets.Keys.GlowHarsh.Value;
+			Texture2D magmaTex = Assets.Masks.GlowHarsh.Value;
 
 			var magmaOffset = new Vector2(-13 * NPC.spriteDirection, 8);
 			SpriteEffects effects = SpriteEffects.None;

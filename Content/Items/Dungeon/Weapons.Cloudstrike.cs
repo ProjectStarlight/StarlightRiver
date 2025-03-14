@@ -532,7 +532,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			if (Branch)
 				return;
 
-			Texture2D tex = Assets.Keys.GlowSoft.Value;
+			Texture2D tex = Assets.Masks.GlowSoft.Value;
 
 			Color color = new Color(200, 230, 255) * Fade;
 			for (int i = 0; i < ChargeSqrt; i++)
@@ -694,7 +694,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 	}
 	class CloudstrikeCircleDust : ModDust
 	{
-		public override string Texture => "StarlightRiver/Assets/Keys/GlowSoft";
+		public override string Texture => "StarlightRiver/Assets/Masks/GlowSoft";
 
 		public override void OnSpawn(Dust dust)
 		{

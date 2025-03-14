@@ -303,7 +303,7 @@ namespace StarlightRiver.Content.Items.Hell
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D bloom = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloom = Assets.Masks.GlowAlpha.Value;
 			Color bloomColor = TrailColor;
 			bloomColor.A = 0;
 

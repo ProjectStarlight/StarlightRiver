@@ -37,7 +37,7 @@ namespace StarlightRiver.Compat.BossChecklist
 			Texture2D glow = Assets.BossChecklist.SquidBossGlow.Value;
 			Texture2D blur = Assets.BossChecklist.SquidBossGlowBlur.Value;
 			Texture2D specular = Assets.BossChecklist.SquidBossSpecular.Value;
-			Texture2D circleGlow = Assets.Keys.Glow.Value;
+			Texture2D circleGlow = Assets.Masks.Glow.Value;
 
 			spriteBatch.Draw(circleGlow, rect, null, Color.Black * 0.6f, 0, Vector2.UnitY * 2, 0, 0);
 

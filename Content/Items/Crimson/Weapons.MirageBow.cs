@@ -302,7 +302,7 @@ namespace StarlightRiver.Content.Items.Crimson
 			{
 				if (proj.type == Type)
 				{
-					Texture2D tex = Assets.Keys.GlowAlpha.Value;
+					Texture2D tex = Assets.Masks.GlowAlpha.Value;
 					float alpha = proj.timeLeft < 30 ? proj.timeLeft / 30f * 0.5f : 0.5f;
 
 					batch.Draw(tex, proj.Center - Main.screenPosition, null, new Color(255, 255, 255, 0) * alpha, 0, tex.Size() / 2f, 2.5f, 0, 0);

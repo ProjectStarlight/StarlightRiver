@@ -567,7 +567,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
-			Texture2D impactTex = Assets.Keys.GlowSoft.Value;
+			Texture2D impactTex = Assets.Masks.GlowSoft.Value;
 			Texture2D impactTex2 = Assets.GUI.ItemGlow.Value;
 			Texture2D glowTex = Assets.GlowTrail.Value;
 

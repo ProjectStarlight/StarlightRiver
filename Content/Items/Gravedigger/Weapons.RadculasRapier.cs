@@ -124,7 +124,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 					Main.spriteBatch.Draw(PlayerTarget.Target, PlayerTarget.getPlayerTargetPosition(player.whoAmI),
 								 PlayerTarget.getPlayerTargetSourceRectangle(player.whoAmI), new Color(150, 0, 0) * (player.GetModPlayer<RadculasRapierPlayer>().teleportTimer / 60f), player.fullRotation, Vector2.Zero, 1f, 0f, 0f);
 
-					Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+					Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 					Main.spriteBatch.Draw(bloomTex, player.Center - Main.screenPosition, null, new Color(255, 0, 0) * (player.GetModPlayer<RadculasRapierPlayer>().teleportTimer / 60f), 0f, bloomTex.Size() / 2f, 2f, 0f, 0f);
 				}
 

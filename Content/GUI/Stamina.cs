@@ -299,7 +299,7 @@ namespace StarlightRiver.Content.GUI
 		{
 			Texture2D slotTex = Assets.GUI.StaminaEmpty.Value;
 			Texture2D slotTexGlow = Assets.GUI.StaminaGlowNormal.Value;
-			Texture2D star = Assets.Keys.StarAlpha.Value;
+			Texture2D star = Assets.Masks.StarAlpha.Value;
 			Vector2 pos = dimensions.TopLeft();
 
 			// Spawn particles

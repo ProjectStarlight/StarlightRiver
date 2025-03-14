@@ -434,11 +434,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		{
 			if (state == 0) //extra FX while vulnerable
 			{
-				Texture2D texGlow = Assets.Keys.GlowSoft.Value;
+				Texture2D texGlow = Assets.Masks.GlowSoft.Value;
 				Vector2 pos = NPC.Center - Main.screenPosition;
 				spriteBatch.Draw(texGlow, pos, null, new Color(200, 255, 255) * 0.7f * (0.9f + (float)Math.Sin(Main.GameUpdateCount / 50f) * 0.1f), 0, texGlow.Size() / 2, 2, 0, 0);
 
-				Texture2D texShine = Assets.Keys.Shine.Value;
+				Texture2D texShine = Assets.Masks.Shine.Value;
 
 				spriteBatch.Draw(texShine, pos, null, new Color(200, 255, 255) * 0.5f * (1 - GetProgress(0)), Main.GameUpdateCount / 100f, new Vector2(texShine.Width / 2, texShine.Height), 0.18f * GetProgress(0), 0, 0);
 				spriteBatch.Draw(texShine, pos, null, new Color(200, 255, 255) * 0.5f * (1 - GetProgress(34)), Main.GameUpdateCount / 90f + 2.2f, new Vector2(texShine.Width / 2, texShine.Height), 0.19f * GetProgress(34), 0, 0);
@@ -456,7 +456,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			if (phase == 6 && timer > 220)
 			{
-				Texture2D texGlow2 = Assets.Keys.Glow.Value;
+				Texture2D texGlow2 = Assets.Masks.Glow.Value;
 				Texture2D ballTex = Assets.Bosses.VitricBoss.FinalLaser.Value;
 
 				float progress = Math.Min(1, (timer - 220) / 60f);
@@ -536,7 +536,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					else
 						alpha = 1;
 
-					Texture2D tex = Assets.Keys.GlowSoft.Value;
+					Texture2D tex = Assets.Masks.GlowSoft.Value;
 					Texture2D tex2 = Request<Texture2D>(Texture + "Outline").Value;
 
 					spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, new Color(255, 160, 100) * alpha, 0, tex.Size() / 2, 2, 0, 0);
@@ -559,7 +559,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					else
 						alpha = 1;
 
-					Texture2D tex = Assets.Keys.GlowSoft.Value;
+					Texture2D tex = Assets.Masks.GlowSoft.Value;
 					Texture2D tex2 = Request<Texture2D>(Texture + "Outline").Value;
 
 					spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, new Color(255, 160, 100) * alpha * 0.5f, 0, tex.Size() / 2, 1, 0, 0);

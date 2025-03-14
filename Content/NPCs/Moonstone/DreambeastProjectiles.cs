@@ -196,7 +196,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			Texture2D tex = Assets.Keys.Glow.Value;
+			Texture2D tex = Assets.Masks.Glow.Value;
 			var color = new Color(78, 87, 191);
 
 			if (Main.LocalPlayer.GetModPlayer<LunacyPlayer>().Insane)

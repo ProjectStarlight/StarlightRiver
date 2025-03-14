@@ -114,7 +114,7 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 			if (timer > teleTime)
 			{
 				Texture2D tex = Assets.Tiles.Moonstone.GlowSmall.Value;
-				Texture2D tex2 = Assets.Keys.GlowSoft.Value;
+				Texture2D tex2 = Assets.Masks.GlowSoft.Value;
 
 				float opacity;
 

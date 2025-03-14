@@ -109,7 +109,7 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			Texture2D tex = Assets.Keys.Glow.Value;
+			Texture2D tex = Assets.Masks.Glow.Value;
 			spriteBatch.Draw(tex, Center - Main.screenPosition + Vector2.UnitY * 16, tex.Frame(), new Color(91, 211, 233) * 0.7f, 0, tex.Size() / 2, 0.8f, 0, 0);
 		}
 	}

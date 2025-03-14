@@ -5,7 +5,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 {
 	class GeoRainbowDust : ModDust
 	{
-		public override string Texture => "StarlightRiver/Assets/Keys/GlowVerySoft";
+		public override string Texture => "StarlightRiver/Assets/Masks/GlowVerySoft";
 
 		public override void OnSpawn(Dust dust)
 		{

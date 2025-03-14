@@ -89,7 +89,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				return false;
 
 			Texture2D tex = Assets.Bosses.TheThinkerBoss.Neurysm.Value;
-			Texture2D glow = Assets.Keys.GlowAlpha.Value;
+			Texture2D glow = Assets.Masks.GlowAlpha.Value;
 			Texture2D star = Assets.StarTexture.Value;
 
 			float r = 0.7f + (float)Math.Sin(Main.GameUpdateCount * 0.01f * 6.28f) * 0.03f;

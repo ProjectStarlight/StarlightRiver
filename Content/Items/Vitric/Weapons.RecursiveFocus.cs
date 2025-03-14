@@ -252,7 +252,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			Texture2D baseTex = ModContent.Request<Texture2D>(Texture + "Base").Value;
 			Texture2D crystalTex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			Texture2D crystalTexOrange = ModContent.Request<Texture2D>(Texture + "_Orange").Value;
 			Texture2D baseTexOrange = ModContent.Request<Texture2D>(Texture + "Base_Orange").Value;
@@ -576,7 +576,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			Texture2D baseTex = ModContent.Request<Texture2D>(crystal.Texture + "Base").Value;
 			Texture2D crystalTex = ModContent.Request<Texture2D>(crystal.Texture).Value;
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			Texture2D crystalTexOrange = ModContent.Request<Texture2D>(crystal.Texture + "_Orange").Value;
 			Texture2D baseTexOrange = ModContent.Request<Texture2D>(crystal.Texture + "Base_Orange").Value;

@@ -88,7 +88,7 @@ namespace StarlightRiver.Content.Biomes
 			onDrawHallucinationMap?.Invoke(spriteBatch);
 
 			// Draw the screen overlay for when the player is actively standing on gray matter
-			Texture2D glow = Assets.Keys.GlowAlpha.Value;
+			Texture2D glow = Assets.Masks.GlowAlpha.Value;
 			spriteBatch.Draw(glow, lastGrayPos - Main.screenPosition, null, new Color(1, 1, 1f, 0), 0, glow.Size() / 2f, Main.screenWidth / glow.Width * (fullscreenTimer / 9f), 0, 0);
 			spriteBatch.Draw(glow, lastGrayPos - Main.screenPosition, null, new Color(1, 1, 1f, 0), 0, glow.Size() / 2f, Main.screenWidth / glow.Width * (fullscreenTimer / 9f), 0, 0);
 

@@ -117,7 +117,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public void DrawMap(SpriteBatch spriteBatch)
 		{
-			Texture2D tex = Assets.Keys.Glow.Value;
+			Texture2D tex = Assets.Masks.Glow.Value;
 			spriteBatch.Draw(tex, Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, scale: 24f, 0, 0);
 		}
 	}

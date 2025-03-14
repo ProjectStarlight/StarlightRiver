@@ -116,7 +116,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		{
 			Color color = Helpers.CommonVisualEffects.HeatedToCoolColor(MathHelper.Min(600 - Projectile.timeLeft, 120));
 
-			Texture2D glow = Assets.Keys.GlowSoft.Value;
+			Texture2D glow = Assets.Masks.GlowSoft.Value;
 
 			Color bloomColor = color;
 			bloomColor.A = 0;
@@ -126,7 +126,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			Main.EntitySpriteDraw(Request<Texture2D>(Texture).Value, Projectile.Center - Main.screenPosition, new Rectangle(0, 0, 32, 128), lightColor, Projectile.rotation, new Vector2(16, 64), Projectile.scale, 0, 0);
 			Main.EntitySpriteDraw(Request<Texture2D>(Texture).Value, Projectile.Center - Main.screenPosition, new Rectangle(0, 128, 32, 128), color, Projectile.rotation, new Vector2(16, 64), Projectile.scale, 0, 0);
 
-			Texture2D tell = Assets.Keys.GlowHarsh.Value;
+			Texture2D tell = Assets.Masks.GlowHarsh.Value;
 			Texture2D trail = Assets.GlowTrailOneEnd.Value;
 			float tellLength = Helpers.Eases.BezierEase(1 - (Projectile.timeLeft - 570) / 30f) * 18f;
 

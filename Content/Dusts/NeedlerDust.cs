@@ -163,7 +163,7 @@ namespace StarlightRiver.Content.Dusts
 
 	class NeedlerDustGlow : ModDust
 	{
-		public override string Texture => "StarlightRiver/Assets/Keys/GlowVerySoft";
+		public override string Texture => "StarlightRiver/Assets/Masks/GlowVerySoft";
 
 		public override Color? GetAlpha(Dust dust, Color lightColor)
 		{
@@ -212,7 +212,7 @@ namespace StarlightRiver.Content.Dusts
 
 	class NeedlerDustGlowGrowing : ModDust
 	{
-		public override string Texture => "StarlightRiver/Assets/Keys/GlowVerySoft";
+		public override string Texture => "StarlightRiver/Assets/Masks/GlowVerySoft";
 
 		public override Color? GetAlpha(Dust dust, Color lightColor)
 		{

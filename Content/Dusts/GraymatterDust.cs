@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Dusts
 				{
 					if (dust.active && dust.type == Type)
 					{
-						Texture2D tex = Assets.Keys.GlowAlpha.Value;
+						Texture2D tex = Assets.Masks.GlowAlpha.Value;
 						spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, new Color(255, 255, 255, 0), dust.rotation, tex.Size() / 2f, dust.scale, 0, 0);
 					}
 				}

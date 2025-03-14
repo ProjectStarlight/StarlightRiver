@@ -243,7 +243,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			Texture2D texGlow = Assets.Items.Dungeon.ThousandthDegreeProjectile_Glowy.Value;
 			Texture2D wheelTex = Assets.Items.Dungeon.ThousandthDegreeProjectileFired.Value;
 			Texture2D wheelTexGlow = Assets.Items.Dungeon.ThousandthDegreeProjectileFired_Glowy.Value;
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Projectile.GetAlpha(lightColor), Projectile.rotation, tex.Size() / 2f, Projectile.scale, owner.direction == -1 ? SpriteEffects.FlipHorizontally : 0, 0f);
 
 			if (flashTimer > 0)
@@ -481,7 +481,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 		{
 			Texture2D wheelTex = Assets.Items.Dungeon.ThousandthDegreeProjectileFired.Value;
 			Texture2D wheelTexGlow = Assets.Items.Dungeon.ThousandthDegreeProjectileFired_Glowy.Value;
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 			var bloomColor = Color.Lerp(Color.Transparent, new Color(255, 50, 15, 0), inputHeat / MAXHEAT);
 			DrawPrimitives();
 			Main.spriteBatch.Draw(wheelTex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, wheelTex.Size() / 2f, Projectile.scale, 0, 0f);

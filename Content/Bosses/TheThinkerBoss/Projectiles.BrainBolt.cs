@@ -97,7 +97,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D glow = Assets.Keys.GlowAlpha.Value;
+			Texture2D glow = Assets.Masks.GlowAlpha.Value;
 			Texture2D star = Assets.StarTexture.Value;
 
 			Color color;

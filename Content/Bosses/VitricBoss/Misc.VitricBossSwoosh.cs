@@ -101,7 +101,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public void DrawAdditive(SpriteBatch sb)
 		{
-			Texture2D tex = Assets.Keys.GlowSoft.Value;
+			Texture2D tex = Assets.Masks.GlowSoft.Value;
 
 			for (int k = 0; k < chain.segmentCount; k++)
 			{

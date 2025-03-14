@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 			{
 				if (proj.type == Type)
 				{
-					Texture2D glow = Assets.Keys.GlowAlpha.Value;
+					Texture2D glow = Assets.Masks.GlowAlpha.Value;
 
 					float alpha = 1f;
 
@@ -153,7 +153,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 			}
 
 			Texture2D tex = Assets.Abilities.HintCursor.Value;
-			Texture2D glow = Assets.Keys.GlowAlpha.Value;
+			Texture2D glow = Assets.Masks.GlowAlpha.Value;
 			Texture2D star = Assets.StarTexture.Value;
 			Texture2D ring = Assets.Misc.GlowRing.Value;
 			var frame = new Rectangle(0, 120, 50, 30);
@@ -239,7 +239,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 
 			float opacity = height / (texBeam.Height / 2f) * 0.75f;
 
-			Texture2D impactTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D impactTex = Assets.Masks.GlowAlpha.Value;
 			Texture2D glowTex = Assets.GlowTrail.Value;
 
 			spriteBatch.Draw(glowTex, target, source, color * 0.05f, rotation, new Vector2(0, glowTex.Height / 2), 0, 0);

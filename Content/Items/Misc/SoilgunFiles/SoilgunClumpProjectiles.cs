@@ -219,7 +219,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 		{
 			DrawPrimitives();
 			Texture2D tex = Terraria.GameContent.TextureAssets.Item[TextureID].Value;
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			// just gonna hardcode this since its the only exception
 			if (Projectile.ModProjectile is SoilgunVitricSandSoil)

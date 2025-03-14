@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		{
 			Texture2D tex = Assets.StarTexture.Value;
 			Texture2D tex2 = Assets.Misc.GlowRing.Value;
-			Texture2D tex3 = Assets.Keys.GlowAlpha.Value;
+			Texture2D tex3 = Assets.Masks.GlowAlpha.Value;
 
 			Color color1 = colorMain * ease(Projectile.timeLeft / 60f);
 			color1.A = 0;

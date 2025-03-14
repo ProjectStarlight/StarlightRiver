@@ -301,7 +301,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 				for (int k = 0; k < Math.Min(state - 2, maxWaves - 1); k++)
 				{
-					Texture2D tex2 = Assets.Keys.GlowSoft.Value;
+					Texture2D tex2 = Assets.Masks.GlowSoft.Value;
 					spriteBatch.Draw(tex, Center - Main.screenPosition + new Vector2(0, -44) + Vector2.UnitX.RotatedBy(k / (float)(maxWaves - 2) * 3.14f) * rad, default, new Color(255, 100, 100), 0, tex.Size() / 2, 0.3f, 0, 0);
 					spriteBatch.Draw(tex2, Center - Main.screenPosition + new Vector2(0, -32) + Vector2.UnitX.RotatedBy(k / (float)(maxWaves - 2) * 3.14f) * rad, default, new Color(255, 100, 100), 0, tex2.Size() / 2, 0.3f, 0, 0);
 					spriteBatch.Draw(tex2, Center - Main.screenPosition + new Vector2(0, -32) + Vector2.UnitX.RotatedBy(k / (float)(maxWaves - 2) * 3.14f) * rad, default, Color.White, 0, tex2.Size() / 2, 0.1f, 0, 0);
@@ -417,7 +417,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			if (Projectile.timeLeft < 30)
 			{
-				Texture2D tex2 = Assets.Keys.GlowSoft.Value;
+				Texture2D tex2 = Assets.Masks.GlowSoft.Value;
 				spriteBatch.Draw(tex2, Projectile.Center - Main.screenPosition, null, new Color(255, 50, 50) * (Projectile.timeLeft / 30f), 0, tex2.Size() / 2, (1 - Projectile.timeLeft / 30f) * 7 * Projectile.scale, 0, 0);
 				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 150, 150) * (Projectile.timeLeft / 30f), 0, tex.Size() / 2, (1 - Projectile.timeLeft / 30f) * 1 * Projectile.scale, 0, 0);
 

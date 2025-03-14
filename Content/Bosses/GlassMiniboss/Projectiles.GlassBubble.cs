@@ -289,7 +289,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		private void DrawBloom()
 		{
-			Asset<Texture2D> bloomTex = Assets.Keys.GlowAlpha;
+			Asset<Texture2D> bloomTex = Assets.Masks.GlowAlpha;
 			Asset<Texture2D> shineTex = Assets.Bosses.GlassMiniboss.BubbleBloom;
 
 			float colLerp = Utils.GetLerpValue(150, 190, Timer, true) * Utils.GetLerpValue(CRACK_TIME + 120, CRACK_TIME, Timer, true);
@@ -423,7 +423,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			var hotFade = new Color(255, 255, 255, 128);
 			Main.EntitySpriteDraw(fragment.Value, Projectile.Center - Main.screenPosition, hotFrame, hotFade, Projectile.rotation, hotFrame.Size() * 0.5f, Projectile.scale, 0, 0);
 
-			Asset<Texture2D> fragGlow = Assets.Keys.GlowAlpha;
+			Asset<Texture2D> fragGlow = Assets.Masks.GlowAlpha;
 			Color glowFade = Color.OrangeRed;
 			glowFade.A = 0;
 			Main.EntitySpriteDraw(fragGlow.Value, Projectile.Center - Main.screenPosition, null, glowFade, Projectile.rotation, fragGlow.Size() * 0.5f, Projectile.scale, 0, 0);

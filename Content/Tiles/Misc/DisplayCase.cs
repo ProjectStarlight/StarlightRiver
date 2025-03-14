@@ -58,11 +58,11 @@ namespace StarlightRiver.Content.Tiles.Misc
 				spriteBatch.End();
 				spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default);
 
-				Texture2D tex2 = Assets.Keys.GlowSoft.Value;
+				Texture2D tex2 = Assets.Masks.GlowSoft.Value;
 				Vector2 pos = new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange - Main.screenPosition - Vector2.One * 16;
 				spriteBatch.Draw(tex2, pos, new Color(255, 255, 200) * (0.9f + (float)Math.Sin(Main.GameUpdateCount / 50f) * 0.1f));
 
-				Texture2D texShine = Assets.Keys.Shine.Value;
+				Texture2D texShine = Assets.Masks.Shine.Value;
 				pos += Vector2.One * 32;
 
 				spriteBatch.Draw(texShine, pos, null, new Color(255, 255, 200) * (1 - GetProgress(0)), Main.GameUpdateCount / 250f, new Vector2(texShine.Width / 2, texShine.Height), 0.08f * GetProgress(0), 0, 0);

@@ -425,7 +425,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			Texture2D tex = Assets.Items.Breacher.FlareBreacherMuzzleFlashDust.Value;
 			Texture2D texBlur = Assets.Items.Breacher.FlareBreacherMuzzleFlashDust_Blur.Value;
 			Texture2D texGlow = Assets.Items.Breacher.FlareBreacherMuzzleFlashDust_Glow.Value;
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 			Texture2D starTex = Assets.Items.Breacher.SupplyBeaconProj_Star.Value;
 
 			Color color = Color.Lerp(new Color(255, 50, 200, 0), new Color(50, 230, 255, 0), Eases.EaseCircularInOut(1f - lerper));
@@ -488,7 +488,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			float lerper = 1f - dust.alpha / 255f;
 
 			Texture2D tex = Assets.Items.Breacher.SupplyBeaconProj_Star.Value;
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			Main.spriteBatch.Draw(bloomTex, dust.position + new Vector2(0f, player.gfxOffY) - Main.screenPosition, null, Color.Lerp(Color.White with { A = 0 }, dust.color, 1f - lerper) * 0.5f, 0f, bloomTex.Size() / 2f, dust.scale * 2f * lerper, 0f, 0f);
 

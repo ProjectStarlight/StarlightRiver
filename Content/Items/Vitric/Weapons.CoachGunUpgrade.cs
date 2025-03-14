@@ -521,7 +521,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Texture2D tex = Assets.Items.Vitric.CoachGunUpgradeMuzzleFlashDust.Value;
 			Texture2D texBlur = Assets.Items.Vitric.CoachGunUpgradeMuzzleFlashDust_Blur.Value;
 			Texture2D texGlow = Assets.Items.Vitric.CoachGunUpgradeMuzzleFlashDust_Glow.Value;
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			Main.spriteBatch.Draw(bloomTex, dust.position - Main.screenPosition, null, new Color(255, 75, 0, 0) * 0.25f * lerper, dust.rotation, bloomTex.Size() / 2f, dust.scale * 1.25f, 0f, 0f);
 

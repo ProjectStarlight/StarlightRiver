@@ -424,7 +424,7 @@ namespace StarlightRiver.Content.Items.Infernal
 
 			opacity *= Projectile.velocity.Length() / 24f;
 
-			Texture2D glow = Assets.Keys.GlowAlpha.Value;
+			Texture2D glow = Assets.Masks.GlowAlpha.Value;
 			Color color = new Color(160, 50, 80) * opacity;
 			color.A = 0;
 			Main.spriteBatch.Draw(glow, Projectile.Center - Main.screenPosition, null, color, 0, glow.Size() / 2f, 7f * opacity, 0, 0);
@@ -542,7 +542,7 @@ namespace StarlightRiver.Content.Items.Infernal
 		{
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
-			Texture2D tex = Assets.Keys.GlowAlpha.Value;
+			Texture2D tex = Assets.Masks.GlowAlpha.Value;
 
 			Effect effect = ShaderLoader.GetShader("ColoredFire").Value;
 

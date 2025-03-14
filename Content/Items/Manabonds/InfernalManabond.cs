@@ -144,8 +144,8 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			Texture2D tex = Assets.Keys.Glow.Value;
-			Texture2D tex2 = Assets.Keys.GlowSoft.Value;
+			Texture2D tex = Assets.Masks.Glow.Value;
+			Texture2D tex2 = Assets.Masks.GlowSoft.Value;
 			spriteBatch.Draw(tex2, Projectile.Center - Main.screenPosition, null, new Color(255, 220, 20), 0, tex2.Size() / 2, 1.4f, 0, 0);
 			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 0.8f, 0, 0);
 

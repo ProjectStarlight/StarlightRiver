@@ -321,7 +321,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		private void DrawPredictor(Vector2 screenPos)
 		{
-			Texture2D predictorTex = Assets.Keys.Shine.Value;
+			Texture2D predictorTex = Assets.Masks.Shine.Value;
 			float rot = bowArmRotation + 1.57f;
 
 			float charge = Eases.EaseQuadInOut(MathHelper.Clamp(BowFrameCounter / 100f, 0, 1));
@@ -633,7 +633,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		public void DrawAdditive(SpriteBatch sb)
 		{
-			Texture2D tex = Assets.Keys.GlowSoft.Value;
+			Texture2D tex = Assets.Masks.GlowSoft.Value;
 
 			Color color = Color.OrangeRed;
 			for (int i = 0; i < 6; i++)

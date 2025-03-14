@@ -313,7 +313,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 			Texture2D starTex = Assets.StarTexture.Value;
 
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			SpriteEffects flip = Owner.direction == -1 ? SpriteEffects.FlipHorizontally : 0f;
 
@@ -446,7 +446,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 		{
 			Texture2D starTex = Assets.StarTexture.Value;
 
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, new Color(150, 150, 10, 0), 0f, bloomTex.Size() / 2f, 0.25f, 0, 0);
 
@@ -495,7 +495,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 		{
 			Texture2D starTex = Assets.StarTexture.Value;
 
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			float lerper = Eases.EaseCircularInOut(Projectile.timeLeft / 15f);
 

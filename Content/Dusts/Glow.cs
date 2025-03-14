@@ -7,7 +7,7 @@ namespace StarlightRiver.Content.Dusts
 {
 	public class Glow : ModDust
 	{
-		public override string Texture => "StarlightRiver/Assets/Keys/GlowSoft";
+		public override string Texture => "StarlightRiver/Assets/Masks/GlowSoft";
 
 		public override void OnSpawn(Dust dust)
 		{
@@ -169,7 +169,7 @@ namespace StarlightRiver.Content.Dusts
 		{
 			float lerper = 1f - dust.alpha / 255f;
 
-			Texture2D tex = Assets.Keys.GlowAlpha.Value;
+			Texture2D tex = Assets.Masks.GlowAlpha.Value;
 
 			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () =>
 			{
@@ -219,7 +219,7 @@ namespace StarlightRiver.Content.Dusts
 		{
 			float lerper = 1f - dust.alpha / 255f;
 
-			Texture2D tex = Assets.Keys.GlowAlpha.Value;
+			Texture2D tex = Assets.Masks.GlowAlpha.Value;
 
 			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () =>
 			{
@@ -277,7 +277,7 @@ namespace StarlightRiver.Content.Dusts
 		{
 			float lerper = 1f - dust.alpha / 255f;
 
-			Texture2D tex = Assets.Keys.GlowAlpha.Value;
+			Texture2D tex = Assets.Masks.GlowAlpha.Value;
 
 			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () =>
 			{

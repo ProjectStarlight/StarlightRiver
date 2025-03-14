@@ -384,7 +384,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			Texture2D tex = Assets.Keys.GlowSoft.Value;
+			Texture2D tex = Assets.Masks.GlowSoft.Value;
 
 			float sin1 = 1 + (float)Math.Sin(Main.GameUpdateCount / 10f);
 			float cos1 = 1 + (float)Math.Cos(Main.GameUpdateCount / 10f);

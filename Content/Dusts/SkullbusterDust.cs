@@ -184,7 +184,7 @@ namespace StarlightRiver.Content.Dusts
 
 	class SkullbusterDustGlow : ModDust
 	{
-		public override string Texture => "StarlightRiver/Assets/Keys/GlowVerySoft";
+		public override string Texture => "StarlightRiver/Assets/Masks/GlowVerySoft";
 
 		public override Color? GetAlpha(Dust dust, Color lightColor)
 		{

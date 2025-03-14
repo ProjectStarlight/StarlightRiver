@@ -467,7 +467,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 			if (effect != null)
 			{
-				Texture2D ballTex = Assets.Keys.GlowSoft.Value;
+				Texture2D ballTex = Assets.Masks.GlowSoft.Value;
 				float ballRotation = (laserEndpoint - laserStartpoint).ToRotation();
 
 				sb.End();
@@ -505,7 +505,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			var blue = new Color(0, 0, 255);
 			var blueCyan = Color.Lerp(Color.Cyan, blue, 0.5f);
-			Texture2D tex = Assets.Keys.GlowSoft.Value;
+			Texture2D tex = Assets.Masks.GlowSoft.Value;
 
 			sb.Draw(tex, laserStartpoint - Main.screenPosition, null, blueCyan, 0, tex.Size() / 2, 0.45f * laserSizeMult, SpriteEffects.None, 0f);
 			sb.Draw(tex, laserEndpoint - Main.screenPosition, null, blueCyan, 0, tex.Size() / 2, 0.35f * laserSizeMult, SpriteEffects.None, 0f);
