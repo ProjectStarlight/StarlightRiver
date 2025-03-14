@@ -1,9 +1,9 @@
-﻿using System;
+﻿using StarlightRiver.Core.Loaders;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using StarlightRiver.Core.Loaders;
 
 namespace StarlightRiver.Content.Dusts
 {

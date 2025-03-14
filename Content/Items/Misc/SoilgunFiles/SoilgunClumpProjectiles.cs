@@ -280,7 +280,6 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 					Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, color * opacity, Projectile.rotation, bloomTex.Size() / 2f, Projectile.scale * 0.5f, 0f, 0f);
 				}
-
 			});
 
 			Main.spriteBatch.End();

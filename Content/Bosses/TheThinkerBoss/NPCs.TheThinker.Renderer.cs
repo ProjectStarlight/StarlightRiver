@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		public void DrawBackground(SpriteBatch spriteBatch)
 		{
 			Texture2D tex = Assets.Bosses.TheThinkerBoss.ThinkerBackground.Value;
-			var backgroundShader = ShaderLoader.GetShader("ThinkerBackground").Value;
+			Effect backgroundShader = ShaderLoader.GetShader("ThinkerBackground").Value;
 
 			if (backgroundShader != null)
 			{
@@ -270,7 +270,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			// need a scissor enabled rasterizer to be able to draw in bestiary
 			var rasterizer = new RasterizerState() { ScissorTestEnable = true };
 
-			var bodyShader = ShaderLoader.GetShader("ThinkerBody").Value;
+			Effect bodyShader = ShaderLoader.GetShader("ThinkerBody").Value;
 
 			if (bodyShader != null)
 			{
@@ -310,8 +310,8 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		/// <param name="scale">progress into the expansion animation, to be able to run forwards or backwards</param>
 		private void DrawFlower(SpriteBatch spriteBatch, float scale, Vector2 screenPos)
 		{
-			var petalShader = ShaderLoader.GetShader("ThinkerPetal").Value;
-			var bodyShader = ShaderLoader.GetShader("ThinkerBody").Value;
+			Effect petalShader = ShaderLoader.GetShader("ThinkerPetal").Value;
+			Effect bodyShader = ShaderLoader.GetShader("ThinkerBody").Value;
 
 			if (petalShader != null && bodyShader != null)
 			{
@@ -416,7 +416,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		/// <param name="color"></param>
 		private void DrawExtraPetals(SpriteBatch spriteBatch, float rotOffset, float scale, Vector3 color, float rootOffset)
 		{
-			var petalShader = ShaderLoader.GetShader("ThinkerPetal").Value;
+			Effect petalShader = ShaderLoader.GetShader("ThinkerPetal").Value;
 
 			if (petalShader != null)
 			{

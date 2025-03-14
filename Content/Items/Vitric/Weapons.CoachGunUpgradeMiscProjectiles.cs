@@ -115,6 +115,7 @@ namespace StarlightRiver.Content.Items.Vitric
 					Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY),
 					sourceRectangle, Color.White, Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
 			}
+
 			return false;
 		}
 

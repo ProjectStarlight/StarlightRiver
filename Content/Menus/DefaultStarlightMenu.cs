@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Menus
 			targetPos += (targetPos - Main.MouseScreen) * -0.05f;
 			targetPos2 += (targetPos2 - Main.MouseScreen) * -0.01f;
 
-			var tex = StarlightRiverBackground.starsTarget.RenderTarget;
+			RenderTarget2D tex = StarlightRiverBackground.starsTarget.RenderTarget;
 			spriteBatch.Draw(tex, Main.ScreenSize.ToVector2() / 2f, null, Color.White, 0, tex.Size() / 2f, Main.UIScale, 0, 0);
 
 			spriteBatch.End();

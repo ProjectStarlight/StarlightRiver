@@ -259,7 +259,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (trail == null || trail == default)
 				return;
-		
+
 			Effect effect = ShaderLoader.GetShader("OrbitalStrikeTrail").Value;
 
 			if (effect != null)

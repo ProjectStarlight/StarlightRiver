@@ -141,7 +141,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			if (line.Mod == "Terraria" && line.Name == "ItemName")
 			{
 				Effect effect = ShaderLoader.GetShader("CursedTooltip").Value;
-				
+
 				if (effect is null)
 					return true;
 

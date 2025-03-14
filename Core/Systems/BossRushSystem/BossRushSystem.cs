@@ -1,13 +1,15 @@
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Backgrounds;
-using StarlightRiver.Content.Bosses.TheThinkerBoss;
 using StarlightRiver.Content.Bosses.GlassMiniboss;
 using StarlightRiver.Content.Bosses.SquidBoss;
+using StarlightRiver.Content.Bosses.TheThinkerBoss;
 using StarlightRiver.Content.Bosses.VitricBoss;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Permafrost;
 using StarlightRiver.Content.NPCs.BossRush;
 using StarlightRiver.Content.PersistentData;
 using StarlightRiver.Content.Tiles.Vitric;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.Systems.PersistentDataSystem;
@@ -23,8 +25,6 @@ using Terraria.ID;
 using Terraria.IO;
 using Terraria.ModLoader.IO;
 using Terraria.WorldBuilding;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core.Loaders;
 
 namespace StarlightRiver.Core.Systems.BossRushSystem
 {

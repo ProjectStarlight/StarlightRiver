@@ -551,6 +551,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				Texture2D tex = Request<Texture2D>(Texture).Value;
 				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * fade, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
 			}
+
 			return false;
 		}
 

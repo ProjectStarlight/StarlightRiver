@@ -564,7 +564,7 @@ namespace StarlightRiver.Core
 			int x = vitricBiome.X - 37;
 			StructureHelper.API.MultiStructureGenerator.GenerateMultistructureSpecific("Structures/VitricForge", Main.masterMode ? 2 : Main.expertMode ? 1 : 0, new Point16(x, vitricBiome.Center.Y - 10), StarlightRiver.Instance);
 
-			var dims = StructureHelper.API.MultiStructureGenerator.GetStructureDimensions("Structures/VitricForge", StarlightRiver.Instance, 0);
+			Point16 dims = StructureHelper.API.MultiStructureGenerator.GetStructureDimensions("Structures/VitricForge", StarlightRiver.Instance, 0);
 
 			ProtectionWorld.ProtectedRegions.Add(new Rectangle(x, vitricBiome.Center.Y - 10, dims.X, dims.Y));
 

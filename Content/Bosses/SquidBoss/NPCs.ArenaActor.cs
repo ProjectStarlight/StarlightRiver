@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		private static VertexPositionColorTexture[] verticies;
 		private static VertexBuffer buffer;
-		private static Effect applyEffect;
+		private static readonly Effect applyEffect;
 
 		public ref float WaterLevel => ref NPC.ai[0];
 		public ref float VisualTimerA => ref NPC.ai[1];
@@ -327,7 +327,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			if (Main.dedServ || !ScreenTracker.OnScreenScreenspace(target))
 				return;
 
-			var applyEffect = Main.dedServ ? null : ShaderLoader.GetShader("WaterShine").Value;
+			Effect applyEffect = Main.dedServ ? null : ShaderLoader.GetShader("WaterShine").Value;
 
 			if (applyEffect != null)
 			{

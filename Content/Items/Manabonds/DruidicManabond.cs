@@ -78,7 +78,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 			target.AddBuff(BuffID.Poisoned, 180);
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int k = 0; k < 20; k++)
 			{

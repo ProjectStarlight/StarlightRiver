@@ -43,10 +43,12 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			NPC.HitSound = SoundID.NPCHit1;
 			NPC.DeathSound = SoundID.NPCDeath4;
 
-			attachedChain = new VerletChain(40, true, NPC.Center, 10);
-			attachedChain.useEndPoint = true;
-			attachedChain.useStartPoint = true;
-			attachedChain.forceGravity = Vector2.Zero;
+			attachedChain = new VerletChain(40, true, NPC.Center, 10)
+			{
+				useEndPoint = true,
+				useStartPoint = true,
+				forceGravity = Vector2.Zero
+			};
 		}
 
 		public override void AI()
@@ -105,7 +107,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 					for (int k = 0; k < 6; k++)
 					{
 						float rot = k / 6f * 6.28f;
-						
+
 						if (Timer % 240 == 0)
 							rot += 6.28f / 12;
 
@@ -146,7 +148,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			var tex = Assets.NPCs.Crimson.Depressor.Value;
 			var chain = Assets.NPCs.Crimson.DepressorChain.Value;
 
-			foreach (var depressor in toDraw)
+			foreach (Depressor depressor in toDraw)
 			{
 				if (depressor.attachedChain?.ropeSegments != null)
 				{

@@ -82,7 +82,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			}
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int n = 0; n < 20; n++)
 			{

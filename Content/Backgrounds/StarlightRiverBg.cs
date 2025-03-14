@@ -173,7 +173,7 @@ namespace StarlightRiver.Content.Backgrounds
 			source = new Rectangle((int)offset.X, (int)offset.Y, tex2.Width, tex2.Height);
 			sb.Draw(tex2, target, source, color * 0.05f);
 
-			var riverBodyShader = ShaderLoader.GetShader("RiverBody").Value;
+			Effect riverBodyShader = ShaderLoader.GetShader("RiverBody").Value;
 
 			if (riverBodyShader != null)
 			{
@@ -269,9 +269,9 @@ namespace StarlightRiver.Content.Backgrounds
 			if (Main.rand.NextBool(2))
 			{
 				var pos = new Vector2(Main.rand.Next(-Main.screenWidth / 2, (int)(Main.screenWidth * 1.5f)), Main.rand.Next(-Main.screenHeight / 2, (int)(Main.screenHeight * 1.5f)));
-				var scale = Main.rand.NextFloat(0.35f);
+				float scale = Main.rand.NextFloat(0.35f);
 
-				var color = new Color(0.1f, 0.4f + Main.rand.NextFloat(0.1f) + (scale / 0.35f) * 0.5f, 1f)
+				var color = new Color(0.1f, 0.4f + Main.rand.NextFloat(0.1f) + scale / 0.35f * 0.5f, 1f)
 				{
 					A = 0
 				};
@@ -288,8 +288,8 @@ namespace StarlightRiver.Content.Backgrounds
 				};
 
 				bool star = Main.rand.NextBool(24);
-				var partScale = Main.rand.NextFloat(0.05f, 0.15f) * (0.8f + prog * 0.2f);
-				var partColor = starColor * (0.6f + prog * 0.2f);
+				float partScale = Main.rand.NextFloat(0.05f, 0.15f) * (0.8f + prog * 0.2f);
+				Color partColor = starColor * (0.6f + prog * 0.2f);
 
 				if (star)
 				{

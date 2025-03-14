@@ -123,7 +123,7 @@ namespace StarlightRiver.Content.Archaeology
 			return (Main.GameUpdateCount + off * 6) % 300 / 300f;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			var itemDrop = new Rectangle((int)Projectile.position.X + (int)(size.X / 2), (int)Projectile.position.Y + (int)(size.Y / 2), 1, 1);
 			Item.NewItem(new EntitySource_Misc("Artifact"), itemDrop, itemType);

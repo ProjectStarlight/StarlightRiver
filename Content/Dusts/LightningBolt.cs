@@ -1,5 +1,5 @@
-﻿using System;
-using StarlightRiver.Core.Loaders;
+﻿using StarlightRiver.Core.Loaders;
+using System;
 
 namespace StarlightRiver.Content.Dusts
 {

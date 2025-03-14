@@ -35,7 +35,7 @@ namespace StarlightRiver.Helpers
 			if (playerCount <= 1)
 				return life;
 
-			return (int) (life * Math.Min(0.95f * playerCount, 0.1f * Math.Pow(playerCount, 1.5f) + 0.9f * vanillaFactor));
+			return (int)(life * Math.Min(0.95f * playerCount, 0.1f * Math.Pow(playerCount, 1.5f) + 0.9f * vanillaFactor));
 		}
 	}
 }

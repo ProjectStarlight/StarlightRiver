@@ -1,7 +1,9 @@
-﻿using StarlightRiver.Content.Abilities.Hint;
-using StarlightRiver.Content.Abilities;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.Hint;
 using StarlightRiver.Content.Backgrounds;
+using StarlightRiver.Content.Bestiary;
 using StarlightRiver.Content.Events;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
 using System.Collections.Generic;
@@ -9,9 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria.Graphics.Effects;
-using StarlightRiver.Content.Bestiary;
 using Terraria.ModLoader.IO;
-using StarlightRiver.Core.Loaders;
 
 namespace StarlightRiver.Content.Biomes
 {
@@ -34,9 +34,9 @@ namespace StarlightRiver.Content.Biomes
 		public override void OnInBiome(Player player)
 		{
 			// TODO: Add check
-			var biomeCondition = player.Hitbox.Intersects(ModContent.GetInstance<ObservatorySystem>().ObservatoryRoomWorld);
+			bool biomeCondition = player.Hitbox.Intersects(ModContent.GetInstance<ObservatorySystem>().ObservatoryRoomWorld);
 
-			var structRect = ModContent.GetInstance<ObservatorySystem>().MainStructureWorld;
+			Rectangle structRect = ModContent.GetInstance<ObservatorySystem>().MainStructureWorld;
 			if (player.Hitbox.Intersects(structRect))
 				fade = 1f - (player.Center.Y - structRect.Y) / structRect.Height;
 
@@ -114,7 +114,7 @@ namespace StarlightRiver.Content.Biomes
 
 		public override void ModifySunLightColor(ref Color tileColor, ref Color backgroundColor)
 		{
-			var biome = ModContent.GetInstance<ObservatoryBiome>();
+			ObservatoryBiome biome = ModContent.GetInstance<ObservatoryBiome>();
 
 			if (biome.IsBiomeActive(Main.LocalPlayer))
 			{

@@ -131,7 +131,6 @@ namespace StarlightRiver.Content.Items.Moonstone
 						effect1.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
 						effect1.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.008f);
 
-
 						Main.spriteBatch.End();
 						Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, effect1, Main.UIScaleMatrix);
 

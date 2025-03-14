@@ -71,7 +71,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 		private void DrawHallucionatoryBlocks(SpriteBatch sb)
 		{
-			var shader = ShaderLoader.GetShader("HallucionationBlockShader").Value;
+			Effect shader = ShaderLoader.GetShader("HallucionationBlockShader").Value;
 
 			if (shader != null)
 			{

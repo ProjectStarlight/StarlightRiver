@@ -443,7 +443,7 @@ namespace StarlightRiver.Content.Items.Haunted
 		}
 
 		public void DrawPrimitives(SpriteBatch spriteBatch)
-		{		
+		{
 			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
 			if (effect != null)

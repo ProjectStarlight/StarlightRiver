@@ -1,16 +1,16 @@
-﻿using MonoMod.Cil;
+﻿using Mono.Cecil.Cil;
+using MonoMod.Cil;
+using MonoMod.Cil;
+using StarlightRiver.Content.Waters;
+using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems.LightingSystem;
+using System;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Mono.Cecil.Cil;
-using MonoMod.Cil;
-using StarlightRiver.Core.Systems.LightingSystem;
-using System;
-using StarlightRiver.Content.Waters;
 using Terraria.Graphics.Effects;
-using StarlightRiver.Core.Loaders;
 using Terraria.Graphics.Shaders;
 
 namespace StarlightRiver.Content.Biomes
@@ -89,8 +89,8 @@ namespace StarlightRiver.Content.Biomes
 			Vector2 basepoint = StarlightWorld.vitricBiome.TopLeft() * 16 + new Vector2(-2000, 0);
 			int screenCenterX = (int)(Main.screenPosition.X + Main.screenWidth / 2);
 
-			var start = (int)(screenCenterX - basepoint.X) - (int)(Main.screenWidth * 1.5f);
-			var end = (int)(screenCenterX - basepoint.X) + (int)(Main.screenWidth * 1.5f);
+			int start = (int)(screenCenterX - basepoint.X) - (int)(Main.screenWidth * 1.5f);
+			int end = (int)(screenCenterX - basepoint.X) + (int)(Main.screenWidth * 1.5f);
 
 			for (int k = start; k <= end; k += 30)
 			{

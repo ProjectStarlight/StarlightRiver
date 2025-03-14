@@ -93,7 +93,7 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 
 			if (IsMulti)
 				StructureHelper.API.MultiStructureGenerator.GenerateMultistructureRandom(StructurePath, TopLeftTile + dungeonPos, StarlightRiver.Instance);
-			else 
+			else
 				StructureHelper.API.Generator.GenerateStructure(StructurePath, TopLeftTile + dungeonPos, StarlightRiver.Instance);
 
 			OnGenerate(TopLeftTile + dungeonPos);

@@ -253,7 +253,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			if (ThisThinker is null)
 				return;
 
-			var bodyShader = ShaderLoader.GetShader("ThinkerBody").Value;
+			Effect bodyShader = ShaderLoader.GetShader("ThinkerBody").Value;
 
 			if (bodyShader != null)
 			{

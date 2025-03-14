@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public bool doubled = false;
 
-		private int tooltipSparkleCounter = 0;
+		private readonly int tooltipSparkleCounter = 0;
 
 		public override bool InstancePerEntity => true;
 
@@ -96,7 +96,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			Vector2 position = new Vector2(line.OriginalX + 7, line.OriginalY + 7) + (line.Font.MeasureString(line.Text) - new Vector2(14, 14)) * scale * new Vector2(Main.rand.NextFloat(), Main.rand.NextFloat());
 
 			//if (tooltipSparkleCounter++ % 14 == 0)
-				//RelicTooltipParticleSystem?.AddParticle(position, Vector2.Zero, 0, Main.UIScale * Main.rand.NextFloat(0.85f, 1.15f), Color.White, 20, Vector2.Zero, new Rectangle(0, 0, 14, 14));
+			//RelicTooltipParticleSystem?.AddParticle(position, Vector2.Zero, 0, Main.UIScale * Main.rand.NextFloat(0.85f, 1.15f), Color.White, 20, Vector2.Zero, new Rectangle(0, 0, 14, 14));
 
 			//RelicTooltipParticleSystem?.DrawParticles(Main.spriteBatch);
 

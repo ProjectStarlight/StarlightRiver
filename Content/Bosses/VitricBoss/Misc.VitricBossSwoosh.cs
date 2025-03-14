@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				0, 0, 0, 1
 			);
 
-			var fireEffect = ShaderLoader.GetShader("FireShader").Value;
+			Effect fireEffect = ShaderLoader.GetShader("FireShader").Value;
 
 			if (fireEffect != null)
 			{

@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.CustomHooks
 				if (preComputedVitricColors is null || preComputedVitricColors.Length != StarlightWorld.vitricBiome.Height)
 					preComputedVitricColors = new Vector3[StarlightWorld.vitricBiome.Height];
 
-				for(int yOff = 0; yOff < StarlightWorld.vitricBiome.Height; yOff++)
+				for (int yOff = 0; yOff < StarlightWorld.vitricBiome.Height; yOff++)
 				{
 					if (mult > 1)
 						mult = 1;

@@ -715,7 +715,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 		}
 
 		public void DrawPrimitives()
-		{			
+		{
 			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
 			if (effect != null)

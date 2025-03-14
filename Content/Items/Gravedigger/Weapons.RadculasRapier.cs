@@ -788,7 +788,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			return Projectile.friendly && !hitNPCs.Contains(target) && Projectile.timeLeft == 30 && !target.friendly;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			if (!teleported)
 				return;

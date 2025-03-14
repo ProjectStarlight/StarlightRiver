@@ -561,7 +561,7 @@ namespace StarlightRiver.Content.Items.Haunted
 			SoundHelper.PlayPitched("Impacts/StabTiny", 1f, 0f, Projectile.Center);
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int i = 0; i < 15; i++)
 			{
@@ -749,7 +749,7 @@ namespace StarlightRiver.Content.Items.Haunted
 			EchochainSystem.ResetTimers(target);
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			if (hitTargets.Count >= 2)
 				EchochainSystem.AddNPCS(hitTargets);
