@@ -432,7 +432,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 	public class BizarreLightningOrb : ModProjectile, IDrawAdditive
 	{
-		public override string Texture => AssetDirectory.Assets + "Keys/GlowSoft";
+		public override string Texture => AssetDirectory.Masks + "GlowSoft";
 
 		private float Fade => Eases.EaseCubicOut(Projectile.timeLeft / 30f);
 
