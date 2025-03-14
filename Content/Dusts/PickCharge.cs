@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.UndergroundTemple;
+using StarlightRiver.Core.Loaders;
 
 namespace StarlightRiver.Content.Dusts
 {
@@ -14,7 +15,7 @@ namespace StarlightRiver.Content.Dusts
 			dust.scale = 0.1f;
 			dust.alpha = 0;
 
-			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value), "GlowingDustPass");
+			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
 		}
 
 		public override Color? GetAlpha(Dust dust, Color lightColor)
