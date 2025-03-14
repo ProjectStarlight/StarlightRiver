@@ -147,8 +147,6 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 		private const int EXPLOSIONTIME = 2;
 
-		private readonly bool initialized = false;
-
 		private Player owner => Main.player[Projectile.owner];
 
 		private BarrierPlayer shieldPlayer => owner.GetModPlayer<BarrierPlayer>();

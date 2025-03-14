@@ -24,7 +24,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		/// <typeparam name="T">The type of the instanced buff to get</typeparam>
 		/// <param name="npc">The NPC to check for this buff on</param>
 		/// <returns>The inflicted instance, or null if one does not exist</returns>
-		public static T? GetInstance<T>(NPC npc) where T : InstancedBuff
+		public static T GetInstance<T>(NPC npc) where T : InstancedBuff
 		{
 			npc.TryGetGlobalNPC(out InstancedBuffNPC instancedBuffNPC);
 
@@ -40,7 +40,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		/// <param name="npc">the NPC to check for this buff on</param>
 		/// <param name="name">the internal name of the buff to check for</param>
 		/// <returns>The inflicted instance, or null if one does not exist</returns>
-		public static InstancedBuff? GetInstance(NPC npc, string name)
+		public static InstancedBuff GetInstance(NPC npc, string name)
 		{
 			npc.TryGetGlobalNPC(out InstancedBuffNPC instancedBuffNPC);
 

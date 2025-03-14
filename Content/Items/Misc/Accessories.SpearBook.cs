@@ -21,10 +21,10 @@ namespace StarlightRiver.Content.Items.Misc
 		public int comboState;
 		public static Dictionary<int, bool> spearList;
 
-		public static MethodInfo? AI019SpearsOld_Info;
-		public static Action<Projectile>? AI019SpearsOld;
-		public static MethodInfo? AI019Spears_Info;
-		public static Action<Projectile>? AI019Spears;
+		public static MethodInfo AI019SpearsOld_Info;
+		public static Action<Projectile> AI019SpearsOld;
+		public static MethodInfo AI019Spears_Info;
+		public static Action<Projectile> AI019Spears;
 
 		public SpearBook() : base("Snake Technique", "Teaches you the Art of the Spear, granting all normal spear weapons a new combo attack\nThe last strike in the combo deals increased damage and knockback\n<right> to deter enemies with a flurry of stabs") { }
 
@@ -160,7 +160,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public Texture2D texture;
 		public Color trailColor;
 
-		public Projectile? original; // Flurry duplicates do not run original AI
+		public Projectile original; // Flurry duplicates do not run original AI
 		private int originalAITimer = 0;
 
 		private float holdout = 0.8f;

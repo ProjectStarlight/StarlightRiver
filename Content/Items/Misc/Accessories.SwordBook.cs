@@ -127,11 +127,11 @@ namespace StarlightRiver.Content.Items.Misc
 		private bool hasDoneOnSpawn = false;
 
 		// These handle replicating the vanilla effects which we must do via reflection
-		public static MethodInfo? playerItemCheckEmitUseVisuals_Info;
-		public static Func<Player, Item, Rectangle, Rectangle>? playerItemCheckEmitUseVisuals;
+		public static MethodInfo playerItemCheckEmitUseVisuals_Info;
+		public static Func<Player, Item, Rectangle, Rectangle> playerItemCheckEmitUseVisuals;
 
-		public static MethodInfo? ApplyNPCOnHitEffects_Info;
-		public static Action<Player, Item, Rectangle, int, float, int, int, int>? ApplyNPCOnHitEffects;
+		public static MethodInfo ApplyNPCOnHitEffects_Info;
+		public static Action<Player, Item, Rectangle, int, float, int, int, int> ApplyNPCOnHitEffects;
 
 		public Item itemSnapshot; //lock in the item on creation incase they bypass the item switching prevention
 

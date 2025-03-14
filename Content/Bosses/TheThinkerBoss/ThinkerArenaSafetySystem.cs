@@ -9,13 +9,13 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 {
 	public struct ThinkerRecord : TagSerializable
 	{
-		public NPC? thinker;
+		public NPC thinker;
 		public Vector2 arenaPos;
 		public List<Point16> changedTiles;
 
 		public static Func<TagCompound, ThinkerRecord> DESERIALIZER = DeserializeData;
 
-		public ThinkerRecord(NPC? thinker, Vector2 arenaPos, List<Point16> changedTiles)
+		public ThinkerRecord(NPC thinker, Vector2 arenaPos, List<Point16> changedTiles)
 		{
 			this.thinker = thinker;
 			this.arenaPos = arenaPos;

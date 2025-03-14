@@ -21,8 +21,6 @@ namespace StarlightRiver.Content.Biomes
 		public static bool forceGrayMatter;
 		public static int forceTimer;
 
-		public List<Vector2> thinkerPositions;
-
 		public Vector2 lastGrayPos;
 
 		public static ScreenTarget hallucinationMap;

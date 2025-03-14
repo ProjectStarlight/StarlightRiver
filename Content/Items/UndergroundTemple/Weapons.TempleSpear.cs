@@ -54,8 +54,6 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 		public Vector2 offset;
 
-		public Vector2 pullbackOffset; //cache the pullback offset for the stab
-
 		public ref float Timer => ref Projectile.ai[0];
 
 		public ref float maxCharge => ref Projectile.ai[1];

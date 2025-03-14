@@ -1,10 +1,8 @@
 ﻿using StarlightRiver.Core.Loaders;
-using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using Terraria.DataStructures;
-using Terraria.Graphics.Effects;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
@@ -22,7 +20,6 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 		public Vector2 endPoint;
 		public Vector2 midPoint;
 		public int duration;
-		public EvasionShrineDummy parent;
 
 		public float dist1;
 		public float dist2;

@@ -24,7 +24,7 @@ namespace StarlightRiver.Core.Loaders
 	{
 		public static bool targetActive;
 
-		public static Queue<int> renderQueueIndicies;
+		public static readonly Queue<int> renderQueueIndicies = new();
 
 		public static ScreenTarget projTarget = new(DrawProjTarget, () => targetActive, 1);
 		public static ScreenTarget tileTarget = new(DrawTileTarget, () => targetActive, 1);

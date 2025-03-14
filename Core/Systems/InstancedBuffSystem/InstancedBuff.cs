@@ -121,7 +121,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		/// </summary>
 		/// <param name="npc">The NPC to check</param>
 		/// <returns>The inflicted instance, or null if not inflicted</returns>
-		public InstancedBuff? GetInstance(NPC npc)
+		public InstancedBuff GetInstance(NPC npc)
 		{
 			return InstancedBuffNPC.GetInstance(npc, Name);
 		}
@@ -131,7 +131,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		/// </summary>
 		/// <param name="player">The player to check</param>
 		/// <returns>The inflicted instance, or null if not inflicted</returns>
-		public InstancedBuff? GetInstance(Player player)
+		public InstancedBuff GetInstance(Player player)
 		{
 			return InstancedBuffPlayer.GetInstance(player, Name);
 		}

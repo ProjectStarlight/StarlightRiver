@@ -155,7 +155,6 @@ namespace StarlightRiver.Content.Abilities.Hint
 	internal class HintText : ModProjectile
 	{
 		public string text;
-		public bool follow;
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -186,7 +185,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 			if (Timer > text.Length * 2f)
 				Projectile.velocity.Y = -0.25f;
 
-			if (follow && !Main.dedServ)
+			if (!Main.dedServ)
 				Projectile.Center = Main.screenPosition + new Vector2(Main.screenWidth / 2, Main.screenHeight / 2 - 64);
 		}
 

@@ -71,7 +71,6 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		// chunk animation inputs
 		private static StaticRig rig;
 		public float extraChunkRadius;
-		public float staggeredExtraChunkRadius;
 
 		// shield shader inputs
 		public float shieldOpacity = 0f;
