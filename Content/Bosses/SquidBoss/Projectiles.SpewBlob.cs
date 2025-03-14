@@ -59,7 +59,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D tex = Assets.Bosses.SquidBoss.SpewBlob.Value;
 			Texture2D star = Assets.Items.Breacher.OrbitalStrike.Value;
 
 			for (int k = 0; k < Projectile.oldPos.Length; k++)

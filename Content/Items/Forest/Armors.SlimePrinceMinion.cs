@@ -252,7 +252,7 @@ namespace StarlightRiver.Content.Items.Forest
 			SpriteBatch sb = Main.spriteBatch;
 
 			// Draw wings
-			Texture2D texWing = ModContent.Request<Texture2D>(Texture + "Wing").Value;
+			Texture2D texWing = Assets.Items.Forest.SlimePrinceMinionWing.Value;
 			var wingFrame = new Rectangle(0, 46 * (int)(Main.GameUpdateCount * 0.2f % 4), 30, 46);
 
 			int wingOff = 0;
@@ -281,18 +281,18 @@ namespace StarlightRiver.Content.Items.Forest
 			// Drawing behavior for normal, non-fused
 			if (State < 2)
 			{
-				Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+				Texture2D tex = Assets.Items.Forest.SlimePrinceMinion.Value;
 				var frame = new Rectangle(0, 26 * Projectile.frame, 28, 26);
 				sb.Draw(tex, Projectile.Center - Main.screenPosition, frame, Color.White, Projectile.rotation, new Vector2(14, 13), Projectile.scale, 0, 0);
 			}
 			else if (State == 2 && Timer < 10) // Transition
 			{
-				Texture2D tex = ModContent.Request<Texture2D>(Texture + "Med").Value;
+				Texture2D tex = Assets.Items.Forest.SlimePrinceMinionMed.Value;
 				sb.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, tex.Size() / 2f, Projectile.scale, 0, 0);
 			}
 			else // Merged
 			{
-				Texture2D tex = ModContent.Request<Texture2D>(Texture + "Big").Value;
+				Texture2D tex = Assets.Items.Forest.SlimePrinceMinionBig.Value;
 				var frame = new Rectangle(0, 62 * Projectile.frame, 64, 62);
 				sb.Draw(tex, Projectile.Center - Main.screenPosition, frame, Color.White, Projectile.rotation, new Vector2(32, 31), Projectile.scale, 0, 0);
 			}
@@ -306,7 +306,7 @@ namespace StarlightRiver.Content.Items.Forest
 		public override void PostDraw(Color lightColor)
 		{
 			// Draw crown
-			Texture2D texCrown = ModContent.Request<Texture2D>(Texture + "Crown").Value;
+			Texture2D texCrown = Assets.Items.Forest.SlimePrinceMinionCrown.Value;
 
 			var crownOff = new Vector2(0, -13 - Projectile.frame * 2);
 

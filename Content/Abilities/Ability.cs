@@ -17,15 +17,19 @@ namespace StarlightRiver.Content.Abilities
 
 		public AbilityHandler User { get; internal set; }
 		public Player Player => User.Player;
+
+		public virtual float ActivationCostDefault { get; }
 		public float ActivationCostBonus { get; set; }
+
 		public bool Active => ReferenceEquals(User.ActiveAbility, this);
 
 		public virtual string Name => "No name";
 		public virtual string Tooltip => "No tooltip";
-		public abstract string Texture { get; }
-		public virtual float ActivationCostDefault { get; }
-		public virtual string PreviewTexture => Texture + "Preview";
-		public virtual string PreviewTextureOff => Texture + "PreviewOff";
+
+		public abstract Asset<Texture2D> Texture { get; }
+		public abstract Asset<Texture2D> PreviewTexture { get; }
+		public abstract Asset<Texture2D> PreviewTextureOff { get; }
+
 		public virtual bool Available => User.ActiveAbility == null && User.Stamina >= ActivationCost(User);
 		public virtual Color Color => Color.White;
 

@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Archaeology
 			foreach (KeyValuePair<int, TileEntity> drawable in toDraw)
 			{
 				var artifact = (Artifact)drawable.Value;
-				Texture2D mapTex = ModContent.Request<Texture2D>(artifact.MapTexturePath).Value;
+				Texture2D mapTex = artifact.MapPreviewTexture.Value;
 
 				if (context.Draw(mapTex, artifact.Position.ToVector2(), Color.White, new SpriteFrame(1, 1, 0, 0), 1, 1, Alignment.Center).IsMouseOver)
 					text = "Artifact";

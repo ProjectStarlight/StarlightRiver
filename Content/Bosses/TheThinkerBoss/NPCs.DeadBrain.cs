@@ -970,7 +970,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				effect.Parameters["repeats"]?.SetValue(2f);
 				effect.Parameters["transformMatrix"]?.SetValue(world * view * projection);
 
-				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/WavyTrail").Value);
+				effect.Parameters["sampleTexture"].SetValue(Assets.WavyTrail.Value);
 				attachedChainTrail?.Render(effect);
 			}
 		}

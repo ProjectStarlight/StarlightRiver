@@ -420,8 +420,8 @@ namespace StarlightRiver.Content.Items.Haunted
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D texGlow = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
+			Texture2D tex = Assets.Items.Haunted.HauntedDaggerProjectile.Value;
+			Texture2D texGlow = Assets.Items.Haunted.HauntedDaggerProjectile_Glow.Value;
 			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
 			Texture2D starTex = Assets.StarTexture.Value;
 

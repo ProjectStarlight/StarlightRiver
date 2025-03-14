@@ -133,8 +133,8 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		{
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
-			Texture2D chainTex = ModContent.Request<Texture2D>(AssetDirectory.TheThinkerBoss + "VeinSpearChain").Value;
-			Texture2D glow = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrailNoEnd").Value;
+			Texture2D chainTex = Assets.Bosses.TheThinkerBoss.VeinSpearChain.Value;
+			Texture2D glow = Assets.GlowTrailNoEnd.Value;
 
 			float opacity = 1f;
 
@@ -159,7 +159,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 			if (Projectile.timeLeft > Lifetime - 30)
 			{
-				Texture2D tell = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrailNoEnd").Value;
+				Texture2D tell = Assets.GlowTrailNoEnd.Value;
 				var source = new Rectangle(0, 0, tell.Width, tell.Height);
 				var target = new Rectangle((int)(Projectile.Center.X - Main.screenPosition.X), (int)(Projectile.Center.Y - Main.screenPosition.Y), 500, 24);
 				var origin = new Vector2(0, 12);

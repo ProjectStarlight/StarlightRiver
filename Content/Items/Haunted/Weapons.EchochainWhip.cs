@@ -676,11 +676,11 @@ namespace StarlightRiver.Content.Items.Haunted
 
 		public override void DrawBehindWhip(ref Color lightColor)
 		{
-			Texture2D texBlur = ModContent.Request<Texture2D>(Texture + "_TipBlur").Value;
-			Texture2D texGlow = ModContent.Request<Texture2D>(Texture + "_TipGlow").Value;
+			Texture2D texBlur = Assets.Items.Haunted.EchochainWhipProjectile_TipBlur.Value;
+			Texture2D texGlow = Assets.Items.Haunted.EchochainWhipProjectile_TipGlow.Value;
 			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D texture = Assets.Items.Haunted.EchochainWhipProjectile.Value;
 
-			Asset<Texture2D> texture = ModContent.Request<Texture2D>(Texture);
 			Rectangle whipFrame = texture.Frame(1, 5, 0, 0);
 			int height = whipFrame.Height;
 
@@ -699,7 +699,7 @@ namespace StarlightRiver.Content.Items.Haunted
 					whipFrame.Y = height * 4;
 					Color color = Color.Lerp(new Color(20, 135, 15, 0), new Color(100, 200, 10, 0), fade) * 0.5f;
 
-					Main.EntitySpriteDraw(texture.Value, tipPositions[i] - Main.screenPosition, whipFrame, Color.White * 0.15f * fade * fadeOut, tipRotations[i], whipFrame.Size() * 0.5f, Projectile.scale, SpriteEffects.None, 0);
+					Main.EntitySpriteDraw(texture, tipPositions[i] - Main.screenPosition, whipFrame, Color.White * 0.15f * fade * fadeOut, tipRotations[i], whipFrame.Size() * 0.5f, Projectile.scale, SpriteEffects.None, 0);
 
 					Main.spriteBatch.Draw(texBlur, tipPositions[i] - Main.screenPosition, null, Color.White with { A = 0 } * 0.15f * fade * fadeOut, tipRotations[i], texBlur.Size() / 2f, Projectile.scale, 0f, 0f);
 
@@ -714,7 +714,7 @@ namespace StarlightRiver.Content.Items.Haunted
 						var newPosition = Vector2.Lerp(tipPositions[i], tipPositions[i + 1], 0.5f);
 						float newRotation = MathHelper.Lerp(tipRotations[i], tipRotations[i + 1], 0.5f);
 
-						Main.EntitySpriteDraw(texture.Value, newPosition - Main.screenPosition, whipFrame, Color.White * 0.15f * fade * fadeOut, newRotation, whipFrame.Size() * 0.5f, Projectile.scale, SpriteEffects.None, 0);
+						Main.EntitySpriteDraw(texture, newPosition - Main.screenPosition, whipFrame, Color.White * 0.15f * fade * fadeOut, newRotation, whipFrame.Size() * 0.5f, Projectile.scale, SpriteEffects.None, 0);
 
 						Main.spriteBatch.Draw(texBlur, newPosition - Main.screenPosition, null, Color.White with { A = 0 } * 0.15f * fade * fadeOut, newRotation, texBlur.Size() / 2f, Projectile.scale, 0f, 0f);
 

@@ -89,7 +89,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D glow = ModContent.Request<Texture2D>(Texture + "Glow").Value;
+			Texture2D glow = Assets.Items.Manabonds.DruidThornGlow.Value;
 
 			for (int k = 0; k < Projectile.oldPos.Length; k += 2)
 			{

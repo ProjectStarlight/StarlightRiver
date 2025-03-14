@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D tex = Assets.Bosses.GlassMiniboss.GlassweaverDoor.Value;
 			int height = (int)(tex.Height * closeTimer);
 
 			var frame = new Rectangle(0, 0, tex.Width, height);

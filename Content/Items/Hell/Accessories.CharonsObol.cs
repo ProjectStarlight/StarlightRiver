@@ -452,7 +452,7 @@ namespace StarlightRiver.Content.Items.Hell
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D tex = Assets.StarTexture.Value;
 
 			Color color2 = color * (1 - Projectile.alpha / 255f);
 			color2.A = 0;

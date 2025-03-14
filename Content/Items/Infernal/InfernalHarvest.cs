@@ -170,8 +170,8 @@ namespace StarlightRiver.Content.Items.Infernal
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D texGlow = ModContent.Request<Texture2D>(Texture + "Glow").Value;
+			Texture2D tex = Assets.Items.Infernal.InfernalHarvestProj.Value;
+			Texture2D texGlow = Assets.Items.Infernal.InfernalHarvestProjGlow.Value;
 			var origin = new Vector2(tex.Width - 16, tex.Height - 16);
 
 			float opacity;
@@ -290,11 +290,11 @@ namespace StarlightRiver.Content.Items.Infernal
 				effect.Parameters["time"].SetValue(Main.GameUpdateCount);
 				effect.Parameters["repeats"].SetValue(2f);
 				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
+				effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 				trail?.Render(effect);
 
 				effect.Parameters["repeats"].SetValue(1f);
-				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/MotionTrail").Value);
+				effect.Parameters["sampleTexture"].SetValue(Assets.MotionTrail.Value);
 				trailBig?.Render(effect);
 			}
 		}
@@ -406,7 +406,7 @@ namespace StarlightRiver.Content.Items.Infernal
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D tex = Assets.Items.Infernal.InfernalHarvestPaid.Value;
 			Vector2 origin = new Vector2(tex.Width, tex.Height) / 2f;
 
 			float opacity;
@@ -424,7 +424,7 @@ namespace StarlightRiver.Content.Items.Infernal
 
 			opacity *= Projectile.velocity.Length() / 24f;
 
-			Texture2D glow = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
+			Texture2D glow = Assets.Keys.GlowAlpha.Value;
 			Color color = new Color(160, 50, 80) * opacity;
 			color.A = 0;
 			Main.spriteBatch.Draw(glow, Projectile.Center - Main.screenPosition, null, color, 0, glow.Size() / 2f, 7f * opacity, 0, 0);
@@ -487,7 +487,7 @@ namespace StarlightRiver.Content.Items.Infernal
 				effect.Parameters["time"].SetValue(Main.GameUpdateCount);
 				effect.Parameters["repeats"].SetValue(2f);
 				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
+				effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 				trail?.Render(effect);
 			}
 		}
@@ -542,7 +542,7 @@ namespace StarlightRiver.Content.Items.Infernal
 		{
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
+			Texture2D tex = Assets.Keys.GlowAlpha.Value;
 
 			Effect effect = ShaderLoader.GetShader("ColoredFire").Value;
 
@@ -556,8 +556,8 @@ namespace StarlightRiver.Content.Items.Infernal
 			effect.Parameters["primaryScaling"].SetValue(new Vector3(1, 1, 1));
 			effect.Parameters["secondary"].SetValue(new Vector3(1f, 0.2f, 0.05f) * opacity);
 
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value);
-			effect.Parameters["mapTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.Noise.MiscNoise3.Value);
+			effect.Parameters["mapTexture"].SetValue(Assets.Noise.MiscNoise3.Value);
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);

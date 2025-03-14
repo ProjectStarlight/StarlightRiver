@@ -169,7 +169,7 @@ namespace StarlightRiver.Content.Dusts
 		{
 			float lerper = 1f - dust.alpha / 255f;
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D tex = Assets.Keys.GlowAlpha.Value;
 
 			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () =>
 			{
@@ -219,7 +219,7 @@ namespace StarlightRiver.Content.Dusts
 		{
 			float lerper = 1f - dust.alpha / 255f;
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D tex = Assets.Keys.GlowAlpha.Value;
 
 			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () =>
 			{
@@ -277,7 +277,7 @@ namespace StarlightRiver.Content.Dusts
 		{
 			float lerper = 1f - dust.alpha / 255f;
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D tex = Assets.Keys.GlowAlpha.Value;
 
 			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () =>
 			{

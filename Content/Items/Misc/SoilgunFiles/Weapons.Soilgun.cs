@@ -179,11 +179,11 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			if (Charge <= 2)
 				return false;
 
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D texGlow = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
-			Texture2D texBlur = ModContent.Request<Texture2D>(Texture + "_Blur").Value;
-			Texture2D starTex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "StarTexture_Alt").Value;
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D tex = Assets.Items.Misc.Soilgun.Value;
+			Texture2D texGlow = Assets.Items.Misc.Soilgun_Glow.Value;
+			Texture2D texBlur = Assets.Items.Misc.Soilgun_Blur.Value;
+			Texture2D starTex = Assets.StarTexture_Alt.Value;
+			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
 
 			float fade = 0f;
 			if (Charge < 8f)

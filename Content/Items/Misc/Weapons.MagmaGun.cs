@@ -422,7 +422,7 @@ namespace StarlightRiver.Content.Items.Misc
 			foreach (MagmaGlob glob in Globs)
 			{
 				if (glob.active)
-					glob.Draw(Main.spriteBatch, ModContent.Request<Texture2D>(Texture + "_Glow").Value);
+					glob.Draw(Main.spriteBatch, Assets.Items.Misc.MagmaGunProj_Glow.Value);
 			}
 
 			return false;
@@ -496,17 +496,6 @@ namespace StarlightRiver.Content.Items.Misc
 				}
 			}
 		}
-
-		/*public void DrawOverTiles(SpriteBatch spriteBatch)
-        {
-			foreach (MagmaGlob glob in Globs)
-			{
-				if (glob.active)
-				{
-					glob.DrawSinge(spriteBatch, ModContent.Request<Texture2D>(Texture + "_Glow").Value);
-				}
-			}
-		}*/
 	}
 
 	public class MagmaGunDust : ModDust

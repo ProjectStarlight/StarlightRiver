@@ -12,6 +12,7 @@ namespace StarlightRiver.Content.Archaeology
 		public static int sparkleTypeToAssign;
 
 		public override string Texture => itemTexture;
+		private Asset<Texture2D> texture;
 
 		public string itemTexture = AssetDirectory.Invisible;
 		public Color glowColor = Color.Gold;
@@ -48,6 +49,8 @@ namespace StarlightRiver.Content.Archaeology
 			itemType = itemTypeToAssign;
 			size = sizeToAssign;
 			sparkleType = sparkleTypeToAssign;
+
+			texture = ModContent.Request<Texture2D>(Texture);
 		}
 
 		public override void AI()
@@ -83,7 +86,7 @@ namespace StarlightRiver.Content.Archaeology
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
-			Texture2D mainTex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D mainTex = texture.Value;
 			Texture2D glowTex = Assets.Keys.Glow.Value;
 			Texture2D beamTex = Assets.Keys.Shine.Value;
 

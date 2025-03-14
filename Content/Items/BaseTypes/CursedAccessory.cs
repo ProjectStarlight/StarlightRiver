@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		{
 			if (GoingBoom)
 			{
-				Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+				Texture2D tex = TextureAssets.Item[Item.type].Value;
 				position += Vector2.One.RotatedByRandom(6.28f) * boomTimer / 60;
 
 				spriteBatch.Draw(tex, position, frame, Color.White, 0, origin, scale, 0, 0);

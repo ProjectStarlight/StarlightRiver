@@ -146,7 +146,7 @@ namespace StarlightRiver.Content.Items.Desert
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D tex = Assets.Items.Desert.Sandscript.Value;
 
 			float mult = 1f;
 			if (Projectile.timeLeft > MaxTimeleft * 0.8f)

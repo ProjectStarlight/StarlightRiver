@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			Texture2D top = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D top = Assets.Bosses.SquidBoss.TentacleTellTop.Value;
 			Texture2D body = Assets.Bosses.SquidBoss.TentacleTellBody.Value;
 			Texture2D glow = Assets.GlowTrail.Value;
 			Texture2D flat = Terraria.GameContent.TextureAssets.MagicPixel.Value;

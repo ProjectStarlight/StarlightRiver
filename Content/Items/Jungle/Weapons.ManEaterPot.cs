@@ -288,12 +288,10 @@ namespace StarlightRiver.Content.Items.Jungle
 
 			float dist = Vector2.Distance(Projectile.Center, Origin);
 
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-
-			Texture2D texVine = ModContent.Request<Texture2D>(Texture + "Vine").Value;
-			Texture2D texBlob = ModContent.Request<Texture2D>(Texture + "Blob").Value;
-
-			Texture2D texPot = ModContent.Request<Texture2D>(Texture + "Pot").Value;
+			Texture2D tex = Assets.Items.Jungle.ManEaterPotMinion.Value;
+			Texture2D texVine = Assets.Items.Jungle.ManEaterPotMinionVine.Value;
+			Texture2D texBlob = Assets.Items.Jungle.ManEaterPotMinionBlob.Value;
+			Texture2D texPot = Assets.Items.Jungle.ManEaterPotMinionPot.Value;
 
 			for (int k = texVine.Height; k < dist; k++)
 			{

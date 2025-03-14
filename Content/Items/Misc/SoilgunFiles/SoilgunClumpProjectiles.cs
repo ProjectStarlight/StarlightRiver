@@ -255,13 +255,13 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 					effect.Parameters["offset"].SetValue(new Vector2(0.001f));
 					effect.Parameters["repeats"].SetValue(1);
-					effect.Parameters["uImage1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/SwirlyNoiseLooping").Value);
-					effect.Parameters["uImage2"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/SwirlyNoiseLooping").Value);
+					effect.Parameters["uImage1"].SetValue(Assets.Noise.SwirlyNoiseLooping.Value);
+					effect.Parameters["uImage2"].SetValue(Assets.Noise.SwirlyNoiseLooping.Value);
 
 					Color color = Colors["TrailColor"] with { A = 0 } * opacity;
 
 					effect.Parameters["uColor"].SetValue(color.ToVector4());
-					effect.Parameters["noiseImage1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "Soilgun_Noise").Value);
+					effect.Parameters["noiseImage1"].SetValue(Assets.Items.Misc.Soilgun_Noise.Value);
 
 					effect.CurrentTechnique.Passes[0].Apply();
 
@@ -339,13 +339,13 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 					effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.05f);
 					effect.Parameters["repeats"].SetValue(1);
 					effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-					effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "GlowTrail").Value);
+					effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 
 					trail?.Render(effect);
 					trail2?.Render(effect);
 
 					effect.Parameters["repeats"].SetValue(2);
-					effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "FireTrail").Value);
+					effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
 
 					trail?.Render(effect);
 					trail?.Render(effect);

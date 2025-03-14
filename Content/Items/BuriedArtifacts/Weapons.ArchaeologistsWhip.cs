@@ -75,7 +75,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			var points = new List<Vector2>();
 			points.Clear();
 			SetPoints(points);
-			Asset<Texture2D> texture = ModContent.Request<Texture2D>(Texture + "_Glow");
+			Asset<Texture2D> texture = Assets.Items.BuriedArtifacts.ArchaeologistsWhip_Whip_Glow;
 			Rectangle whipFrame = texture.Frame(X_FRAMES, Y_FRAMES, xFrame, 0);
 			int height = whipFrame.Height;
 			Vector2 firstPoint = points[0];

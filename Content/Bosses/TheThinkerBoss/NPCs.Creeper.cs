@@ -57,7 +57,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			if (!reworked)
 				return true;
 
-			Texture2D glow = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
+			Texture2D glow = Assets.Keys.GlowAlpha.Value;
 			var color = new Color(180, 100, 40)
 			{
 				A = 0

@@ -469,8 +469,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D texGlow = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
+			Texture2D tex = Assets.Items.Misc.RadculasRapier_Spear.Value;
+			Texture2D texGlow = Assets.Items.Misc.RadculasRapier_Spear_Glow.Value;
 
 			Vector2 off = new Vector2(0, -20).RotatedBy(Projectile.rotation - MathHelper.PiOver2);
 
@@ -806,8 +806,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D texGlow = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
+			Texture2D tex = Assets.Items.Misc.RadculasRapier_Spear.Value;
+			Texture2D texGlow = Assets.Items.Misc.RadculasRapier_Spear_Glow.Value;
 
 			float fade = 1f;
 

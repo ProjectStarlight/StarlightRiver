@@ -77,71 +77,81 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 
 		private static void DrawAuroraTarget(SpriteBatch sb)
 		{
-			sb.End();
-			sb.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Asset<Texture2D> asset = Assets.Misc.AuroraWaterMap;
 
-			Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/AuroraWaterMap", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
-
-			for (int i = -tex2.Width; i <= Main.screenWidth + tex2.Width; i += tex2.Width)
+			if (asset.IsLoaded)
 			{
-				for (int j = -tex2.Height; j <= Main.screenHeight + tex2.Height; j += tex2.Height)
-				{
-					Main.spriteBatch.Draw(tex2, new Vector2(i, j),
-						new Rectangle(
-							(int)(Main.screenPosition.X % tex2.Width - Main.GameUpdateCount * 0.55f),
-							(int)(Main.screenPosition.Y % tex2.Height + Main.GameUpdateCount * 0.3f),
-							tex2.Width,
-							tex2.Height
-							),
-						Color.White * 0.7f, default, default, 1, 0, 0);
+				sb.End();
+				sb.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
-					Main.spriteBatch.Draw(tex2, new Vector2(i, j),
-						new Rectangle(
-							(int)(Main.screenPosition.X % tex2.Width + Main.GameUpdateCount * 0.75f),
-							(int)(Main.screenPosition.Y % tex2.Height - Main.GameUpdateCount * 0.4f),
-							tex2.Width,
-							tex2.Height
-							),
-						Color.White);
+				Texture2D tex = asset.Value;
+
+				for (int i = -tex.Width; i <= Main.screenWidth + tex.Width; i += tex.Width)
+				{
+					for (int j = -tex.Height; j <= Main.screenHeight + tex.Height; j += tex.Height)
+					{
+						Main.spriteBatch.Draw(tex, new Vector2(i, j),
+							new Rectangle(
+								(int)(Main.screenPosition.X % tex.Width - Main.GameUpdateCount * 0.55f),
+								(int)(Main.screenPosition.Y % tex.Height + Main.GameUpdateCount * 0.3f),
+								tex.Width,
+								tex.Height
+								),
+							Color.White * 0.7f, default, default, 1, 0, 0);
+
+						Main.spriteBatch.Draw(tex, new Vector2(i, j),
+							new Rectangle(
+								(int)(Main.screenPosition.X % tex.Width + Main.GameUpdateCount * 0.75f),
+								(int)(Main.screenPosition.Y % tex.Height - Main.GameUpdateCount * 0.4f),
+								tex.Width,
+								tex.Height
+								),
+							Color.White);
+					}
 				}
 			}
 		}
 
 		private static void DrawAuroraBackTarget(SpriteBatch sb)
 		{
-			sb.End();
-			sb.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Asset<Texture2D> asset = Assets.Misc.AuroraWaterMap;
 
-			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
-
-			Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/AuroraWaterMap", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
-
-			for (int i = -tex2.Width; i <= Main.screenWidth + tex2.Width; i += tex2.Width)
+			if (asset.IsLoaded)
 			{
-				for (int j = -tex2.Height; j <= Main.screenHeight + tex2.Height; j += tex2.Height)
+				sb.End();
+				sb.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+
+				Main.graphics.GraphicsDevice.Clear(Color.Transparent);
+
+				Texture2D tex = asset.Value;
+
+				for (int i = -tex.Width; i <= Main.screenWidth + tex.Width; i += tex.Width)
 				{
-					sb.Draw(tex2, new Vector2(i, j),
-						new Rectangle(
-							(int)(Main.screenPosition.X % tex2.Width - Main.GameUpdateCount * 0.55f),
-							(int)(Main.screenPosition.Y % tex2.Height + Main.GameUpdateCount * 0.3f),
-							tex2.Width,
-							tex2.Height
-							),
-						Color.White * 0.7f, default, default, 1, 0, 0);
+					for (int j = -tex.Height; j <= Main.screenHeight + tex.Height; j += tex.Height)
+					{
+						sb.Draw(tex, new Vector2(i, j),
+							new Rectangle(
+								(int)(Main.screenPosition.X % tex.Width - Main.GameUpdateCount * 0.55f),
+								(int)(Main.screenPosition.Y % tex.Height + Main.GameUpdateCount * 0.3f),
+								tex.Width,
+								tex.Height
+								),
+							Color.White * 0.7f, default, default, 1, 0, 0);
 
-					sb.Draw(tex2, new Vector2(i, j),
-						new Rectangle(
-							(int)(Main.screenPosition.X % tex2.Width + Main.GameUpdateCount * 0.75f),
-							(int)(Main.screenPosition.Y % tex2.Height - Main.GameUpdateCount * 0.4f),
-							tex2.Width,
-							tex2.Height
-							),
-						Color.White);
+						sb.Draw(tex, new Vector2(i, j),
+							new Rectangle(
+								(int)(Main.screenPosition.X % tex.Width + Main.GameUpdateCount * 0.75f),
+								(int)(Main.screenPosition.Y % tex.Height - Main.GameUpdateCount * 0.4f),
+								tex.Width,
+								tex.Height
+								),
+							Color.White);
+					}
 				}
-			}
 
-			sb.End();
-			sb.Begin();
+				sb.End();
+				sb.Begin();
+			}
 		}
 
 		private void DrawAuroraWater(On_Main.orig_DrawInfernoRings orig, Main self)

@@ -162,11 +162,11 @@ namespace StarlightRiver.Content.Items.Breacher
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
 			DrawTrail(spriteBatch);
-			Texture2D cannonTex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D baseTex = ModContent.Request<Texture2D>(Texture + "_Base").Value;
+			Texture2D cannonTex = Assets.Items.Breacher.BreachCannonSentry.Value;
+			Texture2D baseTex = Assets.Items.Breacher.BreachCannonSentry_Base.Value;
 
-			Texture2D cannonGlowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
-			Texture2D baseGlowTex = ModContent.Request<Texture2D>(Texture + "_Base_Glow").Value;
+			Texture2D cannonGlowTex = Assets.Items.Breacher.BreachCannonSentry_Glow.Value;
+			Texture2D baseGlowTex = Assets.Items.Breacher.BreachCannonSentry_Base_Glow.Value;
 
 			float baseRotation = -1.57f + originAngleRad;
 			var baseOrigin = new Vector2(baseTex.Width / 2, baseTex.Height + 8);

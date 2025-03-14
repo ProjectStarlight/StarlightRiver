@@ -289,7 +289,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
-			Texture2D mainTex = ModContent.Request<Texture2D>(Texture).Value; //the actual sprite of the minion
+			Texture2D mainTex = Assets.Items.Gravedigger.FleshApparation.Value; //the actual sprite of the minion
 
 			if (State == 1)  //draw afterimage only when dashing
 			{
