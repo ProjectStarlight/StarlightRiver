@@ -217,7 +217,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			DrawPrimitives();
 
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Masks + "GlowAlpha").Value;
 
 			float lerper = FadeOut();
 

@@ -4,7 +4,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 {
 	class PowerupDust : ModDust
 	{
-		public override string Texture => AssetDirectory.Keys + "GlowVerySoft";
+		public override string Texture => AssetDirectory.Masks + "GlowVerySoft";
 
 		public override Color? GetAlpha(Dust dust, Color lightColor)
 		{

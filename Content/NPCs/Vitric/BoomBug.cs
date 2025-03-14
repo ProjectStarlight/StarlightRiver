@@ -448,7 +448,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 	{
 		private readonly List<Vector2> oldPos = new();
 
-		public override string Texture => AssetDirectory.Keys + "GlowHarsh";
+		public override string Texture => AssetDirectory.Masks + "GlowHarsh";
 
 		public override void SetDefaults()
 		{

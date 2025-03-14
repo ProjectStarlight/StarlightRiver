@@ -154,7 +154,7 @@ namespace StarlightRiver.Core
 		public const string VitricCrystalStructs = VitricStructures + "WalkableCrystals/";
 
 		//misc
-		public const string Keys = Assets + "Keys/";
+		public const string Masks = Assets + "Masks/";
 		public const string Palettes = Assets + "Palettes/";
 	}
 }

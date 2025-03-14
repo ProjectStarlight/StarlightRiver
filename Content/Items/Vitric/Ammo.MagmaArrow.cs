@@ -137,7 +137,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		private readonly List<Vector2> oldPos = new();
 
-		public override string Texture => AssetDirectory.Keys + "GlowHarshAlpha";
+		public override string Texture => AssetDirectory.Masks + "GlowHarshAlpha";
 
 		public override void SetStaticDefaults()
 		{

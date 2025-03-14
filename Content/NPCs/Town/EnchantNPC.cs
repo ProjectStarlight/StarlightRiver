@@ -37,13 +37,13 @@ namespace StarlightRiver.Content.NPCs.Town
 			return "";
 
 			textState = 0;
-			UILoader.GetUIState<RichTextBox>().Visible = true;
-			RichTextBox.ClearButtons();
+			UILoader.GetUIState<DialogUI>().Visible = true;
+			DialogUI.ClearButtons();
 
 			SetData();
-			RichTextBox.AddButton("[]Chat", Chat);
-			RichTextBox.AddButton("[<color:200, 140, 255>]Enchant", OpenEnchantUI);
-			RichTextBox.AddButton("[]Move Altar", PackUp);
+			DialogUI.AddButton("[]Chat", Chat);
+			DialogUI.AddButton("[<color:200, 140, 255>]Enchant", OpenEnchantUI);
+			DialogUI.AddButton("[]Move Altar", PackUp);
 
 			return "";
 		}
@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.NPCs.Town
 			Main.LocalPlayer.SetTalkNPC(-1);
 			enchanting = true;
 
-			UILoader.GetUIState<RichTextBox>().Visible = false;
+			UILoader.GetUIState<DialogUI>().Visible = false;
 		}
 
 		private void PackUp()
@@ -76,14 +76,14 @@ namespace StarlightRiver.Content.NPCs.Town
 		{
 			return;
 
-			if (RichTextBox.talking == NPC)
+			if (DialogUI.talking == NPC)
 			{
 				SetData();
 
 				if (Main.player[Main.myPlayer].talkNPC != NPC.whoAmI)
 				{
-					UILoader.GetUIState<RichTextBox>().Visible = false;
-					RichTextBox.SetData(null, "", "");
+					UILoader.GetUIState<DialogUI>().Visible = false;
+					DialogUI.SetData(null, "", "");
 				}
 			}
 		}
@@ -103,27 +103,27 @@ namespace StarlightRiver.Content.NPCs.Town
 			switch (textState)
 			{
 				case 0:
-					RichTextBox.SetData(NPC, "[PH]Enchantress",
+					DialogUI.SetData(NPC, "[PH]Enchantress",
 						"[]Hello hello generic greeting message thing"
 					); break;
 
 				case 1:
-					RichTextBox.SetData(NPC, "[PH]Enchantress",
+					DialogUI.SetData(NPC, "[PH]Enchantress",
 						"[]Generic Chat Text 1"
 					); break;
 
 				case 2:
-					RichTextBox.SetData(NPC, "[PH]Enchantress",
+					DialogUI.SetData(NPC, "[PH]Enchantress",
 						"[]Generic Chat Text 2"
 					); break;
 
 				case 3:
-					RichTextBox.SetData(NPC, "[PH]Enchantress",
+					DialogUI.SetData(NPC, "[PH]Enchantress",
 						"[]Generic Chat Text 3"
 					); break;
 
 				case 4:
-					RichTextBox.SetData(NPC, "[PH]Enchantress",
+					DialogUI.SetData(NPC, "[PH]Enchantress",
 						"[]Generic Chat Text 4"
 					); break;
 			}

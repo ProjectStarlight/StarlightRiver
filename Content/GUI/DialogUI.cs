@@ -2,11 +2,12 @@
 using System;
 using System.Collections.Generic;
 using Terraria.UI;
+using Terraria.UI.Chat;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.GUI
 {
-	public class RichTextBox : SmartUIState
+	public class DialogUI : SmartUIState
 	{
 		private static string message;
 		private static string title;
@@ -72,12 +73,12 @@ namespace StarlightRiver.Content.GUI
 			// Calculate bounding
 			position = absolutePosition / Main.UIScale;
 
-			int mainWidth = (int)MathHelper.Lerp(0, 520, Helpers.Eases.BezierEase(Math.Max(0, (boxTimer - 30) / 30f)));
+			int mainWidth = (int)MathHelper.Lerp(0, 520, Eases.BezierEase(Math.Max(0, (boxTimer - 30) / 30f)));
 
-			int iconSize = (int)MathHelper.Lerp(0, 100, Helpers.Eases.BezierEase(Math.Min(1, boxTimer / 30f)));
+			int iconSize = (int)MathHelper.Lerp(0, 100, Eases.BezierEase(Math.Min(1, boxTimer / 30f)));
 
 			float titleWidth = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(title).X;
-			int titleSize = (int)MathHelper.Lerp(0, titleWidth + 40, Helpers.Eases.BezierEase(boxTimer / 60f));
+			int titleSize = (int)MathHelper.Lerp(0, titleWidth + 40, Eases.BezierEase(boxTimer / 60f));
 
 			var mainRect = new Rectangle(50 + (int)position.X - 260, (int)position.Y, mainWidth, (int)Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(message).Y + 20);
 			var iconRect = new Rectangle(-52 + (int)position.X - 260, (int)position.Y, iconSize, iconSize);
@@ -139,11 +140,11 @@ namespace StarlightRiver.Content.GUI
 				return;
 
 			// Main text box
-			DrawBox(spriteBatch, mainRect);
+			DrawBoxAndSetBounds(spriteBatch, mainRect);
 			Utils.DrawBorderString(spriteBatch, message[..textTimer], new Vector2(50 + position.X - 250, position.Y + 15), Color.White);
 
 			// Box around the icon
-			DrawBox(spriteBatch, iconRect);
+			DrawBoxAndSetBounds(spriteBatch, iconRect);
 
 			if (!Main.screenTarget.IsDisposed && icon != null)
 			{
@@ -152,49 +153,19 @@ namespace StarlightRiver.Content.GUI
 			}
 
 			// Title bar
-			DrawBox(spriteBatch, titleRect);
+			DrawBoxAndSetBounds(spriteBatch, titleRect);
 			Utils.DrawBorderString(spriteBatch, title[..Math.Min(title.Length, titleTimer)], new Vector2((int)position.X, (int)position.Y - 18), Color.White, 1, 0.5f, 0.5f);
 
 			base.Draw(spriteBatch);
 		}
 
-		public static void DrawBox(SpriteBatch sb, Rectangle target)
+		public static void DrawBoxAndSetBounds(SpriteBatch sb, Rectangle target)
 		{
-			Texture2D tex = Assets.GUI.FancyBoxCustom.Value;
-			Color color = Color.White * 0.8f * opacity;
-
-			if (target.Width < 12 || target.Height < 12)
-				return;
-
-			if (target.Width < 32 || target.Height < 32)
-			{
-				int min = target.Width > target.Height ? target.Height : target.Width;
-				color *= (min - 12) / 20f;
-			}
-
-			var sourceCorner = new Rectangle(0, 0, 6, 6);
-			var sourceEdge = new Rectangle(6, 0, 4, 6);
-			var sourceCenter = new Rectangle(6, 6, 4, 4);
-
-			Rectangle inner = target;
-			inner.Inflate(-4, -4);
-
-			sb.Draw(tex, inner, sourceCenter, color);
-
-			sb.Draw(tex, new Rectangle(target.X + 2, target.Y, target.Width - 4, 6), sourceEdge, color, 0, Vector2.Zero, 0, 0);
-			sb.Draw(tex, new Rectangle(target.X, target.Y - 2 + target.Height, target.Height - 4, 6), sourceEdge, color, -(float)Math.PI * 0.5f, Vector2.Zero, 0, 0);
-			sb.Draw(tex, new Rectangle(target.X - 2 + target.Width, target.Y + target.Height, target.Width - 4, 6), sourceEdge, color, (float)Math.PI, Vector2.Zero, 0, 0);
-			sb.Draw(tex, new Rectangle(target.X + target.Width, target.Y + 2, target.Height - 4, 6), sourceEdge, color, (float)Math.PI * 0.5f, Vector2.Zero, 0, 0);
-
-			sb.Draw(tex, new Rectangle(target.X, target.Y, 6, 6), sourceCorner, color, 0, Vector2.Zero, 0, 0);
-			sb.Draw(tex, new Rectangle(target.X + target.Width, target.Y, 6, 6), sourceCorner, color, (float)Math.PI * 0.5f, Vector2.Zero, 0, 0);
-			sb.Draw(tex, new Rectangle(target.X + target.Width, target.Y + target.Height, 6, 6), sourceCorner, color, (float)Math.PI, Vector2.Zero, 0, 0);
-			sb.Draw(tex, new Rectangle(target.X, target.Y + target.Height, 6, 6), sourceCorner, color, (float)Math.PI * 1.5f, Vector2.Zero, 0, 0);
-
+			UIHelper.DrawBox(sb, target, new Color(100, 120, 255));
 			SetBounds(target);
 		}
 
-		public static void SetBounds(Rectangle input)
+		private static void SetBounds(Rectangle input)
 		{
 			if (input.X < boundingBox.X)
 				boundingBox.X = input.X;
@@ -240,13 +211,13 @@ namespace StarlightRiver.Content.GUI
 
 			talking = NPC;
 			title = newTitle;
-			message = Helpers.LocalizationHelper.WrapString(newMessage, 450, Terraria.GameContent.FontAssets.MouseText.Value, 1);
+			message = LocalizationHelper.WrapString(newMessage, 450, Terraria.GameContent.FontAssets.MouseText.Value, 1);
 		}
 
 		public static void ClearButtons()
 		{
 			widthOff = 0;
-			UILoader.GetUIState<RichTextBox>().Elements.Clear();
+			UILoader.GetUIState<DialogUI>().Elements.Clear();
 		}
 
 		public static void AddButton(string message, Action onClick)
@@ -256,7 +227,7 @@ namespace StarlightRiver.Content.GUI
 			add.Height.Set(32, 0);
 
 			widthOff += Markdown.GetWidth(message, 1) + 24;
-			UILoader.GetUIState<RichTextBox>().Append(add);
+			UILoader.GetUIState<DialogUI>().Append(add);
 		}
 	}
 
@@ -277,11 +248,11 @@ namespace StarlightRiver.Content.GUI
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
-			if (RichTextBox.boxTimer >= 60 && boxTimer < 30)
+			if (DialogUI.boxTimer >= 60 && boxTimer < 30)
 				boxTimer++;
 
-			Left.Set(RichTextBox.position.X - 210 + offset.X, 0);
-			Top.Set(RichTextBox.position.Y + 22 + RichTextBox.HeightOff, 0);
+			Left.Set(DialogUI.position.X - 210 + offset.X, 0);
+			Top.Set(DialogUI.position.Y + 22 + DialogUI.HeightOff, 0);
 
 			Recalculate();
 
@@ -291,7 +262,7 @@ namespace StarlightRiver.Content.GUI
 			CalculatedStyle dims = GetDimensions();
 			int mainBoxWidth = (int)MathHelper.Lerp(0, dims.Width, Helpers.Eases.BezierEase(boxTimer / 30f));
 
-			RichTextBox.DrawBox(spriteBatch, new Rectangle((int)dims.X, (int)dims.Y, mainBoxWidth, (int)dims.Height));
+			DialogUI.DrawBoxAndSetBounds(spriteBatch, new Rectangle((int)dims.X, (int)dims.Y, mainBoxWidth, (int)dims.Height));
 
 			if (boxTimer >= 30)
 				Utils.DrawBorderString(spriteBatch, message, GetDimensions().ToRectangle().TopLeft() + new Vector2(10, 5), Color.White);

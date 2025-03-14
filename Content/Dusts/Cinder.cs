@@ -4,7 +4,7 @@ namespace StarlightRiver.Content.Dusts
 {
 	public class Cinder : ModDust
 	{
-		public override string Texture => AssetDirectory.Keys + "GlowHarsh";
+		public override string Texture => AssetDirectory.Masks + "GlowHarsh";
 
 		public override Color? GetAlpha(Dust dust, Color lightColor)
 		{

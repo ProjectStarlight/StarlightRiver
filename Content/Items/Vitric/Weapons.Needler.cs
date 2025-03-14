@@ -450,7 +450,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Texture2D texBlur = ModContent.Request<Texture2D>(Texture + "_Blur").Value;
 			Texture2D texWhite = ModContent.Request<Texture2D>(Texture + "_White").Value;
 
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Masks + "GlowAlpha").Value;
 
 			float fadeOut = 1f;
 			if (Projectile.timeLeft < 30f)
@@ -745,7 +745,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
 			Texture2D starTex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "StarTexture_Alt").Value;
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Masks + "GlowAlpha").Value;
 
 			if (explodeTimer > 0 && explodeTimer < 20)
 			{
@@ -848,7 +848,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.VitricItem + Name).Value;
 			Texture2D texBlur = ModContent.Request<Texture2D>(AssetDirectory.VitricItem + Name + "_Blur").Value;
 			Texture2D texGlow = ModContent.Request<Texture2D>(AssetDirectory.VitricItem + Name + "_Glow").Value;
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Masks + "GlowAlpha").Value;
 
 			Main.spriteBatch.Draw(bloomTex, dust.position - Main.screenPosition, null, new Color(255, 75, 0, 0) * 0.25f * lerper, dust.rotation, bloomTex.Size() / 2f, dust.scale * 1.25f, 0f, 0f);
 

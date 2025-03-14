@@ -110,7 +110,7 @@ namespace StarlightRiver.Core
 		public override void OnWorldLoad()
 		{
 			if (!Main.dedServ)
-				RichTextBox.CloseDialogue(); //Safeguard
+				DialogUI.CloseDialogue(); //Safeguard
 		}
 
 		public override void SaveWorldData(TagCompound tag)

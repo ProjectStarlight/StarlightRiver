@@ -440,7 +440,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 			Texture2D holderTex = ModContent.Request<Texture2D>(Texture + "_AmmoHolder").Value;
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Masks + "GlowAlpha").Value;
 			Texture2D starTex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "StarTexture_Alt").Value;
 
 			Texture2D blockTex = TextureAssets.Item[ammoID].Value;
@@ -831,7 +831,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Texture2D texBlur = ModContent.Request<Texture2D>(AssetDirectory.MiscItem + Name + "_Blur").Value;
 			Texture2D texGlow = ModContent.Request<Texture2D>(AssetDirectory.MiscItem + Name + "_Glow").Value;
 			Texture2D texFireGlow = ModContent.Request<Texture2D>(AssetDirectory.MiscItem + Name + "_FireGlow").Value;
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Masks + "GlowAlpha").Value;
 
 			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () =>
 			{

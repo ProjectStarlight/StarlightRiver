@@ -112,8 +112,8 @@ namespace StarlightRiver.Core.Systems.CutsceneSystem
 				spriteBatch.Draw(ScreenspaceShaderSystem.finalScreenTexture, Vector2.Zero, Color.White * (cutscenePlayer.fadeTimer / 60f));
 
 				// Hack to redraw the rich text box, this will likely be the only UI we want here, right?
-				if (UILoader.GetUIState<RichTextBox>().Visible)
-					UILoader.GetUIState<RichTextBox>().Draw(spriteBatch);
+				if (UILoader.GetUIState<DialogUI>().Visible)
+					UILoader.GetUIState<DialogUI>().Draw(spriteBatch);
 			}
 		}
 	}

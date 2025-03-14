@@ -83,13 +83,13 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				if (talkingTo != null && Vector2.Distance(talkingTo.Center, NPC.Center) > 2000)
 				{
 					talkingTo = null;
-					RichTextBox.CloseDialogue();
+					DialogUI.CloseDialogue();
 				}
 
 				if (talkingTo != null && talkingTo.TalkNPC != NPC)
 				{
 					talkingTo = null;
-					RichTextBox.CloseDialogue();
+					DialogUI.CloseDialogue();
 				}
 			}
 
@@ -152,7 +152,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			if (Main.netMode == NetmodeID.MultiplayerClient && !NPC.active) // Close any dialogs if the npc is inactive.
 			{
 				talkingTo = null;
-				RichTextBox.CloseDialogue();
+				DialogUI.CloseDialogue();
 			}
 
 			return true;

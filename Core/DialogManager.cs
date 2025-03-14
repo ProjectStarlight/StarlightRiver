@@ -96,15 +96,15 @@ namespace StarlightRiver.Core
 			}
 
 			Entry entry = entries[key];
-			RichTextBox.SetData(talkingTo, entry.Title, entry.Body);
-			RichTextBox.ClearButtons();
+			DialogUI.SetData(talkingTo, entry.Title, entry.Body);
+			DialogUI.ClearButtons();
 
 			foreach (Button button in entry.Buttons)
 			{
 				Action buttonAction = () => { };
 
 				if (button.Key == "End")
-					buttonAction += RichTextBox.CloseDialogue;
+					buttonAction += DialogUI.CloseDialogue;
 				else if (button.Key.Length > 0)
 					buttonAction += () => ActivateEntry(button.Key);
 
@@ -118,7 +118,7 @@ namespace StarlightRiver.Core
 						Main.NewText($"Failed to find required method '{button.Code}' on '{talkingTo.ModNPC.GetType()}'", Color.Red);
 				}
 
-				RichTextBox.AddButton(button.Text, buttonAction);
+				DialogUI.AddButton(button.Text, buttonAction);
 			}
 		}
 
@@ -133,7 +133,7 @@ namespace StarlightRiver.Core
 				return;
 			}
 
-			RichTextBox.OpenDialogue(talkingTo, "", "");
+			DialogUI.OpenDialogue(talkingTo, "", "");
 			ActivateEntry(key);
 		}
 	}
