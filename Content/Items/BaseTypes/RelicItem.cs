@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public bool doubled = false;
 
-		private readonly int tooltipSparkleCounter = 0;
+		//private readonly int tooltipSparkleCounter = 0;
 
 		public override bool InstancePerEntity => true;
 

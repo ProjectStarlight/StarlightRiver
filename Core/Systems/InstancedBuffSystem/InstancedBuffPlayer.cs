@@ -8,7 +8,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		/// <summary>
 		/// The instanced buffs that exist on this NPC
 		/// </summary>
-		public readonly List<InstancedBuff> buffInstances = new();
+		public readonly List<InstancedBuff> buffInstances = [];
 
 		/// <summary>
 		/// Gets the instance of a given instanced buff inflicted on a player

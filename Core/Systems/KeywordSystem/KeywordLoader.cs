@@ -68,6 +68,6 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 		public byte G { get; set; }
 		public byte B { get; set; }
 
-		public string ColorHex => BitConverter.ToString(new byte[] { R, G, B }).Replace("-", "");
+		public string ColorHex => BitConverter.ToString([R, G, B]).Replace("-", "");
 	}
 }

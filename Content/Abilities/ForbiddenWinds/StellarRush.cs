@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 	{
 		public override float ActivationCostDefault => 1.5f;
 
-		public void Load()
+		public new void Load()
 		{
 			StarlightPlayer.PostUpdateEvent += UpdatePlayerFrame;
 		}
