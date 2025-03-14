@@ -21,8 +21,6 @@ namespace StarlightRiver
 	{
 		private List<IOrderedLoadable> loadCache;
 
-		private List<IRecipeGroup> recipeGroupCache;
-
 		public static bool debugMode = false;
 
 		//debug hook to view RTs
@@ -70,19 +68,6 @@ namespace StarlightRiver
 				SetLoadingText("Loading " + loadCache[k].GetType().Name);
 			}
 
-			recipeGroupCache = new List<IRecipeGroup>();
-
-			foreach (Type type in Code.GetTypes())
-			{
-				if (!type.IsAbstract && type.GetInterfaces().Contains(typeof(IRecipeGroup)))
-				{
-					object instance = Activator.CreateInstance(type);
-					recipeGroupCache.Add(instance as IRecipeGroup);
-				}
-
-				recipeGroupCache.Sort((n, t) => n.Priority > t.Priority ? 1 : -1);
-			}
-
 			if (!Main.dedServ)
 			{
 				//Hotkeys
@@ -113,15 +98,6 @@ namespace StarlightRiver
 				AbilityKeys?.Unload();
 
 				SLRSpawnConditions.Unload();
-
-			}
-		}
-
-		public override void AddRecipeGroups()
-		{
-			foreach (IRecipeGroup group in recipeGroupCache)
-			{
-				group.AddRecipeGroups();
 			}
 		}
 
@@ -139,11 +115,6 @@ namespace StarlightRiver
 
 					((IPostLoadable)toLoad).PostLoad();
 				}
-			}
-
-			for (int k = 0; k < NPCID.Count; k++)
-			{
-
 			}
 		}
 

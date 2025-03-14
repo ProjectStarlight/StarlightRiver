@@ -3,7 +3,7 @@ using Terraria.Localization;
 
 namespace StarlightRiver.Core.RecipeGroups
 {
-	class GraveRecipeGroup : IRecipeGroup
+	class GraveRecipeGroup : RecipeGroupLoader
 	{
 		public void AddRecipeGroups()
 		{

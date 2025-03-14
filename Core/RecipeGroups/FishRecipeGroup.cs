@@ -3,7 +3,7 @@ using Terraria.Localization;
 
 namespace StarlightRiver.Core.RecipeGroups
 {
-	class FishRecipeGroup : IRecipeGroup
+	class FishRecipeGroup : RecipeGroupLoader
 	{
 		public void AddRecipeGroups()
 		{
