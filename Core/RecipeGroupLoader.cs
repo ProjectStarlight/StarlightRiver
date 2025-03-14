@@ -24,9 +24,12 @@ namespace StarlightRiver.Core
 			}
 		}
 
-		public override void PostAddRecipes()
+		public override void AddRecipeGroups()
 		{
-			base.PostAddRecipes();
+			foreach (IRecipeGroup group in recipeGroupCache)
+			{
+				group.AddRecipeGroups();
+			}
 		}
 	}
 
