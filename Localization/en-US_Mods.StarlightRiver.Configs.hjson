@@ -1,20 +1,4 @@
 Configs: {
-	AudioConfig: {
-		DisplayName: Audio Config
-
-		InvSounds: {
-			Label: Custom Inventory Sounds
-			Tooltip: If custom inventory sounds should play for all Items, select few, or none.
-		}
-	}
-
-	CustomSounds: {
-		Tooltip: ""
-		All.Label: All
-		Specific.Label: Specific
-		None.Label: None
-	}
-
 	GraphicsConfig: {
 		DisplayName: Graphics Config
 

@@ -8,7 +8,7 @@ namespace StarlightRiver.Core
 	{
 		private List<IRecipeGroup> recipeGroupCache;
 
-		public override void PostSetupContent()
+		public override void Load()
 		{
 			recipeGroupCache = new List<IRecipeGroup>();
 
