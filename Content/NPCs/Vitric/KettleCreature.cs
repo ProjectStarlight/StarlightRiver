@@ -210,7 +210,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		}
 	}
 
-	class KettleMortar : ModProjectile, IDrawAdditive, IDrawPrimitive
+	class KettleMortar : ModProjectile, IDrawPrimitive
 	{
 		private List<Vector2> cache;
 		private Trail trail;
@@ -309,11 +309,11 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			}
 		}
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
+		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = Assets.Masks.GlowSoft.Value;
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 150, 50), 0, tex.Size() / 2, 1, 0, 0);
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 0.8f, 0, 0);
+			Texture2D tex = Assets.Masks.GlowSoftAlpha.Value;
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 150, 50, 0), 0, tex.Size() / 2, 1, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0), 0, tex.Size() / 2, 0.8f, 0, 0);
 		}
 	}
 }

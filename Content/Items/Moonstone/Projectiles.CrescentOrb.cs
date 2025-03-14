@@ -1,15 +1,11 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core.Loaders;
-using StarlightRiver.Helpers;
+﻿using StarlightRiver.Core.Loaders;
 using System;
 using Terraria.GameContent;
-using Terraria.Graphics.Effects;
 using Terraria.ID;
-using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Moonstone
 {
-	public class CrescentOrb : ModProjectile, IDrawAdditive
+	public class CrescentOrb : ModProjectile
 	{
 		public override string Texture => AssetDirectory.MoonstoneItem + Name;
 
@@ -58,20 +54,15 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			return false;
-		}
-
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
 			Projectile.Opacity = Projectile.timeLeft > 10 ? 1 : Projectile.timeLeft / 10f;
 
-			Texture2D texGlow = Assets.Masks.Glow.Value;
+			Texture2D texGlow = Assets.Masks.GlowAlpha.Value;
 
 			int sin = (int)(Math.Sin(StarlightWorld.visualTimer * 3) * 40f);
 			var color = new Color(72 + sin, 30 + sin / 2, 127);
 
-			spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, color * Projectile.scale * Projectile.Opacity, 0, texGlow.Size() / 2, Projectile.scale / 2, default, default);
-			spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, color * Projectile.scale * 1.2f * Projectile.Opacity, 0, texGlow.Size() / 2, Projectile.scale * 0.8f, default, default);
+			Main.spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, color * Projectile.scale * Projectile.Opacity, 0, texGlow.Size() / 2, Projectile.scale / 2, default, default);
+			Main.spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, color * Projectile.scale * 1.2f * Projectile.Opacity, 0, texGlow.Size() / 2, Projectile.scale * 0.8f, default, default);
 
 			Effect effect1 = ShaderLoader.GetShader("CrescentOrb").Value;
 
@@ -82,18 +73,19 @@ namespace StarlightRiver.Content.Items.Moonstone
 				effect1.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.01f);
 				effect1.Parameters["opacity"].SetValue(Projectile.Opacity);
 
-				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect1, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect1, Main.GameViewMatrix.TransformationMatrix);
 
-				spriteBatch.Draw(TextureAssets.Projectile[Projectile.type].Value, Projectile.Center - Main.screenPosition, null, Color.White * Projectile.scale, Projectile.rotation, Vector2.One * 32, Projectile.scale, 0, 0);
+				Main.spriteBatch.Draw(TextureAssets.Projectile[Projectile.type].Value, Projectile.Center - Main.screenPosition, null, Color.White * Projectile.scale, Projectile.rotation, Vector2.One * 32, Projectile.scale, 0, 0);
 
-				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, default, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 
-			Texture2D tex = Assets.Masks.Glow.Value;
-			var glowColor = new Color(78, 87, 191);
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), glowColor * Projectile.Opacity * 0.8f, 0, tex.Size() / 2, 2.5f * Projectile.scale * Projectile.Opacity, 0, 0);
+			var glowColor = new Color(78, 87, 191, 0);
+			Main.spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, texGlow.Frame(), glowColor * Projectile.Opacity * 0.8f, 0, texGlow.Size() / 2, 2.5f * Projectile.scale * Projectile.Opacity, 0, 0);
+
+			return false;
 		}
 
 		public override bool? CanDamage()

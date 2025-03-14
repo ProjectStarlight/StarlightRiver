@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Items.Gravedigger;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Items.Gravedigger;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
@@ -116,7 +117,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		}
 	}
 
-	internal class CrescentQuarterstaffProj : ModProjectile, IDrawAdditive
+	internal class CrescentQuarterstaffProj : ModProjectile
 	{
 		enum AttackType : int
 		{
@@ -342,6 +343,25 @@ namespace StarlightRiver.Content.Items.Moonstone
 			spriteBatch.Draw(tex, position - Main.screenPosition, null, Color.Lerp(lightColor, Color.White, Charge), Projectile.rotation + 0.78f, origin, scale, SpriteEffects.None, 0);
 
 			return false;
+		}
+
+		public override void PostDraw(Color lightColor)
+		{
+			if (CurrentAttack == AttackType.Slam && slamCharged)
+			{
+				Texture2D texFlare = Assets.StarTexture.Value;
+				Texture2D texBloom = Assets.Masks.GlowAlpha.Value;
+
+				float flareRotation = MathHelper.SmoothStep(0, MathHelper.TwoPi, timer / 40f);
+				float flareScale = timer < 20 ? MathHelper.SmoothStep(0, 1, timer / 20f) : MathHelper.SmoothStep(1, 0, (timer - 20) / 20f);
+
+				var color = new Color(78, 87, 191, 0);
+
+				Vector2 pos = StaffEnd + Vector2.UnitX.RotatedBy(Projectile.rotation) * 10 * Projectile.scale;
+
+				Main.spriteBatch.Draw(texBloom, pos - Main.screenPosition, null, color, 0, texBloom.Size() / 2, Projectile.scale * 3 * flareScale, default, default);
+				Main.spriteBatch.Draw(texFlare, pos - Main.screenPosition, null, color * 2, flareRotation, texFlare.Size() / 2, Projectile.scale * 0.75f * flareScale, default, default);
+			}
 		}
 
 		public override void SendExtraAI(BinaryWriter writer)
@@ -659,25 +679,6 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 					Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 				}
-			}
-		}
-
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
-			if (CurrentAttack == AttackType.Slam && slamCharged)
-			{
-				Texture2D texFlare = Assets.StarTexture.Value;
-				Texture2D texBloom = Assets.Masks.GlowAlpha.Value;
-
-				float flareRotation = MathHelper.SmoothStep(0, MathHelper.TwoPi, timer / 40f);
-				float flareScale = timer < 20 ? MathHelper.SmoothStep(0, 1, timer / 20f) : MathHelper.SmoothStep(1, 0, (timer - 20) / 20f);
-
-				var color = new Color(78, 87, 191);
-
-				Vector2 pos = StaffEnd + Vector2.UnitX.RotatedBy(Projectile.rotation) * 10 * Projectile.scale;
-
-				spriteBatch.Draw(texBloom, pos - Main.screenPosition, null, color, 0, texBloom.Size() / 2, Projectile.scale * 3 * flareScale, default, default);
-				spriteBatch.Draw(texFlare, pos - Main.screenPosition, null, color * 2, flareRotation, texFlare.Size() / 2, Projectile.scale * 0.75f * flareScale, default, default);
 			}
 		}
 	}

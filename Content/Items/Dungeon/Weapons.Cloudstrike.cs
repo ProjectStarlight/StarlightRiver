@@ -1,14 +1,11 @@
 ﻿using StarlightRiver.Content.Items.SpaceEvent;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
-using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms;
 using Terraria.DataStructures;
-using Terraria.Graphics.Effects;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Dungeon
@@ -193,7 +190,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 		}
 	}
 
-	public class CloudstrikeShot : ModProjectile, IDrawAdditive, IDrawPrimitive
+	public class CloudstrikeShot : ModProjectile, IDrawPrimitive
 	{
 		public bool followPlayer = false; //Whether or not the bolt stays on the Player if they move/rotate their mouse
 
@@ -213,7 +210,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 		private Trail trail;
 		private Trail trail2;
 
-		private readonly List<NPC> hitTargets = new();
+		private readonly List<NPC> hitTargets = [];
 		private NPC target = default;
 
 		private Vector2 startPoint = Vector2.Zero;
@@ -416,7 +413,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 			if (cache == null)
 			{
-				cache = new List<Vector2>();
+				cache = [];
 
 				for (int i = 0; i < 50; i++)
 				{
@@ -432,7 +429,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 				cache.RemoveAt(0);
 			}
 
-			cache2 = new List<Vector2>();
+			cache2 = [];
 			for (int i = 0; i < cache.Count; i++)
 			{
 				Vector2 point = cache[i];
@@ -478,6 +475,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			trail2.Positions = cache2.ToArray();
 			trail2.NextPosition = Projectile.Center;
 		}
+
 		public void DrawPrimitives()
 		{
 			if (followPlayer)
@@ -516,7 +514,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			}
 		}
 
-		public void DrawAdditive(SpriteBatch sb)
+		public override void PostDraw(Color lightColor)
 		{
 			if (followPlayer)
 			{
@@ -532,11 +530,14 @@ namespace StarlightRiver.Content.Items.Dungeon
 			if (Branch)
 				return;
 
-			Texture2D tex = Assets.Masks.GlowSoft.Value;
+			Texture2D tex = Assets.Masks.GlowSoftAlpha.Value;
 
-			Color color = new Color(200, 230, 255) * Fade;
+			Color color = new Color(200, 230, 255, 0) * Fade;
+
 			for (int i = 0; i < ChargeSqrt; i++)
-				sb.Draw(tex, startPoint - Main.screenPosition, null, color, 0, tex.Size() / 2, (float)MathHelper.Lerp(1, 2, ChargeSqrt / (float)Math.Sqrt(Cloudstrike.MAXCHARGE)) * ((Branch || Miniature) ? 0.25f : 0.5f), SpriteEffects.None, 0f);
+			{
+				Main.spriteBatch.Draw(tex, startPoint - Main.screenPosition, null, color, 0, tex.Size() / 2, (float)MathHelper.Lerp(1, 2, ChargeSqrt / (float)Math.Sqrt(Cloudstrike.MAXCHARGE)) * ((Branch || Miniature) ? 0.25f : 0.5f), SpriteEffects.None, 0f);
+			}
 		}
 
 		private void CalculateTarget()

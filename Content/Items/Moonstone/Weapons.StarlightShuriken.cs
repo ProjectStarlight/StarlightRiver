@@ -1,10 +1,9 @@
-﻿using StarlightRiver.Core.Loaders;
-using StarlightRiver.Helpers;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core.Loaders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
-using Terraria.Graphics.Effects;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Moonstone
@@ -83,7 +82,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		}
 	}
 
-	class StarShuriken : ModProjectile, IDrawAdditive, IDrawPrimitive
+	class StarShuriken : ModProjectile, IDrawPrimitive
 	{
 		private List<Vector2> cache;
 		private Trail trail;
@@ -163,6 +162,12 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, drawColor * 0.3f, Projectile.rotation, tex.Size() / 2, Projectile.scale, 0, 0);
 			Main.spriteBatch.Draw(texOutline, Projectile.Center - Main.screenPosition, null, drawColor * 1.5f, Projectile.rotation, texOutline.Size() / 2, Projectile.scale, 0, 0);
 
+			Texture2D glowTex = Assets.Masks.GlowSoftAlpha.Value;
+			Color glowColor = color;
+			glowColor.A = 0;
+
+			Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, glowColor * 0.5f, Projectile.rotation, glowTex.Size() / 2, Projectile.scale, 0, 0);
+
 			return false;
 		}
 
@@ -186,12 +191,6 @@ namespace StarlightRiver.Content.Items.Moonstone
 				creator.amountToThrow = 3;
 
 			return false;
-		}
-
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
-			Texture2D tex = Assets.Masks.GlowSoft.Value;
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, color * 0.5f, Projectile.rotation, tex.Size() / 2, Projectile.scale, 0, 0);
 		}
 
 		private void ManageCaches()
@@ -252,7 +251,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		}
 	}
 
-	class StarGlaive : ModProjectile, IDrawAdditive, IDrawPrimitive
+	class StarGlaive : ModProjectile, IDrawPrimitive
 	{
 		private List<Vector2> cache;
 		private Trail trail;
@@ -334,13 +333,13 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, drawColor * 0.3f, Projectile.rotation, tex.Size() / 2, Projectile.scale, 0, 0);
 			Main.spriteBatch.Draw(texOutline, Projectile.Center - Main.screenPosition, null, drawColor * 1.5f, Projectile.rotation, texOutline.Size() / 2, Projectile.scale, 0, 0);
 
-			return false;
-		}
+			Texture2D glowTex = Assets.Masks.GlowSoftAlpha.Value;
+			Color glowColor = color;
+			color.A = 0;
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
-			Texture2D tex = Assets.Masks.GlowSoft.Value;
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, color * 0.5f, Projectile.rotation, tex.Size() / 2, Projectile.scale * 1.5f, 0, 0);
+			Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, glowColor * 0.5f, Projectile.rotation, glowTex.Size() / 2, Projectile.scale * 1.5f, 0, 0);
+
+			return false;
 		}
 
 		private void ManageCaches()

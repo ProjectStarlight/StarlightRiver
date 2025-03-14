@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Dusts;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Projectiles;
 using StarlightRiver.Helpers;
 using System;
@@ -127,7 +128,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		}
 	}
 
-	class FacetProjectile : SpearProjectile, IDrawAdditive
+	class FacetProjectile : SpearProjectile
 	{
 		public ref float DrawbackTime => ref Projectile.ai[0];
 		public ref float BuffPower => ref Projectile.ai[1];
@@ -252,23 +253,20 @@ namespace StarlightRiver.Content.Items.Vitric
 			Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY),
 				tex.Frame(), color, Projectile.rotation - (float)Math.PI / 4f, new Vector2(tex.Width / 2, 0), Projectile.scale, 0, 0);
 
+			if (BuffPower > 0)
+			{
+				Texture2D glowTex = Assets.FireTrail.Value;
+				var glowColor = new Color(255, 200, 100, 0);
+
+				var source = new Rectangle((int)(Projectile.timeLeft / 50f * glowTex.Width / 2), 0, glowTex.Width / 2, glowTex.Height);
+				var target = new Rectangle((int)(Projectile.Center.X - Main.screenPosition.X), (int)(Projectile.Center.Y - Main.screenPosition.Y), 64, 40);
+
+				Main.spriteBatch.Draw(glowTex, target, source, glowColor, Projectile.rotation - (float)Math.PI * 3 / 4f, new Vector2(glowTex.Width / 2, glowTex.Height / 2), 0, 0);
+
+				Lighting.AddLight(Projectile.Center, new Vector3(1, 0.6f, 0.2f) * 0.5f);
+			}
+
 			return false;
-		}
-
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
-			if (BuffPower <= 0)
-				return;
-
-			Texture2D tex = Assets.FireTrail.Value;
-			var color = new Color(255, 200, 100);
-
-			var source = new Rectangle((int)(Projectile.timeLeft / 50f * tex.Width / 2), 0, tex.Width / 2, tex.Height);
-			var target = new Rectangle((int)(Projectile.Center.X - Main.screenPosition.X), (int)(Projectile.Center.Y - Main.screenPosition.Y), 64, 40);
-
-			spriteBatch.Draw(tex, target, source, color, Projectile.rotation - (float)Math.PI * 3 / 4f, new Vector2(tex.Width / 2, tex.Height / 2), 0, 0);
-
-			Lighting.AddLight(Projectile.Center, new Vector3(1, 0.6f, 0.2f) * 0.5f);
 		}
 	}
 

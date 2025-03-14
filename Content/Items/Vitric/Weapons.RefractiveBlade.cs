@@ -312,7 +312,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		}
 	}
 
-	public class RefractiveBladeLaser : ModProjectile, IDrawAdditive
+	public class RefractiveBladeLaser : ModProjectile
 	{
 		public Vector2 endPoint;
 		public float LaserRotation;
@@ -471,6 +471,8 @@ namespace StarlightRiver.Content.Items.Vitric
 			DrawRing(spriteBatch, Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * prog1 * 30, 1, 1, Main.GameUpdateCount * 0.05f, prog1, new Color(255, 240, 120));
 			DrawRing(spriteBatch, Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * prog2 * 50, 0.5f, 0.5f, Main.GameUpdateCount * -0.075f, prog2, new Color(255, 180, 120));
 
+			DrawAdditive(spriteBatch);
+
 			return false;
 		}
 
@@ -507,6 +509,9 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			if (LaserTimer <= 0)
 				return;
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			int sin = (int)(Math.Sin(StarlightWorld.visualTimer * 3) * 40f); //Just a copy/paste of the boss laser. Need to tune this later
 			var color = new Color(255, 160 + sin, 40 + sin / 2);
@@ -588,6 +593,9 @@ namespace StarlightRiver.Content.Items.Vitric
 
 				Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * width + Vector2.One.RotatedBy(rot) * Main.rand.NextFloat(40), DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot) * 1, 0, color, 0.2f - variation * 0.02f);
 			}
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 

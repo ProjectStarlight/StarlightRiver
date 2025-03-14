@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Biomes;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Helpers;
@@ -444,11 +445,11 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		}
 	}
 
-	public class FirebugMagma : ModProjectile, IDrawAdditive
+	public class FirebugMagma : ModProjectile
 	{
 		private readonly List<Vector2> oldPos = new();
 
-		public override string Texture => AssetDirectory.Masks + "GlowHarsh";
+		public override string Texture => AssetDirectory.Invisible;
 
 		public override void SetDefaults()
 		{
@@ -487,18 +488,17 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			}
 		}
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
+		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = Request<Texture2D>(Texture).Value;
+			Texture2D tex = Assets.Masks.GlowHarshAlpha.Value;
 
 			for (int i = 0; i < oldPos.Count; i++)
 			{
-				spriteBatch.Draw(tex, oldPos[i] - Main.screenPosition, tex.Frame(),
-					Color.OrangeRed * (i / (float)oldPos.Count), 0, tex.Size() / 2, 1.5f, 0, 0);
-
-				spriteBatch.Draw(tex, oldPos[i] - Main.screenPosition, tex.Frame(),
-					Color.White * (i / (float)oldPos.Count) * 0.5f, 0, tex.Size() / 2, 0.75f, 0, 0);
+				Main.spriteBatch.Draw(tex, oldPos[i] - Main.screenPosition, tex.Frame(), new Color(255, 70, 0, 0) * (i / (float)oldPos.Count), 0, tex.Size() / 2, 1.5f, 0, 0);
+				Main.spriteBatch.Draw(tex, oldPos[i] - Main.screenPosition, tex.Frame(), new Color(255, 255, 255, 0) * (i / (float)oldPos.Count) * 0.5f, 0, tex.Size() / 2, 0.75f, 0, 0);
 			}
+
+			return false;
 		}
 	}
 }

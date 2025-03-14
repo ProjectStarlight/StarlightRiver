@@ -13,7 +13,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.NPCs.Moonstone
 {
-	internal class Dreambeast : ModNPC, IDrawAdditive
+	internal class Dreambeast : ModNPC
 	{
 		public enum AIState : int
 		{
@@ -851,6 +851,27 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
+			Texture2D glowTex = Assets.Masks.GlowSoftAlpha.Value;
+
+			if (hasLoaded)
+			{
+				for (int k = 0; k < chains.Length; k++)
+				{
+					VerletChain chain = chains[k];
+
+					for (int i = 0; i < chain.ropeSegments.Count; i++)
+					{
+						RopeSegment segment = chain.ropeSegments[i];
+						var color = segment.color;
+						color.A = 0;
+
+						float progress = 1.35f - (float)k / chain.segmentCount;
+						float progress2 = 1.22f - (float)k / chain.segmentCount;
+						spriteBatch.Draw(glowTex, segment.posNow - Main.screenPosition, null, color * progress * 0.175f * NPC.Opacity, 0, glowTex.Size() / 2, progress2, 0, 0);
+					}
+				}
+			}
+
 			return false;
 		}
 
@@ -894,28 +915,6 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 				return buff;
 			};
-		}
-
-		// Draw tentacle glowy bits
-		public void DrawAdditive(SpriteBatch sb)
-		{
-			Texture2D tex = Assets.Masks.GlowSoft.Value;
-
-			if (hasLoaded)
-			{
-				for (int k = 0; k < chains.Length; k++)
-				{
-					VerletChain chain = chains[k];
-
-					for (int i = 0; i < chain.ropeSegments.Count; i++)
-					{
-						RopeSegment segment = chain.ropeSegments[i];
-						float progress = 1.35f - (float)k / chain.segmentCount;
-						float progress2 = 1.22f - (float)k / chain.segmentCount;
-						sb.Draw(tex, segment.posNow - Main.screenPosition, null, segment.color * progress * 0.175f * NPC.Opacity, 0, tex.Size() / 2, progress2, 0, 0);
-					}
-				}
-			}
 		}
 
 		#endregion Drawing

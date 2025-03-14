@@ -39,7 +39,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 		}
 	}
 
-	internal class AquaticBolt : ModProjectile, IDrawAdditive, IDrawPrimitive
+	internal class AquaticBolt : ModProjectile, IDrawPrimitive
 	{
 		private List<Vector2> cache;
 		private Trail trail;
@@ -120,13 +120,13 @@ namespace StarlightRiver.Content.Items.Manabonds
 			return false;
 		}
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
+		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = Assets.Dusts.Aurora.Value;
-			Texture2D tex2 = Assets.Masks.GlowSoft.Value;
-			spriteBatch.Draw(tex2, Projectile.Center - Main.screenPosition, null, new Color(40, 90, 255), 0, tex2.Size() / 2, 0.6f, 0, 0);
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(60, 95, 255), Main.GameUpdateCount * 0.15f, tex.Size() / 2, 0.4f, 0, 0);
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(90, 145, 255), Main.GameUpdateCount * -0.25f, tex.Size() / 2, 0.3f, 0, 0);
+			Texture2D tex = Assets.Masks.StarBlurryAlpha.Value;
+			Texture2D tex2 = Assets.Masks.GlowSoftAlpha.Value;
+			Main.spriteBatch.Draw(tex2, Projectile.Center - Main.screenPosition, null, new Color(40, 90, 255, 0), 0, tex2.Size() / 2, 0.6f, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(60, 95, 255, 0), Main.GameUpdateCount * 0.15f, tex.Size() / 2, 0.4f, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(90, 145, 255, 0), Main.GameUpdateCount * -0.25f, tex.Size() / 2, 0.3f, 0, 0);
 		}
 
 		private void ManageCaches()

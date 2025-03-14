@@ -3,7 +3,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
-	class SpewBlob : ModProjectile, IDrawAdditive
+	class SpewBlob : ModProjectile
 	{
 		public override string Texture => AssetDirectory.SquidBoss + Name;
 
@@ -54,13 +54,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			return false;
-		}
-
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
 			Texture2D tex = Assets.Bosses.SquidBoss.SpewBlob.Value;
-			Texture2D star = Assets.Items.Breacher.OrbitalStrike.Value;
+			Texture2D star = Assets.Masks.StarAlpha.Value;
 
 			for (int k = 0; k < Projectile.oldPos.Length; k++)
 			{
@@ -71,6 +66,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				if (Main.masterMode)
 					color = new Color(1, 0.5f + sin * 0.25f, 0.25f) * (1 - k / (float)Projectile.oldPos.Length);
 
+				color.A = 0;
+
 				Main.spriteBatch.Draw(tex, Projectile.oldPos[k] + Projectile.Size / 2 - Main.screenPosition, null, color, Projectile.oldRot[k], tex.Size() / 2, Projectile.scale * (0.85f - k / (float)Projectile.oldPos.Length * 0.85f), default, default);
 
 				if (k == 0)
@@ -80,6 +77,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, color * 0.6f, Projectile.ai[1] * -0.6f, star.Size() / 2, Projectile.scale * 1.15f, default, default);
 				}
 			}
+
+			return false;
 		}
 
 		public override void OnKill(int timeLeft)

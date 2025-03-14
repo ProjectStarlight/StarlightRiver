@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Helpers;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Helpers;
 using System;
 using System.IO;
 using System.Linq;
@@ -95,7 +96,7 @@ namespace StarlightRiver.Content.Items.Utility
 		}
 	}
 
-	class LaserPointerProjectile : ModProjectile, IDrawAdditive
+	class LaserPointerProjectile : ModProjectile
 	{
 		public static Color colorToAssign;
 
@@ -154,12 +155,10 @@ namespace StarlightRiver.Content.Items.Utility
 
 			Main.spriteBatch.Draw(ModContent.Request<Texture2D>(Texture).Value, OwnerCenterScreen, null, lightColor, LaserRotation, new Vector2(0, ModContent.Request<Texture2D>(Texture).Value.Height - 3), 1, 0, 0);
 			Main.spriteBatch.Draw(ModContent.Request<Texture2D>(Texture + "Glow").Value, OwnerCenterScreen, null, color, LaserRotation, new Vector2(0, ModContent.Request<Texture2D>(Texture + "Glow").Value.Height - 3), 1, 0, 0);
-			return false;
-		}
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
 			Texture2D texBeam = Assets.GlowTrail.Value;
+			Color beamColor = color;
+			beamColor.A = 0;
 
 			var origin = new Vector2(0, texBeam.Height / 2);
 
@@ -168,13 +167,15 @@ namespace StarlightRiver.Content.Items.Utility
 
 			Vector2 pos = Projectile.Center - Main.screenPosition + Vector2.UnitX.RotatedBy(LaserRotation) * 24;
 			var target = new Rectangle((int)pos.X, (int)pos.Y, width, (int)(height * 1.2f));
-			spriteBatch.Draw(texBeam, target, null, color, LaserRotation, origin, 0, 0);
+			Main.spriteBatch.Draw(texBeam, target, null, beamColor, LaserRotation, origin, 0, 0);
+
+			Texture2D impactTex = Assets.Masks.GlowSoftAlpha.Value;
+			Main.spriteBatch.Draw(impactTex, endPoint - Main.screenPosition, null, beamColor, 0, impactTex.Size() / 2, 0.5f, 0, 0);
 
 			for (int i = 0; i < width; i += 10)
 				Lighting.AddLight(pos + Vector2.UnitX.RotatedBy(LaserRotation) * i + Main.screenPosition, color.ToVector3() * height * 0.030f);
 
-			Texture2D impactTex = Assets.Masks.GlowSoft.Value;
-			spriteBatch.Draw(impactTex, endPoint - Main.screenPosition, null, color, 0, impactTex.Size() / 2, 0.5f, 0, 0);
+			return false;
 		}
 
 		public override void SendExtraAI(BinaryWriter writer)

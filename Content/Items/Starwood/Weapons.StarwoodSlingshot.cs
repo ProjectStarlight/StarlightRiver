@@ -1,3 +1,4 @@
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Helpers;
 using System;
@@ -258,7 +259,7 @@ namespace StarlightRiver.Content.Items.Starwood
 		}
 	}
 
-	public class StarwoodSlingshotStar : ModProjectile, IDrawAdditive
+	public class StarwoodSlingshotStar : ModProjectile
 	{
 		const int DAMAGE_INCREASE = 5;
 
@@ -369,26 +370,24 @@ namespace StarlightRiver.Content.Items.Starwood
 			}
 
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, new Rectangle(0, 24 * Projectile.frame, 22, 24), Color.White, Projectile.rotation, new Vector2(11, 12), Projectile.scale, default, default);
-			return false;
-		}
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
 			if (Projectile.frame == 4 || Projectile.frame == 9)
 			{
 				for (int k = 0; k < Projectile.oldPos.Length; k++)
 				{
-					Color color = (empowered ? new Color(200, 220, 255) * 0.35f : new Color(255, 255, 200) * 0.3f) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
+					Color glowColor = (empowered ? new Color(200, 220, 255, 0) * 0.35f : new Color(255, 255, 200, 0) * 0.3f) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
 
 					if (k <= 4)
-						color *= 1.2f;
+						glowColor *= 1.2f;
 
-					float scale = Projectile.scale * (Projectile.oldPos.Length - k) / Projectile.oldPos.Length * 0.8f;
-					Texture2D tex = Assets.Items.Starwood.Glow.Value;
+					float glowScale = Projectile.scale * (Projectile.oldPos.Length - k) / Projectile.oldPos.Length * 0.8f;
+					Texture2D glowTex = Assets.Items.Starwood.Glow.Value;
 
-					spriteBatch.Draw(tex, Projectile.oldPos[k] + Projectile.Size / 2 - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default);
+					Main.spriteBatch.Draw(glowTex, Projectile.oldPos[k] + Projectile.Size / 2 - Main.screenPosition, null, glowColor, 0, glowTex.Size() / 2, glowScale, default, default);
 				}
 			}
+
+			return false;
 		}
 
 		public override void SendExtraAI(BinaryWriter writer)

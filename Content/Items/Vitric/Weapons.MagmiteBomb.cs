@@ -53,7 +53,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		}
 	}
 
-	class MagmiteBombProjectile : ModProjectile, IDrawAdditive
+	class MagmiteBombProjectile : ModProjectile
 	{
 		public const int NUM_SEGMENTS = 12;
 
@@ -320,11 +320,12 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			return ret;
 		}
-		public void DrawAdditive(SpriteBatch spriteBatch)
+
+		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = Assets.Masks.Glow.Value;
-			Color color = new Color(255, 100, 50) * 0.4f;
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), color, 0, tex.Size() / 2, 1.2f * (Projectile.timeLeft / 180f), 0, 0);
+			Texture2D tex = Assets.Masks.GlowAlpha.Value;
+			Color color = new Color(255, 100, 50, 0) * 0.4f;
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), color, 0, tex.Size() / 2, 1.2f * (Projectile.timeLeft / 180f), 0, 0);
 		}
 	}
 }

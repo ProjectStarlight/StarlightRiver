@@ -14,13 +14,15 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
-	internal class VitricBossCrystal : ModNPC, IDrawAdditive
+	internal class VitricBossCrystal : ModNPC
 	{
 		public Vector2 StartPos;
 		public Vector2 TargetPos;
 		public Vector2 prevTargetPos;
 		public VitricBoss Parent;
 		public bool shouldDrawArc;
+
+		private Trail trail;
 
 		public ref float state => ref NPC.ai[0];
 		public ref float timer => ref NPC.ai[1];
@@ -426,12 +428,15 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			{
 				spriteBatch.Draw(Assets.Bosses.VitricBoss.VitricBossCrystalShape.Value, NPC.Center - screenPos, NPC.frame, Color.White * (timer / 120f), NPC.rotation, NPC.frame.Size() / 2, NPC.scale, 0, 0);
 			}
-		}
 
-		Trail trail;
+			DrawAdditive(spriteBatch);
+		}
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
+			spriteBatch.End();
+			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+
 			if (state == 0) //extra FX while vulnerable
 			{
 				Texture2D texGlow = Assets.Masks.GlowSoft.Value;
@@ -451,7 +456,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			{
 				Texture2D tex = Assets.Bosses.VitricBoss.GlassSpikeGlow.Value;
 				float speed = NPC.velocity.Y / 15f;
-				spriteBatch.Draw(tex, NPC.Center - Main.screenPosition + new Vector2(0, -45), null, new Color(255, 150, 50) * speed, -MathHelper.PiOver4, tex.Size() / 2, 3, 0, 0);
+				spriteBatch.Draw(tex, NPC.Center - Main.screenPosition + new Vector2(0, -45), null, new Color(255, 150, 50, 0) * speed, -MathHelper.PiOver4, tex.Size() / 2, 3, 0, 0);
 			}
 
 			if (phase == 6 && timer > 220)
@@ -566,6 +571,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					spriteBatch.Draw(tex2, NPC.Center - Main.screenPosition, null, Color.White * alpha * 0.8f, NPC.rotation, NPC.Size / 2, NPC.scale, 0, 0);
 				}
 			}
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		private float GetProgress(float off)

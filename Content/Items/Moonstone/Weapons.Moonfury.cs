@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Buffs;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Items.Gravedigger;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
@@ -110,7 +111,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		}
 	}
 
-	internal class MoonfuryProj : ModProjectile, IDrawPrimitive, IDrawAdditive
+	internal class MoonfuryProj : ModProjectile, IDrawPrimitive
 	{
 		private List<Vector2> cache;
 		private Trail trail;
@@ -214,6 +215,13 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
 			Vector2 pos = Projectile.Bottom + new Vector2(0, 20) - Main.screenPosition;
 			Main.spriteBatch.Draw(tex, pos, null, lightColor * (1 - Projectile.alpha / 255f), Projectile.rotation, new Vector2(tex.Width / 2, tex.Height), Projectile.scale, SpriteEffects.None, 0);
+
+			Texture2D texGlow = Assets.Items.Moonstone.MoonfuryProj_Additive.Value;
+			Color glowColor = Color.White * (1 - Projectile.alpha / 255f);
+			glowColor.A = 0;
+
+			Main.spriteBatch.Draw(texGlow, Projectile.Bottom + new Vector2(0, 20) - Main.screenPosition, null, glowColor * 0.5f, Projectile.rotation, new Vector2(texGlow.Width / 2, texGlow.Height), Projectile.scale, SpriteEffects.None, 0);
+
 			return false;
 		}
 
@@ -284,13 +292,6 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 				trail2?.Render(effect);
 			}
-		}
-
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture + "_Additive").Value;
-			Color color = Color.White * (1 - Projectile.alpha / 255f);
-			spriteBatch.Draw(tex, Projectile.Bottom + new Vector2(0, 20) - Main.screenPosition, null, color * 0.5f, Projectile.rotation, new Vector2(tex.Width / 2, tex.Height), Projectile.scale, SpriteEffects.None, 0);
 		}
 	}
 

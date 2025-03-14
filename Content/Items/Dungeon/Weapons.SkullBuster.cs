@@ -657,7 +657,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 		}
 	}
 
-	internal class SkullbusterSkull : ModProjectile, IDrawAdditive
+	internal class SkullbusterSkull : ModProjectile
 	{
 		private float fadeIn = 0;
 
@@ -721,11 +721,6 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			return false;
-		}
-
-		public void DrawAdditive(SpriteBatch sb)
-		{
 			Texture2D tex = Assets.Items.Dungeon.SkullBusterSkull.Value;
 
 			switch (skullNumber)
@@ -737,7 +732,9 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 			float opacity = fadeOut;
 			float scale = fadeIn + 0.25f * (1 - fadeOut);
-			sb.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.Aqua * opacity, Projectile.rotation, tex.Size() / 2, scale, SpriteEffects.None, 0f);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(0, 255, 255, 0) * opacity, Projectile.rotation, tex.Size() / 2, scale, SpriteEffects.None, 0f);
+
+			return false;
 		}
 	}
 

@@ -47,7 +47,7 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 	}
 
-	class DiscordantBolt : ModProjectile, IDrawPrimitive, IDrawAdditive
+	class DiscordantBolt : ModProjectile, IDrawPrimitive
 	{
 		private List<Vector2> cache;
 		private Trail trail;
@@ -126,6 +126,11 @@ namespace StarlightRiver.Content.Items.Misc
 				A = 0
 			};
 			Main.spriteBatch.Draw(texture, Projectile.Center - Projectile.velocity - Main.screenPosition, null, color, 0, texture.Size() / 2f, Projectile.scale - 0.7f, SpriteEffects.None, 0);
+
+			Texture2D glowTex = Assets.Masks.GlowSoftAlpha.Value;
+			var glowColor = new Color(220, 205, 140, 0);
+			Main.spriteBatch.Draw(glowTex, Projectile.Center - Projectile.velocity - Main.screenPosition, null, glowColor * 0.6f, Projectile.rotation, glowTex.Size() / 2f, Projectile.scale - 0.35f, SpriteEffects.None, 0);
+			Main.spriteBatch.Draw(glowTex, Projectile.Center - Projectile.velocity - Main.screenPosition, null, glowColor, Projectile.rotation, glowTex.Size() / 2f, Projectile.scale - 0.45f, SpriteEffects.None, 0);
 		}
 
 		private void ManageCaches()
@@ -173,14 +178,6 @@ namespace StarlightRiver.Content.Items.Misc
 
 				trail?.Render(effect);
 			}
-		}
-
-		public void DrawAdditive(SpriteBatch sb)
-		{
-			Texture2D texture = Assets.Masks.GlowSoft.Value;
-			var color = new Color(220, 205, 140);
-			sb.Draw(texture, Projectile.Center - Projectile.velocity - Main.screenPosition, null, color * 0.6f, Projectile.rotation, texture.Size() / 2f, Projectile.scale - 0.35f, SpriteEffects.None, 0);
-			sb.Draw(texture, Projectile.Center - Projectile.velocity - Main.screenPosition, null, color, Projectile.rotation, texture.Size() / 2f, Projectile.scale - 0.45f, SpriteEffects.None, 0);
 		}
 	}
 

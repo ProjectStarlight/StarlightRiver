@@ -430,7 +430,7 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 	}
 
-	public class BizarreLightningOrb : ModProjectile, IDrawAdditive
+	public class BizarreLightningOrb : ModProjectile
 	{
 		public override string Texture => AssetDirectory.Masks + "GlowSoft";
 
@@ -449,12 +449,14 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.hide = true;
 		}
 
-		public void DrawAdditive(SpriteBatch sb)
-		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+		public override bool PreDraw(ref Color lightColor)
+		{ 
+			Texture2D tex = Assets.Masks.GlowSoft.Value;
 
 			for (int i = 0; i < 3; i++)
-				sb.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.Yellow * Fade, 0, tex.Size() / 2, 0.55f, SpriteEffects.None, 0f);
+				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 0, 0) * Fade, 0, tex.Size() / 2, 0.55f, SpriteEffects.None, 0f);
+
+			return false;
 		}
 	}
 

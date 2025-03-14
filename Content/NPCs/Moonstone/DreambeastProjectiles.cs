@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Loaders;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.NPCs.Moonstone
 {
-	public class DreambeastProj : ModProjectile, IDrawAdditive
+	public class DreambeastProj : ModProjectile
 	{
 		public override string Texture => AssetDirectory.MoonstoneNPC + Name;
 
@@ -70,25 +71,22 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D tex = Assets.NPCs.Moonstone.DreambeastProj.Value;
+			Texture2D glowTex = Assets.NPCs.Moonstone.DreambeastProj_Bloom.Value;
+
+			var glowColor = new Color(78, 87, 191, 0);
 
 			if (Main.LocalPlayer.GetModPlayer<LunacyPlayer>().Insane)
+			{
 				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), Color.White, Projectile.rotation, tex.Size() / 2, 1.2f, 0, 0);
+				Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, glowTex.Frame(), glowColor * 0.8f, Projectile.rotation, glowTex.Size() / 2, 1.2f, 0, 0);
+			}
 
 			return false;
 		}
-
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture + "_Bloom").Value;
-			var glowColor = new Color(78, 87, 191);
-
-			if (Main.LocalPlayer.GetModPlayer<LunacyPlayer>().Insane)
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), glowColor * 0.8f, Projectile.rotation, tex.Size() / 2, 1.2f, 0, 0);
-		}
 	}
 
-	public class DreambeastProjHome : ModProjectile, IDrawPrimitive, IDrawAdditive
+	public class DreambeastProjHome : ModProjectile, IDrawPrimitive
 	{
 
 		private List<Vector2> cache;
@@ -185,22 +183,17 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 			var color = new Color(78, 87, 191);
 
+			Texture2D glowTex = Assets.Masks.GlowAlpha.Value;
+			var glowColor = new Color(78, 87, 191, 0);
+
 			if (Main.LocalPlayer.GetModPlayer<LunacyPlayer>().Insane)
 			{
 				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), color * Projectile.Opacity, Projectile.rotation, tex.Size() / 2, 0.5f, 0, 0);
 				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), Color.White * Projectile.Opacity, Projectile.rotation, tex.Size() / 2, 0.4f, 0, 0);
+				Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, glowTex.Frame(), glowColor * 0.8f * Projectile.Opacity, Projectile.rotation, glowTex.Size() / 2, 1.2f, 0, 0);
 			}
 
 			return false;
-		}
-
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
-			Texture2D tex = Assets.Masks.Glow.Value;
-			var color = new Color(78, 87, 191);
-
-			if (Main.LocalPlayer.GetModPlayer<LunacyPlayer>().Insane)
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), color * 0.8f * Projectile.Opacity, Projectile.rotation, tex.Size() / 2, 1.2f, 0, 0);
 		}
 
 		public void DrawPrimitives()

@@ -88,7 +88,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		}
 	}
 
-	class OldCeirosShrineDummy : Dummy, IDrawAdditive
+	class OldCeirosShrineDummy : Dummy
 	{
 		public int echoTimer = 0;
 
@@ -119,22 +119,15 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			Vector2 pos = position - Main.screenPosition + new Vector2(32, -32 + sin * 4);
 
 			Main.spriteBatch.Draw(tex, pos, null, Color.White, 0, tex.Size() / 2, 1, 0, 0);
-
 			Main.spriteBatch.Draw(tex, pos, null, Color.White * (echoTimer / 30f), 0, tex.Size() / 2, 1 + (2 - echoTimer / 30f * 2), 0, 0);
-		}
-
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
-			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
-				return;
 
 			Texture2D texGlow = Assets.Bosses.VitricBoss.LongGlow.Value;
-			Vector2 pos = position - Main.screenPosition + new Vector2(33, 10);
+			Vector2 posGlow = position - Main.screenPosition + new Vector2(33, 10);
 
-			float sin = (float)Math.Sin(Main.GameUpdateCount / 18f);
+			float sinGlow = (float)Math.Sin(Main.GameUpdateCount / 18f);
 
-			spriteBatch.Draw(texGlow, pos + Vector2.UnitY * 2, null, new Color(255, 180, 100) * (0.5f + sin * 0.1f), 0, new Vector2(texGlow.Width / 2, texGlow.Height), 0.32f, 0, 0);
-			spriteBatch.Draw(texGlow, pos, null, new Color(255, 255, 100) * (0.8f + sin * 0.2f), 0, new Vector2(texGlow.Width / 2, texGlow.Height), 0.12f, 0, 0);
+			Main.spriteBatch.Draw(texGlow, posGlow + Vector2.UnitY * 2, null, new Color(255, 180, 100, 0) * (0.5f + sinGlow * 0.1f), 0, new Vector2(texGlow.Width / 2, texGlow.Height), 0.32f, 0, 0);
+			Main.spriteBatch.Draw(texGlow, posGlow, null, new Color(255, 255, 100, 0) * (0.8f + sinGlow * 0.2f), 0, new Vector2(texGlow.Width / 2, texGlow.Height), 0.12f, 0, 0);
 		}
 	}
 

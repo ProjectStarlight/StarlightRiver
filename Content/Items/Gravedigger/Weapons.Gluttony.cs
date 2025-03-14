@@ -58,7 +58,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		}
 	}
 
-	public class GluttonyHandle : ModProjectile, IDrawAdditive, IDrawPrimitive
+	public class GluttonyHandle : ModProjectile, IDrawPrimitive
 	{
 		public Vector2 direction = Vector2.Zero;
 
@@ -365,13 +365,6 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			}
 
 			return false;
-		}
-
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
-			float prog = Eases.SwoopEase(Math.Min(1, timer / 50f));
-			Texture2D tex = Assets.Bosses.VitricBoss.ConeTell.Value;
-			//spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 60, 80) * prog * 0.4f, Projectile.rotation + 1.57f + 0.1f, new Vector2(tex.Width / 2, tex.Height), prog * 0.55f, 0, 0);
 		}
 	}
 

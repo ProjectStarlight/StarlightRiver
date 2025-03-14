@@ -1,10 +1,11 @@
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
-	internal class GlassVolley : ModProjectile, IDrawAdditive
+	internal class GlassVolley : ModProjectile
 	{
 		public ref float Timer => ref Projectile.ai[0];
 		public ref float Rotation => ref Projectile.ai[1];
@@ -50,14 +51,16 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				Projectile.Kill(); //kill it when it expires
 		}
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
+		public override bool PreDraw(ref Color lightColor)
 		{
-			if (Timer <= 30) //draws the proejctile's tell ~0.75 seconds before it goes off
+			if (Timer <= 30) //draws the projectile's tell ~0.75 seconds before it goes off
 			{
 				Texture2D tex = Assets.Bosses.VitricBoss.VolleyTell.Value;
 				float alpha = (float)Math.Sin(Timer / 30f * 3.14f) * 0.8f;
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), new Color(200, 255, 255) * alpha, Projectile.rotation - 1.57f, new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
+				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), new Color(200, 255, 255, 0) * alpha, Projectile.rotation - 1.57f, new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
 			}
+
+			return false;
 		}
 	}
 

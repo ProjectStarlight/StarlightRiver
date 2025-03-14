@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 		}
 	}
 
-	internal class JarDummy : Dummy, IDrawAdditive
+	internal class JarDummy : Dummy
 	{
 		public override bool DoesCollision => true;
 
@@ -107,10 +107,10 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 			}
 		}
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
+		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = Assets.Masks.Glow.Value;
-			spriteBatch.Draw(tex, Center - Main.screenPosition + Vector2.UnitY * 16, tex.Frame(), new Color(91, 211, 233) * 0.7f, 0, tex.Size() / 2, 0.8f, 0, 0);
+			Texture2D glowTex = Assets.Masks.GlowAlpha.Value;
+			Main.spriteBatch.Draw(glowTex, Center - Main.screenPosition + Vector2.UnitY * 16, glowTex.Frame(), new Color(91, 211, 233, 0) * 0.7f, 0, glowTex.Size() / 2, 0.8f, 0, 0);
 		}
 	}
 

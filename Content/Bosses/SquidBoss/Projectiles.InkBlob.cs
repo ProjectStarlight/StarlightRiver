@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Loaders;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
-	class InkBlob : ModProjectile, IDrawPrimitive, IDrawAdditive
+	class InkBlob : ModProjectile, IDrawPrimitive
 	{
 		private List<Vector2> cache;
 		private Trail trail;
@@ -96,6 +97,15 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), color, Projectile.rotation, tex.Size() / 2, Projectile.scale, 0, 0);
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), Color.White * alpha, Projectile.rotation, tex.Size() / 2, Projectile.scale * 0.8f, 0, 0);
 
+			Texture2D glow = Assets.Masks.GlowSoftAlpha.Value;
+			Color glowColor = new Color(0.7f, 0.8f, 0.5f) * Eases.EaseCubicOut(MathHelper.Max(0, (Projectile.timeLeft - 90) / 30f));
+			glowColor.A = 0;
+
+			for (int i = 0; i < 3; i++)
+			{
+				Main.spriteBatch.Draw(glow, initialPosition - Main.screenPosition, null, glowColor, 0f, glow.Size() / 2, 1.2f, SpriteEffects.None, 0f);
+			}
+
 			return false;
 		}
 
@@ -162,17 +172,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
-		}
-
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
-			Texture2D tex = Assets.Masks.GlowSoft.Value;
-			Color color = new Color(0.7f, 0.8f, 0.5f) * Eases.EaseCubicOut(MathHelper.Max(0, (Projectile.timeLeft - 90) / 30f));
-
-			for (int i = 0; i < 3; i++)
-			{
-				spriteBatch.Draw(tex, initialPosition - Main.screenPosition, null, color, 0f, tex.Size() / 2, 1.2f, SpriteEffects.None, 0f);
-			}
 		}
 
 		public void DrawPrimitives()

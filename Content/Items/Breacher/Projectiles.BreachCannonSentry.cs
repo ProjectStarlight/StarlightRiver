@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		}
 	}
 
-	public class BreachCannonSentry : ModProjectile, IDrawPrimitive, IDrawAdditive
+	public class BreachCannonSentry : ModProjectile, IDrawPrimitive
 	{
 		public static Vector2 tileOriginToAassign;
 		public static float rotationToAssign;
@@ -501,22 +501,24 @@ namespace StarlightRiver.Content.Items.Breacher
 			}
 		}
 
-		public void DrawAdditive(SpriteBatch sb)
+		public override void PostDraw(Color lightColor)
 		{
 			var blue = new Color(0, 0, 255);
 			var blueCyan = Color.Lerp(Color.Cyan, blue, 0.5f);
-			Texture2D tex = Assets.Masks.GlowSoft.Value;
+			blueCyan.A = 0;
 
-			sb.Draw(tex, laserStartpoint - Main.screenPosition, null, blueCyan, 0, tex.Size() / 2, 0.45f * laserSizeMult, SpriteEffects.None, 0f);
-			sb.Draw(tex, laserEndpoint - Main.screenPosition, null, blueCyan, 0, tex.Size() / 2, 0.35f * laserSizeMult, SpriteEffects.None, 0f);
+			Texture2D tex = Assets.Masks.GlowSoftAlpha.Value;
+
+			Main.spriteBatch.Draw(tex, laserStartpoint - Main.screenPosition, null, blueCyan, 0, tex.Size() / 2, 0.45f * laserSizeMult, SpriteEffects.None, 0f);
+			Main.spriteBatch.Draw(tex, laserEndpoint - Main.screenPosition, null, blueCyan, 0, tex.Size() / 2, 0.35f * laserSizeMult, SpriteEffects.None, 0f);
 
 			if (superLaser)
 			{
-				sb.Draw(tex, superLaserStartpoint - Main.screenPosition, null, blueCyan, 0, tex.Size() / 2, 0.45f * superLaserSizeMult, SpriteEffects.None, 0f);
-				sb.Draw(tex, superLaserEndpoint - Main.screenPosition, null, blueCyan, 0, tex.Size() / 2, 0.35f * superLaserSizeMult, SpriteEffects.None, 0f);
+				Main.spriteBatch.Draw(tex, superLaserStartpoint - Main.screenPosition, null, blueCyan, 0, tex.Size() / 2, 0.45f * superLaserSizeMult, SpriteEffects.None, 0f);
+				Main.spriteBatch.Draw(tex, superLaserEndpoint - Main.screenPosition, null, blueCyan, 0, tex.Size() / 2, 0.35f * superLaserSizeMult, SpriteEffects.None, 0f);
 			}
 
-			DrawBalls(sb, BlendState.Additive, Color.White, Color.White, 0.35f);
+			DrawBalls(Main.spriteBatch, BlendState.AlphaBlend, Color.White, Color.White, 0.35f);
 		}
 
 		private void SpawnParticles()

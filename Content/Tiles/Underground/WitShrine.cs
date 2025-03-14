@@ -64,7 +64,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 		}
 	}
 
-	public partial class WitShrineDummy : Dummy, IDrawAdditive
+	public partial class WitShrineDummy : Dummy
 	{
 		public enum runeState
 		{
@@ -219,6 +219,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 			Main.spriteBatch.Draw(tex, targetPos, source, Color.White, 0, Vector2.One * 17, 1, 0, 0);
 		}
 
+		// TODO: Call this since IDrawAdditive ded
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
 			if (state != 0)

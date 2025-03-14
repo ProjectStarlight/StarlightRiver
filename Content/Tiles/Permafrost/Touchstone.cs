@@ -212,7 +212,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 		public TouchstoneItem() : base("Touchstone", "A guiding light", "Touchstone", 3, AssetDirectory.PermafrostTile) { }
 	}
 
-	class TouchstoneWisp : ModNPC, IDrawAdditive, IDrawPrimitive //not sure if this is really a great place to put this but ehhhh
+	class TouchstoneWisp : ModNPC, IDrawPrimitive //not sure if this is really a great place to put this but ehhhh
 	{
 
 		private ref float TargetX => ref NPC.ai[0];
@@ -333,6 +333,17 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
+			Texture2D glowTex = Assets.Masks.GlowSoftAlpha.Value;
+
+			float sin1 = 1 + (float)Math.Sin(Main.GameUpdateCount / 10f);
+			float cos1 = 1 + (float)Math.Cos(Main.GameUpdateCount / 10f);
+			var auroraColor = new Color(0.5f + cos1 * 0.2f, 0.8f, 0.5f + sin1 * 0.2f, 0);
+
+			for (int i = 0; i < 3; i++)
+			{
+				spriteBatch.Draw(glowTex, NPC.Center - Main.screenPosition, null, auroraColor * NPC.Opacity, 0f, glowTex.Size() / 2, 0.8f * NPC.scale, SpriteEffects.None, 0f);
+			}
+
 			return false;
 		}
 
@@ -380,20 +391,6 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = NPC.Center + NPC.velocity;
-		}
-
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
-			Texture2D tex = Assets.Masks.GlowSoft.Value;
-
-			float sin1 = 1 + (float)Math.Sin(Main.GameUpdateCount / 10f);
-			float cos1 = 1 + (float)Math.Cos(Main.GameUpdateCount / 10f);
-			var auroraColor = new Color(0.5f + cos1 * 0.2f, 0.8f, 0.5f + sin1 * 0.2f);
-
-			for (int i = 0; i < 3; i++)
-			{
-				spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, auroraColor * NPC.Opacity, 0f, tex.Size() / 2, 0.8f * NPC.scale, SpriteEffects.None, 0f);
-			}
 		}
 
 		public void DrawPrimitives()

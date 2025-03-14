@@ -39,7 +39,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 		}
 	}
 
-	internal class Fireball : ModProjectile, IDrawAdditive, IDrawPrimitive
+	internal class Fireball : ModProjectile, IDrawPrimitive
 	{
 		private List<Vector2> cache;
 		private Trail trail;
@@ -142,18 +142,18 @@ namespace StarlightRiver.Content.Items.Manabonds
 			}
 		}
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
+		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = Assets.Masks.Glow.Value;
-			Texture2D tex2 = Assets.Masks.GlowSoft.Value;
-			spriteBatch.Draw(tex2, Projectile.Center - Main.screenPosition, null, new Color(255, 220, 20), 0, tex2.Size() / 2, 1.4f, 0, 0);
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 0.8f, 0, 0);
+			Texture2D tex = Assets.Masks.GlowAlpha.Value;
+			Texture2D tex2 = Assets.Masks.GlowSoftAlpha.Value;
+			Main.spriteBatch.Draw(tex2, Projectile.Center - Main.screenPosition, null, new Color(255, 220, 20, 0), 0, tex2.Size() / 2, 1.4f, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0), 0, tex.Size() / 2, 0.8f, 0, 0);
 
 			if (State == 1 && Projectile.timeLeft <= 15)
 			{
-				Texture2D tex3 = Assets.Dusts.Aurora.Value;
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 100 + (int)(Projectile.timeLeft / 15f * 155), 50) * (Projectile.timeLeft / 15f), 0, tex.Size() / 2, (15 - Projectile.timeLeft) * 0.6f, 0, 0);
-				spriteBatch.Draw(tex3, Projectile.Center - Main.screenPosition, null, new Color(255, 100 + (int)(Projectile.timeLeft / 15f * 155), 50) * (Projectile.timeLeft / 15f) * 1.5f, 0, tex3.Size() / 2, (15 - Projectile.timeLeft) * 0.4f, 0, 0);
+				Texture2D tex3 = Assets.Masks.StarBlurryAlpha.Value;
+				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 100 + (int)(Projectile.timeLeft / 15f * 155), 50, 0) * (Projectile.timeLeft / 15f), 0, tex.Size() / 2, (15 - Projectile.timeLeft) * 0.6f, 0, 0);
+				Main.spriteBatch.Draw(tex3, Projectile.Center - Main.screenPosition, null, new Color(255, 100 + (int)(Projectile.timeLeft / 15f * 155), 50, 0) * (Projectile.timeLeft / 15f) * 1.5f, 0, tex3.Size() / 2, (15 - Projectile.timeLeft) * 0.4f, 0, 0);
 			}
 		}
 

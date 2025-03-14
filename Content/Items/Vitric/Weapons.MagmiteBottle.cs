@@ -110,7 +110,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		}
 	}
 
-	class MagmaBottleBurn : ModProjectile, IDrawAdditive
+	class MagmaBottleBurn : ModProjectile
 	{
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -156,13 +156,10 @@ namespace StarlightRiver.Content.Items.Vitric
 			Color color = new Color(255, 140, 50) * 0.2f * (Projectile.timeLeft / 180f);
 
 			Main.spriteBatch.Draw(tex, pos, frame, color, 0, Vector2.Zero, 1, 0, 0);
-		}
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
-			Texture2D tex = Assets.Masks.Glow.Value;
-			Color color = new Color(255, 100, 50) * 0.3f * (Projectile.timeLeft / 180f);
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), color, 0, tex.Size() / 2, 1.2f * (Projectile.timeLeft / 180f), 0, 0);
+			Texture2D glowTex = Assets.Masks.GlowAlpha.Value;
+			Color glowColor = new Color(255, 100, 50, 0) * 0.3f * (Projectile.timeLeft / 180f);
+			Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, glowTex.Frame(), glowColor, 0, glowTex.Size() / 2, 1.2f * (Projectile.timeLeft / 180f), 0, 0);
 		}
 	}
 

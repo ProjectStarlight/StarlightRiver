@@ -194,7 +194,7 @@ namespace StarlightRiver.Content.Items.Magnet
 		}
 	}
 
-	internal class ThunderbussShot : ModProjectile, IDrawAdditive, IDrawPrimitive
+	internal class ThunderbussShot : ModProjectile, IDrawPrimitive
 	{
 		public Vector2 startPoint;
 		public Vector2 endPoint;
@@ -447,7 +447,7 @@ namespace StarlightRiver.Content.Items.Magnet
 				PreKill(Projectile.timeLeft);
 		}
 
-		public void DrawAdditive(SpriteBatch sb)
+		public override void PostDraw(Color lightColor)
 		{
 			Vector2 point1 = startPoint;
 			Vector2 point2 = Projectile.Center;
@@ -464,9 +464,9 @@ namespace StarlightRiver.Content.Items.Magnet
 				var target = new Rectangle((int)(prevPos.X - Main.screenPosition.X), (int)(prevPos.Y - Main.screenPosition.Y), (int)Vector2.Distance(nodes[k], prevPos) + 1, power);
 				var origin = new Vector2(0, tex.Height / 2);
 				float rot = (nodes[k] - prevPos).ToRotation();
-				Color color = new Color(200, 230, 255) * (Projectile.extraUpdates == 0 ? Projectile.timeLeft / 15f : 1);
+				Color color = new Color(200, 230, 255, 0) * (Projectile.extraUpdates == 0 ? Projectile.timeLeft / 15f : 1);
 
-				sb.Draw(tex, target, null, color, rot, origin, 0, 0);
+				Main.spriteBatch.Draw(tex, target, null, color, rot, origin, 0, 0);
 			}
 		}
 
@@ -572,7 +572,7 @@ namespace StarlightRiver.Content.Items.Magnet
 		}
 	}
 
-	internal class ThunderbussBall : ModProjectile, IDrawAdditive, IDrawPrimitive
+	internal class ThunderbussBall : ModProjectile, IDrawPrimitive
 	{
 		private List<Vector2> cache;
 		private Trail trail;
@@ -700,27 +700,27 @@ namespace StarlightRiver.Content.Items.Magnet
 			return false;
 		}
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
+		public override void PostDraw(Color lightColor)
 		{
-			float scale = 0;
-			float opacity = 1;
+			float glowScale = 0;
+			float glowOpacity = 1;
 
-			Texture2D tex = Assets.Masks.GlowSoft.Value;
-			Texture2D texRing = Assets.Bosses.VitricBoss.BombTell.Value;
+			Texture2D glowTex = Assets.Masks.GlowSoftAlpha.Value;
+			Texture2D glowRingTex = Assets.Masks.GlowWithRing.Value;
 
 			if (Projectile.timeLeft <= 30)
 			{
-				scale = Eases.SwoopEase(1 - Projectile.timeLeft / 30f);
-				opacity = Eases.SwoopEase(Projectile.timeLeft / 30f);
+				glowScale = Eases.SwoopEase(1 - Projectile.timeLeft / 30f);
+				glowOpacity = Eases.SwoopEase(Projectile.timeLeft / 30f);
 
-				spriteBatch.Draw(texRing, Projectile.Center - Main.screenPosition, null, new Color(160, 230, 255) * 0.8f * (Projectile.timeLeft / 30f), 0, texRing.Size() / 2, (1 - Projectile.timeLeft / 30f) * 1.4f, 0, 0);
+				Main.spriteBatch.Draw(glowRingTex, Projectile.Center - Main.screenPosition, null, new Color(160, 230, 255, 0) * 0.8f * (Projectile.timeLeft / 30f), 0, glowRingTex.Size() / 2, (1 - Projectile.timeLeft / 30f) * 1.4f, 0, 0);
 			}
 
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(160, 230, 255) * opacity, 0, tex.Size() / 2, (1.5f + scale * 3) * (Stacks / 1.5f), 0, 0);
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(200, 230, 255) * opacity, 0, tex.Size() / 2, (1f + scale * 2) * (Stacks / 1.5f), 0, 0);
+			Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, new Color(160, 230, 255, 0) * glowOpacity, 0, glowTex.Size() / 2, (1.5f + glowScale * 3) * (Stacks / 1.5f), 0, 0);
+			Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, new Color(200, 230, 255, 0) * glowOpacity, 0, glowTex.Size() / 2, (1f + glowScale * 2) * (Stacks / 1.5f), 0, 0);
 
 			if (Projectile.timeLeft > 30)
-				spriteBatch.Draw(texRing, Projectile.Center - Main.screenPosition, null, new Color(120, 200, 255) * 0.4f * opacity, 0, texRing.Size() / 2, 0.75f * Stacks, 0, 0);
+				Main.spriteBatch.Draw(glowRingTex, Projectile.Center - Main.screenPosition, null, new Color(120, 200, 255, 0) * 0.4f * glowOpacity, 0, glowRingTex.Size() / 2, 0.75f * Stacks, 0, 0);
 		}
 
 		private void ManageCaches()

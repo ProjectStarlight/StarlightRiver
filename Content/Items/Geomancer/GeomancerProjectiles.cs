@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria.GameContent;
 using Terraria.ID;
+using static tModPorter.ProgressUpdate;
 
 namespace StarlightRiver.Content.Items.Geomancer
 {
@@ -93,7 +94,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 		}
 	}
 
-	public class TopazShieldFade : ModProjectile, IDrawAdditive
+	public class TopazShieldFade : ModProjectile
 	{
 		public override string Texture => AssetDirectory.GeomancerItem + "TopazShield";
 
@@ -130,18 +131,19 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 			Projectile.Center = player.Center + direction * 35;
 		}
-		public void DrawAdditive(SpriteBatch spriteBatch)
+
+		public override void PostDraw(Color lightColor)
 		{
 			Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
 
 			float transparency = (float)Math.Pow(1 - progress, 2);
 			float scale = 1f + progress * 2;
 
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * transparency, Projectile.rotation, tex.Size() / 2, Projectile.scale * scale, SpriteEffects.None, 0f);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255 ,0) * transparency, Projectile.rotation, tex.Size() / 2, Projectile.scale * scale, SpriteEffects.None, 0f);
 		}
 	}
 
-	public class TopazShield : ModProjectile, IDrawAdditive
+	public class TopazShield : ModProjectile
 	{
 		public override string Texture => AssetDirectory.GeomancerItem + "TopazShield";
 
@@ -230,23 +232,13 @@ namespace StarlightRiver.Content.Items.Geomancer
 					}
 				}
 			}
-			else
-			{
-				/*float progress = EXPLOSIONTIME - Projectile.timeLeft;
-
-                float deviation = (float)Math.Sqrt(progress) * 0.08f;
-                Projectile.rotation += Main.rand.NextFloat(-deviation,deviation);
-
-                Vector2 dustDir = Main.rand.NextFloat(6.28f).ToRotationVector2();
-                Dust.NewDustPerfect(Projectile.Center - (dustDir * 50), DustID.TopazBolt, dustDir * 10, 0, default, (float)Math.Sqrt(progress) * 0.3f).noGravity = true;*/
-			}
 		}
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
+		public override void PostDraw(Color lightColor)
 		{
 			Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
 
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0), Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
 		}
 
 		public override bool? CanHitNPC(NPC target)
@@ -283,7 +275,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 		}
 	}
 
-	public class TopazShard : ModProjectile, IDrawAdditive
+	public class TopazShard : ModProjectile
 	{
 		public override string Texture => AssetDirectory.GeomancerItem + Name;
 		public override void SetStaticDefaults()
@@ -319,15 +311,16 @@ namespace StarlightRiver.Content.Items.Geomancer
 				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.GemTopaz, Projectile.velocity.X * rand, Projectile.velocity.Y * rand);
 			}
 		}
-		public void DrawAdditive(SpriteBatch spriteBatch)
+
+		public override void PostDraw(Color lightColor)
 		{
 			Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
 
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0), Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
 		}
 	}
 
-	public class AmethystShard : ModProjectile, IDrawAdditive
+	public class AmethystShard : ModProjectile
 	{
 		public override string Texture => AssetDirectory.GeomancerItem + "GeoAmethyst";
 
@@ -378,17 +371,18 @@ namespace StarlightRiver.Content.Items.Geomancer
 			Projectile.rotation = direction.ToRotation();
 		}
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
+		public override void PostDraw(Color lightColor)
 		{
 			Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
-			for (int k = Projectile.oldPos.Length - 1; k > 0; k--) //TODO: Clean this shit up
+
+			for (int k = Projectile.oldPos.Length - 1; k > 0; k--)
 			{
 				Vector2 drawPos = Projectile.oldPos[k] + new Vector2(Projectile.width, Projectile.height) / 2;
-				Color color = Color.White * (float)((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
-				spriteBatch.Draw(tex, drawPos - Main.screenPosition, null, color, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
+				Color color = new Color(255, 255, 255, 0) * (float)((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
+				Main.spriteBatch.Draw(tex, drawPos - Main.screenPosition, null, color, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
 			}
 
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * (fadeIn / 15f), Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0) * (fadeIn / 15f), Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
 		}
 
 		public override void OnKill(int timeLeft)
@@ -398,7 +392,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 		}
 	}
 
-	public class RubyDagger : ModProjectile, IDrawAdditive
+	public class RubyDagger : ModProjectile
 	{
 		public override string Texture => AssetDirectory.GeomancerItem + "GeoRuby";
 
@@ -500,22 +494,22 @@ namespace StarlightRiver.Content.Items.Geomancer
 			}
 		}
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
+		public override void PostDraw(Color lightColor)
 		{
 			Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
-
 			var origin = new Vector2(tex.Width / 2, tex.Height);
-
 			SpriteEffects effects = Math.Sign(radiansToSpin) == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-			for (int k = Projectile.oldPos.Length - 1; k > 0; k--) //TODO: Clean this shit up
+
+			for (int k = Projectile.oldPos.Length - 1; k > 0; k--)
 			{
 				Vector2 drawPos = Projectile.oldPos[k] + new Vector2(Projectile.width, Projectile.height) / 2;
-				Color color = Color.White * (float)((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
+				Color color = new Color(255, 255, 255, 0) * (float)((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
+
 				if (k > 0 && k < oldRotation.Count)
-					spriteBatch.Draw(tex, drawPos - Main.screenPosition, null, color, oldRotation[k], tex.Size() / 2, Projectile.scale, effects, 0f);
+					Main.spriteBatch.Draw(tex, drawPos - Main.screenPosition, null, color, oldRotation[k], tex.Size() / 2, Projectile.scale, effects, 0f);
 			}
 
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, tex.Size() / 2, Projectile.scale, effects, 0f);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0), Projectile.rotation, tex.Size() / 2, Projectile.scale, effects, 0f);
 		}
 
 		public override void OnKill(int timeLeft)

@@ -489,7 +489,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		}
 	}
 
-	internal class PelterConstructArrowLarge : ModProjectile, IDrawAdditive
+	internal class PelterConstructArrowLarge : ModProjectile
 	{
 		private List<Vector2> cache;
 		private Trail trail;
@@ -632,13 +632,17 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
 		}
 
-		public void DrawAdditive(SpriteBatch sb)
+		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = Assets.Masks.GlowSoft.Value;
+			Texture2D tex = Assets.Masks.GlowSoftAlpha.Value;
 
 			Color color = Color.OrangeRed;
+			color.A = 0;
+
 			for (int i = 0; i < 6; i++)
-				sb.Draw(tex, firstPos - Main.screenPosition, null, color, 0, tex.Size() / 2, 1.25f * fade, SpriteEffects.None, 0f);
+			{
+				Main.spriteBatch.Draw(tex, firstPos - Main.screenPosition, null, color, 0, tex.Size() / 2, 1.25f * fade, SpriteEffects.None, 0f);
+			}
 		}
 
 		private void SpawnParticles()

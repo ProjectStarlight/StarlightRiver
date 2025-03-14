@@ -48,7 +48,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		}
 	}
 
-	public class GlassShard : ModProjectile, IDrawAdditive
+	public class GlassShard : ModProjectile
 	{
 		Vector2 savedVelocity;
 
@@ -127,17 +127,14 @@ namespace StarlightRiver.Content.Items.Vitric
 			spriteBatch.Draw(Assets.Bosses.VitricBoss.GlassSpike.Value, Projectile.Center - Main.screenPosition, new Rectangle(0, 0, 22, 22), lightColor, Projectile.rotation, Vector2.One * 11, Projectile.scale, 0, 0);
 			spriteBatch.Draw(Assets.Bosses.VitricBoss.GlassSpike.Value, Projectile.Center - Main.screenPosition, new Rectangle(0, 22, 22, 22), color, Projectile.rotation, Vector2.One * 11, Projectile.scale, 0, 0);
 
+			Texture2D glowTex = Assets.Bosses.VitricBoss.GlassSpikeGlow.Value;
+			float glowAlpha = Projectile.timeLeft > 160 ? 1 - (Projectile.timeLeft - 160) / 20f : 1;
+			Color glowColor = CommonVisualEffects.HeatedToCoolColor(MathHelper.Min(200 - Projectile.timeLeft, 120)) * glowAlpha;
+			glowColor.A = 0;
+
+			spriteBatch.Draw(glowTex, Projectile.Center + Vector2.Normalize(Projectile.velocity) * -40 - Main.screenPosition, glowTex.Frame(), glowColor * (Projectile.timeLeft / 140f), Projectile.rotation + 3.14f, glowTex.Size() / 2, 1.8f, 0, 0);
+
 			return false;
-		}
-
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
-			Texture2D tex = Assets.Bosses.VitricBoss.GlassSpikeGlow.Value;
-			float alpha = Projectile.timeLeft > 160 ? 1 - (Projectile.timeLeft - 160) / 20f : 1;
-			Color color = Helpers.CommonVisualEffects.HeatedToCoolColor(MathHelper.Min(200 - Projectile.timeLeft, 120)) * alpha;
-
-			spriteBatch.Draw(tex, Projectile.Center + Vector2.Normalize(Projectile.velocity) * -40 - Main.screenPosition, tex.Frame(),
-				color * (Projectile.timeLeft / 140f), Projectile.rotation + 3.14f, tex.Size() / 2, 1.8f, 0, 0);
 		}
 	}
 }
