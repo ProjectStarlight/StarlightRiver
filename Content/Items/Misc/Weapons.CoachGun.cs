@@ -327,7 +327,7 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			CameraSystem.shake += 8;
 			SoundHelper.PlayPitched("Magic/FireHit", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));

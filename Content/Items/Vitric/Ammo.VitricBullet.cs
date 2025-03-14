@@ -242,7 +242,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				Projectile.scale += 0.01f;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			if (hitByBullet && Projectile.timeLeft < 240)
 			{

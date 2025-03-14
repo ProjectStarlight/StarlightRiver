@@ -548,7 +548,7 @@ namespace StarlightRiver.Content.Items.Starwood
 			return FoundTarget;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			SoundEngine.PlaySound(SoundID.DD2_WitherBeastHurt, Projectile.Center);
 

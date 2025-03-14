@@ -111,7 +111,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				target.AddBuff(BuffType<Buffs.Squash>(), 180);
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			if (Main.netMode == NetmodeID.Server)
 				return;

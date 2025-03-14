@@ -242,7 +242,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			ManageTrail();
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int k = 0; k < 20; k++)
 				Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(32), DustType<Dusts.Glow>(), Vector2.UnitY * -1.5f, 0, new Color(255, 100, 50), 0.6f);

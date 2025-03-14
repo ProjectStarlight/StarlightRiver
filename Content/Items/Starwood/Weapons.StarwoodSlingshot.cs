@@ -329,7 +329,7 @@ namespace StarlightRiver.Content.Items.Starwood
 				modifiers.SourceDamage += DAMAGE_INCREASE;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			Helpers.DustHelper.SpawnStarPattern(Projectile.Center, dustType, pointAmount: 5, mainSize: 1.2f * ScaleMult, dustDensity: 1f, pointDepthMult: 0.3f, rotationAmount: Projectile.rotation);
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item10, Projectile.Center);
@@ -431,7 +431,7 @@ namespace StarlightRiver.Content.Items.Starwood
 			Projectile.rotation += 0.3f;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int k = 0; k < 3; k++)
 				Dust.NewDustPerfect(Projectile.position, ModContent.DustType<StarFragment>(), Projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.NextFloat(0.3f, 0.5f), 0, Color.White, 1.5f);

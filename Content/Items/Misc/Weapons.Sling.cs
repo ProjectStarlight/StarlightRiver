@@ -343,7 +343,7 @@ namespace StarlightRiver.Content.Items.Misc
 			target.AddBuff(BuffID.Poisoned, Main.rand.Next(new int[] { 180, 240, 300 }));
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int i = 0; i < 20; i++)
 			{
@@ -409,7 +409,7 @@ namespace StarlightRiver.Content.Items.Misc
 			CameraSystem.shake += 1;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int i = 0; i < 20; i++)
 			{
@@ -475,7 +475,7 @@ namespace StarlightRiver.Content.Items.Misc
 			return true;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int i = 0; i < 20; i++)
 			{

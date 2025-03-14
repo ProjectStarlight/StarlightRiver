@@ -451,16 +451,15 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			for (int k = 0; k < 4; k++) //each tenticle
 			{
 				int x;
-				int y;
 				int xb;
 
 				switch (k) //I handle these manually to get them to line up with the window correctly
 				{
-					case 0: x = -370; y = 0; xb = -50; break;
-					case 1: x = -420; y = -100; xb = -20; break;
-					case 3: x = 370; y = 0; xb = 50; break;
-					case 2: x = 420; y = -100; xb = 20; break;
-					default: x = 0; y = 0; xb = 0; break;
+					case 0: x = -370; xb = -50; break;
+					case 1: x = -420; xb = -20; break;
+					case 3: x = 370; xb = 50; break;
+					case 2: x = 420; xb = 20; break;
+					default: x = 0; xb = 0; break;
 				}
 
 				var tent = new NPC();

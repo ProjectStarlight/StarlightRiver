@@ -343,7 +343,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			}
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			Vector2 pos = Projectile.Center + new Vector2(100, 0f).RotatedBy(parent.rotation - MathHelper.PiOver2);
 			var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), pos, Vector2.Zero, ModContent.ProjectileType<TempleSpearLight>(), Projectile.damage, 0f, Projectile.owner);

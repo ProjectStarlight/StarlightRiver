@@ -95,7 +95,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			NPCID.Sets.BossBestiaryPriority.Add(Type);
 
-			var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0)
+			var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
 			{
 
 			};

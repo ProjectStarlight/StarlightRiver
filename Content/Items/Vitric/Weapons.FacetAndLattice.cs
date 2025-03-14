@@ -297,7 +297,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			ShieldLife = 50;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			if (timeLeft > 0)
 			{

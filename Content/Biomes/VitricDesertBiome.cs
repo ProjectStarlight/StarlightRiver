@@ -1,15 +1,9 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
-using MonoMod.Cil;
 using StarlightRiver.Content.Waters;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.LightingSystem;
 using System;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 

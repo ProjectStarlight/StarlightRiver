@@ -115,7 +115,6 @@ namespace StarlightRiver.Content.Items.Crimson
 		public Texture2D texture;
 
 		public float oldRot;
-		public Vector2 oldPos;
 
 		private bool hasDoneOnSpawn = false;
 

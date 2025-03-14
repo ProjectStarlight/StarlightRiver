@@ -234,7 +234,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			}
 		}
 
-		public override void Kill(int timeleft)
+		public override void OnKill(int timeleft)
 		{
 			Player.itemAnimation = Player.itemTime = 0;
 			Player.UpdateRotation(0);

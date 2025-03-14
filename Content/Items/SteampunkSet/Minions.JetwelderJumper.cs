@@ -142,7 +142,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			return false;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int i = 1; i < 9; i++)
 			{
@@ -256,7 +256,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			return base.CanHitNPC(target);
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int i = 0; i < 6; i++)
 			{

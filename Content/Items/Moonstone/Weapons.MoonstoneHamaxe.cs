@@ -228,7 +228,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			}
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			Item Item = Owner.HeldItem;
 

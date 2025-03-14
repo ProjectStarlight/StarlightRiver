@@ -16,7 +16,6 @@ namespace StarlightRiver.Content.NPCs.Starlight
 	class Alican : ModNPC
 	{
 		public bool visible = true;
-		public bool leaving;
 
 		public DialogManager manager;
 

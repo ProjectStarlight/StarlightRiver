@@ -182,7 +182,7 @@ namespace StarlightRiver.Content.Items.Misc
 			return false;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			Vector2 dustPos = GetChainPoints()[NUM_SEGMENTS - 1];
 			SoundEngine.PlaySound(SoundID.NPCDeath63, dustPos);

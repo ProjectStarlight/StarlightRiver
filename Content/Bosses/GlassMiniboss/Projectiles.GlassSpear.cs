@@ -178,7 +178,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			return projHitbox.Intersects(targetHitbox) && Timer > 100;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			Helpers.SoundHelper.PlayPitched("GlassMiniboss/GlassShatter", 1f, Main.rand.NextFloat(0.1f), Projectile.Center);
 
@@ -384,7 +384,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			return false;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int i = 0; i < 15; i++)
 				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(18, 18), DustType<Dusts.Cinder>(), Projectile.velocity.RotatedByRandom(0.5f) * 0.1f, 0, Glassweaver.GlowDustOrange, 1.5f);

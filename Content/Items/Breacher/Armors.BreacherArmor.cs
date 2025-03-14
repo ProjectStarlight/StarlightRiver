@@ -224,7 +224,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			}
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			if (target == null || !target.active)
 				return;

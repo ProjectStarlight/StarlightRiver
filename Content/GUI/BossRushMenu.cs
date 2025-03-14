@@ -159,8 +159,6 @@ namespace StarlightRiver.Content.GUI
 		public float radiusTarget;
 		public float rotTarget;
 
-		public bool clicked;
-
 		public BossRushRelicToggle(Func<bool> active, string name, string hint, Asset<Texture2D> texture, float radiusTarget, float rotTarget)
 		{
 			this.active = active;

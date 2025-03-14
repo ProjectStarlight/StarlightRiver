@@ -112,7 +112,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			return false;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			Helpers.SoundHelper.PlayPitched("GlassMiniboss/GlassShatter", 1f, Main.rand.NextFloat(0.1f), Projectile.Center);
 

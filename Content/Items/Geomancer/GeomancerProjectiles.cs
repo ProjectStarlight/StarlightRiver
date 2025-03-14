@@ -274,7 +274,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 			}
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			//kill is clientside only so this is fine
 			Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<TopazShieldFade>(), 0, 0, Projectile.owner);
@@ -313,7 +313,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 				Projectile.velocity = Vector2.Lerp(Projectile.velocity, Projectile.DirectionTo(target.Center) * 30, 0.05f);
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int i = 0; i < 3; i++)
 			{
@@ -393,7 +393,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * (fadeIn / 15f), Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int i = 0; i < 4; i++)
 				Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.GemAmethyst).velocity *= 1.4f;
@@ -520,7 +520,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, tex.Size() / 2, Projectile.scale, effects, 0f);
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int i = 0; i < 10; i++)
 				Dust.NewDustPerfect(Projectile.Center, DustID.GemRuby, Projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.4f, 0.4f)) * Main.rand.NextFloat(0.4f), 0, default, 1.25f).noGravity = true;

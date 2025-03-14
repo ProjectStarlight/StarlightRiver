@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 			DisplayName.SetDefault("Crescent Caster");
 			Main.npcFrameCount[NPC.type] = 10;
 
-			var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
+			var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers();
 			NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
 		}
 

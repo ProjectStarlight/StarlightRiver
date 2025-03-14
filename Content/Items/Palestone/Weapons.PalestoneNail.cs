@@ -249,14 +249,7 @@ namespace StarlightRiver.Content.Items.Palestone
 				Projectile.tileCollide = false;
 				AttackState = Flying;
 			}
-			/*else if (AttackState == Flying && WorldGen.SolidTileAllowBottomSlope((int)(Projectile.Center.X / 16), (int)(Projectile.Bottom.Y / 16)))
-			{
-				Projectile.tileCollide = true;
-				AttackState = Walking;
-			}*/
 
-			//AttackState = 0;//debug
-			float stepSpeed = 1f;
 			switch (AttackState)
 			{
 				case Walking:
@@ -278,11 +271,6 @@ namespace StarlightRiver.Content.Items.Palestone
 									Projectile.direction = Player.direction;
 								}
 							}
-
-							//!debug
-							//for (int i = 0; i < 4; i++)
-							//    Dust.NewDustPerfect(validZone.TopLeft() + new Vector2(Main.rand.Next(validZone.Width), Main.rand.Next(validZone.Height)), DustType<Dusts.AirDash>(), Vector2.Zero, 0, Color.Blue);
-							//Dust.NewDustPerfect(validZone.Center(), DustType<Dusts.AirDash>(), Vector2.Zero, 0, Color.Red);
 						}
 
 						if (Projectile.velocity.Length() < 0.1f)

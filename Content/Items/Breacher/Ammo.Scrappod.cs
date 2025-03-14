@@ -95,7 +95,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			distanceToExplode -= Projectile.velocity.Length();
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int i = 0; i < 5; i++)
 			{
@@ -190,7 +190,7 @@ namespace StarlightRiver.Content.Items.Breacher
 				Projectile.velocity.Y = 16f;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int i = 0; i < 4; i++)
 			{

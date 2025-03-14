@@ -5,7 +5,6 @@ using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CutawaySystem;
 using StarlightRiver.Core.Systems.LightingSystem;
-using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +26,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		private static VertexPositionColorTexture[] verticies;
 		private static VertexBuffer buffer;
-		private static readonly Effect applyEffect;
 
 		public ref float WaterLevel => ref NPC.ai[0];
 		public ref float VisualTimerA => ref NPC.ai[1];

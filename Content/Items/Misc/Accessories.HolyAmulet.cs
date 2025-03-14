@@ -250,7 +250,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * 0.0001f;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			trail?.Dispose();
 		}

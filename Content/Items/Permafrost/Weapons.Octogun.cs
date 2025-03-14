@@ -245,7 +245,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			}
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			Gore.NewGoreDirect(Projectile.GetSource_Death(), Projectile.Center, Vector2.One.RotatedByRandom(6.28f) * 1.5f, Mod.Find<ModGore>("Octogun_Tentapistol").Type).timeLeft = 90;
 			SoundHelper.PlayPitched("Impacts/EnergyBreak", Main.rand.NextFloat(0.4f, 0.5f), Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);

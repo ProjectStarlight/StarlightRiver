@@ -123,7 +123,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			modifiers.Knockback *= 1 + progressToDepletion;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			ReLogic.Utilities.SlotId unused1 = SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
 

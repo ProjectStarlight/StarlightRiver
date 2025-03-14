@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Configs
 
 		[Label("Lighting Buffer Poll Rate")]
 		[Tooltip("Changes how often the lighting buffer polls for data. \nHigher values increase performance but make lighting update slower on some objects. \nLower values result in smoother moving light but may hurt performance.")]
-		[Range(1, 30)]
+		[Range(5, 30)]
 		[DrawTicks]
 		[Slider]
 		[DefaultValue(5f)]
@@ -26,11 +26,6 @@ namespace StarlightRiver.Content.Configs
 		[Tooltip("Enables/Disables special particles. \nDisable this if you have performance issues.")]
 		[DefaultValue(true)]
 		public bool ParticlesActive = true;
-
-		[Label("High quality lit textures")]
-		[Tooltip("Enables/Disables fancy lighting on large textures. \nDisable this if you have performance issues.")]
-		[DefaultValue(true)]
-		public bool HighQualityLighting = true;
 
 		[Label("Background Reflections")]
 		[Tooltip("Configures what is rendered for background reflections. \nDisable this if you have performance issues.")]

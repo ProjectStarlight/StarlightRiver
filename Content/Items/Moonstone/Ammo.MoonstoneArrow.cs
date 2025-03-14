@@ -199,7 +199,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			targetID = target.whoAmI;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			SoundEngine.PlaySound(SoundID.Item68 with { Volume = (float)Math.Sqrt(charge), Pitch = Main.rand.NextFloat(0.8f, 1.2f) }, Projectile.Center);
 			CameraSystem.shake += (int)(6 * charge);

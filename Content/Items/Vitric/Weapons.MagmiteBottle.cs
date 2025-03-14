@@ -71,7 +71,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Projectile.rotation += Projectile.velocity.X * 0.05f;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int x = -8; x < 8; x++)
 			{

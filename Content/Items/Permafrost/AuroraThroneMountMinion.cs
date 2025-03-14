@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Lighting.AddLight(Projectile.Center, color.ToVector3() * 0.5f);
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			foreach (NPC npc in Main.npc.Where(n => n.active && n.CanBeChasedBy(this, false) && Vector2.Distance(n.Center, Projectile.Center) < 120))
 			{

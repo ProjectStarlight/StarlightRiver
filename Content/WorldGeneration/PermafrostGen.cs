@@ -15,8 +15,6 @@ namespace StarlightRiver.Core
 	{
 		public static int permafrostCenter;
 
-		private static Vector2 oldPos;
-
 		public void PermafrostGen(GenerationProgress progress, GameConfiguration configuration)
 		{
 			progress.Message = "Permafrost generation";

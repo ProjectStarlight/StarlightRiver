@@ -64,7 +64,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 			return false;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int k = 0; k < 20; k++)
 				Dust.NewDustPerfect(Projectile.Center, DustID.Obsidian);

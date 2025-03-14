@@ -161,7 +161,6 @@ namespace StarlightRiver.Content.Items.Dungeon
 			else
 			{
 				float rot = velocity.ToRotation();
-				float spread = 0.4f;
 
 				Vector2 offset = new Vector2(1, -0.1f * player.direction).RotatedBy(rot);
 

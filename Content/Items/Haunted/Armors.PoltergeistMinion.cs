@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Items.Haunted
 			Projectile.DamageType = DamageClass.Magic;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			if (owner?.armor[0]?.ModItem != null && owner.armor[0].type == ItemType<PoltergeistHead>())
 				(owner.armor[0].ModItem as PoltergeistHead).minions.Remove(Projectile);

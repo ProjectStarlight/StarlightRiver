@@ -502,7 +502,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			SoundHelper.PlayPitched("Impacts/FireBladeStab", 0.2f, Main.rand.NextFloat(-0.05f, 0.05f), Projectile.Center);
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int i = 0; i < 35; ++i)
 			{

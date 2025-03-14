@@ -82,7 +82,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			NPCID.Sets.ShouldBeCountedAsBoss[Type] = true;
 			NPCID.Sets.BossBestiaryPriority.Add(Type);
 
-			var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0)
+			var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
 			{
 
 			};

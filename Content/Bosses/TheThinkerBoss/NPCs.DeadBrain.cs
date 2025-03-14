@@ -48,8 +48,6 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 		public float opacity;
 
-		public float arenaFade;
-
 		public List<int> attackQueue = [];
 
 		public VerletChain attachedChain;

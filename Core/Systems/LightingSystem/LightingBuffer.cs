@@ -144,15 +144,12 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 			if (!bufferNeedsPopulated)
 				return;
 
-			if (ModContent.GetInstance<GraphicsConfig>().HighQualityLighting)
-			{
-				refreshTimer++;
+			refreshTimer++;
 
-				if (Config.LightingPollRate != 0 && refreshTimer % Config.LightingPollRate == 0)
-					PopulateTileTexture((Main.screenPosition / 16).Round() * 16 - Vector2.One * PADDING * 16);
+			if (Config.LightingPollRate != 0 && refreshTimer % Config.LightingPollRate == 0)
+				PopulateTileTexture((Main.screenPosition / 16).Round() * 16 - Vector2.One * PADDING * 16);
 
-				PopulateScreenTexture();
-			}
+			PopulateScreenTexture();
 
 			bufferNeedsPopulated = false;
 		}

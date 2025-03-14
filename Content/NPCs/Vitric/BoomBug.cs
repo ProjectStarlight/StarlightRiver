@@ -477,7 +477,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				oldPos.RemoveAt(0);
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			SoundEngine.PlaySound(SoundID.Item45, Projectile.Center);
 			for (int k = 0; k <= 10; k++)

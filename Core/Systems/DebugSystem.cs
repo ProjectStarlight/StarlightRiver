@@ -6,8 +6,6 @@ namespace StarlightRiver.Core.Systems
 {
 	internal class DebugSystem : ModSystem
 	{
-		readonly int timer = 0;
-
 		public override void Load()
 		{
 			On_Main.Update += DoUpdate;

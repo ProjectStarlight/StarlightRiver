@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 			DisplayName.SetDefault("Blover");
 			Main.npcFrameCount[NPC.type] = 6;
 
-			var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
+			var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers();
 			NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
 		}
 

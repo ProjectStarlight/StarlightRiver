@@ -369,7 +369,7 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			if (!Overheated)
 			{

@@ -143,7 +143,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int i = -3; i < 7; i += 1)
 				Dust.NewDust(new Vector2(Projectile.Center.X, Projectile.Center.Y + i), Projectile.width, 0, DustType<GlassGravity>(), 0f, 0f, 75, default, 0.85f);

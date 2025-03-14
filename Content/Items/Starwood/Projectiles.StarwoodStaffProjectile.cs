@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.Items.Starwood
 				target.GetGlobalNPC<StarwoodScoreCounter>().AddScore(counterScore, Projectile.owner, damageDone);
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item10, Projectile.Center);
 
@@ -159,7 +159,7 @@ namespace StarlightRiver.Content.Items.Starwood
 			Lighting.AddLight(Projectile.Center, lightColor);
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			Helpers.DustHelper.SpawnStarPattern(Projectile.Center, dustType, pointAmount: 5, mainSize: 2f * ScaleMult, dustDensity: 1f, pointDepthMult: 0.3f);
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item10, Projectile.Center);

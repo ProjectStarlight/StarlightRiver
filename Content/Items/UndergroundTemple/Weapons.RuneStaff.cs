@@ -424,7 +424,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Vector2.Zero, 0, new Color(175, 155, 25), 0.45f);
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int i = 0; i < 5; i++)
 			{

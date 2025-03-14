@@ -219,7 +219,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			}
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			if (Projectile.sentry && timeLeft > 0)
 			{

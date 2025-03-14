@@ -10,7 +10,6 @@
 		{
 			get
 			{
-				SecType _ = SecType.none;
 				SecType W = SecType.fill;
 				SecType D = SecType.door;
 				return InvertMatrix(new SecType[,]

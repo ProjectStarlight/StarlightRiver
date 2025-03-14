@@ -12,7 +12,6 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 {
 	internal class CutsceneFakeThinker : ModNPC
 	{
-		public static Effect bodyShader;
 		public Vector2 homePos;
 
 		public static CutsceneFakeThinker ThisThinker => Main.npc.FirstOrDefault(n => n.active && n.type == ModContent.NPCType<CutsceneFakeThinker>())?.ModNPC as CutsceneFakeThinker;

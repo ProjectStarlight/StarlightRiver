@@ -33,7 +33,6 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		public static readonly List<TheThinker> toRender = [];
 
 		public int bloomProgress;
-		public float flowerRotationOnDeath;
 
 		public bool active = false;
 		public Vector2 home;
@@ -486,8 +485,6 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 		public void SpawnProjectile(int direction = -1, int offset = -99)
 		{
-			int n;
-
 			if (direction == -1 || direction > 3)
 				direction = Main.rand.Next(4);
 

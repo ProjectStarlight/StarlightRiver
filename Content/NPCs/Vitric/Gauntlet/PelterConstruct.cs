@@ -679,25 +679,16 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			return false;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			if (Main.netMode == NetmodeID.Server)
 				return;
 
-			/*for (int j = 0; j < 8; j++)
-            {
-                float lerper = j / 8f;
-                Vector2 dir = Main.rand.NextVector2Circular(5, 5);
-                Dust.NewDustPerfect(Projectile.Center + dir - (((Projectile.rotation + 1.57f).ToRotationVector2() * 15) * lerper), DustType<Dusts.GlassGravity>(), dir * 0.3f);
-            }*/
 			SoundEngine.PlaySound(SoundID.Item27, Projectile.Center);
 
 			for (int i = 0; i < 3; i++)
 			{
 				Vector2 dir = -(Projectile.rotation - 1.57f).ToRotationVector2().RotatedByRandom(1.57f) * Main.rand.NextFloat(5);
-				/*int dustID = Dust.NewDust(Projectile.Center, 2, 2, ModContent.DustType<MagmaGunDust>(), dir.X, dir.Y);
-                Main.dust[dustID].noGravity = false;*/
-
 				Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.Center - Projectile.velocity, dir, StarlightRiver.Instance.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(0.5f, 0.7f));
 			}
 		}

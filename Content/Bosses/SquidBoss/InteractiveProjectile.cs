@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public virtual void SafeKill(int timeLeft) { }
 
-		public sealed override void Kill(int timeLeft)
+		public sealed override void OnKill(int timeLeft)
 		{
 			SafeKill(timeLeft);
 

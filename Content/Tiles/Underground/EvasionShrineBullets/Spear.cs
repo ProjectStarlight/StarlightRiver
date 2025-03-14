@@ -18,7 +18,6 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 		public int timeToRetract;
 		public int teleTime;
 		public int holdTime;
-		public EvasionShrineDummy parent;
 
 		public float Alpha => 1 - Projectile.alpha / 255f;
 

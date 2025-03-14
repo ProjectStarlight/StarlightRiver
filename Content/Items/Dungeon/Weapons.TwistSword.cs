@@ -304,7 +304,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 				findIfHit();
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			//have to reset rotation in multiPlayer when proj is gone
 			Player player = Main.player[Projectile.owner];

@@ -1,11 +1,7 @@
 ﻿using StarlightRiver.Content.Tiles.Crimson;
-using StructureHelper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
 

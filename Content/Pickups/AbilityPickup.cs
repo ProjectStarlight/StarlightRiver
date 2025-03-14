@@ -23,8 +23,6 @@ namespace StarlightRiver.Content.Pickups
 
 		public AbilityPickup(int validType) : base(validType, 16, 16) { }
 
-		public virtual void SafeSetDefaults() { }
-
 		/// <summary>
 		/// The clientside visual dust that this pickup makes when in-world
 		/// </summary>

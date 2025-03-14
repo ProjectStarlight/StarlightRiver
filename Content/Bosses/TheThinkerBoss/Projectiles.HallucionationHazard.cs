@@ -1,17 +1,11 @@
 ﻿using StarlightRiver.Content.Biomes;
-using StarlightRiver.Content.NPCs.BaseTypes;
 using StarlightRiver.Core.Loaders;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 {
 	internal class HallucinationHazard : ModProjectile
 	{
-		public static Effect shader;
 		public static List<HallucinationHazard> toRender = new();
 
 		public ref float Timer => ref Projectile.ai[0];
