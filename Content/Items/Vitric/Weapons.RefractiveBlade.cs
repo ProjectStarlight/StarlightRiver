@@ -402,6 +402,35 @@ namespace StarlightRiver.Content.Items.Vitric
 				}
 			}
 
+			float height = 64f;
+			int width = (int)(Projectile.Center - endPoint).Length();
+			int sin = (int)(Math.Sin(StarlightWorld.visualTimer * 3) * 40f);
+			var color = new Color(255, 160 + sin, 40 + sin / 2);
+
+			if (LaserTimer < 20)
+				height = 64 * LaserTimer / 20f;
+
+			if (LaserTimer > (int)MaxTime - 40)
+				height = 64 * (1 - (LaserTimer - ((int)MaxTime - 40)) / 40f);
+
+			for (int i = 0; i < width; i += 10)
+			{
+				Lighting.AddLight(Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * i + Main.screenPosition, color.ToVector3() * height * 0.010f);
+
+				if (Main.rand.NextBool(20))
+					Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * i, DustType<Dusts.Glow>(), Vector2.UnitY * Main.rand.NextFloat(-1.5f, -0.5f), 0, color, 0.35f);
+			}
+
+			for (int k = 0; k < 4; k++)
+			{
+				float rot = Main.rand.NextFloat(6.28f);
+				int variation = Main.rand.Next(30);
+
+				color.G -= (byte)variation;
+
+				Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * width + Vector2.One.RotatedBy(rot) * Main.rand.NextFloat(40), DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot) * 1, 0, color, 0.2f - variation * 0.02f);
+			}
+
 			if (Main.myPlayer != Owner.whoAmI)
 				CheckHits();
 		}
@@ -550,14 +579,6 @@ namespace StarlightRiver.Content.Items.Vitric
 			spriteBatch.Draw(texBeam, target, source, color, LaserRotation, origin, 0, 0);
 			spriteBatch.Draw(texBeam2, target2, source2, color * 0.5f, LaserRotation, origin2, 0, 0);
 
-			for (int i = 0; i < width; i += 10)
-			{
-				Lighting.AddLight(pos + Vector2.UnitX.RotatedBy(LaserRotation) * i + Main.screenPosition, color.ToVector3() * height * 0.010f);
-
-				if (Main.rand.NextBool(20))
-					Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * i, DustType<Dusts.Glow>(), Vector2.UnitY * Main.rand.NextFloat(-1.5f, -0.5f), 0, color, 0.35f);
-			}
-
 			float opacity = height / (texBeam.Height / 2f) * 0.75f;
 
 			spriteBatch.End();
@@ -583,16 +604,6 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			spriteBatch.Draw(impactTex, pos, null, color * (height * 0.02f), 0, impactTex.Size() / 2, 1.2f, 0, 0);
 			spriteBatch.Draw(impactTex2, pos, null, color * (height * 0.05f), StarlightWorld.visualTimer * -3, impactTex2.Size() / 2, 0.17f, 0, 0);
-
-			for (int k = 0; k < 4; k++)
-			{
-				float rot = Main.rand.NextFloat(6.28f);
-				int variation = Main.rand.Next(30);
-
-				color.G -= (byte)variation;
-
-				Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * width + Vector2.One.RotatedBy(rot) * Main.rand.NextFloat(40), DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot) * 1, 0, color, 0.2f - variation * 0.02f);
-			}
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
