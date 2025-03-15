@@ -26,7 +26,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			dust.noLight = false;
 			dust.frame = new Rectangle(0, 0, 8, 128);
 
-			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
+			if (ShaderLoader.GetShader("GlowingDust").Value != null)
+	dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
 		}
 
 		public override bool Update(Dust dust)
@@ -36,7 +37,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			dust.rotation = dust.velocity.ToRotation() + 1.57f;
 			dust.position += dust.velocity;
-			dust.shader.UseColor(dust.color);
+			dust.shader?.UseColor(dust.color);
 			dust.fadeIn++;
 
 			Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.6f);

@@ -17,7 +17,8 @@ namespace StarlightRiver.Content.Dusts
 			dust.noLight = false;
 			dust.frame = new Rectangle(0, 0, 5, 50);
 
-			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("ShrinkingDust"), "ShrinkingDustPass");
+			if (ShaderLoader.GetShader("ShrinkingDust").Value != null)
+	dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("ShrinkingDust"), "ShrinkingDustPass");
 		}
 
 		public override bool Update(Dust dust)
@@ -47,8 +48,8 @@ namespace StarlightRiver.Content.Dusts
 			if (dust.fadeIn < 5)
 				mult = dust.fadeIn / 5f;
 
-			dust.shader.UseSecondaryColor(new Color((int)(255 * (1 - dust.fadeIn / 20f)), 0, 0) * mult);
-			dust.shader.UseColor(dust.color * mult);
+			dust.shader?.UseSecondaryColor(new Color((int)(255 * (1 - dust.fadeIn / 20f)), 0, 0) * mult);
+			dust.shader?.UseColor(dust.color * mult);
 			dust.fadeIn++;
 
 			Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.02f);
@@ -87,8 +88,8 @@ namespace StarlightRiver.Content.Dusts
 			if (dust.fadeIn < 5)
 				mult = dust.fadeIn / 5f;
 
-			dust.shader.UseSecondaryColor(new Color((int)(255 * (1 - dust.fadeIn / 20f)), 0, 0) * mult);
-			dust.shader.UseColor(dust.color * mult);
+			dust.shader?.UseSecondaryColor(new Color((int)(255 * (1 - dust.fadeIn / 20f)), 0, 0) * mult);
+			dust.shader?.UseColor(dust.color * mult);
 			dust.fadeIn++;
 
 			Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.02f);

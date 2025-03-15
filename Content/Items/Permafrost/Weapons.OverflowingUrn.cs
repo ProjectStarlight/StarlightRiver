@@ -479,7 +479,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 			dust.noLight = false;
 			dust.frame = new Rectangle(0, 0, 8, 128);
 
-			dust.shader = new ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
+			if (ShaderLoader.GetShader("GlowingDust").Value != null)
+	dust.shader = new ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
 		}
 
 		public override bool Update(Dust dust)
@@ -496,7 +497,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			dust.velocity *= 0.98f;
 			dust.color *= 0.95f;
 
-			dust.shader.UseColor(dust.color * MathHelper.Min(1, dust.fadeIn / 20f));
+			dust.shader?.UseColor(dust.color * MathHelper.Min(1, dust.fadeIn / 20f));
 			dust.fadeIn += 2;
 
 			Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.6f);

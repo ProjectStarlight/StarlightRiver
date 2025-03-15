@@ -502,7 +502,8 @@ namespace StarlightRiver.Content.Items.Misc
 			dust.noLight = false;
 			dust.frame = new Rectangle(0, 0, 100, 100);
 			dust.color = Color.Lerp(Color.White, Color.Salmon, Eases.EaseQuadIn(Main.rand.NextFloat()));
-			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
+			if (ShaderLoader.GetShader("GlowingDust").Value != null)
+	dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
 		}
 
 		public override Color? GetAlpha(Dust dust, Color lightColor)
@@ -517,7 +518,7 @@ namespace StarlightRiver.Content.Items.Misc
 			else
 				dust.velocity *= 0.92f;
 
-			dust.shader.UseColor(dust.color * ((255 - dust.alpha) / 255f) * 0.6f);
+			dust.shader?.UseColor(dust.color * ((255 - dust.alpha) / 255f) * 0.6f);
 
 			Lighting.AddLight(dust.position, Color.White.ToVector3() * 1.4f * ((255 - dust.alpha) / 255f));
 			if (dust.alpha > 100)

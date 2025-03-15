@@ -211,8 +211,8 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 			if (dust.fadeIn < 5)
 				mult = dust.fadeIn / 5f;
 
-			dust.shader.UseSecondaryColor(new Color((int)(255 * (1 - dust.fadeIn / 20f)), 0, 0) * mult);
-			dust.shader.UseColor(dust.color * mult);
+			dust.shader?.UseSecondaryColor(new Color((int)(255 * (1 - dust.fadeIn / 20f)), 0, 0) * mult);
+			dust.shader?.UseColor(dust.color * mult);
 			dust.fadeIn += 2;
 
 			Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.02f);
@@ -250,8 +250,8 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 
 			float mult = MathHelper.Min(dust.fadeIn / 15f, (45 - dust.fadeIn) / 15f);
 
-			dust.shader.UseSecondaryColor(new Color((int)(255 * (1 - dust.fadeIn / 20f)), 0, 0) * mult);
-			dust.shader.UseColor(dust.color * mult);
+			dust.shader?.UseSecondaryColor(new Color((int)(255 * (1 - dust.fadeIn / 20f)), 0, 0) * mult);
+			dust.shader?.UseColor(dust.color * mult);
 			dust.fadeIn += 2;
 
 			Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.02f);
@@ -272,8 +272,9 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 			dust.noGravity = true;
 			dust.noLight = true;
 			dust.frame = new Rectangle(0, 0, 74, 74);
-			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
-			dust.shader.UseColor(Color.White);
+			if (ShaderLoader.GetShader("GlowingDust").Value != null)
+	dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
+			dust.shader?.UseColor(Color.White);
 
 		}
 
@@ -284,7 +285,7 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 
 		public override bool Update(Dust dust)
 		{
-			dust.shader.UseColor(Color.White);
+			dust.shader?.UseColor(Color.White);
 
 			dust.rotation += 0.25f * dust.scale;
 			dust.position += dust.velocity;
@@ -323,7 +324,8 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 			dust.scale *= 0.3f;
 			dust.frame = new Rectangle(0, 0, 64, 64);
 			dust.velocity *= 2;
-			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
+			if (ShaderLoader.GetShader("GlowingDust").Value != null)
+	dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
 		}
 
 		public override bool Update(Dust dust)
@@ -334,7 +336,7 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 			//dust.rotation += dust.velocity.Y * 0.1f;
 			dust.position += dust.velocity;
 			dust.velocity *= 0.86f;
-			dust.shader.UseColor(dust.color);
+			dust.shader?.UseColor(dust.color);
 			dust.scale *= 0.95f;
 			dust.fadeIn++;
 
@@ -362,7 +364,7 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 
 			if (dir.Length() < 4)
 				dust.fadeIn = 16;
-			dust.shader.UseColor(dust.color);
+			dust.shader?.UseColor(dust.color);
 
 			if (modPlayer.launching)
 				dust.active = false;
@@ -394,7 +396,7 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 			if (modPlayer.launching)
 				dust.active = false;
 
-			dust.shader.UseColor(Color.Lerp(Color.Orange, Color.OrangeRed, dust.alpha / 300f));
+			dust.shader?.UseColor(Color.Lerp(Color.Orange, Color.OrangeRed, dust.alpha / 300f));
 			dust.position = owner.Center + new Vector2(0, 15 + dust.alpha % 100 * 0.1f - (float)Math.Pow(dust.fadeIn / 3, 1.75f)) + new Vector2((15 + 3 * (dust.alpha / 100)) * (float)Math.Sin((dust.fadeIn + dust.alpha) * 0.1f), 0) - dust.scale * new Vector2(32, 32);
 
 			if (dust.fadeIn >= 15 && dust.alpha < 100)

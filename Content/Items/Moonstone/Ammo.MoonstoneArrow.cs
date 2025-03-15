@@ -271,8 +271,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 			float mult = 1;
 
-			dust.shader.UseSecondaryColor(new Color((int)(255 * (1 - dust.fadeIn / 30f)), 0, 0) * mult);
-			dust.shader.UseColor(dust.color * mult);
+			dust.shader?.UseSecondaryColor(new Color((int)(255 * (1 - dust.fadeIn / 30f)), 0, 0) * mult);
+			dust.shader?.UseColor(dust.color * mult);
 			dust.fadeIn++;
 
 			Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.02f);

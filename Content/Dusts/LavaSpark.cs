@@ -14,8 +14,9 @@ namespace StarlightRiver.Content.Dusts
 			dust.frame = new Rectangle(0, 0, 64, 64);
 			dust.fadeIn = 0;
 
-			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
-			dust.shader.UseColor(Color.Transparent);
+			if (ShaderLoader.GetShader("GlowingDust").Value != null)
+	dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
+			dust.shader?.UseColor(Color.Transparent);
 		}
 
 		public override Color? GetAlpha(Dust dust, Color lightColor)
@@ -33,7 +34,7 @@ namespace StarlightRiver.Content.Dusts
 				dust.customData = true;
 			}
 
-			dust.shader.UseColor(dust.color * (float)Math.Sin(dust.fadeIn / 60f * 3.14f));
+			dust.shader?.UseColor(dust.color * (float)Math.Sin(dust.fadeIn / 60f * 3.14f));
 
 			dust.position += dust.velocity;
 

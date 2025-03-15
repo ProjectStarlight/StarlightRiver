@@ -473,7 +473,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			dust.fadeIn++;
 			dust.scale *= 1.02f;
 			base.Update(dust);
-			dust.shader.UseColor(dust.color * Math.Min(dust.fadeIn / 20f, 1));
+			dust.shader?.UseColor(dust.color * Math.Min(dust.fadeIn / 20f, 1));
 			return false;
 		}
 	}
