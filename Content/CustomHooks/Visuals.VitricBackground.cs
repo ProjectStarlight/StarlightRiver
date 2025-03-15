@@ -30,6 +30,9 @@ namespace StarlightRiver.Content.CustomHooks
 			ForegroundParticles = new ParticleSystem("StarlightRiver/Assets/GUI/HolyBig", UpdateForegroundBody, ParticleSystem.AnchorOptions.World);
 			BackgroundParticles = new ParticleSystem("StarlightRiver/Assets/GUI/Holy", UpdateBackgroundBody, ParticleSystem.AnchorOptions.World);
 
+			if (ModLoader.TryGetMod("NotQuiteNitrate", out Mod nqn))
+				nqn.Call("ModifyDrawBlackThreshold", (Func<float, float>)NewThreshold);
+
 			On_Main.DrawBackgroundBlackFill += DrawVitricBackground;
 			On_Main.DrawBlack += ForceDrawBlack;
 			IL_Main.DrawBlack += ChangeBlackThreshold;
