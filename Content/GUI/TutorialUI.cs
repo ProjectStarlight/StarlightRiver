@@ -4,6 +4,7 @@ using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using Terraria.UI;
 using Terraria.UI.Chat;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace StarlightRiver.Content.GUI
 {
@@ -125,8 +126,24 @@ namespace StarlightRiver.Content.GUI
 			Recalculate();
 		}
 
+		public void RecalculateHeight()
+		{
+			DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
+			float height = font.MeasureString(message).Y + 8;
+			if (image != null)
+				height += image.Height() + 24;
+
+			Height.Set(height, 0);
+			Width.Set(500, 0);
+			Left.Set(-250, 0.5f);
+			Top.Set(-height / 2, 0.5f);
+
+			Recalculate();
+		}
+
 		public override void Draw(SpriteBatch spriteBatch)
 		{
+			RecalculateHeight();
 			var dims = GetDimensions().ToRectangle();
 
 			var frameBox = dims;

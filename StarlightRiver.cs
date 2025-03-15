@@ -49,6 +49,10 @@ namespace StarlightRiver
 
 		public override void Load()
 		{
+#if DEBUG
+			debugMode = true;
+#endif
+
 			loadCache = new List<IOrderedLoadable>();
 
 			foreach (Type type in Code.GetTypes())

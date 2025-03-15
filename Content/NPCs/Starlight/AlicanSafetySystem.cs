@@ -72,6 +72,16 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			}
 		}
 
+		public static void DebugForceState(int stateToForce)
+		{
+			intendedAlicanPhase = stateToForce;
+
+			NPC alican = Main.npc.FirstOrDefault(n => n.active && n.type == ModContent.NPCType<Alican>());
+
+			if (alican.ModNPC is Alican thisAlican)
+				thisAlican.State = stateToForce;
+		}
+
 		public override void ClearWorld()
 		{
 			intendedAlicanPhase = 0;

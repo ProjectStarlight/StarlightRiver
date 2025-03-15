@@ -10,6 +10,7 @@ using StarlightRiver.Content.Items.Haunted;
 using StarlightRiver.Content.Items.UndergroundTemple;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Content.Noise;
+using StarlightRiver.Content.NPCs.Starlight;
 using StarlightRiver.Content.PersistentData;
 using StarlightRiver.Content.Tiles.Crimson;
 using StarlightRiver.Content.Tiles.Forest;
@@ -57,7 +58,7 @@ namespace StarlightRiver.Content.Items
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			player.GetHandler().StaminaMaxBonus = 1000;
+			player.GetHandler().StaminaMaxBonus = 10;
 
 			int x = StarlightWorld.vitricBiome.X - 37;
 
@@ -72,6 +73,9 @@ namespace StarlightRiver.Content.Items
 
 			//StarlightWorld.FlipFlag(WorldFlags.ThinkerBossOpen);
 			//GrayBlob((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
+
+			GUI.Stamina.gainAnimationTimer = 240;
+			AlicanSafetySystem.DebugForceState(0);
 
 			return true;
 		}
