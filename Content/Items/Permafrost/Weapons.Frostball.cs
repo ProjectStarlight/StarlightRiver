@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Tiles.Permafrost;
+using StarlightRiver.Core.Loaders;
 using System;
 using Terraria.ID;
 
@@ -134,7 +135,10 @@ namespace StarlightRiver.Content.Items.Permafrost
 		{
 			Texture2D tex = Assets.Masks.GlowAlpha.Value;
 
-			Effect effect = StarlightRiver.Instance.Assets.Request<Effect>("Effects/FrostAura").Value;
+			Effect effect = ShaderLoader.GetShader("FrostAura").Value;
+
+			if (effect is null)
+				return;
 
 			effect.Parameters["drawTexture"].SetValue(tex);
 			effect.Parameters["noiseTexture"].SetValue(Assets.Noise.SwirlyNoiseLooping.Value);
