@@ -39,9 +39,6 @@ namespace StarlightRiver.Core.Loaders
 				return;
 
 			On_Main.DrawProjectiles += DrawOverlay;
-
-			projTarget = new(DrawProjTarget, () => targetActive, 1);
-			tileTarget = new(DrawTileTarget, () => targetActive, 1);
 		}
 
 		public void Unload()
@@ -52,6 +49,11 @@ namespace StarlightRiver.Core.Loaders
 		private void DrawOverlay(On_Main.orig_DrawProjectiles orig, Main self)
 		{
 			orig(self);
+
+			targetActive = renderQueueIndicies.Count > 0;
+
+			if (!targetActive)
+				return;
 
 			if (tileTarget is null || projTarget is null)
 				return;
@@ -77,8 +79,6 @@ namespace StarlightRiver.Core.Loaders
 
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null);
-
-			targetActive = renderQueueIndicies.Count > 0;
 
 			while (renderQueueIndicies.TryDequeue(out int i))
 			{
