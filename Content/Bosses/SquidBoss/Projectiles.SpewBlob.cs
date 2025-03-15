@@ -73,8 +73,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				if (k == 0)
 				{
 					Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, color, Projectile.ai[1], star.Size() / 2, Projectile.scale * 0.65f, default, default);
-					Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, color * 0.75f, Projectile.ai[1] * -0.2f, star.Size() / 2, Projectile.scale * 0.85f, default, default);
-					Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, color * 0.6f, Projectile.ai[1] * -0.6f, star.Size() / 2, Projectile.scale * 1.15f, default, default);
+					Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, color * 0.4f, Projectile.ai[1] * -0.2f, star.Size() / 2, Projectile.scale * 0.85f, default, default);
+					Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, color * 0.3f, Projectile.ai[1] * -0.6f, star.Size() / 2, Projectile.scale * 1.15f, default, default);
 				}
 			}
 
