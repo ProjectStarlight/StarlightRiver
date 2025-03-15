@@ -186,7 +186,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				if (Main.netMode != NetmodeID.Server)
 				{
 					float progress = (GlobalTimer - 600) / 20f;
-					Filters.Scene.Activate("Shockwave", NPC.Center).GetShader().UseProgress(Main.screenWidth / (float)Main.screenHeight).UseIntensity(300 - (int)(Math.Sin(progress * 3.14f) * 220)).UseDirection(new Vector2(progress * 0.8f, progress * 0.9f));
+					//Filters.Scene.Activate("Shockwave", NPC.Center).GetShader().UseProgress(Main.screenWidth / (float)Main.screenHeight).UseIntensity(300 - (int)(Math.Sin(progress * 3.14f) * 220)).UseDirection(new Vector2(progress * 0.8f, progress * 0.9f));
 				}
 			}
 
@@ -201,8 +201,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					CameraSystem.shake += 60;
 				}
 
-				if (Main.netMode != NetmodeID.Server)
-					Filters.Scene.Deactivate("Shockwave");
+				//if (Main.netMode != NetmodeID.Server)
+					//Filters.Scene.Deactivate("Shockwave");
 			}
 
 			if (checkSpecificTime(690))

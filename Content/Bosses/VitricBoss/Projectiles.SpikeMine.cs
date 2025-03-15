@@ -89,7 +89,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			{
 				float glowAlpha = Math.Min(Timer / 90f, 1);
 				Texture2D glowTex = Assets.Masks.GlowSoftAlpha.Value;
-				spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, new Color(255, 200, 100) * glowAlpha, 0, glowTex.Size() / 2, 1, 0, 0);
+				spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, new Color(255, 200, 100, 0) * glowAlpha, 0, glowTex.Size() / 2, 1, 0, 0);
 			}
 
 			if (Timer > 90 && Timer < 130)
