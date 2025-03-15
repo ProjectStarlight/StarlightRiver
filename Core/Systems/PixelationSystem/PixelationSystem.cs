@@ -127,6 +127,12 @@ namespace StarlightRiver.Core.Systems.PixelationSystem
 
 				sb.End();
 			}
+			else
+			{
+				sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				sb.Draw(target.pixelationTarget2.RenderTarget, Vector2.Zero, null, Color.White, 0, new Vector2(0, 0), 2f, SpriteEffects.None, 0);
+				sb.End();
+			}
 
 			if (endSpriteBatch)
 				sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
