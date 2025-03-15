@@ -1,6 +1,9 @@
-﻿using StarlightRiver.Core.Loaders.UILoading;
+﻿using Microsoft.Xna.Framework.Graphics.PackedVector;
+using StarlightRiver.Core.Loaders.UILoading;
 using System;
 using System.Collections.Generic;
+using Terraria.Audio;
+using Terraria.ID;
 using Terraria.UI;
 using Terraria.UI.Chat;
 using static Terraria.ModLoader.ModContent;
@@ -19,6 +22,7 @@ namespace StarlightRiver.Content.GUI
 		public static Vector2 position;
 
 		private static float opacity = 1f;
+		public static float finalOpacity = 1f;
 
 		public static int boxTimer = 0;
 
@@ -120,15 +124,28 @@ namespace StarlightRiver.Content.GUI
 			Rectangle player = Main.LocalPlayer.Hitbox;
 			player.Offset((-Main.screenPosition).ToPoint());
 
+
 			if (nearby.Intersects(player))
 			{
-				if (opacity > 0.3f)
+				if (opacity > 0.1f)
 					opacity -= 0.05f;
 			}
 			else if (opacity < 1f)
 			{
 				opacity += 0.05f;
 			}
+
+			// Distance calc
+			var dist = Vector2.Distance(Main.LocalPlayer.Center, talking.Center);
+
+			if (dist < 100)
+				finalOpacity = opacity;
+
+			if (dist > 100)
+				finalOpacity = opacity * (1f - (dist - 100) / 156f);
+
+			if (dist > 256)
+				CloseDialogue();
 
 			icon = Main.screenTarget;
 
@@ -141,7 +158,7 @@ namespace StarlightRiver.Content.GUI
 
 			// Main text box
 			DrawBoxAndSetBounds(spriteBatch, mainRect);
-			Utils.DrawBorderString(spriteBatch, message[..textTimer], new Vector2(50 + position.X - 250, position.Y + 15), Color.White);
+			Utils.DrawBorderString(spriteBatch, message[..textTimer], new Vector2(50 + position.X - 250, position.Y + 15), Color.White * finalOpacity);
 
 			// Box around the icon
 			DrawBoxAndSetBounds(spriteBatch, iconRect);
@@ -149,19 +166,19 @@ namespace StarlightRiver.Content.GUI
 			if (!Main.screenTarget.IsDisposed && icon != null)
 			{
 				int iconInnerSize = (int)MathHelper.Lerp(0, 88, Helpers.Eases.BezierEase(Math.Min(1, boxTimer / 30f)));
-				spriteBatch.Draw(icon, new Rectangle(-46 + (int)position.X - 260, (int)position.Y + 6, iconInnerSize, iconInnerSize), iconFrame, Color.White * opacity, 0, Vector2.Zero, 0, 0);
+				spriteBatch.Draw(icon, new Rectangle(-46 + (int)position.X - 260, (int)position.Y + 6, iconInnerSize, iconInnerSize), iconFrame, Color.White * finalOpacity, 0, Vector2.Zero, 0, 0);
 			}
 
 			// Title bar
 			DrawBoxAndSetBounds(spriteBatch, titleRect);
-			Utils.DrawBorderString(spriteBatch, title[..Math.Min(title.Length, titleTimer)], new Vector2((int)position.X, (int)position.Y - 18), Color.White, 1, 0.5f, 0.5f);
+			Utils.DrawBorderString(spriteBatch, title[..Math.Min(title.Length, titleTimer)], new Vector2((int)position.X, (int)position.Y - 18), Color.White * finalOpacity, 1, 0.5f, 0.5f);
 
 			base.Draw(spriteBatch);
 		}
 
 		public static void DrawBoxAndSetBounds(SpriteBatch sb, Rectangle target)
 		{
-			UIHelper.DrawBox(sb, target, new Color(100, 120, 255));
+			UIHelper.DrawBox(sb, target, new Color(50, 80, 155) * finalOpacity);
 			SetBounds(target);
 		}
 
@@ -195,6 +212,8 @@ namespace StarlightRiver.Content.GUI
 		public static void CloseDialogue()
 		{
 			Main.LocalPlayer.SetTalkNPC(-1);
+
+			SoundEngine.PlaySound(SoundID.MenuClose);
 
 			visible = false;
 			boxTimer = 0;
@@ -265,7 +284,7 @@ namespace StarlightRiver.Content.GUI
 			DialogUI.DrawBoxAndSetBounds(spriteBatch, new Rectangle((int)dims.X, (int)dims.Y, mainBoxWidth, (int)dims.Height));
 
 			if (boxTimer >= 30)
-				Utils.DrawBorderString(spriteBatch, message, GetDimensions().ToRectangle().TopLeft() + new Vector2(10, 5), Color.White);
+				Utils.DrawBorderString(spriteBatch, message, GetDimensions().ToRectangle().TopLeft() + new Vector2(10, 5), Color.White * DialogUI.finalOpacity);
 		}
 
 		public override void SafeClick(UIMouseEvent evt)

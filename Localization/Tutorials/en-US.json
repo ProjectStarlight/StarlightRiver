@@ -12,5 +12,15 @@
                 "Text": "This is the second page of an example tutorial."
             }
         ]
+    },
+    {
+        "Key": "Starsight",
+        "Title": "Starsight",
+        "Screens": [
+            {
+                "ImagePath": "StarlightRiver/Assets/Tutorials/Example1",
+                "Text": "Press Y to channel starlight to see ancient knowledge about what your mouse is hovering over."
+            }
+        ]
     }
 ]

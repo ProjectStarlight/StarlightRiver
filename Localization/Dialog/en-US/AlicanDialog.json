@@ -78,6 +78,7 @@
     "Buttons": [
       {
         "Key": "End",
+        "Code": "FinishTutorial",
         "Text": "Goodbye!"
       }
     ]

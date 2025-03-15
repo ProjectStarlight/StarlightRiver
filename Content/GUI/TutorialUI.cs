@@ -108,7 +108,7 @@ namespace StarlightRiver.Content.GUI
 		{
 			DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
 
-			string message = Helper.WrapString(text, 460, font, 0.9f);
+			string message = LocalizationHelper.WrapString(text, 460, font, 0.9f);
 			this.message = message;
 
 			float height = font.MeasureString(message).Y + 8;
@@ -131,7 +131,7 @@ namespace StarlightRiver.Content.GUI
 
 			var frameBox = dims;
 			frameBox.Inflate(dims.Width / 2, dims.Height / 2);
-			var glow = Assets.Keys.Glow.Value;
+			var glow = Assets.Masks.Glow.Value;
 
 			spriteBatch.Draw(glow, frameBox, Color.Black * 0.8f * Opacity);
 			//UIHelper.DrawBox(spriteBatch, frameBox, new Color(0.15f, 0.2f, 0.5f) * 0.8f * Opacity);

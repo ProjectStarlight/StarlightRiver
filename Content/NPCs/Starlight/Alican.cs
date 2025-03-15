@@ -124,11 +124,19 @@ namespace StarlightRiver.Content.NPCs.Starlight
 		{
 			Main.LocalPlayer.DeactivateCutscene();
 
-			string message = StarlightRiver.Instance.AbilityKeys.Get<HintAbility>().GetAssignedKeys().Count > 0 ?
-				$"Aim your cursor and press {StarlightRiver.Instance.AbilityKeys.Get<HintAbility>().GetAssignedKeys()[0]} to inspect the world." :
-				"Aim your cursor and press [Please bind a key] to inspect the world.";
+			AlicanSafetySystem.IntendedAlicanPhase = 1;
+			State = 1;
 
-			TextCard.Display("Starsight", message, () => Main.LocalPlayer.GetModPlayer<AbilityHandler>().ActiveAbility is HintAbility);
+			TutorialManager.ActivateTutorial("Starsight");
+		}
+
+		/// <summary>
+		/// Invoked by dialogue manager to set state
+		/// </summary>
+		public void FinishTutorial()
+		{
+			AlicanSafetySystem.IntendedAlicanPhase = 2;
+			State = 2;
 		}
 
 		private void SetFrame(int x, int y)
