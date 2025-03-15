@@ -77,6 +77,7 @@ namespace StarlightRiver.Content.Items
 		}
 	}
 
+	[SLRDebug]
 	class DebugStick2 : ModItem
 	{
 		public override string Texture => AssetDirectory.Assets + "Items/DebugStick";

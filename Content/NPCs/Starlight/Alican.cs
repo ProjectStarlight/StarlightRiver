@@ -25,12 +25,6 @@ namespace StarlightRiver.Content.NPCs.Starlight
 		public ref float State => ref NPC.ai[1];
 		public ref float CutsceneTimer => ref NPC.ai[2];
 
-		public bool InCutscene
-		{
-			get => State == 1;
-			set => State = value ? 1 : 0;
-		}
-
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("???");
@@ -102,7 +96,14 @@ namespace StarlightRiver.Content.NPCs.Starlight
 
 		public override string GetChat()
 		{
-			manager.Start("Intro1");
+			if (State == 0)
+				manager.Start("Intro1");
+
+			if (State == 1)
+				manager.Start("AfterTutorial1");
+
+			if (State == 2)
+				manager.Start("AfterTutorialRepeating");
 
 			return "";
 		}
