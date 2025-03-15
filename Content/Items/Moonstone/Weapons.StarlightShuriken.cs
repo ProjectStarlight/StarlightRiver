@@ -334,10 +334,11 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Main.spriteBatch.Draw(texOutline, Projectile.Center - Main.screenPosition, null, drawColor * 1.5f, Projectile.rotation, texOutline.Size() / 2, Projectile.scale, 0, 0);
 
 			Texture2D glowTex = Assets.Masks.GlowSoftAlpha.Value;
-			Color glowColor = color;
+			Color glowColor = drawColor;
 			color.A = 0;
 
-			Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, glowColor * 0.5f, Projectile.rotation, glowTex.Size() / 2, Projectile.scale * 1.5f, 0, 0);
+			if (Projectile.timeLeft < 590)
+				Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, glowColor * 0.5f, Projectile.rotation, glowTex.Size() / 2, Projectile.scale * 1.5f, 0, 0);
 
 			return false;
 		}
