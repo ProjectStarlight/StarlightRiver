@@ -288,7 +288,7 @@ namespace StarlightRiver.Content.GUI
 		/// <param name="timer">The timer associated with the animation</param>
 		private void DrawGainAnimationBar(SpriteBatch spriteBatch, Rectangle dimensions, int timer)
 		{
-			Texture2D star = Assets.Masks.StarAlpha.Value;
+			Texture2D star = Assets.StarTexture.Value;
 			Vector2 pos = dimensions.TopRight() + new Vector2(-18, 10);
 
 			// Spawn particles
@@ -324,7 +324,7 @@ namespace StarlightRiver.Content.GUI
 				Color starColor = new Color(150, 220, 255) * Helpers.Eases.SwoopEase(prog);
 				starColor.A = 0;
 
-				spriteBatch.Draw(star, pos, star.Frame(), starColor, 0, star.Size() / 2f, Helpers.Eases.SwoopEase(prog), SpriteEffects.None, 0);
+				spriteBatch.Draw(star, pos, star.Frame(), starColor, 0, star.Size() / 2f, Helpers.Eases.SwoopEase(prog) * 0.5f, SpriteEffects.None, 0);
 			}
 
 			// Hold
@@ -338,7 +338,7 @@ namespace StarlightRiver.Content.GUI
 				Color starColor = Color.Lerp(new Color(150, 220, 255), Color.White, colorProg) * (1 - colorProg);
 				starColor.A = 0;
 
-				spriteBatch.Draw(star, pos, star.Frame(), starColor, 0, star.Size() / 2f, 1 + colorProg, SpriteEffects.None, 0);
+				spriteBatch.Draw(star, pos, star.Frame(), starColor, 0, star.Size() / 2f, (1 + colorProg) * 0.5f, SpriteEffects.None, 0);
 			}
 
 			// Fade out with slot underneath
@@ -416,7 +416,7 @@ namespace StarlightRiver.Content.GUI
 		{
 			Texture2D slotTex = Assets.GUI.StaminaEmpty.Value;
 			Texture2D slotTexGlow = Assets.GUI.StaminaGlowNormal.Value;
-			Texture2D star = Assets.Masks.StarAlpha.Value;
+			Texture2D star = Assets.StarTexture.Value;
 			Vector2 pos = dimensions.TopLeft();
 
 			// Spawn particles
@@ -452,7 +452,7 @@ namespace StarlightRiver.Content.GUI
 				Color starColor = new Color(150, 220, 255) * Helpers.Eases.SwoopEase(prog);
 				starColor.A = 0;
 
-				spriteBatch.Draw(star, pos + slotTexGlow.Size() / 2f, star.Frame(), starColor, 0, star.Size() / 2f, Helpers.Eases.SwoopEase(prog), SpriteEffects.None, 0);
+				spriteBatch.Draw(star, pos + slotTexGlow.Size() / 2f, star.Frame(), starColor, 0, star.Size() / 2f, Helpers.Eases.SwoopEase(prog) * 0.5f, SpriteEffects.None, 0);
 			}
 
 			// Hold
@@ -466,7 +466,7 @@ namespace StarlightRiver.Content.GUI
 				Color starColor = Color.Lerp(new Color(150, 220, 255), Color.White, colorProg) * (1 - colorProg);
 				starColor.A = 0;
 
-				spriteBatch.Draw(star, pos + slotTexGlow.Size() / 2f, star.Frame(), starColor, 0, star.Size() / 2f, 1 + colorProg, SpriteEffects.None, 0);
+				spriteBatch.Draw(star, pos + slotTexGlow.Size() / 2f, star.Frame(), starColor, 0, star.Size() / 2f, (1 + colorProg) * 0.5f, SpriteEffects.None, 0);
 			}
 
 			// Fade out with slot underneath
