@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Abilities;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets;
@@ -301,6 +302,9 @@ namespace StarlightRiver.Content.Tiles.Underground
 						Main.spriteBatch.Draw(fireTex, rightPos, frame, new Color(255, 255, 255, 0), 0, fireTex.Size() / 2, 0.95f, 0, 0);
 					}
 
+					Main.spriteBatch.End();
+					Main.spriteBatch.Begin(default, default, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+
 					Texture2D barrier = Assets.MotionTrail.Value;
 					var sourceRect = new Rectangle(0, (int)(Main.GameUpdateCount * 0.4f), barrier.Width, barrier.Height);
 					var sourceRect2 = new Rectangle(0, (int)(Main.GameUpdateCount * -0.73f), barrier.Width, barrier.Height);
@@ -318,6 +322,9 @@ namespace StarlightRiver.Content.Tiles.Underground
 					targetRect.Inflate(-15, 0);
 					targetRect.Offset(-15, 0);
 					Main.spriteBatch.Draw(barrier, targetRect, sourceRect2, new Color(255, 255, 255, 0) * Windup);
+
+					Main.spriteBatch.End();
+					Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 				}
 			}
 		}
