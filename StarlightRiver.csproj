@@ -14,11 +14,6 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<None Remove="AssGenConfig.txt" />
-		<None Remove="Effects\Compile\GrayMatter.fx" />
-		<None Remove="Effects\Compile\ThinkerPetal.fx" />
-		<None Remove="effects\HallucionationBlockShader.fx" />
-		<None Remove="Effects\Source\GlowingCustomParticle.fx" />
-		<None Remove="effects\ThinkerBody.fx" />
 		<None Remove="OldPatchNotes\0.2.0\0.2.2.txt" />
 		<None Remove="OldPatchNotes\0.2.0\0.2.4.txt" />
 		<None Remove="OldPatchNotes\0.2.0\0.2.6.txt" />
@@ -42,14 +37,7 @@
 		<AdditionalFiles Include="**/*.png" />
 
 	</ItemGroup>
-	<ItemGroup>
-	  <AdditionalFiles Remove="effects\source\RiverBody.fx" />
-	  <AdditionalFiles Remove="effects\source\ThinkerBackground.fx" />
-	</ItemGroup>
-	<ItemGroup>
-	  <ShaderFile Remove="effects\source\RiverBody.fx" />
-	  <ShaderFile Remove="effects\source\ThinkerBackground.fx" />
-	</ItemGroup>
+
 	<ItemGroup>
 		<Folder Include="Assets\Healthbars\" />
 		<Folder Include="Content\NPCs\Vitric\GlassTrial\" />
