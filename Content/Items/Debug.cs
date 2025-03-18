@@ -1,6 +1,7 @@
 using ReLogic.Graphics;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
+using StarlightRiver.Content.Abilities.Hint;
 using StarlightRiver.Content.Bosses.TheThinkerBoss;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Events;
@@ -128,7 +129,7 @@ namespace StarlightRiver.Content.Items
 			//StarlightWorld.FlipFlag(WorldFlags.ThinkerBossOpen);
 			//ModContent.GetInstance<StarlightWorld>().GraymatterGen(new GenerationProgress(), null);
 
-			SplineGlow.Spawn(player.Center, Vector2.Lerp(player.Center, Main.MouseWorld, 0.5f) + Vector2.UnitX.RotatedByRandom(6.28f) * 50, Main.MouseWorld, 120, 1, Color.Teal);
+			/*SplineGlow.Spawn(player.Center, Vector2.Lerp(player.Center, Main.MouseWorld, 0.5f) + Vector2.UnitX.RotatedByRandom(6.28f) * 50, Main.MouseWorld, 120, 1, Color.Teal);
 
 			Tile tile2 = Framing.GetTileSafely((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16));
 			Main.NewText(tile2.TileType + " " + tile2.WallType);
@@ -143,12 +144,14 @@ namespace StarlightRiver.Content.Items
 					if (tile.TileType == 922)
 						tile.ClearEverything();
 				}
-			}
+			}*/
 
 			//Point16 target = new Point16((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
 			//Main.NewText($"Deviation at {target} along width 10: {WorldGenHelper.GetElevationDeviation(target, 10, 20, 10, true)}");
 
-			ModContent.GetInstance<StarlightWorld>().ObservatoryGen(null, null);
+			//ModContent.GetInstance<StarlightWorld>().ObservatoryGen(null, null);
+
+			Main.LocalPlayer.GetHandler().Lock<HintAbility>();
 
 			return true;
 		}

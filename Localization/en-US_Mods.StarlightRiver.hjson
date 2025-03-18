@@ -3716,6 +3716,11 @@ Items: {
 		DisplayName: Starlight Pylon
 		Tooltip: You shouldn't have this!
 	}
+
+	StarsightTileItem: {
+		DisplayName: Starsight
+		Tooltip: "{{Debug}} placer for ability pickup"
+	}
 }
 
 Tiles: {
