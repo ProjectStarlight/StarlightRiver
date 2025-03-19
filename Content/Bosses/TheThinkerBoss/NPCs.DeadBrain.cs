@@ -49,6 +49,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		public float opacity;
 
 		public List<int> attackQueue = [];
+		public int attackCount;
 
 		public VerletChain attachedChain;
 		public Vector2 attachedChainEndpoint;
@@ -302,6 +303,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			if (Phase != Phases.TempDead)
 				Lighting.AddLight(NPC.Center, Phase > Phases.FirstPhase ? new Vector3(0.5f, 0.4f, 0.2f) : new Vector3(0.5f, 0.5f, 0.5f) * (shieldOpacity / 0.4f));
 
+			// we're only a boss in the second phase so that the HP bar switches to the dead brain from the thinker.
 			if (Phase == Phases.SecondPhase)
 				NPC.boss = true;
 
@@ -436,6 +438,8 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 					if (AttackTimer == 1)
 					{
+						attackCount++;
+
 						AttackState = attackQueue[0];
 						attackQueue.RemoveAt(0);
 
@@ -454,15 +458,16 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 							AttackState = 0;
 
 							// Reset attack queue
+							attackCount = 0;
 							attackQueue.Clear();
-							attackQueue.Add(Main.rand.Next(2));
+							attackQueue.Add(Main.rand.Next(3));
 
-							for (int k = 0; k < 3; k++)
+							for (int k = 0; k < 2; k++)
 							{
-								int next2 = Main.rand.Next(2);
+								int next2 = 3 + Main.rand.Next(3);
 
 								while (next2 == attackQueue.Last())
-									next2 = Main.rand.Next(2);
+									next2 = 3 + Main.rand.Next(3);
 
 								attackQueue.Add(next2);
 							}
@@ -513,13 +518,14 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 					if (AttackTimer == 1)
 					{
+						attackCount++;
 						AttackState = attackQueue[0];
 						attackQueue.RemoveAt(0);
 
-						int next = Main.rand.Next(5);
+						int next = attackCount % 3 == 0 ? Main.rand.Next(3) : 3 + Main.rand.Next(3);
 
 						while (next == attackQueue.Last())
-							next = Main.rand.Next(5);
+							next = attackCount % 3 == 0 ? Main.rand.Next(3) : 3 + Main.rand.Next(3);
 
 						attackQueue.Add(next);
 
@@ -532,19 +538,22 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 							Recover();
 							break;
 						case 0:
-							DoubleSpin();
-							break;
-						case 1:
 							Clones();
 							break;
-						case 2:
-							TeleportHunt();
-							break;
-						case 3:
+						case 1:
 							Clones2();
 							break;
-						case 4:
+						case 2:
 							MindMines();
+							break;
+						case 3:
+							DoubleSpin();
+							break;
+						case 4:
+							TeleportHunt();
+							break;
+						case 5:
+							TeleportBlooms();
 							break;
 					}
 
@@ -743,7 +752,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			if (Phase == Phases.FirstPhase && AttackState == 2)
 				DrawRamGraphics(spriteBatch);
 
-			if (Phase == Phases.SecondPhase && AttackState == 2)
+			if (Phase == Phases.SecondPhase && AttackState == 4)
 				DrawHuntGraphics(spriteBatch);
 
 			if (opacity >= 1)

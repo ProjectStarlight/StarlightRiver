@@ -7,6 +7,9 @@ using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 {
+	/// <summary>
+	/// serializable structure which tracks the location and tiles changed for a given thinker
+	/// </summary>
 	public struct ThinkerRecord : TagSerializable
 	{
 		public NPC thinker;
