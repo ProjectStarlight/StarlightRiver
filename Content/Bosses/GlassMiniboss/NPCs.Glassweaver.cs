@@ -45,8 +45,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override string Texture => AssetDirectory.Glassweaver + Name;
 
-		public static int SmallProjectileDamage => Helpers.Helper.GetProjectileDamage(100, 50, 30);
-		public static int LargeProjectileDamage => Helpers.Helper.GetProjectileDamage(180, 90, 60);
+		public static int SmallProjectileDamage => Helpers.StarlightMathHelper.GetProjectileDamage(100, 50, 30);
+		public static int LargeProjectileDamage => Helpers.StarlightMathHelper.GetProjectileDamage(180, 90, 60);
 
 		//Phase tracking utils
 		public enum Phases
@@ -82,7 +82,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			NPCID.Sets.ShouldBeCountedAsBoss[Type] = true;
 			NPCID.Sets.BossBestiaryPriority.Add(Type);
 
-			var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0)
+			var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
 			{
 
 			};
@@ -128,14 +128,16 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		{
 			NPC.lifeMax = 3000;
 			NPC.GetGlobalNPC<BarrierNPC>().maxBarrier = 650;
-			NPC.GetGlobalNPC<BarrierNPC>().barrier = 650;
 
 			if (Main.masterMode)
 			{
 				NPC.lifeMax = 4000;
 				NPC.GetGlobalNPC<BarrierNPC>().maxBarrier = 900;
-				NPC.GetGlobalNPC<BarrierNPC>().barrier = 900;
 			}
+
+			NPC.lifeMax = StarlightMathHelper.GetScaledBossLife(NPC.lifeMax, balance, numPlayers);
+			NPC.GetGlobalNPC<BarrierNPC>().maxBarrier = StarlightMathHelper.GetScaledBossLife(NPC.GetGlobalNPC<BarrierNPC>().maxBarrier, balance, numPlayers);
+			NPC.GetGlobalNPC<BarrierNPC>().barrier = NPC.GetGlobalNPC<BarrierNPC>().maxBarrier;
 		}
 
 		public override bool CheckDead()
@@ -176,7 +178,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					if (AttackTimer <= 120)
 					{
 						if (Main.netMode != NetmodeID.Server)
-							RichTextBox.CloseDialogue(); // may accidentially kick players that aren't involved in the fight out of their modal but its probably good enough as is
+							DialogUI.CloseDialogue(); // may accidentially kick players that aren't involved in the fight out of their modal but its probably good enough as is
 
 						SpawnAnimation();
 					}
@@ -233,7 +235,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					NPC.rotation = MathHelper.Lerp(NPC.rotation, 0, 0.33f);
 
 					if (NPC.velocity.Y > 0f && NPC.collideY && !disableJumpSound)
-						Helpers.Helper.PlayPitched("GlassMiniboss/RippedSoundJump", 1f, -0.1f, NPC.Center);
+						Helpers.SoundHelper.PlayPitched("GlassMiniboss/RippedSoundJump", 1f, -0.1f, NPC.Center);
 
 					if (AttackTimer == 1)
 					{

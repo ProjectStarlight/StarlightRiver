@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
 		public override void PostDraw(Color lightColor)
 		{
 			Texture2D tex = Assets.Tiles.Interactive.BouncerGlow.Value;
-			Color color = Helper.IndicatorColorProximity(150, 300, Center);
+			Color color = CommonVisualEffects.IndicatorColorProximity(150, 300, Center);
 			Main.spriteBatch.Draw(tex, position - Vector2.One - Main.screenPosition, color);
 		}
 	}

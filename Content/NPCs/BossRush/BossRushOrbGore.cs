@@ -47,7 +47,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 
 			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/NPCs/BossRush/Gore/Rock" + type.ToString()).Value;
 			Texture2D glow = ModContent.Request<Texture2D>("StarlightRiver/Assets/NPCs/BossRush/Gore/RockGlow" + type.ToString()).Value;
-			Texture2D bloom = Assets.Keys.Glow.Value;
+			Texture2D bloom = Assets.Masks.Glow.Value;
 
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() * 0.5f, 1, SpriteEffects.None, 0);
 
@@ -64,7 +64,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 			return false;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int k = 0; k < 20; k++)
 				Dust.NewDustPerfect(Projectile.Center, DustID.Obsidian);

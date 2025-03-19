@@ -2,6 +2,7 @@
 using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Packets;
 using StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Helpers;
@@ -29,7 +30,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 		}
 	}
 
-	class ReflectorDummy : Dummy, IDrawAdditive
+	class ReflectorDummy : Dummy
 	{
 		public bool rotating = false;
 		public int frame = 0;
@@ -73,7 +74,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 			if (rotating) // this rotation is all done client side and then updated to other clients when key is released in one packet
 			{
 				if (Vector2.Distance(Main.MouseWorld, Center) > 48)
-					rotation += Helper.CompareAngle((Main.MouseWorld - Center).ToRotation(), rotation) * 0.1f;
+					rotation += GeometryHelper.CompareAngle((Main.MouseWorld - Center).ToRotation(), rotation) * 0.1f;
 
 				if (rotateAnimation < 15)
 					rotateAnimation++;
@@ -116,7 +117,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 					LightPuzzleHandler.solved = true;
 				}
 
-				if (Helper.PointInTile(posCheck) || k == 159)
+				if (CollisionHelper.PointInTile(posCheck) || k == 159)
 				{
 					endPoint = posCheck;
 					break;
@@ -168,10 +169,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 			Texture2D tex = Assets.Tiles.Vitric.Reflector.Value;
 			var drawFrame = new Rectangle(50 * frame, 0, 50, 50);
 			Main.spriteBatch.Draw(tex, Center - Main.screenPosition, drawFrame, lightColor, rotation - 1.57f, Vector2.One * 25, 1, 0, 0);
-		}
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
 			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
 				return;
 
@@ -181,19 +179,19 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 			for (int k = 0; k < 30; k++)
 			{
 				float rot = k / 30f * 6.28f;
-				float rotOpacity = 1.0f - Math.Abs(Helper.CompareAngle(rot, rotation)) / 6.28f;
-				Color color = new Color(100, 220, 255) * rotOpacity * opacity;
-				spriteBatch.Draw(tickTexture, Center - Main.screenPosition + Vector2.UnitX.RotatedBy(rot) * 32, null, color, rot + 1.57f, tickTexture.Size() / 2, 0.5f + rotOpacity * 0.5f, 0, 0);
+				float rotOpacity = 1.0f - Math.Abs(GeometryHelper.CompareAngle(rot, rotation)) / 6.28f;
+				Color color = new Color(100, 220, 255, 0) * rotOpacity * opacity;
+				Main.spriteBatch.Draw(tickTexture, Center - Main.screenPosition + Vector2.UnitX.RotatedBy(rot) * 32, null, color, rot + 1.57f, tickTexture.Size() / 2, 0.5f + rotOpacity * 0.5f, 0, 0);
 			}
 
-			spriteBatch.Draw(tickTexture, Center - Main.screenPosition + Vector2.UnitX.RotatedBy(rotation) * 60, null, new Color(150, 220, 255) * opacity, rotation + 1.57f, tickTexture.Size() / 2, 3f, 0, 0);
+			Main.spriteBatch.Draw(tickTexture, Center - Main.screenPosition + Vector2.UnitX.RotatedBy(rotation) * 60, null, new Color(150, 220, 255, 0) * opacity, rotation + 1.57f, tickTexture.Size() / 2, 3f, 0, 0);
 
 			if (emitting <= 0)
 				return;
 
 			//Laser
 			int sin = (int)(Math.Sin(StarlightWorld.visualTimer * 3) * 20f); //Just a copy/paste of the boss laser. Need to tune this later
-			Color color2 = new Color(100, 200 + sin, 255) * 0.65f;
+			Color color2 = new Color(100, 200 + sin, 255, 0) * 0.65f;
 
 			Texture2D texBeam = Assets.Misc.BeamCore.Value;
 			Texture2D texBeam2 = Assets.Misc.BeamCore.Value;
@@ -201,45 +199,48 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 			var origin = new Vector2(0, texBeam.Height / 2);
 			var origin2 = new Vector2(0, texBeam2.Height / 2);
 
-			Effect effect = StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value;
+			Effect effect = ShaderLoader.GetShader("GlowingDust").Value;
 
-			effect.Parameters["uColor"].SetValue(color2.ToVector3() * 0.35f);
-
-			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
-
-			float height = texBeam.Height / 10f * (1 - opacity);
-			int width = (int)(Center - endPoint).Length() - 6;
-
-			Vector2 pos = Center + Vector2.UnitX.RotatedBy(rotation) * 6 - Main.screenPosition;
-
-			var target = new Rectangle((int)pos.X, (int)pos.Y, width, (int)(height * 2.75f));
-			var target2 = new Rectangle((int)pos.X, (int)pos.Y, width, (int)height);
-
-			var source = new Rectangle((int)(Main.GameUpdateCount / 140f * -texBeam.Width), 0, texBeam.Width, texBeam.Height);
-			var source2 = new Rectangle((int)(Main.GameUpdateCount / 80f * -texBeam2.Width), 0, texBeam2.Width, texBeam2.Height);
-
-			spriteBatch.Draw(texBeam, target, source, color2, rotation, origin, 0, 0);
-			spriteBatch.Draw(texBeam2, target2, source2, color2 * 0.5f, rotation, origin2, 0, 0);
-
-			for (int i = 0; i < width; i += 10)
+			if (effect != null)
 			{
-				Lighting.AddLight(pos + Vector2.UnitX.RotatedBy(rotation) * i + Main.screenPosition, color2.ToVector3() * height * 0.010f);
+				effect.Parameters["uColor"].SetValue(color2.ToVector3() * 0.35f);
+
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+
+				float height = texBeam.Height / 10f * (1 - opacity);
+				int width = (int)(Center - endPoint).Length() - 6;
+
+				Vector2 pos = Center + Vector2.UnitX.RotatedBy(rotation) * 6 - Main.screenPosition;
+
+				var target = new Rectangle((int)pos.X, (int)pos.Y, width, (int)(height * 2.75f));
+				var target2 = new Rectangle((int)pos.X, (int)pos.Y, width, (int)height);
+
+				var source = new Rectangle((int)(Main.GameUpdateCount / 140f * -texBeam.Width), 0, texBeam.Width, texBeam.Height);
+				var source2 = new Rectangle((int)(Main.GameUpdateCount / 80f * -texBeam2.Width), 0, texBeam2.Width, texBeam2.Height);
+
+				Main.spriteBatch.Draw(texBeam, target, source, color2, rotation, origin, 0, 0);
+				Main.spriteBatch.Draw(texBeam2, target2, source2, color2 * 0.5f, rotation, origin2, 0, 0);
+
+				for (int i = 0; i < width; i += 10)
+				{
+					Lighting.AddLight(pos + Vector2.UnitX.RotatedBy(rotation) * i + Main.screenPosition, color2.ToVector3() * height * 0.010f);
+				}
+
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+
+				Texture2D impactTex = Assets.Masks.GlowSoftAlpha.Value;
+				Texture2D impactTex2 = Assets.GUI.ItemGlow.Value;
+				Texture2D glowTex = Assets.GlowTrail.Value;
+
+				target = new Rectangle((int)pos.X, (int)pos.Y, width, (int)(height * 4.5f));
+				Main.spriteBatch.Draw(glowTex, target, source, color2 * 0.75f, rotation, new Vector2(0, glowTex.Height / 2), 0, 0);
+
+				Main.spriteBatch.Draw(impactTex, endPoint - Main.screenPosition, null, color2 * (height * 0.024f), 0, impactTex.Size() / 2, 2.2f, 0, 0);
+				Main.spriteBatch.Draw(impactTex2, endPoint - Main.screenPosition, null, color2 * 0.5f * (height * 0.1f), StarlightWorld.visualTimer * 2, impactTex2.Size() / 2, 0.2f, 0, 0);
+				Main.spriteBatch.Draw(impactTex2, endPoint - Main.screenPosition, null, color2 * 1.5f * (height * 0.1f), StarlightWorld.visualTimer * 2.2f, impactTex2.Size() / 2, 0.1f, 0, 0);
 			}
-
-			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
-
-			Texture2D impactTex = Assets.Keys.GlowSoft.Value;
-			Texture2D impactTex2 = Assets.GUI.ItemGlow.Value;
-			Texture2D glowTex = Assets.GlowTrail.Value;
-
-			target = new Rectangle((int)pos.X, (int)pos.Y, width, (int)(height * 4.5f));
-			spriteBatch.Draw(glowTex, target, source, color2 * 0.75f, rotation, new Vector2(0, glowTex.Height / 2), 0, 0);
-
-			spriteBatch.Draw(impactTex, endPoint - Main.screenPosition, null, color2 * (height * 0.024f), 0, impactTex.Size() / 2, 2.2f, 0, 0);
-			spriteBatch.Draw(impactTex2, endPoint - Main.screenPosition, null, color2 * 0.5f * (height * 0.1f), StarlightWorld.visualTimer * 2, impactTex2.Size() / 2, 0.2f, 0, 0);
-			spriteBatch.Draw(impactTex2, endPoint - Main.screenPosition, null, color2 * 1.5f * (height * 0.1f), StarlightWorld.visualTimer * 2.2f, impactTex2.Size() / 2, 0.1f, 0, 0);
 		}
 
 		public override void SafeSendExtraAI(BinaryWriter writer)

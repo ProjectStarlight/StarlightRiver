@@ -24,7 +24,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		{
 			Projectile.width = 60;
 			Projectile.height = 1;
-			Projectile.damage = 50;
 			Projectile.hostile = true;
 			Projectile.timeLeft = Main.masterMode ? 360 : Main.expertMode ? 510 : 660;
 			Projectile.aiStyle = -1;

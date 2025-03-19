@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Abilities.Infusions;
 using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Content.Tiles.Vitric.Temple;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 	{
 		public override float ActivationCostDefault => 1.5f;
 
-		public void Load()
+		public new void Load()
 		{
 			StarlightPlayer.PostUpdateEvent += UpdatePlayerFrame;
 		}
@@ -155,18 +156,21 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 		{
 			Main.spriteBatch.End();
 
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.0025f);
-			effect.Parameters["repeats"].SetValue(1f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.0025f);
+				effect.Parameters["repeats"].SetValue(1f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
-			trail?.Render(effect);
+				trail?.Render(effect);
+			}
 
 			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}

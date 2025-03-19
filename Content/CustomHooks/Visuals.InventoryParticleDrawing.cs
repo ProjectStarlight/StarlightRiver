@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core.Loaders;
 
 namespace StarlightRiver.Content.CustomHooks
 {
@@ -16,8 +17,8 @@ namespace StarlightRiver.Content.CustomHooks
 		private void DrawInventoryParticles(On_Main.orig_DrawInterface_27_Inventory orig, Main self)
 		{
 			orig(self);
-			CursedAccessory.CursedSystem.DrawParticles(Main.spriteBatch);
-			CursedAccessory.ShardsSystem.DrawParticles(Main.spriteBatch);
+			CursedAccessoryParticleManager.CursedSystem.DrawParticles(Main.spriteBatch);
+			CursedAccessoryParticleManager.ShardsSystem.DrawParticles(Main.spriteBatch);
 		}
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.Gravedigger;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,7 +47,7 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 	}
 
-	class DiscordantBolt : ModProjectile, IDrawPrimitive, IDrawAdditive
+	class DiscordantBolt : ModProjectile, IDrawPrimitive
 	{
 		private List<Vector2> cache;
 		private Trail trail;
@@ -106,7 +107,7 @@ namespace StarlightRiver.Content.Items.Misc
 			globalNPC.VolatileTimer = 600;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int i = 0; i < 8; i++)
 			{
@@ -125,6 +126,11 @@ namespace StarlightRiver.Content.Items.Misc
 				A = 0
 			};
 			Main.spriteBatch.Draw(texture, Projectile.Center - Projectile.velocity - Main.screenPosition, null, color, 0, texture.Size() / 2f, Projectile.scale - 0.7f, SpriteEffects.None, 0);
+
+			Texture2D glowTex = Assets.Masks.GlowSoftAlpha.Value;
+			var glowColor = new Color(220, 205, 140, 0);
+			Main.spriteBatch.Draw(glowTex, Projectile.Center - Projectile.velocity - Main.screenPosition, null, glowColor * 0.6f, Projectile.rotation, glowTex.Size() / 2f, Projectile.scale - 0.35f, SpriteEffects.None, 0);
+			Main.spriteBatch.Draw(glowTex, Projectile.Center - Projectile.velocity - Main.screenPosition, null, glowColor, Projectile.rotation, glowTex.Size() / 2f, Projectile.scale - 0.45f, SpriteEffects.None, 0);
 		}
 
 		private void ManageCaches()
@@ -157,26 +163,21 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.03f);
-			effect.Parameters["repeats"].SetValue(2f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+				effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.03f);
+				effect.Parameters["repeats"].SetValue(2f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 
-			trail?.Render(effect);
-		}
-
-		public void DrawAdditive(SpriteBatch sb)
-		{
-			Texture2D texture = Assets.Keys.GlowSoft.Value;
-			var color = new Color(220, 205, 140);
-			sb.Draw(texture, Projectile.Center - Projectile.velocity - Main.screenPosition, null, color * 0.6f, Projectile.rotation, texture.Size() / 2f, Projectile.scale - 0.35f, SpriteEffects.None, 0);
-			sb.Draw(texture, Projectile.Center - Projectile.velocity - Main.screenPosition, null, color, Projectile.rotation, texture.Size() / 2f, Projectile.scale - 0.45f, SpriteEffects.None, 0);
+				trail?.Render(effect);
+			}
 		}
 	}
 

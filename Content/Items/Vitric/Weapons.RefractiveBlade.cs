@@ -1,5 +1,6 @@
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Dusts;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.ExposureSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -133,7 +134,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				StoredAngle = Projectile.velocity.ToRotation();
 				Projectile.velocity *= 0;
 
-				Helper.PlayPitched("Effects/FancySwoosh", 1, Combo);
+				SoundHelper.PlayPitched("Effects/FancySwoosh", 1, Combo);
 
 				switch (Combo)
 				{
@@ -150,9 +151,9 @@ namespace StarlightRiver.Content.Items.Vitric
 				}
 			}
 
-			float targetAngle = StoredAngle + (-(maxAngle / 2) + Helper.BezierEase(Timer / maxTime) * maxAngle) * Owner.direction * direction;
+			float targetAngle = StoredAngle + (-(maxAngle / 2) + Eases.BezierEase(Timer / maxTime) * maxAngle) * Owner.direction * direction;
 
-			Projectile.Center = Owner.Center + Vector2.UnitX.RotatedBy(targetAngle) * (70 + (float)Math.Sin(Helper.BezierEase(Timer / maxTime) * 3.14f) * 40);
+			Projectile.Center = Owner.Center + Vector2.UnitX.RotatedBy(targetAngle) * (70 + (float)Math.Sin(Eases.BezierEase(Timer / maxTime) * 3.14f) * 40);
 			Projectile.rotation = targetAngle + 1.57f * 0.5f;
 
 			if (Main.netMode != NetmodeID.Server)
@@ -195,11 +196,11 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			target.immune[Projectile.owner] = 10; //equivalent to normal pierce iframes but explicit for multiPlayer compatibility
 
-			Helper.CheckLinearCollision(Owner.Center, Projectile.Center, target.Hitbox, out Vector2 hitPoint); //here to get the point of impact, ideally we dont have to do this twice but for some reasno colliding hook dosent have an actual NPC ref, soo...
+			CollisionHelper.CheckLinearCollision(Owner.Center, Projectile.Center, target.Hitbox, out Vector2 hitPoint); //here to get the point of impact, ideally we dont have to do this twice but for some reasno colliding hook dosent have an actual NPC ref, soo...
 
-			if (Helper.IsFleshy(target))
+			if (NPCHelper.IsFleshy(target))
 			{
-				Helper.PlayPitched("Impacts/FireBladeStab", 0.3f, -0.2f, Projectile.Center);
+				SoundHelper.PlayPitched("Impacts/FireBladeStab", 0.3f, -0.2f, Projectile.Center);
 
 				for (int k = 0; k < 20; k++)
 				{
@@ -212,7 +213,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			else
 			{
-				Helper.PlayPitched("Impacts/Clink", 0.5f, 0, Projectile.Center);
+				SoundHelper.PlayPitched("Impacts/Clink", 0.5f, 0, Projectile.Center);
 
 				for (int k = 0; k < 30; k++)
 				{
@@ -223,7 +224,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
-			if (Helper.CheckLinearCollision(Owner.Center, Projectile.Center, targetHitbox, out Vector2 hitPoint))
+			if (CollisionHelper.CheckLinearCollision(Owner.Center, Projectile.Center, targetHitbox, out Vector2 hitPoint))
 				return true;
 
 			return false;
@@ -245,8 +246,8 @@ namespace StarlightRiver.Content.Items.Vitric
 			Texture2D tex = Request<Texture2D>(Texture).Value;
 			Texture2D texGlow = Request<Texture2D>(Texture + "Glow").Value;
 
-			float targetAngle = StoredAngle + (-(maxAngle / 2) + Helper.BezierEase(Timer / maxTime) * maxAngle) * Owner.direction * direction;
-			Vector2 pos = Owner.Center + Vector2.UnitX.RotatedBy(targetAngle) * ((float)Math.Sin(Helper.BezierEase(Timer / maxTime) * 3.14f) * 20) - Main.screenPosition;
+			float targetAngle = StoredAngle + (-(maxAngle / 2) + Eases.BezierEase(Timer / maxTime) * maxAngle) * Owner.direction * direction;
+			Vector2 pos = Owner.Center + Vector2.UnitX.RotatedBy(targetAngle) * ((float)Math.Sin(Eases.BezierEase(Timer / maxTime) * 3.14f) * 20) - Main.screenPosition;
 
 			Main.spriteBatch.Draw(tex, pos, null, lightColor, Projectile.rotation, new Vector2(0, tex.Height), 1.1f, 0, 0);
 			Main.spriteBatch.Draw(texGlow, pos, null, Color.White, Projectile.rotation, new Vector2(0, texGlow.Height), 1.1f, 0, 0);
@@ -293,22 +294,25 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount);
-			effect.Parameters["repeats"].SetValue(2f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount);
+				effect.Parameters["repeats"].SetValue(2f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
-			trail?.Render(effect);
+				trail?.Render(effect);
+			}
 		}
 	}
 
-	public class RefractiveBladeLaser : ModProjectile, IDrawAdditive
+	public class RefractiveBladeLaser : ModProjectile
 	{
 		public Vector2 endPoint;
 		public float LaserRotation;
@@ -346,7 +350,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				cPlayer.mouseRotationListener = true;
 
 			float targetRot = (cPlayer.mouseWorld - Owner.Center).ToRotation();
-			float diff = Helper.CompareAngle(LaserRotation, targetRot);
+			float diff = GeometryHelper.CompareAngle(LaserRotation, targetRot);
 			float maxRot = firing ? 0.02f : 0.08f;
 			LaserRotation -= MathHelper.Clamp(diff, -maxRot, maxRot);
 
@@ -356,7 +360,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				LaserRotation = targetRot;
 
 			if (Charge == 1)
-				Helper.PlayPitched("Magic/RefractiveCharge", 0.7f, 0, Projectile.Center);
+				SoundHelper.PlayPitched("Magic/RefractiveCharge", 0.7f, 0, Projectile.Center);
 
 			if (Charge >= 12 || firing)
 			{
@@ -364,7 +368,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 			else
 			{
-				Projectile.rotation = LaserRotation + 1.57f / 2 + Helper.BezierEase(Charge / 12f) * 6.28f;
+				Projectile.rotation = LaserRotation + 1.57f / 2 + Eases.BezierEase(Charge / 12f) * 6.28f;
 				Projectile.scale = 0.5f + Charge / 12f * 0.5f;
 			}
 
@@ -383,7 +387,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 
 			if (Charge >= 30 && !firing)
-				Helper.PlayPitched("Magic/RefractiveLaser", 0.6f, -0.2f, Projectile.Center);
+				SoundHelper.PlayPitched("Magic/RefractiveLaser", 0.6f, -0.2f, Projectile.Center);
 
 			firing = true;
 
@@ -391,11 +395,40 @@ namespace StarlightRiver.Content.Items.Vitric
 			{
 				Vector2 posCheck = Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * k * 8;
 
-				if (Helper.PointInTile(posCheck) || k == 79)
+				if (CollisionHelper.PointInTile(posCheck) || k == 79)
 				{
 					endPoint = posCheck;
 					break;
 				}
+			}
+
+			float height = 64f;
+			int width = (int)(Projectile.Center - endPoint).Length();
+			int sin = (int)(Math.Sin(StarlightWorld.visualTimer * 3) * 40f);
+			var color = new Color(255, 160 + sin, 40 + sin / 2);
+
+			if (LaserTimer < 20)
+				height = 64 * LaserTimer / 20f;
+
+			if (LaserTimer > (int)MaxTime - 40)
+				height = 64 * (1 - (LaserTimer - ((int)MaxTime - 40)) / 40f);
+
+			for (int i = 0; i < width; i += 10)
+			{
+				Lighting.AddLight(Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * i + Main.screenPosition, color.ToVector3() * height * 0.010f);
+
+				if (Main.rand.NextBool(20))
+					Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * i, DustType<Dusts.Glow>(), Vector2.UnitY * Main.rand.NextFloat(-1.5f, -0.5f), 0, color, 0.35f);
+			}
+
+			for (int k = 0; k < 4; k++)
+			{
+				float rot = Main.rand.NextFloat(6.28f);
+				int variation = Main.rand.Next(30);
+
+				color.G -= (byte)variation;
+
+				Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * width + Vector2.One.RotatedBy(rot) * Main.rand.NextFloat(40), DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot) * 1, 0, color, 0.2f - variation * 0.02f);
 			}
 
 			if (Main.myPlayer != Owner.whoAmI)
@@ -417,7 +450,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
-			if (LaserTimer > 0 && Helper.CheckLinearCollision(Owner.Center, endPoint, targetHitbox, out Vector2 colissionPoint))
+			if (LaserTimer > 0 && CollisionHelper.CheckLinearCollision(Owner.Center, endPoint, targetHitbox, out Vector2 colissionPoint))
 			{
 				Dust.NewDustPerfect(colissionPoint, DustType<Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 150, 100), Main.rand.NextFloat());
 				return true;
@@ -441,8 +474,8 @@ namespace StarlightRiver.Content.Items.Vitric
 			spriteBatch.Draw(Request<Texture2D>(Texture).Value, Owner.Center - Main.screenPosition, null, lightColor, Projectile.rotation, new Vector2(0, Request<Texture2D>(Texture).Value.Height), Projectile.scale, 0, 0);
 			spriteBatch.Draw(Request<Texture2D>(Texture + "Glow").Value, Owner.Center - Main.screenPosition, null, Color.White, Projectile.rotation, new Vector2(0, Request<Texture2D>(Texture).Value.Height), Projectile.scale, 0, 0);
 
-			float prog1 = Helper.SwoopEase((Charge - 12) / 23f);
-			float prog2 = Helper.SwoopEase((Charge - 17) / 18f);
+			float prog1 = Eases.SwoopEase((Charge - 12) / 23f);
+			float prog2 = Eases.SwoopEase((Charge - 17) / 18f);
 
 			float pow = 0;
 
@@ -467,28 +500,33 @@ namespace StarlightRiver.Content.Items.Vitric
 			DrawRing(spriteBatch, Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * prog1 * 30, 1, 1, Main.GameUpdateCount * 0.05f, prog1, new Color(255, 240, 120));
 			DrawRing(spriteBatch, Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * prog2 * 50, 0.5f, 0.5f, Main.GameUpdateCount * -0.075f, prog2, new Color(255, 180, 120));
 
+			DrawAdditive(spriteBatch);
+
 			return false;
 		}
 
 		private void DrawRing(SpriteBatch sb, Vector2 pos, float w, float h, float rotation, float prog, Color color)
 		{
 			Texture2D texRing = Assets.Items.Vitric.BossBowRing.Value;
-			Effect effect = Filters.Scene["BowRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("BowRing").Value;
 
-			effect.Parameters["uTime"].SetValue(rotation);
-			effect.Parameters["cosine"].SetValue((float)Math.Cos(rotation));
-			effect.Parameters["uColor"].SetValue(color.ToVector3());
-			effect.Parameters["uImageSize1"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
-			effect.Parameters["uOpacity"].SetValue(prog);
+			if (effect != null)
+			{
+				effect.Parameters["uTime"].SetValue(rotation);
+				effect.Parameters["cosine"].SetValue((float)Math.Cos(rotation));
+				effect.Parameters["uColor"].SetValue(color.ToVector3());
+				effect.Parameters["uImageSize1"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+				effect.Parameters["uOpacity"].SetValue(prog);
 
-			sb.End();
-			sb.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+				sb.End();
+				sb.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 
-			Rectangle target = toRect(pos, (int)(10 * (w + prog)), (int)(30 * (h + prog)));
-			sb.Draw(texRing, target, null, color * prog, Projectile.rotation - 1.57f / 2, texRing.Size() / 2, 0, 0);
+				Rectangle target = toRect(pos, (int)(10 * (w + prog)), (int)(30 * (h + prog)));
+				sb.Draw(texRing, target, null, color * prog, Projectile.rotation - 1.57f / 2, texRing.Size() / 2, 0, 0);
 
-			sb.End();
-			sb.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				sb.End();
+				sb.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 		}
 
 		private Rectangle toRect(Vector2 pos, int w, int h)
@@ -500,6 +538,9 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			if (LaserTimer <= 0)
 				return;
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			int sin = (int)(Math.Sin(StarlightWorld.visualTimer * 3) * 40f); //Just a copy/paste of the boss laser. Need to tune this later
 			var color = new Color(255, 160 + sin, 40 + sin / 2);
@@ -538,14 +579,6 @@ namespace StarlightRiver.Content.Items.Vitric
 			spriteBatch.Draw(texBeam, target, source, color, LaserRotation, origin, 0, 0);
 			spriteBatch.Draw(texBeam2, target2, source2, color * 0.5f, LaserRotation, origin2, 0, 0);
 
-			for (int i = 0; i < width; i += 10)
-			{
-				Lighting.AddLight(pos + Vector2.UnitX.RotatedBy(LaserRotation) * i + Main.screenPosition, color.ToVector3() * height * 0.010f);
-
-				if (Main.rand.NextBool(20))
-					Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * i, DustType<Dusts.Glow>(), Vector2.UnitY * Main.rand.NextFloat(-1.5f, -0.5f), 0, color, 0.35f);
-			}
-
 			float opacity = height / (texBeam.Height / 2f) * 0.75f;
 
 			spriteBatch.End();
@@ -560,7 +593,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
-			Texture2D impactTex = Assets.Keys.GlowSoft.Value;
+			Texture2D impactTex = Assets.Masks.GlowSoft.Value;
 			Texture2D impactTex2 = Assets.GUI.ItemGlow.Value;
 			Texture2D glowTex = Assets.GlowTrail.Value;
 
@@ -572,15 +605,8 @@ namespace StarlightRiver.Content.Items.Vitric
 			spriteBatch.Draw(impactTex, pos, null, color * (height * 0.02f), 0, impactTex.Size() / 2, 1.2f, 0, 0);
 			spriteBatch.Draw(impactTex2, pos, null, color * (height * 0.05f), StarlightWorld.visualTimer * -3, impactTex2.Size() / 2, 0.17f, 0, 0);
 
-			for (int k = 0; k < 4; k++)
-			{
-				float rot = Main.rand.NextFloat(6.28f);
-				int variation = Main.rand.Next(30);
-
-				color.G -= (byte)variation;
-
-				Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * width + Vector2.One.RotatedBy(rot) * Main.rand.NextFloat(40), DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot) * 1, 0, color, 0.2f - variation * 0.02f);
-			}
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 

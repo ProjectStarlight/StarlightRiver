@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.CameraSystem;
+﻿using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,6 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace StarlightRiver.Content.Items.Dungeon
 {
@@ -229,7 +229,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 				}
 			}
 
-			Helper.PlayPitched("Impacts/FireBladeStab", 0.25f, Main.rand.NextFloat(-0.05f, 0.05f), wheelPos);
+			SoundHelper.PlayPitched("Impacts/FireBladeStab", 0.25f, Main.rand.NextFloat(-0.05f, 0.05f), wheelPos);
 			CameraSystem.shake += 1;
 			target.AddBuff(BuffID.OnFire, 240);
 			target.AddBuff(BuffID.OnFire3, 240);
@@ -243,7 +243,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			Texture2D texGlow = Assets.Items.Dungeon.ThousandthDegreeProjectile_Glowy.Value;
 			Texture2D wheelTex = Assets.Items.Dungeon.ThousandthDegreeProjectileFired.Value;
 			Texture2D wheelTexGlow = Assets.Items.Dungeon.ThousandthDegreeProjectileFired_Glowy.Value;
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Projectile.GetAlpha(lightColor), Projectile.rotation, tex.Size() / 2f, Projectile.scale, owner.direction == -1 ? SpriteEffects.FlipHorizontally : 0, 0f);
 
 			if (flashTimer > 0)
@@ -312,7 +312,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 				Dust.NewDustPerfect(wheelPos, DustID.Torch, velo.RotatedByRandom(0.65f) * Main.rand.NextFloat(6f, 8f), 0, default, 1.35f);
 			}
 
-			Helper.PlayPitched("Magic/FireHit", 0.45f, 0, wheelPos);
+			SoundHelper.PlayPitched("Magic/FireHit", 0.45f, 0, wheelPos);
 			CameraSystem.shake += 4;
 		}
 	}
@@ -481,7 +481,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 		{
 			Texture2D wheelTex = Assets.Items.Dungeon.ThousandthDegreeProjectileFired.Value;
 			Texture2D wheelTexGlow = Assets.Items.Dungeon.ThousandthDegreeProjectileFired_Glowy.Value;
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 			var bloomColor = Color.Lerp(Color.Transparent, new Color(255, 50, 15, 0), inputHeat / MAXHEAT);
 			DrawPrimitives();
 			Main.spriteBatch.Draw(wheelTex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, wheelTex.Size() / 2f, Projectile.scale, 0, 0f);
@@ -499,10 +499,10 @@ namespace StarlightRiver.Content.Items.Dungeon
 			target.AddBuff(BuffID.OnFire, 240);
 			target.AddBuff(BuffID.OnFire3, 240);
 
-			Helper.PlayPitched("Impacts/FireBladeStab", 0.2f, Main.rand.NextFloat(-0.05f, 0.05f), Projectile.Center);
+			SoundHelper.PlayPitched("Impacts/FireBladeStab", 0.2f, Main.rand.NextFloat(-0.05f, 0.05f), Projectile.Center);
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int i = 0; i < 35; ++i)
 			{
@@ -716,28 +716,32 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public void DrawPrimitives()
 		{
-			Main.spriteBatch.End();
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				Main.spriteBatch.End();
 
-			effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.04f);
-			effect.Parameters["repeats"].SetValue(1);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			trail2?.Render(effect);
+				effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.04f);
+				effect.Parameters["repeats"].SetValue(1);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
-			trail?.Render(effect);
+				trail2?.Render(effect);
 
-			effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
+				trail?.Render(effect);
 
-			trail2?.Render(effect);
+				effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
 
-			trail?.Render(effect);
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				trail2?.Render(effect);
+
+				trail?.Render(effect);
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 		}
 
 		public override void SendExtraAI(BinaryWriter writer)

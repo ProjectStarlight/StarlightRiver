@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.CameraSystem;
+﻿using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -52,8 +53,6 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 		public bool charged;
 
 		public Vector2 offset;
-
-		public Vector2 pullbackOffset; //cache the pullback offset for the stab
 
 		public ref float Timer => ref Projectile.ai[0];
 
@@ -119,7 +118,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 				Projectile.friendly = true;
 
-				Helpers.Helper.PlayPitched("Effects/HeavyWhooshShort", 1f, Main.rand.NextFloat(-0.05f, 0.05f), Owner.Center);
+				Helpers.SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 1f, Main.rand.NextFloat(-0.05f, 0.05f), Owner.Center);
 
 				for (int i = 0; i < 15; i++)
 				{
@@ -131,7 +130,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 					var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<TempleSpearLaser>(), Projectile.damage * 2, 0f, Projectile.owner, ai0: Projectile.identity);
 					(proj.ModProjectile as TempleSpearLaser).parent = Projectile;
 
-					Helper.PlayPitched("Effects/FancySwoosh", 1f, 0.2f, Owner.Center);
+					SoundHelper.PlayPitched("Effects/FancySwoosh", 1f, 0.2f, Owner.Center);
 				}
 			}
 
@@ -145,7 +144,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 				if (Timer < 15) // Pullback
 				{
-					float lerper = EaseBuilder.EaseQuinticOut.Ease(Timer / 15f);
+					float lerper = Eases.EaseQuinticOut(Timer / 15f);
 					offset = Vector2.Lerp(new Vector2(100, 0), new Vector2(50, 0), lerper);
 
 					if (Timer > 1)
@@ -177,12 +176,12 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 				if (Timer < 10)
 				{
-					float lerper = EaseBuilder.EaseQuinticOut.Ease(Timer / 10f);
+					float lerper = Eases.EaseQuinticOut(Timer / 10f);
 					offset = Vector2.Lerp(new Vector2(50, 0), new Vector2(110, 0), lerper);
 				}
 				else if (Timer < 35f)
 				{
-					float lerper = EaseBuilder.EaseQuinticIn.Ease((Timer - 10f) / 25f);
+					float lerper = Eases.EaseQuinticIn((Timer - 10f) / 25f);
 					offset = Vector2.Lerp(new Vector2(110, 0), new Vector2(40, 0), lerper);
 				}
 			}
@@ -200,7 +199,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 			Texture2D starTex = Assets.StarTexture.Value;
 
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			float fade = 1f;
 			if (stabbing && Timer > 20f)
@@ -342,7 +341,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			}
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			Vector2 pos = Projectile.Center + new Vector2(100, 0f).RotatedBy(parent.rotation - MathHelper.PiOver2);
 			var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), pos, Vector2.Zero, ModContent.ProjectileType<TempleSpearLight>(), Projectile.damage, 0f, Projectile.owner);
@@ -360,7 +359,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 		{
 			Texture2D starTex = Assets.StarTexture.Value;
 
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			DrawLaser(Main.spriteBatch);
 
@@ -405,33 +404,37 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 		private void DrawLaser(SpriteBatch spriteBatch)
 		{
-			spriteBatch.End();
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				spriteBatch.End();
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount * -0.03f);
-			effect.Parameters["repeats"].SetValue(1);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			trail?.Render(effect);
-			trail2?.Render(effect);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount * -0.03f);
+				effect.Parameters["repeats"].SetValue(1);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 
-			effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
+				trail?.Render(effect);
+				trail2?.Render(effect);
 
-			trail?.Render(effect);
-			trail2?.Render(effect);
+				effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
 
-			effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.02f);
-			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
+				trail?.Render(effect);
+				trail2?.Render(effect);
 
-			trail?.Render(effect);
-			trail2?.Render(effect);
+				effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.02f);
+				effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				trail?.Render(effect);
+				trail2?.Render(effect);
+
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 		}
 
 		private float TrailFade()
@@ -468,7 +471,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 		{
 			Texture2D starTex = Assets.StarTexture.Value;
 
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			lightColor = new Color(150, 150, 10, 0);
 			lightColor *= Projectile.timeLeft / 1800f;

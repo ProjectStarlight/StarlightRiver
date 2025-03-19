@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Helpers;
+﻿using StarlightRiver.Core.Loaders;
+using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using Terraria.GameContent.Bestiary;
@@ -167,7 +168,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		private readonly KettleCreature parent;
 		private NPC ParentNPC => parent.NPC;
 
-		public bool FootOnGround => Helper.PointInTile(foot);
+		public bool FootOnGround => CollisionHelper.PointInTile(foot);
 
 		public KettleLimb(KettleCreature parent, Vector2 attachOff)
 		{
@@ -209,7 +210,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		}
 	}
 
-	class KettleMortar : ModProjectile, IDrawAdditive, IDrawPrimitive
+	class KettleMortar : ModProjectile, IDrawPrimitive
 	{
 		private List<Vector2> cache;
 		private Trail trail;
@@ -241,7 +242,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			ManageTrail();
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int k = 0; k < 20; k++)
 				Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(32), DustType<Dusts.Glow>(), Vector2.UnitY * -1.5f, 0, new Color(255, 100, 50), 0.6f);
@@ -291,25 +292,28 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Terraria.Graphics.Effects.Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
-			effect.Parameters["repeats"].SetValue(2f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
+				effect.Parameters["repeats"].SetValue(2f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
-			trail?.Render(effect);
+				trail?.Render(effect);
+			}
 		}
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
+		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = Assets.Keys.GlowSoft.Value;
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 150, 50), 0, tex.Size() / 2, 1, 0, 0);
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 0.8f, 0, 0);
+			Texture2D tex = Assets.Masks.GlowSoftAlpha.Value;
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 150, 50, 0), 0, tex.Size() / 2, 1, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0), 0, tex.Size() / 2, 0.8f, 0, 0);
 		}
 	}
 }

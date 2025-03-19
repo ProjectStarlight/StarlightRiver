@@ -26,7 +26,7 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 				ReLogic.Graphics.DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
 
 				name = Lang.GetBuffName(fromType);
-				description = Helpers.Helper.WrapString(Lang.GetBuffDescription(fromType), 200, font, 1);
+				description = Helpers.LocalizationHelper.WrapString(Lang.GetBuffDescription(fromType), 200, font, 1);
 				icon = Terraria.GameContent.TextureAssets.Buff[fromType];
 				buff = !Main.debuff[fromType];
 

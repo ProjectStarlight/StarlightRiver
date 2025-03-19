@@ -184,7 +184,8 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 					Data.anchorTiles,
 					Data.faceDirection,
 					Data.wallAnchor,
-					Data.origin
+					Data.origin,
+					Data.variants
 				);
 		}
 
@@ -240,8 +241,9 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 		public bool faceDirection;
 		public bool wallAnchor;
 		public Point16 origin;
+		public int variants;
 
-		public FurnitureLoadData(int width, int height, int dustType, SoundStyle hitSound, bool tallBottom, Color mapColor, bool solidTop = false, bool solid = false, string mapName = "", AnchorData bottomAnchor = default, AnchorData topAnchor = default, int[] anchorTiles = null, bool faceDirection = false, bool wallAnchor = false, Point16 origin = default)
+		public FurnitureLoadData(int width, int height, int dustType, SoundStyle hitSound, bool tallBottom, Color mapColor, bool solidTop = false, bool solid = false, string mapName = "", AnchorData bottomAnchor = default, AnchorData topAnchor = default, int[] anchorTiles = null, bool faceDirection = false, bool wallAnchor = false, Point16 origin = default, int variants = 1)
 		{
 			this.width = width;
 			this.height = height;
@@ -258,6 +260,7 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 			this.faceDirection = faceDirection;
 			this.wallAnchor = wallAnchor;
 			this.origin = origin;
+			this.variants = variants;
 		}
 	}
 }

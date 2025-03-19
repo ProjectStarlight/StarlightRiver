@@ -48,7 +48,7 @@
 
 		public override Color? GetAlpha(Dust dust, Color lightColor)
 		{
-			return Helpers.Helper.MoltenVitricGlow(dust.fadeIn * 3);
+			return Helpers.CommonVisualEffects.HeatedToCoolColor(dust.fadeIn * 3);
 		}
 	}
 

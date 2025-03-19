@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace StarlightRiver.Core.Systems.ScreenTargetSystem
@@ -9,6 +10,7 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 		public static Semaphore targetSem = new(1, 1);
 
 		private static int firstResizeTime = 0;
+		private static bool wasIngame;
 
 		public float Priority => 1;
 
@@ -18,6 +20,7 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 			{
 				On_Main.CheckMonoliths += RenderScreens;
 				Main.OnResolutionChanged += ResizeScreens;
+				On_Main.UpdateMenu += MenuUpdate;
 			}
 		}
 
@@ -74,22 +77,37 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 
 		public static void ResizeScreens(Vector2 obj)
 		{
-			if (Main.gameMenu || Main.dedServ)
+			if (Main.dedServ)
 				return;
 
 			targetSem.WaitOne();
 
 			targets.ForEach(n =>
 			{
-				Vector2? size = obj;
-
-				if (n.onResize != null)
-					size = n.onResize(obj);
-
-				if (size != null)
+				if (!Main.gameMenu || n.allowOnMenu)
 				{
-					n.RenderTarget?.Dispose();
-					n.RenderTarget = new RenderTarget2D(Main.instance.GraphicsDevice, (int)size?.X, (int)size?.Y, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+					Vector2? size = obj;
+
+					if (n.onResize != null)
+						size = n.onResize(obj);
+
+					if (Main.gameMenu)
+					{
+						float menuScalingFactor = (float)size.Value.Y / 900f;
+						if (menuScalingFactor < 1f)
+							menuScalingFactor = 1f;
+
+						if (Main.SettingDontScaleMainMenuUp)
+							menuScalingFactor = 1f;
+
+						size /= menuScalingFactor;
+					}
+
+					if (size != null)
+					{
+						n.RenderTarget?.Dispose();
+						n.RenderTarget = new RenderTarget2D(Main.instance.GraphicsDevice, (int)size?.X, (int)size?.Y, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+					}
 				}
 			});
 
@@ -100,7 +118,7 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 		{
 			orig();
 
-			if (Main.gameMenu || Main.dedServ)
+			if (Main.dedServ)
 				return;
 
 			RenderTargetBinding[] bindings = Main.graphics.GraphicsDevice.GetRenderTargets();
@@ -109,17 +127,22 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 
 			foreach (ScreenTarget target in targets)
 			{
+				if (Main.gameMenu && !target.allowOnMenu)
+					continue;
+
 				if (target.drawFunct is null) //allows for RTs which dont draw in the default loop, like the lighting tile buffers
 					continue;
 
-				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default);
-				Main.graphics.GraphicsDevice.SetRenderTarget(target.RenderTarget);
-				Main.graphics.GraphicsDevice.Clear(Color.Transparent);
-
 				if (target.activeFunct())
+				{
+					Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default);
+					Main.graphics.GraphicsDevice.SetRenderTarget(target.RenderTarget);
+					Main.graphics.GraphicsDevice.Clear(Color.Transparent);
+
 					target.drawFunct(Main.spriteBatch);
 
-				Main.spriteBatch.End();
+					Main.spriteBatch.End();
+				}
 			}
 
 			Main.graphics.GraphicsDevice.SetRenderTargets(bindings);
@@ -129,13 +152,36 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 
 		public override void PostUpdateEverything()
 		{
-			if (Main.gameMenu)
+			if (!wasIngame)
+			{
 				firstResizeTime = 0;
+				wasIngame = true;
+			}
 			else
+			{
 				firstResizeTime++;
+			}
 
 			if (firstResizeTime == 20)
 				ResizeScreens(new Vector2(Main.screenWidth, Main.screenHeight));
+		}
+
+		private void MenuUpdate(On_Main.orig_UpdateMenu orig)
+		{
+			if (wasIngame)
+			{
+				firstResizeTime = 0;
+				wasIngame = false;
+			}
+			else
+			{
+				firstResizeTime++;
+			}
+
+			if (firstResizeTime == 20)
+				ResizeScreens(new Vector2(Main.screenWidth, Main.screenHeight));
+
+			orig();
 		}
 	}
 }

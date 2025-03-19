@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.NPCs.Actors;
+using StarlightRiver.Core.Loaders;
 using System;
 
 namespace StarlightRiver.Content.Dusts
@@ -15,8 +16,9 @@ namespace StarlightRiver.Content.Dusts
 			dust.frame = new Rectangle(0, 0, 100, 100);
 			dust.scale = 0;
 
-			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
-			dust.shader.UseColor(Color.Transparent);
+			if (ShaderLoader.GetShader("GlowingDust").Value != null)
+				dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
+			dust.shader?.UseColor(Color.Transparent);
 		}
 
 		public override Color? GetAlpha(Dust dust, Color lightColor)
@@ -40,7 +42,7 @@ namespace StarlightRiver.Content.Dusts
 			dust.fadeIn--;
 			dust.position += dust.velocity * 0.25f;
 
-			dust.shader.UseColor(dust.color);
+			dust.shader?.UseColor(dust.color);
 
 			if (dust.fadeIn <= 0)
 				dust.active = false;
@@ -92,7 +94,7 @@ namespace StarlightRiver.Content.Dusts
 			else
 				dust.position += Vector2.Normalize(((AuroraSuctionData)dust.customData).actor.targetItem.Center - dust.position) * 1.5f;
 
-			dust.shader.UseColor(dust.color);
+			dust.shader?.UseColor(dust.color);
 
 			if (dust.fadeIn <= 0)
 				dust.active = false;

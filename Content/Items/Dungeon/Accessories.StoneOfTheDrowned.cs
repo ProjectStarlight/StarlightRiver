@@ -12,8 +12,8 @@ namespace StarlightRiver.Content.Items.Dungeon
 		internal bool summoned;
 
 		// i love private terraria methods which require reflection to access
-		public static MethodInfo? playerItemCheckShoot_Info;
-		public static Action<Player, int, Item, int>? playerItemCheckShoot;
+		public static MethodInfo playerItemCheckShoot_Info;
+		public static Action<Player, int, Item, int> playerItemCheckShoot;
 
 		public override string Texture => AssetDirectory.JungleItem + Name;
 

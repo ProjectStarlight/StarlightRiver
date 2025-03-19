@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Helpers;
+﻿using StarlightRiver.Core.Loaders;
+using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -384,7 +385,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 					if (Math.Abs(NPC.Center.X - shielderPartner.Center.X) < 110 && !shielderComboJumped)
 					{
-						NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Bottom, shielderPartner.Top + new Vector2(shielderPartner.spriteDirection * 15, 0), 0.1f, 120, 350);
+						NPC.velocity = GeometryHelper.GetArcVel(NPC.Bottom, shielderPartner.Top + new Vector2(shielderPartner.spriteDirection * 15, 0), 0.1f, 120, 350);
 						shielderComboJumped = true;
 					}
 
@@ -553,7 +554,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		private void RotateBodyParts(Vector2 direction)
 		{
-			float rotDifference = Helper.RotationDifference(direction.ToRotation(), bowArmRotation);
+			float rotDifference = GeometryHelper.RotationDifference(direction.ToRotation(), bowArmRotation);
 
 			bowArmRotation = MathHelper.Lerp(bowArmRotation, bowArmRotation + rotDifference, 0.1f);
 			bowRotation = BackArmPos.DirectionTo(BowPos).ToRotation();
@@ -563,7 +564,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			if (NPC.spriteDirection == 1)
 				headRotation = bowRotation / 2;
 			else
-				headRotation = Helper.RotationDifference(bowRotation, 3.14f) / 2;
+				headRotation = GeometryHelper.RotationDifference(bowRotation, 3.14f) / 2;
 		}
 
 		public override void DrawHealingGlow(SpriteBatch spriteBatch)
@@ -647,51 +648,47 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Main.spriteBatch.End();
-			Effect effect = Terraria.Graphics.Effects.Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				Main.spriteBatch.End();
 
-			effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.04f);
-			effect.Parameters["repeats"].SetValue(1);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			trail?.Render(effect);
+				effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.04f);
+				effect.Parameters["repeats"].SetValue(1);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
-			effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
+				trail?.Render(effect);
 
-			trail?.Render(effect);
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
 
-			Texture2D tex = Request<Texture2D>(Texture).Value;
-			Texture2D glowTex = Request<Texture2D>(Texture + "_Glow").Value;
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
-			Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
+				trail?.Render(effect);
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+
+				Texture2D tex = Request<Texture2D>(Texture).Value;
+				Texture2D glowTex = Request<Texture2D>(Texture + "_Glow").Value;
+				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
+				Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
+			}
+
 			return false;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			if (Main.netMode == NetmodeID.Server)
 				return;
 
-			/*for (int j = 0; j < 8; j++)
-            {
-                float lerper = j / 8f;
-                Vector2 dir = Main.rand.NextVector2Circular(5, 5);
-                Dust.NewDustPerfect(Projectile.Center + dir - (((Projectile.rotation + 1.57f).ToRotationVector2() * 15) * lerper), DustType<Dusts.GlassGravity>(), dir * 0.3f);
-            }*/
 			SoundEngine.PlaySound(SoundID.Item27, Projectile.Center);
 
 			for (int i = 0; i < 3; i++)
 			{
 				Vector2 dir = -(Projectile.rotation - 1.57f).ToRotationVector2().RotatedByRandom(1.57f) * Main.rand.NextFloat(5);
-				/*int dustID = Dust.NewDust(Projectile.Center, 2, 2, ModContent.DustType<MagmaGunDust>(), dir.X, dir.Y);
-                Main.dust[dustID].noGravity = false;*/
-
 				Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.Center - Projectile.velocity, dir, StarlightRiver.Instance.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(0.5f, 0.7f));
 			}
 		}

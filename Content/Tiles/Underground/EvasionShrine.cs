@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Abilities;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets;
@@ -35,7 +36,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 		}
 	}
 
-	public partial class EvasionShrineDummy : ShrineDummy, IDrawAdditive
+	public partial class EvasionShrineDummy : ShrineDummy
 	{
 		public int maxAttacks = 15;
 		public int lives;
@@ -121,7 +122,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 							attackOrder.Add(k);
 						}
 
-						attackOrder = Helpers.Helper.RandomizeList<int>(attackOrder);
+						attackOrder = Helpers.ListHelper.RandomizeList<int>(attackOrder);
 					}
 
 					if (state > maxAttacks) // --- !  WIN CONDITION  ! ---
@@ -244,15 +245,15 @@ namespace StarlightRiver.Content.Tiles.Underground
 			}
 		}
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
+		public override void PostDraw(Color lightColor)
 		{
 			if (state != SHRINE_STATE_IDLE && state != SHRINE_STATE_DEFEATED)
 			{
 				Texture2D tex = Assets.Tiles.Moonstone.GlowSmall.Value;
 				var origin = new Vector2(tex.Width / 2, tex.Height);
-				spriteBatch.Draw(tex, Center - Main.screenPosition + new Vector2(0, 60), default, GetBeamColor(StarlightWorld.visualTimer), 0, origin, 3.5f, 0, 0);
-				spriteBatch.Draw(tex, Center - Main.screenPosition + new Vector2(10, 60), default, GetBeamColor(StarlightWorld.visualTimer + 2) * 0.8f, 0, origin, 2.5f, 0, 0);
-				spriteBatch.Draw(tex, Center - Main.screenPosition + new Vector2(-10, 60), default, GetBeamColor(StarlightWorld.visualTimer + 4) * 0.8f, 0, origin, 3.2f, 0, 0);
+				Main.spriteBatch.Draw(tex, Center - Main.screenPosition + new Vector2(0, 60), default, GetBeamColor(StarlightWorld.visualTimer), 0, origin, 3.5f, 0, 0);
+				Main.spriteBatch.Draw(tex, Center - Main.screenPosition + new Vector2(10, 60), default, GetBeamColor(StarlightWorld.visualTimer + 2) * 0.8f, 0, origin, 2.5f, 0, 0);
+				Main.spriteBatch.Draw(tex, Center - Main.screenPosition + new Vector2(-10, 60), default, GetBeamColor(StarlightWorld.visualTimer + 4) * 0.8f, 0, origin, 3.2f, 0, 0);
 
 				if (state > SHRINE_STATE_IDLE)
 				{
@@ -279,45 +280,51 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 					if (lives > 0) //kinda gross lol, should probably figure a better way of doing this
 					{
-						spriteBatch.Draw(fireTex, leftPos, frame, new Color(200, 100, 255), 0, fireTex.Size() / 2, 1, 0, 0);
-						spriteBatch.Draw(fireTex, leftPos, frame, Color.White, 0, fireTex.Size() / 2, 0.95f, 0, 0);
+						Main.spriteBatch.Draw(fireTex, leftPos, frame, new Color(200, 100, 255, 0), 0, fireTex.Size() / 2, 1, 0, 0);
+						Main.spriteBatch.Draw(fireTex, leftPos, frame, new Color(255, 255, 255, 0), 0, fireTex.Size() / 2, 0.95f, 0, 0);
 					}
 
 					if (lives > 1)
 					{
-						spriteBatch.Draw(fireTex, leftMidPos, frame, new Color(200, 100, 255), 0, fireTex.Size() / 2, 1, 0, 0);
-						spriteBatch.Draw(fireTex, leftMidPos, frame, Color.White, 0, fireTex.Size() / 2, 0.95f, 0, 0);
+						Main.spriteBatch.Draw(fireTex, leftMidPos, frame, new Color(200, 100, 255, 0), 0, fireTex.Size() / 2, 1, 0, 0);
+						Main.spriteBatch.Draw(fireTex, leftMidPos, frame, new Color(255, 255, 255, 0), 0, fireTex.Size() / 2, 0.95f, 0, 0);
 					}
 
 					if (lives > 2)
 					{
-						spriteBatch.Draw(fireTex, rightMidPos, frame, new Color(200, 100, 255), 0, fireTex.Size() / 2, 1, 0, 0);
-						spriteBatch.Draw(fireTex, rightMidPos, frame, Color.White, 0, fireTex.Size() / 2, 0.95f, 0, 0);
+						Main.spriteBatch.Draw(fireTex, rightMidPos, frame, new Color(200, 100, 255, 0), 0, fireTex.Size() / 2, 1, 0, 0);
+						Main.spriteBatch.Draw(fireTex, rightMidPos, frame, new Color(255, 255, 255, 0), 0, fireTex.Size() / 2, 0.95f, 0, 0);
 					}
 
 					if (lives > 3)
 					{
-						spriteBatch.Draw(fireTex, rightPos, frame, new Color(200, 100, 255), 0, fireTex.Size() / 2, 1, 0, 0);
-						spriteBatch.Draw(fireTex, rightPos, frame, Color.White, 0, fireTex.Size() / 2, 0.95f, 0, 0);
+						Main.spriteBatch.Draw(fireTex, rightPos, frame, new Color(200, 100, 255, 0), 0, fireTex.Size() / 2, 1, 0, 0);
+						Main.spriteBatch.Draw(fireTex, rightPos, frame, new Color(255, 255, 255, 0), 0, fireTex.Size() / 2, 0.95f, 0, 0);
 					}
+
+					Main.spriteBatch.End();
+					Main.spriteBatch.Begin(default, default, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 					Texture2D barrier = Assets.MotionTrail.Value;
 					var sourceRect = new Rectangle(0, (int)(Main.GameUpdateCount * 0.4f), barrier.Width, barrier.Height);
 					var sourceRect2 = new Rectangle(0, (int)(Main.GameUpdateCount * -0.73f), barrier.Width, barrier.Height);
 
 					var targetRect = new Rectangle((int)(Center.X - Main.screenPosition.X) - 27 * 16 - 10, (int)(Center.Y - Main.screenPosition.Y) + 48, 32, 96);
-					spriteBatch.Draw(barrier, targetRect, sourceRect, new Color(155, 100, 255) * 0.6f * Windup);
-					spriteBatch.Draw(barrier, targetRect, sourceRect2, new Color(85, 50, 150) * 0.5f * Windup);
+					Main.spriteBatch.Draw(barrier, targetRect, sourceRect, new Color(155, 100, 255, 0) * 0.6f * Windup);
+					Main.spriteBatch.Draw(barrier, targetRect, sourceRect2, new Color(85, 50, 150, 0) * 0.5f * Windup);
 					targetRect.Inflate(-15, 0);
 					targetRect.Offset(15, 0);
-					spriteBatch.Draw(barrier, targetRect, sourceRect2, Color.White * Windup);
+					Main.spriteBatch.Draw(barrier, targetRect, sourceRect2, new Color(255, 255, 255, 0) * Windup);
 
 					targetRect = new Rectangle((int)(Center.X - Main.screenPosition.X) + 26 * 16 - 6, (int)(Center.Y - Main.screenPosition.Y) + 48, 32, 96);
-					spriteBatch.Draw(barrier, targetRect, sourceRect, new Color(155, 100, 255) * 0.6f * Windup, 0, default, SpriteEffects.FlipHorizontally, 0);
-					spriteBatch.Draw(barrier, targetRect, sourceRect2, new Color(85, 50, 150) * 0.5f * Windup, 0, default, SpriteEffects.FlipHorizontally, 0);
+					Main.spriteBatch.Draw(barrier, targetRect, sourceRect, new Color(155, 100, 255, 0) * 0.6f * Windup, 0, default, SpriteEffects.FlipHorizontally, 0);
+					Main.spriteBatch.Draw(barrier, targetRect, sourceRect2, new Color(85, 50, 150, 0) * 0.5f * Windup, 0, default, SpriteEffects.FlipHorizontally, 0);
 					targetRect.Inflate(-15, 0);
 					targetRect.Offset(-15, 0);
-					spriteBatch.Draw(barrier, targetRect, sourceRect2, Color.White * Windup);
+					Main.spriteBatch.Draw(barrier, targetRect, sourceRect2, new Color(255, 255, 255, 0) * Windup);
+
+					Main.spriteBatch.End();
+					Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 				}
 			}
 		}
@@ -326,7 +333,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 		{
 			float sin = 0.5f + (float)Math.Sin(time * 2 + 1) * 0.5f;
 			float sin2 = 0.5f + (float)Math.Sin(time) * 0.5f;
-			return new Color(80 + (int)(50 * sin), 60, 255) * sin2 * Windup;
+			return new Color(80 + (int)(50 * sin), 60, 255, 0) * sin2 * Windup;
 		}
 
 		public override void SafeSendExtraAI(BinaryWriter writer)

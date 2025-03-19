@@ -1,8 +1,7 @@
-﻿using StarlightRiver.Core.Systems.DummyTileSystem;
-using StarlightRiver.Helpers;
+﻿using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using Terraria.GameInput;
-using Terraria.Graphics.Effects;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Abilities.Faewhip
@@ -13,14 +12,16 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 		public override string Tooltip => "Channel Starlight to forge the energies of connection into an appendage extending from your own arm, allowing you to manipualate objects at a distance and maneuver yourself with the dexterity of the Overgrowth's denizens. NEWBLOCK " +
 			"Objects with a thin, pulsing yellow outline can be grabbed with this appendage, as well as enemies and walls. Anything you can overpower can be manipulated, and anything you can't can be used as an anchor to fling yourself.";
 
-		public override string Texture => "StarlightRiver/Assets/Abilities/Faeflame";
+		public override Asset<Texture2D> Texture => Assets.Abilities.Faeflame;
+		public override Asset<Texture2D> PreviewTexture => Assets.Abilities.FaeflamePreview;
+		public override Asset<Texture2D> PreviewTextureOff => Assets.Abilities.FaeflamePreviewOff;
+
 		public override float ActivationCostDefault => 0.15f;
 		public override Color Color => new(255, 247, 126);
 
 		public Trail trail;
 		public Trail glowTrail;
 		public Vector2[] trailPoints = new Vector2[100];
-		public Effect effect;
 
 		public Vector2 tipsPosition; //where the "tip" of the whip is in the world
 		public bool attached; //if the whip is attached to anything
@@ -51,7 +52,6 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 		{
 			trail = null;
 			glowTrail = null;
-			effect = null;
 			endScale = 0;
 
 			Player.mount.Dismount(Player);
@@ -71,7 +71,7 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 				Dust.NewDustPerfect(Player.Center + new Vector2(0, 60) + vel * 64, DustType<Dusts.GlowLine>(), vel * Main.rand.NextFloat(5, 15), 1, new Color(255, 190, 50), 1.0f);
 			}
 
-			Helper.PlayPitched("Magic/HolyCastShort", 1, 1, Player.Center);
+			SoundHelper.PlayPitched("Magic/HolyCastShort", 1, 1, Player.Center);
 		}
 
 		public override void UpdateActive()
@@ -230,7 +230,7 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 
 					Player.velocity.Y -= 0.43f;
 
-					Player.velocity += (Main.MouseWorld - tipsPosition) * -(0.05f - Helper.BezierEase(Player.velocity.Length() / 24f) * 0.025f);
+					Player.velocity += (Main.MouseWorld - tipsPosition) * -(0.05f - Eases.BezierEase(Player.velocity.Length() / 24f) * 0.025f);
 
 					if (Player.velocity.Length() > 18)
 						Player.velocity = Vector2.Normalize(Player.velocity) * 17.99f;
@@ -294,16 +294,16 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 				trailPoints[k] = pos;
 			}
 
-			effect ??= Filters.Scene["WhipAbility"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("WhipAbility").Value;
 
-			if (startPoint != Vector2.Zero)
+			if (startPoint != Vector2.Zero && effect != null)
 			{
 				spriteBatch.End();
 
 				Texture2D tex0 = Assets.EnergyTrail.Value;
 				Texture2D tex1 = Assets.GlowTrail.Value;
 
-				var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 				Matrix view = Main.GameViewMatrix.TransformationMatrix;
 				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
@@ -338,7 +338,7 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 				spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 				Texture2D endTex = endRooted ? Assets.Abilities.WhipEndRoot.Value : Assets.Abilities.WhipEndGrab.Value;
-				Texture2D endGlow = Assets.Keys.GlowSoft.Value;
+				Texture2D endGlow = Assets.Masks.GlowSoft.Value;
 
 				spriteBatch.Draw(endTex, tipsPosition - Main.screenPosition, null, new Color(255, 190, 100), Main.GameUpdateCount * 0.1f, endTex.Size() / 2, endScale * 0.75f, 0, 0);
 				spriteBatch.Draw(endGlow, tipsPosition - Main.screenPosition, null, new Color(255, 190, 100), 0, endGlow.Size() / 2, endScale, 0, 0);

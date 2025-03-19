@@ -7,8 +7,8 @@ namespace StarlightRiver.Helpers
 	internal class SummonerHelper : IOrderedLoadable
 	{
 		// i love private terraria methods which require reflection to access
-		public static MethodInfo? playerItemCheckShoot_Info;
-		public static Action<Player, int, Item, int>? playerItemCheckShoot;
+		public static MethodInfo playerItemCheckShoot_Info;
+		public static Action<Player, int, Item, int> playerItemCheckShoot;
 
 		public float Priority => 1f;
 

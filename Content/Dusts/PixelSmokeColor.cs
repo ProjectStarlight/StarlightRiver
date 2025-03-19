@@ -4,6 +4,13 @@ namespace StarlightRiver.Content.Dusts
 {
 	public class PixelSmokeColor : ModDust
 	{
+		private static readonly Asset<Texture2D>[] variants =
+		{
+			Assets.SmokeTransparent_1,
+			Assets.SmokeTransparent_2,
+			Assets.SmokeTransparent_3
+		};
+
 		public override string Texture => AssetDirectory.Invisible;
 
 		public override void OnSpawn(Dust dust)
@@ -49,13 +56,15 @@ namespace StarlightRiver.Content.Dusts
 			if (pair[0] is Color color_)
 				fadeColor = color_;
 
-			Color color = Color.Lerp(dust.color, fadeColor ?? Color.Black, EaseBuilder.EaseQuinticInOut.Ease(1f - lerper));
+			Color color = Color.Lerp(dust.color, fadeColor ?? Color.Black, Eases.EaseQuinticInOut(1f - lerper));
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "SmokeTransparent_" + variant).Value;
+			if (variant < 1 || variant > 3)
+				return false;
+
+			Texture2D tex = variants[variant - 1].Value;
 			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () =>
 			{
 				Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, color * lerper, dust.rotation, tex.Size() / 2f, dust.scale, 0f, 0f);
-
 				Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, color * lerper, dust.rotation + MathHelper.PiOver2, tex.Size() / 2f, dust.scale, 0f, 0f);
 			});
 

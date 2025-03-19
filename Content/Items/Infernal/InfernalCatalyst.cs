@@ -62,8 +62,8 @@ namespace StarlightRiver.Content.Items.Infernal
 
 				Projectile.NewProjectile(Item.GetSource_FromThis(), Item.Center + new Vector2(0, 20), Vector2.Zero, ModContent.ProjectileType<FirePillar>(), 0, 0, Main.myPlayer, 1.5f);
 
-				Helpers.Helper.PlayPitched("Magic/FireHit", 1, -0.5f, Item.Center);
-				Helpers.Helper.PlayPitched("Magic/FireHit", 0.5f, 0.5f, Item.Center);
+				Helpers.SoundHelper.PlayPitched("Magic/FireHit", 1, -0.5f, Item.Center);
+				Helpers.SoundHelper.PlayPitched("Magic/FireHit", 0.5f, 0.5f, Item.Center);
 
 				Item.TurnToAir();
 			}

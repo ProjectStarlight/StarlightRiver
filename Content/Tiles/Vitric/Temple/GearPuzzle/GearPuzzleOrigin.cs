@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 			Main.EntitySpriteDraw(tex, Center - Main.screenPosition, null, lightColor, Rotation, tex.Size() / 2, 1, 0, 0);
 
-			Texture2D magmiteTex = ModContent.Request<Texture2D>(AssetDirectory.VitricNpc + "MagmitePassive").Value;
+			Texture2D magmiteTex = Assets.NPCs.Vitric.MagmitePassive.Value;
 			float sinTimer = Main.GameUpdateCount / 20f;
 			var frame = new Rectangle(42, sinTimer % 6.28f < 1.57f ? 0 : (int)(Main.GameUpdateCount / 3f) % 5 * 40, 42, 40);
 

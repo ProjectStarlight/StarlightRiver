@@ -7,6 +7,11 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
 	class VitricTempleWall : ModWall
 	{
+		// These nasty magic numbers are a hack for the framing!
+		const int r1XMin = 36, r1XMax = 144, r1YMin = 36, r1YMax = 72;
+		const int r2XMin = 216, r2XMax = 324, r2YMin = 36, r2YMax = 108;
+		const int r3XMin = 360, r3XMax = 432, r3YMin = 0, r3YMax = 108;
+
 		public override string Texture => AssetDirectory.VitricTile + "VitricTempleWall";
 
 		public override void SetStaticDefaults()
@@ -22,15 +27,23 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 		{
+			Lighting.GetCornerColors(i, j, out VertexColors vertices);
+
 			Tile tile = Main.tile[i, j];
 
 			var frame = new Rectangle(i % 14 * 16, j % 25 * 16, 16, 16);
-			var frame2 = new Rectangle(tile.WallFrameX, tile.WallFrameY, 32, 32);
 
-			Lighting.GetCornerColors(i, j, out VertexColors vertices);
+			int fx = tile.WallFrameX;
+			int fy = tile.WallFrameY;
+			int fxMax = fx + 32;
+			int fyMax = fy + 32;
 
-			if (!(frame2.Intersects(new Rectangle(36, 36, 36 * 3, 36)) || frame2.Intersects(new Rectangle(36 * 6, 36, 36 * 3, 36 * 2)) || frame2.Intersects(new Rectangle(36 * 10, 0, 36 * 2, 36 * 3))))
-				Main.tileBatch.Draw(Assets.Tiles.Vitric.VitricTempleWallEdge.Value, new Vector2(i * 16 - (int)Main.screenPosition.X + Main.offScreenRange - 8, j * 16 - (int)Main.screenPosition.Y + Main.offScreenRange - 8), frame2, vertices, Vector2.Zero, 1f, SpriteEffects.None);
+			bool inRegion1 = fxMax > r1XMin && fx < r1XMax && fyMax > r1YMin && fy < r1YMax;
+			bool inRegion2 = fxMax > r2XMin && fx < r2XMax && fyMax > r2YMin && fy < r2YMax;
+			bool inRegion3 = fxMax > r3XMin && fx < r3XMax && fyMax > r3YMin && fy < r3YMax;
+
+			if (!(inRegion1 || inRegion2 || inRegion3))
+				Main.tileBatch.Draw(Assets.Tiles.Vitric.VitricTempleWallEdge.Value, new Vector2(i * 16 - (int)Main.screenPosition.X + Main.offScreenRange - 8, j * 16 - (int)Main.screenPosition.Y + Main.offScreenRange - 8), new Rectangle(tile.WallFrameX, tile.WallFrameY, 32, 32), vertices, Vector2.Zero, 1f, SpriteEffects.None);
 
 			Main.tileBatch.Draw(Assets.Tiles.Vitric.VitricTempleWall.Value, new Vector2(i * 16 - (int)Main.screenPosition.X + Main.offScreenRange, j * 16 - (int)Main.screenPosition.Y + Main.offScreenRange), frame, vertices, Vector2.Zero, 1f, SpriteEffects.None);
 

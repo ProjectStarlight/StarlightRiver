@@ -110,8 +110,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 			spriteBatch.End();
 
-			LightingBufferRenderer.DrawWithLighting(pos + offset, texHammer, Color.White);
-			LightingBufferRenderer.DrawWithLighting(pos, tex, Color.White);
+			LightingBufferRenderer.DrawWithLighting(texHammer, pos + offset, Color.White);
+			LightingBufferRenderer.DrawWithLighting(tex, pos, Color.White);
 
 			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
@@ -187,7 +187,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			else if (input < 0.8f)
 				return 52 - 60;
 			else
-				return 52 - 60 + Helpers.Helper.BezierEase((input - 0.8f) / 0.2f) * 60;
+				return 52 - 60 + Helpers.Eases.BezierEase((input - 0.8f) / 0.2f) * 60;
 		}
 	}
 

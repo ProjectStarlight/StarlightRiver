@@ -398,7 +398,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			}
 
 			Vector2 posToBe = entityCenter + new Vector2(data.x, data.y);
-			Terraria.Graphics.Shaders.ArmorShaderData unused = dust.shader.UseColor(dust.color);
+			Terraria.Graphics.Shaders.ArmorShaderData unused = dust.shader?.UseColor(dust.color);
 
 			if ((posToBe - dust.position).Length() < 5)
 			{

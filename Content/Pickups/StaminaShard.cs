@@ -11,8 +11,6 @@ namespace StarlightRiver.Content.Pickups
 {
 	class StaminaShardPickup : AbilityPickup
 	{
-		Tile Parent => Framing.GetTileSafely((int)Center.X / 16, (int)Center.Y / 16);
-
 		public override Asset<Texture2D> Texture => GetStaminaTexture();
 
 		public override Color GlowColor => new(0, 30, 90);

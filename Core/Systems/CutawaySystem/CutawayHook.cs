@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.CustomHooks;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
 using System.Collections.Generic;
@@ -69,7 +70,7 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 			{
 				Cutaway activeCutaway = cutaways.FirstOrDefault(n => n.fadeTime < 0.95f);
 
-				Effect effect = Filters.Scene["Negative"].GetShader().Shader;
+				Effect effect = ShaderLoader.GetShader("Negative").Value;
 
 				if (effect is null)
 					return;

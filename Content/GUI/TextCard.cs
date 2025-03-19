@@ -71,15 +71,15 @@ namespace StarlightRiver.Content.GUI
 			int Longest = MessageLength > TitleLength ? MessageLength : TitleLength;
 			int startY = Main.screenHeight / 5;
 			int startX = Main.screenWidth / 2;
-			float slide = 0.2f + Helpers.Helper.BezierEase(Math.Clamp(timer / 60f, 0f, 1f)) * 0.8f;
-			float slide2 = 0.4f + Helpers.Helper.BezierEase(Math.Clamp(timer / 60f, 0f, 1f)) * 0.6f;
+			float slide = 0.2f + Helpers.Eases.BezierEase(Math.Clamp(timer / 60f, 0f, 1f)) * 0.8f;
+			float slide2 = 0.4f + Helpers.Eases.BezierEase(Math.Clamp(timer / 60f, 0f, 1f)) * 0.6f;
 			Color textColor = Color.White * ((timer - 60) / 60f);
 			Color barColor = Color.White * Math.Clamp(timer / 45f, 0f, 1f);
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.AlphaBlend, SamplerState.LinearWrap, default, default, default, Main.UIScaleMatrix);
 
-			Texture2D glowTex = Assets.Keys.Glow.Value;
+			Texture2D glowTex = Assets.Masks.Glow.Value;
 			spriteBatch.Draw(glowTex, new Rectangle(startX - (int)(Longest * 2 * slide2), startY - (int)(15 * textScale), (int)(Longest * 4 * slide2), (int)(120 * textScale)), new Rectangle(5, 5, glowTex.Width - 10, glowTex.Height - 10), Color.Black * 0.6f * Math.Clamp(timer / 60f, 0f, 1f));
 
 			spriteBatch.End();

@@ -77,9 +77,9 @@ namespace StarlightRiver.Core
 				var offset = new Point16(maxWidth / 2 - 1, maxHeight - 1);
 
 				if (variantCount > 1)//if statement because the ternary was acting weird
-					StructureHelper.Generator.GenerateStructure(fullStructurePath + style, new Point16(x, y) - offset, StarlightRiver.Instance);
+					StructureHelper.API.Generator.GenerateStructure(fullStructurePath + style, new Point16(x, y) - offset, StarlightRiver.Instance);
 				else
-					StructureHelper.Generator.GenerateStructure(fullStructurePath, new Point16(x, y) - offset, StarlightRiver.Instance);
+					StructureHelper.API.Generator.GenerateStructure(fullStructurePath, new Point16(x, y) - offset, StarlightRiver.Instance);
 			}
 
 			return 0;
@@ -128,7 +128,7 @@ namespace StarlightRiver.Core
 				Texture2D tex = TextureAssets.Tile[t.TileType].Value;
 				Rectangle frame = tex.Frame(variantCount, 1, t.TileFrameX - 1);
 				Vector2 pos = position - Main.screenPosition + DrawOffset - new Vector2(frame.Width * 0.5f, frame.Height);
-				LightingBufferRenderer.DrawWithLighting(pos, tex, frame, DrawColor);
+				LightingBufferRenderer.DrawWithLighting(tex, pos, frame, DrawColor);
 			}
 		}
 	}

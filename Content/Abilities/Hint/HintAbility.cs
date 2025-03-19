@@ -19,7 +19,11 @@ namespace StarlightRiver.Content.Abilities.Hint
 			"Most things can be investigated - treasures, lore, and enemy weaknesses all lie in plain sight to those who can see with the eyes of a star.";
 
 		public override float ActivationCostDefault => 0.25f;
-		public override string Texture => "StarlightRiver/Assets/Abilities/Hint";
+
+		public override Asset<Texture2D> Texture => Assets.Abilities.Hint;
+		public override Asset<Texture2D> PreviewTexture => Assets.Abilities.HintPreview;
+		public override Asset<Texture2D> PreviewTextureOff => Assets.Abilities.HintPreviewOff;
+
 		public override Color Color => new(68, 76, 220);
 
 		public override int CooldownMax => 60;
@@ -151,7 +155,6 @@ namespace StarlightRiver.Content.Abilities.Hint
 	internal class HintText : ModProjectile
 	{
 		public string text;
-		public bool follow;
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -182,7 +185,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 			if (Timer > text.Length * 2f)
 				Projectile.velocity.Y = -0.25f;
 
-			if (follow && !Main.dedServ)
+			if (!Main.dedServ)
 				Projectile.Center = Main.screenPosition + new Vector2(Main.screenWidth / 2, Main.screenHeight / 2 - 64);
 		}
 
@@ -202,7 +205,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 				return false;
 
 			int end = Math.Min((int)Timer, text.Length);
-			string toDraw = Helpers.Helper.WrapString(text[..end], 400, FontAssets.ItemStack.Value, Projectile.scale);
+			string toDraw = Helpers.LocalizationHelper.WrapString(text[..end], 400, FontAssets.ItemStack.Value, Projectile.scale);
 
 			float opacity = 1f;
 			int full = text.Length * 3;

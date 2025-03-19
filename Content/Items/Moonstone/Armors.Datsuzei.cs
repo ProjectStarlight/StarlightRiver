@@ -1,4 +1,6 @@
-﻿using StarlightRiver.Core.Systems.CameraSystem;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 
 using System;
@@ -80,7 +82,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			if (activationTimer > 0 && !Main.playerInventory)
 			{
 				int activationTimerNoCurve = Datsuzei.activationTimer;
-				float activationTimer = Helper.BezierEase(Math.Min(1, activationTimerNoCurve / 60f));
+				float activationTimer = Eases.BezierEase(Math.Min(1, activationTimerNoCurve / 60f));
 
 				var hideTarget = new Rectangle(20, 20, 446, 52);
 
@@ -119,22 +121,26 @@ namespace StarlightRiver.Content.Items.Moonstone
 				sparkles.DrawParticles(Main.spriteBatch);
 
 				//the shader for the flames
-				Effect effect1 = Filters.Scene["MagicalFlames"].GetShader().Shader;
-				effect1.Parameters["sampleTexture1"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap1.Value);
-				effect1.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
-				effect1.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.008f);
-
 				if (activationTimerNoCurve > 85)
 				{
-					Main.spriteBatch.End();
-					Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, effect1, Main.UIScaleMatrix);
+					Effect effect1 = ShaderLoader.GetShader("MagicalFlames").Value;
 
-					Texture2D spearTex = Assets.Items.Moonstone.DatsuzeiHotbarSprite.Value;
-					Main.spriteBatch.Draw(spearTex, target.Center() + new Vector2(0, -40), null, Color.White, 0, spearTex.Size() / 2, 1, 0, 0);
+					if (effect1 != null)
+					{
+						effect1.Parameters["sampleTexture1"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap1.Value);
+						effect1.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
+						effect1.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.008f);
+
+						Main.spriteBatch.End();
+						Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, effect1, Main.UIScaleMatrix);
+
+						Texture2D spearTex = Assets.Items.Moonstone.DatsuzeiHotbarSprite.Value;
+						Main.spriteBatch.Draw(spearTex, target.Center() + new Vector2(0, -40), null, Color.White, 0, spearTex.Size() / 2, 1, 0, 0);
+
+						Main.spriteBatch.End();
+						Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
+					}
 				}
-
-				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
 
 				if (activationTimerNoCurve >= 80)
 				{
@@ -160,7 +166,6 @@ namespace StarlightRiver.Content.Items.Moonstone
 					for (int k = 0; k < 3; k++)
 					{
 						sparkles.AddParticle(
-							new Particle(
 								new Vector2(111 + backTex.Width * activationTimer, 20 + Main.rand.Next(backTex.Height)),
 								new Vector2(Main.rand.NextFloat(-0.6f, -0.3f), Main.rand.NextFloat(3f)),
 								Main.rand.NextFloat(6.28f),
@@ -168,14 +173,13 @@ namespace StarlightRiver.Content.Items.Moonstone
 								Color.White,
 								60,
 								new Vector2(Main.rand.NextFloat(0.15f, 0.2f), Main.rand.NextFloat(6.28f)),
-								new Rectangle(0, 0, 100, 100)));
+								new Rectangle(0, 0, 100, 100));
 					}
 				}
 
 				if (Main.rand.NextBool(4))
 				{
 					sparkles.AddParticle(
-						new Particle(
 							new Vector2(111, 20) + new Vector2(Main.rand.Next(backTex.Width),
 							Main.rand.Next(backTex.Height)),
 							new Vector2(0, Main.rand.NextFloat(0.4f)),
@@ -184,7 +188,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 							new Color(255, 230, 0),
 							120,
 							new Vector2(Main.rand.NextFloat(0.05f, 0.15f), 0.02f),
-							new Rectangle(0, 0, 100, 100)));
+							new Rectangle(0, 0, 100, 100));
 				}
 			}
 		}
@@ -224,7 +228,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
-			Helper.PlayPitched("Magic/HolyCastShort", 1, comboState / 4f, player.Center);
+			SoundHelper.PlayPitched("Magic/HolyCastShort", 1, comboState / 4f, player.Center);
 
 			switch (comboState)
 			{
@@ -265,6 +269,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 				if (activationTimer < 120)
 					activationTimer++;
+
+				sparkles?.UpdateParticles();
 			}
 		}
 
@@ -337,8 +343,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 					if (Timer == 1)
 					{
-						Helper.PlayPitched("Impacts/Clink", 1, 0, Projectile.Center);
-						Helper.PlayPitched("Magic/MysticCast", 1, -0.2f, Projectile.Center);
+						SoundHelper.PlayPitched("Impacts/Clink", 1, 0, Projectile.Center);
+						SoundHelper.PlayPitched("Magic/MysticCast", 1, -0.2f, Projectile.Center);
 
 						for (int k = 0; k < 40; k++)
 						{
@@ -376,7 +382,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 					if (Timer == 1)
 						storedRotation = Projectile.velocity.ToRotation();
 
-					float rot = storedRotation + (-1.5f + Helper.BezierEase(Timer / 40f) * 3f);
+					float rot = storedRotation + (-1.5f + Eases.BezierEase(Timer / 40f) * 3f);
 					Projectile.Center = Owner.Center + Vector2.UnitX.RotatedBy(rot) * (-30 + (float)Math.Sin(Timer / 40f * 3.14f) * 100);
 					Projectile.rotation = rot;
 
@@ -387,7 +393,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 					if (Timer == 1)
 						storedRotation = Projectile.velocity.ToRotation();
 
-					rot = storedRotation + (1f - Helper.BezierEase(Timer / 30f) * 2f);
+					rot = storedRotation + (1f - Eases.BezierEase(Timer / 30f) * 2f);
 					Projectile.Center = Owner.Center + Vector2.UnitX.RotatedBy(rot) * (-30 + (float)Math.Sin(Timer / 30f * 3.14f) * 100);
 					Projectile.rotation = rot;
 
@@ -431,7 +437,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			Helper.PlayPitched("Magic/FireHit", 0.5f, 1f, target.Center);
+			SoundHelper.PlayPitched("Magic/FireHit", 0.5f, 1f, target.Center);
 
 			for (int k = 0; k < 40; k++)
 			{
@@ -566,26 +572,29 @@ namespace StarlightRiver.Content.Items.Moonstone
 			if (ComboState == -1)
 				return;
 
-			Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("DatsuzeiTrail").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
-			effect.Parameters["repeats"].SetValue(8f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
-			effect.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
+				effect.Parameters["repeats"].SetValue(8f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+				effect.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
 
-			trail?.Render(effect);
+				trail?.Render(effect);
 
-			if (ComboState == 3)
-				trailBack?.Render(effect);
+				if (ComboState == 3)
+					trailBack?.Render(effect);
 
-			effect.Parameters["sampleTexture2"].SetValue(TextureAssets.MagicPixel.Value);
+				effect.Parameters["sampleTexture2"].SetValue(TextureAssets.MagicPixel.Value);
 
-			trail2?.Render(effect);
+				trail2?.Render(effect);
+			}
 		}
 	}
 }

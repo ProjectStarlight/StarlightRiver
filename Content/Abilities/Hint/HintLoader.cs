@@ -48,7 +48,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 			stream.Close();
 		}
 
-		public static string? GetNPCEntry(NPC npc)
+		public static string GetNPCEntry(NPC npc)
 		{
 			string key;
 
@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 			return hints.Npc["Default"].FormatWith(npc.FullName);
 		}
 
-		public static string? GetProjectileEntry(Projectile proj)
+		public static string GetProjectileEntry(Projectile proj)
 		{
 			string key;
 
@@ -92,7 +92,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 			return null;
 		}
 
-		public static string? GetTileEntry(Tile tile)
+		public static string GetTileEntry(Tile tile)
 		{
 			string key;
 			ModTile modTile = ModContent.GetModTile(tile.TileType);

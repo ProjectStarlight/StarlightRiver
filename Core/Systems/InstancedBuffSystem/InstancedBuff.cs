@@ -20,6 +20,11 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		public static Dictionary<string, InstancedBuff> prototypes = new();
 
 		/// <summary>
+		/// Stores the last time this buff was told it was sent data, to ensure that if data comes out of order only the latest is used.
+		/// </summary>
+		public long LastSentAt = 0;
+
+		/// <summary>
 		/// The numeric ID of the backing traditional buff to indicate this buffs inflicted status
 		/// </summary>
 		public int BackingType => StarlightRiver.Instance.Find<ModBuff>(Name).Type;
@@ -98,7 +103,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		/// <returns>If that NPC has any instance of this buff</returns>
 		public bool AnyInflicted(NPC npc)
 		{
-			return npc.HasBuff(BackingType);
+			return npc.HasBuff(BackingType) && GetInstance(npc) != null;
 		}
 
 		/// <summary>
@@ -108,7 +113,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		/// <returns>If that player has any instance of this buff</returns>
 		public bool AnyInflicted(Player player)
 		{
-			return player.HasBuff(BackingType);
+			return player.HasBuff(BackingType) && GetInstance(player) != null;
 		}
 
 		/// <summary>
@@ -116,7 +121,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		/// </summary>
 		/// <param name="npc">The NPC to check</param>
 		/// <returns>The inflicted instance, or null if not inflicted</returns>
-		public InstancedBuff? GetInstance(NPC npc)
+		public InstancedBuff GetInstance(NPC npc)
 		{
 			return InstancedBuffNPC.GetInstance(npc, Name);
 		}
@@ -126,7 +131,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		/// </summary>
 		/// <param name="player">The player to check</param>
 		/// <returns>The inflicted instance, or null if not inflicted</returns>
-		public InstancedBuff? GetInstance(Player player)
+		public InstancedBuff GetInstance(Player player)
 		{
 			return InstancedBuffPlayer.GetInstance(player, Name);
 		}
@@ -174,7 +179,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 					return;
 
 				InstancedBuffPacket packet = new(Main.myPlayer, Name, whoAmI, isPlayer, player.buffTime[buffIndex], stream.ToArray());
-				packet.Send(255, Main.myPlayer, false);
+				packet.Send(-1, Main.myPlayer, false);
 			}
 			else
 			{
@@ -185,7 +190,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 					return;
 
 				InstancedBuffPacket packet = new(Main.myPlayer, Name, whoAmI, isPlayer, npc.buffTime[buffIndex], stream.ToArray());
-				packet.Send(255, Main.myPlayer, false);
+				packet.Send(-1, Main.myPlayer, false);
 			}
 		}
 
@@ -235,6 +240,10 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 				if (prototype is StackableBuff)
 				{
 					StackableBuff stackable = prototype.GetInstance(Main.LocalPlayer) as StackableBuff;
+
+					if (stackable is null)
+						return;
+
 					DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
 					string message = $"x{stackable.stacks.Count}";
 					Vector2 dims = font.MeasureString(message) * 0.8f;

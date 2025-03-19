@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Tiles.Permafrost;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -43,7 +44,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			if (proj.CountsAsClass(DamageClass.Melee) && info.Crit && instance.cooldown <= 0)
 			{
-				Helper.PlayPitched("Magic/FrostHit", 0.75f, Main.rand.NextFloat(-0.05f, 0.05f), target.Center);
+				SoundHelper.PlayPitched("Magic/FrostHit", 0.75f, Main.rand.NextFloat(-0.05f, 0.05f), target.Center);
 				Projectile.NewProjectile(player.GetSource_OnHit(target), target.Center, Vector2.Zero, ModContent.ProjectileType<FrostExplosion>(), (int)(damageDone * 0.75f), info.Knockback * 0.25f, player.whoAmI);
 				instance.cooldown = 60;
 			}
@@ -58,7 +59,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			if (Item.CountsAsClass(DamageClass.Melee) && info.Crit && instance.cooldown <= 0)
 			{
-				Helper.PlayPitched("Magic/FrostHit", 0.75f, Main.rand.NextFloat(-0.05f, 0.05f), target.Center);
+				SoundHelper.PlayPitched("Magic/FrostHit", 0.75f, Main.rand.NextFloat(-0.05f, 0.05f), target.Center);
 				Projectile.NewProjectile(player.GetSource_OnHit(target), target.Center, Vector2.Zero, ModContent.ProjectileType<FrostExplosion>(), (int)(damageDone * 0.75f), info.Knockback * 0.25f, player.whoAmI);
 				instance.cooldown = 60;
 			}
@@ -82,7 +83,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		private Trail trail2;
 
 		public float TimeFade => 1 - Projectile.timeLeft / 20f;
-		public float Radius => EaseBuilder.EaseCubicOut.Ease(1 - Projectile.timeLeft / 20f) * 55f;
+		public float Radius => Eases.EaseCubicOut(1 - Projectile.timeLeft / 20f) * 55f;
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -134,7 +135,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
-			return Helper.CheckCircularCollision(Projectile.Center, (int)Radius + 50, targetHitbox);
+			return CollisionHelper.CheckCircularCollision(Projectile.Center, (int)Radius + 50, targetHitbox);
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -185,23 +186,26 @@ namespace StarlightRiver.Content.Items.Permafrost
 			if (Projectile.ai[1] == 1f)
 				return;
 
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.01f);
-			effect.Parameters["repeats"].SetValue(5f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
+				effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.01f);
+				effect.Parameters["repeats"].SetValue(5f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
-			trail?.Render(effect);
-			trail2?.Render(effect);
+				trail?.Render(effect);
+				trail2?.Render(effect);
 
-			effect.Parameters["sampleTexture"].SetValue(Assets.LightningTrail.Value);
+				effect.Parameters["sampleTexture"].SetValue(Assets.LightningTrail.Value);
 
-			trail2?.Render(effect);
+				trail2?.Render(effect);
+			}
 		}
 	}
 }

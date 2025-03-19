@@ -58,7 +58,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			if (!isLoaded)
 			{
-				Helpers.Helper.PlayPitched("GlassMiniboss/WeavingShort", 1f, 0f, Projectile.Center);
+				Helpers.SoundHelper.PlayPitched("GlassMiniboss/WeavingShort", 1f, 0f, Projectile.Center);
 				isLoaded = true;
 			}
 
@@ -194,7 +194,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			SpriteEffects dir = Projectile.direction * Parent.direction < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-			float scaleIn = Projectile.scale * Helpers.Helper.BezierEase(Utils.GetLerpValue(50, 70, Timer, true));
+			float scaleIn = Projectile.scale * Helpers.Eases.BezierEase(Utils.GetLerpValue(50, 70, Timer, true));
 
 			var fadeIn = Color.Lerp(lightColor, Color.White, Utils.GetLerpValue(100, 60, Timer, true));
 			Main.EntitySpriteDraw(sword.Value, gripPos - Main.screenPosition, frame, fadeIn, rot, origin, scaleIn, dir, 0);

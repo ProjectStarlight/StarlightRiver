@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			for (int i = 0; i < Player.MaxBuffs; i++)
 			{
-				if (Helper.IsValidDebuff(Player, i))
+				if (BuffHelper.IsValidDebuff(Player, i))
 					Player.buffTime[i] -= 180;
 			}
 		}

@@ -15,8 +15,6 @@ namespace StarlightRiver.Core
 	{
 		public static int permafrostCenter;
 
-		private static Vector2 oldPos;
-
 		public void PermafrostGen(GenerationProgress progress, GameConfiguration configuration)
 		{
 			progress.Message = "Permafrost generation";
@@ -99,7 +97,7 @@ namespace StarlightRiver.Core
 					randomIndices[i] = i;
 				}
 
-				randomIndices = Helper.RandomizeList(randomIndices.ToList(), WorldGen.genRand).ToArray();
+				randomIndices = ListHelper.RandomizeList(randomIndices.ToList(), WorldGen.genRand).ToArray();
 
 				for (int i = 0; i < spotsToCheck; i++)
 				{
@@ -164,7 +162,7 @@ namespace StarlightRiver.Core
 			}
 
 			squidBossArena = new Rectangle(centerX - 40, centerY + 100, 109, 180);
-			StructureHelper.Generator.GenerateStructure("Structures/SquidBossArena", new Point16(centerX - 40, centerY + 100), Mod);
+			StructureHelper.API.Generator.GenerateStructure("Structures/SquidBossArena", new Point16(centerX - 40, centerY + 100), Mod);
 
 			GenVars.structures.AddProtectedStructure(squidBossArena, 20);
 
@@ -174,7 +172,7 @@ namespace StarlightRiver.Core
 			for (int k = 1; k <= 3; k++)
 			{
 				float fraction = k / 4f;
-				int yTarget = (int)Helper.LerpFloat(squidBossArena.Y, (float)GenVars.worldSurfaceHigh, fraction);
+				int yTarget = (int)MathHelper.Lerp(squidBossArena.Y, (float)GenVars.worldSurfaceHigh, fraction);
 
 				for (int x = 0; x < Main.maxTilesX; x++)
 				{
@@ -205,7 +203,7 @@ namespace StarlightRiver.Core
 					if (!Helpers.WorldGenHelper.IsRectangleSafe(new Rectangle(xTarget, yTarget, 32, 32)))
 					{
 						xTarget = iceCenter + WorldGen.genRand.Next(-100, 100);
-						yTarget = (int)Helper.LerpFloat(squidBossArena.Y, (float)GenVars.worldSurfaceHigh, fraction) + WorldGen.genRand.Next(-40, 40);
+						yTarget = (int)MathHelper.Lerp(squidBossArena.Y, (float)GenVars.worldSurfaceHigh, fraction) + WorldGen.genRand.Next(-40, 40);
 						continue;
 					}
 					else
@@ -369,23 +367,16 @@ namespace StarlightRiver.Core
 				case 4: touchstonePos = topLeft + new Point16(13, 16); break;
 			}
 
-			bool genned = StructureHelper.Generator.GenerateMultistructureSpecific("Structures/TouchstoneAltar", topLeft, Mod, variant);
+			StructureHelper.API.MultiStructureGenerator.GenerateMultistructureSpecific("Structures/TouchstoneAltar", variant, topLeft, Mod);
 
-			if (genned)
-			{
-				var te = TileEntity.ByPosition[touchstonePos] as TouchstoneTileEntity;
+			var te = TileEntity.ByPosition[touchstonePos] as TouchstoneTileEntity;
 
-				if (te is null)
-					return touchstonePos.ToVector2();
-
-				te.targetPoint = targetPoint;
-
+			if (te is null)
 				return touchstonePos.ToVector2();
-			}
-			else
-			{
-				throw new Exception("Failed to generate an altar...");
-			}
+
+			te.targetPoint = targetPoint;
+
+			return touchstonePos.ToVector2();
 		}
 	}
 }

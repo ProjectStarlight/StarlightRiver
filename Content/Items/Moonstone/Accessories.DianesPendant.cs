@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.Dungeon;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.BarrierSystem;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
@@ -212,10 +213,10 @@ namespace StarlightRiver.Content.Items.Moonstone
 			for (int k = AfterimageLength; k > 0; k--)
 			{
 				float progress = 1 - (float)((AfterimageLength - k) / (float)AfterimageLength);
-				Color color = new Color(100, 60, 255) * EaseFunction.EaseQuarticOut.Ease(progress) * MathHelper.Lerp(0.45f, 0.75f, ChargeRatio);
+				Color color = new Color(100, 60, 255) * Eases.EaseQuarticOut(progress) * MathHelper.Lerp(0.45f, 0.75f, ChargeRatio);
 
 				if (k > 0 && k < oldRotation.Count)
-					Main.spriteBatch.Draw(tex, oldPosition[k] - Main.screenPosition, null, color, oldRotation[k], tex.Size() / 2, Projectile.scale * EaseFunction.EaseQuadOut.Ease(progress), SpriteEffects.None, 0f);
+					Main.spriteBatch.Draw(tex, oldPosition[k] - Main.screenPosition, null, color, oldRotation[k], tex.Size() / 2, Projectile.scale * Eases.EaseQuadOut(progress), SpriteEffects.None, 0f);
 			}
 
 			Main.spriteBatch.End();
@@ -433,26 +434,30 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private void DrawTrail(SpriteBatch spriteBatch)
 		{
-			spriteBatch.End();
-			Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("DatsuzeiTrail").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				spriteBatch.End();
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
-			effect.Parameters["repeats"].SetValue(8f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
-			effect.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			trail?.Render(effect);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
+				effect.Parameters["repeats"].SetValue(8f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+				effect.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
 
-			effect.Parameters["sampleTexture2"].SetValue(TextureAssets.MagicPixel.Value);
+				trail?.Render(effect);
 
-			trail2?.Render(effect);
+				effect.Parameters["sampleTexture2"].SetValue(TextureAssets.MagicPixel.Value);
 
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				trail2?.Render(effect);
+
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 		}
 	}
 
@@ -468,7 +473,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			dust.fadeIn++;
 			dust.scale *= 1.02f;
 			base.Update(dust);
-			dust.shader.UseColor(dust.color * Math.Min(dust.fadeIn / 20f, 1));
+			dust.shader?.UseColor(dust.color * Math.Min(dust.fadeIn / 20f, 1));
 			return false;
 		}
 	}

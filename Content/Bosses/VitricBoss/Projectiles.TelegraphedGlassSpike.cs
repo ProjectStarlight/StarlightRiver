@@ -4,7 +4,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
-	public class TelegraphedGlassSpike : ModProjectile, IDrawAdditive
+	public class TelegraphedGlassSpike : ModProjectile
 	{
 		Vector2 savedVelocity;
 
@@ -19,7 +19,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			Projectile.timeLeft = 240;
 			Projectile.tileCollide = true;
 			Projectile.ignoreWater = true;
-			Projectile.damage = 5;
 		}
 
 		public override void SetStaticDefaults()
@@ -38,7 +37,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			if (Projectile.timeLeft > 150)
 				Projectile.velocity = Vector2.SmoothStep(Vector2.Zero, savedVelocity, (30 - (Projectile.timeLeft - 150)) / 30f);
 
-			Color color = Helpers.Helper.MoltenVitricGlow(MathHelper.Min(200 - Projectile.timeLeft, 120));
+			Color color = Helpers.CommonVisualEffects.HeatedToCoolColor(MathHelper.Min(200 - Projectile.timeLeft, 120));
 
 			if (Projectile.timeLeft < 165)
 			{
@@ -53,14 +52,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			Projectile.rotation = savedVelocity.ToRotation() + 3.14f / 4;
 		}
 
-		public override void ModifyHitPlayer(Player target, ref Player.HurtModifiers modifiers)
+		public override void OnHitPlayer(Player target, Player.HurtInfo info)
 		{
 			target.AddBuff(BuffID.Bleeding, 300);
 		}
 
 		public override void OnKill(int timeLeft)
 		{
-			Color color = Helpers.Helper.MoltenVitricGlow(MathHelper.Min(200 - Projectile.timeLeft, 120));
+			Color color = CommonVisualEffects.HeatedToCoolColor(MathHelper.Min(200 - Projectile.timeLeft, 120));
 
 			for (int k = 0; k <= 10; k++)
 			{
@@ -77,22 +76,22 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			if (Projectile.timeLeft > 180)
 				return false;
 
-			Color color = Helpers.Helper.MoltenVitricGlow(MathHelper.Min(200 - Projectile.timeLeft, 120));
+			Color color = CommonVisualEffects.HeatedToCoolColor(MathHelper.Min(200 - Projectile.timeLeft, 120));
 
-			spriteBatch.Draw(Request<Texture2D>(Texture).Value, Projectile.Center - Main.screenPosition, new Rectangle(0, 0, 22, 22), lightColor, Projectile.rotation, Vector2.One * 11, Projectile.scale, 0, 0);
-			spriteBatch.Draw(Request<Texture2D>(Texture).Value, Projectile.Center - Main.screenPosition, new Rectangle(0, 22, 22, 22), color, Projectile.rotation, Vector2.One * 11, Projectile.scale, 0, 0);
+			spriteBatch.Draw(Assets.Bosses.VitricBoss.GlassSpike.Value, Projectile.Center - Main.screenPosition, new Rectangle(0, 0, 22, 22), lightColor, Projectile.rotation, Vector2.One * 11, Projectile.scale, 0, 0);
+			spriteBatch.Draw(Assets.Bosses.VitricBoss.GlassSpike.Value, Projectile.Center - Main.screenPosition, new Rectangle(0, 22, 22, 22), color, Projectile.rotation, Vector2.One * 11, Projectile.scale, 0, 0);
 
 			return false;
 		}
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
+		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = Request<Texture2D>(Texture + "Glow").Value;
+			Texture2D tex = Assets.Bosses.VitricBoss.GlassSpikeGlow.Value;
 			float alpha = Projectile.timeLeft > 160 ? 1 - (Projectile.timeLeft - 160) / 20f : 1;
-			Color color = Helpers.Helper.MoltenVitricGlow(MathHelper.Min(200 - Projectile.timeLeft, 120)) * alpha;
+			Color color = CommonVisualEffects.HeatedToCoolColor(MathHelper.Min(200 - Projectile.timeLeft, 120)) * alpha;
+			color.A = 0;
 
-			spriteBatch.Draw(tex, Projectile.Center + Vector2.Normalize(Projectile.velocity) * -40 - Main.screenPosition, tex.Frame(),
-				color * (Projectile.timeLeft / 140f), Projectile.rotation + 3.14f, tex.Size() / 2, 1.8f, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center + Vector2.Normalize(Projectile.velocity) * -40 - Main.screenPosition, tex.Frame(), color * (Projectile.timeLeft / 140f), Projectile.rotation + 3.14f, tex.Size() / 2, 1.8f, 0, 0);
 
 			if (Projectile.timeLeft > 180)
 			{
@@ -100,7 +99,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				float alpha2 = (float)Math.Sin((Projectile.timeLeft - 180) / 60f * 3.14f);
 				Color color2 = new Color(255, 180, 80) * alpha2;
 				var source = new Rectangle(0, tex2.Height / 2, tex2.Width, tex2.Height / 2);
-				spriteBatch.Draw(tex2, Projectile.Center - Main.screenPosition, source, color2, Projectile.rotation - 3.14f / 4 - 3.14f / 2, new Vector2(tex2.Width / 2, 0), 6, 0, 0);
+				Main.spriteBatch.Draw(tex2, Projectile.Center - Main.screenPosition, source, color2, Projectile.rotation - 3.14f / 4 - 3.14f / 2, new Vector2(tex2.Width / 2, 0), 6, 0, 0);
 			}
 		}
 	}

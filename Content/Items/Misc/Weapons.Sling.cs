@@ -88,7 +88,7 @@ namespace StarlightRiver.Content.Items.Misc
 			player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, rotation - (player.direction == 1 ? MathHelper.ToRadians(120f) : MathHelper.ToRadians(60f)));
 			var itemSize = new Vector2(22);
 			var itemOrigin = new Vector2(-6f, 0f);
-			Helper.CleanHoldStyle(player, rotation, itemPosition, itemSize, itemOrigin, true, false, true);
+			CommonGunAnimations.CleanHoldStyle(player, rotation, itemPosition, itemSize, itemOrigin, true, false, true);
 		}
 
 		public override void UseStyle(Player player, Rectangle heldItemFrame)
@@ -249,7 +249,7 @@ namespace StarlightRiver.Content.Items.Misc
 				Projectile.NewProjectile(Projectile.GetSource_FromThis(), pos, Projectile.DirectionTo(Main.MouseWorld) * shootSpeed, (int)ProjectileToShoot, Projectile.damage, Projectile.knockBack, Projectile.owner);
 			}
 
-			Helper.PlayPitched("Effects/HeavyWhooshShort", 0.6f, 0.15f, Projectile.position);
+			SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 0.6f, 0.15f, Projectile.position);
 			if (Owner.HeldItem.ModItem is Sling sling)
 			{
 				int type = sling.currentAmmoStruct.projectileID;
@@ -343,7 +343,7 @@ namespace StarlightRiver.Content.Items.Misc
 			target.AddBuff(BuffID.Poisoned, Main.rand.Next(new int[] { 180, 240, 300 }));
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int i = 0; i < 20; i++)
 			{
@@ -409,7 +409,7 @@ namespace StarlightRiver.Content.Items.Misc
 			CameraSystem.shake += 1;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int i = 0; i < 20; i++)
 			{
@@ -475,7 +475,7 @@ namespace StarlightRiver.Content.Items.Misc
 			return true;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int i = 0; i < 20; i++)
 			{

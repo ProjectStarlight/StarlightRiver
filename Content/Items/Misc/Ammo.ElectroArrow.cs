@@ -199,7 +199,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			Helpers.Helper.PlayPitched("Magic/LightningShortest1", 0.6f, Main.rand.NextFloat(-0.2f, 0.4f), Projectile.Center);
+			Helpers.SoundHelper.PlayPitched("Magic/LightningShortest1", 0.6f, Main.rand.NextFloat(-0.2f, 0.4f), Projectile.Center);
 
 			hitNPCs.Add(target);
 

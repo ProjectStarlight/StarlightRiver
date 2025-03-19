@@ -1,6 +1,7 @@
 ﻿using ReLogic.Peripherals.RGB;
 using StarlightRiver.Content.Items.Hell;
 using StarlightRiver.Content.Items.Infernal;
+using StarlightRiver.Core.Loaders;
 using System;
 using System.Collections.Generic;
 using Terraria.Graphics.Effects;
@@ -70,7 +71,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 					Projectile.NewProjectile(item.GetSource_FromThis(), item.Center + new Vector2(10, 20), Vector2.Zero, ProjectileType<FirePillar>(), 0, 0, Main.myPlayer, 1.25f);
 					Projectile.NewProjectile(item.GetSource_FromThis(), item.Center + new Vector2(-5, 20), Vector2.Zero, ProjectileType<FirePillar>(), 0, 0, Main.myPlayer, 1.5f);
 
-					Helpers.Helper.PlayPitched("Magic/FireHit", 1, -0.25f, item.Center);
+					Helpers.SoundHelper.PlayPitched("Magic/FireHit", 1, -0.25f, item.Center);
 
 					Fadeout = 1;
 				}
@@ -100,7 +101,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 			var target = new Rectangle(0, 0, 400, 200);
 			target.Offset((NPC.Center + new Vector2(-200, -196) - Main.screenPosition).ToPoint());
 
-			Effect effect = Filters.Scene["ColoredFire"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("ColoredFire").Value;
 
 			if (effect is null)
 				return;
@@ -158,7 +159,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 
 			var frame = new Rectangle(59, 0, 59, 120);
 
-			Effect effect = Filters.Scene["ColoredFire"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("ColoredFire").Value;
 
 			if (effect is null)
 				return false;
@@ -266,7 +267,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 				spriteBatch.End();
 				spriteBatch.Begin(default, BlendState.Additive, SamplerMode, default, RasterizerCullMode, default, Main.UIScaleMatrix);
 
-				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
+				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Masks/GlowSoft").Value;
 				spriteBatch.Draw(tex, position, null, new Color(255, 140, 60) * (HellLavaConversion.HellLavaItemGlow + (float)Math.Sin(StarlightWorld.visualTimer) * 0.2f), 0, tex.Size() / 2, 1, 0, 0);
 
 				spriteBatch.End();
@@ -300,7 +301,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 				spriteBatch.End();
 				spriteBatch.Begin(default, BlendState.Additive, SamplerMode, default, RasterizerCullMode, default, Main.GameViewMatrix.TransformationMatrix);
 
-				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
+				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Masks/GlowSoft").Value;
 				spriteBatch.Draw(tex, Item.Center - Main.screenPosition, null, new Color(255, 140, 60), 0, tex.Size() / 2, 1, 0, 0);
 
 				spriteBatch.End();

@@ -39,6 +39,9 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
 		public override void Update()
 		{
+			//Particles
+			particles.UpdateParticles();
+
 			//Dust
 			if (timer > 0 && timer < 359)
 				Dust.NewDustPerfect(Center + Vector2.One.RotatedByRandom(6.28f) * 412, DustType<Dusts.Stone>());
@@ -101,7 +104,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 				}
 			}
 
-			if (StarlightWorld.HasFlag(WorldFlags.OvergrowBossFree) && timer <= 360)
+			if (timer <= 360)
 				timer++;
 		}
 
@@ -148,7 +151,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 			particles.DrawParticles(spriteBatch);
 
 			if (Main.rand.NextBool(10))
-				particles.AddParticle(new Particle(Vector2.Zero, new Vector2(0, Main.rand.NextFloat(0.6f, 1.8f)), 0, 1, Color.White, 600, Center + new Vector2(Main.rand.Next(-350, 350), -580)));
+				particles.AddParticle(Vector2.Zero, new Vector2(0, Main.rand.NextFloat(0.6f, 1.8f)), 0, 1, Color.White, 600, Center + new Vector2(Main.rand.Next(-350, 350), -580));
 
 			for (int k = -2; k < 3; k++)
 			{

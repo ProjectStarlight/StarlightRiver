@@ -51,7 +51,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 				{
 					if (!wasSwimming)
 					{
-						Helper.PlayPitched("Magic/WaterWoosh", 0.8f, 0, Player.Center);
+						SoundHelper.PlayPitched("Magic/WaterWoosh", 0.8f, 0, Player.Center);
 
 						for (int k = 0; k < 20; k++)
 						{
@@ -77,7 +77,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 				Player.rocketTime = Player.rocketTimeMax;
 				Player.wingTime = Player.wingTimeMax;
 
-				Helper.PlayPitched("Magic/WaterWoosh", 0.8f, 0, Player.Center);
+				SoundHelper.PlayPitched("Magic/WaterWoosh", 0.8f, 0, Player.Center);
 
 				for (int k = 0; k < 20; k++)
 				{
@@ -173,8 +173,8 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 
 			if (Player.controlJump && boostCD <= 0)
 			{
-				Helper.PlayPitched("SquidBoss/MagicSplash", 1f, -0.5f, Player.Center);
-				Helper.PlayPitched("SquidBoss/MagicSplash", 1f, 0f, Player.Center);
+				SoundHelper.PlayPitched("SquidBoss/MagicSplash", 1f, -0.5f, Player.Center);
+				SoundHelper.PlayPitched("SquidBoss/MagicSplash", 1f, 0f, Player.Center);
 
 				boostCD = 60;
 			}

@@ -5,6 +5,7 @@ using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.Misc.SoilgunFiles;
 using StarlightRiver.Content.Items.UndergroundTemple;
 using StarlightRiver.Content.Items.Vitric;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.ExposureSystem;
 using StarlightRiver.Core.Systems.PixelationSystem;
@@ -136,7 +137,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public ref float UseTime => ref Projectile.ai[1];
 		public ref float PressureTimer => ref Projectile.ai[2];
 		public bool CanHold => Owner.channel && !Owner.CCed && !Owner.noItems;
-		public Vector2 ArmPosition => Owner.RotatedRelativePoint(Owner.MountedCenter, true) + new Vector2(28f + MathHelper.Lerp(0f, -12f, EaseBuilder.EaseQuarticIn.Ease(Timer < 150f ? Timer / 150f : 1f)), 16f * Owner.direction).RotatedBy(Projectile.rotation);
+		public Vector2 ArmPosition => Owner.RotatedRelativePoint(Owner.MountedCenter, true) + new Vector2(28f + MathHelper.Lerp(0f, -12f, Eases.EaseQuarticIn(Timer < 150f ? Timer / 150f : 1f)), 16f * Owner.direction).RotatedBy(Projectile.rotation);
 		public Vector2 BarrelPosition => ArmPosition + Projectile.velocity * Projectile.width * 0.5f + new Vector2(-2f, -2f * Owner.direction).RotatedBy(Projectile.rotation);
 		public Player Owner => Main.player[Projectile.owner];
 		public override string Texture => AssetDirectory.MiscItem + Name;
@@ -226,7 +227,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 				PressureTimer = MathHelper.Lerp(oldPressureTimer, newPressureTimer, lerper);
 
-				Vector2 firePos = BarrelPosition + Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(0f, -15f, EaseBuilder.EaseCircularOut.Ease(lerper));
+				Vector2 firePos = BarrelPosition + Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(0f, -15f, Eases.EaseCircularOut(lerper));
 
 				Lighting.AddLight(firePos, new Color(255, 255, 20).ToVector3() * new Vector3(1.5f * (1f - lerper), 1.5f * (1f - lerper), 1.5f * (1f - lerper)));
 
@@ -246,11 +247,11 @@ namespace StarlightRiver.Content.Items.Misc
 					dust2.customData = new Color(150, 150, 150);
 					dust2.noGravity = true;
 
-					Vector2 pos = firePos + Main.rand.NextVector2Circular(150f, 150f) * EaseBuilder.EaseCircularInOut.Ease(1f - lerper);
+					Vector2 pos = firePos + Main.rand.NextVector2Circular(150f, 150f) * Eases.EaseCircularInOut(1f - lerper);
 
 					Dust.NewDustPerfect(pos, ModContent.DustType<PixelatedImpactLineDust>(), pos.DirectionTo(firePos) * 1.5f, 0, new Color(255, 100, 20, 0), 0.075f);
 
-					pos = firePos + Main.rand.NextVector2Circular(150f, 150f) * EaseBuilder.EaseCircularInOut.Ease(1f - lerper);
+					pos = firePos + Main.rand.NextVector2Circular(150f, 150f) * Eases.EaseCircularInOut(1f - lerper);
 
 					Dust.NewDustPerfect(pos, ModContent.DustType<PixelatedGlow>(), pos.DirectionTo(firePos) * 1.5f, 0, new Color(255, 100, 20, 0), 0.2f);
 				}
@@ -342,7 +343,7 @@ namespace StarlightRiver.Content.Items.Misc
 					}
 
 					//SoundEngine.PlaySound(SoundID.Item61, Projectile.position);
-					Helper.PlayPitched("Magic/FireHit", 1f, -0.5f, Projectile.Center);
+					SoundHelper.PlayPitched("Magic/FireHit", 1f, -0.5f, Projectile.Center);
 
 					recoilStrength = 2f;
 
@@ -381,7 +382,7 @@ namespace StarlightRiver.Content.Items.Misc
 				return;
 			}
 
-			float spinUpTime = (int)(UseTime * MathHelper.Lerp(5f, 1f, EaseBuilder.EaseCircularOut.Ease(Pressure)));
+			float spinUpTime = (int)(UseTime * MathHelper.Lerp(5f, 1f, Eases.EaseCircularOut(Pressure)));
 
 			if (maxPressureTimer > 0)
 				spinUpTime = (int)(UseTime * MathHelper.Lerp(1f, 3f, maxPressureTimer / 300f));
@@ -425,7 +426,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 					rightClickAnimationTimer = 35;
 
-					Helper.PlayPitched("Impacts/HammerSteamSlam", 2f, -0.25f, Projectile.Center);
+					SoundHelper.PlayPitched("Impacts/HammerSteamSlam", 2f, -0.25f, Projectile.Center);
 				}
 			}
 		}
@@ -439,7 +440,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 			Texture2D holderTex = ModContent.Request<Texture2D>(Texture + "_AmmoHolder").Value;
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Masks + "GlowAlpha").Value;
 			Texture2D starTex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "StarTexture_Alt").Value;
 
 			Texture2D blockTex = TextureAssets.Item[ammoID].Value;
@@ -460,16 +461,16 @@ namespace StarlightRiver.Content.Items.Misc
 				{
 					float interpolant = progress / 0.1f;
 
-					position += Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(0f, -15f * recoilStrength, EaseBuilder.EaseCircularOut.Ease(interpolant));
+					position += Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(0f, -15f * recoilStrength, Eases.EaseCircularOut(interpolant));
 
-					rotation += MathHelper.Lerp(0f, -0.5f * Projectile.direction, EaseBuilder.EaseQuinticOut.Ease(interpolant));
+					rotation += MathHelper.Lerp(0f, -0.5f * Projectile.direction, Eases.EaseQuinticOut(interpolant));
 				}
 				else
 				{
 					float interpolant = (progress - 0.1f) / 0.9f;
-					position += Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(-15f * recoilStrength, 0f, EaseBuilder.EaseBackOut.Ease(interpolant));
+					position += Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(-15f * recoilStrength, 0f, Eases.EaseBackOut(interpolant));
 
-					rotation += MathHelper.Lerp(-0.5f * Projectile.direction, 0f, EaseBuilder.EaseBackOut.Ease(interpolant));
+					rotation += MathHelper.Lerp(-0.5f * Projectile.direction, 0f, Eases.EaseBackOut(interpolant));
 				}
 			}
 
@@ -477,7 +478,7 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				float progress = 1f - rightClickAnimationTimer / 35f;
 
-				position += Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(0f, -15f, EaseBuilder.EaseCircularOut.Ease(progress));
+				position += Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(0f, -15f, Eases.EaseCircularOut(progress));
 			}
 
 			float lerper = Timer < 150f ? Timer / 150f : 1f;
@@ -492,7 +493,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () =>
 			{
-				Effect effect = Filters.Scene["ColoredFireAlpha"].GetShader().Shader;
+				Effect effect = ShaderLoader.GetShader("ColoredFireAlpha").Value;
 
 				if (effect is null)
 					return;
@@ -506,9 +507,9 @@ namespace StarlightRiver.Content.Items.Misc
 				{
 					float progress = 1f - rightClickAnimationTimer / 35f;
 
-					position += Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(0f, -15f, EaseBuilder.EaseCircularOut.Ease(progress));
+					position += Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(0f, -15f, Eases.EaseCircularOut(progress));
 
-					firePos += Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(0f, -15f, EaseBuilder.EaseCircularOut.Ease(progress));
+					firePos += Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(0f, -15f, Eases.EaseCircularOut(progress));
 				}
 
 				float fadeIn = PressureTimer < 250f ? PressureTimer / 250f : 1f;
@@ -572,7 +573,7 @@ namespace StarlightRiver.Content.Items.Misc
 				{
 					float progress = 1f - rightClickAnimationTimer / 35f;
 
-					firePos += Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(0f, -15f, EaseBuilder.EaseCircularOut.Ease(progress));
+					firePos += Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(0f, -15f, Eases.EaseCircularOut(progress));
 				}
 
 				float interpolant = (Pressure - 0.5f) / 0.5f;
@@ -594,7 +595,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (pressureFlashTimer > 0)
 			{
-				rotation = 2f * EaseBuilder.EaseCircularInOut.Ease(pressureFlashTimer / 20f);
+				rotation = 2f * Eases.EaseCircularInOut(pressureFlashTimer / 20f);
 
 				Main.spriteBatch.Draw(starTex, position + new Vector2(-17f, 4f * Projectile.direction).RotatedBy(Projectile.rotation) + off,
 					null, color * (pressureFlashTimer / 20f), rotation, starTex.Size() / 2f, Projectile.scale * 0.55f, 0f, 0f);
@@ -702,10 +703,10 @@ namespace StarlightRiver.Content.Items.Misc
 					Projectile.velocity.RotatedByRandom(1.5f) * Main.rand.NextFloat(1f, 3f), 0, new Color(255, 100, 20, 0), 0.15f).customData = -Projectile.direction;
 			}
 
-			Helper.PlayPitched("VitricBoss/ceramicimpact", 1f, Pressure, Projectile.Center);
+			SoundHelper.PlayPitched("VitricBoss/ceramicimpact", 1f, Pressure, Projectile.Center);
 
 			if (MaxPressure)
-				Helper.PlayPitched("Guns/dry_fire", 1f, -0.5f, Projectile.Center);
+				SoundHelper.PlayPitched("Guns/dry_fire", 1f, -0.5f, Projectile.Center);
 
 			if (Owner.HeldItem.ModItem is Earthduster earthDuster)
 			{
@@ -830,7 +831,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Texture2D texBlur = ModContent.Request<Texture2D>(AssetDirectory.MiscItem + Name + "_Blur").Value;
 			Texture2D texGlow = ModContent.Request<Texture2D>(AssetDirectory.MiscItem + Name + "_Glow").Value;
 			Texture2D texFireGlow = ModContent.Request<Texture2D>(AssetDirectory.MiscItem + Name + "_FireGlow").Value;
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Masks + "GlowAlpha").Value;
 
 			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () =>
 			{
@@ -857,7 +858,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 				Main.spriteBatch.Draw(texBlur, dust.position - Main.screenPosition, frame, Color.White with { A = 0 } * 0.5f * lerper, dust.rotation, frame.Size() / 2f, dust.scale, 0f, 0f);
 
-				Effect effect = Filters.Scene["ColoredFireAlpha"].GetShader().Shader;
+				Effect effect = ShaderLoader.GetShader("ColoredFireAlpha").Value;
 
 				if (effect is null)
 					return;

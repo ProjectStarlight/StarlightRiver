@@ -1,3 +1,4 @@
+using StarlightRiver.Core.Loaders;
 using System;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -72,6 +73,11 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 		{
 			orig(self);
 
+			Effect effect = ShaderLoader.GetShader("ConicalNoise").Value;
+
+			if (effect is null)
+				return;
+
 			foreach (Projectile Projectile in Main.projectile)
 			{
 				if (Projectile.active && Projectile.type == ModContent.ProjectileType<IgnitionGauntletLaunch>() && Main.player[Projectile.owner].GetModPlayer<IgnitionPlayer>().loadedCharge > 15)
@@ -84,7 +90,7 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 
 					var mp = Projectile.ModProjectile as IgnitionGauntletLaunch;
 					Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-					Effect effect = Filters.Scene["ConicalNoise"].GetShader().Shader;
+
 					Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 					effect.Parameters["vnoise"].SetValue(ModContent.Request<Texture2D>(Texture + "_noise").Value);

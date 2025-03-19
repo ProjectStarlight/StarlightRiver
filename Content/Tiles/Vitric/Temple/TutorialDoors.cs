@@ -143,7 +143,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			if (ShouldBeOn(Player))
 			{
 				Main.spriteBatch.Draw(Assets.Tiles.Vitric.TutorialDoor2.Value, position - Main.screenPosition, lightColor);
-				Main.spriteBatch.Draw(Assets.Tiles.Vitric.TutorialDoor2Glow.Value, position - Main.screenPosition, Helper.IndicatorColor);
+				Main.spriteBatch.Draw(Assets.Tiles.Vitric.TutorialDoor2Glow.Value, position - Main.screenPosition, CommonVisualEffects.IndicatorColor);
 			}
 		}
 	}

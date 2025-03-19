@@ -1,0 +1,26 @@
+[
+    {
+        "Key": "Example",
+        "Title": "Example tutorial",
+        "Screens": [
+            {
+                "ImagePath": "StarlightRiver/Assets/Tutorials/Example1",
+                "Text": "This is the first page of an example tutorial using the data driven tutorials! You can make more like this."
+            },
+            {
+                "ImagePath": "StarlightRiver/Assets/Tutorials/Example2",
+                "Text": "This is the second page of an example tutorial."
+            }
+        ]
+    },
+    {
+        "Key": "Starsight",
+        "Title": "Starsight",
+        "Screens": [
+            {
+                "ImagePath": "StarlightRiver/Assets/Tutorials/Example1",
+                "Text": "Press Y to channel starlight to see ancient knowledge about what your mouse is hovering over."
+            }
+        ]
+    }
+]

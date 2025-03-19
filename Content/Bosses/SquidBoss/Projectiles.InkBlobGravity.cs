@@ -11,7 +11,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			Projectile.aiStyle = -1;
 			Projectile.timeLeft = 200;
 			Projectile.hostile = true;
-			Projectile.damage = 25;
 		}
 
 		public override void AI()

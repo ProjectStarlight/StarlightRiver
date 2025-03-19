@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using Terraria.ID;
@@ -32,7 +33,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 		public WindowSmallItem() : base("Smol Window", "{{Debug}} Item", "WindowSmall", 1) { }
 	}
 
-	class WindowSmallDummy : Dummy, IDrawAdditive
+	class WindowSmallDummy : Dummy
 	{
 		public float timer;
 
@@ -51,6 +52,15 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
 			Main.spriteBatch.Draw(tex, target, source, Color.White);
 			Main.spriteBatch.Draw(tex2, target, tex2.Frame(), lightColor);
+
+			Texture2D tex3 = Assets.Tiles.Overgrow.PitGlow.Value;
+
+			float off = (float)Math.Sin(timer) * 0.05f;
+
+			for (int k = -1; k < 2; k++)
+			{
+				Main.spriteBatch.Draw(tex3, Center - Main.screenPosition + new Vector2(0, 100), tex3.Frame(), new Color(1, 0.9f, 0.6f, 0) * (0.4f + off), (float)Math.PI + k * (0.9f + off), new Vector2(tex3.Width / 2, 0), 0.7f, 0, 0);
+			}
 		}
 
 		public override void Update()
@@ -62,18 +72,6 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 			{
 				Vector2 off = Vector2.UnitY.RotatedByRandom(0.8f);
 				Dust.NewDustPerfect(Center + off * 20, DustType<Dusts.GoldSlowFade>(), off * 0.15f, 0, default, 0.35f);
-			}
-		}
-
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
-			Texture2D tex = Assets.Tiles.Overgrow.PitGlow.Value;
-
-			float off = (float)Math.Sin(timer) * 0.05f;
-
-			for (int k = -1; k < 2; k++)
-			{
-				spriteBatch.Draw(tex, Center - Main.screenPosition + new Vector2(0, 100), tex.Frame(), new Color(1, 0.9f, 0.6f) * (0.4f + off), (float)Math.PI + k * (0.9f + off), new Vector2(tex.Width / 2, 0), 0.7f, 0, 0);
 			}
 		}
 	}

@@ -124,7 +124,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (justAltUsed)
 				return;
 
-			Vector2 itemPosition = Helper.SetGunUseStyle(player, Item, shootDirection, -6f, new Vector2(68f, 22f), new Vector2(-48f, 0f));
+			Vector2 itemPosition = CommonGunAnimations.SetGunUseStyle(player, Item, shootDirection, -6f, new Vector2(68f, 22f), new Vector2(-48f, 0f));
 
 			float animProgress = 1f - player.itemTime / (float)player.itemTimeMax;
 
@@ -143,7 +143,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (justAltUsed)
 				return;
 
-			Helper.SetGunUseItemFrame(player, shootDirection, shootRotation, -0.2f, true);
+			CommonGunAnimations.SetGunUseItemFrame(player, shootDirection, shootRotation, -0.2f, true);
 		}
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -192,8 +192,8 @@ namespace StarlightRiver.Content.Items.Vitric
 					Dust.NewDustPerfect(shellPos + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<PixelatedGlow>(), new Vector2(player.direction * -1, -0.5f).RotatedByRandom(0.4f) * Main.rand.NextFloat(4f), 0, new Color(255, 150, 0, 0), 0.35f);
 				}
 
-				Helper.PlayPitched("Guns/PlinkLever", 0.45f, Main.rand.NextFloat(-0.1f, 0.1f), position);
-				Helper.PlayPitched("Guns/RifleLight", 0.75f, Main.rand.NextFloat(-0.1f, 0.1f), position);
+				SoundHelper.PlayPitched("Guns/PlinkLever", 0.45f, Main.rand.NextFloat(-0.1f, 0.1f), position);
+				SoundHelper.PlayPitched("Guns/RifleLight", 0.75f, Main.rand.NextFloat(-0.1f, 0.1f), position);
 				Projectile.NewProjectileDirect(source, position, velocity * 1.4f, type, damage, knockback, player.whoAmI).GetGlobalProjectile<CoachGunUpgradeGlobalProj>().ShotFromGun = true;
 
 				CameraSystem.shake += 1;
@@ -317,7 +317,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void OnKill(int timeLeft)
 		{
-			Helper.PlayPitched("GlassMiniboss/GlassSmash", 0.5f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
+			SoundHelper.PlayPitched("GlassMiniboss/GlassSmash", 0.5f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
 
 			for (int i = 1; i < 5; i++)
 			{
@@ -379,7 +379,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
-			Helper.PlayPitched("GlassMiniboss/GlassBounce", 0.15f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
+			SoundHelper.PlayPitched("GlassMiniboss/GlassBounce", 0.15f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
 
 			if (Math.Abs(Projectile.velocity.X - oldVelocity.X) > float.Epsilon)
 				Projectile.velocity.X = -oldVelocity.X;
@@ -521,7 +521,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Texture2D tex = Assets.Items.Vitric.CoachGunUpgradeMuzzleFlashDust.Value;
 			Texture2D texBlur = Assets.Items.Vitric.CoachGunUpgradeMuzzleFlashDust_Blur.Value;
 			Texture2D texGlow = Assets.Items.Vitric.CoachGunUpgradeMuzzleFlashDust_Glow.Value;
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			Main.spriteBatch.Draw(bloomTex, dust.position - Main.screenPosition, null, new Color(255, 75, 0, 0) * 0.25f * lerper, dust.rotation, bloomTex.Size() / 2f, dust.scale * 1.25f, 0f, 0f);
 

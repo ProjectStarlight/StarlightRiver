@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public override bool RightClick(int i, int j)
 		{
-			if (Helpers.Helper.TryTakeItem(Main.LocalPlayer, ModContent.ItemType<Items.Vitric.TempleEntranceKey>(), 1))
+			if (Helpers.InventoryHelper.TryTakeItem(Main.LocalPlayer, ModContent.ItemType<Items.Vitric.TempleEntranceKey>(), 1))
 			{
 				WorldGen.KillTile(i, j);
 				return true;

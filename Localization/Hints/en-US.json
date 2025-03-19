@@ -26,10 +26,10 @@
     "Terraria/DemonEye": "Sentient eyeball with contact lens. Smaller specimen of it's species.",
     "Terraria/Antlion": "Desert insect which spits sand.",
     "Terraria/Skeleton": "Animated human skeleton. Rarely carries hooks used in mining operations.",
-    "Terraria/Crimera": "Flesh creature with an appetite for blood. Has a notibly lage spine.",
+    "Terraria/Crimera": "Flesh creature with an appetite for blood. Has a notibly large spine.",
     "Terraria/FaceMonster": "Flesh creature with an elongated head. Has a notibly large spine.",
 
-    "Terraria/EyeOfCthulhu": "Largest specimen of a race of sentient eyeballs. Contains a large jaw beneath it's cornea, and posses teh ability to move swiftly in short bursts.",
+    "Terraria/EyeOfCthulhu": "Largest specimen of a race of sentient eyeballs. Contains a large jaw beneath it's cornea, and posses the ability to move swiftly in short bursts.",
     "Terraria/KingSlime": "Large amalgamation of sentient gelatine. Will break apart into individual creatures when struck.",
 
     "StarlightRiver/SquidBoss": "A large aquatic beast protected by the energy in it's tentacles. These tentacles turn red when vulnerable to physical attack.",
@@ -45,7 +45,8 @@
     "StarlightRiver/VitricBoss": "Construct built to protect it's temple, made of ceramic and glass. Can vent it's molten core into deadly attacks.",
     "StarlightRiver/Snoobel": "Obscure hybrid creature with little aesthetic appeal. Uses it's unnaturally large trunk as a weapon.",
     "StarlightRiver/Stalker": "A harmless hallucination induced by corrupt spores.",
-    "StarlightRiver/Warbanner": "Possesed banner emitting enraging energy to nearby creatures, empowering them."
+    "StarlightRiver/Warbanner": "Possesed banner emitting enraging energy to nearby creatures, empowering them.",
+    "StarlightRiver/TheThinker":  "Pure thought made sentient. It's cocoon may be ruptured using a material known as 'Dendrite'."
   },
 
   "Projectile": {

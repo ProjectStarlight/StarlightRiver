@@ -8,7 +8,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 	{
 		public static void InflictFromNet(Player player, int duration, string type)
 		{
-			Main.NewText($"InflictFromNet: {duration}, {type}");
+			StarlightRiver.Instance.Logger.Info($"InflictFromNet: {duration}, {type}");
 			InstancedBuffPlayer mp = player.GetModPlayer<InstancedBuffPlayer>();
 
 			if (InstancedBuff.TryGetPrototype(type, out InstancedBuff proto))
@@ -18,12 +18,13 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 
 				mp.buffInstances.Add(proto.Clone());
 				player.AddBuff(proto.BackingType, duration);
+				StarlightRiver.Instance.Logger.Info($"InflictFromNet: complete!");
 			}
 		}
 
 		public static void InflictFromNet(NPC npc, int duration, string type)
 		{
-			Main.NewText($"InflictFromNet: {duration}, {type}");
+			StarlightRiver.Instance.Logger.Info($"InflictFromNet: {duration}, {type}");
 			InstancedBuffNPC gn = npc.GetGlobalNPC<InstancedBuffNPC>();
 
 			if (InstancedBuff.TryGetPrototype(type, out InstancedBuff proto))
@@ -33,6 +34,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 
 				gn.buffInstances.Add(proto.Clone());
 				npc.AddBuff(proto.BackingType, duration);
+				StarlightRiver.Instance.Logger.Info($"InflictFromNet: complete!");
 			}
 		}
 

@@ -402,7 +402,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 				if (comboTimer == 100)
 				{
-					NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Bottom, healingTarget.Center + new Vector2(healingTarget.spriteDirection * 15, -100), 0.2f, 120, 450);
+					NPC.velocity = GeometryHelper.GetArcVel(NPC.Bottom, healingTarget.Center + new Vector2(healingTarget.spriteDirection * 15, -100), 0.2f, 120, 450);
 					return true;
 				}
 

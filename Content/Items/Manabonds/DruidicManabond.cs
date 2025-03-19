@@ -78,7 +78,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 			target.AddBuff(BuffID.Poisoned, 180);
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int k = 0; k < 20; k++)
 			{
@@ -89,7 +89,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D glow = ModContent.Request<Texture2D>(Texture + "Glow").Value;
+			Texture2D glow = Assets.Items.Manabonds.DruidThornGlow.Value;
 
 			for (int k = 0; k < Projectile.oldPos.Length; k += 2)
 			{

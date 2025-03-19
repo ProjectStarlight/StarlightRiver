@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 		{
-			Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition + new Vector2(18, -42);
+			Vector2 pos = new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange - Main.screenPosition + new Vector2(18, -42);
 
 			if (!StarlightWorld.HasFlag(WorldFlags.SquidBossOpen))
 			{

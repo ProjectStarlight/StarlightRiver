@@ -83,13 +83,13 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				if (talkingTo != null && Vector2.Distance(talkingTo.Center, NPC.Center) > 2000)
 				{
 					talkingTo = null;
-					RichTextBox.CloseDialogue();
+					DialogUI.CloseDialogue();
 				}
 
 				if (talkingTo != null && talkingTo.TalkNPC != NPC)
 				{
 					talkingTo = null;
-					RichTextBox.CloseDialogue();
+					DialogUI.CloseDialogue();
 				}
 			}
 
@@ -152,7 +152,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			if (Main.netMode == NetmodeID.MultiplayerClient && !NPC.active) // Close any dialogs if the npc is inactive.
 			{
 				talkingTo = null;
-				RichTextBox.CloseDialogue();
+				DialogUI.CloseDialogue();
 			}
 
 			return true;
@@ -196,7 +196,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		{
 			State = 5;
 
-			if (!Helpers.Helper.HasItem(Main.LocalPlayer, ItemType<TempleEntranceKey>(), 1))
+			if (!Helpers.InventoryHelper.HasItem(Main.LocalPlayer, ItemType<TempleEntranceKey>(), 1))
 			{
 				Main.LocalPlayer.QuickSpawnItem(NPC.GetSource_FromThis(), ItemType<TempleEntranceKey>());
 				Main.LocalPlayer.GetModPlayer<HintPlayer>().SetHintState("PreWinds");

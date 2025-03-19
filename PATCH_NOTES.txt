@@ -1,7 +1,25 @@
 ﻿# Starlight River 0.3.0
 
+## Flagship Content
+- Added a new optional boss, The Thinker! This boss can be challenged in a crimson world at any point after the Brain of Cthulhu has been defeated, but is intended for players that have atleast visited the dungeon.
+- After defeating the Brain of Cthulhu, some strange bits of material will activate in the crimson. Will you be able to use it to your advantage, or simply go mad?
+
 ## Content
 - Added the heavy flail and frost flail, melee weapons with a heavy overhead swing
+- Added Misery's Company, a cursed accessory that shares your defense and innoculation with your foes
+
+- The following are spoilers for the crimson biome
+||- Added gray maatter to the crimson, which emits a hallucinatory and causes hallucinations when stood on
+- Added dendrite to the crimson, a sneaky ore only visible if you are hallucinating
+||
+- The following are spoilers for The Thinker
+||- Added the bear poker, which can be used to spawn The Thinker
+- Added the lobotolizer, a spear which can throw a hallucinatory copy of itself to engage a more offensive attack mode
+- Added the mirage bow, which creates a copy of its user on critical hits reflected across their mouse
+- Added the mind crusher, a charged magic weapon which creates a growing bubble that can be collapsed for bonus damage againsted armored targets
+- Added the myelin sheath, which allows swords to create a crippling projectile on their first strike
+- Added the psychotic manabond, which drains your mana to have your minions emit a damaging aura
+||
 
 ## Gameplay features
 - Added a pool of unique 'cursed' prefixes for accessories, with up and downsides. All cursed accessories now only pull from this pool.

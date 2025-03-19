@@ -3,6 +3,7 @@ using StarlightRiver.Content.Abilities.ForbiddenWinds;
 using StarlightRiver.Content.Abilities.Hint;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Tiles.Overgrow;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
@@ -72,7 +73,7 @@ namespace StarlightRiver.Content.Pickups
 			{
 				if (timer < 260)
 				{
-					float progress = Helper.BezierEase(timer / 260f);
+					float progress = Eases.BezierEase(timer / 260f);
 					point1 = Player.Center + new Vector2((float)Math.Sin(progress * 6.28f) * (40 + progress * 80), 100 - timer);
 					point2 = Player.Center + new Vector2((float)Math.Sin(progress * 6.28f + 6.28f / 3) * (40 + progress * 80), 100 - timer);
 					point3 = Player.Center + new Vector2((float)Math.Sin(progress * 6.28f + 6.28f / 3 * 2) * (40 + progress * 80), 100 - timer);
@@ -80,7 +81,7 @@ namespace StarlightRiver.Content.Pickups
 
 				if (timer >= 260 && timer <= 380)
 				{
-					float progress = 1 - Helper.BezierEase((timer - 260) / 120f);
+					float progress = 1 - Eases.BezierEase((timer - 260) / 120f);
 					point1 = Player.Center + new Vector2((float)Math.Sin(progress * 6.28f) * progress * 120, progress * -160);
 					point2 = Player.Center + new Vector2((float)Math.Sin(progress * 6.28f + 6.28f / 3) * progress * 120, progress * -160);
 					point3 = Player.Center + new Vector2((float)Math.Sin(progress * 6.28f + 6.28f / 3 * 2) * progress * 120, progress * -160);
@@ -218,12 +219,12 @@ namespace StarlightRiver.Content.Pickups
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
 			if (effect is null)
 				return;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

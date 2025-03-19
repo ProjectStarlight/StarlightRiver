@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.CameraSystem;
+﻿using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -175,13 +176,13 @@ namespace StarlightRiver.Content.Items.Moonstone
 					if (Charge == (MAXCHARGE - 1))
 					{
 						//DustHelper.DrawStar(owner.Center + Projectile.rotation.ToRotationVector2() * 40f, ModContent.DustType<Dusts.GlowFastDecelerate>(), pointAmount: 5, mainSize: 1.5f, dustDensity: 0.7f, pointDepthMult: 0.3f, rotationAmount: Projectile.rotation, dustSize: 0.5f, color: new Color(120, 120, 255));
-						DustHelper.DrawDustImage(Owner.Center + Projectile.rotation.ToRotationVector2() * 40f, ModContent.DustType<Dusts.GlowFastDecelerate>(), 0.05f,
+						DustHelper.SpawnImagePattern(Owner.Center + Projectile.rotation.ToRotationVector2() * 40f, ModContent.DustType<Dusts.GlowFastDecelerate>(), 0.05f,
 							ModContent.Request<Texture2D>(Texture + "_Crescent").Value, 0.7f, 0, new Color(120, 120, 255));
 						SoundEngine.PlaySound(SoundID.MaxMana, Projectile.Center);
 						flashTimer = 15;
 					}
 
-					Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.Lerp(0, -3f * Projectile.direction, EaseBuilder.EaseCubicInOut.Ease(Charge / MAXCHARGE));
+					Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.Lerp(0, -3f * Projectile.direction, Eases.EaseCubicInOut(Charge / MAXCHARGE));
 					Charge++;
 				}
 
@@ -195,7 +196,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 				if (SwingTimer < MAXSWINGTIME)
 				{
 					Projectile.timeLeft = 2;
-					Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.Lerp(MathHelper.Lerp(0, -3f * Projectile.direction, Charge / MAXCHARGE), 2f * Projectile.direction, EaseBuilder.EaseCubicInOut.Ease(SwingTimer / MAXSWINGTIME));
+					Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.Lerp(MathHelper.Lerp(0, -3f * Projectile.direction, Charge / MAXCHARGE), 2f * Projectile.direction, Eases.EaseCubicInOut(SwingTimer / MAXSWINGTIME));
 					SwingTimer++;
 				}
 
@@ -227,7 +228,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			}
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			Item Item = Owner.HeldItem;
 
@@ -343,25 +344,29 @@ namespace StarlightRiver.Content.Items.Moonstone
 			if (!swung)
 				return;
 
-			Main.spriteBatch.End();
-			Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("DatsuzeiTrail").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				Main.spriteBatch.End();
 
-			effect.Parameters["time"].SetValue(-Projectile.timeLeft * 0.05f);
-			effect.Parameters["repeats"].SetValue(8f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
-			effect.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			trail?.Render(effect);
+				effect.Parameters["time"].SetValue(-Projectile.timeLeft * 0.05f);
+				effect.Parameters["repeats"].SetValue(8f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+				effect.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
 
-			effect.Parameters["sampleTexture2"].SetValue(TextureAssets.MagicPixel.Value);
+				trail?.Render(effect);
 
-			trail2?.Render(effect);
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				effect.Parameters["sampleTexture2"].SetValue(TextureAssets.MagicPixel.Value);
+
+				trail2?.Render(effect);
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 		}
 	}
 	internal class MoonstoneHamaxeRing : ModProjectile, IDrawPrimitive
@@ -373,7 +378,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		protected float Progress => 1 - Projectile.timeLeft / 25f;
 
-		protected virtual float Radius => Projectile.ai[0] * EaseBuilder.EaseCircularInOut.Ease(Progress);
+		protected virtual float Radius => Projectile.ai[0] * Eases.EaseCircularInOut(Progress);
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -459,18 +464,21 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("OrbitalStrikeTrail").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
-			effect.Parameters["alpha"].SetValue(1);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+				effect.Parameters["alpha"].SetValue(1);
 
-			trail?.Render(effect);
-			trail2?.Render(effect);
+				trail?.Render(effect);
+				trail2?.Render(effect);
+			}
 		}
 	}
 }

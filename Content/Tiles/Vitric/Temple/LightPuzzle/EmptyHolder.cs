@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 
 			if (tile.TileFrameX == 0 && tile.TileFrameY == 0)
 			{
-				Vector2 pos = (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 + Vector2.One * 24;
+				Vector2 pos = new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange + Vector2.One * 24;
 				Color lighting = Lighting.GetColor(i, j);
 
 				Texture2D texUnder = Assets.Tiles.Vitric.MirrorUnder.Value;

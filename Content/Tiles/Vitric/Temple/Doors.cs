@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			Tile tile = Framing.GetTileSafely(i, j);
 
 			Texture2D tex = Request<Texture2D>(Texture).Value;
-			Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 + Vector2.UnitY * -Helper.BezierEase(GearPuzzle.GearPuzzleHandler.solveTimer / 180f) * 7 * 16;
+			Vector2 pos = new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange + Vector2.UnitY * -Eases.BezierEase(GearPuzzle.GearPuzzleHandler.solveTimer / 180f) * 7 * 16;
 			var frame = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16);
 
 			spriteBatch.Draw(tex, pos - Main.screenPosition, frame, Lighting.GetColor(i, j));
@@ -101,7 +101,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			Tile tile = Framing.GetTileSafely(i, j);
 
 			Texture2D tex = Request<Texture2D>(Texture).Value;
-			Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 + Vector2.UnitY * -Helper.BezierEase(LightPuzzle.LightPuzzleHandler.solveTimer / 180f) * 5 * 16;
+			Vector2 pos = new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange + Vector2.UnitY * -Eases.BezierEase(LightPuzzle.LightPuzzleHandler.solveTimer / 180f) * 5 * 16;
 			var frame = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16);
 
 			spriteBatch.Draw(tex, pos - Main.screenPosition, frame, Lighting.GetColor(i, j));
@@ -175,7 +175,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		public override void PostDraw(Color lightColor)
 		{
 			Main.spriteBatch.Draw(Assets.Tiles.Vitric.TutorialDoor2.Value, position + Vector2.UnitX * 8 - Main.screenPosition, lightColor);
-			Main.spriteBatch.Draw(Assets.Tiles.Vitric.TutorialDoor2Glow.Value, position + Vector2.UnitX * 8 - Main.screenPosition, Helper.IndicatorColor);
+			Main.spriteBatch.Draw(Assets.Tiles.Vitric.TutorialDoor2Glow.Value, position + Vector2.UnitX * 8 - Main.screenPosition, CommonVisualEffects.IndicatorColor);
 		}
 	}
 

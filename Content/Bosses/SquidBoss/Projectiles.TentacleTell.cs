@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.IO;
 using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
-	class TentacleTell : ModProjectile, IDrawAdditive
+	class TentacleTell : ModProjectile
 	{
 		public static Vector2 endPointToAssign;
 
@@ -35,12 +36,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			return false;
-		}
-
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
-			Texture2D top = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D top = Assets.Bosses.SquidBoss.TentacleTellTop.Value;
 			Texture2D body = Assets.Bosses.SquidBoss.TentacleTellBody.Value;
 			Texture2D glow = Assets.GlowTrail.Value;
 			Texture2D flat = Terraria.GameContent.TextureAssets.MagicPixel.Value;
@@ -58,24 +54,26 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			var rightTarget = new Rectangle((int)(basePos.X + 50 * Math.Cos(rot)), (int)(basePos.Y + 50 * Math.Sin(rot)), 4, (int)dist * 2);
 			var thinSource = new Rectangle(50, 0, glow.Width - 100, glow.Height);
 
-			spriteBatch.Draw(flat, underGlowTarget, null, new Color(255, 40, 40) * (float)Math.Sin(timer / 60f * 3.14f) * 0.7f, rot, origin, 0, 0);
-			spriteBatch.Draw(glow, leftTarget, thinSource, new Color(255, 120, 120) * (float)Math.Sin(timer / 60f * 3.14f), rot, glow.Size() / 4, 0, 0);
-			spriteBatch.Draw(glow, rightTarget, thinSource, new Color(255, 120, 120) * (float)Math.Sin(timer / 60f * 3.14f), rot, glow.Size() / 4, 0, 0);
+			Main.spriteBatch.Draw(flat, underGlowTarget, null, new Color(255, 40, 40, 0) * (float)Math.Sin(timer / 60f * 3.14f) * 0.7f, rot, origin, 0, 0);
+			Main.spriteBatch.Draw(glow, leftTarget, thinSource, new Color(255, 120, 120, 0) * (float)Math.Sin(timer / 60f * 3.14f), rot, glow.Size() / 4, 0, 0);
+			Main.spriteBatch.Draw(glow, rightTarget, thinSource, new Color(255, 120, 120, 0) * (float)Math.Sin(timer / 60f * 3.14f), rot, glow.Size() / 4, 0, 0);
 
-			spriteBatch.Draw(glow, underGlowTarget, null, new Color(255, 80, 80) * (float)Math.Sin(timer / 60f * 3.14f), rot, origin, 0, 0);
-			spriteBatch.Draw(glow, flashGlowTarget, null, new Color(255, 120, 120) * (1 - timer / 20f), rot, origin, 0, 0);
+			Main.spriteBatch.Draw(glow, underGlowTarget, null, new Color(255, 80, 80, 0) * (float)Math.Sin(timer / 60f * 3.14f), rot, origin, 0, 0);
+			Main.spriteBatch.Draw(glow, flashGlowTarget, null, new Color(255, 120, 120, 0) * (1 - timer / 20f), rot, origin, 0, 0);
 
-			spriteBatch.Draw(top, Projectile.Center - Main.screenPosition, null, new Color(255, 80, 80) * (float)Math.Sin((timer - 30) / 30f * 3.14f), rot, top.Size() / 2, 1, 0, 0);
-			spriteBatch.Draw(top, Projectile.Center - Main.screenPosition, null, new Color(255, 120, 120) * (1 - timer / 20f), rot, top.Size() / 2, timer / 10f, 0, 0);
+			Main.spriteBatch.Draw(top, Projectile.Center - Main.screenPosition, null, new Color(255, 80, 80, 0) * (float)Math.Sin((timer - 30) / 30f * 3.14f), rot, top.Size() / 2, 1, 0, 0);
+			Main.spriteBatch.Draw(top, Projectile.Center - Main.screenPosition, null, new Color(255, 120, 120, 0) * (1 - timer / 20f), rot, top.Size() / 2, timer / 10f, 0, 0);
 
 			for (int k = 64; k < dist; k += 32)
 			{
 				Vector2 pos = Vector2.Lerp(Projectile.Center, endPoint, k / dist) - Main.screenPosition;
 				float scale = Math.Max(0.5f, 1 - k * 0.0005f);
 
-				spriteBatch.Draw(body, pos, null, new Color(255, 80, 80) * (float)Math.Sin(Math.Max(0, timer - (dist - k) / dist * 30) / 30f * 3.14f), rot, body.Size() / 2, scale, 0, 0);
-				spriteBatch.Draw(body, pos, null, new Color(255, 120, 120) * (1 - timer / 20f), rot, body.Size() / 2, timer / 10f, 0, 0);
+				Main.spriteBatch.Draw(body, pos, null, new Color(255, 80, 80, 0) * (float)Math.Sin(Math.Max(0, timer - (dist - k) / dist * 30) / 30f * 3.14f), rot, body.Size() / 2, scale, 0, 0);
+				Main.spriteBatch.Draw(body, pos, null, new Color(255, 120, 120, 0) * (1 - timer / 20f), rot, body.Size() / 2, timer / 10f, 0, 0);
 			}
+
+			return false;
 		}
 
 		public override void SendExtraAI(BinaryWriter writer)

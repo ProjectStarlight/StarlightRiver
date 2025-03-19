@@ -29,7 +29,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		public bool spawnerActive;
 
 		public float timer;
-		public float spawned;
 
 		public CrystalSlimeSpawnerDummy() : base(ModContent.TileType<CrystalSlimeSpawner>(), 32, 48) { }
 

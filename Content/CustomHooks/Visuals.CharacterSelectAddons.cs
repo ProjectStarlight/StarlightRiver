@@ -117,10 +117,12 @@ namespace StarlightRiver.Content.CustomHooks
 			for (int k = 0; k < abilities.Length; k++)
 			{
 				Ability ability = abilities[abilities.Length - 1 - k];
-				string texture = Player.GetHandler().Unlocked(ability.GetType())
-					? ability.PreviewTexture
-					: ability.PreviewTextureOff;
-				spriteBatch.Draw(ModContent.Request<Texture2D>(texture).Value, origin + new Vector2(542 - k * 32, 64), Color.White);
+
+				Texture2D texture = Player.GetHandler().Unlocked(ability.GetType())
+					? ability.PreviewTexture.Value
+					: ability.PreviewTextureOff.Value;
+
+				spriteBatch.Draw(texture, origin + new Vector2(542 - k * 32, 64), Color.White);
 			}
 
 			if (Player.statLifeMax > 400) //why vanilla dosent do this I dont know
@@ -161,10 +163,10 @@ namespace StarlightRiver.Content.CustomHooks
 					spriteBatch.Draw(tex, pos, frame, Color.White);
 
 					if (medal.difficulty == 1 && Main.rand.NextBool(10))
-						sparkles.AddParticle(new Particle(pos + new Vector2(Main.rand.Next(34), 10 + Main.rand.Next(36)), Vector2.UnitY * Main.rand.NextFloat(0.2f), 0, 0, new Color(255, 230, 0), 90, new Vector2(Main.rand.NextFloat(0.4f, 0.7f), 0), new Rectangle(0, 0, 15, 15)));
+						sparkles.AddParticle(pos + new Vector2(Main.rand.Next(34), 10 + Main.rand.Next(36)), Vector2.UnitY * Main.rand.NextFloat(0.2f), 0, 0, new Color(255, 230, 0), 90, new Vector2(Main.rand.NextFloat(0.4f, 0.7f), 0), new Rectangle(0, 0, 15, 15));
 
 					if (medal.difficulty == 2 && Main.rand.NextBool(8))
-						sparkles.AddParticle(new Particle(pos + new Vector2(Main.rand.Next(34), 10 + Main.rand.Next(36)), Vector2.UnitY * Main.rand.NextFloat(0.2f), 0, 0, new Color(255, 50, 50), 90, new Vector2(Main.rand.NextFloat(0.4f, 0.7f), 0), new Rectangle(0, 0, 15, 15)));
+						sparkles.AddParticle(pos + new Vector2(Main.rand.Next(34), 10 + Main.rand.Next(36)), Vector2.UnitY * Main.rand.NextFloat(0.2f), 0, 0, new Color(255, 50, 50), 90, new Vector2(Main.rand.NextFloat(0.4f, 0.7f), 0), new Rectangle(0, 0, 15, 15));
 
 					var rectangle = new Rectangle((int)origin.X + 14 + k * 42, (int)origin.Y + 98, 34, 46);
 
@@ -193,9 +195,9 @@ namespace StarlightRiver.Content.CustomHooks
 				if (Main.rand.NextBool(3))
 				{
 					if (Main.rand.Next(4) > 0)
-						sparkles.AddParticle(new Particle(origin + new Vector2(Main.rand.Next(borderTex.Width), Main.rand.NextBool() ? 2 : borderTex.Height - 2), Vector2.Zero, 0, 0, new Color(255, 230, 0), 60, new Vector2(Main.rand.NextFloat(0.4f, 0.7f), 0), new Rectangle(0, 0, 15, 15)));
+						sparkles.AddParticle(origin + new Vector2(Main.rand.Next(borderTex.Width), Main.rand.NextBool() ? 2 : borderTex.Height - 2), Vector2.Zero, 0, 0, new Color(255, 230, 0), 60, new Vector2(Main.rand.NextFloat(0.4f, 0.7f), 0), new Rectangle(0, 0, 15, 15));
 					else
-						sparkles.AddParticle(new Particle(origin + new Vector2(Main.rand.NextBool() ? 2 : borderTex.Width - 2, Main.rand.Next(borderTex.Height)), Vector2.Zero, 0, 0, new Color(255, 230, 0), 60, new Vector2(Main.rand.NextFloat(0.4f, 0.7f), 0), new Rectangle(0, 0, 15, 15)));
+						sparkles.AddParticle(origin + new Vector2(Main.rand.NextBool() ? 2 : borderTex.Width - 2, Main.rand.Next(borderTex.Height)), Vector2.Zero, 0, 0, new Color(255, 230, 0), 60, new Vector2(Main.rand.NextFloat(0.4f, 0.7f), 0), new Rectangle(0, 0, 15, 15));
 				}
 			}
 

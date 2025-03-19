@@ -1,5 +1,7 @@
-﻿using StarlightRiver.Content.Buffs;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Items.Gravedigger;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -96,7 +98,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 				int index = target.FindBuffIndex(ModContent.BuffType<MoonfuryDebuff>());
 				target.DelBuff(index);
 
-				Helper.PlayPitched("Magic/Shadow1", 1, Main.rand.NextFloat(-0.1f, 0.1f));
+				SoundHelper.PlayPitched("Magic/Shadow1", 1, Main.rand.NextFloat(-0.1f, 0.1f));
 				modifiers.FlatBonusDamage += 20;
 				modifiers.FlatBonusDamage += (int)(target.defense / 5f);
 				Projectile.NewProjectile(player.GetSource_ItemUse(Item), target.Center, Vector2.Zero, ModContent.ProjectileType<MoonfuryRing>(), 0, 0, player.whoAmI);
@@ -109,7 +111,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		}
 	}
 
-	internal class MoonfuryProj : ModProjectile, IDrawPrimitive, IDrawAdditive
+	internal class MoonfuryProj : ModProjectile, IDrawPrimitive
 	{
 		private List<Vector2> cache;
 		private Trail trail;
@@ -213,6 +215,13 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
 			Vector2 pos = Projectile.Bottom + new Vector2(0, 20) - Main.screenPosition;
 			Main.spriteBatch.Draw(tex, pos, null, lightColor * (1 - Projectile.alpha / 255f), Projectile.rotation, new Vector2(tex.Width / 2, tex.Height), Projectile.scale, SpriteEffects.None, 0);
+
+			Texture2D texGlow = Assets.Items.Moonstone.MoonfuryProj_Additive.Value;
+			Color glowColor = Color.White * (1 - Projectile.alpha / 255f);
+			glowColor.A = 0;
+
+			Main.spriteBatch.Draw(texGlow, Projectile.Bottom + new Vector2(0, 20) - Main.screenPosition, null, glowColor * 0.5f, Projectile.rotation, new Vector2(texGlow.Width / 2, texGlow.Height), Projectile.scale, SpriteEffects.None, 0);
+
 			return false;
 		}
 
@@ -263,30 +272,26 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("DatsuzeiTrail").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
-			effect.Parameters["repeats"].SetValue(8f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
-			effect.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
+				effect.Parameters["repeats"].SetValue(8f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+				effect.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
 
-			trail?.Render(effect);
+				trail?.Render(effect);
 
-			effect.Parameters["sampleTexture2"].SetValue(TextureAssets.MagicPixel.Value);
+				effect.Parameters["sampleTexture2"].SetValue(TextureAssets.MagicPixel.Value);
 
-			trail2?.Render(effect);
-		}
-
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture + "_Additive").Value;
-			Color color = Color.White * (1 - Projectile.alpha / 255f);
-			spriteBatch.Draw(tex, Projectile.Bottom + new Vector2(0, 20) - Main.screenPosition, null, color * 0.5f, Projectile.rotation, new Vector2(tex.Width / 2, tex.Height), Projectile.scale, SpriteEffects.None, 0);
+				trail2?.Render(effect);
+			}
 		}
 	}
 
@@ -389,18 +394,21 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("OrbitalStrikeTrail").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
-			effect.Parameters["alpha"].SetValue(1);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+				effect.Parameters["alpha"].SetValue(1);
 
-			trail?.Render(effect);
-			trail2?.Render(effect);
+				trail?.Render(effect);
+				trail2?.Render(effect);
+			}
 		}
 	}
 

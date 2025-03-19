@@ -6,8 +6,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
 	internal class Glint : ModProjectile
 	{
-		public static Func<float, float> ease = Helpers.Helper.CubicBezier(0.25f, 0.8f, 0.75f, 0.01f);
-		public static Func<float, float> ease2 = Helpers.Helper.CubicBezier(0.35f, 0.7f, 0.85f, 0.01f);
+		public static Func<float, float> ease = Helpers.Eases.CubicBezier(0.25f, 0.8f, 0.75f, 0.01f);
+		public static Func<float, float> ease2 = Helpers.Eases.CubicBezier(0.35f, 0.7f, 0.85f, 0.01f);
 
 		// Color is applied in this seeming hacky way so that the colors are applied inside of OnSpawn instead of outside using Main.Projectile[] so that they exist prior to the first packet
 		// So that we don't require further syncing for these.
@@ -30,8 +30,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Projectile.hostile = false;
 			Projectile.timeLeft = 60;
 
-			ease = Helpers.Helper.CubicBezier(0.25f, 0.8f, 0.75f, 0.01f);
-			ease2 = Helpers.Helper.CubicBezier(0.05f, 0.5f, 0.55f, 0.1f);
+			ease = Helpers.Eases.CubicBezier(0.25f, 0.8f, 0.75f, 0.01f);
+			ease2 = Helpers.Eases.CubicBezier(0.05f, 0.5f, 0.55f, 0.1f);
 		}
 
 		public override void OnSpawn(IEntitySource source)
@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		{
 			Texture2D tex = Assets.StarTexture.Value;
 			Texture2D tex2 = Assets.Misc.GlowRing.Value;
-			Texture2D tex3 = Assets.Keys.GlowAlpha.Value;
+			Texture2D tex3 = Assets.Masks.GlowAlpha.Value;
 
 			Color color1 = colorMain * ease(Projectile.timeLeft / 60f);
 			color1.A = 0;
