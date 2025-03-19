@@ -652,7 +652,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
 		{
 			// Prevent the health bar from being drawn in the clone phases
-			if (Phase == Phases.SecondPhase && (AttackState == 1 || AttackState == 3))
+			if (Phase == Phases.SecondPhase && (AttackState == 0 || AttackState == 1))
 				return false;
 
 			return base.DrawHealthBar(hbPosition, ref scale, ref position);

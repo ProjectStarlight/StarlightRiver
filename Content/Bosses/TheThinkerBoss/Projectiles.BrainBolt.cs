@@ -72,7 +72,16 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			float sin = 1 + (float)Math.Sin(WiggleProgress);
 			Color color = new Color(1, 0f, 0.1f + sin * 0.1f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
 
+			if (IsBlue == 1)
+				color = new Color(0.1f + sin * 0.1f, 0f, 1f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
+
 			Lighting.AddLight(Projectile.Center, color.ToVector3() * 0.5f);
+
+			if (Main.rand.NextBool(5))
+			{
+				color.A = 0;
+				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(4, 4), ModContent.DustType<Dusts.PixelatedEmber>(), Projectile.velocity * Main.rand.NextFloat(), 0, color, Main.rand.NextFloat(0.5f));
+			}
 
 			if (!Main.dedServ)
 			{

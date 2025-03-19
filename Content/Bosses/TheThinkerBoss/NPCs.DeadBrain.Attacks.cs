@@ -651,7 +651,19 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 				if (AttackTimer >= 60)
 				{
-					float rad = 280 + (float)Math.Cos((AttackTimer - 60) / 170f * 3.14f + 3.14f) * 200;
+					float maxRad = Main.masterMode ? 500 : Main.expertMode ? 480 : 300;
+					float period = Main.masterMode ? 85 : 170;
+					float rad = 280 + (float)Math.Cos((AttackTimer - 60) / period * 3.14f + 3.14f) * (maxRad - 280);
+
+					if (Main.masterMode && AttackTimer == 60 + 170 || AttackTimer == 60)
+					{
+						for(int k = 0; k < 9; k++)
+						{
+							float rot = k / 9f * 6.28f;
+							Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.UnitX.RotatedBy(rot) * 6, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 160, 0, 20);
+							Projectile.NewProjectile(NPC.GetSource_FromThis(), thinker.Center, Vector2.UnitX.RotatedBy(rot) * 6, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 160, 1, 20);
+						}
+					}
 
 					for (int k = 0; k < neurisms.Count; k++)
 					{
@@ -662,21 +674,6 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 						else
 							neurisms[k].Center = NPC.Center + Vector2.UnitX.RotatedBy(rot) * rad;
 					}
-				}
-			}
-
-			if (Main.expertMode && AttackTimer > 60 && AttackTimer % 60 == 0)
-			{
-				Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, NPC.Center.DirectionTo(ThisThinker.home) * 8, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 160, 0, 30);
-
-				if (Main.masterMode)
-				{
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, NPC.Center.DirectionTo(ThisThinker.home).RotatedBy(0.4f) * 8, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 80, 0, 30);
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, NPC.Center.DirectionTo(ThisThinker.home).RotatedBy(-0.4f) * 8, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 80, 0, 30);
-
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), thinker.Center, thinker.Center.DirectionTo(ThisThinker.home) * 8, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 160, 1, 30);
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), thinker.Center, thinker.Center.DirectionTo(ThisThinker.home).RotatedBy(0.4f) * 8, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 80, 1, 30);
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), thinker.Center, thinker.Center.DirectionTo(ThisThinker.home).RotatedBy(-0.4f) * 8, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 80, 1, 30);
 				}
 			}
 
@@ -1131,8 +1128,6 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				{
 					safeMineIndicides[k] = Main.rand.Next(10, 30);
 				}
-
-				savedPos = sunflower(45, safeMineIndicides[0], ThisThinker.home);
 			}
 
 			if (AttackTimer > 90 && AttackTimer < 400)
@@ -1147,15 +1142,13 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				ThisThinker.NPC.Center += (targetPos - ThisThinker.NPC.Center) * 0.05f;
 			}
 
-			if (AttackTimer == 199)
+			if (AttackTimer > 200 && AttackTimer <= 230)
 			{
-				savedPos2 = NPC.Center;
+				opacity = 1f - (AttackTimer - 200) / 30f;
 			}
 
-			if (AttackTimer > 200 && AttackTimer < 260)
-			{
-				NPC.Center = Vector2.SmoothStep(savedPos2, savedPos, (AttackTimer - 200) / 60f);
-			}
+			if (AttackTimer == 231)
+				NPC.Center = ThisThinker.home + new Vector2(0, -200);
 
 			if (AttackTimer > 90 && AttackTimer % 2 == 0 && AttackTimer <= 180)
 			{
@@ -1181,6 +1174,9 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				ThisThinker.NPC.Center += (ThisThinker.home - ThisThinker.NPC.Center) * 0.075f;
 			}
 
+			if (AttackTimer > 430 && AttackTimer < 460)
+				opacity = (AttackTimer - 430) / 30f;
+
 			if (AttackTimer >= 500)
 				AttackTimer = 0;
 		}
@@ -1190,7 +1186,18 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			if (AttackTimer > 30 && AttackTimer < 60)
 				(thinker.ModNPC as TheThinker).ExtraGrayAuraRadius = -140 * (AttackTimer - 30) / 30f;
 
-			for(int k = 0; k < 7; k++)
+			if (AttackTimer == 30)
+			{
+				ThisThinker.platformRadiusTarget = 400;
+				ThisThinker.platformRotationTarget -= 0.2f;
+			}
+
+			if (AttackTimer <= 120)
+			{
+				thinker.Center += ((thinker.ModNPC as TheThinker).home - thinker.Center) * 0.03f;
+			}
+
+			for (int k = 0; k < 7; k++)
 			{
 				int relTime = (int)AttackTimer - 60 - k * 75;
 
@@ -1201,7 +1208,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					opacity = 1f - relTime / 15f;
 
 				if (relTime == 15)
-					NPC.Center = ThisThinker.home + Vector2.One.RotatedByRandom(6.28f) * 300;
+					NPC.Center = ThisThinker.home + Vector2.One.RotatedByRandom(6.28f) * 370;
 
 				if (relTime > 15 && relTime <= 45)
 					opacity = (relTime - 15) / 30f;
@@ -1230,7 +1237,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 			if (AttackTimer >= 60 + 75 * 7)
 			{
-				float relTime = AttackTimer - 60 + 75 * 7;
+				float relTime = AttackTimer - (60 + 75 * 7);
 				(thinker.ModNPC as TheThinker).ExtraGrayAuraRadius = -140 + relTime / 30f * 140;
 			}
 
