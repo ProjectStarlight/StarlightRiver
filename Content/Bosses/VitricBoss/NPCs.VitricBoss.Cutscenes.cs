@@ -202,7 +202,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				}
 
 				//if (Main.netMode != NetmodeID.Server)
-					//Filters.Scene.Deactivate("Shockwave");
+				//Filters.Scene.Deactivate("Shockwave");
 			}
 
 			if (checkSpecificTime(690))

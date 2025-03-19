@@ -274,7 +274,7 @@ namespace StarlightRiver.Content.GUI
 			if (Main.ResourceSetsManager.ActiveSetKeyName.Contains("HorizontalBars"))
 				DrawGainAnimationBar(spriteBatch, dimensions, timer);
 			else
-			DrawGainAnimationIcon(spriteBatch, dimensions, timer);
+				DrawGainAnimationIcon(spriteBatch, dimensions, timer);
 
 			gainAnimationParticles.UpdateParticles();
 			gainAnimationParticles.DrawParticles(spriteBatch);

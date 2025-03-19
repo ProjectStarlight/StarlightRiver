@@ -862,7 +862,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 					for (int i = 0; i < chain.ropeSegments.Count; i++)
 					{
 						RopeSegment segment = chain.ropeSegments[i];
-						var color = segment.color;
+						Color color = segment.color;
 						color.A = 0;
 
 						float progress = 1.35f - (float)k / chain.segmentCount;

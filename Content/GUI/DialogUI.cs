@@ -124,7 +124,6 @@ namespace StarlightRiver.Content.GUI
 			Rectangle player = Main.LocalPlayer.Hitbox;
 			player.Offset((-Main.screenPosition).ToPoint());
 
-
 			if (nearby.Intersects(player))
 			{
 				if (opacity > 0.1f)
@@ -136,7 +135,7 @@ namespace StarlightRiver.Content.GUI
 			}
 
 			// Distance calc
-			var dist = Vector2.Distance(Main.LocalPlayer.Center, talking.Center);
+			float dist = Vector2.Distance(Main.LocalPlayer.Center, talking.Center);
 
 			if (dist < 100)
 				finalOpacity = opacity;

@@ -75,7 +75,7 @@ namespace StarlightRiver.Core
 	{
 		public string Key { get; set; }
 		public string Title { get; set; }
-		public List<TutorialScreen> Screens {get; set;}
+		public List<TutorialScreen> Screens { get; set; }
 	}
 
 	public class TutorialScreen

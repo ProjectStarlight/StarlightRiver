@@ -1,18 +1,18 @@
-﻿using StarlightRiver.Content.Abilities.Faewhip;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Core.Systems.DummyTileSystem;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.Faewhip;
+using StarlightRiver.Content.Abilities.Hint;
+using StarlightRiver.Content.GUI;
+using StarlightRiver.Content.NPCs.Starlight;
 using StarlightRiver.Core.Systems;
+using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria.Audio;
-using Terraria.ID;
 using Terraria.Graphics.Effects;
-using StarlightRiver.Content.Abilities.Hint;
-using StarlightRiver.Content.NPCs.Starlight;
-using StarlightRiver.Content.GUI;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Pickups
 {

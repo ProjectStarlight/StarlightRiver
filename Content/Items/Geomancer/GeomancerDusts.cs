@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 			dust.frame = new Rectangle(0, 0, 64, 64);
 			dust.velocity *= 2;
 			if (ShaderLoader.GetShader("GlowingDust").Value != null)
-	dust.shader = new ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
+				dust.shader = new ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
 			dust.alpha = Main.rand.Next(100);
 		}
 

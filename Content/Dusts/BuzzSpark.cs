@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Dusts
 			dust.frame = new Rectangle(0, 0, 5, 50);
 
 			if (ShaderLoader.GetShader("ShrinkingDust").Value != null)
-	dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("ShrinkingDust"), "ShrinkingDustPass");
+				dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("ShrinkingDust"), "ShrinkingDustPass");
 		}
 
 		public override bool Update(Dust dust)

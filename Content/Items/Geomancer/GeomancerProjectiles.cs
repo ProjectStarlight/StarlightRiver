@@ -139,7 +139,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 			float transparency = (float)Math.Pow(1 - progress, 2);
 			float scale = 1f + progress * 2;
 
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255 ,0) * transparency, Projectile.rotation, tex.Size() / 2, Projectile.scale * scale, SpriteEffects.None, 0f);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0) * transparency, Projectile.rotation, tex.Size() / 2, Projectile.scale * scale, SpriteEffects.None, 0f);
 		}
 	}
 

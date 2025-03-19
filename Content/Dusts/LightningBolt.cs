@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Dusts
 			dust.frame = new Rectangle(0, 0, 43, 74);
 
 			if (ShaderLoader.GetShader("GlowingDust").Value != null)
-	dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
+				dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
 		}
 
 		public override bool Update(Dust dust)

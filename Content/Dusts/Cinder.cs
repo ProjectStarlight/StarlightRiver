@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Dusts
 			dust.frame = new Rectangle(0, 0, 0, 0);
 			dust.fadeIn = 0;
 			if (ShaderLoader.GetShader("GlowingDust").Value != null)
-	dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
+				dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
 			dust.noLightEmittence = false;
 		}
 

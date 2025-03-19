@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.GUI
 
 			if (index < currentTutorial.Screens.Count)
 			{
-				var screen = currentTutorial.Screens[index];
+				TutorialScreen screen = currentTutorial.Screens[index];
 				mainBox.SetContents(screen.Text, screen.image);
 
 				UILoader.GetUIState<TutorialUI>().Recalculate();
@@ -146,15 +146,15 @@ namespace StarlightRiver.Content.GUI
 			RecalculateHeight();
 			var dims = GetDimensions().ToRectangle();
 
-			var frameBox = dims;
+			Rectangle frameBox = dims;
 			frameBox.Inflate(dims.Width / 2, dims.Height / 2);
 			var glow = Assets.Masks.Glow.Value;
 
 			spriteBatch.Draw(glow, frameBox, Color.Black * 0.8f * Opacity);
 			//UIHelper.DrawBox(spriteBatch, frameBox, new Color(0.15f, 0.2f, 0.5f) * 0.8f * Opacity);
 
-			var font = Terraria.GameContent.FontAssets.DeathText.Value;
-			var titlePos = dims.Center.ToVector2() - Vector2.UnitY * (dims.Height / 2 + 32);
+			DynamicSpriteFont font = Terraria.GameContent.FontAssets.DeathText.Value;
+			Vector2 titlePos = dims.Center.ToVector2() - Vector2.UnitY * (dims.Height / 2 + 32);
 			ChatManager.DrawColorCodedString(spriteBatch, font, Title, titlePos, Color.White * Opacity, 0, font.MeasureString(Title) * 0.5f, Vector2.One * 0.8f);
 
 			int startY = 8;

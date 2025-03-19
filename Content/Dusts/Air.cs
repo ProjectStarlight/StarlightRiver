@@ -174,7 +174,7 @@ namespace StarlightRiver.Content.Dusts
 			dust.position -= Vector2.One * 32;
 
 			if (ShaderLoader.GetShader("GlowingDust").Value != null)
-	dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
+				dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
 		}
 
 		public override Color? GetAlpha(Dust dust, Color lightColor)

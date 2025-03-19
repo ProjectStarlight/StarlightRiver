@@ -450,7 +450,7 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 
 		public override bool PreDraw(ref Color lightColor)
-		{ 
+		{
 			Texture2D tex = Assets.Masks.GlowSoft.Value;
 
 			for (int i = 0; i < 3; i++)

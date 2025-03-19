@@ -705,7 +705,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			dust.frame = new Rectangle(0, 0, 64, 64);
 			//dust.rotation = Main.rand.NextFloat(6.28f);
 			if (ShaderLoader.GetShader("GlowingDust").Value != null)
-	dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
+				dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
 		}
 
 		public override bool Update(Dust dust)
@@ -748,7 +748,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			dust.frame = new Rectangle(0, 0, 8, 128);
 
 			if (ShaderLoader.GetShader("GlowingDust").Value != null)
-	dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
+				dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
 		}
 
 		public override bool Update(Dust dust)
