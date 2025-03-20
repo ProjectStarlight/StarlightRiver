@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Terraria.DataStructures;
+using Terraria.ModLoader.Exceptions;
 using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Archaeology
@@ -81,6 +82,9 @@ namespace StarlightRiver.Content.Archaeology
 		public override void Load()
 		{
 			texture = ModContent.Request<Texture2D>(TexturePath);
+
+			if (texture is null)
+				throw new MissingResourceException(TexturePath + " Could not be found for an artifact!");
 		}
 
 		public virtual void Draw(SpriteBatch spriteBatch)

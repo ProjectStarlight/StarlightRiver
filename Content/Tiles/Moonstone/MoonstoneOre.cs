@@ -105,6 +105,9 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 			int realWidth = glowLines.Width - 1; //1 pixel offset since the texture has a empty row of pixels on the side, this is also accounted for elsewhere below
 			Color drawColor = overlayColor * 0.35f;
 
+			if (realWidth < 1)
+				realWidth = 2;
+
 			float val = (Main.GameUpdateCount * 0.3333f + realY) % realWidth;
 			int offset = (int)(val + realX % realWidth - realWidth);
 
