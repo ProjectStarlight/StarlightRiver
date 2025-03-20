@@ -57,9 +57,9 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			{
 				chain.startPoint = NPC.Center + Vector2.UnitY * 90;
 				chain.useEndPoint = false;
-				chain.drag = 1.1f;
-				chain.forceGravity = Vector2.UnitY * 1f;
-				chain.constraintRepetitions = 30;
+				chain.drag = 1f;
+				chain.forceGravity = Vector2.UnitY * 0.3f;
+				chain.constraintRepetitions = 8;
 				chain.UpdateChain();
 
 				chain.IterateRope(a => chain.ropeSegments[a].posNow.X += (float)Math.Sin(Main.GameUpdateCount * 0.15f) * 0.1f);
@@ -145,8 +145,9 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 				Matrix view = Main.GameViewMatrix.TransformationMatrix;
 				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+				float opacity = Math.Min(1f, Timer / 30f);
 
-				effect.Parameters["alpha"].SetValue(1f);
+				effect.Parameters["alpha"].SetValue(opacity);
 				effect.Parameters["repeats"].SetValue(3.3f);
 				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 

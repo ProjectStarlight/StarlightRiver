@@ -204,7 +204,7 @@ namespace StarlightRiver.Content.Items
 
 			Utils.DrawBorderStringBig(Main.spriteBatch, $"STARLIGHT RIVER ALPHA TEST -- THINKER BOSS FIGHT TEST", new Vector2(Main.screenWidth / 2, 16), Color.White, 0.4f, 0.5f);
 			Utils.DrawBorderStringBig(Main.spriteBatch, $"ALPHA BUILD DOES NOT REPRESENT FINAL PRODUCT", new Vector2(Main.screenWidth / 2, 48), Color.White, 0.4f, 0.5f);
-			Utils.DrawBorderStringBig(Main.spriteBatch, $"Things to test: Performance improvements", new Vector2(Main.screenWidth / 2, 86), new Color(255, 255, 200), 0.3f, 0.5f);
+			Utils.DrawBorderStringBig(Main.spriteBatch, $"Things to test: boss phase 2 changes, all difficulties", new Vector2(Main.screenWidth / 2, 86), new Color(255, 255, 200), 0.3f, 0.5f);
 
 			Main.spriteBatch.End();
 		}

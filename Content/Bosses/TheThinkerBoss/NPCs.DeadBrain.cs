@@ -177,8 +177,8 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				attachedChain.endPoint = thinker.Center + new Vector2(0, 40);
 				attachedChain.useEndPoint = true;
 				attachedChain.drag = 1.1f;
-				attachedChain.forceGravity = Vector2.UnitY * 1f;
-				attachedChain.constraintRepetitions = 30;
+				attachedChain.forceGravity = Vector2.UnitY * 0.1f;
+				attachedChain.constraintRepetitions = 5;
 				attachedChain.UpdateChain();
 			}
 
@@ -215,9 +215,9 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				{
 					chainSplitBrainAttached.startPoint = NPC.Center + Vector2.UnitY * 90;
 					chainSplitBrainAttached.useEndPoint = false;
-					chainSplitBrainAttached.drag = 1.1f;
-					chainSplitBrainAttached.forceGravity = Vector2.UnitY * 1f;
-					chainSplitBrainAttached.constraintRepetitions = 30;
+					chainSplitBrainAttached.drag = 1f;
+					chainSplitBrainAttached.forceGravity = Vector2.UnitY * 0.1f;
+					chainSplitBrainAttached.constraintRepetitions = 8;
 					chainSplitBrainAttached.UpdateChain();
 
 					chainSplitBrainAttached.IterateRope(a => chainSplitBrainAttached.ropeSegments[a].posNow.X += (float)Math.Sin(Main.GameUpdateCount * 0.15f) * 0.1f);
@@ -234,8 +234,8 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					chainSplitThinkerAttached.startPoint = ThisThinker.home;
 					chainSplitThinkerAttached.useEndPoint = false;
 					chainSplitThinkerAttached.drag = 1.1f;
-					chainSplitThinkerAttached.forceGravity = Vector2.UnitY * 1f;
-					chainSplitThinkerAttached.constraintRepetitions = 30;
+					chainSplitThinkerAttached.forceGravity = Vector2.UnitY * 0.1f;
+					chainSplitThinkerAttached.constraintRepetitions = 5;
 
 					chainSplitThinkerAttached.IterateRope(a => chainSplitThinkerAttached.ropeSegments[a].posNow.X += (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.3f);
 
@@ -248,6 +248,23 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					}
 				}
 			}
+		}
+
+		public void TeleportWithChain(Vector2 centerTarget)
+		{
+			List<Vector2> relPos = new();
+
+			if (chainSplitBrainAttached != null)
+				chainSplitBrainAttached.IterateRope(a => relPos.Add(chainSplitBrainAttached.ropeSegments[a].posNow - NPC.Center));
+
+			NPC.Center = centerTarget;
+
+			if (chainSplitBrainAttached != null)
+				chainSplitBrainAttached.IterateRope(a =>
+				{
+					chainSplitBrainAttached.ropeSegments[a].posNow = centerTarget + relPos[a];
+					chainSplitBrainAttached.ropeSegments[a].posOld = centerTarget + relPos[a];
+				});
 		}
 
 		public override void SetStaticDefaults()

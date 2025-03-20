@@ -753,7 +753,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				}
 
 				NPC.chaseable = false;
-				NPC.Center = savedPos;
+				TeleportWithChain(savedPos);
 			}
 
 			if (AttackTimer > 90 && AttackTimer <= 120)
@@ -852,7 +852,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 				NPC.TargetClosest();
 
-				NPC.Center = Main.player[NPC.target].Center + Vector2.UnitX.RotatedByRandom(6.28f) * 150;
+				TeleportWithChain(Main.player[NPC.target].Center + Vector2.UnitX.RotatedByRandom(6.28f) * 150);
 
 				savedPos = NPC.Center;
 				savedPos2 = savedPos + savedPos.DirectionTo(Main.player[NPC.target].Center) * 500;
@@ -992,7 +992,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				}
 
 				NPC.chaseable = false;
-				NPC.Center = savedPos;
+				TeleportWithChain(savedPos);
 			}
 
 			if (AttackTimer > 60 && AttackTimer <= 90)
@@ -1208,7 +1208,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					opacity = 1f - relTime / 15f;
 
 				if (relTime == 15)
-					NPC.Center = ThisThinker.home + Vector2.One.RotatedByRandom(6.28f) * 370;
+					TeleportWithChain(ThisThinker.home + Vector2.One.RotatedByRandom(6.28f) * 370);
 
 				if (relTime > 15 && relTime <= 45)
 					opacity = (relTime - 15) / 30f;
