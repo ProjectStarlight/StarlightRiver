@@ -142,7 +142,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 						brain.weakpoint?.ModNPC?.PreDraw(obj, Main.screenPosition, Color.White);
 
 						// If doing a clones attack, highlight the real one
-						if (brain.Phase == Phases.SecondPhase && (brain.AttackState == 1 || brain.AttackState == 3))
+						if (brain.Phase == Phases.SecondPhase && (brain.AttackState == 0 || brain.AttackState == 1))
 							brain.DrawBrain(obj, Lighting.GetColor((brain.NPC.Center / 16).ToPoint()), true);
 					}
 				}
@@ -213,7 +213,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			{
 				if (chainSplitBrainAttached != null)
 				{
-					chainSplitBrainAttached.startPoint = NPC.Center + Vector2.UnitY * 90;
+					chainSplitBrainAttached.startPoint = NPC.Center + Vector2.UnitY * (90 + extraChunkRadius * 70);
 					chainSplitBrainAttached.useEndPoint = false;
 					chainSplitBrainAttached.drag = 1f;
 					chainSplitBrainAttached.forceGravity = Vector2.UnitY * 0.1f;
@@ -254,13 +254,12 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		{
 			List<Vector2> relPos = new();
 
-			if (chainSplitBrainAttached != null)
-				chainSplitBrainAttached.IterateRope(a => relPos.Add(chainSplitBrainAttached.ropeSegments[a].posNow - NPC.Center));
+			chainSplitBrainAttached?.IterateRope(a => relPos.Add(chainSplitBrainAttached.ropeSegments[a].posNow - NPC.Center));
 
 			NPC.Center = centerTarget;
+			NPC.Center = centerTarget;
 
-			if (chainSplitBrainAttached != null)
-				chainSplitBrainAttached.IterateRope(a =>
+			chainSplitBrainAttached?.IterateRope(a =>
 				{
 					chainSplitBrainAttached.ropeSegments[a].posNow = centerTarget + relPos[a];
 					chainSplitBrainAttached.ropeSegments[a].posOld = centerTarget + relPos[a];
@@ -587,6 +586,9 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 						NPC.rotation += 0.01f;
 					else
 						NPC.velocity.X *= 0;
+
+					if (extraChunkRadius != 0)
+						extraChunkRadius += (0 - extraChunkRadius) * 0.05f;
 
 					Dust.NewDust(NPC.position, NPC.width, NPC.height, ModContent.DustType<Dusts.BloodMetaballDust>());
 
