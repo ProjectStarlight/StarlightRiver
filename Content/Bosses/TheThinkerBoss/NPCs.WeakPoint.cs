@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			NPC.noGravity = true;
 			NPC.aiStyle = -1;
 			NPC.knockBackResist = 0f;
-			NPC.defense = 3;
+			NPC.defense = 5;
 			NPC.hide = true;
 
 			NPC.HitSound = SoundID.NPCDeath12.WithPitchOffset(-0.25f);
@@ -140,7 +140,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 			Color color = progress > 0.5f ?
 				Color.Lerp(Color.OrangeRed, Color.Yellow, progress * 2 - 1) :
-				Color.Lerp(new Color(160, 15, 220), Color.OrangeRed, progress * 2);
+				Color.Lerp(Color.Red, Color.OrangeRed, progress * 2);
 
 			spriteBatch.Draw(tex, position - Main.screenPosition, null, color * 0.8f, 0, tex.Size() / 2, 1, 0, 0);
 			spriteBatch.Draw(texOver, target, source, color * 0.8f, 0, tex.Size() / 2, 0, 0);

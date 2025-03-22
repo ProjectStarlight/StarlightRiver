@@ -40,6 +40,10 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					npc.velocity = Vector2.Normalize(npc.Center - Main.player[npc.target].Center) * -3;
 					npc.velocity += Vector2.One.RotatedBy(npc.ai[0] * 0.05f);
 				}
+				else
+				{
+					npc.active = false;
+				}
 
 				return false;
 			}

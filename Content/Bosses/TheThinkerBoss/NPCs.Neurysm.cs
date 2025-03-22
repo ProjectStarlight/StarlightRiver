@@ -79,6 +79,16 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			return opacity > 0.5f;
 		}
 
+		public override bool? CanBeHitByItem(Player player, Item item)
+		{
+			return opacity > 0.5f ? null : false;
+		}
+
+		public override bool? CanBeHitByProjectile(Projectile projectile)
+		{
+			return opacity > 0.5f ? null : false;
+		}
+
 		public override void ModifyIncomingHit(ref NPC.HitModifiers modifiers)
 		{
 			modifiers.FinalDamage *= 0;
@@ -118,7 +128,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			else if (State == 2)
 				opacity = prog;
 
-			if (ThisBrain is null)
+			if (ThisBrain is null || !ThisBrain.NPC.active)
 			{
 				State = 1;
 

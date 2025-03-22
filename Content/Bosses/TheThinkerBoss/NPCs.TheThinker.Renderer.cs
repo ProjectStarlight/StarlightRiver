@@ -50,6 +50,30 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			Main.instance.DrawCacheNPCProjectiles.Add(index);
 		}
 
+		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+		{
+			if (NPC.IsABestiaryIconDummy)
+			{
+				DrawBestiary(spriteBatch, screenPos);
+				return false;
+			}
+
+			if (!Open)
+				return false;
+
+			DrawCocoon();
+
+			if (active)
+				DrawArenaBorder(spriteBatch);
+
+			return false;
+		}
+
+		/// <summary>
+		/// Renders the backgrounds for each appropriate thinker
+		/// </summary>
+		/// <param name="orig"></param>
+		/// <param name="self"></param>
 		private void DrawBackgrounds(On_Main.orig_DrawPlayers_BehindNPCs orig, Main self)
 		{
 			orig(self);
@@ -60,6 +84,10 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			}
 		}
 
+		/// <summary>
+		/// Draws the background element of the arena, using its fade-in shader
+		/// </summary>
+		/// <param name="spriteBatch"></param>
 		public void DrawBackground(SpriteBatch spriteBatch)
 		{
 			Texture2D tex = Assets.Bosses.TheThinkerBoss.ThinkerBackground.Value;
@@ -93,7 +121,12 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			}
 		}
 
-		public void DrawUnderShell()
+		/// <summary>
+		/// Draws the thinkers 'cocoon'/shell. While its unintutive, even the part that appears above the heart actually draws under it,
+		/// and then the actual hearts rendering is masked. This is so that the grayscale of the gray matter shader can apply to the
+		/// shell but not the heart.
+		/// </summary>
+		public void DrawCocoon()
 		{
 			Texture2D tex = Assets.Bosses.TheThinkerBoss.ShellBack.Value;
 			Texture2D texOver = Assets.Bosses.TheThinkerBoss.ShellFront.Value;
@@ -115,7 +148,11 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			}
 		}
 
-		public void DrawArena(SpriteBatch spriteBatch)
+		/// <summary>
+		/// Draws the arena border
+		/// </summary>
+		/// <param name="spriteBatch"></param>
+		public void DrawArenaBorder(SpriteBatch spriteBatch)
 		{
 			Texture2D spike = Assets.Misc.SpikeTell.Value;
 			Texture2D solid = Assets.Bosses.TheThinkerBoss.ShellSpike.Value;
@@ -140,12 +177,15 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin();
+			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
 			ManageArenaTrail();
 			DrawArenaEdgeTrail();
 		}
 
+		/// <summary>
+		/// Updates the trail used to track the pulsing shape of the arena border
+		/// </summary>
 		protected void ManageArenaTrail()
 		{
 			if (arenaCache is null || arenaCache.Count != 73)
@@ -175,6 +215,9 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			arenaTrail.NextPosition = NPC.Center;
 		}
 
+		/// <summary>
+		/// Draws the trail portion of the arena edge
+		/// </summary>
 		public void DrawArenaEdgeTrail()
 		{
 			Effect effect = ShaderLoader.GetShader("RepeatingChain").Value;
@@ -191,25 +234,10 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			arenaTrail?.Render(effect);
 		}
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
-		{
-			if (NPC.IsABestiaryIconDummy)
-			{
-				DrawBestiary(spriteBatch, screenPos);
-				return false;
-			}
-
-			if (!Open)
-				return false;
-
-			DrawUnderShell();
-
-			if (active)
-				DrawArena(spriteBatch);
-
-			return false;
-		}
-
+		/// <summary>
+		/// Draws the graymatter mask for each thinker
+		/// </summary>
+		/// <param name="sb"></param>
 		private void DrawGrayAura(SpriteBatch sb)
 		{
 			Texture2D glow = Assets.Masks.GlowAlpha.Value;
@@ -256,6 +284,19 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			}
 		}
 
+		public float Heartbeat(float t)
+		{
+			float omega = 2 * MathF.PI;
+			float alpha = 0.5f;
+			float beta = 2 * MathF.PI;
+
+			float pulse = MathF.Sin(omega * t);
+			float decay = MathF.Exp(-alpha * (t % (2 * MathF.PI / omega)));
+			float modulation = 1 + MathF.Cos(beta * t);
+
+			return MathF.Pow(pulse, 2) * decay * modulation;
+		}
+
 		/// <summary>
 		/// Renders the normal "heart" appearance of the thinker
 		/// </summary>
@@ -270,11 +311,13 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			// need a scissor enabled rasterizer to be able to draw in bestiary
 			var rasterizer = new RasterizerState() { ScissorTestEnable = true };
 
+			float scaleCalc = 1f + 0.2f * Heartbeat(Main.GameUpdateCount * 0.02f);
+
 			Effect bodyShader = ShaderLoader.GetShader("ThinkerBody").Value;
 
 			if (bodyShader != null)
 			{
-				bodyShader.Parameters["u_resolution"].SetValue(Assets.Bosses.TheThinkerBoss.Heart.Size());
+				bodyShader.Parameters["u_resolution"].SetValue(Assets.Bosses.TheThinkerBoss.Heart.Size() * scaleCalc);
 				bodyShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f);
 
 				bodyShader.Parameters["mainbody_t"].SetValue(Assets.Bosses.TheThinkerBoss.Heart.Value);
@@ -290,7 +333,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointWrap, default, rasterizer, bodyShader, Main.GameViewMatrix.TransformationMatrix);
 
 				Texture2D tex = Assets.Bosses.TheThinkerBoss.Heart.Value;
-				spriteBatch.Draw(tex, NPC.Center - screenPos, null, Color.White, NPC.rotation, tex.Size() / 2f, NPC.scale, 0, 0);
+				spriteBatch.Draw(tex, NPC.Center - screenPos, null, Color.White, NPC.rotation, tex.Size() / 2f, scaleCalc * NPC.scale, 0, 0);
 
 				if (pulseTime > 0)
 				{
@@ -408,7 +451,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		}
 
 		/// <summary>
-		/// 
+		/// Draws an additional ring of petals for the death animation
 		/// </summary>
 		/// <param name="spriteBatch"></param>
 		/// <param name="rotOffset"></param>
@@ -451,6 +494,11 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			}
 		}
 
+		/// <summary>
+		/// Draws the death animation
+		/// </summary>
+		/// <param name="spriteBatch"></param>
+		/// <param name="progress"></param>
 		private void DrawFlowerToDead(SpriteBatch spriteBatch, float progress)
 		{
 			float scaleMult = 1;

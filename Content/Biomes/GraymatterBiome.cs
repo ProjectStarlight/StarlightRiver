@@ -44,6 +44,11 @@ namespace StarlightRiver.Content.Biomes
 
 		public static int fullscreenTimer = 0;
 
+		/// <summary>
+		/// List of tiles with graymatter emissions.
+		/// </summary>
+		public static HashSet<int> grayEmissionTypes = new();
+
 		public override SceneEffectPriority Priority => SceneEffectPriority.None;
 
 		public override int Music => -1;
@@ -78,11 +83,64 @@ namespace StarlightRiver.Content.Biomes
 			}
 		}
 
+		/// <summary>
+		/// Draws the graymatter aura for all tiles marked as emitting graymatter
+		/// </summary>
+		/// <param name="spriteBatch"></param>
+		private void DrawTileMap(SpriteBatch spriteBatch)
+		{
+			if (!StarlightWorld.HasFlag(WorldFlags.ThinkerBossOpen))
+				return;
+
+			Texture2D glow = Assets.Masks.GlowAlpha.Value;
+			var pos = (Main.screenPosition / 16).ToPoint16();
+
+			int width = Main.screenWidth / 16 + 1;
+			int height = Main.screenHeight / 16 + 1;
+
+			Color color = new(0.7f, 0.7f, 0.7f, 0f);
+			Vector2 origin = glow.Size() / 2f;
+
+			for (int x = pos.X; x < pos.X + width; x++)
+			{
+				for (int y = pos.Y; y < pos.Y + height; y++)
+				{
+					Tile tile = Main.tile[x, y];
+
+					if (grayEmissionTypes.Contains(tile.TileType))
+					{
+						Vector2 drawPos = new Vector2(x, y) * 16 + Vector2.One * 8 - Main.screenPosition;
+
+						// Draw to map
+						spriteBatch.Draw(glow, drawPos, null, color, 0, origin, 1.1f + 0.4f * MathF.Sin(Main.GameUpdateCount * 0.05f + (x ^ y)), 0, 0);
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// draws the tiles that emit gray matter as themselves over
+		/// </summary>
+		/// <param name="spriteBatch"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		private void DrawTileOverlay(SpriteBatch spriteBatch, int x, int y)
+		{
+			Tile tile = Main.tile[x, y];
+
+			if (grayEmissionTypes.Contains(tile.TileType))
+			{
+				Texture2D tex = Terraria.GameContent.TextureAssets.Tile[tile.TileType].Value;
+				spriteBatch.Draw(tex, new Vector2(x, y) * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), Color.White * 0.1f);
+			}
+		}
+
 		public void DrawHallucinationMap(SpriteBatch spriteBatch)
 		{
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
+			DrawTileMap(spriteBatch);
 			onDrawHallucinationMap?.Invoke(spriteBatch);
 
 			// Draw the screen overlay for when the player is actively standing on gray matter
@@ -111,6 +169,7 @@ namespace StarlightRiver.Content.Biomes
 				for (int y = pos.Y; y < pos.Y + height; y++)
 				{
 					onDrawOverPerTile.Invoke(spriteBatch, x, y);
+					DrawTileOverlay(spriteBatch, x, y);
 				}
 			}
 
@@ -162,7 +221,7 @@ namespace StarlightRiver.Content.Biomes
 
 		private void AddThinker(On_WorldGen.orig_CrimVein orig, Vector2D position, Vector2D velocity)
 		{
-			if (!thinkerPositions.Contains(position.ToPoint().ToVector2()))
+			if (!thinkerPositions.Contains(position.ToPoint().ToVector2()) && !thinkerPositions.Any(n => Vector2.Distance(position.ToPoint().ToVector2(), n) < 100))
 				thinkerPositions.Add(position.ToPoint().ToVector2());
 
 			orig(position, velocity);
@@ -201,7 +260,7 @@ namespace StarlightRiver.Content.Biomes
 
 			foreach (Vector2 pos in thinkerPositions)
 			{
-				if (!Main.npc.Any(n => n.active && n.type == ModContent.NPCType<TheThinker>() && Vector2.Distance(n.Center, pos) < 64))
+				if (!Main.npc.Any(n => n.active && n.type == ModContent.NPCType<TheThinker>() && Vector2.Distance(n.Center, pos) < 100))
 					NPC.NewNPC(null, (int)pos.X * 16, (int)pos.Y * 16, ModContent.NPCType<TheThinker>());
 			}
 		}
