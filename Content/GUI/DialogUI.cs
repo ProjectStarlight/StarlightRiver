@@ -79,7 +79,12 @@ namespace StarlightRiver.Content.GUI
 			if (boxTimer >= 60)
 			{
 				if (textTimer < messageLen)
-					textTimer++;
+				{
+					if (textTimer % 8 == 0)
+						SoundEngine.PlaySound(SoundID.MenuTick.WithPitchOffset(Main.rand.NextFloat()));
+
+					textTimer += 2;
+				}
 
 				if (titleTimer < title.Length)
 					titleTimer++;
@@ -331,7 +336,7 @@ namespace StarlightRiver.Content.GUI
 		public override void SafeClick(UIMouseEvent evt)
 		{
 			onClick.Invoke();
-			Terraria.Audio.SoundEngine.PlaySound(Terraria.ID.SoundID.GuitarC);
+			Terraria.Audio.SoundEngine.PlaySound(Terraria.ID.SoundID.MenuTick.WithPitchOffset(0.5f));
 		}
 	}
 }
