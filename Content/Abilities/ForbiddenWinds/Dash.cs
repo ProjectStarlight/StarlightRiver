@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
 		public override int CooldownMax => 80;
 
-		public Vector2 Dir { get; private set; }
+		public Vector2 Dir { get; set; }
 		public Vector2 Vel { get; private set; }
 		public float Speed { get; set; }
 		public float Boost { get; set; }

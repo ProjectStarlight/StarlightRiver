@@ -22,5 +22,15 @@
                 "Text": "Press Y to channel starlight to see ancient knowledge about what your mouse is hovering over."
             }
         ]
+    },
+    {
+        "Key": "DashAbility",
+        "Title": "Forbidden Winds",
+        "Screens": [
+            {
+                "ImagePath": "StarlightRiver/Assets/Tutorials/DashControls",
+                "Text": "Press [c/6699FF:SHIFT] while holding any combination of [c/6699FF:W], [c/6699FF:A], [c/6699FF:S], and [c/6699FF:D] to channel starlight into a powerful dash.\n\nYou'll strike with enough force to shatter any object with a [c/88FFFF:glowing blue outline!]"
+            }
+        ]
     }
 ]

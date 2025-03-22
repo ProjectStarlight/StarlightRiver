@@ -17,6 +17,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 	{
 		public bool visible = true;
 
+		public Player talkingTo;
 		public DialogManager manager;
 
 		public override string Texture => "StarlightRiver/Assets/NPCs/Starlight/Alican";
@@ -68,6 +69,12 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			if (Main.netMode == NetmodeID.Server && Main.GameUpdateCount % 60 == 0)
 				NPC.netUpdate = true;
 
+			if (talkingTo != null && talkingTo.TalkNPC != NPC)
+			{
+				talkingTo = null;
+				DialogUI.CloseDialogue();
+			}
+
 			if (visible)
 			{
 				if (Timer % 50 < 25)
@@ -96,6 +103,8 @@ namespace StarlightRiver.Content.NPCs.Starlight
 
 		public override string GetChat()
 		{
+			talkingTo = Main.LocalPlayer;
+
 			if (State == 0)
 				manager.Start("Intro1");
 
@@ -156,6 +165,21 @@ namespace StarlightRiver.Content.NPCs.Starlight
 
 			if (visible)
 				spriteBatch.Draw(Assets.NPCs.Starlight.Alican.Value, NPC.Center + new Vector2(0, -10) - Main.screenPosition, NPC.frame, Lighting.GetColor((NPC.Center / 16).ToPoint()), 0, new Vector2(31, 44), 1, effects, 0);
+
+			if ((
+				State == 0 ||
+				State == 1)
+				&& talkingTo is null)
+			{
+				Texture2D exclaim = Assets.Misc.Exclaim.Value;
+				Vector2 exclaimPos = NPC.Center + Vector2.UnitY * -66 - Main.screenPosition;
+				exclaimPos.Y += (float)Math.Sin(Main.GameUpdateCount * 0.025f) * 5;
+				spriteBatch.Draw(exclaim, exclaimPos, null, Color.White, (float)Math.Sin(Main.GameUpdateCount * 0.05f) * 0.15f, exclaim.Size() / 2f, 1, 0, 0);
+
+				float pulseTime = Main.GameUpdateCount % 60 < 50 ? 0 : (Main.GameUpdateCount % 60 - 50) / 10f;
+
+				spriteBatch.Draw(exclaim, exclaimPos, null, Color.White * (1 - pulseTime), (float)Math.Sin(Main.GameUpdateCount * 0.05f) * 0.15f, exclaim.Size() / 2f, 1 + pulseTime, 0, 0);
+			}
 
 			return false;
 		}

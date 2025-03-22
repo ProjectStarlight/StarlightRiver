@@ -7,6 +7,7 @@ using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
+using StarlightRiver.Core.Systems.PixelationSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -47,13 +48,13 @@ namespace StarlightRiver.Content.Pickups
 		public override void Visuals()
 		{
 			float sin = 0.2f + Math.Abs((float)Math.Sin(StarlightWorld.visualTimer));
-			Dust.NewDustPerfect(new Vector2(Center.X + (float)Math.Sin(StarlightWorld.visualTimer) * 30, Center.Y - 20 + (float)Math.Cos(StarlightWorld.visualTimer) * 10), DustType<Content.Dusts.Glow>(), Vector2.Zero, 0, new Color(100, 200, 255) * sin, 0.25f);
+			Dust.NewDustPerfect(new Vector2(Center.X + (float)Math.Sin(StarlightWorld.visualTimer) * 30, Center.Y - 20 + (float)Math.Cos(StarlightWorld.visualTimer) * 10), DustType<Dusts.PixelatedGlow>(), Vector2.Zero, 0, new Color(100, 200, 255, 0) * sin, 0.16f);
 
 			float sin2 = 0.2f + Math.Abs((float)Math.Cos(StarlightWorld.visualTimer));
-			Dust.NewDustPerfect(new Vector2(Center.X + (float)Math.Cos(StarlightWorld.visualTimer) * 25, Center.Y + (float)Math.Sin(StarlightWorld.visualTimer) * 6), DustType<Content.Dusts.Glow>(), Vector2.Zero, 0, new Color(100, 200, 255) * sin2, 0.25f);
+			Dust.NewDustPerfect(new Vector2(Center.X + (float)Math.Cos(StarlightWorld.visualTimer) * 25, Center.Y + (float)Math.Sin(StarlightWorld.visualTimer) * 6), DustType<Dusts.PixelatedGlow>(), Vector2.Zero, 0, new Color(100, 200, 255, 0) * sin2, 0.13f);
 
 			float sin3 = 0.2f + Math.Abs((float)Math.Sin(StarlightWorld.visualTimer));
-			Dust.NewDustPerfect(new Vector2(Center.X + (float)Math.Sin(StarlightWorld.visualTimer + 2) * 15, Center.Y + 20 + (float)Math.Cos(StarlightWorld.visualTimer + 2) * 4), DustType<Content.Dusts.Glow>(), Vector2.Zero, 0, new Color(100, 200, 255) * sin3, 0.2f);
+			Dust.NewDustPerfect(new Vector2(Center.X + (float)Math.Sin(StarlightWorld.visualTimer + 2) * 15, Center.Y + 20 + (float)Math.Cos(StarlightWorld.visualTimer + 2) * 4), DustType<Dusts.PixelatedGlow>(), Vector2.Zero, 0, new Color(100, 200, 255, 0) * sin3, 0.1f);
 		}
 
 		public override void PickupVisuals(int timer)
@@ -74,24 +75,25 @@ namespace StarlightRiver.Content.Pickups
 				if (timer < 260)
 				{
 					float progress = Eases.BezierEase(timer / 260f);
-					point1 = Player.Center + new Vector2((float)Math.Sin(progress * 6.28f) * (40 + progress * 80), 100 - timer);
-					point2 = Player.Center + new Vector2((float)Math.Sin(progress * 6.28f + 6.28f / 3) * (40 + progress * 80), 100 - timer);
-					point3 = Player.Center + new Vector2((float)Math.Sin(progress * 6.28f + 6.28f / 3 * 2) * (40 + progress * 80), 100 - timer);
+					point1 = Player.Center + new Vector2((float)Math.Sin(progress * 6.28f) * (40 + progress * 80), 100 - Eases.EaseQuadIn(progress) * 320);
+					point2 = Player.Center + new Vector2((float)Math.Sin(progress * 6.28f + 6.28f / 3) * (40 + progress * 80), 100 - Eases.EaseQuadIn(progress) * 320);
+					point3 = Player.Center + new Vector2((float)Math.Sin(progress * 6.28f + 6.28f / 3 * 2) * (40 + progress * 80), 100 - Eases.EaseQuadIn(progress) * 320);
 				}
 
 				if (timer >= 260 && timer <= 380)
 				{
 					float progress = 1 - Eases.BezierEase((timer - 260) / 120f);
-					point1 = Player.Center + new Vector2((float)Math.Sin(progress * 6.28f) * progress * 120, progress * -160);
-					point2 = Player.Center + new Vector2((float)Math.Sin(progress * 6.28f + 6.28f / 3) * progress * 120, progress * -160);
-					point3 = Player.Center + new Vector2((float)Math.Sin(progress * 6.28f + 6.28f / 3 * 2) * progress * 120, progress * -160);
+					point1 = Player.Center + new Vector2((float)Math.Sin(progress * 6.28f) * progress * 120, progress * -220);
+					point2 = Player.Center + new Vector2((float)Math.Sin(progress * 6.28f + 6.28f / 3) * progress * 120, progress * -220);
+					point3 = Player.Center + new Vector2((float)Math.Sin(progress * 6.28f + 6.28f / 3 * 2) * progress * 120, progress * -220);
 				}
 
-				if (cache1 != null && timer > 60)
+				if (cache1 != null && timer > 100 && timer < 380)
 				{
-					Dust.NewDustPerfect(cache1[Main.rand.Next(20, 100)], DustType<Dusts.Glow>(), Vector2.Zero, 0, new Color(80, 140, 140), 0.3f);
-					Dust.NewDustPerfect(cache2[Main.rand.Next(20, 100)], DustType<Dusts.Glow>(), Vector2.Zero, 0, new Color(80, 140, 140), 0.3f);
-					Dust.NewDustPerfect(cache3[Main.rand.Next(20, 100)], DustType<Dusts.Glow>(), Vector2.Zero, 0, new Color(80, 140, 140), 0.3f);
+					float fade = Math.Clamp((timer - 100) / 120f, 0, 1);
+					Dust.NewDustPerfect(cache1[Main.rand.Next(20, 100)], DustType<Dusts.PixelatedEmber>(), Vector2.UnitY * Main.rand.NextFloat(-1, -0.5f), 0, new Color(20, 35, 35, 0) * fade, 0.3f * fade);
+					Dust.NewDustPerfect(cache2[Main.rand.Next(20, 100)], DustType<Dusts.PixelatedEmber>(), Vector2.UnitY * -1, 0, new Color(20, 35, 35, 0) * fade, 0.3f * fade);
+					Dust.NewDustPerfect(cache3[Main.rand.Next(20, 100)], DustType<Dusts.PixelatedEmber>(), Vector2.UnitY * -1, 0, new Color(20, 35, 35, 0) * fade, 0.3f * fade);
 				}
 
 				ManageCache(ref cache1, point1);
@@ -106,29 +108,51 @@ namespace StarlightRiver.Content.Pickups
 				ManageTrail(ref trail6, cache3, true);
 			}
 
+			if (timer >= 500)
+			{
+				Player.GetModPlayer<StarlightPlayer>().pickupHoldsPlayer = false;
+
+				Player.controlUp = true;
+				Player.controlLeft = false;
+				Player.controlRight = false;
+				Player.controlDown = false;
+
+				float timeRel = (timer - 500) / 150f;
+				Dust.NewDust(Player.position, Player.width, Player.height, DustType<Content.Dusts.Air>(), 0, 0, 0, default, 0.3f);
+				//Filters.Scene.Activate("Shockwave", Player.Center).GetShader().UseProgress(2f).UseIntensity(100).UseDirection(new Vector2(0.005f + timeRel * 0.5f, 1 * 0.02f - timeRel * 0.02f));
+			}
+
 			if (timer == 500)
 			{
 				SoundEngine.PlaySound(SoundID.Item104);
 				SoundEngine.PlaySound(SoundID.Item45);
-			}
 
-			if (timer > 500)
-			{
-				float timeRel = (timer - 500) / 150f;
-				Dust.NewDust(Player.position, Player.width, Player.height, DustType<Content.Dusts.Air>(), 0, 0, 0, default, 0.3f);
-				Filters.Scene.Activate("Shockwave", Player.Center).GetShader().UseProgress(2f).UseIntensity(100).UseDirection(new Vector2(0.005f + timeRel * 0.5f, 1 * 0.02f - timeRel * 0.02f));
+				for(int k = 0; k < 100; k++)
+				{
+					Dust.NewDustPerfect(Player.Center, DustType<Dusts.PixelatedEmber>(), Main.rand.NextVector2Circular(20, 20), 0, new Color(20, 35, 35, 0), Main.rand.NextFloat(0.5f));
+				}
+
+				for(int k = 0; k < 20; k++)
+				{
+					Dust.NewDustPerfect(Player.Center, DustType<Dusts.PixelatedImpactLineDust>(), Main.rand.NextVector2Circular(10, 10), 0, new Color(20, 35, 35, 0), Main.rand.NextFloat(0.5f));
+				}
+
+				Player.GetHandler().Stamina = Player.GetHandler().StaminaMax;
+
+				if (Player.GetHandler().GetAbility<Dash>(out var dash))
+				{
+					// We have to hard set this since it would only be triggered by ProcessTriggers otherwise
+					dash.Dir = Vector2.UnitY * -1;
+					dash.Activate(Player.GetHandler());
+				}
 			}
 
 			if (timer == 569) //popup + codex entry
 			{
-				string message = StarlightRiver.Instance.AbilityKeys.Get<Dash>().GetAssignedKeys().Count > 0 ?
-					"Press W/A/S/D + " + StarlightRiver.Instance.AbilityKeys.Get<Dash>().GetAssignedKeys()[0] + " to dash." :
-					"Press W/A/S/D + [Please Bind a Key] to dash.";
+				TutorialManager.ActivateTutorial("DashAbility");
 
-				TextCard.Display("Forbidden Winds", message, () => Main.LocalPlayer.GetModPlayer<AbilityHandler>().ActiveAbility is Dash);
-
-				Filters.Scene.Activate("Shockwave", Player.Center).GetShader().UseProgress(0f).UseIntensity(0);
-				Filters.Scene.Deactivate("Shockwave");
+				//Filters.Scene.Activate("Shockwave", Player.Center).GetShader().UseProgress(0f).UseIntensity(0);
+				//Filters.Scene.Deactivate("Shockwave");
 			}
 
 			// audio fade shenanigans
@@ -172,16 +196,20 @@ namespace StarlightRiver.Content.Pickups
 			{
 				if (trail is null || trail.IsDisposed)
 				{
-					trail = new Trail(Main.instance.GraphicsDevice, 120, new NoTip(), factor => Math.Min((float)Math.Sin(factor * 3.14f) * 50, 50), factor =>
+					trail = new Trail(Main.instance.GraphicsDevice, 120, new NoTip(), factor => Math.Min((float)Math.Sin(factor * 3.14f) * 24, 24), factor =>
 									{
-										if (factor.X == 1)
+										if (factor.X == 1 || factor.X == 0)
 											return Color.Transparent;
 
 										int time = Main.LocalPlayer.GetModPlayer<StarlightPlayer>().pickupTimer;
 										float mul = 1;
 
-										if (time < 100)
-											mul = (time - 30) / 70f;
+										if (time < 100 + factor.X * 120)
+											mul = 0;
+
+										float relTime = (time - 100) - factor.X * 120;
+										if (relTime < 120)
+											mul = Math.Clamp(relTime / 120f, 0, 1);
 
 										if (time > 600)
 											mul = 1 - (time - 600) / 20f;
@@ -196,17 +224,23 @@ namespace StarlightRiver.Content.Pickups
 				{
 					trail = new Trail(Main.instance.GraphicsDevice, 120, new NoTip(), factor => Math.Min((float)Math.Sin(factor * 3.14f) * 13, 13), factor =>
 									{
-										if (factor.X == 1)
+										if (factor.X == 1 || factor.X == 0)
 											return Color.Transparent;
 
 										int time = Main.LocalPlayer.GetModPlayer<StarlightPlayer>().pickupTimer;
 										float mul = 1;
 
-										if (time < 100)
-											mul = (time - 30) / 70f;
+										if (time < 100 + factor.X * 120)
+											mul = 0;
+
+										float relTime = (time - 100) - factor.X * 120;
+										if (relTime < 120)
+											mul = Math.Clamp(relTime / 120f, 0, 1);
 
 										if (time > 600)
 											mul = 1 - (time - 600) / 20f;
+
+
 
 										return new Color(140, 150 + (int)(105 * factor.X), 255) * (float)Math.Sin(factor.X * 3.14f) * mul;
 									});
@@ -231,7 +265,7 @@ namespace StarlightRiver.Content.Pickups
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * -0.01f);
 			effect.Parameters["repeats"].SetValue(4f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
 			trail1?.Render(effect);
 			trail2?.Render(effect);
@@ -247,7 +281,11 @@ namespace StarlightRiver.Content.Pickups
 		public override void PostDraw(Color lightColor)
 		{
 			base.PostDraw(lightColor);
-			DrawPrimitives();
+
+			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("OverPlayers", () =>
+			{
+				DrawPrimitives();
+			});
 		}
 
 		public string GetHint()
