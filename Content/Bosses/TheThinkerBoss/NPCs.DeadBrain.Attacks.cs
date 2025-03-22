@@ -1195,7 +1195,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		public void TeleportBlooms()
 		{
 			if (AttackTimer > 30 && AttackTimer < 60)
-				(thinker.ModNPC as TheThinker).ExtraGrayAuraRadius = -140 * (AttackTimer - 30) / 30f;
+				(thinker.ModNPC as TheThinker).ExtraGrayAuraRadius = -70 * (AttackTimer - 30) / 30f;
 
 			if (AttackTimer == 30)
 			{
@@ -1254,7 +1254,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			if (AttackTimer >= 60 + 75 * 7)
 			{
 				float relTime = AttackTimer - (60 + 75 * 7);
-				(thinker.ModNPC as TheThinker).ExtraGrayAuraRadius = -140 + relTime / 30f * 140;
+				(thinker.ModNPC as TheThinker).ExtraGrayAuraRadius = -70 + relTime / 30f * 70;
 			}
 
 			if (AttackTimer >= 60 + 75 * 7 + 30)

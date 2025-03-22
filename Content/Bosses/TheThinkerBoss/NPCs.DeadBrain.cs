@@ -127,7 +127,20 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		/// <returns>If the player is a valid target by virtue of being inside of the arena</returns>
 		private bool IsInArena(Player player)
 		{
-			return Vector2.Distance(player.Center, thinker.Center) < ThisThinker.ArenaRadius + 20;
+			return player.active && !player.dead && Vector2.Distance(player.Center, thinker.Center) < ThisThinker.ArenaRadius + 20;
+		}
+
+		private void SelectTarget()
+		{
+			List<Player> options = new();
+
+			foreach(Player player in Main.ActivePlayers)
+			{
+				if (IsInArena(player))
+					options.Add(player);
+			}
+
+			NPC.target = Main.rand.NextFromCollection(options).whoAmI;
 		}
 
 		private void DrawOverGraymatter(SpriteBatch obj)
@@ -309,6 +322,12 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			Timer++;
 			AttackTimer++;
 
+			if (Phase != Phases.Fleeing && thinker != null && !Main.player.Any(n => n.active && IsInArena(n)))
+			{
+				Phase = Phases.Fleeing;
+				Timer = 0;
+			}
+
 			if (contactDamage && contactDamageOpacity < 1)
 				contactDamageOpacity += 0.05f;
 
@@ -368,10 +387,14 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			switch (Phase)
 			{
 				case Phases.Fleeing:
-					NPC.position.Y += 10;
+					opacity = 1f - Timer / 60f;
+					shieldOpacity = 1f - Timer / 60f;
 
 					if (Timer > 60)
+					{
 						NPC.active = false;
+						weakpoint.active = false;
+					}
 
 					break;
 
@@ -455,6 +478,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					if (AttackTimer == 1)
 					{
 						attackCount++;
+						SelectTarget();
 
 						AttackState = attackQueue[0];
 						attackQueue.RemoveAt(0);
@@ -535,6 +559,8 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					if (AttackTimer == 1)
 					{
 						attackCount++;
+						SelectTarget();
+
 						AttackState = attackQueue[0];
 						attackQueue.RemoveAt(0);
 

@@ -177,7 +177,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin();
+			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
 			ManageArenaTrail();
 			DrawArenaEdgeTrail();
@@ -284,6 +284,19 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			}
 		}
 
+		public float Heartbeat(float t)
+		{
+			float omega = 2 * MathF.PI;
+			float alpha = 0.5f;
+			float beta = 2 * MathF.PI;
+
+			float pulse = MathF.Sin(omega * t);
+			float decay = MathF.Exp(-alpha * (t % (2 * MathF.PI / omega)));
+			float modulation = 1 + MathF.Cos(beta * t);
+
+			return MathF.Pow(pulse, 2) * decay * modulation;
+		}
+
 		/// <summary>
 		/// Renders the normal "heart" appearance of the thinker
 		/// </summary>
@@ -298,11 +311,13 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			// need a scissor enabled rasterizer to be able to draw in bestiary
 			var rasterizer = new RasterizerState() { ScissorTestEnable = true };
 
+			var scaleCalc = 1f + 0.2f * Heartbeat(Main.GameUpdateCount * 0.02f);
+
 			Effect bodyShader = ShaderLoader.GetShader("ThinkerBody").Value;
 
 			if (bodyShader != null)
 			{
-				bodyShader.Parameters["u_resolution"].SetValue(Assets.Bosses.TheThinkerBoss.Heart.Size());
+				bodyShader.Parameters["u_resolution"].SetValue(Assets.Bosses.TheThinkerBoss.Heart.Size() * scaleCalc);
 				bodyShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f);
 
 				bodyShader.Parameters["mainbody_t"].SetValue(Assets.Bosses.TheThinkerBoss.Heart.Value);
@@ -318,7 +333,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointWrap, default, rasterizer, bodyShader, Main.GameViewMatrix.TransformationMatrix);
 
 				Texture2D tex = Assets.Bosses.TheThinkerBoss.Heart.Value;
-				spriteBatch.Draw(tex, NPC.Center - screenPos, null, Color.White, NPC.rotation, tex.Size() / 2f, NPC.scale, 0, 0);
+				spriteBatch.Draw(tex, NPC.Center - screenPos, null, Color.White, NPC.rotation, tex.Size() / 2f, scaleCalc * NPC.scale, 0, 0);
 
 				if (pulseTime > 0)
 				{

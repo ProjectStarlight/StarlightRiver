@@ -128,7 +128,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			else if (State == 2)
 				opacity = prog;
 
-			if (ThisBrain is null)
+			if (ThisBrain is null || !ThisBrain.NPC.active)
 			{
 				State = 1;
 

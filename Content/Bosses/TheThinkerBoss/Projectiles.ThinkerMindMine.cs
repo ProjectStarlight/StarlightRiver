@@ -83,12 +83,21 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					opacity = 1 - (Projectile.timeLeft - 270) / 30f;
 
 				Texture2D tex = Assets.Bosses.TheThinkerBoss.ThinkerMindMine.Value;
+				Texture2D overlay = Assets.Bosses.TheThinkerBoss.HallucionationHazard.Value;
 
 				float pulse2 = pulseAccum * 0.0025f + 0.5f + MathF.Sin(pulseAccum * 0.12f + 0.5f) * (0.5f + pulseAccum * 0.0001f);
 				Vector2 scale = new Vector2(1f + pulse * 0.1f, 1f + pulse2 * 0.1f) * opacity;
 
 				Vector2 scaleAdj = tex.Size() - tex.Size() * scale;
+
+				Color rainbow = new Color(
+				1f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f) * 0.5f,
+				1f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f + 1) * 0.5f,
+				1f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f + 2) * 0.5f,
+				0);
+
 				LightingBufferRenderer.DrawWithLighting(tex, Projectile.position - Main.screenPosition + Vector2.One * 75 - tex.Size() / 2f + scaleAdj / 2, null, Color.White * opacity, 0f, Vector2.Zero, scale);
+				Main.spriteBatch.Draw(overlay, Projectile.Center - Main.screenPosition, null, Color.Lerp(rainbow, new Color(255, 40, 40, 0), 1f - Projectile.timeLeft / 270f) * (1f - Projectile.timeLeft / 270f) * opacity, 0f, overlay.Size() / 2f, scale, 0, 0);
 
 				if (Projectile.timeLeft < 90)
 					Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 40, 40, 0) * MathF.Sin(Projectile.timeLeft / 90f * 6.28f) * 0.5f * opacity, 0f, tex.Size() / 2f, scale, 0, 0);
