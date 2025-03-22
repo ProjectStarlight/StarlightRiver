@@ -668,7 +668,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 					if (Main.masterMode && (AttackTimer - 90) == 60 + 170 || (AttackTimer - 90) == 60)
 					{
-						for(int k = 0; k < 9; k++)
+						for (int k = 0; k < 9; k++)
 						{
 							float rot = k / 9f * 6.28f;
 							Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.UnitX.RotatedBy(rot) * 6, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 160, 0, 20);
@@ -718,7 +718,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			}
 
 			if ((AttackTimer - 90) >= 370)
-				(thinker.ModNPC as TheThinker).ExtraGrayAuraRadius = -60 + 60 * ((AttackTimer - 90) - 370) / 30f;
+				(thinker.ModNPC as TheThinker).ExtraGrayAuraRadius = -60 + 60 * (AttackTimer - 90 - 370) / 30f;
 
 			if ((AttackTimer - 90) >= 400)
 			{
@@ -1237,7 +1237,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				if (relTime == 65)
 				{
 					int projCount = Main.expertMode ? 9 : 6;
-					for(int i = 0; i < projCount; i++)
+					for (int i = 0; i < projCount; i++)
 					{
 						float rot = i / (float)projCount * 6.28f;
 						Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.UnitX.RotatedBy(rot) * (6 + k / 4f), ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 190, 0, 20);

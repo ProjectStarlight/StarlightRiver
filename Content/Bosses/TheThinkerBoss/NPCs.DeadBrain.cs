@@ -134,7 +134,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		{
 			List<Player> options = new();
 
-			foreach(Player player in Main.ActivePlayers)
+			foreach (Player player in Main.ActivePlayers)
 			{
 				if (IsInArena(player))
 					options.Add(player);

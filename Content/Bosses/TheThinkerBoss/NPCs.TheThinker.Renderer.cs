@@ -311,7 +311,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			// need a scissor enabled rasterizer to be able to draw in bestiary
 			var rasterizer = new RasterizerState() { ScissorTestEnable = true };
 
-			var scaleCalc = 1f + 0.2f * Heartbeat(Main.GameUpdateCount * 0.02f);
+			float scaleCalc = 1f + 0.2f * Heartbeat(Main.GameUpdateCount * 0.02f);
 
 			Effect bodyShader = ShaderLoader.GetShader("ThinkerBody").Value;
 
