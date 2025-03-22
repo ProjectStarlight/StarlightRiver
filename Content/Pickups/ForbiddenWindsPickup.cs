@@ -127,19 +127,19 @@ namespace StarlightRiver.Content.Pickups
 				SoundEngine.PlaySound(SoundID.Item104);
 				SoundEngine.PlaySound(SoundID.Item45);
 
-				for(int k = 0; k < 100; k++)
+				for (int k = 0; k < 100; k++)
 				{
 					Dust.NewDustPerfect(Player.Center, DustType<Dusts.PixelatedEmber>(), Main.rand.NextVector2Circular(20, 20), 0, new Color(20, 35, 35, 0), Main.rand.NextFloat(0.5f));
 				}
 
-				for(int k = 0; k < 20; k++)
+				for (int k = 0; k < 20; k++)
 				{
 					Dust.NewDustPerfect(Player.Center, DustType<Dusts.PixelatedImpactLineDust>(), Main.rand.NextVector2Circular(10, 10), 0, new Color(20, 35, 35, 0), Main.rand.NextFloat(0.5f));
 				}
 
 				Player.GetHandler().Stamina = Player.GetHandler().StaminaMax;
 
-				if (Player.GetHandler().GetAbility<Dash>(out var dash))
+				if (Player.GetHandler().GetAbility<Dash>(out Dash dash))
 				{
 					// We have to hard set this since it would only be triggered by ProcessTriggers otherwise
 					dash.Dir = Vector2.UnitY * -1;
@@ -207,7 +207,7 @@ namespace StarlightRiver.Content.Pickups
 										if (time < 100 + factor.X * 120)
 											mul = 0;
 
-										float relTime = (time - 100) - factor.X * 120;
+										float relTime = time - 100 - factor.X * 120;
 										if (relTime < 120)
 											mul = Math.Clamp(relTime / 120f, 0, 1);
 
@@ -233,14 +233,12 @@ namespace StarlightRiver.Content.Pickups
 										if (time < 100 + factor.X * 120)
 											mul = 0;
 
-										float relTime = (time - 100) - factor.X * 120;
+										float relTime = time - 100 - factor.X * 120;
 										if (relTime < 120)
 											mul = Math.Clamp(relTime / 120f, 0, 1);
 
 										if (time > 600)
 											mul = 1 - (time - 600) / 20f;
-
-
 
 										return new Color(140, 150 + (int)(105 * factor.X), 255) * (float)Math.Sin(factor.X * 3.14f) * mul;
 									});
@@ -282,10 +280,7 @@ namespace StarlightRiver.Content.Pickups
 		{
 			base.PostDraw(lightColor);
 
-			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("OverPlayers", () =>
-			{
-				DrawPrimitives();
-			});
+			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("OverPlayers", DrawPrimitives);
 		}
 
 		public string GetHint()

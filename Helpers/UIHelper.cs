@@ -203,7 +203,7 @@ namespace StarlightRiver.Helpers
 						if (maxChars == -1)
 							spriteBatch.DrawString(font, words[k], vector, color, rotation, origin, baseScale * textSnippet.Scale * num2, SpriteEffects.None, 0f);
 						else if (maxChars >= charIndex)
-							spriteBatch.DrawString(font, words[k][..(Math.Min(words[k].Length, maxChars - charIndex))], vector, color, rotation, origin, baseScale * textSnippet.Scale * num2, SpriteEffects.None, 0f);
+							spriteBatch.DrawString(font, words[k][..Math.Min(words[k].Length, maxChars - charIndex)], vector, color, rotation, origin, baseScale * textSnippet.Scale * num2, SpriteEffects.None, 0f);
 
 						charIndex += words[k].Length;
 

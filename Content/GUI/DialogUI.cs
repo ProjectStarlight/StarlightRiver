@@ -103,8 +103,8 @@ namespace StarlightRiver.Content.GUI
 			float titleWidth = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(title).X;
 			int titleSize = (int)MathHelper.Lerp(0, titleWidth + 40, Eases.BezierEase(boxTimer / 60f));
 
-			var font = Terraria.GameContent.FontAssets.MouseText.Value;
-			var messageDims = ChatManager.GetStringSize(font, message, Vector2.One, 500);
+			ReLogic.Graphics.DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
+			Vector2 messageDims = ChatManager.GetStringSize(font, message, Vector2.One, 500);
 
 			var mainRect = new Rectangle(50 + (int)position.X - 260, (int)position.Y, mainWidth, (int)messageDims.Y + 20);
 			var iconRect = new Rectangle(-52 + (int)position.X - 260, (int)position.Y, iconSize, iconSize);
@@ -187,7 +187,7 @@ namespace StarlightRiver.Content.GUI
 			if (!Main.screenTarget.IsDisposed && icon != null)
 			{
 				int iconInnerSize = (int)MathHelper.Lerp(0, 88, Helpers.Eases.BezierEase(Math.Min(1, boxTimer / 30f)));
-				spriteBatch.Draw(icon, new Rectangle( -2 + (int)position.X - 260 - iconInnerSize / 2, 44 + (int)position.Y + 6 - iconInnerSize / 2, iconInnerSize, iconInnerSize), iconFrame, Color.White * finalOpacity, 0, Vector2.Zero, 0, 0);
+				spriteBatch.Draw(icon, new Rectangle(-2 + (int)position.X - 260 - iconInnerSize / 2, 44 + (int)position.Y + 6 - iconInnerSize / 2, iconInnerSize, iconInnerSize), iconFrame, Color.White * finalOpacity, 0, Vector2.Zero, 0, 0);
 			}
 
 			UIHelper.DrawCustomBox(spriteBatch, Assets.Tutorials.Border, iconRect, Color.White, 12);
@@ -312,7 +312,7 @@ namespace StarlightRiver.Content.GUI
 
 			if (IsMouseHovering && hoverTime < 1)
 				hoverTime += 0.1f;
-			
+
 			if (!IsMouseHovering && hoverTime > 0)
 				hoverTime -= 0.1f;
 
