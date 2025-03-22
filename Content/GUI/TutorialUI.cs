@@ -171,7 +171,7 @@ namespace StarlightRiver.Content.GUI
 				startY += image.Height() + 24;
 			}
 
-			ChatManager.DrawColorCodedStringWithShadow(spriteBatch, font, message, dims.TopLeft() + new Vector2(8, startY), 0, Color.LightGray * Opacity, Vector2.Zero, Vector2.One * 0.4f, out int hovered, 480);
+			UIHelper.DrawColorCodedStringShadow(spriteBatch, font, message, dims.TopLeft() + new Vector2(8, startY), Color.White * Opacity, 0, Vector2.Zero, Vector2.One * 0.4f, out int hovered, 480);
 
 			base.Draw(spriteBatch);
 		}
