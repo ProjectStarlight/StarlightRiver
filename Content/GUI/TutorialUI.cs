@@ -150,7 +150,7 @@ namespace StarlightRiver.Content.GUI
 
 			Rectangle frameBox = dims;
 			frameBox.Inflate(dims.Width / 2, dims.Height / 2);
-			var glow = Assets.Masks.Glow.Value;
+			Texture2D glow = Assets.Masks.Glow.Value;
 
 			spriteBatch.Draw(glow, frameBox, Color.Black * 0.8f * Opacity);
 
