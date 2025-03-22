@@ -18,8 +18,8 @@
         "Title": "Starsight",
         "Screens": [
             {
-                "ImagePath": "StarlightRiver/Assets/Tutorials/Example1",
-                "Text": "Press Y to channel starlight to see ancient knowledge about what your mouse is hovering over."
+                "ImagePath": "StarlightRiver/Assets/Tutorials/HintControls",
+                "Text": "Press [c/6699FF:Y] to channel starlight to see [c/AADDFF:ancient knowledge] about what your [c/6699FF:Cursor] is hovering over.\n\n You can also press [c/6699FF:Y] with your [c/6699FF:Cursor] hovering over the air instead to garner a [c/AADDFF:hint on what to do next!]"
             }
         ]
     },
