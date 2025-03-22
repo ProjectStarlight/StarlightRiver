@@ -198,12 +198,12 @@ namespace StarlightRiver.Content.Items.Crimson
 				effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.1f);
 
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, default, effect, Main.UIScaleMatrix);
+				Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
 
 				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, origin, 1, direction, 0);
 
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 
 			return false;
