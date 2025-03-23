@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Biomes
 
 		public override void OnInBiome(Player player)
 		{
-			ZoomHandler.AddFlatZoom(0.2f);
+			//ZoomHandler.AddFlatZoom(0.2f);
 		}
 
 		public override bool IsBiomeActive(Player player)

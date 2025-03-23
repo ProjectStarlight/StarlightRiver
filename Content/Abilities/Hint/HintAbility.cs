@@ -184,9 +184,6 @@ namespace StarlightRiver.Content.Abilities.Hint
 
 			if (Timer > text.Length * 2f)
 				Projectile.velocity.Y = -0.25f;
-
-			if (!Main.dedServ)
-				Projectile.Center = Main.screenPosition + new Vector2(Main.screenWidth / 2, Main.screenHeight / 2 - 64);
 		}
 
 		public override bool TileCollideStyle(ref int width, ref int height, ref bool fallThrough, ref Vector2 hitboxCenterFrac)

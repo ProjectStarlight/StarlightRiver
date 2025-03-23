@@ -30,6 +30,7 @@ namespace StarlightRiver.Core
 		public int maxPickupTimer = 0;
 		public Dummy pickupTarget;
 		public Vector2 oldPickupPos;
+		public bool pickupHoldsPlayer = true;
 
 		public bool inTutorial;
 
@@ -56,7 +57,11 @@ namespace StarlightRiver.Core
 				Player.immuneTime = 5;
 				Player.immuneNoBlink = true;
 
-				Player.Center = Vector2.SmoothStep(oldPickupPos, pickupTarget.Center, pickupTimer / 30f);
+				if (pickupHoldsPlayer)
+					Player.Center = Vector2.SmoothStep(oldPickupPos, pickupTarget.Center, pickupTimer / 30f);
+				else
+					pickupHoldsPlayer = true;
+
 				if (pickupTimer >= maxPickupTimer)
 					pickupTarget = null;
 			}

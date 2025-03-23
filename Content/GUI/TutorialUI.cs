@@ -99,7 +99,7 @@ namespace StarlightRiver.Content.GUI
 	public class TutorialBox : SmartUIElement
 	{
 		public Asset<Texture2D> image;
-		public string message;
+		public TextSnippet[] message;
 
 		public string Title => TutorialUI.currentTutorial.Title;
 
@@ -109,10 +109,10 @@ namespace StarlightRiver.Content.GUI
 		{
 			DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
 
-			string message = LocalizationHelper.WrapString(text, 460, font, 0.9f);
-			this.message = message;
+			message = ChatManager.ParseMessage(text, Color.White).ToArray();
+			Vector2 size = ChatManager.GetStringSize(font, message, Vector2.One, 460);
 
-			float height = font.MeasureString(message).Y + 8;
+			float height = size.Y + 8;
 			if (image != null)
 				height += image.Height() + 24;
 
@@ -129,7 +129,9 @@ namespace StarlightRiver.Content.GUI
 		public void RecalculateHeight()
 		{
 			DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
-			float height = font.MeasureString(message).Y + 8;
+			Vector2 size = ChatManager.GetStringSize(font, message, Vector2.One, 460);
+
+			float height = size.Y + 8;
 			if (image != null)
 				height += image.Height() + 24;
 
@@ -148,10 +150,9 @@ namespace StarlightRiver.Content.GUI
 
 			Rectangle frameBox = dims;
 			frameBox.Inflate(dims.Width / 2, dims.Height / 2);
-			var glow = Assets.Masks.Glow.Value;
+			Texture2D glow = Assets.Masks.Glow.Value;
 
 			spriteBatch.Draw(glow, frameBox, Color.Black * 0.8f * Opacity);
-			//UIHelper.DrawBox(spriteBatch, frameBox, new Color(0.15f, 0.2f, 0.5f) * 0.8f * Opacity);
 
 			DynamicSpriteFont font = Terraria.GameContent.FontAssets.DeathText.Value;
 			Vector2 titlePos = dims.Center.ToVector2() - Vector2.UnitY * (dims.Height / 2 + 32);
@@ -164,13 +165,13 @@ namespace StarlightRiver.Content.GUI
 				var imageRect = new Rectangle(dims.X + 8, dims.Y + 8, 484, image.Height());
 				var frameRect = new Rectangle(dims.X + 4, dims.Y + 4, 492, image.Height() + 8);
 
-				//UIHelper.DrawBox(spriteBatch, frameRect, new Color(0.2f, 0.25f, 0.55f) * Opacity);
 				spriteBatch.Draw(image.Value, imageRect, Color.White * Opacity);
+				UIHelper.DrawCustomBox(spriteBatch, Assets.Tutorials.Border, frameRect, Color.White * Opacity, 12);
 
 				startY += image.Height() + 24;
 			}
 
-			Utils.DrawBorderString(spriteBatch, message, dims.TopLeft() + new Vector2(8, startY), Color.LightGray * Opacity, 0.9f);
+			UIHelper.DrawColorCodedStringShadow(spriteBatch, font, message, dims.TopLeft() + new Vector2(8, startY), Color.White * Opacity, 0, Vector2.Zero, Vector2.One * 0.4f, out int hovered, 480);
 
 			base.Draw(spriteBatch);
 		}

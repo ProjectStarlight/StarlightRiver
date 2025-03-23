@@ -177,7 +177,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 					if (AttackTimer <= 120)
 					{
-						if (Main.netMode != NetmodeID.Server)
+						if (Main.netMode != NetmodeID.Server && !DialogUI.closing)
 							DialogUI.CloseDialogue(); // may accidentially kick players that aren't involved in the fight out of their modal but its probably good enough as is
 
 						SpawnAnimation();
