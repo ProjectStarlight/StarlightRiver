@@ -22,6 +22,7 @@ using Steamworks;
 using System;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.UI.Chat;
 using Terraria.WorldBuilding;
 using static System.Net.WebRequestMethods;
 
@@ -75,7 +76,8 @@ namespace StarlightRiver.Content.Items
 			//StarlightWorld.FlipFlag(WorldFlags.ThinkerBossOpen);
 			//GrayBlob((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
 
-			GUI.Stamina.gainAnimationTimer = 240;
+			//GUI.Stamina.gainAnimationTimer = 240;
+			player.GetHandler().unlockedAbilities.Clear();
 			AlicanSafetySystem.DebugForceState(0);
 
 			return true;
@@ -204,7 +206,16 @@ namespace StarlightRiver.Content.Items
 
 			Utils.DrawBorderStringBig(Main.spriteBatch, $"STARLIGHT RIVER ALPHA TEST -- THINKER BOSS FIGHT TEST", new Vector2(Main.screenWidth / 2, 16), Color.White, 0.4f, 0.5f);
 			Utils.DrawBorderStringBig(Main.spriteBatch, $"ALPHA BUILD DOES NOT REPRESENT FINAL PRODUCT", new Vector2(Main.screenWidth / 2, 48), Color.White, 0.4f, 0.5f);
-			Utils.DrawBorderStringBig(Main.spriteBatch, $"Things to test: Performance improvements", new Vector2(Main.screenWidth / 2, 86), new Color(255, 255, 200), 0.3f, 0.5f);
+			Utils.DrawBorderStringBig(Main.spriteBatch, $"Things to test: boss phase 2 changes, all difficulties", new Vector2(Main.screenWidth / 2, 86), new Color(255, 255, 200), 0.3f, 0.5f);
+
+			/*Terraria.UI.Chat.ChatManager.DrawColorCodedString(Main.spriteBatch, font, ChatManager.ParseMessage("what? [c/ff22ff:This is a test of the\nnational emergency fuck system\nwoo] no way!", Color.White).ToArray(), new Vector2(Main.screenWidth / 2, 126), Color.White, 0, default, Vector2.One, out var hovered, -1);
+
+			Terraria.UI.Chat.ChatManager.DrawColorCodedString(Main.spriteBatch, font, ChatManager.ParseMessage("what? [c/ff22ff:This is a test of the national emergency fuck system woo] no way!", Color.White).ToArray(), new Vector2(Main.screenWidth / 2, 226), Color.White, 0, default, Vector2.One, out var hovered2, -1);
+
+			Terraria.UI.Chat.ChatManager.DrawColorCodedString(Main.spriteBatch, font, "what? [c/ff22ff:This is a test of the national emergency fuck system woo] no way!", new Vector2(Main.screenWidth / 2, 326), Color.White, 0, default, Vector2.One);
+
+			Terraria.UI.Chat.ChatManager.DrawColorCodedString(Main.spriteBatch, font, ChatManager.ParseMessage("what? [c/ff22ff:This is a test of the national emergency fuck system woo] no way!\n\ngreen is green but [c/22ff22: green is greener!]", Color.White).ToArray(), new Vector2(Main.screenWidth / 2, 426), Color.White, 0, default, Vector2.One, out var hovered3, 200);
+			*/
 
 			Main.spriteBatch.End();
 		}

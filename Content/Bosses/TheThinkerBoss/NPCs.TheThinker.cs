@@ -11,6 +11,7 @@ using StarlightRiver.Core.Systems.BarrierSystem;
 using StarlightRiver.Core.Systems.MusicFilterSystem;
 using System;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.ItemDropRules;
@@ -63,7 +64,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		public ref float AttackState => ref NPC.ai[3];
 
 		public bool Open => StarlightWorld.HasFlag(WorldFlags.ThinkerBossOpen);
-		public bool FightActive => ThisBrain != null;
+		public bool FightActive => ThisBrain != null && (ThisBrain?.NPC?.active ?? false);
 
 		public bool ShouldBeAttacking => ThisBrain != null && ThisBrain.Phase == DeadBrain.Phases.TempDead;
 
@@ -153,6 +154,22 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			if (pulseTime > 0)
 				pulseTime--;
 
+			if (active && (ThisBrain is null || !ThisBrain.NPC.active))
+			{
+				ExtraGrayAuraRadius -= 10f;
+
+				if (arenaFade > 0)
+					arenaFade--;
+
+				if (arenaFade <= 0)
+				{
+					active = false;
+					shellFrame = 0;
+					ResetArena();
+					BossBarOverlay.visible = false;
+				}
+			}
+
 			if (!FightActive)
 			{
 				NPC.boss = false;
@@ -224,11 +241,6 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 				if (Vector2.DistanceSquared(player.Center, NPC.Center) <= Math.Pow(140 + ExtraGrayAuraRadius, 2))
 					player.AddBuff(ModContent.BuffType<CrimsonHallucination>(), 10);
-			}
-
-			if (active && (ThisBrain is null || !ThisBrain.NPC.active))
-			{
-				ResetArena();
 			}
 
 			if (platforms.Count > 0)

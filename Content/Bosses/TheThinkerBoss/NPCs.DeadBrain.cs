@@ -49,6 +49,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		public float opacity;
 
 		public List<int> attackQueue = [];
+		public int attackCount;
 
 		public VerletChain attachedChain;
 		public Vector2 attachedChainEndpoint;
@@ -126,7 +127,20 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		/// <returns>If the player is a valid target by virtue of being inside of the arena</returns>
 		private bool IsInArena(Player player)
 		{
-			return Vector2.Distance(player.Center, thinker.Center) < ThisThinker.ArenaRadius + 20;
+			return player.active && !player.dead && Vector2.Distance(player.Center, thinker.Center) < ThisThinker.ArenaRadius + 20;
+		}
+
+		private void SelectTarget()
+		{
+			List<Player> options = new();
+
+			foreach (Player player in Main.ActivePlayers)
+			{
+				if (IsInArena(player))
+					options.Add(player);
+			}
+
+			NPC.target = Main.rand.NextFromCollection(options).whoAmI;
 		}
 
 		private void DrawOverGraymatter(SpriteBatch obj)
@@ -141,7 +155,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 						brain.weakpoint?.ModNPC?.PreDraw(obj, Main.screenPosition, Color.White);
 
 						// If doing a clones attack, highlight the real one
-						if (brain.Phase == Phases.SecondPhase && (brain.AttackState == 1 || brain.AttackState == 3))
+						if (brain.Phase == Phases.SecondPhase && (brain.AttackState == 0 || brain.AttackState == 1))
 							brain.DrawBrain(obj, Lighting.GetColor((brain.NPC.Center / 16).ToPoint()), true);
 					}
 				}
@@ -176,8 +190,8 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				attachedChain.endPoint = thinker.Center + new Vector2(0, 40);
 				attachedChain.useEndPoint = true;
 				attachedChain.drag = 1.1f;
-				attachedChain.forceGravity = Vector2.UnitY * 1f;
-				attachedChain.constraintRepetitions = 30;
+				attachedChain.forceGravity = Vector2.UnitY * 0.1f;
+				attachedChain.constraintRepetitions = 5;
 				attachedChain.UpdateChain();
 			}
 
@@ -212,11 +226,11 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			{
 				if (chainSplitBrainAttached != null)
 				{
-					chainSplitBrainAttached.startPoint = NPC.Center + Vector2.UnitY * 90;
+					chainSplitBrainAttached.startPoint = NPC.Center + Vector2.UnitY * (90 + extraChunkRadius * 70);
 					chainSplitBrainAttached.useEndPoint = false;
-					chainSplitBrainAttached.drag = 1.1f;
-					chainSplitBrainAttached.forceGravity = Vector2.UnitY * 1f;
-					chainSplitBrainAttached.constraintRepetitions = 30;
+					chainSplitBrainAttached.drag = 1f;
+					chainSplitBrainAttached.forceGravity = Vector2.UnitY * 0.1f;
+					chainSplitBrainAttached.constraintRepetitions = 8;
 					chainSplitBrainAttached.UpdateChain();
 
 					chainSplitBrainAttached.IterateRope(a => chainSplitBrainAttached.ropeSegments[a].posNow.X += (float)Math.Sin(Main.GameUpdateCount * 0.15f) * 0.1f);
@@ -233,8 +247,8 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					chainSplitThinkerAttached.startPoint = ThisThinker.home;
 					chainSplitThinkerAttached.useEndPoint = false;
 					chainSplitThinkerAttached.drag = 1.1f;
-					chainSplitThinkerAttached.forceGravity = Vector2.UnitY * 1f;
-					chainSplitThinkerAttached.constraintRepetitions = 30;
+					chainSplitThinkerAttached.forceGravity = Vector2.UnitY * 0.1f;
+					chainSplitThinkerAttached.constraintRepetitions = 5;
 
 					chainSplitThinkerAttached.IterateRope(a => chainSplitThinkerAttached.ropeSegments[a].posNow.X += (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.3f);
 
@@ -247,6 +261,22 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					}
 				}
 			}
+		}
+
+		public void TeleportWithChain(Vector2 centerTarget)
+		{
+			List<Vector2> relPos = new();
+
+			chainSplitBrainAttached?.IterateRope(a => relPos.Add(chainSplitBrainAttached.ropeSegments[a].posNow - NPC.Center));
+
+			NPC.Center = centerTarget;
+			NPC.Center = centerTarget;
+
+			chainSplitBrainAttached?.IterateRope(a =>
+				{
+					chainSplitBrainAttached.ropeSegments[a].posNow = centerTarget + relPos[a];
+					chainSplitBrainAttached.ropeSegments[a].posOld = centerTarget + relPos[a];
+				});
 		}
 
 		public override void SetStaticDefaults()
@@ -292,6 +322,12 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			Timer++;
 			AttackTimer++;
 
+			if (Phase != Phases.Fleeing && thinker != null && !Main.player.Any(n => n.active && IsInArena(n)))
+			{
+				Phase = Phases.Fleeing;
+				Timer = 0;
+			}
+
 			if (contactDamage && contactDamageOpacity < 1)
 				contactDamageOpacity += 0.05f;
 
@@ -302,6 +338,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			if (Phase != Phases.TempDead)
 				Lighting.AddLight(NPC.Center, Phase > Phases.FirstPhase ? new Vector3(0.5f, 0.4f, 0.2f) : new Vector3(0.5f, 0.5f, 0.5f) * (shieldOpacity / 0.4f));
 
+			// we're only a boss in the second phase so that the HP bar switches to the dead brain from the thinker.
 			if (Phase == Phases.SecondPhase)
 				NPC.boss = true;
 
@@ -350,10 +387,14 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			switch (Phase)
 			{
 				case Phases.Fleeing:
-					NPC.position.Y += 10;
+					opacity = 1f - Timer / 60f;
+					shieldOpacity = 1f - Timer / 60f;
 
 					if (Timer > 60)
+					{
 						NPC.active = false;
+						weakpoint.active = false;
+					}
 
 					break;
 
@@ -436,6 +477,9 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 					if (AttackTimer == 1)
 					{
+						attackCount++;
+						SelectTarget();
+
 						AttackState = attackQueue[0];
 						attackQueue.RemoveAt(0);
 
@@ -454,15 +498,16 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 							AttackState = 0;
 
 							// Reset attack queue
+							attackCount = 0;
 							attackQueue.Clear();
-							attackQueue.Add(Main.rand.Next(2));
+							attackQueue.Add(Main.rand.Next(3));
 
-							for (int k = 0; k < 3; k++)
+							for (int k = 0; k < 2; k++)
 							{
-								int next2 = Main.rand.Next(2);
+								int next2 = 3 + Main.rand.Next(3);
 
 								while (next2 == attackQueue.Last())
-									next2 = Main.rand.Next(2);
+									next2 = 3 + Main.rand.Next(3);
 
 								attackQueue.Add(next2);
 							}
@@ -513,13 +558,16 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 					if (AttackTimer == 1)
 					{
+						attackCount++;
+						SelectTarget();
+
 						AttackState = attackQueue[0];
 						attackQueue.RemoveAt(0);
 
-						int next = Main.rand.Next(5);
+						int next = attackCount % 3 == 0 ? Main.rand.Next(3) : 3 + Main.rand.Next(3);
 
 						while (next == attackQueue.Last())
-							next = Main.rand.Next(5);
+							next = attackCount % 3 == 0 ? Main.rand.Next(3) : 3 + Main.rand.Next(3);
 
 						attackQueue.Add(next);
 
@@ -532,19 +580,22 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 							Recover();
 							break;
 						case 0:
-							DoubleSpin();
-							break;
-						case 1:
 							Clones();
 							break;
-						case 2:
-							TeleportHunt();
-							break;
-						case 3:
+						case 1:
 							Clones2();
 							break;
-						case 4:
+						case 2:
 							MindMines();
+							break;
+						case 3:
+							DoubleSpin();
+							break;
+						case 4:
+							TeleportHunt();
+							break;
+						case 5:
+							TeleportBlooms();
 							break;
 					}
 
@@ -561,6 +612,9 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 						NPC.rotation += 0.01f;
 					else
 						NPC.velocity.X *= 0;
+
+					if (extraChunkRadius != 0)
+						extraChunkRadius += (0 - extraChunkRadius) * 0.05f;
 
 					Dust.NewDust(NPC.position, NPC.width, NPC.height, ModContent.DustType<Dusts.BloodMetaballDust>());
 
@@ -643,7 +697,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
 		{
 			// Prevent the health bar from being drawn in the clone phases
-			if (Phase == Phases.SecondPhase && (AttackState == 1 || AttackState == 3))
+			if (Phase == Phases.SecondPhase && (AttackState == 0 || AttackState == 1))
 				return false;
 
 			return base.DrawHealthBar(hbPosition, ref scale, ref position);
@@ -743,7 +797,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			if (Phase == Phases.FirstPhase && AttackState == 2)
 				DrawRamGraphics(spriteBatch);
 
-			if (Phase == Phases.SecondPhase && AttackState == 2)
+			if (Phase == Phases.SecondPhase && AttackState == 4)
 				DrawHuntGraphics(spriteBatch);
 
 			if (opacity >= 1)

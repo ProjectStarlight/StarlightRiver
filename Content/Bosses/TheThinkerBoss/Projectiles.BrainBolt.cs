@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Buffs;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.InstancedBuffSystem;
+using StarlightRiver.Core.Systems.PixelationSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 {
-	class BrainBolt : ModProjectile, IDrawPrimitive
+	class BrainBolt : ModProjectile
 	{
 		private List<Vector2> cache;
 		private Trail trail;
@@ -70,9 +71,18 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			Projectile.position += Projectile.velocity.RotatedBy(1.57f) * (float)Math.Sin(Projectile.timeLeft / WigglePeriod * 3.14f * 3) * 0.75f;
 
 			float sin = 1 + (float)Math.Sin(WiggleProgress);
-			Color color = new Color(1, 0f, 0.1f + sin * 0.1f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
+			Color color = new Color(1, 0.1f, 0.1f + sin * 0.1f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
+
+			if (IsBlue == 1)
+				color = new Color(0.1f + sin * 0.1f, 0.4f, 1f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
 
 			Lighting.AddLight(Projectile.Center, color.ToVector3() * 0.5f);
+
+			if (Main.rand.NextBool(4))
+			{
+				color.A = 0;
+				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(2, 2), ModContent.DustType<Dusts.PixelatedEmber>(), Projectile.velocity * Main.rand.NextFloat(0.2f, 0.8f), 0, color, Main.rand.NextFloat(0.5f));
+			}
 
 			if (!Main.dedServ)
 			{
@@ -120,6 +130,27 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			Main.spriteBatch.Draw(glow, Projectile.Center - Main.screenPosition, null, color * 0.5f, 0, glow.Size() / 2f, 0.5f, 0, 0);
 			Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, color, Main.GameUpdateCount * 0.1f, star.Size() / 2f, 0.25f, 0, 0);
 			Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, color * 1.8f, Main.GameUpdateCount * -0.2f, star.Size() / 2f, 0.15f, 0, 0);
+
+			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("OverPlayers", () =>
+			{
+				Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
+
+				if (effect != null)
+				{
+					var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+					Matrix view = Matrix.Identity;
+					var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+					effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.025f);
+					effect.Parameters["repeats"].SetValue(1f);
+					effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+					effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+					trail?.Render(effect);
+
+					effect.Parameters["sampleTexture"].SetValue(Assets.LightningTrail.Value);
+					trail?.Render(effect);
+				}
+			});
 
 			return false;
 		}
@@ -199,27 +230,6 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
-		}
-
-		public void DrawPrimitives()
-		{
-			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
-
-			if (effect != null)
-			{
-				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-				Matrix view = Main.GameViewMatrix.TransformationMatrix;
-				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
-
-				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.025f);
-				effect.Parameters["repeats"].SetValue(1f);
-				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-				effect.Parameters["sampleTexture"].SetValue(Assets.DimGlowTrail.Value);
-				trail?.Render(effect);
-
-				effect.Parameters["sampleTexture"].SetValue(Assets.LightningTrail.Value);
-				trail?.Render(effect);
-			}
 		}
 	}
 }

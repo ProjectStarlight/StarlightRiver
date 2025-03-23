@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Loaders.TileLoading;
+﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Core.Loaders.TileLoading;
 using Terraria.ID;
 using static StarlightRiver.Helpers.ListHelper;
 
@@ -31,12 +32,12 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 		public override void PostLoad()
 		{
-			GrayMatter.grayEmissionTypes.Add(StarlightRiver.Instance.Find<ModTile>("GraymatterDeco1x4").Type);
-			GrayMatter.grayEmissionTypes.Add(StarlightRiver.Instance.Find<ModTile>("GraymatterDeco2x3").Type);
-			GrayMatter.grayEmissionTypes.Add(StarlightRiver.Instance.Find<ModTile>("GraymatterDeco2x2").Type);
-			GrayMatter.grayEmissionTypes.Add(StarlightRiver.Instance.Find<ModTile>("GraymatterDeco1x2").Type);
-			GrayMatter.grayEmissionTypes.Add(StarlightRiver.Instance.Find<ModTile>("GraymatterDeco3x3").Type);
-			GrayMatter.grayEmissionTypes.Add(StarlightRiver.Instance.Find<ModTile>("GraymatterDeco1x1").Type);
+			GraymatterBiome.grayEmissionTypes.Add(StarlightRiver.Instance.Find<ModTile>("GraymatterDeco1x4").Type);
+			GraymatterBiome.grayEmissionTypes.Add(StarlightRiver.Instance.Find<ModTile>("GraymatterDeco2x3").Type);
+			GraymatterBiome.grayEmissionTypes.Add(StarlightRiver.Instance.Find<ModTile>("GraymatterDeco2x2").Type);
+			GraymatterBiome.grayEmissionTypes.Add(StarlightRiver.Instance.Find<ModTile>("GraymatterDeco1x2").Type);
+			GraymatterBiome.grayEmissionTypes.Add(StarlightRiver.Instance.Find<ModTile>("GraymatterDeco3x3").Type);
+			GraymatterBiome.grayEmissionTypes.Add(StarlightRiver.Instance.Find<ModTile>("GraymatterDeco1x1").Type);
 		}
 	}
 }

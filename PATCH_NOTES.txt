@@ -30,6 +30,8 @@
 - Added a button to the barrier tincture slot to hide the barrier effect
 - Added a popout tooltip for buffs similar to keywords. Various item's tooltips have been updated to utilize this.
 - The keyword popout tooltip has been updated slightly
+- The tutorial for when you get an ability is now much more robust
+- Improvements to the UI used for dialog with Starlight River NPCs
 
 ## Balance
 - ↑ Base barrier recharge rate has increased from 6 to 10
@@ -65,6 +67,9 @@
 - Fixed cutaways drawing in subworlds where they should not exist
 - Fixed the cooking station requiring one more free tile than it should to place
 - Fixed some forest props being able to generate mid-air
+- Alot of optimization changes, mostly around the vitric desert, particles, and lighting
+- Updated AssGen to 3.0 to allow asset lazy loading which should speed up load times
+- Updated to the latest StructureHelper version which should improve world generation time and decrease file size a bit
 
 ## Boring programmer stuff
 - Keywords now utilize localization and are data driven similar to dialogue and hints
