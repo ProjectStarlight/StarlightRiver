@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.Tiles.Dungeon
 
 						for (int n = 0; n < 40; n++)
 						{
-							Dust.NewDust(position, width, height, DustID.Iron);
+							Dust.NewDust(position + new Vector2(0, -48), 64, 64, DustID.Gold);
 						}
 
 						attempts.Clear();
