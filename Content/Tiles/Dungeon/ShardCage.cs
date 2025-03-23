@@ -103,7 +103,7 @@ namespace StarlightRiver.Content.Tiles.Dungeon
 
 			Vector2 topleft = position + new Vector2(0, -16 * 4);
 
-			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(topleft - Main.screenPosition, tex);
+			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(tex, topleft - Main.screenPosition, Color.White);
 
 			var leftBox = new Rectangle((int)TopLeft.X - 8, (int)TopLeft.Y - 16 * 4, 16, 16 * 5);
 			var rightBox = new Rectangle((int)TopLeft.X + 16 * 5 - 8, (int)TopLeft.Y - 16 * 4, 16, 16 * 5);

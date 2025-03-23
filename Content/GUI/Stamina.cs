@@ -1,7 +1,9 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core.Loaders.UILoading;
+using StarlightRiver.Core.Systems.MusicFilterSystem;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
 
@@ -20,6 +22,17 @@ namespace StarlightRiver.Content.GUI
 		public static int gainAnimationTimer = 0;
 
 		/// <summary>
+		/// Exposes the position that shards should go to for their animation
+		/// </summary>
+		public static Vector2 shardTarget;
+
+		// Fields related to the shard animation
+		public static Vector2 shardStartPos;
+		public static int shardTimer;
+		public const int SHARD_TIMER_MAX = 120;
+		public readonly ParticleSystem shardParticles = new("StarlightRiver/Assets/StarTexture", UpdateShardParticles, ParticleSystem.AnchorOptions.UI);
+
+		/// <summary>
 		/// If the gain animation is currently playing
 		/// </summary>
 		public static bool InGainAnimation => gainAnimationTimer > 0;
@@ -36,6 +49,128 @@ namespace StarlightRiver.Content.GUI
 			AddElement(staminaBar, -303, 1f, 110, 0f, 30, 0f, 0, 0f);
 		}
 
+		public static void StartShardAnimation(Vector2 start)
+		{
+			shardStartPos = start;
+			shardTimer = SHARD_TIMER_MAX;
+		}
+
+		public void DrawShardAnimation(SpriteBatch spriteBatch)
+		{
+			shardTimer--;
+
+			Player Player = Main.LocalPlayer;
+			AbilityHandler mp = Player.GetHandler();
+
+			Texture2D tex;
+
+			if (mp.ShardCount % 3 == 1)
+				tex = Assets.Abilities.Stamina1.Value;
+			else if (mp.ShardCount % 3 == 2)
+				tex = Assets.Abilities.Stamina2.Value;
+			else
+				tex = Assets.Abilities.Stamina3.Value;
+
+			var prog = Eases.EaseQuadInOut(1f - shardTimer / (float)SHARD_TIMER_MAX);
+			float scale = 1f + MathF.Sin(prog * 3.14f) * 0.5f;
+
+			Vector2 pos = Vector2.Lerp(shardStartPos, shardTarget + tex.Size() / 2f, prog);
+			pos.Y += MathF.Sin(prog * 3.14f) * Main.screenHeight / 6f;
+
+			// Stars
+			Texture2D star = Assets.StarTexture.Value;
+			float sin = (float)Math.Sin(Main.GameUpdateCount * 0.05f);
+			float sin2 = (float)Math.Sin(Main.GameUpdateCount * 0.05f + 2f);
+
+			Vector2 drawPos = pos;
+
+			float op = 1f - prog;
+
+			Main.spriteBatch.Draw(star, drawPos, null, new Color(190, 255, 255, 0) * op, 0, star.Size() / 2f, 0.2f + sin * 0.05f, 0, 0);
+			Main.spriteBatch.Draw(star, drawPos, null, new Color(190, 255, 255, 0) * op, 1.57f / 2f, star.Size() / 2f, 0.1f + sin2 * 0.05f, 0, 0);
+
+			Main.spriteBatch.Draw(star, drawPos, null, new Color(0, 230, 255, 0) * op, 0, star.Size() / 2f, 0.25f + sin * 0.05f, 0, 0);
+			Main.spriteBatch.Draw(star, drawPos, null, new Color(0, 160, 255, 0) * op, 1.57f / 2f, star.Size() / 2f, 0.2f + sin2 * 0.05f, 0, 0);
+
+			Main.spriteBatch.Draw(star, drawPos, null, new Color(0, 10, 60, 0) * op, 0, star.Size() / 2f, 0.3f + sin * 0.05f, 0, 0);
+			Main.spriteBatch.Draw(star, drawPos, null, new Color(0, 0, 60, 0) * op, 1.57f / 2f, star.Size() / 2f, 0.25f + sin2 * 0.05f, 0, 0);
+
+			// Main tex
+			spriteBatch.Draw(tex, pos, null, Color.White, 0, tex.Size() / 2f, scale, 0, 0);
+
+			// Over glow
+			Texture2D glow = Assets.Masks.GlowAlpha.Value;
+			Color glowColor = new Color(0, 90, 120, 0) * op;
+			Main.spriteBatch.Draw(glow, pos, glow.Frame(), glowColor * 0.3f, 0, glow.Size() / 2, 1, 0, 0);
+			Main.spriteBatch.Draw(glow, pos, glow.Frame(), glowColor * 0.5f, 0, glow.Size() / 2, 0.6f, 0, 0);
+
+			shardParticles.AddParticle(
+				position: pos + new Vector2(Main.rand.Next(34), Main.rand.Next(34)) - Vector2.One * 20,
+				velocity: Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.5f),
+				rotation: 0,
+				scale: Main.rand.NextFloat(0.1f),
+				color: new Color(50, 100 + Main.rand.Next(100), 255, 0),
+				timer: 45,
+				storedPosition: default
+			);
+
+			if (shardTimer == 0)
+			{
+				SoundHelper.PlayPitched("Magic/HolyCastShort", 1, -0.5f);
+				SoundHelper.PlayPitched("Impacts/StoneStrikeLight", 0.3f, -0.2f);
+				SoundHelper.PlayPitched("Effects/Loot", 1f, -0.3f);
+
+				shardParticles.AddParticle(
+					position: pos,
+					velocity: Vector2.Zero,
+					rotation: 0,
+					scale: 0.01f,
+					color: new Color(150, 255, 255, 0),
+					timer: 120,
+					storedPosition: default
+				);
+
+				shardParticles.AddParticle(
+					position: pos,
+					velocity: Vector2.Zero,
+					rotation: 1.57f / 2f,
+					scale: 0.01f,
+					color: new Color(100, 200, 255, 0),
+					timer: 120,
+					storedPosition: default
+				);
+
+				for (int k = 0; k < 20; k++)
+				{
+					shardParticles.AddParticle(
+						position: pos + new Vector2(Main.rand.Next(-17, 17), Main.rand.Next(-17, 17)),
+						velocity: Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.3f, 0.5f),
+						rotation: 0,
+						scale: Main.rand.NextFloat(0.1f, 0.2f),
+						color: new Color(50, 100 + Main.rand.Next(100), 255, 0),
+						timer: 90,
+						storedPosition: default
+					);
+				}
+			}
+		}
+
+		private static void UpdateShardParticles(Particle particle)
+		{
+			particle.Timer--;
+
+			if (particle.Timer > 110)
+				particle.Scale += 0.1f * ((particle.Timer - 110) / 10f);
+
+			if (particle.Timer < 110)
+			{
+				particle.Scale *= 0.97f;
+				particle.Color *= 0.97f;
+			}
+
+			particle.Position += particle.Velocity;
+		}
+
 		/// <summary>
 		/// We have additional rendering logic for an informative string on mouse-over here
 		/// </summary>
@@ -43,6 +178,12 @@ namespace StarlightRiver.Content.GUI
 		public override void Draw(SpriteBatch spriteBatch)
 		{
 			base.Draw(spriteBatch);
+
+			if (shardTimer > 0)
+				DrawShardAnimation(spriteBatch);
+
+			shardParticles.DrawParticles(spriteBatch);
+			shardParticles.UpdateParticles();
 
 			// We render some mouse-over text to display the numerical stamina amount if the mouse is hovered over the bar
 			if (staminaBar.IsMouseHovering)
@@ -132,7 +273,7 @@ namespace StarlightRiver.Content.GUI
 		/// </summary>
 		private readonly ParticleSystem gainAnimationParticles = new("StarlightRiver/Assets/GUI/Sparkle", UpdateGainParticles, ParticleSystem.AnchorOptions.UI);
 
-		private readonly ParticleSystem sparkleParticles = new("StarlightRiver/Assets/GUI/Sparkle", UpdateSparkleParticles, ParticleSystem.AnchorOptions.UI);
+		public readonly ParticleSystem sparkleParticles = new("StarlightRiver/Assets/GUI/Sparkle", UpdateSparkleParticles, ParticleSystem.AnchorOptions.UI);
 
 		/// <summary>
 		/// Draws this stamina bar as either the gain animation or standard depending on the animation state of the Stamina UIState
@@ -201,6 +342,20 @@ namespace StarlightRiver.Content.GUI
 
 			pos = dimensions.TopRight() + new Vector2(-56, 0);
 			spriteBatch.Draw(ornament, pos + new Vector2(0, -2), null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+
+			// Draw shards
+			int effectiveShardCount = Stamina.shardTimer > 0 ? mp.ShardCount - 1 : mp.ShardCount;
+			Texture2D shard1 = Assets.Abilities.Stamina1.Value;
+			Texture2D shard2 = Assets.Abilities.Stamina2.Value;
+
+			pos = dimensions.TopRight();
+			Stamina.shardTarget = pos;
+
+			if (effectiveShardCount % 3 >= 1)
+				spriteBatch.Draw(shard1, pos, shard1.Frame(), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+
+			if (effectiveShardCount % 3 >= 2)
+				spriteBatch.Draw(shard2, pos, shard2.Frame(), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 		}
 
 		/// <summary>
@@ -226,18 +381,23 @@ namespace StarlightRiver.Content.GUI
 				Vector2 pos = row % 2 == 0 ? dimensions.TopLeft() + new Vector2(row * -18, k % 7 * 24) :
 					dimensions.TopLeft() + new Vector2(row * -18, 12 + k % 7 * 24);
 
-				if (k >= mp.StaminaMax) //draws the incomplete vessel
+				int effectiveShardCount = Stamina.shardTimer > 0 ? mp.ShardCount - 1 : mp.ShardCount;
+				float effectiveStaminaMax = Stamina.shardTimer > 0 ? (mp.ShardCount % 3 == 0 ? mp.StaminaMax - 1 : mp.StaminaMax) : mp.StaminaMax;
+
+				if (k >= effectiveStaminaMax) //draws the incomplete vessel
 				{
 					Texture2D shard1 = Assets.Abilities.Stamina1.Value;
 					Texture2D shard2 = Assets.Abilities.Stamina2.Value;
 
-					if (mp.ShardCount % 3 >= 1)
+					Stamina.shardTarget = pos;
+
+					if (effectiveShardCount % 3 >= 1)
 						spriteBatch.Draw(shard1, pos, shard1.Frame(), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 
-					if (mp.ShardCount % 3 >= 2)
+					if (effectiveShardCount % 3 >= 2)
 						spriteBatch.Draw(shard2, pos, shard2.Frame(), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 
-					continue;
+					break;
 				}
 
 				Texture2D slotTex = emptyTex;

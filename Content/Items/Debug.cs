@@ -153,7 +153,7 @@ namespace StarlightRiver.Content.Items
 
 			//ModContent.GetInstance<StarlightWorld>().ObservatoryGen(null, null);
 
-			Main.LocalPlayer.GetHandler().Lock<HintAbility>();
+			Main.LocalPlayer.GetHandler().Shards.Clear();
 
 			return true;
 		}

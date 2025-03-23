@@ -10,6 +10,7 @@ namespace StarlightRiver.Core.Systems.MusicFilterSystem
 	internal class MusicFilterSystem : ModSystem
 	{
 		public static float globalPitchModifier = 0f;
+		public static float globalVolumeModifier = 0f;
 
 		public static void ResetModifiers()
 		{
@@ -48,6 +49,7 @@ namespace StarlightRiver.Core.Systems.MusicFilterSystem
 								ref FACTTrackInstance trackz = ref sound->tracks[i];
 								ref FACTTrackInstance._wave wave1 = ref trackz.activeWave;
 								wave1.basePitch = (short)(globalPitchModifier * 1200);
+								wave1.baseVolume = -1200 + (short)(globalVolumeModifier * 1200);
 							}
 						}
 					}

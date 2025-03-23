@@ -22,7 +22,7 @@ namespace StarlightRiver.Core
 			pos.Y -= 16;
 			pos.X += direction * 38 - 2;
 
-			StructureHelper.Generator.GenerateStructure("Structures/DungeonShardCage", pos.ToPoint16(), Mod);
+			StructureHelper.API.Generator.GenerateStructure("Structures/DungeonShardCage", pos.ToPoint16(), Mod);
 
 			// Generate the chain
 			pos.X += 2;
