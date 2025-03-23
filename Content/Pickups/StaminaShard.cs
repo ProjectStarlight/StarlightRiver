@@ -105,6 +105,11 @@ namespace StarlightRiver.Content.Pickups
 			Main.tileFrameImportant[Type] = true;
 		}
 
+		public override bool SpawnConditions(int i, int j)
+		{
+			return true;
+		}
+
 		public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
 		{
 			fail = true;

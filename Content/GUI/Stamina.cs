@@ -1,9 +1,7 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core.Loaders.UILoading;
-using StarlightRiver.Core.Systems.MusicFilterSystem;
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
 
@@ -71,10 +69,10 @@ namespace StarlightRiver.Content.GUI
 			else
 				tex = Assets.Abilities.Stamina3.Value;
 
-			var prog = Eases.EaseQuadInOut(1f - shardTimer / (float)SHARD_TIMER_MAX);
+			float prog = Eases.EaseQuadInOut(1f - shardTimer / (float)SHARD_TIMER_MAX);
 			float scale = 1f + MathF.Sin(prog * 3.14f) * 0.5f;
 
-			Vector2 pos = Vector2.Lerp(shardStartPos, shardTarget + tex.Size() / 2f, prog);
+			var pos = Vector2.Lerp(shardStartPos, shardTarget + tex.Size() / 2f, prog);
 			pos.Y += MathF.Sin(prog * 3.14f) * Main.screenHeight / 6f;
 
 			// Stars
@@ -152,6 +150,9 @@ namespace StarlightRiver.Content.GUI
 						storedPosition: default
 					);
 				}
+
+				if (mp.ShardCount % 3 == 0)
+					TextCard.Display("Maximum Starlight Increased", "Your maximum starlight has increased by 1", 240, 1f);
 			}
 		}
 
@@ -266,7 +267,7 @@ namespace StarlightRiver.Content.GUI
 		/// <summary>
 		/// Allows overriding the container texture of specific containers with icon styles. Reset every frame.
 		/// </summary>
-		public static List<string> specialVesselTextures = new();
+		public static List<string> specialVesselTextures = [];
 
 		/// <summary>
 		/// Particle system used for the gain animation

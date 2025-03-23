@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core.Systems.BlockerTileSystem;
 using StarlightRiver.Core.Systems.DummyTileSystem;
+using StarlightRiver.Core.Systems.PixelationSystem;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
@@ -96,18 +97,38 @@ namespace StarlightRiver.Content.Tiles.Dungeon
 
 		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.DungeonTile + "ShardCage").Value;
+			if (!CagePuzzleSystem.solved)
+			{
+				Texture2D gem = Assets.Tiles.Dungeon.ShardCageGem.Value;
+				Texture2D glow = Assets.Tiles.Dungeon.ShardCageGemGlow.Value;
+
+				Vector2 center = position + new Vector2(40, -24);
+
+				Vector2 left = center + new Vector2(-42, 0);
+				Vector2 bottom = center + new Vector2(0, 42);
+				Vector2 right = center + new Vector2(42, 0);
+
+				Main.spriteBatch.Draw(gem, left - Main.screenPosition, null, lightColor, 0, gem.Size() / 2f, 1, 0, 0);
+				Main.spriteBatch.Draw(glow, left - Main.screenPosition, null, CommonVisualEffects.IndicatorColorProximity(256, 512, center), 0, glow.Size() / 2f, 1, 0, 0);
+
+				Main.spriteBatch.Draw(gem, bottom - Main.screenPosition, null, lightColor, 0, gem.Size() / 2f, 1, 0, 0);
+				Main.spriteBatch.Draw(glow, bottom - Main.screenPosition, null, CommonVisualEffects.IndicatorColorProximity(256, 512, center), 0, glow.Size() / 2f, 1, 0, 0);
+
+				Main.spriteBatch.Draw(gem, right - Main.screenPosition, null, lightColor, 0, gem.Size() / 2f, 1, 0, 0);
+				Main.spriteBatch.Draw(glow, right - Main.screenPosition, null, CommonVisualEffects.IndicatorColorProximity(256, 512, center), 0, glow.Size() / 2f, 1, 0, 0);
+			}			
+		}
+
+		public override void DrawOverPlayer()
+		{
+			Texture2D tex = Assets.Tiles.Dungeon.ShardCage.Value;
 
 			if (CagePuzzleSystem.solved)
-				tex = ModContent.Request<Texture2D>(AssetDirectory.DungeonTile + "ShardCageOpen").Value;
+				tex = Assets.Tiles.Dungeon.ShardCageOpen.Value;
 
-			Vector2 topleft = position + new Vector2(0, -16 * 4);
+			Vector2 topleft = position + new Vector2(-2, -16 * 4 - 2);
 
 			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(tex, topleft - Main.screenPosition, Color.White);
-
-			var leftBox = new Rectangle((int)TopLeft.X - 8, (int)TopLeft.Y - 16 * 4, 16, 16 * 5);
-			var rightBox = new Rectangle((int)TopLeft.X + 16 * 5 - 8, (int)TopLeft.Y - 16 * 4, 16, 16 * 5);
-			var bottomBox = new Rectangle((int)TopLeft.X, (int)TopLeft.Y + 8, 16 * 5, 16);
 		}
 	}
 
