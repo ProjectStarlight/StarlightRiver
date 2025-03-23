@@ -249,7 +249,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 
 			if (State == ClearSlimeState.attacking && Timer > 60)
 			{
-				var fade = (Timer - 60) / 60f;
+				float fade = (Timer - 60) / 60f;
 				Color color = Color.Lerp(Color.Orange, new Color(255, 255, 200), fade) * fade;
 				spriteBatch.Draw(over, NPC.Center - Main.screenPosition, NPC.frame, color, NPC.rotation, NPC.frame.Size() / 2f, squishScale * NPC.scale, 0, 0);
 			}
