@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Pickups
 			if (Main.rand.NextBool(8))
 				Dust.NewDustPerfect(Center + Vector2.One.RotatedByRandom(Math.PI) * Main.rand.NextFloat(16), DustType<Dusts.AuroraFast>(), Vector2.UnitY * -1, 0, new Color(100, 220, 255));
 
-			Lighting.AddLight(Center, new Vector3(0.5f, 0.25f, 0.05f));
+			Lighting.AddLight(Center, new Vector3(0.6f, 0.7f, 0.9f));
 		}
 
 		public override void PostDraw(Color lightColor)

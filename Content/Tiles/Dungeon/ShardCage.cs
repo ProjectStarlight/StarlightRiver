@@ -41,25 +41,31 @@ namespace StarlightRiver.Content.Tiles.Dungeon
 			if (CagePuzzleSystem.solved)
 				return;
 
-			for (int k = 0; k < attempts.Count; k++)
+			Lighting.AddLight(Center, new Vector3(0.1f, 0.2f, 0.2f));
+
+			if (attempts.Count >= 3)
 			{
-				if (attempts[k] != solution[k])
+				for (int k = 0; k < attempts.Count; k++)
 				{
-					attempts.Clear();
-					break;
-				}
-
-				if (k == 2)
-				{
-					CagePuzzleSystem.solved = true;
-					Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Center);
-
-					for (int n = 0; n < 40; n++)
+					if (attempts[k] != solution[k])
 					{
-						Dust.NewDust(position, width, height, DustID.Iron);
+						SoundHelper.PlayPitched("Effects/Chirp1", 1, -0.25f, Center);
+						attempts.Clear();
+						break;
 					}
 
-					attempts.Clear();
+					if (k == 2)
+					{
+						CagePuzzleSystem.solved = true;
+						Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Center);
+
+						for (int n = 0; n < 40; n++)
+						{
+							Dust.NewDust(position, width, height, DustID.Iron);
+						}
+
+						attempts.Clear();
+					}
 				}
 			}
 
@@ -71,21 +77,21 @@ namespace StarlightRiver.Content.Tiles.Dungeon
 
 			foreach (Player player in Main.player.Where(n => n.active))
 			{
-				if (AbilityHelper.CheckDash(player, leftBox))
+				if (AbilityHelper.CheckDash(player, leftBox) && !attempts.Contains(1))
 				{
 					player.GetHandler().ActiveAbility?.Deactivate();
 					player.velocity = Vector2.Normalize(player.velocity) * -10f;
 					attempts.Add(1);
 					Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Center);
 				}
-				else if (AbilityHelper.CheckDash(player, rightBox))
+				else if (AbilityHelper.CheckDash(player, rightBox) && !attempts.Contains(2))
 				{
 					player.GetHandler().ActiveAbility?.Deactivate();
 					player.velocity = Vector2.Normalize(player.velocity) * -10f;
 					attempts.Add(2);
 					Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Center);
 				}
-				else if (AbilityHelper.CheckDash(player, bottomBox))
+				else if (AbilityHelper.CheckDash(player, bottomBox) && !attempts.Contains(3))
 				{
 					player.GetHandler().ActiveAbility?.Deactivate();
 					player.velocity = Vector2.Normalize(player.velocity) * -10f;
@@ -108,14 +114,23 @@ namespace StarlightRiver.Content.Tiles.Dungeon
 				Vector2 bottom = center + new Vector2(0, 42);
 				Vector2 right = center + new Vector2(42, 0);
 
-				Main.spriteBatch.Draw(gem, left - Main.screenPosition, null, lightColor, 0, gem.Size() / 2f, 1, 0, 0);
-				Main.spriteBatch.Draw(glow, left - Main.screenPosition, null, CommonVisualEffects.IndicatorColorProximity(256, 512, center), 0, glow.Size() / 2f, 1, 0, 0);
+				if (!attempts.Contains(1))
+				{
+					Main.spriteBatch.Draw(gem, left - Main.screenPosition, null, lightColor, 0, gem.Size() / 2f, 1, 0, 0);
+					Main.spriteBatch.Draw(glow, left - Main.screenPosition, null, CommonVisualEffects.IndicatorColorProximity(256, 512, center), 0, glow.Size() / 2f, 1, 0, 0);
+				}
 
-				Main.spriteBatch.Draw(gem, bottom - Main.screenPosition, null, lightColor, 0, gem.Size() / 2f, 1, 0, 0);
-				Main.spriteBatch.Draw(glow, bottom - Main.screenPosition, null, CommonVisualEffects.IndicatorColorProximity(256, 512, center), 0, glow.Size() / 2f, 1, 0, 0);
+				if (!attempts.Contains(3))
+				{
+					Main.spriteBatch.Draw(gem, bottom - Main.screenPosition, null, lightColor, 0, gem.Size() / 2f, 1, 0, 0);
+					Main.spriteBatch.Draw(glow, bottom - Main.screenPosition, null, CommonVisualEffects.IndicatorColorProximity(256, 512, center), 0, glow.Size() / 2f, 1, 0, 0);
+				}
 
-				Main.spriteBatch.Draw(gem, right - Main.screenPosition, null, lightColor, 0, gem.Size() / 2f, 1, 0, 0);
-				Main.spriteBatch.Draw(glow, right - Main.screenPosition, null, CommonVisualEffects.IndicatorColorProximity(256, 512, center), 0, glow.Size() / 2f, 1, 0, 0);
+				if (!attempts.Contains(2))
+				{
+					Main.spriteBatch.Draw(gem, right - Main.screenPosition, null, lightColor, 0, gem.Size() / 2f, 1, 0, 0);
+					Main.spriteBatch.Draw(glow, right - Main.screenPosition, null, CommonVisualEffects.IndicatorColorProximity(256, 512, center), 0, glow.Size() / 2f, 1, 0, 0);
+				}
 			}			
 		}
 

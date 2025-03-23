@@ -14,6 +14,7 @@ using StarlightRiver.Content.Noise;
 using StarlightRiver.Content.NPCs.Starlight;
 using StarlightRiver.Content.PersistentData;
 using StarlightRiver.Content.Tiles.Crimson;
+using StarlightRiver.Content.Tiles.Dungeon;
 using StarlightRiver.Content.Tiles.Forest;
 using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems;
@@ -154,6 +155,7 @@ namespace StarlightRiver.Content.Items
 			//ModContent.GetInstance<StarlightWorld>().ObservatoryGen(null, null);
 
 			Main.LocalPlayer.GetHandler().Shards.Clear();
+			CagePuzzleSystem.solved = false;
 
 			return true;
 		}
