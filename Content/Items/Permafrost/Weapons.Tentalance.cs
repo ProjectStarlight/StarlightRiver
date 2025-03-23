@@ -1,4 +1,6 @@
-﻿using StarlightRiver.Helpers;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core.Loaders;
+using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -98,7 +100,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 				{
 					ChargeSnapshot = Charge;
 					Projectile.damage += (int)Charge;
-					Helper.PlayPitched("SquidBoss/LightSplash", 0.2f, -0.5f, Owner.Center);
+					SoundHelper.PlayPitched("SquidBoss/LightSplash", 0.2f, -0.5f, Owner.Center);
 					if (ChargeSnapshot <= 0)
 						ChargeSnapshot = 1; //make sure it atleast does damage on its attack
 				}
@@ -107,7 +109,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			{
 				if (Owner.channel && Charge == 29)
 				{
-					Helper.PlayPitched("MagicAttack", 1, 1, Owner.Center);
+					SoundHelper.PlayPitched("MagicAttack", 1, 1, Owner.Center);
 
 					for (int k = 0; k < 40; k++)
 					{
@@ -137,7 +139,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 					Projectile.NewProjectile(Owner.GetSource_ItemUse(Owner.HeldItem), Projectile.Center, Projectile.velocity.RotatedBy(-0.25f), Type, Projectile.damage / 2, Projectile.knockBack, Projectile.owner, 0, 14);
 				}
 
-				Helper.PlayPitched("SquidBoss/LightSplash", 0.3f, -0.5f, Owner.Center);
+				SoundHelper.PlayPitched("SquidBoss/LightSplash", 0.3f, -0.5f, Owner.Center);
 			}
 
 			if (Timer == 20 && ChargeSnapshot >= 30)
@@ -148,7 +150,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 					Projectile.NewProjectile(Owner.GetSource_ItemUse(Owner.HeldItem), Projectile.Center, Projectile.velocity.RotatedBy(-0.45f), Type, Projectile.damage / 2, Projectile.knockBack, Projectile.owner, 0, 1);
 				}
 
-				Helper.PlayPitched("SquidBoss/SuperSplash", 0.5f, -0.5f, Owner.Center);
+				SoundHelper.PlayPitched("SquidBoss/SuperSplash", 0.5f, -0.5f, Owner.Center);
 			}
 
 			Vector2 basePos = Owner.Center + Vector2.UnitY * Owner.gfxOffY;
@@ -184,9 +186,9 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Vector2 basePos = Owner.Center + Vector2.UnitY * Owner.gfxOffY;
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + Name).Value;
-			Texture2D texGlow = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + Name + "Glow").Value;
-			Texture2D texGlow2 = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + Name + "Glow2").Value;
+			Texture2D tex = Assets.Items.Permafrost.TentalanceProjectile.Value;
+			Texture2D texGlow = Assets.Items.Permafrost.TentalanceProjectileGlow.Value;
+			Texture2D texGlow2 = Assets.Items.Permafrost.TentalanceProjectileGlow2.Value;
 
 			spriteBatch.Draw(tex, Projectile.Center - Projectile.velocity - Main.screenPosition, null, lightColor, Projectile.rotation + 1.57f / 2, tex.Size() / 2, 1, 0, 0);
 
@@ -197,24 +199,27 @@ namespace StarlightRiver.Content.Items.Permafrost
 			{
 				var pos = Vector2.Lerp(basePos, Projectile.Center, k / 29f);
 				pos += Vector2.Normalize(Projectile.velocity).RotatedBy(1.57f) * (float)Math.Sin(k / 24f * 6.28f * 2) * 5;
-				Texture2D texSegment = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + Name + "Segment").Value;
+				Texture2D texSegment = Assets.Items.Permafrost.TentalanceProjectileSegment.Value;
 
 				spriteBatch.Draw(texSegment, pos - Main.screenPosition, null, Lighting.GetColor((int)pos.X / 16, (int)pos.Y / 16), Projectile.rotation, texSegment.Size() / 2, 1, 0, 0);
 			}
 
 			//Render trail
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.01f);
-			effect.Parameters["repeats"].SetValue(1);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
+				effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.01f);
+				effect.Parameters["repeats"].SetValue(1);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
-			trail?.Render(effect);
+				trail?.Render(effect);
+			}
 
 			return false;
 		}
@@ -244,7 +249,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 60, new NoTip(), factor => 15, factor => GetColor(factor.X) * factor.X * (float)Math.Sin(Math.Max(0, Projectile.timeLeft - 30) / 90f * 3.14f));
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 60, new NoTip(), factor => 15, factor => GetColor(factor.X) * factor.X * (float)Math.Sin(Math.Max(0, Projectile.timeLeft - 30) / 90f * 3.14f));
 
 			var realCache = new Vector2[60];
 

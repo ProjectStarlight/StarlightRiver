@@ -57,7 +57,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		{
 			if (!isLoaded)
 			{
-				Helpers.Helper.PlayPitched("GlassMiniboss/WeavingLong", 1f, 0f, Projectile.Center);
+				Helpers.SoundHelper.PlayPitched("GlassMiniboss/WeavingLong", 1f, 0f, Projectile.Center);
 				isLoaded = true;
 			}
 
@@ -101,7 +101,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				{
 					Projectile.velocity *= 0;
 
-					Helpers.Helper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0.3f, glassweaver.NPC.Center);
+					Helpers.SoundHelper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0.3f, glassweaver.NPC.Center);
 
 					if (Main.netMode != NetmodeID.MultiplayerClient)
 						Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ProjectileType<BurningGround>(), 1, 0, Owner: -1);
@@ -116,7 +116,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					glassweaver.AttackTimer = 90;
 					Timer = 80;
 
-					Helpers.Helper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0.3f, glassweaver.NPC.Center);
+					Helpers.SoundHelper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0.3f, glassweaver.NPC.Center);
 
 					Vector2 lobPos = glassweaver.NPC.Bottom + new Vector2(70 * glassweaver.NPC.direction, -2);
 
@@ -136,7 +136,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 							if (Main.masterMode && i % 3 != 0)
 								LavaLob.staticScaleToSet = 0.5f;
 
-							Projectile.NewProjectile(Projectile.GetSource_FromThis(), lobPos, Vector2.Zero, ProjectileType<LavaLob>(), 10, 0.2f, Owner: -1, -44 - i, lobVel);
+							Projectile.NewProjectile(Projectile.GetSource_FromThis(), lobPos, Vector2.Zero, ProjectileType<LavaLob>(), Glassweaver.SmallProjectileDamage, 0.2f, Owner: -1, -44 - i, lobVel);
 						}
 
 						Projectile.netUpdate = true;
@@ -165,7 +165,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			if (boundToParent)
 			{
 				origin = Parent.Center + handPos.RotatedBy(Parent.rotation);
-				Projectile.Center = origin + new Vector2(0, -25).RotatedBy(Projectile.rotation) * Helpers.Helper.BezierEase(Utils.GetLerpValue(0, 70, Timer, true));
+				Projectile.Center = origin + new Vector2(0, -25).RotatedBy(Projectile.rotation) * Helpers.Eases.BezierEase(Utils.GetLerpValue(0, 70, Timer, true));
 				Projectile.velocity = Parent.velocity;
 			}
 
@@ -178,9 +178,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			return projHitbox.Intersects(targetHitbox) && Timer > 100;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
-			Helpers.Helper.PlayPitched("GlassMiniboss/GlassShatter", 1f, Main.rand.NextFloat(0.1f), Projectile.Center);
+			Helpers.SoundHelper.PlayPitched("GlassMiniboss/GlassShatter", 1f, Main.rand.NextFloat(0.1f), Projectile.Center);
 
 			for (int k = 0; k < 15; k++)
 				Dust.NewDustPerfect(Vector2.Lerp(Projectile.Center, Projectile.Center + new Vector2(0, 130).RotatedBy(Projectile.rotation), Main.rand.NextFloat()), DustType<Dusts.GlassGravity>());
@@ -199,7 +199,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Rectangle smallFrame = spear.Frame(3, 1, 2);
 			Vector2 spearOrigin = frame.Size() * new Vector2(0.5f, 0.33f);
 
-			float scaleIn = Projectile.scale * Helpers.Helper.BezierEase(Utils.GetLerpValue(10, 50, Timer, true));
+			float scaleIn = Projectile.scale * Helpers.Eases.BezierEase(Utils.GetLerpValue(10, 50, Timer, true));
 
 			var fadeIn = Color.Lerp(lightColor, Color.White, Utils.GetLerpValue(150, 0, Timer, true));
 			Main.EntitySpriteDraw(spear.Value, Projectile.Center - Main.screenPosition, frame, fadeIn, Projectile.rotation, spearOrigin, scaleIn, 0, 0);
@@ -296,7 +296,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			if (Timer == 0)
 			{
-				Helpers.Helper.PlayPitched("GlassMiniboss/WeavingShort", 1f, Main.rand.NextFloat(0.33f), Projectile.Center);
+				Helpers.SoundHelper.PlayPitched("GlassMiniboss/WeavingShort", 1f, Main.rand.NextFloat(0.33f), Projectile.Center);
 				Projectile.velocity = new Vector2(0, -speed).RotatedBy(Projectile.ai[1]);
 			}
 
@@ -328,7 +328,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 				if (Math.Abs(Projectile.velocity.Y - oldVelocity.Y) > 0)
 				{
-					Helpers.Helper.PlayPitched("GlassMiniboss/RippedSoundExtinguish", 0.4f, 1f, Projectile.Center);
+					Helpers.SoundHelper.PlayPitched("GlassMiniboss/RippedSoundExtinguish", 0.4f, 1f, Projectile.Center);
 					Projectile.velocity.Y = -oldVelocity.Y * 0.95f;
 					bounces++;
 				}
@@ -352,7 +352,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				Rectangle frame = glob.Frame(1, 3, 0, Projectile.frame);
 				var origin = new Vector2(frame.Height * 0.5f);
 
-				Asset<Texture2D> bloom = Request<Texture2D>(AssetDirectory.Glassweaver + "BubbleBloom");
+				Asset<Texture2D> bloom = Assets.Bosses.GlassMiniboss.BubbleBloom;
 				Color bloomFade = Color.OrangeRed;
 				bloomFade.A = 0;
 
@@ -384,12 +384,12 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			return false;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int i = 0; i < 15; i++)
 				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(18, 18), DustType<Dusts.Cinder>(), Projectile.velocity.RotatedByRandom(0.5f) * 0.1f, 0, Glassweaver.GlowDustOrange, 1.5f);
 
-			Helpers.Helper.PlayPitched("GlassMiniboss/RippedSoundExtinguish", 0.8f, 0.5f, Projectile.Center);
+			Helpers.SoundHelper.PlayPitched("GlassMiniboss/RippedSoundExtinguish", 0.8f, 0.5f, Projectile.Center);
 		}
 
 		public override void SendExtraAI(BinaryWriter writer)

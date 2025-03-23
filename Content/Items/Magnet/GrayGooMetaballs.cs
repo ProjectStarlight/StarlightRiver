@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.LightingSystem;
+﻿using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems.LightingSystem;
 using StarlightRiver.Core.Systems.MetaballSystem;
 using System.Linq;
 using Terraria.Graphics.Effects;
@@ -23,13 +24,13 @@ namespace StarlightRiver.Content.Items.Magnet
 
 		public override void DrawShapes(SpriteBatch spriteBatch)
 		{
-			Effect borderNoise = Filters.Scene["BorderNoise"].GetShader().Shader;
-
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowVerySoft").Value;
-			Texture2D harshTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowHarsh").Value;
+			Effect borderNoise = ShaderLoader.GetShader("BorderNoise").Value;
 
 			if (borderNoise is null)
 				return;
+
+			Texture2D tex = Assets.Masks.GlowVerySoft.Value;
+			Texture2D harshTex = Assets.Masks.GlowHarsh.Value;
 
 			borderNoise.Parameters["offset"].SetValue((float)Main.time / 100f);
 
@@ -64,34 +65,39 @@ namespace StarlightRiver.Content.Items.Magnet
 			if (GrayGooProj.NPCTarget == null)
 				return false;
 
-			Effect effect = Filters.Scene["GrayGooShader"].GetShader().Shader;
-			effect.Parameters["NPCTarget"].SetValue(GrayGooProj.NPCTarget.RenderTarget);
-			effect.Parameters["threshhold"].SetValue(0.95f);
-			effect.Parameters["screenSize"].SetValue(Main.ScreenSize.ToVector2() * 2);
-			effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.1f);
-			effect.Parameters["min"].SetValue(0f);
-			effect.Parameters["max"].SetValue(1f);
+			Effect effect = ShaderLoader.GetShader("GrayGooShader").Value;
 
-			effect.Parameters["noisiness"].SetValue(143.578348f);
+			if (effect != null)
+			{
+				effect.Parameters["NPCTarget"].SetValue(GrayGooProj.NPCTarget.RenderTarget);
+				effect.Parameters["threshhold"].SetValue(0.95f);
+				effect.Parameters["screenSize"].SetValue(Main.ScreenSize.ToVector2() * 2);
+				effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.1f);
+				effect.Parameters["min"].SetValue(0f);
+				effect.Parameters["max"].SetValue(1f);
 
-			effect.Parameters["eyeThreshhold"].SetValue(0.1f);
-			effect.Parameters["eyeColor"].SetValue(new Vector4(0, 1, 1, 1));
-			effect.Parameters["eyeChangeRate"].SetValue(0.1f);
+				effect.Parameters["noisiness"].SetValue(143.578348f);
 
-			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect);
+				effect.Parameters["eyeThreshhold"].SetValue(0.1f);
+				effect.Parameters["eyeColor"].SetValue(new Vector4(0, 1, 1, 1));
+				effect.Parameters["eyeChangeRate"].SetValue(0.1f);
 
-			spriteBatch.Draw(Target.RenderTarget, position: Vector2.Zero, color: Color.White);
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect);
 
-			spriteBatch.End();
-			spriteBatch.Begin();
+				spriteBatch.Draw(Target.RenderTarget, position: Vector2.Zero, color: Color.White);
+
+				spriteBatch.End();
+				spriteBatch.Begin();
+			}
+
 			return false;
 		}
 
 		public override bool PostDraw(SpriteBatch spriteBatch, Texture2D target)
 		{
 			var sourceRect = new Rectangle(0, 0, target.Width, target.Height);
-			LightingBufferRenderer.DrawWithLighting(sourceRect, target, sourceRect, InteriorColor, new Vector2(2, 2));
+			LightingBufferRenderer.DrawWithLighting(target, Vector2.Zero, sourceRect, InteriorColor, 0, Vector2.Zero, 2f);
 
 			visible = false;
 			return false;

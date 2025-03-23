@@ -1,11 +1,13 @@
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.SteampunkSet;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -28,7 +30,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Bizarre Potion");
-			Tooltip.SetDefault("Throws a random volatile potion with random - usually explosive - effects");
+			Tooltip.SetDefault("Throws a random volatile potion with random effects\nMay inflict {{BUFF:BizarrePotionPoisonDebuff}}");
 		}
 
 		public override void SetDefaults()
@@ -292,7 +294,7 @@ namespace StarlightRiver.Content.Items.Misc
 			return true;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int i = 1; i <= 5; i++)
 			{
@@ -344,7 +346,7 @@ namespace StarlightRiver.Content.Items.Misc
 			CameraSystem.shake += 8;
 
 			SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/FireHit"), Projectile.Center);
-			Helper.PlayPitched("Impacts/AirstrikeImpact", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
+			SoundHelper.PlayPitched("Impacts/AirstrikeImpact", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
 
 			for (int i = 0; i < 4; i++)
 			{
@@ -428,11 +430,11 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 	}
 
-	public class BizarreLightningOrb : ModProjectile, IDrawAdditive
+	public class BizarreLightningOrb : ModProjectile
 	{
-		public override string Texture => AssetDirectory.Assets + "Keys/GlowSoft";
+		public override string Texture => AssetDirectory.Masks + "GlowSoft";
 
-		private float Fade => EaseFunction.EaseCubicOut.Ease(Projectile.timeLeft / 30f);
+		private float Fade => Eases.EaseCubicOut(Projectile.timeLeft / 30f);
 
 		public override void SetDefaults()
 		{
@@ -447,12 +449,14 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.hide = true;
 		}
 
-		public void DrawAdditive(SpriteBatch sb)
+		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D tex = Assets.Masks.GlowSoft.Value;
 
 			for (int i = 0; i < 3; i++)
-				sb.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.Yellow * Fade, 0, tex.Size() / 2, 0.55f, SpriteEffects.None, 0f);
+				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 0, 0) * Fade, 0, tex.Size() / 2, 0.55f, SpriteEffects.None, 0f);
+
+			return false;
 		}
 	}
 
@@ -467,7 +471,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private int TrailLength => (int)MathHelper.Clamp((int)(Projectile.ai[1] / 15), 2, 100);
 
-		private float Fade => Projectile.extraUpdates == 0 ? EaseFunction.EaseCubicOut.Ease(Projectile.timeLeft / (float)FADE_TIME) : 1;
+		private float Fade => Projectile.extraUpdates == 0 ? Eases.EaseCubicOut(Projectile.timeLeft / (float)FADE_TIME) : 1;
 
 		private List<Vector2> cache;
 		private List<Vector2> cache2;
@@ -545,31 +549,40 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrails()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, TrailLength, new NoTip(), factor => THICKNESS * Main.rand.NextFloat(0.75f, 1.25f) * 16, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X > 0.99f)
-					return Color.Transparent;
+				trail = new Trail(Main.instance.GraphicsDevice, TrailLength, new NoTip(), factor => THICKNESS * Main.rand.NextFloat(0.75f, 1.25f) * 16, factor =>
+							{
+								if (factor.X > 0.99f)
+									return Color.Transparent;
 
-				return Color.Yellow * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X) * Fade;
-			});
+								return Color.Yellow * 0.1f * Eases.EaseCubicOut(1 - factor.X) * Fade;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, TrailLength, new NoTip(), factor => THICKNESS * 3 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
+			if (trail2 is null || trail2.IsDisposed)
 			{
-				float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
-				return Color.Lerp(Color.Yellow, Color.White, EaseFunction.EaseCubicIn.Ease(Math.Min(1.2f - progress, 1))) * progress * Fade;
-			});
+				trail2 = new Trail(Main.instance.GraphicsDevice, TrailLength, new NoTip(), factor => THICKNESS * 3 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
+							{
+								float progress = Eases.EaseCubicOut(1 - factor.X);
+								return Color.Lerp(Color.Yellow, Color.White, Eases.EaseCubicIn(Math.Min(1.2f - progress, 1))) * progress * Fade;
+							});
+			}
 
 			trail2.Positions = cache2.ToArray();
 			trail2.NextPosition = Projectile.Center + Projectile.velocity;
 
-			trail3 ??= new Trail(Main.instance.GraphicsDevice, TrailLength, new NoTip(), factor => THICKNESS * 2 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
+			if (trail3 is null || trail3.IsDisposed)
 			{
-				float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
-				return Color.White * progress * Fade;
-			});
+				trail3 = new Trail(Main.instance.GraphicsDevice, TrailLength, new NoTip(), factor => THICKNESS * 2 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
+							{
+								float progress = Eases.EaseCubicOut(1 - factor.X);
+								return Color.White * progress * Fade;
+							});
+			}
 
 			trail3.Positions = cache2.ToArray();
 			trail3.NextPosition = Projectile.Center + Projectile.velocity;
@@ -577,20 +590,23 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["LightningTrail"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("LightningTrail").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
-			effect.Parameters["repeats"].SetValue(1f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
+				effect.Parameters["repeats"].SetValue(1f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 
-			trail?.Render(effect);
-			trail2?.Render(effect);
-			trail3?.Render(effect);
+				trail?.Render(effect);
+				trail2?.Render(effect);
+				trail3?.Render(effect);
+			}
 		}
 
 		public override bool? CanHitNPC(NPC hitting)
@@ -629,10 +645,10 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void AI()
 		{
-			IEnumerable<NPC> targets = Main.npc.Where(x => x.active && !x.townNPC && !x.immortal && !x.dontTakeDamage && x.Distance(Projectile.Center) < 73);
+			IEnumerable<NPC> targets = Main.npc.Where(x => x.active && !x.townNPC && !x.immortal && !x.dontTakeDamage && x.Distance(Projectile.Center) < 125);
 			foreach (NPC target in targets)
 			{
-				target.AddBuff(ModContent.BuffType<BizarrePotionPoisonDebuff>(), 2);
+				target.AddBuff(ModContent.BuffType<BizarrePotionPoisonDebuff>(), 120);
 			}
 		}
 	}
@@ -701,7 +717,7 @@ namespace StarlightRiver.Content.Items.Misc
 			return false;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			if (timeLeft == 0)
 				return;
@@ -817,42 +833,15 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 	}
 
-	// TODO: Port to... buff?
-	public class BizarrePotionGNPC : GlobalNPC
-	{
-		public override bool InstancePerEntity => true;
-
-		public bool infected = false;
-
-		public override void ResetEffects(NPC npc)
-		{
-			infected = false;
-		}
-
-		public override void UpdateLifeRegen(NPC npc, ref int damage)
-		{
-			if (infected)
-			{
-				if (npc.lifeRegen > 0)
-					npc.lifeRegen = 0;
-
-				npc.lifeRegen -= 24;
-
-				if (damage < 3)
-					damage = 3;
-			}
-		}
-	}
-
 	class BizarrePotionPoisonDebuff : SmartBuff
 	{
 		public override string Texture => AssetDirectory.Debug;
 
-		public BizarrePotionPoisonDebuff() : base("Bizarre Poison", "You poisoned", true) { }
+		public BizarrePotionPoisonDebuff() : base("Bizarre Poison", "Deals 12 damage per second", true) { }
 
-		public override void Update(NPC NPC, ref int buffIndex)
+		public override void Update(NPC npc, ref int buffIndex)
 		{
-			NPC.GetGlobalNPC<BizarrePotionGNPC>().infected = true;
+			npc.lifeRegen -= 24;
 		}
 	}
 }

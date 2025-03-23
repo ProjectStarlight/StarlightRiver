@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.ExposureSystem;
+﻿using StarlightRiver.Content.GUI;
+using StarlightRiver.Core.Systems.ExposureSystem;
 using Terraria.Audio;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
@@ -47,13 +48,19 @@ namespace StarlightRiver.Content.Items.Forest
 
 		public override void UpdateArmorSet(Player player)
 		{
-			player.setBonus = "A slime prince follows you around\nDouble tap DOWN to fuse with the prince\nYou can control the prince during this time\nThe prince takes damage instead of you during this time";
+			player.setBonus = "A slime prince follows you around\nDouble tap DOWN to temporarily merge with the prince, controlling it\nThe prince takes damage instead of you during this time";
 
 			if (player.whoAmI == Main.myPlayer)
 			{
 				// If the prince is invalid, we need to spawn a new prince
 				if (prince is null || !prince.active || prince.type != ProjectileType<SlimePrinceMinion>() || prince.owner != player.whoAmI)
 					prince = Projectile.NewProjectileDirect(player.GetSource_FromThis(), player.Center, Vector2.Zero, ProjectileType<SlimePrinceMinion>(), 17, 0, player.whoAmI);
+
+				var thisPrince = prince.ModProjectile as SlimePrinceMinion;
+				if (thisPrince != null)
+				{
+					ArmorChargeUI.SetMessage($"{thisPrince.life}/{SlimePrinceMinion.MAX_LIFE}");
+				}
 			}
 		}
 

@@ -1,8 +1,10 @@
-﻿namespace StarlightRiver.Content.Dusts
+﻿using StarlightRiver.Core.Loaders;
+
+namespace StarlightRiver.Content.Dusts
 {
 	public class Cinder : ModDust
 	{
-		public override string Texture => AssetDirectory.Keys + "GlowHarsh";
+		public override string Texture => AssetDirectory.Masks + "GlowHarsh";
 
 		public override Color? GetAlpha(Dust dust, Color lightColor)
 		{
@@ -18,7 +20,8 @@
 			dust.scale *= 0.38f;
 			dust.frame = new Rectangle(0, 0, 0, 0);
 			dust.fadeIn = 0;
-			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
+			if (ShaderLoader.GetShader("GlowingDust").Value != null)
+				dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
 			dust.noLightEmittence = false;
 		}
 
@@ -40,7 +43,7 @@
 					dust.active = false;
 			}
 
-			dust.shader.UseColor(dust.color * Utils.GetLerpValue(0, 4, dust.fadeIn, true));
+			dust.shader?.UseColor(dust.color * Utils.GetLerpValue(0, 4, dust.fadeIn, true));
 
 			dust.fadeIn++;
 			if (dust.fadeIn > 100)

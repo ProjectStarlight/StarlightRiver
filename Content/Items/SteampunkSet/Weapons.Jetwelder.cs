@@ -329,10 +329,10 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Vector2 pos = Owner.Center + dir - Main.screenPosition;
 			Texture2D tex = gray ? grayTex : regTex;
 
-			float lerper = MathHelper.Clamp(EaseFunction.EaseCubicOut.Ease(growCounter), 0, 1);
+			float lerper = MathHelper.Clamp(Eases.EaseCubicOut(growCounter), 0, 1);
 			float colorMult = MathHelper.Lerp(0.66f, 1f, lerper);
 			float scale = MathHelper.Lerp(0.75f, 1.33f, lerper);
-			scale *= EaseFunction.EaseCubicOut.Ease(scaleCounter);
+			scale *= Eases.EaseCubicOut(scaleCounter);
 			spriteBatch.Draw(tex, pos, null, Color.White * colorMult, 0, tex.Size() / 2, scale, SpriteEffects.None, 0f);
 
 			Texture2D barTex = ModContent.Request<Texture2D>(Texture + "_Bar").Value;
@@ -346,7 +346,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 			for (int i = (int)barPos.X - (int)(barTex.Width * 0.5f * numScrapFive); i < (int)barPos.X + (int)(barTex.Width * 0.5f * numScrapFive); i += barTex.Width)
 			{
-				spriteBatch.Draw(barTex, new Vector2(i + barTex.Width / 2, barPos.Y), frame, Color.White * (gray ? 0.33f : 1), 0f, barTex.Size() / new Vector2(2, 4), EaseFunction.EaseCubicOut.Ease(scaleCounter), SpriteEffects.None, 0f);
+				spriteBatch.Draw(barTex, new Vector2(i + barTex.Width / 2, barPos.Y), frame, Color.White * (gray ? 0.33f : 1), 0f, barTex.Size() / new Vector2(2, 4), Eases.EaseCubicOut(scaleCounter), SpriteEffects.None, 0f);
 			}
 		}
 	}
@@ -598,8 +598,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			if (Player.HeldItem.type != ModContent.ItemType<Jetwelder>() || Player.whoAmI != Main.myPlayer)
 				return;
 
-			Texture2D barTex = ModContent.Request<Texture2D>(AssetDirectory.SteampunkItem + "JetwelderBar").Value;
-			Texture2D glowTex = ModContent.Request<Texture2D>(AssetDirectory.SteampunkItem + "JetwelderBar_Glow").Value;
+			Texture2D barTex = Assets.Items.SteampunkSet.JetwelderBar.Value;
+			Texture2D glowTex = Assets.Items.SteampunkSet.JetwelderBar_Glow.Value;
 
 			Vector2 drawPos = Player.MountedCenter - Main.screenPosition - new Vector2(0, 40 - Player.gfxOffY);
 

@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -207,27 +208,30 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 		#region trail stuff
 		private void DrawTrail()
 		{
-			Main.spriteBatch.End();
+			Effect effect = ShaderLoader.GetShader("DatsuzeiTrail").Value;
 
-			Effect effect = Terraria.Graphics.Effects.Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
+			if (effect != null)
+			{
+				Main.spriteBatch.End();
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
-			effect.Parameters["repeats"].SetValue(8f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
-			effect.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Moonstone/DatsuzeiFlameMap2").Value);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
+				effect.Parameters["repeats"].SetValue(8f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+				effect.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
 
-			trail?.Render(effect);
+				trail?.Render(effect);
 
-			effect.Parameters["sampleTexture2"].SetValue(Terraria.GameContent.TextureAssets.MagicPixel.Value);
+				effect.Parameters["sampleTexture2"].SetValue(Terraria.GameContent.TextureAssets.MagicPixel.Value);
 
-			trail2?.Render(effect);
+				trail2?.Render(effect);
 
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 		}
 
 		private void ManageCaches()
@@ -252,9 +256,11 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 15, new NoTip(), factor => factor * 25 * TRAIL_WIDTH, factor => new Color(120, 20 + (int)(100 * factor.X), 255) * factor.X);
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 15, new NoTip(), factor => factor * 25 * TRAIL_WIDTH, factor => new Color(120, 20 + (int)(100 * factor.X), 255) * factor.X);
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 15, new NoTip(), factor => (50 + 0 + factor * 0) * TRAIL_WIDTH, factor => new Color(100, 20 + (int)(60 * factor.X), 255) * factor.X * 0.15f);
+			if (trail2 is null || trail2.IsDisposed)
+				trail2 = new Trail(Main.instance.GraphicsDevice, 15, new NoTip(), factor => (50 + 0 + factor * 0) * TRAIL_WIDTH, factor => new Color(100, 20 + (int)(60 * factor.X), 255) * factor.X * 0.15f);
 
 			if (cache != null)
 			{
@@ -388,7 +394,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 			if (NPC.collideY || slamTimer > 60)
 			{
-				Helper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0.3f, NPC.Center);
+				SoundHelper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0.3f, NPC.Center);
 
 				for (int k = 0; k < 16; k++)
 				{
@@ -422,7 +428,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 			if (slamTimer > 90)
 			{
-				Helper.PlayPitched("StoneSlide", 1f, -1f, NPC.Center);
+				SoundHelper.PlayPitched("StoneSlide", 1f, -1f, NPC.Center);
 				risingPos = NPC.Center;
 				posAbovePlayer = Target.Center - new Vector2(0, Main.rand.Next(300, 400));
 				phase = Phase.rising;

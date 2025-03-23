@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Dusts;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Projectiles;
 using StarlightRiver.Helpers;
 using System;
@@ -26,8 +27,8 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetDefaults()
 		{
 			Item.DamageType = DamageClass.Melee;
-			Item.damage = 37;
-			Item.crit = 6;
+			Item.damage = 45;
+			Item.crit = 15;
 			Item.useTime = 30;
 			Item.useAnimation = 30;
 			Item.width = 32;
@@ -100,9 +101,9 @@ namespace StarlightRiver.Content.Items.Vitric
 			//Player.velocity += Vector2.Normalize(Player.Center - Main.MouseWorld) * 10;
 
 			if (Player.GetModPlayer<ControlsPlayer>().mouseRight)
-				Helper.PlayPitched(SoundID.DD2_CrystalCartImpact, 1f, 0, Player.position);
+				SoundHelper.PlayPitched(SoundID.DD2_CrystalCartImpact, 1f, 0, Player.position);
 			else
-				Helper.PlayPitched(SoundID.DD2_MonkStaffSwing, 1f, 0, Player.position);
+				SoundHelper.PlayPitched(SoundID.DD2_MonkStaffSwing, 1f, 0, Player.position);
 
 			return true;
 		}
@@ -127,7 +128,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		}
 	}
 
-	class FacetProjectile : SpearProjectile, IDrawAdditive
+	class FacetProjectile : SpearProjectile
 	{
 		public ref float DrawbackTime => ref Projectile.ai[0];
 		public ref float BuffPower => ref Projectile.ai[1];
@@ -198,7 +199,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 				Terraria.Audio.SoundEngine.PlaySound(slot2, Projectile.Center);
 
-				modifiers.FinalDamage *= 1 + BuffPower / 25f;
+				modifiers.FinalDamage *= 1 + BuffPower / 20f;
 				modifiers.Knockback *= 3;
 
 				for (int k = 0; k < 20; k++)
@@ -212,9 +213,9 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (Main.myPlayer == Projectile.owner)
 				Projectile.netUpdate = true;
 
-			if (Helper.IsFleshy(target))
+			if (NPCHelper.IsFleshy(target))
 			{
-				Helper.PlayPitched("Impale", 1, Main.rand.NextFloat(0.6f, 0.9f), Projectile.Center);
+				SoundHelper.PlayPitched("Impale", 1, Main.rand.NextFloat(0.6f, 0.9f), Projectile.Center);
 
 				for (int k = 0; k < 20; k++)
 				{
@@ -223,7 +224,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 			else
 			{
-				Helper.PlayPitched("Impacts/Clink", 1, Main.rand.NextFloat(0.1f, 0.3f), Projectile.Center);
+				SoundHelper.PlayPitched("Impacts/Clink", 1, Main.rand.NextFloat(0.1f, 0.3f), Projectile.Center);
 
 				for (int k = 0; k < 15; k++)
 				{
@@ -252,23 +253,20 @@ namespace StarlightRiver.Content.Items.Vitric
 			Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY),
 				tex.Frame(), color, Projectile.rotation - (float)Math.PI / 4f, new Vector2(tex.Width / 2, 0), Projectile.scale, 0, 0);
 
+			if (BuffPower > 0)
+			{
+				Texture2D glowTex = Assets.FireTrail.Value;
+				var glowColor = new Color(255, 200, 100, 0);
+
+				var source = new Rectangle((int)(Projectile.timeLeft / 50f * glowTex.Width / 2), 0, glowTex.Width / 2, glowTex.Height);
+				var target = new Rectangle((int)(Projectile.Center.X - Main.screenPosition.X), (int)(Projectile.Center.Y - Main.screenPosition.Y), 64, 40);
+
+				Main.spriteBatch.Draw(glowTex, target, source, glowColor, Projectile.rotation - (float)Math.PI * 3 / 4f, new Vector2(glowTex.Width / 2, glowTex.Height / 2), 0, 0);
+
+				Lighting.AddLight(Projectile.Center, new Vector3(1, 0.6f, 0.2f) * 0.5f);
+			}
+
 			return false;
-		}
-
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
-			if (BuffPower <= 0)
-				return;
-
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value;
-			var color = new Color(255, 200, 100);
-
-			var source = new Rectangle((int)(Projectile.timeLeft / 50f * tex.Width / 2), 0, tex.Width / 2, tex.Height);
-			var target = new Rectangle((int)(Projectile.Center.X - Main.screenPosition.X), (int)(Projectile.Center.Y - Main.screenPosition.Y), 64, 40);
-
-			spriteBatch.Draw(tex, target, source, color, Projectile.rotation - (float)Math.PI * 3 / 4f, new Vector2(tex.Width / 2, tex.Height / 2), 0, 0);
-
-			Lighting.AddLight(Projectile.Center, new Vector3(1, 0.6f, 0.2f) * 0.5f);
 		}
 	}
 
@@ -297,7 +295,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			ShieldLife = 50;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			if (timeLeft > 0)
 			{
@@ -452,8 +450,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			if (Main.LocalPlayer == Main.player[Projectile.owner])
 			{
-				Texture2D barTex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "SmallBar0").Value;
-				Texture2D barTex2 = ModContent.Request<Texture2D>(AssetDirectory.GUI + "SmallBar1").Value;
+				Texture2D barTex = Assets.GUI.SmallBar0.Value;
+				Texture2D barTex2 = Assets.GUI.SmallBar1.Value;
 
 				Vector2 pos = Main.LocalPlayer.Center - Main.screenPosition + new Vector2(0, -36) - barTex.Size() / 2;
 				var target = new Rectangle((int)pos.X + 1, (int)pos.Y - 2, (int)(ShieldLife / 50f * barTex2.Width), barTex2.Height);

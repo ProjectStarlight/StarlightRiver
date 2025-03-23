@@ -1,6 +1,8 @@
-﻿using NetEasy;
+﻿using Microsoft.Xna.Framework.Graphics;
+using NetEasy;
 using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Items.Misc;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
@@ -27,7 +29,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public override int ShrineTileHeight => COMBAT_SHRINE_TILE_HEIGHT;
 
-		public override string GetHint()
+		public override string GetCustomKey()
 		{
 			return "A shrine - to which deity, you do not know, though it wields a blade. The statue's eyes seem to follow you, and strange runes dance across its pedestal.";
 		}
@@ -39,7 +41,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 		public CombatShrineItem() : base("Combat shrine placer", "{{Debug}} item", "CombatShrine") { }
 	}
 
-	class CombatShrineDummy : ShrineDummy, IDrawAdditive
+	class CombatShrineDummy : ShrineDummy
 	{
 		public List<NPC> minions = new();
 
@@ -253,6 +255,33 @@ namespace StarlightRiver.Content.Tiles.Underground
 		{
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
+			Effect effect = ShaderLoader.GetShader("Whitewash").Value;
+
+			if (effect != null)
+			{
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+
+				for (int k = 0; k < minions.Count; k++)
+				{
+					NPC target = minions[k];
+
+					if (!target.active)
+						continue;
+
+					if (Main.rand.NextBool(2))
+						Dust.NewDustPerfect(target.position + new Vector2(Main.rand.Next(target.width), Main.rand.Next(target.height)), ModContent.DustType<Dusts.Shadow>(), new Vector2(0, -Main.rand.NextFloat()), 0, Color.Black, Main.rand.NextFloat());
+
+					spriteBatch.Draw(TextureAssets.Npc[target.type].Value, target.Center + Vector2.UnitX * 2 - Main.screenPosition, target.frame, Color.White, target.rotation, target.frame.Size() / 2, target.scale, target.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+					spriteBatch.Draw(TextureAssets.Npc[target.type].Value, target.Center + Vector2.UnitX * -2 - Main.screenPosition, target.frame, Color.White, target.rotation, target.frame.Size() / 2, target.scale, target.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+					spriteBatch.Draw(TextureAssets.Npc[target.type].Value, target.Center + Vector2.UnitY * 2 - Main.screenPosition, target.frame, Color.White, target.rotation, target.frame.Size() / 2, target.scale, target.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+					spriteBatch.Draw(TextureAssets.Npc[target.type].Value, target.Center + Vector2.UnitY * -2 - Main.screenPosition, target.frame, Color.White, target.rotation, target.frame.Size() / 2, target.scale, target.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+				}
+			}
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+
 			for (int k = 0; k < minions.Count; k++)
 			{
 				NPC target = minions[k];
@@ -260,31 +289,20 @@ namespace StarlightRiver.Content.Tiles.Underground
 				if (!target.active)
 					continue;
 
-				if (Main.rand.NextBool(2))
-					Dust.NewDustPerfect(target.position + new Vector2(Main.rand.Next(target.width), Main.rand.Next(target.height)), ModContent.DustType<Dusts.Shadow>(), new Vector2(0, -Main.rand.NextFloat()), 0, Color.Black, Main.rand.NextFloat());
-
-				Effect effect = Terraria.Graphics.Effects.Filters.Scene["Whitewash"].GetShader().Shader;
-
-				spriteBatch.End();
-				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
-
-				spriteBatch.Draw(TextureAssets.Npc[target.type].Value, target.Center + Vector2.UnitX * 2 - Main.screenPosition, target.frame, Color.White, target.rotation, target.frame.Size() / 2, target.scale, target.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
-				spriteBatch.Draw(TextureAssets.Npc[target.type].Value, target.Center + Vector2.UnitX * -2 - Main.screenPosition, target.frame, Color.White, target.rotation, target.frame.Size() / 2, target.scale, target.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
-				spriteBatch.Draw(TextureAssets.Npc[target.type].Value, target.Center + Vector2.UnitY * 2 - Main.screenPosition, target.frame, Color.White, target.rotation, target.frame.Size() / 2, target.scale, target.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
-				spriteBatch.Draw(TextureAssets.Npc[target.type].Value, target.Center + Vector2.UnitY * -2 - Main.screenPosition, target.frame, Color.White, target.rotation, target.frame.Size() / 2, target.scale, target.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
-
-				spriteBatch.End();
-				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
-
 				spriteBatch.Draw(TextureAssets.Npc[target.type].Value, target.Center - Main.screenPosition, target.frame, Color.Black, target.rotation, target.frame.Size() / 2, target.scale, target.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
 			}
+
+			DrawGlows(spriteBatch);
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
+		public void DrawGlows(SpriteBatch spriteBatch)
 		{
 			if (state != SHRINE_STATE_IDLE && state != SHRINE_STATE_DEFEATED)
 			{
-				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Moonstone/GlowSmall").Value;
+				Texture2D tex = Assets.Tiles.Moonstone.GlowSmall.Value;
 				var origin = new Vector2(tex.Width / 2, tex.Height);
 				spriteBatch.Draw(tex, Center - Main.screenPosition + new Vector2(0, 60), default, GetBeamColor(StarlightWorld.visualTimer), 0, origin, 3.5f, 0, 0);
 				spriteBatch.Draw(tex, Center - Main.screenPosition + new Vector2(10, 60), default, GetBeamColor(StarlightWorld.visualTimer + 2) * 0.8f, 0, origin, 2.5f, 0, 0);
@@ -293,33 +311,33 @@ namespace StarlightRiver.Content.Tiles.Underground
 				float rad = -32;
 
 				if (state >= maxWaves + 2)
-					rad += Helpers.Helper.BezierEase((timer - waveTime) / 128f) * 32;
+					rad += Eases.BezierEase((timer - waveTime) / 128f) * 32;
 
 				for (int k = 0; k < Math.Min(state - 2, maxWaves - 1); k++)
 				{
-					Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
-					spriteBatch.Draw(tex, Center - Main.screenPosition + new Vector2(0, -44) + Vector2.UnitX.RotatedBy(k / (float)(maxWaves - 2) * 3.14f) * rad, default, new Color(255, 100, 100), 0, tex.Size() / 2, 0.3f, 0, 0);
-					spriteBatch.Draw(tex2, Center - Main.screenPosition + new Vector2(0, -32) + Vector2.UnitX.RotatedBy(k / (float)(maxWaves - 2) * 3.14f) * rad, default, new Color(255, 100, 100), 0, tex2.Size() / 2, 0.3f, 0, 0);
-					spriteBatch.Draw(tex2, Center - Main.screenPosition + new Vector2(0, -32) + Vector2.UnitX.RotatedBy(k / (float)(maxWaves - 2) * 3.14f) * rad, default, Color.White, 0, tex2.Size() / 2, 0.1f, 0, 0);
+					Texture2D tex2 = Assets.Masks.GlowSoftAlpha.Value;
+					spriteBatch.Draw(tex, Center - Main.screenPosition + new Vector2(0, -44) + Vector2.UnitX.RotatedBy(k / (float)(maxWaves - 2) * 3.14f) * rad, default, new Color(255, 100, 100, 0), 0, tex.Size() / 2, 0.3f, 0, 0);
+					spriteBatch.Draw(tex2, Center - Main.screenPosition + new Vector2(0, -32) + Vector2.UnitX.RotatedBy(k / (float)(maxWaves - 2) * 3.14f) * rad, default, new Color(255, 100, 100, 0), 0, tex2.Size() / 2, 0.3f, 0, 0);
+					spriteBatch.Draw(tex2, Center - Main.screenPosition + new Vector2(0, -32) + Vector2.UnitX.RotatedBy(k / (float)(maxWaves - 2) * 3.14f) * rad, default, new Color(255, 255, 255, 0), 0, tex2.Size() / 2, 0.1f, 0, 0);
 				}
 
-				Texture2D barrier = ModContent.Request<Texture2D>("StarlightRiver/Assets/MotionTrail").Value;
+				Texture2D barrier = Assets.MotionTrail.Value;
 				var sourceRect = new Rectangle(0, (int)(Main.GameUpdateCount * 0.4f), barrier.Width, barrier.Height);
 				var sourceRect2 = new Rectangle(0, (int)(Main.GameUpdateCount * -0.73f), barrier.Width, barrier.Height);
 
 				var targetRect = new Rectangle((int)(Center.X - Main.screenPosition.X) - 25 * 16 - 10, (int)(Center.Y - Main.screenPosition.Y) - 16, 32, 80);
-				spriteBatch.Draw(barrier, targetRect, sourceRect, new Color(255, 100, 100) * 0.6f * Windup);
-				spriteBatch.Draw(barrier, targetRect, sourceRect2, new Color(255, 50, 50) * 0.5f * Windup);
+				spriteBatch.Draw(barrier, targetRect, sourceRect, new Color(255, 100, 100, 0) * 0.6f * Windup);
+				spriteBatch.Draw(barrier, targetRect, sourceRect2, new Color(255, 50, 50, 0) * 0.5f * Windup);
 				targetRect.Inflate(-15, 0);
 				targetRect.Offset(15, 0);
-				spriteBatch.Draw(barrier, targetRect, sourceRect2, Color.White * Windup);
+				spriteBatch.Draw(barrier, targetRect, sourceRect2, new Color(255, 255, 255, 0) * Windup);
 
 				targetRect = new Rectangle((int)(Center.X - Main.screenPosition.X) + 24 * 16 - 6, (int)(Center.Y - Main.screenPosition.Y) - 16, 32, 80);
-				spriteBatch.Draw(barrier, targetRect, sourceRect, new Color(255, 100, 100) * 0.6f * Windup, 0, default, SpriteEffects.FlipHorizontally, 0);
-				spriteBatch.Draw(barrier, targetRect, sourceRect2, new Color(255, 50, 50) * 0.5f * Windup, 0, default, SpriteEffects.FlipHorizontally, 0);
+				spriteBatch.Draw(barrier, targetRect, sourceRect, new Color(255, 100, 100, 0) * 0.6f * Windup, 0, default, SpriteEffects.FlipHorizontally, 0);
+				spriteBatch.Draw(barrier, targetRect, sourceRect2, new Color(255, 50, 50, 0) * 0.5f * Windup, 0, default, SpriteEffects.FlipHorizontally, 0);
 				targetRect.Inflate(-15, 0);
 				targetRect.Offset(-15, 0);
-				spriteBatch.Draw(barrier, targetRect, sourceRect2, Color.White * Windup);
+				spriteBatch.Draw(barrier, targetRect, sourceRect2, new Color(255, 255, 255, 0) * Windup);
 			}
 		}
 
@@ -327,7 +345,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 		{
 			float sin = 0.5f + (float)Math.Sin(time * 2 + 1) * 0.5f;
 			float sin2 = 0.5f + (float)Math.Sin(time) * 0.5f;
-			return new Color(255, (int)(50 * sin), 0) * sin2 * Windup;
+			return new Color(255, (int)(50 * sin), 0, 0) * sin2 * Windup;
 		}
 
 		public override void SafeSendExtraAI(BinaryWriter writer)
@@ -343,7 +361,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 		}
 	}
 
-	class SpawnEgg : ModProjectile, IDrawAdditive
+	class SpawnEgg : ModProjectile
 	{
 		public float hpOverride = -1;
 		public float damageOverride = -1;
@@ -371,7 +389,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 			Projectile.scale = projScale;
 
 			if (Projectile.timeLeft == 70)
-				Helpers.Helper.PlayPitched("ShadowSpawn", 0.4f, 1, Projectile.Center);
+				Helpers.SoundHelper.PlayPitched("ShadowSpawn", 0.4f, 1, Projectile.Center);
 
 			if (Projectile.timeLeft == 30 && Main.netMode != NetmodeID.MultiplayerClient)
 			{
@@ -381,23 +399,23 @@ namespace StarlightRiver.Content.Tiles.Underground
 			}
 		}
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
+		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ItemGlow").Value;
-			Texture2D texRing = ModContent.Request<Texture2D>(AssetDirectory.GUI + "RingGlow").Value;
+			Texture2D tex = Assets.GUI.ItemGlow.Value;
+			Texture2D texRing = Assets.GUI.RingGlow.Value;
 
-			float bright = Helpers.Helper.BezierEase(1 - (Projectile.timeLeft - 60) / 120f);
+			float bright = Helpers.Eases.BezierEase(1 - (Projectile.timeLeft - 60) / 120f);
 
 			if (Projectile.timeLeft < 20)
 				bright = Projectile.timeLeft / 20f;
 
-			float starScale = Helpers.Helper.BezierEase(1 - (Projectile.timeLeft - 90) / 30f);
+			float starScale = Helpers.Eases.BezierEase(1 - (Projectile.timeLeft - 90) / 30f);
 
 			if (Projectile.timeLeft <= 90)
 				starScale = 0.3f + Projectile.timeLeft / 90f * 0.7f;
 
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.Red * bright, Helpers.Helper.BezierEase(Projectile.timeLeft / 160f) * 6.28f, tex.Size() / 2, starScale * 0.3f * Projectile.scale, 0, 0);
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * bright, Helpers.Helper.BezierEase(Projectile.timeLeft / 160f) * 6.28f, tex.Size() / 2, starScale * 0.2f * Projectile.scale, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 0, 0, 0) * bright, Helpers.Eases.BezierEase(Projectile.timeLeft / 160f) * 6.28f, tex.Size() / 2, starScale * 0.3f * Projectile.scale, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0) * bright, Helpers.Eases.BezierEase(Projectile.timeLeft / 160f) * 6.28f, tex.Size() / 2, starScale * 0.2f * Projectile.scale, 0, 0);
 
 			float ringBright = 1;
 			if (Projectile.timeLeft > 100)
@@ -406,19 +424,19 @@ namespace StarlightRiver.Content.Tiles.Underground
 			float ringScale = 1 + (Projectile.timeLeft - 50) / 70f * 0.3f;
 
 			if (Projectile.timeLeft <= 50)
-				ringScale = Helpers.Helper.BezierEase((Projectile.timeLeft - 20) / 30f);
+				ringScale = Helpers.Eases.BezierEase((Projectile.timeLeft - 20) / 30f);
 
-			spriteBatch.Draw(texRing, Projectile.Center - Main.screenPosition, null, Color.Red * ringBright * 0.8f, Projectile.timeLeft / 60f * 6.28f, texRing.Size() / 2, ringScale * 0.2f * Projectile.scale, 0, 0);
-			spriteBatch.Draw(texRing, Projectile.Center - Main.screenPosition, null, Color.White * ringBright * 0.5f, Projectile.timeLeft / 60f * 6.28f, texRing.Size() / 2, ringScale * 0.195f * Projectile.scale, 0, 0);
+			Main.spriteBatch.Draw(texRing, Projectile.Center - Main.screenPosition, null, new Color(255, 0, 0, 0) * ringBright * 0.8f, Projectile.timeLeft / 60f * 6.28f, texRing.Size() / 2, ringScale * 0.2f * Projectile.scale, 0, 0);
+			Main.spriteBatch.Draw(texRing, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0) * ringBright * 0.5f, Projectile.timeLeft / 60f * 6.28f, texRing.Size() / 2, ringScale * 0.195f * Projectile.scale, 0, 0);
 
 			if (Projectile.timeLeft < 30)
 			{
-				Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
-				spriteBatch.Draw(tex2, Projectile.Center - Main.screenPosition, null, new Color(255, 50, 50) * (Projectile.timeLeft / 30f), 0, tex2.Size() / 2, (1 - Projectile.timeLeft / 30f) * 7 * Projectile.scale, 0, 0);
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 150, 150) * (Projectile.timeLeft / 30f), 0, tex.Size() / 2, (1 - Projectile.timeLeft / 30f) * 1 * Projectile.scale, 0, 0);
+				Texture2D tex2 = Assets.Masks.GlowSoftAlpha.Value;
+				Main.spriteBatch.Draw(tex2, Projectile.Center - Main.screenPosition, null, new Color(255, 50, 50, 0) * (Projectile.timeLeft / 30f), 0, tex2.Size() / 2, (1 - Projectile.timeLeft / 30f) * 7 * Projectile.scale, 0, 0);
+				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 150, 150, 0) * (Projectile.timeLeft / 30f), 0, tex.Size() / 2, (1 - Projectile.timeLeft / 30f) * 1 * Projectile.scale, 0, 0);
 
 				if (Projectile.timeLeft > 15)
-					spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 100, 100) * ((Projectile.timeLeft - 15) / 15f), 1.57f / 4, tex.Size() / 2, (1 - (Projectile.timeLeft - 15) / 15f) * 2 * Projectile.scale, 0, 0);
+					Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 100, 100, 0) * ((Projectile.timeLeft - 15) / 15f), 1.57f / 4, tex.Size() / 2, (1 - (Projectile.timeLeft - 15) / 15f) * 2 * Projectile.scale, 0, 0);
 			}
 		}
 	}

@@ -1,6 +1,8 @@
 global using Microsoft.Xna.Framework;
 global using Microsoft.Xna.Framework.Graphics;
+global using ReLogic.Content;
 global using StarlightRiver.Core;
+global using StarlightRiver.Helpers;
 global using Terraria;
 global using Terraria.Localization;
 global using Terraria.ModLoader;
@@ -11,14 +13,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Terraria.ID;
 
 namespace StarlightRiver
 {
 	public partial class StarlightRiver : Mod
 	{
 		private List<IOrderedLoadable> loadCache;
-
-		private List<IRecipeGroup> recipeGroupCache;
 
 		public static bool debugMode = false;
 
@@ -48,6 +49,10 @@ namespace StarlightRiver
 
 		public override void Load()
 		{
+#if DEBUG
+			debugMode = true;
+#endif
+
 			loadCache = new List<IOrderedLoadable>();
 
 			foreach (Type type in Code.GetTypes())
@@ -65,19 +70,6 @@ namespace StarlightRiver
 			{
 				loadCache[k].Load();
 				SetLoadingText("Loading " + loadCache[k].GetType().Name);
-			}
-
-			recipeGroupCache = new List<IRecipeGroup>();
-
-			foreach (Type type in Code.GetTypes())
-			{
-				if (!type.IsAbstract && type.GetInterfaces().Contains(typeof(IRecipeGroup)))
-				{
-					object instance = Activator.CreateInstance(type);
-					recipeGroupCache.Add(instance as IRecipeGroup);
-				}
-
-				recipeGroupCache.Sort((n, t) => n.Priority > t.Priority ? 1 : -1);
 			}
 
 			if (!Main.dedServ)
@@ -110,14 +102,6 @@ namespace StarlightRiver
 				AbilityKeys?.Unload();
 
 				SLRSpawnConditions.Unload();
-			}
-		}
-
-		public override void AddRecipeGroups()
-		{
-			foreach (IRecipeGroup group in recipeGroupCache)
-			{
-				group.AddRecipeGroups();
 			}
 		}
 

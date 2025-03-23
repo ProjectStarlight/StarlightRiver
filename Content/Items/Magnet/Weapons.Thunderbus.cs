@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.Haunted;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -93,7 +94,7 @@ namespace StarlightRiver.Content.Items.Magnet
 				int i = Projectile.NewProjectile(source, player.Center - new Vector2(48, 0).RotatedBy(aim), velocity * 0.4f, ModContent.ProjectileType<ThunderbussBall>(), (int)(damage * 1.25), 0, player.whoAmI);
 				ball = Main.projectile[i];
 
-				Helper.PlayPitched("Magic/LightningExplodeShallow", 0.5f, -0.2f, player.Center);
+				SoundHelper.PlayPitched("Magic/LightningExplodeShallow", 0.5f, -0.2f, player.Center);
 
 				return false;
 			}
@@ -135,7 +136,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			{
 				int targetIndex = k % targets.Count;
 
-				float offset = Helper.CompareAngle(aim, (player.Center - targets[targetIndex].Center).ToRotation()) * -120;
+				float offset = GeometryHelper.CompareAngle(aim, (player.Center - targets[targetIndex].Center).ToRotation()) * -120;
 
 				if (targets.Count == 1)
 				{
@@ -183,7 +184,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			foreach (NPC NPC in Main.npc.Where(n => n.active &&
 			 !n.dontTakeDamage &&
 			 !n.townNPC &&
-			 Helper.CheckConicalCollision(Player.Center, 500, aim, 1, n.Hitbox) &&
+			 CollisionHelper.CheckConicalCollision(Player.Center, 500, aim, 1, n.Hitbox) &&
 			 Utils.PlotLine((n.Center / 16).ToPoint16(), (Player.Center / 16).ToPoint16(), (x, y) => !Framing.GetTileSafely(x, y).HasTile || !Main.tileSolid[Framing.GetTileSafely(x, y).TileType])))
 			{
 				targets.Add(NPC);
@@ -193,7 +194,7 @@ namespace StarlightRiver.Content.Items.Magnet
 		}
 	}
 
-	internal class ThunderbussShot : ModProjectile, IDrawAdditive, IDrawPrimitive
+	internal class ThunderbussShot : ModProjectile, IDrawPrimitive
 	{
 		public Vector2 startPoint;
 		public Vector2 endPoint;
@@ -385,7 +386,7 @@ namespace StarlightRiver.Content.Items.Magnet
 
 			if (Projectile.timeLeft == 60)
 			{
-				Helper.PlayPitched("Magic/LightningExplodeShallow", 0.2f * (power / 20f), 0.5f, Projectile.Center);
+				SoundHelper.PlayPitched("Magic/LightningExplodeShallow", 0.2f * (power / 20f), 0.5f, Projectile.Center);
 
 				startPoint = Projectile.Center;
 
@@ -446,7 +447,7 @@ namespace StarlightRiver.Content.Items.Magnet
 				PreKill(Projectile.timeLeft);
 		}
 
-		public void DrawAdditive(SpriteBatch sb)
+		public override void PostDraw(Color lightColor)
 		{
 			Vector2 point1 = startPoint;
 			Vector2 point2 = Projectile.Center;
@@ -454,7 +455,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			if (point1 == Vector2.Zero || point2 == Vector2.Zero)
 				return;
 
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value;
+			Texture2D tex = Assets.GlowTrail.Value;
 
 			for (int k = 1; k < nodes.Count; k++)
 			{
@@ -463,9 +464,9 @@ namespace StarlightRiver.Content.Items.Magnet
 				var target = new Rectangle((int)(prevPos.X - Main.screenPosition.X), (int)(prevPos.Y - Main.screenPosition.Y), (int)Vector2.Distance(nodes[k], prevPos) + 1, power);
 				var origin = new Vector2(0, tex.Height / 2);
 				float rot = (nodes[k] - prevPos).ToRotation();
-				Color color = new Color(200, 230, 255) * (Projectile.extraUpdates == 0 ? Projectile.timeLeft / 15f : 1);
+				Color color = new Color(200, 230, 255, 0) * (Projectile.extraUpdates == 0 ? Projectile.timeLeft / 15f : 1);
 
-				sb.Draw(tex, target, null, color, rot, origin, 0, 0);
+				Main.spriteBatch.Draw(tex, target, null, color, rot, origin, 0, 0);
 			}
 		}
 
@@ -494,13 +495,16 @@ namespace StarlightRiver.Content.Items.Magnet
 
 		private void ManageTrails()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => 40 + power, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X > 0.99f)
-					return Color.Transparent;
+				trail = new Trail(Main.instance.GraphicsDevice, 50, new NoTip(), factor => 40 + power, factor =>
+							{
+								if (factor.X > 0.99f)
+									return Color.Transparent;
 
-				return new Color(160, 220, 255) * 0.05f * (Projectile.extraUpdates == 0 ? Projectile.timeLeft / 15f : 1);
-			});
+								return new Color(160, 220, 255) * 0.05f * (Projectile.extraUpdates == 0 ? Projectile.timeLeft / 15f : 1);
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center;
@@ -508,18 +512,21 @@ namespace StarlightRiver.Content.Items.Magnet
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["LightningTrail"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("LightningTrail").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
-			effect.Parameters["repeats"].SetValue(1f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
+				effect.Parameters["repeats"].SetValue(1f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 
-			trail?.Render(effect);
+				trail?.Render(effect);
+			}
 		}
 
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
@@ -565,7 +572,7 @@ namespace StarlightRiver.Content.Items.Magnet
 		}
 	}
 
-	internal class ThunderbussBall : ModProjectile, IDrawAdditive, IDrawPrimitive
+	internal class ThunderbussBall : ModProjectile, IDrawPrimitive
 	{
 		private List<Vector2> cache;
 		private Trail trail;
@@ -581,7 +588,7 @@ namespace StarlightRiver.Content.Items.Magnet
 
 		public override bool? CanHitNPC(NPC target)
 		{
-			if (Projectile.timeLeft > 30 && Helper.CheckCircularCollision(Projectile.Center, 64, target.Hitbox))
+			if (Projectile.timeLeft > 30 && CollisionHelper.CheckCircularCollision(Projectile.Center, 64, target.Hitbox))
 			{
 				Projectile.tileCollide = false;
 				Projectile.timeLeft = 30;
@@ -641,8 +648,8 @@ namespace StarlightRiver.Content.Items.Magnet
 					Dust.NewDustPerfect(Projectile.Center + new Vector2(0, 50), ModContent.DustType<Dusts.LightningBolt>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3, 6), 0, new Color(100, 200, 255), 0.8f);
 				}
 
-				Helper.PlayPitched("Magic/LightningCast", 0.5f, 0.9f, Projectile.Center);
-				Helper.PlayPitched("Magic/LightningExplode", 0.5f, 0.9f, Projectile.Center);
+				SoundHelper.PlayPitched("Magic/LightningCast", 0.5f, 0.9f, Projectile.Center);
+				SoundHelper.PlayPitched("Magic/LightningExplode", 0.5f, 0.9f, Projectile.Center);
 				if (Projectile.owner == Main.myPlayer)
 					CameraSystem.shake += 40;
 			}
@@ -667,7 +674,7 @@ namespace StarlightRiver.Content.Items.Magnet
 				for (int k = 0; k < Main.maxNPCs; k++)
 				{
 					NPC NPC = Main.npc[k];
-					if (NPC.active && NPC.CanBeChasedBy(this) && Helper.CheckCircularCollision(Projectile.Center, (int)(150 * Stacks), NPC.Hitbox))
+					if (NPC.active && NPC.CanBeChasedBy(this) && CollisionHelper.CheckCircularCollision(Projectile.Center, (int)(150 * Stacks), NPC.Hitbox))
 					{
 						int i = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<ThunderbussShot>(), Projectile.damage, 0, Projectile.owner, k, 1000000);
 						var proj = Main.projectile[i].ModProjectile as ThunderbussShot;
@@ -693,27 +700,27 @@ namespace StarlightRiver.Content.Items.Magnet
 			return false;
 		}
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
+		public override void PostDraw(Color lightColor)
 		{
-			float scale = 0;
-			float opacity = 1;
+			float glowScale = 0;
+			float glowOpacity = 1;
 
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
-			Texture2D texRing = ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/BombTell").Value;
+			Texture2D glowTex = Assets.Masks.GlowSoftAlpha.Value;
+			Texture2D glowRingTex = Assets.Masks.GlowWithRing.Value;
 
 			if (Projectile.timeLeft <= 30)
 			{
-				scale = Helper.SwoopEase(1 - Projectile.timeLeft / 30f);
-				opacity = Helper.SwoopEase(Projectile.timeLeft / 30f);
+				glowScale = Eases.SwoopEase(1 - Projectile.timeLeft / 30f);
+				glowOpacity = Eases.SwoopEase(Projectile.timeLeft / 30f);
 
-				spriteBatch.Draw(texRing, Projectile.Center - Main.screenPosition, null, new Color(160, 230, 255) * 0.8f * (Projectile.timeLeft / 30f), 0, texRing.Size() / 2, (1 - Projectile.timeLeft / 30f) * 1.4f, 0, 0);
+				Main.spriteBatch.Draw(glowRingTex, Projectile.Center - Main.screenPosition, null, new Color(160, 230, 255, 0) * 0.8f * (Projectile.timeLeft / 30f), 0, glowRingTex.Size() / 2, (1 - Projectile.timeLeft / 30f) * 1.4f, 0, 0);
 			}
 
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(160, 230, 255) * opacity, 0, tex.Size() / 2, (1.5f + scale * 3) * (Stacks / 1.5f), 0, 0);
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(200, 230, 255) * opacity, 0, tex.Size() / 2, (1f + scale * 2) * (Stacks / 1.5f), 0, 0);
+			Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, new Color(160, 230, 255, 0) * glowOpacity, 0, glowTex.Size() / 2, (1.5f + glowScale * 3) * (Stacks / 1.5f), 0, 0);
+			Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, new Color(200, 230, 255, 0) * glowOpacity, 0, glowTex.Size() / 2, (1f + glowScale * 2) * (Stacks / 1.5f), 0, 0);
 
 			if (Projectile.timeLeft > 30)
-				spriteBatch.Draw(texRing, Projectile.Center - Main.screenPosition, null, new Color(120, 200, 255) * 0.4f * opacity, 0, texRing.Size() / 2, 0.75f * Stacks, 0, 0);
+				Main.spriteBatch.Draw(glowRingTex, Projectile.Center - Main.screenPosition, null, new Color(120, 200, 255, 0) * 0.4f * glowOpacity, 0, glowRingTex.Size() / 2, 0.75f * Stacks, 0, 0);
 		}
 
 		private void ManageCaches()
@@ -735,7 +742,7 @@ namespace StarlightRiver.Content.Items.Magnet
 				float rad = 35 * (Stacks / 1.5f);
 
 				if (Projectile.timeLeft <= 30)
-					rad += Helper.SwoopEase((30 - Projectile.timeLeft) / 30f) * 80;
+					rad += Eases.SwoopEase((30 - Projectile.timeLeft) / 30f) * 80;
 
 				Vector2 baseOffset = Vector2.UnitX.RotatedBy(Main.GameUpdateCount * 0.15f + i / 10f * 5) * rad;
 				cache.Add(Projectile.Center + new Vector2(baseOffset.X, baseOffset.Y * 0.4f));
@@ -753,32 +760,38 @@ namespace StarlightRiver.Content.Items.Magnet
 
 		private void ManageTrails()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => 10 + factor * 4 + (Projectile.timeLeft <= 30 ? Helper.SwoopEase(1 - Projectile.timeLeft / 30f) * 30 : 0), factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X > 0.95f)
-					return Color.Transparent;
+				trail = new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => 10 + factor * 4 + (Projectile.timeLeft <= 30 ? Eases.SwoopEase(1 - Projectile.timeLeft / 30f) * 30 : 0), factor =>
+							{
+								if (factor.X > 0.95f)
+									return Color.Transparent;
 
-				float mul = 1;
-				if (Projectile.timeLeft < 30)
-					mul = Helper.SwoopEase(Projectile.timeLeft / 30f);
+								float mul = 1;
+								if (Projectile.timeLeft < 30)
+									mul = Eases.SwoopEase(Projectile.timeLeft / 30f);
 
-				return new Color(100, 220, 255) * factor.X * (0.5f + (float)Math.Sin(Main.GameUpdateCount * 0.15f) * 0.25f) * mul;
-			});
+								return new Color(100, 220, 255) * factor.X * (0.5f + (float)Math.Sin(Main.GameUpdateCount * 0.15f) * 0.25f) * mul;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Vector2.UnitX.RotatedBy(Main.GameUpdateCount * 0.1f + 11 / 10f * 3) * 60;
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => 10 + factor * 4 + (Projectile.timeLeft <= 30 ? Helper.SwoopEase(1 - Projectile.timeLeft / 30f) * 30 : 0), factor =>
+			if (trail2 is null || trail2.IsDisposed)
 			{
-				if (factor.X > 0.95f)
-					return Color.Transparent;
+				trail2 = new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => 10 + factor * 4 + (Projectile.timeLeft <= 30 ? Eases.SwoopEase(1 - Projectile.timeLeft / 30f) * 30 : 0), factor =>
+							{
+								if (factor.X > 0.95f)
+									return Color.Transparent;
 
-				float mul = 1;
-				if (Projectile.timeLeft < 30)
-					mul = Helper.SwoopEase(Projectile.timeLeft / 30f);
+								float mul = 1;
+								if (Projectile.timeLeft < 30)
+									mul = Eases.SwoopEase(Projectile.timeLeft / 30f);
 
-				return new Color(100, 220, 255) * factor.X * (0.5f + (float)Math.Cos(Main.GameUpdateCount * 0.15f + 3.14f) * 0.25f) * mul;
-			});
+								return new Color(100, 220, 255) * factor.X * (0.5f + (float)Math.Cos(Main.GameUpdateCount * 0.15f + 3.14f) * 0.25f) * mul;
+							});
+			}
 
 			trail2.Positions = cache2.ToArray();
 			trail2.NextPosition = Projectile.Center + Vector2.UnitY.RotatedBy(Main.GameUpdateCount * 0.1f + 11 / 10f * 3) * 60;
@@ -786,19 +799,22 @@ namespace StarlightRiver.Content.Items.Magnet
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["LightningTrail"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("LightningTrail").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
-			effect.Parameters["repeats"].SetValue(1f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/LightningTrail").Value);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
+				effect.Parameters["repeats"].SetValue(1f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.LightningTrail.Value);
 
-			trail?.Render(effect);
-			trail2?.Render(effect);
+				trail?.Render(effect);
+				trail2?.Render(effect);
+			}
 		}
 	}
 }

@@ -4,6 +4,7 @@ using StarlightRiver.Core.Systems.BarrierSystem;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using Terraria.GameContent;
+using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.UI;
@@ -16,6 +17,7 @@ namespace StarlightRiver.Content.GUI
 		private int topPos = 430;
 
 		private readonly BarrierDyeSlotElement slot = new();
+		private readonly UIImageButton visibility = new(Terraria.GameContent.TextureAssets.InventoryTickOn);
 
 		public override bool Visible => Main.playerInventory && Main.EquipPageSelected == 2;
 
@@ -29,6 +31,16 @@ namespace StarlightRiver.Content.GUI
 			slot.Left.Set(leftPos, 1);
 			slot.Top.Set(topPos, 0);
 			Append(slot);
+
+			visibility.Left.Set(leftPos + 33, 1);
+			visibility.Top.Set(topPos - 2, 0);
+			visibility.SetVisibility(0.7f, 0.7f);
+			visibility.OnLeftClick += (a, b) =>
+			{
+				BarrierPlayer mp = Main.LocalPlayer.GetModPlayer<BarrierPlayer>();
+				mp.hideBarrierEffects = !mp.hideBarrierEffects;
+			};
+			Append(visibility);
 		}
 
 		public override void Draw(SpriteBatch spriteBatch)
@@ -54,6 +66,19 @@ namespace StarlightRiver.Content.GUI
 				Recalculate();
 			}
 		}
+
+		public override void SafeUpdate(GameTime gameTime)
+		{
+			if (slot.IsMouseHovering || visibility.IsMouseHovering)
+				Main.LocalPlayer.mouseInterface = true;
+
+			BarrierPlayer mp = Main.LocalPlayer.GetModPlayer<BarrierPlayer>();
+
+			if (mp.hideBarrierEffects)
+				visibility.SetImage(TextureAssets.InventoryTickOff);
+			else
+				visibility.SetImage(TextureAssets.InventoryTickOn);
+		}
 	}
 
 	public class BarrierDyeSlotElement : SmartUIElement
@@ -65,19 +90,19 @@ namespace StarlightRiver.Content.GUI
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
-			Player Player = Main.LocalPlayer;
-			BarrierPlayer mp = Player.GetModPlayer<BarrierPlayer>();
-			Item Item = mp.barrierDyeItem;
+			Player player = Main.LocalPlayer;
+			BarrierPlayer mp = player.GetModPlayer<BarrierPlayer>();
+			Item item = mp.barrierDyeItem;
 
 			Texture2D tex = TextureAssets.InventoryBack8.Value;
-			Texture2D texSlot = ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/BarrierDyeSlot").Value;
+			Texture2D texSlot = Assets.GUI.BarrierDyeSlot.Value;
 
 			spriteBatch.Draw(tex, GetDimensions().Center(), null, Color.White * 0.8f, 0, tex.Size() / 2, 0.85f, 0, 0);
 			spriteBatch.Draw(texSlot, GetDimensions().Center(), null, Color.White * 0.4f, 0, texSlot.Size() / 2, 0.85f, 0, 0);
 
-			if (!Item.IsAir)
+			if (!item.IsAir)
 			{
-				Texture2D tex2 = ModContent.Request<Texture2D>(Item.ModItem.Texture).Value;
+				Texture2D tex2 = TextureAssets.Item[item.type].Value;
 				spriteBatch.Draw(tex2, GetDimensions().Center(), null, Color.White, 0, tex2.Size() / 2, 0.85f, 0, 0);
 			}
 
@@ -85,12 +110,12 @@ namespace StarlightRiver.Content.GUI
 			{
 				Main.LocalPlayer.mouseInterface = true;
 
-				if (Item.type != ModContent.ItemType<BaseBarrierDye>())
+				if (item.type != ModContent.ItemType<BaseBarrierDye>())
 				{
-					Main.HoverItem = Item.Clone();
-					Main.hoverItemName = Item.Name;
+					Main.HoverItem = item.Clone();
+					Main.hoverItemName = item.Name;
 
-					if (Main.keyState.PressingShift() && Helper.getFreeInventorySlot(Main.LocalPlayer) != -1)
+					if (Main.keyState.PressingShift() && InventoryHelper.getFreeInventorySlot(Main.LocalPlayer) != -1)
 						Main.cursorOverride = 7;
 				}
 				else
@@ -113,7 +138,7 @@ namespace StarlightRiver.Content.GUI
 			//shift left click means they want to quick place into inventory
 			if (PlayerInput.Triggers.Current.SmartSelect)
 			{
-				int invSlot = Helper.getFreeInventorySlot(Main.LocalPlayer);
+				int invSlot = InventoryHelper.getFreeInventorySlot(Main.LocalPlayer);
 
 				if (!Item.IsAir && invSlot != -1)
 				{

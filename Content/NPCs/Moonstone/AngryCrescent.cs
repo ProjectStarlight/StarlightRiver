@@ -251,12 +251,12 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 							pointOnChain++;
 
 						Vector2 pos = curvePositions[pointOnChain];
-						NPC.velocity = NPC.DirectionTo(pos) * (15f * EaseBuilder.EaseCircularInOut.Ease(pointOnChain / 14f));
+						NPC.velocity = NPC.DirectionTo(pos) * (15f * Eases.EaseCircularInOut(pointOnChain / 14f));
 						NPC.rotation += 0.55f;
 
 						if (pointOnChain == 7 && !playedWhoosh)
 						{
-							Helper.PlayPitched("Effects/HeavyWhoosh", 0.5f, -0.05f, NPC.Center);
+							SoundHelper.PlayPitched("Effects/HeavyWhoosh", 0.5f, -0.05f, NPC.Center);
 							playedWhoosh = true;
 						}
 
@@ -277,9 +277,9 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
-			Texture2D eyeTex = ModContent.Request<Texture2D>(Texture + "_Eyes").Value;
+			Texture2D texture = Assets.NPCs.Moonstone.AngryCrescent.Value;
+			Texture2D glowTex = Assets.NPCs.Moonstone.AngryCrescent_Glow.Value;
+			Texture2D eyeTex = Assets.NPCs.Moonstone.AngryCrescent_Eyes.Value;
 			Vector2 origin = texture.Size() / 2f;
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
@@ -288,8 +288,8 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			{
 				float progress = (float)((NPC.oldPos.Length - k) / (float)NPC.oldPos.Length);
 				Vector2 drawPos = NPC.oldPos[k] - screenPos + origin + new Vector2(0f, NPC.gfxOffY);
-				Color color = new Color(100, 60, 255) * EaseFunction.EaseQuarticOut.Ease(progress);
-				Main.EntitySpriteDraw(texture, drawPos, null, color, NPC.rotation, origin, NPC.scale * EaseFunction.EaseQuadOut.Ease(progress), SpriteEffects.None, 0);
+				Color color = new Color(100, 60, 255) * Eases.EaseQuarticOut(progress);
+				Main.EntitySpriteDraw(texture, drawPos, null, color, NPC.rotation, origin, NPC.scale * Eases.EaseQuadOut(progress), SpriteEffects.None, 0);
 			}
 
 			Main.spriteBatch.End();
@@ -297,7 +297,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 			Main.spriteBatch.Draw(texture, NPC.Center - screenPos, null, Color.White, NPC.rotation, texture.Size() / 2f, NPC.scale, SpriteEffects.None, 0f);
 
-			Color glowColor = new Color(150, 120, 255, 0) * Math.Clamp(EaseFunction.EaseQuadOut.Ease((float)Math.Sin((double)(Main.GlobalTimeWrappedHourly * 2f))), 0.25f, 1f);
+			Color glowColor = new Color(150, 120, 255, 0) * Math.Clamp(Eases.EaseQuadOut((float)Math.Sin((double)(Main.GlobalTimeWrappedHourly * 2f))), 0.25f, 1f);
 			Main.spriteBatch.Draw(glowTex, NPC.Center - screenPos, null, glowColor, NPC.rotation, glowTex.Size() / 2, NPC.scale, SpriteEffects.None, 0f);
 
 			if (flashTimer > 0)
@@ -386,7 +386,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			// Sort of sloppy making the assumption that only 1 packet is ever sent for state 1 and that its near enough to the transition
 			if (AIState == 1)
 			{
-				writer.WritePackedVector2(offset);
+				writer.WriteVector2(offset);
 				writer.Write(pointOnChain);
 				writer.Write(animating);
 				writer.Write(initializeAnimation);
@@ -405,7 +405,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			// Sort of sloppy making the assumption that only 1 packet is ever sent for state 1 and that its near enough to the transition
 			if (AIState == 1)
 			{
-				offset = reader.ReadPackedVector2();
+				offset = reader.ReadVector2();
 				pointOnChain = reader.ReadInt32();
 				animating = reader.ReadBoolean();
 				initializeAnimation = reader.ReadBoolean();
@@ -474,8 +474,8 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
+			Texture2D texture = Assets.NPCs.Moonstone.AngryCrescentDeathProjectile.Value;
+			Texture2D glowTex = Assets.NPCs.Moonstone.AngryCrescentDeathProjectile_Glow.Value;
 
 			Rectangle sourceRectangle = texture.Frame(1, Main.projFrames[Projectile.type], frameY: Projectile.frame);
 			Main.spriteBatch.Draw(texture, Projectile.Center - Main.screenPosition, sourceRectangle, Color.White, Projectile.rotation, sourceRectangle.Size() / 2f, Projectile.scale, SpriteEffects.None, 0f);

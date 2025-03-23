@@ -18,13 +18,13 @@ namespace StarlightRiver.Content.Tiles.Trophies
 
 			if (tile.TileFrameX == 2 * 18 && tile.TileFrameY == 2 * 18)
 			{
-				Texture2D headBlob = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyOver").Value;
-				Texture2D headBlobGlow = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyOverGlow").Value;
-				Texture2D headBlobSpecular = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyOverSpecular").Value;
+				Texture2D headBlob = Assets.Bosses.SquidBoss.BodyOver.Value;
+				Texture2D headBlobGlow = Assets.Bosses.SquidBoss.BodyOverGlow.Value;
+				Texture2D headBlobSpecular = Assets.Bosses.SquidBoss.BodyOverSpecular.Value;
 
 				Texture2D tex2 = Request<Texture2D>(AssetDirectory.TrophyTile + Name + "Glow2").Value;
 
-				Vector2 pos = (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 - Vector2.One * 8 - Main.screenPosition;
+				Vector2 pos = new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange - Vector2.One * 8 - Main.screenPosition;
 
 				float sin = 1 + (float)Math.Sin(Main.GameUpdateCount * 0.05f);
 				float cos = 1 + (float)Math.Cos(Main.GameUpdateCount * 0.05f);

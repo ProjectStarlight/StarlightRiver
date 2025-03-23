@@ -10,7 +10,7 @@ using Terraria.ObjectData;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
-	class HotspringFountain : DummyTile, IHintable
+	class HotspringFountain : DummyTile
 	{
 		public override int DummyType => DummySystem.DummyType<HotspringFountainDummy>();
 
@@ -40,11 +40,6 @@ namespace StarlightRiver.Content.Tiles.Underground
 					frame = 0;
 			}
 		}
-
-		public string GetHint()
-		{
-			return "The waters around this spring calm your mind, heal your body, and soothe your soul. A brief reprieve, if only for a moment.";
-		}
 	}
 
 	class HotspringFountainItem : QuickTileItem
@@ -56,7 +51,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 	class HotspringFountainDummy : Dummy
 	{
-		public static bool AnyOnscreen => DummySystem.dummies.Any(n => n.active && n is HotspringFountainDummy && Vector2.DistanceSquared(n.Center, Main.screenPosition + Helpers.Helper.ScreenSize / 2) < Math.Pow(1000, 2));
+		public static bool AnyOnscreen => DummySystem.dummies.Any(n => n.active && n is HotspringFountainDummy && Vector2.DistanceSquared(n.Center, Main.screenPosition + Main.ScreenSize.ToVector2() / 2) < Math.Pow(1000, 2));
 
 		public HotspringFountainDummy() : base(ModContent.TileType<HotspringFountain>(), 5 * 16, 5 * 16) { }
 
@@ -68,7 +63,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 				Dust.NewDustPerfect(Center + Vector2.UnitY * -20, ModContent.DustType<Dusts.Mist>(), new Vector2(0.2f, -Main.rand.NextFloat(0.7f, 1.6f)), Main.rand.Next(50, 70), Color.White, Main.rand.NextFloat(0.2f, 0.5f));
 
 			foreach (Player player in Main.player.Where(n => n.wet && Vector2.Distance(n.Center, Center) < 30 * 16))
-				player.AddBuff(ModContent.BuffType<HotspringHeal>(), 10);
+				player.AddBuff(ModContent.BuffType<HotspringHeal>(), 180);
 
 			for (int x = -30; x < 30; x += 1)
 			{
@@ -122,7 +117,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public void DrawMap(SpriteBatch spriteBatch)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
+			Texture2D tex = Assets.Masks.Glow.Value;
 			spriteBatch.Draw(tex, Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, scale: 24f, 0, 0);
 		}
 	}

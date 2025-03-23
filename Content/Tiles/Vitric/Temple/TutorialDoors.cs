@@ -64,7 +64,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 			if (progress > 0)
 			{
-				Texture2D tex = Request<Texture2D>(AssetDirectory.VitricTile + "TutorialDoor1").Value;
+				Texture2D tex = Assets.Tiles.Vitric.TutorialDoor1.Value;
 				int off = (int)(tex.Height * progress);
 				Vector2 pos = position - Main.screenPosition;
 				var source = new Rectangle(0, 0, tex.Width, off);
@@ -142,8 +142,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 			if (ShouldBeOn(Player))
 			{
-				Main.spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricTile + "TutorialDoor2").Value, position - Main.screenPosition, lightColor);
-				Main.spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricTile + "TutorialDoor2Glow").Value, position - Main.screenPosition, Helper.IndicatorColor);
+				Main.spriteBatch.Draw(Assets.Tiles.Vitric.TutorialDoor2.Value, position - Main.screenPosition, lightColor);
+				Main.spriteBatch.Draw(Assets.Tiles.Vitric.TutorialDoor2Glow.Value, position - Main.screenPosition, CommonVisualEffects.IndicatorColor);
 			}
 		}
 	}

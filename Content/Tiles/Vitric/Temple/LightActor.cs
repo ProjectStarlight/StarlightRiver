@@ -96,7 +96,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 				A = 0
 			};
 
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value;
+			Texture2D tex = Assets.GlowTrail.Value;
 
 			Vector2 pos = Center - Main.screenPosition;
 

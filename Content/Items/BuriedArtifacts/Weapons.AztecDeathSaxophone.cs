@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.Gravedigger;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -99,7 +100,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Death Saxophone"); //TODO: better name?
-			Tooltip.SetDefault("Take damage and kill foes with other weapons to charge the saxophone\nOnce charged, use it to unleash a high-damage roar of primal death"); //TODO: make this not a skippzz tooltip :)
+			Tooltip.SetDefault("Take damage and kill foes with other weapons to charge the saxophone\nOnce charged, use it to unleash a high-damage death roar"); //TODO: make this not a skippzz tooltip :)
 		}
 
 		public override void SetDefaults()
@@ -149,9 +150,9 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 
 		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D texGlow = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
-			Texture2D glowTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D tex = Assets.Items.BuriedArtifacts.AztecDeathSaxophone.Value;
+			Texture2D texGlow = Assets.Items.BuriedArtifacts.AztecDeathSaxophone_Glow.Value;
+			Texture2D glowTex = Assets.Masks.GlowAlpha.Value;
 
 			spriteBatch.Draw(tex, position, frame, drawColor, 0f, origin, scale, 0f, 0f);
 
@@ -284,9 +285,9 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 		{
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D texGlow = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
-			Texture2D glowTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D tex = Assets.Items.BuriedArtifacts.AztecDeathSaxophoneHoldout.Value;
+			Texture2D texGlow = Assets.Items.BuriedArtifacts.AztecDeathSaxophoneHoldout_Glow.Value;
+			Texture2D glowTex = Assets.Masks.GlowAlpha.Value;
 
 			SpriteEffects flip = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : 0f;
 
@@ -304,7 +305,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 	{
 		public float Radius => 50 * Projectile.scale;
 
-		public float RadiusIncrease => 0.15f + 0.35f * EaseBuilder.EaseCircularInOut.Ease(Projectile.timeLeft / 45f);
+		public float RadiusIncrease => 0.15f + 0.35f * Eases.EaseCircularInOut(Projectile.timeLeft / 45f);
 		public override string Texture => AssetDirectory.ArtifactItem + Name;
 
 		public override void SetDefaults()
@@ -330,13 +331,13 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
-			return Helper.CheckCircularCollision(Projectile.Center, (int)Radius, targetHitbox);
+			return CollisionHelper.CheckCircularCollision(Projectile.Center, (int)Radius, targetHitbox);
 		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D texBlur = ModContent.Request<Texture2D>(Texture + "_Blurred").Value;
+			Texture2D tex = Assets.Items.BuriedArtifacts.AztecDeathSaxophoneSoundwave.Value;
+			Texture2D texBlur = Assets.Items.BuriedArtifacts.AztecDeathSaxophoneSoundwave_Blurred.Value;
 
 			var color = new Color(100, 0, 0, 0);
 			if (Projectile.timeLeft < 10)
@@ -373,7 +374,8 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			dust.noLight = false;
 			dust.frame = new Rectangle(0, 0, 8, 128);
 
-			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
+			if (ShaderLoader.GetShader("GlowingDust").Value != null)
+				dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
 		}
 
 		public override bool Update(Dust dust)
@@ -383,7 +385,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 
 			dust.rotation = dust.velocity.ToRotation() + 1.57f;
 			dust.position += dust.velocity;
-			dust.shader.UseColor(dust.color);
+			dust.shader?.UseColor(dust.color);
 			dust.fadeIn++;
 
 			Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.6f);

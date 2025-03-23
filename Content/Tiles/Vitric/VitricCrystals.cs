@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				float zoom = Main.GameViewMatrix.Zoom.X;
 				Vector2 offset = new Vector2((modtile.maxWidth / 2 - 1) * 16, (modtile.maxHeight - 1) * 16 - 1) * zoom;
 
-				spriteBatch.Draw(TextureAssets.Tile[Item.createTile].Value, (Main.MouseWorld / (16 * zoom)).PointAccur() * (16 * zoom) - Main.screenPosition - offset,
+				spriteBatch.Draw(TextureAssets.Tile[Item.createTile].Value, (Main.MouseWorld / (16 * zoom)).Round() * (16 * zoom) - Main.screenPosition - offset,
 					TextureAssets.Tile[Item.createTile].Value.Frame(modtile.variantCount, 1, Main.LocalPlayer.selectedItem, 0),
 					Color.White * 0.75f, 0, default, zoom, default, default);
 			}
@@ -87,7 +87,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 		{
-			Texture2D lavaFadeTex = Request<Texture2D>(AssetDirectory.VitricTile + "VitricLavaFade").Value;
+			Texture2D lavaFadeTex = Assets.Tiles.Vitric.VitricLavaFade.Value;
 
 			if (Main.tile[i, j].TileType == Type)
 			{
@@ -99,11 +99,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 				if (sideTile.LiquidType == LiquidID.Lava)
 				{
-					spriteBatch.Draw(lavaFadeTex, (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition + new Vector2(0, (255f - sideTile.LiquidAmount) / 16f), null, col, 0, default, new Vector2(val / 255f, sideTile.LiquidAmount / 255f), SpriteEffects.None, 0);
+					spriteBatch.Draw(lavaFadeTex, new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange - Main.screenPosition + new Vector2(0, (255f - sideTile.LiquidAmount) / 16f), null, col, 0, default, new Vector2(val / 255f, sideTile.LiquidAmount / 255f), SpriteEffects.None, 0);
 				}
 				else if (sideUpTile.LiquidType == LiquidID.Lava && sideTile.TileType != Type)
 				{
-					spriteBatch.Draw(lavaFadeTex, (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, null, col, 0, default, new Vector2(val / 255f, 1), SpriteEffects.None, 0);
+					spriteBatch.Draw(lavaFadeTex, new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange - Main.screenPosition, null, col, 0, default, new Vector2(val / 255f, 1), SpriteEffects.None, 0);
 				}
 				else
 				{
@@ -111,9 +111,9 @@ namespace StarlightRiver.Content.Tiles.Vitric
 					sideUpTile = Main.tile[i + 1, j - 1];
 
 					if (sideTile.LiquidType == LiquidID.Lava)
-						spriteBatch.Draw(lavaFadeTex, (new Vector2(i - 2, j) + Helper.TileAdj) * 16 - Main.screenPosition + new Vector2(lavaFadeTex.Width, (255f - sideTile.LiquidAmount) / 16f), null, col, 0, new Vector2(lavaFadeTex.Width, 0), new Vector2(val / 255f, sideTile.LiquidAmount / 255f), SpriteEffects.FlipHorizontally, 0);
+						spriteBatch.Draw(lavaFadeTex, new Vector2(i - 2, j) * 16 + Vector2.One * Main.offScreenRange - Main.screenPosition + new Vector2(lavaFadeTex.Width, (255f - sideTile.LiquidAmount) / 16f), null, col, 0, new Vector2(lavaFadeTex.Width, 0), new Vector2(val / 255f, sideTile.LiquidAmount / 255f), SpriteEffects.FlipHorizontally, 0);
 					else if (sideUpTile.LiquidType == LiquidID.Lava && sideTile.TileType != Type)
-						spriteBatch.Draw(lavaFadeTex, (new Vector2(i - 2, j) + Helper.TileAdj) * 16 - Main.screenPosition + new Vector2(lavaFadeTex.Width, 0), null, col, 0, new Vector2(lavaFadeTex.Width, 0), new Vector2(val / 255f, 1), SpriteEffects.FlipHorizontally, 0);
+						spriteBatch.Draw(lavaFadeTex, new Vector2(i - 2, j) * 16 + Vector2.One * Main.offScreenRange - Main.screenPosition + new Vector2(lavaFadeTex.Width, 0), null, col, 0, new Vector2(lavaFadeTex.Width, 0), new Vector2(val / 255f, 1), SpriteEffects.FlipHorizontally, 0);
 				}
 			}
 		}

@@ -157,7 +157,7 @@ namespace StarlightRiver.Content.GUI
 
 					for (int k = 0; k < strings.Count(); k++)
 					{
-						string text = "~" + Helper.WrapString(strings[k], 100, FontAssets.ItemStack.Value, 0.65f);
+						string text = "~" + LocalizationHelper.WrapString(strings[k], 100, FontAssets.ItemStack.Value, 0.65f);
 						string[] substrings = text.Split('\n');
 
 						for (int n = 0; n < substrings.Length; n++)
@@ -189,7 +189,7 @@ namespace StarlightRiver.Content.GUI
 
 				if (lineCount > 5)
 				{
-					Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/GUI/Arrow").Value;
+					Texture2D tex = Assets.GUI.Arrow.Value;
 
 					spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Rectangle((int)Basepos.X + 352, (int)Basepos.Y + 60, 4, 80), new Color(20, 20, 10) * 0.5f);
 					spriteBatch.Draw(tex, Basepos + new Vector2(354, 60 + scrollStart / (float)(lineCount - 5) * 80), null, Color.White, 0, tex.Size() / 2, 1, 0, 0);
@@ -232,7 +232,7 @@ namespace StarlightRiver.Content.GUI
 				Item.position = Main.LocalPlayer.Center;
 				Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), Item);
 
-				Helper.PlayPitched("Effects/UIAlchemy", 1, 0, Main.LocalPlayer.Center);
+				SoundHelper.PlayPitched("Effects/UIAlchemy", 1, 0, Main.LocalPlayer.Center);
 			}
 		}
 
@@ -292,7 +292,7 @@ namespace StarlightRiver.Content.GUI
 					Main.HoverItem = Item.Clone();
 					Main.hoverItemName = "a"; //required but the value doesn't matter for having it show up
 
-					if (Main.keyState.PressingShift() && (ChefBagUI.visible || Helper.getFreeInventorySlot(Main.LocalPlayer) != -1))
+					if (Main.keyState.PressingShift() && (ChefBagUI.visible || InventoryHelper.getFreeInventorySlot(Main.LocalPlayer) != -1))
 						Main.cursorOverride = 7;
 				}
 				else
@@ -301,12 +301,12 @@ namespace StarlightRiver.Content.GUI
 				}
 			}
 
-			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/GUI/CookSlotY").Value;
+			Texture2D tex = Assets.GUI.CookSlotY.Value;
 			switch (Type)
 			{
-				case IngredientType.Main: tex = Request<Texture2D>("StarlightRiver/Assets/GUI/CookSlotY").Value; break;
-				case IngredientType.Side: tex = Request<Texture2D>("StarlightRiver/Assets/GUI/CookSlotG").Value; break;
-				case IngredientType.Seasoning: tex = Request<Texture2D>("StarlightRiver/Assets/GUI/CookSlotB").Value; break;
+				case IngredientType.Main: tex = Assets.GUI.CookSlotY.Value; break;
+				case IngredientType.Side: tex = Assets.GUI.CookSlotG.Value; break;
+				case IngredientType.Seasoning: tex = Assets.GUI.CookSlotB.Value; break;
 			}
 
 			spriteBatch.Draw(tex, GetDimensions().Position(), tex.Frame(), Color.White, 0, Vector2.Zero, 1, 0, 0);
@@ -432,7 +432,7 @@ namespace StarlightRiver.Content.GUI
 			}
 
 			//attempt to quick place into your inventory if no chef bag or invalid to place there
-			int invSlotCount = Helper.getFreeInventorySlot(Main.LocalPlayer);
+			int invSlotCount = InventoryHelper.getFreeInventorySlot(Main.LocalPlayer);
 
 			if (!Item.IsAir && invSlotCount != -1)
 			{

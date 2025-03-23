@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Items.Haunted
 
 		public override void SetStaticDefaults()
 		{
-			Tooltip.SetDefault("Cursed : Landing a Critical Strike will inflict {{Focused}} on a new, different enemy\n" +
+			Tooltip.SetDefault("Landing a Critical Strike will inflict {{Focused}} on a new, different enemy\n" +
 				"<right> on the Greataxe whilst it is Embedded to release it");
 		}
 
@@ -258,7 +258,7 @@ namespace StarlightRiver.Content.Items.Haunted
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D tex = Assets.Items.Haunted.TaintedGreataxeProjectile.Value;
 			SpriteEffects spriteEffects = SpriteEffects.None;
 			if (Embedding)
 				spriteEffects = Projectile.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
@@ -298,7 +298,7 @@ namespace StarlightRiver.Content.Items.Haunted
 		{
 			if (!stickyAI && target.life > 0)
 			{
-				if (Helper.IsFleshy(target))
+				if (NPCHelper.IsFleshy(target))
 				{
 					for (int i = 0; i < 55; i++)
 					{
@@ -312,7 +312,7 @@ namespace StarlightRiver.Content.Items.Haunted
 						Dust.NewDustDirect(Projectile.position, 12, 12, ModContent.DustType<Dusts.Glow>(), velocity.X, velocity.Y, 0, new Color(85, 220, 55), 0.85f);
 					}
 
-					Helper.PlayPitched("Impacts/GoreHeavy", 0.85f, Main.rand.NextFloat(-0.05f, 0.05f), Projectile.position);
+					SoundHelper.PlayPitched("Impacts/GoreHeavy", 0.85f, Main.rand.NextFloat(-0.05f, 0.05f), Projectile.position);
 				}
 				else
 				{
@@ -322,7 +322,7 @@ namespace StarlightRiver.Content.Items.Haunted
 						Dust.NewDustDirect(Projectile.position, 12, 12, ModContent.DustType<Dusts.Glow>(), velocity.X, velocity.Y, 0, new Color(85, 220, 55), 0.85f);
 					}
 
-					Helper.PlayPitched("Impacts/Clink", 0.7f, Main.rand.NextFloat(-0.05f, 0.05f), Projectile.position);
+					SoundHelper.PlayPitched("Impacts/Clink", 0.7f, Main.rand.NextFloat(-0.05f, 0.05f), Projectile.position);
 				}
 
 				for (int i = 0; i < 15; i++)
@@ -353,14 +353,14 @@ namespace StarlightRiver.Content.Items.Haunted
 		public override void SendExtraAI(BinaryWriter writer)
 		{
 			writer.Write(stickyAI);
-			writer.WritePackedVector2(offset);
+			writer.WriteVector2(offset);
 			writer.Write(enemyWhoAmI);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
 			stickyAI = reader.ReadBoolean();
-			offset = reader.ReadPackedVector2();
+			offset = reader.ReadVector2();
 			enemyWhoAmI = reader.ReadInt32();
 		}
 

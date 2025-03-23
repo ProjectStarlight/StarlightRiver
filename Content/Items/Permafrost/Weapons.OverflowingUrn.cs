@@ -1,4 +1,6 @@
-﻿using StarlightRiver.Core.Systems.CameraSystem;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -50,6 +52,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Item.noMelee = true;
 			Item.noUseGraphic = true;
 			Item.autoReuse = true;
+			Item.rare = ItemRarityID.Green;
 
 			Item.value = Item.sellPrice(gold: 2);
 		}
@@ -64,18 +67,18 @@ namespace StarlightRiver.Content.Items.Permafrost
 			if (Player.HeldItem.type == ModContent.ItemType<OverflowingUrn>())
 			{
 				var item = Player.HeldItem.ModItem as OverflowingUrn;
-				Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "UrnFreezeUnder").Value;
-				Texture2D overlayTex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "UrnFreezeUnder_Overlay").Value;
-				Texture2D icicleTex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "UrnFreezeUnder_Icicle").Value;
-				Texture2D whiteTex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "UrnFreezeUnder_White").Value;
-				Texture2D dividerTex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "UrnFreezeUnder_Divider").Value;
+				Texture2D tex = Assets.Items.Permafrost.UrnFreezeUnder.Value;
+				Texture2D overlayTex = Assets.Items.Permafrost.UrnFreezeUnder_Overlay.Value;
+				Texture2D icicleTex = Assets.Items.Permafrost.UrnFreezeUnder_Icicle.Value;
+				Texture2D whiteTex = Assets.Items.Permafrost.UrnFreezeUnder_White.Value;
+				Texture2D dividerTex = Assets.Items.Permafrost.UrnFreezeUnder_Divider.Value;
 
 				if (item.animationTimer > 0)
 				{
 					if (Player.HasBuff(ModContent.BuffType<UrnFreeze>()))
 					{
-						tex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "UrnFreezeUnder_Overload").Value;
-						overlayTex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "UrnFreezeUnder_Overlay_Overload").Value;
+						tex = Assets.Items.Permafrost.UrnFreezeUnder_Overload.Value;
+						overlayTex = Assets.Items.Permafrost.UrnFreezeUnder_Overlay_Overload.Value;
 					}
 
 					spriteBatch.Draw(tex, Player.Center + Vector2.UnitY * (48 + Player.gfxOffY) - Main.screenPosition, null, Color.White * item.animationTimer, 0, new Vector2(16, 23), item.animationTimer, 0, 0);
@@ -342,7 +345,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		{
 			float rot = (Projectile.rotation + 1.57f * 3) % 6.28f - 3.14f;
 
-			return Helper.CheckConicalCollision(Projectile.Center, 500, rot, 0.3f, targetHitbox);
+			return CollisionHelper.CheckConicalCollision(Projectile.Center, 500, rot, 0.3f, targetHitbox);
 		}
 
 		public override bool? CanHitNPC(NPC target)
@@ -352,13 +355,21 @@ namespace StarlightRiver.Content.Items.Permafrost
 			if (!windBlowing)
 				return false;
 
-			if (base.CanHitNPC(target) == true && Helper.CheckConicalCollision(Projectile.Center, 500, rot, 0.3f, target.Hitbox))
-			{
-				target.AddBuff(ModContent.BuffType<Buffs.PrismaticDrown>(), 20);
-				target.velocity += Vector2.Normalize(target.Center - Projectile.Center) * 0.4f * target.knockBackResist;
-			}
+			return null;
+		}
 
-			return base.CanHitNPC(target);
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			target.AddBuff(ModContent.BuffType<Buffs.PrismaticDrown>(), 20);
+			target.velocity += Vector2.Normalize(target.Center - Projectile.Center) * 0.4f * target.knockBackResist;
+		}
+
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+		{
+			modifiers.DisableCrit();
+			modifiers.FinalDamage *= 0;
+			modifiers.DisableKnockback();
+			modifiers.HideCombatText();
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -373,7 +384,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			float rot = 0f;
 
 			Vector2 rotationVector = (Projectile.rotation + 1.57f).ToRotationVector2();
-			Vector2 capPos = Projectile.Center - Main.screenPosition + new Vector2(0, Owner.gfxOffY) + rotationVector * -(20 * (capLeaving ? EaseFunction.EaseCubicIn.Ease(1 - capOpacity) : EaseFunction.EaseCubicOut.Ease(1 - capOpacity)));
+			Vector2 capPos = Projectile.Center - Main.screenPosition + new Vector2(0, Owner.gfxOffY) + rotationVector * -(20 * (capLeaving ? Eases.EaseCubicIn(1 - capOpacity) : Eases.EaseCubicOut(1 - capOpacity)));
 			Vector2 urnPos = Projectile.Center - Main.screenPosition + new Vector2(0, Owner.gfxOffY);
 
 			if (!capLeaving)
@@ -408,43 +419,48 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		private void ManageTrails()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 120, new NoTip(), factor => 174 * WindStrength + 0.9f * freezeTimer, factor => Lighting.GetColor(Projectile.Center.ToTileCoordinates()));
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 120, new NoTip(), factor => 174 * WindStrength + 0.9f * freezeTimer, factor => Lighting.GetColor(Projectile.Center.ToTileCoordinates()));
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center;
 		}
 
 		private void DrawWind()
 		{
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Gravedigger/GluttonyBG").Value;
-			Main.spriteBatch.End();
-			Effect effect1 = Filters.Scene["CycloneIce"].GetShader().Shader;
+			Effect effect1 = ShaderLoader.GetShader("CycloneIce").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect1 != null)
+			{
+				Texture2D tex = Assets.Items.Gravedigger.GluttonyBG.Value;
+				Main.spriteBatch.End();
 
-			effect1.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect1.Parameters["NoiseOffset"].SetValue(Vector2.One * Main.GameUpdateCount * 0.02f + Vector2.One * (0.003f * (float)Math.Pow(freezeTimer, 1.5f)));
-			effect1.Parameters["brightness"].SetValue(10);
-			effect1.Parameters["MainScale"].SetValue(1.0f);
-			effect1.Parameters["CenterPoint"].SetValue(new Vector2(0.5f, 1f));
-			effect1.Parameters["TrailDirection"].SetValue(new Vector2(0, -1));
-			effect1.Parameters["width"].SetValue(0.85f);
-			effect1.Parameters["time"].SetValue(Main.GameUpdateCount * 0.15f);
-			effect1.Parameters["distort"].SetValue(0.75f);
-			effect1.Parameters["progMult"].SetValue(3.7f);
-			effect1.Parameters["Resolution"].SetValue(tex.Size());
-			effect1.Parameters["startColor"].SetValue(Color.Cyan.ToVector3());
-			effect1.Parameters["endColor"].SetValue(Color.White.ToVector3());
-			effect1.Parameters["sampleTexture"].SetValue(tex);
-			effect1.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/LaserBallDistort").Value);
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			BlendState oldState = Main.graphics.GraphicsDevice.BlendState;
-			Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
-			trail?.Render(effect1);
-			Main.graphics.GraphicsDevice.BlendState = oldState;
+				effect1.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect1.Parameters["NoiseOffset"].SetValue(Vector2.One * Main.GameUpdateCount * 0.02f + Vector2.One * (0.003f * (float)Math.Pow(freezeTimer, 1.5f)));
+				effect1.Parameters["brightness"].SetValue(10);
+				effect1.Parameters["MainScale"].SetValue(1.0f);
+				effect1.Parameters["CenterPoint"].SetValue(new Vector2(0.5f, 1f));
+				effect1.Parameters["TrailDirection"].SetValue(new Vector2(0, -1));
+				effect1.Parameters["width"].SetValue(0.85f);
+				effect1.Parameters["time"].SetValue(Main.GameUpdateCount * 0.15f);
+				effect1.Parameters["distort"].SetValue(0.75f);
+				effect1.Parameters["progMult"].SetValue(3.7f);
+				effect1.Parameters["Resolution"].SetValue(tex.Size());
+				effect1.Parameters["startColor"].SetValue(Color.Cyan.ToVector3());
+				effect1.Parameters["endColor"].SetValue(Color.White.ToVector3());
+				effect1.Parameters["sampleTexture"].SetValue(tex);
+				effect1.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.LaserBallDistort.Value);
 
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				BlendState oldState = Main.graphics.GraphicsDevice.BlendState;
+				Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
+				trail?.Render(effect1);
+				Main.graphics.GraphicsDevice.BlendState = oldState;
+
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 		}
 	}
 
@@ -463,7 +479,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 			dust.noLight = false;
 			dust.frame = new Rectangle(0, 0, 8, 128);
 
-			dust.shader = new ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
+			if (ShaderLoader.GetShader("GlowingDust").Value != null)
+				dust.shader = new ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
 		}
 
 		public override bool Update(Dust dust)
@@ -480,7 +497,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			dust.velocity *= 0.98f;
 			dust.color *= 0.95f;
 
-			dust.shader.UseColor(dust.color * MathHelper.Min(1, dust.fadeIn / 20f));
+			dust.shader?.UseColor(dust.color * MathHelper.Min(1, dust.fadeIn / 20f));
 			dust.fadeIn += 2;
 
 			Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.6f);

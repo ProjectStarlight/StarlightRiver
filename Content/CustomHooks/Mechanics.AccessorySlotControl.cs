@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.CustomHooks
 		{
 			if (inv[slot].ModItem is CursedAccessory && context == 10)
 			{
-				Texture2D back = ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/CursedBack").Value;
+				Texture2D back = Assets.GUI.CursedBack.Value;
 				Color backcolor = (!Main.expertMode && slot == 8) ? Color.White * 0.25f : Color.White * 0.75f;
 
 				sb.Draw(back, position, null, backcolor, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);
@@ -30,13 +30,13 @@ namespace StarlightRiver.Content.CustomHooks
 		//this is vanilla code. Only reasonable alternative is likely porting all drawing to IL.
 		internal static void RedrawItem(SpriteBatch sb, Item[] inv, Vector2 position, int slot, Color color)
 		{
-			Item Item = inv[slot];
+			Item item = inv[slot];
 			Vector2 scaleVector = Vector2.One * 52 * Main.inventoryScale;
-			Texture2D PopupTexture = ModContent.Request<Texture2D>(Item.ModItem.Texture).Value;
-			Rectangle source = PopupTexture.Frame(1, 1, 0, 0);
+			Texture2D popupTex = Terraria.GameContent.TextureAssets.Item[item.type].Value;
+			Rectangle source = popupTex.Frame(1, 1, 0, 0);
 			Color currentColor = color;
 			float scaleFactor2 = 1f;
-			ItemSlot.GetItemLight(ref currentColor, ref scaleFactor2, Item, false);
+			ItemSlot.GetItemLight(ref currentColor, ref scaleFactor2, item, false);
 			float scaleFactor = 1f;
 
 			if (source.Width > 32 || source.Height > 32)
@@ -46,10 +46,10 @@ namespace StarlightRiver.Content.CustomHooks
 			Vector2 drawPos = position + scaleVector / 2f - source.Size() * scaleFactor / 2f;
 			Vector2 origin = source.Size() * (scaleFactor2 / 2f - 0.5f);
 
-			if (ItemLoader.PreDrawInInventory(Item, sb, drawPos, source, Item.GetAlpha(currentColor), Item.GetColor(color), origin, scaleFactor * scaleFactor2))
-				sb.Draw(PopupTexture, drawPos, source, Color.White, 0f, origin, scaleFactor * scaleFactor2, SpriteEffects.None, 0f);
+			if (ItemLoader.PreDrawInInventory(item, sb, drawPos, source, item.GetAlpha(currentColor), item.GetColor(color), origin, scaleFactor * scaleFactor2))
+				sb.Draw(popupTex, drawPos, source, Color.White, 0f, origin, scaleFactor * scaleFactor2, SpriteEffects.None, 0f);
 
-			ItemLoader.PostDrawInInventory(Item, sb, drawPos, source, Item.GetAlpha(currentColor), Item.GetColor(color), origin, scaleFactor * scaleFactor2);
+			ItemLoader.PostDrawInInventory(item, sb, drawPos, source, item.GetAlpha(currentColor), item.GetColor(color), origin, scaleFactor * scaleFactor2);
 		}
 	}
 }

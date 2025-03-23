@@ -1,4 +1,5 @@
 using StarlightRiver.Content.Buffs;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -19,14 +20,14 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Phoenix Storm");
-			Tooltip.SetDefault("Summons a storm of phoenixes that periodically swoop in on enemies");
+			Tooltip.SetDefault("Summons a storm of phoenixes that periodically swoop in on enemies\nInflicts {{BUFF:OnFire}}");
 			ItemID.Sets.GamepadWholeScreenUseRange[Item.type] = true;
 			ItemID.Sets.LockOnIgnoresCollision[Item.type] = true;
 		}
 
 		public override void SetDefaults()
 		{
-			Item.damage = 40;
+			Item.damage = 60;
 			Item.knockBack = 3f;
 			Item.mana = 10;
 			Item.width = 32;
@@ -327,7 +328,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => 13 * factor, factor => Color.OrangeRed);
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => 13 * factor, factor => Color.OrangeRed);
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
@@ -351,18 +353,21 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		private void DrawTrail()
 		{
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount);
-			effect.Parameters["repeats"].SetValue(2f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount);
+				effect.Parameters["repeats"].SetValue(2f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
 
-			trail?.Render(effect);
+				trail?.Render(effect);
+			}
 		}
 	}
 

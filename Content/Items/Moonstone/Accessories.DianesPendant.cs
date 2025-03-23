@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.Dungeon;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.BarrierSystem;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
@@ -20,7 +21,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Diane's Pendant");
-			Tooltip.SetDefault("Consuming mana charges a Crescent Guardian, blitzing nearby enemies when fully charged\n+20 {{barrier}}");
+			Tooltip.SetDefault("Consuming mana charges a Crescent Guardian, blitzing nearby enemies when fully charged\n+20 maximum {{barrier}}");
 		}
 
 		public override void SetDefaults()
@@ -203,20 +204,19 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			//DrawTrail(Main.spriteBatch);
-
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "Glow").Value;
+
+			Texture2D tex = Assets.Items.Moonstone.DianeCrescant.Value;
+			Texture2D glowTex = Assets.Items.Moonstone.DianeCrescantGlow.Value;
 
 			for (int k = AfterimageLength; k > 0; k--)
 			{
 				float progress = 1 - (float)((AfterimageLength - k) / (float)AfterimageLength);
-				Color color = new Color(100, 60, 255) * EaseFunction.EaseQuarticOut.Ease(progress) * MathHelper.Lerp(0.45f, 0.75f, ChargeRatio);
+				Color color = new Color(100, 60, 255) * Eases.EaseQuarticOut(progress) * MathHelper.Lerp(0.45f, 0.75f, ChargeRatio);
 
 				if (k > 0 && k < oldRotation.Count)
-					Main.spriteBatch.Draw(tex, oldPosition[k] - Main.screenPosition, null, color, oldRotation[k], tex.Size() / 2, Projectile.scale * EaseFunction.EaseQuadOut.Ease(progress), SpriteEffects.None, 0f);
+					Main.spriteBatch.Draw(tex, oldPosition[k] - Main.screenPosition, null, color, oldRotation[k], tex.Size() / 2, Projectile.scale * Eases.EaseQuadOut(progress), SpriteEffects.None, 0f);
 			}
 
 			Main.spriteBatch.End();
@@ -311,24 +311,30 @@ namespace StarlightRiver.Content.Items.Moonstone
 		private void ManageTrail()
 		{
 
-			trail ??= new Trail(Main.instance.GraphicsDevice, 15, new NoTip(), factor => (10 + factor * 25) * MathHelper.Lerp(0.4f, 1f, ChargeRatio), factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X == 1)
-					return Color.Transparent;
+				trail = new Trail(Main.instance.GraphicsDevice, 15, new NoTip(), factor => (10 + factor * 25) * MathHelper.Lerp(0.4f, 1f, ChargeRatio), factor =>
+							{
+								if (factor.X == 1)
+									return Color.Transparent;
 
-				return new Color(120, 20 + (int)(100 * factor.X), 255) * (float)Math.Sin(factor.X * 3.14f);
-			});
+								return new Color(120, 20 + (int)(100 * factor.X), 255) * (float)Math.Sin(factor.X * 3.14f);
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 15, new NoTip(), factor => (80 + 0 + factor * 0) * MathHelper.Lerp(0.4f, 1f, ChargeRatio), factor =>
+			if (trail2 is null || trail2.IsDisposed)
 			{
-				if (factor.X == 1)
-					return Color.Transparent;
+				trail2 = new Trail(Main.instance.GraphicsDevice, 15, new NoTip(), factor => (80 + 0 + factor * 0) * MathHelper.Lerp(0.4f, 1f, ChargeRatio), factor =>
+							{
+								if (factor.X == 1)
+									return Color.Transparent;
 
-				return new Color(100, 20 + (int)(60 * factor.X), 255) * 0.15f * (float)Math.Sin(factor.X * 3.14f);
-			});
+								return new Color(100, 20 + (int)(60 * factor.X), 255) * 0.15f * (float)Math.Sin(factor.X * 3.14f);
+							});
+			}
 
 			trail2.Positions = cache.ToArray();
 			trail2.NextPosition = Projectile.Center + Projectile.velocity;
@@ -428,26 +434,30 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private void DrawTrail(SpriteBatch spriteBatch)
 		{
-			spriteBatch.End();
-			Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("DatsuzeiTrail").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				spriteBatch.End();
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
-			effect.Parameters["repeats"].SetValue(8f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
-			effect.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Moonstone/DatsuzeiFlameMap2").Value);
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			trail?.Render(effect);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
+				effect.Parameters["repeats"].SetValue(8f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+				effect.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
 
-			effect.Parameters["sampleTexture2"].SetValue(TextureAssets.MagicPixel.Value);
+				trail?.Render(effect);
 
-			trail2?.Render(effect);
+				effect.Parameters["sampleTexture2"].SetValue(TextureAssets.MagicPixel.Value);
 
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				trail2?.Render(effect);
+
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 		}
 	}
 
@@ -463,7 +473,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			dust.fadeIn++;
 			dust.scale *= 1.02f;
 			base.Update(dust);
-			dust.shader.UseColor(dust.color * Math.Min(dust.fadeIn / 20f, 1));
+			dust.shader?.UseColor(dust.color * Math.Min(dust.fadeIn / 20f, 1));
 			return false;
 		}
 	}

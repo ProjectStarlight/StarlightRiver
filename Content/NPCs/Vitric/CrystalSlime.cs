@@ -129,7 +129,13 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			{
 				modifiers.FinalDamage -= int.MaxValue;
 				modifiers.HideCombatText();
+			}
+		}
 
+		public override void HitEffect(NPC.HitInfo hit)
+		{
+			if (Shield == 1)
+			{
 				badHits++;
 				CombatText.NewText(NPC.Hitbox, new Color(200, 255, 255), badHits > 20 ? "Dash into me first!" : "Blocked!");
 			}
@@ -156,9 +162,9 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		{
 			if (Shield == 1)
 			{
-				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/NPCs/Vitric/Crystal").Value;
-				Texture2D texGlow = Request<Texture2D>("StarlightRiver/Assets/NPCs/Vitric/CrystalGlow").Value;
-				Color color = Helper.IndicatorColor;
+				Texture2D tex = Assets.NPCs.Vitric.Crystal.Value;
+				Texture2D texGlow = Assets.NPCs.Vitric.CrystalGlow.Value;
+				Color color = CommonVisualEffects.IndicatorColor;
 
 				spriteBatch.Draw(tex, NPC.Center - screenPos, null, drawColor, NPC.rotation, tex.Size() / 2f, NPC.scale, 0, 0);
 				spriteBatch.Draw(texGlow, NPC.Center - screenPos, null, color, NPC.rotation, texGlow.Size() / 2f, NPC.scale, 0, 0);

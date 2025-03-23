@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Tiles.Crafting
 
 		public override void SetStaticDefaults()
 		{
-			this.QuickSetFurniture(6, 4, DustID.t_LivingWood, SoundID.Dig, true, new Color(151, 107, 75), false, false, "Cooking Station", new AnchorData(AnchorType.SolidTile, 6, 0));
+			this.QuickSetFurniture(5, 4, DustID.t_LivingWood, SoundID.Dig, true, new Color(151, 107, 75), false, false, "Cooking Station", new AnchorData(AnchorType.SolidTile, 5, 0));
 			Main.tileLighted[Type] = true;
 		}
 

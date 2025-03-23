@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Helpers;
+﻿using StarlightRiver.Core.Loaders;
+using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -19,12 +20,12 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 		public override void MinionAI(Projectile minion, ManabondProjectile mp)
 		{
-			if (mp.timer % 50 == 0 && mp.mana >= 8 && mp.target != null)
+			if (mp.timer % 40 == 0 && mp.mana >= 8 && mp.target != null)
 			{
 				mp.mana -= 8;
 
 				if (Main.myPlayer == minion.owner)
-					Projectile.NewProjectile(minion.GetSource_FromThis(), minion.Center, minion.Center.DirectionTo(mp.target.Center) * 6, ModContent.ProjectileType<AquaticBolt>(), 24, 1f, minion.owner);
+					Projectile.NewProjectile(minion.GetSource_FromThis(), minion.Center, minion.Center.DirectionTo(mp.target.Center) * 6, ModContent.ProjectileType<AquaticBolt>(), 26, 1f, minion.owner);
 			}
 		}
 
@@ -38,7 +39,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 		}
 	}
 
-	internal class AquaticBolt : ModProjectile, IDrawAdditive, IDrawPrimitive
+	internal class AquaticBolt : ModProjectile, IDrawPrimitive
 	{
 		private List<Vector2> cache;
 		private Trail trail;
@@ -63,6 +64,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 			Projectile.timeLeft = 600;
 			Projectile.penetrate = 4;
 			Projectile.hostile = false;
+			Projectile.usesLocalNPCImmunity = true;
 		}
 
 		public override void AI()
@@ -118,13 +120,13 @@ namespace StarlightRiver.Content.Items.Manabonds
 			return false;
 		}
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
+		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Dusts/Aurora").Value;
-			Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
-			spriteBatch.Draw(tex2, Projectile.Center - Main.screenPosition, null, new Color(40, 90, 255), 0, tex2.Size() / 2, 0.6f, 0, 0);
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(60, 95, 255), Main.GameUpdateCount * 0.15f, tex.Size() / 2, 0.4f, 0, 0);
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(90, 145, 255), Main.GameUpdateCount * -0.25f, tex.Size() / 2, 0.3f, 0, 0);
+			Texture2D tex = Assets.Masks.StarBlurryAlpha.Value;
+			Texture2D tex2 = Assets.Masks.GlowSoftAlpha.Value;
+			Main.spriteBatch.Draw(tex2, Projectile.Center - Main.screenPosition, null, new Color(40, 90, 255, 0), 0, tex2.Size() / 2, 0.6f, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(60, 95, 255, 0), Main.GameUpdateCount * 0.15f, tex.Size() / 2, 0.4f, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(90, 145, 255, 0), Main.GameUpdateCount * -0.25f, tex.Size() / 2, 0.3f, 0, 0);
 		}
 
 		private void ManageCaches()
@@ -149,18 +151,21 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 8, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				float alpha = 1;
+				trail = new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 8, factor =>
+							{
+								float alpha = 1;
 
-				if (factor.X == 1)
-					return Color.Transparent;
+								if (factor.X == 1)
+									return Color.Transparent;
 
-				if (Projectile.timeLeft < 15)
-					alpha *= Projectile.timeLeft / 15f;
+								if (Projectile.timeLeft < 15)
+									alpha *= Projectile.timeLeft / 15f;
 
-				return new Color(40, 40 + (int)(factor.X * 50), 255) * factor.X * alpha;
-			});
+								return new Color(40, 40 + (int)(factor.X * 50), 255) * factor.X * alpha;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
@@ -168,18 +173,21 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
-			effect.Parameters["repeats"].SetValue(2f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
+				effect.Parameters["repeats"].SetValue(2f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/ShadowTrail").Value);
-			trail?.Render(effect);
+				effect.Parameters["sampleTexture"].SetValue(Assets.ShadowTrail.Value);
+				trail?.Render(effect);
+			}
 		}
 	}
 }

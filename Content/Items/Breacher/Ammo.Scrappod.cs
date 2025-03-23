@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Scrap Pod");
-			Tooltip.SetDefault("Shatters into scrapnel after reaching the mouse cursor");
+			Tooltip.SetDefault("Shatters into scrapnel after reaching your cursor");
 		}
 
 		public override void SetDefaults()
@@ -95,7 +95,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			distanceToExplode -= Projectile.velocity.Length();
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int i = 0; i < 5; i++)
 			{
@@ -110,7 +110,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			SpriteEffects spriteEffects = Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-			Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D texture = Assets.Items.Breacher.ScrappodProjectile.Value;
 
 			int frameHeight = texture.Height / Main.projFrames[Projectile.type];
 			int startY = frameHeight * Projectile.frame;
@@ -149,7 +149,7 @@ namespace StarlightRiver.Content.Items.Breacher
 				}
 			}
 			//maybe better sound here
-			Helper.PlayPitched("Guns/Scrapshot", 0.2f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
+			SoundHelper.PlayPitched("Guns/Scrapshot", 0.2f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
 			Projectile.Kill();
 		}
 	}
@@ -190,7 +190,7 @@ namespace StarlightRiver.Content.Items.Breacher
 				Projectile.velocity.Y = 16f;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int i = 0; i < 4; i++)
 			{

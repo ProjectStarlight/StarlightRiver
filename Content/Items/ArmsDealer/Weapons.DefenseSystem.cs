@@ -23,9 +23,9 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 
 		public string dealerName = "Arms Dealer";
 
-		public static string PistolTex => "Terraria/" + Terraria.GameContent.TextureAssets.Item?[ItemID.FlintlockPistol]?.Name ?? "PlaceholderForServer";
-		public static string ShotgunTex => "Terraria/" + Terraria.GameContent.TextureAssets.Item?[ItemID.Boomstick]?.Name ?? "PlaceholderForServer";
-		public static string MinigunTex => "Terraria/" + Terraria.GameContent.TextureAssets.Item?[ItemID.Minishark]?.Name ?? "PlaceholderForServer";
+		public static Asset<Texture2D> PistolTex => Terraria.GameContent.TextureAssets.Item?[ItemID.FlintlockPistol] ?? Assets.Invisible;
+		public static Asset<Texture2D> ShotgunTex => Terraria.GameContent.TextureAssets.Item?[ItemID.Boomstick] ?? Assets.Invisible;
+		public static Asset<Texture2D> MinigunTex => Terraria.GameContent.TextureAssets.Item?[ItemID.Minishark] ?? Assets.Invisible;
 
 		public override string Texture => AssetDirectory.ArmsDealerItem + Name;
 
@@ -165,7 +165,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 				_ => 0
 			};
 
-			held.radialRotation += Helpers.Helper.RotationDifference(rotTarget, held.radialRotation) * 0.1f;
+			held.radialRotation += Helpers.GeometryHelper.RotationDifference(rotTarget, held.radialRotation) * 0.1f;
 			held.radialRotation %= 6.28f;
 
 			// Draw all 3 guns
@@ -176,9 +176,9 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 
 				Texture2D tex = k switch
 				{
-					0 => ModContent.Request<Texture2D>(PistolTex).Value,
-					1 => ModContent.Request<Texture2D>(ShotgunTex).Value,
-					2 => ModContent.Request<Texture2D>(MinigunTex).Value,
+					0 => PistolTex.Value,
+					1 => ShotgunTex.Value,
+					2 => MinigunTex.Value,
 					_ => null
 				};
 
@@ -222,9 +222,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 
 		// Used for the visuals of the gun
 		public float gunRotation;
-		public string gunTexPath;
-
-		public Texture2D GunTex => ModContent.Request<Texture2D>(gunTexPath).Value;
+		public Asset<Texture2D> gunTex;
 
 		public Player Owner => Main.player[Projectile.owner];
 
@@ -233,11 +231,11 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 
 		public override string Texture => AssetDirectory.Invisible;
 
-		public DefenseSystemTurret(int delay, int range, string gunTexPath)
+		public DefenseSystemTurret(int delay, int range, Asset<Texture2D> gunTex)
 		{
 			this.delay = delay;
 			this.range = range;
-			this.gunTexPath = gunTexPath;
+			this.gunTex = gunTex;
 		}
 
 		public override void SetStaticDefaults()
@@ -315,7 +313,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 					Dust.NewDustPerfect(Projectile.Center + Vector2.UnitY * 24, ModContent.DustType<Dusts.BuzzSpark>(), Main.rand.NextVector2Circular(3, 3), 0, Color.Yellow);
 				}
 
-				Helpers.Helper.PlayPitched("Impacts/StabTiny", 0.5f, 0, Projectile.Center);
+				Helpers.SoundHelper.PlayPitched("Impacts/StabTiny", 0.5f, 0, Projectile.Center);
 
 				Placed = 1;
 			}
@@ -336,7 +334,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 
 				// Rotate the gun to aim it
 				float targetAngle = (target.Center - (Projectile.Center + Vector2.UnitY * -10)).ToRotation();
-				gunRotation += Helpers.Helper.CompareAngle(targetAngle, gunRotation) * 0.075f;
+				gunRotation += Helpers.GeometryHelper.CompareAngle(targetAngle, gunRotation) * 0.075f;
 
 				// If the delay time has passed, fire a shot and reset
 				if (Timer >= delay)
@@ -349,7 +347,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D baseTex = ModContent.Request<Texture2D>(AssetDirectory.ArmsDealerItem + "DefenseSystemStand").Value;
+			Texture2D baseTex = Assets.Items.ArmsDealer.DefenseSystemStand.Value;
 
 			SpriteEffects effects = SpriteEffects.None;
 
@@ -359,7 +357,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 			var source = new Rectangle(0, (int)(Timer / 4 % 2) * 38, 32, 32);
 
 			Main.spriteBatch.Draw(baseTex, Projectile.Center - Main.screenPosition, source, lightColor, 0, Vector2.One * 16, 1, 0, 0);
-			Main.spriteBatch.Draw(GunTex, Projectile.Center - Main.screenPosition + Vector2.UnitY * -10, null, lightColor, gunRotation, GunTex.Size() / 2f, 1, effects, 0);
+			Main.spriteBatch.Draw(gunTex.Value, Projectile.Center - Main.screenPosition + Vector2.UnitY * -10, null, lightColor, gunRotation, gunTex.Size() / 2f, 1, effects, 0);
 
 			return false;
 		}

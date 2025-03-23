@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core.Systems.InoculationSystem;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Misc
@@ -10,7 +11,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Lost Collar");
-			Tooltip.SetDefault("+40% {{Inoculation}}\nDebuffs you inflict are inflicted on yourself\n+5% movement and attack speed per debuff affecting you\nCursed : Lose all debuff immunities");
+			Tooltip.SetDefault("+40% {{Inoculation}}\nDebuffs you inflict are inflicted on yourself\n+5% movement and attack speed per debuff affecting you\nLose all debuff immunities");
 		}
 
 		public override void SafeSetDefaults()
@@ -60,7 +61,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SafeUpdateEquip(Player Player)
 		{
-			Player.GetModPlayer<DoTResistancePlayer>().DoTResist += 0.4f;
+			Player.GetModPlayer<InoculationPlayer>().DoTResist += 0.4f;
 
 			for (int k = 0; k < Player.buffImmune.Length; k++)
 			{

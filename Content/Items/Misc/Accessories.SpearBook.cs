@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -20,10 +21,10 @@ namespace StarlightRiver.Content.Items.Misc
 		public int comboState;
 		public static Dictionary<int, bool> spearList;
 
-		public static MethodInfo? AI019SpearsOld_Info;
-		public static Action<Projectile>? AI019SpearsOld;
-		public static MethodInfo? AI019Spears_Info;
-		public static Action<Projectile>? AI019Spears;
+		public static MethodInfo AI019SpearsOld_Info;
+		public static Action<Projectile> AI019SpearsOld;
+		public static MethodInfo AI019Spears_Info;
+		public static Action<Projectile> AI019Spears;
 
 		public SpearBook() : base("Snake Technique", "Teaches you the Art of the Spear, granting all normal spear weapons a new combo attack\nThe last strike in the combo deals increased damage and knockback\n<right> to deter enemies with a flurry of stabs") { }
 
@@ -63,6 +64,12 @@ namespace StarlightRiver.Content.Items.Misc
 		public void PostLoadUnload()
 		{
 			spearList.Clear();
+		}
+
+		public override void SetStaticDefaults()
+		{
+			base.SetStaticDefaults();
+			ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<AxeBook>();
 		}
 
 		public override void SafeSetDefaults()
@@ -153,7 +160,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public Texture2D texture;
 		public Color trailColor;
 
-		public Projectile? original; // Flurry duplicates do not run original AI
+		public Projectile original; // Flurry duplicates do not run original AI
 		private int originalAITimer = 0;
 
 		private float holdout = 0.8f;
@@ -298,7 +305,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			Helper.PlayPitched(Helpers.Helper.IsFleshy(target) ? "Impacts/StabFleshy" : "Impacts/Clink", 1, Main.rand.NextFloat(), Owner.Center);
+			SoundHelper.PlayPitched(Helpers.NPCHelper.IsFleshy(target) ? "Impacts/StabFleshy" : "Impacts/Clink", 1, Main.rand.NextFloat(), Owner.Center);
 
 			// cooldown for screenshake to avoid spazzing out
 			// flurry duplicates also do not have screenshake for the same reason
@@ -357,11 +364,15 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (CurrentAttack == AttackType.Slash)
 			{
-				Effect effect = Filters.Scene["SpearDepth"].GetShader().Shader;
-				effect.Parameters["rotation"].SetValue(progressAngle);
-				effect.Parameters["xRotation"].SetValue(xRotation);
-				effect.Parameters["holdout"].SetValue(holdout);
-				effect.CurrentTechnique.Passes[0].Apply();
+				Effect effect = ShaderLoader.GetShader("SpearDepth").Value;
+
+				if (effect != null)
+				{
+					effect.Parameters["rotation"].SetValue(progressAngle);
+					effect.Parameters["xRotation"].SetValue(xRotation);
+					effect.Parameters["holdout"].SetValue(holdout);
+					effect.CurrentTechnique.Passes[0].Apply();
+				}
 			}
 
 			Main.spriteBatch.Draw(texture, Projectile.Center - Main.screenPosition, default, lightColor * Projectile.Opacity, Projectile.rotation + rotationOffset + slashRotationOffset, origin, Projectile.scale, effects, 0);
@@ -429,7 +440,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.spriteDirection = Owner.direction;
 
 			if (Timer == 0)
-				Helper.PlayPitched("Effects/HeavyWhooshShort", 0.8f, 0.8f, Projectile.Center);
+				SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 0.8f, 0.8f, Projectile.Center);
 
 			if (progress > 1)
 				Projectile.Kill();
@@ -450,7 +461,7 @@ namespace StarlightRiver.Content.Items.Misc
 				motion = Motion.None;
 
 			if (Timer == 0)
-				Helper.PlayPitched("Effects/HeavyWhooshShort", 0.5f, 1.2f, Projectile.Center);
+				SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 0.5f, 1.2f, Projectile.Center);
 
 			if (progress > 1)
 				Projectile.Kill();
@@ -489,11 +500,11 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 
 			if (Timer == 0)
-				Helper.PlayPitched("Effects/HeavyWhooshShort", 0.7f, 1.2f, Projectile.Center);
+				SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 0.7f, 1.2f, Projectile.Center);
 
 			if (progress == 0.5f)
 			{
-				Helper.PlayPitched("Effects/HeavyWhooshShort", 0.7f, 1.1f, Projectile.Center);
+				SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 0.7f, 1.1f, Projectile.Center);
 				Projectile.ResetLocalNPCHitImmunity();
 			}
 
@@ -515,7 +526,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.spriteDirection = Owner.direction;
 
 			if (Timer == 0)
-				Helper.PlayPitched("Effects/HeavyWhooshShort", 0.8f, 0.7f, Projectile.Center);
+				SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 0.8f, 0.7f, Projectile.Center);
 
 			if (progress > 1)
 				Projectile.Kill();
@@ -523,13 +534,13 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ChargedStab()
 		{
-			var StabEase = new EaseBuilder();
-			StabEase.AddPoint(new Vector2(0, 0.6f), EaseFunction.EaseQuinticOut);
-			StabEase.AddPoint(new Vector2(60, 0.3f), EaseFunction.EaseQuinticOut);
-			StabEase.AddPoint(new Vector2(65, 0.3f), EaseFunction.EaseQuinticOut);
-			StabEase.AddPoint(new Vector2(95, 0.9f), EaseFunction.EaseQuinticOut);
-			StabEase.AddPoint(new Vector2(125, 0.9f), EaseFunction.EaseQuinticOut);
-			StabEase.AddPoint(new Vector2(145, 0.5f), EaseFunction.EaseQuinticOut);
+			var StabEase = new ModularEaseFunction();
+			StabEase.AddPoint(new Vector2(0, 0.6f), Eases.EaseQuinticOut);
+			StabEase.AddPoint(new Vector2(60, 0.3f), Eases.EaseQuinticOut);
+			StabEase.AddPoint(new Vector2(65, 0.3f), Eases.EaseQuinticOut);
+			StabEase.AddPoint(new Vector2(95, 0.9f), Eases.EaseQuinticOut);
+			StabEase.AddPoint(new Vector2(125, 0.9f), Eases.EaseQuinticOut);
+			StabEase.AddPoint(new Vector2(145, 0.5f), Eases.EaseQuinticOut);
 
 			Projectile.rotation = TargetAngle;
 			holdout = StabEase.Ease(Timer);
@@ -546,7 +557,7 @@ namespace StarlightRiver.Content.Items.Misc
 				Projectile.Opacity = MathHelper.SmoothStep(1, 0, (Timer - 125) / 20);
 
 			if (Timer == 65)
-				Helper.PlayPitched("Effects/HeavyWhooshShort", 1, 0.5f, Projectile.Center);
+				SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 1, 0.5f, Projectile.Center);
 
 			if (Timer == 85)
 				CameraSystem.shake += 2;
@@ -643,13 +654,16 @@ namespace StarlightRiver.Content.Items.Misc
 			// first trail
 			if (motion == Motion.Swing || motion == Motion.Slash)
 			{
-				trail ??= new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new NoTip(), factor => (float)Math.Min(factor, progress) * length * 0.75f, factor =>
+				if (trail is null || trail.IsDisposed)
 				{
-					if (factor.X == 1)
-						return Color.Transparent;
+					trail = new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new NoTip(), factor => (float)Math.Min(factor, progress) * length * 0.75f, factor =>
+									{
+										if (factor.X == 1)
+											return Color.Transparent;
 
-					return trailColor * (float)Math.Min(factor.X, progress) * 0.5f * (float)Math.Sin(progress * 3.14f) * 2;
-				});
+										return trailColor * (float)Math.Min(factor.X, progress) * 0.5f * (float)Math.Sin(progress * 3.14f) * 2;
+									});
+				}
 
 				var realCache = new Vector2[TRAILLENGTH];
 
@@ -665,23 +679,29 @@ namespace StarlightRiver.Content.Items.Misc
 				// repeat for second trail (only when it is needed for second slash or stab)
 				if (motion == Motion.Stab)
 				{
-					trail2 ??= new Trail(Main.instance.GraphicsDevice, TRAIL2LENGTH, new NoTip(), factor => (1f - (float)Math.Pow(2 * factor - 1, 2)) * length * 0.5f, factor =>
+					if (trail2 is null || trail2.IsDisposed)
 					{
-						if (factor.X == 1)
-							return Color.Transparent;
+						trail2 = new Trail(Main.instance.GraphicsDevice, TRAIL2LENGTH, new NoTip(), factor => (1f - (float)Math.Pow(2 * factor - 1, 2)) * length * 0.5f, factor =>
+											{
+												if (factor.X == 1)
+													return Color.Transparent;
 
-						return trailColor * (float)Math.Min(factor.X, progress) * 0.5f * (float)Math.Sin(progress * 3.14f) * 4;
-					});
+												return trailColor * (float)Math.Min(factor.X, progress) * 0.5f * (float)Math.Sin(progress * 3.14f) * 4;
+											});
+					}
 				}
 				else
 				{
-					trail2 ??= new Trail(Main.instance.GraphicsDevice, TRAIL2LENGTH, new NoTip(), factor => (float)Math.Min(factor, progress) * length * 0.75f, factor =>
+					if (trail2 is null || trail2.IsDisposed)
 					{
-						if (factor.X == 1)
-							return Color.Transparent;
+						trail2 = new Trail(Main.instance.GraphicsDevice, TRAIL2LENGTH, new NoTip(), factor => (float)Math.Min(factor, progress) * length * 0.75f, factor =>
+											{
+												if (factor.X == 1)
+													return Color.Transparent;
 
-						return trailColor * (float)Math.Min(factor.X, progress) * 1.5f * (float)Math.Sin(progress * 3.14f);
-					});
+												return trailColor * (float)Math.Min(factor.X, progress) * 1.5f * (float)Math.Sin(progress * 3.14f);
+											});
+					}
 				}
 
 				var realCache2 = new Vector2[TRAIL2LENGTH];
@@ -697,24 +717,27 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("DatsuzeiTrail").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
-
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
-			effect.Parameters["repeats"].SetValue(8f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
-			effect.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Moonstone/DatsuzeiFlameMap2").Value);
-
-			if (motion != Motion.Stab)
-				trail?.Render(effect);
-
-			if (motion == Motion.Slash2 || motion == Motion.Stab)
+			if (effect != null)
 			{
-				trail2?.Render(effect);
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
+				effect.Parameters["repeats"].SetValue(8f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+				effect.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
+
+				if (motion != Motion.Stab)
+					trail?.Render(effect);
+
+				if (motion == Motion.Slash2 || motion == Motion.Stab)
+				{
+					trail2?.Render(effect);
+				}
 			}
 		}
 

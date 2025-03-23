@@ -1,4 +1,5 @@
 ﻿using ReLogic.Content;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -160,80 +161,83 @@ namespace StarlightRiver.Content.Items.Haunted
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			float fadeOut = 1f;
 			if (DeathTimer > 0)
 				fadeOut = DeathTimer / 30f;
 
-			Effect effect = Filters.Scene["DistortSprite"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("DistortSprite").Value;
 
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
-
-			effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.005f);
-			effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.005f);
-			effect.Parameters["screenPos"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / new Vector2(Main.screenWidth, Main.screenHeight));
-
-			effect.Parameters["offset"].SetValue(new Vector2(0.001f));
-			effect.Parameters["repeats"].SetValue(2);
-			effect.Parameters["uImage1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/SwirlyNoiseLooping").Value);
-			effect.Parameters["uImage2"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/PerlinNoise").Value);
-			effect.Parameters["noiseImage1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/PerlinNoise").Value);
-
-			Color color = new Color(150, 255, 25, 0) * 0.5f * fadeOut;
-			effect.Parameters["uColor"].SetValue(color.ToVector4());
-
-			effect.CurrentTechnique.Passes[0].Apply();
-
-			Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.White, 0f, bloomTex.Size() / 2f, 0.65f, 0f, 0f);
-			Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.White, 0f, bloomTex.Size() / 2f, 0.45f, 0f, 0f);
-
-			color = new Color(200, 255, 200, 0) * 0.5f * fadeOut;
-			effect.Parameters["uColor"].SetValue(color.ToVector4());
-
-			effect.CurrentTechnique.Passes[0].Apply();
-
-			Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.White, 0f, bloomTex.Size() / 2f, 0.25f, 0f, 0f);
-
-			Vector2 pos = Owner.GetBackHandPosition(Player.CompositeArmStretchAmount.Full, handRotation) - Main.screenPosition;
-
-			color = new Color(150, 255, 25, 0) * 0.5f * fadeOut;
-			effect.Parameters["uColor"].SetValue(color.ToVector4());
-
-			effect.CurrentTechnique.Passes[0].Apply();
-
-			Main.spriteBatch.Draw(bloomTex, pos, null, Color.White, 0f, bloomTex.Size() / 2f, 0.65f, 0f, 0f);
-			Main.spriteBatch.Draw(bloomTex, pos, null, Color.White, 0f, bloomTex.Size() / 2f, 0.45f, 0f, 0f);
-
-			color = new Color(200, 255, 200, 0) * 0.5f * fadeOut;
-			effect.Parameters["uColor"].SetValue(color.ToVector4());
-
-			effect.CurrentTechnique.Passes[0].Apply();
-
-			Main.spriteBatch.Draw(bloomTex, pos, null, Color.White, 0f, bloomTex.Size() / 2f, 0.25f, 0f, 0f);
-
-			float mult = MathHelper.Lerp(0.15f, 0.05f, (float)Math.Sin(Main.GlobalTimeWrappedHourly));
-
-			color = new Color(150, 255, 25, 0) * mult * fadeOut;
-			effect.Parameters["uColor"].SetValue(color.ToVector4());
-
-			effect.CurrentTechnique.Passes[0].Apply();
-
-			for (int i = 0; i < tiles.Length; i++)
+			if (effect != null)
 			{
-				if (tiles[i] != null)
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+
+				effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.005f);
+				effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.005f);
+				effect.Parameters["screenPos"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / new Vector2(Main.screenWidth, Main.screenHeight));
+
+				effect.Parameters["offset"].SetValue(new Vector2(0.001f));
+				effect.Parameters["repeats"].SetValue(2);
+				effect.Parameters["uImage1"].SetValue(Assets.Noise.SwirlyNoiseLooping.Value);
+				effect.Parameters["uImage2"].SetValue(Assets.Noise.PerlinNoise.Value);
+				effect.Parameters["noiseImage1"].SetValue(Assets.Noise.PerlinNoise.Value);
+
+				Color color = new Color(150, 255, 25, 0) * 0.5f * fadeOut;
+				effect.Parameters["uColor"].SetValue(color.ToVector4());
+
+				effect.CurrentTechnique.Passes[0].Apply();
+
+				Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.White, 0f, bloomTex.Size() / 2f, 0.65f, 0f, 0f);
+				Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.White, 0f, bloomTex.Size() / 2f, 0.45f, 0f, 0f);
+
+				color = new Color(200, 255, 200, 0) * 0.5f * fadeOut;
+				effect.Parameters["uColor"].SetValue(color.ToVector4());
+
+				effect.CurrentTechnique.Passes[0].Apply();
+
+				Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.White, 0f, bloomTex.Size() / 2f, 0.25f, 0f, 0f);
+
+				Vector2 pos = Owner.GetBackHandPosition(Player.CompositeArmStretchAmount.Full, handRotation) - Main.screenPosition;
+
+				color = new Color(150, 255, 25, 0) * 0.5f * fadeOut;
+				effect.Parameters["uColor"].SetValue(color.ToVector4());
+
+				effect.CurrentTechnique.Passes[0].Apply();
+
+				Main.spriteBatch.Draw(bloomTex, pos, null, Color.White, 0f, bloomTex.Size() / 2f, 0.65f, 0f, 0f);
+				Main.spriteBatch.Draw(bloomTex, pos, null, Color.White, 0f, bloomTex.Size() / 2f, 0.45f, 0f, 0f);
+
+				color = new Color(200, 255, 200, 0) * 0.5f * fadeOut;
+				effect.Parameters["uColor"].SetValue(color.ToVector4());
+
+				effect.CurrentTechnique.Passes[0].Apply();
+
+				Main.spriteBatch.Draw(bloomTex, pos, null, Color.White, 0f, bloomTex.Size() / 2f, 0.25f, 0f, 0f);
+
+				float mult = MathHelper.Lerp(0.15f, 0.05f, (float)Math.Sin(Main.GlobalTimeWrappedHourly));
+
+				color = new Color(150, 255, 25, 0) * mult * fadeOut;
+				effect.Parameters["uColor"].SetValue(color.ToVector4());
+
+				effect.CurrentTechnique.Passes[0].Apply();
+
+				for (int i = 0; i < tiles.Length; i++)
 				{
-					Vector2 drawPos = new Vector2(tiles[i].Value.X * 16, tiles[i].Value.Y * 16) - Main.screenPosition + new Vector2(5f);
+					if (tiles[i] != null)
+					{
+						Vector2 drawPos = new Vector2(tiles[i].Value.X * 16, tiles[i].Value.Y * 16) - Main.screenPosition + new Vector2(5f);
 
-					Main.spriteBatch.Draw(bloomTex, drawPos, null, Color.White, 0f, bloomTex.Size() / 2f, 0.65f, 0f, 0f);
-					Main.spriteBatch.Draw(bloomTex, drawPos, null, Color.White, 0f, bloomTex.Size() / 2f, 0.45f, 0f, 0f);
-					Main.spriteBatch.Draw(bloomTex, drawPos, null, Color.White, 0f, bloomTex.Size() / 2f, 0.25f, 0f, 0f);
+						Main.spriteBatch.Draw(bloomTex, drawPos, null, Color.White, 0f, bloomTex.Size() / 2f, 0.65f, 0f, 0f);
+						Main.spriteBatch.Draw(bloomTex, drawPos, null, Color.White, 0f, bloomTex.Size() / 2f, 0.45f, 0f, 0f);
+						Main.spriteBatch.Draw(bloomTex, drawPos, null, Color.White, 0f, bloomTex.Size() / 2f, 0.25f, 0f, 0f);
+					}
 				}
-			}
 
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 
 			return false;
 		}
@@ -290,14 +294,14 @@ namespace StarlightRiver.Content.Items.Haunted
 
 			if (progress < 0.25f)
 			{
-				handRotation = MathHelper.Lerp(-1f, -3f, EaseBuilder.EaseCircularInOut.Ease(1f - (DeathTimer - 22.5f) / 7.5f)) * Owner.direction;
+				handRotation = MathHelper.Lerp(-1f, -3f, Eases.EaseCircularInOut(1f - (DeathTimer - 22.5f) / 7.5f)) * Owner.direction;
 			}
 			else
 			{
-				handRotation = MathHelper.Lerp(-3f, -0.5f, EaseBuilder.EaseQuarticIn.Ease(1f - DeathTimer / 22.5f)) * Owner.direction;
+				handRotation = MathHelper.Lerp(-3f, -0.5f, Eases.EaseQuarticIn(1f - DeathTimer / 22.5f)) * Owner.direction;
 				if (progress >= 0.9f && !playedSound)
 				{
-					Helper.PlayPitched("Effects/HeavyWhooshShort", 1f, 0f, Owner.Center);
+					SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 1f, 0f, Owner.Center);
 
 					CameraSystem.shake += 6;
 					playedSound = true;
@@ -316,7 +320,7 @@ namespace StarlightRiver.Content.Items.Haunted
 				DeathTimer = 30f;
 				oldMouse = OwnerMouse;
 				CameraSystem.shake += 4;
-				Helper.PlayPitched("Effects/HeavyWhoosh", 1f, 0f, Owner.Center);
+				SoundHelper.PlayPitched("Effects/HeavyWhoosh", 1f, 0f, Owner.Center);
 
 				for (int i = 0; i < Main.rand.Next(2, 4); i++)
 				{
@@ -485,13 +489,13 @@ namespace StarlightRiver.Content.Items.Haunted
 
 			if (progress < 0.25f)
 			{
-				Projectile.Center = Vector2.Lerp(tilePosition + new Vector2(0f, -25f), target.Center + tilePosition.DirectionTo(target.Center) * 50f, EaseBuilder.EaseQuarticInOut.Ease(StabTimer / (maxStabTimer * 0.25f)));
+				Projectile.Center = Vector2.Lerp(tilePosition + new Vector2(0f, -25f), target.Center + tilePosition.DirectionTo(target.Center) * 50f, Eases.EaseQuarticInOut(StabTimer / (maxStabTimer * 0.25f)));
 
 				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(1f, 1f), 0, new Color(150, 255, 25), 0.65f);
 			}
 			else
 			{
-				Projectile.Center = Vector2.Lerp(Projectile.Center, tilePosition + new Vector2(0f, target.height > 25 ? -target.height : -25f), EaseBuilder.EaseQuarticIn.Ease((StabTimer - maxStabTimer * 0.25f) / (maxStabTimer * 0.75f)));
+				Projectile.Center = Vector2.Lerp(Projectile.Center, tilePosition + new Vector2(0f, target.height > 25 ? -target.height : -25f), Eases.EaseQuarticIn((StabTimer - maxStabTimer * 0.25f) / (maxStabTimer * 0.75f)));
 
 				if (target.knockBackResist > 0f)
 					target.Center = Projectile.Center - tilePosition.DirectionTo(target.Center) * 50f * (1f - progress);
@@ -510,7 +514,7 @@ namespace StarlightRiver.Content.Items.Haunted
 						Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(5f, 5f), 0, new Color(150, 255, 25), 0.65f);
 					}
 
-					if (Helper.IsFleshy(target))
+					if (NPCHelper.IsFleshy(target))
 					{
 						for (int i = 0; i < 15; i++)
 						{
@@ -542,7 +546,7 @@ namespace StarlightRiver.Content.Items.Haunted
 				Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), tilePosition.DirectionTo(target.Center).RotatedByRandom(0.5f) * Main.rand.NextFloat(15f), 0, new Color(150, 255, 25), 0.65f);
 			}
 
-			if (Helper.IsFleshy(target))
+			if (NPCHelper.IsFleshy(target))
 			{
 				for (int i = 0; i < 15; i++)
 				{
@@ -554,10 +558,10 @@ namespace StarlightRiver.Content.Items.Haunted
 
 			target.velocity += tilePosition.DirectionTo(target.Center) * 5f * target.knockBackResist;
 
-			Helper.PlayPitched("Impacts/StabTiny", 1f, 0f, Projectile.Center);
+			SoundHelper.PlayPitched("Impacts/StabTiny", 1f, 0f, Projectile.Center);
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int i = 0; i < 15; i++)
 			{
@@ -577,10 +581,10 @@ namespace StarlightRiver.Content.Items.Haunted
 
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.HauntedItem + "EchochainWhipChain").Value;
-			Texture2D texGlow = ModContent.Request<Texture2D>(AssetDirectory.HauntedItem + "EchochainWhipChain_Glow").Value;
-			Texture2D texBlur = ModContent.Request<Texture2D>(AssetDirectory.HauntedItem + "EchochainWhipChain_Blur").Value;
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D tex = Assets.Items.Haunted.EchochainWhipChain.Value;
+			Texture2D texGlow = Assets.Items.Haunted.EchochainWhipChain_Glow.Value;
+			Texture2D texBlur = Assets.Items.Haunted.EchochainWhipChain_Blur.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			Vector2 chainEnd = tilePosition;
 			Vector2 chainStart = Projectile.Center;
@@ -672,11 +676,11 @@ namespace StarlightRiver.Content.Items.Haunted
 
 		public override void DrawBehindWhip(ref Color lightColor)
 		{
-			Texture2D texBlur = ModContent.Request<Texture2D>(Texture + "_TipBlur").Value;
-			Texture2D texGlow = ModContent.Request<Texture2D>(Texture + "_TipGlow").Value;
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D texBlur = Assets.Items.Haunted.EchochainWhipProjectile_TipBlur.Value;
+			Texture2D texGlow = Assets.Items.Haunted.EchochainWhipProjectile_TipGlow.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
+			Texture2D texture = Assets.Items.Haunted.EchochainWhipProjectile.Value;
 
-			Asset<Texture2D> texture = ModContent.Request<Texture2D>(Texture);
 			Rectangle whipFrame = texture.Frame(1, 5, 0, 0);
 			int height = whipFrame.Height;
 
@@ -695,7 +699,7 @@ namespace StarlightRiver.Content.Items.Haunted
 					whipFrame.Y = height * 4;
 					Color color = Color.Lerp(new Color(20, 135, 15, 0), new Color(100, 200, 10, 0), fade) * 0.5f;
 
-					Main.EntitySpriteDraw(texture.Value, tipPositions[i] - Main.screenPosition, whipFrame, Color.White * 0.15f * fade * fadeOut, tipRotations[i], whipFrame.Size() * 0.5f, Projectile.scale, SpriteEffects.None, 0);
+					Main.EntitySpriteDraw(texture, tipPositions[i] - Main.screenPosition, whipFrame, Color.White * 0.15f * fade * fadeOut, tipRotations[i], whipFrame.Size() * 0.5f, Projectile.scale, SpriteEffects.None, 0);
 
 					Main.spriteBatch.Draw(texBlur, tipPositions[i] - Main.screenPosition, null, Color.White with { A = 0 } * 0.15f * fade * fadeOut, tipRotations[i], texBlur.Size() / 2f, Projectile.scale, 0f, 0f);
 
@@ -710,7 +714,7 @@ namespace StarlightRiver.Content.Items.Haunted
 						var newPosition = Vector2.Lerp(tipPositions[i], tipPositions[i + 1], 0.5f);
 						float newRotation = MathHelper.Lerp(tipRotations[i], tipRotations[i + 1], 0.5f);
 
-						Main.EntitySpriteDraw(texture.Value, newPosition - Main.screenPosition, whipFrame, Color.White * 0.15f * fade * fadeOut, newRotation, whipFrame.Size() * 0.5f, Projectile.scale, SpriteEffects.None, 0);
+						Main.EntitySpriteDraw(texture, newPosition - Main.screenPosition, whipFrame, Color.White * 0.15f * fade * fadeOut, newRotation, whipFrame.Size() * 0.5f, Projectile.scale, SpriteEffects.None, 0);
 
 						Main.spriteBatch.Draw(texBlur, newPosition - Main.screenPosition, null, Color.White with { A = 0 } * 0.15f * fade * fadeOut, newRotation, texBlur.Size() / 2f, Projectile.scale, 0f, 0f);
 
@@ -745,7 +749,7 @@ namespace StarlightRiver.Content.Items.Haunted
 			EchochainSystem.ResetTimers(target);
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			if (hitTargets.Count >= 2)
 				EchochainSystem.AddNPCS(hitTargets);

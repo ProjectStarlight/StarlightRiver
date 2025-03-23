@@ -24,13 +24,13 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 			if (tile.TileFrameX == 0 && tile.TileFrameY == 0)
 			{
 				int frame = ((i ^ 123 + j ^ 018) >> 3 ^ 12961) % 8;
-				Vector2 pos = (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 + Vector2.One * 24;
+				Vector2 pos = new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange + Vector2.One * 24;
 				Color lighting = Lighting.GetColor(i, j);
 
-				Texture2D texUnder = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MirrorUnder").Value;
+				Texture2D texUnder = Assets.Tiles.Vitric.MirrorUnder.Value;
 				Main.spriteBatch.Draw(texUnder, pos - Main.screenPosition, null, lighting, 0, texUnder.Size() / 2, 1, 0, 0);
 
-				Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "Blocker").Value;
+				Texture2D tex = Assets.Tiles.Vitric.Blocker.Value;
 				var drawFrame = new Rectangle(50 * frame, 0, 50, 50);
 				Main.spriteBatch.Draw(tex, pos - Main.screenPosition, drawFrame, lighting, 0, Vector2.One * 25, 1, 0, 0);
 			}

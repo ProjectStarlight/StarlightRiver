@@ -258,8 +258,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				Color color = Color.OrangeRed;
 				Vector2 pos = NPC.Center - Main.screenPosition;
 				float laserRotation = NPC.DirectionTo(healingTarget.Center).ToRotation(); //TODO: Simplyify from copy/paste ceiros laser
-				Texture2D texBeam = Request<Texture2D>(AssetDirectory.MiscTextures + "BeamCore").Value;
-				Texture2D texBeam2 = Request<Texture2D>(AssetDirectory.MiscTextures + "BeamTrail").Value;
+				Texture2D texBeam = Assets.Misc.BeamCore.Value;
+				Texture2D texBeam2 = Assets.Misc.BeamTrail.Value;
 
 				Vector2 origin = new(0, texBeam.Height / 2);
 				Vector2 origin2 = new(0, texBeam2.Height / 2);
@@ -402,7 +402,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 				if (comboTimer == 100)
 				{
-					NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Bottom, healingTarget.Center + new Vector2(healingTarget.spriteDirection * 15, -100), 0.2f, 120, 450);
+					NPC.velocity = GeometryHelper.GetArcVel(NPC.Bottom, healingTarget.Center + new Vector2(healingTarget.spriteDirection * 15, -100), 0.2f, 120, 450);
 					return true;
 				}
 

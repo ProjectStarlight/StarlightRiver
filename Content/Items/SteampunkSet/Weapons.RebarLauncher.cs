@@ -1,4 +1,5 @@
 using StarlightRiver.Content.Dusts;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -42,7 +43,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
 		{
-			Helper.PlayPitched("Guns/RebarLauncher", 0.6f, 0);
+			SoundHelper.PlayPitched("Guns/RebarLauncher", 0.6f, 0);
 			CameraSystem.shake += 6;
 			direction = velocity;
 			position += velocity * 0.9f;
@@ -367,9 +368,11 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, TRAIL_LENGTH, new NoTip(), factor => factor * trailWidth * 4f, factor => Color.Red);
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, TRAIL_LENGTH, new NoTip(), factor => factor * trailWidth * 4f, factor => Color.Red);
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, TRAIL_LENGTH, new NoTip(), factor => factor * trailWidth * 4f, factor => Color.Red);
+			if (trail2 is null || trail2.IsDisposed)
+				trail2 = new Trail(Main.instance.GraphicsDevice, TRAIL_LENGTH, new NoTip(), factor => factor * trailWidth * 4f, factor => Color.Red);
 
 			if (trailWidth < 3.9f && (collided || stuck || Projectile.timeLeft % 6 == 0))
 			{
@@ -397,21 +400,24 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["RebarTrail"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("RebarTrail").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.SteampunkItem + "RebarTrailTexture").Value);
-			effect.Parameters["noiseTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.SteampunkItem + "RebarNoiseTexture").Value);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["progress"].SetValue(trailWidth / 4f);
-			effect.Parameters["repeats"].SetValue(18);
-			effect.Parameters["midColor"].SetValue(new Color(248, 126, 0).ToVector3());
+				effect.Parameters["sampleTexture"].SetValue(Assets.Items.SteampunkSet.RebarTrailTexture.Value);
+				effect.Parameters["noiseTexture"].SetValue(Assets.Items.SteampunkSet.RebarNoiseTexture.Value);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["progress"].SetValue(trailWidth / 4f);
+				effect.Parameters["repeats"].SetValue(18);
+				effect.Parameters["midColor"].SetValue(new Color(248, 126, 0).ToVector3());
 
-			trail?.Render(effect);
-			trail2?.Render(effect);
+				trail?.Render(effect);
+				trail2?.Render(effect);
+			}
 		}
 
 		private Color HeatColor(float progress, float midpoint)

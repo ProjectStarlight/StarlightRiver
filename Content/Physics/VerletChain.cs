@@ -1,3 +1,4 @@
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -27,7 +28,7 @@ namespace StarlightRiver.Content.Physics
 
 		private void DrawVerletBanners(On_Main.orig_DrawProjectiles orig, Main self)
 		{
-			Effect shader = Filters.Scene["Outline"].GetShader().Shader;
+			Effect shader = ShaderLoader.GetShader("Outline").Value;
 
 			if (shader is null)
 				return;
@@ -35,7 +36,7 @@ namespace StarlightRiver.Content.Physics
 			shader.Parameters["resolution"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
 			shader.Parameters["outlineColor"].SetValue(new Vector3(0, 0, 0));
 
-			Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, Filters.Scene["Outline"].GetShader().Shader, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, shader, Main.GameViewMatrix.TransformationMatrix);
 
 			VerletChain.DrawStripsPixelated(Main.spriteBatch);
 
@@ -369,9 +370,9 @@ namespace StarlightRiver.Content.Physics
 
 			float rotation = (ropeSegments[0].ScreenPos - ropeSegments[1].ScreenPos).ToRotation() + (float)Math.PI / 2;
 
-			verticies[0] = new VertexPositionColor((ropeSegments[0].ScreenPos + Vector2.UnitY.RotatedBy(rotation - Math.PI / 4) * -5).Vec3().ScreenCoord(), ropeSegments[0].color);
-			verticies[1] = new VertexPositionColor((ropeSegments[0].ScreenPos + Vector2.UnitY.RotatedBy(rotation + Math.PI / 4) * -5).Vec3().ScreenCoord(), ropeSegments[0].color);
-			verticies[2] = new VertexPositionColor(ropeSegments[1].ScreenPos.Vec3().ScreenCoord(), ropeSegments[1].color);
+			verticies[0] = new VertexPositionColor((ropeSegments[0].ScreenPos + Vector2.UnitY.RotatedBy(rotation - Math.PI / 4) * -5).ToVector3().ToScreenspaceCoord(), ropeSegments[0].color);
+			verticies[1] = new VertexPositionColor((ropeSegments[0].ScreenPos + Vector2.UnitY.RotatedBy(rotation + Math.PI / 4) * -5).ToVector3().ToScreenspaceCoord(), ropeSegments[0].color);
+			verticies[2] = new VertexPositionColor(ropeSegments[1].ScreenPos.ToVector3().ToScreenspaceCoord(), ropeSegments[1].color);
 
 			for (int k = 1; k < segmentCount - 1; k++)
 			{
@@ -380,9 +381,9 @@ namespace StarlightRiver.Content.Physics
 				int point = k * 9 - 6;
 				int off = Math.Min(k, segmentCount - segmentCount / 4);
 
-				verticies[point] = new VertexPositionColor((ropeSegments[k].ScreenPos + Vector2.UnitY.RotatedBy(rotation2 - Math.PI / 4) * -(segmentCount - off) * scale).Vec3().ScreenCoord(), ropeSegments[k].color);
-				verticies[point + 1] = new VertexPositionColor((ropeSegments[k].ScreenPos + Vector2.UnitY.RotatedBy(rotation2 + Math.PI / 4) * -(segmentCount - off) * scale).Vec3().ScreenCoord(), ropeSegments[k].color);
-				verticies[point + 2] = new VertexPositionColor(ropeSegments[k + 1].ScreenPos.Vec3().ScreenCoord(), ropeSegments[k + 1].color);
+				verticies[point] = new VertexPositionColor((ropeSegments[k].ScreenPos + Vector2.UnitY.RotatedBy(rotation2 - Math.PI / 4) * -(segmentCount - off) * scale).ToVector3().ToScreenspaceCoord(), ropeSegments[k].color);
+				verticies[point + 1] = new VertexPositionColor((ropeSegments[k].ScreenPos + Vector2.UnitY.RotatedBy(rotation2 + Math.PI / 4) * -(segmentCount - off) * scale).ToVector3().ToScreenspaceCoord(), ropeSegments[k].color);
+				verticies[point + 2] = new VertexPositionColor(ropeSegments[k + 1].ScreenPos.ToVector3().ToScreenspaceCoord(), ropeSegments[k + 1].color);
 
 				int extra = k == 1 ? 0 : 6;
 				verticies[point + 3] = verticies[point];
@@ -483,6 +484,30 @@ namespace StarlightRiver.Content.Physics
 				ret.Y *= 0;
 
 			return ret;
+		}
+
+		/// <summary>
+		/// Popualtes a list of vectors to be used as a trails position cache from this verlet chain
+		/// </summary>
+		/// <param name="cache">The cache to populate</param>
+		public void UpdateCacheFromChain(ref List<Vector2> cache)
+		{
+			if (cache is null)
+			{
+				cache = [];
+				for (int k = 0; k < segmentCount; k++)
+				{
+					cache.Add(ropeSegments[k].posNow);
+				}
+			}
+
+			for (int k = 0; k < segmentCount; k++)
+			{
+				cache[k] = ropeSegments[k].posNow;
+			}
+
+			if (useEndPoint)
+				cache[segmentCount - 1] = endPoint;
 		}
 	}
 }

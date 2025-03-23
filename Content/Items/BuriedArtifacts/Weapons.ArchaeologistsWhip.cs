@@ -75,7 +75,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			var points = new List<Vector2>();
 			points.Clear();
 			SetPoints(points);
-			Asset<Texture2D> texture = ModContent.Request<Texture2D>(Texture + "_Glow");
+			Asset<Texture2D> texture = Assets.Items.BuriedArtifacts.ArchaeologistsWhip_Whip_Glow;
 			Rectangle whipFrame = texture.Frame(X_FRAMES, Y_FRAMES, xFrame, 0);
 			int height = whipFrame.Height;
 			Vector2 firstPoint = points[0];
@@ -189,7 +189,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 
 		public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
 		{
-			Texture2D glowTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D glowTex = Assets.Masks.GlowAlpha.Value;
 			Color drawColor = Color.Gold;
 			drawColor.A = 0;
 			spriteBatch.Draw(glowTex, Item.Center - Main.screenPosition, null, drawColor, 0, glowTex.Size() / 2, 0.55f, SpriteEffects.None, 0f);

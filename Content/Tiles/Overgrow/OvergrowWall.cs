@@ -18,12 +18,12 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 		{
 			if (i + 1 > Main.screenPosition.X / 16 && i - 1 < Main.screenPosition.X / 16 + Main.screenWidth / 16 && j + 1 > Main.screenPosition.Y / 16 && j - 1 < Main.screenPosition.Y / 16 + Main.screenHeight / 16)
 			{
-				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Tiles/Overgrow/WallOvergrowGrassFlow").Value;
+				Texture2D tex = Assets.Tiles.Overgrow.WallOvergrowGrassFlow.Value;
 				float offset = i * j % 6.28f;
 				float sin = (float)Math.Sin(StarlightWorld.visualTimer + offset);
 				int variant = i * i * j % 4;
 
-				spriteBatch.Draw(tex, (new Vector2(i + 0.5f, j + 0.5f) + Helper.TileAdj) * 16 + new Vector2(1, 0.5f) * sin * 1.2f - Main.screenPosition,
+				spriteBatch.Draw(tex, new Vector2(i + 0.5f, j + 0.5f) * 16 + Vector2.One * Main.offScreenRange + new Vector2(1, 0.5f) * sin * 1.2f - Main.screenPosition,
 					new Rectangle(variant * 26, 0, 24, 24), Lighting.GetColor(i, j) * (0.65f + sin * 0.05f), offset + sin * 0.06f, new Vector2(12, 12), 1 + sin / 14f, 0, 0);
 			}
 		}

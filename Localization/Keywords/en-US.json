@@ -1,0 +1,79 @@
+[
+  {
+    "Name": "Shredded",
+    "Description": "Inflicted enemies have their defense decreased by 2 and take 2 DoT per stack. Caps at 5 stacks.",
+    "R": 90,
+    "G": 20,
+    "B": 20
+  },
+  {
+    "Name": "Exposure",
+    "Description": "Exposure increases the amount of damage a target takes. It can be specific to a damage type.",
+    "R": 195,
+    "G": 75,
+    "B": 75
+  },
+  {
+    "Name": "Focused",
+    "Description": "Focused enemies have twice the chance to be critically struck, but disallow other enemies from being critically struck.",
+    "R": 85,
+    "G": 220,
+    "B": 55
+  },
+  {
+    "Name": "Graze",
+    "Description": "Graze occurs when a projectile barely misses you. This has a cooldown of 2 seconds by default.",
+    "R": 135,
+    "G": 235,
+    "B": 255
+  },
+  {
+    "Name": "Barrier",
+    "Description": "Barrier reduces damage taken at a cost equal to the damage that would be taken otherwise. It recovers after not taking damage for a time.",
+    "R": 100,
+    "G": 255,
+    "B": 255
+  },
+  {
+    "Name": "Starlight",
+    "Description": "Starlight is consumed to activate abilities. It recovers slowly over time.",
+    "R": 170,
+    "G": 240,
+    "B": 255
+  },
+  {
+    "Name": "Cursed",
+    "Description": "Cursed items grant specialized bonuses in addition to a downside.",
+    "R": 200,
+    "G": 100,
+    "B": 255
+  },
+  {
+    "Name": "Inoculation",
+    "Description": "Inoculation reduces the amount of damage over time you take from debuffs.",
+    "R": 170,
+    "G": 255,
+    "B": 150
+  },
+  {
+    "Name": "Reserve",
+    "Description": "Life and mana can be reserved, disallowing you from regaining that amount. Your maximum life or mana still counts as its normal amount.",
+    "R": 180,
+    "G": 180,
+    "B": 200
+  },
+  {
+    "Name": "Rend",
+    "Description": "Rend permanently decreases defense by the specified amount.",
+    "R": 255,
+    "G": 100,
+    "B": 80
+  },
+  {
+    "Name": "Debug",
+    "Description": "Not intended for use in normal gameplay, and should only be obtainable via cheats or inventory editors. Please submit a bug report at https://github.com/ProjectStarlight/StarlightRiver/issues if you believe you recieved this item in error.",
+    "R": 255,
+    "G": 0,
+    "B": 0
+  }
+]

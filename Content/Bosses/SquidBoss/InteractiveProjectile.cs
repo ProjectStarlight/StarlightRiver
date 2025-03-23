@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public virtual void SafeKill(int timeLeft) { }
 
-		public sealed override void Kill(int timeLeft)
+		public sealed override void OnKill(int timeLeft)
 		{
 			SafeKill(timeLeft);
 
@@ -55,8 +55,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.SquidBoss + "Highlight").Value;
-			Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/SquareGlow").Value;
+			Texture2D tex = Assets.Bosses.SquidBoss.Highlight.Value;
+			Texture2D tex2 = Assets.Misc.SquareGlow.Value;
 
 			int off = 16 * ((int)Projectile.ai[0] % 5);
 

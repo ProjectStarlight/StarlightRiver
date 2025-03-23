@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
@@ -9,6 +11,8 @@ namespace StarlightRiver.Core.Loaders
 {
 	class ShaderLoader : IOrderedLoadable
 	{
+		private static readonly Dictionary<string, Lazy<Asset<Effect>>> shaders = new();
+
 		public float Priority => 0.9f;
 
 		public void Load()
@@ -19,7 +23,7 @@ namespace StarlightRiver.Core.Loaders
 			MethodInfo info = typeof(Mod).GetProperty("File", BindingFlags.NonPublic | BindingFlags.Instance).GetGetMethod(true);
 			var file = (TmodFile)info.Invoke(StarlightRiver.Instance, null);
 
-			System.Collections.Generic.IEnumerable<FileEntry> shaders = file.Where(n => n.Name.StartsWith("Effects/") && n.Name.EndsWith(".xnb"));
+			IEnumerable<FileEntry> shaders = file.Where(n => n.Name.StartsWith("Effects/") && n.Name.EndsWith(".xnb"));
 
 			foreach (FileEntry entry in shaders)
 			{
@@ -34,11 +38,23 @@ namespace StarlightRiver.Core.Loaders
 
 		}
 
+		public static Asset<Effect> GetShader(string key)
+		{
+			if (shaders.ContainsKey(key))
+			{
+				return shaders[key].Value;
+			}
+			else
+			{
+				LoadShader(key, $"Effects/{key}");
+				return shaders[key].Value;
+			}
+		}
+
 		public static void LoadShader(string name, string path)
 		{
-			var screenRef = new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>(path, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value);
-			Filters.Scene[name] = new Filter(new ScreenShaderData(screenRef, name + "Pass"), EffectPriority.High);
-			Filters.Scene[name].Load();
+			if (!shaders.ContainsKey(name))
+				shaders.Add(name, new(() => StarlightRiver.Instance.Assets.Request<Effect>(path)));
 		}
 	}
 }

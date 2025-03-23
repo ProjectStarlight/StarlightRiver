@@ -1,3 +1,4 @@
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Helpers;
 using System;
@@ -14,7 +15,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
 		public override string Texture => AssetDirectory.StarwoodItem + Name;
 
-		public StarwoodSlingshot() : base(ModContent.Request<Texture2D>(AssetDirectory.StarwoodItem + "StarwoodSlingshot_Alt").Value) { }
+		public StarwoodSlingshot() : base(Assets.Items.Starwood.StarwoodSlingshot_Alt.Value) { }
 
 		public override void SetStaticDefaults()
 		{
@@ -167,8 +168,8 @@ namespace StarlightRiver.Content.Items.Starwood
 				{
 					if (Projectile.owner == Main.myPlayer)
 					{
-						Vector2 velocity = direction * Helper.LerpFloat(MIN_VELOCITY, MAX_VELOCITY, charge);
-						int damage = (int)Helper.LerpFloat(MIN_DAMAGE, MAX_DAMAGE, charge);
+						Vector2 velocity = direction * MathHelper.Lerp(MIN_VELOCITY, MAX_VELOCITY, charge);
+						int damage = (int)MathHelper.Lerp(MIN_DAMAGE, MAX_DAMAGE, charge);
 						StarwoodSlingshotStar.frameToAssign = (int)(charge * 5) - 1;
 
 						if ((int)(charge * 5) == 0)
@@ -199,7 +200,7 @@ namespace StarlightRiver.Content.Items.Starwood
 				frameHeight += 60;
 
 			var frame = new Rectangle(0, frameHeight, 30, 30);
-			Vector2 pos = (Main.player[Projectile.owner].Center - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY)).PointAccur() + offset;
+			Vector2 pos = (Main.player[Projectile.owner].Center - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY)).Round() + offset;
 			Main.spriteBatch.Draw(TextureAssets.Projectile[Projectile.type].Value, pos, frame, color, direction.ToRotation(), new Vector2(8, 10), Projectile.scale, spriteEffect, 0);
 
 			if (!fired)
@@ -211,9 +212,9 @@ namespace StarlightRiver.Content.Items.Starwood
 					if (charge > i + 0.33f || charge >= 1)
 						offset2 = Vector2.Zero;
 					else
-						offset2 *= Helper.LerpFloat(0, 7, (float)Math.Sqrt((0.33f - (charge - i)) * 3));
+						offset2 *= MathHelper.Lerp(0, 7, (float)Math.Sqrt((0.33f - (charge - i)) * 3));
 
-					Texture2D fragmenttexture = ModContent.Request<Texture2D>(AssetDirectory.StarwoodItem + "StarwoodSlingshotParts").Value;
+					Texture2D fragmenttexture = Assets.Items.Starwood.StarwoodSlingshotParts.Value;
 					var frame2 = new Rectangle(0, (int)(i * 5 * 24), 22, 24);
 
 					if (empowered)
@@ -235,7 +236,7 @@ namespace StarlightRiver.Content.Items.Starwood
 				if (alpha < 0)
 					alpha = 0;
 
-				Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.StarwoodItem + "StarwoodSlingshotStarWhite").Value;
+				Texture2D tex = Assets.Items.Starwood.StarwoodSlingshotStarWhite.Value;
 				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, color * alpha, direction.ToRotation() + 1.57f, new Vector2(11, 12), Projectile.scale, SpriteEffects.None, 0);
 			}
 
@@ -258,7 +259,7 @@ namespace StarlightRiver.Content.Items.Starwood
 		}
 	}
 
-	public class StarwoodSlingshotStar : ModProjectile, IDrawAdditive
+	public class StarwoodSlingshotStar : ModProjectile
 	{
 		const int DAMAGE_INCREASE = 5;
 
@@ -329,9 +330,9 @@ namespace StarlightRiver.Content.Items.Starwood
 				modifiers.SourceDamage += DAMAGE_INCREASE;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
-			Helpers.DustHelper.DrawStar(Projectile.Center, dustType, pointAmount: 5, mainSize: 1.2f * ScaleMult, dustDensity: 1f, pointDepthMult: 0.3f, rotationAmount: Projectile.rotation);
+			Helpers.DustHelper.SpawnStarPattern(Projectile.Center, dustType, pointAmount: 5, mainSize: 1.2f * ScaleMult, dustDensity: 1f, pointDepthMult: 0.3f, rotationAmount: Projectile.rotation);
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item10, Projectile.Center);
 
 			for (int k = 0; k < 35; k++)
@@ -359,7 +360,7 @@ namespace StarlightRiver.Content.Items.Starwood
 				Color color = Projectile.GetAlpha(Color.White) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length * 0.5f);
 				float scale = Projectile.scale * (Projectile.oldPos.Length - k) / Projectile.oldPos.Length;
 
-				Main.spriteBatch.Draw(ModContent.Request<Texture2D>(AssetDirectory.StarwoodItem + "StarwoodSlingshotGlowTrail").Value,
+				Main.spriteBatch.Draw(Assets.Items.Starwood.StarwoodSlingshotGlowTrail.Value,
 				Projectile.oldPos[k] + drawOrigin - Main.screenPosition,
 				new Rectangle(0, 24 * Projectile.frame, 22, 24),
 				color,
@@ -369,26 +370,24 @@ namespace StarlightRiver.Content.Items.Starwood
 			}
 
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, new Rectangle(0, 24 * Projectile.frame, 22, 24), Color.White, Projectile.rotation, new Vector2(11, 12), Projectile.scale, default, default);
-			return false;
-		}
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
 			if (Projectile.frame == 4 || Projectile.frame == 9)
 			{
 				for (int k = 0; k < Projectile.oldPos.Length; k++)
 				{
-					Color color = (empowered ? new Color(200, 220, 255) * 0.35f : new Color(255, 255, 200) * 0.3f) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
+					Color glowColor = (empowered ? new Color(200, 220, 255, 0) * 0.35f : new Color(255, 255, 200, 0) * 0.3f) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
 
 					if (k <= 4)
-						color *= 1.2f;
+						glowColor *= 1.2f;
 
-					float scale = Projectile.scale * (Projectile.oldPos.Length - k) / Projectile.oldPos.Length * 0.8f;
-					Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Starwood/Glow").Value;
+					float glowScale = Projectile.scale * (Projectile.oldPos.Length - k) / Projectile.oldPos.Length * 0.8f;
+					Texture2D glowTex = Assets.Items.Starwood.Glow.Value;
 
-					spriteBatch.Draw(tex, Projectile.oldPos[k] + Projectile.Size / 2 - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default);
+					Main.spriteBatch.Draw(glowTex, Projectile.oldPos[k] + Projectile.Size / 2 - Main.screenPosition, null, glowColor, 0, glowTex.Size() / 2, glowScale, default, default);
 				}
 			}
+
+			return false;
 		}
 
 		public override void SendExtraAI(BinaryWriter writer)
@@ -431,7 +430,7 @@ namespace StarlightRiver.Content.Items.Starwood
 			Projectile.rotation += 0.3f;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int k = 0; k < 3; k++)
 				Dust.NewDustPerfect(Projectile.position, ModContent.DustType<StarFragment>(), Projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.NextFloat(0.3f, 0.5f), 0, Color.White, 1.5f);

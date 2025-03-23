@@ -147,7 +147,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 					if (tile.TileType == 85 && tile.HasTile && tile2.TileType == 85 && tile2.HasTile)
 					{
-						Texture2D tex = Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+						Texture2D tex = Assets.Masks.GlowAlpha.Value;
 						Vector2 drawPos = new Vector2(i + 1, j + 1) * 16;
 
 						Color color = Color.White * Progress * 0.3f;
@@ -300,7 +300,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (effect == null)
 				return;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

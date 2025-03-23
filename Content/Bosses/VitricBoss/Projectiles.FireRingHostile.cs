@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Content.Packets;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		private Trail trail;
 
 		public float TimeFade => 1 - Projectile.timeLeft / 20f;
-		public float Radius => Helper.BezierEase((20 - Projectile.timeLeft) / 20f) * Projectile.ai[0];
+		public float Radius => Eases.BezierEase((20 - Projectile.timeLeft) / 20f) * Projectile.ai[0];
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -47,7 +48,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
-			return Helper.CheckCircularCollision(Projectile.Center, (int)Radius + 20, targetHitbox);
+			return CollisionHelper.CheckCircularCollision(Projectile.Center, (int)Radius + 20, targetHitbox);
 		}
 
 		public override void OnHitPlayer(Player target, Player.HurtInfo info)
@@ -97,7 +98,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		private void ManageTrail(ref Trail trail, List<Vector2> cache, int width)
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 40, new NoTip(), factor => width, factor => new Color(255, 100 + (int)(100 * (float)Math.Sin(TimeFade * 3.14f)), 65) * (float)Math.Sin(TimeFade * 3.14f) * 0.5f);
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 40, new NoTip(), factor => width, factor => new Color(255, 100 + (int)(100 * (float)Math.Sin(TimeFade * 3.14f)), 65) * (float)Math.Sin(TimeFade * 3.14f) * 0.5f);
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = cache[39];
@@ -105,22 +107,25 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Projectile.timeLeft * 0.01f);
-			effect.Parameters["repeats"].SetValue(6);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
+				effect.Parameters["time"].SetValue(Projectile.timeLeft * 0.01f);
+				effect.Parameters["repeats"].SetValue(6);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
-			trail?.Render(effect);
+				trail?.Render(effect);
 
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
+				effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
 
-			trail?.Render(effect);
+				trail?.Render(effect);
+			}
 		}
 	}
 }

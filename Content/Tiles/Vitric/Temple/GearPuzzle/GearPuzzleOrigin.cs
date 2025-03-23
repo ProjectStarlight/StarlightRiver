@@ -49,14 +49,14 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
 				return;
 
-			Texture2D bgTex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "OriginGearBase").Value;
+			Texture2D bgTex = Assets.Tiles.Vitric.OriginGearBase.Value;
 			Main.EntitySpriteDraw(bgTex, Center - Main.screenPosition, null, lightColor, 0, new Vector2(bgTex.Width / 2, 4), 1, 0, 0);
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "OriginGear").Value;
+			Texture2D tex = Assets.Tiles.Vitric.OriginGear.Value;
 
 			Main.EntitySpriteDraw(tex, Center - Main.screenPosition, null, lightColor, Rotation, tex.Size() / 2, 1, 0, 0);
 
-			Texture2D magmiteTex = ModContent.Request<Texture2D>(AssetDirectory.VitricNpc + "MagmitePassive").Value;
+			Texture2D magmiteTex = Assets.NPCs.Vitric.MagmitePassive.Value;
 			float sinTimer = Main.GameUpdateCount / 20f;
 			var frame = new Rectangle(42, sinTimer % 6.28f < 1.57f ? 0 : (int)(Main.GameUpdateCount / 3f) % 5 * 40, 42, 40);
 

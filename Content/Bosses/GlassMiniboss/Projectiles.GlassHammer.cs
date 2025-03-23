@@ -49,14 +49,14 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			{
 				swingTimer = (int)TotalTime;
 				Projectile.timeLeft = (int)TotalTime + 50;
-				Helpers.Helper.PlayPitched("GlassMiniboss/WeavingLong", 1f, 0f, Projectile.Center);
+				Helpers.SoundHelper.PlayPitched("GlassMiniboss/WeavingLong", 1f, 0f, Projectile.Center);
 				isLoaded = true;
 			}
 
 			swingTimer--;
 
 			float dropLerp = (float)Math.Pow(Utils.GetLerpValue(TotalTime * 0.93f, TotalTime * 0.55f, swingTimer, true), 3f);
-			float liftLerp = Helpers.Helper.SwoopEase(1f - Utils.GetLerpValue(TotalTime * 0.5f, TotalTime * 0.15f, swingTimer, true));
+			float liftLerp = Helpers.Eases.SwoopEase(1f - Utils.GetLerpValue(TotalTime * 0.5f, TotalTime * 0.15f, swingTimer, true));
 			float swingAccel = (float)Math.Pow(Utils.GetLerpValue(TotalTime * 0.16f, 0, swingTimer, true), 1.7f);
 			//20 degree spawn
 			//10 degree drop
@@ -79,11 +79,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			Projectile.rotation = chargeRot * -Parent.direction + (Parent.direction < 0 ? -MathHelper.PiOver4 : MathHelper.PiOver4) + Parent.rotation;
 			origin = Parent.Center + handleOffset;
-			Projectile.Center = origin + new Vector2(78 * Parent.direction, -78).RotatedBy(Projectile.rotation) * Helpers.Helper.BezierEase(Utils.GetLerpValue(TotalTime + 5, TotalTime * 0.4f, swingTimer, true));
+			Projectile.Center = origin + new Vector2(78 * Parent.direction, -78).RotatedBy(Projectile.rotation) * Helpers.Eases.BezierEase(Utils.GetLerpValue(TotalTime + 5, TotalTime * 0.4f, swingTimer, true));
 
 			if (swingTimer == 0)
 			{
-				Helpers.Helper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0f, Projectile.Center);
+				Helpers.SoundHelper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0f, Projectile.Center);
 				CameraSystem.shake += 15;
 
 				for (int i = 0; i < 30; i++)
@@ -111,12 +111,12 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				target.AddBuff(BuffType<Buffs.Squash>(), 180);
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			if (Main.netMode == NetmodeID.Server)
 				return;
 
-			Helpers.Helper.PlayPitched("GlassMiniboss/GlassShatter", 1f, Main.rand.NextFloat(0.1f), Projectile.Center);
+			Helpers.SoundHelper.PlayPitched("GlassMiniboss/GlassShatter", 1f, Main.rand.NextFloat(0.1f), Projectile.Center);
 
 			for (int k = 0; k < 10; k++)
 				Dust.NewDustPerfect(Vector2.Lerp(origin, Projectile.Center, Main.rand.NextFloat()), DustType<Dusts.GlassGravity>());
@@ -137,7 +137,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			Vector2 handle = frame.Size() * new Vector2(Parent.direction < 0 ? 0.2f : 0.8f, 0.2f);
 
-			float scaleIn = Projectile.scale * Helpers.Helper.BezierEase(Utils.GetLerpValue(TotalTime * 0.9f, TotalTime * 0.6f, swingTimer, true));
+			float scaleIn = Projectile.scale * Helpers.Eases.BezierEase(Utils.GetLerpValue(TotalTime * 0.9f, TotalTime * 0.6f, swingTimer, true));
 
 			Color fadeIn = Color.Lerp(lightColor, Color.White, 0.2f) * Utils.GetLerpValue(TotalTime * 0.93f, TotalTime * 0.89f, swingTimer, true);
 			Main.EntitySpriteDraw(hammer.Value, Projectile.Center - Main.screenPosition, frame, fadeIn, Projectile.rotation, handle, scaleIn, effects, 0);
@@ -244,7 +244,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			if (Timer == RAISE_TIME)
 			{
-				Helpers.Helper.PlayPitched("GlassMiniboss/RippedSoundGlassRaise", 0.5f, 0.3f, Projectile.Center);
+				Helpers.SoundHelper.PlayPitched("GlassMiniboss/RippedSoundGlassRaise", 0.5f, 0.3f, Projectile.Center);
 				//shotgun projectiles up?
 
 				for (int i = 0; i < 70 * Projectile.scale; i++)
@@ -321,17 +321,17 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			if (Timer < RAISE_TIME + 10)
 				DrawGroundTell();
 
-			Asset<Texture2D> bloom = Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha");
+			Asset<Texture2D> bloom = Assets.Masks.GlowAlpha;
 
 			if (Timer > RAISE_TIME - 10)
 			{
 				for (int i = 0; i < maxSpikes; i++)
 				{
 					float lerp = Utils.GetLerpValue(2.5f, maxSpikes, i, true);
-					float height = -totalHeight * lerp * (float)Math.Sqrt(EaseFunction.EaseCircularOut.Ease(Utils.GetLerpValue(RAISE_TIME - 10 + 10f * lerp, RAISE_TIME + 30 + 7f * lerp, Timer, true)));
+					float height = -totalHeight * lerp * (float)Math.Sqrt(Eases.EaseCircularOut(Utils.GetLerpValue(RAISE_TIME - 10 + 10f * lerp, RAISE_TIME + 30 + 7f * lerp, Timer, true)));
 					float width = baseWidth * (1.1f - lerp);
 
-					points[i] = Projectile.Bottom + (new Vector2(offsets[i] * width, 0) + new Vector2(0, height).RotatedBy(Projectile.rotation) - new Vector2(0, (1f - Helpers.Helper.BezierEase(Utils.GetLerpValue(RAISE_TIME + 200, RAISE_TIME + 150, Timer, true))) * 80f)) * Projectile.scale;
+					points[i] = Projectile.Bottom + (new Vector2(offsets[i] * width, 0) + new Vector2(0, height).RotatedBy(Projectile.rotation) - new Vector2(0, (1f - Helpers.Eases.BezierEase(Utils.GetLerpValue(RAISE_TIME + 200, RAISE_TIME + 150, Timer, true))) * 80f)) * Projectile.scale;
 					int j = maxSpikes - i - 1;
 					float rotation = Projectile.rotation + offsets[j] * (0.4f + (float)Math.Pow(lerp, 2) * 0.4f);
 
@@ -369,19 +369,19 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Vector2 origin = frame.Size() * new Vector2(0.5f, 0.77f);
 
 			var lightColor = Color.Lerp(Lighting.GetColor((int)position.X / 16, (int)position.Y / 16), Color.White, (1f - progress) * 0.8f);
-			float scaleW = Utils.GetLerpValue(-0.05f, 0.05f, progress, true) * Helpers.Helper.BezierEase(Utils.GetLerpValue(1, 0.9f, progress, true));
-			float scaleH = Helpers.Helper.SwoopEase(Utils.GetLerpValue(0, 0.1f, progress, true)) * Helpers.Helper.BezierEase(Utils.GetLerpValue(1, 0.92f, progress, true));
+			float scaleW = Utils.GetLerpValue(-0.05f, 0.05f, progress, true) * Helpers.Eases.BezierEase(Utils.GetLerpValue(1, 0.9f, progress, true));
+			float scaleH = Helpers.Eases.SwoopEase(Utils.GetLerpValue(0, 0.1f, progress, true)) * Helpers.Eases.BezierEase(Utils.GetLerpValue(1, 0.92f, progress, true));
 			Vector2 scale = Projectile.scale * new Vector2(scaleW, scaleH);
 
 			Main.EntitySpriteDraw(growth.Value, position - Main.screenPosition, frame, lightColor, rotation, origin, scale, 0, 0);
 
-			Color hotFade = new Color(255, 255, 255, 128) * Helpers.Helper.BezierEase(Utils.GetLerpValue(0.45f, 0.2f, progress, true));
+			Color hotFade = new Color(255, 255, 255, 128) * Helpers.Eases.BezierEase(Utils.GetLerpValue(0.45f, 0.2f, progress, true));
 			Main.EntitySpriteDraw(growth.Value, position - Main.screenPosition, hotFrame, hotFade, rotation, origin, scale, 0, 0);
 		}
 
 		private void DrawGroundTell()
 		{
-			Asset<Texture2D> tellTex = Request<Texture2D>(AssetDirectory.MiscTextures + "SpikeTell");
+			Asset<Texture2D> tellTex = Assets.Misc.SpikeTell;
 			Rectangle frame = tellTex.Frame(2, 1, 1);
 			Rectangle frameGlow = tellTex.Frame(2, 1, 1);
 			Vector2 tellOrigin = frame.Size() * new Vector2(0.5f, 0.928f);
@@ -390,7 +390,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			fade.A = 0;
 			Color fadeInner = Color.OrangeRed * Utils.GetLerpValue(RAISE_TIME * 0.66f, RAISE_TIME * 0.35f, Timer, true);
 			fadeInner.A = 0;
-			float height = Helpers.Helper.BezierEase(Utils.GetLerpValue(0, RAISE_TIME * 0.8f, Timer, true)) * 4f * Projectile.scale;
+			float height = Helpers.Eases.BezierEase(Utils.GetLerpValue(0, RAISE_TIME * 0.8f, Timer, true)) * 4f * Projectile.scale;
 			float width = 0.6f + (float)Math.Pow(Utils.GetLerpValue(RAISE_TIME * 0.17f, RAISE_TIME, Timer, true), 2) * 6f * Projectile.scale;
 			Main.EntitySpriteDraw(tellTex.Value, Projectile.Bottom - new Vector2(0, 10) - Main.screenPosition, frameGlow, fade, Projectile.rotation * 0.3f, tellOrigin, new Vector2(width, height), 0, 0);
 			Main.EntitySpriteDraw(tellTex.Value, Projectile.Bottom - new Vector2(0, 10) - Main.screenPosition, frame, fadeInner, Projectile.rotation * 0.3f, tellOrigin, new Vector2(1f, height * 0.6f), 0, 0);

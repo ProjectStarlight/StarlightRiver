@@ -1,4 +1,5 @@
 using StarlightRiver.Content.Dusts;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -320,7 +321,7 @@ namespace StarlightRiver.Content.Items.Misc
 					Dust.NewDustPerfect(Projectile.Center + new Vector2(0f, 40f), ModContent.DustType<Dusts.BuzzSpark>(), Projectile.velocity.RotatedByRandom(MathHelper.ToRadians(15f)) * Main.rand.NextFloat(-0.4f, -0.1f), 0, new Color(255, 255, 60) * 0.8f, 1.1f);
 				}
 
-				Helper.PlayPitched("Impacts/Clink", 0.50f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
+				SoundHelper.PlayPitched("Impacts/Clink", 0.50f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
 
 				catchDelay = 15;
 
@@ -341,7 +342,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (Overheated && !exploding && !exploded)
 			{
-				Helper.PlayPitched("Magic/FireCast", 0.75f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
+				SoundHelper.PlayPitched("Magic/FireCast", 0.75f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 				ShootDelay = 0;
 				Projectile.friendly = false;
 				Projectile.velocity *= -0.25f;
@@ -368,7 +369,7 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			if (!Overheated)
 			{
@@ -405,10 +406,10 @@ namespace StarlightRiver.Content.Items.Misc
 			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
 			Texture2D whiteTex = ModContent.Request<Texture2D>(Texture + "_White").Value;
 			Texture2D flareTex = ModContent.Request<Texture2D>(Texture + "Flare").Value;
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 			Texture2D glowMap = ModContent.Request<Texture2D>(Texture + "_GlowMap").Value;
 			Texture2D bloomMap = ModContent.Request<Texture2D>(Texture + "_BloomMap").Value;
-			Texture2D starTex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "StarTexture").Value;
+			Texture2D starTex = Assets.StarTexture.Value;
 
 			SpriteEffects flip = Projectile.spriteDirection == -1 ? SpriteEffects.FlipVertically : 0f;
 
@@ -509,11 +510,11 @@ namespace StarlightRiver.Content.Items.Misc
 
 			updateVelo = true;
 
-			Helper.PlayPitched("Guns/RifleLight", 0.35f, Main.rand.NextFloat(-0.1f, 0.1f), pos);
+			SoundHelper.PlayPitched("Guns/RifleLight", 0.35f, Main.rand.NextFloat(-0.1f, 0.1f), pos);
 
 			if (shots >= 25)
 			{
-				Helper.PlayPitched("Guns/dry_fire", 0.7f, Main.rand.NextFloat(-0.1f, 0.1f), pos);
+				SoundHelper.PlayPitched("Guns/dry_fire", 0.7f, Main.rand.NextFloat(-0.1f, 0.1f), pos);
 
 				if (Main.rand.NextBool(3))
 					Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.Smoke>(), Vector2.UnitY * -2 + Projectile.rotation.ToRotationVector2() * Main.rand.NextFloat(1f, 5), 0, new Color(100, 55, 50) * 0.5f, Main.rand.NextFloat(0.35f, 0.5f));
@@ -614,12 +615,12 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (throwTimer < 10)
 			{
-				float progress = EaseFunction.EaseCircularInOut.Ease(throwTimer / 10f);
+				float progress = Eases.EaseCircularInOut(throwTimer / 10f);
 				Projectile.velocity = Vector2.One.RotatedBy(mousePos.ToRotation() + MathHelper.Lerp(0f, -1.85f, progress) * Owner.direction - MathHelper.PiOver4);
 			}
 			else if (throwTimer < 20)
 			{
-				float progress = EaseFunction.EaseCircularInOut.Ease((throwTimer - 10f) / 10f);
+				float progress = Eases.EaseCircularInOut((throwTimer - 10f) / 10f);
 				Projectile.velocity = Vector2.One.RotatedBy(mousePos.ToRotation() + MathHelper.Lerp(-1.85f, 0.35f, progress) * Owner.direction - MathHelper.PiOver4);
 			}
 			else
@@ -691,12 +692,12 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (throwTimer < 20)
 			{
-				float progress = EaseFunction.EaseCircularInOut.Ease(throwTimer / 20f);
+				float progress = Eases.EaseCircularInOut(throwTimer / 20f);
 				Projectile.velocity = Vector2.One.RotatedBy(mousePos.ToRotation() + MathHelper.Lerp(0f, -1.85f, progress) * Owner.direction - MathHelper.PiOver4);
 			}
 			else if (throwTimer < 30)
 			{
-				float progress = EaseFunction.EaseCircularInOut.Ease((throwTimer - 20f) / 10f);
+				float progress = Eases.EaseCircularInOut((throwTimer - 20f) / 10f);
 				Projectile.velocity = Vector2.One.RotatedBy(mousePos.ToRotation() + MathHelper.Lerp(-1.85f, 0.35f, progress) * Owner.direction - MathHelper.PiOver4);
 			}
 			else
@@ -730,7 +731,7 @@ namespace StarlightRiver.Content.Items.Misc
 					if (++explodingTimer >= 45)
 					{
 						ImpactSMGPlayer mp = Owner.GetModPlayer<ImpactSMGPlayer>();
-						Helper.PlayPitched("Magic/FireHit", 0.75f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
+						SoundHelper.PlayPitched("Magic/FireHit", 0.75f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 						CameraSystem.shake += 10 + mp.stacks;
 
 						for (int i = 0; i < 20 + mp.stacks * 6; i++)
@@ -897,12 +898,14 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => factor * 3.5f, factor => new Color(255, 255, 255) * factor.X * (Projectile.timeLeft / 80f));
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => factor * 3.5f, factor => new Color(255, 255, 255) * factor.X * (Projectile.timeLeft / 80f));
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center;
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => factor * 6f, factor => new Color(190, 40, 40) * factor.X * (Projectile.timeLeft / 80f));
+			if (trail2 is null || trail2.IsDisposed)
+				trail2 = new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => factor * 6f, factor => new Color(190, 40, 40) * factor.X * (Projectile.timeLeft / 80f));
 
 			trail2.Positions = cache.ToArray();
 			trail2.NextPosition = Projectile.Center;
@@ -910,19 +913,22 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
-			effect.Parameters["repeats"].SetValue(1f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
+				effect.Parameters["repeats"].SetValue(1f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 
-			trail2?.Render(effect);
-			trail?.Render(effect);
+				trail2?.Render(effect);
+				trail?.Render(effect);
+			}
 		}
 	}
 
@@ -1007,9 +1013,11 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 40, new NoTip(), factor => 25 * (1 - Progress), factor => new Color(180, 50, 50));
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 40, new NoTip(), factor => 25 * (1 - Progress), factor => new Color(180, 50, 50));
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 40, new NoTip(), factor => 20 * (1 - Progress), factor => new Color(255, 50, 50));
+			if (trail2 is null || trail2.IsDisposed)
+				trail2 = new Trail(Main.instance.GraphicsDevice, 40, new NoTip(), factor => 20 * (1 - Progress), factor => new Color(255, 50, 50));
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = cache[39];
@@ -1020,23 +1028,26 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.03f);
-			effect.Parameters["repeats"].SetValue(2f);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "GlowTrail").Value);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.03f);
+				effect.Parameters["repeats"].SetValue(2f);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 
-			trail?.Render(effect);
-			trail2?.Render(effect);
+				trail?.Render(effect);
+				trail2?.Render(effect);
 
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "FireTrail").Value);
+				effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
 
-			trail2?.Render(effect);
+				trail2?.Render(effect);
+			}
 		}
 	}
 }

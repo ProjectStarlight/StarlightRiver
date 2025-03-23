@@ -116,7 +116,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 			Texture2D tex2 = ModContent.Request<Texture2D>(Texture + "Glow").Value;
-			Texture2D tex3 = ModContent.Request<Texture2D>(AssetDirectory.SquidBoss + "PortalGlow").Value;
+			Texture2D tex3 = Assets.Bosses.SquidBoss.PortalGlow.Value;
 			Texture2D tex4 = ModContent.Request<Texture2D>(Texture + "Shape").Value;
 			CombatMountPlayer mp = drawPlayer.GetModPlayer<CombatMountPlayer>();
 			float progress = 1 - Math.Max(0, (mp.mountingTime - 15) / 15f);

@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Biomes;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Helpers;
@@ -61,7 +62,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		{
 			if (dying)
 			{
-				Helper.PlayPitched("Magic/FireHit", 0.3f, 0.3f, NPC.Center);
+				SoundHelper.PlayPitched("Magic/FireHit", 0.3f, 0.3f, NPC.Center);
 				for (int i = 0; i < 8; i++)
 				{
 					var dust = Dust.NewDustDirect(NPC.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<CoachGunDust>());
@@ -142,7 +143,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				if (magmaCharge > 1.75f)
 				{
 					SoundEngine.PlaySound(SoundID.Item45, NPC.Center);
-					Vector2 projVel = ArcVelocityHelper.GetArcVel(NPC.Center, Target.Center, 0.2f, 100, 400, 12);
+					Vector2 projVel = GeometryHelper.GetArcVel(NPC.Center, Target.Center, 0.2f, 100, 400, 12);
 					NPC.velocity = projVel * -1;
 					magmaCharge = 0;
 					chargingMagma = false;
@@ -193,7 +194,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		{
 			Texture2D tex = Request<Texture2D>(Texture).Value;
 			Texture2D glowTex = Request<Texture2D>(Texture + "_Glow").Value;
-			Texture2D magmaTex = Request<Texture2D>(AssetDirectory.Keys + "GlowHarsh").Value;
+			Texture2D magmaTex = Assets.Masks.GlowHarsh.Value;
 
 			var magmaOffset = new Vector2(-13 * NPC.spriteDirection, 8);
 			SpriteEffects effects = SpriteEffects.None;
@@ -444,11 +445,11 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		}
 	}
 
-	public class FirebugMagma : ModProjectile, IDrawAdditive
+	public class FirebugMagma : ModProjectile
 	{
 		private readonly List<Vector2> oldPos = new();
 
-		public override string Texture => AssetDirectory.Keys + "GlowHarsh";
+		public override string Texture => AssetDirectory.Invisible;
 
 		public override void SetDefaults()
 		{
@@ -477,7 +478,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				oldPos.RemoveAt(0);
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			SoundEngine.PlaySound(SoundID.Item45, Projectile.Center);
 			for (int k = 0; k <= 10; k++)
@@ -487,18 +488,17 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			}
 		}
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
+		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = Request<Texture2D>(Texture).Value;
+			Texture2D tex = Assets.Masks.GlowHarshAlpha.Value;
 
 			for (int i = 0; i < oldPos.Count; i++)
 			{
-				spriteBatch.Draw(tex, oldPos[i] - Main.screenPosition, tex.Frame(),
-					Color.OrangeRed * (i / (float)oldPos.Count), 0, tex.Size() / 2, 1.5f, 0, 0);
-
-				spriteBatch.Draw(tex, oldPos[i] - Main.screenPosition, tex.Frame(),
-					Color.White * (i / (float)oldPos.Count) * 0.5f, 0, tex.Size() / 2, 0.75f, 0, 0);
+				Main.spriteBatch.Draw(tex, oldPos[i] - Main.screenPosition, tex.Frame(), new Color(255, 70, 0, 0) * (i / (float)oldPos.Count), 0, tex.Size() / 2, 1.5f, 0, 0);
+				Main.spriteBatch.Draw(tex, oldPos[i] - Main.screenPosition, tex.Frame(), new Color(255, 255, 255, 0) * (i / (float)oldPos.Count) * 0.5f, 0, tex.Size() / 2, 0.75f, 0, 0);
 			}
+
+			return false;
 		}
 	}
 }

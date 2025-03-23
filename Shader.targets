@@ -1,0 +1,36 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!--TODO: Figure out why this condition prevents VS from removing new items from the ShaderFile group.-->
+  <ItemGroup Condition="'$(DesignTimeBuild)' != 'true'">
+    <ShaderFile Include="**\*.fx" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <!--TODO: Pass path to EasyXnb as CLI argument.-->
+    <DestinationFolder>Effects</DestinationFolder>
+  </PropertyGroup>
+
+  <Target
+    Name="BuildShaders"
+    BeforeTargets="BuildMod"
+    Inputs="@(ShaderFile)"
+    Outputs="@(ShaderFile->'$(DestinationFolder)\%(Filename).xnb')">
+
+    <Message Importance="normal" Text="Building shaders..." />
+    <Message Importance="normal" Text="@(ShaderFile) was modified." />
+
+    <!--Turns all .fx files into .xnb files.-->
+    <Exec Command="EasyXnb.exe" WorkingDirectory="Effects\EasyXnb\" />
+
+    <!--Only copies .xnb files corresponding to modified .fx files into DestinationFolder.-->
+    <Copy SourceFiles="@(ShaderFile->'Effects\EasyXnb\%(Filename).xnb')" DestinationFolder="$(DestinationFolder)"/>
+
+    <!--Removes intermediate .xnb files from EasyXnb directory.-->
+    <ItemGroup>
+      <TemporaryShaderFiles Include="Effects\EasyXnb\*.xnb"/>
+    </ItemGroup>
+    <Delete Files="@(TemporaryShaderFiles)" />
+
+    <Message Importance="normal" Text="Finished building shaders." />
+  </Target>
+</Project>

@@ -8,7 +8,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 	{
 		public override string Texture => AssetDirectory.DungeonItem + Name;
 
-		public AquaSapphire() : base("Aqua Sapphire", "{{Barrier}} negates 15% more damage \n+20 {{Barrier}}") { }
+		public AquaSapphire() : base("Aqua Sapphire", "{{Barrier}} negates 15% more damage \n+20 maximum {{Barrier}} \n'Its depths shimmer like waves'") { }
 
 		public override void SafeSetDefaults()
 		{

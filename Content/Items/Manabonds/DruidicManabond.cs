@@ -36,6 +36,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 			recipe.AddIngredient(ModContent.ItemType<BasicManabond>(), 1);
 			recipe.AddIngredient(ItemID.JungleSpores, 15);
 			recipe.AddIngredient(ItemID.Stinger, 5);
+			recipe.AddIngredient(ItemID.BeeWax, 5);
 			recipe.AddTile(TileID.Bookcases);
 			recipe.Register();
 		}
@@ -60,6 +61,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 			Projectile.friendly = true;
 			Projectile.DamageType = DamageClass.Summon;
 			Projectile.hostile = false;
+			Projectile.usesLocalNPCImmunity = true;
 		}
 
 		public override void AI()
@@ -76,7 +78,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 			target.AddBuff(BuffID.Poisoned, 180);
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int k = 0; k < 20; k++)
 			{
@@ -87,7 +89,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D glow = ModContent.Request<Texture2D>(Texture + "Glow").Value;
+			Texture2D glow = Assets.Items.Manabonds.DruidThornGlow.Value;
 
 			for (int k = 0; k < Projectile.oldPos.Length; k += 2)
 			{

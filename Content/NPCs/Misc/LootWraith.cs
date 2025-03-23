@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.Haunted;
 using StarlightRiver.Content.Physics;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -178,7 +179,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 						if (NPC.Distance(ChainStart) > 100)
 						{
-							Helper.PlayPitched("Impacts/GlassExplodeShort", 1, Main.rand.NextFloat(0.1f, 0.3f), NPC.Center);
+							SoundHelper.PlayPitched("Impacts/GlassExplodeShort", 1, Main.rand.NextFloat(0.1f, 0.3f), NPC.Center);
 							chargeupCounter = 0;
 							NPC.damage = 25;
 							NPC.dontTakeDamage = false;
@@ -316,7 +317,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 		public override void ModifyNPCLoot(NPCLoot npcLoot)
 		{
-			npcLoot.Add(ItemDropRule.Common(ItemType<VengefulSpirit>(), 1, 2, 4));
+			npcLoot.Add(ItemDropRule.Common(ItemType<VengefulSpirit>(), 1, 4, 6));
 		}
 
 		private void UpdateChain()
@@ -370,14 +371,16 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, NUM_SEGMENTS, new NoTip(), factor => 7, factor => Lighting.GetColor((int)(NPC.Center.X / 16), (int)(NPC.Center.Y / 16)) * MathF.Sqrt(1 - factor.X));
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, NUM_SEGMENTS, new NoTip(), factor => 7, factor => Lighting.GetColor((int)(NPC.Center.X / 16), (int)(NPC.Center.Y / 16)) * MathF.Sqrt(1 - factor.X));
 
 			List<Vector2> positions = cache;
 			trail.NextPosition = NPC.Center;
 
 			trail.Positions = positions.ToArray();
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, NUM_SEGMENTS, new NoTip(), factor => 7, factor => Color.White * chargeupCounter * MathF.Sqrt(1 - factor.X));
+			if (trail2 is null || trail2.IsDisposed)
+				trail2 = new Trail(Main.instance.GraphicsDevice, NUM_SEGMENTS, new NoTip(), factor => 7, factor => Color.White * chargeupCounter * MathF.Sqrt(1 - factor.X));
 
 			trail2.NextPosition = NPC.Center;
 
@@ -389,35 +392,39 @@ namespace StarlightRiver.Content.NPCs.Misc
 			if (trail == null || trail == default)
 				return;
 
-			Main.spriteBatch.End();
-			Effect effect = Terraria.Graphics.Effects.Filters.Scene["RepeatingChain"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("RepeatingChain").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				Main.spriteBatch.End();
 
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(Texture + "_Chain").Value);
-			effect.Parameters["flip"].SetValue(false);
-			effect.Parameters["alpha"].SetValue(1);
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.ZoomMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			List<Vector2> points;
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(Texture + "_Chain").Value);
+				effect.Parameters["flip"].SetValue(false);
+				effect.Parameters["alpha"].SetValue(1);
 
-			if (cache == null)
-				points = GetChainPoints();
-			else
-				points = trail.Positions.ToList();
+				List<Vector2> points;
 
-			effect.Parameters["repeats"].SetValue(TotalLength(points) / 20f);
+				if (cache == null)
+					points = GetChainPoints();
+				else
+					points = trail.Positions.ToList();
 
-			BlendState oldState = Main.graphics.GraphicsDevice.BlendState;
-			Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
-			trail?.Render(effect);
-			Main.graphics.GraphicsDevice.BlendState = oldState;
+				effect.Parameters["repeats"].SetValue(TotalLength(points) / 20f);
 
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(Texture + "_Chain_White").Value);
+				BlendState oldState = Main.graphics.GraphicsDevice.BlendState;
+				Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
+				trail?.Render(effect);
+				Main.graphics.GraphicsDevice.BlendState = oldState;
 
-			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(Texture + "_Chain_White").Value);
+
+				Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 		}
 
 		private List<Vector2> GetChainPoints()

@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 	{
 		public override string Texture => AssetDirectory.ManabondItem + Name;
 
-		public ShockingManabond() : base("Shocking Manabond", "Your minions can store 40 mana\nYour minions siphon 6 mana per second from you untill full\nYour minions spend 12 mana to attack with chain lightning occasionally\nChain lightning inflicts overcharged, decreasing defense") { }
+		public ShockingManabond() : base("Shocking Manabond", "Your minions can store 40 mana\nYour minions siphon 6 mana per second from you untill full\nYour minions spend 12 mana to attack with chain lightning occasionally\nChain lightning inflicts {{BUFF:Overcharge}}") { }
 
 		public override void SafeSetDefaults()
 		{
@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 		}
 	}
 
-	internal class Shock : ModProjectile, IDrawAdditive
+	internal class Shock : ModProjectile
 	{
 		public Projectile parent;
 
@@ -68,6 +68,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 			Projectile.timeLeft = 15;
 			Projectile.tileCollide = false;
 			Projectile.hostile = false;
+			Projectile.usesLocalNPCImmunity = true;
 		}
 
 		public override void SetStaticDefaults()
@@ -170,7 +171,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 			return null;
 		}
 
-		public void DrawAdditive(SpriteBatch sb)
+		public override void PostDraw(Color lightColor)
 		{
 			if (parent is null)
 				return;
@@ -181,9 +182,9 @@ namespace StarlightRiver.Content.Items.Manabonds
 			if (point1 == Vector2.Zero || point2 == Vector2.Zero)
 				return;
 
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value;
+			Texture2D tex = Assets.GlowTrail.Value;
 
-			Color color = new Color(200, 230, 255) * (Projectile.timeLeft <= 5 ? Projectile.timeLeft / 5f : 1);
+			Color color = new Color(200, 230, 255, 0) * (Projectile.timeLeft <= 5 ? Projectile.timeLeft / 5f : 1);
 
 			for (int k = 1; k < nodes.Count; k++)
 			{
@@ -194,8 +195,8 @@ namespace StarlightRiver.Content.Items.Manabonds
 				var origin = new Vector2(0, tex.Height / 2);
 				float rot = (nodes[k] - prevPos).ToRotation();
 
-				sb.Draw(tex, target, null, color * 0.5f, rot, origin, 0, 0);
-				sb.Draw(tex, target2, null, color, rot, origin, 0, 0);
+				Main.spriteBatch.Draw(tex, target, null, color * 0.5f, rot, origin, 0, 0);
+				Main.spriteBatch.Draw(tex, target2, null, color, rot, origin, 0, 0);
 
 				if (Main.rand.NextBool(30))
 					Dust.NewDustPerfect(prevPos + new Vector2(0, 32), ModContent.DustType<Dusts.GlowLine>(), Vector2.Normalize(nodes[k] - prevPos) * Main.rand.NextFloat(-6, -4), 0, new Color(50, 180, 255), 0.5f);
@@ -203,17 +204,17 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 			foreach (NPC target in targets)
 			{
-				Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Dusts/Aurora").Value;
-				Texture2D tex3 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
+				Texture2D tex2 = Assets.Masks.StarBlurryAlpha.Value;
+				Texture2D tex3 = Assets.Masks.GlowSoftAlpha.Value;
 
-				sb.Draw(tex2, target.Center - Main.screenPosition, null, color, 0, tex2.Size() / 2f, 0.3f, 0, 0);
-				sb.Draw(tex3, target.Center - Main.screenPosition, null, color, 0, tex3.Size() / 2f, 0.5f, 0, 0);
+				Main.spriteBatch.Draw(tex2, target.Center - Main.screenPosition, null, color, 0, tex2.Size() / 2f, 0.3f, 0, 0);
+				Main.spriteBatch.Draw(tex3, target.Center - Main.screenPosition, null, color, 0, tex3.Size() / 2f, 0.5f, 0, 0);
 
-				sb.Draw(tex2, target.Center - Main.screenPosition, null, new Color(0, 150, 255) * (Projectile.timeLeft / 15f), 0, tex2.Size() / 2f, 0.5f + (1 - Projectile.timeLeft / 15f) * 2, 0, 0);
+				Main.spriteBatch.Draw(tex2, target.Center - Main.screenPosition, null, new Color(0, 150, 255, 0) * (Projectile.timeLeft / 15f), 0, tex2.Size() / 2f, 0.5f + (1 - Projectile.timeLeft / 15f) * 2, 0, 0);
 			}
 
-			Color glowColor = new Color(100, 150, 200) * 0.45f * (Projectile.timeLeft <= 5 ? Projectile.timeLeft / 5f : 1);
-			sb.Draw(tex, new Rectangle((int)(point1.X - Main.screenPosition.X), (int)(point1.Y - Main.screenPosition.Y), (int)Vector2.Distance(point1, point2), 100), null, glowColor, (point2 - point1).ToRotation(), new Vector2(0, tex.Height / 2), 0, 0);
+			Color glowColor = new Color(100, 150, 200, 0) * 0.45f * (Projectile.timeLeft <= 5 ? Projectile.timeLeft / 5f : 1);
+			Main.spriteBatch.Draw(tex, new Rectangle((int)(point1.X - Main.screenPosition.X), (int)(point1.Y - Main.screenPosition.Y), (int)Vector2.Distance(point1, point2), 100), null, glowColor, (point2 - point1).ToRotation(), new Vector2(0, tex.Height / 2), 0, 0);
 		}
 	}
 }

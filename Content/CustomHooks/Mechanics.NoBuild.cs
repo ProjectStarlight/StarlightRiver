@@ -71,6 +71,30 @@ namespace StarlightRiver.Content.CustomHooks
 
 	public class ProtectionGlobalItem : GlobalItem
 	{
+		public static List<int> blacklist = [ItemID.WaterBucket,
+			ItemID.LavaBucket,
+			ItemID.HoneyBucket,
+			ItemID.BottomlessBucket,
+			ItemID.Wrench,
+			ItemID.BlueWrench,
+			ItemID.GreenWrench,
+			ItemID.YellowWrench,
+			ItemID.MulticolorWrench,
+			ItemID.ActuationRod,
+			ItemID.Actuator,
+			ItemID.WireKite,
+			ItemID.WireCutter,
+			ItemID.WireBulb,
+			ItemID.Paintbrush,
+			ItemID.PaintRoller,
+			ItemID.PaintScraper,
+			ItemID.SpectrePaintbrush,
+			ItemID.SpectrePaintRoller,
+			ItemID.SpectrePaintScraper
+		];
+
+		public static List<int> whitelist = [ItemID.AcornAxe];
+
 		public override void Load()
 		{
 			On_Player.PickTile += DontPickInZone;
@@ -270,14 +294,10 @@ namespace StarlightRiver.Content.CustomHooks
 			if (player != Main.LocalPlayer)
 				return base.CanUseItem(Item, player);
 
-			//list of Item ids that don't place Items in the normal way so we need to specifically take them out
-			var forbiddenItemIds = new List<int>{ ItemID.WaterBucket, ItemID.LavaBucket, ItemID.HoneyBucket, ItemID.BottomlessBucket,
-														ItemID.Wrench, ItemID.BlueWrench, ItemID.GreenWrench, ItemID.YellowWrench, ItemID.MulticolorWrench,
-														ItemID.ActuationRod, ItemID.Actuator, ItemID.WireKite, ItemID.WireCutter, ItemID.WireBulb,
-														ItemID.Paintbrush, ItemID.PaintRoller, ItemID.PaintScraper,
-														ItemID.SpectrePaintbrush, ItemID.SpectrePaintRoller, ItemID.SpectrePaintScraper};
+			if (whitelist.Contains(Item.type))
+				return base.CanUseItem(Item, player);
 
-			if (Item.createTile != -1 || Item.createWall != -1 || forbiddenItemIds.Contains(Item.type))
+			if (Item.createTile != -1 || Item.createWall != -1 || blacklist.Contains(Item.type))
 			{
 				Point16 targetPoint = Main.SmartCursorIsUsed ? new Point16(Main.SmartCursorX, Main.SmartCursorY) : new Point16(Player.tileTargetX, Player.tileTargetY);
 
@@ -331,10 +351,10 @@ namespace StarlightRiver.Content.CustomHooks
 
 	public class ProtectionWorld : ModSystem
 	{
-		public static List<Rectangle> ProtectedRegions = new();
+		public static List<Rectangle> ProtectedRegions = [];
 
-		private static readonly Dictionary<Point16, Ref<Rectangle>> RuntimeRegionsByPoint = new();
-		public static readonly List<Ref<Rectangle>> RuntimeProtectedRegions = new();
+		private static readonly Dictionary<Point16, Ref<Rectangle>> RuntimeRegionsByPoint = [];
+		public static readonly List<Ref<Rectangle>> RuntimeProtectedRegions = [];
 
 		public override void PostDrawTiles()
 		{
@@ -345,7 +365,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 			foreach (Rectangle rect in ProtectedRegions)
 			{
-				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/MagicPixel").Value;
+				Texture2D tex = Assets.MagicPixel.Value;
 				var target = new Rectangle(rect.X * 16 - (int)Main.screenPosition.X, rect.Y * 16 - (int)Main.screenPosition.Y, rect.Width * 16, rect.Height * 16);
 				Main.spriteBatch.Draw(tex, target, Color.Red * 0.25f);
 			}
@@ -353,7 +373,7 @@ namespace StarlightRiver.Content.CustomHooks
 			foreach (Ref<Rectangle> rectRef in RuntimeProtectedRegions)
 			{
 				Rectangle rect = rectRef.Value;
-				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/MagicPixel").Value;
+				Texture2D tex = Assets.MagicPixel.Value;
 				var target = new Rectangle(rect.X * 16 - (int)Main.screenPosition.X, rect.Y * 16 - (int)Main.screenPosition.Y, rect.Width * 16, rect.Height * 16);
 				Main.spriteBatch.Draw(tex, target, Color.Blue * 0.25f);
 			}

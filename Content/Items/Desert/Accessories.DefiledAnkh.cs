@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems.BarrierSystem;
+using StarlightRiver.Core.Systems.InoculationSystem;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Desert
@@ -10,8 +11,8 @@ namespace StarlightRiver.Content.Items.Desert
 
 		public override void SetStaticDefaults()
 		{
-			Tooltip.SetDefault("Cursed : Your {{Barrier}} protects against twenty-five percent less damage\n+100% {{Inoculation}} while {{Barrier}} is active\nimmunity to most debuffs while {{Barrier}} is active" +
-				"\n+40 max {{Barrier}}");
+			Tooltip.SetDefault("Your {{Barrier}} protects against 25% less damage\n+100% {{Inoculation}} and immunity to most debuffs while {{Barrier}} is active" +
+				"\n+40 maximum {{Barrier}}");
 		}
 
 		public override void SafeSetDefaults()
@@ -43,7 +44,7 @@ namespace StarlightRiver.Content.Items.Desert
 				player.buffImmune[BuffID.Frozen] = true;
 				player.buffImmune[BuffID.Webbed] = true;
 
-				player.GetModPlayer<DoTResistancePlayer>().DoTResist += 1;
+				player.GetModPlayer<InoculationPlayer>().DoTResist += 1;
 			}
 		}
 	}

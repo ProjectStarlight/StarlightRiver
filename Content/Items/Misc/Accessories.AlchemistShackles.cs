@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Alchemist's Shackles");
-			Tooltip.SetDefault("Resource potions are more effective when their respective resource is lower \nCursed : Potion sickness effects last 15 seconds longer");
+			Tooltip.SetDefault("Resource potions are more effective when their respective resource is lower \nPotion sickness effects last 15 seconds longer");
 		}
 
 		public override void SafeSetDefaults()

@@ -37,6 +37,7 @@ namespace StarlightRiver.Core
 		public const string AluminumItem = Assets + "Items/AstralMeteor/";
 		public const string MoonstoneItem = Assets + "Items/Moonstone/";
 		public const string CaveTempleItem = Assets + "Items/UndergroundTemple/";
+		public const string CrimsonItem = Assets + "Items/Crimson/";
 		public const string DungeonItem = Assets + "Items/Dungeon/";
 		public const string HellItem = Assets + "Items/Hell/";
 		public const string JungleItem = Assets + "Items/Jungle/";
@@ -128,7 +129,7 @@ namespace StarlightRiver.Core
 		public const string JungleCorruptTile = Assets + "Tiles/JungleCorrupt/";
 		public const string JungleHolyTile = Assets + "Tiles/JungleHoly/";
 
-		public const string StarjuiceTile = Assets + "Tiles/StarJuice/";
+		public const string StarlightTile = Assets + "Tiles/Starlight/";
 
 		public const string UndergroundTempleTile = Assets + "Tiles/UndergroundTemple/";
 
@@ -141,6 +142,9 @@ namespace StarlightRiver.Core
 		public const string DesertItem = Assets + "Items/Desert/";
 
 		public const string EvilBiomesItem = Assets + "Items/EvilBiomes/";
+		public const string CrimsonNPCs = Assets + "NPCs/Crimson/";
+
+		public const string TheThinkerBoss = Assets + "Bosses/TheThinkerBoss/";
 
 		//structures
 		public const string StructureFolder = "Structures/";
@@ -150,6 +154,7 @@ namespace StarlightRiver.Core
 		public const string VitricCrystalStructs = VitricStructures + "WalkableCrystals/";
 
 		//misc
-		public const string Keys = Assets + "Keys/";
+		public const string Masks = Assets + "Masks/";
+		public const string Palettes = Assets + "Palettes/";
 	}
 }

@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		}
 	}
 
-	class MainForgeDummy : Dummy, IHintable
+	class MainForgeDummy : Dummy
 	{
 		public float power = 0;
 
@@ -103,27 +103,27 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 			TempleTileUtils.DrawBackground(spriteBatch, bgTarget);
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MainForgeOver").Value;
-			Texture2D texHammer = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MainForgeHammer").Value;
+			Texture2D tex = Assets.Tiles.Vitric.MainForgeOver.Value;
+			Texture2D texHammer = Assets.Tiles.Vitric.MainForgeHammer.Value;
 
 			var offset = new Vector2(0, HammerFunction(timer * 0.01f));
 
 			spriteBatch.End();
 
-			LightingBufferRenderer.DrawWithLighting(pos + offset, texHammer, Color.White);
-			LightingBufferRenderer.DrawWithLighting(pos, tex, Color.White);
+			LightingBufferRenderer.DrawWithLighting(texHammer, pos + offset, Color.White);
+			LightingBufferRenderer.DrawWithLighting(tex, pos, Color.White);
 
 			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
-			Texture2D texGlow = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MainForgeGlow").Value;
+			Texture2D texGlow = Assets.Tiles.Vitric.MainForgeGlow.Value;
 			spriteBatch.Draw(texGlow, pos, Color.White);
 		}
 
 		public void DrawLaser(SpriteBatch spriteBatch)
 		{
-			Texture2D texBeam = ModContent.Request<Texture2D>(AssetDirectory.MiscTextures + "BeamCore").Value;
-			Texture2D texBeam2 = ModContent.Request<Texture2D>(AssetDirectory.MiscTextures + "BeamTrail").Value;
-			Texture2D texDark = ModContent.Request<Texture2D>(AssetDirectory.MiscTextures + "GradientBlack").Value;
+			Texture2D texBeam = Assets.Misc.BeamCore.Value;
+			Texture2D texBeam2 = Assets.Misc.BeamTrail.Value;
+			Texture2D texDark = Assets.Misc.GradientBlack.Value;
 
 			var origin = new Vector2(0, texBeam.Height / 2);
 			var origin2 = new Vector2(0, texBeam2.Height / 2);
@@ -139,43 +139,46 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 			Effect effect = StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value;
 
-			effect.Parameters["uColor"].SetValue(color.ToVector3());
-
-			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
-
-			float height = texBeam.Height / 2f * (0.5f + puzzleProg * 0.5f);
-			int width = (int)(centerPos - endpoint).Length();
-
-			Vector2 pos = centerPos - Main.screenPosition;
-
-			var target = new Rectangle((int)pos.X, (int)pos.Y, width, (int)(height * 1.2f));
-			var target2 = new Rectangle((int)pos.X, (int)pos.Y, width, (int)height);
-
-			var source = new Rectangle(texBeam.Width + (int)Main.GameUpdateCount * (int)(3 * power + 1), 0, texBeam.Width, texBeam.Height);
-			var source2 = new Rectangle(texBeam2.Width + (int)Main.GameUpdateCount * (int)(3 * power + 1), 0, texBeam2.Width, texBeam2.Height);
-
-			spriteBatch.Draw(texBeam, target, source, color, rot, origin, 0, 0);
-			spriteBatch.Draw(texBeam2, target2, source2, color * 0.5f, rot, origin2, 0, 0);
-
-			source = new Rectangle(texBeam.Width + (int)Main.GameUpdateCount * (int)(5 * power + 1), 0, texBeam.Width, texBeam.Height);
-			source2 = new Rectangle(texBeam2.Width + (int)Main.GameUpdateCount * (int)(5 * power + 1), 0, texBeam2.Width, texBeam2.Height);
-
-			spriteBatch.Draw(texBeam, target, source, color, rot, origin, SpriteEffects.FlipVertically, 0);
-			spriteBatch.Draw(texBeam2, target2, source2, color * 0.5f, rot, origin2, SpriteEffects.FlipVertically, 0);
-
-			for (int i = 0; i < width; i += 10)
+			if (effect != null)
 			{
-				Lighting.AddLight(pos + Vector2.UnitX.RotatedBy(rot) * i + Main.screenPosition, color.ToVector3() * height * 0.010f);
+				effect.Parameters["uColor"].SetValue(color.ToVector3());
+
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+
+				float height = texBeam.Height / 2f * (0.5f + puzzleProg * 0.5f);
+				int width = (int)(centerPos - endpoint).Length();
+
+				Vector2 pos = centerPos - Main.screenPosition;
+
+				var target = new Rectangle((int)pos.X, (int)pos.Y, width, (int)(height * 1.2f));
+				var target2 = new Rectangle((int)pos.X, (int)pos.Y, width, (int)height);
+
+				var source = new Rectangle(texBeam.Width + (int)Main.GameUpdateCount * (int)(3 * power + 1), 0, texBeam.Width, texBeam.Height);
+				var source2 = new Rectangle(texBeam2.Width + (int)Main.GameUpdateCount * (int)(3 * power + 1), 0, texBeam2.Width, texBeam2.Height);
+
+				spriteBatch.Draw(texBeam, target, source, color, rot, origin, 0, 0);
+				spriteBatch.Draw(texBeam2, target2, source2, color * 0.5f, rot, origin2, 0, 0);
+
+				source = new Rectangle(texBeam.Width + (int)Main.GameUpdateCount * (int)(5 * power + 1), 0, texBeam.Width, texBeam.Height);
+				source2 = new Rectangle(texBeam2.Width + (int)Main.GameUpdateCount * (int)(5 * power + 1), 0, texBeam2.Width, texBeam2.Height);
+
+				spriteBatch.Draw(texBeam, target, source, color, rot, origin, SpriteEffects.FlipVertically, 0);
+				spriteBatch.Draw(texBeam2, target2, source2, color * 0.5f, rot, origin2, SpriteEffects.FlipVertically, 0);
+
+				for (int i = 0; i < width; i += 10)
+				{
+					Lighting.AddLight(pos + Vector2.UnitX.RotatedBy(rot) * i + Main.screenPosition, color.ToVector3() * height * 0.010f);
+				}
+
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+
+				Texture2D glowTex = Assets.GlowTrail.Value;
+
+				color.A = 0;
+				spriteBatch.Draw(glowTex, target, source, color * 0.95f, rot, new Vector2(0, glowTex.Height / 2), 0, 0);
 			}
-
-			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
-
-			Texture2D glowTex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "GlowTrail").Value;
-
-			color.A = 0;
-			spriteBatch.Draw(glowTex, target, source, color * 0.95f, rot, new Vector2(0, glowTex.Height / 2), 0, 0);
 		}
 
 		public float HammerFunction(float input)
@@ -187,11 +190,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			else if (input < 0.8f)
 				return 52 - 60;
 			else
-				return 52 - 60 + Helpers.Helper.BezierEase((input - 0.8f) / 0.2f) * 60;
-		}
-		public string GetHint()
-		{
-			return "An ancient forge, powered by concentrated light...";
+				return 52 - 60 + Helpers.Eases.BezierEase((input - 0.8f) / 0.2f) * 60;
 		}
 	}
 

@@ -1,10 +1,12 @@
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
+using StarlightRiver.Content.Abilities.Hint;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Content.Packets;
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
+using Terraria;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
@@ -12,7 +14,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
-	class GlassweaverWaiting : ModNPC, IHintable
+	class GlassweaverFriendly : ModNPC
 	{
 		public const int FRAME_WIDTH = 124;
 
@@ -50,7 +52,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			NPC.DeathSound = SoundID.NPCDeath1;
 			NPC.knockBackResist = 0;
 
-			manager = new("Localization/Dialog/GlassweaverDialog.json", NPC);
+			manager = new("GlassweaverDialog.json", NPC);
 		}
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
@@ -72,20 +74,22 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			VisualTimer++;
 
 			if (State < 0 || State > 7)
-				State = StarlightWorld.HasFlag(WorldFlags.GlassweaverDowned) ? 3 : 0;
+				State = GlassweaverSafetySystem.IntendedGlassweaverPhase;
+
+			GlassweaverSafetySystem.IntendedGlassweaverPhase = (int)State;
 
 			if (Main.netMode != NetmodeID.Server) // Client based stuff
 			{
 				if (talkingTo != null && Vector2.Distance(talkingTo.Center, NPC.Center) > 2000)
 				{
 					talkingTo = null;
-					RichTextBox.CloseDialogue();
+					DialogUI.CloseDialogue();
 				}
 
 				if (talkingTo != null && talkingTo.TalkNPC != NPC)
 				{
 					talkingTo = null;
-					RichTextBox.CloseDialogue();
+					DialogUI.CloseDialogue();
 				}
 			}
 
@@ -148,7 +152,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			if (Main.netMode == NetmodeID.MultiplayerClient && !NPC.active) // Close any dialogs if the npc is inactive.
 			{
 				talkingTo = null;
-				RichTextBox.CloseDialogue();
+				DialogUI.CloseDialogue();
 			}
 
 			return true;
@@ -192,8 +196,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		{
 			State = 5;
 
-			if (!Helpers.Helper.HasItem(Main.LocalPlayer, ItemType<TempleEntranceKey>(), 1))
+			if (!Helpers.InventoryHelper.HasItem(Main.LocalPlayer, ItemType<TempleEntranceKey>(), 1))
+			{
 				Main.LocalPlayer.QuickSpawnItem(NPC.GetSource_FromThis(), ItemType<TempleEntranceKey>());
+				Main.LocalPlayer.GetModPlayer<HintPlayer>().SetHintState("PreWinds");
+			}
 		}
 
 		/// <summary>
@@ -213,6 +220,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Infusion.gainAnimationTimer = 240;
 
 			Main.LocalPlayer.QuickSpawnItem(NPC.GetSource_FromThis(), ItemType<StellarRushItem>());
+			Main.LocalPlayer.GetModPlayer<HintPlayer>().SetHintState("PostGlassweaverMove");
 		}
 
 		public override string GetChat()
@@ -267,10 +275,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				State == 2 ||
 				State == 3 ||
 				State == 5 && StarlightWorld.HasFlag(WorldFlags.VitricBossDowned) ||
-				State == 7 && Main.LocalPlayer.GetHandler().InfusionLimit == 0) 
+				State == 7 && Main.LocalPlayer.GetHandler().InfusionLimit == 0)
 				&& talkingTo is null)
 			{
-				Texture2D exclaim = Request<Texture2D>("StarlightRiver/Assets/Misc/Exclaim").Value;
+				Texture2D exclaim = Assets.Misc.Exclaim.Value;
 				Vector2 exclaimPos = NPC.Center + Vector2.UnitY * -95 - Main.screenPosition;
 				exclaimPos.Y += (float)Math.Sin(Main.GameUpdateCount * 0.025f) * 5;
 				spriteBatch.Draw(exclaim, exclaimPos, null, Color.White, (float)Math.Sin(Main.GameUpdateCount * 0.05f) * 0.15f, exclaim.Size() / 2f, 1, 0, 0);
@@ -291,11 +299,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		public override void LoadData(TagCompound tag)
 		{
 			State = tag.GetAsInt("State");
-		}
-
-		public string GetHint()
-		{
-			return "Is this... creature... really what 'lurks beneath the desert?'";
 		}
 	}
 }

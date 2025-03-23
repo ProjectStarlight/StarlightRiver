@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.Misc;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -141,7 +142,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			return false;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int i = 1; i < 9; i++)
 			{
@@ -174,7 +175,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		{
 			if (target != default && Owner.whoAmI == Main.myPlayer)
 			{
-				Vector2 vel = ArcVelocityHelper.GetArcVel(Projectile.Center, target.Center, 0.25f, 300, 600);
+				Vector2 vel = GeometryHelper.GetArcVel(Projectile.Center, target.Center, 0.25f, 300, 600);
 				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, vel, ModContent.ProjectileType<JetwelderJumperMissle>(), Projectile.damage * 2, Projectile.knockBack, Owner.whoAmI, target.whoAmI);
 			}
 		}
@@ -255,7 +256,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			return base.CanHitNPC(target);
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int i = 0; i < 6; i++)
 			{
@@ -313,11 +314,14 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => 4, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				Color trailColor = Color.White;
-				return trailColor * 0.3f;
-			});
+				trail = new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => 4, factor =>
+							{
+								Color trailColor = Color.White;
+								return trailColor * 0.3f;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
@@ -325,19 +329,24 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		private void DrawTrail(SpriteBatch spriteBatch)
 		{
-			spriteBatch.End();
-			Effect effect = Filters.Scene["CoachBombTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			Effect effect = ShaderLoader.GetShader("CoachBombTrail").Value;
 
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/MotionTrail").Value);
+			if (effect != null)
+			{
+				spriteBatch.End();
 
-			trail?.Render(effect);
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.MotionTrail.Value);
+
+				trail?.Render(effect);
+
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 		}
 	}
 

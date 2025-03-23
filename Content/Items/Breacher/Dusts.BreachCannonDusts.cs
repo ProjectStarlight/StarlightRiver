@@ -1,4 +1,6 @@
-﻿namespace StarlightRiver.Content.Items.Breacher
+﻿using StarlightRiver.Core.Loaders;
+
+namespace StarlightRiver.Content.Items.Breacher
 {
 	public class BreachImpactGlow : Dusts.Glow
 	{
@@ -7,7 +9,8 @@
 			dust.noGravity = true;
 			dust.frame = new Rectangle(0, 0, 64, 64);
 
-			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value), "GlowingDustPass");
+			if (ShaderLoader.GetShader("GlowingDust").Value != null)
+				dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
 		}
 
 		public override bool Update(Dust dust)
@@ -25,7 +28,8 @@
 			dust.noLight = false;
 			dust.frame = new Rectangle(0, 0, 5, 50);
 
-			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/ShrinkingDust").Value), "ShrinkingDustPass");
+			if (ShaderLoader.GetShader("ShrinkingDust").Value != null)
+				dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("ShrinkingDust"), "ShrinkingDustPass");
 		}
 
 		public override bool Update(Dust dust)

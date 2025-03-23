@@ -2,11 +2,13 @@
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Breacher;
 using StarlightRiver.Content.Packets;
+using StarlightRiver.Content.PersistentData;
 using StarlightRiver.Content.Tiles.Vitric;
 using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems.BossRushSystem;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.DummyTileSystem;
+using StarlightRiver.Core.Systems.PersistentDataSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -26,8 +28,9 @@ namespace StarlightRiver.Core
 
 		public int pickupTimer = 0; //TODO: Move this into its own thing eventually
 		public int maxPickupTimer = 0;
-		public NPC pickupTarget;
+		public Dummy pickupTarget;
 		public Vector2 oldPickupPos;
+		public bool pickupHoldsPlayer = true;
 
 		public bool inTutorial;
 
@@ -54,7 +57,11 @@ namespace StarlightRiver.Core
 				Player.immuneTime = 5;
 				Player.immuneNoBlink = true;
 
-				Player.Center = Vector2.SmoothStep(oldPickupPos, pickupTarget.Center, pickupTimer / 30f);
+				if (pickupHoldsPlayer)
+					Player.Center = Vector2.SmoothStep(oldPickupPos, pickupTarget.Center, pickupTimer / 30f);
+				else
+					pickupHoldsPlayer = true;
+
 				if (pickupTimer >= maxPickupTimer)
 					pickupTarget = null;
 			}
@@ -162,11 +169,20 @@ namespace StarlightRiver.Core
 
 			DummyTile.dummiesByPosition.Clear();
 
-			if (Main.masterMode && !BossRushSystem.isBossRush)
+			TutorialDataStore store = PersistentDataStoreSystem.GetDataStore<TutorialDataStore>();
+
+			if (Main.masterMode && !BossRushSystem.isBossRush && !store.ignoreMasterWarning)
 			{
-				UILoader.GetUIState<MessageBox>().Display("WARNING", "Starlight River has unique behavior for its bosses in Master Mode. This behavior is intended to be immensely difficult over anything else, and assumes a high amount of knowldge about " +
+				UILoader.GetUIState<MessageBox>().Display("Warning - Master Mode", "Starlight River has unique behavior for its bosses in Master Mode. This behavior is intended to be immensely difficult over anything else, and assumes a high amount of knowldge about " +
 					"both the mod and base game. Starlight River Master Mode is not intended for a first playthrough. Starlight River Master Mode is not intended to be fair. Starlight River Master Mode is not intended to be fun for everyone. " +
 					"Please remember that the health, both physical and mental, of yourself and those around you is far more important than this game or anything inside of it.");
+
+				UILoader.GetUIState<MessageBox>().AppendButton(Assets.GUI.BackButton, () =>
+				{
+					store.ignoreMasterWarning = true;
+					store.ForceSave();
+					UILoader.GetUIState<MessageBox>().Visible = false;
+				}, "Dont show again");
 			}
 		}
 
@@ -205,7 +221,7 @@ namespace StarlightRiver.Core
 
 					if (modPlayer.Charges >= 1 && target != default)
 					{
-						Helper.PlayPitched("Effects/Chirp" + (Main.rand.Next(2) + 1).ToString(), 0.5f, 0);
+						SoundHelper.PlayPitched("Effects/Chirp" + (Main.rand.Next(2) + 1).ToString(), 0.5f, 0);
 						drone.ScanTimer = SpotterDrone.SCAN_TIME;
 						drone.Charges = Player.GetModPlayer<BreacherPlayer>().Charges;
 						Player.GetModPlayer<BreacherPlayer>().ticks = 0;

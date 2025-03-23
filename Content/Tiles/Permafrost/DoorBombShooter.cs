@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 		{
-			Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition + new Vector2(18, -42);
+			Vector2 pos = new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange - Main.screenPosition + new Vector2(18, -42);
 
 			if (!StarlightWorld.HasFlag(WorldFlags.SquidBossOpen))
 			{
@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
-			Texture2D barrier = ModContent.Request<Texture2D>("StarlightRiver/Assets/MotionTrail").Value;
+			Texture2D barrier = Assets.MotionTrail.Value;
 			var sourceRect = new Rectangle(0, (int)(Main.GameUpdateCount * 0.2f), barrier.Width, barrier.Height);
 			var sourceRect2 = new Rectangle(0, (int)(Main.GameUpdateCount * -0.42f), barrier.Width, barrier.Height);
 

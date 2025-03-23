@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.SoundPuzzle
 			Tile tile = Framing.GetTileSafely(i, j);
 
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 + Vector2.UnitY * -Helper.BezierEase(SoundPuzzleHandler.solveTimer / 180f) * 5 * 16;
+			Vector2 pos = new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange + Vector2.UnitY * -Eases.BezierEase(SoundPuzzleHandler.solveTimer / 180f) * 5 * 16;
 			var frame = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16);
 
 			spriteBatch.Draw(tex, pos - Main.screenPosition, frame, Lighting.GetColor(i, j));

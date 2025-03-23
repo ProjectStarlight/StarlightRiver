@@ -1,3 +1,4 @@
+using StarlightRiver.Core.Loaders;
 using System;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -72,24 +73,24 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 		{
 			orig(self);
 
-			//putting this here so I dont have to load another detour to get it to load in front of the fist
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+			Effect effect = ShaderLoader.GetShader("ConicalNoise").Value;
 
-			Main.spriteBatch.End();
-
-			Color color = Color.OrangeRed;
-			color.A = 0;
+			if (effect is null)
+				return;
 
 			foreach (Projectile Projectile in Main.projectile)
 			{
 				if (Projectile.active && Projectile.type == ModContent.ProjectileType<IgnitionGauntletLaunch>() && Main.player[Projectile.owner].GetModPlayer<IgnitionPlayer>().loadedCharge > 15)
 				{
+					Color color = Color.OrangeRed;
+					color.A = 0;
+
 					Player player = Main.player[Projectile.owner];
 					Texture2D starTex = ModContent.Request<Texture2D>(Texture + "_Star").Value;
 
 					var mp = Projectile.ModProjectile as IgnitionGauntletLaunch;
 					Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-					Effect effect = Filters.Scene["ConicalNoise"].GetShader().Shader;
+
 					Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 					effect.Parameters["vnoise"].SetValue(ModContent.Request<Texture2D>(Texture + "_noise").Value);

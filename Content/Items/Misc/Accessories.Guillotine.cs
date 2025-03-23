@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void Execute(NPC NPC, int owner)
 		{
-			int flesh = Helpers.Helper.IsFleshy(NPC) ? 0 : 1;
+			int flesh = Helpers.NPCHelper.IsFleshy(NPC) ? 0 : 1;
 
 			if (Main.myPlayer == owner)
 			{
@@ -106,7 +106,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 				if (WasFleshy == 0)
 				{
-					Helpers.Helper.PlayPitched("Impacts/GoreHeavy", 1, 0, Projectile.Center);
+					Helpers.SoundHelper.PlayPitched("Impacts/GoreHeavy", 1, 0, Projectile.Center);
 
 					for (int k = 0; k < 200; k++)
 					{
@@ -115,14 +115,14 @@ namespace StarlightRiver.Content.Items.Misc
 				}
 				else
 				{
-					Helpers.Helper.PlayPitched("ChainHit", 1, -0.5f, Projectile.Center);
+					Helpers.SoundHelper.PlayPitched("ChainHit", 1, -0.5f, Projectile.Center);
 				}
 			}
 		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "Guillotine").Value;
+			Texture2D tex = Assets.Items.Misc.Guillotine.Value;
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * (Projectile.timeLeft / 45f), 0, tex.Size() / 2f, (1 - Projectile.timeLeft / 45f) * 3f, 0, 0);
 
 			return false;

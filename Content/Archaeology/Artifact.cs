@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Terraria.DataStructures;
+using Terraria.ModLoader.Exceptions;
 using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Archaeology
@@ -31,10 +32,12 @@ namespace StarlightRiver.Content.Archaeology
 
 		public virtual string TexturePath => AssetDirectory.Archaeology + Name;
 
+		private Asset<Texture2D> texture;
+
 		/// <summary>
 		/// Texture path the artifact uses on the map when revealed
 		/// </summary>
-		public virtual string MapTexturePath => AssetDirectory.Archaeology + "DigMarker";
+		public virtual Asset<Texture2D> MapPreviewTexture => Assets.Archaeology.DigMarker;
 
 		/// <summary>
 		/// Size of the artifact. In world coordinates, not tile coordinates
@@ -74,6 +77,14 @@ namespace StarlightRiver.Content.Archaeology
 		public virtual bool CanGenerate(int i, int j)
 		{
 			return true;
+		}
+
+		public override void Load()
+		{
+			texture = ModContent.Request<Texture2D>(TexturePath);
+
+			if (texture is null)
+				throw new MissingResourceException(TexturePath + " Could not be found for an artifact!");
 		}
 
 		public virtual void Draw(SpriteBatch spriteBatch)
@@ -130,15 +141,13 @@ namespace StarlightRiver.Content.Archaeology
 
 		public void GenericDraw(SpriteBatch spriteBatch) //I have no idea why but the drawing is offset by -192 on each axis by default, so I had to correct it
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(TexturePath).Value;
-
 			var offScreen = new Vector2(Main.offScreenRange);
 			if (Main.drawToScreen)
 			{
 				offScreen = Vector2.Zero;
 			}
 
-			spriteBatch.Draw(tex, WorldPosition - Main.screenPosition, null, Lighting.GetColor(Position.ToPoint()), 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
+			spriteBatch.Draw(texture.Value, WorldPosition - Main.screenPosition, null, Lighting.GetColor(Position.ToPoint()), 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
 		}
 
 		public void CheckOpen()
