@@ -44,6 +44,8 @@ namespace StarlightRiver.Content.NPCs.Forest
 			NPC.height = 28;
 			NPC.aiStyle = -1;
 			NPC.defense = 3;
+			NPC.HitSound = SoundID.NPCHit1;
+			NPC.DeathSound = SoundID.NPCDeath1;
 		}
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
