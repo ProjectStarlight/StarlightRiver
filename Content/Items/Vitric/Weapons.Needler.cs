@@ -1,5 +1,6 @@
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.UndergroundTemple;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.PixelationSystem;
 using StarlightRiver.Helpers;
@@ -74,11 +75,11 @@ namespace StarlightRiver.Content.Items.Vitric
 			recipe.Register();
 		}
 	}
-	
+
 	public class NeedlerHoldout : ModProjectile
 	{
 		public bool updateVelocity = true;
-		public ref float Timer => ref Projectile.ai[0];	
+		public ref float Timer => ref Projectile.ai[0];
 		public ref float UseTime => ref Projectile.ai[1];
 		public bool CanHold => Owner.channel && !Owner.CCed && !Owner.noItems;
 		public Vector2 ArmPosition => Owner.RotatedRelativePoint(Owner.MountedCenter, true) + new Vector2(16f, -4f * Owner.direction).RotatedBy(Projectile.velocity.ToRotation());
@@ -145,36 +146,39 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			SpriteEffects spriteEffects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-			Vector2 position = Projectile.Center + Vector2.Lerp(Vector2.Zero, new Vector2(-4f * Owner.direction, 0f), EaseBuilder.EaseCircularIn.Ease(Timer < 75f ? Timer / 75f : 1f)).RotatedBy(Projectile.rotation) - Main.screenPosition;
+			Vector2 position = Projectile.Center + Vector2.Lerp(Vector2.Zero, new Vector2(-4f * Owner.direction, 0f), Eases.EaseCircularIn(Timer < 75f ? Timer / 75f : 1f)).RotatedBy(Projectile.rotation) - Main.screenPosition;
 
 			Main.spriteBatch.Draw(tex, position, frame, lightColor, Projectile.rotation, frame.Size() / 2f, Projectile.scale, spriteEffects, 0f);
 
-			Effect effect = Filters.Scene["DistortSprite"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("DistortSprite").Value;
 
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+			if (effect != null)
+			{
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
-			effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.035f);
-			effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.0035f);
-			effect.Parameters["screenPos"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / new Vector2(Main.screenWidth, Main.screenHeight));
+				effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.035f);
+				effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.0035f);
+				effect.Parameters["screenPos"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / new Vector2(Main.screenWidth, Main.screenHeight));
 
-			effect.Parameters["offset"].SetValue(new Vector2(0.001f));
-			effect.Parameters["repeats"].SetValue(1);
-			effect.Parameters["uImage1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/SwirlyNoiseLooping").Value);
-			effect.Parameters["uImage2"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.VitricBoss + "LaserBallDistort").Value);
+				effect.Parameters["offset"].SetValue(new Vector2(0.001f));
+				effect.Parameters["repeats"].SetValue(1);
+				effect.Parameters["uImage1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/SwirlyNoiseLooping").Value);
+				effect.Parameters["uImage2"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.VitricBoss + "LaserBallDistort").Value);
 
-			Color color = new Color(255, 50, 20, 0) * (Timer < 35f ? Timer / 35f : 1f) * 0.55f;
+				Color color = new Color(255, 50, 20, 0) * (Timer < 35f ? Timer / 35f : 1f) * 0.55f;
 
-			effect.Parameters["uColor"].SetValue(color.ToVector4());
-			effect.Parameters["noiseImage1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/SwirlyNoiseLooping").Value);
+				effect.Parameters["uColor"].SetValue(color.ToVector4());
+				effect.Parameters["noiseImage1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/SwirlyNoiseLooping").Value);
 
-			effect.CurrentTechnique.Passes[0].Apply();
+				effect.CurrentTechnique.Passes[0].Apply();
 
-			Main.spriteBatch.Draw(itemTexGlow, position, null, Color.White, Projectile.rotation, itemTexGlow.Size() / 2f, Projectile.scale, spriteEffects, 0f);
+				Main.spriteBatch.Draw(itemTexGlow, position, null, Color.White, Projectile.rotation, itemTexGlow.Size() / 2f, Projectile.scale, spriteEffects, 0f);
 
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
-			
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			}
+
 			return false;
 		}
 
@@ -183,7 +187,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		/// </summary>
 		private void Shoot()
 		{
-			Helper.PlayPitched("Guns/SMG2", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
+			SoundHelper.PlayPitched("Guns/SMG2", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
 
 			if (Main.myPlayer == Projectile.owner)
 				Projectile.NewProjectile(Projectile.GetSource_FromThis(), BarrelPosition, Projectile.velocity.RotatedByRandom(0.15f) * Owner.HeldItem.shootSpeed, ModContent.ProjectileType<NeedlerProj>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
@@ -305,7 +309,6 @@ namespace StarlightRiver.Content.Items.Vitric
 					}
 
 					NPC target = Main.npc[enemyID];
-					
 
 					if (!target.active)
 						Projectile.Kill();
@@ -384,16 +387,15 @@ namespace StarlightRiver.Content.Items.Vitric
 					target.GetGlobalNPC<NeedlerNPC>().ProcExplode(Projectile.Center, Projectile.damage, Projectile.owner);
 			}
 
-			if (Helper.IsFleshy(target))
+			if (NPCHelper.IsFleshy(target))
 			{
-				Helper.PlayPitched("Impacts/StabFleshy", 0.25f, Main.rand.NextFloat(-0.05f, 0.05f), Projectile.Center);
+				SoundHelper.PlayPitched("Impacts/StabFleshy", 0.25f, Main.rand.NextFloat(-0.05f, 0.05f), Projectile.Center);
 			}
 			else
 			{
-				Helper.PlayPitched("Impacts/StabTiny", 0.25f, Main.rand.NextFloat(-0.05f, 0.05f), Projectile.Center);
+				SoundHelper.PlayPitched("Impacts/StabTiny", 0.25f, Main.rand.NextFloat(-0.05f, 0.05f), Projectile.Center);
 			}
 
-			
 			for (int i = 0; i < 2; i++)
 			{
 				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<PixelatedGlow>(),
@@ -425,7 +427,7 @@ namespace StarlightRiver.Content.Items.Vitric
 						velo, 0, new Color(255, 100, 20, 0), 0.05f);
 				}
 
-				Helper.PlayPitched("Impacts/IceHit", 0.75f, Main.rand.NextFloat(-0.05f, 0.05f), Projectile.Center);
+				SoundHelper.PlayPitched("Impacts/IceHit", 0.75f, Main.rand.NextFloat(-0.05f, 0.05f), Projectile.Center);
 			}
 
 			return false;
@@ -448,7 +450,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Texture2D texBlur = ModContent.Request<Texture2D>(Texture + "_Blur").Value;
 			Texture2D texWhite = ModContent.Request<Texture2D>(Texture + "_White").Value;
 
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Masks + "GlowAlpha").Value;
 
 			float fadeOut = 1f;
 			if (Projectile.timeLeft < 30f)
@@ -488,13 +490,13 @@ namespace StarlightRiver.Content.Items.Vitric
 		private void ManageTrail()
 		{
 			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(190), factor => factor * 4.5f, factor =>
-			Color.Lerp(new Color(255, 100, 20), new Color(35, 70, 120), EaseBuilder.EaseQuarticOut.Ease(1f - factor.X)) * (1f - stuckTimer / 10f));
+			Color.Lerp(new Color(255, 100, 20), new Color(35, 70, 120), Eases.EaseQuarticOut(1f - factor.X)) * (1f - stuckTimer / 10f));
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
 
 			trail2 ??= new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(190), factor => factor * 4f, factor =>
-			Color.Lerp(new Color(255, 130, 20), new Color(50, 100, 170), EaseBuilder.EaseQuarticOut.Ease(1f - factor.X)) * (1f - stuckTimer / 10f));
+			Color.Lerp(new Color(255, 130, 20), new Color(50, 100, 170), Eases.EaseQuarticOut(1f - factor.X)) * (1f - stuckTimer / 10f));
 
 			trail2.Positions = cache.ToArray();
 			trail2.NextPosition = Projectile.Center + Projectile.velocity;
@@ -504,25 +506,28 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("UnderTiles", () =>
 			{
-				Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+				Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-				Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+				if (effect != null)
+				{
+					Matrix world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 
-				// !!! IMPORTANT WHEN PIXELIZING, MAKE SURE TO USE Main.GameViewMatrix.EffectMatrix IMPORTANT !!!
+					// !!! IMPORTANT WHEN PIXELIZING, MAKE SURE TO USE Main.GameViewMatrix.EffectMatrix IMPORTANT !!!
 
-				Matrix view = Main.GameViewMatrix.EffectMatrix; 
-				Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+					Matrix view = Main.GameViewMatrix.EffectMatrix;
+					Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
-				effect.Parameters["repeats"].SetValue(1f);
-				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "GlowTrail").Value);
-				trail?.Render(effect);
+					effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
+					effect.Parameters["repeats"].SetValue(1f);
+					effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+					effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "GlowTrail").Value);
+					trail?.Render(effect);
 
-				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "FireTrail").Value);
+					effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "FireTrail").Value);
 
-				trail?.Render(effect);
-				trail2?.Render(effect);
+					trail?.Render(effect);
+					trail2?.Render(effect);
+				}
 			});
 		}
 	}
@@ -536,7 +541,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override string Texture => AssetDirectory.Invisible;
 		private float Progress => Utils.Clamp(1 - Projectile.timeLeft / 30f, 0f, 1f);
 
-		private float Radius => Projectile.ai[0] * EaseBuilder.EaseQuinticOut.Ease(Progress);
+		private float Radius => Projectile.ai[0] * Eases.EaseQuinticOut(Progress);
 
 		public override void SetDefaults()
 		{
@@ -568,9 +573,6 @@ namespace StarlightRiver.Content.Items.Vitric
 			for (int k = 0; k < 6; k++)
 			{
 				float rot = Main.rand.NextFloat(0, 6.28f);
-
-				//Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedBy(rot) * Radius, ModContent.DustType<PixelatedGlow>(),
-					//Vector2.One.RotatedBy(rot) * 0.5f, 0, Color.Lerp(new Color(255, 200, 50, 0), new Color(255, 50, 20, 0), EaseBuilder.EaseQuinticOut.Ease(Progress)), Main.rand.NextFloat(0.2f, 0.3f));
 
 				Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedBy(rot) * Radius, DustID.Torch,
 					Vector2.One.RotatedBy(rot) * 0.5f, 0, default, Main.rand.NextFloat(1.5f, 3f)).noGravity = true;
@@ -624,9 +626,9 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 40, new TriangularTip(1), factor => 40 * (1f - Progress), factor => Color.Lerp(new Color(255, 180, 20), new Color(255, 20, 20), EaseBuilder.EaseQuinticInOut.Ease(Progress)));
+			trail ??= new Trail(Main.instance.GraphicsDevice, 40, new TriangularTip(1), factor => 40 * (1f - Progress), factor => Color.Lerp(new Color(255, 180, 20), new Color(255, 20, 20), Eases.EaseQuinticInOut(Progress)));
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 40, new TriangularTip(1), factor => 30 * (1f - Progress), factor => Color.Lerp(new Color(255, 255, 255), new Color(255, 180, 20), EaseBuilder.EaseQuinticInOut.Ease(Progress)));
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 40, new TriangularTip(1), factor => 30 * (1f - Progress), factor => Color.Lerp(new Color(255, 255, 255), new Color(255, 180, 20), Eases.EaseQuinticInOut(Progress)));
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = cache[39];
@@ -642,23 +644,26 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("UnderProjectiles", () =>
 			{
-				Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+				Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-				Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-				Matrix view = Main.GameViewMatrix.EffectMatrix;
-				Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+				if (effect != null)
+				{
+					Matrix world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+					Matrix view = Main.GameViewMatrix.EffectMatrix;
+					Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-				effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.01f);
-				effect.Parameters["repeats"].SetValue(5f);
-				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "FireTrail").Value);
+					effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+					effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.01f);
+					effect.Parameters["repeats"].SetValue(5f);
+					effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "FireTrail").Value);
 
-				trail?.Render(effect);
-				trail2?.Render(effect);
+					trail?.Render(effect);
+					trail2?.Render(effect);
 
-				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "EnergyTrail").Value);
+					effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "EnergyTrail").Value);
 
-				trail2?.Render(effect);
+					trail2?.Render(effect);
+				}
 			});
 		}
 	}
@@ -702,7 +707,7 @@ namespace StarlightRiver.Content.Items.Vitric
 	{
 		public int explodeTimer;
 		public int explodePlayerID = -1; // simple for projectile ownership
-		private int explodeDamage;		
+		private int explodeDamage;
 		public override bool InstancePerEntity => true;
 		public override void AI(NPC npc)
 		{
@@ -716,7 +721,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 				if (explodeTimer <= 30)
 				{
-					float lerper = EaseBuilder.EaseQuinticOut.Ease(explodeTimer / 30f);
+					float lerper = Eases.EaseQuinticOut(explodeTimer / 30f);
 
 					if (explodeTimer >= 10)
 					{
@@ -740,15 +745,15 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
 			Texture2D starTex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "StarTexture_Alt").Value;
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Masks + "GlowAlpha").Value;
 
 			if (explodeTimer > 0 && explodeTimer < 20)
 			{
 				float lerper = explodeTimer / 20f;
 
-				Main.spriteBatch.Draw(starTex, npc.Center - Main.screenPosition, null, new Color(255, 50, 20, 0), 1.7f * EaseBuilder.EaseQuadIn.Ease(lerper), starTex.Size() / 2f, 3f * lerper, 0f, 0f);
+				Main.spriteBatch.Draw(starTex, npc.Center - Main.screenPosition, null, new Color(255, 50, 20, 0), 1.7f * Eases.EaseQuadIn(lerper), starTex.Size() / 2f, 3f * lerper, 0f, 0f);
 
-				Main.spriteBatch.Draw(starTex, npc.Center - Main.screenPosition, null, new Color(255, 200, 100, 0), 1.7f * EaseBuilder.EaseQuadIn.Ease(lerper), starTex.Size() / 2f, 2.8f * lerper, 0f, 0f);
+				Main.spriteBatch.Draw(starTex, npc.Center - Main.screenPosition, null, new Color(255, 200, 100, 0), 1.7f * Eases.EaseQuadIn(lerper), starTex.Size() / 2f, 2.8f * lerper, 0f, 0f);
 
 				Main.spriteBatch.Draw(bloomTex, npc.Center - Main.screenPosition, null, new Color(255, 50, 20, 0), 1f * lerper, bloomTex.Size() / 2f, 2f * (1f - lerper), 0f, 0f);
 
@@ -843,7 +848,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.VitricItem + Name).Value;
 			Texture2D texBlur = ModContent.Request<Texture2D>(AssetDirectory.VitricItem + Name + "_Blur").Value;
 			Texture2D texGlow = ModContent.Request<Texture2D>(AssetDirectory.VitricItem + Name + "_Glow").Value;
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Masks + "GlowAlpha").Value;
 
 			Main.spriteBatch.Draw(bloomTex, dust.position - Main.screenPosition, null, new Color(255, 75, 0, 0) * 0.25f * lerper, dust.rotation, bloomTex.Size() / 2f, dust.scale * 1.25f, 0f, 0f);
 

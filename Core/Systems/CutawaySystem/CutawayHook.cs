@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.CustomHooks;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,12 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 
 		public static ScreenTarget cutawayTarget;
 
+		// We track this so we can disable these in subworlds
+		private static Mod subLib;
+
 		private static bool Inside => cutaways?.Any(n => n.fadeTime < 0.95f) ?? false;
+
+		public static bool InSubworld => (bool)(subLib?.Call("AnyActive") ?? false);
 
 		public override void Load()
 		{
@@ -22,6 +28,8 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 
 			cutaways = new();
 			cutawayTarget = new(DrawCutawayTarget, () => Inside, 1);
+
+			ModLoader.TryGetMod("SubworldLibrary", out subLib);
 
 			On_Main.DrawInfernoRings += DrawNegative;
 			On_Main.DrawDust += DrawPositive;
@@ -42,8 +50,11 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 
 		private void DrawPositive(On_Main.orig_DrawDust orig, Main self)
 		{
-			for (int k = 0; k < cutaways.Count; k++)
-				cutaways[k].Draw();
+			if (!InSubworld)
+			{
+				for (int k = 0; k < cutaways.Count; k++)
+					cutaways[k].Draw();
+			}
 
 			orig(self);
 		}
@@ -52,14 +63,14 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 		{
 			orig(self);
 
-			if (StarlightRiver.debugMode)
+			if (StarlightRiver.debugMode || InSubworld)
 				return;
 
 			if (Inside)
 			{
 				Cutaway activeCutaway = cutaways.FirstOrDefault(n => n.fadeTime < 0.95f);
 
-				Effect effect = Filters.Scene["Negative"].GetShader().Shader;
+				Effect effect = ShaderLoader.GetShader("Negative").Value;
 
 				if (effect is null)
 					return;

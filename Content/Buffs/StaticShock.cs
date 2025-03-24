@@ -9,10 +9,19 @@ namespace StarlightRiver.Content.Buffs
 
 		public StaticShock() : base("Static Shock", "Decreases defense by 4", true) { }
 
+		public override void Load()
+		{
+			StarlightNPC.ModifyIncomingHitEvent += ReduceDefense;
+		}
+
+		private void ReduceDefense(NPC npc, ref NPC.HitModifiers modifiers)
+		{
+			if (Inflicted(npc))
+				modifiers.Defense.Flat -= 4;
+		}
+
 		public override void Update(NPC npc, ref int buffIndex)
 		{
-			npc.defense -= 4;
-
 			if (Main.rand.NextBool(9))
 			{
 				Vector2 around = npc.Center + Main.rand.NextVector2Circular(npc.width, npc.height) * 1.1f;

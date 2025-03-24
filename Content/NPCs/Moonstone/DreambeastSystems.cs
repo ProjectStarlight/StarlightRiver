@@ -4,6 +4,7 @@ using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.Misc;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.MetaballSystem;
 using System;
 using System.Linq;
@@ -73,17 +74,21 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			float lunacy = Main.LocalPlayer.GetModPlayer<LunacyPlayer>().lunacy;
 			if (lunacy >= 0 && lunacy < 100)
 			{
-				Effect effect = Filters.Scene["MoonstoneBeastEffect"].GetShader().Shader;
-				effect.Parameters["baseTexture"].SetValue(target);
-				effect.Parameters["distortTexture"].SetValue(Assets.Noise.MiscNoise2.Value);
-				effect.Parameters["size"].SetValue(target.Size());
-				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.005f);
-				effect.Parameters["opacity"].SetValue(lunacy / 100f);
-				effect.Parameters["noiseSampleSize"].SetValue(new Vector2(800, 800));
-				effect.Parameters["noisePower"].SetValue(100f);
+				Effect effect = ShaderLoader.GetShader("MoonstoneBeastEffect").Value;
 
-				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+				if (effect != null)
+				{
+					effect.Parameters["baseTexture"].SetValue(target);
+					effect.Parameters["distortTexture"].SetValue(Assets.Noise.MiscNoise2.Value);
+					effect.Parameters["size"].SetValue(target.Size());
+					effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.005f);
+					effect.Parameters["opacity"].SetValue(lunacy / 100f);
+					effect.Parameters["noiseSampleSize"].SetValue(new Vector2(800, 800));
+					effect.Parameters["noisePower"].SetValue(100f);
+
+					Main.spriteBatch.End();
+					Main.spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+				}
 			}
 
 			Main.spriteBatch.Draw(target, Vector2.Zero, null, Color.White, 0, Vector2.Zero, 2, 0, 0);
@@ -162,9 +167,9 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			}
 
 			if (fullyInsaneTimer == 1)
-				insaneChargeSound = Helpers.Helper.PlayPitched("Magic/MysticCast", 1, -0.2f);
+				insaneChargeSound = Helpers.SoundHelper.PlayPitched("Magic/MysticCast", 1, -0.2f);
 			else if (fullyInsaneTimer == 90)
-				Helpers.Helper.PlayPitched("Magic/HolyCastShort", 1, 0.2f);
+				Helpers.SoundHelper.PlayPitched("Magic/HolyCastShort", 1, 0.2f);
 
 			if (lunacy < 100)
 				awarded = false;

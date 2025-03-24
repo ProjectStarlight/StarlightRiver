@@ -102,7 +102,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			MountData.playerYOffsets = Enumerable.Repeat(38 - (int)(2 * Math.Sin(((CogWheelSpecificData)player.mount._mountSpecificData).rotation * 2)), 1).ToArray(); // Fills an array with values for less repeating code
 			((CogWheelSpecificData)player.mount._mountSpecificData).rotation += modPlayer.climbing ? player.velocity.Y * Math.Sign(modPlayer.oldSpeed) / -40f : player.velocity.X / 40f;
 
-			modPlayer.armLerper = EaseFunction.EaseQuadIn.Ease(0.5f + 0.5f * (float)Math.Sin(((CogWheelSpecificData)player.mount._mountSpecificData).rotation * 1.1f));
+			modPlayer.armLerper = Eases.EaseQuadIn(0.5f + 0.5f * (float)Math.Sin(((CogWheelSpecificData)player.mount._mountSpecificData).rotation * 1.1f));
 		}
 
 		public override void SetMount(Player player, ref bool skipDust)

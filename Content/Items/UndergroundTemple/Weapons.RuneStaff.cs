@@ -125,7 +125,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 					}
 				}
 
-				Helpers.Helper.PlayPitched("Magic/HolyCastShort", 1f, 1f, starPos);
+				Helpers.SoundHelper.PlayPitched("Magic/HolyCastShort", 1f, 1f, starPos);
 
 				Owner.CheckMana(15, true);
 
@@ -138,9 +138,9 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			if (shooting)
 			{
 				if (Projectile.timeLeft > 30)
-					Projectile.Center = Owner.MountedCenter + (Projectile.rotation - MathHelper.PiOver4).ToRotationVector2() * MathHelper.Lerp(30f, 15f, EaseBuilder.EaseQuinticOut.Ease(1f - (Projectile.timeLeft - 30) / 15f));
+					Projectile.Center = Owner.MountedCenter + (Projectile.rotation - MathHelper.PiOver4).ToRotationVector2() * MathHelper.Lerp(30f, 15f, Eases.EaseQuinticOut(1f - (Projectile.timeLeft - 30) / 15f));
 				else
-					Projectile.Center = Owner.MountedCenter + (Projectile.rotation - MathHelper.PiOver4).ToRotationVector2() * MathHelper.Lerp(15f, 30f, EaseBuilder.EaseCircularInOut.Ease(1f - Projectile.timeLeft / 30f));
+					Projectile.Center = Owner.MountedCenter + (Projectile.rotation - MathHelper.PiOver4).ToRotationVector2() * MathHelper.Lerp(15f, 30f, Eases.EaseCircularInOut(1f - Projectile.timeLeft / 30f));
 			}
 			else
 			{
@@ -184,7 +184,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 				if (PingTimer >= 120)
 				{
-					Helpers.Helper.PlayPitched("Effects/BleepLouder", 1.25f, MathHelper.Lerp(0.75f, 2.5f, TreasureLerp), starPos);
+					Helpers.SoundHelper.PlayPitched("Effects/BleepLouder", 1.25f, MathHelper.Lerp(0.75f, 2.5f, TreasureLerp), starPos);
 					PingTimer = 0;
 					playedSound = false;
 				}
@@ -313,7 +313,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 			Texture2D starTex = Assets.StarTexture.Value;
 
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			SpriteEffects flip = Owner.direction == -1 ? SpriteEffects.FlipHorizontally : 0f;
 
@@ -337,7 +337,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 			for (int i = 0; i < 10; i++)
 			{
-				float progress = EaseBuilder.EaseCircularInOut.Ease(i / 10f) * fade;
+				float progress = Eases.EaseCircularInOut(i / 10f) * fade;
 
 				if (i > 0 && i < oldStarPositions.Count)
 				{
@@ -424,7 +424,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Vector2.Zero, 0, new Color(175, 155, 25), 0.45f);
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int i = 0; i < 5; i++)
 			{
@@ -446,7 +446,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 		{
 			Texture2D starTex = Assets.StarTexture.Value;
 
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, new Color(150, 150, 10, 0), 0f, bloomTex.Size() / 2f, 0.25f, 0, 0);
 
@@ -495,11 +495,11 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 		{
 			Texture2D starTex = Assets.StarTexture.Value;
 
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
-			float lerper = EaseBuilder.EaseCircularInOut.Ease(Projectile.timeLeft / 15f);
+			float lerper = Eases.EaseCircularInOut(Projectile.timeLeft / 15f);
 
-			float scale = MathHelper.Lerp(3f, 1f, EaseBuilder.EaseCircularInOut.Ease(lerper));
+			float scale = MathHelper.Lerp(3f, 1f, Eases.EaseCircularInOut(lerper));
 
 			Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, new Color(150, 150, 10, 0) * lerper, 0f, bloomTex.Size() / 2f, 0.35f * scale, 0, 0);
 

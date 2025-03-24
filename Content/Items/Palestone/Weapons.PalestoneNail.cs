@@ -56,13 +56,13 @@ namespace StarlightRiver.Content.Items.Palestone
 		{
 			Recipe recipe = CreateRecipe();
 
-			recipe.AddIngredient(ItemID.SilverBar, 12);
+			recipe.AddIngredient(ItemID.DemoniteBar, 12);
 			recipe.AddIngredient<PalestoneItem>(25);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
 
 			recipe = CreateRecipe();
-			recipe.AddIngredient(ItemID.TungstenBar, 12);
+			recipe.AddIngredient(ItemID.CrimtaneBar, 12);
 			recipe.AddIngredient<PalestoneItem>(25);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
@@ -249,14 +249,7 @@ namespace StarlightRiver.Content.Items.Palestone
 				Projectile.tileCollide = false;
 				AttackState = Flying;
 			}
-			/*else if (AttackState == Flying && WorldGen.SolidTileAllowBottomSlope((int)(Projectile.Center.X / 16), (int)(Projectile.Bottom.Y / 16)))
-			{
-				Projectile.tileCollide = true;
-				AttackState = Walking;
-			}*/
 
-			//AttackState = 0;//debug
-			float stepSpeed = 1f;
 			switch (AttackState)
 			{
 				case Walking:
@@ -278,11 +271,6 @@ namespace StarlightRiver.Content.Items.Palestone
 									Projectile.direction = Player.direction;
 								}
 							}
-
-							//!debug
-							//for (int i = 0; i < 4; i++)
-							//    Dust.NewDustPerfect(validZone.TopLeft() + new Vector2(Main.rand.Next(validZone.Width), Main.rand.Next(validZone.Height)), DustType<Dusts.AirDash>(), Vector2.Zero, 0, Color.Blue);
-							//Dust.NewDustPerfect(validZone.Center(), DustType<Dusts.AirDash>(), Vector2.Zero, 0, Color.Red);
 						}
 
 						if (Projectile.velocity.Length() < 0.1f)
@@ -673,7 +661,7 @@ namespace StarlightRiver.Content.Items.Palestone
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D texGlow = Assets.Keys.GlowAlpha.Value;
+			Texture2D texGlow = Assets.Masks.GlowAlpha.Value;
 
 			SpriteEffects flip = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : 0f;
 			if (Down && parent != null)

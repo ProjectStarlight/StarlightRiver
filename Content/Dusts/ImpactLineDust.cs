@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Dusts
 		{
 			float lerper = 1f - dust.alpha / 255f;
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Dust + "ImpactLineDust").Value;
+			Texture2D tex = Assets.Dusts.ImpactLineDust.Value;
 
 			Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, dust.color * lerper, dust.rotation, tex.Size() / 2f, new Vector2(dust.scale * lerper, dust.scale), 0f, 0f);
 
@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.Dusts
 		{
 			float lerper = 1f - dust.alpha / 255f;
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Dust + "ImpactLineDust").Value;
+			Texture2D tex = Assets.Dusts.ImpactLineDust.Value;
 
 			Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, dust.color * lerper, dust.rotation, tex.Size() / 2f, new Vector2(dust.scale * lerper, dust.scale), 0f, 0f);
 
@@ -113,7 +113,7 @@ namespace StarlightRiver.Content.Dusts
 
 			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () =>
 			{
-				Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Dust + "ImpactLineDust").Value;
+				Texture2D tex = Assets.Dusts.ImpactLineDust.Value;
 
 				Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, dust.color * lerper, dust.rotation, tex.Size() / 2f, new Vector2(dust.scale * lerper, dust.scale), 0f, 0f);
 
@@ -153,7 +153,7 @@ namespace StarlightRiver.Content.Dusts
 		{
 			float lerper = 1f - dust.alpha / 255f;
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Dust + "ImpactLineDust").Value;
+			Texture2D tex = Assets.Dusts.ImpactLineDust.Value;
 
 			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () =>
 			{
@@ -198,7 +198,7 @@ namespace StarlightRiver.Content.Dusts
 		{
 			float lerper = 1f - dust.alpha / 255f;
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Dust + "ImpactLineDust").Value;
+			Texture2D tex = Assets.Dusts.ImpactLineDust.Value;
 
 			if (dust.customData is Color fadeColor)
 			{
@@ -210,7 +210,7 @@ namespace StarlightRiver.Content.Dusts
 
 					Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, Color.White with { A = 0 } * lerper, dust.rotation, tex.Size() / 2f, new Vector2(glowScale * lerper, glowScale), 0f, 0f);
 				});
-			}		
+			}
 
 			return false;
 		}

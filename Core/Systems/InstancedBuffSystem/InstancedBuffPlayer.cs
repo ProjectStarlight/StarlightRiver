@@ -8,7 +8,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		/// <summary>
 		/// The instanced buffs that exist on this NPC
 		/// </summary>
-		public readonly List<InstancedBuff> buffInstances = new();
+		public readonly List<InstancedBuff> buffInstances = [];
 
 		/// <summary>
 		/// Gets the instance of a given instanced buff inflicted on a player
@@ -16,7 +16,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		/// <typeparam name="T">The type of the instanced buff to get</typeparam>
 		/// <param name="player">The player to check for this buff on</param>
 		/// <returns>The inflicted instance, or null if one does not exist</returns>
-		public static T? GetInstance<T>(Player player) where T : InstancedBuff
+		public static T GetInstance<T>(Player player) where T : InstancedBuff
 		{
 			return player.GetModPlayer<InstancedBuffPlayer>().buffInstances.FirstOrDefault(n => n is T) as T;
 		}
@@ -27,7 +27,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		/// <param name="player">the player to check for this buff on</param>
 		/// <param name="name">the internal name of the buff to check for</param>
 		/// <returns>The inflicted instance, or null if one does not exist</returns>
-		public static InstancedBuff? GetInstance(Player player, string name)
+		public static InstancedBuff GetInstance(Player player, string name)
 		{
 			return player.GetModPlayer<InstancedBuffPlayer>().buffInstances.FirstOrDefault(n => n.Name == name);
 		}

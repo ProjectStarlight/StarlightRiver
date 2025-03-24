@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Dusts;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.PixelationSystem;
 using StarlightRiver.Helpers;
@@ -68,12 +69,12 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public override void UseStyle(Player player, Rectangle heldItemFrame)
 		{
-			Helper.SetGunUseStyle(player, Item, shootDirection, -4f, new Vector2(34f, 26f), new Vector2(-20f, 4f));
+			CommonGunAnimations.SetGunUseStyle(player, Item, shootDirection, -4f, new Vector2(34f, 26f), new Vector2(-20f, 4f));
 		}
 
 		public override void UseItemFrame(Player player)
 		{
-			Helper.SetGunUseItemFrame(player, shootDirection, shootRotation, -0.35f);
+			CommonGunAnimations.SetGunUseItemFrame(player, shootDirection, shootRotation, -0.35f);
 		}
 
 		public override bool Shoot(Player Player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -92,7 +93,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			Dust.NewDustPerfect(barrelPos + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<FlareBreacherSmokeDust>(), velocity * 0.025f, 50, new Color(255, 50, 200), 0.1f);
 
 			Dust.NewDustPerfect(barrelPos + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<FlareBreacherSmokeDust>(), velocity * 0.05f, 150, new Color(255, 50, 200), 0.2f);
-			
+
 			Dust.NewDustPerfect(barrelPos + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<FlareBreacherSmokeDust>(), velocity * 0.05f, 150, new Color(100, 100, 100), 0.2f);
 
 			Dust.NewDustPerfect(barrelPos, ModContent.DustType<FlareBreacherStarDust>(), Vector2.Zero, 0, new Color(30, 230, 255, 0), 0.35f).customData = Player;
@@ -101,7 +102,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 			Dust.NewDustPerfect(flashPos, ModContent.DustType<FlareBreacherMuzzleFlashDust>(), Vector2.Zero, 0, default, 0.75f).rotation = velocity.ToRotation();
 
-			Helper.PlayPitched("Guns/FlareFire", 0.6f, Main.rand.NextFloat(-0.1f, 0.1f), position);
+			SoundHelper.PlayPitched("Guns/FlareFire", 0.6f, Main.rand.NextFloat(-0.1f, 0.1f), position);
 			CameraSystem.shake += 1;
 			Item.noUseGraphic = true;
 
@@ -174,7 +175,7 @@ namespace StarlightRiver.Content.Items.Breacher
 					if (!red)
 					{
 						red = true;
-						Helper.PlayPitched("Effects/Bleep", 1, 1 - explosionTimer / 100f, Projectile.Center);
+						SoundHelper.PlayPitched("Effects/Bleep", 1, 1 - explosionTimer / 100f, Projectile.Center);
 						blinkCounter = 0;
 					}
 					else
@@ -256,7 +257,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		private void Explode(NPC target)
 		{
-			Helper.PlayPitched("Guns/FlareBoom", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
+			SoundHelper.PlayPitched("Guns/FlareBoom", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 
 			if (!target.immortal && !target.dontTakeDamage)
 				target.SimpleStrikeNPC(Projectile.damage, 0);
@@ -380,17 +381,20 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["ShrapnelTrail"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("ShrapnelTrail").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
-			effect.Parameters["progress"].SetValue(MathHelper.Lerp(Projectile.timeLeft / 60f, 0, 0.3f));
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+				effect.Parameters["progress"].SetValue(MathHelper.Lerp(Projectile.timeLeft / 60f, 0, 0.3f));
 
-			trail?.Render(effect);
+				trail?.Render(effect);
+			}
 		}
 	}
 
@@ -421,10 +425,10 @@ namespace StarlightRiver.Content.Items.Breacher
 			Texture2D tex = Assets.Items.Breacher.FlareBreacherMuzzleFlashDust.Value;
 			Texture2D texBlur = Assets.Items.Breacher.FlareBreacherMuzzleFlashDust_Blur.Value;
 			Texture2D texGlow = Assets.Items.Breacher.FlareBreacherMuzzleFlashDust_Glow.Value;
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 			Texture2D starTex = Assets.Items.Breacher.SupplyBeaconProj_Star.Value;
 
-			Color color = Color.Lerp(new Color(255, 50, 200, 0), new Color(50, 230, 255, 0), EaseBuilder.EaseCircularInOut.Ease(1f - lerper));
+			Color color = Color.Lerp(new Color(255, 50, 200, 0), new Color(50, 230, 255, 0), Eases.EaseCircularInOut(1f - lerper));
 
 			Main.spriteBatch.Draw(bloomTex, dust.position - Main.screenPosition, null, color * 0.25f * lerper, dust.rotation, bloomTex.Size() / 2f, dust.scale * 1.25f, 0f, 0f);
 
@@ -434,7 +438,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 			Main.spriteBatch.Draw(texBlur, dust.position - Main.screenPosition, null, color * 0.5f * lerper, dust.rotation, texBlur.Size() / 2f, dust.scale, 0f, 0f);
 
-			Main.spriteBatch.Draw(starTex, dust.position - Main.screenPosition, null, color * lerper, dust.rotation, starTex.Size() / 2f, dust.scale * 0.75f * EaseBuilder.EaseCircularInOut.Ease(lerper), 0f, 0f);
+			Main.spriteBatch.Draw(starTex, dust.position - Main.screenPosition, null, color * lerper, dust.rotation, starTex.Size() / 2f, dust.scale * 0.75f * Eases.EaseCircularInOut(lerper), 0f, 0f);
 
 			return false;
 		}
@@ -484,7 +488,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			float lerper = 1f - dust.alpha / 255f;
 
 			Texture2D tex = Assets.Items.Breacher.SupplyBeaconProj_Star.Value;
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			Main.spriteBatch.Draw(bloomTex, dust.position + new Vector2(0f, player.gfxOffY) - Main.screenPosition, null, Color.Lerp(Color.White with { A = 0 }, dust.color, 1f - lerper) * 0.5f, 0f, bloomTex.Size() / 2f, dust.scale * 2f * lerper, 0f, 0f);
 
@@ -553,7 +557,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			if ((int)dust.customData == 3)
 				tex = Assets.SmokeTransparent_3.Value;
 
-			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () => Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, Color.Lerp(dust.color, new Color(50, 50, 50), EaseBuilder.EaseCircularIn.Ease(1f - lerper)) * lerper, dust.rotation, tex.Size() / 2f, dust.scale, 0f, 0f));
+			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () => Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, Color.Lerp(dust.color, new Color(50, 50, 50), Eases.EaseCircularIn(1f - lerper)) * lerper, dust.rotation, tex.Size() / 2f, dust.scale, 0f, 0f));
 
 			return false;
 		}

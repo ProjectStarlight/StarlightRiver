@@ -376,7 +376,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			return true;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			if (!stuck)
 			{

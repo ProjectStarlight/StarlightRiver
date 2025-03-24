@@ -4,6 +4,7 @@ using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.PersistentData;
 using StarlightRiver.Content.Tiles.Blockers;
 using StarlightRiver.Core.Loaders.UILoading;
+using StarlightRiver.Core.Systems.BarrierSystem;
 using StarlightRiver.Core.Systems.BossRushSystem;
 using System;
 using System.IO;
@@ -44,6 +45,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override string Texture => AssetDirectory.Glassweaver + Name;
 
+		public static int SmallProjectileDamage => Helpers.StarlightMathHelper.GetProjectileDamage(100, 50, 30);
+		public static int LargeProjectileDamage => Helpers.StarlightMathHelper.GetProjectileDamage(180, 90, 60);
+
 		//Phase tracking utils
 		public enum Phases
 		{
@@ -78,7 +82,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			NPCID.Sets.ShouldBeCountedAsBoss[Type] = true;
 			NPCID.Sets.BossBestiaryPriority.Add(Type);
 
-			var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0)
+			var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
 			{
 
 			};
@@ -89,17 +93,20 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		{
 			NPC.width = 82;
 			NPC.height = 75;
-			NPC.lifeMax = 2300;
+			NPC.lifeMax = 2500;
 			NPC.damage = 20;
 			NPC.aiStyle = -1;
 			NPC.noGravity = true;
 			NPC.knockBackResist = 0;
 			NPC.boss = true;
-			NPC.defense = 14;
+			NPC.defense = 10;
 			NPC.HitSound = SoundID.NPCHit52;
 			Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/GlassWeaver");
 			NPC.dontTakeDamage = true;
 			NPC.npcSlots = 10;
+
+			NPC.GetGlobalNPC<BarrierNPC>().maxBarrier = 500;
+			NPC.GetGlobalNPC<BarrierNPC>().barrier = 500;
 		}
 
 		private SpriteEffects GetSpriteEffects()
@@ -119,7 +126,18 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 		{
-			NPC.lifeMax = (int)(2800 * bossAdjustment);
+			NPC.lifeMax = 3000;
+			NPC.GetGlobalNPC<BarrierNPC>().maxBarrier = 650;
+
+			if (Main.masterMode)
+			{
+				NPC.lifeMax = 4000;
+				NPC.GetGlobalNPC<BarrierNPC>().maxBarrier = 900;
+			}
+
+			NPC.lifeMax = StarlightMathHelper.GetScaledBossLife(NPC.lifeMax, balance, numPlayers);
+			NPC.GetGlobalNPC<BarrierNPC>().maxBarrier = StarlightMathHelper.GetScaledBossLife(NPC.GetGlobalNPC<BarrierNPC>().maxBarrier, balance, numPlayers);
+			NPC.GetGlobalNPC<BarrierNPC>().barrier = NPC.GetGlobalNPC<BarrierNPC>().maxBarrier;
 		}
 
 		public override bool CheckDead()
@@ -159,8 +177,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 					if (AttackTimer <= 120)
 					{
-						if (Main.netMode != NetmodeID.Server)
-							RichTextBox.CloseDialogue(); // may accidentially kick players that aren't involved in the fight out of their modal but its probably good enough as is
+						if (Main.netMode != NetmodeID.Server && !DialogUI.closing)
+							DialogUI.CloseDialogue(); // may accidentially kick players that aren't involved in the fight out of their modal but its probably good enough as is
 
 						SpawnAnimation();
 					}
@@ -217,7 +235,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					NPC.rotation = MathHelper.Lerp(NPC.rotation, 0, 0.33f);
 
 					if (NPC.velocity.Y > 0f && NPC.collideY && !disableJumpSound)
-						Helpers.Helper.PlayPitched("GlassMiniboss/RippedSoundJump", 1f, -0.1f, NPC.Center);
+						Helpers.SoundHelper.PlayPitched("GlassMiniboss/RippedSoundJump", 1f, -0.1f, NPC.Center);
 
 					if (AttackTimer == 1)
 					{
@@ -303,7 +321,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 					if (Math.Abs(NPC.Center.X - arenaPos.X) < 5)
 					{
-						NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<GlassweaverWaiting>(), 0, 0, 3);
+						NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<GlassweaverFriendly>(), 0, 0, 3);
 						NPC.active = false;
 
 						StarlightWorld.Flag(WorldFlags.GlassweaverDowned);
@@ -324,7 +342,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 					if (Math.Abs(NPC.Center.X - arenaPos.X) < 5)
 					{
-						NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<GlassweaverWaiting>(), 0, 0, StarlightWorld.HasFlag(WorldFlags.DesertOpen) ? 4 : 2);
+						NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<GlassweaverFriendly>(), 0, 0, StarlightWorld.HasFlag(WorldFlags.DesertOpen) ? 4 : 2);
 						NPC.active = false;
 					}
 

@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 	class HotspringFountainDummy : Dummy
 	{
-		public static bool AnyOnscreen => DummySystem.dummies.Any(n => n.active && n is HotspringFountainDummy && Vector2.DistanceSquared(n.Center, Main.screenPosition + Helpers.Helper.ScreenSize / 2) < Math.Pow(1000, 2));
+		public static bool AnyOnscreen => DummySystem.dummies.Any(n => n.active && n is HotspringFountainDummy && Vector2.DistanceSquared(n.Center, Main.screenPosition + Main.ScreenSize.ToVector2() / 2) < Math.Pow(1000, 2));
 
 		public HotspringFountainDummy() : base(ModContent.TileType<HotspringFountain>(), 5 * 16, 5 * 16) { }
 
@@ -117,7 +117,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public void DrawMap(SpriteBatch spriteBatch)
 		{
-			Texture2D tex = Assets.Keys.Glow.Value;
+			Texture2D tex = Assets.Masks.Glow.Value;
 			spriteBatch.Draw(tex, Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, scale: 24f, 0, 0);
 		}
 	}

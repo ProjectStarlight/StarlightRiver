@@ -35,7 +35,7 @@ namespace StarlightRiver.Core
 					{
 						break;
 					}
-					else if (tile.HasTile && tile.TileType == TileID.Grass && Helper.AirScanUp(new Vector2(x, y - 1), 10) && WorldGen.genRand.NextBool(20))
+					else if (tile.HasTile && tile.TileType == TileID.Grass && WorldGenHelper.AirScanUp(new Point16(x, y - 1), 10) && WorldGen.genRand.NextBool(20))
 					{
 						var dims = new Point16();
 
@@ -44,7 +44,7 @@ namespace StarlightRiver.Core
 						while (selection == lastForestVariant)
 							selection = WorldGen.genRand.Next(7);
 
-						StructureHelper.Generator.GetMultistructureDimensions("Structures/ForestStructures", Mod, selection, ref dims);
+						dims = StructureHelper.API.MultiStructureGenerator.GetStructureDimensions("Structures/ForestStructures", Mod, selection);
 
 						int off = 3;
 
@@ -71,7 +71,7 @@ namespace StarlightRiver.Core
 							if (!valid)
 								continue;
 
-							StructureHelper.Generator.GenerateMultistructureSpecific("Structures/ForestStructures", new Point16(x, y - dims.Y + off), Mod, selection);
+							StructureHelper.API.MultiStructureGenerator.GenerateMultistructureSpecific("Structures/ForestStructures", selection, new Point16(x, y - dims.Y + off), Mod);
 							lastForestVariant = selection;
 						}
 
@@ -96,7 +96,7 @@ namespace StarlightRiver.Core
 					{
 						break;
 					}
-					else if (tile.HasTile && tile.Slope == SlopeType.Solid && !tile.IsHalfBlock && tile.TileType == TileID.Sand && Helper.AirScanUp(new Vector2(x, y - 1), 10) && WorldGen.genRand.NextBool(20))
+					else if (tile.HasTile && tile.Slope == SlopeType.Solid && !tile.IsHalfBlock && tile.TileType == TileID.Sand && WorldGenHelper.AirScanUp(new Point16(x, y - 1), 10) && WorldGen.genRand.NextBool(20))
 					{
 						Tile newTile = Framing.GetTileSafely(x, y - 1);
 						newTile.ClearEverything();

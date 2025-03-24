@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				{
 					closed = true;
 					CameraSystem.shake += 9;
-					Helpers.Helper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0.3f, Projectile.Center);
+					Helpers.SoundHelper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0.3f, Projectile.Center);
 
 					var dustPos = new Vector2(Projectile.Center.X, Projectile.Center.Y - Projectile.height);
 					for (int i = 0; i < 15; i++)
@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D tex = Assets.Bosses.GlassMiniboss.GlassweaverDoor.Value;
 			int height = (int)(tex.Height * closeTimer);
 
 			var frame = new Rectangle(0, 0, tex.Width, height);

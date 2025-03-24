@@ -17,7 +17,6 @@ namespace StarlightRiver.Content.Tiles.Herbology.Crops
 		protected readonly string TexturePath;
 
 		protected readonly int FrameCount;
-		protected readonly int DustType;
 		protected readonly SoundStyle SoundType;
 		protected readonly string DropType;
 

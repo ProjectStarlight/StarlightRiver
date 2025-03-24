@@ -165,7 +165,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			{
 				shouldDoSFX = false;
 
-				Helper.PlayPitched("Effects/HeavyWhooshShort", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
+				SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 			}
 
 			Owner.heldProj = Projectile.whoAmI;
@@ -309,7 +309,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			if (Main.myPlayer == Owner.whoAmI)
 				CameraSystem.shake += 3;
 
-			Helper.PlayPitched("Impacts/GoreLight", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), target.Center);
+			SoundHelper.PlayPitched("Impacts/GoreLight", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), target.Center);
 
 			if (target.knockBackResist != 0)
 			{

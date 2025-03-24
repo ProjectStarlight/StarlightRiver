@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 				if (Arena?.fakeBoss != null)
 				{
-					float progress = Helper.BezierEase(GlobalTimer / 100f);
+					float progress = Eases.BezierEase(GlobalTimer / 100f);
 					Arena.fakeBoss.Center = Vector2.Lerp(savedPoint, new Vector2(savedPoint.X, spawnPoint.Y), progress);
 				}
 			}
@@ -29,12 +29,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			if (GlobalTimer == 300)
 			{
 				CameraSystem.shake += 25;
-				Helper.PlayPitched("ArenaHit", 1f, 0.5f, NPC.Center);
+				SoundHelper.PlayPitched("ArenaHit", 1f, 0.5f, NPC.Center);
 			}
 
 			if (GlobalTimer > 300 && GlobalTimer < 400)
 			{
-				float progress = Helper.SwoopEase((GlobalTimer - 300) / 100f);
+				float progress = Eases.SwoopEase((GlobalTimer - 300) / 100f);
 				NPC.Center = Vector2.Lerp(spawnPoint + new Vector2(0, 20), spawnPoint + new Vector2(0, -600), progress); //rise up from the ground
 
 				if (GlobalTimer == 306)
@@ -98,13 +98,13 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 					CameraSystem.shake += 5;
 					if (tentacles.Count == 4) // Almost always skips the first sound in multiplayer but its better than crashing
-						Helper.PlayPitched("ArenaHit", 0.5f, 1f, tentacles[k].Center);
+						SoundHelper.PlayPitched("ArenaHit", 0.5f, 1f, tentacles[k].Center);
 				}
 
 				if (GlobalTimer > 100 + k * 30 && GlobalTimer <= 160 + k * 30 && tentacles.Count == 4)
 				{
 					var tentacle = tentacles[k].ModNPC as Tentacle;
-					float progress = Helper.SwoopEase((GlobalTimer - (100 + k * 30)) / 60f);
+					float progress = Eases.SwoopEase((GlobalTimer - (100 + k * 30)) / 60f);
 
 					tentacle.NPC.Center = Vector2.Lerp(tentacle.basePoint, tentacle.movementTarget, progress);
 					tentacle.downwardDrawDistance = 50;

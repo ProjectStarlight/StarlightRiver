@@ -1,7 +1,24 @@
 ﻿# Starlight River 0.3.0
 
+## Flagship Content
+- Added a new optional boss, The Thinker! This boss can be challenged in a crimson world at any point after the Brain of Cthulhu has been defeated, but is intended for players that have atleast visited the dungeon.
+- After defeating the Brain of Cthulhu, some strange bits of material will activate in the crimson. Will you be able to use it to your advantage, or simply go mad?
+
 ## Content
 - Added the heavy flail and frost flail, melee weapons with a heavy overhead swing
+- Added Misery's Company, a cursed accessory that shares your defense and innoculation with your foes
+- The following are spoilers for the crimson biome
+||- Added gray maatter to the crimson, which emits a hallucinatory and causes hallucinations when stood on
+- Added dendrite to the crimson, a sneaky ore only visible if you are hallucinating
+||
+- The following are spoilers for The Thinker
+||- Added the bear poker, which can be used to spawn The Thinker
+- Added the lobotolizer, a spear which can throw a hallucinatory copy of itself to engage a more offensive attack mode
+- Added the mirage bow, which creates a copy of its user on critical hits reflected across their mouse
+- Added the mind crusher, a charged magic weapon which creates a growing bubble that can be collapsed for bonus damage againsted armored targets
+- Added the myelin sheath, which allows swords to create a crippling projectile on their first strike
+- Added the psychotic manabond, which drains your mana to have your minions emit a damaging aura
+||
 
 ## Gameplay features
 - Added a pool of unique 'cursed' prefixes for accessories, with up and downsides. All cursed accessories now only pull from this pool.
@@ -12,6 +29,8 @@
 - Added a button to the barrier tincture slot to hide the barrier effect
 - Added a popout tooltip for buffs similar to keywords. Various item's tooltips have been updated to utilize this.
 - The keyword popout tooltip has been updated slightly
+- The tutorial for when you get an ability is now much more robust
+- Improvements to the UI used for dialog with Starlight River NPCs
 
 ## Balance
 - ↑ Base barrier recharge rate has increased from 6 to 10
@@ -23,11 +42,17 @@
 - ↑ Aquatic manabond damage 24 => 26, fire rate 1/0.8s => 1/0.63s
 - ↑ Aquamarine pendant max barrier 15 => 20, now has +4 barrier recharge rate
 - ↑ Barrier potion restoration (lesser/normal/greater) 40/80/120 => 100/150/200, buff duration 3s/4s/5s => 5s/7s/10s
+- ↑ Electro arrows can now hit up to 4 targets, chain randomly instead of failing to chain if targets are already debuffed, and have refreshed audiovisual effects
 - = Man eater pot now uses local immunity
 - = All manabonds now use local immunity
 - ↓ Corpseflower damage penalty 55% => 65%
 - ↓ Druidic manabond now requires beeswax (queen bee drop) to craft
+- ↓ Palestone nail now requires demonite/crimtane bars to craft instead of silver/tungsten
+- ↓ Overflowing urn no longer deals direct hits in addition to its debuff damage (This is technically a bugfix but its so drastic for balance it belongs here)
+- Glassweaver's forge will now have some mildly dangerous crystal growth on the ceiling in expert and quite dangerous crystal growth in expert. Put those grappling hooks away.
 - Various boss damage values have been normalized across difficulties. In general, bosses should hit a bit harder on normal mode, a bit less on expert, and much less on master as compared to before
+- Glassweaver is a slight exception to this as his direct attack damage was quite low previously, he should be much tougher on normal, a bit tougher on expert, and a wee smidge tougher on master
+- Glassweaver now has proper master mode HP scaling, and has a bit of barrier on all difficulties to make him last a bit longer on his own.
 - Various enemies throughout the game have had barrier added to them, and their life and defense decresed to make up for it. This should diversify combat a little bit. Notable inclusions are "caster" type enemies, demons, and the nebular branch of the lunar events.
 - When holding an uncharged magnet, charged enemies spawn twice as often as previously
 - Loot wraiths are more common
@@ -37,6 +62,13 @@
 - Fixed an issue where all stackable buffs failed to sync in multiplayer
 - Fixed an issue where the cough drops did not grant a damage increase like the tooltip stated
 - Fixed the text card popup when gaining an ability not dissappearing sometimes
+- Made the glassweaver respawn himself better if he somehow goes missing
+- Fixed cutaways drawing in subworlds where they should not exist
+- Fixed the cooking station requiring one more free tile than it should to place
+- Fixed some forest props being able to generate mid-air
+- Alot of optimization changes, mostly around the vitric desert, particles, and lighting
+- Updated AssGen to 3.0 to allow asset lazy loading which should speed up load times
+- Updated to the latest StructureHelper version which should improve world generation time and decrease file size a bit
 
 ## Boring programmer stuff
 - Keywords now utilize localization and are data driven similar to dialogue and hints

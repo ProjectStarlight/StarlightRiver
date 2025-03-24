@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Configs;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
 using System.Reflection;
@@ -68,7 +69,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 			DrawWallReflectionNormalMapEvent += drawGlassWallReflectionNormalMap;
 
-			GameShaders.Misc[simpleReflectionShaderPath] = new MiscShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/SimpleReflection").Value), "TileReflectionPass");
+			GameShaders.Misc[simpleReflectionShaderPath] = new MiscShaderData(ShaderLoader.GetShader("SimpleReflection"), "TileReflectionPass");
 		}
 
 		public override void Unload()
@@ -267,13 +268,13 @@ namespace StarlightRiver.Content.CustomHooks
 
 		public void drawGlassWallReflectionNormalMap(SpriteBatch spriteBatch)
 		{
-			Effect shader = Filters.Scene["ReflectionMapper"].GetShader().Shader;
+			Effect shader = ShaderLoader.GetShader("ReflectionMapper").Value;
 
 			if (shader is null)
 				return;
 
 			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, SamplerState.PointClamp, default, RasterizerState.CullNone, Filters.Scene["ReflectionMapper"].GetShader().Shader);
+			spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, SamplerState.PointClamp, default, RasterizerState.CullNone, ShaderLoader.GetShader("ReflectionMapper").Value);
 
 			shader.Parameters["uColor"].SetValue(new Vector3(0.5f, 0.5f, 1f));
 			shader.Parameters["uIntensity"].SetValue(0.5f);

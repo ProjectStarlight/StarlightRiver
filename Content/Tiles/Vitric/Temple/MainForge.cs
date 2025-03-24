@@ -110,8 +110,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 			spriteBatch.End();
 
-			LightingBufferRenderer.DrawWithLighting(pos + offset, texHammer, Color.White);
-			LightingBufferRenderer.DrawWithLighting(pos, tex, Color.White);
+			LightingBufferRenderer.DrawWithLighting(texHammer, pos + offset, Color.White);
+			LightingBufferRenderer.DrawWithLighting(tex, pos, Color.White);
 
 			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
@@ -139,43 +139,46 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 			Effect effect = StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value;
 
-			effect.Parameters["uColor"].SetValue(color.ToVector3());
-
-			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
-
-			float height = texBeam.Height / 2f * (0.5f + puzzleProg * 0.5f);
-			int width = (int)(centerPos - endpoint).Length();
-
-			Vector2 pos = centerPos - Main.screenPosition;
-
-			var target = new Rectangle((int)pos.X, (int)pos.Y, width, (int)(height * 1.2f));
-			var target2 = new Rectangle((int)pos.X, (int)pos.Y, width, (int)height);
-
-			var source = new Rectangle(texBeam.Width + (int)Main.GameUpdateCount * (int)(3 * power + 1), 0, texBeam.Width, texBeam.Height);
-			var source2 = new Rectangle(texBeam2.Width + (int)Main.GameUpdateCount * (int)(3 * power + 1), 0, texBeam2.Width, texBeam2.Height);
-
-			spriteBatch.Draw(texBeam, target, source, color, rot, origin, 0, 0);
-			spriteBatch.Draw(texBeam2, target2, source2, color * 0.5f, rot, origin2, 0, 0);
-
-			source = new Rectangle(texBeam.Width + (int)Main.GameUpdateCount * (int)(5 * power + 1), 0, texBeam.Width, texBeam.Height);
-			source2 = new Rectangle(texBeam2.Width + (int)Main.GameUpdateCount * (int)(5 * power + 1), 0, texBeam2.Width, texBeam2.Height);
-
-			spriteBatch.Draw(texBeam, target, source, color, rot, origin, SpriteEffects.FlipVertically, 0);
-			spriteBatch.Draw(texBeam2, target2, source2, color * 0.5f, rot, origin2, SpriteEffects.FlipVertically, 0);
-
-			for (int i = 0; i < width; i += 10)
+			if (effect != null)
 			{
-				Lighting.AddLight(pos + Vector2.UnitX.RotatedBy(rot) * i + Main.screenPosition, color.ToVector3() * height * 0.010f);
+				effect.Parameters["uColor"].SetValue(color.ToVector3());
+
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+
+				float height = texBeam.Height / 2f * (0.5f + puzzleProg * 0.5f);
+				int width = (int)(centerPos - endpoint).Length();
+
+				Vector2 pos = centerPos - Main.screenPosition;
+
+				var target = new Rectangle((int)pos.X, (int)pos.Y, width, (int)(height * 1.2f));
+				var target2 = new Rectangle((int)pos.X, (int)pos.Y, width, (int)height);
+
+				var source = new Rectangle(texBeam.Width + (int)Main.GameUpdateCount * (int)(3 * power + 1), 0, texBeam.Width, texBeam.Height);
+				var source2 = new Rectangle(texBeam2.Width + (int)Main.GameUpdateCount * (int)(3 * power + 1), 0, texBeam2.Width, texBeam2.Height);
+
+				spriteBatch.Draw(texBeam, target, source, color, rot, origin, 0, 0);
+				spriteBatch.Draw(texBeam2, target2, source2, color * 0.5f, rot, origin2, 0, 0);
+
+				source = new Rectangle(texBeam.Width + (int)Main.GameUpdateCount * (int)(5 * power + 1), 0, texBeam.Width, texBeam.Height);
+				source2 = new Rectangle(texBeam2.Width + (int)Main.GameUpdateCount * (int)(5 * power + 1), 0, texBeam2.Width, texBeam2.Height);
+
+				spriteBatch.Draw(texBeam, target, source, color, rot, origin, SpriteEffects.FlipVertically, 0);
+				spriteBatch.Draw(texBeam2, target2, source2, color * 0.5f, rot, origin2, SpriteEffects.FlipVertically, 0);
+
+				for (int i = 0; i < width; i += 10)
+				{
+					Lighting.AddLight(pos + Vector2.UnitX.RotatedBy(rot) * i + Main.screenPosition, color.ToVector3() * height * 0.010f);
+				}
+
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+
+				Texture2D glowTex = Assets.GlowTrail.Value;
+
+				color.A = 0;
+				spriteBatch.Draw(glowTex, target, source, color * 0.95f, rot, new Vector2(0, glowTex.Height / 2), 0, 0);
 			}
-
-			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
-
-			Texture2D glowTex = Assets.GlowTrail.Value;
-
-			color.A = 0;
-			spriteBatch.Draw(glowTex, target, source, color * 0.95f, rot, new Vector2(0, glowTex.Height / 2), 0, 0);
 		}
 
 		public float HammerFunction(float input)
@@ -187,7 +190,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			else if (input < 0.8f)
 				return 52 - 60;
 			else
-				return 52 - 60 + Helpers.Helper.BezierEase((input - 0.8f) / 0.2f) * 60;
+				return 52 - 60 + Helpers.Eases.BezierEase((input - 0.8f) / 0.2f) * 60;
 		}
 	}
 

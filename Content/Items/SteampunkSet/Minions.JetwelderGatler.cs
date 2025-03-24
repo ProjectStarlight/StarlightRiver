@@ -178,7 +178,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			}
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int i = 1; i < 9; i++)
 			{

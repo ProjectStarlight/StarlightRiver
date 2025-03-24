@@ -1,6 +1,7 @@
 ﻿//TODO:
 //Make it work with lucky coin
 using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -260,7 +261,7 @@ namespace StarlightRiver.Content.Items.Hell
 			Projectile.penetrate++;
 
 			CameraSystem.shake += 3;
-			Helper.PlayPitched("Impacts/Ricochet", 0.2f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
+			SoundHelper.PlayPitched("Impacts/Ricochet", 0.2f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 			ManageCaches();
 			Projectile.velocity = Vector2.Zero;
 			disappeared = true;
@@ -302,7 +303,7 @@ namespace StarlightRiver.Content.Items.Hell
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D bloom = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloom = Assets.Masks.GlowAlpha.Value;
 			Color bloomColor = TrailColor;
 			bloomColor.A = 0;
 
@@ -335,7 +336,7 @@ namespace StarlightRiver.Content.Items.Hell
 
 		private void PickTarget()
 		{
-			Projectile closestCoin = Main.projectile.Where(n => n.active && n != Projectile && !n.friendly && n.ModProjectile is ObolProj modProj2 && !modProj2.disappeared && !modProj2.bouncedOff && !modProj2.embedded && n.Distance(Projectile.Center) < 1000 && Helper.ClearPath(n.Center, Projectile.Center)).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
+			Projectile closestCoin = Main.projectile.Where(n => n.active && n != Projectile && !n.friendly && n.ModProjectile is ObolProj modProj2 && !modProj2.disappeared && !modProj2.bouncedOff && !modProj2.embedded && n.Distance(Projectile.Center) < 1000 && CollisionHelper.ClearPath(n.Center, Projectile.Center)).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
 
 			if (closestCoin != default)
 			{
@@ -344,7 +345,7 @@ namespace StarlightRiver.Content.Items.Hell
 			}
 			else
 			{
-				NPC closestNPC = Main.npc.Where(n => n.active && n.CanBeChasedBy() && !n.friendly && Helper.ClearPath(n.Center, Projectile.Center)).OrderBy(n => n.lifeMax).LastOrDefault();
+				NPC closestNPC = Main.npc.Where(n => n.active && n.CanBeChasedBy() && !n.friendly && CollisionHelper.ClearPath(n.Center, Projectile.Center)).OrderBy(n => n.lifeMax).LastOrDefault();
 
 				if (closestNPC != default)
 				{
@@ -400,18 +401,20 @@ namespace StarlightRiver.Content.Items.Hell
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("OrbitalStrikeTrail").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
-			effect.Parameters["alpha"].SetValue(trailWidth / 4f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+				effect.Parameters["alpha"].SetValue(trailWidth / 4f);
 
-			trail?.Render(effect);
-			//trail2?.Render(effect);
+				trail?.Render(effect);
+			}
 		}
 	}
 
@@ -449,7 +452,7 @@ namespace StarlightRiver.Content.Items.Hell
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D tex = Assets.StarTexture.Value;
 
 			Color color2 = color * (1 - Projectile.alpha / 255f);
 			color2.A = 0;

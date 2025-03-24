@@ -1,3 +1,4 @@
+using StarlightRiver.Core.Loaders;
 using System;
 
 namespace StarlightRiver.Content.Dusts
@@ -187,7 +188,7 @@ namespace StarlightRiver.Content.Dusts
 
 	class CoachGunDustGlow : ModDust
 	{
-		public override string Texture => "StarlightRiver/Assets/Keys/GlowVerySoft";
+		public override string Texture => "StarlightRiver/Assets/Masks/GlowVerySoft";
 
 		public override Color? GetAlpha(Dust dust, Color lightColor)
 		{
@@ -210,7 +211,8 @@ namespace StarlightRiver.Content.Dusts
 			dust.scale *= 0.3f;
 			dust.frame = new Rectangle(0, 0, 64, 64);
 			dust.velocity *= 2;
-			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
+			if (ShaderLoader.GetShader("GlowingDust").Value != null)
+				dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
 		}
 
 		public override bool Update(Dust dust)
@@ -221,7 +223,7 @@ namespace StarlightRiver.Content.Dusts
 			//dust.rotation += dust.velocity.Y * 0.1f;
 			dust.position += dust.velocity;
 			dust.velocity *= 0.95f;
-			dust.shader.UseColor(dust.color);
+			dust.shader?.UseColor(dust.color);
 			dust.scale *= 0.97f;
 			dust.fadeIn++;
 
@@ -236,7 +238,7 @@ namespace StarlightRiver.Content.Dusts
 
 	class CoachGunSparks : ModDust
 	{
-		public override string Texture => "StarlightRiver/Assets/Keys/GlowVerySoft";
+		public override string Texture => "StarlightRiver/Assets/Masks/GlowVerySoft";
 
 		public override void OnSpawn(Dust dust)
 		{
@@ -245,7 +247,8 @@ namespace StarlightRiver.Content.Dusts
 			dust.scale *= 0.15f;
 			dust.frame = new Rectangle(0, 0, 64, 64);
 			dust.color = Color.Lerp(Color.Red, Color.Yellow, Main.rand.NextFloat());
-			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
+			if (ShaderLoader.GetShader("GlowingDust").Value != null)
+				dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
 		}
 
 		public override Color? GetAlpha(Dust dust, Color lightColor)
@@ -255,7 +258,7 @@ namespace StarlightRiver.Content.Dusts
 
 		public override bool Update(Dust dust)
 		{
-			dust.shader.UseColor(dust.color);
+			dust.shader?.UseColor(dust.color);
 			dust.position += dust.velocity;
 			dust.velocity.Y += 0.03f;
 			dust.scale *= 0.97f;

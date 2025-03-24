@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Lighting.AddLight(Projectile.Center, color.ToVector3() * 0.5f);
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			foreach (NPC npc in Main.npc.Where(n => n.active && n.CanBeChasedBy(this, false) && Vector2.Distance(n.Center, Projectile.Center) < 120))
 			{
@@ -71,8 +71,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 				Dust.NewDustPerfect(Projectile.Center + sparkOff * 5, DustType<Dusts.Cinder>(), sparkOff, 0, rainbowColor, 1);
 			}
 
-			Helpers.Helper.PlayPitched("SquidBoss/LightSplash", 0.6f, 1f, Projectile.Center);
-			Helpers.Helper.PlayPitched("JellyBounce", 1f, 1f, Projectile.Center);
+			Helpers.SoundHelper.PlayPitched("SquidBoss/LightSplash", 0.6f, 1f, Projectile.Center);
+			Helpers.SoundHelper.PlayPitched("JellyBounce", 1f, 1f, Projectile.Center);
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -87,7 +87,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			Texture2D tex = Assets.Bosses.SquidBoss.AuroralingGlow.Value;
 			Texture2D tex2 = Assets.Bosses.SquidBoss.AuroralingGlow2.Value;
-			Texture2D tex3 = Assets.Keys.GlowAlpha.Value;
+			Texture2D tex3 = Assets.Masks.GlowAlpha.Value;
 
 			for (int k = 0; k < Projectile.oldPos.Length; k++)
 			{

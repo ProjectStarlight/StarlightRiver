@@ -123,7 +123,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			modifiers.Knockback *= 1 + progressToDepletion;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			ReLogic.Utilities.SlotId unused1 = SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
 
@@ -137,7 +137,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		private readonly List<Vector2> oldPos = new();
 
-		public override string Texture => AssetDirectory.Keys + "GlowHarshAlpha";
+		public override string Texture => AssetDirectory.Masks + "GlowHarshAlpha";
 
 		public override void SetStaticDefaults()
 		{
@@ -158,7 +158,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = Assets.Keys.GlowHarshAlpha.Value;
+			Texture2D tex = Assets.Masks.GlowHarshAlpha.Value;
 			Color color = Color.Orange;
 			color.A = 0;
 			color *= 0.2f;

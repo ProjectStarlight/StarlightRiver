@@ -73,7 +73,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 				for (int i = 0; i < 2; i++)
 				{
-					rotation += Helpers.Helper.RotationDifference(velocity.ToRotation(), rotation) * 0.175f;
+					rotation += Helpers.GeometryHelper.RotationDifference(velocity.ToRotation(), rotation) * 0.175f;
 					velocity = Vector2.UnitX.RotatedBy(rotation) * velocity.Length();
 
 					Vector2 direction = velocity.RotatedByRandom(0.1f);
@@ -417,10 +417,12 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool PreDraw(ref Color lightColor)
 		{
+			MagmaMetaballs.activeTime = 6;
+
 			foreach (MagmaGlob glob in Globs)
 			{
 				if (glob.active)
-					glob.Draw(Main.spriteBatch, ModContent.Request<Texture2D>(Texture + "_Glow").Value);
+					glob.Draw(Main.spriteBatch, Assets.Items.Misc.MagmaGunProj_Glow.Value);
 			}
 
 			return false;
@@ -494,17 +496,6 @@ namespace StarlightRiver.Content.Items.Misc
 				}
 			}
 		}
-
-		/*public void DrawOverTiles(SpriteBatch spriteBatch)
-        {
-			foreach (MagmaGlob glob in Globs)
-			{
-				if (glob.active)
-				{
-					glob.DrawSinge(spriteBatch, ModContent.Request<Texture2D>(Texture + "_Glow").Value);
-				}
-			}
-		}*/
 	}
 
 	public class MagmaGunDust : ModDust
@@ -517,6 +508,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool Update(Dust dust)
 		{
+			MagmaMetaballs.activeTime = 6;
+
 			dust.position += dust.velocity;
 
 			if (dust.noGravity)

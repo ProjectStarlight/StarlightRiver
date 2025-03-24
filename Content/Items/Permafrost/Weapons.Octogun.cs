@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Helpers;
+﻿using StarlightRiver.Core.Loaders;
+using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using Terraria.DataStructures;
@@ -224,8 +225,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 						Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, mouseDirection * 20f,
 							ModContent.ProjectileType<AuroracleInkBullet>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI, 1); // [ai] is one for tiny ink
 
-						Helper.PlayPitched("Impacts/IceShoot", Main.rand.NextFloat(0.3f, 0.4f), Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
-						Helper.PlayPitched("Guns/EnergySMG", Main.rand.NextFloat(0.2f, 0.3f), Main.rand.NextFloat(0.2f, 0.5f), Projectile.position);
+						SoundHelper.PlayPitched("Impacts/IceShoot", Main.rand.NextFloat(0.3f, 0.4f), Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
+						SoundHelper.PlayPitched("Guns/EnergySMG", Main.rand.NextFloat(0.2f, 0.3f), Main.rand.NextFloat(0.2f, 0.5f), Projectile.position);
 
 						float sin = 1 + (float)Math.Sin(Main.GameUpdateCount * 10); //yes ive reused this color like 17 times shh
 						float cos = 1 + (float)Math.Cos(Main.GameUpdateCount * 10);
@@ -244,10 +245,10 @@ namespace StarlightRiver.Content.Items.Permafrost
 			}
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			Gore.NewGoreDirect(Projectile.GetSource_Death(), Projectile.Center, Vector2.One.RotatedByRandom(6.28f) * 1.5f, Mod.Find<ModGore>("Octogun_Tentapistol").Type).timeLeft = 90;
-			Helper.PlayPitched("Impacts/EnergyBreak", Main.rand.NextFloat(0.4f, 0.5f), Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
+			SoundHelper.PlayPitched("Impacts/EnergyBreak", Main.rand.NextFloat(0.4f, 0.5f), Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -302,19 +303,23 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		private void DrawPrimitives(SpriteBatch spriteBatch)
 		{
-			spriteBatch.End();
+			Effect effect = ShaderLoader.GetShader("AlphaTextureTrail").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				spriteBatch.End();
 
-			Effect effect = Filters.Scene["AlphaTextureTrail"].GetShader().Shader;
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.Items.Permafrost.Octogun_Tentacle.Value);
-			effect.Parameters["alpha"].SetValue(Projectile.timeLeft < 10 ? MathHelper.Lerp(1, 0, 1f - Projectile.timeLeft / 10f) : 1);
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			trail?.Render(effect);
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.Items.Permafrost.Octogun_Tentacle.Value);
+				effect.Parameters["alpha"].SetValue(Projectile.timeLeft < 10 ? MathHelper.Lerp(1, 0, 1f - Projectile.timeLeft / 10f) : 1);
+
+				trail?.Render(effect);
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 		}
 
 		private BezierCurve GetBezierCurve()
@@ -439,7 +444,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		{
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
-			Texture2D tex = Assets.Keys.GlowSoft.Value;
+			Texture2D tex = Assets.Masks.GlowSoft.Value;
 			float sin = 1 + (float)Math.Sin(Projectile.timeLeft * 10);
 			float cos = 1 + (float)Math.Cos(Projectile.timeLeft * 10);
 			var color = Color.Lerp(Color.Transparent, Main.masterMode ? new Color(1, 0.25f + sin * 0.25f, 0f) : new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f), FadeInTimer / 15f);
@@ -472,7 +477,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 					Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.7f, 1.25f), 0, color, 0.5f);
 			}
 
-			Helper.PlayPitched("Impacts/IceHit", 0.5f, 0, Projectile.position);
+			SoundHelper.PlayPitched("Impacts/IceHit", 0.5f, 0, Projectile.position);
 		}
 
 		private void ManageCaches()
@@ -521,22 +526,26 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public void DrawPrimitives(SpriteBatch spriteBatch)
 		{
-			spriteBatch.End();
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				spriteBatch.End();
 
-			effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.02f);
-			effect.Parameters["repeats"].SetValue(2f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
-			trail?.Render(effect);
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
-			trail?.Render(effect);
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.02f);
+				effect.Parameters["repeats"].SetValue(2f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+				trail?.Render(effect);
+
+				effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
+				trail?.Render(effect);
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 		}
 	}
 }

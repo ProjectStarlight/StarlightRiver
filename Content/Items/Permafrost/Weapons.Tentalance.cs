@@ -1,4 +1,6 @@
-﻿using StarlightRiver.Helpers;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core.Loaders;
+using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -98,7 +100,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 				{
 					ChargeSnapshot = Charge;
 					Projectile.damage += (int)Charge;
-					Helper.PlayPitched("SquidBoss/LightSplash", 0.2f, -0.5f, Owner.Center);
+					SoundHelper.PlayPitched("SquidBoss/LightSplash", 0.2f, -0.5f, Owner.Center);
 					if (ChargeSnapshot <= 0)
 						ChargeSnapshot = 1; //make sure it atleast does damage on its attack
 				}
@@ -107,7 +109,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			{
 				if (Owner.channel && Charge == 29)
 				{
-					Helper.PlayPitched("MagicAttack", 1, 1, Owner.Center);
+					SoundHelper.PlayPitched("MagicAttack", 1, 1, Owner.Center);
 
 					for (int k = 0; k < 40; k++)
 					{
@@ -137,7 +139,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 					Projectile.NewProjectile(Owner.GetSource_ItemUse(Owner.HeldItem), Projectile.Center, Projectile.velocity.RotatedBy(-0.25f), Type, Projectile.damage / 2, Projectile.knockBack, Projectile.owner, 0, 14);
 				}
 
-				Helper.PlayPitched("SquidBoss/LightSplash", 0.3f, -0.5f, Owner.Center);
+				SoundHelper.PlayPitched("SquidBoss/LightSplash", 0.3f, -0.5f, Owner.Center);
 			}
 
 			if (Timer == 20 && ChargeSnapshot >= 30)
@@ -148,7 +150,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 					Projectile.NewProjectile(Owner.GetSource_ItemUse(Owner.HeldItem), Projectile.Center, Projectile.velocity.RotatedBy(-0.45f), Type, Projectile.damage / 2, Projectile.knockBack, Projectile.owner, 0, 1);
 				}
 
-				Helper.PlayPitched("SquidBoss/SuperSplash", 0.5f, -0.5f, Owner.Center);
+				SoundHelper.PlayPitched("SquidBoss/SuperSplash", 0.5f, -0.5f, Owner.Center);
 			}
 
 			Vector2 basePos = Owner.Center + Vector2.UnitY * Owner.gfxOffY;
@@ -203,18 +205,21 @@ namespace StarlightRiver.Content.Items.Permafrost
 			}
 
 			//Render trail
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.01f);
-			effect.Parameters["repeats"].SetValue(1);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
+				effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.01f);
+				effect.Parameters["repeats"].SetValue(1);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
-			trail?.Render(effect);
+				trail?.Render(effect);
+			}
 
 			return false;
 		}

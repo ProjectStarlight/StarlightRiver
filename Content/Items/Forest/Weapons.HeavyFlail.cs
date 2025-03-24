@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.Items.Forest
 		{
 			if (wasTile)
 			{
-				Helpers.Helper.PlayPitched("Impacts/StoneStrike", 1, 0, Projectile.Center);
+				Helpers.SoundHelper.PlayPitched("Impacts/StoneStrike", 1, 0, Projectile.Center);
 
 				if (Owner == Main.LocalPlayer)
 					CameraSystem.shake += 10;

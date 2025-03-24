@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.BarrierSystem;
+﻿using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems.BarrierSystem;
 using System;
 using System.Collections.Generic;
 using Terraria.Graphics.Effects;
@@ -69,42 +70,45 @@ namespace StarlightRiver.Content.Items.Geomancer
 			spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
-			Effect effect = Filters.Scene["RainbowAura"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("RainbowAura").Value;
 
-			if (activeGem == StoredGem.All)
+			if (effect != null)
 			{
-
-				float sin = (float)Math.Sin(Main.GameUpdateCount / 10f);
-				float opacity = 1.25f - (sin / 2 + 0.5f) * 0.8f;
-
-				effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.03f);
-				effect.Parameters["uOpacity"].SetValue(opacity);
-				effect.CurrentTechnique.Passes[0].Apply();
-
-				for (int k = 0; k < 6; k++)
+				if (activeGem == StoredGem.All)
 				{
-					Vector2 dir = Vector2.UnitX.RotatedBy(k / 6f * 6.28f) * (5.5f + sin * 2.2f);
-					Color color = Color.White * (opacity - sin * 0.1f) * 0.9f;
 
-					spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI), color * 0.25f * fadeOut);
+					float sin = (float)Math.Sin(Main.GameUpdateCount / 10f);
+					float opacity = 1.25f - (sin / 2 + 0.5f) * 0.8f;
+
+					effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.03f);
+					effect.Parameters["uOpacity"].SetValue(opacity);
+					effect.CurrentTechnique.Passes[0].Apply();
+
+					for (int k = 0; k < 6; k++)
+					{
+						Vector2 dir = Vector2.UnitX.RotatedBy(k / 6f * 6.28f) * (5.5f + sin * 2.2f);
+						Color color = Color.White * (opacity - sin * 0.1f) * 0.9f;
+
+						spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI), color * 0.25f * fadeOut);
+					}
 				}
-			}
-			else if (ActivationCounter > 0)
-			{
-				float sin = Player.GetModPlayer<GeomancerPlayer>().ActivationCounter;
-				float opacity = 1.5f - sin;
-
-				Color color = GetArmorColor(Player) * (opacity - sin * 0.1f) * 0.9f;
-
-				effect.Parameters["uColor"].SetValue(color.ToVector3());
-				effect.Parameters["uOpacity"].SetValue(sin);
-				effect.CurrentTechnique.Passes[1].Apply();
-
-				for (int k = 0; k < 6; k++)
+				else if (ActivationCounter > 0)
 				{
-					Vector2 dir = Vector2.UnitX.RotatedBy(k / 6f * 6.28f) * (sin * 8f);
+					float sin = Player.GetModPlayer<GeomancerPlayer>().ActivationCounter;
+					float opacity = 1.5f - sin;
 
-					spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI), Color.White * 0.25f);
+					Color color = GetArmorColor(Player) * (opacity - sin * 0.1f) * 0.9f;
+
+					effect.Parameters["uColor"].SetValue(color.ToVector3());
+					effect.Parameters["uOpacity"].SetValue(sin);
+					effect.CurrentTechnique.Passes[1].Apply();
+
+					for (int k = 0; k < 6; k++)
+					{
+						Vector2 dir = Vector2.UnitX.RotatedBy(k / 6f * 6.28f) * (sin * 8f);
+
+						spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI), Color.White * 0.25f);
+					}
 				}
 			}
 

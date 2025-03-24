@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Items.Misc
 				if (Main.netMode == NetmodeID.Server)
 					return; //Server should only spawn the item + apply DOT and then stop before sounds and dust
 
-				Helper.PlayPitched("Impacts/StabTiny", 0.8f, Main.rand.NextFloat(-0.3f, 0.3f), target.Center);
+				SoundHelper.PlayPitched("Impacts/StabTiny", 0.8f, Main.rand.NextFloat(-0.3f, 0.3f), target.Center);
 
 				if (Main.myPlayer == player.whoAmI)
 					Projectile.NewProjectile(player.GetSource_ItemUse(Item), target.Center, Vector2.Zero, ModContent.ProjectileType<FiletSlash>(), 0, 0, player.whoAmI, target.whoAmI);
@@ -282,7 +282,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (effect == null)
 				return;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

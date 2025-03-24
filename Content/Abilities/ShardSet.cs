@@ -17,6 +17,11 @@ namespace StarlightRiver.Content.Abilities
 			collected.Add(id);
 		}
 
+		public void Clear()
+		{
+			collected.Clear();
+		}
+
 		public int Count => collected.Count;
 
 		public List<int> ToList()

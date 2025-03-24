@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Packets;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Helpers;
 using System;
@@ -70,7 +71,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 					float sin = (float)Math.Sin(Main.GameUpdateCount * 0.05f + k * 0.5f);
 					var target = new Rectangle((i + 1) * 16, (int)((j + 4.5f) * 16), (int)(portalGlow.Width * (1.2f - k * 0.2f + 0.05f * sin)), (int)(portalGlow.Height * (0.1f + 0.15f * k + 0.05f * sin)));
 
-					target.Offset((-Main.screenPosition + Helper.TileAdj * 16).ToPoint());
+					target.Offset((-Main.screenPosition + Vector2.One * Main.offScreenRange).ToPoint());
 
 					spriteBatch.Draw(portalGlow, target, null, portalGlowColor * 0.4f, 0, new Vector2(portalGlow.Width / 2, portalGlow.Height), 0, 0);
 				}
@@ -211,7 +212,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 		public TouchstoneItem() : base("Touchstone", "A guiding light", "Touchstone", 3, AssetDirectory.PermafrostTile) { }
 	}
 
-	class TouchstoneWisp : ModNPC, IDrawAdditive, IDrawPrimitive //not sure if this is really a great place to put this but ehhhh
+	class TouchstoneWisp : ModNPC, IDrawPrimitive //not sure if this is really a great place to put this but ehhhh
 	{
 
 		private ref float TargetX => ref NPC.ai[0];
@@ -332,6 +333,17 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
+			Texture2D glowTex = Assets.Masks.GlowSoftAlpha.Value;
+
+			float sin1 = 1 + (float)Math.Sin(Main.GameUpdateCount / 10f);
+			float cos1 = 1 + (float)Math.Cos(Main.GameUpdateCount / 10f);
+			var auroraColor = new Color(0.5f + cos1 * 0.2f, 0.8f, 0.5f + sin1 * 0.2f, 0);
+
+			for (int i = 0; i < 3; i++)
+			{
+				spriteBatch.Draw(glowTex, NPC.Center - Main.screenPosition, null, auroraColor * NPC.Opacity, 0f, glowTex.Size() / 2, 0.8f * NPC.scale, SpriteEffects.None, 0f);
+			}
+
 			return false;
 		}
 
@@ -381,36 +393,25 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			trail.NextPosition = NPC.Center + NPC.velocity;
 		}
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
-			Texture2D tex = Assets.Keys.GlowSoft.Value;
-
-			float sin1 = 1 + (float)Math.Sin(Main.GameUpdateCount / 10f);
-			float cos1 = 1 + (float)Math.Cos(Main.GameUpdateCount / 10f);
-			var auroraColor = new Color(0.5f + cos1 * 0.2f, 0.8f, 0.5f + sin1 * 0.2f);
-
-			for (int i = 0; i < 3; i++)
-			{
-				spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, auroraColor * NPC.Opacity, 0f, tex.Size() / 2, 0.8f * NPC.scale, SpriteEffects.None, 0f);
-			}
-		}
-
 		public void DrawPrimitives()
 		{
-			Effect effect = Terraria.Graphics.Effects.Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
-			effect.Parameters["repeats"].SetValue(2f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
-			trail?.Render(effect);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
+				effect.Parameters["repeats"].SetValue(2f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+				trail?.Render(effect);
 
-			effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
-			trail?.Render(effect);
+				effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
+				trail?.Render(effect);
+			}
 		}
 	}
 

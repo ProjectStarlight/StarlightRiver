@@ -23,14 +23,14 @@ namespace StarlightRiver.Core
 					{
 						for (int y = 10; y < Main.worldSurface; y++)
 						{
-							if (Main.tile[k, y].TileType == TileID.Grass && Main.tile[k + 1, y].TileType == TileID.Grass && Helper.CheckAirRectangle(new Point16(k, y - 2), new Point16(2, 2)))
+							if (Main.tile[k, y].TileType == TileID.Grass && Main.tile[k + 1, y].TileType == TileID.Grass && WorldGenHelper.CheckAirRectangle(new Point16(k, y - 2), new Point16(2, 2)))
 							{
 								int type = TileType<ForestBerryBush>();
 
 								if (WorldGen.genRand.NextBool(4))
 									type = TileType<SlimeberryBush>();
 
-								Helper.PlaceMultitile(new Point16(k, y - 2), type); //25% chance for slimeberries instead
+								WorldGenHelper.PlaceMultitile(new Point16(k, y - 2), type); //25% chance for slimeberries instead
 								k += 3;
 							}
 						}
@@ -40,9 +40,9 @@ namespace StarlightRiver.Core
 					{
 						for (int y = 10; y < Main.worldSurface; y++)
 						{
-							if (Main.tile[k, y].HasTile && Main.tile[k, y].BlockType == BlockType.Solid && Main.tile[k, y].TileType == TileID.Grass && Helper.CheckAirRectangle(new Point16(k, y - 2), new Point16(1, 2)))
+							if (Main.tile[k, y].HasTile && Main.tile[k, y].BlockType == BlockType.Solid && Main.tile[k, y].TileType == TileID.Grass && WorldGenHelper.CheckAirRectangle(new Point16(k, y - 2), new Point16(1, 2)))
 							{
-								Helper.PlaceMultitile(new Point16(k, y - 2), TileType<CommonVegetables>());
+								WorldGenHelper.PlaceMultitile(new Point16(k, y - 2), TileType<CommonVegetables>());
 								k += 2;
 							}
 						}
@@ -144,7 +144,7 @@ namespace StarlightRiver.Core
 		{
 			for (int y = (int)(Main.worldSurface * 0.35f); y < Main.rockLayer; y++)
 			{
-				if (Main.tile[x, y].TileType == TileID.Grass)
+				if (Main.tile[x, y].HasTile && Main.tile[x, y].TileType == TileID.Grass)
 					return true;
 			}
 

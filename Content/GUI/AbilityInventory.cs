@@ -89,7 +89,7 @@ namespace StarlightRiver.Content.GUI
 			bool unlocked = Main.LocalPlayer.GetHandler().Unlocked(ability.GetType());
 
 			Vector2 pos = GetDimensions().Center() - Vector2.One;
-			Texture2D tex = !unlocked ? Assets.GUI.blank.Value : Request<Texture2D>(ability.Texture).Value;
+			Texture2D tex = !unlocked ? Assets.GUI.blank.Value : ability.Texture.Value;
 
 			spriteBatch.Draw(tex, pos, tex.Frame(), Color.White, 0, tex.Size() / 2, 1, 0, 0);
 

@@ -1,6 +1,5 @@
 ﻿using StarlightRiver.Content.Biomes;
 using Terraria.ID;
-using static StarlightRiver.Helpers.Helper;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
@@ -11,7 +10,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		public override void SetStaticDefaults()
 		{
 			Main.tileLighted[Type] = true;
-			this.QuickSetFurniture(1, 1, 0, SoundID.Dig, false, new Color(140, 97, 86), false, false, "Candle", AnchorTableTop(1, true));
+			this.QuickSetFurniture(1, 1, 0, SoundID.Dig, false, new Color(140, 97, 86), false, false, "Candle", TileHelper.AnchorTableTop(1, true));
 			RegisterItemDrop(ModContent.ItemType<TempleCandleItem>());
 		}
 

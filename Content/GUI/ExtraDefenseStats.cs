@@ -151,7 +151,7 @@ namespace StarlightRiver.Content.GUI
 			if (timer > 25)
 				timer = 25;
 
-			float progress = Helpers.Helper.SwoopEase(timer / 25f);
+			float progress = Helpers.Eases.SwoopEase(timer / 25f);
 			var pos = Vector2.Lerp(ParentState.basePos, endPos, progress);
 
 			Left.Set(pos.X - 46, 0);
@@ -163,7 +163,7 @@ namespace StarlightRiver.Content.GUI
 
 			float cappedMagnitude = Math.Min(magnitude, 1f);
 
-			spriteBatch.Draw(Assets.Keys.GlowAlpha.Value, pos, null, new Color(color.R, color.G, color.B, 0) * progress * (0.5f + cappedMagnitude * 0.5f), 0, new Vector2(80, 80), 0.6f + magnitude * 0.25f, 0, 0);
+			spriteBatch.Draw(Assets.Masks.GlowAlpha.Value, pos, null, new Color(color.R, color.G, color.B, 0) * progress * (0.5f + cappedMagnitude * 0.5f), 0, new Vector2(80, 80), 0.6f + magnitude * 0.25f, 0, 0);
 
 			if (magnitude >= 0.75f)
 			{

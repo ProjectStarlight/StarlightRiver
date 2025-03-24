@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Helpers;
+﻿using StarlightRiver.Core.Loaders;
+using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -47,16 +48,16 @@ namespace StarlightRiver.Content.Items.Infernal
 				Projectile.NewProjectile(Item.GetSource_FromThis(), position, velocity, type, damage, knockback, player.whoAmI, 0, combo);
 				combo *= -1;
 
-				Helper.PlayPitched("Effects/HeavyWhoosh", 0.8f, -0.1f + Main.rand.NextFloat(-0.1f, 0.1f), player.Center);
-				Helper.PlayPitched("Effects/FancySwoosh", 0.8f, 0f, player.Center);
+				SoundHelper.PlayPitched("Effects/HeavyWhoosh", 0.8f, -0.1f + Main.rand.NextFloat(-0.1f, 0.1f), player.Center);
+				SoundHelper.PlayPitched("Effects/FancySwoosh", 0.8f, 0f, player.Center);
 			}
 			else if (player.CheckMana(90, true))
 			{
 				player.manaRegenDelay = 35;
 				Projectile.NewProjectile(Item.GetSource_FromThis(), position, velocity * 24, ModContent.ProjectileType<InfernalHarvestPaid>(), damage * 3, knockback, player.whoAmI, 0, velocity.X > 0 ? -1 : 1);
 
-				Helper.PlayPitched("Effects/FancySwoosh", 0.8f, 0.2f, player.Center);
-				Helper.PlayPitched("Magic/FireHit", 0.6f, -0.1f, player.Center);
+				SoundHelper.PlayPitched("Effects/FancySwoosh", 0.8f, 0.2f, player.Center);
+				SoundHelper.PlayPitched("Magic/FireHit", 0.6f, -0.1f, player.Center);
 			}
 
 			return false;
@@ -142,9 +143,9 @@ namespace StarlightRiver.Content.Items.Infernal
 			Vector2 perp = Vector2.UnitX.RotatedBy(Projectile.rotation + 1.57f);
 
 			bool hit = target.immune[0] <= 0 && Timer < 60 && (
-				Helper.CheckLinearCollision(Projectile.Center, Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation) * SCYTHE_LENGTH, target.Hitbox, out _) ||
-				Helper.CheckLinearCollision(Projectile.Center + perp * 10, Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation) * SCYTHE_LENGTH + perp * 10, target.Hitbox, out _) ||
-				Helper.CheckLinearCollision(Projectile.Center + perp * -10, Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation) * SCYTHE_LENGTH + perp * -10, target.Hitbox, out _));
+				CollisionHelper.CheckLinearCollision(Projectile.Center, Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation) * SCYTHE_LENGTH, target.Hitbox, out _) ||
+				CollisionHelper.CheckLinearCollision(Projectile.Center + perp * 10, Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation) * SCYTHE_LENGTH + perp * 10, target.Hitbox, out _) ||
+				CollisionHelper.CheckLinearCollision(Projectile.Center + perp * -10, Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation) * SCYTHE_LENGTH + perp * -10, target.Hitbox, out _));
 
 			return hit ? null : false;
 		}
@@ -159,8 +160,8 @@ namespace StarlightRiver.Content.Items.Infernal
 				Owner.ManaEffect(amount);
 			}
 
-			Helper.PlayPitched("Impacts/StabFleshy", 0.9f, 0f, target.Center);
-			Helper.PlayPitched("Impacts/GoreLight", 0.25f, 0.5f, target.Center);
+			SoundHelper.PlayPitched("Impacts/StabFleshy", 0.9f, 0f, target.Center);
+			SoundHelper.PlayPitched("Impacts/GoreLight", 0.25f, 0.5f, target.Center);
 
 			Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.GlowLineFast>(), Vector2.UnitX.RotatedBy(Projectile.rotation - 1.57f) * 15 * direction, 0, new Color(255, 80, 0), 2.5f);
 
@@ -169,8 +170,8 @@ namespace StarlightRiver.Content.Items.Infernal
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D texGlow = ModContent.Request<Texture2D>(Texture + "Glow").Value;
+			Texture2D tex = Assets.Items.Infernal.InfernalHarvestProj.Value;
+			Texture2D texGlow = Assets.Items.Infernal.InfernalHarvestProjGlow.Value;
 			var origin = new Vector2(tex.Width - 16, tex.Height - 16);
 
 			float opacity;
@@ -278,21 +279,24 @@ namespace StarlightRiver.Content.Items.Infernal
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount);
-			effect.Parameters["repeats"].SetValue(2f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
-			trail?.Render(effect);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount);
+				effect.Parameters["repeats"].SetValue(2f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
+				trail?.Render(effect);
 
-			effect.Parameters["repeats"].SetValue(1f);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/MotionTrail").Value);
-			trailBig?.Render(effect);
+				effect.Parameters["repeats"].SetValue(1f);
+				effect.Parameters["sampleTexture"].SetValue(Assets.MotionTrail.Value);
+				trailBig?.Render(effect);
+			}
 		}
 	}
 
@@ -394,15 +398,15 @@ namespace StarlightRiver.Content.Items.Infernal
 		{
 			Projectile.damage -= 7;
 
-			Helper.PlayPitched("Impacts/StabFleshy", 0.9f, -0.2f, target.Center);
-			Helper.PlayPitched("Impacts/GoreLight", 0.25f, 0.2f, target.Center);
+			SoundHelper.PlayPitched("Impacts/StabFleshy", 0.9f, -0.2f, target.Center);
+			SoundHelper.PlayPitched("Impacts/GoreLight", 0.25f, 0.2f, target.Center);
 
 			Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.GlowLineFast>(), Vector2.UnitX.RotatedBy(Projectile.rotation - 1.57f) * 15, 0, new Color(255, 80, 0), 2.5f);
 		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D tex = Assets.Items.Infernal.InfernalHarvestPaid.Value;
 			Vector2 origin = new Vector2(tex.Width, tex.Height) / 2f;
 
 			float opacity;
@@ -420,7 +424,7 @@ namespace StarlightRiver.Content.Items.Infernal
 
 			opacity *= Projectile.velocity.Length() / 24f;
 
-			Texture2D glow = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
+			Texture2D glow = Assets.Masks.GlowAlpha.Value;
 			Color color = new Color(160, 50, 80) * opacity;
 			color.A = 0;
 			Main.spriteBatch.Draw(glow, Projectile.Center - Main.screenPosition, null, color, 0, glow.Size() / 2f, 7f * opacity, 0, 0);
@@ -472,17 +476,20 @@ namespace StarlightRiver.Content.Items.Infernal
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount);
-			effect.Parameters["repeats"].SetValue(2f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
-			trail?.Render(effect);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount);
+				effect.Parameters["repeats"].SetValue(2f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
+				trail?.Render(effect);
+			}
 		}
 	}
 
@@ -535,9 +542,9 @@ namespace StarlightRiver.Content.Items.Infernal
 		{
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
+			Texture2D tex = Assets.Masks.GlowAlpha.Value;
 
-			Effect effect = Filters.Scene["ColoredFire"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("ColoredFire").Value;
 
 			if (effect is null)
 				return false;
@@ -549,8 +556,8 @@ namespace StarlightRiver.Content.Items.Infernal
 			effect.Parameters["primaryScaling"].SetValue(new Vector3(1, 1, 1));
 			effect.Parameters["secondary"].SetValue(new Vector3(1f, 0.2f, 0.05f) * opacity);
 
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value);
-			effect.Parameters["mapTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value);
+			effect.Parameters["sampleTexture"].SetValue(Assets.Noise.MiscNoise3.Value);
+			effect.Parameters["mapTexture"].SetValue(Assets.Noise.MiscNoise3.Value);
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);

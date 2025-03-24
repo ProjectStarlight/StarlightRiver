@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.CameraSystem;
+﻿using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -68,7 +69,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			}
 			else
 			{
-				Item.useTime = 30;	
+				Item.useTime = 30;
 				Item.useAnimation = 30;
 				Item.noUseGraphic = false;
 
@@ -119,7 +120,7 @@ namespace StarlightRiver.Content.Items.Breacher
 					hook = Main.projectile[i].ModProjectile as ScrapshotHook;
 				}
 
-				Helper.PlayPitched("Guns/ChainShoot", 0.5f, 0, player.Center);
+				SoundHelper.PlayPitched("Guns/ChainShoot", 0.5f, 0, player.Center);
 			}
 			else
 			{
@@ -149,7 +150,7 @@ namespace StarlightRiver.Content.Items.Breacher
 					hook.Projectile.timeLeft = 20;
 					player.velocity = Vector2.Normalize(hook.startPos - hooked.Center) * 12;
 
-					Helper.PlayPitched("ChainHit", 0.5f, 0, player.Center);
+					SoundHelper.PlayPitched("ChainHit", 0.5f, 0, player.Center);
 
 					for (int k = 0; k < 20; k++)
 					{
@@ -189,7 +190,7 @@ namespace StarlightRiver.Content.Items.Breacher
 					}
 				}
 
-				Helper.PlayPitched("Guns/Scrapshot", 0.4f, 0, player.Center);
+				SoundHelper.PlayPitched("Guns/Scrapshot", 0.4f, 0, player.Center);
 			}
 
 			return true;
@@ -309,7 +310,7 @@ namespace StarlightRiver.Content.Items.Breacher
 				Player.direction = startPos.X > hooked.Center.X ? -1 : 1;
 
 				if (timer == 1)
-					Helper.PlayPitched("Guns/ChainPull", 1, 0, Player.Center);
+					SoundHelper.PlayPitched("Guns/ChainPull", 1, 0, Player.Center);
 
 				if (timer < 10)
 				{
@@ -351,7 +352,7 @@ namespace StarlightRiver.Content.Items.Breacher
 					CameraSystem.shake += 15;
 
 					hooked.SimpleStrikeNPC(Projectile.damage, Player.Center.X < hooked.Center.X ? -1 : 1);
-					Helper.PlayPitched("Guns/ChainPull", 0.001f, 0, Player.Center);
+					SoundHelper.PlayPitched("Guns/ChainPull", 0.001f, 0, Player.Center);
 				}
 			}
 
@@ -493,18 +494,21 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
-			effect.Parameters["repeats"].SetValue(2f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
+				effect.Parameters["repeats"].SetValue(2f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 
-			trail?.Render(effect);
+				trail?.Render(effect);
+			}
 		}
 	}
 }

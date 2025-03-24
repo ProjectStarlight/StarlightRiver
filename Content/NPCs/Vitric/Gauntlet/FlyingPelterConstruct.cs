@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.Misc;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -143,7 +144,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			if (!empowered)
 				direction = direction.RotatedBy((Target.Center.X - NPC.Center.X) * -0.0003f);
 
-			float rotDifference = Helper.RotationDifference(direction.ToRotation(), bowArmRotation);
+			float rotDifference = GeometryHelper.RotationDifference(direction.ToRotation(), bowArmRotation);
 
 			if (!empowered || BowFrameCounter < 75)
 				bowArmRotation = MathHelper.Lerp(bowArmRotation, bowArmRotation + rotDifference, 0.1f);
@@ -155,7 +156,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			if (NPC.spriteDirection == 1)
 				headRotation = bowRotation / 2;
 			else
-				headRotation = Helper.RotationDifference(bowRotation, 3.14f) / 2;
+				headRotation = GeometryHelper.RotationDifference(bowRotation, 3.14f) / 2;
 
 			float distance = posToBe.X - oldPos.X;
 			float progress = (NPC.Center.X - oldPos.X) / distance;
@@ -320,10 +321,10 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		private void DrawPredictor(Vector2 screenPos)
 		{
-			Texture2D predictorTex = Assets.Keys.Shine.Value;
+			Texture2D predictorTex = Assets.Masks.Shine.Value;
 			float rot = bowArmRotation + 1.57f;
 
-			float charge = EaseFunction.EaseQuadInOut.Ease(MathHelper.Clamp(BowFrameCounter / 100f, 0, 1));
+			float charge = Eases.EaseQuadInOut(MathHelper.Clamp(BowFrameCounter / 100f, 0, 1));
 			float opacity = (float)Math.Sqrt(charge);
 
 			if (BowFrameCounter > 100)
@@ -488,7 +489,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		}
 	}
 
-	internal class PelterConstructArrowLarge : ModProjectile, IDrawAdditive
+	internal class PelterConstructArrowLarge : ModProjectile
 	{
 		private List<Vector2> cache;
 		private Trail trail;
@@ -520,32 +521,37 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Main.spriteBatch.End();
-			Effect effect = Terraria.Graphics.Effects.Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				Main.spriteBatch.End();
 
-			effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.04f);
-			effect.Parameters["repeats"].SetValue((int)Projectile.ai[0] / 5);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			trail?.Render(effect);
+				effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.04f);
+				effect.Parameters["repeats"].SetValue((int)Projectile.ai[0] / 5);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
-			effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
+				trail?.Render(effect);
 
-			trail?.Render(effect);
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
 
-			Texture2D flash = Request<Texture2D>(Texture + "_Flare").Value;
-			Color flashFade = Color.OrangeRed * fade * fade;
-			flashFade.A = 0;
-			Main.EntitySpriteDraw(flash, firstPos - Main.screenPosition, null, flashFade, 0, flash.Size() / 2, 2.5f * MathHelper.Lerp(0.5f, 1, fade * fade), SpriteEffects.None, 0);
+				trail?.Render(effect);
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
-			Texture2D tex = Request<Texture2D>(Texture).Value;
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * fade, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
+				Texture2D flash = Request<Texture2D>(Texture + "_Flare").Value;
+				Color flashFade = Color.OrangeRed * fade * fade;
+				flashFade.A = 0;
+				Main.EntitySpriteDraw(flash, firstPos - Main.screenPosition, null, flashFade, 0, flash.Size() / 2, 2.5f * MathHelper.Lerp(0.5f, 1, fade * fade), SpriteEffects.None, 0);
+
+				Texture2D tex = Request<Texture2D>(Texture).Value;
+				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * fade, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
+			}
+
 			return false;
 		}
 
@@ -589,7 +595,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				{
 					ManageCaches();
 					SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/FireHit"), Projectile.Center);
-					Helper.PlayPitched("Impacts/AirstrikeImpact", 0.3f, Main.rand.NextFloat(-0.1f, 0.1f));
+					SoundHelper.PlayPitched("Impacts/AirstrikeImpact", 0.3f, Main.rand.NextFloat(-0.1f, 0.1f));
 
 					SpawnParticles();
 				}
@@ -626,13 +632,17 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
 		}
 
-		public void DrawAdditive(SpriteBatch sb)
+		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = Assets.Keys.GlowSoft.Value;
+			Texture2D tex = Assets.Masks.GlowSoftAlpha.Value;
 
 			Color color = Color.OrangeRed;
+			color.A = 0;
+
 			for (int i = 0; i < 6; i++)
-				sb.Draw(tex, firstPos - Main.screenPosition, null, color, 0, tex.Size() / 2, 1.25f * fade, SpriteEffects.None, 0f);
+			{
+				Main.spriteBatch.Draw(tex, firstPos - Main.screenPosition, null, color, 0, tex.Size() / 2, 1.25f * fade, SpriteEffects.None, 0f);
+			}
 		}
 
 		private void SpawnParticles()

@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -126,11 +127,11 @@ namespace StarlightRiver.Content.Items.Misc
 		private bool hasDoneOnSpawn = false;
 
 		// These handle replicating the vanilla effects which we must do via reflection
-		public static MethodInfo? playerItemCheckEmitUseVisuals_Info;
-		public static Func<Player, Item, Rectangle, Rectangle>? playerItemCheckEmitUseVisuals;
+		public static MethodInfo playerItemCheckEmitUseVisuals_Info;
+		public static Func<Player, Item, Rectangle, Rectangle> playerItemCheckEmitUseVisuals;
 
-		public static MethodInfo? ApplyNPCOnHitEffects_Info;
-		public static Action<Player, Item, Rectangle, int, float, int, int, int>? ApplyNPCOnHitEffects;
+		public static MethodInfo ApplyNPCOnHitEffects_Info;
+		public static Action<Player, Item, Rectangle, int, float, int, int, int> ApplyNPCOnHitEffects;
 
 		public Item itemSnapshot; //lock in the item on creation incase they bypass the item switching prevention
 
@@ -208,7 +209,7 @@ namespace StarlightRiver.Content.Items.Misc
 				if (pitch >= 1)
 					pitch = 1;
 
-				Helper.PlayPitched("Effects/HeavyWhooshShort", 1, pitch, Owner.Center);
+				SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 1, pitch, Owner.Center);
 
 				if (itemSnapshot.UseSound.HasValue)
 					Terraria.Audio.SoundEngine.PlaySound(itemSnapshot.UseSound.Value, Owner.Center);
@@ -278,7 +279,7 @@ namespace StarlightRiver.Content.Items.Misc
 						lifeSpan += 20;
 					}
 
-					Projectile.rotation = BaseAngle + Direction + Helpers.Helper.BezierEase(Progress) * 6.28f * Direction;
+					Projectile.rotation = BaseAngle + Direction + Helpers.Eases.BezierEase(Progress) * 6.28f * Direction;
 					holdOut = Progress * 32;
 
 					float rot = Projectile.rotation + (Direction == 1 ? 0 : -(float)Math.PI / 2f);
@@ -333,7 +334,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Vector2 start = Owner.Center;
 			Vector2 end = Owner.Center + Vector2.UnitX.RotatedBy(rot) * (length + holdOut);
 
-			if (Helpers.Helper.CheckLinearCollision(start, end, targetHitbox, out Vector2 colissionPoint))
+			if (Helpers.CollisionHelper.CheckLinearCollision(start, end, targetHitbox, out Vector2 colissionPoint))
 			{
 				for (int k = 0; k < 20; k++)
 				{
@@ -358,7 +359,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			Helpers.Helper.PlayPitched(Helpers.Helper.IsFleshy(target) ? "Impacts/StabFleshy" : "Impacts/Clink", 1, Main.rand.NextFloat(), Owner.Center);
+			Helpers.SoundHelper.PlayPitched(Helpers.NPCHelper.IsFleshy(target) ? "Impacts/StabFleshy" : "Impacts/Clink", 1, Main.rand.NextFloat(), Owner.Center);
 			CameraSystem.shake += 3;
 
 			// Simulate on-hit effects
@@ -428,19 +429,22 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("DatsuzeiTrail").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
-			effect.Parameters["repeats"].SetValue(8f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
-			effect.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
+				effect.Parameters["repeats"].SetValue(8f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+				effect.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
 
-			trail?.Render(effect);
+				trail?.Render(effect);
+			}
 		}
 	}
 
@@ -518,13 +522,13 @@ namespace StarlightRiver.Content.Items.Misc
 					{
 						Vector2 first = Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation + 1.57f) * length / 2;
 						Vector2 second = Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation - 1.57f) * length / 2;
-						bool colliding = Helper.CheckLinearCollision(first, second, proj.Hitbox, out Vector2 collisionPoint);
+						bool colliding = CollisionHelper.CheckLinearCollision(first, second, proj.Hitbox, out Vector2 collisionPoint);
 
 						var normal = Vector2.Normalize(Projectile.Center - Owner.Center);
 
 						first = Projectile.Center + normal * 16 + Vector2.UnitX.RotatedBy(Projectile.rotation + 1.57f) * length / 2;
 						second = Projectile.Center + normal * 16 + Vector2.UnitX.RotatedBy(Projectile.rotation - 1.57f) * length / 2;
-						colliding |= Helper.CheckLinearCollision(first, second, proj.Hitbox, out Vector2 collisionPoint2);
+						colliding |= CollisionHelper.CheckLinearCollision(first, second, proj.Hitbox, out Vector2 collisionPoint2);
 
 						if (!colliding)
 							continue;

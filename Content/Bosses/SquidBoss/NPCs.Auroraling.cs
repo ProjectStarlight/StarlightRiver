@@ -73,7 +73,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				Dust.NewDustPerfect(NPC.Center + Main.rand.NextVector2Circular(8, 8), DustType<Dusts.Glow>(), Main.rand.NextVector2Circular(8, 8), 0, new Color(150, 200, 255) * 0.5f);
 			}
 
-			Helpers.Helper.PlayPitched("SquidBoss/MagicSplash", 1, 0.2f, NPC.Center);
+			Helpers.SoundHelper.PlayPitched("SquidBoss/MagicSplash", 1, 0.2f, NPC.Center);
 
 			NPC.active = false;
 		}

@@ -6,7 +6,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
-	internal class FireCone : ModProjectile, IDrawAdditive
+	internal class FireCone : ModProjectile
 	{
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -96,25 +96,22 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		{
 			if (Timer > 70 && Timer < 78)
 			{
-				return Helper.CheckConicalCollision(Projectile.Center, (int)((Timer - 70) / 8f * 700), Projectile.rotation, 0.2f, targetHitbox);
+				return CollisionHelper.CheckConicalCollision(Projectile.Center, (int)((Timer - 70) / 8f * 700), Projectile.rotation, 0.2f, targetHitbox);
 			}
 
 			return false;
 		}
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
+		public override bool PreDraw(ref Color lightColor)
 		{
+			SpriteBatch spriteBatch = Main.spriteBatch;
+
 			if (Timer < 66) //draws the proejctile's tell ~1 second before it goes off
 			{
 				Texture2D tex = Assets.Bosses.VitricBoss.ConeTell.Value;
 				float alpha = (Timer * 2 / 33 - (float)Math.Pow(Timer, 2) / 1086) * 0.5f;
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), new Color(255, 170, 100) * alpha, Projectile.rotation - 1.57f, new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
+				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), new Color(255, 170, 100, 0) * alpha, Projectile.rotation - 1.57f, new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
 			}
-		}
-
-		public override bool PreDraw(ref Color lightColor)
-		{
-			SpriteBatch spriteBatch = Main.spriteBatch;
 
 			if (Timer >= 66) //draws the proejctile
 			{

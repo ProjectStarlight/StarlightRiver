@@ -1,6 +1,7 @@
 ﻿using NetEasy;
 using StarlightRiver.Content.Buffs.Summon;
 using StarlightRiver.Content.Items.BarrierDye;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.BarrierSystem;
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
@@ -119,12 +120,12 @@ namespace StarlightRiver.Content.Items.Haunted
 				CameraSystem.shake += 8;
 			}
 
-			bool fleshy = Helpers.Helper.IsFleshy(npc);
+			bool fleshy = Helpers.NPCHelper.IsFleshy(npc);
 
-			Helpers.Helper.PlayPitched("Impacts/GoreLight", 1f, Main.rand.NextFloat(-0.1f, 0.1f), npc.Center);
+			Helpers.SoundHelper.PlayPitched("Impacts/GoreLight", 1f, Main.rand.NextFloat(-0.1f, 0.1f), npc.Center);
 
 			if (!fleshy)
-				Helpers.Helper.PlayPitched("Impacts/Clink", 1f, Main.rand.NextFloat(-0.1f, 0.1f), npc.Center);
+				Helpers.SoundHelper.PlayPitched("Impacts/Clink", 1f, Main.rand.NextFloat(-0.1f, 0.1f), npc.Center);
 
 			for (int i = 0; i < 15; i++)
 			{
@@ -324,9 +325,9 @@ namespace StarlightRiver.Content.Items.Haunted
 				{
 					DoIdleMovement();
 
-					rotTimer += (int)MathHelper.Lerp(1f, 50f, EaseFunction.EaseCubicIn.Ease(AttackTimer / 45f));
+					rotTimer += (int)MathHelper.Lerp(1f, 50f, Eases.EaseCubicIn(AttackTimer / 45f));
 
-					float lerper = MathHelper.Lerp(30f, 2f, EaseFunction.EaseCubicIn.Ease(AttackTimer / 45f));
+					float lerper = MathHelper.Lerp(30f, 2f, Eases.EaseCubicIn(AttackTimer / 45f));
 					if (Main.rand.NextBool(3))
 						Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2CircularEdge(lerper, lerper), ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(0.25f, 0.25f), 0, new Color(70, 200, 100), 0.5f);
 				}
@@ -345,7 +346,7 @@ namespace StarlightRiver.Content.Items.Haunted
 					{
 						Projectile.velocity += Projectile.DirectionTo(Target.Center) * 22f;
 
-						Helpers.Helper.PlayPitched("Effects/HeavyWhooshShort", 0.65f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
+						Helpers.SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 0.65f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 					}
 
 					Vector2 direction = Target.Center - Projectile.Center;
@@ -381,14 +382,14 @@ namespace StarlightRiver.Content.Items.Haunted
 				Projectile.netUpdate = true;
 			}
 
-			Helpers.Helper.PlayPitched("Impacts/StabTiny", 1f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
+			Helpers.SoundHelper.PlayPitched("Impacts/StabTiny", 1f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 
 			for (int i = 0; i < 6; i++)
 			{
 				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(2f, 2f), ModContent.DustType<Dusts.GlowFastDecelerate>(),
 					-Projectile.velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.5f), 0, new Color(70, 200, 100), 0.5f);
 
-				if (Helpers.Helper.IsFleshy(target))
+				if (Helpers.NPCHelper.IsFleshy(target))
 				{
 					Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(3f, 3f), DustID.Blood,
 						-Projectile.velocity.RotatedByRandom(0.75f) * Main.rand.NextFloat(0.25f), Main.rand.Next(100), default, 2.5f).noGravity = true;
@@ -419,9 +420,9 @@ namespace StarlightRiver.Content.Items.Haunted
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D texGlow = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D tex = Assets.Items.Haunted.HauntedDaggerProjectile.Value;
+			Texture2D texGlow = Assets.Items.Haunted.HauntedDaggerProjectile_Glow.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 			Texture2D starTex = Assets.StarTexture.Value;
 
 			Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, new Color(70, 200, 100, 0) * 0.25f, Projectile.rotation + MathHelper.ToRadians(rotTimer), bloomTex.Size() / 2f, 1f, 0f, 0f);
@@ -430,33 +431,36 @@ namespace StarlightRiver.Content.Items.Haunted
 
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation + MathHelper.ToRadians(rotTimer), tex.Size() / 2f, Projectile.scale, 0f, 0f);
 
-			Effect effect = Filters.Scene["DistortSprite"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("DistortSprite").Value;
 
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+			if (effect != null)
+			{
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
-			effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.005f);
-			effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.005f);
-			effect.Parameters["screenPos"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / new Vector2(Main.screenWidth, Main.screenHeight));
+				effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.005f);
+				effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.005f);
+				effect.Parameters["screenPos"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / new Vector2(Main.screenWidth, Main.screenHeight));
 
-			effect.Parameters["offset"].SetValue(new Vector2(0.001f));
-			effect.Parameters["repeats"].SetValue(2);
-			effect.Parameters["uImage1"].SetValue(Assets.Noise.SwirlyNoiseLooping.Value);
-			effect.Parameters["uImage2"].SetValue(Assets.Noise.PerlinNoise.Value);
+				effect.Parameters["offset"].SetValue(new Vector2(0.001f));
+				effect.Parameters["repeats"].SetValue(2);
+				effect.Parameters["uImage1"].SetValue(Assets.Noise.SwirlyNoiseLooping.Value);
+				effect.Parameters["uImage2"].SetValue(Assets.Noise.PerlinNoise.Value);
 
-			Color color = new Color(70, 200, 100, 0) * 0.4f * Utils.Clamp((float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f), 0.5f, 1f);
+				Color color = new Color(70, 200, 100, 0) * 0.4f * Utils.Clamp((float)Math.Sin(Main.GlobalTimeWrappedHourly * 2f), 0.5f, 1f);
 
-			effect.Parameters["uColor"].SetValue(color.ToVector4());
-			effect.Parameters["noiseImage1"].SetValue(Assets.Noise.PerlinNoise.Value);
+				effect.Parameters["uColor"].SetValue(color.ToVector4());
+				effect.Parameters["noiseImage1"].SetValue(Assets.Noise.PerlinNoise.Value);
 
-			effect.CurrentTechnique.Passes[0].Apply();
+				effect.CurrentTechnique.Passes[0].Apply();
 
-			Main.spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, new Color(70, 200, 100, 0), Projectile.rotation + MathHelper.ToRadians(rotTimer), texGlow.Size() / 2f, Projectile.scale * 1.5f, 0f, 0f);
+				Main.spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, new Color(70, 200, 100, 0), Projectile.rotation + MathHelper.ToRadians(rotTimer), texGlow.Size() / 2f, Projectile.scale * 1.5f, 0f, 0f);
 
-			Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, new Color(70, 200, 100, 0), Projectile.rotation + MathHelper.ToRadians(rotTimer), bloomTex.Size() / 2f, 1f, 0f, 0f);
+				Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, new Color(70, 200, 100, 0), Projectile.rotation + MathHelper.ToRadians(rotTimer), bloomTex.Size() / 2f, 1f, 0f, 0f);
 
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 
 			return false;
 		}

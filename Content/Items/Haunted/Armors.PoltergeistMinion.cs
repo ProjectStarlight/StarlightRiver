@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Items.Haunted
 			Projectile.DamageType = DamageClass.Magic;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			if (owner?.armor[0]?.ModItem != null && owner.armor[0].type == ItemType<PoltergeistHead>())
 				(owner.armor[0].ModItem as PoltergeistHead).minions.Remove(Projectile);
@@ -83,8 +83,8 @@ namespace StarlightRiver.Content.Items.Haunted
 
 				Projectile.Center += (targetPos - Projectile.Center) * 0.05f;
 
-				if (Math.Abs(Helper.CompareAngle(targetRotation, Projectile.rotation)) > 0.1f)
-					Projectile.rotation += Helper.CompareAngle(targetRotation, Projectile.rotation) * 0.05f;
+				if (Math.Abs(GeometryHelper.CompareAngle(targetRotation, Projectile.rotation)) > 0.1f)
+					Projectile.rotation += GeometryHelper.CompareAngle(targetRotation, Projectile.rotation) * 0.05f;
 				else
 					Projectile.rotation = targetRotation;
 

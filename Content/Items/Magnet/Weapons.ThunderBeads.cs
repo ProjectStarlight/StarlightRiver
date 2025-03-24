@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Dusts;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using System.Linq;
@@ -159,7 +160,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			}
 			else
 			{
-				Helper.PlayPitched("Magic/LightningShortest1", 0.5f, Main.rand.NextFloat(0f, 0.2f), target.Center);
+				SoundHelper.PlayPitched("Magic/LightningShortest1", 0.5f, Main.rand.NextFloat(0f, 0.2f), target.Center);
 				fade = 1;
 
 				for (int i = 2; i < cache.Count - 2; i++)
@@ -201,7 +202,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			if (embedded)
 			{
 				Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
-				Texture2D bloomTex = Assets.Keys.Glow.Value;
+				Texture2D bloomTex = Assets.Masks.Glow.Value;
 				for (int i = 0; i < cache.Count - 1; i++)
 				{
 					if (i % 3 != 0)
@@ -246,7 +247,7 @@ namespace StarlightRiver.Content.Items.Magnet
 								if (factor.X > 0.99f)
 									return Color.Transparent;
 
-								return new Color(160, 220, 255) * fade * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X);
+								return new Color(160, 220, 255) * fade * 0.1f * Eases.EaseCubicOut(1 - factor.X);
 							});
 			}
 
@@ -257,8 +258,8 @@ namespace StarlightRiver.Content.Items.Magnet
 			{
 				trail2 = new Trail(Main.instance.GraphicsDevice, segments + 1, new NoTip(), factor => 3 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
 							{
-								float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
-								return Color.Lerp(baseColor, endColor, EaseFunction.EaseCubicIn.Ease(1 - progress)) * fade * progress;
+								float progress = Eases.EaseCubicOut(1 - factor.X);
+								return Color.Lerp(baseColor, endColor, Eases.EaseCubicIn(1 - progress)) * fade * progress;
 							});
 			}
 
@@ -269,19 +270,22 @@ namespace StarlightRiver.Content.Items.Magnet
 		public void DrawPrimitives()
 		{
 			Main.spriteBatch.End();
-			Effect effect = Filters.Scene["LightningTrail"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("LightningTrail").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
-			effect.Parameters["repeats"].SetValue(1f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
+				effect.Parameters["repeats"].SetValue(1f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 
-			trail?.Render(effect);
-			trail2?.Render(effect);
+				trail?.Render(effect);
+				trail2?.Render(effect);
+			}
 		}
 
 		private void OverrideWhipControlPoints(On_Projectile.orig_FillWhipControlPoints orig, Projectile proj, List<Vector2> controlPoints)

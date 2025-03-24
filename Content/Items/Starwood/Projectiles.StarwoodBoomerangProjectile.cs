@@ -1,11 +1,12 @@
-﻿using Terraria.Audio;
+﻿using Microsoft.Xna.Framework.Graphics;
+using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Starwood
 {
-	public class StarwoodBoomerangProjectile : ModProjectile, IDrawAdditive
+	public class StarwoodBoomerangProjectile : ModProjectile
 	{
 		private const int CHARGE_TIME = 30; //how long it takes to charge up
 
@@ -19,6 +20,10 @@ namespace StarlightRiver.Content.Items.Starwood
 
 		private const int MaxTimeLeft = 1200;
 		private const int MaxDistTime = MaxTimeLeft - 30;
+
+		private Texture2D GlowingTrail => Assets.Items.Starwood.StarwoodBoomerangGlowTrail.Value;
+		private Texture2D GlowingTexture => Assets.Items.Starwood.StarwoodBoomerangGlow.Value;
+		private Texture2D AuraTexture => Assets.Items.Starwood.Glow.Value;
 
 		public override string Texture => AssetDirectory.StarwoodItem + Name;
 
@@ -120,7 +125,7 @@ namespace StarlightRiver.Content.Items.Starwood
 						}
 						else if (Projectile.ai[1] == CHARGE_TIME - 5) //sfx
 						{
-							Helpers.DustHelper.DrawStar(Projectile.Center, dustType, pointAmount: 5, mainSize: 2.25f * ScaleMult, dustDensity: 2, pointDepthMult: 0.3f);
+							Helpers.DustHelper.SpawnStarPattern(Projectile.Center, dustType, pointAmount: 5, mainSize: 2.25f * ScaleMult, dustDensity: 2, pointDepthMult: 0.3f);
 							Lighting.AddLight(Projectile.Center, lightColor * 2);
 							SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/MagicAttack"), Projectile.Center);
 
@@ -202,10 +207,6 @@ namespace StarlightRiver.Content.Items.Starwood
 			Projectile.netUpdate = true;
 		}
 
-		private Texture2D GlowingTrail => Assets.Items.Starwood.StarwoodBoomerangGlowTrail.Value;
-		private Texture2D GlowingTexture => Assets.Items.Starwood.StarwoodBoomerangGlow.Value;
-		private Texture2D AuraTexture => Assets.Items.Starwood.Glow.Value;
-
 		public override bool PreDraw(ref Color lightColor)
 		{
 			SpriteBatch spriteBatch = Main.spriteBatch;
@@ -239,35 +240,32 @@ namespace StarlightRiver.Content.Items.Starwood
 			return false;
 		}
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
-			Texture2D tex = AuraTexture;
-
-			for (int k = 0; k < Projectile.oldPos.Length; k++)
-			{
-				if (!(Projectile.ai[0] == 1 && (Projectile.oldPos[k] / 5).ToPoint() == (Projectile.position / 5).ToPoint()))
-				{
-					Color color = (empowered ? new Color(70, 90, 100) : new Color(100, 90, 60)) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
-
-					if (k <= 4)
-						color *= 1.2f;
-
-					float scale = Projectile.scale * (Projectile.oldPos.Length - k) / Projectile.oldPos.Length * 0.8f;
-
-					spriteBatch.Draw(tex, Projectile.oldPos[k] + Projectile.Size / 2 - Main.screenPosition, null, color, 0, tex.Size() * 0.5f, scale * 0.5f, default, default);
-				}
-			}
-
-			Texture2D tex2 = Assets.Items.Starwood.Glow2.Value;//a
-			spriteBatch.Draw(tex2, Projectile.Center - Main.screenPosition, tex2.Frame(), new Color(255, 255, 200, 75) * (Projectile.ai[1] / CHARGE_TIME), 0, tex2.Size() * 0.5f, (-chargeMult + 1) * 1.2f, 0, 0);
-		}
-
 		public override void PostDraw(Color lightColor)
 		{
 			Color color = Color.White * (chargeMult + 0.25f);
 			var source = new Rectangle(0, GlowingTexture.Height / 2 * Projectile.frame, GlowingTexture.Width, GlowingTexture.Height / 2);
 
 			Main.spriteBatch.Draw(GlowingTexture, Projectile.Center - Main.screenPosition, source, color, Projectile.rotation, new Vector2(GlowingTexture.Width / 2, GlowingTexture.Height / 4), 1f, default, default);
+
+			Texture2D glowTex = AuraTexture;
+
+			for (int k = 0; k < Projectile.oldPos.Length; k++)
+			{
+				if (!(Projectile.ai[0] == 1 && (Projectile.oldPos[k] / 5).ToPoint() == (Projectile.position / 5).ToPoint()))
+				{
+					Color glowColor = (empowered ? new Color(70, 90, 100, 0) : new Color(100, 90, 60, 0)) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
+
+					if (k <= 4)
+						glowColor *= 1.2f;
+
+					float glowScale = Projectile.scale * (Projectile.oldPos.Length - k) / Projectile.oldPos.Length * 0.8f;
+
+					Main.spriteBatch.Draw(glowTex, Projectile.oldPos[k] + Projectile.Size / 2 - Main.screenPosition, null, glowColor, 0, glowTex.Size() * 0.5f, glowScale * 0.5f, default, default);
+				}
+			}
+
+			Texture2D glowTex2 = Assets.Items.Starwood.Glow2.Value;
+			Main.spriteBatch.Draw(glowTex2, Projectile.Center - Main.screenPosition, glowTex2.Frame(), new Color(75, 75, 60, 0) * (Projectile.ai[1] / CHARGE_TIME), 0, glowTex2.Size() * 0.5f, (-chargeMult + 1) * 1.2f, 0, 0);
 		}
 
 		private void NextPhase(int phase, bool bounce = false)

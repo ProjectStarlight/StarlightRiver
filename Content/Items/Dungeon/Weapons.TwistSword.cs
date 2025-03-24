@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.CustomHooks;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -139,10 +140,10 @@ namespace StarlightRiver.Content.Items.Dungeon
 			}
 
 			if (timer % 20 == 0 && timer > 0)
-				Helper.PlayPitched("Magic/WaterWoosh", 0.3f, Main.rand.NextFloat(0.2f, 0.4f), Player.Center);
+				SoundHelper.PlayPitched("Magic/WaterWoosh", 0.3f, Main.rand.NextFloat(0.2f, 0.4f), Player.Center);
 
 			if (timer % 20 == 10 && timer > 0)
-				Helper.PlayPitched("Magic/WaterWoosh", 0.3f, -0.4f, Player.Center);
+				SoundHelper.PlayPitched("Magic/WaterWoosh", 0.3f, -0.4f, Player.Center);
 
 			if (charge <= 0)
 				Player.channel = false;
@@ -303,7 +304,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 				findIfHit();
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			//have to reset rotation in multiPlayer when proj is gone
 			Player player = Main.player[Projectile.owner];
@@ -325,8 +326,8 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public void OnHitEffect(NPC target)
 		{
-			Helper.PlayPitched("Magic/WaterSlash", 0.4f, 0.2f, Projectile.Center);
-			Helper.PlayPitched("Magic/WaterWoosh", 0.3f, 0.6f, Projectile.Center);
+			SoundHelper.PlayPitched("Magic/WaterSlash", 0.4f, 0.2f, Projectile.Center);
+			SoundHelper.PlayPitched("Magic/WaterWoosh", 0.3f, 0.6f, Projectile.Center);
 
 			float rot = Rotation % 80 / 80f * 6.28f;
 			Vector2 away = Vector2.UnitX.RotatedBy(rot);
@@ -399,18 +400,21 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount);
-			effect.Parameters["repeats"].SetValue(2f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.ShadowTrail.Value);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount);
+				effect.Parameters["repeats"].SetValue(2f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.ShadowTrail.Value);
 
-			trail?.Render(effect);
+				trail?.Render(effect);
+			}
 		}
 	}
 }

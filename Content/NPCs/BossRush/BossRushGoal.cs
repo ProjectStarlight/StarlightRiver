@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 					Main.GameMode == 2 ? "Starlight showdown" :
 					"Invalid";
 
-				mi.time = Helpers.Helper.TicksToTime(BossRushSystem.scoreTimer);
+				mi.time = TicksToTime(BossRushSystem.scoreTimer);
 
 				Main.LocalPlayer.QuickSpawnClonedItemDirect(null, item);
 
@@ -51,6 +51,12 @@ namespace StarlightRiver.Content.NPCs.BossRush
 
 				NPC.active = false;
 			}
+		}
+
+		private string TicksToTime(int ticks)
+		{
+			int sec = ticks / 60;
+			return sec / 60 + ":" + (sec % 60 < 10 ? "0" + sec % 60 : "" + sec % 60);
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)

@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.BarrierSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -48,7 +49,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 			DisplayName.SetDefault("Crescent Caster");
 			Main.npcFrameCount[NPC.type] = 10;
 
-			var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
+			var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers();
 			NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
 		}
 
@@ -181,7 +182,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 
 			if (positionTargets.Count > 0)
 			{
-				float xPositionToBe = Helper.Centeroid(positionTargets).X; //Calculate middle of valid enemies
+				float xPositionToBe = GeometryHelper.Centeroid(positionTargets).X; //Calculate middle of valid enemies
 
 				if (Math.Abs(xPositionToBe - NPC.Center.X) > 20)
 					direction = Math.Sign(xPositionToBe - NPC.Center.X);
@@ -291,20 +292,23 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Terraria.Graphics.Effects.Filters.Scene["LightningTrail"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("LightningTrail").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
-
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
-			effect.Parameters["repeats"].SetValue(1f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
-
-			foreach (CrescentCasterBolt bolt in Bolts)
+			if (effect != null)
 			{
-				bolt.Render(effect);
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
+				effect.Parameters["repeats"].SetValue(1f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+
+				foreach (CrescentCasterBolt bolt in Bolts)
+				{
+					bolt.Render(effect);
+				}
 			}
 		}
 
@@ -459,13 +463,13 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 					if (factor.X > 0.99f)
 						return Color.Transparent;
 
-					return new Color(160, 220, 255) * fade * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X) * DistanceFade;
+					return new Color(160, 220, 255) * fade * 0.1f * Eases.EaseCubicOut(1 - factor.X) * DistanceFade;
 				});
 
 				trail2 = new Trail(device, 15, new NoTip(), factor => 3 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
 				{
-					float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
-					return Color.Lerp(baseColor, endColor, EaseFunction.EaseCubicIn.Ease(1 - progress)) * fade * progress * DistanceFade;
+					float progress = Eases.EaseCubicOut(1 - factor.X);
+					return Color.Lerp(baseColor, endColor, Eases.EaseCubicIn(1 - progress)) * fade * progress * DistanceFade;
 				});
 
 				UpdateTrailPoints();

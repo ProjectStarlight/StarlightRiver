@@ -64,7 +64,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 		}
 	}
 
-	public partial class WitShrineDummy : Dummy, IDrawAdditive
+	public partial class WitShrineDummy : Dummy
 	{
 		public enum runeState
 		{
@@ -219,6 +219,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 			Main.spriteBatch.Draw(tex, targetPos, source, Color.White, 0, Vector2.One * 17, 1, 0, 0);
 		}
 
+		// TODO: Call this since IDrawAdditive ded
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
 			if (state != 0)
@@ -294,7 +295,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 						if (oldPlayer == new Vector2(x, y))
 							color2 = Color.Transparent;
 
-						float combinedAlpha = Helpers.Helper.Lerp(color.A / 255f, color2.A / 255f, PlayerTimer / 30f);
+						float combinedAlpha = MathHelper.Lerp(color.A / 255f, color2.A / 255f, PlayerTimer / 30f);
 						var colorCombined = Color.Lerp(color2, color, 1 - PlayerTimer / 30f);
 
 						for (int k = 0; k < 5; k++)

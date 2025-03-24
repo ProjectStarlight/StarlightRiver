@@ -22,7 +22,7 @@
   },
   {
     "Name": "Graze",
-    "Description": "Graze occurs when a projectile barely misses you. They have a cooldown of 2 seconds by default.",
+    "Description": "Graze occurs when a projectile barely misses you. This has a cooldown of 2 seconds by default.",
     "R": 135,
     "G": 235,
     "B": 255

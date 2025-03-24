@@ -36,7 +36,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public List<NPC> tentacles = new(); //the tentacle NPCs which this boss controls
 		public List<NPC> platforms = new(); //the big platforms the boss' arena has
 		public bool variantAttack;
-		public int baseLife;
 		public NPC arenaActor;
 		private NPC arenaBlocker;
 		Vector2 spawnPoint;
@@ -149,14 +148,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			NPC.knockBackResist = 0;
 			NPC.dontTakeDamage = true;
 			NPC.npcSlots = 10;
-
-			baseLife = 2000;
 		}
 
 		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 		{
 			NPC.lifeMax = Main.masterMode ? 8000 : 6000;
-			baseLife = Main.masterMode ? 4000 : 3000;
+			NPC.lifeMax = StarlightMathHelper.GetScaledBossLife(NPC.lifeMax, balance, numPlayers);
 		}
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
@@ -454,16 +451,15 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			for (int k = 0; k < 4; k++) //each tenticle
 			{
 				int x;
-				int y;
 				int xb;
 
 				switch (k) //I handle these manually to get them to line up with the window correctly
 				{
-					case 0: x = -370; y = 0; xb = -50; break;
-					case 1: x = -420; y = -100; xb = -20; break;
-					case 3: x = 370; y = 0; xb = 50; break;
-					case 2: x = 420; y = -100; xb = 20; break;
-					default: x = 0; y = 0; xb = 0; break;
+					case 0: x = -370; xb = -50; break;
+					case 1: x = -420; xb = -20; break;
+					case 3: x = 370; xb = 50; break;
+					case 2: x = 420; xb = 20; break;
+					default: x = 0; xb = 0; break;
 				}
 
 				var tent = new NPC();
@@ -640,10 +636,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					NPC.Center = Vector2.SmoothStep(savedPoint, spawnPoint + new Vector2(0, -750), GlobalTimer / 325f);
 
 					if (GlobalTimer % 45 == 0 && GlobalTimer < 200)
-						Helper.PlayPitched("SquidBoss/UnderwaterSwoosh", 0.5f, 0f, NPC.Center);
+						SoundHelper.PlayPitched("SquidBoss/UnderwaterSwoosh", 0.5f, 0f, NPC.Center);
 
 					if (GlobalTimer % 180 == 0 || GlobalTimer == 1)
-						Helper.PlayPitched("SquidBoss/WaterLoop", 2, 0.0f, NPC.Center);
+						SoundHelper.PlayPitched("SquidBoss/WaterLoop", 2, 0.0f, NPC.Center);
 				}
 
 				if (GlobalTimer > 275 && GlobalTimer <= 325)
@@ -730,10 +726,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					Arena.NPC.netUpdate = true;
 
 					if (GlobalTimer % 45 == 0 && GlobalTimer < 200)
-						Helper.PlayPitched("SquidBoss/UnderwaterSwoosh", 1, 0f, NPC.Center);
+						SoundHelper.PlayPitched("SquidBoss/UnderwaterSwoosh", 1, 0f, NPC.Center);
 
 					if (GlobalTimer % 180 == 0 || GlobalTimer == 1)
-						Helper.PlayPitched("SquidBoss/WaterLoop", 2, 0.0f, NPC.Center);
+						SoundHelper.PlayPitched("SquidBoss/WaterLoop", 2, 0.0f, NPC.Center);
 
 					arenaBlocker.position.Y -= 1f;
 				}

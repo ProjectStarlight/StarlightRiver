@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.CustomHooks;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.InstancedBuffSystem;
 using StarlightRiver.Helpers;
@@ -123,7 +124,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 					Main.spriteBatch.Draw(PlayerTarget.Target, PlayerTarget.getPlayerTargetPosition(player.whoAmI),
 								 PlayerTarget.getPlayerTargetSourceRectangle(player.whoAmI), new Color(150, 0, 0) * (player.GetModPlayer<RadculasRapierPlayer>().teleportTimer / 60f), player.fullRotation, Vector2.Zero, 1f, 0f, 0f);
 
-					Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+					Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 					Main.spriteBatch.Draw(bloomTex, player.Center - Main.screenPosition, null, new Color(255, 0, 0) * (player.GetModPlayer<RadculasRapierPlayer>().teleportTimer / 60f), 0f, bloomTex.Size() / 2f, 2f, 0f, 0f);
 				}
 
@@ -348,20 +349,20 @@ namespace StarlightRiver.Content.Items.Gravedigger
 					{
 						float lerper = stabTimer / (totalTime * 0.5f);
 
-						offset = Vector2.Lerp(new Vector2(75, 0), stabVec, EaseFunction.EaseCircularOut.Ease(lerper)).RotatedBy(Projectile.rotation - MathHelper.PiOver2);
+						offset = Vector2.Lerp(new Vector2(75, 0), stabVec, Eases.EaseCircularOut(lerper)).RotatedBy(Projectile.rotation - MathHelper.PiOver2);
 					}
 					else
 					{
 						if (!playedSound)
 						{
 							afterImages.Add(new afterImageStruct(Projectile.Center, Projectile.rotation, 15));
-							Helper.PlayPitched("Magic/ShurikenThrow", 1f, Main.rand.NextFloat(-0.3f, 0.3f), Owner.Center);
+							SoundHelper.PlayPitched("Magic/ShurikenThrow", 1f, Main.rand.NextFloat(-0.3f, 0.3f), Owner.Center);
 							playedSound = true;
 						}
 
 						float lerper = (stabTimer - totalTime * 0.5f) / (float)(totalTime * 0.5f);
 
-						offset = Vector2.Lerp(stabVec, new Vector2(75, 0), EaseFunction.EaseCircularOut.Ease(lerper)).RotatedBy(Projectile.rotation - MathHelper.PiOver2);
+						offset = Vector2.Lerp(stabVec, new Vector2(75, 0), Eases.EaseCircularOut(lerper)).RotatedBy(Projectile.rotation - MathHelper.PiOver2);
 					}
 				}
 				else
@@ -432,9 +433,9 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.GlowFastDecelerate>(), Projectile.Center.DirectionTo(Owner.Center).RotatedByRandom(0.35f) * Main.rand.NextFloat(0.5f, 2f), 0, new Color(150, 0, 0, 100), 0.55f);
 			}
 
-			if (Helper.IsFleshy(target))
+			if (NPCHelper.IsFleshy(target))
 			{
-				Helper.PlayPitched("Impale", 1, Main.rand.NextFloat(0.6f, 0.9f), Projectile.Center);
+				SoundHelper.PlayPitched("Impale", 1, Main.rand.NextFloat(0.6f, 0.9f), Projectile.Center);
 
 				for (int k = 0; k < 5; k++)
 				{
@@ -445,7 +446,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			}
 			else
 			{
-				Helper.PlayPitched("Impacts/Clink", 1, Main.rand.NextFloat(0.1f, 0.3f), Projectile.Center);
+				SoundHelper.PlayPitched("Impacts/Clink", 1, Main.rand.NextFloat(0.1f, 0.3f), Projectile.Center);
 
 				for (int k = 0; k < 5; k++)
 				{
@@ -468,8 +469,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D texGlow = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
+			Texture2D tex = Assets.Items.Misc.RadculasRapier_Spear.Value;
+			Texture2D texGlow = Assets.Items.Misc.RadculasRapier_Spear_Glow.Value;
 
 			Vector2 off = new Vector2(0, -20).RotatedBy(Projectile.rotation - MathHelper.PiOver2);
 
@@ -478,36 +479,40 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				fade = Projectile.timeLeft / 5f;
 
 			Color color = new Color(100, 0, 0, 0) * fade;
-			Effect effect = Terraria.Graphics.Effects.Filters.Scene["AlphaDistort"].GetShader().Shader;
-			effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.1f);
-			effect.Parameters["power"].SetValue(0.2f);
-			effect.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X / Main.screenWidth * 0.5f, 0));
-			effect.Parameters["speed"].SetValue(10f);
-			for (int i = 0; i < afterImages.Count; i++) //idk how performance intensive reapplying this shader is
+			Effect effect = ShaderLoader.GetShader("AlphaDistort").Value;
+
+			if (effect != null)
 			{
-				afterImageStruct afterImage = afterImages[i];
+				effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.1f);
+				effect.Parameters["power"].SetValue(0.2f);
+				effect.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X / Main.screenWidth * 0.5f, 0));
+				effect.Parameters["speed"].SetValue(10f);
+				for (int i = 0; i < afterImages.Count; i++) //idk how performance intensive reapplying this shader is
+				{
+					afterImageStruct afterImage = afterImages[i];
 
-				float opacity = MathHelper.Lerp(0.5f, 0f, 1f - afterImage.time / 15f);
+					float opacity = MathHelper.Lerp(0.5f, 0f, 1f - afterImage.time / 15f);
 
-				effect.Parameters["opacity"].SetValue(opacity * fade);
-				effect.Parameters["drawColor"].SetValue(Color.Lerp(new Color(50, 0, 150, 0), new Color(200, 0, 0, 0), 1f - afterImage.time / 15f).ToVector4());
-				effect.CurrentTechnique.Passes[0].Apply();
+					effect.Parameters["opacity"].SetValue(opacity * fade);
+					effect.Parameters["drawColor"].SetValue(Color.Lerp(new Color(50, 0, 150, 0), new Color(200, 0, 0, 0), 1f - afterImage.time / 15f).ToVector4());
+					effect.CurrentTechnique.Passes[0].Apply();
 
-				Main.spriteBatch.Draw(texGlow, afterImage.pos - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY) + new Vector2(-55, 0).RotatedBy(afterImage.rot - MathHelper.PiOver2), null, color * opacity, afterImage.rot, texGlow.Size() / 2f, Projectile.scale, 0f, 0f);
+					Main.spriteBatch.Draw(texGlow, afterImage.pos - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY) + new Vector2(-55, 0).RotatedBy(afterImage.rot - MathHelper.PiOver2), null, color * opacity, afterImage.rot, texGlow.Size() / 2f, Projectile.scale, 0f, 0f);
 
-				Main.spriteBatch.Draw(texGlow, afterImage.pos - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY) + new Vector2(-55, 0).RotatedBy(Projectile.rotation - MathHelper.PiOver2), null, color * opacity, afterImage.rot, texGlow.Size() / 2f, Projectile.scale, 0f, 0f);
+					Main.spriteBatch.Draw(texGlow, afterImage.pos - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY) + new Vector2(-55, 0).RotatedBy(Projectile.rotation - MathHelper.PiOver2), null, color * opacity, afterImage.rot, texGlow.Size() / 2f, Projectile.scale, 0f, 0f);
 
-				effect.Parameters["drawColor"].SetValue((new Color(255, 255, 255, 0) * 0.25f).ToVector4());
-				effect.CurrentTechnique.Passes[0].Apply();
+					effect.Parameters["drawColor"].SetValue((new Color(255, 255, 255, 0) * 0.25f).ToVector4());
+					effect.CurrentTechnique.Passes[0].Apply();
 
-				Main.spriteBatch.Draw(tex, afterImage.pos - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY) + off, null, Color.White * 0.25f * opacity, afterImage.rot, Vector2.Zero, Projectile.scale, 0f, 0f);
+					Main.spriteBatch.Draw(tex, afterImage.pos - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY) + off, null, Color.White * 0.25f * opacity, afterImage.rot, Vector2.Zero, Projectile.scale, 0f, 0f);
+				}
+
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix); //also dont know if this spritebatch reset is needed
+
+				Main.spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY) + new Vector2(-55, 0).RotatedBy(Projectile.rotation - MathHelper.PiOver2), null, color, Projectile.rotation, texGlow.Size() / 2f, Projectile.scale, 0, 0);
+				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY) + off, null, Color.White * fade, Projectile.rotation, Vector2.Zero, Projectile.scale, 0, 0);
 			}
-
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix); //also dont know if this spritebatch reset is needed
-
-			Main.spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY) + new Vector2(-55, 0).RotatedBy(Projectile.rotation - MathHelper.PiOver2), null, color, Projectile.rotation, texGlow.Size() / 2f, Projectile.scale, 0, 0);
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY) + off, null, Color.White * fade, Projectile.rotation, Vector2.Zero, Projectile.scale, 0, 0);
 
 			return false;
 		}
@@ -576,7 +581,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 			if (Projectile.timeLeft < 25 && Projectile.timeLeft > 15)
 			{
-				float progress = EaseFunction.EaseQuinticInOut.Ease(1f - (Projectile.timeLeft - 15) / 10f);
+				float progress = Eases.EaseQuinticInOut(1f - (Projectile.timeLeft - 15) / 10f);
 				Projectile.rotation = MathHelper.Lerp(0, 3.5f * Projectile.direction, progress);
 			}
 			else if (Projectile.timeLeft <= 15)
@@ -587,12 +592,12 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				if (Projectile.timeLeft > 5f)
 				{
 					progress = 1f - (Projectile.timeLeft - 5f) / 10f;
-					offset = Vector2.Lerp(new Vector2(0, 0), new Vector2(-30, 0), EaseFunction.EaseQuinticOut.Ease(progress)).RotatedBy(Projectile.rotation - MathHelper.PiOver2);
+					offset = Vector2.Lerp(new Vector2(0, 0), new Vector2(-30, 0), Eases.EaseQuinticOut(progress)).RotatedBy(Projectile.rotation - MathHelper.PiOver2);
 				}
 				else
 				{
 					progress = 1f - Projectile.timeLeft / 5f;
-					offset = Vector2.Lerp(new Vector2(-30, 0), new Vector2(10, 0), EaseFunction.EaseQuinticInOut.Ease(progress)).RotatedBy(Projectile.rotation - MathHelper.PiOver2);
+					offset = Vector2.Lerp(new Vector2(-30, 0), new Vector2(10, 0), Eases.EaseQuinticInOut(progress)).RotatedBy(Projectile.rotation - MathHelper.PiOver2);
 				}
 			}
 
@@ -683,9 +688,9 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 			mp.teleportTimer = 60;
 
-			Helper.PlayPitched("Magic/ShurikenThrow", 1f, Main.rand.NextFloat(-0.3f, 0.3f), Owner.Center);
+			SoundHelper.PlayPitched("Magic/ShurikenThrow", 1f, Main.rand.NextFloat(-0.3f, 0.3f), Owner.Center);
 
-			Helper.PlayPitched("Effects/HeavyWhooshShort", 1.5f, Main.rand.NextFloat(-0.3f, 0.3f), Owner.Center);
+			SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 1.5f, Main.rand.NextFloat(-0.3f, 0.3f), Owner.Center);
 
 			CameraSystem.shake += 15;
 
@@ -738,7 +743,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (hitNPCs.Count <= 0)
-				Helper.PlayPitched("Impacts/GoreHeavy", 1.5f, Main.rand.NextFloat(-0.3f, 0.3f), Owner.Center);
+				SoundHelper.PlayPitched("Impacts/GoreHeavy", 1.5f, Main.rand.NextFloat(-0.3f, 0.3f), Owner.Center);
 
 			hitNPCs.Add(target);
 
@@ -749,7 +754,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.GlowFastDecelerate>(), target.Center.DirectionTo(originalPos).RotatedByRandom(0.55f) * Main.rand.NextFloat(2f, 5f), 0, new Color(150, 0, 0, 100), 1f);
 			}
 
-			if (Helper.IsFleshy(target))
+			if (NPCHelper.IsFleshy(target))
 			{
 				for (int k = 0; k < 15; k++)
 				{
@@ -783,7 +788,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			return Projectile.friendly && !hitNPCs.Contains(target) && Projectile.timeLeft == 30 && !target.friendly;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			if (!teleported)
 				return;
@@ -796,13 +801,13 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				Dust.NewDustPerfect(pos + Main.rand.NextVector2Circular(1f, 1f), ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(2f, 2f), 0, new Color(200, 0, 0, 100), 0.35f);
 			}
 
-			Helper.PlayPitched("Impacts/Clink", 1f, Main.rand.NextFloat(-0.3f, 0.3f), Owner.Center);
+			SoundHelper.PlayPitched("Impacts/Clink", 1f, Main.rand.NextFloat(-0.3f, 0.3f), Owner.Center);
 		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D texGlow = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
+			Texture2D tex = Assets.Items.Misc.RadculasRapier_Spear.Value;
+			Texture2D texGlow = Assets.Items.Misc.RadculasRapier_Spear_Glow.Value;
 
 			float fade = 1f;
 

@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Items.Forest
 				int nextY = Player.tileTargetY;
 
 				float angle = (new Vector2(Player.tileTargetX, Player.tileTargetY) * 16 + Vector2.One * 8 - player.Center).ToRotation();
-				angle = Helpers.Helper.ConvertAngle(angle);
+				angle = Helpers.GeometryHelper.ConvertAngle(angle);
 
 				if (angle < Math.PI / 4 || angle > Math.PI / 4 * 7)
 					nextX -= k * direction;
@@ -144,7 +144,7 @@ namespace StarlightRiver.Content.Items.Forest
 
 			Vector2 pos = FindNextTile(Main.LocalPlayer, 1).ToVector2() * 16 - Main.screenPosition;
 
-			spriteBatch.Draw(TextureAssets.Tile[tile.TileType].Value, pos, new Rectangle(162, 54, 16, 16), Helpers.Helper.IndicatorColor * 0.5f);
+			spriteBatch.Draw(TextureAssets.Tile[tile.TileType].Value, pos, new Rectangle(162, 54, 16, 16), Helpers.CommonVisualEffects.IndicatorColor * 0.5f);
 		}
 	}
 
