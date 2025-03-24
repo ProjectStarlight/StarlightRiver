@@ -44,5 +44,4 @@
 		<Folder Include="Content\NPCs\Vitric\GlassTrial\" />
 		<Folder Include="Localization\Hints\" />
 	</ItemGroup>
-
 </Project>

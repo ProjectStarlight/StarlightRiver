@@ -177,7 +177,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				NPC.Center += (home - NPC.Center) * 0.02f;
 
 				// Dust towards assembling brain
-				if (Main.rand.NextBool(7))
+				if (Main.rand.NextBool(7) && Open)
 				{
 					SplineGlow.Spawn(NPC.Center, NPC.Center + new Vector2(Main.rand.NextFloat(-150, 150), Main.rand.Next(100, 150)), NPC.Center + new Vector2(0, 250) + Main.rand.NextVector2Circular(100, 100), Main.rand.Next(120, 240), Main.rand.NextFloat(0.1f, 0.25f), new Color(155, Main.rand.Next(20, 50), 50));
 				}
@@ -693,7 +693,8 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		{
 			for (int k = 0; k < 10; k++)
 			{
-				Main.BestiaryTracker.Kills.RegisterKill(brain);
+				if (brain != null)
+					Main.BestiaryTracker.Kills.RegisterKill(brain);
 			}
 		}
 	}

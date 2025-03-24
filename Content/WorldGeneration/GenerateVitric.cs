@@ -366,7 +366,7 @@ namespace StarlightRiver.Core
 					{
 						PlaceTile(x, y, instance.Find<ModTile>("VitricSand").Type, true, true);
 						t.Slope = SlopeType.Solid;
-						KillWall(x, y, false);
+						t.WallType = 0;
 					}
 				}
 

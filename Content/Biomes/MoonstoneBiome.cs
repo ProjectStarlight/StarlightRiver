@@ -128,12 +128,12 @@ namespace StarlightRiver.Content.Biomes
 		{
 			if (distortion > 0 && !drawingBGtarget && !Main.gameMenu)
 			{
-				Main.spriteBatch.End();
-
 				Effect effect = ShaderLoader.GetShader("MoonstoneDistortion").Value;
 
 				if (effect != null)
 				{
+					Main.spriteBatch.End();
+
 					effect.Parameters["intensity"].SetValue(0.01f * distortion);
 					effect.Parameters["repeats"].SetValue(2);
 					effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.003f);

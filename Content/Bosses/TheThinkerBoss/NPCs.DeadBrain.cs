@@ -127,7 +127,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		/// <returns>If the player is a valid target by virtue of being inside of the arena</returns>
 		private bool IsInArena(Player player)
 		{
-			return player.active && !player.dead && Vector2.Distance(player.Center, thinker.Center) < ThisThinker.ArenaRadius + 20;
+			return player.active && !player.dead && Vector2.Distance(player.Center, ThisThinker.home) < ThisThinker.ArenaRadius + 20;
 		}
 
 		private void SelectTarget()
@@ -393,7 +393,9 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					if (Timer > 60)
 					{
 						NPC.active = false;
-						weakpoint.active = false;
+
+						if (weakpoint != null)
+							weakpoint.active = false;
 					}
 
 					break;

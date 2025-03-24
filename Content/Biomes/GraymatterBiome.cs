@@ -254,6 +254,15 @@ namespace StarlightRiver.Content.Biomes
 			GraymatterBiome.forceGrayMatter = false;
 		}
 
+		public static void SpawnThinkers()
+		{
+			foreach (Vector2 pos in ModContent.GetInstance<GraymatterBiomeSystem>().thinkerPositions)
+			{
+				if (!Main.npc.Any(n => n.active && n.type == ModContent.NPCType<TheThinker>() && Vector2.Distance(n.Center, pos) < 100))
+					NPC.NewNPC(null, (int)pos.X * 16, (int)pos.Y * 16, ModContent.NPCType<TheThinker>());
+			}
+		}
+
 		public override void LoadWorldData(TagCompound tag)
 		{
 			thinkerPositions = tag.GetList<Vector2>("ThinkerPositions") as List<Vector2>;

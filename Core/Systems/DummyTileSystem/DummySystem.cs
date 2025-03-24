@@ -13,6 +13,7 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 		{
 			On_Main.DrawProjectiles += DrawDummies;
 			On_Main.DoDraw_DrawNPCsBehindTiles += DrawBehindNPCs;
+			On_Main.DrawPlayers_AfterProjectiles += DrawOverPlayers;
 			On_Player.TileInteractionsCheck += RightClickDummies;
 		}
 
@@ -49,6 +50,17 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 			});
 
 			Main.spriteBatch.End();
+
+			orig(self);
+		}
+
+		private void DrawOverPlayers(On_Main.orig_DrawPlayers_AfterProjectiles orig, Main self)
+		{
+			dummies.ForEach(n =>
+			{
+				if (!n.offscreen)
+					n.DrawOverPlayer();
+			});
 
 			orig(self);
 		}

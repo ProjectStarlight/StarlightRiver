@@ -118,6 +118,8 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 		/// </summary>
 		public virtual void DrawBehindTiles() { }
 
+		public virtual void DrawOverPlayer() { }
+
 		/// <summary>
 		/// Determines if a player should be considered colliding with this dummy or not.
 		/// </summary>
