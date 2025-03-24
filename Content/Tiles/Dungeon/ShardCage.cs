@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Tiles.Dungeon
 		public override int DummyType => DummySystem.DummyType<ShardCageDummy>();
 
 		public override void SetStaticDefaults()
-		{	
+		{
 			QuickBlock.QuickSetFurniture(this, 5, 1, DustID.Stone, SoundID.Tink, true, new Color(100, 100, 100));
 			Main.tileSolid[Type] = true;
 		}
@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Tiles.Dungeon
 
 	internal class ShardCageDummy : Dummy
 	{
-		List<int> attempts = new();
+		readonly List<int> attempts = new();
 
 		static readonly int[] solution = new int[] { 1, 2, 3 };
 
@@ -131,7 +131,7 @@ namespace StarlightRiver.Content.Tiles.Dungeon
 					Main.spriteBatch.Draw(gem, right - Main.screenPosition, null, lightColor, 0, gem.Size() / 2f, 1, 0, 0);
 					Main.spriteBatch.Draw(glow, right - Main.screenPosition, null, CommonVisualEffects.IndicatorColorProximity(256, 512, center), 0, glow.Size() / 2f, 1, 0, 0);
 				}
-			}			
+			}
 		}
 
 		public override void DrawOverPlayer()

@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.Pickups
 
 			SoundHelper.PlayPitched("Effects/Loot", 1f, 0, Player.Center);
 
-			for(int k = 0; k < 20; k++)
+			for (int k = 0; k < 20; k++)
 			{
 				Dust.NewDustPerfect(Center, DustType<Dusts.PixelatedImpactLineDust>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5), 0, new Color(50, Main.rand.Next(100, 200), 255, 0), Main.rand.NextFloat(0.1f, 0.2f));
 			}
