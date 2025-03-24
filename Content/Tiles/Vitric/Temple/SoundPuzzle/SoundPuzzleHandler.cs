@@ -44,7 +44,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.SoundPuzzle
 					Vector2 pos = StarlightWorld.VitricBossArena.BottomLeft() * 16 + new Vector2(-446 + k * 12 * 16, 1524);
 					Color color = k < lastTries.Count || solved ? Color.Orange : new Color(40, 80, 90);
 
-					Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.Cinder>(), Vector2.UnitY * -Main.rand.NextFloat(), 0, color, 1);
+					color.A = 0;
+
+					Dust.NewDustPerfect(pos + Vector2.UnitX * Main.rand.NextFloat(-4, 0), ModContent.DustType<Dusts.PixelatedEmber>(), Vector2.UnitY * -Main.rand.NextFloat(), 0, color, Main.rand.NextFloat(0.4f));
 				}
 			}
 
@@ -64,6 +66,38 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.SoundPuzzle
 
 			if (solved && solveTimer < 180)
 				solveTimer++;
+		}
+
+		public override void PostDrawTiles()
+		{
+			var one = Assets.Tiles.Vitric.OldCeirosOrnament0.Value;
+			var two = Assets.Tiles.Vitric.OldCeirosOrnament3.Value;
+			var three = Assets.Tiles.Vitric.OldCeirosOrnament1.Value;
+			var four = Assets.Tiles.Vitric.OldCeirosOrnament2.Value;
+			var blank = Assets.Bosses.VitricBoss.VitricBossCrystal.Value;
+
+			Vector2 pos = StarlightWorld.VitricBossArena.BottomLeft() * 16 + new Vector2(-762, 1424) - Main.screenPosition;
+
+			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+
+			Main.spriteBatch.Draw(one, pos, Color.White * 0.25f);
+			pos.X += 24 * 16;
+			Main.spriteBatch.Draw(two, pos, Color.White * 0.25f);
+			pos.X += 24 * 16 - 4;
+			Main.spriteBatch.Draw(three, pos, Color.White * 0.25f);
+			pos.X += 24 * 16 + 6;
+			Main.spriteBatch.Draw(four, pos, Color.White * 0.25f);
+
+			pos = StarlightWorld.VitricBossArena.BottomLeft() * 16 + new Vector2(-753, 1412) - Main.screenPosition;
+			pos.X += 12 * 16;
+
+			Main.spriteBatch.Draw(blank, pos, new Rectangle(0, 0, blank.Width, blank.Height / 4), Color.White * 0.25f);
+			pos.X += 24 * 16;
+			Main.spriteBatch.Draw(blank, pos, new Rectangle(0, 0, blank.Width, blank.Height / 4), Color.White * 0.25f);
+			pos.X += 24 * 16;
+			Main.spriteBatch.Draw(blank, pos, new Rectangle(0, 0, blank.Width, blank.Height / 4), Color.White * 0.25f);
+
+			Main.spriteBatch.End();
 		}
 
 		public override void ClearWorld()
