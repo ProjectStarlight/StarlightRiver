@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Archaeology
 
 		public virtual string TexturePath => AssetDirectory.Archaeology + Name;
 
-		private Asset<Texture2D> texture;
+		protected static Asset<Texture2D> texture;
 
 		/// <summary>
 		/// Texture path the artifact uses on the map when revealed
@@ -146,6 +146,9 @@ namespace StarlightRiver.Content.Archaeology
 			{
 				offScreen = Vector2.Zero;
 			}
+
+			if (texture?.Value is null)
+				return;
 
 			spriteBatch.Draw(texture.Value, WorldPosition - Main.screenPosition, null, Lighting.GetColor(Position.ToPoint()), 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
 		}

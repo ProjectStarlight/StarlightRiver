@@ -129,7 +129,7 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
-			//StarlightWorld.FlipFlag(WorldFlags.ThinkerBossOpen);
+			StarlightWorld.FlipFlag(WorldFlags.ThinkerBossOpen);
 			//ModContent.GetInstance<StarlightWorld>().GraymatterGen(new GenerationProgress(), null);
 
 			/*SplineGlow.Spawn(player.Center, Vector2.Lerp(player.Center, Main.MouseWorld, 0.5f) + Vector2.UnitX.RotatedByRandom(6.28f) * 50, Main.MouseWorld, 120, 1, Color.Teal);

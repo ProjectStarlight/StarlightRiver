@@ -189,6 +189,9 @@ namespace StarlightRiver.Content.Items.Misc
 
 			Effect effect = StarlightRiver.Instance.Assets.Request<Effect>("Effects/Wiggle").Value;
 
+			if (effect is null)
+				return;
+
 			effect.Parameters["time"].SetValue(Timer);
 
 			effect.Parameters["freq1"].SetValue(2.0f);

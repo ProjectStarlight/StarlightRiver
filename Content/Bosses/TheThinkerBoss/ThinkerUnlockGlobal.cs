@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarlightRiver.Content.Biomes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,10 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		public override void OnKill(NPC npc)
 		{
 			if (!StarlightWorld.HasFlag(WorldFlags.ThinkerBossOpen))
+			{
 				NPC.NewNPC(npc.GetSource_FromThis(), (int)npc.Center.X, (int)npc.Center.Y, ModContent.NPCType<CutsceneFakeThinker>());
+				GraymatterBiomeSystem.SpawnThinkers();
+			}
 		}
 	}
 }
