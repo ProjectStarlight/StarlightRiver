@@ -232,7 +232,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		private void InkBurst()
 		{
 			if (AttackTimer < 30)
-				NPC.velocity = (Main.player[NPC.target].Center + new Vector2(0, -200) - NPC.Center) * 0.05f;
+				NPC.velocity = (Main.player[NPC.target].Center + new Vector2(0, -200) - NPC.Center) * 0.1f * AttackTimer / 30f;
 
 			if (AttackTimer > 30 && AttackTimer < 60)
 				NPC.velocity *= 0.95f;
@@ -471,7 +471,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			if (AttackTimer > 260 && AttackTimer < 340) //going to the side
 			{
 				var targetPoint = new Vector2(OrderedPlatforms[0].Center.X, spawnPoint.Y - 400);
-				NPC.Center = Vector2.SmoothStep(savedPoint, targetPoint, (AttackTimer - 260) / 80f);
+				NPC.Center = Vector2.Lerp(savedPoint, targetPoint, Eases.BezierEase((AttackTimer - 260) / 80f));
 			}
 
 			if (AttackTimer == 360)
