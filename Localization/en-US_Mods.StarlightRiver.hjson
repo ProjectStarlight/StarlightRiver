@@ -2641,6 +2641,11 @@ Items: {
 		Tooltip: ""
 	}
 
+	ChartGrateItem: {
+		DisplayName: Chart Grate
+		Tooltip: Composite
+	}
+
 	StarlightPylonItem: {
 		DisplayName: Starlight Pylon
 		Tooltip: You shouldn't have this!
@@ -3010,16 +3015,6 @@ Items: {
 		Tooltip: ""
 	}
 
-	VitricBossBarrierItem: {
-		DisplayName: VitricBossBarrierItem
-		Tooltip: "{{Debug}} item"
-	}
-
-	GlassweaverBossBarrierItem: {
-		DisplayName: GlassweaverBossBarrierItem
-		Tooltip: "{{Debug}} item"
-	}
-
 	CombatShrineBarrierItem: {
 		DisplayName: CombatShrineBarrierItem
 		Tooltip: "{{Debug}} item"
@@ -3027,6 +3022,16 @@ Items: {
 
 	EvasionShrineBarrierItem: {
 		DisplayName: EvasionShrineBarrierItem
+		Tooltip: "{{Debug}} item"
+	}
+
+	VitricBossBarrierItem: {
+		DisplayName: VitricBossBarrierItem
+		Tooltip: "{{Debug}} item"
+	}
+
+	GlassweaverBossBarrierItem: {
+		DisplayName: GlassweaverBossBarrierItem
 		Tooltip: "{{Debug}} item"
 	}
 
@@ -3115,6 +3120,41 @@ Items: {
 		Tooltip: ""
 	}
 
+	GraymatterDeco1x4Item: {
+		DisplayName: Gray Nerve (1x4)
+		Tooltip: ""
+	}
+
+	GraymatterDeco2x3Item: {
+		DisplayName: Gray Nerve (2x3)
+		Tooltip: ""
+	}
+
+	GraymatterDeco2x2Item: {
+		DisplayName: Gray Nerve (2x2)
+		Tooltip: ""
+	}
+
+	GraymatterDeco1x2Item: {
+		DisplayName: Gray Nerve (1x2)
+		Tooltip: ""
+	}
+
+	GraymatterDeco3x3Item: {
+		DisplayName: Gray Nerve (3x3)
+		Tooltip: ""
+	}
+
+	GraymatterDeco1x1Item: {
+		DisplayName: Gray Nerve (1x1)
+		Tooltip: ""
+	}
+
+	TempleBrickItem: {
+		DisplayName: Ancient Bricks
+		Tooltip: ""
+	}
+
 	AuroracleRelicItem: {
 		DisplayName: Auroracle Relic
 		Tooltip: ""
@@ -3127,41 +3167,6 @@ Items: {
 
 	ThinkerRelicItem: {
 		DisplayName: The Thinker Relic
-		Tooltip: ""
-	}
-
-	TempleBrickItem: {
-		DisplayName: Ancient Bricks
-		Tooltip: ""
-	}
-
-	VitricBoss1Item: {
-		DisplayName: Music Box (Ceiros P1)
-		Tooltip: ""
-	}
-
-	VitricBoss2Item: {
-		DisplayName: Music Box (Ceiros P2)
-		Tooltip: ""
-	}
-
-	VitricPassiveItem: {
-		DisplayName: Music Box (Vitric Desert)
-		Tooltip: ""
-	}
-
-	VitricTempleItem: {
-		DisplayName: Music Box (Vitric Temple)
-		Tooltip: ""
-	}
-
-	MinibossItem: {
-		DisplayName: Music Box (GlassWeaver)
-		Tooltip: ""
-	}
-
-	AuroracleItem: {
-		DisplayName: Music Box (Auroracle)
 		Tooltip: ""
 	}
 
@@ -3230,33 +3235,58 @@ Items: {
 		Tooltip: ""
 	}
 
-	GraymatterDeco1x4Item: {
-		DisplayName: Gray Nerve (1x4)
+	VitricBoss1Item: {
+		DisplayName: Music Box (Ceiros P1)
 		Tooltip: ""
 	}
 
-	GraymatterDeco2x3Item: {
-		DisplayName: Gray Nerve (2x3)
+	VitricBoss2Item: {
+		DisplayName: Music Box (Ceiros P2)
 		Tooltip: ""
 	}
 
-	GraymatterDeco2x2Item: {
-		DisplayName: Gray Nerve (2x2)
+	VitricPassiveItem: {
+		DisplayName: Music Box (Vitric Desert)
 		Tooltip: ""
 	}
 
-	GraymatterDeco1x2Item: {
-		DisplayName: Gray Nerve (1x2)
+	VitricTempleItem: {
+		DisplayName: Music Box (Vitric Temple)
 		Tooltip: ""
 	}
 
-	GraymatterDeco3x3Item: {
-		DisplayName: Gray Nerve (3x3)
+	MinibossItem: {
+		DisplayName: Music Box (GlassWeaver)
 		Tooltip: ""
 	}
 
-	GraymatterDeco1x1Item: {
-		DisplayName: Gray Nerve (1x1)
+	AuroracleItem: {
+		DisplayName: Music Box (Auroracle)
+		Tooltip: ""
+	}
+
+	IceTempleShinglesItem: {
+		DisplayName: Aurora Temple Shingles
+		Tooltip: ""
+	}
+
+	IceTempleBricksItem: {
+		DisplayName: Coldstone Bricks
+		Tooltip: ""
+	}
+
+	IceTempleCobblesItem: {
+		DisplayName: Coldstone Cobbles
+		Tooltip: ""
+	}
+
+	IceTempleStuccoItem: {
+		DisplayName: Frozen Stucco
+		Tooltip: ""
+	}
+
+	IceTempleStonesItem: {
+		DisplayName: Frozen Stones
 		Tooltip: ""
 	}
 
@@ -3392,6 +3422,7 @@ Tiles: {
 	PermafrostIce.MapEntry: ""
 	Touchstone.MapEntry: Touchstone
 	TouchstoneLootbox.MapEntry: ""
+	ChartGrate.MapEntry: ""
 	StarlightPylon.MapEntry: Starlight Pylon
 	AuroracleTrophy.MapEntry: Trophy
 	Auroracle.MapEntry: Music Box
@@ -3489,12 +3520,13 @@ Tiles: {
 	VitricWorkbench.MapEntry: ""
 	VitricDoorClosed.MapEntry: ""
 	VitricDoorOpen.MapEntry: ""
+	GraymatterDeco1x4.MapEntry: ""
+	GraymatterDeco2x3.MapEntry: ""
+	GraymatterDeco2x2.MapEntry: ""
+	GraymatterDeco1x2.MapEntry: ""
+	GraymatterDeco3x3.MapEntry: ""
+	GraymatterDeco1x1.MapEntry: ""
 	TempleBrick.MapEntry: ""
-	VitricBoss1.MapEntry: Music Box
-	VitricBoss2.MapEntry: Music Box
-	VitricPassive.MapEntry: Music Box
-	VitricTemple.MapEntry: Music Box
-	Miniboss.MapEntry: Music Box
 	TempleChair.MapEntry: Chair
 	TempleLargeVase.MapEntry: Large Vase
 	TempleLargeVaseCrystal.MapEntry: Large Vase
@@ -3508,12 +3540,16 @@ Tiles: {
 	TempleWeaponRack2.MapEntry: Weapon Rack
 	TempleWeaponRack3.MapEntry: Weapon Rack
 	TempleThingamajig.MapEntry: Weapon Rack
-	GraymatterDeco1x4.MapEntry: ""
-	GraymatterDeco2x3.MapEntry: ""
-	GraymatterDeco2x2.MapEntry: ""
-	GraymatterDeco1x2.MapEntry: ""
-	GraymatterDeco3x3.MapEntry: ""
-	GraymatterDeco1x1.MapEntry: ""
+	VitricBoss1.MapEntry: Music Box
+	VitricBoss2.MapEntry: Music Box
+	VitricPassive.MapEntry: Music Box
+	VitricTemple.MapEntry: Music Box
+	Miniboss.MapEntry: Music Box
+	IceTempleShingles.MapEntry: ""
+	IceTempleBricks.MapEntry: ""
+	IceTempleCobbles.MapEntry: ""
+	IceTempleStucco.MapEntry: ""
+	IceTempleStones.MapEntry: ""
 	LeafOvergrow.MapEntry: ""
 	BrickOvergrow.MapEntry: ""
 	StoneOvergrow.MapEntry: ""

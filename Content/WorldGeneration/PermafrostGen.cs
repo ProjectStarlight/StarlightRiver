@@ -80,84 +80,28 @@ namespace StarlightRiver.Core
 			int centerX = (iceLeft + iceRight) / 2;
 			int centerY = (int)(iceBottom + GenVars.worldSurfaceHigh) / 2;
 
-			bool TryToGenerateArena(out int xPosition)
+			// Try shotgun approach
+			int retries = 0;
+			while (retries < 100)
 			{
-				int arenaWidth = 109;
-				int stepSpacing = 20;
-				int arenaHeight = 180;
-				int stepsToLeft = (centerX - iceLeft) / stepSpacing;
-				int stepsToRight = (iceRight - centerX) / stepSpacing;
-				int startX = centerX - stepsToLeft * stepSpacing;
+				retries++;
 
-				int spotsToCheck = stepsToLeft + 1 + stepsToRight;
+				if (retries >= 100)
+					throw new Exception("Could not place a required structure: Auroracle Arena");
 
-				int[] randomIndices = new int[spotsToCheck];
-				for (int i = 0; i < spotsToCheck; i++)
+				if (centerX < iceLeft || centerX > iceRight - 109)
+					centerX = (iceLeft + iceRight) / 2;
+
+				if (!WorldGenHelper.IsRectangleSafe(new Rectangle(centerX - 40, centerY + 100, 109, 180)))
 				{
-					randomIndices[i] = i;
+					centerX = WorldGen.genRand.Next(iceLeft, iceRight - 109);
+					centerY = (int)GenVars.worldSurfaceHigh + (int)((iceBottom - (int)GenVars.worldSurfaceHigh) * WorldGen.genRand.NextFloat(0.5f, 0.8f));
+					StarlightRiver.Instance.Logger.Info($"World generation attempting to place Auroracle Arena at {centerX}, {centerY} failed, retries left: {100 - retries}");
+					continue;
 				}
-
-				randomIndices = ListHelper.RandomizeList(randomIndices.ToList(), WorldGen.genRand).ToArray();
-
-				for (int i = 0; i < spotsToCheck; i++)
+				else
 				{
-					int spotIndex = randomIndices[i];
-					int xPos = startX + spotIndex * stepSpacing;
-
-					bool invalidLocation = false;
-					for (int x1 = 0; x1 < arenaWidth; x1++)
-					{
-						for (int y1 = 0; y1 < arenaHeight; y1++)
-						{
-							Tile tile = Framing.GetTileSafely(xPos - 40 + x1, centerY + 100 + y1);
-
-							if (tile.TileType == TileID.BlueDungeonBrick || tile.TileType == TileID.GreenDungeonBrick || tile.TileType == TileID.PinkDungeonBrick)
-							{
-								invalidLocation = true;
-								break;
-							}
-						}
-
-						if (invalidLocation)
-							break;
-					}
-
-					if (invalidLocation)
-						continue;
-
-					xPosition = xPos;
-					return true;
-				}
-
-				xPosition = centerX;
-				return false;
-			}
-
-			if (!TryToGenerateArena(out centerX))
-			{
-				// Try shotgun approach
-				int retries = 0;
-				while (retries < 100)
-				{
-					retries++;
-
-					if (retries >= 100)
-						throw new Exception("Could not place a required structure: Auroracle Arena");
-
-					if (centerX < iceLeft || centerX > iceRight - 109)
-						centerX = (iceLeft + iceRight) / 2;
-
-					if (!WorldGenHelper.IsRectangleSafe(new Rectangle(centerX - 40, centerY + 100, 109, 180)))
-					{
-						centerX = WorldGen.genRand.Next(iceLeft, iceRight - 109);
-						centerY = (int)GenVars.worldSurfaceHigh + (int)((iceBottom - (int)GenVars.worldSurfaceHigh) * WorldGen.genRand.NextFloat(0.5f, 0.8f));
-						StarlightRiver.Instance.Logger.Info($"World generation attempting to place Auroracle Arena at {centerX}, {centerY} failed, retries left: {100 - retries}");
-						continue;
-					}
-					else
-					{
-						break;
-					}
+					break;
 				}
 			}
 
@@ -208,25 +152,34 @@ namespace StarlightRiver.Core
 					}
 					else
 					{
-						oldPos = PlaceShrine(new Point16(xTarget, yTarget), Main.rand.Next(1, 4), oldPos) * 16;
+						oldPos = PlaceShrine(new Point16(xTarget, yTarget), 4 - k, oldPos) * 16;
 						break;
 					}
 				}
 				// We can continue after a fail here and just skip a shrine, its not ideal as it decreases loot but its better than failing the seed
 			}
 
-			for (int y = 40; y < Main.maxTilesY - 200; y++)
-			{
-				if (Main.tile[centerX, y].HasTile && (Main.tile[centerX, y].TileType == TileID.SnowBlock || Main.tile[centerX, y].TileType == TileID.IceBlock))
-				{
-					PlaceShrine(new Point16(centerX, y - 24), 0, oldPos);
-					break;
-				}
+			bool placedSurfaceShrine = false;
 
-				if (Main.tile[centerX, y].HasTile && Main.tileSolid[Main.tile[centerX, y].TileType])
+			for (int x = iceLeft; x < iceRight - 40; x++)
+			{
+				if (placedSurfaceShrine)
+					break;
+
+				for (int y = 40; y < Main.maxTilesY - 200; y++)
 				{
-					centerX += centerX > ((iceLeft + iceRight) / 2) ? -10 : 10;
-					continue;
+					Tile tile = Main.tile[x, y];
+					Point16 size = StructureHelper.API.Generator.GetStructureDimensions("Structures/AuroraShrine0", Mod);
+
+					if (tile.HasTile && tile.TileType == TileID.SnowBlock && WorldGenHelper.NonSolidScanUp(new Point16(x, y), 20))
+					{
+						if (WorldGenHelper.GetElevationDeviation(new Point16(x, y), size.X, 20, 5, true) < 5)
+						{
+							PlaceShrine(new Point16(x, y - size.Y + 8), 0, oldPos);
+							placedSurfaceShrine = true;
+							break;
+						}
+					}
 				}
 			}
 
@@ -360,14 +313,13 @@ namespace StarlightRiver.Core
 
 			switch (variant)
 			{
-				case 0: touchstonePos = topLeft + new Point16(11, 19); break;
-				case 1: touchstonePos = topLeft + new Point16(8, 11); break;
-				case 2: touchstonePos = topLeft + new Point16(11, 15); break;
-				case 3: touchstonePos = topLeft + new Point16(10, 15); break;
-				case 4: touchstonePos = topLeft + new Point16(13, 16); break;
+				case 0: touchstonePos = topLeft + new Point16(18, 21); break;
+				case 1: touchstonePos = topLeft + new Point16(11, 15); break;
+				case 2: touchstonePos = topLeft + new Point16(12, 12); break;
+				case 3: touchstonePos = topLeft + new Point16(14, 12); break;
 			}
 
-			StructureHelper.API.MultiStructureGenerator.GenerateMultistructureSpecific("Structures/TouchstoneAltar", variant, topLeft, Mod);
+			StructureHelper.API.Generator.GenerateStructure("Structures/AuroraShrine" + variant, topLeft, Mod);
 
 			var te = TileEntity.ByPosition[touchstonePos] as TouchstoneTileEntity;
 
