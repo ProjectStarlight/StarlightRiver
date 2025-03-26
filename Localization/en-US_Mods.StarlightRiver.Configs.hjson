@@ -140,3 +140,101 @@ Configs: {
 		Neither.Label: Neither
 	}
 }
+
+GraphicsConfig: {
+	DisplayName: Graphics Config
+
+	ScreenshakeMult: {
+		Label: Screenshake Mult
+		Tooltip: ""
+	}
+
+	LightingPollRate: {
+		Label: Lighting Poll Rate
+		Tooltip: ""
+	}
+
+	ParticlesActive: {
+		Label: Particles Active
+		Tooltip: ""
+	}
+
+	ReflectionConfig: {
+		Label: Reflection Config
+		Tooltip: ""
+	}
+}
+
+ReflectionSubConfig: {
+	Tooltip: ""
+
+	ReflectionsOn: {
+		Label: Reflections On
+		Tooltip: ""
+	}
+
+	PlayerReflectionsOn: {
+		Label: Player Reflections On
+		Tooltip: ""
+	}
+
+	NpcReflectionsOn: {
+		Label: Npc Reflections On
+		Tooltip: ""
+	}
+
+	ProjReflectionsOn: {
+		Label: Proj Reflections On
+		Tooltip: ""
+	}
+
+	DustReflectionsOn: {
+		Label: Dust Reflections On
+		Tooltip: ""
+	}
+}
+
+GUIConfig: {
+	DisplayName: G U I Config
+
+	OverheadStaminaState: {
+		Label: Overhead Stamina State
+		Tooltip: ""
+	}
+
+	KeywordStyle: {
+		Label: Keyword Style
+		Tooltip: ""
+	}
+
+	ObviousArmorCharge: {
+		Label: Obvious Armor Charge
+		Tooltip: ""
+	}
+
+	AddMaterialIndicator: {
+		Label: Add Material Indicator
+		Tooltip: ""
+	}
+
+	AbilityIconPosition: {
+		Label: Ability Icon Position
+		Tooltip: ""
+	}
+}
+
+OverlayState: {
+	Tooltip: ""
+	AlwaysOn.Label: Always On
+	WhileNotFull.Label: While Not Full
+	WhileUsing.Label: While Using
+	Never.Label: Never
+}
+
+KeywordStyle: {
+	Tooltip: ""
+	Colors.Label: Colors
+	Brackets.Label: Brackets
+	Both.Label: Both
+	Neither.Label: Neither
+}
