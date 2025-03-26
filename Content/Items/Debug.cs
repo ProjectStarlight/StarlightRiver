@@ -157,6 +157,8 @@ namespace StarlightRiver.Content.Items
 			Main.LocalPlayer.GetHandler().Shards.Clear();
 			CagePuzzleSystem.solved = false;
 
+			WorldGen.KillTile((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
+
 			return true;
 		}
 	}

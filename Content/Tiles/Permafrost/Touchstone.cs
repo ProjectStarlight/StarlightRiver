@@ -49,13 +49,6 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 		{
-			int index = ModContent.GetInstance<TouchstoneTileEntity>().Find(i, j);
-
-			if (index == -1)
-				return;
-
-			var entity = (TouchstoneTileEntity)TileEntity.ByID[index];
-
 			float sin1 = 1 + (float)Math.Sin(Main.GameUpdateCount / 10f);
 			float cos1 = 1 + (float)Math.Cos(Main.GameUpdateCount / 10f);
 
