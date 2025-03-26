@@ -162,14 +162,14 @@ namespace StarlightRiver.Core
 			bool placedSurfaceShrine = false;
 
 			for (int x = iceLeft; x < iceRight - 40; x++)
-			{			
+			{
 				if (placedSurfaceShrine)
 					break;
 
 				for (int y = 40; y < Main.maxTilesY - 200; y++)
 				{
-					var tile = Main.tile[x, y];
-					var size = StructureHelper.API.Generator.GetStructureDimensions("Structures/AuroraShrine0", Mod);
+					Tile tile = Main.tile[x, y];
+					Point16 size = StructureHelper.API.Generator.GetStructureDimensions("Structures/AuroraShrine0", Mod);
 
 					if (tile.HasTile && tile.TileType == TileID.SnowBlock && WorldGenHelper.NonSolidScanUp(new Point16(x, y), 20))
 					{

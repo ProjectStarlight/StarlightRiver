@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Tiles.Starlight
 		{
 			Framing.SelfFrame8Way(i, j, Main.tile[i, j], resetFrame);
 
-			var tile = Main.tile[i, j];
+			Tile tile = Main.tile[i, j];
 			tile.TileFrameX += (short)(i % 3 * 324);
 			tile.TileFrameY += (short)(j % 3 * 90);
 
