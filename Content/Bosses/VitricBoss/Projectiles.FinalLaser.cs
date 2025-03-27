@@ -252,7 +252,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 					if (Main.rand.NextBool(20))
 					{
-						var dustColor = color;
+						Color dustColor = color;
 						dustColor.A = 0;
 
 						Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * i, DustType<Dusts.PixelatedGlow>(), Vector2.UnitY * Main.rand.NextFloat(-1.5f, -0.5f), 0, dustColor, Main.rand.NextFloat(0.2f, 0.3f));
