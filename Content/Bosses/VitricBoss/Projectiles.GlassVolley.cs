@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core.Systems.PixelationSystem;
 using System;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -56,8 +57,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			if (Timer <= 30) //draws the projectile's tell ~0.75 seconds before it goes off
 			{
 				Texture2D tex = Assets.Bosses.VitricBoss.VolleyTell.Value;
-				float alpha = (float)Math.Sin(Timer / 30f * 3.14f) * 0.8f;
-				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), new Color(200, 255, 255, 0) * alpha, Projectile.rotation - 1.57f, new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
+				float alpha = (float)Math.Sin(Timer / 30f * 3.14f) * 0.4f;
+				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), new Color(100, 100 + (int)(155 * alpha), 255 - (int)(155 * alpha), 0) * alpha, Projectile.rotation - 1.57f, new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
 			}
 
 			return false;
@@ -96,10 +97,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			Color color2 = Helpers.CommonVisualEffects.HeatedToCoolColor(MathHelper.Min(600 - Projectile.timeLeft, 120));
 			var color = Color.Lerp(new Color(100, 145, 200), color2, color2.R / 255f);
 
+			color.A = 0;
+
 			if (Main.rand.NextBool(5))
 			{
-				var swirl = Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Cinder>(), Vector2.Normalize(Projectile.velocity).RotatedByRandom(0.5f) * 2, 0, color, Main.rand.NextFloat(0.5f, 1f));
-				swirl.customData = homePos;
+				var swirl = Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.PixelatedEmber>(), Vector2.Normalize(Projectile.velocity).RotatedByRandom(0.5f) * Main.rand.NextFloat(), 0, color, Main.rand.NextFloat(0.1f, 0.2f));
 			}
 
 			Lighting.AddLight(Projectile.Center, color.ToVector3());
@@ -107,11 +109,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public override void OnKill(int timeLeft)
 		{
-			for (int k = 0; k < 20; k++)
+			for (int k = 0; k < 8; k++)
 			{
 				Vector2 vel = Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10f);
-				var swirl = Dust.NewDustPerfect(Projectile.Center + vel, DustType<Dusts.Cinder>(), vel, 0, new Color(100, 145, 200), Main.rand.NextFloat(0.5f, 2f));
-				swirl.customData = Projectile.Center;
+				var swirl = Dust.NewDustPerfect(Projectile.Center + vel, DustType<Dusts.PixelatedImpactLineDust>(), vel, 0, new Color(100, 145, 200, 0), Main.rand.NextFloat(0.15f, 0.2f));
+				//swirl.customData = Projectile.Center;
 			}
 		}
 
@@ -141,11 +143,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			if (Projectile.timeLeft > 595)
 				trailLength = 0;
 
-			Main.EntitySpriteDraw(trail, Projectile.Center - Main.screenPosition, null, color, Projectile.rotation + 1.57f, trail.Size() * new Vector2(0f, 0.5f), new Vector2(trailLength, 0.05f), SpriteEffects.None, 0);
-			Main.EntitySpriteDraw(trail, Projectile.Center - Main.screenPosition, null, color * 0.5f, Projectile.rotation + 1.57f, trail.Size() * new Vector2(0f, 0.5f), new Vector2(trailLength, 0.15f), SpriteEffects.None, 0);
+			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("OverPlayers", () =>
+			{
+				Main.EntitySpriteDraw(trail, Projectile.Center - Main.screenPosition, null, color, Projectile.rotation + 1.57f, trail.Size() * new Vector2(0f, 0.5f), new Vector2(trailLength, 0.05f), SpriteEffects.None, 0);
+				Main.EntitySpriteDraw(trail, Projectile.Center - Main.screenPosition, null, color * 0.5f, Projectile.rotation + 1.57f, trail.Size() * new Vector2(0f, 0.5f), new Vector2(trailLength, 0.15f), SpriteEffects.None, 0);
 
-			Main.EntitySpriteDraw(tell, Projectile.Center - Main.screenPosition, null, bloomColor * 0.1f, Projectile.rotation, tell.Size() * new Vector2(0.5f, 0.75f), new Vector2(0.18f, tellLength), SpriteEffects.None, 0);
-			Main.EntitySpriteDraw(tell, Projectile.Center - Main.screenPosition, null, bloomColor * 0.2f, Projectile.rotation, tell.Size() * new Vector2(0.5f, 0.75f), new Vector2(0.03f, tellLength), SpriteEffects.None, 0);
+				Main.EntitySpriteDraw(tell, Projectile.Center - Main.screenPosition, null, bloomColor * 0.1f, Projectile.rotation, tell.Size() * new Vector2(0.5f, 0.75f), new Vector2(0.18f, tellLength), SpriteEffects.None, 0);
+				Main.EntitySpriteDraw(tell, Projectile.Center - Main.screenPosition, null, bloomColor * 0.2f, Projectile.rotation, tell.Size() * new Vector2(0.5f, 0.75f), new Vector2(0.05f, tellLength), SpriteEffects.None, 0);
+			});
 
 			return false;
 		}

@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			Texture2D glowTex1 = Assets.Masks.GlowSoftAlpha.Value;
 			Texture2D glowTex2 = Assets.Masks.GlowWithRing.Value;
 
-			float bright = (300 - Projectile.timeLeft) / 300f * 0.7f;
+			float bright = (300 - Projectile.timeLeft) / 300f * 0.3f;
 
 			if (Projectile.timeLeft < 60)
 				bright += (float)Math.Sin(StarlightWorld.visualTimer * 6) * 0.12f;
@@ -118,6 +118,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				{
 					Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.LavaSpark>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), 0, new Color(255, 155, 0), Main.rand.NextFloat(0.1f, 0.8f));
 				}
+
+				for (int k = 0; k < 40; k++)
+					Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.PixelatedImpactLineDust>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(20), 0, new Color(255, 120, 20, 0), Main.rand.NextFloat(0.2f, 0.5f));
 
 				for (int k = 0; k < 60; k++)
 				{

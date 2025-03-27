@@ -41,9 +41,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				Vector2 pos2 = Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation + 0.2f) * Main.rand.Next(-550, -450);
 				Vector2 posRand = Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation + Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.Next(-420, -380);
 
-				Dust.NewDustPerfect(pos1, DustType<PowerupDust>(), (pos1 - Projectile.Center) * -0.03f, 0, new Color(255, 240, 220), Timer / 25f);
-				Dust.NewDustPerfect(pos2, DustType<PowerupDust>(), (pos2 - Projectile.Center) * -0.03f, 0, new Color(255, 240, 220), Timer / 25f);
-				Dust.NewDustPerfect(posRand, DustType<PowerupDust>(), (posRand - Projectile.Center) * -0.03f, 0, new Color(255, 220, 100), Timer / 25f);
+				Dust.NewDustPerfect(pos1, DustType<PowerupDust>(), (pos1 - Projectile.Center) * -0.03f, 0, new Color(255, 210, 180, 0), Timer / 25f * Main.rand.NextFloat(0.75f, 1f));
+				Dust.NewDustPerfect(pos2, DustType<PowerupDust>(), (pos2 - Projectile.Center) * -0.03f, 0, new Color(255, 210, 180, 0), Timer / 25f * Main.rand.NextFloat(0.75f, 1f));
+				Dust.NewDustPerfect(posRand, DustType<PowerupDust>(), (posRand - Projectile.Center) * -0.03f, 0, new Color(255, 160, 100, 0), Timer / 25f * Main.rand.NextFloat(0.3f, 0.6f));
 			}
 
 			if (Timer == 70)
