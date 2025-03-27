@@ -5,6 +5,7 @@ using StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
+using StarlightRiver.Core.Systems.PixelationSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.IO;
@@ -190,57 +191,60 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 				return;
 
 			//Laser
-			int sin = (int)(Math.Sin(StarlightWorld.visualTimer * 3) * 20f); //Just a copy/paste of the boss laser. Need to tune this later
-			Color color2 = new Color(100, 200 + sin, 255, 0) * 0.65f;
-
-			Texture2D texBeam = Assets.Misc.BeamCore.Value;
-			Texture2D texBeam2 = Assets.Misc.BeamCore.Value;
-
-			var origin = new Vector2(0, texBeam.Height / 2);
-			var origin2 = new Vector2(0, texBeam2.Height / 2);
-
-			Effect effect = ShaderLoader.GetShader("GlowingDust").Value;
-
-			if (effect != null)
+			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () =>
 			{
-				effect.Parameters["uColor"].SetValue(color2.ToVector3() * 0.35f);
+				int sin = (int)(Math.Sin(StarlightWorld.visualTimer * 3) * 20f); //Just a copy/paste of the boss laser. Need to tune this later
+				Color color2 = new Color(100, 200 + sin, 255, 0) * 0.65f;
 
-				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+				Texture2D texBeam = Assets.Misc.BeamCore.Value;
+				Texture2D texBeam2 = Assets.Misc.BeamCore.Value;
 
-				float height = texBeam.Height / 10f * (1 - opacity);
-				int width = (int)(Center - endPoint).Length() - 6;
+				var origin = new Vector2(0, texBeam.Height / 2);
+				var origin2 = new Vector2(0, texBeam2.Height / 2);
 
-				Vector2 pos = Center + Vector2.UnitX.RotatedBy(rotation) * 6 - Main.screenPosition;
+				Effect effect = ShaderLoader.GetShader("GlowingDust").Value;
 
-				var target = new Rectangle((int)pos.X, (int)pos.Y, width, (int)(height * 2.75f));
-				var target2 = new Rectangle((int)pos.X, (int)pos.Y, width, (int)height);
-
-				var source = new Rectangle((int)(Main.GameUpdateCount / 140f * -texBeam.Width), 0, texBeam.Width, texBeam.Height);
-				var source2 = new Rectangle((int)(Main.GameUpdateCount / 80f * -texBeam2.Width), 0, texBeam2.Width, texBeam2.Height);
-
-				Main.spriteBatch.Draw(texBeam, target, source, color2, rotation, origin, 0, 0);
-				Main.spriteBatch.Draw(texBeam2, target2, source2, color2 * 0.5f, rotation, origin2, 0, 0);
-
-				for (int i = 0; i < width; i += 10)
+				if (effect != null)
 				{
-					Lighting.AddLight(pos + Vector2.UnitX.RotatedBy(rotation) * i + Main.screenPosition, color2.ToVector3() * height * 0.010f);
+					effect.Parameters["uColor"].SetValue(color2.ToVector3() * 0.35f);
+
+					Main.spriteBatch.End();
+					Main.spriteBatch.Begin(default, default, SamplerState.PointWrap, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+
+					float height = texBeam.Height / 10f * (1 - opacity);
+					int width = (int)(Center - endPoint).Length();
+
+					Vector2 pos = Center - Main.screenPosition;
+
+					var target = new Rectangle((int)pos.X, (int)pos.Y, width, (int)(height * 2.75f));
+					var target2 = new Rectangle((int)pos.X, (int)pos.Y, width, (int)(height * 4f));
+
+					var source = new Rectangle((int)(Main.GameUpdateCount / 140f * -texBeam.Width), 0, texBeam.Width, texBeam.Height);
+					var source2 = new Rectangle((int)(Main.GameUpdateCount / 80f * -texBeam2.Width), 0, width, texBeam2.Height);
+
+					Main.spriteBatch.Draw(texBeam, target, source, color2, rotation, origin, 0, 0);
+					Main.spriteBatch.Draw(texBeam2, target2, source2, color2 * 0.5f, rotation, origin2, 0, 0);
+
+					for (int i = 0; i < width; i += 10)
+					{
+						Lighting.AddLight(pos + Vector2.UnitX.RotatedBy(rotation) * i + Main.screenPosition, color2.ToVector3() * height * 0.010f);
+					}
+
+					Main.spriteBatch.End();
+					Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+
+					Texture2D impactTex = Assets.Masks.GlowSoftAlpha.Value;
+					Texture2D impactTex2 = Assets.GUI.ItemGlow.Value;
+					Texture2D glowTex = Assets.GlowTrail.Value;
+
+					target = new Rectangle((int)pos.X, (int)pos.Y, width, (int)(height * 4.5f));
+					Main.spriteBatch.Draw(glowTex, target, source, color2 * 0.75f, rotation, new Vector2(0, glowTex.Height / 2), 0, 0);
+
+					Main.spriteBatch.Draw(impactTex, endPoint - Main.screenPosition, null, color2 * (height * 0.024f), 0, impactTex.Size() / 2, 2.8f, 0, 0);
+					Main.spriteBatch.Draw(impactTex2, endPoint - Main.screenPosition, null, color2 * 0.5f * (height * 0.1f), StarlightWorld.visualTimer * 2, impactTex2.Size() / 2, 0.2f, 0, 0);
+					Main.spriteBatch.Draw(impactTex2, endPoint - Main.screenPosition, null, color2 * 1.5f * (height * 0.1f), StarlightWorld.visualTimer * 2.2f, impactTex2.Size() / 2, 0.1f, 0, 0);
 				}
-
-				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
-
-				Texture2D impactTex = Assets.Masks.GlowSoftAlpha.Value;
-				Texture2D impactTex2 = Assets.GUI.ItemGlow.Value;
-				Texture2D glowTex = Assets.GlowTrail.Value;
-
-				target = new Rectangle((int)pos.X, (int)pos.Y, width, (int)(height * 4.5f));
-				Main.spriteBatch.Draw(glowTex, target, source, color2 * 0.75f, rotation, new Vector2(0, glowTex.Height / 2), 0, 0);
-
-				Main.spriteBatch.Draw(impactTex, endPoint - Main.screenPosition, null, color2 * (height * 0.024f), 0, impactTex.Size() / 2, 2.2f, 0, 0);
-				Main.spriteBatch.Draw(impactTex2, endPoint - Main.screenPosition, null, color2 * 0.5f * (height * 0.1f), StarlightWorld.visualTimer * 2, impactTex2.Size() / 2, 0.2f, 0, 0);
-				Main.spriteBatch.Draw(impactTex2, endPoint - Main.screenPosition, null, color2 * 1.5f * (height * 0.1f), StarlightWorld.visualTimer * 2.2f, impactTex2.Size() / 2, 0.1f, 0, 0);
-			}
+			});
 		}
 
 		public override void SafeSendExtraAI(BinaryWriter writer)
