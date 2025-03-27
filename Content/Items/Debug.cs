@@ -210,7 +210,7 @@ namespace StarlightRiver.Content.Items
 
 			Utils.DrawBorderStringBig(Main.spriteBatch, $"STARLIGHT RIVER ALPHA TEST -- THINKER BOSS FIGHT TEST", new Vector2(Main.screenWidth / 2, 16), Color.White, 0.4f, 0.5f);
 			Utils.DrawBorderStringBig(Main.spriteBatch, $"ALPHA BUILD DOES NOT REPRESENT FINAL PRODUCT", new Vector2(Main.screenWidth / 2, 48), Color.White, 0.4f, 0.5f);
-			Utils.DrawBorderStringBig(Main.spriteBatch, $"Things to test: boss phase 2 changes, all difficulties", new Vector2(Main.screenWidth / 2, 86), new Color(255, 255, 200), 0.3f, 0.5f);
+			Utils.DrawBorderStringBig(Main.spriteBatch, $"Things to test: Some vitric desert touchup, chartgrate tile", new Vector2(Main.screenWidth / 2, 86), new Color(255, 255, 200), 0.3f, 0.5f);
 
 			/*Terraria.UI.Chat.ChatManager.DrawColorCodedString(Main.spriteBatch, font, ChatManager.ParseMessage("what? [c/ff22ff:This is a test of the\nnational emergency fuck system\nwoo] no way!", Color.White).ToArray(), new Vector2(Main.screenWidth / 2, 126), Color.White, 0, default, Vector2.One, out var hovered, -1);
 

@@ -16,6 +16,8 @@ namespace StarlightRiver.Content.Tiles.Starlight
 		public override void SetStaticDefaults()
 		{
 			QuickBlock.QuickSet(this, int.MaxValue, DustID.Gold, SoundID.Tink, new Color(255, 210, 150), ModContent.ItemType<ChartGrateItem>());
+			Main.tileBlockLight[Type] = false;
+			MinPick = 100;
 		}
 
 		public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
@@ -23,8 +25,8 @@ namespace StarlightRiver.Content.Tiles.Starlight
 			Framing.SelfFrame8Way(i, j, Main.tile[i, j], resetFrame);
 
 			Tile tile = Main.tile[i, j];
-			tile.TileFrameX += (short)(i % 3 * 324);
-			tile.TileFrameY += (short)(j % 3 * 90);
+			tile.TileFrameX += (short)(i % 6 * 324);
+			tile.TileFrameY += (short)(j % 6 * 90);
 
 			return false;
 		}

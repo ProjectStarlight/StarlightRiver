@@ -326,11 +326,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 							NPC.rotation = 0;
 					}
 
-					for (int k = 0; k < 3; k++)
-					{
-						var d = Dust.NewDustPerfect(NPC.Center + new Vector2(Main.rand.Next(-10, 10), Main.rand.Next(-10, 10)), DustType<PowerupDust>(), new Vector2(0, -Main.rand.NextFloat(3)), 0, new Color(255, 230, 100), 0.75f);
-						d.fadeIn = 10;
-					}
+					Dust.NewDustPerfect(NPC.Center + new Vector2(Main.rand.Next(-10, 10), Main.rand.Next(-10, 10)), DustType<PixelatedEmber>(), new Vector2(0, -Main.rand.NextFloat(3)), 0, new Color(255, 130 + Main.rand.Next(30), 60, 0) * (NPC.velocity.Length() / 10f), Main.rand.NextFloat(0.2f, 0.3f));
 
 					if (NPC.Center.Y > TargetPos.Y)
 					{
@@ -394,7 +390,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Zero, ProjectileType<FireRingHostile>(), 20, 0, Main.myPlayer, 100);
 
 			for (int k = 0; k < 40; k++)
-				Dust.NewDustPerfect(NPC.Center, DustType<Dusts.Stamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(7));
+				Dust.NewDustPerfect(NPC.Center, DustType<Dusts.PixelatedImpactLineDust>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(7), 0, new Color(255, 150, 20, 0), Main.rand.NextFloat(0.4f));
 		}
 
 		private void ResetTimers()
