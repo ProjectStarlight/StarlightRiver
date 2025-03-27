@@ -81,6 +81,8 @@ namespace StarlightRiver.Content.Items
 			player.GetHandler().unlockedAbilities.Clear();
 			AlicanSafetySystem.DebugForceState(0);
 
+			KeybindHelper.OpenKeybindsWithHelp();
+
 			return true;
 		}
 	}

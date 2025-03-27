@@ -591,7 +591,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			return new AfterParent(PlayerDrawLayers.SolarShield);
 		}
 
-		protected override void Draw(ref PlayerDrawSet drawInfo)
+		public override void Draw(ref PlayerDrawSet drawInfo)
 		{
 			Player Player = drawInfo.drawPlayer;
 

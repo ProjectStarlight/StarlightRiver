@@ -3756,6 +3756,11 @@ Items: {
 		DisplayName: Pink Laser Pointer
 		Tooltip: ""
 	}
+
+	ChartGrateWallItem: {
+		DisplayName: Chart Grate Wall
+		Tooltip: ""
+	}
 }
 
 Tiles: {

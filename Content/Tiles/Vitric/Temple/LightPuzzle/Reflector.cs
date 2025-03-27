@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 		public int frame = 0;
 
 		private int rotateAnimation = 0;
-		private Vector2 endPoint;
+		protected Vector2 endPoint;
 
 		public float rotation;
 		public float emitting;

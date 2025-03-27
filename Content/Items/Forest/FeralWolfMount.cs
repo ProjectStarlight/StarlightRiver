@@ -64,10 +64,10 @@ namespace StarlightRiver.Content.Items.Forest
 			float animTime = secondarySpeedCoefficient / 4f;
 			float time = Math.Max(0, (timer - animTime * 3) / animTime);
 
-			if (time > 0)
+			/*if (time > 0)
 				Filters.Scene.Activate("Shockwave", player.Center).GetShader().UseProgress(2f).UseIntensity(100 - time * 100).UseDirection(new Vector2(0.1f - time * 0.1f, 0.02f - time * 0.02f));
 			else
-				Filters.Scene.Deactivate("Shockwave");
+				Filters.Scene.Deactivate("Shockwave");*/
 
 			if (timer == 1)
 			{
