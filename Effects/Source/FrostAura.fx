@@ -1,4 +1,6 @@
-﻿texture drawTexture;
+﻿#include "Common.fxh"
+
+texture drawTexture;
 sampler2D drawSampler = sampler_state
 {
     texture = <drawTexture>;
@@ -27,7 +29,7 @@ float height;
 
 float GoodCos(float input)
 {
-    return sin(input + 3.14);
+    return sin(input + PI);
 }
 
 float4 MainPS(float2 uv : TEXCOORD) : COLOR

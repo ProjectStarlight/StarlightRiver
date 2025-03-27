@@ -1,4 +1,6 @@
-﻿sampler uImage0 : register(s0);
+﻿#include "Common.fxh"
+
+sampler uImage0 : register(s0);
 sampler uImage1 : register(s1);
 float3 uColor;
 float3 uSecondaryColor;
@@ -38,12 +40,12 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 float4 Fragment(VertexShaderOutput input) : COLOR
 {
 	float2 coords = input.coord;
-	float2 off = float2(sin(uTime + coords.y * 6.28 * 10.0) * power * 0.1, sin(uTime + coords.x * 6.28 * 20.0) * power * 0.5);
+	float2 off = float2(sin(uTime + coords.y * TWO_PI * 10.0) * power * 0.1, sin(uTime + coords.x * TWO_PI * 20.0) * power * 0.5);
 
 	float4 colorr = tex2D(uImage0, coords + off) * float4(input.color.xyz, 1.0);
 
-	colorr *= 1.0 + sin(uTime + coords.x * 6.28 * 20.0) * 0.1;
-	colorr.x *= 1.0 + sin(uTime + coords.y * 6.28 * 10.0) * 0.1;
+	colorr *= 1.0 + sin(uTime + coords.x * TWO_PI * 20.0) * 0.1;
+	colorr.x *= 1.0 + sin(uTime + coords.y * TWO_PI * 10.0) * 0.1;
 
 	return colorr * input.color.a;
 }

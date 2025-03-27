@@ -1,3 +1,5 @@
+#include "Common.fxh"
+
 sampler uImage0 : register(s0);
 sampler uImage1 : register(s1);
 
@@ -26,7 +28,7 @@ float4 White(float2 uv : TEXCOORD0) : COLOR0
 	float2 conecoords = float2(uv.x, uv.y);
 
 	float angle = atan2(conecoords.x - 1.25f, conecoords.y - 0.5) + rotation;
-	float2 noiseCoords = float2(0.5f, ((angle + 3.14f) / 6.28f) % 1);
+	float2 noiseCoords = float2(0.5f, ((angle + PI) / TWO_PI) % 1);
 
 	float column;
 	if (conecoords.y > 1 || conecoords.y < 0)
