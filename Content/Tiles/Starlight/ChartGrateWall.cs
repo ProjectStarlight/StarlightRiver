@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Tiles.Starlight
 
 		public override void SetStaticDefaults()
 		{
-			QuickBlock.QuickSetWall(this, DustID.Gold, SoundID.Tink, ModContent.ItemType<ChartGrateWallItem>(), true, new Color(90, 90, 40));
+			QuickBlock.QuickSetWall(this, DustID.Gold, SoundID.Tink, ModContent.ItemType<ChartGrateWallItem>(), true, new Color(90, 70, 40));
 			Main.wallLight[Type] = true;
 		}
 
