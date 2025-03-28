@@ -632,7 +632,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				ThisThinker.platformRadiusTarget = 600;
 				ThisThinker.platformRotationTarget -= 0.2f;
 
-				savedRot = Main.rand.Next(4) * (6.28f / 4f);
+				savedRot = 0;
 				NPC.netUpdate = true;
 			}
 
@@ -666,7 +666,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					float period = Main.masterMode ? 85 : 170;
 					float rad = 280 + (float)Math.Cos((AttackTimer - 90 - 60) / period * 3.14f + 3.14f) * (maxRad - 280);
 
-					if (Main.masterMode && (AttackTimer - 90) == 60 + 170 || (AttackTimer - 90) == 60)
+					if (Main.masterMode && ((AttackTimer - 90) == 60 + 170 || (AttackTimer - 90) == 60))
 					{
 						for (int k = 0; k < 9; k++)
 						{

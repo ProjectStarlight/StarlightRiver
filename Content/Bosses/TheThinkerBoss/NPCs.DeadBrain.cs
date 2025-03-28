@@ -571,7 +571,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 						while (next == attackQueue.Last())
 							next = attackCount % 3 == 0 ? Main.rand.Next(3) : 3 + Main.rand.Next(3);
 
-						attackQueue.Add(next);
+						attackQueue.Add(2);
 
 						NPC.netUpdate = true;
 					}
