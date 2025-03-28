@@ -253,7 +253,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override void AI()
 		{
-			var d = Dust.NewDustPerfect(Projectile.Center + Projectile.velocity, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 150, 50), 0.4f);
+			var d = Dust.NewDustPerfect(Projectile.Center + Projectile.velocity, DustType<Dusts.PixelatedEmber>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 150, 50, 0), 0.1f);
 			d.noGravity = false;
 
 			Projectile.rotation = Projectile.velocity.ToRotation() - 1.57f;

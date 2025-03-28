@@ -40,6 +40,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				Projectile.velocity = Vector2.SmoothStep(Vector2.Zero, savedVelocity, (30 - (Projectile.timeLeft - 150)) / 30f);
 
 			Color color = Helpers.CommonVisualEffects.HeatedToCoolColor(MathHelper.Min(200 - Projectile.timeLeft, 120));
+			color.A = 0;
 
 			if (Projectile.timeLeft < 165)
 			{
@@ -47,8 +48,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				{
 					if (Main.rand.NextBool(3))
 					{
-						Vector2 pos = Projectile.Center + Vector2.Normalize(Projectile.velocity).RotatedBy(1.57f) * (k == 0 ? 10f : -10f);
-						var d = Dust.NewDustPerfect(pos, DustType<Dusts.GlowLine>(), (Projectile.velocity * Main.rand.NextFloat(-0.5f, -0.02f)).RotatedBy(k == 0 ? -0.4f : 0.4f), 0, color, 1f);
+						Vector2 pos = Projectile.Center + Vector2.Normalize(Projectile.velocity).RotatedBy(1.57f) * (k == 0 ? 6f : -6f);
+						var d = Dust.NewDustPerfect(pos, DustType<Dusts.PixelatedImpactLineDust>(), (Projectile.velocity * Main.rand.NextFloat(-0.5f, -0.02f)).RotatedBy(k == 0 ? -0.4f : 0.4f), 0, color, 0.1f);
 						d.customData = 0.85f;
 					}
 				}
@@ -65,11 +66,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		public override void OnKill(int timeLeft)
 		{
 			Color color = Helpers.CommonVisualEffects.HeatedToCoolColor(MathHelper.Min(200 - Projectile.timeLeft, 120));
+			color.A = 0;
 
 			for (int k = 0; k <= 10; k++)
 			{
 				Dust.NewDust(Projectile.position, 22, 22, DustType<Dusts.GlassGravity>(), Projectile.velocity.X * 0.5f, Projectile.velocity.Y * 0.5f);
-				Dust.NewDust(Projectile.position, 22, 22, DustType<Dusts.Glow>(), 0, 0, 0, color, 0.3f);
+				Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.PixelatedImpactLineDust>(), Main.rand.NextVector2Circular(1, 1) * Main.rand.NextFloat(4), 0, color, Main.rand.NextFloat(0.2f, 0.4f));
 			}
 
 			if (Main.masterMode)

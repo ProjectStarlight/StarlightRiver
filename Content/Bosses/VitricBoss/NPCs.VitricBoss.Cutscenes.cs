@@ -399,7 +399,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 				float progress = (GlobalTimer - 100) / 20f;
 
-				Filters.Scene.Activate("Shockwave", NPC.Center).GetShader().UseProgress(Main.screenWidth / (float)Main.screenHeight).UseIntensity(300 - (int)(Math.Sin(progress * 3.14f) * 220)).UseDirection(new Vector2(progress * 0.8f, progress * 0.9f));
+				//Filters.Scene.Activate("Shockwave", NPC.Center).GetShader().UseProgress(Main.screenWidth / (float)Main.screenHeight).UseIntensity(300 - (int)(Math.Sin(progress * 3.14f) * 220)).UseDirection(new Vector2(progress * 0.8f, progress * 0.9f));
 			}
 
 			if (checkSpecificTime(120) && Main.netMode != NetmodeID.Server)
@@ -412,7 +412,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Roar, NPC.Center);
 
-				Filters.Scene.Deactivate("Shockwave");
+				//Filters.Scene.Deactivate("Shockwave");
 			}
 
 			if (GlobalTimer > 120 && GlobalTimer <= 160)

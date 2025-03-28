@@ -251,7 +251,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					Lighting.AddLight(pos + Vector2.UnitX.RotatedBy(LaserRotation) * i + Main.screenPosition, color.ToVector3() * height * 0.010f);
 
 					if (Main.rand.NextBool(20))
-						Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * i, DustType<Dusts.Glow>(), Vector2.UnitY * Main.rand.NextFloat(-1.5f, -0.5f), 0, color, 0.4f);
+					{
+						Color dustColor = color;
+						dustColor.A = 0;
+
+						Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * i, DustType<Dusts.PixelatedGlow>(), Vector2.UnitY * Main.rand.NextFloat(-1.5f, -0.5f), 0, dustColor, Main.rand.NextFloat(0.2f, 0.3f));
+					}
 				}
 
 				float opacity = height / (texBeam.Height / 2f);
@@ -283,8 +288,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					int variation = Main.rand.Next(30);
 
 					color.G -= (byte)variation;
+					color.A = 0;
 
-					Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * width + Vector2.One.RotatedBy(rot) * Main.rand.NextFloat(40), DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot) * 2, 0, color, 0.9f - variation * 0.03f);
+					Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * width + Vector2.One.RotatedBy(rot) * Main.rand.NextFloat(40), DustType<Dusts.PixelatedEmber>(), Vector2.One.RotatedBy(rot) * 2, 0, color, 0.3f - variation * 0.01f);
 				}
 			}
 

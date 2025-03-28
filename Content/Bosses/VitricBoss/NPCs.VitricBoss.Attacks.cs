@@ -217,8 +217,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 						for (int i = 0; i < 4 - (int)(AttackTimer - 360) / 100; i++)
 						{
 							float rot = Main.rand.NextFloat(1.57f);
-							Dust.NewDustPerfect(NPC.Center + (crystal.Center - NPC.Center).RotatedBy(rot), DustType<Dusts.Glow>(),
-								-Vector2.UnitX.RotatedBy(crystal.rotation + rot + Main.rand.NextFloat(-0.45f, 0.45f)) * Main.rand.NextFloat(1, 4) * alpha, 0, new Color(255, 160, 100) * alpha, Main.rand.NextFloat(0.4f, 0.8f) * alpha);
+							Dust.NewDustPerfect(NPC.Center + (crystal.Center - NPC.Center).RotatedBy(rot), DustType<Dusts.PixelatedGlow>(),
+								-Vector2.UnitX.RotatedBy(crystal.rotation + rot + Main.rand.NextFloat(-0.45f, 0.45f)) * Main.rand.NextFloat(1, 4) * alpha, 0, new Color(255, 100 + Main.rand.Next(60), 100, 0) * alpha, Main.rand.NextFloat(0.2f, 0.4f) * alpha);
 						}
 					}
 				}

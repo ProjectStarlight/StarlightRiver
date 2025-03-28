@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				float rot = Main.rand.NextFloat(0, 6.28f);
 
 				if (Main.netMode != NetmodeID.Server)
-					Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedBy(rot) * (Radius + 15), ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot + Main.rand.NextFloat(1.1f, 1.3f)) * 2, 0, new Color(255, 120 + (int)(100 * (float)Math.Sin(TimeFade * 3.14f)), 65), 0.4f);
+					Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedBy(rot) * (Radius + 15), ModContent.DustType<Dusts.PixelatedEmber>(), Vector2.One.RotatedBy(rot + Main.rand.NextFloat(1.1f, 1.3f)) * Main.rand.NextFloat(3), 0, new Color(255, 120 + (int)(100 * (float)Math.Sin(TimeFade * 3.14f)), 65, 0), 0.1f);
 			}
 		}
 

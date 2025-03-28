@@ -103,6 +103,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		{
 			Texture2D tex = Assets.Masks.GlowSoft.Value;
 
+			if (chain.ropeSegments is null)
+				return;
+
 			for (int k = 0; k < chain.segmentCount; k++)
 			{
 				RopeSegment segment = chain.ropeSegments[k];
