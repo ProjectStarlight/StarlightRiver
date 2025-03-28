@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 		{
 			get
 			{
-				var ab = StarlightRiver.Instance.AbilityKeys.Get<HintAbility>().GetAssignedKeys();
+				var ab = StarlightRiver.Instance.AbilityKeys.Get<Dash>().GetAssignedKeys();
 				var def = "Unbound";
 
 				return $"Press [c/6699FF:{(ab.Count > 0 ? ab[0] : def)}] while holding any combination of [c/6699FF:{UIHelper.GetVanillaInputString("Up")}], [c/6699FF:{UIHelper.GetVanillaInputString("Left")}], [c/6699FF:{UIHelper.GetVanillaInputString("Down")}], and [c/6699FF:{UIHelper.GetVanillaInputString("Right")}] to channel starlight into a powerful dash.\n\nYou'll strike with enough force to shatter any object with a [c/88FFFF:glowing blue outline!]";
