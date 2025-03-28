@@ -313,7 +313,7 @@ namespace StarlightRiver.Core
 
 			switch (variant)
 			{
-				case 0: touchstonePos = topLeft + new Point16(18, 21); break;
+				case 0: touchstonePos = topLeft + new Point16(24, 21); break;
 				case 1: touchstonePos = topLeft + new Point16(11, 15); break;
 				case 2: touchstonePos = topLeft + new Point16(12, 12); break;
 				case 3: touchstonePos = topLeft + new Point16(14, 12); break;
