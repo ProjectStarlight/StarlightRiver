@@ -1,3 +1,4 @@
+#include "Common.fxh"
 
 texture draw;
 sampler2D InputLayer1 = sampler_state { texture = <draw>; };
@@ -13,8 +14,6 @@ float2 drawSize;
 
 float RefractionStrength;
 
-static const float tau = 6.283185307;
-
 float4 main(float2 uv : TEXCOORD) : COLOR 
 { 	
 	//samping the overlay
@@ -29,7 +28,7 @@ float4 main(float2 uv : TEXCOORD) : COLOR
 	float4 OverlayColor = tex2D(InputLayer1Overlay, float2(xPos, yPos));//gets full overlay color
 	
 	//offset math
-	float RefractionRadian = OverlayColor.r * tau;//uses just the r channel * tau to get a radian (color values here are 0 to 1)
+	float RefractionRadian = OverlayColor.r * TWO_PI;//uses just the r channel * tau to get a radian (color values here are 0 to 1)
 	float2 RefractionOffset = (float2(cos(RefractionRadian), sin(RefractionRadian)) * RefractionStrength) * OverlayColor.a;//gets a x/y offset from radian, and multiplies it by overlay alpha channel. so there doesn't need to be branching
 	
 	//other samples

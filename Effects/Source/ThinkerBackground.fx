@@ -1,3 +1,5 @@
+#include "Common.fxh"
+
 texture mainbody_t;
 sampler2D u_tex0 = sampler_state { texture = <mainbody_t>; AddressU = wrap; AddressV = wrap; };
 
@@ -13,8 +15,6 @@ float u_time;
 float3 u_color;
 
 float2 u_sampleTopLeft;
-
-#define PI 3.1415926538
 
 float dist(float2 pointz) {
     return distance(pointz, float2(0.5, 0.5)) / 0.707;

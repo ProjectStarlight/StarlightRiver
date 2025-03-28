@@ -1,4 +1,6 @@
-﻿sampler uImage0 : register(s0);
+﻿#include "Common.fxh"
+
+sampler uImage0 : register(s0);
 sampler uImage1 : register(s1);
 sampler uImage2 : register(s2);
 float3 uColor;
@@ -24,7 +26,7 @@ float4 drawColor;
 float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
 {
     float sin1 = sin(uTime + (coords.x + offset.x) * speed);
-    float sin2 = sin(1.57 + (coords.x + offset.x) * 0.37 * speed - uTime);
+    float sin2 = sin(HALF_PI + (coords.x + offset.x) * 0.37 * speed - uTime);
     float sin3 = sin((coords.x + offset.x) * 0.21 * speed - uTime);
 
 	float2 off = float2(0, sin1 * sin2 * sin3 * power);

@@ -1,3 +1,5 @@
+#include "Common.fxh"
+
 texture drawTexture;
 sampler2D drawSampler = sampler_state
 {
@@ -68,8 +70,8 @@ float4 MainPS(float2 st : TEXCOORD) : COLOR
     
     float rot = atan(middif.y / middif.x);
     rot = st.x > 0.5 ? -rot : rot;
-    st -= (-0.05 + sin(rot * 8.0 + time * 10.0) * 0.08) * middif * max(0.0, dist - 0.1) * sin(st.y * 3.14);
-    st -= (-0.05 + sin(rot * 12.0 + time * 8.0) * 0.04) * middif * max(0.0, dist - 0.1) * sin(st.y * 3.14);
+    st -= (-0.05 + sin(rot * 8.0 + time * 10.0) * 0.08) * middif * max(0.0, dist - 0.1) * sin(st.y * PI);
+    st -= (-0.05 + sin(rot * 12.0 + time * 8.0) * 0.04) * middif * max(0.0, dist - 0.1) * sin(st.y * PI);
     
     float2 oldst = st;
 
@@ -88,7 +90,7 @@ float4 MainPS(float2 st : TEXCOORD) : COLOR
     float3 shined = float3(0.0, 0.0, 0.0);
     float3 under = tex2D(pulseSampler, st).xyz;
     float saved = under.r * 1.5;
-    saved += sin(st.x * 3.14);
+    saved += sin(st.x * PI);
     shined += 0.5 + 0.5 * sin(st.y * 8.0 + saved - time * 3.0);
     shined += max(0.0, -20.0 + 20.8 * sin(st.y * 12.0 + saved - time * 9.0));
       

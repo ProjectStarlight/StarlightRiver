@@ -1,3 +1,4 @@
+#include "Common.fxh"
 
 Texture2D body;
 sampler2D tex0 = sampler_state { texture = <body>; };
@@ -11,29 +12,24 @@ float u_amplitude;
 float u_offset;
 float u_alpha;
 
-float GetLuminance(float3 color)
-{
-    return dot(color, float3(0.299, 0.587, 0.114));
-}
-
 float4 main(float2 st : TEXCOORD0) : COLOR0
 { 
     float2 sample1 = st;
-    sample1.y += sin((st.x + u_offset) * 6.28) * u_amplitude / u_resolution.y;
+    sample1.y += sin((st.x + u_offset) * TWO_PI) * u_amplitude / u_resolution.y;
     sample1.x = frac(st.x * u_resolution / 1400.0 - u_time);
 
     //sample1 -= fmod(sample1, 2.0 / u_resolution);
     //sample1 += 1.0 / u_resolution;
     
     float2 sample2 = st;
-    sample2.y += sin((st.x + u_offset) * 6.28) * (u_amplitude * 0.6) / u_resolution.y;
+    sample2.y += sin((st.x + u_offset) * TWO_PI) * (u_amplitude * 0.6) / u_resolution.y;
     sample2.x = frac(st.x * u_resolution / 1400.0 - u_time * 1.2);
 
     //sample2 -= fmod(sample2, 2.0 / u_resolution);
     //sample2 += 1.0 / u_resolution;
     
     float2 sample3 = st;
-    sample3.y += sin((st.x + u_offset) * 6.28) * (u_amplitude * 0.6) / u_resolution.y;
+    sample3.y += sin((st.x + u_offset) * TWO_PI) * (u_amplitude * 0.6) / u_resolution.y;
     sample3.x = frac(st.x * u_resolution / 1400.0 - u_time * 0.7);
 
     //sample3 -= fmod(sample3, 2.0 / u_resolution);

@@ -1,4 +1,5 @@
-﻿
+﻿#include "Common.fxh"
+
 float time;
 float stretch;
 
@@ -46,7 +47,7 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 	float offset = tex2D(noiseSampler, float2(stretchedcoords.x, ((time * 0.4f) + uv.y) % 1.0f));
 	float2 newcoords = float2 (stretchedcoords.x, lerp(uv.y, 0.5f + (sign(uv.y - 0.5f) * 0.25f), pow(offset / 2, dilation)));
 	float3 Color = tex2D(samplerTex, uv).rgb; 
-	float3 Color2 = tex2D(samplerTex, float2(0.5f, tex2D(noiseSampler, float2((time - abs(uv.y - 0.5f)) % 1.0f, newcoords.y)).r)).rgb * pow(sin(uv.y * 3.14f), falloff);
+	float3 Color2 = tex2D(samplerTex, float2(0.5f, tex2D(noiseSampler, float2((time - abs(uv.y - 0.5f)) % 1.0f, newcoords.y)).r)).rgb * pow(sin(uv.y * PI), falloff);
 
     float3 totalColor = Color + Color2;
     return float4(totalColor * input.Color, totalColor.x * input.Color.w);

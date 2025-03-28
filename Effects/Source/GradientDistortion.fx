@@ -1,3 +1,5 @@
+#include "Common.fxh"
+
 sampler uImage0 : register(s0);
 sampler uImage1 : register(s1);
 sampler uImage2 : register(s2);
@@ -34,7 +36,7 @@ float4 main(float2 uv : TEXCOORD0) : COLOR0
 
     float strength = max(tex2D(uImage1, uv).r - tex2D(uImage1, uv).b, 0.0);
     float progress = uTime / uProgress;
-    float sinTime = (strength + progress) * uIntensity * 6.28;
+    float sinTime = (strength + progress) * uIntensity * TWO_PI;
 	float2 off = float2(sin(sinTime), sin(sinTime * 1.25168)) * 0.1 * (strength / 255.0) * uOpacity;
     return tex2D(uImage0, coord + off);
 }

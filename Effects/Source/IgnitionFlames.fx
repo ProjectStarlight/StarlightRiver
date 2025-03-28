@@ -65,8 +65,8 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 
     float x = st.x + uTime * 0.6;
 
-    //color2.a *= sin(st.x * 3.14);
-    //color3.a *= sin(st.x * 3.14);
+    //color2.a *= sin(st.x * PI);
+    //color3.a *= sin(st.x * PI);
 
     float finala = 0;
 

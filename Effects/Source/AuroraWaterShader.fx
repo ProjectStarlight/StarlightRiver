@@ -1,4 +1,6 @@
-﻿float time;
+﻿#include "Common.fxh"
+
+float time;
 float2 screenSize;
 float2 offset;
 
@@ -19,7 +21,7 @@ float4 PixelShaderFunction(float4 screenSpace : TEXCOORD0) : COLOR0
     float progress = (st.x + st.y) * 10.0;
 
     float r = 40.0 * (1.0 + sin(time + progress * 0.2));
-    float g = 46.0 * (1.0 + sin(1.57 + time + progress));
+    float g = 46.0 * (1.0 + sin(HALF_PI + time + progress));
     float b = 72.0;
 
     float3 colorB = float3(r, g, b);

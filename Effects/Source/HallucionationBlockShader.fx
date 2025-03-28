@@ -1,3 +1,5 @@
+#include "Common.fxh"
+
 float2 u_resolution;
 float u_time;
 float u_alpha;
@@ -36,7 +38,7 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0) : COLOR0
 {
     float2 st = uv;
      
-    float noise = tex2D(noisemap, st).x * 6.28;
+    float noise = tex2D(noisemap, st).x * TWO_PI;
     noise = 0.8 + 0.6 * sin(u_time * 3.0 + noise);
     
     st += (st - float2(0.5, 0.5)) * 0.3 * noise * (0.5 - dist(st));

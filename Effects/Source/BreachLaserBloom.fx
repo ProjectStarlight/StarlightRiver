@@ -1,4 +1,6 @@
-﻿sampler uImage0 : register(s0); // The contents of the screen
+﻿#include "Common.fxh"
+
+sampler uImage0 : register(s0); // The contents of the screen
 sampler uImage1 : register(s1);
 sampler uImage2 : register(s2);
 sampler uImage3 : register(s3);
@@ -41,13 +43,13 @@ sampler2D noiseSampler = sampler_state { texture = <sampleTexture>; magfilter = 
 float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
 {
     float angle = atan2(coords.x - 0.5f, coords.y - 0.5f) + rotation;
-	float2 uv = float2(angle / 6.28f, 0.5f + length(coords - float2(0.5f,0.5f)));
+	float2 uv = float2(angle / TWO_PI, 0.5f + length(coords - float2(0.5f,0.5f)));
     float2 stretchedcoords = float2(uv.x * stretch, uv.y);
 
 	float offset = tex2D(noiseSampler, float2(stretchedcoords.x, ((time * 0.4f) + uv.y) % 1.0f));
 	float2 newcoords = float2 (stretchedcoords.x, lerp(uv.y, 0.5f + (sign(uv.y - 0.5f) * 0.25f), pow(offset / 2, dilation)));
 	float3 Color = tex2D(samplerTex, uv).rgb; 
-	float3 Color2 = tex2D(samplerTex, float2(0.5f, tex2D(noiseSampler, float2((time - abs(uv.y - 0.5f)) % 1.0f, newcoords.y)).r)).rgb * pow(sin(uv.y * 3.14f), falloff);
+	float3 Color2 = tex2D(samplerTex, float2(0.5f, tex2D(noiseSampler, float2((time - abs(uv.y - 0.5f)) % 1.0f, newcoords.y)).r)).rgb * pow(sin(uv.y * PI), falloff);
 
     float3 totalColor = Color + Color2;
 

@@ -1,4 +1,6 @@
-﻿sampler uImage0 : register(s0);
+﻿#include "Common.fxh"
+
+sampler uImage0 : register(s0);
 sampler uImage1 : register(s1);
 sampler uImage2 : register(s2);
 float3 uColor;
@@ -20,7 +22,7 @@ float2 offset;
 
 float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
 {
-	float2 off = float2(0, sin(uTime + (coords.x + offset.x) * speed) * sin(1.57 + (coords.x + offset.x) * 0.37 * speed - uTime) * sin((coords.x + offset.x) * 0.21 * speed - uTime) * power);
+	float2 off = float2(0, sin(uTime + (coords.x + offset.x) * speed) * sin(HALF_PI + (coords.x + offset.x) * 0.37 * speed - uTime) * sin((coords.x + offset.x) * 0.21 * speed - uTime) * power);
     float4 color = tex2D(uImage0, coords + off);
     return color;
 }

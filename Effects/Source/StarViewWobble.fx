@@ -14,7 +14,7 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0) : COLOR0
 {
     float2 st = uv;
     float theta = atan2(st.y - 0.5, st.x - 0.5);
-	// float alpha = (sinsquared(theta * 2. + uTime * 1.2 + 2.0) + sinsquared(theta * 1.5 - uTime  + 2.0) + sin(1.57 - (theta - bobbleAngle)) * bobbleMag) / 10.0;
+	// float alpha = (sinsquared(theta * 2. + uTime * 1.2 + 2.0) + sinsquared(theta * 1.5 - uTime  + 2.0) + sin(HALF_PI - (theta - bobbleAngle)) * bobbleMag) / 10.0;
 	float alpha = (sinsquared(theta * 2. + uTime * 1.2 + 2.0) + sinsquared(theta * 1.5 - uTime  + 2.0)) / 10.0;
 
     float2 center = {0.5, 0.5};

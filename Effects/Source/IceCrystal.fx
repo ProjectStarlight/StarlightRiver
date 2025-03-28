@@ -1,4 +1,6 @@
-﻿float2 resolution;
+﻿#include "Common.fxh"
+
+float2 resolution;
 float2 center;
 float4x4 zoom;
 
@@ -29,8 +31,8 @@ struct VertexShaderOutput
 
 float offset(float a, float n)
 {
-	float d = abs(a - n) % 6.28;
-	return d > 3.14 ? 6.28 - d : d;
+	float d = abs(a - n) % TWO_PI;
+	return d > PI ? TWO_PI - d : d;
 }
 
 VertexShaderOutput MainVS(in VertexShaderInput input)
@@ -59,9 +61,9 @@ float4 main(VertexShaderOutput input) : COLOR
 	
 	color.xyz += map * (
 	abs(offset(angle, 0.75)),
-	abs(offset(angle, -1.57)), 
+	abs(offset(angle, -HALF_PI)), 
 	abs(offset(angle, 2.32)) 
-	/ 3.14);
+	/ PI);
 
     return float4(color);
 }

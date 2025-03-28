@@ -1,3 +1,5 @@
+#include "Common.fxh"
+
 sampler uImage0 : register(s0);
 
 texture uImage1;
@@ -37,9 +39,9 @@ float4 distort(float2 uv : TEXCOORD) : COLOR
 
 	for (int i = 0; i < 10; i++)
 	{
-		float intensity1 = tex2D(uImage1Sampler, screenPos + (uv_n + float2(time / 6.28f, time / 6.28f) / repeats)).r;
-		float intensity2 = tex2D(uImage1Sampler, screenPos + (uv_n + float2(-time / 6.28f, time / 6.28f) / repeats)).r;
-		float angle = (sqrt(intensity1 * intensity2) * 6.28f) * tex2D(uImage2Sampler, uv * 0.1f);
+		float intensity1 = tex2D(uImage1Sampler, screenPos + (uv_n + float2(time / TWO_PI, time / TWO_PI) / repeats)).r;
+		float intensity2 = tex2D(uImage1Sampler, screenPos + (uv_n + float2(-time / TWO_PI, time / TWO_PI) / repeats)).r;
+		float angle = (sqrt(intensity1 * intensity2) * TWO_PI) * tex2D(uImage2Sampler, uv * 0.1f);
 		uv_n += rotation(offset, angle);
         uv_N += rotation(offset, angle);
 	}
