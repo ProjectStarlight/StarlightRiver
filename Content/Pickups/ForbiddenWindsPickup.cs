@@ -149,6 +149,9 @@ namespace StarlightRiver.Content.Pickups
 
 			if (timer == 569) //popup + codex entry
 			{
+				if (StarlightRiver.Instance.AbilityKeys.Get<Dash>().GetAssignedKeys().Count <= 0)
+					KeybindHelper.OpenKeybindsWithHelp();
+
 				TutorialManager.ActivateTutorial("DashAbility");
 
 				//Filters.Scene.Activate("Shockwave", Player.Center).GetShader().UseProgress(0f).UseIntensity(0);
