@@ -79,9 +79,11 @@ namespace StarlightRiver.Content.Items
 
 			//GUI.Stamina.gainAnimationTimer = 240;
 			player.GetHandler().unlockedAbilities.Clear();
+			player.GetHandler().InfusionLimit++;
+			player.GetHandler().InfusionLimit %= 4;
 			AlicanSafetySystem.DebugForceState(2);
 
-			KeybindHelper.OpenKeybindsWithHelp();
+			//KeybindHelper.OpenKeybindsWithHelp();
 
 			return true;
 		}

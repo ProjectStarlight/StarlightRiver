@@ -132,8 +132,10 @@ namespace StarlightRiver.Content.GUI
 
 			// We want this to draw under even if in the gain animation
 			Texture2D background = Assets.GUI.Infusions.Value;
-			var backgroundColor = Color.Lerp(Color.White, new Color(100, 220, 255), 0.5f + 0.5f * (float)Math.Sin(Main.GameUpdateCount * 0.05f));
-			backgroundColor *= 0.25f + 0.15f * (float)Math.Sin(Main.GameUpdateCount * 0.035f);
+			var backgroundColor = Color.Lerp(new Color(100, 255, 255), new Color(100, 180, 255), 0.5f + 0.5f * (float)Math.Sin(Main.GameUpdateCount * 0.05f));
+			backgroundColor *= 0.25f + 0.15f * (float)Math.Sin(Main.GameUpdateCount * 0.05f);
+			backgroundColor.A = 0;
+
 			spriteBatch.Draw(background, new Vector2(infusionElement.Left.Pixels + 2, infusionElement.Top.Pixels), null, backgroundColor);
 
 			if (InGainAnimation)
@@ -159,7 +161,7 @@ namespace StarlightRiver.Content.GUI
 			if (mp.InfusionLimit > 0)
 			{
 				Texture2D texture = Assets.GUI.InfusionFrame.Value;
-				var source = new Rectangle(60 * (mp.InfusionLimit - 1), 0, 60, 56);
+				var source = new Rectangle(62 * (mp.InfusionLimit - 1), 0, 60, 56);
 				spriteBatch.Draw(texture, new Vector2(infusionElement.Left.Pixels + 2, infusionElement.Top.Pixels), source, Color.White);
 
 				Texture2D textureGlow = Assets.GUI.InfusionFrameFlash.Value;

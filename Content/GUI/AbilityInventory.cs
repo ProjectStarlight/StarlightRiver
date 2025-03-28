@@ -87,16 +87,31 @@ namespace StarlightRiver.Content.GUI
 				Main.LocalPlayer.mouseInterface = true;
 
 			bool unlocked = Main.LocalPlayer.GetHandler().Unlocked(ability.GetType());
-
 			Vector2 pos = GetDimensions().Center() - Vector2.One;
-			Texture2D tex = !unlocked ? Assets.GUI.blank.Value : ability.Texture.Value;
 
-			spriteBatch.Draw(tex, pos, tex.Frame(), Color.White, 0, tex.Size() / 2, 1, 0, 0);
-
-			if (IsMouseHovering && unlocked)
+			if (!unlocked)
 			{
-				Tooltip.SetName($"{ability.Name}    {ability.ActivationCostDefault} SP");
-				Tooltip.SetTooltip(ability.Tooltip);
+				Texture2D glow = Assets.Masks.GlowAlpha.Value;
+				Texture2D glow2 = Assets.StarTexture.Value;
+
+				var backgroundColor = Color.Lerp(new Color(100, 180, 255), new Color(130, 220, 255), 0.5f + 0.5f * (float)Math.Sin(Main.GameUpdateCount * 0.05f));
+				backgroundColor *= 0.25f + 0.05f * (float)Math.Sin(Main.GameUpdateCount * 0.05f);
+				backgroundColor.A = 0;
+
+				spriteBatch.Draw(glow, pos, null, backgroundColor, 0, glow.Size() / 2, 0.3f, 0, 0);
+				spriteBatch.Draw(glow2, pos, null, backgroundColor, 0, glow2.Size() / 2, 0.1f, 0, 0);
+			}
+			else
+			{			
+				Texture2D tex = ability.Texture.Value;
+
+				spriteBatch.Draw(tex, pos, tex.Frame(), Color.White, 0, tex.Size() / 2, 1, 0, 0);
+
+				if (IsMouseHovering)
+				{
+					Tooltip.SetName($"{ability.Name}");
+					Tooltip.SetTooltip($"[i:StarlightRiver/StarlightHover][c/AAF0FF:{ability.ActivationCostDefault}] Starlight\n\n" + ability.Tooltip);
+				}
 			}
 		}
 	}

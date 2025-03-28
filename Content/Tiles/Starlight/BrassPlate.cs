@@ -16,7 +16,6 @@ namespace StarlightRiver.Content.Tiles.Starlight
 		public override void SetStaticDefaults()
 		{
 			QuickBlock.QuickSet(this, int.MaxValue, DustID.Gold, SoundID.Tink, new Color(255, 210, 150), ModContent.ItemType<BrassPlateItem>());
-			Main.tileBlockLight[Type] = false;
 			MinPick = 100;
 		}
 
@@ -36,6 +35,6 @@ namespace StarlightRiver.Content.Tiles.Starlight
 	{
 		public override string Texture => AssetDirectory.StarlightTile + Name;
 
-		public BrassPlateItem() : base("Chart Grate", "Composite", "BrassPlate", ItemRarityID.White) { }
+		public BrassPlateItem() : base("Brass Plate", "Composite", "BrassPlate", ItemRarityID.White) { }
 	}
 }
