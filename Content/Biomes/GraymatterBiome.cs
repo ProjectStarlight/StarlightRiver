@@ -75,7 +75,6 @@ namespace StarlightRiver.Content.Biomes
 			{
 				GenTileMap();
 				lastScreenPos = Main.screenPosition;
-				Main.NewText("Regenerated map!");
 			}
 		}
 
