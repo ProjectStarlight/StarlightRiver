@@ -103,6 +103,7 @@ namespace StarlightRiver.Content.Biomes
 		private void GenTileMap()
 		{
 			grayTileMap.Clear();
+			overTileMap.Clear();
 
 			var pos = (Main.screenPosition / 16).ToPoint16();
 
