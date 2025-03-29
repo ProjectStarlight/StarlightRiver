@@ -214,6 +214,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					for (int k = 0; k < 20; k++)
 					{
 						Texture2D trail = Assets.Bosses.TheThinkerBoss.NeurysmTrail.Value;
+						Texture2D trail2 = Assets.Masks.GlowAlpha.Value;
 
 						Vector2 pos = NPC.oldPos[k] + NPC.Size / 2f;
 						Color col = Color.Lerp(trailOne, trailTwo, k / 20f) * opacity * (1f - k / 20f) * 0.25f;
@@ -221,6 +222,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 						col.A = 0;
 
 						spriteBatch.Draw(trail, pos - Main.screenPosition, null, col, NPC.rotation, trail.Size() / 2f, 1 - k / 20f, 0, 0);
+						spriteBatch.Draw(trail2, pos - Main.screenPosition, null, col * 0.5f, NPC.rotation, trail2.Size() / 2f, 1 - k / 20f, 0, 0);
 					}
 
 					Effect effect = ShaderLoader.GetShader("Neurysm").Value;
