@@ -375,11 +375,12 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Gathering Winds");
-			Tooltip.SetDefault("Forbidden Winds Infusion\nHold the dash key to hover and charge up a dash\nCharged dashes shatter enemy defense on contact\nDrain 2 starlight/s while charging\nMust spend atleast 1 starlight to activate");
+			Tooltip.SetDefault("[i:StarlightRiver/WindsHover][c/99FFCC:Forbidden Winds] Infusion\nDrains[i:StarlightRiver/StarlightHover][c/AAF0FF:2] {{Starlight}} per second while charging\nHold the dash key to hover and charge up a dash\nCharged dashes shatter enemy defense on contact\nYou must spend atleast 1 {{starlight}} to activate");
 		}
 
 		public override void SetDefaults()
 		{
+			SetStaticDefaults();
 			Item.width = 20;
 			Item.height = 14;
 			Item.rare = ItemRarityID.Green;
