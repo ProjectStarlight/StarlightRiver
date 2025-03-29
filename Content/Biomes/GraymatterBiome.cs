@@ -1,6 +1,7 @@
 ﻿using ReLogic.Utilities;
 using StarlightRiver.Content.Bosses.TheThinkerBoss;
 using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Tiles.Crimson;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems;
@@ -23,6 +24,11 @@ namespace StarlightRiver.Content.Biomes
 
 		public Vector2 lastGrayPos;
 
+		public List<Point16> grayTileMap = new();
+		public List<Point16> overTileMap = new();
+
+		public Vector2 lastScreenPos;
+
 		public static ScreenTarget hallucinationMap;
 		public static ScreenTarget overHallucinationMap;
 
@@ -36,12 +42,6 @@ namespace StarlightRiver.Content.Biomes
 		/// </summary>
 		public static Action<SpriteBatch> onDrawOverHallucinationMap;
 
-		/// <summary>
-		/// Can be subscribed to for drawing hallucinatory tiles, seperated to be able to be called from one iteration
-		/// for optimization.
-		/// </summary>
-		public static Action<SpriteBatch, int, int> onDrawOverPerTile;
-
 		public static int fullscreenTimer = 0;
 
 		/// <summary>
@@ -49,21 +49,39 @@ namespace StarlightRiver.Content.Biomes
 		/// </summary>
 		public static HashSet<int> grayEmissionTypes = new();
 
+		/// <summary>
+		/// List of tiles with graymatter overlays. these MUST implement ICustomGraymatterDrawOver!!!
+		/// </summary>
+		public static HashSet<int> grayOverTypes = new();
+
 		public override SceneEffectPriority Priority => SceneEffectPriority.None;
 
 		public override int Music => -1;
 
 		public override void Load()
 		{
+			On_Main.DrawTiles += GenMap;
 			hallucinationMap = new(DrawHallucinationMap, () => IsBiomeActive(Main.LocalPlayer), 1);
 			overHallucinationMap = new(DrawOverHallucinationMap, () => IsBiomeActive(Main.LocalPlayer), 1.1f);
 
 			ScreenspaceShaderSystem.AddScreenspacePass(new(0, DrawAuras, () => IsBiomeActive(Main.LocalPlayer)));
 		}
 
+		private void GenMap(On_Main.orig_DrawTiles orig, Main self, bool solidLayer, bool forRenderTargets, bool intoRenderTargets, int waterStyleOverride)
+		{
+			orig(self, solidLayer, forRenderTargets, intoRenderTargets, waterStyleOverride);
+
+			if (ModContent.GetInstance<GraymatterBiomeSystem>().anyTiles && Vector2.DistanceSquared(lastScreenPos, Main.screenPosition) > 256)
+			{
+				GenTileMap();
+				lastScreenPos = Main.screenPosition;
+				Main.NewText("Regenerated map!");
+			}
+		}
+
 		public override bool IsBiomeActive(Player player)
 		{
-			return forceGrayMatter || forceTimer > 0 || fullscreenTimer > 0 || ModContent.GetInstance<GraymatterBiomeSystem>().anyTiles;
+			return forceTimer > 0 || fullscreenTimer > 0 || ModContent.GetInstance<GraymatterBiomeSystem>().anyTiles;
 		}
 
 		public override void OnInBiome(Player player)
@@ -79,6 +97,30 @@ namespace StarlightRiver.Content.Biomes
 				else if (fullscreenTimer > 0)
 				{
 					fullscreenTimer--;
+				}
+			}
+		}
+
+		private void GenTileMap()
+		{
+			grayTileMap.Clear();
+
+			var pos = (Main.screenPosition / 16).ToPoint16();
+
+			int width = Main.screenWidth / 16 + 1;
+			int height = Main.screenHeight / 16 + 1;
+
+			for (int x = pos.X; x < pos.X + width; x++)
+			{
+				for (int y = pos.Y; y < pos.Y + height; y++)
+				{
+					Tile tile = Main.tile[x, y];
+
+					if (grayEmissionTypes.Contains(tile.TileType))
+						grayTileMap.Add(new(x, y));
+
+					if (grayOverTypes.Contains(tile.TileType))
+						overTileMap.Add(new(x, y));
 				}
 			}
 		}
@@ -101,21 +143,12 @@ namespace StarlightRiver.Content.Biomes
 			Color color = new(0.7f, 0.7f, 0.7f, 0f);
 			Vector2 origin = glow.Size() / 2f;
 
-			for (int x = pos.X; x < pos.X + width; x++)
+			foreach (var point in grayTileMap)
 			{
-				for (int y = pos.Y; y < pos.Y + height; y++)
-				{
-					Tile tile = Main.tile[x, y];
-
-					if (grayEmissionTypes.Contains(tile.TileType))
-					{
-						Vector2 drawPos = new Vector2(x, y) * 16 + Vector2.One * 8 - Main.screenPosition;
-
-						// Draw to map
-						spriteBatch.Draw(glow, drawPos, null, color, 0, origin, 1.1f + 0.4f * MathF.Sin(Main.GameUpdateCount * 0.05f + (x ^ y)), 0, 0);
-					}
-				}
+				Vector2 drawPos = point.ToVector2() * 16 + Vector2.One * 8 - Main.screenPosition;
+				spriteBatch.Draw(glow, drawPos, null, color, 0, origin, 1.1f + 0.4f * MathF.Sin(Main.GameUpdateCount * 0.05f + (point.X ^ point.Y)), 0, 0);
 			}
+			return;
 		}
 
 		/// <summary>
@@ -128,11 +161,16 @@ namespace StarlightRiver.Content.Biomes
 		{
 			Tile tile = Main.tile[x, y];
 
-			if (grayEmissionTypes.Contains(tile.TileType))
-			{
-				Texture2D tex = Terraria.GameContent.TextureAssets.Tile[tile.TileType].Value;
-				spriteBatch.Draw(tex, new Vector2(x, y) * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), Color.White * 0.1f);
-			}
+			Texture2D tex = Terraria.GameContent.TextureAssets.Tile[tile.TileType].Value;
+			spriteBatch.Draw(tex, new Vector2(x, y) * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), Color.White * 0.2f);
+		}
+
+		private void DrawSpecialOverlay(SpriteBatch sprite, int x, int y)
+		{
+			Tile tile = Main.tile[x, y];
+
+			var mt = ModContent.GetModTile(tile.TileType) as ICustomGraymatterDrawOver;
+			mt?.DrawOverlay(sprite, x, y);			
 		}
 
 		public void DrawHallucinationMap(SpriteBatch spriteBatch)
@@ -159,19 +197,15 @@ namespace StarlightRiver.Content.Biomes
 
 			onDrawOverHallucinationMap?.Invoke(spriteBatch);
 
-			var pos = (Main.screenPosition / 16).ToPoint16();
-
-			int width = Main.screenWidth / 16 + 1;
-			int height = Main.screenHeight / 16 + 1;
-
-			for (int x = pos.X; x < pos.X + width; x++)
+			foreach (var point in overTileMap)
 			{
-				for (int y = pos.Y; y < pos.Y + height; y++)
-				{
-					onDrawOverPerTile.Invoke(spriteBatch, x, y);
-					DrawTileOverlay(spriteBatch, x, y);
-				}
+				DrawSpecialOverlay(spriteBatch, point.X, point.Y);
 			}
+
+			/*foreach (var point in grayTileMap)
+			{
+				DrawTileOverlay(spriteBatch, point.X, point.Y);
+			}*/
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default);
@@ -229,7 +263,25 @@ namespace StarlightRiver.Content.Biomes
 
 		public override void TileCountsAvailable(ReadOnlySpan<int> tileCounts)
 		{
-			anyTiles = tileCounts[ModContent.TileType<GrayMatter>()] > 0;
+			anyTiles = false;
+
+			foreach (var type in GraymatterBiome.grayEmissionTypes)
+			{
+				if (tileCounts[type] > 0)
+				{
+					anyTiles = true;
+					return;				
+				}
+			}
+
+			foreach (var type in GraymatterBiome.grayOverTypes)
+			{
+				if (tileCounts[type] > 0)
+				{
+					anyTiles = true;
+					return;
+				}
+			}
 		}
 
 		public override void SaveWorldData(TagCompound tag)
@@ -273,5 +325,10 @@ namespace StarlightRiver.Content.Biomes
 					NPC.NewNPC(null, (int)pos.X * 16, (int)pos.Y * 16, ModContent.NPCType<TheThinker>());
 			}
 		}
+	}
+
+	public interface ICustomGraymatterDrawOver
+	{
+		public void DrawOverlay(SpriteBatch spriteBatch, int x, int y);
 	}
 }
