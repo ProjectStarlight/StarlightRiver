@@ -190,8 +190,8 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				attachedChain.endPoint = thinker.Center + new Vector2(0, 40);
 				attachedChain.useEndPoint = true;
 				attachedChain.drag = 1.1f;
-				attachedChain.forceGravity = Vector2.UnitY * 0.1f;
-				attachedChain.constraintRepetitions = 5;
+				attachedChain.forceGravity = Vector2.UnitY * 0.15f;
+				attachedChain.constraintRepetitions = 15;
 				attachedChain.UpdateChain();
 			}
 
