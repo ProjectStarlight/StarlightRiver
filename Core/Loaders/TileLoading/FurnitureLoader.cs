@@ -537,8 +537,8 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 		{
 			Player Player = Main.LocalPlayer;
 			Player.noThrow = 2;
-			//Player.cursorItemIconEnabled = true;
-			//Player.cursorItemIconID = Mod.Find<ModItem>(name.Replace("Closed", "")).Type;
+			Player.cursorItemIconEnabled = true;
+			Player.cursorItemIconID = Mod.Find<ModItem>(name).Type;
 		}
 	}
 
@@ -605,8 +605,8 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 		{
 			Player Player = Main.LocalPlayer;
 			Player.noThrow = 2;
-			//Player.cursorItemIconEnabled = true;
-			//Player.cursorItemIconID = Mod.Find<ModItem>(name.Replace("Open", "")).Type;
+			Player.cursorItemIconEnabled = true;
+			Player.cursorItemIconID = Mod.Find<ModItem>(name.Replace("Open", "Closed")).Type;
 		}
 	}
 
