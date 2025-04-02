@@ -549,6 +549,8 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 
 		public override void SetStaticDefaults()
 		{
+			RegisterItemDrop(Mod.Find<ModItem>(name.Replace("Open", "Closed")).Type, 0);
+
 			Main.tileLavaDeath[Type] = true;
 			TileObjectData.newTile.CopyFrom(TileObjectData.Style2xX);
 			TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile, 1, 0);
