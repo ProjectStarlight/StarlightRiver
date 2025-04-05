@@ -108,6 +108,7 @@ namespace StarlightRiver
 		public override void PostSetupContent()
 		{
 			Compat.BossChecklist.BossChecklistCalls.CallBossChecklist();
+			Compat.Wikithis.WikithisWrapper.AddStarlightRiverWikiUrl();
 
 			NetEasy.NetEasy.Register(this);
 
