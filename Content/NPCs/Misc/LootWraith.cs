@@ -399,7 +399,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 				Main.spriteBatch.End();
 
 				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-				Matrix view = Main.GameViewMatrix.ZoomMatrix;
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
 				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 				effect.Parameters["transformMatrix"].SetValue(world * view * projection);

@@ -436,7 +436,7 @@ namespace StarlightRiver.Content.Items.Haunted
 			if (effect != null)
 			{
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 				effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.005f);
 				effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.005f);

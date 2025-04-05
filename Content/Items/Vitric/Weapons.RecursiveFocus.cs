@@ -601,7 +601,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				if (effect != null)
 				{
 					Main.spriteBatch.End();
-					Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+					Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 					effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.075f);
 					effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.0075f);
@@ -833,7 +833,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				spriteBatch.End();
 
 				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-				Matrix view = Main.GameViewMatrix.ZoomMatrix;
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
 				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 				effect.Parameters["time"].SetValue(lifetime * -0.02f);

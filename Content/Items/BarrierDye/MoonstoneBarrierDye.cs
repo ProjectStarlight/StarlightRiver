@@ -67,7 +67,7 @@ namespace StarlightRiver.Content.Items.BarrierDye
 				effect.Parameters["drawOriginal"].SetValue(false);
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
+				spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
 
 				Rectangle rect = CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI);
 
