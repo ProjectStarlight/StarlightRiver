@@ -64,7 +64,7 @@ namespace StarlightRiver.Content.Items.BarrierDye
 			BarrierPlayer barrier = player.GetModPlayer<BarrierPlayer>();
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.ZoomMatrix);
 
 			float opacity = barrier.rechargeAnimationTimer;
 

@@ -269,7 +269,10 @@ namespace StarlightRiver.Content.Items.Crimson
 
 			float alpha = Projectile.timeLeft < 30 ? Projectile.timeLeft / 30f * 0.5f : 0.5f;
 
-			Main.spriteBatch.Draw(PlayerTarget.Target, Projectile.Center - Main.screenPosition, source, Color.White * alpha, owner.fullRotation, source.Size() / 2f + new Vector2(-owner.width, owner.height) / 2f, 1, SpriteEffects.FlipHorizontally, 0);
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.ZoomMatrix);
+
+			Main.spriteBatch.Draw(PlayerTarget.Target, Main.ReverseGravitySupport(Projectile.Center - Main.screenPosition, -Projectile.height), source, Color.White * alpha, owner.fullRotation, source.Size() / 2f + new Vector2(-owner.width, owner.height) / 2f, 1, SpriteEffects.FlipHorizontally, 0);
 
 			Texture2D tex = Assets.Items.Crimson.MirageBow.Value;
 			var origin = new Vector2(0, tex.Height / 2);
@@ -288,10 +291,10 @@ namespace StarlightRiver.Content.Items.Crimson
 				Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
 
 				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * alpha, Projectile.rotation, origin, 1, direction, 0);
-
-				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 			}
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			return false;
 		}

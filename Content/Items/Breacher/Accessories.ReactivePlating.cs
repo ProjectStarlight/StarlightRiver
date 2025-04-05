@@ -128,7 +128,7 @@ namespace StarlightRiver.Content.Items.Breacher
 				effect.Parameters["alpha"].SetValue((float)Math.Pow(shieldTimer / 200f, 0.25f));
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.ZoomMatrix);
 
 				if (flickerTime > 0 && flickerTime < 16)
 				{
