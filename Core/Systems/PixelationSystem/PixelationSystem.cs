@@ -205,7 +205,7 @@ namespace StarlightRiver.Core.Systems.PixelationSystem
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
 			sb.End();
-			sb.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, null, Main.GameViewMatrix.EffectMatrix);
+			sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, null);
 
 			sb.Draw(pixelationTarget.RenderTarget, Vector2.Zero, null, Color.White, 0, new Vector2(0, 0), 0.5f, SpriteEffects.None, 0);
 
@@ -218,7 +218,7 @@ namespace StarlightRiver.Core.Systems.PixelationSystem
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
 			sb.End();
-			sb.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, null, Main.GameViewMatrix.EffectMatrix);
+			sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, null);
 
 			foreach (Tuple<Action, int> tuple in pixelationDrawActions.OrderBy(t => t.Item2))
 			{

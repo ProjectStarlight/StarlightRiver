@@ -240,13 +240,13 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 						effect.Parameters["u_strength"].SetValue(0.2f);
 
 						spriteBatch.End();
-						spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointWrap, default, default, effect);
+						spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointWrap, default, RasterizerState.CullNone, effect);
 
 						Texture2D tex = Assets.Misc.StarView.Value;
 						spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, Color.White, NPC.rotation, tex.Size() / 2f, NPC.scale * 0.25f, 0, 0);
 
 						spriteBatch.End();
-						spriteBatch.Begin(default, default, default, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+						spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default);
 					}
 
 					spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, glowColor * opacity, NPC.rotation, tex.Size() / 2f, 1, 0, 0);

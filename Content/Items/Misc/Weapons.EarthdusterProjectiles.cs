@@ -253,7 +253,7 @@ namespace StarlightRiver.Content.Items.Misc
 				if (effect != null)
 				{
 					Main.spriteBatch.End();
-					Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.EffectMatrix);
+					Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null);
 
 					effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.035f);
 					effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.0035f);
@@ -282,7 +282,7 @@ namespace StarlightRiver.Content.Items.Misc
 					Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, bloomTex.Size() / 2f, Projectile.scale * 0.25f, 0f, 0f);
 
 					Main.spriteBatch.End();
-					Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+					Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default);
 				}
 			});
 
@@ -335,7 +335,7 @@ namespace StarlightRiver.Content.Items.Misc
 				if (effect != null)
 				{
 					var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-					Matrix view = Main.GameViewMatrix.EffectMatrix;
+					Matrix view = Matrix.Identity;
 					var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 					effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.05f);

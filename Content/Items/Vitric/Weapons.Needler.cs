@@ -511,10 +511,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				if (effect != null)
 				{
 					Matrix world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-
-					// !!! IMPORTANT WHEN PIXELIZING, MAKE SURE TO USE Main.GameViewMatrix.EffectMatrix IMPORTANT !!!
-
-					Matrix view = Main.GameViewMatrix.EffectMatrix;
+					Matrix view = Matrix.Identity;
 					Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 					effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
@@ -649,7 +646,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				if (effect != null)
 				{
 					Matrix world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-					Matrix view = Main.GameViewMatrix.EffectMatrix;
+					Matrix view = Matrix.Identity;
 					Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 					effect.Parameters["transformMatrix"].SetValue(world * view * projection);

@@ -499,7 +499,7 @@ namespace StarlightRiver.Content.Items.Misc
 					return;
 
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.EffectMatrix);
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null);
 
 				Vector2 firePos = BarrelPosition;
 
@@ -559,7 +559,7 @@ namespace StarlightRiver.Content.Items.Misc
 				sb.Draw(bloomTex, firePos + new Vector2(-32f * fadeIn, 0f).RotatedBy(Projectile.rotation) - Main.screenPosition, null, Color.White * pressureFade, Projectile.rotation - MathHelper.PiOver2, bloomTex.Size() / 2f, new Vector2(0.3f, 1f * fadeIn), 0, 0);
 
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.EffectMatrix);
+				Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default);
 			});
 
 			Main.spriteBatch.End();
@@ -842,7 +842,7 @@ namespace StarlightRiver.Content.Items.Misc
 					return;
 
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.EffectMatrix);
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null);
 
 				Main.spriteBatch.Draw(bloomTex, dust.position - Main.screenPosition, null, new Color(255, 75, 0, 0) * 0.25f * lerper, dust.rotation, bloomTex.Size() / 2f, dust.scale * 1.25f, 0f, 0f);
 
@@ -888,7 +888,7 @@ namespace StarlightRiver.Content.Items.Misc
 				Main.spriteBatch.Draw(texFireGlow, dust.position - Main.screenPosition, null, Color.White with { A = 0 } * lerper, dust.rotation - MathHelper.PiOver2, texFireGlow.Size() / 2f, new Vector2(1f, 3f * lerper), 0, 0);
 
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.EffectMatrix);
+				Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default);
 			}, 1);
 
 			Main.spriteBatch.End();
