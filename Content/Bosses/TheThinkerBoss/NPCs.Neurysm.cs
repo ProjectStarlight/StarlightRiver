@@ -246,7 +246,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 						spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, Color.White, NPC.rotation, tex.Size() / 2f, NPC.scale * 0.25f, 0, 0);
 
 						spriteBatch.End();
-						spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+						spriteBatch.Begin(default, default, default, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 					}
 
 					spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, glowColor * opacity, NPC.rotation, tex.Size() / 2f, 1, 0, 0);

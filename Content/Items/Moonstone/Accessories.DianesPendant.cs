@@ -205,7 +205,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D tex = Assets.Items.Moonstone.DianeCrescant.Value;
 			Texture2D glowTex = Assets.Items.Moonstone.DianeCrescantGlow.Value;
@@ -220,7 +220,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			}
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			if (flashTimer < 1)
 			{
@@ -456,7 +456,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 				trail2?.Render(effect);
 
-				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 	}

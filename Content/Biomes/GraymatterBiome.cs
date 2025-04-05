@@ -10,8 +10,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows.Forms;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
+using Terraria.Graphics.Shaders;
 using Terraria.ModLoader.IO;
 using Terraria.WorldBuilding;
 
@@ -64,7 +66,7 @@ namespace StarlightRiver.Content.Biomes
 			hallucinationMap = new(DrawHallucinationMap, () => IsBiomeActive(Main.LocalPlayer), 1);
 			overHallucinationMap = new(DrawOverHallucinationMap, () => IsBiomeActive(Main.LocalPlayer), 1.1f);
 
-			ScreenspaceShaderSystem.AddScreenspacePass(new(0, DrawAuras, () => IsBiomeActive(Main.LocalPlayer)));
+			Filters.Scene["StarlightRiver_GrayMatter"] = new Filter(new ScreenShaderData(ShaderLoader.GetShader("GrayMatter"), "GrayMatterPass"), EffectPriority.VeryHigh);
 		}
 
 		private void GenMap(On_Main.orig_DrawTiles orig, Main self, bool solidLayer, bool forRenderTargets, bool intoRenderTargets, int waterStyleOverride)
@@ -97,7 +99,35 @@ namespace StarlightRiver.Content.Biomes
 				{
 					fullscreenTimer--;
 				}
+
+				var shader = Filters.Scene["StarlightRiver_GrayMatter"].GetShader().Shader;
+				if (shader != null)
+				{
+					Texture2D noise = Assets.Noise.SwirlyNoiseLooping.Value;
+
+					//shader.Parameters["background"].SetValue(screen);
+					shader.Parameters["map"].SetValue(hallucinationMap.RenderTarget);
+					shader.Parameters["noise"].SetValue(noise);
+					shader.Parameters["over"].SetValue(overHallucinationMap.RenderTarget);
+					shader.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
+					shader.Parameters["screensize"].SetValue(noise.Size() / new Vector2(Main.screenWidth, Main.screenHeight));
+					shader.Parameters["screenpos"].SetValue(-Main.screenPosition / Main.ScreenSize.ToVector2());
+
+					shader.Parameters["distortionpow"].SetValue(0.1f);
+					shader.Parameters["chromepow"].SetValue(1.25f);
+
+					if (!Filters.Scene["StarlightRiver_GrayMatter"].IsActive())
+					{
+						Filters.Scene.Activate("StarlightRiver_GrayMatter").GetShader();
+					}
+				}
 			}
+		}
+
+		public override void OnLeave(Player player)
+		{
+			if (Filters.Scene["StarlightRiver_GrayMatter"].IsActive())
+				Filters.Scene.Deactivate("StarlightRiver_GrayMatter");
 		}
 
 		private void GenTileMap()
@@ -176,7 +206,7 @@ namespace StarlightRiver.Content.Biomes
 		public void DrawHallucinationMap(SpriteBatch spriteBatch)
 		{
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			DrawTileMap(spriteBatch);
 			onDrawHallucinationMap?.Invoke(spriteBatch);
@@ -193,7 +223,7 @@ namespace StarlightRiver.Content.Biomes
 		public void DrawOverHallucinationMap(SpriteBatch spriteBatch)
 		{
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			onDrawOverHallucinationMap?.Invoke(spriteBatch);
 
@@ -209,36 +239,6 @@ namespace StarlightRiver.Content.Biomes
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default);
-		}
-
-		private void DrawAuras(SpriteBatch spriteBatch, Texture2D screen)
-		{
-			if (IsBiomeActive(Main.LocalPlayer))
-			{
-				Effect shader = ShaderLoader.GetShader("GrayMatter").Value;
-
-				if (shader != null)
-				{
-					Texture2D noise = Assets.Noise.SwirlyNoiseLooping.Value;
-
-					shader.Parameters["background"].SetValue(screen);
-					shader.Parameters["map"].SetValue(hallucinationMap.RenderTarget);
-					shader.Parameters["noise"].SetValue(noise);
-					shader.Parameters["over"].SetValue(overHallucinationMap.RenderTarget);
-					shader.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
-					shader.Parameters["screensize"].SetValue(noise.Size() / new Vector2(Main.screenWidth, Main.screenHeight));
-					shader.Parameters["screenpos"].SetValue(-Main.screenPosition / Main.ScreenSize.ToVector2());
-
-					shader.Parameters["distortionpow"].SetValue(0.1f);
-					shader.Parameters["chromepow"].SetValue(1.25f);
-
-					spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default, shader);
-
-					spriteBatch.Draw(screen, Vector2.Zero, Color.White);
-
-					spriteBatch.End();
-				}
-			}
 		}
 	}
 

@@ -216,7 +216,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 						bodyShader.Parameters["mask_t"].SetValue(Assets.MagicPixel.Value);
 
 						batch.End();
-						batch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointWrap, default, default, bodyShader, Main.GameViewMatrix.TransformationMatrix);
+						batch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointWrap, default, Main.Rasterizer, bodyShader, Main.GameViewMatrix.TransformationMatrix);
 
 						Texture2D tex = Assets.Bosses.TheThinkerBoss.MineBigFlower.Value;
 						batch.Draw(tex, proj.Center - Main.screenPosition, null, Color.White, proj.rotation + MathF.Sin(proj.timeLeft * 0.05f) * 0.15f, tex.Size() / 2f, scale + MathF.Sin(proj.timeLeft * 0.12f) * 0.05f, 0, 0);
@@ -233,7 +233,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 						batch.Draw(tex, proj.Center - Main.screenPosition, null, Color.White, proj.rotation + MathF.Sin(proj.timeLeft * -0.05f) * 0.15f, tex.Size() / 2f, scale + MathF.Sin(proj.timeLeft * -0.12f) * 0.05f, 0, 0);
 
 						batch.End();
-						batch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+						batch.Begin(default, default, default, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 						var color = new Color();
 						proj.ModProjectile?.PreDraw(ref color);

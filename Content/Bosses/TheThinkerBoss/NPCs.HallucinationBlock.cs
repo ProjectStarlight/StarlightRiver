@@ -65,13 +65,13 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					shader.Parameters["noisemap_t"].SetValue(Assets.Noise.ShaderNoise.Value);
 
 					sb.End();
-					sb.Begin(default, BlendState.AlphaBlend, SamplerState.PointWrap, default, default, shader, Main.GameViewMatrix.TransformationMatrix);
+					sb.Begin(default, BlendState.AlphaBlend, SamplerState.PointWrap, default, Main.Rasterizer, shader, Main.GameViewMatrix.TransformationMatrix);
 
 					Texture2D tex = Assets.Bosses.TheThinkerBoss.HallucinationBlock.Value;
 					sb.Draw(tex, block.NPC.Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2f, block.NPC.scale, 0, 0);
 
 					sb.End();
-					sb.Begin(default, default, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+					sb.Begin(default, default, SamplerState.PointWrap, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 				}
 			}
 

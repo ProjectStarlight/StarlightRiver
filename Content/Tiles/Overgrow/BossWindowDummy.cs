@@ -145,7 +145,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
 			//godbeams
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			// Update + draw dusts
 			particles.DrawParticles(spriteBatch);
@@ -168,7 +168,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			for (int k = -9; k < 8; k++)// small waterfalls
 			{

@@ -53,12 +53,12 @@ namespace StarlightRiver.Content.Items.BarrierDye
 				effect.Parameters["texSize"].SetValue(tex.Size());
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.NonPremultiplied, SamplerState.PointClamp, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, BlendState.NonPremultiplied, SamplerState.PointClamp, default, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
 
 				spriteBatch.Draw(tex, CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI), CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI), Color.White);
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 

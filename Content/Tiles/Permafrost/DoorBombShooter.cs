@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D barrier = Assets.MotionTrail.Value;
 			var sourceRect = new Rectangle(0, (int)(Main.GameUpdateCount * 0.2f), barrier.Width, barrier.Height);
@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			spriteBatch.Draw(barrier, targetRect, sourceRect2, Color.White * 1);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 

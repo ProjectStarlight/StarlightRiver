@@ -206,7 +206,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			if (!NPC.IsABestiaryIconDummy || drawColor == Color.White)
 			{
 				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 				for (int i = 0; i < 6; i++)
 				{
 					float angle = i / 6f * MathHelper.TwoPi;
@@ -226,7 +226,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				}
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 
 			return false;
@@ -366,7 +366,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			if (!NPC.IsABestiaryIconDummy || drawColor == Color.White)
 			{
 				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 				for (int i = 0; i < 6; i++)
 				{
 					float angle = i / 6f * MathHelper.TwoPi;
@@ -381,7 +381,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				}
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 
 			return false;

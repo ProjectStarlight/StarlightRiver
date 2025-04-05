@@ -118,12 +118,12 @@ namespace StarlightRiver.Content.NPCs.Actors
 			effect.Parameters["mapTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, default, default, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			spriteBatch.Draw(tex, target, Color.White * opacity);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, default, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		private float Swoop(float input)
@@ -176,12 +176,12 @@ namespace StarlightRiver.Content.NPCs.Actors
 			effect.Parameters["mapTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, default, default, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frame, Color.White * opacity, 0, new Vector2(28, 114), opacity, 0, 0);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, default, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			return false;
 		}

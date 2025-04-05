@@ -283,7 +283,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			});
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			return false;
 		}

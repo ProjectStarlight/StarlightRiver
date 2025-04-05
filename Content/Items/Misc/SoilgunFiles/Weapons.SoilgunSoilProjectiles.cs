@@ -263,7 +263,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 					Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, bloomTex.Size() / 2f, Projectile.scale * 0.45f, 0f, 0f);
 
 					Main.spriteBatch.End();
-					Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+					Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 				}
 			});
 

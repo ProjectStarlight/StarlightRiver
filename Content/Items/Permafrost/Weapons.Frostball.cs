@@ -149,12 +149,12 @@ namespace StarlightRiver.Content.Items.Permafrost
 			effect.Parameters["height"].SetValue(2);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * AuroraPercent, 0, tex.Size() / 2f, 1.6f * AuroraPercent, 0, 0);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			for (int k = 0; k < 3; k++)
 			{

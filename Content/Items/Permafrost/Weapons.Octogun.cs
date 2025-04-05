@@ -318,7 +318,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 				effect.Parameters["alpha"].SetValue(Projectile.timeLeft < 10 ? MathHelper.Lerp(1, 0, 1f - Projectile.timeLeft / 10f) : 1);
 
 				trail?.Render(effect);
-				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 
@@ -443,7 +443,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		public override void PostDraw(Color lightColor)
 		{
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 			Texture2D tex = Assets.Masks.GlowSoft.Value;
 			float sin = 1 + (float)Math.Sin(Projectile.timeLeft * 10);
 			float cos = 1 + (float)Math.Cos(Projectile.timeLeft * 10);
@@ -458,7 +458,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			}
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		private void KillEffects()
@@ -544,7 +544,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 				effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
 				trail?.Render(effect);
-				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 	}

@@ -175,7 +175,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 			if (reflectionConfig.DustReflectionsOn)
 			{
-				sb.Begin(SpriteSortMode.Deferred, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				sb.Begin(SpriteSortMode.Deferred, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 				try
 				{
 					//tml does this try catch for some reason, maybe gores are bugged in this version, v2022.3.35.3, possible TODO: remove the try catch if tml removes theirs
@@ -211,7 +211,7 @@ namespace StarlightRiver.Content.CustomHooks
 			if (ReflectionTarget.applyWallReflectionsThisFrame)
 			{
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
 				DrawReflection(Main.spriteBatch, screenPos: Vector2.Zero, normalMap: reflectionNormalMapTarget.RenderTarget, flatOffset: new Vector2(-0.0075f, 0.016f), offsetScale: 0.05f, tintColor: Color.White, restartSpriteBatch: false);
 				ReflectionTarget.applyWallReflectionsThisFrame = false;
@@ -312,7 +312,7 @@ namespace StarlightRiver.Content.CustomHooks
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Texture, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(SpriteSortMode.Texture, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 }

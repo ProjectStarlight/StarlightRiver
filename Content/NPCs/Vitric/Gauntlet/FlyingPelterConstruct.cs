@@ -218,7 +218,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			if (empowered)
 			{
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 				if (BowFrame == 0)
 					DrawPredictor(screenPos);
@@ -235,7 +235,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				}
 
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 				if (BowFrame == 0)
 					DrawLaserArrow(screenPos);
@@ -459,7 +459,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		public override void DrawHealingGlow(SpriteBatch spriteBatch)
 		{
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			float sin = 0.5f + (float)Math.Sin(Main.timeForVisualEffects * 0.04f) * 0.5f;
 			float distance = sin * 3 + 2;
@@ -473,7 +473,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		public override void SafeSendExtraAI(BinaryWriter writer)
@@ -541,7 +541,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
 
 				trail?.Render(effect);
-				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 				Texture2D flash = Request<Texture2D>(Texture + "_Flare").Value;
 				Color flashFade = Color.OrangeRed * fade * fade;

@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.Biomes
 			On_Main.DrawBlack += ForceDrawBlack;
 			IL_Main.DrawBlack += ChangeBlackThreshold;
 
-			Filters.Scene["GradientDistortion"] = new Filter(new ScreenShaderData(ShaderLoader.GetShader("GradientDistortion"), "GradientDistortion" + "Pass"), EffectPriority.High);
+			Filters.Scene["StarlightRiver_GradientDistortion"] = new Filter(new ScreenShaderData(ShaderLoader.GetShader("GradientDistortion"), "GradientDistortion" + "Pass"), EffectPriority.High);
 		}
 
 		public override void SetStaticDefaults()
@@ -115,10 +115,13 @@ namespace StarlightRiver.Content.Biomes
 
 			if (Main.Configuration.Get<bool>("UseHeatDistortion", false) && !NPC.AnyDanger())
 			{
-				if (!Filters.Scene["GradientDistortion"].IsActive())
-				{
-					Filters.Scene["GradientDistortion"].GetShader().Shader.Parameters["uZoom"].SetValue(Main.GameViewMatrix.Zoom);
-					Filters.Scene.Activate("GradientDistortion").GetShader()
+				var shader = Filters.Scene["StarlightRiver_GradientDistortion"].GetShader();
+
+				shader.Shader.Parameters["uTransform"].SetValue(Main.GameViewMatrix.TransformationMatrix);
+
+				if (!Filters.Scene["StarlightRiver_GradientDistortion"].IsActive())
+				{				
+					Filters.Scene.Activate("StarlightRiver_GradientDistortion").GetShader()
 						.UseOpacity(2.5f)
 						.UseIntensity(7f)
 						.UseProgress(6)
@@ -127,15 +130,15 @@ namespace StarlightRiver.Content.Biomes
 			}
 			else
 			{
-				if (Filters.Scene["GradientDistortion"].IsActive())
-					Filters.Scene.Deactivate("GradientDistortion");
+				if (Filters.Scene["StarlightRiver_GradientDistortion"].IsActive())
+					Filters.Scene.Deactivate("StarlightRiver_GradientDistortion");
 			}
 		}
 
 		public override void OnLeave(Player player)
 		{
-			if (Filters.Scene["GradientDistortion"].IsActive())
-				Filters.Scene.Deactivate("GradientDistortion");
+			if (Filters.Scene["StarlightRiver_GradientDistortion"].IsActive())
+				Filters.Scene.Deactivate("StarlightRiver_GradientDistortion");
 		}
 
 		/// <summary>
@@ -252,7 +255,7 @@ namespace StarlightRiver.Content.Biomes
 			float y = basepoint.Y + GetParallaxOffsetY(basepoint.Y, 0.2f) - Main.screenPosition.Y;
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			DrawLayer(basepoint, textures[5].Value, 6, Vector2.UnitY * 100, default, false);
 			DrawLayer(basepoint, textures[4].Value, 5, Vector2.UnitY * 40, default, false);
@@ -276,7 +279,7 @@ namespace StarlightRiver.Content.Biomes
 
 			// Restart and draw the tiling background
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 			DrawTilingBackground();
 		}
 

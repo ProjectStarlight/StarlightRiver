@@ -563,7 +563,7 @@ namespace StarlightRiver.Content.Items.Misc
 			});
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, default, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			if (Pressure > 0.5f)
 			{
@@ -892,7 +892,7 @@ namespace StarlightRiver.Content.Items.Misc
 			}, 1);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, default, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			return false;
 		}

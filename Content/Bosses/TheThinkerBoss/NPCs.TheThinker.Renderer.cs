@@ -107,13 +107,13 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 				LightingBuffer.bufferNeedsPopulated = true;
 
-				spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointWrap, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 				var fade = Assets.Masks.GlowLarge.Value;
 				spriteBatch.Draw(fade, home - Main.screenPosition, null, Color.Black * 0.3f * ArenaOpacity, 0, fade.Size() / 2f, 2000f / fade.Width, 0, 0);
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default, backgroundShader, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, SamplerState.PointWrap, default, Main.Rasterizer, backgroundShader, Main.GameViewMatrix.TransformationMatrix);
 
 				spriteBatch.Draw(tex, home - Main.screenPosition, null, Color.White, 0, tex.Size() / 2f, 1, 0, 0);
 
@@ -177,7 +177,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, default, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			ManageArenaTrail();
 			DrawArenaEdgeTrail();
@@ -342,7 +342,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				}
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, default, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 
@@ -446,7 +446,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				spriteBatch.Draw(coreTex, pos, null, Color.White, NPC.rotation, coreTex.Size() / 2f, NPC.scale, 0, 0);
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, default, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 
@@ -478,7 +478,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				var bigOrigin = new Vector2(0, bigPetal.Height / 2f);
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default, petalShader, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, SamplerState.PointWrap, default, Main.Rasterizer, petalShader, Main.GameViewMatrix.TransformationMatrix);
 
 				for (int k = 0; k < 5; k++)
 				{
@@ -490,7 +490,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				}
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, default, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 

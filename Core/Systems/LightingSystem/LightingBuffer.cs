@@ -131,6 +131,9 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 			upscaleEffect.Parameters["fullBufferSize"].SetValue(tileLightingTarget.RenderTarget.Size() * 16);
 			upscaleEffect.Parameters["offset"].SetValue(offset);
 			upscaleEffect.Parameters["sampleTexture"].SetValue(tileLightingTarget.RenderTarget);
+			upscaleEffect.Parameters["transform"].SetValue(Main.LocalPlayer.gravDir != 1f ? new(1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1) : Matrix.Identity);
+			var a = Main.GameViewMatrix.TransformationMatrix;
+			var b = 0;
 
 			foreach (EffectPass pass in upscaleEffect.CurrentTechnique.Passes)
 			{
@@ -177,7 +180,7 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 
 			Vector2 screenOrigin = destinationRectangle.TopLeft() + origin * scale;
 
-			var zoom =  //Main.GameViewMatrix.TransformationMatrix;
+			var zoom = //Main.GameViewMatrix.TransformationMatrix;
 			new Matrix
 			(
 				Main.GameViewMatrix.TransformationMatrix.M11, 0, 0, 0,
@@ -211,6 +214,7 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 				Main.instance.GraphicsDevice.SetVertexBuffer(buffer);
 
 				Main.instance.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+				Main.instance.GraphicsDevice.RasterizerState = Main.Rasterizer;
 
 				foreach (EffectPass pass in ApplyEffect.CurrentTechnique.Passes)
 				{
