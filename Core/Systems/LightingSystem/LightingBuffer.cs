@@ -132,8 +132,8 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 			upscaleEffect.Parameters["offset"].SetValue(offset);
 			upscaleEffect.Parameters["sampleTexture"].SetValue(tileLightingTarget.RenderTarget);
 			upscaleEffect.Parameters["transform"].SetValue(Main.LocalPlayer.gravDir != 1f ? new(1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1) : Matrix.Identity);
-			var a = Main.GameViewMatrix.TransformationMatrix;
-			var b = 0;
+			Matrix a = Main.GameViewMatrix.TransformationMatrix;
+			int b = 0;
 
 			foreach (EffectPass pass in upscaleEffect.CurrentTechnique.Passes)
 			{

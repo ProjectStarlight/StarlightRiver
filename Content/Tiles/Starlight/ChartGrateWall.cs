@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Tiles.Starlight
 			Tile tile = Main.tile[i, j];
 
 			var tex = Assets.Tiles.Starlight.ChartGrateWall.Value;
-			Lighting.GetCornerColors(i, j, out var vertices);
+			Lighting.GetCornerColors(i, j, out VertexColors vertices);
 
 			var frame = new Rectangle(tile.WallFrameX + i % 6 * 468, tile.WallFrameY + j % 6 * 180, 32, 32);
 

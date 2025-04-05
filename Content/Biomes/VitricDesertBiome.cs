@@ -115,12 +115,12 @@ namespace StarlightRiver.Content.Biomes
 
 			if (Main.Configuration.Get<bool>("UseHeatDistortion", false) && !NPC.AnyDanger())
 			{
-				var shader = Filters.Scene["StarlightRiver_GradientDistortion"].GetShader();
+				ScreenShaderData shader = Filters.Scene["StarlightRiver_GradientDistortion"].GetShader();
 
 				shader.Shader.Parameters["uTransform"].SetValue(Main.GameViewMatrix.TransformationMatrix);
 
 				if (!Filters.Scene["StarlightRiver_GradientDistortion"].IsActive())
-				{				
+				{
 					Filters.Scene.Activate("StarlightRiver_GradientDistortion").GetShader()
 						.UseOpacity(2.5f)
 						.UseIntensity(7f)

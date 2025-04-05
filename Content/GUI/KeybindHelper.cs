@@ -48,7 +48,7 @@ namespace StarlightRiver.Content.GUI
 			UIList list = Main.ManageControlsMenu._uilist;
 			UIScrollbar scrollbar = list._scrollbar;
 
-			posTarget = GotoRecursive(list, n => n is UIKeybindingListItem list && list._keybind.StartsWith("StarlightRiver"), scrollbar.ViewPosition, out var found);
+			posTarget = GotoRecursive(list, n => n is UIKeybindingListItem list && list._keybind.StartsWith("StarlightRiver"), scrollbar.ViewPosition, out UIElement found);
 			scrollbar.ViewPosition = posTarget;
 
 			Main.ManageControlsMenu.Append(helper);
@@ -58,7 +58,7 @@ namespace StarlightRiver.Content.GUI
 
 		public static float GotoRecursive(UIElement list, Func<UIElement, bool> searchMethod, float total, out UIElement found)
 		{
-			foreach(UIElement child in list.Children)
+			foreach (UIElement child in list.Children)
 			{
 				if (searchMethod(child))
 				{
@@ -67,7 +67,7 @@ namespace StarlightRiver.Content.GUI
 				}
 				else
 				{
-					var res = GotoRecursive(child, searchMethod, total + child.Top.Pixels, out found);
+					float res = GotoRecursive(child, searchMethod, total + child.Top.Pixels, out found);
 
 					if (res != 0)
 						return res;
@@ -95,14 +95,14 @@ namespace StarlightRiver.Content.GUI
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
-			var font = Terraria.GameContent.FontAssets.ItemStack.Value;
-			var message = ChatManager.ParseMessage("There are some [c/FFCC44:Keybinds] you'll want to set to use your starlight powers!\n\nYou can set them right here.", Color.White).ToArray();
-			var size = ChatManager.GetStringSize(font, message, Vector2.One, 140);
+			ReLogic.Graphics.DynamicSpriteFont font = Terraria.GameContent.FontAssets.ItemStack.Value;
+			TextSnippet[] message = ChatManager.ParseMessage("There are some [c/FFCC44:Keybinds] you'll want to set to use your starlight powers!\n\nYou can set them right here.", Color.White).ToArray();
+			Vector2 size = ChatManager.GetStringSize(font, message, Vector2.One, 140);
 
 			int heightMax = (int)size.Y + 20;
 			int height = (int)(heightMax * Eases.SwoopEase(Math.Min(1f, textTimer / 60f)));
 
-			var pos = boxPos.GetDimensions().Position() + new Vector2(-200, 0);
+			Vector2 pos = boxPos.GetDimensions().Position() + new Vector2(-200, 0);
 			var target = new Rectangle((int)pos.X, (int)pos.Y - height, 160, height);
 			UIHelper.DrawBox(spriteBatch, target, new Color(50, 80, 155) * 0.7f);
 			UIHelper.DrawCustomBox(spriteBatch, Assets.Tutorials.Border, target, Color.White, 12);
@@ -114,7 +114,7 @@ namespace StarlightRiver.Content.GUI
 				float arrowFade = Math.Min(1, (textTimer - 60) / 30f);
 
 				var arrow = Assets.GUI.WhiteArrow.Value;
-				var arrowPos = target.BottomLeft() + new Vector2(20 + MathF.Sin(textTimer * 0.1f) * 10, 10);
+				Vector2 arrowPos = target.BottomLeft() + new Vector2(20 + MathF.Sin(textTimer * 0.1f) * 10, 10);
 				spriteBatch.Draw(arrow, arrowPos, new Color(255, 190, 130) * 0.7f * arrowFade);
 			}
 		}

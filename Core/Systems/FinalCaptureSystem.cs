@@ -23,7 +23,7 @@ namespace StarlightRiver.Core.Systems
 		// there really isnt a great way to do this otherwise, it sucks!
 		private void GrabFinalBuffer(On_FilterManager.orig_EndCapture orig, FilterManager self, RenderTarget2D finalTexture, RenderTarget2D screenTarget1, RenderTarget2D screenTarget2, Color clearColor)
 		{
-			if ( FinalNeedsCaptured && finalTexture is null && finalBuffer.RenderTarget != null )
+			if (FinalNeedsCaptured && finalTexture is null && finalBuffer.RenderTarget != null)
 			{
 				orig(self, finalBuffer.RenderTarget, screenTarget1, screenTarget2, clearColor);
 				Main.graphics.GraphicsDevice.SetRenderTarget(null);

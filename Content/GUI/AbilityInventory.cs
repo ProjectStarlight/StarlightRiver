@@ -102,7 +102,7 @@ namespace StarlightRiver.Content.GUI
 				spriteBatch.Draw(glow2, pos, null, backgroundColor, 0, glow2.Size() / 2, 0.1f, 0, 0);
 			}
 			else
-			{			
+			{
 				Texture2D tex = ability.Texture.Value;
 
 				spriteBatch.Draw(tex, pos, tex.Frame(), Color.White, 0, tex.Size() / 2, 1, 0, 0);

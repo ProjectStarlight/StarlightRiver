@@ -137,7 +137,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			AlicanSafetySystem.IntendedAlicanPhase = 1;
 			State = 1;
 
-			if(StarlightRiver.Instance.AbilityKeys.Get<HintAbility>().GetAssignedKeys().Count <= 0)
+			if (StarlightRiver.Instance.AbilityKeys.Get<HintAbility>().GetAssignedKeys().Count <= 0)
 				KeybindHelper.OpenKeybindsWithHelp();
 
 			TutorialManager.ActivateTutorial("Starsight");

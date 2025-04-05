@@ -184,7 +184,6 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			if (opacity >= 0.05f)
 			{
 
-
 				float speed = Vector2.Distance(NPC.position, NPC.oldPos[1]);
 				float glowPower = Math.Max(speed / 10f, 0.4f);
 

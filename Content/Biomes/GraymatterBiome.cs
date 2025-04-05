@@ -100,7 +100,7 @@ namespace StarlightRiver.Content.Biomes
 					fullscreenTimer--;
 				}
 
-				var shader = Filters.Scene["StarlightRiver_GrayMatter"].GetShader().Shader;
+				Effect shader = Filters.Scene["StarlightRiver_GrayMatter"].GetShader().Shader;
 				if (shader != null)
 				{
 					Texture2D noise = Assets.Noise.SwirlyNoiseLooping.Value;
@@ -173,11 +173,12 @@ namespace StarlightRiver.Content.Biomes
 			Color color = new(0.7f, 0.7f, 0.7f, 0f);
 			Vector2 origin = glow.Size() / 2f;
 
-			foreach (var point in grayTileMap)
+			foreach (Point16 point in grayTileMap)
 			{
 				Vector2 drawPos = point.ToVector2() * 16 + Vector2.One * 8 - Main.screenPosition;
 				spriteBatch.Draw(glow, drawPos, null, color, 0, origin, 1.1f + 0.4f * MathF.Sin(Main.GameUpdateCount * 0.05f + (point.X ^ point.Y)), 0, 0);
 			}
+
 			return;
 		}
 
@@ -200,7 +201,7 @@ namespace StarlightRiver.Content.Biomes
 			Tile tile = Main.tile[x, y];
 
 			var mt = ModContent.GetModTile(tile.TileType) as ICustomGraymatterDrawOver;
-			mt?.DrawOverlay(sprite, x, y);			
+			mt?.DrawOverlay(sprite, x, y);
 		}
 
 		public void DrawHallucinationMap(SpriteBatch spriteBatch)
@@ -227,7 +228,7 @@ namespace StarlightRiver.Content.Biomes
 
 			onDrawOverHallucinationMap?.Invoke(spriteBatch);
 
-			foreach (var point in overTileMap)
+			foreach (Point16 point in overTileMap)
 			{
 				DrawSpecialOverlay(spriteBatch, point.X, point.Y);
 			}
@@ -265,16 +266,16 @@ namespace StarlightRiver.Content.Biomes
 		{
 			anyTiles = false;
 
-			foreach (var type in GraymatterBiome.grayEmissionTypes)
+			foreach (int type in GraymatterBiome.grayEmissionTypes)
 			{
 				if (tileCounts[type] > 0)
 				{
 					anyTiles = true;
-					return;				
+					return;
 				}
 			}
 
-			foreach (var type in GraymatterBiome.grayOverTypes)
+			foreach (int type in GraymatterBiome.grayOverTypes)
 			{
 				if (tileCounts[type] > 0)
 				{

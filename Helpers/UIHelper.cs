@@ -82,11 +82,11 @@ namespace StarlightRiver.Helpers
 
 		public static string GetVanillaInputString(string key)
 		{
-			var status = PlayerInput.CurrentProfile.InputModes[InputMode.Keyboard].KeyStatus;
+			System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> status = PlayerInput.CurrentProfile.InputModes[InputMode.Keyboard].KeyStatus;
 
-			if(status.ContainsKey(key))
+			if (status.ContainsKey(key))
 			{
-				var binds = status[key];
+				System.Collections.Generic.List<string> binds = status[key];
 				return binds.Count > 0 ? binds[0] : "{Unbound!}";
 			}
 
