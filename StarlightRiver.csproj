@@ -15,10 +15,17 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<None Remove="AssGenConfig.txt" />
+		<None Remove="effects\source\Neurysm.fx" />
 		<None Remove="OldPatchNotes\0.2.0\0.2.2.txt" />
 		<None Remove="OldPatchNotes\0.2.0\0.2.4.txt" />
 		<None Remove="OldPatchNotes\0.2.0\0.2.6.txt" />
 		<None Remove="OldPatchNotes\0.2.0\0.2.8.txt" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2" PrivateAssets="all" />
+	</ItemGroup>
+	<ItemGroup>
+		<Reference Update="$(tMLSteamPath)$(tMLPath)" Publicize="true" />
 	</ItemGroup>
 	<ItemGroup>
 		<Reference Include="NetEasy">

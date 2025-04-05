@@ -1,3 +1,5 @@
+#include "Common.fxh"
+
 texture mainbody_t;
 sampler2D u_tex0 = sampler_state { texture = <mainbody_t>; AddressU = wrap; AddressV = wrap; };
 
@@ -11,10 +13,9 @@ float2 u_screenSize;
 float2 u_resolution;
 float u_time;
 float3 u_color;
+float4x4 transform;
 
 float2 u_sampleTopLeft;
-
-#define PI 3.1415926538
 
 float dist(float2 pointz) {
     return distance(pointz, float2(0.5, 0.5)) / 0.707;
@@ -30,6 +31,7 @@ float4 PixelShaderFunction(float2 st : TEXCOORD0) : COLOR
     float4 color = tex2D(u_tex0, st) * float4(u_color, 1.0);
     
     float2 coord = u_sampleTopLeft / u_screenSize + (u_resolution / u_screenSize) * st;
+    coord = mul(float4(coord, 0, 0), transform).xy;
     color.rgb *= tex2D(u_tex2, coord).rgb;
     
     float2 pixel = st - fmod(st, 2.0 / u_resolution);

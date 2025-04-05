@@ -44,6 +44,9 @@ namespace StarlightRiver.Content.GUI
 
 		public override void SafeUpdate(GameTime gameTime)
 		{
+			if (Main.inFancyUI)
+				return;
+
 			if (fadeOpacity < 1 && tutorialPosition < currentTutorial.Screens.Count)
 			{
 				fadeOpacity += 1 / 60f;
@@ -74,7 +77,7 @@ namespace StarlightRiver.Content.GUI
 
 		public override void SafeClick(UIMouseEvent evt)
 		{
-			if (fadeOpacity >= 1)
+			if (fadeOpacity >= 1 && !Main.inFancyUI)
 				SetPage(tutorialPosition + 1);
 		}
 

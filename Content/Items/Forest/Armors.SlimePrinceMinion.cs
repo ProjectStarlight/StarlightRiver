@@ -276,7 +276,7 @@ namespace StarlightRiver.Content.Items.Forest
 			effect.Parameters["alpha"].SetValue(0.5f);
 
 			sb.End();
-			sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			// Drawing behavior for normal, non-fused
 			if (State < 2)
@@ -298,7 +298,7 @@ namespace StarlightRiver.Content.Items.Forest
 			}
 
 			sb.End();
-			sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			return false;
 		}

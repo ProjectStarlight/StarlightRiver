@@ -81,7 +81,7 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 
 		public override string Texture => texture;
 
-		protected override bool CloneNewInstances => true;
+		public override bool CloneNewInstances => true;
 
 		public GenericFurnitureItem() { }
 
@@ -537,8 +537,8 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 		{
 			Player Player = Main.LocalPlayer;
 			Player.noThrow = 2;
-			//Player.cursorItemIconEnabled = true;
-			//Player.cursorItemIconID = Mod.Find<ModItem>(name.Replace("Closed", "")).Type;
+			Player.cursorItemIconEnabled = true;
+			Player.cursorItemIconID = Mod.Find<ModItem>(name).Type;
 		}
 	}
 
@@ -549,6 +549,8 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 
 		public override void SetStaticDefaults()
 		{
+			RegisterItemDrop(Mod.Find<ModItem>(name.Replace("Open", "Closed")).Type, 0);
+
 			Main.tileLavaDeath[Type] = true;
 			TileObjectData.newTile.CopyFrom(TileObjectData.Style2xX);
 			TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile, 1, 0);
@@ -605,8 +607,8 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 		{
 			Player Player = Main.LocalPlayer;
 			Player.noThrow = 2;
-			//Player.cursorItemIconEnabled = true;
-			//Player.cursorItemIconID = Mod.Find<ModItem>(name.Replace("Open", "")).Type;
+			Player.cursorItemIconEnabled = true;
+			Player.cursorItemIconID = Mod.Find<ModItem>(name.Replace("Open", "Closed")).Type;
 		}
 	}
 

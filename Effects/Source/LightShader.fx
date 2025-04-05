@@ -1,6 +1,7 @@
 float2 screenSize;
 float2 fullBufferSize;
 float2 offset;
+float4x4 transform;
 
 texture sampleTexture;
 sampler2D samplerTex = sampler_state { texture = <sampleTexture>; magfilter = LINEAR; minfilter = LINEAR; mipfilter = LINEAR; AddressU = mirror; AddressV = mirror; };
@@ -21,7 +22,7 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 {
 	VertexShaderOutput output = (VertexShaderOutput)0;
 	output.coord = input.coord + offset;
-	output.Position = input.Position;
+    output.Position = mul(input.Position, transform);
 	return output;
 }
 

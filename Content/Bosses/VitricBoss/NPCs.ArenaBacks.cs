@@ -261,7 +261,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(tex2, target.TopLeft() + new Vector2(-134, -120), Color.White);
 
 			sb.End();
-			sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D reflectionMap = Assets.Bosses.VitricBoss.VitricBackdropLeftReflectionMap.Value;
 			Texture2D reflectionMapSide = Assets.Bosses.VitricBoss.VitricBackdropLeftSideReflectionMap.Value;
@@ -270,7 +270,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			DrawReflections(sb, reflectionMapSide, target2.TopLeft());
 
 			sb.End();
-			sb.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(default, default, SamplerState.PointClamp, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		/// <summary>
@@ -301,7 +301,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(tex, target2, source2, Color.White);
 
 			sb.End();
-			sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D reflectionMap = Assets.Bosses.VitricBoss.VitricBackdropLeftReflectionMap.Value;
 
@@ -309,7 +309,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			DrawReflections(sb, reflectionMap, target2.TopLeft(), source2);
 
 			sb.End();
-			sb.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(default, default, SamplerState.PointClamp, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		public virtual void SpawnPlatforms(bool rising = true)
@@ -403,7 +403,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			}
 
 			sb.End();
-			sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D reflectionMap = Assets.Bosses.VitricBoss.VitricBackdropRightReflectionMap.Value;
 			Texture2D reflectionMapSide = Assets.Bosses.VitricBoss.VitricBackdropRightSideReflectionMap.Value;
@@ -412,7 +412,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			DrawReflections(sb, reflectionMapSide, target2.TopLeft());
 
 			sb.End();
-			sb.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(default, default, SamplerState.PointClamp, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		public override void ScrollDraw(SpriteBatch sb)
@@ -432,7 +432,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(tex, target2, source2, Color.White);
 
 			sb.End();
-			sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D reflectionMap = Assets.Bosses.VitricBoss.VitricBackdropRightReflectionMap.Value;
 
@@ -440,7 +440,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			DrawReflections(sb, reflectionMap, target2.TopLeft(), source2);
 
 			sb.End();
-			sb.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(default, default, SamplerState.PointClamp, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			if (Holidays.AnySpecialEvent)//1 in 32 or any special date event
 			{

@@ -519,13 +519,13 @@ namespace StarlightRiver.Content.Items.Vitric
 				effect.Parameters["uOpacity"].SetValue(prog);
 
 				sb.End();
-				sb.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+				sb.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
 
 				Rectangle target = toRect(pos, (int)(10 * (w + prog)), (int)(30 * (h + prog)));
 				sb.Draw(texRing, target, null, color * prog, Projectile.rotation - 1.57f / 2, texRing.Size() / 2, 0, 0);
 
 				sb.End();
-				sb.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				sb.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 
@@ -540,7 +540,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				return;
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			int sin = (int)(Math.Sin(StarlightWorld.visualTimer * 3) * 40f); //Just a copy/paste of the boss laser. Need to tune this later
 			var color = new Color(255, 160 + sin, 40 + sin / 2);
@@ -557,7 +557,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			effect.Parameters["uColor"].SetValue(color.ToVector3());
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			float height = texBeam.Height / 4f;
 			int width = (int)(Projectile.Center - endPoint).Length() - 76;
@@ -582,7 +582,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			float opacity = height / (texBeam.Height / 2f) * 0.75f;
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			if (Owner == Main.LocalPlayer)
 			{
@@ -591,7 +591,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D impactTex = Assets.Masks.GlowSoft.Value;
 			Texture2D impactTex2 = Assets.GUI.ItemGlow.Value;
@@ -606,7 +606,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			spriteBatch.Draw(impactTex2, pos, null, color * (height * 0.05f), StarlightWorld.visualTimer * -3, impactTex2.Size() / 2, 0.17f, 0, 0);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 

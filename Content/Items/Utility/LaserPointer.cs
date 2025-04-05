@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.Items.Utility
 		private readonly int extraMaterial;
 		private readonly string InternalName;
 
-		protected override bool CloneNewInstances => true;
+		public override bool CloneNewInstances => true;
 
 		public override string Name => InternalName;
 

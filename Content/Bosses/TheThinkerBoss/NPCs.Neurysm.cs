@@ -1,4 +1,6 @@
-﻿using System;
+﻿using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems.PixelationSystem;
+using System;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
@@ -155,9 +157,9 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		public Color Rainbow(float offset)
 		{
 			return new Color(
-				1f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f + offset) * 0.5f,
-				1f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f + 1 + offset) * 0.5f,
-				1f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f + 2 + offset) * 0.5f);
+				0.75f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f + offset) * 0.25f,
+				0.75f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f + 2 + offset) * 0.25f,
+				0.75f + MathF.Sin(Main.GameUpdateCount / 60f * 3.14f + 4 + offset) * 0.25f);
 		}
 
 		public Color RedRainbow(float offset)
@@ -181,14 +183,6 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 			if (opacity >= 0.05f)
 			{
-				for (int k = 0; k < 20; k++)
-				{
-					Texture2D trail = Assets.Bosses.TheThinkerBoss.NeurysmTrail.Value;
-
-					Vector2 pos = NPC.oldPos[k] + NPC.Size / 2f;
-					Color col = Color.Lerp(trailOne, trailTwo, k / 20f) * opacity * (1f - k / 20f) * 0.25f;
-					spriteBatch.Draw(trail, pos - Main.screenPosition, null, col, NPC.rotation, tex.Size() / 2f, 1 - k / 20f, 0, 0);
-				}
 
 				float speed = Vector2.Distance(NPC.position, NPC.oldPos[1]);
 				float glowPower = Math.Max(speed / 10f, 0.4f);
@@ -200,8 +194,8 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 				if (State == 0)
 				{
-					spriteBatch.Draw(glow, NPC.Center - Main.screenPosition, null, col2, NPC.rotation, glow.Size() / 2f, 1f, 0, 0);
-					spriteBatch.Draw(glow2, NPC.Center - Main.screenPosition, null, col2 * 2.5f, NPC.rotation, glow2.Size() / 2f, 1.1f, 0, 0);
+					//spriteBatch.Draw(glow, NPC.Center - Main.screenPosition, null, col2, NPC.rotation, glow.Size() / 2f, 1f, 0, 0);
+					//spriteBatch.Draw(glow2, NPC.Center - Main.screenPosition, null, col2 * 2.5f, NPC.rotation, glow2.Size() / 2f, 1.1f, 0, 0);
 				}
 				else
 				{
@@ -213,6 +207,69 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 						spriteBatch.Draw(glow2, NPC.Center + offset - Main.screenPosition, null, col2 * 0.425f, NPC.rotation, glow2.Size() / 2f, 1.1f, 0, 0);
 					}
 				}
+
+				ModContent.GetInstance<PixelationSystem>().QueueRenderAction("OverPlayers", () =>
+				{
+					for (int k = 0; k < 20; k++)
+					{
+						Texture2D trail = Assets.Bosses.TheThinkerBoss.NeurysmTrail.Value;
+						Texture2D trail2 = Assets.Masks.GlowAlpha.Value;
+
+						Vector2 pos = NPC.oldPos[k] + NPC.Size / 2f;
+						Color col = Color.Lerp(trailOne, trailTwo, k / 20f) * opacity * (1f - k / 20f) * 0.25f;
+						col *= Math.Min(1, Vector2.Distance(NPC.position, NPC.oldPos[1]) / 1f);
+						col.A = 0;
+
+						spriteBatch.Draw(trail, pos - Main.screenPosition, null, col, NPC.rotation, trail.Size() / 2f, 1 - k / 20f, 0, 0);
+						spriteBatch.Draw(trail2, pos - Main.screenPosition, null, col * 0.5f, NPC.rotation, trail2.Size() / 2f, 1 - k / 20f, 0, 0);
+					}
+
+					Effect effect = ShaderLoader.GetShader("Neurysm").Value;
+
+					if (effect != null)
+					{
+						effect.Parameters["u_resolution"].SetValue(Assets.Misc.StarView.Size() * 0.5f);
+						effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f);
+
+						effect.Parameters["mainbody_t"].SetValue(Assets.Misc.StarView.Value);
+						effect.Parameters["noisemap_t"].SetValue(Assets.Misc.AuroraWaterMap.Value);
+
+						effect.Parameters["u_color"].SetValue(glowColor.ToVector3() * opacity * 2.0f);
+						effect.Parameters["u_fade"].SetValue(Vector3.Zero * opacity);
+						effect.Parameters["u_strength"].SetValue(0.2f);
+
+						spriteBatch.End();
+						spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointWrap, default, RasterizerState.CullNone, effect);
+
+						Texture2D tex = Assets.Misc.StarView.Value;
+						spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, Color.White, NPC.rotation, tex.Size() / 2f, NPC.scale * 0.25f, 0, 0);
+
+						spriteBatch.End();
+						spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default);
+					}
+
+					spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, glowColor * opacity, NPC.rotation, tex.Size() / 2f, 1, 0, 0);
+
+					if (State == 1)
+					{
+						for (int k = 0; k < 6; k++)
+						{
+							float rot = k / 6f * 6.28f + prog * 3.14f;
+							Vector2 offset = Vector2.UnitX.RotatedBy(rot) * prog * 32;
+							spriteBatch.Draw(tex, NPC.Center + offset - Main.screenPosition, null, glowColor * opacity * 0.2f, NPC.rotation, tex.Size() / 2f, 1, 0, 0);
+						}
+					}
+
+					if (State == 2)
+					{
+						for (int k = 0; k < 6; k++)
+						{
+							float rot = k / 6f * 6.28f + (1 - prog) * 3.14f;
+							Vector2 offset = Vector2.UnitX.RotatedBy(rot) * (1 - prog) * 32;
+							spriteBatch.Draw(tex, NPC.Center + offset - Main.screenPosition, null, glowColor * opacity * 0.2f, NPC.rotation, tex.Size() / 2f, 1, 0, 0);
+						}
+					}
+				});
 			}
 
 			if (TellTime > 0)
@@ -242,29 +299,6 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 						thisOpacity += 0.25f * MathF.Sin((TellTime - minTell) / 30f * 3.14f);
 
 					spriteBatch.Draw(trail, pos, null, new Color(255, 180, 80, 0) * opacity * thisOpacity, tellDirection + 3.14f, trail.Size() / 2f, thisOpacity * 2, 0, 0);
-				}
-			}
-
-			//if (State == 0)
-			spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, drawColor * opacity, NPC.rotation, tex.Size() / 2f, 1, 0, 0);
-
-			if (State == 1)
-			{
-				for (int k = 0; k < 6; k++)
-				{
-					float rot = k / 6f * 6.28f + prog * 3.14f;
-					Vector2 offset = Vector2.UnitX.RotatedBy(rot) * prog * 32;
-					spriteBatch.Draw(tex, NPC.Center + offset - Main.screenPosition, null, drawColor * opacity * 0.2f, NPC.rotation, tex.Size() / 2f, 1, 0, 0);
-				}
-			}
-
-			if (State == 2)
-			{
-				for (int k = 0; k < 6; k++)
-				{
-					float rot = k / 6f * 6.28f + (1 - prog) * 3.14f;
-					Vector2 offset = Vector2.UnitX.RotatedBy(rot) * (1 - prog) * 32;
-					spriteBatch.Draw(tex, NPC.Center + offset - Main.screenPosition, null, drawColor * opacity * 0.2f, NPC.rotation, tex.Size() / 2f, 1, 0, 0);
 				}
 			}
 

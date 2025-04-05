@@ -74,12 +74,12 @@ namespace StarlightRiver.Content.Items.Moonstone
 				effect1.Parameters["opacity"].SetValue(Projectile.Opacity);
 
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect1, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, Main.Rasterizer, effect1, Main.GameViewMatrix.TransformationMatrix);
 
 				Main.spriteBatch.Draw(TextureAssets.Projectile[Projectile.type].Value, Projectile.Center - Main.screenPosition, null, Color.White * Projectile.scale, Projectile.rotation, Vector2.One * 32, Projectile.scale, 0, 0);
 
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, default, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Begin(default, default, SamplerState.PointWrap, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 
 			var glowColor = new Color(78, 87, 191, 0);

@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.Backgrounds
 
 			stars = new("StarlightRiver/Assets/Misc/StarParticle", UpdateStars, ParticleSystem.AnchorOptions.Screen);
 
-			ScreenspaceShaderSystem.AddScreenspacePass(new(1, DrawOverlay, CheckIsActive));
+			On_Main.DrawInterface += DrawOverlay;
 			On_Main.UpdateMenu += UpdateOnMenu;
 		}
 
@@ -83,12 +83,9 @@ namespace StarlightRiver.Content.Backgrounds
 		/// <param name="starsMap"></param>
 		/// <param name="starsTarget"></param>
 		public static event DrawOverlayDelegate DrawOverlayEvent;
-		public void DrawOverlay(SpriteBatch spriteBatch, Texture2D screen)
-		{
-			spriteBatch.Begin();
-			spriteBatch.Draw(screen, Vector2.Zero, Color.White);
-			spriteBatch.End();
 
+		private void DrawOverlay(On_Main.orig_DrawInterface orig, Main self, GameTime gameTime)
+		{
 			if (DrawOverlayEvent != null)
 			{
 				foreach (DrawOverlayDelegate del in DrawOverlayEvent.GetInvocationList())
@@ -96,6 +93,8 @@ namespace StarlightRiver.Content.Backgrounds
 					del(Main.gameTimeCache, starsMap, starsTarget);
 				}
 			}
+
+			orig(self, gameTime);
 		}
 
 		public delegate void DrawMapDelegate(SpriteBatch sb);
@@ -257,7 +256,9 @@ namespace StarlightRiver.Content.Backgrounds
 		public override void PostUpdateEverything()
 		{
 			if (!CheckIsActive() || Main.dedServ)
+			{
 				return;
+			}
 
 			if (!Main.gameMenu && !BossRushSystem.isBossRush)
 				yOrigin = (int)Main.spawnTileY * 16 - 2400;

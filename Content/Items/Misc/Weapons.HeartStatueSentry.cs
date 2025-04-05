@@ -205,7 +205,7 @@ namespace StarlightRiver.Content.Items.Misc
 			effect.Parameters["colorIn"].SetValue(color.ToVector4());
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			float height = texBeam.Height / 24f;
 			int width = (int)(Projectile.Center - endPoint).Length();
@@ -222,7 +222,7 @@ namespace StarlightRiver.Content.Items.Misc
 			spriteBatch.Draw(texBeam, target2, source2, color, rotation, origin, 0, 0);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			for (int i = 0; i < width; i += 10)
 			{

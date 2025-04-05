@@ -155,7 +155,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (effect != null)
 			{
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
 				effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.035f);
 				effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.0035f);
@@ -176,7 +176,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				Main.spriteBatch.Draw(itemTexGlow, position, null, Color.White, Projectile.rotation, itemTexGlow.Size() / 2f, Projectile.scale, spriteEffects, 0f);
 
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 
 			return false;
@@ -511,10 +511,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				if (effect != null)
 				{
 					Matrix world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-
-					// !!! IMPORTANT WHEN PIXELIZING, MAKE SURE TO USE Main.GameViewMatrix.EffectMatrix IMPORTANT !!!
-
-					Matrix view = Main.GameViewMatrix.EffectMatrix;
+					Matrix view = Matrix.Identity;
 					Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 					effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
@@ -649,7 +646,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				if (effect != null)
 				{
 					Matrix world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-					Matrix view = Main.GameViewMatrix.EffectMatrix;
+					Matrix view = Matrix.Identity;
 					Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 					effect.Parameters["transformMatrix"].SetValue(world * view * projection);

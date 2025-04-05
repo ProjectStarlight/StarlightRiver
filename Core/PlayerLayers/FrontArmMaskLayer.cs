@@ -13,7 +13,7 @@ namespace StarlightRiver.Core.PlayerLayers
 			return new AfterParent(PlayerDrawLayers.ArmOverItem);
 		}
 
-		protected override void Draw(ref PlayerDrawSet drawInfo)
+		public override void Draw(ref PlayerDrawSet drawInfo)
 		{
 			if (drawInfo.drawPlayer.armor[CHESTVANITYSLOT].IsAir && drawInfo.drawPlayer.armor[CHESTARMORSLOT].ModItem is IArmorLayerDrawable)
 				(drawInfo.drawPlayer.armor[CHESTARMORSLOT].ModItem as IArmorLayerDrawable).DrawArmorLayer(drawInfo, IArmorLayerDrawable.SubLayer.InFront);

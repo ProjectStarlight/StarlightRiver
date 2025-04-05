@@ -303,7 +303,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 					}
 
 					Main.spriteBatch.End();
-					Main.spriteBatch.Begin(default, default, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+					Main.spriteBatch.Begin(default, default, SamplerState.PointWrap, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 					Texture2D barrier = Assets.MotionTrail.Value;
 					var sourceRect = new Rectangle(0, (int)(Main.GameUpdateCount * 0.4f), barrier.Width, barrier.Height);
@@ -324,7 +324,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 					Main.spriteBatch.Draw(barrier, targetRect, sourceRect2, new Color(255, 255, 255, 0) * Windup);
 
 					Main.spriteBatch.End();
-					Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+					Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 				}
 			}
 		}

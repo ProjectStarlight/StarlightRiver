@@ -404,16 +404,6 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				if (Timer > 100 && Timer < 900 && Timer % 60 == 0)
 					SpawnProjectile();
 
-				if (Main.expertMode && Timer > 100 && Timer < 1100 && Timer % 300 == 0)
-				{
-					for (int k = 0; k < 8; k++)
-					{
-						float rot = k / 8f * 6.28f;
-						rot += Timer / 200f;
-						Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.One.RotatedBy(rot) * 3, ModContent.ProjectileType<BrainBolt>(), ThisBrain.BrainBoltDamage, 1, Main.myPlayer, 240, 0, 10);
-					}
-				}
-
 				if (Timer > 1140)
 				{
 					ExtraGrayAuraRadius -= 10;
@@ -466,8 +456,8 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			if (direction == -1 || direction > 3)
 				direction = Main.rand.Next(4);
 
-			if (offset == -99 || offset < -3 || offset > 3)
-				offset = Main.rand.Next(-3, 4);
+			if (offset == -99 || offset < -2 || offset > 2)
+				offset = Main.rand.Next(-2, 3);
 
 			while (Math.Abs(offset) <= 1)
 			{

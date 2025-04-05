@@ -1,3 +1,5 @@
+#include "Common.fxh"
+
 sampler uImage0 : register(s0);
 sampler uImage1 : register(s1);
 
@@ -36,12 +38,12 @@ float4 MainPS(float2 uv : TEXCOORD) : COLOR
 		return whiteColor;
 		
 	float2 noiseCoords1 = uv;
-	noiseCoords1.x += (intensity * (sin((noiseR1 * 6.28f) + 4 + (0.1f * time)) * noiseR2)) / screenWidth;
-	noiseCoords1.y += (intensity * (cos((noiseR2 * 6.28f * 1.1f) + 3 + (0.2f * time)) * noiseR1)) / screenHeight;
+	noiseCoords1.x += (intensity * (sin((noiseR1 * TWO_PI) + 4 + (0.1f * time)) * noiseR2)) / screenWidth;
+	noiseCoords1.y += (intensity * (cos((noiseR2 * TWO_PI * 1.1f) + 3 + (0.2f * time)) * noiseR1)) / screenHeight;
 	
 	float2 noiseCoords2 = uv;
-	noiseCoords2.x += (intensity * (sin((noiseR2 * 6.28f * 0.9f) + 1 + (0.17f * time)) * noiseR1)) / screenWidth;
-	noiseCoords2.y += (intensity * (cos((noiseR1 * 6.28f * 1.05f) + 2 + (0.12f * time)) * noiseR2)) / screenHeight;
+	noiseCoords2.x += (intensity * (sin((noiseR2 * TWO_PI * 0.9f) + 1 + (0.17f * time)) * noiseR1)) / screenWidth;
+	noiseCoords2.y += (intensity * (cos((noiseR1 * TWO_PI * 1.05f) + 2 + (0.12f * time)) * noiseR2)) / screenHeight;
 	
 	float4 ret = float4(0,0,0,0);
 

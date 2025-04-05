@@ -1,4 +1,6 @@
-﻿texture sampleTexture;
+﻿#include "Common.fxh"
+
+texture sampleTexture;
 sampler2D samplerTex = sampler_state { texture = <sampleTexture>; magfilter = LINEAR; minfilter = LINEAR; mipfilter = LINEAR; AddressU = wrap; AddressV = wrap; };
 
 texture sampleTexture2;
@@ -41,7 +43,7 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0) : COLOR0
     color.b += (1.0 - (uTime - (1 - st.y))) * 0.2 * max(1.2 - abs(uTime - (1 - st.y)), 0.0) * (1.0 - value);
 
     float value2 = tex2D(samplerTex2, st);
-    float opacity = (0.5 + sin((uTime - 2.0) / 2.0 * 6.28 + st.y * 10.0) * 0.5);
+    float opacity = (0.5 + sin((uTime - 2.0) / 2.0 * TWO_PI + st.y * 10.0) * 0.5);
 
     color.r += value2 * opacity * 1.8;
     color.g += value2 * opacity * 0.8;

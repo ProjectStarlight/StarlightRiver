@@ -3756,6 +3756,26 @@ Items: {
 		DisplayName: Pink Laser Pointer
 		Tooltip: ""
 	}
+
+	ChartGrateWallItem: {
+		DisplayName: Chart Grate Wall
+		Tooltip: ""
+	}
+
+	BrassPlateItem: {
+		DisplayName: Chart Grate
+		Tooltip: Composite
+	}
+
+	RawOnyxItem: {
+		DisplayName: Raw Onyx
+		Tooltip: Composite
+	}
+
+	BlinkbrickItem: {
+		DisplayName: Blinkbrick
+		Tooltip: ""
+	}
 }
 
 Tiles: {
@@ -3965,6 +3985,9 @@ Tiles: {
 	VitricLargeCrystal.MapEntry: Vitric Large Crystal
 	VitricMediumCrystal.MapEntry: Vitric Medium Crystal
 	VitricSmallCrystal.MapEntry: Vitric Small Crystal
+	BrassPlate.MapEntry: ""
+	RawOnyx.MapEntry: ""
+	Blinkbrick.MapEntry: ""
 }
 
 Projectiles: {

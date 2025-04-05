@@ -45,7 +45,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			if (inMenu)
 			{
 				batch.End();
-				batch.Begin(default, default, SamplerState.LinearWrap, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				batch.Begin(default, default, SamplerState.LinearWrap, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 				BossRushMenu.DrawMap(batch);
 			}

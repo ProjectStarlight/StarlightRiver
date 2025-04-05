@@ -280,7 +280,7 @@ namespace StarlightRiver.Content.GUI
 		/// Draws this stamina bar as either the gain animation or standard depending on the animation state of the Stamina UIState
 		/// </summary>
 		/// <param name="spriteBatch">The spriteBatch to draw with</param>
-		protected override void DrawSelf(SpriteBatch spriteBatch)
+		public override void DrawSelf(SpriteBatch spriteBatch)
 		{
 			var dimensions = GetDimensions().ToRectangle();
 

@@ -113,7 +113,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			LightingBufferRenderer.DrawWithLighting(texHammer, pos + offset, Color.White);
 			LightingBufferRenderer.DrawWithLighting(tex, pos, Color.White);
 
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D texGlow = Assets.Tiles.Vitric.MainForgeGlow.Value;
 			spriteBatch.Draw(texGlow, pos, Color.White);
@@ -144,7 +144,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 				effect.Parameters["uColor"].SetValue(color.ToVector3());
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
 
 				float height = texBeam.Height / 2f * (0.5f + puzzleProg * 0.5f);
 				int width = (int)(centerPos - endpoint).Length();
@@ -172,7 +172,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 				}
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 				Texture2D glowTex = Assets.GlowTrail.Value;
 

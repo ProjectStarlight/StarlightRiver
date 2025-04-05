@@ -1,4 +1,6 @@
-﻿texture background;
+﻿#include "Common.fxh"
+
+texture background;
 sampler2D InputLayer0 = sampler_state
 {
     texture = <background>;
@@ -24,11 +26,6 @@ sampler2D InputLayer3 = sampler_state
     texture = <over>;
 };
 
-float GetLuminance(float3 color)
-{
-    return dot(color, float3(0.299, 0.587, 0.114));
-}
-
 float time;
 float2 screensize;
 float2 screenpos;
@@ -41,7 +38,7 @@ float4 main(float2 uv : TEXCOORD0) : COLOR0
     float2 ns = (st - screenpos) / screensize;
  
     float3 color = tex2D(InputLayer0,st).xyz;
-    float distort = sin( min(1.0, tex2D(InputLayer1,st).x) * 3.14 ) * 0.1;
+    float distort = sin( min(1.0, tex2D(InputLayer1,st).x) * PI ) * 0.1;
     float noise = tex2D(InputLayer2, (ns +  time * 0.1)).x;
     
     float3 sample = tex2D(InputLayer0, st).xyz;
@@ -70,7 +67,7 @@ float4 main(float2 uv : TEXCOORD0) : COLOR0
 
 technique Technique1
 {
-    pass GradientDistortionPass
+    pass GrayMatterPass
     {
         PixelShader = compile ps_3_0 main();
     }

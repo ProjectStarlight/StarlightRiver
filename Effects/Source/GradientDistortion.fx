@@ -1,3 +1,5 @@
+#include "Common.fxh"
+
 sampler uImage0 : register(s0);
 sampler uImage1 : register(s1);
 sampler uImage2 : register(s2);
@@ -22,19 +24,17 @@ float2 uImageSize3;
 float2 uImageOffset;
 float uSaturation;
 float4 uSourceRect;
-float2 uZoom;
+float4x4 uTransform;
 
 float4 main(float2 uv : TEXCOORD0) : COLOR0
-{
+{  
     float2 coord = uv;
-
-    uv -= float2(0.5, 0.5);
-    uv /= (uZoom);
-    uv += float2(0.5, 0.5);
-
+    
+    uv = mul(float4(uv, 0, 0), uTransform).xy;
+    
     float strength = max(tex2D(uImage1, uv).r - tex2D(uImage1, uv).b, 0.0);
     float progress = uTime / uProgress;
-    float sinTime = (strength + progress) * uIntensity * 6.28;
+    float sinTime = (strength + progress) * uIntensity * TWO_PI;
 	float2 off = float2(sin(sinTime), sin(sinTime * 1.25168)) * 0.1 * (strength / 255.0) * uOpacity;
     return tex2D(uImage0, coord + off);
 }

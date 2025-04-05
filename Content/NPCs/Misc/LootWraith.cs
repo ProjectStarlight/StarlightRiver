@@ -289,7 +289,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 			}
 			// Not sure if the below commented out code is needed.
 			//Main.spriteBatch.End();
-			//Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			//Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 			return false;
 		}
 
@@ -399,7 +399,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 				Main.spriteBatch.End();
 
 				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-				Matrix view = Main.GameViewMatrix.ZoomMatrix;
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
 				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
@@ -423,7 +423,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(Texture + "_Chain_White").Value);
 
-				Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 

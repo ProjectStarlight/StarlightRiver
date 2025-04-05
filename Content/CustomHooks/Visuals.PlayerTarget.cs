@@ -83,7 +83,7 @@ namespace StarlightRiver.Content.CustomHooks
 		public static Vector2 getPlayerTargetPosition(int whoAmI)
 		{
 			Vector2 gravPosition = Main.ReverseGravitySupport(Main.player[whoAmI].position - Main.screenPosition);
-			return gravPosition - new Vector2(sheetSquareX / 2, sheetSquareY / 2);
+			return gravPosition - new Vector2(sheetSquareX / 2, sheetSquareY / 2) + Vector2.UnitY * Main.player[whoAmI].gfxOffY;
 		}
 
 		private void DrawTargets(On_Main.orig_CheckMonoliths orig)

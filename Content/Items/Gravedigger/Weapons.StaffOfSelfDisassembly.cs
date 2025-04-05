@@ -256,7 +256,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Vector2 targetPoint = Owner.Center;
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			//the lines connecting back to the owner
 			Texture2D tex = Terraria.GameContent.TextureAssets.MagicPixel.Value;
@@ -287,7 +287,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Main.spriteBatch.Draw(tex3, target3, source2, new Color(255, 80, 80) * strength, rot - 1.57f, new Vector2(0, 0), 0, 0);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D mainTex = Assets.Items.Gravedigger.FleshApparation.Value; //the actual sprite of the minion
 

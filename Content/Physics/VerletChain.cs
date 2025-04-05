@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.Physics
 			shader.Parameters["resolution"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
 			shader.Parameters["outlineColor"].SetValue(new Vector3(0, 0, 0));
 
-			Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, shader, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, Main.Rasterizer, shader, Main.GameViewMatrix.TransformationMatrix);
 
 			VerletChain.DrawStripsPixelated(Main.spriteBatch);
 
