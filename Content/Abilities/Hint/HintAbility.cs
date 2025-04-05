@@ -1,4 +1,5 @@
 ﻿using ReLogic.Graphics;
+using StarlightRiver.Content.Abilities.Faewhip;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -15,8 +16,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 		public static bool defaultHint;
 
 		public override string Name => "Starsight";
-		public override string Tooltip => "Pull a strand of meaning from the memory of the world, allowing you to reveal secrets, hidden knowledge, and messages left by ancient scholars. NEWBLOCK " +
-			"Most things can be investigated - treasures, lore, and enemy weaknesses all lie in plain sight to those who can see with the eyes of a star.";
+		public override string Tooltip => $"Press [c/6699FF:{StarlightRiver.Instance.AbilityKeys.Get<HintAbility>().GetAssignedKeys()[0]}] to channel starlight to see [c/AADDFF:ancient knowledge] about what your [c/6699FF:Cursor] is hovering over.\n\n You can also press [c/6699FF:{StarlightRiver.Instance.AbilityKeys.Get<HintAbility>().GetAssignedKeys()[0]}] with your [c/6699FF:Cursor] hovering over the air instead to garner a [c/AADDFF:hint on what to do next!]";
 
 		public override float ActivationCostDefault => 0.25f;
 

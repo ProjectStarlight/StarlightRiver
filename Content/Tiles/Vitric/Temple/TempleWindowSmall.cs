@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 			LightingBufferRenderer.DrawWithLighting(tex, pos, Color.White);
 
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		public void RedrawWall(int i, int j)

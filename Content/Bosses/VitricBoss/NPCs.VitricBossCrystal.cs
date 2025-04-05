@@ -431,7 +431,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			if (state == 0) //extra FX while vulnerable
 			{
@@ -476,12 +476,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					effect1.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.01f);
 
 					spriteBatch.End();
-					spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect1, Main.GameViewMatrix.TransformationMatrix);
+					spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, Main.Rasterizer, effect1, Main.GameViewMatrix.TransformationMatrix);
 
 					spriteBatch.Draw(ballTex, NPC.Center - Main.screenPosition, null, Color.White * progress, 0, ballTex.Size() / 2, progress * 1.7f, 0, 0);
 
 					spriteBatch.End();
-					spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+					spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 				}
 			}
 
@@ -569,7 +569,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		private float GetProgress(float off)

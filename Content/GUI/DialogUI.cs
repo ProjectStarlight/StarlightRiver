@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics.PackedVector;
 using StarlightRiver.Core.Loaders.UILoading;
+using StarlightRiver.Core.Systems;
 using System;
 using System.Collections.Generic;
 using Terraria.Audio;
@@ -168,7 +169,8 @@ namespace StarlightRiver.Content.GUI
 			if (dist > 256)
 				CloseDialogue();
 
-			icon = Main.screenTarget;
+			FinalCaptureSystem.FinalNeedsCaptured = true;
+			icon = FinalCaptureSystem.finalScreen;
 
 			Vector2 pos = talking.Center - Main.screenPosition;
 			iconFrame = new Rectangle((int)pos.X - 44, (int)pos.Y - 44, (int)(88 * Main.GameViewMatrix.Zoom.X), (int)(88 * Main.GameViewMatrix.Zoom.X));

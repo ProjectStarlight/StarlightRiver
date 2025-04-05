@@ -65,7 +65,7 @@ namespace StarlightRiver.Core.Loaders
 
 			overTilesEffect.Parameters["TileTarget"].SetValue(tileTarget.RenderTarget);
 
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
 			overTilesEffect.CurrentTechnique.Passes[0].Apply();
 			Main.spriteBatch.Draw(projTarget.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);

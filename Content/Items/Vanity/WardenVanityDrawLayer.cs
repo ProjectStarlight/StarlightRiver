@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Items.Vanity
 			return new AfterParent(PlayerDrawLayers.Torso);
 		}
 
-		protected override void Draw(ref PlayerDrawSet drawInfo)
+		public override void Draw(ref PlayerDrawSet drawInfo)
 		{
 			Player armorOwner = drawInfo.drawPlayer;
 			WardenVanityPlayer modPlayer = armorOwner.GetModPlayer<WardenVanityPlayer>();

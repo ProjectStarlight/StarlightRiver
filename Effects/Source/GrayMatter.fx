@@ -67,7 +67,7 @@ float4 main(float2 uv : TEXCOORD0) : COLOR0
 
 technique Technique1
 {
-    pass GradientDistortionPass
+    pass GrayMatterPass
     {
         PixelShader = compile ps_3_0 main();
     }

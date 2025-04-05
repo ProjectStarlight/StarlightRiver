@@ -85,7 +85,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 				mapEffect.Parameters["map"].SetValue(starsMap.RenderTarget);
 				mapEffect.Parameters["background"].SetValue(starsTarget.RenderTarget);
 
-				Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, mapEffect, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, mapEffect, Main.GameViewMatrix.TransformationMatrix);
 
 				Main.spriteBatch.Draw(starsMap.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), new Color(1f, 1f, 1f, 0));
 
@@ -213,7 +213,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 			effect.Parameters["colorIn"].SetValue(color.ToVector4());
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			float height = texBeam.Height / 10f;
 			int width = (int)(Projectile.Center - endPoint).Length();
@@ -230,7 +230,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 			spriteBatch.Draw(texBeam, target2, source2, color, rotation, origin, 0, 0);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			for (int i = 0; i < width; i += 10)
 			{

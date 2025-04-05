@@ -87,7 +87,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 					effect.Parameters["noisePower"].SetValue(100f);
 
 					Main.spriteBatch.End();
-					Main.spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+					Main.spriteBatch.Begin(default, BlendState.Additive, default, default, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
 				}
 			}
 
@@ -287,7 +287,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			}
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, default, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			if (fullyInsaneTimer < 0)
 			{

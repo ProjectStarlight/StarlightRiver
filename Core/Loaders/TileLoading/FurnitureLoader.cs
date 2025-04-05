@@ -81,7 +81,7 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 
 		public override string Texture => texture;
 
-		protected override bool CloneNewInstances => true;
+		public override bool CloneNewInstances => true;
 
 		public GenericFurnitureItem() { }
 

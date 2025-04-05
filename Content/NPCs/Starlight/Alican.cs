@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.ForbiddenWinds;
 using StarlightRiver.Content.Abilities.Hint;
 using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Events;
@@ -135,6 +136,9 @@ namespace StarlightRiver.Content.NPCs.Starlight
 
 			AlicanSafetySystem.IntendedAlicanPhase = 1;
 			State = 1;
+
+			if (StarlightRiver.Instance.AbilityKeys.Get<HintAbility>().GetAssignedKeys().Count <= 0)
+				KeybindHelper.OpenKeybindsWithHelp();
 
 			TutorialManager.ActivateTutorial("Starsight");
 		}

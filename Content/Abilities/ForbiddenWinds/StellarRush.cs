@@ -172,7 +172,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 				trail?.Render(effect);
 			}
 
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 
@@ -185,11 +185,12 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Stellar Rush");
-			Tooltip.SetDefault("Forbidden Winds Infusion\nDash farther and carry more speed\nIncreases starlight cost to 1.5");
+			Tooltip.SetDefault("[i:StarlightRiver/WindsHover][c/99FFCC:Forbidden Winds] Infusion\nIncreases cost to[i:StarlightRiver/StarlightHover][c/AAF0FF:1.5] {{Starlight}}\nYour dash will travel farther and launch you more afterwards");
 		}
 
 		public override void SetDefaults()
 		{
+			SetStaticDefaults();
 			Item.width = 20;
 			Item.height = 14;
 			Item.rare = ItemRarityID.Green;

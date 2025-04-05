@@ -260,7 +260,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 			if (effect != null)
 			{
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
 
 				for (int k = 0; k < minions.Count; k++)
 				{
@@ -280,7 +280,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			for (int k = 0; k < minions.Count; k++)
 			{
@@ -295,7 +295,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 			DrawGlows(spriteBatch);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		public void DrawGlows(SpriteBatch spriteBatch)

@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Items.Hovers
 
 		public override void SetStaticDefaults()
 		{
-			ItemID.Sets.Deprecated[Type] = true;
+			//ItemID.Sets.Deprecated[Type] = true;
 		}
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
@@ -24,6 +24,11 @@ namespace StarlightRiver.Content.Items.Hovers
 			tooltips.Clear();
 			tooltips.Add(new(Mod, "SLRHoverInfo", "This should not apper! report to https://github.com/ProjectStarlight/StarlightRiver/issues"));
 		}
+	}
+
+	internal class StarlightHover : Hover
+	{
+		public StarlightHover() : base("StarlightRiver/Assets/GUI/Starlight") { }
 	}
 
 	internal class GenericHover : Hover

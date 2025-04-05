@@ -24,16 +24,14 @@ float2 uImageSize3;
 float2 uImageOffset;
 float uSaturation;
 float4 uSourceRect;
-float2 uZoom;
+float4x4 uTransform;
 
 float4 main(float2 uv : TEXCOORD0) : COLOR0
-{
+{  
     float2 coord = uv;
-
-    uv -= float2(0.5, 0.5);
-    uv /= (uZoom);
-    uv += float2(0.5, 0.5);
-
+    
+    uv = mul(float4(uv, 0, 0), uTransform).xy;
+    
     float strength = max(tex2D(uImage1, uv).r - tex2D(uImage1, uv).b, 0.0);
     float progress = uTime / uProgress;
     float sinTime = (strength + progress) * uIntensity * TWO_PI;

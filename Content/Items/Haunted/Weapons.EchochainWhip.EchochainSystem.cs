@@ -451,7 +451,7 @@ namespace StarlightRiver.Content.Items.Haunted
 				spriteBatch.End();
 
 				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-				Matrix view = Main.GameViewMatrix.ZoomMatrix;
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
 				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 				effect.Parameters["time"].SetValue(Main.GameUpdateCount * -0.025f);
@@ -467,7 +467,7 @@ namespace StarlightRiver.Content.Items.Haunted
 
 				trail?.Render(effect);
 
-				spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 		#endregion Primitive Drawing

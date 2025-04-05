@@ -168,7 +168,7 @@ namespace StarlightRiver.Content.Biomes
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
 			sb.End();
-			sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
 			particleSystem.DrawParticles(sb);
 			particleSystemMedium.DrawParticles(sb);
@@ -180,7 +180,7 @@ namespace StarlightRiver.Content.Biomes
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
 			sb.End();
-			sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
 			drawingBGtarget = true;
 
@@ -246,7 +246,7 @@ namespace StarlightRiver.Content.Biomes
 			Main.spriteBatch.Draw(target.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White * 0.9f);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		protected void UpdateMoonParticles(Particle particle)

@@ -734,14 +734,14 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				}
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			// Tentacles
 			if (AppearVisible && hasLoaded && NPC.Opacity > 0)
@@ -792,10 +792,10 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 					effect.Parameters["opacity"].SetValue(1);
 
 					spriteBatch.End();
-					spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+					spriteBatch.Begin(default, BlendState.Additive, default, default, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
 
 					spriteBatch.End();
-					spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+					spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
 
 					Texture2D orb = Assets.Items.Moonstone.CrescentOrb.Value;
 					spriteBatch.Draw(orb, OrbPos - Main.screenPosition, null, Color.White * (projChargeTime / 30f), Main.GameUpdateCount * 0.01f, orb.Size() / 2, projChargeTime / 150f, 0, 0);
@@ -803,7 +803,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D tex = Assets.Masks.Glow.Value;
 			var glowColor = new Color(78, 87, 191);
@@ -849,7 +849,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D glowTex = Assets.Masks.GlowSoftAlpha.Value;
 

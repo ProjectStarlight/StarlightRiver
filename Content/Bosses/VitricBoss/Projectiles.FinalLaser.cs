@@ -163,7 +163,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				return;
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D texGlow = Assets.Masks.Glow.Value;
 
@@ -182,12 +182,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				ballEffect.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.01f);
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, ballEffect, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, Main.Rasterizer, ballEffect, Main.GameViewMatrix.TransformationMatrix);
 
 				spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricBoss + Name).Value, Projectile.Center - Main.screenPosition, null, Color.White * Projectile.scale, 0, Projectile.Size / 2, Projectile.scale * 1.7f, 0, 0);
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 
 			if (LaserTimer > 30 && LaserTimer <= 120) //tell line
@@ -224,7 +224,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				laserEffect.Parameters["uColor"].SetValue(color.ToVector3());
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, laserEffect, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, laserEffect, Main.GameViewMatrix.TransformationMatrix);
 
 				float height = texBeam.Height / 2f;
 				int width = (int)(Projectile.Center - endpoint).Length();
@@ -262,7 +262,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				float opacity = height / (texBeam.Height / 2f);
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 				if (parent.arena.Contains(Main.LocalPlayer.Center.ToPoint()))
 				{
@@ -271,7 +271,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				}
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 				Texture2D impactTex = Assets.Masks.GlowSoft.Value;
 				Texture2D impactTex2 = Assets.GUI.ItemGlow.Value;
@@ -295,7 +295,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		public override void SendExtraAI(BinaryWriter writer)

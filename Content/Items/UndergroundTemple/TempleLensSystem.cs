@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
 			for (int i = 0; i < Main.npc.Length; i++)
 			{
@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D bloom = Assets.Masks.GlowAlpha.Value;
 			Color gold = Color.Orange;
@@ -106,7 +106,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 					spriteBatch.Draw(NPCTarget.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
 
 					spriteBatch.End();
-					spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+					spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 				}
 			}
 		}

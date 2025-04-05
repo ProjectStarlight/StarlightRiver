@@ -115,21 +115,20 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		{
 			if (PlayerTarget.canUseTarget)
 			{
-				spriteBatch.End();
-				spriteBatch.Begin(default, blendState: BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
-
 				bool active = player.active && !player.outOfRange && !player.dead;
 				if (active && player.GetModPlayer<RadculasRapierPlayer>().teleportTimer > 0)
 				{
-					Main.spriteBatch.Draw(PlayerTarget.Target, PlayerTarget.getPlayerTargetPosition(player.whoAmI),
-								 PlayerTarget.getPlayerTargetSourceRectangle(player.whoAmI), new Color(150, 0, 0) * (player.GetModPlayer<RadculasRapierPlayer>().teleportTimer / 60f), player.fullRotation, Vector2.Zero, 1f, 0f, 0f);
+					spriteBatch.End();
+					spriteBatch.Begin(default, blendState: BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.ZoomMatrix);
+
+					Main.spriteBatch.Draw(PlayerTarget.Target, PlayerTarget.getPlayerTargetPosition(player.whoAmI), PlayerTarget.getPlayerTargetSourceRectangle(player.whoAmI), new Color(150, 0, 0) * (player.GetModPlayer<RadculasRapierPlayer>().teleportTimer / 60f), player.fullRotation, Vector2.Zero, 1f, 0f, 0f);
+
+					spriteBatch.End();
+					spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 					Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
-					Main.spriteBatch.Draw(bloomTex, player.Center - Main.screenPosition, null, new Color(255, 0, 0) * (player.GetModPlayer<RadculasRapierPlayer>().teleportTimer / 60f), 0f, bloomTex.Size() / 2f, 2f, 0f, 0f);
+					Main.spriteBatch.Draw(bloomTex, player.Center - Main.screenPosition, null, new Color(255, 0, 0, 0) * (player.GetModPlayer<RadculasRapierPlayer>().teleportTimer / 60f), 0f, bloomTex.Size() / 2f, 2f, 0f, 0f);
 				}
-
-				spriteBatch.End();
-				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 
@@ -137,21 +136,23 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		{
 			if (PlayerTarget.canUseTarget)
 			{
-				spriteBatch.End();
-				spriteBatch.Begin(default, blendState: BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
-
 				bool active = player.active && !player.outOfRange && !player.dead;
 				if (active && player.GetModPlayer<RadculasRapierPlayer>().trailPositions.Count > 0)
 				{
+					spriteBatch.End();
+					spriteBatch.Begin(default, blendState: BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.ZoomMatrix);
+
+					Rectangle source = PlayerTarget.getPlayerTargetSourceRectangle(player.whoAmI);
+
 					for (int x = player.GetModPlayer<RadculasRapierPlayer>().trailPositions.Count - 1; x > 0; x--)
 					{
-						Main.spriteBatch.Draw(PlayerTarget.Target, player.GetModPlayer<RadculasRapierPlayer>().trailPositions[x] - Main.screenPosition,
-								 PlayerTarget.getPlayerTargetSourceRectangle(player.whoAmI), new Color(100, 0, 0) * (player.GetModPlayer<RadculasRapierPlayer>().teleportTimer / 60f), player.fullRotation, Vector2.Zero, 1f, 0f, 0f);
+						Main.spriteBatch.Draw(PlayerTarget.Target, Main.ReverseGravitySupport(player.GetModPlayer<RadculasRapierPlayer>().trailPositions[x] - Main.screenPosition, player.height),
+								 source, new Color(100, 0, 0) * (player.GetModPlayer<RadculasRapierPlayer>().teleportTimer / 60f), player.fullRotation, source.Size() / 2f, 1f, 0f, 0f);
 					}
-				}
 
-				spriteBatch.End();
-				spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+					spriteBatch.End();
+					spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+				}
 			}
 		}
 
@@ -179,7 +180,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		{
 			if (teleportTimer > 0)
 			{
-				trailPositions.Add(PlayerTarget.getPlayerTargetPosition(Player.whoAmI) + Main.screenPosition);
+				trailPositions.Add(Player.position);
 
 				if (Main.rand.NextBool(5))
 					Dust.NewDustPerfect(Player.Center + Main.rand.NextVector2Circular(Player.width, Player.height), ModContent.DustType<Dusts.GlowFastDecelerate>(), Player.velocity * 0.25f, 0, new Color(255, 0, 0, 100), 0.5f);
@@ -508,7 +509,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				}
 
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix); //also dont know if this spritebatch reset is needed
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix); //also dont know if this spritebatch reset is needed
 
 				Main.spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY) + new Vector2(-55, 0).RotatedBy(Projectile.rotation - MathHelper.PiOver2), null, color, Projectile.rotation, texGlow.Size() / 2f, Projectile.scale, 0, 0);
 				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY) + off, null, Color.White * fade, Projectile.rotation, Vector2.Zero, Projectile.scale, 0, 0);
@@ -682,7 +683,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			step = 0.033f;
 			for (int i = (int)(1 / step); i > 0; i--)
 			{
-				Vector2 stepPos = PlayerTarget.getPlayerTargetPosition(Owner.whoAmI) + Main.screenPosition + (originalPos - Owner.Center) * step * i;
+				Vector2 stepPos = Owner.Center + (originalPos - Owner.Center) * step * i;
 				mp.trailPositions.Add(stepPos);
 			}
 

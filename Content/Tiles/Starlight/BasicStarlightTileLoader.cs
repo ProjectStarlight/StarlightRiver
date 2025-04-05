@@ -17,7 +17,18 @@ namespace StarlightRiver.Content.Tiles.Starlight
 
 		public override void Load()
 		{
-
+			LoadTile(
+			"Blinkbrick",
+			"Blinkbrick",
+			new TileLoadData(
+				minPick: 100,
+				dustType: DustID.Stone,
+				hitSound: SoundID.Tink,
+				mapColor: new Color(92, 103, 113),
+				dirtMerge: true,
+				stone: true
+				)
+			);
 		}
 
 		public override void PostLoad()

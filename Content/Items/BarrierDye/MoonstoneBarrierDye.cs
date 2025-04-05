@@ -67,7 +67,7 @@ namespace StarlightRiver.Content.Items.BarrierDye
 				effect.Parameters["drawOriginal"].SetValue(false);
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
+				spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.ZoomMatrix);
 
 				Rectangle rect = CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI);
 
@@ -76,7 +76,7 @@ namespace StarlightRiver.Content.Items.BarrierDye
 				spriteBatch.Draw(tex, drawPos, rect, Color.White);
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 	}
