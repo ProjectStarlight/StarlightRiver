@@ -206,7 +206,7 @@ namespace StarlightRiver.Content.Biomes
 		public void DrawHallucinationMap(SpriteBatch spriteBatch)
 		{
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, RasterizerState.CullNone, default);
+			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.ZoomMatrix);
 
 			DrawTileMap(spriteBatch);
 			onDrawHallucinationMap?.Invoke(spriteBatch);
@@ -223,7 +223,7 @@ namespace StarlightRiver.Content.Biomes
 		public void DrawOverHallucinationMap(SpriteBatch spriteBatch)
 		{
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, RasterizerState.CullNone, default);
+			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.ZoomMatrix);
 
 			onDrawOverHallucinationMap?.Invoke(spriteBatch);
 
