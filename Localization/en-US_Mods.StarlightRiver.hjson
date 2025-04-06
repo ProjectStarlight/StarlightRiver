@@ -3776,6 +3776,41 @@ Items: {
 		DisplayName: Blinkbrick
 		Tooltip: ""
 	}
+
+	StarlightHover: {
+		DisplayName: Starlight Hover
+		Tooltip: ""
+	}
+
+	ReinforcedBlinkbrickItem: {
+		DisplayName: Reinforced Blinkbrick
+		Tooltip: ""
+	}
+
+	SmoothBrassPlateItem: {
+		DisplayName: Smooth Brass Plate
+		Tooltip: ""
+	}
+
+	LockedOnyxItem: {
+		DisplayName: Locked Onyx
+		Tooltip: ""
+	}
+
+	DreamingOnyxItem: {
+		DisplayName: Dreaming Onyx
+		Tooltip: ""
+	}
+
+	OracleGlassItem: {
+		DisplayName: Oracle Glass
+		Tooltip: ""
+	}
+
+	GlowingOracleGlassItem: {
+		DisplayName: Oracle Glass Glow Test
+		Tooltip: Composite
+	}
 }
 
 Tiles: {
@@ -3988,6 +4023,12 @@ Tiles: {
 	BrassPlate.MapEntry: ""
 	RawOnyx.MapEntry: ""
 	Blinkbrick.MapEntry: ""
+	ReinforcedBlinkbrick.MapEntry: ""
+	SmoothBrassPlate.MapEntry: ""
+	LockedOnyx.MapEntry: ""
+	DreamingOnyx.MapEntry: ""
+	OracleGlass.MapEntry: ""
+	GlowingOracleGlass.MapEntry: ""
 }
 
 Projectiles: {

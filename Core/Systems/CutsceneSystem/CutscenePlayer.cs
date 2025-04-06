@@ -110,44 +110,6 @@ namespace StarlightRiver.Core.Systems.CutsceneSystem
 		{
 			CutscenePlayer cutscenePlayer = Main.LocalPlayer.GetModPlayer<CutscenePlayer>();
 
-			var target1 = new Rectangle(100, 400, Main.screenWidth / 10, Main.screenHeight / 10);
-			var target2 = new Rectangle(100, 400 + Main.screenHeight / 10 + 20, Main.screenWidth / 10, Main.screenHeight / 10);
-			var target3 = new Rectangle(100, 400 + Main.screenHeight / 10 * 2 + 40, Main.screenWidth / 10, Main.screenHeight / 10);
-
-			var target4 = new Rectangle(100 + Main.screenWidth / 10 + 20, 400, Main.screenWidth / 10, Main.screenHeight / 10);
-			var target5 = new Rectangle(100 + Main.screenWidth / 10 + 20, 400 + Main.screenHeight / 10 + 20, Main.screenWidth / 10, Main.screenHeight / 10);
-			var target6 = new Rectangle(100 + Main.screenWidth / 10 + 20, 400 + Main.screenHeight / 10 * 2 + 40, PlayerTarget.Target.Width / 2, PlayerTarget.Target.Height / 2);
-
-			target1.Inflate(6, 6);
-			UIHelper.DrawBox(spriteBatch, target1, Color.Gray);
-			target1.Inflate(-6, -6);
-			spriteBatch.Draw(Main.screenTarget, target1, Color.White);
-
-			target2.Inflate(6, 6);
-			UIHelper.DrawBox(spriteBatch, target2, Color.Gray);
-			target2.Inflate(-6, -6);
-			spriteBatch.Draw(Main.screenTargetSwap, target2, Color.White);
-
-			target3.Inflate(6, 6);
-			UIHelper.DrawBox(spriteBatch, target3, Color.Gray);
-			target3.Inflate(-6, -6);
-			spriteBatch.Draw(FinalCaptureSystem.finalScreen, target3, Color.White);
-
-			target4.Inflate(6, 6);
-			UIHelper.DrawBox(spriteBatch, target4, Color.Gray);
-			target4.Inflate(-6, -6);
-			spriteBatch.Draw(LightingBuffer.screenLightingTarget.RenderTarget, target4, Color.White);
-
-			target5.Inflate(6, 6);
-			UIHelper.DrawBox(spriteBatch, target5, Color.Gray);
-			target5.Inflate(-6, -6);
-			spriteBatch.Draw(LightingBuffer.tileLightingTarget.RenderTarget, target5, Color.White);
-
-			target6.Inflate(6, 6);
-			UIHelper.DrawBox(spriteBatch, target6, Color.Gray);
-			target6.Inflate(-6, -6);
-			spriteBatch.Draw(PlayerTarget.Target, target6, Color.White);
-
 			if (cutscenePlayer.InCutscene || cutscenePlayer.fadeTimer > 0)
 			{
 				FinalCaptureSystem.FinalNeedsCaptured = true;

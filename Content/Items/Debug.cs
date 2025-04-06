@@ -1,8 +1,10 @@
+using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
 using StarlightRiver.Content.Abilities.Hint;
 using StarlightRiver.Content.Bosses.TheThinkerBoss;
+using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Events;
 using StarlightRiver.Content.GUI;
@@ -18,6 +20,7 @@ using StarlightRiver.Content.Tiles.Dungeon;
 using StarlightRiver.Content.Tiles.Forest;
 using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems;
+using StarlightRiver.Core.Systems.LightingSystem;
 using StarlightRiver.Core.Systems.PersistentDataSystem;
 using Steamworks;
 using System;
@@ -212,9 +215,10 @@ namespace StarlightRiver.Content.Items
 
 			DynamicSpriteFont font = Terraria.GameContent.FontAssets.ItemStack.Value;
 
-			Utils.DrawBorderStringBig(Main.spriteBatch, $"STARLIGHT RIVER ALPHA TEST -- THINKER BOSS FIGHT TEST", new Vector2(Main.screenWidth / 2, 16), Color.White, 0.4f, 0.5f);
+			Utils.DrawBorderStringBig(Main.spriteBatch, $"STARLIGHT RIVER 0.3 ALPHA", new Vector2(Main.screenWidth / 2, 16), Color.White, 0.4f, 0.5f);
 			Utils.DrawBorderStringBig(Main.spriteBatch, $"ALPHA BUILD DOES NOT REPRESENT FINAL PRODUCT", new Vector2(Main.screenWidth / 2, 48), Color.White, 0.4f, 0.5f);
-			Utils.DrawBorderStringBig(Main.spriteBatch, $"Things to test: Gravitation potion/globe please", new Vector2(Main.screenWidth / 2, 86), new Color(255, 255, 200), 0.3f, 0.5f);
+			Utils.DrawBorderStringBig(Main.spriteBatch, $"Press T for target views", new Vector2(Main.screenWidth / 2, 86), Color.White, 0.4f, 0.5f);
+			Utils.DrawBorderStringBig(Main.spriteBatch, $"Things to test: Gravitation potion/globe please", new Vector2(Main.screenWidth / 2, 112), new Color(255, 255, 200), 0.3f, 0.5f);
 
 			/*Terraria.UI.Chat.ChatManager.DrawColorCodedString(Main.spriteBatch, font, ChatManager.ParseMessage("what? [c/ff22ff:This is a test of the\nnational emergency fuck system\nwoo] no way!", Color.White).ToArray(), new Vector2(Main.screenWidth / 2, 126), Color.White, 0, default, Vector2.One, out var hovered, -1);
 
@@ -224,6 +228,47 @@ namespace StarlightRiver.Content.Items
 
 			Terraria.UI.Chat.ChatManager.DrawColorCodedString(Main.spriteBatch, font, ChatManager.ParseMessage("what? [c/ff22ff:This is a test of the national emergency fuck system woo] no way!\n\ngreen is green but [c/22ff22: green is greener!]", Color.White).ToArray(), new Vector2(Main.screenWidth / 2, 426), Color.White, 0, default, Vector2.One, out var hovered3, 200);
 			*/
+			if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.T))
+			{
+				var spriteBatch = Main.spriteBatch;
+				var target1 = new Rectangle(100, 400, Main.screenWidth / 10, Main.screenHeight / 10);
+				var target2 = new Rectangle(100, 400 + Main.screenHeight / 10 + 20, Main.screenWidth / 10, Main.screenHeight / 10);
+				var target3 = new Rectangle(100, 400 + Main.screenHeight / 10 * 2 + 40, Main.screenWidth / 10, Main.screenHeight / 10);
+
+				var target4 = new Rectangle(100 + Main.screenWidth / 10 + 20, 400, Main.screenWidth / 10, Main.screenHeight / 10);
+				var target5 = new Rectangle(100 + Main.screenWidth / 10 + 20, 400 + Main.screenHeight / 10 + 20, Main.screenWidth / 10, Main.screenHeight / 10);
+				var target6 = new Rectangle(100 + Main.screenWidth / 10 + 20, 400 + Main.screenHeight / 10 * 2 + 40, PlayerTarget.Target.Width / 2, PlayerTarget.Target.Height / 2);
+
+				target1.Inflate(6, 6);
+				UIHelper.DrawBox(spriteBatch, target1, Color.Gray);
+				target1.Inflate(-6, -6);
+				spriteBatch.Draw(Main.screenTarget, target1, Color.White);
+
+				target2.Inflate(6, 6);
+				UIHelper.DrawBox(spriteBatch, target2, Color.Gray);
+				target2.Inflate(-6, -6);
+				spriteBatch.Draw(Main.screenTargetSwap, target2, Color.White);
+
+				target3.Inflate(6, 6);
+				UIHelper.DrawBox(spriteBatch, target3, Color.Gray);
+				target3.Inflate(-6, -6);
+				spriteBatch.Draw(FinalCaptureSystem.finalScreen, target3, Color.White);
+
+				target4.Inflate(6, 6);
+				UIHelper.DrawBox(spriteBatch, target4, Color.Gray);
+				target4.Inflate(-6, -6);
+				spriteBatch.Draw(LightingBuffer.screenLightingTarget.RenderTarget, target4, Color.White);
+
+				target5.Inflate(6, 6);
+				UIHelper.DrawBox(spriteBatch, target5, Color.Gray);
+				target5.Inflate(-6, -6);
+				spriteBatch.Draw(LightingBuffer.tileLightingTarget.RenderTarget, target5, Color.White);
+
+				target6.Inflate(6, 6);
+				UIHelper.DrawBox(spriteBatch, target6, Color.Gray);
+				target6.Inflate(-6, -6);
+				spriteBatch.Draw(PlayerTarget.Target, target6, Color.White);
+			}
 
 			Main.spriteBatch.End();
 		}
