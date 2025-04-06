@@ -136,7 +136,7 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
-			StarlightWorld.FlipFlag(WorldFlags.ThinkerBossOpen);
+			//StarlightWorld.FlipFlag(WorldFlags.ThinkerBossOpen);
 			//ModContent.GetInstance<StarlightWorld>().GraymatterGen(new GenerationProgress(), null);
 
 			/*SplineGlow.Spawn(player.Center, Vector2.Lerp(player.Center, Main.MouseWorld, 0.5f) + Vector2.UnitX.RotatedByRandom(6.28f) * 50, Main.MouseWorld, 120, 1, Color.Teal);
@@ -161,10 +161,10 @@ namespace StarlightRiver.Content.Items
 
 			//ModContent.GetInstance<StarlightWorld>().ObservatoryGen(null, null);
 
-			Main.LocalPlayer.GetHandler().Shards.Clear();
-			CagePuzzleSystem.solved = false;
+			//Main.LocalPlayer.GetHandler().Shards.Clear();
+			//CagePuzzleSystem.solved = false;
 
-			WorldGen.KillTile((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
+			//WorldGen.KillTile((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
 
 			return true;
 		}

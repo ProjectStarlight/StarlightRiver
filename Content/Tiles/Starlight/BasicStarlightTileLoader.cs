@@ -107,19 +107,6 @@ namespace StarlightRiver.Content.Tiles.Starlight
 					mapColor: new Color(79, 99, 122)
 				)
 			);
-
-			LoadGemsparkCompositeTile(
-				"DreamingOnyx",
-				"Dreaming Onyx",
-				6,
-				6,
-				new TileLoadData(
-					minPick: 100,
-					dustType: DustID.Granite,
-					hitSound: SoundID.DD2_SkeletonHurt,
-					mapColor: new Color(79, 99, 162)
-				)
-			);
 		}
 
 		public override void PostLoad()
