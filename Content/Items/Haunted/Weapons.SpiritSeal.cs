@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Items.Haunted
 			Item.damage = 12;
 			Item.mana = 7;
 			Item.shootSpeed = 14;
-			Item.rare = 2;
+			Item.rare = ItemRarityID.Green;
 
 			spread = 0.3f;
 		}
@@ -71,8 +71,8 @@ namespace StarlightRiver.Content.Items.Haunted
 			{
 				for (int k = 0; k < 10; k += 2)
 				{
-					var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Misc/TalismansProjectile").Value;
-					var pos = Projectile.oldPos[k] - Main.screenPosition + new Vector2(14, 11);
+					Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Misc/TalismansProjectile").Value;
+					Vector2 pos = Projectile.oldPos[k] - Main.screenPosition + new Vector2(14, 11);
 					var frame = new Rectangle(0, Projectile.frame * 22, 28, 22);
 
 					Main.spriteBatch.Draw(tex, pos, frame, Color.LimeGreen * (1 - k / 10f) * 0.2f, Projectile.oldRot[k], new Vector2(14, 11), 0.8f, 0, 0);
@@ -100,14 +100,16 @@ namespace StarlightRiver.Content.Items.Haunted
 
 		public override BuffStack GenerateDefaultStack(int duration)
 		{
-			var stack = new BuffStack();
-			stack.duration = duration;
+			var stack = new BuffStack
+			{
+				duration = duration
+			};
 			return stack;
 		}
 
 		public override void OnMaxStacks(NPC npc)
 		{
-			foreach(NPC other in Main.npc.Where(n => n.active && AnyInflicted(n)))
+			foreach (NPC other in Main.npc.Where(n => n.active && AnyInflicted(n)))
 			{
 				other.AddBuff(ModContent.BuffType<SpiritSealDamageShare>(), 600);
 			}
@@ -151,7 +153,7 @@ namespace StarlightRiver.Content.Items.Haunted
 		{
 			if (Inflicted(npc))
 			{
-				foreach(NPC n in Main.npc.Where(n => n.active && n.HasBuff<SpiritSealDamageShare>()))
+				foreach (NPC n in Main.npc.Where(n => n.active && n.HasBuff<SpiritSealDamageShare>()))
 				{
 					n.SimpleStrikeNPC(damageDone / 2, 0);
 				}
@@ -168,6 +170,5 @@ namespace StarlightRiver.Content.Items.Haunted
 				}
 			}
 		}
-
 	}
 }

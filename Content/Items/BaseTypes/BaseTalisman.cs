@@ -133,8 +133,8 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			{
 				var buff = GetInstance(npc) as BaseTalismanBuff;
 
-				var tex = texture.Value;
-				var pos = npc.Center + Vector2.UnitY * (npc.height / 2 + 32) * -1 - Main.screenPosition;
+				Texture2D tex = texture.Value;
+				Vector2 pos = npc.Center + Vector2.UnitY * (npc.height / 2 + 32) * -1 - Main.screenPosition;
 
 				var rand = new Random(npc.whoAmI);
 
@@ -143,7 +143,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 					for (int k = 0; k < buff.threshold; k++)
 					{
 						Vector2 off = new Vector2(rand.Next(npc.width), rand.Next(npc.height));
-						var pos2 = npc.position + off - Main.screenPosition;
+						Vector2 pos2 = npc.position + off - Main.screenPosition;
 						spriteBatch.Draw(tex, pos2, null, drawColor * (buff.triggerAnimTime / 15f), 0, tex.Size() / 2f, 1f + (1 - buff.triggerAnimTime / 15f), 0, 0);
 					}
 				}
@@ -152,7 +152,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 					for (int k = 0; k < buff.stacks.Count; k++)
 					{
 						Vector2 off = new Vector2(rand.Next(npc.width), rand.Next(npc.height));
-						var pos2 = npc.position + off - Main.screenPosition;
+						Vector2 pos2 = npc.position + off - Main.screenPosition;
 						spriteBatch.Draw(tex, pos2, null, drawColor, 0, tex.Size() / 2f, 1f, 0, 0);
 					}
 				}
