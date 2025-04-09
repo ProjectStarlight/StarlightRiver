@@ -7,6 +7,8 @@
 ## Content
 - Added the heavy flail and frost flail, melee weapons with a heavy overhead swing
 - Added Misery's Company, a cursed accessory that shares your defense and innoculation with your foes
+- New Magic Weapon: Talismans
+- New Magic Weapon: Spirit Seal
 - The following are spoilers for the crimson biome
 ||- Added gray maatter to the crimson, which emits a hallucinatory and causes hallucinations when stood on
 - Added dendrite to the crimson, a sneaky ore only visible if you are hallucinating
