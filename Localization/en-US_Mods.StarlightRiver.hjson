@@ -4517,6 +4517,7 @@ NPCs: {
 	Dreambeast.DisplayName: Dreambeast
 	WaterCube.DisplayName: Water Cube
 	DesertWisp2.DisplayName: Desert Wisp2
+	GestaltCell.DisplayName: Gestalt Cell
 }
 
 Buffs: {
