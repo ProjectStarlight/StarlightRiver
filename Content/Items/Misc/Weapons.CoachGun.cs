@@ -1,6 +1,8 @@
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Dusts;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
+using StarlightRiver.Core.Systems.PixelationSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -15,6 +17,11 @@ namespace StarlightRiver.Content.Items.Misc
 {
 	public class CoachGun : ModItem
 	{
+		public float shootRotation;
+		public int shootDirection;
+
+		public bool justAltUsed; // to prevent custom recoil anim
+
 		private int cooldown = 0;
 
 		public override string Texture => AssetDirectory.MiscItem + Name;
@@ -75,6 +82,8 @@ namespace StarlightRiver.Content.Items.Misc
 				Item.useTime = 15;
 				Item.useAnimation = 15;
 
+				justAltUsed = true;
+
 				if (cooldown > 0)
 					return false;
 			}
@@ -84,7 +93,12 @@ namespace StarlightRiver.Content.Items.Misc
 				Item.useAnimation = 35;
 				Item.useStyle = ItemUseStyleID.Shoot;
 				Item.noUseGraphic = false;
+
+				justAltUsed = false;
 			}
+
+			shootRotation = (Player.Center - Main.MouseWorld).ToRotation();
+			shootDirection = (Main.MouseWorld.X < Player.Center.X) ? -1 : 1;
 
 			return base.CanUseItem(Player);
 		}
@@ -109,6 +123,30 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 		}
 
+		public override void UseStyle(Player player, Rectangle heldItemFrame)
+		{
+			if (justAltUsed)
+				return;
+
+			Vector2 itemPosition = CommonGunAnimations.SetGunUseStyle(player, Item, shootDirection, -6f, new Vector2(82f, 22f), new Vector2(-50f, 0f));
+
+			float animProgress = 1f - player.itemTime / (float)player.itemTimeMax;
+
+			if (animProgress >= 0.35f)
+			{
+				float lerper = (animProgress - 0.35f) / 0.65f;
+				Dust.NewDustPerfect(itemPosition + new Vector2(55f, -2f * player.direction).RotatedBy(player.compositeFrontArm.rotation + 1.5707964f * player.gravDir), DustID.Smoke, Vector2.UnitY * -2f, (int)MathHelper.Lerp(210f, 200f, lerper), default, MathHelper.Lerp(0.5f, 1f, lerper)).noGravity = true;
+			}
+		}
+
+		public override void UseItemFrame(Player player)
+		{
+			if (justAltUsed)
+				return;
+
+			CommonGunAnimations.SetGunUseItemFrame(player, shootDirection, shootRotation, -0.2f, true);
+		}
+
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
 			if (player.altFunctionUse == 2)
@@ -117,27 +155,56 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 			else
 			{
-				float rot = velocity.ToRotation();
-				float spread = 0.4f;
+				Vector2 barrelPos = position + new Vector2(70f, -2f * player.direction).RotatedBy(velocity.ToRotation());
 
-				Vector2 offset = new Vector2(1, -0.05f * player.direction).RotatedBy(rot);
-
-				for (int k = 0; k < 15; k++)
+				for (int i = 0; i < 5; i++)
 				{
-					Vector2 direction = offset.RotatedByRandom(spread);
-					Dust.NewDustPerfect(position + offset * 70, ModContent.DustType<Dusts.Glow>(), direction * Main.rand.NextFloat(8), 125, new Color(150, 80, 40), Main.rand.NextFloat(0.2f, 0.5f));
+					Dust.NewDustPerfect(barrelPos + Main.rand.NextVector2Circular(5f, 5f), DustID.Torch, velocity.RotatedByRandom(0.5f).RotatedByRandom(0.5f) * Main.rand.NextFloat(0.25f), 0, default, 1.2f).noGravity = true;
+
+					Dust.NewDustPerfect(barrelPos + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<PixelatedEmber>(), velocity.RotatedByRandom(0.5f).RotatedByRandom(0.5f) * Main.rand.NextFloat(0.25f), 0, new Color(255, 125, 0, 0), 0.15f).customData = -player.direction;
+
+					Dust.NewDustPerfect(barrelPos + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<PixelatedEmber>(), velocity.RotatedByRandom(0.5f).RotatedByRandom(0.5f) * Main.rand.NextFloat(0.25f), 0, new Color(255, 80, 0, 0), 0.15f).customData = -player.direction;
+
+					Dust.NewDustPerfect(barrelPos + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<PixelatedGlow>(), velocity.RotatedByRandom(0.5f).RotatedByRandom(0.5f) * Main.rand.NextFloat(0.25f), 0, new Color(255, 50, 0, 0), 0.35f).noGravity = true;
 				}
 
-				Helper.PlayPitched("Guns/PlinkLever", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), position);
-				Helper.PlayPitched("Guns/RifleLight", 0.7f, Main.rand.NextFloat(-0.1f, 0.1f), position);
-				Dust.NewDustPerfect(player.Center + offset * 70, ModContent.DustType<Dusts.Smoke>(), Vector2.UnitY * -2 + offset.RotatedByRandom(spread) * 5, 0, new Color(60, 55, 50) * 0.5f, Main.rand.NextFloat(0.5f, 1));
+				for (int i = 0; i < 2; i++)
+				{
+					Dust.NewDustPerfect(barrelPos + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<CoachGunSmokeDust>(), velocity * 0.025f, 130, new Color(255, 150, 0, 0), 0.1f);
+
+					Dust.NewDustPerfect(barrelPos + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<CoachGunSmokeDust>(), velocity * 0.05f, 160, new Color(255, 150, 0, 0), 0.15f);
+
+					Dust.NewDustPerfect(barrelPos + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<CoachGunSmokeDust>(), velocity * Main.rand.NextFloat(0.075f, 0.125f) - Vector2.UnitY * Main.rand.NextFloat(0.5f, 1.5f), 175, new Color(255, 150, 50, 0), 0.125f).noGravity = true;
+
+					Dust.NewDustPerfect(barrelPos + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<CoachGunSmokeDust>(), velocity * Main.rand.NextFloat(0.075f, 0.125f) - Vector2.UnitY * Main.rand.NextFloat(0.5f, 2f), 175, new Color(255, 150, 50, 0), 0.1f).noGravity = true;
+
+				}
+
+				Dust.NewDustPerfect(barrelPos, ModContent.DustType<CoachGunMuzzleFlashDust>(), Vector2.Zero, 0, default, Main.rand.NextFloat(1f, 1.15f)).rotation = velocity.ToRotation();
+
+				Vector2 shellPos = player.Center + new Vector2(10f, -4f * player.direction).RotatedBy(velocity.ToRotation());
+
+				Gore.NewGoreDirect(source, shellPos, new Vector2(player.direction * -1, -0.5f) * 2, Mod.Find<ModGore>("CoachGunCasing").Type, 1f).timeLeft = 60;
+
+				Dust.NewDustPerfect(shellPos + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<CoachGunSmokeDust>(), new Vector2(player.direction * -1, -0.5f), 150, new Color(255, 255, 255, 0), 0.05f);
+
+				for (int i = 0; i < 3; i++)
+				{
+					Dust.NewDustPerfect(shellPos + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<PixelatedEmber>(), new Vector2(player.direction * -1, -0.5f).RotatedByRandom(0.4f) * Main.rand.NextFloat(2f), 0, new Color(255, 125, 0, 0), 0.15f).customData = player.direction;
+
+					Dust.NewDustPerfect(shellPos + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<PixelatedEmber>(), new Vector2(player.direction * -1, -0.5f).RotatedByRandom(0.4f) * Main.rand.NextFloat(2f), 0, new Color(255, 80, 0, 0), 0.15f).customData = player.direction;
+
+					Dust.NewDustPerfect(shellPos + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<PixelatedGlow>(), new Vector2(player.direction * -1, -0.5f).RotatedByRandom(0.4f) * Main.rand.NextFloat(4f), 0, new Color(255, 150, 0, 0), 0.35f);
+				}
+
+				SoundHelper.PlayPitched("Guns/PlinkLever", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), position);
+				SoundHelper.PlayPitched("Guns/RifleLight", 0.7f, Main.rand.NextFloat(-0.1f, 0.1f), position);
 
 				var proj = Projectile.NewProjectileDirect(player.GetSource_ItemUse(Item), position, velocity * 2, type, damage, knockback, player.whoAmI);
 				proj.GetGlobalProjectile<CoachGunGlobalProj>().shotFromGun = true;
 
-				Projectile.NewProjectile(player.GetSource_ItemUse(Item), position + offset * 70, Vector2.Zero, ModContent.ProjectileType<CoachGunMuzzleFlash>(), 0, 0, player.whoAmI, rot);
-
-				Gore.NewGore(source, player.Center + offset * 20, new Vector2(player.direction * -1, -0.5f) * 2, Mod.Find<ModGore>("CoachGunCasing").Type, 1f);
+				CameraSystem.shake += 2;
+				Item.noUseGraphic = true;
 
 				return false;
 			}
@@ -186,10 +253,10 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D mainTex = TextureAssets.Projectile[Projectile.type].Value;
+			Texture2D mainTex = Assets.Items.Misc.CoachGunMuzzleFlash.Value;
 			Main.spriteBatch.Draw(mainTex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, new Vector2(8, mainTex.Height / 2), Projectile.scale, SpriteEffects.None, 0f);
 
-			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
+			Texture2D glowTex = Assets.Items.Misc.CoachGunMuzzleFlash_Glow.Value;
 			Color glowColor = Color.Orange;
 			glowColor.A = 0;
 			Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, glowColor, Projectile.rotation, new Vector2(8, glowTex.Height / 2), Projectile.scale, SpriteEffects.None, 0f);
@@ -260,11 +327,11 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			CameraSystem.shake += 8;
-			Helper.PlayPitched("Magic/FireHit", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
-			Helper.PlayPitched("Impacts/AirstrikeImpact", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
+			SoundHelper.PlayPitched("Magic/FireHit", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
+			SoundHelper.PlayPitched("Impacts/AirstrikeImpact", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
 
 			for (int i = 0; i < 10; i++)
 			{
@@ -321,10 +388,10 @@ namespace StarlightRiver.Content.Items.Misc
 			else
 				overlayColor = Color.Lerp(Color.Orange * 0.5f, Color.White, (progress - 0.5f) * 2);
 
-			Texture2D mainTex = TextureAssets.Projectile[Projectile.type].Value;
+			Texture2D mainTex = Assets.Items.Misc.CoachGunBomb.Value;
 			spriteBatch.Draw(mainTex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, mainTex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
 
-			Texture2D overlayTex = ModContent.Request<Texture2D>(Texture + "_White").Value;
+			Texture2D overlayTex = Assets.Items.Misc.CoachGunBomb_White.Value;
 			spriteBatch.Draw(overlayTex, Projectile.Center - Main.screenPosition, null, overlayColor, Projectile.rotation, mainTex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
 
 			progress *= progress;
@@ -335,7 +402,7 @@ namespace StarlightRiver.Content.Items.Misc
 			else
 				glowColor = Color.Lerp(Color.Orange, Color.White, (progress - 0.5f) * 2);
 
-			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
+			Texture2D glowTex = Assets.Items.Misc.CoachGunBomb_Glow.Value;
 			spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, new Color(glowColor.R, glowColor.G, glowColor.B, 0) * 0.5f, Projectile.rotation, glowTex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
 			return false;
 		}
@@ -361,12 +428,15 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => 10, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				float progress = 1 - Projectile.timeLeft / 150f;
-				var trailColor = Color.Lerp(Color.Red, Color.Yellow, progress);
-				return trailColor * 0.8f;
-			});
+				trail = new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => 10, factor =>
+							{
+								float progress = 1 - Projectile.timeLeft / 150f;
+								var trailColor = Color.Lerp(Color.Red, Color.Yellow, progress);
+								return trailColor * 0.8f;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
@@ -374,19 +444,23 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void DrawTrail(SpriteBatch spriteBatch)
 		{
-			spriteBatch.End();
-			Effect effect = Filters.Scene["CoachBombTrail"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CoachBombTrail").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				spriteBatch.End();
 
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.MotionTrail.Value);
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			trail?.Render(effect);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.MotionTrail.Value);
 
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				trail?.Render(effect);
+
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 		}
 	}
 
@@ -516,6 +590,114 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (projectile.DamageType == DamageClass.Ranged && damageIncreased)
 				modifiers.SourceDamage *= 1.2f;
+		}
+	}
+
+	public class CoachGunMuzzleFlashDust : ModDust
+	{
+		public override string Texture => AssetDirectory.Invisible;
+
+		public override void OnSpawn(Dust dust)
+		{
+			dust.frame = new Rectangle(0, 0, 4, 4);
+		}
+
+		public override bool Update(Dust dust)
+		{
+			dust.alpha += 20;
+			dust.alpha = (int)(dust.alpha * 1.05f);
+
+			if (dust.alpha >= 255)
+				dust.active = false;
+
+			return false;
+		}
+
+		public override bool PreDraw(Dust dust)
+		{
+			float lerper = 1f - dust.alpha / 255f;
+
+			Texture2D tex = Assets.Items.Misc.CoachGunMuzzleFlashDust.Value;
+			Texture2D texBlur = Assets.Items.Misc.CoachGunMuzzleFlashDust_Blur.Value;
+			Texture2D texGlow = Assets.Items.Misc.CoachGunMuzzleFlashDust_Glow.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
+
+			int frame = 0;
+			if (lerper < 0.5f)
+				frame = 1;
+
+			Main.spriteBatch.Draw(bloomTex, dust.position - Main.screenPosition, null, new Color(255, 100, 0, 0) * 0.25f * lerper, dust.rotation, bloomTex.Size() / 2f, dust.scale * 1.25f, 0f, 0f);
+
+			Main.spriteBatch.Draw(texGlow, dust.position - Main.screenPosition, texGlow.Frame(verticalFrames: 2, frameY: frame), new Color(255, 100, 0, 0) * lerper, dust.rotation, texGlow.Frame(verticalFrames: 2, frameY: frame).Size() / 2f, dust.scale, 0f, 0f);
+
+			Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, tex.Frame(verticalFrames: 2, frameY: frame), Color.White * lerper, dust.rotation, tex.Frame(verticalFrames: 2, frameY: frame).Size() / 2f, dust.scale, 0f, 0f);
+
+			Main.spriteBatch.Draw(texBlur, dust.position - Main.screenPosition, texBlur.Frame(verticalFrames: 2, frameY: frame), Color.White with { A = 0 } * 0.5f * lerper, dust.rotation, texBlur.Frame(verticalFrames: 2, frameY: frame).Size() / 2f, dust.scale, 0f, 0f);
+
+			return false;
+		}
+	}
+
+	public class CoachGunSmokeDust : ModDust
+	{
+		public override string Texture => AssetDirectory.Invisible;
+
+		public override void OnSpawn(Dust dust)
+		{
+			dust.frame = new Rectangle(0, 0, 4, 4);
+			dust.customData = 1 + Main.rand.Next(2);
+			dust.rotation = Main.rand.NextFloat(6.28f);
+		}
+
+		public override bool Update(Dust dust)
+		{
+			dust.position.Y -= 0.1f;
+			if (dust.noGravity)
+				dust.position.Y -= 0.5f;
+
+			dust.position += dust.velocity;
+
+			if (!dust.noGravity)
+			{
+				dust.velocity *= 0.99f;
+			}
+			else
+			{
+				dust.velocity *= 0.975f;
+				dust.velocity.X *= 0.99f;
+			}
+
+			dust.rotation += dust.velocity.Length() * 0.01f;
+
+			if (dust.noGravity)
+				dust.alpha += 2;
+			else
+				dust.alpha += 5;
+
+			dust.alpha = (int)(dust.alpha * 1.005f);
+
+			if (!dust.noGravity)
+				dust.scale *= 1.02f;
+			else
+				dust.scale *= 0.99f;
+
+			if (dust.alpha >= 255)
+				dust.active = false;
+
+			return false;
+		}
+
+		public override bool PreDraw(Dust dust)
+		{
+			float lerper = 1f - dust.alpha / 255f;
+
+			Texture2D tex = Assets.SmokeAlpha_1.Value;
+			if ((int)dust.customData > 1)
+				tex = Assets.SmokeAlpha_2.Value;
+
+			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () => Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, Color.Lerp(dust.color, new Color(255, 255, 255, 0), Eases.EaseQuinticIn(1f - lerper)) * lerper, dust.rotation, tex.Size() / 2f, dust.scale, 0f, 0f));
+
+			return false;
 		}
 	}
 }

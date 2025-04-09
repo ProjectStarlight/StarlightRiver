@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Helpers;
+﻿using StarlightRiver.Core.Loaders;
+using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using System.IO;
 using Terraria.DataStructures;
@@ -63,6 +64,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 			Projectile.tileCollide = false;
 			Projectile.penetrate = -1;
 			Projectile.hostile = false;
+			Projectile.usesLocalNPCImmunity = true;
 		}
 
 		public override void OnSpawn(IEntitySource source)
@@ -133,21 +135,24 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 12, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				float alpha = 1;
+				trail = new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 12, factor =>
+							{
+								float alpha = 1;
 
-				if (factor.X > 0.8f)
-					alpha = 1 + (factor.X - 0.8f) * 30;
+								if (factor.X > 0.8f)
+									alpha = 1 + (factor.X - 0.8f) * 30;
 
-				if (factor.X == 1)
-					return Color.Transparent;
+								if (factor.X == 1)
+									return Color.Transparent;
 
-				if (Projectile.timeLeft < 15)
-					alpha *= Projectile.timeLeft / 15f;
+								if (Projectile.timeLeft < 15)
+									alpha *= Projectile.timeLeft / 15f;
 
-				return new Color(40, 50 + (int)(factor.X * 100), 255) * factor.X * alpha;
-			});
+								return new Color(40, 50 + (int)(factor.X * 100), 255) * factor.X * alpha;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
@@ -155,18 +160,21 @@ namespace StarlightRiver.Content.Items.Manabonds
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
-			effect.Parameters["repeats"].SetValue(2f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
+				effect.Parameters["repeats"].SetValue(2f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
-			trail?.Render(effect);
+				trail?.Render(effect);
+			}
 		}
 
 		public override void SendExtraAI(BinaryWriter writer)

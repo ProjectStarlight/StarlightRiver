@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using Terraria.Graphics.Effects;
@@ -203,14 +204,17 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, oldPositionCacheLength, new NoTip(), factor => factor * trailMaxWidth, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				// 1 = full opacity, 0 = transparent.
-				float normalisedAlpha = 1 - Projectile.alpha / 255f;
+				trail = new Trail(Main.instance.GraphicsDevice, oldPositionCacheLength, new NoTip(), factor => factor * trailMaxWidth, factor =>
+							{
+								// 1 = full opacity, 0 = transparent.
+								float normalisedAlpha = 1 - Projectile.alpha / 255f;
 
-				// Scales opacity with the Projectile alpha as well as the distance from the beginning of the trail.
-				return Color.Crimson * normalisedAlpha * factor.X;
-			});
+								// Scales opacity with the Projectile alpha as well as the distance from the beginning of the trail.
+								return Color.Crimson * normalisedAlpha * factor.X;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
@@ -218,15 +222,18 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["Primitives"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("Primitives").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 
-			trail?.Render(effect);
+				trail?.Render(effect);
+			}
 		}
 
 		public override bool? CanHitNPC(NPC target)
@@ -243,7 +250,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * 0.0001f;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			trail?.Dispose();
 		}

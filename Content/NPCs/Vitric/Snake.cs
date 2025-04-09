@@ -163,7 +163,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			{
 				var toCheck = Vector2.Lerp(NPC.Center, Target.Center, k / checks);
 
-				if (Helpers.Helper.PointInTile(toCheck))
+				if (Helpers.CollisionHelper.PointInTile(toCheck))
 					return false;
 			}
 
@@ -230,7 +230,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		}
 	}
 
-	public class SnakeSpit : ModProjectile, IDrawAdditive
+	public class SnakeSpit : ModProjectile
 	{
 		public override string Texture => AssetDirectory.VitricNpc + Name;
 
@@ -253,7 +253,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override void AI()
 		{
-			var d = Dust.NewDustPerfect(Projectile.Center + Projectile.velocity, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 150, 50), 0.4f);
+			var d = Dust.NewDustPerfect(Projectile.Center + Projectile.velocity, DustType<Dusts.PixelatedEmber>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 150, 50, 0), 0.1f);
 			d.noGravity = false;
 
 			Projectile.rotation = Projectile.velocity.ToRotation() - 1.57f;
@@ -283,7 +283,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			}
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int k = 0; k <= 10; k++)
 			{
@@ -296,16 +296,12 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		{
 			Texture2D tex = Request<Texture2D>(Texture).Value;
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, tex.Size() / 2, 1, 0, 0);
-		}
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
-			Texture2D tex = Assets.Tiles.Moonstone.GlowSmall.Value;
+			Texture2D tex2 = Assets.Tiles.Moonstone.GlowSmall.Value;
 			float alpha = Projectile.timeLeft > 160 ? 1 - (Projectile.timeLeft - 160) / 20f : 1;
-			Color color = new Color(255, 150, 50) * alpha;
+			Color color = new Color(255, 150, 50, 0) * alpha;
 
-			spriteBatch.Draw(tex, Projectile.Center + Vector2.Normalize(Projectile.velocity) * -40 - Main.screenPosition, tex.Frame(),
-				color * (Projectile.timeLeft / 140f), Projectile.rotation, tex.Size() / 2, 1.8f, 0, 0);
+			Main.spriteBatch.Draw(tex2, Projectile.Center + Vector2.Normalize(Projectile.velocity) * -40 - Main.screenPosition, tex2.Frame(), color * (Projectile.timeLeft / 140f), Projectile.rotation, tex2.Size() / 2, 1.8f, 0, 0);
 		}
 	}
 }

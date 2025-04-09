@@ -4,6 +4,7 @@ using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.PersistentData;
 using StarlightRiver.Content.Tiles.Blockers;
 using StarlightRiver.Core.Loaders.UILoading;
+using StarlightRiver.Core.Systems.BarrierSystem;
 using StarlightRiver.Core.Systems.BossRushSystem;
 using System;
 using System.IO;
@@ -14,7 +15,7 @@ using static Terraria.ModLoader.ModContent;
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
 	[AutoloadBossHead]
-	public partial class Glassweaver : ModNPC, IHintable
+	public partial class Glassweaver : ModNPC
 	{
 		public static readonly Color GlowDustOrange = new(6255, 108, 0);
 		public static readonly Color GlassColor = new(60, 170, 205);
@@ -43,6 +44,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		public Rectangle Arena => new((int)arenaPos.X - 35 * 16, (int)arenaPos.Y - 30 * 16, 70 * 16, 30 * 16);
 
 		public override string Texture => AssetDirectory.Glassweaver + Name;
+
+		public static int SmallProjectileDamage => Helpers.StarlightMathHelper.GetProjectileDamage(100, 50, 30);
+		public static int LargeProjectileDamage => Helpers.StarlightMathHelper.GetProjectileDamage(180, 90, 60);
 
 		//Phase tracking utils
 		public enum Phases
@@ -78,7 +82,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			NPCID.Sets.ShouldBeCountedAsBoss[Type] = true;
 			NPCID.Sets.BossBestiaryPriority.Add(Type);
 
-			var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0)
+			var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
 			{
 
 			};
@@ -89,17 +93,20 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		{
 			NPC.width = 82;
 			NPC.height = 75;
-			NPC.lifeMax = 2300;
+			NPC.lifeMax = 2500;
 			NPC.damage = 20;
 			NPC.aiStyle = -1;
 			NPC.noGravity = true;
 			NPC.knockBackResist = 0;
 			NPC.boss = true;
-			NPC.defense = 14;
+			NPC.defense = 10;
 			NPC.HitSound = SoundID.NPCHit52;
 			Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/GlassWeaver");
 			NPC.dontTakeDamage = true;
 			NPC.npcSlots = 10;
+
+			NPC.GetGlobalNPC<BarrierNPC>().maxBarrier = 500;
+			NPC.GetGlobalNPC<BarrierNPC>().barrier = 500;
 		}
 
 		private SpriteEffects GetSpriteEffects()
@@ -119,7 +126,18 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 		{
-			NPC.lifeMax = (int)(2800 * bossAdjustment);
+			NPC.lifeMax = 3000;
+			NPC.GetGlobalNPC<BarrierNPC>().maxBarrier = 650;
+
+			if (Main.masterMode)
+			{
+				NPC.lifeMax = 4000;
+				NPC.GetGlobalNPC<BarrierNPC>().maxBarrier = 900;
+			}
+
+			NPC.lifeMax = StarlightMathHelper.GetScaledBossLife(NPC.lifeMax, balance, numPlayers);
+			NPC.GetGlobalNPC<BarrierNPC>().maxBarrier = StarlightMathHelper.GetScaledBossLife(NPC.GetGlobalNPC<BarrierNPC>().maxBarrier, balance, numPlayers);
+			NPC.GetGlobalNPC<BarrierNPC>().barrier = NPC.GetGlobalNPC<BarrierNPC>().maxBarrier;
 		}
 
 		public override bool CheckDead()
@@ -159,8 +177,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 					if (AttackTimer <= 120)
 					{
-						if (Main.netMode != NetmodeID.Server)
-							RichTextBox.CloseDialogue(); // may accidentially kick players that aren't involved in the fight out of their modal but its probably good enough as is
+						if (Main.netMode != NetmodeID.Server && !DialogUI.closing)
+							DialogUI.CloseDialogue(); // may accidentially kick players that aren't involved in the fight out of their modal but its probably good enough as is
 
 						SpawnAnimation();
 					}
@@ -205,7 +223,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				case (int)Phases.ReturnToForeground:
 
 					if (AttackTimer == 1 && Main.netMode != NetmodeID.Server) // Only display in singelplayer or multiplayer client
-						UILoader.GetUIState<TextCard>().Display("Glassweaver", "Worker of the Anvil", null, 240, 1.2f, false);
+						TextCard.Display("Glassweaver", "Worker of the Anvil", 240, 1.2f);
 
 					JumpBackAnimation();
 
@@ -217,7 +235,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					NPC.rotation = MathHelper.Lerp(NPC.rotation, 0, 0.33f);
 
 					if (NPC.velocity.Y > 0f && NPC.collideY && !disableJumpSound)
-						Helpers.Helper.PlayPitched("GlassMiniboss/RippedSoundJump", 1f, -0.1f, NPC.Center);
+						Helpers.SoundHelper.PlayPitched("GlassMiniboss/RippedSoundJump", 1f, -0.1f, NPC.Center);
 
 					if (AttackTimer == 1)
 					{
@@ -303,8 +321,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 					if (Math.Abs(NPC.Center.X - arenaPos.X) < 5)
 					{
-						NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<GlassweaverWaiting>(), 0, 0, 3);
+						NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<GlassweaverFriendly>(), 0, 0, 3);
 						NPC.active = false;
+
+						StarlightWorld.Flag(WorldFlags.GlassweaverDowned);
 					}
 
 					break;
@@ -322,7 +342,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 					if (Math.Abs(NPC.Center.X - arenaPos.X) < 5)
 					{
-						NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<GlassweaverWaiting>(), 0, 0, StarlightWorld.HasFlag(WorldFlags.DesertOpen) ? 4 : 2);
+						NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<GlassweaverFriendly>(), 0, 0, StarlightWorld.HasFlag(WorldFlags.DesertOpen) ? 4 : 2);
 						NPC.active = false;
 					}
 
@@ -341,14 +361,14 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
-			writer.WritePackedVector2(moveTarget);
+			writer.WriteVector2(moveTarget);
 			writer.Write(attackVariant);
 			writer.Write(NPC.direction);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
-			moveTarget = reader.ReadPackedVector2();
+			moveTarget = reader.ReadVector2();
 			attackVariant = reader.ReadBoolean();
 			NPC.direction = reader.ReadInt32();
 		}
@@ -515,10 +535,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			spriteBatch.Draw(weaverGlow.Value, NPC.Center + drawPos, frame, glowColor, NPC.rotation, origin, NPC.scale, GetSpriteEffects(), 0);
 
 			return false;
-		}
-		public string GetHint()
-		{
-			return "Now he's getting serious.";
 		}
 	}
 }

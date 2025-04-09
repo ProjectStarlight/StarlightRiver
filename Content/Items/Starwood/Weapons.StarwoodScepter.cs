@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Items.Starwood
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Starwood Scepter");
-			Tooltip.SetDefault("Summons two halves of a sentient star\nThe stars drop mana stars when hitting summon tagged enemies");
+			Tooltip.SetDefault("Summons two halves of a sentient star\nThe stars inflict {{BUFF:StarstruckDebuff}}\nThe stars drop mana stars when hitting summon tagged enemies");
 
 			ItemID.Sets.GamepadWholeScreenUseRange[Item.type] = true; // This lets the Player target anywhere on the whole screen while using a controller.
 			ItemID.Sets.LockOnIgnoresCollision[Item.type] = true;
@@ -59,7 +59,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
 			(proj.ModProjectile as StarwoodScepterSummonSplit).otherProj = proj2;
 
-			Helpers.DustHelper.DrawStar(Main.MouseWorld, ModContent.DustType<Dusts.GlowFastDecelerate>(), 5, 1, 1, 0.5f, 1, 1f, 0, -1, new Color(240, 200, 20));
+			Helpers.DustHelper.SpawnStarPattern(Main.MouseWorld, ModContent.DustType<Dusts.GlowFastDecelerate>(), 5, 1, 1, 0.5f, 1, 1f, 0, -1, new Color(240, 200, 20));
 
 			return false;
 		}
@@ -220,7 +220,7 @@ namespace StarlightRiver.Content.Items.Starwood
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
 			Texture2D blurTex = ModContent.Request<Texture2D>(Texture + "_Blur").Value;
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			if (HasEmpoweredStar)
 				return false;
@@ -361,7 +361,7 @@ namespace StarlightRiver.Content.Items.Starwood
 					rotationalVelocity = Vector2.Lerp(rotationalVelocity, Projectile.DirectionTo(otherProj.Center), 0.15f);
 					Projectile.rotation = rotationalVelocity.ToRotation();
 
-					Projectile.Center = Vector2.Lerp(Projectile.Center, otherProj.Center, EaseBuilder.EaseCubicIn.Ease((empowermentTimer - 25f) / 45f));
+					Projectile.Center = Vector2.Lerp(Projectile.Center, otherProj.Center, Eases.EaseCubicIn((empowermentTimer - 25f) / 45f));
 				}
 
 				if (Main.rand.NextBool(5))
@@ -386,7 +386,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
 				empowermentTimer = 0;
 
-				Helpers.DustHelper.DrawStar(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), 5, 1.5f, 1.5f, 0.5f, 1, 1f, 0, -1, new Color(0, 0, 255));
+				Helpers.DustHelper.SpawnStarPattern(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), 5, 1.5f, 1.5f, 0.5f, 1, 1f, 0, -1, new Color(0, 0, 255));
 
 				for (int i = 0; i < 20; i++)
 				{
@@ -548,7 +548,7 @@ namespace StarlightRiver.Content.Items.Starwood
 			return FoundTarget;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			SoundEngine.PlaySound(SoundID.DD2_WitherBeastHurt, Projectile.Center);
 
@@ -609,7 +609,7 @@ namespace StarlightRiver.Content.Items.Starwood
 					if (AttackTimer < 15f)
 					{
 						Projectile.velocity *= 0.94f;
-						Projectile.rotation += MathHelper.Lerp(0.05f, 1f, EaseBuilder.EaseCircularIn.Ease(AttackTimer / 15f));
+						Projectile.rotation += MathHelper.Lerp(0.05f, 1f, Eases.EaseCircularIn(AttackTimer / 15f));
 					}
 					else
 					{
@@ -618,7 +618,7 @@ namespace StarlightRiver.Content.Items.Starwood
 							Projectile.velocity += Projectile.DirectionTo(Target.Center) * 10f;
 							SoundEngine.PlaySound(SoundID.Item9, Projectile.Center);
 
-							Helpers.DustHelper.DrawStar(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), 5, 1f, 0.65f, 0.65f, 1, 1f, 0, Main.rand.NextFloat(-1f, 1f), new Color(0, 0, 255));
+							Helpers.DustHelper.SpawnStarPattern(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), 5, 1f, 0.65f, 0.65f, 1, 1f, 0, Main.rand.NextFloat(-1f, 1f), new Color(0, 0, 255));
 						}
 
 						float distance = Vector2.Distance(Target.Center, Projectile.Center);
@@ -661,7 +661,7 @@ namespace StarlightRiver.Content.Items.Starwood
 		{
 			if (target == Target)
 			{
-				Helpers.DustHelper.DrawStar(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), 5, 1f, 1f, 0.55f, 1, 1f, 0, Main.rand.NextFloat(-1f, 1f), new Color(0, 0, 255));
+				Helpers.DustHelper.SpawnStarPattern(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), 5, 1f, 1f, 0.55f, 1, 1f, 0, Main.rand.NextFloat(-1f, 1f), new Color(0, 0, 255));
 
 				for (int i = 0; i < 10; i++)
 				{
@@ -687,7 +687,7 @@ namespace StarlightRiver.Content.Items.Starwood
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
 			Texture2D blurTex = ModContent.Request<Texture2D>(Texture + "_Blur").Value;
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			lightColor = Color.White;
 
@@ -799,25 +799,12 @@ namespace StarlightRiver.Content.Items.Starwood
 	{
 		public override string Texture => AssetDirectory.Debug;
 
-		public StarstruckDebuff() : base("Starstruck", "Reach for the stars", true) { }
-
-		public override void Load()
-		{
-			StarlightNPC.UpdateLifeRegenEvent += ApplyDot;
-		}
-
-		private void ApplyDot(NPC npc, ref int damage)
-		{
-			if (Inflicted(npc))
-			{
-				npc.lifeRegen -= 16;
-				if (damage < 1)
-					damage = 1;
-			}
-		}
+		public StarstruckDebuff() : base("Starstruck", "Deals 8 damage per second", true) { }
 
 		public override void Update(NPC npc, ref int buffIndex)
 		{
+			npc.lifeRegen -= 16;
+
 			if (Main.rand.NextBool(7))
 				Dust.NewDustPerfect(npc.Center + Main.rand.NextVector2Circular(npc.width, npc.height), ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(5f, 5f), 100, new Color(255, 255, 0), 0.5f);
 

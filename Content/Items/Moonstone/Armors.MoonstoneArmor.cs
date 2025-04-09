@@ -1,5 +1,6 @@
 ﻿using NetEasy;
 using StarlightRiver.Content.CustomHooks;
+using StarlightRiver.Content.GUI;
 using StarlightRiver.Core.Systems.BarrierSystem;
 using System;
 using System.Collections.Generic;
@@ -73,7 +74,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Moonstone Helmet");
-			Tooltip.SetDefault("2% increased melee critical strike chance\n+20 {{Barrier}}");
+			Tooltip.SetDefault("2% increased melee critical strike chance\n+20 maximum {{Barrier}}");
 		}
 
 		public override void SetDefaults()
@@ -108,6 +109,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 				moonFlash--;
 
 			Lighting.AddLight(player.Center + new Vector2(0, -16), new Vector3(0.55f, 0.5f, 0.9f) * moonCharge / 720f * 0.5f);
+
+			ArmorChargeUI.SetMessage($"{Math.Truncate(moonCharge / 720f * 100)}%");
 
 			if (spearOn)
 			{
@@ -214,7 +217,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			if (IsArmorSet(Player) && !Player.dead && PlayerTarget.canUseTarget)
 			{
 				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 				var head = Player.armor[0].ModItem as MoonstoneHead;
 				float charge = head.moonCharge / 720f;
@@ -234,7 +237,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 				spriteBatch.End();
 
-				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 
@@ -255,7 +258,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Moonstone Chestpiece");
-			Tooltip.SetDefault("+35 {{Barrier}}");
+			Tooltip.SetDefault("+35 maximum {{Barrier}}");
 		}
 
 		public override void SetDefaults()
@@ -312,7 +315,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Moonstone Greaves");
-			Tooltip.SetDefault("Improved acceleration\n +25 {{Barrier}}");
+			Tooltip.SetDefault("Improved acceleration\n +25 maximum {{Barrier}}");
 		}
 
 		public override void SetDefaults()

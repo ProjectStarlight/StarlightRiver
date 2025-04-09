@@ -8,7 +8,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Permafrost
 {
-	class AuroraIce : ModTile, IHintable
+	class AuroraIce : ModTile
 	{
 		public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/AuroraIce";
 
@@ -104,7 +104,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			if (tile.TileFrameY >= 4 * 18 || CheckIce(i - 1, j) || CheckIce(i, j - 1) || CheckIce(i + 1, j) || CheckIce(i, j + 1))
 			{
 				Color light = Lighting.GetColor(i, j);
-				spriteBatch.Draw(Assets.Tiles.Permafrost.AuroraIceUnder.Value, (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY % (4 * 18), 16, 16), light);
+				spriteBatch.Draw(Assets.Tiles.Permafrost.AuroraIceUnder.Value, new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY % (4 * 18), 16, 16), light);
 			}
 
 			if (tile.TileFrameY >= 4 * 18)
@@ -123,7 +123,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			if (color.G < 80)
 				color.G = 80;
 
-			Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition;
+			Vector2 pos = new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange - Main.screenPosition;
 			var frame = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16);
 
 			spriteBatch.Draw(TextureAssets.Tile[tile.TileType].Value, pos, frame, color * 0.3f);
@@ -165,11 +165,6 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 		bool CheckIce(int x, int y)
 		{
 			return Framing.GetTileSafely(x, y).TileType == TileID.IceBlock;
-		}
-
-		public string GetHint()
-		{
-			return "It fades away when you look at it...";
 		}
 	}
 }

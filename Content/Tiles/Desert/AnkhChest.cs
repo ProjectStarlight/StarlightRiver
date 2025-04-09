@@ -11,7 +11,7 @@ using Terraria.ObjectData;
 
 namespace StarlightRiver.Content.Tiles.Desert
 {
-	public class AnkhChest : DummyTile, IHintable
+	public class AnkhChest : DummyTile
 	{
 		public override string Texture => AssetDirectory.DesertTile + Name;
 
@@ -236,11 +236,6 @@ namespace StarlightRiver.Content.Tiles.Desert
 				player.cursorItemIconEnabled = true;
 			}
 		}
-
-		public string GetHint()
-		{
-			return "Starlight-infused crystals encrust the chests' lock... Perhaps equally powerful starlight could break them off";
-		}
 	}
 
 	internal class AnkhChestDummy : Dummy
@@ -282,7 +277,7 @@ namespace StarlightRiver.Content.Tiles.Desert
 		public override void PostDraw(Color lightColor)
 		{
 			Texture2D tex = Assets.Tiles.Desert.AnkhChestGlow.Value;
-			Color color = Helper.IndicatorColorProximity(150, 300, Center);
+			Color color = CommonVisualEffects.IndicatorColorProximity(150, 300, Center);
 
 			Main.spriteBatch.Draw(tex, position - new Vector2(1, -1) - Main.screenPosition, color);
 		}

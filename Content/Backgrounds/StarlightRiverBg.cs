@@ -1,5 +1,11 @@
-﻿using StarlightRiver.Core.Systems.ScreenTargetSystem;
+﻿using StarlightRiver.Content.Bosses.TheThinkerBoss;
+using StarlightRiver.Content.Items.Food.Special;
+using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems;
+using StarlightRiver.Core.Systems.BossRushSystem;
+using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
+using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Content.Backgrounds
 {
@@ -13,6 +19,9 @@ namespace StarlightRiver.Content.Backgrounds
 		public static ParticleSystem stars;
 
 		public static float starOpacity = 1;
+		public static float timer = 0;
+		public static float yOrigin = 0;
+		public static int forceActiveTimer;
 
 		public override void Load()
 		{
@@ -21,9 +30,14 @@ namespace StarlightRiver.Content.Backgrounds
 
 			starsTarget = new(DrawStars, CheckIsActive, 1f);
 			starsMap = new(DrawMap, CheckIsActive, 1f);
+
+			starsTarget.allowOnMenu = true;
+			starsMap.allowOnMenu = true;
+
 			stars = new("StarlightRiver/Assets/Misc/StarParticle", UpdateStars, ParticleSystem.AnchorOptions.Screen);
 
 			On_Main.DrawInterface += DrawOverlay;
+			On_Main.UpdateMenu += UpdateOnMenu;
 		}
 
 		public override void Unload()
@@ -43,6 +57,9 @@ namespace StarlightRiver.Content.Backgrounds
 		{
 			if (CheckIsActive != null)
 			{
+				if (forceActiveTimer > 0)
+					return true;
+
 				bool isActive = false;
 				foreach (CheckIsActiveDelegate del in CheckIsActiveEvent.GetInvocationList())
 				{
@@ -66,13 +83,14 @@ namespace StarlightRiver.Content.Backgrounds
 		/// <param name="starsMap"></param>
 		/// <param name="starsTarget"></param>
 		public static event DrawOverlayDelegate DrawOverlayEvent;
-		public void DrawOverlay(On_Main.orig_DrawInterface orig, Main self, GameTime gameTime)
+
+		private void DrawOverlay(On_Main.orig_DrawInterface orig, Main self, GameTime gameTime)
 		{
 			if (DrawOverlayEvent != null)
 			{
 				foreach (DrawOverlayDelegate del in DrawOverlayEvent.GetInvocationList())
 				{
-					del(gameTime, starsMap, starsTarget);
+					del(Main.gameTimeCache, starsMap, starsTarget);
 				}
 			}
 
@@ -103,15 +121,16 @@ namespace StarlightRiver.Content.Backgrounds
 		/// <param name="sb"></param>
 		public static void DrawStars(SpriteBatch sb)
 		{
+			Matrix wantedMatrix = Main.gameMenu ? Matrix.CreateScale(1 / Main.UIScale) : Matrix.Identity;
+
 			Texture2D texB = Terraria.GameContent.TextureAssets.MagicPixel.Value;
 			sb.Draw(texB, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.Black);
 
 			sb.End();
-			sb.Begin(default, default, SamplerState.LinearWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(default, default, SamplerState.LinearWrap, default, RasterizerState.CullNone, default, wantedMatrix);
 
-			Texture2D tex = Assets.Noise.SwirlyNoiseLooping.Value;
 			Texture2D tex2 = Assets.Noise.PerlinNoise.Value;
-			Texture2D tex3 = Assets.Noise.MiscNoise3.Value;
+
 			var color = new Color(100, 230, 220)
 			{
 				A = 0
@@ -119,32 +138,69 @@ namespace StarlightRiver.Content.Backgrounds
 
 			var target = new Rectangle(0, 0, Main.screenWidth, Main.screenHeight);
 
+			if (Main.gameMenu)
+			{
+				//target.Width = (int)(target.Width / Main.UIScale);
+				//target.Height = (int)(target.Height / Main.UIScale);
+			}
+
 			color.G = 190;
 			color.B = 255;
-			Vector2 offset = Vector2.One * Main.GameUpdateCount * 0.2f + Vector2.One.RotatedBy(Main.GameUpdateCount * 0.01f) * 20;
-			var source = new Rectangle((int)offset.X, (int)offset.Y, tex.Width, tex.Height);
-			sb.Draw(tex, target, source, color * 0.05f);
+			Vector2 offset = Vector2.UnitX * timer * 0.2f;
+			//offset.X += 0.05f * Main.screenPosition.X % target.Width;
+			//offset.Y += 0.05f * Main.screenPosition.Y % target.Height;
+			var source = new Rectangle((int)offset.X, (int)offset.Y, tex2.Width, tex2.Height);
+			sb.Draw(tex2, target, source, color * 0.05f);
 
 			color.R = 150;
 			color.G = 10;
 			color.B = 255;
 			color.A = 0;
-			offset = Vector2.One * Main.GameUpdateCount * 0.4f + Vector2.One.RotatedBy(Main.GameUpdateCount * 0.005f) * 36;
-			source = new Rectangle((int)offset.X, (int)offset.Y, tex.Width, tex.Height);
+			offset = Vector2.UnitX * timer * 0.3f;
+			//offset.X += 0.1f * Main.screenPosition.X % target.Width;
+			//offset.Y += 0.1f * Main.screenPosition.Y % target.Height;
+			source = new Rectangle((int)offset.X, (int)offset.Y, tex2.Width, tex2.Height);
 			sb.Draw(tex2, target, source, color * 0.05f);
 
 			color.R = 10;
 			color.G = 255;
 			color.B = 255;
 			color.A = 0;
-			offset = Vector2.One * Main.GameUpdateCount * 0.6f + Vector2.One.RotatedBy(Main.GameUpdateCount * 0.021f) * 15;
-			source = new Rectangle((int)offset.X, (int)offset.Y, tex.Width, tex.Height);
-			sb.Draw(tex3, target, source, color * 0.05f);
+			offset = Vector2.UnitX * timer * 0.4f;
+			//offset.X += 0.15f * Main.screenPosition.X % target.Width;
+			//offset.Y += 0.15f * Main.screenPosition.Y % target.Height;
+			source = new Rectangle((int)offset.X, (int)offset.Y, tex2.Width, tex2.Height);
+			sb.Draw(tex2, target, source, color * 0.05f);
 
-			sb.End();
-			sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Effect riverBodyShader = ShaderLoader.GetShader("RiverBody").Value;
 
-			stars.DrawParticles(sb);
+			if (riverBodyShader != null)
+			{
+				riverBodyShader.Parameters["body"].SetValue(Assets.EnergyTrail.Value);
+				riverBodyShader.Parameters["mask"].SetValue(Assets.FireTrail.Value);
+				riverBodyShader.Parameters["u_amplitude"].SetValue(Main.screenHeight / 8f);
+				riverBodyShader.Parameters["u_offset"].SetValue(0.5f + Main.screenPosition.X * 0.2f / target.Width);
+
+				sb.End();
+				sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearWrap, default, RasterizerState.CullNone, riverBodyShader, wantedMatrix);
+
+				float yOff = (Main.screenPosition.Y - yOrigin) * -0.2f;
+
+				riverBodyShader.Parameters["u_time"].SetValue(timer * 0.0045f);
+				riverBodyShader.Parameters["u_alpha"].SetValue(starOpacity * 0.3f);
+				riverBodyShader.Parameters["u_resolution"].SetValue(new Vector2(Main.screenWidth, 700));
+				sb.Draw(Assets.ShadowTrail.Value, new Rectangle(0, (int)yOff + Main.screenHeight / 2 - 350, target.Width, 700), Color.White);
+
+				riverBodyShader.Parameters["u_time"].SetValue(timer * 0.003f);
+				riverBodyShader.Parameters["u_alpha"].SetValue(starOpacity * 0.6f);
+				riverBodyShader.Parameters["u_resolution"].SetValue(new Vector2(Main.screenWidth, 500));
+				sb.Draw(Assets.ShadowTrail.Value, new Rectangle(0, (int)yOff + Main.screenHeight / 2 - 250, target.Width, 500), Color.White);
+
+				sb.End();
+				sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, wantedMatrix);
+			}
+
+			stars.DrawParticlesWithEffect(sb, ShaderLoader.GetShader("GlowingCustomParticle").Value);
 		}
 
 		/// <summary>
@@ -158,7 +214,9 @@ namespace StarlightRiver.Content.Backgrounds
 				particle.Timer--;
 				particle.Position += particle.Velocity;
 
-				particle.Position.Y = Main.screenHeight / 2f + (float)Math.Sin(particle.Position.X / Main.screenWidth * 6.28f) * Main.screenHeight / 8f + particle.StoredPosition.Y;
+				float yOff = (Main.screenPosition.Y - yOrigin) * -0.2f;
+				float xOff = Main.screenPosition.X * 0.2f;
+				particle.Position.Y = yOff + Main.screenHeight / 2f + (float)Math.Sin((particle.Position.X + xOff) / Main.screenWidth * 6.28f) * Main.screenHeight / 8f + particle.StoredPosition.Y;
 
 				particle.Alpha = starOpacity;
 
@@ -172,20 +230,24 @@ namespace StarlightRiver.Content.Backgrounds
 				particle.Timer--;
 				particle.Position += particle.Velocity;
 
-				particle.Scale = (1f - particle.Timer / 60f) * 2f;
+				particle.Scale = (1f - particle.Timer / 60f) * 1f;
 			}
 			else if (particle.Type == 2) // Background
 			{
 				particle.Timer--;
 				particle.StoredPosition += particle.Velocity;
 
-				particle.Rotation += 0.02f;
+				//particle.Rotation += 0.02f;
+
+				particle.Alpha = 0.5f + 0.5f * (particle.Scale / 0.35f);
 
 				if (particle.Timer > 1570)
-					particle.Alpha = (1600 - particle.Timer) / 30f * starOpacity;
+					particle.Alpha = (1600 - particle.Timer) / 30f * particle.Alpha;
 
 				if (particle.Timer < 30)
-					particle.Alpha = particle.Timer / 30f * starOpacity;
+					particle.Alpha = particle.Timer / 30f * particle.Alpha;
+
+				particle.Alpha *= starOpacity;
 
 				particle.Position = particle.StoredPosition + (particle.StoredPosition - (Main.screenPosition + Main.ScreenSize.ToVector2() / 2f)) * (particle.Scale * 6f - 0.35f * 3f) - Main.screenPosition;
 			}
@@ -194,25 +256,61 @@ namespace StarlightRiver.Content.Backgrounds
 		public override void PostUpdateEverything()
 		{
 			if (!CheckIsActive() || Main.dedServ)
-				return;
-
-			// star particles
-			var starColor = new Color(150, Main.rand.Next(150, 255), 255)
 			{
-				A = 0
-			};
+				return;
+			}
+
+			if (!Main.gameMenu && !BossRushSystem.isBossRush)
+				yOrigin = (int)Main.spawnTileY * 16 - 2400;
+			else
+				yOrigin = Main.screenPosition.Y;
+
+			timer++;
 
 			if (Main.rand.NextBool(2))
 			{
 				var pos = new Vector2(Main.rand.Next(-Main.screenWidth / 2, (int)(Main.screenWidth * 1.5f)), Main.rand.Next(-Main.screenHeight / 2, (int)(Main.screenHeight * 1.5f)));
-				stars.AddParticle(new Particle(pos, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.25f), 0, Main.rand.NextFloat(0.35f), starColor * 0.8f, 1600, pos + Main.screenPosition, new Rectangle(0, 120, 120, 120), 1, 2));
+				float scale = Main.rand.NextFloat(0.35f);
+
+				var color = new Color(0.1f, 0.4f + Main.rand.NextFloat(0.1f) + scale / 0.35f * 0.5f, 1f)
+				{
+					A = 0
+				};
+
+				stars.AddParticle(pos, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.05f, 0.2f) * (scale / 0.35f), 0, scale, color * 0.8f, 1600, pos + Main.screenPosition, new Rectangle(0, 120, 120, 120), 1, 2);
 			}
 
-			float prog = Main.rand.NextFloat();
-			starColor.G = (byte)(150 + prog * 105);
+			if (Main.rand.NextBool(2, 3))
+			{
+				float prog = Main.rand.NextFloat();
+				var starColor = new Color(0.1f, 0.2f + prog * 0.6f, 1f)
+				{
+					A = 0
+				};
 
-			bool star = Main.rand.NextBool(18);
-			stars.AddParticle(new Particle(new Vector2(0, Main.screenHeight * 0.2f + prog * 0f), new Vector2(3f + prog * 4f, 1), 0, star ? Main.rand.NextFloat(0.2f, 0.3f) : Main.rand.NextFloat(0.05f, 0.1f), starColor * (star ? 1.2f : 1f), 600, Vector2.One * (prog * 110f), new Rectangle(0, star ? 120 : 0, 120, 120), 1));
+				bool star = Main.rand.NextBool(24);
+				float partScale = Main.rand.NextFloat(0.05f, 0.15f) * (0.8f + prog * 0.2f);
+				Color partColor = starColor * (0.6f + prog * 0.2f);
+
+				if (star)
+				{
+					partScale += 0.15f;
+					partColor *= 1.5f;
+				}
+
+				stars.AddParticle(new Vector2(0, Main.screenHeight * 0.2f + prog * 0f), new Vector2(Main.rand.NextFloat(1f, 5f) + prog * 4f, 1), 0, partScale, partColor, 600, Vector2.One * (-70 + prog * 140f), new Rectangle(0, star ? 120 : 0, 120, 120), 1f);
+			}
+
+			stars.UpdateParticles();
+
+			forceActiveTimer--;
+		}
+
+		private void UpdateOnMenu(On_Main.orig_UpdateMenu orig)
+		{
+			orig();
+
+			PostUpdateEverything();
 		}
 	}
 }

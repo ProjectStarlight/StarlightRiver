@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.DummyTileSystem;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -33,7 +34,7 @@ namespace StarlightRiver.Content.Tiles
 		public virtual void DrawBubble(Vector2 pos, SpriteBatch spriteBatch, float time)
 		{
 			int n = (int)(time % GoldLootPool.Count);
-			Texture2D tex2 = Helper.GetItemTexture(GoldLootPool[n].type);
+			Texture2D tex2 = Terraria.GameContent.TextureAssets.Item[GoldLootPool[n].type].Value;
 			var ItemTarget = new Rectangle((int)pos.X + 8, (int)pos.Y + 8, 16, 16);
 			spriteBatch.Draw(tex2, ItemTarget, Color.White);
 
@@ -52,7 +53,7 @@ namespace StarlightRiver.Content.Tiles
 		}
 	}
 
-	class LootBubbleDummy : Dummy, IDrawAdditive
+	class LootBubbleDummy : Dummy
 	{
 		public float timer;
 
@@ -89,13 +90,10 @@ namespace StarlightRiver.Content.Tiles
 		{
 			var bubble = GetModTile(Parent.TileType) as LootBubble;
 			bubble.DrawBubble(position - Main.screenPosition, Main.spriteBatch, timer);
-		}
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
-			Texture2D tex = Assets.Keys.Glow.Value;
+			Texture2D tex = Assets.Masks.GlowAlpha.Value;
 			float sin = 0.5f + (float)(Math.Sin(StarlightWorld.visualTimer) * 0.5f);
-			spriteBatch.Draw(tex, Center - Main.screenPosition, null, Color.SkyBlue * (0.4f + sin * 0.1f), 0, tex.Size() / 2, 0.8f + sin * 0.1f, 0, 0);
+			Main.spriteBatch.Draw(tex, Center - Main.screenPosition, null, new Color(135, 206, 235, 0) * (0.4f + sin * 0.1f), 0, tex.Size() / 2, 0.8f + sin * 0.1f, 0, 0);
 		}
 	}
 }

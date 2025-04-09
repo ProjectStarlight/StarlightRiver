@@ -4,7 +4,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-	internal class VitricSpike : ModTile, IHintable
+	internal class VitricSpike : ModTile
 	{
 		public override string Texture => AssetDirectory.VitricTile + Name;
 
@@ -15,6 +15,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			TileID.Sets.TouchDamageImmediate[Type] = 5;//vanilla contact damage
 			TileID.Sets.DrawsWalls[Type] = true;
 			Main.tileMerge[Type][Mod.Find<ModTile>("VitricSand").Type] = true;
+			Main.tileMerge[Type][Mod.Find<ModTile>("AncientSandstone").Type] = true;
+			Main.tileMerge[Type][Mod.Find<ModTile>("AncientSandstoneTile").Type] = true;
 			Main.tileMerge[Type][TileType<VitricGiantCrystal>()] = true;
 			Main.tileMerge[Type][TileType<VitricMediumCrystal>()] = true;
 			Main.tileMerge[Type][TileType<VitricLargeCrystal>()] = true;
@@ -70,10 +72,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
 					entity.velocity.Y = vector.Y == 0 ? entity.velocity.Y : vector.Y;
 				}
 			}
-		}
-		public string GetHint()
-		{
-			return "Dangerous.";
 		}
 	}
 

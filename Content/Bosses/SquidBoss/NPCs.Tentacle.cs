@@ -300,7 +300,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				return false;
 
 			//Stalk
-			if (Vector2.Distance(NPC.Center, basePoint) > 32 && Helpers.Helper.CheckLinearCollision(NPC.Center, basePoint, player.Hitbox, out Vector2 intersect))
+			if (Vector2.Distance(NPC.Center, basePoint) > 32 && Helpers.CollisionHelper.CheckLinearCollision(NPC.Center, basePoint, player.Hitbox, out Vector2 intersect))
 			{
 				if (StarlightRiver.debugMode)
 					Main.NewText($"Stalk colliding {Main.rand.Next(2000)}");
@@ -322,7 +322,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			Vector2 visibleCenter = NPC.Center + new Vector2(tentacleSin * 30, -32).RotatedBy(rot) + Vector2.UnitY * 36;
 
-			if (Helpers.Helper.CheckCircularCollision(visibleCenter, 32, player.Hitbox))
+			if (Helpers.CollisionHelper.CheckCircularCollision(visibleCenter, 32, player.Hitbox))
 			{
 				player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByNPC(NPC.whoAmI), NPC.damage, NPC.Center.X > player.Center.X ? -1 : 1);
 				return true;
@@ -372,8 +372,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 				float tentacleSin = (float)Math.Sin(Timer / 20f) * stalkWaviness;
 
-				Helpers.Helper.PlayPitched("SquidBoss/LightSplash", 0.5f, 0, NPC.Center);
-				Helpers.Helper.PlayPitched("Magic/WaterWoosh", 0.8f, 0, NPC.Center);
+				Helpers.SoundHelper.PlayPitched("SquidBoss/LightSplash", 0.5f, 0, NPC.Center);
+				Helpers.SoundHelper.PlayPitched("Magic/WaterWoosh", 0.8f, 0, NPC.Center);
 
 				if (Main.netMode != NetmodeID.MultiplayerClient)
 					Projectile.NewProjectile(NPC.GetSource_FromThis(), new Vector2(NPC.Center.X + tentacleSin * 30, Arena.WaterLevelWorld - 41), Vector2.Zero, ProjectileType<AuroraWaterSplash>(), 0, 0, Main.myPlayer);

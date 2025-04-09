@@ -55,8 +55,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 			Tile tile = Framing.GetTileSafely(i, j);
 
-			Texture2D tex = Request<Texture2D>(Texture + "Glow").Value;
-			Vector2 pos = (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 - Main.screenPosition;
+			Texture2D tex = Assets.Tiles.Vitric.VitricPillarWallLavaGlow.Value;
+			Vector2 pos = new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange - Main.screenPosition;
 			float sin = 0.5f + (float)Math.Sin((Main.GameUpdateCount + i + j * 10) * 0.05f) * 0.25f;
 
 			spriteBatch.Draw(tex, pos, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), Color.White * sin);

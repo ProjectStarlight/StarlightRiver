@@ -16,17 +16,6 @@ namespace StarlightRiver.Content.Tiles.Underground
 		{
 			return player.GetModPlayer<ShrinePlayer>().EvasionShrineActive;
 		}
-
-		public override void OnEnter(Player player)
-		{
-			ShrineBlockerLoader.evasionBlockers = true;
-		}
-
-		public override void OnLeave(Player player)
-		{
-			if (!Main.player.Any(n => n.active && n.InModBiome<EvasionShrineBiome>()))
-				ShrineBlockerLoader.evasionBlockers = false;
-		}
 	}
 
 	class CombatShrineBiome : ModBiome
@@ -38,17 +27,6 @@ namespace StarlightRiver.Content.Tiles.Underground
 		public override bool IsBiomeActive(Player player)
 		{
 			return player.GetModPlayer<ShrinePlayer>().CombatShrineActive;
-		}
-
-		public override void OnEnter(Player player)
-		{
-			ShrineBlockerLoader.combatBlockers = true;
-		}
-
-		public override void OnLeave(Player player)
-		{
-			if (!Main.player.Any(n => n.active && n.InModBiome<CombatShrineBiome>()))
-				ShrineBlockerLoader.combatBlockers = false;
 		}
 	}
 

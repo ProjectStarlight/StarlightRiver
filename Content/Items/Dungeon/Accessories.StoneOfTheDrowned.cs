@@ -12,15 +12,15 @@ namespace StarlightRiver.Content.Items.Dungeon
 		internal bool summoned;
 
 		// i love private terraria methods which require reflection to access
-		public static MethodInfo? playerItemCheckShoot_Info;
-		public static Action<Player, int, Item, int>? playerItemCheckShoot;
+		public static MethodInfo playerItemCheckShoot_Info;
+		public static Action<Player, int, Item, int> playerItemCheckShoot;
 
 		public override string Texture => AssetDirectory.JungleItem + Name;
 
 		public StoneOfTheDrowned() : base("Stone of the Drowned",
-			"+30 {{barrier}}\n" +
-			"Increases your max number of minions by 2 when you have no {{barrier}}\n" +
-			"Automatically re-summons two slots worth of minions when you reach 0 {{barrier}}")
+			"+30 maximum {{barrier}}\n" +
+			"Increases your max minions by 2 when you have no {{barrier}}\n" +
+			"Re-summons two slots worth of minions when you reach 0 {{barrier}}")
 		{ }
 
 		public override void Load()

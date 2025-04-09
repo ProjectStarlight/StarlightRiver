@@ -12,8 +12,9 @@ namespace StarlightRiver.Content.GUI
 	/// </summary>
 	public class Tooltip : SmartUIState, ILoadable
 	{
-		private static string text = string.Empty;
-		private static string tooltip = string.Empty;
+		private static TextSnippet[] text;
+		private static TextSnippet[] tooltip;
+		private static Color color = Color.White;
 
 		public override bool Visible => true;
 
@@ -33,7 +34,7 @@ namespace StarlightRiver.Content.GUI
 		/// <param name="name"></param>
 		public static void SetName(string name)
 		{
-			text = name;
+			text = ChatManager.ParseMessage(name, color).ToArray();
 		}
 
 		/// <summary>
@@ -42,40 +43,47 @@ namespace StarlightRiver.Content.GUI
 		/// <param name="newTooltip"></param>
 		public static void SetTooltip(string newTooltip)
 		{
-			ReLogic.Graphics.DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
-			tooltip = Helpers.Helper.WrapString(newTooltip, 200, font, 1);
+			tooltip = ChatManager.ParseMessage(newTooltip, Color.LightGray).ToArray();
+		}
+
+		/// <summary>
+		/// Sets the color of the tooltip title.
+		/// </summary>
+		/// <param name="color">The color of the tooltip title</param>
+		public static void SetColor(Color color)
+		{
+			Tooltip.color = color;
 		}
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
-			if (text == string.Empty)
+			if (text is null || text.Length <= 0)
 				return;
 
 			ReLogic.Graphics.DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
 
 			float nameWidth = ChatManager.GetStringSize(font, text, Vector2.One).X;
-			float tipWidth = ChatManager.GetStringSize(font, tooltip, Vector2.One).X * 0.9f;
+			float tipWidth = ChatManager.GetStringSize(font, tooltip, Vector2.One * 0.9f, 200).X;
 
 			float width = Math.Max(nameWidth, tipWidth);
 			float height = -16;
-			Vector2 pos;
+			Vector2 pos = Main.MouseScreen + new Vector2(32, 32);
 
-			if (Main.MouseScreen.X > Main.screenWidth - width)
-				pos = Main.MouseScreen - new Vector2(width + 20, 0);
-			else
-				pos = Main.MouseScreen + new Vector2(40, 0);
+			if (pos.X > Main.screenWidth - (width + 10))
+				pos.X = Main.screenWidth - (width + 10);
 
-			height += ChatManager.GetStringSize(font, "{Dummy}\n" + tooltip, Vector2.One).Y + 16;
+			height += ChatManager.GetStringSize(font, tooltip, Vector2.One * 0.9f, 200).Y + 36;
 
 			if (pos.Y + height > Main.screenHeight)
 				pos.Y -= height;
 
-			Utils.DrawInvBG(Main.spriteBatch, new Rectangle((int)pos.X - 10, (int)pos.Y - 10, (int)width + 20, (int)height + 20), new Color(20, 30, 55) * 0.925f);
+			Utils.DrawInvBG(Main.spriteBatch, new Rectangle((int)pos.X - 10, (int)pos.Y - 10, (int)width + 20, (int)height + 20), new Color(20, 20, 55) * 0.925f);
 
-			Utils.DrawBorderString(Main.spriteBatch, text, pos, Color.White);
+			ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, text, pos, 0, Vector2.Zero, Vector2.One, out int hov);
 			pos.Y += ChatManager.GetStringSize(font, text, Vector2.One).Y + 4;
 
-			Utils.DrawBorderString(Main.spriteBatch, tooltip, pos, Color.LightGray, 0.9f);
+			if (tooltip != null && tooltip.Length > 0)
+				ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, tooltip, pos, 0, Vector2.Zero, Vector2.One * 0.9f, out int hov2, 200);
 		}
 
 		private void Reset(On_Main.orig_Update orig, Main self, GameTime gameTime)
@@ -83,8 +91,9 @@ namespace StarlightRiver.Content.GUI
 			orig(self, gameTime);
 
 			//reset
-			text = string.Empty;
-			tooltip = string.Empty;
+			text = null;
+			tooltip = null;
+			color = Color.White;
 		}
 	}
 }

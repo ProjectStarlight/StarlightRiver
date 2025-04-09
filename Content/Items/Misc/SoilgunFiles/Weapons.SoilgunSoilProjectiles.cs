@@ -1,39 +1,57 @@
-﻿using StarlightRiver.Core.Systems.CameraSystem;
+﻿using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.Dusts;
+using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems.CameraSystem;
+using StarlightRiver.Core.Systems.ExposureSystem;
+using StarlightRiver.Core.Systems.PixelationSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
+using Terraria.Utilities;
 
 namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 {
-	public abstract class BaseSoilProjectile : ModProjectile
+	public abstract class SoilProjectile : ModProjectile
 	{
-		public int dustID;
-
-		public bool Gravity = true;
-
-		public bool DrawTrail = true;
-
-		public Color TrailColor = Color.White;
-		public Color RingOutsideColor = Color.White;
-		public Color RingInsideColor = Color.White;
-
 		private List<Vector2> cache;
 		private Trail trail;
+		private Trail trail2;
 
-		public float AmmoType => Projectile.ai[0];
+		public int dustID;
 
-		public ref float Time => ref Projectile.ai[1];
+		public int deathTimer;
 
-		public override string Texture => AssetDirectory.Invisible; //using the item id for texture was dumb when it can just be requested
+		public float maxTimeleft;
 
-		protected BaseSoilProjectile(Color trailColor, Color ringOutsideColor, Color ringInsideColor, int dustID)
+		public bool drawTrail = true;
+
+		public Dictionary<string, Color> Colors = new()
 		{
-			TrailColor = trailColor;
-			RingOutsideColor = ringOutsideColor;
-			RingInsideColor = ringInsideColor;
+			{ "SmokeColor", Color.White },
+			{ "TrailColor", Color.White },
+			{ "TrailInsideColor", Color.White },
+			{ "RingOutsideColor", Color.White },
+			{ "RingInsideColor", Color.White },
+		};
+		public virtual bool gravity => true;
+		public virtual int ClumpType => -1;
+		public float AmmoType => Projectile.ai[0];
+		public ref float Time => ref Projectile.ai[1];
+		public Player Owner => Main.player[Projectile.owner];
+		public override string Texture => AssetDirectory.Invisible;
+		protected SoilProjectile(Color trailColor, Color trailInsideColor, Color ringOutsideColor, Color ringInsideColor, Color smokeColor, int dustID)
+		{
+			Colors["TrailColor"] = trailColor;
+			Colors["TrailInsideColor"] = trailInsideColor;
+			Colors["RingOutsideColor"] = ringOutsideColor;
+			Colors["RingInsideColor"] = ringInsideColor;
+			Colors["SmokeColor"] = smokeColor;
+
 			this.dustID = dustID;
 		}
 
@@ -46,30 +64,74 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 		public sealed override void SetDefaults()
 		{
-			Projectile.penetrate = 1;
+			Projectile.penetrate = 2;
 			SafeSetDefaults();
 
 			Projectile.DamageType = DamageClass.Ranged;
 			Projectile.Size = new Vector2(12);
 			Projectile.friendly = true;
-			Projectile.timeLeft = 240;
+			Projectile.timeLeft = 30;
+
+			Projectile.usesLocalNPCImmunity = true; // the projectile acts as a projectile which can only hit once so local immunity makes it act with vanilla behavior, ex: 5 projectiles can hit at once
+			Projectile.localNPCHitCooldown = 10;
+
+			Projectile.ArmorPenetration = 5;
+		}
+
+		public override bool? CanDamage()
+		{
+			return Projectile.penetrate >= 2;
 		}
 
 		public virtual void SafeAI() { }
 
 		public sealed override void AI()
 		{
+			if (deathTimer > 0)
+			{
+				Projectile.velocity *= 0f;
+
+				deathTimer--;
+				if (deathTimer == 1)
+					Projectile.active = false;
+			}
+
 			SafeAI();
 
 			Time++;
 
 			Projectile.rotation = Projectile.velocity.ToRotation();
 
-			if (Projectile.timeLeft < 230 && Gravity)
+			if (Projectile.timeLeft < maxTimeleft - 10 && gravity)
 			{
-				Projectile.velocity.Y += 0.96f;
-				if (Projectile.velocity.Y > 16f)
-					Projectile.velocity.Y = 16f;
+				if (Projectile.velocity.Y < 18f)
+				{
+					Projectile.velocity.Y += 0.45f;
+
+					if (Projectile.velocity.Y > 0)
+					{
+						if (Projectile.velocity.Y < 12f)
+							Projectile.velocity.Y *= 1.025f;
+						else
+							Projectile.velocity.Y *= 1.0125f;
+					}
+				}
+			}
+
+			Dust.NewDustPerfect(Projectile.Center + Projectile.velocity + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<SoilgunSmoke>(),
+				 Main.rand.NextVector2Circular(1f, 1f), 130, Colors["SmokeColor"], Main.rand.NextFloat(0.05f, 0.08f));
+
+			if (Main.rand.NextBool(6))
+				Dust.NewDustPerfect(Projectile.Center, dustID, Vector2.Zero, 100).noGravity = true;
+
+			if (Main.rand.NextBool(3))
+			{
+				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(15f, 15f), dustID, Projectile.velocity.RotatedByRandom(MathHelper.Lerp(0.1f, 1f, 1f - Projectile.timeLeft / maxTimeleft)), 150, default, 1f).noGravity = true;
+
+				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(15f, 15f), dustID, Projectile.velocity.RotatedByRandom(MathHelper.Lerp(0.1f, 1f, 1f - Projectile.timeLeft / maxTimeleft)) * 0.6f, 150, default, 0.65f);
+
+				Dust.NewDustPerfect(Projectile.Center + Projectile.velocity + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<SoilgunSmoke>(),
+					Projectile.velocity.RotatedByRandom(MathHelper.Lerp(0.1f, 1f, 1f - Projectile.timeLeft / maxTimeleft)) * Main.rand.NextFloat(0.35f, 1f), Main.rand.Next(80, 120), Colors["SmokeColor"], Main.rand.NextFloat(0.03f, 0.05f));
 			}
 
 			if (!Main.dedServ)
@@ -79,32 +141,131 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			}
 		}
 
+		public virtual void SafeOnKill()
+		{
+
+		}
+
+		public sealed override bool OnTileCollide(Vector2 oldVelocity)
+		{
+			if (deathTimer <= 0)
+			{
+				deathTimer = 10;
+
+				SafeOnKill();
+
+				SoundEngine.PlaySound(SoundID.Dig, Projectile.position);
+
+				for (int i = 0; i < 6; i++)
+				{
+					Dust.NewDustPerfect(Projectile.Center, dustID, -Projectile.velocity.RotatedByRandom(0.6f) * Main.rand.NextFloat(0.4f),
+						Main.rand.Next(100), default, Main.rand.NextFloat(1f, 1.5f)).noGravity = true;
+
+					Dust dust = Dust.NewDustPerfect(Projectile.Center + Projectile.velocity + Main.rand.NextVector2Circular(5f, 5f),
+						ModContent.DustType<PixelSmokeColor>(), -Projectile.velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.25f),
+						Main.rand.Next(100, 140), Colors["SmokeColor"], Main.rand.NextFloat(0.02f, 0.03f));
+
+					dust.rotation = Main.rand.NextFloat(6.28f);
+					dust.customData = Colors["SmokeColor"];
+
+					dust = Dust.NewDustPerfect(Projectile.Center + Projectile.velocity + Main.rand.NextVector2Circular(5f, 5f),
+						ModContent.DustType<PixelSmokeColor>(), -Projectile.velocity.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.25f),
+						Main.rand.Next(100, 120), Colors["SmokeColor"], Main.rand.NextFloat(0.03f, 0.05f));
+
+					dust.rotation = Main.rand.NextFloat(6.28f);
+					dust.customData = Colors["SmokeColor"];
+				}
+			}
+
+			return false;
+		}
+
+		public virtual void SafeOnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+
+		}
+
+		public sealed override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			if (deathTimer <= 0 && Projectile.penetrate == 2)
+			{
+				SafeOnKill();
+
+				deathTimer = 10;
+			}
+
+			SafeOnHitNPC(target, hit, damageDone);
+
+			SoundEngine.PlaySound(SoundID.Dig, Projectile.position);
+
+			for (int i = 0; i < 5; i++)
+			{
+				Dust.NewDustPerfect(Projectile.Center, dustID, -Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.5f),
+					Main.rand.Next(100), default, Main.rand.NextFloat(1f, 1.5f)).noGravity = true;
+
+				Dust dust = Dust.NewDustPerfect(Projectile.Center + Projectile.velocity + Main.rand.NextVector2Circular(5f, 5f),
+					ModContent.DustType<PixelSmokeColor>(), -Projectile.velocity.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.3f),
+					Main.rand.Next(120, 140), Colors["TrailColor"], Main.rand.NextFloat(0.03f, 0.06f));
+
+				dust.rotation = Main.rand.NextFloat(6.28f);
+				dust.customData = Colors["SmokeColor"];
+			}
+		}
+
 		public override bool PreDraw(ref Color lightColor)
 		{
 			DrawPrimitives();
 
-			//this predraw code is kinda bad examplemod boilerplate but it works
-			SpriteEffects spriteEffects = SpriteEffects.None;
-			if (Projectile.spriteDirection == -1)
-				spriteEffects = SpriteEffects.FlipHorizontally;
+			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Masks + "GlowAlpha").Value;
 
-			Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
+			float lerper = FadeOut();
 
-			int frameHeight = texture.Height / Main.projFrames[Projectile.type];
-			int startY = frameHeight * Projectile.frame;
+			Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Colors["RingInsideColor"] with { A = 0 } * lerper, Projectile.rotation, bloomTex.Size() / 2f, Projectile.scale * 0.35f, 0f, 0f);
 
-			var sourceRectangle = new Rectangle(0, startY, texture.Width, frameHeight);
+			Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Colors["RingOutsideColor"] with { A = 0 } * lerper, Projectile.rotation, bloomTex.Size() / 2f, Projectile.scale * 0.25f, 0f, 0f);
 
-			Vector2 origin = sourceRectangle.Size() / 2f;
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor * lerper, Projectile.rotation, tex.Size() / 2f, Projectile.scale, 0f, 0f);
 
-			float offsetX = 0f;
-			origin.X = Projectile.spriteDirection == 1 ? sourceRectangle.Width - offsetX : offsetX;
+			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("OverPlayers", () =>
+			{
+				Effect effect = ShaderLoader.GetShader("DistortSprite").Value;
 
-			Color drawColor = Projectile.GetAlpha(lightColor);
+				if (effect != null)
+				{
+					Main.spriteBatch.End();
+					Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null);
 
-			Main.EntitySpriteDraw(texture,
-				Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY),
-				sourceRectangle, drawColor, Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
+					effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.035f);
+					effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.0035f);
+					effect.Parameters["screenPos"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / new Vector2(Main.screenWidth, Main.screenHeight));
+
+					effect.Parameters["offset"].SetValue(new Vector2(0.001f));
+					effect.Parameters["repeats"].SetValue(1);
+					effect.Parameters["uImage1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/SwirlyNoiseLooping").Value);
+					effect.Parameters["uImage2"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/SwirlyNoiseLooping").Value);
+
+					Color color = Colors["TrailColor"] with { A = 0 } * lerper;
+
+					effect.Parameters["uColor"].SetValue(color.ToVector4());
+					effect.Parameters["noiseImage1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "Soilgun_Noise").Value);
+
+					effect.CurrentTechnique.Passes[0].Apply();
+
+					Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, bloomTex.Size() / 2f, Projectile.scale * 0.65f, 0f, 0f);
+
+					color = Colors["TrailInsideColor"] with { A = 0 } * lerper;
+
+					effect.Parameters["uColor"].SetValue(color.ToVector4());
+
+					effect.CurrentTechnique.Passes[0].Apply();
+
+					Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, bloomTex.Size() / 2f, Projectile.scale * 0.45f, 0f, 0f);
+
+					Main.spriteBatch.End();
+					Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default);
+				}
+			});
 
 			return false;
 		}
@@ -116,11 +277,11 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 				cache = new List<Vector2>();
 				for (int i = 0; i < 13; i++)
 				{
-					cache.Add(Projectile.Center);
+					cache.Add(Projectile.Center + Projectile.velocity);
 				}
 			}
 
-			cache.Add(Projectile.Center);
+			cache.Add(Projectile.Center + Projectile.velocity);
 
 			while (cache.Count > 13)
 			{
@@ -130,424 +291,283 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 13, new NoTip(), factor => 7, factor => TrailColor * 0.8f * factor.X);
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 13, new NoTip(), factor => 8, factor => Colors["TrailColor"] * factor.X * FadeOut());
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
+
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 13, new TriangularTip(4), factor => 4, factor => Colors["TrailInsideColor"] * factor.X * 0.5f * FadeOut());
+
+			trail2.Positions = cache.ToArray();
+			trail2.NextPosition = Projectile.Center + Projectile.velocity;
 		}
+
 		public void DrawPrimitives()
 		{
-			if (!DrawTrail)
+			if (!drawTrail)
 				return;
-			Main.spriteBatch.End();
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("UnderProjectiles", () =>
+			{
+				Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-			effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.01f);
-			effect.Parameters["repeats"].SetValue(1);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.Items.Misc.SoilgunMuddyTrail.Value);
+				if (effect != null)
+				{
+					var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+					Matrix view = Matrix.Identity;
+					var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			trail?.Render(effect);
+					effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.05f);
+					effect.Parameters["repeats"].SetValue(1);
+					effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+					effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 
-			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
+					trail?.Render(effect);
+					trail2?.Render(effect);
 
-			trail?.Render(effect);
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+					effect.Parameters["repeats"].SetValue(2);
+					effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "FireTrail").Value);
+
+					trail?.Render(effect);
+					trail?.Render(effect);
+				}
+			});
+		}
+
+		private float FadeOut()
+		{
+			float opacity = 1f;
+
+			if (Projectile.timeLeft < 10)
+				opacity *= Projectile.timeLeft / 10f;
+
+			if (deathTimer > 0)
+				opacity *= deathTimer / 10f;
+
+			return opacity;
 		}
 	}
 
-	public class SoilgunDirtSoil : BaseSoilProjectile
+	public class SoilgunDirtSoil : SoilProjectile
 	{
+		public override int ClumpType => ModContent.ProjectileType<SoilgunDirtClump>();
 		public override string Texture => "Terraria/Images/Item_" + ItemID.DirtBlock;
-		public SoilgunDirtSoil() : base(new Color(30, 19, 12), new Color(81, 47, 27), new Color(105, 67, 44), DustID.Dirt) { }
-		public override void SafeAI()
-		{
-			if (Main.rand.NextBool(10))
-			{
-				var dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Dirt, 0f, 0f, 25, default, Main.rand.NextFloat(0.9f, 1.25f));
-				dust.noGravity = true;
-				if (Main.rand.NextBool(3))
-				{
-					Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<SandNoGravity>(), 0f, 0f, 120, default, Main.rand.NextFloat(0.7f, 1.1f));
-				}
-			}
-		}
-
-		public override void Kill(int timeLeft)
-		{
-			SoundEngine.PlaySound(SoundID.Dig, Projectile.position);
-			for (int i = 0; i < 15; i++)
-			{
-				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Dirt, 0f, 0f, 15, default, Main.rand.NextFloat(0.8f, 1f));
-			}
-
-			for (int i = 0; i < 5; i++)
-			{
-				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<Dusts.Sand>(), 0f, 0f, 140, default, Main.rand.NextFloat(0.8f, 1.1f));
-			}
-		}
+		public SoilgunDirtSoil() : base(new Color(30, 19, 12), new Color(30, 19, 12), new Color(81, 47, 27), new Color(105, 67, 44), new Color(82, 45, 22), DustID.Dirt) { }
 	}
 
-	public class SoilgunSandSoil : BaseSoilProjectile
+	public class SoilgunSandSoil : SoilProjectile
 	{
+		public override int ClumpType => ModContent.ProjectileType<SoilgunSandClump>();
 		public override string Texture => "Terraria/Images/Item_" + ItemID.SandBlock;
-		public SoilgunSandSoil() : base(new Color(58, 49, 18), new Color(139, 131, 59), new Color(212, 192, 100), DustID.Sand) { }
-		public override void SafeAI()
+		public SoilgunSandSoil() : base(new Color(80, 50, 20), new Color(160, 131, 59), new Color(139, 131, 59), new Color(212, 192, 100), new Color(150, 120, 59), DustID.Sand) { }
+
+		public override void SafeOnKill()
 		{
-			if (Main.rand.NextBool(8))
+			if (Projectile.owner == Main.myPlayer)
 			{
-				var dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Sand, 0f, 0f, 35, default, Main.rand.NextFloat(0.8f, 1.2f));
-				dust.noGravity = true;
-			}
-		}
-
-		public override void Kill(int timeLeft)
-		{
-			SoundEngine.PlaySound(SoundID.Dig, Projectile.position);
-			for (int i = 0; i < 12; i++)
-			{
-				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Sand, 0f, 0f, 25, default, Main.rand.NextFloat(0.9f, 1.1f));
-
-				Dust.NewDustPerfect(Projectile.Center, DustID.Sand, (Vector2.UnitY * Main.rand.NextFloat(-3, -1)).RotatedByRandom(0.35f), 35, default, Main.rand.NextFloat(0.8f, 1.1f));
-			}
-
-			for (int i = 0; i < 6; i++)
-			{
-				if (Main.myPlayer == Projectile.owner)
-					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, (Vector2.UnitY * Main.rand.NextFloat(-6.5f, -1)).RotatedByRandom(0.45f), ModContent.ProjectileType<SoilgunSandGrain>(), (int)(Projectile.damage * 0.33f), 0f, Projectile.owner);
+				Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, Vector2.Zero,
+						ModContent.ProjectileType<SoilgunSandExplosion>(), Projectile.damage / 2, 0f, Owner.whoAmI);
 			}
 		}
 	}
 
-	public class SoilgunCrimsandSoil : BaseSoilProjectile
+	class SoilgunSandExplosion : ModProjectile
 	{
-		public override string Texture => "Terraria/Images/Item_" + ItemID.CrimsandBlock;
-
-		public SoilgunCrimsandSoil() : base(new Color(39, 17, 14), new Color(56, 17, 14), new Color(135, 43, 34), DustID.CrimsonPlants) { }
-
-		public override void SafeAI()
+		public override string Texture => AssetDirectory.Invisible;
+		public override void SetStaticDefaults()
 		{
+			DisplayName.SetDefault("Sand");
+		}
+
+		public override void SetDefaults()
+		{
+			Projectile.penetrate = -1;
+
+			Projectile.DamageType = DamageClass.Ranged;
+			Projectile.Size = new Vector2(50);
+			Projectile.friendly = true;
+			Projectile.timeLeft = 10;
+
+			Projectile.usesLocalNPCImmunity = true;
+			Projectile.localNPCHitCooldown = -1;
+
+			Projectile.ArmorPenetration = 5;
+		}
+	}
+
+	public class SoilgunCrimsandSoil : SoilProjectile
+	{
+		public override int ClumpType => ModContent.ProjectileType<SoilgunCrimsandClump>();
+		public override string Texture => "Terraria/Images/Item_" + ItemID.CrimsandBlock;
+		public SoilgunCrimsandSoil() : base(new Color(56, 17, 14), new Color(135, 43, 34), new Color(56, 17, 14), new Color(135, 43, 34), new Color(40, 10, 10) * 0.6f, DustID.CrimsonPlants) { }
+
+		public override void SafeOnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			Owner.AddBuff(BuffID.Regeneration, 300);
+		}
+	}
+
+	public class SoilgunEbonsandSoil : SoilProjectile
+	{
+		public override int ClumpType => ModContent.ProjectileType<SoilgunEbonsandClump>();
+		public override string Texture => "Terraria/Images/Item_" + ItemID.EbonsandBlock;
+		public SoilgunEbonsandSoil() : base(new Color(26, 18, 31), new Color(62, 45, 75), new Color(62, 45, 75), new Color(119, 106, 138), new Color(30, 25, 45) * 0.6f, DustID.Ebonwood) { }
+
+		public override void SafeOnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			target.AddBuff(ModContent.BuffType<EbonsandDebuff>(), 300);
+		}
+	}
+
+	class EbonsandDebuff : SmartBuff
+	{
+		public override string Texture => AssetDirectory.Debug;
+
+		public EbonsandDebuff() : base("Weakened", "Damage taken increased by 15%", false) { }
+
+		public override void Update(NPC npc, ref int buffIndex)
+		{
+			npc.GetGlobalNPC<ExposureNPC>().ExposureMultAll += 0.15f;
+
 			if (Main.rand.NextBool(10))
 			{
-				var dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.CrimsonPlants, 0f, 0f, 25, default, Main.rand.NextFloat(0.9f, 1.25f));
-				dust.noGravity = true;
-			}
-		}
-
-		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-		{
-			if (Main.rand.NextBool(5) && Main.player[Projectile.owner].statLife < Main.player[Projectile.owner].statLifeMax2)
-			{
-				for (int i = 0; i < 12; i++)
-				{
-					var dust = Dust.NewDustPerfect(Projectile.Center, DustID.LifeDrain, (Projectile.DirectionTo(Main.player[Projectile.owner].Center) * Main.rand.NextFloat(2f, 3f)).RotatedByRandom(MathHelper.ToRadians(5f)), 50, default, Main.rand.NextFloat(0.75f, 1f));
-					dust.noGravity = true;
-				}
-
-				if (Main.myPlayer == Projectile.owner && !target.SpawnedFromStatue && target.lifeMax > 5 && target.type != NPCID.TargetDummy)
-					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.DirectionTo(Main.player[Projectile.owner].Center), ModContent.ProjectileType<SoilgunLifeSteal>(), 0, 0f, Projectile.owner, 1);
-			}
-		}
-
-		public override void Kill(int timeLeft)
-		{
-			SoundEngine.PlaySound(SoundID.Dig, Projectile.position);
-
-			for (int i = 0; i < 15; i++)
-			{
-				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.CrimsonPlants, 0f, 0f, 25, default, Main.rand.NextFloat(0.8f, 1f));
+				Dust.NewDustPerfect(npc.Center + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2), ModContent.DustType<PixelatedImpactLineDustGlow>(),
+					Vector2.UnitY * -Main.rand.NextFloat(3f, 6f), 50, new Color(255, 0, 255, 0), 0.15f);
 			}
 		}
 	}
 
-	public class SoilgunEbonsandSoil : BaseSoilProjectile
+	public class SoilgunPearlsandSoil : SoilProjectile
 	{
-		public override string Texture => "Terraria/Images/Item_" + ItemID.EbonsandBlock;
-		public SoilgunEbonsandSoil() : base(new Color(26, 18, 31), new Color(62, 45, 75), new Color(119, 106, 138), DustID.Ebonwood) { }
-		public override void SafeAI()
-		{
-			if (Main.rand.NextBool(8))
-			{
-				var dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Ebonwood, 0f, 0f, 25, default, Main.rand.NextFloat(0.8f, 1.15f));
-				dust.noGravity = true;
-				if (Main.rand.NextBool(2))
-				{
-					var dust2 = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Shadowflame, 0f, 0f, 25, default, Main.rand.NextFloat(0.9f, 1.2f));
-					dust2.noGravity = true;
-				}
-			}
-		}
-
-		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-		{
-			SoilgunGlobalNPC globalNPC = target.GetGlobalNPC<SoilgunGlobalNPC>();
-			globalNPC.HauntedSoulDamage = damageDone * 3;
-			globalNPC.HauntedStacks++;
-			globalNPC.HauntedTimer = 420;
-			globalNPC.HauntedSoulOwner = Projectile.owner;
-		}
-
-		public override void Kill(int timeLeft)
-		{
-			SoundEngine.PlaySound(SoundID.Dig, Projectile.position);
-			for (int i = 0; i < 12; i++)
-			{
-				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Ebonwood, 0f, 0f, 25, default, Main.rand.NextFloat(0.8f, 1f));
-			}
-		}
-	}
-
-	public class SoilgunPearlsandSoil : BaseSoilProjectile
-	{
+		private NPC target;
+		public override bool gravity => false;
+		public override int ClumpType => ModContent.ProjectileType<SoilgunPearlsandClump>();
 		public override string Texture => "Terraria/Images/Item_" + ItemID.PearlsandBlock;
-
-		private bool foundTarget;
-		public SoilgunPearlsandSoil() : base(new Color(87, 77, 106), new Color(87, 77, 106), new Color(246, 235, 228), DustID.Pearlsand) { }
-		public override Color? GetAlpha(Color lightColor)
-		{
-			return Color.White;
-		}
-
+		public SoilgunPearlsandSoil() : base(new Color(87, 77, 106), new Color(174, 168, 186), new Color(87, 77, 106), new Color(246, 235, 228), new Color(120, 110, 140), DustID.Pearlsand) { }
 		public override void SafeAI()
 		{
-			Gravity = !foundTarget;
+			target = Main.npc.Where(n => n.CanBeChasedBy() && n.Distance(Projectile.Center) < 1250f && Collision.CanHitLine(Projectile.Center, 1, 1, n.Center, 1, 1)).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
 
-			Vector2 npcCenter = Projectile.Center;
-			NPC npc = Projectile.FindTargetWithinRange(1500f);
-
-			if (npc != null && Collision.CanHit(Projectile.Center, 1, 1, npc.Center, 1, 1) && !npc.dontTakeDamage && !npc.immortal)
+			if (target != null)
 			{
-				npcCenter = npc.Center;
-				foundTarget = true;
-			}
-
-			if (foundTarget)
-			{
-				float speed = Main.player[Projectile.owner].HeldItem.shootSpeed;
-				Vector2 velo = Utils.SafeNormalize(npcCenter - Projectile.Center, Vector2.UnitY);
-				Projectile.velocity = (Projectile.velocity * 20f + velo * speed) / 21f;
-			}
-
-			if (Main.rand.NextBool(5))
-			{
-				Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Pearlsand, 0f, 0f, 25, default, Main.rand.NextFloat(0.8f, 1.1f)).noGravity = true;
-				if (Main.rand.NextBool(2))
-					Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.MoonstoneShimmer>(), Main.rand.NextVector2Circular(1, 1) * Main.rand.NextFloat(0.1f, 0.2f), 25, new Color(0.3f, 0.2f, 0.3f, 0f), Main.rand.NextFloat(0.2f, 0.3f)).fadeIn = 90f;
-			}
-		}
-
-		public override void Kill(int timeLeft)
-		{
-			SoundEngine.PlaySound(SoundID.Dig, Projectile.position);
-			for (int i = 0; i < 10; i++)
-			{
-				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Pearlsand, 0f, 0f, 25, default, Main.rand.NextFloat(0.8f, 1f));
-			}
-
-			for (int i = 0; i < 6; i++)
-			{
-				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.MoonstoneShimmer>(), Main.rand.NextVector2Circular(1, 1) * Main.rand.NextFloat(0.3f, 0.4f), 25, new Color(0.3f, 0.2f, 0.3f, 0f), Main.rand.NextFloat(0.3f, 0.4f)).fadeIn = 90f;
-			}
-		}
-	}
-
-	public class SoilgunVitricSandSoil : BaseSoilProjectile
-	{
-		public override string Texture => AssetDirectory.VitricTile + "VitricSandItem";
-
-		public SoilgunVitricSandSoil() : base(new Color(87, 129, 140), new Color(87, 129, 140), new Color(171, 230, 167), ModContent.DustType<VitricSandDust>()) { }
-
-		//yeah this is copied from vitric bullet they kinda similar tho
-		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-		{
-			SoilgunGlobalNPC globalNPC = target.GetGlobalNPC<SoilgunGlobalNPC>();
-			if (globalNPC.ShardAmount < 10)
-			{
-				var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), target.position, Vector2.Zero, ModContent.ProjectileType<SoilgunVitricCrystals>(), Projectile.damage / 2, 0f, Projectile.owner);
-
-				proj.rotation = Projectile.rotation + Main.rand.NextFloat(-1f, 1f);
-
-				if (proj.ModProjectile is SoilgunVitricCrystals Crystal)
+				if (!target.active || Projectile.Distance(target.Center) > 1250f)
 				{
-					//Vector2 Offset = 0;
-					Crystal.offset = Projectile.position - target.position;
-					//Crystal.offset += Offset;
-					Crystal.enemyID = target.whoAmI;
+					target = null;
+					return;
 				}
 
-				globalNPC.ShardAmount++;
-			}
-
-			globalNPC.ShardTimer = 600;
-		}
-
-		public override void Kill(int timeLeft)
-		{
-			SoundEngine.PlaySound(SoundID.Dig, Projectile.position);
-			for (int i = 0; i < 3; i++)
-			{
-				Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<Dusts.GlassGravity>(), 0f, 0f).scale = Main.rand.NextFloat(0.6f, 0.9f);
-				for (int d = 0; d < 4; d++)
-				{
-					Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<VitricSandDust>(), 0f, 0f).scale = Main.rand.NextFloat(0.8f, 1.2f);
-				}
-			}
-		}
-	}
-
-	public class SoilgunSlushSoil : BaseSoilProjectile
-	{
-		public override string Texture => "Terraria/Images/Item_" + ItemID.SlushBlock;
-		public SoilgunSlushSoil() : base(new Color(27, 40, 51), new Color(27, 40, 51), new Color(164, 182, 180), DustID.Slush) { }
-		public override void SafeAI()
-		{
-			if (Main.rand.NextBool(8))
-			{
-				var dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Ice, 0f, 0f, 35, default, Main.rand.NextFloat(0.8f, 1.2f));
-				dust.noGravity = true;
-			}
-		}
-
-		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-		{
-			SoilgunGlobalNPC globalNPC = target.GetGlobalNPC<SoilgunGlobalNPC>();
-			globalNPC.GlassPlayerID = Projectile.owner;
-			globalNPC.GlassAmount++;
-
-			if (Main.myPlayer == Projectile.owner)
-				Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<SoilgunIcicleProj>(), (int)(Projectile.damage * 0.65f), 0f, Projectile.owner, target.whoAmI);
-
-			if (globalNPC.GlassAmount > 10)
-			{
-				for (int i = 0; i < Main.maxProjectiles; i++)
-				{
-					Projectile proj = Main.projectile[i];
-					if (proj.type == ModContent.ProjectileType<SoilgunIcicleProj>() && proj.active && proj.ai[0] == target.whoAmI)
-					{
-						proj.ai[1] = 1f;
-						proj.Kill();
-					}
-				}
-
-				globalNPC.GlassAmount = 0;
-				SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath.WithVolumeScale(3f), Projectile.position);
-				CameraSystem.shake += 5;
-			}
-
-			target.AddBuff(BuffID.Frostburn, 180);
-		}
-
-		public override void Kill(int timeLeft)
-		{
-			SoundEngine.PlaySound(SoundID.Shatter, Projectile.position);
-			for (int i = 0; i < 15; i++)
-			{
-				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Slush, 0f, 0f, 15, default, Main.rand.NextFloat(0.8f, 1f));
-			}
-		}
-	}
-
-	public class SoilgunSiltSoil : BaseSoilProjectile
-	{
-		public override string Texture => "Terraria/Images/Item_" + ItemID.SiltBlock;
-		public SoilgunSiltSoil() : base(new Color(22, 24, 32), new Color(49, 51, 61), new Color(106, 107, 118), DustID.Silt) { }
-		public override void SafeAI()
-		{
-			if (Main.rand.NextBool(8))
-			{
-				var dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, Main.rand.Next(new int[] { DustID.CopperCoin, DustID.SilverCoin, DustID.GoldCoin, DustID.PlatinumCoin }), 0f, 0f, 35, default, Main.rand.NextFloat(0.8f, 1.2f));
-				dust.noGravity = true;
-			}
-		}
-
-		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-		{
-			for (int i = 0; i < 12; i++)
-			{
-				Dust.NewDustPerfect(Projectile.Center, Main.rand.Next(new int[] { DustID.CopperCoin, DustID.SilverCoin, DustID.GoldCoin, DustID.PlatinumCoin }), (Vector2.UnitY * Main.rand.NextFloat(-4, -1)).RotatedByRandom(0.25f), 35, default, Main.rand.NextFloat(1f, 1.3f));
-			}
-
-			for (int i = 0; i < 1 + Main.rand.Next(2); i++)
-			{
-				if (Main.myPlayer == Projectile.owner)
-					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, (Vector2.UnitY * Main.rand.NextFloat(-9f, -1)).RotatedByRandom(0.35f), ModContent.ProjectileType<SoilgunCoinsProjectile>(), (int)(Projectile.damage * 0.66f), 1f, Projectile.owner);
-			}
-		}
-
-		public override void Kill(int timeLeft)
-		{
-			SoundEngine.PlaySound(SoundID.Dig, Projectile.position);
-			for (int i = 0; i < 15; i++)
-			{
-				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Silt, 0f, 0f, 25, default, Main.rand.NextFloat(0.8f, 1f));
-			}
-		}
-	}
-
-	public class SoilgunMudSoil : BaseSoilProjectile
-	{
-		public override string Texture => "Terraria/Images/Item_" + ItemID.MudBlock;
-		public override void SafeSetDefaults()
-		{
-			Projectile.penetrate = 3;
-			Projectile.usesLocalNPCImmunity = true; //without local immunity this was by far the worse ammo, about 3x less dps than just dirt. high hit cooldown to compensate though.
-			Projectile.localNPCHitCooldown = 20;
-		}
-		public SoilgunMudSoil() : base(new Color(30, 21, 24), new Color(73, 57, 63), new Color(111, 83, 89), DustID.Mud) { }
-		public override void SafeAI()
-		{
-			if (Main.rand.NextBool(4))
-			{
-				var dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Mud, 0f, 0f, 35, default, Main.rand.NextFloat(0.75f, 1.15f));
-				dust.noGravity = true;
-			}
-		}
-
-		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-		{
-			Projectile.velocity.X *= -1;
-
-			Projectile.damage = (int)(Projectile.damage * 0.66f);
-		}
-
-		public override bool OnTileCollide(Vector2 oldVelocity)
-		{
-			Projectile.penetrate--;
-			if (Projectile.penetrate <= 0)
-			{
-				Projectile.Kill();
+				Projectile.velocity = (Projectile.velocity * 35f + Utils.SafeNormalize(target.Center - Projectile.Center, Vector2.UnitX) * 25f) / 36f;
 			}
 			else
 			{
-				Collision.HitTiles(Projectile.position, Projectile.velocity, Projectile.width, Projectile.height);
+				Projectile.velocity *= 0.96f;
 
-				SoundEngine.PlaySound(SoundID.Item10, Projectile.position);
-
-				if (Math.Abs(Projectile.velocity.X - oldVelocity.X) > float.Epsilon)
-				{
-					Projectile.velocity.X = -oldVelocity.X;
-				}
-
-				if (Math.Abs(Projectile.velocity.Y - oldVelocity.Y) > float.Epsilon)
-				{
-					Projectile.velocity.Y = -oldVelocity.Y;
-				}
+				if (Projectile.velocity.Length() < 1f)
+					Projectile.timeLeft--;
 			}
-
-			return false;
 		}
+	}
 
-		public override void Kill(int timeLeft)
+	public class SoilgunVitricSandSoil : SoilProjectile
+	{
+		public override int ClumpType => ModContent.ProjectileType<SoilgunVitricSandClump>();
+		public override string Texture => AssetDirectory.VitricTile + "VitricSandItem";
+		public SoilgunVitricSandSoil() : base(new Color(87, 129, 140), new Color(99, 183, 173), new Color(87, 129, 140), new Color(171, 230, 167), new Color(86, 57, 47), ModContent.DustType<VitricSandDust>()) { }
+		public override void SafeSetDefaults()
 		{
-			SoundEngine.PlaySound(SoundID.Dig, Projectile.position);
-			for (int i = 0; i < 12; i++)
+			Projectile.penetrate = Main.rand.Next(2, 5);
+
+			Projectile.localNPCHitCooldown = 20;
+			Projectile.usesLocalNPCImmunity = true;
+		}
+	}
+
+	public class SoilgunSlushSoil : SoilProjectile
+	{
+		public override int ClumpType => ModContent.ProjectileType<SoilgunSlushClump>();
+		public override string Texture => "Terraria/Images/Item_" + ItemID.SlushBlock;
+		public SoilgunSlushSoil() : base(new Color(27, 40, 51), new Color(62, 95, 104), new Color(27, 40, 51), new Color(164, 182, 180), new Color(77, 106, 113), DustID.Slush) { }
+		public override void SafeOnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			target.AddBuff(BuffID.Frostburn, 300);
+		}
+	}
+
+	public class SoilgunSiltSoil : SoilProjectile
+	{
+		public override int ClumpType => ModContent.ProjectileType<SoilgunSiltClump>();
+		public override string Texture => "Terraria/Images/Item_" + ItemID.SiltBlock;
+		public SoilgunSiltSoil() : base(new Color(22, 24, 32), new Color(49, 51, 61), new Color(49, 51, 61), new Color(106, 107, 118), new Color(89, 83, 83), DustID.Silt) { }
+		public override void OnSpawn(IEntitySource source)
+		{
+			// vanilla extracinator code is like a billion lines so i modified it slightly
+			// ore drops and stuff arent able to be got from this, just gems and coins, but like who is actually going to use this seriously idk
+			if (Main.rand.NextBool(5))
 			{
-				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Mud, 0f, 0f, 25, default, Main.rand.NextFloat(0.8f, 0.9f));
+				int quantity = 2 + Main.rand.Next(50);
+				int type;
+
+				if (Main.rand.NextFloat() < 0.75f) // give the player money 75% of the time
+				{
+					float roll = Main.rand.NextFloat();
+
+					if (roll < 0.0005f)
+					{
+						quantity = Main.rand.Next(3);
+						type = ItemID.PlatinumCoin;
+					}
+					else if (roll < 0.01f)
+					{
+						quantity = Main.rand.Next(10);
+						type = ItemID.GoldCoin;
+					}
+					else if (roll < 0.1f)
+					{
+						type = ItemID.SilverCoin;
+					}
+					else
+					{
+						type = ItemID.CopperCoin;
+					}
+				}
+				else // otherwise give them a random gem
+				{
+					type = Main.rand.Next(new int[] { ItemID.Amethyst, ItemID.Topaz, ItemID.Sapphire, ItemID.Emerald, ItemID.Ruby, ItemID.Diamond, ItemID.Amber });
+					quantity = 1 + Main.rand.Next(3);
+				}
+
+				Item.NewItem(Projectile.GetSource_Loot(), Projectile.getRect(), type, quantity);
 			}
+		}
+	}
+
+	public class SoilgunMudSoil : SoilProjectile
+	{
+		public override int ClumpType => ModContent.ProjectileType<SoilgunMudClump>();
+		public override string Texture => "Terraria/Images/Item_" + ItemID.MudBlock;
+		public SoilgunMudSoil() : base(new Color(30, 21, 24), new Color(23, 68, 9), new Color(73, 57, 63), new Color(111, 83, 89), new Color(73, 57, 63), DustID.Mud) { }
+		public override void SafeOnKill()
+		{
+			if (Main.rand.NextBool(5))
+			{
+				if (Projectile.owner == Main.myPlayer)
+				{
+					Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, Main.rand.NextVector2CircularEdge(6f, 6f),
+							Owner.beeType(), Owner.beeDamage(Projectile.damage), Owner.beeKB(Projectile.knockBack), Owner.whoAmI);
+				}
+			}
+		}
+	}
+
+	public class SoilgunAshSoil : SoilProjectile
+	{
+		public override int ClumpType => ModContent.ProjectileType<SoilgunAshClump>();
+		public override string Texture => "Terraria/Images/Item_" + ItemID.AshBlock;
+		public SoilgunAshSoil() : base(new Color(246, 86, 22), new Color(252, 147, 20), new Color(73, 57, 63), new Color(111, 83, 89), new Color(32, 27, 34) * 0.75f, DustID.Ash) { }
+		public override void SafeOnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			target.AddBuff(BuffID.OnFire, 300);
 		}
 	}
 }

@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			int distance = (int)(Owner.Center - Projectile.Center).Length();
-			float pushback = (float)Math.Sqrt(200 * EaseFunction.EaseCubicIn.Ease((200 - distance) / 200f));
+			float pushback = (float)Math.Sqrt(200 * Eases.EaseCubicIn((200 - distance) / 200f));
 			Vector2 direction = target.DirectionTo(Owner.Center);
 
 			if (direction.LengthSquared() > 0)
@@ -99,21 +99,21 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 			Texture2D afterTex = ModContent.Request<Texture2D>(Texture + "_After").Value;
 
 			/*Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);*/
+			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);*/
 
 			for (int k = 15; k > 0; k--)
 			{
 
 				float progress = 1 - (float)((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
-				Color color = Color.White * EaseFunction.EaseQuarticOut.Ease(progress) * EaseFunction.EaseQuarticOut.Ease(Fade) * 0.2f;
+				Color color = Color.White * Eases.EaseQuarticOut(progress) * Eases.EaseQuarticOut(Fade) * 0.2f;
 				if (k > 0 && k < oldRotation.Count)
 					Main.spriteBatch.Draw(tex, oldPosition[k] - Main.screenPosition, null, color, oldRotation[k], tex.Size() / 2, Projectile.scale * 0.8f * progress, SpriteEffects.None, 0f);
 			}
 
 			/*Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.AlphaBlend, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);*/
+			Main.spriteBatch.Begin(default, BlendState.AlphaBlend, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);*/
 
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * (float)EaseFunction.EaseQuarticOut.Ease(Fade), Projectile.rotation, tex.Size() / 2, Projectile.scale * 1.2f, SpriteEffects.None, 0f);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * (float)Eases.EaseQuarticOut(Fade), Projectile.rotation, tex.Size() / 2, Projectile.scale * 1.2f, SpriteEffects.None, 0f);
 			return false;
 		}
 	}

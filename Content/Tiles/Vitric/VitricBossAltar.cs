@@ -17,7 +17,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-	internal class VitricBossAltar : DummyTile, IHintable
+	internal class VitricBossAltar : DummyTile
 	{
 		public override int DummyType => DummySystem.DummyType<VitricBossAltarDummy>();
 
@@ -106,16 +106,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 			if (NPC.type == NPCType<VitricBoss>())
 				(Dummy(i, j) as VitricBossAltarDummy).boss = Main.npc[n];
-		}
-
-		public string GetHint()
-		{
-			Tile tile = Framing.GetTileSafely((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
-
-			if (tile.TileFrameX < 90)
-				return "An altar, encased in crystal rich with binding Starlight. You'd have to use a Starlight power of equal strength...";
-			else
-				return "An altar awaiting an offering...";
 		}
 	}
 
@@ -263,7 +253,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 						Main.musicFade[Main.curMusic] = 1 - (cutsceneTimer - 120) / 120f;
 
 					if (cutsceneTimer == 180)
-						Helper.PlayPitched("ArenaRise", 0.5f, -0.1f, Center);
+						SoundHelper.PlayPitched("ArenaRise", 0.5f, -0.1f, Center);
 				}
 
 				cutsceneTimer++;
@@ -297,7 +287,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 					if (barrierTimer == 119) //hitting the top
 					{
 						CameraSystem.shake += 15;
-						Helper.PlayPitched("VitricBoss/CeirosPillarImpact", 0.5f, 0, Center);
+						SoundHelper.PlayPitched("VitricBoss/CeirosPillarImpact", 0.5f, 0, Center);
 					}
 				}
 			}
@@ -353,7 +343,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				}
 
 				Texture2D glow = Assets.Tiles.Vitric.VitricBossAltarGlow.Value;
-				spriteBatch.Draw(glow, position - Main.screenPosition + new Vector2(-1, 7), glow.Frame(), Helper.IndicatorColorProximity(300, 600, Center), 0, Vector2.Zero, 1, 0, 0);
+				spriteBatch.Draw(glow, position - Main.screenPosition + new Vector2(-1, 7), glow.Frame(), CommonVisualEffects.IndicatorColorProximity(300, 600, Center), 0, Vector2.Zero, 1, 0, 0);
 			}
 
 			//Barriers
@@ -366,14 +356,14 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			int off = (int)(barrierTimer / 120f * tex.Height);
 			int off2 = (int)(barrierTimer / 120f * texTop.Width / 2);
 
-			LightingBufferRenderer.DrawWithLighting(new Rectangle((int)center.X - 790 - (int)Main.screenPosition.X, (int)center.Y - off - 16 - (int)Main.screenPosition.Y, tex.Width, off), tex, new Rectangle(0, 0, tex.Width, off), default);
-			LightingBufferRenderer.DrawWithLighting(new Rectangle((int)center.X + 606 - (int)Main.screenPosition.X, (int)center.Y - off - 16 - (int)Main.screenPosition.Y, tex.Width, off), tex2, new Rectangle(0, 0, tex.Width, off), default);
+			LightingBufferRenderer.DrawWithLighting(tex, new Rectangle((int)center.X - 790 - (int)Main.screenPosition.X, (int)center.Y - off - 16 - (int)Main.screenPosition.Y, tex.Width, off), new Rectangle(0, 0, tex.Width, off), Color.White);
+			LightingBufferRenderer.DrawWithLighting(tex2, new Rectangle((int)center.X + 606 - (int)Main.screenPosition.X, (int)center.Y - off - 16 - (int)Main.screenPosition.Y, tex.Width, off), new Rectangle(0, 0, tex.Width, off), Color.White);
 
 			//left
-			LightingBufferRenderer.DrawWithLighting(new Rectangle((int)center.X - 592 - (int)Main.screenPosition.X, (int)center.Y - 1040 - (int)Main.screenPosition.Y, off2, texTop.Height), texTop, new Rectangle(texTop.Width / 2 - off2, 0, off2, texTop.Height), default);
+			LightingBufferRenderer.DrawWithLighting(texTop, new Rectangle((int)center.X - 592 - (int)Main.screenPosition.X, (int)center.Y - 1040 - (int)Main.screenPosition.Y, off2, texTop.Height), new Rectangle(texTop.Width / 2 - off2, 0, off2, texTop.Height), Color.White);
 
 			//right
-			LightingBufferRenderer.DrawWithLighting(new Rectangle((int)center.X + 608 - off2 - (int)Main.screenPosition.X, (int)center.Y - 1040 - (int)Main.screenPosition.Y, off2, texTop.Height), texTop, new Rectangle(texTop.Width / 2, 0, off2, texTop.Height), default);
+			LightingBufferRenderer.DrawWithLighting(texTop, new Rectangle((int)center.X + 608 - off2 - (int)Main.screenPosition.X, (int)center.Y - 1040 - (int)Main.screenPosition.Y, off2, texTop.Height), new Rectangle(texTop.Width / 2, 0, off2, texTop.Height), Color.White);
 
 			//spriteBatch.Draw(tex, new Rectangle((int)center.X - 790 - (int)Main.screenPosition.X, (int)center.Y - off - 16 - (int)Main.screenPosition.Y, tex.Width, off),
 			//new Rectangle(0, 0, tex.Width, off), color);

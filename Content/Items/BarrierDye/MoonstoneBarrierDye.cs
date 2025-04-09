@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.Moonstone;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.BarrierSystem;
 using System;
 using Terraria.Graphics.Effects;
@@ -47,32 +48,36 @@ namespace StarlightRiver.Content.Items.BarrierDye
 			if (barrier.barrier <= 0)
 				return;
 
-			Effect effect = Filters.Scene["MoonstoneRunes"].GetShader().Shader;
-			effect.Parameters["intensity"].SetValue(10f * MathF.Min(barrier.rechargeAnimationTimer, 1));
-			effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.1f);
+			Effect effect = ShaderLoader.GetShader("MoonstoneRunes").Value;
 
-			effect.Parameters["noiseTexture1"].SetValue(Assets.Noise.MiscNoise3.Value);
-			effect.Parameters["noiseTexture2"].SetValue(Assets.Noise.MiscNoise4.Value);
-			effect.Parameters["color1"].SetValue(Color.Magenta.ToVector4());
-			effect.Parameters["color2"].SetValue(Color.Cyan.ToVector4());
-			effect.Parameters["opacity"].SetValue(1);
+			if (effect != null)
+			{
+				effect.Parameters["intensity"].SetValue(10f * MathF.Min(barrier.rechargeAnimationTimer, 1));
+				effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.1f);
 
-			effect.Parameters["screenWidth"].SetValue(tex.Width);
-			effect.Parameters["screenHeight"].SetValue(tex.Width);
-			effect.Parameters["screenPosition"].SetValue(CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI));
-			effect.Parameters["drawOriginal"].SetValue(false);
+				effect.Parameters["noiseTexture1"].SetValue(Assets.Noise.MiscNoise3.Value);
+				effect.Parameters["noiseTexture2"].SetValue(Assets.Noise.MiscNoise4.Value);
+				effect.Parameters["color1"].SetValue(Color.Magenta.ToVector4());
+				effect.Parameters["color2"].SetValue(Color.Cyan.ToVector4());
+				effect.Parameters["opacity"].SetValue(1);
 
-			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
+				effect.Parameters["screenWidth"].SetValue(tex.Width);
+				effect.Parameters["screenHeight"].SetValue(tex.Width);
+				effect.Parameters["screenPosition"].SetValue(CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI));
+				effect.Parameters["drawOriginal"].SetValue(false);
 
-			Rectangle rect = CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI);
+				spriteBatch.End();
+				spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.ZoomMatrix);
 
-			Vector2 drawPos = CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI);
+				Rectangle rect = CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI);
 
-			spriteBatch.Draw(tex, drawPos, rect, Color.White);
+				Vector2 drawPos = CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI);
 
-			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Draw(tex, drawPos, rect, Color.White);
+
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 		}
 	}
 }

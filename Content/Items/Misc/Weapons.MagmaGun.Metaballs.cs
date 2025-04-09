@@ -1,4 +1,6 @@
-﻿using StarlightRiver.Content.Items.Vitric;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Items.Vitric;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.MetaballSystem;
 using System.Linq;
 using Terraria.Graphics.Effects;
@@ -7,13 +9,15 @@ namespace StarlightRiver.Content.Items.Misc
 {
 	internal class MagmaMetaballs : MetaballActor
 	{
-		public override bool Active => Main.projectile.Any(n => n.active && (n.type == ModContent.ProjectileType<MagmaGunPhantomProj>() || n.type == ModContent.ProjectileType<ArrowMagma>()));
+		public static int activeTime;
+
+		public override bool Active => activeTime > 0;
 
 		public override Color OutlineColor => new(255, 254, 255);
 
 		public override void DrawShapes(SpriteBatch spriteBatch)
 		{
-			Effect borderNoise = Filters.Scene["BorderNoise"].GetShader().Shader;
+			Effect borderNoise = ShaderLoader.GetShader("BorderNoise").Value;
 
 			Texture2D tex = Assets.Items.Misc.MagmaGunProj.Value;
 
@@ -51,20 +55,26 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointClamp, DepthStencilState.Default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+
+			activeTime--;
 		}
 
 		public override bool PostDraw(SpriteBatch spriteBatch, Texture2D target)
 		{
-			Effect magmaNoise = Filters.Scene["MagmaNoise"].GetShader().Shader;
-			magmaNoise.Parameters["noiseScale"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight) / 200);
-			magmaNoise.Parameters["offset"].SetValue(2 * Main.screenPosition / new Vector2(Main.screenWidth, Main.screenHeight));
-			magmaNoise.Parameters["codedColor"].SetValue(Color.White.ToVector4());
-			magmaNoise.Parameters["newColor"].SetValue(new Color(255, 70, 10).ToVector4());
-			magmaNoise.Parameters["distort"].SetValue(Assets.Noise.ShaderNoiseLooping.Value);
+			Effect magmaNoise = ShaderLoader.GetShader("MagmaNoise").Value;
 
-			magmaNoise.CurrentTechnique.Passes[0].Apply();
-			spriteBatch.Draw(target, Vector2.Zero, null, Color.White, 0, new Vector2(0, 0), 2f, SpriteEffects.None, 0);
+			if (magmaNoise != null)
+			{
+				magmaNoise.Parameters["noiseScale"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight) / 200);
+				magmaNoise.Parameters["offset"].SetValue(2 * Main.screenPosition / new Vector2(Main.screenWidth, Main.screenHeight));
+				magmaNoise.Parameters["codedColor"].SetValue(Color.White.ToVector4());
+				magmaNoise.Parameters["newColor"].SetValue(new Color(255, 70, 10).ToVector4());
+				magmaNoise.Parameters["distort"].SetValue(Assets.Noise.ShaderNoiseLooping.Value);
+
+				magmaNoise.CurrentTechnique.Passes[0].Apply();
+				spriteBatch.Draw(target, Vector2.Zero, null, Color.White, 0, new Vector2(0, 0), 2f, SpriteEffects.None, 0);
+			}
 
 			return false;
 		}

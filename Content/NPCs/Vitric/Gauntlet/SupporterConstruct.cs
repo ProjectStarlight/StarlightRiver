@@ -268,7 +268,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				effect.Parameters["uColor"].SetValue(color.ToVector3());
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
 
 				float height = texBeam.Height / 8f;
 				int width = (int)(NPC.Center - healingTarget.Center).Length();
@@ -402,7 +402,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 				if (comboTimer == 100)
 				{
-					NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Bottom, healingTarget.Center + new Vector2(healingTarget.spriteDirection * 15, -100), 0.2f, 120, 450);
+					NPC.velocity = GeometryHelper.GetArcVel(NPC.Bottom, healingTarget.Center + new Vector2(healingTarget.spriteDirection * 15, -100), 0.2f, 120, 450);
 					return true;
 				}
 

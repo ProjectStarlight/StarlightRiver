@@ -8,7 +8,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
-	internal class ArenaBottom : ModNPC, IDrawAdditive
+	internal class ArenaBottom : ModNPC
 	{
 		public VitricBoss Parent;
 
@@ -272,38 +272,33 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 						}
 					}
 				}
-			}
-		}
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
-			Texture2D tex = Assets.Bosses.VitricBoss.LongGlow.Value;
-
-			if (NPC.ai[1] == 2)
-			{
-				Color color;
+				Texture2D glowTex = Assets.Bosses.VitricBoss.LongGlow.Value;
+				Color glowColor;
 
 				if (NPC.ai[0] < 360)
 				{
-					color = Color.Lerp(Color.Transparent, Color.Red, NPC.ai[0] / 360f);
+					glowColor = Color.Lerp(Color.Transparent, Color.Red, NPC.ai[0] / 360f);
 				}
 				else if (NPC.ai[0] < 390)
 				{
-					color = Color.Lerp(Color.Red, Color.Red * 0.6f, (NPC.ai[0] - 360f) / 30f);
+					glowColor = Color.Lerp(Color.Red, Color.Red * 0.6f, (NPC.ai[0] - 360f) / 30f);
 				}
 				else
 				{
-					color = Color.Red * (0.5f + ((float)Math.Sin(NPC.ai[0] / 20f) + 1) * 0.1f);
-					color.G += (byte)((Math.Sin(NPC.ai[0] / 50f) + 1) * 25);
+					glowColor = Color.Red * (0.5f + ((float)Math.Sin(NPC.ai[0] / 20f) + 1) * 0.1f);
+					glowColor.G += (byte)((Math.Sin(NPC.ai[0] / 50f) + 1) * 25);
 				}
 
-				spriteBatch.Draw(tex, new Rectangle(NPC.Hitbox.X - (int)Main.screenPosition.X, NPC.Hitbox.Y - 66 - (int)Main.screenPosition.Y, NPC.Hitbox.Width, 100), null, color, 0, default, default, default);
-				spriteBatch.Draw(tex, new Rectangle(NPC.Hitbox.X - (int)Main.screenPosition.X, NPC.Hitbox.Y - 848 - (int)Main.screenPosition.Y, NPC.Hitbox.Width, 100), null, color, 0, default, SpriteEffects.FlipVertically, default);
+				glowColor.A = 0;
+
+				spriteBatch.Draw(glowTex, new Rectangle(NPC.Hitbox.X - (int)Main.screenPosition.X, NPC.Hitbox.Y - 66 - (int)Main.screenPosition.Y, NPC.Hitbox.Width, 100), null, glowColor, 0, default, default, default);
+				spriteBatch.Draw(glowTex, new Rectangle(NPC.Hitbox.X - (int)Main.screenPosition.X, NPC.Hitbox.Y - 848 - (int)Main.screenPosition.Y, NPC.Hitbox.Width, 100), null, glowColor, 0, default, SpriteEffects.FlipVertically, default);
 
 				if (Main.masterMode)
 				{
-					spriteBatch.Draw(tex, new Rectangle(NPC.Hitbox.X + 106 - (int)Main.screenPosition.X, NPC.Hitbox.Y - 866 - (int)Main.screenPosition.Y, 900, 100), null, color, 1.57f, default, default, default);
-					spriteBatch.Draw(tex, new Rectangle(NPC.Hitbox.X + 10 + NPC.width - (int)Main.screenPosition.X, NPC.Hitbox.Y - 866 - (int)Main.screenPosition.Y, 900, 100), null, color, 1.57f, default, SpriteEffects.FlipVertically, default);
+					spriteBatch.Draw(glowTex, new Rectangle(NPC.Hitbox.X + 106 - (int)Main.screenPosition.X, NPC.Hitbox.Y - 866 - (int)Main.screenPosition.Y, 900, 100), null, glowColor, 1.57f, default, default, default);
+					spriteBatch.Draw(glowTex, new Rectangle(NPC.Hitbox.X + 10 + NPC.width - (int)Main.screenPosition.X, NPC.Hitbox.Y - 866 - (int)Main.screenPosition.Y, 900, 100), null, glowColor, 1.57f, default, SpriteEffects.FlipVertically, default);
 				}
 			}
 		}

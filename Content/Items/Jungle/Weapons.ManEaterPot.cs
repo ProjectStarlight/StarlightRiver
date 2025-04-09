@@ -15,9 +15,9 @@ namespace StarlightRiver.Content.Items.Jungle
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Man Eater Pot");
-			Tooltip.SetDefault("Causes man eaters to sprout from your head\n" +
-				"These man eaters will consume heart pickups to empower themselves\n" +
-				"Consumed heart pickups heal you after a delay");
+			Tooltip.SetDefault("Causes Man Eaters to sprout from your head\n" +
+				"These Man Eaters will consume heart pickups to empower themselves\n" +
+				"Consumed heart pickups are delayed and heal you for less");
 
 			ItemID.Sets.GamepadWholeScreenUseRange[Item.type] = true; // This lets the Player target anywhere on the whole screen while using a controller.
 			ItemID.Sets.LockOnIgnoresCollision[Item.type] = true;
@@ -114,6 +114,7 @@ namespace StarlightRiver.Content.Items.Jungle
 			Projectile.penetrate = -1;
 			Projectile.DamageType = DamageClass.Summon;
 			Projectile.timeLeft = 2;
+			Projectile.usesLocalNPCImmunity = true;
 		}
 
 		public override void AI()
@@ -287,12 +288,10 @@ namespace StarlightRiver.Content.Items.Jungle
 
 			float dist = Vector2.Distance(Projectile.Center, Origin);
 
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-
-			Texture2D texVine = ModContent.Request<Texture2D>(Texture + "Vine").Value;
-			Texture2D texBlob = ModContent.Request<Texture2D>(Texture + "Blob").Value;
-
-			Texture2D texPot = ModContent.Request<Texture2D>(Texture + "Pot").Value;
+			Texture2D tex = Assets.Items.Jungle.ManEaterPotMinion.Value;
+			Texture2D texVine = Assets.Items.Jungle.ManEaterPotMinionVine.Value;
+			Texture2D texBlob = Assets.Items.Jungle.ManEaterPotMinionBlob.Value;
+			Texture2D texPot = Assets.Items.Jungle.ManEaterPotMinionPot.Value;
 
 			for (int k = texVine.Height; k < dist; k++)
 			{

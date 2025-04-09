@@ -154,9 +154,9 @@ namespace StarlightRiver.Content.Items.Misc
 				}
 
 				if (currentAttack == PanAttack.Crit)
-					Helper.PlayPitched("Effects/HeavyWhoosh", 0.7f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
+					SoundHelper.PlayPitched("Effects/HeavyWhoosh", 0.7f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 				else
-					Helper.PlayPitched("Effects/HeavyWhooshShort", 0.7f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
+					SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 0.7f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 
 				startRotation = endRotation;
 
@@ -279,7 +279,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			struckNPCs.Add(target);
-			Helper.PlayPitched("Impacts/PanBonkSmall", 0.5f, Main.rand.NextFloat(-0.2f, 0.2f), target.Center);
+			SoundHelper.PlayPitched("Impacts/PanBonkSmall", 0.5f, Main.rand.NextFloat(-0.2f, 0.2f), target.Center);
 			CameraSystem.shake += 2;
 		}
 
@@ -301,7 +301,7 @@ namespace StarlightRiver.Content.Items.Misc
 			for (int k = 16; k > 0; k--)
 			{
 				float progress = 1 - (float)((16 - k) / (float)16);
-				Color color = lightColor * EaseFunction.EaseQuarticOut.Ease(progress) * 0.1f;
+				Color color = lightColor * Eases.EaseQuarticOut(progress) * 0.1f;
 
 				if (k > 0 && k < oldRotation.Count)
 					Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, color, oldRotation[k] + 0.78f, origin, Projectile.scale * scaleVec, effects, 0f);
@@ -339,11 +339,14 @@ namespace StarlightRiver.Content.Items.Misc
 			Vector2 off = (Projectile.rotation + rotVel).ToRotationVector2() * 35;
 			off.X *= (float)Math.Cos(zRotation);
 
-			trail ??= new Trail(Main.instance.GraphicsDevice, 60, new NoTip(), factor => 12, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				Color trailColor = Color.DarkGray * MathHelper.Min(rotVel * 18, 0.75f);
-				return trailColor;
-			});
+				trail = new Trail(Main.instance.GraphicsDevice, 60, new NoTip(), factor => 12, factor =>
+							{
+								Color trailColor = Color.DarkGray * MathHelper.Min(rotVel * 18, 0.75f);
+								return trailColor;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + off;
@@ -353,11 +356,11 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			return currentAttack switch
 			{
-				PanAttack.Down => EaseFunction.EaseCircularInOut.Ease(input),
-				PanAttack.FirstUp => EaseFunction.EaseCircularInOut.Ease(input),
-				PanAttack.Spin => EaseFunction.EaseCircularInOut.Ease(input),
-				PanAttack.SecondUp => EaseFunction.EaseCircularInOut.Ease(input),
-				PanAttack.Crit => EaseFunction.EaseQuadInOut.Ease(input),
+				PanAttack.Down => Eases.EaseCircularInOut(input),
+				PanAttack.FirstUp => Eases.EaseCircularInOut(input),
+				PanAttack.Spin => Eases.EaseCircularInOut(input),
+				PanAttack.SecondUp => Eases.EaseCircularInOut(input),
+				PanAttack.Crit => Eases.EaseQuadInOut(input),
 				_ => input,
 			};
 		}
@@ -419,7 +422,7 @@ namespace StarlightRiver.Content.Items.Misc
 			for (int k = 8; k > 0; k--)
 			{
 				float progress = 1 - (float)((8 - k) / (float)8);
-				Color color = lightColor * EaseFunction.EaseQuarticOut.Ease(progress) * 0.2f;
+				Color color = lightColor * Eases.EaseQuarticOut(progress) * 0.2f;
 
 				if (k > 0 && k < oldRotation.Count)
 					Main.spriteBatch.Draw(tex, oldPosition[k] - Main.screenPosition, null, color, oldRotation[k], origin, Projectile.scale, effects, 0f);
@@ -446,7 +449,7 @@ namespace StarlightRiver.Content.Items.Misc
 		private void Bonk(Vector2 position)
 		{
 			Projectile.friendly = false;
-			Helper.PlayPitched("Impacts/PanBonkBig", 0.7f, Main.rand.NextFloat(-0.2f, 0.2f), position);
+			SoundHelper.PlayPitched("Impacts/PanBonkBig", 0.7f, Main.rand.NextFloat(-0.2f, 0.2f), position);
 
 			CameraSystem.shake += 10;
 			for (int j = 0; j < 17; j++)

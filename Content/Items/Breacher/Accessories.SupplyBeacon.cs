@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Items.SpaceEvent;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -17,7 +18,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Supply Beacon");
-			Tooltip.SetDefault("Taking over 50 damage summons a supply drop \nStand near the supply drop to buff either damage, regeneration, or defense \n10 second cooldown");
+			Tooltip.SetDefault("Taking over 50 damage summons a supply drop \nStand near the supply drop to gain {{BUFF:SupplyBeaconDefense, {{BUFF:SupplyBeaconHeal}}, or {{BUFF:SupplyBeaconDamage}} \n10 second cooldown");
 		}
 
 		public override void SetDefaults()
@@ -71,7 +72,7 @@ namespace StarlightRiver.Content.Items.Breacher
 					damageTicker = 0;
 					cooldown = 600;
 					launchCounter = 125;
-					Helper.PlayPitched("AirstrikeIncoming", 0.6f, 0);
+					SoundHelper.PlayPitched("AirstrikeIncoming", 0.6f, 0);
 				}
 			}
 		}
@@ -285,8 +286,10 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 100, new NoTip(), factor => factor * MathHelper.Lerp(11, 22, factor), factor => GetColor());
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 100, new NoTip(), factor => factor * MathHelper.Lerp(6, 12, factor), factor => Color.White);
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 100, new NoTip(), factor => factor * MathHelper.Lerp(11, 22, factor), factor => GetColor());
+			if (trail2 is null || trail2.IsDisposed)
+				trail2 = new Trail(Main.instance.GraphicsDevice, 100, new NoTip(), factor => factor * MathHelper.Lerp(6, 12, factor), factor => Color.White);
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center;
@@ -297,19 +300,22 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("OrbitalStrikeTrail").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
-			effect.Parameters["alpha"].SetValue(trailAlpha);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+				effect.Parameters["alpha"].SetValue(trailAlpha);
 
-			trail?.Render(effect);
+				trail?.Render(effect);
 
-			trail2?.Render(effect);
+				trail2?.Render(effect);
+			}
 		}
 	}
 
@@ -317,7 +323,7 @@ namespace StarlightRiver.Content.Items.Breacher
 	{
 		public override string Texture => AssetDirectory.Buffs + Name;
 
-		public SupplyBeaconDefense() : base("Supply Beacon", "Defense increased", false) { }
+		public SupplyBeaconDefense() : base("Supplied Defense", "Defense increased by 15", false) { }
 
 		public override void SafeSetDefaults()
 		{
@@ -336,7 +342,7 @@ namespace StarlightRiver.Content.Items.Breacher
 	{
 		public override string Texture => AssetDirectory.Buffs + Name;
 
-		public SupplyBeaconHeal() : base("Supply Beacon", "Regeneration increased", false) { }
+		public SupplyBeaconHeal() : base("Supplied Healing", "Life and mana regeneration increased by 10", false) { }
 
 		public override void SafeSetDefaults()
 		{
@@ -356,7 +362,7 @@ namespace StarlightRiver.Content.Items.Breacher
 	{
 		public override string Texture => AssetDirectory.Buffs + Name;
 
-		public SupplyBeaconDamage() : base("Supply Beacon", "Damage increased", false) { }
+		public SupplyBeaconDamage() : base("Supplied Damage", "Damage increased by 20%", false) { }
 
 		public override void SafeSetDefaults()
 		{

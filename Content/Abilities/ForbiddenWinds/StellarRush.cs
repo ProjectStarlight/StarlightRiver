@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Abilities.Infusions;
 using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Content.Tiles.Vitric.Temple;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -10,9 +11,14 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 {
-	class StellarRush : Dash
+	class StellarRush : Dash, IOrderedLoadable
 	{
 		public override float ActivationCostDefault => 1.5f;
+
+		public new void Load()
+		{
+			StarlightPlayer.PostUpdateEvent += UpdatePlayerFrame;
+		}
 
 		public override void OnActivate()
 		{
@@ -70,12 +76,15 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 			}
 		}
 
-		public override void UpdateFixed()
+		public override void SafeUpdateFixed()
 		{
-			base.UpdateFixed();
-
 			if (cache is null)
 				return;
+
+			if (EffectTimer > 0)
+			{
+				EffectTimer--;
+			}
 
 			if (EffectTimer < 44 - 24)
 			{
@@ -85,6 +94,20 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 					cache[i] += swirlOff2 * 0.05f;
 					cache[i] += Vector2.Normalize(cache[23] - cache[0]) * 1f;
 				}
+			}
+		}
+
+		new public void UpdatePlayerFrame(Player Player)
+		{
+			if (Player.GetHandler().ActiveAbility is StellarRush)
+			{
+				var dash = Player.GetHandler().ActiveAbility as Dash;
+
+				Player.bodyFrame = new Rectangle(0, 56 * 3, 40, 56);
+				Player.UpdateRotation(dash.Time / (float)dash.maxTime * 6.28f);
+
+				if (dash.Time == dash.maxTime || Player.dead)
+					Player.UpdateRotation(0);
 			}
 		}
 
@@ -114,13 +137,16 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 24, new NoTip(), factor => (float)Math.Sin(factor * 3.14f) * 60, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X == 1)
-					return Color.Transparent;
+				trail = new Trail(Main.instance.GraphicsDevice, 24, new NoTip(), factor => (float)Math.Sin(factor * 3.14f) * 60, factor =>
+							{
+								if (factor.X == 1)
+									return Color.Transparent;
 
-				return new Color(50, 100 + (int)(factor.X * 150), 255) * (float)Math.Sin(factor.X * 3.14f) * (float)Math.Sin(EffectTimer / 45f * 3.14f) * 0.15f;
-			});
+								return new Color(50, 100 + (int)(factor.X * 150), 255) * (float)Math.Sin(factor.X * 3.14f) * (float)Math.Sin(EffectTimer / 45f * 3.14f) * 0.15f;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Player.Center + Player.velocity * 6;
@@ -130,20 +156,23 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 		{
 			Main.spriteBatch.End();
 
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.0025f);
-			effect.Parameters["repeats"].SetValue(1f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.0025f);
+				effect.Parameters["repeats"].SetValue(1f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
-			trail?.Render(effect);
+				trail?.Render(effect);
+			}
 
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 
@@ -156,11 +185,12 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Stellar Rush");
-			Tooltip.SetDefault("Forbidden Winds Infusion\nDash farther and carry more speed\nIncreases starlight cost to 1.5");
+			Tooltip.SetDefault("[i:StarlightRiver/WindsHover][c/99FFCC:Forbidden Winds] Infusion\nIncreases cost to[i:StarlightRiver/StarlightHover][c/AAF0FF:1.5] {{Starlight}}\nYour dash will travel farther and launch you more afterwards");
 		}
 
 		public override void SetDefaults()
 		{
+			SetStaticDefaults();
 			Item.width = 20;
 			Item.height = 14;
 			Item.rare = ItemRarityID.Green;

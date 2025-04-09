@@ -28,13 +28,13 @@ namespace StarlightRiver.Content.Tiles.Forest
 				float offset = i * j % 6.28f + (float)rand.NextDouble() / 8f;
 				float sin = (float)Math.Sin(Main.GameUpdateCount / 45f + offset);
 
-				spriteBatch.Draw(tex, (new Vector2(i + 0.5f, j + 0.5f) + Helper.TileAdj) * 16 + new Vector2(1, 0.5f) * sin * 2.2f - Main.screenPosition,
+				spriteBatch.Draw(tex, new Vector2(i + 0.5f, j + 0.5f) * 16 + Vector2.One * Main.offScreenRange + new Vector2(1, 0.5f) * sin * 2.2f - Main.screenPosition,
 				new Rectangle(rand.Next(4) * 26, 0, 24, 24), Lighting.GetColor(i, j), offset + sin * 0.09f, new Vector2(12, 12), 1 + sin / 14f, 0, 0);
 
 				if (rand.Next(7) == 0)
 				{
 					Texture2D tex2 = Assets.Tiles.Forest.LeafWallFlower.Value;
-					spriteBatch.Draw(tex2, (new Vector2(i + 0.5f, j + 0.5f) + Helper.TileAdj) * 16 + new Vector2(1, 0.5f) * sin * 1.8f - Main.screenPosition,
+					spriteBatch.Draw(tex2, new Vector2(i + 0.5f, j + 0.5f) * 16 + Vector2.One * Main.offScreenRange + new Vector2(1, 0.5f) * sin * 1.8f - Main.screenPosition,
 						new Rectangle(i * j % 4 * 10, 0, 8, 8), Lighting.GetColor(i, j), offset + sin * 0.07f, new Vector2(4, 4), 1, 0, 0);
 				}
 			}

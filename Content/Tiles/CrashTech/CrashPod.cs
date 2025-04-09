@@ -10,7 +10,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.CrashTech
 {
-	class CrashPod : DummyTile, IHintable
+	class CrashPod : DummyTile
 	{
 		public override string Texture => "StarlightRiver/Assets/Tiles/CrashTech/CrashPod";
 
@@ -51,8 +51,8 @@ namespace StarlightRiver.Content.Tiles.CrashTech
 				Texture2D tex = Request<Texture2D>(Texture + "_Glow").Value;
 				Texture2D tex2 = Request<Texture2D>(Texture + "_Glow2").Value;
 
-				spriteBatch.Draw(tex, (Helper.TileAdj + new Vector2(i, j)) * 16 - Main.screenPosition, null, Color.White);
-				spriteBatch.Draw(tex2, (Helper.TileAdj + new Vector2(i, j)) * 16 + new Vector2(-1, 0) - Main.screenPosition, null, Helper.IndicatorColorProximity(150, 300, dummy.Center));
+				spriteBatch.Draw(tex, new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange - Main.screenPosition, null, Color.White);
+				spriteBatch.Draw(tex2, new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange + new Vector2(-1, 0) - Main.screenPosition, null, CommonVisualEffects.IndicatorColorProximity(150, 300, dummy.Center));
 
 			}
 		}
@@ -70,11 +70,6 @@ namespace StarlightRiver.Content.Tiles.CrashTech
 		public override bool CanExplode(int i, int j)
 		{
 			return false;
-		}
-
-		public string GetHint()
-		{
-			return "A fallen droppod, made of metal rich in binding Starlight. You'd have to use a Starlight power of equal strength...";
 		}
 	}
 
@@ -142,9 +137,9 @@ namespace StarlightRiver.Content.Tiles.CrashTech
 
 				if (tile1.HasTile && tile2.HasTile && Main.tileSolid[tile1.TileType] && Main.tileSolid[tile2.TileType])
 				{
-					if (tile1.BlockType == BlockType.Solid && tile2.BlockType == BlockType.Solid && Helper.CheckAirRectangle(new Point16(i, j - 4), new Point16(2, 4)))
+					if (tile1.BlockType == BlockType.Solid && tile2.BlockType == BlockType.Solid && WorldGenHelper.CheckAirRectangle(new Point16(i, j - 4), new Point16(2, 4)))
 					{
-						Helper.PlaceMultitile(new Point16(i, j - 4), TileType<CrashPod>());
+						WorldGenHelper.PlaceMultitile(new Point16(i, j - 4), TileType<CrashPod>());
 					}
 				}
 			}

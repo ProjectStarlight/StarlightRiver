@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.CameraSystem;
+﻿using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -93,7 +94,7 @@ namespace StarlightRiver.Content.Items.Haunted
 
 				Dust.NewDustPerfect(n.Center, ModContent.DustType<EchochainBurstDust>(), Vector2.Zero, 0, default, Main.rand.NextFloat(0.5f, 0.75f));
 
-				Helper.PlayPitched("Magic/Shadow1", 0.5f, 0f, npc.Center);
+				SoundHelper.PlayPitched("Magic/Shadow1", 0.5f, 0f, npc.Center);
 				CameraSystem.shake += 2;
 			}, true);
 
@@ -140,7 +141,7 @@ namespace StarlightRiver.Content.Items.Haunted
 
 				Dust.NewDustPerfect(n.Center, ModContent.DustType<EchochainBurstDust>(), Vector2.Zero, 0, default, Main.rand.NextFloat(0.5f, 0.75f));
 
-				Helper.PlayPitched("Magic/Shadow1", 0.5f, 0f, npc.Center);
+				SoundHelper.PlayPitched("Magic/Shadow1", 0.5f, 0f, npc.Center);
 
 			}, true);
 
@@ -386,7 +387,7 @@ namespace StarlightRiver.Content.Items.Haunted
 			Texture2D tex = Assets.Items.Haunted.EchochainWhipChain.Value;
 			Texture2D texGlow = Assets.Items.Haunted.EchochainWhipChain_Glow.Value;
 			Texture2D texBlur = Assets.Items.Haunted.EchochainWhipChain_Blur.Value;
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 			Vector2 chainStart = start.npc.Center;
 			Vector2 chainEnd = end.npc.Center;
 
@@ -426,13 +427,16 @@ namespace StarlightRiver.Content.Items.Haunted
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => 12.5f, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X >= 0.85f)
-					return Color.Transparent;
+				trail = new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => 12.5f, factor =>
+							{
+								if (factor.X >= 0.85f)
+									return Color.Transparent;
 
-				return new Color(100, 200, 10) * 0.3f * factor.X;
-			});
+								return new Color(100, 200, 10) * 0.3f * factor.X;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = cache[9];
@@ -440,27 +444,31 @@ namespace StarlightRiver.Content.Items.Haunted
 
 		public void DrawPrimitives(SpriteBatch spriteBatch)
 		{
-			spriteBatch.End();
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				spriteBatch.End();
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount * -0.025f);
-			effect.Parameters["repeats"].SetValue(1f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			trail?.Render(effect);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount * -0.025f);
+				effect.Parameters["repeats"].SetValue(1f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
-			effect.Parameters["repeats"].SetValue(2f);
-			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
+				trail?.Render(effect);
 
-			trail?.Render(effect);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
+				effect.Parameters["repeats"].SetValue(2f);
+				effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
-			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+				trail?.Render(effect);
+
+				spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+			}
 		}
 		#endregion Primitive Drawing
 

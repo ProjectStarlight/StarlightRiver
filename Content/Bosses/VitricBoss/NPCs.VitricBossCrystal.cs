@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Foregrounds;
 using StarlightRiver.Content.Packets;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -13,13 +14,15 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
-	internal class VitricBossCrystal : ModNPC, IDrawAdditive
+	internal class VitricBossCrystal : ModNPC
 	{
 		public Vector2 StartPos;
 		public Vector2 TargetPos;
 		public Vector2 prevTargetPos;
 		public VitricBoss Parent;
 		public bool shouldDrawArc;
+
+		private Trail trail;
 
 		public ref float state => ref NPC.ai[0];
 		public ref float timer => ref NPC.ai[1];
@@ -116,14 +119,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
-			writer.WritePackedVector2(StartPos);
-			writer.WritePackedVector2(TargetPos);
+			writer.WriteVector2(StartPos);
+			writer.WriteVector2(TargetPos);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
-			StartPos = reader.ReadPackedVector2();
-			TargetPos = reader.ReadPackedVector2();
+			StartPos = reader.ReadVector2();
+			TargetPos = reader.ReadVector2();
 		}
 
 		public override void AI()
@@ -237,7 +240,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					if (NPC.friendly && state != 0)
 					{
 						if (altTimer > 0 && altTimer <= 90)
-							NPC.Center = Vector2.Lerp(StartPos, TargetPos, Helper.SwoopEase(altTimer / 90f));
+							NPC.Center = Vector2.Lerp(StartPos, TargetPos, Eases.SwoopEase(altTimer / 90f));
 
 						if (altTimer == 90)
 						{
@@ -323,11 +326,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 							NPC.rotation = 0;
 					}
 
-					for (int k = 0; k < 3; k++)
-					{
-						var d = Dust.NewDustPerfect(NPC.Center + new Vector2(Main.rand.Next(-10, 10), Main.rand.Next(-10, 10)), DustType<PowerupDust>(), new Vector2(0, -Main.rand.NextFloat(3)), 0, new Color(255, 230, 100), 0.75f);
-						d.fadeIn = 10;
-					}
+					Dust.NewDustPerfect(NPC.Center + new Vector2(Main.rand.Next(-10, 10), Main.rand.Next(-10, 10)), DustType<PixelatedEmber>(), new Vector2(0, -Main.rand.NextFloat(3)), 0, new Color(255, 130 + Main.rand.Next(30), 60, 0) * (NPC.velocity.Length() / 10f), Main.rand.NextFloat(0.2f, 0.3f));
 
 					if (NPC.Center.Y > TargetPos.Y)
 					{
@@ -391,7 +390,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Zero, ProjectileType<FireRingHostile>(), 20, 0, Main.myPlayer, 100);
 
 			for (int k = 0; k < 40; k++)
-				Dust.NewDustPerfect(NPC.Center, DustType<Dusts.Stamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(7));
+				Dust.NewDustPerfect(NPC.Center, DustType<Dusts.PixelatedImpactLineDust>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(7), 0, new Color(255, 150, 20, 0), Main.rand.NextFloat(0.4f));
 		}
 
 		private void ResetTimers()
@@ -410,7 +409,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		{
 			Texture2D tex = Request<Texture2D>(Texture + "Glow").Value; //glowy outline
 			if (state == 0)
-				spriteBatch.Draw(tex, NPC.Center - screenPos, tex.Frame(), Helper.IndicatorColor, NPC.rotation, tex.Frame().Size() / 2, NPC.scale, 0, 0);
+				spriteBatch.Draw(tex, NPC.Center - screenPos, tex.Frame(), CommonVisualEffects.IndicatorColor, NPC.rotation, tex.Frame().Size() / 2, NPC.scale, 0, 0);
 
 			if (phase == 3 && timer < 30)
 			{
@@ -425,19 +424,22 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			{
 				spriteBatch.Draw(Assets.Bosses.VitricBoss.VitricBossCrystalShape.Value, NPC.Center - screenPos, NPC.frame, Color.White * (timer / 120f), NPC.rotation, NPC.frame.Size() / 2, NPC.scale, 0, 0);
 			}
-		}
 
-		Trail trail;
+			DrawAdditive(spriteBatch);
+		}
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
+			spriteBatch.End();
+			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+
 			if (state == 0) //extra FX while vulnerable
 			{
-				Texture2D texGlow = Assets.Keys.GlowSoft.Value;
+				Texture2D texGlow = Assets.Masks.GlowSoft.Value;
 				Vector2 pos = NPC.Center - Main.screenPosition;
 				spriteBatch.Draw(texGlow, pos, null, new Color(200, 255, 255) * 0.7f * (0.9f + (float)Math.Sin(Main.GameUpdateCount / 50f) * 0.1f), 0, texGlow.Size() / 2, 2, 0, 0);
 
-				Texture2D texShine = Assets.Keys.Shine.Value;
+				Texture2D texShine = Assets.Masks.Shine.Value;
 
 				spriteBatch.Draw(texShine, pos, null, new Color(200, 255, 255) * 0.5f * (1 - GetProgress(0)), Main.GameUpdateCount / 100f, new Vector2(texShine.Width / 2, texShine.Height), 0.18f * GetProgress(0), 0, 0);
 				spriteBatch.Draw(texShine, pos, null, new Color(200, 255, 255) * 0.5f * (1 - GetProgress(34)), Main.GameUpdateCount / 90f + 2.2f, new Vector2(texShine.Width / 2, texShine.Height), 0.19f * GetProgress(34), 0, 0);
@@ -450,12 +452,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			{
 				Texture2D tex = Assets.Bosses.VitricBoss.GlassSpikeGlow.Value;
 				float speed = NPC.velocity.Y / 15f;
-				spriteBatch.Draw(tex, NPC.Center - Main.screenPosition + new Vector2(0, -45), null, new Color(255, 150, 50) * speed, -MathHelper.PiOver4, tex.Size() / 2, 3, 0, 0);
+				spriteBatch.Draw(tex, NPC.Center - Main.screenPosition + new Vector2(0, -45), null, new Color(255, 150, 50, 0) * speed, -MathHelper.PiOver4, tex.Size() / 2, 3, 0, 0);
 			}
 
 			if (phase == 6 && timer > 220)
 			{
-				Texture2D texGlow2 = Assets.Keys.Glow.Value;
+				Texture2D texGlow2 = Assets.Masks.Glow.Value;
 				Texture2D ballTex = Assets.Bosses.VitricBoss.FinalLaser.Value;
 
 				float progress = Math.Min(1, (timer - 220) / 60f);
@@ -465,25 +467,30 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				spriteBatch.Draw(texGlow2, NPC.Center - Main.screenPosition, null, color * progress, 0, texGlow2.Size() / 2, progress * 1.0f, default, default);
 				spriteBatch.Draw(texGlow2, NPC.Center - Main.screenPosition, null, color * progress * 1.2f, 0, texGlow2.Size() / 2, progress * 1.6f, default, default);
 
-				Effect effect1 = Terraria.Graphics.Effects.Filters.Scene["SunPlasma"].GetShader().Shader;
-				effect1.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.LaserBallMap.Value);
-				effect1.Parameters["sampleTexture3"].SetValue(Assets.Bosses.VitricBoss.LaserBallDistort.Value);
-				effect1.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.01f);
+				Effect effect1 = ShaderLoader.GetShader("SunPlasma").Value;
 
-				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect1, Main.GameViewMatrix.TransformationMatrix);
+				if (effect1 != null)
+				{
+					effect1.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.LaserBallMap.Value);
+					effect1.Parameters["sampleTexture3"].SetValue(Assets.Bosses.VitricBoss.LaserBallDistort.Value);
+					effect1.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.01f);
 
-				spriteBatch.Draw(ballTex, NPC.Center - Main.screenPosition, null, Color.White * progress, 0, ballTex.Size() / 2, progress * 1.7f, 0, 0);
+					spriteBatch.End();
+					spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, Main.Rasterizer, effect1, Main.GameViewMatrix.TransformationMatrix);
 
-				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+					spriteBatch.Draw(ballTex, NPC.Center - Main.screenPosition, null, Color.White * progress, 0, ballTex.Size() / 2, progress * 1.7f, 0, 0);
+
+					spriteBatch.End();
+					spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+				}
 			}
 
 			if (shouldDrawArc)
 			{
 				GraphicsDevice graphics = Main.graphics.GraphicsDevice;
 
-				trail ??= new Trail(graphics, 20, new NoTip(), ArcWidth, ArcColor);
+				if (trail is null || trail.IsDisposed)
+					trail = new Trail(graphics, 20, new NoTip(), ArcWidth, ArcColor);
 
 				var positions = new Vector2[20];
 
@@ -495,20 +502,23 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 				trail.Positions = positions;
 
-				Effect effect = Terraria.Graphics.Effects.Filters.Scene["CeirosRing"].GetShader().Shader;
+				Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-				var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-				Matrix view = Main.GameViewMatrix.TransformationMatrix;
-				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+				if (effect != null)
+				{
+					var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+					Matrix view = Main.GameViewMatrix.TransformationMatrix;
+					var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-				effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
-				effect.Parameters["time"].SetValue(Main.GameUpdateCount / 80f);
-				effect.Parameters["repeats"].SetValue((1 - (Parent.AttackTimer - 360) / 480) * 4);
+					effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+					effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
+					effect.Parameters["time"].SetValue(Main.GameUpdateCount / 80f);
+					effect.Parameters["repeats"].SetValue((1 - (Parent.AttackTimer - 360) / 480) * 4);
 
-				effect.CurrentTechnique.Passes[0].Apply();
+					effect.CurrentTechnique.Passes[0].Apply();
 
-				trail.Render(effect);
+					trail.Render(effect);
+				}
 
 				if (Parent.AttackTimer >= 760)
 					shouldDrawArc = false;
@@ -527,7 +537,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					else
 						alpha = 1;
 
-					Texture2D tex = Assets.Keys.GlowSoft.Value;
+					Texture2D tex = Assets.Masks.GlowSoft.Value;
 					Texture2D tex2 = Request<Texture2D>(Texture + "Outline").Value;
 
 					spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, new Color(255, 160, 100) * alpha, 0, tex.Size() / 2, 2, 0, 0);
@@ -550,13 +560,16 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					else
 						alpha = 1;
 
-					Texture2D tex = Assets.Keys.GlowSoft.Value;
+					Texture2D tex = Assets.Masks.GlowSoft.Value;
 					Texture2D tex2 = Request<Texture2D>(Texture + "Outline").Value;
 
 					spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, new Color(255, 160, 100) * alpha * 0.5f, 0, tex.Size() / 2, 1, 0, 0);
 					spriteBatch.Draw(tex2, NPC.Center - Main.screenPosition, null, Color.White * alpha * 0.8f, NPC.rotation, NPC.Size / 2, NPC.scale, 0, 0);
 				}
 			}
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		private float GetProgress(float off)

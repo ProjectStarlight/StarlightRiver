@@ -1,0 +1,384 @@
+﻿[
+  {
+    "Key": "Intro1",
+    "Title": "???",
+    "Body": "\"Ah, you've finally found me. Come to browse my wares? My commissions are full, but for the right price, I'm sure we can work something out. Or... that look you're giving me... Are you perhaps a fan?\"",
+    "Buttons": [
+      {
+        "Key": "Intro2",
+        "Text": "What? No."
+      }
+    ]
+  },
+  {
+    "Key": "Intro2",
+    "Title": "Glassweaver",
+    "Body": "\"I- Wh- What? What do you mean, you just 'wandered in here'? Nobody comes to see the Legendary Weaver of Glass without a reason, especially outside of my forge! It must have been... FATE!\"",
+    "Buttons": [
+      {
+        "Key": "Intro3",
+        "Text": "..."
+      }
+    ]
+  },
+  {
+    "Key": "Intro3",
+    "Title": "Glassweaver",
+    "Body": "\"Yes, yes, you see, I've actually been having some trouble lately. I know, it's hard to believe, me, in trouble, right, but I do need the assistance of a daring one such as you. Think of it as... a quest, or something. Adventurers love those, right?\"",
+    "Buttons": [
+      {
+        "Key": "Intro4",
+        "Text": "..."
+      }
+    ]
+  },
+  {
+    "Key": "Intro4",
+    "Title": "Glassweaver",
+    "Body": "\"I am an artist, and crystal is my medium, but to properly work it I need some very powerful equipment, and, well, how should I say this... I did maybe forget to maintain the tools in my chosen forge for a bit. Only a few centuries. Don't give me that look.\"",
+    "Buttons": [
+      {
+        "Key": "Intro5",
+        "Text": "..."
+      }
+    ]
+  },
+  {
+    "Key": "Intro5",
+    "Title": "Glassweaver",
+    "Body": "\"You might not be able to tell with your lack of experience and all, but I give it only a few more years before the magma channels erode and the forgeheart collapses. Sooo... I've been diligently scouting out a nearby Forge Temple. Thing is, it's almost in even more disrepair!\"",
+    "Buttons": [
+      {
+        "Key": "Intro6",
+        "Text": "..."
+      }
+    ]
+  },
+  {
+    "Key": "Intro6",
+    "Title": "Glassweaver",
+    "Body": "\"If you, handsome, wise, kind explorer, are brave enough to venture in and fix up the forge, I'll let you keep whatever you find inside. Here, I'll show you where it is!\"",
+    "Buttons": [
+      {
+        "Key": "AfterCamera",
+        "Code": "PanCamera",
+        "Text": "Show me that temple."
+      }
+    ]
+  },
+
+
+
+  {
+    "Key": "AfterCamera",
+    "Title": "Glassweaver",
+    "Body": "\"No- Wait! You can't just barge in, you need a key. I need to know if I am giving my faith and crystal to the right person, so when you think you're strong enough, challenge me properly and I'll put you through my Glassweaver Gauntlet to really test your mettle! Don't keep me waiting! You know where to find me.\"",
+    "Buttons": [
+      {
+        "Key": "End",
+        "Code": "SyncGlassweaver",
+        "Text": "See you around."
+      }
+    ]
+  },
+
+
+
+  {
+    "Key": "Challenge1",
+    "Title": "Glassweaver",
+    "Body": "\"Are you finally ready to prove your worth? It's honestly very hard for me to tell, you lot are always so small and scrawny.\"",
+    "Buttons": [
+      {
+        "Key": "End",
+        "Code": "StartBossfight",
+        "Text": "I'm ready.'"
+      },
+      {
+        "Key": "End",
+        "Text": "Close"
+      }
+    ]
+  },
+  {
+    "Key": "Challenge2",
+    "Title": "Glassweaver",
+    "Body": "\"Adventurer, you return! Are you here to challenge me, or just gaze at my wonderful works?\"",
+    "Buttons": [
+      {
+        "Key": "End",
+        "Code": "StartBossfight",
+        "Text": "I'm ready.'"
+      },
+      {
+        "Key": "End",
+        "Text": "Close"
+      }
+    ]
+  },
+  {
+    "Key": "Challenge3",
+    "Title": "Glassweaver",
+    "Body": "\"Ah, my fated champion! Here to liberate my forge from that dastardly Sentinel? Er- forget I said that. I'll tell you about it if you win.\"",
+    "Buttons": [
+      {
+        "Key": "End",
+        "Code": "StartBossfight",
+        "Text": "I'm ready.'"
+      },
+      {
+        "Key": "End",
+        "Text": "Close"
+      }
+    ]
+  },
+
+
+
+  {
+    "Key": "AfterFight1",
+    "Title": "Glassweaver",
+    "Body": "\"Congratulations, you destroyed many decades of my finest work! I really should have thought this through more. I was going to have those help you clear out the forge, but... I'm sure you'll figure it out. Let me fill you in on what to expect.",
+    "Buttons": [
+      {
+        "Key": "AfterFight2",
+        "Text": "..."
+      }
+    ]
+  },
+  {
+    "Key": "AfterFight2",
+    "Title": "Glassweaver",
+    "Body": "\"Here is my Great Map of the Grand Forge Temple. Just another legendary artwork that I'm allowing you to briefly look at, free of charge.\"",
+    "Buttons": [
+      {
+        "Key": "AfterFight3",
+        "Text": "..."
+      }
+    ]
+  },
+  {
+    "Key": "AfterFight3",
+    "Title": "Glassweaver",
+    "Body": "It pulls out what looks to be a map, but with completely illegible scribbles in place of anything useful. You're not sure how one capable of creating such intricate crystal work is so inept at moving a pen on paper, but you've seen more bizzare things...",
+    "Buttons": [
+      {
+        "Key": "AfterFight4",
+        "Text": "..."
+      }
+    ]
+  },
+  {
+    "Key": "AfterFight4",
+    "Title": "Glassweaver",
+    "Body": "\"You can see the two main rooms of the forge at the heart of the temple. Both are most likely broken in some way, and if you want access to the vault at the bottom, you'll have to get the power system and hammer system in working order.\"",
+    "Buttons": [
+      {
+        "Key": "AfterFight5",
+        "Text": "..."
+      }
+    ]
+  },
+  {
+    "Key": "AfterFight5",
+    "Title": "Glassweaver",
+    "Body": "\"If you enter the vault, there's a pretty high likelihood of the Sentinel taking notice. It will not be happy, but most adventurers have no such compunctions about theft from holy forge-temples and the murder of religious guardians, so you'll probably be able to take it out just fine.\"",
+    "Buttons": [
+      {
+        "Key": "AfterFight6",
+        "Text": "..."
+      }
+    ]
+  },
+  {
+    "Key": "AfterFight6",
+    "Title": "Glassweaver",
+    "Body": "\"Why are you looking at me like that? Did I not tell you about the Sentinel before? Ah. It's just a... slightly oversized ceramic snake. That's all. It is not capable of melting the entire temple if you do not escape fast enough. Nope. Just talk to me when you defeat that slightly oversized snake so I can finally move in.\"",
+    "Buttons": [
+      {
+        "Key": "AfterFight7",
+        "Text": "..."
+      }
+    ]
+  },
+  {
+    "Key": "AfterFight7",
+    "Title": "Glassweaver",
+    "Body": "\"Anyway, here's the Temple Key. Why do you suddenly look so uneasy? Remember your duty, adventurer, and get me my forge temple!\"",
+    "Buttons": [
+      {
+        "Key": "End",
+        "Code": "SpawnKey",
+        "Text": "Bye!"
+      }
+    ]
+  },
+
+
+
+  {
+    "Key": "Interruption",
+    "Title": "Glassweaver",
+    "Body": "\"How rude of you to leave me mid-explanation! Should I really trust you with the future of my work? But given you have proven your strength, I do suppose you are the best choice.\"",
+    "Buttons": [
+      {
+        "Key": "AfterFight3",
+        "Text": "..."
+      }
+    ]
+  },
+
+
+
+  {
+    "Key": "EasterEgg1",
+    "Title": "Glassweaver",
+    "Body": "It hands you an old scroll. You unravel the bindings expecting a map, but what you are looking at... is definitely not a map.",
+    "Buttons": [
+      {
+        "Key": "EasterEgg2",
+        "Text": "..."
+      }
+    ]
+  },
+  {
+    "Key": "EasterEgg2",
+    "Title": "Glassweaver",
+    "Body": "It looks at you, befuddled, before pulling out a stained papyrus that looks to be a map, but with completely illegible scribbles in place of anything useful. You're not sure how one capable of creating such intricate crystal work is so inept at moving a pen on paper, but you've seen more bizzare things... Especially what it gave you previously.",
+    "Buttons": [
+      {
+        "Key": "AfterFight4",
+        "Text": "..."
+      }
+    ]
+  },
+
+
+
+  {
+    "Key": "Key1",
+    "Title": "Glassweaver",
+    "Body": "\"It doesn't look like you've cleared out the forge. What are you standing there for? I'm busy standing here!\"",
+    "Buttons": [
+      {
+        "Key": "End",
+        "Code": "SpawnKey",
+        "Text": "I need a key"
+      },
+      {
+        "Key": "End",
+        "Code": "StartBossfight",
+        "Text": "Rematch"
+      },
+      {
+        "Key": "End",
+        "Text": "Goodbye"
+      }
+    ]
+  },
+  {
+    "Key": "Key2",
+    "Title": "Glassweaver",
+    "Body": "\"Don't you have better things to be doing, like fixing my forge?\"",
+    "Buttons": [
+      {
+        "Key": "End",
+        "Code": "SpawnKey",
+        "Text": "I need a key"
+      },
+      {
+        "Key": "End",
+        "Code": "StartBossfight",
+        "Text": "Rematch"
+      },
+      {
+        "Key": "End",
+        "Text": "Goodbye"
+      }
+    ]
+  },
+  {
+    "Key": "Key3",
+    "Title": "Glassweaver",
+    "Body": "\"Adventurer! You defeated the Sentinel so soon? It's a miracle! Oh. Oh, you didn't. Never mind. Go away.\"",
+    "Buttons": [
+      {
+        "Key": "End",
+        "Code": "SpawnKey",
+        "Text": "I need a key"
+      },
+      {
+        "Key": "End",
+        "Code": "StartBossfight",
+        "Text": "Rematch"
+      },
+      {
+        "Key": "End",
+        "Text": "Goodbye"
+      }
+    ]
+  },
+
+
+
+  {
+    "Key": "Moving1",
+    "Title": "Glassweaver",
+    "Body": "\"Well, based on the horrifying screech that shattered half of my work, I'm going to assume you managed to 'deal' with the sentinel. I'll be moving in soon.\"",
+    "Buttons": [
+      {
+        "Key": "Moving2",
+        "Text": "..."
+      }
+    ]
+  },
+  {
+    "Key": "Moving2",
+    "Title": "Glassweaver",
+    "Body": "\"Come see me in the temple in a day or so. I'll be able to make you something special as thanks for your house cleaning duties.\"",
+    "Buttons": [
+      {
+        "Key": "End",
+        "Code": "SetFlagForMove",
+        "Text": "Bye!"
+      }
+    ]
+  },
+
+
+
+  {
+    "Key": "Infusion1",
+    "Title": "Glassweaver",
+    "Body": "\"Hello again! I humbly welcome you to my new abode, as you can see I have already began working my genius on this place, simply look at the beautiful glass pylon to your right!\"",
+    "Buttons": [
+      {
+        "Key": "Infusion2",
+        "Text": "How wonderful..."
+      }
+    ]
+  },
+  {
+    "Key": "Infusion2",
+    "Title": "Glassweaver",
+    "Body": "\"Ah, yes, truly wonderful... Anyways, I did promise you a reward. Some feathered fellow swung by earlier and dropped off a design for something he said you would be interested in. I've taken the liberty of making it for you.\"",
+    "Buttons": [
+      {
+        "Key": "Infusion3",
+        "Text": "..."
+      }
+    ]
+  },
+  {
+    "Key": "Infusion3",
+    "Title": "Glassweaver",
+    "Body": "\"If you have the materials I do have some ideas for a few... variations on this. If you find yourself interested I can offer you the services of my forge.\"",
+    "Buttons": [
+      {
+        "Key": "End",
+        "Code": "GiveInfusion",
+        "Text": "Goodbye"
+      }
+    ]
+  }
+]

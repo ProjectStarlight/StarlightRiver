@@ -1,4 +1,5 @@
 using ReLogic.Content;
+using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.CustomHooks;
 
 namespace StarlightRiver.Content.Menus
@@ -14,7 +15,7 @@ namespace StarlightRiver.Content.Menus
 		{
 			logoScale = 1.0f;
 
-			VitricBackground.DrawTitleVitricBackground();
+			VitricDesertBiome.DrawTitleVitricBackground();
 			return true;
 		}
 

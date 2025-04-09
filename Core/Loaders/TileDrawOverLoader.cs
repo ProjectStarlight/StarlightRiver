@@ -1,39 +1,76 @@
 ﻿using StarlightRiver.Core.Systems.ScreenTargetSystem;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Core.Loaders
 {
+	class TileDrawOverGlobal : GlobalProjectile
+	{
+		public override bool AppliesToEntity(Projectile entity, bool lateInstantiation)
+		{
+			return entity.ModProjectile is IDrawOverTiles;
+		}
+
+		public override bool PreDraw(Projectile projectile, ref Color lightColor)
+		{
+			TileDrawOverLoader.renderQueueIndicies.Enqueue(projectile.whoAmI);
+			TileDrawOverLoader.targetActive = true;
+			return true;
+		}
+	}
+
 	class TileDrawOverLoader : IOrderedLoadable
 	{
-		public float Priority => 1.1f;
+		public static bool targetActive;
 
-		public static ScreenTarget projTarget = new(DrawProjTarget, () => Main.projectile.Any(n => n.ModProjectile is IDrawOverTiles), 1);
-		public static ScreenTarget tileTarget = new(DrawTileTarget, () => Main.projectile.Any(n => n.ModProjectile is IDrawOverTiles), 1);
+		public static readonly Queue<int> renderQueueIndicies = new();
+
+		public static ScreenTarget projTarget = new(DrawProjTarget, () => targetActive, 1);
+		public static ScreenTarget tileTarget = new(DrawTileTarget, () => targetActive, 1);
+
+		public static Effect overTilesEffect;
+
+		public float Priority => 1.1f;
 
 		public void Load()
 		{
 			if (Main.dedServ)
 				return;
 
-			On_Main.DrawProjectiles += Main_DrawProjectiles;
-
-			projTarget = new(DrawProjTarget, () => Main.projectile.Any(n => n.ModProjectile is IDrawOverTiles), 1);
-			tileTarget = new(DrawTileTarget, () => Main.projectile.Any(n => n.ModProjectile is IDrawOverTiles), 1);
+			On_Main.DrawProjectiles += DrawOverlay;
 		}
 
 		public void Unload()
 		{
-			On_Main.DrawProjectiles -= Main_DrawProjectiles;
 
-			projTarget ??= null;
-			tileTarget ??= null;
 		}
 
-		private void Main_DrawProjectiles(On_Main.orig_DrawProjectiles orig, Main self)
+		private void DrawOverlay(On_Main.orig_DrawProjectiles orig, Main self)
 		{
 			orig(self);
-			DrawTargets();
+
+			targetActive = renderQueueIndicies.Count > 0;
+
+			if (!targetActive)
+				return;
+
+			if (tileTarget is null || projTarget is null)
+				return;
+
+			overTilesEffect ??= ShaderLoader.GetShader("OverTileShader").Value;
+
+			if (overTilesEffect is null)
+				return;
+
+			overTilesEffect.Parameters["TileTarget"].SetValue(tileTarget.RenderTarget);
+
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+
+			overTilesEffect.CurrentTechnique.Passes[0].Apply();
+			Main.spriteBatch.Draw(projTarget.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+
+			Main.spriteBatch.End();
 		}
 
 		private static void DrawProjTarget(SpriteBatch spriteBatch)
@@ -43,7 +80,7 @@ namespace StarlightRiver.Core.Loaders
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null);
 
-			for (int i = 0; i < Main.projectile.Length; i++)
+			while (renderQueueIndicies.TryDequeue(out int i))
 			{
 				Projectile proj = Main.projectile[i];
 
@@ -60,26 +97,6 @@ namespace StarlightRiver.Core.Loaders
 			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null);
 			spriteBatch.Draw(Main.instance.tileTarget, Main.sceneTilePos - Main.screenPosition, Color.White);
 			spriteBatch.Draw(Main.instance.tile2Target, Main.sceneTile2Pos - Main.screenPosition, Color.White);
-		}
-
-		private void DrawTargets()
-		{
-			if (tileTarget is null || projTarget is null)
-				return;
-
-			Effect effect = Filters.Scene["OverTileShader"].GetShader().Shader;
-
-			if (effect is null)
-				return;
-
-			effect.Parameters["TileTarget"].SetValue(tileTarget.RenderTarget);
-
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-
-			effect.CurrentTechnique.Passes[0].Apply();
-			Main.spriteBatch.Draw(projTarget.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
-
-			Main.spriteBatch.End();
 		}
 	}
 }

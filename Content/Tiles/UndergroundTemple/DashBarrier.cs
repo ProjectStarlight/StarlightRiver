@@ -7,7 +7,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.UndergroundTemple
 {
-	class DashBarrier : DummyTile, IHintable
+	class DashBarrier : DummyTile
 	{
 		public override int DummyType => DummySystem.DummyType<DashBarrierDummy>();
 
@@ -37,10 +37,6 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 		public override bool CanDrop(int i, int j)
 		{
 			return false;
-		}
-		public string GetHint()
-		{
-			return "A barrier, infused with binding Starlight. You'd have to use a Starlight power of equal strength...";
 		}
 	}
 

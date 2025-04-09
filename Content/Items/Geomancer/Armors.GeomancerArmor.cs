@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.BuriedArtifacts;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.BarrierSystem;
 using System;
 using System.Collections.Generic;
@@ -217,7 +218,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 			Tooltip.SetDefault(
 			"[i/s1:" + ItemType<GeoDiamond>() + "]: Critical strikes partially ignore armor, with increased chance for missing enemy HP \n" +
-			"[i/s1:" + ItemType<GeoTopaz>() + "]: +100 barrier. Gain a shield that points to your cursor and blocks attacks, consuming {{barrier}} \n" +
+			"[i/s1:" + ItemType<GeoTopaz>() + "]: +100 maximum barrier. Gain a shield that points to your cursor and blocks attacks, consuming {{barrier}} \n" +
 			"[i/s1:" + ItemType<GeoEmerald>() + "]: Immediately heal 20 hp. Hits have a chance to create a 5 HP life heart \n" +
 			"[i/s1:" + ItemType<GeoSapphire>() + "]: Immediately refill mana. Hits have a chance to create 1 to 3 mana stars \n" +
 			"[i/s1:" + ItemType<GeoAmethyst>() + "]: All strikes inflict Toxic Amethyst, a stacking poison debuff \n" +
@@ -243,10 +244,10 @@ namespace StarlightRiver.Content.Items.Geomancer
 			float timerVar = (float)(Main.timeForVisualEffects * 0.05f % 2.4f / 2.4f) * 6.28f;
 			float timer = (float)(Math.Sin(timerVar) / 2f) + 0.5f;
 
-			Filters.Scene["RainbowArmor"].GetShader().Shader.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.005f);
+			ShaderLoader.GetShader("RainbowArmor").Value.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.005f);
 
-			Filters.Scene["RainbowArmor2"].GetShader().Shader.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.005f);
-			Filters.Scene["RainbowArmor2"].GetShader().Shader.Parameters["uOpacity"].SetValue(1.25f - timer);
+			ShaderLoader.GetShader("RainbowArmor2").Value.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.005f);
+			ShaderLoader.GetShader("RainbowArmor2").Value.Parameters["uOpacity"].SetValue(1.25f - timer);
 
 			var value = new DrawData(
 						texture,

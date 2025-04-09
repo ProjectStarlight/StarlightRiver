@@ -1,6 +1,8 @@
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.Misc;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
+using StarlightRiver.Core.Systems.PixelationSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -14,6 +16,11 @@ namespace StarlightRiver.Content.Items.Dungeon
 {
 	public class SkullBuster : ModItem
 	{
+		public float shootRotation;
+		public int shootDirection;
+
+		public bool justAltUsed; // to prevent custom recoil anim
+
 		private int cooldown = 0;
 
 		public override string Texture => AssetDirectory.DungeonItem + Name;
@@ -64,6 +71,11 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 				Item.useTime = 15;
 				Item.useAnimation = 15;
+
+				justAltUsed = true;
+
+				if (cooldown > 0)
+					return;
 			}
 			else
 			{
@@ -71,6 +83,8 @@ namespace StarlightRiver.Content.Items.Dungeon
 				Item.useAnimation = 35;
 				Item.useStyle = ItemUseStyleID.Shoot;
 				Item.noUseGraphic = false;
+
+				justAltUsed = false;
 			}
 
 			cooldown--;
@@ -80,6 +94,9 @@ namespace StarlightRiver.Content.Items.Dungeon
 		{
 			if (Player.altFunctionUse == 2 && cooldown > 0)
 				return false;
+
+			shootRotation = (Player.Center - Main.MouseWorld).ToRotation();
+			shootDirection = (Main.MouseWorld.X < Player.Center.X) ? -1 : 1;
 
 			return base.CanUseItem(Player);
 		}
@@ -104,6 +121,30 @@ namespace StarlightRiver.Content.Items.Dungeon
 			}
 		}
 
+		public override void UseStyle(Player player, Rectangle heldItemFrame)
+		{
+			if (justAltUsed)
+				return;
+
+			Vector2 itemPosition = CommonGunAnimations.SetGunUseStyle(player, Item, shootDirection, -10f, new Vector2(52f, 28f), new Vector2(-40f, 4f));
+
+			float animProgress = 1f - player.itemTime / (float)player.itemTimeMax;
+
+			if (animProgress >= 0.5f)
+			{
+				float lerper = (animProgress - 0.5f) / 0.5f;
+				Dust.NewDustPerfect(itemPosition + new Vector2(50f, -10f * player.direction).RotatedBy(player.compositeFrontArm.rotation + 1.5707964f * player.gravDir), DustID.Smoke, Vector2.UnitY * -2f, (int)MathHelper.Lerp(210f, 200f, lerper), default, MathHelper.Lerp(0.5f, 1f, lerper)).noGravity = true;
+			}
+		}
+
+		public override void UseItemFrame(Player player)
+		{
+			if (justAltUsed)
+				return;
+
+			CommonGunAnimations.SetGunUseItemFrame(player, shootDirection, shootRotation, -0.6f);
+		}
+
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
 			if (player.altFunctionUse == 2)
@@ -120,24 +161,54 @@ namespace StarlightRiver.Content.Items.Dungeon
 			else
 			{
 				float rot = velocity.ToRotation();
-				float spread = 0.4f;
 
 				Vector2 offset = new Vector2(1, -0.1f * player.direction).RotatedBy(rot);
 
-				for (int k = 0; k < 15; k++)
-				{
-					Vector2 direction = offset.RotatedByRandom(spread);
+				SoundHelper.PlayPitched("Guns/PlinkLever", 0.2f, Main.rand.NextFloat(-0.1f, 0.1f), position);
+				SoundHelper.PlayPitched("Guns/RifleLight", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), position);
+				//Dust.NewDustPerfect(player.Center + offset * 43, ModContent.DustType<Dusts.Smoke>(), Vector2.UnitY * -2 + offset.RotatedByRandom(spread) * 5, 0, new Color(60, 55, 50) * 0.5f, Main.rand.NextFloat(0.5f, 1));
 
-					Dust.NewDustPerfect(position + offset * 43, ModContent.DustType<Dusts.Glow>(), direction * Main.rand.NextFloat(8), 125, new Color(150, 80, 40), Main.rand.NextFloat(0.2f, 0.5f));
+				Vector2 ejectPos = position + new Vector2(10f, -20f * player.direction).RotatedBy(rot);
+
+				Gore.NewGoreDirect(source, ejectPos, -velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.1f, 0.25f), Mod.Find<ModGore>("CoachGunCasing").Type, 1f).timeLeft = 60;
+
+				for (int i = 0; i < 5; i++)
+				{
+					Dust.NewDustPerfect(ejectPos, DustID.Smoke, -velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.1f, 0.25f), 150, default, 1.2f).noGravity = true;
 				}
 
-				Helper.PlayPitched("Guns/PlinkLever", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), position);
-				Helper.PlayPitched("Guns/RifleLight", 0.7f, Main.rand.NextFloat(-0.1f, 0.1f), position);
-				Dust.NewDustPerfect(player.Center + offset * 43, ModContent.DustType<Dusts.Smoke>(), Vector2.UnitY * -2 + offset.RotatedByRandom(spread) * 5, 0, new Color(60, 55, 50) * 0.5f, Main.rand.NextFloat(0.5f, 1));
+				Vector2 barrelPos = position + new Vector2(50f, -10f * player.direction).RotatedBy(rot);
+
+				for (int k = 0; k < 7; k++)
+				{
+					Dust.NewDustPerfect(barrelPos + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<PixelatedEmber>(), velocity.RotatedByRandom(0.5f).RotatedByRandom(0.5f) * Main.rand.NextFloat(0.25f), 0, new Color(255, 125, 0, 0), 0.15f).customData = -player.direction;
+
+					Dust.NewDustPerfect(barrelPos, ModContent.DustType<PixelatedGlow>(), velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.4f), 0, new Color(0, 110, 255, 0), Main.rand.NextFloat(0.2f, 0.5f));
+
+					Dust.NewDustPerfect(barrelPos, ModContent.DustType<PixelatedGlow>(), velocity.RotatedByRandom(1f) * Main.rand.NextFloat(0.2f), 0, new Color(0, 110, 255, 0), Main.rand.NextFloat(0.5f, 0.75f));
+				}
+
+				for (int i = 0; i < 2; i++)
+				{
+					Dust.NewDustPerfect(barrelPos, ModContent.DustType<WaterBubble>(), velocity * Main.rand.NextFloat(0.05f, 0.1f) - Vector2.UnitY * Main.rand.NextFloat(0.5f, 1f), 0, new Color(160, 180, 255), Main.rand.NextFloat(0.6f, 0.8f));
+				}
+
+				Dust.NewDustPerfect(barrelPos, ModContent.DustType<SkullBusterMuzzleFlashDust>(), Vector2.Zero, 0, default, Main.rand.NextFloat(1f, 1.15f)).rotation = velocity.ToRotation();
+
+				Dust.NewDustPerfect(barrelPos + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<SkullBusterSmokeDust>(), velocity * 0.05f, 180, new Color(200, 200, 255, 0), 0.15f);
+
+				Dust.NewDustPerfect(barrelPos + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<SkullBusterSmokeDust>(), velocity * 0.025f, 180, new Color(200, 200, 255, 0), 0.175f);
+
+				Dust.NewDustPerfect(barrelPos + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<SkullBusterSmokeDust>(), velocity * Main.rand.NextFloat(0.075f, 0.125f) - Vector2.UnitY * Main.rand.NextFloat(0.5f, 1.5f), 150, new Color(200, 200, 200, 0), 0.125f).noGravity = true;
+
+				Dust.NewDustPerfect(barrelPos + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<SkullBusterSmokeDust>(), velocity * Main.rand.NextFloat(0.075f, 0.125f) - Vector2.UnitY * Main.rand.NextFloat(0.5f, 2f), 150, new Color(200, 200, 200, 0), 0.1f).noGravity = true;
 
 				Projectile.NewProjectileDirect(player.GetSource_ItemUse(Item), player.Center + offset * 43, velocity * 2, type, damage, knockback, player.whoAmI);
 
-				Projectile.NewProjectile(player.GetSource_ItemUse(Item), position + offset * 43, Vector2.Zero, ModContent.ProjectileType<CoachGunMuzzleFlash>(), 0, 0, player.whoAmI, rot);
+				//Projectile.NewProjectile(player.GetSource_ItemUse(Item), position + offset * 43, Vector2.Zero, ModContent.ProjectileType<CoachGunMuzzleFlash>(), 0, 0, player.whoAmI, rot);
+
+				CameraSystem.shake += 2;
+				Item.noUseGraphic = true;
 			}
 
 			return false;
@@ -212,7 +283,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			if (frameCounter < 2)
 				return false;
 
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D tex = Assets.Items.Dungeon.SkullBusterReload.Value;
 			int frameHeight = tex.Height / Main.projFrames[Projectile.type];
 			var frame = new Rectangle(0, frameHeight * Projectile.frame, tex.Width, frameHeight);
 
@@ -224,7 +295,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			if (Projectile.frame < 18)
 				origin = Vector2.Lerp(startOrigin, midOrigin, Projectile.frame / 18f);
 			else
-				origin = Vector2.Lerp(midOrigin, endOrigin, EaseFunction.EaseQuadOut.Ease((Projectile.frame - 18) / 4f));
+				origin = Vector2.Lerp(midOrigin, endOrigin, Eases.EaseQuadOut((Projectile.frame - 18) / 4f));
 
 			SpriteEffects effects = SpriteEffects.None;
 			float rot = direction.ToRotation();
@@ -352,8 +423,8 @@ namespace StarlightRiver.Content.Items.Dungeon
 								Dust.NewDustPerfect(gunTip, ModContent.DustType<Dusts.Glow>(), dustDirection * Main.rand.NextFloat(8), 125, new Color(150, 80, 40), Main.rand.NextFloat(0.2f, 0.5f));
 							}
 
-							Helper.PlayPitched("Guns/PlinkLever", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), position);
-							Helper.PlayPitched("Guns/RifleLight", 0.7f, Main.rand.NextFloat(-0.1f, 0.1f), position);
+							SoundHelper.PlayPitched("Guns/PlinkLever", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), position);
+							SoundHelper.PlayPitched("Guns/RifleLight", 0.7f, Main.rand.NextFloat(-0.1f, 0.1f), position);
 							//Dust.NewDustPerfect(gunTip, ModContent.DustType<Dusts.Smoke>(), Vector2.UnitY * -2 + offset.RotatedByRandom(spread) * 5, 0, new Color(60, 55, 50) * 0.5f, Main.rand.NextFloat(0.5f, 1));
 						}
 					}
@@ -387,7 +458,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public override void OnKill(int timeLeft)
 		{
-			Helper.PlayPitched("Guns/RevolvingReload", 0.6f, 0, Owner.Center);
+			SoundHelper.PlayPitched("Guns/RevolvingReload", 0.6f, 0, Owner.Center);
 
 			if (Owner.whoAmI == Main.myPlayer)
 				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Owner.Center, Vector2.Zero, ModContent.ProjectileType<SkullBusterReload>(), 0, 0, Owner.whoAmI);
@@ -398,7 +469,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			if (released)
 			{
 				float rot = direction.ToRotation();
-				Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+				Texture2D tex = Assets.Items.Dungeon.SkullBusterProj.Value;
 				var origin = new Vector2(10, tex.Height * 0.75f);
 				SpriteEffects effects = SpriteEffects.None;
 
@@ -555,9 +626,9 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D whiteTex = ModContent.Request<Texture2D>(Texture + "_White").Value;
-			Texture2D crosshairTex = ModContent.Request<Texture2D>(Texture + "_Crosshair").Value;
+			Texture2D tex = Assets.Items.Dungeon.SkullBomb.Value;
+			Texture2D whiteTex = Assets.Items.Dungeon.SkullBomb_White.Value;
+			Texture2D crosshairTex = Assets.Items.Dungeon.SkullBomb_Crosshair.Value;
 
 			float progress = 1 - Projectile.timeLeft / 150f;
 			Color overlayColor = Color.White;
@@ -576,7 +647,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 				{
 					float rot = i / 4f * 6.28f;
 
-					float ease = EaseFunction.EaseQuinticIn.Ease(CrosshairSin);
+					float ease = Eases.EaseQuinticIn(CrosshairSin);
 					Vector2 origin = crosshairTex.Size() * (1.75f + 0.25f * (float)Math.Cos(ease * 3.14f));
 					Main.spriteBatch.Draw(crosshairTex, Projectile.Center - Main.screenPosition, null, Color.Red * CrosshairSin, crosshairRotation + rot, origin, 1, SpriteEffects.None, 0f);
 				}
@@ -586,7 +657,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 		}
 	}
 
-	internal class SkullbusterSkull : ModProjectile, IDrawAdditive
+	internal class SkullbusterSkull : ModProjectile
 	{
 		private float fadeIn = 0;
 
@@ -650,15 +721,20 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			return false;
-		}
+			Texture2D tex = Assets.Items.Dungeon.SkullBusterSkull.Value;
 
-		public void DrawAdditive(SpriteBatch sb)
-		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture + skullNumber.ToString()).Value;
+			switch (skullNumber)
+			{
+				case 1: tex = Assets.Items.Dungeon.SkullBusterSkull1.Value; break;
+				case 2: tex = Assets.Items.Dungeon.SkullBusterSkull2.Value; break;
+				case 3: tex = Assets.Items.Dungeon.SkullBusterSkull3.Value; break;
+			}
+
 			float opacity = fadeOut;
 			float scale = fadeIn + 0.25f * (1 - fadeOut);
-			sb.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.Aqua * opacity, Projectile.rotation, tex.Size() / 2, scale, SpriteEffects.None, 0f);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(0, 255, 255, 0) * opacity, Projectile.rotation, tex.Size() / 2, scale, SpriteEffects.None, 0f);
+
+			return false;
 		}
 	}
 
@@ -743,7 +819,8 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 15, new NoTip(), factor => factor * 3, factor => new Color(255, 170, 80) * factor.X * (Projectile.timeLeft / 100f));
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 15, new NoTip(), factor => factor * 3, factor => new Color(255, 170, 80) * factor.X * (Projectile.timeLeft / 100f));
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center;
@@ -751,18 +828,21 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
-			effect.Parameters["repeats"].SetValue(2f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
+				effect.Parameters["repeats"].SetValue(2f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 
-			trail?.Render(effect);
+				trail?.Render(effect);
+			}
 		}
 
 		public override void SendExtraAI(BinaryWriter writer)
@@ -776,6 +856,114 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 			if (targetIdentity != -1)
 				targetBomb = Main.projectile.FirstOrDefault(n => n.active && n.identity == targetIdentity);
+		}
+	}
+
+	public class SkullBusterMuzzleFlashDust : ModDust
+	{
+		public override string Texture => AssetDirectory.Invisible;
+
+		public override void OnSpawn(Dust dust)
+		{
+			dust.frame = new Rectangle(0, 0, 4, 4);
+		}
+
+		public override bool Update(Dust dust)
+		{
+			dust.alpha += 20;
+			dust.alpha = (int)(dust.alpha * 1.05f);
+
+			if (dust.alpha >= 255)
+				dust.active = false;
+
+			return false;
+		}
+
+		public override bool PreDraw(Dust dust)
+		{
+			float lerper = 1f - dust.alpha / 255f;
+
+			Texture2D tex = Assets.Items.Dungeon.SkullBusterMuzzleFlashDust.Value;
+			Texture2D texBlur = Assets.Items.Dungeon.SkullBusterMuzzleFlashDust_Blur.Value;
+			Texture2D texGlow = Assets.Items.Dungeon.SkullBusterMuzzleFlashDust_Glow.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
+
+			int frame = 0;
+			if (lerper < 0.5f)
+				frame = 1;
+
+			Main.spriteBatch.Draw(bloomTex, dust.position - Main.screenPosition, null, new Color(20, 20, 255, 0) * 0.25f * lerper, dust.rotation, bloomTex.Size() / 2f, dust.scale * 1.25f, 0f, 0f);
+
+			Main.spriteBatch.Draw(texGlow, dust.position - Main.screenPosition, texGlow.Frame(verticalFrames: 2, frameY: frame), new Color(20, 20, 255, 0) * lerper, dust.rotation, texGlow.Frame(verticalFrames: 2, frameY: frame).Size() / 2f, dust.scale, 0f, 0f);
+
+			Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, tex.Frame(verticalFrames: 2, frameY: frame), Color.White * lerper, dust.rotation, tex.Frame(verticalFrames: 2, frameY: frame).Size() / 2f, dust.scale, 0f, 0f);
+
+			Main.spriteBatch.Draw(texBlur, dust.position - Main.screenPosition, texBlur.Frame(verticalFrames: 2, frameY: frame), Color.White with { A = 0 } * 0.5f * lerper, dust.rotation, texBlur.Frame(verticalFrames: 2, frameY: frame).Size() / 2f, dust.scale, 0f, 0f);
+
+			return false;
+		}
+	}
+
+	public class SkullBusterSmokeDust : ModDust
+	{
+		public override string Texture => AssetDirectory.Invisible;
+
+		public override void OnSpawn(Dust dust)
+		{
+			dust.frame = new Rectangle(0, 0, 4, 4);
+			dust.customData = 1 + Main.rand.Next(2);
+			dust.rotation = Main.rand.NextFloat(6.28f);
+		}
+
+		public override bool Update(Dust dust)
+		{
+			dust.position.Y -= 0.1f;
+			if (dust.noGravity)
+				dust.position.Y -= 0.5f;
+
+			dust.position += dust.velocity;
+
+			if (!dust.noGravity)
+			{
+				dust.velocity *= 0.99f;
+			}
+			else
+			{
+				dust.velocity *= 0.975f;
+				dust.velocity.X *= 0.99f;
+			}
+
+			dust.rotation += dust.velocity.Length() * 0.01f;
+
+			if (dust.noGravity)
+				dust.alpha += 2;
+			else
+				dust.alpha += 5;
+
+			dust.alpha = (int)(dust.alpha * 1.005f);
+
+			if (!dust.noGravity)
+				dust.scale *= 1.02f;
+			else
+				dust.scale *= 0.99f;
+
+			if (dust.alpha >= 255)
+				dust.active = false;
+
+			return false;
+		}
+
+		public override bool PreDraw(Dust dust)
+		{
+			float lerper = 1f - dust.alpha / 255f;
+
+			Texture2D tex = Assets.SmokeAlpha_1.Value;
+			if ((int)dust.customData > 1)
+				tex = Assets.SmokeAlpha_2.Value;
+
+			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () => Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, dust.color * lerper, dust.rotation, tex.Size() / 2f, dust.scale, 0f, 0f));
+
+			return false;
 		}
 	}
 }

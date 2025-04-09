@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Dusts;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using StarlightRiver.Helpers;
@@ -79,7 +80,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public override void UpdateArmorSet(Player Player)
 		{
-			Player.setBonus = "A spotter drone follows you, building energy with kills\nDouble tap DOWN to consume it and call down an orbital strike on an enemy";
+			Player.setBonus = "A spotter drone follows you, charging energy with kills\nDouble tap DOWN to drain it and call down an orbital strike on an enemy";
 
 			if (Player.ownedProjectileCounts[ProjectileType<SpotterDrone>()] < 1 && !Player.dead)
 				Projectile.NewProjectile(Player.GetSource_Accessory(Item), Player.Center, Vector2.Zero, ProjectileType<SpotterDrone>(), (int)(50 * Player.GetDamage(DamageClass.Ranged).Multiplicative), 1.5f, Player.whoAmI);
@@ -223,7 +224,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			}
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			if (target == null || !target.active)
 				return;
@@ -393,7 +394,7 @@ namespace StarlightRiver.Content.Items.Breacher
 						if (Main.myPlayer == Projectile.owner)
 							Projectile.netUpdate = true;
 
-						Helper.PlayPitched("Effects/Scan", 0.5f, 0);
+						SoundHelper.PlayPitched("Effects/Scan", 0.5f, 0);
 						target = testtarget;
 						ScanTimer--;
 						rotations = new List<float>();
@@ -442,7 +443,7 @@ namespace StarlightRiver.Content.Items.Breacher
 					CameraSystem.shake = (int)MathHelper.Lerp(0, 2, 1 - (float)ScanTimer / 150f);
 
 				if (ScanTimer == 125)
-					Helper.PlayPitched("AirstrikeIncoming", 0.6f, 0);
+					SoundHelper.PlayPitched("AirstrikeIncoming", 0.6f, 0);
 
 				ScanTimer--;
 			}
@@ -457,7 +458,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			}
 
 			if (ScanTimer == 100)
-				Helper.PlayPitched("Effects/ScanComplete", 0.5f, 0);
+				SoundHelper.PlayPitched("Effects/ScanComplete", 0.5f, 0);
 
 			if (ScanTimer > 100)
 			{
@@ -618,8 +619,10 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 100, new NoTip(), factor => factor * MathHelper.Lerp(11, 22, factor), factor => Color.Cyan);
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 100, new NoTip(), factor => factor * MathHelper.Lerp(6, 12, factor), factor => Color.White);
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 100, new NoTip(), factor => factor * MathHelper.Lerp(11, 22, factor), factor => Color.Cyan);
+			if (trail2 is null || trail2.IsDisposed)
+				trail2 = new Trail(Main.instance.GraphicsDevice, 100, new NoTip(), factor => factor * MathHelper.Lerp(6, 12, factor), factor => Color.White);
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center;
@@ -630,23 +633,26 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("OrbitalStrikeTrail").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
-			effect.Parameters["alpha"].SetValue(Alpha);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+				effect.Parameters["alpha"].SetValue(Alpha);
 
-			trail?.Render(effect);
-			trail2?.Render(effect);
+				trail?.Render(effect);
+				trail2?.Render(effect);
+			}
 		}
 
 		private void Explode(NPC target)
 		{
-			Helper.PlayPitched("Impacts/AirstrikeImpact", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
+			SoundHelper.PlayPitched("Impacts/AirstrikeImpact", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
 
 			for (int i = 0; i < 5; i++)
 			{
@@ -742,8 +748,10 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 33, new NoTip(), factor => 38 * (1 - Progress), factor => Color.Cyan);
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 33, new NoTip(), factor => 20 * (1 - Progress), factor => Color.White);
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 33, new NoTip(), factor => 38 * (1 - Progress), factor => Color.Cyan);
+			if (trail2 is null || trail2.IsDisposed)
+				trail2 = new Trail(Main.instance.GraphicsDevice, 33, new NoTip(), factor => 20 * (1 - Progress), factor => Color.White);
 
 			float nextplace = 33f / 32f;
 			var offset = new Vector2((float)Math.Sin(nextplace), (float)Math.Cos(nextplace));
@@ -758,18 +766,21 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("OrbitalStrikeTrail").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
-			effect.Parameters["alpha"].SetValue(1);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+				effect.Parameters["alpha"].SetValue(1);
 
-			trail?.Render(effect);
-			trail2?.Render(effect);
+				trail?.Render(effect);
+				trail2?.Render(effect);
+			}
 		}
 	}
 
@@ -850,7 +861,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
 			for (int i = 0; i < Main.npc.Length; i++)
 			{
@@ -889,33 +900,37 @@ namespace StarlightRiver.Content.Items.Breacher
 			if (Main.dedServ || spriteBatch == null || NPCTarget == null || gD == null)
 				return;
 
-			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null);
+			Effect effect = ShaderLoader.GetShader("BreacherScan").Value;
 
-			Effect effect = Filters.Scene["BreacherScan"].GetShader().Shader;
-			effect.Parameters["uImageSize0"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
-			effect.Parameters["alpha"].SetValue(alpha);
-			effect.Parameters["red"].SetValue(new Color(1, 0.1f, 0.1f, 1).ToVector4());
-			effect.Parameters["red2"].SetValue(new Color(1, 0.1f, 0.1f, 0.9f).ToVector4());
-
-			float flickerTime = 100 - alpha * 100;
-
-			if (flickerTime > 0 && flickerTime < 16)
+			if (effect != null)
 			{
-				float flickerTime2 = (float)(flickerTime / 20f);
-				float whiteness = 1.5f - (flickerTime2 * flickerTime2 / 2 + 2f * flickerTime2);
-				effect.Parameters["whiteness"].SetValue(whiteness);
-			}
-			else
-			{
-				effect.Parameters["whiteness"].SetValue(0);
-			}
+				spriteBatch.End();
+				spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null);
 
-			effect.CurrentTechnique.Passes[0].Apply();
-			spriteBatch.Draw(NPCTarget.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+				effect.Parameters["uImageSize0"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+				effect.Parameters["alpha"].SetValue(alpha);
+				effect.Parameters["red"].SetValue(new Color(1, 0.1f, 0.1f, 1).ToVector4());
+				effect.Parameters["red2"].SetValue(new Color(1, 0.1f, 0.1f, 0.9f).ToVector4());
 
-			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				float flickerTime = 100 - alpha * 100;
+
+				if (flickerTime > 0 && flickerTime < 16)
+				{
+					float flickerTime2 = (float)(flickerTime / 20f);
+					float whiteness = 1.5f - (flickerTime2 * flickerTime2 / 2 + 2f * flickerTime2);
+					effect.Parameters["whiteness"].SetValue(whiteness);
+				}
+				else
+				{
+					effect.Parameters["whiteness"].SetValue(0);
+				}
+
+				effect.CurrentTechnique.Passes[0].Apply();
+				spriteBatch.Draw(NPCTarget.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 		}
 	}
 }

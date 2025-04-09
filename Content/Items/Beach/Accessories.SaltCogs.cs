@@ -8,9 +8,16 @@ namespace StarlightRiver.Content.Items.Beach
 	{
 		public const int COG_DURATION = 240; // 240 = 2 seconds with the additional extra update. Will end up being shorter on sentries that already have an extra update set.
 
+		public Asset<Texture2D> cogTex = Assets.Items.Beach.SaltGear;
+		public Asset<Texture2D> smallCogTex = Assets.Items.Beach.SaltGearSmall;
+
 		public override string Texture => AssetDirectory.Assets + "Items/Beach/" + Name;
 
-		public SaltCogs() : base("Salt Cogs", "Your sentries fire twice as fast for two seconds after placing them\n100% increased sentry placement speed") { }
+		public SaltCogs() : base("Salt Cogs",
+			"Your sentries fire twice as fast for two seconds after being placed\n" +
+			"100% increased sentry placement speed\n" +
+			"'Not edible. Probably.'")
+		{ }
 
 		public override void Load()
 		{
@@ -43,6 +50,7 @@ namespace StarlightRiver.Content.Items.Beach
 		private void DrawCog(Projectile projectile, Color lightColor)
 		{
 			Player owner = Main.player[projectile.owner];
+			var instance = GetEquippedInstance(owner) as SaltCogs;
 
 			if (owner != null && Equipped(owner) && projectile.sentry)
 			{
@@ -50,8 +58,8 @@ namespace StarlightRiver.Content.Items.Beach
 				{
 					int prog = Projectile.SentryLifeTime - projectile.timeLeft;
 
-					Texture2D tex = Assets.Items.Beach.SaltGear.Value;
-					Texture2D tex2 = Assets.Items.Beach.SaltGearSmall.Value;
+					Texture2D tex = instance.cogTex.Value;
+					Texture2D tex2 = instance.smallCogTex.Value;
 					var color = new Color(255, 220, 220);
 
 					if (prog > COG_DURATION - 40)

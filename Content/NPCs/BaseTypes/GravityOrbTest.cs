@@ -4,7 +4,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.BaseTypes
 {
-	class GravityOrbTest : ModNPC, IDrawAdditive
+	class GravityOrbTest : ModNPC
 	{
 		public int radius = 100;
 		public int attract = 100;
@@ -55,7 +55,7 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 			return new Vector2(vector.X * x, vector.Y * y);
 		}
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
+		public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
 			for (int k = 0; k < 6; k++)
 			{
@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 
 				Texture2D tex = Assets.Tiles.Interactive.WispSwitchGlow2.Value;
 				float rad = (radius + attract) * 2 / (float)tex.Width;
-				spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, Color.Cyan * (time % rad / (rad / 4)) * 0.4f, 0, tex.Size() / 2, rad - time % rad, 0, 0);
+				spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, new Color(0, 255, 255, 0) * (time % rad / (rad / 4)) * 0.4f, 0, tex.Size() / 2, rad - time % rad, 0, 0);
 			}
 		}
 	}

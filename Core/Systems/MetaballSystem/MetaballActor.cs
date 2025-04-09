@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.ScreenTargetSystem;
+﻿using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Core.Systems.MetaballSystem
@@ -95,16 +96,20 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 			graphicsDevice.SetRenderTarget(Target.RenderTarget);
 			graphicsDevice.Clear(Color.Transparent);
 
-			Effect metaballEdgeDetection = Filters.Scene["MetaballEdgeDetection"].GetShader().Shader;
-			metaballEdgeDetection.Parameters["width"].SetValue((float)Main.screenWidth / 2);
-			metaballEdgeDetection.Parameters["height"].SetValue((float)Main.screenHeight / 2);
-			metaballEdgeDetection.Parameters["border"].SetValue(OutlineColor.ToVector4());
+			Effect metaballEdgeDetection = ShaderLoader.GetShader("MetaballEdgeDetection").Value;
 
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, metaballEdgeDetection);
+			if (metaballEdgeDetection != null)
+			{
+				metaballEdgeDetection.Parameters["width"].SetValue((float)Main.screenWidth / 2);
+				metaballEdgeDetection.Parameters["height"].SetValue((float)Main.screenHeight / 2);
+				metaballEdgeDetection.Parameters["border"].SetValue(OutlineColor.ToVector4());
 
-			spriteBatch.Draw(Target2.RenderTarget, position: Vector2.Zero, color: Color.White);
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, metaballEdgeDetection);
 
-			spriteBatch.End();
+				spriteBatch.Draw(Target2.RenderTarget, position: Vector2.Zero, color: Color.White);
+
+				spriteBatch.End();
+			}
 
 			graphicsDevice.SetRenderTarget(null);
 		}
@@ -119,13 +124,13 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 				return;
 
 			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
 			if (PostDraw(spriteBatch, Target.RenderTarget))
 				spriteBatch.Draw(Target.RenderTarget, Vector2.Zero, null, Color.White, 0, new Vector2(0, 0), 2f, SpriteEffects.None, 0);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 }

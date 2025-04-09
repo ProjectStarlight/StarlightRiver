@@ -1,5 +1,6 @@
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Physics;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
@@ -52,7 +53,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		}
 	}
 
-	class MagmiteBombProjectile : ModProjectile, IDrawAdditive
+	class MagmiteBombProjectile : ModProjectile
 	{
 		public const int NUM_SEGMENTS = 12;
 
@@ -180,7 +181,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			return false;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			if (Main.netMode == NetmodeID.Server)
 				return;
@@ -188,7 +189,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			CameraSystem.shake += 6;
 
 			SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/FireHit"), Projectile.Center);
-			Helper.PlayPitched("Magic/FireCast", 0.2f, Main.rand.NextFloat(-0.1f, 0.1f));
+			SoundHelper.PlayPitched("Magic/FireCast", 0.2f, Main.rand.NextFloat(-0.1f, 0.1f));
 
 			for (int k = 0; k < 60; k++)
 			{
@@ -205,7 +206,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				for (int y = -10; y < 10; y++)
 				{
 					Tile tile = Main.tile[(int)Projectile.Center.X / 16 + x, (int)Projectile.Center.Y / 16 + y];
-					if (tile.HasTile && Main.tileSolid[tile.TileType] && Helpers.Helper.IsEdgeTile((int)Projectile.Center.X / 16 + x, (int)Projectile.Center.Y / 16 + y))
+					if (tile.HasTile && Main.tileSolid[tile.TileType] && Helpers.WorldGenHelper.IsEdgeTile((int)Projectile.Center.X / 16 + x, (int)Projectile.Center.Y / 16 + y))
 					{
 						Vector2 pos = new Vector2((int)Projectile.Center.X / 16 + x, (int)Projectile.Center.Y / 16 + y) * 16 + Vector2.One * 8;
 
@@ -277,26 +278,30 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (trail == null || trail == default)
 				return;
 
-			Main.spriteBatch.End();
+			Effect effect = ShaderLoader.GetShader("OrbitalStrikeTrail").Value;
 
-			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
+			if (effect != null)
+			{
+				Main.spriteBatch.End();
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
-			effect.Parameters["alpha"].SetValue(1);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+				effect.Parameters["alpha"].SetValue(1);
 
-			trail?.Render(effect);
+				trail?.Render(effect);
 
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 		}
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, NUM_SEGMENTS, new NoTip(), factor => 4, factor => Lighting.GetColor((int)(Projectile.Center.X / 16), (int)(Projectile.Center.Y / 16)));
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, NUM_SEGMENTS, new NoTip(), factor => 4, factor => Lighting.GetColor((int)(Projectile.Center.X / 16), (int)(Projectile.Center.Y / 16)));
 
 			List<Vector2> positions = cache;
 			trail.NextPosition = positions[NUM_SEGMENTS - 1];
@@ -315,11 +320,12 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			return ret;
 		}
-		public void DrawAdditive(SpriteBatch spriteBatch)
+
+		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = Assets.Keys.Glow.Value;
-			Color color = new Color(255, 100, 50) * 0.4f;
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), color, 0, tex.Size() / 2, 1.2f * (Projectile.timeLeft / 180f), 0, 0);
+			Texture2D tex = Assets.Masks.GlowAlpha.Value;
+			Color color = new Color(255, 100, 50, 0) * 0.4f;
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), color, 0, tex.Size() / 2, 1.2f * (Projectile.timeLeft / 180f), 0, 0);
 		}
 	}
 }

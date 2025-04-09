@@ -11,7 +11,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		public override void SetDefaults()
 		{
 			Projectile.hostile = true;
-			Projectile.damage = 1;
 			Projectile.height = 32;
 			Projectile.width = 1;
 			Projectile.timeLeft = 2;
@@ -78,7 +77,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		public void DrawOverTiles(SpriteBatch spriteBatch)
 		{
 			Texture2D tex = Assets.Bosses.GlassMiniboss.FireAura.Value;
-			Texture2D tex2 = Assets.Keys.GlowAlpha.Value;
+			Texture2D tex2 = Assets.Masks.GlowAlpha.Value;
 			var color = new Color(255, 110, 50, 0);
 			var color2 = new Color(255, 200, 50, 0);
 

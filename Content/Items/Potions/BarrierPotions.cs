@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Items.Potions
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault(prefix + " Barrier Potion");
-			Tooltip.SetDefault($"Grants {amount} {{barrier}}\nGreatly reduces overcharge {{barrier}} loss for {duration / 60} seconds");
+			Tooltip.SetDefault($"Grants {amount} {{barrier}}\nGrants {{BUFF:ShieldDegenReduction}} for {duration / 60} seconds\nInflicts {{Buff:PotionSickness}} for 20 seconds\nInflicts {{BUFF:NoShieldPot}} for 60 seconds");
 		}
 
 		public override void SetDefaults()
@@ -59,7 +59,7 @@ namespace StarlightRiver.Content.Items.Potions
 
 	public class LesserBarrierPotion : BarrierPotion
 	{
-		public LesserBarrierPotion() : base(40, 180, "Lesser") { }
+		public LesserBarrierPotion() : base(100, 300, "Lesser") { }
 
 		public override void AddRecipes()
 		{
@@ -74,7 +74,7 @@ namespace StarlightRiver.Content.Items.Potions
 
 	public class RegularBarrierPotion : BarrierPotion
 	{
-		public RegularBarrierPotion() : base(80, 240, "") { }
+		public RegularBarrierPotion() : base(150, 420, "") { }
 
 		public override void AddRecipes()
 		{
@@ -89,7 +89,7 @@ namespace StarlightRiver.Content.Items.Potions
 
 	public class GreaterBarrierPotion : BarrierPotion
 	{
-		public GreaterBarrierPotion() : base(120, 300, "Greater") { }
+		public GreaterBarrierPotion() : base(200, 600, "Greater") { }
 
 		public override void AddRecipes()
 		{
@@ -119,13 +119,13 @@ namespace StarlightRiver.Content.Items.Potions
 
 	public class ShieldDegenReduction : SmartBuff
 	{
-		public ShieldDegenReduction() : base("Barrier Affinity", "Barrier sticks to you better", false) { }
+		public ShieldDegenReduction() : base("Barrier Affinity", "Barrier over your maximum drains much slower", false) { }
 
 		public override string Texture => AssetDirectory.PotionsItem + Name;
 
 		public override void Update(Player Player, ref int buffIndex)
 		{
-			Player.GetModPlayer<BarrierPlayer>().overchargeDrainRate -= 50;
+			Player.GetModPlayer<BarrierPlayer>().overchargeDrainRate -= 55;
 		}
 	}
 }

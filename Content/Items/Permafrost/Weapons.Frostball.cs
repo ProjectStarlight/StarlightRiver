@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Tiles.Permafrost;
+using StarlightRiver.Core.Loaders;
 using System;
 using Terraria.ID;
 
@@ -88,12 +89,12 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			foreach (Player player in Main.player)
 			{
-				if (Helpers.Helper.CheckCircularCollision(Projectile.Center, AuroraRadius, player.Hitbox))
+				if (Helpers.CollisionHelper.CheckCircularCollision(Projectile.Center, AuroraRadius, player.Hitbox))
 					player.lifeRegen += auroraPower;
 			}
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			Player player = Main.player[Projectile.owner];
 			player.AddBuff(BuffID.Regeneration, auroraPower * 120);
@@ -132,9 +133,12 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = Assets.Keys.GlowAlpha.Value;
+			Texture2D tex = Assets.Masks.GlowAlpha.Value;
 
-			Effect effect = StarlightRiver.Instance.Assets.Request<Effect>("Effects/FrostAura").Value;
+			Effect effect = ShaderLoader.GetShader("FrostAura").Value;
+
+			if (effect is null)
+				return;
 
 			effect.Parameters["drawTexture"].SetValue(tex);
 			effect.Parameters["noiseTexture"].SetValue(Assets.Noise.SwirlyNoiseLooping.Value);
@@ -145,16 +149,16 @@ namespace StarlightRiver.Content.Items.Permafrost
 			effect.Parameters["height"].SetValue(2);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * AuroraPercent, 0, tex.Size() / 2f, 1.6f * AuroraPercent, 0, 0);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			for (int k = 0; k < 3; k++)
 			{
-				Texture2D texStar = Assets.Keys.StarAlpha.Value;
+				Texture2D texStar = Assets.Masks.StarAlpha.Value;
 
 				Color color = GetAuroraColor(k / 3f * 1.5f) * AuroraPercent;
 				color.A = 0;

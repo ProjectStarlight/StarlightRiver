@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Physics;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Helpers;
 using System;
 using Terraria.Graphics.Effects;
@@ -10,7 +11,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 	{
 		readonly VitricBoss parent;
 		readonly VerletChain chain;
-		readonly Effect fireEffect;
+
 		Vector2 position;
 
 		public VitricBossSwoosh(Vector2 offset, int length, VitricBoss parent)
@@ -20,8 +21,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			if (!Main.dedServ)
 			{
-				fireEffect = Filters.Scene["FireShader"].GetShader().Shader;
-
 				chain = new VerletChain(length, true, parent.NPC.Center + position, 8)
 				{
 					constraintRepetitions = 2,
@@ -47,13 +46,18 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				0, 0, 0, 1
 			);
 
-			fireEffect.Parameters["time"].SetValue(-Main.GameUpdateCount / 45f);
-			fireEffect.Parameters["upscale"].SetValue(matrix);
-			fireEffect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
+			Effect fireEffect = ShaderLoader.GetShader("FireShader").Value;
 
-			chain.DrawStrip(PrepareStrip, fireEffect);
-			chain.UpdateChain(parent.NPC.Center + parent.PainOffset + Vector2.UnitX * -parent.twistTarget * 18 + position.RotatedBy(parent.NPC.rotation));
-			chain.IterateRope(WindForce);
+			if (fireEffect != null)
+			{
+				fireEffect.Parameters["time"].SetValue(-Main.GameUpdateCount / 45f);
+				fireEffect.Parameters["upscale"].SetValue(matrix);
+				fireEffect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
+
+				chain.DrawStrip(PrepareStrip, fireEffect);
+				chain.UpdateChain(parent.NPC.Center + parent.PainOffset + Vector2.UnitX * -parent.twistTarget * 18 + position.RotatedBy(parent.NPC.rotation));
+				chain.IterateRope(WindForce);
+			}
 		}
 
 		public VertexBuffer PrepareStrip(Vector2 offset)
@@ -64,9 +68,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			float rotation = (chain.ropeSegments[0].ScreenPos - chain.ropeSegments[1].ScreenPos).ToRotation() + (float)Math.PI / 2;
 
-			verticies[0] = new VertexPositionColorTexture((chain.ropeSegments[0].ScreenPos + offset + Vector2.UnitY.RotatedBy(rotation - Math.PI / 4) * -5).Vec3().ScreenCoord(), chain.ropeSegments[0].color, new Vector2(0, 0.2f));
-			verticies[1] = new VertexPositionColorTexture((chain.ropeSegments[0].ScreenPos + offset + Vector2.UnitY.RotatedBy(rotation + Math.PI / 4) * -5).Vec3().ScreenCoord(), chain.ropeSegments[0].color, new Vector2(0, 0.8f));
-			verticies[2] = new VertexPositionColorTexture((chain.ropeSegments[1].ScreenPos + offset).Vec3().ScreenCoord(), chain.ropeSegments[1].color, new Vector2(0, 0.5f));
+			verticies[0] = new VertexPositionColorTexture((chain.ropeSegments[0].ScreenPos + offset + Vector2.UnitY.RotatedBy(rotation - Math.PI / 4) * -5).ToVector3().ToScreenspaceCoord(), chain.ropeSegments[0].color, new Vector2(0, 0.2f));
+			verticies[1] = new VertexPositionColorTexture((chain.ropeSegments[0].ScreenPos + offset + Vector2.UnitY.RotatedBy(rotation + Math.PI / 4) * -5).ToVector3().ToScreenspaceCoord(), chain.ropeSegments[0].color, new Vector2(0, 0.8f));
+			verticies[2] = new VertexPositionColorTexture((chain.ropeSegments[1].ScreenPos + offset).ToVector3().ToScreenspaceCoord(), chain.ropeSegments[1].color, new Vector2(0, 0.5f));
 
 			for (int k = 1; k < chain.segmentCount - 1; k++)
 			{
@@ -76,9 +80,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 				int point = k * 9 - 6;
 
-				verticies[point] = new VertexPositionColorTexture((chain.ropeSegments[k].ScreenPos + offset + Vector2.UnitY.RotatedBy(rotation2 - Math.PI / 4) * -(chain.segmentCount - k) * scale).Vec3().ScreenCoord(), chain.ropeSegments[k].color, new Vector2(progress, 0.2f));
-				verticies[point + 1] = new VertexPositionColorTexture((chain.ropeSegments[k].ScreenPos + offset + Vector2.UnitY.RotatedBy(rotation2 + Math.PI / 4) * -(chain.segmentCount - k) * scale).Vec3().ScreenCoord(), chain.ropeSegments[k].color, new Vector2(progress, 0.8f));
-				verticies[point + 2] = new VertexPositionColorTexture((chain.ropeSegments[k + 1].ScreenPos + offset).Vec3().ScreenCoord(), chain.ropeSegments[k + 1].color, new Vector2(progress + 1 / 3f, 0.5f));
+				verticies[point] = new VertexPositionColorTexture((chain.ropeSegments[k].ScreenPos + offset + Vector2.UnitY.RotatedBy(rotation2 - Math.PI / 4) * -(chain.segmentCount - k) * scale).ToVector3().ToScreenspaceCoord(), chain.ropeSegments[k].color, new Vector2(progress, 0.2f));
+				verticies[point + 1] = new VertexPositionColorTexture((chain.ropeSegments[k].ScreenPos + offset + Vector2.UnitY.RotatedBy(rotation2 + Math.PI / 4) * -(chain.segmentCount - k) * scale).ToVector3().ToScreenspaceCoord(), chain.ropeSegments[k].color, new Vector2(progress, 0.8f));
+				verticies[point + 2] = new VertexPositionColorTexture((chain.ropeSegments[k + 1].ScreenPos + offset).ToVector3().ToScreenspaceCoord(), chain.ropeSegments[k + 1].color, new Vector2(progress + 1 / 3f, 0.5f));
 
 				int extra = k == 1 ? 0 : 6;
 				verticies[point + 3] = verticies[point];
@@ -97,7 +101,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public void DrawAdditive(SpriteBatch sb)
 		{
-			Texture2D tex = Assets.Keys.GlowSoft.Value;
+			Texture2D tex = Assets.Masks.GlowSoft.Value;
+
+			if (chain.ropeSegments is null)
+				return;
 
 			for (int k = 0; k < chain.segmentCount; k++)
 			{

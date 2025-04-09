@@ -34,7 +34,8 @@ namespace StarlightRiver.Content.Archaeology
 
 		public void DrawArtifacts(On_Main.orig_DoDraw_Tiles_Solid orig, Main self)
 		{
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+
 			foreach (KeyValuePair<int, TileEntity> item in TileEntity.ByID)
 			{
 				if (item.Value is Artifact artifact && artifact.IsOnScreen())
@@ -63,7 +64,7 @@ namespace StarlightRiver.Content.Archaeology
 			foreach (KeyValuePair<int, TileEntity> drawable in toDraw)
 			{
 				var artifact = (Artifact)drawable.Value;
-				Texture2D mapTex = ModContent.Request<Texture2D>(artifact.MapTexturePath).Value;
+				Texture2D mapTex = artifact.MapPreviewTexture.Value;
 
 				if (context.Draw(mapTex, artifact.Position.ToVector2(), Color.White, new SpriteFrame(1, 1, 0, 0), 1, 1, Alignment.Center).IsMouseOver)
 					text = "Artifact";

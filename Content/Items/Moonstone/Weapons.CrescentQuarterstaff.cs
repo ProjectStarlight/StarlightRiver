@@ -1,4 +1,6 @@
-﻿using StarlightRiver.Content.Items.Gravedigger;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Items.Gravedigger;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -115,7 +117,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		}
 	}
 
-	internal class CrescentQuarterstaffProj : ModProjectile, IDrawAdditive
+	internal class CrescentQuarterstaffProj : ModProjectile
 	{
 		enum AttackType : int
 		{
@@ -157,10 +159,10 @@ namespace StarlightRiver.Content.Items.Moonstone
 		private Vector2 StaffEnd => Player.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, ArmRotation) + Vector2.UnitX.RotatedBy(Projectile.rotation) * length * Projectile.scale;
 		private float MeleeSpeed => Player.GetTotalAttackSpeed(DamageClass.Melee);
 
-		private readonly static Func<float, float> StabEase = Helper.CubicBezier(0.09f, 0.71f, 0.08f, 1.62f);
-		private readonly static Func<float, float> SpinEase = Helper.CubicBezier(0.6f, -0.3f, .3f, 1f);
-		private readonly static Func<float, float> UppercutEase = Helper.CubicBezier(0.6f, -0.3f, 0.5f, 0.8f);
-		private readonly static Func<float, float> SlamEase = Helper.CubicBezier(0.5f, -1.6f, 0.9f, -1.6f);
+		private readonly static Func<float, float> StabEase = Eases.CubicBezier(0.09f, 0.71f, 0.08f, 1.62f);
+		private readonly static Func<float, float> SpinEase = Eases.CubicBezier(0.6f, -0.3f, .3f, 1f);
+		private readonly static Func<float, float> UppercutEase = Eases.CubicBezier(0.6f, -0.3f, 0.5f, 0.8f);
+		private readonly static Func<float, float> SlamEase = Eases.CubicBezier(0.5f, -1.6f, 0.9f, -1.6f);
 
 		public override string Texture => AssetDirectory.MoonstoneItem + Name;
 
@@ -233,7 +235,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			}
 		}
 
-		public override void Kill(int timeleft)
+		public override void OnKill(int timeleft)
 		{
 			Player.itemAnimation = Player.itemTime = 0;
 			Player.UpdateRotation(0);
@@ -305,38 +307,61 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Vector2 position = Player.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, ArmRotation);
 
 			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
-			Effect effect = Filters.Scene["MoonFireAura"].GetShader().Shader;
-			effect.Parameters["time"].SetValue(StarlightWorld.visualTimer * 0.2f);
-			effect.Parameters["fireHeight"].SetValue(0.03f * Charge);
-			effect.Parameters["fnoise"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap1.Value);
-			effect.Parameters["fnoise2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
-			effect.Parameters["vnoise"].SetValue(Assets.Items.Moonstone.CrescentQuarterstaffMap.Value);
-			effect.CurrentTechnique.Passes[0].Apply();
+			Effect effect = ShaderLoader.GetShader("MoonFireAura").Value;
 
-			spriteBatch.Draw(head, position - Main.screenPosition, null, lightColor, Projectile.rotation + 0.78f, origin, scale, SpriteEffects.None, 0);
+			if (effect != null)
+			{
+				effect.Parameters["time"].SetValue(StarlightWorld.visualTimer * 0.2f);
+				effect.Parameters["fireHeight"].SetValue(0.03f * Charge);
+				effect.Parameters["fnoise"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap1.Value);
+				effect.Parameters["fnoise2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
+				effect.Parameters["vnoise"].SetValue(Assets.Items.Moonstone.CrescentQuarterstaffMap.Value);
+				effect.CurrentTechnique.Passes[0].Apply();
 
-			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Draw(head, position - Main.screenPosition, null, lightColor, Projectile.rotation + 0.78f, origin, scale, SpriteEffects.None, 0);
 
-			effect.Parameters["time"].SetValue(StarlightWorld.visualTimer * 0.2f);
-			effect.Parameters["fireHeight"].SetValue(0.03f * Charge);
-			effect.Parameters["fnoise"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap1.Value);
-			effect.Parameters["fnoise2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
-			effect.Parameters["vnoise"].SetValue(Assets.Items.Moonstone.CrescentQuarterstaffMap.Value);
-			effect.CurrentTechnique.Passes[1].Apply();
+				spriteBatch.End();
+				spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
-			spriteBatch.Draw(head, position - Main.screenPosition, null, lightColor, Projectile.rotation + 0.78f, origin, scale, SpriteEffects.None, 0);
+				effect.Parameters["time"].SetValue(StarlightWorld.visualTimer * 0.2f);
+				effect.Parameters["fireHeight"].SetValue(0.03f * Charge);
+				effect.Parameters["fnoise"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap1.Value);
+				effect.Parameters["fnoise2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
+				effect.Parameters["vnoise"].SetValue(Assets.Items.Moonstone.CrescentQuarterstaffMap.Value);
+				effect.CurrentTechnique.Passes[1].Apply();
 
-			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Draw(head, position - Main.screenPosition, null, lightColor, Projectile.rotation + 0.78f, origin, scale, SpriteEffects.None, 0);
+
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 
 			DrawPrimitives();
 
 			spriteBatch.Draw(tex, position - Main.screenPosition, null, Color.Lerp(lightColor, Color.White, Charge), Projectile.rotation + 0.78f, origin, scale, SpriteEffects.None, 0);
 
 			return false;
+		}
+
+		public override void PostDraw(Color lightColor)
+		{
+			if (CurrentAttack == AttackType.Slam && slamCharged)
+			{
+				Texture2D texFlare = Assets.StarTexture.Value;
+				Texture2D texBloom = Assets.Masks.GlowAlpha.Value;
+
+				float flareRotation = MathHelper.SmoothStep(0, MathHelper.TwoPi, timer / 40f);
+				float flareScale = timer < 20 ? MathHelper.SmoothStep(0, 1, timer / 20f) : MathHelper.SmoothStep(1, 0, (timer - 20) / 20f);
+
+				var color = new Color(78, 87, 191, 0);
+
+				Vector2 pos = StaffEnd + Vector2.UnitX.RotatedBy(Projectile.rotation) * 10 * Projectile.scale;
+
+				Main.spriteBatch.Draw(texBloom, pos - Main.screenPosition, null, color, 0, texBloom.Size() / 2, Projectile.scale * 3 * flareScale, default, default);
+				Main.spriteBatch.Draw(texFlare, pos - Main.screenPosition, null, color * 2, flareRotation, texFlare.Size() / 2, Projectile.scale * 0.75f * flareScale, default, default);
+			}
 		}
 
 		public override void SendExtraAI(BinaryWriter writer)
@@ -380,7 +405,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			if (timer == 0)
 			{
 				Projectile.ResetLocalNPCHitImmunity();
-				Helper.PlayPitched("Effects/HeavyWhooshShort", 0.3f, Main.rand.NextFloat(-0.1f, 0.1f));
+				SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 0.3f, Main.rand.NextFloat(-0.1f, 0.1f));
 			}
 
 			if (timer > 15 / MeleeSpeed)
@@ -404,7 +429,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 				Projectile.ResetLocalNPCHitImmunity();
 
 			if ((timer == (int)(25 / MeleeSpeed) || timer == (int)(50 / MeleeSpeed)) && freezeTimer < 0)
-				Helper.PlayPitched("Effects/HeavyWhoosh", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
+				SoundHelper.PlayPitched("Effects/HeavyWhoosh", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
 
 			if (timer > 90 / MeleeSpeed)
 				curAttackDone = true;
@@ -423,7 +448,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			if (timer == 0)
 			{
 				Projectile.ResetLocalNPCHitImmunity();
-				Helper.PlayPitched("Effects/HeavyWhooshShort", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
+				SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
 			}
 
 			if (timer > 20 / MeleeSpeed)
@@ -523,7 +548,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 				if (slamCharged)
 				{
 					Terraria.Audio.SoundEngine.PlaySound(SoundID.MaxMana, Projectile.Center);
-					DustHelper.DrawDustImage(StaffEnd + Vector2.One * 4, ModContent.DustType<Dusts.GlowFastDecelerate>(), 0.05f, Assets.Items.Moonstone.MoonstoneHamaxe_Crescent.Value, 0.7f, 0, new Color(120, 120, 255));
+					DustHelper.SpawnImagePattern(StaffEnd + Vector2.One * 4, ModContent.DustType<Dusts.GlowFastDecelerate>(), 0.05f, Assets.Items.Moonstone.MoonstoneHamaxe_Crescent.Value, 0.7f, 0, new Color(120, 120, 255));
 
 					for (int i = 0; i < 64; i++)
 					{
@@ -623,7 +648,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 16, new NoTip(), factor => 50f * Charge, factor => new Color(78, 87, 191) * Charge * 0.7f * factor.X);
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 16, new NoTip(), factor => 50f * Charge, factor => new Color(78, 87, 191) * Charge * 0.7f * factor.X);
 
 			trail.Positions = cache.ToArray();
 
@@ -634,41 +660,25 @@ namespace StarlightRiver.Content.Items.Moonstone
 		{
 			if (CurrentAttack == AttackType.Slam && slamCharged)
 			{
-				Main.spriteBatch.End();
+				Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-				Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+				if (effect != null)
+				{
+					Main.spriteBatch.End();
 
-				var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-				Matrix view = Main.GameViewMatrix.TransformationMatrix;
-				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+					var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+					Matrix view = Main.GameViewMatrix.TransformationMatrix;
+					var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
-				effect.Parameters["repeats"].SetValue(1f);
-				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-				effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
+					effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
+					effect.Parameters["repeats"].SetValue(1f);
+					effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+					effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
-				trail?.Render(effect);
+					trail?.Render(effect);
 
-				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
-			}
-		}
-
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
-			if (CurrentAttack == AttackType.Slam && slamCharged)
-			{
-				Texture2D texFlare = Assets.StarTexture.Value;
-				Texture2D texBloom = Assets.Keys.GlowAlpha.Value;
-
-				float flareRotation = MathHelper.SmoothStep(0, MathHelper.TwoPi, timer / 40f);
-				float flareScale = timer < 20 ? MathHelper.SmoothStep(0, 1, timer / 20f) : MathHelper.SmoothStep(1, 0, (timer - 20) / 20f);
-
-				var color = new Color(78, 87, 191);
-
-				Vector2 pos = StaffEnd + Vector2.UnitX.RotatedBy(Projectile.rotation) * 10 * Projectile.scale;
-
-				spriteBatch.Draw(texBloom, pos - Main.screenPosition, null, color, 0, texBloom.Size() / 2, Projectile.scale * 3 * flareScale, default, default);
-				spriteBatch.Draw(texFlare, pos - Main.screenPosition, null, color * 2, flareRotation, texFlare.Size() / 2, Projectile.scale * 0.75f * flareScale, default, default);
+					Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+				}
 			}
 		}
 	}

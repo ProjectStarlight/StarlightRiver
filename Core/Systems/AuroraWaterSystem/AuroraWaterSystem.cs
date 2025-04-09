@@ -1,6 +1,7 @@
 using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.NPCs.Permafrost;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.MetaballSystem;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
@@ -76,71 +77,76 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 
 		private static void DrawAuroraTarget(SpriteBatch sb)
 		{
-			sb.End();
-			sb.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Asset<Texture2D> asset = Assets.Misc.AuroraWaterMap;
 
-			Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/AuroraWaterMap", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
-
-			for (int i = -tex2.Width; i <= Main.screenWidth + tex2.Width; i += tex2.Width)
+			if (asset.IsLoaded)
 			{
-				for (int j = -tex2.Height; j <= Main.screenHeight + tex2.Height; j += tex2.Height)
-				{
-					Main.spriteBatch.Draw(tex2, new Vector2(i, j),
-						new Rectangle(
-							(int)(Main.screenPosition.X % tex2.Width - Main.GameUpdateCount * 0.55f),
-							(int)(Main.screenPosition.Y % tex2.Height + Main.GameUpdateCount * 0.3f),
-							tex2.Width,
-							tex2.Height
-							),
-						Color.White * 0.7f, default, default, 1, 0, 0);
+				sb.End();
+				sb.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
-					Main.spriteBatch.Draw(tex2, new Vector2(i, j),
-						new Rectangle(
-							(int)(Main.screenPosition.X % tex2.Width + Main.GameUpdateCount * 0.75f),
-							(int)(Main.screenPosition.Y % tex2.Height - Main.GameUpdateCount * 0.4f),
-							tex2.Width,
-							tex2.Height
-							),
-						Color.White);
+				Texture2D tex = asset.Value;
+
+				for (int i = -tex.Width; i <= Main.screenWidth + tex.Width; i += tex.Width)
+				{
+					for (int j = -tex.Height; j <= Main.screenHeight + tex.Height; j += tex.Height)
+					{
+						Main.spriteBatch.Draw(tex, new Vector2(i, j),
+							new Rectangle(
+								(int)(Main.screenPosition.X % tex.Width - Main.GameUpdateCount * 0.55f),
+								(int)(Main.screenPosition.Y % tex.Height + Main.GameUpdateCount * 0.3f),
+								tex.Width,
+								tex.Height
+								),
+							Color.White * 0.7f, default, default, 1, 0, 0);
+
+						Main.spriteBatch.Draw(tex, new Vector2(i, j),
+							new Rectangle(
+								(int)(Main.screenPosition.X % tex.Width + Main.GameUpdateCount * 0.75f),
+								(int)(Main.screenPosition.Y % tex.Height - Main.GameUpdateCount * 0.4f),
+								tex.Width,
+								tex.Height
+								),
+							Color.White);
+					}
 				}
 			}
 		}
 
 		private static void DrawAuroraBackTarget(SpriteBatch sb)
 		{
-			sb.End();
-			sb.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Asset<Texture2D> asset = Assets.Misc.AuroraWaterMap;
 
-			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
-
-			Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/AuroraWaterMap", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
-
-			for (int i = -tex2.Width; i <= Main.screenWidth + tex2.Width; i += tex2.Width)
+			if (asset.IsLoaded)
 			{
-				for (int j = -tex2.Height; j <= Main.screenHeight + tex2.Height; j += tex2.Height)
-				{
-					sb.Draw(tex2, new Vector2(i, j),
-						new Rectangle(
-							(int)(Main.screenPosition.X % tex2.Width - Main.GameUpdateCount * 0.55f),
-							(int)(Main.screenPosition.Y % tex2.Height + Main.GameUpdateCount * 0.3f),
-							tex2.Width,
-							tex2.Height
-							),
-						Color.White * 0.7f, default, default, 1, 0, 0);
+				sb.End();
+				sb.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default);
 
-					sb.Draw(tex2, new Vector2(i, j),
-						new Rectangle(
-							(int)(Main.screenPosition.X % tex2.Width + Main.GameUpdateCount * 0.75f),
-							(int)(Main.screenPosition.Y % tex2.Height - Main.GameUpdateCount * 0.4f),
-							tex2.Width,
-							tex2.Height
-							),
-						Color.White);
-				}
+				Main.graphics.GraphicsDevice.Clear(Color.Transparent);
+
+				Texture2D tex = asset.Value;
+
+				Vector2 layer1Pivot = Main.GameUpdateCount * new Vector2(-0.55f, 0.3f);
+				Vector2 layer2Pivot = Main.GameUpdateCount * new Vector2(0.75f, -0.4f);
+				sb.Draw(tex,
+					Vector2.Zero,
+					new Rectangle(
+						(int)(Main.screenPosition.X + layer1Pivot.X) % tex.Width,
+						(int)(Main.screenPosition.Y + layer1Pivot.Y) % tex.Height,
+						Main.screenWidth,
+						Main.screenHeight),
+					Color.White * 0.7f);
+				sb.Draw(tex,
+					Vector2.Zero,
+					new Rectangle(
+						(int)(Main.screenPosition.X + layer2Pivot.X) % tex.Width,
+						(int)(Main.screenPosition.Y + layer2Pivot.Y) % tex.Height,
+						Main.screenWidth,
+						Main.screenHeight),
+					Color.White);
+
+				sb.End();
+				sb.Begin();
 			}
-
-			sb.End();
-			sb.Begin();
 		}
 
 		private void DrawAuroraWater(On_Main.orig_DrawInfernoRings orig, Main self)
@@ -330,7 +336,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 				return;
 			}
 
-			Effect shader = Terraria.Graphics.Effects.Filters.Scene["AuroraWaterShader"].GetShader().Shader;
+			Effect shader = ShaderLoader.GetShader("AuroraWaterShader").Value;
 
 			if (shader is null)
 			{
@@ -344,7 +350,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 			shader.Parameters["sampleTexture2"].SetValue(AuroraWaterSystem.auroraBackTarget.RenderTarget);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, shader, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, shader, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D target = MetaballSystem.MetaballSystem.actors.FirstOrDefault(n => n is AuroraWaterTileMetaballs).Target.RenderTarget;
 			Main.spriteBatch.Draw(target, Vector2.Zero, null, Color.White, 0, Vector2.Zero, 2, 0, 0);

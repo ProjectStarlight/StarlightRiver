@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.CameraSystem;
+﻿using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -119,25 +120,30 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Main.spriteBatch.End();
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				Main.spriteBatch.End();
 
-			effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.06f);
-			effect.Parameters["repeats"].SetValue(1);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			trail?.Render(effect);
+				effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.06f);
+				effect.Parameters["repeats"].SetValue(1);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
-			effect.Parameters["sampleTexture"].SetValue(Assets.LightningTrail.Value);
+				trail?.Render(effect);
 
-			trail?.Render(effect);
+				effect.Parameters["sampleTexture"].SetValue(Assets.LightningTrail.Value);
 
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				trail?.Render(effect);
+
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+			}
+
 			return true;
 		}
 
@@ -162,7 +168,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 13, new NoTip(), factor => 3, factor => new Color(70, 178, 201) * 0.5f * factor.X);
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 13, new NoTip(), factor => 3, factor => new Color(70, 178, 201) * 0.5f * factor.X);
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
@@ -235,7 +242,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				Projectile.scale += 0.01f;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			if (hitByBullet && Projectile.timeLeft < 240)
 			{
@@ -267,41 +274,15 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 		}
 
-		/*public override bool PreDraw(ref Color lightColor) //this drawcode draws offset and weird so if someone better with custom drawing could fix dis plz <3
-        {
-            Main.instance.LoadProjectile(Projectile.type);
-            Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
-
-            SpriteEffects spriteEffects = Projectile.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-
-            int frameHeight = texture.Height / Main.projFrames[Projectile.type];
-            int startY = frameHeight * Projectile.frame;
-
-            Rectangle frameRect = new Rectangle(0, startY, texture.Width, frameHeight);
-
-            Color drawColor = Projectile.GetAlpha(lightColor) * (1 - (Projectile.alpha / 255));
-
-            float rotationOffset = -1.25f;
-
-            Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, frameRect, drawColor, Projectile.rotation + rotationOffset, texture.Size() / 2f,
-                Projectile.scale * 0.55f, spriteEffects, 0);
-
-            rotationOffset = -0.75f;
-
-            Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, frameRect, drawColor, Projectile.rotation + rotationOffset, texture.Size() / 2f,
-                Projectile.scale * 0.65f, spriteEffects, 0);
-            return true;
-        }*/
-
 		public override void SendExtraAI(BinaryWriter writer)
 		{
-			writer.WritePackedVector2(offset);
+			writer.WriteVector2(offset);
 			writer.Write(enemyID);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
-			offset = reader.ReadPackedVector2();
+			offset = reader.ReadVector2();
 			enemyID = reader.ReadInt32();
 		}
 	}

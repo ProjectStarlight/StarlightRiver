@@ -154,7 +154,7 @@ namespace StarlightRiver.Core
 				int x = genRand.NextBool(2) ? genRand.Next(vitricBiome.X + SLOPE_OFFSET + 20, vitricBiome.Center.X - 61) : genRand.Next(vitricBiome.Center.X + 62, vitricBiome.Right - SLOPE_OFFSET - 20);
 				int y = maxCeilingDepth + 20 + genRand.Next((int)(vitricBiome.Height / 3.2f));
 
-				if (Helper.ScanForTypeDown(x, y, instance.Find<ModTile>("VitricSand").Type, 120))
+				if (WorldGenHelper.ScanForTypeDown(x, y, instance.Find<ModTile>("VitricSand").Type, 120))
 				{
 					y = FindType(x, y, vitricBiome.Bottom + 20, instance.Find<ModTile>("VitricSand").Type);
 				}
@@ -366,7 +366,7 @@ namespace StarlightRiver.Core
 					{
 						PlaceTile(x, y, instance.Find<ModTile>("VitricSand").Type, true, true);
 						t.Slope = SlopeType.Solid;
-						KillWall(x, y, false);
+						t.WallType = 0;
 					}
 				}
 
@@ -520,10 +520,10 @@ namespace StarlightRiver.Core
 				Point16 size = ruinedHouseSizes[ty];
 				int y = FindType(x, vitricBiome.Y + 38 + genRand.Next((int)(vitricBiome.Height / 3.2f)), -1, ValidGround) + genRand.Next(2);
 
-				if ((x < vitricBiome.X + vitricBiome.Width / 2 - 71 || x > vitricBiome.X + vitricBiome.Width / 2 + 70) && Helper.CheckAirRectangle(new Point16(x, y - size.Y), new Point16(size.X, size.Y - 3)) && //ScanRectangle(x, y, size.X, size.Y) < 10
+				if ((x < vitricBiome.X + vitricBiome.Width / 2 - 71 || x > vitricBiome.X + vitricBiome.Width / 2 + 70) && WorldGenHelper.CheckAirRectangle(new Point16(x, y - size.Y), new Point16(size.X, size.Y - 3)) && //ScanRectangle(x, y, size.X, size.Y) < 10
 					ValidGround.Any(v => v == Main.tile[x + 1, y].TileType) && ValidGround.Any(v => v == Main.tile[x + size.X - 1, y].TileType))
 				{
-					StructureHelper.Generator.GenerateStructure("Structures/Vitric/VitricTempleRuins_" + ty, new Point16(x, y - size.Y), StarlightRiver.Instance);
+					StructureHelper.API.Generator.GenerateStructure("Structures/Vitric/VitricTempleRuins_" + ty, new Point16(x, y - size.Y), StarlightRiver.Instance);
 				}
 				else
 				{
@@ -562,25 +562,23 @@ namespace StarlightRiver.Core
 		private static void GenForge()
 		{
 			int x = vitricBiome.X - 37;
-			StructureHelper.Generator.GenerateStructure("Structures/VitricForge", new Point16(x, vitricBiome.Center.Y - 10), StarlightRiver.Instance);
+			StructureHelper.API.MultiStructureGenerator.GenerateMultistructureSpecific("Structures/VitricForge", Main.masterMode ? 2 : Main.expertMode ? 1 : 0, new Point16(x, vitricBiome.Center.Y - 10), StarlightRiver.Instance);
 
-			var dims = new Point16();
-			StructureHelper.Generator.GetDimensions("Structures/VitricForge", StarlightRiver.Instance, ref dims);
+			Point16 dims = StructureHelper.API.MultiStructureGenerator.GetStructureDimensions("Structures/VitricForge", StarlightRiver.Instance, 0);
 
 			ProtectionWorld.ProtectedRegions.Add(new Rectangle(x, vitricBiome.Center.Y - 10, dims.X, dims.Y));
 
-			NPC.NewNPC(new EntitySource_WorldGen(), (x + 80) * 16, (StarlightWorld.vitricBiome.Center.Y + 20) * 16, NPCType<Content.Bosses.GlassMiniboss.GlassweaverWaiting>());
+			NPC.NewNPC(new EntitySource_WorldGen(), (x + 80) * 16, (StarlightWorld.vitricBiome.Center.Y + 20) * 16, NPCType<Content.Bosses.GlassMiniboss.GlassweaverFriendly>());
 		}
 
 		private static void GenTemple()
 		{
-			Point16 dimensions = Point16.Zero;
-			StructureHelper.Generator.GetDimensions("Structures/VitricTempleNew", StarlightRiver.Instance, ref dimensions);
+			Point16 dimensions = StructureHelper.API.Generator.GetStructureDimensions("Structures/VitricTempleNew", StarlightRiver.Instance);
 
 			int yOff = 71;
 
 			var pos = new Point16(vitricBiome.Center.X - dimensions.X / 2, vitricBiome.Center.Y - yOff);
-			StructureHelper.Generator.GenerateStructure("Structures/VitricTempleNew", pos, StarlightRiver.Instance);
+			StructureHelper.API.Generator.GenerateStructure("Structures/VitricTempleNew", pos, StarlightRiver.Instance);
 
 			GearPuzzleHandler.PuzzleOriginLocation = pos + new Point16(14, 130);
 		}
@@ -590,14 +588,13 @@ namespace StarlightRiver.Core
 		/// </summary>
 		public static void RepairTemple()
 		{
-			Point16 dimensions = Point16.Zero;
-			StructureHelper.Generator.GetDimensions("Structures/VitricTempleNew", StarlightRiver.Instance, ref dimensions);
+			Point16 dimensions = StructureHelper.API.Generator.GetStructureDimensions("Structures/VitricTempleNew", StarlightRiver.Instance);
 
 			int yOff = 71;
 
 			var pos = new Point16(vitricBiome.Center.X - dimensions.X / 2, vitricBiome.Center.Y - yOff + 8);
 			pos += new Point16(75, 88);
-			StructureHelper.Generator.GenerateStructure("Structures/VitricTempleRepair", pos, StarlightRiver.Instance);
+			StructureHelper.API.Generator.GenerateStructure("Structures/VitricTempleRepair", pos, StarlightRiver.Instance);
 		}
 
 		/// <summary>Generates decor of every type throughout the biome</summary>
@@ -643,16 +640,16 @@ namespace StarlightRiver.Core
 
 		private static void GenerateDeco(int x, int y, int w, int h, int type, int variants)
 		{
-			if (ValidGround.Any(x1 => x1 == Main.tile[x, y].TileType) && Helper.CheckAirRectangle(new Point16(x, y - h), new Point16(w, h)) && ValidGround.Any(x1 => x1 == Main.tile[x, y].TileType))
-				Helper.PlaceMultitile(new Point16(x, y - h), type, genRand.Next(variants));
+			if (ValidGround.Any(x1 => x1 == Main.tile[x, y].TileType) && WorldGenHelper.CheckAirRectangle(new Point16(x, y - h), new Point16(w, h)) && ValidGround.Any(x1 => x1 == Main.tile[x, y].TileType))
+				WorldGenHelper.PlaceMultitile(new Point16(x, y - h), type, genRand.Next(variants));
 
 			KillTile(x, y - h, true);
 		}
 
 		private static void GenerateDecoInverted(int x, int y, int w, int h, int type, int variants)
 		{
-			if (ValidGround.Any(x1 => x1 == Main.tile[x, y].TileType) && Helper.CheckAirRectangle(new Point16(x, y + 1), new Point16(w, h)) && ValidGround.Any(x1 => x1 == Main.tile[x, y].TileType))
-				Helper.PlaceMultitile(new Point16(x, y + 1), type, genRand.Next(variants));
+			if (ValidGround.Any(x1 => x1 == Main.tile[x, y].TileType) && WorldGenHelper.CheckAirRectangle(new Point16(x, y + 1), new Point16(w, h)) && ValidGround.Any(x1 => x1 == Main.tile[x, y].TileType))
+				WorldGenHelper.PlaceMultitile(new Point16(x, y + 1), type, genRand.Next(variants));
 
 			KillTile(x, y + 1, true);
 		}
@@ -856,7 +853,7 @@ namespace StarlightRiver.Core
 
 					if (ValidGround.Any(v => v == Main.tile[cX + 1, cY].TileType) && ValidGround.Any(v => v == Main.tile[cX + 2, cY].TileType) && ScanRectangle(cX, cY - 6, 4, 6) < 3)
 					{
-						StructureHelper.Generator.GenerateStructure(
+						StructureHelper.API.Generator.GenerateStructure(
 							AssetDirectory.VitricCrystalStructs + "VitricMediumCrystal_" + genRand.Next(2),
 							new Point16(cX, cY - 6),
 							StarlightRiver.Instance
@@ -895,7 +892,7 @@ namespace StarlightRiver.Core
 
 					// Success! Halve the spawnAttempts count so we don't spam crystals.
 					PlaceTile(cX + 1, cY, Framing.GetTileSafely(cX, cY).TileType, true, true);
-					Helper.PlaceMultitile(new Point16(cX, cY - 3), TileType<VitricOre>(), Main.rand.Next(3));
+					WorldGenHelper.PlaceMultitile(new Point16(cX, cY - 3), TileType<VitricOre>(), Main.rand.Next(3));
 					spawnAttempts /= 2;
 				}
 			}
@@ -918,7 +915,7 @@ namespace StarlightRiver.Core
 
 			if (ScanRectangleStrict(x, y - 17, 10, 17) <= 0 && ScanRectangle(x, y, 17, 1) == 17)
 			{
-				StructureHelper.Generator.GenerateStructure(AssetDirectory.VitricCrystalStructs + "VitricGiantCrystal_" + genRand.Next(2), new Point16(x, cY - 17), StarlightRiver.Instance);
+				StructureHelper.API.Generator.GenerateStructure(AssetDirectory.VitricCrystalStructs + "VitricGiantCrystal_" + genRand.Next(2), new Point16(x, cY - 17), StarlightRiver.Instance);
 				return true;
 			}
 
@@ -958,7 +955,7 @@ namespace StarlightRiver.Core
 
 			for (int i = -wid; i < wid + 1; ++i) //Checks for crystals. If there's a crystal, kill this pillar before it gens
 			{
-				if (Helper.ScanForTypeDown(x + i, y, TileType<VitricLargeCrystal>(), 100) || Helper.ScanForTypeDown(x + i, y, TileType<VitricSmallCrystal>(), 100))
+				if (WorldGenHelper.ScanForTypeDown(x + i, y, TileType<VitricLargeCrystal>(), 100) || WorldGenHelper.ScanForTypeDown(x + i, y, TileType<VitricSmallCrystal>(), 100))
 					return false; //Crystal found, can't place here
 
 				if (GetHeight(x + i) - 30 > GetHeight(x - wid) || GetHeight(x + i) - 30 > GetHeight(x + wid))

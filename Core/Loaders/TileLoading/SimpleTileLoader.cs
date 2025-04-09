@@ -18,6 +18,12 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 			Mod.AddContent(new LoaderTile(internalName, data, data.dropType == -1 ? Mod.Find<ModItem>(internalName + "Item").Type : data.dropType, AssetRoot + internalName));
 		}
 
+		public void LoadGemsparkCompositeTile(string internalName, string displayName, int compositeX, int compositeY, TileLoadData data)
+		{
+			Mod.AddContent(new LoaderTileItem(internalName + "Item", displayName, "", internalName, 0, AssetRoot + internalName + "Item", true));
+			Mod.AddContent(new LoaderGemsparkCompositeTile(internalName, data, data.dropType == -1 ? Mod.Find<ModItem>(internalName + "Item").Type : data.dropType, AssetRoot + internalName, compositeX, compositeY));
+		}
+
 		public void LoadFurniture(string internalName, string displayName, FurnitureLoadData data)
 		{
 			Mod.AddContent(new LoaderTileItem(internalName + "Item", displayName, "", internalName, 0, AssetRoot + internalName + "Item", true));
@@ -100,7 +106,7 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 	public class LoaderTileItem : QuickTileItem
 	{
 		public LoaderTileItem() { }
-		protected override bool CloneNewInstances => true;
+		public override bool CloneNewInstances => true;
 		public LoaderTileItem(string internalName, string name, string tooltip, string placetype, int rare = ItemRarityID.White, string texturePath = null, bool pathHasName = false, int ItemValue = 0)
 			: base(internalName, name, tooltip, placetype, rare, texturePath, pathHasName, ItemValue) { }
 	}
@@ -147,6 +153,30 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 	}
 
 	[Autoload(false)]
+	public class LoaderGemsparkCompositeTile : LoaderTile
+	{
+		public int compositeX;
+		public int compositeY;
+
+		public LoaderGemsparkCompositeTile(string internalName, TileLoadData data, int dropID, string texture, int compositeX, int compositeY) : base(internalName, data, dropID, texture)
+		{
+			this.compositeX = compositeX;
+			this.compositeY = compositeY;
+		}
+
+		public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
+		{
+			Framing.SelfFrame8Way(i, j, Main.tile[i, j], resetFrame);
+
+			Tile tile = Main.tile[i, j];
+			tile.TileFrameX += (short)(i % compositeX * 324);
+			tile.TileFrameY += (short)(j % compositeY * 90);
+
+			return false;
+		}
+	}
+
+	[Autoload(false)]
 	public class LoaderFurniture : ModTile
 	{
 		public string InternalName;
@@ -184,7 +214,8 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 					Data.anchorTiles,
 					Data.faceDirection,
 					Data.wallAnchor,
-					Data.origin
+					Data.origin,
+					Data.variants
 				);
 		}
 
@@ -240,8 +271,9 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 		public bool faceDirection;
 		public bool wallAnchor;
 		public Point16 origin;
+		public int variants;
 
-		public FurnitureLoadData(int width, int height, int dustType, SoundStyle hitSound, bool tallBottom, Color mapColor, bool solidTop = false, bool solid = false, string mapName = "", AnchorData bottomAnchor = default, AnchorData topAnchor = default, int[] anchorTiles = null, bool faceDirection = false, bool wallAnchor = false, Point16 origin = default)
+		public FurnitureLoadData(int width, int height, int dustType, SoundStyle hitSound, bool tallBottom, Color mapColor, bool solidTop = false, bool solid = false, string mapName = "", AnchorData bottomAnchor = default, AnchorData topAnchor = default, int[] anchorTiles = null, bool faceDirection = false, bool wallAnchor = false, Point16 origin = default, int variants = 1)
 		{
 			this.width = width;
 			this.height = height;
@@ -258,6 +290,7 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 			this.faceDirection = faceDirection;
 			this.wallAnchor = wallAnchor;
 			this.origin = origin;
+			this.variants = variants;
 		}
 	}
 }

@@ -4,7 +4,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
-	internal class SpikeMine : ModProjectile, IDrawAdditive
+	internal class SpikeMine : ModProjectile
 	{
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			if (Timer == 90) //when this Projectile goes off
 			{
-				Helper.PlayPitched("Magic/FireHit", 0.20f, 0, Projectile.Center);
+				SoundHelper.PlayPitched("Magic/FireHit", 0.20f, 0, Projectile.Center);
 
 				for (int k = 0; k < 50; k++)
 				{
@@ -44,14 +44,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				}
 
 				if (Main.masterMode)
-					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ProjectileType<NPCs.Vitric.SnakeSpit>(), Projectile.damage, 1, Projectile.owner);
+					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ProjectileType<NPCs.Vitric.SnakeSpit>(), VitricBoss.ShardSpitDamage, 1, Projectile.owner);
 			}
 		}
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
 			int radius = (int)(Math.Sin((Timer - 90) / 60f * 3.14f) * 128);
-			bool inRadius = Helper.CheckCircularCollision(Projectile.Center, radius, targetHitbox);
+			bool inRadius = CollisionHelper.CheckCircularCollision(Projectile.Center, radius, targetHitbox);
 
 			return Timer > 90 && Timer < 150 && inRadius;
 		}
@@ -73,7 +73,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 				var rand = new Random(Projectile.GetHashCode());
 
-				Color color = Helper.MoltenVitricGlow(Timer * 4 - 360);
+				Color color = CommonVisualEffects.HeatedToCoolColor(Timer * 4 - 360);
 
 				for (float k = 0; k < 6.28f; k += 6.28f / 12)
 				{
@@ -84,33 +84,22 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					spriteBatch.Draw(glow, target, null, color, k, new Vector2(spike.Width / 2, spike.Height), 0, 0);
 				}
 			}
-		}
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
 			if (Timer < 120)
 			{
-				float alpha = Math.Min(Timer / 90f, 1);
-				Texture2D tex = Assets.Keys.GlowSoft.Value;
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 200, 100) * alpha, 0, tex.Size() / 2, 1, 0, 0);
+				float glowAlpha = Math.Min(Timer / 90f, 1);
+				Texture2D glowTex = Assets.Masks.GlowSoftAlpha.Value;
+				spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, new Color(255, 200, 100, 0) * glowAlpha, 0, glowTex.Size() / 2, 1, 0, 0);
 			}
 
 			if (Timer > 90 && Timer < 130)
 			{
-				float alpha = (float)Math.Sin((Timer - 90) / 40f * 3.14f);
+				float glowAlpha = (float)Math.Sin((Timer - 90) / 40f * 3.14f);
 
-				Texture2D texShine = Assets.Keys.Shine.Value;
-				Vector2 pos = Projectile.Center - Main.screenPosition;
-
-				Texture2D tex = Assets.GUI.ItemGlow.Value;
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 200, 50) * alpha * 0.5f, Main.GameUpdateCount / 20f, tex.Size() / 2, alpha * 1.5f, 0, 0);
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * alpha * 0.5f, Main.GameUpdateCount / 22f, tex.Size() / 2, alpha * 1.1f, 0, 0);
+				Texture2D glowTex = Assets.GUI.ItemGlow.Value;
+				spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, new Color(255, 200, 50, 0) * glowAlpha * 0.5f, Main.GameUpdateCount / 20f, glowTex.Size() / 2, glowAlpha * 1.5f, 0, 0);
+				spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0) * glowAlpha * 0.5f, Main.GameUpdateCount / 22f, glowTex.Size() / 2, glowAlpha * 1.1f, 0, 0);
 			}
-		}
-
-		private float GetProgress(float off)
-		{
-			return (Main.GameUpdateCount + off * 3) % 50 / 50f;
 		}
 	}
 }

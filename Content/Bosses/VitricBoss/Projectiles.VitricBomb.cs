@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Dusts;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Dusts;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -8,14 +9,16 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
-	class VitricBomb : ModProjectile, IDrawAdditive
+	class VitricBomb : ModProjectile
 	{
 		public override string Texture => AssetDirectory.VitricBoss + Name;
 
 		public override void Load()
 		{
 			for (int k = 0; k < 4; k++)
+			{
 				GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.VitricBoss + "Gore/Mine" + k);
+			}
 		}
 
 		public override void SetDefaults()
@@ -29,29 +32,26 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		public override bool PreDraw(ref Color lightColor)
 		{
 			var rect = new Rectangle(0, 48 * Projectile.frame, 46, 48);
-			Main.spriteBatch.Draw(Request<Texture2D>(Texture).Value, Projectile.Center - Main.screenPosition, rect, lightColor * 4, 0, Vector2.One * 23, 1, 0, 0);
+			Main.spriteBatch.Draw(Assets.Bosses.VitricBoss.VitricBomb.Value, Projectile.Center - Main.screenPosition, rect, lightColor * 4, 0, Vector2.One * 23, 1, 0, 0);
 
 			return false;
 		}
 
 		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = Request<Texture2D>(Texture + "Glow").Value;
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), Helper.IndicatorColor, 0, tex.Size() / 2, 1, 0, 0);
-		}
+			Texture2D tex = Assets.Bosses.VitricBoss.VitricBombGlow.Value;
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), CommonVisualEffects.IndicatorColor, 0, tex.Size() / 2, 1, 0, 0);
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
-			Texture2D tex = Assets.Keys.GlowSoft.Value;
-			Texture2D tex2 = Assets.Bosses.VitricBoss.BombTell.Value;
+			Texture2D glowTex1 = Assets.Masks.GlowSoftAlpha.Value;
+			Texture2D glowTex2 = Assets.Masks.GlowWithRing.Value;
 
-			float bright = (300 - Projectile.timeLeft) / 300f * 0.7f;
+			float bright = (300 - Projectile.timeLeft) / 300f * 0.3f;
 
 			if (Projectile.timeLeft < 60)
 				bright += (float)Math.Sin(StarlightWorld.visualTimer * 6) * 0.12f;
 
-			spriteBatch.Draw(tex2, Projectile.Center - Main.screenPosition, tex2.Frame(), (Projectile.timeLeft < 60 ? new Color(255, 100, 50) : new Color(210, 200, 240)) * bright, 0, tex2.Size() / 2, 2, 0, 0);
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), (Projectile.timeLeft < 60 ? new Color(255, 200, 50) : new Color(220, 255, 255)) * bright, 0, tex.Size() / 2, 5, 0, 0);
+			Main.spriteBatch.Draw(glowTex2, Projectile.Center - Main.screenPosition, glowTex2.Frame(), (Projectile.timeLeft < 60 ? new Color(255, 100, 50, 0) : new Color(210, 200, 240, 0)) * bright, 0, glowTex2.Size() / 2, 2, 0, 0);
+			Main.spriteBatch.Draw(glowTex1, Projectile.Center - Main.screenPosition, glowTex1.Frame(), (Projectile.timeLeft < 60 ? new Color(255, 200, 50, 0) : new Color(220, 255, 255, 0)) * bright, 0, glowTex1.Size() / 2, 5, 0, 0);
 		}
 
 		public override bool CanHitPlayer(Player target)
@@ -112,12 +112,15 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			{
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.Center);
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_KoboldExplosion, Projectile.Center);
-				Helper.PlayPitched("Magic/FireHit", 0.5f, 0, Projectile.Center);
+				SoundHelper.PlayPitched("Magic/FireHit", 0.5f, 0, Projectile.Center);
 
 				for (int k = 0; k < 80; k++)
 				{
 					Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.LavaSpark>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), 0, new Color(255, 155, 0), Main.rand.NextFloat(0.1f, 0.8f));
 				}
+
+				for (int k = 0; k < 40; k++)
+					Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.PixelatedImpactLineDust>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(20), 0, new Color(255, 120, 20, 0), Main.rand.NextFloat(0.2f, 0.5f));
 
 				for (int k = 0; k < 60; k++)
 				{
@@ -155,7 +158,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			if (Main.masterMode && Main.netMode != NetmodeID.MultiplayerClient)
 			{
 				for (int k = 0; k < 8; k++)
-					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.UnitX.RotatedBy(k / 8f * 6.28f) * 18, ProjectileType<TelegraphedGlassSpike>(), 20, 1, Main.myPlayer);
+					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.UnitX.RotatedBy(k / 8f * 6.28f) * 18, ProjectileType<TelegraphedGlassSpike>(), VitricBoss.ShardSpitDamage, 1, Main.myPlayer);
 			}
 		}
 	}

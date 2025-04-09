@@ -1,4 +1,5 @@
 using StarlightRiver.Content.Dusts;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -137,10 +138,12 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 15, new RoundedTip(12), factor => (10 + factor * 25) * TRAIL_WIDTH, factor => new Color(120, 20 + (int)(100 * factor.X), 255) * factor.X * charge);
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 15, new RoundedTip(12), factor => (10 + factor * 25) * TRAIL_WIDTH, factor => new Color(120, 20 + (int)(100 * factor.X), 255) * factor.X * charge);
 			trail.Positions = cache.ToArray();
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 15, new RoundedTip(6), factor => (80 + 0 + factor * 0) * TRAIL_WIDTH, factor => new Color(100, 20 + (int)(60 * factor.X), 255) * factor.X * 0.15f * charge);
+			if (trail2 is null || trail2.IsDisposed)
+				trail2 = new Trail(Main.instance.GraphicsDevice, 15, new RoundedTip(6), factor => (80 + 0 + factor * 0) * TRAIL_WIDTH, factor => new Color(100, 20 + (int)(60 * factor.X), 255) * factor.X * 0.15f * charge);
 			trail2.Positions = cache.ToArray();
 
 			if (Projectile.velocity.Length() > 1)
@@ -152,23 +155,26 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("DatsuzeiTrail").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
-			effect.Parameters["repeats"].SetValue(8f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
-			effect.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
+				effect.Parameters["repeats"].SetValue(8f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+				effect.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
 
-			trail?.Render(effect);
+				trail?.Render(effect);
 
-			effect.Parameters["sampleTexture2"].SetValue(Terraria.GameContent.TextureAssets.MagicPixel.Value);
+				effect.Parameters["sampleTexture2"].SetValue(Terraria.GameContent.TextureAssets.MagicPixel.Value);
 
-			trail2?.Render(effect);
+				trail2?.Render(effect);
+			}
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -193,7 +199,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			targetID = target.whoAmI;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			SoundEngine.PlaySound(SoundID.Item68 with { Volume = (float)Math.Sqrt(charge), Pitch = Main.rand.NextFloat(0.8f, 1.2f) }, Projectile.Center);
 			CameraSystem.shake += (int)(6 * charge);
@@ -265,8 +271,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 			float mult = 1;
 
-			dust.shader.UseSecondaryColor(new Color((int)(255 * (1 - dust.fadeIn / 30f)), 0, 0) * mult);
-			dust.shader.UseColor(dust.color * mult);
+			dust.shader?.UseSecondaryColor(new Color((int)(255 * (1 - dust.fadeIn / 30f)), 0, 0) * mult);
+			dust.shader?.UseColor(dust.color * mult);
 			dust.fadeIn++;
 
 			Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.02f);

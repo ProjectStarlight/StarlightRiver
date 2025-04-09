@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Core;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -113,12 +114,12 @@ namespace StarlightRiver.Content.Items.Desert
 		{
 			Owner.heldProj = Projectile.whoAmI;
 
-			Projectile.rotation += MathHelper.Lerp(0.5f, 0.02f, EaseBuilder.EaseQuarticOut.Ease(Progress));
-			Projectile.Center = Owner.MountedCenter + Projectile.velocity.RotatedBy(45f * SwingDirection) * MathHelper.Lerp(5f, 45f, EaseBuilder.EaseQuarticOut.Ease(Progress));
+			Projectile.rotation += MathHelper.Lerp(0.5f, 0.02f, Eases.EaseQuarticOut(Progress));
+			Projectile.Center = Owner.MountedCenter + Projectile.velocity.RotatedBy(45f * SwingDirection) * MathHelper.Lerp(5f, 45f, Eases.EaseQuarticOut(Progress));
 
-			Projectile.scale = MathHelper.Lerp(0.6f, 1.2f, EaseBuilder.EaseQuarticOut.Ease(Progress));
+			Projectile.scale = MathHelper.Lerp(0.6f, 1.2f, Eases.EaseQuarticOut(Progress));
 
-			float lerper = MathHelper.Lerp(45f, 2f, EaseBuilder.EaseCircularInOut.Ease(Progress));
+			float lerper = MathHelper.Lerp(45f, 2f, Eases.EaseCircularInOut(Progress));
 
 			if (Projectile.timeLeft < MaxTimeleft)
 				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2CircularEdge(lerper, lerper), ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(0.5f, 0.5f), 0, Main.rand.NextBool() ? new Color(30, 230, 200) : new Color(230, 170, 100), 0.4f);
@@ -145,7 +146,7 @@ namespace StarlightRiver.Content.Items.Desert
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D tex = Assets.Items.Desert.Sandscript.Value;
 
 			float mult = 1f;
 			if (Projectile.timeLeft > MaxTimeleft * 0.8f)
@@ -156,7 +157,7 @@ namespace StarlightRiver.Content.Items.Desert
 			Main.spriteBatch.Draw(tex, Projectile.Center + new Vector2(0f, Owner.gfxOffY) - Main.screenPosition, null, lightColor * mult, Projectile.rotation, tex.Size() / 2f, Projectile.scale, 0f, 0f);
 
 			if (Projectile.timeLeft < 10)
-				Main.spriteBatch.Draw(tex, Projectile.Center + new Vector2(0f, Owner.gfxOffY) - Main.screenPosition, null, lightColor * mult, Projectile.rotation, tex.Size() / 2f, Projectile.scale * MathHelper.Lerp(1f, 2f, EaseBuilder.EaseCubicOut.Ease(1f - Projectile.timeLeft / 10f)), 0f, 0f);
+				Main.spriteBatch.Draw(tex, Projectile.Center + new Vector2(0f, Owner.gfxOffY) - Main.screenPosition, null, lightColor * mult, Projectile.rotation, tex.Size() / 2f, Projectile.scale * MathHelper.Lerp(1f, 2f, Eases.EaseCubicOut(1f - Projectile.timeLeft / 10f)), 0f, 0f);
 			return false;
 		}
 
@@ -215,7 +216,7 @@ namespace StarlightRiver.Content.Items.Desert
 			{
 				float lerper = 1f - (Projectile.timeLeft - maxTimeleft * 0.5f) / (maxTimeleft * 0.5f);
 
-				mult = MathHelper.Lerp(1f, 10f, EaseBuilder.EaseQuinticOut.Ease(lerper));
+				mult = MathHelper.Lerp(1f, 10f, Eases.EaseQuinticOut(lerper));
 
 				if (!hasPlayedSound && progress >= 0.1f)
 				{
@@ -230,7 +231,7 @@ namespace StarlightRiver.Content.Items.Desert
 			{
 				float lerper = 1f - Projectile.timeLeft / (maxTimeleft * 0.5f);
 
-				mult = MathHelper.Lerp(10f, -2f, EaseBuilder.EaseQuinticIn.Ease(lerper));
+				mult = MathHelper.Lerp(10f, -2f, Eases.EaseQuinticIn(lerper));
 			}
 
 			Projectile.Center = Owner.Center + Vector2.Lerp(new Vector2(20f * mult, 40f * SwingDirection).RotatedBy(Projectile.rotation), new Vector2(20f * mult, -50f * SwingDirection).RotatedBy(Projectile.rotation), progress);
@@ -263,14 +264,14 @@ namespace StarlightRiver.Content.Items.Desert
 				Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Sand>(), target.Center.DirectionTo(Owner.Center) * Main.rand.NextFloat(5f) + Main.rand.NextVector2Circular(3f, 3f), 140, default, 0.6f).noGravity = false;
 			}
 
-			Helper.PlayPitched("Impacts/StoneStrikeLight", 1f, Main.rand.NextFloat(0.6f, 1.0f), Projectile.Center); // [PH] for egshels
+			SoundHelper.PlayPitched("Impacts/StoneStrikeLight", 1f, Main.rand.NextFloat(0.6f, 1.0f), Projectile.Center); // [PH] for egshels
 		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D starTex = Assets.StarTexture.Value;
 
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			float mult = 0f;
 			if (Projectile.timeLeft > maxTimeleft * 0.6f)
@@ -316,24 +317,30 @@ namespace StarlightRiver.Content.Items.Desert
 				mult = 1f - (Projectile.timeLeft - maxTimeleft * 0.5f) / maxTimeleft * 0.5f;
 			}
 
-			trail ??= new Trail(Main.instance.GraphicsDevice, 20, new NoTip(), factor => 30f * factor, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (factor.X >= 0.85f)
-					return Color.Transparent;
+				trail = new Trail(Main.instance.GraphicsDevice, 20, new NoTip(), factor => 30f * factor, factor =>
+							{
+								if (factor.X >= 0.85f)
+									return Color.Transparent;
 
-				return Color.Lerp(new Color(30, 230, 200), new Color(230, 170, 100), 1f - Projectile.timeLeft / maxTimeleft) * factor.X * (float)Math.Sin(Projectile.timeLeft / maxTimeleft) * mult * 0.5f;
-			});
+								return Color.Lerp(new Color(30, 230, 200), new Color(230, 170, 100), 1f - Projectile.timeLeft / maxTimeleft) * factor.X * (float)Math.Sin(Projectile.timeLeft / maxTimeleft) * mult * 0.5f;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 20, new NoTip(), factor => 20f, factor =>
+			if (trail2 is null || trail2.IsDisposed)
 			{
-				if (factor.X >= 0.85f)
-					return Color.Transparent;
+				trail2 = new Trail(Main.instance.GraphicsDevice, 20, new NoTip(), factor => 20f, factor =>
+							{
+								if (factor.X >= 0.85f)
+									return Color.Transparent;
 
-				return Color.Lerp(new Color(30, 230, 200), new Color(230, 170, 100), 1f - Projectile.timeLeft / maxTimeleft) * factor.X * (float)Math.Sin(Projectile.timeLeft / maxTimeleft) * mult * 0.5f;
-			});
+								return Color.Lerp(new Color(30, 230, 200), new Color(230, 170, 100), 1f - Projectile.timeLeft / maxTimeleft) * factor.X * (float)Math.Sin(Projectile.timeLeft / maxTimeleft) * mult * 0.5f;
+							});
+			}
 
 			trail2.Positions = cache.ToArray();
 			trail2.NextPosition = Projectile.Center + Projectile.velocity;
@@ -341,21 +348,24 @@ namespace StarlightRiver.Content.Items.Desert
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount);
-			effect.Parameters["repeats"].SetValue(1f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount);
+				effect.Parameters["repeats"].SetValue(1f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 
-			trail?.Render(effect);
+				trail?.Render(effect);
 
-			effect.Parameters["sampleTexture"].SetValue(Assets.LiquidTrailAlt.Value);
-			trail2?.Render(effect);
+				effect.Parameters["sampleTexture"].SetValue(Assets.LiquidTrailAlt.Value);
+				trail2?.Render(effect);
+			}
 		}
 
 		#endregion Primitive Drawing

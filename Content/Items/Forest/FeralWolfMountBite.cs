@@ -86,7 +86,7 @@ namespace StarlightRiver.Content.Items.Forest
 	{
 		public override string Texture => AssetDirectory.Debug;
 
-		public WolfBleeding() : base("Gored", "Gored by a wolf", true, false) { }
+		public WolfBleeding() : base("Gored", "Deals 10 damage per second", true, false) { }
 
 		public override void Update(NPC npc, ref int buffIndex)
 		{

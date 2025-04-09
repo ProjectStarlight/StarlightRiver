@@ -53,10 +53,10 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			spriteBatch.End();
 			spriteBatch.Begin(); //this reset is neccisary for some reason?
 
-			LightingBufferRenderer.DrawWithLighting(pos, backdrop);
+			LightingBufferRenderer.DrawWithLighting(backdrop, pos, Color.White);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			spriteBatch.Draw(backdropGlow, pos, Color.White);
 

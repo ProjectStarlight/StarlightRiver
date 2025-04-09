@@ -42,10 +42,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				startPos = NPC.Center;
 
 				if (IsInsideArena())
-				{
-					StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
 					CameraSystem.DoPanAnimation(650, NPC.Center + new Vector2(0, -600));
-				}
 
 				Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/VitricBossAmbient");
 
@@ -53,21 +50,19 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				SetFrameY(0);
 				lastTwistState = 0;
 
-				Helper.PlayPitched("VitricBoss/CeirosEarthquake", 0.4f, 0, NPC.Center);
-				Helper.PlayPitched("VitricBoss/CeirosRumble", 0.4f, 0, NPC.Center);
+				SoundHelper.PlayPitched("VitricBoss/CeirosEarthquake", 0.4f, 0, NPC.Center);
+				SoundHelper.PlayPitched("VitricBoss/CeirosRumble", 0.4f, 0, NPC.Center);
 			}
 
 			if (checkSpecificTime(90))
-				//Helper.PlayPitched("VitricBoss/StoneBreak", 0.25f, 0.3f, NPC.Center);
-				Helper.PlayPitched("VitricBoss/ceiroslidclose", 0.35f, 0.4f, NPC.Center);
+				//SoundHelper.PlayPitched("VitricBoss/StoneBreak", 0.25f, 0.3f, NPC.Center);
+				SoundHelper.PlayPitched("VitricBoss/ceiroslidclose", 0.35f, 0.4f, NPC.Center);
 
 			if (checkSpecificTime(120))
 			{
 				if (IsInsideArena())
 				{
-					StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
 					CameraSystem.shake += 10;
-
 					ZoomHandler.SetZoomAnimation(1.1f, 60);
 				}
 
@@ -79,8 +74,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			}
 
 			if (checkSpecificTime(210))
-				//Helper.PlayPitched("VitricBoss/ceiroslidclose", 0.35f, 0.2f, NPC.Center);
-				Helper.PlayPitched("VitricBoss/StoneBreak", 0.35f, 0.2f, NPC.Center);
+				//SoundHelper.PlayPitched("VitricBoss/ceiroslidclose", 0.35f, 0.2f, NPC.Center);
+				SoundHelper.PlayPitched("VitricBoss/StoneBreak", 0.35f, 0.2f, NPC.Center);
 
 			if (checkSpecificTime(240))
 			{
@@ -100,8 +95,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			}
 
 			if (checkSpecificTime(330))
-				//Helper.PlayPitched("VitricBoss/ceiroslidclose", 0.5f, 0.1f, NPC.Center);
-				Helper.PlayPitched("VitricBoss/StoneBreak", 0.5f, 0, NPC.Center);
+				//SoundHelper.PlayPitched("VitricBoss/ceiroslidclose", 0.5f, 0.1f, NPC.Center);
+				SoundHelper.PlayPitched("VitricBoss/StoneBreak", 0.5f, 0, NPC.Center);
 
 			if (checkSpecificTime(360))
 			{
@@ -122,14 +117,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			if (checkSpecificTime(424))
 			{
-				Helper.PlayPitched("VitricBoss/StoneBreak", 0.7f, 0, NPC.Center);
-				Helper.PlayPitched("VitricBoss/StoneBreakTwo", 0.7f, 0, NPC.Center);
+				SoundHelper.PlayPitched("VitricBoss/StoneBreak", 0.7f, 0, NPC.Center);
+				SoundHelper.PlayPitched("VitricBoss/StoneBreakTwo", 0.7f, 0, NPC.Center);
 			}
 
 			if (checkSpecificTime(454))
 			{
 				if (Main.netMode != NetmodeID.Server)
-					UILoader.GetUIState<TextCard>().Display(NPC.FullName, Main.rand.NextBool(10000) ? "Glass tax returns" : "Shattered Sentinel", null, 310, 1.25f); //intro text
+					TextCard.Display(NPC.FullName, Main.rand.NextBool(10000) ? "Glass tax returns" : "Shattered Sentinel", 310, 1.25f); //intro text
 
 				if (IsInsideArena())
 				{
@@ -191,12 +186,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				if (Main.netMode != NetmodeID.Server)
 				{
 					float progress = (GlobalTimer - 600) / 20f;
-					Filters.Scene.Activate("Shockwave", NPC.Center).GetShader().UseProgress(Main.screenWidth / (float)Main.screenHeight).UseIntensity(300 - (int)(Math.Sin(progress * 3.14f) * 220)).UseDirection(new Vector2(progress * 0.8f, progress * 0.9f));
+					//Filters.Scene.Activate("Shockwave", NPC.Center).GetShader().UseProgress(Main.screenWidth / (float)Main.screenHeight).UseIntensity(300 - (int)(Math.Sin(progress * 3.14f) * 220)).UseDirection(new Vector2(progress * 0.8f, progress * 0.9f));
 				}
 			}
 
 			if (checkSpecificTime(610))
-				Helper.PlayPitched("VitricBoss/CeirosRoar", 1, 0, NPC.Center);
+				SoundHelper.PlayPitched("VitricBoss/CeirosRoar", 1, 0, NPC.Center);
 
 			if (checkSpecificTime(620))
 			{
@@ -206,12 +201,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					CameraSystem.shake += 60;
 				}
 
-				if (Main.netMode != NetmodeID.Server)
-					Filters.Scene.Deactivate("Shockwave");
+				//if (Main.netMode != NetmodeID.Server)
+				//Filters.Scene.Deactivate("Shockwave");
 			}
 
 			if (checkSpecificTime(690))
-				Helper.PlayPitched("VitricBoss/ceiroslidclose", 1, 0, NPC.Center);
+				SoundHelper.PlayPitched("VitricBoss/ceiroslidclose", 1, 0, NPC.Center);
 
 			if (GlobalTimer > 690 && GlobalTimer < 750)
 			{
@@ -309,7 +304,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			}
 
 			if (checkSpecificTime(325))
-				Helper.PlayPitched("VitricBoss/StoneBreakTwo", 0.7f, 0, NPC.Center);
+				SoundHelper.PlayPitched("VitricBoss/StoneBreakTwo", 0.7f, 0, NPC.Center);
 
 			if (GlobalTimer >= 340 && GlobalTimer < 370)
 			{
@@ -404,7 +399,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 				float progress = (GlobalTimer - 100) / 20f;
 
-				Filters.Scene.Activate("Shockwave", NPC.Center).GetShader().UseProgress(Main.screenWidth / (float)Main.screenHeight).UseIntensity(300 - (int)(Math.Sin(progress * 3.14f) * 220)).UseDirection(new Vector2(progress * 0.8f, progress * 0.9f));
+				//Filters.Scene.Activate("Shockwave", NPC.Center).GetShader().UseProgress(Main.screenWidth / (float)Main.screenHeight).UseIntensity(300 - (int)(Math.Sin(progress * 3.14f) * 220)).UseDirection(new Vector2(progress * 0.8f, progress * 0.9f));
 			}
 
 			if (checkSpecificTime(120) && Main.netMode != NetmodeID.Server)
@@ -417,7 +412,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Roar, NPC.Center);
 
-				Filters.Scene.Deactivate("Shockwave");
+				//Filters.Scene.Deactivate("Shockwave");
 			}
 
 			if (GlobalTimer > 120 && GlobalTimer <= 160)

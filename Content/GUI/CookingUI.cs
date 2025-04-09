@@ -157,7 +157,7 @@ namespace StarlightRiver.Content.GUI
 
 					for (int k = 0; k < strings.Count(); k++)
 					{
-						string text = "~" + Helper.WrapString(strings[k], 100, FontAssets.ItemStack.Value, 0.65f);
+						string text = "~" + LocalizationHelper.WrapString(strings[k], 100, FontAssets.ItemStack.Value, 0.65f);
 						string[] substrings = text.Split('\n');
 
 						for (int n = 0; n < substrings.Length; n++)
@@ -232,7 +232,7 @@ namespace StarlightRiver.Content.GUI
 				Item.position = Main.LocalPlayer.Center;
 				Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), Item);
 
-				Helper.PlayPitched("Effects/UIAlchemy", 1, 0, Main.LocalPlayer.Center);
+				SoundHelper.PlayPitched("Effects/UIAlchemy", 1, 0, Main.LocalPlayer.Center);
 			}
 		}
 
@@ -292,7 +292,7 @@ namespace StarlightRiver.Content.GUI
 					Main.HoverItem = Item.Clone();
 					Main.hoverItemName = "a"; //required but the value doesn't matter for having it show up
 
-					if (Main.keyState.PressingShift() && (ChefBagUI.visible || Helper.getFreeInventorySlot(Main.LocalPlayer) != -1))
+					if (Main.keyState.PressingShift() && (ChefBagUI.visible || InventoryHelper.getFreeInventorySlot(Main.LocalPlayer) != -1))
 						Main.cursorOverride = 7;
 				}
 				else
@@ -432,7 +432,7 @@ namespace StarlightRiver.Content.GUI
 			}
 
 			//attempt to quick place into your inventory if no chef bag or invalid to place there
-			int invSlotCount = Helper.getFreeInventorySlot(Main.LocalPlayer);
+			int invSlotCount = InventoryHelper.getFreeInventorySlot(Main.LocalPlayer);
 
 			if (!Item.IsAir && invSlotCount != -1)
 			{

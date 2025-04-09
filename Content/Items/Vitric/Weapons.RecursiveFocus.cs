@@ -1,4 +1,5 @@
 ﻿using ReLogic.Utilities;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -186,7 +187,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			{
 				SwitchCooldown = 240f;
 				SwitchTimer = 60f;
-				Helper.PlayPitched("Magic/FireCast", 1f, 0f, Projectile.Center);
+				SoundHelper.PlayPitched("Magic/FireCast", 1f, 0f, Projectile.Center);
 			}
 
 			if (SwitchTimer > 0)
@@ -204,7 +205,7 @@ namespace StarlightRiver.Content.Items.Vitric
 					else
 						Projectile.ai[0] = 1f;
 
-					Helper.PlayPitched("Magic/FireHit", 1f, 0f, Projectile.Center);
+					SoundHelper.PlayPitched("Magic/FireHit", 1f, 0f, Projectile.Center);
 
 					for (int i = 0; i < 20; i++)
 					{
@@ -251,7 +252,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			Texture2D baseTex = ModContent.Request<Texture2D>(Texture + "Base").Value;
 			Texture2D crystalTex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			Texture2D crystalTexOrange = ModContent.Request<Texture2D>(Texture + "_Orange").Value;
 			Texture2D baseTexOrange = ModContent.Request<Texture2D>(Texture + "Base_Orange").Value;
@@ -288,7 +289,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			return false;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int i = 1; i < 5; i++)
 			{
@@ -450,7 +451,7 @@ namespace StarlightRiver.Content.Items.Vitric
 						}
 					}
 
-					Helper.PlayPitched("Magic/RefractiveCharge", 1f, 0f, Projectile.Center);
+					SoundHelper.PlayPitched("Magic/RefractiveCharge", 1f, 0f, Projectile.Center);
 
 					crystal.pulseTimer = 15;
 				}
@@ -575,7 +576,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			Texture2D baseTex = ModContent.Request<Texture2D>(crystal.Texture + "Base").Value;
 			Texture2D crystalTex = ModContent.Request<Texture2D>(crystal.Texture).Value;
-			Texture2D bloomTex = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			Texture2D crystalTexOrange = ModContent.Request<Texture2D>(crystal.Texture + "_Orange").Value;
 			Texture2D baseTexOrange = ModContent.Request<Texture2D>(crystal.Texture + "Base_Orange").Value;
@@ -595,84 +596,87 @@ namespace StarlightRiver.Content.Items.Vitric
 				if (MultiMode)
 					scale = 2f;
 
-				Effect effect = Filters.Scene["DistortSprite"].GetShader().Shader;
+				Effect effect = ShaderLoader.GetShader("DistortSprite").Value;
 
-				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+				if (effect != null)
+				{
+					Main.spriteBatch.End();
+					Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
-				effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.075f);
-				effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.0075f);
-				effect.Parameters["screenPos"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / new Vector2(Main.screenWidth, Main.screenHeight));
+					effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.075f);
+					effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.0075f);
+					effect.Parameters["screenPos"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / new Vector2(Main.screenWidth, Main.screenHeight));
 
-				effect.Parameters["offset"].SetValue(new Vector2(0.001f));
-				effect.Parameters["repeats"].SetValue(1);
-				effect.Parameters["uImage1"].SetValue(Assets.Noise.SwirlyNoiseLooping.Value);
-				effect.Parameters["uImage2"].SetValue(Assets.Bosses.VitricBoss.LaserBallDistort.Value);
+					effect.Parameters["offset"].SetValue(new Vector2(0.001f));
+					effect.Parameters["repeats"].SetValue(1);
+					effect.Parameters["uImage1"].SetValue(Assets.Noise.SwirlyNoiseLooping.Value);
+					effect.Parameters["uImage2"].SetValue(Assets.Bosses.VitricBoss.LaserBallDistort.Value);
 
-				Color color = new Color(255, 165, 115, 0) * 0.4f * fadeIn * (MultiMode ? 1f : (TimeSpentOnTarget / 540f));
-				if (pulseTimer > 0)
-					color = Color.Lerp(new Color(255, 150, 100, 0) * 0.5f, color, 1f - pulseTimer / 15f);
+					Color color = new Color(255, 165, 115, 0) * 0.4f * fadeIn * (MultiMode ? 1f : (TimeSpentOnTarget / 540f));
+					if (pulseTimer > 0)
+						color = Color.Lerp(new Color(255, 150, 100, 0) * 0.5f, color, 1f - pulseTimer / 15f);
 
-				if (MultiMode)
-					color *= 0.25f;
+					if (MultiMode)
+						color *= 0.25f;
 
-				effect.Parameters["uColor"].SetValue(color.ToVector4());
-				effect.Parameters["noiseImage1"].SetValue(Assets.MagicPixel.Value);
+					effect.Parameters["uColor"].SetValue(color.ToVector4());
+					effect.Parameters["noiseImage1"].SetValue(Assets.MagicPixel.Value);
 
-				effect.CurrentTechnique.Passes[0].Apply();
+					effect.CurrentTechnique.Passes[0].Apply();
 
-				Main.spriteBatch.Draw(crystalTexGlow, Projectile.Center - Main.screenPosition, null, Color.White, 0f, crystalTexGlow.Size() / 2f, 1.25f, 0f, 0f);
+					Main.spriteBatch.Draw(crystalTexGlow, Projectile.Center - Main.screenPosition, null, Color.White, 0f, crystalTexGlow.Size() / 2f, 1.25f, 0f, 0f);
 
-				color = new Color(255, 150, 50, 0) * 0.5f * fadeIn * (MultiMode ? 1f : (TimeSpentOnTarget / 540f));
-				if (pulseTimer > 0)
-					color = Color.Lerp(new Color(255, 150, 100, 0) * 0.5f, color, 1f - pulseTimer / 15f);
+					color = new Color(255, 150, 50, 0) * 0.5f * fadeIn * (MultiMode ? 1f : (TimeSpentOnTarget / 540f));
+					if (pulseTimer > 0)
+						color = Color.Lerp(new Color(255, 150, 100, 0) * 0.5f, color, 1f - pulseTimer / 15f);
 
-				if (MultiMode)
-					color *= 0.25f;
+					if (MultiMode)
+						color *= 0.25f;
 
-				effect.Parameters["uColor"].SetValue(color.ToVector4());
-				effect.CurrentTechnique.Passes[0].Apply();
+					effect.Parameters["uColor"].SetValue(color.ToVector4());
+					effect.CurrentTechnique.Passes[0].Apply();
 
-				Main.spriteBatch.Draw(crystalTexGlow, Projectile.Center - Main.screenPosition, null, Color.White, 0f, crystalTexGlow.Size() / 2f, 1.25f, 0f, 0f);
+					Main.spriteBatch.Draw(crystalTexGlow, Projectile.Center - Main.screenPosition, null, Color.White, 0f, crystalTexGlow.Size() / 2f, 1.25f, 0f, 0f);
 
-				color = new Color(255, 150, 50, 0) * 0.15f * fadeIn * (MultiMode ? 1f : (TimeSpentOnTarget / 540f));
-				if (pulseTimer > 0)
-					color = Color.Lerp(new Color(255, 150, 100, 0) * 0.15f, color, 1f - pulseTimer / 15f);
+					color = new Color(255, 150, 50, 0) * 0.15f * fadeIn * (MultiMode ? 1f : (TimeSpentOnTarget / 540f));
+					if (pulseTimer > 0)
+						color = Color.Lerp(new Color(255, 150, 100, 0) * 0.15f, color, 1f - pulseTimer / 15f);
 
-				if (MultiMode)
-					color *= 0.25f;
+					if (MultiMode)
+						color *= 0.25f;
 
-				effect.Parameters["uColor"].SetValue(color.ToVector4());
-				effect.CurrentTechnique.Passes[0].Apply();
+					effect.Parameters["uColor"].SetValue(color.ToVector4());
+					effect.CurrentTechnique.Passes[0].Apply();
 
-				Main.spriteBatch.Draw(crystalTexGlow, Projectile.Center - Main.screenPosition, null, Color.White, 0f, crystalTexGlow.Size() / 2f, 2.25f, 0f, 0f);
+					Main.spriteBatch.Draw(crystalTexGlow, Projectile.Center - Main.screenPosition, null, Color.White, 0f, crystalTexGlow.Size() / 2f, 2.25f, 0f, 0f);
 
-				color = new Color(255, 150, 50, 0) * fadeIn;
-				if (MultiMode)
-					color *= 0.65f;
+					color = new Color(255, 150, 50, 0) * fadeIn;
+					if (MultiMode)
+						color *= 0.65f;
 
-				effect.Parameters["uColor"].SetValue(color.ToVector4());
-				effect.CurrentTechnique.Passes[0].Apply();
+					effect.Parameters["uColor"].SetValue(color.ToVector4());
+					effect.CurrentTechnique.Passes[0].Apply();
 
-				Main.spriteBatch.Draw(bloomTex, targetNPC.Center - Main.screenPosition, null, Color.White, 0f, bloomTex.Size() / 2f, 0.4f * scale, 0f, 0f);
+					Main.spriteBatch.Draw(bloomTex, targetNPC.Center - Main.screenPosition, null, Color.White, 0f, bloomTex.Size() / 2f, 0.4f * scale, 0f, 0f);
 
-				Main.spriteBatch.Draw(bloomTex, targetNPC.Center - Main.screenPosition, null, Color.White, 0f, bloomTex.Size() / 2f, 0.3f * scale, 0f, 0f);
+					Main.spriteBatch.Draw(bloomTex, targetNPC.Center - Main.screenPosition, null, Color.White, 0f, bloomTex.Size() / 2f, 0.3f * scale, 0f, 0f);
 
-				Main.spriteBatch.Draw(bloomTex, targetNPC.Center - Main.screenPosition, null, Color.White, 0f, bloomTex.Size() / 2f, 0.1f * scale, 0f, 0f);
+					Main.spriteBatch.Draw(bloomTex, targetNPC.Center - Main.screenPosition, null, Color.White, 0f, bloomTex.Size() / 2f, 0.1f * scale, 0f, 0f);
 
-				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+					Main.spriteBatch.End();
+					Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
-				color = new Color(255, 165, 115, 0);
-				if (pulseTimer > 0)
-					color = Color.Lerp(new Color(255, 150, 100, 0), color, 1f - pulseTimer / 15f);
+					color = new Color(255, 165, 115, 0);
+					if (pulseTimer > 0)
+						color = Color.Lerp(new Color(255, 150, 100, 0), color, 1f - pulseTimer / 15f);
 
-				if (MultiMode)
-					color *= 0.35f;
+					if (MultiMode)
+						color *= 0.35f;
 
-				Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, color, 0f, bloomTex.Size() / 2f, 0.2f * scale, 0f, 0f);
+					Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, color, 0f, bloomTex.Size() / 2f, 0.2f * scale, 0f, 0f);
 
-				Main.spriteBatch.Draw(bloomTex, targetNPC.Center - Main.screenPosition, null, Color.White with { A = 0 }, 0f, bloomTex.Size() / 2f, 0.1f * scale, 0f, 0f);
+					Main.spriteBatch.Draw(bloomTex, targetNPC.Center - Main.screenPosition, null, Color.White with { A = 0 }, 0f, bloomTex.Size() / 2f, 0.1f * scale, 0f, 0f);
+				}
 			}
 
 			return false;
@@ -751,58 +755,70 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 26, new NoTip(), factor => MultiMode ? 3 : 4 * 1 + Stage, factor =>
+			if (trail is null || trail.IsDisposed)
 			{
-				if (trailFade < 15)
-					return Color.Lerp(Color.Transparent, new Color(255, 165, 115), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
+				trail = new Trail(Main.instance.GraphicsDevice, 26, new NoTip(), factor => MultiMode ? 3 : 4 * 1 + Stage, factor =>
+							{
+								if (trailFade < 15)
+									return Color.Lerp(Color.Transparent, new Color(255, 165, 115), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
 
-				if (pulseTimer > 0)
-					return Color.Lerp(Color.White, new Color(255, 165, 115), 1f - pulseTimer / 15f) * 0.6f;
+								if (pulseTimer > 0)
+									return Color.Lerp(Color.White, new Color(255, 165, 115), 1f - pulseTimer / 15f) * 0.6f;
 
-				return new Color(255, 165, 115) * 0.6f;
-			});
+								return new Color(255, 165, 115) * 0.6f;
+							});
+			}
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = cache[25];
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 26, new NoTip(), factor => MultiMode ? 3 : 4 * 1 + Stage, factor =>
+			if (trail2 is null || trail2.IsDisposed)
 			{
-				if (trailFade < 15)
-					return Color.Lerp(Color.Transparent, new Color(255, 150, 50), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
+				trail2 = new Trail(Main.instance.GraphicsDevice, 26, new NoTip(), factor => MultiMode ? 3 : 4 * 1 + Stage, factor =>
+							{
+								if (trailFade < 15)
+									return Color.Lerp(Color.Transparent, new Color(255, 150, 50), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
 
-				if (pulseTimer > 0)
-					return Color.Lerp(new Color(255, 165, 115), new Color(255, 150, 50), 1f - pulseTimer / 15f) * 0.6f;
+								if (pulseTimer > 0)
+									return Color.Lerp(new Color(255, 165, 115), new Color(255, 150, 50), 1f - pulseTimer / 15f) * 0.6f;
 
-				return new Color(255, 150, 50) * 0.6f;
-			});
+								return new Color(255, 150, 50) * 0.6f;
+							});
+			}
 
 			trail2.Positions = cache.ToArray();
 			trail2.NextPosition = cache[25];
 
-			trail3 ??= new Trail(Main.instance.GraphicsDevice, 26, new NoTip(), factor => MultiMode ? 5 : 7 * 1 + Stage, factor =>
+			if (trail3 is null || trail3.IsDisposed)
 			{
-				if (trailFade < 15)
-					return Color.Lerp(Color.Transparent, new Color(255, 165, 115), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
+				trail3 = new Trail(Main.instance.GraphicsDevice, 26, new NoTip(), factor => MultiMode ? 5 : 7 * 1 + Stage, factor =>
+							{
+								if (trailFade < 15)
+									return Color.Lerp(Color.Transparent, new Color(255, 165, 115), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
 
-				if (pulseTimer > 0)
-					return Color.Lerp(Color.White, new Color(255, 165, 115), 1f - pulseTimer / 15f) * 0.6f;
+								if (pulseTimer > 0)
+									return Color.Lerp(Color.White, new Color(255, 165, 115), 1f - pulseTimer / 15f) * 0.6f;
 
-				return new Color(255, 165, 115) * 0.6f;
-			});
+								return new Color(255, 165, 115) * 0.6f;
+							});
+			}
 
 			trail3.Positions = cache.ToArray();
 			trail3.NextPosition = cache[25];
 
-			trail4 ??= new Trail(Main.instance.GraphicsDevice, 26, new NoTip(), factor => MultiMode ? 5 : 7 * 1 + Stage, factor =>
+			if (trail4 is null || trail4.IsDisposed)
 			{
-				if (trailFade < 15)
-					return Color.Lerp(Color.Transparent, new Color(255, 150, 50), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
+				trail4 = new Trail(Main.instance.GraphicsDevice, 26, new NoTip(), factor => MultiMode ? 5 : 7 * 1 + Stage, factor =>
+							{
+								if (trailFade < 15)
+									return Color.Lerp(Color.Transparent, new Color(255, 150, 50), trailFade / 15f) * MathHelper.Lerp(0f, 0.6f, trailFade / 15f);
 
-				if (pulseTimer > 0)
-					return Color.Lerp(new Color(255, 165, 115), new Color(255, 150, 50), 1f - pulseTimer / 15f) * 0.6f;
+								if (pulseTimer > 0)
+									return Color.Lerp(new Color(255, 165, 115), new Color(255, 150, 50), 1f - pulseTimer / 15f) * 0.6f;
 
-				return new Color(255, 150, 50) * 0.6f;
-			});
+								return new Color(255, 150, 50) * 0.6f;
+							});
+			}
 
 			trail4.Positions = cache.ToArray();
 			trail4.NextPosition = cache[25];
@@ -810,36 +826,38 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		private void DrawTrail(SpriteBatch spriteBatch)
 		{
-			spriteBatch.End();
-			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
-
-			/*effect.Parameters["intensity"].SetValue(new Vector2(0.1f, 0.15f));
-			effect.Parameters["sinTime"].SetValue(Lifetime * 0.075f);*/
-			effect.Parameters["time"].SetValue(lifetime * -0.02f);
-			effect.Parameters["repeats"].SetValue(1);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
-
-			if (HasTarget && TimeSpentOnTarget > 2)
+			if (effect != null)
 			{
-				trail?.Render(effect);
-				trail2?.Render(effect);
+				spriteBatch.End();
 
-				effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-				trail?.Render(effect);
-				trail3?.Render(effect);
+				effect.Parameters["time"].SetValue(lifetime * -0.02f);
+				effect.Parameters["repeats"].SetValue(1);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 
-				effect.Parameters["time"].SetValue(lifetime * 0.05f);
-				trail2?.Render(effect);
-				trail4?.Render(effect);
+				if (HasTarget && TimeSpentOnTarget > 2)
+				{
+					trail?.Render(effect);
+					trail2?.Render(effect);
+
+					effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
+
+					trail?.Render(effect);
+					trail3?.Render(effect);
+
+					effect.Parameters["time"].SetValue(lifetime * 0.05f);
+					trail2?.Render(effect);
+					trail4?.Render(effect);
+				}
+
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 			}
-
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		#endregion PRIMITIVEDRAWING

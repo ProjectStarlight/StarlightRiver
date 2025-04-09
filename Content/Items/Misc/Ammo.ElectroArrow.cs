@@ -1,7 +1,10 @@
 ﻿using StarlightRiver.Content.Buffs;
+using StarlightRiver.Core.Systems.PixelationSystem;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.ID;
+using Terraria.Utilities;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Misc
@@ -13,7 +16,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Electro Arrow");
-			Tooltip.SetDefault("Chains to nearby enemies\nInflicts Overcharged, greatly lowering enemy defense");
+			Tooltip.SetDefault("Chains to nearby enemies\nInflicts {{BUFF:Overcharge}}");
 		}
 
 		public override void SetDefaults()
@@ -48,11 +51,14 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 	}
 
-	internal class ElectroArrowProjectile : ModProjectile, IDrawAdditive
+	internal class ElectroArrowProjectile : ModProjectile
 	{
 		Vector2 savedPos = Vector2.Zero;
-		int blacklistNPC = -1;
+
+		readonly List<NPC> hitNPCs = new();
 		readonly List<Vector2> nodes = new();
+
+		public ref float State => ref Projectile.ai[0];
 
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
@@ -67,7 +73,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.tileCollide = true;
 			Projectile.ignoreWater = false;
 
-			Projectile.extraUpdates = 6;
+			Projectile.extraUpdates = 3;
 		}
 
 		public override void SetStaticDefaults()
@@ -88,99 +94,151 @@ namespace StarlightRiver.Content.Items.Misc
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_LightningBugZap, Projectile.Center);
 			}
 
-			if (Main.GameUpdateCount % 3 == 0) //rebuild electricity nodes
+			if (State == 1)
 			{
-				nodes.Clear();
+				Projectile.extraUpdates = 0;
+				Projectile.velocity *= 0;
 
-				Vector2 point1 = savedPos;
-				Vector2 point2 = Projectile.Center;
-				int nodeCount = (int)Vector2.Distance(point1, point2) / 30;
+				if (Projectile.timeLeft > 15)
+					Projectile.timeLeft = 15;
 
-				for (int k = 1; k < nodeCount; k++)
+				Projectile.Opacity = MathF.Sin(Projectile.timeLeft / 15f * 3.14f);
+
+				for (int k = 0; k < hitNPCs.Count; k++)
 				{
-					nodes.Add(Vector2.Lerp(point1, point2, k / (float)nodeCount) +
-						(k == nodes.Count - 1 ? Vector2.Zero : Vector2.Normalize(point1 - point2).RotatedBy(1.58f) * (Main.rand.NextFloat(2) - 1) * 30 / 3));
-				}
+					Vector2 start = k == 0 ? savedPos : hitNPCs[k - 1].Center;
+					Vector2 end = hitNPCs[k].Center;
 
-				nodes.Add(point2);
+					Vector2 vel = end.DirectionTo(start).RotatedBy(Main.rand.NextBool() ? 0.5f : -0.5f) * Main.rand.NextFloat(2f, 8f);
+					Dust.NewDustPerfect(Vector2.Lerp(start, end, Main.rand.NextFloat()), ModContent.DustType<Dusts.GlowLineFast>(), vel, 0, new Color(50, 80, 200), Main.rand.NextFloat(0.4f, 0.5f));
+
+					if (Main.rand.NextBool(3))
+					{
+						vel = end.DirectionTo(start).RotatedBy(Main.rand.NextBool() ? 0.3f : -0.3f) * Main.rand.NextFloat(6f, 12f);
+						Dust.NewDustPerfect(Vector2.Lerp(start, end, Main.rand.NextFloat()), ModContent.DustType<Dusts.GlowLineFast>(), vel, 0, new Color(150, 200, 255), Main.rand.NextFloat(0.5f, 0.7f));
+					}
+				}
 			}
 
 			if (Projectile.timeLeft == 1)
 				PreKill(Projectile.timeLeft);
 		}
 
-		public void DrawAdditive(SpriteBatch sb)
+		public override void PostDraw(Color lightColor)
 		{
-			Vector2 point1 = savedPos;
-			Vector2 point2 = Projectile.Center;
-
-			if (point1 == Vector2.Zero || point2 == Vector2.Zero)
-				return;
-
-			Texture2D tex = Assets.GlowTrail.Value;
-
-			for (int k = 1; k < nodes.Count; k++)
+			if (State == 1)
 			{
-				Vector2 prevPos = k == 1 ? point1 : nodes[k - 1];
+				for (int k = 0; k < hitNPCs.Count; k++)
+				{
+					Vector2 start = k == 0 ? savedPos : hitNPCs[k - 1].Center;
+					Vector2 end = hitNPCs[k].Center;
 
-				var target = new Rectangle((int)(prevPos.X - Main.screenPosition.X), (int)(prevPos.Y - Main.screenPosition.Y), (int)Vector2.Distance(nodes[k], prevPos) + 1, 10);
-				var origin = new Vector2(0, tex.Height / 2);
-				float rot = (nodes[k] - prevPos).ToRotation();
-				Color color = new Color(200, 230, 255) * (Projectile.extraUpdates == 0 ? Projectile.timeLeft / 15f : 1);
-
-				sb.Draw(tex, target, null, color, rot, origin, 0, 0);
-
-				if (Main.rand.NextBool(30))
-					Dust.NewDustPerfect(prevPos + new Vector2(0, 32), DustType<Dusts.GlowLine>(), Vector2.Normalize(nodes[k] - prevPos) * Main.rand.NextFloat(-6, -4), 0, new Color(100, 150, 200), 0.5f);
+					ModContent.GetInstance<PixelationSystem>().QueueRenderAction("UnderProjectiles", () => DrawLightning(Main.spriteBatch, start, end));
+				}
 			}
-
-			Color glowColor = new Color(100, 150, 200) * 0.45f * (Projectile.extraUpdates == 0 ? Projectile.timeLeft / 15f : 1);
-			sb.Draw(tex, new Rectangle((int)(point1.X - Main.screenPosition.X), (int)(point1.Y - Main.screenPosition.Y), (int)Vector2.Distance(point1, point2), 100), null, glowColor, (point2 - point1).ToRotation(), new Vector2(0, tex.Height / 2), 0, 0);
 		}
 
-		public override bool? CanHitNPC(NPC target)
+		private void DrawLightning(SpriteBatch spritebatch, Vector2 point1, Vector2 point2)
 		{
-			return target.whoAmI != blacklistNPC;
+			Texture2D tex = Assets.GlowTrailNoEnd.Value;
+			Texture2D tex2 = Assets.GlowTrail.Value;
+			Texture2D glow = Assets.StarTexture.Value;
+
+			float dist = Vector2.Distance(point1, point2);
+			float rot = point1.DirectionTo(point2).ToRotation();
+
+			Rectangle target = new Rectangle((int)(point1.X - Main.screenPosition.X), (int)(point1.Y - Main.screenPosition.Y), (int)dist, (int)(60 * Projectile.Opacity));
+			Rectangle target2 = new Rectangle((int)(point1.X - Main.screenPosition.X), (int)(point1.Y - Main.screenPosition.Y), (int)dist, (int)(90 * Projectile.Opacity));
+
+			spritebatch.Draw(tex, target, null, new Color(50, 150, 200, 0) * 0.45f * Projectile.Opacity, rot, new Vector2(0, tex.Height / 2f), 0, 0);
+			spritebatch.Draw(tex, target2, null, new Color(30, 100, 200, 0) * 0.25f * Projectile.Opacity, rot, new Vector2(0, tex.Height / 2f), 0, 0);
+
+			UnifiedRandom rand = new UnifiedRandom((int)Main.GameUpdateCount / 3 ^ 901273125 + Projectile.whoAmI ^ 917232);
+
+			float lastOffset = 0;
+
+			int segments = (int)(dist / 42) + 1;
+			int step = (int)(dist / segments);
+
+			for (int k = 0; k < step * segments; k += step)
+			{
+				Vector2 segStart = Vector2.Lerp(point1, point2, k / dist);
+				segStart += Vector2.UnitX.RotatedBy(rot + 1.57f) * lastOffset;
+
+				lastOffset = rand.NextFloat(-10, 10);
+
+				if (k == step * segments - step)
+					lastOffset = 0;
+
+				Vector2 segEnd = Vector2.Lerp(point1, point2, (k + step) / dist);
+				segEnd += Vector2.UnitX.RotatedBy(rot + 1.57f) * lastOffset;
+
+				float segDist = Vector2.Distance(segStart, segEnd);
+				float segWidth = 6 + MathF.Sin(k / dist * 3.14f) * 10;
+
+				Rectangle segTarget = new Rectangle((int)(segStart.X - Main.screenPosition.X), (int)(segStart.Y - Main.screenPosition.Y), (int)segDist + 2, (int)(segWidth * Projectile.Opacity));
+				spritebatch.Draw(tex2, segTarget, null, new Color(200, 220, 255, 0) * Projectile.Opacity, segStart.DirectionTo(segEnd).ToRotation(), new Vector2(0, tex2.Height / 2f), 0, 0);
+			}
+
+			spritebatch.Draw(glow, point2 - Main.screenPosition, null, new Color(150, 180, 200, 0) * 0.85f * Projectile.Opacity, 0, glow.Size() / 2f, 0.2f * Projectile.Opacity, 0, 0);
+			spritebatch.Draw(glow, point2 - Main.screenPosition, null, new Color(30, 100, 200, 0) * 0.25f * Projectile.Opacity, 0, glow.Size() / 2f, 0.4f * Projectile.Opacity, 0, 0);
 		}
 
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
-			modifiers.FinalDamage *= 0.25f;
+			modifiers.FinalDamage *= 0;
 			modifiers.DisableCrit();
+			modifiers.DisableKnockback();
+			modifiers.HideCombatText();
+		}
+
+		public override bool? CanHitNPC(NPC target)
+		{
+			return State == 0;
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			target.AddBuff(BuffType<Overcharge>(), 300);
+			Helpers.SoundHelper.PlayPitched("Magic/LightningShortest1", 0.6f, Main.rand.NextFloat(-0.2f, 0.4f), Projectile.Center);
 
-			if (Projectile.penetrate <= 1)
-				return;
+			hitNPCs.Add(target);
 
-			for (int k = 0; k < Main.maxNPCs; k++)
+			CheckAboutNPC(target, 3);
+
+			State = 1;
+
+			hitNPCs.ForEach(n =>
 			{
-				NPC NPC = Main.npc[k];
-				if (NPC.active && NPC.chaseable && !NPC.HasBuff(BuffType<Overcharge>()) && Vector2.Distance(NPC.Center, target.Center) < 500)
-				{
-					var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), target.Center, Vector2.Normalize(target.Center - NPC.Center) * -6, ProjectileType<ElectroArrowProjectile>(), 20, 0, Projectile.owner, 2, 100);
-					proj.penetrate = Projectile.penetrate - 1;
-					proj.tileCollide = false;
-					(proj.ModProjectile as ElectroArrowProjectile).blacklistNPC = target.whoAmI;
-					break;
-				}
-			}
+				n.AddBuff(BuffType<Overcharge>(), 300);
+				n.SimpleStrikeNPC((int)(Projectile.damage * 0.25f), 0, false, 0, DamageClass.Ranged);
+			});
 
 			PreKill(Projectile.timeLeft);
 		}
 
+		public void CheckAboutNPC(NPC origin, int remaining)
+		{
+			if (remaining <= 0)
+				return;
+
+			Random rng = new Random();
+			int[] indicies = Enumerable.Range(0, Main.maxNPCs + 1).OrderBy(_ => rng.Next()).ToArray();
+
+			for (int k = 0; k < indicies.Length; k++)
+			{
+				NPC scan = Main.npc[indicies[k]];
+				if (scan.active && scan.chaseable && !hitNPCs.Contains(scan) && Vector2.Distance(scan.Center, origin.Center) < 500)
+				{
+					hitNPCs.Add(scan);
+					CheckAboutNPC(scan, remaining - 1);
+					break;
+				}
+			}
+		}
+
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
-			if (Projectile.extraUpdates == 0)
-				return true;
-
-			Projectile.velocity *= 0;
-			Projectile.friendly = false;
-			Projectile.timeLeft = 15;
-			Projectile.extraUpdates = 0;
+			State = 1;
 
 			return false;
 		}

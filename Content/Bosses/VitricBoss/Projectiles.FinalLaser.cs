@@ -1,10 +1,11 @@
-﻿using System;
+﻿using StarlightRiver.Core.Loaders;
+using System;
 using System.IO;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
-	class FinalLaser : ModProjectile, IDrawAdditive
+	class FinalLaser : ModProjectile
 	{
 		public VitricBoss parent;
 
@@ -35,6 +36,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public override bool PreDraw(ref Color lightColor)
 		{
+			DrawAdditive(Main.spriteBatch);
 			return false;
 		}
 
@@ -111,7 +113,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				}
 
 				if (LaserTimer == 135)
-					Helpers.Helper.PlayPitched("VitricBoss/LaserFire", 1.0f, 0, Projectile.Center);
+					Helpers.SoundHelper.PlayPitched("VitricBoss/LaserFire", 1.0f, 0, Projectile.Center);
 
 				if (LaserTimer > 150) //laser is actually active
 				{
@@ -136,9 +138,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					{
 						Player Player = Main.player[k];
 
-						if (Player.active && !Player.dead && Helpers.Helper.CheckLinearCollision(Projectile.Center, endpoint, Player.Hitbox, out Vector2 point))
+						if (Player.active && !Player.dead && Helpers.CollisionHelper.CheckLinearCollision(Projectile.Center, endpoint, Player.Hitbox, out Vector2 point))
 						{
-							Player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByCustomReason(Player.name + " was reduced to ash"), Main.masterMode ? 9999999 : Main.expertMode ? 65 : 45, 0, false, false, -1, false);
+							Player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByCustomReason(Player.name + " was reduced to ash"), Projectile.damage, 0, false, false, -1, false);
 							endpoint = point;
 							break;
 						}
@@ -160,7 +162,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			if (parent is null)
 				return;
 
-			Texture2D texGlow = Assets.Keys.Glow.Value;
+			spriteBatch.End();
+			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+
+			Texture2D texGlow = Assets.Masks.Glow.Value;
 
 			int sin = (int)(Math.Sin(StarlightWorld.visualTimer * 3) * 40f);
 			var color = new Color(255, 160 + sin, 40 + sin / 2);
@@ -168,18 +173,22 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, color * Projectile.scale, 0, texGlow.Size() / 2, Projectile.scale * 1.0f, default, default);
 			spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, color * Projectile.scale * 1.2f, 0, texGlow.Size() / 2, Projectile.scale * 1.6f, default, default);
 
-			Effect effect1 = Terraria.Graphics.Effects.Filters.Scene["SunPlasma"].GetShader().Shader;
-			effect1.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.LaserBallMap.Value);
-			effect1.Parameters["sampleTexture3"].SetValue(Assets.Bosses.VitricBoss.LaserBallDistort.Value);
-			effect1.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.01f);
+			Effect ballEffect = ShaderLoader.GetShader("SunPlasma").Value;
 
-			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect1, Main.GameViewMatrix.TransformationMatrix);
+			if (ballEffect != null)
+			{
+				ballEffect.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.LaserBallMap.Value);
+				ballEffect.Parameters["sampleTexture3"].SetValue(Assets.Bosses.VitricBoss.LaserBallDistort.Value);
+				ballEffect.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.01f);
 
-			spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricBoss + Name).Value, Projectile.Center - Main.screenPosition, null, Color.White * Projectile.scale, 0, Projectile.Size / 2, Projectile.scale * 1.7f, 0, 0);
+				spriteBatch.End();
+				spriteBatch.Begin(default, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, Main.Rasterizer, ballEffect, Main.GameViewMatrix.TransformationMatrix);
 
-			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricBoss + Name).Value, Projectile.Center - Main.screenPosition, null, Color.White * Projectile.scale, 0, Projectile.Size / 2, Projectile.scale * 1.7f, 0, 0);
+
+				spriteBatch.End();
+				spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 
 			if (LaserTimer > 30 && LaserTimer <= 120) //tell line
 			{
@@ -210,12 +219,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				var origin = new Vector2(0, texBeam.Height / 2);
 				var origin2 = new Vector2(0, texBeam2.Height / 2);
 
-				Effect effect = StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value;
+				Effect laserEffect = StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value;
 
-				effect.Parameters["uColor"].SetValue(color.ToVector3());
+				laserEffect.Parameters["uColor"].SetValue(color.ToVector3());
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, laserEffect, Main.GameViewMatrix.TransformationMatrix);
 
 				float height = texBeam.Height / 2f;
 				int width = (int)(Projectile.Center - endpoint).Length();
@@ -242,13 +251,18 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					Lighting.AddLight(pos + Vector2.UnitX.RotatedBy(LaserRotation) * i + Main.screenPosition, color.ToVector3() * height * 0.010f);
 
 					if (Main.rand.NextBool(20))
-						Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * i, DustType<Dusts.Glow>(), Vector2.UnitY * Main.rand.NextFloat(-1.5f, -0.5f), 0, color, 0.4f);
+					{
+						Color dustColor = color;
+						dustColor.A = 0;
+
+						Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * i, DustType<Dusts.PixelatedGlow>(), Vector2.UnitY * Main.rand.NextFloat(-1.5f, -0.5f), 0, dustColor, Main.rand.NextFloat(0.2f, 0.3f));
+					}
 				}
 
 				float opacity = height / (texBeam.Height / 2f);
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 				if (parent.arena.Contains(Main.LocalPlayer.Center.ToPoint()))
 				{
@@ -257,9 +271,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				}
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
-				Texture2D impactTex = Assets.Keys.GlowSoft.Value;
+				Texture2D impactTex = Assets.Masks.GlowSoft.Value;
 				Texture2D impactTex2 = Assets.GUI.ItemGlow.Value;
 				Texture2D glowTex = Assets.GlowTrail.Value;
 
@@ -274,10 +288,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					int variation = Main.rand.Next(30);
 
 					color.G -= (byte)variation;
+					color.A = 0;
 
-					Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * width + Vector2.One.RotatedBy(rot) * Main.rand.NextFloat(40), DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot) * 2, 0, color, 0.9f - variation * 0.03f);
+					Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * width + Vector2.One.RotatedBy(rot) * Main.rand.NextFloat(40), DustType<Dusts.PixelatedEmber>(), Vector2.One.RotatedBy(rot) * 2, 0, color, 0.3f - variation * 0.01f);
 				}
 			}
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		public override void SendExtraAI(BinaryWriter writer)

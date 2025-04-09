@@ -1,6 +1,7 @@
 ﻿using MonoMod.Cil;
 using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Bosses.SquidBoss;
+using StarlightRiver.Content.Configs;
 using StarlightRiver.Content.NPCs.BaseTypes;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,13 +41,13 @@ namespace StarlightRiver.Content.CustomHooks
 				return;
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			NPC NPC = Main.npc.FirstOrDefault(n => n.active && n.ModNPC is ArenaActor);
 
 			if (NPC != null && NPC.active)
 			{
-				if (ReflectionTarget.canUseTarget)
+				if (ReflectionTarget.canUseTarget || !ModContent.GetInstance<GraphicsConfig>().ReflectionConfig.ReflectionsOn)
 					(NPC.ModNPC as ArenaActor).DrawBigWindow(Main.spriteBatch);
 
 				int boss = -1;

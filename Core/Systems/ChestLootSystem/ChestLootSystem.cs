@@ -233,7 +233,7 @@ namespace StarlightRiver.Core.Systems.ChestLootSystem
 			{
 				Item Item = SetupItem(type, 1, true);
 
-				Helper.PlaceMultitile(new Point16(chest.x, chest.y - 1), ModContent.TileType<DisplayCase>());
+				WorldGenHelper.PlaceMultitile(new Point16(chest.x, chest.y - 1), ModContent.TileType<DisplayCase>());
 				TileEntity.PlaceEntityNet(chest.x, chest.y - 1, ModContent.TileEntityType<DisplayCaseEntity>());
 				(TileEntity.ByPosition[new Point16(chest.x, chest.y - 1)] as DisplayCaseEntity).containedItem = Item;
 				return true;

@@ -1,0 +1,240 @@
+Configs: {
+	GraphicsConfig: {
+		DisplayName: Graphics Config
+
+		ScreenshakeMult: {
+			Label: Screenshake
+			Tooltip: Modifies the intensity of screen shake effects
+		}
+
+		LightingPollRate: {
+			Label: Lighting Buffer Poll Rate
+			Tooltip:
+				'''
+				Changes how often the lighting buffer polls for data. 
+				Higher values increase performance but make lighting update slower on some objects. 
+				Lower values result in smoother moving light but may hurt performance.
+				'''
+		}
+
+		ParticlesActive: {
+			Label: Extra Particles
+			Tooltip:
+				'''
+				Enables/Disables special particles. 
+				Disable this if you have performance issues.
+				'''
+		}
+
+		HighQualityLighting: {
+			Label: High quality lit textures
+			Tooltip:
+				'''
+				Enables/Disables fancy lighting on large textures. 
+				Disable this if you have performance issues.
+				'''
+		}
+
+		ReflectionConfig: {
+			Label: Background Reflections
+			Tooltip:
+				'''
+				Configures what is rendered for background reflections. 
+				Disable this if you have performance issues.
+				'''
+		}
+	}
+
+	ReflectionSubConfig: {
+		Tooltip: ""
+
+		ReflectionsOn: {
+			Label: Background Reflections
+			Tooltip:
+				'''
+				This will Enable/Disable the background reflections system entirely. 
+				If this is off, the other settings in this block are ignored. 
+				Disable this if you have performance issues.
+				'''
+		}
+
+		PlayerReflectionsOn: {
+			Label: Reflect Players
+			Tooltip:
+				'''
+				This will Enable/Disable reflecting Players.
+				 low performance impact.
+				'''
+		}
+
+		NpcReflectionsOn: {
+			Label: Reflect NPCs
+			Tooltip:
+				'''
+				This will Enable/Disable reflecting NPCs.
+				 low performance impact.
+				'''
+		}
+
+		ProjReflectionsOn: {
+			Label: Reflect Projectiles
+			Tooltip:
+				'''
+				This will Enable/Disable reflecting Projectiles.
+				 high performance impact.
+				'''
+		}
+
+		DustReflectionsOn: {
+			Label: Reflect Particles
+			Tooltip:
+				'''
+				This will Enable/Disable reflecting Particles, gores and dusts.
+				 high performance impact.
+				'''
+		}
+	}
+
+	GUIConfig: {
+		DisplayName: G U I Config
+
+		OverheadStaminaState: {
+			Label: Overhead Starlight Display
+			Tooltip: When/If the overhead starlight meter should display
+		}
+
+		KeywordStyle: {
+			Label: Keyword Style
+			Tooltip: How keywords should be displayed in tooltips
+		}
+
+		ObviousArmorCharge: {
+			Label: Numeric Set Bonus Indicators
+			Tooltip: Adds a numeric display to various armor set bonuses over the player
+		}
+
+		AddMaterialIndicator: {
+			Label: Indicate Items with Added Recipes
+			Tooltip: Displays a star icon in vanilla item tooltips if used in Starlight River crafting recipes
+		}
+
+		AbilityIconPosition: {
+			Label: Ability icon positon
+			Tooltip: Where the ability icons should be shown while the inventory is open
+		}
+	}
+
+	OverlayState: {
+		Tooltip: ""
+		AlwaysOn.Label: Always On
+		WhileNotFull.Label: While Not Full
+		WhileUsing.Label: While Using
+		Never.Label: Never
+	}
+
+	KeywordStyle: {
+		Tooltip: ""
+		Colors.Label: Colors
+		Brackets.Label: Brackets
+		Both.Label: Both
+		Neither.Label: Neither
+	}
+}
+
+GraphicsConfig: {
+	DisplayName: Graphics Config
+
+	ScreenshakeMult: {
+		Label: Screenshake Mult
+		Tooltip: ""
+	}
+
+	LightingPollRate: {
+		Label: Lighting Poll Rate
+		Tooltip: ""
+	}
+
+	ParticlesActive: {
+		Label: Particles Active
+		Tooltip: ""
+	}
+
+	ReflectionConfig: {
+		Label: Reflection Config
+		Tooltip: ""
+	}
+}
+
+ReflectionSubConfig: {
+	Tooltip: ""
+
+	ReflectionsOn: {
+		Label: Reflections On
+		Tooltip: ""
+	}
+
+	PlayerReflectionsOn: {
+		Label: Player Reflections On
+		Tooltip: ""
+	}
+
+	NpcReflectionsOn: {
+		Label: Npc Reflections On
+		Tooltip: ""
+	}
+
+	ProjReflectionsOn: {
+		Label: Proj Reflections On
+		Tooltip: ""
+	}
+
+	DustReflectionsOn: {
+		Label: Dust Reflections On
+		Tooltip: ""
+	}
+}
+
+GUIConfig: {
+	DisplayName: G U I Config
+
+	OverheadStaminaState: {
+		Label: Overhead Stamina State
+		Tooltip: ""
+	}
+
+	KeywordStyle: {
+		Label: Keyword Style
+		Tooltip: ""
+	}
+
+	ObviousArmorCharge: {
+		Label: Obvious Armor Charge
+		Tooltip: ""
+	}
+
+	AddMaterialIndicator: {
+		Label: Add Material Indicator
+		Tooltip: ""
+	}
+
+	AbilityIconPosition: {
+		Label: Ability Icon Position
+		Tooltip: ""
+	}
+}
+
+OverlayState: {
+	Tooltip: ""
+	AlwaysOn.Label: Always On
+	WhileNotFull.Label: While Not Full
+	WhileUsing.Label: While Using
+	Never.Label: Never
+}
+
+KeywordStyle: {
+	Tooltip: ""
+	Colors.Label: Colors
+	Brackets.Label: Brackets
+	Both.Label: Both
+	Neither.Label: Neither
+}

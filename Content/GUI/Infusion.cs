@@ -1,12 +1,11 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Configs;
 using StarlightRiver.Core.Loaders.UILoading;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria.GameContent.UI;
 using Terraria.ID;
 using Terraria.UI;
-using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.GUI
 {
@@ -18,6 +17,8 @@ namespace StarlightRiver.Content.GUI
 		private readonly InfusionSlot[] slots = new InfusionSlot[InfusionSlots];
 		private readonly SmartUIElement infusionElement = new();
 
+		private Vector2 lastConfigPos;
+
 		/// <summary>
 		/// The timer controlling the gain animation
 		/// </summary>
@@ -26,7 +27,7 @@ namespace StarlightRiver.Content.GUI
 		/// <summary>
 		/// Particle system used for the links between infusions and the icons
 		/// </summary>
-		public static ParticleSystem linkParticles = new("StarlightRiver/Assets/Keys/GlowSoft", UpdateLinkDelegate, ParticleSystem.AnchorOptions.UI);
+		public static ParticleSystem linkParticles = new("StarlightRiver/Assets/Masks/GlowSoft", UpdateLinkDelegate, ParticleSystem.AnchorOptions.UI);
 
 		/// <summary>
 		/// Particle system used for the gain animation
@@ -67,13 +68,16 @@ namespace StarlightRiver.Content.GUI
 			infusionElement.Width.Set(64, 0);
 			infusionElement.Height.Set(58, 0);
 			// Calculating these instead of using magic numbers.
-			infusionElement.Left.Set(100 - infusionElement.Width.Pixels / 2, 0);
-			infusionElement.Top.Set(300 - infusionElement.Height.Pixels / 2, 0);
+
+			Vector2 configPos = ModContent.GetInstance<GUIConfig>().AbilityIconPosition;
+
+			infusionElement.Left.Set(configPos.X - infusionElement.Width.Pixels / 2, 0);
+			infusionElement.Top.Set(configPos.Y - infusionElement.Height.Pixels / 2, 0);
 
 			const float width = 20;
 			const float height = 22;
-			const float topSlotLeft = 90;
-			const float topSlotTop = 276;
+			float topSlotLeft = configPos.X - 10;
+			float topSlotTop = configPos.Y - 24;
 
 			int targetSlot = 0;
 			void InitSlot(float left, float top)
@@ -109,6 +113,18 @@ namespace StarlightRiver.Content.GUI
 			particle.Timer--;
 		}
 
+		public override void SafeUpdate(GameTime gameTime)
+		{
+			Vector2 configPos = ModContent.GetInstance<GUIConfig>().AbilityIconPosition;
+
+			if (configPos != lastConfigPos)
+			{
+				RemoveAllChildren();
+				OnInitialize();
+				lastConfigPos = configPos;
+			}
+		}
+
 		public override void Draw(SpriteBatch spriteBatch)
 		{
 			if (ReturnConditions())
@@ -116,17 +132,22 @@ namespace StarlightRiver.Content.GUI
 
 			// We want this to draw under even if in the gain animation
 			Texture2D background = Assets.GUI.Infusions.Value;
-			var backgroundColor = Color.Lerp(Color.White, new Color(100, 220, 255), 0.5f + 0.5f * (float)Math.Sin(Main.GameUpdateCount * 0.05f));
-			backgroundColor *= 0.25f + 0.15f * (float)Math.Sin(Main.GameUpdateCount * 0.035f);
+			var backgroundColor = Color.Lerp(new Color(100, 255, 255), new Color(100, 180, 255), 0.5f + 0.5f * (float)Math.Sin(Main.GameUpdateCount * 0.05f));
+			backgroundColor *= 0.25f + 0.15f * (float)Math.Sin(Main.GameUpdateCount * 0.05f);
+			backgroundColor.A = 0;
+
 			spriteBatch.Draw(background, new Vector2(infusionElement.Left.Pixels + 2, infusionElement.Top.Pixels), null, backgroundColor);
 
 			if (InGainAnimation)
 			{
 				gainAnimationTimer--;
 				DrawGainAnimation(spriteBatch, 240 - gainAnimationTimer);
+
+				gainAnimationParticles.UpdateParticles();
+				gainAnimationParticles.DrawParticles(spriteBatch);
 			}
 
-			gainAnimationParticles.DrawParticles(spriteBatch);
+			sparkleParticles.UpdateParticles();
 			sparkleParticles.DrawParticles(spriteBatch);
 
 			if (InGainAnimation)
@@ -140,7 +161,7 @@ namespace StarlightRiver.Content.GUI
 			if (mp.InfusionLimit > 0)
 			{
 				Texture2D texture = Assets.GUI.InfusionFrame.Value;
-				var source = new Rectangle(60 * (mp.InfusionLimit - 1), 0, 60, 56);
+				var source = new Rectangle(62 * (mp.InfusionLimit - 1), 0, 60, 56);
 				spriteBatch.Draw(texture, new Vector2(infusionElement.Left.Pixels + 2, infusionElement.Top.Pixels), source, Color.White);
 
 				Texture2D textureGlow = Assets.GUI.InfusionFrameFlash.Value;
@@ -153,6 +174,7 @@ namespace StarlightRiver.Content.GUI
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
 
+			linkParticles.UpdateParticles();
 			linkParticles.DrawParticles(spriteBatch);
 
 			spriteBatch.End();
@@ -172,7 +194,7 @@ namespace StarlightRiver.Content.GUI
 		{
 			Texture2D slotTex = Assets.GUI.InfusionAnimUnder.Value;
 			Texture2D slotTexGlow = Assets.GUI.InfusionGlow.Value;
-			Texture2D star = Assets.Keys.StarAlpha.Value;
+			Texture2D star = Assets.Masks.StarAlpha.Value;
 			var pos = new Vector2(infusionElement.Left.Pixels + 2, infusionElement.Top.Pixels);
 			var starOff = new Vector2(0, -12);
 
@@ -186,7 +208,6 @@ namespace StarlightRiver.Content.GUI
 					float rot = Main.rand.NextFloat(6.28f);
 
 					gainAnimationParticles.AddParticle(
-						new Particle(
 								position: pos + new Vector2(30, 18) + Vector2.One.RotatedBy(rot) * Main.rand.NextFloat(80, 150),
 								velocity: Vector2.One.RotatedBy(rot + 1.57f) * 3.5f,
 								rotation: 0,
@@ -195,7 +216,6 @@ namespace StarlightRiver.Content.GUI
 								timer: 80,
 								storedPosition: pos + new Vector2(30, 18),
 								alpha: 0
-							)
 						);
 				}
 			}
@@ -204,20 +224,20 @@ namespace StarlightRiver.Content.GUI
 			if (timer > 40 && timer < 120)
 			{
 				float prog = (timer - 40) / 80f;
-				float opacity = Helpers.Helper.BezierEase(prog);
+				float opacity = Helpers.Eases.BezierEase(prog);
 
 				spriteBatch.Draw(slotTexGlow, pos + slotTexGlow.Size() / 2f, slotTexGlow.Frame(), new Color(50, 120, 255) * opacity, 0, slotTexGlow.Size() / 2f, opacity, SpriteEffects.None, 0);
 
-				Color starColor = new Color(150, 220, 255) * Helpers.Helper.SwoopEase(prog);
+				Color starColor = new Color(150, 220, 255) * Helpers.Eases.SwoopEase(prog);
 				starColor.A = 0;
 
-				spriteBatch.Draw(star, pos + starOff + slotTexGlow.Size() / 2f, star.Frame(), starColor, 0, star.Size() / 2f, Helpers.Helper.SwoopEase(prog) * 1.5f, SpriteEffects.None, 0);
+				spriteBatch.Draw(star, pos + starOff + slotTexGlow.Size() / 2f, star.Frame(), starColor, 0, star.Size() / 2f, Helpers.Eases.SwoopEase(prog) * 1.5f, SpriteEffects.None, 0);
 			}
 
 			// Hold
 			if (timer >= 120 && timer <= 140)
 			{
-				float colorProg = Helpers.Helper.BezierEase((timer - 120) / 20f);
+				float colorProg = Helpers.Eases.BezierEase((timer - 120) / 20f);
 				var color = Color.Lerp(new Color(50, 120, 255), Color.White, colorProg);
 
 				spriteBatch.Draw(slotTexGlow, pos, slotTexGlow.Frame(), color, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
@@ -232,7 +252,7 @@ namespace StarlightRiver.Content.GUI
 			if (timer > 140 && timer < 170)
 			{
 				float prog = (timer - 140) / 30f;
-				float opacity = 1 - Helpers.Helper.BezierEase(prog);
+				float opacity = 1 - Helpers.Eases.BezierEase(prog);
 
 				spriteBatch.Draw(slotTex, pos, slotTex.Frame(), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 				spriteBatch.Draw(slotTexGlow, pos, slotTexGlow.Frame(), Color.White * opacity, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
@@ -241,7 +261,6 @@ namespace StarlightRiver.Content.GUI
 			if (timer >= 90 && Main.rand.NextBool(4))
 			{
 				sparkleParticles.AddParticle(
-					new Particle(
 						position: pos + new Vector2(Main.rand.Next(60), Main.rand.Next(60)),
 						velocity: Vector2.UnitY * Main.rand.NextFloat(0.2f),
 						rotation: 0,
@@ -249,7 +268,7 @@ namespace StarlightRiver.Content.GUI
 						color: new Color(255, 50, 50),
 						timer: 90,
 						storedPosition: new Vector2(Main.rand.NextFloat(0.4f, 0.7f), 0),
-						frame: new Rectangle(0, 0, 15, 15))
+						frame: new Rectangle(0, 0, 15, 15)
 					);
 			}
 
@@ -348,10 +367,10 @@ namespace StarlightRiver.Content.GUI
 
 				if (Main.rand.NextBool(5))
 				{
-					Vector2 targetPos = AbilityInventory.abilityIconPositions.ContainsKey(equipped.AbilityType) ? AbilityInventory.abilityIconPositions[equipped.AbilityType] - Vector2.One * 8 : Vector2.Zero;
-					Vector2 startPos = GetDimensions().Center() + new Vector2(-6, -6);
+					Vector2 targetPos = AbilityInventory.abilityIconPositions.ContainsKey(equipped.AbilityType) ? AbilityInventory.abilityIconPositions[equipped.AbilityType] : Vector2.Zero;
+					Vector2 startPos = GetDimensions().Center();
 					float dist = Vector2.Distance(targetPos, startPos);
-					Infusion.linkParticles.AddParticle(new Particle(startPos, Vector2.UnitX * dist, 0, Main.rand.NextFloat(0.2f, 0.25f), equipped.color, (int)dist, targetPos));
+					Infusion.linkParticles.AddParticle(startPos, Vector2.UnitX * dist, 0, Main.rand.NextFloat(0.2f, 0.25f), equipped.color, (int)dist, targetPos);
 				}
 
 				//Draws the Item itself
@@ -424,7 +443,7 @@ namespace StarlightRiver.Content.GUI
 
 				Infusion.animationProgress = 0;
 				Infusion.animationColor = Item.color;
-				Helpers.Helper.PlayPitched("Magic/Shadow2", 1, 0);
+				Helpers.SoundHelper.PlayPitched("Magic/Shadow2", 1, 0);
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
 			}
 

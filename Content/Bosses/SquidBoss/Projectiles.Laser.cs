@@ -24,7 +24,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		{
 			Projectile.width = 60;
 			Projectile.height = 1;
-			Projectile.damage = 50;
 			Projectile.hostile = true;
 			Projectile.timeLeft = Main.masterMode ? 360 : Main.expertMode ? 510 : 660;
 			Projectile.aiStyle = -1;
@@ -148,7 +147,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			effect.Parameters["uColor"].SetValue(color.ToVector3());
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			float height = texBeam2.Height / 2f * 1.5f;
 			int adjustedLaserHeight = this.height - 32;
@@ -179,7 +178,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			spriteBatch.Draw(texStar, Projectile.Center - Vector2.UnitY * (this.height - 16) - Main.screenPosition, null, color * 1.1f, Timer * -0.045f, texStar.Size() / 2, 0.65f, 0, 0);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 		}
 

@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Physics;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Snow
 {
-	internal class Snoobel : ModNPC, IHintable
+	internal class Snoobel : ModNPC
 	{
 		private enum AiStates
 		{
@@ -189,30 +190,34 @@ namespace StarlightRiver.Content.NPCs.Snow
 			if (trail == null || trail == default)
 				return;
 
-			Main.spriteBatch.End();
-			Effect effect = Terraria.Graphics.Effects.Filters.Scene["SnoobelTrunk"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("SnoobelTrunk").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				Main.spriteBatch.End();
 
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(Texture + "_Whip").Value);
-			effect.Parameters["sampleTextureEnd"].SetValue(ModContent.Request<Texture2D>(Texture + "_WhipEnd").Value);
-			effect.Parameters["alpha"].SetValue(1);
-			effect.Parameters["flip"].SetValue(NPC.spriteDirection == 1);
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			List<Vector2> points;
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(Texture + "_Whip").Value);
+				effect.Parameters["sampleTextureEnd"].SetValue(ModContent.Request<Texture2D>(Texture + "_WhipEnd").Value);
+				effect.Parameters["alpha"].SetValue(1);
+				effect.Parameters["flip"].SetValue(NPC.spriteDirection == 1);
 
-			if (cache == null)
-				points = GetTrunkPoints();
-			else
-				points = trail.Positions.ToList();
+				List<Vector2> points;
 
-			effect.Parameters["totalLength"].SetValue(TotalLength(points));
-			trail.Render(effect);
+				if (cache == null)
+					points = GetTrunkPoints();
+				else
+					points = trail.Positions.ToList();
 
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				effect.Parameters["totalLength"].SetValue(TotalLength(points));
+				trail.Render(effect);
+
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 		}
 
 		private void ManageCache()
@@ -255,7 +260,8 @@ namespace StarlightRiver.Content.NPCs.Snow
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, NUM_SEGMENTS, new NoTip(), factor => 7, factor => Lighting.GetColor((int)(NPC.Center.X / 16), (int)(NPC.Center.Y / 16)));
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, NUM_SEGMENTS, new NoTip(), factor => 7, factor => Lighting.GetColor((int)(NPC.Center.X / 16), (int)(NPC.Center.Y / 16)));
 
 			List<Vector2> positions = cache;
 			trail.NextPosition = positions[NUM_SEGMENTS - 1];
@@ -463,10 +469,6 @@ namespace StarlightRiver.Content.NPCs.Snow
 			trunkChain.forceGravity = new Vector2(0, 0.1f);
 			trunkChain.useEndPoint = false;
 			currentPhase = (int)AiStates.Walking;
-		}
-		public string GetHint()
-		{
-			return "Extremely ugly. so Fucking ugly.";
 		}
 	}
 

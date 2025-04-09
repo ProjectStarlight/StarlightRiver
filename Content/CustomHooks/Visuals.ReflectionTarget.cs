@@ -1,4 +1,6 @@
-﻿using StarlightRiver.Content.Configs;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Configs;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
 using System.Reflection;
@@ -67,7 +69,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 			DrawWallReflectionNormalMapEvent += drawGlassWallReflectionNormalMap;
 
-			GameShaders.Misc[simpleReflectionShaderPath] = new MiscShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/SimpleReflection").Value), "TileReflectionPass");
+			GameShaders.Misc[simpleReflectionShaderPath] = new MiscShaderData(ShaderLoader.GetShader("SimpleReflection"), "TileReflectionPass");
 		}
 
 		public override void Unload()
@@ -129,6 +131,11 @@ namespace StarlightRiver.Content.CustomHooks
 		{
 			canUseTarget = false;
 
+			Vector2 storedZoom = Main.GameViewMatrix.Zoom;
+			Main.GameViewMatrix.Zoom = new Vector2(1, 1);
+			SpriteEffects storedSpriteEffects = Main.GameViewMatrix.Effects;
+			Main.GameViewMatrix.Effects = SpriteEffects.None;
+
 			ReflectionSubConfig reflectionConfig = ModContent.GetInstance<GraphicsConfig>().ReflectionConfig;
 
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
@@ -168,7 +175,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 			if (reflectionConfig.DustReflectionsOn)
 			{
-				sb.Begin(SpriteSortMode.Deferred, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				sb.Begin(SpriteSortMode.Deferred, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 				try
 				{
 					//tml does this try catch for some reason, maybe gores are bugged in this version, v2022.3.35.3, possible TODO: remove the try catch if tml removes theirs
@@ -186,6 +193,9 @@ namespace StarlightRiver.Content.CustomHooks
 
 			Overlays.Scene.Draw(sb, RenderLayers.Entities, true);
 
+			Main.GameViewMatrix.Zoom = storedZoom;
+			Main.GameViewMatrix.Effects = storedSpriteEffects;
+
 			canUseTarget = true;
 		}
 
@@ -200,8 +210,14 @@ namespace StarlightRiver.Content.CustomHooks
 
 			if (ReflectionTarget.applyWallReflectionsThisFrame)
 			{
-				DrawReflection(Main.spriteBatch, screenPos: Vector2.Zero, normalMap: reflectionNormalMapTarget.RenderTarget, flatOffset: new Vector2(-0.0075f, 0.016f), offsetScale: 0.05f, tintColor: Color.White, restartSpriteBatch: true);
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+
+				DrawReflection(Main.spriteBatch, screenPos: Vector2.Zero, normalMap: reflectionNormalMapTarget.RenderTarget, flatOffset: new Vector2(-0.0075f, 0.016f), offsetScale: 0.05f, tintColor: Color.White, restartSpriteBatch: false);
 				ReflectionTarget.applyWallReflectionsThisFrame = false;
+
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 
@@ -218,7 +234,7 @@ namespace StarlightRiver.Content.CustomHooks
 				if (restartSpriteBatch)
 				{
 					spriteBatch.End();
-					spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+					spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, RasterizerState.CullNone, default);
 				}
 
 				var data = new DrawData(normalMap, screenPos, sourceRect, new Color(255, 255, 255, 0));
@@ -252,13 +268,13 @@ namespace StarlightRiver.Content.CustomHooks
 
 		public void drawGlassWallReflectionNormalMap(SpriteBatch spriteBatch)
 		{
-			Effect shader = Filters.Scene["ReflectionMapper"].GetShader().Shader;
+			Effect shader = ShaderLoader.GetShader("ReflectionMapper").Value;
 
 			if (shader is null)
 				return;
 
 			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, SamplerState.PointClamp, default, RasterizerState.CullNone, Filters.Scene["ReflectionMapper"].GetShader().Shader, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, SamplerState.PointClamp, default, RasterizerState.CullNone, ShaderLoader.GetShader("ReflectionMapper").Value);
 
 			shader.Parameters["uColor"].SetValue(new Vector3(0.5f, 0.5f, 1f));
 			shader.Parameters["uIntensity"].SetValue(0.5f);
@@ -296,7 +312,7 @@ namespace StarlightRiver.Content.CustomHooks
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Texture, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(SpriteSortMode.Texture, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 }

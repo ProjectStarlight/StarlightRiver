@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Copper Coil");
-			Tooltip.SetDefault("Strikes nearby enemies with static electricity");
+			Tooltip.SetDefault("Strikes nearby enemies with static electricity\nInflicts {{BUFF:StaticShock}}");
 			CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1;
 		}
 
@@ -143,7 +143,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (Projectile.ai[1] == 0)
 			{
 				startPoint = Projectile.Center;
-				Helpers.Helper.PlayPitched("Impacts/ShockHit", 0.9f, Main.rand.NextFloat(-0.3f, 0.8f), Projectile.Center);
+				Helpers.SoundHelper.PlayPitched("Impacts/ShockHit", 0.9f, Main.rand.NextFloat(-0.3f, 0.8f), Projectile.Center);
 			}
 
 			Projectile.ai[1]++;

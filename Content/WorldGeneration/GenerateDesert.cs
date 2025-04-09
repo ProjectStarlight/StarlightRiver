@@ -65,7 +65,7 @@ namespace StarlightRiver.Core
 			//place the sections
 			for (int k = 0; k < height; k++)
 			{
-				Helper.PlaceMultitile(new Point16(i, j - k * 4), type);
+				WorldGenHelper.PlaceMultitile(new Point16(i, j - k * 4), type);
 
 				if (type == TileType<DesertMonolith>())
 					GetInstance<DesertMonolith>().PlaceInWorld(i + 2, j - k * 4 + 2, null);

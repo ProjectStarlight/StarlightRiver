@@ -6,6 +6,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
+using Terraria.WorldBuilding;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
@@ -119,18 +120,18 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				{
 					if (Timer < 250) //Shield Raising, preparing to slam
 					{
-						shieldAnimationProgress = EaseFunction.EaseCubicInOut.Ease((Timer - 200) / 50f);
+						shieldAnimationProgress = Eases.EaseCubicInOut((Timer - 200) / 50f);
 						shieldOffset = up * shieldAnimationProgress;
 					}
 					else if (Timer <= 260) //Shield lowering towards the ground
 					{
-						shieldAnimationProgress = EaseFunction.EaseQuarticIn.Ease((Timer - 250) / 10f);
+						shieldAnimationProgress = Eases.EaseQuarticIn((Timer - 250) / 10f);
 						shieldOffset = Vector2.Lerp(up, down, shieldAnimationProgress);
 					}
 
 					if ((int)Timer == 260 && Main.netMode != NetmodeID.Server) //Shield hits the ground
 					{
-						Helper.PlayPitched("GlassMiniboss/GlassSmash", 0.5f, 0.3f, NPC.Center);
+						SoundHelper.PlayPitched("GlassMiniboss/GlassSmash", 0.5f, 0.3f, NPC.Center);
 						CameraSystem.shake += 4;
 
 						for (int i = 0; i < 10; i++)
@@ -144,22 +145,22 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				{
 					if (Timer < 464) //Shield slowly sliding out of the ground
 					{
-						shieldAnimationProgress = EaseFunction.EaseQuadIn.Ease((Timer - 400) / 64f);
+						shieldAnimationProgress = Eases.EaseQuadIn((Timer - 400) / 64f);
 						shieldOffset = Vector2.Lerp(down, new Vector2(0, 4), shieldAnimationProgress);
 					}
 					else if (Timer < 470) //Shield jolts out of the ground
 					{
-						shieldAnimationProgress = EaseFunction.EaseQuadOut.Ease((Timer - 464) / 6f);
+						shieldAnimationProgress = Eases.EaseQuadOut((Timer - 464) / 6f);
 						shieldOffset = Vector2.Lerp(new Vector2(0, 4), up, shieldAnimationProgress);
 					}
 					else //Shield lowers back into place
 					{
-						shieldAnimationProgress = EaseFunction.EaseQuinticInOut.Ease((Timer - 470) / 30f);
+						shieldAnimationProgress = Eases.EaseQuinticInOut((Timer - 470) / 30f);
 						shieldOffset = up * (1 - shieldAnimationProgress);
 					}
 
 					if ((int)Timer == 421)
-						Helper.PlayPitched("StoneSlide", 0.5f, -1f, NPC.Center);
+						SoundHelper.PlayPitched("StoneSlide", 0.5f, -1f, NPC.Center);
 
 					if ((int)Timer == 464 && Main.netMode != NetmodeID.Server) //Shield exits the ground
 					{
@@ -241,21 +242,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 			if (Math.Sign(NPC.Center.DirectionTo(player.Center).X) == NPC.spriteDirection)
 			{
-				SoundEngine.PlaySound(SoundID.Item27 with { Pitch = 0.1f }, NPC.Center);
-
 				if (Guarding || stacked)
 				{
 					modifiers.FinalDamage -= int.MaxValue;
-					CombatText.NewText(NPC.Hitbox, Color.OrangeRed, "Blocked!");
 				}
 				else
 				{
 					modifiers.FinalDamage *= 0.4f;
 				}
-			}
-			else
-			{
-				SoundEngine.PlaySound(SoundID.Item27 with { Pitch = -0.3f }, NPC.Center);
 			}
 		}
 
@@ -266,26 +260,31 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 			if (Math.Sign(NPC.Center.DirectionTo(Target.Center).X) == NPC.spriteDirection)
 			{
-				SoundEngine.PlaySound(SoundID.Item27 with { Pitch = -0.6f }, NPC.Center);
-
 				if (Guarding || stacked)
 				{
 					modifiers.FinalDamage -= int.MaxValue;
-					CombatText.NewText(NPC.Hitbox, Color.OrangeRed, "Blocked!");
 				}
 				else
 				{
 					modifiers.FinalDamage *= 0.4f;
 				}
 			}
-			else
-			{
-				SoundEngine.PlaySound(SoundID.Item27 with { Pitch = -0.3f }, NPC.Center);
-			}
 		}
 
 		public override void HitEffect(NPC.HitInfo hit)
 		{
+			if (Math.Sign(NPC.Center.DirectionTo(Target.Center).X) == NPC.spriteDirection)
+			{
+				SoundEngine.PlaySound(SoundID.Item27 with { Pitch = -0.6f }, NPC.Center);
+
+				if (Guarding || stacked)
+					CombatText.NewText(NPC.Hitbox, Color.OrangeRed, "Blocked!");
+			}
+			else
+			{
+				SoundEngine.PlaySound(SoundID.Item27 with { Pitch = -0.3f }, NPC.Center);
+			}
+
 			if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
 			{
 				for (int i = 0; i < 12; i++)
@@ -303,7 +302,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		public override void DrawHealingGlow(SpriteBatch spriteBatch)
 		{
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D tex = Request<Texture2D>(Texture).Value;
 			Texture2D shieldTex = Request<Texture2D>(Texture + "_Shield").Value;
@@ -321,7 +320,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
@@ -436,7 +435,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				NPC.velocity.X *= 1.05f;
 
 				if (NPC.velocity.Y == 0)
-					NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Bottom, stackPartnerBelow.Top + new Vector2(directionToPartner * 15, 0), 0.3f, 120, 850);
+					NPC.velocity = GeometryHelper.GetArcVel(NPC.Bottom, stackPartnerBelow.Top + new Vector2(directionToPartner * 15, 0), 0.3f, 120, 850);
 
 				if (NPC.velocity.Y > 0 && Collision.CheckAABBvAABBCollision(NPC.position, NPC.Size, stackPartnerBelow.position, stackPartnerBelow.Size))
 				{

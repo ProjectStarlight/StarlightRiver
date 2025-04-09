@@ -1,5 +1,7 @@
-﻿using StarlightRiver.Content.Buffs;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Items.Gravedigger;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -20,7 +22,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Moonfury");
-			Tooltip.SetDefault("Call down a shard of moonstone, inflicting {{Dreamfire}} on struck enemies");
+			Tooltip.SetDefault("Call down a shard of moonstone, inflicting {{BUFF:MoonfuryDebuff}}");
 		}
 
 		public override void SetDefaults()
@@ -96,7 +98,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 				int index = target.FindBuffIndex(ModContent.BuffType<MoonfuryDebuff>());
 				target.DelBuff(index);
 
-				Helper.PlayPitched("Magic/Shadow1", 1, Main.rand.NextFloat(-0.1f, 0.1f));
+				SoundHelper.PlayPitched("Magic/Shadow1", 1, Main.rand.NextFloat(-0.1f, 0.1f));
 				modifiers.FlatBonusDamage += 20;
 				modifiers.FlatBonusDamage += (int)(target.defense / 5f);
 				Projectile.NewProjectile(player.GetSource_ItemUse(Item), target.Center, Vector2.Zero, ModContent.ProjectileType<MoonfuryRing>(), 0, 0, player.whoAmI);
@@ -109,7 +111,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		}
 	}
 
-	internal class MoonfuryProj : ModProjectile, IDrawPrimitive, IDrawAdditive
+	internal class MoonfuryProj : ModProjectile, IDrawPrimitive
 	{
 		private List<Vector2> cache;
 		private Trail trail;
@@ -213,6 +215,13 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
 			Vector2 pos = Projectile.Bottom + new Vector2(0, 20) - Main.screenPosition;
 			Main.spriteBatch.Draw(tex, pos, null, lightColor * (1 - Projectile.alpha / 255f), Projectile.rotation, new Vector2(tex.Width / 2, tex.Height), Projectile.scale, SpriteEffects.None, 0);
+
+			Texture2D texGlow = Assets.Items.Moonstone.MoonfuryProj_Additive.Value;
+			Color glowColor = Color.White * (1 - Projectile.alpha / 255f);
+			glowColor.A = 0;
+
+			Main.spriteBatch.Draw(texGlow, Projectile.Bottom + new Vector2(0, 20) - Main.screenPosition, null, glowColor * 0.5f, Projectile.rotation, new Vector2(texGlow.Width / 2, texGlow.Height), Projectile.scale, SpriteEffects.None, 0);
+
 			return false;
 		}
 
@@ -244,11 +253,13 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 50, new RoundedTip(12), factor => (10 + factor * 25) * trailWidth, factor => new Color(120, 20 + (int)(100 * factor.X), 255) * factor.X * trailWidth);
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 50, new RoundedTip(12), factor => (10 + factor * 25) * trailWidth, factor => new Color(120, 20 + (int)(100 * factor.X), 255) * factor.X * trailWidth);
 
 			trail.Positions = cache.ToArray();
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 50, new RoundedTip(6), factor => (80 + 0 + factor * 0) * trailWidth, factor => new Color(100, 20 + (int)(60 * factor.X), 255) * factor.X * 0.15f * trailWidth);
+			if (trail2 is null || trail2.IsDisposed)
+				trail2 = new Trail(Main.instance.GraphicsDevice, 50, new RoundedTip(6), factor => (80 + 0 + factor * 0) * trailWidth, factor => new Color(100, 20 + (int)(60 * factor.X), 255) * factor.X * 0.15f * trailWidth);
 
 			trail2.Positions = cache.ToArray();
 
@@ -261,30 +272,26 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("DatsuzeiTrail").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
-			effect.Parameters["repeats"].SetValue(8f);
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
-			effect.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
+				effect.Parameters["repeats"].SetValue(8f);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+				effect.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
 
-			trail?.Render(effect);
+				trail?.Render(effect);
 
-			effect.Parameters["sampleTexture2"].SetValue(TextureAssets.MagicPixel.Value);
+				effect.Parameters["sampleTexture2"].SetValue(TextureAssets.MagicPixel.Value);
 
-			trail2?.Render(effect);
-		}
-
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture + "_Additive").Value;
-			Color color = Color.White * (1 - Projectile.alpha / 255f);
-			spriteBatch.Draw(tex, Projectile.Bottom + new Vector2(0, 20) - Main.screenPosition, null, color * 0.5f, Projectile.rotation, new Vector2(tex.Width / 2, tex.Height), Projectile.scale, SpriteEffects.None, 0);
+				trail2?.Render(effect);
+			}
 		}
 	}
 
@@ -369,9 +376,11 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 33, new NoTip(), factor => 38 * (1 - Progress), factor => new Color(100, 0, 255));
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 33, new NoTip(), factor => 38 * (1 - Progress), factor => new Color(100, 0, 255));
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 33, new NoTip(), factor => 20 * (1 - Progress), factor => Color.Lerp(new Color(180, 180, 255), new Color(85, 85, 200), Progress));
+			if (trail2 is null || trail2.IsDisposed)
+				trail2 = new Trail(Main.instance.GraphicsDevice, 33, new NoTip(), factor => 20 * (1 - Progress), factor => Color.Lerp(new Color(180, 180, 255), new Color(85, 85, 200), Progress));
 			float nextplace = 33f / 32f;
 			var offset = new Vector2((float)Math.Sin(nextplace), (float)Math.Cos(nextplace));
 			offset *= Radius;
@@ -385,18 +394,21 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("OrbitalStrikeTrail").Value;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
-			effect.Parameters["alpha"].SetValue(1);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+				effect.Parameters["alpha"].SetValue(1);
 
-			trail?.Render(effect);
-			trail2?.Render(effect);
+				trail?.Render(effect);
+				trail2?.Render(effect);
+			}
 		}
 	}
 
@@ -404,7 +416,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 	{
 		public override string Texture => AssetDirectory.Debug;
 
-		public MoonfuryDebuff() : base("Dreamfire", "Next Moonfury hit has increased damage", false) { }
+		public MoonfuryDebuff() : base("Dreamfire", "The next Moonfury hit has increased damage", true) { }
 
 		public override void Update(NPC NPC, ref int buffIndex)
 		{

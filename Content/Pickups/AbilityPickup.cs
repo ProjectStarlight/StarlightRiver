@@ -1,12 +1,14 @@
-﻿using StarlightRiver.Content.Abilities;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Packets;
+using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using Terraria.GameContent.Bestiary;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Pickups
 {
-	internal abstract class AbilityPickup : ModNPC, IDrawAdditive
+	internal abstract class AbilityPickup : Dummy
 	{
 		/// <summary>
 		/// Indicates if the pickup should be visible in-world. Should be controlled using clientside vars.
@@ -15,50 +17,11 @@ namespace StarlightRiver.Content.Pickups
 
 		public virtual bool Fancy => true;
 
-		public sealed override void SetDefaults()
-		{
-			SafeSetDefaults();
+		public override bool DoesCollision => true;
 
-			NPC.width = 32;
-			NPC.height = 32;
-			NPC.lifeMax = 2;
-			NPC.damage = 1;
-			NPC.dontTakeDamage = true;
-			NPC.dontCountMe = true;
-			NPC.immortal = true;
-			NPC.noGravity = true;
-			NPC.aiStyle = -1;
-			NPC.friendly = false;
-		}
+		public virtual Asset<Texture2D> Texture => Assets.Default;
 
-		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
-		{
-			database.Entries.Remove(bestiaryEntry);
-		}
-
-		public virtual void SafeSetDefaults() { }
-
-		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
-		{
-			modifiers.FinalDamage *= 0;
-			modifiers.Knockback *= 0;
-			modifiers.DisableCrit();
-		}
-
-		public override bool CheckActive()
-		{
-			return false;
-		}
-
-		public sealed override bool? CanBeHitByItem(Player Player, Item Item)
-		{
-			return false;
-		}
-
-		public sealed override bool? CanBeHitByProjectile(Projectile Projectile)
-		{
-			return false;
-		}
+		public AbilityPickup(int validType) : base(validType, 16, 16) { }
 
 		/// <summary>
 		/// The clientside visual dust that this pickup makes when in-world
@@ -84,7 +47,7 @@ namespace StarlightRiver.Content.Pickups
 
 		public virtual Color GlowColor => Color.White;
 
-		public sealed override void AI()
+		public override void Update()
 		{
 			StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>(); //the local Player since ability pickup visuals are clientside
 
@@ -95,28 +58,19 @@ namespace StarlightRiver.Content.Pickups
 				if (!Fancy)
 					return;
 
-				/*if (Vector2.Distance(Main.screenPosition + new Vector2(Main.screenWidth / 2, Main.screenHeight / 2), NPC.Center) <= Main.screenWidth / 2 + 100) //shader
-                {
-                    float timer = Math.Abs((float)Math.Sin(StarlightWorld.rottime));
-                    Filters.Scene.Activate("Shockwave", NPC.Center).GetShader()
-                        .UseProgress(Main.screenWidth / (float)Main.screenHeight)
-                        .UseIntensity(500 + 200 * (timer))
-                        .UseDirection(new Vector2(0.005f + timer * 0.03f, 1 * 0.008f - timer * 0.004f));
-                }*/
-
-				if (Vector2.Distance(Main.LocalPlayer.Center, NPC.Center) < 200f) //music handling
+				if (Vector2.Distance(Main.LocalPlayer.Center, Center) < 200f) //music handling
 				{
 					for (int k = 0; k < Main.musicFade.Length; k++)
 					{
 						if (k == Main.curMusic)
-							Main.musicFade[k] = Vector2.Distance(Main.LocalPlayer.Center, NPC.Center) / 200f;
+							Main.musicFade[k] = Vector2.Distance(Main.LocalPlayer.Center, Center) / 200f;
 					}
 				}
 			}
 
 			Main.blockInput = false;
 
-			if (mp.pickupTarget?.whoAmI == NPC.whoAmI)
+			if (mp.pickupTarget == this)
 			{
 				PickupVisuals(mp.pickupTimer); //if the Player is picking this up, clientside only also
 				Main.blockInput = true;
@@ -124,48 +78,37 @@ namespace StarlightRiver.Content.Pickups
 			}
 		}
 
-		public sealed override bool CanHitPlayer(Player target, ref int cooldownSlot)
+		public override void Collision(Player player)
 		{
-			StarlightPlayer mp = target.GetModPlayer<StarlightPlayer>();
+			StarlightPlayer mp = player.GetModPlayer<StarlightPlayer>();
 
-			if (CanPickup(target) && target.Hitbox.Intersects(NPC.Hitbox))
+			if (CanPickup(player))
 			{
-				PickupEffects(target);
-				mp.pickupTarget = NPC;
+				PickupEffects(player);
+				mp.pickupTarget = this;
 
-				var packet = new AbilityProgress(target.whoAmI, target.GetHandler());
+				var packet = new AbilityProgress(player.whoAmI, player.GetHandler());
 				packet.Send();
 			}
-
-			return false;
 		}
 
-		public sealed override bool CanHitNPC(NPC target)
-		{
-			return false;
-		}
-
-		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+		public override void PostDraw(Color lightColor)
 		{
 			if (Visible)
 			{
-				Texture2D tex = Request<Texture2D>(Texture).Value;
-				Vector2 pos = NPC.Center - screenPos + new Vector2(0, (float)Math.Sin(StarlightWorld.visualTimer) * 5);
-				spriteBatch.Draw(tex, pos, tex.Frame(), Color.White, 0, tex.Size() / 2, 1, 0, 0);
-			}
+				Tile a = Parent;
+				int b = width;
+				Texture2D tex = Texture.Value;
+				Texture2D glow = Assets.Masks.GlowAlpha.Value;
 
-			return false;
-		}
+				Vector2 pos = Center - Main.screenPosition + new Vector2(0, (float)Math.Sin(StarlightWorld.visualTimer) * 5);
+				Main.spriteBatch.Draw(tex, pos, tex.Frame(), Color.White, 0, tex.Size() / 2, 1, 0, 0);
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
-			if (Visible)
-			{
-				Texture2D tex = Assets.RiftCrafting.Glow0.Value;
-				Vector2 pos = NPC.Center - Main.screenPosition + new Vector2(0, (float)Math.Sin(StarlightWorld.visualTimer) * 5);
+				Color color = GlowColor;
+				color.A = 0;
 
-				spriteBatch.Draw(tex, pos, tex.Frame(), GlowColor * 0.3f, 0, tex.Size() / 2, 1, 0, 0);
-				spriteBatch.Draw(tex, pos, tex.Frame(), GlowColor * 0.5f, 0, tex.Size() / 2, 0.6f, 0, 0);
+				Main.spriteBatch.Draw(glow, pos, glow.Frame(), color * 0.3f, 0, glow.Size() / 2, 1, 0, 0);
+				Main.spriteBatch.Draw(glow, pos, glow.Frame(), color * 0.5f, 0, glow.Size() / 2, 0.6f, 0, 0);
 			}
 		}
 	}

@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.ScreenTargetSystem;
+﻿using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System.Linq;
 using Terraria.Graphics.Effects;
 
@@ -34,7 +35,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
 			for (int i = 0; i < Main.npc.Length; i++)
 			{
@@ -64,9 +65,9 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
-			Texture2D bloom = Assets.Keys.GlowAlpha.Value;
+			Texture2D bloom = Assets.Masks.GlowAlpha.Value;
 			Color gold = Color.Orange;
 			gold.A = 0;
 
@@ -93,16 +94,20 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 				if (Main.dedServ || spriteBatch == null || NPCTarget == null || gD == null)
 					return;
 
-				Effect effect = Filters.Scene["TempleLens"].GetShader().Shader;
-				effect.Parameters["LensTarget"].SetValue(LensTarget.RenderTarget);
+				Effect effect = ShaderLoader.GetShader("TempleLens").Value;
 
-				spriteBatch.End();
-				spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, effect);
+				if (effect != null)
+				{
+					effect.Parameters["LensTarget"].SetValue(LensTarget.RenderTarget);
 
-				spriteBatch.Draw(NPCTarget.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+					spriteBatch.End();
+					spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, effect);
 
-				spriteBatch.End();
-				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+					spriteBatch.Draw(NPCTarget.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+
+					spriteBatch.End();
+					spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+				}
 			}
 		}
 	}

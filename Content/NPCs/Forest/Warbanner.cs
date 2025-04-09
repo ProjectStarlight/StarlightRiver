@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Physics;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.VerletGenerators;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Forest
 {
-	class Warbanner : ModNPC, IDrawAdditive, IHintable
+	class Warbanner : ModNPC
 	{
 		public enum BehaviorStates
 		{
@@ -188,7 +189,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 
 						if (toCheck is null || !toCheck.active || Vector2.Distance(NPC.Center, toCheck.Center) > (targets.Count > 1 ? MAX_BUFF_RADIUS : 2500)) //remove invalid targets
 							targets.Remove(toCheck);
-						else if (Helper.CheckCircularCollision(NPC.Center, (int)BuffRadius, toCheck.Hitbox))
+						else if (CollisionHelper.CheckCircularCollision(NPC.Center, (int)BuffRadius, toCheck.Hitbox))
 							toCheck.AddBuff(BuffType<Rage>(), 2);
 					}
 
@@ -199,7 +200,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 						return;
 					}
 
-					Vector2 target = Helper.Centeroid(targets) + new Vector2(0, -100);
+					Vector2 target = GeometryHelper.Centeroid(targets) + new Vector2(0, -100);
 
 					if (Vector2.Distance(NPC.Center, target) > 32)
 						NPC.velocity += Vector2.Normalize(NPC.Center - target) * -0.12f; //accelerate towards the centeroid of it's supported NPCs
@@ -292,34 +293,33 @@ namespace StarlightRiver.Content.NPCs.Forest
 
 			Texture2D tex = Request<Texture2D>(Texture).Value;
 			spriteBatch.Draw(tex, NPC.Center + new Vector2(0, -64) - screenPos, null, drawColor, NPC.rotation, tex.Size() / 2f, NPC.scale, 0, 0);
-			return false;
-		}
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
-			Texture2D auraTex = Assets.Misc.GlowRingTransparent.Value;
-			Texture2D ballTex = Assets.Keys.GlowSoft.Value;
+			Texture2D auraTex = Assets.Misc.GlowRing.Value;
+			Texture2D ballTex = Assets.Masks.GlowSoftAlpha.Value;
 			float maxScale = auraTex.Width / MAX_BUFF_RADIUS;
+			Color glowColor = new(255, 255, 255, 0);
 
-			spriteBatch.Draw(auraTex, NPC.Center - Main.screenPosition, null, Color.Red * VFXAlpha * 0.4f, 0, auraTex.Size() / 2, VFXAlpha * maxScale, 0, 0);
+			spriteBatch.Draw(auraTex, NPC.Center - Main.screenPosition, null, new Color(255, 0, 0, 0) * VFXAlpha * 0.4f, 0, auraTex.Size() / 2, VFXAlpha * maxScale, 0, 0);
 
 			for (int k = 0; k < 2; k++)
 			{
 				for (int i = 0; i < 40; i++)
 				{
 					Vector2 pos = NPC.Center + Vector2.One.RotatedBy(VisualTimer * 0.012f + k * 3.14f + i * 0.04f) * 320 * VFXAlpha * 0.5f;
-					spriteBatch.Draw(ballTex, pos - Main.screenPosition, null, new Color(255, 50, 0) * VFXAlpha * (i / 40f) * 0.5f, 0, ballTex.Size() / 2f, 0.9f - i * 0.01f, 0, 0);
-					spriteBatch.Draw(ballTex, pos - Main.screenPosition, null, Color.White * VFXAlpha * (i / 40f) * 0.5f, 0, ballTex.Size() / 2f, 0.45f - i * 0.005f, 0, 0);
+					spriteBatch.Draw(ballTex, pos - Main.screenPosition, null, new Color(255, 50, 0, 0) * VFXAlpha * (i / 40f) * 0.5f, 0, ballTex.Size() / 2f, 0.9f - i * 0.01f, 0, 0);
+					spriteBatch.Draw(ballTex, pos - Main.screenPosition, null, glowColor * VFXAlpha * (i / 40f) * 0.5f, 0, ballTex.Size() / 2f, 0.45f - i * 0.005f, 0, 0);
 
 					Vector2 pos2 = NPC.Center + Vector2.One.RotatedBy(VisualTimer * 0.023f + k * 3.14f + i * 0.04f) * 294 * VFXAlpha * 0.5f;
-					spriteBatch.Draw(ballTex, pos2 - Main.screenPosition, null, new Color(255, 80, 0) * VFXAlpha * (i / 40f) * 0.47f, 0, ballTex.Size() / 2f, 0.8f - i * 0.01f, 0, 0);
-					spriteBatch.Draw(ballTex, pos2 - Main.screenPosition, null, Color.White * VFXAlpha * (i / 40f) * 0.47f, 0, ballTex.Size() / 2f, 0.4f - i * 0.005f, 0, 0);
+					spriteBatch.Draw(ballTex, pos2 - Main.screenPosition, null, new Color(255, 80, 0, 0) * VFXAlpha * (i / 40f) * 0.47f, 0, ballTex.Size() / 2f, 0.8f - i * 0.01f, 0, 0);
+					spriteBatch.Draw(ballTex, pos2 - Main.screenPosition, null, glowColor * VFXAlpha * (i / 40f) * 0.47f, 0, ballTex.Size() / 2f, 0.4f - i * 0.005f, 0, 0);
 
 					Vector2 pos3 = NPC.Center + Vector2.One.RotatedBy(VisualTimer * 0.043f + k * 3.14f + i * 0.04f) * 268 * VFXAlpha * 0.5f;
-					spriteBatch.Draw(ballTex, pos3 - Main.screenPosition, null, new Color(255, 120, 0) * VFXAlpha * (i / 40f) * 0.4f, 0, ballTex.Size() / 2f, 0.7f - i * 0.01f, 0, 0);
-					spriteBatch.Draw(ballTex, pos3 - Main.screenPosition, null, Color.White * VFXAlpha * (i / 40f) * 0.4f, 0, ballTex.Size() / 2f, 0.35f - i * 0.005f, 0, 0);
+					spriteBatch.Draw(ballTex, pos3 - Main.screenPosition, null, new Color(255, 120, 0, 0) * VFXAlpha * (i / 40f) * 0.4f, 0, ballTex.Size() / 2f, 0.7f - i * 0.01f, 0, 0);
+					spriteBatch.Draw(ballTex, pos3 - Main.screenPosition, null, glowColor * VFXAlpha * (i / 40f) * 0.4f, 0, ballTex.Size() / 2f, 0.35f - i * 0.005f, 0, 0);
 				}
 			}
+
+			return false;
 		}
 
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
@@ -342,11 +342,6 @@ namespace StarlightRiver.Content.NPCs.Forest
 				}
 			}
 		}
-
-		public string GetHint()
-		{
-			return "It somehow bolsters nearby foes...";
-		}
 	}
 
 	internal class BannerBuffDust : ModDust
@@ -360,7 +355,8 @@ namespace StarlightRiver.Content.NPCs.Forest
 			dust.frame = new Rectangle(0, 0, 8, 128);
 			dust.scale = 1;
 
-			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
+			if (ShaderLoader.GetShader("GlowingDust").Value != null)
+				dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
 		}
 
 		public override bool Update(Dust dust)
@@ -379,9 +375,9 @@ namespace StarlightRiver.Content.NPCs.Forest
 			dust.color *= 0.97f;
 
 			if (dust.fadeIn <= 2)
-				dust.shader.UseColor(Color.Transparent);
+				dust.shader?.UseColor(Color.Transparent);
 			else
-				dust.shader.UseColor(dust.color * 0.5f);
+				dust.shader?.UseColor(dust.color * 0.5f);
 
 			dust.fadeIn++;
 

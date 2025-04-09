@@ -37,11 +37,11 @@ namespace StarlightRiver.Content.NPCs.SpaceEvent
 				if (Timer < 30 || Timer > 60 && Timer < 90)
 				{
 					float angle = NPC.direction == 1 ? 0 : 3.14f;
-					return Helper.CheckConicalCollision(NPC.Center, 80, angle, 1.5f, target.Hitbox);
+					return CollisionHelper.CheckConicalCollision(NPC.Center, 80, angle, 1.5f, target.Hitbox);
 				}
 
 				if (Timer > 120)
-					return Helper.CheckCircularCollision(NPC.Center, 60, target.Hitbox);
+					return CollisionHelper.CheckCircularCollision(NPC.Center, 60, target.Hitbox);
 			}
 
 			return false;
@@ -84,7 +84,7 @@ namespace StarlightRiver.Content.NPCs.SpaceEvent
 					if (Timer == 1 || Timer == 40)
 					{
 						NPC.velocity.X += NPC.direction * 8;
-						Helper.PlayPitched("Effects/FancySwoosh", 1, 1, NPC.Center);
+						SoundHelper.PlayPitched("Effects/FancySwoosh", 1, 1, NPC.Center);
 					}
 
 					if (Timer < 30)
@@ -99,7 +99,7 @@ namespace StarlightRiver.Content.NPCs.SpaceEvent
 					if (Timer == 80)
 					{
 						NPC.Frame(NPC.frame.Width, 0);
-						Helper.PlayPitched("Effects/SwordUltimate", 0.4f, 0.5f, NPC.Center);
+						SoundHelper.PlayPitched("Effects/SwordUltimate", 0.4f, 0.5f, NPC.Center);
 					}
 
 					if (Timer >= 85)

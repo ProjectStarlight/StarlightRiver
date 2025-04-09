@@ -18,7 +18,6 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 		public int timeToRetract;
 		public int teleTime;
 		public int holdTime;
-		public EvasionShrineDummy parent;
 
 		public float Alpha => 1 - Projectile.alpha / 255f;
 
@@ -107,14 +106,14 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			int timer = timeToRise + timeToRetract + teleTime + holdTime - Projectile.timeLeft;
 
 			if (timer > teleTime)
 			{
 				Texture2D tex = Assets.Tiles.Moonstone.GlowSmall.Value;
-				Texture2D tex2 = Assets.Keys.GlowSoft.Value;
+				Texture2D tex2 = Assets.Masks.GlowSoft.Value;
 
 				float opacity;
 
@@ -151,14 +150,14 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			return true;
 		}
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
-			writer.WritePackedVector2(endPoint);
+			writer.WriteVector2(endPoint);
 			writer.Write(timeToRise);
 			writer.Write(timeToRetract);
 			writer.Write(teleTime);
@@ -167,7 +166,7 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
-			endPoint = reader.ReadPackedVector2();
+			endPoint = reader.ReadVector2();
 			timeToRise = reader.ReadInt32();
 			timeToRetract = reader.ReadInt32();
 			teleTime = reader.ReadInt32();

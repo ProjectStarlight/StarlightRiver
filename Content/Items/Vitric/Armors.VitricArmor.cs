@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.GUI;
 using StarlightRiver.Helpers;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -72,6 +73,8 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (player.whoAmI != Main.myPlayer)
 				return;
 
+			ArmorChargeUI.SetMessage($"{shardCount}/3");
+
 			if (shardCount < 3 && !loaded)
 			{
 				shardTimer++;
@@ -117,7 +120,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 				if (helm.loaded && helm.shardCount > 0)
 				{
-					Helper.PlayPitched("Magic/FireHit", 1, 0, Player.Center);
+					SoundHelper.PlayPitched("Magic/FireHit", 1, 0, Player.Center);
 					type = ProjectileType<VitricArmorProjectile>();
 					speed = 10;
 					damage.Base = weapon.damage + 100;
