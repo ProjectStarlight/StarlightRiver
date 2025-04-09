@@ -35,11 +35,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
 		{
-			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
-			{
-				Bestiary.SLRSpawnConditions.VitricDesert,
-				new FlavorTextBestiaryInfoElement("A tangle of Starlight energy that can be considered alive, if only barely.")
-			});
+			database.Entries.Remove(bestiaryEntry);
 		}
 
 		public override void AI()
@@ -85,6 +81,11 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 			if (!Main.dedServ)
 				trail = new Trail(Main.graphics.GraphicsDevice, 120, new NoTip(), TrailWidth, TrailColor);
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
 		}
 
 		private static Color TrailColor(Vector2 textureCoordinates)

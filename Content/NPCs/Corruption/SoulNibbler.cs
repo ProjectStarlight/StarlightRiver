@@ -139,8 +139,8 @@ namespace StarlightRiver.Content.NPCs.Corruption
 			else
 				color *= 0;
 
-			spriteBatch.Draw(texGlow, NPC.Center - Main.screenPosition, null, color, NPC.rotation, texGlow.Size() / 2f, NPC.scale * 0.6f, 0, 0);
-			spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, frame, drawColor * 0.8f, NPC.rotation, new Vector2(16, 17), NPC.scale, 0, 0);
+			spriteBatch.Draw(texGlow, NPC.Center - screenPos, null, color, NPC.rotation, texGlow.Size() / 2f, NPC.scale * 0.6f, 0, 0);
+			spriteBatch.Draw(tex, NPC.Center - screenPos, frame, drawColor * 0.8f, NPC.rotation, new Vector2(16, 17), NPC.scale, 0, 0);
 
 			return false;
 		}

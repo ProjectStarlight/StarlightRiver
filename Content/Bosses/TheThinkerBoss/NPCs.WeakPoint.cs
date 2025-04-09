@@ -31,6 +31,11 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			NPC.HitSound = SoundID.NPCDeath12.WithPitchOffset(-0.25f);
 		}
 
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
+		}
+
 		public override bool CheckActive()
 		{
 			return false;

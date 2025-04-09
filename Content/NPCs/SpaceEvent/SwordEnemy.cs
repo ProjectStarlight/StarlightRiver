@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Helpers;
+using Terraria.GameContent.Bestiary;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.SpaceEvent
@@ -28,6 +29,11 @@ namespace StarlightRiver.Content.NPCs.SpaceEvent
 
 			NPC.frame.Width = 192;
 			NPC.frame.Height = 164;
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
 		}
 
 		public override bool CanHitPlayer(Player target, ref int cooldownSlot)

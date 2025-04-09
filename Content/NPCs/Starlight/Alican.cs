@@ -10,6 +10,7 @@ using StarlightRiver.Core.Systems.CutsceneSystem;
 using System;
 using System.Linq;
 using Terraria.DataStructures;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.NPCs.Starlight
@@ -29,7 +30,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("???");
+			DisplayName.SetDefault("Alican");
 		}
 
 		public override void SetDefaults()
@@ -55,6 +56,15 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			visible = true;
 
 			manager = new("AlicanDialog.json", NPC);
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
+			{
+				BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Times.NightTime,
+				new FlavorTextBestiaryInfoElement("Isn't it a bit rude of you to put me in here?"),
+			});
 		}
 
 		public override bool CheckActive()
@@ -164,11 +174,18 @@ namespace StarlightRiver.Content.NPCs.Starlight
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			var frame = new Rectangle(0, 88, 62, 88);
 			SpriteEffects effects = NPC.direction == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
+			if (NPC.IsABestiaryIconDummy)
+			{
+				if (Main.GameUpdateCount % 50 < 25)
+					SetFrame(0, 11);
+				else
+					SetFrame(0, 12);
+			}
+
 			if (visible)
-				spriteBatch.Draw(Assets.NPCs.Starlight.Alican.Value, NPC.Center + new Vector2(0, -10) - Main.screenPosition, NPC.frame, Lighting.GetColor((NPC.Center / 16).ToPoint()), 0, new Vector2(31, 44), 1, effects, 0);
+				spriteBatch.Draw(Assets.NPCs.Starlight.Alican.Value, NPC.Center + new Vector2(0, -10) - screenPos, NPC.frame, drawColor, 0, new Vector2(31, 44), 1, effects, 0);
 
 			if ((
 				State == 0 ||

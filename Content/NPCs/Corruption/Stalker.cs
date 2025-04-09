@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Abilities;
 using System.Linq;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -26,6 +27,11 @@ namespace StarlightRiver.Content.NPCs.Corruption
 			NPC.immortal = true;
 			NPC.lifeMax = 10000;
 			NPC.alpha = 255;
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
 		}
 
 		public override void AI()

@@ -81,12 +81,21 @@ namespace StarlightRiver.Content.Items
 			//GrayBlob((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
 
 			//GUI.Stamina.gainAnimationTimer = 240;
-			player.GetHandler().unlockedAbilities.Clear();
-			player.GetHandler().InfusionLimit++;
-			player.GetHandler().InfusionLimit %= 4;
-			AlicanSafetySystem.DebugForceState(2);
+			//player.GetHandler().unlockedAbilities.Clear();
+			//player.GetHandler().InfusionLimit++;
+			//player.GetHandler().InfusionLimit %= 4;
+			//AlicanSafetySystem.DebugForceState(2);
 
 			//KeybindHelper.OpenKeybindsWithHelp();
+
+			for(int k = 0; k < NPCLoader.NPCCount; k++)
+			{
+				NPC npc = new();
+				npc.SetDefaults(k);
+				Main.BestiaryTracker.Kills.RegisterKill(npc);
+				Main.BestiaryTracker.Chats.RegisterChatStartWith(npc);
+				Main.BestiaryTracker.Sights.RegisterWasNearby(npc);
+			}
 
 			return true;
 		}

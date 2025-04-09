@@ -4,6 +4,7 @@ using StarlightRiver.Content.Items.Infernal;
 using StarlightRiver.Core.Loaders;
 using System;
 using System.Collections.Generic;
+using Terraria.GameContent.Bestiary;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -31,6 +32,11 @@ namespace StarlightRiver.Content.NPCs.Actors
 			NPC.aiStyle = -1;
 			NPC.noGravity = true;
 			NPC.hide = true;
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
 		}
 
 		public override void AI()
