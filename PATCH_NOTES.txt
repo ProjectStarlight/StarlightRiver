@@ -3,7 +3,6 @@
 ## Flagship Content
 - Added a new optional boss, The Thinker! This boss can be challenged in a crimson world at any point after the Brain of Cthulhu has been defeated, but is intended for players that have atleast visited the dungeon.
 - After defeating the Brain of Cthulhu, some strange bits of material will activate in the crimson. Will you be able to use it to your advantage, or simply go mad?
->>>>>>> master
 
 ## Content
 - Added the heavy flail and frost flail, melee weapons with a heavy overhead swing
