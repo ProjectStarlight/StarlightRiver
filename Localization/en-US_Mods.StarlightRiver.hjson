@@ -4518,6 +4518,7 @@ NPCs: {
 	WaterCube.DisplayName: Water Cube
 	DesertWisp2.DisplayName: Desert Wisp2
 	GestaltCell.DisplayName: Gestalt Cell
+	NeuronChomper.DisplayName: big chungus
 }
 
 Buffs: {
