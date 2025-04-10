@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.Audio;
+using Terraria.GameContent.Bestiary;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
@@ -77,6 +78,11 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			NPC.dontTakeDamage = true;
 			NPC.immortal = true;
 			NPC.knockBackResist = 0;
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
 		}
 
 		// Can only hit slightly lunatic players

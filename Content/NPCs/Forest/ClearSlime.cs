@@ -224,6 +224,11 @@ namespace StarlightRiver.Content.NPCs.Forest
 			int fuseLen = fuse.Width;
 			float fuseOpacity = 1f;
 
+			if(NPC.IsABestiaryIconDummy)
+			{
+				NPC.frame = (Main.GameUpdateCount % 20) < 10 ? new Rectangle(0, 0, 32, 28) : new Rectangle(0, 28, 32, 28);
+			}
+
 			if (State == ClearSlimeState.attacking)
 			{
 				fuseLen = (int)(fuse.Width * (1f - Timer / 120f));
@@ -238,20 +243,20 @@ namespace StarlightRiver.Content.NPCs.Forest
 			}
 
 			Rectangle fuseSource = new(0, 0, fuseLen, fuse.Height);
-			Rectangle fuseTarget = new((int)(NPC.Center.X - Main.screenPosition.X), (int)(NPC.Center.Y - Main.screenPosition.Y), fuseLen, fuse.Height);
+			Rectangle fuseTarget = new((int)(NPC.Center.X - screenPos.X), (int)(NPC.Center.Y - screenPos.Y), fuseLen, fuse.Height);
 
 			float fuseRot = NPC.rotation - 1.57f / 2f;
 			fuseRot += NPC.velocity.Y * 0.03f;
 
 			spriteBatch.Draw(fuse, fuseTarget, fuseSource, drawColor * fuseOpacity, fuseRot, Vector2.Zero, 0, 0);
 
-			spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, NPC.frame, drawColor * 0.8f, NPC.rotation, NPC.frame.Size() / 2f, squishScale * NPC.scale, 0, 0);
+			spriteBatch.Draw(tex, NPC.Center - screenPos, NPC.frame, drawColor * 0.8f, NPC.rotation, NPC.frame.Size() / 2f, squishScale * NPC.scale, 0, 0);
 
 			if (State == ClearSlimeState.attacking && Timer > 60)
 			{
 				float fade = (Timer - 60) / 60f;
 				Color color = Color.Lerp(Color.Orange, new Color(255, 255, 200), fade) * fade;
-				spriteBatch.Draw(over, NPC.Center - Main.screenPosition, NPC.frame, color, NPC.rotation, NPC.frame.Size() / 2f, squishScale * NPC.scale, 0, 0);
+				spriteBatch.Draw(over, NPC.Center - screenPos, NPC.frame, color, NPC.rotation, NPC.frame.Size() / 2f, squishScale * NPC.scale, 0, 0);
 			}
 
 			return false;
@@ -275,7 +280,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 
 						float scale = 150 + (1f - Timer / 120f) * 30;
 
-						spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, color, 0, tex.Size() / 2f, scale / tex.Width, 0, 0);
+						spriteBatch.Draw(tex, NPC.Center - screenPos, null, color, 0, tex.Size() / 2f, scale / tex.Width, 0, 0);
 					}
 					else if (Timer > 120 && Timer < 135)
 					{
@@ -286,9 +291,9 @@ namespace StarlightRiver.Content.NPCs.Forest
 						Color color = Color.Lerp(Color.Orange, Color.Red, fade) * (1f - fade);
 						color.A = 0;
 
-						spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, color, 0, tex.Size() / 2f, 180f / tex.Width * (1 + fade), 0, 0);
-						spriteBatch.Draw(tex2, NPC.Center - Main.screenPosition, null, color, 0, tex2.Size() / 2f, 320f / tex2.Width * (1 + fade), 0, 0);
-						spriteBatch.Draw(tex2, NPC.Center - Main.screenPosition, null, color, 1.57f / 2f, tex2.Size() / 2f, 290f / tex2.Width * (1 + fade), 0, 0);
+						spriteBatch.Draw(tex, NPC.Center - screenPos, null, color, 0, tex.Size() / 2f, 180f / tex.Width * (1 + fade), 0, 0);
+						spriteBatch.Draw(tex2, NPC.Center - screenPos, null, color, 0, tex2.Size() / 2f, 320f / tex2.Width * (1 + fade), 0, 0);
+						spriteBatch.Draw(tex2, NPC.Center - screenPos, null, color, 1.57f / 2f, tex2.Size() / 2f, 290f / tex2.Width * (1 + fade), 0, 0);
 					}
 				});
 			}
