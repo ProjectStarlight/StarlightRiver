@@ -1,6 +1,8 @@
 ﻿using StarlightRiver.Core.Systems.PixelationSystem;
 using System;
+using System.Linq;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.NPCs.Crimson
@@ -29,7 +31,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("big chungus");
+			DisplayName.SetDefault("Neuron Chomper");
 
 			NPCID.Sets.TrailCacheLength[Type] = 10;
 			NPCID.Sets.TrailingMode[Type] = 1;
@@ -37,14 +39,16 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 		public override void SetDefaults()
 		{
-			NPC.width = 72;
-			NPC.height = 72;
+			NPC.width = 96;
+			NPC.height = 80;
 			NPC.lifeMax = 200;
 			NPC.damage = 30;
 			NPC.aiStyle = -1;
 			NPC.noGravity = true;
 			NPC.noTileCollide = true;
 			NPC.knockBackResist = 0.1f;
+			NPC.HitSound = SoundID.NPCHit1;
+			NPC.DeathSound = SoundID.DD2_OgreDeath.WithPitchOffset(1.5f);
 			NPC.defense = 8;
 		}
 
@@ -64,23 +68,28 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 			NPC.rotation = NPC.Center.DirectionFrom(homePos).ToRotation() - 1.57f;
 
+			NPC.frame = new Rectangle((int)(Main.GameUpdateCount / 4f) % 6 * NPC.width, 0, NPC.width, NPC.height);
+
 			switch (State)
 			{
 				case NeuronChomperState.Idle:
 
 					NPC.TargetClosest();
 
-					if (target != null && target.active && !target.dead && Vector2.Distance(homePos, target.Center) <= 900)
+					if (target != null && target.active && !target.dead && Vector2.Distance(homePos, target.Center) <= 600)
 					{
 						State = NeuronChomperState.Charging;
 						Timer = 0;
 					}
 
+					Vector2 idleTargetPos = homePos + new Vector2(0, 64);
+					NPC.velocity = (idleTargetPos - NPC.Center) * 0.025f;
+
 					break;
 
 				case NeuronChomperState.Charging:
 
-					if (target is null || !target.active || target.dead || Vector2.Distance(homePos, target.Center) > 900)
+					if (target is null || !target.active || target.dead || Vector2.Distance(homePos, target.Center) > 600)
 					{
 						State = NeuronChomperState.Idle;
 						Timer = 0;
@@ -97,7 +106,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 					// Float into position
 					if (Timer < 120)
 					{
-						Vector2 targetPos = homePos + homePos.DirectionTo(target.Center) * -(400 * Timer / 120f);
+						Vector2 targetPos = homePos + homePos.DirectionTo(target.Center) * -(300 * Timer / 120f);
 						NPC.velocity = (targetPos - NPC.Center) * 0.05f * (Timer > 100 ? 1f - (Timer - 100) / 20f : 1f);
 					}
 
@@ -118,7 +127,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 					if (Timer < 30)
 					{
-						NPC.velocity += NPC.Center.DirectionTo(targetPos) * 0.09f * Timer;
+						NPC.velocity += NPC.Center.DirectionTo(targetPos) * 0.075f * Timer;
 					}
 
 					if (Timer < 70)
@@ -146,13 +155,15 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			Texture2D texture = Assets.NPCs.Crimson.NeuronChomper.Value;
 			Texture2D chain = Assets.NPCs.Crimson.NeuronChomperChain.Value;
 
-			var dist = Vector2.Distance(NPC.Center, homePos);
+			Vector2 chainStart = NPC.Center + Vector2.UnitX.RotatedBy(NPC.rotation - 1.57f) * 30;
+
+			var dist = Vector2.Distance(chainStart, homePos);
 			for (int k = 0; k < dist; k += 26)
 			{
-				Vector2 pos = Vector2.Lerp(NPC.Center, homePos, k / dist) - screenPos;
+				Vector2 pos = Vector2.Lerp(chainStart, homePos, k / dist) - screenPos;
 				pos.Y += MathF.Sin(k / dist * 3.14f) * 32;
 
-				Vector2 next = Vector2.Lerp(NPC.Center, homePos, (k + 1) / dist) - screenPos;
+				Vector2 next = Vector2.Lerp(chainStart, homePos, (k + 1) / dist) - screenPos;
 				next.Y += MathF.Sin((k + 1) / dist * 3.14f) * 32;
 
 				float opacity = 1f;
@@ -160,7 +171,9 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				if (k + 26 > dist)
 					opacity *= (dist % 26) / 26f;
 
-				spriteBatch.Draw(chain, pos, null, Color.Lerp(Color.LightYellow, Color.LightPink, k / dist) * opacity, pos.DirectionTo(next).ToRotation() + 1.57f, chain.Size() / 2f, 1f, 0, 0);
+				var color = Color.Lerp(new Color(255, 255, 140), new Color(255, 100, 200), k / dist) * opacity;
+
+				spriteBatch.Draw(chain, pos, null, color, pos.DirectionTo(next).ToRotation() + 1.57f, chain.Size() / 2f, 1f, 0, 0);
 			}
 
 			if (State == NeuronChomperState.Dashing)
@@ -173,17 +186,17 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 					color *= 1f - Timer / 90f;
 
-					Main.EntitySpriteDraw(texture, drawPos, null, color, NPC.rotation, NPC.Size / 2f, NPC.scale * Eases.EaseQuadOut(progress), SpriteEffects.None, 0);
+					Main.EntitySpriteDraw(texture, drawPos, NPC.frame, color, NPC.rotation, NPC.Size / 2f, NPC.scale * Eases.EaseQuadOut(progress), SpriteEffects.None, 0);
 				}
 			}
 
-			spriteBatch.Draw(texture, NPC.Center - Main.screenPosition, null, drawColor, NPC.rotation, texture.Size() / 2f, NPC.scale, 0, 0);
+			spriteBatch.Draw(texture, NPC.Center - Main.screenPosition, NPC.frame, drawColor, NPC.rotation, NPC.Size / 2f, NPC.scale, 0, 0);
 
 			if (State == NeuronChomperState.Charging)
 			{
 				float opacity = Timer < 140 ? (Timer - 60) / 80f : 1f - (Timer - 140) / 10f;
 
-				spriteBatch.Draw(texture, NPC.Center - Main.screenPosition, null, new Color(255, 100, 100, 0) * opacity, NPC.rotation, texture.Size() / 2f, NPC.scale, 0, 0);
+				spriteBatch.Draw(texture, NPC.Center - Main.screenPosition, NPC.frame, new Color(255, 100, 100, 0) * opacity, NPC.rotation, NPC.Size / 2f, NPC.scale, 0, 0);
 
 				if (Timer > 90 && Timer <= 150)
 				{
@@ -210,6 +223,56 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			}
 
 			return false;
+		}
+
+		public override float SpawnChance(NPCSpawnInfo spawnInfo)
+		{
+			return spawnInfo.Player.ZoneCrimson && StarlightWorld.HasFlag(WorldFlags.ThinkerBossOpen) ? 0.3f : 0;
+		}
+
+		public override void OnSpawn(IEntitySource source)
+		{
+			for(int x = -40; x < 40; x++)
+			{
+				for(int y = -40; y < 40; y++)
+				{
+					var tX = x + (int)NPC.Center.X / 16;
+					var tY = y + (int)NPC.Center.Y / 16;
+					var tile = Main.tile[tX, tY];
+					var up = Main.tile[tX, tY - 1];
+					var left = Main.tile[tX - 1, tY];
+					var right = Main.tile[tX + 1, tY];
+					var down = Main.tile[tX, tY + 1];
+
+					if (tile.HasTile && tile.TileType == TileID.Trees && !up.HasTile && !left.HasTile && !right.HasTile && down.HasTile && down.TileType == TileID.Trees)
+					{
+						var target = new Vector2(tX, tY) * 16 + Vector2.One * 8;
+
+						if (Main.npc.Any(n => n.active && n.ModNPC is NeuronChomper chomper && Vector2.Distance(chomper.homePos, target) < 256))
+							continue;
+
+						NPC.Center = target;
+						return;
+					}
+				}
+			}
+
+			NPC.active = false;
+		}
+
+		public override void OnKill()
+		{
+			for(int k = 0; k < 60; k++)
+			{
+				float rot = Main.rand.NextFloat(6.28f);
+				Dust.NewDustPerfect(NPC.Center + Vector2.UnitX.RotatedBy(rot) * Main.rand.NextFloat(20), DustID.Blood, Vector2.UnitX.RotatedBy(rot) * Main.rand.NextFloat(6), 0, default, Main.rand.NextFloat(3));
+			}
+
+			for (int k = 0; k < 10; k++)
+			{
+				float rot = Main.rand.NextFloat(6.28f);
+				Dust.NewDustPerfect(NPC.Center + Vector2.UnitX.RotatedBy(rot) * Main.rand.NextFloat(20), ModContent.DustType<Dusts.GraymatterDust>(), Vector2.UnitX.RotatedBy(rot) * Main.rand.NextFloat(3));
+			}
 		}
 	}
 }
