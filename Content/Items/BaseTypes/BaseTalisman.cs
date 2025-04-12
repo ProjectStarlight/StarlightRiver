@@ -121,7 +121,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public Asset<Texture2D> texture;
 
-		public override void Load()
+		public override void SafeLoad()
 		{
 			texture = ModContent.Request<Texture2D>(Texture);
 			StarlightNPC.PostDrawEvent += DrawTalisman;
