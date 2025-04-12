@@ -287,10 +287,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					}
 				}
 
-				ModContent.GetInstance<PixelationSystem>().QueueRenderAction("OverPlayers", () =>
-				{
-					InnerDraw(spriteBatch, screenPos, prog);
-				});
+				ModContent.GetInstance<PixelationSystem>().QueueRenderAction("OverPlayers", () => InnerDraw(spriteBatch, screenPos, prog));
 			}
 
 			if (TellTime > 0)

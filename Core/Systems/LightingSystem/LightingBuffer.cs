@@ -168,7 +168,7 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 		{
 			LightingBuffer.bufferNeedsPopulated = true;
 
-			var cullCheck = destinationRectangle;
+			Rectangle cullCheck = destinationRectangle;
 			cullCheck.Offset((-origin).ToPoint());
 			if (Main.dedServ || !ScreenTracker.OnScreenScreenspace(cullCheck))
 				return;

@@ -88,7 +88,7 @@ namespace StarlightRiver.Content.Items
 
 			//KeybindHelper.OpenKeybindsWithHelp();
 
-			for(int k = 0; k < NPCLoader.NPCCount; k++)
+			for (int k = 0; k < NPCLoader.NPCCount; k++)
 			{
 				NPC npc = new();
 				npc.SetDefaults(k);
