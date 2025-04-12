@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Archaeology
 
 		public virtual string TexturePath => AssetDirectory.Archaeology + Name;
 
-		protected static Asset<Texture2D> texture;
+		protected Asset<Texture2D> texture;
 
 		/// <summary>
 		/// Texture path the artifact uses on the map when revealed
@@ -79,14 +79,6 @@ namespace StarlightRiver.Content.Archaeology
 			return true;
 		}
 
-		public override void Load()
-		{
-			texture = ModContent.Request<Texture2D>(TexturePath);
-
-			if (texture is null)
-				throw new MissingResourceException(TexturePath + " Could not be found for an artifact!");
-		}
-
 		public virtual void Draw(SpriteBatch spriteBatch)
 		{
 			GenericDraw(spriteBatch);
@@ -103,6 +95,11 @@ namespace StarlightRiver.Content.Archaeology
 			{
 				displayedOnMap = tag.GetBool(nameof(displayedOnMap));
 				bounds = new Rectangle((int)WorldPosition.X, (int)WorldPosition.Y, (int)Size.X, (int)Size.Y);
+				texture = ModContent.Request<Texture2D>(TexturePath);
+
+				if (texture is null)
+					throw new MissingResourceException(TexturePath + " Could not be found for an artifact!");
+
 				ArtifactManager.artifacts.Add(this);
 			}
 			catch (Exception e)
@@ -153,7 +150,7 @@ namespace StarlightRiver.Content.Archaeology
 			spriteBatch.Draw(texture.Value, WorldPosition - Main.screenPosition, null, Lighting.GetColor(Position.ToPoint()), 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
 		}
 
-		public void CheckOpen()
+		public bool CheckOpen()
 		{
 			for (int i = 0; i < Size.X / 16; i++)
 			{
@@ -161,7 +158,7 @@ namespace StarlightRiver.Content.Archaeology
 				{
 					Tile tile = Main.tile[i + Position.X, j + Position.Y];
 					if (tile.HasTile && Main.tileSolid[tile.TileType])
-						return;
+						return false;
 				}
 			}
 
@@ -174,6 +171,8 @@ namespace StarlightRiver.Content.Archaeology
 
 			ArtifactSpawnPacket packet = new ArtifactSpawnPacket(this.ID, Position.X, Position.Y, proj.identity, TexturePath);
 			packet.Send();
+
+			return true;
 		}
 	}
 
@@ -199,8 +198,16 @@ namespace StarlightRiver.Content.Archaeology
 		{
 			if (scanNextFrame)
 			{
-				artifacts.ForEach(n => n.CheckOpen());
 				scanNextFrame = false;
+
+				for (int k = 0; k < artifacts.Count; k++)
+				{
+					if (artifacts[k].CheckOpen())
+					{
+						scanNextFrame = true;
+						break;
+					}
+				}
 			}
 		}
 

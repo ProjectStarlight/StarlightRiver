@@ -190,25 +190,25 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		/// </summary>
 		protected void ManageArenaTrail()
 		{
-			if (arenaCache is null || arenaCache.Count != 73)
-				arenaCache = new(new Vector2[73]);
+			if (arenaCache is null || arenaCache.Count != 41)
+				arenaCache = new(new Vector2[41]);
 
-			for (int k = 0; k < 72; k++)
+			for (int k = 0; k < 40; k++)
 			{
-				float rot = k / 72f * 6.28f;
-				float offset = (float)Math.Sin(k / 72f * 6.28f * 8 + Main.GameUpdateCount * 0.025f) * 12;
-				offset += (float)Math.Cos(k / 72f * 6.28f * 6 + Main.GameUpdateCount * 0.04f) * 12;
+				float rot = k / 40f * 6.28f;
+				float offset = (float)Math.Sin(k / 40f * 6.28f * 8 + Main.GameUpdateCount * 0.025f) * 12;
+				offset += (float)Math.Cos(k / 40f * 6.28f * 6 + Main.GameUpdateCount * 0.04f) * 12;
 
-				arenaCache[k] = home + Vector2.UnitX.RotatedBy(rot) * (ArenaRadius + 50 + offset);
+				arenaCache[k] = home + Vector2.UnitX.RotatedBy(rot) * (ArenaRadius + 86 + offset);
 			}
 
-			arenaCache[72] = arenaCache[0];
+			arenaCache[40] = arenaCache[0];
 
 			if (arenaTrail is null || arenaTrail.IsDisposed)
 			{
-				arenaTrail = new Trail(Main.instance.GraphicsDevice, 73, new NoTip(), factor => 56, factor =>
+				arenaTrail = new Trail(Main.instance.GraphicsDevice, 41, new NoTip(), factor => 59, factor =>
 				{
-					int index = (int)(factor.X * 72);
+					int index = (int)(factor.X * 40);
 					return new Color(Lighting.GetSubLight(arenaCache[index])) * ArenaOpacity;
 				});
 			}

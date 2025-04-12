@@ -93,7 +93,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			if (thinker?.ModNPC is TheThinker think && think.brain.ModNPC is DeadBrain brain && brain.Phase == DeadBrain.Phases.SpawnAnim && brain.Timer <= 100)
 				return false;
 
-			Texture2D tex = Assets.Bosses.TheThinkerBoss.Neurysm.Value;
+			Texture2D tex = Assets.Bosses.TheThinkerBoss.Weakpoint.Value;
 			Texture2D glow = Assets.Masks.GlowAlpha.Value;
 			Texture2D star = Assets.StarTexture.Value;
 
