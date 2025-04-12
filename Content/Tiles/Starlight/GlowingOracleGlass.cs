@@ -40,16 +40,16 @@ namespace StarlightRiver.Content.Tiles.Starlight
 
 		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 		{
-			var tile = Main.tile[i, j];
+			Tile tile = Main.tile[i, j];
 
 			var tex = Assets.Tiles.Starlight.OracleGlassGlow.Value;
 			var frame = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16);
-			var target = new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange - Main.screenPosition + Vector2.One * 8;
+			Vector2 target = new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange - Main.screenPosition + Vector2.One * 8;
 			var color = new Color(255, 255, 255, 0);
 
-			var time = Main.GameUpdateCount * 0.01f + i * 0.2f;
-			var time2 = Main.GameUpdateCount * 0.01f + j * 0.2f;
-			var prog = 0.5f + (MathF.Sin(time) + MathF.Sin(time * 1.7f - 5) + MathF.Sin(time * 1.2f - 2)) * 0.2f;
+			float time = Main.GameUpdateCount * 0.01f + i * 0.2f;
+			float time2 = Main.GameUpdateCount * 0.01f + j * 0.2f;
+			float prog = 0.5f + (MathF.Sin(time) + MathF.Sin(time * 1.7f - 5) + MathF.Sin(time * 1.2f - 2)) * 0.2f;
 			prog += (MathF.Sin(time2 * 0.8f) + MathF.Sin(time2 * 1.1f + 2) + MathF.Sin(time2 * 1.6f - 3)) * 0.2f;
 			color *= prog;
 

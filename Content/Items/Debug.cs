@@ -239,7 +239,7 @@ namespace StarlightRiver.Content.Items
 			*/
 			if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.T))
 			{
-				var spriteBatch = Main.spriteBatch;
+				SpriteBatch spriteBatch = Main.spriteBatch;
 				var target1 = new Rectangle(100, 400, Main.screenWidth / 10, Main.screenHeight / 10);
 				var target2 = new Rectangle(100, 400 + Main.screenHeight / 10 + 20, Main.screenWidth / 10, Main.screenHeight / 10);
 				var target3 = new Rectangle(100, 400 + Main.screenHeight / 10 * 2 + 40, Main.screenWidth / 10, Main.screenHeight / 10);
