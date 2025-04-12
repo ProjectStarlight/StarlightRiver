@@ -88,7 +88,7 @@ namespace StarlightRiver.Content.Items
 
 			//KeybindHelper.OpenKeybindsWithHelp();
 
-			for(int k = 0; k < NPCLoader.NPCCount; k++)
+			for (int k = 0; k < NPCLoader.NPCCount; k++)
 			{
 				NPC npc = new();
 				npc.SetDefaults(k);
@@ -227,7 +227,7 @@ namespace StarlightRiver.Content.Items
 			Utils.DrawBorderStringBig(Main.spriteBatch, $"STARLIGHT RIVER 0.3 ALPHA", new Vector2(Main.screenWidth / 2, 16), Color.White, 0.4f, 0.5f);
 			Utils.DrawBorderStringBig(Main.spriteBatch, $"ALPHA BUILD DOES NOT REPRESENT FINAL PRODUCT", new Vector2(Main.screenWidth / 2, 48), Color.White, 0.4f, 0.5f);
 			Utils.DrawBorderStringBig(Main.spriteBatch, $"Press T for target views", new Vector2(Main.screenWidth / 2, 86), Color.White, 0.4f, 0.5f);
-			Utils.DrawBorderStringBig(Main.spriteBatch, $"Things to test: Gravitation potion/globe please", new Vector2(Main.screenWidth / 2, 112), new Color(255, 255, 200), 0.3f, 0.5f);
+			//Utils.DrawBorderStringBig(Main.spriteBatch, $"Things to test: Gravitation potion/globe please", new Vector2(Main.screenWidth / 2, 112), new Color(255, 255, 200), 0.3f, 0.5f);
 
 			/*Terraria.UI.Chat.ChatManager.DrawColorCodedString(Main.spriteBatch, font, ChatManager.ParseMessage("what? [c/ff22ff:This is a test of the\nnational emergency fuck system\nwoo] no way!", Color.White).ToArray(), new Vector2(Main.screenWidth / 2, 126), Color.White, 0, default, Vector2.One, out var hovered, -1);
 
@@ -239,7 +239,7 @@ namespace StarlightRiver.Content.Items
 			*/
 			if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.T))
 			{
-				var spriteBatch = Main.spriteBatch;
+				SpriteBatch spriteBatch = Main.spriteBatch;
 				var target1 = new Rectangle(100, 400, Main.screenWidth / 10, Main.screenHeight / 10);
 				var target2 = new Rectangle(100, 400 + Main.screenHeight / 10 + 20, Main.screenWidth / 10, Main.screenHeight / 10);
 				var target3 = new Rectangle(100, 400 + Main.screenHeight / 10 * 2 + 40, Main.screenWidth / 10, Main.screenHeight / 10);

@@ -168,7 +168,9 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 		{
 			LightingBuffer.bufferNeedsPopulated = true;
 
-			if (Main.dedServ || !ScreenTracker.OnScreenScreenspace(new Rectangle(destinationRectangle.X, destinationRectangle.Y, texture.Width, texture.Height)))
+			Rectangle cullCheck = destinationRectangle;
+			cullCheck.Offset((-origin).ToPoint());
+			if (Main.dedServ || !ScreenTracker.OnScreenScreenspace(cullCheck))
 				return;
 
 			Rectangle sourceToUse = sourceRectangle ?? texture.Bounds;

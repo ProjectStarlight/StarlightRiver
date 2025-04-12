@@ -224,7 +224,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 			int fuseLen = fuse.Width;
 			float fuseOpacity = 1f;
 
-			if(NPC.IsABestiaryIconDummy)
+			if (NPC.IsABestiaryIconDummy)
 			{
 				NPC.frame = (Main.GameUpdateCount % 20) < 10 ? new Rectangle(0, 0, 32, 28) : new Rectangle(0, 28, 32, 28);
 			}
