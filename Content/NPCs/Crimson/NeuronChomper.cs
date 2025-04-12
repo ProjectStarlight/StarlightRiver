@@ -157,7 +157,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 			Vector2 chainStart = NPC.Center + Vector2.UnitX.RotatedBy(NPC.rotation - 1.57f) * 30;
 
-			var dist = Vector2.Distance(chainStart, homePos);
+			float dist = Vector2.Distance(chainStart, homePos);
 			for (int k = 0; k < dist; k += 26)
 			{
 				Vector2 pos = Vector2.Lerp(chainStart, homePos, k / dist) - screenPos;
@@ -169,9 +169,9 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				float opacity = 1f;
 
 				if (k + 26 > dist)
-					opacity *= (dist % 26) / 26f;
+					opacity *= dist % 26 / 26f;
 
-				var color = Color.Lerp(new Color(255, 255, 140), new Color(255, 100, 200), k / dist) * opacity;
+				Color color = Color.Lerp(new Color(255, 255, 140), new Color(255, 100, 200), k / dist) * opacity;
 
 				spriteBatch.Draw(chain, pos, null, color, pos.DirectionTo(next).ToRotation() + 1.57f, chain.Size() / 2f, 1f, 0, 0);
 			}
@@ -232,21 +232,21 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 		public override void OnSpawn(IEntitySource source)
 		{
-			for(int x = -40; x < 40; x++)
+			for (int x = -40; x < 40; x++)
 			{
-				for(int y = -40; y < 40; y++)
+				for (int y = -40; y < 40; y++)
 				{
-					var tX = x + (int)NPC.Center.X / 16;
-					var tY = y + (int)NPC.Center.Y / 16;
-					var tile = Main.tile[tX, tY];
-					var up = Main.tile[tX, tY - 1];
-					var left = Main.tile[tX - 1, tY];
-					var right = Main.tile[tX + 1, tY];
-					var down = Main.tile[tX, tY + 1];
+					int tX = x + (int)NPC.Center.X / 16;
+					int tY = y + (int)NPC.Center.Y / 16;
+					Tile tile = Main.tile[tX, tY];
+					Tile up = Main.tile[tX, tY - 1];
+					Tile left = Main.tile[tX - 1, tY];
+					Tile right = Main.tile[tX + 1, tY];
+					Tile down = Main.tile[tX, tY + 1];
 
 					if (tile.HasTile && tile.TileType == TileID.Trees && !up.HasTile && !left.HasTile && !right.HasTile && down.HasTile && down.TileType == TileID.Trees)
 					{
-						var target = new Vector2(tX, tY) * 16 + Vector2.One * 8;
+						Vector2 target = new Vector2(tX, tY) * 16 + Vector2.One * 8;
 
 						if (Main.npc.Any(n => n.active && n.ModNPC is NeuronChomper chomper && Vector2.Distance(chomper.homePos, target) < 256))
 							continue;
@@ -262,7 +262,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 		public override void OnKill()
 		{
-			for(int k = 0; k < 60; k++)
+			for (int k = 0; k < 60; k++)
 			{
 				float rot = Main.rand.NextFloat(6.28f);
 				Dust.NewDustPerfect(NPC.Center + Vector2.UnitX.RotatedBy(rot) * Main.rand.NextFloat(20), DustID.Blood, Vector2.UnitX.RotatedBy(rot) * Main.rand.NextFloat(6), 0, default, Main.rand.NextFloat(3));
