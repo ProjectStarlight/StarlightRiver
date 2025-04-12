@@ -200,6 +200,11 @@ namespace StarlightRiver.Content.Tiles.Forest
 			stream.Close();
 		}
 
+		public override void OnSpawn()
+		{
+			offscreenRadius = 600;
+		}
+
 		public override bool ValidTile(Tile tile)
 		{
 			int i = ParentX;
@@ -226,6 +231,14 @@ namespace StarlightRiver.Content.Tiles.Forest
 			float branchRot = Main.windSpeedCurrent * 0.05f + Sway(Center, 0.02f);
 
 			LightingBufferRenderer.DrawWithLighting(branches, Center - Main.screenPosition + Vector2.UnitY * 2, null, Color.White, branchRot, branchOrigin, 1);
+
+			if (StarlightRiver.debugMode)
+			{
+				Rectangle box = Hitbox;
+				box.Inflate(18, 8);
+				box.Offset((-Main.screenPosition).ToPoint());
+				Main.spriteBatch.Draw(Assets.MagicPixel.Value, box, Color.Yellow);
+			}
 		}
 
 		public override void PostDraw(Color lightColor)
