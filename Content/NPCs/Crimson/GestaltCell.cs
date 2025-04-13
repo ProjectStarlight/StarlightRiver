@@ -29,7 +29,10 @@ namespace StarlightRiver.Content.NPCs.Crimson
 		public Vector2 spawnPos;
 		public Vector2 savedPos;
 
+		public int attackChoice;
+
 		public bool autoPositionFollowers = true;
+		public bool contactDamage = true;
 
 		public List<NPC> myFollowers = new();
 
@@ -65,7 +68,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			NPC.defense = 7;
 			NPC.width = 42;
 			NPC.height = 38;
-			NPC.knockBackResist = 0.1f;
+			NPC.knockBackResist = 0.33f;
 		}
 
 		public override void ModifyIncomingHit(ref NPC.HitModifiers modifiers)
@@ -74,6 +77,11 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				modifiers.FinalDamage *= 0.01f;
 
 			modifiers.FinalDamage *= (1f - CellCount * 0.15f);
+		}
+
+		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+		{
+			return MyLeaderCell.contactDamage;
 		}
 
 		/// <summary>
@@ -164,7 +172,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				if (CellCount > 1)
 				{
 					var rot = NPC.velocity.X * -0.05f;
-					var off = Vector2.UnitY.RotatedBy(rot) * -28;
+					var off = Vector2.UnitY.RotatedBy(rot) * -30;
 					lastPos += off;
 					lastRot += rot;
 
@@ -222,10 +230,10 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				{
 					bool spawnedOnLeft = Main.rand.NextBool();
 
-					if (CellCount == 2)
+					if (CellCount == 3)
 						spawnedOnLeft = true;
 
-					if (CellCount == 3)
+					if (CellCount == 4)
 						spawnedOnLeft = false;
 
 					SpawnFollower(arena.X + (spawnedOnLeft ? 0 : arena.Width - NPC.width), (int)NPC.Center.Y);
@@ -444,20 +452,9 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 				NPC.direction = NPC.velocity.X > 0 ? -1 : 1;
 
-				if (Timer > 120 && CellCount == 3)
+				if (Timer > 90 && CellCount > 2)
 				{
-					State = GestaltCellState.MultiCellAttack;
-					Timer = 0;
-				}
-
-				if (Timer > 60 && CellCount == 4)
-				{
-					State = GestaltCellState.MultiCellAttack;
-					Timer = 0;
-				}
-
-				if (Timer > 90 && CellCount == 5)
-				{
+					attackChoice = Main.rand.Next((int)CellCount - 2);
 					State = GestaltCellState.MultiCellAttack;
 					Timer = 0;
 				}
@@ -465,17 +462,17 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 			if (State == GestaltCellState.MultiCellAttack)
 			{
-				switch(CellCount)
+				switch(attackChoice)
 				{
-					case 3:
+					case 0:
 						ThreeCellAttack();
 						break;
 
-					case 4:
+					case 1:
 						FourCellAttack();
 						break;
 
-					case 5:
+					case 2:
 						FiveCellAttack();
 						break;
 				}
@@ -525,7 +522,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				}
 			}
 
-			if (Timer > 60 && Timer <= 135)
+			if (Timer > 60 && Timer <= 150)
 			{
 				for (int k = 0; k < myFollowers.Count; k++)
 				{
@@ -561,19 +558,21 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				}
 			}
 
-			if (Timer == 94 || Timer == 134)
+			if (Timer == 90 + (CellCount - 2) * 4 || Timer == 130 + (CellCount - 2) * 4)
 			{
 				SoundHelper.PlayPitched("Impacts/StoneStrike", 1f, Main.rand.NextFloat(-0.8f, -0.6f), myFollowers[1].Center);
 
 				for(int k = 0; k < 30; k++)
 				{
-					Dust.NewDustPerfect(myFollowers[1].Center, DustID.Crimson, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10));
-					Dust.NewDustPerfect(myFollowers[1].Center, DustID.Blood, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(15));
+					Dust.NewDustPerfect(myFollowers[(int)CellCount - 2].Center, DustID.Crimson, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10));
+					Dust.NewDustPerfect(myFollowers[(int)CellCount - 2].Center, DustID.Blood, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(15));
 				}
 			}
 
 			if (Timer == 150)
 			{
+				contactDamage = false;
+
 				for (int k = 0; k < myFollowers.Count; k++)
 				{
 					var follower = myFollowers[k];
@@ -589,14 +588,22 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				{
 					var follower = myFollowers[k];
 					var followerCell = follower.ModNPC as GestaltCell;
+					var direction = k == 2 ? -1 : 1;
 
-					Vector2 target = NPC.Center + Vector2.UnitY * -30 * (k + 1);
-					follower.Center = Vector2.Lerp(followerCell.savedPos, target, Eases.EaseCubicIn((Timer - 150) / 30f));
+					Vector2 targetPos;
+
+					if (k >= 2)
+						targetPos = NPC.Center + new Vector2(direction * 30, -60);
+					else
+						targetPos = NPC.Center + new Vector2(0, -30 * (k + 1));
+
+					follower.Center = Vector2.Lerp(followerCell.savedPos, targetPos, Eases.EaseCubicIn((Timer - 150) / 30f));
 				}
 			}
 
 			if (Timer > 180)
 			{
+				contactDamage = true;
 				autoPositionFollowers = true;
 				State = GestaltCellState.RestingOrMoving;
 				Timer = 0;
@@ -621,7 +628,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				var follower = myFollowers[2];
 				var followerCell = follower.ModNPC as GestaltCell;
 
-				Vector2 targetPos = NPC.Center + new Vector2(NPC.direction * -52, -40);
+				Vector2 targetPos = NPC.Center + new Vector2(0, -140);
 
 				follower.Center = Vector2.Lerp(followerCell.savedPos, targetPos, Eases.EaseCubicOut((Timer - 30) / 30f));
 			}
@@ -712,19 +719,19 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			{
 				var follower = myFollowers[2];
 
-				for (int i = 0; i < 6; i++)
+				for (int i = 0; i < 7; i++)
 				{
-					Projectile.NewProjectile(follower.GetSource_FromThis(), follower.Center, Vector2.UnitX.RotatedBy(i / 6f * 6.28f) * 8, ModContent.ProjectileType<BrainBolt>(), 20, 0, Main.myPlayer, 210, 1, 20);
+					Projectile.NewProjectile(follower.GetSource_FromThis(), follower.Center, new Vector2((-3 + i) * 3, -20), ModContent.ProjectileType<GestaltMortar>(), 20, 0, Main.myPlayer, Main.rand.Next(3));
 				}
 			}
 
-			if (Timer == 75)
+			if (Timer == 80)
 			{
 				var follower = myFollowers[3];
 
 				for (int i = 0; i < 6; i++)
 				{
-					Projectile.NewProjectile(follower.GetSource_FromThis(), follower.Center, Vector2.UnitX.RotatedBy((i + 0.5f) / 6f * 6.28f) * 8, ModContent.ProjectileType<BrainBolt>(), 20, 0, Main.myPlayer, 210, 1, 20);
+					Projectile.NewProjectile(follower.GetSource_FromThis(), follower.Center, new Vector2((-3 + i) * 3, -20), ModContent.ProjectileType<GestaltMortar>(), 20, 0, Main.myPlayer, Main.rand.Next(3));
 				}
 			}
 
@@ -739,7 +746,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 					Vector2 targetPos;
 
 					if (k >= 2)
-						targetPos = NPC.Center + new Vector2(direction * 32, -60);
+						targetPos = NPC.Center + new Vector2(direction * 30, -60);
 					else
 						targetPos = NPC.Center + new Vector2(0, -30 * (k + 1));
 
@@ -812,14 +819,27 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 					Vector2 pos = myFollowers[k].Center;
 					float dist = Vector2.Distance(pos, lastpos);
+					var rot = pos.DirectionTo(lastpos).ToRotation();
 
-					Rectangle target = new Rectangle((int)(pos.X - Main.screenPosition.X), (int)(pos.Y - Main.screenPosition.Y), (int)dist, 4);
+					Rectangle target = new Rectangle((int)(pos.X - Main.screenPosition.X), (int)(pos.Y - Main.screenPosition.Y), (int)dist, 2);
 					Color color = Color.Lerp(new Color(255, 160, 100, 150), new Color(255, 100, 220, 150), 0.5f + MathF.Sin((Main.GameUpdateCount + k * 5) / 4f) * 0.5f);
 
-					spriteBatch.Draw(tex, target, null, color, pos.DirectionTo(lastpos).ToRotation(), new Vector2(0, tex.Height / 2f), 0, 0);
+					pos += Vector2.UnitY.RotatedBy(rot) * MathF.Sin(Main.GameUpdateCount * 0.1f + k * 0.2f) * 4;
+					Rectangle target2 = new Rectangle((int)(pos.X - Main.screenPosition.X), (int)(pos.Y - Main.screenPosition.Y), (int)dist, 2);
+					Color color2 = Color.Lerp(new Color(100, 220, 255, 150), new Color(120, 255, 120, 150), 0.5f + MathF.Sin((Main.GameUpdateCount + k * 5) / 5f) * 0.5f);
 
-					if (k < 2)
-					lastpos = pos;
+					pos += Vector2.UnitY.RotatedBy(rot) * MathF.Sin(Main.GameUpdateCount * 0.1f + k * 0.2f) * 4;
+					Rectangle target3 = new Rectangle((int)(pos.X - Main.screenPosition.X), (int)(pos.Y - Main.screenPosition.Y), (int)dist, 2);
+					Color color3 = Color.Lerp(new Color(200, 255, 255, 150), new Color(210, 100, 255, 150), 0.5f + MathF.Sin((Main.GameUpdateCount + k * 5) / 6f) * 0.5f);
+
+					spriteBatch.Draw(tex, target, null, color, rot, new Vector2(0, tex.Height / 2f), 0, 0);
+					spriteBatch.Draw(tex, target2, null, color2, rot, new Vector2(0, tex.Height / 2f), 0, 0);
+					spriteBatch.Draw(tex, target3, null, color3, rot, new Vector2(0, tex.Height / 2f), 0, 0);
+
+					pos = myFollowers[k].Center;
+
+					if (k < 2 || attackChoice == 0)
+						lastpos = pos;
 				}
 			});
 

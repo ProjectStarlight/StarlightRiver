@@ -3579,6 +3579,7 @@ Projectiles: {
 	ConstructSpawner.DisplayName: Construct Spawner
 	GauntletSpawner.DisplayName: Gauntlet Spawner
 	SpawnEgg.DisplayName: Spawn Egg
+	GestaltMortar.DisplayName: Mind Mortar
 }
 
 Biomes: {
