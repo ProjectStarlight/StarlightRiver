@@ -1,14 +1,7 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Dusts;
-using StarlightRiver.Content.Items.Misc;
-using StarlightRiver.Core.Loaders;
+﻿using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.LightingSystem;
-using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
-using Terraria.DataStructures;
-using Terraria.Graphics.Effects;
-using static tModPorter.ProgressUpdate;
 
 namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 {
@@ -111,7 +104,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 				spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointWrap, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
-				var fade = Assets.Masks.GlowLarge.Value;
+				Texture2D fade = Assets.Masks.GlowLarge.Value;
 				spriteBatch.Draw(fade, home - Main.screenPosition, null, Color.Black * 0.3f * ArenaOpacity, 0, fade.Size() / 2f, 2000f / fade.Width, 0, 0);
 
 				spriteBatch.End();
@@ -135,7 +128,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 			Vector2 pos = home - Main.screenPosition - tex.Size() / 2f;
 
-			Rectangle frame = new Rectangle(0, texOver.Height / 3 * shellFrame, texOver.Width, texOver.Height / 3);
+			var frame = new Rectangle(0, texOver.Height / 3 * shellFrame, texOver.Width, texOver.Height / 3);
 
 			LightingBufferRenderer.DrawWithLighting(tex, pos, Color.Gray);
 			LightingBufferRenderer.DrawWithLighting(texOver, pos, frame, Color.White);
