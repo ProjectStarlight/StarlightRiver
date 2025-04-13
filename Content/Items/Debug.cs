@@ -1,34 +1,10 @@
-using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Abilities.ForbiddenWinds;
-using StarlightRiver.Content.Abilities.Hint;
 using StarlightRiver.Content.Bosses.TheThinkerBoss;
 using StarlightRiver.Content.CustomHooks;
-using StarlightRiver.Content.Dusts;
-using StarlightRiver.Content.Events;
-using StarlightRiver.Content.GUI;
-using StarlightRiver.Content.Items.Dungeon;
-using StarlightRiver.Content.Items.Haunted;
-using StarlightRiver.Content.Items.UndergroundTemple;
-using StarlightRiver.Content.Items.Vitric;
-using StarlightRiver.Content.Noise;
-using StarlightRiver.Content.NPCs.Starlight;
-using StarlightRiver.Content.PersistentData;
-using StarlightRiver.Content.Tiles.Crimson;
-using StarlightRiver.Content.Tiles.Dungeon;
-using StarlightRiver.Content.Tiles.Forest;
-using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.LightingSystem;
-using StarlightRiver.Core.Systems.PersistentDataSystem;
-using Steamworks;
-using System;
-using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.UI.Chat;
-using Terraria.WorldBuilding;
-using static System.Net.WebRequestMethods;
 
 namespace StarlightRiver.Content.Items
 {
@@ -87,6 +63,8 @@ namespace StarlightRiver.Content.Items
 			//AlicanSafetySystem.DebugForceState(2);
 
 			//KeybindHelper.OpenKeybindsWithHelp();
+
+			player.ConsumedLifeFruit = 0;
 
 			for (int k = 0; k < NPCLoader.NPCCount; k++)
 			{
