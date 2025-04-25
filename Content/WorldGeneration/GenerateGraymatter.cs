@@ -238,5 +238,51 @@ namespace StarlightRiver.Core
 
 			return safe;
 		}
+
+		public void GenerateGestaltStructure(int x, int y)
+		{
+			for (int x1 = 0; x1 < 75; x1++)
+			{
+				WorldGen.PlaceTile(x + x1, y, Mod.Find<ModTile>("GestaltCellsBarrier").Type, true, true);
+			}
+
+			PillarDown(x + 10, y + 1);
+			PillarDown(x + 27, y + 1);
+			PillarDown(x + 48, y + 1);
+			PillarDown(x + 65, y + 1);
+		}
+
+		private void PillarDown(int x, int y)
+		{
+
+			for (int y1 = y; y1 < Main.maxTilesY; y1++)
+			{
+				for (int x1 = -1; x1 <= 1; x1++)
+				{
+					WorldGen.PlaceWall(x + x1, y1, WallID.Flesh);
+				}
+
+				var tile = Framing.GetTileSafely(x, y1);
+
+				if (tile.HasTile && Main.tileSolid[tile.type])
+				{
+					for (int up = -6; up < 10; up++)
+					{
+						int w = 4 - up / 4;
+
+						for (int side = -w; side < w; side++)
+						{
+							WorldGen.PlaceWall(x + side, y1 - up, WallID.CrimstoneUnsafe);
+							if (WorldGen.genRand.NextBool(Math.Max(1, up)))
+							{
+								Main.tile[x + side, y1 - up].WallType = WallID.CrimstoneBrick;
+							}
+						}
+					}
+
+					break;
+				}
+			}
+		}
 	}
 }

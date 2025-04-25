@@ -3015,6 +3015,11 @@ Items: {
 		DisplayName: Pink Laser Pointer
 		Tooltip: ""
 	}
+
+	GestaltCellsBarrierItem: {
+		DisplayName: GestaltCellsBarrierItem
+		Tooltip: "{{Debug}} item"
+	}
 }
 
 Tiles: {
@@ -3228,6 +3233,8 @@ Tiles: {
 	SmoothBrassPlate.MapEntry: Smooth Brass Plate
 	RawOnyx.MapEntry: Raw Onyx
 	LockedOnyx.MapEntry: Locked Onyx
+	GestaltAltar.MapEntry: ""
+	ObservatoryDoodad.MapEntry: ""
 }
 
 Projectiles: {

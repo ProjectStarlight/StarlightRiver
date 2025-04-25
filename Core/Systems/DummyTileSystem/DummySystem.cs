@@ -12,7 +12,7 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 		public override void Load()
 		{
 			On_Main.DrawProjectiles += DrawDummies;
-			On_Main.DoDraw_DrawNPCsBehindTiles += DrawBehindNPCs;
+			On_Main.DoDraw_Tiles_NonSolid += DrawBehindTiles;
 			On_Main.DrawPlayers_AfterProjectiles += DrawOverPlayers;
 			On_Player.TileInteractionsCheck += RightClickDummies;
 		}
@@ -39,9 +39,9 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 			Main.spriteBatch.End();
 		}
 
-		private void DrawBehindNPCs(On_Main.orig_DoDraw_DrawNPCsBehindTiles orig, Main self)
+		private void DrawBehindTiles(On_Main.orig_DoDraw_Tiles_NonSolid orig, Main self)
 		{
-			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.Transform);
+			//Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.Transform);
 
 			dummies.ForEach(n =>
 			{
@@ -49,7 +49,7 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 					n.DrawBehindTiles();
 			});
 
-			Main.spriteBatch.End();
+			//Main.spriteBatch.End();
 
 			orig(self);
 		}

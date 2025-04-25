@@ -74,6 +74,21 @@ namespace StarlightRiver.Content.Items
 				Main.BestiaryTracker.Chats.RegisterChatStartWith(npc);
 				Main.BestiaryTracker.Sights.RegisterWasNearby(npc);
 			}
+			if (Main.LocalPlayer.controlDown)
+			{
+				ModContent.GetInstance<StarlightWorld>().GenerateGestaltStructure((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
+			}
+			else
+			{
+				for (int x = -100; x < 100; x++)
+				{
+					for (int y = -100; y < 100; y++)
+					{
+						Tile tile = Framing.GetTileSafely(x + (int)(Main.MouseWorld.X / 16), y + (int)(Main.MouseWorld.Y / 16));
+						tile.WallType = WallID.None;
+					}
+				}
+			}
 
 			return true;
 		}
