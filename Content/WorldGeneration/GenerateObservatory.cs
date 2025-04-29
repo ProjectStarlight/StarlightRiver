@@ -24,12 +24,12 @@ namespace StarlightRiver.Core
 				{
 					Tile tile = Main.tile[x, y];
 
-					if (tile.HasTile && tile.TileType == TileID.Grass && WorldGenHelper.NonSolidScanUp(new Point16(x, y), 20))
+					if (tile.HasTile && tile.TileType == TileID.Grass && WorldGenHelper.NonSolidScanUp(new Point16(x, y), 40))
 					{
-						if (WorldGenHelper.GetElevationDeviation(new Point16(x, y), observatorySize.Y, 20, 5, true) < 5)
+						if (WorldGenHelper.GetElevationDeviation(new Point16(x, y), observatorySize.Y, 30, 5, true) < 5)
 						{
-							StructureHelper.API.Generator.GenerateStructure("Structures/Observatory", new Point16(x, y - 20), Mod);
-							ModContent.GetInstance<ObservatorySystem>().observatoryRoom = new Rectangle(x + 5, y - 20, 15, 6);
+							StructureHelper.API.Generator.GenerateStructure("Structures/Observatory", new Point16(x - 8, y - 29), Mod);
+							ModContent.GetInstance<ObservatorySystem>().observatoryRoom = new Rectangle(x + 11, y - 20, 16, 7);
 							generated = true;
 							break;
 						}

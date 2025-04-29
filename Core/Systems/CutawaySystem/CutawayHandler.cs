@@ -52,9 +52,9 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 			CutawayHook.NewCutaway(templeOverlay);
 
 			// Observatory overlay
-			observatoryOverlay = new Cutaway(Assets.Overlay.ObservatoryOverlay, ModContent.GetInstance<ObservatorySystem>().ObservatoryRoomWorld.TopLeft() + new Vector2(0, 6) * 16)
+			observatoryOverlay = new Cutaway(Assets.Overlay.ObservatoryOverlay, ModContent.GetInstance<ObservatorySystem>().ObservatoryRoomWorld.TopLeft() + new Vector2(-9, 8) * 16)
 			{
-				Inside = (n) => ModContent.GetInstance<ObservatorySystem>().MainStructureWorld.Intersects(n.Hitbox)
+				Inside = (n) => ModContent.GetInstance<ObservatorySystem>().IsInMainStructure(n)
 			};
 			CutawayHook.NewCutaway(observatoryOverlay);
 		}

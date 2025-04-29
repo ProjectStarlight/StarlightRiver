@@ -33,12 +33,7 @@ namespace StarlightRiver.Content.Biomes
 
 		public override void OnInBiome(Player player)
 		{
-			// TODO: Add check
-			bool biomeCondition = player.Hitbox.Intersects(ModContent.GetInstance<ObservatorySystem>().ObservatoryRoomWorld);
-
-			Rectangle structRect = ModContent.GetInstance<ObservatorySystem>().MainStructureWorld;
-			if (player.Hitbox.Intersects(structRect))
-				fade = 1f - (player.Center.Y - structRect.Y) / structRect.Height;
+			bool biomeCondition = ModContent.GetInstance<ObservatorySystem>().IsInObservatory(player);
 
 			if (biomeCondition && fade < 1)
 				fade += 0.02f;
@@ -95,13 +90,28 @@ namespace StarlightRiver.Content.Biomes
 					spriteBatch.End();
 				}
 			}
+
+			if (StarlightRiver.debugMode)
+			{
+				Main.spriteBatch.Begin();
+				var target = ModContent.GetInstance<ObservatorySystem>().ObservatoryRoomWorld;
+				target.Offset((-Main.screenPosition).ToPoint());
+				Main.spriteBatch.Draw(Assets.MagicPixel.Value, target, Color.Green * 0.25f);
+
+				target = ModContent.GetInstance<ObservatorySystem>().MainStructureWorld;
+				target.Offset((-Main.screenPosition).ToPoint());
+				Main.spriteBatch.Draw(Assets.MagicPixel.Value, target, Color.Orange * 0.25f);
+
+				target = ModContent.GetInstance<ObservatorySystem>().SideStructureWorld;
+				target.Offset((-Main.screenPosition).ToPoint());
+				Main.spriteBatch.Draw(Assets.MagicPixel.Value, target, Color.Red * 0.25f);
+				Main.spriteBatch.End();
+			}
 		}
 
 		public override bool IsBiomeActive(Player player)
 		{
-			return player.Hitbox.Intersects(ModContent.GetInstance<ObservatorySystem>().ObservatoryRoomWorld) ||
-				player.Hitbox.Intersects(ModContent.GetInstance<ObservatorySystem>().MainStructureWorld) ||
-				fade > 0;
+			return ModContent.GetInstance<ObservatorySystem>().IsInObservatory(player) || fade > 0;
 		}
 	}
 
@@ -111,6 +121,17 @@ namespace StarlightRiver.Content.Biomes
 
 		public Rectangle ObservatoryRoomWorld => new(observatoryRoom.X * 16, observatoryRoom.Y * 16, observatoryRoom.Width * 16, observatoryRoom.Height * 16);
 		public Rectangle MainStructureWorld => new(observatoryRoom.X * 16, observatoryRoom.Y * 16 + 7 * 16, observatoryRoom.Width * 16, observatoryRoom.Height * 16 * 2);
+		public Rectangle SideStructureWorld => new(observatoryRoom.X * 16 - 9 * 16, observatoryRoom.Y * 16 + 11 * 16, 9 * 16, 10 * 16);
+
+		public bool IsInMainStructure(Player player)
+		{
+			return player.Hitbox.Intersects(MainStructureWorld) || player.Hitbox.Intersects(SideStructureWorld);
+		}
+
+		public bool IsInObservatory(Player player)
+		{
+			return IsInMainStructure(player) || player.Hitbox.Intersects(ObservatoryRoomWorld);
+		}
 
 		public override void ModifySunLightColor(ref Color tileColor, ref Color backgroundColor)
 		{
