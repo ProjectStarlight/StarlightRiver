@@ -68,13 +68,13 @@ namespace StarlightRiver.Content.Tiles.Starlight
 		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 		{
 			r = 0.2f;
-			g = 0.6f;
+			g = 0.45f;
 			b = 1f;
 		}
 
 		public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch)
 		{
-			DefaultDrawPylonCrystal(spriteBatch, i, j, Assets.Tiles.Starlight.StarlightPylon_Crystal, Assets.Tiles.Starlight.StarlightPylon_CrystalHighlight, new Vector2(0f, -12f), Color.White * 0.1f, new Color(255, 120, 0), 4, CrystalVerticalFrameCount);
+			DefaultDrawPylonCrystal(spriteBatch, i, j, Assets.Tiles.Starlight.StarlightPylon_Crystal, Assets.Tiles.Starlight.StarlightPylon_CrystalHighlight, new Vector2(0f, -12f), Color.White * 0.1f, new Color(120, 200, 255), 4, CrystalVerticalFrameCount);
 		}
 
 		public override void DrawMapIcon(ref MapOverlayDrawContext context, ref string mouseOverText, TeleportPylonInfo pylonInfo, bool isNearPylon, Color drawColor, float deselectedScale, float selectedScale)

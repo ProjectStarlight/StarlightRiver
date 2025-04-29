@@ -140,7 +140,7 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
-			//player.ActivateCutscene<StarlightPylonActivateCutscene>();
+			player.ActivateCutscene<StarlightPylonActivateCutscene>();
 			//StarlightWorld.FlipFlag(WorldFlags.ThinkerBossOpen);
 			//ModContent.GetInstance<StarlightWorld>().GraymatterGen(new GenerationProgress(), null);
 
@@ -164,7 +164,7 @@ namespace StarlightRiver.Content.Items
 			//Point16 target = new Point16((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
 			//Main.NewText($"Deviation at {target} along width 10: {WorldGenHelper.GetElevationDeviation(target, 10, 20, 10, true)}");
 
-			ModContent.GetInstance<StarlightWorld>().ObservatoryGen(null, null);
+			//ModContent.GetInstance<StarlightWorld>().ObservatoryGen(null, null);
 
 			//Main.LocalPlayer.GetHandler().Shards.Clear();
 			//CagePuzzleSystem.solved = false;

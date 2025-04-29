@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Tiles.Starlight
 {
@@ -34,7 +35,10 @@ namespace StarlightRiver.Content.Tiles.Starlight
 				Fadeout.opacity = 1f - (timer - 30) / 60f;
 			}
 
-
+			if (timer > 150 && timer < 210)
+			{
+				Vector2 pylon = Main.PylonSystem.Pylons.FirstOrDefault(n => n.ModPylon is StarlightPylon).PositionInTiles.ToVector2() * 16;
+			}
 
 			// Ending fade
 			if (timer > 240)
