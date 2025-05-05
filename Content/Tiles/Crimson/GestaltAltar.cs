@@ -28,7 +28,8 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 		public override bool RightClick(int i, int j)
 		{
-			(Dummy(i, j) as GestaltAltarDummy)?.Start();
+			var tile = Framing.GetTileSafely(i, j);
+			(Dummy(i - tile.frameX / 18, j - tile.frameY / 18) as GestaltAltarDummy)?.Start();
 
 			if (NPC.AnyNPCs(ModContent.NPCType<GestaltCell>()))
 				return false;
