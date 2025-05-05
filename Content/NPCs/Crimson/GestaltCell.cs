@@ -1,9 +1,11 @@
-﻿using StarlightRiver.Content.Bosses.TheThinkerBoss;
+﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Bosses.TheThinkerBoss;
 using StarlightRiver.Core.Systems.PixelationSystem;
 using System;
 using System.Collections.Generic;
 using Terraria.Audio;
 using Terraria.ID;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace StarlightRiver.Content.NPCs.Crimson
 {
@@ -64,6 +66,8 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			NPC.width = 42;
 			NPC.height = 38;
 			NPC.knockBackResist = 0.33f;
+			NPC.HitSound = SoundID.NPCHit8;
+			NPC.DeathSound = SoundID.NPCDeath12;
 		}
 
 		public override void ModifyIncomingHit(ref NPC.HitModifiers modifiers)
@@ -133,7 +137,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				opacity += 0.05f;
 
 			if (arena == default)
-				arena = new Rectangle((int)NPC.Center.X - 600, (int)NPC.Center.Y - 500, 1200, 500);
+				arena = GestaltCellArenaSystem.ArenaWorld;
 
 			if (spawnPos == default)
 				spawnPos = NPC.Center;
@@ -179,29 +183,44 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				{
 					float rot = NPC.velocity.X * -0.07f;
 					Vector2 off = Vector2.UnitY.RotatedBy(rot) * -32 + Vector2.UnitX * -NPC.velocity;
-					lastPos += off;
-					lastRot += rot;
+					//lastPos += off;
+					//lastRot += rot;
 
-					myFollowers[1].Center = lastPos;
-					myFollowers[1].rotation = lastRot;
+					myFollowers[1].Center = lastPos + off;
+					myFollowers[1].rotation = lastRot + rot;
 				}
 
 				if (CellCount > 3)
 				{
 					myFollowers[2].Center = lastPos + Vector2.UnitX.RotatedBy(lastRot) * -32;
-					myFollowers[2].rotation = lastRot + NPC.velocity.X * -0.03f;
+					myFollowers[2].rotation = lastRot;
 				}
 
 				if (CellCount > 4)
 				{
 					myFollowers[3].Center = lastPos + Vector2.UnitX.RotatedBy(lastRot) * 32;
-					myFollowers[3].rotation = lastRot + NPC.velocity.X * -0.03f;
+					myFollowers[3].rotation = lastRot;
 				}
 			}
 
 			if (State == GestaltCellState.Fleeing)
 			{
-				if (Timer > 30)
+				CheckTarget();
+
+				NPC.velocity.X *= 0.95f;
+
+				if (Target != null)
+				{
+					State = GestaltCellState.RestingOrMoving;
+					Timer = 0;
+					return;
+
+				}
+
+				if (Timer > 240)
+					opacity = 1f - (Timer - 240) / 60f;
+
+				if (Timer > 300)
 					NPC.active = false;
 
 				return;
@@ -240,10 +259,12 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 			bool targetChanged = CheckTarget();
 
-			if (targetChanged && Target is null)
+			if (Target is null)
 			{
 				State = GestaltCellState.Fleeing;
 				Timer = 0;
+
+				return;
 			}
 
 			// Main AI, check cell count then choose an action
@@ -277,6 +298,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 					NPC.active = false;
 
 				NPC.direction = myLeader.direction;
+				NPC.velocity *= 0;
 				return;
 			}
 
@@ -588,7 +610,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 					Vector2 targetPos;
 
 					if (k >= 2)
-						targetPos = NPC.Center + new Vector2(direction * 30, -60);
+						targetPos = NPC.Center + new Vector2(direction * 30, -30);
 					else
 						targetPos = NPC.Center + new Vector2(0, -30 * (k + 1));
 
@@ -608,7 +630,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 		public void FourCellAttack()
 		{
 			if (Timer < 30)
-				NPC.velocity.X *= 0.97f;
+				NPC.velocity.X *= 0.95f;
 
 			if (Timer == 30)
 			{
@@ -646,7 +668,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				NPC follower = myFollowers[2];
 				var followerCell = follower.ModNPC as GestaltCell;
 
-				Vector2 targetPos = NPC.Center + new Vector2(-32, -60);
+				Vector2 targetPos = NPC.Center + new Vector2(-32, -30);
 
 				follower.Center = Vector2.Lerp(followerCell.savedPos, targetPos, Eases.EaseCubicOut((Timer - 60) / 30f));
 			}
@@ -661,7 +683,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 		public void FiveCellAttack()
 		{
 			if (Timer < 30)
-				NPC.velocity.X *= 0.9f;
+				NPC.velocity.X *= 0.85f;
 
 			if (Timer == 30)
 			{
@@ -741,7 +763,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 					Vector2 targetPos;
 
 					if (k >= 2)
-						targetPos = NPC.Center + new Vector2(direction * 30, -60);
+						targetPos = NPC.Center + new Vector2(direction * 30, -30);
 					else
 						targetPos = NPC.Center + new Vector2(0, -30 * (k + 1));
 
@@ -768,8 +790,8 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			{
 				1 => NPC.Center + Vector2.UnitY * -28,
 				2 => NPC.Center + Vector2.UnitY * -60,
-				3 => NPC.Center + new Vector2(-32, -60),
-				4 => NPC.Center + new Vector2(32, -60),
+				3 => NPC.Center + new Vector2(-32, -30),
+				4 => NPC.Center + new Vector2(32, -30),
 				_ => NPC.Center,
 			};
 		}
@@ -788,14 +810,41 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			if (StarlightRiver.debugMode)
+			if (StarlightRiver.debugMode && Leader)
 			{
-				Rectangle box = arena;
-				box.Offset((-Main.screenPosition).ToPoint());
-
-				spriteBatch.Draw(Assets.MagicPixel.Value, box, Color.White * 0.15f);
+				Rectangle ar = new(arena.X - (int)Main.screenPosition.X, arena.Y - (int)Main.screenPosition.Y, arena.Width, arena.Height);
+				spriteBatch.Draw(Assets.MagicPixel.Value, ar, Color.Red * 0.25f);
 			}
 
+			// Draw arena dev art
+			Rectangle floor = new(arena.X - (int)Main.screenPosition.X - 16, arena.Y + arena.Height - (int)Main.screenPosition.Y, arena.Width + 32, 16);
+			spriteBatch.Draw(Assets.MagicPixel.Value, floor, Color.Lerp(Main.DiscoColor, Color.White, 0.5f) * 0.75f * opacity);
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+
+			Texture2D barrier = Assets.MotionTrail.Value;
+			var sourceRect = new Rectangle(0, (int)(Main.GameUpdateCount * 0.4f), barrier.Width, barrier.Height * 4);
+			var sourceRect2 = new Rectangle(0, (int)(Main.GameUpdateCount * -0.73f), barrier.Width, barrier.Height * 4);
+
+			var targetRect = new Rectangle((int)(arena.X - Main.screenPosition.X) - 64, (int)(arena.Y - Main.screenPosition.Y), 64, 30 * 16);
+			spriteBatch.Draw(barrier, targetRect, sourceRect, new Color(255, 100, 100, 0) * 0.3f * opacity);
+			spriteBatch.Draw(barrier, targetRect, sourceRect2, new Color(255, 50, 50, 0) * 0.2f * opacity);
+			targetRect.Inflate(-24, 0);
+			targetRect.Offset(24, 0);
+			spriteBatch.Draw(barrier, targetRect, sourceRect2, new Color(255, 255, 255, 0) * 0.5f * opacity);
+
+			targetRect = new Rectangle((int)(arena.X - Main.screenPosition.X) + 75 * 16, (int)(arena.Y - Main.screenPosition.Y), 64, 30 * 16);
+			spriteBatch.Draw(barrier, targetRect, sourceRect, new Color(255, 100, 100, 0) * 0.3f * opacity, 0, default, SpriteEffects.FlipHorizontally, 0);
+			spriteBatch.Draw(barrier, targetRect, sourceRect2, new Color(255, 50, 50, 0) * 0.2f * opacity, 0, default, SpriteEffects.FlipHorizontally, 0);
+			targetRect.Inflate(-24, 0);
+			targetRect.Offset(-24, 0);
+			spriteBatch.Draw(barrier, targetRect, sourceRect2, new Color(255, 255, 255, 0) * 0.5f * opacity, 0, default, SpriteEffects.FlipHorizontally, 0);
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+
+			// draw cell
 			Texture2D tex = Assets.NPCs.Crimson.GestaltCell.Value;
 
 			Vector2 scale = Vector2.One * NPC.scale;

@@ -3644,6 +3644,11 @@ Biomes: {
 		DisplayName: Evasion Shrine Biome
 		TownNPCDialogueName: the Evasion Shrine Biome
 	}
+
+	GestaltCellArena: {
+		DisplayName: Gestalt Cell Arena
+		TownNPCDialogueName: the Gestalt Cell Arena
+	}
 }
 
 NPCs: {

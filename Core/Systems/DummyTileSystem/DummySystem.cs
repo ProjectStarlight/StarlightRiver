@@ -56,13 +56,13 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 
 		private void DrawOverPlayers(On_Main.orig_DrawPlayers_AfterProjectiles orig, Main self)
 		{
+			orig(self);
+
 			dummies.ForEach(n =>
 			{
 				if (!n.offscreen)
 					n.DrawOverPlayer();
 			});
-
-			orig(self);
 		}
 
 		public override void Unload()

@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Noise;
+﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Noise;
 using StarlightRiver.Content.Tiles.Crimson;
 using StarlightRiver.Content.Tiles.Forest;
 using StarlightRiver.Content.Tiles.Palestone;
@@ -100,6 +101,92 @@ namespace StarlightRiver.Core
 							k += 30;
 						}
 					}
+				}
+			}
+
+			// Gestalt arena
+			bool generated = false;
+
+			for (int x = Main.maxTilesX / 2; x < Main.maxTilesX - 100; x++)
+			{
+				bool leftCrimson = false;
+				bool rightCrimson = false;
+
+				for (int y = 100; y < Main.worldSurface; y++)
+				{
+					Tile tileL = Main.tile[x - 30, y];
+					Tile tileR = Main.tile[x + 30, y];
+
+					if (tileL.HasTile && TileID.Sets.Crimson[tileL.TileType])
+						leftCrimson = true;
+
+					if (tileR.HasTile && TileID.Sets.Crimson[tileR.TileType])
+						rightCrimson = true;
+				}
+
+				if (!leftCrimson || !rightCrimson)
+					continue;
+
+				for (int y = 100; y < Main.worldSurface; y++)
+				{
+					Tile tile = Main.tile[x, y];
+
+					if (tile.HasTile && tile.TileType == TileID.CrimsonGrass && WorldGenHelper.NonSolidScanUp(new Point16(x, y), 40))
+					{
+						if (WorldGenHelper.GetElevationDeviation(new Point16(x, y), 10, 5, 2, true) < 2)
+						{
+							WorldGenHelper.PlaceMultitile(new Point16(x, y-5), ModContent.TileType<GestaltAltar>());
+							GenerateGestaltStructure(x - 33, y - 60);
+							generated = true;
+							break;
+						}
+					}
+				}
+
+				if (generated)
+					break;
+			}
+
+			if (!generated)
+			{
+				for (int x = Main.maxTilesX / 2; x > 100; x--)
+				{
+					bool leftCrimson = false;
+					bool rightCrimson = false;
+
+					for (int y = 100; y < Main.worldSurface; y++)
+					{
+						Tile tileL = Main.tile[x - 30, y];
+						Tile tileR = Main.tile[x + 30, y];
+
+						if (tileL.HasTile && TileID.Sets.Crimson[tileL.TileType])
+							leftCrimson = true;
+
+						if (tileR.HasTile && TileID.Sets.Crimson[tileR.TileType])
+							rightCrimson = true;
+					}
+
+					if (!leftCrimson || !rightCrimson)
+						continue;
+
+					for (int y = 100; y < Main.worldSurface; y++)
+					{
+						Tile tile = Main.tile[x, y];
+
+						if (tile.HasTile && tile.TileType == TileID.CrimsonGrass && WorldGenHelper.NonSolidScanUp(new Point16(x, y), 40))
+						{
+							if (WorldGenHelper.GetElevationDeviation(new Point16(x, y), 10, 5, 2, true) < 2)
+							{
+								WorldGenHelper.PlaceMultitile(new Point16(x, y - 5), ModContent.TileType<GestaltAltar>());
+								GenerateGestaltStructure(x - 33, y - 60);
+								generated = true;
+								break;
+							}
+						}
+					}
+
+					if (generated)
+						break;
 				}
 			}
 		}
@@ -241,9 +328,17 @@ namespace StarlightRiver.Core
 
 		public void GenerateGestaltStructure(int x, int y)
 		{
-			for (int x1 = 0; x1 < 75; x1++)
+			GestaltCellArenaSystem.arena = new Rectangle(x, y - 30, 75, 30);
+
+			for (int x1 = 0; x1 <= 75; x1++)
 			{
 				WorldGen.PlaceTile(x + x1, y, Mod.Find<ModTile>("GestaltCellsBarrier").Type, true, true);
+			}
+
+			for (int y1 = 0; y1 < 30; y1++)
+			{
+				WorldGen.PlaceTile(x - 1, y - y1, Mod.Find<ModTile>("GestaltCellsBarrier").Type, true, true);
+				WorldGen.PlaceTile(x + 75, y - y1, Mod.Find<ModTile>("GestaltCellsBarrier").Type, true, true);
 			}
 
 			PillarDown(x + 10, y + 1);
