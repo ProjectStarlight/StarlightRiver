@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Biomes
 
 		public override void OnInBiome(Player player)
 		{
-			bool biomeCondition = ModContent.GetInstance<ObservatorySystem>().IsInObservatory(player);
+			bool biomeCondition = ObservatorySystem.IsInObservatory(player);
 
 			if (biomeCondition && fade < 1)
 				fade += 0.02f;
@@ -94,15 +94,15 @@ namespace StarlightRiver.Content.Biomes
 			if (StarlightRiver.debugMode)
 			{
 				Main.spriteBatch.Begin();
-				var target = ModContent.GetInstance<ObservatorySystem>().ObservatoryRoomWorld;
+				var target = ObservatorySystem.ObservatoryRoomWorld;
 				target.Offset((-Main.screenPosition).ToPoint());
 				Main.spriteBatch.Draw(Assets.MagicPixel.Value, target, Color.Green * 0.25f);
 
-				target = ModContent.GetInstance<ObservatorySystem>().MainStructureWorld;
+				target = ObservatorySystem.MainStructureWorld;
 				target.Offset((-Main.screenPosition).ToPoint());
 				Main.spriteBatch.Draw(Assets.MagicPixel.Value, target, Color.Orange * 0.25f);
 
-				target = ModContent.GetInstance<ObservatorySystem>().SideStructureWorld;
+				target = ObservatorySystem.SideStructureWorld;
 				target.Offset((-Main.screenPosition).ToPoint());
 				Main.spriteBatch.Draw(Assets.MagicPixel.Value, target, Color.Red * 0.25f);
 				Main.spriteBatch.End();
@@ -111,24 +111,26 @@ namespace StarlightRiver.Content.Biomes
 
 		public override bool IsBiomeActive(Player player)
 		{
-			return ModContent.GetInstance<ObservatorySystem>().IsInObservatory(player) || fade > 0;
+			return ObservatorySystem.IsInObservatory(player) || fade > 0;
 		}
 	}
 
 	internal class ObservatorySystem : ModSystem
 	{
-		public Rectangle observatoryRoom;
+		public static Rectangle observatoryRoom;
+		public static bool observatoryOpen;
+		public static bool pylonAppearsOn;
 
-		public Rectangle ObservatoryRoomWorld => new(observatoryRoom.X * 16, observatoryRoom.Y * 16, observatoryRoom.Width * 16, observatoryRoom.Height * 16);
-		public Rectangle MainStructureWorld => new(observatoryRoom.X * 16, observatoryRoom.Y * 16 + 7 * 16, observatoryRoom.Width * 16, observatoryRoom.Height * 16 * 2);
-		public Rectangle SideStructureWorld => new(observatoryRoom.X * 16 - 9 * 16, observatoryRoom.Y * 16 + 11 * 16, 9 * 16, 10 * 16);
+		public static Rectangle ObservatoryRoomWorld => new(observatoryRoom.X * 16, observatoryRoom.Y * 16, observatoryRoom.Width * 16, observatoryRoom.Height * 16);
+		public static Rectangle MainStructureWorld => new(observatoryRoom.X * 16, observatoryRoom.Y * 16 + 7 * 16, observatoryRoom.Width * 16, observatoryRoom.Height * 16 * 2);
+		public static Rectangle SideStructureWorld => new(observatoryRoom.X * 16 - 9 * 16, observatoryRoom.Y * 16 + 11 * 16, 9 * 16, 10 * 16);
 
-		public bool IsInMainStructure(Player player)
+		public static bool IsInMainStructure(Player player)
 		{
 			return player.Hitbox.Intersects(MainStructureWorld) || player.Hitbox.Intersects(SideStructureWorld);
 		}
 
-		public bool IsInObservatory(Player player)
+		public static bool IsInObservatory(Player player)
 		{
 			return IsInMainStructure(player) || player.Hitbox.Intersects(ObservatoryRoomWorld);
 		}
@@ -147,11 +149,14 @@ namespace StarlightRiver.Content.Biomes
 		public override void SaveWorldData(TagCompound tag)
 		{
 			tag["observatoryRoom"] = observatoryRoom;
+			tag["observatoryOpen"] = observatoryOpen;
 		}
 
 		public override void LoadWorldData(TagCompound tag)
 		{
 			observatoryRoom = tag.Get<Rectangle>("observatoryRoom");
+			observatoryOpen = tag.GetBool("observatoryOpen");
+			pylonAppearsOn = observatoryOpen;
 		}
 	}
 }

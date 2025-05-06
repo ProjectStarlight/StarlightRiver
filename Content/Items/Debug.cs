@@ -1,5 +1,6 @@
 using ReLogic.Graphics;
 using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Bosses.TheThinkerBoss;
 using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Tiles.Starlight;
@@ -140,6 +141,7 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
+			ObservatorySystem.pylonAppearsOn = false;
 			player.ActivateCutscene<StarlightPylonActivateCutscene>();
 			//StarlightWorld.FlipFlag(WorldFlags.ThinkerBossOpen);
 			//ModContent.GetInstance<StarlightWorld>().GraymatterGen(new GenerationProgress(), null);

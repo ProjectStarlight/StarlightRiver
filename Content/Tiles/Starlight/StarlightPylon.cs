@@ -1,4 +1,5 @@
 ﻿using ReLogic.Content;
+using StarlightRiver.Content.Biomes;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -65,6 +66,12 @@ namespace StarlightRiver.Content.Tiles.Starlight
 			return true;
 		}
 
+		public override void ValidTeleportCheck_DestinationPostCheck(TeleportPylonInfo destinationPylonInfo, ref bool destinationPylonValid, ref string errorKey)
+		{
+			destinationPylonValid = ObservatorySystem.observatoryOpen;
+			errorKey = "This pylon is dormant...";
+		}
+
 		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 		{
 			r = 0.2f;
@@ -74,7 +81,10 @@ namespace StarlightRiver.Content.Tiles.Starlight
 
 		public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch)
 		{
-			DefaultDrawPylonCrystal(spriteBatch, i, j, Assets.Tiles.Starlight.StarlightPylon_Crystal, Assets.Tiles.Starlight.StarlightPylon_CrystalHighlight, new Vector2(0f, -12f), Color.White * 0.1f, new Color(120, 200, 255), 4, CrystalVerticalFrameCount);
+			if (ObservatorySystem.pylonAppearsOn)
+				DefaultDrawPylonCrystal(spriteBatch, i, j, Assets.Tiles.Starlight.StarlightPylon_Crystal, Assets.Tiles.Starlight.StarlightPylon_CrystalHighlight, new Vector2(0f, -12f), Color.White * 0.1f, new Color(120, 200, 255), 4, CrystalVerticalFrameCount);	
+			else
+				DefaultDrawPylonCrystal(spriteBatch, i, j, Assets.Tiles.Starlight.StarlightPylon_CrystalDead, Assets.Tiles.Starlight.StarlightPylon_CrystalHighlight, new Vector2(0f, 0f), Color.White * 0.1f, new Color(120, 120, 120), 12, 1);
 		}
 
 		public override void DrawMapIcon(ref MapOverlayDrawContext context, ref string mouseOverText, TeleportPylonInfo pylonInfo, bool isNearPylon, Color drawColor, float deselectedScale, float selectedScale)

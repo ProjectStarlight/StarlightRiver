@@ -29,7 +29,7 @@ namespace StarlightRiver.Core
 						if (WorldGenHelper.GetElevationDeviation(new Point16(x, y), observatorySize.Y, 30, 5, true) < 5)
 						{
 							StructureHelper.API.Generator.GenerateStructure("Structures/Observatory", new Point16(x - 8, y - 29), Mod);
-							ModContent.GetInstance<ObservatorySystem>().observatoryRoom = new Rectangle(x + 11, y - 20, 16, 7);
+							ObservatorySystem.observatoryRoom = new Rectangle(x + 11, y - 20, 16, 7);
 							generated = true;
 							break;
 						}

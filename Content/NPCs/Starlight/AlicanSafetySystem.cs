@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 
 		public static Vector2 IntendedAlicanLocation => IntendedAlicanPhase switch
 		{
-			_ => ModContent.GetInstance<ObservatorySystem>().ObservatoryRoomWorld.TopLeft() + new Vector2(11, 4) * 16
+			_ => ObservatorySystem.ObservatoryRoomWorld.TopLeft() + new Vector2(11, 4) * 16
 		};
 
 		public override void PostUpdateEverything()
