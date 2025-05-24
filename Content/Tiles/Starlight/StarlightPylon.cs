@@ -95,8 +95,16 @@ namespace StarlightRiver.Content.Tiles.Starlight
 
 		public override void DrawMapIcon(ref MapOverlayDrawContext context, ref string mouseOverText, TeleportPylonInfo pylonInfo, bool isNearPylon, Color drawColor, float deselectedScale, float selectedScale)
 		{
-			bool mouseOver = DefaultDrawMapIcon(ref context, Assets.Tiles.Starlight.StarlightPylon_MapIcon, pylonInfo.PositionInTiles.ToVector2() + new Vector2(1.5f, 2f), drawColor, deselectedScale, selectedScale);
-			DefaultMapClickHandle(mouseOver, pylonInfo, ModContent.GetInstance<StarlightPylonItem>().DisplayName.Key, ref mouseOverText);
+			if (ObservatorySystem.pylonAppearsOn)
+			{
+				bool mouseOver = DefaultDrawMapIcon(ref context, Assets.Tiles.Starlight.StarlightPylon_MapIcon, pylonInfo.PositionInTiles.ToVector2() + new Vector2(1.5f, 2f), drawColor, deselectedScale, selectedScale);
+				DefaultMapClickHandle(mouseOver, pylonInfo, ModContent.GetInstance<StarlightPylonItem>().DisplayName.Key, ref mouseOverText);
+			}
+			else
+			{
+				bool mouseOver = DefaultDrawMapIcon(ref context, Assets.Tiles.Starlight.StarlightPylon_MapIconDead, pylonInfo.PositionInTiles.ToVector2() + new Vector2(1.5f, 2f), drawColor, deselectedScale, selectedScale);
+				DefaultMapClickHandle(mouseOver, pylonInfo, ModContent.GetInstance<StarlightPylonItem>().DisplayName.Key, ref mouseOverText);
+			}
 		}
 
 		public override void EmitParticles(int i, int j, Tile tile, short tileFrameX, short tileFrameY, Color tileLight, bool visible)
@@ -240,6 +248,6 @@ namespace StarlightRiver.Content.Tiles.Starlight
 
 	public sealed class StarlightPylonItem : QuickTileItem
 	{
-		public StarlightPylonItem() : base("Starlight Pylon", "You shouldn't have this!", "StarlightPylon", 0, AssetDirectory.Debug, true, 0) { }
+		public StarlightPylonItem() : base("Mysterious Pylon", "You shouldn't have this!", "StarlightPylon", 0, AssetDirectory.Debug, true, 0) { }
 	}
 }
