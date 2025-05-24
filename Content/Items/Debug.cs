@@ -142,8 +142,9 @@ namespace StarlightRiver.Content.Items
 		public override bool? UseItem(Player player)
 		{
 			ObservatorySystem.pylonAppearsOn = false;
+			ObservatorySystem.observatoryOpen = false;
 
-			if(player.controlDown)
+			if (player.controlDown)
 				player.ActivateCutscene<StarlightPylonActivateCutscene>();
 
 			//StarlightWorld.FlipFlag(WorldFlags.ThinkerBossOpen);

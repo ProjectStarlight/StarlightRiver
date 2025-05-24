@@ -71,7 +71,7 @@ namespace StarlightRiver.Content.Tiles.Starlight
 
 		public override void ValidTeleportCheck_DestinationPostCheck(TeleportPylonInfo destinationPylonInfo, ref bool destinationPylonValid, ref string errorKey)
 		{
-			destinationPylonValid = ObservatorySystem.observatoryOpen;
+			destinationPylonValid = ObservatorySystem.observatoryOpen && ObservatorySystem.pylonAppearsOn;
 			errorKey = "This pylon is dormant...";
 		}
 
