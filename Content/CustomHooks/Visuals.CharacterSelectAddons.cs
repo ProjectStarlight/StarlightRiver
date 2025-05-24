@@ -1,7 +1,6 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core.Systems.BarrierSystem;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Terraria.GameContent;
@@ -14,11 +13,6 @@ namespace StarlightRiver.Content.CustomHooks
 	class CharacterSelectAddons : HookGroup
 	{
 		public static ParticleSystem sparkles;
-
-		//TODO: Create a reflection cache for this, or implement a global reflection caching utility
-		private readonly FieldInfo _PlayerPanel = typeof(UICharacterListItem).GetField("_playerPanel", BindingFlags.NonPublic | BindingFlags.Instance);
-		private readonly FieldInfo _Player = typeof(UICharacter).GetField("_player", BindingFlags.NonPublic | BindingFlags.Instance);
-		private readonly FieldInfo Elements = typeof(UIElement).GetField("Elements", BindingFlags.NonPublic | BindingFlags.Instance);
 
 		//Relies on other mods not doing anything visual here to work properly, but there is very little actual danger here, its just some extra draw calls in the UI element.
 		public override void Load()
@@ -58,16 +52,14 @@ namespace StarlightRiver.Content.CustomHooks
 
 			text.Left.Set(190, 0);
 
-			var character = (UICharacter)_PlayerPanel.GetValue(self);
-			var Player = (Player)_Player.GetValue(character);
-			MedalPlayer mp3 = Player.GetModPlayer<MedalPlayer>();
+			Player player = self._playerPanel._player;
+			MedalPlayer mp3 = player.GetModPlayer<MedalPlayer>();
 
-			if (mp3.Player == Player && mp3.medals.Count > 0) //expand only if medals are earned
+			if (mp3.Player == player && mp3.medals.Count > 0) //expand only if medals are earned
 			{
 				self.Height.Set(152, 0);
 
-				var elements = (List<UIElement>)Elements.GetValue(self);
-				foreach (UIElement e in elements.Where(n => n.VAlign == 1))
+				foreach (UIElement e in self.Elements.Where(n => n.VAlign == 1))
 					e.Top.Set(-56, 0);
 			}
 		}
@@ -77,20 +69,18 @@ namespace StarlightRiver.Content.CustomHooks
 			orig(self, spriteBatch);
 			var origin = new Vector2(self.GetDimensions().X, self.GetDimensions().Y);
 
-			//hooray double reflection
-			var character = (UICharacter)_PlayerPanel.GetValue(self);
+			Player player = self._playerPanel._player;
 
-			var Player = (Player)_Player.GetValue(character);
-			AbilityHandler mp = Player.GetHandler();
-			MedalPlayer mp3 = Player.GetModPlayer<MedalPlayer>();
+			AbilityHandler mp = player.GetHandler();
+			MedalPlayer mp3 = player.GetModPlayer<MedalPlayer>();
 
 			if (mp == null || mp3 == null)
 				return;
 
-			for (int k = 0; k < Player.armor.Length; k++)
+			for (int k = 0; k < player.armor.Length; k++)
 			{
-				if (Player.armor[k].ModItem != null && Player.armor[k].ModItem.Mod.Name == StarlightRiver.Instance.Name)
-					Player.GrantPrefixBenefits(Player.armor[k]);
+				if (player.armor[k].ModItem != null && player.armor[k].ModItem.Mod.Name == StarlightRiver.Instance.Name)
+					player.GrantPrefixBenefits(player.armor[k]);
 			}
 
 			float PlayerStamina = mp.StaminaMaxDefault;
@@ -118,19 +108,19 @@ namespace StarlightRiver.Content.CustomHooks
 			{
 				Ability ability = abilities[abilities.Length - 1 - k];
 
-				Texture2D texture = Player.GetHandler().Unlocked(ability.GetType())
+				Texture2D texture = player.GetHandler().Unlocked(ability.GetType())
 					? ability.PreviewTexture.Value
 					: ability.PreviewTextureOff.Value;
 
 				spriteBatch.Draw(texture, origin + new Vector2(542 - k * 32, 64), Color.White);
 			}
 
-			if (Player.statLifeMax > 400) //why vanilla dosent do this I dont know
+			if (player.statLifeMax > 400) //why vanilla dosent do this I dont know
 			{
 				spriteBatch.Draw(TextureAssets.Heart2.Value, origin + new Vector2(80, 37), Color.White);
 			}
 
-			if (Player.GetModPlayer<BarrierPlayer>().maxBarrier > 0)
+			if (player.GetModPlayer<BarrierPlayer>().maxBarrier > 0)
 			{
 				Texture2D barrierTex = Assets.GUI.ShieldHeartOver.Value;
 				Texture2D barrierTex2 = Assets.GUI.ShieldHeart.Value;
@@ -183,10 +173,10 @@ namespace StarlightRiver.Content.CustomHooks
 			}
 
 			if ( //Player is "complete"
-				Player.statLifeMax == 500 &&
-				Player.statManaMax == 200 &&
+				player.statLifeMax == 500 &&
+				player.statManaMax == 200 &&
 				PlayerStamina == 5 &&
-				!abilities.Any(n => !Player.GetHandler().Unlocked(n.GetType()))
+				!abilities.Any(n => !player.GetHandler().Unlocked(n.GetType()))
 				)
 			{
 				Texture2D borderTex = Assets.GUI.GoldBorder.Value;
@@ -203,7 +193,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 			sparkles.DrawParticles(spriteBatch);
 
-			Player.ResetEffects();
+			player.ResetEffects();
 		}
 	}
 }

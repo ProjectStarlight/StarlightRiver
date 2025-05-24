@@ -11,7 +11,7 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 		public static Cutaway cathedralOverlay;
 		public static Cutaway forgeOverlay;
 		public static Cutaway templeOverlay;
-		public static Cutaway observatoryOverlay;
+		//public static Cutaway observatoryOverlay;
 
 		public static void CreateCutaways()
 		{
@@ -52,11 +52,11 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 			CutawayHook.NewCutaway(templeOverlay);
 
 			// Observatory overlay
-			observatoryOverlay = new Cutaway(Assets.Overlay.ObservatoryOverlay, ObservatorySystem.ObservatoryRoomWorld.TopLeft() + new Vector2(-9, 8) * 16)
+			/*observatoryOverlay = new Cutaway(Assets.Overlay.ObservatoryOverlay, ObservatorySystem.ObservatoryRoomWorld.TopLeft() + new Vector2(-9, 8) * 16)
 			{
 				Inside = (n) => ObservatorySystem.IsInMainStructure(n)
 			};
-			CutawayHook.NewCutaway(observatoryOverlay);
+			CutawayHook.NewCutaway(observatoryOverlay);*/
 		}
 
 		/// <summary>

@@ -171,6 +171,16 @@ namespace StarlightRiver.Core.Systems.CutsceneSystem
 
 			return false;
 		}
+
+		/// <summary>
+		/// Gets this players current active cutscene
+		/// </summary>
+		/// <param name="player">The player to get the cutscene for</param>
+		/// <returns>The cutscene the player is in, or null if none</returns>
+		public static Cutscene GetActiveCutscene(this Player player)
+		{
+			return player.GetModPlayer<CutscenePlayer>().activeCutscene;
+		}
 	}
 
 	[Serializable]

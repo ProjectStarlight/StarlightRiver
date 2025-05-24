@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.Tiles.Starlight
 	{
 		public override void InCutscene(Player player)
 		{
-			Vector2 center = ObservatorySystem.ObservatoryRoomWorld.Center();
+			Vector2 center = ObservatorySystem.SideStructureWorld.Center();
 
 			// Opening fade
 			if (timer <= 60)
@@ -48,26 +48,13 @@ namespace StarlightRiver.Content.Tiles.Starlight
 			if (timer == 60)
 			{
 				CameraSystem.TeleportCamera(center);
+				ZoomHandler.SetZoomAnimation(1.5f, 70);
 			}
 
 			if (timer > 70 && timer <= 130)
 			{
 				Fadeout.color = Color.Black;
 				Fadeout.opacity = 1f - (timer - 70) / 60f;
-			}
-
-			if (timer > 150 && timer < 240)
-			{
-				Vector2 pylon = Main.PylonSystem.Pylons.FirstOrDefault(n => n.ModPylon is StarlightPylon).PositionInTiles.ToVector2() * 16;
-				pylon += new Vector2(24, 32);
-
-				float scale = 1f - (timer - 150) / 90f;
-
-				Vector2 off = Main.rand.NextVector2Circular(1, 1);
-				Dust.NewDustPerfect(pylon + off * 128 * scale, ModContent.DustType<Dusts.PixelatedGlow>(), off * -Main.rand.NextFloat(6), 0, new Color(Main.rand.Next(200), 200 + Main.rand.Next(55), 255, 0), Main.rand.NextFloat(0.2f, 0.4f) * scale);
-				
-				off = Main.rand.NextVector2Circular(1, 1);
-				Dust.NewDustPerfect(pylon + off * 128 * scale, ModContent.DustType<Dusts.PixelatedImpactLineDust>(), off * -Main.rand.NextFloat(6), 0, new Color(100, 200 + Main.rand.Next(55), 255, 0), Main.rand.NextFloat(0.1f, 0.2f) * scale);
 			}
 
 			if (timer == 240)
@@ -104,6 +91,7 @@ namespace StarlightRiver.Content.Tiles.Starlight
 			if (timer == 390)
 			{
 				CameraSystem.TeleportCameraBack();
+				ZoomHandler.SetZoomAnimation(1f, 1);
 			}
 
 			if (timer > 390)

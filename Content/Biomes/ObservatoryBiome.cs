@@ -91,7 +91,7 @@ namespace StarlightRiver.Content.Biomes
 				}
 			}
 
-			if (StarlightRiver.debugMode)
+			if (StarlightRiver.debugMode && false)
 			{
 				Main.spriteBatch.Begin();
 				var target = ObservatorySystem.ObservatoryRoomWorld;
