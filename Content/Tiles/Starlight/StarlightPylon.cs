@@ -151,6 +151,7 @@ namespace StarlightRiver.Content.Tiles.Starlight
 				return;
 
 			Texture2D tex = Assets.Tiles.Starlight.StarlightPylon_CrystalDead.Value;
+			var frame = new Rectangle(0, 0, tex.Width, tex.Height / 8);
 			Vector2 pos = Center + new Vector2(46, 32) - Main.screenPosition;
 			float rot = 1.2f;
 
@@ -160,6 +161,11 @@ namespace StarlightRiver.Content.Tiles.Starlight
 
 				Vector2 targetPos = Center - Main.screenPosition;
 				float targetRot = 0f;
+
+				if (timer > 120)
+				{
+					frame.Y = tex.Height / 8 * (int)((timer - 120) / 10f % 8);
+				}
 
 				if (timer > 120 && timer < 180)
 				{
@@ -186,7 +192,7 @@ namespace StarlightRiver.Content.Tiles.Starlight
 				}
 			}
 
-			Main.spriteBatch.Draw(tex, pos, null, new Color(Lighting.GetSubLight(pos + Main.screenPosition)), rot, tex.Size() / 2f, 1, 0, 0);
+			Main.spriteBatch.Draw(tex, pos, frame, new Color(Lighting.GetSubLight(pos + Main.screenPosition)), rot, frame.Size() / 2f, 1, 0, 0);
 		}
 
 		public override void Update()
@@ -194,6 +200,24 @@ namespace StarlightRiver.Content.Tiles.Starlight
 			if (Main.LocalPlayer.InCutscene<StarlightPylonActivateCutscene>())
 			{
 				int timer = Main.LocalPlayer.GetActiveCutscene().timer;
+
+				if (timer > 120 && timer < 210)
+				{
+					Vector2 pos = Center + new Vector2(46, 32);
+					Vector2 targetPos = Center;
+
+					float posProg = Eases.EaseQuadInOut((timer - 120) / 60f);
+					pos = Vector2.Lerp(pos, targetPos, posProg);
+					pos.Y -= MathF.Sin(posProg * 3.14f) * 32;
+
+					if (timer > 180)
+					{
+						pos = targetPos;
+						pos.Y += MathF.Sin((timer - 180) / 30f * 3.14f) * 4;
+					}
+
+					Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.PixelatedGlow>(), Vector2.Zero, 0, new Color(Main.rand.Next(200), 200 + Main.rand.Next(55), 255, 0), Main.rand.NextFloat(0.2f, 0.4f));
+				}
 
 				if (timer > 160 && timer < 210)
 				{
