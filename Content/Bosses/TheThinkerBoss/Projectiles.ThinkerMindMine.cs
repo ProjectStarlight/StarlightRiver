@@ -207,8 +207,8 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 						bodyShader.Parameters["noisemap_t"].SetValue(Assets.Noise.ShaderNoise.Value);
 						bodyShader.Parameters["overlay_t"].SetValue(Assets.Invisible.Value);
 
-						bodyShader.Parameters["u_color"].SetValue((danger ? new Vector3(0.7f, 0.3f, 0.3f) : new Vector3(0.3f, 0.7f, 0.3f)) * scale);
-						bodyShader.Parameters["u_fade"].SetValue(new Vector3(0.3f, 0.3f, 0.0f));
+						bodyShader.Parameters["u_color"].SetValue((danger ? new Vector3(0.3f, 0.15f, 0.15f) : new Vector3(0.15f, 0.3f, 0.15f)) * scale);
+						bodyShader.Parameters["u_fade"].SetValue(new Vector3(0.15f, 0.15f, 0.0f));
 
 						bodyShader.Parameters["u_resolution"].SetValue(Assets.Bosses.TheThinkerBoss.MineBigFlower.Size() * scale);
 						bodyShader.Parameters["mainbody_t"].SetValue(Assets.Bosses.TheThinkerBoss.MineBigFlower.Value);
@@ -219,10 +219,10 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 						batch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointWrap, default, RasterizerState.CullNone, bodyShader, Main.GameViewMatrix.ZoomMatrix);
 
 						Texture2D tex = Assets.Bosses.TheThinkerBoss.MineBigFlower.Value;
-						batch.Draw(tex, proj.Center - Main.screenPosition, null, Color.White, proj.rotation + MathF.Sin(proj.timeLeft * 0.05f) * 0.15f, tex.Size() / 2f, scale + MathF.Sin(proj.timeLeft * 0.12f) * 0.05f, 0, 0);
+						batch.Draw(tex, proj.Center - Main.screenPosition, null, Color.White, proj.rotation, tex.Size() / 2f, scale + MathF.Sin(proj.timeLeft * 0.12f) * 0.05f, 0, 0);
 
-						bodyShader.Parameters["u_color"].SetValue((danger ? new Vector3(0.7f, 0.3f, 0.3f) : new Vector3(0.3f, 0.7f, 0.3f)) * scale);
-						bodyShader.Parameters["u_fade"].SetValue(new Vector3(0.0f, 0.3f, 0.3f));
+						bodyShader.Parameters["u_color"].SetValue((danger ? new Vector3(0.7f, 0.3f, 0.2f) : new Vector3(0.2f, 0.5f, 0.2f)) * scale);
+						bodyShader.Parameters["u_fade"].SetValue(new Vector3(0.0f, 0.2f, 0.2f));
 
 						bodyShader.Parameters["u_resolution"].SetValue(Assets.Bosses.TheThinkerBoss.MineSmallFlower.Size() * scale);
 						bodyShader.Parameters["mainbody_t"].SetValue(Assets.Bosses.TheThinkerBoss.MineSmallFlower.Value);

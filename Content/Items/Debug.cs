@@ -3,6 +3,7 @@ using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Bosses.TheThinkerBoss;
 using StarlightRiver.Content.CustomHooks;
+using StarlightRiver.Content.NPCs.Starlight;
 using StarlightRiver.Content.Tiles.Starlight;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.CutsceneSystem;
@@ -144,6 +145,12 @@ namespace StarlightRiver.Content.Items
 			ObservatorySystem.pylonAppearsOn = false;
 			ObservatorySystem.observatoryOpen = false;
 
+			player.GetHandler().unlockedAbilities.Clear();
+			player.GetHandler().Shards.Clear();
+			player.GetHandler().InfusionLimit = 0;
+
+			AlicanSafetySystem.DebugForceState(0);
+
 			if (player.controlDown)
 				player.ActivateCutscene<StarlightPylonActivateCutscene>();
 
@@ -222,7 +229,8 @@ namespace StarlightRiver.Content.Items
 		private void DrawBeta(On_Main.orig_DoDraw orig, Main self, GameTime gameTime)
 		{
 			orig(self, gameTime);
-			Main.spriteBatch.Begin();
+			return;
+			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.UIScaleMatrix);
 
 			DynamicSpriteFont font = Terraria.GameContent.FontAssets.ItemStack.Value;
 
@@ -239,6 +247,21 @@ namespace StarlightRiver.Content.Items
 
 			Terraria.UI.Chat.ChatManager.DrawColorCodedString(Main.spriteBatch, font, ChatManager.ParseMessage("what? [c/ff22ff:This is a test of the national emergency fuck system woo] no way!\n\ngreen is green but [c/22ff22: green is greener!]", Color.White).ToArray(), new Vector2(Main.screenWidth / 2, 426), Color.White, 0, default, Vector2.One, out var hovered3, 200);
 			*/
+
+			for(int k = 0; k < Main.screenHeight / 32; k ++)
+			{
+				var message = $"ALPHA BUILD DOES NOT REPRESENT FINAL PRODUCT - ";
+
+				if (k % 2 == 0)
+					message = "DO NOT STREAM OR RECORD - ";
+
+				for (int x = 0; x < Main.screenWidth; x += (int)(font.MeasureString(message).X * 1.5f))
+				{
+
+					Main.spriteBatch.DrawString(font, message, new Vector2(x, k * 32), Color.White * 0.3f, 0, Vector2.Zero, 1.5f, 0, 0);
+				}
+			}
+
 			if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.T))
 			{
 				SpriteBatch spriteBatch = Main.spriteBatch;

@@ -15,6 +15,8 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		public int pulseTime;
 		public float arenaFade;
 
+		public float heartPetalProgress;
+
 		public float pulseProg => pulseTime > 25 ? 1f - (pulseTime - 25) / 5f : pulseTime / 25f;
 		public float ArenaOpacity => arenaFade / 120f;
 
@@ -292,6 +294,59 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			return MathF.Pow(pulse, 2) * decay * modulation;
 		}
 
+		private void DrawHeartPetals(SpriteBatch spriteBatch, float scale, Vector2 screenPos)
+		{
+			Effect petalShader = ShaderLoader.GetShader("ThinkerPetal").Value;
+			Effect bodyShader = ShaderLoader.GetShader("ThinkerBody").Value;
+
+			if (petalShader != null && bodyShader != null)
+			{
+				petalShader.Parameters["u_resolution"].SetValue(Assets.Bosses.TheThinkerBoss.PetalSmall.Size());
+				petalShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f);
+
+				petalShader.Parameters["mainbody_t"].SetValue(Assets.GlowTrail.Value);
+				petalShader.Parameters["linemap_t"].SetValue(Assets.GlowTopTrail.Value);
+				petalShader.Parameters["noisemap_t"].SetValue(Assets.Noise.ShaderNoise.Value);
+				petalShader.Parameters["overlay_t"].SetValue(Assets.Bosses.TheThinkerBoss.HeartOver.Value);
+				petalShader.Parameters["u_color"].SetValue(new Vector3(0.5f, 0.3f, 0.3f) * scale);
+				petalShader.Parameters["u_fade"].SetValue(new Vector3(0.1f, 0.2f, 0.1f));
+
+				Vector2 pos = NPC.Center - screenPos;
+
+				// need a scissor enabled rasterizer to be able to draw in bestiary
+				var rasterizer = new RasterizerState() { ScissorTestEnable = true, CullMode = CullMode.None };
+
+				spriteBatch.End();
+				spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointWrap, default, rasterizer, petalShader, Main.GameViewMatrix.ZoomMatrix);
+
+				Texture2D smallPetal = Assets.Bosses.TheThinkerBoss.PetalSmall.Value;
+
+				var origin = new Vector2(0, smallPetal.Height / 2f);
+
+				for (int k = 0; k < 5; k++)
+				{
+					petalShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f + k * 0.2f);
+					float thisScale = Eases.EaseQuadInOut((scale - 0.5f) / 0.5f);
+					float rot = k / 5f * 6.28f;
+					spriteBatch.Draw(smallPetal, pos + Vector2.UnitX.RotatedBy(rot) * 64 * NPC.scale, null, Color.White, rot, origin, NPC.scale, 0, 0);
+				}
+
+				petalShader.Parameters["u_color"].SetValue(new Vector3(0.35f, 0.2f, 0.2f) * scale);
+				petalShader.Parameters["u_fade"].SetValue(new Vector3(0.1f, 0.2f, 0.1f));
+
+				for (int k = 0; k < 5; k++)
+				{
+					petalShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f + k * 0.2f);
+					float thisScale = Eases.EaseQuadInOut((scale - 0.5f) / 0.5f);
+					float rot = k / 5f * 6.28f + 0.682f;
+					spriteBatch.Draw(smallPetal, pos + Vector2.UnitX.RotatedBy(rot) * 96 * NPC.scale, null, Color.White, rot, origin, NPC.scale, 0, 0);
+				}
+
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			}
+		}
+
 		/// <summary>
 		/// Renders the normal "heart" appearance of the thinker
 		/// </summary>
@@ -302,6 +357,9 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			Texture2D glow = Assets.Masks.Glow.Value;
 
 			spriteBatch.Draw(glow, NPC.Center - screenPos, null, Color.Black * 0.5f, NPC.rotation, glow.Size() / 2f, NPC.scale * 2.8f, 0, 0);
+
+			if (heartPetalProgress > 0)
+				DrawHeartPetals(spriteBatch, heartPetalProgress, screenPos);
 
 			// need a scissor enabled rasterizer to be able to draw in bestiary
 			var rasterizer = new RasterizerState() { ScissorTestEnable = true, CullMode = CullMode.None };
