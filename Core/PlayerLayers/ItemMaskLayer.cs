@@ -6,7 +6,7 @@ namespace StarlightRiver.Core.PlayerLayers
 	{
 		public override Position GetDefaultPosition()
 		{
-			return new Between(PlayerDrawLayers.HeldItem, PlayerDrawLayers.ArmOverItem);
+			return new AfterParent(PlayerDrawLayers.HeldItem);
 		}
 
 		public override void Draw(ref PlayerDrawSet drawInfo)
