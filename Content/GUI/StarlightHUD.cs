@@ -7,12 +7,12 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.GUI
 {
-	public class Stamina : SmartUIState
+	public class StarlightHUD : SmartUIState
 	{
 		/// <summary>
 		/// The stamina bar
 		/// </summary>
-		private readonly StaminaBar staminaBar = new();
+		private readonly StarlightBar starlightBar = new();
 
 		/// <summary>
 		/// The timer controlling the gain animation
@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.GUI
 
 		public override void OnInitialize()
 		{
-			AddElement(staminaBar, -303, 1f, 110, 0f, 30, 0f, 0, 0f);
+			AddElement(starlightBar, -303, 1f, 110, 0f, 30, 0f, 0, 0f);
 		}
 
 		public static void StartShardAnimation(Vector2 start)
@@ -152,7 +152,10 @@ namespace StarlightRiver.Content.GUI
 				}
 
 				if (mp.ShardCount % 3 == 0)
-					TextCard.Display("Maximum Starlight Increased", "Your maximum starlight has increased by 1", 240, 1f);
+					TextCard.Display(
+						Language.GetTextValue("Mods.StarlightRiver.GUI.StarlightHUD.IncreaseMessage"),
+						Language.GetTextValue("Mods.StarlightRiver.GUI.StarlightHUD.IncreaseTooltip"),
+						240, 1f);
 			}
 		}
 
@@ -187,12 +190,12 @@ namespace StarlightRiver.Content.GUI
 			shardParticles.UpdateParticles();
 
 			// We render some mouse-over text to display the numerical stamina amount if the mouse is hovered over the bar
-			if (staminaBar.IsMouseHovering)
+			if (starlightBar.IsMouseHovering)
 			{
 				AbilityHandler mp = Main.LocalPlayer.GetHandler();
 				double stamina = Math.Round(mp.Stamina, 1);
 				double staminaMax = Math.Round(mp.StaminaMax, 1);
-				string text = $"Starlight: {stamina}/{staminaMax}";
+				string text = Language.GetText("Mods.StarlightRiver.GUI.StarlightHUD.Hover").Format(stamina, staminaMax);
 				Vector2 pos = Main.MouseScreen + Vector2.One * 16;
 				pos.X = Math.Min(Main.screenWidth - Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(text).X - 6, pos.X);
 				Utils.DrawBorderString(spriteBatch, text, pos, Main.MouseTextColorReal);
@@ -218,10 +221,10 @@ namespace StarlightRiver.Content.GUI
 			if (Main.ResourceSetsManager.ActiveSetKeyName.Contains("HorizontalBars")) // logic for if we are on a bar style
 			{
 				int width = 36 + 12 * (int)mp.StaminaMax;
-				staminaBar.Left.Set(-306 + 258 - width, 1);
-				staminaBar.Top.Set(110 - 44, 0);
-				staminaBar.Height.Set(22, 0);
-				staminaBar.Width.Set(width, 0);
+				starlightBar.Left.Set(-306 + 258 - width, 1);
+				starlightBar.Top.Set(110 - 44, 0);
+				starlightBar.Height.Set(22, 0);
+				starlightBar.Width.Set(width, 0);
 			}
 			else // logic for if we are on an icon style
 			{
@@ -229,19 +232,19 @@ namespace StarlightRiver.Content.GUI
 				{
 					if (Main.playerInventory) // We need to shift over if the inventory is open due to the equipment panel on the right side
 					{
-						staminaBar.Left.Set(-220, 1);
-						staminaBar.Top.Set(90, 0);
+						starlightBar.Left.Set(-220, 1);
+						starlightBar.Top.Set(90, 0);
 					}
 					else
 					{
-						staminaBar.Left.Set(-70, 1);
-						staminaBar.Top.Set(90, 0);
+						starlightBar.Left.Set(-70, 1);
+						starlightBar.Top.Set(90, 0);
 					}
 				}
 				else // If the minimap is enabled
 				{
-					staminaBar.Left.Set(-306, 1);
-					staminaBar.Top.Set(110, 0);
+					starlightBar.Left.Set(-306, 1);
+					starlightBar.Top.Set(110, 0);
 				}
 
 				// We set the height according to the amount of icons displayed here. Since it loops horizontally after 7, we cap it there
@@ -249,7 +252,7 @@ namespace StarlightRiver.Content.GUI
 				if (height > 30 * 7)
 					height = 30 * 7;
 
-				staminaBar.Height.Set(height, 0f);
+				starlightBar.Height.Set(height, 0f);
 			}
 		}
 	}
@@ -257,7 +260,7 @@ namespace StarlightRiver.Content.GUI
 	/// <summary>
 	/// This element acts as the actual stamina bar, for ease of re-positioning it as it can shift around alot according to other UI settings
 	/// </summary>
-	internal class StaminaBar : SmartUIElement
+	internal class StarlightBar : SmartUIElement
 	{
 		/// <summary>
 		/// Allows overriding the fill texture of stamina with icon styles. Reset every frame.
@@ -284,9 +287,9 @@ namespace StarlightRiver.Content.GUI
 		{
 			var dimensions = GetDimensions().ToRectangle();
 
-			if (Stamina.InGainAnimation) // If we are in the gain animation, draw that
+			if (StarlightHUD.InGainAnimation) // If we are in the gain animation, draw that
 			{
-				DrawGainAnimation(spriteBatch, dimensions, 240 - Stamina.gainAnimationTimer);
+				DrawGainAnimation(spriteBatch, dimensions, 240 - StarlightHUD.gainAnimationTimer);
 			}
 			else // Otherwise, proceed with standard drawing logic
 			{
@@ -345,12 +348,12 @@ namespace StarlightRiver.Content.GUI
 			spriteBatch.Draw(ornament, pos + new Vector2(0, -2), null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 
 			// Draw shards
-			int effectiveShardCount = Stamina.shardTimer > 0 ? mp.ShardCount - 1 : mp.ShardCount;
+			int effectiveShardCount = StarlightHUD.shardTimer > 0 ? mp.ShardCount - 1 : mp.ShardCount;
 			Texture2D shard1 = Assets.Abilities.Stamina1.Value;
 			Texture2D shard2 = Assets.Abilities.Stamina2.Value;
 
 			pos = dimensions.TopRight();
-			Stamina.shardTarget = pos;
+			StarlightHUD.shardTarget = pos;
 
 			if (effectiveShardCount % 3 >= 1)
 				spriteBatch.Draw(shard1, pos, shard1.Frame(), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
@@ -382,15 +385,15 @@ namespace StarlightRiver.Content.GUI
 				Vector2 pos = row % 2 == 0 ? dimensions.TopLeft() + new Vector2(row * -18, k % 7 * 24) :
 					dimensions.TopLeft() + new Vector2(row * -18, 12 + k % 7 * 24);
 
-				int effectiveShardCount = Stamina.shardTimer > 0 ? mp.ShardCount - 1 : mp.ShardCount;
-				float effectiveStaminaMax = Stamina.shardTimer > 0 ? (mp.ShardCount % 3 == 0 ? mp.StaminaMax - 1 : mp.StaminaMax) : mp.StaminaMax;
+				int effectiveShardCount = StarlightHUD.shardTimer > 0 ? mp.ShardCount - 1 : mp.ShardCount;
+				float effectiveStaminaMax = StarlightHUD.shardTimer > 0 ? (mp.ShardCount % 3 == 0 ? mp.StaminaMax - 1 : mp.StaminaMax) : mp.StaminaMax;
 
 				if (k >= effectiveStaminaMax) //draws the incomplete vessel
 				{
 					Texture2D shard1 = Assets.Abilities.Stamina1.Value;
 					Texture2D shard2 = Assets.Abilities.Stamina2.Value;
 
-					Stamina.shardTarget = pos;
+					StarlightHUD.shardTarget = pos;
 
 					if (effectiveShardCount % 3 >= 1)
 						spriteBatch.Draw(shard1, pos, shard1.Frame(), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);

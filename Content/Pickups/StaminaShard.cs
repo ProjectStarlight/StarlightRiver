@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.Pickups
 			ah.Shards.Add(Parent.TileFrameX);
 
 			Vector2 drawPos = Center - Main.screenPosition + new Vector2(0, (float)Math.Sin(StarlightWorld.visualTimer) * 5);
-			GUI.Stamina.StartShardAnimation(drawPos);
+			GUI.StarlightHUD.StartShardAnimation(drawPos);
 
 			SoundHelper.PlayPitched("Effects/Loot", 1f, 0, Player.Center);
 

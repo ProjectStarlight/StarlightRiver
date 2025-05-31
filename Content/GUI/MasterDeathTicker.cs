@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.GUI
 			var pos = new Vector2(Main.screenWidth / 2, Main.screenHeight / 2 - 120);
 			string split = Regex.Replace(name, "([a-z])([A-Z])", "$1 $2");
 
-			string message = "Deaths to " + split + ": " + (animationTimer < 60 ? (deaths - 1) : deaths);
+			string message = Language.GetText("Mods.StarlightRiver.GUI.MasterDeathTicker.Deaths").Format(split, animationTimer < 60 ? (deaths - 1) : deaths);
 
 			Color color = new Color(255, 100, 100) * (animationTimer > 420 ? 1 - (animationTimer - 420) / 60f : 1);
 
@@ -52,25 +52,8 @@ namespace StarlightRiver.Content.GUI
 
 			if (deaths % 10 == 0)
 			{
-				tease = Main.rand.Next(14) switch
-				{
-					0 => "Maybe try Journey Mode...",
-					1 => "You're not supposed to win.",
-					2 => "Whoopsie daisy.",
-					3 => "It's not THAT hard.",
-					4 => "Give up.",
-					5 => "Have you tried dodging?",
-					6 => "skill issue",
-					7 => "Are the logged hours on your Steam account accurate?",
-					8 => "You sure you wanna do this?",
-					9 => "There are easier difficulties you know.",
-					10 => "You can install Dragonlens from the mod browser.",
-					11 => "You can always come back after beating other bosses.",
-					12 => "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-					13 => "Just so you know, Starlight River does not have a pacifist route. Consider changing your playstyle.",
-					14 => "Press " + Main.cJump + " to jump.",
-					_ => "You died so many times you broke our snarky quote code. Great job.",
-				};
+				string teaseKey = $"Mods.StarlightRiver.GUI.MasterDeathTicker.Teases.{Main.rand.Next(14)}";
+				tease = Language.GetText(teaseKey).Value;
 			}
 		}
 	}

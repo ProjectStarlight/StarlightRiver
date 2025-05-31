@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SafeUpdateAccessory(Player Player, bool hideVisual)
 		{
-			GUI.StaminaBar.overrideTexture = Assets.GUI.StaminaBlood.Value;
+			GUI.StarlightBar.overrideTexture = Assets.GUI.StaminaBlood.Value;
 		}
 
 		private void DisableRegen(StarlightPlayer Player)

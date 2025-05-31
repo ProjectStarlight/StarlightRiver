@@ -134,7 +134,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 		public void UnlockStarsight()
 		{
 			Main.LocalPlayer.GetHandler().Unlock<HintAbility>();
-			Stamina.gainAnimationTimer = 240;
+			StarlightHUD.gainAnimationTimer = 240;
 		}
 
 		/// <summary>

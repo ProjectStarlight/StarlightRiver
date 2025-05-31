@@ -94,7 +94,7 @@ namespace StarlightRiver.Content.GUI
 				parent.Recalculate();
 
 				if (parent.exitButton.IsMouseHovering)
-					Tooltip.SetName("Close");
+					Tooltip.SetName(Language.GetTextValue("Mods.StarlightRiver.GUI.MessageBox.Close"));
 
 				if (parent.auxillary != null && parent.auxillary.IsMouseHovering)
 					Tooltip.SetName(parent.auxillaryTooltip);

@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.Pickups
 
 			if (player == Main.LocalPlayer)
 			{
-				Stamina.gainAnimationTimer = 240;
+				StarlightHUD.gainAnimationTimer = 240;
 			}
 
 			player.GetModPlayer<StarlightPlayer>().maxPickupTimer = 240;
