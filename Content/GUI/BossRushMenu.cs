@@ -14,6 +14,8 @@ using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.UI;
+using Terraria.UI.Chat;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace StarlightRiver.Content.GUI
 {
@@ -30,7 +32,7 @@ namespace StarlightRiver.Content.GUI
 
 		public override void OnInitialize()
 		{
-			button = new UIText("Armillary Trial");
+			button = new UIText(Language.GetText("Mods.StarlightRiver.GUI.BossRushMenu.TrialName"));
 			button.Left.Set(350, 0.5f);
 			button.Top.Set(230, 0);
 			button.Width.Set(140, 0);
@@ -69,8 +71,12 @@ namespace StarlightRiver.Content.GUI
 	{
 		public BossrushUnlockFlag flag;
 
-		public string name;
-		public string hint;
+		public string localizationKey;
+
+		public string name => Language.GetTextValue($"{localizationKey}.Name");
+		public string hintRaw => Language.GetTextValue($"{localizationKey}.Hint");
+		public TextSnippet[] hint => ChatManager.ParseMessage(hintRaw, Color.White).ToArray();
+
 		public Asset<Texture2D> texture;
 		public int seed;
 
@@ -81,11 +87,10 @@ namespace StarlightRiver.Content.GUI
 
 		public bool Unlocked => BossRushDataStore.DownedBoss(flag);
 
-		public BossRushUnlockInfo(BossrushUnlockFlag flag, string name, string hint, Asset<Texture2D> texture, float radiusTarget, float rotTarget)
+		public BossRushUnlockInfo(BossrushUnlockFlag flag, string localizationKey, Asset<Texture2D> texture, float radiusTarget, float rotTarget)
 		{
+			this.localizationKey = localizationKey;
 			this.flag = flag;
-			this.name = name;
-			this.hint = LocalizationHelper.WrapString(hint, 300, Terraria.GameContent.FontAssets.ItemStack.Value, 0.8f);
 			this.texture = texture;
 			this.radiusTarget = radiusTarget;
 			this.rotTarget = rotTarget;
@@ -144,26 +149,38 @@ namespace StarlightRiver.Content.GUI
 			Utils.DrawBorderString(spriteBatch, Unlocked ? name + " ✔" : "???", pos + new Vector2(0, 32), (Unlocked ? new Color(200, 255, 200) : Color.Gray) * opacity, 0.8f, 0.5f, 0);
 
 			if (IsMouseHovering)
-				Utils.DrawBorderString(spriteBatch, Unlocked ? "Boss defeated" : hint, Main.MouseScreen + new Vector2(16, 16), (Unlocked ? new Color(200, 255, 200) : Color.White) * opacity, 0.8f);
+			{
+				ReLogic.Graphics.DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
+
+				if (Unlocked)
+					Utils.DrawBorderString(spriteBatch, Language.GetTextValue("Mods.StarlightRiver.GUI.BossRushMenu.Defeated"), Main.MouseScreen + new Vector2(16, 16), new Color(200, 255, 200) * opacity, 0.8f);
+				else
+					ChatManager.DrawColorCodedStringWithShadow(spriteBatch, font, hint, Main.MouseScreen + new Vector2(16, 16), 0f, default, Vector2.One * 0.8f, out int junk, 300);
+			}
+				
 		}
 	}
 
 	internal class BossRushRelicToggle : SmartUIElement
 	{
 		public Func<bool> active;
-		public string name;
-		public string hint;
+
+		public string localizationKey;
+
+		public string name => Language.GetTextValue($"{localizationKey}.Name");
+		public string hintRaw => Language.GetTextValue($"{localizationKey}.Hint");
+		public TextSnippet[] hint => ChatManager.ParseMessage(hintRaw, Color.White).ToArray();
+
 		public Asset<Texture2D> texture;
 		public int seed;
 
 		public float radiusTarget;
 		public float rotTarget;
 
-		public BossRushRelicToggle(Func<bool> active, string name, string hint, Asset<Texture2D> texture, float radiusTarget, float rotTarget)
+		public BossRushRelicToggle(Func<bool> active, string localizationKey, Asset<Texture2D> texture, float radiusTarget, float rotTarget)
 		{
 			this.active = active;
-			this.name = name;
-			this.hint = LocalizationHelper.WrapString(hint, 300, Terraria.GameContent.FontAssets.ItemStack.Value, 0.8f);
+			this.localizationKey = localizationKey;
 			this.texture = texture;
 			this.radiusTarget = radiusTarget;
 			this.rotTarget = rotTarget;
@@ -219,7 +236,10 @@ namespace StarlightRiver.Content.GUI
 			Utils.DrawBorderString(spriteBatch, name, pos + new Vector2(0, 32), active() ? new Color(100, 230, 255) : Color.Gray, 0.8f, 0.5f, 0);
 
 			if (IsMouseHovering)
-				Utils.DrawBorderString(spriteBatch, hint, Main.MouseScreen + new Vector2(16, 16), Color.White, 0.8f);
+			{
+				ReLogic.Graphics.DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
+				ChatManager.DrawColorCodedStringWithShadow(spriteBatch, font, hint, Main.MouseScreen + new Vector2(16, 16), 0f, default, Vector2.One * 0.8f, out int junk, 300);
+			}
 		}
 	}
 
@@ -260,7 +280,7 @@ namespace StarlightRiver.Content.GUI
 			start.Top.Set(220, 0.5f);
 			Append(start);
 
-			button = new UIText("Back");
+			button = new UIText(Language.GetText("Mods.StarlightRiver.GUI.BossRushMenu.Back"));
 			button.Left.Set(-70, 0.5f);
 			button.Top.Set(320, 0.5f);
 			button.Width.Set(140, 0);
@@ -280,16 +300,16 @@ namespace StarlightRiver.Content.GUI
 
 			Append(button);
 
-			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Auroracle, "Auroracle", "Found by following the wisps in the ice biome", Assets.Bosses.SquidBoss.SquidBoss_Head_Boss, 220, -1.57f - 1f));
-			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Glassweaver, "Glassweaver", "Guards his forge deep below the desert", Assets.Bosses.GlassMiniboss.Glassweaver_Head_Boss, 220, -1.57f - 0.33f));
-			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Ceiros, "Ceiros", "Guards a temple deep below the desert", Assets.Bosses.VitricBoss.VitricBoss_Head_Boss, 220, -1.57f + 0.33f));
-			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Thinker, "The Thinker", "Born from the Brain of Cthulhu into the crimson caverns", Assets.Bosses.TheThinkerBoss.TheThinker_Head_Boss, 220, -1.57f + 1f));
-
-			var speedRelic = new BossRushRelicToggle(() => BossRushSpeedupAddon.active, "Speed Relic", "Makes the game move 33% faster", Assets.NPCs.BossRush.SpeedRelic, 240, 1.57f - 0.66f);
+			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Auroracle, "Mods.StarlightRiver.GUI.BossRushMenu.AuroracleUnlock", Assets.Bosses.SquidBoss.SquidBoss_Head_Boss, 220, -1.57f - 1f));
+			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Glassweaver, "Mods.StarlightRiver.GUI.BossRushMenu.GlassweaverUnlock", Assets.Bosses.GlassMiniboss.Glassweaver_Head_Boss, 220, -1.57f - 0.33f));
+			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Ceiros, "Mods.StarlightRiver.GUI.BossRushMenu.CeirosUnlock", Assets.Bosses.VitricBoss.VitricBoss_Head_Boss, 220, -1.57f + 0.33f));
+			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Thinker, "Mods.StarlightRiver.GUI.BossRushMenu.ThinkerUnlock", Assets.Bosses.TheThinkerBoss.TheThinker_Head_Boss, 220, -1.57f + 1f));
+			
+			var speedRelic = new BossRushRelicToggle(() => BossRushSpeedupAddon.active, "Mods.StarlightRiver.GUI.BossRushMenu.SpeedRelic", Assets.NPCs.BossRush.SpeedRelic, 240, 1.57f - 0.66f);
 			speedRelic.OnLeftClick += (a, b) => BossRushSpeedupAddon.active = !BossRushSpeedupAddon.active;
 			Append(speedRelic);
 
-			var frailRelic = new BossRushRelicToggle(() => BossRushFrailtyAddon.active, "Frailty Relic", "Causes you to die from a single hit", Assets.NPCs.BossRush.FrailRelic, 240, 1.57f + 0.66f);
+			var frailRelic = new BossRushRelicToggle(() => BossRushFrailtyAddon.active, "Mods.StarlightRiver.GUI.BossRushMenu.FrailtyRelic", Assets.NPCs.BossRush.FrailRelic, 240, 1.57f + 0.66f);
 			frailRelic.OnLeftClick += (a, b) => BossRushFrailtyAddon.active = !BossRushFrailtyAddon.active;
 			Append(frailRelic);
 		}
@@ -447,7 +467,7 @@ namespace StarlightRiver.Content.GUI
 				var dims = GetDimensions().ToRectangle();
 
 				Color textColor = Unlocked ? (IsMouseHovering ? Color.Yellow : Color.White) : new Color(80, 80, 80);
-				Utils.DrawBorderString(spriteBatch, "Start", dims.Center(), textColor, 1, 0.5f, 0.4f);
+				Utils.DrawBorderString(spriteBatch, Language.GetTextValue("Mods.StarlightRiver.GUI.BossRushMenu.Start"), dims.Center(), textColor, 1, 0.5f, 0.4f);
 			}
 		}
 	}
@@ -485,7 +505,7 @@ namespace StarlightRiver.Content.GUI
 			var dims = GetDimensions().ToRectangle();
 
 			Color textColor = Unlocked ? BossRushMenu.DifficultyColor : new Color(80, 80, 80);
-			Utils.DrawBorderString(spriteBatch, Unlocked ? BossRushMenu.DifficultyString : "Locked", dims.Center(), textColor, 1, 0.5f, 0.4f);
+			Utils.DrawBorderString(spriteBatch, Unlocked ? BossRushMenu.DifficultyString : Language.GetTextValue("Mods.StarlightRiver.GUI.BossRushMenu.Locked"), dims.Center(), textColor, 1, 0.5f, 0.4f);
 		}
 	}
 }

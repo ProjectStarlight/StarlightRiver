@@ -109,8 +109,8 @@ namespace StarlightRiver.Content.GUI
 
 				if (IsMouseHovering)
 				{
-					Tooltip.SetName($"{ability.Name}");
-					Tooltip.SetTooltip($"[i:StarlightRiver/StarlightHover][c/AAF0FF:{ability.ActivationCostDefault}] Starlight\n\n" + ability.Tooltip);
+					Tooltip.SetName(ability.Name.Value);
+					Tooltip.SetTooltip(Language.GetText("Mods.StarlightRiver.GUI.AbilityInventory.AbilityDisplay.Tooltip").Format(ability.ActivationCostDefault, ability.Tooltip));
 				}
 			}
 		}

@@ -16,6 +16,8 @@
 	<ItemGroup>
 		<None Remove="AssGenConfig.txt" />
 		<None Remove="effects\source\Neurysm.fx" />
+		<None Remove="Localization\en-US_Mods.StarlightRiver.Abilities.hjson" />
+		<None Remove="localization\en-US_Mods.StarlightRiver.GUI.hjson" />
 		<None Remove="OldPatchNotes\0.2.0\0.2.2.txt" />
 		<None Remove="OldPatchNotes\0.2.0\0.2.4.txt" />
 		<None Remove="OldPatchNotes\0.2.0\0.2.6.txt" />

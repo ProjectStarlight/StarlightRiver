@@ -23,8 +23,12 @@ namespace StarlightRiver.Content.Abilities
 
 		public bool Active => ReferenceEquals(User.ActiveAbility, this);
 
-		public virtual string Name => "No name";
-		public virtual string Tooltip => "No tooltip";
+		public virtual string NameKey => $"Mods.StarlightRiver.Abilities.{GetType()}.Name";
+		public LocalizedText Name => Language.GetText(NameKey);
+		public virtual string TooltipKey => $"Mods.StarlightRiver.Abilities.{GetType()}.Tooltip";
+		public LocalizedText UnformattedTooltip => Language.GetText(TooltipKey);
+
+		public virtual string Tooltip => UnformattedTooltip.Value;
 
 		public abstract Asset<Texture2D> Texture { get; }
 		public abstract Asset<Texture2D> PreviewTexture { get; }

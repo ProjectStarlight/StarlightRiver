@@ -22,8 +22,11 @@ namespace StarlightRiver.Content.GUI
 
 		public override void OnInitialize()
 		{
-			Vector2 retryTextSize = FontAssets.MouseText.Value.MeasureString("Retry?");
-			retryButton = new UIText("Retry?")
+			var retry = Language.GetText("Mods.StarlightRiver.GUI.BossRushDeathScreen.Retry");
+			var giveUp = Language.GetText("Mods.StarlightRiver.GUI.BossRushDeathScreen.GiveUp");
+
+			Vector2 retryTextSize = FontAssets.MouseText.Value.MeasureString(retry.Value);
+			retryButton = new UIText(retry)
 			{
 				Left = new StyleDimension(-retryTextSize.X / 2, 0.5f),
 				Top = new StyleDimension(80f, 0.5f),
@@ -31,8 +34,8 @@ namespace StarlightRiver.Content.GUI
 
 			retryButton.OnLeftClick += (a, b) => ClickRetryButton();
 
-			Vector2 giveUpSize = FontAssets.MouseText.Value.MeasureString("Give Up?");
-			giveUpButton = new UIText("Give Up?")
+			Vector2 giveUpSize = FontAssets.MouseText.Value.MeasureString(giveUp.Value);
+			giveUpButton = new UIText(giveUp)
 			{
 				Left = new StyleDimension(-giveUpSize.X / 2, 0.5f),
 				Top = new StyleDimension(120f, 0.5f),
@@ -77,7 +80,7 @@ namespace StarlightRiver.Content.GUI
 			string value = Lang.inter[38].Value; //pulled directly from vanilla comes free with translation
 			DynamicSpriteFontExtensionMethods.DrawString(spriteBatch, FontAssets.DeathText.Value, value, new Vector2(Main.screenWidth / 2 - FontAssets.DeathText.Value.MeasureString(value).X / 2f, Main.screenHeight / 2 - 60f), Main.LocalPlayer.GetDeathAlpha(Color.Transparent), 0f, default, 1f, 0, 0f);
 
-			string ScoreString = "Final score: " + BossRushSystem.Score;
+			string ScoreString = Language.GetText("Mods.StarlightRiver.GUI.BossRushDeathScreen.Score").Format(BossRushSystem.Score);
 
 			Utils.DrawBorderStringBig(spriteBatch, ScoreString, pos, Main.LocalPlayer.GetDeathAlpha(new Color(255, 255, 0, 0)), 0.5f, 0.5f, 0.5f);
 

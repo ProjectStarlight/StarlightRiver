@@ -8,10 +8,6 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 {
 	public class Whip : Ability
 	{
-		public override string Name => "Fae Whip";
-		public override string Tooltip => "Channel Starlight to forge the energies of connection into an appendage extending from your own arm, allowing you to manipualate objects at a distance and maneuver yourself with the dexterity of the Overgrowth's denizens. NEWBLOCK " +
-			"Objects with a thin, pulsing yellow outline can be grabbed with this appendage, as well as enemies and walls. Anything you can overpower can be manipulated, and anything you can't can be used as an anchor to fling yourself.";
-
 		public override Asset<Texture2D> Texture => Assets.Abilities.Faeflame;
 		public override Asset<Texture2D> PreviewTexture => Assets.Abilities.FaeflamePreview;
 		public override Asset<Texture2D> PreviewTextureOff => Assets.Abilities.FaeflamePreviewOff;

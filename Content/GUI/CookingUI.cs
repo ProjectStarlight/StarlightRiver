@@ -129,14 +129,14 @@ namespace StarlightRiver.Content.GUI
 			spriteBatch.Draw(TextureAssets.MagicPixel.Value, backDims, new Color(25, 25, 25) * 0.5f);
 
 			base.Draw(spriteBatch);
-			Utils.DrawBorderString(spriteBatch, "Ingredients", Basepos + new Vector2(38, 8), Color.White, 0.8f);
-			Utils.DrawBorderString(spriteBatch, "Info/Stats", Basepos + new Vector2(202, 8), Color.White, 0.8f);
-			Utils.DrawBorderString(spriteBatch, "Prepare", Basepos + new Vector2(212, 210), Color.White, 1.1f);
+			Utils.DrawBorderString(spriteBatch, Language.GetTextValue("Mods.StarlightRiver.GUI.CookingUI.Ingredients"), Basepos + new Vector2(38, 8), Color.White, 0.8f);
+			Utils.DrawBorderString(spriteBatch, Language.GetTextValue("Mods.StarlightRiver.GUI.CookingUI.Info"), Basepos + new Vector2(202, 8), Color.White, 0.8f);
+			Utils.DrawBorderString(spriteBatch, Language.GetTextValue("Mods.StarlightRiver.GUI.CookingUI.Prepare"), Basepos + new Vector2(212, 210), Color.White, 1.1f);
 
 			int drawY = 0;
 			if (!Elements.Any(n => n is CookingSlot && !(n as CookingSlot).Item.IsAir && ((n as CookingSlot).Item.ModItem as Ingredient).ThisType == IngredientType.Main))
 			{
-				Utils.DrawBorderString(spriteBatch, "Place a Main Course in\nthe top slot to start\ncooking", Basepos + new Vector2(186, 54 + drawY), Color.White, 0.7f);
+				Utils.DrawBorderString(spriteBatch, Language.GetTextValue("Mods.StarlightRiver.GUI.CookingUI.Instructions"), Basepos + new Vector2(186, 54 + drawY), Color.White, 0.7f);
 			}
 			else
 			{
@@ -297,7 +297,7 @@ namespace StarlightRiver.Content.GUI
 				}
 				else
 				{
-					Main.hoverItemName = "Place [c/" + Ingredient.GetDescriptionColor(Type).Hex3() + ":" + Ingredient.GetDescription(Type) + "] here";
+					Main.hoverItemName = Language.GetText("Mods.StarlightRiver.GUI.CookingUI.SlotHover").Format(Ingredient.GetDescriptionColor(Type).Hex3(), Ingredient.GetDescription(Type));
 				}
 			}
 

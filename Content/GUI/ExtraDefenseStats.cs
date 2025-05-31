@@ -18,11 +18,11 @@ namespace StarlightRiver.Content.GUI
 
 		public static bool Open;
 
-		public ExtraDefenseInfoPanel DefensePanel = new(Assets.GUI.DefenseBG, 0);
-		public ExtraDefenseInfoPanel EndurancePanel = new(Assets.GUI.EnduranceBG, 1);
-		public ExtraDefenseInfoPanel BarrierPanel = new(Assets.GUI.BarrierBG, 2);
-		public ExtraDefenseInfoPanel LifePanel = new(Assets.GUI.LifeBG, 3);
-		public ExtraDefenseInfoPanel DoTResistPanel = new(Assets.GUI.DoTResistBG, 4);
+		public ExtraDefenseInfoPanel DefensePanel = new(Assets.GUI.DefenseBG, 0, "Mods.StarlightRiver.GUI.ExtraDefenseStats.Panels.Defense");
+		public ExtraDefenseInfoPanel EndurancePanel = new(Assets.GUI.EnduranceBG, 1, "Mods.StarlightRiver.GUI.ExtraDefenseStats.Panels.Endurance");
+		public ExtraDefenseInfoPanel BarrierPanel = new(Assets.GUI.BarrierBG, 2, "Mods.StarlightRiver.GUI.ExtraDefenseStats.Panels.Barrier");
+		public ExtraDefenseInfoPanel LifePanel = new(Assets.GUI.LifeBG, 3, "Mods.StarlightRiver.GUI.ExtraDefenseStats.Panels.Life");
+		public ExtraDefenseInfoPanel DoTResistPanel = new(Assets.GUI.DoTResistBG, 4, "Mods.StarlightRiver.GUI.ExtraDefenseStats.Panels.Inoculation");
 
 		public override bool Visible => Main.playerInventory;
 
@@ -33,28 +33,18 @@ namespace StarlightRiver.Content.GUI
 
 		public override void OnInitialize()
 		{
-			DefensePanel.title = "Defense";
-			DefensePanel.tooltip = "Defense reduces damage you take by a flat amount. The amount is equal to your defense multiplied by your defense effect and rounded up";
 			DefensePanel.color = new Color(255, 255, 255);
 			Append(DefensePanel);
 
-			EndurancePanel.title = "Endurance";
-			EndurancePanel.tooltip = "Endurance reduces the damage you take by a percent of the damage dealt. This is taken into account after defense.";
 			EndurancePanel.color = new Color(255, 240, 150);
 			Append(EndurancePanel);
 
-			BarrierPanel.title = "Barrier";
-			BarrierPanel.tooltip = "Barrier reduces the damage you take by a percent of the damage dealt, at the cost of the original damage to your barrier. Your barrier recharges after a short period of not taking damage. It is calculated after endurance and defense.";
 			BarrierPanel.color = new Color(150, 255, 255);
 			Append(BarrierPanel);
 
-			LifePanel.title = "Life";
-			LifePanel.tooltip = "Your maximum life represents how much damage you can take before dying. It regenerates slowly over time, or more quickly if standing still.";
 			LifePanel.color = new Color(255, 150, 150);
 			Append(LifePanel);
 
-			DoTResistPanel.title = "Inoculation";
-			DoTResistPanel.tooltip = "Inoculation reduces the damage over time you take, such as from debuffs like 'On Fire!'. Inoculation over 100% will cause these effects to heal you instead by a proportional amount.";
 			DoTResistPanel.color = new Color(170, 255, 150);
 			Append(DoTResistPanel);
 		}
@@ -74,29 +64,30 @@ namespace StarlightRiver.Content.GUI
 				if (Timer < 41)
 					Timer++;
 
-				DefensePanel.value = $"{player.statDefense}";
+				DefensePanel.value = player.statDefense;
 				DefensePanel.magnitude = player.statDefense / 100f;
-				DefensePanel.extraInfo =
-					$"Effect: {(int)Math.Round(player.DefenseEffectiveness.Value * 100, MidpointRounding.AwayFromZero)}%\n" +
-					$"Absorbed: {(int)(player.statDefense * player.DefenseEffectiveness.Value)}\n";
+				DefensePanel.Format(
+					(int)Math.Round(player.DefenseEffectiveness.Value * 100, MidpointRounding.AwayFromZero),
+					(int)(player.statDefense * player.DefenseEffectiveness.Value));
 
-				EndurancePanel.value = $"{(int)Math.Round(player.endurance * 100, MidpointRounding.AwayFromZero)}%";
+				EndurancePanel.value = (int)Math.Round(player.endurance * 100, MidpointRounding.AwayFromZero);
 				EndurancePanel.magnitude = player.endurance * 2f;
 
 				BarrierPlayer barrierPlayer = player.GetModPlayer<BarrierPlayer>();
-				BarrierPanel.value = $"{barrierPlayer.maxBarrier}";
+				BarrierPanel.value = barrierPlayer.maxBarrier;
 				BarrierPanel.magnitude = barrierPlayer.maxBarrier / 500f;
-				BarrierPanel.extraInfo =
-					$"Effect: {(int)Math.Round(barrierPlayer.barrierDamageReduction * 100, MidpointRounding.AwayFromZero)}%\n" +
-					$"Regen: {barrierPlayer.rechargeRate}/s\n" +
-					$"Delay: {barrierPlayer.rechargeDelay / 60f} s";
+				BarrierPanel.Format(
+					(int)Math.Round(barrierPlayer.barrierDamageReduction * 100, MidpointRounding.AwayFromZero),
+					barrierPlayer.rechargeRate,
+					barrierPlayer.rechargeDelay / 60f);
 
-				LifePanel.value = $"{player.statLifeMax2}";
+				LifePanel.value = player.statLifeMax2;
 				LifePanel.magnitude = player.statLifeMax2 / 800f;
-				LifePanel.extraInfo = $"Regen: {player.lifeRegen / 2f}/s";
+				LifePanel.Format(
+					player.lifeRegen / 2f);
 
 				InoculationPlayer ResistPlayer = player.GetModPlayer<InoculationPlayer>();
-				DoTResistPanel.value = $"{(int)Math.Round(ResistPlayer.DoTResist * 100, MidpointRounding.AwayFromZero)}%";
+				DoTResistPanel.value = (int)Math.Round(ResistPlayer.DoTResist * 100, MidpointRounding.AwayFromZero);
 				DoTResistPanel.magnitude = ResistPlayer.DoTResist;
 			}
 			else if (Timer > 0)
@@ -125,20 +116,33 @@ namespace StarlightRiver.Content.GUI
 	{
 		private readonly Asset<Texture2D> texture;
 		private readonly int offsetPosition;
-		public string value = "";
-		public string title = "";
-		public string extraInfo = "";
-		public string tooltip = "";
+		private readonly string localizationKey;
+
+		public int value;
+		
 		public float magnitude = 0f;
 		public Color color;
+
+		public string Title => Language.GetText($"{localizationKey}.Title").Value;
+		public string Tooltip => Language.GetText($"{localizationKey}.Tooltip").Value;
+		public string ValueLabel => Language.GetText($"{localizationKey}.Value").Format(value);
+		public LocalizedText Extra => Language.GetText($"{localizationKey}.Extra");
+
+		private string extraInfo;
 
 		public ExtraDefenseStats ParentState => Parent as ExtraDefenseStats;
 		private Vector2 endPos => ParentState.basePos + new Vector2(-20 + offsetPosition * -92, 0);
 
-		public ExtraDefenseInfoPanel(Asset<Texture2D> texture, int offsetPosition)
+		public ExtraDefenseInfoPanel(Asset<Texture2D> texture, int offsetPosition, string localizationKey)
 		{
 			this.texture = texture;
 			this.offsetPosition = offsetPosition;
+			this.localizationKey = localizationKey;
+		}
+
+		public void Format(params object[] args)
+		{
+			extraInfo = Extra.Format(args);
 		}
 
 		public override void Draw(SpriteBatch spriteBatch)
@@ -171,10 +175,10 @@ namespace StarlightRiver.Content.GUI
 			}
 
 			spriteBatch.Draw(texture.Value, pos, null, Color.White * progress, 0, texture.Size() / 2, progress, 0, 0);
-			Utils.DrawBorderString(spriteBatch, value, pos, color * progress, 0.8f * progress, 0.5f, 0.5f);
+			Utils.DrawBorderString(spriteBatch, ValueLabel, pos, color * progress, 0.8f * progress, 0.5f, 0.5f);
 
 			pos.Y += 6;
-			Utils.DrawBorderString(spriteBatch, title, pos, Color.White * progress, 0.85f * progress, 0.5f, 0f);
+			Utils.DrawBorderString(spriteBatch, Title, pos, Color.White * progress, 0.85f * progress, 0.5f, 0f);
 
 			pos.Y += 24;
 			Utils.DrawBorderString(spriteBatch, extraInfo, pos, Color.LightGray * progress, 0.7f * progress, 0.5f, 0f);
@@ -182,9 +186,9 @@ namespace StarlightRiver.Content.GUI
 			if (IsMouseHovering)
 			{
 				Main.LocalPlayer.mouseInterface = true;
-				Tooltip.SetName($"{value} {title}");
-				Tooltip.SetTooltip(tooltip);
-				Tooltip.SetColor(color);
+				GUI.Tooltip.SetName($"{ValueLabel} {Title}");
+				GUI.Tooltip.SetTooltip(Tooltip);
+				GUI.Tooltip.SetColor(color);
 			}
 
 			base.Draw(spriteBatch);
@@ -216,7 +220,7 @@ namespace StarlightRiver.Content.GUI
 				Main.spriteBatch.Draw(Assets.GUI.DefenseFlash.Value, vector, null, Color.White * flash, 0f, TextureAssets.Extra[58].Value.Size() / 2f, Main.inventoryScale, SpriteEffects.None, 0f);
 
 				if (Utils.CenteredRectangle(vector, TextureAssets.Extra[58].Value.Size()).Contains(new Point(Main.mouseX, Main.mouseY)) && !PlayerInput.IgnoreMouseInterface)
-					Main.hoverItemName += "\nClick for defensive stats";
+					Main.hoverItemName += Language.GetTextValue("Mods.StarlightRiver.GUI.ExtraDefenseStats.Click");
 			}
 		}
 	}

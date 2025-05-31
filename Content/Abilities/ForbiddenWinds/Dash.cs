@@ -1,11 +1,8 @@
-﻿using StarlightRiver.Content.Abilities.Hint;
-using StarlightRiver.Content.Dusts;
+﻿using StarlightRiver.Content.Dusts;
 using StarlightRiver.Core.Loaders;
-using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using Terraria.GameInput;
-using Terraria.Graphics.Effects;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -20,15 +17,20 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 		protected List<Vector2> cache;
 		protected Trail trail;
 
-		public override string Name => "Forbidden Winds";
 		public override string Tooltip
 		{
 			get
 			{
 				List<string> ab = StarlightRiver.Instance.AbilityKeys.Get<Dash>().GetAssignedKeys();
-				string def = "Unbound";
+				string def = ab.Count > 0 ? ab[0] : "Unbound";
 
-				return $"Press [c/6699FF:{(ab.Count > 0 ? ab[0] : def)}] while holding any combination of [c/6699FF:{UIHelper.GetVanillaInputString("Up")}], [c/6699FF:{UIHelper.GetVanillaInputString("Left")}], [c/6699FF:{UIHelper.GetVanillaInputString("Down")}], and [c/6699FF:{UIHelper.GetVanillaInputString("Right")}] to channel starlight into a powerful dash.\n\nYou'll strike with enough force to shatter any object with a [c/88FFFF:glowing blue outline!]";
+				return UnformattedTooltip.Format(
+					def,
+					UIHelper.GetVanillaInputString("Up"),
+					UIHelper.GetVanillaInputString("Left"),
+					UIHelper.GetVanillaInputString("Down"),
+					UIHelper.GetVanillaInputString("Right")
+				);
 			}
 		}
 
@@ -212,7 +214,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
 			if (cache == null || cache.Count < 14)
 			{
-				cache = new List<Vector2>();
+				cache = [];
 
 				for (int i = 0; i < 14; i++)
 				{

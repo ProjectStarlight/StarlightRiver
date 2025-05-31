@@ -54,14 +54,9 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		private void UpdateBossMenu(On_Main.orig_Update orig, Main self, GameTime gameTime)
 		{
 			if (inMenu && BossRushDataStore.UnlockedBossRush)
-			{
-				ModContent.GetInstance<StarlightRiverBackground>().PostUpdateEverything();
 				BossRushMenu.timer++;
-			}
 			else
-			{
 				BossRushMenu.timer = 0;
-			}
 
 			if (Main.gameMenu && Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape))
 			{

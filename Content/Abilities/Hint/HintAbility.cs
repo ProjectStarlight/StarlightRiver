@@ -1,5 +1,6 @@
 ﻿using ReLogic.Graphics;
 using StarlightRiver.Content.Abilities.Faewhip;
+using StarlightRiver.Content.Abilities.ForbiddenWinds;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -15,8 +16,16 @@ namespace StarlightRiver.Content.Abilities.Hint
 		public static string hintToDisplay;
 		public static bool defaultHint;
 
-		public override string Name => "Starsight";
-		public override string Tooltip => $"Press [c/6699FF:{StarlightRiver.Instance.AbilityKeys.Get<HintAbility>().GetAssignedKeys()[0]}] to channel starlight to see [c/AADDFF:ancient knowledge] about what your [c/6699FF:Cursor] is hovering over.\n\n You can also press [c/6699FF:{StarlightRiver.Instance.AbilityKeys.Get<HintAbility>().GetAssignedKeys()[0]}] with your [c/6699FF:Cursor] hovering over the air instead to garner a [c/AADDFF:hint on what to do next!]";
+		public override string Tooltip
+		{
+			get
+			{
+				List<string> ab = StarlightRiver.Instance.AbilityKeys.Get<HintAbility>().GetAssignedKeys();
+				string def = ab.Count > 0 ? ab[0] : "Unbound";
+
+				return UnformattedTooltip.Format(def);
+			}
+		}
 
 		public override float ActivationCostDefault => 0.25f;
 

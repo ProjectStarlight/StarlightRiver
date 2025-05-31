@@ -120,7 +120,7 @@ namespace StarlightRiver.Content.GUI
 				}
 				else
 				{
-					Main.hoverItemName = "Barrier Tincture";
+					Main.hoverItemName = Language.GetTextValue("Mods.StarlightRiver.GUI.BarrierDyeSlot.Name");
 				}
 			}
 		}
