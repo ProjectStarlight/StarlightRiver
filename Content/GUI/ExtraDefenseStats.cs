@@ -128,7 +128,7 @@ namespace StarlightRiver.Content.GUI
 		public string ValueLabel => Language.GetText($"{localizationKey}.Value").Format(value);
 		public LocalizedText Extra => Language.GetText($"{localizationKey}.Extra");
 
-		private string extraInfo;
+		private string extraInfo = "";
 
 		public ExtraDefenseStats ParentState => Parent as ExtraDefenseStats;
 		private Vector2 endPos => ParentState.basePos + new Vector2(-20 + offsetPosition * -92, 0);
@@ -186,9 +186,11 @@ namespace StarlightRiver.Content.GUI
 			if (IsMouseHovering)
 			{
 				Main.LocalPlayer.mouseInterface = true;
+
+				GUI.Tooltip.SetColor(color);
+
 				GUI.Tooltip.SetName($"{ValueLabel} {Title}");
 				GUI.Tooltip.SetTooltip(Tooltip);
-				GUI.Tooltip.SetColor(color);
 			}
 
 			base.Draw(spriteBatch);

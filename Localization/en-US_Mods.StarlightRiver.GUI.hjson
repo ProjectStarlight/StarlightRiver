@@ -1,29 +1,23 @@
-AbilityInventory: {
-	AbilityDisplay: {
-		Tooltip: """
-		[i:StarlightRiver/StarlightHover][c/AAF0FF:{0}] Starlight
+AbilityInventory.AbilityDisplay.Tooltip:
+	'''
+	[i:StarlightRiver/StarlightHover][c/AAF0FF:{0}] Starlight
 
-		{1}
-		"""
-	}
-}
-
-BarrierDyeSlot: {
-	Name: "Barrier Tincture"
-}
+	{1}
+	'''
+BarrierDyeSlot.Name: Barrier Tincture
 
 BossRushDeathScreen: {
-	Retry: "Retry?"
-	GiveUp: "Give Up?"
-	Score: "Final score: {0}"
+	Retry: Retry?
+	GiveUp: Give Up?
+	Score: Final score: {0}
 }
 
 BossRushMenu: {
-	TrialName: "Armillary Trial"
-	Defeated: "Boss defeated"
-	Back: "Back"
-	Start: "Start"
-	Locked: "Locked"
+	TrialName: Armillary Trial
+	Defeated: Boss defeated
+	Back: Back
+	Start: Start
+	Locked: Locked
 
 	AuroracleUnlock: {
 		Name: Auroracle
@@ -33,7 +27,7 @@ BossRushMenu: {
 	GlassweaverUnlock: {
 		Name: Glassweaver
 		Hint: Guards his forge deep below the desert
-		}
+	}
 
 	CeirosUnlock: {
 		Name: Ceiros
@@ -57,64 +51,67 @@ BossRushMenu: {
 }
 
 CookingUI: {
-
-	Ingredients: "Ingredients"
-	Info: "Info/Stats"
-	Prepare: "Prepare"
-
-	Instructions: """
-	Place a Main Course in
-	the top slot to start
-	cooking!"
-	"""
-
-	SlotHover: "Place [c/{0}:{1}] here"
+	Ingredients: Ingredients
+	Info: Info/Stats
+	Prepare: Prepare
+	Instructions:
+		'''
+		Place a Main Course in
+		the top slot to start
+		cooking!"
+		'''
+	SlotHover: Place [c/{0}:{1}] here
 }
 
 ExtraDefenseStats: {
+	Click:
+		'''
+
+		Click for defensive stats
+		'''
 
 	Panels: {
 		Defense: {
-			Title: "Defense"
+			Title: Defense
 			Value: "{0}"
-			Tooltip: "Defense reduces damage you take by a flat amount. The amount is equal to your defense multiplied by your defense effect and rounded up"
-			Extra: """
-			Effect: {0}
-			Absorbed: {1}
-			"""
+			Tooltip: Defense reduces damage you take by a flat amount. The amount is equal to your defense multiplied by your defense effect and rounded up
+			Extra:
+				'''
+				Effect: {0}%
+				Absorbed: {1}
+				'''
 		}
 
 		Endurance: {
-			Title: "Endurance"
+			Title: Endurance
 			Value: "{0}%"
-			Tooltip: "Endurance reduces the damage you take by a percent of the damage dealt. This is taken into account after defense."
+			Tooltip: Endurance reduces the damage you take by a percent of the damage dealt. This is taken into account after defense.
 			Extra: ""
 		}
 
 		Barrier: {
-			Title: "Barrier"
+			Title: Barrier
 			Value: "{0}"
-			Tooltip: "Barrier reduces the damage you take by a percent of the damage dealt, at the cost of the original damage to your barrier. Your barrier recharges after a short period of not taking damage. It is calculated after endurance and defense."
-			Extra: """
-			Effect: {0}%
-			Regen: {1}/s
-			Delay: {2} s
-			"""
+			Tooltip: Barrier reduces the damage you take by a percent of the damage dealt, at the cost of the original damage to your barrier. Your barrier recharges after a short period of not taking damage. It is calculated after endurance and defense.
+			Extra:
+				'''
+				Effect: {0}%
+				Regen: {1}/s
+				Delay: {2} s
+				'''
 		}
 
 		Life: {
-			Title: "Life"
+			Title: Life
 			Value: "{0}"
-			Tooltip: "Your maximum life represents how much damage you can take before dying. It regenerates slowly over time, or more quickly if standing still."
-			Extra: """
-			Regen: {0}/s
-			"""
+			Tooltip: Your maximum life represents how much damage you can take before dying. It regenerates slowly over time, or more quickly if standing still.
+			Extra: Regen: {0}/s
 		}
 
 		Inoculation: {
-			Title: "Inoculation"
+			Title: Inoculation
 			Value: "{0}%"
-			Tooltip: "Inoculation reduces the damage over time you take, such as from debuffs like 'On Fire!'. Inoculation over 100% will cause these effects to heal you instead by a proportional amount."
+			Tooltip: Inoculation reduces the damage over time you take, such as from debuffs like 'On Fire!'. Inoculation over 100% will cause these effects to heal you instead by a proportional amount.
 			Extra: ""
 		}
 	}
