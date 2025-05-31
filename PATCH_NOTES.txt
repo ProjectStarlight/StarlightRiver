@@ -9,6 +9,10 @@
 - Added Misery's Company, a cursed accessory that shares your defense and innoculation with your foes
 - New Magic Weapon: Talismans
 - New Magic Weapon: Spirit Seal
+- The player's introduction to Starlight has changed significantly. Rather than alican causing an event requiring the player to return to the center of the world,
+  he will now reside in a new structure on the surface. Once a boss is defeated, you will be able to enter and talk to him.
+- Updated the visuals and structures leading up to Auroracle
+- The player can now seek out 3 special starlight vessel shards to increase their maximum starlight
 - The following are spoilers for the crimson biome
 ||- Added gray maatter to the crimson, which emits a hallucinatory and causes hallucinations when stood on
 - Added dendrite to the crimson, a sneaky ore only visible if you are hallucinating
