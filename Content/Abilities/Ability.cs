@@ -23,9 +23,9 @@ namespace StarlightRiver.Content.Abilities
 
 		public bool Active => ReferenceEquals(User.ActiveAbility, this);
 
-		public virtual string NameKey => $"Mods.StarlightRiver.Abilities.{GetType()}.Name";
+		public virtual string NameKey => $"Mods.StarlightRiver.Abilities.{GetType().Name}.Name";
 		public LocalizedText Name => Language.GetText(NameKey);
-		public virtual string TooltipKey => $"Mods.StarlightRiver.Abilities.{GetType()}.Tooltip";
+		public virtual string TooltipKey => $"Mods.StarlightRiver.Abilities.{GetType().Name}.Tooltip";
 		public LocalizedText UnformattedTooltip => Language.GetText(TooltipKey);
 
 		public virtual string Tooltip => UnformattedTooltip.Value;
