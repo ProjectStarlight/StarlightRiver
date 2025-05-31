@@ -159,3 +159,9 @@ MasterDeathTicker: {
 MessageBox: {
 	Close: "Close"
 }
+
+StarlightHUD: {
+	IncreaseMessage: "Maximum Starlight Increased",
+	IncreaseTooltip: "Your maximum starlight has increased by 1"
+	Hover: "Starlight: {0}/{1}"
+}
