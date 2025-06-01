@@ -2,7 +2,6 @@
 using StarlightRiver.Core.Systems.BarrierSystem;
 using System;
 using System.Linq;
-using System.Reflection;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.IO;
@@ -20,8 +19,8 @@ namespace StarlightRiver.Content.CustomHooks
 			if (Main.dedServ)
 				return;
 
-			Terraria.GameContent.UI.Elements.On_UICharacterListItem.DrawSelf += DrawSpecialCharacter;
-			Terraria.GameContent.UI.Elements.On_UICharacterListItem.ctor += ShiftTextOver;
+			On_UICharacterListItem.DrawSelf += DrawSpecialCharacter;
+			On_UICharacterListItem.ctor += ShiftTextOver;
 
 			sparkles = new ParticleSystem(AssetDirectory.GUI + "Sparkle", updateSparkles, ParticleSystem.AnchorOptions.UI);
 		}
@@ -43,12 +42,11 @@ namespace StarlightRiver.Content.CustomHooks
 			particle.Rotation += 0.05f;
 		}
 
-		private void ShiftTextOver(Terraria.GameContent.UI.Elements.On_UICharacterListItem.orig_ctor orig, UICharacterListItem self, PlayerFileData data, int snapPointIndex)
+		private void ShiftTextOver(On_UICharacterListItem.orig_ctor orig, UICharacterListItem self, PlayerFileData data, int snapPointIndex)
 		{
 			orig(self, data, snapPointIndex);
 
-			FieldInfo info = typeof(UICharacterListItem).GetField("_buttonLabel", BindingFlags.Instance | BindingFlags.NonPublic);
-			var text = info.GetValue(self) as UIText;
+			UIText text = self._buttonLabel;
 
 			text.Left.Set(190, 0);
 
@@ -64,7 +62,7 @@ namespace StarlightRiver.Content.CustomHooks
 			}
 		}
 
-		private void DrawSpecialCharacter(Terraria.GameContent.UI.Elements.On_UICharacterListItem.orig_DrawSelf orig, UICharacterListItem self, SpriteBatch spriteBatch)
+		private void DrawSpecialCharacter(On_UICharacterListItem.orig_DrawSelf orig, UICharacterListItem self, SpriteBatch spriteBatch)
 		{
 			orig(self, spriteBatch);
 			var origin = new Vector2(self.GetDimensions().X, self.GetDimensions().Y);

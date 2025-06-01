@@ -17,18 +17,11 @@ using Terraria.ID;
 
 namespace StarlightRiver
 {
-	public partial class StarlightRiver : Mod
+	public class StarlightRiver : Mod
 	{
 		private List<IOrderedLoadable> loadCache;
 
 		public static bool debugMode = false;
-
-		//debug hook to view RTs
-		//public override void PostDrawInterface(SpriteBatch spriteBatch)
-		//{
-		//    spriteBatch.Draw(Content.CustomHooks.HotspringMapTarget.hotspringMapTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.Purple * 0.5f);
-		//    spriteBatch.Draw(Content.CustomHooks.HotspringMapTarget.hotspringShineTarget, new Rectangle(Main.screenWidth - (Main.screenWidth / 4), 0, Main.screenWidth / 4, Main.screenHeight / 4), Color.White * 0.5f);
-		//}
 
 		public static StarlightRiver Instance { get; set; }
 
@@ -37,14 +30,6 @@ namespace StarlightRiver
 		public StarlightRiver()
 		{
 			Instance = this;
-		}
-
-		public static void SetLoadingText(string text)
-		{
-			FieldInfo Interface_loadMods = typeof(Mod).Assembly.GetType("Terraria.ModLoader.UI.Interface")!.GetField("loadMods", BindingFlags.NonPublic | BindingFlags.Static)!;
-			MethodInfo UIProgress_set_SubProgressText = typeof(Mod).Assembly.GetType("Terraria.ModLoader.UI.UIProgress")!.GetProperty("SubProgressText", BindingFlags.Public | BindingFlags.Instance)!.GetSetMethod()!;
-
-			UIProgress_set_SubProgressText.Invoke(Interface_loadMods.GetValue(null), new object[] { text });
 		}
 
 		public override void Load()
@@ -69,7 +54,7 @@ namespace StarlightRiver
 			for (int k = 0; k < loadCache.Count; k++)
 			{
 				loadCache[k].Load();
-				SetLoadingText("Loading " + loadCache[k].GetType().Name);
+				Terraria.ModLoader.UI.Interface.loadMods.SubProgressText = "Loading " + loadCache[k].GetType().Name;
 			}
 
 			if (!Main.dedServ)

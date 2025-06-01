@@ -1,8 +1,5 @@
-﻿using StarlightRiver.Content.Items.Moonstone;
-using StarlightRiver.Content.Items.Underground;
+﻿using StarlightRiver.Content.Items.Underground;
 using StarlightRiver.Content.NPCs.BaseTypes;
-using System.Linq;
-using System.Reflection;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.Graphics.Light;
@@ -12,9 +9,6 @@ namespace StarlightRiver.Content.NPCs.Underground
 {
 	internal class GloomSlime : Swarmer
 	{
-		public static FieldInfo engineInfo;
-		public static FieldInfo mapInfo;
-
 		public ref float Timer => ref NPC.ai[0];
 
 		public override string Texture => "StarlightRiver/Assets/NPCs/Underground/" + Name;
@@ -92,14 +86,8 @@ namespace StarlightRiver.Content.NPCs.Underground
 		{
 			orig(self);
 
-			if (engineInfo is null)
-			{
-				engineInfo = typeof(Lighting).GetField("NewEngine", BindingFlags.Static | BindingFlags.NonPublic);
-				mapInfo = typeof(LightingEngine).GetField("_workingLightMap", BindingFlags.Instance | BindingFlags.NonPublic);
-			}
-
-			object engine = engineInfo.GetValue(null);
-			var map = mapInfo.GetValue(engine) as LightMap;
+			LightingEngine engine = Lighting.NewEngine;
+			LightMap map = engine._workingLightMap;
 
 			Main.GetAreaToLight(out int x, out int _, out int y, out int _);
 

@@ -21,11 +21,6 @@ namespace StarlightRiver.Content.Items.Misc
 		public int comboState;
 		public static Dictionary<int, bool> spearList;
 
-		public static MethodInfo AI019SpearsOld_Info;
-		public static Action<Projectile> AI019SpearsOld;
-		public static MethodInfo AI019Spears_Info;
-		public static Action<Projectile> AI019Spears;
-
 		public SpearBook() : base("Snake Technique", "Teaches you the Art of the Spear, granting all normal spear weapons a new combo attack\nThe last strike in the combo deals increased damage and knockback\n<right> to deter enemies with a flurry of stabs") { }
 
 		public override string Texture => AssetDirectory.MiscItem + "SpearBook";
@@ -34,12 +29,6 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			StarlightItem.CanUseItemEvent += OverrideSpearEffects;
 			StarlightItem.AltFunctionUseEvent += AllowRightClick;
-
-			AI019SpearsOld_Info = typeof(Projectile).GetMethod("AI_019_Spears_Old", BindingFlags.NonPublic | BindingFlags.Instance);
-			AI019SpearsOld = (Action<Projectile>)Delegate.CreateDelegate(typeof(Action<Projectile>), AI019SpearsOld_Info);
-
-			AI019Spears_Info = typeof(Projectile).GetMethod("AI_019_Spears", BindingFlags.NonPublic | BindingFlags.Instance);
-			AI019Spears = (Action<Projectile>)Delegate.CreateDelegate(typeof(Action<Projectile>), AI019Spears_Info);
 		}
 
 		public override void Unload()
@@ -410,8 +399,8 @@ namespace StarlightRiver.Content.Items.Misc
 				}
 
 				// run vanilla AI
-				SpearBook.AI019Spears(original);
-				SpearBook.AI019SpearsOld(original);
+				original.AI_019_Spears();
+				original.AI_019_Spears_Old();
 
 				// run modded AI if applicable
 				if (original.ModProjectile is ModProjectile modProj)

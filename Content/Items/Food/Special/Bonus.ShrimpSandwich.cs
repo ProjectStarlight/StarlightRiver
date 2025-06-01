@@ -60,21 +60,6 @@ namespace StarlightRiver.Content.Items.Food.Special
 
 	public class ShrimpSandwhichDropsNPC : GlobalNPC
 	{
-		private static MethodInfo RollFishingDropInfo;
-		public delegate void RollFishingDropDelegate(Projectile proj, ref FishingAttempt fisher);
-		public static RollFishingDropDelegate RollFishingDrop;
-
-		public override void Load()
-		{
-			RollFishingDropInfo = typeof(Terraria.Projectile).GetMethod("FishingCheck_RollItemDrop", BindingFlags.NonPublic | BindingFlags.Instance);
-			RollFishingDrop = (RollFishingDropDelegate)Delegate.CreateDelegate(typeof(RollFishingDropDelegate), RollFishingDropInfo);
-		}
-
-		public override void Unload()
-		{
-			RollFishingDrop = null;
-		}
-
 		public override void ModifyGlobalLoot(GlobalLoot globalLoot)
 		{
 			var leadingConditionRule = new LeadingConditionRule(new ShrimpSandwhichDropsCondition());
@@ -255,7 +240,7 @@ namespace StarlightRiver.Content.Items.Food.Special
 				//Main.NewText("Height teir: " + GetHeightTeir((int)(info.player.position.Y / 16)), Color.SkyBlue);
 				//projecile just to pass into the roll fishing drop method, the proj is never used
 				var dummyProjectile = new Projectile() { position = info.npc.position };
-				ShrimpSandwhichDropsNPC.RollFishingDrop(dummyProjectile, ref FishingAttemptData);
+				dummyProjectile.FishingCheck_RollItemDrop(ref FishingAttemptData);
 
 				int itemdrop = FishingAttemptData.rolledItemDrop;
 				int itemstack = GetFishStack(FishingLevel, itemdrop);//increase the stack size if this is bombfish or frost daggerfish

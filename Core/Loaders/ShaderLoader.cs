@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using Terraria.Graphics.Effects;
-using Terraria.Graphics.Shaders;
 using Terraria.ModLoader.Core;
 using static Terraria.ModLoader.Core.TmodFile;
 
@@ -11,7 +8,7 @@ namespace StarlightRiver.Core.Loaders
 {
 	class ShaderLoader : IOrderedLoadable
 	{
-		private static readonly Dictionary<string, Lazy<Asset<Effect>>> shaders = new();
+		private static readonly Dictionary<string, Lazy<Asset<Effect>>> shaders = [];
 
 		public float Priority => 0.9f;
 
@@ -20,8 +17,7 @@ namespace StarlightRiver.Core.Loaders
 			if (Main.dedServ)
 				return;
 
-			MethodInfo info = typeof(Mod).GetProperty("File", BindingFlags.NonPublic | BindingFlags.Instance).GetGetMethod(true);
-			var file = (TmodFile)info.Invoke(StarlightRiver.Instance, null);
+			TmodFile file = StarlightRiver.Instance.File;
 
 			IEnumerable<FileEntry> shaders = file.Where(n => n.Name.StartsWith("Effects/") && n.Name.EndsWith(".xnb"));
 

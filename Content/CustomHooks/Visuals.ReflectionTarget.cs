@@ -17,16 +17,6 @@ namespace StarlightRiver.Content.CustomHooks
 		//Drawing Player to Target. Should be safe. Excuse me if im duplicating something that alr exists :p
 		public const string simpleReflectionShaderPath = "StarlightRiver:SimpleReflection";
 
-		private MethodInfo NpcsOverTilesDrawMethod;
-		private MethodInfo PlayerBehindNPCsDrawMethod;
-		private MethodInfo NpcsBehindTilesDrawMethod;
-		private MethodInfo PlayerAfterProjDrawMethod;
-		private MethodInfo ProjectileDrawMethod;
-		private MethodInfo drawCachedProjsMethod;
-		private MethodInfo drawCachedNPCsMethod;
-		private MethodInfo dustDrawMethod;
-		private MethodInfo goreDrawMethod;
-
 		public static ScreenTarget Target;
 		private static ScreenTarget reflectionNormalMapTarget;
 
@@ -53,16 +43,6 @@ namespace StarlightRiver.Content.CustomHooks
 			//Since this renders alot of other things, we need to render it seperately to prevent deadlocks with other render targets
 			Target = new(null, () => ModContent.GetInstance<GraphicsConfig>().ReflectionConfig.isReflectingAnything(), 1.2f);
 			reflectionNormalMapTarget = new(DrawTargets, () => ModContent.GetInstance<GraphicsConfig>().ReflectionConfig.isReflectingAnything(), 1.15f);
-
-			NpcsOverTilesDrawMethod = typeof(Main).GetMethod("DoDraw_DrawNPCsOverTiles", BindingFlags.NonPublic | BindingFlags.Instance);
-			NpcsBehindTilesDrawMethod = typeof(Main).GetMethod("DoDraw_DrawNPCsBehindTiles", BindingFlags.NonPublic | BindingFlags.Instance);
-			PlayerBehindNPCsDrawMethod = typeof(Main).GetMethod("DrawPlayers_BehindNPCs", BindingFlags.NonPublic | BindingFlags.Instance);
-			PlayerAfterProjDrawMethod = typeof(Main).GetMethod("DrawPlayers_AfterProjectiles", BindingFlags.NonPublic | BindingFlags.Instance);
-			ProjectileDrawMethod = typeof(Main).GetMethod("DrawProjectiles", BindingFlags.NonPublic | BindingFlags.Instance);
-			drawCachedProjsMethod = typeof(Main).GetMethod("DrawCachedProjs", BindingFlags.NonPublic | BindingFlags.Instance);
-			drawCachedNPCsMethod = typeof(Main).GetMethod("DrawCachedNPCs", BindingFlags.NonPublic | BindingFlags.Instance);
-			dustDrawMethod = typeof(Main).GetMethod("DrawDust", BindingFlags.NonPublic | BindingFlags.Instance);
-			goreDrawMethod = typeof(Main).GetMethod("DrawGore", BindingFlags.NonPublic | BindingFlags.Instance);
 
 			On_Main.DoDraw_WallsAndBlacks += DrawWallReflectionLayer;
 			On_Main.CheckMonoliths += SpecialDraww;
@@ -141,29 +121,29 @@ namespace StarlightRiver.Content.CustomHooks
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
 			if (reflectionConfig.NpcReflectionsOn)
-				NpcsBehindTilesDrawMethod?.Invoke(Main.instance, null);
+				Main.instance.DoDraw_DrawNPCsBehindTiles();
 
 			if (reflectionConfig.PlayerReflectionsOn)
-				PlayerBehindNPCsDrawMethod?.Invoke(Main.instance, null);
+				Main.instance.DrawPlayers_BehindNPCs();
 
 			if (reflectionConfig.NpcReflectionsOn)
-				NpcsOverTilesDrawMethod?.Invoke(Main.instance, null);
+				Main.instance.DoDraw_DrawNPCsOverTiles();
 
 			if (reflectionConfig.ProjReflectionsOn)
 			{
-				drawCachedProjsMethod?.Invoke(Main.instance, new object[] { Main.instance.DrawCacheProjsBehindProjectiles, true });
-				ProjectileDrawMethod?.Invoke(Main.instance, null);
+				Main.instance.DrawCachedProjs(Main.instance.DrawCacheProjsBehindProjectiles, true);
+				Main.instance.DrawProjectiles();
 			}
 
 			if (reflectionConfig.PlayerReflectionsOn)
-				PlayerAfterProjDrawMethod?.Invoke(Main.instance, new object[] { });
+				Main.instance.DrawPlayers_AfterProjectiles();
 
 			if (reflectionConfig.ProjReflectionsOn)
-				drawCachedProjsMethod?.Invoke(Main.instance, new object[] { Main.instance.DrawCacheProjsOverPlayers, true });
+				Main.instance.DrawCachedProjs(Main.instance.DrawCacheProjsOverPlayers, true);
 
 			if (reflectionConfig.NpcReflectionsOn)
 			{
-				drawCachedNPCsMethod?.Invoke(Main.instance, new object[] { Main.instance.DrawCacheNPCsOverPlayers, false });
+				Main.instance.DrawCachedNPCs(Main.instance.DrawCacheNPCsOverPlayers, false);
 
 				if (Main.LocalPlayer.InModBiome(ModContent.GetInstance<Biomes.PermafrostTempleBiome>()))
 				{
@@ -178,8 +158,7 @@ namespace StarlightRiver.Content.CustomHooks
 				sb.Begin(SpriteSortMode.Deferred, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 				try
 				{
-					//tml does this try catch for some reason, maybe gores are bugged in this version, v2022.3.35.3, possible TODO: remove the try catch if tml removes theirs
-					goreDrawMethod?.Invoke(Main.instance, null);
+					Main.instance.DrawGore();
 				}
 				catch (Exception e2)
 				{
@@ -188,7 +167,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 				sb.End();
 
-				dustDrawMethod?.Invoke(Main.instance, null);
+				Main.instance.DrawDust();
 			}
 
 			Overlays.Scene.Draw(sb, RenderLayers.Entities, true);

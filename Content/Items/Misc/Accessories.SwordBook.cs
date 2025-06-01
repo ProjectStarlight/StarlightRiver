@@ -126,13 +126,6 @@ namespace StarlightRiver.Content.Items.Misc
 		private bool hasDoneSwingSound = false;
 		private bool hasDoneOnSpawn = false;
 
-		// These handle replicating the vanilla effects which we must do via reflection
-		public static MethodInfo playerItemCheckEmitUseVisuals_Info;
-		public static Func<Player, Item, Rectangle, Rectangle> playerItemCheckEmitUseVisuals;
-
-		public static MethodInfo ApplyNPCOnHitEffects_Info;
-		public static Action<Player, Item, Rectangle, int, float, int, int, int> ApplyNPCOnHitEffects;
-
 		public Item itemSnapshot; //lock in the item on creation incase they bypass the item switching prevention
 
 		// Properties
@@ -145,19 +138,6 @@ namespace StarlightRiver.Content.Items.Misc
 		public ref float ComboState => ref Projectile.ai[1];
 
 		public override string Texture => AssetDirectory.Invisible;
-
-		public override void Load()
-		{
-			// We cache the MethodInfo of the methods we need to simulate vanilla effects here
-			playerItemCheckEmitUseVisuals_Info = typeof(Player).GetMethod("ItemCheck_EmitUseVisuals", BindingFlags.NonPublic | BindingFlags.Instance);
-			playerItemCheckEmitUseVisuals = (Func<Player, Item, Rectangle, Rectangle>)Delegate.CreateDelegate(
-				typeof(Func<Player, Item, Rectangle, Rectangle>), playerItemCheckEmitUseVisuals_Info);
-
-			ApplyNPCOnHitEffects_Info = typeof(Player).GetMethod("ApplyNPCOnHitEffects", BindingFlags.NonPublic | BindingFlags.Instance);
-			ApplyNPCOnHitEffects = (Action<Player, Item, Rectangle, int, float, int, int, int>)Delegate.CreateDelegate(
-				typeof(Action<Player, Item, Rectangle, int, float, int, int, int>), ApplyNPCOnHitEffects_Info);
-
-		}
 
 		public override void SetDefaults()
 		{
@@ -234,7 +214,7 @@ namespace StarlightRiver.Content.Items.Misc
 				Vector2 itemRectStart = Projectile.Center + Projectile.rotation.ToRotationVector2() * length * 0.5f;
 				var itemRect = new Rectangle((int)itemRectStart.X, (int)itemRectStart.Y, 2, 2);
 				itemRect.Inflate((int)length / 2, (int)length / 2);
-				playerItemCheckEmitUseVisuals(Owner, itemSnapshot, itemRect);
+				Owner.ItemCheck_EmitUseVisuals(itemSnapshot, itemRect);
 			}
 
 			if (ComboState < 3 && Progress == 0 && itemSnapshot.shoot > ProjectileID.None && Projectile.owner == Main.myPlayer) //spawn projectile if relevant
@@ -368,7 +348,7 @@ namespace StarlightRiver.Content.Items.Misc
 			PlayerLoader.OnHitNPC(Owner, target, hit, damageDone);
 			Owner.StatusToNPC(itemSnapshot.type, target.whoAmI);
 			float knockback = hit.Knockback;
-			ApplyNPCOnHitEffects(Owner, itemSnapshot, Projectile.Hitbox, Projectile.damage, knockback, target.whoAmI, Main.DamageVar(damageDone, Owner.luck), damageDone);
+			Owner.ApplyNPCOnHitEffects(itemSnapshot, Projectile.Hitbox, Projectile.damage, knockback, target.whoAmI, Main.DamageVar(damageDone, Owner.luck), damageDone);
 
 			target.velocity += Vector2.Normalize(target.Center - Owner.Center) * Projectile.knockBack * 2 * target.knockBackResist;
 		}

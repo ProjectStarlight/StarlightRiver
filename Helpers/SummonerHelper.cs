@@ -4,29 +4,8 @@ using Terraria.ID;
 
 namespace StarlightRiver.Helpers
 {
-	internal class SummonerHelper : IOrderedLoadable
+	internal static class SummonerHelper 
 	{
-		// i love private terraria methods which require reflection to access
-		public static MethodInfo playerItemCheckShoot_Info;
-		public static Action<Player, int, Item, int> playerItemCheckShoot;
-
-		public float Priority => 1f;
-
-		public void Load()
-		{
-			playerItemCheckShoot_Info = typeof(Player).GetMethod("ItemCheck_Shoot", BindingFlags.NonPublic | BindingFlags.Instance);
-
-			//Here we cache this method for performance
-			playerItemCheckShoot = (Action<Player, int, Item, int>)Delegate.CreateDelegate(
-				typeof(Action<Player, int, Item, int>), playerItemCheckShoot_Info);
-		}
-
-		public void Unload()
-		{
-			playerItemCheckShoot_Info = null;
-			playerItemCheckShoot = null;
-		}
-
 		/// <summary>
 		/// Attempts to respawn a given amount of minion slots worth of minions. Will draw from the first minion
 		/// spawning item in the player's inventory.
@@ -62,7 +41,7 @@ namespace StarlightRiver.Helpers
 
 					dummyProj.SetDefaults(summoningItem.shoot);
 
-					playerItemCheckShoot(player, player.whoAmI, summoningItem, summoningItem.damage);
+					player.ItemCheck_Shoot(player.whoAmI, summoningItem, summoningItem.damage);
 
 					// TODO: Decide if we want this?
 					for (int d = 0; d < 5; d++)

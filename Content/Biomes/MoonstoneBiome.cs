@@ -58,8 +58,6 @@ namespace StarlightRiver.Content.Biomes
 
 		private bool drawingBGtarget = false;
 
-		private MethodInfo info = null;
-
 		public ParticleSystem particleSystem;
 		public ParticleSystem particleSystemMedium;
 		public ParticleSystem particleSystemLarge;
@@ -183,10 +181,7 @@ namespace StarlightRiver.Content.Biomes
 			sb.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
 			drawingBGtarget = true;
-
-			info ??= Main.instance.GetType().GetMethod("DrawSurfaceBG", BindingFlags.NonPublic | BindingFlags.Instance);
-
-			info.Invoke(Main.instance, null);
+			Main.instance.DrawSurfaceBG();
 			drawingBGtarget = false;
 		}
 

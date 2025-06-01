@@ -17,9 +17,6 @@ namespace StarlightRiver.Content.Tiles.Underground
 		public static int savedX;
 		public static int savedY;
 
-		public static FieldInfo engineInfo;
-		public static FieldInfo mapInfo;
-
 		public override string Texture => "StarlightRiver/Assets/Tiles/Underground/Glorch";
 
 		public override void Load()
@@ -80,14 +77,8 @@ namespace StarlightRiver.Content.Tiles.Underground
 		{
 			orig(self);
 
-			if (engineInfo is null)
-			{
-				engineInfo = typeof(Lighting).GetField("NewEngine", BindingFlags.Static | BindingFlags.NonPublic);
-				mapInfo = typeof(LightingEngine).GetField("_workingLightMap", BindingFlags.Instance | BindingFlags.NonPublic);
-			}
-
-			object engine = engineInfo.GetValue(null);
-			var map = mapInfo.GetValue(engine) as LightMap;
+			LightingEngine engine = Lighting.NewEngine;
+			LightMap map = engine._workingLightMap;
 
 			foreach (Point16 point in darkPoints)
 			{
