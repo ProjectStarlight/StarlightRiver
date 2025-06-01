@@ -119,7 +119,7 @@ namespace StarlightRiver.Content.GUI
 		private readonly string localizationKey;
 
 		public int value;
-		
+
 		public float magnitude = 0f;
 		public Color color;
 

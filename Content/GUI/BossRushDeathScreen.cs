@@ -22,8 +22,8 @@ namespace StarlightRiver.Content.GUI
 
 		public override void OnInitialize()
 		{
-			var retry = Language.GetText("Mods.StarlightRiver.GUI.BossRushDeathScreen.Retry");
-			var giveUp = Language.GetText("Mods.StarlightRiver.GUI.BossRushDeathScreen.GiveUp");
+			LocalizedText retry = Language.GetText("Mods.StarlightRiver.GUI.BossRushDeathScreen.Retry");
+			LocalizedText giveUp = Language.GetText("Mods.StarlightRiver.GUI.BossRushDeathScreen.GiveUp");
 
 			Vector2 retryTextSize = FontAssets.MouseText.Value.MeasureString(retry.Value);
 			retryButton = new UIText(retry)

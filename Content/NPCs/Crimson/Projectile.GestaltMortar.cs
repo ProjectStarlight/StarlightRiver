@@ -77,7 +77,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 			Color color = BaseColor * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
 			color.A = 0;
-			
+
 			Main.spriteBatch.Draw(glow, Projectile.Center - Main.screenPosition, null, color * 0.5f, 0, glow.Size() / 2f, 0.5f, 0, 0);
 			Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, color, Main.GameUpdateCount * 0.1f, star.Size() / 2f, 0.25f, 0, 0);
 			Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, color * 1.8f, Main.GameUpdateCount * -0.2f, star.Size() / 2f, 0.15f, 0, 0);

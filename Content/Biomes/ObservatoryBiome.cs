@@ -94,7 +94,7 @@ namespace StarlightRiver.Content.Biomes
 			if (StarlightRiver.debugMode && false)
 			{
 				Main.spriteBatch.Begin();
-				var target = ObservatorySystem.ObservatoryRoomWorld;
+				Rectangle target = ObservatorySystem.ObservatoryRoomWorld;
 				target.Offset((-Main.screenPosition).ToPoint());
 				Main.spriteBatch.Draw(Assets.MagicPixel.Value, target, Color.Green * 0.25f);
 

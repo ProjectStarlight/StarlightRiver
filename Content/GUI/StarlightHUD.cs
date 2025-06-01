@@ -152,10 +152,12 @@ namespace StarlightRiver.Content.GUI
 				}
 
 				if (mp.ShardCount % 3 == 0)
+				{
 					TextCard.Display(
 						Language.GetTextValue("Mods.StarlightRiver.GUI.StarlightHUD.IncreaseMessage"),
 						Language.GetTextValue("Mods.StarlightRiver.GUI.StarlightHUD.IncreaseTooltip"),
 						240, 1f);
+				}
 			}
 		}
 

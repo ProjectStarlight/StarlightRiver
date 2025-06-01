@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Tiles.Starlight
 		{
 			if (!ObservatorySystem.observatoryOpen)
 			{
-				foreach(Player player in Main.ActivePlayers)
+				foreach (Player player in Main.ActivePlayers)
 				{
 					player.ActivateCutscene<StarlightPylonActivateCutscene>();
 				}
@@ -74,7 +74,7 @@ namespace StarlightRiver.Content.Tiles.Starlight
 					Dust.NewDustPerfect(pylon + off * 16, ModContent.DustType<Dusts.PixelatedImpactLineDustGlow>(), off * Main.rand.NextFloat(30), 0, new Color(Main.rand.Next(30), 100 + Main.rand.Next(155), 255, 0), Main.rand.NextFloat(0.2f, 0.3f));
 				}
 
-				for(int k = 0; k < 4; k++)
+				for (int k = 0; k < 4; k++)
 				{
 					Vector2 off = Vector2.UnitX.RotatedBy(k / 4f * 6.28f);
 					Dust.NewDustPerfect(pylon + off * 16, ModContent.DustType<Dusts.PixelatedImpactLineDustGlow>(), off * 45, 0, new Color(Main.rand.Next(100), 100 + Main.rand.Next(155), 255, 0), Main.rand.NextFloat(0.2f, 0.3f));

@@ -78,6 +78,7 @@ namespace StarlightRiver.Content.Items
 				Main.BestiaryTracker.Chats.RegisterChatStartWith(npc);
 				Main.BestiaryTracker.Sights.RegisterWasNearby(npc);
 			}
+
 			if (Main.LocalPlayer.controlDown)
 			{
 				ModContent.GetInstance<StarlightWorld>().GenerateGestaltStructure((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
@@ -248,9 +249,9 @@ namespace StarlightRiver.Content.Items
 			Terraria.UI.Chat.ChatManager.DrawColorCodedString(Main.spriteBatch, font, ChatManager.ParseMessage("what? [c/ff22ff:This is a test of the national emergency fuck system woo] no way!\n\ngreen is green but [c/22ff22: green is greener!]", Color.White).ToArray(), new Vector2(Main.screenWidth / 2, 426), Color.White, 0, default, Vector2.One, out var hovered3, 200);
 			*/
 
-			for(int k = 0; k < Main.screenHeight / 32; k ++)
+			for (int k = 0; k < Main.screenHeight / 32; k++)
 			{
-				var message = $"ALPHA BUILD DOES NOT REPRESENT FINAL PRODUCT - ";
+				string message = $"ALPHA BUILD DOES NOT REPRESENT FINAL PRODUCT - ";
 
 				if (k % 2 == 0)
 					message = "DO NOT STREAM OR RECORD - ";

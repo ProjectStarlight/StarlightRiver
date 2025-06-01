@@ -157,7 +157,6 @@ namespace StarlightRiver.Content.GUI
 				else
 					ChatManager.DrawColorCodedStringWithShadow(spriteBatch, font, hint, Main.MouseScreen + new Vector2(16, 16), 0f, default, Vector2.One * 0.8f, out int junk, 300);
 			}
-				
 		}
 	}
 
@@ -304,7 +303,7 @@ namespace StarlightRiver.Content.GUI
 			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Glassweaver, "Mods.StarlightRiver.GUI.BossRushMenu.GlassweaverUnlock", Assets.Bosses.GlassMiniboss.Glassweaver_Head_Boss, 220, -1.57f - 0.33f));
 			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Ceiros, "Mods.StarlightRiver.GUI.BossRushMenu.CeirosUnlock", Assets.Bosses.VitricBoss.VitricBoss_Head_Boss, 220, -1.57f + 0.33f));
 			Append(new BossRushUnlockInfo(BossrushUnlockFlag.Thinker, "Mods.StarlightRiver.GUI.BossRushMenu.ThinkerUnlock", Assets.Bosses.TheThinkerBoss.TheThinker_Head_Boss, 220, -1.57f + 1f));
-			
+
 			var speedRelic = new BossRushRelicToggle(() => BossRushSpeedupAddon.active, "Mods.StarlightRiver.GUI.BossRushMenu.SpeedRelic", Assets.NPCs.BossRush.SpeedRelic, 240, 1.57f - 0.66f);
 			speedRelic.OnLeftClick += (a, b) => BossRushSpeedupAddon.active = !BossRushSpeedupAddon.active;
 			Append(speedRelic);

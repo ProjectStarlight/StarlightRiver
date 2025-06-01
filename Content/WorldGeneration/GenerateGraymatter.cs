@@ -135,7 +135,7 @@ namespace StarlightRiver.Core
 					{
 						if (WorldGenHelper.GetElevationDeviation(new Point16(x, y), 10, 5, 2, true) < 2)
 						{
-							WorldGenHelper.PlaceMultitile(new Point16(x, y-5), ModContent.TileType<GestaltAltar>());
+							WorldGenHelper.PlaceMultitile(new Point16(x, y - 5), ModContent.TileType<GestaltAltar>());
 							GenerateGestaltStructure(x - 33, y - 60);
 							generated = true;
 							break;
@@ -357,7 +357,7 @@ namespace StarlightRiver.Core
 					WorldGen.PlaceWall(x + x1, y1, WallID.Flesh);
 				}
 
-				var tile = Framing.GetTileSafely(x, y1);
+				Tile tile = Framing.GetTileSafely(x, y1);
 
 				if (tile.HasTile && Main.tileSolid[tile.type])
 				{

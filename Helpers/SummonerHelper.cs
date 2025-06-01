@@ -4,7 +4,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Helpers
 {
-	internal static class SummonerHelper 
+	internal static class SummonerHelper
 	{
 		/// <summary>
 		/// Attempts to respawn a given amount of minion slots worth of minions. Will draw from the first minion

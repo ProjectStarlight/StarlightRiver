@@ -863,7 +863,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				Vector2 targetPos = Main.player[NPC.target].Center + new Vector2(0, 175);
 				targetPos += Vector2.UnitX.RotatedBy(AttackTimer / 650 * 6.28f * 4) * 30;
 
-				var speed = AttackTimer < 650 ? 0.045f : 0.045f * (1f - (AttackTimer - 650) / 60f);
+				float speed = AttackTimer < 650 ? 0.045f : 0.045f * (1f - (AttackTimer - 650) / 60f);
 
 				if (AttackTimer < 120)
 					speed *= AttackTimer / 120f;
@@ -873,7 +873,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 			if (AttackTimer > 680 && AttackTimer <= 710)
 			{
-				var teleTimer = AttackTimer - 680;
+				float teleTimer = AttackTimer - 680;
 				ThisThinker.ExtraGrayAuraRadius = -80 + -100 * (teleTimer / 30f);
 			}
 
@@ -885,7 +885,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 			if (AttackTimer > 710 && AttackTimer <= 730)
 			{
-				var teleTimer = AttackTimer - 710;
+				float teleTimer = AttackTimer - 710;
 				ThisThinker.ExtraGrayAuraRadius = -180 + 180 * (teleTimer / 20f);
 			}
 
@@ -1268,7 +1268,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				Vector2 targetPos = Main.player[NPC.target].Center + new Vector2(0, -225).RotatedBy(AttackTimer / 545f * 6.28f * 2f);
 				targetPos += Vector2.UnitX.RotatedBy(AttackTimer / 650 * 6.28f * 4) * 30;
 
-				var speed = AttackTimer < 485 ? 0.045f : 0.045f * (1f - (AttackTimer - 485) / 60f);
+				float speed = AttackTimer < 485 ? 0.045f : 0.045f * (1f - (AttackTimer - 485) / 60f);
 
 				if (AttackTimer < 120)
 					speed *= AttackTimer / 120f;
@@ -1278,7 +1278,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 			if (AttackTimer > 515 && AttackTimer <= 545)
 			{
-				var teleTimer = AttackTimer - 515;
+				float teleTimer = AttackTimer - 515;
 				ThisThinker.ExtraGrayAuraRadius = -80 + -100 * (teleTimer / 30f);
 			}
 
@@ -1290,7 +1290,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 			if (AttackTimer > 545 && AttackTimer <= 565)
 			{
-				var teleTimer = AttackTimer - 545;
+				float teleTimer = AttackTimer - 545;
 				ThisThinker.ExtraGrayAuraRadius = -180 + 180 * (teleTimer / 20f);
 			}
 

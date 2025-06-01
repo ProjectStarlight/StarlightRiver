@@ -28,14 +28,14 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 		public override bool RightClick(int i, int j)
 		{
-			var tile = Framing.GetTileSafely(i, j);
+			Tile tile = Framing.GetTileSafely(i, j);
 			(Dummy(i - tile.frameX / 18, j - tile.frameY / 18) as GestaltAltarDummy)?.Start();
 
 			if (NPC.AnyNPCs(ModContent.NPCType<GestaltCell>()))
 				return false;
 
-			var arena = GestaltCellArenaSystem.ArenaWorld;
-			var pos = arena.Center.ToVector2() + Vector2.UnitY * (arena.Height * 0.5f - 32);
+			Rectangle arena = GestaltCellArenaSystem.ArenaWorld;
+			Vector2 pos = arena.Center.ToVector2() + Vector2.UnitY * (arena.Height * 0.5f - 32);
 
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 			{
@@ -85,22 +85,22 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 				if (timer > 45 && timer <= 75)
 				{
-					var prog = (timer - 45) / 30f;
+					float prog = (timer - 45) / 30f;
 					Fadeout.color = Color.Lerp(Color.DarkRed, Color.Black, prog);
 					Fadeout.opacity = prog;
 				}
 
 				if (timer > 90 && timer < 120)
 				{
-					var prog = 1f - (timer - 90) / 30f;
+					float prog = 1f - (timer - 90) / 30f;
 					Fadeout.color = Color.Lerp(Color.DarkRed, Color.Black, prog);
 					Fadeout.opacity = prog;
 				}
 
 				if (timer == 80)
 				{
-					var arena = GestaltCellArenaSystem.ArenaWorld;
-					var pos = arena.Center.ToVector2() + Vector2.UnitY * (arena.Height * 0.5f - 120);
+					Rectangle arena = GestaltCellArenaSystem.ArenaWorld;
+					Vector2 pos = arena.Center.ToVector2() + Vector2.UnitY * (arena.Height * 0.5f - 120);
 					savedPos = pos + Vector2.UnitX * Main.rand.Next(80, 160) * (Main.rand.NextBool() ? 1 : -1);
 				}
 
