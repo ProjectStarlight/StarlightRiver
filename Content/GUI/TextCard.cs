@@ -1,10 +1,8 @@
 ﻿using ReLogic.Graphics;
-using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core.Loaders.UILoading;
 using System;
 using System.Collections.Generic;
 using Terraria.UI;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.GUI

@@ -1,21 +1,13 @@
 using StarlightRiver.Content.Dusts;
-using StarlightRiver.Content.Items.UndergroundTemple;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.PixelationSystem;
-using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.GameContent;
-using Terraria.Graphics.Effects;
 using Terraria.ID;
-using static Humanizer.In;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using static tModPorter.ProgressUpdate;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
@@ -354,7 +346,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(5f, 5f), ModContent.DustType<PixelatedGlow>(),
 					Projectile.velocity.RotatedByRandom(0.1f) * 0.05f, 0, new Color(255, 100, 20, 0), 0.1f);
 
-				Dust dust = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(5f, 5f), DustID.Torch, Projectile.velocity.RotatedByRandom(0.1f) * 0.05f, 150, default, Main.rand.NextFloat(1f, 2f));
+				var dust = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(5f, 5f), DustID.Torch, Projectile.velocity.RotatedByRandom(0.1f) * 0.05f, 150, default, Main.rand.NextFloat(1f, 2f));
 				dust.noGravity = true;
 			}
 
@@ -472,7 +464,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			if (cache == null)
 			{
-				cache = new List<Vector2>();
+				cache = [];
 				for (int i = 0; i < 10; i++)
 				{
 					cache.Add(Projectile.Center + Projectile.velocity);
@@ -510,9 +502,9 @@ namespace StarlightRiver.Content.Items.Vitric
 
 				if (effect != null)
 				{
-					Matrix world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+					var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 					Matrix view = Matrix.Identity;
-					Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+					var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 					effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
 					effect.Parameters["repeats"].SetValue(1f);
@@ -602,7 +594,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			if (cache is null)
 			{
-				cache = new List<Vector2>();
+				cache = [];
 
 				for (int i = 0; i < 40; i++)
 				{
@@ -645,9 +637,9 @@ namespace StarlightRiver.Content.Items.Vitric
 
 				if (effect != null)
 				{
-					Matrix world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+					var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
 					Matrix view = Matrix.Identity;
-					Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+					var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 					effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 					effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.01f);
@@ -798,7 +790,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			for (int i = 0; i < 20; i++)
 			{
-				Dust dust = Dust.NewDustPerfect(npc.Center + Main.rand.NextVector2Circular(80f, 80f), ModContent.DustType<PixelSmokeColor>(), Main.rand.NextVector2Circular(4f, 4f), Main.rand.Next(50, 125), new Color(255, 80, 0), Main.rand.NextFloat(0.1f, 0.15f));
+				var dust = Dust.NewDustPerfect(npc.Center + Main.rand.NextVector2Circular(80f, 80f), ModContent.DustType<PixelSmokeColor>(), Main.rand.NextVector2Circular(4f, 4f), Main.rand.Next(50, 125), new Color(255, 80, 0), Main.rand.NextFloat(0.1f, 0.15f));
 				dust.rotation = Main.rand.NextFloat(6.28f);
 
 				dust = Dust.NewDustPerfect(npc.Center + Main.rand.NextVector2Circular(80f, 80f), ModContent.DustType<PixelSmokeColor>(), Main.rand.NextVector2Circular(4.5f, 4.5f) + -Vector2.UnitY * 2f, Main.rand.Next(50, 125), new Color(255, 110, 0), Main.rand.NextFloat(0.05f, 0.1f));

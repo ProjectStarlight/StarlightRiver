@@ -1,16 +1,8 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Dusts;
-using StarlightRiver.Content.GUI;
-using StarlightRiver.Core.Loaders.UILoading;
+﻿using StarlightRiver.Content.GUI;
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 {

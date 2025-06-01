@@ -1,18 +1,8 @@
-﻿using BepInEx.AssemblyPublicizer;
-using StarlightRiver.Core.Loaders.UILoading;
+﻿using StarlightRiver.Core.Loaders.UILoading;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Runtime;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.GameContent.UI.Elements;
-using Terraria.GameContent.UI.States;
 using Terraria.UI;
 using Terraria.UI.Chat;
-using static System.Net.Mime.MediaTypeNames;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace StarlightRiver.Content.GUI
 {
@@ -113,7 +103,7 @@ namespace StarlightRiver.Content.GUI
 			{
 				float arrowFade = Math.Min(1, (textTimer - 60) / 30f);
 
-				var arrow = Assets.GUI.WhiteArrow.Value;
+				Texture2D arrow = Assets.GUI.WhiteArrow.Value;
 				Vector2 arrowPos = target.BottomLeft() + new Vector2(20 + MathF.Sin(textTimer * 0.1f) * 10, 10);
 				spriteBatch.Draw(arrow, arrowPos, new Color(255, 190, 130) * 0.7f * arrowFade);
 			}

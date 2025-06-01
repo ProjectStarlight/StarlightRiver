@@ -15,15 +15,8 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<None Remove="AssGenConfig.txt" />
-		<None Remove="effects\source\GestaltLine.fx" />
-		<None Remove="effects\source\Neurysm.fx" />
-		<None Remove="Localization\en-US_Mods.StarlightRiver.Abilities.hjson" />
-		<None Remove="localization\en-US_Mods.StarlightRiver.GUI.hjson" />
-		<None Remove="OldPatchNotes\0.2.0\0.2.2.txt" />
-		<None Remove="OldPatchNotes\0.2.0\0.2.4.txt" />
-		<None Remove="OldPatchNotes\0.2.0\0.2.6.txt" />
-		<None Remove="OldPatchNotes\0.2.0\0.2.8.txt" />
 	</ItemGroup>
+	
 	<ItemGroup>
 		<PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2" PrivateAssets="all" />
 	</ItemGroup>
@@ -34,14 +27,8 @@
 		<Reference Include="NetEasy">
 			<HintPath>lib\NetEasy_v0.1.8.dll</HintPath>
 		</Reference>
-		<Reference Include="ProjectStarlight.Interchange">
-			<HintPath>lib\ProjectStarlight.Interchange.dll</HintPath>
-		</Reference>
 		<Reference Include="StructureHelper">
 			<HintPath>lib\StructureHelper.dll</HintPath>
-		</Reference>
-		<Reference Include="System.Windows.Forms">
-			<HintPath>C:\Windows\Microsoft.NET\assembly\GAC_MSIL\System.Windows.Forms\v4.0_4.0.0.0__b77a5c561934e089\System.Windows.Forms.dll</HintPath>
 		</Reference>
 
 		<PackageReference Include="AssGen" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Version="3.0.0" />

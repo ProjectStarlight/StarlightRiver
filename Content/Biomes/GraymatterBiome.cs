@@ -1,21 +1,15 @@
 ﻿using ReLogic.Utilities;
 using StarlightRiver.Content.Bosses.TheThinkerBoss;
 using StarlightRiver.Content.Buffs;
-using StarlightRiver.Content.Dusts;
-using StarlightRiver.Content.Tiles.Crimson;
 using StarlightRiver.Core.Loaders;
-using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Windows.Forms;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ModLoader.IO;
-using Terraria.WorldBuilding;
 
 namespace StarlightRiver.Content.Biomes
 {
@@ -26,8 +20,8 @@ namespace StarlightRiver.Content.Biomes
 
 		public Vector2 lastGrayPos;
 
-		public List<Point16> grayTileMap = new();
-		public List<Point16> overTileMap = new();
+		public List<Point16> grayTileMap = [];
+		public List<Point16> overTileMap = [];
 
 		public Vector2 lastScreenPos;
 
@@ -49,12 +43,12 @@ namespace StarlightRiver.Content.Biomes
 		/// <summary>
 		/// List of tiles with graymatter emissions.
 		/// </summary>
-		public static HashSet<int> grayEmissionTypes = new();
+		public static HashSet<int> grayEmissionTypes = [];
 
 		/// <summary>
 		/// List of tiles with graymatter overlays. these MUST implement ICustomGraymatterDrawOver!!!
 		/// </summary>
-		public static HashSet<int> grayOverTypes = new();
+		public static HashSet<int> grayOverTypes = [];
 
 		public override SceneEffectPriority Priority => SceneEffectPriority.None;
 
@@ -247,7 +241,7 @@ namespace StarlightRiver.Content.Biomes
 	{
 		public bool anyTiles;
 
-		public List<Vector2> thinkerPositions = new();
+		public List<Vector2> thinkerPositions = [];
 
 		public override void Load()
 		{

@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using Terraria.Audio;
 using Terraria.ID;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace StarlightRiver.Content.NPCs.Crimson
 {

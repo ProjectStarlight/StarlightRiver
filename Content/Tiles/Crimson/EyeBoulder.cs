@@ -1,14 +1,8 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core.Systems.DummyTileSystem;
+﻿using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace StarlightRiver.Content.Tiles.Crimson
 {
