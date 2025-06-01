@@ -77,7 +77,7 @@ namespace StarlightRiver.Core
 				VitricSpike.CollideWithSpikes(Player, out int damage);
 
 				if (damage > 0)
-					Player.Hurt(PlayerDeathReason.ByCustomReason(Player.name + " was impaled by glass shards."), damage, 0);
+					Player.Hurt(PlayerDeathReason.ByCustomReason(NetworkText.FromKey("Mods.StarlightRiver.Deaths.VitricSpike", Player.name)), damage, 0);
 			}
 
 			foreach (PlayerTicker ticker in spawners.Where(n => n.Active(Player) && Timer % n.TickFrequency == 0))

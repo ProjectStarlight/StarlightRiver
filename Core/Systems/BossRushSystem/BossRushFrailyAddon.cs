@@ -17,7 +17,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		public override void OnHurt(Player.HurtInfo info)
 		{
 			if (BossRushSystem.isBossRush && BossRushFrailtyAddon.active)
-				Player.KillMe(PlayerDeathReason.ByCustomReason(Player.name + " shattered..."), double.PositiveInfinity, 0);
+				Player.KillMe(PlayerDeathReason.ByCustomReason(NetworkText.FromKey("Mods.StarlightRiver.Deaths.BossRushFrailty", Player.name)), double.PositiveInfinity, 0);
 		}
 	}
 }

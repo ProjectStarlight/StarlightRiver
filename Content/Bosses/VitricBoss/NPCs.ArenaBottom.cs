@@ -171,7 +171,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 							if (target.Hitbox.Intersects(NPC.Hitbox))
 							{
-								target.Hurt(PlayerDeathReason.ByCustomReason(target.name + " was impaled..."), Main.expertMode ? 80 : 40, 0);
+								target.Hurt(PlayerDeathReason.ByCustomReason(NetworkText.FromKey("Mods.StarlightRiver.CeirosArena", target.name)), Main.expertMode ? 80 : 40, 0);
 								target.GetModPlayer<StarlightPlayer>().platformTimer = 15;
 								target.velocity.Y = -Main.rand.Next(9, 13);
 
@@ -184,7 +184,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 							if (target.Hitbox.Intersects(topColission))
 							{
-								target.Hurt(PlayerDeathReason.ByCustomReason(target.name + " was impaled..."), Main.expertMode ? 80 : 40, 0);
+								target.Hurt(PlayerDeathReason.ByCustomReason(NetworkText.FromKey("Mods.StarlightRiver.CeirosArena", target.name)), Main.expertMode ? 80 : 40, 0);
 								target.GetModPlayer<StarlightPlayer>().platformTimer = 15;
 								target.velocity.Y = Main.rand.Next(9, 13);
 							}
@@ -196,7 +196,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 								if (target.Hitbox.Intersects(rightColission) || target.Hitbox.Intersects(leftColission))
 								{
-									target.Hurt(PlayerDeathReason.ByCustomReason(target.name + " was impaled..."), Main.expertMode ? 80 : 40, 0);
+									target.Hurt(PlayerDeathReason.ByCustomReason(NetworkText.FromKey("Mods.StarlightRiver.CeirosArena", target.name)), Main.expertMode ? 80 : 40, 0);
 									target.GetModPlayer<StarlightPlayer>().platformTimer = 15;
 
 									target.velocity.X = target.Hitbox.Intersects(leftColission) ? 10 : -10;

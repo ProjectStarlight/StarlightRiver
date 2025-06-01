@@ -68,7 +68,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
 		{
 			if (equipped && hitDirection == 0 && damageSource.SourceOtherIndex == 8)
-				damageSource = PlayerDeathReason.ByCustomReason(Player.name + " didn't read the tooltip");
+				damageSource = PlayerDeathReason.ByCustomReason(NetworkText.FromKey("Mods.StarlightRiver.Deaths.CausalMirror", Player.name));
 
 			return true;
 		}

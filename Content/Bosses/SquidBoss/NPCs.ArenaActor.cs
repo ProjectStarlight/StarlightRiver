@@ -202,7 +202,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					if (player.Hitbox.Intersects(new Rectangle((int)pos.X, (int)pos.Y, 104 * 16, (int)WaterLevel)))
 					{
 						if (!player.HasBuff(BuffType<Buffs.PrismaticDrown>()) && NPC.AnyNPCs(ModContent.NPCType<Content.Bosses.SquidBoss.SquidBoss>()))
-							player.Hurt(PlayerDeathReason.ByCustomReason("fell into the drink"), Main.masterMode ? 50 : Main.expertMode ? 20 : 10, 0);
+							player.Hurt(PlayerDeathReason.ByCustomReason(NetworkText.FromKey("Mods.StarlightRiver.Deaths.AuroraWater", player.name)), Main.masterMode ? 50 : Main.expertMode ? 20 : 10, 0);
 
 						player.AddBuff(BuffType<Buffs.PrismaticDrown>(), 4, false);
 					}

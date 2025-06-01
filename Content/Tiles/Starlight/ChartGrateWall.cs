@@ -1,7 +1,4 @@
-﻿using System.Reflection;
-using Terraria.DataStructures;
-using Terraria.GameContent.Drawing;
-using Terraria.Graphics;
+﻿using Terraria.Graphics;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Starlight
@@ -20,12 +17,12 @@ namespace StarlightRiver.Content.Tiles.Starlight
 		{
 			Tile tile = Main.tile[i, j];
 
-			var tex = Assets.Tiles.Starlight.ChartGrateWall.Value;
+			Texture2D tex = Assets.Tiles.Starlight.ChartGrateWall.Value;
 			Lighting.GetCornerColors(i, j, out VertexColors vertices);
 
 			var frame = new Rectangle(tile.WallFrameX + i % 6 * 468, tile.WallFrameY + j % 6 * 180, 32, 32);
 
-			Vector2 vector = new Vector2(Main.offScreenRange, Main.offScreenRange);
+			var vector = new Vector2(Main.offScreenRange, Main.offScreenRange);
 			Main.tileBatch.Draw(tex, new Vector2(i * 16 - (int)Main.screenPosition.X - 8, j * 16 - (int)Main.screenPosition.Y - 8) + vector, frame, vertices, Vector2.Zero, 1f, SpriteEffects.None);
 
 			return false;

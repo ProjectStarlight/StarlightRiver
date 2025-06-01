@@ -117,7 +117,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			if (Main.netMode != NetmodeID.Server && Main.LocalPlayer.Hitbox.Intersects(rect)) // Damage is dictated by the local client for that more fair seeming hitboxes
 			{
-				Main.LocalPlayer.Hurt(PlayerDeathReason.ByCustomReason(Main.LocalPlayer.name + " got lasered to death by a squid..."), 50, 0);
+				Main.LocalPlayer.Hurt(PlayerDeathReason.ByCustomReason(NetworkText.FromKey("Mods.StarlightRiver.Deaths.AuroracleLaser", Main.LocalPlayer.name)), 50, 0);
 			}
 		}
 

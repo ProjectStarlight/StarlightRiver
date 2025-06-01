@@ -72,7 +72,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					if (Helpers.CollisionHelper.CheckLinearCollision(Thinker.Center, Projectile.Center, player.Hitbox, out Vector2 collision))
 					{
 						int mult = Main.masterMode ? 6 : Main.expertMode ? 4 : 1;
-						player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " played the idiot harp..."), Projectile.damage * mult, 0);
+						player.Hurt(PlayerDeathReason.ByCustomReason(NetworkText.FromKey("Mods.StarlightRiver.Deaths.ThinkerVein", player.name)), Projectile.damage * mult, 0);
 						BuffInflictor.Inflict<Neurosis>(player, Main.masterMode ? 18000 : Main.expertMode ? 3000 : 1500);
 					}
 				}

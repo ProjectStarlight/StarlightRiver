@@ -307,7 +307,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 		public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
 		{
 			if (damageSource.SourceProjectileType == ModContent.ProjectileType<DreambeastProj>() || damageSource.SourceProjectileType == ModContent.ProjectileType<DreambeastProjHome>() || damageSource.SourceNPCIndex != -1 && Main.npc[damageSource.SourceNPCIndex].type == ModContent.NPCType<Dreambeast>())
-				damageSource = PlayerDeathReason.ByCustomReason(Player.name + "'s mind was torn apart by their hallucinations");
+				damageSource = PlayerDeathReason.ByCustomReason(NetworkText.FromKey("Mods.StarlightRiver.Deaths.Dreambeast", Player.name));
 
 			return true;
 		}

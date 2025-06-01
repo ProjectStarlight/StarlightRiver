@@ -114,7 +114,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 				{
 					if (player.active)
 					{
-						player.KillMe(PlayerDeathReason.ByCustomReason($"{player.name} was swept away by the starlight river"), 9999999, 1, false);
+						player.KillMe(PlayerDeathReason.ByCustomReason(NetworkText.FromKey("Mods.StarlightRiver.Deaths.BossRushBounds", player.name)), 9999999, 1, false);
 						player.Center = Vector2.One * 32;
 					}
 				}

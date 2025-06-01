@@ -338,7 +338,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 					if (dist > ArenaRadius && dist < (ArenaRadius + 200) && !player.immune)
 					{
-						player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " was calcified"), 50, 0);
+						player.Hurt(PlayerDeathReason.ByCustomReason(NetworkText.FromKey("Mods.StarlightRiver.Deaths.ThinkerArena", player.name)), 50, 0);
 						player.velocity += Vector2.Normalize(home - player.Center) * 28 * new Vector2(0.5f, 1f);
 					}
 				}
