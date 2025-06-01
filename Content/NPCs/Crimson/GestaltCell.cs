@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Bosses.TheThinkerBoss;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.PixelationSystem;
 using System;
 using System.Collections.Generic;
@@ -857,33 +858,37 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			{
 				Vector2 lastpos = NPC.Center;
 
-				for (int k = 0; k < myFollowers.Count; k++)
+				Effect effect = ShaderLoader.GetShader("GestaltLine").Value;
+
+				if (effect != null)
 				{
-					Texture2D tex = Assets.MagicPixel.Value;
+					effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.1f);
+					effect.Parameters["u_speed"].SetValue(0.5f);
 
-					Vector2 pos = myFollowers[k].Center;
-					float dist = Vector2.Distance(pos, lastpos);
-					float rot = pos.DirectionTo(lastpos).ToRotation();
+					spriteBatch.End();
+					spriteBatch.Begin(default, default, default, default, Main.Rasterizer, effect);
 
-					var target = new Rectangle((int)(pos.X - Main.screenPosition.X), (int)(pos.Y - Main.screenPosition.Y), (int)dist, 2);
-					var color = Color.Lerp(new Color(255, 160, 100, 150), new Color(255, 100, 220, 150), 0.5f + MathF.Sin((Main.GameUpdateCount + k * 5) / 4f) * 0.5f);
+					for (int k = 0; k < myFollowers.Count; k++)
+					{
+						Texture2D tex = Assets.Misc.Line.Value;
 
-					pos += Vector2.UnitY.RotatedBy(rot) * MathF.Sin(Main.GameUpdateCount * 0.1f + k * 0.2f) * 4;
-					var target2 = new Rectangle((int)(pos.X - Main.screenPosition.X), (int)(pos.Y - Main.screenPosition.Y), (int)dist, 2);
-					var color2 = Color.Lerp(new Color(100, 220, 255, 150), new Color(120, 255, 120, 150), 0.5f + MathF.Sin((Main.GameUpdateCount + k * 5) / 5f) * 0.5f);
+						Vector2 pos = myFollowers[k].Center;
+						float dist = Vector2.Distance(pos, lastpos);
+						float rot = pos.DirectionTo(lastpos).ToRotation();
 
-					pos += Vector2.UnitY.RotatedBy(rot) * MathF.Sin(Main.GameUpdateCount * 0.1f + k * 0.2f) * 4;
-					var target3 = new Rectangle((int)(pos.X - Main.screenPosition.X), (int)(pos.Y - Main.screenPosition.Y), (int)dist, 2);
-					var color3 = Color.Lerp(new Color(200, 255, 255, 150), new Color(210, 100, 255, 150), 0.5f + MathF.Sin((Main.GameUpdateCount + k * 5) / 6f) * 0.5f);
+						var target = new Rectangle((int)(pos.X - Main.screenPosition.X), (int)(pos.Y - Main.screenPosition.Y), (int)dist, 64);
+						var color = Color.Lerp(new Color(255, 160, 100, 150), new Color(255, 100, 220, 150), 0.5f + MathF.Sin((Main.GameUpdateCount + k * 5) / 4f) * 0.5f);
 
-					spriteBatch.Draw(tex, target, null, color, rot, new Vector2(0, tex.Height / 2f), 0, 0);
-					spriteBatch.Draw(tex, target2, null, color2, rot, new Vector2(0, tex.Height / 2f), 0, 0);
-					spriteBatch.Draw(tex, target3, null, color3, rot, new Vector2(0, tex.Height / 2f), 0, 0);
+						spriteBatch.Draw(tex, target, null, color, rot, new Vector2(0, tex.Height / 2f), 0, 0);
 
-					pos = myFollowers[k].Center;
+						pos = myFollowers[k].Center;
 
-					if (k < 2 || attackChoice == 0)
-						lastpos = pos;
+						if (k < 2 || attackChoice == 0)
+							lastpos = pos;
+					}
+
+					spriteBatch.End();
+					spriteBatch.Begin(default, default, default, default, Main.Rasterizer, default);
 				}
 			});
 

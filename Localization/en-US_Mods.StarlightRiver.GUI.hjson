@@ -77,7 +77,7 @@ ExtraDefenseStats: {
 			Tooltip: Defense reduces damage you take by a flat amount. The amount is equal to your defense multiplied by your defense effect and rounded up
 			Extra:
 				'''
-				Effect: {0}%
+				Effect: {0}
 				Absorbed: {1}
 				'''
 		}
@@ -115,53 +115,4 @@ ExtraDefenseStats: {
 			Extra: ""
 		}
 	}
-}
-
-LootUI: {
-	Jokes: {
-		0: "Loot?"
-		1: "Loot!"
-		2: "Shiny treasures!"
-		3: "Shinies!"
-		4: "Treasure!"
-		5: "For your troubles..."
-		6: "This looks valuable..."
-		7: "Not a mimic!"
-		8: "Shiny!"
-	}
-
-	Get: "You get:"
-	Pick: "Pick two:"
-}
-
-MasterDeathTicker: {
-
-	Deaths: "Deaths to {0}: {1}"
-
-	Teases: {
-		0: "Maybe try Journey Mode..."
-		1: "You're not supposed to win."
-		2: "Whoopsie daisy."
-		3: "It's not THAT hard."
-		4: "Give up."
-		5: "Have you tried dodging?"
-		6: "skill issue"
-		7: "Are the logged hours on your Steam account accurate?"
-		8: "You sure you wanna do this?"
-		9: "There are easier difficulties you know."
-		10: "You can install Dragonlens from the mod browser."
-		11: "You can always come back after beating other bosses."
-		12: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-		13: "Just so you know, Starlight River does not have a pacifist route. Consider changing your playstyle."
-	}
-}
-
-MessageBox: {
-	Close: "Close"
-}
-
-StarlightHUD: {
-	IncreaseMessage: "Maximum Starlight Increased",
-	IncreaseTooltip: "Your maximum starlight has increased by 1"
-	Hover: "Starlight: {0}/{1}"
 }

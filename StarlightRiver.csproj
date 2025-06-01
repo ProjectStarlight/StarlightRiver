@@ -15,6 +15,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<None Remove="AssGenConfig.txt" />
+		<None Remove="effects\source\GestaltLine.fx" />
 		<None Remove="effects\source\Neurysm.fx" />
 		<None Remove="Localization\en-US_Mods.StarlightRiver.Abilities.hjson" />
 		<None Remove="localization\en-US_Mods.StarlightRiver.GUI.hjson" />
