@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 		public override string Texture => AssetDirectory.Invisible;
 
-		public Color BaseColor => Projectile.ai[0] == 0 ? new Color(1f, 0.25f, 0.25f) : Projectile.ai[0] == 1 ? new Color(1f, 0.45f, 0.2f) : new Color(1f, 0.2f, 0.65f);
+		public Color BaseColor => Projectile.ai[0] == 0 ? new Color(0.65f, 0.64f, 0.87f) : Projectile.ai[0] == 1 ? new Color(0.5f, 0.87f, 0.87f) : new Color(0.95f, 0.59f, 0.78f);
 
 		public override void SetStaticDefaults()
 		{

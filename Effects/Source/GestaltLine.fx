@@ -10,9 +10,9 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0) : COLOR0
     float2 sam2 = uv + float2(0.0, sin(u_time + 2.0) * 0.1 * sin( uv.x * 7.0 + u_time * u_speed * 0.8));
     float2 sam3 = uv + float2(0.0, sin(u_time + 4.0) * 0.1 * sin( uv.x * 12.0 + u_time * u_speed * 1.1));
    
-    float3 color = tex2D( maintex, sam1).xyz * float3(1.0, 0.2, 0.2);
-    color += tex2D( maintex, sam2).xyz * float3(0.2, 1.0, 0.2);
-    color += tex2D( maintex, sam3).xyz * float3(0.2, 0.2, 1.0);
+    float3 color = tex2D( maintex, sam1).xyz * float3(0.65, 0.64, 0.87);
+    color += tex2D( maintex, sam2).xyz * float3(0.5, 0.87, 0.87);
+    color += tex2D( maintex, sam3).xyz * float3(0.95, 0.59, 0.78);
     
     return float4(color, (color.r + color.g + color.b) / 3.0);
 }
