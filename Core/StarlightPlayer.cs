@@ -159,7 +159,7 @@ namespace StarlightRiver.Core
 
 		public override void OnEnterWorld()
 		{
-			ZoomHandler.SetZoomAnimation(Main.GameZoomTarget, 1);
+			ZoomHandler.ReturnZoom(1);
 
 			rotation = 0;
 

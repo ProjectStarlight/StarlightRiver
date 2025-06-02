@@ -53,6 +53,12 @@ namespace StarlightRiver.Core.Systems.CameraSystem
 			ZoomHandler.maxTimer = maxTimer;
 		}
 
+		public static void ReturnZoom(int maxTimer = 60)
+		{
+			ExtraZoomTarget = Main.GameZoomTarget;
+			ZoomHandler.maxTimer = maxTimer;
+		}
+
 		public static Vector2 ScaleVector => new(zoomOverride + flatZoom, zoomOverride + flatZoom);
 
 		public static void TickZoom()

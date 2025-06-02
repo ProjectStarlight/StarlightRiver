@@ -91,7 +91,7 @@ namespace StarlightRiver.Content.Tiles.Starlight
 			if (timer == 390)
 			{
 				CameraSystem.TeleportCameraBack();
-				ZoomHandler.SetZoomAnimation(1f, 1);
+				ZoomHandler.ReturnZoom(1);
 			}
 
 			if (timer > 390)

@@ -143,6 +143,9 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
+			StarlightWorld.FlipFlag(WorldFlags.ThinkerBossOpen);
+			return true;
+
 			ObservatorySystem.pylonAppearsOn = false;
 			ObservatorySystem.observatoryOpen = false;
 

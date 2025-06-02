@@ -362,7 +362,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				}
 
 				CameraSystem.ReturnCamera(180);
-				ZoomHandler.SetZoomAnimation(1f, 180);
+				ZoomHandler.ReturnZoom(180);
 
 				for (int k = 1; k < 13; k++)
 				{

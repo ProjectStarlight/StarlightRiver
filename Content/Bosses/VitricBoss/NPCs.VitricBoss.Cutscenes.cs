@@ -132,7 +132,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					CameraSystem.shake += 30;
 				}
 
-				ZoomHandler.SetZoomAnimation(Main.GameZoomTarget, 20);
+				ZoomHandler.ReturnZoom(20);
 
 				for (int k = 0; k < 10; k++)
 				{

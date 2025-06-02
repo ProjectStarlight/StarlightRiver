@@ -115,7 +115,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			if (Timer == 130)
 			{
 				if (Vector2.Distance(Main.LocalPlayer.Center, homePos) < 3000)
-					ZoomHandler.SetZoomAnimation(1f, 90);
+					ZoomHandler.ReturnZoom(90);
 			}
 
 			if (Timer > 180 && Timer < 240)

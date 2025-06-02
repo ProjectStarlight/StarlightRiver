@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.SoundPuzzle
 
 			if (solved && solveTimer == 179)
 			{
-				ZoomHandler.SetZoomAnimation(1f, 60);
+				ZoomHandler.ReturnZoom();
 			}
 
 			if (solved && solveTimer < 180)
