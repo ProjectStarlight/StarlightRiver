@@ -117,13 +117,13 @@ namespace StarlightRiver.Content.Tiles.Forest
 			bool up = Framing.GetTileSafely(i, j - 1).TileType == ModContent.TileType<RiggedTree>();
 			bool down = Framing.GetTileSafely(i, j + 1).TileType == ModContent.TileType<RiggedTree>();
 
-			if (Main.rand.NextBool(10) && right && !up && down)
+			if (Main.rand.NextBool(8) && right && !up && down)
 			{
 				Color godrayColor = Lighting.GetColor(i, j - 20);
 				if (Main.dayTime && !Main.raining && Main.time > 10000 && Main.time < 44000 && godrayColor.ToVector3().Length() > 1f)
 				{
 					float godrayRot = (float)Main.time / 54000f * 3.14f;
-					Dust.NewDustPerfect(new Vector2(i, j) * 16 - Vector2.UnitY * 400 + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(200), ModContent.DustType<Dusts.GoldSlowFade>(), Vector2.UnitX.RotatedBy(godrayRot) * Main.rand.NextFloat(0.25f, 0.5f), 255, default, 0.75f);
+					Dust.NewDustPerfect(new Vector2(i, j) * 16 - Vector2.UnitY * 400 + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(200), ModContent.DustType<Dusts.GoldSlowFade>(), Vector2.UnitX.RotatedBy(godrayRot) * Main.rand.NextFloat(0.25f, 1.0f), 255, default, Main.rand.NextFloat(0.4f, 0.6f));
 				}
 			}
 		}
@@ -231,14 +231,6 @@ namespace StarlightRiver.Content.Tiles.Forest
 			float branchRot = Main.windSpeedCurrent * 0.05f + Sway(Center, 0.02f);
 
 			LightingBufferRenderer.DrawWithLighting(branches, Center - Main.screenPosition + Vector2.UnitY * 2, null, Color.White, branchRot, branchOrigin, 1);
-
-			if (StarlightRiver.debugMode)
-			{
-				Rectangle box = Hitbox;
-				box.Inflate(18, 8);
-				box.Offset((-Main.screenPosition).ToPoint());
-				Main.spriteBatch.Draw(Assets.MagicPixel.Value, box, Color.Yellow);
-			}
 		}
 
 		public override void PostDraw(Color lightColor)
@@ -267,29 +259,23 @@ namespace StarlightRiver.Content.Tiles.Forest
 				else
 					FoliageLayerSystem.underTilesData.Add(new(leaves, pointPos, source, Lighting.GetColor((pointPos / 16).ToPoint()), rot, origin, 1, 0, 0));
 			}
-
-			if (StarlightRiver.debugMode)
-			{
-				Rectangle box = Hitbox;
-				box.Inflate(8, 8);
-				box.Offset((-Main.screenPosition).ToPoint());
-				Main.spriteBatch.Draw(Assets.MagicPixel.Value, box, Color.Red);
-			}
 		}
 	}
 
 	class RiggedTreeBase : ModTile
 	{
-		public override string Texture => AssetDirectory.ForestTile + "ThickTreeBase";
+		public override string Texture => AssetDirectory.ForestTile + "RiggedTreeBase";
 
 		public override void SetStaticDefaults()
 		{
 			TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 4, 0);
+			TileObjectData.newTile.StyleHorizontal = true;
+			TileObjectData.newTile.RandomStyleRange = 5;
 			Main.tileAxe[Type] = true;
 			TileID.Sets.PreventsTileRemovalIfOnTopOfIt[Type] = true;
 			TileID.Sets.PreventsTileReplaceIfOnTopOfIt[Type] = true;
 
-			this.QuickSetFurniture(4, 4, 0, SoundID.Dig, true, new Color(169, 125, 93));//a
+			this.QuickSetFurniture(4, 4, 0, SoundID.Dig, true, new Color(169, 125, 93));
 		}
 
 		public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
