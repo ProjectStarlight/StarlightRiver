@@ -424,6 +424,11 @@ namespace StarlightRiver.Content.Items.MechBoss
 			for (int k = 0; k < 16; k++)
 			{
 				Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.PixelatedImpactLineDustGlow>(), Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(16), 0, new Color(50, Main.rand.Next(100, 255), 70, 0), Main.rand.NextFloat(0.2f, 0.3f));
+
+				var dustColor = Color.Lerp(new Color(50, 100, 50), Color.Orange, Main.rand.NextFloat());
+				dustColor.A = 0;
+
+				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.PixelatedGlow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(12), 0, dustColor, Main.rand.NextFloat(0.1f, 0.4f));
 			}
 
 			SoundHelper.PlayPitched("Effects/ScanComplete", 1f, 0.25f, target.Center);
