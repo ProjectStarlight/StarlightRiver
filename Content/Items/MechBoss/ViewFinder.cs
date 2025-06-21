@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Projectiles;
 using StarlightRiver.Core.Systems.PixelationSystem;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.ID;
@@ -104,8 +105,9 @@ namespace StarlightRiver.Content.Items.MechBoss
 
 					for (int k = 0; k < 30; k++)
 					{
+						int duration = Main.rand.Next(30, 120);
 						Vector2 mid = Vector2.Lerp(start, target.Center, 0.5f).RotatedBy(Main.rand.NextFloat(0.18f, 0.22f), start);
-						ViewfinderSplineDust.Spawn(start, mid, Main.rand.Next(30, 120), target, player, Main.rand.NextFloat(0.05f, 0.15f), new Color(60, Main.rand.Next(150, 255), 60));
+						ViewfinderSplineDust.Spawn(start, mid, duration, target, player, Main.rand.NextFloat(0.05f, 0.15f), new Color(100, Main.rand.Next(150, 255), 100, 0) * (1f - (duration - 30) / 90f));
 					}
 				}
 			}
@@ -114,6 +116,11 @@ namespace StarlightRiver.Content.Items.MechBoss
 		public override void UpdateInventory(Player player)
 		{
 			targets.RemoveAll(n => n is null || !n.active);
+
+			foreach(NPC target in targets)
+			{
+				Lighting.AddLight(target.Center, new Vector3(0.2f, 0.4f, 0.2f));
+			}
 		}
 
 		public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
@@ -150,7 +157,7 @@ namespace StarlightRiver.Content.Items.MechBoss
 		public override void SafeSetDefaults()
 		{
 			Projectile.usesLocalNPCImmunity = true;
-			Projectile.localNPCHitCooldown = 30;
+			Projectile.localNPCHitCooldown = 20;
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -208,6 +215,15 @@ namespace StarlightRiver.Content.Items.MechBoss
 			owner.compositeFrontArm.enabled = true;
 			owner.compositeFrontArm.rotation = -1.57f * owner.direction;
 			owner.compositeFrontArm.stretch = Player.CompositeArmStretchAmount.Full;
+
+			int time = 38 - Projectile.timeLeft;
+			float opacity = time < 10 ? time / 10f : time > 33 ? 1f - (time - 33) / 5f : 1;
+
+			Vector2 pos = owner.HandPosition.Value;
+			pos.Y -= time < 10 ? Eases.EaseQuadInOut(time / 10f) * 46 : 46;
+			Vector2 soulPos = pos + new Vector2(-6 * owner.direction, -29);
+
+			Lighting.AddLight(pos, new Vector3(0.4f, 0.75f, 0.4f) * opacity);
 
 			if (Projectile.timeLeft <= 1)
 			{
@@ -268,16 +284,24 @@ namespace StarlightRiver.Content.Items.MechBoss
 
 			Texture2D tex = Assets.Masks.GlowAlpha.Value;
 
+			int time = 38 - Projectile.timeLeft;
 			float len = SplineHelper.ApproximateSplineLength(spline);
+
 			for (int k = 0; k < len; k += 16)
 			{
 				float prog = k / len;
+
+				float opMult = 1f / MathF.Abs(prog - (time / 38f));
+
+				if (opMult < 2)
+					opMult = 2;
+
 				Vector2 pos = SplineHelper.PointOnSpline(prog, spline);
 				float dir = SplineHelper.TangentOfSpline(prog, spline);
-				Main.spriteBatch.Draw(tex, pos, null, new Color(5, 10, 5, 0) * opacity, dir, tex.Size() / 2f, new Vector2(0.5f, 0.1f), 0f, 0f);
+				Main.spriteBatch.Draw(tex, pos, null, new Color(1, 2, 1, 0) * opacity * opMult, dir, tex.Size() / 2f, new Vector2(0.5f, 0.1f), 0f, 0f);
 			}
 
-			int time = 38 - Projectile.timeLeft;
+
 
 			Main.spriteBatch.Draw(tex, SplineHelper.PointOnSpline(time / 38f, spline), null, new Color(100, 255, 100, 0) * opacity, 0, tex.Size() / 2f, 0.2f, 0f, 0f);
 		}
@@ -322,6 +346,7 @@ namespace StarlightRiver.Content.Items.MechBoss
 				data.spline.EndPoint = data.target.Center;
 
 				dust.position = SplineHelper.PointOnSpline(dust.fadeIn / data.duration, data.spline);
+				Lighting.AddLight(dust.position, dust.color.ToVector3());
 
 				if (dust.fadeIn < 20)
 					dust.alpha = 255 - (int)(dust.fadeIn / 20f * 255);
@@ -353,10 +378,6 @@ namespace StarlightRiver.Content.Items.MechBoss
 			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () =>
 			{
 				Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, dust.color * lerper, dust.rotation, tex.Size() / 2f, dust.scale * lerper, 0f, 0f);
-
-				float glowScale = dust.scale * 0.25f;
-
-				Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, Color.White with { A = 0 } * lerper, dust.rotation, tex.Size() / 2f, glowScale * lerper, 0f, 0f);
 			});
 
 			return false;
@@ -390,13 +411,19 @@ namespace StarlightRiver.Content.Items.MechBoss
 		public override void AI()
 		{
 			Projectile.rotation = Projectile.velocity.ToRotation();
+			Lighting.AddLight(Projectile.Center, new Vector3(0.3f, 0.6f, 0.3f));
+
+			var dustColor = Color.Lerp(new Color(50, 100, 50), Color.Orange, Main.rand.NextFloat());
+			dustColor.A = 0;
+
+			Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.PixelatedEmber>(), Projectile.velocity.RotatedByRandom(0.2f) * -Main.rand.NextFloat(), 0, dustColor, Main.rand.NextFloat(0.25f));
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			for (int k = 0; k < 16; k++)
 			{
-				Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.PixelatedImpactLineDustGlow>(), Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(16), 0, new Color(100, 255, 100, 0), Main.rand.NextFloat(0.2f, 0.3f));
+				Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.PixelatedImpactLineDustGlow>(), Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(16), 0, new Color(50, Main.rand.Next(100, 255), 70, 0), Main.rand.NextFloat(0.2f, 0.3f));
 			}
 
 			SoundHelper.PlayPitched("Effects/ScanComplete", 1f, 0.25f, target.Center);
