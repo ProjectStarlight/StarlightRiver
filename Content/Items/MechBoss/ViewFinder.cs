@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.Items.MechBoss
 
 		public override void SetDefaults()
 		{
-			Item.damage = 47;
+			Item.damage = 72;
 			Item.useTime = 38;
 			Item.useAnimation = 38;
 			Item.useStyle = ItemUseStyleID.Shoot;
@@ -173,7 +173,7 @@ namespace StarlightRiver.Content.Items.MechBoss
 					if (beamTarget != null && beamTarget.active)
 					{
 						float rot = Main.rand.NextFloat(-0.2f, 0.2f);
-						Projectile.NewProjectile(null, beamTarget.Center - Vector2.UnitY.RotatedBy(rot) * 1000, Vector2.UnitY.RotatedBy(rot) * 12, ModContent.ProjectileType<ViewFinderLaser>(), item.Item.damage * 2, item.Item.knockBack, Projectile.owner);
+						Projectile.NewProjectile(null, beamTarget.Center - Vector2.UnitY.RotatedBy(rot) * 1000, Vector2.UnitY.RotatedBy(rot) * 12, ModContent.ProjectileType<ViewFinderLaser>(), (int)(item.Item.damage * 1.5f), item.Item.knockBack, Projectile.owner);
 					}
 				}
 
@@ -181,8 +181,40 @@ namespace StarlightRiver.Content.Items.MechBoss
 			}
 		}
 
+		public override void PostAI()
+		{
+			if (Projectile.timeLeft == RealDuration - 1)
+			{
+				SoundHelper.PlayPitched("Impacts/Clink", 0.5f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
+				SoundHelper.PlayPitched("Impacts/Ricochet", 0.25f, Main.rand.NextFloat(-0.5f, -0.3f), Projectile.Center);
+			}
+
+			if (Projectile.timeLeft > RealDuration / 2f)
+				Dust.NewDust(Projectile.Center + new Vector2(0, 16), 1, 1, ModContent.DustType<Dusts.BuzzSpark>(), -Projectile.velocity.X * 4, -Projectile.velocity.Y * 4, 0, Color.Yellow, Main.rand.NextFloat(0.5f, 1f));
+
+			if (Main.rand.NextBool(3))
+			{
+				var d = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.FireworksRGB, 0, 0, 0, new Color(160, 255, 160), 0.5f);
+				Main.dust[d].noGravity = true;
+			}
+		}
+
 		public override bool PreDraw(ref Color lightColor)
 		{
+			var spike = Assets.Misc.SpikeTell.Value;
+			var spikeFrame = new Rectangle(spike.Width / 2, 0, spike.Width / 2, spike.Height);
+
+			float opacity = 1f;
+
+			if (Projectile.timeLeft < 20)
+				opacity = Math.Max(0f, (Projectile.timeLeft - 15) / 5f);
+
+			if (Projectile.timeLeft > RealDuration - fadeDuration)
+				opacity = (RealDuration - Projectile.timeLeft) / (float)fadeDuration;
+
+			Main.spriteBatch.Draw(spike, Projectile.Center - Main.screenPosition, spikeFrame, new Color(60, 255, 60, 0) * opacity, Projectile.rotation - 1.57f / 2f, new Vector2(spike.Width / 4f, spike.Height - 42), new Vector2(0.45f, 1f), 0, 0);
+			Main.spriteBatch.Draw(spike, Projectile.Center - Main.screenPosition, spikeFrame, new Color(180, 255, 180, 0) * opacity, Projectile.rotation - 1.57f / 2f, new Vector2(spike.Width / 4f, spike.Height - 42), new Vector2(0.15f, 0.8f), 0, 0);
+
 			return base.PreDraw(ref lightColor);
 		}
 
