@@ -134,7 +134,7 @@ namespace StarlightRiver.Content.Items.MechBoss
 			if (player.altFunctionUse == 2)
 			{
 				var mouseBox = new Rectangle((int)Main.MouseWorld.X - 128, (int)Main.MouseWorld.Y - 128, 256, 256);
-				foreach (NPC npc in Main.npc.Where(n => n.active && /*n.CanBeChasedBy() &&*/ n.Hitbox.Intersects(mouseBox)))
+				foreach (NPC npc in Main.npc.Where(n => n.active && n.CanBeChasedBy() && n.Hitbox.Intersects(mouseBox)))
 				{
 					AddTarget(player, npc);
 				}
