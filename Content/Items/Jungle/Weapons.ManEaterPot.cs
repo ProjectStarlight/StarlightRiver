@@ -115,6 +115,7 @@ namespace StarlightRiver.Content.Items.Jungle
 			Projectile.DamageType = DamageClass.Summon;
 			Projectile.timeLeft = 2;
 			Projectile.usesLocalNPCImmunity = true;
+			Projectile.localNPCHitCooldown = 30;
 		}
 
 		public override void AI()

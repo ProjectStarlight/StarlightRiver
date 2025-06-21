@@ -196,9 +196,7 @@ namespace StarlightRiver.Content.Items.Magnet
 
 	internal class ThunderbussShot : ModProjectile, IDrawPrimitive
 	{
-		public Vector2 startPoint;
-		public Vector2 endPoint;
-		public Vector2 midPoint;
+		public SplineHelper.SplineData spline;
 
 		public int power = 20;
 		public Projectile projOwner;
@@ -246,34 +244,6 @@ namespace StarlightRiver.Content.Items.Magnet
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Electro Shock");
-		}
-
-		private Vector2 PointOnSpline(float progress) //I should really move this spline stuff somewhere central eventually. heh.
-		{
-			float factor = dist1 / (dist1 + dist2);
-
-			if (progress < factor)
-				return Vector2.Hermite(startPoint, midPoint - startPoint, midPoint, endPoint - startPoint, progress * (1 / factor));
-			if (progress >= factor)
-				return Vector2.Hermite(midPoint, endPoint - startPoint, endPoint, endPoint - midPoint, (progress - factor) * (1 / (1 - factor)));
-
-			return Vector2.Zero;
-		}
-
-		private float ApproximateSplineLength(int steps, Vector2 start, Vector2 startTan, Vector2 end, Vector2 endTan)
-		{
-			float total = 0;
-			Vector2 prevPoint = start;
-
-			for (int k = 0; k < steps; k++)
-			{
-				var testPoint = Vector2.Hermite(start, startTan, end, endTan, k / (float)steps);
-				total += Vector2.Distance(prevPoint, testPoint);
-
-				prevPoint = testPoint;
-			}
-
-			return total;
 		}
 
 		private void FindTarget()
@@ -388,10 +358,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			{
 				SoundHelper.PlayPitched("Magic/LightningExplodeShallow", 0.2f * (power / 20f), 0.5f, Projectile.Center);
 
-				startPoint = Projectile.Center;
-
-				dist1 = ApproximateSplineLength(30, startPoint, midPoint - startPoint, midPoint, endPoint - startPoint);
-				dist2 = ApproximateSplineLength(30, midPoint, endPoint - startPoint, endPoint, endPoint - midPoint);
+				spline.StartPoint = Projectile.Center;
 			}
 
 			float effectiveOffset = Offset;
@@ -400,34 +367,34 @@ namespace StarlightRiver.Content.Items.Magnet
 			{
 				Player player = Main.player[Projectile.owner];
 				float armRot = player.itemRotation + (player.direction == -1 ? 3.14f : 0);
-				startPoint = player.Center + Vector2.UnitX.RotatedBy(armRot) * 48;
+				spline.StartPoint = player.Center + Vector2.UnitX.RotatedBy(armRot) * 48;
 			}
 			else
 			{
-				startPoint = projOwner.Center;
+				spline.StartPoint = projOwner.Center;
 				effectiveOffset = 0;
 			}
 
 			if (projTarget is null)
-				endPoint = target.Center;
+				spline.EndPoint = target.Center;
 			else
-				endPoint = projTarget.Center;
+				spline.EndPoint = projTarget.Center;
 
-			midPoint = Vector2.Lerp(startPoint, endPoint, 0.5f) + Vector2.Normalize(endPoint - startPoint).RotatedBy(1.57f) * (effectiveOffset + (float)Math.Sin(Main.GameUpdateCount * 0.2f) * 10);
+			spline.MidPoint = Vector2.Lerp(spline.StartPoint, spline.EndPoint, 0.5f) + Vector2.Normalize(spline.EndPoint - spline.StartPoint).RotatedBy(1.57f) * (effectiveOffset + (float)Math.Sin(Main.GameUpdateCount * 0.2f) * 10);
 
-			Projectile.Center = endPoint;
+			Projectile.Center = spline.EndPoint;
 
 			if (Main.GameUpdateCount % 1 == 0) //rebuild electricity nodes
 			{
 				nodes.Clear();
 
-				Vector2 point1 = startPoint;
+				Vector2 point1 = spline.StartPoint;
 				Vector2 point2 = Projectile.Center;
 				int nodeCount = (int)Vector2.Distance(point1, point2) / 30;
 
 				for (int k = 1; k < nodeCount; k++)
 				{
-					nodes.Add(PointOnSpline(k / (float)nodeCount) +
+					nodes.Add(SplineHelper.PointOnSpline(k / (float)nodeCount, spline) +
 						(k == nodes.Count - 1 ? Vector2.Zero : Vector2.Normalize(point1 - point2).RotatedBy(1.58f) * (Main.rand.NextFloat(2) - 1) * 30 / 3));
 				}
 
@@ -436,7 +403,7 @@ namespace StarlightRiver.Content.Items.Magnet
 
 			for (int n = 1; n < nodes.Count - 1; n++)
 			{
-				Vector2 prevPos = n == 1 ? startPoint : nodes[n - 1];
+				Vector2 prevPos = n == 1 ? spline.StartPoint : nodes[n - 1];
 				Vector2 dustVel = Vector2.Normalize(nodes[n] - prevPos) * Main.rand.NextFloat(-3, -2);
 
 				if (Main.rand.NextBool(20))
@@ -449,7 +416,7 @@ namespace StarlightRiver.Content.Items.Magnet
 
 		public override void PostDraw(Color lightColor)
 		{
-			Vector2 point1 = startPoint;
+			Vector2 point1 = spline.StartPoint;
 			Vector2 point2 = Projectile.Center;
 
 			if (point1 == Vector2.Zero || point2 == Vector2.Zero)
@@ -484,7 +451,7 @@ namespace StarlightRiver.Content.Items.Magnet
 
 			for (int i = 0; i < 50; i++)
 			{
-				cache.Add(PointOnSpline(i / 50f));
+				cache.Add(SplineHelper.PointOnSpline(i / 50f, spline));
 			}
 
 			while (cache.Count > 50)

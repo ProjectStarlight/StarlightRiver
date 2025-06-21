@@ -3020,6 +3020,15 @@ Items: {
 		DisplayName: GestaltCellsBarrierItem
 		Tooltip: "{{Debug}} item"
 	}
+
+	ViewFinder: {
+		DisplayName: Viewfinder
+		Tooltip:
+			'''
+			<right> to place up to 3 marks
+			strike any foe with the spear to call down lasers on marked enemies
+			'''
+	}
 }
 
 Tiles: {

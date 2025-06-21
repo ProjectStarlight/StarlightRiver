@@ -62,6 +62,7 @@ namespace StarlightRiver.Content.Items.Manabonds
 			Projectile.DamageType = DamageClass.Summon;
 			Projectile.hostile = false;
 			Projectile.usesLocalNPCImmunity = true;
+			Projectile.localNPCHitCooldown = -1;
 		}
 
 		public override void AI()
