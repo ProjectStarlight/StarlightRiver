@@ -283,7 +283,7 @@ namespace StarlightRiver.Content.Items.MechBoss
 
 			Vector2 pos = owner.HandPosition.Value - Main.screenPosition;
 			pos.Y -= time < 10 ? Eases.EaseQuadInOut(time / 10f) * 46 : 46;
-			Vector2 soulPos = pos + new Vector2(-6 * owner.direction, -29);
+			Vector2 soulPos = pos + new Vector2(-4 * owner.direction, -31);
 
 			float opacity = time < 10 ? time / 10f : time > 33 ? 1f - (time - 33) / 5f : 1;
 

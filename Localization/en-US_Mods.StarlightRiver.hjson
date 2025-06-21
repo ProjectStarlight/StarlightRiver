@@ -3596,6 +3596,9 @@ Projectiles: {
 	GauntletSpawner.DisplayName: Gauntlet Spawner
 	SpawnEgg.DisplayName: Spawn Egg
 	GestaltMortar.DisplayName: Mind Mortar
+	ViewFinderLaser.DisplayName: View Finder Laser
+	ViewFinderProjectile.DisplayName: View Finder Projectile
+	ViewFinderRightProjectile.DisplayName: View Finder Right Projectile
 }
 
 Biomes: {
