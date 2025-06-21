@@ -46,6 +46,8 @@ namespace StarlightRiver.Content.Items.MechBoss
 			Item.shoot = ModContent.ProjectileType<ViewFinderProjectile>();
 			Item.noUseGraphic = true;
 			Item.noMelee = true;
+			Item.UseSound = SoundID.Item1;
+			Item.rare = ItemRarityID.Pink;
 		}
 
 		public override bool AltFunctionUse(Player player)
