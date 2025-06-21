@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Items.MechBoss
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Viewfinder");
-			Tooltip.SetDefault("<right> to place up to 3 marks\nstrike any foe with the spear to call down lasers on marked enemies");
+			Tooltip.SetDefault("<right> to place up to 3 marks\nstrike any foe with the spear to call down lasers on marked enemies\n'Great for poking out giant eyeballs!'");
 			ItemID.Sets.Spears[Type] = true;
 		}
 
