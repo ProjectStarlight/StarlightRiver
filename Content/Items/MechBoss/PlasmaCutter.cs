@@ -35,6 +35,7 @@ namespace StarlightRiver.Content.Items.MechBoss
 			Item.channel = true;
 			Item.mana = 3;
 			Item.noUseGraphic = true;
+			Item.autoReuse = true;
 		}
 
 		public override void AddRecipes()
