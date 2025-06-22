@@ -197,9 +197,9 @@ namespace StarlightRiver.Content.Items.MechBoss
 				{
 					var mid = Vector2.Lerp(Projectile.Center, partner.Center, 0.5f);
 					Dust.NewDustPerfect(mid, ModContent.DustType<Dusts.PixelatedImpactLineDustGlow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), 0, new Color(100, 100, 255, 0), Main.rand.NextFloat(0.1f));
+
+					Lighting.AddLight(mid, new Vector3(1.2f, 1.2f, 1.8f) * LaserSize / 20f);
 				}
-
-
 			}
 
 			// Out mode
@@ -214,6 +214,14 @@ namespace StarlightRiver.Content.Items.MechBoss
 					// since we dont control the update order of the projectiles we have to do this on each
 					if (partner.ModProjectile is PlasmaCutterDrone drone)
 						drone.CalculateLaserEnd();
+
+					var dist = Vector2.Distance(Projectile.Center, outLaserEnd);
+
+					for(int k = 0; k < dist; k += 32)
+					{
+						Vector2 pos = Vector2.Lerp(Projectile.Center, outLaserEnd, k / dist);
+						Lighting.AddLight(pos, new Vector3(0.2f, 0.2f, 0.4f) * LaserSize / 20f);
+					}
 
 					Dust.NewDustPerfect(outLaserEnd, ModContent.DustType<Dusts.PixelatedImpactLineDustGlow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), 0, new Color(100, 100, 255, 0), Main.rand.NextFloat(0.1f));
 				}
