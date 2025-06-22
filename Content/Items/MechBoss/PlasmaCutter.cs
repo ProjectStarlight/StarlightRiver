@@ -84,6 +84,14 @@ namespace StarlightRiver.Content.Items.MechBoss
 
 			return true;
 		}
+
+		public override void ModifyManaCost(Player player, ref float reduce, ref float mult)
+		{
+			if (player.altFunctionUse == 2)
+			{
+				mult = 0f;
+			}
+		}
 	}
 
 	internal class PlasmaCutterDrone : ModProjectile
