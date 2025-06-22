@@ -103,7 +103,7 @@ namespace StarlightRiver.Content.Items.MechBoss
 		public override void SetDefaults()
 		{
 			Projectile.penetrate = -1;
-			Projectile.timeLeft = 2;
+			Projectile.timeLeft = 10;
 			Projectile.width = 32;
 			Projectile.height = 32;
 			Projectile.tileCollide = false;
@@ -147,8 +147,11 @@ namespace StarlightRiver.Content.Items.MechBoss
 			if (State == 1)
 				targetDist = 50;
 
-			// Common
-			Projectile.timeLeft = 2;
+			if (Projectile.timeLeft > 2)
+				return;
+
+			if (Projectile.timeLeft <= 2)
+				Projectile.timeLeft = 2;
 
 			Vector2 target = Main.MouseWorld + Vector2.UnitX * targetDist * Direction;
 
@@ -211,6 +214,8 @@ namespace StarlightRiver.Content.Items.MechBoss
 					// since we dont control the update order of the projectiles we have to do this on each
 					if (partner.ModProjectile is PlasmaCutterDrone drone)
 						drone.CalculateLaserEnd();
+
+					Dust.NewDustPerfect(outLaserEnd, ModContent.DustType<Dusts.PixelatedImpactLineDustGlow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), 0, new Color(100, 100, 255, 0), Main.rand.NextFloat(0.1f));
 				}
 			}
 
@@ -220,9 +225,9 @@ namespace StarlightRiver.Content.Items.MechBoss
 
 		public void CalculateLaserEnd()
 		{
-			for (int k = 0; k < 200; k++)
+			for (int k = 0; k < 150; k++)
 			{
-				Vector2 check = Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation - 3.14f) * k * 16;
+				Vector2 check = Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation - 3.14f) * k * 8;
 				if (Helpers.CollisionHelper.PointInTile(check))
 				{
 					outLaserEnd = check;
@@ -238,11 +243,11 @@ namespace StarlightRiver.Content.Items.MechBoss
 			// Draw convergent laser
 			if (LaserSize > 0 && Direction == 1 && State == 0)
 			{
-				ModContent.GetInstance<PixelationSystem>().QueueRenderAction("UnderProjectiles", () =>
+				ModContent.GetInstance<PixelationSystem>().QueueRenderAction("OverPlayers", () =>
 				{
 					Texture2D laser = Assets.MagicPixel.Value;
 					Vector2 mid = Vector2.Lerp(Projectile.Center, partner.Center, 0.5f) - Main.screenPosition;
-					float dist = Vector2.Distance(Projectile.Center, partner.Center);
+					float dist = Vector2.Distance(Projectile.Center, partner.Center) - 23;
 
 					float sizeProg = LaserSize / 20f;
 
@@ -339,7 +344,7 @@ namespace StarlightRiver.Content.Items.MechBoss
 
 			var frame = new Rectangle(46 * xFrame, 46 * yFrame, 46, 46);
 
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frame, lightColor, 3.14f + Projectile.rotation, frame.Size() / 2f, Projectile.scale, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frame, lightColor, 3.14f + Projectile.rotation, frame.Size() / 2f, Projectile.scale, Direction == 1 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0);
 
 			return false;
 		}
