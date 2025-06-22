@@ -4102,6 +4102,11 @@ Buffs: {
 		DisplayName: Full
 		Description: Mods.StarlightRiver.Buffs.Full.Description
 	}
+
+	PlasmaCutterBuff: {
+		DisplayName: Plasma Destabilization
+		Description: Effected entities have 75% exposure to magic damage
+	}
 }
 
 Prefixes: {

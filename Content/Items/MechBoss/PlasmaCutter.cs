@@ -1,4 +1,7 @@
-﻿using StarlightRiver.Core.Systems.PixelationSystem;
+﻿using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.Dusts;
+using StarlightRiver.Core.Systems.ExposureSystem;
+using StarlightRiver.Core.Systems.PixelationSystem;
 using System;
 using System.Linq;
 using Terraria.ID;
@@ -12,7 +15,7 @@ namespace StarlightRiver.Content.Items.MechBoss
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Plasma Cutter");
-			Tooltip.SetDefault("Drones follow your cursor while held\nUse to spend mana to make them fire lasers\n<right> to flip the drones around");
+			Tooltip.SetDefault("Drones follow your cursor while held\nUse to spend mana to make them fire lasers\n<right> to flip the drones around\ndeal lower damage but inflict {BUFF:PlasmaCutterBuff} while flipped");
 		}
 
 		public override void SetDefaults()
@@ -111,13 +114,24 @@ namespace StarlightRiver.Content.Items.MechBoss
 			Projectile.aiStyle = -1;
 			Projectile.usesLocalNPCImmunity = true;
 			Projectile.localNPCHitCooldown = 5;
+			Projectile.DamageType = DamageClass.Magic;
 		}
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
 			if (State == 0 && Direction == 1 && LaserSize > 0)
 			{
-				return Helpers.CollisionHelper.CheckLinearCollision(Projectile.Center, partner.Center, targetHitbox, out Vector2 inter);
+				bool hit = Helpers.CollisionHelper.CheckLinearCollision(Projectile.Center, partner.Center, targetHitbox, out Vector2 inter);
+
+				if (hit)
+				{
+					Dust.NewDustPerfect(inter, ModContent.DustType<Dusts.PixelSmokeColor>(), Vector2.UnitY * -Main.rand.NextFloat(2, 10), 100, Color.Gray, Main.rand.NextFloat(0.1f, 0.2f));
+
+					for (int k = 0; k < 6; k++)
+						Dust.NewDustPerfect(inter, ModContent.DustType<Dusts.PixelatedImpactLineDust>(), Vector2.UnitX.RotatedBy(k / 6f * 6.28f) * -Main.rand.NextFloat(2, 4), 0, new Color(150, 150, 255, 0), Main.rand.NextFloat(0.1f, 0.2f));
+				}
+
+				return hit;
 			}
 
 			if (State == 1 && LaserSize > 0)
@@ -132,6 +146,19 @@ namespace StarlightRiver.Content.Items.MechBoss
 		{
 			if (State == 1)
 				modifiers.FinalDamage *= 0.2f;
+		}
+
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			if (State == 1)
+			{
+				target.AddBuff(ModContent.BuffType<PlasmaCutterBuff>(), 300);
+			}
+
+			if (State == 0)
+			{
+				SoundHelper.PlayPitched("Magic/LightningShortest1", 0.5f, Main.rand.NextFloat(0.5f, 0.6f), target.Center);
+			}
 		}
 
 		public override void AI()
@@ -169,7 +196,7 @@ namespace StarlightRiver.Content.Items.MechBoss
 			if (LaserSize <= 0)
 				Projectile.Center += (target - Projectile.Center) * 0.09f;
 			else
-				Projectile.position.Y += (target.Y - Projectile.Center.Y) * 0.09f;
+				Projectile.position.Y += (target.Y - Projectile.Center.Y) * 0.12f;
 
 			if (LaserSize < 20)
 			{
@@ -182,7 +209,7 @@ namespace StarlightRiver.Content.Items.MechBoss
 			Projectile.rotation = Projectile.Center.DirectionTo(partner.Center).ToRotation();
 			partner.rotation = partner.Center.DirectionTo(Projectile.Center).ToRotation();
 
-			if (player.channel && LaserSize < 20)
+			if (player.channel && player.altFunctionUse != 2 && LaserSize < 20)
 			{
 				LaserSize++;
 			}
@@ -213,6 +240,9 @@ namespace StarlightRiver.Content.Items.MechBoss
 					Dust.NewDustPerfect(mid, ModContent.DustType<Dusts.PixelatedImpactLineDustGlow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), 0, new Color(100, 100, 255, 0), Main.rand.NextFloat(0.1f));
 
 					Lighting.AddLight(mid, new Vector3(1.2f, 1.2f, 1.8f) * LaserSize / 20f);
+
+					if (Main.GameUpdateCount % 10 == 0)
+						SoundHelper.PlayPitched("Magic/LightningChargeShort", 0.5f, Main.rand.NextFloat(0.5f, 1f), mid);
 				}
 			}
 
@@ -229,15 +259,18 @@ namespace StarlightRiver.Content.Items.MechBoss
 					if (partner.ModProjectile is PlasmaCutterDrone drone)
 						drone.CalculateLaserEnd();
 
-					var dist = Vector2.Distance(Projectile.Center, outLaserEnd);
+					float dist = Vector2.Distance(Projectile.Center, outLaserEnd);
 
-					for(int k = 0; k < dist; k += 32)
+					for (int k = 0; k < dist; k += 32)
 					{
-						Vector2 pos = Vector2.Lerp(Projectile.Center, outLaserEnd, k / dist);
+						var pos = Vector2.Lerp(Projectile.Center, outLaserEnd, k / dist);
 						Lighting.AddLight(pos, new Vector3(0.2f, 0.2f, 0.4f) * LaserSize / 20f);
 					}
 
 					Dust.NewDustPerfect(outLaserEnd, ModContent.DustType<Dusts.PixelatedImpactLineDustGlow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), 0, new Color(100, 100, 255, 0), Main.rand.NextFloat(0.1f));
+
+					if (Main.GameUpdateCount % 10 == 0)
+						SoundHelper.PlayPitched("Magic/LightningChargeShort", 0.15f, Main.rand.NextFloat(0.8f, 1f), Projectile.Center);
 				}
 			}
 
@@ -369,6 +402,28 @@ namespace StarlightRiver.Content.Items.MechBoss
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frame, lightColor, 3.14f + Projectile.rotation, frame.Size() / 2f, Projectile.scale, Direction == 1 ? SpriteEffects.None : SpriteEffects.FlipVertically, 0);
 
 			return false;
+		}
+	}
+
+	class PlasmaCutterBuff : SmartBuff
+	{
+		public override string Texture => AssetDirectory.Buffs + "PlasmaCutterBuff";
+
+		public PlasmaCutterBuff() : base("Plasma Destabilization", "Effected entities have 75% exposure to magic damage", true) { }
+
+		public override void Update(NPC NPC, ref int buffIndex)
+		{
+			if (Main.rand.NextBool(4))
+				Dust.NewDust(NPC.position, NPC.width, NPC.height, ModContent.DustType<PixelatedEmber>(), 0, 0, 0, new Color(40, 40, 85, 0), Main.rand.NextFloat(0.15f));
+
+			Dust.NewDustPerfect(NPC.Center, ModContent.DustType<PixelatedImpactLineDust>(), Vector2.UnitX.RotatedByRandom(6.28f), 0, new Color(20, 20, 80, 0), 0.1f);
+
+			NPC.GetGlobalNPC<ExposureNPC>().ExposureMultMagic += 0.75f;
+		}
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+			player.GetModPlayer<ExposurePlayer>().exposureMult += 0.75f;
 		}
 	}
 }
