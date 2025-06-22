@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Items.MechBoss
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Plasma Cutter");
-			Tooltip.SetDefault("Drones follow your cursor while held\nUse to spend mana to make them fire lasers\n<right> to flip the drones around\ndeal lower damage but inflict {BUFF:PlasmaCutterBuff} while flipped");
+			Tooltip.SetDefault("Drones follow your cursor while held\nUse to spend mana to make them fire lasers\n<right> to flip the drones around\ndeal lower damage but inflict {{BUFF:PlasmaCutterBuff}} while flipped");
 		}
 
 		public override void SetDefaults()
