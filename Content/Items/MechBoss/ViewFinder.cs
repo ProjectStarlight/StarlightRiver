@@ -36,7 +36,8 @@ namespace StarlightRiver.Content.Items.MechBoss
 
 		public override void SetDefaults()
 		{
-			Item.damage = 72;
+			Item.damage = 78;
+			Item.crit = 12;
 			Item.useTime = 38;
 			Item.useAnimation = 38;
 			Item.useStyle = ItemUseStyleID.Shoot;
@@ -440,6 +441,7 @@ namespace StarlightRiver.Content.Items.MechBoss
 			Projectile.aiStyle = -1;
 			Projectile.usesLocalNPCImmunity = true;
 			Projectile.localNPCHitCooldown = -1;
+			Projectile.DamageType = DamageClass.Melee;
 		}
 
 		public override void AI()

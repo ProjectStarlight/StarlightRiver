@@ -3029,6 +3029,16 @@ Items: {
 			strike any foe with the spear to call down lasers on marked enemies
 			'''
 	}
+
+	PlasmaCutter: {
+		DisplayName: Plasma Cutter
+		Tooltip:
+			'''
+			Drones follow your cursor while held
+			Use to spend mana to make them fire lasers
+			<right> to flip the drones around
+			'''
+	}
 }
 
 Tiles: {
