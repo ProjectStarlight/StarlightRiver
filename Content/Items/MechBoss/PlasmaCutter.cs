@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Items.MechBoss
 
 		public override void SetDefaults()
 		{
-			Item.damage = 32;
+			Item.damage = 40;
 			Item.DamageType = DamageClass.Magic;
 			Item.width = 32;
 			Item.height = 32;
@@ -109,6 +109,8 @@ namespace StarlightRiver.Content.Items.MechBoss
 			Projectile.tileCollide = false;
 			Projectile.friendly = true;
 			Projectile.aiStyle = -1;
+			Projectile.usesLocalNPCImmunity = true;
+			Projectile.localNPCHitCooldown = 5;
 		}
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
@@ -126,6 +128,12 @@ namespace StarlightRiver.Content.Items.MechBoss
 			return false;
 		}
 
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+		{
+			if (State == 1)
+				modifiers.FinalDamage *= 0.2f;
+		}
+
 		public override void AI()
 		{
 			Player player = Main.player[Projectile.owner];
@@ -138,7 +146,10 @@ namespace StarlightRiver.Content.Items.MechBoss
 				partner = Main.projectile.FirstOrDefault(n => n.active && n.type == Projectile.type && n.owner == Projectile.owner && n.ModProjectile is PlasmaCutterDrone drone && drone.Direction != Direction);
 
 				if (partner is null)
+				{
 					Projectile.active = false;
+					return;
+				}
 			}
 
 			// Select target ditance from the cursor
@@ -156,9 +167,9 @@ namespace StarlightRiver.Content.Items.MechBoss
 			Vector2 target = Main.MouseWorld + Vector2.UnitX * targetDist * Direction;
 
 			if (LaserSize <= 0)
-				Projectile.Center += (target - Projectile.Center) * 0.07f;
+				Projectile.Center += (target - Projectile.Center) * 0.09f;
 			else
-				Projectile.position.Y += (target.Y - Projectile.Center.Y) * 0.07f;
+				Projectile.position.Y += (target.Y - Projectile.Center.Y) * 0.09f;
 
 			if (LaserSize < 20)
 			{
@@ -178,7 +189,10 @@ namespace StarlightRiver.Content.Items.MechBoss
 
 			if (!player.channel && LaserSize > 0)
 			{
-				LaserSize--;
+				LaserSize -= 2;
+
+				if (LaserSize < 0)
+					LaserSize = 0;
 			}
 
 			Dust.NewDustPerfect(Projectile.Center + new Vector2(Direction * 12, 16), ModContent.DustType<Dusts.PixelatedGlow>(), Vector2.UnitY * Main.rand.NextFloat(0.5f, 1.8f), 0, new Color(255, Main.rand.Next(20, 255), 20, 0), Main.rand.NextFloat(0.2f));
