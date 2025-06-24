@@ -292,6 +292,9 @@ namespace StarlightRiver.Core
 		public void SetTexture(Texture2D texture)
 		{
 			this.texture = texture;
+
+			if (effect != null)
+				effect.Texture = texture;
 		}
 	}
 

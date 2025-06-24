@@ -130,7 +130,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 								drawpos - tex.Size() / 2f + new Vector2(x * tex.Width / 5f, y * tex.Height / 5f),
 								Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(1, 2.55f),
 								0,
-								1.25f,
+								1f,
 								Color.White,
 								120,
 								Vector2.Zero,
