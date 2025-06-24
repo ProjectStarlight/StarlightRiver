@@ -3020,6 +3020,11 @@ Items: {
 		DisplayName: GestaltCellsBarrierItem
 		Tooltip: "{{Debug}} item"
 	}
+
+	BlinkbrickWallItem: {
+		DisplayName: Blinkbrick Wall
+		Tooltip: ""
+	}
 }
 
 Tiles: {

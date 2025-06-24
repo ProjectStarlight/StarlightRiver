@@ -39,7 +39,8 @@ namespace StarlightRiver.Content.Tiles.Starlight
 					minPick: 100,
 					dustType: DustID.Gold,
 					hitSound: SoundID.Tink,
-					mapColor: new Color(92, 103, 113)
+					mapColor: new Color(92, 103, 113),
+					stone: true
 				)
 			);
 
@@ -113,6 +114,18 @@ namespace StarlightRiver.Content.Tiles.Starlight
 		{
 			Main.tileBlockLight[Mod.Find<ModTile>("ChartGrate").Type] = false;
 			AddMerge("Blinkbrick", "ReinforcedBlinkbrick");
+
+			TileID.Sets.GemsparkFramingTypes[Mod.Find<ModTile>("ChartGrate").Type] = Mod.Find<ModTile>("ChartGrate").Type;
+
+			TileID.Sets.GemsparkFramingTypes[Mod.Find<ModTile>("ReinforcedBlinkbrick").Type] = Mod.Find<ModTile>("ReinforcedBlinkbrick").Type;
+			TileID.Sets.GemsparkFramingTypes[Mod.Find<ModTile>("Blinkbrick").Type] = Mod.Find<ModTile>("ReinforcedBlinkbrick").Type;
+
+			TileID.Sets.GemsparkFramingTypes[Mod.Find<ModTile>("BrassPlate").Type] = Mod.Find<ModTile>("BrassPlate").Type;
+			TileID.Sets.GemsparkFramingTypes[Mod.Find<ModTile>("SmoothBrassPlate").Type] = Mod.Find<ModTile>("BrassPlate").Type;
+
+			TileID.Sets.GemsparkFramingTypes[Mod.Find<ModTile>("RawOnyx").Type] = Mod.Find<ModTile>("RawOnyx").Type;
+			TileID.Sets.GemsparkFramingTypes[Mod.Find<ModTile>("LockedOnyx").Type] = Mod.Find<ModTile>("RawOnyx").Type;
+			TileID.Sets.GemsparkFramingTypes[Mod.Find<ModTile>("DreamingOnyx").Type] = Mod.Find<ModTile>("RawOnyx").Type;
 		}
 	}
 }
