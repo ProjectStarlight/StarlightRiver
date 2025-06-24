@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Prefixes.Accessory.Cursed;
+﻿using StarlightRiver.Content.Items.Utility;
+using StarlightRiver.Content.Prefixes.Accessory.Cursed;
 using StarlightRiver.Core.Loaders;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 {
 	public abstract class CursedAccessory : SmartAccessory
 	{
-		public static readonly Color CurseColor = new(25, 17, 49);
+		public static readonly Color CurseColor = new(25, 17, 49, 0);
 
 		private static float tooltipProgress;
 
@@ -37,13 +38,21 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 				spriteBatch.Draw(tex, position, frame, Color.White, 0, origin, scale, 0, 0);
 
-				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
+				Effect effect = ShaderLoader.GetShader("Whitewash").Value;
 
-				spriteBatch.Draw(tex, position, frame, Color.White * (boomTimer / 30f), 0, origin, scale, 0, 0);
+				if (effect != null)
+				{
+					Color burnColor = boomTimer < 30f ? Color.Lerp(Color.Red, Color.Yellow, boomTimer / 30f) : Color.Lerp(Color.Yellow, Color.White, (boomTimer - 30) / 30f);
+					effect.Parameters["outlineColor"].SetValue(new Vector4(burnColor.R / 255f, burnColor.G / 255f, burnColor.B / 255f, boomTimer/60f));
 
-				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
+					Main.spriteBatch.End();
+					Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default, effect, Main.UIScaleMatrix);
+
+					spriteBatch.Draw(tex, position, frame, Color.White * (boomTimer / 30f), 0, origin, scale, 0, 0);
+
+					Main.spriteBatch.End();
+					Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
+				}
 
 				return false;
 			}
@@ -56,14 +65,15 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			Vector2 pos = position - origin * scale + new Vector2(0, 10) + Main.rand.NextVector2Circular(16, 16) + frame.Size() / 2f * scale;
 
 			if (!GoingBoom)
-				CursedAccessoryParticleManager.CursedSystem.AddParticle(pos, new Vector2(0, -0.4f), 0, 0.5f, CurseColor, 60, Vector2.Zero);
+				CursedAccessoryParticleManager.CursedSystem.AddParticle(pos, new Vector2(0, -0.4f), 0, 0.5f, CurseColor, 60, Vector2.Zero, alpha:0);
 
-			drawpos = pos;
+			drawpos = (position - origin * scale) + frame.Size() * scale * 0.5f;
 
 			if (GoingBoom && boomTimer < 60)
 			{
 				float rot = Main.rand.NextFloat(6.28f);
-				CursedAccessoryParticleManager.CursedSystem.AddParticle(pos + Vector2.One.RotatedBy(rot) * 30, -Vector2.One.RotatedBy(rot) * 1.5f, 0, 0.6f * boomTimer / 100f, Color.White, 20, Vector2.Zero);
+				var decay = (1f - boomTimer / 60f);
+				CursedAccessoryParticleManager.CursedSystem.AddParticle(drawpos + Vector2.One.RotatedBy(rot) * decay * 30, -Vector2.One.RotatedBy(rot) * 1.5f * decay, 0, 0.6f * boomTimer / 100f, new Color(255, Main.rand.Next(120, 200), 120) * 0.6f, 20, Vector2.Zero, alpha: 0);
 			}
 		}
 
@@ -75,22 +85,12 @@ namespace StarlightRiver.Content.Items.BaseTypes
 				SoundEngine.PlaySound(SoundID.Item123);
 
 				for (int k = 0; k <= 50; k++)
-					CursedAccessoryParticleManager.CursedSystem.AddParticle(drawpos, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.75f), 0, 1, CurseColor, 60, Vector2.Zero);
+					CursedAccessoryParticleManager.CursedSystem.AddParticle(drawpos, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.75f), 0, 1, CurseColor, 60, Vector2.Zero, alpha: 0);
 			}
 		}
 
 		public override void UpdateInventory(Player Player)
 		{
-			if (!(Main.HoverItem.ModItem is CursedAccessory))
-				tooltipProgress = 0;
-		}
-
-		public virtual void SafeUpdateAccessory(Player Player, bool hideVisual) { }
-
-		public sealed override void UpdateAccessory(Player Player, bool hideVisual)
-		{
-			SafeUpdateAccessory(Player, hideVisual);
-
 			if (!(Main.HoverItem.ModItem is CursedAccessory))
 				tooltipProgress = 0;
 
@@ -104,7 +104,12 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			{
 				Texture2D tex = TextureAssets.Item[Item.type].Value;
 
+				//Item.NewItem(Item.GetSource_FromThis(), Player.Hitbox, ModContent.ItemType<CursedDrop>(), Main.rand.Next(4, 10));
+
 				Item.TurnToAir();
+				Item.SetDefaults(ModContent.ItemType<CursedDrop>());
+				Item.stack = Main.rand.Next(4, 10);
+
 				SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/Shadow2"));
 
 				for (int k = 0; k <= 70; k++)
@@ -112,7 +117,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 					float distance = Main.rand.NextFloat(4.25f);
 
 					CursedAccessoryParticleManager.CursedSystem.AddParticle(drawpos, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4.25f, 4.75f), 1, 1.2f, CurseColor * 0.6f, 60, Vector2.Zero);
-					CursedAccessoryParticleManager.CursedSystem.AddParticle(drawpos, Vector2.One.RotatedByRandom(6.28f) * distance, 1, 0.8f, Color.Lerp(new Color(200, 60, 250), CurseColor * 0.8f, distance / 4.25f), 60, Vector2.Zero);
+					CursedAccessoryParticleManager.CursedSystem.AddParticle(drawpos, Vector2.One.RotatedByRandom(6.28f) * distance, 1, 0.8f, Color.Lerp(new Color(200, 60, 250, 0), CurseColor * 0.8f, distance / 4.25f), 60, Vector2.Zero);
 				}
 
 				CursedAccessoryParticleManager.ShardsSystem.SetTexture(tex);
@@ -122,7 +127,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 					for (int y = 0; y < 5; y++)
 					{
 						CursedAccessoryParticleManager.ShardsSystem.AddParticle(
-								drawpos + new Vector2(x * tex.Width / 5f, y * tex.Height / 5f),
+								drawpos - tex.Size() / 2f + new Vector2(x * tex.Width / 5f, y * tex.Height / 5f),
 								Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(1, 2.55f),
 								0,
 								1.25f,
@@ -134,6 +139,16 @@ namespace StarlightRiver.Content.Items.BaseTypes
 					}
 				}
 			}
+		}
+
+		public virtual void SafeUpdateAccessory(Player Player, bool hideVisual) { }
+
+		public sealed override void UpdateAccessory(Player Player, bool hideVisual)
+		{
+			SafeUpdateAccessory(Player, hideVisual);
+
+			if (!(Main.HoverItem.ModItem is CursedAccessory))
+				tooltipProgress = 0;
 		}
 
 		public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset)

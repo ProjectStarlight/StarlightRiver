@@ -26,9 +26,9 @@ namespace StarlightRiver.Core
 
 					if (tile.HasTile && tile.TileType == TileID.Grass && WorldGenHelper.NonSolidScanUp(new Point16(x, y), 40))
 					{
-						if (WorldGenHelper.GetElevationDeviation(new Point16(x, y), observatorySize.Y, 30, 5, true) < 5)
+						if (WorldGenHelper.GetElevationDeviation(new Point16(x, y), observatorySize.X, 30, 5, true) < 5)
 						{
-							StructureHelper.API.Generator.GenerateStructure("Structures/Observatory", new Point16(x - 8, y - 29), Mod);
+							StructureHelper.API.Generator.GenerateStructure("Structures/Observatory", new Point16(x - 8, y - 24), Mod);
 							ObservatorySystem.observatoryRoom = new Rectangle(x + 11, y - 20, 16, 7);
 							generated = true;
 							break;
