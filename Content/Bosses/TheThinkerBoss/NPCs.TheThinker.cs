@@ -645,7 +645,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
 		{
-			return Helpers.CollisionHelper.CheckCircularCollision(NPC.Center, 45, target.Hitbox);
+			return active && Helpers.CollisionHelper.CheckCircularCollision(NPC.Center, 45, target.Hitbox);
 		}
 
 		public override void SaveData(TagCompound tag)

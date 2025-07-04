@@ -768,6 +768,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				savedPoint = NPC.Center;
 				NPC.velocity *= 0;
 				NPC.rotation = 0;
+
+				Helpers.SoundHelper.PlayPitched("SquidBoss/Chargeup", 1, 0, NPC.Center);
 			}
 
 			if (AttackTimer < 60) //move to left of the arena
@@ -802,8 +804,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			if (AttackTimer > 90 && AttackTimer < 90 + laserTime) //lasering
 			{
-				if (AttackTimer % 10 == 0)
-					Helpers.SoundHelper.PlayPitched("Magic/LightningShortest1", 1, 0, NPC.Center);
+				if (AttackTimer % 30 == 0)
+					Helpers.SoundHelper.PlayPitched("BossRush/StarlightIntro", 1, 1f - (AttackTimer - 90f) / laserTime, NPC.Center);
 
 				NPC.Center = Vector2.SmoothStep(savedPoint, spawnPoint + (variantAttack ? new Vector2(800, -500) : new Vector2(-800, -500)), (AttackTimer - 90) / laserTime);
 			}

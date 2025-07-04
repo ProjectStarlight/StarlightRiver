@@ -13,11 +13,11 @@ namespace StarlightRiver.Helpers
 		/// each difficulty. Normally the game applies multipliers to projectile values making them hard
 		/// to predict for a given difficulty.
 		/// </summary>
-		/// <param name="master">The desired final damage on master mode</param>
-		/// <param name="expert">The desired final damage on expert mode</param>
 		/// <param name="normal">The desired final damage on normal mode</param>
+		/// <param name="expert">The desired final damage on expert mode</param>
+		/// <param name="master">The desired final damage on master mode</param>
 		/// <returns></returns>
-		public static int GetProjectileDamage(int master, int expert, int normal)
+		public static int GetProjectileDamage(int normal, int expert, int master)
 		{
 			return Main.masterMode ? master / 6 : Main.expertMode ? expert / 4 : normal;
 		}

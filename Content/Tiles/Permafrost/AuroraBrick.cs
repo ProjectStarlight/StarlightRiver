@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			var color = new Color(100 * (1 + sin2) / 255f, 140 * (1 + cos) / 255f, 180 / 255f);
 			float mult = Lighting.Brightness(i, j);
 
-			drawData.colorTint = color.MultiplyRGB(Color.White * mult);
+			//drawData.colorTint = drawData.colorTint.MultiplyRGB(color);
 		}
 
 		private bool StopGrappling(On_Projectile.orig_AI_007_GrapplingHooks_CanTileBeLatchedOnTo orig, Projectile self, int x, int y)

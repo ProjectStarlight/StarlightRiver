@@ -76,8 +76,8 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		// shield shader inputs
 		public float shieldOpacity = 0f;
 
-		public int BrainBoltDamage => StarlightMathHelper.GetProjectileDamage(80, 60, 40);
-		public int VeinSpearDamage => StarlightMathHelper.GetProjectileDamage(200, 120, 80);
+		public int BrainBoltDamage => StarlightMathHelper.GetProjectileDamage(40, 60, 80);
+		public int VeinSpearDamage => StarlightMathHelper.GetProjectileDamage(80, 120, 200);
 
 		// Phase enum and state variables
 		public enum Phases : int

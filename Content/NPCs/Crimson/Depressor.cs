@@ -111,7 +111,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 						if (Timer % 240 == 0)
 							rot += 6.28f / 12;
 
-						Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.UnitX.RotatedBy(k) * 3, ModContent.ProjectileType<BrainBolt>(), StarlightMathHelper.GetProjectileDamage(10, 20, 40), 1, Main.myPlayer, 180, 1, 60);
+						Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.UnitX.RotatedBy(k) * 3, ModContent.ProjectileType<BrainBolt>(), StarlightMathHelper.GetProjectileDamage(40, 20, 10), 1, Main.myPlayer, 180, 1, 60);
 					}
 				}
 			}
