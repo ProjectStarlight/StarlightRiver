@@ -7,12 +7,9 @@ float2 offset;
 
 float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
 {
-	float alpha = tex2D(samplerTex, coords).a;
+	float alpha = 1.0 - tex2D(samplerTex, coords).a;
 
-	if(alpha == 0.0)
-		return float4(uColor, opacity);
-
-	return float4(0.0, 0.0, 0.0, 0.0);
+    return float4(0.0, 0.0, 0.0, alpha * opacity);
 }
 
 technique Technique1

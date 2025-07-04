@@ -55,7 +55,10 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 	{
 		public override void NearbyEffects(int i, int j, bool closer)
 		{
-			Framing.GetTileSafely(i, j).IsActuated = StarlightWorld.HasFlag(WorldFlags.SquidBossOpen);
+			var flag = StarlightWorld.HasFlag(WorldFlags.SquidBossOpen);
+
+			Main.tileSolid[Type] = !flag;
+			Main.tileSolidTop[Type] = flag;
 		}
 	}
 
