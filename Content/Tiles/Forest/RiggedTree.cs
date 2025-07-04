@@ -27,6 +27,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 			TileID.Sets.IsATreeTrunk[Type] = true;
 			Main.tileAxe[Type] = true;
 			AddMapEntry(new Color(169, 125, 93), name);
+			DustType = DustID.WoodFurniture;
 
 			RegisterItemDrop(ItemID.Wood);
 		}
@@ -149,6 +150,37 @@ namespace StarlightRiver.Content.Tiles.Forest
 				WorldGen.KillTile(i, j - 1);
 			if (down)
 				WorldGen.KillTile(i, j + 1);
+
+			if (right && !up && down)
+			{
+				Vector2 Center = new Vector2(i, j) * 16 - Vector2.One * 8;
+				Vector2 pos = Center - new Vector2(280, 630);
+				float windDir = Main.windSpeedCurrent > 0 ? 1 : -1;
+
+				float branchRot = Main.windSpeedCurrent * 0.05f + Sway(Center, 0.02f);
+
+				if (!Main.dedServ)
+				{
+					var tex = Assets.Tiles.Forest.BranchesShape.Value;
+					DustHelper.SpawnStillImagePattern(Center + new Vector2(24, -tex.Height / 2f), DustID.WoodFurniture, 1f, tex, noGravity:false, randomVel:1f, chance: 0.1f);
+				}
+				
+				foreach (StaticRigPoint point in RiggedTreeDummy.treeRig.Points)
+				{
+					Vector2 pointPos = pos + new Vector2(point.X, point.Y) * 2;
+					Vector2 origin = Vector2.One * 41;
+					float weight = point.Frame % 2 == 0 ? 6 : 4;
+
+					pointPos = pointPos.RotatedBy(branchRot, Center);
+					float rot = Sway(pointPos, 0.1f);
+					pointPos.X += Sway(pointPos, weight);
+
+					for(int k = 0; k < 10; k++)
+					{
+						Dust.NewDustPerfect(pointPos + Main.rand.NextVector2Circular(41, 41), DustID.Grass);				
+					}
+				}
+			}
 		}
 
 		public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
