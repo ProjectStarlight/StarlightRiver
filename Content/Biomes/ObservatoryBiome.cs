@@ -46,12 +46,12 @@ namespace StarlightRiver.Content.Biomes
 		{
 			if (!Main.gameMenu && IsSceneEffectActive(Main.LocalPlayer))
 			{
-				Texture2D tex = Assets.Noise.PerlinNoise.Value;
+				Texture2D tex = Assets.MagicPixel.Value;
 
 				sb.End();
 				sb.Begin(default, default, SamplerState.PointWrap, default, default);
 
-				sb.Draw(tex, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), new Rectangle((int)Main.GameUpdateCount / 3, 0, tex.Width, tex.Height), Color.White * fade * 0.2f);
+				sb.Draw(tex, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), new Rectangle((int)Main.GameUpdateCount / 3, 0, tex.Width, tex.Height), Color.White * fade * 0.5f);
 
 				Texture2D glowTex = Assets.Masks.Glow.Value;
 

@@ -46,6 +46,9 @@ namespace StarlightRiver.Content.Items
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
+			ObservatoryBiome.fade = 1f;
+			return;
+
 			player.GetHandler().StaminaMaxBonus = 10;
 
 			int x = StarlightWorld.vitricBiome.X - 37;

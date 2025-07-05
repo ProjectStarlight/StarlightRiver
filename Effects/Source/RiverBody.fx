@@ -14,6 +14,9 @@ float u_alpha;
 
 float4 main(float2 st : TEXCOORD0) : COLOR0
 { 
+    st -= fmod(st, 2.0 / u_resolution);
+    st += 1.0 / u_resolution;
+    
     float2 sample1 = st;
     sample1.y += sin((st.x + u_offset) * TWO_PI) * u_amplitude / u_resolution.y;
     sample1.x = frac(st.x * u_resolution / 1400.0 - u_time);
@@ -43,7 +46,7 @@ float4 main(float2 st : TEXCOORD0) : COLOR0
     
     float3 pcolor1 = color * color2;
     pcolor1.g = GetLuminance(pcolor1) * 0.6;
-    pcolor1.r = pow(GetLuminance(pcolor1), 2.0);
+    pcolor1.r = pow(GetLuminance(pcolor1) * 0.6f, 2.0);
     final += pcolor1;
     
     float3 pcolor2 = color * color3;
@@ -51,7 +54,11 @@ float4 main(float2 st : TEXCOORD0) : COLOR0
     pcolor2.g = GetLuminance(pcolor2) * 0.4;
     final += pcolor2;
     
-    return u_alpha * float4(final * 3.0, (final.b * 3.0));
+    float4 mulled = float4(final * 3.0, (final.b * 3.0));
+    mulled -= fmod(mulled, 0.2);
+    mulled.rgb += 0.1;
+    
+    return u_alpha * mulled;
 }
 
 technique Technique1

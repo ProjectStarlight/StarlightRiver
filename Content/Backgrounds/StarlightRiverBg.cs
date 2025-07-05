@@ -1,11 +1,7 @@
-﻿using StarlightRiver.Content.Bosses.TheThinkerBoss;
-using StarlightRiver.Content.Items.Food.Special;
-using StarlightRiver.Core.Loaders;
-using StarlightRiver.Core.Systems;
+﻿using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.BossRushSystem;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
-using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Content.Backgrounds
 {
@@ -22,6 +18,9 @@ namespace StarlightRiver.Content.Backgrounds
 		public static float timer = 0;
 		public static float yOrigin = 0;
 		public static int forceActiveTimer;
+
+		public static int starCount;
+		public static Vector2 screenCenter;
 
 		public override void Load()
 		{
@@ -200,6 +199,7 @@ namespace StarlightRiver.Content.Backgrounds
 				sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, wantedMatrix);
 			}
 
+			//stars.DrawParticles(sb);
 			stars.DrawParticlesWithEffect(sb, ShaderLoader.GetShader("GlowingCustomParticle").Value);
 		}
 
@@ -237,20 +237,56 @@ namespace StarlightRiver.Content.Backgrounds
 				particle.Timer--;
 				particle.StoredPosition += particle.Velocity;
 
-				//particle.Rotation += 0.02f;
+				particle.Alpha = 0.5f + 0.2f * (particle.Scale / 0.2f);
 
-				particle.Alpha = 0.5f + 0.5f * (particle.Scale / 0.35f);
+				if (particle.Timer > 1480)
+					particle.Alpha = (1600 - particle.Timer) / 120f * particle.Alpha;
 
-				if (particle.Timer > 1570)
-					particle.Alpha = (1600 - particle.Timer) / 30f * particle.Alpha;
+				if (particle.Timer < 120)
+					particle.Alpha = particle.Timer / 120f * particle.Alpha;
 
-				if (particle.Timer < 30)
-					particle.Alpha = particle.Timer / 30f * particle.Alpha;
+				if (particle.Timer == 0)
+					starCount--;
 
 				particle.Alpha *= starOpacity;
 
-				particle.Position = particle.StoredPosition + (particle.StoredPosition - (Main.screenPosition + Main.ScreenSize.ToVector2() / 2f)) * (particle.Scale * 6f - 0.35f * 3f) - Main.screenPosition;
+				float factor = 1f - particle.Scale / 0.2f * 1.2f;
+
+				particle.Position = particle.StoredPosition + (screenCenter - particle.StoredPosition) * factor - Main.screenPosition;
+
+
+				if (particle.Timer > 3 && (particle.Position.X < -120 || particle.Position.X > Main.screenWidth + 120 || particle.Position.Y < -120 || particle.Position.Y > Main.screenHeight + 120))
+					particle.Timer = 3;
+
+				float grace = 60;
+
+				if (particle.Position.X < -grace)
+					particle.StoredPosition.X += Main.screenWidth + grace + 2 * ((screenCenter.X - particle.StoredPosition.X) * factor);
+
+				if (particle.Position.X > Main.screenWidth + grace)
+					particle.StoredPosition.X -= Main.screenWidth + grace + -2 * ((screenCenter.X - particle.StoredPosition.X) * factor);
+
+				if (particle.Position.Y < -grace)
+					particle.StoredPosition.Y += Main.screenHeight + grace + 2 * ((screenCenter.Y - particle.StoredPosition.Y) * factor);
+
+				if (particle.Position.Y > Main.screenHeight + grace)
+					particle.StoredPosition.Y -= Main.screenHeight + grace + -2 * ((screenCenter.Y - particle.StoredPosition.Y) * factor);
 			}
+		}
+
+		public void SpawnAStar()
+		{
+			float weight = MathF.Pow(Main.rand.NextFloat(), 4);
+			float scale = 0.05f + 0.15f * weight;
+			int rangeX = (int)((1f - weight * 1.2f) * (Main.screenWidth / 2f));
+			int rangeY = (int)((1f - weight * 1.2f) * (Main.screenHeight / 2f));
+
+			var pos = new Vector2(Main.rand.Next(-rangeX, Main.screenWidth + rangeX), Main.rand.Next(-rangeY, Main.screenHeight + rangeY));
+
+			var color = new Color(0f + (1f - scale / 0.2f) * 0.25f, 0.2f + Main.rand.NextFloat(0.3f) + scale / 0.2f * 0.2f, 1f, 0.25f);
+
+			stars.AddParticle(pos, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.05f, 0.2f) * (scale / 0.2f), Main.rand.NextBool() ? 0f : 1.57f / 2f, scale, color * 0.7f, 1600, pos + Main.screenPosition, new Rectangle(0, scale > 0.15f ? 120 : 0, 120, 120), 1, 2);
+			starCount++;
 		}
 
 		public override void PostUpdateEverything()
@@ -260,42 +296,45 @@ namespace StarlightRiver.Content.Backgrounds
 				return;
 			}
 
+			screenCenter = Main.screenPosition + Main.ScreenSize.ToVector2() / 2f;
+
 			if (!Main.gameMenu && !BossRushSystem.isBossRush)
-				yOrigin = (int)Main.spawnTileY * 16 - 2400;
+				yOrigin = Main.spawnTileY * 16 - 2400;
 			else
 				yOrigin = Main.screenPosition.Y;
 
 			timer++;
 
-			if (Main.rand.NextBool(2))
+			/*if (Main.rand.NextBool(2))
+				SpawnAStar();*/
+
+			if (starCount < 100)
 			{
-				var pos = new Vector2(Main.rand.Next(-Main.screenWidth / 2, (int)(Main.screenWidth * 1.5f)), Main.rand.Next(-Main.screenHeight / 2, (int)(Main.screenHeight * 1.5f)));
-				float scale = Main.rand.NextFloat(0.35f);
-
-				var color = new Color(0.1f, 0.4f + Main.rand.NextFloat(0.1f) + scale / 0.35f * 0.5f, 1f)
+				for (int k = 0; k < 3; k++)
 				{
-					A = 0
-				};
+					SpawnAStar();
+				}
+			}
 
-				stars.AddParticle(pos, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.05f, 0.2f) * (scale / 0.35f), 0, scale, color * 0.8f, 1600, pos + Main.screenPosition, new Rectangle(0, 120, 120, 120), 1, 2);
+			if (starCount < 300 && Main.rand.NextBool())
+			{
+				SpawnAStar();
 			}
 
 			if (Main.rand.NextBool(2, 3))
 			{
 				float prog = Main.rand.NextFloat();
-				var starColor = new Color(0.1f, 0.2f + prog * 0.6f, 1f)
-				{
-					A = 0
-				};
+				var starColor = new Color(0.1f, 0.2f + prog * 0.4f, 1f, 0.5f);
 
 				bool star = Main.rand.NextBool(24);
 				float partScale = Main.rand.NextFloat(0.05f, 0.15f) * (0.8f + prog * 0.2f);
-				Color partColor = starColor * (0.6f + prog * 0.2f);
+				Color partColor = starColor * (0.8f + prog * 0.2f);
 
 				if (star)
 				{
 					partScale += 0.15f;
-					partColor *= 1.5f;
+					partColor *= 1.2f;
+					partColor.A = 255;
 				}
 
 				stars.AddParticle(new Vector2(0, Main.screenHeight * 0.2f + prog * 0f), new Vector2(Main.rand.NextFloat(1f, 5f) + prog * 4f, 1), 0, partScale, partColor, 600, Vector2.One * (-70 + prog * 140f), new Rectangle(0, star ? 120 : 0, 120, 120), 1f);
