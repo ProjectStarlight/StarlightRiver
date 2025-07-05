@@ -161,10 +161,10 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 				if (!Main.dedServ)
 				{
-					var tex = Assets.Tiles.Forest.BranchesShape.Value;
-					DustHelper.SpawnStillImagePattern(Center + new Vector2(24, -tex.Height / 2f), DustID.WoodFurniture, 1f, tex, noGravity:false, randomVel:1f, chance: 0.1f);
+					Texture2D tex = Assets.Tiles.Forest.BranchesShape.Value;
+					DustHelper.SpawnStillImagePattern(Center + new Vector2(24, -tex.Height / 2f), DustID.WoodFurniture, 1f, tex, noGravity: false, randomVel: 1f, chance: 0.1f);
 				}
-				
+
 				foreach (StaticRigPoint point in RiggedTreeDummy.treeRig.Points)
 				{
 					Vector2 pointPos = pos + new Vector2(point.X, point.Y) * 2;
@@ -175,9 +175,9 @@ namespace StarlightRiver.Content.Tiles.Forest
 					float rot = Sway(pointPos, 0.1f);
 					pointPos.X += Sway(pointPos, weight);
 
-					for(int k = 0; k < 10; k++)
+					for (int k = 0; k < 10; k++)
 					{
-						Dust.NewDustPerfect(pointPos + Main.rand.NextVector2Circular(41, 41), DustID.Grass);				
+						Dust.NewDustPerfect(pointPos + Main.rand.NextVector2Circular(41, 41), DustID.Grass);
 					}
 				}
 			}

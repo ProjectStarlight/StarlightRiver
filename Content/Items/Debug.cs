@@ -4,9 +4,11 @@ using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Bosses.TheThinkerBoss;
 using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.NPCs.Starlight;
+using StarlightRiver.Content.Tiles.BaseTypes;
 using StarlightRiver.Content.Tiles.Starlight;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.CutsceneSystem;
+using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.Systems.LightingSystem;
 using Terraria.ID;
 
@@ -54,6 +56,20 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
+			ProximityActivatedPylonSystem.activePylons.Clear();
+
+			foreach (var item in DummySystem.dummies)
+			{
+				if (item is ProximityActivatedPylonDummy d)
+				{
+					d.activating = false;
+					d.timer = 0;
+				}
+			}
+			return true;
+
+
+
 			//NPC.NewNPC(null, (int)player.Center.X, (int)player.Center.Y - 600, ModContent.NPCType<TheThinker>());
 			//NPC.NewNPC(null, (int)player.Center.X, (int)player.Center.Y - 600, ModContent.NPCType<DeadBrain>());
 
@@ -215,6 +231,42 @@ namespace StarlightRiver.Content.Items
 		public override bool? UseItem(Player Player)
 		{
 			StarlightRiver.debugMode = !StarlightRiver.debugMode;
+			return true;
+		}
+	}
+
+	[SLRDebug]
+	class SuperBreaker : ModItem
+	{
+		public override string Texture => AssetDirectory.Assets + "Items/DebugStick";
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Super Breaker");
+			Tooltip.SetDefault("Breaks anything!");
+		}
+
+		public override void SetDefaults()
+		{
+			Item.damage = 10;
+			Item.DamageType = DamageClass.Melee;
+			Item.width = 38;
+			Item.height = 40;
+			Item.useTime = 18;
+
+			Item.useAnimation = 18;
+			Item.useStyle = ItemUseStyleID.Swing;
+			Item.knockBack = 5f;
+			Item.value = 1000;
+			Item.rare = ItemRarityID.Master;
+			Item.autoReuse = true;
+			Item.UseSound = SoundID.Item18;
+			Item.useTurn = true;
+		}
+
+		public override bool? UseItem(Player player)
+		{
+			WorldGen.KillTile((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
 			return true;
 		}
 	}

@@ -36,6 +36,9 @@
 		<AdditionalFiles Include="**/*.png" />
 
 	</ItemGroup>
+	<ItemGroup>
+	  <AdditionalFiles Remove="Localization\en-US_Mods.StarlightRiver.Pylons.hjson" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<Folder Include="Assets\Healthbars\" />

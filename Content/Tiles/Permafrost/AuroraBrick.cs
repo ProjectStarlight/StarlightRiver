@@ -1,5 +1,4 @@
 using StarlightRiver.Core.Systems;
-using System;
 using Terraria.DataStructures;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -25,18 +24,6 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			return false;
 		}
 
-		public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
-		{
-			float off = (float)Math.Sin((i + j) * 0.2f) * 300 + (float)Math.Cos(j * 0.15f) * 200;
-
-			float sin2 = (float)Math.Sin(StarlightWorld.visualTimer + off * 0.01f * 0.2f);
-			float cos = (float)Math.Cos(StarlightWorld.visualTimer + off * 0.01f);
-			var color = new Color(100 * (1 + sin2) / 255f, 140 * (1 + cos) / 255f, 180 / 255f);
-			float mult = Lighting.Brightness(i, j);
-
-			//drawData.colorTint = drawData.colorTint.MultiplyRGB(color);
-		}
-
 		private bool StopGrappling(On_Projectile.orig_AI_007_GrapplingHooks_CanTileBeLatchedOnTo orig, Projectile self, int x, int y)
 		{
 			Tile theTile = Framing.GetTileSafely(x, y);
@@ -55,10 +42,31 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 	{
 		public override void NearbyEffects(int i, int j, bool closer)
 		{
-			var flag = StarlightWorld.HasFlag(WorldFlags.SquidBossOpen);
+			bool flag = StarlightWorld.HasFlag(WorldFlags.SquidBossOpen);
 
 			Main.tileSolid[Type] = !flag;
 			Main.tileSolidTop[Type] = flag;
+		}
+
+		public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
+		{
+			if (StarlightWorld.HasFlag(WorldFlags.SquidBossOpen))
+			{
+				drawData.finalColor *= 0f;
+			}
+		}
+
+		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
+		{
+			if (StarlightWorld.HasFlag(WorldFlags.SquidBossOpen))
+			{
+				Tile tile = Main.tile[i, j];
+				Texture2D tex = Assets.Tiles.Permafrost.AuroraBrickDoorOver.Value;
+				Vector2 pos = new Vector2(i, j) * 16 - Main.screenPosition + Vector2.One * Main.offScreenRange;
+				var frame = new Rectangle(tile.frameX, tile.frameY, 16, 16);
+
+				spriteBatch.Draw(tex, pos, frame, Lighting.GetColor(i, j));
+			}
 		}
 	}
 

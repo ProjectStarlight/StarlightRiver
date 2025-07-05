@@ -25,8 +25,7 @@ namespace StarlightRiver.Helpers
 				var data = new Color[tex.Width * tex.Height];
 				tex.GetData(data);
 
-				if (color is null)
-					color = Color.White;
+				color ??= Color.White;
 
 				for (int i = 0; i < tex.Width; i += 2)
 				{
@@ -74,8 +73,7 @@ namespace StarlightRiver.Helpers
 				var data = new Color[tex.Width * tex.Height];
 				tex.GetData(data);
 
-				if (color is null)
-					color = Color.White;
+				color ??= Color.White;
 
 				for (int i = 0; i < tex.Width; i += 2)
 				{

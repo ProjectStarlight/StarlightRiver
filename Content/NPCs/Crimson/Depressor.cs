@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 {
 	internal class Depressor : ModNPC
 	{
-		public static List<Depressor> toDraw = new();
+		public static List<Depressor> toDraw = [];
 
 		public Vector2 homePos;
 		public VerletChain attachedChain;
@@ -145,8 +145,8 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 		private void DrawDepressors(SpriteBatch batch)
 		{
-			var tex = Assets.NPCs.Crimson.Depressor.Value;
-			var chain = Assets.NPCs.Crimson.DepressorChain.Value;
+			Texture2D tex = Assets.NPCs.Crimson.Depressor.Value;
+			Texture2D chain = Assets.NPCs.Crimson.DepressorChain.Value;
 
 			foreach (Depressor depressor in toDraw)
 			{
@@ -156,7 +156,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 					for (int k = 0; k < height; k += 10)
 					{
-						Vector2 pos = Vector2.Lerp(depressor.homePos, depressor.NPC.Center, k / height);
+						var pos = Vector2.Lerp(depressor.homePos, depressor.NPC.Center, k / height);
 						batch.Draw(chain, pos - Main.screenPosition, null, Main.DiscoColor, 0, chain.Size() / 2f, 1, 0, 0);
 					}
 				}

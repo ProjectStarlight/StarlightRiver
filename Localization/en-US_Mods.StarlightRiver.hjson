@@ -3432,6 +3432,16 @@ Items: {
 		DisplayName: Locked Onyx
 		Tooltip: ""
 	}
+
+	AuroraPylonItem: {
+		Tooltip: You shouldn't have this!
+		DisplayName: Aurora Pylon
+	}
+
+	SuperBreaker: {
+		Tooltip: Breaks anything!
+		DisplayName: Super Breaker
+	}
 }
 
 Tiles: {
@@ -3647,6 +3657,7 @@ Tiles: {
 	SmoothBrassPlate.MapEntry: ""
 	RawOnyx.MapEntry: ""
 	LockedOnyx.MapEntry: ""
+	AuroraPylon.MapEntry: Aurora Pylon
 	// VitricGiantCrystal.MapEntry: ""
 	// VitricLargeCrystal.MapEntry: ""
 	// VitricMediumCrystal.MapEntry: ""
