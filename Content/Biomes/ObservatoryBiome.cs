@@ -4,6 +4,7 @@ using StarlightRiver.Content.Backgrounds;
 using StarlightRiver.Content.Bestiary;
 using StarlightRiver.Content.Events;
 using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems.LightingSystem;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
 using System.Collections.Generic;
@@ -46,19 +47,22 @@ namespace StarlightRiver.Content.Biomes
 		{
 			if (!Main.gameMenu && IsSceneEffectActive(Main.LocalPlayer))
 			{
-				Texture2D tex = Assets.MagicPixel.Value;
+				Texture2D tex = Assets.GradientV.Value;
 
 				sb.End();
 				sb.Begin(default, default, SamplerState.PointWrap, default, default);
 
-				sb.Draw(tex, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), new Rectangle((int)Main.GameUpdateCount / 3, 0, tex.Width, tex.Height), Color.White * fade * 0.5f);
+				Color color = Color.White;
+				color.A = 0;
 
-				Texture2D glowTex = Assets.Masks.Glow.Value;
+				int factor = 5;
 
-				float opacity = fade;
-				Color color = Color.Black * opacity;
+				sb.Draw(tex, new Rectangle(0, 0, Main.screenWidth / factor, Main.screenHeight), null, color * fade);
+				sb.Draw(tex, new Rectangle(Main.screenWidth - Main.screenWidth / factor, 0, Main.screenWidth / factor, Main.screenHeight), null, color * fade, 0f, default, SpriteEffects.FlipHorizontally, 0);
 
-				sb.Draw(glowTex, new Vector2(Main.screenWidth / 2, Main.screenHeight / 2), null, color, 0, glowTex.Size() / 2f, opacity * 10f, 0, 0);
+				tex = Assets.GradientH.Value;
+				sb.Draw(tex, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight / factor), null, color * fade, 0f, default, SpriteEffects.FlipVertically, 0);
+				sb.Draw(tex, new Rectangle(0, Main.screenHeight - Main.screenHeight / factor, Main.screenWidth, Main.screenHeight / factor), null, color * fade);
 			}
 		}
 
