@@ -188,11 +188,13 @@ namespace StarlightRiver.Content.Backgrounds
 				riverBodyShader.Parameters["u_time"].SetValue(timer * 0.0045f);
 				riverBodyShader.Parameters["u_alpha"].SetValue(starOpacity * 0.3f);
 				riverBodyShader.Parameters["u_resolution"].SetValue(new Vector2(Main.screenWidth, 700));
+				riverBodyShader.Parameters["u_target_resolution"].SetValue(new Vector2(starsTarget.RenderTarget.Width, 700f / Main.screenHeight * starsTarget.RenderTarget.Height));
 				sb.Draw(Assets.ShadowTrail.Value, new Rectangle(0, (int)yOff + Main.screenHeight / 2 - 350, target.Width, 700), Color.White);
 
 				riverBodyShader.Parameters["u_time"].SetValue(timer * 0.003f);
 				riverBodyShader.Parameters["u_alpha"].SetValue(starOpacity * 0.6f);
 				riverBodyShader.Parameters["u_resolution"].SetValue(new Vector2(Main.screenWidth, 500));
+				riverBodyShader.Parameters["u_target_resolution"].SetValue(new Vector2(starsTarget.RenderTarget.Width, 500f / Main.screenHeight * starsTarget.RenderTarget.Height));
 				sb.Draw(Assets.ShadowTrail.Value, new Rectangle(0, (int)yOff + Main.screenHeight / 2 - 250, target.Width, 500), Color.White);
 
 				sb.End();
@@ -245,7 +247,7 @@ namespace StarlightRiver.Content.Backgrounds
 				if (particle.Timer < 120)
 					particle.Alpha = particle.Timer / 120f * particle.Alpha;
 
-				if (particle.Timer == 0)
+				if (particle.Timer == 1 && starCount > 0)
 					starCount--;
 
 				particle.Alpha *= starOpacity;
@@ -278,14 +280,14 @@ namespace StarlightRiver.Content.Backgrounds
 		{
 			float weight = MathF.Pow(Main.rand.NextFloat(), 4);
 			float scale = 0.05f + 0.15f * weight;
-			int rangeX = (int)((1f - weight * 1.2f) * (Main.screenWidth / 2f));
-			int rangeY = (int)((1f - weight * 1.2f) * (Main.screenHeight / 2f));
+			int rangeX = (int)((1f - weight * 1.2f) * (Main.screenWidth));
+			int rangeY = (int)((1f - weight * 1.2f) * (Main.screenHeight));
 
 			var pos = new Vector2(Main.rand.Next(-rangeX, Main.screenWidth + rangeX), Main.rand.Next(-rangeY, Main.screenHeight + rangeY));
 
-			var color = new Color(0f + (1f - scale / 0.2f) * 0.25f, 0.2f + Main.rand.NextFloat(0.3f) + scale / 0.2f * 0.2f, 1f, 0.25f);
+			var color = new Color(0f + (1f - scale / 0.2f) * 0.25f, 0.2f + Main.rand.NextFloat(0.3f) + scale / 0.2f * 0.1f, 1f, 0.25f);
 
-			stars.AddParticle(pos, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.05f, 0.2f) * (scale / 0.2f), Main.rand.NextBool() ? 0f : 1.57f / 2f, scale, color * 0.7f, 1600, pos + Main.screenPosition, new Rectangle(0, scale > 0.15f ? 120 : 0, 120, 120), 1, 2);
+			stars.AddParticle(pos, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.05f, 0.1f) * (scale / 0.2f), Main.rand.NextBool() ? 0f : 1.57f / 2f, scale, color * 0.7f, 1600, pos + Main.screenPosition, new Rectangle(0, scale > 0.15f ? 120 : 0, 120, 120), 1, 2);
 			starCount++;
 		}
 
@@ -308,7 +310,7 @@ namespace StarlightRiver.Content.Backgrounds
 			/*if (Main.rand.NextBool(2))
 				SpawnAStar();*/
 
-			if (starCount < 100)
+			if (starCount < 1100)
 			{
 				for (int k = 0; k < 3; k++)
 				{
@@ -316,7 +318,7 @@ namespace StarlightRiver.Content.Backgrounds
 				}
 			}
 
-			if (starCount < 300 && Main.rand.NextBool())
+			if (starCount < 1200 && Main.rand.NextBool())
 			{
 				SpawnAStar();
 			}

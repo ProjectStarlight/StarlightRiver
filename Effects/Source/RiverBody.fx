@@ -7,6 +7,7 @@ Texture2D mask;
 sampler2D tex1 = sampler_state { texture = <mask>; };
 
 float2 u_resolution;
+float2 u_target_resolution;
 float u_time;
 float u_amplitude;
 float u_offset;
@@ -14,8 +15,8 @@ float u_alpha;
 
 float4 main(float2 st : TEXCOORD0) : COLOR0
 { 
-    st -= fmod(st, 2.0 / u_resolution);
-    st += 1.0 / u_resolution;
+    st -= fmod(st, 2.0 / u_target_resolution);
+    st += 1.0 / u_target_resolution;
     
     float2 sample1 = st;
     sample1.y += sin((st.x + u_offset) * TWO_PI) * u_amplitude / u_resolution.y;
