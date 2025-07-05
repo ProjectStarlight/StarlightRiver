@@ -60,6 +60,7 @@ namespace StarlightRiver.Content.Backgrounds
 					return true;
 
 				bool isActive = false;
+
 				foreach (CheckIsActiveDelegate del in CheckIsActiveEvent.GetInvocationList())
 				{
 					isActive |= del();
@@ -138,18 +139,10 @@ namespace StarlightRiver.Content.Backgrounds
 
 			var target = new Rectangle(0, 0, Main.screenWidth, Main.screenHeight);
 
-			if (Main.gameMenu)
-			{
-				//target.Width = (int)(target.Width / Main.UIScale);
-				//target.Height = (int)(target.Height / Main.UIScale);
-			}
-
 			color.R = 10;
 			color.G = 100;
 			color.B = 255;
 			Vector2 offset = Vector2.UnitX * timer * 0.2f;
-			//offset.X += 0.05f * Main.screenPosition.X % target.Width;
-			//offset.Y += 0.05f * Main.screenPosition.Y % target.Height;
 			var source = new Rectangle((int)offset.X, (int)offset.Y, tex2.Width, tex2.Height);
 			sb.Draw(tex2, target, source, color * 0.12f);
 			sb.Draw(tex, target, source, new Color(0.03f, 0.04f, 0.06f, 0) * 0.8f);
@@ -159,8 +152,6 @@ namespace StarlightRiver.Content.Backgrounds
 			color.B = 220;
 			color.A = 0;
 			offset = Vector2.UnitX * timer * 0.3f;
-			//offset.X += 0.1f * Main.screenPosition.X % target.Width;
-			//offset.Y += 0.1f * Main.screenPosition.Y % target.Height;
 			source = new Rectangle((int)offset.X, (int)offset.Y, tex2.Width / 3, tex2.Height / 3);
 			sb.Draw(tex, target, source, color * 0.1f);
 
@@ -169,8 +160,6 @@ namespace StarlightRiver.Content.Backgrounds
 			color.B = 255;
 			color.A = 0;
 			offset = Vector2.UnitX * timer * 0.4f;
-			//offset.X += 0.15f * Main.screenPosition.X % target.Width;
-			//offset.Y += 0.15f * Main.screenPosition.Y % target.Height;
 			source = new Rectangle((int)offset.X, (int)offset.Y, tex2.Width / 2, tex2.Height / 2);
 			sb.Draw(tex, target, source, color * 0.1f);
 
@@ -204,7 +193,6 @@ namespace StarlightRiver.Content.Backgrounds
 				sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, wantedMatrix);
 			}
 
-			//stars.DrawParticles(sb);
 			stars.DrawParticlesWithEffect(sb, ShaderLoader.GetShader("GlowingCustomParticle").Value);
 		}
 
@@ -259,7 +247,6 @@ namespace StarlightRiver.Content.Backgrounds
 
 				particle.Position = particle.StoredPosition + (screenCenter - particle.StoredPosition) * factor - Main.screenPosition;
 
-
 				if (particle.Timer > 3 && (particle.Position.X < -120 || particle.Position.X > Main.screenWidth + 120 || particle.Position.Y < -120 || particle.Position.Y > Main.screenHeight + 120))
 					particle.Timer = 3;
 
@@ -283,8 +270,8 @@ namespace StarlightRiver.Content.Backgrounds
 		{
 			float weight = MathF.Pow(Main.rand.NextFloat(), 4);
 			float scale = 0.05f + 0.15f * weight;
-			int rangeX = (int)((1f - weight * 1.2f) * (Main.screenWidth));
-			int rangeY = (int)((1f - weight * 1.2f) * (Main.screenHeight));
+			int rangeX = (int)((1f - weight * 1.2f) * Main.screenWidth);
+			int rangeY = (int)((1f - weight * 1.2f) * Main.screenHeight);
 
 			var pos = new Vector2(Main.rand.Next(-rangeX, Main.screenWidth + rangeX), Main.rand.Next(-rangeY, Main.screenHeight + rangeY));
 
@@ -297,9 +284,7 @@ namespace StarlightRiver.Content.Backgrounds
 		public override void PostUpdateEverything()
 		{
 			if (!CheckIsActive() || Main.dedServ)
-			{
 				return;
-			}
 
 			screenCenter = Main.screenPosition + Main.ScreenSize.ToVector2() / 2f;
 
@@ -310,9 +295,6 @@ namespace StarlightRiver.Content.Backgrounds
 
 			timer++;
 
-			/*if (Main.rand.NextBool(2))
-				SpawnAStar();*/
-
 			if (starCount < 1100)
 			{
 				for (int k = 0; k < 3; k++)
@@ -322,9 +304,7 @@ namespace StarlightRiver.Content.Backgrounds
 			}
 
 			if (starCount < 1200 && Main.rand.NextBool())
-			{
 				SpawnAStar();
-			}
 
 			if (Main.rand.NextBool(2, 3))
 			{
