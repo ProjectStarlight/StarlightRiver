@@ -128,6 +128,7 @@ namespace StarlightRiver.Content.Backgrounds
 			sb.End();
 			sb.Begin(default, default, SamplerState.LinearWrap, default, RasterizerState.CullNone, default, wantedMatrix);
 
+			Texture2D tex = Assets.Noise.PerlinSparse.Value;
 			Texture2D tex2 = Assets.Noise.PerlinNoise.Value;
 
 			var color = new Color(100, 230, 220)
@@ -143,33 +144,35 @@ namespace StarlightRiver.Content.Backgrounds
 				//target.Height = (int)(target.Height / Main.UIScale);
 			}
 
-			color.G = 190;
+			color.R = 10;
+			color.G = 100;
 			color.B = 255;
 			Vector2 offset = Vector2.UnitX * timer * 0.2f;
 			//offset.X += 0.05f * Main.screenPosition.X % target.Width;
 			//offset.Y += 0.05f * Main.screenPosition.Y % target.Height;
 			var source = new Rectangle((int)offset.X, (int)offset.Y, tex2.Width, tex2.Height);
-			sb.Draw(tex2, target, source, color * 0.05f);
+			sb.Draw(tex2, target, source, color * 0.12f);
+			sb.Draw(tex, target, source, new Color(0.03f, 0.04f, 0.06f, 0) * 0.8f);
 
 			color.R = 150;
 			color.G = 10;
-			color.B = 255;
+			color.B = 220;
 			color.A = 0;
 			offset = Vector2.UnitX * timer * 0.3f;
 			//offset.X += 0.1f * Main.screenPosition.X % target.Width;
 			//offset.Y += 0.1f * Main.screenPosition.Y % target.Height;
-			source = new Rectangle((int)offset.X, (int)offset.Y, tex2.Width, tex2.Height);
-			sb.Draw(tex2, target, source, color * 0.05f);
+			source = new Rectangle((int)offset.X, (int)offset.Y, tex2.Width / 3, tex2.Height / 3);
+			sb.Draw(tex, target, source, color * 0.1f);
 
 			color.R = 10;
-			color.G = 255;
+			color.G = 155;
 			color.B = 255;
 			color.A = 0;
 			offset = Vector2.UnitX * timer * 0.4f;
 			//offset.X += 0.15f * Main.screenPosition.X % target.Width;
 			//offset.Y += 0.15f * Main.screenPosition.Y % target.Height;
-			source = new Rectangle((int)offset.X, (int)offset.Y, tex2.Width, tex2.Height);
-			sb.Draw(tex2, target, source, color * 0.05f);
+			source = new Rectangle((int)offset.X, (int)offset.Y, tex2.Width / 2, tex2.Height / 2);
+			sb.Draw(tex, target, source, color * 0.1f);
 
 			Effect riverBodyShader = ShaderLoader.GetShader("RiverBody").Value;
 
