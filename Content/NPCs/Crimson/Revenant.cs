@@ -210,7 +210,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				{
 					Player target = Main.player[NPC.target];
 
-					if (Math.Sign(target.Center.X - NPC.Center.X) == NPC.direction)
+					if (Math.Sign(target.Center.X - NPC.Center.X) == NPC.direction && AttackTimer < windupTime / 2)
 						NPC.velocity.X += NPC.direction * 0.05f;
 					else
 						NPC.velocity.X *= 0.92f;
@@ -302,8 +302,8 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 			Player target = Main.player[NPC.target];
 
-			if (Vector2.Distance(NPC.Center, target.Center) < 64 && AttackTimer < 60)
-				NPC.velocity.X *= 0.92f;
+			if (Vector2.Distance(NPC.Center, target.Center) < 96 && AttackTimer < windupTime)
+				NPC.velocity.X *= 0.9f;
 
 			if (AttackTimer <= windupTime)
 			{
@@ -370,7 +370,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 					// Collision
 					foreach (Player player in Main.ActivePlayers)
 					{
-						if (CollisionHelper.CheckLinearCollision(NPC.Center, splinePoint, player.Hitbox, out _))
+						if (CollisionHelper.CheckLinearCollision(NPC.Center, splinePoint + NPC.Center.DirectionTo(splinePoint) * 8, player.Hitbox, out _))
 							player.Hurt(PlayerDeathReason.ByNPC(NPC.whoAmI), NPC.damage, 0);
 					}
 				}
