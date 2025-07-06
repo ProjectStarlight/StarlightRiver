@@ -178,8 +178,8 @@ namespace StarlightRiver.Content.NPCs.Crimson
 					if (!Flipping)
 						NPC.velocity.X += NPC.direction * 0.05f;
 
-					if (Math.Abs(NPC.velocity.X) > 2)
-						NPC.velocity.X = NPC.velocity.X > 0 ? 2 : -2;
+					if (Math.Abs(NPC.velocity.X) > 4)
+						NPC.velocity.X = NPC.velocity.X > 0 ? 4 : -4;
 
 					int targetDir = target.Center.X > NPC.Center.X ? 1 : -1;
 					HandleFlip(targetDir);
@@ -198,11 +198,13 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				{
 					Player target = Main.player[NPC.target];
 
-					if (!Flipping)
+					if (Math.Sign(target.Center.X - NPC.Center.X) == NPC.direction)
 						NPC.velocity.X += NPC.direction * 0.05f;
+					else
+						NPC.velocity.X *= 0.92f;
 
-					if (Math.Abs(NPC.velocity.X) > 2)
-						NPC.velocity.X = NPC.velocity.X > 0 ? 2 : -2;
+					if (Math.Abs(NPC.velocity.X) > 3f)
+						NPC.velocity.X = NPC.velocity.X > 0 ? 3f : -3f;
 				}
 
 				Attack();
