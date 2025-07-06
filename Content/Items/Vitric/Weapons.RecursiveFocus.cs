@@ -601,7 +601,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				if (effect != null)
 				{
 					Main.spriteBatch.End();
-					Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+					Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
 					effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.075f);
 					effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.0075f);
@@ -664,7 +664,7 @@ namespace StarlightRiver.Content.Items.Vitric
 					Main.spriteBatch.Draw(bloomTex, targetNPC.Center - Main.screenPosition, null, Color.White, 0f, bloomTex.Size() / 2f, 0.1f * scale, 0f, 0f);
 
 					Main.spriteBatch.End();
-					Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+					Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 					color = new Color(255, 165, 115, 0);
 					if (pulseTimer > 0)
@@ -833,7 +833,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				spriteBatch.End();
 
 				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-				Matrix view = Main.GameViewMatrix.ZoomMatrix;
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
 				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 				effect.Parameters["time"].SetValue(lifetime * -0.02f);
@@ -856,7 +856,7 @@ namespace StarlightRiver.Content.Items.Vitric
 					trail4?.Render(effect);
 				}
 
-				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 

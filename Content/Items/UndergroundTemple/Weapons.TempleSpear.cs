@@ -433,7 +433,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 				trail?.Render(effect);
 				trail2?.Render(effect);
 
-				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 

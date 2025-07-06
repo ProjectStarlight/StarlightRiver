@@ -42,7 +42,11 @@ namespace StarlightRiver.Content.Pickups
 		{
 			if (timer == 1)
 			{
+				if (StarlightRiver.Instance.AbilityKeys.Get<HintAbility>().GetAssignedKeys().Count <= 0)
+					KeybindHelper.OpenKeybindsWithHelp();
+
 				TutorialManager.ActivateTutorial("Starsight");
+
 				SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Pickups/get")); //start the SFX
 				Filters.Scene.Deactivate("Shockwave");
 			}

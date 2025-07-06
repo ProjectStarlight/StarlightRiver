@@ -383,7 +383,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			if (effect != null)
 			{
 				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				Matrix view = Matrix.Identity;
 				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);

@@ -1,6 +1,8 @@
 ﻿using ReLogic.Graphics;
+using StarlightRiver.Content.Abilities.Hint;
 using System;
 using System.Text.RegularExpressions;
+using Terraria.GameInput;
 using Terraria.UI.Chat;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -76,6 +78,19 @@ namespace StarlightRiver.Helpers
 			sb.Draw(tex, new Rectangle(target.X + target.Width - cornerSize, target.Y, cornerSize, cornerSize), sourceCorner1, color, 0, Vector2.Zero, 0, 0);
 			sb.Draw(tex, new Rectangle(target.X + target.Width - cornerSize, target.Y + target.Height - cornerSize, cornerSize, cornerSize), sourceCorner2, color, 0, Vector2.Zero, 0, 0);
 			sb.Draw(tex, new Rectangle(target.X, target.Y + target.Height - cornerSize, cornerSize, cornerSize), sourceCorner3, color, 0, Vector2.Zero, 0, 0);
+		}
+
+		public static string GetVanillaInputString(string key)
+		{
+			System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>> status = PlayerInput.CurrentProfile.InputModes[InputMode.Keyboard].KeyStatus;
+
+			if (status.ContainsKey(key))
+			{
+				System.Collections.Generic.List<string> binds = status[key];
+				return binds.Count > 0 ? binds[0] : "{Unbound!}";
+			}
+
+			return "[Unknown!]";
 		}
 
 		public static int GetCharCount(TextSnippet[] snippets)

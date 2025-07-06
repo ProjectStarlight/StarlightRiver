@@ -78,7 +78,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.SoundPuzzle
 
 			Vector2 pos = StarlightWorld.VitricBossArena.BottomLeft() * 16 + new Vector2(-762, 1424) - Main.screenPosition;
 
-			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, default, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Main.spriteBatch.Draw(one, pos, Color.White * 0.25f);
 			pos.X += 24 * 16;

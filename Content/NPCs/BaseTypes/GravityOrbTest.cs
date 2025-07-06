@@ -1,5 +1,6 @@
 ﻿using System;
 using Terraria.DataStructures;
+using Terraria.GameContent.Bestiary;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.BaseTypes
@@ -22,6 +23,11 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 			NPC.width = 200;
 			NPC.height = 200;
 			NPC.knockBackResist = 0;
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
 		}
 
 		public override void AI()

@@ -68,7 +68,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 				fadeOut = allTimer / 60f;
 
 			spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
 			Effect effect = ShaderLoader.GetShader("RainbowAura").Value;
 

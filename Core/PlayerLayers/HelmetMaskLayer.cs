@@ -13,7 +13,7 @@ namespace StarlightRiver.Core.PlayerLayers
 			return new AfterParent(PlayerDrawLayers.Head);
 		}
 
-		protected override void Draw(ref PlayerDrawSet drawInfo)
+		public override void Draw(ref PlayerDrawSet drawInfo)
 		{
 			if (drawInfo.drawPlayer.armor[HEADVANITYSLOT].IsAir && drawInfo.drawPlayer.armor[HEADARMORSLOT].ModItem is IArmorLayerDrawable)
 				(drawInfo.drawPlayer.armor[HEADARMORSLOT].ModItem as IArmorLayerDrawable).DrawArmorLayer(drawInfo);

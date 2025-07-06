@@ -4,6 +4,7 @@ using StarlightRiver.Content.Items.Infernal;
 using StarlightRiver.Core.Loaders;
 using System;
 using System.Collections.Generic;
+using Terraria.GameContent.Bestiary;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -31,6 +32,11 @@ namespace StarlightRiver.Content.NPCs.Actors
 			NPC.aiStyle = -1;
 			NPC.noGravity = true;
 			NPC.hide = true;
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
 		}
 
 		public override void AI()
@@ -118,12 +124,12 @@ namespace StarlightRiver.Content.NPCs.Actors
 			effect.Parameters["mapTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, default, default, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			spriteBatch.Draw(tex, target, Color.White * opacity);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, default, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		private float Swoop(float input)
@@ -176,12 +182,12 @@ namespace StarlightRiver.Content.NPCs.Actors
 			effect.Parameters["mapTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise3").Value);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, default, default, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frame, Color.White * opacity, 0, new Vector2(28, 114), opacity, 0, 0);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, default, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			return false;
 		}

@@ -105,15 +105,17 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				backgroundShader.Parameters["noise_t"].SetValue(Assets.Noise.ShaderNoiseLooping.Value);
 				backgroundShader.Parameters["light_t"].SetValue(LightingBuffer.screenLightingTarget.RenderTarget);
 
+				backgroundShader.Parameters["transform"].SetValue(Main.GameViewMatrix.EffectMatrix);
+
 				LightingBuffer.bufferNeedsPopulated = true;
 
-				spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointWrap, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 				var fade = Assets.Masks.GlowLarge.Value;
 				spriteBatch.Draw(fade, home - Main.screenPosition, null, Color.Black * 0.3f * ArenaOpacity, 0, fade.Size() / 2f, 2000f / fade.Width, 0, 0);
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default, backgroundShader, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, SamplerState.PointWrap, default, Main.Rasterizer, backgroundShader, Main.GameViewMatrix.TransformationMatrix);
 
 				spriteBatch.Draw(tex, home - Main.screenPosition, null, Color.White, 0, tex.Size() / 2f, 1, 0, 0);
 
@@ -177,7 +179,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, default, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			ManageArenaTrail();
 			DrawArenaEdgeTrail();
@@ -309,7 +311,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			spriteBatch.Draw(glow, NPC.Center - screenPos, null, Color.Black * 0.5f, NPC.rotation, glow.Size() / 2f, NPC.scale * 2.8f, 0, 0);
 
 			// need a scissor enabled rasterizer to be able to draw in bestiary
-			var rasterizer = new RasterizerState() { ScissorTestEnable = true };
+			var rasterizer = new RasterizerState() { ScissorTestEnable = true, CullMode = CullMode.None };
 
 			float scaleCalc = 1f + 0.2f * Heartbeat(Main.GameUpdateCount * 0.02f);
 
@@ -330,7 +332,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				bodyShader.Parameters["mask_t"].SetValue(shellFrame != 1 ? Assets.MagicPixel.Value : Assets.Bosses.TheThinkerBoss.CrackMask.Value);
 
 				spriteBatch.End();
-				spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointWrap, default, rasterizer, bodyShader, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointWrap, default, rasterizer, bodyShader, Main.GameViewMatrix.ZoomMatrix);
 
 				Texture2D tex = Assets.Bosses.TheThinkerBoss.Heart.Value;
 				spriteBatch.Draw(tex, NPC.Center - screenPos, null, Color.White, NPC.rotation, tex.Size() / 2f, scaleCalc * NPC.scale, 0, 0);
@@ -342,7 +344,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				}
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, default, default, Main.Rasterizer, default);
 			}
 		}
 
@@ -372,10 +374,10 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				spriteBatch.Draw(glow, pos, null, Color.Black * 0.5f * scale, NPC.rotation, glow.Size() / 2f, NPC.scale * 5.5f, 0, 0);
 
 				// need a scissor enabled rasterizer to be able to draw in bestiary
-				var rasterizer = new RasterizerState() { ScissorTestEnable = true };
+				var rasterizer = new RasterizerState() { ScissorTestEnable = true, CullMode = CullMode.None };
 
 				spriteBatch.End();
-				spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointWrap, default, rasterizer, petalShader, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointWrap, default, rasterizer, petalShader, Main.GameViewMatrix.ZoomMatrix);
 
 				Texture2D bigPetal = Assets.Bosses.TheThinkerBoss.PetalBig.Value;
 				Texture2D smallPetal = Assets.Bosses.TheThinkerBoss.PetalSmall.Value;
@@ -423,7 +425,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				}
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, default, default, rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, default, default, rasterizer, default, Main.GameViewMatrix.ZoomMatrix);
 
 				spriteBatch.Draw(glow, pos, null, Color.Black * (0.5f + 0.4f * scale), NPC.rotation, glow.Size() / 2f, NPC.scale * 2.8f, 0, 0);
 
@@ -440,13 +442,13 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				bodyShader.Parameters["mask_t"].SetValue(Assets.MagicPixel.Value);
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, SamplerState.PointWrap, default, rasterizer, bodyShader, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, SamplerState.PointWrap, default, rasterizer, bodyShader, Main.GameViewMatrix.ZoomMatrix);
 
 				Texture2D coreTex = Assets.Bosses.TheThinkerBoss.FlowerCore.Value;
 				spriteBatch.Draw(coreTex, pos, null, Color.White, NPC.rotation, coreTex.Size() / 2f, NPC.scale, 0, 0);
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 
@@ -478,7 +480,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				var bigOrigin = new Vector2(0, bigPetal.Height / 2f);
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default, petalShader, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, SamplerState.PointWrap, default, RasterizerState.CullNone, petalShader, Main.GameViewMatrix.ZoomMatrix);
 
 				for (int k = 0; k < 5; k++)
 				{
@@ -490,7 +492,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				}
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.ZoomMatrix);
 			}
 		}
 
@@ -574,6 +576,9 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				NPC.scale = 0.6f + Eases.BezierEase((time - 500) / 50f) * 0.4f;
 
 			DrawHeartToFlower(sb, timeToPass, screenPos);
+
+			sb.End();
+			sb.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
 		}
 	}
 }

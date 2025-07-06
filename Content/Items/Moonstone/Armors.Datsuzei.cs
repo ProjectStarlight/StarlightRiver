@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 
@@ -86,8 +87,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 				var hideTarget = new Rectangle(20, 20, 446, 52);
 
-				if (!Main.screenTarget.IsDisposed)
-					Main.spriteBatch.Draw(Main.screenTarget, hideTarget, hideTarget, Color.White * activationTimer);
+				FinalCaptureSystem.FinalNeedsCaptured = true;
+				Main.spriteBatch.Draw(FinalCaptureSystem.finalScreen, hideTarget, hideTarget, Color.White * activationTimer);
 
 				Texture2D backTex = Assets.Items.Moonstone.DatsuzeiHotbar.Value;
 				var target = new Rectangle(111, 20, (int)(backTex.Width * activationTimer), backTex.Height);

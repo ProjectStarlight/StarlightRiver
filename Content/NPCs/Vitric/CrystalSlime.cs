@@ -58,6 +58,9 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override Color? GetAlpha(Color drawColor)
 		{
+			if (NPC.IsABestiaryIconDummy)
+				return Color.White * 0.75f;
+
 			return Lighting.GetColor((int)NPC.position.X / 16, (int)NPC.position.Y / 16) * 0.75f;
 		}
 
@@ -160,14 +163,16 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			if (Shield == 1)
+			if (Shield == 1 || NPC.IsABestiaryIconDummy)
 			{
 				Texture2D tex = Assets.NPCs.Vitric.Crystal.Value;
 				Texture2D texGlow = Assets.NPCs.Vitric.CrystalGlow.Value;
 				Color color = CommonVisualEffects.IndicatorColor;
 
 				spriteBatch.Draw(tex, NPC.Center - screenPos, null, drawColor, NPC.rotation, tex.Size() / 2f, NPC.scale, 0, 0);
-				spriteBatch.Draw(texGlow, NPC.Center - screenPos, null, color, NPC.rotation, texGlow.Size() / 2f, NPC.scale, 0, 0);
+
+				if (!NPC.IsABestiaryIconDummy)
+					spriteBatch.Draw(texGlow, NPC.Center - screenPos, null, color, NPC.rotation, texGlow.Size() / 2f, NPC.scale, 0, 0);
 			}
 		}
 	}

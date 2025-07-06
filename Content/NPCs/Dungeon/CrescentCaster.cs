@@ -229,7 +229,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
 		{
-			return SpawnCondition.Dungeon.Chance * 0.17f;
+			return NPC.downedBoss3 ? SpawnCondition.Dungeon.Chance * 0.17f : 0;
 		}
 
 		public override void ModifyNPCLoot(NPCLoot npcLoot)

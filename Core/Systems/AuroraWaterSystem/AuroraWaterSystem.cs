@@ -82,7 +82,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 			if (asset.IsLoaded)
 			{
 				sb.End();
-				sb.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				sb.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 				Texture2D tex = asset.Value;
 
@@ -119,35 +119,30 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 			if (asset.IsLoaded)
 			{
 				sb.End();
-				sb.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				sb.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default);
 
 				Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
 				Texture2D tex = asset.Value;
 
-				for (int i = -tex.Width; i <= Main.screenWidth + tex.Width; i += tex.Width)
-				{
-					for (int j = -tex.Height; j <= Main.screenHeight + tex.Height; j += tex.Height)
-					{
-						sb.Draw(tex, new Vector2(i, j),
-							new Rectangle(
-								(int)(Main.screenPosition.X % tex.Width - Main.GameUpdateCount * 0.55f),
-								(int)(Main.screenPosition.Y % tex.Height + Main.GameUpdateCount * 0.3f),
-								tex.Width,
-								tex.Height
-								),
-							Color.White * 0.7f, default, default, 1, 0, 0);
-
-						sb.Draw(tex, new Vector2(i, j),
-							new Rectangle(
-								(int)(Main.screenPosition.X % tex.Width + Main.GameUpdateCount * 0.75f),
-								(int)(Main.screenPosition.Y % tex.Height - Main.GameUpdateCount * 0.4f),
-								tex.Width,
-								tex.Height
-								),
-							Color.White);
-					}
-				}
+				Vector2 layer1Pivot = Main.GameUpdateCount * new Vector2(-0.55f, 0.3f);
+				Vector2 layer2Pivot = Main.GameUpdateCount * new Vector2(0.75f, -0.4f);
+				sb.Draw(tex,
+					Vector2.Zero,
+					new Rectangle(
+						(int)(Main.screenPosition.X + layer1Pivot.X) % tex.Width,
+						(int)(Main.screenPosition.Y + layer1Pivot.Y) % tex.Height,
+						Main.screenWidth,
+						Main.screenHeight),
+					Color.White * 0.7f);
+				sb.Draw(tex,
+					Vector2.Zero,
+					new Rectangle(
+						(int)(Main.screenPosition.X + layer2Pivot.X) % tex.Width,
+						(int)(Main.screenPosition.Y + layer2Pivot.Y) % tex.Height,
+						Main.screenWidth,
+						Main.screenHeight),
+					Color.White);
 
 				sb.End();
 				sb.Begin();
@@ -355,7 +350,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 			shader.Parameters["sampleTexture2"].SetValue(AuroraWaterSystem.auroraBackTarget.RenderTarget);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, shader, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, shader, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D target = MetaballSystem.MetaballSystem.actors.FirstOrDefault(n => n is AuroraWaterTileMetaballs).Target.RenderTarget;
 			Main.spriteBatch.Draw(target, Vector2.Zero, null, Color.White, 0, Vector2.Zero, 2, 0, 0);

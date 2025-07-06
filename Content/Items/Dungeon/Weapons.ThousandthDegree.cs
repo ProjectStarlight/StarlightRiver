@@ -740,7 +740,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 				trail2?.Render(effect);
 
 				trail?.Render(effect);
-				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 

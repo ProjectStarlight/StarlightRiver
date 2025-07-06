@@ -1,7 +1,10 @@
 ﻿using NetEasy;
+using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Core.Loaders.UILoading;
+using StarlightRiver.Core.Systems.LightingSystem;
 using System;
+using Terraria.Graphics.Effects;
 using Terraria.ID;
 
 namespace StarlightRiver.Core.Systems.CutsceneSystem
@@ -109,7 +112,8 @@ namespace StarlightRiver.Core.Systems.CutsceneSystem
 
 			if (cutscenePlayer.InCutscene || cutscenePlayer.fadeTimer > 0)
 			{
-				spriteBatch.Draw(ScreenspaceShaderSystem.finalScreenTexture, Vector2.Zero, Color.White * (cutscenePlayer.fadeTimer / 60f));
+				FinalCaptureSystem.FinalNeedsCaptured = true;
+				spriteBatch.Draw(FinalCaptureSystem.finalBuffer.RenderTarget, Vector2.Zero, Color.White * (cutscenePlayer.fadeTimer / 60f));
 
 				// Hack to redraw the rich text box, this will likely be the only UI we want here, right?
 				if (UILoader.GetUIState<DialogUI>().Visible)

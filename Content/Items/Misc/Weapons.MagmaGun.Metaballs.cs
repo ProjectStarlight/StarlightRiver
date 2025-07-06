@@ -55,7 +55,7 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointClamp, DepthStencilState.Default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			activeTime--;
 		}

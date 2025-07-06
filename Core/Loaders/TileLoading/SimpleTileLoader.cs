@@ -19,6 +19,12 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 			Mod.AddContent(new LoaderTile(internalName, data, data.dropType == -1 ? Mod.Find<ModItem>(internalName + "Item").Type : data.dropType, AssetRoot + internalName));
 		}
 
+		public void LoadGemsparkCompositeTile(string internalName, string displayName, int compositeX, int compositeY, TileLoadData data)
+		{
+			Mod.AddContent(new LoaderTileItem(internalName + "Item", displayName, "", internalName, 0, AssetRoot + internalName + "Item", true));
+			Mod.AddContent(new LoaderGemsparkCompositeTile(internalName, data, data.dropType == -1 ? Mod.Find<ModItem>(internalName + "Item").Type : data.dropType, AssetRoot + internalName, compositeX, compositeY));
+		}
+
 		public void LoadFurniture(string internalName, string displayName, FurnitureLoadData data)
 		{
 			Mod.AddContent(new LoaderTileItem(internalName + "Item", displayName, "", internalName, 0, AssetRoot + internalName + "Item", true));
@@ -101,7 +107,7 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 	public class LoaderTileItem : QuickTileItem
 	{
 		public LoaderTileItem() { }
-		protected override bool CloneNewInstances => true;
+		public override bool CloneNewInstances => true;
 		public LoaderTileItem(string internalName, string name, string tooltip, string placetype, int rare = ItemRarityID.White, string texturePath = null, bool pathHasName = false, int ItemValue = 0)
 			: base(internalName, name, tooltip, placetype, rare, texturePath, pathHasName, ItemValue) { }
 	}
@@ -144,6 +150,30 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 		public override bool CanExplode(int i, int j)
 		{
 			return MinPick < 100;
+		}
+	}
+
+	[Autoload(false)]
+	public class LoaderGemsparkCompositeTile : LoaderTile
+	{
+		public int compositeX;
+		public int compositeY;
+
+		public LoaderGemsparkCompositeTile(string internalName, TileLoadData data, int dropID, string texture, int compositeX, int compositeY) : base(internalName, data, dropID, texture)
+		{
+			this.compositeX = compositeX;
+			this.compositeY = compositeY;
+		}
+
+		public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
+		{
+			Framing.SelfFrame8Way(i, j, Main.tile[i, j], resetFrame);
+
+			Tile tile = Main.tile[i, j];
+			tile.TileFrameX += (short)(i % compositeX * 324);
+			tile.TileFrameY += (short)(j % compositeY * 90);
+
+			return false;
 		}
 	}
 

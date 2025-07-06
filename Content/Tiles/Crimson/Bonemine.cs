@@ -15,25 +15,9 @@ namespace StarlightRiver.Content.Tiles.Crimson
 		public BonemineItem() : base("Bone mine", "Doyoyouuyuuhuyhh *BRRPT* *Anyuerism*", "Bonemine", 0, "StarlightRiver/Assets/Tiles/Crimson/") { }
 	}
 
-	internal class Bonemine : ModTile
+	internal class Bonemine : ModTile, ICustomGraymatterDrawOver
 	{
 		public override string Texture => "StarlightRiver/Assets/Tiles/Crimson/" + Name;
-
-		public override void Load()
-		{
-			GraymatterBiome.onDrawOverPerTile += DrawRealVersion;
-		}
-
-		private void DrawRealVersion(SpriteBatch spriteBatch, int x, int y)
-		{
-			Tile tile = Framing.GetTileSafely(x, y);
-
-			if (tile.TileType == Type)
-			{
-				Texture2D tex = Assets.Symbol.Value;
-				spriteBatch.Draw(tex, new Vector2(x, y) * 16 + Vector2.One * 8 - Main.screenPosition, null, Color.Red * 0.8f, 0, tex.Size() / 2f, 1, 0, 0);
-			}
-		}
 
 		public override void SetStaticDefaults()
 		{
@@ -53,6 +37,7 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 			DustType = Terraria.ID.DustID.Blood;
 			RegisterItemDrop(ModContent.ItemType<BonemineItem>());
+			GraymatterBiome.grayOverTypes.Add(Type);
 
 			AddMapEntry(new Color(165, 180, 191));
 		}
@@ -61,6 +46,12 @@ namespace StarlightRiver.Content.Tiles.Crimson
 		{
 			Vector2 origin = new Vector2(i, j) * 16 + Vector2.One * 8;
 			Projectile.NewProjectile(null, origin, Vector2.Zero, ModContent.ProjectileType<FireRingHostile>(), 20, 1, Main.myPlayer);
+		}
+
+		public void DrawOverlay(SpriteBatch spriteBatch, int x, int y)
+		{
+			Texture2D tex = Assets.Symbol.Value;
+			spriteBatch.Draw(tex, new Vector2(x, y) * 16 + Vector2.One * 8 - Main.screenPosition, null, Color.Red * 0.8f, 0, tex.Size() / 2f, 1, 0, 0);
 		}
 	}
 }

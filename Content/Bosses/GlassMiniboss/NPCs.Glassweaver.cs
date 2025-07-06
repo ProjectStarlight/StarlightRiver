@@ -9,6 +9,7 @@ using StarlightRiver.Core.Systems.BossRushSystem;
 using System;
 using System.IO;
 using System.Linq;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -107,6 +108,15 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			NPC.GetGlobalNPC<BarrierNPC>().maxBarrier = 500;
 			NPC.GetGlobalNPC<BarrierNPC>().barrier = 500;
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
+			{
+				Bestiary.SLRSpawnConditions.VitricDesert,
+				new FlavorTextBestiaryInfoElement("The glassweaver is a strange creature from an ancient race, upholding a nearly time-lost tradition of shaping mystical vitric glass.")
+			});
 		}
 
 		private SpriteEffects GetSpriteEffects()
@@ -322,6 +332,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					if (Math.Abs(NPC.Center.X - arenaPos.X) < 5)
 					{
 						NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<GlassweaverFriendly>(), 0, 0, 3);
+						Main.BestiaryTracker.Kills.RegisterKill(NPC);
 						NPC.active = false;
 
 						StarlightWorld.Flag(WorldFlags.GlassweaverDowned);
@@ -391,8 +402,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			if (NPC.IsABestiaryIconDummy)
 			{
-				Rectangle bestiaryFrame = weaver.Frame(1, 6, 0, 4);
-				spriteBatch.Draw(weaver.Value, NPC.Center - screenPos, bestiaryFrame, Color.White, 0, bestiaryFrame.Size() * 0.5f, 1f, 0, 0);
+				Rectangle bestiaryFrame = weaver.Frame(3, 6, 0, 0);
+				spriteBatch.Draw(weaver.Value, NPC.Center + new Vector2(10, -20) - screenPos, bestiaryFrame, Color.White, 0, bestiaryFrame.Size() * 0.5f, 1f, 0, 0);
 				return false;
 			}
 

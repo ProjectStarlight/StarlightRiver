@@ -34,11 +34,11 @@ namespace StarlightRiver.Core.Systems.FoliageLayerSystem
 				DrawBlacks(Main.spriteBatch, underTilesData);
 				Main.spriteBatch.End();
 
-				Main.spriteBatch.Begin(default, CeilBlend, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Begin(default, CeilBlend, default, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 				DrawReals(Main.spriteBatch, underTilesData);
 				Main.spriteBatch.End();
 
-				Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Begin(default, default, default, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 				underTilesData.Clear();
 			}
@@ -50,11 +50,11 @@ namespace StarlightRiver.Core.Systems.FoliageLayerSystem
 		{
 			if (overTilesData.Count > 0)
 			{
-				Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Begin(default, default, default, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 				DrawBlacks(Main.spriteBatch, overTilesData);
 				Main.spriteBatch.End();
 
-				Main.spriteBatch.Begin(default, CeilBlend, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Begin(default, CeilBlend, default, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 				DrawReals(Main.spriteBatch, overTilesData);
 				Main.spriteBatch.End();
 

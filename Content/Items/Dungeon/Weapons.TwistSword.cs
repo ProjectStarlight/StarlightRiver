@@ -184,7 +184,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			return new AfterParent(PlayerDrawLayers.IceBarrier);
 		}
 
-		protected override void Draw(ref PlayerDrawSet drawInfo)
+		public override void Draw(ref PlayerDrawSet drawInfo)
 		{
 
 			Player drawPlayer = drawInfo.drawPlayer;

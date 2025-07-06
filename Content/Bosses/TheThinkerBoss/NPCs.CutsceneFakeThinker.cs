@@ -273,13 +273,13 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				bodyShader.Parameters["mask_t"].SetValue(Assets.MagicPixel.Value);
 
 				sb.End();
-				sb.Begin(default, default, SamplerState.PointWrap, default, default, bodyShader, Main.GameViewMatrix.TransformationMatrix);
+				sb.Begin(default, default, SamplerState.PointWrap, default, Main.Rasterizer, bodyShader, Main.GameViewMatrix.TransformationMatrix);
 
 				Texture2D tex = Assets.Bosses.TheThinkerBoss.Heart.Value;
 				sb.Draw(tex, thinker.NPC.Center - Main.screenPosition, null, Color.White, thinker.NPC.rotation, tex.Size() / 2f, thinker.NPC.scale, 0, 0);
 
 				sb.End();
-				sb.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				sb.Begin(default, default, default, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 	}

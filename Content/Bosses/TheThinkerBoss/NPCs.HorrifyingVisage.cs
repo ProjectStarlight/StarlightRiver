@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Drawing.Text;
 using System.Linq;
 using Terraria.Audio;
+using Terraria.GameContent.Bestiary;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
@@ -46,6 +47,11 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			NPC.knockBackResist = 0f;
 
 			chain = new VerletChain(33, true, NPC.Center, 4);
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
 		}
 
 		public override void AI()

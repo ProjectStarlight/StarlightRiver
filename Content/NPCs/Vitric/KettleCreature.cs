@@ -47,11 +47,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
 		{
-			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
-			{
-				Bestiary.SLRSpawnConditions.VitricDesert,
-				new FlavorTextBestiaryInfoElement("A construct built by an unknown people, seemingly harvesting crystal and processing it internally. It can be assumed that it has run out of storage after an extremely long amount of time unmaintained, so it uses its excess molten crystal as an automatic defense mechanism.")
-			});
+			database.Entries.Remove(bestiaryEntry);
 		}
 
 		public override void AI()

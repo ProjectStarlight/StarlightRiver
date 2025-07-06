@@ -112,7 +112,6 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 		public override void Load()
 		{
-			GraymatterBiome.onDrawHallucinationMap += DrawGraymatterLink;
 			GraymatterBiome.onDrawOverHallucinationMap += DrawOverGraymatter;
 
 			Stream stream = StarlightRiver.Instance.GetFileStream("Assets/Bosses/TheThinkerBoss/DeadBrainRig.json");
@@ -190,8 +189,8 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				attachedChain.endPoint = thinker.Center + new Vector2(0, 40);
 				attachedChain.useEndPoint = true;
 				attachedChain.drag = 1.1f;
-				attachedChain.forceGravity = Vector2.UnitY * 0.1f;
-				attachedChain.constraintRepetitions = 5;
+				attachedChain.forceGravity = Vector2.UnitY * 0.15f;
+				attachedChain.constraintRepetitions = 15;
 				attachedChain.UpdateChain();
 			}
 
@@ -854,21 +853,13 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					effect.Parameters["color"].SetValue(Vector3.Lerp(Vector3.One, new Vector3(1, 0.5f, 0.5f), contactDamageOpacity));
 
 					spriteBatch.End();
-					spriteBatch.Begin(default, BlendState.Additive, default, default, default, effect, Main.Transform);
+					spriteBatch.Begin(default, BlendState.Additive, default, default, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
 
 					spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2f, 0.58f, SpriteEffects.FlipVertically, 0);
 
 					spriteBatch.End();
-					spriteBatch.Begin(default, default, default, default, default, default, Main.Transform);
+					spriteBatch.Begin(default, default, default, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 				}
-			}
-		}
-
-		private void DrawGraymatterLink(SpriteBatch batch)
-		{
-			if (Phase == Phases.SecondPhase && attachedChain != null)
-			{
-				DrawGraymatterChainTrails();
 			}
 		}
 
@@ -1003,28 +994,6 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 				if (!isOverlay)
 					DrawFleshyTrail(chainSplitThinkerAttachedTrail, 6.6f);
-			}
-		}
-
-		/// <summary>
-		/// Renders all of the graymatter trails
-		/// </summary>
-		public void DrawGraymatterChainTrails()
-		{
-			Effect effect = ShaderLoader.GetShader("LightningTrail").Value;
-
-			if (effect != null)
-			{
-				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-				Matrix view = Main.GameViewMatrix.TransformationMatrix;
-				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
-
-				effect.Parameters["time"]?.SetValue(Main.GameUpdateCount * 0.025f);
-				effect.Parameters["repeats"]?.SetValue(2f);
-				effect.Parameters["transformMatrix"]?.SetValue(world * view * projection);
-
-				effect.Parameters["sampleTexture"].SetValue(Assets.WavyTrail.Value);
-				attachedChainTrail?.Render(effect);
 			}
 		}
 

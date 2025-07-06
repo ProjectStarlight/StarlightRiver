@@ -141,8 +141,8 @@ namespace StarlightRiver.Content.NPCs.Underground
 			Texture2D texGlow = Assets.Masks.GlowAlpha.Value;
 			var frame = new Rectangle(0, (Timer % 20) < 10 ? 14 : 0, 14, 14);
 
-			spriteBatch.Draw(texGlow, NPC.Center - Main.screenPosition, null, new Color(0.1f, 0.1f, 0.1f, 0f) * 0.5f, NPC.rotation, texGlow.Size() / 2f, NPC.scale, 0, 0);
-			spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, frame, Color.Gray * 0.8f, NPC.rotation, Vector2.One * 7, NPC.scale, 0, 0);
+			spriteBatch.Draw(texGlow, NPC.Center - screenPos, null, new Color(0.1f, 0.1f, 0.1f, 0f) * 0.5f, NPC.rotation, texGlow.Size() / 2f, NPC.scale, 0, 0);
+			spriteBatch.Draw(tex, NPC.Center - screenPos, frame, Color.Gray * 0.8f, NPC.rotation, Vector2.One * 7, NPC.scale, 0, 0);
 
 			return false;
 		}
