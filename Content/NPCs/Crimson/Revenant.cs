@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
-using Terraria;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.NPCs.Crimson
 {
@@ -18,6 +18,9 @@ namespace StarlightRiver.Content.NPCs.Crimson
 		public const int swordSegment0 = 5;
 		public const int swordSegment1 = 6;
 		public const int swordSegment2 = 7;
+
+		public const int windupTime = 50;
+		public const int swingTime = 40;
 
 		private static StaticRig rig;
 
@@ -34,11 +37,16 @@ namespace StarlightRiver.Content.NPCs.Crimson
 		private float yTarget;
 		private int flipTimer;
 
+		private float maxSpeed;
+
 		private readonly Vector2[] stringPoints = new Vector2[8];
 		private readonly float[] stringRotations = new float[8];
 
 		public Arm swordArm;
 		public bool useArm;
+
+		private List<Vector2> swingTrailCache;
+		private Trail swingTrail;
 
 		public ref float Timer => ref NPC.ai[0];
 		public ref float State => ref NPC.ai[1];
@@ -46,6 +54,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 		private bool Flipping => flipTimer > 0;
 		private float FlipProg => (maxFlipTime - flipTimer) / (float)maxFlipTime;
+		private int AttackTime => windupTime + swingTime;
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -63,6 +72,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			NPC.height = 128;
 			NPC.aiStyle = -1;
 			NPC.knockBackResist = 0.2f;
+			NPC.damage = 30;
 			NPC.noGravity = true;
 
 			// We dont really care about the offsets here at all since this is just relative distances for segment
@@ -97,15 +107,15 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			swordArm.start = stringPoints[bodySegment] + Vector2.UnitX * -10 * NPC.direction;
 
 			float prog = AttackTimer < 20 ? AttackTimer / 20f : 1f;
-			if (AttackTimer > 100)
-				prog = 1f - (AttackTimer - 100) / 20f;
+			if (AttackTimer > AttackTime - 20)
+				prog = 1f - (AttackTimer - (AttackTime - 20)) / 20f;
 
 			swordArm.Update();
 			stringPoints[swordSegment0] = Vector2.Lerp(stringPoints[swordSegment0], swordArm.segments[0].Endpoint, prog);
 			stringPoints[swordSegment1] = Vector2.Lerp(stringPoints[swordSegment1], swordArm.segments[1].Endpoint, prog);
 			stringPoints[swordSegment2] = Vector2.Lerp(stringPoints[swordSegment2], swordArm.segments[2].Endpoint, prog);
 
-			var rotAdjust = NPC.direction == 1 ? -1.1f : -2f;
+			float rotAdjust = NPC.direction == 1 ? -1.1f : -2f;
 
 			stringRotations[swordSegment0] = (swordArm.segments[0].rotation + rotAdjust) * prog;
 			stringRotations[swordSegment1] = (swordArm.segments[1].rotation + rotAdjust) * prog;
@@ -139,11 +149,11 @@ namespace StarlightRiver.Content.NPCs.Crimson
 					apos = Vector2.Lerp(apos, flipTarget, Eases.EaseCircularInOut(FlipProg));
 				}
 
-				Vector2 targetPos = NPC.position + apos + offset - Main.screenPosition;
+				Vector2 targetPos = NPC.position + apos + offset;
 				targetPos.Y += 2 * MathF.Sin(Timer * 0.02f * 6.28f + point.Frame * 0.3f);
 
 				Vector2 centerPos = targetPos + new Vector2(21, 27) - origin;
-				stringPoints[rig.Points.IndexOf(point)] = centerPos + Main.screenPosition;
+				stringPoints[rig.Points.IndexOf(point)] = centerPos.RotatedBy(NPC.rotation, NPC.Center);
 			}
 
 			if (useArm)
@@ -171,6 +181,8 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			{
 				NPC.TargetClosest(false);
 
+				maxSpeed = 4;
+
 				if (NPC.HasValidTarget)
 				{
 					Player target = Main.player[NPC.target];
@@ -178,8 +190,8 @@ namespace StarlightRiver.Content.NPCs.Crimson
 					if (!Flipping)
 						NPC.velocity.X += NPC.direction * 0.05f;
 
-					if (Math.Abs(NPC.velocity.X) > 4)
-						NPC.velocity.X = NPC.velocity.X > 0 ? 4 : -4;
+					if (Math.Abs(NPC.velocity.X) > maxSpeed)
+						NPC.velocity.X = NPC.velocity.X > 0 ? maxSpeed : -maxSpeed;
 
 					int targetDir = target.Center.X > NPC.Center.X ? 1 : -1;
 					HandleFlip(targetDir);
@@ -203,12 +215,19 @@ namespace StarlightRiver.Content.NPCs.Crimson
 					else
 						NPC.velocity.X *= 0.92f;
 
-					if (Math.Abs(NPC.velocity.X) > 3f)
-						NPC.velocity.X = NPC.velocity.X > 0 ? 3f : -3f;
+					if (Math.Abs(NPC.velocity.X) > maxSpeed)
+						NPC.velocity.X = NPC.velocity.X > 0 ? maxSpeed : -maxSpeed;
 				}
 
+				maxSpeed = 4;
 				Attack();
 				Lighting.AddLight(NPC.Center, new Vector3(0.5f, 0.3f, 0.3f));
+			}
+
+			if (!Main.dedServ)
+			{
+				ManageCaches();
+				ManageTrail();
 			}
 		}
 
@@ -283,64 +302,157 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 			Player target = Main.player[NPC.target];
 
-			if(Vector2.Distance(NPC.Center, target.Center) < 64)
-					NPC.velocity.X *= 0.92f;
+			if (Vector2.Distance(NPC.Center, target.Center) < 64 && AttackTimer < 60)
+				NPC.velocity.X *= 0.92f;
 
-			if (AttackTimer <= 60)
+			if (AttackTimer <= windupTime)
 			{
 				var spline = new SplineHelper.SplineData(
-					NPC.Center + new Vector2(0, swordArm.MaxLen * 0.8f), 
-					NPC.Center + new Vector2(swordArm.MaxLen * 0.9f * NPC.direction, 0), 
+					NPC.Center + new Vector2(0, swordArm.MaxLen * 0.8f),
+					NPC.Center + new Vector2(swordArm.MaxLen * 0.9f * NPC.direction, 0),
 					NPC.Center + new Vector2(30 * NPC.direction, -swordArm.MaxLen * 0.95f));
-				
-				Vector2 endPoint = SplineHelper.PointOnSpline(Eases.EaseCircularInOut(AttackTimer / 60f), spline);
+
+				Vector2 endPoint = SplineHelper.PointOnSpline(Eases.EaseCircularInOut(AttackTimer / windupTime), spline);
 				swordArm.IKToPoint(endPoint);
 			}
 
-			if (AttackTimer == 60)
+			if (AttackTimer == windupTime)
 			{
 				SoundHelper.PlayPitched("Effects/FancySwoosh", 1f, -0.2f, NPC.Center);
+				NPC.velocity.X += 8 * NPC.direction;
+
+				swingTrailCache.Clear();
+
+				for (int i = 0; i < 20; i++)
+				{
+					swingTrailCache.Add(NPC.Center + new Vector2(30 * NPC.direction, -70 * 0.95f));
+				}
 			}
 
-			if (AttackTimer > 60 && AttackTimer <= 120)
+			if (AttackTimer >= windupTime && AttackTimer < (windupTime + swingTime / 2f))
 			{
-				float prog = Eases.EaseQuinticOut((AttackTimer - 60) / 60f);
+				maxSpeed = 8;
+				NPC.velocity.X *= 0.98f;
+			}
+
+			if (AttackTimer > windupTime && AttackTimer <= (windupTime + swingTime))
+			{
+				float prog = Eases.EaseQuinticOut((AttackTimer - windupTime) / swingTime);
 				prog = prog > 0.5f ? 0.5f - prog / 2f : prog;
-				swordArm.segments[1].length = Vector2.Distance(rig.Points[swordSegment0].Pos, rig.Points[swordSegment1].Pos) + (40 * prog);
-				swordArm.segments[2].length = Vector2.Distance(rig.Points[swordSegment1].Pos, rig.Points[swordSegment2].Pos) + (20 * prog);
+				swordArm.segments[1].length = Vector2.Distance(rig.Points[swordSegment0].Pos, rig.Points[swordSegment1].Pos) + 40 * prog;
+				swordArm.segments[2].length = Vector2.Distance(rig.Points[swordSegment1].Pos, rig.Points[swordSegment2].Pos) + 20 * prog;
+
+				float rot = Eases.EaseQuadInOut((AttackTimer - (windupTime - 20)) / (swingTime + 20));
+				rot = rot > 0.5f ? 0.5f - rot / 2f : rot;
+				NPC.rotation = rot * 0.5f * NPC.direction;
 
 				var spline = new SplineHelper.SplineData(
-					NPC.Center + new Vector2(30 * NPC.direction, -swordArm.MaxLen * 0.95f), 
-					NPC.Center + new Vector2(swordArm.MaxLen * NPC.direction, 0), 
-					NPC.Center + Vector2.UnitY.RotatedBy(0.8f * NPC.direction) * swordArm.MaxLen * 1.5f);
+					new Vector2(30 * NPC.direction, -70 * 0.95f),
+					new Vector2(160 * NPC.direction, 0),
+					Vector2.UnitY.RotatedBy(0.8f * NPC.direction) * 70 * 1.5f);
 
-				Vector2 endPoint = SplineHelper.PointOnSpline(Eases.EaseQuinticOut((AttackTimer - 60) / 60f), spline);
-				swordArm.IKToPoint(endPoint);
+				Vector2 splinePoint = NPC.Center + SplineHelper.PointOnSpline(Eases.EaseQuinticOut((AttackTimer - windupTime) / swingTime), spline);
+				swordArm.IKToPoint(splinePoint);
 
-				if (AttackTimer < 90)
+				if (AttackTimer < (windupTime + swingTime / 3f))
 				{
-					for (int k = 0; k < 4f; k++)
+					for (int k = 0; k < 2f; k++)
 					{
-						endPoint = SplineHelper.PointOnSpline(Eases.EaseQuinticOut((AttackTimer - 60 + k / 4f) / 60f), spline);
-						Dust.NewDustPerfect(endPoint + Main.rand.NextVector2Circular(4f, 4f), ModContent.DustType<Dusts.GraymatterDust>(), Main.rand.NextVector2Circular(0.5f, 0.5f) + Vector2.UnitY, 0, default, prog);
+						Vector2 prev = NPC.Center + NPC.velocity * k / 2f + SplineHelper.PointOnSpline(Eases.EaseQuinticOut((AttackTimer - 1 - windupTime + k / 2f) / swingTime), spline);
+						Vector2 endPoint = NPC.Center + NPC.velocity * k / 2f + SplineHelper.PointOnSpline(Eases.EaseQuinticOut((AttackTimer - windupTime + k / 2f) / swingTime), spline);
+
+						swingTrailCache.Add(endPoint);
+
+						float colProg = (AttackTimer - windupTime) / swingTime;
+						Dust.NewDustPerfect(endPoint + Main.rand.NextVector2Circular(4f, 4f), ModContent.DustType<Dusts.PixelatedImpactLineDust>(), endPoint.DirectionTo(prev).RotatedBy(0.5f * NPC.direction) * (3 + 3 * prog), 0, new Color(1, colProg, colProg, 0), 0.5f * colProg);
+					}
+
+					// Collision
+					foreach (Player player in Main.ActivePlayers)
+					{
+						if (CollisionHelper.CheckLinearCollision(NPC.Center, splinePoint, player.Hitbox, out _))
+							player.Hurt(PlayerDeathReason.ByNPC(NPC.whoAmI), NPC.damage, 0);
 					}
 				}
 			}
 
-			if (AttackTimer >= 120)
+			if (AttackTimer >= AttackTime)
 			{
 				State = 1;
 				AttackTimer = 0;
 				useArm = false;
 			}
+		}
 
-			// Calculate collision here 
+		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+		{
+			return false;
 		}
 
 		public override void HitEffect(NPC.HitInfo hit)
 		{
 			if (State == 0)
 				State = 1;
+		}
+
+		protected void ManageCaches()
+		{
+			if (swingTrailCache == null)
+			{
+				swingTrailCache = [];
+
+				for (int i = 0; i < 20; i++)
+				{
+					swingTrailCache.Add(NPC.Center);
+				}
+			}
+
+			//swingTrailCache.Add(NPC.Center);
+
+			while (swingTrailCache.Count > 20)
+			{
+				swingTrailCache.RemoveAt(0);
+			}
+		}
+
+		protected void ManageTrail()
+		{
+			if (swingTrail is null || swingTrail.IsDisposed)
+			{
+				swingTrail = new Trail(Main.instance.GraphicsDevice, 20, new NoTip(), factor =>
+				{
+					float attackProg = Math.Clamp((AttackTimer - windupTime) * 3 / swingTime, 0, 1);
+					float trueFactor = (factor - (1 - attackProg)) * (1 / attackProg);
+					return MathF.Sin(trueFactor * 3.14f) * 16;
+				}, factor =>
+				{
+					float attackProg = Math.Clamp((AttackTimer - windupTime) * 3 / swingTime, 0, 1);
+					float trueFactor = (factor.X - (1 - attackProg)) * (1 / attackProg);
+
+					float alpha = trueFactor;
+
+					if (factor.X == 1)
+						alpha = 0;
+
+					if (AttackTimer <= windupTime + 5)
+						alpha *= Math.Max(0, (AttackTimer - windupTime) / 5f);
+
+					if (AttackTimer >= AttackTime - 20)
+						alpha *= 1f - (AttackTimer - (AttackTime - 20)) / 20f;
+
+					Color color;
+
+					float r = 1f;
+					float g = 0.5f * trueFactor;
+					float b = 0.5f * trueFactor;
+					color = new Color(r, g, b, 1);
+
+					return color * alpha;
+				});
+			}
+
+			swingTrail.Positions = swingTrailCache.ToArray();
+			swingTrail.NextPosition = NPC.Center;
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -376,8 +488,8 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				Vector2 targetPos = point + origin - Main.screenPosition;
 				var frame = new Rectangle(rigPoint.Frame * 42, frameY * 54, 42, 54);
 
-				spriteBatch.Draw(tex, targetPos, frame, drawColor, stringRotations[k], new Vector2(21, 27), 1f, effects, 0);
-				spriteBatch.Draw(texGlow, targetPos, frame, Color.White, stringRotations[k], new Vector2(21, 27), 1f, effects, 0);
+				spriteBatch.Draw(tex, targetPos, frame, drawColor, stringRotations[k] + NPC.rotation, new Vector2(21, 27), 1f, effects, 0);
+				spriteBatch.Draw(texGlow, targetPos, frame, Color.White, stringRotations[k] + NPC.rotation, new Vector2(21, 27), 1f, effects, 0);
 			}
 
 			// Enqueues the pixelated links
@@ -412,6 +524,31 @@ namespace StarlightRiver.Content.NPCs.Crimson
 					spriteBatch.Begin(default, default, default, default, Main.Rasterizer, default);
 				}
 			});
+
+			// Enqueue trail to draw
+			if (State == 2 && AttackTimer > windupTime)
+			{
+				ModContent.GetInstance<PixelationSystem>().QueueRenderAction("OverPlayers", () =>
+				{
+					Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
+
+					if (effect != null)
+					{
+						var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+						Matrix view = Matrix.Identity;
+						var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+						effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.01f);
+						effect.Parameters["repeats"].SetValue(1f);
+						effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+						effect.Parameters["sampleTexture"].SetValue(Assets.ShadowTrail.Value);
+						swingTrail?.Render(effect);
+
+						effect.Parameters["sampleTexture"].SetValue(Assets.LiquidTrailAlt.Value);
+						swingTrail?.Render(effect);
+					}
+				});
+			}
 
 			return false;
 		}
