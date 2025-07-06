@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using static Terraria.GameContent.Biomes.DunesBiome;
 
 namespace StarlightRiver.Core.Systems.ArmatureSystem
 {
@@ -11,6 +13,9 @@ namespace StarlightRiver.Core.Systems.ArmatureSystem
 		public Vector2 start;
 		public float rotation;
 		public float length;
+
+		public Vector2 end;
+
 		public Rectangle frame;
 
 		public Vector2 Endpoint => start + Vector2.UnitX.RotatedBy(rotation) * length;
@@ -111,6 +116,70 @@ namespace StarlightRiver.Core.Systems.ArmatureSystem
 
 				segments[i].rotation = targetRotation;
 				target += Vector2.UnitX.RotatedBy(targetRotation) * -currentSegment.length;
+			}
+		}
+
+		/// <summary>
+		/// Better for more 'organic' shapes like limbs
+		/// </summary>
+		/// <param name="target"></param>
+		public void FabrikIKToPoint(Vector2 target)
+		{
+			float totalLength = MaxLen;
+			float distanceToTarget = Vector2.Distance(start, target);
+
+			if (distanceToTarget > totalLength)
+			{
+				// Unreachable target: stretch toward it
+				Vector2 dir = (target - start).SafeNormalize(Vector2.UnitX);
+				segments[0].start = start;
+
+				for (int i = 0; i < segments.Length; i++)
+				{
+					segments[i].rotation = dir.ToRotation();
+					if (i > 0)
+						segments[i].start = segments[i - 1].Endpoint;
+				}
+
+				return;
+			}
+
+			// Initialize joint positions
+			Vector2[] joints = new Vector2[segments.Length + 1];
+			joints[0] = start;
+			for (int i = 1; i <= segments.Length; i++)
+			{
+				joints[i] = joints[i - 1] + Vector2.UnitX * segments[i - 1].length;
+			}
+
+			for (int k = 0; k < 40; k++)
+			{
+				// BACKWARD PASS
+				joints[^1] = target;
+				for (int i = segments.Length - 1; i >= 0; i--)
+				{
+					Vector2 dir = (joints[i] - joints[i + 1]).SafeNormalize(Vector2.UnitX);
+					joints[i] = joints[i + 1] + dir * segments[i].length;
+				}
+
+				// FORWARD PASS
+				joints[0] = start;
+				for (int i = 1; i <= segments.Length; i++)
+				{
+					Vector2 dir = (joints[i] - joints[i - 1]).SafeNormalize(Vector2.UnitX);
+					joints[i] = joints[i - 1] + dir * segments[i - 1].length;
+				}
+
+				if (Vector2.Distance(joints[^1], target) < 0.1f)
+					break;
+			}
+
+			// Apply new joint positions and rotations
+			for (int i = 0; i < segments.Length; i++)
+			{
+				segments[i].start = joints[i];
+				Vector2 toNext = joints[i + 1] - joints[i];
+				segments[i].rotation = toNext.ToRotation();
 			}
 		}
 

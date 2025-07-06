@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core.DrawingRigs;
+﻿using StarlightRiver.Core.DrawingRigs;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.ArmatureSystem;
 using StarlightRiver.Core.Systems.PixelationSystem;
@@ -15,28 +14,28 @@ namespace StarlightRiver.Content.NPCs.Crimson
 	{
 		public const int maxFlipTime = 20;
 
-		public const int bodySegment = 7;
-		public const int swordSegment0 = 3;
-		public const int swordSegment1 = 1;
-		public const int swordSegment2 = 4;
+		public const int bodySegment = 2;
+		public const int swordSegment0 = 5;
+		public const int swordSegment1 = 6;
+		public const int swordSegment2 = 7;
 
 		private static StaticRig rig;
+
+		private static readonly List<(int, int)> connections =
+		[
+			(2, 0),
+			(2, 3),
+			(3, 4),
+			(2, 5),
+			(5, 6),
+			(6, 7)
+		];
 
 		private float yTarget;
 		private int flipTimer;
 
-		private Vector2[] stringPoints = new Vector2[8];
-		private float[] stringRotations = new float[8];
-
-		private List<(int, int)> connections =
-		[
-			(7, 2),
-			(2, 0),
-			(7, 3),
-			(3, 1),
-			(1, 4),
-			(7, 6)
-		];
+		private readonly Vector2[] stringPoints = new Vector2[8];
+		private readonly float[] stringRotations = new float[8];
 
 		public Arm swordArm;
 		public bool useArm;
@@ -70,7 +69,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			// length. Start point is arbitrary and will be moved later
 			swordArm = new(NPC.Center,
 				new ArmSegment[]{
-				new(Vector2.Distance(rig.Points[bodySegment].Pos, rig.Points[swordSegment0].Pos)),
+				new(6),
 				new(Vector2.Distance(rig.Points[swordSegment0].Pos, rig.Points[swordSegment1].Pos)),
 				new(Vector2.Distance(rig.Points[swordSegment1].Pos, rig.Points[swordSegment2].Pos)),
 				}, Assets.Invisible.Value);
@@ -82,7 +81,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 		/// </summary>
 		public void ResetArmToRig()
 		{
-			swordArm.start = stringPoints[bodySegment];
+			swordArm.start = stringPoints[bodySegment] + Vector2.UnitX * -10 * NPC.direction;
 			swordArm.segments[0].rotation = stringPoints[bodySegment].DirectionTo(stringPoints[swordSegment0]).ToRotation();
 			swordArm.segments[1].start = stringPoints[swordSegment0];
 			swordArm.segments[1].rotation = stringPoints[swordSegment0].DirectionTo(stringPoints[swordSegment1]).ToRotation();
@@ -95,20 +94,22 @@ namespace StarlightRiver.Content.NPCs.Crimson
 		/// </summary>
 		public void ProcessAndSetFromArm()
 		{
-			swordArm.start = stringPoints[bodySegment];
+			swordArm.start = stringPoints[bodySegment] + Vector2.UnitX * -10 * NPC.direction;
 
-			float prog = AttackTimer < 10 ? AttackTimer / 10f : 1f;
-			if (AttackTimer > 110)
-				prog = 1f - (AttackTimer - 110) / 10f;
+			float prog = AttackTimer < 20 ? AttackTimer / 20f : 1f;
+			if (AttackTimer > 100)
+				prog = 1f - (AttackTimer - 100) / 20f;
 
 			swordArm.Update();
 			stringPoints[swordSegment0] = Vector2.Lerp(stringPoints[swordSegment0], swordArm.segments[0].Endpoint, prog);
 			stringPoints[swordSegment1] = Vector2.Lerp(stringPoints[swordSegment1], swordArm.segments[1].Endpoint, prog);
 			stringPoints[swordSegment2] = Vector2.Lerp(stringPoints[swordSegment2], swordArm.segments[2].Endpoint, prog);
 
-			stringRotations[swordSegment0] = swordArm.segments[0].rotation;
-			stringRotations[swordSegment1] = swordArm.segments[1].rotation;
-			stringRotations[swordSegment2] = swordArm.segments[2].rotation + (NPC.direction == 1 ? 5.1f : -2f);
+			var rotAdjust = NPC.direction == 1 ? -1.1f : -2f;
+
+			stringRotations[swordSegment0] = (swordArm.segments[0].rotation + rotAdjust) * prog;
+			stringRotations[swordSegment1] = (swordArm.segments[1].rotation + rotAdjust) * prog;
+			stringRotations[swordSegment2] = (swordArm.segments[2].rotation + rotAdjust) * prog;
 		}
 
 		/// <summary>
@@ -146,11 +147,8 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			}
 
 			if (useArm)
-				ProcessAndSetFromArm();
-			else
 			{
-				for (int k = 0; k < stringRotations.Length; k++)
-					stringRotations[k] *= 0.9f;
+				ProcessAndSetFromArm();
 			}
 		}
 
@@ -185,10 +183,10 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 					int targetDir = target.Center.X > NPC.Center.X ? 1 : -1;
 					HandleFlip(targetDir);
-				}
 
-				if (Timer % 300 == 0)
-					StartAttack();
+					if (Vector2.Distance(NPC.Center, target.Center) < 256 && !Flipping)
+						StartAttack();
+				}
 
 				Lighting.AddLight(NPC.Center, new Vector3(0.5f, 0.3f, 0.3f));
 			}
@@ -196,7 +194,16 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			// attack
 			if (State == 2)
 			{
-				NPC.velocity.X *= 0.92f;
+				if (NPC.HasValidTarget)
+				{
+					Player target = Main.player[NPC.target];
+
+					if (!Flipping)
+						NPC.velocity.X += NPC.direction * 0.05f;
+
+					if (Math.Abs(NPC.velocity.X) > 2)
+						NPC.velocity.X = NPC.velocity.X > 0 ? 2 : -2;
+				}
 
 				Attack();
 				Lighting.AddLight(NPC.Center, new Vector3(0.5f, 0.3f, 0.3f));
@@ -272,11 +279,50 @@ namespace StarlightRiver.Content.NPCs.Crimson
 		{
 			AttackTimer++;
 
-			if (AttackTimer < 120)
+			Player target = Main.player[NPC.target];
+
+			if(Vector2.Distance(NPC.Center, target.Center) < 64)
+					NPC.velocity.X *= 0.92f;
+
+			if (AttackTimer <= 60)
 			{
-				//var spline = 
-				//Vector2 endPoint = NPC.Center
-				swordArm.IKToPoint(Main.MouseWorld);
+				var spline = new SplineHelper.SplineData(
+					NPC.Center + new Vector2(0, swordArm.MaxLen * 0.8f), 
+					NPC.Center + new Vector2(swordArm.MaxLen * 0.9f * NPC.direction, 0), 
+					NPC.Center + new Vector2(30 * NPC.direction, -swordArm.MaxLen * 0.95f));
+				
+				Vector2 endPoint = SplineHelper.PointOnSpline(Eases.EaseCircularInOut(AttackTimer / 60f), spline);
+				swordArm.IKToPoint(endPoint);
+			}
+
+			if (AttackTimer == 60)
+			{
+				SoundHelper.PlayPitched("Effects/FancySwoosh", 1f, -0.2f, NPC.Center);
+			}
+
+			if (AttackTimer > 60 && AttackTimer <= 120)
+			{
+				float prog = Eases.EaseQuinticOut((AttackTimer - 60) / 60f);
+				prog = prog > 0.5f ? 0.5f - prog / 2f : prog;
+				swordArm.segments[1].length = Vector2.Distance(rig.Points[swordSegment0].Pos, rig.Points[swordSegment1].Pos) + (40 * prog);
+				swordArm.segments[2].length = Vector2.Distance(rig.Points[swordSegment1].Pos, rig.Points[swordSegment2].Pos) + (20 * prog);
+
+				var spline = new SplineHelper.SplineData(
+					NPC.Center + new Vector2(30 * NPC.direction, -swordArm.MaxLen * 0.95f), 
+					NPC.Center + new Vector2(swordArm.MaxLen * NPC.direction, 0), 
+					NPC.Center + Vector2.UnitY.RotatedBy(0.8f * NPC.direction) * swordArm.MaxLen * 1.5f);
+
+				Vector2 endPoint = SplineHelper.PointOnSpline(Eases.EaseQuinticOut((AttackTimer - 60) / 60f), spline);
+				swordArm.IKToPoint(endPoint);
+
+				if (AttackTimer < 90)
+				{
+					for (int k = 0; k < 4f; k++)
+					{
+						endPoint = SplineHelper.PointOnSpline(Eases.EaseQuinticOut((AttackTimer - 60 + k / 4f) / 60f), spline);
+						Dust.NewDustPerfect(endPoint + Main.rand.NextVector2Circular(4f, 4f), ModContent.DustType<Dusts.GraymatterDust>(), Main.rand.NextVector2Circular(0.5f, 0.5f) + Vector2.UnitY, 0, default, prog);
+					}
+				}
 			}
 
 			if (AttackTimer >= 120)
@@ -284,7 +330,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				State = 1;
 				AttackTimer = 0;
 				useArm = false;
-			}	
+			}
 
 			// Calculate collision here 
 		}
@@ -303,12 +349,12 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 			int offsetAmount = 10;
 
-			var frameY = (int)(Timer / 40f) % 3;
+			int frameY = (int)(Timer / 40f) % 3;
 
 			if (State > 0)
 				frameY += 3;
 
-			for(int k = 0; k < stringPoints.Length; k++)
+			for (int k = 0; k < stringPoints.Length; k++)
 			{
 				Vector2 point = stringPoints[k];
 				StaticRigPoint rigPoint = rig.Points[k];
@@ -324,6 +370,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 						origin = NPC.direction == -1 ? Vector2.Zero : new Vector2(0, 0);
 					}
 				}
+
 				Vector2 targetPos = point + origin - Main.screenPosition;
 				var frame = new Rectangle(rigPoint.Frame * 42, frameY * 54, 42, 54);
 
