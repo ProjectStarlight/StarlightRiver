@@ -21,9 +21,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public ref float Duration => ref Projectile.ai[0];
 
-		public float dist1;
-		public float dist2;
-
 		public override string Texture => AssetDirectory.VitricBoss + Name;
 
 		public override void SetStaticDefaults()

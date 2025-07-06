@@ -14,8 +14,6 @@ namespace StarlightRiver.Core.Systems.ArmatureSystem
 		public float rotation;
 		public float length;
 
-		public Vector2 end;
-
 		public Rectangle frame;
 
 		public Vector2 Endpoint => start + Vector2.UnitX.RotatedBy(rotation) * length;
