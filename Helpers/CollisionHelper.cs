@@ -22,6 +22,9 @@ namespace StarlightRiver.Helpers
 		{
 			intersectPoint = Vector2.Zero;
 
+			if (point1 == point2)
+				return hitbox.Contains(point1.ToPoint());
+
 			return
 				LinesIntersect(point1, point2, hitbox.TopLeft(), hitbox.TopRight(), out intersectPoint) ||
 				LinesIntersect(point1, point2, hitbox.TopLeft(), hitbox.BottomLeft(), out intersectPoint) ||

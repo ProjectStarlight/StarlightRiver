@@ -68,6 +68,7 @@ namespace StarlightRiver.Content.Items.Crimson
 			Projectile.tileCollide = false;
 			Projectile.friendly = true;
 			Projectile.usesLocalNPCImmunity = true;
+			Projectile.localNPCHitCooldown = 30;
 		}
 
 		public override void AI()

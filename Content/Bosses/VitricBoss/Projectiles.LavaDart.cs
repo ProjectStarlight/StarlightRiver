@@ -17,9 +17,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		private List<Vector2> cache;
 		private Trail trail;
 
-		private Vector2 startPoint;
-		public Vector2 endPoint;
-		public Vector2 midPoint;
+		public SplineHelper.SplineData spline = new();
 
 		public ref float Duration => ref Projectile.ai[0];
 
@@ -57,19 +55,16 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public override void OnSpawn(IEntitySource source)
 		{
-			midPoint = midPointToAssign;
-			endPoint = endPointToAssign;
+			spline.MidPoint = midPointToAssign;
+			spline.EndPoint = endPointToAssign;
 
 			setStartAndDist();
 		}
 
 		private void setStartAndDist()
 		{
-			startPoint = Projectile.Center;
+			spline.StartPoint = Projectile.Center;
 			Projectile.timeLeft = (int)Duration + 30;
-
-			dist1 = ApproximateSplineLength(30, startPoint, midPoint - startPoint, midPoint, endPoint - startPoint);
-			dist2 = ApproximateSplineLength(30, midPoint, endPoint - startPoint, endPoint, endPoint - midPoint);
 		}
 
 		public override void AI()
@@ -78,9 +73,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			float timer = Duration + 30 - Projectile.timeLeft;
 
-			if (endPoint != Vector2.Zero && timer > 30)
+			if (spline.EndPoint != Vector2.Zero && timer > 30)
 			{
-				Projectile.Center = PointOnSpline((timer - 30) / Duration);
+				Projectile.Center = SplineHelper.PointOnSpline((timer - 30) / Duration, spline);
 			}
 
 			Projectile.rotation = (Projectile.position - Projectile.oldPos[0]).ToRotation() + 1.57f;
@@ -92,34 +87,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				ManageCaches();
 				ManageTrail();
 			}
-		}
-
-		private Vector2 PointOnSpline(float progress)
-		{
-			float factor = dist1 / (dist1 + dist2);
-
-			if (progress < factor)
-				return Vector2.Hermite(startPoint, midPoint - startPoint, midPoint, endPoint - startPoint, progress * (1 / factor));
-			if (progress >= factor)
-				return Vector2.Hermite(midPoint, endPoint - startPoint, endPoint, endPoint - midPoint, (progress - factor) * (1 / (1 - factor)));
-
-			return Vector2.Zero;
-		}
-
-		private float ApproximateSplineLength(int steps, Vector2 start, Vector2 startTan, Vector2 end, Vector2 endTan)
-		{
-			float total = 0;
-			Vector2 prevPoint = start;
-
-			for (int k = 0; k < steps; k++)
-			{
-				var testPoint = Vector2.Hermite(start, startTan, end, endTan, k / (float)steps);
-				total += Vector2.Distance(prevPoint, testPoint);
-
-				prevPoint = testPoint;
-			}
-
-			return total;
 		}
 
 		public override void PostDraw(Color lightColor)
@@ -134,22 +101,22 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				float alpha = (float)Math.Sin(timer / 30f * 3.14f);
 
 				for (int k = 0; k < 20; k++)
-					spriteBatch.Draw(tellTex, PointOnSpline(k / 20f) - Main.screenPosition, null, new Color(255, 200, 100) * alpha * 0.6f, Projectile.rotation, tellTex.Size() / 2, 3, 0, 0);
+					spriteBatch.Draw(tellTex, SplineHelper.PointOnSpline(k / 20f, spline) - Main.screenPosition, null, new Color(255, 200, 100) * alpha * 0.6f, Projectile.rotation, tellTex.Size() / 2, 3, 0, 0);
 			}
 		}
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
-			writer.WriteVector2(midPoint);
-			writer.WriteVector2(endPoint);
+			writer.WriteVector2(spline.MidPoint);
+			writer.WriteVector2(spline.EndPoint);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
-			midPoint = reader.ReadVector2();
-			endPoint = reader.ReadVector2();
+			spline.MidPoint = reader.ReadVector2();
+			spline.EndPoint = reader.ReadVector2();
 
-			if (startPoint == Vector2.Zero)
+			if (spline.StartPoint == Vector2.Zero)
 				setStartAndDist();
 		}
 

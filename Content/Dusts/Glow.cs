@@ -92,46 +92,15 @@ namespace StarlightRiver.Content.Dusts
 	{
 		public struct SplineGlowData
 		{
-			public Vector2 startPoint;
-			public Vector2 midPoint;
-			public Vector2 endPoint;
+			public SplineHelper.SplineData spline;
 			public int duration;
 			public int timer;
 
-			public float dist1;
-			public float dist2;
-
 			public SplineGlowData(Vector2 startPoint, Vector2 midPoint, Vector2 endPoint, int duration)
 			{
-				this.startPoint = startPoint;
-				this.midPoint = midPoint;
-				this.endPoint = endPoint;
+				this.spline = new(startPoint, midPoint, endPoint);
 				this.duration = duration;
 			}
-		}
-
-		private Vector2 PointOnSpline(float progress, SplineGlowData data)
-		{
-			float factor = data.dist1 / (data.dist1 + data.dist2);
-			if (progress < factor)
-				return Vector2.Hermite(data.startPoint, data.midPoint - data.startPoint, data.midPoint, data.endPoint - data.startPoint, progress * (1 / factor));
-			if (progress >= factor)
-				return Vector2.Hermite(data.midPoint, data.endPoint - data.startPoint, data.endPoint, data.endPoint - data.midPoint, (progress - factor) * (1 / (1 - factor)));
-			return Vector2.Zero;
-		}
-
-		private float ApproximateSplineLength(int steps, Vector2 start, Vector2 startTan, Vector2 end, Vector2 endTan)
-		{
-			float total = 0;
-			Vector2 prevPoint = start;
-			for (int k = 0; k < steps; k++)
-			{
-				var testPoint = Vector2.Hermite(start, startTan, end, endTan, k / (float)steps);
-				total += Vector2.Distance(prevPoint, testPoint);
-				prevPoint = testPoint;
-			}
-
-			return total;
 		}
 
 		public override bool Update(Dust dust)
@@ -141,10 +110,7 @@ namespace StarlightRiver.Content.Dusts
 				dust.color.A = 0;
 				dust.fadeIn++;
 
-				data.dist1 = ApproximateSplineLength(30, data.startPoint, data.midPoint - data.startPoint, data.midPoint, data.endPoint - data.startPoint);
-				data.dist2 = ApproximateSplineLength(30, data.midPoint, data.endPoint - data.startPoint, data.endPoint, data.endPoint - data.midPoint);
-
-				dust.position = PointOnSpline(dust.fadeIn / (float)data.duration, data);
+				dust.position = SplineHelper.PointOnSpline(dust.fadeIn / (float)data.duration, data.spline);
 
 				if (dust.fadeIn < 20)
 					dust.alpha = 255 - (int)(dust.fadeIn / 20f * 255);
