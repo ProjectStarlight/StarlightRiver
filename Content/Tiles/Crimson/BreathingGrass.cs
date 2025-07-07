@@ -3,21 +3,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria;
+using Terraria.Enums;
+using Terraria.GameContent.Drawing;
+using Terraria.ID;
+using Terraria.ObjectData;
 
 namespace StarlightRiver.Content.Tiles.Crimson
 {
 	internal class BreathingGrass : ModTile
 	{
-		public override string Texture => AssetDirectory.Invisible;
+		public override string Texture => "StarlightRiver/Assets/Tiles/Crimson/GrassSway";
 
 		public override void SetStaticDefaults()
 		{
 			Main.tileSolid[Type] = false;
-			Main.tileFrameImportant[Type] = true;
+
+			TileID.Sets.MultiTileSway[Type] = true;
+			TileID.Sets.ReverseVineThreads[Type] = true;
+
+			TileObjectData.newTile.AnchorBottom = new(AnchorType.AlternateTile | AnchorType.SolidTile, 1, 0);
+			TileObjectData.newTile.AnchorAlternateTiles = [TileID.CrimsonGrass, Type];
+			QuickBlock.QuickSetFurniture(this, 1, 1, DustID.Blood, SoundID.Grass, Color.Red);
 		}
 
 		public override void NearbyEffects(int i, int j, bool closer)
 		{
+			return;
+
 			Vector2 logicPos = new Vector2(i, j + 1) * 16;
 
 			float dist = Vector2.Distance(logicPos, Main.LocalPlayer.Center);
@@ -41,8 +54,37 @@ namespace StarlightRiver.Content.Tiles.Crimson
 				tile.TileFrameY = 0;
 		}
 
+		public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
+		{
+			var tile = Main.tile[i, j];
+
+			tile.frameX = (short)(i % 2 * 18);
+
+			tile.frameY = (short)(18 * Main.rand.Next(1, 4));
+
+			var up = Framing.GetTileSafely(i, j - 1);
+
+			if (up.type != Type)
+				tile.frameY = 0;
+
+			return false;
+		}
+
+		public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
+		{
+			var up = Framing.GetTileSafely(i, j - 1);
+			var down = Framing.GetTileSafely(i, j + 1);
+
+			if (down.type != Type)
+				Main.instance.TilesRenderer.AddSpecialPoint(i, j, TileDrawing.TileCounterType.ReverseVine);
+
+			return false;
+		}
+
 		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 		{
+			return;
+
 			Tile tile = Framing.GetTileSafely(i, j);
 			Texture2D tex = Assets.Tiles.Crimson.BreathingGrass.Value;
 			Vector2 pos = new Vector2(i, j + 1) * 16 + Vector2.One * Main.offScreenRange;

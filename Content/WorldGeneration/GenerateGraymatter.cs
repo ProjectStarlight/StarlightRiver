@@ -32,7 +32,7 @@ namespace StarlightRiver.Core
 			{
 				for (int y = 10; y < Main.worldSurface; y++)
 				{
-					if (Main.tile[k, y].TileType == TileID.CrimsonGrass)
+					if (Main.tile[k, y].TileType == TileID.CrimsonGrass && Main.tile[k, y].IsSquareSolidTile())
 					{
 						if (CrimsonGrassPatch(k, y, 3, 2) && WorldGen.genRand.NextBool(16))
 						{
@@ -52,7 +52,14 @@ namespace StarlightRiver.Core
 
 						if (noise.GetNoise(k * 5, 0.5f) > 0f)
 						{
-							WorldGen.PlaceTile(k, y - 1, ModContent.TileType<BreathingGrass>());
+							for (int h = 0; h < WorldGen.genRand.Next(3, 10); h++)
+							{
+								if (!Main.tile[k, y - 1 - h].HasTile)
+									WorldGen.PlaceTile(k, y - 1 - h, ModContent.TileType<BreathingGrass>());
+								else
+									break;
+							}
+
 							k += 1;
 							y = 10;
 						}

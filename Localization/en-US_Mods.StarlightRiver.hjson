@@ -3679,6 +3679,11 @@ Tiles: {
 	SmoothBrassPlate.MapEntry: ""
 	RawOnyx.MapEntry: ""
 	LockedOnyx.MapEntry: ""
+	BreathingGrass.MapEntry: ""
+	// VitricGiantCrystal.MapEntry: ""
+	// VitricLargeCrystal.MapEntry: ""
+	// VitricMediumCrystal.MapEntry: ""
+	// VitricSmallCrystal.MapEntry: ""
 }
 
 Projectiles: {

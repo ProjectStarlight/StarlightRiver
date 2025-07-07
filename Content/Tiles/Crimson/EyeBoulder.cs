@@ -3,6 +3,7 @@ using System;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
+using Terraria.ObjectData;
 
 namespace StarlightRiver.Content.Tiles.Crimson
 {
@@ -14,6 +15,7 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 		public override void SetStaticDefaults()
 		{
+			TileObjectData.newTile.FlattenAnchors = true;
 			var anchor = new AnchorData(AnchorType.SolidTile, 3, 0);
 			QuickBlock.QuickSetFurniture(this, 3, 2, DustID.Blood, SoundID.NPCHit1, true, Color.Wheat, false, false, "", anchor, variants: 2);
 		}
@@ -22,6 +24,11 @@ namespace StarlightRiver.Content.Tiles.Crimson
 	internal class EyeBoulderDummy : Dummy
 	{
 		public EyeBoulderDummy() : base(ModContent.TileType<EyeBoulder>(), 3 * 16, 2 * 16) { }
+
+		public override bool ValidTile(Tile tile)
+		{
+			return tile.type == validType;
+		}
 
 		public override void PostDraw(Color lightColor)
 		{

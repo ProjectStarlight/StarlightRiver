@@ -11,6 +11,7 @@ using StarlightRiver.Core.Systems.CutsceneSystem;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.Systems.LightingSystem;
 using Terraria.ID;
+using Terraria.WorldBuilding;
 
 namespace StarlightRiver.Content.Items
 {
@@ -162,6 +163,9 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
+			ModContent.GetInstance<StarlightWorld>().GraymatterGen(new GenerationProgress(), null);
+			return true;
+
 			//StarlightWorld.FlipFlag(WorldFlags.ThinkerBossOpen);
 			//return true;
 

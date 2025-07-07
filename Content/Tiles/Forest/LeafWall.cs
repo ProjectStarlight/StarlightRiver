@@ -18,6 +18,16 @@ namespace StarlightRiver.Content.Tiles.Forest
 			AddMapEntry(new Color(50, 140, 90));
 		}
 
+		public override void KillWall(int i, int j, ref bool fail)
+		{
+			fail = false;
+		}
+
+		public override bool Drop(int i, int j, ref int type)
+		{
+			return false;
+		}
+
 		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 		{
 			if (i + 1 > Main.screenPosition.X / 16 && i - 1 < Main.screenPosition.X / 16 + Main.screenWidth / 16 && j + 1 > Main.screenPosition.Y / 16 && j - 1 < Main.screenPosition.Y / 16 + Main.screenHeight / 16)
@@ -36,6 +46,26 @@ namespace StarlightRiver.Content.Tiles.Forest
 					Texture2D tex2 = Assets.Tiles.Forest.LeafWallFlower.Value;
 					spriteBatch.Draw(tex2, new Vector2(i + 0.5f, j + 0.5f) * 16 + Vector2.One * Main.offScreenRange + new Vector2(1, 0.5f) * sin * 1.8f - Main.screenPosition,
 						new Rectangle(i * j % 4 * 10, 0, 8, 8), Lighting.GetColor(i, j), offset + sin * 0.07f, new Vector2(4, 4), 1, 0, 0);
+				}
+			}
+		}
+
+		public override void RandomUpdate(int i, int j)
+		{
+			for(int x = -1; x <= 1; x++)
+			{
+				for(int y = -1; y <= 1; y++)
+				{
+					var check = Main.tile[i + x, j + y];
+
+					if (check.HasTile && TileID.Sets.Corrupt[check.type] || WallID.Sets.Corrupt[check.WallType])
+						WorldGen.ConvertWall(i, j, WallID.CorruptGrassUnsafe);
+
+					if (check.HasTile && TileID.Sets.Crimson[check.type] || WallID.Sets.Crimson[check.WallType])
+						WorldGen.ConvertWall(i, j, WallID.CrimsonGrassUnsafe);
+
+					if (check.HasTile && TileID.Sets.Hallow[check.type] || WallID.Sets.Hallow[check.WallType])
+						WorldGen.ConvertWall(i, j, WallID.HallowedGrassUnsafe);
 				}
 			}
 		}

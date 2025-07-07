@@ -3,6 +3,7 @@ using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.Systems.LightingSystem;
 using System;
 using Terraria.ID;
+using Terraria.ObjectData;
 
 namespace StarlightRiver.Content.Tiles.Crimson
 {
@@ -14,7 +15,12 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 		public override void SetStaticDefaults()
 		{
-			QuickBlock.QuickSetFurniture(this, 1, 1, DustID.Bone, SoundID.NPCHit10, new Color(60, 40, 20));
+			TileObjectData.newTile.AnchorBottom = new(Terraria.Enums.AnchorType.SolidTile, 1, 0);
+			TileObjectData.newTile.AnchorLeft = new(Terraria.Enums.AnchorType.SolidTile, 1, 0);
+			TileObjectData.newTile.AnchorRight = new(Terraria.Enums.AnchorType.SolidTile, 1, 0);
+			TileObjectData.newTile.AnchorTop = new(Terraria.Enums.AnchorType.SolidTile, 1, 0);
+
+			QuickBlock.QuickSetFurniture(this, 1, 1, DustID.Bone, SoundID.NPCHit1, new Color(60, 40, 20));
 		}
 
 		public override bool SpawnConditions(int i, int j)
@@ -25,6 +31,7 @@ namespace StarlightRiver.Content.Tiles.Crimson
 		public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 		{
 			Vector2 final = Vector2.Zero;
+			int count = 0;
 
 			for (int x = 0; x < 3; x++)
 			{
@@ -38,22 +45,26 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 					if (!occluded)
 						final += Vector2.Normalize(new Vector2(x - 1, y - 1));
+					else
+						count++;
 				}
 			}
 
 			Tile tile = Framing.GetTileSafely(i, j);
 			float angle = final.ToRotation();
 
-			if (float.IsNaN(angle))
+			if (float.IsNaN(angle) || count <= 0)
 			{
 				WorldGen.KillTile(i, j);
-				return true;
+				return false;
 			}
 
 			tile.TileFrameX = (short)(angle % 6.28f * 100);
-			tile.TileFrameY = (short)Main.rand.Next(6);
 
-			return true;
+			if (WorldGen.generatingWorld)
+				tile.TileFrameY = (short)Main.rand.Next(6);
+
+			return false;
 		}
 	}
 
@@ -71,12 +82,6 @@ namespace StarlightRiver.Content.Tiles.Crimson
 			Vector2 pos = Center - Main.screenPosition;
 
 			LightingBufferRenderer.DrawWithLighting(tex, pos, source, Color.White, angle - 0.25f, origin, 1f);
-
-			if (StarlightRiver.debugMode)
-			{
-				Texture2D arrow = Assets.MagicPixel.Value;
-				Main.spriteBatch.Draw(arrow, new Rectangle((int)pos.X, (int)pos.Y, 100, 2), source, Color.LimeGreen, angle - 1.57f / 2f, origin, 0, 0);
-			}
 		}
 	}
 }
