@@ -2,7 +2,6 @@ float3 u_color;
 float3 u_fade;
 float2 u_resolution;
 float u_time;
-float sampleScale;
 
 texture mainbody_t;
 sampler2D mainbody = sampler_state { texture = <mainbody_t>; AddressU = wrap; AddressV = wrap; };
@@ -52,24 +51,24 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0) : COLOR0
     st.y += (norm.g - 0.5) / (norm.b - 0.5) * 0.15;
     st.x += (norm.r - 0.5) / (norm.b - 0.5) * 0.15;
     
-    float3 noise = tex2D(linemap, st * sampleScale + float2(u_time * 0.6, u_time * 0.6)).xyz;
-    noise += tex2D(linemap, st * sampleScale + float2(u_time * 1.7, u_time * 1.7)).xyz;
-    noise += tex2D(linemap, st * sampleScale + float2(u_time * 0.2, u_time * 0.2)).xyz;
+    float3 noise = tex2D(linemap, st + float2(u_time * 0.6, u_time * 0.6)).xyz;
+    noise += tex2D(linemap, st + float2(u_time * 1.7, u_time * 1.7)).xyz;
+    noise += tex2D(linemap, st + float2(u_time * 0.2, u_time * 0.2)).xyz;
     
-    noise += tex2D(noisemap, (st * sampleScale + float2(u_time * 0.6, u_time * 0.6)) / 2.0).xyz * 0.5;
+    noise += tex2D(noisemap, (st + float2(u_time * 0.6, u_time * 0.6)) / 2.0).xyz * 0.5;
      
     noise += float3(0.325, 0.25, 0.1);
     
     st.y -= (norm.g - 0.5) / (norm.b - 0.5) * 0.15;
     st.x -= (norm.r - 0.5) / (norm.b - 0.5) * 0.15;
     
-    noise *= rainbow(st * sampleScale, u_time - 0.3);
+    noise *= rainbow(st, u_time - 0.3);
     float mask = tex2D(mainbody, st).x;
     noise *= mask;
      
     float3 color = (outline + noise);
     color = color - fmod(color, 0.2);
-    color += over * rainbow(st * sampleScale, u_time);
+    color += over * rainbow(st, u_time);
     
     return float4(color, length(color)) * tex2D(maskTex, uv).r;
 }

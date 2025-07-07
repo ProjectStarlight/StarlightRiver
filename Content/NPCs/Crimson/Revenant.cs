@@ -391,7 +391,11 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 			if (AttackTimer == windupDuration)
 			{
-				SoundHelper.PlayPitched("Effects/FancySwoosh", 1f, -0.2f, NPC.Center);
+				if (Main.rand.NextBool())
+					SoundHelper.PlayPitched("NPC/Crimson/RevenantSlash1", 1f, 0f, NPC.Center);
+				else
+					SoundHelper.PlayPitched("NPC/Crimson/RevenantSlash2", 1f, 0f, NPC.Center);
+
 				NPC.velocity.X += 8 * NPC.direction;
 
 				swingTrailCache.Clear();
@@ -670,7 +674,6 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			{
 				bodyShader.Parameters["u_resolution"].SetValue(texGlow.Size());
 				bodyShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f);
-				bodyShader.Parameters["sampleScale"].SetValue(6f);
 
 				bodyShader.Parameters["mainbody_t"].SetValue(texGlow);
 				bodyShader.Parameters["linemap_t"].SetValue(Assets.Invisible.Value);
