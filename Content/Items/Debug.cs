@@ -4,9 +4,11 @@ using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Bosses.TheThinkerBoss;
 using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.NPCs.Starlight;
+using StarlightRiver.Content.Tiles.BaseTypes;
 using StarlightRiver.Content.Tiles.Starlight;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.CutsceneSystem;
+using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.Systems.LightingSystem;
 using Terraria.ID;
 
@@ -44,6 +46,9 @@ namespace StarlightRiver.Content.Items
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
+			ObservatoryBiome.fade = 1f;
+			return;
+
 			player.GetHandler().StaminaMaxBonus = 10;
 
 			int x = StarlightWorld.vitricBiome.X - 37;
@@ -54,6 +59,20 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
+			ProximityActivatedPylonSystem.activePylons.Clear();
+
+			foreach (var item in DummySystem.dummies)
+			{
+				if (item is ProximityActivatedPylonDummy d)
+				{
+					d.activating = false;
+					d.timer = 0;
+				}
+			}
+			return true;
+
+
+
 			//NPC.NewNPC(null, (int)player.Center.X, (int)player.Center.Y - 600, ModContent.NPCType<TheThinker>());
 			//NPC.NewNPC(null, (int)player.Center.X, (int)player.Center.Y - 600, ModContent.NPCType<DeadBrain>());
 
@@ -143,8 +162,8 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
-			StarlightWorld.FlipFlag(WorldFlags.ThinkerBossOpen);
-			return true;
+			//StarlightWorld.FlipFlag(WorldFlags.ThinkerBossOpen);
+			//return true;
 
 			ObservatorySystem.pylonAppearsOn = false;
 			ObservatorySystem.observatoryOpen = false;
@@ -181,7 +200,7 @@ namespace StarlightRiver.Content.Items
 			//Point16 target = new Point16((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
 			//Main.NewText($"Deviation at {target} along width 10: {WorldGenHelper.GetElevationDeviation(target, 10, 20, 10, true)}");
 
-			//ModContent.GetInstance<StarlightWorld>().ObservatoryGen(null, null);
+			ModContent.GetInstance<StarlightWorld>().ObservatoryGen(null, null);
 
 			//Main.LocalPlayer.GetHandler().Shards.Clear();
 			//CagePuzzleSystem.solved = false;
@@ -215,6 +234,42 @@ namespace StarlightRiver.Content.Items
 		public override bool? UseItem(Player Player)
 		{
 			StarlightRiver.debugMode = !StarlightRiver.debugMode;
+			return true;
+		}
+	}
+
+	[SLRDebug]
+	class SuperBreaker : ModItem
+	{
+		public override string Texture => AssetDirectory.Assets + "Items/DebugStick";
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Super Breaker");
+			Tooltip.SetDefault("Breaks anything!");
+		}
+
+		public override void SetDefaults()
+		{
+			Item.damage = 10;
+			Item.DamageType = DamageClass.Melee;
+			Item.width = 38;
+			Item.height = 40;
+			Item.useTime = 18;
+
+			Item.useAnimation = 18;
+			Item.useStyle = ItemUseStyleID.Swing;
+			Item.knockBack = 5f;
+			Item.value = 1000;
+			Item.rare = ItemRarityID.Master;
+			Item.autoReuse = true;
+			Item.UseSound = SoundID.Item18;
+			Item.useTurn = true;
+		}
+
+		public override bool? UseItem(Player player)
+		{
+			WorldGen.KillTile((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
 			return true;
 		}
 	}

@@ -46,8 +46,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override string Texture => AssetDirectory.Glassweaver + Name;
 
-		public static int SmallProjectileDamage => Helpers.StarlightMathHelper.GetProjectileDamage(100, 50, 30);
-		public static int LargeProjectileDamage => Helpers.StarlightMathHelper.GetProjectileDamage(180, 90, 60);
+		public static int SmallProjectileDamage => Helpers.StarlightMathHelper.GetProjectileDamage(30, 50, 100);
+		public static int LargeProjectileDamage => Helpers.StarlightMathHelper.GetProjectileDamage(60, 90, 180);
 
 		//Phase tracking utils
 		public enum Phases

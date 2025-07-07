@@ -1,6 +1,8 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Prefixes.Accessory.Cursed;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria.Audio;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Utility
@@ -11,33 +13,46 @@ namespace StarlightRiver.Content.Items.Utility
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Scroll of Undoing");
-			Tooltip.SetDefault("Place over an equipped Cursed item to destroy it\n'There's no turning back, most of the time'");
+			DisplayName.SetDefault("Scroll of Scrying Flames");
+			Tooltip.SetDefault("Right click a cursed accessory while holding this on your cursor to destroy it\nGrants you the residual darkness in it's place");
 		}
 
 		public override void SetDefaults()
 		{
 			Item.width = 32;
 			Item.height = 32;
-			Item.maxStack = 1;
+			Item.maxStack = 9999;
 			Item.rare = ItemRarityID.LightRed;
-			Item.accessory = true;
+		}
+	}
+
+	class CurseRemoverApply : GlobalItem
+	{
+		public override bool AppliesToEntity(Item entity, bool lateInstantiation)
+		{
+			return entity.ModItem is CursedAccessory;
 		}
 
-		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		public override bool CanRightClick(Item item)
 		{
-			tooltips.Remove(tooltips.FirstOrDefault(n => n.Mod == "Terraria" && n.Name == "Equipable"));
+			return Main.mouseItem.type == ModContent.ItemType<CurseRemover>();
 		}
 
-		public override bool CanEquipAccessory(Player Player, int slot, bool modded)
+		public override void RightClick(Item item, Player player)
 		{
-			if (Player.armor[slot].ModItem is CursedAccessory && slot <= (Main.masterMode ? 9 : 8) + Player.extraAccessorySlots)
+			if (Main.mouseItem.type == ModContent.ItemType<CurseRemover>())
 			{
-				(Player.armor[slot].ModItem as CursedAccessory).GoingBoom = true;
-				Item.TurnToAir();
-			}
+				if (item.ModItem is CursedAccessory cursed)
+				{
+					cursed.GoingBoom = true;
+					Main.mouseItem.stack--;
 
-			return false;
+					if (Main.mouseItem.stack <= 0)
+						Main.mouseItem.TurnToAir();
+				}
+
+				item.stack++;
+			}
 		}
 	}
 }

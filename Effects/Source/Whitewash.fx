@@ -1,5 +1,5 @@
 float2 resolution;
-float3 outlineColor;
+float4 outlineColor;
 
 texture toDraw;
 sampler2D ToDraw = sampler_state
@@ -31,11 +31,11 @@ float4 main(VertexShaderOutput input) : COLOR
 	
     float4 color = tex2D(ToDraw, st);
     
-    color.x = 0.75 * color.a;
-    color.y = 0.04 * color.a;
-    color.z = 0.04 * color.a;
+    color.x = outlineColor.r * color.a;
+    color.y = outlineColor.g * color.a;
+    color.z = outlineColor.b * color.a;
 
-    return color;
+    return color * outlineColor.a;
 }
 
 technique Technique1

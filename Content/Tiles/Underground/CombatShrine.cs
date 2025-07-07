@@ -259,6 +259,8 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			if (effect != null)
 			{
+				effect.Parameters["outlineColor"].SetValue(new Vector4(0.75f, 0.04f, 0.04f, 1f));
+
 				spriteBatch.End();
 				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
 

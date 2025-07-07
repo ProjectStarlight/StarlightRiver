@@ -4,6 +4,7 @@ using StarlightRiver.Content.Backgrounds;
 using StarlightRiver.Content.Bestiary;
 using StarlightRiver.Content.Events;
 using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems.LightingSystem;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
 using System.Collections.Generic;
@@ -46,19 +47,22 @@ namespace StarlightRiver.Content.Biomes
 		{
 			if (!Main.gameMenu && IsSceneEffectActive(Main.LocalPlayer))
 			{
-				Texture2D tex = Assets.Noise.PerlinNoise.Value;
+				Texture2D tex = Assets.GradientV.Value;
 
 				sb.End();
 				sb.Begin(default, default, SamplerState.PointWrap, default, default);
 
-				sb.Draw(tex, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), new Rectangle((int)Main.GameUpdateCount / 3, 0, tex.Width, tex.Height), Color.White * fade * 0.2f);
+				Color color = Color.White;
+				color.A = 0;
 
-				Texture2D glowTex = Assets.Masks.Glow.Value;
+				int factor = 5;
 
-				float opacity = fade;
-				Color color = Color.Black * opacity;
+				sb.Draw(tex, new Rectangle(0, 0, Main.screenWidth / factor, Main.screenHeight), null, color * fade);
+				sb.Draw(tex, new Rectangle(Main.screenWidth - Main.screenWidth / factor, 0, Main.screenWidth / factor, Main.screenHeight), null, color * fade, 0f, default, SpriteEffects.FlipHorizontally, 0);
 
-				sb.Draw(glowTex, new Vector2(Main.screenWidth / 2, Main.screenHeight / 2), null, color, 0, glowTex.Size() / 2f, opacity * 10f, 0, 0);
+				tex = Assets.GradientH.Value;
+				sb.Draw(tex, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight / factor), null, color * fade, 0f, default, SpriteEffects.FlipVertically, 0);
+				sb.Draw(tex, new Rectangle(0, Main.screenHeight - Main.screenHeight / factor, Main.screenWidth, Main.screenHeight / factor), null, color * fade);
 			}
 		}
 
@@ -91,12 +95,20 @@ namespace StarlightRiver.Content.Biomes
 				}
 			}
 
-			if (StarlightRiver.debugMode && false)
+			if (StarlightRiver.debugMode && true)
 			{
 				Main.spriteBatch.Begin();
 				Rectangle target = ObservatorySystem.ObservatoryRoomWorld;
 				target.Offset((-Main.screenPosition).ToPoint());
 				Main.spriteBatch.Draw(Assets.MagicPixel.Value, target, Color.Green * 0.25f);
+
+				target = ObservatorySystem.ObservatoryRoomMidWorld;
+				target.Offset((-Main.screenPosition).ToPoint());
+				Main.spriteBatch.Draw(Assets.MagicPixel.Value, target, Color.Teal * 0.25f);
+
+				target = ObservatorySystem.ObservatoryRoomTopWorld;
+				target.Offset((-Main.screenPosition).ToPoint());
+				Main.spriteBatch.Draw(Assets.MagicPixel.Value, target, Color.Cyan * 0.25f);
 
 				target = ObservatorySystem.MainStructureWorld;
 				target.Offset((-Main.screenPosition).ToPoint());
@@ -121,18 +133,25 @@ namespace StarlightRiver.Content.Biomes
 		public static bool observatoryOpen;
 		public static bool pylonAppearsOn;
 
-		public static Rectangle ObservatoryRoomWorld => new(observatoryRoom.X * 16, observatoryRoom.Y * 16, observatoryRoom.Width * 16, observatoryRoom.Height * 16);
-		public static Rectangle MainStructureWorld => new(observatoryRoom.X * 16, observatoryRoom.Y * 16 + 7 * 16, observatoryRoom.Width * 16, observatoryRoom.Height * 16 * 2);
-		public static Rectangle SideStructureWorld => new(observatoryRoom.X * 16 - 9 * 16, observatoryRoom.Y * 16 + 11 * 16, 9 * 16, 10 * 16);
+		public static Rectangle ObservatoryRoomWorld => new(observatoryRoom.X * 16, observatoryRoom.Y * 16 + 16, observatoryRoom.Width * 16, observatoryRoom.Height * 16 - 16);
+		public static Rectangle ObservatoryRoomMidWorld => new(observatoryRoom.X * 16 + 32, observatoryRoom.Y * 16 - 16 * 2, observatoryRoom.Width * 16 - 64, 3 * 16);
+		public static Rectangle ObservatoryRoomTopWorld => new(observatoryRoom.X * 16 + 64, observatoryRoom.Y * 16 - 16 * 4, observatoryRoom.Width * 16 - 128, 2 * 16);
+		public static Rectangle MainStructureWorld => new(observatoryRoom.X * 16, observatoryRoom.Y * 16 + 7 * 16, observatoryRoom.Width * 16, 12 * 16);
+		public static Rectangle SideStructureWorld => new(observatoryRoom.X * 16 - 9 * 16, observatoryRoom.Y * 16 + 12 * 16, 9 * 16, 7 * 16);
 
 		public static bool IsInMainStructure(Player player)
 		{
 			return player.Hitbox.Intersects(MainStructureWorld) || player.Hitbox.Intersects(SideStructureWorld);
 		}
 
+		public static bool IsInTop(Player player)
+		{
+			return player.Hitbox.Intersects(ObservatoryRoomWorld) || player.Hitbox.Intersects(ObservatoryRoomMidWorld) || player.Hitbox.Intersects(ObservatoryRoomTopWorld);
+		}
+
 		public static bool IsInObservatory(Player player)
 		{
-			return IsInMainStructure(player) || player.Hitbox.Intersects(ObservatoryRoomWorld);
+			return IsInMainStructure(player) || IsInTop(player);
 		}
 
 		public override void ModifySunLightColor(ref Color tileColor, ref Color backgroundColor)

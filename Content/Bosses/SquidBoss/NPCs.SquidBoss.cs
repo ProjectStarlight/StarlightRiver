@@ -552,11 +552,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				NPC.position.X += (float)Math.Sin(GlobalTimer * 0.03f);
 				NPC.position.Y += (float)Math.Cos(GlobalTimer * 0.08f);
 
-				int tentacleLife = tentacles[0].lifeMax;
-
 				if (AttackTimer == 1)
 				{
-					if (NPC.life <= NPC.lifeMax - tentacleLife * 2) //phasing logic
+					if (NPC.life <= NPC.lifeMax * 0.75f) //phasing logic
 					{
 						Phase = (int)AIStates.FirstPhaseTwo;
 						GlobalTimer = 0;
@@ -617,8 +615,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			{
 				BossBarOverlay.forceInvulnerabilityVisuals = false;
 
-				int tentacleLife = tentacles[0].lifeMax;
-
 				if (GlobalTimer == 1)
 					savedPoint = NPC.Center;
 
@@ -655,7 +651,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 					if (AttackTimer == 1)
 					{
-						if (NPC.life <= NPC.lifeMax - tentacleLife * 4) //phasing logic
+						if (NPC.life <= NPC.lifeMax * 0.5f) //phasing logic
 						{
 							foreach (NPC tentacle in tentacles.Where(n => n.ai[0] == 1))
 								tentacle.Kill();
@@ -746,14 +742,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 				if (GlobalTimer > 300)
 				{
-					if (NPC.life < NPC.lifeMax / 4)
+					if (NPC.life < NPC.lifeMax * 0.25f)
 						NPC.dontTakeDamage = true; //health gate
 
 					AttackTimer++;
 
 					if (AttackTimer == 1)
 					{
-						if (NPC.life < NPC.lifeMax / 4) //phasing logic
+						if (NPC.life < NPC.lifeMax * 0.25f) //phasing logic
 						{
 							Phase = (int)AIStates.ThirdPhase;
 							GlobalTimer = 0;

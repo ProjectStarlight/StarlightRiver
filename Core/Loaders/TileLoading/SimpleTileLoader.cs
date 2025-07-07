@@ -164,6 +164,11 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 			this.compositeY = compositeY;
 		}
 
+		public override void SetStaticDefaults()
+		{
+			base.SetStaticDefaults();
+		}
+
 		public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 		{
 			Framing.SelfFrame8Way(i, j, Main.tile[i, j], resetFrame);

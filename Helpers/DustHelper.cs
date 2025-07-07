@@ -17,7 +17,7 @@ namespace StarlightRiver.Helpers
 		/// <param name="color"></param>
 		/// <param name="noGravity"></param>
 		/// <param name="rot"></param>
-		public static void SpawnImagePattern(Vector2 position, int dustType, float size, Texture2D tex, float dustSize = 1f, int Alpha = 0, Color? color = null, bool noGravity = true, float rot = 0.34f)
+		public static void SpawnImagePattern(Vector2 position, int dustType, float size, Texture2D tex, float dustSize = 1f, int Alpha = 0, Color? color = null, bool noGravity = true, float rot = 0.34f, float chance = 1f)
 		{
 			if (Main.netMode != NetmodeID.Server)
 			{
@@ -25,19 +25,76 @@ namespace StarlightRiver.Helpers
 				var data = new Color[tex.Width * tex.Height];
 				tex.GetData(data);
 
+				color ??= Color.White;
+
 				for (int i = 0; i < tex.Width; i += 2)
 				{
 					for (int j = 0; j < tex.Height; j += 2)
 					{
-						Color alpha = data[j * tex.Width + i];
-
-						if (alpha == new Color(255, 255, 255))
+						if (Main.rand.NextFloat() < chance)
 						{
-							double dustX = i - tex.Width / 2;
-							double dustY = j - tex.Height / 2;
-							dustX *= size;
-							dustY *= size;
-							Dust.NewDustPerfect(position, dustType, new Vector2((float)dustX, (float)dustY).RotatedBy(rotation), Alpha, (Color)color, dustSize).noGravity = noGravity;
+							Color alpha = data[j * tex.Width + i];
+
+							if (alpha == new Color(255, 255, 255))
+							{
+								double dustX = i - tex.Width / 2;
+								double dustY = j - tex.Height / 2;
+								dustX *= size;
+								dustY *= size;
+
+								var d = Dust.NewDustPerfect(position, dustType, new Vector2((float)dustX, (float)dustY).RotatedBy(rotation), Alpha, (Color)color, dustSize);
+
+								if (d != null)
+									d.noGravity = noGravity;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Spawns a still set of dusts from an image
+		/// </summary>
+		/// <param name="position"></param>
+		/// <param name="dustType"></param>
+		/// <param name="size"></param>
+		/// <param name="tex"></param>
+		/// <param name="dustSize"></param>
+		/// <param name="Alpha"></param>
+		/// <param name="color"></param>
+		/// <param name="noGravity"></param>
+		/// <param name="rot"></param>
+		/// <param name="chance"></param>
+		public static void SpawnStillImagePattern(Vector2 position, int dustType, float size, Texture2D tex, float dustSize = 1f, int Alpha = 0, Color? color = null, bool noGravity = true, float randomVel = 0f, float chance = 1f)
+		{
+			if (Main.netMode != NetmodeID.Server)
+			{
+				var data = new Color[tex.Width * tex.Height];
+				tex.GetData(data);
+
+				color ??= Color.White;
+
+				for (int i = 0; i < tex.Width; i += 2)
+				{
+					for (int j = 0; j < tex.Height; j += 2)
+					{
+						if (Main.rand.NextFloat() < chance)
+						{
+							Color alpha = data[j * tex.Width + i];
+
+							if (alpha == new Color(255, 255, 255))
+							{
+								float dustX = i - tex.Width / 2;
+								float dustY = j - tex.Height / 2;
+								dustX *= size;
+								dustY *= size;
+
+								var d = Dust.NewDustPerfect(position + new Vector2(dustX, dustY), dustType, Vector2.UnitX.RotatedByRandom(6.28f) * randomVel, Alpha, (Color)color, dustSize);
+
+								if (d != null)
+									d.noGravity = noGravity;
+							}
 						}
 					}
 				}

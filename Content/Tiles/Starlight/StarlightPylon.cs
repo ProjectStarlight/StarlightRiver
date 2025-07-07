@@ -107,11 +107,6 @@ namespace StarlightRiver.Content.Tiles.Starlight
 			}
 		}
 
-		public override void EmitParticles(int i, int j, Tile tile, short tileFrameX, short tileFrameY, Color tileLight, bool visible)
-		{
-			base.EmitParticles(i, j, tile, tileFrameX, tileFrameY, tileLight, visible);
-		}
-
 		/// <summary>
 		/// This is a re-implementation of the Dummy Tile class' behavior because we have some inheritence problems.
 		/// Oh well.

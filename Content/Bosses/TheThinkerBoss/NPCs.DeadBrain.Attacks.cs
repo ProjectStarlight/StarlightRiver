@@ -1233,9 +1233,9 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				Vector2 pos = sunflower(45, (int)index, ThisThinker.home);
 
 				if (safeMineIndicides.Contains((int)index))
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), pos, Vector2.Zero, ModContent.ProjectileType<FakeMindMine>(), Helpers.StarlightMathHelper.GetProjectileDamage(200, 150, 100), 1, Main.myPlayer, thinker.whoAmI);
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), pos, Vector2.Zero, ModContent.ProjectileType<FakeMindMine>(), Helpers.StarlightMathHelper.GetProjectileDamage(100, 150, 200), 1, Main.myPlayer, thinker.whoAmI);
 				else
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), pos, Vector2.Zero, ModContent.ProjectileType<ThinkerMindMine>(), Helpers.StarlightMathHelper.GetProjectileDamage(200, 150, 100), 1, Main.myPlayer, thinker.whoAmI);
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), pos, Vector2.Zero, ModContent.ProjectileType<ThinkerMindMine>(), Helpers.StarlightMathHelper.GetProjectileDamage(100, 150, 200), 1, Main.myPlayer, thinker.whoAmI);
 			}
 
 			if (AttackTimer > 300 && AttackTimer <= 400)

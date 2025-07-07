@@ -2,7 +2,6 @@
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using System.IO;
-using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -48,17 +47,22 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		{
 			if (Projectile.timeLeft == 659 || Main.expertMode && Projectile.timeLeft == 509 || Main.masterMode && Projectile.timeLeft == 359)
 			{
-				int y = (int)Projectile.Center.Y / 16 - 28;
-
-				int xOff = (parent.ModNPC as SquidBoss).variantAttack ? 18 : -76;
-
-				for (int k = 0; k < 59; k++)
+				if (parent.ModNPC is SquidBoss squid)
 				{
-					if (Main.masterMode && ((k + 1) % 20 <= 5 || (k + 1) % 20 >= 15))
-						continue;
+					int y = (int)Projectile.Center.Y / 16 - 28;
 
-					int x = (int)Projectile.Center.X / 16 + xOff + k;
-					ValidPoints.Add(new Point16(x, y));
+					for (int k = 0; k < 60; k++)
+					{
+						if (Main.masterMode && ((k + 1) % 20 <= 5 || (k + 1) % 20 >= 15))
+							continue;
+
+						int x = (int)squid.arenaActor.Center.X / 16 - 30 + k;
+						ValidPoints.Add(new Point16(x, y));
+					}
+				}
+				else
+				{
+					Projectile.active = false;
 				}
 			}
 
@@ -92,32 +96,40 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			if (Main.masterMode)
 				color = new Color(1, 0.65f + sin * 0.25f, 0.25f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
 
+			Color colorAlpha = color;
+			colorAlpha.A = 0;
+
 			if (Main.netMode != NetmodeID.Server)
 			{
 				for (int k = 0; k < rect.Height; k += 500)
 				{
-					int i = Dust.NewDust(rect.TopLeft() + Vector2.UnitY * k, rect.Width, rect.Height - k, ModContent.DustType<Dusts.Glow>(), 0, -6, 0, color, Main.rand.NextFloat(0.4f, 0.6f));
-					Main.dust[i].noLight = true;
+					Dust.NewDust(rect.TopLeft() + Vector2.UnitY * k, rect.Width, rect.Height - k, ModContent.DustType<Dusts.PixelatedEmber>(), 0, -6, 0, colorAlpha, Main.rand.NextFloat(0.1f, 0.2f));
 				}
 			}
 
 			if (Projectile.timeLeft > 30)
 			{
-				Vector2 endPos = Projectile.Center - Vector2.UnitY * (height - 84);
+				Vector2 endPos = Projectile.Center - Vector2.UnitY * height;
 
 				for (int k = 0; k < 5; k++)
 				{
-					Vector2 vel = Vector2.UnitY.RotatedByRandom(2f) * Main.rand.NextFloat(15);
-					Dust.NewDustPerfect(endPos, ModContent.DustType<Dusts.ColoredSpark>(), vel, 0, color, Main.rand.NextFloat(1.2f, 2.6f));
+					Vector2 vel = Vector2.UnitY.RotatedByRandom(2f) * Main.rand.NextFloat(10, 25);
+					Dust.NewDustPerfect(endPos, ModContent.DustType<Dusts.PixelatedImpactLineDust>(), vel, 0, colorAlpha, Main.rand.NextFloat(0.1f, 0.2f));
 				}
 
 				if (CameraSystem.shake < 10)
 					CameraSystem.shake += (int)Math.Max(0, 1.5f - Math.Abs(Main.LocalPlayer.Center.X - endPos.X) * 0.0025f);
+
+				Lighting.AddLight(endPos, color.ToVector3() * 2);
 			}
+
+			// Adjust 1 tile down to prevent hitting the player while ontop of blocks
+			rect.Height -= 16;
+			rect.Y += 16;
 
 			if (Main.netMode != NetmodeID.Server && Main.LocalPlayer.Hitbox.Intersects(rect)) // Damage is dictated by the local client for that more fair seeming hitboxes
 			{
-				Main.LocalPlayer.Hurt(PlayerDeathReason.ByCustomReason(NetworkText.FromKey("Mods.StarlightRiver.Deaths.AuroracleLaser", Main.LocalPlayer.name)), 50, 0);
+				Main.LocalPlayer.Hurt(PlayerDeathReason.ByCustomReason(NetworkText.FromKey("Mods.StarlightRiver.Deaths.AuroracleLaser", Main.LocalPlayer.name)), Projectile.damage, 0);
 			}
 		}
 
@@ -160,7 +172,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				Vector2 pos = Projectile.Center + Vector2.UnitY * -k - Main.screenPosition;
 				int thisHeight = k > (adjustedLaserHeight - 500) ? (adjustedLaserHeight % 500) : 500;
 
-				var source = new Rectangle((int)(Timer * 0.01f * -texBeam.Width), 0, (int)(texBeam.Width * thisHeight / 500f), texBeam.Height);
+				var source = new Rectangle((int)(Timer * 0.015f * -texBeam.Width), 0, (int)(texBeam.Width * thisHeight / 500f), texBeam.Height);
 				var source1 = new Rectangle((int)(Timer * 0.023f * -texBeam.Width), 0, (int)(texBeam.Width * thisHeight / 500f), texBeam.Height);
 				var source2 = new Rectangle(0, 0, (int)(texBeam2.Width * thisHeight / 500f), texBeam2.Height);
 
@@ -169,7 +181,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				var target3 = new Rectangle((int)pos.X, (int)pos.Y, thisHeight, (int)(50 * alpha));
 
 				spriteBatch.Draw(texBeam, target, source, color * 0.65f, -1.57f, origin, 0, 0);
-				spriteBatch.Draw(texBeam, target, source1, color * 0.45f, -1.57f, origin, 0, 0);
+				spriteBatch.Draw(texBeam, target, source1, color * 0.6f, -1.57f, origin, 0, 0);
 				spriteBatch.Draw(texBeam2, target2, source2, color * 0.65f, -1.57f, origin2, 0, 0);
 				spriteBatch.Draw(texBeam2, target3, source2, color * 1.1f, -1.57f, origin2, 0, 0);
 			}

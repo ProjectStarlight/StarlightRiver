@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			NPC.width = 34;
 			NPC.height = 34;
 			NPC.knockBackResist = 1f;
-			NPC.lifeMax = 25;
+			NPC.lifeMax = 60;
 			NPC.noGravity = true;
 			NPC.noTileCollide = true;
 			NPC.damage = 35;

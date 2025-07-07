@@ -35,13 +35,13 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 {
     float2 coords = input.TexCoords;
     float4 uColor = input.Color;
-    float alpha = max(max(uColor.r, uColor.g), uColor.b);
     
     float4 sam = tex2D(uImage0, coords);
 	float4 color = uColor * sam;
     float lum = GetLuminance(sam.xyz);
-    lum = (alpha - 0.5) * 2.0 * pow(lum, 2.0);
-    color.xyz = color.xyz * (1.0 - lum) + float3(1.0, 1.0, 1.0) * lum;
+    float added = clamp(lum - 0.5, 0.0, 0.5);
+    
+    color.rgb += float3(added, added, added) * uColor.a;
     color.a = 0.0;
 
 	return color;
