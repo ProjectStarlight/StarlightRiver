@@ -1,4 +1,6 @@
-﻿using StarlightRiver.Core.DrawingRigs;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Bosses.TheThinkerBoss;
+using StarlightRiver.Core.DrawingRigs;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.ArmatureSystem;
 using StarlightRiver.Core.Systems.PixelationSystem;
@@ -435,7 +437,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 						swingTrailCache.Add(endPoint);
 
 						float colProg = (AttackTimer - windupDuration) / swingDuration;
-						Dust.NewDustPerfect(endPoint + Main.rand.NextVector2Circular(4f, 4f), ModContent.DustType<Dusts.PixelatedImpactLineDust>(), endPoint.DirectionTo(prev).RotatedBy(0.5f * NPC.direction) * (3 + 3 * prog), 0, new Color(1, colProg, colProg, 0), 0.5f * colProg);
+						Dust.NewDustPerfect(endPoint + Main.rand.NextVector2Circular(4f, 4f), ModContent.DustType<Dusts.PixelatedImpactLineDust>(), endPoint.DirectionTo(prev).RotatedBy(0.5f * NPC.direction) * (3 + 3 * prog), 0, new Color(1, colProg, colProg * 0.8f, 0), 0.5f * colProg);
 					}
 
 					// Collision
@@ -526,7 +528,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 					float r = 1f;
 					float g = 0.5f * trueFactor;
-					float b = 0.5f * trueFactor;
+					float b = 0.4f * trueFactor;
 					color = new Color(r, g, b, 1);
 
 					return color * alpha;
@@ -550,28 +552,33 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			if (State > 0)
 				frameY += 3;
 
+			SpriteEffects effects = NPC.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+			Vector2 origin = NPC.direction == 1 ? Vector2.Zero : new Vector2(0, 0);
+
+			if (Flipping)
+			{
+				if (FlipProg > 0.5f)
+				{
+					effects = NPC.direction == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+					origin = NPC.direction == -1 ? Vector2.Zero : new Vector2(0, 0);
+				}
+			}
+
 			for (int k = 0; k < stringPoints.Length; k++)
 			{
+				if (k == 2)
+				{
+					DrawCowl(spriteBatch);
+				}
+
 				Vector2 point = stringPoints[k];
 				StaticRigPoint rigPoint = rig.Points[k];
-
-				SpriteEffects effects = NPC.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-				Vector2 origin = NPC.direction == 1 ? Vector2.Zero : new Vector2(0, 0);
-
-				if (Flipping)
-				{
-					if (FlipProg > 0.5f)
-					{
-						effects = NPC.direction == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-						origin = NPC.direction == -1 ? Vector2.Zero : new Vector2(0, 0);
-					}
-				}
 
 				Vector2 targetPos = point + origin - Main.screenPosition;
 				var frame = new Rectangle(rigPoint.Frame * 42, frameY * 54, 42, 54);
 
 				spriteBatch.Draw(tex, targetPos, frame, drawColor, stringRotations[k] + NPC.rotation, new Vector2(21, 27), 1f, effects, 0);
-				spriteBatch.Draw(texGlow, targetPos, frame, Color.White, stringRotations[k] + NPC.rotation, new Vector2(21, 27), 1f, effects, 0);
+				spriteBatch.Draw(texGlow, targetPos, frame, new Color(100, 100, 100, 100), stringRotations[k] + NPC.rotation, new Vector2(21, 27), 1f, effects, 0);
 			}
 
 			// Enqueues the pixelated links
@@ -585,6 +592,9 @@ namespace StarlightRiver.Content.NPCs.Crimson
 					{
 						effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.1f);
 						effect.Parameters["u_speed"].SetValue(1f);
+						effect.Parameters["color1"].SetValue(new Vector3(0.9f, 0.7f, 0.6f));
+						effect.Parameters["color2"].SetValue(new Vector3(0.9f, 0.8f, 0.6f));
+						effect.Parameters["color3"].SetValue(new Vector3(0.95f, 0.6f, 0.8f));
 
 						spriteBatch.End();
 						spriteBatch.Begin(default, default, default, default, Main.Rasterizer, effect);
@@ -636,6 +646,49 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			}
 
 			return false;
+		}
+
+		private void DrawCowl(SpriteBatch spriteBatch)
+		{
+			Texture2D texGlow = Assets.NPCs.Crimson.RevenantCowl.Value;
+
+			SpriteEffects effects = NPC.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+			Vector2 origin = NPC.direction == 1 ? new Vector2(2, 0) : new Vector2(-2, 0);
+
+			if (Flipping)
+			{
+				if (FlipProg > 0.5f)
+				{
+					effects = NPC.direction == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+					origin = NPC.direction == 1 ? new Vector2(2, 0) : new Vector2(-2, 0);
+				}
+			}
+
+			Effect bodyShader = ShaderLoader.GetShader("ThinkerBody").Value;
+
+			if (bodyShader != null)
+			{
+				bodyShader.Parameters["u_resolution"].SetValue(texGlow.Size());
+				bodyShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f);
+				bodyShader.Parameters["sampleScale"].SetValue(6f);
+
+				bodyShader.Parameters["mainbody_t"].SetValue(texGlow);
+				bodyShader.Parameters["linemap_t"].SetValue(Assets.Invisible.Value);
+				bodyShader.Parameters["noisemap_t"].SetValue(Assets.Noise.ShaderNoise.Value);
+				bodyShader.Parameters["overlay_t"].SetValue(Assets.Invisible.Value);
+				bodyShader.Parameters["normal_t"].SetValue(Assets.MagicPixel.Value);
+				bodyShader.Parameters["u_color"].SetValue(new Vector3(0.7f, 0.3f, 0.3f));
+				bodyShader.Parameters["u_fade"].SetValue(new Vector3(0.3f, 0.5f, 0.3f));
+				bodyShader.Parameters["mask_t"].SetValue(Assets.MagicPixel.Value);
+
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, SamplerState.PointWrap, default, Main.Rasterizer, bodyShader, Main.GameViewMatrix.TransformationMatrix);
+
+				spriteBatch.Draw(texGlow, stringPoints[bodySegment] - Main.screenPosition, null, new Color(255, 255, 255, 0), stringRotations[bodySegment] + NPC.rotation, new Vector2(21, 27), 1f, effects, 0);
+
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, default, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+			}
 		}
 	}
 }

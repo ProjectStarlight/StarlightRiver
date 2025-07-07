@@ -863,6 +863,9 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				{
 					effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.1f);
 					effect.Parameters["u_speed"].SetValue(0.5f);
+					effect.Parameters["color1"].SetValue(new Vector3(0.65f, 0.64f, 0.87f));
+					effect.Parameters["color2"].SetValue(new Vector3(0.5f, 0.87f, 0.87f));
+					effect.Parameters["color3"].SetValue(new Vector3(0.95f, 0.59f, 0.78f));
 
 					spriteBatch.End();
 					spriteBatch.Begin(default, default, default, default, Main.Rasterizer, effect);
