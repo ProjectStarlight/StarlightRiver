@@ -163,7 +163,9 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
-			ModContent.GetInstance<StarlightWorld>().GraymatterGen(new GenerationProgress(), null);
+			
+
+			//ModContent.GetInstance<StarlightWorld>().GraymatterGen(new GenerationProgress(), null);
 			return true;
 
 			//StarlightWorld.FlipFlag(WorldFlags.ThinkerBossOpen);
