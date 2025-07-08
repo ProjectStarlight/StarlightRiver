@@ -2,6 +2,7 @@
 using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.Misc;
+using StarlightRiver.Core.Systems.PixelationSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -461,7 +462,6 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			Projectile.tileCollide = true;
 			Projectile.ignoreWater = true;
 			Projectile.damage = 5;
-			Projectile.hide = true;
 		}
 
 		public override void SetStaticDefaults()
@@ -483,7 +483,8 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			SoundEngine.PlaySound(SoundID.Item45, Projectile.Center);
 			for (int k = 0; k <= 10; k++)
 			{
-				var d = Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5), 0, new Color(255, 150, 50), 0.5f);
+				Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.PixelatedImpactLineDust>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3, 7), 0, new Color(255, Main.rand.Next(100), 0, 0), 0.2f);
+				var d = Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.PixelatedEmber>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5), 0, new Color(255, 150, 20, 0), 0.1f);
 				d.noGravity = false;
 			}
 		}
@@ -491,12 +492,25 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D tex = Assets.Masks.GlowHarshAlpha.Value;
+			Texture2D texMain = Assets.Misc.Circle.Value;
 
-			for (int i = 0; i < oldPos.Count; i++)
+			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("OverPlayers", () =>
 			{
-				Main.spriteBatch.Draw(tex, oldPos[i] - Main.screenPosition, tex.Frame(), new Color(255, 70, 0, 0) * (i / (float)oldPos.Count), 0, tex.Size() / 2, 1.5f, 0, 0);
-				Main.spriteBatch.Draw(tex, oldPos[i] - Main.screenPosition, tex.Frame(), new Color(255, 255, 255, 0) * (i / (float)oldPos.Count) * 0.5f, 0, tex.Size() / 2, 0.75f, 0, 0);
-			}
+
+				Vector2 last = Projectile.Center;
+				for (int i = oldPos.Count - 1; i > 0; i--)
+				{
+					var prog = (i / (float)oldPos.Count);
+					Vector2 target = last - oldPos[i].DirectionFrom(oldPos[i - 1]) * Math.Min(5, Projectile.velocity.Length());
+					last = target;
+
+					Main.spriteBatch.Draw(tex, target - Main.screenPosition, null, new Color(255, 100, 0, 0) * prog, 0, tex.Size() / 2, 1.2f * prog, 0, 0);
+					Main.spriteBatch.Draw(texMain, target - Main.screenPosition, null, new Color(255, 255, 200, 0) * prog, 0, texMain.Size() / 2, 0.2f * prog, 0, 0);
+				}
+
+				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 100, 0, 0), 0, tex.Size() / 2f, 1.2f, 0, 0);
+				Main.spriteBatch.Draw(texMain, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 200, 0), 0, texMain.Size() / 2f, 0.2f, 0, 0);
+			});
 
 			return false;
 		}
