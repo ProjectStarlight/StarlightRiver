@@ -402,7 +402,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), spikePos, Vector2.Zero, ProjectileType<GlassRaiseSpike>(), LargeProjectileDamage, 1f, owner: -1, -20, dist);
 			}
 
-			if (AttackTimer > spikeSpawn + spikeCount * betweenSpikes + 120)
+			if (AttackTimer > spikeSpawn + spikeCount * betweenSpikes + 160)
 				ResetAttack();
 
 		}
@@ -467,7 +467,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				raise.direction = -NPC.direction; //TODO: not actually synced for multiplayer but this is such a minor visual maybe we don't need to
 			}
 
-			if (AttackTimer > spikeSpawn + spikeCount * betweenSpikes + 120)
+			if (AttackTimer > spikeSpawn + spikeCount * betweenSpikes + 160)
 				ResetAttack();
 		}
 
