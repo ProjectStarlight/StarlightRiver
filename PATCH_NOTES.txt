@@ -51,6 +51,7 @@
 - ↑ Electro arrows can now hit up to 4 targets, chain randomly instead of failing to chain if targets are already debuffed, and have refreshed audiovisual effects
 - = Man eater pot now uses local immunity
 - = All manabonds now use local immunity
+- = Shattered aegis' damage now scales with your defense instead of damage taken
 - ↓ Corpseflower damage penalty 55% => 65%
 - ↓ Druidic manabond now requires beeswax (queen bee drop) to craft
 - ↓ Palestone nail now requires demonite/crimtane bars to craft instead of silver/tungsten
@@ -63,6 +64,9 @@
 - When holding an uncharged magnet, charged enemies spawn twice as often as previously
 - Loot wraiths are more common
 - Living blood drops more often
+
+## Misc
+- Various visual effects throughout the mod have been updated
 
 ## Fixes
 - Fixed an issue where all stackable buffs failed to sync in multiplayer

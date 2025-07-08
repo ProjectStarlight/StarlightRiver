@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void SafeNearbyEffects(int i, int j, bool closer)
 		{
-			if (Main.rand.NextBool(50))
+			if (Main.rand.NextBool(200))
 			{
 				var pos = new Vector2(i * 16 + Main.rand.Next(16), j * 16 + Main.rand.Next(16));
 
