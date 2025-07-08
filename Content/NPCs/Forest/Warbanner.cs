@@ -194,7 +194,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 						var dist = Main.rand.NextFloat();
 
 						var d = Dust.NewDustPerfect(NPC.Center, DustType<BannerBuffDust>(), Vector2.UnitY * Main.rand.NextFloat(-4, -1), 0, new Color(1f, (1f - dist) * 0.6f, 0, 0), Main.rand.NextFloat(0.3f, 0.5f));
-						d.customData = (NPC, Vector2.UnitY * 48 + Vector2.One.RotatedByRandom(6.28f) * dist * 170);
+						d.customData = (NPC, Vector2.UnitY * 48 + Vector2.One.RotatedByRandom(6.28f) * VFXAlpha * dist * 170);
 					}
 
 					for (int k = 0; k < targets.Count; k++)
@@ -276,23 +276,23 @@ namespace StarlightRiver.Content.NPCs.Forest
 
 		private void DrawBestiary(SpriteBatch spriteBatch, Vector2 screenPos)
 		{
+			var target = new Rectangle((int)NPC.Center.X - 8, (int)NPC.Center.Y - 24, 16, 70);
+			spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, target, new Color(55, 0, 0));
+			target.Inflate(-2, -2);
+			spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, target, new Color(200, 60, 30));
+
+			target = new Rectangle((int)NPC.Center.X - 10 - 5, (int)NPC.Center.Y - 24, 10, 60);
+			spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, target, new Color(55, 0, 0));
+			target.Inflate(-2, -2);
+			spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, target, new Color(120, 20, 20));
+
+			target = new Rectangle((int)NPC.Center.X + 10 - 5, (int)NPC.Center.Y - 24, 10, 60);
+			spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, target, new Color(55, 0, 0));
+			target.Inflate(-2, -2);
+			spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, target, new Color(120, 20, 20));
+
 			Texture2D tex = Request<Texture2D>(Texture).Value;
-			spriteBatch.Draw(tex, NPC.Center + new Vector2(0, -32) - screenPos, null, Color.White, NPC.rotation, tex.Size() / 2f, NPC.scale, 0, 0);
-
-			var target = new Rectangle((int)NPC.Center.X - 14, (int)NPC.Center.Y - 16, 28, 100);
-			spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, target, new Color(55, 0, 0));
-			target.Inflate(-2, 0);
-			spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, target, new Color(200, 30, 30));
-
-			target = new Rectangle((int)NPC.Center.X - 22 - 4, (int)NPC.Center.Y - 16, 8, 100);
-			spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, target, new Color(55, 0, 0));
-			target.Inflate(-2, 0);
-			spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, target, new Color(160, 20, 20));
-
-			target = new Rectangle((int)NPC.Center.X + 22 - 4, (int)NPC.Center.Y - 16, 8, 100);
-			spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, target, new Color(55, 0, 0));
-			target.Inflate(-2, 0);
-			spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, target, new Color(160, 20, 20));
+			spriteBatch.Draw(tex, NPC.Center - screenPos, null, Color.White, NPC.rotation, tex.Size() / 2f, NPC.scale, 0, 0);
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
