@@ -111,7 +111,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 						{
 							for (int k = -1; k <= 1; k++)
 							{
-								Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Normalize(Main.player[NPC.target].Center - NPC.Center).RotatedBy(k * 0.5f) * 6, ProjectileType<Bosses.VitricBoss.GlassSpike>(), 10, 0);
+								Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Normalize(Main.player[NPC.target].Center - NPC.Center).RotatedBy(k * 0.5f) * 6, ProjectileType<Bosses.VitricBoss.GlassSpike>(), StarlightMathHelper.GetProjectileDamage(15, 30, 60), 0);
 							}
 						}
 

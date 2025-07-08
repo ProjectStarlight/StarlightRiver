@@ -99,7 +99,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 					proj.scale = Main.rand.NextFloat(0.55f, 0.85f);
 				}
 
-				Projectile.NewProjectile(NPC.GetSource_Death(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<CoachGunRing>(), 60, 4, Target.whoAmI);
+				Projectile.NewProjectile(NPC.GetSource_Death(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<CoachGunRing>(), StarlightMathHelper.GetProjectileDamage(40, 80, 120), 4, Target.whoAmI);
 				return true;
 			}
 
@@ -148,7 +148,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 					NPC.velocity = projVel * -1;
 					magmaCharge = 0;
 					chargingMagma = false;
-					Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, projVel, ModContent.ProjectileType<FirebugMagma>(), 45, 4);
+					Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, projVel, ModContent.ProjectileType<FirebugMagma>(), StarlightMathHelper.GetProjectileDamage(20, 40, 80), 4);
 				}
 			}
 			else
@@ -461,7 +461,6 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			Projectile.timeLeft = 180;
 			Projectile.tileCollide = true;
 			Projectile.ignoreWater = true;
-			Projectile.damage = 5;
 		}
 
 		public override void SetStaticDefaults()
