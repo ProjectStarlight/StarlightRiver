@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Content.Packets;
 using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems.PixelationSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -14,8 +15,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		private List<Vector2> cache;
 		private Trail trail;
 
-		public float TimeFade => 1 - Projectile.timeLeft / 20f;
-		public float Radius => Eases.BezierEase((20 - Projectile.timeLeft) / 20f) * Projectile.ai[0];
+		public float TimeFade => 1 - Projectile.timeLeft / 30f;
+		public float Radius => Eases.BezierEase((30 - Projectile.timeLeft) / 30f) * Projectile.ai[0];
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -25,7 +26,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			Projectile.width = 1;
 			Projectile.height = 1;
 			Projectile.tileCollide = false;
-			Projectile.timeLeft = 20;
+			Projectile.timeLeft = 30;
 			Projectile.penetrate = -1;
 		}
 
@@ -34,15 +35,15 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			if (Main.netMode != NetmodeID.Server)
 			{
 				ManageCaches(ref cache);
-				ManageTrail(ref trail, cache, 50);
+				ManageTrail(ref trail, cache, (int)(25 * Math.Min(1, Projectile.timeLeft / 15f)));
 			}
 
-			for (int k = 0; k < 8; k++)
+			for (int k = 0; k < 4; k++)
 			{
 				float rot = Main.rand.NextFloat(0, 6.28f);
 
 				if (Main.netMode != NetmodeID.Server)
-					Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedBy(rot) * (Radius + 15), ModContent.DustType<Dusts.PixelatedEmber>(), Vector2.One.RotatedBy(rot + Main.rand.NextFloat(1.1f, 1.3f)) * Main.rand.NextFloat(3), 0, new Color(255, 120 + (int)(100 * (float)Math.Sin(TimeFade * 3.14f)), 65, 0), 0.1f);
+					Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedBy(rot) * (Radius + 20), ModContent.DustType<Dusts.PixelatedEmber>(), Vector2.One.RotatedBy(rot + Main.rand.NextFloat(1.1f, 1.3f)) * Main.rand.NextFloat(3), 0, new Color(255, 120 + (int)(100 * (float)Math.Sin(TimeFade * 3.14f)), 65, 0), 0.1f);
 			}
 		}
 
@@ -111,20 +112,23 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			if (effect != null)
 			{
-				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-				Matrix view = Main.GameViewMatrix.TransformationMatrix;
-				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+				ModContent.GetInstance<PixelationSystem>().QueueRenderAction("UnderProjectiles", () =>
+				{
+					var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+					Matrix view = Main.GameViewMatrix.TransformationMatrix;
+					var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-				effect.Parameters["time"].SetValue(Projectile.timeLeft * 0.01f);
-				effect.Parameters["repeats"].SetValue(6);
-				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-				effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
+					effect.Parameters["time"].SetValue(Projectile.timeLeft * 0.01f);
+					effect.Parameters["repeats"].SetValue((int)(Projectile.ai[0] / 6));
+					effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+					effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
-				trail?.Render(effect);
+					trail?.Render(effect);
 
-				effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
+					effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
 
-				trail?.Render(effect);
+					trail?.Render(effect);
+				});
 			}
 		}
 	}
