@@ -558,12 +558,12 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				{
 					for (int i = 0; i < 3; i++)
 					{
-						Projectile.NewProjectile(NPC.GetSource_FromThis(), OrbPos, Rotation.ToRotationVector2().RotatedBy(0.2f * (i - 1)) * 5, ModContent.ProjectileType<DreambeastProj>(), 66, 2);
+						Projectile.NewProjectile(NPC.GetSource_FromThis(), OrbPos, Rotation.ToRotationVector2().RotatedBy(0.2f * (i - 1)) * 5, ModContent.ProjectileType<DreambeastProj>(), StarlightMathHelper.GetProjectileDamage(50, 100, 150), 2);
 					}
 
 					for (int i = 0; i < 2; i++)
 					{
-						Projectile.NewProjectile(NPC.GetSource_FromThis(), OrbPos, Rotation.ToRotationVector2().RotatedBy(MathHelper.Pi * 2 / 3 * (i == 0 ? -1 : 1)).RotatedByRandom(MathHelper.Pi / 3) * 10, ModContent.ProjectileType<DreambeastProjHome>(), 66, 2, -1, NPC.target);
+						Projectile.NewProjectile(NPC.GetSource_FromThis(), OrbPos, Rotation.ToRotationVector2().RotatedBy(MathHelper.Pi * 2 / 3 * (i == 0 ? -1 : 1)).RotatedByRandom(MathHelper.Pi / 3) * 10, ModContent.ProjectileType<DreambeastProjHome>(), StarlightMathHelper.GetProjectileDamage(50, 100, 150), 2, -1, NPC.target);
 					}
 				}
 			}
