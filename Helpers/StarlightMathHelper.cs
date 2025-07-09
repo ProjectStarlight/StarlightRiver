@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Numerics;
 
 namespace StarlightRiver.Helpers
 {
@@ -36,6 +33,27 @@ namespace StarlightRiver.Helpers
 				return life;
 
 			return (int)(life * Math.Min(0.95f * playerCount, 0.1f * Math.Pow(playerCount, 1.5f) + 0.9f * vanillaFactor));
+		}
+
+		/// <summary>
+		/// Gets the trail progress for a trail rendering prematurely, adjusted to squeeze into the existing length
+		/// </summary>
+		/// <param name="realFactor">The factor parameter of the trials callback</param>
+		/// <param name="trailLength">The total length of the trial</param>
+		/// <param name="populatedUpTo">The amount of trail points with meaningful values</param>
+		/// <returns></returns>
+		public static float GetEarlyTrailFactor(float realFactor, int trailLength, int populatedUpTo)
+		{
+			if (populatedUpTo >= trailLength)
+				return realFactor;
+
+			int skip = trailLength - populatedUpTo;
+			int index = (int)(realFactor * trailLength) - 2;
+
+			if (index < skip)
+				return 0f;
+			else
+				return (index - skip) / (float)populatedUpTo;
 		}
 	}
 }

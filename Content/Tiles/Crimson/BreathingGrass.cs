@@ -27,33 +27,6 @@ namespace StarlightRiver.Content.Tiles.Crimson
 			QuickBlock.QuickSetFurniture(this, 1, 1, DustID.Blood, SoundID.Grass, Color.Red);
 		}
 
-		public override void NearbyEffects(int i, int j, bool closer)
-		{
-			return;
-
-			Vector2 logicPos = new Vector2(i, j + 1) * 16;
-
-			float dist = Vector2.Distance(logicPos, Main.LocalPlayer.Center);
-			float yDist = Main.LocalPlayer.Center.X > logicPos.X ? 600 : 0;
-
-			Tile tile = Framing.GetTileSafely(i, j);
-
-			if (tile.TileFrameX != dist)
-				tile.TileFrameX += (short)((dist - tile.TileFrameX) * 0.1f);
-
-			if (tile.TileFrameY != yDist)
-				tile.TileFrameY += (short)((yDist - tile.TileFrameY) * 0.02f);
-
-			if (tile.TileFrameX > 160)
-				tile.TileFrameX = 160;
-
-			if (tile.TileFrameY > 600)
-				tile.TileFrameY = 600;
-
-			if (tile.TileFrameY < 0)
-				tile.TileFrameY = 0;
-		}
-
 		public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 		{
 			var tile = Main.tile[i, j];
