@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			}
 		}
 
-		public void SpawnProjectile(int direction = -1, int offset = -99, float speed = 5)
+		public void SpawnProjectile(int direction = -1, int offset = -99, float speed = 5, int duration = 320)
 		{
 			if (direction == -1 || direction > 3)
 				direction = Main.rand.Next(4);
@@ -53,16 +53,16 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			switch (direction)
 			{
 				case 0:
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), (int)home.X - 776, (int)home.Y + offset * 194, speed, 0, ModContent.ProjectileType<HallucinationHazard>(), 30, 1, Main.myPlayer);
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), (int)home.X - 776, (int)home.Y + offset * 194, speed, 0, ModContent.ProjectileType<HallucinationHazard>(), 30, 1, Main.myPlayer, 0, duration);
 					break;
 				case 1:
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), (int)home.X + 776, (int)home.Y + offset * 194, -speed, 0, ModContent.ProjectileType<HallucinationHazard>(), 30, 1, Main.myPlayer);
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), (int)home.X + 776, (int)home.Y + offset * 194, -speed, 0, ModContent.ProjectileType<HallucinationHazard>(), 30, 1, Main.myPlayer, 0, duration);
 					break;
 				case 2:
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), (int)home.X + offset * 194, (int)home.Y - 800, 0, speed, ModContent.ProjectileType<HallucinationHazard>(), 30, 1, Main.myPlayer);
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), (int)home.X + offset * 194, (int)home.Y - 800, 0, speed, ModContent.ProjectileType<HallucinationHazard>(), 30, 1, Main.myPlayer, 0, duration);
 					break;
 				case 3:
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), (int)home.X + offset * 194, (int)home.Y + 800, 0, -speed, ModContent.ProjectileType<HallucinationHazard>(), 30, 1, Main.myPlayer);
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), (int)home.X + offset * 194, (int)home.Y + 800, 0, -speed, ModContent.ProjectileType<HallucinationHazard>(), 30, 1, Main.myPlayer, 0, duration);
 					break;
 			}
 		}
@@ -165,10 +165,10 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 						SpawnBlock(0, k, 3);
 					}
 
-					if (k == skip && Main.expertMode)
+					if (k == skip && Main.expertMode && Timer % 400 == 0)
 					{
-						SpawnProjectile(0, k - 1, 3);
-						SpawnProjectile(0, k + 1, 3);
+						SpawnProjectile(0, k - 1, 3, 560);
+						SpawnProjectile(0, k + 1, 3, 560);
 					}
 				}
 			}

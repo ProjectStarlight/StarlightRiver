@@ -357,6 +357,8 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				Timer++;
 				AttackTimer++;
 
+				heartPetalProgress = 0;
+
 				if (bloomProgress < 150)
 					bloomProgress++;
 
@@ -397,16 +399,12 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				if (ExtraGrayAuraRadius < 600 && Timer <= 1140)
 					ExtraGrayAuraRadius += 4f;
 
-				AttackState = 1;
 				switch(AttackState)
 				{
 					case 0: AlternatingDirections(); break;
 					case 1: FlappyBird(); break;
 					case 2: RainingHazzards(); break;
 				}
-
-				if (Timer == 1199)
-					Timer = 0;
 
 				if (Timer > 1140)
 				{
@@ -427,6 +425,15 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 						if (npc.ModNPC is HallucinationBlock hb)
 						{
 							hb.Timer = 500;
+						}
+					}
+
+					foreach (Projectile proj in Main.ActiveProjectiles)
+					{
+						if (proj.ModProjectile is HallucinationHazard hz)
+						{
+							hz.Duration = 90;
+							hz.Timer = 60;
 						}
 					}
 				}

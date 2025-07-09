@@ -6,10 +6,12 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 {
 	internal class HallucinationHazard : ModProjectile
 	{
+		public int turnTimer;
+
 		public static List<HallucinationHazard> toRender = new();
 
 		public ref float Timer => ref Projectile.ai[0];
-		public ref float TurnTime => ref Projectile.ai[1];
+		public ref float Duration => ref Projectile.ai[1];
 		public ref float TimeTillTurn => ref Projectile.ai[2];
 
 		public override string Texture => AssetDirectory.Invisible;
@@ -29,7 +31,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			Projectile.width = 120;
 			Projectile.height = 120;
 			Projectile.tileCollide = false;
-			Projectile.timeLeft = 320;
+			Projectile.timeLeft = 2;
 			Projectile.hostile = true;
 			Projectile.penetrate = -1;
 		}
@@ -38,20 +40,22 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		{
 			Timer++;
 
-			if (Timer > 320)
+			if (Timer > Duration)
 				Projectile.timeLeft = 0;
+			else
+				Projectile.timeLeft = 2;
 
 			if (Timer >= TimeTillTurn)
 			{
-				TurnTime = 20;
+				turnTimer = 20;
 				TimeTillTurn += Main.rand.Next(40, 90);
 				Projectile.netUpdate = true;
 			}
 
-			if (TurnTime > 0)
+			if (turnTimer > 0)
 			{
 				Projectile.rotation += 1.57f / 40f;
-				TurnTime--;
+				turnTimer--;
 			}
 
 			Lighting.AddLight(Projectile.Center, Color.White.ToVector3() * 0.5f);
@@ -73,7 +77,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				{
 					shader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f);
 
-					float alpha = hazard.Timer < 30 ? hazard.Timer / 30f : hazard.Timer > 260 ? 1f - (hazard.Timer - 260) / 60f : 1;
+					float alpha = hazard.Timer < 30 ? hazard.Timer / 30f : hazard.Timer > (hazard.Duration - 60) ? 1f - (hazard.Timer - (hazard.Duration - 60)) / 60f : 1;
 					shader.Parameters["u_alpha"].SetValue(alpha);
 
 					shader.Parameters["mainbody_t"].SetValue(Assets.Bosses.TheThinkerBoss.HallucionationHazard.Value);

@@ -52,14 +52,12 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 					var shuntBox = XBox;
 					shuntBox.Inflate(-1, 0);
 
-					if (nextPlayer.Intersects(shuntBox))
+					if (nextPlayer.Intersects(shuntBox) && self.grappling[0] > 0)
 					{
 						if (self.Center.X < npc.Center.X)
 							self.position.X = npc.position.X - self.width;
 						else
 							self.position.X = npc.position.X + npc.width;
-
-						self.velocity.X = 0;
 					}
 
 					if (self.position.X <= npc.position.X && self.velocity.X >= npc.velocity.X)
