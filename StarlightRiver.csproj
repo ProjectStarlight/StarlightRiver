@@ -15,6 +15,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<None Remove="AssGenConfig.txt" />
+		<None Remove="effects\source\RadialFill.fx" />
 		<None Remove="Localization\en-US_Mods.StarlightRiver.Deaths.hjson" />
 	</ItemGroup>
 	

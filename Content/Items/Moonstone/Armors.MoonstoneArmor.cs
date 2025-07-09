@@ -1,7 +1,10 @@
 ﻿using NetEasy;
+using StarlightRiver.Content.Bosses.TheThinkerBoss;
 using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.GUI;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.BarrierSystem;
+using StarlightRiver.Core.Systems.PixelationSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,6 +70,9 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 			if (head.moonCharge >= 180 && oldCharge < 180 || head.moonCharge >= 720 && oldCharge < 720)
 				head.moonFlash = 30;
+
+			if (head.moonCharge > 720)
+				head.moonCharge = 720;
 
 			Player.GetModPlayer<StarlightPlayer>().SetHitPacketStatus(shouldRunProjMethods: false);
 		}
@@ -216,28 +222,42 @@ namespace StarlightRiver.Content.Items.Moonstone
 		{
 			if (IsArmorSet(Player) && !Player.dead && PlayerTarget.canUseTarget)
 			{
-				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+				Effect shader = ShaderLoader.GetShader("RadialFill").Value;
 
-				var head = Player.armor[0].ModItem as MoonstoneHead;
-				float charge = head.moonCharge / 720f;
+				if (shader != null)
+				{
+					//ModContent.GetInstance<PixelationSystem>().QueueRenderAction("UnderProjectiles", () =>
+					//{
+					var sb = spriteBatch;
 
-				Texture2D texRing = Assets.Items.Vitric.BossBowRing.Value;
-				Color color = new Color(130, 110, 225) * (0.5f + charge * 0.5f);
+					var head = Player.armor[0].ModItem as MoonstoneHead;
+					float charge = head.moonCharge / 720f;
 
-				if (charge <= 180 / 720f)
-					color = new Color(150, 150, 150) * (0.5f + charge * 0.5f);
+					Color color = new Color(130, 110, 225);
 
-				if (charge >= 1 || head.spearOn)
-					color = new Color(150, 150 + (int)(Math.Sin(Main.GameUpdateCount * 0.2f) * 20), 255) * (0.5f + charge * 0.5f);
+					if (charge <= 180 / 720f)
+						color = new Color(50, 50, 50);
 
-				color = Color.Lerp(color, Color.White, head.moonFlash / 30f);
+					if (charge >= 1 || head.spearOn)
+						color = new Color(150, 150 + (int)(Math.Sin(Main.GameUpdateCount * 0.2f) * 20), 255);
 
-				spriteBatch.Draw(texRing, Player.MountedCenter + new Vector2(0, -16) + Vector2.UnitY * Player.gfxOffY - Main.screenPosition, null, color, Main.GameUpdateCount * 0.01f, texRing.Size() / 2, 0.08f + charge * 0.05f, 0, 0);
+					color = Color.Lerp(color, Color.White, head.moonFlash / 30f);
+					color.A = 0;
 
-				spriteBatch.End();
+					shader.Parameters["minAngle"].SetValue(0.2f);
+					shader.Parameters["maxAngle"].SetValue(charge * 2.94f);
+					shader.Parameters["u_color"].SetValue(color.ToVector4());
 
-				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+					sb.End();
+					sb.Begin(default, BlendState.AlphaBlend, SamplerState.PointWrap, default, RasterizerState.CullNone, shader, Main.GameViewMatrix.ZoomMatrix);
+
+					Texture2D texRing = Assets.Misc.Gauge.Value;
+					spriteBatch.Draw(texRing, Player.MountedCenter + new Vector2(0, -16) + Vector2.UnitY * Player.gfxOffY - Main.screenPosition, null, color, -1.57f, texRing.Size() / 2, 0.4f, SpriteEffects.FlipHorizontally, 0);
+					
+					sb.End();
+					sb.Begin(default, default, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.ZoomMatrix);
+					//});
+				}
 			}
 		}
 
