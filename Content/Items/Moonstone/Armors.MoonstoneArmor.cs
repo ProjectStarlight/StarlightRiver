@@ -222,6 +222,11 @@ namespace StarlightRiver.Content.Items.Moonstone
 		{
 			if (IsArmorSet(Player) && !Player.dead && PlayerTarget.canUseTarget)
 			{
+				Texture2D texRing = Assets.Misc.Gauge.Value;
+				var pos = Player.MountedCenter + new Vector2(0, -16 + MathF.Sin(Main.GameUpdateCount * 0.05f) * 4) + Vector2.UnitY * Player.gfxOffY - Main.screenPosition;
+
+				spriteBatch.Draw(texRing, pos + new Vector2(0, -40), new Rectangle(0, 0, texRing.Width / 2, texRing.Height), new Color(50, 50, 50, 0), -1.57f, texRing.Size() / 2, 0.4f, SpriteEffects.FlipHorizontally, 0);
+
 				Effect shader = ShaderLoader.GetShader("RadialFill").Value;
 
 				if (shader != null)
@@ -251,8 +256,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 					sb.End();
 					sb.Begin(default, BlendState.AlphaBlend, SamplerState.PointWrap, default, RasterizerState.CullNone, shader, Main.GameViewMatrix.ZoomMatrix);
 
-					Texture2D texRing = Assets.Misc.Gauge.Value;
-					spriteBatch.Draw(texRing, Player.MountedCenter + new Vector2(0, -16) + Vector2.UnitY * Player.gfxOffY - Main.screenPosition, null, color, -1.57f, texRing.Size() / 2, 0.4f, SpriteEffects.FlipHorizontally, 0);
+					spriteBatch.Draw(texRing, pos, null, color, -1.57f, texRing.Size() / 2, 0.4f, SpriteEffects.FlipHorizontally, 0);
 					
 					sb.End();
 					sb.Begin(default, default, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.ZoomMatrix);
