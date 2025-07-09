@@ -3,6 +3,7 @@ using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Bosses.TheThinkerBoss;
 using StarlightRiver.Content.CustomHooks;
+using StarlightRiver.Content.NPCs.BaseTypes;
 using StarlightRiver.Content.NPCs.Starlight;
 using StarlightRiver.Content.Tiles.BaseTypes;
 using StarlightRiver.Content.Tiles.Starlight;
@@ -60,6 +61,12 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
+			var n = NPC.NewNPC(null, (int)Main.MouseWorld.X, (int)Main.MouseWorld.Y, ModContent.NPCType<TestCollider>());
+			Main.npc[n].velocity.X = 3.5f;
+			n = NPC.NewNPC(null, (int)Main.MouseWorld.X, (int)Main.MouseWorld.Y + 500, ModContent.NPCType<TestCollider>());
+			Main.npc[n].velocity.X = 3.5f;
+			return true;
+
 			ProximityActivatedPylonSystem.activePylons.Clear();
 
 			foreach (var item in DummySystem.dummies)

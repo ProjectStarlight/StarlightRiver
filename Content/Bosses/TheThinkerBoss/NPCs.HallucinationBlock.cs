@@ -14,6 +14,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		public static List<HallucinationBlock> toRender = new();
 
 		public ref float Timer => ref NPC.ai[0];
+		public ref float Fadein => ref NPC.ai[1];
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -35,6 +36,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			NPC.noTileCollide = true;
 
 			Timer++;
+			Fadein++;
 
 			if (Timer > 560)
 				NPC.active = false;
@@ -58,7 +60,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				{
 					shader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f);
 
-					float alpha = block.Timer < 30 ? block.Timer / 30f : block.Timer > 500 ? 1f - (block.Timer - 500) / 60f : 1;
+					float alpha = block.Fadein < 30 ? block.Fadein / 30f : block.Timer > 500 ? 1f - (block.Timer - 500) / 60f : 1;
 					shader.Parameters["u_alpha"].SetValue(alpha);
 
 					shader.Parameters["mainbody_t"].SetValue(Assets.Bosses.TheThinkerBoss.HallucinationBlock.Value);

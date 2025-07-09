@@ -336,10 +336,17 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				{
 					float dist = Vector2.Distance(player.Center, home);
 
-					if (dist > ArenaRadius && dist < (ArenaRadius + 200) && !player.immune)
+					if (dist > ArenaRadius && dist < (ArenaRadius + 200))
 					{
-						player.Hurt(PlayerDeathReason.ByCustomReason(NetworkText.FromKey("Mods.StarlightRiver.Deaths.ThinkerArena", player.name)), 50, 0);
-						player.velocity += Vector2.Normalize(home - player.Center) * 28 * new Vector2(0.5f, 1f);
+						if (!player.immune)
+						{
+							player.Hurt(PlayerDeathReason.ByCustomReason(NetworkText.FromKey("Mods.StarlightRiver.Deaths.ThinkerArena", player.name)), 50, 0);
+							player.velocity += Vector2.Normalize(home - player.Center) * 28 * new Vector2(0.5f, 1f);
+							player.RefreshExtraJumps();
+							player.RefreshMovementAbilities();
+						}
+
+						player.Center = home + home.DirectionTo(player.Center) * (ArenaRadius - 2);
 					}
 				}
 			}
@@ -347,7 +354,6 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			// Attacks
 			if (ShouldBeAttacking)
 			{
-
 				Timer++;
 				AttackTimer++;
 
@@ -362,6 +368,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					platformRadiusTransitionTime = 240;
 
 					NPC.GetGlobalNPC<BarrierNPC>().maxBarrier = intendedBarrier;
+					AttackState = Main.rand.Next(0, 3);
 				}
 
 				if (Timer < 60)
@@ -390,22 +397,22 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				if (ExtraGrayAuraRadius < 600 && Timer <= 1140)
 					ExtraGrayAuraRadius += 4f;
 
-				if (Timer == 1)
+				AttackState = 1;
+				switch(AttackState)
 				{
-					SpawnBlock(3, -2);
-					SpawnBlock(3, 2);
+					case 0: AlternatingDirections(); break;
+					case 1: FlappyBird(); break;
+					case 2: RainingHazzards(); break;
 				}
 
-				if (Timer % (194 / 3) == 0)
-				{
-					SpawnBlock();
-				}
-
-				if (Timer > 100 && Timer < 900 && Timer % 60 == 0)
-					SpawnProjectile();
+				if (Timer == 1199)
+					Timer = 0;
 
 				if (Timer > 1140)
 				{
+					if (bloomProgress > 0)
+						bloomProgress--;
+
 					ExtraGrayAuraRadius -= 10;
 					NPC.GetGlobalNPC<BarrierNPC>().maxBarrier = 0;
 				}
@@ -441,78 +448,13 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					bloomProgress--;
 
 				NPC.immortal = true;
-			}
-		}
-
-		/// <summary>
-		/// Spawns a cube traveling in the given direction and at the given offset (in cube sizes) from the center.
-		/// </summary>
-		/// <param name="direction">0 = left to right, 1 = right to left, 2 = top to bottom, 3 = bottom to top</param>
-		/// <param name="offset">offset in cube sizes from the center, 0 is at the center</param>
-		public void SpawnBlock(int direction = -1, int offset = -99)
-		{
-			int n;
-
-			if (direction == -1 || direction > 3)
-				direction = Main.rand.Next(4);
-
-			if (offset == -99 || offset < -2 || offset > 2)
-				offset = Main.rand.Next(-2, 3);
-
-			while (Math.Abs(offset) <= 1)
-			{
-				offset = Main.rand.Next(-4, 5);
-			}
-
-			switch (direction)
-			{
-				case 0:
-					n = NPC.NewNPC(NPC.GetSource_FromThis(), (int)home.X - 776, (int)home.Y + offset * 194, ModContent.NPCType<HallucinationBlock>());
-					Main.npc[n].velocity.X = 3;
-					break;
-				case 1:
-					n = NPC.NewNPC(NPC.GetSource_FromThis(), (int)home.X + 776, (int)home.Y + offset * 194, ModContent.NPCType<HallucinationBlock>());
-					Main.npc[n].velocity.X = -3;
-					break;
-				case 2:
-					n = NPC.NewNPC(NPC.GetSource_FromThis(), (int)home.X + offset * 194, (int)home.Y - 776, ModContent.NPCType<HallucinationBlock>());
-					Main.npc[n].velocity.Y = 3;
-					break;
-				case 3:
-					n = NPC.NewNPC(NPC.GetSource_FromThis(), (int)home.X + offset * 194, (int)home.Y + 776, ModContent.NPCType<HallucinationBlock>());
-					Main.npc[n].velocity.Y = -3;
-					break;
-			}
-		}
-
-		public void SpawnProjectile(int direction = -1, int offset = -99)
-		{
-			if (direction == -1 || direction > 3)
-				direction = Main.rand.Next(4);
-
-			if (offset == -99 || offset < -3 || offset > 3)
-				offset = Main.rand.Next(-3, 4);
-
-			switch (direction)
-			{
-				case 0:
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), (int)home.X - 800, (int)home.Y + offset * 194, 5, 0, ModContent.ProjectileType<HallucinationHazard>(), 30, 1, Main.myPlayer);
-					break;
-				case 1:
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), (int)home.X + 800, (int)home.Y + offset * 194, -5, 0, ModContent.ProjectileType<HallucinationHazard>(), 30, 1, Main.myPlayer);
-					break;
-				case 2:
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), (int)home.X + offset * 194, (int)home.Y - 800, 0, 5, ModContent.ProjectileType<HallucinationHazard>(), 30, 1, Main.myPlayer);
-					break;
-				case 3:
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), (int)home.X + offset * 194, (int)home.Y + 800, 0, -5, ModContent.ProjectileType<HallucinationHazard>(), 30, 1, Main.myPlayer);
-					break;
+				NPC.GetGlobalNPC<BarrierNPC>().barrier = 0;
 			}
 		}
 
 		public override bool? CanBeHitByItem(Player player, Item item)
 		{
-			return active ? null : false;
+			return FightActive ? null : false;
 		}
 
 		public override bool? CanBeHitByProjectile(Projectile projectile)
@@ -523,7 +465,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				return true;
 			}
 
-			return active ? null : false;
+			return FightActive ? null : false;
 		}
 
 		public override bool CanBeHitByNPC(NPC attacker)

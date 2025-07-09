@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria;
 
 namespace StarlightRiver.Content.NPCs.BaseTypes
 {
@@ -13,6 +14,8 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 
 	public class SquareColliderSystem : ModSystem
 	{
+		public static bool localPlayerPushedBySquareInX;
+
 		public override void Load()
 		{
 			On_Player.DryCollision += SideCollision;
@@ -20,6 +23,8 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 
 		private void SideCollision(On_Player.orig_DryCollision orig, Player self, bool fallThrough, bool ignorePlats)
 		{
+			localPlayerPushedBySquareInX = false;
+
 			foreach (NPC npc in Main.ActiveNPCs)
 			{
 				if (npc.ModNPC == null || npc.ModNPC is not SquareCollider || (npc.ModNPC as SquareCollider).dontCollide)
@@ -31,21 +36,52 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 				Rectangle nextBox = npc.Hitbox;
 				nextBox.Offset(npc.velocity.ToPoint());
 
+				Rectangle XBox = nextBox;
+				XBox.Inflate(0, -((int)Math.Abs(self.velocity.Y) + 1));
+
+				Rectangle YBox = nextBox;
+				YBox.Inflate(-4, 0);
+
 				var PlayerRect = new Rectangle((int)self.position.X, (int)self.position.Y + self.height, self.width, 1);
 				var NPCRect = new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, 8 + (self.velocity.Y > 0 ? (int)self.velocity.Y : 0));
 
 				bool platforming = PlayerRect.Intersects(NPCRect);
 
-				if (nextPlayer.Intersects(nextBox) && !platforming)
+				if (nextPlayer.Intersects(XBox) && !platforming)
 				{
-					if (self.position.X <= npc.position.X && self.velocity.X > npc.velocity.X)
-						self.velocity.X += npc.velocity.X - self.velocity.X;
+					var shuntBox = XBox;
+					shuntBox.Inflate(-1, 0);
 
-					if ((self.position.X + self.width) >= (npc.position.X + npc.width) && self.velocity.X < npc.velocity.X)
-						self.velocity.X += npc.velocity.X - self.velocity.X;
+					if (nextPlayer.Intersects(shuntBox))
+					{
+						if (self.Center.X < npc.Center.X)
+							self.position.X = npc.position.X - self.width;
+						else
+							self.position.X = npc.position.X + npc.width;
 
+						self.velocity.X = 0;
+					}
+
+					if (self.position.X <= npc.position.X && self.velocity.X >= npc.velocity.X)
+					{
+						self.velocity.X += npc.velocity.X - self.velocity.X;
+						localPlayerPushedBySquareInX = true;
+					}
+
+					if ((self.position.X + self.width) >= (npc.position.X + npc.width) && self.velocity.X <= npc.velocity.X)
+					{
+						self.velocity.X += npc.velocity.X - self.velocity.X;
+						localPlayerPushedBySquareInX = true;
+					}
+				}
+
+				if (nextPlayer.Intersects(YBox) && !platforming)
+				{
 					if ((self.position.Y + self.height) >= (npc.position.Y + npc.height) && self.velocity.Y < npc.velocity.Y)
 						self.velocity.Y += npc.velocity.Y - self.velocity.Y;
+
+					if (self.velocity.Y == 0)
+						self.velocity.Y = 0.01f;
 				}
 			}
 
