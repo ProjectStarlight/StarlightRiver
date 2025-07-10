@@ -227,9 +227,9 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				{
 					chainSplitBrainAttached.startPoint = NPC.Center + Vector2.UnitY * (90 + extraChunkRadius * 70);
 					chainSplitBrainAttached.useEndPoint = false;
-					chainSplitBrainAttached.drag = 1f;
+					chainSplitBrainAttached.drag = 1.05f;
 					chainSplitBrainAttached.forceGravity = Vector2.UnitY * 0.1f;
-					chainSplitBrainAttached.constraintRepetitions = 8;
+					chainSplitBrainAttached.constraintRepetitions = 12;
 					chainSplitBrainAttached.UpdateChain();
 
 					chainSplitBrainAttached.IterateRope(a => chainSplitBrainAttached.ropeSegments[a].posNow.X += (float)Math.Sin(Main.GameUpdateCount * 0.15f) * 0.1f);
@@ -932,6 +932,23 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		}
 
 		/// <summary>
+		/// Initializes one of the dangling split chains' trail
+		/// </summary>
+		/// <param name="chain">The chain to create a trail for</param>
+		/// <param name="toInit">The trail to populate</param>
+		protected void InitSplitChainThinkerTrail(VerletChain chain, ref Trail toInit)
+		{
+			toInit = new Trail(Main.instance.GraphicsDevice, chain.segmentCount, new NoTip(), factor => 32,
+			factor =>
+			{
+				int index = (int)(factor.X * chain.segmentCount);
+				index = Math.Clamp(index, 0, chain.segmentCount - 1);
+
+				return Lighting.GetColor((chain.ropeSegments[index].posNow / 16).ToPoint());
+			});
+		}
+
+		/// <summary>
 		/// Performs all trail updates to prepare for rendering based on phase
 		/// </summary>
 		protected void ManageTrail()
@@ -948,7 +965,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					InitSplitChainTrail(chainSplitBrainAttached, ref chainSplitBrainAttachedTrail);
 
 				if (chainSplitThinkerAttachedTrail is null || chainSplitThinkerAttachedTrail.IsDisposed)
-					InitSplitChainTrail(chainSplitThinkerAttached, ref chainSplitThinkerAttachedTrail);
+					InitSplitChainThinkerTrail(chainSplitThinkerAttached, ref chainSplitThinkerAttachedTrail);
 
 				chainSplitBrainAttachedTrail.Positions = chainSplitBrainAttachedCache.ToArray();
 				chainSplitThinkerAttachedTrail.Positions = chainSplitThinkerAttachedCache.ToArray();

@@ -63,9 +63,9 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			{
 				chain.startPoint = NPC.Center + Vector2.UnitY * 90;
 				chain.useEndPoint = false;
-				chain.drag = 1f;
+				chain.drag = 1.05f;
 				chain.forceGravity = Vector2.UnitY * 0.3f;
-				chain.constraintRepetitions = 8;
+				chain.constraintRepetitions = 12;
 				chain.UpdateChain();
 
 				chain.IterateRope(a => chain.ropeSegments[a].posNow.X += (float)Math.Sin(Main.GameUpdateCount * 0.15f) * 0.1f);
