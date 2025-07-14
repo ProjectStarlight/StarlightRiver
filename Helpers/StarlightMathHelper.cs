@@ -16,7 +16,7 @@ namespace StarlightRiver.Helpers
 		/// <returns></returns>
 		public static int GetProjectileDamage(int normal, int expert, int master)
 		{
-			return Main.masterMode ? master / 6 : Main.expertMode ? expert / 4 : normal;
+			return Main.masterMode ? master / 6 : Main.expertMode ? expert / 4 : normal / 2;
 		}
 
 		/// <summary>

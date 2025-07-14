@@ -61,6 +61,9 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
+			player.GetHandler().unlockedAbilities.Clear();
+			return true;
+
 			var n = NPC.NewNPC(null, (int)Main.MouseWorld.X, (int)Main.MouseWorld.Y, ModContent.NPCType<TestCollider>());
 			Main.npc[n].velocity.X = 3.5f;
 			n = NPC.NewNPC(null, (int)Main.MouseWorld.X, (int)Main.MouseWorld.Y + 500, ModContent.NPCType<TestCollider>());
