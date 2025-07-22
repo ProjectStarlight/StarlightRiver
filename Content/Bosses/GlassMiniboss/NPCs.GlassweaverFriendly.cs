@@ -16,6 +16,17 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
 	class GlassweaverFriendly : ModNPC
 	{
+		public enum GlassweaverFriendlyState : int
+		{
+			BeforeMet = 0,
+			JumpingInside = 1,
+			WaitingForDuel = 2,
+			AfterWinDuel = 3,
+			AfterGiveKey = 4,
+			ReadyToMoveToTemple = 5,
+			MovedIntoTemple = 6
+		}
+
 		public const int FRAME_WIDTH = 124;
 
 		public const int FRAME_HEIGHT = 92;
@@ -28,7 +39,13 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		public override string Texture => AssetDirectory.Glassweaver + Name;
 
 		public ref float Timer => ref NPC.ai[0];
-		public ref float State => ref NPC.ai[1];
+
+		public GlassweaverFriendlyState State
+		{
+			get => (GlassweaverFriendlyState)NPC.ai[1];
+			set => NPC.ai[1] = (float)value;
+		}
+
 		public ref float VisualTimer => ref NPC.ai[2];
 
 		public override void SetStaticDefaults()
@@ -73,10 +90,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Timer++;
 			VisualTimer++;
 
-			if (State < 0 || State > 7)
-				State = GlassweaverSafetySystem.IntendedGlassweaverPhase;
-
-			GlassweaverSafetySystem.IntendedGlassweaverPhase = (int)State;
+			GlassweaverSafetySystem.IntendedGlassweaverPhase = State;
 
 			if (Main.netMode != NetmodeID.Server) // Client based stuff
 			{
@@ -93,14 +107,14 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				}
 			}
 
-			if (State == 0 || State >= 2)
+			if (State == GlassweaverFriendlyState.BeforeMet || State >= GlassweaverFriendlyState.WaitingForDuel)
 			{
 				NPC.direction = 1;
 
 				NPC.frame = new Rectangle(0, FRAME_HEIGHT * ((int)(VisualTimer / 10f) % 7), FRAME_WIDTH, FRAME_HEIGHT);
 			}
 
-			if (State == 1)
+			if (State == GlassweaverFriendlyState.JumpingInside)
 			{
 				if (Timer == 15)
 				{
@@ -132,18 +146,18 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					NPC.noGravity = false;
 					NPC.noTileCollide = false;
 					NPC.Center = ArenaPos;
-					State = 2;
+					State = GlassweaverFriendlyState.WaitingForDuel;
 				}
 			}
 
-			if (State == 6 && Main.time == 0 && Main.dayTime)
+			if (State == GlassweaverFriendlyState.ReadyToMoveToTemple && Main.time == 0 && Main.dayTime)
 			{
 				NPC.Center = StarlightWorld.vitricBiome.Center.ToVector2() * 16 + new Vector2(-86, 1200);
 				StarlightWorld.RepairTemple();
 
 				Main.NewText("The Glassweaver has moved into the forge!", new Color(160, 230, 255));
 
-				State = 7;
+				State = GlassweaverFriendlyState.MovedIntoTemple;
 			}
 		}
 
@@ -194,7 +208,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		/// </summary>
 		public void SpawnKey()
 		{
-			State = 5;
+			State = GlassweaverFriendlyState.AfterGiveKey;
 
 			if (!Helpers.InventoryHelper.HasItem(Main.LocalPlayer, ItemType<TempleEntranceKey>(), 1))
 			{
@@ -208,7 +222,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		/// </summary>
 		public void SetFlagForMove()
 		{
-			State = 6;
+			State = GlassweaverFriendlyState.ReadyToMoveToTemple;
 		}
 
 		/// <summary>
@@ -230,31 +244,27 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			talkingTo = Main.LocalPlayer;
 
-			if (State == 0) //Waiting at entrance
+			if (State == GlassweaverFriendlyState.BeforeMet) //Waiting at entrance
 			{
 				manager.Start("Intro1");
 			}
-			else if (State == 2) //Waiting in arena
+			else if (State == GlassweaverFriendlyState.WaitingForDuel) //Waiting in arena
 			{
 				manager.Start("Challenge" + Main.rand.Next(1, 4));
 			}
-			else if (State == 3) //After winning
+			else if (State == GlassweaverFriendlyState.AfterWinDuel) //After winning
 			{
 				manager.Start("AfterFight1");
 			}
-			else if (State == 4) //After giving you the map
-			{
-				manager.Start("Interruption");
-			}
-			else if (State == 5 && !StarlightWorld.HasFlag(WorldFlags.VitricBossDowned)) //After talking after win
+			else if (State == GlassweaverFriendlyState.AfterGiveKey && !StarlightWorld.HasFlag(WorldFlags.VitricBossDowned)) //After talking after win
 			{
 				manager.Start("Key" + Main.rand.Next(1, 4));
 			}
-			else if (StarlightWorld.HasFlag(WorldFlags.VitricBossDowned) && State < 7)
+			else if (StarlightWorld.HasFlag(WorldFlags.VitricBossDowned) && State < GlassweaverFriendlyState.MovedIntoTemple)
 			{
 				manager.Start("Moving1");
 			}
-			else if (State == 7 && Main.LocalPlayer.GetHandler().InfusionLimit == 0)
+			else if (State == GlassweaverFriendlyState.MovedIntoTemple && Main.LocalPlayer.GetHandler().InfusionLimit == 0)
 			{
 				manager.Start("Infusion1");
 			}
@@ -271,11 +281,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			spriteBatch.Draw(tex, pos, NPC.frame, drawColor, NPC.rotation, origin, NPC.scale, NPC.direction == 1 ? 0 : SpriteEffects.FlipHorizontally, 0);
 
 			if ((
-				State == 0 ||
-				State == 2 ||
-				State == 3 ||
-				State == 5 && StarlightWorld.HasFlag(WorldFlags.VitricBossDowned) ||
-				State == 7 && Main.LocalPlayer.GetHandler().InfusionLimit == 0)
+				State == GlassweaverFriendlyState.BeforeMet ||
+				State == GlassweaverFriendlyState.WaitingForDuel ||
+				State == GlassweaverFriendlyState.AfterWinDuel ||
+				State == GlassweaverFriendlyState.AfterGiveKey && StarlightWorld.HasFlag(WorldFlags.VitricBossDowned) ||
+				State == GlassweaverFriendlyState.MovedIntoTemple && Main.LocalPlayer.GetHandler().InfusionLimit == 0)
 				&& talkingTo is null)
 			{
 				Texture2D exclaim = Assets.Misc.Exclaim.Value;
@@ -298,7 +308,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void LoadData(TagCompound tag)
 		{
-			State = tag.GetAsInt("State");
+			State = (GlassweaverFriendlyState)tag.GetAsInt("State");
 		}
 	}
 }

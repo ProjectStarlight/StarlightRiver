@@ -8,12 +8,12 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 	{
 		private static int scanTimer = 0;
 
-		private static int intendedGlassweaverPhase;
+		private static GlassweaverFriendly.GlassweaverFriendlyState intendedGlassweaverPhase;
 
 		/// <summary>
 		/// The highest state the glassweaver has reached in this world is the one he should spawn in
 		/// </summary>
-		public static int IntendedGlassweaverPhase
+		public static GlassweaverFriendly.GlassweaverFriendlyState IntendedGlassweaverPhase
 		{
 			get => intendedGlassweaverPhase;
 
@@ -29,9 +29,16 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		/// </summary>
 		public static Vector2 IntendedGlassweaverLocation => intendedGlassweaverPhase switch
 		{
-			0 => new Vector2((StarlightWorld.vitricBiome.X - 37 + 80) * 16, (StarlightWorld.vitricBiome.Center.Y + 20) * 16),
-			1 or 2 or 3 or 4 or 5 or 6 => GlassweaverFriendly.ArenaPos,
-			7 => StarlightWorld.vitricBiome.Center.ToVector2() * 16 + new Vector2(-86, 1200),
+			GlassweaverFriendly.GlassweaverFriendlyState.BeforeMet => new Vector2((StarlightWorld.vitricBiome.X - 37 + 80) * 16, (StarlightWorld.vitricBiome.Center.Y + 20) * 16),
+
+			GlassweaverFriendly.GlassweaverFriendlyState.JumpingInside or 
+			GlassweaverFriendly.GlassweaverFriendlyState.WaitingForDuel or
+			GlassweaverFriendly.GlassweaverFriendlyState.AfterWinDuel or
+			GlassweaverFriendly.GlassweaverFriendlyState.AfterGiveKey or
+			GlassweaverFriendly.GlassweaverFriendlyState.ReadyToMoveToTemple => GlassweaverFriendly.ArenaPos,
+
+			GlassweaverFriendly.GlassweaverFriendlyState.MovedIntoTemple => StarlightWorld.vitricBiome.Center.ToVector2() * 16 + new Vector2(-86, 1200),
+
 			_ => GlassweaverFriendly.ArenaPos,
 		};
 
@@ -63,7 +70,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			if (glassWeaver is null)
 			{
-				int i = NPC.NewNPC(null, (int)IntendedGlassweaverLocation.X, (int)IntendedGlassweaverLocation.Y, ModContent.NPCType<GlassweaverFriendly>(), 0, 0, IntendedGlassweaverPhase);
+				int i = NPC.NewNPC(null, (int)IntendedGlassweaverLocation.X, (int)IntendedGlassweaverLocation.Y, ModContent.NPCType<GlassweaverFriendly>(), 0, 0, (float)IntendedGlassweaverPhase);
 				Main.npc[i].netUpdate = true;
 			}
 			else if (glassWeaver.ModNPC is GlassweaverFriendly gw)
@@ -93,12 +100,12 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void SaveWorldData(TagCompound tag)
 		{
-			tag["IntendedPhase"] = intendedGlassweaverPhase;
+			tag["IntendedPhase"] = (int)intendedGlassweaverPhase;
 		}
 
 		public override void LoadWorldData(TagCompound tag)
 		{
-			intendedGlassweaverPhase = tag.GetInt("IntendedPhase");
+			intendedGlassweaverPhase = (GlassweaverFriendly.GlassweaverFriendlyState)tag.GetInt("IntendedPhase");
 
 			DoGlassweaverScan(); // Scan on load
 		}
