@@ -78,7 +78,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				if (gw.State != intendedGlassweaverPhase)
 					gw.State = intendedGlassweaverPhase;
 
-				if (Vector2.DistanceSquared(glassWeaver.Center, IntendedGlassweaverLocation) > 64)
+				if (Vector2.DistanceSquared(glassWeaver.Center, IntendedGlassweaverLocation) > 64 * 64)
 					glassWeaver.Center = IntendedGlassweaverLocation;
 
 				glassWeaver.netUpdate = true;
