@@ -8,6 +8,7 @@ using StarlightRiver.Content.NPCs.Starlight;
 using StarlightRiver.Content.Tiles.BaseTypes;
 using StarlightRiver.Content.Tiles.Starlight;
 using StarlightRiver.Core.Systems;
+using StarlightRiver.Core.Systems.ArmatureSystem;
 using StarlightRiver.Core.Systems.CutsceneSystem;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.Systems.LightingSystem;
@@ -19,6 +20,8 @@ namespace StarlightRiver.Content.Items
 	[SLRDebug]
 	class DebugStick : ModItem
 	{
+		Arm arm = new(Vector2.Zero, 5, 64, Assets.Invisible.Value);
+
 		public override string Texture => AssetDirectory.Assets + "Items/DebugStick";
 
 		public override void SetStaticDefaults()
@@ -173,13 +176,9 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
-			
-
 			//ModContent.GetInstance<StarlightWorld>().GraymatterGen(new GenerationProgress(), null);
 			return true;
 
-			//StarlightWorld.FlipFlag(WorldFlags.ThinkerBossOpen);
-			//return true;
 
 			ObservatorySystem.pylonAppearsOn = false;
 			ObservatorySystem.observatoryOpen = false;

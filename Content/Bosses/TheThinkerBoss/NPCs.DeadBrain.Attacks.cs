@@ -110,7 +110,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				}
 			}
 
-			if (AttackTimer == 160 && Main.masterMode)
+			if (AttackTimer == 160 && Main.masterMode && Main.netMode != NetmodeID.MultiplayerClient)
 			{
 				for (int k = 0; k < 12; k++)
 				{
@@ -185,7 +185,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				NPC.netUpdate = true;
 			}
 
-			if (AttackTimer == 60)
+			if (AttackTimer == 60 && Main.netMode != NetmodeID.MultiplayerClient)
 			{
 				if (Main.masterMode)
 				{
@@ -203,7 +203,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				}
 			}
 
-			if (AttackTimer == 75 && Main.masterMode)
+			if (AttackTimer == 75 && Main.masterMode && Main.netMode != NetmodeID.MultiplayerClient)
 			{
 				for (int k = 0; k < 9; k++)
 				{
@@ -407,7 +407,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				}
 			}
 
-			if (AttackTimer == 560 && Main.masterMode)
+			if (AttackTimer == 560 && Main.masterMode && Main.netMode != NetmodeID.MultiplayerClient)
 			{
 				neurisms.ForEach(n => Projectile.NewProjectile(null, n.Center, Vector2.Normalize(thinker.Center - n.Center) * Vector2.Distance(n.Center, thinker.Center) / 45f, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 0, Main.myPlayer, 45));
 			}
@@ -464,7 +464,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				savedPos.Y = Main.player[NPC.target].Center.Y;
 			}
 
-			if (AttackTimer == 60)
+			if (AttackTimer == 60 && Main.netMode != NetmodeID.MultiplayerClient)
 			{
 				Projectile.NewProjectile(null, thinker.Center, Vector2.UnitY * 0.5f, ModContent.ProjectileType<VeinSpear>(), VeinSpearDamage, 0, Main.myPlayer, thinker.whoAmI, 260);
 				Projectile.NewProjectile(null, thinker.Center, Vector2.UnitY * -0.5f, ModContent.ProjectileType<VeinSpear>(), VeinSpearDamage, 0, Main.myPlayer, thinker.whoAmI, 260);
@@ -508,7 +508,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 			for (int k = 1; k < 6; k++)
 			{
-				if (AttackTimer == 120 + k * 10)
+				if (AttackTimer == 120 + k * 10 && Main.netMode != NetmodeID.MultiplayerClient)
 					Projectile.NewProjectile(null, thinker.Center, Vector2.Normalize(oppPos - thinker.Center).RotatedBy((-0.5f + k / 6f) * 3.14f) * 0.5f, ModContent.ProjectileType<VeinSpear>(), VeinSpearDamage, 0, Main.myPlayer, thinker.whoAmI, 200 - k * 10);
 			}
 
@@ -533,7 +533,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				savedPos.X = Main.player[NPC.target].Center.X;
 			}
 
-			if (AttackTimer == 60)
+			if (AttackTimer == 60 && Main.netMode != NetmodeID.MultiplayerClient)
 			{
 				Projectile.NewProjectile(null, thinker.Center, Vector2.UnitX * 0.5f, ModContent.ProjectileType<VeinSpear>(), VeinSpearDamage, 0, Main.myPlayer, thinker.whoAmI, 260);
 				Projectile.NewProjectile(null, thinker.Center, Vector2.UnitX * -0.5f, ModContent.ProjectileType<VeinSpear>(), VeinSpearDamage, 0, Main.myPlayer, thinker.whoAmI, 260);
@@ -573,7 +573,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 			for (int k = 1; k < 6; k++)
 			{
-				if (AttackTimer == 120 + k * 10)
+				if (AttackTimer == 120 + k * 10 && Main.netMode != NetmodeID.MultiplayerClient)
 					Projectile.NewProjectile(null, thinker.Center, Vector2.Normalize(savedPos2 - thinker.Center).RotatedBy((-0.5f + k / 6f) * 3.14f) * 0.5f, ModContent.ProjectileType<VeinSpear>(), 25, 0, Main.myPlayer, thinker.whoAmI, 200 - k * 10);
 			}
 
@@ -581,24 +581,33 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			{
 				ThisThinker.pulseTime = 30;
 
-				for (int k = 0; k <= 7; k++)
-					Projectile.NewProjectile(null, thinker.Center, Vector2.Normalize(savedPos2 - thinker.Center).RotatedBy(1.57f + k / 7f * 3.14f) * 4.5f, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 210, 0, 20);
+				if (Main.netMode != NetmodeID.MultiplayerClient)
+				{
+					for (int k = 0; k <= 7; k++)
+						Projectile.NewProjectile(null, thinker.Center, Vector2.Normalize(savedPos2 - thinker.Center).RotatedBy(1.57f + k / 7f * 3.14f) * 4.5f, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 210, 0, 20);
+				}
 			}
 
 			if (AttackTimer == 120)
 			{
 				ThisThinker.pulseTime = 30;
 
-				for (int k = 0; k <= 4; k++)
-					Projectile.NewProjectile(null, thinker.Center, Vector2.Normalize(savedPos2 - thinker.Center).RotatedBy(1.57f + k / 4f * 3.14f) * 4.5f, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 210, 1, 20);
+				if (Main.netMode != NetmodeID.MultiplayerClient)
+				{
+					for (int k = 0; k <= 4; k++)
+						Projectile.NewProjectile(null, thinker.Center, Vector2.Normalize(savedPos2 - thinker.Center).RotatedBy(1.57f + k / 4f * 3.14f) * 4.5f, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 210, 1, 20);
+				}
 			}
 
 			if (AttackTimer == 180)
 			{
 				ThisThinker.pulseTime = 30;
 
-				for (int k = 0; k <= 7; k++)
-					Projectile.NewProjectile(null, thinker.Center, Vector2.Normalize(savedPos2 - thinker.Center).RotatedBy(1.57f + k / 7f * 3.14f) * 4.5f, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 210, 0, 20);
+				if (Main.netMode != NetmodeID.MultiplayerClient)
+				{
+					for (int k = 0; k <= 7; k++)
+						Projectile.NewProjectile(null, thinker.Center, Vector2.Normalize(savedPos2 - thinker.Center).RotatedBy(1.57f + k / 7f * 3.14f) * 4.5f, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 210, 0, 20);
+				}
 			}
 
 			if (AttackTimer >= 210 + neurisms.Count * 15)
@@ -674,7 +683,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					float period = Main.masterMode ? 85 : 170;
 					float rad = 280 + (float)Math.Cos((AttackTimer - 90 - 60) / period * 3.14f + 3.14f) * (maxRad - 280);
 
-					if (Main.masterMode && ((AttackTimer - 90) == 60 + 170 || (AttackTimer - 90) == 60))
+					if (Main.masterMode && ((AttackTimer - 90) == 60 + 170 || (AttackTimer - 90) == 60) && Main.netMode != NetmodeID.MultiplayerClient)
 					{
 						for (int k = 0; k < 9; k++)
 						{
@@ -799,9 +808,12 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				{
 					ThisThinker.pulseTime = 30;
 
-					for (int k = 0; k < 12; k++)
+					if (Main.netMode != NetmodeID.MultiplayerClient)
 					{
-						Projectile.NewProjectile(null, thinker.Center, Vector2.UnitX.RotatedBy(k / 12f * 6.28f) * 4, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 0, Main.myPlayer, 200, 0, 20);
+						for (int k = 0; k < 12; k++)
+						{
+							Projectile.NewProjectile(null, thinker.Center, Vector2.UnitX.RotatedBy(k / 12f * 6.28f) * 4, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 0, Main.myPlayer, 200, 0, 20);
+						}
 					}
 				}
 
@@ -809,9 +821,12 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				{
 					ThisThinker.pulseTime = 30;
 
-					for (int k = 0; k < 12; k++)
+					if (Main.netMode != NetmodeID.MultiplayerClient)
 					{
-						Projectile.NewProjectile(null, thinker.Center, Vector2.UnitX.RotatedBy((k + 0.5f) / 12f * 6.28f) * 4, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 0, Main.myPlayer, 200, 0, 20);
+						for (int k = 0; k < 12; k++)
+						{
+							Projectile.NewProjectile(null, thinker.Center, Vector2.UnitX.RotatedBy((k + 0.5f) / 12f * 6.28f) * 4, ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 0, Main.myPlayer, 200, 0, 20);
+						}
 					}
 				}
 			}
@@ -1202,6 +1217,8 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				{
 					safeMineIndicides[k] = Main.rand.Next(10, 30);
 				}
+
+				NPC.netUpdate = true;
 			}
 
 			if (AttackTimer > 90 && AttackTimer < 400)
@@ -1224,7 +1241,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			if (AttackTimer == 231)
 				NPC.Center = ThisThinker.home + new Vector2(0, -200);
 
-			if (AttackTimer > 90 && AttackTimer % 2 == 0 && AttackTimer <= 180)
+			if (AttackTimer > 90 && AttackTimer % 2 == 0 && AttackTimer <= 180 && Main.netMode != NetmodeID.MultiplayerClient)
 			{
 				float thisTimer = AttackTimer - 90;
 
@@ -1343,7 +1360,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					extraChunkRadius = Eases.BezierEase((relTime - 45) / 20f) * -0.5f;
 				}
 
-				if (relTime == 65)
+				if (relTime == 65 && Main.netMode != NetmodeID.MultiplayerClient)
 				{
 					int projCount = Main.expertMode ? 9 : 6;
 					for (int i = 0; i < projCount; i++)

@@ -15,9 +15,6 @@ sampler2D noisemap = sampler_state { texture = <noisemap_t>; AddressU = wrap; Ad
 texture overlay_t;
 sampler2D overlay = sampler_state { texture = <overlay_t>; AddressU = wrap; AddressV = wrap; };
 
-texture shading_t;
-sampler2D shading = sampler_state { texture = <shading_t>; AddressU = wrap; AddressV = wrap; };
-
 texture normal_t;
 sampler2D normal = sampler_state { texture = <normal_t>; AddressU = wrap; AddressV = wrap; };
 

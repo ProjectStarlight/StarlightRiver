@@ -92,8 +92,8 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		{
 			NPC.noGravity = true;
 			NPC.aiStyle = -1;
-			NPC.width = 128;
-			NPC.height = 128;
+			NPC.width = 100;
+			NPC.height = 100;
 			NPC.damage = 10;
 			NPC.lifeMax = 5500;
 			NPC.knockBackResist = 0f;
@@ -356,6 +356,8 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			{
 				Timer++;
 				AttackTimer++;
+				
+				heartPetalProgress = 0;
 
 				heartPetalProgress = 0;
 

@@ -270,6 +270,8 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				bodyShader.Parameters["noisemap_t"].SetValue(Assets.Noise.ShaderNoise.Value);
 				bodyShader.Parameters["overlay_t"].SetValue(Assets.Bosses.TheThinkerBoss.HeartOver.Value);
 				bodyShader.Parameters["normal_t"].SetValue(Assets.Bosses.TheThinkerBoss.HeartNormal.Value);
+				bodyShader.Parameters["u_color"].SetValue(new Vector3(0.7f, 0.3f, 0.3f));
+				bodyShader.Parameters["u_fade"].SetValue(new Vector3(0.3f, 0.5f, 0.3f));
 				bodyShader.Parameters["mask_t"].SetValue(Assets.MagicPixel.Value);
 
 				sb.End();
