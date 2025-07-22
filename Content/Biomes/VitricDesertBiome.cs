@@ -2,6 +2,7 @@
 using MonoMod.Cil;
 using StarlightRiver.Content.Waters;
 using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems.CutawaySystem;
 using StarlightRiver.Core.Systems.LightingSystem;
 using System;
 using Terraria.Graphics.Effects;
@@ -113,7 +114,7 @@ namespace StarlightRiver.Content.Biomes
 			ForegroundParticles.UpdateParticles();
 			BackgroundParticles.UpdateParticles();
 
-			if (Main.Configuration.Get<bool>("UseHeatDistortion", false) && !NPC.AnyDanger())
+			if (Main.Configuration.Get<bool>("UseHeatDistortion", false) && !NPC.AnyDanger() && !CutawayHandler.forgeOverlay.Inside(Main.LocalPlayer) && !CutawayHandler.templeOverlay.Inside(Main.LocalPlayer))
 			{
 				ScreenShaderData shader = Filters.Scene["StarlightRiver_GradientDistortion"].GetShader();
 
@@ -122,8 +123,8 @@ namespace StarlightRiver.Content.Biomes
 				if (!Filters.Scene["StarlightRiver_GradientDistortion"].IsActive())
 				{
 					Filters.Scene.Activate("StarlightRiver_GradientDistortion").GetShader()
-						.UseOpacity(2.5f)
-						.UseIntensity(7f)
+						.UseOpacity(2f)
+						.UseIntensity(5f)
 						.UseProgress(6)
 						.UseImage(LightingBuffer.screenLightingTarget.RenderTarget, 0);
 				}
