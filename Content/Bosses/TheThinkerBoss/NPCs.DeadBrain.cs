@@ -97,11 +97,22 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		public Phases Phase
 		{
 			get => (Phases)NPC.ai[1];
-			set => NPC.ai[1] = (float)value;
+			set {
+				NPC.ai[1] = (float)value;
+				NPC.netUpdate = true;
+			}
 		}
 
 		public ref float AttackTimer => ref NPC.ai[2];
-		public ref float AttackState => ref NPC.ai[3];
+
+		public float AttackState {
+			get => NPC.ai[3];
+			set
+			{
+				NPC.ai[3] = value;
+				NPC.netUpdate = true;
+			}
+		}
 
 		/// <summary>
 		/// Helper property to obtain the specific ModNPC instance of the linked thinker
@@ -140,6 +151,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			}
 
 			NPC.target = Main.rand.NextFromCollection(options).whoAmI;
+			NPC.netUpdate = true;
 		}
 
 		private void DrawOverGraymatter(SpriteBatch obj)
@@ -1008,6 +1020,11 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			{
 				binaryWriter.Write(attackQueue[k]);
 			}
+
+			for(int k = 0; k < 4; k++)
+			{
+				binaryWriter.Write(safeMineIndicides[k]);
+			}
 		}
 
 		public override void ReceiveExtraAI(BinaryReader binaryReader)
@@ -1021,6 +1038,11 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			for (int k = 0; k < amount; k++)
 			{
 				attackQueue.Add(binaryReader.ReadInt32());
+			}
+
+			for (int k = 0; k < 4; k++)
+			{
+				safeMineIndicides[k] = binaryReader.ReadInt32();
 			}
 		}
 	}
