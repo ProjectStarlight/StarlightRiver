@@ -430,15 +430,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 			if (AttackTimer % 40 == 0 && Main.npc.Count(n => n.active && n.type == Terraria.ID.NPCID.Creeper) < 10)
 			{
-				int i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, Terraria.ID.NPCID.Creeper);
-
-				//TODO: Multiplayer compat
-				Main.npc[i].lifeMax = 30;
-				Main.npc[i].life = 30;
-				Main.npc[i].SpawnedFromStatue = true;
-				Main.npc[i].velocity += NPC.Center.DirectionTo(Main.player[NPC.target].Center) * 30;
-				Main.npc[i].GetGlobalNPC<Creeper>().reworked = true;
-
+				new CreeperSpawnPacket(NPC.whoAmI, NPC.target).Send(-1, -1, Main.netMode == NetmodeID.SinglePlayer);
 				SoundEngine.PlaySound(SoundID.NPCDeath13, NPC.Center);
 			}
 
@@ -769,17 +761,14 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			{
 				int random = Main.rand.Next(10);
 				savedPos = ThisThinker.home + Vector2.UnitX.RotatedBy(random / 10f * 6.28f) * 590;
+				NPC.netUpdate = true;
 
 				for (int k = 0; k < 10; k++)
 				{
 					if (k != random)
 					{
 						Vector2 pos = ThisThinker.home + Vector2.UnitX.RotatedBy(k / 10f * 6.28f) * 590;
-						int i = NPC.NewNPC(null, (int)pos.X, (int)pos.Y, ModContent.NPCType<HorrifyingVisage>());
-						Main.npc[i].Center = pos;
-
-						if (Main.npc[i].ModNPC is HorrifyingVisage hv)
-							hv.thinker = thinker;
+						new VisageSpawnPacket(NPC.whoAmI, (int)pos.X, (int)pos.Y).Send(-1, -1, Main.netMode == NetmodeID.SinglePlayer);
 					}
 				}
 
@@ -1064,16 +1053,14 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				int random = Main.rand.Next(4);
 				savedPos = ThisThinker.home + Vector2.UnitX.RotatedBy(random / 4f * 6.28f) * 590;
 
+				NPC.netUpdate = true;
+
 				for (int k = 0; k < 4; k++)
 				{
 					if (k != random)
 					{
 						Vector2 pos = ThisThinker.home + Vector2.UnitX.RotatedBy(k / 4f * 6.28f) * 590;
-						int i = NPC.NewNPC(null, (int)pos.X, (int)pos.Y, ModContent.NPCType<HorrifyingVisage>());
-						Main.npc[i].Center = pos;
-
-						if (Main.npc[i].ModNPC is HorrifyingVisage hv)
-							hv.thinker = thinker;
+						new VisageSpawnPacket(NPC.whoAmI, (int)pos.X, (int)pos.Y).Send(-1, -1, Main.netMode == NetmodeID.SinglePlayer);
 					}
 				}
 

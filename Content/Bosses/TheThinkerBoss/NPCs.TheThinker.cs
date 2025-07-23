@@ -1,17 +1,17 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Biomes;
+﻿using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Crimson;
 using StarlightRiver.Content.Items.Vitric;
+using StarlightRiver.Content.Packets;
 using StarlightRiver.Content.PersistentData;
 using StarlightRiver.Content.Tiles.Crimson;
 using StarlightRiver.Core.Systems.BarrierSystem;
 using StarlightRiver.Core.Systems.MusicFilterSystem;
 using System;
 using System.Collections.Generic;
-using Terraria;
+using System.IO;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.ItemDropRules;
@@ -356,7 +356,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			{
 				Timer++;
 				AttackTimer++;
-				
+
 				heartPetalProgress = 0;
 
 				heartPetalProgress = 0;
@@ -401,7 +401,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				if (ExtraGrayAuraRadius < 600 && Timer <= 1140)
 					ExtraGrayAuraRadius += 4f;
 
-				switch(AttackState)
+				switch (AttackState)
 				{
 					case 0: AlternatingDirections(); break;
 					case 1: FlappyBird(); break;
@@ -470,7 +470,9 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		{
 			if (Open && !active && projectile.Hitbox.Intersects(NPC.Hitbox) && projectile.ModProjectile is BearPokerProjectile)
 			{
-				NPC.NewNPC(null, (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<DeadBrain>(), NPC.whoAmI);
+				var packet = new SpawnNPC((int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<DeadBrain>(), NPC.whoAmI);
+				packet.Send(-1, -1, Main.netMode == NetmodeID.SinglePlayer);
+
 				return true;
 			}
 
@@ -568,17 +570,22 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				}
 			}
 
-			for (int k = 0; k < 12; k++)
+			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
-				Vector2 pos = home + Vector2.UnitX.RotatedBy(k / 12f * 6.28f) * 550;
-				int i = NPC.NewNPC(null, (int)pos.X, (int)pos.Y, ModContent.NPCType<BrainPlatform>());
+				for (int k = 0; k < 12; k++)
+				{
+					Vector2 pos = home + Vector2.UnitX.RotatedBy(k / 12f * 6.28f) * 550;
+					int i = NPC.NewNPC(null, (int)pos.X, (int)pos.Y, ModContent.NPCType<BrainPlatform>());
 
-				NPC newPlat = Main.npc[i];
+					NPC newPlat = Main.npc[i];
 
-				newPlat.Center = pos;
-				(newPlat.ModNPC as BrainPlatform).thinker = NPC;
+					newPlat.Center = pos;
+					(newPlat.ModNPC as BrainPlatform).thinker = NPC;
 
-				platforms.Add(Main.npc[i]);
+					platforms.Add(Main.npc[i]);
+				}
+
+				NPC.netUpdate = true;
 			}
 
 			active = true;
@@ -624,7 +631,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 			npcLoot.Add(ItemDropRule.MasterModeCommonDrop(Mod.Find<ModItem>("ThinkerRelicItem").Type));
 
-			LeadingConditionRule notExpertRule = new LeadingConditionRule(new Conditions.NotExpert());
+			var notExpertRule = new LeadingConditionRule(new Conditions.NotExpert());
 
 			notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<ImaginaryTissue>(), 1, 30, 40));
 			notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<DendriteItem>(), 1, 80, 120));
@@ -636,6 +643,27 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			{
 				if (brain != null)
 					Main.BestiaryTracker.Kills.RegisterKill(brain);
+			}
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(platforms.Count);
+			for (int k = 0; k < platforms.Count; k++)
+			{
+				writer.Write(platforms[k]?.whoAmI ?? -1);
+			}
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			platforms.Clear();
+			int platformCount = reader.ReadInt32();
+			for (int k = 0; k < platformCount; k++)
+			{
+				int platformWhoAmI = reader.ReadInt32();
+				if (platformWhoAmI > -1)
+					platforms.Add(Main.npc[platformWhoAmI]);
 			}
 		}
 	}

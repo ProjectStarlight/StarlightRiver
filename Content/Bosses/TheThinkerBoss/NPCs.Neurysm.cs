@@ -130,12 +130,14 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			else if (State == 2)
 				opacity = prog;
 
-			if (ThisBrain is null || !ThisBrain.NPC.active)
+			if ((ThisBrain is null || !ThisBrain.NPC.active) && Main.netMode != NetmodeID.MultiplayerClient)
 			{
 				State = 1;
 
 				if (Timer > 60)
 					NPC.active = false;
+
+				NPC.netUpdate = true;
 			}
 
 			NPC.immortal = true;

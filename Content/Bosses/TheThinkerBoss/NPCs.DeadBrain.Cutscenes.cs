@@ -36,21 +36,24 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 				ThisThinker.shellFrame = 1;
 
-				Gore.NewGorePerfect(NPC.GetSource_FromThis(), thinker.Center, Vector2.UnitX.RotatedBy(0.5f).RotatedByRandom(1f) * 8, StarlightRiver.Instance.Find<ModGore>("ThinkerShellGore1").Type);
-				Gore.NewGorePerfect(NPC.GetSource_FromThis(), thinker.Center, Vector2.UnitX.RotatedBy(0.5f).RotatedByRandom(1f) * 8, StarlightRiver.Instance.Find<ModGore>("ThinkerShellGore2").Type);
-
-				Gore.NewGorePerfect(NPC.GetSource_FromThis(), thinker.Center, Vector2.UnitX.RotatedBy(-2.5f).RotatedByRandom(0.6f) * 8, StarlightRiver.Instance.Find<ModGore>("ThinkerShellGore3").Type);
-				Gore.NewGorePerfect(NPC.GetSource_FromThis(), thinker.Center, Vector2.UnitX.RotatedBy(-2.5f).RotatedByRandom(0.6f) * 8, StarlightRiver.Instance.Find<ModGore>("ThinkerShellGore4").Type);
-
-				for (int k = 0; k < 30; k++)
+				if (Main.netMode != NetmodeID.Server)
 				{
-					Dust.NewDustPerfect(ThisThinker.NPC.Center, DustID.Stone, Vector2.UnitX.RotatedBy(0.5f).RotatedByRandom(1f) * Main.rand.NextFloat(10), 0, default, 1);
-					Dust.NewDustPerfect(ThisThinker.NPC.Center, DustID.Stone, Vector2.UnitX.RotatedBy(-2.5f).RotatedByRandom(0.6f) * Main.rand.NextFloat(10), 0, default, 0.8f);
+					Gore.NewGorePerfect(NPC.GetSource_FromThis(), thinker.Center, Vector2.UnitX.RotatedBy(0.5f).RotatedByRandom(1f) * 8, StarlightRiver.Instance.Find<ModGore>("ThinkerShellGore1").Type);
+					Gore.NewGorePerfect(NPC.GetSource_FromThis(), thinker.Center, Vector2.UnitX.RotatedBy(0.5f).RotatedByRandom(1f) * 8, StarlightRiver.Instance.Find<ModGore>("ThinkerShellGore2").Type);
 
-					Dust.NewDustPerfect(ThisThinker.NPC.Center, ModContent.DustType<Dusts.GraymatterDust>(), Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), 0, default, Main.rand.NextFloat(1.5f, 2f));
+					Gore.NewGorePerfect(NPC.GetSource_FromThis(), thinker.Center, Vector2.UnitX.RotatedBy(-2.5f).RotatedByRandom(0.6f) * 8, StarlightRiver.Instance.Find<ModGore>("ThinkerShellGore3").Type);
+					Gore.NewGorePerfect(NPC.GetSource_FromThis(), thinker.Center, Vector2.UnitX.RotatedBy(-2.5f).RotatedByRandom(0.6f) * 8, StarlightRiver.Instance.Find<ModGore>("ThinkerShellGore4").Type);
+
+					for (int k = 0; k < 30; k++)
+					{
+						Dust.NewDustPerfect(ThisThinker.NPC.Center, DustID.Stone, Vector2.UnitX.RotatedBy(0.5f).RotatedByRandom(1f) * Main.rand.NextFloat(10), 0, default, 1);
+						Dust.NewDustPerfect(ThisThinker.NPC.Center, DustID.Stone, Vector2.UnitX.RotatedBy(-2.5f).RotatedByRandom(0.6f) * Main.rand.NextFloat(10), 0, default, 0.8f);
+
+						Dust.NewDustPerfect(ThisThinker.NPC.Center, ModContent.DustType<Dusts.GraymatterDust>(), Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), 0, default, Main.rand.NextFloat(1.5f, 2f));
+					}
+
+					Helpers.SoundHelper.PlayPitched("Impacts/StoneStrike", 1, 2f, ThisThinker.NPC.Center);
 				}
-
-				Helpers.SoundHelper.PlayPitched("Impacts/StoneStrike", 1, 2f, ThisThinker.NPC.Center);
 
 				extraChunkRadius = ThisThinker.FakeBrainRadius;
 			}
@@ -258,9 +261,12 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			{
 				ThisThinker.shellFrame = 2;
 
-				for (int k = 5; k < 13; k++)
+				if (Main.netMode != NetmodeID.Server)
 				{
-					Gore.NewGorePerfect(NPC.GetSource_FromThis(), thinker.Center, Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(5, 7), StarlightRiver.Instance.Find<ModGore>("ThinkerShellGore" + k).Type);
+					for (int k = 5; k < 13; k++)
+					{
+						Gore.NewGorePerfect(NPC.GetSource_FromThis(), thinker.Center, Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(5, 7), StarlightRiver.Instance.Find<ModGore>("ThinkerShellGore" + k).Type);
+					}
 				}
 
 				for (int k = 0; k < 30; k++)
@@ -364,9 +370,12 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				CameraSystem.ReturnCamera(180);
 				ZoomHandler.ReturnZoom(180);
 
-				for (int k = 1; k < 13; k++)
+				if (Main.netMode != NetmodeID.Server)
 				{
-					Gore.NewGorePerfect(NPC.GetSource_FromThis(), thinker.Center, Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(5, 7), StarlightRiver.Instance.Find<ModGore>("ThinkerShellGore" + k).Type);
+					for (int k = 1; k < 13; k++)
+					{
+						Gore.NewGorePerfect(NPC.GetSource_FromThis(), thinker.Center, Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(5, 7), StarlightRiver.Instance.Find<ModGore>("ThinkerShellGore" + k).Type);
+					}
 				}
 
 				for (int k = 0; k < 50; k++)

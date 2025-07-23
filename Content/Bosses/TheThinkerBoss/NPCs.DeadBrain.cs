@@ -1,18 +1,13 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Biomes;
+﻿using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Physics;
 using StarlightRiver.Core.DrawingRigs;
 using StarlightRiver.Core.Loaders;
-using StarlightRiver.Core.Systems.PixelationSystem;
-using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
-using Terraria;
 using Terraria.GameContent.Bestiary;
-using Terraria.Graphics.Effects;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Bosses.TheThinkerBoss
@@ -97,7 +92,8 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		public Phases Phase
 		{
 			get => (Phases)NPC.ai[1];
-			set {
+			set
+			{
 				NPC.ai[1] = (float)value;
 				NPC.netUpdate = true;
 			}
@@ -105,7 +101,8 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 		public ref float AttackTimer => ref NPC.ai[2];
 
-		public float AttackState {
+		public float AttackState
+		{
 			get => NPC.ai[3];
 			set
 			{
@@ -142,7 +139,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 		private void SelectTarget()
 		{
-			List<Player> options = new();
+			List<Player> options = [];
 
 			foreach (Player player in Main.ActivePlayers)
 			{
@@ -276,18 +273,23 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 		public void TeleportWithChain(Vector2 centerTarget)
 		{
-			List<Vector2> relPos = new();
+			List<Vector2> relPos = [];
 
 			chainSplitBrainAttached?.IterateRope(a => relPos.Add(chainSplitBrainAttached.ropeSegments[a].posNow - NPC.Center));
 
-			NPC.Center = centerTarget;
-			NPC.Center = centerTarget;
+			if (Main.netMode != NetmodeID.MultiplayerClient)
+			{
+				NPC.Center = centerTarget;
+				NPC.Center = centerTarget;
+			}
 
 			chainSplitBrainAttached?.IterateRope(a =>
 				{
 					chainSplitBrainAttached.ropeSegments[a].posNow = centerTarget + relPos[a];
 					chainSplitBrainAttached.ropeSegments[a].posOld = centerTarget + relPos[a];
 				});
+
+			NPC.netUpdate = true;
 		}
 
 		public override void SetStaticDefaults()
@@ -414,38 +416,44 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				case Phases.Setup:
 					opacity = 1;
 
-					for (int k = 0; k < 10; k++)
+					// Spawn the weakpoint and neurism NPCs
+					if (Main.netMode != NetmodeID.MultiplayerClient)
 					{
-						// Spawn minion
-						int i = NPC.NewNPC(null, (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<Neurysm>(), NPC.whoAmI, 1, 60);
-						neurisms.Add(Main.npc[i]);
-
-						// Link minion
-						var neurism = Main.npc[i].ModNPC as Neurysm;
-
-						// Safety check, if its not a minion go back and try again
-						if (neurism is null)
+						for (int k = 0; k < 10; k++)
 						{
-							Main.npc[i].active = false;
-							k--;
-							continue;
+							// Spawn minion
+							int i = NPC.NewNPC(null, (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<Neurysm>(), NPC.whoAmI, 1, 60);
+
+							var neurism = Main.npc[i].ModNPC as Neurysm;
+
+							// Safety check, if its not a minion go back and try again
+							if (neurism is null)
+							{
+								Main.npc[i].active = false;
+								k--;
+								continue;
+							}
+							else
+							{
+								// Link
+								neurism.brain = NPC;
+								neurisms.Add(Main.npc[i]);
+							}
 						}
-						else
+
+						int weakpointIndex = NPC.NewNPC(null, (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<WeakPoint>(), NPC.whoAmI);
+
+						NPC weakpoint = Main.npc[weakpointIndex];
+
+						if (weakpoint.ModNPC is WeakPoint wp)
 						{
-							// Link
-							neurism.brain = NPC;
+							wp.thinker = thinker;
+							this.weakpoint = weakpoint;
+
+							weakpoint.dontTakeDamage = true;
 						}
-					}
 
-					// Spawn the weakpoint NPC
-					int weakpointIndex = NPC.NewNPC(null, (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<WeakPoint>(), NPC.whoAmI);
-					weakpoint = Main.npc[weakpointIndex];
-
-					if (weakpoint.ModNPC is WeakPoint wp)
-					{
-						// Link the weakpoint to the appropriate thinker
-						wp.thinker = thinker;
-						weakpoint.dontTakeDamage = true;
+						NPC.netUpdate = true;
 					}
 
 					// populate the attack queue
@@ -475,15 +483,21 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				case Phases.SpawnAnim:
 
 					Intro();
-					weakpoint.Center = attachedChain.ropeSegments[attachedChain.ropeSegments.Count / 3].posNow;
+
+					if (weakpoint != null)
+						weakpoint.Center = attachedChain.ropeSegments[attachedChain.ropeSegments.Count / 3].posNow;
 
 					break;
 
 				case Phases.FirstPhase:
 
 					attachedChainEndpoint = NPC.Center + Vector2.UnitY * 90;
-					weakpoint.Center = attachedChain.ropeSegments[attachedChain.ropeSegments.Count / 3].posNow;
-					weakpoint.dontTakeDamage = false;
+
+					if (weakpoint != null)
+					{
+						weakpoint.Center = attachedChain.ropeSegments[attachedChain.ropeSegments.Count / 3].posNow;
+						weakpoint.dontTakeDamage = false;
+					}
 
 					if (thinker.life <= thinker.lifeMax / 2f)
 						thinker.life = (int)(thinker.lifeMax / 2f);
@@ -1038,9 +1052,16 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				binaryWriter.Write(attackQueue[k]);
 			}
 
-			for(int k = 0; k < 4; k++)
+			for (int k = 0; k < 4; k++)
 			{
 				binaryWriter.Write(safeMineIndicides[k]);
+			}
+
+			binaryWriter.Write(weakpoint?.whoAmI ?? -1);
+			binaryWriter.Write(neurisms.Count);
+			for (int k = 0; k < neurisms.Count; k++)
+			{
+				binaryWriter.Write(neurisms[k]?.whoAmI ?? -1);
 			}
 		}
 
@@ -1060,6 +1081,19 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			for (int k = 0; k < 4; k++)
 			{
 				safeMineIndicides[k] = binaryReader.ReadInt32();
+			}
+
+			int weakpointWhoAmI = binaryReader.ReadInt32();
+			if (weakpointWhoAmI > -1)
+				weakpoint = Main.npc[weakpointWhoAmI];
+
+			neurisms.Clear();
+			int neurismCount = binaryReader.ReadInt32();
+			for (int k = 0; k < neurismCount; k++)
+			{
+				int neurismWhoAmI = binaryReader.ReadInt32();
+				if (neurismWhoAmI > -1)
+					neurisms.Add(Main.npc[neurismWhoAmI]);
 			}
 		}
 	}

@@ -1,4 +1,5 @@
 ﻿using System;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 {
@@ -11,6 +12,9 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		/// <param name="offset">offset in cube sizes from the center, 0 is at the center</param>
 		public void SpawnBlock(int direction = -1, int offset = -99, float speed = 3, int duration = 560)
 		{
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+				return;
+
 			int n;
 
 			if (direction == -1 || direction > 3)
@@ -44,6 +48,9 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 		public void SpawnProjectile(int direction = -1, int offset = -99, float speed = 5, int duration = 320)
 		{
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+				return;
+
 			if (direction == -1 || direction > 3)
 				direction = Main.rand.Next(4);
 

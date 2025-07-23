@@ -26,15 +26,13 @@ namespace StarlightRiver.Core.Systems.InoculationSystem
 
 		public static void ReduceDoT(NPC npc)
 		{
-			if (npc.lifeRegen < 0)
-				npc.lifeRegen = (int)(npc.lifeRegen * (1.0f - npc.GetGlobalNPC<InoculationNPC>().DoTResist));
+			if (npc.TryGetGlobalNPC<InoculationNPC>(out var global))
+			{
+				if (npc.lifeRegen < 0)
+					npc.lifeRegen = (int)(npc.lifeRegen * (1.0f - global.DoTResist));
 
-			npc.GetGlobalNPC<InoculationNPC>().DoTResist = 0;
-		}
-
-		public override void ResetEffects(NPC npc)
-		{
-
+				global.DoTResist = 0;
+			}
 		}
 	}
 }
