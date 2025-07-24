@@ -787,7 +787,10 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			if (AttackTimer > 90 && AttackTimer < 410)
 			{
 				if (hurtLastFrame)
+				{
 					AttackTimer = 410;
+					NPC.netUpdate = true;
+				}
 			}
 
 			// Bullet hell for expert and above
@@ -1122,7 +1125,10 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			if (AttackTimer > 240 && AttackTimer < 410)
 			{
 				if (hurtLastFrame)
+				{
 					AttackTimer = 410;
+					NPC.netUpdate = true;
+				}
 			}
 
 			// Timeout

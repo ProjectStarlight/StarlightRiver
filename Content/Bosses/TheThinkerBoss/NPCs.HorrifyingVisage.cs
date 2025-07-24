@@ -133,6 +133,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				NPC.life = NPC.lifeMax;
 				NPC.dontTakeDamage = true;
 				NPC.immortal = true;
+				NPC.netUpdate = true;
 				return false;
 			}
 

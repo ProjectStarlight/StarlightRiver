@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.PixelationSystem;
 using System;
+using System.IO;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
@@ -130,7 +131,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			else if (State == 2)
 				opacity = prog;
 
-			if ((ThisBrain is null || !ThisBrain.NPC.active) && Main.netMode != NetmodeID.MultiplayerClient)
+			if (ThisBrain is null || !ThisBrain.NPC.active)
 			{
 				State = 1;
 
@@ -323,6 +324,19 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			}
 
 			return false;
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(brain?.whoAmI ?? -1);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			int brainWhoAmI = reader.ReadInt32();
+
+			if (brainWhoAmI >= 0)
+				brain = Main.npc[brainWhoAmI];
 		}
 	}
 }

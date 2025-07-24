@@ -127,17 +127,20 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 		public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
 		{
+			if (thinker is null)
+				return false;
+
 			position.Y += 8;
 
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
 			Texture2D tex = Assets.GUI.SmallBar0.Value;
 			Texture2D texOver = Assets.GUI.SmallBar1.Value;
-			float progress = (NPC.life - NPC.lifeMax / 2f) / (NPC.lifeMax / 2f);
+			float progress = (thinker.life - thinker.lifeMax / 2f) / (thinker.lifeMax / 2f);
 
 			int w = (int)(progress * texOver.Width - 4);
 
-			if (w < 2 && thinker?.life > thinker?.lifeMax / 2f)
+			if (w < 2 && thinker.life > thinker.lifeMax / 2f)
 				w = 2;
 
 			var target = new Rectangle((int)(position.X - Main.screenPosition.X) + 2, (int)(position.Y - Main.screenPosition.Y) - 2, w, texOver.Height);

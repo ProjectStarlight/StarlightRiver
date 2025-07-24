@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 		public bool hurtLastFrame;
 
-		public float opacity;
+		public float opacity = 1;
 
 		public List<int> attackQueue = [];
 		public int attackCount;
@@ -437,7 +437,8 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 							{
 								// Link
 								neurism.brain = NPC;
-								neurisms.Add(Main.npc[i]);
+								neurism.NPC.netUpdate = true;
+								neurisms.Add(Main.npc[i]);						
 							}
 						}
 

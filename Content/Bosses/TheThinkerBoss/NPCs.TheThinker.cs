@@ -252,6 +252,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					{
 						lastPlatformRadius = platformRadius;
 						platformRadiusTimer = 0;
+						NPC.netUpdate = true;
 					}
 				}
 				else if (platformRadiusTimer <= platformRadiusTransitionTime)
@@ -272,6 +273,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					{
 						lastPlatformRotation = platformRotation;
 						platformRotationTimer = 0;
+						NPC.netUpdate = true;
 					}
 				}
 				else if (platformRotationTimer <= platformRotationTransitionTime)
@@ -648,6 +650,16 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
+			writer.Write(platformRadius);
+			writer.Write(platformRadiusTarget);
+			writer.Write(platformRadiusTimer);
+			writer.Write(platformRadiusTransitionTime);
+
+			writer.Write(platformRotation);
+			writer.Write(platformRotationTarget);
+			writer.Write(platformRotationTimer);
+			writer.Write(platformRotationTransitionTime);
+
 			writer.Write(platforms.Count);
 			for (int k = 0; k < platforms.Count; k++)
 			{
@@ -657,6 +669,16 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
+			platformRadius = reader.ReadSingle();
+			platformRadiusTarget = reader.ReadSingle();
+			platformRadiusTimer = reader.ReadInt32();
+			platformRadiusTransitionTime = reader.ReadInt32();
+
+			platformRotation = reader.ReadSingle();
+			platformRotationTarget = reader.ReadSingle();
+			platformRotationTimer = reader.ReadInt32();
+			platformRotationTransitionTime = reader.ReadInt32();
+
 			platforms.Clear();
 			int platformCount = reader.ReadInt32();
 			for (int k = 0; k < platformCount; k++)
