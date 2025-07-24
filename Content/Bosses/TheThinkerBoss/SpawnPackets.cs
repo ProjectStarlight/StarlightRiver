@@ -32,30 +32,4 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			Main.npc[i].GetGlobalNPC<Creeper>().reworked = true;
 		}
 	}
-
-	[Serializable]
-	public class VisageSpawnPacket : Module
-	{
-		public readonly int parentWhoAmI;
-		public readonly int x;
-		public readonly int y;
-
-		public VisageSpawnPacket(int parentWhoAmI, int x, int y)
-		{
-			this.parentWhoAmI = parentWhoAmI;
-			this.x = x;
-			this.y = y;
-		}
-
-		protected override void Receive()
-		{
-			var parent = Main.npc[parentWhoAmI];
-
-			int i = NPC.NewNPC(null, x, y, ModContent.NPCType<HorrifyingVisage>());
-			Main.npc[i].Center = new Vector2(x, y);
-
-			if (Main.npc[i].ModNPC is HorrifyingVisage hv && parent.ModNPC is DeadBrain brain)
-				hv.thinker = brain.thinker;
-		}
-	}
 }

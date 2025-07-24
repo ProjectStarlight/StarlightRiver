@@ -6,6 +6,7 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Text;
+using System.IO;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
@@ -189,6 +190,19 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			}
 
 			return false;
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(thinker?.whoAmI ?? -1);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			int thinkerWhoAmI = reader.ReadInt32();
+
+			if (thinkerWhoAmI >= 0)
+				thinker = Main.npc[thinkerWhoAmI];
 		}
 	}
 }

@@ -759,21 +759,33 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 			if (AttackTimer == 90)
 			{
-				int random = Main.rand.Next(10);
-				savedPos = ThisThinker.home + Vector2.UnitX.RotatedBy(random / 10f * 6.28f) * 590;
-				NPC.netUpdate = true;
-
-				for (int k = 0; k < 10; k++)
+				if (Main.netMode != NetmodeID.MultiplayerClient)
 				{
-					if (k != random)
+					int random = Main.rand.Next(10);
+					savedPos = ThisThinker.home + Vector2.UnitX.RotatedBy(random / 10f * 6.28f) * 590;
+
+					for (int k = 0; k < 10; k++)
 					{
-						Vector2 pos = ThisThinker.home + Vector2.UnitX.RotatedBy(k / 10f * 6.28f) * 590;
-						new VisageSpawnPacket(NPC.whoAmI, (int)pos.X, (int)pos.Y).Send(-1, -1, Main.netMode == NetmodeID.SinglePlayer);
+						if (k != random)
+						{
+							Vector2 pos = ThisThinker.home + Vector2.UnitX.RotatedBy(k / 10f * 6.28f) * 590;
+
+							int i = NPC.NewNPC(null, (int)pos.X, (int)pos.Y, ModContent.NPCType<HorrifyingVisage>());
+							Main.npc[i].Center = pos;
+
+							if (Main.npc[i].ModNPC is HorrifyingVisage hv)
+								hv.thinker = thinker;
+
+							Main.npc[i].netUpdate = true;
+						}
 					}
+
+					TeleportWithChain(savedPos);
+
+					NPC.netUpdate = true;
 				}
 
 				NPC.chaseable = false;
-				TeleportWithChain(savedPos);
 			}
 
 			if (AttackTimer > 90 && AttackTimer <= 120)
@@ -1053,22 +1065,33 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				ThisThinker.platformRadiusTarget = 400;
 				ThisThinker.platformRotationTarget -= 0.2f;
 
-				int random = Main.rand.Next(4);
-				savedPos = ThisThinker.home + Vector2.UnitX.RotatedBy(random / 4f * 6.28f) * 590;
-
-				NPC.netUpdate = true;
-
-				for (int k = 0; k < 4; k++)
+				if (Main.netMode != NetmodeID.MultiplayerClient)
 				{
-					if (k != random)
+					int random = Main.rand.Next(4);
+					savedPos = ThisThinker.home + Vector2.UnitX.RotatedBy(random / 4f * 6.28f) * 590;
+
+					for (int k = 0; k < 4; k++)
 					{
-						Vector2 pos = ThisThinker.home + Vector2.UnitX.RotatedBy(k / 4f * 6.28f) * 590;
-						new VisageSpawnPacket(NPC.whoAmI, (int)pos.X, (int)pos.Y).Send(-1, -1, Main.netMode == NetmodeID.SinglePlayer);
+						if (k != random)
+						{
+							Vector2 pos = ThisThinker.home + Vector2.UnitX.RotatedBy(k / 4f * 6.28f) * 590;
+
+							int i = NPC.NewNPC(null, (int)pos.X, (int)pos.Y, ModContent.NPCType<HorrifyingVisage>());
+							Main.npc[i].Center = pos;
+
+							if (Main.npc[i].ModNPC is HorrifyingVisage hv)
+								hv.thinker = thinker;
+
+							Main.npc[i].netUpdate = true;
+						}
 					}
+
+					TeleportWithChain(savedPos);
+					NPC.netUpdate = true;
 				}
 
 				NPC.chaseable = false;
-				TeleportWithChain(savedPos);
+				
 			}
 
 			if (AttackTimer > 60 && AttackTimer <= 90)
