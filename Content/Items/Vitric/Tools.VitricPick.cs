@@ -1,4 +1,5 @@
-﻿using Terraria.DataStructures;
+﻿using System;
+using Terraria.DataStructures;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -8,6 +9,8 @@ namespace StarlightRiver.Content.Items.Vitric
 	{
 		public const int MAX_HEAT = 20;
 
+		public static Point16 lastVitricPickInteraction;
+
 		public int heat = 0;
 		public int heatTime = 0;
 
@@ -16,12 +19,11 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void Load()
 		{
 			On_Player.PickTile += GenerateHeat;
+			On_NetMessage.TrySendData += SendPickInfo;
+			On_WorldGen.KillTile += CancelLava;
 		}
 
-		public override void Unload()
-		{
-			On_Player.PickTile -= GenerateHeat;
-		}
+
 
 		public override void SetStaticDefaults()
 		{
@@ -49,23 +51,54 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		private void GenerateHeat(On_Player.orig_PickTile orig, Player self, int x, int y, int pickPower)
 		{
-			var myPick = self.HeldItem.ModItem as VitricPick;
-			Tile tile = Framing.GetTileSafely(x, y);
-			ushort type = tile.TileType;
+			var tile = Framing.GetTileSafely(x, y);
+			var oldType = tile.TileType;
 
 			orig(self, x, y, pickPower);
 
-			tile = Framing.GetTileSafely(x, y);
+			var myPick = self.HeldItem.ModItem as VitricPick;
 
-			if (myPick != null && type == TileID.Hellstone)
+			if (myPick != null && oldType == TileID.Hellstone)
 			{
 				if (myPick.heat < MAX_HEAT)
 					myPick.heat++;
 
+				// Sets for singleplayer, for multiplayer see SendPickInfo to set this on the server based on picktile packets
+				lastVitricPickInteraction = new(x, y);
+			}
+			else
+			{
+				lastVitricPickInteraction = default;
+			}
+		}
+
+		private bool SendPickInfo(On_NetMessage.orig_TrySendData orig, int msgType, int remoteClient, int ignoreClient, NetworkText text, int number, float number2, float number3, float number4, int number5, int number6, int number7)
+		{
+			var final = orig(msgType, remoteClient, ignoreClient, text, number, number2, number3, number4, number5, number6, number7);
+
+			if (Main.netMode == NetmodeID.Server && msgType == MessageID.SyncTilePicking && ignoreClient != -1)
+			{
+				var player = Main.player[ignoreClient];
+
+				if (player.HeldItem.type == ModContent.ItemType<VitricPick>())
+					lastVitricPickInteraction = new((int)number2, (int)number3); // These are the X and Y coordinates, see vanilla MessageBuffer.cs for case 125 (tile pick packet)
+			}
+
+			return final;
+		}
+
+		private void CancelLava(On_WorldGen.orig_KillTile orig, int i, int j, bool fail, bool effectOnly, bool noItem)
+		{
+			var tile = Framing.GetTileSafely(i, j);
+			var oldType = tile.TileType;
+
+			orig(i, j, fail, effectOnly, noItem);
+
+			if (lastVitricPickInteraction == new Point16(i, j) && oldType == TileID.Hellstone)
+			{
 				tile.LiquidType = 0;
 				tile.LiquidAmount = 0;
 				tile.SkipLiquid = true;
-				NetMessage.SendTileSquare(0, x, y, 1, 1);
 			}
 		}
 
