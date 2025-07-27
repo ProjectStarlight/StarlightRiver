@@ -637,6 +637,8 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 			notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<ImaginaryTissue>(), 1, 30, 40));
 			notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<DendriteItem>(), 1, 80, 120));
+
+			npcLoot.Add(notExpertRule);
 		}
 
 		public override void OnKill()
