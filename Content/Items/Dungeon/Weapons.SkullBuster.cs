@@ -57,6 +57,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			recipe.AddIngredient(ItemID.Grenade, 5);
 			recipe.AddIngredient(ItemID.Bone, 10);
 			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 
 		public override void HoldItem(Player Player)
