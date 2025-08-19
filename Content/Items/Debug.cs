@@ -297,13 +297,13 @@ namespace StarlightRiver.Content.Items
 
 		public override void Load()
 		{
-			On_Main.DoDraw += DrawBeta;
+			//On_Main.DoDraw += DrawBeta;
 		}
 
 		private void DrawBeta(On_Main.orig_DoDraw orig, Main self, GameTime gameTime)
 		{
 			orig(self, gameTime);
-			return;
+
 			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.UIScaleMatrix);
 
 			DynamicSpriteFont font = Terraria.GameContent.FontAssets.ItemStack.Value;
