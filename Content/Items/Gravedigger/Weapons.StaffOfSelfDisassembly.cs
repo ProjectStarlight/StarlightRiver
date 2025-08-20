@@ -240,7 +240,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 			for (int k = 0; k < 20; k++)
 			{
-				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.BloodMetaballDust>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2.5f), 0, Color.Red, 0.3f);
+				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.BloodMetaballDust>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2.5f), 0, Color.Red, 0.5f);
 
 				for (int i = 0; i < 5; i++)
 				{

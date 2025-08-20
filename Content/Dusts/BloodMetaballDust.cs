@@ -10,15 +10,23 @@ namespace StarlightRiver.Content.Dusts
 		public override void OnSpawn(Dust dust)
 		{
 			dust.noLight = true;
+			dust.color = new(Main.rand.Next(90, 140), 20, 20);
 		}
 
 		public override bool Update(Dust dust)
 		{
 			BloodMetaballs.Visible = true;
+			MainUpdate(dust);
 
+			return false;
+		}
+
+		public void MainUpdate(Dust dust)
+		{
 			dust.position += dust.velocity;
+			dust.fadeIn++;
 
-			dust.customData ??= Main.rand.NextFloat(0.75f, 1.5f);
+			dust.customData ??= Main.rand.NextFloat(0.05f, 0.5f);
 
 			if (dust.noGravity)
 			{
@@ -26,32 +34,42 @@ namespace StarlightRiver.Content.Dusts
 			}
 			else
 			{
-				dust.velocity.Y += 0.2f;
+				dust.velocity.Y += 0.3f;
 
 				if (dust.position.X > 16 && dust.position.Y > 16)
 				{
 					Tile tile = Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16];
 
-					if (tile.HasTile && tile.BlockType == BlockType.Solid && Main.tileSolid[tile.TileType])
+					if (dust.velocity.Y > 0.1f && tile.HasTile && tile.BlockType == BlockType.Solid && Main.tileSolid[tile.TileType])
 					{
-						dust.scale *= 1.03f;
-						dust.velocity *= -0.5f;
+						dust.velocity.Y *= Main.rand.NextFloat(-0.9f, -0.25f);
+						dust.velocity.X *= 0.5f;
 					}
 				}
 			}
 
 			dust.rotation = dust.velocity.ToRotation() + 1.57f;
-			dust.scale *= 0.96f;
+			dust.scale *= 0.98f;
+
+			if (dust.fadeIn > 300)
+				dust.scale *= 0.9f;
 
 			if (dust.noGravity)
 				dust.scale *= 0.96f;
 
 			if (dust.scale < 0.05f)
 				dust.active = false;
+		}
+	}
+
+	public class BloodMetaballDustLight : BloodMetaballDust
+	{
+		public override bool Update(Dust dust)
+		{
+			BloodMetaballsLight.Visible = true;
+			MainUpdate(dust);
 
 			return false;
 		}
 	}
-
-	public class BloodMetaballDustLight : BloodMetaballDust { }
 }

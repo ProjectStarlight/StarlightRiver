@@ -33,6 +33,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			Texture2D harshTex = Assets.Masks.GlowHarsh.Value;
 
 			borderNoise.Parameters["offset"].SetValue((float)Main.time / 100f);
+			borderNoise.Parameters["magnitude"].SetValue(0.025f);
 
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);

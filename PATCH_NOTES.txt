@@ -40,6 +40,7 @@
 
 ## Balance
 - ↑ Base barrier recharge rate has increased from 6 to 10
+- ↑ Bloodbolter's unique arrows no longer has restrictions on what enemies can expode, and has a 5% chance to explode when hitting a boss
 - ↑ Facet and lattice damage 47 => 45, crit 10% => 19%, max buff multiplier 3x => 3.5x
 - ↑ Coalescence damage 44 => 50
 - ↑ Refractive blade laser damage 5% of base => 25% of base

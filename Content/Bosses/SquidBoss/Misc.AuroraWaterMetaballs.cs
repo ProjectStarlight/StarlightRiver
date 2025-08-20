@@ -31,6 +31,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			if (borderNoise != null)
 			{
 				borderNoise.Parameters["offset"].SetValue((float)Main.time / 100f);
+				borderNoise.Parameters["magnitude"].SetValue(0.025f);
 
 				spriteBatch.End();
 				spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);

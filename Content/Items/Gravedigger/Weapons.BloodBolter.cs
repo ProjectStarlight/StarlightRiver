@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Bloodbolter");
-			Tooltip.SetDefault("Converts wooden arrows into bloodbolts \nBloodbolts impale dead fleshy enemies, exploding them on surfaces");
+			Tooltip.SetDefault("Converts wooden arrows into bloodbolts \nBloodbolts impale and explode violently on kill\nBloodbolts occasionally explode when hitting bosses");
 		}
 
 		public override void SetDefaults()
@@ -184,7 +184,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
-			if (target.active && !target.boss && target.knockBackResist != 0 && NPCHelper.IsFleshy(target))
+			if (target.active)
 			{
 				modifiers.SetMaxDamage(target.life - 1); // Cap damage to not kill NPC outright, we'll assume 1 off lethal is a blood bolter "kill"
 				Owner.TryGetModPlayer(out StarlightPlayer starlightPlayer);
@@ -197,8 +197,16 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (target.life <= 1 && target.active && !target.boss && target.knockBackResist != 0 && NPCHelper.IsFleshy(target))
-				BloodBolterGNPC.MarkForDeath(target, Projectile);
+			if (target.life <= 1 && target.active)
+			{
+				if (!target.boss && target.knockBackResist != 0)
+					BloodBolterGNPC.MarkForDeath(target, Projectile);
+				else
+					BloodBolterGNPC.SpawnBlood(target, Projectile);
+			}
+
+			if (target.boss && Main.rand.NextBool(20))
+				BloodBolterGNPC.SpawnBlood(target, Projectile);
 		}
 
 		public override void OnKill(int timeLeft)
@@ -259,14 +267,18 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				for (int i = 0; i < 16; i++)
 				{
 					Dust.NewDustPerfect(Projectile.Center - goreVelocity + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), DustID.Blood, Main.rand.NextVector2Circular(5, 5), 0, default, 1.4f);
-					Dust.NewDustPerfect(Projectile.Center - goreVelocity + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), DustID.Blood, direction.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(3, 8), 0, default, 2.1f);
-					Dust.NewDustPerfect(Projectile.Center - goreVelocity + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), ModContent.DustType<BloodMetaballDust>(), direction.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(3, 8), 0, default, 0.3f);
-					Dust.NewDustPerfect(Projectile.Center - goreVelocity + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), ModContent.DustType<BloodMetaballDustLight>(), direction.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(3, 8), 0, default, 0.3f);
+					Dust.NewDustPerfect(Projectile.Center - goreVelocity + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), DustID.Blood, direction.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(3, 8), 0, default, 2.1f);					
+					Dust.NewDustPerfect(Projectile.Center - goreVelocity + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), ModContent.DustType<BloodMetaballDustLight>(), direction.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(4, 6), 0, default, Main.rand.NextFloat(0.2f, 0.4f));
 				}
 
-				for (int i = 0; i < 8; i++)
+				for(int k = 0; k < 32; k++)
 				{
-					Dust.NewDustPerfect(Projectile.Center - goreVelocity + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), ModContent.DustType<SmokeDustColor>(), Main.rand.NextVector2Circular(3, 3), 0, Color.DarkRed, Main.rand.NextFloat(1, 1.5f));
+					Dust.NewDustPerfect(Projectile.Center - goreVelocity + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), ModContent.DustType<BloodMetaballDust>(), direction.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(6, 12), 0, default, Main.rand.NextFloat(0.1f, 0.3f));
+				}
+
+				for (int i = 0; i < 6; i++)
+				{
+					Dust.NewDustPerfect(Projectile.Center - goreVelocity + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), ModContent.DustType<PixelSmokeColor>(), Main.rand.NextVector2Circular(3, 3), 0, Color.DarkRed, Main.rand.NextFloat(0.1f, 0.2f));
 				}
 			}
 		}
@@ -311,12 +323,15 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 				if (!storedBolt.active || (npc.collideX || npc.collideY) && deathCounter > 2)
 				{
-					SpawnBlood(npc, storedBolt);
-					markedForDeath = false;
-					storedBolt.active = false;
 					npc.Kill();
 				}
 			}
+		}
+
+		public override void OnKill(NPC npc)
+		{
+			if (markedForDeath && storedBolt != default)
+				SpawnBlood(npc, storedBolt);
 		}
 
 		public override bool CheckActive(NPC npc)
@@ -354,7 +369,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			GNPC.storedBolt = bolt;
 		}
 
-		private static void SpawnBlood(NPC npc, Projectile projectile)
+		public static void SpawnBlood(NPC npc, Projectile projectile)
 		{
 			// For the sake of mp compat this projectile is going to be spawned by the server. Player will miss out on some DPS calcs / onhit procs but its better than totally non-functional
 			if (Main.netMode != NetmodeID.MultiplayerClient)

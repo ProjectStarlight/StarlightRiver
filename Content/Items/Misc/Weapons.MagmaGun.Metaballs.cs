@@ -25,6 +25,7 @@ namespace StarlightRiver.Content.Items.Misc
 				return;
 
 			borderNoise.Parameters["offset"].SetValue((float)Main.time / 100f);
+			borderNoise.Parameters["magnitude"].SetValue(0.025f);
 
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
