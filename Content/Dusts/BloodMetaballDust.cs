@@ -42,10 +42,18 @@ namespace StarlightRiver.Content.Dusts
 
 					if (dust.velocity.Y > 0.1f && tile.HasTile && tile.BlockType == BlockType.Solid && Main.tileSolid[tile.TileType])
 					{
-						dust.velocity.Y *= Main.rand.NextFloat(-0.9f, -0.25f);
-						dust.velocity.X *= 0.5f;
+						dust.velocity.Y *= Main.rand.NextFloat(-0.65f, -0.1f);
+						dust.velocity.X *= Main.rand.NextFloat(0.3f, 0.8f);
+
+						if (dust.color.A >= 255)
+							dust.color.A = 254;
 					}
 				}
+			}
+
+			if (dust.color.A <= 254 && dust.color.R < 252)
+			{
+				dust.color.R += 2;
 			}
 
 			dust.rotation = dust.velocity.ToRotation() + 1.57f;

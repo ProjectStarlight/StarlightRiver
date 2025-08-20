@@ -60,14 +60,14 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 					if (Timer >= NextJerk)
 					{
-						NPC.velocity += Main.rand.NextVector2CircularEdge(5, 5);
+						NPC.velocity += Main.rand.NextVector2CircularEdge(4, 4);
 						NextJerk += Main.rand.Next(10, 40);
 
 						NPC.TargetClosest();
 
 						if (Target != null)
 						{
-							NPC.velocity += NPC.Center.DirectionTo(Target.Center) * 9;
+							NPC.velocity += NPC.Center.DirectionTo(Target.Center) * 3;
 
 							NPC.direction = NPC.Center.X > Target.Center.X ? 1 : -1;
 
@@ -87,7 +87,9 @@ namespace StarlightRiver.Content.NPCs.Crimson
 					NPC.velocity *= 0.92f;
 					FuseTimer++;
 
-					if (FuseTimer == 120)
+					NPC.scale = 1f + 0.5f * Eases.SwoopEase(FuseTimer / 60f);
+
+					if (FuseTimer == 60)
 					{
 						NPC.Kill();
 					}
@@ -129,19 +131,24 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			{
 				ModContent.GetInstance<PixelationSystem>().QueueRenderAction("UnderTiles", () =>
 				{
-					if (FuseTimer <= 120)
+					if (FuseTimer <= 60)
 					{
-						Texture2D tex = Assets.Masks.GlowWithRing.Value;
+						Texture2D tex = Assets.Misc.GlowRing.Value;
+						Texture2D tex2 = Assets.StarTexture.Value;
 
-						Color color = Color.Lerp(Color.Red, new Color(255, 50, 50), FuseTimer / 120f) * (FuseTimer / 120f);
+						Color color = Color.Lerp(new Color(255, 50, 100), new Color(255, 50, 50), FuseTimer / 60f) * Math.Min(1f, FuseTimer / 15f);
 						color.A = 0;
 
-						if (FuseTimer > 100)
-							color *= 1f - (FuseTimer - 100) / 20f;
+						if (FuseTimer > 50)
+							color *= 1f - (FuseTimer - 50) / 10f;
 
-						float scale = 220 + (1f - FuseTimer / 120f) * 30;
+						float scale = 30 + Eases.EaseQuarticOut(FuseTimer / 60f) * 220;
+						float scale2 = 30 + Eases.SwoopEase(FuseTimer / 60f) * 260;
+						float scale3 = 30 + Eases.SwoopEase((FuseTimer - 20) / 40f) * 160;
 
-						spriteBatch.Draw(tex, NPC.Center - screenPos, null, color, 0, tex.Size() / 2f, scale / tex.Width, 0, 0);
+						spriteBatch.Draw(tex, NPC.Center - screenPos, null, color * 0.5f, 0, tex.Size() / 2f, scale / tex.Width, 0, 0);
+						spriteBatch.Draw(tex2, NPC.Center - screenPos, null, color, 0, tex2.Size() / 2f, scale2 / tex2.Width, 0, 0);
+						spriteBatch.Draw(tex2, NPC.Center - screenPos, null, color, 1.57f / 2f, tex2.Size() / 2f, scale3 / tex2.Width, 0, 0);
 					}
 				});
 			}
