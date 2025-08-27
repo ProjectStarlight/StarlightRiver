@@ -16,10 +16,10 @@ namespace StarlightRiver.Content.NPCs.Crimson
 	{
 		public const int maxFlipTime = 20;
 
-		public const int bodySegment = 2;
-		public const int swordSegment0 = 5;
-		public const int swordSegment1 = 6;
-		public const int swordSegment2 = 7;
+		public const int bodySegment = 1;
+		public const int swordSegment0 = 4;
+		public const int swordSegment1 = 5;
+		public const int swordSegment2 = 6;
 
 		public const int windupDuration = 50;
 		public const int swingDuration = 40;
@@ -30,12 +30,12 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 		private static readonly List<(int, int)> connections =
 		[
-			(2, 0),
+			(1, 0),
+			(1, 2),
 			(2, 3),
-			(3, 4),
-			(2, 5),
-			(5, 6),
-			(6, 7)
+			(1, 4),
+			(4, 5),
+			(5, 6)
 		];
 
 		private float yTarget;
@@ -43,11 +43,11 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 		private float maxSpeed;
 
-		private readonly Vector2[] stringPoints = new Vector2[8];
-		private readonly float[] stringRotations = new float[8];
+		private readonly Vector2[] stringPoints = new Vector2[7];
+		private readonly float[] stringRotations = new float[7];
 
-		private readonly Vector2[] gorePoints = new Vector2[8];
-		private readonly Vector2[] goreVels = new Vector2[8];
+		private readonly Vector2[] gorePoints = new Vector2[7];
+		private readonly Vector2[] goreVels = new Vector2[7];
 
 		public Arm swordArm;
 		public bool useArm;
@@ -557,14 +557,12 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				frameY += 3;
 
 			SpriteEffects effects = NPC.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-			Vector2 origin = NPC.direction == 1 ? Vector2.Zero : new Vector2(0, 0);
 
 			if (Flipping)
 			{
 				if (FlipProg > 0.5f)
 				{
 					effects = NPC.direction == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-					origin = NPC.direction == -1 ? Vector2.Zero : new Vector2(0, 0);
 				}
 			}
 
@@ -578,11 +576,11 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				Vector2 point = stringPoints[k];
 				StaticRigPoint rigPoint = rig.Points[k];
 
-				Vector2 targetPos = point + origin - Main.screenPosition;
-				var frame = new Rectangle(rigPoint.Frame * 42, frameY * 54, 42, 54);
+				Vector2 targetPos = point - Main.screenPosition;
+				var frame = new Rectangle(rigPoint.Frame * 48, frameY * 52, 48, 52);
 
-				spriteBatch.Draw(tex, targetPos, frame, drawColor, stringRotations[k] + NPC.rotation, new Vector2(21, 27), 1f, effects, 0);
-				spriteBatch.Draw(texGlow, targetPos, frame, new Color(100, 100, 100, 100), stringRotations[k] + NPC.rotation, new Vector2(21, 27), 1f, effects, 0);
+				spriteBatch.Draw(tex, targetPos, frame, drawColor, stringRotations[k] + NPC.rotation, new Vector2(24, 26), 1f, effects, 0);
+				//spriteBatch.Draw(texGlow, targetPos, frame, new Color(100, 100, 100, 100), stringRotations[k] + NPC.rotation, new Vector2(21, 27), 1f, effects, 0);
 			}
 
 			// Enqueues the pixelated links
@@ -654,6 +652,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 		private void DrawCowl(SpriteBatch spriteBatch)
 		{
+			return;
 			Texture2D texGlow = Assets.NPCs.Crimson.RevenantCowl.Value;
 
 			SpriteEffects effects = NPC.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
