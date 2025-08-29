@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.NPCs.Crimson
@@ -87,7 +88,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 					NPC.velocity *= 0.92f;
 					FuseTimer++;
 
-					NPC.scale = 1f + 0.5f * Eases.SwoopEase(FuseTimer / 60f);
+					NPC.scale = 1f + 0.25f * Eases.SwoopEase(FuseTimer / 60f);
 
 					if (FuseTimer == 60)
 					{
@@ -100,9 +101,35 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 		public override void OnKill()
 		{
-			for (int k = 0; k < 40; k++)
+			if (State == GrossquitoState.Aggroed)
 			{
-				Dust.NewDustPerfect(NPC.Center, DustID.Blood, Main.rand.NextVector2Circular(10, 10));
+				foreach(Player player in Main.ActivePlayers)
+				{
+					if (CollisionHelper.CheckCircularCollision(NPC.Center, 125, player.Hitbox))
+					{
+						player.Hurt(PlayerDeathReason.ByNPC(NPC.whoAmI), NPC.damage, 0, false, false, false, 0);
+
+						if (!player.noKnockback)
+							player.velocity += NPC.Center.DirectionTo(player.Center) * 5;
+					}
+				}
+
+				for (int k = 0; k < 40; k++)
+				{
+					Dust.NewDustPerfect(NPC.Center, DustID.Blood, Main.rand.NextVector2Circular(10, 10), 0, default, Main.rand.NextFloat(3));
+					Dust.NewDustPerfect(NPC.Center, ModContent.DustType<Dusts.PixelatedImpactLineDust>(), Main.rand.NextVector2Circular(20, 20), 0, new Color(255, 30, Main.rand.Next(90), 0), Main.rand.NextFloat(0.2f));
+				}
+
+				SoundHelper.PlayPitched("Impacts/GoreHeavy", 1f, 0.5f, NPC.Center);
+			}
+			else
+			{
+				SoundHelper.PlayPitched("Effects/Splat", 1f, 0.5f, NPC.Center);
+
+				for (int k = 0; k < 3; k++)
+				{
+					ItemHelper.NewItemPerfect(NPC.Center, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3), ItemID.Heart);
+				}
 			}
 
 			for (int k = 0; k < 20; k++)
@@ -136,7 +163,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 						Texture2D tex = Assets.Misc.GlowRing.Value;
 						Texture2D tex2 = Assets.StarTexture.Value;
 
-						Color color = Color.Lerp(new Color(255, 50, 100), new Color(255, 50, 50), FuseTimer / 60f) * Math.Min(1f, FuseTimer / 15f);
+						Color color = Color.Lerp(new Color(255, 90, 90), new Color(50, 0, 0), FuseTimer / 60f) * Math.Min(1f, FuseTimer / 15f);
 						color.A = 0;
 
 						if (FuseTimer > 50)
@@ -146,7 +173,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 						float scale2 = 30 + Eases.SwoopEase(FuseTimer / 60f) * 260;
 						float scale3 = 30 + Eases.SwoopEase((FuseTimer - 20) / 40f) * 160;
 
-						spriteBatch.Draw(tex, NPC.Center - screenPos, null, color * 0.5f, 0, tex.Size() / 2f, scale / tex.Width, 0, 0);
+						spriteBatch.Draw(tex, NPC.Center - screenPos, null, color * 0.25f, 0, tex.Size() / 2f, scale / tex.Width, 0, 0);
 						spriteBatch.Draw(tex2, NPC.Center - screenPos, null, color, 0, tex2.Size() / 2f, scale2 / tex2.Width, 0, 0);
 						spriteBatch.Draw(tex2, NPC.Center - screenPos, null, color, 1.57f / 2f, tex2.Size() / 2f, scale3 / tex2.Width, 0, 0);
 					}

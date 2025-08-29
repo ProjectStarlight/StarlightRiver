@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Bosses.TheThinkerBoss;
+using StarlightRiver.Content.Projectiles;
 using StarlightRiver.Core.DrawingRigs;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.ArmatureSystem;
@@ -8,7 +9,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.NPCs.Crimson
 {
@@ -480,6 +483,17 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 			State = 3;
 			ReviveTimer = 0;
+
+			SoundEngine.PlaySound(SoundID.DD2_EtherianPortalOpen, NPC.Center);
+			SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact, NPC.Center);
+
+			for (int k = 0; k < 50; k++)
+			{
+				Dust.NewDust(NPC.position + Vector2.UnitY * 32, NPC.width, NPC.height, ModContent.DustType<Dusts.PixelatedEmber>(), 0, -Main.rand.NextFloat(5), 0, new Color(255, Main.rand.Next(50, 200), Main.rand.Next(50, 200), 0), Main.rand.NextFloat(0.25f));
+			}
+
+			Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<ReusableHallucinationZone>(), 0, 0, Main.myPlayer, 80, 600);
+
 			return false;
 		}
 
@@ -553,8 +567,8 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 			int frameY = (int)(Timer / 40f) % 3;
 
-			if (State > 0)
-				frameY += 3;
+			/*if (State > 0)
+				frameY += 3;*/
 
 			SpriteEffects effects = NPC.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
@@ -578,8 +592,9 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 				Vector2 targetPos = point - Main.screenPosition;
 				var frame = new Rectangle(rigPoint.Frame * 48, frameY * 52, 48, 52);
+				Color color = new(Lighting.GetSubLight(point));
 
-				spriteBatch.Draw(tex, targetPos, frame, drawColor, stringRotations[k] + NPC.rotation, new Vector2(24, 26), 1f, effects, 0);
+				spriteBatch.Draw(tex, targetPos, frame, color, stringRotations[k] + NPC.rotation, new Vector2(24, 26), 1f, effects, 0);
 				//spriteBatch.Draw(texGlow, targetPos, frame, new Color(100, 100, 100, 100), stringRotations[k] + NPC.rotation, new Vector2(21, 27), 1f, effects, 0);
 			}
 
