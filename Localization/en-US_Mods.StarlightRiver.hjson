@@ -4596,6 +4596,7 @@ NPCs: {
 	WaterCube.DisplayName: Water Cube
 	DesertWisp2.DisplayName: Desert Wisp2
 	Grossquito.DisplayName: Grossquito
+	GrossquitoElite.DisplayName: Thoughtful Grossquito
 }
 
 Buffs: {
@@ -4680,6 +4681,11 @@ Buffs: {
 	Psychosis: {
 		DisplayName: Psychosis
 		Description: Deals 4 damage per second and increases expsoure by 1%
+	}
+
+	PsychosisImbuementBuff: {
+		DisplayName: Weapon Imbue: Psychosis
+		Description: All attacks inflict stacks of the Psychosis debuff on enemies
 	}
 
 	Rage: {

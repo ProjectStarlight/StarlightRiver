@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Terraria;
 using Terraria.ID;
 
@@ -196,6 +197,11 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		public static void InflictStack<A, B>(Player player, int duration, B premadeStack = null) where A : StackableBuff<B>, new() where B : BuffStack, new()
 		{
 			InflictStackInner<A>(player, duration, premadeStack);
+		}
+
+		internal static void InflictStack<T>(NPC target, int v)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

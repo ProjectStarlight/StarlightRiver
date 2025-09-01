@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Items.Crimson;
 using StarlightRiver.Content.NPCs.Misc;
 using StarlightRiver.Core.Systems.PixelationSystem;
 using System;
@@ -12,123 +13,39 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.NPCs.Crimson
 {
-	enum GrossquitoState : int
+	internal class GrossquitoElite : Grossquito
 	{
-		Idle,
-		Aggroed
-	}
-
-	internal class Grossquito : ModNPC
-	{
-
-		public ref float Timer => ref NPC.ai[0];
-
-		public GrossquitoState State
-		{
-			get => (GrossquitoState)NPC.ai[1];
-			set => NPC.ai[1] = (float)value;
-		}
-
-		public ref float NextJerk => ref NPC.ai[2];
-		public ref float FuseTimer => ref NPC.ai[3];
-
-		protected Texture2D tex = Assets.NPCs.Crimson.Grossquito.Value;
-		protected float speed = 3f;
-
-		public Player Target => NPC.target > -1 ? Main.player[NPC.target] : null;
 
 		public override string Texture => AssetDirectory.CrimsonNPCs + Name;
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Grossquito");
-			NPCID.Sets.TrailCacheLength[NPC.type] = 5; 
-			NPCID.Sets.TrailingMode[NPC.type] = 3; 
+			DisplayName.SetDefault("Thoughtful Grossquito");
+			NPCID.Sets.TrailCacheLength[NPC.type] = 5;
+			NPCID.Sets.TrailingMode[NPC.type] = 3;
 		}
 
 		public override void SetDefaults()
 		{
-			NPC.width = 48;
-			NPC.height = 36;
+			NPC.width = 60;
+			NPC.height = 54;
 			NPC.knockBackResist = 1.8f;
-			NPC.lifeMax = 64;
+			NPC.lifeMax = 94;
 			NPC.noGravity = true;
 			NPC.noTileCollide = false;
-			NPC.damage = 25;
+			NPC.damage = 35;
 			NPC.aiStyle = -1;
 			NPC.HitSound = SoundID.NPCHit1;
 			NPC.DeathSound = SoundID.NPCDeath1;
-		}
-
-		public override void AI()
-		{
-
-			Timer++;
-
-			switch (State)
-			{
-				case GrossquitoState.Idle:
-
-					if (Timer >= NextJerk)
-					{
-						NPC.velocity += Main.rand.NextVector2CircularEdge(4, 4);
-						NextJerk += Main.rand.Next(10, 40);
-
-						NPC.TargetClosest();
-						if (Target != null)
-						{
-							NPC.velocity += NPC.Center.DirectionTo(Target.Center) * speed;
-							NPC.rotation = NPC.velocity.X * 0.05f; 
-							NPC.direction = NPC.Center.X > Target.Center.X ? 1 : -1;
-
-							if (Vector2.Distance(NPC.Center, Target.Center) < 120)
-							{
-								State = GrossquitoState.Aggroed;
-							}
-						}
-
-						NPC.netUpdate = true;
-					}
-
-					NPC.velocity *= 0.96f;
-
-					break;
-
-				case GrossquitoState.Aggroed:
-
-					NPC.velocity *= 0.92f;
-					FuseTimer++;
-
-					float intensity = 0.2f;
-
-					if (FuseTimer >= 40)
-					{
-						intensity = 0.55f;
-
-					}
-
-					float scaleVariance = intensity * (float)Math.Sin(FuseTimer * 1.2f);
-					float rotationVariance = 0.3f * (float)Math.Sin(FuseTimer * 1.75f);
-
-					NPC.scale = 1f + 0.25f * Eases.SwoopEase(FuseTimer / 50f) * scaleVariance;
-					NPC.rotation = MathHelper.Lerp(NPC.rotation, 0, 0.2f) * rotationVariance * 7.75f;
-					NPC.damage = 0;
-
-
-					if (FuseTimer == 60)
-					{
-						NPC.Kill();
-					}
-
-					break;
-			}
+			speed = 5;
+			tex = Assets.NPCs.Crimson.GrossquitoElite.Value;
 		}
 
 		public override void OnKill()
 		{
 			if (State == GrossquitoState.Aggroed)
 			{
-				foreach(Player player in Main.ActivePlayers)
+				foreach (Player player in Main.ActivePlayers)
 				{
 					if (CollisionHelper.CheckCircularCollision(NPC.Center, 125, player.Hitbox))
 					{
@@ -146,20 +63,27 @@ namespace StarlightRiver.Content.NPCs.Crimson
 					Dust.NewDustPerfect(NPC.Center, ModContent.DustType<Dusts.PixelatedImpactLineDust>(), Main.rand.NextVector2Circular(20, 20), 0, new Color(255, 30, Main.rand.Next(90), 0), Main.rand.NextFloat(0.2f));
 				}
 
-                if (Main.rand.NextBool())
-                {
-                    SoundHelper.PlayPitched("NPC/Crimson/GrossquitoBoom1", 1f, 0.5f, NPC.Center);
-                } else
-                {
-                    SoundHelper.PlayPitched("NPC/Crimson/GrossquitoBoom2", 1f, 0.5f, NPC.Center);
-                }
+				if (Main.rand.NextBool())
+				{
+					SoundHelper.PlayPitched("Impacts/GoreHeavy", 0.15f, 0.5f, NPC.Center);
+
+					SoundHelper.PlayPitched("NPC/Crimson/GrossquitoBoom1", 1f, 0.5f, NPC.Center);
+				}
+				else
+				{
+					SoundHelper.PlayPitched("Impacts/GoreHeavy", 0.15f, 0.5f, NPC.Center);
+
+					SoundHelper.PlayPitched("NPC/Crimson/GrossquitoBoom2", 1f, 0.5f, NPC.Center);
+				}
 			}
 			else
 			{
-                SoundEngine.PlaySound(SoundID.NPCDeath1, NPC.Center);
+				SoundEngine.PlaySound(SoundID.NPCDeath1, NPC.Center);
+
 				for (int k = 0; k < 3; k++)
 				{
 					ItemHelper.NewItemPerfect(NPC.Center, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3), ItemID.Heart);
+					ItemHelper.NewItemPerfect(NPC.Center, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3), ModContent.ItemType<Graymatter>());
 				}
 			}
 
@@ -172,33 +96,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 		public override void FindFrame(int frameHeight)
 		{
-			NPC.frame = new(48 * (int)(Timer / 6f % 2), 0, 48, 36);
-		}
-
-		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
-		{
-			var eff = NPC.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-			Vector2 origin = NPC.frame.Size() / 2;
-
-			if (Target != null)
-			{
-				for (int i = NPC.oldPos.Length - 1; i > 0; i--)
-				{
-					float alpha = (NPC.oldPos.Length - i) / (float)NPC.oldPos.Length;
-					Color color = NPC.GetAlpha(drawColor) * alpha * 0.45f;
-					float rotation = NPC.oldRot[i];
-					Vector2 position = NPC.oldPos[i];
-					Vector2 drawPos = position - screenPos + origin + new Vector2(0f, NPC.gfxOffY);
-
-					Main.EntitySpriteDraw(tex, drawPos, NPC.frame, color, rotation, origin, NPC.scale, eff, 0);
-				}
-
-			}
-
-			Main.EntitySpriteDraw(tex, NPC.Center - screenPos, NPC.frame, drawColor, NPC.rotation, NPC.frame.Size() / 2f, NPC.scale, eff, 0);
-
-
-			return false;
+			NPC.frame = new(60 * (int)(Timer / 6f % 2), 0, 60, 54);
 		}
 
 		public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -232,5 +130,8 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				});
 			}
 		}
+
 	}
+
 }
+
