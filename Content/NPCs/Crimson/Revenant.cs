@@ -149,7 +149,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 		/// </summary>
 		public void ProcessSegmentGravityWhenDead()
 		{
-			for(int k = 0; k < stringPoints.Length; k++)
+			for (int k = 0; k < stringPoints.Length; k++)
 			{
 				if (!CollisionHelper.PointInTile(gorePoints[k]))
 				{
@@ -172,11 +172,11 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 				gorePoints[k] += goreVels[k];
 
-				var target = gorePoints[k];
-				var final = ReviveTimer < (reviveDuration - 30) ? target : Vector2.Lerp(target, stringPoints[k], Eases.EaseCircularInOut((ReviveTimer - (reviveDuration - 30)) / 30f));
+				Vector2 target = gorePoints[k];
+				Vector2 final = ReviveTimer < (reviveDuration - 30) ? target : Vector2.Lerp(target, stringPoints[k], Eases.EaseCircularInOut((ReviveTimer - (reviveDuration - 30)) / 30f));
 
 				stringRotations[k] = (final.X - stringPoints[k].X) * 0.05f;
-				stringPoints[k] = final;	
+				stringPoints[k] = final;
 			}
 		}
 

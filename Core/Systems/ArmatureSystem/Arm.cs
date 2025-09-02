@@ -43,7 +43,7 @@ namespace StarlightRiver.Core.Systems.ArmatureSystem
 			Vector2 origin = new Vector2(0, frame.Height / 2f);
 			Vector2 midpoint = Vector2.Lerp(start, Endpoint, 0.5f);
 
-			var color = Lighting.GetColor((midpoint / 16).ToPoint());
+			Color color = Lighting.GetColor((midpoint / 16).ToPoint());
 
 			spriteBatch.Draw(texture, pos, frame, color, rotation, origin, 1f, 0, 0);
 		}
@@ -88,7 +88,7 @@ namespace StarlightRiver.Core.Systems.ArmatureSystem
 			this.start = start;
 			this.segments = new ArmSegment[segments];
 
-			for(int k = 0; k < segments; k++)
+			for (int k = 0; k < segments; k++)
 			{
 				this.segments[k] = new ArmSegment(segmentLength);
 			}
@@ -188,12 +188,12 @@ namespace StarlightRiver.Core.Systems.ArmatureSystem
 		{
 			segments[0].start = start;
 
-			for(int k = 1; k < segments.Length; k++)
+			for (int k = 1; k < segments.Length; k++)
 			{
 				segments[k].start = segments[k - 1].Endpoint;
 			}
 
-			for(int k = 0; k < segments.Length; k++)
+			for (int k = 0; k < segments.Length; k++)
 			{
 				if (segments[k].rotation != segments[k].rotation) // == NaN
 					segments[k].rotation = 0;

@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Items
 	[SLRDebug]
 	class DebugStick : ModItem
 	{
-		Arm arm = new(Vector2.Zero, 5, 64, Assets.Invisible.Value);
+		readonly Arm arm = new(Vector2.Zero, 5, 64, Assets.Invisible.Value);
 
 		public override string Texture => AssetDirectory.Assets + "Items/DebugStick";
 
@@ -67,7 +67,7 @@ namespace StarlightRiver.Content.Items
 			player.GetHandler().unlockedAbilities.Clear();
 			return true;
 
-			var n = NPC.NewNPC(null, (int)Main.MouseWorld.X, (int)Main.MouseWorld.Y, ModContent.NPCType<TestCollider>());
+			int n = NPC.NewNPC(null, (int)Main.MouseWorld.X, (int)Main.MouseWorld.Y, ModContent.NPCType<TestCollider>());
 			Main.npc[n].velocity.X = 3.5f;
 			n = NPC.NewNPC(null, (int)Main.MouseWorld.X, (int)Main.MouseWorld.Y + 500, ModContent.NPCType<TestCollider>());
 			Main.npc[n].velocity.X = 3.5f;
@@ -75,7 +75,7 @@ namespace StarlightRiver.Content.Items
 
 			ProximityActivatedPylonSystem.activePylons.Clear();
 
-			foreach (var item in DummySystem.dummies)
+			foreach (Dummy item in DummySystem.dummies)
 			{
 				if (item is ProximityActivatedPylonDummy d)
 				{
@@ -83,9 +83,8 @@ namespace StarlightRiver.Content.Items
 					d.timer = 0;
 				}
 			}
+
 			return true;
-
-
 
 			//NPC.NewNPC(null, (int)player.Center.X, (int)player.Center.Y - 600, ModContent.NPCType<TheThinker>());
 			//NPC.NewNPC(null, (int)player.Center.X, (int)player.Center.Y - 600, ModContent.NPCType<DeadBrain>());
@@ -178,7 +177,6 @@ namespace StarlightRiver.Content.Items
 		{
 			//ModContent.GetInstance<StarlightWorld>().GraymatterGen(new GenerationProgress(), null);
 			return true;
-
 
 			ObservatorySystem.pylonAppearsOn = false;
 			ObservatorySystem.observatoryOpen = false;

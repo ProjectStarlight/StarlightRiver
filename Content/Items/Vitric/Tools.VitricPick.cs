@@ -23,8 +23,6 @@ namespace StarlightRiver.Content.Items.Vitric
 			On_WorldGen.KillTile += CancelLava;
 		}
 
-
-
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Vitric Pickaxe");
@@ -51,8 +49,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		private void GenerateHeat(On_Player.orig_PickTile orig, Player self, int x, int y, int pickPower)
 		{
-			var tile = Framing.GetTileSafely(x, y);
-			var oldType = tile.TileType;
+			Tile tile = Framing.GetTileSafely(x, y);
+			ushort oldType = tile.TileType;
 
 			orig(self, x, y, pickPower);
 
@@ -74,11 +72,11 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		private bool SendPickInfo(On_NetMessage.orig_TrySendData orig, int msgType, int remoteClient, int ignoreClient, NetworkText text, int number, float number2, float number3, float number4, int number5, int number6, int number7)
 		{
-			var final = orig(msgType, remoteClient, ignoreClient, text, number, number2, number3, number4, number5, number6, number7);
+			bool final = orig(msgType, remoteClient, ignoreClient, text, number, number2, number3, number4, number5, number6, number7);
 
 			if (Main.netMode == NetmodeID.Server && msgType == MessageID.SyncTilePicking && ignoreClient != -1)
 			{
-				var player = Main.player[ignoreClient];
+				Player player = Main.player[ignoreClient];
 
 				if (player.HeldItem.type == ModContent.ItemType<VitricPick>())
 					lastVitricPickInteraction = new((int)number2, (int)number3); // These are the X and Y coordinates, see vanilla MessageBuffer.cs for case 125 (tile pick packet)
@@ -89,8 +87,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		private void CancelLava(On_WorldGen.orig_KillTile orig, int i, int j, bool fail, bool effectOnly, bool noItem)
 		{
-			var tile = Framing.GetTileSafely(i, j);
-			var oldType = tile.TileType;
+			Tile tile = Framing.GetTileSafely(i, j);
+			ushort oldType = tile.TileType;
 
 			orig(i, j, fail, effectOnly, noItem);
 

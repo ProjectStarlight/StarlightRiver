@@ -8,7 +8,6 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-
 namespace StarlightRiver.Content.Items.Crimson
 {
 	internal class Graymatter : ModItem
@@ -42,13 +41,12 @@ namespace StarlightRiver.Content.Items.Crimson
 				StarlightNPC.ModifyHitByProjectileEvent += PsychosisBuffProjectile;
 			}
 
-
 			private void PsychosisBuffProjectile(NPC npc, Projectile projectile, ref NPC.HitModifiers modifiers)
 			{
 				Player player = Main.player[projectile.owner];
 				if (player.HasBuff(ModContent.BuffType<PsychosisImbuementBuff>()))
 				{
-					BuffInflictor.Inflict<Psychosis>(npc, 60 * Main.rand.Next(5,9));
+					BuffInflictor.Inflict<Psychosis>(npc, 60 * Main.rand.Next(5, 9));
 				}
 			}
 
@@ -69,4 +67,3 @@ namespace StarlightRiver.Content.Items.Crimson
 		}
 	}
 }
-

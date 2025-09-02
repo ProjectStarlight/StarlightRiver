@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.NPCs.Misc;
 using StarlightRiver.Core.Systems.PixelationSystem;
 using System;
@@ -42,8 +43,8 @@ namespace StarlightRiver.Content.NPCs.Crimson
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Grossquito");
-			NPCID.Sets.TrailCacheLength[NPC.type] = 5; 
-			NPCID.Sets.TrailingMode[NPC.type] = 3; 
+			NPCID.Sets.TrailCacheLength[NPC.type] = 5;
+			NPCID.Sets.TrailingMode[NPC.type] = 3;
 		}
 
 		public override void SetDefaults()
@@ -58,6 +59,23 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			NPC.aiStyle = -1;
 			NPC.HitSound = SoundID.NPCHit1;
 			NPC.DeathSound = SoundID.NPCDeath1;
+		}
+
+		public override void OnHitByItem(Player player, Item item, NPC.HitInfo hit, int damageDone)
+		{
+			if (player.HasBuff(ModContent.BuffType<CrimsonHallucination>()))
+			{
+				NPC.Kill();
+			}
+		}
+
+		public override void OnHitByProjectile(Projectile projectile, NPC.HitInfo hit, int damageDone)
+		{
+			Player player = Main.player[projectile.owner];
+			if (player.HasBuff(ModContent.BuffType<CrimsonHallucination>()))
+			{
+				NPC.Kill();
+			}
 		}
 
 		public override void AI()
@@ -78,7 +96,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 						if (Target != null)
 						{
 							NPC.velocity += NPC.Center.DirectionTo(Target.Center) * speed;
-							NPC.rotation = NPC.velocity.X * 0.05f; 
+							NPC.rotation = NPC.velocity.X * 0.05f;
 							NPC.direction = NPC.Center.X > Target.Center.X ? 1 : -1;
 
 							if (Vector2.Distance(NPC.Center, Target.Center) < 120)
@@ -114,7 +132,6 @@ namespace StarlightRiver.Content.NPCs.Crimson
 					NPC.rotation = MathHelper.Lerp(NPC.rotation, 0, 0.2f) * rotationVariance * 7.75f;
 					NPC.damage = 0;
 
-
 					if (FuseTimer == 60)
 					{
 						NPC.Kill();
@@ -128,7 +145,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 		{
 			if (State == GrossquitoState.Aggroed)
 			{
-				foreach(Player player in Main.ActivePlayers)
+				foreach (Player player in Main.ActivePlayers)
 				{
 					if (CollisionHelper.CheckCircularCollision(NPC.Center, 125, player.Hitbox))
 					{
@@ -146,17 +163,18 @@ namespace StarlightRiver.Content.NPCs.Crimson
 					Dust.NewDustPerfect(NPC.Center, ModContent.DustType<Dusts.PixelatedImpactLineDust>(), Main.rand.NextVector2Circular(20, 20), 0, new Color(255, 30, Main.rand.Next(90), 0), Main.rand.NextFloat(0.2f));
 				}
 
-                if (Main.rand.NextBool())
-                {
-                    SoundHelper.PlayPitched("NPC/Crimson/GrossquitoBoom1", 1f, 0.5f, NPC.Center);
-                } else
-                {
-                    SoundHelper.PlayPitched("NPC/Crimson/GrossquitoBoom2", 1f, 0.5f, NPC.Center);
-                }
+				if (Main.rand.NextBool())
+				{
+					SoundHelper.PlayPitched("NPC/Crimson/GrossquitoBoom1", 1f, 0.5f, NPC.Center);
+				}
+				else
+				{
+					SoundHelper.PlayPitched("NPC/Crimson/GrossquitoBoom2", 1f, 0.5f, NPC.Center);
+				}
 			}
 			else
 			{
-                SoundEngine.PlaySound(SoundID.NPCDeath1, NPC.Center);
+				SoundEngine.PlaySound(SoundID.NPCDeath1, NPC.Center);
 				for (int k = 0; k < 3; k++)
 				{
 					ItemHelper.NewItemPerfect(NPC.Center, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3), ItemID.Heart);
@@ -177,7 +195,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			var eff = NPC.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+			SpriteEffects eff = NPC.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 			Vector2 origin = NPC.frame.Size() / 2;
 
 			if (Target != null)
@@ -192,11 +210,9 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 					Main.EntitySpriteDraw(tex, drawPos, NPC.frame, color, rotation, origin, NPC.scale, eff, 0);
 				}
-
 			}
 
 			Main.EntitySpriteDraw(tex, NPC.Center - screenPos, NPC.frame, drawColor, NPC.rotation, NPC.frame.Size() / 2f, NPC.scale, eff, 0);
-
 
 			return false;
 		}

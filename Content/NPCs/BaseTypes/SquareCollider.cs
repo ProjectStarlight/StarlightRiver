@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 
 				if (nextPlayer.Intersects(XBox) && !platforming)
 				{
-					var shuntBox = XBox;
+					Rectangle shuntBox = XBox;
 					shuntBox.Inflate(-1, 0);
 
 					if (nextPlayer.Intersects(shuntBox) && self.grappling[0] > 0)

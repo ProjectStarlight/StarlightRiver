@@ -52,11 +52,11 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 		public override void RandomUpdate(int i, int j)
 		{
-			for(int x = -1; x <= 1; x++)
+			for (int x = -1; x <= 1; x++)
 			{
-				for(int y = -1; y <= 1; y++)
+				for (int y = -1; y <= 1; y++)
 				{
-					var check = Main.tile[i + x, j + y];
+					Tile check = Main.tile[i + x, j + y];
 
 					if (check.HasTile && TileID.Sets.Corrupt[check.type] || WallID.Sets.Corrupt[check.WallType])
 						WorldGen.ConvertWall(i, j, WallID.CorruptGrassUnsafe);

@@ -183,7 +183,7 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 				NPCRect.Inflate(-2, 0);
 				NPCOldRect.Inflate(-2, 0);
 
-				var oldValid = plat.beingStoodOn && PlayerRect.Intersects(NPCOldRect);
+				bool oldValid = plat.beingStoodOn && PlayerRect.Intersects(NPCOldRect);
 
 				if ((PlayerRect.Intersects(NPCRect) || oldValid) && self.position.Y <= npc.position.Y)
 				{

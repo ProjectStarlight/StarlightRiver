@@ -438,7 +438,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 								// Link
 								neurism.brain = NPC;
 								neurism.NPC.netUpdate = true;
-								neurisms.Add(Main.npc[i]);						
+								neurisms.Add(Main.npc[i]);
 							}
 						}
 

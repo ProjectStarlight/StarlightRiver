@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 		protected override void Receive()
 		{
-			var parent = Main.npc[parentWhoAmI];
+			NPC parent = Main.npc[parentWhoAmI];
 			int i = NPC.NewNPC(parent.GetSource_FromThis(), (int)parent.Center.X, (int)parent.Center.Y, Terraria.ID.NPCID.Creeper);
 
 			Main.npc[i].lifeMax = 30;

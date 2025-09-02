@@ -1091,7 +1091,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				}
 
 				NPC.chaseable = false;
-				
+
 			}
 
 			if (AttackTimer > 60 && AttackTimer <= 90)

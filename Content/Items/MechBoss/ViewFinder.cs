@@ -120,7 +120,7 @@ namespace StarlightRiver.Content.Items.MechBoss
 		{
 			targets.RemoveAll(n => n is null || !n.active);
 
-			foreach(NPC target in targets)
+			foreach (NPC target in targets)
 			{
 				Lighting.AddLight(target.Center, new Vector3(0.2f, 0.4f, 0.2f));
 			}
@@ -195,7 +195,7 @@ namespace StarlightRiver.Content.Items.MechBoss
 
 			if (Main.rand.NextBool(3))
 			{
-				var d = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.FireworksRGB, 0, 0, 0, new Color(160, 255, 160), 0.5f);
+				int d = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.FireworksRGB, 0, 0, 0, new Color(160, 255, 160), 0.5f);
 				Main.dust[d].noGravity = true;
 			}
 		}
@@ -326,7 +326,7 @@ namespace StarlightRiver.Content.Items.MechBoss
 			{
 				float prog = k / len;
 
-				float opMult = 1f / MathF.Abs(prog - (time / 38f));
+				float opMult = 1f / MathF.Abs(prog - time / 38f);
 
 				if (opMult < 2)
 					opMult = 2;
@@ -335,8 +335,6 @@ namespace StarlightRiver.Content.Items.MechBoss
 				float dir = SplineHelper.TangentOfSpline(prog, spline);
 				Main.spriteBatch.Draw(tex, pos, null, new Color(1, 2, 1, 0) * opacity * opMult, dir, tex.Size() / 2f, new Vector2(0.5f, 0.1f), 0f, 0f);
 			}
-
-
 
 			Main.spriteBatch.Draw(tex, SplineHelper.PointOnSpline(time / 38f, spline), null, new Color(100, 255, 100, 0) * opacity, 0, tex.Size() / 2f, 0.2f, 0f, 0f);
 		}
@@ -410,10 +408,7 @@ namespace StarlightRiver.Content.Items.MechBoss
 
 			Texture2D tex = Assets.Masks.GlowAlpha.Value;
 
-			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () =>
-			{
-				Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, dust.color * lerper, dust.rotation, tex.Size() / 2f, dust.scale * lerper, 0f, 0f);
-			});
+			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("Dusts", () => Main.spriteBatch.Draw(tex, dust.position - Main.screenPosition, null, dust.color * lerper, dust.rotation, tex.Size() / 2f, dust.scale * lerper, 0f, 0f));
 
 			return false;
 		}
@@ -481,7 +476,7 @@ namespace StarlightRiver.Content.Items.MechBoss
 				Texture2D spike = Assets.Misc.SpikeTell.Value;
 
 				var spikeFrame = new Rectangle(spike.Width / 2, 0, spike.Width / 2, spike.Height - 16);
-				var opacity = Projectile.timeLeft > 1100 ? 1f - (Projectile.timeLeft - 1100) / 100f : 1f;
+				float opacity = Projectile.timeLeft > 1100 ? 1f - (Projectile.timeLeft - 1100) / 100f : 1f;
 
 				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(60, 255, 60, 0) * opacity, Projectile.rotation - 1.57f, tex.Size() / 2f, new Vector2(0.35f, 1.5f), 0, 0);
 				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(200, 255, 200, 0) * opacity, Projectile.rotation - 1.57f, tex.Size() / 2f, new Vector2(0.15f, 0.75f), 0, 0);

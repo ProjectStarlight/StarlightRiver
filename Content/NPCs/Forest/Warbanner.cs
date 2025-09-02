@@ -126,7 +126,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 
 			if (Main.netMode != NetmodeID.Server)
 			{
-				var center = NPC.Center + new Vector2(0, 42);
+				Vector2 center = NPC.Center + new Vector2(0, 42);
 				chain.UpdateChain(center + Vector2.UnitY.RotatedBy(NPC.rotation) * -68);
 				miniChain0.UpdateChain(center + new Vector2(8, -68).RotatedBy(NPC.rotation));
 				miniChain1.UpdateChain(center + new Vector2(-8, -68).RotatedBy(NPC.rotation));
@@ -144,7 +144,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 				Lighting.AddLight(pos, new Vector3(0.9f, 0.4f, 0.2f) * VFXAlpha * 0.1f);
 			}
 
-			foreach(NPC npc in Main.ActiveNPCs)
+			foreach (NPC npc in Main.ActiveNPCs)
 			{
 				if (npc != NPC && CollisionHelper.CheckCircularCollision(NPC.Center, (int)BuffRadius, npc.Hitbox))
 					npc.AddBuff(BuffType<Rage>(), 2);
@@ -191,7 +191,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 
 					if (Main.rand.NextBool(2))
 					{
-						var dist = Main.rand.NextFloat();
+						float dist = Main.rand.NextFloat();
 
 						var d = Dust.NewDustPerfect(NPC.Center, DustType<BannerBuffDust>(), Vector2.UnitY * Main.rand.NextFloat(-4, -1), 0, new Color(1f, (1f - dist) * 0.6f, 0, 0), Main.rand.NextFloat(0.3f, 0.5f));
 						d.customData = (NPC, Vector2.UnitY * 48 + Vector2.One.RotatedByRandom(6.28f) * VFXAlpha * dist * 170);
@@ -312,7 +312,6 @@ namespace StarlightRiver.Content.NPCs.Forest
 				miniChain0.DrawStrip(miniChain0.scale);
 				miniChain1.DrawStrip(miniChain1.scale);
 			});
-
 
 			Texture2D auraTex = Assets.Misc.GlowRing.Value;
 			Texture2D ballTex = Assets.Masks.GlowHarshAlpha.Value;

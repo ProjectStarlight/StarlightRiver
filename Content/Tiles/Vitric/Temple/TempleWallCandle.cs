@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			LocalizedText name = CreateMapEntryName();
 			name.SetDefault("Candle");
 			AddMapEntry(new Color(140, 97, 86), name);
-			DustType = 0;
+			DustType = DustID.Dirt;
 			HitSound = SoundID.Dig;
 			RegisterItemDrop(ModContent.ItemType<TempleWallCandleItem>());
 			AnimationFrameHeight = 36;

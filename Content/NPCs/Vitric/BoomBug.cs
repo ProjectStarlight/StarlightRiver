@@ -112,7 +112,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 				if (magmaCharge < 1.6f)
 				{
-					var prog = magmaCharge / 1.75f;
+					float prog = magmaCharge / 1.75f;
 
 					Color color = Color.Lerp(Color.Red, Color.Orange, prog);
 					color.A = 0;
@@ -206,7 +206,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 				ModContent.GetInstance<PixelationSystem>().QueueRenderAction("UnderProjectiles", () =>
 				{
-					var prog = magmaCharge / 1.75f;
+					float prog = magmaCharge / 1.75f;
 
 					Color color = Color.Lerp(Color.OrangeRed, Color.Yellow, prog) * prog;
 					color.A = 0;
@@ -461,7 +461,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				Vector2 last = Projectile.Center;
 				for (int i = oldPos.Count - 1; i > 0; i--)
 				{
-					var prog = (i / (float)oldPos.Count);
+					float prog = i / (float)oldPos.Count;
 					Vector2 target = last - oldPos[i].DirectionFrom(oldPos[i - 1]) * Math.Min(5, Projectile.velocity.Length());
 					last = target;
 
