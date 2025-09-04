@@ -71,11 +71,13 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 				for (int k = 0; k < 40; k++)
 				{
+
 					Dust.NewDustPerfect(Projectile.Center, DustID.Blood, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(8), 0, default, 1 + Main.rand.NextFloat(2));
 					Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.PixelatedImpactLineDust>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(20), 0, new Color(255, 90, 60, 0), Main.rand.NextFloat(0.2f));
+
 				}
 
-				Helpers.SoundHelper.PlayPitched("Impacts/GoreHeavy", 0.1f, Main.rand.NextFloat(-0.5f, 0f), Projectile.Center);
+				Helpers.SoundHelper.PlayPitched("NPC/Crimson/GrossquitoBoom1", .5f, Main.rand.NextFloat(-0.5f, 0f), Projectile.Center);
 			}
 		}
 
@@ -115,11 +117,13 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			}
 			else
 			{
+
 				Texture2D flash = Assets.StarTexture.Value;
 				Texture2D flash2 = Assets.Masks.GlowAlpha.Value;
 				Main.spriteBatch.Draw(flash2, Projectile.Center - Main.screenPosition, null, new Color(255, 70, 70, 0) * (Projectile.timeLeft / 20f), 0f, flash2.Size() / 2f, 6f - Projectile.timeLeft / 20f * 3, 0, 0);
 				Main.spriteBatch.Draw(flash, Projectile.Center - Main.screenPosition, null, new Color(255, 120, 120, 0) * (Projectile.timeLeft / 20f), 0f, flash.Size() / 2f, 2f - Projectile.timeLeft / 20f * 2f, 0, 0);
 				Main.spriteBatch.Draw(flash, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0) * (Projectile.timeLeft / 20f), 0f, flash.Size() / 2f, 0.5f - Projectile.timeLeft / 20f * 0.5f, 0, 0);
+
 			}
 
 			return false;
