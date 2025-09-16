@@ -63,8 +63,8 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			NPC.lifeMax = 1500;
 			NPC.damage = 15;
 			NPC.defense = 7;
-			NPC.width = 42;
-			NPC.height = 38;
+			NPC.width = 44;
+			NPC.height = 36;
 			NPC.knockBackResist = 0.33f;
 			NPC.HitSound = SoundID.NPCHit8;
 			NPC.DeathSound = SoundID.NPCDeath12;
@@ -299,11 +299,11 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 				NPC.direction = myLeader.direction;
 				NPC.velocity *= 0;
+				NPC.frame = new Rectangle(44 * (int)(Timer * 0.3f % 5), 36 * 3, NPC.width, NPC.height);
 				return;
 			}
 
 			FrameCell();
-
 			NPC.direction = NPC.Center.X > myLeader.Center.X ? 1 : -1;
 			float targetX = myLeader.Center.X + 90 * (NPC.direction * 1);
 			var target = new Vector2(targetX, spawnPos.Y);
@@ -318,8 +318,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 			if (Timer > dist)
 			{
-				NPC.frame = new Rectangle(0, 38 * 3, NPC.width, NPC.height);
-
+				// NPC.frame = new Rectangle(0, 36 * 3, NPC.width, NPC.height);
 				NPC.velocity.Y = 0;
 				NPC.noGravity = true;
 
@@ -802,10 +801,10 @@ namespace StarlightRiver.Content.NPCs.Crimson
 		public void FrameCell()
 		{
 			if (NPC.velocity.Y != 0)
-				NPC.frame = new Rectangle(0, 38 * 3, NPC.width, NPC.height);
+				NPC.frame = new Rectangle(0, 36 * 3, NPC.width, NPC.height);
 
 			else
-				NPC.frame = new Rectangle(42 * (int)(NPC.Center.X * 0.1f % 5), 38, NPC.width, NPC.height);
+				NPC.frame = new Rectangle(44 * (int)(NPC.Center.X * 0.1f % 5), 36, NPC.width, NPC.height);
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
