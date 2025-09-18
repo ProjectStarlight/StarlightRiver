@@ -1382,11 +1382,19 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					for (int i = 0; i < projCount; i++)
 					{
 						float rot = i / (float)projCount * 6.28f;
-						Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.UnitX.RotatedBy(rot) * (6 + k / 4f), ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 190, 0, 20);
+						Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.UnitX.RotatedBy(rot) * (11 + k / 4f), ModContent.ProjectileType<FleshChunk>(), BrainBoltDamage, 1, Main.myPlayer);
 
 						if (Main.masterMode)
-							Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.UnitX.RotatedBy(rot + 6.28f / 18f) * (4f + k / 4f), ModContent.ProjectileType<BrainBolt>(), BrainBoltDamage, 1, Main.myPlayer, 190, 1, 20);
+							Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.UnitX.RotatedBy(rot + 6.28f / 18f) * (8f + k / 4f), ModContent.ProjectileType<FleshChunk>(), BrainBoltDamage, 1, Main.myPlayer);
 					}
+
+					for (int i = 0; i < 6; i++)
+					{
+						Gore.NewGore(NPC.GetSource_FromThis(), NPC.Center, Vector2.One.RotatedByRandom(6.28f) * 2, Main.rand.Next(392, 396));
+					}
+
+					SoundEngine.PlaySound(SoundID.NPCDeath1.WithPitchOffset(0.5f), NPC.Center);
+					SoundHelper.PlayPitched("Impacts/GoreLight", 1f, -0.25f, NPC.Center);
 				}
 
 				if (relTime > 65 && relTime <= 75)
