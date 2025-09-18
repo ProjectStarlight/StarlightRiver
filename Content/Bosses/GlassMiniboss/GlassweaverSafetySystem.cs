@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		{
 			GlassweaverFriendly.GlassweaverFriendlyState.BeforeMet => new Vector2((StarlightWorld.vitricBiome.X - 37 + 80) * 16, (StarlightWorld.vitricBiome.Center.Y + 20) * 16),
 
-			GlassweaverFriendly.GlassweaverFriendlyState.JumpingInside or 
+			GlassweaverFriendly.GlassweaverFriendlyState.JumpingInside or
 			GlassweaverFriendly.GlassweaverFriendlyState.WaitingForDuel or
 			GlassweaverFriendly.GlassweaverFriendlyState.AfterWinDuel or
 			GlassweaverFriendly.GlassweaverFriendlyState.AfterGiveKey or

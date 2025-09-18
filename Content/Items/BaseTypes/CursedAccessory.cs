@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 				if (effect != null)
 				{
 					Color burnColor = boomTimer < 30f ? Color.Lerp(Color.Red, Color.Yellow, boomTimer / 30f) : Color.Lerp(Color.Yellow, Color.White, (boomTimer - 30) / 30f);
-					effect.Parameters["outlineColor"].SetValue(new Vector4(burnColor.R / 255f, burnColor.G / 255f, burnColor.B / 255f, boomTimer/60f));
+					effect.Parameters["outlineColor"].SetValue(new Vector4(burnColor.R / 255f, burnColor.G / 255f, burnColor.B / 255f, boomTimer / 60f));
 
 					Main.spriteBatch.End();
 					Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default, effect, Main.UIScaleMatrix);
@@ -65,14 +65,14 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			Vector2 pos = position - origin * scale + new Vector2(0, 10) + Main.rand.NextVector2Circular(16, 16) + frame.Size() / 2f * scale;
 
 			if (!GoingBoom)
-				CursedAccessoryParticleManager.CursedSystem.AddParticle(pos, new Vector2(0, -0.4f), 0, 0.5f, CurseColor, 60, Vector2.Zero, alpha:0);
+				CursedAccessoryParticleManager.CursedSystem.AddParticle(pos, new Vector2(0, -0.4f), 0, 0.5f, CurseColor, 60, Vector2.Zero, alpha: 0);
 
-			drawpos = (position - origin * scale) + frame.Size() * scale * 0.5f;
+			drawpos = position - origin * scale + frame.Size() * scale * 0.5f;
 
 			if (GoingBoom && boomTimer < 60)
 			{
 				float rot = Main.rand.NextFloat(6.28f);
-				var decay = (1f - boomTimer / 60f);
+				float decay = 1f - boomTimer / 60f;
 				CursedAccessoryParticleManager.CursedSystem.AddParticle(drawpos + Vector2.One.RotatedBy(rot) * decay * 30, -Vector2.One.RotatedBy(rot) * 1.5f * decay, 0, 0.6f * boomTimer / 100f, new Color(255, Main.rand.Next(120, 200), 120) * 0.6f, 20, Vector2.Zero, alpha: 0);
 			}
 		}

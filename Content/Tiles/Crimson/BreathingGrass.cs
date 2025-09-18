@@ -29,13 +29,13 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 		public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 		{
-			var tile = Main.tile[i, j];
+			Tile tile = Main.tile[i, j];
 
 			tile.frameX = (short)(i % 2 * 18);
 
 			tile.frameY = (short)(18 * Main.rand.Next(1, 4));
 
-			var up = Framing.GetTileSafely(i, j - 1);
+			Tile up = Framing.GetTileSafely(i, j - 1);
 
 			if (up.type != Type)
 				tile.frameY = 0;
@@ -45,8 +45,8 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 		public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 		{
-			var up = Framing.GetTileSafely(i, j - 1);
-			var down = Framing.GetTileSafely(i, j + 1);
+			Tile up = Framing.GetTileSafely(i, j - 1);
+			Tile down = Framing.GetTileSafely(i, j + 1);
 
 			if (down.type != Type)
 				Main.instance.TilesRenderer.AddSpecialPoint(i, j, TileDrawing.TileCounterType.ReverseVine);

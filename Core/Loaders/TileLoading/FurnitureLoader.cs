@@ -791,7 +791,7 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 			if (player.cursorItemIconText == "")
 			{
 				player.cursorItemIconEnabled = false;
-				player.cursorItemIconID = 0;
+				player.cursorItemIconID = ItemID.None;
 			}
 		}
 

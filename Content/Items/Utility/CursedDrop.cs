@@ -98,7 +98,7 @@ namespace StarlightRiver.Content.Items.Utility
 				SoundEngine.PlaySound(SoundID.Item123.WithPitchOffset(0.2f));
 
 				for (int k = 0; k <= 50; k++)
-					CursedAccessoryParticleManager.CursedSystem.AddParticle(Main.MouseScreen, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.75f), 0, 1, new(25, 17, 49, 0), 60, Vector2.Zero, alpha:0);
+					CursedAccessoryParticleManager.CursedSystem.AddParticle(Main.MouseScreen, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.75f), 0, 1, new(25, 17, 49, 0), 60, Vector2.Zero, alpha: 0);
 
 				Main.mouseItem.stack--;
 

@@ -40,5 +40,4 @@ namespace StarlightRiver.Content.Tiles.Starlight
 	}
 
 	internal class BrassPlatformItem : QuickTileItem { public BrassPlatformItem() : base("Brass Platform", "", "BrassPlatform", 0, AssetDirectory.StarlightTile) { } }
-
 }

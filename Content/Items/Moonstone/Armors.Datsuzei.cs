@@ -596,7 +596,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			{
 				ModContent.GetInstance<PixelationSystem>().QueueRenderAction("UnderProjectiles", () =>
 				{
-					var translate = ComboState == 3 ? Vector2.Zero : Owner.Center;
+					Vector2 translate = ComboState == 3 ? Vector2.Zero : Owner.Center;
 					var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3() + translate.ToVector3());
 					Matrix view = Main.GameViewMatrix.TransformationMatrix;
 					var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);

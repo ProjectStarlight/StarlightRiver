@@ -267,11 +267,11 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				for (int i = 0; i < 16; i++)
 				{
 					Dust.NewDustPerfect(Projectile.Center - goreVelocity + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), DustID.Blood, Main.rand.NextVector2Circular(5, 5), 0, default, 1.4f);
-					Dust.NewDustPerfect(Projectile.Center - goreVelocity + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), DustID.Blood, direction.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(3, 8), 0, default, 2.1f);					
+					Dust.NewDustPerfect(Projectile.Center - goreVelocity + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), DustID.Blood, direction.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(3, 8), 0, default, 2.1f);
 					Dust.NewDustPerfect(Projectile.Center - goreVelocity + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), ModContent.DustType<BloodMetaballDustLight>(), direction.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(4, 6), 0, default, Main.rand.NextFloat(0.2f, 0.4f));
 				}
 
-				for(int k = 0; k < 32; k++)
+				for (int k = 0; k < 32; k++)
 				{
 					Dust.NewDustPerfect(Projectile.Center - goreVelocity + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), ModContent.DustType<BloodMetaballDust>(), direction.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(6, 12), 0, default, Main.rand.NextFloat(0.1f, 0.3f));
 				}

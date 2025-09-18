@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Items.Crimson;
 using StarlightRiver.Content.NPCs.Misc;
+using StarlightRiver.Core.Systems.InstancedBuffSystem;
 using StarlightRiver.Core.Systems.PixelationSystem;
 using System;
 using System.Collections.Generic;
@@ -10,6 +12,7 @@ using System.Threading.Tasks;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
+using static StarlightRiver.Content.Items.Crimson.Graymatter;
 
 namespace StarlightRiver.Content.NPCs.Crimson
 {
@@ -39,6 +42,23 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			NPC.DeathSound = SoundID.NPCDeath1;
 			speed = 5;
 			tex = Assets.NPCs.Crimson.GrossquitoElite.Value;
+		}
+
+		public override void OnHitByItem(Player player, Item item, NPC.HitInfo hit, int damageDone)
+		{
+			if (player.HasBuff(ModContent.BuffType<CrimsonHallucination>()))
+			{
+				NPC.Kill();
+			}
+		}
+
+		public override void OnHitByProjectile(Projectile projectile, NPC.HitInfo hit, int damageDone)
+		{
+			Player player = Main.player[projectile.owner];
+			if (player.HasBuff(ModContent.BuffType<CrimsonHallucination>()))
+			{
+				NPC.Kill();
+			}
 		}
 
 		public override void OnKill()
@@ -130,8 +150,5 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				});
 			}
 		}
-
 	}
-
 }
-

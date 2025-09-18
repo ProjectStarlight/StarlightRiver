@@ -198,10 +198,5 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		{
 			InflictStackInner<A>(player, duration, premadeStack);
 		}
-
-		internal static void InflictStack<T>(NPC target, int v)
-		{
-			throw new NotImplementedException();
-		}
 	}
 }
