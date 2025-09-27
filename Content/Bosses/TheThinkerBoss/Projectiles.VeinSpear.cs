@@ -1,6 +1,8 @@
 ﻿using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Buffs;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.InstancedBuffSystem;
+using StarlightRiver.Core.Systems.PixelationSystem;
 using System;
 using System.Collections.Generic;
 using Terraria.DataStructures;
@@ -11,6 +13,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 	internal class VeinSpear : ModProjectile
 	{
 		public bool hit;
+		public int hitTime;
 
 		public int ThinkerWhoAmI
 		{
@@ -43,7 +46,6 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			Projectile.timeLeft = 99999;
 			Projectile.tileCollide = true;
 			Projectile.ignoreWater = true;
-			Projectile.hide = true;
 		}
 
 		public override void AI()
@@ -77,6 +79,17 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					}
 				}
 			}
+
+
+			float opacity = 1f;
+
+			if (Projectile.timeLeft <= 30)
+				opacity = Projectile.timeLeft / 30f;
+
+			for (int k = 0; k < Vector2.Distance(Thinker.Center, Projectile.Center); k += 24)
+			{
+				Lighting.AddLight(Thinker.Center + Thinker.Center.DirectionTo(Projectile.Center) * k, Vector3.One * 0.5f * opacity);
+			}
 		}
 
 		public override void OnHitPlayer(Player target, Player.HurtInfo info)
@@ -89,6 +102,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			if (!hit)
 			{
 				hit = true;
+				hitTime = (int)Lifetime - Projectile.timeLeft;
 				Projectile.velocity *= 0;
 				Helpers.SoundHelper.PlayPitched("Impacts/StabFleshy", 1f, -0.5f, Projectile.Center);
 			}
@@ -126,14 +140,14 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
 		{
-			behindNPCs.Add(index);
+			//behindNPCs.Add(index);
 		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
-			Texture2D chainTex = Assets.Bosses.TheThinkerBoss.VeinSpearChain.Value;
+			Texture2D chainTex = Assets.Bosses.TheThinkerBoss.TendrilDebris.Value;
 			Texture2D glow = Assets.GlowTrailNoEnd.Value;
 
 			float opacity = 1f;
@@ -150,11 +164,56 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 			spriteBatch.Draw(glow, gTarget, gSource, glowColor, (Projectile.Center - Thinker.Center).ToRotation() - 3.14f, gOrigin, 0, 0);
 
-			for (float k = 0; k <= 1; k += 1 / (Vector2.Distance(Thinker.Center, Projectile.Center) / 16))
+			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("UnderProjectiles", () =>
 			{
-				Vector2 pos = Vector2.Lerp(Projectile.Center, Thinker.Center, k) - Main.screenPosition;
+				Effect effect = ShaderLoader.GetShader("GestaltLine").Value;
 
-				spriteBatch.Draw(chainTex, pos, null, new Color(220, 60, 70) * opacity, (Projectile.Center - Thinker.Center).ToRotation() + 1.58f, chainTex.Size() / 2, 1, 0, 0);
+				if (effect != null)
+				{
+					effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.1f);
+					effect.Parameters["u_speed"].SetValue(1f);
+					effect.Parameters["color1"].SetValue(new Vector3(0.3f, 0.2f, 0.1f) * opacity);
+					effect.Parameters["color2"].SetValue(new Vector3(0.3f, 0.2f, 0.1f) * opacity);
+					effect.Parameters["color3"].SetValue(new Vector3(0.3f, 0.2f, 0.1f) * opacity);
+
+					spriteBatch.End();
+					spriteBatch.Begin(default, default, default, default, Main.Rasterizer, effect);
+
+					Texture2D tex = Assets.Misc.Line.Value;
+
+					Vector2 lastpos = Thinker.Center;
+					Vector2 pos = Projectile.Center;
+					float dist = Vector2.Distance(pos, lastpos);
+					float rot = pos.DirectionTo(lastpos).ToRotation();
+
+					var target = new Rectangle((int)(pos.X - Main.screenPosition.X), (int)(pos.Y - Main.screenPosition.Y), (int)dist, 60);
+					var color = Color.Lerp(new Color(255, 160, 100, 150), new Color(255, 100, 220, 150), 0.5f + MathF.Sin(Main.GameUpdateCount / 4f) * 0.5f);
+
+					spriteBatch.Draw(tex, target, null, color, rot, new Vector2(0, tex.Height / 2f), 0, 0);
+
+					spriteBatch.End();
+					spriteBatch.Begin(default, default, default, default, Main.Rasterizer, default);
+				}
+			});
+
+			if (hit)
+			{
+				Random random = new Random(Projectile.whoAmI);
+				for (float k = 0; k <= 1; k += 1 / (Vector2.Distance(Thinker.Center, Projectile.Center) / 24))
+				{
+					float timer = Lifetime - Projectile.timeLeft - hitTime;
+					float fade = Math.Min(1f, (timer - 15 + k * 15) / 30);
+
+					Vector2 pos = Vector2.Lerp(Projectile.Center, Thinker.Center, k) - Main.screenPosition;
+					pos += Vector2.One.RotatedBy(random.NextSingle() * 6.28f) * random.NextSingle() * (12 + Eases.BezierEase(1f - fade) * 40 * (1 + k));
+					pos += Vector2.One.RotatedBy(Main.GameUpdateCount * 0.02f + random.NextSingle() * 6.28f) * 4;
+					Rectangle frame = new(26 * random.Next(11), 0, 26, 28);
+					float rotation = random.NextSingle() * 6.28f;
+
+					var color = Lighting.GetColor(((pos + Main.screenPosition) / 16).ToPoint());
+
+					spriteBatch.Draw(chainTex, pos, frame, color * opacity * fade, rotation, new Vector2(13, 14), 1, 0, 0);
+				}
 			}
 
 			if (Projectile.timeLeft > Lifetime - 30)
@@ -163,13 +222,13 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				var source = new Rectangle(0, 0, tell.Width, tell.Height);
 				var target = new Rectangle((int)(Projectile.Center.X - Main.screenPosition.X), (int)(Projectile.Center.Y - Main.screenPosition.Y), 500, 24);
 				var origin = new Vector2(0, 12);
-				Color color = new Color(255, 40, 40) * (float)Math.Sin((Projectile.timeLeft - (Lifetime - 30)) / 30f * 3.14f) * 0.5f;
+				Color color = new Color(255, 255, 255) * (float)Math.Sin((Projectile.timeLeft - (Lifetime - 30)) / 30f * 3.14f) * 0.5f;
 				color.A = 0;
 
 				spriteBatch.Draw(tell, target, source, color, Projectile.rotation, origin, 0, 0);
 			}
 
-			return true;
+			return false;
 		}
 	}
 }
