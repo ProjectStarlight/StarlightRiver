@@ -4448,6 +4448,7 @@ Projectiles: {
 	ConstructSpawner.DisplayName: Construct Spawner
 	GauntletSpawner.DisplayName: Gauntlet Spawner
 	SpawnEgg.DisplayName: Spawn Egg
+	ThoughtPoliceProjectile.DisplayName: Thoughtcrime
 }
 
 Biomes: {

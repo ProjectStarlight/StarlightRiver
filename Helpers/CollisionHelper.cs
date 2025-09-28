@@ -118,7 +118,16 @@ namespace StarlightRiver.Helpers
 			if (CheckPoint(center, radius, hitbox.BottomLeft(), angle, width))
 				return true;
 
-			return CheckPoint(center, radius, hitbox.BottomRight(), angle, width);
+			if (CheckPoint(center, radius, hitbox.BottomRight(), angle, width))
+				return true;
+
+			if (CheckLinearCollision(center, center + Vector2.UnitX.RotatedBy(angle + width) * radius, hitbox, out _))
+				return true;
+
+			if (CheckLinearCollision(center, center + Vector2.UnitX.RotatedBy(angle - width) * radius, hitbox, out _))
+				return true;
+
+			return false;
 		}
 
 		private static bool CheckPoint(Vector2 center, int radius, Vector2 check, float angle, float width)

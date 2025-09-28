@@ -202,10 +202,11 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				for (float k = 0; k <= 1; k += 1 / (Vector2.Distance(Thinker.Center, Projectile.Center) / 24))
 				{
 					float timer = Lifetime - Projectile.timeLeft - hitTime;
-					float fade = Math.Min(1f, (timer - 15 + k * 15) / 30);
+					float maxFade = random.Next(15, 30);
+					float fade = Math.Min(1f, (timer - 25 + k * 25) / maxFade);
 
 					Vector2 pos = Vector2.Lerp(Projectile.Center, Thinker.Center, k) - Main.screenPosition;
-					pos += Vector2.One.RotatedBy(random.NextSingle() * 6.28f) * random.NextSingle() * (12 + Eases.BezierEase(1f - fade) * 40 * (1 + k));
+					pos += Vector2.One.RotatedBy(random.NextSingle() * 6.28f) * random.NextSingle() * (8 * (1 + k) + Eases.BezierEase(1f - fade) * 30);
 					pos += Vector2.One.RotatedBy(Main.GameUpdateCount * 0.02f + random.NextSingle() * 6.28f) * 4;
 					Rectangle frame = new(26 * random.Next(11), 0, 26, 28);
 					float rotation = random.NextSingle() * 6.28f;

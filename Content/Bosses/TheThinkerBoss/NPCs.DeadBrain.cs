@@ -550,7 +550,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 						NPC.netUpdate = true;
 					}
-					AttackState = 1;
+
 					switch (AttackState)
 					{
 						case 0:

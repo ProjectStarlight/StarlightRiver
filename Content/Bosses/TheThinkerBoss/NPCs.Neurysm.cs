@@ -300,7 +300,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				var target = new Rectangle((int)(NPC.Center.X - Main.screenPosition.X), (int)(NPC.Center.Y - Main.screenPosition.Y), (int)tellLen, 64);
 				var origin = new Vector2(0, tell.Height / 2f);
 				float opacity = (float)Math.Sin(TellTime / 60f * 3.14f) * 0.5f;
-				Color color = new Color(160, 90, 40) * opacity * 0.2f;
+				Color color = new Color(160, 60, 60) * opacity * 0.2f;
 				color.A = 0;
 
 				spriteBatch.Draw(tell, target, source, color, tellDirection + 3.14f, origin, 0, 0);
