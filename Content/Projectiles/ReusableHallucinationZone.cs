@@ -1,10 +1,6 @@
 ﻿using StarlightRiver.Content.Biomes;
-using StarlightRiver.Content.Items.Crimson;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.Dusts;
 
 namespace StarlightRiver.Content.Projectiles
 {
@@ -36,6 +32,8 @@ namespace StarlightRiver.Content.Projectiles
 		{
 			GraymatterBiome.forceGrayMatter = true;
 
+			Timer++;
+
 			if (Timer < Duration)
 				Projectile.timeLeft = 2;
 
@@ -43,7 +41,16 @@ namespace StarlightRiver.Content.Projectiles
 				Projectile.Opacity = Timer / 20f;
 
 			if (Timer > Duration - 20)
-				Projectile.Opacity = 1f - (Timer - (Duration - 20) / 20f);
+				Projectile.Opacity = 1f - ((Timer - (Duration - 20)) / 20f);
+
+			foreach (Player player in Main.ActivePlayers)
+			{
+				if (CollisionHelper.CheckCircularCollision(Projectile.Center, (int)Radius, player.Hitbox))
+					player.AddBuff(ModContent.BuffType<CrimsonHallucination>(), 2, true);
+			}
+
+			if (Main.rand.NextBool(4))
+				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(Radius * 0.5f, Radius * 0.5f), ModContent.DustType<GraymatterDust>(), new Vector2(0, -1), 0, default, Main.rand.NextFloat(0.25f, 0.5f) * Projectile.Opacity);
 		}
 
 		private void DrawProjectileHallucinations(SpriteBatch batch)
@@ -52,8 +59,8 @@ namespace StarlightRiver.Content.Projectiles
 			{
 				if (proj.type == Type)
 				{
-					Texture2D tex = Assets.Misc.StarView.Value;
-					batch.Draw(tex, proj.Center - Main.screenPosition, null, new Color(255, 255, 255, 0) * proj.Opacity, 0, tex.Size() / 2f, (proj.ModProjectile as ReusableHallucinationZone).Radius * proj.Opacity * 7f / tex.Width, 0, 0);
+					Texture2D tex = Assets.Masks.GlowLargeAlpha.Value;
+					batch.Draw(tex, proj.Center - Main.screenPosition, null, new Color(255, 255, 255, 0) * proj.Opacity, 0, tex.Size() / 2f, (proj.ModProjectile as ReusableHallucinationZone).Radius * 2 * proj.Opacity / tex.Width, 0, 0);
 				}
 			}
 		}

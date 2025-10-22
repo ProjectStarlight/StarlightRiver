@@ -492,7 +492,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				Dust.NewDust(NPC.position + Vector2.UnitY * 32, NPC.width, NPC.height, ModContent.DustType<Dusts.PixelatedEmber>(), 0, -Main.rand.NextFloat(5), 0, new Color(255, Main.rand.Next(50, 200), Main.rand.Next(50, 200), 0), Main.rand.NextFloat(0.25f));
 			}
 
-			Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<ReusableHallucinationZone>(), 0, 0, Main.myPlayer, 80, 600);
+			Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, NPC.height / 2f), Vector2.Zero, ModContent.ProjectileType<ReusableHallucinationZone>(), 0, 0, Main.myPlayer, 120, 600);
 
 			return false;
 		}

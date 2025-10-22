@@ -62,6 +62,9 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			NPC.aiStyle = -1;
 			NPC.HitSound = SoundID.NPCHit1;
 			NPC.DeathSound = SoundID.NPCDeath1;
+			Variant = Main.rand.Next(6);
+
+			NPC.netUpdate = true;
 
 			toRender.Add(this);
 		}
@@ -127,12 +130,13 @@ namespace StarlightRiver.Content.NPCs.Crimson
 					// Cone check
 					foreach (Player player in Main.ActivePlayers)
 					{
-						if (CollisionHelper.CheckConicalCollision(NPC.Center, 400, AimRotation, 1.57f / 2f, player.Hitbox))
+						if (player.HasBuff(ModContent.BuffType<CrimsonHallucination>()) && CollisionHelper.CheckConicalCollision(NPC.Center, 400, AimRotation, 1.57f / 2f, player.Hitbox))
 						{
 							NPC.target = player.whoAmI;
 							Timer = 0;
 							State = ThoughtPoliceState.Aggroed;
 							aggroFlashTimer = MAX_FLASH_TIMER;
+							NPC.netUpdate = true;
 						}
 					}
 
@@ -142,6 +146,9 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 					if (localScanOpacity > 0)
 						localScanOpacity -= 0.1f;
+
+					if (localScanOpacity < 0)
+						localScanOpacity = 0;
 
 					if (Target != null && Vector2.Distance(NPC.Center, Target.Center) <= 2000)
 					{
@@ -155,12 +162,14 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 							Timer = 0;
 							State = ThoughtPoliceState.Attack;
+							NPC.netUpdate = true;
 						}
 					}
 					else
 					{
 						Timer = 0;
 						State = ThoughtPoliceState.Recall;
+						NPC.netUpdate = true;
 					}
 
 					break;
@@ -185,6 +194,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 					{
 						Timer = 0;
 						State = ThoughtPoliceState.Aggroed;
+						NPC.netUpdate = true;
 					}
 
 					break;
@@ -210,9 +220,9 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			{
 				Texture2D shape = Assets.NPCs.Crimson.ThoughtPoliceShape.Value;
 				float prog = (MAX_FLASH_TIMER - aggroFlashTimer) / MAX_FLASH_TIMER;
-				Color color = Color.White * (prog < 0.25f ? Eases.EaseQuadIn(prog / 0.25f) : 1f - Eases.EaseCircularOut((prog - 0.25f) / 0.75f));
+				Color color = new Color(255, 100, 100, 0) * (prog < 0.25f ? Eases.EaseQuadIn(prog / 0.25f) : 1f - Eases.EaseCircularOut((prog - 0.25f) / 0.75f));
 
-				spriteBatch.Draw(shape, NPC.Center - Main.screenPosition, frame, color, NPC.rotation, frame.Size() / 2f, NPC.scale, 0, 0);
+				spriteBatch.Draw(shape, NPC.Center - Main.screenPosition, frame, color, NPC.rotation, frame.Size() / 2f, NPC.scale + Eases.EaseCircularOut(prog) * 0.5f, 0, 0);
 			}
 
 			return false;

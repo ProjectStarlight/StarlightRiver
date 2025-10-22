@@ -27,8 +27,8 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 		public override void SetDefaults()
 		{
-			Projectile.width = 8;
-			Projectile.height = 8;
+			Projectile.width = 12;
+			Projectile.height = 12;
 			Projectile.aiStyle = -1;
 			Projectile.timeLeft = 150;
 			Projectile.hostile = true;
