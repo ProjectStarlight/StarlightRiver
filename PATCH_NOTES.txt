@@ -14,6 +14,7 @@
 ## Gameplay features
 - Added a pool of unique 'cursed' prefixes for accessories, with up and downsides. All cursed accessories now only pull from this pool.
 - You can gamble on applying one of these cursed prefixes to a normal item with a Drop of Darkness.
+- Added a pylon in auroracle's arena that will activate when you first encoutner it
 
 ## UI
 - Updated the defensive stat UI to better show various features of the mod and vanilla. You can click the defense icon in the inventory to expand the new UI

@@ -225,16 +225,48 @@ GUIConfig: {
 
 OverlayState: {
 	Tooltip: ""
-	AlwaysOn.Label: Always On
-	WhileNotFull.Label: While Not Full
-	WhileUsing.Label: While Using
-	Never.Label: Never
+
+	AlwaysOn: {
+		Label: Always On
+		Tooltip: ""
+	}
+
+	WhileNotFull: {
+		Label: While Not Full
+		Tooltip: ""
+	}
+
+	WhileUsing: {
+		Label: While Using
+		Tooltip: ""
+	}
+
+	Never: {
+		Label: Never
+		Tooltip: ""
+	}
 }
 
 KeywordStyle: {
 	Tooltip: ""
-	Colors.Label: Colors
-	Brackets.Label: Brackets
-	Both.Label: Both
-	Neither.Label: Neither
+
+	Colors: {
+		Label: Colors
+		Tooltip: ""
+	}
+
+	Brackets: {
+		Label: Brackets
+		Tooltip: ""
+	}
+
+	Both: {
+		Label: Both
+		Tooltip: ""
+	}
+
+	Neither: {
+		Label: Neither
+		Tooltip: ""
+	}
 }
