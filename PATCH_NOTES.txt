@@ -1,30 +1,15 @@
-﻿# Starlight River 0.3.0
-
-## Flagship Content
-- Added a new optional boss, The Thinker! This boss can be challenged in a crimson world at any point after the Brain of Cthulhu has been defeated, but is intended for players that have atleast visited the dungeon.
-- After defeating the Brain of Cthulhu, some strange bits of material will activate in the crimson. Will you be able to use it to your advantage, or simply go mad?
+﻿# Starlight River 0.2.9
 
 ## Content
 - Added the heavy flail and frost flail, melee weapons with a heavy overhead swing
 - Added Misery's Company, a cursed accessory that shares your defense and innoculation with your foes
 - New Magic Weapon: Talismans
 - New Magic Weapon: Spirit Seal
+- New Melee Weapon: Viewfinder
+- New Magic Weapon: Plasma Cutter
 - The player's introduction to Starlight has changed significantly. Rather than alican causing an event requiring the player to return to the center of the world,
   he will now reside in a new structure on the surface. Once a boss is defeated, you will be able to enter and talk to him.
 - Updated the visuals and structures leading up to Auroracle
-- The player can now seek out 3 special starlight vessel shards to increase their maximum starlight
-- The following are spoilers for the crimson biome
-||- Added gray maatter to the crimson, which emits a hallucinatory and causes hallucinations when stood on
-- Added dendrite to the crimson, a sneaky ore only visible if you are hallucinating
-||
-- The following are spoilers for The Thinker
-||- Added the bear poker, which can be used to spawn The Thinker
-- Added the lobotolizer, a spear which can throw a hallucinatory copy of itself to engage a more offensive attack mode
-- Added the mirage bow, which creates a copy of its user on critical hits reflected across their mouse
-- Added the mind crusher, a charged magic weapon which creates a growing bubble that can be collapsed for bonus damage againsted armored targets
-- Added the myelin sheath, which allows swords to create a crippling projectile on their first strike
-- Added the psychotic manabond, which drains your mana to have your minions emit a damaging aura
-||
 
 ## Gameplay features
 - Added a pool of unique 'cursed' prefixes for accessories, with up and downsides. All cursed accessories now only pull from this pool.
@@ -41,7 +26,7 @@
 ## Balance
 - ↑ Base barrier recharge rate has increased from 6 to 10
 - ↑ Bloodbolter's unique arrows no longer has restrictions on what enemies can expode, and has a 5% chance to explode when hitting a boss
-- ↑ Facet and lattice damage 47 => 45, crit 10% => 19%, max buff multiplier 3x => 3.5x
+- ↑ Facet and lattice damage 47 => 55, crit 10% => 19%, max buff multiplier 3x => 3.5x
 - ↑ Coalescence damage 44 => 50
 - ↑ Refractive blade laser damage 5% of base => 25% of base
 - ↑ Phoeenix storm damage 40 => 60

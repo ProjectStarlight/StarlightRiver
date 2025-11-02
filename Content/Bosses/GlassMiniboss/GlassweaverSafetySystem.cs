@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		/// </summary>
 		public static Vector2 IntendedGlassweaverLocation => intendedGlassweaverPhase switch
 		{
-			GlassweaverFriendly.GlassweaverFriendlyState.BeforeMet => new Vector2((StarlightWorld.vitricBiome.X - 37 + 80) * 16, (StarlightWorld.vitricBiome.Center.Y + 20) * 16),
+			GlassweaverFriendly.GlassweaverFriendlyState.BeforeMet => new Vector2((StarlightWorld.vitricBiome.X - 37 + 76) * 16, (StarlightWorld.vitricBiome.Center.Y + 26) * 16),
 
 			GlassweaverFriendly.GlassweaverFriendlyState.JumpingInside or
 			GlassweaverFriendly.GlassweaverFriendlyState.WaitingForDuel or
