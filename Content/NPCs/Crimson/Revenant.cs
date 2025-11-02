@@ -582,11 +582,6 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 			for (int k = 0; k < stringPoints.Length; k++)
 			{
-				if (k == 2)
-				{
-					DrawCowl(spriteBatch);
-				}
-
 				Vector2 point = stringPoints[k];
 				StaticRigPoint rigPoint = rig.Points[k];
 
@@ -663,49 +658,6 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			}
 
 			return false;
-		}
-
-		private void DrawCowl(SpriteBatch spriteBatch)
-		{
-			return;
-			Texture2D texGlow = Assets.NPCs.Crimson.RevenantCowl.Value;
-
-			SpriteEffects effects = NPC.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-			Vector2 origin = NPC.direction == 1 ? new Vector2(2, 0) : new Vector2(-2, 0);
-
-			if (Flipping)
-			{
-				if (FlipProg > 0.5f)
-				{
-					effects = NPC.direction == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-					origin = NPC.direction == 1 ? new Vector2(2, 0) : new Vector2(-2, 0);
-				}
-			}
-
-			Effect bodyShader = ShaderLoader.GetShader("ThinkerBody").Value;
-
-			if (bodyShader != null)
-			{
-				bodyShader.Parameters["u_resolution"].SetValue(texGlow.Size());
-				bodyShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f);
-
-				bodyShader.Parameters["mainbody_t"].SetValue(texGlow);
-				bodyShader.Parameters["linemap_t"].SetValue(Assets.Invisible.Value);
-				bodyShader.Parameters["noisemap_t"].SetValue(Assets.Noise.ShaderNoise.Value);
-				bodyShader.Parameters["overlay_t"].SetValue(Assets.Invisible.Value);
-				bodyShader.Parameters["normal_t"].SetValue(Assets.MagicPixel.Value);
-				bodyShader.Parameters["u_color"].SetValue(new Vector3(0.7f, 0.3f, 0.3f));
-				bodyShader.Parameters["u_fade"].SetValue(new Vector3(0.3f, 0.5f, 0.3f));
-				bodyShader.Parameters["mask_t"].SetValue(Assets.MagicPixel.Value);
-
-				spriteBatch.End();
-				spriteBatch.Begin(default, default, SamplerState.PointWrap, default, Main.Rasterizer, bodyShader, Main.GameViewMatrix.TransformationMatrix);
-
-				spriteBatch.Draw(texGlow, stringPoints[bodySegment] - Main.screenPosition, null, new Color(255, 255, 255, 0), stringRotations[bodySegment] + NPC.rotation, new Vector2(21, 27), 1f, effects, 0);
-
-				spriteBatch.End();
-				spriteBatch.Begin(default, default, default, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
-			}
 		}
 	}
 }

@@ -17,12 +17,6 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override string Texture => "StarlightRiver/Assets/NPCs/Vitric/Snake";
 
-		public override void Load()
-		{
-			for (int k = 0; k <= 5; k++)
-				GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.VitricNpc + "Gore/SnakeGore" + k);
-		}
-
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Sandviper");

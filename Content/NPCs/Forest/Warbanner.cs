@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 		{
 			for (int k = 0; k <= 6; k++)
 			{
-				GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.ForestNPC + "Gore/WarbannerGore" + k);
+				GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.ForestNPC + "Gores/WarbannerGore" + k);
 			}
 		}
 

@@ -102,11 +102,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
 		}
 
-		public override void Load()
-		{
-			BodyHandler.LoadGores();
-		}
-
 		public override void SetDefaults()
 		{
 			NPC.aiStyle = -1;

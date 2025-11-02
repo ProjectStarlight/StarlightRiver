@@ -16,12 +16,6 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override string Texture => AssetDirectory.VitricNpc + Name;
 
-		public override void Load()
-		{
-			for (int k = 0; k <= 4; k++)
-				GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.VitricNpc + "Gore/CrystalPopperGore" + k);
-		}
-
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Sand Bat");

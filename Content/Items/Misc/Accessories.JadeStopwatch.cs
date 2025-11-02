@@ -15,8 +15,8 @@ namespace StarlightRiver.Content.Items.Misc
 		public int slowTime;
 		public int flashTime;
 
-		public string feat;
-		public string time;
+		public string feat = "";
+		public string time = "";
 
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
