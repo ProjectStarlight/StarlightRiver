@@ -1,5 +1,4 @@
 ﻿using NetEasy;
-using StarlightRiver.Content.Bosses.TheThinkerBoss;
 using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Core.Loaders;

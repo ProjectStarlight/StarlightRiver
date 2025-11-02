@@ -2,7 +2,6 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Backgrounds;
 using StarlightRiver.Content.Bosses.GlassMiniboss;
 using StarlightRiver.Content.Bosses.SquidBoss;
-using StarlightRiver.Content.Bosses.TheThinkerBoss;
 using StarlightRiver.Content.Bosses.VitricBoss;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Permafrost;
@@ -303,24 +302,6 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 						visibleArea = new Rectangle((int)a.X + 1040, (int)a.Y + 60, 1520, 1064);
 						visibleShape = VisibleShape.rectangle;
 						HushArmorSystem.DPSTarget = 215;
-					},
-					a => _ = a),
-
-				new(
-					"Structures/ThinkerBossRushArena",
-					false,
-					ModContent.NPCType<TheThinker>(),
-					new Vector2(16 * 55, 16 * 70),
-					a =>
-					{
-						NPC.NewNPC(null, (int)a.X + 16 * 60 - 8, (int)a.Y + 16 * 60 - 8, ModContent.NPCType<TheThinker>());
-						NPC.NewNPC(null, (int)a.X + 16 * 60, (int)a.Y + 16 * 45, ModContent.NPCType<DeadBrain>());
-
-						visibleArea = new Rectangle((int)a.X, (int)a.Y, 1920, 1920);
-						visibleShape = VisibleShape.circle;
-						HushArmorSystem.DPSTarget = 300;
-
-						StarlightWorld.Flag(WorldFlags.ThinkerBossOpen);
 					},
 					a => _ = a),
 

@@ -264,9 +264,12 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			{
 				manager.Start("Moving1");
 			}
-			else if (State == GlassweaverFriendlyState.MovedIntoTemple && Main.LocalPlayer.GetHandler().InfusionLimit == 0)
+			else if (State == GlassweaverFriendlyState.MovedIntoTemple)
 			{
-				manager.Start("Infusion1");
+				if (Main.LocalPlayer.GetHandler().InfusionLimit == 0)
+					manager.Start("Infusion1");
+				else
+					manager.Start("NoMore");
 			}
 
 			return "";

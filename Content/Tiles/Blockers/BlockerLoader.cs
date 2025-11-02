@@ -1,6 +1,5 @@
 ﻿using StarlightRiver.Content.Bosses.GlassMiniboss;
 using StarlightRiver.Content.Bosses.VitricBoss;
-using StarlightRiver.Content.NPCs.Crimson;
 using StarlightRiver.Core.Systems.BlockerTileSystem;
 
 namespace StarlightRiver.Content.Tiles.Blockers
@@ -16,7 +15,6 @@ namespace StarlightRiver.Content.Tiles.Blockers
 		{
 			BlockerTileSystem.LoadBarrier("VitricBossBarrier", () => NPC.AnyNPCs(ModContent.NPCType<VitricBoss>()));
 			BlockerTileSystem.LoadBarrier("GlassweaverBossBarrier", () => NPC.AnyNPCs(ModContent.NPCType<Glassweaver>()));
-			BlockerTileSystem.LoadBarrier("GestaltCellsBarrier", () => NPC.AnyNPCs(ModContent.NPCType<GestaltCell>()));
 		}
 
 		public void Unload() { }
