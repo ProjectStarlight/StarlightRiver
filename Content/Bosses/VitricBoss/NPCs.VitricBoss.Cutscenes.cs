@@ -142,8 +142,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				for (int k = 0; k < 40; k++)
 					Gore.NewGorePerfect(NPC.GetSource_FromThis(), NPC.Center, Vector2.UnitY.RotatedByRandom(1) * -Main.rand.NextFloat(20), Mod.Find<ModGore>("Cluster" + Main.rand.Next(1, 20)).Type);
 
-				Gore.NewGorePerfect(NPC.GetSource_FromThis(), NPC.Center + new Vector2(-112, 50), Vector2.Zero, Mod.Find<ModGore>("TempleHole").Type);
-
 				Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/VitricBoss1");
 			}
 
