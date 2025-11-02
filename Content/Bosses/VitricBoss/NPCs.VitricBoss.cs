@@ -493,17 +493,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			Dying = 7
 		}
 
-		public override void PostAI()
-		{
-			if (!StarlightRiver.debugMode)
-				return;
-		}
-
 		public override void AI()
 		{
 			BlockerLoader.ceirosBlockers = true;
 
-			if (arena == new Rectangle())
+			if (arena == default)
 				arena = new Rectangle((int)NPC.Center.X + 8 - arenaWidth / 2, (int)NPC.Center.Y - 832 - arenaHeight / 2, arenaWidth, arenaHeight);
 
 			//find crystals
@@ -533,7 +527,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			Lighting.AddLight(NPC.Center, new Vector3(1, 0.8f, 0.4f)); //glow
 
 			// Handles fleeing logic. To make sure we dont force a client into having a fleeing boss too early we give the boss a 1 second "charge" to flee
-			if (Phase != (int)AIStates.Leaving && Phase != (int)AIStates.Dying && arena != new Rectangle() && !Main.player.Any(n => n.active && !n.dead && arena.Contains(n.Center.ToPoint()))) //if no valid players are detected
+			if (Phase != (int)AIStates.Leaving && Phase != (int)AIStates.Dying && (int)Phase > (int)AIStates.SpawnAnimation && arena != new Rectangle() && !Main.player.Any(n => n.active && !n.dead && arena.Contains(n.Center.ToPoint()))) //if no valid players are detected
 				fleeTimer++;
 			else
 				fleeTimer = 0;

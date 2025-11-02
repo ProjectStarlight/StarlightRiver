@@ -66,8 +66,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					ZoomHandler.SetZoomAnimation(1.1f, 60);
 				}
 
-				for (int k = 0; k < 10; k++)
-					Gore.NewGorePerfect(NPC.GetSource_FromThis(), arena.Center() + new Vector2(Main.rand.Next(-600, 600), -450), Vector2.UnitY * Main.rand.NextFloat(-1, 2), Mod.Find<ModGore>("Cluster" + Main.rand.Next(1, 19)).Type);
+				if (Main.netMode != NetmodeID.Server)
+				{
+					for (int k = 0; k < 10; k++)
+						Gore.NewGorePerfect(NPC.GetSource_FromThis(), arena.Center() + new Vector2(Main.rand.Next(-600, 600), -450), Vector2.UnitY * Main.rand.NextFloat(-1, 2), Mod.Find<ModGore>("Cluster" + Main.rand.Next(1, 19)).Type);
+				}
 
 				for (int k = 0; k < 20; k++)
 					Dust.NewDustPerfect(arena.Center() + new Vector2(Main.rand.Next(-600, 600), -450), DustID.Stone, Vector2.UnitY * Main.rand.NextFloat(6, 12), 0, default, Main.rand.NextFloat(1, 3));
@@ -87,8 +90,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					ZoomHandler.SetZoomAnimation(1.2f, 60);
 				}
 
-				for (int k = 0; k < 10; k++)
-					Gore.NewGorePerfect(NPC.GetSource_FromThis(), arena.Center() + new Vector2(Main.rand.Next(-600, 600), -450), Vector2.UnitY * Main.rand.NextFloat(-1, 2), Mod.Find<ModGore>("Cluster" + Main.rand.Next(1, 19)).Type);
+				if (Main.netMode != NetmodeID.Server)
+				{
+					for (int k = 0; k < 10; k++)
+						Gore.NewGorePerfect(NPC.GetSource_FromThis(), arena.Center() + new Vector2(Main.rand.Next(-600, 600), -450), Vector2.UnitY * Main.rand.NextFloat(-1, 2), Mod.Find<ModGore>("Cluster" + Main.rand.Next(1, 19)).Type);
+				}
 
 				for (int k = 0; k < 20; k++)
 					Dust.NewDustPerfect(arena.Center() + new Vector2(Main.rand.Next(-600, 600), -450), DustID.Stone, Vector2.UnitY * Main.rand.NextFloat(6, 12), 0, default, Main.rand.NextFloat(1, 3));
@@ -108,8 +114,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					ZoomHandler.SetZoomAnimation(1.3f, 60);
 				}
 
-				for (int k = 0; k < 10; k++)
-					Gore.NewGorePerfect(NPC.GetSource_FromThis(), arena.Center() + new Vector2(Main.rand.Next(-600, 600), -450), Vector2.UnitY * Main.rand.NextFloat(-1, 2), Mod.Find<ModGore>("Cluster" + Main.rand.Next(1, 19)).Type);
+				if (Main.netMode != NetmodeID.Server)
+				{
+					for (int k = 0; k < 10; k++)
+						Gore.NewGorePerfect(NPC.GetSource_FromThis(), arena.Center() + new Vector2(Main.rand.Next(-600, 600), -450), Vector2.UnitY * Main.rand.NextFloat(-1, 2), Mod.Find<ModGore>("Cluster" + Main.rand.Next(1, 19)).Type);
+				}
 
 				for (int k = 0; k < 20; k++)
 					Dust.NewDustPerfect(arena.Center() + new Vector2(Main.rand.Next(-600, 600), -450), DustID.Stone, Vector2.UnitY * Main.rand.NextFloat(6, 12), 0, default, Main.rand.NextFloat(1, 3));
@@ -139,8 +148,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					Dust.NewDustPerfect(NPC.Center, DustType<Dusts.Stone>(), Vector2.UnitY.RotatedByRandom(1) * -Main.rand.NextFloat(20), 0, default, 2);
 				}
 
-				for (int k = 0; k < 40; k++)
-					Gore.NewGorePerfect(NPC.GetSource_FromThis(), NPC.Center, Vector2.UnitY.RotatedByRandom(1) * -Main.rand.NextFloat(20), Mod.Find<ModGore>("Cluster" + Main.rand.Next(1, 20)).Type);
+				if (Main.netMode != NetmodeID.Server)
+				{
+					for (int k = 0; k < 40; k++)
+						Gore.NewGorePerfect(NPC.GetSource_FromThis(), NPC.Center, Vector2.UnitY.RotatedByRandom(1) * -Main.rand.NextFloat(20), Mod.Find<ModGore>("Cluster" + Main.rand.Next(1, 20)).Type);
+				}
 
 				Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/VitricBoss1");
 			}
@@ -164,6 +176,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 						(Main.npc[index].ModNPC as VitricBossCrystal).StartPos = target;
 						(Main.npc[index].ModNPC as VitricBossCrystal).TargetPos = NPC.Center + new Vector2(0, -180).RotatedBy(6.28f / 4 * k);
 						crystals.Add(Main.npc[index]); //add this crystal to the list of crystals the boss controls
+
+						Main.npc[index].netUpdate = true;
 					}
 				}
 

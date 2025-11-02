@@ -2,6 +2,7 @@
 using StarlightRiver.Core.Loaders;
 using System;
 using System.Collections.Generic;
+using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
@@ -220,6 +221,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public void SpawnGores2()
 		{
+			if (Main.netMode == NetmodeID.Server)
+				return;
+
 			if (chain?.ropeSegments[0]?.posNow == null)
 				return;
 
@@ -241,6 +245,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public void SpawnGores()
 		{
+			if (Main.netMode == NetmodeID.Server)
+				return;
+
 			stopDrawingBody = true;
 
 			if (chain?.ropeSegments == null)
