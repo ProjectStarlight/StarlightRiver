@@ -70,3 +70,14 @@
 ## Boring programmer stuff
 - Keywords now utilize localization and are data driven similar to dialogue and hints
 - Untied the text cards from the ability system to unwind a longstanding issue with it persisting after the intended period
+
+# Starlight River 0.2.9.2
+
+## Fixes
+- Fixed coalescence sending debug messages to the chat
+- Fixed the "full" debuff being dismissable
+- Fixed an issue where auroracle's tentacles would check an incorrect HP threshold, causing them to be unable to be damaged on some difficulties
+- Fixed an issue where ceiros' platforms would fail to trigger their explosion timer on master mode
+
+## Tweaks
+- Improved visual and audio feedback for platform explosions during Ceiros' master mode fight
