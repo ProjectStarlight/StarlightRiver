@@ -1,4 +1,5 @@
-﻿using Terraria.Audio;
+﻿using System.Collections.Generic;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -229,9 +230,9 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 			return MinPick < 100;
 		}
 
-		public override void KillMultiTile(int i, int j, int frameX, int frameY)
+		public override IEnumerable<Item> GetItemDrops(int i, int j)
 		{
-			Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, DropID);
+			yield return new Item(DropID);
 		}
 	}
 
