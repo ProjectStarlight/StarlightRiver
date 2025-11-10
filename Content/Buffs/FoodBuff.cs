@@ -35,6 +35,7 @@ namespace StarlightRiver.Content.Buffs
 		public override void SetStaticDefaults()
 		{
 			BuffID.Sets.NurseCannotRemoveDebuff[Type] = true;
+			base.SetStaticDefaults();
 		}
 
 		public override string Texture => AssetDirectory.Buffs + "Full";
