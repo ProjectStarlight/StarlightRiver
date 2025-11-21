@@ -67,17 +67,27 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			if (Thinker is null)
 				return;
 
-			if (Vector2.Distance(Thinker.Center, Projectile.Center) > 32)
+			var dist = Vector2.Distance(Thinker.Center, Projectile.Center);
+
+			if (dist > 32)
 			{
 				foreach (Player player in Main.ActivePlayers)
 				{
-					if (Helpers.CollisionHelper.CheckLinearCollision(Thinker.Center, Projectile.Center, player.Hitbox, out Vector2 collision))
+					if (CollisionHelper.CheckLinearCollision(Thinker.Center, Projectile.Center, player.Hitbox, out Vector2 collision))
 					{
 						int mult = Main.masterMode ? 6 : Main.expertMode ? 4 : 1;
 						player.Hurt(PlayerDeathReason.ByCustomReason(NetworkText.FromKey("Mods.StarlightRiver.Deaths.ThinkerVein", player.name)), Projectile.damage * mult, 0);
 						BuffInflictor.Inflict<Neurosis>(player, Main.masterMode ? 18000 : Main.expertMode ? 3000 : 1500);
 					}
 				}
+			}
+
+			if (dist > ((Thinker.ModNPC as TheThinker)?.ArenaRadius ?? 99999))
+			{
+				hit = true;
+				hitTime = (int)Lifetime - Projectile.timeLeft;
+				Projectile.velocity *= 0;
+				SoundHelper.PlayPitched("Impacts/StabFleshy", 1f, -0.5f, Projectile.Center);
 			}
 
 
@@ -104,7 +114,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				hit = true;
 				hitTime = (int)Lifetime - Projectile.timeLeft;
 				Projectile.velocity *= 0;
-				Helpers.SoundHelper.PlayPitched("Impacts/StabFleshy", 1f, -0.5f, Projectile.Center);
+				SoundHelper.PlayPitched("Impacts/StabFleshy", 1f, -0.5f, Projectile.Center);
 			}
 
 			return false;

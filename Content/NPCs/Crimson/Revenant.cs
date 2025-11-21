@@ -46,6 +46,8 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 		private float maxSpeed;
 
+		private int grayFieldWhoAmI = -1;
+
 		private readonly Vector2[] stringPoints = new Vector2[7];
 		private readonly float[] stringRotations = new float[7];
 
@@ -78,7 +80,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 		public override void SetDefaults()
 		{
-			NPC.lifeMax = 500;
+			NPC.lifeMax = 300;
 			NPC.width = 64;
 			NPC.height = 128;
 			NPC.aiStyle = -1;
@@ -477,6 +479,31 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 		public override bool CheckDead()
 		{
+			if (State == 3)
+			{
+				foreach(Vector2 pos in gorePoints)
+				{
+					for (int k = 0; k < 25; k++)
+					{
+						Dust.NewDustPerfect(pos, DustID.Blood, Main.rand.NextVector2Circular(1, 1) * Main.rand.NextFloat(10));
+					}
+
+					for(int k = 0; k < 5; k++)
+					{
+						Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.PixelatedImpactLineDust>(), Main.rand.NextVector2Circular(1, 1) * Main.rand.NextFloat(5, 25), 0, new Color(200, 200, 200, 0), Main.rand.NextFloat(0.25f));
+					}
+				}
+
+				SoundHelper.PlayPitched("Impacts/GoreHeavy", 0.5f, -0.25f, NPC.Center);
+
+				if (grayFieldWhoAmI != -1 && Main.projectile[grayFieldWhoAmI].ModProjectile is ReusableHallucinationZone zone)
+				{
+					zone.Timer = zone.Duration = 20;
+				}
+					
+				return true;
+			}
+
 			NPC.life = 1;
 			NPC.dontTakeDamage = true;
 			SetGorePointsToRig();
@@ -492,7 +519,8 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				Dust.NewDust(NPC.position + Vector2.UnitY * 32, NPC.width, NPC.height, ModContent.DustType<Dusts.PixelatedEmber>(), 0, -Main.rand.NextFloat(5), 0, new Color(255, Main.rand.Next(50, 200), Main.rand.Next(50, 200), 0), Main.rand.NextFloat(0.25f));
 			}
 
-			Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, NPC.height / 2f), Vector2.Zero, ModContent.ProjectileType<ReusableHallucinationZone>(), 0, 0, Main.myPlayer, 120, 600);
+			grayFieldWhoAmI = Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, NPC.height / 2f), Vector2.Zero, ModContent.ProjectileType<ReusableHallucinationZone>(), 0, 0, Main.myPlayer, 120, 600);
+			NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<RevenantCore>(), 0, NPC.whoAmI);
 
 			return false;
 		}
