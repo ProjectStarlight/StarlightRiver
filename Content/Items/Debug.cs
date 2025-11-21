@@ -60,7 +60,6 @@ namespace StarlightRiver.Content.Items
 			Dust.NewDustPerfect(new Vector2((x + 80) * 16, (StarlightWorld.vitricBiome.Center.Y + 20) * 16), DustID.Firefly);
 
 		}
-
 	}
 
 	[SLRDebug]

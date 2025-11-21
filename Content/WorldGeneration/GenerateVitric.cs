@@ -366,7 +366,7 @@ namespace StarlightRiver.Core
 					{
 						PlaceTile(x, y, instance.Find<ModTile>("VitricSand").Type, true, true);
 						t.Slope = SlopeType.Solid;
-						t.WallType = 0;
+						t.WallType = WallID.None;
 					}
 				}
 
@@ -429,7 +429,7 @@ namespace StarlightRiver.Core
 						if (lakeProgress == 30)
 							PlaceTile(x + 1, y, TileType<VitricSpike>(), true, true);
 
-						t.LiquidType = 1;
+						t.LiquidType = LiquidID.Lava;
 						t.LiquidAmount = 200;
 						t.HasTile = false;
 

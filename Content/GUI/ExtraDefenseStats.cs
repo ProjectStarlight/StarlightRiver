@@ -219,9 +219,9 @@ namespace StarlightRiver.Content.GUI
 				float flash = 0.5f + MathF.Sin(Main.GameUpdateCount * 0.15f) * 0.5f;
 
 				Vector2 vector = new Vector2(inventoryX - 10 - 47 - 47 - 14, inventoryY + TextureAssets.InventoryBack.Height() * 0.5f);
-				Main.spriteBatch.Draw(Assets.GUI.DefenseFlash.Value, vector, null, Color.White * flash, 0f, TextureAssets.Extra[58].Value.Size() / 2f, Main.inventoryScale, SpriteEffects.None, 0f);
+				Main.spriteBatch.Draw(Assets.GUI.DefenseFlash.Value, vector, null, Color.White * flash, 0f, TextureAssets.Extra[ExtrasID.DefenseShield].Value.Size() / 2f, Main.inventoryScale, SpriteEffects.None, 0f);
 
-				if (Utils.CenteredRectangle(vector, TextureAssets.Extra[58].Value.Size()).Contains(new Point(Main.mouseX, Main.mouseY)) && !PlayerInput.IgnoreMouseInterface)
+				if (Utils.CenteredRectangle(vector, TextureAssets.Extra[ExtrasID.DefenseShield].Value.Size()).Contains(new Point(Main.mouseX, Main.mouseY)) && !PlayerInput.IgnoreMouseInterface)
 					Main.hoverItemName += Language.GetTextValue("Mods.StarlightRiver.GUI.ExtraDefenseStats.Click");
 			}
 		}

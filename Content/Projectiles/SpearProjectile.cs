@@ -1,6 +1,7 @@
 ﻿using System;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Projectiles
 {
@@ -75,7 +76,7 @@ namespace StarlightRiver.Content.Projectiles
 			Projectile.width = 32;
 			Projectile.height = 32;
 			Projectile.penetrate = -1;
-			Projectile.aiStyle = 19;
+			Projectile.aiStyle = ProjAIStyleID.Spear;
 			Projectile.friendly = true;
 			Projectile.timeLeft = duration;
 			Projectile.tileCollide = false;

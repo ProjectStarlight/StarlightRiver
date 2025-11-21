@@ -325,7 +325,7 @@ namespace StarlightRiver.Content.CustomHooks
 	{
 		public override bool AppliesToEntity(Projectile entity, bool lateInstantiation)
 		{
-			return entity.aiStyle == 17;
+			return entity.aiStyle == ProjAIStyleID.GraveMarker;
 		}
 
 		public override void PostAI(Projectile Projectile)

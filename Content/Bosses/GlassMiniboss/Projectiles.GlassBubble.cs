@@ -312,7 +312,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				for (int i = 0; i < shardCount; i++)
 				{
 					float rotation = MathHelper.TwoPi / shardCount * i;
-					Asset<Texture2D> tell = TextureAssets.Extra[98];
+					Asset<Texture2D> tell = TextureAssets.Extra[ExtrasID.SharpTears];
 					float tellLength = Helpers.Eases.BezierEase((Timer - CRACK_TIME) / 130f) * 12f;
 					Color tellFade = Color.OrangeRed * ((Timer - CRACK_TIME) / 130f) * 0.5f;
 					tellFade.A = 0;

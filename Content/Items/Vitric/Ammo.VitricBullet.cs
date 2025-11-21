@@ -71,7 +71,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			Projectile.extraUpdates = 1;
 
-			Projectile.aiStyle = 1;
+			Projectile.aiStyle = ProjAIStyleID.Arrow;
 			AIType = ProjectileID.Bullet;
 		}
 
