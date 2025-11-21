@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			NPC.dontTakeDamage = true;
 			NPC.value = 0f;
 			NPC.knockBackResist = 0f;
-			NPC.aiStyle = 65;
+			NPC.aiStyle = NPCAIStyleID.Butterfly;
 		}
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)

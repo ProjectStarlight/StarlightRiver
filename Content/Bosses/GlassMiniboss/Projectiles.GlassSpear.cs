@@ -370,7 +370,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			}
 			else //Draw tell before firing
 			{
-				Texture2D line = TextureAssets.Extra[60].Value;
+				Texture2D line = TextureAssets.Extra[ExtrasID.PortalGateHalo2].Value;
 				Color color = Color.OrangeRed;
 				color.A = 0;
 

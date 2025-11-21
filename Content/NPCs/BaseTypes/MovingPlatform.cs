@@ -262,15 +262,15 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 			Player Player = Main.player[proj.owner];
 			int numHooks = 3;
 			//time to replicate retarded vanilla hardcoding, wheee
-			if (proj.type == 165)
+			if (proj.type == ProjectileID.Web)
 				numHooks = 8;
-			if (proj.type == 256)
+			if (proj.type == ProjectileID.SkeletronHand)
 				numHooks = 2;
-			if (proj.type == 372)
+			if (proj.type == ProjectileID.FishHook)
 				numHooks = 2;
-			if (proj.type == 652)
+			if (proj.type == ProjectileID.StaticHook)
 				numHooks = 1;
-			if (proj.type >= 646 && proj.type <= 649)
+			if (proj.type >= ProjectileID.LunarHookSolar && proj.type <= ProjectileID.LunarHookStardust)
 				numHooks = 4;
 			//end vanilla zoink
 
@@ -288,7 +288,7 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 
 		public override bool AppliesToEntity(Projectile entity, bool lateInstantiation)
 		{
-			return entity.aiStyle == 7;
+			return entity.aiStyle == ProjAIStyleID.Hook;
 		}
 
 		public override void SendExtraAI(Projectile projectile, BitWriter bitWriter, BinaryWriter binaryWriter)

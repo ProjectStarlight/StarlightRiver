@@ -127,7 +127,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			Tile tile = Framing.GetTileSafely((int)pos.X / 16, (int)pos.Y / 16);
 
-			if (!tile.HasTile && tile.WallType == 0)
+			if (!tile.HasTile && tile.WallType == WallID.None)
 				Lighting.AddLight(pos, new Vector3(1, 0.8f, 0.2f) * brightness * 0.4f);
 		}
 

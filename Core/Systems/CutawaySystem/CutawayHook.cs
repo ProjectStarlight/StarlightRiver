@@ -19,7 +19,7 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 
 		private static bool Inside => cutaways?.Any(n => n.fadeTime < 0.95f) ?? false;
 
-		public static bool InSubworld => (bool)(subLib?.Call("AnyActive") ?? false);
+		public static bool InSubworld => subLib?.Call("Current") != null;
 
 		public override void Load()
 		{

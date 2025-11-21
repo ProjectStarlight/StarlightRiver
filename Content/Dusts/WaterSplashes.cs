@@ -1,3 +1,5 @@
+using Terraria.ID;
+
 namespace StarlightRiver.Content.Dusts
 {
 	public abstract class QuickSplash : ModDust
@@ -6,7 +8,7 @@ namespace StarlightRiver.Content.Dusts
 
 		public override void SetStaticDefaults()
 		{
-			UpdateType = 33;
+			UpdateType = DustID.Water;
 		}
 
 		public override void OnSpawn(Dust dust)

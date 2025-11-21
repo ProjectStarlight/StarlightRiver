@@ -675,7 +675,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Projectile.tileCollide = true;
 			Projectile.hostile = false;
 			Projectile.friendly = true;
-			Projectile.aiStyle = 1;
+			Projectile.aiStyle = ProjAIStyleID.Arrow;
 			Projectile.width = Projectile.height = 12;
 			Projectile.extraUpdates = 1;
 			Projectile.alpha = 255;

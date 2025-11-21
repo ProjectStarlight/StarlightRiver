@@ -359,7 +359,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override void SetDefaults()
 		{
-			Projectile.aiStyle = 1;
+			Projectile.aiStyle = ProjAIStyleID.Arrow;
 			AIType = ProjectileID.Bullet;
 
 			Projectile.friendly = true;

@@ -61,8 +61,8 @@ namespace StarlightRiver.Content.GUI
 			string quote = Language.GetTextValue($"Mods.StarlightRiver.GUI.LootUI.Jokes.{QuoteID}");
 			Utils.DrawBorderStringBig(spriteBatch, quote, GetDimensions().Center() + new Vector2(0, -80) - 1.5f * Terraria.GameContent.FontAssets.ItemStack.Value.MeasureString(quote) / 2, Color.White, 0.5f);
 
-			string get = Language.GetTextValue("Mods.StarlightRiver.GUI.LootUI.Jokes.Get");
-			string pick = Language.GetTextValue("Mods.StarlightRiver.GUI.LootUI.Jokes.Pick");
+			string get = Language.GetTextValue("Mods.StarlightRiver.GUI.LootUI.Get");
+			string pick = Language.GetTextValue("Mods.StarlightRiver.GUI.LootUI.Pick");
 
 			Utils.DrawBorderString(spriteBatch, get, GetDimensions().Center() + new Vector2(0, -40) - Terraria.GameContent.FontAssets.ItemStack.Value.MeasureString(get) / 2, Color.White, 0.8f);
 			Utils.DrawBorderString(spriteBatch, pick, GetDimensions().Center() + new Vector2(0, 40) - Terraria.GameContent.FontAssets.ItemStack.Value.MeasureString(pick) / 2, Color.White, 0.8f);

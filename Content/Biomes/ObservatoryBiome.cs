@@ -8,6 +8,7 @@ using StarlightRiver.Core.Systems.LightingSystem;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -176,6 +177,19 @@ namespace StarlightRiver.Content.Biomes
 			observatoryRoom = tag.Get<Rectangle>("observatoryRoom");
 			observatoryOpen = tag.GetBool("observatoryOpen");
 			pylonAppearsOn = observatoryOpen;
+		}
+
+		public override void NetSend(BinaryWriter writer)
+		{
+			writer.Write(observatoryOpen);
+		}
+
+		public override void NetReceive(BinaryReader reader)
+		{
+			observatoryOpen = reader.ReadBoolean();
+
+			if (observatoryOpen)
+				pylonAppearsOn = true;
 		}
 	}
 }

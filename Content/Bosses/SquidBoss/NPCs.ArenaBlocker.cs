@@ -1,5 +1,6 @@
 ﻿using System;
 using Terraria.GameContent.Bestiary;
+using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.SquidBoss
@@ -56,7 +57,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			for (int k = 0; k < Main.maxProjectiles; k++)
 			{
 				Projectile proj = Main.projectile[k];
-				if (proj.active && proj.Hitbox.Intersects(NPC.Hitbox) && proj.aiStyle == 7) //Hooks
+				if (proj.active && proj.Hitbox.Intersects(NPC.Hitbox) && proj.aiStyle == ProjAIStyleID.Hook) //Hooks
 					Main.projectile[k].active = false;
 			}
 		}

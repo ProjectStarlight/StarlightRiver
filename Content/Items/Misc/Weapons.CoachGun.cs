@@ -288,7 +288,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.height = 18;
 			Projectile.DamageType = DamageClass.Ranged;
 			Projectile.timeLeft = 150;
-			Projectile.aiStyle = 14;
+			Projectile.aiStyle = ProjAIStyleID.GroundProjectile;
 			Projectile.friendly = false;
 		}
 
@@ -479,7 +479,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.tileCollide = true;
 			Projectile.hostile = false;
 			Projectile.friendly = true;
-			Projectile.aiStyle = 1;
+			Projectile.aiStyle = ProjAIStyleID.Arrow;
 			Projectile.width = Projectile.height = 12;
 			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 9;
 			ProjectileID.Sets.TrailingMode[Projectile.type] = 0;

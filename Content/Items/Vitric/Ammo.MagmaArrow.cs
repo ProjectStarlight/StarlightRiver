@@ -68,7 +68,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Projectile.timeLeft = 400;
 			Projectile.tileCollide = true;
 			Projectile.ignoreWater = false;
-			Projectile.aiStyle = 1;
+			Projectile.aiStyle = ProjAIStyleID.Arrow;
 			AIType = ProjectileID.WoodenArrowFriendly;
 		}
 

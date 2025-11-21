@@ -1,4 +1,5 @@
 ﻿using System;
+using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Abilities
@@ -52,7 +53,7 @@ namespace StarlightRiver.Content.Abilities
 			}
 
 			float rot = Main.rand.NextFloat((float)Math.PI * 2);
-			var d = Dust.NewDustPerfect(Item.Center + Vector2.One.RotatedBy(rot) * 16, 264, Vector2.One.RotatedBy(rot) * -1.25f, 0, color, 0.8f);
+			var d = Dust.NewDustPerfect(Item.Center + Vector2.One.RotatedBy(rot) * 16, DustID.PortalBoltTrail, Vector2.One.RotatedBy(rot) * -1.25f, 0, color, 0.8f);
 			d.noGravity = true;
 			d.noLight = true;
 		}

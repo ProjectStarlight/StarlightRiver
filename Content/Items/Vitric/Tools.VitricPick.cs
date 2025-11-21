@@ -94,7 +94,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			if (lastVitricPickInteraction == new Point16(i, j) && oldType == TileID.Hellstone)
 			{
-				tile.LiquidType = 0;
+				tile.LiquidType = LiquidID.Water;
 				tile.LiquidAmount = 0;
 				tile.SkipLiquid = true;
 			}

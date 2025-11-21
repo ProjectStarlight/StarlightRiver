@@ -289,7 +289,7 @@ namespace StarlightRiver.Content.Items.Starwood
 			Projectile.penetrate = 2;
 			Projectile.tileCollide = true;
 			Projectile.ignoreWater = false;
-			Projectile.aiStyle = 1;
+			Projectile.aiStyle = ProjAIStyleID.Arrow;
 			Main.projFrames[Projectile.type] = 10;
 		}
 

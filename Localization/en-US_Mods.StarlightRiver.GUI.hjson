@@ -63,6 +63,23 @@ CookingUI: {
 	SlotHover: Place [c/{0}:{1}] here
 }
 
+LootUI: {
+	Get: You get
+	Pick: Pick two more rewards
+
+	Jokes: {
+		0: Treasure!
+		1: Loot!
+		2: This looks shiny!
+		3: Treasure!
+		4: Treasure!
+		5: Treasure!
+		6: Treasure!
+		7: Treasure!
+		8: Treasure!
+	}
+}
+
 ExtraDefenseStats: {
 	Click:
 		'''

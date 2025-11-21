@@ -131,7 +131,7 @@ namespace StarlightRiver.Core.Systems.ChestLootSystem
 					if (!framingToRegion.TryGetValue(
 						ModContent.GetModTile(tile.TileType) != null ?
 							tile.TileType + 10000 :
-							tile.TileFrameX + (tile.TileType == 467 ? 2000 : 0), out ChestRegionFlags region))
+							tile.TileFrameX + (tile.TileType == TileID.Containers2 ? 2000 : 0), out ChestRegionFlags region))
 					{
 						continue;
 					}
