@@ -101,6 +101,11 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 		public override void OnKill()
 		{
+			for (int k = 0; k < 25; k++)
+			{
+				Dust.NewDustPerfect(NPC.Center, ModContent.DustType<Dusts.PixelatedImpactLineDust>(), Main.rand.NextVector2Circular(1, 1) * Main.rand.NextFloat(5, 40), 0, new Color(255, Main.rand.Next(50, 255), 50, 0), Main.rand.NextFloat(0.5f));
+			}
+
 			ParentNPC.Kill();
 		}
 
