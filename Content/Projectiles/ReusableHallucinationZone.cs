@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Projectiles
 				Projectile.Opacity = Timer / 20f;
 
 			if (Timer > Duration - 20)
-				Projectile.Opacity = 1f - ((Timer - (Duration - 20)) / 20f);
+				Projectile.Opacity = 1f - (Timer - (Duration - 20)) / 20f;
 
 			foreach (Player player in Main.ActivePlayers)
 			{
