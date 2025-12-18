@@ -4,10 +4,68 @@ using StarlightRiver.Core.Systems.InstancedBuffSystem;
 using StarlightRiver.Core.Systems.PixelationSystem;
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using Terraria.Audio;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.NPCs.Crimson
 {
-	class ThoughtPoliceProjectile : ModProjectile
+	class ThoughtPoliceCage : ModProjectile
+	{
+		public override string Texture => AssetDirectory.Invisible;
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Thoughtcrime");
+		}
+
+		public override void SetDefaults()
+		{
+			Projectile.width = 12;
+			Projectile.height = 12;
+			Projectile.aiStyle = -1;
+			Projectile.timeLeft = 150;
+			Projectile.hostile = true;
+			Projectile.tileCollide = true;
+			Projectile.extraUpdates = 4;
+		}
+
+		public override void AI()
+		{
+			Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GraymatterDust>(), Vector2.One.RotatedByRandom(6.28f), 0, default, 0.3f);
+			Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.PixelatedImpactLineDust>(), Vector2.One.RotatedByRandom(6.28f) * 5, 0, new Color(255, Main.rand.Next(40, 120), 80, 0), 0.1f);
+			Projectile.velocity *= 0.99f;
+		}
+
+		public override void ModifyHitPlayer(Player target, ref Player.HurtModifiers modifiers)
+		{
+			modifiers.Cancel();
+		}
+
+		public override void OnHitPlayer(Player target, Player.HurtInfo info)
+		{
+			Projectile.timeLeft = 0;
+		}
+
+		public override void OnKill(int timeLeft)
+		{
+			SoundEngine.PlaySound(SoundID.Item52.WithPitchOffset(-0.5f), Projectile.Center);
+
+			int count = Main.masterMode ? 8 : Main.expertMode ? 7 : 6;
+
+			for (int k = 0; k < count; k++)
+			{
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<ThoughtPoliceShard>(), Projectile.damage, 0.5f, Main.myPlayer, 600, k / (float)count * 6.28f);
+			}
+		}
+
+		public override bool PreDraw(ref Color lightColor)
+		{
+			return false;
+		}
+	}
+
+	class ThoughtPoliceShard : ModProjectile
 	{
 		private List<Vector2> cache;
 		private Trail trail;
@@ -116,6 +174,14 @@ namespace StarlightRiver.Content.NPCs.Crimson
 					effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 					trail?.Render(effect);
 				}
+
+				int time = 150 - Projectile.timeLeft;
+				var opacity = Math.Clamp((time - 30) / 10f, 0, 1);
+				Color starColor = color;
+				starColor.A = 0;
+
+				Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, starColor * opacity, Main.GameUpdateCount * 0.1f, star.Size() / 2f, 0.25f, 0, 0);
+				Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, starColor * opacity, Main.GameUpdateCount * -0.2f, star.Size() / 2f, 0.25f, 0, 0);
 			});
 
 			return false;
