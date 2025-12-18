@@ -227,7 +227,7 @@ namespace StarlightRiver.Content.Items.Misc
 			for (int k = 0; k < indicies.Length; k++)
 			{
 				NPC scan = Main.npc[indicies[k]];
-				if (scan.active && scan.chaseable && !hitNPCs.Contains(scan) && Vector2.Distance(scan.Center, origin.Center) < 500)
+				if (scan.active && scan.chaseable && !scan.friendly && !scan.dontTakeDamage && !scan.immortal && !hitNPCs.Contains(scan) && Vector2.Distance(scan.Center, origin.Center) < 500)
 				{
 					hitNPCs.Add(scan);
 					CheckAboutNPC(scan, remaining - 1);
