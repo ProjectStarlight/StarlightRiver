@@ -102,7 +102,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 					// Hover up if needed
 					bool foundGround = false;
 
-					for (int k = 0; k < 30; k++)
+					for (int k = 0; k < 20; k++)
 					{
 						Tile tile = Framing.GetTileSafely((int)NPC.Center.X / 16, (int)NPC.Center.Y / 16 + k);
 
@@ -152,8 +152,8 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 					if (Target != null && Vector2.Distance(NPC.Center, Target.Center) <= 2000)
 					{
-						Vector2 targetPos = Target.Center + new Vector2(MathF.Sin(Timer * 6.28f / 120) * 40, -120);
-						NPC.Center += (targetPos - NPC.Center) * 0.05f;
+						Vector2 targetPos = Target.Center + new Vector2(MathF.Sin(Timer * 6.28f / 240) * 240, -200);
+						NPC.Center += (targetPos - NPC.Center) * 0.05f * (Math.Min(1f, Timer / 30f));
 
 						if (Timer == 180)
 						{
@@ -182,15 +182,10 @@ namespace StarlightRiver.Content.NPCs.Crimson
 					{
 						NPC.velocity *= 0f;
 
-						int count = Main.masterMode ? 10 : Main.expertMode ? 8 : 6;
-
-						for (int k = 0; k < count; k++)
-						{
-							Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<ThoughtPoliceProjectile>(), NPC.damage, 0.5f, Main.myPlayer, 600, k / (float)count * 6.28f);
-						}
+						Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, NPC.DirectionTo(Target.Center) * 5, ModContent.ProjectileType<ThoughtPoliceCage>(), NPC.damage, 0, Main.myPlayer);
 					}
 
-					if (Timer == 200)
+					if (Timer >= 60)
 					{
 						Timer = 0;
 						State = ThoughtPoliceState.Aggroed;
@@ -211,7 +206,8 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				Texture2D aura = Assets.Bosses.TheThinkerBoss.HallucionationHazard.Value;
 				float pulse = 1.1f + MathF.Sin(Timer * 0.1f) * 0.1f;
 				float colorPulse = 1f + MathF.Sin(Timer * 0.1f) * 0.5f;
-				spriteBatch.Draw(aura, NPC.Center - Main.screenPosition, null, new Color(255, 80, 80) * 0.35f * colorPulse, MathF.Sin(Timer / 120f * 6.28f) * 0.1f, aura.Size() / 2f, pulse, 0, 0);
+
+				spriteBatch.Draw(aura, NPC.Center - Main.screenPosition, null, new Color(255, 80, 80) * 0.35f * colorPulse, 0, aura.Size() / 2f, pulse, 0, 0);
 			}
 
 			spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, frame, drawColor, NPC.rotation, frame.Size() / 2f, NPC.scale, 0, 0);
@@ -222,7 +218,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				float prog = (MAX_FLASH_TIMER - aggroFlashTimer) / MAX_FLASH_TIMER;
 				Color color = new Color(255, 100, 100, 0) * (prog < 0.25f ? Eases.EaseQuadIn(prog / 0.25f) : 1f - Eases.EaseCircularOut((prog - 0.25f) / 0.75f));
 
-				spriteBatch.Draw(shape, NPC.Center - Main.screenPosition, frame, color, NPC.rotation, frame.Size() / 2f, NPC.scale + Eases.EaseCircularOut(prog) * 0.5f, 0, 0);
+				spriteBatch.Draw(shape, NPC.Center - Main.screenPosition, frame, color, NPC.rotation, frame.Size() / 2f, NPC.scale, 0, 0);
 			}
 
 			return false;

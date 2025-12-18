@@ -4449,6 +4449,8 @@ Projectiles: {
 	GauntletSpawner.DisplayName: Gauntlet Spawner
 	SpawnEgg.DisplayName: Spawn Egg
 	ThoughtPoliceProjectile.DisplayName: Thoughtcrime
+	ThoughtPoliceShard.DisplayName: Thoughtcrime
+	ThoughtPoliceCage.DisplayName: Thoughtcrime
 }
 
 Biomes: {
