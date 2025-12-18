@@ -80,6 +80,8 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			if (aggroFlashTimer > 0)
 				aggroFlashTimer--;
 
+			NPC.rotation = (NPC.position.X - NPC.oldPosition.X) * 0.1f;
+
 			// spawn dust
 			Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Blood, 0, 2);
 
