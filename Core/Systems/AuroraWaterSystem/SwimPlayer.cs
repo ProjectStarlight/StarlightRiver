@@ -56,6 +56,8 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 				{
 					if (!wasSwimming)
 					{
+						AuroraWaterSystem.AddRipple(Player.Center, 1.5f, 0.03f);
+
 						SoundHelper.PlayPitched("Magic/WaterWoosh", 0.8f, 0, Player.Center);
 
 						for (int k = 0; k < 20; k++)
@@ -225,10 +227,14 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 			float slow = Player.velocity.Length() > SwimSpeed ? 0.5f : 0.95f;
 			Player.velocity *= slow;
 
+			if (Main.GameUpdateCount % 10 == 0)
+				AuroraWaterSystem.AddRipple(Player.Center, 0.5f + Player.velocity.Length() * 0.05f, 0.02f);
+
 			if (Player.controlJump && boostCD <= 0)
 			{
 				SoundHelper.PlayPitched("SquidBoss/LightSplash", Main.rand.NextFloat(0.5f, 0.8f), Main.rand.NextFloat(-0.9f, -0.6f), Player.Center);
 				SoundHelper.PlayPitched("Magic/WaterWoosh", Main.rand.NextFloat(0.3f, 0.6f), Main.rand.NextFloat(-0.5f, -0.2f), Player.Center);
+				AuroraWaterSystem.AddRipple(Player.Center, 1.5f, 0.03f);
 
 				boostCD = 60;
 			}

@@ -6,6 +6,7 @@ using StarlightRiver.Core.Systems.LightingSystem;
 using StarlightRiver.Core.Systems.MetaballSystem;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria.ModLoader.IO;
 
@@ -35,6 +36,21 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 		}
 	}
 
+	class AuroraRipple
+	{
+		public Vector2 pos;
+		public float scale;
+		public float speed;
+		public float prog;
+
+		public AuroraRipple(Vector2 pos, float scale, float speed)
+		{
+			this.pos = pos;
+			this.scale = scale;
+			this.speed = speed;
+		}	
+	}
+
 	class AuroraWaterSystem : ModSystem
 	{
 		public static int visCounter = 0;
@@ -44,6 +60,8 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 		public static ScreenTarget auroraBackTarget;
 
 		public static bool failedLoad = false;
+
+		public static List<AuroraRipple> ripplePoints = new();
 
 		public float Priority => 1;
 
@@ -128,6 +146,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 				Texture2D tex = asset.Value;
 				Texture2D tex2 = asset2.Value;
 				Texture2D tex3 = Assets.Masks.Glow.Value;
+				Texture2D rippleTex = Assets.Masks.RingGlowInnerTwo.Value;
 
 				Vector2 layer1Pivot = Main.GameUpdateCount * new Vector2(-0.55f, 0.3f);
 				Vector2 layer2Pivot = Main.GameUpdateCount * new Vector2(0.75f, -0.4f);
@@ -170,9 +189,32 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 					null,
 					Color.Blue, 0, tex3.Size() / 2f, 3f, 0, 0);
 
+				foreach(var ripple in ripplePoints)
+				{
+					var col = Color.Lime * (1f - ripple.prog) * ripple.scale;
+					var col2 = Color.Red * (1f - ripple.prog) * ripple.scale;
+					sb.Draw(rippleTex, ripple.pos - Main.screenPosition, null, col, 0, rippleTex.Size() / 2f, ripple.scale * ripple.prog, 0, 0);
+					sb.Draw(rippleTex, ripple.pos - Main.screenPosition, null, col2, 0, rippleTex.Size() / 2f, ripple.scale * ripple.prog, 0, 0);
+				}
+
 				sb.End();
 				sb.Begin();
 			}
+		}
+
+		public override void PostUpdateEverything()
+		{
+			for(int k = 0; k < ripplePoints.Count; k++)
+			{
+				ripplePoints[k].prog += ripplePoints[k].speed;
+			}
+
+			ripplePoints.RemoveAll(n => n.prog >= 1f);
+		}
+
+		public static void AddRipple(Vector2 pos, float scale, float speed)
+		{
+			ripplePoints.Add(new(pos, scale, speed));
 		}
 
 		private void DrawAuroraWater(On_Main.orig_DrawInfernoRings orig, Main self)
