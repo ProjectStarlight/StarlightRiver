@@ -64,7 +64,7 @@ float4 PixelShaderFunction(float4 screenSpace : TEXCOORD0) : COLOR0
     float4 color = distortLight * (pow(speculars, 2.0) * 3.0 + bright);
     color.a = shapeMask;
     
-    float2 originalUnderCoord = originalCoords * 2.0 + (swirl) * 0.005 * tex2D(uImage0, coords).a;
+    float2 originalUnderCoord = originalCoords * 2.0 + (swirl) * 0.005 * tex2D(uImage0, coords).a * (1.0 - mapSample.b);
     float4 underColor = tex2D(gameTex, originalUnderCoord);
     underColor += shapeMask * distortLight * distortLight * (1.0 - abs(swirl));
 

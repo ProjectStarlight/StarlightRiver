@@ -127,7 +127,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 
 				Texture2D tex = asset.Value;
 				Texture2D tex2 = asset2.Value;
-				Texture2D tex3 = Assets.GradientV.Value;
+				Texture2D tex3 = Assets.Masks.Glow.Value;
 
 				Vector2 layer1Pivot = Main.GameUpdateCount * new Vector2(-0.55f, 0.3f);
 				Vector2 layer2Pivot = Main.GameUpdateCount * new Vector2(0.75f, -0.4f);
@@ -166,13 +166,9 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 					Color.Green);
 
 				sb.Draw(tex3,
-					Vector2.Zero,
-					new Rectangle(
-						(int)(Main.screenPosition.X) % tex3.Width,
-						(int)(Main.screenPosition.Y) % tex3.Height,
-						Main.screenWidth,
-						Main.screenHeight),
-					Color.Blue);
+					Main.LocalPlayer.Center - Main.screenPosition,
+					null,
+					Color.Blue, 0, tex3.Size() / 2f, 3f, 0, 0);
 
 				sb.End();
 				sb.Begin();
@@ -354,7 +350,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 			foreach (Dust dust in Main.dust)
 			{
 				if (dust.active && dust.type == ModContent.DustType<AuroraWaterFast>())
-					spriteBatch.Draw(tex, (dust.position - Main.screenPosition) / 2, null, Color.Green, 0f, Vector2.One * 256f, dust.scale * 0.05f, SpriteEffects.None, 0);
+					spriteBatch.Draw(tex, (dust.position - Main.screenPosition) / 2, null, Color.Lime, 0f, Vector2.One * 256f, dust.scale * 0.05f, SpriteEffects.None, 0);
 			}
 
 			spriteBatch.End();
