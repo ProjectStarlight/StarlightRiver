@@ -2,6 +2,7 @@ using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.NPCs.Permafrost;
 using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems.LightingSystem;
 using StarlightRiver.Core.Systems.MetaballSystem;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
@@ -320,7 +321,12 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 		public override void NearbyEffects(int i, int j, int type, bool closer)
 		{
 			if (Main.tile[i, j].Get<AuroraWaterData>().HasAuroraWater)
+			{
 				AuroraWaterSystem.visCounter = 30;
+
+				if (i % 2 == 0 && j % 2 == 0 && !Main.tile[i, j].IsSquareSolidTile())
+					Lighting.AddLight(new Vector2(i, j) * 16, new Vector3(0.4f, 0.8f, 1f));
+			}
 		}
 	}
 
@@ -328,7 +334,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 	{
 		public override bool Active => AuroraWaterSystem.Visible && !Main.LocalPlayer.InModBiome(ModContent.GetInstance<Content.Biomes.PermafrostTempleBiome>());
 
-		public override Color OutlineColor => new(255, 0, 255);
+		public override Color OutlineColor => new(255, 0, 0);
 
 		public override void DrawShapes(SpriteBatch spriteBatch)
 		{
@@ -348,7 +354,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 			foreach (Dust dust in Main.dust)
 			{
 				if (dust.active && dust.type == ModContent.DustType<AuroraWaterFast>())
-					spriteBatch.Draw(tex, (dust.position - Main.screenPosition) / 2, null, Color.Red, 0f, Vector2.One * 256f, dust.scale * 0.05f, SpriteEffects.None, 0);
+					spriteBatch.Draw(tex, (dust.position - Main.screenPosition) / 2, null, Color.Green, 0f, Vector2.One * 256f, dust.scale * 0.05f, SpriteEffects.None, 0);
 			}
 
 			spriteBatch.End();
@@ -365,7 +371,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 				return;
 			}
 
-			Effect shader = ShaderLoader.GetShader("AuroraWaterShader").Value;
+			/*Effect shader = ShaderLoader.GetShader("AuroraWaterShader").Value;
 
 			if (shader is null)
 			{
@@ -386,6 +392,44 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(0, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+			*/
+
+			Effect effect = ShaderLoader.GetShader("AuroraWaterShader").Value;
+
+			if (effect is null)
+			{
+				MetaballSystem.MetaballSystem.actorsSem.Release();
+				return;
+			}
+
+			if (effect != null)
+			{
+				Main.spriteBatch.End();
+				Main.graphics.GraphicsDevice.SetRenderTarget(Main.screenTargetSwap);
+
+				effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.02f);
+				effect.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X / Main.screenWidth * -0.5f, Main.screenPosition.Y / Main.screenHeight * -0.5f));
+				effect.Parameters["sampleTexture"].SetValue(AuroraWaterSystem.auroraBackTarget.RenderTarget);
+				effect.Parameters["uImageSize1"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+				//effect.Parameters["lightTexture"].SetValue(LightingBuffer.screenLightingTarget.RenderTarget);
+				effect.Parameters["gameTexture"].SetValue(Main.screenTarget);
+				effect.Parameters["transform"].SetValue(Matrix.Invert(Main.GameViewMatrix.TransformationMatrix));
+				effect.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X % Main.screenWidth / Main.screenWidth, Main.screenPosition.Y % Main.screenHeight / Main.screenHeight));
+
+				var inv = Matrix.Invert(Main.GameViewMatrix.TransformationMatrix);
+
+				Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, effect, Matrix.Identity);
+
+				Texture2D target = MetaballSystem.MetaballSystem.actors.FirstOrDefault(n => n is AuroraWaterTileMetaballs).Target.RenderTarget;
+				Main.spriteBatch.Draw(target, Vector2.Zero, null, Color.White, 0, Vector2.Zero, 2, 0, 0);
+
+				Main.spriteBatch.End();
+
+				Main.graphics.GraphicsDevice.SetRenderTarget(Main.screenTarget);
+
+				Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Matrix.Identity);
+				Main.spriteBatch.Draw(Main.screenTargetSwap, Vector2.Zero, null, Color.White, 0, Vector2.Zero, 1, 0, 0);
+			}
 
 			MetaballSystem.MetaballSystem.actorsSem.Release();
 		}

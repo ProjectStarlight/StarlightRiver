@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.NPCs.Permafrost
 			Vector2 pos = (NPC.position - Main.screenPosition) / 2f;
 			var target = new Rectangle((int)pos.X, (int)pos.Y, NPC.width / 2, NPC.height / 2);
 
-			spriteBatch.Draw(tex, target, Color.Red);
+			spriteBatch.Draw(tex, target, Color.Green);
 		}
 	}
 }
