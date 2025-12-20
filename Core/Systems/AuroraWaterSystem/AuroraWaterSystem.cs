@@ -115,6 +115,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 		private static void DrawAuroraBackTarget(SpriteBatch sb)
 		{
 			Asset<Texture2D> asset = Assets.Misc.AuroraWaterMap;
+			Asset<Texture2D> asset2 = Assets.Noise.SwirlyNoiseLooping;
 
 			if (asset.IsLoaded)
 			{
@@ -124,6 +125,8 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 				Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
 				Texture2D tex = asset.Value;
+				Texture2D tex2 = asset2.Value;
+				Texture2D tex3 = Assets.GradientV.Value;
 
 				Vector2 layer1Pivot = Main.GameUpdateCount * new Vector2(-0.55f, 0.3f);
 				Vector2 layer2Pivot = Main.GameUpdateCount * new Vector2(0.75f, -0.4f);
@@ -134,7 +137,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 						(int)(Main.screenPosition.Y + layer1Pivot.Y) % tex.Height,
 						Main.screenWidth,
 						Main.screenHeight),
-					Color.White * 0.7f);
+					Color.Red * 0.7f);
 				sb.Draw(tex,
 					Vector2.Zero,
 					new Rectangle(
@@ -142,7 +145,33 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 						(int)(Main.screenPosition.Y + layer2Pivot.Y) % tex.Height,
 						Main.screenWidth,
 						Main.screenHeight),
-					Color.White);
+					Color.Red);
+
+				sb.Draw(tex2,
+					Vector2.Zero,
+					new Rectangle(
+						(int)(Main.screenPosition.X + layer1Pivot.X) % tex2.Width,
+						(int)(Main.screenPosition.Y + layer1Pivot.Y) % tex2.Height,
+						Main.screenWidth,
+						Main.screenHeight),
+					Color.Green * 0.7f);
+				sb.Draw(tex2,
+					Vector2.Zero,
+					new Rectangle(
+						(int)(Main.screenPosition.X + layer2Pivot.X) % tex2.Width,
+						(int)(Main.screenPosition.Y + layer2Pivot.Y) % tex2.Height,
+						Main.screenWidth,
+						Main.screenHeight),
+					Color.Green);
+
+				sb.Draw(tex3,
+					Vector2.Zero,
+					new Rectangle(
+						(int)(Main.screenPosition.X) % tex3.Width,
+						(int)(Main.screenPosition.Y) % tex3.Height,
+						Main.screenWidth,
+						Main.screenHeight),
+					Color.Blue);
 
 				sb.End();
 				sb.Begin();
