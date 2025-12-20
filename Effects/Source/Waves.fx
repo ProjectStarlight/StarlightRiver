@@ -1,20 +1,7 @@
 sampler uImage0 : register(s0);
-sampler uImage1 : register(s1);
-sampler uImage2 : register(s2);
-float3 uColor;
-float3 uSecondaryColor;
-float uOpacity;
-float uSaturation;
-float uRotation;
 float uTime;
-float4 uSourceRect;
-float2 uWorldPosition;
-float uDirection;
-float3 uLightSource;
 float2 uImageSize0;
 float2 uImageSize1;
-float power;
-float speed;
 float4x4 transform;
 
 texture sampleTexture;
@@ -28,34 +15,13 @@ sampler2D gameTex = sampler_state { texture = <gameTexture>; magfilter = LINEAR;
 
 float2 offset;
 
-struct VertexShaderInput
-{
-    float4 Position : POSITION0;
-    float2 TexCoords : TEXCOORD0;
-    float4 Color : COLOR0;
-};
-
-struct VertexShaderOutput
-{
-    float4 Position : SV_POSITION;
-    float2 TexCoords : TEXCOORD0;
-    float4 Color : COLOR0;
-};
-
-VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
-{
-    VertexShaderOutput output;
-    
-    output.Color = input.Color;
-    output.TexCoords = input.TexCoords;
-    output.Position = mul(input.Position, transform);
-
-    return output;
-}
-
-float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
+float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
 {  
-    float2 coords = input.TexCoords;
+    float2 originalCoords = coords;
+    
+    float2 pixel = coords * uImageSize1 * 2.0;
+    coords = mul(float4(pixel, 0.0, 1.0), transform).xy / (uImageSize1 * 2.0);
+    
     float2 pixCoord = coords - coords % (1.0 / uImageSize1) + float2(1.0 / uImageSize1);
     
     float4 mapSample = tex2D(samplerTex, coords * 2.0);
@@ -80,7 +46,8 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
     float4 color = distortLight * (pow(speculars, 2.0) * 3.0 + bright);
     color.a = shapeMask;
     
-    float4 underColor = tex2D(gameTex, underCoord);
+    float2 originalUnderCoord = originalCoords * 2.0 + (swirl) * 0.005 * tex2D(uImage0, coords).a;
+    float4 underColor = tex2D(gameTex, originalUnderCoord);
     underColor += distortLight * distortLight * shapeMask * abs(swirl);
 
 	return underColor + color;
@@ -90,7 +57,6 @@ technique Technique1
 {
 	pass Pass1
 	{
-        //VertexShader = compile vs_2_0 VertexShaderFunction();
 		PixelShader = compile ps_3_0 PixelShaderFunction();
 	}
 }

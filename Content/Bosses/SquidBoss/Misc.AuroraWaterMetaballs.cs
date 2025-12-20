@@ -85,16 +85,16 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				Main.graphics.GraphicsDevice.SetRenderTarget(Main.screenTargetSwap);
 
 				effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.02f);
-				effect.Parameters["power"].SetValue(0.01f);
 				effect.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X / Main.screenWidth * -0.5f, Main.screenPosition.Y / Main.screenHeight * -0.5f));
 				effect.Parameters["sampleTexture"].SetValue(AuroraWaterSystem.auroraBackTarget.RenderTarget);
 				effect.Parameters["uImageSize1"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
-				effect.Parameters["speed"].SetValue(50f);
 				effect.Parameters["lightTexture"].SetValue(LightingBuffer.screenLightingTarget.RenderTarget);
 				effect.Parameters["gameTexture"].SetValue(Main.screenTarget);
-				effect.Parameters["transform"].SetValue(Main.GameViewMatrix.TransformationMatrix);
+				effect.Parameters["transform"].SetValue(Matrix.Invert(Main.GameViewMatrix.TransformationMatrix));
 
-				Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, Main.Rasterizer, effect, Matrix.Identity);
+				var inv = Matrix.Invert(Main.GameViewMatrix.TransformationMatrix);
+
+				Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, effect, Matrix.Identity);
 
 				Main.spriteBatch.Draw(target, Vector2.Zero, null, Color.White, 0, Vector2.Zero, 2, 0, 0);
 
@@ -102,7 +102,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				
 				Main.graphics.GraphicsDevice.SetRenderTarget(Main.screenTarget);
 				
-				Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, Main.Rasterizer, default, Matrix.Identity);
+				Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Matrix.Identity);
 				Main.spriteBatch.Draw(Main.screenTargetSwap, Vector2.Zero, null, Color.White, 0, Vector2.Zero, 1, 0, 0);
 			}
 
