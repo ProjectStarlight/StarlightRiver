@@ -371,29 +371,6 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 				return;
 			}
 
-			/*Effect shader = ShaderLoader.GetShader("AuroraWaterShader").Value;
-
-			if (shader is null)
-			{
-				MetaballSystem.MetaballSystem.actorsSem.Release();
-				return;
-			}
-
-			shader.Parameters["time"].SetValue(StarlightWorld.visualTimer);
-			shader.Parameters["screenSize"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
-			shader.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X % Main.screenWidth / Main.screenWidth, Main.screenPosition.Y % Main.screenHeight / Main.screenHeight));
-			shader.Parameters["sampleTexture2"].SetValue(AuroraWaterSystem.auroraBackTarget.RenderTarget);
-
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, shader, Main.GameViewMatrix.TransformationMatrix);
-
-			Texture2D target = MetaballSystem.MetaballSystem.actors.FirstOrDefault(n => n is AuroraWaterTileMetaballs).Target.RenderTarget;
-			Main.spriteBatch.Draw(target, Vector2.Zero, null, Color.White, 0, Vector2.Zero, 2, 0, 0);
-
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(0, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
-			*/
-
 			Effect effect = ShaderLoader.GetShader("AuroraWaterShader").Value;
 
 			if (effect is null)
@@ -402,34 +379,31 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 				return;
 			}
 
-			if (effect != null)
-			{
-				Main.spriteBatch.End();
-				Main.graphics.GraphicsDevice.SetRenderTarget(Main.screenTargetSwap);
+			Main.spriteBatch.End();
+			Main.graphics.GraphicsDevice.SetRenderTarget(Main.screenTargetSwap);
 
-				effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.02f);
-				effect.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X / Main.screenWidth * -0.5f, Main.screenPosition.Y / Main.screenHeight * -0.5f));
-				effect.Parameters["sampleTexture"].SetValue(AuroraWaterSystem.auroraBackTarget.RenderTarget);
-				effect.Parameters["uImageSize1"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
-				//effect.Parameters["lightTexture"].SetValue(LightingBuffer.screenLightingTarget.RenderTarget);
-				effect.Parameters["gameTexture"].SetValue(Main.screenTarget);
-				effect.Parameters["transform"].SetValue(Matrix.Invert(Main.GameViewMatrix.TransformationMatrix));
-				effect.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X % Main.screenWidth / Main.screenWidth, Main.screenPosition.Y % Main.screenHeight / Main.screenHeight));
+			effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.02f);
+			effect.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X / Main.screenWidth * -0.5f, Main.screenPosition.Y / Main.screenHeight * -0.5f));
+			effect.Parameters["sampleTexture"].SetValue(AuroraWaterSystem.auroraBackTarget.RenderTarget);
+			effect.Parameters["uImageSize1"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+			//effect.Parameters["lightTexture"].SetValue(LightingBuffer.screenLightingTarget.RenderTarget);
+			effect.Parameters["gameTexture"].SetValue(Main.screenTarget);
+			effect.Parameters["transform"].SetValue(Matrix.Invert(Main.GameViewMatrix.TransformationMatrix));
+			effect.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X % Main.screenWidth / Main.screenWidth, Main.screenPosition.Y % Main.screenHeight / Main.screenHeight));
 
-				var inv = Matrix.Invert(Main.GameViewMatrix.TransformationMatrix);
+			var inv = Matrix.Invert(Main.GameViewMatrix.TransformationMatrix);
 
-				Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, effect, Matrix.Identity);
+			Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, effect, Matrix.Identity);
 
-				Texture2D target = MetaballSystem.MetaballSystem.actors.FirstOrDefault(n => n is AuroraWaterTileMetaballs).Target.RenderTarget;
-				Main.spriteBatch.Draw(target, Vector2.Zero, null, Color.White, 0, Vector2.Zero, 2, 0, 0);
+			Texture2D target = MetaballSystem.MetaballSystem.actors.FirstOrDefault(n => n is AuroraWaterTileMetaballs).Target.RenderTarget;
+			Main.spriteBatch.Draw(target, Vector2.Zero, null, Color.White, 0, Vector2.Zero, 2, 0, 0);
 
-				Main.spriteBatch.End();
+			Main.spriteBatch.End();
 
-				Main.graphics.GraphicsDevice.SetRenderTarget(Main.screenTarget);
+			Main.graphics.GraphicsDevice.SetRenderTarget(Main.screenTarget);
 
-				Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Matrix.Identity);
-				Main.spriteBatch.Draw(Main.screenTargetSwap, Vector2.Zero, null, Color.White, 0, Vector2.Zero, 1, 0, 0);
-			}
+			Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Matrix.Identity);
+			Main.spriteBatch.Draw(Main.screenTargetSwap, Vector2.Zero, null, Color.White, 0, Vector2.Zero, 1, 0, 0);
 
 			MetaballSystem.MetaballSystem.actorsSem.Release();
 		}
