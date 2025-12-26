@@ -8,7 +8,9 @@ using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria.ID;
 using Terraria.ModLoader.IO;
+using Terraria.WorldBuilding;
 
 namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 
@@ -202,9 +204,25 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 			}
 		}
 
-		public override void PostUpdateEverything()
+		public override void PostUpdateNPCs()
 		{
-			for(int k = 0; k < ripplePoints.Count; k++)
+			Rectangle rectangle = WorldUtils.ClampToWorld(new Rectangle((int)Main.screenPosition.X / 16, (int)Main.screenPosition.Y / 16, Main.screenWidth / 16, Main.screenHeight / 16));
+			for (int k = rectangle.Left; k < rectangle.Right; k++)
+			{
+				for (int l = rectangle.Top; l < rectangle.Bottom; l++)
+				{
+					Tile tile = Main.tile[k, l];
+					if (tile.Get<AuroraWaterData>().HasAuroraWater)
+					{
+						AuroraWaterSystem.visCounter = 30;
+
+						if (l % 2 == 0 && k % 2 == 0 && !tile.IsSquareSolidTile())
+							Lighting.AddLight(new Vector2(k, l) * 16, new Vector3(0.4f, 0.8f, 1f));
+					}
+				}
+			}
+
+			for (int k = 0; k < ripplePoints.Count; k++)
 			{
 				ripplePoints[k].prog += ripplePoints[k].speed;
 			}
@@ -350,20 +368,6 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 				var span = new Span<byte>(bytePtr, targetData.Length);
 				var target = new Span<byte>(data);
 				target.CopyTo(span);
-			}
-		}
-	}
-
-	class AuroraWaterGlobalTile : GlobalTile
-	{
-		public override void NearbyEffects(int i, int j, int type, bool closer)
-		{
-			if (Main.tile[i, j].Get<AuroraWaterData>().HasAuroraWater)
-			{
-				AuroraWaterSystem.visCounter = 30;
-
-				if (i % 2 == 0 && j % 2 == 0 && !Main.tile[i, j].IsSquareSolidTile())
-					Lighting.AddLight(new Vector2(i, j) * 16, new Vector3(0.4f, 0.8f, 1f));
 			}
 		}
 	}
