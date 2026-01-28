@@ -84,10 +84,13 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 			if (dist > ((Thinker.ModNPC as TheThinker)?.ArenaRadius ?? 99999))
 			{
-				hit = true;
-				hitTime = (int)Lifetime - Projectile.timeLeft;
-				Projectile.velocity *= 0;
-				SoundHelper.PlayPitched("Impacts/StabFleshy", 1f, -0.5f, Projectile.Center);
+				if (!hit)
+				{
+					hit = true;
+					hitTime = (int)Lifetime - Projectile.timeLeft;
+					Projectile.velocity *= 0;
+					SoundHelper.PlayPitched("Impacts/StabFleshy", 1f, -0.5f, Projectile.Center);
+				}
 			}
 
 
@@ -216,10 +219,17 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					float fade = Math.Min(1f, (timer - 25 + k * 25) / maxFade);
 
 					Vector2 pos = Vector2.Lerp(Projectile.Center, Thinker.Center, k) - Main.screenPosition;
-					pos += Vector2.One.RotatedBy(random.NextSingle() * 6.28f) * random.NextSingle() * (8 * (1 + k) + Eases.BezierEase(1f - fade) * 30);
-					pos += Vector2.One.RotatedBy(Main.GameUpdateCount * 0.02f + random.NextSingle() * 6.28f) * 4;
+					pos += Vector2.One.RotatedBy(random.NextSingle() * 6.28f) * (0.5f + random.NextSingle() * 0.5f) * (8 * (1 + k) + Eases.BezierEase(1f - fade) * 30);
+					pos += Vector2.One.RotatedBy(Main.GameUpdateCount * 0.03f + random.NextSingle() * 6.28f) * random.Next(4, 8);
+
+					// fall after dissolve
+					float fall = random.NextSingle() * (30 - Projectile.timeLeft) * MathF.Pow(1.04f, 30 - Projectile.timeLeft); //always needs to be calculated to keep determinism
+
+					if (Projectile.timeLeft < 30)
+						pos.Y += fall;
+
 					Rectangle frame = new(26 * random.Next(11), 0, 26, 28);
-					float rotation = random.NextSingle() * 6.28f;
+					float rotation = random.NextSingle() * 6.28f + Main.GameUpdateCount * 0.05f * (-0.5f + random.NextSingle());
 
 					var color = Lighting.GetColor(((pos + Main.screenPosition) / 16).ToPoint());
 
