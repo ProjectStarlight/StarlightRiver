@@ -98,7 +98,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 			for (int k = 0; k < Vector2.Distance(Thinker.Center, Projectile.Center); k += 24)
 			{
-				Lighting.AddLight(Thinker.Center + Thinker.Center.DirectionTo(Projectile.Center) * k, Vector3.One * 0.5f * opacity);
+				Lighting.AddLight(Thinker.Center + Thinker.Center.DirectionTo(Projectile.Center) * k, new Vector3(1f, 0.3f, 0.3f) * 0.75f * opacity);
 			}
 		}
 
