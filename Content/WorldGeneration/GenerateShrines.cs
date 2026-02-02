@@ -24,9 +24,40 @@ namespace StarlightRiver.Core
 			TileID.Granite,
 		};
 
+		public static readonly List<int> InvalidSnowShrineTiles = new()
+		{
+			TileID.Sand,
+			TileID.Ebonstone,
+			TileID.Crimstone,
+			TileID.Stone,
+			TileID.Dirt,
+			TileID.Sandstone,
+			TileID.JungleGrass,
+			TileID.Mud,
+			TileID.MushroomGrass,
+			TileID.Marble,
+			TileID.Granite,
+		};
+
+		public static readonly List<int> InvalidJungleShrineTiles = new()
+		{
+			TileID.Sand,
+			TileID.Ebonstone,
+			TileID.Crimstone,
+			TileID.IceBlock,
+			TileID.SnowBlock,
+			TileID.Stone,
+			TileID.Dirt,
+			TileID.Sandstone,
+			TileID.JungleGrass,
+			TileID.Marble,
+			TileID.Granite,
+		};
+
 		public static void ShrineGen(GenerationProgress progress, GameConfiguration configuration)
 		{
 			ShrinePass("Structures/CombatShrine");
+			SnowShrinePass("Structures/CombatShrineSnow");
 			ShrinePass("Structures/EvasionShrine");
 		}
 
@@ -49,6 +80,25 @@ namespace StarlightRiver.Core
 			}
 		}
 
+		public static void SnowShrinePass(string structure)
+		{
+			for (int x = 350; x < Main.maxTilesX - 350; x += WorldGen.genRand.Next(100, 350))
+			{
+				for (int retry = 0; retry < 40; retry++)
+				{
+					int y = WorldGen.genRand.Next((int)Main.worldSurface + 100, Main.UnderworldLayer - 100);
+
+					Point16 dims = StructureHelper.API.Generator.GetStructureDimensions(structure, StarlightRiver.Instance);
+
+					if (WorldGen.InWorld(x, y) && WorldGenHelper.IsRectangleSafe(new Rectangle(x, y, dims.X, dims.Y), SnowShrineCondition))
+					{
+						StructureHelper.API.Generator.GenerateStructure(structure, new Point16(x, y), StarlightRiver.Instance);
+						break;
+					}
+				}
+			}
+		}
+
 		public static bool ShrineCondition(Tile a, Point16 b)
 		{
 			//we dont want shrines on shrines...
@@ -56,6 +106,25 @@ namespace StarlightRiver.Core
 				return false;
 
 			if (InvalidShrineTiles.Contains(a.TileType))
+				return false;
+
+			if (vitricBiome.Contains(b.ToPoint()))
+				return false;
+
+			var aether = new Rectangle((int)GenVars.shimmerPosition.X, (int)GenVars.shimmerPosition.Y, 125, 125);
+			if (aether.Contains(b.ToPoint()))
+				return false;
+
+			return true;
+		}
+
+		public static bool SnowShrineCondition(Tile a, Point16 b)
+		{
+			//we dont want shrines on shrines...
+			if (a.TileType == StarlightRiver.Instance.Find<ModTile>("TempleBrick").Type)
+				return false;
+
+			if (InvalidSnowShrineTiles.Contains(a.TileType))
 				return false;
 
 			if (vitricBiome.Contains(b.ToPoint()))
