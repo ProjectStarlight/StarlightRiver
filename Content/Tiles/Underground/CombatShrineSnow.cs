@@ -47,16 +47,16 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			if (state == 1)
 			{
-				SpawnNPC(Center + new Vector2(130, 50), NPCID.IceSlime, 20);
-				SpawnNPC(Center + new Vector2(-130, 50), NPCID.IceSlime, 20);
-				SpawnNPC(Center + new Vector2(267, -40), NPCID.IceSlime, 20);
-				SpawnNPC(Center + new Vector2(-267, -40), NPCID.IceSlime, 20);
+				SpawnNPC(Center + new Vector2(130, 50), NPCID.SpikedIceSlime, 20, hpOverride: 0.75f);
+				SpawnNPC(Center + new Vector2(-130, 50), NPCID.SpikedIceSlime, 20, hpOverride: 0.75f);
+				SpawnNPC(Center + new Vector2(267, -40), NPCID.SpikedIceSlime, 20, hpOverride: 0.75f);
+				SpawnNPC(Center + new Vector2(-267, -40), NPCID.SpikedIceSlime, 20, hpOverride: 0.75f);
 			}
 
 			if (state == 2)
 			{
-				SpawnNPC(Center + new Vector2(110, 50), NPCID.IceSlime, 20);
-				SpawnNPC(Center + new Vector2(-110, 50), NPCID.IceSlime, 20);
+				SpawnNPC(Center + new Vector2(110, 50), NPCID.SpikedIceSlime, 20);
+				SpawnNPC(Center + new Vector2(-110, 50), NPCID.SpikedIceSlime, 20);
 				SpawnNPC(Center + new Vector2(240, 40), NPCID.SnowFlinx, 20);
 				SpawnNPC(Center + new Vector2(-240, 40), NPCID.SnowFlinx, 20);
 				SpawnNPC(Center + new Vector2(0, -150), NPCID.IceBat, 20);
@@ -64,8 +64,8 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			if (state == 3)
 			{
-				SpawnNPC(Center + new Vector2(130, 40), NPCID.ArmedZombie, 20);
-				SpawnNPC(Center + new Vector2(-130, 40), NPCID.ArmedZombie, 20);
+				SpawnNPC(Center + new Vector2(130, 40), NPCID.UndeadViking, 20);
+				SpawnNPC(Center + new Vector2(-130, 40), NPCID.UndeadViking, 20);
 				SpawnNPC(Center + new Vector2(140, -140), NPCID.IceBat, 20);
 				SpawnNPC(Center + new Vector2(-140, -140), NPCID.IceBat, 20);
 			}
@@ -74,16 +74,16 @@ namespace StarlightRiver.Content.Tiles.Underground
 			{
 				SpawnNPC(Center + new Vector2(130, 50), NPCID.SnowFlinx, 20);
 				SpawnNPC(Center + new Vector2(-130, 50), NPCID.SnowFlinx, 20);
-				SpawnNPC(Center + new Vector2(267, -40), NPCID.ArmedZombie, 20);
-				SpawnNPC(Center + new Vector2(-267, -40), NPCID.ArmedZombie, 20);
+				SpawnNPC(Center + new Vector2(267, -40), NPCID.UndeadViking, 20);
+				SpawnNPC(Center + new Vector2(-267, -40), NPCID.UndeadViking, 20);
 				SpawnNPC(Center + new Vector2(70, -140), NPCID.IceBat, 20);
 				SpawnNPC(Center + new Vector2(-70, -140), NPCID.IceBat, 20);
 			}
 
 			if (state == 5)
 			{
-				SpawnNPC(Center + new Vector2(130, 50), NPCID.ArmedZombie, 20);
-				SpawnNPC(Center + new Vector2(-130, 50), NPCID.ArmedZombie, 20);
+				SpawnNPC(Center + new Vector2(130, 50), NPCID.UndeadViking, 20);
+				SpawnNPC(Center + new Vector2(-130, 50), NPCID.UndeadViking, 20);
 				SpawnNPC(Center + new Vector2(120, -160), NPCID.IceBat, 20);
 				SpawnNPC(Center + new Vector2(-120, -160), NPCID.IceBat, 20);
 				SpawnNPC(Center + new Vector2(220, -110), NPCID.IceBat, 20);
@@ -92,11 +92,11 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			if (state == 6)
 			{
-				SpawnNPC(Center + new Vector2(130, 50), NPCID.SnowFlinx, 20);
-				SpawnNPC(Center + new Vector2(-130, 50), NPCID.SnowFlinx, 20);
-				SpawnNPC(Center + new Vector2(267, -50), NPCID.ArmedZombie, 20);
-				SpawnNPC(Center + new Vector2(-267, -50), NPCID.ArmedZombie, 20);
-				SpawnNPC(Center + new Vector2(0, -170), NPCID.IceElemental, 40, hpOverride: 2f, scale: 1.5f);
+				SpawnNPC(Center + new Vector2(130, 50), NPCID.SpikedIceSlime, 20);
+				SpawnNPC(Center + new Vector2(-130, 50), NPCID.SpikedIceSlime, 20);
+				SpawnNPC(Center + new Vector2(267, -50), NPCID.UndeadViking, 20);
+				SpawnNPC(Center + new Vector2(-267, -50), NPCID.UndeadViking, 20);
+				SpawnNPC(Center + new Vector2(0, -170), NPCID.IceElemental, 40, hpOverride: 1.5f, scale: 1.5f);
 			}
 		}
 	}
