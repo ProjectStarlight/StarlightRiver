@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.GUI
 			ReLogic.Graphics.DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
 
 			float nameWidth = ChatManager.GetStringSize(font, text, Vector2.One).X;
-			float tipWidth = ChatManager.GetStringSize(font, tooltip, Vector2.One * 0.9f, 200).X;
+			float tipWidth = tooltip != null && tooltip.Length > 0 ? ChatManager.GetStringSize(font, tooltip, Vector2.One * 0.9f, 200).X : 0;
 
 			float width = Math.Max(nameWidth, tipWidth);
 			float height = -16;
@@ -72,7 +72,7 @@ namespace StarlightRiver.Content.GUI
 			if (pos.X > Main.screenWidth - (width + 10))
 				pos.X = Main.screenWidth - (width + 10);
 
-			height += ChatManager.GetStringSize(font, tooltip, Vector2.One * 0.9f, 200).Y + 36;
+			height += tooltip != null && tooltip.Length > 0 ? ChatManager.GetStringSize(font, tooltip, Vector2.One * 0.9f, 200).Y + 36 : 36;
 
 			if (pos.Y + height > Main.screenHeight)
 				pos.Y -= height;
