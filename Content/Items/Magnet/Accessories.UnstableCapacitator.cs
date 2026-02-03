@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Items.Magnet
 				{
 					int manaUsed = Player.statMana;
 
-					float percentOfMax = manaUsed / Player.statMana;
+					float percentOfMax = manaUsed / (float)Player.statManaMax2;
 
 					int damageToDeal = (int)MathHelper.Lerp(20, 100, percentOfMax);
 
