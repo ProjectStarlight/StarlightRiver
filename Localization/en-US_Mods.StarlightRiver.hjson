@@ -3871,6 +3871,11 @@ Items: {
 		DisplayName: Pink Laser Pointer
 		Tooltip: ""
 	}
+
+	CombatShrineSnowItem: {
+		DisplayName: Combat shrine snow placer
+		Tooltip: "{{Debug}} item"
+	}
 }
 
 Tiles: {
@@ -4092,6 +4097,7 @@ Tiles: {
 	VitricLargeCrystal.MapEntry: Vitric Large Crystal
 	VitricMediumCrystal.MapEntry: Vitric Medium Crystal
 	VitricSmallCrystal.MapEntry: Vitric Small Crystal
+	CombatShrineSnow.MapEntry: Mysterious Shrine
 }
 
 Projectiles: {
