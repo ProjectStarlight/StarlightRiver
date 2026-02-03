@@ -75,9 +75,22 @@ namespace StarlightRiver.Content.Tiles.Underground
 			}
 		}
 
+		public static void SimulateFrozenChest(Entity source, bool twiceReforge) {
+			int[] chestItems = new int[] { ItemID.IceBoomerang, ItemID.IceBlade, ItemID.IceSkates, ItemID.SnowballCannon, ItemID.BlizzardinaBottle, ItemID.FlurryBoots};
+
+			int chosenItem = Main.rand.Next(chestItems);
+
+			int i = Item.NewItem(source.GetSource_FromAI(), source.Hitbox, chosenItem, prefixGiven: -1);
+
+			if (twiceReforge)
+				Main.item[i].Prefix(-2);
+
+			Main.item[i].GetGlobalItem<RelicItem>().isRelic = twiceReforge && Main.item[i].CanHavePrefixes();
+		}
+
 		public static void SimulateWoodenChest(Entity source)
 		{
-			int[] chestItems = new int[] { ItemID.Spear, ItemID.Blowpipe, ItemID.WoodenBoomerang, ItemID.Aglet, ItemID.ClimbingClaws, ItemID.Umbrella, 3068, ItemID.WandofSparking, ItemID.Radar, ItemID.PortableStool }; // 3068 is guide to plant fiber cortilage or whatever
+			int[] chestItems = new int[] { ItemID.Spear, ItemID.Blowpipe, ItemID.WoodenBoomerang, ItemID.Aglet, ItemID.ClimbingClaws, ItemID.Umbrella, ItemID.CordageGuide, ItemID.WandofSparking, ItemID.Radar, ItemID.PortableStool };
 
 			int chosenItem = Main.rand.Next(chestItems);
 

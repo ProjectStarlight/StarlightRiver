@@ -1,3 +1,4 @@
+using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
@@ -38,6 +39,13 @@ namespace StarlightRiver.Content.Tiles.Underground
 		public override int ShrineTileHeight => CombatShrineSnow.COMBAT_SHRINE_TILE_HEIGHT;
 
 		public CombatShrineSnowDummy() : base(ModContent.TileType<CombatShrineSnow>(), CombatShrineSnow.COMBAT_SHRINE_TILE_WIDTH * 16, CombatShrineSnow.COMBAT_SHRINE_TILE_HEIGHT * 16) { }
+
+		protected override void SpawnReward()
+		{
+			Item.NewItem(GetSource_FromAI(), Hitbox, ModContent.ItemType<DullBlade>());
+			ShrineUtils.SimulateFrozenChest(this, false);
+			ShrineUtils.SimulateWoodenChest(this);
+		}
 
 		protected override void SpawnWave()
 		{

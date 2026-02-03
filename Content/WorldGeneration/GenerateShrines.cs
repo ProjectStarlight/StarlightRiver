@@ -82,11 +82,11 @@ namespace StarlightRiver.Core
 
 		public static void SnowShrinePass(string structure)
 		{
-			for (int x = 350; x < Main.maxTilesX - 350; x += WorldGen.genRand.Next(100, 350))
+			for (int x = GenVars.snowOriginLeft; x < GenVars.snowOriginRight; x += WorldGen.genRand.Next(50, 200))
 			{
 				for (int retry = 0; retry < 40; retry++)
 				{
-					int y = WorldGen.genRand.Next((int)Main.worldSurface + 100, Main.UnderworldLayer - 100);
+					int y = WorldGen.genRand.Next((int)GenVars.snowTop, GenVars.snowBottom);
 
 					Point16 dims = StructureHelper.API.Generator.GetStructureDimensions(structure, StarlightRiver.Instance);
 
