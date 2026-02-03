@@ -13,6 +13,7 @@ namespace StarlightRiver.Content.Items.Magnet
 {
 	public class UnstableCapacitator : SmartAccessory
 	{
+		public int cooldown;
 		public override string Texture => AssetDirectory.MagnetItem + Name;
 		public override void Load()
 		{
@@ -30,17 +31,22 @@ namespace StarlightRiver.Content.Items.Magnet
 
 		public override void SafeUpdateEquip(Player Player)
 		{
+			if ((GetEquippedInstance(Player) as UnstableCapacitator).cooldown > 0)
+				cooldown--;
+
 			Player.GetCritChance(DamageClass.Magic) -= 5;
 		}
 
 		private void OnHitProjectile(Projectile proj, NPC target, NPC.HitInfo info, int damageDone)
 		{
-			if (Equipped(Main.player[proj.owner]))
+			if (Equipped(Main.player[proj.owner]) && (GetEquippedInstance(Main.player[proj.owner]) as UnstableCapacitator).cooldown <= 0)
 			{
 				Player Player = Main.player[proj.owner];
 
 				if (proj.DamageType == DamageClass.Magic && info.Crit)
 				{
+					(GetEquippedInstance(Main.player[proj.owner]) as UnstableCapacitator).cooldown = 240;
+
 					int manaUsed = Player.statMana;
 
 					float percentOfMax = manaUsed / (float)Player.statManaMax2;
@@ -337,7 +343,7 @@ namespace StarlightRiver.Content.Items.Magnet
 		{
 			Projectile.width = 2;
 			Projectile.height = 2;
-			Projectile.DamageType = DamageClass.Ranged;
+			Projectile.DamageType = DamageClass.Magic;
 			Projectile.friendly = true;
 			Projectile.tileCollide = false;
 			Projectile.penetrate = -1;
@@ -378,11 +384,6 @@ namespace StarlightRiver.Content.Items.Magnet
 			line.Normalize();
 			line *= Radius;
 			return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, Projectile.Center + line);
-		}
-
-		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-		{
-			//target.AddBuff(BuffID.OnFire, 300);
 		}
 
 		public override bool PreDraw(ref Color lightColor)
