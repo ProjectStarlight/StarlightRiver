@@ -43,12 +43,16 @@ namespace StarlightRiver.Content.Items.Magnet
 				{
 					int manaUsed = Player.statMana;
 
+					float percentOfMax = manaUsed / Player.statMana;
+
+					int damageToDeal = (int)MathHelper.Lerp(20, 100, percentOfMax);
+
 					Player.statMana = 0;
 
 					Projectile.NewProjectile(proj.GetSource_OnHit(target), Main.player[proj.owner].Center, Vector2.UnitY * -5f, ModContent.ProjectileType<UnstableCapacitatorIcon>(), 0, 0f, proj.owner);
 
 					Projectile.NewProjectile(proj.GetSource_OnHit(target), target.Center + new Vector2(Main.rand.NextFloat(-30f, 30f), -500f), Vector2.Zero,
-						ModContent.ProjectileType<UnstableCapacitatorBolt>(), manaUsed, 5f, proj.owner, target.whoAmI);
+						ModContent.ProjectileType<UnstableCapacitatorBolt>(), damageToDeal, 5f, proj.owner, target.whoAmI);
 				}
 			}		
 		}
@@ -174,7 +178,6 @@ namespace StarlightRiver.Content.Items.Magnet
 				return;
 			}
 
-
 			Projectile.Center = Vector2.Lerp(startPos, Main.npc[TargetWhoAmI].Center, Progress) + Main.rand.NextVector2Circular(25f, 25f);
 			
 			Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<PixelatedGlow>(), Projectile.position.DirectionTo(Projectile.oldPosition), 0, Color.Lerp(new Color(200, 20, 255, 0), new Color(255, 255, 255, 0), Progress), 0.3f);
@@ -203,7 +206,6 @@ namespace StarlightRiver.Content.Items.Magnet
 					Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<PixelatedGlow>(),
 						-Vector2.UnitY.RotatedByRandom(1.5f) * Main.rand.NextFloat(4f, 14f), 0, new Color(Main.rand.Next(150, 220), 50, 255, 0), 0.35f);
 				}
-
 
 				CameraSystem.shake += 4;
 
