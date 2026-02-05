@@ -4462,6 +4462,7 @@ Projectiles: {
 	ThoughtPoliceShard.DisplayName: Thoughtcrime
 	ThoughtPoliceCage.DisplayName: Thoughtcrime
 	ThoughtProvokerProjectile.DisplayName: Thinky Junior
+	ThoughtProvokerExplosion.DisplayName: Greymatter Explosion
 }
 
 Biomes: {
