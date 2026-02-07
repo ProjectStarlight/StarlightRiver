@@ -77,7 +77,7 @@ namespace StarlightRiver.Content.Items.Crimson
 
 		public override void SetDefaults()
 		{
-			Item.damage = 45;
+			Item.damage = 32;
 			Item.knockBack = 10f;
 			Item.mana = 30;
 			Item.width = 32;
@@ -99,25 +99,18 @@ namespace StarlightRiver.Content.Items.Crimson
 		{
 			player.AddBuff(Item.buffType, 2);
 			Projectile.NewProjectileDirect(source, Main.MouseWorld, velocity, type, damage, knockback, Main.myPlayer).originalDamage = Item.damage;
+			
+			Vector2 pos = Main.MouseWorld;
+
+			if (Vector2.Distance(Main.MouseWorld, player.Center) > 200f)
+				pos = player.Center;
 
 			for (int i = 0; i < 5; i++)
-			{
-				float r = 0.2f + (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.03f;
-				float g = 0.3f + (float)Math.Sin(Main.GameUpdateCount * 0.1f + 2f) * 0.05f;
-				float b = 0.7f + (float)Math.Sin(Main.GameUpdateCount * 0.1f + 4f) * 0.03f;
-				Color blue = new Color(r, g, b);
-
-				r = 0.7f + (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.03f;
-				g = 0.3f + (float)Math.Sin(Main.GameUpdateCount * 0.1f + 2f) * 0.05f;
-				b = 0.3f + (float)Math.Sin(Main.GameUpdateCount * 0.1f + 4f) * 0.03f;
-				Color red = new Color(r, g, b);
-
-				Color c = Main.rand.NextBool() ? red : blue;
-
-				Dust.NewDustPerfect(Main.MouseWorld,
-				ModContent.DustType<Dusts.PixelatedEmber>(), Main.rand.NextVector2CircularEdge(2f, 2f), 0, c with { A = 0 }, Main.rand.NextFloat(0.5f)).customData = -1;
+			{				
+				Color c = Main.rand.NextBool() ? new Color(236, 189, 64) : new Color(200, 80, 220);
+				
+				Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.PixelatedEmber>(), Main.rand.NextVector2CircularEdge(2f, 2f), 0, c with { A = 0 }, Main.rand.NextFloat(0.5f)).customData = -1;
 			}
-
 
 			return false;
 		}
@@ -146,8 +139,11 @@ namespace StarlightRiver.Content.Items.Crimson
 
 	public class ThoughtProvokerProjectile : ModProjectile
 	{
+		public const int RESET_TIME = 300;
+
 		private List<Vector2> cache;
 		private Trail trail;
+		private Trail trail2;
 
 		public int resetTimer;
 		public int lifetime;
@@ -266,7 +262,7 @@ namespace StarlightRiver.Content.Items.Crimson
 
 				float totalCount = Owner.ownedProjectileCounts[Type] > 0 ? Owner.ownedProjectileCounts[Type] : 1;
 
-				Vector2 idlePos = Owner.Center + new Vector2(0, 65).RotatedBy(MathHelper.ToRadians(Projectile.minionPos / totalCount * 360f + (Projectile.minionPos == totalCount ? 360f / totalCount : 0f)) + MathHelper.ToRadians(Lifetime));
+				Vector2 idlePos = Owner.Center + new Vector2(0, 80).RotatedBy(MathHelper.ToRadians(Projectile.minionPos / totalCount * 360f + (Projectile.minionPos == totalCount ? 360f / totalCount : 0f)) + MathHelper.ToRadians(Lifetime));
 
 				float dist = Vector2.Distance(Projectile.Center, idlePos);
 
@@ -324,10 +320,7 @@ namespace StarlightRiver.Content.Items.Crimson
 					CameraSystem.shake += 3;
 					SoundEngine.PlaySound(SoundID.NPCDeath1, Projectile.Center);
 
-					trail?.Dispose();
-
-					trail = null;
-					cache = null;
+					DisposeTrails();
 				}
 
 				if (Projectile.Distance(Owner.Center) >= 200f)
@@ -388,26 +381,30 @@ namespace StarlightRiver.Content.Items.Crimson
 			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 			Texture2D starTex = Assets.StarTexture_Alt.Value;
 
+			Texture2D glow = Assets.Masks.Glow.Value;
+
+			float fade = 1f;
+			if (resetTimer > 0)
+				fade = 1f - resetTimer / (float)RESET_TIME;
+
+			float scaleCalc = 1f + 0.15f * (float)Math.Sin(Main.GameUpdateCount * 0.02f);
+			
+			spriteBatch.Draw(glow, Projectile.Center - Main.screenPosition, null, Color.Black * 0.15f * fade, 0f, glow.Size() / 2f, scaleCalc * 1.5f, 0, 0);
+
+			spriteBatch.Draw(glow, Projectile.Center - Main.screenPosition, null, Color.Black * 0.5f * fade, 0f, glow.Size() / 2f, scaleCalc * 0.8f, 0, 0);
+
 			if (AttackState == 0)
 			{
 				DrawTrail();
-				spriteBatch.Draw(bloomTex, Owner.Center - Main.screenPosition, null, TrailColor() with { A = 0}, 0f, bloomTex.Size() / 2f, Projectile.scale, 0f, 0f);
 
 				ModContent.GetInstance<PixelationSystem>().QueueRenderAction("OverPlayers", () =>
 				{
 					spriteBatch.Draw(bloomTex, Owner.Center - Main.screenPosition, null, TrailColor() with { A = 0 }, 0f, bloomTex.Size() / 2f, 0.3f / Owner.ownedProjectileCounts[Type], 0f, 0f);
 					spriteBatch.Draw(bloomTex, Owner.Center - Main.screenPosition, null, Color.White with { A = 0 }, 0f, bloomTex.Size() / 2f, 0.25f / Owner.ownedProjectileCounts[Type], 0f, 0f);
 				});
-			}
+			}			
 			
-			float fade = 1f;
-			if (resetTimer > 0)
-				fade = 1f - resetTimer / 120f;
-
-			//Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * fade, Projectile.rotation, tex.Size() / 2f, Projectile.scale, 0f, 0f);
-
-			float scaleCalc = 1.25f + 0.2f * (float)Math.Sin(Main.GameUpdateCount * 0.02f);
-
+			//Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * fade, Projectile.rotation, tex.Size() / 2f, Projectile.scale, 0f, 0f);		
 
 			Effect bodyShader = ShaderLoader.GetShader("ThinkerBody").Value;
 
@@ -440,10 +437,10 @@ namespace StarlightRiver.Content.Items.Crimson
 				spriteBatch.Begin(default, default, default, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 
-			spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, TrailColor() with { A = 0 }, 0f, bloomTex.Size() / 2f, Projectile.scale, 0f, 0f);
-			spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, TrailColor() with { A = 0 }, 0f, bloomTex.Size() / 2f, Projectile.scale * 0.5f, 0f, 0f);
-			spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.White with { A = 0 } * fade, 0f, bloomTex.Size() / 2f, Projectile.scale * 0.25f, 0f, 0f);
-			
+			spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, TrailColor() with { A = 0 } * 0.35f * fade, 0f, bloomTex.Size() / 2f, scaleCalc * 0.7f, 0f, 0f);
+			spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, TrailColor() with { A = 0 } * 0.5f * fade, 0f, bloomTex.Size() / 2f, scaleCalc * 0.3f, 0f, 0f);
+			spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.White with { A = 0 } * fade * 0.6f, 0f, bloomTex.Size() / 2f, scaleCalc * 0.1f, 0f, 0f);
+
 			if (AttackDelay > 0 && AttackState == 1)
 			{
 				float fadeIn = AttackDelay / 30f;
@@ -458,10 +455,7 @@ namespace StarlightRiver.Content.Items.Crimson
 
 		public override void OnKill(int timeLeft)
 		{
-			trail?.Dispose();
-
-			trail = null;
-			cache = null;
+			DisposeTrails();
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -507,7 +501,7 @@ namespace StarlightRiver.Content.Items.Crimson
 		internal Entity CheckCollisions(NPC target)
 		{
 			// we dont want the shield to break if its not actively "protecting" its owner, for example on spawn
-			if (Projectile.Distance(Owner.Center) > 75f)
+			if (Projectile.Distance(Owner.Center) > 125f)
 				return null;
 
 			Projectile closest = Main.projectile.Where(p => p.active && p.hostile && p.Distance(Projectile.Center) < 100f).OrderBy(p => p.Distance(Projectile.Center)).FirstOrDefault();
@@ -529,12 +523,9 @@ namespace StarlightRiver.Content.Items.Crimson
 		internal void ResetToIdle()
 		{
 			AttackDelay = 45;
-			resetTimer = 120;
+			resetTimer = RESET_TIME;
 
-			trail?.Dispose();
-
-			trail = null;
-			cache = null;
+			DisposeTrails();
 
 			AttackState = 0;
 			Projectile.Center = Owner.Center + Main.rand.NextVector2CircularEdge(25f, 25f);					
@@ -543,15 +534,10 @@ namespace StarlightRiver.Content.Items.Crimson
 		#region PRIMITIVE DRAWING
 		private Color TrailColor(bool fadeColor = true)
 		{
-			float r = 0.2f + (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.03f;
-			float g = 0.3f + (float)Math.Sin(Main.GameUpdateCount * 0.1f + 2f) * 0.05f;
-			float b = 0.7f + (float)Math.Sin(Main.GameUpdateCount * 0.1f + 4f) * 0.03f;
-			Color blue = new Color(r, g, b);
-
-			r = 0.7f + (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.03f;
-			g = 0.3f + (float)Math.Sin(Main.GameUpdateCount * 0.1f + 2f) * 0.05f;
-			b = 0.3f + (float)Math.Sin(Main.GameUpdateCount * 0.1f + 4f) * 0.03f;
-			Color red = new Color(r, g, b);
+			Color c = Color.Lerp(new Color(236, 189, 64), new Color(200, 80, 220), (float)Math.Sin(Main.GameUpdateCount * 0.01f));
+			
+			if (Projectile.minionPos % 2 == 0)
+				c = Color.Lerp(new Color(200, 80, 220), new Color(236, 189, 64), (float)Math.Sin(Main.GameUpdateCount * 0.01f));
 
 			float fade = 0f;
 			if (resetTimer < 30f)
@@ -562,7 +548,34 @@ namespace StarlightRiver.Content.Items.Crimson
 			if (!fadeColor)
 				fade = 1f;
 
-			return (Projectile.minionPos % 2 == 0 ? red : blue) * fade;
+			return c * fade;
+		}
+
+		private Color AltTrailColor(bool fadeColor = true)
+		{
+			Color c = Color.Lerp(new Color(112, 249, 235), new Color(249, 255, 191), (float)Math.Sin(Main.GameUpdateCount * 0.035f));
+
+			float fade = 0f;
+			if (resetTimer < 30f)
+				fade = 1f - resetTimer / 30f;
+			else if (resetTimer <= 0)
+				fade = 1f;
+
+			if (!fadeColor)
+				fade = 1f;
+
+			return c * fade;
+		}
+
+		private Color FadingWhite()
+		{
+			float fade = 0f;
+			if (resetTimer < 30f)
+				fade = 1f - resetTimer / 30f;
+			else if (resetTimer <= 0)
+				fade = 1f;
+
+			return Color.White * fade;
 		}
 
 		private BezierCurve GetBezierCurve()
@@ -593,10 +606,8 @@ namespace StarlightRiver.Content.Items.Crimson
 			BezierCurve curve = GetBezierCurve();
 			if (curve is null)
 			{
-				trail?.Dispose();
+				DisposeTrails();
 
-				trail = null;
-				cache = null;
 				return;
 			}
 
@@ -631,10 +642,15 @@ namespace StarlightRiver.Content.Items.Crimson
 			if (cache is null || GetBezierCurve() is null)
 				return;
 
-			trail ??= new Trail(Main.instance.GraphicsDevice, 26, new NoTip(), factor => 5f, factor => TrailColor());
+			trail ??= new Trail(Main.instance.GraphicsDevice, 26, new NoTip(), factor => 2.5f, factor => TrailColor() * 0.5f);
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = cache[25];
+
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 26, new TriangularTip(1), factor => 7f, factor => Color.Lerp(FadingWhite(), AltTrailColor(), (float)Math.Sin(Main.GameUpdateCount * 0.01f)) * 0.5f);
+
+			trail2.Positions = cache.ToArray();
+			trail2.NextPosition = cache[25];
 		}
 
 		private void DrawTrail()
@@ -642,7 +658,7 @@ namespace StarlightRiver.Content.Items.Crimson
 			if (lifetime < 2)
 				return;
 
-			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("OverPlayers", () =>
+			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("UnderProjectiles", () =>
 			{
 				Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
@@ -658,8 +674,24 @@ namespace StarlightRiver.Content.Items.Crimson
 					effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
 
 					trail?.Render(effect);
+
+					effect.Parameters["repeats"].SetValue(1f);
+					effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.01f);
+					effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
+
+					trail2?.Render(effect);
 				}
 			});
+		}
+
+		private void DisposeTrails()
+		{
+			trail?.Dispose();
+			trail2?.Dispose();
+
+			trail = null;
+			trail2 = null;
+			cache = null;
 		}
 
 		#endregion PRIMITIVEDRAWING
@@ -710,15 +742,22 @@ namespace StarlightRiver.Content.Items.Crimson
 			Color c = TrailColor();
 			c.A = 0;
 
-			Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2CircularEdge(Radius, Radius),
-				ModContent.DustType<Dusts.PixelatedEmber>(), Main.rand.NextVector2Circular(2f, 2f), 0, c, Main.rand.NextFloat(0.5f)).customData = Main.rand.NextBool() ? -1 : 1;
+			
+			if (Main.rand.NextBool())
+			{
+				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2CircularEdge(Radius, Radius),
+					ModContent.DustType<Dusts.PixelatedEmber>(), Main.rand.NextVector2Circular(2f, 2f), 0, c, Main.rand.NextFloat(0.5f)).customData = Main.rand.NextBool() ? -1 : 1;
+			}
 
 			for (int k = 0; k < 2; k++)
 			{
 				float rot = Main.rand.NextFloat(0, 6.28f);
 
-				Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedBy(rot) * Radius, ModContent.DustType<PixelatedGlow>(),
+				if (Main.rand.NextBool())
+				{
+					Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedBy(rot) * Radius, ModContent.DustType<PixelatedGlow>(),
 					Vector2.One.RotatedBy(rot) * 0.5f, 0, default, Main.rand.NextFloat(0.5f, 1f));
+				}
 
 				Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedBy(rot) * Radius, ModContent.DustType<GraymatterDust>(),
 					Vector2.One.RotatedBy(rot) * 1f, 0, new Color(255, 255, 255, 0) * Main.rand.NextFloat(0.2f, 0.6f), Main.rand.NextFloat(0.25f, 0.4f));
@@ -747,17 +786,9 @@ namespace StarlightRiver.Content.Items.Crimson
 
 		private Color TrailColor()
 		{
-			float r = 0.2f + (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.03f;
-			float g = 0.3f + (float)Math.Sin(Main.GameUpdateCount * 0.1f + 2f) * 0.05f;
-			float b = 0.7f + (float)Math.Sin(Main.GameUpdateCount * 0.1f + 4f) * 0.03f;
-			Color blue = new Color(r, g, b);
+			Color c = Color.Lerp(new Color(236, 189, 64), new Color(200, 80, 220), Progress);
 
-			r = 0.7f + (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.03f;
-			g = 0.3f + (float)Math.Sin(Main.GameUpdateCount * 0.1f + 2f) * 0.05f;
-			b = 0.3f + (float)Math.Sin(Main.GameUpdateCount * 0.1f + 4f) * 0.03f;
-			Color red = new Color(r, g, b);
-
-			return Color.Lerp(blue, red, Progress);
+			return c;
 		}
 
 		private void ManageCaches()
