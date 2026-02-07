@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Items.Crimson
 					effect.Parameters["time"]?.SetValue(Main.GameUpdateCount * 0.02f);
 					effect.Parameters["size"]?.SetValue(tex.Size() * 0.6f);
 					effect.Parameters["opacity"]?.SetValue(fade);
-					effect.Parameters["pixelRes"]?.SetValue(2f);
+					effect.Parameters["pixelRes"]?.SetValue(4f);
 
 					effect.Parameters["drawTexture"]?.SetValue(tex);
 					effect.Parameters["noiseTexture"]?.SetValue(Assets.Noise.SwirlyNoiseLooping.Value);
@@ -415,7 +415,7 @@ namespace StarlightRiver.Content.Items.Crimson
 				if (AttackDelay > 0)
 					c = Vector3.Lerp(new Vector3(1f, 1f, 1f), new Vector3(0.7f, 0.3f, 0.3f), 1f - AttackDelay / 30f);
 
-				bodyShader.Parameters["u_resolution"].SetValue(Assets.Bosses.TheThinkerBoss.Heart.Size() * scaleCalc);
+				bodyShader.Parameters["u_resolution"].SetValue(Assets.Bosses.TheThinkerBoss.Heart.Size() / 3 * scaleCalc);
 				bodyShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f);
 
 				bodyShader.Parameters["mainbody_t"].SetValue(Assets.Bosses.TheThinkerBoss.Heart.Value);
