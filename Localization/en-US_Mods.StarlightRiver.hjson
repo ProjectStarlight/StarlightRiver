@@ -3871,6 +3871,16 @@ Items: {
 		DisplayName: Pink Laser Pointer
 		Tooltip: ""
 	}
+
+	PsychosisWeapon: {
+		DisplayName: Neurosis & Psychosis
+		Tooltip:
+			'''
+			<left> to fire bullets infused with {{BUFF:Neurosis}}
+			<right> to fire bullets infused with {{BUFF:Psychosis}}
+			Hitting enemies with the opposing effect causes a BRAIN BLAST, scaling with stacks
+			'''
+	}
 }
 
 Tiles: {
