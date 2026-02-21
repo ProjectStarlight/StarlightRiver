@@ -4461,6 +4461,8 @@ Projectiles: {
 	ThoughtPoliceProjectile.DisplayName: Thoughtcrime
 	ThoughtPoliceShard.DisplayName: Thoughtcrime
 	ThoughtPoliceCage.DisplayName: Thoughtcrime
+	BrainBlastProjectile.DisplayName: BRAIN BLAST!
+	BrainBlastBolt.DisplayName: Brain Blast Bolt
 }
 
 Biomes: {
