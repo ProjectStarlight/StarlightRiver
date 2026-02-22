@@ -3871,6 +3871,16 @@ Items: {
 		DisplayName: Pink Laser Pointer
 		Tooltip: ""
 	}
+
+	ThoughtProvoker: {
+		DisplayName: Thought Provoker
+		Tooltip:
+			'''
+			Summons Thinky Jr to protect you
+			Endurance is increased by 5% per Thinky Jr alive
+			If hit by an enemy or projectile, Thinky Jr will target the nearest enemy and explode violently
+			'''
+	}
 }
 
 Tiles: {
@@ -4451,6 +4461,8 @@ Projectiles: {
 	ThoughtPoliceProjectile.DisplayName: Thoughtcrime
 	ThoughtPoliceShard.DisplayName: Thoughtcrime
 	ThoughtPoliceCage.DisplayName: Thoughtcrime
+	ThoughtProvokerProjectile.DisplayName: Thinky Junior
+	ThoughtProvokerExplosion.DisplayName: Greymatter Explosion
 }
 
 Biomes: {
@@ -4971,6 +4983,11 @@ Buffs: {
 	Full: {
 		DisplayName: Full
 		Description: Mods.StarlightRiver.Buffs.Full.Description
+	}
+
+	ThoughtProvokerSummonBuff: {
+		DisplayName: Thinky Juniors
+		Description: 1000 IQ
 	}
 }
 
