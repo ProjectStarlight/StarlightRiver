@@ -1,10 +1,6 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Biomes;
+﻿using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Buffs.Summon;
 using StarlightRiver.Content.Dusts;
-using StarlightRiver.Content.Items.Haunted;
-using StarlightRiver.Content.Items.Palestone;
-using StarlightRiver.Content.Projectiles;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.PixelationSystem;
@@ -14,56 +10,18 @@ using System.Linq;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
-using static tModPorter.ProgressUpdate;
 
 namespace StarlightRiver.Content.Items.Crimson
 {
 	public class ThoughtProvoker : ModItem
 	{
+		public override string Texture => AssetDirectory.CrimsonItem + Name;
+
 		public override void Load()
 		{
 			StarlightPlayer.PostDrawEvent += DrawShield;
 		}
 
-		private void DrawShield(Player player, SpriteBatch spriteBatch)
-		{
-			if (player.ownedProjectileCounts[ModContent.ProjectileType<ThoughtProvokerProjectile>()] > 0)
-			{
-				Texture2D tex = Assets.Bosses.TheThinkerBoss.ShieldMap.Value;
-
-				Effect effect = ShaderLoader.GetShader("BrainShield").Value;
-
-				if (effect != null)
-				{
-					float fade = player.GetModPlayer<ThoughtProvokerPlayer>().shieldFade / 30f;
-
-					effect.Parameters["time"]?.SetValue(Main.GameUpdateCount * 0.02f);
-					effect.Parameters["size"]?.SetValue(tex.Size() * 0.6f);
-					effect.Parameters["opacity"]?.SetValue(fade);
-					effect.Parameters["pixelRes"]?.SetValue(4f);
-
-					effect.Parameters["drawTexture"]?.SetValue(tex);
-					effect.Parameters["noiseTexture"]?.SetValue(Assets.Noise.SwirlyNoiseLooping.Value);
-					effect.Parameters["pulseTexture"]?.SetValue(Assets.Noise.PerlinNoise.Value);
-					effect.Parameters["edgeTexture"]?.SetValue(Assets.Bosses.TheThinkerBoss.ShieldEdge.Value);
-					effect.Parameters["outTexture"]?.SetValue(Assets.Bosses.TheThinkerBoss.ShieldMapOut.Value);
-					effect.Parameters["color"].SetValue(Vector3.Lerp(Vector3.One, new Vector3(1, 0.5f, 0.5f), 1f));
-
-					spriteBatch.End();
-					spriteBatch.Begin(default, BlendState.Additive, default, default, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
-					
-					spriteBatch.Draw(tex, player.Center + new Vector2(0f, player.gfxOffY) - Main.screenPosition, null, Color.White, 0, tex.Size() / 2f, 0.18f, SpriteEffects.FlipVertically, 0);
-
-					spriteBatch.End();
-					spriteBatch.Begin(default, default, default, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
-				}
-
-				effect = ShaderLoader.GetShader("BrainShield").Value;
-
-			}
-		}
-
-		public override string Texture => AssetDirectory.CrimsonItem + Name;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Thought Provoker");
@@ -99,20 +57,55 @@ namespace StarlightRiver.Content.Items.Crimson
 		{
 			player.AddBuff(Item.buffType, 2);
 			Projectile.NewProjectileDirect(source, Main.MouseWorld, velocity, type, damage, knockback, Main.myPlayer).originalDamage = Item.damage;
-			
+
 			Vector2 pos = Main.MouseWorld;
 
 			if (Vector2.Distance(Main.MouseWorld, player.Center) > 200f)
 				pos = player.Center;
 
 			for (int i = 0; i < 5; i++)
-			{				
+			{
 				Color c = Main.rand.NextBool() ? new Color(236, 189, 64) : new Color(200, 80, 220);
-				
+
 				Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.PixelatedEmber>(), Main.rand.NextVector2CircularEdge(2f, 2f), 0, c with { A = 0 }, Main.rand.NextFloat(0.5f)).customData = -1;
 			}
 
 			return false;
+		}
+
+		private void DrawShield(Player player, SpriteBatch spriteBatch)
+		{
+			if (player.ownedProjectileCounts[ModContent.ProjectileType<ThoughtProvokerProjectile>()] > 0)
+			{
+				Texture2D tex = Assets.Bosses.TheThinkerBoss.ShieldMap.Value;
+
+				Effect effect = ShaderLoader.GetShader("BrainShield").Value;
+
+				if (effect != null)
+				{
+					float fade = player.GetModPlayer<ThoughtProvokerPlayer>().shieldFade / 30f;
+
+					effect.Parameters["time"]?.SetValue(Main.GameUpdateCount * 0.02f);
+					effect.Parameters["size"]?.SetValue(tex.Size() * 0.6f);
+					effect.Parameters["opacity"]?.SetValue(fade);
+					effect.Parameters["pixelRes"]?.SetValue(4f);
+
+					effect.Parameters["drawTexture"]?.SetValue(tex);
+					effect.Parameters["noiseTexture"]?.SetValue(Assets.Noise.SwirlyNoiseLooping.Value);
+					effect.Parameters["pulseTexture"]?.SetValue(Assets.Noise.PerlinNoise.Value);
+					effect.Parameters["edgeTexture"]?.SetValue(Assets.Bosses.TheThinkerBoss.ShieldEdge.Value);
+					effect.Parameters["outTexture"]?.SetValue(Assets.Bosses.TheThinkerBoss.ShieldMapOut.Value);
+					effect.Parameters["color"].SetValue(Vector3.Lerp(Vector3.One, new Vector3(1, 0.5f, 0.5f), 1f));
+
+					spriteBatch.End();
+					spriteBatch.Begin(default, BlendState.Additive, default, default, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
+
+					spriteBatch.Draw(tex, player.Center + new Vector2(0f, player.gfxOffY) - Main.screenPosition, null, Color.White, 0, tex.Size() / 2f, 0.18f, SpriteEffects.FlipVertically, 0);
+
+					spriteBatch.End();
+					spriteBatch.Begin(default, default, default, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+				}
+			}
 		}
 	}
 
@@ -129,17 +122,21 @@ namespace StarlightRiver.Content.Items.Crimson
 			if (shieldingThinkers > 0)
 			{
 				Player.endurance += 0.05f * shieldingThinkers;
+
 				if (shieldFade < 30)
 					shieldFade++;
 			}
 			else if (shieldFade > 0)
-				shieldFade--;				
+			{
+				shieldFade--;
+			}
 		}
 	}
 
 	public class ThoughtProvokerProjectile : ModProjectile
 	{
 		public const int RESET_TIME = 300;
+		public const int MAX_CHASE_RANGE = 500;
 
 		private List<Vector2> cache;
 		private Trail trail;
@@ -147,9 +144,18 @@ namespace StarlightRiver.Content.Items.Crimson
 
 		public int resetTimer;
 		public int lifetime;
+
 		public ref float TargetWhoAmI => ref Projectile.ai[1];
 		public NPC Target => TargetWhoAmI > -1 ? Main.npc[(int)TargetWhoAmI] : null;
 		public bool FoundTarget => Target != null;
+
+		public ref float AttackState => ref Projectile.ai[0];
+		public ref float EnemyWhoAmI => ref Projectile.ai[1];
+		public ref float AttackDelay => ref Projectile.ai[2];
+
+		public Player Owner => Main.player[Projectile.owner];
+
+		public override string Texture => AssetDirectory.CrimsonItem + Name;
 
 		public NPC MinionTarget
 		{
@@ -161,6 +167,7 @@ namespace StarlightRiver.Content.Items.Crimson
 				return null;
 			}
 		}
+
 		public int Lifetime
 		{
 			get
@@ -171,7 +178,7 @@ namespace StarlightRiver.Content.Items.Crimson
 				}
 				else
 				{
-					Projectile proj = Main.projectile.Where(p => p.active && p.type == Type && p.owner == Projectile.owner && p.minionPos == 0).FirstOrDefault();
+					Projectile proj = Main.projectile.FirstOrDefault(p => p.active && p.type == Type && p.owner == Projectile.owner && p.minionPos == 0);
 					if (proj != null)
 					{
 						var brain = proj.ModProjectile as ThoughtProvokerProjectile;
@@ -183,13 +190,6 @@ namespace StarlightRiver.Content.Items.Crimson
 				return 0;
 			}
 		}
-
-		public const int maxMinionChaseRange = 500;
-		public ref float AttackState => ref Projectile.ai[0];
-		public ref float EnemyWhoAmI => ref Projectile.ai[1];
-		public ref float AttackDelay => ref Projectile.ai[2];
-		public Player Owner => Main.player[Projectile.owner];
-		public override string Texture => AssetDirectory.CrimsonItem + Name;
 
 		public override void SetStaticDefaults()
 		{
@@ -347,7 +347,9 @@ namespace StarlightRiver.Content.Items.Crimson
 					Vector2 direction = Target.Center - Projectile.Center;
 					direction.Normalize();
 					if (Projectile.Distance(Target.Center) > 400f)
+					{
 						direction *= 20f;
+					}
 					else
 					{
 						float mult = MathHelper.Lerp(20f, 100f, 1f - Projectile.Distance(Target.Center) / 400f);
@@ -388,7 +390,7 @@ namespace StarlightRiver.Content.Items.Crimson
 				fade = 1f - resetTimer / (float)RESET_TIME;
 
 			float scaleCalc = 1f + 0.15f * (float)Math.Sin(Main.GameUpdateCount * 0.02f);
-			
+
 			spriteBatch.Draw(glow, Projectile.Center - Main.screenPosition, null, Color.Black * 0.15f * fade, 0f, glow.Size() / 2f, scaleCalc * 1.5f, 0, 0);
 
 			spriteBatch.Draw(glow, Projectile.Center - Main.screenPosition, null, Color.Black * 0.5f * fade, 0f, glow.Size() / 2f, scaleCalc * 0.8f, 0, 0);
@@ -402,15 +404,15 @@ namespace StarlightRiver.Content.Items.Crimson
 					spriteBatch.Draw(bloomTex, Owner.Center - Main.screenPosition, null, TrailColor() with { A = 0 }, 0f, bloomTex.Size() / 2f, 0.3f / Owner.ownedProjectileCounts[Type], 0f, 0f);
 					spriteBatch.Draw(bloomTex, Owner.Center - Main.screenPosition, null, Color.White with { A = 0 }, 0f, bloomTex.Size() / 2f, 0.25f / Owner.ownedProjectileCounts[Type], 0f, 0f);
 				});
-			}			
-			
+			}
+
 			//Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * fade, Projectile.rotation, tex.Size() / 2f, Projectile.scale, 0f, 0f);		
 
 			Effect bodyShader = ShaderLoader.GetShader("ThinkerBody").Value;
 
 			if (bodyShader != null)
 			{
-				Vector3 c = new Vector3(0.7f, 0.3f, 0.3f);
+				var c = new Vector3(0.7f, 0.3f, 0.3f);
 
 				if (AttackDelay > 0)
 					c = Vector3.Lerp(new Vector3(1f, 1f, 1f), new Vector3(0.7f, 0.3f, 0.3f), 1f - AttackDelay / 30f);
@@ -472,12 +474,12 @@ namespace StarlightRiver.Content.Items.Crimson
 				float r = 0.2f + (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.03f;
 				float g = 0.3f + (float)Math.Sin(Main.GameUpdateCount * 0.1f + 2f) * 0.05f;
 				float b = 0.7f + (float)Math.Sin(Main.GameUpdateCount * 0.1f + 4f) * 0.03f;
-				Color blue = new Color(r, g, b);
+				var blue = new Color(r, g, b);
 
 				r = 0.7f + (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.03f;
 				g = 0.3f + (float)Math.Sin(Main.GameUpdateCount * 0.1f + 2f) * 0.05f;
 				b = 0.3f + (float)Math.Sin(Main.GameUpdateCount * 0.1f + 4f) * 0.03f;
-				Color red = new Color(r, g, b);
+				var red = new Color(r, g, b);
 
 				Color c = Main.rand.NextBool() ? red : blue;
 				c.A = 0;
@@ -488,6 +490,7 @@ namespace StarlightRiver.Content.Items.Crimson
 
 			ResetToIdle();
 		}
+
 		public override bool? CanHitNPC(NPC target)
 		{
 			return target.whoAmI == TargetWhoAmI && target.CanBeChasedBy(Projectile);
@@ -528,14 +531,14 @@ namespace StarlightRiver.Content.Items.Crimson
 			DisposeTrails();
 
 			AttackState = 0;
-			Projectile.Center = Owner.Center + Main.rand.NextVector2CircularEdge(25f, 25f);					
+			Projectile.Center = Owner.Center + Main.rand.NextVector2CircularEdge(25f, 25f);
 		}
 
 		#region PRIMITIVE DRAWING
 		private Color TrailColor(bool fadeColor = true)
 		{
-			Color c = Color.Lerp(new Color(236, 189, 64), new Color(200, 80, 220), (float)Math.Sin(Main.GameUpdateCount * 0.01f));
-			
+			var c = Color.Lerp(new Color(236, 189, 64), new Color(200, 80, 220), (float)Math.Sin(Main.GameUpdateCount * 0.01f));
+
 			if (Projectile.minionPos % 2 == 0)
 				c = Color.Lerp(new Color(200, 80, 220), new Color(236, 189, 64), (float)Math.Sin(Main.GameUpdateCount * 0.01f));
 
@@ -553,7 +556,7 @@ namespace StarlightRiver.Content.Items.Crimson
 
 		private Color AltTrailColor(bool fadeColor = true)
 		{
-			Color c = Color.Lerp(new Color(112, 249, 235), new Color(249, 255, 191), (float)Math.Sin(Main.GameUpdateCount * 0.035f));
+			var c = Color.Lerp(new Color(112, 249, 235), new Color(249, 255, 191), (float)Math.Sin(Main.GameUpdateCount * 0.035f));
 
 			float fade = 0f;
 			if (resetTimer < 30f)
@@ -613,7 +616,7 @@ namespace StarlightRiver.Content.Items.Crimson
 
 			if (cache is null)
 			{
-				cache = new List<Vector2>();
+				cache = [];
 
 				for (int i = 0; i < 26; i++)
 				{
@@ -621,18 +624,11 @@ namespace StarlightRiver.Content.Items.Crimson
 				}
 			}
 
-			//cache.Add(Projectile.Center);
-
-			//while (cache.Count > 15)
-			//{
-			//	cache.RemoveAt(0);
-			//}
-
 			for (int k = 0; k < 26; k++)
 			{
 				int points = 26;
 				Vector2[] curvePositions = curve.GetPoints(points).ToArray();
-			
+
 				cache[k] = curvePositions[k];
 			}
 		}
@@ -696,20 +692,24 @@ namespace StarlightRiver.Content.Items.Crimson
 
 		#endregion PRIMITIVEDRAWING
 	}
+
 	public class ThoughtProvokerExplosion : ModProjectile
 	{
 		private List<Vector2> cache;
 
 		private Trail trail;
 		private Trail trail2;
+
 		public override string Texture => AssetDirectory.Invisible;
 		private float Progress => Utils.Clamp(1 - Projectile.timeLeft / 45f, 0f, 1f);
 
 		private float Radius => Projectile.ai[0] * Eases.EaseQuinticOut(Progress);
+
 		public override void Load()
 		{
 			GraymatterBiome.onDrawHallucinationMap += DrawHallucinationExplosion;
 		}
+
 		public override void SetDefaults()
 		{
 			Projectile.width = 2;
@@ -742,7 +742,6 @@ namespace StarlightRiver.Content.Items.Crimson
 			Color c = TrailColor();
 			c.A = 0;
 
-			
 			if (Main.rand.NextBool())
 			{
 				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2CircularEdge(Radius, Radius),
@@ -773,11 +772,6 @@ namespace StarlightRiver.Content.Items.Crimson
 			return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, Projectile.Center + line);
 		}
 
-		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-		{
-			//target.AddBuff(BuffID.OnFire, 300);
-		}
-
 		public override bool PreDraw(ref Color lightColor)
 		{
 			DrawPrimitives();
@@ -786,7 +780,7 @@ namespace StarlightRiver.Content.Items.Crimson
 
 		private Color TrailColor()
 		{
-			Color c = Color.Lerp(new Color(236, 189, 64), new Color(200, 80, 220), Progress);
+			var c = Color.Lerp(new Color(236, 189, 64), new Color(200, 80, 220), Progress);
 
 			return c;
 		}
@@ -834,7 +828,7 @@ namespace StarlightRiver.Content.Items.Crimson
 			{
 				if (proj.type == Type)
 				{
-					ThoughtProvokerExplosion p = proj.ModProjectile as ThoughtProvokerExplosion;
+					var p = proj.ModProjectile as ThoughtProvokerExplosion;
 
 					Texture2D tex = Assets.Masks.GlowAlpha.Value;
 					//batch.Draw(tex, proj.Center - Main.screenPosition, null, new Color(255, 255, 255, 0) * (1f - p.Progress), 0, tex.Size() / 2f, MathHelper.Lerp(1f, 2.5f, Eases.EaseQuinticOut(p.Progress)), 0, 0);
@@ -857,7 +851,7 @@ namespace StarlightRiver.Content.Items.Crimson
 
 					effect.Parameters["uImage1"].SetValue(Assets.Noise.PerlinNoise.Value);
 					effect.Parameters["uProgress"].SetValue(p.Progress);
-					Color color = new Color(255, 255, 255, 0);
+					var color = new Color(255, 255, 255, 0);
 
 					effect.Parameters["uColor"].SetValue(color.ToVector4());
 					effect.Parameters["uOpacity"].SetValue(0f);
