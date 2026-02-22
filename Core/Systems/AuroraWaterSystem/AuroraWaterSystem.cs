@@ -48,7 +48,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 			this.pos = pos;
 			this.scale = scale;
 			this.speed = speed;
-		}	
+		}
 	}
 
 	class AuroraWaterSystem : ModSystem
@@ -189,10 +189,10 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 					null,
 					Color.Blue, 0, tex3.Size() / 2f, 3f, 0, 0);
 
-				foreach(var ripple in ripplePoints)
+				foreach (AuroraRipple ripple in ripplePoints)
 				{
-					var col = Color.Lime * (1f - ripple.prog) * ripple.scale;
-					var col2 = Color.Red * (1f - ripple.prog) * ripple.scale;
+					Color col = Color.Lime * (1f - ripple.prog) * ripple.scale;
+					Color col2 = Color.Red * (1f - ripple.prog) * ripple.scale;
 					sb.Draw(rippleTex, ripple.pos - Main.screenPosition, null, col, 0, rippleTex.Size() / 2f, ripple.scale * ripple.prog, 0, 0);
 					sb.Draw(rippleTex, ripple.pos - Main.screenPosition, null, col2, 0, rippleTex.Size() / 2f, ripple.scale * ripple.prog, 0, 0);
 				}
@@ -204,7 +204,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 
 		public override void PostUpdateEverything()
 		{
-			for(int k = 0; k < ripplePoints.Count; k++)
+			for (int k = 0; k < ripplePoints.Count; k++)
 			{
 				ripplePoints[k].prog += ripplePoints[k].speed;
 			}

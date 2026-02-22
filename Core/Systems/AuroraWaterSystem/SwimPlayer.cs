@@ -96,7 +96,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 				{
 					// Makes the exit boost "flat"
 					emergeBoostTime--;
-					Player.velocity = emergeBoostSpeed * (0.1f + (emergeBoostTime / 20f));
+					Player.velocity = emergeBoostSpeed * (0.1f + emergeBoostTime / 20f);
 
 					for (int k = 0; k < 5; k++)
 					{
@@ -172,7 +172,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 
 			// Forces the rotation target to be upright if the player is emerging
 			if (emergeTime < 18)
-				realRotation = -MathHelper.PiOver2 + (emergeRotatio + MathHelper.PiOver2 ) * (emergeTime - 1) / 19f;
+				realRotation = -MathHelper.PiOver2 + (emergeRotatio + MathHelper.PiOver2) * (emergeTime - 1) / 19f;
 
 			Player.fullRotationOrigin = Player.Size / 2; //so the Player rotates around their center... why is this not the default?
 			Player.fullRotation = realRotation + MathHelper.PiOver2;
@@ -250,7 +250,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 				{
 					float prog = k / 2f;
 					var off = new Vector2((float)Math.Cos(angle + 1 / 20f * 6.28f * prog) * 18, (float)Math.Sin(angle + 1 / 20f * 6.28f * prog) * 4);
-					var color = new Color(timer, 1 - timer, 0.5f + 0.5f * MathF.Sin(timer * 3.14f), 0) * MathF.Sin(timer * 3.14f) * 0.3f;
+					Color color = new Color(timer, 1 - timer, 0.5f + 0.5f * MathF.Sin(timer * 3.14f), 0) * MathF.Sin(timer * 3.14f) * 0.3f;
 
 					var l = Dust.NewDustPerfect(Player.Center + Player.velocity * prog + off.RotatedBy(Player.fullRotation), DustType<Content.Dusts.PixelatedEmber>(), vel, 0, color, Main.rand.NextFloat(0.1f, 0.23f));
 					var r = Dust.NewDustPerfect(Player.Center + Player.velocity * prog - off.RotatedBy(Player.fullRotation), DustType<Content.Dusts.PixelatedEmber>(), vel, 0, color, Main.rand.NextFloat(0.1f, 0.23f));

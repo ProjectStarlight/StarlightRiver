@@ -99,9 +99,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				Main.spriteBatch.Draw(target, Vector2.Zero, null, Color.White, 0, Vector2.Zero, 2, 0, 0);
 
 				Main.spriteBatch.End();
-				
+
 				Main.graphics.GraphicsDevice.SetRenderTarget(Main.screenTarget);
-				
+
 				Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Matrix.Identity);
 				Main.spriteBatch.Draw(Main.screenTargetSwap, Vector2.Zero, null, Color.White, 0, Vector2.Zero, 1, 0, 0);
 			}
