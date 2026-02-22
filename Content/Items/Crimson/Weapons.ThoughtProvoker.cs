@@ -75,7 +75,9 @@ namespace StarlightRiver.Content.Items.Crimson
 
 		private void DrawShield(Player player, SpriteBatch spriteBatch)
 		{
-			if (player.ownedProjectileCounts[ModContent.ProjectileType<ThoughtProvokerProjectile>()] > 0)
+			var count = player.ownedProjectileCounts[ModContent.ProjectileType<ThoughtProvokerProjectile>()];
+
+			if (count > 0)
 			{
 				Texture2D tex = Assets.Bosses.TheThinkerBoss.ShieldMap.Value;
 
@@ -83,24 +85,24 @@ namespace StarlightRiver.Content.Items.Crimson
 
 				if (effect != null)
 				{
-					float fade = player.GetModPlayer<ThoughtProvokerPlayer>().shieldFade / 30f;
+					float fade = player.GetModPlayer<ThoughtProvokerPlayer>().shieldFade / 120f;
 
 					effect.Parameters["time"]?.SetValue(Main.GameUpdateCount * 0.02f);
-					effect.Parameters["size"]?.SetValue(tex.Size() * 0.6f);
+					effect.Parameters["size"]?.SetValue(tex.Size() * 0.2f);
 					effect.Parameters["opacity"]?.SetValue(fade);
-					effect.Parameters["pixelRes"]?.SetValue(4f);
+					effect.Parameters["pixelRes"]?.SetValue(2f);
 
 					effect.Parameters["drawTexture"]?.SetValue(tex);
 					effect.Parameters["noiseTexture"]?.SetValue(Assets.Noise.SwirlyNoiseLooping.Value);
 					effect.Parameters["pulseTexture"]?.SetValue(Assets.Noise.PerlinNoise.Value);
 					effect.Parameters["edgeTexture"]?.SetValue(Assets.Bosses.TheThinkerBoss.ShieldEdge.Value);
 					effect.Parameters["outTexture"]?.SetValue(Assets.Bosses.TheThinkerBoss.ShieldMapOut.Value);
-					effect.Parameters["color"].SetValue(Vector3.Lerp(Vector3.One, new Vector3(1, 0.5f, 0.5f), 1f));
+					effect.Parameters["color"].SetValue(new Vector3(1f, 0.5f, 0.5f));
 
 					spriteBatch.End();
 					spriteBatch.Begin(default, BlendState.Additive, default, default, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
 
-					spriteBatch.Draw(tex, player.Center + new Vector2(0f, player.gfxOffY) - Main.screenPosition, null, Color.White, 0, tex.Size() / 2f, 0.18f, SpriteEffects.FlipVertically, 0);
+					spriteBatch.Draw(tex, player.Center + new Vector2(0f, player.gfxOffY) - Main.screenPosition, null, Color.White, 0, tex.Size() / 2f, 0.2f, SpriteEffects.FlipVertically, 0);
 
 					spriteBatch.End();
 					spriteBatch.Begin(default, default, default, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
@@ -115,16 +117,27 @@ namespace StarlightRiver.Content.Items.Crimson
 
 		public override void UpdateEquips()
 		{
+			var count = Player.ownedProjectileCounts[ModContent.ProjectileType<ThoughtProvokerProjectile>()];
+
+			// Max effect appears at 5 minions
+			if (count < 5)
+				count = 5;
+
 			// 5% increased endurance per Thinky Jr
-			int shieldingThinkers = Main.projectile.Where(p => p.active && p.type == ModContent.ProjectileType<ThoughtProvokerProjectile>()
-				&& p.owner == Player.whoAmI && (p.ModProjectile as ThoughtProvokerProjectile).AttackState == 0 && (p.ModProjectile as ThoughtProvokerProjectile).resetTimer <= 0).Count();
+			int shieldingThinkers = Main.projectile.Count(p => p.active && p.type == ModContent.ProjectileType<ThoughtProvokerProjectile>()
+				&& p.owner == Player.whoAmI && (p.ModProjectile as ThoughtProvokerProjectile).AttackState == 0 && (p.ModProjectile as ThoughtProvokerProjectile).resetTimer <= 0);
+
+			int maxFade = (int)(120 * (shieldingThinkers / (float)count));
 
 			if (shieldingThinkers > 0)
 			{
 				Player.endurance += 0.05f * shieldingThinkers;
 
-				if (shieldFade < 30)
+				if (shieldFade < maxFade)
 					shieldFade++;
+
+				if (shieldFade > maxFade)
+					shieldFade--;
 			}
 			else if (shieldFade > 0)
 			{
@@ -262,29 +275,12 @@ namespace StarlightRiver.Content.Items.Crimson
 
 				float totalCount = Owner.ownedProjectileCounts[Type] > 0 ? Owner.ownedProjectileCounts[Type] : 1;
 
-				Vector2 idlePos = Owner.Center + new Vector2(0, 80).RotatedBy(MathHelper.ToRadians(Projectile.minionPos / totalCount * 360f + (Projectile.minionPos == totalCount ? 360f / totalCount : 0f)) + MathHelper.ToRadians(Lifetime));
+				Vector2 idlePos = Owner.Center + (Vector2.UnitY * Owner.gfxOffY) + new Vector2(0, 80).RotatedBy(MathHelper.ToRadians(Projectile.minionPos / totalCount * 360f + (Projectile.minionPos == totalCount ? 360f / totalCount : 0f)) + MathHelper.ToRadians(Lifetime));
 
 				float dist = Vector2.Distance(Projectile.Center, idlePos);
 
 				Vector2 toIdlePos = idlePos - Projectile.Center;
-				if (toIdlePos.Length() < 0.0001f)
-				{
-					toIdlePos = Vector2.Zero;
-				}
-				else
-				{
-					float speed = 50f;
-					if (dist < 1000f)
-						speed = MathHelper.Lerp(15f, 50f, dist / 1000f);
-
-					if (dist < 100f)
-						speed = MathHelper.Lerp(3f, 15f, dist / 100f);
-
-					toIdlePos.Normalize();
-					toIdlePos *= speed;
-				}
-
-				Projectile.velocity = (Projectile.velocity * (5f - 1) + toIdlePos) / 5f;
+				Projectile.velocity = toIdlePos * 0.1f;
 
 				if (dist > 2000f)
 				{
@@ -323,7 +319,7 @@ namespace StarlightRiver.Content.Items.Crimson
 					DisposeTrails();
 				}
 
-				if (Projectile.Distance(Owner.Center) >= 200f)
+				if (Projectile.Distance(Owner.Center) >= 2000f)
 					Projectile.Center = Owner.Center;
 
 				#endregion
@@ -383,7 +379,7 @@ namespace StarlightRiver.Content.Items.Crimson
 			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 			Texture2D starTex = Assets.StarTexture_Alt.Value;
 
-			Texture2D glow = Assets.Masks.Glow.Value;
+			Texture2D glow = Assets.Masks.GlowSoft.Value;
 
 			float fade = 1f;
 			if (resetTimer > 0)
@@ -391,9 +387,9 @@ namespace StarlightRiver.Content.Items.Crimson
 
 			float scaleCalc = 1f + 0.15f * (float)Math.Sin(Main.GameUpdateCount * 0.02f);
 
-			spriteBatch.Draw(glow, Projectile.Center - Main.screenPosition, null, Color.Black * 0.15f * fade, 0f, glow.Size() / 2f, scaleCalc * 1.5f, 0, 0);
+			spriteBatch.Draw(glow, Projectile.Center - Main.screenPosition, null, Color.Black * fade, 0f, glow.Size() / 2f, scaleCalc * 1.2f, 0, 0);
 
-			spriteBatch.Draw(glow, Projectile.Center - Main.screenPosition, null, Color.Black * 0.5f * fade, 0f, glow.Size() / 2f, scaleCalc * 0.8f, 0, 0);
+			//spriteBatch.Draw(glow, Projectile.Center - Main.screenPosition, null, Color.Black * 0.5f * fade, 0f, glow.Size() / 2f, scaleCalc * 0.8f, 0, 0);
 
 			if (AttackState == 0)
 			{
@@ -417,31 +413,31 @@ namespace StarlightRiver.Content.Items.Crimson
 				if (AttackDelay > 0)
 					c = Vector3.Lerp(new Vector3(1f, 1f, 1f), new Vector3(0.7f, 0.3f, 0.3f), 1f - AttackDelay / 30f);
 
-				bodyShader.Parameters["u_resolution"].SetValue(Assets.Bosses.TheThinkerBoss.Heart.Size() / 3 * scaleCalc);
+				bodyShader.Parameters["u_resolution"].SetValue(Assets.Items.Crimson.ThoughtProvokerProjectile.Size() * scaleCalc);
 				bodyShader.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f);
 
-				bodyShader.Parameters["mainbody_t"].SetValue(Assets.Bosses.TheThinkerBoss.Heart.Value);
+				bodyShader.Parameters["mainbody_t"].SetValue(Assets.Items.Crimson.ThoughtProvokerProjectile.Value);
 				bodyShader.Parameters["linemap_t"].SetValue(Assets.Bosses.TheThinkerBoss.HeartLine.Value);
 				bodyShader.Parameters["noisemap_t"].SetValue(Assets.Noise.ShaderNoise.Value);
-				bodyShader.Parameters["overlay_t"].SetValue(Assets.Bosses.TheThinkerBoss.HeartOver.Value);
-				bodyShader.Parameters["normal_t"].SetValue(Assets.Bosses.TheThinkerBoss.HeartNormal.Value);
+				bodyShader.Parameters["overlay_t"].SetValue(Assets.Items.Crimson.ThoughtProvokerProjectileOver.Value);
+				bodyShader.Parameters["normal_t"].SetValue(Assets.Items.Crimson.ThoughtProvokerProjectileNormal.Value);
 				bodyShader.Parameters["u_color"].SetValue(c * fade);
-				bodyShader.Parameters["u_fade"].SetValue(Vector3.Lerp(new Vector3(0.0f, 0.2f, 0.4f), new Vector3(0.3f, 0.5f, 0.3f), (float)Math.Sin(Main.GameUpdateCount * 0.01f)) * fade); // Lerp here so this is the same as the flower core at 0 scale
+				bodyShader.Parameters["u_fade"].SetValue(Vector3.Lerp(new Vector3(0.0f, 0.2f, 0.4f), new Vector3(0.3f, 0.5f, 0.3f), fade)); // Lerp here so this is the same as the flower core at 0 scale
 				bodyShader.Parameters["mask_t"].SetValue(Assets.MagicPixel.Value);
 
 				spriteBatch.End();
 				spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointWrap, default, Main.Rasterizer, bodyShader, Main.GameViewMatrix.ZoomMatrix);
 
-				Texture2D t = Assets.Bosses.TheThinkerBoss.Heart.Value;
-				spriteBatch.Draw(t, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, t.Size() / 2f, scaleCalc * 0.35f, 0, 0);
+				Texture2D t = Assets.Items.Crimson.ThoughtProvokerProjectile.Value;
+				spriteBatch.Draw(t, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, t.Size() / 2f, scaleCalc, 0, 0);
 
 				spriteBatch.End();
 				spriteBatch.Begin(default, default, default, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 
-			spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, TrailColor() with { A = 0 } * 0.35f * fade, 0f, bloomTex.Size() / 2f, scaleCalc * 0.7f, 0f, 0f);
-			spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, TrailColor() with { A = 0 } * 0.5f * fade, 0f, bloomTex.Size() / 2f, scaleCalc * 0.3f, 0f, 0f);
-			spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.White with { A = 0 } * fade * 0.6f, 0f, bloomTex.Size() / 2f, scaleCalc * 0.1f, 0f, 0f);
+			//spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, TrailColor() with { A = 0 } * 0.35f * fade, 0f, bloomTex.Size() / 2f, scaleCalc * 0.7f, 0f, 0f);
+			//spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, TrailColor() with { A = 0 } * 0.5f * fade, 0f, bloomTex.Size() / 2f, scaleCalc * 0.3f, 0f, 0f);
+			//spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.White with { A = 0 } * fade * 0.6f, 0f, bloomTex.Size() / 2f, scaleCalc * 0.1f, 0f, 0f);
 
 			if (AttackDelay > 0 && AttackState == 1)
 			{
@@ -583,15 +579,15 @@ namespace StarlightRiver.Content.Items.Crimson
 
 		private BezierCurve GetBezierCurve()
 		{
-			float lerper = 1f - Vector2.Distance(Projectile.Center, Owner.Center) / 200f;
+			float lerper = Vector2.Distance(Projectile.Center, Owner.Center) / 200f;
 
-			if (lerper > 1f || lerper < 0f || resetTimer > 30)
+			if (resetTimer > 30)
 				return null;
 
 			Vector2[] curvePoints =
 			{
-				Vector2.Lerp(Projectile.Center + Projectile.velocity, Owner.Center, 0.3f) + new Vector2(0f, -MathHelper.Lerp(10f, 20f, lerper) * (float)Math.Sin(lifetime * 0.05f)).RotatedBy(Projectile.DirectionTo(Owner.Center).ToRotation()),
-				Vector2.Lerp(Projectile.Center + Projectile.velocity, Owner.Center, 0.6f) + new Vector2(0f, MathHelper.Lerp(30f, 15f, lerper) * (float)Math.Cos(lifetime * -0.075f)).RotatedBy(Projectile.DirectionTo(Owner.Center).ToRotation()),
+				Vector2.Lerp(Projectile.Center + Projectile.velocity, Owner.Center, 0.3f) + new Vector2(0f, (-20 + lerper * 10) * (float)Math.Sin(lifetime * 0.05f)).RotatedBy(Projectile.DirectionTo(Owner.Center).ToRotation()),
+				Vector2.Lerp(Projectile.Center + Projectile.velocity, Owner.Center, 0.6f) + new Vector2(0f, 15 * (1 + lerper) * (float)Math.Cos(lifetime * -0.075f)).RotatedBy(Projectile.DirectionTo(Owner.Center).ToRotation()),
 			};
 
 			var curve = new BezierCurve(new Vector2[] {
@@ -638,12 +634,14 @@ namespace StarlightRiver.Content.Items.Crimson
 			if (cache is null || GetBezierCurve() is null)
 				return;
 
-			trail ??= new Trail(Main.instance.GraphicsDevice, 26, new NoTip(), factor => 2.5f, factor => TrailColor() * 0.5f);
+			if (trail is null || trail.IsDisposed)
+				trail = new Trail(Main.instance.GraphicsDevice, 26, new NoTip(), factor => 2.5f, factor => TrailColor() * 0.5f);
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = cache[25];
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 26, new TriangularTip(1), factor => 7f, factor => Color.Lerp(FadingWhite(), AltTrailColor(), (float)Math.Sin(Main.GameUpdateCount * 0.01f)) * 0.5f);
+			if (trail2 is null || trail2.IsDisposed)
+				trail2 = new Trail(Main.instance.GraphicsDevice, 26, new TriangularTip(1), factor => 7f, factor => Color.Lerp(FadingWhite(), AltTrailColor(), (float)Math.Sin(Main.GameUpdateCount * 0.01f)) * 0.5f);
 
 			trail2.Positions = cache.ToArray();
 			trail2.NextPosition = cache[25];
