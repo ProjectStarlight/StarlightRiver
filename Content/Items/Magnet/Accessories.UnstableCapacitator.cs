@@ -24,10 +24,11 @@ namespace StarlightRiver.Content.Items.Magnet
 		{
 			StarlightProjectile.OnHitNPCEvent -= OnHitProjectile;
 		}
-		public UnstableCapacitator() : base("Unstable Capacitator", 
+		public UnstableCapacitator() : base("Unstable Capacitator",
 			"-5% magic critical strike chance\n" +
 			"Critically striking enemies with magic weapons consume all of your mana to cast a lightning explosion\n" +
-			"The explosion deals more damage based on how much mana was consumed") { }
+			"The explosion deals more damage based on how much mana was consumed")
+		{ }
 
 		public override void SafeUpdateEquip(Player Player)
 		{
@@ -60,7 +61,7 @@ namespace StarlightRiver.Content.Items.Magnet
 					Projectile.NewProjectile(proj.GetSource_OnHit(target), target.Center + new Vector2(Main.rand.NextFloat(-30f, 30f), -500f), Vector2.Zero,
 						ModContent.ProjectileType<UnstableCapacitatorBolt>(), damageToDeal, 5f, proj.owner, target.whoAmI);
 				}
-			}		
+			}
 		}
 	}
 
@@ -102,7 +103,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			SpriteBatch sb = Main.spriteBatch;
 
 			sb.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor * (Projectile.timeLeft / 60f), 0f, tex.Size() / 2f, 1f, 0f, 0f);
-			
+
 			if (Projectile.timeLeft > 40)
 			{
 				float lerper = (Projectile.timeLeft - 40) / 20f;
@@ -185,9 +186,9 @@ namespace StarlightRiver.Content.Items.Magnet
 			}
 
 			Projectile.Center = Vector2.Lerp(startPos, Main.npc[TargetWhoAmI].Center, Progress) + Main.rand.NextVector2Circular(25f, 25f);
-			
+
 			Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<PixelatedGlow>(), Projectile.position.DirectionTo(Projectile.oldPosition), 0, Color.Lerp(new Color(200, 20, 255, 0), new Color(255, 255, 255, 0), Progress), 0.3f);
-			
+
 			Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<PixelatedGlow>(), Projectile.position.DirectionTo(Projectile.oldPosition).RotatedByRandom(1f) * Main.rand.NextFloat(0.8f, 3f), 0, new Color(180, 80, 255, 0), 0.2f);
 
 			if (Projectile.timeLeft == 1)
@@ -237,7 +238,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			if (flashProg > 0)
 			{
 				Vector2 stretch = new Vector2(MathHelper.Lerp(5f, 1f, Eases.EaseQuinticOut(flashProg)), 1f);
-				
+
 				sb.Draw(bloomCircle, pos, null, new Color(200, 80, 255, 0) * flashProg, 0f, bloomCircle.Size() / 2f, MathHelper.Lerp(0.1f, 0.3f, 1f - flashProg), 0f, 0f);
 				sb.Draw(bloomCircle, pos, null, new Color(255, 255, 255, 0) * flashProg, 0f, bloomCircle.Size() / 2f, MathHelper.Lerp(0.1f, 0.25f, 1f - flashProg), 0f, 0f);
 
@@ -294,7 +295,7 @@ namespace StarlightRiver.Content.Items.Magnet
 		{
 			if (deathTimer <= 0)
 				return 1f;
-			else 
+			else
 				return deathTimer / 600f;
 		}
 
@@ -314,7 +315,7 @@ namespace StarlightRiver.Content.Items.Magnet
 					effect.Parameters["repeats"].SetValue(1);
 					effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 					effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
-					
+
 					trail2?.Render(effect);
 					trail?.Render(effect);
 				}
@@ -375,7 +376,7 @@ namespace StarlightRiver.Content.Items.Magnet
 					Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedBy(rot) * Radius, ModContent.DustType<PixelatedGlow>(),
 						Vector2.One.RotatedBy(rot) * 0.5f, 0, new Color(Main.rand.Next(150, 220), 50, 255, 0), Main.rand.NextFloat(0.15f, 0.25f)).noGravity = true;
 				}
-			}		
+			}
 		}
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
@@ -528,7 +529,7 @@ namespace StarlightRiver.Content.Items.Magnet
 					effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.01f);
 					effect.Parameters["repeats"].SetValue(5f);
 					effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
-					
+
 					trail3?.Render(effect);
 					trail4?.Render(effect);
 
