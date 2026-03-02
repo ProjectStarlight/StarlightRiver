@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Dusts;
+using StarlightRiver.Content.Items.Crimson;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.LightingSystem;
 using StarlightRiver.Core.Systems.MetaballSystem;
@@ -46,6 +47,29 @@ namespace StarlightRiver.Content.Metaballs
 					spriteBatch.Draw(tex, (dust.position - Main.screenPosition) / 2, null, dust.color, dust.rotation, tex.Size() / 2, scale, SpriteEffects.None, 0);
 				}
 			}
+
+			/*foreach (Projectile p in Main.projectile)
+			{
+				if (p.active && p.type == ModContent.ProjectileType<PsychosisWeaponDummyProjectile>())
+				{
+					PsychosisWeaponDummyProjectile modProjectile = p.ModProjectile as PsychosisWeaponDummyProjectile;
+
+					for (int i = 0; i < modProjectile.oldPositions.Count; i++)
+					{
+						float scale = 0.15f * (i / (float)modProjectile.oldPositions.Count);
+
+						if (modProjectile.timer < 30)
+						{
+							scale *= modProjectile.timer / 30f;
+						}
+
+						if (scale > 0.025f)
+						{
+							spriteBatch.Draw(tex, (modProjectile.oldPositions[i] - Main.screenPosition) / 2, null, new Color(140, 20, 20), 0f, tex.Size() / 2f, scale, 0f, 0f);
+						}
+					}
+				}
+			}*/
 
 			spriteBatch.End();
 			spriteBatch.Begin();

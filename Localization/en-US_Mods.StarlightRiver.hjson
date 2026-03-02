@@ -4463,6 +4463,7 @@ Projectiles: {
 	ThoughtPoliceCage.DisplayName: Thoughtcrime
 	BrainBlastProjectile.DisplayName: BRAIN BLAST!
 	BrainBlastBolt.DisplayName: Brain Blast Bolt
+	PsychosisWeaponHeldProjectile.DisplayName: Psychosis Weapon
 }
 
 Biomes: {
