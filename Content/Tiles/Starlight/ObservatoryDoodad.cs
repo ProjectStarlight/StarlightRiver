@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Tiles.Starlight
 
 		public override void DrawBehindTiles()
 		{
-			var tex = Assets.Tiles.Starlight.ObervatoryDoodadBack.Value;
+			Texture2D tex = Assets.Tiles.Starlight.ObervatoryDoodadBack.Value;
 			LightingBufferRenderer.DrawWithLighting(tex, Center + Vector2.UnitY * height / 2f - Main.screenPosition, null, Color.White, 0, new Vector2(tex.Width / 2f, tex.Height), 1);
 		}
 	}

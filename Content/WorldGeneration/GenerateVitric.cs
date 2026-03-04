@@ -1,7 +1,6 @@
 ﻿using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Tiles.Vitric;
 using StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle;
-using StarlightRiver.Helpers;
 using StarlightRiver.Noise;
 using System;
 using System.Collections.Generic;
@@ -73,7 +72,7 @@ namespace StarlightRiver.Core
 				PlaceTile(vitricBiome.X + vitricBiome.Width / 2 + 41, y, StarlightRiver.Instance.Find<ModTile>("VitricBossBarrier").Type, false, false);
 			}
 
-			VitricIslandLocations = new List<Point>(); //List for island positions
+			VitricIslandLocations = []; //List for island positions
 			int fail = 0;
 
 			for (int i = 0; i < vitricBiome.Width / 40 - 1; ++i)
@@ -199,7 +198,7 @@ namespace StarlightRiver.Core
 
 			GenConsistentMiniIslands();
 			GenSandstonePillars();
-			RuinedPillarPositions = new List<Point>();
+			RuinedPillarPositions = [];
 			GenRuins();
 			GenForge();
 			GenDecoration();

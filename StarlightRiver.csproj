@@ -28,7 +28,6 @@
 		</Reference>
 
 		<PackageReference Include="AssGen" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Version="3.0.0" />
-		<AdditionalFiles Include="**/*.png" />
 
 	</ItemGroup>
 	<ItemGroup>
