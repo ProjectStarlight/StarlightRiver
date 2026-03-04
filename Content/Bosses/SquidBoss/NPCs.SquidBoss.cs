@@ -202,7 +202,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			npcLoot.Add(ItemDropRule.MasterModeCommonDrop(Mod.Find<ModItem>("AuroracleRelicItem").Type));
 		}
 
-		public override void BossLoot(ref string name, ref int potionType)
+		public override void BossLoot(ref int potionType)
 		{
 			for (int k = 0; k < Main.maxPlayers; k++)
 			{
