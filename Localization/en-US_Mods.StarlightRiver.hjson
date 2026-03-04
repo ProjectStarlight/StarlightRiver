@@ -3871,6 +3871,15 @@ Items: {
 		DisplayName: Pink Laser Pointer
 		Tooltip: ""
 	}
+
+	HeavyThoughts: {
+		DisplayName: Heavy Thoughts
+		Tooltip:
+			'''
+			Hold to swing a mass of genius
+			Creates psychic seekers upon impact, inflicting {{BUFF:Neurosis}} and {{BUFF:Psychosis}}
+			'''
+	}
 }
 
 Tiles: {
@@ -4451,6 +4460,7 @@ Projectiles: {
 	ThoughtPoliceProjectile.DisplayName: Thoughtcrime
 	ThoughtPoliceShard.DisplayName: Thoughtcrime
 	ThoughtPoliceCage.DisplayName: Thoughtcrime
+	HeavyThoughtsSeeker.DisplayName: Seeker
 }
 
 Biomes: {

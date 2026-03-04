@@ -161,6 +161,9 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			}
 			else if (State == 4) // Retract
 			{
+				//if (Timer < 10f)
+				//	Timer += 0.01f * chainPos.Count;
+
 				Projectile.Center = chainPos.Count > 0 ? chainPos[^1] : Owner.Center;
 
 				for (int k = 0; k < chainPos.Count; k++)
