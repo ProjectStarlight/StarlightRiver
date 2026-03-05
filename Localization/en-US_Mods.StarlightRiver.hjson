@@ -3871,6 +3871,26 @@ Items: {
 		DisplayName: Pink Laser Pointer
 		Tooltip: ""
 	}
+
+	UnstableCapacitor: {
+		DisplayName: Unstable Capacitor
+		Tooltip:
+			'''
+			-5% magic critical strike chance
+			Critically striking enemies with magic weapons consume all of your mana to cast a lightning explosion
+			The explosion deals more damage based on how much mana was consumed
+			'''
+	}
+
+	UnstableCapacitator: {
+		DisplayName: Unstable Capacitator
+		Tooltip:
+			'''
+			-5% magic critical strike chance
+			Critically striking enemies with magic weapons consume all of your mana to cast a lightning explosion
+			The explosion deals more damage based on how much mana was consumed
+			'''
+	}
 }
 
 Tiles: {
@@ -4449,6 +4469,9 @@ Projectiles: {
 	GauntletSpawner.DisplayName: Gauntlet Spawner
 	SpawnEgg.DisplayName: Spawn Egg
 	ThoughtPoliceProjectile.DisplayName: Thoughtcrime
+	UnstableCapacitatorExplosion.DisplayName: Lightning Explosion
+	UnstableCapacitatorBolt.DisplayName: Lightning Explosion
+	UnstableCapacitatorIcon.DisplayName: Icon
 }
 
 Biomes: {
