@@ -11,7 +11,12 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 		float targetRotation = 0;
 		float realRotation = 0;
 		float armRotation;
+
 		int emergeTime = 0;
+		float emergeRotatio = 0;
+
+		int emergeBoostTime = 0;
+		Vector2 emergeBoostSpeed = default;
 
 		public bool wasSwimming;
 
@@ -51,6 +56,8 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 				{
 					if (!wasSwimming)
 					{
+						AuroraWaterSystem.AddRipple(Player.Center, 1.5f, 0.03f);
+
 						SoundHelper.PlayPitched("Magic/WaterWoosh", 0.8f, 0, Player.Center);
 
 						for (int k = 0; k < 20; k++)
@@ -62,7 +69,6 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 					}
 
 					ShouldSwim = true;
-					SwimSpeed *= 0.7f;
 				}
 			}
 		}
@@ -71,17 +77,61 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 		{
 			CheckAuroraSwimming();
 
+			if (emergeBoostTime > 0)
+			{
+				// Special effects for when we re-enter out of an exit boost
+				if (ShouldSwim)
+				{
+					emergeBoostTime = 0;
+					Player.velocity = Vector2.Normalize(Player.velocity) * 0.5f;
+
+					SoundHelper.PlayPitched("Magic/WaterWoosh", 1f, -0.3f, Player.Center);
+
+					for (int k = 0; k < 20; k++)
+					{
+						Dust.NewDustPerfect(Player.Center, DustType<Content.Dusts.AuroraWaterFast>(), -Vector2.Normalize(Player.velocity).RotatedByRandom(0.5f) * Main.rand.NextFloat(15), 0, new Color(200, 220, 255) * 0.4f, Main.rand.NextFloat(0.2f, 0.8f));
+					}
+				}
+				else
+				{
+					// Makes the exit boost "flat"
+					emergeBoostTime--;
+					Player.velocity = emergeBoostSpeed * (0.1f + emergeBoostTime / 20f);
+
+					for (int k = 0; k < 5; k++)
+					{
+						Dust.NewDustPerfect(Player.Center + Main.rand.NextVector2Circular(16, 16), DustType<Content.Dusts.PixelatedGlow>(), -Vector2.Normalize(Player.velocity).RotatedByRandom(0.5f) * Main.rand.NextFloat(5), 0, new Color(100, Main.rand.Next(150, 255), 255, 0), Main.rand.NextFloat(0.1f, 0.2f));
+					}
+				}
+			}
+
 			if (emergeTime == 18) //reset jumps
 			{
 				Player.RefreshExtraJumps();
 				Player.rocketTime = Player.rocketTimeMax;
 				Player.wingTime = Player.wingTimeMax;
+				emergeRotatio = realRotation;
 
 				SoundHelper.PlayPitched("Magic/WaterWoosh", 0.8f, 0, Player.Center);
 
 				for (int k = 0; k < 20; k++)
 				{
 					Dust.NewDustPerfect(Player.Center, DustType<Content.Dusts.AuroraWaterFast>(), Main.rand.NextVector2Circular(2, 2), 0, new Color(200, 220, 255) * 0.4f, Main.rand.NextFloat(0.2f, 0.8f));
+				}
+
+				if (boostCD > 20 && Player.velocity.Length() > 0)
+				{
+					SoundHelper.PlayPitched("SquidBoss/LightSplash", 1f, 0.2f, Player.Center);
+
+					for (int k = 0; k < 20; k++)
+					{
+						Dust.NewDustPerfect(Player.Center, DustType<Content.Dusts.AuroraWaterFast>(), Vector2.Normalize(Player.velocity).RotatedByRandom(0.5f) * Main.rand.NextFloat(15), 0, new Color(200, 220, 255) * 0.4f, Main.rand.NextFloat(0.2f, 0.8f));
+					}
+
+					emergeBoostTime = 20;
+					emergeBoostSpeed = Vector2.Normalize(Player.velocity) * 20;
+
+					boostCD = 0;
 				}
 
 				wasSwimming = false;
@@ -91,7 +141,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 			{
 				if (boostCD > 0)
 				{
-					boostCD = 0;
+					//boostCD = 0;
 					Player.UpdateRotation(0);
 				}
 
@@ -100,10 +150,6 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 			}
 
 			targetRotation = ShouldSwim ? Player.velocity.ToRotation() : 1.57f + 3.14f;
-
-			// Forces the rotation target to be upright if the player is emerging
-			if (emergeTime < 19)
-				targetRotation = -MathHelper.PiOver2;
 
 			realRotation %= 6.28f; //handles the rotation, ensures the Player wont randomly snap to rotation when entering/leaving swimming
 
@@ -123,6 +169,10 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 			{
 				realRotation = targetRotation;
 			}
+
+			// Forces the rotation target to be upright if the player is emerging
+			if (emergeTime < 18)
+				realRotation = -MathHelper.PiOver2 + (emergeRotatio + MathHelper.PiOver2) * (emergeTime - 1) / 19f;
 
 			Player.fullRotationOrigin = Player.Size / 2; //so the Player rotates around their center... why is this not the default?
 			Player.fullRotation = realRotation + MathHelper.PiOver2;
@@ -154,53 +204,67 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 
 			Player.legFrame = new Rectangle(0, 56 * (int)(5 + Main.GameUpdateCount / 7 % 3), 40, 56);
 
-			float speed = 0.2f * SwimSpeed;
+			float speed = 0.02f * SwimSpeed;
 
+			Vector2 dir = Vector2.Zero;
 			if (Player.controlRight)
-				Player.velocity.X += speed; //there should probably be a better way of doing this?
+				dir.X += 1;
 
 			if (Player.controlLeft)
-				Player.velocity.X -= speed;
+				dir.X -= 1;
 
 			if (Player.controlDown)
-				Player.velocity.Y += speed;
+				dir.Y += 1;
 
 			if (Player.controlUp)
-				Player.velocity.Y -= speed;
+				dir.Y -= 1;
+
+			if (dir.Length() > 0)
+				Player.velocity += Vector2.Normalize(dir) * speed;
 
 			Player.gravity = 0;
-			Player.velocity *= 0.95f;
+
+			float slow = Player.velocity.Length() > SwimSpeed ? 0.5f : 0.95f;
+			Player.velocity *= slow;
+
+			if (Main.GameUpdateCount % 10 == 0)
+				AuroraWaterSystem.AddRipple(Player.Center, 0.5f + Player.velocity.Length() * 0.05f, 0.02f);
 
 			if (Player.controlJump && boostCD <= 0)
 			{
-				SoundHelper.PlayPitched("SquidBoss/MagicSplash", 1f, -0.5f, Player.Center);
-				SoundHelper.PlayPitched("SquidBoss/MagicSplash", 1f, 0f, Player.Center);
+				SoundHelper.PlayPitched("SquidBoss/LightSplash", Main.rand.NextFloat(0.5f, 0.8f), Main.rand.NextFloat(-0.9f, -0.6f), Player.Center);
+				SoundHelper.PlayPitched("Magic/WaterWoosh", Main.rand.NextFloat(0.3f, 0.6f), Main.rand.NextFloat(-0.5f, -0.2f), Player.Center);
+				AuroraWaterSystem.AddRipple(Player.Center, 1.5f, 0.03f);
 
 				boostCD = 60;
 			}
 
-			if (boostCD > 40)
+			if (boostCD > 20)
 			{
-				float timer = (boostCD - 40) / 20f;
-				float angle = timer * 6.28f;
-				Vector2 vel = -Player.velocity * 0f;
+				float timer = (boostCD - 20) / 40f;
+				float angle = timer * 6.28f * 2f;
+				Vector2 vel = Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.15f);
 				Player.UpdateRotation(angle);
 
 				for (int k = 0; k < 2; k++)
 				{
 					float prog = k / 2f;
 					var off = new Vector2((float)Math.Cos(angle + 1 / 20f * 6.28f * prog) * 18, (float)Math.Sin(angle + 1 / 20f * 6.28f * prog) * 4);
+					Color color = new Color(timer, 1 - timer, 0.5f + 0.5f * MathF.Sin(timer * 3.14f), 0) * MathF.Sin(timer * 3.14f) * 0.3f;
 
-					var l = Dust.NewDustPerfect(Player.Center + Player.velocity * prog + off.RotatedBy(Player.fullRotation), DustType<Content.Dusts.Cinder>(), vel, 0, new Color(1 - timer, timer, 1), Main.rand.NextFloat(0.4f, 0.7f));
-					var r = Dust.NewDustPerfect(Player.Center + Player.velocity * prog - off.RotatedBy(Player.fullRotation), DustType<Content.Dusts.Cinder>(), vel, 0, new Color(1 - timer, timer, 1), Main.rand.NextFloat(0.4f, 0.7f));
+					var l = Dust.NewDustPerfect(Player.Center + Player.velocity * prog + off.RotatedBy(Player.fullRotation), DustType<Content.Dusts.PixelatedEmber>(), vel, 0, color, Main.rand.NextFloat(0.1f, 0.23f));
+					var r = Dust.NewDustPerfect(Player.Center + Player.velocity * prog - off.RotatedBy(Player.fullRotation), DustType<Content.Dusts.PixelatedEmber>(), vel, 0, color, Main.rand.NextFloat(0.1f, 0.23f));
 					l.noGravity = true;
 					r.noGravity = true;
 				}
+			}
 
+			if (boostCD > 40)
+			{
 				if (Player.velocity == Vector2.Zero)
 					Player.velocity = new Vector2(0, -0.01f);
 
-				Player.velocity += Vector2.Normalize(Player.velocity) * 0.8f * SwimSpeed;
+				Player.velocity += Vector2.Normalize(Player.velocity) * 0.08f * SwimSpeed;
 				Player.AddBuff(Terraria.ID.BuffID.Cursed, 1, true);
 			}
 			else
@@ -231,7 +295,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 		public override void ResetEffects()
 		{
 			ShouldSwim = false;
-			SwimSpeed = 1f;
+			SwimSpeed = 10f;
 		}
 	}
 }

@@ -10,9 +10,6 @@ namespace StarlightRiver.Noise
 	{
 		private const short Inline = (short)MethodImplOptions.AggressiveInlining;
 		private const int CellularMaxIndex = 3;
-
-		private int octaves = 3;
-		private DECIMAL gain = (DECIMAL)0.5;
 		private DECIMAL fractalBounding;
 
 		public int Seed { get; set; }
@@ -24,24 +21,24 @@ namespace StarlightRiver.Noise
 
 		public int FractalOctaves
 		{
-			get => octaves;
+			get;
 			set
 			{
-				octaves = value;
+				field = value;
 
 				CalculateFractalBounding();
 			}
-		}
+		} = 3;
 		public DECIMAL FractalGain
 		{
-			get => gain;
+			get;
 			set
 			{
-				gain = value;
+				field = value;
 
 				CalculateFractalBounding();
 			}
-		}
+		} = (DECIMAL)0.5;
 
 		public FastNoise(int seed = 0)
 		{
@@ -150,13 +147,13 @@ namespace StarlightRiver.Noise
 
 		private void CalculateFractalBounding()
 		{
-			DECIMAL amp = gain;
+			DECIMAL amp = FractalGain;
 			DECIMAL ampFractal = 1;
 
-			for (int i = 1; i < octaves; i++)
+			for (int i = 1; i < FractalOctaves; i++)
 			{
 				ampFractal += amp;
-				amp *= gain;
+				amp *= FractalGain;
 			}
 
 			fractalBounding = 1 / ampFractal;

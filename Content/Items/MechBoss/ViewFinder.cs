@@ -202,7 +202,7 @@ namespace StarlightRiver.Content.Items.MechBoss
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			var spike = Assets.Misc.SpikeTell.Value;
+			Texture2D spike = Assets.Misc.SpikeTell.Value;
 			var spikeFrame = new Rectangle(spike.Width / 2, 0, spike.Width / 2, spike.Height);
 
 			float opacity = 1f;
