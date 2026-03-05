@@ -17,8 +17,8 @@ namespace StarlightRiver.Content.CustomHooks
 		private void DrawInventoryParticles(On_Main.orig_DrawInterface_27_Inventory orig, Main self)
 		{
 			orig(self);
-			CursedAccessoryParticleManager.CursedSystem.DrawParticles(Main.spriteBatch);
-			CursedAccessoryParticleManager.ShardsSystem.DrawParticles(Main.spriteBatch);
+			CursedAccessorySystem.CursedSystem.DrawParticles(Main.spriteBatch);
+			CursedAccessorySystem.ShardsSystem.DrawParticles(Main.spriteBatch);
 		}
 	}
 }

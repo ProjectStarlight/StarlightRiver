@@ -1,10 +1,10 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using NetEasy;
-using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
+using StarlightRiver.Core.Systems.NoBuildingSystem;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -91,7 +91,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			if (state != SHRINE_STATE_IDLE)//this does not need a defeated check because of the above one
 			{
-				ProtectionWorld.AddRegionBySource(new Point16(ParentX, ParentY), ArenaTile);//stop calling this and call RemoveRegionBySource() when shrine is completed
+				NoBuildSystem.AddRegionBySource(new Point16(ParentX, ParentY), ArenaTile);//stop calling this and call RemoveRegionBySource() when shrine is completed
 
 				Dust.NewDustPerfect(Center + new Vector2(Main.rand.NextFloat(-24, 24), 28), ModContent.DustType<Dusts.Glow>(), Vector2.UnitY * -Main.rand.NextFloat(2), 0, new Color(255, 40 + Main.rand.Next(50), 75) * Windup, 0.2f);
 
@@ -122,7 +122,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 							NPC.active = false;
 
 						minions.Clear();
-						ProtectionWorld.RemoveRegionBySource(new Point16(ParentX, ParentY));
+						NoBuildSystem.RemoveRegionBySource(new Point16(ParentX, ParentY));
 					}
 
 					return;
@@ -143,7 +143,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 						timer = 0;
 						waveTime = 0;
 						SetFrame(2);
-						ProtectionWorld.RemoveRegionBySource(new Point16(ParentX, ParentY));
+						NoBuildSystem.RemoveRegionBySource(new Point16(ParentX, ParentY));
 					}
 
 					return;
