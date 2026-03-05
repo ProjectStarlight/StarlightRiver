@@ -67,7 +67,13 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
-			player.GetHandler().unlockedAbilities.Clear();
+			var index = Projectile.NewProjectile(null, player.Center, Vector2.Zero, ModContent.ProjectileType<NeurismManifest>(), 1, 0, Main.myPlayer);
+
+			if (index >= 0 && Main.projectile[index].ModProjectile is NeurismManifest manifest)
+			{
+				manifest.target = Main.MouseWorld;
+			}
+
 			return true;
 
 			int n = NPC.NewNPC(null, (int)Main.MouseWorld.X, (int)Main.MouseWorld.Y, ModContent.NPCType<TestCollider>());
