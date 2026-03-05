@@ -43,12 +43,12 @@ namespace StarlightRiver.Content.CustomHooks
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
-			NPC NPC = Main.npc.FirstOrDefault(n => n.active && n.ModNPC is ArenaActor);
+			NPC npc = ArenaActor.latestActor?.NPC;
 
-			if (NPC != null && NPC.active)
+			if (npc != null && npc.active)
 			{
 				if (ReflectionTarget.canUseTarget || !ModContent.GetInstance<GraphicsConfig>().ReflectionConfig.ReflectionsOn)
-					(NPC.ModNPC as ArenaActor).DrawBigWindow(Main.spriteBatch);
+					(npc.ModNPC as ArenaActor).DrawBigWindow(Main.spriteBatch);
 
 				int boss = -1;
 				var drawCache = new List<NPC>();

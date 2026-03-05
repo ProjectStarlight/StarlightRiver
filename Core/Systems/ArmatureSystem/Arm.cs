@@ -109,7 +109,7 @@ namespace StarlightRiver.Core.Systems.ArmatureSystem
 				Vector2 toTarget = target - currentSegment.start;
 				float targetRotation = toTarget.ToRotation();
 
-				if (targetRotation != targetRotation) // == NaN
+				if (float.IsNaN(targetRotation))
 					targetRotation = 0;
 
 				segments[i].rotation = targetRotation;

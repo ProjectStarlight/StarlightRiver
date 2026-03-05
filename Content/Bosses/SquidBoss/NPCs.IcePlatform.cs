@@ -47,7 +47,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			if (Main.npc.Any(n => n.active && n.type == ModContent.NPCType<ArenaActor>()))
 			{
-				var actor = Main.npc.FirstOrDefault(n => n.active && n.type == ModContent.NPCType<ArenaActor>()).ModNPC as ArenaActor;
+				ArenaActor actor = ArenaActor.latestActor;
 
 				if (NPC.position.Y >= HomeYPosition)
 				{
