@@ -140,7 +140,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			}
 
 			// Neurysms
-			if (Timer > 280 && Timer <= 440)
+			if (Timer > 250 && Timer <= 440)
 			{
 				for (int k = 0; k < neurisms.Count; k++)
 				{
