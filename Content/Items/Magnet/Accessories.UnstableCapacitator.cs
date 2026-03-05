@@ -4,9 +4,7 @@ using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.PixelationSystem;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.DataStructures;
-using Terraria.Graphics.Effects;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Magnet
@@ -14,7 +12,9 @@ namespace StarlightRiver.Content.Items.Magnet
 	public class UnstableCapacitator : SmartAccessory
 	{
 		public int cooldown;
+
 		public override string Texture => AssetDirectory.MagnetItem + Name;
+
 		public override void Load()
 		{
 			StarlightProjectile.OnHitNPCEvent += OnHitProjectile;
@@ -24,6 +24,7 @@ namespace StarlightRiver.Content.Items.Magnet
 		{
 			StarlightProjectile.OnHitNPCEvent -= OnHitProjectile;
 		}
+
 		public UnstableCapacitator() : base("Unstable Capacitator",
 			"-5% magic critical strike chance\n" +
 			"Critically striking enemies with magic weapons consume all of your mana to cast a lightning explosion\n" +
@@ -32,7 +33,7 @@ namespace StarlightRiver.Content.Items.Magnet
 
 		public override void SafeUpdateEquip(Player Player)
 		{
-			if ((GetEquippedInstance(Player) as UnstableCapacitator).cooldown > 0)
+			if (cooldown > 0)
 				cooldown--;
 
 			Player.GetCritChance(DamageClass.Magic) -= 5;
@@ -40,21 +41,23 @@ namespace StarlightRiver.Content.Items.Magnet
 
 		private void OnHitProjectile(Projectile proj, NPC target, NPC.HitInfo info, int damageDone)
 		{
-			if (Equipped(Main.player[proj.owner]) && (GetEquippedInstance(Main.player[proj.owner]) as UnstableCapacitator).cooldown <= 0)
+			var instance = GetEquippedInstance(Main.player[proj.owner]) as UnstableCapacitator;
+
+			if (Equipped(Main.player[proj.owner]) && instance.cooldown <= 0)
 			{
-				Player Player = Main.player[proj.owner];
+				Player player = Main.player[proj.owner];
 
 				if (proj.DamageType == DamageClass.Magic && info.Crit)
 				{
-					(GetEquippedInstance(Main.player[proj.owner]) as UnstableCapacitator).cooldown = 240;
+					instance.cooldown = 240;
 
-					int manaUsed = Player.statMana;
+					int manaUsed = player.statMana;
 
-					float percentOfMax = manaUsed / (float)Player.statManaMax2;
+					float percentOfMax = manaUsed / (float)player.statManaMax2;
 
 					int damageToDeal = (int)MathHelper.Lerp(20, 100, percentOfMax);
 
-					Player.statMana = 0;
+					player.statMana = 0;
 
 					Projectile.NewProjectile(proj.GetSource_OnHit(target), Main.player[proj.owner].Center, Vector2.UnitY * -5f, ModContent.ProjectileType<UnstableCapacitatorIcon>(), 0, 0f, proj.owner);
 
@@ -68,6 +71,7 @@ namespace StarlightRiver.Content.Items.Magnet
 	public class UnstableCapacitatorIcon : ModProjectile
 	{
 		public override string Texture => AssetDirectory.MagnetItem + "UnstableCapacitator";
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Icon");
@@ -128,6 +132,7 @@ namespace StarlightRiver.Content.Items.Magnet
 		private Trail trail2;
 
 		public Vector2 startPos;
+
 		public override string Texture => AssetDirectory.Invisible;
 		public int TargetWhoAmI => (int)Projectile.ai[0];
 		public float Progress => 1f - Projectile.timeLeft / 30f;
@@ -237,7 +242,7 @@ namespace StarlightRiver.Content.Items.Magnet
 
 			if (flashProg > 0)
 			{
-				Vector2 stretch = new Vector2(MathHelper.Lerp(5f, 1f, Eases.EaseQuinticOut(flashProg)), 1f);
+				var stretch = new Vector2(MathHelper.Lerp(5f, 1f, Eases.EaseQuinticOut(flashProg)), 1f);
 
 				sb.Draw(bloomCircle, pos, null, new Color(200, 80, 255, 0) * flashProg, 0f, bloomCircle.Size() / 2f, MathHelper.Lerp(0.1f, 0.3f, 1f - flashProg), 0f, 0f);
 				sb.Draw(bloomCircle, pos, null, new Color(255, 255, 255, 0) * flashProg, 0f, bloomCircle.Size() / 2f, MathHelper.Lerp(0.1f, 0.25f, 1f - flashProg), 0f, 0f);
@@ -257,11 +262,11 @@ namespace StarlightRiver.Content.Items.Magnet
 
 		private void ManageCaches()
 		{
-			Vector2 offset = new Vector2(Main.rand.NextFloat(-5f, 5f), 0f);
+			var offset = new Vector2(Main.rand.NextFloat(-5f, 5f), 0f);
 
 			if (cache == null)
 			{
-				cache = new List<Vector2>();
+				cache = [];
 				for (int i = 0; i < 100; i++)
 				{
 					cache.Add(Projectile.Center);
@@ -335,6 +340,7 @@ namespace StarlightRiver.Content.Items.Magnet
 
 		private Trail trail3;
 		private Trail trail4;
+
 		public override string Texture => AssetDirectory.Invisible;
 		private float Progress => Utils.Clamp(1 - Projectile.timeLeft / 30f, 0f, 1f);
 
@@ -384,6 +390,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			Vector2 line = targetHitbox.Center.ToVector2() - Projectile.Center;
 			line.Normalize();
 			line *= Radius;
+
 			return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, Projectile.Center + line);
 		}
 
@@ -420,7 +427,7 @@ namespace StarlightRiver.Content.Items.Magnet
 				effect.Parameters["uImage1"].SetValue(Assets.Noise.ElectricNoise.Value);
 				effect.Parameters["uImage2"].SetValue(Assets.Noise.PerlinNoise.Value);
 				effect.Parameters["uProgress"].SetValue(Eases.EaseQuinticIn(Progress));
-				Color color = Color.Lerp(new Color(210, 100, 255), new Color(255, 255, 255), Eases.EaseQuinticIn(1f - Progress));
+				var color = Color.Lerp(new Color(210, 100, 255), new Color(255, 255, 255), Eases.EaseQuinticIn(1f - Progress));
 
 				effect.Parameters["uColor"].SetValue(color.ToVector4());
 				effect.Parameters["uOpacity"].SetValue(0f);
