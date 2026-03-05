@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.Events;
 using System.Collections.Generic;
 using Terraria.ID;
@@ -91,6 +92,15 @@ namespace StarlightRiver.Content.CustomHooks
 				squidDomeRect.X += 26;
 				squidDomeRect.Width -= 52;
 				squidDomeRect.Y += 35;
+				squidDomeRect.Height = 76;
+			}
+
+			if (ArenaActor.latestActor?.WaterLevel > 1100)
+			{
+				squidDomeRect.Height = (int)(76 - (ArenaActor.latestActor.WaterLevel - 1100) / 16);
+			}
+			else
+			{
 				squidDomeRect.Height = 76;
 			}
 		}

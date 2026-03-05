@@ -27,6 +27,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		private static VertexPositionColorTexture[] verticies;
 		private static VertexBuffer buffer;
 
+		public static ArenaActor latestActor;
+
 		public ref float WaterLevel => ref NPC.ai[0];
 		public ref float VisualTimerA => ref NPC.ai[1];
 		public ref float VisualTimerB => ref NPC.ai[2];
@@ -106,6 +108,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void AI()
 		{
+			latestActor = this;
+
 			VisualTimerA += 0.04f; //used as timers for visuals
 			VisualTimerB += 0.01f;
 
@@ -316,7 +320,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			Vector2 pos = NPC.Center + new Vector2(-840, 30 * 16) + new Vector2(0, -tex.Height) - Main.screenPosition;
 			var source = new Rectangle(0, tex.Height - (int)WaterLevel + 5 * 16, tex.Width, (int)WaterLevel - 5 * 16);
 
-			spriteBatch.Draw(tex, (pos + source.TopLeft()) * 0.5f, source, new Color(0.4f, 1, 1), 0, default, 0.5f, 0, 0);
+			spriteBatch.Draw(tex, (pos + source.TopLeft()) * 0.5f, source, new Color(0, 255, 0), 0, default, 0.5f, 0, 0);
 			DrawWaterfalls(spriteBatch);
 		}
 

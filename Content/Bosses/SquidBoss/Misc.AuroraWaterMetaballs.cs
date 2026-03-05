@@ -12,19 +12,13 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 	{
 		public override bool Active => Main.LocalPlayer.InModBiome(ModContent.GetInstance<Biomes.PermafrostTempleBiome>());
 
-		public override Color OutlineColor => new(255, 254, 255);
+		public override Color OutlineColor => new(255, 0, 0);
 
 		public override void DrawShapes(SpriteBatch spriteBatch)
 		{
 			Texture2D tex = Assets.Items.Misc.MagmaGunProj.Value;
 
-			for (int k = 0; k < Main.maxNPCs; k++)
-			{
-				NPC NPC = Main.npc[k];
-
-				if (NPC.active && NPC.ModNPC is ArenaActor)
-					(NPC.ModNPC as ArenaActor).DrawWater(Main.spriteBatch);
-			}
+			ArenaActor.latestActor?.DrawWater(Main.spriteBatch);
 
 			Effect borderNoise = ShaderLoader.GetShader("BorderNoise").Value;
 
@@ -41,7 +35,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					if (dust.active && (dust.type == ModContent.DustType<AuroraWater>() || dust.type == ModContent.DustType<AuroraWaterFast>()))
 					{
 						borderNoise.Parameters["offset"].SetValue((float)Main.time / 1000f + dust.rotation);
-						spriteBatch.Draw(tex, (dust.position - Main.screenPosition) / 2, null, new Color(0.4f, 1, 1), 0f, Vector2.One * 256f, dust.scale * 0.05f, SpriteEffects.None, 0);
+						spriteBatch.Draw(tex, (dust.position - Main.screenPosition) / 2, null, new Color(0, 255, 0), 0f, Vector2.One * 256f, dust.scale * 0.05f, SpriteEffects.None, 0);
 					}
 				}
 
@@ -50,7 +44,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					Texture2D tex2 = Assets.Bosses.SquidBoss.AuroraWaterSplash.Value;
 					var frame = new Rectangle(0, (int)(6 - proj.timeLeft / 40f * 6) * 106, 72, 106);
 
-					spriteBatch.Draw(tex2, (proj.Center - Main.screenPosition) / 2f, frame, new Color(0.4f, 1, 1), 0, new Vector2(36, 53), 0.5f, 0, 0);
+					spriteBatch.Draw(tex2, (proj.Center - Main.screenPosition) / 2f, frame, new Color(0, 255, 0), 0, new Vector2(36, 53), 0.5f, 0, 0);
 				}
 
 				spriteBatch.End();
@@ -87,21 +81,29 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			if (effect != null)
 			{
+				Main.spriteBatch.End();
+				Main.graphics.GraphicsDevice.SetRenderTarget(Main.screenTargetSwap);
+
 				effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.02f);
-				effect.Parameters["power"].SetValue(0.01f);
 				effect.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X / Main.screenWidth * -0.5f, Main.screenPosition.Y / Main.screenHeight * -0.5f));
 				effect.Parameters["sampleTexture"].SetValue(AuroraWaterSystem.auroraBackTarget.RenderTarget);
 				effect.Parameters["uImageSize1"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
-				effect.Parameters["speed"].SetValue(50f);
 				effect.Parameters["lightTexture"].SetValue(LightingBuffer.screenLightingTarget.RenderTarget);
+				effect.Parameters["gameTexture"].SetValue(Main.screenTarget);
+				effect.Parameters["transform"].SetValue(Matrix.Invert(Main.GameViewMatrix.TransformationMatrix));
+
+				var inv = Matrix.Invert(Main.GameViewMatrix.TransformationMatrix);
+
+				Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, effect, Matrix.Identity);
+
+				Main.spriteBatch.Draw(target, Vector2.Zero, null, Color.White, 0, Vector2.Zero, 2, 0, 0);
 
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
 
-				Main.spriteBatch.Draw(target, Vector2.Zero, null, Color.Red * 0.4f, 0, Vector2.Zero, 2, 0, 0);
+				Main.graphics.GraphicsDevice.SetRenderTarget(Main.screenTarget);
 
-				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Matrix.Identity);
+				Main.spriteBatch.Draw(Main.screenTargetSwap, Vector2.Zero, null, Color.White, 0, Vector2.Zero, 1, 0, 0);
 			}
 
 			return false;

@@ -293,8 +293,7 @@ namespace StarlightRiver.Core
 		{
 			this.texture = texture;
 
-			if (effect != null)
-				effect.Texture = texture;
+			effect?.Texture = texture;
 		}
 	}
 

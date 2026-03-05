@@ -194,8 +194,7 @@ namespace StarlightRiver.Content.Items.Forest
 			{
 				var helm = Owner.armor[0].ModItem as SlimePrinceHead;
 
-				if (helm != null)
-					helm.targetVel = new Vector2(0, -10);
+				helm?.targetVel = new Vector2(0, -10);
 
 				State = 3;
 				Timer = 0;

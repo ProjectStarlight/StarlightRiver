@@ -2,11 +2,15 @@ using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.NPCs.Permafrost;
 using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems.LightingSystem;
 using StarlightRiver.Core.Systems.MetaballSystem;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using Terraria.ID;
 using Terraria.ModLoader.IO;
+using Terraria.WorldBuilding;
 
 namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 
@@ -34,6 +38,21 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 		}
 	}
 
+	class AuroraRipple
+	{
+		public Vector2 pos;
+		public float scale;
+		public float speed;
+		public float prog;
+
+		public AuroraRipple(Vector2 pos, float scale, float speed)
+		{
+			this.pos = pos;
+			this.scale = scale;
+			this.speed = speed;
+		}
+	}
+
 	class AuroraWaterSystem : ModSystem
 	{
 		public static int visCounter = 0;
@@ -43,6 +62,8 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 		public static ScreenTarget auroraBackTarget;
 
 		public static bool failedLoad = false;
+
+		public static List<AuroraRipple> ripplePoints = new();
 
 		public float Priority => 1;
 
@@ -115,6 +136,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 		private static void DrawAuroraBackTarget(SpriteBatch sb)
 		{
 			Asset<Texture2D> asset = Assets.Misc.AuroraWaterMap;
+			Asset<Texture2D> asset2 = Assets.Noise.SwirlyNoiseLooping;
 
 			if (asset.IsLoaded)
 			{
@@ -124,6 +146,9 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 				Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
 				Texture2D tex = asset.Value;
+				Texture2D tex2 = asset2.Value;
+				Texture2D tex3 = Assets.Masks.Glow.Value;
+				Texture2D rippleTex = Assets.Masks.RingGlowInnerTwo.Value;
 
 				Vector2 layer1Pivot = Main.GameUpdateCount * new Vector2(-0.55f, 0.3f);
 				Vector2 layer2Pivot = Main.GameUpdateCount * new Vector2(0.75f, -0.4f);
@@ -134,7 +159,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 						(int)(Main.screenPosition.Y + layer1Pivot.Y) % tex.Height,
 						Main.screenWidth,
 						Main.screenHeight),
-					Color.White * 0.7f);
+					Color.Red * 0.7f);
 				sb.Draw(tex,
 					Vector2.Zero,
 					new Rectangle(
@@ -142,11 +167,72 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 						(int)(Main.screenPosition.Y + layer2Pivot.Y) % tex.Height,
 						Main.screenWidth,
 						Main.screenHeight),
-					Color.White);
+					Color.Red);
+
+				sb.Draw(tex2,
+					Vector2.Zero,
+					new Rectangle(
+						(int)(Main.screenPosition.X + layer1Pivot.X) % tex2.Width,
+						(int)(Main.screenPosition.Y + layer1Pivot.Y) % tex2.Height,
+						Main.screenWidth,
+						Main.screenHeight),
+					Color.Green * 0.7f);
+				sb.Draw(tex2,
+					Vector2.Zero,
+					new Rectangle(
+						(int)(Main.screenPosition.X + layer2Pivot.X) % tex2.Width,
+						(int)(Main.screenPosition.Y + layer2Pivot.Y) % tex2.Height,
+						Main.screenWidth,
+						Main.screenHeight),
+					Color.Green);
+
+				sb.Draw(tex3,
+					Main.LocalPlayer.Center - Main.screenPosition,
+					null,
+					Color.Blue, 0, tex3.Size() / 2f, 3f, 0, 0);
+
+				foreach (AuroraRipple ripple in ripplePoints)
+				{
+					Color col = Color.Lime * (1f - ripple.prog) * ripple.scale;
+					Color col2 = Color.Red * (1f - ripple.prog) * ripple.scale;
+					sb.Draw(rippleTex, ripple.pos - Main.screenPosition, null, col, 0, rippleTex.Size() / 2f, ripple.scale * ripple.prog, 0, 0);
+					sb.Draw(rippleTex, ripple.pos - Main.screenPosition, null, col2, 0, rippleTex.Size() / 2f, ripple.scale * ripple.prog, 0, 0);
+				}
 
 				sb.End();
 				sb.Begin();
 			}
+		}
+
+		public override void PostUpdateNPCs()
+		{
+			Rectangle rectangle = WorldUtils.ClampToWorld(new Rectangle((int)Main.screenPosition.X / 16, (int)Main.screenPosition.Y / 16, Main.screenWidth / 16, Main.screenHeight / 16));
+			for (int k = rectangle.Left; k < rectangle.Right; k++)
+			{
+				for (int l = rectangle.Top; l < rectangle.Bottom; l++)
+				{
+					Tile tile = Main.tile[k, l];
+					if (tile.Get<AuroraWaterData>().HasAuroraWater)
+					{
+						AuroraWaterSystem.visCounter = 30;
+
+						if (l % 2 == 0 && k % 2 == 0 && !tile.IsSquareSolidTile())
+							Lighting.AddLight(new Vector2(k, l) * 16, new Vector3(0.4f, 0.8f, 1f));
+					}
+				}
+			}
+
+			for (int k = 0; k < ripplePoints.Count; k++)
+			{
+				ripplePoints[k].prog += ripplePoints[k].speed;
+			}
+
+			ripplePoints.RemoveAll(n => n.prog >= 1f);
+		}
+
+		public static void AddRipple(Vector2 pos, float scale, float speed)
+		{
+			ripplePoints.Add(new(pos, scale, speed));
 		}
 
 		private void DrawAuroraWater(On_Main.orig_DrawInfernoRings orig, Main self)
@@ -286,20 +372,11 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 		}
 	}
 
-	class AuroraWaterGlobalTile : GlobalTile
-	{
-		public override void NearbyEffects(int i, int j, int type, bool closer)
-		{
-			if (Main.tile[i, j].Get<AuroraWaterData>().HasAuroraWater)
-				AuroraWaterSystem.visCounter = 30;
-		}
-	}
-
 	class AuroraWaterTileMetaballs : MetaballActor
 	{
 		public override bool Active => AuroraWaterSystem.Visible && !Main.LocalPlayer.InModBiome(ModContent.GetInstance<Content.Biomes.PermafrostTempleBiome>());
 
-		public override Color OutlineColor => new(255, 0, 255);
+		public override Color OutlineColor => new(255, 0, 0);
 
 		public override void DrawShapes(SpriteBatch spriteBatch)
 		{
@@ -319,7 +396,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 			foreach (Dust dust in Main.dust)
 			{
 				if (dust.active && dust.type == ModContent.DustType<AuroraWaterFast>())
-					spriteBatch.Draw(tex, (dust.position - Main.screenPosition) / 2, null, Color.Red, 0f, Vector2.One * 256f, dust.scale * 0.05f, SpriteEffects.None, 0);
+					spriteBatch.Draw(tex, (dust.position - Main.screenPosition) / 2, null, Color.Lime, 0f, Vector2.One * 256f, dust.scale * 0.05f, SpriteEffects.None, 0);
 			}
 
 			spriteBatch.End();
@@ -336,27 +413,39 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 				return;
 			}
 
-			Effect shader = ShaderLoader.GetShader("AuroraWaterShader").Value;
+			Effect effect = ShaderLoader.GetShader("AuroraWaterShader").Value;
 
-			if (shader is null)
+			if (effect is null)
 			{
 				MetaballSystem.MetaballSystem.actorsSem.Release();
 				return;
 			}
 
-			shader.Parameters["time"].SetValue(StarlightWorld.visualTimer);
-			shader.Parameters["screenSize"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
-			shader.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X % Main.screenWidth / Main.screenWidth, Main.screenPosition.Y % Main.screenHeight / Main.screenHeight));
-			shader.Parameters["sampleTexture2"].SetValue(AuroraWaterSystem.auroraBackTarget.RenderTarget);
-
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, shader, Main.GameViewMatrix.TransformationMatrix);
+			Main.graphics.GraphicsDevice.SetRenderTarget(Main.screenTargetSwap);
+
+			effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.02f);
+			effect.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X / Main.screenWidth * -0.5f, Main.screenPosition.Y / Main.screenHeight * -0.5f));
+			effect.Parameters["sampleTexture"].SetValue(AuroraWaterSystem.auroraBackTarget.RenderTarget);
+			effect.Parameters["uImageSize1"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+			//effect.Parameters["lightTexture"].SetValue(LightingBuffer.screenLightingTarget.RenderTarget);
+			effect.Parameters["gameTexture"].SetValue(Main.screenTarget);
+			effect.Parameters["transform"].SetValue(Matrix.Invert(Main.GameViewMatrix.TransformationMatrix));
+			effect.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X % Main.screenWidth / Main.screenWidth, Main.screenPosition.Y % Main.screenHeight / Main.screenHeight));
+
+			var inv = Matrix.Invert(Main.GameViewMatrix.TransformationMatrix);
+
+			Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, effect, Matrix.Identity);
 
 			Texture2D target = MetaballSystem.MetaballSystem.actors.FirstOrDefault(n => n is AuroraWaterTileMetaballs).Target.RenderTarget;
 			Main.spriteBatch.Draw(target, Vector2.Zero, null, Color.White, 0, Vector2.Zero, 2, 0, 0);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(0, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+
+			Main.graphics.GraphicsDevice.SetRenderTarget(Main.screenTarget);
+
+			Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Matrix.Identity);
+			Main.spriteBatch.Draw(Main.screenTargetSwap, Vector2.Zero, null, Color.White, 0, Vector2.Zero, 1, 0, 0);
 
 			MetaballSystem.MetaballSystem.actorsSem.Release();
 		}

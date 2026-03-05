@@ -1,7 +1,6 @@
 ﻿using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Tiles.Vitric;
 using StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle;
-using StarlightRiver.Helpers;
 using StarlightRiver.Noise;
 using System;
 using System.Collections.Generic;
@@ -37,8 +36,7 @@ namespace StarlightRiver.Core
 		/// <param name="progress"></param>
 		public static void VitricGen(GenerationProgress progress, GameConfiguration configuration)
 		{
-			if (progress != null)
-				progress.Message = "Digging the Vitric Desert";
+			progress?.Message = "Digging the Vitric Desert";
 
 			int vitricHeight = 140;
 			ValidGround = new int[] { instance.Find<ModTile>("VitricSand").Type, instance.Find<ModTile>("VitricSoftSand").Type };
@@ -73,7 +71,7 @@ namespace StarlightRiver.Core
 				PlaceTile(vitricBiome.X + vitricBiome.Width / 2 + 41, y, StarlightRiver.Instance.Find<ModTile>("VitricBossBarrier").Type, false, false);
 			}
 
-			VitricIslandLocations = new List<Point>(); //List for island positions
+			VitricIslandLocations = []; //List for island positions
 			int fail = 0;
 
 			for (int i = 0; i < vitricBiome.Width / 40 - 1; ++i)
@@ -194,12 +192,11 @@ namespace StarlightRiver.Core
 				}
 			}
 
-			if (progress != null)
-				progress.Message = "Melting Glass";
+			progress?.Message = "Melting Glass";
 
 			GenConsistentMiniIslands();
 			GenSandstonePillars();
-			RuinedPillarPositions = new List<Point>();
+			RuinedPillarPositions = [];
 			GenRuins();
 			GenForge();
 			GenDecoration();
