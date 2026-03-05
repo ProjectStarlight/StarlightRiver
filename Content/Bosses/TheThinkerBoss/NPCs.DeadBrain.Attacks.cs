@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics.PackedVector;
 using rail;
 using StarlightRiver.Content.Bosses.SquidBoss;
@@ -14,6 +15,22 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 {
 	internal partial class DeadBrain
 	{
+		public void SpawnNeurismManifest(Vector2 target, Vector2 source = default)
+		{
+			if (Main.dedServ)
+				return;
+
+			if (source == default)
+				source = thinker.Center;
+
+			var index = Projectile.NewProjectile(null, source, Vector2.Zero, ModContent.ProjectileType<NeurismManifest>(), 1, 0, Main.myPlayer);
+
+			if (index >= 0 && Main.projectile[index].ModProjectile is NeurismManifest manifest)
+			{
+				manifest.target = target;
+			}
+		}
+
 		#region Phase 1
 		public void ShrinkingCircle()
 		{
@@ -77,6 +94,16 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				if (AttackTimer == 260)
 				{
 					contactDamage = false;
+				}
+			}
+
+			if (AttackTimer == 1)
+			{
+				for (int k = 0; k < neurisms.Count; k++)
+				{
+					float rot = k / (float)neurisms.Count * 6.28f;
+
+					SpawnNeurismManifest(thinker.Center + Vector2.UnitX.RotatedBy(rot) * 750);
 				}
 			}
 
@@ -214,6 +241,19 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			for (int k = 0; k < neurisms.Count; k++)
 			{
 				float lerp = k / (neurisms.Count - 1f);
+
+				if (AttackTimer == k * 20)
+				{
+					float rot = savedRot;
+					float direction = k % 2 == 0 ? 1 : -1;
+
+					float a = (1 - lerp * 2) * 750f;
+					float h = 750f;
+
+					float offset = (float)Math.Sqrt(Math.Pow(h, 2) - Math.Pow(a, 2));
+
+					SpawnNeurismManifest(thinker.Center + Vector2.UnitX.RotatedBy(rot) * (-750 + 1500 * lerp) + Vector2.UnitY.RotatedBy(rot) * direction * offset);
+				}
 
 				if (AttackTimer == 30 + k * 20)
 				{
@@ -388,18 +428,29 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					float radius = k / (float)neurisms.Count * radiusMax;
 					float rot = k * 2 / (float)neurisms.Count * 6.28f;
 
+					SpawnNeurismManifest(thinker.Center + Vector2.UnitX.RotatedBy(rot) * (750 - radius));
+				}
+			}
+
+			if (AttackTimer == 31)
+			{
+				for (int k = 0; k < neurisms.Count; k++)
+				{
+					float radius = k / (float)neurisms.Count * radiusMax;
+					float rot = k * 2 / (float)neurisms.Count * 6.28f;
+
 					neurisms[k].Center = thinker.Center + Vector2.UnitX.RotatedBy(rot) * (750 - radius);
 					(neurisms[k].ModNPC as Neurysm).State = 2;
 					(neurisms[k].ModNPC as Neurysm).Timer = 0;
 				}
 			}
 
-			if (AttackTimer >= 31)
+			if (AttackTimer >= 61)
 			{
 				for (int k = 0; k < neurisms.Count; k++)
 				{
 					float radius = k / (float)neurisms.Count * radiusMax;
-					float rot = k * 2 / (float)neurisms.Count * 6.28f + Helpers.Eases.BezierEase((AttackTimer - 30) / 540f) * speed * (k % 2 == 0 ? 1 : -1);
+					float rot = k * 2 / (float)neurisms.Count * 6.28f + Helpers.Eases.BezierEase((AttackTimer - 60) / 540f) * speed * (k % 2 == 0 ? 1 : -1);
 
 					neurisms[k].Center = thinker.Center + Vector2.UnitX.RotatedBy(rot) * (750 - radius);
 					(neurisms[k].ModNPC as Neurysm).State = 0;
@@ -469,12 +520,16 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			{
 				float lerp = k / (neurisms.Count - 1f);
 
+				if (AttackTimer == 30 + k * 15)
+				{
+					SpawnNeurismManifest(ThisThinker.home + Vector2.UnitX * (-600 + lerp * 1200) + Vector2.UnitY * 750);
+				}
+
 				if (AttackTimer == 60 + k * 15)
 				{
 					neurisms[k].Center = ThisThinker.home + Vector2.UnitX * (-600 + lerp * 1200) + Vector2.UnitY * 750;
 					(neurisms[k].ModNPC as Neurysm).State = 2;
 					(neurisms[k].ModNPC as Neurysm).Timer = 0;
-					//(neurisms[k].ModNPC as Neurysm).DoTell(1500, 1.57f);
 				}
 
 				if (AttackTimer >= 90 + k * 15 && AttackTimer <= 240 + k * 15)
@@ -534,6 +589,11 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			for (int k = 0; k < neurisms.Count; k += 2)
 			{
 				float lerp = k / (neurisms.Count - 1f);
+
+				if (AttackTimer == 30 + k * 15)
+				{
+					SpawnNeurismManifest(savedPos2 + Vector2.UnitY * (-300 + lerp * 600) + Vector2.UnitX * 750);
+				}
 
 				if (AttackTimer == 60 + k * 15)
 				{
@@ -661,16 +721,18 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 			if ((AttackTimer - 90) >= 1 && (AttackTimer - 90) < 400)
 			{
-				Vector2 targetPos = ThisThinker.home + Vector2.UnitX.RotatedBy(savedRot + (AttackTimer - 90) / 400f * 6.28f) * 550;
-				Vector2 targetPos2 = ThisThinker.home + Vector2.UnitX.RotatedBy(savedRot + (AttackTimer - 90) / 400f * 6.28f) * -550;
 
-				float speed = Math.Min(0.05f, (AttackTimer - 90) / 100f * 0.05f);
 
-				NPC.Center += (targetPos - NPC.Center) * speed;
-				thinker.Center += (targetPos2 - thinker.Center) * speed;
-
-				if ((AttackTimer - 90) >= 60)
+				if ((AttackTimer - 90) >= 30)
 				{
+					Vector2 targetPos = ThisThinker.home + Vector2.UnitX.RotatedBy(savedRot + (AttackTimer - 90) / 400f * 6.28f) * 550;
+					Vector2 targetPos2 = ThisThinker.home + Vector2.UnitX.RotatedBy(savedRot + (AttackTimer - 90) / 400f * 6.28f) * -550;
+
+					float speed = Math.Min(0.05f, (AttackTimer - 90) / 100f * 0.05f);
+
+					NPC.Center += (targetPos - NPC.Center) * speed;
+					thinker.Center += (targetPos2 - thinker.Center) * speed;
+
 					float maxRad = Main.masterMode ? 500 : Main.expertMode ? 480 : 360;
 					float period = Main.masterMode ? 85 : 170;
 					float rad = 280 + (float)Math.Cos((AttackTimer - 90 - 60) / period * 3.14f + 3.14f) * (maxRad - 280);
@@ -697,9 +759,46 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				}
 			}
 
-			if ((AttackTimer - 90) == 60)
+			if ((AttackTimer - 90) == 0)
+			{
+				float maxRad = Main.masterMode ? 500 : Main.expertMode ? 480 : 360;
+				float period = Main.masterMode ? 85 : 170;
+				float rad = 280 + (float)Math.Cos((AttackTimer - 90 - 30) / period * 3.14f + 3.14f) * (maxRad - 280);
+
+				Vector2 s1 = ThisThinker.home + Vector2.UnitX * 550;
+				Vector2 s2 = ThisThinker.home + Vector2.UnitX * -550;
+
+				for (int k = 0; k < neurisms.Count; k++)
+				{
+					float rot = k * 2 / (float)neurisms.Count * 6.28f + (AttackTimer - 60) * -0.015f;
+
+					if (k % 2 == 0)
+						SpawnNeurismManifest(s2 + Vector2.UnitX.RotatedBy(rot) * rad);
+					else
+						SpawnNeurismManifest(s1 + Vector2.UnitX.RotatedBy(rot) * rad);
+				}
+			}
+
+			if ((AttackTimer - 90) == 30)
 			{
 				contactDamage = true;
+
+				float maxRad = Main.masterMode ? 500 : Main.expertMode ? 480 : 360;
+				float period = Main.masterMode ? 85 : 170;
+				float rad = 280 + (float)Math.Cos((AttackTimer - 90 - 60) / period * 3.14f + 3.14f) * (maxRad - 280);
+
+				Vector2 s1 = ThisThinker.home + Vector2.UnitX * 550;
+				Vector2 s2 = ThisThinker.home + Vector2.UnitX * -550;
+
+				for (int k = 0; k < neurisms.Count; k++)
+				{
+					float rot = k * 2 / (float)neurisms.Count * 6.28f + (AttackTimer - 90) * -0.015f;
+
+					if (k % 2 == 0)
+						neurisms[k].Center = s2 + Vector2.UnitX.RotatedBy(rot) * rad;
+					else
+						neurisms[k].Center = s1 + Vector2.UnitX.RotatedBy(rot) * rad;
+				}
 
 				for (int k = 0; k < neurisms.Count; k++)
 				{
@@ -1100,6 +1199,16 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			if (AttackTimer <= 120)
 			{
 				thinker.Center += (ThisThinker.home - thinker.Center) * 0.03f;
+			}
+
+			if (AttackTimer == 1)
+			{
+				for (int k = 0; k < neurisms.Count; k++)
+				{
+					float rot = k / (float)neurisms.Count * 6.28f;
+
+					SpawnNeurismManifest(ThisThinker.home + Vector2.UnitX.RotatedBy(rot) * 80);
+				}
 			}
 
 			// Exapanding circle

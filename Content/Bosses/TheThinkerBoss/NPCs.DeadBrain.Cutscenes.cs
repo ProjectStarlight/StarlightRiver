@@ -147,6 +147,11 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					float lerp = k / (neurisms.Count - 1f);
 					float rot = 6.28f * lerp;
 
+					if (Timer == 250 + k * 5)
+					{
+						SpawnNeurismManifest(thinker.Center + Vector2.UnitX.RotatedBy(rot) * 200);
+					}
+
 					if (Timer == 280 + k * 5)
 					{
 						neurisms[k].Center = thinker.Center + Vector2.UnitX.RotatedBy(rot) * 200;
