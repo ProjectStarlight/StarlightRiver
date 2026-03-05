@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		private readonly List<NPC> platforms = new();
 
 		public int waterfallWidth = 0;
-		ParticleSystem bubblesSystem;
+		public static ParticleSystem bubblesSystem;
 		private Vector2 domeOffset = new(0, -886);
 
 		private static VertexPositionColorTexture[] verticies;
