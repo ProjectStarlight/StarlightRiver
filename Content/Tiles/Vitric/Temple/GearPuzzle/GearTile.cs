@@ -309,8 +309,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 			}
 			set
 			{
-				if (GearEntity != null)
-					GearEntity.engaged = value;
+				GearEntity?.engaged = value;
 			}
 		}
 
@@ -325,8 +324,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 			}
 			set
 			{
-				if (GearEntity != null)
-					GearEntity.rotationVelocity = value;
+				GearEntity?.rotationVelocity = value;
 			}
 		}
 
@@ -341,8 +339,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 			}
 			set
 			{
-				if (GearEntity != null)
-					GearEntity.rotationOffset = value;
+				GearEntity?.rotationOffset = value;
 			}
 		}
 
@@ -364,8 +361,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 			get => GearEntity?.size ?? 0;
 			set
 			{
-				if (GearEntity != null)
-					GearEntity.size = value % 4;
+				GearEntity?.size = value % 4;
 			}
 		}
 

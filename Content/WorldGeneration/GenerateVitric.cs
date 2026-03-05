@@ -36,8 +36,7 @@ namespace StarlightRiver.Core
 		/// <param name="progress"></param>
 		public static void VitricGen(GenerationProgress progress, GameConfiguration configuration)
 		{
-			if (progress != null)
-				progress.Message = "Digging the Vitric Desert";
+			progress?.Message = "Digging the Vitric Desert";
 
 			int vitricHeight = 140;
 			ValidGround = new int[] { instance.Find<ModTile>("VitricSand").Type, instance.Find<ModTile>("VitricSoftSand").Type };
@@ -193,8 +192,7 @@ namespace StarlightRiver.Core
 				}
 			}
 
-			if (progress != null)
-				progress.Message = "Melting Glass";
+			progress?.Message = "Melting Glass";
 
 			GenConsistentMiniIslands();
 			GenSandstonePillars();

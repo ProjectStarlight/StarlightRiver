@@ -15,19 +15,17 @@ namespace StarlightRiver.Core.Systems.CameraSystem
 		private static float flatZoomTarget = 0;
 		private static float flatZoom = 0;
 
-		private static float extraZoomTarget = 1;
-
 		public static float ExtraZoomTarget
 		{
-			get => extraZoomTarget;
+			get;
 
 			private set
 			{
 				oldZoom = zoomOverride;
 				zoomTimer = 0;
-				extraZoomTarget = value;
+				field = value;
 			}
-		}
+		} = 1;
 
 		public static float ClampedExtraZoomTarget => System.Math.Min(1, ExtraZoomTarget);
 
@@ -83,12 +81,12 @@ namespace StarlightRiver.Core.Systems.CameraSystem
 
 		public static void UpdateZoom()
 		{
-			zoomOverride = Vector2.SmoothStep(new Vector2(oldZoom, 0), new Vector2(extraZoomTarget, 0), zoomTimer / (float)maxTimer).X;
+			zoomOverride = Vector2.SmoothStep(new Vector2(oldZoom, 0), new Vector2(ExtraZoomTarget, 0), zoomTimer / (float)maxTimer).X;
 
 			if (zoomOverride == Main.GameZoomTarget)
 				oldZoom = Main.GameZoomTarget;
 
-			if (zoomTimer == maxTimer && extraZoomTarget == Main.GameZoomTarget)
+			if (zoomTimer == maxTimer && ExtraZoomTarget == Main.GameZoomTarget)
 				maxTimer = 0;
 
 			if (maxTimer == 0)

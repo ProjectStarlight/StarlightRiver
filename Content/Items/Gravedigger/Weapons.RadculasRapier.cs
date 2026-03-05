@@ -424,8 +424,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 			RadculasRapierBleed buff = InstancedBuffNPC.GetInstance<RadculasRapierBleed>(target);
 
-			if (buff != null)
-				buff.lastHitPos = Owner.Center;
+			buff?.lastHitPos = Owner.Center;
 
 			Vector2 pos = Owner.Center - (Owner.Center - target.Center);
 

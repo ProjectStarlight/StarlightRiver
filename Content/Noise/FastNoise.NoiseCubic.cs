@@ -132,12 +132,12 @@ namespace StarlightRiver.Noise
 			DECIMAL amp = 1;
 			int i = 0;
 
-			while (++i < octaves)
+			while (++i < FractalOctaves)
 			{
 				x *= FractalLacunarity;
 				y *= FractalLacunarity;
 
-				amp *= gain;
+				amp *= FractalGain;
 				sum += SingleCubic(++seed, x, y) * amp;
 			}
 
@@ -150,13 +150,13 @@ namespace StarlightRiver.Noise
 			DECIMAL amp = 1;
 			int i = 0;
 
-			while (++i < octaves)
+			while (++i < FractalOctaves)
 			{
 				x *= FractalLacunarity;
 				y *= FractalLacunarity;
 				z *= FractalLacunarity;
 
-				amp *= gain;
+				amp *= FractalGain;
 				sum += SingleCubic(++seed, x, y, z) * amp;
 			}
 
@@ -169,12 +169,12 @@ namespace StarlightRiver.Noise
 			DECIMAL amp = 1;
 			int i = 0;
 
-			while (++i < octaves)
+			while (++i < FractalOctaves)
 			{
 				x *= FractalLacunarity;
 				y *= FractalLacunarity;
 
-				amp *= gain;
+				amp *= FractalGain;
 				sum += (Math.Abs(SingleCubic(++seed, x, y)) * 2 - 1) * amp;
 			}
 
@@ -187,13 +187,13 @@ namespace StarlightRiver.Noise
 			DECIMAL amp = 1;
 			int i = 0;
 
-			while (++i < octaves)
+			while (++i < FractalOctaves)
 			{
 				x *= FractalLacunarity;
 				y *= FractalLacunarity;
 				z *= FractalLacunarity;
 
-				amp *= gain;
+				amp *= FractalGain;
 				sum += (Math.Abs(SingleCubic(++seed, x, y, z)) * 2 - 1) * amp;
 			}
 
@@ -206,12 +206,12 @@ namespace StarlightRiver.Noise
 			DECIMAL amp = 1;
 			int i = 0;
 
-			while (++i < octaves)
+			while (++i < FractalOctaves)
 			{
 				x *= FractalLacunarity;
 				y *= FractalLacunarity;
 
-				amp *= gain;
+				amp *= FractalGain;
 				sum -= (1 - Math.Abs(SingleCubic(++seed, x, y))) * amp;
 			}
 
@@ -224,13 +224,13 @@ namespace StarlightRiver.Noise
 			DECIMAL amp = 1;
 			int i = 0;
 
-			while (++i < octaves)
+			while (++i < FractalOctaves)
 			{
 				x *= FractalLacunarity;
 				y *= FractalLacunarity;
 				z *= FractalLacunarity;
 
-				amp *= gain;
+				amp *= FractalGain;
 				sum -= (1 - Math.Abs(SingleCubic(++seed, x, y, z))) * amp;
 			}
 

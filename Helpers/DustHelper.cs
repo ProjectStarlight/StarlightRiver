@@ -44,8 +44,7 @@ namespace StarlightRiver.Helpers
 
 								var d = Dust.NewDustPerfect(position, dustType, new Vector2((float)dustX, (float)dustY).RotatedBy(rotation), Alpha, (Color)color, dustSize);
 
-								if (d != null)
-									d.noGravity = noGravity;
+								d?.noGravity = noGravity;
 							}
 						}
 					}
@@ -92,8 +91,7 @@ namespace StarlightRiver.Helpers
 
 								var d = Dust.NewDustPerfect(position + new Vector2(dustX, dustY), dustType, Vector2.UnitX.RotatedByRandom(6.28f) * randomVel, Alpha, (Color)color, dustSize);
 
-								if (d != null)
-									d.noGravity = noGravity;
+								d?.noGravity = noGravity;
 							}
 						}
 					}
