@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Loaders.TileLoading;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core.Loaders.TileLoading;
 using StarlightRiver.Core.Systems;
 
 namespace StarlightRiver.Content.Tiles.Vitric
@@ -9,7 +10,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 	}
 
 	[SLRDebug]
-	internal class VitricFountainItem : QuickTileItem
+	internal class VitricFountainItem : BaseTileItem
 	{
 		public VitricFountainItem() : base("VitricFountainItem", "Vitric Fountain", "{{Debug}} Item", "VitricFountain", texturePath: AssetDirectory.VitricTile) { }
 	}

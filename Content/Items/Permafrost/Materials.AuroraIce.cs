@@ -1,10 +1,11 @@
-﻿using System;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using System;
 using Terraria.GameContent;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Permafrost
 {
-	class AuroraIceItem : QuickMaterial
+	class AuroraIceItem : BaseMaterial
 	{
 		public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/AuroraIceItem";
 
@@ -61,7 +62,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		}
 	}
 
-	class AuroraIceBar : QuickMaterial
+	class AuroraIceBar : BaseMaterial
 	{
 		public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/AuroraIceBar";
 

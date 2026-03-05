@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Dusts;
-using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Items.BaseTypes.Weapons;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;

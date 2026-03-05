@@ -1,4 +1,5 @@
-﻿using Terraria.DataStructures;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ObjectData;
@@ -6,7 +7,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-	internal class VitricRockItem : QuickTileItem
+	internal class VitricRockItem : BaseTileItem
 	{
 		public VitricRockItem() : base("Vitric Rock", "", "VitricRock", 0, AssetDirectory.VitricTile) { }
 		//public override void OnConsumeItem(Player Player) => Main.NewText(TileType<VitricRock>());

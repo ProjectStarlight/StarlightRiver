@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Items.BaseTypes
+namespace StarlightRiver.Content.Items.BaseTypes.Weapons
 {
-	internal abstract class AbstractHeavyFlail : ModItem
+	internal abstract class BaseHeavyFlail : ModItem
 	{
 		public abstract int ProjType { get; }
 
@@ -25,11 +25,11 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public override bool CanShoot(Player player)
 		{
-			return !Main.projectile.Any(n => n.active && n.owner == player.whoAmI && n.type == ProjType && (n.ModProjectile as AbstractHeavyFlailProjectile).State < 4);
+			return !Main.projectile.Any(n => n.active && n.owner == player.whoAmI && n.type == ProjType && (n.ModProjectile as BaseHeavyFlailProjectile).State < 4);
 		}
 	}
 
-	internal abstract class AbstractHeavyFlailProjectile : ModProjectile
+	internal abstract class BaseHeavyFlailProjectile : ModProjectile
 	{
 		public abstract Asset<Texture2D> ChainAsset { get; }
 		protected Asset<Texture2D> BallAsset;
@@ -77,9 +77,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			//Owner.itemAnimation = 10;
 
 			if (Owner.channel)
-			{
 				Projectile.timeLeft = 180;
-			}
 			else if (State != 4)
 			{
 				Projectile.velocity *= 0.5f;
@@ -263,13 +261,13 @@ namespace StarlightRiver.Content.Items.BaseTypes
 				for (int k = 0; k < max; k++)
 				{
 					var pos = Vector2.Lerp(Owner.Center, Projectile.Center, k / (float)max);
-					Rectangle source = new Rectangle(0, 0, 8, 22);
+					var source = new Rectangle(0, 0, 8, 22);
 
 					if (k > 1)
 					{
 						source.Y += 22;
 
-						if (extraStyles > 0 && (k + 3) >= (max - extraStyles * AlternateStyleRepeats))
+						if (extraStyles > 0 && k + 3 >= max - extraStyles * AlternateStyleRepeats)
 							source.Y += 22 * (extraStyles - (max - (k + 3)) / AlternateStyleRepeats);
 					}
 
@@ -282,13 +280,13 @@ namespace StarlightRiver.Content.Items.BaseTypes
 				Vector2 prev = chainPos[k - 1];
 				Vector2 curr = chainPos[k];
 
-				Rectangle source = new Rectangle(0, 0, 8, 22);
+				var source = new Rectangle(0, 0, 8, 22);
 
 				if (k > 1)
 				{
 					source.Y += 22;
 
-					if (extraStyles > 0 && (k + 3) >= (chainPos.Count - extraStyles * AlternateStyleRepeats))
+					if (extraStyles > 0 && k + 3 >= chainPos.Count - extraStyles * AlternateStyleRepeats)
 						source.Y += 22 * (extraStyles - (chainPos.Count - (k + 3)) / AlternateStyleRepeats);
 				}
 

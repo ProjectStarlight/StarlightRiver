@@ -1,44 +1,18 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using StarlightRiver.Content.CustomHooks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.CustomHooks
+namespace StarlightRiver.Core.Systems.WaterAddonSystem
 {
-	public abstract class WaterAddon : IOrderedLoadable
+	class WaterAddonManager : ModSystem
 	{
-		public float Priority => 1f;
-
-		/// <summary>
-		/// call Main.SpriteBatch.Begin with the parameters you want for the front of water. Primarily used for applying shaders
-		/// </summary>
-		public abstract void SpritebatchChange();
-		/// <summary>
-		/// call Main.SpriteBatch.Begin with the parameters you want for the back of water. Primarily used for applying shaders
-		/// </summary>
-		public abstract void SpritebatchChangeBack();
-
-		public abstract bool Visible { get; }
-
-		public abstract Texture2D BlockTexture(Texture2D normal, int x, int y);
-
-		public void Load()
-		{
-			WaterAddonHandler.addons.Add(this);
-		}
-
-		public void Unload() { }
-	}
-
-	class WaterAddonHandler : HookGroup
-	{
-		public static List<WaterAddon> addons = new();
-
 		public static WaterAddon activeAddon;
-
-		public override float Priority => 1.1f;
 
 		public override void Load()
 		{
@@ -50,13 +24,12 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private void UpdateActiveAddon(Player Player)
 		{
-			activeAddon = addons.FirstOrDefault(n => n.Visible);
+			activeAddon = ModContent.GetContent<WaterAddon>().FirstOrDefault(n => n.Visible);
 		}
 
 		public override void Unload()
 		{
-			addons ??= null;
-			activeAddon ??= null;
+			activeAddon = null;
 		}
 
 		private void SwapBlockTexture(ILContext il)

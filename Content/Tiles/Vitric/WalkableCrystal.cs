@@ -8,7 +8,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ObjectData;
 
-namespace StarlightRiver.Core
+namespace StarlightRiver.Content.Tiles.Vitric
 {
 	internal abstract class WalkableCrystal : DummyTile
 	{

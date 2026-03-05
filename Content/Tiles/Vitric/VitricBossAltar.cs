@@ -1,8 +1,8 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Bosses.VitricBoss;
-using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Dusts;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Packets;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.CameraSystem;
@@ -110,7 +110,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 	}
 
 	[SLRDebug]
-	class VitricBossAltarItem : QuickTileItem
+	class VitricBossAltarItem : BaseTileItem
 	{
 		public VitricBossAltarItem() : base("Vitric Boss Altar Item", "{{{{Debug}}}} Item", "VitricBossAltar", 1, AssetDirectory.Debug, true) { }
 	}
@@ -334,12 +334,12 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				spriteBatch.Draw(texSkull, Center - Main.screenPosition, null, new Color(255, 100, 100) * (1 - Vector2.Distance(Main.LocalPlayer.Center, Center) / 200f), 0, texSkull.Size() / 2, 1, 0, 0);
 			}
 
-			else if (parent.TileFrameX < 90 && ReflectionTarget.canUseTarget)
+			else if (parent.TileFrameX < 90 && BackgroundReflectionSystem.canUseTarget)
 			{
 				if (ShouldDrawReflection())
 				{
-					ReflectionTarget.DrawReflection(spriteBatch, screenPos: position - Main.screenPosition, normalMap: Assets.Tiles.Vitric.VitricBossAltarReflectionMap.Value, flatOffset: new Vector2(-0.0075f, 0.011f), tintColor: new Color(150, 150, 255, 200), offsetScale: 0.05f);
-					ReflectionTarget.isDrawReflectablesThisFrame = true;
+					BackgroundReflectionSystem.DrawReflection(spriteBatch, screenPos: position - Main.screenPosition, normalMap: Assets.Tiles.Vitric.VitricBossAltarReflectionMap.Value, flatOffset: new Vector2(-0.0075f, 0.011f), tintColor: new Color(150, 150, 255, 200), offsetScale: 0.05f);
+					BackgroundReflectionSystem.isDrawReflectablesThisFrame = true;
 				}
 
 				Texture2D glow = Assets.Tiles.Vitric.VitricBossAltarGlow.Value;

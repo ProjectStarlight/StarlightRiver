@@ -1,4 +1,4 @@
-﻿using StarlightRiver.Content.Items.BaseTypes;
+﻿using StarlightRiver.Content.Items.BaseTypes.Weapons;
 using StarlightRiver.Content.Items.Forest;
 using StarlightRiver.Content.Tiles.Misc;
 using StarlightRiver.Core.Systems.CameraSystem;
@@ -11,7 +11,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Snow
 {
-	internal class FrostFlail : AbstractHeavyFlail
+	internal class FrostFlail : BaseHeavyFlail
 	{
 		public override string Texture => AssetDirectory.SnowItem + Name;
 
@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Items.Snow
 		}
 	}
 
-	internal class FrostFlailProjectile : AbstractHeavyFlailProjectile
+	internal class FrostFlailProjectile : BaseHeavyFlailProjectile
 	{
 		public override string Texture => AssetDirectory.SnowItem + Name;
 

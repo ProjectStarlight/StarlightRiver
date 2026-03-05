@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
 
-namespace StarlightRiver.Content.CustomHooks
+namespace StarlightRiver.Core.Systems
 {
-	class PlayerTarget : HookGroup
+	class PlayerTargetSystem : ModSystem
 	{
 		//Drawing Player to Target. Should be safe. Excuse me if im duplicating something that alr exists :p
 		public static RenderTarget2D Target;

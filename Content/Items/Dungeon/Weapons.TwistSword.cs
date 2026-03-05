@@ -1,5 +1,5 @@
-﻿using StarlightRiver.Content.CustomHooks;
-using StarlightRiver.Core.Loaders;
+﻿using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -189,7 +189,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 			Player drawPlayer = drawInfo.drawPlayer;
 
-			if (drawPlayer != null && !drawPlayer.HeldItem.IsAir && drawPlayer.HeldItem.type == ItemType<TwistSword>() && PlayerTarget.canUseTarget)
+			if (drawPlayer != null && !drawPlayer.HeldItem.IsAir && drawPlayer.HeldItem.type == ItemType<TwistSword>() && PlayerTargetSystem.canUseTarget)
 			{
 				int charge = (drawPlayer.HeldItem.ModItem as TwistSword).charge;
 				Texture2D tex = Assets.GUI.SmallBar1.Value;

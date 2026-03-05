@@ -6,7 +6,7 @@ using Terraria.Enums;
 using Terraria.GameContent;
 using Terraria.ID;
 
-namespace StarlightRiver.Core
+namespace StarlightRiver.Content.Items.BaseTypes.Weapons
 {
 	public abstract class BaseWhip : ModProjectile
 	{
@@ -60,7 +60,7 @@ namespace StarlightRiver.Core
 			Projectile.ai[0]++;
 			Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
 			Projectile.Center = Main.GetPlayerArmPosition(Projectile) + Projectile.velocity * (Projectile.ai[0] - 1f);
-			Projectile.spriteDirection = (!(Vector2.Dot(Projectile.velocity, Vector2.UnitX) < 0f)) ? 1 : -1;
+			Projectile.spriteDirection = !(Vector2.Dot(Projectile.velocity, Vector2.UnitX) < 0f) ? 1 : -1;
 
 			if (Projectile.ai[0] >= flyTime || player.itemAnimation == 0)
 			{
@@ -186,9 +186,7 @@ namespace StarlightRiver.Core
 				bool draw = true;
 
 				if (i == 0)
-				{
 					origin.Y += handleOffset;
-				}
 				else if (i == points.Count - 2)
 				{
 					whipFrame.Y = height * 4;

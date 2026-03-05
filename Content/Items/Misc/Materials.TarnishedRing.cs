@@ -1,8 +1,9 @@
-﻿using Terraria.ID;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-	public class TarnishedRing : QuickMaterial
+	public class TarnishedRing : BaseMaterial
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 

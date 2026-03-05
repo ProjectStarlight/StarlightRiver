@@ -208,7 +208,11 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			CursedSystem = new ParticleSystem("StarlightRiver/Assets/Masks/GlowAlpha", UpdateCursedBody, ParticleSystem.AnchorOptions.UI);
 			ShardsSystem = new ParticleSystem("StarlightRiver/Assets/GUI/charm", UpdateShardsBody, ParticleSystem.AnchorOptions.UI);
 
-			On_ItemSlot.Draw_SpriteBatch_ItemArray_int_int_Vector2_Color += DrawSpecial;
+			if (!Main.dedServ)
+			{
+				On_ItemSlot.Draw_SpriteBatch_ItemArray_int_int_Vector2_Color += DrawSpecial;
+				On_Main.DrawInterface_27_Inventory += DrawInventoryParticles;
+			}
 		}
 
 		public override void PostUpdateEverything()
@@ -231,6 +235,13 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			{
 				orig(sb, inv, context, slot, position, color);
 			}
+		}
+
+		private void DrawInventoryParticles(On_Main.orig_DrawInterface_27_Inventory orig, Main self)
+		{
+			orig(self);
+			CursedSystem.DrawParticles(Main.spriteBatch);
+			ShardsSystem.DrawParticles(Main.spriteBatch);
 		}
 
 		//this is vanilla code. Only reasonable alternative is likely porting all drawing to IL.

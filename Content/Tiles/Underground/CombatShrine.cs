@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using NetEasy;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems;
@@ -36,7 +37,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 	}
 
 	[SLRDebug]
-	class CombatShrineItem : QuickTileItem
+	class CombatShrineItem : BaseTileItem
 	{
 		public CombatShrineItem() : base("Combat shrine placer", "{{Debug}} item", "CombatShrine") { }
 	}

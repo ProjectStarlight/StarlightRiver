@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Core.Systems.DummyTileSystem;
@@ -20,7 +21,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
 		}
 	}
 
-	internal class BouncerItem : QuickTileItem
+	internal class BouncerItem : BaseTileItem
 	{
 		public BouncerItem() : base("Vitric Bouncer", "Dash into this to go flying!\nResets jump accessories", "Bouncer", 8, AssetDirectory.InteractiveTile) { }
 

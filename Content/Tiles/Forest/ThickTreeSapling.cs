@@ -1,3 +1,4 @@
+using StarlightRiver.Content.Items.BaseTypes;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ObjectData;
@@ -79,7 +80,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 		}
 	}
 
-	class ThickTreeAcorn : QuickTileItem
+	class ThickTreeAcorn : BaseTileItem
 	{
 		public ThickTreeAcorn() : base("Large Acorn", "", "ThickTreeSapling", 1, AssetDirectory.ForestTile, false,
 			ItemValue: Item.buyPrice(silver: 50))

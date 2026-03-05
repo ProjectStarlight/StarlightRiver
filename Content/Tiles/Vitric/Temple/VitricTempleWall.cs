@@ -1,3 +1,4 @@
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems;
 using Terraria.Graphics;
 using Terraria.ID;
@@ -52,7 +53,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	}
 
 	[SLRDebug]
-	class VitricTempleWallItem : QuickWallItem
+	class VitricTempleWallItem : BaseWallItem
 	{
 		public override string Texture => AssetDirectory.VitricTile + "VitricTempleWallItem";
 
@@ -61,7 +62,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 	class VitricTempleWallSafe : VitricTempleWall { }
 
-	class VitricTempleWallSafeItem : QuickWallItem
+	class VitricTempleWallSafeItem : BaseWallItem
 	{
 		public override string Texture => AssetDirectory.VitricTile + "VitricTempleWallItem";
 

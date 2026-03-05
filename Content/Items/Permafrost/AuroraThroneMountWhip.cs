@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarlightRiver.Content.Items.BaseTypes.Weapons;
+using System;
 using System.Collections.Generic;
 using Terraria.Audio;
 using Terraria.ID;

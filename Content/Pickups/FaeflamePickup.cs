@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.Faewhip;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
@@ -59,7 +60,7 @@ namespace StarlightRiver.Content.Pickups
 	}
 
 	[SLRDebug]
-	public class FaeflameTileItem : QuickTileItem
+	public class FaeflameTileItem : BaseTileItem
 	{
 		public FaeflameTileItem() : base("Faeflame", "{{Debug}} placer for ability pickup", "FaeflamePickupTile", -1) { }
 

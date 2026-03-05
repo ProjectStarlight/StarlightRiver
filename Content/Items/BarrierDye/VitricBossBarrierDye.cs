@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.BarrierSystem;
 using Terraria.ID;
 
@@ -34,14 +35,14 @@ namespace StarlightRiver.Content.Items.BarrierDye
 
 		public override void PostDrawEffects(SpriteBatch spriteBatch, Player Player)
 		{
-			if (!CustomHooks.PlayerTarget.canUseTarget)
+			if (!PlayerTargetSystem.canUseTarget)
 				return;
 
 			BarrierPlayer barrier = Player.GetModPlayer<BarrierPlayer>();
 
-			Texture2D tex = CustomHooks.PlayerTarget.Target;
+			Texture2D tex = PlayerTargetSystem.Target;
 
-			Vector2 pos = CustomHooks.PlayerTarget.getPositionOffset(Player.whoAmI);
+			Vector2 pos = PlayerTargetSystem.getPositionOffset(Player.whoAmI);
 
 			Effect effect = ShaderLoader.GetShader("MoltenFormAndColor").Value;
 
@@ -55,7 +56,7 @@ namespace StarlightRiver.Content.Items.BarrierDye
 				spriteBatch.End();
 				spriteBatch.Begin(default, BlendState.NonPremultiplied, SamplerState.PointClamp, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.ZoomMatrix);
 
-				spriteBatch.Draw(tex, CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI), CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI), Color.White);
+				spriteBatch.Draw(tex, PlayerTargetSystem.getPlayerTargetPosition(Player.whoAmI), PlayerTargetSystem.getPlayerTargetSourceRectangle(Player.whoAmI), Color.White);
 
 				spriteBatch.End();
 				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);

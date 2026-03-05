@@ -1,8 +1,9 @@
-﻿using Terraria.ID;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.SteampunkSet
 {
-	public class AncientGear : QuickMaterial
+	public class AncientGear : BaseMaterial
 	{
 		public AncientGear() : base("Ancient Gear", "", 999, 200, 2, AssetDirectory.SteampunkItem) { }
 

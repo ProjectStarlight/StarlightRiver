@@ -1,5 +1,10 @@
 ﻿using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Tiles.Permafrost;
+using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems.ScreenTargetSystem;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria.DataStructures;
 
 namespace StarlightRiver.Core.Systems.CutawaySystem
@@ -8,17 +13,47 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 	{
 		public static bool created = false;
 
+		public static List<Cutaway> cutaways;
+
+		public static ScreenTarget cutawayTarget;
+
+		private static Mod subLib;
+
 		public static Cutaway cathedralOverlay;
 		public static Cutaway forgeOverlay;
 		public static Cutaway templeOverlay;
-		//public static Cutaway observatoryOverlay;
+
+		private static bool Inside => cutaways?.Any(n => n.fadeTime < 0.95f) ?? false;
+
+		public static bool InSubworld => subLib?.Call("Current") != null;
+
+		public override void Load()
+		{
+			if (Main.dedServ)
+				return;
+
+			cutaways = new();
+			cutawayTarget = new(DrawCutawayTarget, () => Inside, 1);
+
+			ModLoader.TryGetMod("SubworldLibrary", out subLib);
+
+			On_Main.DrawInfernoRings += DrawNegative;
+			On_Main.DrawDust += DrawPositive;
+			On_WorldGen.SaveAndQuit += ClearCutaways;
+		}
+
+		public override void Unload()
+		{
+			cutaways = null;
+			cutawayTarget = null;
+		}
 
 		public static void CreateCutaways()
 		{
-			CutawayHook.cutaways.Clear();
+			cutaways.Clear();
 
 			// Dont create in subworlds
-			if (CutawayHook.InSubworld)
+			if (InSubworld)
 				return;
 
 			// Auroracle temple overlay
@@ -26,7 +61,7 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 			{
 				Inside = CheckForSquidArena
 			};
-			CutawayHook.NewCutaway(cathedralOverlay);
+			cutaways.Add(cathedralOverlay);
 
 			// Glassweaver forge overlay
 			forgeOverlay = new Cutaway(Assets.Overlay.ForgeOverlay, StarlightWorld.GlassweaverArena.TopLeft() + new Vector2(-2, 2) * 16)
@@ -39,7 +74,7 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 					return arena.Intersects(n.Hitbox);
 				}
 			};
-			CutawayHook.NewCutaway(forgeOverlay);
+			cutaways.Add(forgeOverlay);
 
 			// Vitric temple overlay
 			Point16 dimensions = StructureHelper.API.Generator.GetStructureDimensions("Structures/VitricTempleNew", StarlightRiver.Instance);
@@ -49,14 +84,7 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 			{
 				Inside = (n) => n.InModBiome<VitricTempleBiome>()
 			};
-			CutawayHook.NewCutaway(templeOverlay);
-
-			// Observatory overlay
-			/*observatoryOverlay = new Cutaway(Assets.Overlay.ObservatoryOverlay, ObservatorySystem.ObservatoryRoomWorld.TopLeft() + new Vector2(-9, 8) * 16)
-			{
-				Inside = (n) => ObservatorySystem.IsInMainStructure(n)
-			};
-			CutawayHook.NewCutaway(observatoryOverlay);*/
+			cutaways.Add(templeOverlay);
 		}
 
 		/// <summary>
@@ -79,6 +107,64 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 			}
 
 			return false;
+		}
+
+		private void ClearCutaways(On_WorldGen.orig_SaveAndQuit orig, Action callback)
+		{
+			cutaways.Clear();
+			orig(callback);
+		}
+
+		private static void DrawCutawayTarget(SpriteBatch sb)
+		{
+			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
+
+			for (int k = 0; k < cutaways.Count; k++)
+			{
+				if (cutaways[k].fadeTime < 0.95f)
+					cutaways[k].Draw(1);
+			}
+		}
+
+		private void DrawPositive(On_Main.orig_DrawDust orig, Main self)
+		{
+			if (!InSubworld)
+			{
+				for (int k = 0; k < cutaways.Count; k++)
+					cutaways[k].Draw();
+			}
+
+			orig(self);
+		}
+
+		private void DrawNegative(On_Main.orig_DrawInfernoRings orig, Main self)
+		{
+			orig(self);
+
+			if (StarlightRiver.debugMode || InSubworld)
+				return;
+
+			if (Inside)
+			{
+				Cutaway activeCutaway = cutaways.FirstOrDefault(n => n.fadeTime < 0.95f);
+
+				Effect effect = ShaderLoader.GetShader("Negative").Value;
+
+				if (effect is null)
+					return;
+
+				effect.Parameters["sampleTexture"].SetValue(cutawayTarget.RenderTarget);
+				effect.Parameters["uColor"].SetValue(Color.Black.ToVector3());
+				effect.Parameters["opacity"].SetValue(1 - activeCutaway.fadeTime);
+
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect);
+
+				Main.spriteBatch.Draw(cutawayTarget.RenderTarget, Vector2.Zero, Color.White);
+
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default);
+			}
 		}
 
 		public override void PostUpdateEverything()

@@ -1,4 +1,5 @@
 using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Helpers;
 using Terraria.Audio;
@@ -283,7 +284,7 @@ namespace StarlightRiver.Content.Tiles.Desert
 		}
 	}
 
-	class AnkhChestItem : QuickTileItem
+	class AnkhChestItem : BaseTileItem
 	{
 		public AnkhChestItem() : base("Ankh Chest", "", "AnkhChest", 1, AssetDirectory.DesertTile, false) { }
 	}

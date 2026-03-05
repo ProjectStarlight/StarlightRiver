@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Loaders;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.Systems.PixelationSystem;
@@ -139,7 +140,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 	}
 
 	[SLRDebug]
-	class LensItem : QuickTileItem
+	class LensItem : BaseTileItem
 	{
 		public LensItem() : base("Reflector Lens", "{{Debug}} Item", "Lens") { }
 	}

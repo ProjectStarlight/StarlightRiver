@@ -1,4 +1,6 @@
-﻿namespace StarlightRiver.Content.Tiles.Paintings
+﻿using StarlightRiver.Content.Items.BaseTypes;
+
+namespace StarlightRiver.Content.Tiles.Paintings
 {
 	class RatKingPainting : ModTile
 	{
@@ -10,7 +12,7 @@
 		}
 	}
 
-	class RatKingPaintingItem : QuickTileItem
+	class RatKingPaintingItem : BaseTileItem
 	{
 		public RatKingPaintingItem() : base("Majestic Hoarder", "'K. Ra'", "RatKingPainting", 0, AssetDirectory.PaintingTile) { }
 	}

@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.Faewhip;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.DummyTileSystem;
@@ -140,7 +141,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 	}
 
 	[SLRDebug]
-	internal class NoxiousNodeItem : QuickTileItem
+	internal class NoxiousNodeItem : BaseTileItem
 	{
 		public override string Texture => AssetDirectory.Debug;
 

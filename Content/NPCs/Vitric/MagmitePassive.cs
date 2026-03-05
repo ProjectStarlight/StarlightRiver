@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Items.BaseTypes;
 using System;
 using System.IO;
 using Terraria.Audio;
@@ -334,7 +335,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		}
 	}
 
-	internal class MagmitePassiveItem : QuickCritterItem
+	internal class MagmitePassiveItem : BaseCritterItem
 	{
 		public MagmitePassiveItem() : base("Magmite", "Release him!", Item.sellPrice(silver: 15), ItemRarityID.Orange, NPCType<MagmitePassive>(), AssetDirectory.VitricItem) { }
 	}

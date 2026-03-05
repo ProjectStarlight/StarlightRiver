@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.DummyTileSystem;
+using StarlightRiver.Core.Systems;
 using System;
 using Terraria.GameInput;
 using static Terraria.ModLoader.ModContent;
@@ -272,7 +273,7 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 
 		public override void DrawActiveEffects(SpriteBatch spriteBatch)
 		{
-			if (!Active || !CustomHooks.PlayerTarget.canUseTarget)
+			if (!Active || !PlayerTargetSystem.canUseTarget)
 				return;
 
 			if (trail is null || trail.IsDisposed)

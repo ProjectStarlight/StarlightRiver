@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Items.BaseTypes;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -75,7 +76,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		}
 	}
 
-	class VitricSpikeItem : QuickTileItem
+	class VitricSpikeItem : BaseTileItem
 	{
 		public VitricSpikeItem() : base("Vitric Spikes", "Ouch!", "VitricSpike", 0, AssetDirectory.VitricTile) { }
 	}

@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Packets;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Packets;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent.ItemDropRules;
@@ -114,12 +115,12 @@ namespace StarlightRiver.Content.Tiles.Forest
 		}
 	}
 
-	public class Slimeberry : QuickMaterial
+	public class Slimeberry : BaseMaterial
 	{
 		public Slimeberry() : base("Slimeberry", "Ew.", 99, 1, ItemRarityID.Blue, AssetDirectory.ForestTile) { }
 	}
 
-	public class SlimeberryBushItem : QuickTileItem
+	public class SlimeberryBushItem : BaseTileItem
 	{
 		public SlimeberryBushItem() : base("Slimeberry Bush", "Places a slimeberry bush", "SlimeberryBush", ItemRarityID.Blue, AssetDirectory.ForestTile) { }
 	}

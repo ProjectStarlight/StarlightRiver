@@ -1,4 +1,5 @@
 ﻿using ReLogic.Content;
+using StarlightRiver.Content.Items.BaseTypes;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -98,7 +99,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 	public sealed class VitricPylonEntity : TEModdedPylon { }
 
-	public sealed class VitricPylonItem : QuickTileItem
+	public sealed class VitricPylonItem : BaseTileItem
 	{
 		public VitricPylonItem() : base("Vitric Pylon", "You shouldn't have this!", "VitricPylon", 0, AssetDirectory.Debug, true, 0) { }
 	}

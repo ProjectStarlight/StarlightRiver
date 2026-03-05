@@ -1,5 +1,5 @@
-﻿using StarlightRiver.Content.CustomHooks;
-using StarlightRiver.Core.Loaders;
+﻿using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems;
 using System;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -110,12 +110,12 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		private static void DrawPlayerTarget(int flickerTime, int shieldTimer, Player drawPlayer)
 		{
-			if (!PlayerTarget.canUseTarget)
+			if (!PlayerTargetSystem.canUseTarget)
 				return;
 
 			GraphicsDevice gD = Main.graphics.GraphicsDevice;
 			SpriteBatch spriteBatch = Main.spriteBatch;
-			Texture2D target = PlayerTarget.Target;
+			Texture2D target = PlayerTargetSystem.Target;
 
 			if (Main.dedServ || spriteBatch == null || gD == null || target == null)
 				return;
@@ -124,7 +124,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 			if (effect != null)
 			{
-				effect.Parameters["uImageSize0"].SetValue(new Vector2(PlayerTarget.sheetSquareX, PlayerTarget.sheetSquareY));
+				effect.Parameters["uImageSize0"].SetValue(new Vector2(PlayerTargetSystem.sheetSquareX, PlayerTargetSystem.sheetSquareY));
 				effect.Parameters["alpha"].SetValue((float)Math.Pow(shieldTimer / 200f, 0.25f));
 
 				spriteBatch.End();
@@ -147,7 +147,7 @@ namespace StarlightRiver.Content.Items.Breacher
 				effect.Parameters["red2"].SetValue(color.ToVector4());
 
 				effect.CurrentTechnique.Passes[0].Apply();
-				spriteBatch.Draw(target, PlayerTarget.getPlayerTargetPosition(drawPlayer.whoAmI), PlayerTarget.getPlayerTargetSourceRectangle(drawPlayer.whoAmI), Color.White);
+				spriteBatch.Draw(target, PlayerTargetSystem.getPlayerTargetPosition(drawPlayer.whoAmI), PlayerTargetSystem.getPlayerTargetSourceRectangle(drawPlayer.whoAmI), Color.White);
 
 				spriteBatch.End();
 				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);

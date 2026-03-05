@@ -1,5 +1,6 @@
 ﻿using ReLogic.Content;
 using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Items.BaseTypes.Weapons;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.GameContent;

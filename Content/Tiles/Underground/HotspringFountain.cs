@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using System.Linq;
@@ -42,7 +43,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 		}
 	}
 
-	class HotspringFountainItem : QuickTileItem
+	class HotspringFountainItem : BaseTileItem
 	{
 		public override string Texture => AssetDirectory.Assets + "Tiles/Underground/HotspringFountainItem";
 

@@ -1,11 +1,12 @@
-﻿using Terraria.DataStructures;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.Localization;
 
 namespace StarlightRiver.Content.Items.Haunted
 {
-	public class VengefulSpirit : QuickMaterial
+	public class VengefulSpirit : BaseMaterial
 	{
 		private static LocalizedText DropConditionText;
 		public override void Load()

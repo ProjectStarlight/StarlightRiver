@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Items.BaseTypes
+namespace StarlightRiver.Content.Items.BaseTypes.Weapons
 {
 	internal abstract class BaseTalisman<T, T2> : ModItem where T : BaseTalismanProjectile<T2> where T2 : BaseTalismanBuff, new()
 	{
@@ -71,7 +71,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 			if (flipTimer > 0)
 			{
-				Projectile.velocity = Projectile.velocity.RotatedBy(6.28f / (float)maxFlip * -direction);
+				Projectile.velocity = Projectile.velocity.RotatedBy(6.28f / maxFlip * -direction);
 				flipTimer--;
 			}
 			else if (Main.rand.NextBool(100))
@@ -85,7 +85,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			Projectile.velocity += Vector2.UnitY.RotatedBy(Projectile.rotation) * (float)Math.Sin(Projectile.timeLeft / 5f) * 0.25f;
 			Projectile.velocity += Vector2.UnitY.RotatedBy(Projectile.rotation) * (float)Math.Sin(Projectile.timeLeft / 10f + 2) * 0.1f;
 
-			if (Projectile.frameCounter++ > (4 - (int)Projectile.velocity.Length() / 6f))
+			if (Projectile.frameCounter++ > 4 - (int)Projectile.velocity.Length() / 6f)
 			{
 				Projectile.frameCounter = 0;
 				Projectile.frame++;
@@ -142,7 +142,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 				{
 					for (int k = 0; k < buff.threshold; k++)
 					{
-						Vector2 off = new Vector2(rand.Next(npc.width), rand.Next(npc.height));
+						var off = new Vector2(rand.Next(npc.width), rand.Next(npc.height));
 						Vector2 pos2 = npc.position + off - Main.screenPosition;
 						spriteBatch.Draw(tex, pos2, null, drawColor * (buff.triggerAnimTime / 15f), 0, tex.Size() / 2f, 1f + (1 - buff.triggerAnimTime / 15f), 0, 0);
 					}
@@ -151,7 +151,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 				{
 					for (int k = 0; k < buff.stacks.Count; k++)
 					{
-						Vector2 off = new Vector2(rand.Next(npc.width), rand.Next(npc.height));
+						var off = new Vector2(rand.Next(npc.width), rand.Next(npc.height));
 						Vector2 pos2 = npc.position + off - Main.screenPosition;
 						spriteBatch.Draw(tex, pos2, null, drawColor, 0, tex.Size() / 2f, 1f, 0, 0);
 					}

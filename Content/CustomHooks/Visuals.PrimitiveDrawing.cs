@@ -1,6 +1,6 @@
 ﻿namespace StarlightRiver.Content.CustomHooks
 {
-	public class PrimitiveDrawing : HookGroup
+	public class PrimitiveDrawing : ModSystem
 	{
 		// Should not interfere with anything.
 		public override void Load()

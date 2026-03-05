@@ -4,7 +4,7 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.UI.Chat;
 
-namespace StarlightRiver.Content.Items.BaseTypes
+namespace StarlightRiver.Content.Items.BaseTypes.Weapons
 {
 	public abstract class MultiAmmoWeapon : ModItem
 	{
@@ -186,9 +186,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 				return;
 
 			if (!Main.LocalPlayer.controlDown)
-			{
 				tooltips.Add(new TooltipLine(Mod, "Ammo", "[c/646464:Press DOWN for ammo information]"));
-			}
 			else
 			{
 				string ammoList = "Valid Ammunition:\n";
@@ -208,7 +206,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 				tooltips.Add(new TooltipLine(StarlightRiver.Instance, "AmmoListTooltip", ammoList));
 			}
 
-			TooltipLine AmmoLine = new TooltipLine(StarlightRiver.Instance, "AmmoLineToolTip", $"Current Ammo:[i:{ammoItem.type}]{ammoItem.stack} {ammoItem.Name}:" +
+			var AmmoLine = new TooltipLine(StarlightRiver.Instance, "AmmoLineToolTip", $"Current Ammo:[i:{ammoItem.type}]{ammoItem.stack} {ammoItem.Name}:" +
 				$" {ValidAmmos.Find(a => a.ammoID == ammoItem.type).tooltip}");
 
 			TooltipLine kbLine = tooltips.Find(n => n.Name == "Knockback");

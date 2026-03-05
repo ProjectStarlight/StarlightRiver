@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Tiles.BaseTypes;
 using System;
 using System.Collections.Generic;
@@ -37,7 +38,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 		}
 	}
 
-	internal class AuroraPylonItem : QuickTileItem
+	internal class AuroraPylonItem : BaseTileItem
 	{
 		public AuroraPylonItem() : base("Aurora Pylon", "You shouldn't have this!", "AuroraPylon", 0, AssetDirectory.Debug, true, 0) { }
 	}

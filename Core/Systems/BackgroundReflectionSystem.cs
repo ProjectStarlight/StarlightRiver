@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.Configs;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
@@ -10,9 +11,9 @@ using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.CustomHooks
+namespace StarlightRiver.Core.Systems
 {
-	class ReflectionTarget : HookGroup
+	class BackgroundReflectionSystem : ModSystem
 	{
 		//Drawing Player to Target. Should be safe. Excuse me if im duplicating something that alr exists :p
 		public const string simpleReflectionShaderPath = "StarlightRiver:SimpleReflection";
@@ -72,7 +73,7 @@ namespace StarlightRiver.Content.CustomHooks
 			if (isDrawReflectablesThisFrame)
 			{
 				DrawReflectableEntities(Main.spriteBatch);
-				ReflectionTarget.isDrawReflectablesThisFrame = false;
+				isDrawReflectablesThisFrame = false;
 			}
 
 			GD.SetRenderTarget(null);
@@ -145,10 +146,10 @@ namespace StarlightRiver.Content.CustomHooks
 			{
 				Main.instance.DrawCachedNPCs(Main.instance.DrawCacheNPCsOverPlayers, false);
 
-				if (Main.LocalPlayer.InModBiome(ModContent.GetInstance<Biomes.PermafrostTempleBiome>()))
+				if (Main.LocalPlayer.InModBiome(ModContent.GetInstance<Content.Biomes.PermafrostTempleBiome>()))
 				{
 					Main.spriteBatch.Begin();
-					DrawUnderCathedralWater.DrawWater();
+					ArenaActor.RenderArenaLayersInner();
 					Main.spriteBatch.End();
 				}
 			}
@@ -187,13 +188,13 @@ namespace StarlightRiver.Content.CustomHooks
 		{
 			orig(self);
 
-			if (ReflectionTarget.applyWallReflectionsThisFrame)
+			if (applyWallReflectionsThisFrame)
 			{
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
 				DrawReflection(Main.spriteBatch, screenPos: Vector2.Zero, normalMap: reflectionNormalMapTarget.RenderTarget, flatOffset: new Vector2(-0.0075f, 0.016f), offsetScale: 0.05f, tintColor: Color.White, restartSpriteBatch: false);
-				ReflectionTarget.applyWallReflectionsThisFrame = false;
+				applyWallReflectionsThisFrame = false;
 
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
@@ -207,7 +208,7 @@ namespace StarlightRiver.Content.CustomHooks
 		{
 			ReflectionSubConfig reflectionConfig = ModContent.GetInstance<GraphicsConfig>().ReflectionConfig;
 
-			if (ReflectionTarget.canUseTarget && reflectionConfig.isReflectingAnything())
+			if (canUseTarget && reflectionConfig.isReflectingAnything())
 			{
 
 				if (restartSpriteBatch)
@@ -218,7 +219,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 				var data = new DrawData(normalMap, screenPos, sourceRect, new Color(255, 255, 255, 0));
 
-				Vector2 normalMapPos = new Vector2(screenPos.X / Target.RenderTarget.Width, screenPos.Y / Target.RenderTarget.Height);
+				var normalMapPos = new Vector2(screenPos.X / Target.RenderTarget.Width, screenPos.Y / Target.RenderTarget.Height);
 
 				if (sourceRect != null)
 					normalMapPos = new Vector2((screenPos.X - sourceRect.Value.Left) / Target.RenderTarget.Width, (screenPos.Y - sourceRect.Value.Top) / Target.RenderTarget.Height);
@@ -283,8 +284,8 @@ namespace StarlightRiver.Content.CustomHooks
 							//not sure if tile.WallFrame* is the correct value
 							if (tex != null)
 								spriteBatch.Draw(TextureAssets.Wall[type].Value, pos - Main.screenPosition - new Vector2(8, 8), new Rectangle(tile.WallFrameX, tile.WallFrameY, 36, 36), new Color(128, 128, 255, 255));
-							ReflectionTarget.isDrawReflectablesThisFrame = true;
-							ReflectionTarget.applyWallReflectionsThisFrame = true;
+							isDrawReflectablesThisFrame = true;
+							applyWallReflectionsThisFrame = true;
 						}
 					}
 				}

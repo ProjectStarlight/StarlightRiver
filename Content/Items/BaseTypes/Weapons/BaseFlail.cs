@@ -3,7 +3,7 @@ using System.IO;
 using Terraria.Audio;
 using Terraria.ID;
 
-namespace StarlightRiver.Core
+namespace StarlightRiver.Content.Items.BaseTypes.Weapons
 {
 	public abstract class BaseFlailItem : ModItem
 	{
@@ -120,7 +120,7 @@ namespace StarlightRiver.Core
 			{
 				Projectile.rotation += Projectile.velocity.X * 0.03f;
 				Owner.ChangeDir(Math.Sign(Projectile.Center.X - Owner.Center.X));
-				Owner.itemRotation = MathHelper.WrapAngle(Projectile.AngleFrom(Owner.MountedCenter) - ((Owner.direction < 0) ? MathHelper.Pi : 0));
+				Owner.itemRotation = MathHelper.WrapAngle(Projectile.AngleFrom(Owner.MountedCenter) - (Owner.direction < 0 ? MathHelper.Pi : 0));
 			}
 
 			float launchspeed = Owner.HeldItem.shootSpeed * MathHelper.Lerp(SpeedMult.X, SpeedMult.Y, ChargeTime / MaxChargeTime);
@@ -131,7 +131,7 @@ namespace StarlightRiver.Core
 
 				if (++Timer == 1 && Owner.whoAmI == Main.myPlayer)
 				{
-					Terraria.Audio.SoundEngine.PlaySound(SoundID.Item19, Projectile.Center);
+					SoundEngine.PlaySound(SoundID.Item19, Projectile.Center);
 					Projectile.Center = Owner.MountedCenter;
 					Projectile.velocity = Owner.DirectionTo(Main.MouseWorld) * launchspeed;
 					OnLaunch(Owner);
@@ -153,9 +153,7 @@ namespace StarlightRiver.Core
 			if (falling) //falling towards ground, returns after hitting ground
 			{
 				if (strucktile || ++Timer >= 180)
-				{
 					Return(launchspeed, Owner);
-				}
 				else
 				{
 					FallingExtras(Owner);
@@ -214,9 +212,9 @@ namespace StarlightRiver.Core
 
 			SoundEngine.PlaySound(SoundID.Dig, Projectile.Center);
 			Collision.HitTiles(Projectile.position, Projectile.velocity, Projectile.width, Projectile.height);
-			Projectile.velocity = new Vector2((Projectile.velocity.X != Projectile.oldVelocity.X) ?
+			Projectile.velocity = new Vector2(Projectile.velocity.X != Projectile.oldVelocity.X ?
 				-Projectile.oldVelocity.X / 5 : Projectile.velocity.X,
-				(Projectile.velocity.Y != Projectile.oldVelocity.Y) ?
+				Projectile.velocity.Y != Projectile.oldVelocity.Y ?
 				-Projectile.oldVelocity.Y / 5 : Projectile.velocity.Y);
 			SafeTileCollide(oldVelocity);
 			Timer = 30;

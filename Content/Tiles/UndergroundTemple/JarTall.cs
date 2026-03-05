@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
@@ -115,7 +116,7 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 	}
 
 	[SLRDebug]
-	public class JarTallItem : QuickTileItem
+	public class JarTallItem : BaseTileItem
 	{
 		public override string Texture => AssetDirectory.Debug;
 

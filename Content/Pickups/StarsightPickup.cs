@@ -2,6 +2,7 @@
 using StarlightRiver.Content.Abilities.Faewhip;
 using StarlightRiver.Content.Abilities.Hint;
 using StarlightRiver.Content.GUI;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.NPCs.Starlight;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
@@ -76,7 +77,7 @@ namespace StarlightRiver.Content.Pickups
 	}
 
 	[SLRDebug]
-	public class StarsightTileItem : QuickTileItem
+	public class StarsightTileItem : BaseTileItem
 	{
 		public StarsightTileItem() : base("Starsight", "{{Debug}} placer for ability pickup", "StarsightPickupTile", -1) { }
 

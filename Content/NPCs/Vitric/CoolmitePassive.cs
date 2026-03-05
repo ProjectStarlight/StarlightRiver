@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Items.BaseTypes;
 using System.IO;
 using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
@@ -121,7 +122,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		}
 	}
 
-	internal class CoolmitePassiveItem : QuickCritterItem
+	internal class CoolmitePassiveItem : BaseCritterItem
 	{
 		public CoolmitePassiveItem() : base("Coolmite", "Fragile! Please handle with care.", Item.sellPrice(silver: 15), ItemRarityID.Orange, NPCType<CoolmitePassive>(), AssetDirectory.VitricItem) { }
 	}

@@ -1,8 +1,11 @@
+using MonoMod.Cil;
 using StarlightRiver.Content.Biomes;
-using StarlightRiver.Content.CustomHooks;
+using StarlightRiver.Content.Configs;
 using StarlightRiver.Content.Items.Permafrost;
+using StarlightRiver.Content.NPCs.BaseTypes;
 using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.CutawaySystem;
 using StarlightRiver.Core.Systems.LightingSystem;
 using System;
@@ -21,7 +24,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		private readonly List<NPC> platforms = new();
 
 		public int waterfallWidth = 0;
-		ParticleSystem bubblesSystem = new(AssetDirectory.SquidBoss + "Bubble", UpdateBubblesBody);
+		ParticleSystem bubblesSystem;
 		private Vector2 domeOffset = new(0, -886);
 
 		private static VertexPositionColorTexture[] verticies;
@@ -40,6 +43,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public override string Texture => AssetDirectory.Invisible;
 
 		private int WhitelistID => WallType<AuroraBrickWall>();
+
+		public override void Load()
+		{
+			bubblesSystem = new(AssetDirectory.SquidBoss + "Bubble", UpdateBubblesBody);
+
+			if (!Main.dedServ)
+				IL_Main.DoDraw_WallsTilesNPCs += RenderArenaLayers;
+		}
 
 		public override void SetStaticDefaults()
 		{
@@ -67,6 +78,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
 		{
 			database.Entries.Remove(bestiaryEntry);
+		}
+
+		private void RenderArenaLayers(ILContext il)
+		{
+			var c = new ILCursor(il);
+			c.TryGotoNext(n => n.MatchLdfld<Main>("DrawCacheNPCsBehindNonSolidTiles"));
+
+			c.EmitDelegate(RenderArenaLayersInner);
 		}
 
 		public override bool NeedSaving()
@@ -314,6 +333,49 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			platforms.Add(Main.npc[i]);
 		}
 
+		public static void RenderArenaLayersInner()
+		{
+			if (!Main.LocalPlayer.InModBiome<PermafrostTempleBiome>())
+				return;
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+
+			NPC npc = latestActor?.NPC;
+
+			if (npc != null && npc.active)
+			{
+				if (BackgroundReflectionSystem.canUseTarget || !ModContent.GetInstance<GraphicsConfig>().ReflectionConfig.ReflectionsOn)
+					(npc.ModNPC as ArenaActor).DrawBigWindow(Main.spriteBatch);
+
+				int boss = -1;
+				var drawCache = new List<NPC>();
+
+				for (int k = 0; k < Main.maxNPCs; k++) //draw NPCs and find boss
+				{
+					NPC NPC2 = Main.npc[k];
+
+					if (NPC2.active && NPC2.ModNPC is IUnderwater)
+					{
+						if (NPC2.type == ModContent.NPCType<SquidBoss>())
+							boss = k;
+						else
+							drawCache.Add(NPC2);
+					}
+				}
+
+				drawCache.ForEach(n => (n.ModNPC as IUnderwater).DrawUnderWater(Main.spriteBatch, 0));
+
+				foreach (Projectile proj in Main.projectile.Where(n => n.active && n.ModProjectile is IUnderwater)) //draw all Projectiles
+					(proj.ModProjectile as IUnderwater).DrawUnderWater(Main.spriteBatch, 0);
+
+				if (boss != -1 && Main.npc[boss].ModNPC is IUnderwater)
+					(Main.npc[boss].ModNPC as IUnderwater).DrawUnderWater(Main.spriteBatch, 0); //draw boss ontop if extant
+
+				drawCache.ForEach(n => (n.ModNPC as IUnderwater).DrawUnderWater(Main.spriteBatch, 1)); //draw layer for NPCs over bosses, used for the front part of tentacles
+			}
+		}
+
 		public void DrawWater(SpriteBatch spriteBatch)
 		{
 			Texture2D tex = Assets.Bosses.SquidBoss.CathedralWater.Value;
@@ -529,9 +591,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			Color tintColor = Color.White;
 			tintColor.A = (byte)(NPC.AnyNPCs(NPCType<SquidBoss>()) ? 25 : 75);
 
-			ReflectionTarget.DrawReflection(spriteBatch, screenPos: NPC.Center - reflectionMap.Size() / 2 + new Vector2(0, -7 * 16 - 3) - Main.screenPosition, normalMap: reflectionMap, flatOffset: new Vector2(-0.0075f, 0.05f), offsetScale: 0.04f, tintColor: tintColor, restartSpriteBatch: false);
-			ReflectionTarget.DrawReflection(spriteBatch, screenPos: NPC.Center - domeMap.Size() / 2 + domeOffset - Main.screenPosition, normalMap: domeMap, flatOffset: new Vector2(0f, 0.15f), offsetScale: 0.08f, tintColor: tintColor, restartSpriteBatch: false);
-			ReflectionTarget.isDrawReflectablesThisFrame = true;
+			BackgroundReflectionSystem.DrawReflection(spriteBatch, screenPos: NPC.Center - reflectionMap.Size() / 2 + new Vector2(0, -7 * 16 - 3) - Main.screenPosition, normalMap: reflectionMap, flatOffset: new Vector2(-0.0075f, 0.05f), offsetScale: 0.04f, tintColor: tintColor, restartSpriteBatch: false);
+			BackgroundReflectionSystem.DrawReflection(spriteBatch, screenPos: NPC.Center - domeMap.Size() / 2 + domeOffset - Main.screenPosition, normalMap: domeMap, flatOffset: new Vector2(0f, 0.15f), offsetScale: 0.08f, tintColor: tintColor, restartSpriteBatch: false);
+			BackgroundReflectionSystem.isDrawReflectablesThisFrame = true;
 		}
 
 		private void SpawnPlatform(int x, int y, bool small = false)

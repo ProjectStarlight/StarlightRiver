@@ -1,3 +1,4 @@
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Physics;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
@@ -21,7 +22,7 @@ namespace StarlightRiver.Content.Tiles
 	}
 
 	[SLRDebug]
-	class VerletBannerItem : QuickTileItem
+	class VerletBannerItem : BaseTileItem
 	{
 		public VerletBannerItem() : base("Verlet banner", "{{Debug}} Item", "VerletBanner", 1, AssetDirectory.VitricTile, false) { }
 	}

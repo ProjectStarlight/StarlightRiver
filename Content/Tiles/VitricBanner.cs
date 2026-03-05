@@ -1,3 +1,4 @@
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Physics;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.VerletGenerators;
@@ -22,7 +23,7 @@ namespace StarlightRiver.Content.Tiles
 		}
 	}
 
-	class VitricBannerItem : QuickTileItem
+	class VitricBannerItem : BaseTileItem
 	{
 		public VitricBannerItem() : base("Long Flowing Banner", "", "VitricBanner", 1, AssetDirectory.VitricTile, false) { }
 	}

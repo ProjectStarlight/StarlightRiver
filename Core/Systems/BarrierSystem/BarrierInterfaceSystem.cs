@@ -1,5 +1,6 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using StarlightRiver.Content.Abilities.Hint;
 using StarlightRiver.Content.CustomHooks;
 using System;
 using System.Reflection;
@@ -7,7 +8,7 @@ using Terraria.GameInput;
 
 namespace StarlightRiver.Core.Systems.BarrierSystem
 {
-	class PlayerRadarBarrierHook : HookGroup
+	class BarrierInterfaceSystem : ModSystem
 	{
 		public override void Load()
 		{
@@ -15,6 +16,12 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 			Terraria.GameContent.UI.IL_NewMultiplayerClosePlayersOverlay.PlayerOffScreenCache.DrawLifeBar += DrawAllyRadarBarrierIL;
 			On_Main.DrawInterface_14_EntityHealthBars += DrawShieldForPlayers;
 			On_Main.DrawInterface_39_MouseOver += drawShieldHoverText;
+
+			if (Main.dedServ)
+				return;
+
+			Terraria.GameContent.UI.ResourceSets.IL_ClassicPlayerResourcesDisplaySet.DrawLife += ShiftText;
+			Terraria.GameContent.UI.ResourceSets.On_CommonResourceBarMethods.DrawLifeMouseOver += DrawBarrierMouseOver;
 		}
 
 		private void DrawShieldForPlayers(On_Main.orig_DrawInterface_14_EntityHealthBars orig, Main self)
@@ -136,6 +143,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 
 			DrawBarrierBar(healthBarDrawPosition, bPlayer.barrier, bPlayer.maxBarrier, Color.White, 1.25f);
 		}
+
 		/// <summary>
 		/// Barrier overlay for enemy and ally health bars
 		/// </summary>
@@ -165,6 +173,52 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 
 				Main.spriteBatch.Draw(texLine, targetLine, sourceLine, color: color);
 			}
+		}
+
+		/// <summary>
+		/// Replaces default health bar mouse over text with one that includes barrier text
+		/// </summary>
+		/// <param name="orig"></param>
+		private void DrawBarrierMouseOver(Terraria.GameContent.UI.ResourceSets.On_CommonResourceBarMethods.orig_DrawLifeMouseOver orig)
+		{
+			Player localPlayer = Main.LocalPlayer;
+			BarrierPlayer barrierPlayer = localPlayer.GetModPlayer<BarrierPlayer>();
+
+			if (barrierPlayer.maxBarrier <= 0)
+			{
+				orig.Invoke();
+			}
+			else if (!Main.mouseText)
+			{
+				localPlayer.cursorItemIconEnabled = false;
+				string text = localPlayer.statLife + "/" + localPlayer.statLifeMax2;
+				text += "\n[c/64c8ff:" + barrierPlayer.barrier + "/" + barrierPlayer.maxBarrier + "]";
+				Main.instance.MouseTextHackZoom(text);
+				Main.mouseText = true;
+			}
+		}
+
+		private void ShiftText(ILContext il)
+		{
+			var c = new ILCursor(il);
+
+			for (int k = 0; k < 2; k++)
+			{
+				c.TryGotoNext(n => n.MatchLdcI4(500));
+				c.Index++;
+				c.EmitDelegate(StringConcat);
+			}
+		}
+
+		private int StringConcat(int arg)
+		{
+			Player Player = Main.LocalPlayer;
+			BarrierPlayer sp = Player.GetModPlayer<BarrierPlayer>();
+
+			if (sp.barrier <= 0 && sp.maxBarrier <= 0)
+				return arg;
+
+			return arg - (int)(Terraria.GameContent.FontAssets.MouseText.Value.MeasureString($"  {sp.barrier}/{sp.maxBarrier}").X / 2) - 6;
 		}
 	}
 }

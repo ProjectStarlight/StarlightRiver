@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core.Systems;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -20,7 +21,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 	}
 
 	[SLRDebug]
-	class AuroraBrickWallItem : QuickWallItem
+	class AuroraBrickWallItem : BaseWallItem
 	{
 		public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/AuroraBrickWallItem";
 

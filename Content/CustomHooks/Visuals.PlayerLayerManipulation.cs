@@ -3,7 +3,7 @@ using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.CustomHooks
 {
-	class PlayerLayerManipulation : HookGroup
+	class PlayerLayerManipulation : ModSystem
 	{
 		//Swaps out some variables on PlayerLayer drawData for certain effects like the pancake and spinning.
 		//This might look weird if other mods do strange PlayerLayer stuff but it shouldnt have consquences outside of visuals. The actual patch is a bit iffy rn tho, come fix this later.

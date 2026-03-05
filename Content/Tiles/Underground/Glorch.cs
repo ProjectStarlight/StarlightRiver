@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Items.Misc;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Content.Items.Underground;
 using System;
 using System.Collections.Generic;
@@ -111,7 +112,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 		}
 	}
 
-	public class GlorchItem : QuickTileItem
+	public class GlorchItem : BaseTileItem
 	{
 		public GlorchItem() : base("Glorch", "Does a lamp give off light... or suck up the dark?\nReduces light nearby", "Glorch", ItemRarityID.Blue, "StarlightRiver/Assets/Tiles/Underground/") { }
 

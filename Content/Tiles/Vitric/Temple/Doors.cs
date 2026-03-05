@@ -1,4 +1,5 @@
 using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.CameraSystem;
@@ -39,7 +40,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	}
 
 	[SLRDebug]
-	class DoorVerticalItem : QuickTileItem
+	class DoorVerticalItem : BaseTileItem
 	{
 		public DoorVerticalItem() : base("Vertical Temple Door", "Temple Door, But what if it was vertical?", "DoorVertical", ItemRarityID.Blue, AssetDirectory.Debug, true) { }
 	}
@@ -75,7 +76,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	}
 
 	[SLRDebug]
-	class DoorGearsItem : QuickTileItem
+	class DoorGearsItem : BaseTileItem
 	{
 		public DoorGearsItem() : base("Gear Puzzle Temple Door", "Temple Door, Opens if gear puzzle is solved", "DoorGears", ItemRarityID.Blue, AssetDirectory.Debug, true) { }
 	}
@@ -111,7 +112,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	}
 
 	[SLRDebug]
-	class DoorLasersItem : QuickTileItem
+	class DoorLasersItem : BaseTileItem
 	{
 		public DoorLasersItem() : base("Laser Puzzle Temple Door", "Temple Door, Opens if laser puzzle is solved", "DoorLasers", ItemRarityID.Blue, AssetDirectory.Debug, true) { }
 	}
@@ -180,7 +181,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	}
 
 	[SLRDebug]
-	class DashableDoorItem : QuickTileItem
+	class DashableDoorItem : BaseTileItem
 	{
 		public DashableDoorItem() : base("DashableDoor", "{{Debug}} Item", "DashableDoor", 1, AssetDirectory.Debug, true) { }
 	}

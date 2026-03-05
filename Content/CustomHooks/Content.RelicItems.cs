@@ -6,7 +6,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.CustomHooks
 {
-	class RelicItems : HookGroup
+	class RelicItems : ModSystem
 	{
 		//gonna be really weird if anything does anything else here I think
 		public override void Load()

@@ -1,12 +1,10 @@
-﻿using StarlightRiver.Content.Biomes;
-using StarlightRiver.Content.Bosses.SquidBoss;
-using StarlightRiver.Content.Events;
-using System.Collections.Generic;
+﻿using StarlightRiver.Content.Bosses.SquidBoss;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.CustomHooks
+namespace StarlightRiver.Content.Biomes
 {
-	class PassiveLight : ModSystem
+	//TODO: See if splitting this across the biome classes creates a performance concern
+	class BiomePassiveLightingSystem : ModSystem
 	{
 		private static float mult = 0;
 		private static bool vitricLava = false;
@@ -72,9 +70,9 @@ namespace StarlightRiver.Content.CustomHooks
 					float progress = 0.5f + yOff / (float)StarlightWorld.vitricBiome.Height * 0.7f;
 					progress = MathHelper.Max(0.5f, progress);
 
-					preComputedVitricColors[yOff].X = (0.3f + (yOff > 70 ? ((yOff - 70) * 0.006f) : 0)) * progress * mult;
-					preComputedVitricColors[yOff].Y = (0.48f + (yOff > 70 ? ((yOff - 70) * 0.0005f) : 0)) * progress * mult;
-					preComputedVitricColors[yOff].Z = (0.65f - (yOff > 70 ? ((yOff - 70) * 0.005f) : 0)) * progress * mult;
+					preComputedVitricColors[yOff].X = (0.3f + (yOff > 70 ? (yOff - 70) * 0.006f : 0)) * progress * mult;
+					preComputedVitricColors[yOff].Y = (0.48f + (yOff > 70 ? (yOff - 70) * 0.0005f : 0)) * progress * mult;
+					preComputedVitricColors[yOff].Z = (0.65f - (yOff > 70 ? (yOff - 70) * 0.005f : 0)) * progress * mult;
 
 					if (yOff > 90 && mult < 1)
 					{
@@ -84,7 +82,7 @@ namespace StarlightRiver.Content.CustomHooks
 				}
 			}
 
-			inSquidBiome = Main.LocalPlayer.InModBiome(ModContent.GetInstance<Biomes.PermafrostTempleBiome>());
+			inSquidBiome = Main.LocalPlayer.InModBiome(ModContent.GetInstance<PermafrostTempleBiome>());
 
 			if (squidDomeRect == default)
 			{

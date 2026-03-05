@@ -1,4 +1,5 @@
 ﻿using Mono.Cecil.Cil;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems;
 using System;
 using System.Collections.Generic;
@@ -57,7 +58,7 @@ namespace StarlightRiver.Content.Tiles.Starlight
 		}
 	}
 
-	class OracleGlassItem : QuickTileItem
+	class OracleGlassItem : BaseTileItem
 	{
 		public override string Texture => AssetDirectory.StarlightTile + Name;
 

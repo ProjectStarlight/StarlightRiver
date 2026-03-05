@@ -1,5 +1,5 @@
-﻿using StarlightRiver.Content.CustomHooks;
-using StarlightRiver.Core.Loaders;
+﻿using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.InstancedBuffSystem;
 using StarlightRiver.Helpers;
@@ -113,7 +113,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		private void StarlightPlayer_PostDrawEvent(Player player, SpriteBatch spriteBatch)
 		{
-			if (PlayerTarget.canUseTarget)
+			if (PlayerTargetSystem.canUseTarget)
 			{
 				bool active = player.active && !player.outOfRange && !player.dead;
 				if (active && player.GetModPlayer<RadculasRapierPlayer>().teleportTimer > 0)
@@ -121,7 +121,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 					spriteBatch.End();
 					spriteBatch.Begin(default, blendState: BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.ZoomMatrix);
 
-					Main.spriteBatch.Draw(PlayerTarget.Target, PlayerTarget.getPlayerTargetPosition(player.whoAmI), PlayerTarget.getPlayerTargetSourceRectangle(player.whoAmI), new Color(150, 0, 0) * (player.GetModPlayer<RadculasRapierPlayer>().teleportTimer / 60f), player.fullRotation, Vector2.Zero, 1f, 0f, 0f);
+					Main.spriteBatch.Draw(PlayerTargetSystem.Target, PlayerTargetSystem.getPlayerTargetPosition(player.whoAmI), PlayerTargetSystem.getPlayerTargetSourceRectangle(player.whoAmI), new Color(150, 0, 0) * (player.GetModPlayer<RadculasRapierPlayer>().teleportTimer / 60f), player.fullRotation, Vector2.Zero, 1f, 0f, 0f);
 
 					spriteBatch.End();
 					spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
@@ -134,7 +134,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		private void StarlightPlayer_PreDrawEvent(Player player, SpriteBatch spriteBatch)
 		{
-			if (PlayerTarget.canUseTarget)
+			if (PlayerTargetSystem.canUseTarget)
 			{
 				bool active = player.active && !player.outOfRange && !player.dead;
 				if (active && player.GetModPlayer<RadculasRapierPlayer>().trailPositions.Count > 0)
@@ -142,11 +142,11 @@ namespace StarlightRiver.Content.Items.Gravedigger
 					spriteBatch.End();
 					spriteBatch.Begin(default, blendState: BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.ZoomMatrix);
 
-					Rectangle source = PlayerTarget.getPlayerTargetSourceRectangle(player.whoAmI);
+					Rectangle source = PlayerTargetSystem.getPlayerTargetSourceRectangle(player.whoAmI);
 
 					for (int x = player.GetModPlayer<RadculasRapierPlayer>().trailPositions.Count - 1; x > 0; x--)
 					{
-						Main.spriteBatch.Draw(PlayerTarget.Target, Main.ReverseGravitySupport(player.GetModPlayer<RadculasRapierPlayer>().trailPositions[x] - Main.screenPosition, player.height),
+						Main.spriteBatch.Draw(PlayerTargetSystem.Target, Main.ReverseGravitySupport(player.GetModPlayer<RadculasRapierPlayer>().trailPositions[x] - Main.screenPosition, player.height),
 								 source, new Color(100, 0, 0) * (player.GetModPlayer<RadculasRapierPlayer>().teleportTimer / 60f), player.fullRotation, source.Size() / 2f, 1f, 0f, 0f);
 					}
 
