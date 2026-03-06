@@ -126,7 +126,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 				if (item.material)
 				{
-					var newLine2 = new TooltipLine(Mod, "relicLine2", "Items crafted with this one will inherit it's prefix")
+					var newLine2 = new TooltipLine(Mod, "relicLine2", "Items crafted with this one will inherit its prefix")
 					{
 						OverrideColor = new Color(210, 210, 180)
 					};
