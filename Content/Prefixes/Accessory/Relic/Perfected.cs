@@ -15,6 +15,7 @@ namespace StarlightRiver.Content.Prefixes.Accessory.Relic
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Perfected");
+			RelicItem.relicPrefixSet[Type] = true;
 		}
 
 		public override void ModifyValue(ref float valueMult)

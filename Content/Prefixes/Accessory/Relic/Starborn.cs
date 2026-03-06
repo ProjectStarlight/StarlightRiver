@@ -16,6 +16,7 @@ namespace StarlightRiver.Content.Prefixes.Accessory.Relic
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Starborn");
+			RelicItem.relicPrefixSet[Type] = true;
 		}
 
 		public override void ModifyValue(ref float valueMult)

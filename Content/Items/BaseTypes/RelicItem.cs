@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader.IO;
 using Terraria.UI.Chat;
 using Terraria.Utilities;
@@ -12,7 +13,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 	{
 		public bool isRelic = false;
 
-		public bool doubled = false;
+		public static bool[] relicPrefixSet = PrefixID.Sets.Factory.CreateBoolSet();
 
 		public override bool InstancePerEntity => true;
 
@@ -21,17 +22,28 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			return Color.Lerp(Color.Gold, Color.Orange, 0.5f + (float)Math.Sin(Main.GameUpdateCount / 20f + offset) / 2f);
 		}
 
+		public override bool CanReforge(Item item)
+		{
+			if (isRelic)
+				return false;
+
+			return true;
+		}
+
 		public override bool PreDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
 		{
 			if (!isRelic)
 				return base.PreDrawInInventory(item, spriteBatch, position, frame, drawColor, ItemColor, origin, scale);
 
-			var pos = new Vector2(position.X, position.Y) + Main.rand.NextVector2Circular(16, 16);
+			Vector2 pos = new Vector2(position.X, position.Y) + Main.rand.NextVector2Circular(16, 16);
 
 			if (Main.rand.NextBool(18))
 			{
 				RelicAccessorySystem.RelicParticleSystem?.AddParticle(pos, Vector2.Zero, 0, Main.UIScale * Main.rand.NextFloat(0.85f, 1.15f), Color.White, 20, Vector2.Zero, new Rectangle(0, 0, 14, 14));
 			}
+
+			var tex = Assets.Masks.GlowAlpha.Value;
+			spriteBatch.Draw(tex, position, null, new Color(255, 220, 100, 0) * 0.5f, 0, tex.Size() / 2f, 0.5f, 0, 0);
 
 			return base.PreDrawInInventory(item, spriteBatch, position, frame, drawColor, ItemColor, origin, scale);
 		}
@@ -43,22 +55,19 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 			if (line.Visible && (line.Name == "ItemName" || line.IsModifier && !line.IsModifierBad))
 			{
-				
-
-				
-
-				for(int k = 0; k < 4; k++)
+				for (int k = 0; k < 4; k++)
 				{
 					Vector2 off = Vector2.UnitX.RotatedBy(k / 4f * 6.28f + Main.GameUpdateCount * 0.01f) * 4;
 
-					var snippets = ChatManager.ParseMessage(line.Text, RelicColor(20 * k));
-					foreach (var item1 in snippets)
+					List<TextSnippet> snippets = ChatManager.ParseMessage(line.Text, RelicColor(20 * k));
+					foreach (TextSnippet item1 in snippets)
 					{
 						item1.Color *= 0.5f;
 					}
 
 					ChatManager.DrawColorCodedString(Main.spriteBatch, line.Font, snippets.ToArray(), new Vector2(line.X, line.Y) + off, RelicColor(20 * k), 0, Vector2.Zero, Vector2.One, out int hovered, -1);
 				}
+
 				Utils.DrawBorderString(Main.spriteBatch, line.Text, new Vector2(line.X, line.Y), Color.Lerp(RelicColor(0), Color.White, 0.5f));
 
 				if (Main.rand.NextBool(20))
@@ -98,8 +107,8 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		{
 			if (item.GetGlobalItem<RelicItem>().isRelic)
 			{
-				int result = base.ChoosePrefix(item, rand);
-				return result != 0 ? result : ChoosePrefix(item, rand);
+				ModPrefix[] pool = Mod.GetContent<ModPrefix>().Where(n => relicPrefixSet[n.Type]).ToArray();
+				return pool[rand.Next(0, pool.Length)].Type;
 			}
 
 			return base.ChoosePrefix(item, rand);
@@ -109,20 +118,20 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		{
 			if (item.GetGlobalItem<RelicItem>().isRelic)
 			{
-				if (item.material)
-				{
-					var newLine2 = new TooltipLine(Mod, "relicLine2", "Items crafted with this one will inherit it's prefix")
-					{
-						OverrideColor = new Color(160, 160, 160)
-					};
-					tooltips.Add(newLine2);
-				}
-
 				var newLine = new TooltipLine(Mod, "relicLine", "Cannot be reforged")
 				{
 					OverrideColor = new Color(160, 160, 160)
 				};
 				tooltips.Add(newLine);
+
+				if (item.material)
+				{
+					var newLine2 = new TooltipLine(Mod, "relicLine2", "Items crafted with this one will inherit it's prefix")
+					{
+						OverrideColor = new Color(210, 210, 180)
+					};
+					tooltips.Add(newLine2);
+				}
 			}
 		}
 

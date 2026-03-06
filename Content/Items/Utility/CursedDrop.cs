@@ -89,7 +89,7 @@ namespace StarlightRiver.Content.Items.Utility
 
 		public override void RightClick(Item item, Player player)
 		{
-			if (Main.mouseItem.type == ModContent.ItemType<CursedDrop>())
+			if (Main.mouseItem.type == ModContent.ItemType<CursedDrop>() && ItemLoader.CanReforge(item))
 			{
 				List<int> pool = CursedPrefixPool.GetCursedPrefixes();
 				item.prefix = pool[Main.rand.Next(pool.Count)];
