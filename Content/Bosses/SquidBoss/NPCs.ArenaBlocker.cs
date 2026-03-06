@@ -74,7 +74,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		private void ForceColliding(On_Player.orig_Update_NPCCollision orig, Player self)
 		{
-			foreach(NPC npc in Main.ActiveNPCs)
+			foreach (NPC npc in Main.ActiveNPCs)
 			{
 				int specialHit = 0;
 				float damageMult = 0f;

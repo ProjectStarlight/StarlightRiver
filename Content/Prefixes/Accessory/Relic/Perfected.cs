@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Prefixes.Accessory.Relic
 		}
 
 		public override void ModifyValue(ref float valueMult)
-		{	
+		{
 			valueMult *= 20f;
 		}
 

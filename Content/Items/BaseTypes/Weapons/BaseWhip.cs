@@ -186,7 +186,9 @@ namespace StarlightRiver.Content.Items.BaseTypes.Weapons
 				bool draw = true;
 
 				if (i == 0)
+				{
 					origin.Y += handleOffset;
+				}
 				else if (i == points.Count - 2)
 				{
 					whipFrame.Y = height * 4;

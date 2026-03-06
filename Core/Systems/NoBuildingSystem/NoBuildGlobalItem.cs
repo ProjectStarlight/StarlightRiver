@@ -1,6 +1,6 @@
-﻿using StarlightRiver.Content.Bosses.SquidBoss;
+﻿using StarlightRiver.Content;
+using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.Tiles.Permafrost;
-using StarlightRiver.Content;
 using System;
 using System.Collections.Generic;
 using System.Linq;

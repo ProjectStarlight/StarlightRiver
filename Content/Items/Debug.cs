@@ -150,7 +150,7 @@ namespace StarlightRiver.Content.Items
 		{
 			//ModContent.GetInstance<StarlightWorld>().GraymatterGen(new GenerationProgress(), null);
 
-			foreach(Chest chest in Main.chest)
+			foreach (Chest chest in Main.chest)
 			{
 				PlaceDisplayCaseOn(chest);
 			}

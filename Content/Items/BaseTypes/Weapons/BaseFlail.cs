@@ -153,7 +153,9 @@ namespace StarlightRiver.Content.Items.BaseTypes.Weapons
 			if (falling) //falling towards ground, returns after hitting ground
 			{
 				if (strucktile || ++Timer >= 180)
+				{
 					Return(launchspeed, Owner);
+				}
 				else
 				{
 					FallingExtras(Owner);

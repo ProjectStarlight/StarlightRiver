@@ -1,6 +1,6 @@
 ﻿using StarlightRiver.Core.Loaders;
-using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.Systems;
+using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using Terraria.GameInput;
 using static Terraria.ModLoader.ModContent;

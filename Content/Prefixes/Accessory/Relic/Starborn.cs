@@ -55,4 +55,3 @@ namespace StarlightRiver.Content.Prefixes.Accessory.Relic
 		}
 	}
 }
-	

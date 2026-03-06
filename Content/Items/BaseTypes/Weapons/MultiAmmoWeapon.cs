@@ -186,7 +186,9 @@ namespace StarlightRiver.Content.Items.BaseTypes.Weapons
 				return;
 
 			if (!Main.LocalPlayer.controlDown)
+			{
 				tooltips.Add(new TooltipLine(Mod, "Ammo", "[c/646464:Press DOWN for ammo information]"));
+			}
 			else
 			{
 				string ammoList = "Valid Ammunition:\n";

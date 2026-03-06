@@ -77,7 +77,9 @@ namespace StarlightRiver.Content.Items.BaseTypes.Weapons
 			//Owner.itemAnimation = 10;
 
 			if (Owner.channel)
+			{
 				Projectile.timeLeft = 180;
+			}
 			else if (State != 4)
 			{
 				Projectile.velocity *= 0.5f;

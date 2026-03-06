@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Foregrounds
 		public override void Load()
 		{
 			particles = new ParticleSystem("StarlightRiver/Assets/GUI/HolyBig", UpdateOvergrowWells);
-		}  
+		}
 
 		public override bool Visible => Main.LocalPlayer.InModBiome(ModContent.GetInstance<OvergrowBiome>());
 

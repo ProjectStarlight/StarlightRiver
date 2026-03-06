@@ -267,7 +267,7 @@ namespace StarlightRiver.Content.GUI
 
 		public static void AddButton(string message, Action onClick)
 		{
-			var font = Terraria.GameContent.FontAssets.MouseText.Value;
+			ReLogic.Graphics.DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
 			var add = new RichTextButton(message, onClick, new Vector2(widthOff, HeightOff));
 			add.Width.Set(ChatManager.GetStringSize(font, message, Vector2.One).X + 20, 0);
 			add.Height.Set(32, 0);

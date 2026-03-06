@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 				RelicAccessorySystem.RelicParticleSystem?.AddParticle(pos, Vector2.Zero, 0, Main.UIScale * Main.rand.NextFloat(0.85f, 1.15f), Color.White, 20, Vector2.Zero, new Rectangle(0, 0, 14, 14));
 			}
 
-			var tex = Assets.Masks.GlowAlpha.Value;
+			Texture2D tex = Assets.Masks.GlowAlpha.Value;
 			spriteBatch.Draw(tex, position, null, new Color(255, 220, 100, 0) * 0.5f, 0, tex.Size() / 2f, 0.5f, 0, 0);
 
 			return base.PreDrawInInventory(item, spriteBatch, position, frame, drawColor, ItemColor, origin, scale);

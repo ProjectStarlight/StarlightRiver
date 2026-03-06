@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Prefixes.Accessory.Cursed
 		{
 			DisplayName.SetDefault("Unfaithful");
 		}
-			
+
 		public override void ModifyValue(ref float valueMult)
 		{
 			valueMult *= 2f;

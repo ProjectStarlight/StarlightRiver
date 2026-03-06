@@ -7,7 +7,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Core.Systems.NoBuildingSystem
 {
-	public class NoBuildGlobalProjectile : GlobalProjectile 
+	public class NoBuildGlobalProjectile : GlobalProjectile
 	{
 		public override bool AppliesToEntity(Projectile entity, bool lateInstantiation)
 		{

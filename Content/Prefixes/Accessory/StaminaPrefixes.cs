@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Prefixes.Accessory
 			valueMult *= 1 + 0.05f * power;
 		}
 
-		public override void ApplyAccessoryEffects(Player player) 
+		public override void ApplyAccessoryEffects(Player player)
 		{
 			player.GetHandler().StaminaRegenRate += power;
 		}
