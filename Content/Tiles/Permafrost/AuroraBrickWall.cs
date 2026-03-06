@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems;
+using StarlightRiver.Core.Systems.NoBuildingSystem;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -12,6 +13,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 		public override void SetStaticDefaults()
 		{
 			QuickBlock.QuickSetWall(this, DustID.Ice, SoundID.Tink, ItemType<AuroraBrickWallItem>(), true, new Color(33, 65, 94));
+			NoBuildSystem.noBuildWalls[Type] = true;
 		}
 
 		public override bool CanExplode(int i, int j)
