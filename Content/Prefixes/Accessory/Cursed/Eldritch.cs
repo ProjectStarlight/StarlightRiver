@@ -1,15 +1,10 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems.BarrierSystem;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace StarlightRiver.Content.Prefixes.Accessory.Cursed
 {
-	internal class Eldritch : CustomTooltipPrefix
+	internal class Eldritch : ModPrefix
 	{
 		public override PrefixCategory Category => PrefixCategory.Accessory;
 
@@ -28,30 +23,30 @@ namespace StarlightRiver.Content.Prefixes.Accessory.Cursed
 			valueMult *= 2f;
 		}
 
-		public override void Update(Item Item, Player Player)
+		public override void ApplyAccessoryEffects(Player player)
 		{
-			Player.GetModPlayer<BarrierPlayer>().maxBarrier += 40;
-			Player.GetModPlayer<BarrierPlayer>().barrierDamageReduction += 0.05f;
-			Player.statDefense -= 6;
+			player.GetModPlayer<BarrierPlayer>().maxBarrier += 40;
+			player.GetModPlayer<BarrierPlayer>().barrierDamageReduction += 0.05f;
+			player.statDefense -= 6;
 		}
 
-		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
+		public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
 		{
-			tooltips.Add(new TooltipLine(StarlightRiver.Instance, "EldritchTip1", "+40 maximum {{Barrier}}")
+			yield return new TooltipLine(StarlightRiver.Instance, "EldritchTip1", "+40 maximum {{Barrier}}")
 			{
 				IsModifier = true
-			});
+			};
 
-			tooltips.Add(new TooltipLine(StarlightRiver.Instance, "EldritchTip2", "+5% {{Barrier}} effectiveness")
+			yield return new TooltipLine(StarlightRiver.Instance, "EldritchTip2", "+5% {{Barrier}} effectiveness")
 			{
 				IsModifier = true
-			});
+			};
 
-			tooltips.Add(new TooltipLine(StarlightRiver.Instance, "EldritchTip3", "-6 defense")
+			yield return new TooltipLine(StarlightRiver.Instance, "EldritchTip3", "-6 defense")
 			{
 				IsModifier = true,
 				IsModifierBad = true
-			});
+			};
 		}
 	}
 }

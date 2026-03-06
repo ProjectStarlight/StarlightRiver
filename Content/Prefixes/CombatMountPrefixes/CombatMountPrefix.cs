@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace StarlightRiver.Content.Prefixes.CombatMountPrefixes
 {
-	public abstract class CombatMountPrefix : CustomTooltipPrefix
+	public abstract class CombatMountPrefix : ModPrefix
 	{
 		public static List<int> combatMountPrefixTypes = new();
 

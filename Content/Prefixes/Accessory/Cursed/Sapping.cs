@@ -1,15 +1,9 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core.Systems.BarrierSystem;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace StarlightRiver.Content.Prefixes.Accessory.Cursed
 {
-	internal class Sapping : CustomTooltipPrefix
+	internal class Sapping : ModPrefix
 	{
 		public override PrefixCategory Category => PrefixCategory.Accessory;
 
@@ -28,46 +22,45 @@ namespace StarlightRiver.Content.Prefixes.Accessory.Cursed
 			valueMult *= 2f;
 		}
 
-		public override void Update(Item Item, Player Player)
+		public override void ApplyAccessoryEffects(Player player)
 		{
-			Player.lifeRegen += 10;
-			Player.manaRegenBonus += 10;
+			player.lifeRegen += 10;
+			player.manaRegenBonus += 10;
 
-			Player.GetDamage(DamageClass.Generic) -= 0.02f;
-			Player.GetCritChance(DamageClass.Generic) -= 2;
-			Player.statDefense -= 2;
+			player.GetDamage(DamageClass.Generic) -= 0.02f;
+			player.GetCritChance(DamageClass.Generic) -= 2;
+			player.statDefense -= 2;
 		}
 
-		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
+		public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
 		{
-			tooltips.Add(new TooltipLine(StarlightRiver.Instance, "SappingTip1", "+10 life regeneration")
+			yield return new TooltipLine(StarlightRiver.Instance, "SappingTip1", "+10 life regeneration")
 			{
 				IsModifier = true
-			});
+			};
 
-			tooltips.Add(new TooltipLine(StarlightRiver.Instance, "SappingTip2", "+10 mana regeneration")
+			yield return new TooltipLine(StarlightRiver.Instance, "SappingTip2", "+10 mana regeneration")
 			{
 				IsModifier = true
-			});
+			};
 
-			tooltips.Add(new TooltipLine(StarlightRiver.Instance, "SappingTip3", "-2% damage")
+			yield return new TooltipLine(StarlightRiver.Instance, "SappingTip3", "-2% damage")
 			{
 				IsModifier = true,
 				IsModifierBad = true
-			});
+			};
 
-			tooltips.Add(new TooltipLine(StarlightRiver.Instance, "SappingTip4", "-2% critical strike chance")
+			yield return new TooltipLine(StarlightRiver.Instance, "SappingTip4", "-2% critical strike chance")
 			{
 				IsModifier = true,
 				IsModifierBad = true
-			});
+			};
 
-			tooltips.Add(new TooltipLine(StarlightRiver.Instance, "SappingTip5", "-2 defense")
+			yield return new TooltipLine(StarlightRiver.Instance, "SappingTip5", "-2 defense")
 			{
 				IsModifier = true,
 				IsModifierBad = true
-			});
-
+			};
 		}
 	}
 }

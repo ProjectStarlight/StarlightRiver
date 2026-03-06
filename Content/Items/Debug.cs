@@ -2,6 +2,7 @@ using ReLogic.Graphics;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.CustomHooks;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.NPCs.BaseTypes;
 using StarlightRiver.Content.NPCs.Starlight;
 using StarlightRiver.Content.Tiles.BaseTypes;
@@ -107,6 +108,16 @@ namespace StarlightRiver.Content.Items
 		public override bool? UseItem(Player player)
 		{
 			//ModContent.GetInstance<StarlightWorld>().GraymatterGen(new GenerationProgress(), null);
+
+			foreach(Item item in player.inventory)
+			{
+				if (item == null || item.IsAir)
+					continue;
+
+				item.GetGlobalItem<RelicItem>().isRelic = true;
+				item.Prefix(ItemLoader.ChoosePrefix(Item, Main.rand));
+			}
+
 			return true;
 
 			ObservatorySystem.pylonAppearsOn = false;
