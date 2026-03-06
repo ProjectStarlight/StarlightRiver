@@ -56,13 +56,6 @@ namespace StarlightRiver.Content.Items
 		{
 			ObservatoryBiome.fade = 1f;
 			return;
-
-			player.GetHandler().StaminaMaxBonus = 10;
-
-			int x = StarlightWorld.vitricBiome.X - 37;
-
-			Dust.NewDustPerfect(new Vector2((x + 80) * 16, (StarlightWorld.vitricBiome.Center.Y + 20) * 16), DustID.Firefly);
-
 		}
 
 		public override bool? UseItem(Player player)
@@ -397,7 +390,7 @@ namespace StarlightRiver.Content.Items
 
 				var target4 = new Rectangle(100 + Main.screenWidth / 10 + 20, 400, Main.screenWidth / 10, Main.screenHeight / 10);
 				var target5 = new Rectangle(100 + Main.screenWidth / 10 + 20, 400 + Main.screenHeight / 10 + 20, Main.screenWidth / 10, Main.screenHeight / 10);
-				var target6 = new Rectangle(100 + Main.screenWidth / 10 + 20, 400 + Main.screenHeight / 10 * 2 + 40, PlayerTarget.Target.Width / 2, PlayerTarget.Target.Height / 2);
+				//var target6 = new Rectangle(100 + Main.screenWidth / 10 + 20, 400 + Main.screenHeight / 10 * 2 + 40, PlayerTarget.Target.Width / 2, PlayerTarget.Target.Height / 2);
 
 				target1.Inflate(6, 6);
 				UIHelper.DrawBox(spriteBatch, target1, Color.Gray);
@@ -424,10 +417,10 @@ namespace StarlightRiver.Content.Items
 				target5.Inflate(-6, -6);
 				spriteBatch.Draw(LightingBuffer.tileLightingTarget.RenderTarget, target5, Color.White);
 
-				target6.Inflate(6, 6);
+				/*target6.Inflate(6, 6);
 				UIHelper.DrawBox(spriteBatch, target6, Color.Gray);
 				target6.Inflate(-6, -6);
-				spriteBatch.Draw(PlayerTarget.Target, target6, Color.White);
+				spriteBatch.Draw(PlayerTarget.Target, target6, Color.White);*/
 			}
 
 			Main.spriteBatch.End();
