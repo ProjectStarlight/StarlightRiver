@@ -9,7 +9,12 @@ namespace StarlightRiver.Content.Prefixes.Accessory.Relic
 
 		public override bool CanRoll(Item item)
 		{
-			return item.GetGlobalItem<RelicItem>().isRelic;
+			return item.accessory;
+		}
+
+		public override float RollChance(Item item)
+		{
+			return 0f;
 		}
 
 		public override void SetStaticDefaults()

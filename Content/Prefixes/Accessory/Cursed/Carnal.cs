@@ -11,7 +11,12 @@ namespace StarlightRiver.Content.Prefixes.Accessory.Cursed
 
 		public override bool CanRoll(Item item)
 		{
-			return item.ModItem is CursedAccessory;
+			return item.accessory;
+		}
+
+		public override float RollChance(Item item)
+		{
+			return item.ModItem is CursedAccessory ? 1f : 0f;
 		}
 
 		public override void SetStaticDefaults()
