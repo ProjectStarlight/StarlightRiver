@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Packets;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Packets;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
@@ -134,7 +135,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 		}
 	}
 
-	public class ForestBerryBushItem : QuickTileItem
+	public class ForestBerryBushItem : BaseTileItem
 	{
 		public ForestBerryBushItem() : base("Berry Bush", "Plant to grow your own berries", "ForestBerryBush", 1, AssetDirectory.ForestTile) { }
 	}

@@ -1,4 +1,6 @@
-﻿namespace StarlightRiver.Content.Tiles.Paintings
+﻿using StarlightRiver.Content.Items.BaseTypes;
+
+namespace StarlightRiver.Content.Tiles.Paintings
 {
 	class EggCodexPainting : ModTile
 	{
@@ -10,7 +12,7 @@
 		}
 	}
 
-	class EggCodexPaintingItem : QuickTileItem
+	class EggCodexPaintingItem : BaseTileItem
 	{
 		public EggCodexPaintingItem() : base("Codex Genesis", "'K. Ra'", "EggCodexPainting", 0, AssetDirectory.PaintingTile) { }
 	}

@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Physics;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Physics;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
@@ -73,7 +74,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 	}
 
 	[SLRDebug]
-	class RedBannerShortItem : QuickTileItem
+	class RedBannerShortItem : BaseTileItem
 	{
 		public RedBannerShortItem() : base("Short Flowing Banner", "{{Debug}} Item", "RedBannerShort", 2, AssetDirectory.VitricTile, false) { }
 	}

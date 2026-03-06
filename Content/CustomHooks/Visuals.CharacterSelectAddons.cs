@@ -9,11 +9,10 @@ using Terraria.UI;
 
 namespace StarlightRiver.Content.CustomHooks
 {
-	class CharacterSelectAddons : HookGroup
+	class CharacterSelectAddons : ModSystem
 	{
 		public static ParticleSystem sparkles;
 
-		//Relies on other mods not doing anything visual here to work properly, but there is very little actual danger here, its just some extra draw calls in the UI element.
 		public override void Load()
 		{
 			if (Main.dedServ)
@@ -27,7 +26,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 		public override void Unload()
 		{
-			sparkles ??= null;
+			sparkles = null;
 		}
 
 		private static void updateSparkles(Particle particle)

@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Bosses.SquidBoss;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.PixelationSystem;
 using StarlightRiver.Helpers;
@@ -80,7 +81,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 	}
 
 	[SLRDebug]
-	class DoorBombShooterItem : QuickTileItem
+	class DoorBombShooterItem : BaseTileItem
 	{
 		public override string Texture => AssetDirectory.Debug;
 

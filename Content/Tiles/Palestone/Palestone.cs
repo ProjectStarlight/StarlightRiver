@@ -1,9 +1,10 @@
-﻿using Terraria.ID;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Palestone
 {
-	internal class PalestoneItem : QuickTileItem
+	internal class PalestoneItem : BaseTileItem
 	{
 		public PalestoneItem() : base("Palestone Block", "", "Palestone", 0, AssetDirectory.PalestoneTile) { }
 	}

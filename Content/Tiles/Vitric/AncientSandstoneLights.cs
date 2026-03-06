@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Helpers;
 using System;
 using Terraria.ID;
@@ -6,7 +7,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-	public class AncientSandstoneTorchItem : QuickTileItem
+	public class AncientSandstoneTorchItem : BaseTileItem
 	{
 		public AncientSandstoneTorchItem() : base("Ancient Vitric Illuminator", "It has an entrancing glow", "AncientSandstoneTorch", 0, AssetDirectory.VitricTile + "AncientSandstoneTorch", true) { }
 	}

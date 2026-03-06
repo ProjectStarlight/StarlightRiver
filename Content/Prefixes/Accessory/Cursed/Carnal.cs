@@ -1,22 +1,22 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems.BarrierSystem;
 using StarlightRiver.Core.Systems.InoculationSystem;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace StarlightRiver.Content.Prefixes.Accessory.Cursed
 {
-	internal class Carnal : CustomTooltipPrefix
+	internal class Carnal : ModPrefix
 	{
 		public override PrefixCategory Category => PrefixCategory.Accessory;
 
 		public override bool CanRoll(Item item)
 		{
-			return item.ModItem is CursedAccessory;
+			return item.accessory;
+		}
+
+		public override float RollChance(Item item)
+		{
+			return item.ModItem is CursedAccessory ? 1f : 0f;
 		}
 
 		public override void SetStaticDefaults()
@@ -29,30 +29,30 @@ namespace StarlightRiver.Content.Prefixes.Accessory.Cursed
 			valueMult *= 2f;
 		}
 
-		public override void Update(Item Item, Player Player)
+		public override void ApplyAccessoryEffects(Player player)
 		{
-			Player.GetModPlayer<InoculationPlayer>().DoTResist += 0.08f;
-			Player.statLifeMax2 += 10;
-			Player.GetModPlayer<CritMultiPlayer>().AllCritMult -= 0.2f;
+			player.GetModPlayer<InoculationPlayer>().DoTResist += 0.08f;
+			player.statLifeMax2 += 10;
+			player.GetModPlayer<CritMultiPlayer>().AllCritMult -= 0.2f;
 		}
 
-		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
+		public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
 		{
-			tooltips.Add(new TooltipLine(StarlightRiver.Instance, "CarnalTip1", "+8% {{Inoculation}}")
+			yield return new TooltipLine(StarlightRiver.Instance, "CarnalTip1", "+8% {{Inoculation}}")
 			{
 				IsModifier = true
-			});
+			};
 
-			tooltips.Add(new TooltipLine(StarlightRiver.Instance, "CarnalTip2", "+10 maximum life")
+			yield return new TooltipLine(StarlightRiver.Instance, "CarnalTip2", "+10 maximum life")
 			{
 				IsModifier = true
-			});
+			};
 
-			tooltips.Add(new TooltipLine(StarlightRiver.Instance, "CarnalTip3", "20% reduced critical strike damage")
+			yield return new TooltipLine(StarlightRiver.Instance, "CarnalTip3", "20% reduced critical strike damage")
 			{
 				IsModifier = true,
 				IsModifierBad = true
-			});
+			};
 		}
 	}
 }

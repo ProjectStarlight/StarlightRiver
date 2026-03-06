@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Physics;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Physics;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using Terraria.ID;
@@ -71,7 +72,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		}
 	}
 
-	class VitricBannerSmallItem : QuickTileItem
+	class VitricBannerSmallItem : BaseTileItem
 	{
 		public VitricBannerSmallItem() : base("Short Flowing Banner", "", "VitricBannerSmall", 2, AssetDirectory.VitricTile, false) { }
 	}

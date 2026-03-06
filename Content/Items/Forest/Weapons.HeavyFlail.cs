@@ -1,4 +1,4 @@
-﻿using StarlightRiver.Content.Items.BaseTypes;
+﻿using StarlightRiver.Content.Items.BaseTypes.Weapons;
 using StarlightRiver.Content.Items.Gravedigger;
 using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Core.Systems.CameraSystem;
@@ -11,7 +11,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Forest
 {
-	internal class HeavyFlail : AbstractHeavyFlail
+	internal class HeavyFlail : BaseHeavyFlail
 	{
 		public override string Texture => AssetDirectory.ForestItem + Name;
 
@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Items.Forest
 		}
 	}
 
-	internal class HeavyFlailProjectile : AbstractHeavyFlailProjectile
+	internal class HeavyFlailProjectile : BaseHeavyFlailProjectile
 	{
 		public override string Texture => AssetDirectory.ForestItem + Name;
 

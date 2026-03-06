@@ -1,4 +1,6 @@
-﻿namespace StarlightRiver.Content.Tiles.Trophies
+﻿using StarlightRiver.Content.Items.BaseTypes;
+
+namespace StarlightRiver.Content.Tiles.Trophies
 {
 	class ThinkerTrophy : ModTile
 	{
@@ -10,7 +12,7 @@
 		}
 	}
 
-	class ThinkerTrophyItem : QuickTileItem
+	class ThinkerTrophyItem : BaseTileItem
 	{
 		public ThinkerTrophyItem() : base("Thinker Trophy", "", "ThinkerTrophy", 1, AssetDirectory.TrophyTile) { }
 	}

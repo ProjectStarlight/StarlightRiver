@@ -1,21 +1,20 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core.Systems.BarrierSystem;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace StarlightRiver.Content.Prefixes.Accessory.Cursed
 {
-	internal class Reckless : CustomTooltipPrefix
+	internal class Reckless : ModPrefix
 	{
 		public override PrefixCategory Category => PrefixCategory.Accessory;
 
 		public override bool CanRoll(Item item)
 		{
-			return item.ModItem is CursedAccessory;
+			return item.accessory;
+		}
+
+		public override float RollChance(Item item)
+		{
+			return item.ModItem is CursedAccessory ? 1f : 0f;
 		}
 
 		public override void SetStaticDefaults()
@@ -28,24 +27,24 @@ namespace StarlightRiver.Content.Prefixes.Accessory.Cursed
 			valueMult *= 2f;
 		}
 
-		public override void Update(Item Item, Player Player)
+		public override void ApplyAccessoryEffects(Player player)
 		{
-			Player.GetDamage(DamageClass.Generic) += 0.08f;
-			Player.statDefense -= 4;
+			player.GetDamage(DamageClass.Generic) += 0.08f;
+			player.statDefense -= 4;
 		}
 
-		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
+		public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
 		{
-			tooltips.Add(new TooltipLine(StarlightRiver.Instance, "RecklessTip1", "+8% damage")
+			yield return new TooltipLine(StarlightRiver.Instance, "RecklessTip1", "+8% damage")
 			{
 				IsModifier = true
-			});
+			};
 
-			tooltips.Add(new TooltipLine(StarlightRiver.Instance, "RecklessTip2", "-4 defense")
+			yield return new TooltipLine(StarlightRiver.Instance, "RecklessTip2", "-4 defense")
 			{
 				IsModifier = true,
 				IsModifierBad = true
-			});
+			};
 		}
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using Terraria.Audio;
@@ -113,7 +114,7 @@ namespace StarlightRiver.Content.Tiles.Mushroom
 		}
 	}
 
-	class JellyShroomItem : QuickTileItem
+	class JellyShroomItem : BaseTileItem
 	{
 		public override string Texture => "StarlightRiver/Assets/Tiles/Mushroom/JellyShroomItem";
 

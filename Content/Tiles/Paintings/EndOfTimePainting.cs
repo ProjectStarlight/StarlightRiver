@@ -1,4 +1,6 @@
-﻿namespace StarlightRiver.Content.Tiles.Paintings
+﻿using StarlightRiver.Content.Items.BaseTypes;
+
+namespace StarlightRiver.Content.Tiles.Paintings
 {
 	class EndOfTimePainting : ModTile
 	{
@@ -10,7 +12,7 @@
 		}
 	}
 
-	class EndOfTimePaintingItem : QuickTileItem
+	class EndOfTimePaintingItem : BaseTileItem
 	{
 		public EndOfTimePaintingItem() : base("End of Time", "'K. Ra'", "EndOfTimePainting", 0, AssetDirectory.PaintingTile) { }
 	}

@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Items.Moonstone;
 using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.BarrierSystem;
 using System;
 using Terraria.Graphics.Effects;
@@ -36,14 +37,14 @@ namespace StarlightRiver.Content.Items.BarrierDye
 
 		public override void PostDrawEffects(SpriteBatch spriteBatch, Player Player)
 		{
-			if (!CustomHooks.PlayerTarget.canUseTarget)
+			if (!PlayerTargetSystem.canUseTarget)
 				return;
 
 			BarrierPlayer barrier = Player.GetModPlayer<BarrierPlayer>();
 
-			Texture2D tex = CustomHooks.PlayerTarget.Target;
+			Texture2D tex = PlayerTargetSystem.Target;
 
-			Vector2 pos = CustomHooks.PlayerTarget.getPositionOffset(Player.whoAmI);
+			Vector2 pos = PlayerTargetSystem.getPositionOffset(Player.whoAmI);
 
 			if (barrier.barrier <= 0)
 				return;
@@ -63,15 +64,15 @@ namespace StarlightRiver.Content.Items.BarrierDye
 
 				effect.Parameters["screenWidth"].SetValue(tex.Width);
 				effect.Parameters["screenHeight"].SetValue(tex.Width);
-				effect.Parameters["screenPosition"].SetValue(CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI));
+				effect.Parameters["screenPosition"].SetValue(PlayerTargetSystem.getPlayerTargetPosition(Player.whoAmI));
 				effect.Parameters["drawOriginal"].SetValue(false);
 
 				spriteBatch.End();
 				spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.ZoomMatrix);
 
-				Rectangle rect = CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI);
+				Rectangle rect = PlayerTargetSystem.getPlayerTargetSourceRectangle(Player.whoAmI);
 
-				Vector2 drawPos = CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI);
+				Vector2 drawPos = PlayerTargetSystem.getPlayerTargetPosition(Player.whoAmI);
 
 				spriteBatch.Draw(tex, drawPos, rect, Color.White);
 

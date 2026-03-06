@@ -1,7 +1,7 @@
 ﻿using StarlightRiver.Content.Dusts;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
-using StarlightRiver.Helpers;
 using System;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -9,7 +9,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-	public abstract class WalkableCrystalItem : QuickTileItem
+	public abstract class WalkableCrystalItem : BaseTileItem
 	{
 		private bool held = false;
 

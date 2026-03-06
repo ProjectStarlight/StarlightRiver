@@ -1,4 +1,5 @@
 ﻿using Mono.Cecil.Cil;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems;
 using System;
 using System.Collections.Generic;
@@ -61,7 +62,7 @@ namespace StarlightRiver.Content.Tiles.Starlight
 		}
 	}
 
-	class DreamingOnyxItem : QuickTileItem
+	class DreamingOnyxItem : BaseTileItem
 	{
 		public override string Texture => AssetDirectory.StarlightTile + Name;
 

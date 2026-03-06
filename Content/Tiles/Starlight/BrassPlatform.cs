@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -39,5 +40,5 @@ namespace StarlightRiver.Content.Tiles.Starlight
 		}
 	}
 
-	internal class BrassPlatformItem : QuickTileItem { public BrassPlatformItem() : base("Brass Platform", "", "BrassPlatform", 0, AssetDirectory.StarlightTile) { } }
+	internal class BrassPlatformItem : BaseTileItem { public BrassPlatformItem() : base("Brass Platform", "", "BrassPlatform", 0, AssetDirectory.StarlightTile) { } }
 }

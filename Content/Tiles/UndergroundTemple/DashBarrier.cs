@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Dusts;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using Terraria.ID;
@@ -62,7 +63,7 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 	}
 
 	[SLRDebug]
-	public class DashBarrierItem : QuickTileItem
+	public class DashBarrierItem : BaseTileItem
 	{
 		public DashBarrierItem() : base("Dash Barrier", "{{Debug}} Item", "DashBarrier", -12, AssetDirectory.UndergroundTempleTile) { }
 	}

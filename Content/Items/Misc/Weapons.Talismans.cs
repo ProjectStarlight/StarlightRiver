@@ -1,4 +1,4 @@
-﻿using StarlightRiver.Content.Items.BaseTypes;
+﻿using StarlightRiver.Content.Items.BaseTypes.Weapons;
 using StarlightRiver.Core.Systems.InstancedBuffSystem;
 using System;
 using System.Collections.Generic;

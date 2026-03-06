@@ -1,4 +1,5 @@
-﻿using Terraria.ID;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
@@ -14,7 +15,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		}
 	}
 
-	internal class VitricSandWallItem : QuickWallItem
+	internal class VitricSandWallItem : BaseWallItem
 	{
 		public VitricSandWallItem() : base("Vitric Sand Wall", "", WallType<VitricSandWall>(), 0, AssetDirectory.VitricTile) { }
 	}

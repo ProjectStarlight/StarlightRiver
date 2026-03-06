@@ -23,39 +23,8 @@ namespace StarlightRiver.Core
 			return item.TryGetGlobalItem(out StarlightItem gi) ? gi : this;
 		}
 
-		public override void UpdateAccessory(Item Item, Player Player, bool hideVisual)
-		{
-			ModPrefix prefix = PrefixLoader.GetPrefix(Item.prefix);
-
-			if (prefix is CustomTooltipPrefix)
-				(prefix as CustomTooltipPrefix).Update(Item, Player);
-
-			base.UpdateAccessory(Item, Player, hideVisual);
-		}
-
-		public override int ChoosePrefix(Item Item, UnifiedRandom rand)
-		{
-			//resetting for custom prefix stuff
-			prefixLine = "";
-
-			return -1;
-		}
-
 		public override void ModifyTooltips(Item Item, List<TooltipLine> tooltips)
 		{
-			if (PrefixLoader.GetPrefix(Item.prefix) is CustomTooltipPrefix)
-			{
-				TooltipLine critLine = tooltips.Find(n => n.Name == "Knockback");
-				int index = critLine is null ? tooltips.Count - 1 : tooltips.IndexOf(critLine);
-
-				var line = new TooltipLine(StarlightRiver.Instance, "CustomPrefix", prefixLine)
-				{
-					IsModifier = true,
-					IsModifierBad = false
-				};
-				tooltips.Insert(index + 1, line);
-			}
-
 			//Crit display. Same as ammo, maybe move this later?
 			if (Item.damage > 0 && Item.crit > -4)
 			{

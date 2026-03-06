@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -40,7 +41,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.SoundPuzzle
 	}
 
 	[SLRDebug]
-	class SoundPuzzleDoorItem : QuickTileItem
+	class SoundPuzzleDoorItem : BaseTileItem
 	{
 		public SoundPuzzleDoorItem() : base("Sound Puzzle Temple Door", "Temple Door, Opens if sound puzzle is solved", "SoundPuzzleDoor", ItemRarityID.Blue, AssetDirectory.Debug, true) { }
 	}

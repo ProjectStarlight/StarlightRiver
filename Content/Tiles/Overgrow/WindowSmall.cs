@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
@@ -26,7 +27,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 	}
 
 	[SLRDebug]
-	class WindowSmallItem : QuickTileItem
+	class WindowSmallItem : BaseTileItem
 	{
 		public override string Texture => AssetDirectory.OvergrowTile + "WindowSmall";
 

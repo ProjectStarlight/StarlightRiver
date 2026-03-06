@@ -7,6 +7,7 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.UI;
 using Terraria.UI.Chat;
+using static System.Net.Mime.MediaTypeNames;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.GUI
@@ -266,11 +267,12 @@ namespace StarlightRiver.Content.GUI
 
 		public static void AddButton(string message, Action onClick)
 		{
+			ReLogic.Graphics.DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
 			var add = new RichTextButton(message, onClick, new Vector2(widthOff, HeightOff));
-			add.Width.Set(Markdown.GetWidth(message, 1) + 20, 0);
+			add.Width.Set(ChatManager.GetStringSize(font, message, Vector2.One).X + 20, 0);
 			add.Height.Set(32, 0);
 
-			widthOff += Markdown.GetWidth(message, 1) + 30;
+			widthOff += ChatManager.GetStringSize(font, message, Vector2.One).X + 30;
 			UILoader.GetUIState<DialogUI>().Append(add);
 		}
 	}

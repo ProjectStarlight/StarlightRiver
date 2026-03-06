@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Packets;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems;
@@ -143,7 +144,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 	}
 
 	[SLRDebug]
-	class GearTilePlacer : QuickTileItem
+	class GearTilePlacer : BaseTileItem
 	{
 		public GearTilePlacer() : base("Gear puzzle", "{{Debug}} Item", "DynamicGear", 8, AssetDirectory.VitricTile) { }
 	}

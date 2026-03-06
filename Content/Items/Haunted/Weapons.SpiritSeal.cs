@@ -1,5 +1,5 @@
 ﻿using StarlightRiver.Content.Buffs;
-using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Items.BaseTypes.Weapons;
 using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Core.Systems.InstancedBuffSystem;
 using System;

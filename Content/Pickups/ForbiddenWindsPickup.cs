@@ -2,6 +2,7 @@
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
 using StarlightRiver.Content.Abilities.Hint;
 using StarlightRiver.Content.GUI;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Tiles.Overgrow;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Loaders.UILoading;
@@ -300,7 +301,7 @@ namespace StarlightRiver.Content.Pickups
 	}
 
 	[SLRDebug]
-	public class WindsTileItem : QuickTileItem
+	public class WindsTileItem : BaseTileItem
 	{
 		public WindsTileItem() : base("Forbidden Winds", "{{Debug}} placer for ability pickup", "ForbiddenWindsPickupTile", -1) { }
 

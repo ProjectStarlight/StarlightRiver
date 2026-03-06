@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Physics;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Physics;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.VerletGenerators;
 using Terraria.ID;
@@ -18,7 +19,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		}
 	}
 
-	class LowWindBannerItem : QuickTileItem
+	class LowWindBannerItem : BaseTileItem
 	{
 		public LowWindBannerItem() : base("Rectangular Flowing Banner", "", "LowWindBanner", 1, AssetDirectory.VitricTile, false) { }
 	}

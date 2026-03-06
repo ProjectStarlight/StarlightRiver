@@ -1,10 +1,11 @@
-﻿using Terraria.DataStructures;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Gravedigger
 {
-	public class LivingBlood : QuickMaterial
+	public class LivingBlood : BaseMaterial
 	{
 		public override void Load()
 		{

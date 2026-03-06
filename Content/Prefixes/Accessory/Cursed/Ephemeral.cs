@@ -1,21 +1,20 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core.Systems.BarrierSystem;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace StarlightRiver.Content.Prefixes.Accessory.Cursed
 {
-	internal class Ephemeral : CustomTooltipPrefix
+	internal class Ephemeral : ModPrefix
 	{
 		public override PrefixCategory Category => PrefixCategory.Accessory;
 
 		public override bool CanRoll(Item item)
 		{
-			return item.ModItem is CursedAccessory;
+			return item.accessory;
+		}
+
+		public override float RollChance(Item item)
+		{
+			return item.ModItem is CursedAccessory ? 1f : 0f;
 		}
 
 		public override void SetStaticDefaults()
@@ -28,24 +27,24 @@ namespace StarlightRiver.Content.Prefixes.Accessory.Cursed
 			valueMult *= 2f;
 		}
 
-		public override void Update(Item Item, Player Player)
+		public override void ApplyAccessoryEffects(Player player)
 		{
-			Player.moveSpeed += 0.15f;
-			Player.statLifeMax2 -= 20;
+			player.moveSpeed += 0.15f;
+			player.statLifeMax2 -= 20;
 		}
 
-		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
+		public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
 		{
-			tooltips.Add(new TooltipLine(StarlightRiver.Instance, "EphemeralTip1", "+15% movement speed")
+			yield return new TooltipLine(StarlightRiver.Instance, "EphemeralTip1", "+15% movement speed")
 			{
 				IsModifier = true
-			});
+			};
 
-			tooltips.Add(new TooltipLine(StarlightRiver.Instance, "EphemeralTip2", "-20 maximum life")
+			yield return new TooltipLine(StarlightRiver.Instance, "EphemeralTip2", "-20 maximum life")
 			{
 				IsModifier = true,
 				IsModifierBad = true
-			});
+			};
 		}
 	}
 }

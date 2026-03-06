@@ -1,11 +1,12 @@
-﻿using StarlightRiver.Content.NPCs.Actors;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.NPCs.Actors;
 using System;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Infernal
 {
-	internal class InfernalCatalyst : QuickMaterial
+	internal class InfernalCatalyst : BaseMaterial
 	{
 		bool canTransform = true;
 

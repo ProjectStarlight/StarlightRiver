@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Packets;
 using StarlightRiver.Core.Systems.CutsceneSystem;
 using StarlightRiver.Core.Systems.DummyTileSystem;
@@ -241,7 +242,7 @@ namespace StarlightRiver.Content.Tiles.Starlight
 		}
 	}
 
-	public sealed class StarlightPylonItem : QuickTileItem
+	public sealed class StarlightPylonItem : BaseTileItem
 	{
 		public StarlightPylonItem() : base("Mysterious Pylon", "You shouldn't have this!", "StarlightPylon", 0, AssetDirectory.Debug, true, 0) { }
 	}

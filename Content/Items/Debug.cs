@@ -2,15 +2,18 @@ using ReLogic.Graphics;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.CustomHooks;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.NPCs.BaseTypes;
 using StarlightRiver.Content.NPCs.Starlight;
 using StarlightRiver.Content.Tiles.BaseTypes;
+using StarlightRiver.Content.Tiles.Misc;
 using StarlightRiver.Content.Tiles.Starlight;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.ArmatureSystem;
 using StarlightRiver.Core.Systems.CutsceneSystem;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.Systems.LightingSystem;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.WorldBuilding;
 
@@ -104,9 +107,54 @@ namespace StarlightRiver.Content.Items
 
 		}
 
+		private Item SetupItem(int type, int stack, bool isRelic)
+		{
+			var Item = new Item(type, stack);
+
+			Item.GetGlobalItem<RelicItem>().isRelic = isRelic;
+			Item.Prefix(ItemLoader.ChoosePrefix(Item, Main.rand));
+
+			return Item;
+		}
+
+		private bool PlaceDisplayCaseOn(Chest chest)
+		{
+			int type = ItemID.None;
+
+			for (int i = 0; i < chest.item.Length; i++)
+			{
+				Item Item = chest.item[i];
+
+				// Checks if the "main" chest Item is an accessory
+				if (Item.accessory)
+				{
+					type = chest.item[i].type;
+					break;
+				}
+			}
+
+			if (type != ItemID.None)
+			{
+				Item Item = SetupItem(type, 1, true);
+
+				WorldGenHelper.PlaceMultitile(new Point16(chest.x, chest.y - 1), ModContent.TileType<DisplayCase>());
+				TileEntity.PlaceEntityNet(chest.x, chest.y - 1, ModContent.TileEntityType<DisplayCaseEntity>());
+				(TileEntity.ByPosition[new Point16(chest.x, chest.y - 1)] as DisplayCaseEntity).containedItem = Item;
+				return true;
+			}
+
+			return false;
+		}
+
 		public override bool? UseItem(Player player)
 		{
 			//ModContent.GetInstance<StarlightWorld>().GraymatterGen(new GenerationProgress(), null);
+
+			foreach (Chest chest in Main.chest)
+			{
+				PlaceDisplayCaseOn(chest);
+			}
+
 			return true;
 
 			ObservatorySystem.pylonAppearsOn = false;

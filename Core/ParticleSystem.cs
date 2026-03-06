@@ -265,7 +265,7 @@ namespace StarlightRiver.Core
 		/// <param name="type"></param>
 		public void AddParticle(Vector2 position, Vector2 velocity, float rotation, float scale, Color color, int timer, Vector2 storedPosition, Rectangle frame = default, float alpha = 1, int type = 0)
 		{
-			if (Main.dedServ || !GetInstance<GraphicsConfig>().ParticlesActive || particles.Count > maxParticles)
+			if (Main.dedServ || Main.gameInactive || !GetInstance<GraphicsConfig>().ParticlesActive || particles.Count > maxParticles)
 				return;
 
 			Particle particle = pool.Count > 0 ? pool.Dequeue() : new();

@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Helpers;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Helpers;
 using System;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -50,13 +51,13 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 		}
 	}
 
-	public class WallOvergrowBrickItem : QuickWallItem
+	public class WallOvergrowBrickItem : BaseWallItem
 	{
 		public override string Texture => AssetDirectory.OvergrowTile + Name;
 		public WallOvergrowBrickItem() : base("Runic Brick Wall", "", WallType<WallOvergrowBrick>(), 0) { }
 	}
 
-	public class WallOvergrowGrassItem : QuickWallItem
+	public class WallOvergrowGrassItem : BaseWallItem
 	{
 		public override string Texture => AssetDirectory.OvergrowTile + Name;
 		public WallOvergrowGrassItem() : base("Overgrowth Grass Wall", "", WallType<WallOvergrowGrass>(), 0) { }

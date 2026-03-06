@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Items.BaseTypes;
 using System;
 using System.IO;
 using Terraria.Audio;
@@ -195,12 +196,12 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		}
 	}
 
-	internal class MagmiteSmolItem : QuickCritterItem
+	internal class MagmiteSmolItem : BaseCritterItem
 	{
 		public MagmiteSmolItem() : base("Magmini", "Nurture him!", Item.sellPrice(silver: 5), ItemRarityID.Orange, NPCType<MagmiteSmol>(), AssetDirectory.VitricItem) { }
 	}
 
-	internal class MagmiteLargeItem : QuickCritterItem
+	internal class MagmiteLargeItem : BaseCritterItem
 	{
 		public MagmiteLargeItem() : base("Magmificent", "Admire him!", Item.sellPrice(silver: 25), ItemRarityID.Orange, NPCType<MagmiteLarge>(), AssetDirectory.VitricItem) { }
 	}

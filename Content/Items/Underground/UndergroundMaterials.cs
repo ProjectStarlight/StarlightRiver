@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace StarlightRiver.Content.Items.Underground
 {
-	public class GloomGel : QuickMaterial
+	public class GloomGel : BaseMaterial
 	{
 		public override string Texture => "StarlightRiver/Assets/Items/Underground/GloomGel";
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using System;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Trophies
@@ -46,7 +47,7 @@ namespace StarlightRiver.Content.Tiles.Trophies
 		}
 	}
 
-	class AuroracleTrophyItem : QuickTileItem
+	class AuroracleTrophyItem : BaseTileItem
 	{
 		public AuroracleTrophyItem() : base("Auroracle Trophy", "", "AuroracleTrophy", 1, AssetDirectory.TrophyTile) { }
 

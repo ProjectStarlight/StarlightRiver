@@ -3,13 +3,15 @@ using System;
 
 namespace StarlightRiver.Content.Foregrounds
 {
-	class AshHellForeground : ParticleForeground
+	class AshHellForeground : Foreground
 	{
+		ParticleSystem particles;
+
 		public override bool Visible => Main.LocalPlayer.ZoneUnderworldHeight;
 
-		public override void OnLoad()
+		public override void Load()
 		{
-			ParticleSystem = new ParticleSystem("StarlightRiver/Assets/GUI/Fire", UpdateAshParticles);
+			particles = new ParticleSystem("StarlightRiver/Assets/GUI/Fire", UpdateAshParticles);
 		}
 
 		private void UpdateAshParticles(Particle particle)
@@ -40,11 +42,11 @@ namespace StarlightRiver.Content.Foregrounds
 		{
 			if (Main.rand.NextBool(50))
 			{
-				ParticleSystem.AddParticle(Vector2.Zero, new Vector2(Main.rand.NextFloat(1.4f, 2.6f), Main.rand.NextFloat(-1.4f, -0.8f)), 0, Main.rand.NextFloat(1, 2), Color.White,
+				particles.AddParticle(Vector2.Zero, new Vector2(Main.rand.NextFloat(1.4f, 2.6f), Main.rand.NextFloat(-1.4f, -0.8f)), 0, Main.rand.NextFloat(1, 2), Color.White,
 					1500, new Vector2((StarlightWorld.permafrostCenter + Main.rand.Next(-400, 400)) * 16, 16 * (Main.maxTilesY - 40)));
 			}
 
-			ParticleSystem.DrawParticles(Main.spriteBatch);
+			particles.DrawParticles(Main.spriteBatch);
 		}
 	}
 }

@@ -1,4 +1,4 @@
-﻿using StarlightRiver.Content.CustomHooks;
+﻿using StarlightRiver.Core.Systems;
 using System.Collections.Generic;
 using System.IO;
 using Terraria.Audio;
@@ -147,7 +147,7 @@ namespace StarlightRiver.Content.Items.ArmsDealer
 				return;
 
 			// Don't draw radial menu for render target
-			if (!PlayerTarget.canUseTarget)
+			if (!PlayerTargetSystem.canUseTarget)
 				return;
 
 			// Get the held instance, if it exists

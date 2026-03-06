@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Helpers;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Helpers;
 using System;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -42,7 +43,7 @@ namespace StarlightRiver.Content.Tiles.Mushroom
 		}
 	}
 
-	class LumishroomItem : QuickTileItem
+	class LumishroomItem : BaseTileItem
 	{
 		public LumishroomItem() : base("Lumishroom", "Glowy...", "Lumishroom", 1, "StarlightRiver/Assets/Tiles/Mushroom/") { }
 	}

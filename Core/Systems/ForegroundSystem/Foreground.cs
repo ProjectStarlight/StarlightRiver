@@ -1,17 +1,12 @@
 ﻿namespace StarlightRiver.Core.Systems.ForegroundSystem
 {
-	public abstract class Foreground
+	public abstract class Foreground : ModType
 	{
 		protected float opacity = 0;
 
 		public virtual bool Visible => false;
 
 		public virtual bool OverUI => false;
-
-		public Foreground()
-		{
-			OnLoad();
-		}
 
 		public void Render(SpriteBatch spriteBatch)
 		{
@@ -31,29 +26,9 @@
 
 		public virtual void Reset() { }
 
-		public virtual void OnLoad() { }
-
-		public virtual void Unload() { }
-	}
-
-	public abstract class ParticleForeground : Foreground
-	{
-		public ParticleSystem ParticleSystem { get; set; }
-
-		public ParticleForeground()
+		public sealed override void Register()
 		{
-			OnLoad();
-		}
 
-		public ParticleForeground(ParticleSystem system)
-		{
-			ParticleSystem = system;
-			OnLoad();
-		}
-
-		public override void Unload()
-		{
-			ParticleSystem = null;
 		}
 	}
 }

@@ -1,4 +1,6 @@
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems;
+using StarlightRiver.Core.Systems.NoBuildingSystem;
 using Terraria.Graphics;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -18,6 +20,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		{
 			QuickBlock.QuickSetWall(this, DustType<Dusts.Sand>(), SoundID.Dig, ItemType<VitricTempleWallItem>(), true, new Color(54, 48, 42));
 			DustType = DustType<Dusts.Sand>();
+			NoBuildSystem.noBuildWalls[Type] = true;
 		}
 
 		public override bool CanExplode(int i, int j)
@@ -52,7 +55,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	}
 
 	[SLRDebug]
-	class VitricTempleWallItem : QuickWallItem
+	class VitricTempleWallItem : BaseWallItem
 	{
 		public override string Texture => AssetDirectory.VitricTile + "VitricTempleWallItem";
 
@@ -61,7 +64,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 	class VitricTempleWallSafe : VitricTempleWall { }
 
-	class VitricTempleWallSafeItem : QuickWallItem
+	class VitricTempleWallSafeItem : BaseWallItem
 	{
 		public override string Texture => AssetDirectory.VitricTile + "VitricTempleWallItem";
 
