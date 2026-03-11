@@ -1,21 +1,20 @@
 ﻿using Terraria.ID;
 
-namespace StarlightRiver.Content.Items.Food
+namespace StarlightRiver.Content.Items.Food;
+
+internal class DicedMushrooms : Ingredient
 {
-	internal class DicedMushrooms : Ingredient
+	public DicedMushrooms() : base("+20 maximum life", 3600, IngredientType.Side) { }
+
+	public override void SafeSetDefaults()
 	{
-		public DicedMushrooms() : base("+20 maximum life", 3600, IngredientType.Side) { }
+		Item.rare = ItemRarityID.White;
 
-		public override void SafeSetDefaults()
-		{
-			Item.rare = ItemRarityID.White;
+		Item.value = Item.sellPrice(silver: 5);
+	}
 
-			Item.value = Item.sellPrice(silver: 5);
-		}
-
-		public override void BuffEffects(Player Player, float multiplier)
-		{
-			Player.statLifeMax2 += 20;
-		}
+	public override void BuffEffects(Player Player, float multiplier)
+	{
+		Player.statLifeMax2 += 20;
 	}
 }

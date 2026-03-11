@@ -15,181 +15,180 @@ using System.Threading.Tasks;
 using Terraria.Graphics.Effects;
 using Terraria.ModLoader.IO;
 
-namespace StarlightRiver.Content.Biomes
+namespace StarlightRiver.Content.Biomes;
+
+internal class ObservatoryBiome : ModBiome
 {
-	internal class ObservatoryBiome : ModBiome
+	public static float fade;
+
+	public override int Music => MusicLoader.GetMusicSlot("StarlightRiver/Sounds/Music/StarBird");
+
+	public override SceneEffectPriority Priority => SceneEffectPriority.Event;
+
+	public override void Load()
 	{
-		public static float fade;
+		On_Main.DrawBackgroundBlackFill += DrawRiver;
+		StarlightRiverBackground.CheckIsActiveEvent += () => !Main.gameMenu && IsSceneEffectActive(Main.LocalPlayer);
+		StarlightRiverBackground.DrawMapEvent += DrawOverlayMap;
+		StarlightRiverBackground.DrawOverlayEvent += DrawOverlay;
+	}
 
-		public override int Music => MusicLoader.GetMusicSlot("StarlightRiver/Sounds/Music/StarBird");
+	public override void OnInBiome(Player player)
+	{
+		bool biomeCondition = ObservatorySystem.IsInObservatory(player);
 
-		public override SceneEffectPriority Priority => SceneEffectPriority.Event;
+		if (biomeCondition && fade < 1)
+			fade += 0.02f;
 
-		public override void Load()
+		if (!biomeCondition && fade > 0)
+			fade -= 0.05f;
+	}
+
+	private void DrawOverlayMap(SpriteBatch sb)
+	{
+		if (!Main.gameMenu && IsSceneEffectActive(Main.LocalPlayer))
 		{
-			On_Main.DrawBackgroundBlackFill += DrawRiver;
-			StarlightRiverBackground.CheckIsActiveEvent += () => !Main.gameMenu && IsSceneEffectActive(Main.LocalPlayer);
-			StarlightRiverBackground.DrawMapEvent += DrawOverlayMap;
-			StarlightRiverBackground.DrawOverlayEvent += DrawOverlay;
-		}
+			Texture2D tex = Assets.GradientV.Value;
 
-		public override void OnInBiome(Player player)
-		{
-			bool biomeCondition = ObservatorySystem.IsInObservatory(player);
+			sb.End();
+			sb.Begin(default, default, SamplerState.PointWrap, default, default);
 
-			if (biomeCondition && fade < 1)
-				fade += 0.02f;
+			Color color = Color.White;
+			color.A = 0;
 
-			if (!biomeCondition && fade > 0)
-				fade -= 0.05f;
-		}
+			int factor = 5;
 
-		private void DrawOverlayMap(SpriteBatch sb)
-		{
-			if (!Main.gameMenu && IsSceneEffectActive(Main.LocalPlayer))
-			{
-				Texture2D tex = Assets.GradientV.Value;
+			sb.Draw(tex, new Rectangle(0, 0, Main.screenWidth / factor, Main.screenHeight), null, color * fade);
+			sb.Draw(tex, new Rectangle(Main.screenWidth - Main.screenWidth / factor, 0, Main.screenWidth / factor, Main.screenHeight), null, color * fade, 0f, default, SpriteEffects.FlipHorizontally, 0);
 
-				sb.End();
-				sb.Begin(default, default, SamplerState.PointWrap, default, default);
-
-				Color color = Color.White;
-				color.A = 0;
-
-				int factor = 5;
-
-				sb.Draw(tex, new Rectangle(0, 0, Main.screenWidth / factor, Main.screenHeight), null, color * fade);
-				sb.Draw(tex, new Rectangle(Main.screenWidth - Main.screenWidth / factor, 0, Main.screenWidth / factor, Main.screenHeight), null, color * fade, 0f, default, SpriteEffects.FlipHorizontally, 0);
-
-				tex = Assets.GradientH.Value;
-				sb.Draw(tex, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight / factor), null, color * fade, 0f, default, SpriteEffects.FlipVertically, 0);
-				sb.Draw(tex, new Rectangle(0, Main.screenHeight - Main.screenHeight / factor, Main.screenWidth, Main.screenHeight / factor), null, color * fade);
-			}
-		}
-
-		private void DrawRiver(On_Main.orig_DrawBackgroundBlackFill orig, Main self)
-		{
-			orig(self);
-
-			if (!Main.gameMenu && IsSceneEffectActive(Main.LocalPlayer))
-				Main.spriteBatch.Draw(StarlightRiverBackground.starsTarget.RenderTarget, Vector2.Zero, Color.White * fade);
-		}
-
-		private void DrawOverlay(GameTime gameTime, ScreenTarget starsMap, ScreenTarget starsTarget)
-		{
-			if (!Main.gameMenu && IsSceneEffectActive(Main.LocalPlayer))
-			{
-				SpriteBatch spriteBatch = Main.spriteBatch;
-
-				Effect mapEffect = ShaderLoader.GetShader("StarMap").Value;
-
-				if (mapEffect != null)
-				{
-					mapEffect.Parameters["map"].SetValue(starsMap.RenderTarget);
-					mapEffect.Parameters["background"].SetValue(starsTarget.RenderTarget);
-
-					spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, mapEffect, Main.GameViewMatrix.TransformationMatrix);
-
-					spriteBatch.Draw(starsMap.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
-
-					spriteBatch.End();
-				}
-			}
-
-			if (StarlightRiver.debugMode && true)
-			{
-				Main.spriteBatch.Begin();
-				Rectangle target = ObservatorySystem.ObservatoryRoomWorld;
-				target.Offset((-Main.screenPosition).ToPoint());
-				Main.spriteBatch.Draw(Assets.MagicPixel.Value, target, Color.Green * 0.25f);
-
-				target = ObservatorySystem.ObservatoryRoomMidWorld;
-				target.Offset((-Main.screenPosition).ToPoint());
-				Main.spriteBatch.Draw(Assets.MagicPixel.Value, target, Color.Teal * 0.25f);
-
-				target = ObservatorySystem.ObservatoryRoomTopWorld;
-				target.Offset((-Main.screenPosition).ToPoint());
-				Main.spriteBatch.Draw(Assets.MagicPixel.Value, target, Color.Cyan * 0.25f);
-
-				target = ObservatorySystem.MainStructureWorld;
-				target.Offset((-Main.screenPosition).ToPoint());
-				Main.spriteBatch.Draw(Assets.MagicPixel.Value, target, Color.Orange * 0.25f);
-
-				target = ObservatorySystem.SideStructureWorld;
-				target.Offset((-Main.screenPosition).ToPoint());
-				Main.spriteBatch.Draw(Assets.MagicPixel.Value, target, Color.Red * 0.25f);
-				Main.spriteBatch.End();
-			}
-		}
-
-		public override bool IsBiomeActive(Player player)
-		{
-			return ObservatorySystem.IsInObservatory(player) || fade > 0;
+			tex = Assets.GradientH.Value;
+			sb.Draw(tex, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight / factor), null, color * fade, 0f, default, SpriteEffects.FlipVertically, 0);
+			sb.Draw(tex, new Rectangle(0, Main.screenHeight - Main.screenHeight / factor, Main.screenWidth, Main.screenHeight / factor), null, color * fade);
 		}
 	}
 
-	internal class ObservatorySystem : ModSystem
+	private void DrawRiver(On_Main.orig_DrawBackgroundBlackFill orig, Main self)
 	{
-		public static Rectangle observatoryRoom;
-		public static bool observatoryOpen;
-		public static bool pylonAppearsOn;
+		orig(self);
 
-		public static Rectangle ObservatoryRoomWorld => new(observatoryRoom.X * 16, observatoryRoom.Y * 16 + 16, observatoryRoom.Width * 16, observatoryRoom.Height * 16 - 16);
-		public static Rectangle ObservatoryRoomMidWorld => new(observatoryRoom.X * 16 + 32, observatoryRoom.Y * 16 - 16 * 2, observatoryRoom.Width * 16 - 64, 3 * 16);
-		public static Rectangle ObservatoryRoomTopWorld => new(observatoryRoom.X * 16 + 64, observatoryRoom.Y * 16 - 16 * 4, observatoryRoom.Width * 16 - 128, 2 * 16);
-		public static Rectangle MainStructureWorld => new(observatoryRoom.X * 16, observatoryRoom.Y * 16 + 7 * 16, observatoryRoom.Width * 16, 12 * 16);
-		public static Rectangle SideStructureWorld => new(observatoryRoom.X * 16 - 9 * 16, observatoryRoom.Y * 16 + 12 * 16, 9 * 16, 7 * 16);
+		if (!Main.gameMenu && IsSceneEffectActive(Main.LocalPlayer))
+			Main.spriteBatch.Draw(StarlightRiverBackground.starsTarget.RenderTarget, Vector2.Zero, Color.White * fade);
+	}
 
-		public static bool IsInMainStructure(Player player)
+	private void DrawOverlay(GameTime gameTime, ScreenTarget starsMap, ScreenTarget starsTarget)
+	{
+		if (!Main.gameMenu && IsSceneEffectActive(Main.LocalPlayer))
 		{
-			return player.Hitbox.Intersects(MainStructureWorld) || player.Hitbox.Intersects(SideStructureWorld);
-		}
+			SpriteBatch spriteBatch = Main.spriteBatch;
 
-		public static bool IsInTop(Player player)
-		{
-			return player.Hitbox.Intersects(ObservatoryRoomWorld) || player.Hitbox.Intersects(ObservatoryRoomMidWorld) || player.Hitbox.Intersects(ObservatoryRoomTopWorld);
-		}
+			Effect mapEffect = ShaderLoader.GetShader("StarMap").Value;
 
-		public static bool IsInObservatory(Player player)
-		{
-			return IsInMainStructure(player) || IsInTop(player);
-		}
-
-		public override void ModifySunLightColor(ref Color tileColor, ref Color backgroundColor)
-		{
-			ObservatoryBiome biome = ModContent.GetInstance<ObservatoryBiome>();
-
-			if (biome.IsBiomeActive(Main.LocalPlayer))
+			if (mapEffect != null)
 			{
-				tileColor = Color.Lerp(tileColor, new Color(30, 40, 70), ObservatoryBiome.fade);
-				backgroundColor = Color.Lerp(backgroundColor, new Color(2, 36, 62), ObservatoryBiome.fade);
+				mapEffect.Parameters["map"].SetValue(starsMap.RenderTarget);
+				mapEffect.Parameters["background"].SetValue(starsTarget.RenderTarget);
+
+				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, mapEffect, Main.GameViewMatrix.TransformationMatrix);
+
+				spriteBatch.Draw(starsMap.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+
+				spriteBatch.End();
 			}
 		}
 
-		public override void SaveWorldData(TagCompound tag)
+		if (StarlightRiver.debugMode && true)
 		{
-			tag["observatoryRoom"] = observatoryRoom;
-			tag["observatoryOpen"] = observatoryOpen;
-		}
+			Main.spriteBatch.Begin();
+			Rectangle target = ObservatorySystem.ObservatoryRoomWorld;
+			target.Offset((-Main.screenPosition).ToPoint());
+			Main.spriteBatch.Draw(Assets.MagicPixel.Value, target, Color.Green * 0.25f);
 
-		public override void LoadWorldData(TagCompound tag)
+			target = ObservatorySystem.ObservatoryRoomMidWorld;
+			target.Offset((-Main.screenPosition).ToPoint());
+			Main.spriteBatch.Draw(Assets.MagicPixel.Value, target, Color.Teal * 0.25f);
+
+			target = ObservatorySystem.ObservatoryRoomTopWorld;
+			target.Offset((-Main.screenPosition).ToPoint());
+			Main.spriteBatch.Draw(Assets.MagicPixel.Value, target, Color.Cyan * 0.25f);
+
+			target = ObservatorySystem.MainStructureWorld;
+			target.Offset((-Main.screenPosition).ToPoint());
+			Main.spriteBatch.Draw(Assets.MagicPixel.Value, target, Color.Orange * 0.25f);
+
+			target = ObservatorySystem.SideStructureWorld;
+			target.Offset((-Main.screenPosition).ToPoint());
+			Main.spriteBatch.Draw(Assets.MagicPixel.Value, target, Color.Red * 0.25f);
+			Main.spriteBatch.End();
+		}
+	}
+
+	public override bool IsBiomeActive(Player player)
+	{
+		return ObservatorySystem.IsInObservatory(player) || fade > 0;
+	}
+}
+
+internal class ObservatorySystem : ModSystem
+{
+	public static Rectangle observatoryRoom;
+	public static bool observatoryOpen;
+	public static bool pylonAppearsOn;
+
+	public static Rectangle ObservatoryRoomWorld => new(observatoryRoom.X * 16, observatoryRoom.Y * 16 + 16, observatoryRoom.Width * 16, observatoryRoom.Height * 16 - 16);
+	public static Rectangle ObservatoryRoomMidWorld => new(observatoryRoom.X * 16 + 32, observatoryRoom.Y * 16 - 16 * 2, observatoryRoom.Width * 16 - 64, 3 * 16);
+	public static Rectangle ObservatoryRoomTopWorld => new(observatoryRoom.X * 16 + 64, observatoryRoom.Y * 16 - 16 * 4, observatoryRoom.Width * 16 - 128, 2 * 16);
+	public static Rectangle MainStructureWorld => new(observatoryRoom.X * 16, observatoryRoom.Y * 16 + 7 * 16, observatoryRoom.Width * 16, 12 * 16);
+	public static Rectangle SideStructureWorld => new(observatoryRoom.X * 16 - 9 * 16, observatoryRoom.Y * 16 + 12 * 16, 9 * 16, 7 * 16);
+
+	public static bool IsInMainStructure(Player player)
+	{
+		return player.Hitbox.Intersects(MainStructureWorld) || player.Hitbox.Intersects(SideStructureWorld);
+	}
+
+	public static bool IsInTop(Player player)
+	{
+		return player.Hitbox.Intersects(ObservatoryRoomWorld) || player.Hitbox.Intersects(ObservatoryRoomMidWorld) || player.Hitbox.Intersects(ObservatoryRoomTopWorld);
+	}
+
+	public static bool IsInObservatory(Player player)
+	{
+		return IsInMainStructure(player) || IsInTop(player);
+	}
+
+	public override void ModifySunLightColor(ref Color tileColor, ref Color backgroundColor)
+	{
+		ObservatoryBiome biome = ModContent.GetInstance<ObservatoryBiome>();
+
+		if (biome.IsBiomeActive(Main.LocalPlayer))
 		{
-			observatoryRoom = tag.Get<Rectangle>("observatoryRoom");
-			observatoryOpen = tag.GetBool("observatoryOpen");
-			pylonAppearsOn = observatoryOpen;
+			tileColor = Color.Lerp(tileColor, new Color(30, 40, 70), ObservatoryBiome.fade);
+			backgroundColor = Color.Lerp(backgroundColor, new Color(2, 36, 62), ObservatoryBiome.fade);
 		}
+	}
 
-		public override void NetSend(BinaryWriter writer)
-		{
-			writer.Write(observatoryOpen);
-		}
+	public override void SaveWorldData(TagCompound tag)
+	{
+		tag["observatoryRoom"] = observatoryRoom;
+		tag["observatoryOpen"] = observatoryOpen;
+	}
 
-		public override void NetReceive(BinaryReader reader)
-		{
-			observatoryOpen = reader.ReadBoolean();
+	public override void LoadWorldData(TagCompound tag)
+	{
+		observatoryRoom = tag.Get<Rectangle>("observatoryRoom");
+		observatoryOpen = tag.GetBool("observatoryOpen");
+		pylonAppearsOn = observatoryOpen;
+	}
 
-			if (observatoryOpen)
-				pylonAppearsOn = true;
-		}
+	public override void NetSend(BinaryWriter writer)
+	{
+		writer.Write(observatoryOpen);
+	}
+
+	public override void NetReceive(BinaryReader reader)
+	{
+		observatoryOpen = reader.ReadBoolean();
+
+		if (observatoryOpen)
+			pylonAppearsOn = true;
 	}
 }

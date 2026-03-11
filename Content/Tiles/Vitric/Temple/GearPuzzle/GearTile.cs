@@ -6,399 +6,398 @@ using Terraria.ID;
 using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
 
-namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
+namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle;
+
+public abstract class GearTile : DummyTile
 {
-	public abstract class GearTile : DummyTile
+	public override int DummyType => DummySystem.DummyType<GearTileDummy>();
+
+	public override string Texture => AssetDirectory.Invisible;
+
+	public override void SetStaticDefaults()
 	{
-		public override int DummyType => DummySystem.DummyType<GearTileDummy>();
-
-		public override string Texture => AssetDirectory.Invisible;
-
-		public override void SetStaticDefaults()
-		{
-			TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(ModContent.GetInstance<GearTileEntity>().Hook_AfterPlacement, -1, 0, false);
-			this.QuickSetFurniture(1, 1, 1, SoundID.PlayerHit, new Color(1, 1, 1)); // Is the sound correct..?
-		}
-
-		public virtual void OnEngage(GearTileEntity entity) { }
-
-		public virtual void OnDisengage(GearTileEntity entity) { }
+		TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(ModContent.GetInstance<GearTileEntity>().Hook_AfterPlacement, -1, 0, false);
+		this.QuickSetFurniture(1, 1, 1, SoundID.PlayerHit, new Color(1, 1, 1)); // Is the sound correct..?
 	}
 
-	public class GearTileEntity : ModTileEntity
+	public virtual void OnEngage(GearTileEntity entity) { }
+
+	public virtual void OnDisengage(GearTileEntity entity) { }
+}
+
+public class GearTileEntity : ModTileEntity
+{
+	public bool engaged = false;
+	public int size;
+	public float rotationVelocity;
+	public float rotationOffset;
+
+	public int Teeth => size switch
 	{
-		public bool engaged = false;
-		public int size;
-		public float rotationVelocity;
-		public float rotationOffset;
+		0 => 1,
+		1 => 4,
+		2 => 8,
+		3 => 12,
+		_ => 1,
+	};
 
-		public int Teeth => size switch
-		{
-			0 => 1,
-			1 => 4,
-			2 => 8,
-			3 => 12,
-			_ => 1,
-		};
+	public override bool IsTileValidForEntity(int i, int j)
+	{
+		Tile tile = Main.tile[i, j];
+		return ModContent.GetModTile(tile.TileType) is GearTile && tile.HasTile;
+	}
 
-		public override bool IsTileValidForEntity(int i, int j)
+	public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction, int alternate)
+	{
+		if (Main.netMode == NetmodeID.MultiplayerClient)
 		{
-			Tile tile = Main.tile[i, j];
-			return ModContent.GetModTile(tile.TileType) is GearTile && tile.HasTile;
+			NetMessage.SendTileSquare(Main.myPlayer, i, j, 3);
+			NetMessage.SendData(MessageID.TileEntityPlacement, -1, -1, null, i, j, Type, 0f, 0, 0, 0);
+			return -1;
 		}
 
-		public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction, int alternate)
+		return Place(i, j);
+	}
+
+	/// <summary>
+	/// Performs an action on all gears in a system. Has no built-in base case, you must implement one in your action.
+	/// </summary>
+	/// <param name="action">The action to be performed on all connected gears, including this one</param>
+	public void RecurseOverGears(Action<Point16, int> action)
+	{
+		if (size > 0)
 		{
-			if (Main.netMode == NetmodeID.MultiplayerClient)
+			Point16 pos = Position;
+
+			switch (size)
 			{
-				NetMessage.SendTileSquare(Main.myPlayer, i, j, 3);
-				NetMessage.SendData(MessageID.TileEntityPlacement, -1, -1, null, i, j, Type, 0f, 0, 0, 0);
-				return -1;
+				case 1: //small gear
+
+					//check VS smalls
+					CheckCardinals(action, pos, 3, 1);
+					CheckSubCardinals(action, pos, 2, 1);
+					//check VS mediums
+					CheckCardinals(action, pos, 4, 2);
+					//check VS larges
+					Check12Rad5(action, pos, 3);
+					break;
+
+				case 2: //medium gear
+
+					//check VS smalls
+					CheckCardinals(action, pos, 4, 1);
+					//check VS mediums
+					Check12Rad5(action, pos, 2);
+					//check VS larges
+					Check12Rad6(action, pos, 3);
+					break;
+
+				case 3: //large gear
+
+					//check VS smalls
+					Check12Rad5(action, pos, 1);
+					//check VS mediums
+					Check12Rad6(action, pos, 2);
+					//check VS larges
+					CheckCardinals(action, pos, 7, 3);
+					CheckSubCardinals(action, pos, 5, 3);
+					break;
+
+				default: //fallback
+					break;
 			}
-
-			return Place(i, j);
 		}
+	}
 
-		/// <summary>
-		/// Performs an action on all gears in a system. Has no built-in base case, you must implement one in your action.
-		/// </summary>
-		/// <param name="action">The action to be performed on all connected gears, including this one</param>
-		public void RecurseOverGears(Action<Point16, int> action)
+	private void CheckCardinals(Action<Point16, int> action, Point16 pos, int radius, int size)
+	{
+		action(pos + new Point16(radius, 0), size);
+		action(pos + new Point16(0, radius), size);
+		action(pos + new Point16(-radius, 0), size);
+		action(pos + new Point16(0, -radius), size);
+	}
+
+	private void CheckSubCardinals(Action<Point16, int> action, Point16 pos, int radius, int size)
+	{
+		action(pos + new Point16(radius, radius), size);
+		action(pos + new Point16(-radius, -radius), size);
+		action(pos + new Point16(-radius, radius), size);
+		action(pos + new Point16(radius, -radius), size);
+	}
+
+	private void Check12Rad5(Action<Point16, int> action, Point16 pos, int size)
+	{
+		CheckCardinals(action, pos, 5, size);
+
+		action(pos + new Point16(4, 3), size);
+		action(pos + new Point16(3, 4), size);
+		action(pos + new Point16(-3, 4), size);
+		action(pos + new Point16(-4, 3), size);
+		action(pos + new Point16(-4, -3), size);
+		action(pos + new Point16(-3, -4), size);
+		action(pos + new Point16(3, -4), size);
+		action(pos + new Point16(4, -3), size);
+	}
+
+	private void Check12Rad6(Action<Point16, int> action, Point16 pos, int size)
+	{
+		CheckCardinals(action, pos, 6, size);
+
+		action(pos + new Point16(5, 3), size);
+		action(pos + new Point16(3, 5), size);
+		action(pos + new Point16(-3, 5), size);
+		action(pos + new Point16(-5, 3), size);
+		action(pos + new Point16(-5, -3), size);
+		action(pos + new Point16(-3, -5), size);
+		action(pos + new Point16(3, -5), size);
+		action(pos + new Point16(5, -3), size);
+	}
+
+	/// <summary>
+	/// Disengages the connected system and then restarts it from this gear, with the given initial speed
+	/// </summary>
+	/// <param name="rotationVelocity">The speed of this gear in the new engagement</param>
+	public void Engage(float rotationVelocity)
+	{
+		Disengage();
+		this.rotationVelocity = rotationVelocity;
+		Engage(Position, size);
+	}
+
+	private void Engage(Point16 pos, int size)
+	{
+		if (!ByPosition.ContainsKey(pos))
+			return;
+
+		var entity = ByPosition[pos] as GearTileEntity;
+
+		if (entity != null)
 		{
-			if (size > 0)
+			if (entity.size == size && !entity.engaged)
 			{
-				Point16 pos = Position;
+				int thisSize = Teeth;
+				int nextSize = entity.Teeth;
+				float ratio = thisSize / (float)nextSize;
 
-				switch (size)
+				entity.rotationVelocity = rotationVelocity * -1 * ratio;
+
+				if (entity == this) //This is here to prevent the first gear which engages from reversing itself
+					entity.rotationVelocity *= -1;
+
+				float trueAngle = (Position.ToVector2() * 16 + Vector2.One * 8 - (entity.Position.ToVector2() * 16 + Vector2.One * 8)).ToRotation();
+
+				entity.rotationOffset = -(ratio * rotationOffset) + (1 + ratio) * trueAngle + (float)Math.PI / entity.Teeth;
+
+				if (!engaged) // I dont care how dumb this looks it works because FORMAL LOGIC and we release in 2 days so fucking send it
 				{
-					case 1: //small gear
-
-						//check VS smalls
-						CheckCardinals(action, pos, 3, 1);
-						CheckSubCardinals(action, pos, 2, 1);
-						//check VS mediums
-						CheckCardinals(action, pos, 4, 2);
-						//check VS larges
-						Check12Rad5(action, pos, 3);
-						break;
-
-					case 2: //medium gear
-
-						//check VS smalls
-						CheckCardinals(action, pos, 4, 1);
-						//check VS mediums
-						Check12Rad5(action, pos, 2);
-						//check VS larges
-						Check12Rad6(action, pos, 3);
-						break;
-
-					case 3: //large gear
-
-						//check VS smalls
-						Check12Rad5(action, pos, 1);
-						//check VS mediums
-						Check12Rad6(action, pos, 2);
-						//check VS larges
-						CheckCardinals(action, pos, 7, 3);
-						CheckSubCardinals(action, pos, 5, 3);
-						break;
-
-					default: //fallback
-						break;
+					var newGear = ModContent.GetModTile(Framing.GetTileSafely(Position).TileType) as GearTile;
+					newGear?.OnEngage(this);
 				}
+
+				engaged = true;
+
+				entity.RecurseOverGears(entity.Engage);
 			}
 		}
 
-		private void CheckCardinals(Action<Point16, int> action, Point16 pos, int radius, int size)
+		if (!engaged) // I dont care how dumb this looks it works because FORMAL LOGIC and we release in 2 days so fucking send it
 		{
-			action(pos + new Point16(radius, 0), size);
-			action(pos + new Point16(0, radius), size);
-			action(pos + new Point16(-radius, 0), size);
-			action(pos + new Point16(0, -radius), size);
+			var newGear = ModContent.GetModTile(Framing.GetTileSafely(Position).TileType) as GearTile;
+			newGear?.OnEngage(this);
 		}
 
-		private void CheckSubCardinals(Action<Point16, int> action, Point16 pos, int radius, int size)
+		engaged = true;
+	}
+
+	/// <summary>
+	/// Disengage the gear system connected to this gear
+	/// </summary>
+	public void Disengage()
+	{
+		Disengage(Position, size);
+	}
+
+	private void Disengage(Point16 pos, int size)
+	{
+		if (!ByPosition.ContainsKey(pos))
+			return;
+
+		var entity = ByPosition[pos] as GearTileEntity;
+
+		if (entity != null)
 		{
-			action(pos + new Point16(radius, radius), size);
-			action(pos + new Point16(-radius, -radius), size);
-			action(pos + new Point16(-radius, radius), size);
-			action(pos + new Point16(radius, -radius), size);
-		}
-
-		private void Check12Rad5(Action<Point16, int> action, Point16 pos, int size)
-		{
-			CheckCardinals(action, pos, 5, size);
-
-			action(pos + new Point16(4, 3), size);
-			action(pos + new Point16(3, 4), size);
-			action(pos + new Point16(-3, 4), size);
-			action(pos + new Point16(-4, 3), size);
-			action(pos + new Point16(-4, -3), size);
-			action(pos + new Point16(-3, -4), size);
-			action(pos + new Point16(3, -4), size);
-			action(pos + new Point16(4, -3), size);
-		}
-
-		private void Check12Rad6(Action<Point16, int> action, Point16 pos, int size)
-		{
-			CheckCardinals(action, pos, 6, size);
-
-			action(pos + new Point16(5, 3), size);
-			action(pos + new Point16(3, 5), size);
-			action(pos + new Point16(-3, 5), size);
-			action(pos + new Point16(-5, 3), size);
-			action(pos + new Point16(-5, -3), size);
-			action(pos + new Point16(-3, -5), size);
-			action(pos + new Point16(3, -5), size);
-			action(pos + new Point16(5, -3), size);
-		}
-
-		/// <summary>
-		/// Disengages the connected system and then restarts it from this gear, with the given initial speed
-		/// </summary>
-		/// <param name="rotationVelocity">The speed of this gear in the new engagement</param>
-		public void Engage(float rotationVelocity)
-		{
-			Disengage();
-			this.rotationVelocity = rotationVelocity;
-			Engage(Position, size);
-		}
-
-		private void Engage(Point16 pos, int size)
-		{
-			if (!ByPosition.ContainsKey(pos))
-				return;
-
-			var entity = ByPosition[pos] as GearTileEntity;
-
-			if (entity != null)
+			if (entity.size == size && entity.engaged)
 			{
-				if (entity.size == size && !entity.engaged)
-				{
-					int thisSize = Teeth;
-					int nextSize = entity.Teeth;
-					float ratio = thisSize / (float)nextSize;
+				entity.rotationVelocity = 0;
+				entity.rotationOffset = 0;
 
-					entity.rotationVelocity = rotationVelocity * -1 * ratio;
+				engaged = false;
 
-					if (entity == this) //This is here to prevent the first gear which engages from reversing itself
-						entity.rotationVelocity *= -1;
+				Tile tile = Main.tile[Position.X, Position.Y];
+				(ModContent.GetModTile(tile.TileType) as GearTile)?.OnDisengage(this);
 
-					float trueAngle = (Position.ToVector2() * 16 + Vector2.One * 8 - (entity.Position.ToVector2() * 16 + Vector2.One * 8)).ToRotation();
-
-					entity.rotationOffset = -(ratio * rotationOffset) + (1 + ratio) * trueAngle + (float)Math.PI / entity.Teeth;
-
-					if (!engaged) // I dont care how dumb this looks it works because FORMAL LOGIC and we release in 2 days so fucking send it
-					{
-						var newGear = ModContent.GetModTile(Framing.GetTileSafely(Position).TileType) as GearTile;
-						newGear?.OnEngage(this);
-					}
-
-					engaged = true;
-
-					entity.RecurseOverGears(entity.Engage);
-				}
+				entity.RecurseOverGears(entity.Disengage);
 			}
-
-			if (!engaged) // I dont care how dumb this looks it works because FORMAL LOGIC and we release in 2 days so fucking send it
-			{
-				var newGear = ModContent.GetModTile(Framing.GetTileSafely(Position).TileType) as GearTile;
-				newGear?.OnEngage(this);
-			}
-
-			engaged = true;
 		}
 
-		/// <summary>
-		/// Disengage the gear system connected to this gear
-		/// </summary>
-		public void Disengage()
+		engaged = false;
+	}
+
+	/// <summary>
+	/// Toggles the connected gear system between being on and off
+	/// </summary>
+	/// <param name="rotationVelocity">The speed of this gear in the new system if toggling on</param>
+	public void Toggle(float rotationVelocity)
+	{
+		if (engaged)
 		{
 			Disengage(Position, size);
 		}
-
-		private void Disengage(Point16 pos, int size)
+		else
 		{
-			if (!ByPosition.ContainsKey(pos))
-				return;
-
-			var entity = ByPosition[pos] as GearTileEntity;
-
-			if (entity != null)
-			{
-				if (entity.size == size && entity.engaged)
-				{
-					entity.rotationVelocity = 0;
-					entity.rotationOffset = 0;
-
-					engaged = false;
-
-					Tile tile = Main.tile[Position.X, Position.Y];
-					(ModContent.GetModTile(tile.TileType) as GearTile)?.OnDisengage(this);
-
-					entity.RecurseOverGears(entity.Disengage);
-				}
-			}
-
-			engaged = false;
-		}
-
-		/// <summary>
-		/// Toggles the connected gear system between being on and off
-		/// </summary>
-		/// <param name="rotationVelocity">The speed of this gear in the new system if toggling on</param>
-		public void Toggle(float rotationVelocity)
-		{
-			if (engaged)
-			{
-				Disengage(Position, size);
-			}
-			else
-			{
-				this.rotationVelocity = rotationVelocity;
-				Engage(Position, size);
-			}
-		}
-
-		public override void NetSend(BinaryWriter writer)
-		{
-			writer.Write(engaged);
-			writer.Write(size);
-			writer.Write(rotationVelocity);
-			writer.Write(rotationOffset);
-		}
-
-		public override void NetReceive(BinaryReader reader)
-		{
-			engaged = reader.ReadBoolean();
-			size = reader.ReadInt32();
-			rotationVelocity = reader.ReadSingle();
-			rotationOffset = reader.ReadSingle();
-		}
-
-		public override void SaveData(TagCompound tag)
-		{
-			tag["engaged"] = engaged;
-			tag["size"] = size;
-			tag["direction"] = rotationVelocity;
-			tag["rotationOffset"] = rotationOffset;
-		}
-
-		public override void LoadData(TagCompound tag)
-		{
-			engaged = tag.GetBool("engaged");
-			size = tag.GetInt("size");
-			rotationVelocity = tag.GetFloat("direction");
-			rotationOffset = tag.GetFloat("rotationOffset");
+			this.rotationVelocity = rotationVelocity;
+			Engage(Position, size);
 		}
 	}
 
-	public abstract class GearTileDummy : Dummy
+	public override void NetSend(BinaryWriter writer)
 	{
-		public int gearAnimation;
-		public int oldSize;
+		writer.Write(engaged);
+		writer.Write(size);
+		writer.Write(rotationVelocity);
+		writer.Write(rotationOffset);
+	}
 
-		protected bool Engaged
+	public override void NetReceive(BinaryReader reader)
+	{
+		engaged = reader.ReadBoolean();
+		size = reader.ReadInt32();
+		rotationVelocity = reader.ReadSingle();
+		rotationOffset = reader.ReadSingle();
+	}
+
+	public override void SaveData(TagCompound tag)
+	{
+		tag["engaged"] = engaged;
+		tag["size"] = size;
+		tag["direction"] = rotationVelocity;
+		tag["rotationOffset"] = rotationOffset;
+	}
+
+	public override void LoadData(TagCompound tag)
+	{
+		engaged = tag.GetBool("engaged");
+		size = tag.GetInt("size");
+		rotationVelocity = tag.GetFloat("direction");
+		rotationOffset = tag.GetFloat("rotationOffset");
+	}
+}
+
+public abstract class GearTileDummy : Dummy
+{
+	public int gearAnimation;
+	public int oldSize;
+
+	protected bool Engaged
+	{
+		get
 		{
-			get
-			{
-				if (GearEntity != null)
-					return GearEntity.engaged;
+			if (GearEntity != null)
+				return GearEntity.engaged;
 
-				return false;
+			return false;
+		}
+
+		set => GearEntity?.engaged = value;
+	}
+
+	protected float RotationVelocity
+	{
+		get
+		{
+			if (GearEntity != null)
+				return GearEntity.rotationVelocity;
+
+			return 0;
+		}
+
+		set => GearEntity?.rotationVelocity = value;
+	}
+
+	protected float RotationOffset
+	{
+		get
+		{
+			if (GearEntity != null)
+				return GearEntity.rotationOffset;
+
+			return 0;
+		}
+
+		set => GearEntity?.rotationOffset = value;
+	}
+
+	protected GearTileEntity GearEntity
+	{
+		get
+		{
+			var key = new Point16(ParentX, ParentY);
+
+			if (TileEntity.ByPosition.ContainsKey(key))
+				return TileEntity.ByPosition[key] as GearTileEntity;
+
+			return null;
+		}
+	}
+
+	public int GearSize
+	{
+		get => GearEntity?.size ?? 0; set => GearEntity?.size = value % 4;
+	}
+
+	public float Rotation
+	{
+		get
+		{
+			float rot = 0;
+
+			if (Engaged)
+				rot = Main.GameUpdateCount * 0.01f * RotationVelocity;
+
+			return rot + RotationOffset;
+		}
+	}
+
+	public GearTileDummy(int type) : base(type, 16, 16) { }
+
+	public override void Update()
+	{
+		if (gearAnimation > 0)
+			gearAnimation--;
+
+		if (oldSize == 0 && gearAnimation > 20) //no fadeout when there is nothing to fade out
+			gearAnimation = 20;
+
+		if (gearAnimation == 15 && GearSize != 0)
+		{
+			for (int k = 0; k < 10 * GearSize; k++)
+			{
+				Vector2 off = Vector2.One.RotatedByRandom(6.28f);
+				Dust.NewDustPerfect(Center + off * GearSize * 10, ModContent.DustType<Dusts.GlowFastDecelerate>(), off * Main.rand.NextFloat(GearSize * 2 - 2, GearSize * 2) * 0.6f, 0, new Color(100, 200, 255), 0.5f);
 			}
-
-			set => GearEntity?.engaged = value;
 		}
+	}
 
-		protected float RotationVelocity
+	public override void PostDraw(Color lightColor)
+	{
+		Texture2D tex = GearSize switch
 		{
-			get
-			{
-				if (GearEntity != null)
-					return GearEntity.rotationVelocity;
-
-				return 0;
-			}
-
-			set => GearEntity?.rotationVelocity = value;
-		}
-
-		protected float RotationOffset
-		{
-			get
-			{
-				if (GearEntity != null)
-					return GearEntity.rotationOffset;
-
-				return 0;
-			}
-
-			set => GearEntity?.rotationOffset = value;
-		}
-
-		protected GearTileEntity GearEntity
-		{
-			get
-			{
-				var key = new Point16(ParentX, ParentY);
-
-				if (TileEntity.ByPosition.ContainsKey(key))
-					return TileEntity.ByPosition[key] as GearTileEntity;
-
-				return null;
-			}
-		}
-
-		public int GearSize
-		{
-			get => GearEntity?.size ?? 0; set => GearEntity?.size = value % 4;
-		}
-
-		public float Rotation
-		{
-			get
-			{
-				float rot = 0;
-
-				if (Engaged)
-					rot = Main.GameUpdateCount * 0.01f * RotationVelocity;
-
-				return rot + RotationOffset;
-			}
-		}
-
-		public GearTileDummy(int type) : base(type, 16, 16) { }
-
-		public override void Update()
-		{
-			if (gearAnimation > 0)
-				gearAnimation--;
-
-			if (oldSize == 0 && gearAnimation > 20) //no fadeout when there is nothing to fade out
-				gearAnimation = 20;
-
-			if (gearAnimation == 15 && GearSize != 0)
-			{
-				for (int k = 0; k < 10 * GearSize; k++)
-				{
-					Vector2 off = Vector2.One.RotatedByRandom(6.28f);
-					Dust.NewDustPerfect(Center + off * GearSize * 10, ModContent.DustType<Dusts.GlowFastDecelerate>(), off * Main.rand.NextFloat(GearSize * 2 - 2, GearSize * 2) * 0.6f, 0, new Color(100, 200, 255), 0.5f);
-				}
-			}
-		}
-
-		public override void PostDraw(Color lightColor)
-		{
-			Texture2D tex = GearSize switch
-			{
-				0 => Assets.Invisible.Value,
-				1 => Assets.Tiles.Vitric.MagicalGearSmall.Value,
-				2 => Assets.Tiles.Vitric.MagicalGearMid.Value,
-				3 => Assets.Tiles.Vitric.MagicalGearLarge.Value,
-				_ => Assets.Tiles.Vitric.MagicalGearSmall.Value,
-			};
-			Main.spriteBatch.Draw(tex, Center - Main.screenPosition, null, Color.White * 0.75f, Rotation, tex.Size() / 2, 1, 0, 0);
-		}
+			0 => Assets.Invisible.Value,
+			1 => Assets.Tiles.Vitric.MagicalGearSmall.Value,
+			2 => Assets.Tiles.Vitric.MagicalGearMid.Value,
+			3 => Assets.Tiles.Vitric.MagicalGearLarge.Value,
+			_ => Assets.Tiles.Vitric.MagicalGearSmall.Value,
+		};
+		Main.spriteBatch.Draw(tex, Center - Main.screenPosition, null, Color.White * 0.75f, Rotation, tex.Size() / 2, 1, 0, 0);
 	}
 }

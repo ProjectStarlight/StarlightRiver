@@ -14,754 +14,753 @@ using Terraria.Graphics.Effects;
 using Terraria.ID;
 using static Humanizer.In;
 
-namespace StarlightRiver.Content.Items.Misc
+namespace StarlightRiver.Content.Items.Misc;
+
+public class SpearBook : SmartAccessory, IPostLoadable
 {
-	public class SpearBook : SmartAccessory, IPostLoadable
+	public int comboState;
+	public static Dictionary<int, bool> spearList;
+
+	public SpearBook() : base("Snake Technique", "Teaches you the Art of the Spear, granting all normal spear weapons a new combo attack\nThe last strike in the combo deals increased damage and knockback\n<right> to deter enemies with a flurry of stabs") { }
+
+	public override string Texture => AssetDirectory.MiscItem + "SpearBook";
+
+	public override void Load()
 	{
-		public int comboState;
-		public static Dictionary<int, bool> spearList;
+		StarlightItem.CanUseItemEvent += OverrideSpearEffects;
+		StarlightItem.AltFunctionUseEvent += AllowRightClick;
+	}
 
-		public SpearBook() : base("Snake Technique", "Teaches you the Art of the Spear, granting all normal spear weapons a new combo attack\nThe last strike in the combo deals increased damage and knockback\n<right> to deter enemies with a flurry of stabs") { }
+	public override void Unload()
+	{
+		StarlightItem.CanUseItemEvent -= OverrideSpearEffects;
+		StarlightItem.AltFunctionUseEvent -= AllowRightClick;
+	}
 
-		public override string Texture => AssetDirectory.MiscItem + "SpearBook";
+	public void PostLoad()
+	{
+		List<int> blacklistedSpears = new() { ModContent.ProjectileType<Vitric.FacetProjectile>() };
 
-		public override void Load()
+		spearList = new Dictionary<int, bool>();
+		var proj = new Projectile();
+		for (int i = 0; i < ProjectileLoader.ProjectileCount; i++)
 		{
-			StarlightItem.CanUseItemEvent += OverrideSpearEffects;
-			StarlightItem.AltFunctionUseEvent += AllowRightClick;
-		}
-
-		public override void Unload()
-		{
-			StarlightItem.CanUseItemEvent -= OverrideSpearEffects;
-			StarlightItem.AltFunctionUseEvent -= AllowRightClick;
-		}
-
-		public void PostLoad()
-		{
-			List<int> blacklistedSpears = new() { ModContent.ProjectileType<Vitric.FacetProjectile>() };
-
-			spearList = new Dictionary<int, bool>();
-			var proj = new Projectile();
-			for (int i = 0; i < ProjectileLoader.ProjectileCount; i++)
-			{
-				proj.SetDefaults(i);
-				spearList.Add(i, proj.aiStyle == ProjAIStyleID.Spear && !blacklistedSpears.Contains(proj.type));
-			}
-		}
-
-		public void PostLoadUnload()
-		{
-			spearList.Clear();
-		}
-
-		public override void SetStaticDefaults()
-		{
-			base.SetStaticDefaults();
-			ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<AxeBook>();
-		}
-
-		public override void SafeSetDefaults()
-		{
-			Item.rare = ItemRarityID.Orange;
-			Item.value = Item.sellPrice(gold: 2);
-		}
-
-		/// <summary>
-		/// Allows the player to right click with spears that don't normally have them
-		/// </summary>
-		/// <param name="item"></param>
-		/// <param name="player"></param>
-		/// <returns></returns>
-		private bool AllowRightClick(Item item, Player player)
-		{
-			if (Equipped(player))
-			{
-				if (item.DamageType.Type == DamageClass.Melee.Type && spearList[item.shoot] && item.noMelee)
-					return true;
-			}
-
-			return false;
-		}
-
-		private bool OverrideSpearEffects(Item item, Player player)
-		{
-			if (Equipped(player))
-			{
-				if (item != player.HeldItem)
-					return true;
-
-				if (item.DamageType.Type == DamageClass.Melee.Type && spearList[item.shoot] && item.noMelee)
-				{
-					if (Main.projectile.Any(n => n.active && n.type == ModContent.ProjectileType<SpearBookProjectile>() && n.owner == player.whoAmI))
-						return false;
-
-					float targetAngle = (Main.MouseWorld - player.MountedCenter).ToRotation();
-					if (Main.mouseRight && Main.myPlayer == player.whoAmI)
-					{
-						Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Zero, ModContent.ProjectileType<SpearBookProjectile>(), item.damage * 2 / 3, item.knockBack, player.whoAmI, 5, ai2: targetAngle);
-
-						comboState = 0;
-					}
-					else if (Main.myPlayer == player.whoAmI)
-					{
-						Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Zero, ModContent.ProjectileType<SpearBookProjectile>(), item.damage, item.knockBack, player.whoAmI, comboState, ai2: targetAngle);
-
-						comboState++;
-						comboState %= 5;
-					}
-
-					return false;
-				}
-			}
-
-			return true;
+			proj.SetDefaults(i);
+			spearList.Add(i, proj.aiStyle == ProjAIStyleID.Spear && !blacklistedSpears.Contains(proj.type));
 		}
 	}
 
-	class SpearBookProjectile : ModProjectile, IDrawPrimitive
+	public void PostLoadUnload()
 	{
-		const int TRAILLENGTH = 50;
-		const int TRAIL2LENGTH = 20;
+		spearList.Clear();
+	}
 
-		enum AttackType : int
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+		ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<AxeBook>();
+	}
+
+	public override void SafeSetDefaults()
+	{
+		Item.rare = ItemRarityID.Orange;
+		Item.value = Item.sellPrice(gold: 2);
+	}
+
+	/// <summary>
+	/// Allows the player to right click with spears that don't normally have them
+	/// </summary>
+	/// <param name="item"></param>
+	/// <param name="player"></param>
+	/// <returns></returns>
+	private bool AllowRightClick(Item item, Player player)
+	{
+		if (Equipped(player))
 		{
-			DownSwing,
-			Stab,
-			Slash,
-			UpSwing,
-			ChargedStab,
-			Flurry
+			if (item.DamageType.Type == DamageClass.Melee.Type && spearList[item.shoot] && item.noMelee)
+				return true;
 		}
 
-		enum Motion : int
+		return false;
+	}
+
+	private bool OverrideSpearEffects(Item item, Player player)
+	{
+		if (Equipped(player))
 		{
-			None,
-			Swing,
-			Slash,
-			Slash2,
-			Stab
-		}
+			if (item != player.HeldItem)
+				return true;
 
-		public static float opacityToAssign = 1f;
-		public static bool spawnProjToAssign = true;
-
-		public Texture2D texture;
-		public Color trailColor;
-
-		public Projectile original; // Flurry duplicates do not run original AI
-		private int originalAITimer = 0;
-
-		private float holdout = 0.8f;
-		private float xRotation = 0;
-		private float slashRotationOffset = 0;
-
-		private List<Vector2> cache;
-		private Trail trail;
-		private List<Vector2> cache2;
-		private Trail trail2;
-		private float progress = 0;
-		private float progressAngle = 0;
-		private Motion motion = Motion.None;
-
-		private int screenshakeCooldown = 0;
-
-		public override string Texture => AssetDirectory.Invisible;
-		public Player Owner => Main.player[Projectile.owner];
-
-		private AttackType CurrentAttack
-		{
-			get => (AttackType)Projectile.ai[0];
-			set => Projectile.ai[0] = (float)value;
-		}
-		private bool FlurryDuplicate => CurrentAttack == AttackType.Stab && original == null;
-		private ref float Timer => ref Projectile.ai[1];
-		private ref float TargetAngle => ref Projectile.ai[2];
-
-		public Item Item => Owner.HeldItem; // The owner cant switch off untill this dies anyways since its a heldProj
-
-		public override void SetDefaults()
-		{
-			Projectile.friendly = true;
-			Projectile.DamageType = DamageClass.Melee;
-			Projectile.tileCollide = false;
-			Projectile.ownerHitCheck = true;
-			Projectile.penetrate = -1;
-			Projectile.scale = 1.25f;
-			Projectile.usesLocalNPCImmunity = true;
-			Projectile.localNPCHitCooldown = 18;
-			Projectile.extraUpdates = 2;
-			Projectile.timeLeft = 3000;
-		}
-
-		public override void OnSpawn(IEntitySource source)
-		{
-			Owner.direction = TargetAngle > -MathHelper.PiOver2 && TargetAngle < MathHelper.PiOver2 ? 1 : -1;
-
-			trailColor = ItemColorUtility.GetColor(Item.type);
-
-			Main.instance.LoadProjectile(Item.shoot);
-
-			texture = TextureAssets.Projectile[Item.shoot].Value;
-			Projectile.Size = texture.Size();
-
-			Projectile.Opacity = opacityToAssign;
-			opacityToAssign = 1f;
-
-			if (spawnProjToAssign && Item.shoot > ProjectileID.None)
+			if (item.DamageType.Type == DamageClass.Melee.Type && spearList[item.shoot] && item.noMelee)
 			{
-				int i = Projectile.NewProjectile(Item.GetSource_FromThis(), Projectile.Center, TargetAngle.ToRotationVector2() * 5, Item.shoot, Projectile.damage, Projectile.knockBack, Projectile.owner);
-				original = Main.projectile[i];
-			}
+				if (Main.projectile.Any(n => n.active && n.type == ModContent.ProjectileType<SpearBookProjectile>() && n.owner == player.whoAmI))
+					return false;
 
-			spawnProjToAssign = true;
-		}
-
-		public override void AI()
-		{
-
-			Projectile.Center = Owner.Center;
-			Owner.heldProj = Projectile.whoAmI;
-			Owner.itemAnimation = Owner.itemTime = 2; //unlike axe and swordbook spears are a projectile normally so this is a safe way to lock hotbar
-			Owner.itemAnimationMax = 10;
-
-			OriginalAI();
-
-			switch (CurrentAttack)
-			{
-				case AttackType.DownSwing:
-					DownSwing();
-					break;
-				case AttackType.Stab:
-					Stab();
-					break;
-				case AttackType.Slash:
-					Slash();
-					break;
-				case AttackType.UpSwing:
-					UpSwing();
-					break;
-				case AttackType.ChargedStab:
-					ChargedStab();
-					break;
-				case AttackType.Flurry:
-					Flurry();
-					break;
-			}
-
-			Timer++;
-			screenshakeCooldown--;
-
-			Owner.itemRotation = MathHelper.WrapAngle(Projectile.rotation - ((Owner.direction > 0) ? 0 : MathHelper.Pi));
-
-			if (Main.netMode != NetmodeID.Server)
-			{
-				ManageCaches();
-				ManageTrail();
-			}
-		}
-
-		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
-		{
-			float collisionPoint = 0f;
-			Vector2 start = Owner.MountedCenter;
-			Vector2 end = start;
-
-			if (CurrentAttack == AttackType.ChargedStab)
-				end += 1.5f * GetSpearEndVector();
-			else if (CurrentAttack == AttackType.Stab)
-				end += 1.1f * GetSpearEndVector();
-			else
-				end += GetSpearEndVector();
-
-			return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), start, end, 10, ref collisionPoint);
-		}
-
-		public override void CutTiles()
-		{
-			Vector2 start = Owner.MountedCenter;
-			Vector2 end = start;
-
-			if (CurrentAttack == AttackType.ChargedStab)
-				end += 1.5f * GetSpearEndVector();
-			else if (CurrentAttack == AttackType.Stab)
-				end += 1.1f * GetSpearEndVector();
-			else
-				end += GetSpearEndVector();
-
-			Utils.PlotTileLine(start, end, 40 * Projectile.scale, DelegateMethods.CutTiles);
-		}
-
-		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-		{
-			SoundHelper.PlayPitched(Helpers.NPCHelper.IsFleshy(target) ? "Impacts/StabFleshy" : "Impacts/Clink", 1, Main.rand.NextFloat(), Owner.Center);
-
-			// cooldown for screenshake to avoid spazzing out
-			// flurry duplicates also do not have screenshake for the same reason
-			if (screenshakeCooldown < 0 && !FlurryDuplicate)
-			{
-				CameraSystem.shake += 3;
-				screenshakeCooldown = 2;
-			}
-
-			original?.StatusNPC(target.whoAmI);
-
-			// run modded OnHit if applicable
-			if (original?.ModProjectile is ModProjectile modProj)
-				modProj.OnHitNPC(target, hit, damageDone);
-		}
-
-		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
-		{
-			if (CurrentAttack == AttackType.ChargedStab)
-			{
-				if (Main.rand.NextFloat() * 100 < (Owner.GetTotalCritChance(DamageClass.Melee) + Owner.HeldItem.crit) * 2f)
-					modifiers.SetCrit();
-
-				modifiers.CritDamage *= 1.5f;
-			}
-
-			// check for flurry or flurry duplicate
-			if (CurrentAttack == AttackType.Flurry || FlurryDuplicate)
-				modifiers.Knockback *= (1 - (target.Center - Owner.Center).Length() / (Projectile.Size.Length() * Projectile.scale)) * 4;
-
-			modifiers.Knockback *= 0.7f;
-			modifiers.HitDirectionOverride = target.position.X > Owner.MountedCenter.X ? 1 : -1;
-		}
-
-		public override bool PreDraw(ref Color lightColor)
-		{
-			Vector2 origin;
-			float rotationOffset;
-			SpriteEffects effects;
-
-			if (Projectile.spriteDirection < 0)
-			{
-				origin = new Vector2(texture.Width * holdout, texture.Height * holdout);
-				rotationOffset = MathHelper.ToRadians(135f);
-				effects = SpriteEffects.None;
-			}
-			else
-			{
-				origin = new Vector2(texture.Width * (1 - holdout), texture.Height * holdout);
-				rotationOffset = MathHelper.ToRadians(45f);
-				effects = SpriteEffects.FlipHorizontally;
-			}
-
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
-
-			if (CurrentAttack == AttackType.Slash)
-			{
-				Effect effect = ShaderLoader.GetShader("SpearDepth").Value;
-
-				if (effect != null)
+				float targetAngle = (Main.MouseWorld - player.MountedCenter).ToRotation();
+				if (Main.mouseRight && Main.myPlayer == player.whoAmI)
 				{
-					effect.Parameters["rotation"].SetValue(progressAngle);
-					effect.Parameters["xRotation"].SetValue(xRotation);
-					effect.Parameters["holdout"].SetValue(holdout);
-					effect.CurrentTechnique.Passes[0].Apply();
+					Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Zero, ModContent.ProjectileType<SpearBookProjectile>(), item.damage * 2 / 3, item.knockBack, player.whoAmI, 5, ai2: targetAngle);
+
+					comboState = 0;
 				}
-			}
-
-			Main.spriteBatch.Draw(texture, Projectile.Center - Main.screenPosition, default, lightColor * Projectile.Opacity, Projectile.rotation + rotationOffset + slashRotationOffset, origin, Projectile.scale, effects, 0);
-
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
-
-			return false;
-		}
-
-		public override bool? CanDamage()
-		{
-			if (motion != Motion.None)
-				return base.CanDamage();
-
-			return false;
-		}
-
-		private void OriginalAI()
-		{
-			if (original != null && Timer % 3 == 0 && motion != Motion.None)
-			{
-				if (originalAITimer < 2)
+				else if (Main.myPlayer == player.whoAmI)
 				{
-					original.Center = Projectile.Center;
-					original.rotation = Projectile.rotation;
-					original.velocity = TargetAngle.ToRotationVector2() * 5;
-				}
-				else
-				{
-					original.Center = Projectile.Center;
-					original.rotation = Projectile.rotation;
-					original.velocity = GetSpearEndVector() / Projectile.Size.Length() * 12.5f;
-					original.ai[0] = 0; // seems to relate to extension of spear, so we set to 0 to prevent dusts from flying too far
+					Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Zero, ModContent.ProjectileType<SpearBookProjectile>(), item.damage, item.knockBack, player.whoAmI, comboState, ai2: targetAngle);
+
+					comboState++;
+					comboState %= 5;
 				}
 
-				// run vanilla AI
-				original.AI_019_Spears();
-				original.AI_019_Spears_Old();
-
-				// run modded AI if applicable
-				if (original.ModProjectile is ModProjectile modProj)
-				{
-					if (modProj.PreAI())
-						modProj.AI();
-
-					modProj.PostAI();
-				}
-
-				originalAITimer++;
+				return false;
 			}
 		}
 
-		private void DownSwing()
+		return true;
+	}
+}
+
+class SpearBookProjectile : ModProjectile, IDrawPrimitive
+{
+	const int TRAILLENGTH = 50;
+	const int TRAIL2LENGTH = 20;
+
+	enum AttackType : int
+	{
+		DownSwing,
+		Stab,
+		Slash,
+		UpSwing,
+		ChargedStab,
+		Flurry
+	}
+
+	enum Motion : int
+	{
+		None,
+		Swing,
+		Slash,
+		Slash2,
+		Stab
+	}
+
+	public static float opacityToAssign = 1f;
+	public static bool spawnProjToAssign = true;
+
+	public Texture2D texture;
+	public Color trailColor;
+
+	public Projectile original; // Flurry duplicates do not run original AI
+	private int originalAITimer = 0;
+
+	private float holdout = 0.8f;
+	private float xRotation = 0;
+	private float slashRotationOffset = 0;
+
+	private List<Vector2> cache;
+	private Trail trail;
+	private List<Vector2> cache2;
+	private Trail trail2;
+	private float progress = 0;
+	private float progressAngle = 0;
+	private Motion motion = Motion.None;
+
+	private int screenshakeCooldown = 0;
+
+	public override string Texture => AssetDirectory.Invisible;
+	public Player Owner => Main.player[Projectile.owner];
+
+	private AttackType CurrentAttack
+	{
+		get => (AttackType)Projectile.ai[0];
+		set => Projectile.ai[0] = (float)value;
+	}
+	private bool FlurryDuplicate => CurrentAttack == AttackType.Stab && original == null;
+	private ref float Timer => ref Projectile.ai[1];
+	private ref float TargetAngle => ref Projectile.ai[2];
+
+	public Item Item => Owner.HeldItem; // The owner cant switch off untill this dies anyways since its a heldProj
+
+	public override void SetDefaults()
+	{
+		Projectile.friendly = true;
+		Projectile.DamageType = DamageClass.Melee;
+		Projectile.tileCollide = false;
+		Projectile.ownerHitCheck = true;
+		Projectile.penetrate = -1;
+		Projectile.scale = 1.25f;
+		Projectile.usesLocalNPCImmunity = true;
+		Projectile.localNPCHitCooldown = 18;
+		Projectile.extraUpdates = 2;
+		Projectile.timeLeft = 3000;
+	}
+
+	public override void OnSpawn(IEntitySource source)
+	{
+		Owner.direction = TargetAngle > -MathHelper.PiOver2 && TargetAngle < MathHelper.PiOver2 ? 1 : -1;
+
+		trailColor = ItemColorUtility.GetColor(Item.type);
+
+		Main.instance.LoadProjectile(Item.shoot);
+
+		texture = TextureAssets.Projectile[Item.shoot].Value;
+		Projectile.Size = texture.Size();
+
+		Projectile.Opacity = opacityToAssign;
+		opacityToAssign = 1f;
+
+		if (spawnProjToAssign && Item.shoot > ProjectileID.None)
 		{
-			float swingRange = MathHelper.Pi * 1.5f;
-			float initialRotation = TargetAngle - Owner.direction * swingRange * 2 / 3;
-			progress = Timer / 60;
-			progressAngle = MathHelper.SmoothStep(0, swingRange, progress);
-			motion = Motion.Swing;
-
-			Projectile.rotation = initialRotation + Owner.direction * progressAngle;
-			holdout = 0.6f + 0.2f * (float)Math.Sin(Math.PI * progress);
-
-			Projectile.spriteDirection = Owner.direction;
-
-			if (Timer == 0)
-				SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 0.8f, 0.8f, Projectile.Center);
-
-			if (progress > 1)
-				Projectile.Kill();
+			int i = Projectile.NewProjectile(Item.GetSource_FromThis(), Projectile.Center, TargetAngle.ToRotationVector2() * 5, Item.shoot, Projectile.damage, Projectile.knockBack, Projectile.owner);
+			original = Main.projectile[i];
 		}
 
-		private void Stab()
+		spawnProjToAssign = true;
+	}
+
+	public override void AI()
+	{
+
+		Projectile.Center = Owner.Center;
+		Owner.heldProj = Projectile.whoAmI;
+		Owner.itemAnimation = Owner.itemTime = 2; //unlike axe and swordbook spears are a projectile normally so this is a safe way to lock hotbar
+		Owner.itemAnimationMax = 10;
+
+		OriginalAI();
+
+		switch (CurrentAttack)
 		{
-			progress = Timer / 45;
-
-			Projectile.rotation = TargetAngle;
-			holdout = 0.3f + 0.6f * (float)Math.Sin(Math.PI * progress);
-
-			Projectile.spriteDirection = Owner.direction;
-
-			if (progress < 0.5)
-				motion = Motion.Stab;
-			else
-				motion = Motion.None;
-
-			if (Timer == 0)
-				SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 0.5f, 1.2f, Projectile.Center);
-
-			if (progress > 1)
-				Projectile.Kill();
+			case AttackType.DownSwing:
+				DownSwing();
+				break;
+			case AttackType.Stab:
+				Stab();
+				break;
+			case AttackType.Slash:
+				Slash();
+				break;
+			case AttackType.UpSwing:
+				UpSwing();
+				break;
+			case AttackType.ChargedStab:
+				ChargedStab();
+				break;
+			case AttackType.Flurry:
+				Flurry();
+				break;
 		}
 
-		private void Slash()
+		Timer++;
+		screenshakeCooldown--;
+
+		Owner.itemRotation = MathHelper.WrapAngle(Projectile.rotation - ((Owner.direction > 0) ? 0 : MathHelper.Pi));
+
+		if (Main.netMode != NetmodeID.Server)
 		{
-			float swingRange = MathHelper.Pi * 1f;
-			progress = Timer / 90;
+			ManageCaches();
+			ManageTrail();
+		}
+	}
 
-			if (progress < 0.5f)
-			{
-				float initialRotation = TargetAngle + Owner.direction * swingRange * 3 / 4;
-				progressAngle = MathHelper.SmoothStep(0, swingRange, progress * 2);
-				Projectile.rotation = initialRotation - Owner.direction * progressAngle;
-				holdout = 0.6f;
-				xRotation = 1.3f;
-				slashRotationOffset = -MathHelper.Pi / 24;
+	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+	{
+		float collisionPoint = 0f;
+		Vector2 start = Owner.MountedCenter;
+		Vector2 end = start;
 
-				Projectile.scale = 1.5f;
-				Projectile.spriteDirection = Owner.direction;
-				motion = Motion.Slash;
-			}
-			else
-			{
-				float initialRotation = TargetAngle - Owner.direction * swingRange * 3 / 4;
-				progressAngle = MathHelper.SmoothStep(0, swingRange, (progress - 0.5f) * 2);
-				Projectile.rotation = initialRotation + Owner.direction * progressAngle;
-				holdout = 0.6f;
-				xRotation = 1f;
-				slashRotationOffset = MathHelper.Pi / 24;
+		if (CurrentAttack == AttackType.ChargedStab)
+			end += 1.5f * GetSpearEndVector();
+		else if (CurrentAttack == AttackType.Stab)
+			end += 1.1f * GetSpearEndVector();
+		else
+			end += GetSpearEndVector();
 
-				Projectile.scale = 1.4f;
-				Projectile.spriteDirection = -Owner.direction;
-				motion = Motion.Slash2;
-			}
+		return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), start, end, 10, ref collisionPoint);
+	}
 
-			if (Timer == 0)
-				SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 0.7f, 1.2f, Projectile.Center);
+	public override void CutTiles()
+	{
+		Vector2 start = Owner.MountedCenter;
+		Vector2 end = start;
 
-			if (progress == 0.5f)
-			{
-				SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 0.7f, 1.1f, Projectile.Center);
-				Projectile.ResetLocalNPCHitImmunity();
-			}
+		if (CurrentAttack == AttackType.ChargedStab)
+			end += 1.5f * GetSpearEndVector();
+		else if (CurrentAttack == AttackType.Stab)
+			end += 1.1f * GetSpearEndVector();
+		else
+			end += GetSpearEndVector();
 
-			if (progress > 1)
-				Projectile.Kill();
+		Utils.PlotTileLine(start, end, 40 * Projectile.scale, DelegateMethods.CutTiles);
+	}
+
+	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+	{
+		SoundHelper.PlayPitched(Helpers.NPCHelper.IsFleshy(target) ? "Impacts/StabFleshy" : "Impacts/Clink", 1, Main.rand.NextFloat(), Owner.Center);
+
+		// cooldown for screenshake to avoid spazzing out
+		// flurry duplicates also do not have screenshake for the same reason
+		if (screenshakeCooldown < 0 && !FlurryDuplicate)
+		{
+			CameraSystem.shake += 3;
+			screenshakeCooldown = 2;
 		}
 
-		private void UpSwing()
+		original?.StatusNPC(target.whoAmI);
+
+		// run modded OnHit if applicable
+		if (original?.ModProjectile is ModProjectile modProj)
+			modProj.OnHitNPC(target, hit, damageDone);
+	}
+
+	public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+	{
+		if (CurrentAttack == AttackType.ChargedStab)
 		{
-			float swingRange = MathHelper.Pi * 1.5f;
-			float initialRotation = TargetAngle + Owner.direction * swingRange * 2 / 3;
-			progress = Timer / 60;
-			progressAngle = MathHelper.SmoothStep(0, swingRange, progress);
-			motion = Motion.Swing;
+			if (Main.rand.NextFloat() * 100 < (Owner.GetTotalCritChance(DamageClass.Melee) + Owner.HeldItem.crit) * 2f)
+				modifiers.SetCrit();
 
-			Projectile.rotation = initialRotation - Owner.direction * progressAngle;
-			holdout = 0.6f + 0.2f * (float)Math.Sin(Math.PI * progress);
-
-			Projectile.spriteDirection = Owner.direction;
-
-			if (Timer == 0)
-				SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 0.8f, 0.7f, Projectile.Center);
-
-			if (progress > 1)
-				Projectile.Kill();
+			modifiers.CritDamage *= 1.5f;
 		}
 
-		private void ChargedStab()
+		// check for flurry or flurry duplicate
+		if (CurrentAttack == AttackType.Flurry || FlurryDuplicate)
+			modifiers.Knockback *= (1 - (target.Center - Owner.Center).Length() / (Projectile.Size.Length() * Projectile.scale)) * 4;
+
+		modifiers.Knockback *= 0.7f;
+		modifiers.HitDirectionOverride = target.position.X > Owner.MountedCenter.X ? 1 : -1;
+	}
+
+	public override bool PreDraw(ref Color lightColor)
+	{
+		Vector2 origin;
+		float rotationOffset;
+		SpriteEffects effects;
+
+		if (Projectile.spriteDirection < 0)
 		{
-			var StabEase = new ModularEaseFunction();
-			StabEase.AddPoint(new Vector2(0, 0.6f), Eases.EaseQuinticOut);
-			StabEase.AddPoint(new Vector2(60, 0.3f), Eases.EaseQuinticOut);
-			StabEase.AddPoint(new Vector2(65, 0.3f), Eases.EaseQuinticOut);
-			StabEase.AddPoint(new Vector2(95, 0.9f), Eases.EaseQuinticOut);
-			StabEase.AddPoint(new Vector2(125, 0.9f), Eases.EaseQuinticOut);
-			StabEase.AddPoint(new Vector2(145, 0.5f), Eases.EaseQuinticOut);
-
-			Projectile.rotation = TargetAngle;
-			holdout = StabEase.Ease(Timer);
-			progress = Timer / 145;
-
-			Projectile.spriteDirection = Owner.direction;
-
-			if (Timer > 65 && Timer < 95)
-				motion = Motion.Stab;
-			else
-				motion = Motion.None;
-
-			if (Timer > 125)
-				Projectile.Opacity = MathHelper.SmoothStep(1, 0, (Timer - 125) / 20);
-
-			if (Timer == 65)
-				SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 1, 0.5f, Projectile.Center);
-
-			if (Timer == 85)
-				CameraSystem.shake += 2;
-
-			if (Timer > 145)
-				Projectile.Kill();
+			origin = new Vector2(texture.Width * holdout, texture.Height * holdout);
+			rotationOffset = MathHelper.ToRadians(135f);
+			effects = SpriteEffects.None;
+		}
+		else
+		{
+			origin = new Vector2(texture.Width * (1 - holdout), texture.Height * holdout);
+			rotationOffset = MathHelper.ToRadians(45f);
+			effects = SpriteEffects.FlipHorizontally;
 		}
 
-		private void Flurry()
+		Main.spriteBatch.End();
+		Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+
+		if (CurrentAttack == AttackType.Slash)
 		{
-			ChargedStab();
-
-			Owner.velocity.X *= 0.975f; // slow the player down ever so slightly
-
-			if (Timer > 60 && Timer < 120 && Timer % 10 == 0 && Main.myPlayer == Owner.whoAmI)
-			{
-				float randomRotation = TargetAngle + (Main.rand.NextFloat() - 0.5f) * MathHelper.Pi / 4;
-				spawnProjToAssign = false;
-				opacityToAssign = 0.4f;
-				Projectile.NewProjectile(Owner.GetSource_ItemUse(Owner.HeldItem), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<SpearBookProjectile>(), Projectile.damage / 2, Projectile.knockBack, Owner.whoAmI, (float)AttackType.Stab, ai2: randomRotation);
-			}
-		}
-
-		private Vector2 GetSpearEndVector()
-		{
-			float radius = Projectile.Size.Length() * Projectile.scale * holdout;
-
-			if (CurrentAttack == AttackType.Slash)
-			{
-				// constant that applies vertical compress to a circle to make it an ellipse
-				float c = (float)Math.Abs(1 / Math.Cos(xRotation));
-				radius *= (float)(1 / Math.Sqrt(c - (c - 1) * Math.Pow(Math.Cos(progressAngle), 2)));
-			}
-
-			return Vector2.UnitX.RotatedBy(Projectile.rotation) * radius;
-		}
-
-		private void ManageCaches()
-		{
-			float length = Projectile.Size.Length() * Projectile.scale * holdout;
-
-			// first trail
-			if (motion == Motion.Swing || motion == Motion.Slash)
-			{
-				if (cache == null)
-				{
-					cache = new List<Vector2>();
-
-					for (int i = 0; i < TRAILLENGTH; i++)
-					{
-						cache.Add(GetSpearEndVector() * 0.8f);
-					}
-				}
-
-				cache.Add(GetSpearEndVector() * 0.8f);
-
-				while (cache.Count > TRAILLENGTH)
-				{
-					cache.RemoveAt(0);
-				}
-			}
-			else if (motion != Motion.None)
-			{
-				// repeat for second cache (only when it is needed for second slash or stab)
-				if (cache2 == null)
-				{
-					cache2 = new List<Vector2>();
-
-					for (int i = 0; i < TRAIL2LENGTH; i++)
-					{
-						if (motion == Motion.Stab)
-							cache2.Add(GetSpearEndVector() * (CurrentAttack == AttackType.ChargedStab ? 1.5f : 1.25f));
-						else
-							cache2.Add(GetSpearEndVector() * 0.8f);
-					}
-				}
-
-				if (motion == Motion.Stab)
-					cache2.Add(GetSpearEndVector() * (CurrentAttack == AttackType.ChargedStab ? 1.5f : 1.25f));
-				else
-					cache2.Add(GetSpearEndVector() * 0.8f);
-
-				while (cache2.Count > TRAIL2LENGTH)
-				{
-					cache2.RemoveAt(0);
-				}
-			}
-		}
-
-		private void ManageTrail()
-		{
-			float length = GetSpearEndVector().Length();
-
-			// first trail
-			if (motion == Motion.Swing || motion == Motion.Slash)
-			{
-				if (trail is null || trail.IsDisposed)
-				{
-					trail = new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new NoTip(), factor => (float)Math.Min(factor, progress) * length * 0.75f, factor =>
-									{
-										if (factor.X == 1)
-											return Color.Transparent;
-
-										return trailColor * (float)Math.Min(factor.X, progress) * 0.5f * (float)Math.Sin(progress * 3.14f) * 2;
-									});
-				}
-
-				var realCache = new Vector2[TRAILLENGTH];
-
-				for (int k = 0; k < TRAILLENGTH; k++)
-				{
-					realCache[k] = cache[k] + Owner.Center;
-				}
-
-				trail.Positions = realCache;
-			}
-			else if (motion != Motion.None)
-			{
-				// repeat for second trail (only when it is needed for second slash or stab)
-				if (motion == Motion.Stab)
-				{
-					if (trail2 is null || trail2.IsDisposed)
-					{
-						trail2 = new Trail(Main.instance.GraphicsDevice, TRAIL2LENGTH, new NoTip(), factor => (1f - (float)Math.Pow(2 * factor - 1, 2)) * length * 0.5f, factor =>
-											{
-												if (factor.X == 1)
-													return Color.Transparent;
-
-												return trailColor * (float)Math.Min(factor.X, progress) * 0.5f * (float)Math.Sin(progress * 3.14f) * 4;
-											});
-					}
-				}
-				else
-				{
-					if (trail2 is null || trail2.IsDisposed)
-					{
-						trail2 = new Trail(Main.instance.GraphicsDevice, TRAIL2LENGTH, new NoTip(), factor => (float)Math.Min(factor, progress) * length * 0.75f, factor =>
-											{
-												if (factor.X == 1)
-													return Color.Transparent;
-
-												return trailColor * (float)Math.Min(factor.X, progress) * 1.5f * (float)Math.Sin(progress * 3.14f);
-											});
-					}
-				}
-
-				var realCache2 = new Vector2[TRAIL2LENGTH];
-
-				for (int k = 0; k < TRAIL2LENGTH; k++)
-				{
-					realCache2[k] = cache2[k] + Owner.Center;
-				}
-
-				trail2.Positions = realCache2;
-			}
-		}
-
-		public void DrawPrimitives()
-		{
-			Effect effect = ShaderLoader.GetShader("DatsuzeiTrail").Value;
+			Effect effect = ShaderLoader.GetShader("SpearDepth").Value;
 
 			if (effect != null)
 			{
-				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-				Matrix view = Main.GameViewMatrix.TransformationMatrix;
-				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+				effect.Parameters["rotation"].SetValue(progressAngle);
+				effect.Parameters["xRotation"].SetValue(xRotation);
+				effect.Parameters["holdout"].SetValue(holdout);
+				effect.CurrentTechnique.Passes[0].Apply();
+			}
+		}
 
-				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
-				effect.Parameters["repeats"].SetValue(8f);
-				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
-				effect.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
+		Main.spriteBatch.Draw(texture, Projectile.Center - Main.screenPosition, default, lightColor * Projectile.Opacity, Projectile.rotation + rotationOffset + slashRotationOffset, origin, Projectile.scale, effects, 0);
 
-				if (motion != Motion.Stab)
-					trail?.Render(effect);
+		Main.spriteBatch.End();
+		Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
-				if (motion == Motion.Slash2 || motion == Motion.Stab)
+		return false;
+	}
+
+	public override bool? CanDamage()
+	{
+		if (motion != Motion.None)
+			return base.CanDamage();
+
+		return false;
+	}
+
+	private void OriginalAI()
+	{
+		if (original != null && Timer % 3 == 0 && motion != Motion.None)
+		{
+			if (originalAITimer < 2)
+			{
+				original.Center = Projectile.Center;
+				original.rotation = Projectile.rotation;
+				original.velocity = TargetAngle.ToRotationVector2() * 5;
+			}
+			else
+			{
+				original.Center = Projectile.Center;
+				original.rotation = Projectile.rotation;
+				original.velocity = GetSpearEndVector() / Projectile.Size.Length() * 12.5f;
+				original.ai[0] = 0; // seems to relate to extension of spear, so we set to 0 to prevent dusts from flying too far
+			}
+
+			// run vanilla AI
+			original.AI_019_Spears();
+			original.AI_019_Spears_Old();
+
+			// run modded AI if applicable
+			if (original.ModProjectile is ModProjectile modProj)
+			{
+				if (modProj.PreAI())
+					modProj.AI();
+
+				modProj.PostAI();
+			}
+
+			originalAITimer++;
+		}
+	}
+
+	private void DownSwing()
+	{
+		float swingRange = MathHelper.Pi * 1.5f;
+		float initialRotation = TargetAngle - Owner.direction * swingRange * 2 / 3;
+		progress = Timer / 60;
+		progressAngle = MathHelper.SmoothStep(0, swingRange, progress);
+		motion = Motion.Swing;
+
+		Projectile.rotation = initialRotation + Owner.direction * progressAngle;
+		holdout = 0.6f + 0.2f * (float)Math.Sin(Math.PI * progress);
+
+		Projectile.spriteDirection = Owner.direction;
+
+		if (Timer == 0)
+			SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 0.8f, 0.8f, Projectile.Center);
+
+		if (progress > 1)
+			Projectile.Kill();
+	}
+
+	private void Stab()
+	{
+		progress = Timer / 45;
+
+		Projectile.rotation = TargetAngle;
+		holdout = 0.3f + 0.6f * (float)Math.Sin(Math.PI * progress);
+
+		Projectile.spriteDirection = Owner.direction;
+
+		if (progress < 0.5)
+			motion = Motion.Stab;
+		else
+			motion = Motion.None;
+
+		if (Timer == 0)
+			SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 0.5f, 1.2f, Projectile.Center);
+
+		if (progress > 1)
+			Projectile.Kill();
+	}
+
+	private void Slash()
+	{
+		float swingRange = MathHelper.Pi * 1f;
+		progress = Timer / 90;
+
+		if (progress < 0.5f)
+		{
+			float initialRotation = TargetAngle + Owner.direction * swingRange * 3 / 4;
+			progressAngle = MathHelper.SmoothStep(0, swingRange, progress * 2);
+			Projectile.rotation = initialRotation - Owner.direction * progressAngle;
+			holdout = 0.6f;
+			xRotation = 1.3f;
+			slashRotationOffset = -MathHelper.Pi / 24;
+
+			Projectile.scale = 1.5f;
+			Projectile.spriteDirection = Owner.direction;
+			motion = Motion.Slash;
+		}
+		else
+		{
+			float initialRotation = TargetAngle - Owner.direction * swingRange * 3 / 4;
+			progressAngle = MathHelper.SmoothStep(0, swingRange, (progress - 0.5f) * 2);
+			Projectile.rotation = initialRotation + Owner.direction * progressAngle;
+			holdout = 0.6f;
+			xRotation = 1f;
+			slashRotationOffset = MathHelper.Pi / 24;
+
+			Projectile.scale = 1.4f;
+			Projectile.spriteDirection = -Owner.direction;
+			motion = Motion.Slash2;
+		}
+
+		if (Timer == 0)
+			SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 0.7f, 1.2f, Projectile.Center);
+
+		if (progress == 0.5f)
+		{
+			SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 0.7f, 1.1f, Projectile.Center);
+			Projectile.ResetLocalNPCHitImmunity();
+		}
+
+		if (progress > 1)
+			Projectile.Kill();
+	}
+
+	private void UpSwing()
+	{
+		float swingRange = MathHelper.Pi * 1.5f;
+		float initialRotation = TargetAngle + Owner.direction * swingRange * 2 / 3;
+		progress = Timer / 60;
+		progressAngle = MathHelper.SmoothStep(0, swingRange, progress);
+		motion = Motion.Swing;
+
+		Projectile.rotation = initialRotation - Owner.direction * progressAngle;
+		holdout = 0.6f + 0.2f * (float)Math.Sin(Math.PI * progress);
+
+		Projectile.spriteDirection = Owner.direction;
+
+		if (Timer == 0)
+			SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 0.8f, 0.7f, Projectile.Center);
+
+		if (progress > 1)
+			Projectile.Kill();
+	}
+
+	private void ChargedStab()
+	{
+		var StabEase = new ModularEaseFunction();
+		StabEase.AddPoint(new Vector2(0, 0.6f), Eases.EaseQuinticOut);
+		StabEase.AddPoint(new Vector2(60, 0.3f), Eases.EaseQuinticOut);
+		StabEase.AddPoint(new Vector2(65, 0.3f), Eases.EaseQuinticOut);
+		StabEase.AddPoint(new Vector2(95, 0.9f), Eases.EaseQuinticOut);
+		StabEase.AddPoint(new Vector2(125, 0.9f), Eases.EaseQuinticOut);
+		StabEase.AddPoint(new Vector2(145, 0.5f), Eases.EaseQuinticOut);
+
+		Projectile.rotation = TargetAngle;
+		holdout = StabEase.Ease(Timer);
+		progress = Timer / 145;
+
+		Projectile.spriteDirection = Owner.direction;
+
+		if (Timer > 65 && Timer < 95)
+			motion = Motion.Stab;
+		else
+			motion = Motion.None;
+
+		if (Timer > 125)
+			Projectile.Opacity = MathHelper.SmoothStep(1, 0, (Timer - 125) / 20);
+
+		if (Timer == 65)
+			SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 1, 0.5f, Projectile.Center);
+
+		if (Timer == 85)
+			CameraSystem.shake += 2;
+
+		if (Timer > 145)
+			Projectile.Kill();
+	}
+
+	private void Flurry()
+	{
+		ChargedStab();
+
+		Owner.velocity.X *= 0.975f; // slow the player down ever so slightly
+
+		if (Timer > 60 && Timer < 120 && Timer % 10 == 0 && Main.myPlayer == Owner.whoAmI)
+		{
+			float randomRotation = TargetAngle + (Main.rand.NextFloat() - 0.5f) * MathHelper.Pi / 4;
+			spawnProjToAssign = false;
+			opacityToAssign = 0.4f;
+			Projectile.NewProjectile(Owner.GetSource_ItemUse(Owner.HeldItem), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<SpearBookProjectile>(), Projectile.damage / 2, Projectile.knockBack, Owner.whoAmI, (float)AttackType.Stab, ai2: randomRotation);
+		}
+	}
+
+	private Vector2 GetSpearEndVector()
+	{
+		float radius = Projectile.Size.Length() * Projectile.scale * holdout;
+
+		if (CurrentAttack == AttackType.Slash)
+		{
+			// constant that applies vertical compress to a circle to make it an ellipse
+			float c = (float)Math.Abs(1 / Math.Cos(xRotation));
+			radius *= (float)(1 / Math.Sqrt(c - (c - 1) * Math.Pow(Math.Cos(progressAngle), 2)));
+		}
+
+		return Vector2.UnitX.RotatedBy(Projectile.rotation) * radius;
+	}
+
+	private void ManageCaches()
+	{
+		float length = Projectile.Size.Length() * Projectile.scale * holdout;
+
+		// first trail
+		if (motion == Motion.Swing || motion == Motion.Slash)
+		{
+			if (cache == null)
+			{
+				cache = new List<Vector2>();
+
+				for (int i = 0; i < TRAILLENGTH; i++)
 				{
-					trail2?.Render(effect);
+					cache.Add(GetSpearEndVector() * 0.8f);
 				}
 			}
-		}
 
-		public override void SendExtraAI(BinaryWriter writer)
-		{
-			writer.Write(Owner.direction);
-			writer.Write(Projectile.Opacity);
-			writer.Write(original is not null);
+			cache.Add(GetSpearEndVector() * 0.8f);
 
-			if (original is not null)
-				writer.Write(original.identity);
-		}
-
-		public override void ReceiveExtraAI(BinaryReader reader)
-		{
-			Owner.direction = reader.ReadInt32();
-			Projectile.Opacity = reader.ReadSingle();
-			bool containsOriginalProj = reader.ReadBoolean();
-
-			if (containsOriginalProj)
+			while (cache.Count > TRAILLENGTH)
 			{
-				int originalIdentity = reader.ReadInt32();
+				cache.RemoveAt(0);
+			}
+		}
+		else if (motion != Motion.None)
+		{
+			// repeat for second cache (only when it is needed for second slash or stab)
+			if (cache2 == null)
+			{
+				cache2 = new List<Vector2>();
 
-				original = Main.projectile.First(n => n.identity == originalIdentity);
+				for (int i = 0; i < TRAIL2LENGTH; i++)
+				{
+					if (motion == Motion.Stab)
+						cache2.Add(GetSpearEndVector() * (CurrentAttack == AttackType.ChargedStab ? 1.5f : 1.25f));
+					else
+						cache2.Add(GetSpearEndVector() * 0.8f);
+				}
 			}
 
-			if (Main.netMode != NetmodeID.Server)
+			if (motion == Motion.Stab)
+				cache2.Add(GetSpearEndVector() * (CurrentAttack == AttackType.ChargedStab ? 1.5f : 1.25f));
+			else
+				cache2.Add(GetSpearEndVector() * 0.8f);
+
+			while (cache2.Count > TRAIL2LENGTH)
 			{
-				Main.instance.LoadProjectile(Item.shoot);
-
-				trailColor = ItemColorUtility.GetColor(Item.type);
-
-				texture = TextureAssets.Projectile[Item.shoot].Value;
-				Projectile.Size = texture.Size();
+				cache2.RemoveAt(0);
 			}
+		}
+	}
+
+	private void ManageTrail()
+	{
+		float length = GetSpearEndVector().Length();
+
+		// first trail
+		if (motion == Motion.Swing || motion == Motion.Slash)
+		{
+			if (trail is null || trail.IsDisposed)
+			{
+				trail = new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new NoTip(), factor => (float)Math.Min(factor, progress) * length * 0.75f, factor =>
+								{
+									if (factor.X == 1)
+										return Color.Transparent;
+
+									return trailColor * (float)Math.Min(factor.X, progress) * 0.5f * (float)Math.Sin(progress * 3.14f) * 2;
+								});
+			}
+
+			var realCache = new Vector2[TRAILLENGTH];
+
+			for (int k = 0; k < TRAILLENGTH; k++)
+			{
+				realCache[k] = cache[k] + Owner.Center;
+			}
+
+			trail.Positions = realCache;
+		}
+		else if (motion != Motion.None)
+		{
+			// repeat for second trail (only when it is needed for second slash or stab)
+			if (motion == Motion.Stab)
+			{
+				if (trail2 is null || trail2.IsDisposed)
+				{
+					trail2 = new Trail(Main.instance.GraphicsDevice, TRAIL2LENGTH, new NoTip(), factor => (1f - (float)Math.Pow(2 * factor - 1, 2)) * length * 0.5f, factor =>
+										{
+											if (factor.X == 1)
+												return Color.Transparent;
+
+											return trailColor * (float)Math.Min(factor.X, progress) * 0.5f * (float)Math.Sin(progress * 3.14f) * 4;
+										});
+				}
+			}
+			else
+			{
+				if (trail2 is null || trail2.IsDisposed)
+				{
+					trail2 = new Trail(Main.instance.GraphicsDevice, TRAIL2LENGTH, new NoTip(), factor => (float)Math.Min(factor, progress) * length * 0.75f, factor =>
+										{
+											if (factor.X == 1)
+												return Color.Transparent;
+
+											return trailColor * (float)Math.Min(factor.X, progress) * 1.5f * (float)Math.Sin(progress * 3.14f);
+										});
+				}
+			}
+
+			var realCache2 = new Vector2[TRAIL2LENGTH];
+
+			for (int k = 0; k < TRAIL2LENGTH; k++)
+			{
+				realCache2[k] = cache2[k] + Owner.Center;
+			}
+
+			trail2.Positions = realCache2;
+		}
+	}
+
+	public void DrawPrimitives()
+	{
+		Effect effect = ShaderLoader.GetShader("DatsuzeiTrail").Value;
+
+		if (effect != null)
+		{
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
+			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
+			effect.Parameters["repeats"].SetValue(8f);
+			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+			effect.Parameters["sampleTexture2"].SetValue(Assets.Items.Moonstone.DatsuzeiFlameMap2.Value);
+
+			if (motion != Motion.Stab)
+				trail?.Render(effect);
+
+			if (motion == Motion.Slash2 || motion == Motion.Stab)
+			{
+				trail2?.Render(effect);
+			}
+		}
+	}
+
+	public override void SendExtraAI(BinaryWriter writer)
+	{
+		writer.Write(Owner.direction);
+		writer.Write(Projectile.Opacity);
+		writer.Write(original is not null);
+
+		if (original is not null)
+			writer.Write(original.identity);
+	}
+
+	public override void ReceiveExtraAI(BinaryReader reader)
+	{
+		Owner.direction = reader.ReadInt32();
+		Projectile.Opacity = reader.ReadSingle();
+		bool containsOriginalProj = reader.ReadBoolean();
+
+		if (containsOriginalProj)
+		{
+			int originalIdentity = reader.ReadInt32();
+
+			original = Main.projectile.First(n => n.identity == originalIdentity);
+		}
+
+		if (Main.netMode != NetmodeID.Server)
+		{
+			Main.instance.LoadProjectile(Item.shoot);
+
+			trailColor = ItemColorUtility.GetColor(Item.type);
+
+			texture = TextureAssets.Projectile[Item.shoot].Value;
+			Projectile.Size = texture.Size();
 		}
 	}
 }

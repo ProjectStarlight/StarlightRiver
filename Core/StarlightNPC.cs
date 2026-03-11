@@ -1,25 +1,24 @@
-﻿namespace StarlightRiver.Core
+﻿namespace StarlightRiver.Core;
+
+public partial class StarlightNPC : GlobalNPC
 {
-	public partial class StarlightNPC : GlobalNPC
+	public int Age;
+	public int DoT;
+	public bool dontDropItems;
+
+	public override bool InstancePerEntity => true;
+
+	//public override bool CloneNewInstances => true;
+
+	public override bool PreKill(NPC npc)
 	{
-		public int Age;
-		public int DoT;
-		public bool dontDropItems;
+		return !dontDropItems;
+	}
 
-		public override bool InstancePerEntity => true;
+	public override bool PreAI(NPC NPC)
+	{
+		Age++;
 
-		//public override bool CloneNewInstances => true;
-
-		public override bool PreKill(NPC npc)
-		{
-			return !dontDropItems;
-		}
-
-		public override bool PreAI(NPC NPC)
-		{
-			Age++;
-
-			return base.PreAI(NPC);
-		}
+		return base.PreAI(NPC);
 	}
 }

@@ -2,74 +2,73 @@
 using System.Collections.Generic;
 using Terraria.Utilities;
 
-namespace StarlightRiver.Core
+namespace StarlightRiver.Core;
+
+internal partial class StarlightItem : GlobalItem
 {
-	internal partial class StarlightItem : GlobalItem
+	public Rectangle meleeHitbox;
+	public string prefixLine = "";
+
+	//Prefix handlers
+
+	public override bool InstancePerEntity => true;
+
+	public override void UseItemHitbox(Item Item, Player Player, ref Rectangle hitbox, ref bool noHitbox)
 	{
-		public Rectangle meleeHitbox;
-		public string prefixLine = "";
+		meleeHitbox = hitbox;
+	}
 
-		//Prefix handlers
+	public override GlobalItem Clone(Item item, Item itemClone)
+	{
+		return item.TryGetGlobalItem(out StarlightItem gi) ? gi : this;
+	}
 
-		public override bool InstancePerEntity => true;
-
-		public override void UseItemHitbox(Item Item, Player Player, ref Rectangle hitbox, ref bool noHitbox)
+	public override void ModifyTooltips(Item Item, List<TooltipLine> tooltips)
+	{
+		//Crit display. Same as ammo, maybe move this later?
+		if (Item.damage > 0 && Item.crit > -4)
 		{
-			meleeHitbox = hitbox;
-		}
+			var line = new TooltipLine(StarlightRiver.Instance, "CritDamage", "");
 
-		public override GlobalItem Clone(Item item, Item itemClone)
-		{
-			return item.TryGetGlobalItem(out StarlightItem gi) ? gi : this;
-		}
+			TooltipLine critLine = tooltips.Find(n => n.Name == "Damage");
 
-		public override void ModifyTooltips(Item Item, List<TooltipLine> tooltips)
-		{
-			//Crit display. Same as ammo, maybe move this later?
-			if (Item.damage > 0 && Item.crit > -4)
+			if (critLine != null)
 			{
-				var line = new TooltipLine(StarlightRiver.Instance, "CritDamage", "");
+				int index = tooltips.IndexOf(critLine);
 
-				TooltipLine critLine = tooltips.Find(n => n.Name == "Damage");
+				CritMultiPlayer mp = Main.LocalPlayer.GetModPlayer<CritMultiPlayer>();
 
-				if (critLine != null)
-				{
-					int index = tooltips.IndexOf(critLine);
+				float mult = 2;
 
-					CritMultiPlayer mp = Main.LocalPlayer.GetModPlayer<CritMultiPlayer>();
+				if (Item.DamageType.Type == DamageClass.Melee.Type)
+					mult += mp.MeleeCritMult;
 
-					float mult = 2;
+				if (Item.DamageType.Type == DamageClass.Ranged.Type)
+					mult += mp.RangedCritMult;
 
-					if (Item.DamageType.Type == DamageClass.Melee.Type)
-						mult += mp.MeleeCritMult;
+				if (Item.DamageType.Type == DamageClass.Magic.Type)
+					mult += mp.MagicCritMult;
 
-					if (Item.DamageType.Type == DamageClass.Ranged.Type)
-						mult += mp.RangedCritMult;
+				mult += mp.AllCritMult;
 
-					if (Item.DamageType.Type == DamageClass.Magic.Type)
-						mult += mp.MagicCritMult;
-
-					mult += mp.AllCritMult;
-
-					line.Text = $"{(int)(Item.damage * mult)} critical strike damage";
-					line.OverrideColor = new Color(255, 200, 100);
-					tooltips.Insert(index + 1, line);
-				}
-			}
-
-			//Ammo display, maybe move this later? TODO?
-
-			if (Item.useAmmo != 0)
-			{
-				var line = new TooltipLine(StarlightRiver.Instance, "AmmoInfo", "Uses:");
-
-				TooltipLine critLine = tooltips.Find(n => n.Name == "Knockback");
-				int index = critLine is null ? tooltips.Count - 1 : tooltips.IndexOf(critLine);
-
-				line.Text += $"[i:{Item.useAmmo}]";
-
+				line.Text = $"{(int)(Item.damage * mult)} critical strike damage";
+				line.OverrideColor = new Color(255, 200, 100);
 				tooltips.Insert(index + 1, line);
 			}
+		}
+
+		//Ammo display, maybe move this later? TODO?
+
+		if (Item.useAmmo != 0)
+		{
+			var line = new TooltipLine(StarlightRiver.Instance, "AmmoInfo", "Uses:");
+
+			TooltipLine critLine = tooltips.Find(n => n.Name == "Knockback");
+			int index = critLine is null ? tooltips.Count - 1 : tooltips.IndexOf(critLine);
+
+			line.Text += $"[i:{Item.useAmmo}]";
+
+			tooltips.Insert(index + 1, line);
 		}
 	}
 }

@@ -1,19 +1,18 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 
-namespace StarlightRiver.Content.Tiles.Paintings
+namespace StarlightRiver.Content.Tiles.Paintings;
+
+class EndOfTimePainting : ModTile
 {
-	class EndOfTimePainting : ModTile
-	{
-		public override string Texture => AssetDirectory.PaintingTile + Name;
+	public override string Texture => AssetDirectory.PaintingTile + Name;
 
-		public override void SetStaticDefaults()
-		{
-			this.QuickSetPainting(2, 2, 7, new Color(99, 50, 30), "Painting");
-		}
-	}
-
-	class EndOfTimePaintingItem : BaseTileItem
+	public override void SetStaticDefaults()
 	{
-		public EndOfTimePaintingItem() : base("End of Time", "'K. Ra'", "EndOfTimePainting", 0, AssetDirectory.PaintingTile) { }
+		this.QuickSetPainting(2, 2, 7, new Color(99, 50, 30), "Painting");
 	}
+}
+
+class EndOfTimePaintingItem : BaseTileItem
+{
+	public EndOfTimePaintingItem() : base("End of Time", "'K. Ra'", "EndOfTimePainting", 0, AssetDirectory.PaintingTile) { }
 }

@@ -1,30 +1,29 @@
-﻿namespace StarlightRiver.Content.WorldGeneration.DungeonGen.OvergrowDungeon.Rooms
+﻿namespace StarlightRiver.Content.WorldGeneration.DungeonGen.OvergrowDungeon.Rooms;
+
+internal class StrangeShape : DungeonRoom
 {
-	internal class StrangeShape : DungeonRoom
+	public override string StructurePath => "Structures/OvergrowthRooms/StrangeShape";
+
+	public override bool IsMulti => true;
+
+	public override SecType[,] Layout
 	{
-		public override string StructurePath => "Structures/OvergrowthRooms/StrangeShape";
-
-		public override bool IsMulti => true;
-
-		public override SecType[,] Layout
+		get
 		{
-			get
+			SecType _ = SecType.none;
+			SecType W = SecType.fill;
+			SecType D = SecType.door;
+			return InvertMatrix(new SecType[,]
 			{
-				SecType _ = SecType.none;
-				SecType W = SecType.fill;
-				SecType D = SecType.door;
-				return InvertMatrix(new SecType[,]
-				{
-					{ _, W, D, W, _ },
-					{ _, W, W, W, _ },
-					{ W, W, W, W, W },
-					{ W, W, W, W, W },
-					{ W, W, W, W, W },
-					{ W, W, W, W, _ },
-					{ W, W, W, _, _ },
-					{ W, D, W, _, _ },
-				});
-			}
+				{ _, W, D, W, _ },
+				{ _, W, W, W, _ },
+				{ W, W, W, W, W },
+				{ W, W, W, W, W },
+				{ W, W, W, W, W },
+				{ W, W, W, W, _ },
+				{ W, W, W, _, _ },
+				{ W, D, W, _, _ },
+			});
 		}
 	}
 }

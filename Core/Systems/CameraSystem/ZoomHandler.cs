@@ -1,96 +1,95 @@
 ﻿using Terraria.Graphics;
 
-namespace StarlightRiver.Core.Systems.CameraSystem
+namespace StarlightRiver.Core.Systems.CameraSystem;
+
+public class ZoomHandler : ModSystem
 {
-	public class ZoomHandler : ModSystem
+	private static int zoomTimer;
+	public static float zoomOverride = 1;
+	private static float oldZoom = 1;
+	private static int maxTimer = 0;
+
+	private static int flatZoomTimer = 0;
+	private static float oldFlatZoom = 0;
+	private static float oldFlatZoomTarget = 0;
+	private static float flatZoomTarget = 0;
+	private static float flatZoom = 0;
+
+	public static float ExtraZoomTarget
 	{
-		private static int zoomTimer;
-		public static float zoomOverride = 1;
-		private static float oldZoom = 1;
-		private static int maxTimer = 0;
+		get;
 
-		private static int flatZoomTimer = 0;
-		private static float oldFlatZoom = 0;
-		private static float oldFlatZoomTarget = 0;
-		private static float flatZoomTarget = 0;
-		private static float flatZoom = 0;
-
-		public static float ExtraZoomTarget
+		private set
 		{
-			get;
+			oldZoom = zoomOverride;
+			zoomTimer = 0;
+			field = value;
+		}
+	} = 1;
 
-			private set
-			{
-				oldZoom = zoomOverride;
-				zoomTimer = 0;
-				field = value;
-			}
-		} = 1;
+	public static float ClampedExtraZoomTarget => System.Math.Min(1, ExtraZoomTarget);
 
-		public static float ClampedExtraZoomTarget => System.Math.Min(1, ExtraZoomTarget);
+	public override void PostUpdateEverything()
+	{
+		TickZoom();
+	}
 
-		public override void PostUpdateEverything()
+	public override void ModifyTransformMatrix(ref SpriteViewMatrix Transform)
+	{
+		Transform.Zoom = ScaleVector;
+		UpdateZoom();
+	}
+
+	public static void AddFlatZoom(float value)
+	{
+		flatZoomTarget += value;
+	}
+
+	public static void SetZoomAnimation(float zoomValue, int maxTimer = 60)
+	{
+		ExtraZoomTarget = zoomValue;
+		ZoomHandler.maxTimer = maxTimer;
+	}
+
+	public static void ReturnZoom(int maxTimer = 60)
+	{
+		ExtraZoomTarget = Main.GameZoomTarget;
+		ZoomHandler.maxTimer = maxTimer;
+	}
+
+	public static Vector2 ScaleVector => new(zoomOverride + flatZoom, zoomOverride + flatZoom);
+
+	public static void TickZoom()
+	{
+		if (zoomTimer < maxTimer)
+			zoomTimer++;
+
+		if (flatZoomTimer < 30)
+			flatZoomTimer++;
+
+		if (flatZoomTarget != oldFlatZoomTarget)
 		{
-			TickZoom();
+			flatZoomTimer = 0;
+			oldFlatZoom = flatZoom;
 		}
 
-		public override void ModifyTransformMatrix(ref SpriteViewMatrix Transform)
-		{
-			Transform.Zoom = ScaleVector;
-			UpdateZoom();
-		}
+		flatZoom = Vector2.SmoothStep(new Vector2(oldFlatZoom, 0), new Vector2(flatZoomTarget, 0), flatZoomTimer / 30f).X;
 
-		public static void AddFlatZoom(float value)
-		{
-			flatZoomTarget += value;
-		}
+		oldFlatZoomTarget = flatZoomTarget;
+		flatZoomTarget = 0;
+	}
 
-		public static void SetZoomAnimation(float zoomValue, int maxTimer = 60)
-		{
-			ExtraZoomTarget = zoomValue;
-			ZoomHandler.maxTimer = maxTimer;
-		}
+	public static void UpdateZoom()
+	{
+		zoomOverride = Vector2.SmoothStep(new Vector2(oldZoom, 0), new Vector2(ExtraZoomTarget, 0), zoomTimer / (float)maxTimer).X;
 
-		public static void ReturnZoom(int maxTimer = 60)
-		{
-			ExtraZoomTarget = Main.GameZoomTarget;
-			ZoomHandler.maxTimer = maxTimer;
-		}
+		if (zoomOverride == Main.GameZoomTarget)
+			oldZoom = Main.GameZoomTarget;
 
-		public static Vector2 ScaleVector => new(zoomOverride + flatZoom, zoomOverride + flatZoom);
+		if (zoomTimer == maxTimer && ExtraZoomTarget == Main.GameZoomTarget)
+			maxTimer = 0;
 
-		public static void TickZoom()
-		{
-			if (zoomTimer < maxTimer)
-				zoomTimer++;
-
-			if (flatZoomTimer < 30)
-				flatZoomTimer++;
-
-			if (flatZoomTarget != oldFlatZoomTarget)
-			{
-				flatZoomTimer = 0;
-				oldFlatZoom = flatZoom;
-			}
-
-			flatZoom = Vector2.SmoothStep(new Vector2(oldFlatZoom, 0), new Vector2(flatZoomTarget, 0), flatZoomTimer / 30f).X;
-
-			oldFlatZoomTarget = flatZoomTarget;
-			flatZoomTarget = 0;
-		}
-
-		public static void UpdateZoom()
-		{
-			zoomOverride = Vector2.SmoothStep(new Vector2(oldZoom, 0), new Vector2(ExtraZoomTarget, 0), zoomTimer / (float)maxTimer).X;
-
-			if (zoomOverride == Main.GameZoomTarget)
-				oldZoom = Main.GameZoomTarget;
-
-			if (zoomTimer == maxTimer && ExtraZoomTarget == Main.GameZoomTarget)
-				maxTimer = 0;
-
-			if (maxTimer == 0)
-				zoomOverride = Main.GameZoomTarget;
-		}
+		if (maxTimer == 0)
+			zoomOverride = Main.GameZoomTarget;
 	}
 }

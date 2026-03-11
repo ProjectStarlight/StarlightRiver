@@ -7,52 +7,51 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Packets
+namespace StarlightRiver.Content.Packets;
+
+/// <summary>
+/// generalized packet for starting a shrine trial. should only be processed by a server or singleplayer client.
+/// </summary>
+[Serializable]
+public class ShrineStartPacket : Module
 {
-	/// <summary>
-	/// generalized packet for starting a shrine trial. should only be processed by a server or singleplayer client.
-	/// </summary>
-	[Serializable]
-	public class ShrineStartPacket : Module
+	readonly int tileI;
+	readonly int tileJ;
+
+	public ShrineStartPacket(int tileI, int tileJ)
 	{
-		readonly int tileI;
-		readonly int tileJ;
+		this.tileI = tileI;
+		this.tileJ = tileJ;
+	}
 
-		public ShrineStartPacket(int tileI, int tileJ)
+	protected override void Receive()
+	{
+		if (Main.netMode == NetmodeID.MultiplayerClient)
+			return; //this is not for execution by multiplayer clients
+
+		Tile tile = Framing.GetTileSafely(tileI, tileJ);
+
+		ModTile mTile = ModContent.GetModTile(tile.TileType);
+
+		if (mTile == null)
 		{
-			this.tileI = tileI;
-			this.tileJ = tileJ;
+			StarlightRiver.Instance.Logger.Error("at (" + tileI + ", " + tileJ + ") failed to find shrine tile");
+			return; //failed to find shrine tile (this should never happen)
 		}
 
-		protected override void Receive()
-		{
-			if (Main.netMode == NetmodeID.MultiplayerClient)
-				return; //this is not for execution by multiplayer clients
+		ShrineTile shrineTile = mTile as ShrineTile;
 
-			Tile tile = Framing.GetTileSafely(tileI, tileJ);
+		int x = tileI - tile.TileFrameX / 18;
+		int y = tileJ - tile.TileFrameY / 18;
 
-			ModTile mTile = ModContent.GetModTile(tile.TileType);
+		shrineTile.SetActiveFrame(x, y);
 
-			if (mTile == null)
-			{
-				StarlightRiver.Instance.Logger.Error("at (" + tileI + ", " + tileJ + ") failed to find shrine tile");
-				return; //failed to find shrine tile (this should never happen)
-			}
+		ShrineDummy shrineDummy = shrineTile.Dummy(x, y) as ShrineDummy;
 
-			ShrineTile shrineTile = mTile as ShrineTile;
+		shrineDummy.timer = 0;
+		shrineDummy.state = ShrineDummy.SHRINE_STATE_ACTIVE;
+		shrineTile.AdditionalSetup(shrineDummy);
 
-			int x = tileI - tile.TileFrameX / 18;
-			int y = tileJ - tile.TileFrameY / 18;
-
-			shrineTile.SetActiveFrame(x, y);
-
-			ShrineDummy shrineDummy = shrineTile.Dummy(x, y) as ShrineDummy;
-
-			shrineDummy.timer = 0;
-			shrineDummy.state = ShrineDummy.SHRINE_STATE_ACTIVE;
-			shrineTile.AdditionalSetup(shrineDummy);
-
-			shrineDummy.netUpdate = true;
-		}
+		shrineDummy.netUpdate = true;
 	}
 }

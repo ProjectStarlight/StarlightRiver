@@ -17,252 +17,251 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.WorldBuilding;
 
-namespace StarlightRiver.Content.Items
+namespace StarlightRiver.Content.Items;
+
+[SLRDebug]
+class DebugStick : ModItem
 {
-	[SLRDebug]
-	class DebugStick : ModItem
+	readonly Arm arm = new(Vector2.Zero, 5, 64, Assets.Invisible.Value);
+
+	public override string Texture => AssetDirectory.Assets + "Items/DebugStick";
+
+	public override void SetStaticDefaults()
 	{
-		readonly Arm arm = new(Vector2.Zero, 5, 64, Assets.Invisible.Value);
-
-		public override string Texture => AssetDirectory.Assets + "Items/DebugStick";
-
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("Debug Stick");
-			Tooltip.SetDefault("Has whatever effects are needed");
-		}
-
-		public override void SetDefaults()
-		{
-			Item.damage = 10;
-			Item.DamageType = DamageClass.Melee;
-			Item.width = 38;
-			Item.height = 40;
-			Item.useTime = 18;
-
-			Item.useAnimation = 18;
-			Item.useStyle = ItemUseStyleID.Swing;
-			Item.knockBack = 5f;
-			Item.value = 1000;
-			Item.rare = ItemRarityID.LightRed;
-			Item.autoReuse = true;
-			Item.UseSound = SoundID.Item18;
-			Item.useTurn = true;
-			Item.accessory = true;
-		}
-
-		public override void UpdateAccessory(Player player, bool hideVisual)
-		{
-			ObservatoryBiome.fade = 1f;
-			return;
-
-			player.GetHandler().StaminaMaxBonus = 10;
-
-			int x = StarlightWorld.vitricBiome.X - 37;
-
-			Dust.NewDustPerfect(new Vector2((x + 80) * 16, (StarlightWorld.vitricBiome.Center.Y + 20) * 16), DustID.Firefly);
-
-		}
+		DisplayName.SetDefault("Debug Stick");
+		Tooltip.SetDefault("Has whatever effects are needed");
 	}
 
-	[SLRDebug]
-	class DebugStick2 : ModItem
+	public override void SetDefaults()
 	{
-		public override string Texture => AssetDirectory.Assets + "Items/DebugStick";
+		Item.damage = 10;
+		Item.DamageType = DamageClass.Melee;
+		Item.width = 38;
+		Item.height = 40;
+		Item.useTime = 18;
 
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("Debug Stick 2");
-			Tooltip.SetDefault("Has whatever effects are needed");
-		}
-
-		public override void SetDefaults()
-		{
-			Item.damage = 10;
-			Item.DamageType = DamageClass.Melee;
-			Item.width = 38;
-			Item.height = 40;
-			Item.useTime = 18;
-
-			Item.useAnimation = 18;
-			Item.useStyle = ItemUseStyleID.Swing;
-			Item.knockBack = 5f;
-			Item.value = 1000;
-			Item.rare = ItemRarityID.LightRed;
-			Item.autoReuse = true;
-			Item.UseSound = SoundID.Item18;
-			Item.useTurn = true;
-			Item.accessory = true;
-		}
-
-		public override void UpdateAccessory(Player player, bool hideVisual)
-		{
-			//player.GetHandler().StaminaMaxBonus = 1000;
-
-			//int x = StarlightWorld.vitricBiome.X - 37;
-
-			//Dust.NewDustPerfect(new Vector2((x + 80) * 16, (StarlightWorld.vitricBiome.Center.Y + 20) * 16), DustID.Firefly);
-
-			Lighting.AddLight(Main.MouseWorld, new Vector3(0, 1, 0));
-
-		}
-
-		private Item SetupItem(int type, int stack, bool isRelic)
-		{
-			var Item = new Item(type, stack);
-
-			Item.GetGlobalItem<RelicItem>().isRelic = isRelic;
-			Item.Prefix(ItemLoader.ChoosePrefix(Item, Main.rand));
-
-			return Item;
-		}
-
-		private bool PlaceDisplayCaseOn(Chest chest)
-		{
-			int type = ItemID.None;
-
-			for (int i = 0; i < chest.item.Length; i++)
-			{
-				Item Item = chest.item[i];
-
-				// Checks if the "main" chest Item is an accessory
-				if (Item.accessory)
-				{
-					type = chest.item[i].type;
-					break;
-				}
-			}
-
-			if (type != ItemID.None)
-			{
-				Item Item = SetupItem(type, 1, true);
-
-				WorldGenHelper.PlaceMultitile(new Point16(chest.x, chest.y - 1), ModContent.TileType<DisplayCase>());
-				TileEntity.PlaceEntityNet(chest.x, chest.y - 1, ModContent.TileEntityType<DisplayCaseEntity>());
-				(TileEntity.ByPosition[new Point16(chest.x, chest.y - 1)] as DisplayCaseEntity).containedItem = Item;
-				return true;
-			}
-
-			return false;
-		}
-
-		public override bool? UseItem(Player player)
-		{
-			//ModContent.GetInstance<StarlightWorld>().GraymatterGen(new GenerationProgress(), null);
-
-			foreach (Chest chest in Main.chest)
-			{
-				PlaceDisplayCaseOn(chest);
-			}
-
-			return true;
-
-			ObservatorySystem.pylonAppearsOn = false;
-			ObservatorySystem.observatoryOpen = false;
-
-			player.GetHandler().unlockedAbilities.Clear();
-			player.GetHandler().Shards.Clear();
-			player.GetHandler().InfusionLimit = 0;
-
-			AlicanSafetySystem.DebugForceState(0);
-
-			if (player.controlDown)
-				player.ActivateCutscene<StarlightPylonActivateCutscene>();
-
-			//StarlightWorld.FlipFlag(WorldFlags.ThinkerBossOpen);
-			//ModContent.GetInstance<StarlightWorld>().GraymatterGen(new GenerationProgress(), null);
-
-			/*SplineGlow.Spawn(player.Center, Vector2.Lerp(player.Center, Main.MouseWorld, 0.5f) + Vector2.UnitX.RotatedByRandom(6.28f) * 50, Main.MouseWorld, 120, 1, Color.Teal);
-
-			Tile tile2 = Framing.GetTileSafely((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16));
-			Main.NewText(tile2.TileType + " " + tile2.WallType);
-
-			for (int x = -100; x < 100; x++)
-			{
-				for (int y = -100; y < 100; y++)
-				{
-					Tile tile = Framing.GetTileSafely(x + (int)(Main.MouseWorld.X / 16), y + (int)(Main.MouseWorld.Y / 16));
-					//tile.IsActuated = false;
-
-					if (tile.TileType == 922)
-						tile.ClearEverything();
-				}
-			}*/
-
-			//Point16 target = new Point16((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
-			//Main.NewText($"Deviation at {target} along width 10: {WorldGenHelper.GetElevationDeviation(target, 10, 20, 10, true)}");
-
-			ModContent.GetInstance<StarlightWorld>().ObservatoryGen(null, null);
-
-			//Main.LocalPlayer.GetHandler().Shards.Clear();
-			//CagePuzzleSystem.solved = false;
-
-			//WorldGen.KillTile((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
-
-			return true;
-		}
+		Item.useAnimation = 18;
+		Item.useStyle = ItemUseStyleID.Swing;
+		Item.knockBack = 5f;
+		Item.value = 1000;
+		Item.rare = ItemRarityID.LightRed;
+		Item.autoReuse = true;
+		Item.UseSound = SoundID.Item18;
+		Item.useTurn = true;
+		Item.accessory = true;
 	}
 
-	class DebugModerEnabler : ModItem
+	public override void UpdateAccessory(Player player, bool hideVisual)
 	{
-		public override string Texture => AssetDirectory.Assets + "Items/DebugStick";
+		ObservatoryBiome.fade = 1f;
+		return;
 
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("Debug Mode");
-			Tooltip.SetDefault("{{Inoculation}} is a keyword\n{{Barrier}} is too\nHere is a really long line so that we can test the wrapping logic of the tooltip panels! I hope this is long enough.\n{{BUFF:OnFire}} {{BUFF:PlexusChaliceBuff}} {{BUFF:BarbedKnifeBleed}}");
-		}
+		player.GetHandler().StaminaMaxBonus = 10;
 
-		public override void SetDefaults()
-		{
-			Item.damage = 10;
-			Item.width = 38;
-			Item.height = 38;
-			Item.useTime = 15;
-			Item.useAnimation = 15;
-			Item.useStyle = ItemUseStyleID.Swing;
-		}
+		int x = StarlightWorld.vitricBiome.X - 37;
 
-		public override bool? UseItem(Player Player)
-		{
-			StarlightRiver.debugMode = !StarlightRiver.debugMode;
-			return true;
-		}
+		Dust.NewDustPerfect(new Vector2((x + 80) * 16, (StarlightWorld.vitricBiome.Center.Y + 20) * 16), DustID.Firefly);
+
+	}
+}
+
+[SLRDebug]
+class DebugStick2 : ModItem
+{
+	public override string Texture => AssetDirectory.Assets + "Items/DebugStick";
+
+	public override void SetStaticDefaults()
+	{
+		DisplayName.SetDefault("Debug Stick 2");
+		Tooltip.SetDefault("Has whatever effects are needed");
 	}
 
-	[SLRDebug]
-	class SuperBreaker : ModItem
+	public override void SetDefaults()
 	{
-		public override string Texture => AssetDirectory.Assets + "Items/DebugStick";
+		Item.damage = 10;
+		Item.DamageType = DamageClass.Melee;
+		Item.width = 38;
+		Item.height = 40;
+		Item.useTime = 18;
 
-		public override void SetStaticDefaults()
+		Item.useAnimation = 18;
+		Item.useStyle = ItemUseStyleID.Swing;
+		Item.knockBack = 5f;
+		Item.value = 1000;
+		Item.rare = ItemRarityID.LightRed;
+		Item.autoReuse = true;
+		Item.UseSound = SoundID.Item18;
+		Item.useTurn = true;
+		Item.accessory = true;
+	}
+
+	public override void UpdateAccessory(Player player, bool hideVisual)
+	{
+		//player.GetHandler().StaminaMaxBonus = 1000;
+
+		//int x = StarlightWorld.vitricBiome.X - 37;
+
+		//Dust.NewDustPerfect(new Vector2((x + 80) * 16, (StarlightWorld.vitricBiome.Center.Y + 20) * 16), DustID.Firefly);
+
+		Lighting.AddLight(Main.MouseWorld, new Vector3(0, 1, 0));
+
+	}
+
+	private Item SetupItem(int type, int stack, bool isRelic)
+	{
+		var Item = new Item(type, stack);
+
+		Item.GetGlobalItem<RelicItem>().isRelic = isRelic;
+		Item.Prefix(ItemLoader.ChoosePrefix(Item, Main.rand));
+
+		return Item;
+	}
+
+	private bool PlaceDisplayCaseOn(Chest chest)
+	{
+		int type = ItemID.None;
+
+		for (int i = 0; i < chest.item.Length; i++)
 		{
-			DisplayName.SetDefault("Super Breaker");
-			Tooltip.SetDefault("Breaks anything!");
+			Item Item = chest.item[i];
+
+			// Checks if the "main" chest Item is an accessory
+			if (Item.accessory)
+			{
+				type = chest.item[i].type;
+				break;
+			}
 		}
 
-		public override void SetDefaults()
+		if (type != ItemID.None)
 		{
-			Item.damage = 10;
-			Item.DamageType = DamageClass.Melee;
-			Item.width = 38;
-			Item.height = 40;
-			Item.useTime = 18;
+			Item Item = SetupItem(type, 1, true);
 
-			Item.useAnimation = 18;
-			Item.useStyle = ItemUseStyleID.Swing;
-			Item.knockBack = 5f;
-			Item.value = 1000;
-			Item.rare = ItemRarityID.Master;
-			Item.autoReuse = true;
-			Item.UseSound = SoundID.Item18;
-			Item.useTurn = true;
-		}
-
-		public override bool? UseItem(Player player)
-		{
-			WorldGen.KillTile((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
+			WorldGenHelper.PlaceMultitile(new Point16(chest.x, chest.y - 1), ModContent.TileType<DisplayCase>());
+			TileEntity.PlaceEntityNet(chest.x, chest.y - 1, ModContent.TileEntityType<DisplayCaseEntity>());
+			(TileEntity.ByPosition[new Point16(chest.x, chest.y - 1)] as DisplayCaseEntity).containedItem = Item;
 			return true;
 		}
+
+		return false;
+	}
+
+	public override bool? UseItem(Player player)
+	{
+		//ModContent.GetInstance<StarlightWorld>().GraymatterGen(new GenerationProgress(), null);
+
+		foreach (Chest chest in Main.chest)
+		{
+			PlaceDisplayCaseOn(chest);
+		}
+
+		return true;
+
+		ObservatorySystem.pylonAppearsOn = false;
+		ObservatorySystem.observatoryOpen = false;
+
+		player.GetHandler().unlockedAbilities.Clear();
+		player.GetHandler().Shards.Clear();
+		player.GetHandler().InfusionLimit = 0;
+
+		AlicanSafetySystem.DebugForceState(0);
+
+		if (player.controlDown)
+			player.ActivateCutscene<StarlightPylonActivateCutscene>();
+
+		//StarlightWorld.FlipFlag(WorldFlags.ThinkerBossOpen);
+		//ModContent.GetInstance<StarlightWorld>().GraymatterGen(new GenerationProgress(), null);
+
+		/*SplineGlow.Spawn(player.Center, Vector2.Lerp(player.Center, Main.MouseWorld, 0.5f) + Vector2.UnitX.RotatedByRandom(6.28f) * 50, Main.MouseWorld, 120, 1, Color.Teal);
+
+		Tile tile2 = Framing.GetTileSafely((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16));
+		Main.NewText(tile2.TileType + " " + tile2.WallType);
+
+		for (int x = -100; x < 100; x++)
+		{
+			for (int y = -100; y < 100; y++)
+			{
+				Tile tile = Framing.GetTileSafely(x + (int)(Main.MouseWorld.X / 16), y + (int)(Main.MouseWorld.Y / 16));
+				//tile.IsActuated = false;
+
+				if (tile.TileType == 922)
+					tile.ClearEverything();
+			}
+		}*/
+
+		//Point16 target = new Point16((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
+		//Main.NewText($"Deviation at {target} along width 10: {WorldGenHelper.GetElevationDeviation(target, 10, 20, 10, true)}");
+
+		ModContent.GetInstance<StarlightWorld>().ObservatoryGen(null, null);
+
+		//Main.LocalPlayer.GetHandler().Shards.Clear();
+		//CagePuzzleSystem.solved = false;
+
+		//WorldGen.KillTile((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
+
+		return true;
+	}
+}
+
+class DebugModerEnabler : ModItem
+{
+	public override string Texture => AssetDirectory.Assets + "Items/DebugStick";
+
+	public override void SetStaticDefaults()
+	{
+		DisplayName.SetDefault("Debug Mode");
+		Tooltip.SetDefault("{{Inoculation}} is a keyword\n{{Barrier}} is too\nHere is a really long line so that we can test the wrapping logic of the tooltip panels! I hope this is long enough.\n{{BUFF:OnFire}} {{BUFF:PlexusChaliceBuff}} {{BUFF:BarbedKnifeBleed}}");
+	}
+
+	public override void SetDefaults()
+	{
+		Item.damage = 10;
+		Item.width = 38;
+		Item.height = 38;
+		Item.useTime = 15;
+		Item.useAnimation = 15;
+		Item.useStyle = ItemUseStyleID.Swing;
+	}
+
+	public override bool? UseItem(Player Player)
+	{
+		StarlightRiver.debugMode = !StarlightRiver.debugMode;
+		return true;
+	}
+}
+
+[SLRDebug]
+class SuperBreaker : ModItem
+{
+	public override string Texture => AssetDirectory.Assets + "Items/DebugStick";
+
+	public override void SetStaticDefaults()
+	{
+		DisplayName.SetDefault("Super Breaker");
+		Tooltip.SetDefault("Breaks anything!");
+	}
+
+	public override void SetDefaults()
+	{
+		Item.damage = 10;
+		Item.DamageType = DamageClass.Melee;
+		Item.width = 38;
+		Item.height = 40;
+		Item.useTime = 18;
+
+		Item.useAnimation = 18;
+		Item.useStyle = ItemUseStyleID.Swing;
+		Item.knockBack = 5f;
+		Item.value = 1000;
+		Item.rare = ItemRarityID.Master;
+		Item.autoReuse = true;
+		Item.UseSound = SoundID.Item18;
+		Item.useTurn = true;
+	}
+
+	public override bool? UseItem(Player player)
+	{
+		WorldGen.KillTile((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
+		return true;
 	}
 }

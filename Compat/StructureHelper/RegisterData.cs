@@ -6,16 +6,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StarlightRiver.Compat.StructureHelper
+namespace StarlightRiver.Compat.StructureHelper;
+
+internal class RegisterData : ModSystem
 {
-	internal class RegisterData : ModSystem
+	public override void OnModLoad()
 	{
-		public override void OnModLoad()
+		if (ModLoader.TryGetMod("StructureHelper", out Mod sh))
 		{
-			if (ModLoader.TryGetMod("StructureHelper", out Mod sh))
-			{
-				sh.Call("RegisterCustomData", typeof(AuroraWaterData), Mod);
-			}
+			sh.Call("RegisterCustomData", typeof(AuroraWaterData), Mod);
 		}
 	}
 }

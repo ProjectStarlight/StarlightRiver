@@ -6,168 +6,167 @@ using DECIMAL = System.Single;//using FN_DECIMAL = System.Double;
 
 #pragma warning disable IDE0051 // Remove unused private members
 
-namespace StarlightRiver.Noise
+namespace StarlightRiver.Noise;
+
+public partial class FastNoise
 {
-	public partial class FastNoise
+	private const int PrimeX = 1619;
+	private const int PrimeY = 31337;
+	private const int PrimeZ = 6971;
+	private const int PrimeW = 1013;
+
+	private static readonly Decimal2[] Grad2D = {
+		new(-1,-1),new( 1,-1),new(-1,1),new( 1,1),
+		new( 0,-1),new(-1,0),new( 0,1),new( 1,0),
+	};
+
+	private static readonly Decimal3[] Grad3D = {
+		new( 1,1,0),new(-1,1,0),new( 1,-1,0),new(-1,-1,0),
+		new( 1,0,1),new(-1,0,1),new( 1,0,-1),new(-1,0,-1),
+		new( 0,1,1),new( 0,-1,1),new( 0,1,-1),new( 0,-1,-1),
+		new( 1,1,0),new( 0,-1,1),new(-1,1,0),new( 0,-1,-1),
+	};
+
+	[MethodImpl(Inline)]
+	private static DECIMAL GradCoord2D(int seed, int x, int y, DECIMAL xd, DECIMAL yd)
 	{
-		private const int PrimeX = 1619;
-		private const int PrimeY = 31337;
-		private const int PrimeZ = 6971;
-		private const int PrimeW = 1013;
+		int hash = seed;
 
-		private static readonly Decimal2[] Grad2D = {
-			new(-1,-1),new( 1,-1),new(-1,1),new( 1,1),
-			new( 0,-1),new(-1,0),new( 0,1),new( 1,0),
-		};
+		hash ^= PrimeX * x;
+		hash ^= PrimeY * y;
 
-		private static readonly Decimal3[] Grad3D = {
-			new( 1,1,0),new(-1,1,0),new( 1,-1,0),new(-1,-1,0),
-			new( 1,0,1),new(-1,0,1),new( 1,0,-1),new(-1,0,-1),
-			new( 0,1,1),new( 0,-1,1),new( 0,1,-1),new( 0,-1,-1),
-			new( 1,1,0),new( 0,-1,1),new(-1,1,0),new( 0,-1,-1),
-		};
+		hash = hash * hash * hash * 60493;
+		hash = (hash >> 13) ^ hash;
 
-		[MethodImpl(Inline)]
-		private static DECIMAL GradCoord2D(int seed, int x, int y, DECIMAL xd, DECIMAL yd)
-		{
-			int hash = seed;
+		Decimal2 g = Grad2D[hash & 7];
 
-			hash ^= PrimeX * x;
-			hash ^= PrimeY * y;
+		return xd * g.x + yd * g.y;
+	}
+	[MethodImpl(Inline)]
+	private static DECIMAL GradCoord3D(int seed, int x, int y, int z, DECIMAL xd, DECIMAL yd, DECIMAL zd)
+	{
+		int hash = seed;
 
-			hash = hash * hash * hash * 60493;
-			hash = (hash >> 13) ^ hash;
+		hash ^= PrimeX * x;
+		hash ^= PrimeY * y;
+		hash ^= PrimeZ * z;
 
-			Decimal2 g = Grad2D[hash & 7];
+		hash = hash * hash * hash * 60493;
+		hash = (hash >> 13) ^ hash;
 
-			return xd * g.x + yd * g.y;
+		Decimal3 g = Grad3D[hash & 15];
+
+		return xd * g.x + yd * g.y + zd * g.z;
+	}
+	[MethodImpl(Inline)]
+	private static DECIMAL GradCoord4D(int seed, int x, int y, int z, int w, DECIMAL xd, DECIMAL yd, DECIMAL zd, DECIMAL wd)
+	{
+		int hash = seed;
+
+		hash ^= PrimeX * x;
+		hash ^= PrimeY * y;
+		hash ^= PrimeZ * z;
+		hash ^= PrimeW * w;
+
+		hash = hash * hash * hash * 60493;
+		hash = (hash >> 13) ^ hash;
+
+		hash &= 31;
+		DECIMAL a = yd, b = zd, c = wd;           //X,Y,Z
+		switch (hash >> 3)
+		{ //OR,DEPENDING ON HIGH ORDER 2 BITS:
+			case 1:
+				a = wd;
+				b = xd;
+				c = yd;
+				break;    //W,X,Y
+			case 2:
+				a = zd;
+				b = wd;
+				c = xd;
+				break;    //Z,W,X
+			case 3:
+				a = yd;
+				b = zd;
+				c = wd;
+				break;    //Y,Z,W
 		}
-		[MethodImpl(Inline)]
-		private static DECIMAL GradCoord3D(int seed, int x, int y, int z, DECIMAL xd, DECIMAL yd, DECIMAL zd)
-		{
-			int hash = seed;
 
-			hash ^= PrimeX * x;
-			hash ^= PrimeY * y;
-			hash ^= PrimeZ * z;
+		return ((hash & 4) == 0 ? -a : a) + ((hash & 2) == 0 ? -b : b) + ((hash & 1) == 0 ? -c : c);
+	}
+	[MethodImpl(Inline)]
+	private static int Hash2D(int seed, int x, int y)
+	{
+		int hash = seed;
 
-			hash = hash * hash * hash * 60493;
-			hash = (hash >> 13) ^ hash;
+		hash ^= PrimeX * x;
+		hash ^= PrimeY * y;
 
-			Decimal3 g = Grad3D[hash & 15];
+		hash = hash * hash * hash * 60493;
+		hash = (hash >> 13) ^ hash;
 
-			return xd * g.x + yd * g.y + zd * g.z;
-		}
-		[MethodImpl(Inline)]
-		private static DECIMAL GradCoord4D(int seed, int x, int y, int z, int w, DECIMAL xd, DECIMAL yd, DECIMAL zd, DECIMAL wd)
-		{
-			int hash = seed;
+		return hash;
+	}
+	[MethodImpl(Inline)]
+	private static int Hash3D(int seed, int x, int y, int z)
+	{
+		int hash = seed;
 
-			hash ^= PrimeX * x;
-			hash ^= PrimeY * y;
-			hash ^= PrimeZ * z;
-			hash ^= PrimeW * w;
+		hash ^= PrimeX * x;
+		hash ^= PrimeY * y;
+		hash ^= PrimeZ * z;
 
-			hash = hash * hash * hash * 60493;
-			hash = (hash >> 13) ^ hash;
+		hash = hash * hash * hash * 60493;
+		hash = (hash >> 13) ^ hash;
 
-			hash &= 31;
-			DECIMAL a = yd, b = zd, c = wd;           //X,Y,Z
-			switch (hash >> 3)
-			{ //OR,DEPENDING ON HIGH ORDER 2 BITS:
-				case 1:
-					a = wd;
-					b = xd;
-					c = yd;
-					break;    //W,X,Y
-				case 2:
-					a = zd;
-					b = wd;
-					c = xd;
-					break;    //Z,W,X
-				case 3:
-					a = yd;
-					b = zd;
-					c = wd;
-					break;    //Y,Z,W
-			}
+		return hash;
+	}
+	[MethodImpl(Inline)]
+	private static int Hash4D(int seed, int x, int y, int z, int w)
+	{
+		int hash = seed;
 
-			return ((hash & 4) == 0 ? -a : a) + ((hash & 2) == 0 ? -b : b) + ((hash & 1) == 0 ? -c : c);
-		}
-		[MethodImpl(Inline)]
-		private static int Hash2D(int seed, int x, int y)
-		{
-			int hash = seed;
+		hash ^= PrimeX * x;
+		hash ^= PrimeY * y;
+		hash ^= PrimeZ * z;
+		hash ^= PrimeW * w;
 
-			hash ^= PrimeX * x;
-			hash ^= PrimeY * y;
+		hash = hash * hash * hash * 60493;
+		hash = (hash >> 13) ^ hash;
 
-			hash = hash * hash * hash * 60493;
-			hash = (hash >> 13) ^ hash;
+		return hash;
+	}
+	[MethodImpl(Inline)]
+	private static DECIMAL ValCoord2D(int seed, int x, int y)
+	{
+		int n = seed;
 
-			return hash;
-		}
-		[MethodImpl(Inline)]
-		private static int Hash3D(int seed, int x, int y, int z)
-		{
-			int hash = seed;
+		n ^= PrimeX * x;
+		n ^= PrimeY * y;
 
-			hash ^= PrimeX * x;
-			hash ^= PrimeY * y;
-			hash ^= PrimeZ * z;
+		return n * n * n * 60493 / (DECIMAL)2147483648.0;
+	}
+	[MethodImpl(Inline)]
+	private static DECIMAL ValCoord3D(int seed, int x, int y, int z)
+	{
+		int n = seed;
 
-			hash = hash * hash * hash * 60493;
-			hash = (hash >> 13) ^ hash;
+		n ^= PrimeX * x;
+		n ^= PrimeY * y;
+		n ^= PrimeZ * z;
 
-			return hash;
-		}
-		[MethodImpl(Inline)]
-		private static int Hash4D(int seed, int x, int y, int z, int w)
-		{
-			int hash = seed;
+		return n * n * n * 60493 / (DECIMAL)2147483648.0;
+	}
+	[MethodImpl(Inline)]
+	private static DECIMAL ValCoord4D(int seed, int x, int y, int z, int w)
+	{
+		int n = seed;
 
-			hash ^= PrimeX * x;
-			hash ^= PrimeY * y;
-			hash ^= PrimeZ * z;
-			hash ^= PrimeW * w;
+		n ^= PrimeX * x;
+		n ^= PrimeY * y;
+		n ^= PrimeZ * z;
+		n ^= PrimeW * w;
 
-			hash = hash * hash * hash * 60493;
-			hash = (hash >> 13) ^ hash;
-
-			return hash;
-		}
-		[MethodImpl(Inline)]
-		private static DECIMAL ValCoord2D(int seed, int x, int y)
-		{
-			int n = seed;
-
-			n ^= PrimeX * x;
-			n ^= PrimeY * y;
-
-			return n * n * n * 60493 / (DECIMAL)2147483648.0;
-		}
-		[MethodImpl(Inline)]
-		private static DECIMAL ValCoord3D(int seed, int x, int y, int z)
-		{
-			int n = seed;
-
-			n ^= PrimeX * x;
-			n ^= PrimeY * y;
-			n ^= PrimeZ * z;
-
-			return n * n * n * 60493 / (DECIMAL)2147483648.0;
-		}
-		[MethodImpl(Inline)]
-		private static DECIMAL ValCoord4D(int seed, int x, int y, int z, int w)
-		{
-			int n = seed;
-
-			n ^= PrimeX * x;
-			n ^= PrimeY * y;
-			n ^= PrimeZ * z;
-			n ^= PrimeW * w;
-
-			return n * n * n * 60493 / (DECIMAL)2147483648.0;
-		}
+		return n * n * n * 60493 / (DECIMAL)2147483648.0;
 	}
 }

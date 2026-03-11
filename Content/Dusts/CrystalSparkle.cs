@@ -1,39 +1,38 @@
-﻿namespace StarlightRiver.Content.Dusts
+﻿namespace StarlightRiver.Content.Dusts;
+
+class CrystalSparkle : ModDust
 {
-	class CrystalSparkle : ModDust
+	public override string Texture => AssetDirectory.Dust + Name;
+
+	public override Color? GetAlpha(Dust dust, Color lightColor)
 	{
-		public override string Texture => AssetDirectory.Dust + Name;
+		return Color.White;
+	}
 
-		public override Color? GetAlpha(Dust dust, Color lightColor)
+	public override void OnSpawn(Dust dust)
+	{
+		dust.fadeIn = 0;
+		dust.noLight = false;
+		dust.frame = new Rectangle(0, 0, 14, 14);
+	}
+
+	public override bool Update(Dust dust)
+	{
+		if (dust.customData is null)
 		{
-			return Color.White;
+			dust.position -= new Vector2(7, 7) * dust.scale;
+			dust.customData = 1;
 		}
 
-		public override void OnSpawn(Dust dust)
-		{
-			dust.fadeIn = 0;
-			dust.noLight = false;
-			dust.frame = new Rectangle(0, 0, 14, 14);
-		}
+		if (dust.alpha % 64 == 56)
+			dust.frame.Y += 14;
 
-		public override bool Update(Dust dust)
-		{
-			if (dust.customData is null)
-			{
-				dust.position -= new Vector2(7, 7) * dust.scale;
-				dust.customData = 1;
-			}
+		Lighting.AddLight(dust.position, Color.Cyan.ToVector3() * 0.02f);
 
-			if (dust.alpha % 64 == 56)
-				dust.frame.Y += 14;
+		dust.alpha += 8;
 
-			Lighting.AddLight(dust.position, Color.Cyan.ToVector3() * 0.02f);
-
-			dust.alpha += 8;
-
-			if (dust.alpha > 255)
-				dust.active = false;
-			return false;
-		}
+		if (dust.alpha > 255)
+			dust.active = false;
+		return false;
 	}
 }

@@ -2,104 +2,103 @@
 using System;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Bosses.VitricBoss
+namespace StarlightRiver.Content.Bosses.VitricBoss;
+
+internal class SpikeMine : ModProjectile
 {
-	internal class SpikeMine : ModProjectile
+	public override string Texture => AssetDirectory.Invisible;
+
+	public ref float Timer => ref Projectile.ai[0];
+
+	public override void SetDefaults()
 	{
-		public override string Texture => AssetDirectory.Invisible;
+		Projectile.hostile = true;
+		Projectile.width = 40;
+		Projectile.height = 40;
+		Projectile.timeLeft = 170;
+	}
 
-		public ref float Timer => ref Projectile.ai[0];
+	public override void AI()
+	{
+		Timer++; //ticks up the timer
 
-		public override void SetDefaults()
+		if (Timer == 1)
+			Projectile.ai[1] = Projectile.position.Y;
+
+		Projectile.velocity *= 0.98f;
+
+		if (Timer > 10 && Timer < 80 && Main.rand.NextBool(4))
 		{
-			Projectile.hostile = true;
-			Projectile.width = 40;
-			Projectile.height = 40;
-			Projectile.timeLeft = 170;
+			var d = Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 150, 100), 0.5f);
+			d.noGravity = false;
 		}
 
-		public override void AI()
+		if (Timer == 90) //when this Projectile goes off
 		{
-			Timer++; //ticks up the timer
+			SoundHelper.PlayPitched("Magic/FireHit", 0.20f, 0, Projectile.Center);
 
-			if (Timer == 1)
-				Projectile.ai[1] = Projectile.position.Y;
-
-			Projectile.velocity *= 0.98f;
-
-			if (Timer > 10 && Timer < 80 && Main.rand.NextBool(4))
+			for (int k = 0; k < 50; k++)
 			{
-				var d = Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 150, 100), 0.5f);
+				var d = Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5), 0, new Color(255, 120, 70), 0.6f);
 				d.noGravity = false;
 			}
 
-			if (Timer == 90) //when this Projectile goes off
+			if (Main.masterMode)
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ProjectileType<NPCs.Vitric.SnakeSpit>(), VitricBoss.ShardSpitDamage, 1, Projectile.owner);
+		}
+	}
+
+	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+	{
+		int radius = (int)(Math.Sin((Timer - 90) / 60f * 3.14f) * 128);
+		bool inRadius = CollisionHelper.CheckCircularCollision(Projectile.Center, radius, targetHitbox);
+
+		return Timer > 90 && Timer < 150 && inRadius;
+	}
+
+	public override void PostDraw(Color lightColor)
+	{
+		SpriteBatch spriteBatch = Main.spriteBatch;
+		if (Timer < 120)
+		{
+			float alpha = Math.Min(Timer / 20f, 1);
+			Texture2D tex = Assets.Bosses.VitricBoss.SpikeSource.Value;
+			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * alpha, 0, tex.Size() / 2, 1, 0, 0);
+		}
+
+		if (Timer > 90)
+		{
+			Texture2D spike = Assets.Bosses.VitricBoss.BossSpike.Value;
+			Texture2D glow = Assets.Bosses.VitricBoss.BossSpikeGlow.Value;
+
+			var rand = new Random(Projectile.GetHashCode());
+
+			Color color = CommonVisualEffects.HeatedToCoolColor(Timer * 4 - 360);
+
+			for (float k = 0; k < 6.28f; k += 6.28f / 12)
 			{
-				SoundHelper.PlayPitched("Magic/FireHit", 0.20f, 0, Projectile.Center);
+				float progress = (float)Math.Sin((Timer - 90 - rand.Next(20)) / 40f * 3.14f);
+				var target = new Rectangle((int)(Projectile.Center.X - Main.screenPosition.X), (int)(Projectile.Center.Y - Main.screenPosition.Y), (int)(spike.Width * (0.4f + rand.NextDouble() * 0.6f)), (int)(progress * spike.Height * (0.8f + rand.NextDouble() * 0.4f)));
 
-				for (int k = 0; k < 50; k++)
-				{
-					var d = Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5), 0, new Color(255, 120, 70), 0.6f);
-					d.noGravity = false;
-				}
-
-				if (Main.masterMode)
-					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ProjectileType<NPCs.Vitric.SnakeSpit>(), VitricBoss.ShardSpitDamage, 1, Projectile.owner);
+				spriteBatch.Draw(spike, target, null, lightColor, k, new Vector2(spike.Width / 2, spike.Height), 0, 0);
+				spriteBatch.Draw(glow, target, null, color, k, new Vector2(spike.Width / 2, spike.Height), 0, 0);
 			}
 		}
 
-		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+		if (Timer < 120)
 		{
-			int radius = (int)(Math.Sin((Timer - 90) / 60f * 3.14f) * 128);
-			bool inRadius = CollisionHelper.CheckCircularCollision(Projectile.Center, radius, targetHitbox);
-
-			return Timer > 90 && Timer < 150 && inRadius;
+			float glowAlpha = Math.Min(Timer / 90f, 1);
+			Texture2D glowTex = Assets.Masks.GlowSoftAlpha.Value;
+			spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, new Color(255, 200, 100, 0) * glowAlpha, 0, glowTex.Size() / 2, 1, 0, 0);
 		}
 
-		public override void PostDraw(Color lightColor)
+		if (Timer > 90 && Timer < 130)
 		{
-			SpriteBatch spriteBatch = Main.spriteBatch;
-			if (Timer < 120)
-			{
-				float alpha = Math.Min(Timer / 20f, 1);
-				Texture2D tex = Assets.Bosses.VitricBoss.SpikeSource.Value;
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * alpha, 0, tex.Size() / 2, 1, 0, 0);
-			}
+			float glowAlpha = (float)Math.Sin((Timer - 90) / 40f * 3.14f);
 
-			if (Timer > 90)
-			{
-				Texture2D spike = Assets.Bosses.VitricBoss.BossSpike.Value;
-				Texture2D glow = Assets.Bosses.VitricBoss.BossSpikeGlow.Value;
-
-				var rand = new Random(Projectile.GetHashCode());
-
-				Color color = CommonVisualEffects.HeatedToCoolColor(Timer * 4 - 360);
-
-				for (float k = 0; k < 6.28f; k += 6.28f / 12)
-				{
-					float progress = (float)Math.Sin((Timer - 90 - rand.Next(20)) / 40f * 3.14f);
-					var target = new Rectangle((int)(Projectile.Center.X - Main.screenPosition.X), (int)(Projectile.Center.Y - Main.screenPosition.Y), (int)(spike.Width * (0.4f + rand.NextDouble() * 0.6f)), (int)(progress * spike.Height * (0.8f + rand.NextDouble() * 0.4f)));
-
-					spriteBatch.Draw(spike, target, null, lightColor, k, new Vector2(spike.Width / 2, spike.Height), 0, 0);
-					spriteBatch.Draw(glow, target, null, color, k, new Vector2(spike.Width / 2, spike.Height), 0, 0);
-				}
-			}
-
-			if (Timer < 120)
-			{
-				float glowAlpha = Math.Min(Timer / 90f, 1);
-				Texture2D glowTex = Assets.Masks.GlowSoftAlpha.Value;
-				spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, new Color(255, 200, 100, 0) * glowAlpha, 0, glowTex.Size() / 2, 1, 0, 0);
-			}
-
-			if (Timer > 90 && Timer < 130)
-			{
-				float glowAlpha = (float)Math.Sin((Timer - 90) / 40f * 3.14f);
-
-				Texture2D glowTex = Assets.GUI.ItemGlow.Value;
-				spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, new Color(255, 200, 50, 0) * glowAlpha * 0.5f, Main.GameUpdateCount / 20f, glowTex.Size() / 2, glowAlpha * 1.5f, 0, 0);
-				spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0) * glowAlpha * 0.5f, Main.GameUpdateCount / 22f, glowTex.Size() / 2, glowAlpha * 1.1f, 0, 0);
-			}
+			Texture2D glowTex = Assets.GUI.ItemGlow.Value;
+			spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, new Color(255, 200, 50, 0) * glowAlpha * 0.5f, Main.GameUpdateCount / 20f, glowTex.Size() / 2, glowAlpha * 1.5f, 0, 0);
+			spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0) * glowAlpha * 0.5f, Main.GameUpdateCount / 22f, glowTex.Size() / 2, glowAlpha * 1.1f, 0, 0);
 		}
 	}
 }

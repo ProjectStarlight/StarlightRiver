@@ -1,25 +1,24 @@
 ﻿using StarlightRiver.Content.Items.Vanity;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.NPCs.TownModifications
+namespace StarlightRiver.Content.NPCs.TownModifications;
+
+class TravellingMerchantShopAdditions : GlobalNPC
 {
-	class TravellingMerchantShopAdditions : GlobalNPC
+	public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
 	{
-		public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
-		{
-			return entity.type == NPCID.TravellingMerchant;
-		}
+		return entity.type == NPCID.TravellingMerchant;
+	}
 
-		public override void SetupTravelShop(int[] shop, ref int nextSlot)
+	public override void SetupTravelShop(int[] shop, ref int nextSlot)
+	{
+		if (Main.rand.NextBool(15))
 		{
-			if (Main.rand.NextBool(15))
-			{
-				shop[nextSlot] = ModContent.ItemType<WardenHat>();
-				nextSlot++;
+			shop[nextSlot] = ModContent.ItemType<WardenHat>();
+			nextSlot++;
 
-				shop[nextSlot] = ModContent.ItemType<WardenRobe>();
-				nextSlot++;
-			}
+			shop[nextSlot] = ModContent.ItemType<WardenRobe>();
+			nextSlot++;
 		}
 	}
 }

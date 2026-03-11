@@ -6,79 +6,78 @@ using System.Collections.Generic;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Tiles.Vitric
+namespace StarlightRiver.Content.Tiles.Vitric;
+
+class ForgeActor : DummyTile
 {
-	class ForgeActor : DummyTile
+	public override int DummyType => DummySystem.DummyType<ForgeActorDummy>();
+
+	public override string Texture => AssetDirectory.Invisible;
+
+	public override void SetStaticDefaults()
 	{
-		public override int DummyType => DummySystem.DummyType<ForgeActorDummy>();
+		this.QuickSetFurniture(1, 1, DustType<Dusts.Air>(), SoundID.Shatter, false, Color.Black);
+	}
+}
 
-		public override string Texture => AssetDirectory.Invisible;
+class ForgeActorDummy : Dummy
+{
+	public ForgeActorDummy() : base(TileType<ForgeActor>(), 16, 16) { }
 
-		public override void SetStaticDefaults()
+	public override void Update()
+	{
+		if (Main.rand.NextBool(4) && CutawayHandler.forgeOverlay?.fadeTime < 1)
 		{
-			this.QuickSetFurniture(1, 1, DustType<Dusts.Air>(), SoundID.Shatter, false, Color.Black);
+			Vector2 pos = position - new Vector2(567, 400);
+
+			Dust.NewDustPerfect(pos + new Vector2(160 + Main.rand.Next(-18, 18), 380), DustType<Dusts.Cinder>(), Vector2.UnitY * Main.rand.NextFloat(-2, 0), 0, new Color(255, Main.rand.Next(150, 200), 40), Main.rand.NextFloat());
+			Dust.NewDustPerfect(pos + new Vector2(965 + Main.rand.Next(-18, 18), 380), DustType<Dusts.Cinder>(), Vector2.UnitY * Main.rand.NextFloat(-2, 0), 0, new Color(255, Main.rand.Next(150, 200), 40), Main.rand.NextFloat());
 		}
 	}
 
-	class ForgeActorDummy : Dummy
+	public override void DrawBehindTiles()
 	{
-		public ForgeActorDummy() : base(TileType<ForgeActor>(), 16, 16) { }
+		Player player = Main.player[Main.myPlayer];
 
-		public override void Update()
+		Vector2 pos = position - new Vector2(567, 400) - Main.screenPosition;
+
+		Texture2D backdrop = Assets.Bosses.GlassMiniboss.Backdrop.Value;
+		Texture2D farBackdrop = Assets.Bosses.GlassMiniboss.FarBackdrop.Value;
+
+		Texture2D backdropGlow = Assets.Bosses.GlassMiniboss.BackdropGlow.Value;
+		Texture2D farBackdropGlow = Assets.Bosses.GlassMiniboss.FarBackdropGlow.Value;
+
+		Texture2D backdropBlack = Assets.Bosses.GlassMiniboss.BackdropBlack.Value;
+
+		Vector2 parallaxOffset = new Vector2(Main.screenPosition.X + Main.screenWidth / 2f - position.X, 0) * 0.15f;
+
+		var frame = new Rectangle(0, 0, backdrop.Width, backdrop.Height);
+
+		if (CutawayHandler.forgeOverlay?.fadeTime < 1)
 		{
-			if (Main.rand.NextBool(4) && CutawayHandler.forgeOverlay?.fadeTime < 1)
-			{
-				Vector2 pos = position - new Vector2(567, 400);
-
-				Dust.NewDustPerfect(pos + new Vector2(160 + Main.rand.Next(-18, 18), 380), DustType<Dusts.Cinder>(), Vector2.UnitY * Main.rand.NextFloat(-2, 0), 0, new Color(255, Main.rand.Next(150, 200), 40), Main.rand.NextFloat());
-				Dust.NewDustPerfect(pos + new Vector2(965 + Main.rand.Next(-18, 18), 380), DustType<Dusts.Cinder>(), Vector2.UnitY * Main.rand.NextFloat(-2, 0), 0, new Color(255, Main.rand.Next(150, 200), 40), Main.rand.NextFloat());
-			}
+			Main.spriteBatch.Draw(farBackdrop, pos + parallaxOffset, frame, new Color(170, 140 + (int)(Math.Sin(Main.GameUpdateCount * 0.04f) * 15), 90));
+			Main.spriteBatch.Draw(farBackdropGlow, pos + parallaxOffset, frame, Color.White);
 		}
 
-		public override void DrawBehindTiles()
-		{
-			Player player = Main.player[Main.myPlayer];
+		Main.spriteBatch.End();
+		Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
-			Vector2 pos = position - new Vector2(567, 400) - Main.screenPosition;
+		LightingBufferRenderer.DrawWithLighting(backdrop, pos, frame, Color.White);
+		Main.spriteBatch.Draw(backdropGlow, pos, frame, Color.White);
 
-			Texture2D backdrop = Assets.Bosses.GlassMiniboss.Backdrop.Value;
-			Texture2D farBackdrop = Assets.Bosses.GlassMiniboss.FarBackdrop.Value;
+		float fade = 1 - CutawayHandler.forgeOverlay?.fadeTime ?? 0;
 
-			Texture2D backdropGlow = Assets.Bosses.GlassMiniboss.BackdropGlow.Value;
-			Texture2D farBackdropGlow = Assets.Bosses.GlassMiniboss.FarBackdropGlow.Value;
+		float pulse0 = (float)Math.Sin(Main.GameUpdateCount * 0.14f) + (float)Math.Cos(Main.GameUpdateCount * 0.017f);
+		Lighting.AddLight(pos + Main.screenPosition + new Vector2(965, 350), new Vector3(1, 0.8f, 0.4f) * (1.2f + pulse0 * 0.1f) * fade);
 
-			Texture2D backdropBlack = Assets.Bosses.GlassMiniboss.BackdropBlack.Value;
+		float pulse1 = (float)Math.Sin(Main.GameUpdateCount * 0.14f + 4) + (float)Math.Cos(Main.GameUpdateCount * 0.017f + 2);
+		Lighting.AddLight(pos + Main.screenPosition + new Vector2(160, 350), new Vector3(1, 0.8f, 0.4f) * (1.2f + pulse1 * 0.1f) * fade);
 
-			Vector2 parallaxOffset = new Vector2(Main.screenPosition.X + Main.screenWidth / 2f - position.X, 0) * 0.15f;
+		Lighting.AddLight(pos + Main.screenPosition + new Vector2(965, 150), new Vector3(1, 0.8f, 0.4f) * 1.2f * fade);
+		Lighting.AddLight(pos + Main.screenPosition + new Vector2(160, 150), new Vector3(1, 0.8f, 0.4f) * 1.2f * fade);
 
-			var frame = new Rectangle(0, 0, backdrop.Width, backdrop.Height);
+		float pulseMiddle = (float)Math.Sin(Main.GameUpdateCount * 0.1f) + (float)Math.Cos(Main.GameUpdateCount * 0.024f);
 
-			if (CutawayHandler.forgeOverlay?.fadeTime < 1)
-			{
-				Main.spriteBatch.Draw(farBackdrop, pos + parallaxOffset, frame, new Color(170, 140 + (int)(Math.Sin(Main.GameUpdateCount * 0.04f) * 15), 90));
-				Main.spriteBatch.Draw(farBackdropGlow, pos + parallaxOffset, frame, Color.White);
-			}
-
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
-
-			LightingBufferRenderer.DrawWithLighting(backdrop, pos, frame, Color.White);
-			Main.spriteBatch.Draw(backdropGlow, pos, frame, Color.White);
-
-			float fade = 1 - CutawayHandler.forgeOverlay?.fadeTime ?? 0;
-
-			float pulse0 = (float)Math.Sin(Main.GameUpdateCount * 0.14f) + (float)Math.Cos(Main.GameUpdateCount * 0.017f);
-			Lighting.AddLight(pos + Main.screenPosition + new Vector2(965, 350), new Vector3(1, 0.8f, 0.4f) * (1.2f + pulse0 * 0.1f) * fade);
-
-			float pulse1 = (float)Math.Sin(Main.GameUpdateCount * 0.14f + 4) + (float)Math.Cos(Main.GameUpdateCount * 0.017f + 2);
-			Lighting.AddLight(pos + Main.screenPosition + new Vector2(160, 350), new Vector3(1, 0.8f, 0.4f) * (1.2f + pulse1 * 0.1f) * fade);
-
-			Lighting.AddLight(pos + Main.screenPosition + new Vector2(965, 150), new Vector3(1, 0.8f, 0.4f) * 1.2f * fade);
-			Lighting.AddLight(pos + Main.screenPosition + new Vector2(160, 150), new Vector3(1, 0.8f, 0.4f) * 1.2f * fade);
-
-			float pulseMiddle = (float)Math.Sin(Main.GameUpdateCount * 0.1f) + (float)Math.Cos(Main.GameUpdateCount * 0.024f);
-
-			Lighting.AddLight(pos + Main.screenPosition + new Vector2(555, 220), new Vector3(1, 0.6f, 0.4f) * (2f + pulseMiddle * 0.25f) * fade);
-		}
+		Lighting.AddLight(pos + Main.screenPosition + new Vector2(555, 220), new Vector3(1, 0.6f, 0.4f) * (2f + pulseMiddle * 0.25f) * fade);
 	}
 }

@@ -9,403 +9,402 @@ using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Items.Breacher
+namespace StarlightRiver.Content.Items.Breacher;
+
+public class SupplyBeacon : ModItem
 {
-	public class SupplyBeacon : ModItem
+	public override string Texture => AssetDirectory.BreacherItem + Name;
+
+	public override void SetStaticDefaults()
 	{
-		public override string Texture => AssetDirectory.BreacherItem + Name;
+		DisplayName.SetDefault("Supply Beacon");
+		Tooltip.SetDefault("Taking over 50 damage summons a supply drop \nStand near the supply drop to gain {{BUFF:SupplyBeaconDefense, {{BUFF:SupplyBeaconHeal}}, or {{BUFF:SupplyBeaconDamage}} \n10 second cooldown");
+	}
 
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("Supply Beacon");
-			Tooltip.SetDefault("Taking over 50 damage summons a supply drop \nStand near the supply drop to gain {{BUFF:SupplyBeaconDefense, {{BUFF:SupplyBeaconHeal}}, or {{BUFF:SupplyBeaconDamage}} \n10 second cooldown");
-		}
+	public override void SetDefaults()
+	{
+		Item.width = 30;
+		Item.height = 28;
+		Item.rare = ItemRarityID.Orange;
+		Item.value = Item.buyPrice(0, 4, 0, 0);
+		Item.accessory = true;
+	}
 
-		public override void SetDefaults()
-		{
-			Item.width = 30;
-			Item.height = 28;
-			Item.rare = ItemRarityID.Orange;
-			Item.value = Item.buyPrice(0, 4, 0, 0);
-			Item.accessory = true;
-		}
+	public override void UpdateAccessory(Player Player, bool hideVisual)
+	{
+		SupplyBeaconPlayer modPlayer = Player.GetModPlayer<SupplyBeaconPlayer>();
+		modPlayer.active = true;
+		modPlayer.accessory = Item;
+	}
 
-		public override void UpdateAccessory(Player Player, bool hideVisual)
-		{
-			SupplyBeaconPlayer modPlayer = Player.GetModPlayer<SupplyBeaconPlayer>();
-			modPlayer.active = true;
-			modPlayer.accessory = Item;
-		}
+	public override void AddRecipes()
+	{
+		Recipe recipe = CreateRecipe();
+		recipe.AddIngredient(ModContent.ItemType<Astroscrap>(), 10);
+		recipe.AddIngredient(ItemID.Wire, 15);
+		recipe.AddTile(TileID.Anvils);
+		recipe.Register();
+	}
+}
 
-		public override void AddRecipes()
+public class SupplyBeaconPlayer : ModPlayer
+{
+	public bool active = false;
+	public Item accessory;
+
+	int cooldown = 0;
+	int damageTicker = 0;
+	int launchCounter = 0;
+
+	public override void ResetEffects()
+	{
+		active = false;
+	}
+
+	public override void OnHurt(Player.HurtInfo info)
+	{
+		if (cooldown <= 0 && active && Main.myPlayer == Player.whoAmI)
 		{
-			Recipe recipe = CreateRecipe();
-			recipe.AddIngredient(ModContent.ItemType<Astroscrap>(), 10);
-			recipe.AddIngredient(ItemID.Wire, 15);
-			recipe.AddTile(TileID.Anvils);
-			recipe.Register();
+			damageTicker += info.Damage;
+
+			if (damageTicker >= 50)
+			{
+				damageTicker = 0;
+				cooldown = 600;
+				launchCounter = 125;
+				SoundHelper.PlayPitched("AirstrikeIncoming", 0.6f, 0);
+			}
 		}
 	}
 
-	public class SupplyBeaconPlayer : ModPlayer
+	public override void PreUpdate()
 	{
-		public bool active = false;
-		public Item accessory;
+		cooldown--;
 
-		int cooldown = 0;
-		int damageTicker = 0;
-		int launchCounter = 0;
-
-		public override void ResetEffects()
+		if (active)
 		{
-			active = false;
+			launchCounter--;
+
+			if (launchCounter == 1)
+				SummonDrop(Player, accessory);
 		}
-
-		public override void OnHurt(Player.HurtInfo info)
+		else
 		{
-			if (cooldown <= 0 && active && Main.myPlayer == Player.whoAmI)
-			{
-				damageTicker += info.Damage;
-
-				if (damageTicker >= 50)
-				{
-					damageTicker = 0;
-					cooldown = 600;
-					launchCounter = 125;
-					SoundHelper.PlayPitched("AirstrikeIncoming", 0.6f, 0);
-				}
-			}
-		}
-
-		public override void PreUpdate()
-		{
-			cooldown--;
-
-			if (active)
-			{
-				launchCounter--;
-
-				if (launchCounter == 1)
-					SummonDrop(Player, accessory);
-			}
-			else
-			{
-				launchCounter = 0;
-			}
-		}
-
-		private static void SummonDrop(Player Player, Item acc)
-		{
-			var direction = new Vector2(0, -1);
-			direction = direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f));
-			Projectile.NewProjectile(Player.GetSource_Accessory(acc), Player.Center + direction * 800 + new Vector2(Main.rand.Next(-300, 300), 0), direction * -15, ModContent.ProjectileType<SupplyBeaconProj>(), 0, 0, Player.whoAmI, Main.rand.Next(3));
+			launchCounter = 0;
 		}
 	}
 
-	internal class SupplyBeaconProj : ModProjectile, IDrawPrimitive
+	private static void SummonDrop(Player Player, Item acc)
 	{
-		private bool landed = false;
-		private bool ableToLand = false;
+		var direction = new Vector2(0, -1);
+		direction = direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f));
+		Projectile.NewProjectile(Player.GetSource_Accessory(acc), Player.Center + direction * 800 + new Vector2(Main.rand.Next(-300, 300), 0), direction * -15, ModContent.ProjectileType<SupplyBeaconProj>(), 0, 0, Player.whoAmI, Main.rand.Next(3));
+	}
+}
 
-		private List<Vector2> cache;
+internal class SupplyBeaconProj : ModProjectile, IDrawPrimitive
+{
+	private bool landed = false;
+	private bool ableToLand = false;
 
-		private Trail trail;
-		private Trail trail2;
+	private List<Vector2> cache;
 
-		private float startupCounter = 0f;
+	private Trail trail;
+	private Trail trail2;
 
-		public override string Texture => AssetDirectory.BreacherItem + Name;
+	private float startupCounter = 0f;
 
-		private int state => (int)Projectile.ai[0]; //0 is defense, 1 is healing, 2 is attack
+	public override string Texture => AssetDirectory.BreacherItem + Name;
 
-		private Player owner => Main.player[Projectile.owner];
+	private int state => (int)Projectile.ai[0]; //0 is defense, 1 is healing, 2 is attack
 
-		private float trailAlpha => Math.Max(0, 1 - startupCounter * 5);
+	private Player owner => Main.player[Projectile.owner];
 
-		public override void SetDefaults()
+	private float trailAlpha => Math.Max(0, 1 - startupCounter * 5);
+
+	public override void SetDefaults()
+	{
+		Projectile.width = 20;
+		Projectile.height = 20;
+		Projectile.DamageType = DamageClass.Ranged;
+		Projectile.friendly = false;
+		Projectile.tileCollide = false;
+		Projectile.penetrate = 1;
+		Projectile.timeLeft = 300;
+		Projectile.extraUpdates = 2;
+	}
+
+	public override void SetStaticDefaults()
+	{
+		DisplayName.SetDefault("Supply Beacon");
+	}
+
+	public override void AI()
+	{
+		if (!landed)
 		{
-			Projectile.width = 20;
-			Projectile.height = 20;
-			Projectile.DamageType = DamageClass.Ranged;
-			Projectile.friendly = false;
-			Projectile.tileCollide = false;
-			Projectile.penetrate = 1;
-			Projectile.timeLeft = 300;
-			Projectile.extraUpdates = 2;
+			if (Main.netMode != NetmodeID.Server)
+				ManageCaches();
+
+			if (Projectile.Center.Y > owner.Center.Y - 100 && !Main.tile[(int)Projectile.Center.X / 16, (int)Projectile.Center.Y / 16].HasTile)
+				ableToLand = true;
+
+			if (ableToLand)
+				Projectile.tileCollide = true;
+		}
+		else
+		{
+			Projectile.velocity.Y += 0.3f;
+
+			if (startupCounter < 1)
+				startupCounter += 0.02f;
+
+			Lighting.AddLight(Projectile.Center - new Vector2(0, 40 + 7 * (float)Math.Sin(Main.timeForVisualEffects * 0.06f)), GetColor().ToVector3() * startupCounter);
+			BuffPlayers();
 		}
 
-		public override void SetStaticDefaults()
+		if (Main.netMode != NetmodeID.Server)
+			ManageTrail();
+	}
+
+	public override bool PreDraw(ref Color lightColor)
+	{
+		Texture2D mainTex = TextureAssets.Projectile[Projectile.type].Value;
+		Vector2 position = Projectile.Center - Main.screenPosition;
+
+		if (landed)
 		{
-			DisplayName.SetDefault("Supply Beacon");
+			Texture2D displayTex = Assets.Items.Breacher.SupplyBeaconProj_Display.Value;
+			Texture2D symbolTex = Assets.Items.Breacher.SupplyBeaconProj_Symbol.Value;
+
+			Color displayColor = GetColor();
+			displayColor.A = 0;
+
+			Color symbolColor = Color.White;
+
+			var symbolFrame = new Rectangle(
+				state * symbolTex.Width / 3,
+				Main.timeForVisualEffects * 100 % 10 > 5 ? 0 : symbolTex.Height / 2,
+				symbolTex.Width / 3,
+				symbolTex.Height / 2);
+
+			Main.spriteBatch.Draw(displayTex, position, null, displayColor, 0, new Vector2(displayTex.Width / 2, displayTex.Height), startupCounter, SpriteEffects.None, 0);
+			Main.spriteBatch.Draw(symbolTex, position - new Vector2(0, 40 + 7 * (float)Math.Sin(Main.timeForVisualEffects * 0.06f)), symbolFrame, symbolColor, 0, new Vector2(symbolTex.Width / 6, symbolTex.Height / 4), startupCounter, SpriteEffects.None, 0);
 		}
 
-		public override void AI()
+		Main.spriteBatch.Draw(mainTex, position, null, lightColor, Projectile.rotation, mainTex.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
+
+		Texture2D starTex = Assets.Items.Breacher.SupplyBeaconProj_Star.Value;
+		Color color = GetColor();
+		color.A = 0;
+		Color color2 = Color.White;
+		color2.A = 0;
+		Main.spriteBatch.Draw(starTex, position, null,
+						 color * trailAlpha * 0.33f, Projectile.rotation, starTex.Size() / 2, Projectile.scale * 2, SpriteEffects.None, 0);
+		Main.spriteBatch.Draw(starTex, Projectile.Center - Main.screenPosition, null,
+						 color * trailAlpha, Projectile.rotation, starTex.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
+		Main.spriteBatch.Draw(starTex, Projectile.Center - Main.screenPosition, null,
+						 color2 * trailAlpha, Projectile.rotation, starTex.Size() / 2, Projectile.scale * 0.75f, SpriteEffects.None, 0);
+		return false;
+	}
+
+	public override bool OnTileCollide(Vector2 oldVelocity)
+	{
+		if (ableToLand)
 		{
 			if (!landed)
 			{
-				if (Main.netMode != NetmodeID.Server)
-					ManageCaches();
-
-				if (Projectile.Center.Y > owner.Center.Y - 100 && !Main.tile[(int)Projectile.Center.X / 16, (int)Projectile.Center.Y / 16].HasTile)
-					ableToLand = true;
-
-				if (ableToLand)
-					Projectile.tileCollide = true;
-			}
-			else
-			{
-				Projectile.velocity.Y += 0.3f;
-
-				if (startupCounter < 1)
-					startupCounter += 0.02f;
-
-				Lighting.AddLight(Projectile.Center - new Vector2(0, 40 + 7 * (float)Math.Sin(Main.timeForVisualEffects * 0.06f)), GetColor().ToVector3() * startupCounter);
-				BuffPlayers();
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70, Projectile.Center);
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit42, Projectile.Center);
+				landed = true;
+				Projectile.timeLeft = 700;
+				CameraSystem.shake += 12;
 			}
 
-			if (Main.netMode != NetmodeID.Server)
-				ManageTrail();
+			Projectile.extraUpdates = 0;
+			Projectile.velocity = Vector2.Zero;
 		}
 
-		public override bool PreDraw(ref Color lightColor)
+		return false;
+	}
+
+	private void BuffPlayers()
+	{
+		for (int i = 0; i < Main.player.Length; i++)
 		{
-			Texture2D mainTex = TextureAssets.Projectile[Projectile.type].Value;
-			Vector2 position = Projectile.Center - Main.screenPosition;
-
-			if (landed)
+			Player player = Main.player[i];
+			if (player.active && player.Distance(Projectile.Center) < 150 && !player.dead)
 			{
-				Texture2D displayTex = Assets.Items.Breacher.SupplyBeaconProj_Display.Value;
-				Texture2D symbolTex = Assets.Items.Breacher.SupplyBeaconProj_Symbol.Value;
-
-				Color displayColor = GetColor();
-				displayColor.A = 0;
-
-				Color symbolColor = Color.White;
-
-				var symbolFrame = new Rectangle(
-					state * symbolTex.Width / 3,
-					Main.timeForVisualEffects * 100 % 10 > 5 ? 0 : symbolTex.Height / 2,
-					symbolTex.Width / 3,
-					symbolTex.Height / 2);
-
-				Main.spriteBatch.Draw(displayTex, position, null, displayColor, 0, new Vector2(displayTex.Width / 2, displayTex.Height), startupCounter, SpriteEffects.None, 0);
-				Main.spriteBatch.Draw(symbolTex, position - new Vector2(0, 40 + 7 * (float)Math.Sin(Main.timeForVisualEffects * 0.06f)), symbolFrame, symbolColor, 0, new Vector2(symbolTex.Width / 6, symbolTex.Height / 4), startupCounter, SpriteEffects.None, 0);
-			}
-
-			Main.spriteBatch.Draw(mainTex, position, null, lightColor, Projectile.rotation, mainTex.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
-
-			Texture2D starTex = Assets.Items.Breacher.SupplyBeaconProj_Star.Value;
-			Color color = GetColor();
-			color.A = 0;
-			Color color2 = Color.White;
-			color2.A = 0;
-			Main.spriteBatch.Draw(starTex, position, null,
-							 color * trailAlpha * 0.33f, Projectile.rotation, starTex.Size() / 2, Projectile.scale * 2, SpriteEffects.None, 0);
-			Main.spriteBatch.Draw(starTex, Projectile.Center - Main.screenPosition, null,
-							 color * trailAlpha, Projectile.rotation, starTex.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
-			Main.spriteBatch.Draw(starTex, Projectile.Center - Main.screenPosition, null,
-							 color2 * trailAlpha, Projectile.rotation, starTex.Size() / 2, Projectile.scale * 0.75f, SpriteEffects.None, 0);
-			return false;
-		}
-
-		public override bool OnTileCollide(Vector2 oldVelocity)
-		{
-			if (ableToLand)
-			{
-				if (!landed)
+				int buffType = -1;
+				switch (state)
 				{
-					Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70, Projectile.Center);
-					Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit42, Projectile.Center);
-					landed = true;
-					Projectile.timeLeft = 700;
-					CameraSystem.shake += 12;
+					case 0:
+						buffType = ModContent.BuffType<SupplyBeaconDefense>();
+						break;
+					case 1:
+						buffType = ModContent.BuffType<SupplyBeaconHeal>();
+						break;
+					case 2:
+						buffType = ModContent.BuffType<SupplyBeaconDamage>();
+						break;
 				}
 
-				Projectile.extraUpdates = 0;
-				Projectile.velocity = Vector2.Zero;
-			}
-
-			return false;
-		}
-
-		private void BuffPlayers()
-		{
-			for (int i = 0; i < Main.player.Length; i++)
-			{
-				Player player = Main.player[i];
-				if (player.active && player.Distance(Projectile.Center) < 150 && !player.dead)
-				{
-					int buffType = -1;
-					switch (state)
-					{
-						case 0:
-							buffType = ModContent.BuffType<SupplyBeaconDefense>();
-							break;
-						case 1:
-							buffType = ModContent.BuffType<SupplyBeaconHeal>();
-							break;
-						case 2:
-							buffType = ModContent.BuffType<SupplyBeaconDamage>();
-							break;
-					}
-
-					player.AddBuff(buffType, 2);
-				}
-			}
-		}
-
-		private void ManageCaches()
-		{
-			if (cache == null)
-			{
-				cache = new List<Vector2>();
-				for (int i = 0; i < 100; i++)
-				{
-					cache.Add(Projectile.Center);
-				}
-			}
-
-			cache.Add(Projectile.Center);
-
-			while (cache.Count > 100)
-			{
-				cache.RemoveAt(0);
-			}
-		}
-
-		private Color GetColor()
-		{
-			return state switch
-			{
-				0 => Color.Orange,
-				1 => Color.Green,
-				2 => Color.Red,
-				_ => Color.White,
-			};
-		}
-
-		private void ManageTrail()
-		{
-			if (trail is null || trail.IsDisposed)
-				trail = new Trail(Main.instance.GraphicsDevice, 100, new NoTip(), factor => factor * MathHelper.Lerp(11, 22, factor), factor => GetColor());
-			if (trail2 is null || trail2.IsDisposed)
-				trail2 = new Trail(Main.instance.GraphicsDevice, 100, new NoTip(), factor => factor * MathHelper.Lerp(6, 12, factor), factor => Color.White);
-
-			trail.Positions = cache.ToArray();
-			trail.NextPosition = Projectile.Center;
-
-			trail2.Positions = cache.ToArray();
-			trail2.NextPosition = Projectile.Center;
-		}
-
-		public void DrawPrimitives()
-		{
-			Effect effect = ShaderLoader.GetShader("OrbitalStrikeTrail").Value;
-
-			if (effect != null)
-			{
-				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-				Matrix view = Main.GameViewMatrix.TransformationMatrix;
-				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
-
-				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
-				effect.Parameters["alpha"].SetValue(trailAlpha);
-
-				trail?.Render(effect);
-
-				trail2?.Render(effect);
+				player.AddBuff(buffType, 2);
 			}
 		}
 	}
 
-	class SupplyBeaconDefense : SmartBuff
+	private void ManageCaches()
 	{
-		public override string Texture => AssetDirectory.Buffs + Name;
-
-		public SupplyBeaconDefense() : base("Supplied Defense", "Defense increased by 15", false) { }
-
-		public override void SafeSetDefaults()
+		if (cache == null)
 		{
-			Main.buffNoTimeDisplay[Type] = true;
+			cache = new List<Vector2>();
+			for (int i = 0; i < 100; i++)
+			{
+				cache.Add(Projectile.Center);
+			}
 		}
 
-		public override void Update(Player Player, ref int buffIndex)
+		cache.Add(Projectile.Center);
+
+		while (cache.Count > 100)
 		{
-			if (Main.rand.NextBool(7))
-				Dust.NewDust(Player.position, Player.width, Player.height, ModContent.DustType<SupplyBeaconDefenseDust>());
-			Player.statDefense += 15;
+			cache.RemoveAt(0);
 		}
 	}
 
-	class SupplyBeaconHeal : SmartBuff
+	private Color GetColor()
 	{
-		public override string Texture => AssetDirectory.Buffs + Name;
-
-		public SupplyBeaconHeal() : base("Supplied Healing", "Life and mana regeneration increased by 10", false) { }
-
-		public override void SafeSetDefaults()
+		return state switch
 		{
-			Main.buffNoTimeDisplay[Type] = true;
-		}
-
-		public override void Update(Player Player, ref int buffIndex)
-		{
-			if (Main.rand.NextBool(7))
-				Dust.NewDust(Player.position, Player.width, Player.height, ModContent.DustType<SupplyBeaconHealDust>());
-			Player.lifeRegen += 10;
-			Player.manaRegen += 10;
-		}
+			0 => Color.Orange,
+			1 => Color.Green,
+			2 => Color.Red,
+			_ => Color.White,
+		};
 	}
 
-	class SupplyBeaconDamage : SmartBuff
+	private void ManageTrail()
 	{
-		public override string Texture => AssetDirectory.Buffs + Name;
+		if (trail is null || trail.IsDisposed)
+			trail = new Trail(Main.instance.GraphicsDevice, 100, new NoTip(), factor => factor * MathHelper.Lerp(11, 22, factor), factor => GetColor());
+		if (trail2 is null || trail2.IsDisposed)
+			trail2 = new Trail(Main.instance.GraphicsDevice, 100, new NoTip(), factor => factor * MathHelper.Lerp(6, 12, factor), factor => Color.White);
 
-		public SupplyBeaconDamage() : base("Supplied Damage", "Damage increased by 20%", false) { }
+		trail.Positions = cache.ToArray();
+		trail.NextPosition = Projectile.Center;
 
-		public override void SafeSetDefaults()
-		{
-			Main.buffNoTimeDisplay[Type] = true;
-		}
-
-		public override void Update(Player Player, ref int buffIndex)
-		{
-			if (Main.rand.NextBool(7))
-				Dust.NewDust(Player.position, Player.width, Player.height, ModContent.DustType<SupplyBeaconAttackDust>());
-			Player.GetDamage(DamageClass.Melee) += 0.2f;
-			Player.GetDamage(DamageClass.Ranged) += 0.2f;
-			Player.GetDamage(DamageClass.Magic) += 0.2f;
-			Player.GetDamage(DamageClass.Summon) += 0.2f;
-		}
+		trail2.Positions = cache.ToArray();
+		trail2.NextPosition = Projectile.Center;
 	}
 
-	public class SupplyBeaconDefenseDust : ModDust
+	public void DrawPrimitives()
 	{
-		public override string Texture => AssetDirectory.BreacherItem + Name;
+		Effect effect = ShaderLoader.GetShader("OrbitalStrikeTrail").Value;
 
-		public override void OnSpawn(Dust dust)
+		if (effect != null)
 		{
-			dust.noGravity = true;
-			dust.frame = new Rectangle(0, 0, 10, 10);
-		}
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
+			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-		public override Color? GetAlpha(Dust dust, Color lightColor)
-		{
-			return Color.White * ((255 - dust.alpha) / 255f);
-		}
+			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+			effect.Parameters["alpha"].SetValue(trailAlpha);
 
-		public override bool Update(Dust dust)
-		{
-			dust.position.Y -= 2;
-			dust.alpha += 15;
-			if (dust.alpha > 255)
-				dust.active = false;
-			return false;
+			trail?.Render(effect);
+
+			trail2?.Render(effect);
 		}
 	}
-
-	public class SupplyBeaconHealDust : SupplyBeaconDefenseDust { } //What are these here for?
-
-	public class SupplyBeaconAttackDust : SupplyBeaconDefenseDust { }
 }
+
+class SupplyBeaconDefense : SmartBuff
+{
+	public override string Texture => AssetDirectory.Buffs + Name;
+
+	public SupplyBeaconDefense() : base("Supplied Defense", "Defense increased by 15", false) { }
+
+	public override void SafeSetDefaults()
+	{
+		Main.buffNoTimeDisplay[Type] = true;
+	}
+
+	public override void Update(Player Player, ref int buffIndex)
+	{
+		if (Main.rand.NextBool(7))
+			Dust.NewDust(Player.position, Player.width, Player.height, ModContent.DustType<SupplyBeaconDefenseDust>());
+		Player.statDefense += 15;
+	}
+}
+
+class SupplyBeaconHeal : SmartBuff
+{
+	public override string Texture => AssetDirectory.Buffs + Name;
+
+	public SupplyBeaconHeal() : base("Supplied Healing", "Life and mana regeneration increased by 10", false) { }
+
+	public override void SafeSetDefaults()
+	{
+		Main.buffNoTimeDisplay[Type] = true;
+	}
+
+	public override void Update(Player Player, ref int buffIndex)
+	{
+		if (Main.rand.NextBool(7))
+			Dust.NewDust(Player.position, Player.width, Player.height, ModContent.DustType<SupplyBeaconHealDust>());
+		Player.lifeRegen += 10;
+		Player.manaRegen += 10;
+	}
+}
+
+class SupplyBeaconDamage : SmartBuff
+{
+	public override string Texture => AssetDirectory.Buffs + Name;
+
+	public SupplyBeaconDamage() : base("Supplied Damage", "Damage increased by 20%", false) { }
+
+	public override void SafeSetDefaults()
+	{
+		Main.buffNoTimeDisplay[Type] = true;
+	}
+
+	public override void Update(Player Player, ref int buffIndex)
+	{
+		if (Main.rand.NextBool(7))
+			Dust.NewDust(Player.position, Player.width, Player.height, ModContent.DustType<SupplyBeaconAttackDust>());
+		Player.GetDamage(DamageClass.Melee) += 0.2f;
+		Player.GetDamage(DamageClass.Ranged) += 0.2f;
+		Player.GetDamage(DamageClass.Magic) += 0.2f;
+		Player.GetDamage(DamageClass.Summon) += 0.2f;
+	}
+}
+
+public class SupplyBeaconDefenseDust : ModDust
+{
+	public override string Texture => AssetDirectory.BreacherItem + Name;
+
+	public override void OnSpawn(Dust dust)
+	{
+		dust.noGravity = true;
+		dust.frame = new Rectangle(0, 0, 10, 10);
+	}
+
+	public override Color? GetAlpha(Dust dust, Color lightColor)
+	{
+		return Color.White * ((255 - dust.alpha) / 255f);
+	}
+
+	public override bool Update(Dust dust)
+	{
+		dust.position.Y -= 2;
+		dust.alpha += 15;
+		if (dust.alpha > 255)
+			dust.active = false;
+		return false;
+	}
+}
+
+public class SupplyBeaconHealDust : SupplyBeaconDefenseDust { } //What are these here for?
+
+public class SupplyBeaconAttackDust : SupplyBeaconDefenseDust { }

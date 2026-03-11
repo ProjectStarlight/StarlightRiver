@@ -1,47 +1,46 @@
 ﻿using System;
 
-namespace StarlightRiver.Content.ArmorEnchantment
+namespace StarlightRiver.Content.ArmorEnchantment;
+
+class DebugEnchant : ArmorEnchantment
 {
-	class DebugEnchant : ArmorEnchantment
+	public DebugEnchant() : base() { }
+
+	public DebugEnchant(Guid guid) : base(guid) { }
+
+	public override string Texture => AssetDirectory.ArmorEnchant + "{{Debug}}Enchant";
+
+	public override bool IsAvailable(Item head, Item chest, Item legs)
 	{
-		public DebugEnchant() : base() { }
+		return true;
+	}
 
-		public DebugEnchant(Guid guid) : base(guid) { }
+	public override void UpdateSet(Player Player)
+	{
+		Player.setBonus = "Spams the chat with {{Debug}} text";
+		Main.NewText(Player.name + " Is wearing armor enchanted with the {{Debug}} enchant!");
+	}
 
-		public override string Texture => AssetDirectory.ArmorEnchant + "{{Debug}}Enchant";
+	public override void DrawInInventory(Item Item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
+	{
 
-		public override bool IsAvailable(Item head, Item chest, Item legs)
+	}
+
+	public override bool PreDrawInInventory(Item Item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
+	{
+		spriteBatch.End();
+		spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
+
+		Texture2D tex = Terraria.GameContent.TextureAssets.Item[Item.type].Value;
+
+		for (int k = 0; k < 3; k++)
 		{
-			return true;
+			spriteBatch.Draw(tex, position + tex.Size() * 0.5f * scale, frame, new Color(0.5f, 0.8f, 1f) * 0.55f, 0, frame.Size() * 0.5f, scale * 1.3f + 0.1f * (float)Math.Sin(StarlightWorld.visualTimer + k), SpriteEffects.None, 0);
 		}
 
-		public override void UpdateSet(Player Player)
-		{
-			Player.setBonus = "Spams the chat with {{Debug}} text";
-			Main.NewText(Player.name + " Is wearing armor enchanted with the {{Debug}} enchant!");
-		}
+		spriteBatch.End();
+		spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
 
-		public override void DrawInInventory(Item Item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
-		{
-
-		}
-
-		public override bool PreDrawInInventory(Item Item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
-		{
-			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
-
-			Texture2D tex = Terraria.GameContent.TextureAssets.Item[Item.type].Value;
-
-			for (int k = 0; k < 3; k++)
-			{
-				spriteBatch.Draw(tex, position + tex.Size() * 0.5f * scale, frame, new Color(0.5f, 0.8f, 1f) * 0.55f, 0, frame.Size() * 0.5f, scale * 1.3f + 0.1f * (float)Math.Sin(StarlightWorld.visualTimer + k), SpriteEffects.None, 0);
-			}
-
-			spriteBatch.End();
-			spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
-
-			return true;
-		}
+		return true;
 	}
 }

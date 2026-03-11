@@ -1,23 +1,22 @@
 ﻿using StarlightRiver.Content.Biomes;
 using Terraria.GameContent.ItemDropRules;
 
-namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
+namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet;
+
+internal class TempleCondition : IItemDropRuleCondition
 {
-	internal class TempleCondition : IItemDropRuleCondition
+	public bool CanDrop(DropAttemptInfo info)
 	{
-		public bool CanDrop(DropAttemptInfo info)
-		{
-			return info.player.InModBiome<VitricTempleBiome>();
-		}
+		return info.player.InModBiome<VitricTempleBiome>();
+	}
 
-		public bool CanShowItemDropInUI()
-		{
-			return true;
-		}
+	public bool CanShowItemDropInUI()
+	{
+		return true;
+	}
 
-		public string GetConditionDescription()
-		{
-			return "When killed inside the vitric forge";
-		}
+	public string GetConditionDescription()
+	{
+		return "When killed inside the vitric forge";
 	}
 }

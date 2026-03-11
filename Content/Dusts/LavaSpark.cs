@@ -1,53 +1,52 @@
 ﻿using StarlightRiver.Core.Loaders;
 using System;
 
-namespace StarlightRiver.Content.Dusts
+namespace StarlightRiver.Content.Dusts;
+
+public class LavaSpark : ModDust
 {
-	public class LavaSpark : ModDust
+	public override string Texture => "StarlightRiver/Assets/Masks/GlowSoft";
+
+	public override void OnSpawn(Dust dust)
 	{
-		public override string Texture => "StarlightRiver/Assets/Masks/GlowSoft";
+		//dust.noGravity = true;
+		dust.noLight = false;
+		dust.frame = new Rectangle(0, 0, 64, 64);
+		dust.fadeIn = 0;
 
-		public override void OnSpawn(Dust dust)
+		if (ShaderLoader.GetShader("GlowingDust").Value != null)
+			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
+		dust.shader?.UseColor(Color.Transparent);
+	}
+
+	public override Color? GetAlpha(Dust dust, Color lightColor)
+	{
+		return dust.color * (float)Math.Sin(dust.fadeIn / 60f * 3.14f);
+	}
+
+	public override bool Update(Dust dust)
+	{
+		dust.fadeIn++;
+
+		if (dust.customData is null)
 		{
-			//dust.noGravity = true;
-			dust.noLight = false;
-			dust.frame = new Rectangle(0, 0, 64, 64);
-			dust.fadeIn = 0;
-
-			if (ShaderLoader.GetShader("GlowingDust").Value != null)
-				dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
-			dust.shader?.UseColor(Color.Transparent);
+			dust.position -= Vector2.One * 32 * dust.scale;
+			dust.customData = true;
 		}
 
-		public override Color? GetAlpha(Dust dust, Color lightColor)
-		{
-			return dust.color * (float)Math.Sin(dust.fadeIn / 60f * 3.14f);
-		}
+		dust.shader?.UseColor(dust.color * (float)Math.Sin(dust.fadeIn / 60f * 3.14f));
 
-		public override bool Update(Dust dust)
-		{
-			dust.fadeIn++;
+		dust.position += dust.velocity;
 
-			if (dust.customData is null)
-			{
-				dust.position -= Vector2.One * 32 * dust.scale;
-				dust.customData = true;
-			}
+		if (!dust.noGravity)
+			dust.velocity.Y += 0.08f;
 
-			dust.shader?.UseColor(dust.color * (float)Math.Sin(dust.fadeIn / 60f * 3.14f));
+		dust.velocity.X *= 0.995f;
+		dust.scale *= 0.99f;
 
-			dust.position += dust.velocity;
+		if (dust.fadeIn >= 60)
+			dust.active = false;
 
-			if (!dust.noGravity)
-				dust.velocity.Y += 0.08f;
-
-			dust.velocity.X *= 0.995f;
-			dust.scale *= 0.99f;
-
-			if (dust.fadeIn >= 60)
-				dust.active = false;
-
-			return false;
-		}
+		return false;
 	}
 }

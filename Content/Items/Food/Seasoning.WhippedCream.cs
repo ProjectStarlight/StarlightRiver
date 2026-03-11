@@ -1,21 +1,20 @@
 ﻿using Terraria.ID;
 
-namespace StarlightRiver.Content.Items.Food
+namespace StarlightRiver.Content.Items.Food;
+
+internal class WhippedCream : Ingredient
 {
-	internal class WhippedCream : Ingredient
+	public WhippedCream() : base("10% increased movement speed\n-20% duration", 300, IngredientType.Seasoning, 0.8f) { }
+
+	public override void SafeSetDefaults()
 	{
-		public WhippedCream() : base("10% increased movement speed\n-20% duration", 300, IngredientType.Seasoning, 0.8f) { }
+		Item.rare = ItemRarityID.White;
 
-		public override void SafeSetDefaults()
-		{
-			Item.rare = ItemRarityID.White;
+		Item.value = Item.sellPrice(silver: 3);
+	}
 
-			Item.value = Item.sellPrice(silver: 3);
-		}
-
-		public override void BuffEffects(Player Player, float multiplier)
-		{
-			Player.accRunSpeed += 0.5f;
-		}
+	public override void BuffEffects(Player Player, float multiplier)
+	{
+		Player.accRunSpeed += 0.5f;
 	}
 }

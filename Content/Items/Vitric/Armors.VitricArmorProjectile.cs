@@ -7,295 +7,294 @@ using System.IO;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Items.Vitric
+namespace StarlightRiver.Content.Items.Vitric;
+
+internal class VitricArmorProjectileIdle : ModProjectile
 {
-	internal class VitricArmorProjectileIdle : ModProjectile
+	public Vector2 offset = Vector2.Zero;
+	public float rotOffset = 0;
+	public VitricHead parent;
+
+	public float maxSize;
+
+	Vector2 posTarget;
+	float rotTarget;
+	float prevRotTarget;
+
+	public float timer;
+	float prevState;
+
+	public ref float State => ref Projectile.ai[0];
+	public ref float Index => ref Projectile.ai[1];
+
+	public Player Owner => Main.player[Projectile.owner];
+
+	public override string Texture => AssetDirectory.VitricItem + Name;
+
+	public override void SetDefaults()
 	{
-		public Vector2 offset = Vector2.Zero;
-		public float rotOffset = 0;
-		public VitricHead parent;
+		Projectile.width = 16;
+		Projectile.height = 16;
+		Projectile.DamageType = DamageClass.Ranged;
+		Projectile.friendly = true;
+		Projectile.penetrate = -1;
+		Projectile.timeLeft = 15;
+		Projectile.tileCollide = false;
+		Projectile.ignoreWater = true;
+		Projectile.netImportant = true;
+	}
 
-		public float maxSize;
+	public override void SetStaticDefaults()
+	{
+		DisplayName.SetDefault("Enchanted Glass");
+	}
 
-		Vector2 posTarget;
-		float rotTarget;
-		float prevRotTarget;
+	public override bool? CanHitNPC(NPC target)
+	{
+		return false;
+	}
 
-		public float timer;
-		float prevState;
-
-		public ref float State => ref Projectile.ai[0];
-		public ref float Index => ref Projectile.ai[1];
-
-		public Player Owner => Main.player[Projectile.owner];
-
-		public override string Texture => AssetDirectory.VitricItem + Name;
-
-		public override void SetDefaults()
+	public override void AI()
+	{
+		if (Owner.dead)
 		{
-			Projectile.width = 16;
-			Projectile.height = 16;
-			Projectile.DamageType = DamageClass.Ranged;
-			Projectile.friendly = true;
-			Projectile.penetrate = -1;
-			Projectile.timeLeft = 15;
-			Projectile.tileCollide = false;
-			Projectile.ignoreWater = true;
-			Projectile.netImportant = true;
-		}
-
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("Enchanted Glass");
-		}
-
-		public override bool? CanHitNPC(NPC target)
-		{
-			return false;
-		}
-
-		public override void AI()
-		{
-			if (Owner.dead)
+			if (Main.myPlayer == Owner.whoAmI)
 			{
-				if (Main.myPlayer == Owner.whoAmI)
-				{
-					parent.shardCount = 0;
-					parent.shardTimer = 0;
-					parent.loaded = false;
-				}
-
-				Projectile.Kill();
+				parent.shardCount = 0;
+				parent.shardTimer = 0;
+				parent.loaded = false;
 			}
 
-			offset = new Vector2(0, -50).RotatedBy(0.2f + (Index - 1) / -2f * 1.5f);
-			rotOffset = 0.2f + (Index - 1) / -2f * 1.6f;
-			maxSize = Index == 1 ? 0.9f : 0.8f;
+			Projectile.Kill();
+		}
 
-			timer++;
+		offset = new Vector2(0, -50).RotatedBy(0.2f + (Index - 1) / -2f * 1.5f);
+		rotOffset = 0.2f + (Index - 1) / -2f * 1.6f;
+		maxSize = Index == 1 ? 0.9f : 0.8f;
 
-			if (State != 2) //persist
-				Projectile.timeLeft = 15;
+		timer++;
 
-			Vector2 flippedOffset = offset;
-			flippedOffset.X = offset.X * -Owner.direction;
+		if (State != 2) //persist
+			Projectile.timeLeft = 15;
 
-			posTarget = Owner.Center + flippedOffset + Vector2.UnitY * Owner.gfxOffY;
-			Projectile.Center += (posTarget - Projectile.Center) * 0.18f;
+		Vector2 flippedOffset = offset;
+		flippedOffset.X = offset.X * -Owner.direction;
 
-			if (GeometryHelper.CompareAngle(Projectile.rotation, rotTarget) > 0.1f)
-				Projectile.rotation += GeometryHelper.CompareAngle(Projectile.rotation, rotTarget) * 0.1f;
-			else
-				Projectile.rotation = rotTarget;
+		posTarget = Owner.Center + flippedOffset + Vector2.UnitY * Owner.gfxOffY;
+		Projectile.Center += (posTarget - Projectile.Center) * 0.18f;
 
-			if (Owner.armor[0].type != ModContent.ItemType<VitricHead>())
+		if (GeometryHelper.CompareAngle(Projectile.rotation, rotTarget) > 0.1f)
+			Projectile.rotation += GeometryHelper.CompareAngle(Projectile.rotation, rotTarget) * 0.1f;
+		else
+			Projectile.rotation = rotTarget;
+
+		if (Owner.armor[0].type != ModContent.ItemType<VitricHead>())
+		{
+			State = 2;
+			timer = 0;
+		}
+
+		if (State == 0)
+		{
+			rotTarget = (float)Math.Sin(timer * 0.02f) * 0.2f + rotOffset * -Owner.direction;
+
+			if (timer <= 30)
+				Projectile.scale = timer / 30f * maxSize;
+
+			if (Main.myPlayer == Owner.whoAmI && parent != null && parent.loaded)
+			{
+				if (timer < 30)
+					Projectile.active = false;
+
+				State = 1;
+				timer = 0;
+			}
+		}
+
+		if (State == 1 && Main.myPlayer == Owner.whoAmI) //loaded
+		{
+
+			rotTarget = MathHelper.Lerp(Projectile.rotation, (Owner.Center - Main.MouseWorld).ToRotation() + 1.57f, Math.Min(1, timer / 30f));
+
+			if (Math.Abs(rotTarget - prevRotTarget) > 0.1f)
+			{
+				prevRotTarget = rotTarget;
+				Projectile.netUpdate = true;
+			}
+
+			if (parent != null && !parent.loaded)
+			{
+				State = 0;
+				timer = 30;
+			}
+
+			if (parent != null && parent.shardCount <= Index)
 			{
 				State = 2;
 				timer = 0;
 			}
-
-			if (State == 0)
-			{
-				rotTarget = (float)Math.Sin(timer * 0.02f) * 0.2f + rotOffset * -Owner.direction;
-
-				if (timer <= 30)
-					Projectile.scale = timer / 30f * maxSize;
-
-				if (Main.myPlayer == Owner.whoAmI && parent != null && parent.loaded)
-				{
-					if (timer < 30)
-						Projectile.active = false;
-
-					State = 1;
-					timer = 0;
-				}
-			}
-
-			if (State == 1 && Main.myPlayer == Owner.whoAmI) //loaded
-			{
-
-				rotTarget = MathHelper.Lerp(Projectile.rotation, (Owner.Center - Main.MouseWorld).ToRotation() + 1.57f, Math.Min(1, timer / 30f));
-
-				if (Math.Abs(rotTarget - prevRotTarget) > 0.1f)
-				{
-					prevRotTarget = rotTarget;
-					Projectile.netUpdate = true;
-				}
-
-				if (parent != null && !parent.loaded)
-				{
-					State = 0;
-					timer = 30;
-				}
-
-				if (parent != null && parent.shardCount <= Index)
-				{
-					State = 2;
-					timer = 0;
-				}
-			}
-
-			if (State == 2)
-				Projectile.scale = Projectile.timeLeft / 15f * maxSize;
-
-			if (Main.myPlayer == Owner.whoAmI && prevState != State)
-			{
-				prevState = State;
-				Projectile.netUpdate = true;
-			}
 		}
 
-		public override void SendExtraAI(BinaryWriter writer)
+		if (State == 2)
+			Projectile.scale = Projectile.timeLeft / 15f * maxSize;
+
+		if (Main.myPlayer == Owner.whoAmI && prevState != State)
 		{
-			writer.Write(rotTarget);
-			writer.Write(timer);
-		}
-
-		public override void ReceiveExtraAI(BinaryReader reader)
-		{
-			rotTarget = reader.ReadSingle();
-			timer = reader.ReadInt32();
-		}
-
-		public override bool PreDraw(ref Color lightColor)
-		{
-			SpriteBatch spriteBatch = Main.spriteBatch;
-
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D texGlow = ModContent.Request<Texture2D>(Texture + "Glow").Value;
-			Texture2D texHot = ModContent.Request<Texture2D>(Texture + "Hot").Value;
-
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2, Projectile.scale, 0, 0);
-
-			if (State == 0)
-				spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, CommonVisualEffects.HeatedToCoolColor(timer / 30f * 110), Projectile.rotation, texGlow.Size() / 2, Projectile.scale, 0, 0);
-
-			if (State == 1)
-				spriteBatch.Draw(texHot, Projectile.Center - Main.screenPosition, null, Color.White * Math.Min(1, timer / 30f), Projectile.rotation, texHot.Size() / 2, Projectile.scale, 0, 0);
-
-			return false;
+			prevState = State;
+			Projectile.netUpdate = true;
 		}
 	}
 
-	internal class VitricArmorProjectile : ModProjectile, IDrawPrimitive
+	public override void SendExtraAI(BinaryWriter writer)
 	{
-		private List<Vector2> cache;
-		private Trail trail;
+		writer.Write(rotTarget);
+		writer.Write(timer);
+	}
 
-		public ref float State => ref Projectile.ai[0];
+	public override void ReceiveExtraAI(BinaryReader reader)
+	{
+		rotTarget = reader.ReadSingle();
+		timer = reader.ReadInt32();
+	}
 
-		public override string Texture => AssetDirectory.VitricItem + Name;
+	public override bool PreDraw(ref Color lightColor)
+	{
+		SpriteBatch spriteBatch = Main.spriteBatch;
 
-		public override void SetDefaults()
+		Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+		Texture2D texGlow = ModContent.Request<Texture2D>(Texture + "Glow").Value;
+		Texture2D texHot = ModContent.Request<Texture2D>(Texture + "Hot").Value;
+
+		spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2, Projectile.scale, 0, 0);
+
+		if (State == 0)
+			spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, CommonVisualEffects.HeatedToCoolColor(timer / 30f * 110), Projectile.rotation, texGlow.Size() / 2, Projectile.scale, 0, 0);
+
+		if (State == 1)
+			spriteBatch.Draw(texHot, Projectile.Center - Main.screenPosition, null, Color.White * Math.Min(1, timer / 30f), Projectile.rotation, texHot.Size() / 2, Projectile.scale, 0, 0);
+
+		return false;
+	}
+}
+
+internal class VitricArmorProjectile : ModProjectile, IDrawPrimitive
+{
+	private List<Vector2> cache;
+	private Trail trail;
+
+	public ref float State => ref Projectile.ai[0];
+
+	public override string Texture => AssetDirectory.VitricItem + Name;
+
+	public override void SetDefaults()
+	{
+		Projectile.width = 4;
+		Projectile.height = 4;
+		Projectile.DamageType = DamageClass.Ranged;
+		Projectile.friendly = true;
+		Projectile.penetrate = -1;
+		Projectile.timeLeft = 180;
+		Projectile.tileCollide = true;
+		Projectile.ignoreWater = true;
+		Projectile.extraUpdates = 5;
+	}
+
+	public override void SetStaticDefaults()
+	{
+		DisplayName.SetDefault("Enchanted Glass");
+	}
+
+	public override void AI()
+	{
+		Projectile.rotation = Projectile.velocity.ToRotation() + 1.57f;
+
+		if (Main.rand.NextBool(5))
+			Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Glow>(), Vector2.UnitY * Main.rand.NextFloat(-2, -1), 0, new Color(255, 150, 50), 0.6f);
+
+		if (Main.netMode != NetmodeID.Server)
 		{
-			Projectile.width = 4;
-			Projectile.height = 4;
-			Projectile.DamageType = DamageClass.Ranged;
-			Projectile.friendly = true;
-			Projectile.penetrate = -1;
-			Projectile.timeLeft = 180;
-			Projectile.tileCollide = true;
-			Projectile.ignoreWater = true;
-			Projectile.extraUpdates = 5;
+			ManageCaches();
+			ManageTrail();
+		}
+	}
+
+	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+	{
+		for (int k = 0; k < 20; k++)
+		{
+			float rot = Projectile.rotation - 1.57f;
+			Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Glow>(), Vector2.UnitX.RotatedBy(rot + Main.rand.NextFloat(-0.5f, 0.5f)) * Main.rand.NextFloat(5), 0, new Color(255, 150, 50), 0.4f);
 		}
 
-		public override void SetStaticDefaults()
+		Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.Center);
+		CameraSystem.shake += 5;
+	}
+
+	public override bool OnTileCollide(Vector2 oldVelocity)
+	{
+		Projectile.velocity *= 0;
+		Projectile.friendly = false;
+		return false;
+	}
+
+	private void ManageCaches()
+	{
+		if (cache == null)
 		{
-			DisplayName.SetDefault("Enchanted Glass");
-		}
+			cache = new List<Vector2>();
 
-		public override void AI()
-		{
-			Projectile.rotation = Projectile.velocity.ToRotation() + 1.57f;
-
-			if (Main.rand.NextBool(5))
-				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Glow>(), Vector2.UnitY * Main.rand.NextFloat(-2, -1), 0, new Color(255, 150, 50), 0.6f);
-
-			if (Main.netMode != NetmodeID.Server)
+			for (int i = 0; i < 90; i++)
 			{
-				ManageCaches();
-				ManageTrail();
+				cache.Add(Projectile.Center);
 			}
 		}
 
-		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-		{
-			for (int k = 0; k < 20; k++)
-			{
-				float rot = Projectile.rotation - 1.57f;
-				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Glow>(), Vector2.UnitX.RotatedBy(rot + Main.rand.NextFloat(-0.5f, 0.5f)) * Main.rand.NextFloat(5), 0, new Color(255, 150, 50), 0.4f);
-			}
+		cache.Add(Projectile.Center);
 
-			Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.Center);
-			CameraSystem.shake += 5;
+		while (cache.Count > 90)
+		{
+			cache.RemoveAt(0);
+		}
+	}
+
+	private void ManageTrail()
+	{
+		if (trail is null || trail.IsDisposed)
+		{
+			trail = new Trail(Main.instance.GraphicsDevice, 90, new NoTip(), factor => factor * 20, factor =>
+						{
+							if (factor.X > 0.95f)
+								return Color.White * 0;
+
+							float alpha = 1;
+
+							if (Projectile.timeLeft < 20)
+								alpha = Projectile.timeLeft / 20f;
+
+							return new Color(255, 175 + (int)((float)Math.Sin(factor.X * 3.14f * 5) * 25), 100) * (float)Math.Sin(factor.X * 3.14f) * alpha;
+						});
 		}
 
-		public override bool OnTileCollide(Vector2 oldVelocity)
+		trail.Positions = cache.ToArray();
+		trail.NextPosition = Projectile.Center + Projectile.velocity;
+	}
+
+	public void DrawPrimitives()
+	{
+		Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
+
+		if (effect != null)
 		{
-			Projectile.velocity *= 0;
-			Projectile.friendly = false;
-			return false;
-		}
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
+			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-		private void ManageCaches()
-		{
-			if (cache == null)
-			{
-				cache = new List<Vector2>();
+			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
+			effect.Parameters["repeats"].SetValue(2f);
+			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
-				for (int i = 0; i < 90; i++)
-				{
-					cache.Add(Projectile.Center);
-				}
-			}
-
-			cache.Add(Projectile.Center);
-
-			while (cache.Count > 90)
-			{
-				cache.RemoveAt(0);
-			}
-		}
-
-		private void ManageTrail()
-		{
-			if (trail is null || trail.IsDisposed)
-			{
-				trail = new Trail(Main.instance.GraphicsDevice, 90, new NoTip(), factor => factor * 20, factor =>
-							{
-								if (factor.X > 0.95f)
-									return Color.White * 0;
-
-								float alpha = 1;
-
-								if (Projectile.timeLeft < 20)
-									alpha = Projectile.timeLeft / 20f;
-
-								return new Color(255, 175 + (int)((float)Math.Sin(factor.X * 3.14f * 5) * 25), 100) * (float)Math.Sin(factor.X * 3.14f) * alpha;
-							});
-			}
-
-			trail.Positions = cache.ToArray();
-			trail.NextPosition = Projectile.Center + Projectile.velocity;
-		}
-
-		public void DrawPrimitives()
-		{
-			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
-
-			if (effect != null)
-			{
-				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-				Matrix view = Main.GameViewMatrix.TransformationMatrix;
-				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
-
-				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
-				effect.Parameters["repeats"].SetValue(2f);
-				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-				effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
-
-				trail?.Render(effect);
-			}
+			trail?.Render(effect);
 		}
 	}
 }

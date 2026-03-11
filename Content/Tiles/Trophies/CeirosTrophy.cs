@@ -1,19 +1,18 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 
-namespace StarlightRiver.Content.Tiles.Trophies
+namespace StarlightRiver.Content.Tiles.Trophies;
+
+class CeirosTrophy : ModTile
 {
-	class CeirosTrophy : ModTile
-	{
-		public override string Texture => AssetDirectory.TrophyTile + Name;
+	public override string Texture => AssetDirectory.TrophyTile + Name;
 
-		public override void SetStaticDefaults()
-		{
-			this.QuickSetPainting(3, 3, 7, new Color(120, 85, 60), "Trophy");
-		}
-	}
-
-	class CeirosTrophyItem : BaseTileItem
+	public override void SetStaticDefaults()
 	{
-		public CeirosTrophyItem() : base("Ceiros Trophy", "", "CeirosTrophy", 1, AssetDirectory.TrophyTile) { }
+		this.QuickSetPainting(3, 3, 7, new Color(120, 85, 60), "Trophy");
 	}
+}
+
+class CeirosTrophyItem : BaseTileItem
+{
+	public CeirosTrophyItem() : base("Ceiros Trophy", "", "CeirosTrophy", 1, AssetDirectory.TrophyTile) { }
 }

@@ -4,93 +4,92 @@ using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Bosses.SquidBoss
+namespace StarlightRiver.Content.Bosses.SquidBoss;
+
+internal class TentacleHurtbox : ModNPC
 {
-	internal class TentacleHurtbox : ModNPC
+	public static Tentacle tentacleToAssign;
+
+	public Tentacle tentacle;
+
+	public SquidBoss Parent => tentacle.Parent;
+
+	public override string Texture => AssetDirectory.Invisible;
+
+	public override void SetDefaults()
 	{
-		public static Tentacle tentacleToAssign;
+		NPC.width = 80;
+		NPC.height = 80;
+		NPC.lifeMax = 500;
+		NPC.damage = 0;
+		NPC.noGravity = true;
+		NPC.noTileCollide = true;
+		NPC.knockBackResist = 0f;
+		NPC.HitSound = SoundID.NPCHit1;
+		NPC.netAlways = true;
+	}
 
-		public Tentacle tentacle;
+	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+	{
+		database.Entries.Remove(bestiaryEntry);
+	}
 
-		public SquidBoss Parent => tentacle.Parent;
+	public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
+	{
+		NPC.lifeMax = Main.masterMode ? (int)(1000 * bossAdjustment) : (int)(750 * bossAdjustment);
+	}
 
-		public override string Texture => AssetDirectory.Invisible;
+	public override void OnSpawn(IEntitySource source)
+	{
+		tentacle = tentacleToAssign;
+	}
 
-		public override void SetDefaults()
+	public override void AI()
+	{
+		if (tentacle is null || !tentacle.NPC.active)
 		{
-			NPC.width = 80;
-			NPC.height = 80;
-			NPC.lifeMax = 500;
-			NPC.damage = 0;
-			NPC.noGravity = true;
-			NPC.noTileCollide = true;
-			NPC.knockBackResist = 0f;
-			NPC.HitSound = SoundID.NPCHit1;
-			NPC.netAlways = true;
+			NPC.active = false;
+			return;
 		}
 
-		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		if (Parent is null || !Parent.NPC.active)
 		{
-			database.Entries.Remove(bestiaryEntry);
+			NPC.active = false;
+			return;
 		}
 
-		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
-		{
-			NPC.lifeMax = Main.masterMode ? (int)(1000 * bossAdjustment) : (int)(750 * bossAdjustment);
-		}
+		NPC.realLife = Parent.NPC.whoAmI;
 
-		public override void OnSpawn(IEntitySource source)
-		{
-			tentacle = tentacleToAssign;
-		}
+		NPC.Hitbox = tentacle.GetDamageHitbox();
 
-		public override void AI()
-		{
-			if (tentacle is null || !tentacle.NPC.active)
-			{
-				NPC.active = false;
-				return;
-			}
+		NPC.dontTakeDamage = tentacle.State != 0;
 
-			if (Parent is null || !Parent.NPC.active)
-			{
-				NPC.active = false;
-				return;
-			}
+		if (Parent.NPC.life < Parent.NPC.lifeMax * 0.5f)
+			NPC.dontTakeDamage = true;
+	}
 
-			NPC.realLife = Parent.NPC.whoAmI;
+	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+	{
+		return false;
+	}
 
-			NPC.Hitbox = tentacle.GetDamageHitbox();
+	public override void ModifyHitByItem(Player player, Item item, ref NPC.HitModifiers modifiers)
+	{
+		modifiers.FinalDamage *= 1.4f;
+	}
 
-			NPC.dontTakeDamage = tentacle.State != 0;
+	public override void ModifyHitByProjectile(Projectile projectile, ref NPC.HitModifiers modifiers)
+	{
+		modifiers.FinalDamage *= 1.4f;
+	}
 
-			if (Parent.NPC.life < Parent.NPC.lifeMax * 0.5f)
-				NPC.dontTakeDamage = true;
-		}
+	public override void SendExtraAI(BinaryWriter writer)
+	{
+		writer.Write(tentacle.NPC.whoAmI);
+	}
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
-		{
-			return false;
-		}
-
-		public override void ModifyHitByItem(Player player, Item item, ref NPC.HitModifiers modifiers)
-		{
-			modifiers.FinalDamage *= 1.4f;
-		}
-
-		public override void ModifyHitByProjectile(Projectile projectile, ref NPC.HitModifiers modifiers)
-		{
-			modifiers.FinalDamage *= 1.4f;
-		}
-
-		public override void SendExtraAI(BinaryWriter writer)
-		{
-			writer.Write(tentacle.NPC.whoAmI);
-		}
-
-		public override void ReceiveExtraAI(BinaryReader reader)
-		{
-			tentacle = Main.npc[reader.ReadInt32()].ModNPC as Tentacle;
-		}
+	public override void ReceiveExtraAI(BinaryReader reader)
+	{
+		tentacle = Main.npc[reader.ReadInt32()].ModNPC as Tentacle;
 	}
 }

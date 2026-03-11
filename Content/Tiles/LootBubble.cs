@@ -6,94 +6,93 @@ using System.Collections.Generic;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Tiles
+namespace StarlightRiver.Content.Tiles;
+
+abstract class LootBubble : DummyTile
 {
-	abstract class LootBubble : DummyTile
+	public virtual List<Loot> GoldLootPool => null;
+
+	public virtual string BubbleTexture => "StarlightRiver/Assets/Tiles/Bubble";
+
+	public override int DummyType => DummySystem.DummyType<LootBubbleDummy>();
+
+	public override string Texture => AssetDirectory.Invisible;
+
+	public virtual void PickupEffects(Vector2 origin)
 	{
-		public virtual List<Loot> GoldLootPool => null;
+		//Terraria.Audio.SoundEngine.PlaySound( , origin);
 
-		public virtual string BubbleTexture => "StarlightRiver/Assets/Tiles/Bubble";
+		for (int k = 0; k < 50; k++)
+			Dust.NewDustPerfect(origin, DustType<Dusts.BlueStamina>(), Vector2.One.RotatedByRandom(3.14f) * Main.rand.NextFloat(4), 0, default, 0.5f);
+	}
 
-		public override int DummyType => DummySystem.DummyType<LootBubbleDummy>();
+	public virtual bool CanOpen(Player Player)
+	{
+		return true;
+	}
 
-		public override string Texture => AssetDirectory.Invisible;
+	public virtual void DrawBubble(Vector2 pos, SpriteBatch spriteBatch, float time)
+	{
+		int n = (int)(time % GoldLootPool.Count);
+		Texture2D tex2 = Terraria.GameContent.TextureAssets.Item[GoldLootPool[n].type].Value;
+		var ItemTarget = new Rectangle((int)pos.X + 8, (int)pos.Y + 8, 16, 16);
+		spriteBatch.Draw(tex2, ItemTarget, Color.White);
 
-		public virtual void PickupEffects(Vector2 origin)
+		Texture2D tex = Request<Texture2D>(BubbleTexture).Value;
+		int sin = (int)(Math.Sin(time) * 4);
+		int sin2 = (int)(Math.Sin(time + 0.75f) * 4);
+		var bubbleTarget = new Rectangle((int)pos.X - sin / 2, (int)pos.Y + sin2 / 2, 32 + sin, 32 - sin2);
+		spriteBatch.Draw(tex, bubbleTarget, Color.White);
+
+		return;
+	}
+
+	public override bool CanDrop(int i, int j)
+	{
+		return false;
+	}
+}
+
+class LootBubbleDummy : Dummy
+{
+	public float timer;
+
+	public override bool DoesCollision => true;
+
+	public LootBubbleDummy() : base(0, 32, 32) { }
+
+	public override bool ValidTile(Tile tile)
+	{
+		return GetModTile(Parent.TileType) is LootBubble;
+	}
+
+	public override void Collision(Player Player)
+	{
+		var bubble = GetModTile(Parent.TileType) as LootBubble;
+
+		if (bubble.CanOpen(Player) && Player.Hitbox.Intersects(new Rectangle(ParentX * 16, ParentY * 16, 16, 16)))
 		{
-			//Terraria.Audio.SoundEngine.PlaySound( , origin);
+			Loot loot = bubble.GoldLootPool[Main.rand.Next(bubble.GoldLootPool.Count)];
+			Item.NewItem(GetSource_FromThis(), Center, loot.type, loot.GetCount());
+			bubble.PickupEffects(Center);
 
-			for (int k = 0; k < 50; k++)
-				Dust.NewDustPerfect(origin, DustType<Dusts.BlueStamina>(), Vector2.One.RotatedByRandom(3.14f) * Main.rand.NextFloat(4), 0, default, 0.5f);
-		}
-
-		public virtual bool CanOpen(Player Player)
-		{
-			return true;
-		}
-
-		public virtual void DrawBubble(Vector2 pos, SpriteBatch spriteBatch, float time)
-		{
-			int n = (int)(time % GoldLootPool.Count);
-			Texture2D tex2 = Terraria.GameContent.TextureAssets.Item[GoldLootPool[n].type].Value;
-			var ItemTarget = new Rectangle((int)pos.X + 8, (int)pos.Y + 8, 16, 16);
-			spriteBatch.Draw(tex2, ItemTarget, Color.White);
-
-			Texture2D tex = Request<Texture2D>(BubbleTexture).Value;
-			int sin = (int)(Math.Sin(time) * 4);
-			int sin2 = (int)(Math.Sin(time + 0.75f) * 4);
-			var bubbleTarget = new Rectangle((int)pos.X - sin / 2, (int)pos.Y + sin2 / 2, 32 + sin, 32 - sin2);
-			spriteBatch.Draw(tex, bubbleTarget, Color.White);
-
-			return;
-		}
-
-		public override bool CanDrop(int i, int j)
-		{
-			return false;
+			WorldGen.KillTile(ParentX, ParentY);
+			NetMessage.SendTileSquare(Player.whoAmI, (int)(position.X / 16f), (int)(position.Y / 16f), 2, 2, TileChangeType.None);
 		}
 	}
 
-	class LootBubbleDummy : Dummy
+	public override void Update()
 	{
-		public float timer;
+		timer += 0.1f;
+	}
 
-		public override bool DoesCollision => true;
+	public override void PostDraw(Color lightColor)
+	{
+		var bubble = GetModTile(Parent.TileType) as LootBubble;
+		bubble.DrawBubble(position - Main.screenPosition, Main.spriteBatch, timer);
 
-		public LootBubbleDummy() : base(0, 32, 32) { }
-
-		public override bool ValidTile(Tile tile)
-		{
-			return GetModTile(Parent.TileType) is LootBubble;
-		}
-
-		public override void Collision(Player Player)
-		{
-			var bubble = GetModTile(Parent.TileType) as LootBubble;
-
-			if (bubble.CanOpen(Player) && Player.Hitbox.Intersects(new Rectangle(ParentX * 16, ParentY * 16, 16, 16)))
-			{
-				Loot loot = bubble.GoldLootPool[Main.rand.Next(bubble.GoldLootPool.Count)];
-				Item.NewItem(GetSource_FromThis(), Center, loot.type, loot.GetCount());
-				bubble.PickupEffects(Center);
-
-				WorldGen.KillTile(ParentX, ParentY);
-				NetMessage.SendTileSquare(Player.whoAmI, (int)(position.X / 16f), (int)(position.Y / 16f), 2, 2, TileChangeType.None);
-			}
-		}
-
-		public override void Update()
-		{
-			timer += 0.1f;
-		}
-
-		public override void PostDraw(Color lightColor)
-		{
-			var bubble = GetModTile(Parent.TileType) as LootBubble;
-			bubble.DrawBubble(position - Main.screenPosition, Main.spriteBatch, timer);
-
-			Texture2D tex = Assets.Masks.GlowAlpha.Value;
-			float sin = 0.5f + (float)(Math.Sin(StarlightWorld.visualTimer) * 0.5f);
-			Main.spriteBatch.Draw(tex, Center - Main.screenPosition, null, new Color(135, 206, 235, 0) * (0.4f + sin * 0.1f), 0, tex.Size() / 2, 0.8f + sin * 0.1f, 0, 0);
-		}
+		Texture2D tex = Assets.Masks.GlowAlpha.Value;
+		float sin = 0.5f + (float)(Math.Sin(StarlightWorld.visualTimer) * 0.5f);
+		Main.spriteBatch.Draw(tex, Center - Main.screenPosition, null, new Color(135, 206, 235, 0) * (0.4f + sin * 0.1f), 0, tex.Size() / 2, 0.8f + sin * 0.1f, 0, 0);
 	}
 }

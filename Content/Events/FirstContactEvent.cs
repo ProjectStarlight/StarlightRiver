@@ -1,42 +1,41 @@
-namespace StarlightRiver.Content.Events
+namespace StarlightRiver.Content.Events;
+
+public class FirstContactEvent : ModSceneEffect
 {
-	public class FirstContactEvent : ModSceneEffect
+	public override int Music => MusicLoader.GetMusicSlot(Mod, "Sounds/WhipAndNaenae");
+
+	public override SceneEffectPriority Priority => SceneEffectPriority.Event;
+
+	public override bool IsSceneEffectActive(Player player)
 	{
-		public override int Music => MusicLoader.GetMusicSlot(Mod, "Sounds/WhipAndNaenae");
+		return FirstContactSystem.FirstContactActive;//this is here for now to stick with the old style
+	}
+}
 
-		public override SceneEffectPriority Priority => SceneEffectPriority.Event;
+public class FirstContactSystem : ModSystem
+{
+	public static bool FirstContactActive = false;
+	public static float FirstContactFade = 0;
 
-		public override bool IsSceneEffectActive(Player player)
+	public override void PostUpdateEverything()
+	{
+		if (FirstContactActive)
 		{
-			return FirstContactSystem.FirstContactActive;//this is here for now to stick with the old style
+			if (FirstContactFade <= 1)
+				FirstContactFade += 0.01f;
+		}
+		else if (FirstContactFade > 0)
+		{
+			FirstContactFade -= 0.01f;
 		}
 	}
 
-	public class FirstContactSystem : ModSystem
+	public override void ModifySunLightColor(ref Color tileColor, ref Color backgroundColor)
 	{
-		public static bool FirstContactActive = false;
-		public static float FirstContactFade = 0;
-
-		public override void PostUpdateEverything()
+		if (FirstContactFade > 0) //TODO: Move this to a ModSceneEffect
 		{
-			if (FirstContactActive)
-			{
-				if (FirstContactFade <= 1)
-					FirstContactFade += 0.01f;
-			}
-			else if (FirstContactFade > 0)
-			{
-				FirstContactFade -= 0.01f;
-			}
-		}
-
-		public override void ModifySunLightColor(ref Color tileColor, ref Color backgroundColor)
-		{
-			if (FirstContactFade > 0) //TODO: Move this to a ModSceneEffect
-			{
-				tileColor = Color.Lerp(Color.White, new Color(70, 60, 120), FirstContactFade);
-				backgroundColor = Color.Lerp(Color.White, new Color(17, 15, 30), FirstContactFade);
-			}
+			tileColor = Color.Lerp(Color.White, new Color(70, 60, 120), FirstContactFade);
+			backgroundColor = Color.Lerp(Color.White, new Color(17, 15, 30), FirstContactFade);
 		}
 	}
 }

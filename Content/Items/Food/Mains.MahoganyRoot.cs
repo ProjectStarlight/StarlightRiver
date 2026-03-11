@@ -1,21 +1,20 @@
 ﻿using Terraria.ID;
 
-namespace StarlightRiver.Content.Items.Food
+namespace StarlightRiver.Content.Items.Food;
+
+internal class MahoganyRoot : Ingredient
 {
-	internal class MahoganyRoot : Ingredient
+	public MahoganyRoot() : base("+12 defense", 3600 * 5, IngredientType.Main) { }
+
+	public override void SafeSetDefaults()
 	{
-		public MahoganyRoot() : base("+12 defense", 3600 * 5, IngredientType.Main) { }
+		Item.rare = ItemRarityID.Green;
 
-		public override void SafeSetDefaults()
-		{
-			Item.rare = ItemRarityID.Green;
+		Item.value = Item.sellPrice(silver: 15);
+	}
 
-			Item.value = Item.sellPrice(silver: 15);
-		}
-
-		public override void BuffEffects(Player Player, float multiplier)
-		{
-			Player.statDefense += (int)(12 * multiplier);
-		}
+	public override void BuffEffects(Player Player, float multiplier)
+	{
+		Player.statDefense += (int)(12 * multiplier);
 	}
 }

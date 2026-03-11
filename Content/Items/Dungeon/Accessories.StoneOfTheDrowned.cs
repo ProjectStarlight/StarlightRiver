@@ -5,53 +5,52 @@ using System;
 using System.Reflection;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Items.Dungeon
+namespace StarlightRiver.Content.Items.Dungeon;
+
+public class StoneOfTheDrowned : SmartAccessory
 {
-	public class StoneOfTheDrowned : SmartAccessory
+	internal bool summoned;
+
+	public override string Texture => AssetDirectory.JungleItem + Name;
+
+	public StoneOfTheDrowned() : base("Stone of the Drowned",
+		"+30 maximum {{barrier}}\n" +
+		"Increases your max minions by 2 when you have no {{barrier}}\n" +
+		"Re-summons two slots worth of minions when you reach 0 {{barrier}}")
+	{ }
+
+	public override void SafeSetDefaults()
 	{
-		internal bool summoned;
+		Item.value = Item.sellPrice(gold: 2);
+		Item.rare = ItemRarityID.Orange;
+	}
 
-		public override string Texture => AssetDirectory.JungleItem + Name;
+	public override void SafeUpdateEquip(Player player)
+	{
+		player.GetModPlayer<BarrierPlayer>().maxBarrier += 30;
 
-		public StoneOfTheDrowned() : base("Stone of the Drowned",
-			"+30 maximum {{barrier}}\n" +
-			"Increases your max minions by 2 when you have no {{barrier}}\n" +
-			"Re-summons two slots worth of minions when you reach 0 {{barrier}}")
-		{ }
-
-		public override void SafeSetDefaults()
+		if (player.GetModPlayer<BarrierPlayer>().barrier <= 0)
 		{
-			Item.value = Item.sellPrice(gold: 2);
-			Item.rare = ItemRarityID.Orange;
-		}
+			player.maxMinions += 2;
 
-		public override void SafeUpdateEquip(Player player)
-		{
-			player.GetModPlayer<BarrierPlayer>().maxBarrier += 30;
-
-			if (player.GetModPlayer<BarrierPlayer>().barrier <= 0)
+			if (!summoned)
 			{
-				player.maxMinions += 2;
-
-				if (!summoned)
-				{
-					Helpers.SummonerHelper.RespawnMinions(player, 2);
-					summoned = true;
-				}
-			}
-			else
-			{
-				summoned = false;
+				Helpers.SummonerHelper.RespawnMinions(player, 2);
+				summoned = true;
 			}
 		}
-
-		public override void AddRecipes()
+		else
 		{
-			CreateRecipe().
-				AddIngredient<HauntedAmethyst>().
-				AddIngredient<AquaSapphire>().
-				AddTile(TileID.TinkerersWorkbench).
-				Register();
+			summoned = false;
 		}
+	}
+
+	public override void AddRecipes()
+	{
+		CreateRecipe().
+			AddIngredient<HauntedAmethyst>().
+			AddIngredient<AquaSapphire>().
+			AddTile(TileID.TinkerersWorkbench).
+			Register();
 	}
 }

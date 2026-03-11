@@ -4,43 +4,42 @@ using System.Collections.Generic;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.NPCs.TownUpgrade
+namespace StarlightRiver.Content.NPCs.TownUpgrade;
+
+public abstract class TownUpgrade
 {
-	public abstract class TownUpgrade
+	public readonly string buttonName;
+	public readonly string NPCName;
+	public readonly string questName;
+	public readonly string questTip;
+	public readonly string title;
+	public readonly Texture2D icon;
+
+	public bool Unlocked => NPCUpgradeSystem.townUpgrades.TryGetValue(NPCName, out bool unlocked) && unlocked;
+
+	public virtual List<Loot> Requirements => new() { new Loot(ItemID.DirtBlock, 1) };
+
+	protected TownUpgrade(string NPCName, string questName, string questTip, string buttonName, string title)
 	{
-		public readonly string buttonName;
-		public readonly string NPCName;
-		public readonly string questName;
-		public readonly string questTip;
-		public readonly string title;
-		public readonly Texture2D icon;
+		this.buttonName = buttonName;
+		this.NPCName = NPCName;
+		this.questName = questName;
+		this.questTip = questTip;
+		this.title = title;
 
-		public bool Unlocked => NPCUpgradeSystem.townUpgrades.TryGetValue(NPCName, out bool unlocked) && unlocked;
+		icon = Assets.NPCs.TownUpgrade.GuideIcon.Value;
+	}
 
-		public virtual List<Loot> Requirements => new() { new Loot(ItemID.DirtBlock, 1) };
+	public virtual void ClickButton() { }
 
-		protected TownUpgrade(string NPCName, string questName, string questTip, string buttonName, string title)
+	public static TownUpgrade FromString(string input)
+	{
+		TownUpgrade town = input switch
 		{
-			this.buttonName = buttonName;
-			this.NPCName = NPCName;
-			this.questName = questName;
-			this.questTip = questTip;
-			this.title = title;
-
-			icon = Assets.NPCs.TownUpgrade.GuideIcon.Value;
-		}
-
-		public virtual void ClickButton() { }
-
-		public static TownUpgrade FromString(string input)
-		{
-			TownUpgrade town = input switch
-			{
-				"Guide" => new GuideUpgrade(),
-				"Merchant" => new MerchantUpgrade(),
-				_ => null,
-			};
-			return town;
-		}
+			"Guide" => new GuideUpgrade(),
+			"Merchant" => new MerchantUpgrade(),
+			_ => null,
+		};
+		return town;
 	}
 }

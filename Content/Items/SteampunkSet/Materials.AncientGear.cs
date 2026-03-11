@@ -1,26 +1,25 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Items.SteampunkSet
+namespace StarlightRiver.Content.Items.SteampunkSet;
+
+public class AncientGear : BaseMaterial
 {
-	public class AncientGear : BaseMaterial
+	public AncientGear() : base("Ancient Gear", "", 999, 200, 2, AssetDirectory.SteampunkItem) { }
+
+	public override void Load()
 	{
-		public AncientGear() : base("Ancient Gear", "", 999, 200, 2, AssetDirectory.SteampunkItem) { }
+		StarlightItem.ExtractinatorUseEvent += AddToExtractinatorPool;
+	}
 
-		public override void Load()
+	private void AddToExtractinatorPool(int extractType, int extractinatorBlockType, ref int resultType, ref int resultStack)
+	{
+		if (extractType == 0 || extractType == ItemID.DesertFossil)
 		{
-			StarlightItem.ExtractinatorUseEvent += AddToExtractinatorPool;
-		}
-
-		private void AddToExtractinatorPool(int extractType, int extractinatorBlockType, ref int resultType, ref int resultStack)
-		{
-			if (extractType == 0 || extractType == ItemID.DesertFossil)
+			if (Main.rand.NextBool(20))
 			{
-				if (Main.rand.NextBool(20))
-				{
-					resultType = Type;
-					resultStack = 1;
-				}
+				resultType = Type;
+				resultStack = 1;
 			}
 		}
 	}

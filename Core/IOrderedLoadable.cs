@@ -1,9 +1,8 @@
-﻿namespace StarlightRiver.Core
+﻿namespace StarlightRiver.Core;
+
+interface IOrderedLoadable
 {
-	interface IOrderedLoadable
-	{
-		void Load();
-		void Unload();
-		float Priority { get; }
-	}
+	void Load();
+	void Unload();
+	float Priority { get; }
 }

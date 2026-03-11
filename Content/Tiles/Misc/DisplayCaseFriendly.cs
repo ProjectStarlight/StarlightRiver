@@ -1,56 +1,55 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using Terraria.DataStructures;
 
-namespace StarlightRiver.Content.Tiles.Misc
+namespace StarlightRiver.Content.Tiles.Misc;
+
+class DisplayCaseFriendly : DisplayCase
 {
-	class DisplayCaseFriendly : DisplayCase
+	public override bool RightClick(int i, int j)
 	{
-		public override bool RightClick(int i, int j)
-		{
-			Tile tile = Main.tile[i, j];
+		Tile tile = Main.tile[i, j];
 
-			int index = ModContent.GetInstance<DisplayCaseEntity>().Find(i - tile.TileFrameX / 16, j - tile.TileFrameY / 16);
+		int index = ModContent.GetInstance<DisplayCaseEntity>().Find(i - tile.TileFrameX / 16, j - tile.TileFrameY / 16);
 
-			if (index == -1)
-				return true;
-
-			var entity = (DisplayCaseEntity)TileEntity.ByID[index];
-
-			if (entity.containedItem is null)
-			{
-				entity.containedItem = Main.LocalPlayer.HeldItem.Clone();
-				Main.LocalPlayer.HeldItem.TurnToAir();
-			}
-			else
-			{
-				Helpers.ItemHelper.NewItemSpecific(Main.LocalPlayer.Center, entity.containedItem.Clone());
-				entity.containedItem = null;
-			}
-
+		if (index == -1)
 			return true;
-		}
 
-		public override void KillMultiTile(int i, int j, int frameX, int frameY)
+		var entity = (DisplayCaseEntity)TileEntity.ByID[index];
+
+		if (entity.containedItem is null)
 		{
-			Tile tile = Main.tile[i, j];
-
-			int index = ModContent.GetInstance<DisplayCaseEntity>().Find(i - tile.TileFrameX / 16, j - tile.TileFrameY / 16);
-
-			if (index == -1)
-				return;
-
-			var entity = (DisplayCaseEntity)TileEntity.ByID[index];
-
-			Item.NewItem(new EntitySource_TileBreak(i, j), i, j, 1, 1, ModContent.ItemType<DisplayCaseFriendlyItem>());
-
-			if (entity.containedItem != null && !entity.containedItem.IsAir)
-				Helpers.ItemHelper.NewItemSpecific(new Vector2(i, j), entity.containedItem.Clone());
-
+			entity.containedItem = Main.LocalPlayer.HeldItem.Clone();
+			Main.LocalPlayer.HeldItem.TurnToAir();
 		}
+		else
+		{
+			Helpers.ItemHelper.NewItemSpecific(Main.LocalPlayer.Center, entity.containedItem.Clone());
+			entity.containedItem = null;
+		}
+
+		return true;
 	}
 
-	class DisplayCaseFriendlyItem : BaseTileItem
+	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
-		public DisplayCaseFriendlyItem() : base("Display Case", "Can hold an Item for glamorous display", "DisplayCaseFriendly", 2, "StarlightRiver/Assets/Tiles/Misc/") { }
+		Tile tile = Main.tile[i, j];
+
+		int index = ModContent.GetInstance<DisplayCaseEntity>().Find(i - tile.TileFrameX / 16, j - tile.TileFrameY / 16);
+
+		if (index == -1)
+			return;
+
+		var entity = (DisplayCaseEntity)TileEntity.ByID[index];
+
+		Item.NewItem(new EntitySource_TileBreak(i, j), i, j, 1, 1, ModContent.ItemType<DisplayCaseFriendlyItem>());
+
+		if (entity.containedItem != null && !entity.containedItem.IsAir)
+			Helpers.ItemHelper.NewItemSpecific(new Vector2(i, j), entity.containedItem.Clone());
+
 	}
+}
+
+class DisplayCaseFriendlyItem : BaseTileItem
+{
+	public DisplayCaseFriendlyItem() : base("Display Case", "Can hold an Item for glamorous display", "DisplayCaseFriendly", 2, "StarlightRiver/Assets/Tiles/Misc/") { }
 }

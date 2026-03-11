@@ -1,47 +1,46 @@
 ﻿using StarlightRiver.Core.Loaders;
 using Terraria.Graphics.Shaders;
 
-namespace StarlightRiver.Content.Items.Geomancer
+namespace StarlightRiver.Content.Items.Geomancer;
+
+class GeoRainbowDust : ModDust
 {
-	class GeoRainbowDust : ModDust
+	public override string Texture => "StarlightRiver/Assets/Masks/GlowVerySoft";
+
+	public override void OnSpawn(Dust dust)
 	{
-		public override string Texture => "StarlightRiver/Assets/Masks/GlowVerySoft";
+		dust.color = Color.Transparent;
+		dust.fadeIn = 0;
+		dust.noLight = false;
+		dust.frame = new Rectangle(0, 0, 64, 64);
+		dust.velocity *= 2;
+		if (ShaderLoader.GetShader("GlowingDust").Value != null)
+			dust.shader = new ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
+		dust.alpha = Main.rand.Next(100);
+	}
 
-		public override void OnSpawn(Dust dust)
-		{
-			dust.color = Color.Transparent;
-			dust.fadeIn = 0;
-			dust.noLight = false;
-			dust.frame = new Rectangle(0, 0, 64, 64);
-			dust.velocity *= 2;
-			if (ShaderLoader.GetShader("GlowingDust").Value != null)
-				dust.shader = new ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
-			dust.alpha = Main.rand.Next(100);
-		}
+	public override bool Update(Dust dust)
+	{
+		if (dust.color == Color.Transparent)
+			dust.position -= Vector2.One * 32 * dust.scale;
 
-		public override bool Update(Dust dust)
-		{
-			if (dust.color == Color.Transparent)
-				dust.position -= Vector2.One * 32 * dust.scale;
+		//dust.rotation += dust.velocity.Y * 0.1f;
+		dust.position += dust.velocity;
 
-			//dust.rotation += dust.velocity.Y * 0.1f;
-			dust.position += dust.velocity;
+		dust.velocity *= 0.98f;
 
-			dust.velocity *= 0.98f;
+		dust.color = Main.hslToRgb((dust.alpha / 100f + (float)Main.timeForVisualEffects * 0.02f) % 1f, 1, 0.5f);
+		dust.shader?.UseColor(dust.color);
 
-			dust.color = Main.hslToRgb((dust.alpha / 100f + (float)Main.timeForVisualEffects * 0.02f) % 1f, 1, 0.5f);
-			dust.shader?.UseColor(dust.color);
+		dust.fadeIn++;
 
-			dust.fadeIn++;
+		dust.scale *= 0.96f;
 
-			dust.scale *= 0.96f;
+		Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.4f * dust.scale);
 
-			Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.4f * dust.scale);
+		if (dust.fadeIn > 70)
+			dust.active = false;
 
-			if (dust.fadeIn > 70)
-				dust.active = false;
-
-			return false;
-		}
+		return false;
 	}
 }

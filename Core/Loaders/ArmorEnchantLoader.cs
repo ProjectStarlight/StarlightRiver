@@ -2,32 +2,31 @@
 using System;
 using System.Collections.Generic;
 
-namespace StarlightRiver.Core.Loaders
+namespace StarlightRiver.Core.Loaders;
+
+class ArmorEnchantLoader : IOrderedLoadable
 {
-	class ArmorEnchantLoader : IOrderedLoadable
+	public static List<ArmorEnchantment> Enchantments;
+
+	public float Priority => 1.0f;
+
+	public void Load()
 	{
-		public static List<ArmorEnchantment> Enchantments;
+		Mod Mod = StarlightRiver.Instance;
 
-		public float Priority => 1.0f;
+		Enchantments = new List<ArmorEnchantment>();
 
-		public void Load()
+		foreach (Type t in Mod.Code.GetTypes())
 		{
-			Mod Mod = StarlightRiver.Instance;
-
-			Enchantments = new List<ArmorEnchantment>();
-
-			foreach (Type t in Mod.Code.GetTypes())
+			if (t.IsSubclassOf(typeof(ArmorEnchantment)))
 			{
-				if (t.IsSubclassOf(typeof(ArmorEnchantment)))
-				{
-					Enchantments.Add((ArmorEnchantment)Activator.CreateInstance(t));
-				}
+				Enchantments.Add((ArmorEnchantment)Activator.CreateInstance(t));
 			}
 		}
+	}
 
-		public void Unload()
-		{
-			Enchantments ??= null;
-		}
+	public void Unload()
+	{
+		Enchantments ??= null;
 	}
 }

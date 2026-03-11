@@ -1,8 +1,7 @@
-﻿namespace StarlightRiver.Core
+﻿namespace StarlightRiver.Core;
+
+interface IPostLoadable
 {
-	interface IPostLoadable
-	{
-		void PostLoad();
-		void PostLoadUnload();
-	}
+	void PostLoad();
+	void PostLoadUnload();
 }

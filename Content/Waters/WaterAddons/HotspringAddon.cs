@@ -7,123 +7,122 @@ using StarlightRiver.Core.Systems.WaterAddonSystem;
 using System.Linq;
 using Terraria.Graphics.Effects;
 
-namespace StarlightRiver.Content.Waters.WaterAddons
+namespace StarlightRiver.Content.Waters.WaterAddons;
+
+class HotspringAddon : WaterAddon
 {
-	class HotspringAddon : WaterAddon
+	public static ScreenTarget hotspringMapTarget = new(RenderMainTarget, () => HotspringFountainDummy.AnyOnscreen, 1);
+
+	public static ScreenTarget hotspringBackShineTarget = new(RenderForegroundShine, () => HotspringFountainDummy.AnyOnscreen, 1, (a) => Main.waterTarget.Size());
+	public static ScreenTarget hotspringFrontShineTarget = new(RenderBackgroundShine, () => HotspringFountainDummy.AnyOnscreen, 1, (a) => Main.instance.backWaterTarget.Size());
+
+	public override bool Visible => HotspringFountainDummy.AnyOnscreen;
+
+	public override Texture2D BlockTexture(Texture2D normal, int x, int y)
 	{
-		public static ScreenTarget hotspringMapTarget = new(RenderMainTarget, () => HotspringFountainDummy.AnyOnscreen, 1);
+		return normal;
+	}
 
-		public static ScreenTarget hotspringBackShineTarget = new(RenderForegroundShine, () => HotspringFountainDummy.AnyOnscreen, 1, (a) => Main.waterTarget.Size());
-		public static ScreenTarget hotspringFrontShineTarget = new(RenderBackgroundShine, () => HotspringFountainDummy.AnyOnscreen, 1, (a) => Main.instance.backWaterTarget.Size());
+	private static void RenderMainTarget(SpriteBatch spriteBatch)
+	{
+		Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
-		public override bool Visible => HotspringFountainDummy.AnyOnscreen;
+		spriteBatch.End();
+		spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default);
 
-		public override Texture2D BlockTexture(Texture2D normal, int x, int y)
+		foreach (Dummy dummy in DummySystem.dummies.Where(n => n.active && n is HotspringFountainDummy))
 		{
-			return normal;
+			(dummy as HotspringFountainDummy).DrawMap(Main.spriteBatch);
 		}
+	}
 
-		private static void RenderMainTarget(SpriteBatch spriteBatch)
+	private static void RenderForegroundShine(SpriteBatch spriteBatch)
+	{
+		Main.graphics.GraphicsDevice.Clear(Color.Transparent);
+
+		spriteBatch.End();
+		Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default);
+
+		Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/HotspringWaterMap", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+
+		for (int i = -tex2.Width; i <= Main.screenWidth + tex2.Width; i += tex2.Width)
 		{
-			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
-
-			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default);
-
-			foreach (Dummy dummy in DummySystem.dummies.Where(n => n.active && n is HotspringFountainDummy))
+			for (int j = -tex2.Height; j <= Main.screenHeight + tex2.Height; j += tex2.Height)
 			{
-				(dummy as HotspringFountainDummy).DrawMap(Main.spriteBatch);
-			}
-		}
+				var pos = new Vector2(i, j);
 
-		private static void RenderForegroundShine(SpriteBatch spriteBatch)
-		{
-			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
+				// This is the offset for the BACKGROUND, which is the position of the FOREGROUND minus screen pos (why? because god is a cruel creature)
+				if (!Main.drawToScreen)
+					pos -= Main.sceneWaterPos - Main.screenPosition;
 
-			spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default);
+				Vector2 tsp = Main.screenPosition;
 
-			Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/HotspringWaterMap", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
-
-			for (int i = -tex2.Width; i <= Main.screenWidth + tex2.Width; i += tex2.Width)
-			{
-				for (int j = -tex2.Height; j <= Main.screenHeight + tex2.Height; j += tex2.Height)
-				{
-					var pos = new Vector2(i, j);
-
-					// This is the offset for the BACKGROUND, which is the position of the FOREGROUND minus screen pos (why? because god is a cruel creature)
-					if (!Main.drawToScreen)
-						pos -= Main.sceneWaterPos - Main.screenPosition;
-
-					Vector2 tsp = Main.screenPosition;
-
-					spriteBatch.Draw(tex2, pos - new Vector2(tsp.X % tex2.Width, tsp.Y % tex2.Height), null, Color.White);
-				}
+				spriteBatch.Draw(tex2, pos - new Vector2(tsp.X % tex2.Width, tsp.Y % tex2.Height), null, Color.White);
 			}
 		}
+	}
 
-		private static void RenderBackgroundShine(SpriteBatch spriteBatch)
+	private static void RenderBackgroundShine(SpriteBatch spriteBatch)
+	{
+		Main.graphics.GraphicsDevice.Clear(Color.Transparent);
+
+		spriteBatch.End();
+		Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default);
+
+		Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/HotspringWaterMap", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+
+		for (int i = -tex2.Width; i <= Main.screenWidth + tex2.Width; i += tex2.Width)
 		{
-			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
-
-			spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default);
-
-			Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/HotspringWaterMap", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
-
-			for (int i = -tex2.Width; i <= Main.screenWidth + tex2.Width; i += tex2.Width)
+			for (int j = -tex2.Height; j <= Main.screenHeight + tex2.Height; j += tex2.Height)
 			{
-				for (int j = -tex2.Height; j <= Main.screenHeight + tex2.Height; j += tex2.Height)
-				{
-					var pos = new Vector2(i, j);
+				var pos = new Vector2(i, j);
 
-					// This is the offset for the FOREGROUND, which is the position of the WALL RT minus screen pos (why? because god is a cruel creature)
-					if (!Main.drawToScreen)
-						pos -= Main.sceneWallPos - Main.screenPosition;
+				// This is the offset for the FOREGROUND, which is the position of the WALL RT minus screen pos (why? because god is a cruel creature)
+				if (!Main.drawToScreen)
+					pos -= Main.sceneWallPos - Main.screenPosition;
 
-					Vector2 tsp = Main.screenPosition;
+				Vector2 tsp = Main.screenPosition;
 
-					spriteBatch.Draw(tex2, pos - new Vector2(tsp.X % tex2.Width, tsp.Y % tex2.Height), null, Color.White);
-				}
+				spriteBatch.Draw(tex2, pos - new Vector2(tsp.X % tex2.Width, tsp.Y % tex2.Height), null, Color.White);
 			}
 		}
+	}
 
-		public override void SpritebatchChange()
+	public override void SpritebatchChange()
+	{
+		Effect effect = ShaderLoader.GetShader("HotspringWater").Value;
+
+		if (effect != null)
 		{
-			Effect effect = ShaderLoader.GetShader("HotspringWater").Value;
+			effect.Parameters["offset"].SetValue(Vector2.Zero);
+			effect.Parameters["sampleTexture2"].SetValue(hotspringMapTarget.RenderTarget);
+			effect.Parameters["sampleTexture3"].SetValue(hotspringFrontShineTarget.RenderTarget);
+			effect.Parameters["time"].SetValue(Main.GameUpdateCount / 20f);
 
-			if (effect != null)
-			{
-				effect.Parameters["offset"].SetValue(Vector2.Zero);
-				effect.Parameters["sampleTexture2"].SetValue(hotspringMapTarget.RenderTarget);
-				effect.Parameters["sampleTexture3"].SetValue(hotspringFrontShineTarget.RenderTarget);
-				effect.Parameters["time"].SetValue(Main.GameUpdateCount / 20f);
-
-				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.Transform);
-			}
-			else
-			{
-				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, default, Main.Transform);
-			}
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.Transform);
 		}
-
-		public override void SpritebatchChangeBack()
+		else
 		{
-			Effect effect = ShaderLoader.GetShader("HotspringWater").Value;
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, default, Main.Transform);
+		}
+	}
 
-			if (effect != null)
-			{
-				effect.Parameters["offset"].SetValue(Vector2.Zero);
-				effect.Parameters["sampleTexture2"].SetValue(hotspringMapTarget.RenderTarget);
-				effect.Parameters["sampleTexture3"].SetValue(hotspringBackShineTarget.RenderTarget);
-				effect.Parameters["time"].SetValue(Main.GameUpdateCount / 20f);
+	public override void SpritebatchChangeBack()
+	{
+		Effect effect = ShaderLoader.GetShader("HotspringWater").Value;
 
-				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.Transform);
-			}
-			else
-			{
-				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, default, Main.Transform);
-			}
+		if (effect != null)
+		{
+			effect.Parameters["offset"].SetValue(Vector2.Zero);
+			effect.Parameters["sampleTexture2"].SetValue(hotspringMapTarget.RenderTarget);
+			effect.Parameters["sampleTexture3"].SetValue(hotspringBackShineTarget.RenderTarget);
+			effect.Parameters["time"].SetValue(Main.GameUpdateCount / 20f);
+
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.Transform);
+		}
+		else
+		{
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, default, Main.Transform);
 		}
 	}
 }

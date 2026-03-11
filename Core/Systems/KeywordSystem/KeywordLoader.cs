@@ -8,69 +8,68 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Terraria.ID;
 
-namespace StarlightRiver.Core.Systems.KeywordSystem
+namespace StarlightRiver.Core.Systems.KeywordSystem;
+
+internal class KeywordLoader : ModSystem
 {
-	internal class KeywordLoader : ModSystem
+	public static List<Keyword> keywords;
+	private string lastLocale;
+
+	public override void Load()
 	{
-		public static List<Keyword> keywords;
-		private string lastLocale;
+		if (!Main.dedServ)
+			LoadFromFile();
+	}
 
-		public override void Load()
+	public override void PostUpdateEverything()
+	{
+		// check if we need to and reload if locale changes
+		string activeExtension = LanguageManager.Instance.ActiveCulture.Name;
+
+		if (activeExtension != lastLocale)
+			LoadFromFile();
+	}
+
+	public void LoadFromFile()
+	{
+		lastLocale = LanguageManager.Instance.ActiveCulture.Name;
+
+		string activeExtension = LanguageManager.Instance.ActiveCulture.Name;
+		string path = Path.Combine("Localization", "Keywords", activeExtension + ".json");
+
+		// Fall back to english if no file exists
+		if (!StarlightRiver.Instance.FileExists(path))
+			path = Path.Combine("Localization", "Keywords", "en-US.json");
+
+		// Throw if we cant find english
+		if (!StarlightRiver.Instance.FileExists(path))
+			throw new FileNotFoundException("Could not find any keywords file!");
+
+		Stream stream = StarlightRiver.Instance.GetFileStream(path);
+
+		keywords = JsonSerializer.Deserialize<List<Keyword>>(stream);
+		stream.Close();
+
+		// Wrap descriptions after loading to prevent having to do this when displaying them
+		if (!Main.dedServ)
 		{
-			if (!Main.dedServ)
-				LoadFromFile();
-		}
+			ReLogic.Graphics.DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
 
-		public override void PostUpdateEverything()
-		{
-			// check if we need to and reload if locale changes
-			string activeExtension = LanguageManager.Instance.ActiveCulture.Name;
-
-			if (activeExtension != lastLocale)
-				LoadFromFile();
-		}
-
-		public void LoadFromFile()
-		{
-			lastLocale = LanguageManager.Instance.ActiveCulture.Name;
-
-			string activeExtension = LanguageManager.Instance.ActiveCulture.Name;
-			string path = Path.Combine("Localization", "Keywords", activeExtension + ".json");
-
-			// Fall back to english if no file exists
-			if (!StarlightRiver.Instance.FileExists(path))
-				path = Path.Combine("Localization", "Keywords", "en-US.json");
-
-			// Throw if we cant find english
-			if (!StarlightRiver.Instance.FileExists(path))
-				throw new FileNotFoundException("Could not find any keywords file!");
-
-			Stream stream = StarlightRiver.Instance.GetFileStream(path);
-
-			keywords = JsonSerializer.Deserialize<List<Keyword>>(stream);
-			stream.Close();
-
-			// Wrap descriptions after loading to prevent having to do this when displaying them
-			if (!Main.dedServ)
+			foreach (Keyword item in keywords)
 			{
-				ReLogic.Graphics.DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
-
-				foreach (Keyword item in keywords)
-				{
-					item.Description = Helpers.LocalizationHelper.WrapString(item.Description, 200, font, 0.8f);
-				}
+				item.Description = Helpers.LocalizationHelper.WrapString(item.Description, 200, font, 0.8f);
 			}
 		}
 	}
+}
 
-	public class Keyword
-	{
-		public string Name { get; set; }
-		public string Description { get; set; }
-		public byte R { get; set; }
-		public byte G { get; set; }
-		public byte B { get; set; }
+public class Keyword
+{
+	public string Name { get; set; }
+	public string Description { get; set; }
+	public byte R { get; set; }
+	public byte G { get; set; }
+	public byte B { get; set; }
 
-		public string ColorHex => BitConverter.ToString([R, G, B]).Replace("-", "");
-	}
+	public string ColorHex => BitConverter.ToString([R, G, B]).Replace("-", "");
 }

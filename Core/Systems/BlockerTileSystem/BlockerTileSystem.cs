@@ -3,74 +3,73 @@ using System;
 using System.Collections.Generic;
 using Terraria.ID;
 
-namespace StarlightRiver.Core.Systems.BlockerTileSystem
+namespace StarlightRiver.Core.Systems.BlockerTileSystem;
+
+internal class BlockerTileSystem : ModSystem
 {
-	internal class BlockerTileSystem : ModSystem
+	private static readonly List<Blocker> blockers = new();
+
+	public override void Load()
 	{
-		private static readonly List<Blocker> blockers = new();
+		On_Main.DoUpdate += UpdateCollision;
+	}
 
-		public override void Load()
+	public override void Unload()
+	{
+		On_Main.DoUpdate -= UpdateCollision;
+	}
+
+	private void UpdateCollision(On_Main.orig_DoUpdate orig, Main self, ref GameTime gameTime)
+	{
+		orig(self, ref gameTime);
+
+		if (Main.gameMenu && Main.netMode != NetmodeID.Server)
+			return;
+
+		foreach (Blocker barrier in blockers)
 		{
-			On_Main.DoUpdate += UpdateCollision;
-		}
-
-		public override void Unload()
-		{
-			On_Main.DoUpdate -= UpdateCollision;
-		}
-
-		private void UpdateCollision(On_Main.orig_DoUpdate orig, Main self, ref GameTime gameTime)
-		{
-			orig(self, ref gameTime);
-
-			if (Main.gameMenu && Main.netMode != NetmodeID.Server)
-				return;
-
-			foreach (Blocker barrier in blockers)
-			{
-				Main.tileSolid[barrier.Type] = barrier.activeFunction();
-			}
-		}
-
-		public static void LoadBarrier(string internalName, Func<bool> activeFunction)
-		{
-			var instance = new Blocker(internalName, activeFunction);
-
-			StarlightRiver.Instance.AddContent(instance);
-			StarlightRiver.Instance.AddContent(new LoaderTileItem(internalName + "Item", internalName + "Item", "{{Debug}} item", internalName, -1, "StarlightRiver/Assets/Default", true, 0));
-			blockers.Add(instance);
+			Main.tileSolid[barrier.Type] = barrier.activeFunction();
 		}
 	}
 
-	[Autoload(false)]
-	internal class Blocker : ModTile
+	public static void LoadBarrier(string internalName, Func<bool> activeFunction)
 	{
-		private readonly string internalName;
+		var instance = new Blocker(internalName, activeFunction);
 
-		public readonly Func<bool> activeFunction;
+		StarlightRiver.Instance.AddContent(instance);
+		StarlightRiver.Instance.AddContent(new LoaderTileItem(internalName + "Item", internalName + "Item", "{{Debug}} item", internalName, -1, "StarlightRiver/Assets/Default", true, 0));
+		blockers.Add(instance);
+	}
+}
 
-		public override string Texture => AssetDirectory.Invisible;
+[Autoload(false)]
+internal class Blocker : ModTile
+{
+	private readonly string internalName;
 
-		public override string Name => internalName;
+	public readonly Func<bool> activeFunction;
 
-		public Blocker() { }
+	public override string Texture => AssetDirectory.Invisible;
 
-		public Blocker(string internalName, Func<bool> activeFunction)
-		{
-			this.internalName = internalName;
-			this.activeFunction = activeFunction;
-		}
+	public override string Name => internalName;
 
-		public override void SetStaticDefaults()
-		{
-			TileID.Sets.DrawsWalls[Type] = true;
-			Main.tileBlockLight[Type] = false;
-			MinPick = int.MaxValue;
-		}
+	public Blocker() { }
 
-		public override bool CanExplode(int i, int j)
-		{
-			return false;
-		}
+	public Blocker(string internalName, Func<bool> activeFunction)
+	{
+		this.internalName = internalName;
+		this.activeFunction = activeFunction;
+	}
+
+	public override void SetStaticDefaults()
+	{
+		TileID.Sets.DrawsWalls[Type] = true;
+		Main.tileBlockLight[Type] = false;
+		MinPick = int.MaxValue;
+	}
+
+	public override bool CanExplode(int i, int j)
+	{
+		return false;
 	}
 }

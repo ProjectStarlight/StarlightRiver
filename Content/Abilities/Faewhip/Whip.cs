@@ -5,382 +5,381 @@ using System;
 using Terraria.GameInput;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Abilities.Faewhip
+namespace StarlightRiver.Content.Abilities.Faewhip;
+
+public class Whip : Ability
 {
-	public class Whip : Ability
+	public override Asset<Texture2D> Texture => Assets.Abilities.Faeflame;
+	public override Asset<Texture2D> PreviewTexture => Assets.Abilities.FaeflamePreview;
+	public override Asset<Texture2D> PreviewTextureOff => Assets.Abilities.FaeflamePreviewOff;
+
+	public override float ActivationCostDefault => 0.15f;
+	public override Color Color => new(255, 247, 126);
+
+	public Trail trail;
+	public Trail glowTrail;
+	public Vector2[] trailPoints = new Vector2[100];
+
+	public Vector2 tipsPosition; //where the "tip" of the whip is in the world
+	public bool attached; //if the whip is attached to anything
+	public bool endRooted; //if the endpoint is "rooted" to a certain location and cant be moved
+
+	private Vector2 startPoint; //visual spline fields
+	public Vector2 midPoint;
+	public float dist1;
+	public float dist2;
+
+	public float length;
+	public float tipVelocity;
+
+	public Vector2 extraVelocity;
+	public float targetRot;
+
+	public float endScale;
+
+	public NPC attachedNPC; //if the whip is attached to an NPC, what is it attached to?
+	public IFaeWhippable attachedWhippable; //if the whip is attached to an entity with custom whip behavior
+
+	public override void Reset()
 	{
-		public override Asset<Texture2D> Texture => Assets.Abilities.Faeflame;
-		public override Asset<Texture2D> PreviewTexture => Assets.Abilities.FaeflamePreview;
-		public override Asset<Texture2D> PreviewTextureOff => Assets.Abilities.FaeflamePreviewOff;
 
-		public override float ActivationCostDefault => 0.15f;
-		public override Color Color => new(255, 247, 126);
+	}
 
-		public Trail trail;
-		public Trail glowTrail;
-		public Vector2[] trailPoints = new Vector2[100];
+	public override void OnActivate()
+	{
+		trail = null;
+		glowTrail = null;
+		endScale = 0;
 
-		public Vector2 tipsPosition; //where the "tip" of the whip is in the world
-		public bool attached; //if the whip is attached to anything
-		public bool endRooted; //if the endpoint is "rooted" to a certain location and cant be moved
+		Player.mount.Dismount(Player);
+		startPoint = Vector2.Zero;
 
-		private Vector2 startPoint; //visual spline fields
-		public Vector2 midPoint;
-		public float dist1;
-		public float dist2;
+		targetRot = (Main.MouseWorld - Player.Center).ToRotation();
+		tipsPosition = Player.Center;
+		tipVelocity = 2;
 
-		public float length;
-		public float tipVelocity;
+		for (int k = 0; k < 50; k++)
+			Dust.NewDustPerfect(Player.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), DustType<Dusts.Glow>(), Vector2.Normalize(Main.MouseWorld - Player.Center).RotatedByRandom(1) * Main.rand.NextFloat(0, 9), 1, new Color(255, 190, 50), 0.5f);
 
-		public Vector2 extraVelocity;
-		public float targetRot;
-
-		public float endScale;
-
-		public NPC attachedNPC; //if the whip is attached to an NPC, what is it attached to?
-		public IFaeWhippable attachedWhippable; //if the whip is attached to an entity with custom whip behavior
-
-		public override void Reset()
+		for (int k = 0; k < 20; k++)
 		{
-
+			float angle = Main.rand.NextFloat(-0.5f, 0.5f);
+			Vector2 vel = Vector2.Normalize(Main.MouseWorld - Player.Center).RotatedBy(angle);
+			Dust.NewDustPerfect(Player.Center + new Vector2(0, 60) + vel * 64, DustType<Dusts.GlowLine>(), vel * Main.rand.NextFloat(5, 15), 1, new Color(255, 190, 50), 1.0f);
 		}
 
-		public override void OnActivate()
+		SoundHelper.PlayPitched("Magic/HolyCastShort", 1, 1, Player.Center);
+	}
+
+	public override void UpdateActive()
+	{
+		bool control = StarlightRiver.Instance.AbilityKeys.Get<Whip>().Current;
+
+		if (!control || Player.GetHandler().Stamina <= 0)
 		{
-			trail = null;
-			glowTrail = null;
-			endScale = 0;
+			endRooted = false;
+			attached = false;
+			attachedNPC = null;
 
-			Player.mount.Dismount(Player);
-			startPoint = Vector2.Zero;
+			attachedWhippable?.OnRelease(this);
+			attachedWhippable = null;
 
-			targetRot = (Main.MouseWorld - Player.Center).ToRotation();
-			tipsPosition = Player.Center;
-			tipVelocity = 2;
+			Deactivate();
 
-			for (int k = 0; k < 50; k++)
-				Dust.NewDustPerfect(Player.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), DustType<Dusts.Glow>(), Vector2.Normalize(Main.MouseWorld - Player.Center).RotatedByRandom(1) * Main.rand.NextFloat(0, 9), 1, new Color(255, 190, 50), 0.5f);
-
-			for (int k = 0; k < 20; k++)
-			{
-				float angle = Main.rand.NextFloat(-0.5f, 0.5f);
-				Vector2 vel = Vector2.Normalize(Main.MouseWorld - Player.Center).RotatedBy(angle);
-				Dust.NewDustPerfect(Player.Center + new Vector2(0, 60) + vel * 64, DustType<Dusts.GlowLine>(), vel * Main.rand.NextFloat(5, 15), 1, new Color(255, 190, 50), 1.0f);
-			}
-
-			SoundHelper.PlayPitched("Magic/HolyCastShort", 1, 1, Player.Center);
+			extraVelocity = Main.MouseScreen;
+			return;
 		}
 
-		public override void UpdateActive()
+		Player.GetHandler().Stamina -= 0.0025f;
+
+		if (!attached)
 		{
-			bool control = StarlightRiver.Instance.AbilityKeys.Get<Whip>().Current;
+			float dist = Vector2.Distance(Player.Center, tipsPosition);
 
-			if (!control || Player.GetHandler().Stamina <= 0)
+			for (int k = 0; k < 8; k++)
 			{
-				endRooted = false;
-				attached = false;
-				attachedNPC = null;
+				if (dist < 700)
+					tipsPosition += Vector2.UnitX.RotatedBy(targetRot) * tipVelocity;
 
-				attachedWhippable?.OnRelease(this);
-				attachedWhippable = null;
-
-				Deactivate();
-
-				extraVelocity = Main.MouseScreen;
-				return;
-			}
-
-			Player.GetHandler().Stamina -= 0.0025f;
-
-			if (!attached)
-			{
-				float dist = Vector2.Distance(Player.Center, tipsPosition);
-
-				for (int k = 0; k < 8; k++)
+				//Check VS NPC interactions
+				for (int i = 0; i < Main.maxNPCs; i++)
 				{
-					if (dist < 700)
-						tipsPosition += Vector2.UnitX.RotatedBy(targetRot) * tipVelocity;
+					NPC npc = Main.npc[i];
 
-					//Check VS NPC interactions
-					for (int i = 0; i < Main.maxNPCs; i++)
+					//First check the special case of custom whip interaction implementation
+					if (npc.ModNPC is IFaeWhippable)
 					{
-						NPC npc = Main.npc[i];
-
-						//First check the special case of custom whip interaction implementation
-						if (npc.ModNPC is IFaeWhippable)
+						if ((npc.ModNPC as IFaeWhippable).IsWhipColliding(tipsPosition))
 						{
-							if ((npc.ModNPC as IFaeWhippable).IsWhipColliding(tipsPosition))
+							attachedWhippable = npc.ModNPC as IFaeWhippable;
+							attachedWhippable.OnAttach(this);
+							attached = true;
+
+							//If the object still wants the regular NPC binding to run
+							if (attachedWhippable.NormalNPCInteraction())
 							{
-								attachedWhippable = npc.ModNPC as IFaeWhippable;
-								attachedWhippable.OnAttach(this);
-								attached = true;
+								attachedNPC = Main.npc[i];
 
-								//If the object still wants the regular NPC binding to run
-								if (attachedWhippable.NormalNPCInteraction())
-								{
-									attachedNPC = Main.npc[i];
-
-									if (attachedNPC.knockBackResist == 0)
-										endRooted = true;
-								}
+								if (attachedNPC.knockBackResist == 0)
+									endRooted = true;
 							}
-
-							return;
 						}
 
-						//Next check the normal case for NPCs (hitbox colission)
-						if (npc.active && npc.Hitbox.Contains(tipsPosition.ToPoint()))
-						{
-							attachedNPC = Main.npc[i];
-							attached = true;
-
-							if (attachedNPC.knockBackResist == 0)
-								endRooted = true;
-
-							return;
-						}
+						return;
 					}
 
-					//Check VS Projectile interactions
-					for (int i = 0; i < Main.maxProjectiles; i++)
+					//Next check the normal case for NPCs (hitbox colission)
+					if (npc.active && npc.Hitbox.Contains(tipsPosition.ToPoint()))
 					{
-						//we only want to handle special cases for projectiles
-						var whippable = Main.projectile[i].ModProjectile as IFaeWhippable;
-
-						if (whippable != null && whippable.IsWhipColliding(tipsPosition))
-						{
-							attachedWhippable = whippable;
-							attachedWhippable.OnAttach(this);
-							attached = true;
-						}
-					}
-
-					// Check VS dummy interactions
-					foreach (Dummy dummy in DummySystem.dummies)
-					{
-						var whippable = dummy as IFaeWhippable;
-
-						if (whippable != null && whippable.IsWhipColliding(tipsPosition))
-						{
-							attachedWhippable = whippable;
-							attachedWhippable.OnAttach(this);
-							attached = true;
-						}
-					}
-
-					//Check VS Tile interactions
-					Tile tile = Framing.GetTileSafely((int)tipsPosition.X / 16, (int)tipsPosition.Y / 16);
-
-					if (tile.HasTile && Main.tileSolid[tile.TileType]) //debug
-					{
-						endRooted = true;
+						attachedNPC = Main.npc[i];
 						attached = true;
 
-						for (int i = 0; i < 50; i++)
-						{
-							Vector2 pos = tipsPosition + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4);
-							Vector2 vel = Vector2.Normalize(Main.MouseWorld - Player.Center).RotatedByRandom(6.28f) * Main.rand.NextFloat(0, 4);
-
-							Dust.NewDustPerfect(pos, DustType<Dusts.Glow>(), vel, 1, new Color(255, 190, 50), 0.3f);
-						}
+						if (attachedNPC.knockBackResist == 0)
+							endRooted = true;
 
 						return;
 					}
 				}
 
-				if (tipVelocity < 16)
-					tipVelocity++;
-
-				if (dist > 700)
-					Deactivate();
-
-				length = dist - 80;
-				if (length < 100)
-					length = 100;
-			}
-			else
-			{
-				if (endScale < 1.5f)
-					endScale += 0.1f;
-
-				if (attachedWhippable != null)
+				//Check VS Projectile interactions
+				for (int i = 0; i < Main.maxProjectiles; i++)
 				{
-					attachedWhippable.UpdateWhileWhipped(this);
+					//we only want to handle special cases for projectiles
+					var whippable = Main.projectile[i].ModProjectile as IFaeWhippable;
 
-					if (attachedWhippable.DetachCondition())
+					if (whippable != null && whippable.IsWhipColliding(tipsPosition))
 					{
-						attachedWhippable.OnRelease(this);
-						attachedWhippable = null;
-						attached = false;
-						Deactivate();
+						attachedWhippable = whippable;
+						attachedWhippable.OnAttach(this);
+						attached = true;
+					}
+				}
+
+				// Check VS dummy interactions
+				foreach (Dummy dummy in DummySystem.dummies)
+				{
+					var whippable = dummy as IFaeWhippable;
+
+					if (whippable != null && whippable.IsWhipColliding(tipsPosition))
+					{
+						attachedWhippable = whippable;
+						attachedWhippable.OnAttach(this);
+						attached = true;
+					}
+				}
+
+				//Check VS Tile interactions
+				Tile tile = Framing.GetTileSafely((int)tipsPosition.X / 16, (int)tipsPosition.Y / 16);
+
+				if (tile.HasTile && Main.tileSolid[tile.TileType]) //debug
+				{
+					endRooted = true;
+					attached = true;
+
+					for (int i = 0; i < 50; i++)
+					{
+						Vector2 pos = tipsPosition + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4);
+						Vector2 vel = Vector2.Normalize(Main.MouseWorld - Player.Center).RotatedByRandom(6.28f) * Main.rand.NextFloat(0, 4);
+
+						Dust.NewDustPerfect(pos, DustType<Dusts.Glow>(), vel, 1, new Color(255, 190, 50), 0.3f);
 					}
 
 					return;
 				}
+			}
 
-				if (endRooted)
+			if (tipVelocity < 16)
+				tipVelocity++;
+
+			if (dist > 700)
+				Deactivate();
+
+			length = dist - 80;
+			if (length < 100)
+				length = 100;
+		}
+		else
+		{
+			if (endScale < 1.5f)
+				endScale += 0.1f;
+
+			if (attachedWhippable != null)
+			{
+				attachedWhippable.UpdateWhileWhipped(this);
+
+				if (attachedWhippable.DetachCondition())
 				{
-					if (attachedNPC != null && attachedNPC.active)
-						tipsPosition = attachedNPC.Center;
-
-					Player.velocity -= extraVelocity;
-
-					Player.velocity.Y -= 0.43f;
-
-					Player.velocity += (Main.MouseWorld - tipsPosition) * -(0.05f - Eases.BezierEase(Player.velocity.Length() / 24f) * 0.025f);
-
-					if (Player.velocity.Length() > 18)
-						Player.velocity = Vector2.Normalize(Player.velocity) * 17.99f;
-
-					Player.velocity *= 0.92f;
-
-					Vector2 pullPoint = tipsPosition + Vector2.Normalize(Player.Center - tipsPosition) * length;
-					Player.velocity += (pullPoint - Player.Center) * 0.06f;
-					extraVelocity = (pullPoint - Player.Center) * 0.05f;
+					attachedWhippable.OnRelease(this);
+					attachedWhippable = null;
+					attached = false;
+					Deactivate();
 				}
-				else
-				{
-					if (attachedNPC is null || !attachedNPC.active)
-					{
-						attached = false;
-						attachedNPC = null;
-						Deactivate();
-						return;
-					}
 
+				return;
+			}
+
+			if (endRooted)
+			{
+				if (attachedNPC != null && attachedNPC.active)
 					tipsPosition = attachedNPC.Center;
 
-					Vector2 targetPoint = Player.Center + Vector2.UnitX.RotatedBy((Main.MouseWorld - Player.Center).ToRotation()) * Math.Min(700, Vector2.Distance(Player.Center, Main.MouseWorld));
-					attachedNPC.velocity += (targetPoint - attachedNPC.Center) * 0.1f;
+				Player.velocity -= extraVelocity;
 
-					if (attachedNPC.velocity.Length() > 18)
-						attachedNPC.velocity = Vector2.Normalize(attachedNPC.velocity) * 17.99f;
+				Player.velocity.Y -= 0.43f;
 
-					attachedNPC.velocity *= 0.92f;
+				Player.velocity += (Main.MouseWorld - tipsPosition) * -(0.05f - Eases.BezierEase(Player.velocity.Length() / 24f) * 0.025f);
 
-					//attachedNPC.velocity += (attachedNPC.Center - Player.Center) * -0.05f;
+				if (Player.velocity.Length() > 18)
+					Player.velocity = Vector2.Normalize(Player.velocity) * 17.99f;
+
+				Player.velocity *= 0.92f;
+
+				Vector2 pullPoint = tipsPosition + Vector2.Normalize(Player.Center - tipsPosition) * length;
+				Player.velocity += (pullPoint - Player.Center) * 0.06f;
+				extraVelocity = (pullPoint - Player.Center) * 0.05f;
+			}
+			else
+			{
+				if (attachedNPC is null || !attachedNPC.active)
+				{
+					attached = false;
+					attachedNPC = null;
+					Deactivate();
+					return;
 				}
-			}
 
-			for (int k = 0; k < 100; k++) //dust
-			{
-				Vector2 pos = PointOnSpline(k / 100f);
+				tipsPosition = attachedNPC.Center;
 
-				if (k > 0 && Main.rand.NextBool(80))
-					Dust.NewDustPerfect(pos + new Vector2(0, 20), DustType<Dusts.GlowLineFast>(), Vector2.Normalize(pos - trailPoints[k - 1]).RotatedByRandom(0.1f) * Main.rand.NextFloat(6, 8), 1, new Color(255, Main.rand.Next(150, 255), 50), 0.4f);
+				Vector2 targetPoint = Player.Center + Vector2.UnitX.RotatedBy((Main.MouseWorld - Player.Center).ToRotation()) * Math.Min(700, Vector2.Distance(Player.Center, Main.MouseWorld));
+				attachedNPC.velocity += (targetPoint - attachedNPC.Center) * 0.1f;
+
+				if (attachedNPC.velocity.Length() > 18)
+					attachedNPC.velocity = Vector2.Normalize(attachedNPC.velocity) * 17.99f;
+
+				attachedNPC.velocity *= 0.92f;
+
+				//attachedNPC.velocity += (attachedNPC.Center - Player.Center) * -0.05f;
 			}
 		}
 
-		public override void DrawActiveEffects(SpriteBatch spriteBatch)
+		for (int k = 0; k < 100; k++) //dust
 		{
-			if (!Active || !PlayerTargetSystem.canUseTarget)
-				return;
+			Vector2 pos = PointOnSpline(k / 100f);
 
-			if (trail is null || trail.IsDisposed)
-				trail = new Trail(Main.graphics.GraphicsDevice, 100, new NoTip(), n => 10 + n * 0, n => new Color(255, 255, 150) * (endRooted ? Math.Min(n.X * 5f, 1) : (float)Math.Sin(n.X * 3.14f)));
-
-			if (glowTrail is null || glowTrail.IsDisposed)
-				glowTrail = new Trail(Main.graphics.GraphicsDevice, 100, new NoTip(), n => 18 + n * 0, n => new Color(255, 150, 50) * 0.1f * (endRooted ? Math.Min(n.X * 5f, 1) : (float)Math.Sin(n.X * 3.14f)));
-
-			trail.Positions = trailPoints;
-			glowTrail.Positions = trailPoints;
-
-			for (int k = 0; k < 100; k++)
-			{
-				Vector2 pos = PointOnSpline(k / 100f);
-				trailPoints[k] = pos;
-			}
-
-			Effect effect = ShaderLoader.GetShader("WhipAbility").Value;
-
-			if (startPoint != Vector2.Zero && effect != null)
-			{
-				spriteBatch.End();
-
-				Texture2D tex0 = Assets.EnergyTrail.Value;
-				Texture2D tex1 = Assets.GlowTrail.Value;
-
-				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-				Matrix view = Main.GameViewMatrix.TransformationMatrix;
-				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
-
-				effect.Parameters["time"].SetValue(Main.GameUpdateCount * -0.025f);
-				effect.Parameters["repeats"].SetValue(2f);
-				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-				effect.Parameters["sampleTexture"].SetValue(tex0);
-
-				trail?.Render(effect);
-
-				effect.Parameters["sampleTexture"].SetValue(tex1);
-
-				glowTrail?.Render(effect);
-
-				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
-			}
-
-			if (startPoint == Vector2.Zero)
-			{
-				midPoint = Vector2.Lerp(Player.Center, tipsPosition, 0.5f);
-
-				dist1 = ApproximateSplineLength(30, startPoint, midPoint - startPoint, midPoint, tipsPosition - startPoint);
-				dist2 = ApproximateSplineLength(30, midPoint, tipsPosition - startPoint, tipsPosition, tipsPosition - midPoint);
-			}
-
-			startPoint = Player.Center;
-			midPoint += (Vector2.Lerp(Player.Center, tipsPosition, 0.5f) - midPoint) * 0.075f;
-
-			if (attached)
-			{
-				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
-
-				Texture2D endTex = endRooted ? Assets.Abilities.WhipEndRoot.Value : Assets.Abilities.WhipEndGrab.Value;
-				Texture2D endGlow = Assets.Masks.GlowSoft.Value;
-
-				spriteBatch.Draw(endTex, tipsPosition - Main.screenPosition, null, new Color(255, 190, 100), Main.GameUpdateCount * 0.1f, endTex.Size() / 2, endScale * 0.75f, 0, 0);
-				spriteBatch.Draw(endGlow, tipsPosition - Main.screenPosition, null, new Color(255, 190, 100), 0, endGlow.Size() / 2, endScale, 0, 0);
-
-				spriteBatch.End();
-				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
-			}
+			if (k > 0 && Main.rand.NextBool(80))
+				Dust.NewDustPerfect(pos + new Vector2(0, 20), DustType<Dusts.GlowLineFast>(), Vector2.Normalize(pos - trailPoints[k - 1]).RotatedByRandom(0.1f) * Main.rand.NextFloat(6, 8), 1, new Color(255, Main.rand.Next(150, 255), 50), 0.4f);
 		}
+	}
 
-		private Vector2 PointOnSpline(float progress) //someone force me to generalize this stuff later lol
+	public override void DrawActiveEffects(SpriteBatch spriteBatch)
+	{
+		if (!Active || !PlayerTargetSystem.canUseTarget)
+			return;
+
+		if (trail is null || trail.IsDisposed)
+			trail = new Trail(Main.graphics.GraphicsDevice, 100, new NoTip(), n => 10 + n * 0, n => new Color(255, 255, 150) * (endRooted ? Math.Min(n.X * 5f, 1) : (float)Math.Sin(n.X * 3.14f)));
+
+		if (glowTrail is null || glowTrail.IsDisposed)
+			glowTrail = new Trail(Main.graphics.GraphicsDevice, 100, new NoTip(), n => 18 + n * 0, n => new Color(255, 150, 50) * 0.1f * (endRooted ? Math.Min(n.X * 5f, 1) : (float)Math.Sin(n.X * 3.14f)));
+
+		trail.Positions = trailPoints;
+		glowTrail.Positions = trailPoints;
+
+		for (int k = 0; k < 100; k++)
 		{
-			float factor = dist1 / (dist1 + dist2);
-
-			if (progress < factor)
-				return Vector2.Hermite(startPoint, midPoint - startPoint, midPoint, tipsPosition - startPoint, progress * (1 / factor));
-			if (progress >= factor)
-				return Vector2.Hermite(midPoint, tipsPosition - startPoint, tipsPosition, tipsPosition - midPoint, (progress - factor) * (1 / (1 - factor)));
-
-			return Vector2.Zero;
+			Vector2 pos = PointOnSpline(k / 100f);
+			trailPoints[k] = pos;
 		}
 
-		private float ApproximateSplineLength(int steps, Vector2 start, Vector2 startTan, Vector2 end, Vector2 endTan)
+		Effect effect = ShaderLoader.GetShader("WhipAbility").Value;
+
+		if (startPoint != Vector2.Zero && effect != null)
 		{
-			float total = 0;
-			Vector2 prevPoint = start;
+			spriteBatch.End();
 
-			for (int k = 0; k < steps; k++)
-			{
-				var testPoint = Vector2.Hermite(start, startTan, end, endTan, k / (float)steps);
-				total += Vector2.Distance(prevPoint, testPoint);
+			Texture2D tex0 = Assets.EnergyTrail.Value;
+			Texture2D tex1 = Assets.GlowTrail.Value;
 
-				prevPoint = testPoint;
-			}
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
+			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			return total;
+			effect.Parameters["time"].SetValue(Main.GameUpdateCount * -0.025f);
+			effect.Parameters["repeats"].SetValue(2f);
+			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+			effect.Parameters["sampleTexture"].SetValue(tex0);
+
+			trail?.Render(effect);
+
+			effect.Parameters["sampleTexture"].SetValue(tex1);
+
+			glowTrail?.Render(effect);
+
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
-		public override void OnExit()
+		if (startPoint == Vector2.Zero)
 		{
+			midPoint = Vector2.Lerp(Player.Center, tipsPosition, 0.5f);
 
+			dist1 = ApproximateSplineLength(30, startPoint, midPoint - startPoint, midPoint, tipsPosition - startPoint);
+			dist2 = ApproximateSplineLength(30, midPoint, tipsPosition - startPoint, tipsPosition, tipsPosition - midPoint);
 		}
 
-		public override bool HotKeyMatch(TriggersSet triggers, AbilityHotkeys abilityKeys)
+		startPoint = Player.Center;
+		midPoint += (Vector2.Lerp(Player.Center, tipsPosition, 0.5f) - midPoint) * 0.075f;
+
+		if (attached)
 		{
-			return abilityKeys.Get<Whip>().JustPressed;
+			spriteBatch.End();
+			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+
+			Texture2D endTex = endRooted ? Assets.Abilities.WhipEndRoot.Value : Assets.Abilities.WhipEndGrab.Value;
+			Texture2D endGlow = Assets.Masks.GlowSoft.Value;
+
+			spriteBatch.Draw(endTex, tipsPosition - Main.screenPosition, null, new Color(255, 190, 100), Main.GameUpdateCount * 0.1f, endTex.Size() / 2, endScale * 0.75f, 0, 0);
+			spriteBatch.Draw(endGlow, tipsPosition - Main.screenPosition, null, new Color(255, 190, 100), 0, endGlow.Size() / 2, endScale, 0, 0);
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 		}
+	}
+
+	private Vector2 PointOnSpline(float progress) //someone force me to generalize this stuff later lol
+	{
+		float factor = dist1 / (dist1 + dist2);
+
+		if (progress < factor)
+			return Vector2.Hermite(startPoint, midPoint - startPoint, midPoint, tipsPosition - startPoint, progress * (1 / factor));
+		if (progress >= factor)
+			return Vector2.Hermite(midPoint, tipsPosition - startPoint, tipsPosition, tipsPosition - midPoint, (progress - factor) * (1 / (1 - factor)));
+
+		return Vector2.Zero;
+	}
+
+	private float ApproximateSplineLength(int steps, Vector2 start, Vector2 startTan, Vector2 end, Vector2 endTan)
+	{
+		float total = 0;
+		Vector2 prevPoint = start;
+
+		for (int k = 0; k < steps; k++)
+		{
+			var testPoint = Vector2.Hermite(start, startTan, end, endTan, k / (float)steps);
+			total += Vector2.Distance(prevPoint, testPoint);
+
+			prevPoint = testPoint;
+		}
+
+		return total;
+	}
+
+	public override void OnExit()
+	{
+
+	}
+
+	public override bool HotKeyMatch(TriggersSet triggers, AbilityHotkeys abilityKeys)
+	{
+		return abilityKeys.Get<Whip>().JustPressed;
 	}
 }

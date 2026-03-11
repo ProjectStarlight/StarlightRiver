@@ -4,53 +4,52 @@ using System.Linq;
 using Terraria.ModLoader.Core;
 using static Terraria.ModLoader.Core.TmodFile;
 
-namespace StarlightRiver.Core.Loaders
+namespace StarlightRiver.Core.Loaders;
+
+class ShaderLoader : IOrderedLoadable
 {
-	class ShaderLoader : IOrderedLoadable
+	private static readonly Dictionary<string, Lazy<Asset<Effect>>> shaders = [];
+
+	public float Priority => 0.9f;
+
+	public void Load()
 	{
-		private static readonly Dictionary<string, Lazy<Asset<Effect>>> shaders = [];
+		if (Main.dedServ)
+			return;
 
-		public float Priority => 0.9f;
+		TmodFile file = StarlightRiver.Instance.File;
 
-		public void Load()
+		IEnumerable<FileEntry> shaders = file.Where(n => n.Name.StartsWith("Effects/") && n.Name.EndsWith(".xnb"));
+
+		foreach (FileEntry entry in shaders)
 		{
-			if (Main.dedServ)
-				return;
-
-			TmodFile file = StarlightRiver.Instance.File;
-
-			IEnumerable<FileEntry> shaders = file.Where(n => n.Name.StartsWith("Effects/") && n.Name.EndsWith(".xnb"));
-
-			foreach (FileEntry entry in shaders)
-			{
-				string name = entry.Name.Replace(".xnb", "").Replace("Effects/", "");
-				string path = entry.Name.Replace(".xnb", "");
-				LoadShader(name, path);
-			}
+			string name = entry.Name.Replace(".xnb", "").Replace("Effects/", "");
+			string path = entry.Name.Replace(".xnb", "");
+			LoadShader(name, path);
 		}
+	}
 
-		public void Unload()
+	public void Unload()
+	{
+
+	}
+
+	public static Asset<Effect> GetShader(string key)
+	{
+		if (shaders.ContainsKey(key))
 		{
-
+			return shaders[key].Value;
 		}
-
-		public static Asset<Effect> GetShader(string key)
+		else
 		{
-			if (shaders.ContainsKey(key))
-			{
-				return shaders[key].Value;
-			}
-			else
-			{
-				LoadShader(key, $"Effects/{key}");
-				return shaders[key].Value;
-			}
+			LoadShader(key, $"Effects/{key}");
+			return shaders[key].Value;
 		}
+	}
 
-		public static void LoadShader(string name, string path)
-		{
-			if (!shaders.ContainsKey(name))
-				shaders.Add(name, new(() => StarlightRiver.Instance.Assets.Request<Effect>(path)));
-		}
+	public static void LoadShader(string name, string path)
+	{
+		if (!shaders.ContainsKey(name))
+			shaders.Add(name, new(() => StarlightRiver.Instance.Assets.Request<Effect>(path)));
 	}
 }

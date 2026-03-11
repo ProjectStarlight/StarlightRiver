@@ -6,193 +6,192 @@ using System.Collections.Generic;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Bosses.SquidBoss
+namespace StarlightRiver.Content.Bosses.SquidBoss;
+
+class InkBlob : ModProjectile, IDrawPrimitive
 {
-	class InkBlob : ModProjectile, IDrawPrimitive
+	private List<Vector2> cache;
+	private Trail trail;
+
+	private Vector2 initialPosition;
+
+	private bool initialized = false;
+
+	public override string Texture => AssetDirectory.SquidBoss + "InkBlob";
+
+	public override void SetStaticDefaults()
 	{
-		private List<Vector2> cache;
-		private Trail trail;
+		DisplayName.SetDefault("Rainbow Ink");
+	}
 
-		private Vector2 initialPosition;
+	public override void SetDefaults()
+	{
+		Projectile.width = 40;
+		Projectile.height = 40;
+		Projectile.aiStyle = -1;
+		Projectile.timeLeft = 120;
+		Projectile.hostile = true;
+	}
 
-		private bool initialized = false;
-
-		public override string Texture => AssetDirectory.SquidBoss + "InkBlob";
-
-		public override void SetStaticDefaults()
+	public override void AI()
+	{
+		if (!initialized)
 		{
-			DisplayName.SetDefault("Rainbow Ink");
+			initialized = true;
+			initialPosition = Projectile.Center;
+			Projectile.netUpdate = true;
 		}
 
-		public override void SetDefaults()
+		Projectile.scale -= 1 / 400f;
+
+		Projectile.ai[1] += 0.1f;
+		Projectile.rotation += Main.rand.NextFloat(0.2f);
+		Projectile.scale = 0.5f;
+
+		Projectile.position += Projectile.velocity.RotatedBy(1.57f) * (float)Math.Sin(Projectile.timeLeft / 120f * 3.14f * 3 + Projectile.ai[0]) * 0.75f;
+
+		float sin = 1 + (float)Math.Sin(Projectile.ai[1]);
+		float cos = 1 + (float)Math.Cos(Projectile.ai[1]);
+		Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
+
+		if (Main.masterMode)
+			color = new Color(1, 0.25f + sin * 0.25f, 0f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
+
+		Lighting.AddLight(Projectile.Center, color.ToVector3() * 0.5f);
+
+		if (Main.rand.NextBool(4))
 		{
-			Projectile.width = 40;
-			Projectile.height = 40;
-			Projectile.aiStyle = -1;
-			Projectile.timeLeft = 120;
-			Projectile.hostile = true;
+			var d = Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(16), ModContent.DustType<Dusts.AuroraFast>(), Vector2.Zero, 0, color, 0.5f);
+			d.customData = Main.rand.NextFloat(0.5f, 1);
 		}
 
-		public override void AI()
+		if (!Main.dedServ)
 		{
-			if (!initialized)
-			{
-				initialized = true;
-				initialPosition = Projectile.Center;
-				Projectile.netUpdate = true;
-			}
+			ManageCaches();
+			ManageTrail();
+		}
+	}
 
-			Projectile.scale -= 1 / 400f;
+	public override void OnKill(int timeLeft)
+	{
+		for (int k = 0; k < 20; k++)
+		{
+			Vector2 off = Vector2.One.RotatedByRandom(6.28f);
+			var d = Dust.NewDustPerfect(Projectile.Center + off * Main.rand.NextFloat(16), ModContent.DustType<Dusts.Glow>(), off * Main.rand.NextFloat(2), 0, new Color(150, 255, 200), 0.5f);
+			d.customData = Main.rand.NextFloat(1, 2);
+		}
+	}
 
-			Projectile.ai[1] += 0.1f;
-			Projectile.rotation += Main.rand.NextFloat(0.2f);
-			Projectile.scale = 0.5f;
+	public override bool PreDraw(ref Color lightColor)
+	{
+		Texture2D tex = Assets.Bosses.SquidBoss.InkBlob.Value;
 
-			Projectile.position += Projectile.velocity.RotatedBy(1.57f) * (float)Math.Sin(Projectile.timeLeft / 120f * 3.14f * 3 + Projectile.ai[0]) * 0.75f;
+		float sin = 1 + (float)Math.Sin(Projectile.ai[1]);
+		float cos = 1 + (float)Math.Cos(Projectile.ai[1]);
+		float alpha = Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1;
+		Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * alpha;
 
-			float sin = 1 + (float)Math.Sin(Projectile.ai[1]);
-			float cos = 1 + (float)Math.Cos(Projectile.ai[1]);
-			Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
+		if (Main.masterMode)
+			color = new Color(1, 0.25f + sin * 0.25f, 0f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
 
-			if (Main.masterMode)
-				color = new Color(1, 0.25f + sin * 0.25f, 0f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
+		Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), color, Projectile.rotation, tex.Size() / 2, Projectile.scale, 0, 0);
+		Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), Color.White * alpha, Projectile.rotation, tex.Size() / 2, Projectile.scale * 0.8f, 0, 0);
 
-			Lighting.AddLight(Projectile.Center, color.ToVector3() * 0.5f);
+		Texture2D glow = Assets.Masks.GlowSoftAlpha.Value;
+		Color glowColor = new Color(0.7f, 0.8f, 0.5f) * Eases.EaseCubicOut(MathHelper.Max(0, (Projectile.timeLeft - 90) / 30f));
+		glowColor.A = 0;
 
-			if (Main.rand.NextBool(4))
-			{
-				var d = Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(16), ModContent.DustType<Dusts.AuroraFast>(), Vector2.Zero, 0, color, 0.5f);
-				d.customData = Main.rand.NextFloat(0.5f, 1);
-			}
-
-			if (!Main.dedServ)
-			{
-				ManageCaches();
-				ManageTrail();
-			}
+		for (int i = 0; i < 3; i++)
+		{
+			Main.spriteBatch.Draw(glow, initialPosition - Main.screenPosition, null, glowColor, 0f, glow.Size() / 2, 1.2f, SpriteEffects.None, 0f);
 		}
 
-		public override void OnKill(int timeLeft)
-		{
-			for (int k = 0; k < 20; k++)
-			{
-				Vector2 off = Vector2.One.RotatedByRandom(6.28f);
-				var d = Dust.NewDustPerfect(Projectile.Center + off * Main.rand.NextFloat(16), ModContent.DustType<Dusts.Glow>(), off * Main.rand.NextFloat(2), 0, new Color(150, 255, 200), 0.5f);
-				d.customData = Main.rand.NextFloat(1, 2);
-			}
-		}
+		return false;
+	}
 
-		public override bool PreDraw(ref Color lightColor)
-		{
-			Texture2D tex = Assets.Bosses.SquidBoss.InkBlob.Value;
-
-			float sin = 1 + (float)Math.Sin(Projectile.ai[1]);
-			float cos = 1 + (float)Math.Cos(Projectile.ai[1]);
-			float alpha = Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1;
-			Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * alpha;
-
-			if (Main.masterMode)
-				color = new Color(1, 0.25f + sin * 0.25f, 0f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
-
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), color, Projectile.rotation, tex.Size() / 2, Projectile.scale, 0, 0);
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), Color.White * alpha, Projectile.rotation, tex.Size() / 2, Projectile.scale * 0.8f, 0, 0);
-
-			Texture2D glow = Assets.Masks.GlowSoftAlpha.Value;
-			Color glowColor = new Color(0.7f, 0.8f, 0.5f) * Eases.EaseCubicOut(MathHelper.Max(0, (Projectile.timeLeft - 90) / 30f));
-			glowColor.A = 0;
-
-			for (int i = 0; i < 3; i++)
-			{
-				Main.spriteBatch.Draw(glow, initialPosition - Main.screenPosition, null, glowColor, 0f, glow.Size() / 2, 1.2f, SpriteEffects.None, 0f);
-			}
-
-			return false;
-		}
-
-		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
-		{
-			if (Main.netMode == NetmodeID.Server) //no caches on the server
-				return base.Colliding(projHitbox, targetHitbox);
-
-			for (int k = 5; k < cache.Count; k++)
-			{
-				var hitbox = new Rectangle((int)cache[k].X - k / 2, (int)cache[k].Y - k / 2, k, k);
-
-				if (hitbox.Intersects(targetHitbox))
-					return true;
-			}
-
+	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+	{
+		if (Main.netMode == NetmodeID.Server) //no caches on the server
 			return base.Colliding(projHitbox, targetHitbox);
+
+		for (int k = 5; k < cache.Count; k++)
+		{
+			var hitbox = new Rectangle((int)cache[k].X - k / 2, (int)cache[k].Y - k / 2, k, k);
+
+			if (hitbox.Intersects(targetHitbox))
+				return true;
 		}
 
-		protected void ManageCaches()
+		return base.Colliding(projHitbox, targetHitbox);
+	}
+
+	protected void ManageCaches()
+	{
+		if (cache == null)
 		{
-			if (cache == null)
+			cache = new List<Vector2>();
+
+			for (int i = 0; i < 30; i++)
 			{
-				cache = new List<Vector2>();
-
-				for (int i = 0; i < 30; i++)
-				{
-					cache.Add(Projectile.Center);
-				}
-			}
-
-			cache.Add(Projectile.Center);
-
-			while (cache.Count > 30)
-			{
-				cache.RemoveAt(0);
+				cache.Add(Projectile.Center);
 			}
 		}
 
-		protected void ManageTrail()
+		cache.Add(Projectile.Center);
+
+		while (cache.Count > 30)
 		{
-			if (trail is null || trail.IsDisposed)
-			{
-				trail = new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 16, factor =>
-							{
-								float alpha = factor.X;
+			cache.RemoveAt(0);
+		}
+	}
 
-								if (factor.X == 1)
-									alpha = 0;
+	protected void ManageTrail()
+	{
+		if (trail is null || trail.IsDisposed)
+		{
+			trail = new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 16, factor =>
+						{
+							float alpha = factor.X;
 
-								if (Projectile.timeLeft < 20)
-									alpha *= Projectile.timeLeft / 20f;
+							if (factor.X == 1)
+								alpha = 0;
 
-								float sin = 1 + (float)Math.Sin(factor.X * 10);
-								float cos = 1 + (float)Math.Cos(factor.X * 10);
-								Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
+							if (Projectile.timeLeft < 20)
+								alpha *= Projectile.timeLeft / 20f;
 
-								if (Main.masterMode)
-									color = new Color(1, 0.25f + sin * 0.25f, 0.25f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
+							float sin = 1 + (float)Math.Sin(factor.X * 10);
+							float cos = 1 + (float)Math.Cos(factor.X * 10);
+							Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
 
-								return color * alpha;
-							});
-			}
+							if (Main.masterMode)
+								color = new Color(1, 0.25f + sin * 0.25f, 0.25f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
 
-			trail.Positions = cache.ToArray();
-			trail.NextPosition = Projectile.Center + Projectile.velocity;
+							return color * alpha;
+						});
 		}
 
-		public void DrawPrimitives()
+		trail.Positions = cache.ToArray();
+		trail.NextPosition = Projectile.Center + Projectile.velocity;
+	}
+
+	public void DrawPrimitives()
+	{
+		Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
+
+		if (effect != null)
 		{
-			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
+			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			if (effect != null)
-			{
-				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-				Matrix view = Main.GameViewMatrix.TransformationMatrix;
-				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
+			effect.Parameters["repeats"].SetValue(2f);
+			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+			trail?.Render(effect);
 
-				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
-				effect.Parameters["repeats"].SetValue(2f);
-				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
-				trail?.Render(effect);
-
-				effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
-				trail?.Render(effect);
-			}
+			effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
+			trail?.Render(effect);
 		}
 	}
 }

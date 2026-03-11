@@ -1,48 +1,47 @@
 ﻿using System.Collections.Generic;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Items.Hovers
+namespace StarlightRiver.Content.Items.Hovers;
+
+internal abstract class Hover : ModItem
 {
-	internal abstract class Hover : ModItem
+	readonly string texture;
+
+	public override string Texture => texture;
+
+	public Hover(string texture) : base()
 	{
-		readonly string texture;
-
-		public override string Texture => texture;
-
-		public Hover(string texture) : base()
-		{
-			this.texture = texture;
-		}
-
-		public override void SetStaticDefaults()
-		{
-			//ItemID.Sets.Deprecated[Type] = true;
-		}
-
-		public override void ModifyTooltips(List<TooltipLine> tooltips)
-		{
-			tooltips.Clear();
-			tooltips.Add(new(Mod, "SLRHoverInfo", "This should not apper! report to https://github.com/ProjectStarlight/StarlightRiver/issues"));
-		}
+		this.texture = texture;
 	}
 
-	internal class StarlightHover : Hover
+	public override void SetStaticDefaults()
 	{
-		public StarlightHover() : base("StarlightRiver/Assets/GUI/Starlight") { }
+		//ItemID.Sets.Deprecated[Type] = true;
 	}
 
-	internal class GenericHover : Hover
+	public override void ModifyTooltips(List<TooltipLine> tooltips)
 	{
-		public GenericHover() : base("StarlightRiver/Assets/Misc/Exclaim") { }
+		tooltips.Clear();
+		tooltips.Add(new(Mod, "SLRHoverInfo", "This should not apper! report to https://github.com/ProjectStarlight/StarlightRiver/issues"));
 	}
+}
 
-	internal class WindsHover : Hover
-	{
-		public WindsHover() : base("StarlightRiver/Assets/Abilities/ForbiddenWinds") { }
-	}
+internal class StarlightHover : Hover
+{
+	public StarlightHover() : base("StarlightRiver/Assets/GUI/Starlight") { }
+}
 
-	internal class FaeHover : Hover
-	{
-		public FaeHover() : base("StarlightRiver/Assets/Abilities/Faeflame") { }
-	}
+internal class GenericHover : Hover
+{
+	public GenericHover() : base("StarlightRiver/Assets/Misc/Exclaim") { }
+}
+
+internal class WindsHover : Hover
+{
+	public WindsHover() : base("StarlightRiver/Assets/Abilities/ForbiddenWinds") { }
+}
+
+internal class FaeHover : Hover
+{
+	public FaeHover() : base("StarlightRiver/Assets/Abilities/Faeflame") { }
 }

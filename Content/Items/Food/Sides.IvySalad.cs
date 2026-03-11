@@ -1,34 +1,33 @@
 ﻿using Terraria.ID;
 
-namespace StarlightRiver.Content.Items.Food
+namespace StarlightRiver.Content.Items.Food;
+
+internal class IvySalad : Ingredient
 {
-	internal class IvySalad : Ingredient
+	public IvySalad() : base("10% chance to poison with all hits", 1800, IngredientType.Side) { }
+
+	public override void SafeSetDefaults()
 	{
-		public IvySalad() : base("10% chance to poison with all hits", 1800, IngredientType.Side) { }
+		Item.rare = ItemRarityID.White;
 
-		public override void SafeSetDefaults()
-		{
-			Item.rare = ItemRarityID.White;
+		Item.value = Item.sellPrice(silver: 5);
+	}
 
-			Item.value = Item.sellPrice(silver: 5);
-		}
+	public override void Load()
+	{
+		StarlightPlayer.OnHitNPCEvent += ChanceToPoison;
+		StarlightPlayer.OnHitNPCWithProjEvent += ChanceToPoisonProjectile;
+	}
 
-		public override void Load()
-		{
-			StarlightPlayer.OnHitNPCEvent += ChanceToPoison;
-			StarlightPlayer.OnHitNPCWithProjEvent += ChanceToPoisonProjectile;
-		}
+	private void ChanceToPoisonProjectile(Player player, Projectile proj, NPC target, NPC.HitInfo info, int damageDone)
+	{
+		if (info.Crit && Active(player) && Main.rand.NextFloat() < (0.1f * player.GetModPlayer<FoodBuffHandler>().Multiplier))
+			target.AddBuff(BuffID.Poisoned, 30);
+	}
 
-		private void ChanceToPoisonProjectile(Player player, Projectile proj, NPC target, NPC.HitInfo info, int damageDone)
-		{
-			if (info.Crit && Active(player) && Main.rand.NextFloat() < (0.1f * player.GetModPlayer<FoodBuffHandler>().Multiplier))
-				target.AddBuff(BuffID.Poisoned, 30);
-		}
-
-		private void ChanceToPoison(Player player, Item Item, NPC target, NPC.HitInfo info, int damageDone)
-		{
-			if (info.Crit && Active(player) && Main.rand.NextFloat() < (0.1f * player.GetModPlayer<FoodBuffHandler>().Multiplier))
-				target.AddBuff(BuffID.Poisoned, 30);
-		}
+	private void ChanceToPoison(Player player, Item Item, NPC target, NPC.HitInfo info, int damageDone)
+	{
+		if (info.Crit && Active(player) && Main.rand.NextFloat() < (0.1f * player.GetModPlayer<FoodBuffHandler>().Multiplier))
+			target.AddBuff(BuffID.Poisoned, 30);
 	}
 }

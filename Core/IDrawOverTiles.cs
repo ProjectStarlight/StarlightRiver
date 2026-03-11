@@ -1,7 +1,6 @@
-﻿namespace StarlightRiver.Core
+﻿namespace StarlightRiver.Core;
+
+interface IDrawOverTiles
 {
-	interface IDrawOverTiles
-	{
-		void DrawOverTiles(SpriteBatch spriteBatch);
-	}
+	void DrawOverTiles(SpriteBatch spriteBatch);
 }

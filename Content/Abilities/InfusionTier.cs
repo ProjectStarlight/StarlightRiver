@@ -1,4 +1,3 @@
-﻿namespace StarlightRiver.Content.Abilities
-{
-	public enum InfusionTier { Bronze = 1, Silver, Gold, Untiered = 0 }
-}
+﻿namespace StarlightRiver.Content.Abilities;
+
+public enum InfusionTier { Bronze = 1, Silver, Gold, Untiered = 0 }

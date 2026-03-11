@@ -2,16 +2,78 @@
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Helpers
-{
-	public static class ItemHelper
-	{
-		public static void NewItemSpecific(Vector2 position, Item Item)
-		{
-			int targetIndex = 400;
-			Main.item[400] = new Item(); //Vanilla seems to make sure to set the dummy here, so I will too.
+namespace StarlightRiver.Helpers;
 
-			if (Main.netMode != NetmodeID.MultiplayerClient) //Main.item index finder from vanilla
+public static class ItemHelper
+{
+	public static void NewItemSpecific(Vector2 position, Item Item)
+	{
+		int targetIndex = 400;
+		Main.item[400] = new Item(); //Vanilla seems to make sure to set the dummy here, so I will too.
+
+		if (Main.netMode != NetmodeID.MultiplayerClient) //Main.item index finder from vanilla
+		{
+			for (int j = 0; j < 400; j++)
+			{
+				if (!Main.item[j].active && Main.timeItemSlotCannotBeReusedFor[j] == 0)
+				{
+					targetIndex = j;
+					break;
+				}
+			}
+		}
+
+		if (targetIndex == 400 && Main.netMode != NetmodeID.MultiplayerClient) //some sort of vanilla failsafe if no safe index is found it seems?
+		{
+			int timeDiff = 0;
+			for (int k = 0; k < 400; k++)
+			{
+				if (Main.item[k].timeSinceItemSpawned - Main.timeItemSlotCannotBeReusedFor[k] > timeDiff)
+				{
+					timeDiff = Main.item[k].timeSinceItemSpawned - Main.timeItemSlotCannotBeReusedFor[k];
+					targetIndex = k;
+				}
+			}
+		}
+
+		Main.item[targetIndex] = Item;
+		Main.item[targetIndex].position = position;
+
+		if (ItemSlot.Options.HighlightNewItems && Item.type >= ItemID.None && !ItemID.Sets.NeverAppearsAsNewInInventory[Item.type]) //vanilla Item highlight system
+		{
+			Item.newAndShiny = true;
+		}
+
+		if (Main.netMode == NetmodeID.Server) //syncing
+		{
+			NetMessage.SendData(MessageID.SyncItem, -1, -1, null, targetIndex, 0, 0f, 0f, 0, 0, 0);
+			Item.FindOwner(Item.whoAmI);
+		}
+		else if (Main.netMode == NetmodeID.SinglePlayer)
+		{
+			Item.playerIndexTheItemIsReservedFor = Main.myPlayer;
+		}
+	}
+
+	public static Item NewItemPerfect(Vector2 position, Vector2 velocity, int type, int stack = 1, bool noBroadcast = false, int prefixGiven = 0, bool noGrabDelay = false, bool reverseLookup = false)
+	{
+		int targetIndex = 400;
+		Main.item[400] = new Item(); //Vanilla seems to make sure to set the dummy here, so I will too.
+
+		if (Main.netMode != NetmodeID.MultiplayerClient) //Main.item index finder from vanilla
+		{
+			if (reverseLookup)
+			{
+				for (int i = 399; i >= 0; i--)
+				{
+					if (!Main.item[i].active && Main.timeItemSlotCannotBeReusedFor[i] == 0)
+					{
+						targetIndex = i;
+						break;
+					}
+				}
+			}
+			else
 			{
 				for (int j = 0; j < 400; j++)
 				{
@@ -22,109 +84,46 @@ namespace StarlightRiver.Helpers
 					}
 				}
 			}
-
-			if (targetIndex == 400 && Main.netMode != NetmodeID.MultiplayerClient) //some sort of vanilla failsafe if no safe index is found it seems?
-			{
-				int timeDiff = 0;
-				for (int k = 0; k < 400; k++)
-				{
-					if (Main.item[k].timeSinceItemSpawned - Main.timeItemSlotCannotBeReusedFor[k] > timeDiff)
-					{
-						timeDiff = Main.item[k].timeSinceItemSpawned - Main.timeItemSlotCannotBeReusedFor[k];
-						targetIndex = k;
-					}
-				}
-			}
-
-			Main.item[targetIndex] = Item;
-			Main.item[targetIndex].position = position;
-
-			if (ItemSlot.Options.HighlightNewItems && Item.type >= ItemID.None && !ItemID.Sets.NeverAppearsAsNewInInventory[Item.type]) //vanilla Item highlight system
-			{
-				Item.newAndShiny = true;
-			}
-
-			if (Main.netMode == NetmodeID.Server) //syncing
-			{
-				NetMessage.SendData(MessageID.SyncItem, -1, -1, null, targetIndex, 0, 0f, 0f, 0, 0, 0);
-				Item.FindOwner(Item.whoAmI);
-			}
-			else if (Main.netMode == NetmodeID.SinglePlayer)
-			{
-				Item.playerIndexTheItemIsReservedFor = Main.myPlayer;
-			}
 		}
 
-		public static Item NewItemPerfect(Vector2 position, Vector2 velocity, int type, int stack = 1, bool noBroadcast = false, int prefixGiven = 0, bool noGrabDelay = false, bool reverseLookup = false)
+		if (targetIndex == 400 && Main.netMode != NetmodeID.MultiplayerClient) //some sort of vanilla failsafe if no safe index is found it seems?
 		{
-			int targetIndex = 400;
-			Main.item[400] = new Item(); //Vanilla seems to make sure to set the dummy here, so I will too.
-
-			if (Main.netMode != NetmodeID.MultiplayerClient) //Main.item index finder from vanilla
+			int timeDiff = 0;
+			for (int k = 0; k < 400; k++)
 			{
-				if (reverseLookup)
+				if (Main.item[k].timeSinceItemSpawned - Main.timeItemSlotCannotBeReusedFor[k] > timeDiff)
 				{
-					for (int i = 399; i >= 0; i--)
-					{
-						if (!Main.item[i].active && Main.timeItemSlotCannotBeReusedFor[i] == 0)
-						{
-							targetIndex = i;
-							break;
-						}
-					}
-				}
-				else
-				{
-					for (int j = 0; j < 400; j++)
-					{
-						if (!Main.item[j].active && Main.timeItemSlotCannotBeReusedFor[j] == 0)
-						{
-							targetIndex = j;
-							break;
-						}
-					}
+					timeDiff = Main.item[k].timeSinceItemSpawned - Main.timeItemSlotCannotBeReusedFor[k];
+					targetIndex = k;
 				}
 			}
-
-			if (targetIndex == 400 && Main.netMode != NetmodeID.MultiplayerClient) //some sort of vanilla failsafe if no safe index is found it seems?
-			{
-				int timeDiff = 0;
-				for (int k = 0; k < 400; k++)
-				{
-					if (Main.item[k].timeSinceItemSpawned - Main.timeItemSlotCannotBeReusedFor[k] > timeDiff)
-					{
-						timeDiff = Main.item[k].timeSinceItemSpawned - Main.timeItemSlotCannotBeReusedFor[k];
-						targetIndex = k;
-					}
-				}
-			}
-
-			Main.timeItemSlotCannotBeReusedFor[targetIndex] = 0; //normal stuff
-			Item Item = Main.item[targetIndex];
-			Item.SetDefaults(type, false);
-			Item.Prefix(prefixGiven);
-			Item.position = position;
-			Item.velocity = velocity;
-			Item.active = true;
-			Item.timeSinceItemSpawned = 0;
-			Item.stack = stack;
-
-			Item.wet = Collision.WetCollision(Item.position, Item.width, Item.height); //not sure what this is, from vanilla
-
-			if (ItemSlot.Options.HighlightNewItems && Item.type >= ItemID.None && !ItemID.Sets.NeverAppearsAsNewInInventory[Item.type]) //vanilla Item highlight system
-				Item.newAndShiny = true;
-
-			if (Main.netMode == NetmodeID.Server && !noBroadcast) //syncing
-			{
-				NetMessage.SendData(MessageID.SyncItem, -1, -1, null, targetIndex, noGrabDelay ? 1 : 0, 0f, 0f, 0, 0, 0);
-				Item.FindOwner(Item.whoAmI);
-			}
-			else if (Main.netMode == NetmodeID.SinglePlayer)
-			{
-				Item.playerIndexTheItemIsReservedFor = Main.myPlayer;
-			}
-
-			return Item;
 		}
+
+		Main.timeItemSlotCannotBeReusedFor[targetIndex] = 0; //normal stuff
+		Item Item = Main.item[targetIndex];
+		Item.SetDefaults(type, false);
+		Item.Prefix(prefixGiven);
+		Item.position = position;
+		Item.velocity = velocity;
+		Item.active = true;
+		Item.timeSinceItemSpawned = 0;
+		Item.stack = stack;
+
+		Item.wet = Collision.WetCollision(Item.position, Item.width, Item.height); //not sure what this is, from vanilla
+
+		if (ItemSlot.Options.HighlightNewItems && Item.type >= ItemID.None && !ItemID.Sets.NeverAppearsAsNewInInventory[Item.type]) //vanilla Item highlight system
+			Item.newAndShiny = true;
+
+		if (Main.netMode == NetmodeID.Server && !noBroadcast) //syncing
+		{
+			NetMessage.SendData(MessageID.SyncItem, -1, -1, null, targetIndex, noGrabDelay ? 1 : 0, 0f, 0f, 0, 0, 0);
+			Item.FindOwner(Item.whoAmI);
+		}
+		else if (Main.netMode == NetmodeID.SinglePlayer)
+		{
+			Item.playerIndexTheItemIsReservedFor = Main.myPlayer;
+		}
+
+		return Item;
 	}
 }

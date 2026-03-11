@@ -12,633 +12,632 @@ using Terraria.Graphics.Effects;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Items.Vitric
+namespace StarlightRiver.Content.Items.Vitric;
+
+public class RefractiveBlade : ModItem
 {
-	public class RefractiveBlade : ModItem
+	public int combo;
+
+	public override string Texture => AssetDirectory.VitricItem + Name;
+
+	public override bool AltFunctionUse(Player Player)
 	{
-		public int combo;
+		return true;
+	}
 
-		public override string Texture => AssetDirectory.VitricItem + Name;
+	public override void SetStaticDefaults()
+	{
+		DisplayName.SetDefault("Refractive Blade");
+		Tooltip.SetDefault("Hold <right> to charge a laser\nThe laser inflicts {{BUFF:RefractiveBladeBuff}}, increasing their melee {{Exposure}}");
+	}
 
-		public override bool AltFunctionUse(Player Player)
-		{
-			return true;
-		}
+	public override void SetDefaults()
+	{
+		Item.damage = 34;
+		Item.width = 60;
+		Item.height = 60;
+		Item.useTime = 22;
+		Item.useAnimation = 22;
+		Item.useStyle = ItemUseStyleID.Swing;
+		Item.DamageType = DamageClass.Melee;
+		Item.noMelee = true;
+		Item.knockBack = 7;
+		Item.useTurn = false;
+		Item.rare = ItemRarityID.Orange;
+		Item.shoot = ProjectileType<RefractiveBladeProj>();
+		Item.shootSpeed = 0.1f;
+		Item.noUseGraphic = true;
 
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("Refractive Blade");
-			Tooltip.SetDefault("Hold <right> to charge a laser\nThe laser inflicts {{BUFF:RefractiveBladeBuff}}, increasing their melee {{Exposure}}");
-		}
+		Item.value = Item.sellPrice(gold: 2, silver: 75);
+	}
 
-		public override void SetDefaults()
-		{
-			Item.damage = 34;
-			Item.width = 60;
-			Item.height = 60;
-			Item.useTime = 22;
-			Item.useAnimation = 22;
+	public override void HoldItem(Player Player)
+	{
+		if (Main.myPlayer == Player.whoAmI)
+			Player.GetModPlayer<ControlsPlayer>().rightClickListener = true;
+
+		if (Player.altFunctionUse == 2)
+			Item.useStyle = ItemUseStyleID.Shoot;
+		else
 			Item.useStyle = ItemUseStyleID.Swing;
-			Item.DamageType = DamageClass.Melee;
-			Item.noMelee = true;
-			Item.knockBack = 7;
-			Item.useTurn = false;
-			Item.rare = ItemRarityID.Orange;
-			Item.shoot = ProjectileType<RefractiveBladeProj>();
-			Item.shootSpeed = 0.1f;
-			Item.noUseGraphic = true;
+	}
 
-			Item.value = Item.sellPrice(gold: 2, silver: 75);
-		}
-
-		public override void HoldItem(Player Player)
+	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+	{
+		if (player.altFunctionUse == 2)
 		{
-			if (Main.myPlayer == Player.whoAmI)
-				Player.GetModPlayer<ControlsPlayer>().rightClickListener = true;
-
-			if (Player.altFunctionUse == 2)
-				Item.useStyle = ItemUseStyleID.Shoot;
-			else
-				Item.useStyle = ItemUseStyleID.Swing;
-		}
-
-		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
-		{
-			if (player.altFunctionUse == 2)
-			{
-				if (!Main.projectile.Any(n => n.active && n.type == ProjectileType<RefractiveBladeLaser>() && n.owner == player.whoAmI))
-					Projectile.NewProjectile(source, position, velocity, ProjectileType<RefractiveBladeLaser>(), (int)(damage * 0.25f), knockback, player.whoAmI, 0, 120);
-
-				return false;
-			}
-
 			if (!Main.projectile.Any(n => n.active && n.type == ProjectileType<RefractiveBladeLaser>() && n.owner == player.whoAmI))
-				Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, 0, combo);
-
-			combo++;
-
-			if (combo > 1)
-				combo = 0;
+				Projectile.NewProjectile(source, position, velocity, ProjectileType<RefractiveBladeLaser>(), (int)(damage * 0.25f), knockback, player.whoAmI, 0, 120);
 
 			return false;
 		}
 
-		public override void AddRecipes()
+		if (!Main.projectile.Any(n => n.active && n.type == ProjectileType<RefractiveBladeLaser>() && n.owner == player.whoAmI))
+			Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, 0, combo);
+
+		combo++;
+
+		if (combo > 1)
+			combo = 0;
+
+		return false;
+	}
+
+	public override void AddRecipes()
+	{
+		Recipe recipe = CreateRecipe();
+		recipe.AddIngredient<VitricSword>();
+		recipe.AddIngredient<SandstoneChunk>(5);
+		recipe.AddIngredient<VitricOre>(15);
+		recipe.AddIngredient<MagmaCore>();
+		recipe.AddTile(TileID.Anvils);
+		recipe.Register();
+	}
+}
+
+public class RefractiveBladeProj : ModProjectile, IDrawPrimitive
+{
+	int direction = 0;
+	float maxTime = 0;
+	float maxAngle = 0;
+
+	private List<Vector2> cache;
+	private Trail trail;
+
+	public ref float StoredAngle => ref Projectile.ai[0];
+	public ref float Combo => ref Projectile.ai[1];
+
+	public float Timer => 300 - Projectile.timeLeft;
+	public Player Owner => Main.player[Projectile.owner];
+	public float SinProgress => (float)Math.Sin((1 - Timer / maxTime) * 3.14f);
+
+	public override string Texture => AssetDirectory.VitricItem + "RefractiveBlade";
+
+	public sealed override void SetDefaults()
+	{
+		Projectile.hostile = false;
+		Projectile.DamageType = DamageClass.Melee;
+		Projectile.width = Projectile.height = 2;
+		Projectile.aiStyle = -1;
+		Projectile.friendly = true;
+		Projectile.penetrate = -1;
+		Projectile.tileCollide = false;
+		Projectile.alpha = 255;
+
+		Projectile.timeLeft = 300;
+	}
+
+	public override void AI()
+	{
+		if (Timer == 0)
 		{
-			Recipe recipe = CreateRecipe();
-			recipe.AddIngredient<VitricSword>();
-			recipe.AddIngredient<SandstoneChunk>(5);
-			recipe.AddIngredient<VitricOre>(15);
-			recipe.AddIngredient<MagmaCore>();
-			recipe.AddTile(TileID.Anvils);
-			recipe.Register();
+			StoredAngle = Projectile.velocity.ToRotation();
+			Projectile.velocity *= 0;
+
+			SoundHelper.PlayPitched("Effects/FancySwoosh", 1, Combo);
+
+			switch (Combo)
+			{
+				case 0:
+					direction = 1;
+					maxTime = 22;
+					maxAngle = 4;
+					break;
+				case 1:
+					direction = -1;
+					maxTime = 15;
+					maxAngle = 2;
+					break;
+			}
+		}
+
+		float targetAngle = StoredAngle + (-(maxAngle / 2) + Eases.BezierEase(Timer / maxTime) * maxAngle) * Owner.direction * direction;
+
+		Projectile.Center = Owner.Center + Vector2.UnitX.RotatedBy(targetAngle) * (70 + (float)Math.Sin(Eases.BezierEase(Timer / maxTime) * 3.14f) * 40);
+		Projectile.rotation = targetAngle + 1.57f * 0.5f;
+
+		if (Main.netMode != NetmodeID.Server)
+		{
+			ManageCaches();
+			ManageTrail();
+
+			var color = new Color(255, 140 + (int)(40 * SinProgress), 105);
+
+			Lighting.AddLight(Projectile.Center, color.ToVector3() * SinProgress);
+
+			if (Main.rand.NextBool(2))
+				Dust.NewDustPerfect(Projectile.Center, DustType<Glow>(), Vector2.UnitY.RotatedByRandom(0.5f) * Main.rand.NextFloat(-1.5f, -0.5f), 0, color, 0.2f);
+		}
+
+		if (Timer >= maxTime)
+			Projectile.timeLeft = 0;
+
+		if (Main.myPlayer != Owner.whoAmI)
+			checkHits();
+
+	}
+
+	public void checkHits()
+	{
+		// done manually for clients that aren't the Projectile owner since onhit methods are clientside
+		foreach (NPC NPC in Main.npc.Where(n => n.active &&
+			 !n.dontTakeDamage &&
+			 !n.townNPC &&
+			 n.immune[Owner.whoAmI] <= 0 &&
+			 Colliding(new Rectangle(), n.Hitbox) == true))
+		{
+			OnHitNPC(NPC, new NPC.HitInfo() { Damage = 0 }, 0);
 		}
 	}
 
-	public class RefractiveBladeProj : ModProjectile, IDrawPrimitive
+	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
-		int direction = 0;
-		float maxTime = 0;
-		float maxAngle = 0;
+		target.velocity += Vector2.UnitX.RotatedBy((target.Center - Owner.Center).ToRotation()) * 10 * target.knockBackResist;
 
-		private List<Vector2> cache;
-		private Trail trail;
+		target.immune[Projectile.owner] = 10; //equivalent to normal pierce iframes but explicit for multiPlayer compatibility
 
-		public ref float StoredAngle => ref Projectile.ai[0];
-		public ref float Combo => ref Projectile.ai[1];
+		CollisionHelper.CheckLinearCollision(Owner.Center, Projectile.Center, target.Hitbox, out Vector2 hitPoint); //here to get the point of impact, ideally we dont have to do this twice but for some reasno colliding hook dosent have an actual NPC ref, soo...
 
-		public float Timer => 300 - Projectile.timeLeft;
-		public Player Owner => Main.player[Projectile.owner];
-		public float SinProgress => (float)Math.Sin((1 - Timer / maxTime) * 3.14f);
-
-		public override string Texture => AssetDirectory.VitricItem + "RefractiveBlade";
-
-		public sealed override void SetDefaults()
+		if (NPCHelper.IsFleshy(target))
 		{
-			Projectile.hostile = false;
-			Projectile.DamageType = DamageClass.Melee;
-			Projectile.width = Projectile.height = 2;
-			Projectile.aiStyle = -1;
-			Projectile.friendly = true;
-			Projectile.penetrate = -1;
-			Projectile.tileCollide = false;
-			Projectile.alpha = 255;
+			SoundHelper.PlayPitched("Impacts/FireBladeStab", 0.3f, -0.2f, Projectile.Center);
 
-			Projectile.timeLeft = 300;
-		}
-
-		public override void AI()
-		{
-			if (Timer == 0)
+			for (int k = 0; k < 20; k++)
 			{
-				StoredAngle = Projectile.velocity.ToRotation();
-				Projectile.velocity *= 0;
+				Dust.NewDustPerfect(hitPoint, DustType<Glow>(), Vector2.Normalize(hitPoint - Owner.Center).RotatedByRandom(0.25f) * Main.rand.NextFloat(5), 0, new Color(255, 105, 105), 0.5f);
 
-				SoundHelper.PlayPitched("Effects/FancySwoosh", 1, Combo);
-
-				switch (Combo)
-				{
-					case 0:
-						direction = 1;
-						maxTime = 22;
-						maxAngle = 4;
-						break;
-					case 1:
-						direction = -1;
-						maxTime = 15;
-						maxAngle = 2;
-						break;
-				}
-			}
-
-			float targetAngle = StoredAngle + (-(maxAngle / 2) + Eases.BezierEase(Timer / maxTime) * maxAngle) * Owner.direction * direction;
-
-			Projectile.Center = Owner.Center + Vector2.UnitX.RotatedBy(targetAngle) * (70 + (float)Math.Sin(Eases.BezierEase(Timer / maxTime) * 3.14f) * 40);
-			Projectile.rotation = targetAngle + 1.57f * 0.5f;
-
-			if (Main.netMode != NetmodeID.Server)
-			{
-				ManageCaches();
-				ManageTrail();
-
-				var color = new Color(255, 140 + (int)(40 * SinProgress), 105);
-
-				Lighting.AddLight(Projectile.Center, color.ToVector3() * SinProgress);
-
-				if (Main.rand.NextBool(2))
-					Dust.NewDustPerfect(Projectile.Center, DustType<Glow>(), Vector2.UnitY.RotatedByRandom(0.5f) * Main.rand.NextFloat(-1.5f, -0.5f), 0, color, 0.2f);
-			}
-
-			if (Timer >= maxTime)
-				Projectile.timeLeft = 0;
-
-			if (Main.myPlayer != Owner.whoAmI)
-				checkHits();
-
-		}
-
-		public void checkHits()
-		{
-			// done manually for clients that aren't the Projectile owner since onhit methods are clientside
-			foreach (NPC NPC in Main.npc.Where(n => n.active &&
-				 !n.dontTakeDamage &&
-				 !n.townNPC &&
-				 n.immune[Owner.whoAmI] <= 0 &&
-				 Colliding(new Rectangle(), n.Hitbox) == true))
-			{
-				OnHitNPC(NPC, new NPC.HitInfo() { Damage = 0 }, 0);
+				Dust.NewDustPerfect(hitPoint, DustID.Blood, Vector2.Normalize(hitPoint - Owner.Center).RotatedByRandom(0.5f) * Main.rand.NextFloat(2, 8), 0, default, Main.rand.NextFloat(1, 2));
+				Dust.NewDustPerfect(hitPoint, DustID.Blood, Vector2.Normalize(hitPoint - Owner.Center).RotatedByRandom(0.5f) * Main.rand.NextFloat(3, 15), 0, default, Main.rand.NextFloat(1, 2));
 			}
 		}
 
-		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		else
 		{
-			target.velocity += Vector2.UnitX.RotatedBy((target.Center - Owner.Center).ToRotation()) * 10 * target.knockBackResist;
+			SoundHelper.PlayPitched("Impacts/Clink", 0.5f, 0, Projectile.Center);
 
-			target.immune[Projectile.owner] = 10; //equivalent to normal pierce iframes but explicit for multiPlayer compatibility
-
-			CollisionHelper.CheckLinearCollision(Owner.Center, Projectile.Center, target.Hitbox, out Vector2 hitPoint); //here to get the point of impact, ideally we dont have to do this twice but for some reasno colliding hook dosent have an actual NPC ref, soo...
-
-			if (NPCHelper.IsFleshy(target))
+			for (int k = 0; k < 30; k++)
 			{
-				SoundHelper.PlayPitched("Impacts/FireBladeStab", 0.3f, -0.2f, Projectile.Center);
-
-				for (int k = 0; k < 20; k++)
-				{
-					Dust.NewDustPerfect(hitPoint, DustType<Glow>(), Vector2.Normalize(hitPoint - Owner.Center).RotatedByRandom(0.25f) * Main.rand.NextFloat(5), 0, new Color(255, 105, 105), 0.5f);
-
-					Dust.NewDustPerfect(hitPoint, DustID.Blood, Vector2.Normalize(hitPoint - Owner.Center).RotatedByRandom(0.5f) * Main.rand.NextFloat(2, 8), 0, default, Main.rand.NextFloat(1, 2));
-					Dust.NewDustPerfect(hitPoint, DustID.Blood, Vector2.Normalize(hitPoint - Owner.Center).RotatedByRandom(0.5f) * Main.rand.NextFloat(3, 15), 0, default, Main.rand.NextFloat(1, 2));
-				}
+				Dust.NewDustPerfect(hitPoint, DustType<Glow>(), Vector2.Normalize(hitPoint - Owner.Center).RotatedByRandom(0.5f) * Main.rand.NextFloat(5, 8), 0, new Color(255, Main.rand.Next(130, 255), 80), Main.rand.NextFloat(0.3f, 0.7f));
 			}
+		}
+	}
 
-			else
+	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+	{
+		if (CollisionHelper.CheckLinearCollision(Owner.Center, Projectile.Center, targetHitbox, out Vector2 hitPoint))
+			return true;
+
+		return false;
+	}
+
+	public override bool? CanCutTiles()
+	{
+		return true;
+	}
+
+	public override void CutTiles()
+	{
+		DelegateMethods.tilecut_0 = TileCuttingContext.AttackProjectile; //copypasted from example solar eruption with slight changes :trollge:
+		Utils.PlotTileLine(Owner.Center, Projectile.Center, (Projectile.width + Projectile.height) * 0.5f * Projectile.scale, DelegateMethods.CutTiles);
+	}
+
+	public override bool PreDraw(ref Color lightColor)
+	{
+		Texture2D tex = Request<Texture2D>(Texture).Value;
+		Texture2D texGlow = Request<Texture2D>(Texture + "Glow").Value;
+
+		float targetAngle = StoredAngle + (-(maxAngle / 2) + Eases.BezierEase(Timer / maxTime) * maxAngle) * Owner.direction * direction;
+		Vector2 pos = Owner.Center + Vector2.UnitX.RotatedBy(targetAngle) * ((float)Math.Sin(Eases.BezierEase(Timer / maxTime) * 3.14f) * 20) - Main.screenPosition;
+
+		Main.spriteBatch.Draw(tex, pos, null, lightColor, Projectile.rotation, new Vector2(0, tex.Height), 1.1f, 0, 0);
+		Main.spriteBatch.Draw(texGlow, pos, null, Color.White, Projectile.rotation, new Vector2(0, texGlow.Height), 1.1f, 0, 0);
+
+		return false;
+	}
+
+	private void ManageCaches()
+	{
+		if (cache == null)
+		{
+			cache = new List<Vector2>();
+
+			for (int i = 0; i < 10; i++)
 			{
-				SoundHelper.PlayPitched("Impacts/Clink", 0.5f, 0, Projectile.Center);
-
-				for (int k = 0; k < 30; k++)
-				{
-					Dust.NewDustPerfect(hitPoint, DustType<Glow>(), Vector2.Normalize(hitPoint - Owner.Center).RotatedByRandom(0.5f) * Main.rand.NextFloat(5, 8), 0, new Color(255, Main.rand.Next(130, 255), 80), Main.rand.NextFloat(0.3f, 0.7f));
-				}
+				cache.Add(Vector2.Lerp(Projectile.Center, Owner.Center, 0.15f));
 			}
 		}
 
-		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
-		{
-			if (CollisionHelper.CheckLinearCollision(Owner.Center, Projectile.Center, targetHitbox, out Vector2 hitPoint))
-				return true;
+		cache.Add(Vector2.Lerp(Projectile.Center, Owner.Center, 0.15f));
 
-			return false;
+		while (cache.Count > 10)
+		{
+			cache.RemoveAt(0);
+		}
+	}
+
+	private void ManageTrail()
+	{
+		if (trail is null || trail.IsDisposed)
+		{
+			trail = new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => factor * (50 + 40 * Timer / maxTime), factor =>
+						{
+							if (factor.X == 1)
+								return Color.Transparent;
+
+							return new Color(255, 120 + (int)(factor.X * 70), 80) * (factor.X * SinProgress);
+						});
 		}
 
-		public override bool? CanCutTiles()
+		trail.Positions = cache.ToArray();
+		trail.NextPosition = Vector2.Lerp(Projectile.Center, Owner.Center, 0.15f) + Projectile.velocity;
+	}
+
+	public void DrawPrimitives()
+	{
+		Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
+
+		if (effect != null)
 		{
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
+			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+			effect.Parameters["time"].SetValue(Main.GameUpdateCount);
+			effect.Parameters["repeats"].SetValue(2f);
+			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+			effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
+
+			trail?.Render(effect);
+		}
+	}
+}
+
+public class RefractiveBladeLaser : ModProjectile
+{
+	public Vector2 endPoint;
+	public float LaserRotation;
+	public bool firing;
+
+	public ref float Charge => ref Projectile.ai[0];
+	public ref float MaxTime => ref Projectile.ai[1];
+
+	public int LaserTimer => (int)MaxTime - Projectile.timeLeft;
+	public Player Owner => Main.player[Projectile.owner];
+
+	public override string Texture => AssetDirectory.VitricItem + "RefractiveBlade";
+
+	public override void SetDefaults()
+	{
+		Projectile.timeLeft = 300;
+		Projectile.width = 2;
+		Projectile.height = 2;
+		Projectile.friendly = true;
+		Projectile.DamageType = DamageClass.Melee;
+		Projectile.penetrate = -1;
+
+		Projectile.usesLocalNPCImmunity = true;
+		Projectile.localNPCHitCooldown = 8;
+	}
+
+	public override void AI()
+	{
+		Projectile.Center = Owner.Center;
+		Owner.itemAnimation = Owner.itemAnimationMax;
+
+		ControlsPlayer cPlayer = Owner.GetModPlayer<ControlsPlayer>();
+
+		if (Main.myPlayer == Owner.whoAmI)
+			cPlayer.mouseRotationListener = true;
+
+		float targetRot = (cPlayer.mouseWorld - Owner.Center).ToRotation();
+		float diff = GeometryHelper.CompareAngle(LaserRotation, targetRot);
+		float maxRot = firing ? 0.02f : 0.08f;
+		LaserRotation -= MathHelper.Clamp(diff, -maxRot, maxRot);
+
+		Lighting.AddLight(Projectile.Center, new Vector3(0.7f, 0.4f, 0.2f));
+
+		if (Charge == 0)
+			LaserRotation = targetRot;
+
+		if (Charge == 1)
+			SoundHelper.PlayPitched("Magic/RefractiveCharge", 0.7f, 0, Projectile.Center);
+
+		if (Charge >= 12 || firing)
+		{
+			Projectile.rotation = LaserRotation + 1.57f / 2;
+		}
+		else
+		{
+			Projectile.rotation = LaserRotation + 1.57f / 2 + Eases.BezierEase(Charge / 12f) * 6.28f;
+			Projectile.scale = 0.5f + Charge / 12f * 0.5f;
+		}
+
+		if (cPlayer.mouseRight && !firing)
+		{
+			if (Charge < 35)
+				Charge++;
+
+			Projectile.timeLeft = (int)MaxTime + 1;
+			return;
+		}
+		else if (Charge < 30)
+		{
+			Projectile.timeLeft = 0;
+			return;
+		}
+
+		if (Charge >= 30 && !firing)
+			SoundHelper.PlayPitched("Magic/RefractiveLaser", 0.6f, -0.2f, Projectile.Center);
+
+		firing = true;
+
+		for (int k = 0; k < 80; k++)
+		{
+			Vector2 posCheck = Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * k * 8;
+
+			if (CollisionHelper.PointInTile(posCheck) || k == 79)
+			{
+				endPoint = posCheck;
+				break;
+			}
+		}
+
+		float height = 64f;
+		int width = (int)(Projectile.Center - endPoint).Length();
+		int sin = (int)(Math.Sin(StarlightWorld.visualTimer * 3) * 40f);
+		var color = new Color(255, 160 + sin, 40 + sin / 2);
+
+		if (LaserTimer < 20)
+			height = 64 * LaserTimer / 20f;
+
+		if (LaserTimer > (int)MaxTime - 40)
+			height = 64 * (1 - (LaserTimer - ((int)MaxTime - 40)) / 40f);
+
+		for (int i = 0; i < width; i += 10)
+		{
+			Lighting.AddLight(Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * i + Main.screenPosition, color.ToVector3() * height * 0.010f);
+
+			if (Main.rand.NextBool(20))
+				Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * i, DustType<Dusts.Glow>(), Vector2.UnitY * Main.rand.NextFloat(-1.5f, -0.5f), 0, color, 0.35f);
+		}
+
+		for (int k = 0; k < 4; k++)
+		{
+			float rot = Main.rand.NextFloat(6.28f);
+			int variation = Main.rand.Next(30);
+
+			color.G -= (byte)variation;
+
+			Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * width + Vector2.One.RotatedBy(rot) * Main.rand.NextFloat(40), DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot) * 1, 0, color, 0.2f - variation * 0.02f);
+		}
+
+		if (Main.myPlayer != Owner.whoAmI)
+			CheckHits();
+	}
+
+	public void CheckHits()
+	{
+		// done manually for clients that aren't the Projectile owner since onhit methods are clientside
+
+		foreach (NPC NPC in Main.npc.Where(n => n.active &&
+			 !n.dontTakeDamage &&
+			 !n.townNPC &&
+			 Colliding(new Rectangle(), n.Hitbox) == true))
+		{
+			OnHitNPC(NPC, new NPC.HitInfo() { Damage = 0 }, 0);
+		}
+	}
+
+	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+	{
+		if (LaserTimer > 0 && CollisionHelper.CheckLinearCollision(Owner.Center, endPoint, targetHitbox, out Vector2 colissionPoint))
+		{
+			Dust.NewDustPerfect(colissionPoint, DustType<Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 150, 100), Main.rand.NextFloat());
 			return true;
 		}
 
-		public override void CutTiles()
-		{
-			DelegateMethods.tilecut_0 = TileCuttingContext.AttackProjectile; //copypasted from example solar eruption with slight changes :trollge:
-			Utils.PlotTileLine(Owner.Center, Projectile.Center, (Projectile.width + Projectile.height) * 0.5f * Projectile.scale, DelegateMethods.CutTiles);
-		}
-
-		public override bool PreDraw(ref Color lightColor)
-		{
-			Texture2D tex = Request<Texture2D>(Texture).Value;
-			Texture2D texGlow = Request<Texture2D>(Texture + "Glow").Value;
-
-			float targetAngle = StoredAngle + (-(maxAngle / 2) + Eases.BezierEase(Timer / maxTime) * maxAngle) * Owner.direction * direction;
-			Vector2 pos = Owner.Center + Vector2.UnitX.RotatedBy(targetAngle) * ((float)Math.Sin(Eases.BezierEase(Timer / maxTime) * 3.14f) * 20) - Main.screenPosition;
-
-			Main.spriteBatch.Draw(tex, pos, null, lightColor, Projectile.rotation, new Vector2(0, tex.Height), 1.1f, 0, 0);
-			Main.spriteBatch.Draw(texGlow, pos, null, Color.White, Projectile.rotation, new Vector2(0, texGlow.Height), 1.1f, 0, 0);
-
-			return false;
-		}
-
-		private void ManageCaches()
-		{
-			if (cache == null)
-			{
-				cache = new List<Vector2>();
-
-				for (int i = 0; i < 10; i++)
-				{
-					cache.Add(Vector2.Lerp(Projectile.Center, Owner.Center, 0.15f));
-				}
-			}
-
-			cache.Add(Vector2.Lerp(Projectile.Center, Owner.Center, 0.15f));
-
-			while (cache.Count > 10)
-			{
-				cache.RemoveAt(0);
-			}
-		}
-
-		private void ManageTrail()
-		{
-			if (trail is null || trail.IsDisposed)
-			{
-				trail = new Trail(Main.instance.GraphicsDevice, 10, new NoTip(), factor => factor * (50 + 40 * Timer / maxTime), factor =>
-							{
-								if (factor.X == 1)
-									return Color.Transparent;
-
-								return new Color(255, 120 + (int)(factor.X * 70), 80) * (factor.X * SinProgress);
-							});
-			}
-
-			trail.Positions = cache.ToArray();
-			trail.NextPosition = Vector2.Lerp(Projectile.Center, Owner.Center, 0.15f) + Projectile.velocity;
-		}
-
-		public void DrawPrimitives()
-		{
-			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
-
-			if (effect != null)
-			{
-				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-				Matrix view = Main.GameViewMatrix.TransformationMatrix;
-				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
-
-				effect.Parameters["time"].SetValue(Main.GameUpdateCount);
-				effect.Parameters["repeats"].SetValue(2f);
-				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-				effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
-
-				trail?.Render(effect);
-			}
-		}
+		return false;
 	}
 
-	public class RefractiveBladeLaser : ModProjectile
+	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
-		public Vector2 endPoint;
-		public float LaserRotation;
-		public bool firing;
+		target.velocity += Vector2.UnitX.RotatedBy(LaserRotation) * 0.25f * target.knockBackResist;
 
-		public ref float Charge => ref Projectile.ai[0];
-		public ref float MaxTime => ref Projectile.ai[1];
+		if (Main.myPlayer == Owner.whoAmI)
+			target.AddBuff(BuffType<RefractiveBladeBuff>(), 240);
+	}
 
-		public int LaserTimer => (int)MaxTime - Projectile.timeLeft;
-		public Player Owner => Main.player[Projectile.owner];
+	public override bool PreDraw(ref Color lightColor)
+	{
+		SpriteBatch spriteBatch = Main.spriteBatch;
 
-		public override string Texture => AssetDirectory.VitricItem + "RefractiveBlade";
+		spriteBatch.Draw(Request<Texture2D>(Texture).Value, Owner.Center - Main.screenPosition, null, lightColor, Projectile.rotation, new Vector2(0, Request<Texture2D>(Texture).Value.Height), Projectile.scale, 0, 0);
+		spriteBatch.Draw(Request<Texture2D>(Texture + "Glow").Value, Owner.Center - Main.screenPosition, null, Color.White, Projectile.rotation, new Vector2(0, Request<Texture2D>(Texture).Value.Height), Projectile.scale, 0, 0);
 
-		public override void SetDefaults()
+		float prog1 = Eases.SwoopEase((Charge - 12) / 23f);
+		float prog2 = Eases.SwoopEase((Charge - 17) / 18f);
+
+		float pow = 0;
+
+		if (Charge <= 35)
+			pow = Charge / 35f * 0.1f;
+
+		if (LaserTimer > 0 && LaserTimer < 20)
+			pow = 0.1f + LaserTimer / 20f * 0.4f;
+
+		if (LaserTimer >= 20)
+			pow = 0.5f;
+
+		prog1 += (float)Math.Sin(Main.GameUpdateCount * 0.2f) * pow;
+		prog2 += (float)Math.Sin((Main.GameUpdateCount - 20) * 0.2f) * pow;
+
+		if (LaserTimer > 80)
 		{
-			Projectile.timeLeft = 300;
-			Projectile.width = 2;
-			Projectile.height = 2;
-			Projectile.friendly = true;
-			Projectile.DamageType = DamageClass.Melee;
-			Projectile.penetrate = -1;
-
-			Projectile.usesLocalNPCImmunity = true;
-			Projectile.localNPCHitCooldown = 8;
+			prog1 *= (120 - LaserTimer) / 40f;
+			prog2 *= (120 - LaserTimer) / 40f;
 		}
 
-		public override void AI()
+		DrawRing(spriteBatch, Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * prog1 * 30, 1, 1, Main.GameUpdateCount * 0.05f, prog1, new Color(255, 240, 120));
+		DrawRing(spriteBatch, Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * prog2 * 50, 0.5f, 0.5f, Main.GameUpdateCount * -0.075f, prog2, new Color(255, 180, 120));
+
+		DrawAdditive(spriteBatch);
+
+		return false;
+	}
+
+	private void DrawRing(SpriteBatch sb, Vector2 pos, float w, float h, float rotation, float prog, Color color)
+	{
+		Texture2D texRing = Assets.Items.Vitric.BossBowRing.Value;
+		Effect effect = ShaderLoader.GetShader("BowRing").Value;
+
+		if (effect != null)
 		{
-			Projectile.Center = Owner.Center;
-			Owner.itemAnimation = Owner.itemAnimationMax;
-
-			ControlsPlayer cPlayer = Owner.GetModPlayer<ControlsPlayer>();
-
-			if (Main.myPlayer == Owner.whoAmI)
-				cPlayer.mouseRotationListener = true;
-
-			float targetRot = (cPlayer.mouseWorld - Owner.Center).ToRotation();
-			float diff = GeometryHelper.CompareAngle(LaserRotation, targetRot);
-			float maxRot = firing ? 0.02f : 0.08f;
-			LaserRotation -= MathHelper.Clamp(diff, -maxRot, maxRot);
-
-			Lighting.AddLight(Projectile.Center, new Vector3(0.7f, 0.4f, 0.2f));
-
-			if (Charge == 0)
-				LaserRotation = targetRot;
-
-			if (Charge == 1)
-				SoundHelper.PlayPitched("Magic/RefractiveCharge", 0.7f, 0, Projectile.Center);
-
-			if (Charge >= 12 || firing)
-			{
-				Projectile.rotation = LaserRotation + 1.57f / 2;
-			}
-			else
-			{
-				Projectile.rotation = LaserRotation + 1.57f / 2 + Eases.BezierEase(Charge / 12f) * 6.28f;
-				Projectile.scale = 0.5f + Charge / 12f * 0.5f;
-			}
-
-			if (cPlayer.mouseRight && !firing)
-			{
-				if (Charge < 35)
-					Charge++;
-
-				Projectile.timeLeft = (int)MaxTime + 1;
-				return;
-			}
-			else if (Charge < 30)
-			{
-				Projectile.timeLeft = 0;
-				return;
-			}
-
-			if (Charge >= 30 && !firing)
-				SoundHelper.PlayPitched("Magic/RefractiveLaser", 0.6f, -0.2f, Projectile.Center);
-
-			firing = true;
-
-			for (int k = 0; k < 80; k++)
-			{
-				Vector2 posCheck = Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * k * 8;
-
-				if (CollisionHelper.PointInTile(posCheck) || k == 79)
-				{
-					endPoint = posCheck;
-					break;
-				}
-			}
-
-			float height = 64f;
-			int width = (int)(Projectile.Center - endPoint).Length();
-			int sin = (int)(Math.Sin(StarlightWorld.visualTimer * 3) * 40f);
-			var color = new Color(255, 160 + sin, 40 + sin / 2);
-
-			if (LaserTimer < 20)
-				height = 64 * LaserTimer / 20f;
-
-			if (LaserTimer > (int)MaxTime - 40)
-				height = 64 * (1 - (LaserTimer - ((int)MaxTime - 40)) / 40f);
-
-			for (int i = 0; i < width; i += 10)
-			{
-				Lighting.AddLight(Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * i + Main.screenPosition, color.ToVector3() * height * 0.010f);
-
-				if (Main.rand.NextBool(20))
-					Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * i, DustType<Dusts.Glow>(), Vector2.UnitY * Main.rand.NextFloat(-1.5f, -0.5f), 0, color, 0.35f);
-			}
-
-			for (int k = 0; k < 4; k++)
-			{
-				float rot = Main.rand.NextFloat(6.28f);
-				int variation = Main.rand.Next(30);
-
-				color.G -= (byte)variation;
-
-				Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * width + Vector2.One.RotatedBy(rot) * Main.rand.NextFloat(40), DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot) * 1, 0, color, 0.2f - variation * 0.02f);
-			}
-
-			if (Main.myPlayer != Owner.whoAmI)
-				CheckHits();
-		}
-
-		public void CheckHits()
-		{
-			// done manually for clients that aren't the Projectile owner since onhit methods are clientside
-
-			foreach (NPC NPC in Main.npc.Where(n => n.active &&
-				 !n.dontTakeDamage &&
-				 !n.townNPC &&
-				 Colliding(new Rectangle(), n.Hitbox) == true))
-			{
-				OnHitNPC(NPC, new NPC.HitInfo() { Damage = 0 }, 0);
-			}
-		}
-
-		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
-		{
-			if (LaserTimer > 0 && CollisionHelper.CheckLinearCollision(Owner.Center, endPoint, targetHitbox, out Vector2 colissionPoint))
-			{
-				Dust.NewDustPerfect(colissionPoint, DustType<Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 150, 100), Main.rand.NextFloat());
-				return true;
-			}
-
-			return false;
-		}
-
-		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-		{
-			target.velocity += Vector2.UnitX.RotatedBy(LaserRotation) * 0.25f * target.knockBackResist;
-
-			if (Main.myPlayer == Owner.whoAmI)
-				target.AddBuff(BuffType<RefractiveBladeBuff>(), 240);
-		}
-
-		public override bool PreDraw(ref Color lightColor)
-		{
-			SpriteBatch spriteBatch = Main.spriteBatch;
-
-			spriteBatch.Draw(Request<Texture2D>(Texture).Value, Owner.Center - Main.screenPosition, null, lightColor, Projectile.rotation, new Vector2(0, Request<Texture2D>(Texture).Value.Height), Projectile.scale, 0, 0);
-			spriteBatch.Draw(Request<Texture2D>(Texture + "Glow").Value, Owner.Center - Main.screenPosition, null, Color.White, Projectile.rotation, new Vector2(0, Request<Texture2D>(Texture).Value.Height), Projectile.scale, 0, 0);
-
-			float prog1 = Eases.SwoopEase((Charge - 12) / 23f);
-			float prog2 = Eases.SwoopEase((Charge - 17) / 18f);
-
-			float pow = 0;
-
-			if (Charge <= 35)
-				pow = Charge / 35f * 0.1f;
-
-			if (LaserTimer > 0 && LaserTimer < 20)
-				pow = 0.1f + LaserTimer / 20f * 0.4f;
-
-			if (LaserTimer >= 20)
-				pow = 0.5f;
-
-			prog1 += (float)Math.Sin(Main.GameUpdateCount * 0.2f) * pow;
-			prog2 += (float)Math.Sin((Main.GameUpdateCount - 20) * 0.2f) * pow;
-
-			if (LaserTimer > 80)
-			{
-				prog1 *= (120 - LaserTimer) / 40f;
-				prog2 *= (120 - LaserTimer) / 40f;
-			}
-
-			DrawRing(spriteBatch, Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * prog1 * 30, 1, 1, Main.GameUpdateCount * 0.05f, prog1, new Color(255, 240, 120));
-			DrawRing(spriteBatch, Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * prog2 * 50, 0.5f, 0.5f, Main.GameUpdateCount * -0.075f, prog2, new Color(255, 180, 120));
-
-			DrawAdditive(spriteBatch);
-
-			return false;
-		}
-
-		private void DrawRing(SpriteBatch sb, Vector2 pos, float w, float h, float rotation, float prog, Color color)
-		{
-			Texture2D texRing = Assets.Items.Vitric.BossBowRing.Value;
-			Effect effect = ShaderLoader.GetShader("BowRing").Value;
-
-			if (effect != null)
-			{
-				effect.Parameters["uTime"].SetValue(rotation);
-				effect.Parameters["cosine"].SetValue((float)Math.Cos(rotation));
-				effect.Parameters["uColor"].SetValue(color.ToVector3());
-				effect.Parameters["uImageSize1"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
-				effect.Parameters["uOpacity"].SetValue(prog);
-
-				sb.End();
-				sb.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
-
-				Rectangle target = toRect(pos, (int)(10 * (w + prog)), (int)(30 * (h + prog)));
-				sb.Draw(texRing, target, null, color * prog, Projectile.rotation - 1.57f / 2, texRing.Size() / 2, 0, 0);
-
-				sb.End();
-				sb.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
-			}
-		}
-
-		private Rectangle toRect(Vector2 pos, int w, int h)
-		{
-			return new Rectangle((int)(pos.X - Main.screenPosition.X), (int)(pos.Y - Main.screenPosition.Y), w, h);
-		}
-
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
-			if (LaserTimer <= 0)
-				return;
-
-			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
-
-			int sin = (int)(Math.Sin(StarlightWorld.visualTimer * 3) * 40f); //Just a copy/paste of the boss laser. Need to tune this later
-			var color = new Color(255, 160 + sin, 40 + sin / 2);
-
-			Texture2D texBeam = Assets.Misc.BeamCore.Value;
-			Texture2D texBeam2 = Assets.Misc.BeamTrail.Value;
-			Texture2D texDark = Assets.Misc.GradientBlack.Value;
-
-			var origin = new Vector2(0, texBeam.Height / 2);
-			var origin2 = new Vector2(0, texBeam2.Height / 2);
-
-			Effect effect = StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value;
-
+			effect.Parameters["uTime"].SetValue(rotation);
+			effect.Parameters["cosine"].SetValue((float)Math.Cos(rotation));
 			effect.Parameters["uColor"].SetValue(color.ToVector3());
+			effect.Parameters["uImageSize1"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+			effect.Parameters["uOpacity"].SetValue(prog);
 
-			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
+			sb.End();
+			sb.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
 
-			float height = texBeam.Height / 4f;
-			int width = (int)(Projectile.Center - endPoint).Length() - 76;
+			Rectangle target = toRect(pos, (int)(10 * (w + prog)), (int)(30 * (h + prog)));
+			sb.Draw(texRing, target, null, color * prog, Projectile.rotation - 1.57f / 2, texRing.Size() / 2, 0, 0);
 
-			if (LaserTimer < 20)
-				height = texBeam.Height / 4f * LaserTimer / 20f;
-
-			if (LaserTimer > (int)MaxTime - 40)
-				height = texBeam.Height / 4f * (1 - (LaserTimer - ((int)MaxTime - 40)) / 40f);
-
-			Vector2 pos = Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * 76 - Main.screenPosition;
-
-			var target = new Rectangle((int)pos.X, (int)pos.Y, width, (int)(height * 1.2f));
-			var target2 = new Rectangle((int)pos.X, (int)pos.Y, width, (int)height);
-
-			var source = new Rectangle((int)(LaserTimer / 20f * -texBeam.Width), 0, texBeam.Width, texBeam.Height);
-			var source2 = new Rectangle((int)(LaserTimer / 45f * -texBeam2.Width), 0, texBeam2.Width, texBeam2.Height);
-
-			spriteBatch.Draw(texBeam, target, source, color, LaserRotation, origin, 0, 0);
-			spriteBatch.Draw(texBeam2, target2, source2, color * 0.5f, LaserRotation, origin2, 0, 0);
-
-			float opacity = height / (texBeam.Height / 2f) * 0.75f;
-
-			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
-
-			if (Owner == Main.LocalPlayer)
-			{
-				spriteBatch.Draw(texDark, Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation + 1.57f) * 80 - Main.screenPosition, null, Color.White * opacity, LaserRotation, new Vector2(texDark.Width / 2, 0), 10, 0, 0);
-				spriteBatch.Draw(texDark, Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation - 1.57f) * 80 - Main.screenPosition, null, Color.White * opacity, LaserRotation - 3.14f, new Vector2(texDark.Width / 2, 0), 10, 0, 0);
-			}
-
-			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
-
-			Texture2D impactTex = Assets.Masks.GlowSoft.Value;
-			Texture2D impactTex2 = Assets.GUI.ItemGlow.Value;
-			Texture2D glowTex = Assets.GlowTrail.Value;
-
-			spriteBatch.Draw(glowTex, target, source, color * 0.95f, LaserRotation, new Vector2(0, glowTex.Height / 2), 0, 0);
-
-			spriteBatch.Draw(impactTex, endPoint - Main.screenPosition, null, color * (height * 0.012f), 0, impactTex.Size() / 2, 3.8f, 0, 0);
-			spriteBatch.Draw(impactTex2, endPoint - Main.screenPosition, null, color * (height * 0.05f), StarlightWorld.visualTimer * 2, impactTex2.Size() / 2, 0.38f, 0, 0);
-
-			spriteBatch.Draw(impactTex, pos, null, color * (height * 0.02f), 0, impactTex.Size() / 2, 1.2f, 0, 0);
-			spriteBatch.Draw(impactTex2, pos, null, color * (height * 0.05f), StarlightWorld.visualTimer * -3, impactTex2.Size() / 2, 0.17f, 0, 0);
-
-			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+			sb.End();
+			sb.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 
-	class RefractiveBladeBuff : SmartBuff
+	private Rectangle toRect(Vector2 pos, int w, int h)
 	{
-		public override string Texture => AssetDirectory.Buffs + "RefractiveBladeBuff";
+		return new Rectangle((int)(pos.X - Main.screenPosition.X), (int)(pos.Y - Main.screenPosition.Y), w, h);
+	}
 
-		public RefractiveBladeBuff() : base("Melting", "Effected entities have 25% exposure to melee damage, and take an additional 50% more damage from the refractive blade", true) { }
+	public void DrawAdditive(SpriteBatch spriteBatch)
+	{
+		if (LaserTimer <= 0)
+			return;
 
-		public override void Load()
+		spriteBatch.End();
+		spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+
+		int sin = (int)(Math.Sin(StarlightWorld.visualTimer * 3) * 40f); //Just a copy/paste of the boss laser. Need to tune this later
+		var color = new Color(255, 160 + sin, 40 + sin / 2);
+
+		Texture2D texBeam = Assets.Misc.BeamCore.Value;
+		Texture2D texBeam2 = Assets.Misc.BeamTrail.Value;
+		Texture2D texDark = Assets.Misc.GradientBlack.Value;
+
+		var origin = new Vector2(0, texBeam.Height / 2);
+		var origin2 = new Vector2(0, texBeam2.Height / 2);
+
+		Effect effect = StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value;
+
+		effect.Parameters["uColor"].SetValue(color.ToVector3());
+
+		spriteBatch.End();
+		spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
+
+		float height = texBeam.Height / 4f;
+		int width = (int)(Projectile.Center - endPoint).Length() - 76;
+
+		if (LaserTimer < 20)
+			height = texBeam.Height / 4f * LaserTimer / 20f;
+
+		if (LaserTimer > (int)MaxTime - 40)
+			height = texBeam.Height / 4f * (1 - (LaserTimer - ((int)MaxTime - 40)) / 40f);
+
+		Vector2 pos = Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * 76 - Main.screenPosition;
+
+		var target = new Rectangle((int)pos.X, (int)pos.Y, width, (int)(height * 1.2f));
+		var target2 = new Rectangle((int)pos.X, (int)pos.Y, width, (int)height);
+
+		var source = new Rectangle((int)(LaserTimer / 20f * -texBeam.Width), 0, texBeam.Width, texBeam.Height);
+		var source2 = new Rectangle((int)(LaserTimer / 45f * -texBeam2.Width), 0, texBeam2.Width, texBeam2.Height);
+
+		spriteBatch.Draw(texBeam, target, source, color, LaserRotation, origin, 0, 0);
+		spriteBatch.Draw(texBeam2, target2, source2, color * 0.5f, LaserRotation, origin2, 0, 0);
+
+		float opacity = height / (texBeam.Height / 2f) * 0.75f;
+
+		spriteBatch.End();
+		spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+
+		if (Owner == Main.LocalPlayer)
 		{
-			StarlightNPC.ModifyHitByProjectileEvent += IncreaseRefractiveDamages;
+			spriteBatch.Draw(texDark, Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation + 1.57f) * 80 - Main.screenPosition, null, Color.White * opacity, LaserRotation, new Vector2(texDark.Width / 2, 0), 10, 0, 0);
+			spriteBatch.Draw(texDark, Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation - 1.57f) * 80 - Main.screenPosition, null, Color.White * opacity, LaserRotation - 3.14f, new Vector2(texDark.Width / 2, 0), 10, 0, 0);
 		}
 
-		public override void Update(NPC NPC, ref int buffIndex)
-		{
-			Dust.NewDust(NPC.position, NPC.width, NPC.height, DustType<Glow>(), 0, 0, 0, new Color(255, 150, 50), 0.5f);
-			NPC.GetGlobalNPC<ExposureNPC>().ExposureMultMelee += 0.25f;
-		}
+		spriteBatch.End();
+		spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
-		public override void Update(Player player, ref int buffIndex)
-		{
-			player.GetModPlayer<ExposurePlayer>().exposureMult += 0.25f;
-		}
+		Texture2D impactTex = Assets.Masks.GlowSoft.Value;
+		Texture2D impactTex2 = Assets.GUI.ItemGlow.Value;
+		Texture2D glowTex = Assets.GlowTrail.Value;
 
-		private void IncreaseRefractiveDamages(NPC NPC, Projectile Projectile, ref NPC.HitModifiers modifiers)
+		spriteBatch.Draw(glowTex, target, source, color * 0.95f, LaserRotation, new Vector2(0, glowTex.Height / 2), 0, 0);
+
+		spriteBatch.Draw(impactTex, endPoint - Main.screenPosition, null, color * (height * 0.012f), 0, impactTex.Size() / 2, 3.8f, 0, 0);
+		spriteBatch.Draw(impactTex2, endPoint - Main.screenPosition, null, color * (height * 0.05f), StarlightWorld.visualTimer * 2, impactTex2.Size() / 2, 0.38f, 0, 0);
+
+		spriteBatch.Draw(impactTex, pos, null, color * (height * 0.02f), 0, impactTex.Size() / 2, 1.2f, 0, 0);
+		spriteBatch.Draw(impactTex2, pos, null, color * (height * 0.05f), StarlightWorld.visualTimer * -3, impactTex2.Size() / 2, 0.17f, 0, 0);
+
+		spriteBatch.End();
+		spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+	}
+}
+
+class RefractiveBladeBuff : SmartBuff
+{
+	public override string Texture => AssetDirectory.Buffs + "RefractiveBladeBuff";
+
+	public RefractiveBladeBuff() : base("Melting", "Effected entities have 25% exposure to melee damage, and take an additional 50% more damage from the refractive blade", true) { }
+
+	public override void Load()
+	{
+		StarlightNPC.ModifyHitByProjectileEvent += IncreaseRefractiveDamages;
+	}
+
+	public override void Update(NPC NPC, ref int buffIndex)
+	{
+		Dust.NewDust(NPC.position, NPC.width, NPC.height, DustType<Glow>(), 0, 0, 0, new Color(255, 150, 50), 0.5f);
+		NPC.GetGlobalNPC<ExposureNPC>().ExposureMultMelee += 0.25f;
+	}
+
+	public override void Update(Player player, ref int buffIndex)
+	{
+		player.GetModPlayer<ExposurePlayer>().exposureMult += 0.25f;
+	}
+
+	private void IncreaseRefractiveDamages(NPC NPC, Projectile Projectile, ref NPC.HitModifiers modifiers)
+	{
+		if (Inflicted(NPC))
 		{
-			if (Inflicted(NPC))
-			{
-				if (Projectile.type == ProjectileType<RefractiveBladeProj>())
-					modifiers.FinalDamage *= 1.5f;
-			}
+			if (Projectile.type == ProjectileType<RefractiveBladeProj>())
+				modifiers.FinalDamage *= 1.5f;
 		}
 	}
 }

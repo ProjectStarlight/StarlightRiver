@@ -1,41 +1,40 @@
 ﻿using StarlightRiver.Core.Loaders;
 
-namespace StarlightRiver.Content.Items.Breacher
+namespace StarlightRiver.Content.Items.Breacher;
+
+public class BreachImpactGlow : Dusts.Glow
 {
-	public class BreachImpactGlow : Dusts.Glow
+	public override void OnSpawn(Dust dust)
 	{
-		public override void OnSpawn(Dust dust)
-		{
-			dust.noGravity = true;
-			dust.frame = new Rectangle(0, 0, 64, 64);
+		dust.noGravity = true;
+		dust.frame = new Rectangle(0, 0, 64, 64);
 
-			if (ShaderLoader.GetShader("GlowingDust").Value != null)
-				dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
-		}
-
-		public override bool Update(Dust dust)
-		{
-			dust.scale *= 0.85f;
-			return base.Update(dust);
-		}
+		if (ShaderLoader.GetShader("GlowingDust").Value != null)
+			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
 	}
 
-	class BreachImpactSpark : Dusts.BuzzSpark
+	public override bool Update(Dust dust)
 	{
-		public override void OnSpawn(Dust dust)
-		{
-			dust.fadeIn = 0;
-			dust.noLight = false;
-			dust.frame = new Rectangle(0, 0, 5, 50);
+		dust.scale *= 0.85f;
+		return base.Update(dust);
+	}
+}
 
-			if (ShaderLoader.GetShader("ShrinkingDust").Value != null)
-				dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("ShrinkingDust"), "ShrinkingDustPass");
-		}
+class BreachImpactSpark : Dusts.BuzzSpark
+{
+	public override void OnSpawn(Dust dust)
+	{
+		dust.fadeIn = 0;
+		dust.noLight = false;
+		dust.frame = new Rectangle(0, 0, 5, 50);
 
-		public override bool Update(Dust dust)
-		{
-			dust.fadeIn++;
-			return base.Update(dust);
-		}
+		if (ShaderLoader.GetShader("ShrinkingDust").Value != null)
+			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("ShrinkingDust"), "ShrinkingDustPass");
+	}
+
+	public override bool Update(Dust dust)
+	{
+		dust.fadeIn++;
+		return base.Update(dust);
 	}
 }

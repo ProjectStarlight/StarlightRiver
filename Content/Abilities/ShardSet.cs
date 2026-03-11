@@ -1,32 +1,31 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace StarlightRiver.Content.Abilities
+namespace StarlightRiver.Content.Abilities;
+
+public class ShardSet
 {
-	public class ShardSet
+	private readonly HashSet<int> collected = new();
+
+	public bool Has(int id)
 	{
-		private readonly HashSet<int> collected = new();
+		return collected.Contains(id);
+	}
 
-		public bool Has(int id)
-		{
-			return collected.Contains(id);
-		}
+	public void Add(int id)
+	{
+		collected.Add(id);
+	}
 
-		public void Add(int id)
-		{
-			collected.Add(id);
-		}
+	public void Clear()
+	{
+		collected.Clear();
+	}
 
-		public void Clear()
-		{
-			collected.Clear();
-		}
+	public int Count => collected.Count;
 
-		public int Count => collected.Count;
-
-		public List<int> ToList()
-		{
-			return collected.ToList();
-		}
+	public List<int> ToList()
+	{
+		return collected.ToList();
 	}
 }

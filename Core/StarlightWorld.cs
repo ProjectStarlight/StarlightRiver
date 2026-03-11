@@ -10,140 +10,139 @@ using Terraria.ID;
 using Terraria.ModLoader.IO;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Core
+namespace StarlightRiver.Core;
+
+public partial class StarlightWorld : ModSystem
 {
-	public partial class StarlightWorld : ModSystem
+	public static StarlightWorld worldInstance;
+
+	private static WorldFlags flags;
+
+	public static float visualTimer;
+
+	public static Rectangle vitricBiome = new();
+
+	public static Rectangle squidBossArena = new();
+
+	public static Rectangle VitricBossArena => new(vitricBiome.X + vitricBiome.Width / 2 - 56, vitricBiome.Y - 1, 108, 74); //ceiros arena
+
+	private static Vector2 GlassweaverArenaPos => vitricBiome.TopLeft() * 16 + new Vector2(0, 80 * 16) + new Vector2(0, 256);
+	public static Rectangle GlassweaverArena => new((int)GlassweaverArenaPos.X - 35 * 16, (int)GlassweaverArenaPos.Y - 30 * 16, 70 * 16, 30 * 16);
+
+	public StarlightWorld()
 	{
-		public static StarlightWorld worldInstance;
+		worldInstance = this;
+	}
 
-		private static WorldFlags flags;
+	public static bool HasFlag(WorldFlags flag)
+	{
+		return (flags & flag) != 0;
+	}
 
-		public static float visualTimer;
+	public static void Flag(WorldFlags flag)
+	{
+		flags |= flag;
+		NetMessage.SendData(MessageID.WorldData);
+	}
 
-		public static Rectangle vitricBiome = new();
+	public static void FlipFlag(WorldFlags flag)
+	{
+		flags ^= flag;
+		NetMessage.SendData(MessageID.WorldData);
+	}
 
-		public static Rectangle squidBossArena = new();
+	public override void NetSend(BinaryWriter writer)
+	{
+		writer.Write((int)flags);
 
-		public static Rectangle VitricBossArena => new(vitricBiome.X + vitricBiome.Width / 2 - 56, vitricBiome.Y - 1, 108, 74); //ceiros arena
+		WriteRectangle(writer, vitricBiome);
+		WriteRectangle(writer, squidBossArena);
+	}
 
-		private static Vector2 GlassweaverArenaPos => vitricBiome.TopLeft() * 16 + new Vector2(0, 80 * 16) + new Vector2(0, 256);
-		public static Rectangle GlassweaverArena => new((int)GlassweaverArenaPos.X - 35 * 16, (int)GlassweaverArenaPos.Y - 30 * 16, 70 * 16, 30 * 16);
+	public override void NetReceive(BinaryReader reader)
+	{
+		flags = (WorldFlags)reader.ReadInt32();
 
-		public StarlightWorld()
-		{
-			worldInstance = this;
-		}
+		vitricBiome = ReadRectangle(reader);
+		squidBossArena = ReadRectangle(reader);
+	}
 
-		public static bool HasFlag(WorldFlags flag)
-		{
-			return (flags & flag) != 0;
-		}
+	private void WriteRectangle(BinaryWriter writer, Rectangle rect)
+	{
+		writer.Write(rect.X);
+		writer.Write(rect.Y);
+		writer.Write(rect.Width);
+		writer.Write(rect.Height);
+	}
 
-		public static void Flag(WorldFlags flag)
-		{
-			flags |= flag;
-			NetMessage.SendData(MessageID.WorldData);
-		}
+	private Rectangle ReadRectangle(BinaryReader reader)
+	{
+		return new Rectangle(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
+	}
 
-		public static void FlipFlag(WorldFlags flag)
-		{
-			flags ^= flag;
-			NetMessage.SendData(MessageID.WorldData);
-		}
+	public override void PreUpdateWorld()
+	{
+		visualTimer += (float)Math.PI / 60;
 
-		public override void NetSend(BinaryWriter writer)
-		{
-			writer.Write((int)flags);
+		if (visualTimer >= Math.PI * 2)
+			visualTimer = 0;
+	}
 
-			WriteRectangle(writer, vitricBiome);
-			WriteRectangle(writer, squidBossArena);
-		}
+	public override void PostUpdateWorld()
+	{
+		//SquidBoss arena
+		if (!Main.npc.Any(n => n.active && n.type == NPCType<ArenaActor>()))
+			NPC.NewNPC(new EntitySource_WorldEvent(), squidBossArena.Center.X * 16 + 8, squidBossArena.Center.Y * 16 + 56 * 16, NPCType<ArenaActor>());
+	}
 
-		public override void NetReceive(BinaryReader reader)
-		{
-			flags = (WorldFlags)reader.ReadInt32();
+	public override void ClearWorld()
+	{
+		vitricBiome.X = 0;
+		vitricBiome.Y = 0;
 
-			vitricBiome = ReadRectangle(reader);
-			squidBossArena = ReadRectangle(reader);
-		}
+		flags = default;
 
-		private void WriteRectangle(BinaryWriter writer, Rectangle rect)
-		{
-			writer.Write(rect.X);
-			writer.Write(rect.Y);
-			writer.Write(rect.Width);
-			writer.Write(rect.Height);
-		}
+		Content.Physics.VerletChainSystem.toDraw.Clear();
 
-		private Rectangle ReadRectangle(BinaryReader reader)
-		{
-			return new Rectangle(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
-		}
+		DummyTile.dummiesByPosition.Clear();
+	}
 
-		public override void PreUpdateWorld()
-		{
-			visualTimer += (float)Math.PI / 60;
+	public override void OnWorldLoad()
+	{
+		if (!Main.dedServ)
+			DialogUI.CloseDialogue(); //Safeguard
+	}
 
-			if (visualTimer >= Math.PI * 2)
-				visualTimer = 0;
-		}
+	public override void SaveWorldData(TagCompound tag)
+	{
+		tag["VitricBiomePos"] = vitricBiome.TopLeft();
+		tag["VitricBiomeSize"] = vitricBiome.Size();
 
-		public override void PostUpdateWorld()
-		{
-			//SquidBoss arena
-			if (!Main.npc.Any(n => n.active && n.type == NPCType<ArenaActor>()))
-				NPC.NewNPC(new EntitySource_WorldEvent(), squidBossArena.Center.X * 16 + 8, squidBossArena.Center.Y * 16 + 56 * 16, NPCType<ArenaActor>());
-		}
+		tag["SquidBossArenaPos"] = squidBossArena.TopLeft();
+		tag["SquidBossArenaSize"] = squidBossArena.Size();
+		tag["PermafrostCenter"] = permafrostCenter;
 
-		public override void ClearWorld()
-		{
-			vitricBiome.X = 0;
-			vitricBiome.Y = 0;
+		tag[nameof(flags)] = (int)flags;
+	}
 
-			flags = default;
+	public override void LoadWorldData(TagCompound tag)
+	{
+		vitricBiome.X = (int)tag.Get<Vector2>("VitricBiomePos").X;
+		vitricBiome.Y = (int)tag.Get<Vector2>("VitricBiomePos").Y;
+		vitricBiome.Width = (int)tag.Get<Vector2>("VitricBiomeSize").X;
+		vitricBiome.Height = (int)tag.Get<Vector2>("VitricBiomeSize").Y;
 
-			Content.Physics.VerletChainSystem.toDraw.Clear();
+		squidBossArena.X = (int)tag.Get<Vector2>("SquidBossArenaPos").X;
+		squidBossArena.Y = (int)tag.Get<Vector2>("SquidBossArenaPos").Y;
+		squidBossArena.Width = (int)tag.Get<Vector2>("SquidBossArenaSize").X;
+		squidBossArena.Height = (int)tag.Get<Vector2>("SquidBossArenaSize").Y;
+		permafrostCenter = tag.GetInt("PermafrostCenter");
 
-			DummyTile.dummiesByPosition.Clear();
-		}
+		flags = (WorldFlags)tag.GetInt(nameof(flags));
+	}
 
-		public override void OnWorldLoad()
-		{
-			if (!Main.dedServ)
-				DialogUI.CloseDialogue(); //Safeguard
-		}
-
-		public override void SaveWorldData(TagCompound tag)
-		{
-			tag["VitricBiomePos"] = vitricBiome.TopLeft();
-			tag["VitricBiomeSize"] = vitricBiome.Size();
-
-			tag["SquidBossArenaPos"] = squidBossArena.TopLeft();
-			tag["SquidBossArenaSize"] = squidBossArena.Size();
-			tag["PermafrostCenter"] = permafrostCenter;
-
-			tag[nameof(flags)] = (int)flags;
-		}
-
-		public override void LoadWorldData(TagCompound tag)
-		{
-			vitricBiome.X = (int)tag.Get<Vector2>("VitricBiomePos").X;
-			vitricBiome.Y = (int)tag.Get<Vector2>("VitricBiomePos").Y;
-			vitricBiome.Width = (int)tag.Get<Vector2>("VitricBiomeSize").X;
-			vitricBiome.Height = (int)tag.Get<Vector2>("VitricBiomeSize").Y;
-
-			squidBossArena.X = (int)tag.Get<Vector2>("SquidBossArenaPos").X;
-			squidBossArena.Y = (int)tag.Get<Vector2>("SquidBossArenaPos").Y;
-			squidBossArena.Width = (int)tag.Get<Vector2>("SquidBossArenaSize").X;
-			squidBossArena.Height = (int)tag.Get<Vector2>("SquidBossArenaSize").Y;
-			permafrostCenter = tag.GetInt("PermafrostCenter");
-
-			flags = (WorldFlags)tag.GetInt(nameof(flags));
-		}
-
-		public override void Unload()
-		{
-			genNoise = null;
-		}
+	public override void Unload()
+	{
+		genNoise = null;
 	}
 }

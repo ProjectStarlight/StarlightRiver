@@ -2,80 +2,79 @@
 using System;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Bosses.GlassMiniboss
+namespace StarlightRiver.Content.Bosses.GlassMiniboss;
+
+class Whirlwind : ModProjectile
 {
-	class Whirlwind : ModProjectile
+	public override string Texture => AssetDirectory.Glassweaver + Name;
+
+	public ref float Timer => ref Projectile.ai[0];
+
+	public NPC Parent => Main.npc[(int)Projectile.ai[1]];
+
+	public override void SetStaticDefaults()
 	{
-		public override string Texture => AssetDirectory.Glassweaver + Name;
+		DisplayName.SetDefault("Spinning Blades");
+	}
 
-		public ref float Timer => ref Projectile.ai[0];
+	public override void SetDefaults()
+	{
+		Projectile.width = 200;
+		Projectile.height = 100;
+		Projectile.hostile = true;
+		Projectile.aiStyle = -1;
+		Projectile.penetrate = -1;
+		Projectile.tileCollide = true;
+	}
 
-		public NPC Parent => Main.npc[(int)Projectile.ai[1]];
+	public override void AI()
+	{
+		if (!Parent.active || Parent.type != NPCType<Glassweaver>())
+			Projectile.Kill();
 
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("Spinning Blades");
-		}
+		Timer++;
 
-		public override void SetDefaults()
-		{
-			Projectile.width = 200;
-			Projectile.height = 100;
-			Projectile.hostile = true;
-			Projectile.aiStyle = -1;
-			Projectile.penetrate = -1;
-			Projectile.tileCollide = true;
-		}
+		Projectile.Center = Parent.Center;
+		Projectile.velocity = Parent.velocity;
 
-		public override void AI()
-		{
-			if (!Parent.active || Parent.type != NPCType<Glassweaver>())
-				Projectile.Kill();
+		if (Timer < 50)
+			Projectile.rotation = MathHelper.Lerp(Projectile.rotation, Projectile.velocity.ToRotation(), 0.5f);
 
-			Timer++;
+		Lighting.AddLight(Projectile.Center, Glassweaver.GlassColor.ToVector3());
 
-			Projectile.Center = Parent.Center;
-			Projectile.velocity = Parent.velocity;
+		if (Timer > 70)
+			Projectile.Kill();
+	}
 
-			if (Timer < 50)
-				Projectile.rotation = MathHelper.Lerp(Projectile.rotation, Projectile.velocity.ToRotation(), 0.5f);
+	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+	{
+		Rectangle slashBox = projHitbox;
+		slashBox.Inflate(30, 10);
 
-			Lighting.AddLight(Projectile.Center, Glassweaver.GlassColor.ToVector3());
+		return Timer > 10 && slashBox.Intersects(targetHitbox);
+	}
 
-			if (Timer > 70)
-				Projectile.Kill();
-		}
+	public override bool OnTileCollide(Vector2 oldVelocity)
+	{
+		if (Math.Abs(Parent.velocity.X - oldVelocity.X) > 0)
+			Parent.velocity.X = -oldVelocity.X;
 
-		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
-		{
-			Rectangle slashBox = projHitbox;
-			slashBox.Inflate(30, 10);
+		if (Math.Abs(Parent.velocity.Y - oldVelocity.Y) > 0)
+			Parent.velocity.Y = -oldVelocity.Y;
 
-			return Timer > 10 && slashBox.Intersects(targetHitbox);
-		}
+		return false;
+	}
 
-		public override bool OnTileCollide(Vector2 oldVelocity)
-		{
-			if (Math.Abs(Parent.velocity.X - oldVelocity.X) > 0)
-				Parent.velocity.X = -oldVelocity.X;
+	public override bool PreDraw(ref Color lightColor)
+	{
+		Asset<Texture2D> spinTexture = Request<Texture2D>(Texture);
 
-			if (Math.Abs(Parent.velocity.Y - oldVelocity.Y) > 0)
-				Parent.velocity.Y = -oldVelocity.Y;
+		Color glowColor = Glassweaver.GlassColor * Utils.GetLerpValue(0, 15, Timer, true) * Utils.GetLerpValue(70, 25, Timer, true) * 0.5f;
+		glowColor.A = 0;
+		Main.EntitySpriteDraw(spinTexture.Value, Parent.Center + Main.rand.NextVector2Circular(16, 1) - Main.screenPosition, null, glowColor, Projectile.rotation, spinTexture.Size() * 0.5f, Projectile.scale * new Vector2(2f, 2f), 0, 0);
+		Main.EntitySpriteDraw(spinTexture.Value, Parent.Center + Main.rand.NextVector2Circular(16, 1) - Main.screenPosition, null, glowColor, Projectile.rotation, spinTexture.Size() * 0.5f, Projectile.scale * new Vector2(2f, 2f), 0, 0);
+		Main.EntitySpriteDraw(spinTexture.Value, Parent.Center + Main.rand.NextVector2Circular(10, 1) - Main.screenPosition, null, glowColor, Projectile.rotation, spinTexture.Size() * 0.5f, Projectile.scale * new Vector2(2f, 2f), 0, 0);
 
-			return false;
-		}
-
-		public override bool PreDraw(ref Color lightColor)
-		{
-			Asset<Texture2D> spinTexture = Request<Texture2D>(Texture);
-
-			Color glowColor = Glassweaver.GlassColor * Utils.GetLerpValue(0, 15, Timer, true) * Utils.GetLerpValue(70, 25, Timer, true) * 0.5f;
-			glowColor.A = 0;
-			Main.EntitySpriteDraw(spinTexture.Value, Parent.Center + Main.rand.NextVector2Circular(16, 1) - Main.screenPosition, null, glowColor, Projectile.rotation, spinTexture.Size() * 0.5f, Projectile.scale * new Vector2(2f, 2f), 0, 0);
-			Main.EntitySpriteDraw(spinTexture.Value, Parent.Center + Main.rand.NextVector2Circular(16, 1) - Main.screenPosition, null, glowColor, Projectile.rotation, spinTexture.Size() * 0.5f, Projectile.scale * new Vector2(2f, 2f), 0, 0);
-			Main.EntitySpriteDraw(spinTexture.Value, Parent.Center + Main.rand.NextVector2Circular(10, 1) - Main.screenPosition, null, glowColor, Projectile.rotation, spinTexture.Size() * 0.5f, Projectile.scale * new Vector2(2f, 2f), 0, 0);
-
-			return false;
-		}
+		return false;
 	}
 }

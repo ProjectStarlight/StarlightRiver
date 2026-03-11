@@ -1,19 +1,18 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 
-namespace StarlightRiver.Content.Tiles.Paintings
+namespace StarlightRiver.Content.Tiles.Paintings;
+
+class EggCodexPainting : ModTile
 {
-	class EggCodexPainting : ModTile
-	{
-		public override string Texture => AssetDirectory.PaintingTile + Name;
+	public override string Texture => AssetDirectory.PaintingTile + Name;
 
-		public override void SetStaticDefaults()
-		{
-			this.QuickSetPainting(2, 2, 7, new Color(99, 50, 30), "Painting");
-		}
-	}
-
-	class EggCodexPaintingItem : BaseTileItem
+	public override void SetStaticDefaults()
 	{
-		public EggCodexPaintingItem() : base("Codex Genesis", "'K. Ra'", "EggCodexPainting", 0, AssetDirectory.PaintingTile) { }
+		this.QuickSetPainting(2, 2, 7, new Color(99, 50, 30), "Painting");
 	}
+}
+
+class EggCodexPaintingItem : BaseTileItem
+{
+	public EggCodexPaintingItem() : base("Codex Genesis", "'K. Ra'", "EggCodexPainting", 0, AssetDirectory.PaintingTile) { }
 }

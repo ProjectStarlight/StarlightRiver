@@ -1,14 +1,13 @@
 ﻿using Terraria.ID;
 
-namespace StarlightRiver.Helpers
+namespace StarlightRiver.Helpers;
+
+public static class BuffHelper
 {
-	public static class BuffHelper
+	public static bool IsValidDebuff(Player Player, int buffindex)
 	{
-		public static bool IsValidDebuff(Player Player, int buffindex)
-		{
-			int bufftype = Player.buffType[buffindex];
-			bool vitalbuff = bufftype == BuffID.PotionSickness || bufftype == BuffID.ManaSickness || bufftype == BuffID.ChaosState;
-			return Player.buffTime[buffindex] > 2 && Main.debuff[bufftype] && !Main.buffNoTimeDisplay[bufftype] && !Main.vanityPet[bufftype] && !vitalbuff;
-		}
+		int bufftype = Player.buffType[buffindex];
+		bool vitalbuff = bufftype == BuffID.PotionSickness || bufftype == BuffID.ManaSickness || bufftype == BuffID.ChaosState;
+		return Player.buffTime[buffindex] > 2 && Main.debuff[bufftype] && !Main.buffNoTimeDisplay[bufftype] && !Main.vanityPet[bufftype] && !vitalbuff;
 	}
 }

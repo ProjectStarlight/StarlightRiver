@@ -1,7 +1,6 @@
-﻿namespace StarlightRiver.Content.NPCs.BaseTypes
+﻿namespace StarlightRiver.Content.NPCs.BaseTypes;
+
+interface IUnderwater
 {
-	interface IUnderwater
-	{
-		void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer);
-	}
+	void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer);
 }

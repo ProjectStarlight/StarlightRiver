@@ -7,367 +7,367 @@ using Terraria.GameContent;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Items.Misc
+namespace StarlightRiver.Content.Items.Misc;
+
+class Sorcerwrench : ModItem
 {
-	class Sorcerwrench : ModItem
+	[CloneByReference]
+	public Projectile proj;
+
+	public override string Texture => AssetDirectory.MiscItem + Name;
+
+	public override void SetStaticDefaults()
 	{
-		[CloneByReference]
-		public Projectile proj;
+		DisplayName.SetDefault("Sorcerwrench");
+		Tooltip.SetDefault("Select an area of blocks to be broken\n" +
+		"Consumes 2 mana per block broken");
+	}
 
-		public override string Texture => AssetDirectory.MiscItem + Name;
+	public override void SetDefaults()
+	{
+		Item.width = 32;
+		Item.height = 32;
+		Item.useTime = 40;
+		Item.useAnimation = 40;
+		Item.useStyle = ItemUseStyleID.Shoot;
+		Item.staff[Item.type] = true;
+		Item.noMelee = true;
+		Item.autoReuse = false;
+		Item.shoot = ProjectileType<SorcerwrenchProjectile>();
+		Item.shootSpeed = 1;
+		Item.channel = true;
+		Item.value = Item.buyPrice(1, 0, 0, 0);
+		Item.rare = ItemRarityID.Orange;
+	}
 
-		public override void SetStaticDefaults()
+	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+	{
+		position = Main.MouseWorld;
+		proj = Projectile.NewProjectileDirect(source, position, Vector2.Zero, type, damage, knockback, player.whoAmI);
+		return false;
+	}
+	public override void AddRecipes()
+	{
+		Recipe recipe = CreateRecipe();
+		recipe.AddIngredient(ItemID.CombatWrench);
+		recipe.AddIngredient(ItemID.FallenStar, 3);
+		recipe.AddIngredient(ItemID.Dynamite, 5);
+		recipe.AddTile(TileID.Anvils);
+		recipe.Register();
+	}
+}
+
+public class SorcerwrenchProjectile : ModProjectile, IDrawOverTiles
+{
+	private const int DESTRUCTION_TIME = 100;
+	private const int MANA_PER_TILE = 2;
+
+	private bool initialized = false;
+
+	private Vector2 startCorner = Vector2.Zero;
+	private Vector2 endCorner = Vector2.Zero;
+	private Vector2 endCornerGoal = Vector2.Zero;
+
+	private float manaUsed;
+
+	private bool released = false;
+
+	private readonly List<Vector2> tilesToDestroy = new();
+
+	private Player Owner => Main.player[Projectile.owner];
+
+	private Vector2 StartCornerTile => startCorner / 16;
+
+	public override string Texture => AssetDirectory.MiscItem + "Sorcerwrench";
+
+	public override void Load()
+	{
+		//On.Terraria.Main.DrawInterface_Resources_Mana += DrawRottenMana; //TODO: Find where vanilla draws resource bars now
+
+	}
+
+	public override void SetDefaults()
+	{
+		Projectile.width = 2;
+		Projectile.height = 2;
+		Projectile.timeLeft = 150;
+		Projectile.penetrate = -1;
+		Projectile.tileCollide = false;
+	}
+
+	public override void AI()
+	{
+		if (!initialized)
 		{
-			DisplayName.SetDefault("Sorcerwrench");
-			Tooltip.SetDefault("Select an area of blocks to be broken\n" +
-			"Consumes 2 mana per block broken");
+			initialized = true;
+			startCorner.X = endCorner.X = (int)Math.Floor(Projectile.Center.X / 16) * 16;
+			startCorner.Y = endCorner.Y = (int)Math.Floor(Projectile.Center.Y / 16) * 16;
 		}
 
-		public override void SetDefaults()
+		if (Owner.channel && !released)
 		{
-			Item.width = 32;
-			Item.height = 32;
-			Item.useTime = 40;
-			Item.useAnimation = 40;
-			Item.useStyle = ItemUseStyleID.Shoot;
-			Item.staff[Item.type] = true;
-			Item.noMelee = true;
-			Item.autoReuse = false;
-			Item.shoot = ProjectileType<SorcerwrenchProjectile>();
-			Item.shootSpeed = 1;
-			Item.channel = true;
-			Item.value = Item.buyPrice(1, 0, 0, 0);
-			Item.rare = ItemRarityID.Orange;
-		}
+			Projectile.timeLeft = DESTRUCTION_TIME;
+			Projectile.Center = Main.MouseWorld;
 
-		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
-		{
-			position = Main.MouseWorld;
-			proj = Projectile.NewProjectileDirect(source, position, Vector2.Zero, type, damage, knockback, player.whoAmI);
-			return false;
+			Owner.ChangeDir(Main.MouseWorld.X > Owner.position.X ? 1 : -1);
+			Vector2 direction = Owner.DirectionTo(Main.MouseWorld);
+			Owner.itemTime = Owner.itemAnimation = 2;
+			Owner.itemRotation = direction.ToRotation();
+
+			if (Owner.direction != 1)
+				Owner.itemRotation -= 3.14f;
+
+			Owner.itemRotation = MathHelper.WrapAngle(Owner.itemRotation);
+
+			Vector2 endCornerGoalGoal;
+			endCornerGoalGoal.X = (int)Math.Floor(Main.MouseWorld.X / 16) * 16;
+			endCornerGoalGoal.Y = (int)Math.Floor(Main.MouseWorld.Y / 16) * 16;
+
+			Vector2 difference = Vector2.Zero;
+			endCornerGoal = startCorner;
+
+			Vector2 dir2 = endCornerGoalGoal - startCorner;
+
+			if (Math.Abs(dir2.X) > 12 && Math.Abs(dir2.Y) > 12)
+			{
+				dir2.Normalize();
+
+				int xDifferenceInt = 0;
+				int yDifferenceInt = 0;
+
+				int selectedTiles = 0;
+
+				manaUsed = 0;
+
+				int tries = 0;
+				while (selectedTiles * MANA_PER_TILE < Owner.statMana)
+				{
+					if (manaUsed > Owner.statMana)
+						break;
+					difference += dir2 * 8;
+					if ((int)Math.Abs(difference.X / 16) > xDifferenceInt)
+					{
+						for (int y = (int)StartCornerTile.Y; PastIncrement(y, yDifferenceInt * Math.Sign(dir2.Y) + (int)StartCornerTile.Y, Math.Sign(dir2.Y)); y += Math.Sign(dir2.Y))
+						{
+							if (CanKillTile(xDifferenceInt * Math.Sign(dir2.X) + (int)StartCornerTile.X, y))
+								manaUsed += MANA_PER_TILE;
+						}
+
+						if (manaUsed > Owner.statMana)
+							break;
+
+						xDifferenceInt = (int)Math.Abs(difference.X / 16);
+					}
+
+					if ((int)Math.Abs(difference.Y / 16) > yDifferenceInt)
+					{
+						for (int x = (int)StartCornerTile.X; PastIncrement(x, xDifferenceInt * Math.Sign(dir2.X) + (int)StartCornerTile.X, Math.Sign(dir2.X)); x += Math.Sign(dir2.X))
+						{
+							if (CanKillTile(x, yDifferenceInt * Math.Sign(dir2.Y) + (int)StartCornerTile.Y))
+								manaUsed += MANA_PER_TILE;
+						}
+
+						if (manaUsed > Owner.statMana)
+							break;
+
+						yDifferenceInt = (int)Math.Abs(difference.Y / 16);
+					}
+
+					if (yDifferenceInt > 20 || xDifferenceInt > 20)
+						break;
+
+					endCornerGoal = startCorner + new Vector2(xDifferenceInt * 16 * Math.Sign(dir2.X), yDifferenceInt * 16 * Math.Sign(dir2.Y));
+
+					if (!PastIncrement((int)endCornerGoal.X, (int)endCornerGoalGoal.X, Math.Sign(dir2.X)) || !PastIncrement((int)endCornerGoal.Y, (int)endCornerGoalGoal.Y, Math.Sign(dir2.Y)))
+						break;
+
+					tries++;
+					if (tries > 4999)
+					{
+						Main.NewText("Sorcerwrench error: too many tries! Report to developers of Starlight River immediately!"); //TODO: Should this really print to a user?
+						break;
+					}
+				}
+			}
+
+			endCorner = Vector2.Lerp(endCorner, endCornerGoal, 0.35f);
+
+			if (Math.Abs(endCorner.X - endCornerGoal.X) < 5)
+				endCorner.X = endCornerGoal.X;
+
+			if (Math.Abs(endCorner.Y - endCornerGoal.Y) < 5)
+				endCorner.Y = endCornerGoal.Y;
+
+			if (Main.mouseRight)
+				Projectile.active = false;
 		}
-		public override void AddRecipes()
+		else if (Projectile.timeLeft > 2)
 		{
-			Recipe recipe = CreateRecipe();
-			recipe.AddIngredient(ItemID.CombatWrench);
-			recipe.AddIngredient(ItemID.FallenStar, 3);
-			recipe.AddIngredient(ItemID.Dynamite, 5);
-			recipe.AddTile(TileID.Anvils);
-			recipe.Register();
+			if (!released)
+			{
+				Owner.statMana -= (int)manaUsed;
+				released = true;
+				Vector2 startCornerSmall = startCorner / 16;
+				Vector2 endCornerGoalSmall = endCornerGoal / 16;
+
+				int xIncrement = Math.Sign(endCornerGoalSmall.X - startCornerSmall.X);
+				int yIncrement = Math.Sign(endCornerGoalSmall.Y - startCornerSmall.Y);
+
+				if (xIncrement == 0 || yIncrement == 0)
+					return;
+
+				if (xIncrement < 0)
+				{
+					startCornerSmall.X -= 1;
+					endCornerGoalSmall.X -= 1;
+				}
+
+				if (yIncrement < 0)
+				{
+					startCornerSmall.Y -= 1;
+					endCornerGoalSmall.Y -= 1;
+				}
+
+				for (int i = (int)startCornerSmall.X; PastIncrement(i, (int)endCornerGoalSmall.X, xIncrement, false); i += xIncrement)
+				{
+					for (int j = (int)startCornerSmall.Y; PastIncrement(j, (int)endCornerGoalSmall.Y, yIncrement, false); j += yIncrement)
+					{
+						bool canKillTile = CanKillTile(i, j);
+
+						if (!PastIncrement(i, (int)endCornerGoalSmall.X, xIncrement, false) && !PastIncrement(j, (int)endCornerGoalSmall.Y, yIncrement, false))
+							canKillTile = false;
+
+						if (canKillTile)
+							tilesToDestroy.Add(new Vector2(i, j));
+					}
+				}
+			}
+
+			float opacity = (DESTRUCTION_TIME - Projectile.timeLeft) / (float)DESTRUCTION_TIME;
+			opacity = Eases.EaseQuadIn(opacity);
+
+			foreach (Vector2 position in tilesToDestroy)
+			{
+				Lighting.AddLight(position * 16, Color.White.ToVector3() * opacity);
+			}
+		}
+		else
+		{
+			Projectile.active = false;
+
+			foreach (Vector2 pos in tilesToDestroy.OrderBy(x => x.Y))
+			{
+				int i = (int)pos.X;
+				int j = (int)pos.Y;
+
+				for (int l = 0; l < 1; l++) //one time loop so its easy to change if I want to :trollge:
+				{
+					var dust = Dust.NewDustDirect(new Vector2(i * 16, j * 16), 0, 0, ModContent.DustType<SorcerwrenchDust>());
+					dust.velocity = Main.rand.NextVector2Circular(3, 3);
+					dust.scale = Main.rand.NextFloat(0.8f, 1.2f);
+					dust.alpha = 70 + Main.rand.Next(60);
+					dust.rotation = Main.rand.NextFloat(6.28f);
+
+					var dust2 = Dust.NewDustDirect(new Vector2(i * 16, j * 16), 0, 0, ModContent.DustType<SorcerwrenchSparkle>());
+					dust2.velocity = Main.rand.NextVector2Circular(6, 6);
+					dust2.scale = Main.rand.NextFloat(0.1f, 0.2f);
+					dust2.alpha = Main.rand.Next(60);
+					dust2.rotation = Main.rand.NextFloat(6.28f);
+				}
+
+				WorldGen.KillTile(i, j, false, false, false);
+
+				if (!Main.tile[i, j].HasTile && Main.netMode != NetmodeID.SinglePlayer)
+					NetMessage.SendData(MessageID.TileManipulation, -1, -1, null, 0, i, j, 0f, 0, 0, 0);
+			}
 		}
 	}
 
-	public class SorcerwrenchProjectile : ModProjectile, IDrawOverTiles
+	public override bool PreDraw(ref Color lightColor)
 	{
-		private const int DESTRUCTION_TIME = 100;
-		private const int MANA_PER_TILE = 2;
-
-		private bool initialized = false;
-
-		private Vector2 startCorner = Vector2.Zero;
-		private Vector2 endCorner = Vector2.Zero;
-		private Vector2 endCornerGoal = Vector2.Zero;
-
-		private float manaUsed;
-
-		private bool released = false;
-
-		private readonly List<Vector2> tilesToDestroy = new();
-
-		private Player Owner => Main.player[Projectile.owner];
-
-		private Vector2 StartCornerTile => startCorner / 16;
-
-		public override string Texture => AssetDirectory.MiscItem + "Sorcerwrench";
-
-		public override void Load()
-		{
-			//On.Terraria.Main.DrawInterface_Resources_Mana += DrawRottenMana; //TODO: Find where vanilla draws resource bars now
-
-		}
-
-		public override void SetDefaults()
-		{
-			Projectile.width = 2;
-			Projectile.height = 2;
-			Projectile.timeLeft = 150;
-			Projectile.penetrate = -1;
-			Projectile.tileCollide = false;
-		}
-
-		public override void AI()
-		{
-			if (!initialized)
-			{
-				initialized = true;
-				startCorner.X = endCorner.X = (int)Math.Floor(Projectile.Center.X / 16) * 16;
-				startCorner.Y = endCorner.Y = (int)Math.Floor(Projectile.Center.Y / 16) * 16;
-			}
-
-			if (Owner.channel && !released)
-			{
-				Projectile.timeLeft = DESTRUCTION_TIME;
-				Projectile.Center = Main.MouseWorld;
-
-				Owner.ChangeDir(Main.MouseWorld.X > Owner.position.X ? 1 : -1);
-				Vector2 direction = Owner.DirectionTo(Main.MouseWorld);
-				Owner.itemTime = Owner.itemAnimation = 2;
-				Owner.itemRotation = direction.ToRotation();
-
-				if (Owner.direction != 1)
-					Owner.itemRotation -= 3.14f;
-
-				Owner.itemRotation = MathHelper.WrapAngle(Owner.itemRotation);
-
-				Vector2 endCornerGoalGoal;
-				endCornerGoalGoal.X = (int)Math.Floor(Main.MouseWorld.X / 16) * 16;
-				endCornerGoalGoal.Y = (int)Math.Floor(Main.MouseWorld.Y / 16) * 16;
-
-				Vector2 difference = Vector2.Zero;
-				endCornerGoal = startCorner;
-
-				Vector2 dir2 = endCornerGoalGoal - startCorner;
-
-				if (Math.Abs(dir2.X) > 12 && Math.Abs(dir2.Y) > 12)
-				{
-					dir2.Normalize();
-
-					int xDifferenceInt = 0;
-					int yDifferenceInt = 0;
-
-					int selectedTiles = 0;
-
-					manaUsed = 0;
-
-					int tries = 0;
-					while (selectedTiles * MANA_PER_TILE < Owner.statMana)
-					{
-						if (manaUsed > Owner.statMana)
-							break;
-						difference += dir2 * 8;
-						if ((int)Math.Abs(difference.X / 16) > xDifferenceInt)
-						{
-							for (int y = (int)StartCornerTile.Y; PastIncrement(y, yDifferenceInt * Math.Sign(dir2.Y) + (int)StartCornerTile.Y, Math.Sign(dir2.Y)); y += Math.Sign(dir2.Y))
-							{
-								if (CanKillTile(xDifferenceInt * Math.Sign(dir2.X) + (int)StartCornerTile.X, y))
-									manaUsed += MANA_PER_TILE;
-							}
-
-							if (manaUsed > Owner.statMana)
-								break;
-
-							xDifferenceInt = (int)Math.Abs(difference.X / 16);
-						}
-
-						if ((int)Math.Abs(difference.Y / 16) > yDifferenceInt)
-						{
-							for (int x = (int)StartCornerTile.X; PastIncrement(x, xDifferenceInt * Math.Sign(dir2.X) + (int)StartCornerTile.X, Math.Sign(dir2.X)); x += Math.Sign(dir2.X))
-							{
-								if (CanKillTile(x, yDifferenceInt * Math.Sign(dir2.Y) + (int)StartCornerTile.Y))
-									manaUsed += MANA_PER_TILE;
-							}
-
-							if (manaUsed > Owner.statMana)
-								break;
-
-							yDifferenceInt = (int)Math.Abs(difference.Y / 16);
-						}
-
-						if (yDifferenceInt > 20 || xDifferenceInt > 20)
-							break;
-
-						endCornerGoal = startCorner + new Vector2(xDifferenceInt * 16 * Math.Sign(dir2.X), yDifferenceInt * 16 * Math.Sign(dir2.Y));
-
-						if (!PastIncrement((int)endCornerGoal.X, (int)endCornerGoalGoal.X, Math.Sign(dir2.X)) || !PastIncrement((int)endCornerGoal.Y, (int)endCornerGoalGoal.Y, Math.Sign(dir2.Y)))
-							break;
-
-						tries++;
-						if (tries > 4999)
-						{
-							Main.NewText("Sorcerwrench error: too many tries! Report to developers of Starlight River immediately!"); //TODO: Should this really print to a user?
-							break;
-						}
-					}
-				}
-
-				endCorner = Vector2.Lerp(endCorner, endCornerGoal, 0.35f);
-
-				if (Math.Abs(endCorner.X - endCornerGoal.X) < 5)
-					endCorner.X = endCornerGoal.X;
-
-				if (Math.Abs(endCorner.Y - endCornerGoal.Y) < 5)
-					endCorner.Y = endCornerGoal.Y;
-
-				if (Main.mouseRight)
-					Projectile.active = false;
-			}
-			else if (Projectile.timeLeft > 2)
-			{
-				if (!released)
-				{
-					Owner.statMana -= (int)manaUsed;
-					released = true;
-					Vector2 startCornerSmall = startCorner / 16;
-					Vector2 endCornerGoalSmall = endCornerGoal / 16;
-
-					int xIncrement = Math.Sign(endCornerGoalSmall.X - startCornerSmall.X);
-					int yIncrement = Math.Sign(endCornerGoalSmall.Y - startCornerSmall.Y);
-
-					if (xIncrement == 0 || yIncrement == 0)
-						return;
-
-					if (xIncrement < 0)
-					{
-						startCornerSmall.X -= 1;
-						endCornerGoalSmall.X -= 1;
-					}
-
-					if (yIncrement < 0)
-					{
-						startCornerSmall.Y -= 1;
-						endCornerGoalSmall.Y -= 1;
-					}
-
-					for (int i = (int)startCornerSmall.X; PastIncrement(i, (int)endCornerGoalSmall.X, xIncrement, false); i += xIncrement)
-					{
-						for (int j = (int)startCornerSmall.Y; PastIncrement(j, (int)endCornerGoalSmall.Y, yIncrement, false); j += yIncrement)
-						{
-							bool canKillTile = CanKillTile(i, j);
-
-							if (!PastIncrement(i, (int)endCornerGoalSmall.X, xIncrement, false) && !PastIncrement(j, (int)endCornerGoalSmall.Y, yIncrement, false))
-								canKillTile = false;
-
-							if (canKillTile)
-								tilesToDestroy.Add(new Vector2(i, j));
-						}
-					}
-				}
-
-				float opacity = (DESTRUCTION_TIME - Projectile.timeLeft) / (float)DESTRUCTION_TIME;
-				opacity = Eases.EaseQuadIn(opacity);
-
-				foreach (Vector2 position in tilesToDestroy)
-				{
-					Lighting.AddLight(position * 16, Color.White.ToVector3() * opacity);
-				}
-			}
-			else
-			{
-				Projectile.active = false;
-
-				foreach (Vector2 pos in tilesToDestroy.OrderBy(x => x.Y))
-				{
-					int i = (int)pos.X;
-					int j = (int)pos.Y;
-
-					for (int l = 0; l < 1; l++) //one time loop so its easy to change if I want to :trollge:
-					{
-						var dust = Dust.NewDustDirect(new Vector2(i * 16, j * 16), 0, 0, ModContent.DustType<SorcerwrenchDust>());
-						dust.velocity = Main.rand.NextVector2Circular(3, 3);
-						dust.scale = Main.rand.NextFloat(0.8f, 1.2f);
-						dust.alpha = 70 + Main.rand.Next(60);
-						dust.rotation = Main.rand.NextFloat(6.28f);
-
-						var dust2 = Dust.NewDustDirect(new Vector2(i * 16, j * 16), 0, 0, ModContent.DustType<SorcerwrenchSparkle>());
-						dust2.velocity = Main.rand.NextVector2Circular(6, 6);
-						dust2.scale = Main.rand.NextFloat(0.1f, 0.2f);
-						dust2.alpha = Main.rand.Next(60);
-						dust2.rotation = Main.rand.NextFloat(6.28f);
-					}
-
-					WorldGen.KillTile(i, j, false, false, false);
-
-					if (!Main.tile[i, j].HasTile && Main.netMode != NetmodeID.SinglePlayer)
-						NetMessage.SendData(MessageID.TileManipulation, -1, -1, null, 0, i, j, 0f, 0, 0, 0);
-				}
-			}
-		}
-
-		public override bool PreDraw(ref Color lightColor)
-		{
-			if (Projectile.timeLeft < DESTRUCTION_TIME - 2)
-				return false;
-			int xIncrement = Math.Sign(endCorner.X - startCorner.X) * 2;
-			int yIncrement = Math.Sign(endCorner.Y - startCorner.Y) * 2;
-
-			for (int i = (int)startCorner.X; PastIncrement(i, (int)endCorner.X, xIncrement); i += xIncrement)
-			{
-				for (int j = (int)startCorner.Y; PastIncrement(j, (int)endCorner.Y, yIncrement); j += yIncrement)
-				{
-					if (i == startCorner.X || Math.Abs(i - endCorner.X) < 2 || j == startCorner.Y || Math.Abs(j - endCorner.Y) < 2)
-					{
-						DrawPixel(Main.spriteBatch, Color.Red, new Vector2(i, j));
-					}
-					else
-					{
-						Color shadeColor = Color.LightSalmon;
-						DrawPixel(Main.spriteBatch, shadeColor * 0.3f, new Vector2(i, j));
-					}
-				}
-			}
-
+		if (Projectile.timeLeft < DESTRUCTION_TIME - 2)
 			return false;
-		}
+		int xIncrement = Math.Sign(endCorner.X - startCorner.X) * 2;
+		int yIncrement = Math.Sign(endCorner.Y - startCorner.Y) * 2;
 
-		private static void DrawPixel(SpriteBatch spriteBatch, Color color, Vector2 worldPos)
+		for (int i = (int)startCorner.X; PastIncrement(i, (int)endCorner.X, xIncrement); i += xIncrement)
 		{
-			spriteBatch.Draw(TextureAssets.MagicPixel.Value, worldPos - Main.screenPosition, new Rectangle(0, 0, 1, 1), color, 0, Vector2.Zero, 2, SpriteEffects.None, 0f);
-		}
-
-		private static bool PastIncrement(int val, int end, int increment, bool includeEqual = true)
-		{
-			if (increment == 0)
-				return false;
-
-			if (includeEqual)
+			for (int j = (int)startCorner.Y; PastIncrement(j, (int)endCorner.Y, yIncrement); j += yIncrement)
 			{
-				if (increment > 0)
-					return val <= end;
+				if (i == startCorner.X || Math.Abs(i - endCorner.X) < 2 || j == startCorner.Y || Math.Abs(j - endCorner.Y) < 2)
+				{
+					DrawPixel(Main.spriteBatch, Color.Red, new Vector2(i, j));
+				}
 				else
-					return val >= end;
-			}
-
-			if (increment > 0)
-				return val < end;
-			else
-				return val > end;
-		}
-
-		private static bool CanKillTile(int i, int j)
-		{
-			if (Main.tile[i, j] != null && Main.tile[i, j].HasTile)
-			{
-				if (Main.tileDungeon[Main.tile[i, j].TileType] || //TODO: Do we have a better way to check this than hardcoding? Check tile hardness maybe?
-					Main.tile[i, j].TileType == TileID.Dressers ||
-					Main.tile[i, j].TileType == TileID.Containers ||
-					Main.tile[i, j].TileType == TileID.DemonAltar ||
-					Main.tile[i, j].TileType == TileID.Cobalt ||
-					Main.tile[i, j].TileType == TileID.Mythril ||
-					Main.tile[i, j].TileType == TileID.Adamantite ||
-					Main.tile[i, j].TileType == TileID.LihzahrdBrick ||
-					Main.tile[i, j].TileType == TileID.LihzahrdAltar ||
-					Main.tile[i, j].TileType == TileID.Palladium ||
-					Main.tile[i, j].TileType == TileID.Orichalcum ||
-					Main.tile[i, j].TileType == TileID.Titanium ||
-					Main.tile[i, j].TileType == TileID.Chlorophyte ||
-					Main.tile[i, j].TileType == TileID.DesertFossil)
 				{
-					return false;
+					Color shadeColor = Color.LightSalmon;
+					DrawPixel(Main.spriteBatch, shadeColor * 0.3f, new Vector2(i, j));
 				}
-
-				if (!Main.hardMode && Main.tile[i, j].TileType == TileID.Hellstone)
-					return false;
-
-				if (!TileLoader.CanExplode(i, j))
-					return false;
-
-				return true;
 			}
-
-			return false;
 		}
 
-		/* TODO: rework this draw rotten mana
+		return false;
+	}
+
+	private static void DrawPixel(SpriteBatch spriteBatch, Color color, Vector2 worldPos)
+	{
+		spriteBatch.Draw(TextureAssets.MagicPixel.Value, worldPos - Main.screenPosition, new Rectangle(0, 0, 1, 1), color, 0, Vector2.Zero, 2, SpriteEffects.None, 0f);
+	}
+
+	private static bool PastIncrement(int val, int end, int increment, bool includeEqual = true)
+	{
+		if (increment == 0)
+			return false;
+
+		if (includeEqual)
+		{
+			if (increment > 0)
+				return val <= end;
+			else
+				return val >= end;
+		}
+
+		if (increment > 0)
+			return val < end;
+		else
+			return val > end;
+	}
+
+	private static bool CanKillTile(int i, int j)
+	{
+		if (Main.tile[i, j] != null && Main.tile[i, j].HasTile)
+		{
+			if (Main.tileDungeon[Main.tile[i, j].TileType] || //TODO: Do we have a better way to check this than hardcoding? Check tile hardness maybe?
+				Main.tile[i, j].TileType == TileID.Dressers ||
+				Main.tile[i, j].TileType == TileID.Containers ||
+				Main.tile[i, j].TileType == TileID.DemonAltar ||
+				Main.tile[i, j].TileType == TileID.Cobalt ||
+				Main.tile[i, j].TileType == TileID.Mythril ||
+				Main.tile[i, j].TileType == TileID.Adamantite ||
+				Main.tile[i, j].TileType == TileID.LihzahrdBrick ||
+				Main.tile[i, j].TileType == TileID.LihzahrdAltar ||
+				Main.tile[i, j].TileType == TileID.Palladium ||
+				Main.tile[i, j].TileType == TileID.Orichalcum ||
+				Main.tile[i, j].TileType == TileID.Titanium ||
+				Main.tile[i, j].TileType == TileID.Chlorophyte ||
+				Main.tile[i, j].TileType == TileID.DesertFossil)
+			{
+				return false;
+			}
+
+			if (!Main.hardMode && Main.tile[i, j].TileType == TileID.Hellstone)
+				return false;
+
+			if (!TileLoader.CanExplode(i, j))
+				return false;
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/* TODO: rework this draw rotten mana
         private void DrawRottenMana(On.Terraria.Main.orig_DrawInterface_Resources_Mana orig)
         {
             orig();
@@ -426,118 +426,117 @@ namespace StarlightRiver.Content.Items.Misc
         }
         */
 
-		public void DrawOverTiles(SpriteBatch spriteBatch)
+	public void DrawOverTiles(SpriteBatch spriteBatch)
+	{
+		float opacity = (DESTRUCTION_TIME - Projectile.timeLeft) / (float)DESTRUCTION_TIME;
+		opacity = Eases.EaseQuadIn(opacity);
+
+		Color color = Color.Lerp(Color.Salmon, Color.White, opacity) * opacity;
+
+		int xIncrement = Math.Sign(endCornerGoal.X - startCorner.X) * 2;
+		int yIncrement = Math.Sign(endCornerGoal.Y - startCorner.Y) * 2;
+
+		for (int i = (int)startCorner.X; PastIncrement(i, (int)endCornerGoal.X, xIncrement); i += xIncrement)
 		{
-			float opacity = (DESTRUCTION_TIME - Projectile.timeLeft) / (float)DESTRUCTION_TIME;
-			opacity = Eases.EaseQuadIn(opacity);
-
-			Color color = Color.Lerp(Color.Salmon, Color.White, opacity) * opacity;
-
-			int xIncrement = Math.Sign(endCornerGoal.X - startCorner.X) * 2;
-			int yIncrement = Math.Sign(endCornerGoal.Y - startCorner.Y) * 2;
-
-			for (int i = (int)startCorner.X; PastIncrement(i, (int)endCornerGoal.X, xIncrement); i += xIncrement)
+			for (int j = (int)startCorner.Y; PastIncrement(j, (int)endCornerGoal.Y, yIncrement); j += yIncrement)
 			{
-				for (int j = (int)startCorner.Y; PastIncrement(j, (int)endCornerGoal.Y, yIncrement); j += yIncrement)
-				{
-					DrawPixel(spriteBatch, color, new Vector2(i, j));
-				}
+				DrawPixel(spriteBatch, color, new Vector2(i, j));
 			}
 		}
 	}
+}
 
-	public class SorcerwrenchDust : ModDust
+public class SorcerwrenchDust : ModDust
+{
+	public override string Texture => AssetDirectory.Dust + "NeedlerDust";
+
+	public override void OnSpawn(Dust dust)
 	{
-		public override string Texture => AssetDirectory.Dust + "NeedlerDust";
-
-		public override void OnSpawn(Dust dust)
-		{
-			dust.noGravity = true;
-			dust.scale *= Main.rand.NextFloat(0.8f, 2f);
-			dust.frame = new Rectangle(0, 0, 34, 36);
-			dust.color = Color.Lerp(Color.White, Color.Salmon, Eases.EaseQuadIn(Main.rand.NextFloat() / 2));
-		}
-
-		public override Color? GetAlpha(Dust dust, Color lightColor)
-		{
-			return dust.color * ((255 - dust.alpha) / 255f) * 0.6f;
-		}
-
-		public override bool Update(Dust dust)
-		{
-			if (Math.Abs(dust.velocity.Length()) > 3)
-				dust.velocity *= 0.9f;
-			else
-				dust.velocity *= 0.95f;
-
-			Lighting.AddLight(dust.position, Color.White.ToVector3() * 1.4f * ((255 - dust.alpha) / 255f));
-			if (dust.alpha > 100)
-			{
-				//dust.scale += 0.01f;
-				dust.alpha += 4;
-			}
-			else
-			{
-				dust.scale *= 0.985f;
-				dust.alpha += 8;
-			}
-
-			dust.position += dust.velocity;
-
-			if (dust.alpha >= 255)
-				dust.active = false;
-
-			return false;
-		}
+		dust.noGravity = true;
+		dust.scale *= Main.rand.NextFloat(0.8f, 2f);
+		dust.frame = new Rectangle(0, 0, 34, 36);
+		dust.color = Color.Lerp(Color.White, Color.Salmon, Eases.EaseQuadIn(Main.rand.NextFloat() / 2));
 	}
 
-	public class SorcerwrenchSparkle : ModDust
+	public override Color? GetAlpha(Dust dust, Color lightColor)
 	{
-		public override string Texture => AssetDirectory.Dust + "Aurora";
+		return dust.color * ((255 - dust.alpha) / 255f) * 0.6f;
+	}
 
-		public override void OnSpawn(Dust dust)
+	public override bool Update(Dust dust)
+	{
+		if (Math.Abs(dust.velocity.Length()) > 3)
+			dust.velocity *= 0.9f;
+		else
+			dust.velocity *= 0.95f;
+
+		Lighting.AddLight(dust.position, Color.White.ToVector3() * 1.4f * ((255 - dust.alpha) / 255f));
+		if (dust.alpha > 100)
 		{
-			dust.noGravity = true;
-			dust.scale *= Main.rand.NextFloat(0.2f, 0.4f);
-			dust.noLight = false;
-			dust.frame = new Rectangle(0, 0, 100, 100);
-			dust.color = Color.Lerp(Color.White, Color.Salmon, Eases.EaseQuadIn(Main.rand.NextFloat()));
-			if (ShaderLoader.GetShader("GlowingDust").Value != null)
-				dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
+			//dust.scale += 0.01f;
+			dust.alpha += 4;
+		}
+		else
+		{
+			dust.scale *= 0.985f;
+			dust.alpha += 8;
 		}
 
-		public override Color? GetAlpha(Dust dust, Color lightColor)
+		dust.position += dust.velocity;
+
+		if (dust.alpha >= 255)
+			dust.active = false;
+
+		return false;
+	}
+}
+
+public class SorcerwrenchSparkle : ModDust
+{
+	public override string Texture => AssetDirectory.Dust + "Aurora";
+
+	public override void OnSpawn(Dust dust)
+	{
+		dust.noGravity = true;
+		dust.scale *= Main.rand.NextFloat(0.2f, 0.4f);
+		dust.noLight = false;
+		dust.frame = new Rectangle(0, 0, 100, 100);
+		dust.color = Color.Lerp(Color.White, Color.Salmon, Eases.EaseQuadIn(Main.rand.NextFloat()));
+		if (ShaderLoader.GetShader("GlowingDust").Value != null)
+			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
+	}
+
+	public override Color? GetAlpha(Dust dust, Color lightColor)
+	{
+		return dust.color * ((255 - dust.alpha) / 255f) * 0.6f;
+	}
+
+	public override bool Update(Dust dust)
+	{
+		if (Math.Abs(dust.velocity.Length()) > 3)
+			dust.velocity *= 0.85f;
+		else
+			dust.velocity *= 0.92f;
+
+		dust.shader?.UseColor(dust.color * ((255 - dust.alpha) / 255f) * 0.6f);
+
+		Lighting.AddLight(dust.position, Color.White.ToVector3() * 1.4f * ((255 - dust.alpha) / 255f));
+		if (dust.alpha > 100)
 		{
-			return dust.color * ((255 - dust.alpha) / 255f) * 0.6f;
+			//dust.scale += 0.01f;
+			dust.alpha += 4;
+		}
+		else
+		{
+			dust.scale *= 0.985f;
+			dust.alpha += 8;
 		}
 
-		public override bool Update(Dust dust)
-		{
-			if (Math.Abs(dust.velocity.Length()) > 3)
-				dust.velocity *= 0.85f;
-			else
-				dust.velocity *= 0.92f;
+		dust.position += dust.velocity;
 
-			dust.shader?.UseColor(dust.color * ((255 - dust.alpha) / 255f) * 0.6f);
+		if (dust.alpha >= 255)
+			dust.active = false;
 
-			Lighting.AddLight(dust.position, Color.White.ToVector3() * 1.4f * ((255 - dust.alpha) / 255f));
-			if (dust.alpha > 100)
-			{
-				//dust.scale += 0.01f;
-				dust.alpha += 4;
-			}
-			else
-			{
-				dust.scale *= 0.985f;
-				dust.alpha += 8;
-			}
-
-			dust.position += dust.velocity;
-
-			if (dust.alpha >= 255)
-				dust.active = false;
-
-			return false;
-		}
+		return false;
 	}
 }

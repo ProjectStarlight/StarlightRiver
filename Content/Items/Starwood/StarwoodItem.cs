@@ -1,27 +1,26 @@
-namespace StarlightRiver.Content.Items.Starwood
+namespace StarlightRiver.Content.Items.Starwood;
+
+public abstract class StarwoodItem : ModItem
 {
-	public abstract class StarwoodItem : ModItem
+	[CloneByReference]
+	protected Texture2D EmpoweredTexture;
+	protected bool isEmpowered;
+
+	protected StarwoodItem(Texture2D AltTexture)
 	{
-		[CloneByReference]
-		protected Texture2D EmpoweredTexture;
-		protected bool isEmpowered;
+		EmpoweredTexture = AltTexture;
+	}
 
-		protected StarwoodItem(Texture2D AltTexture)
-		{
-			EmpoweredTexture = AltTexture;
-		}
+	public override void UpdateInventory(Player Player)
+	{
+		isEmpowered = Player.GetModPlayer<StarlightPlayer>().empowered;
+	}
 
-		public override void UpdateInventory(Player Player)
-		{
-			isEmpowered = Player.GetModPlayer<StarlightPlayer>().empowered;
-		}
+	public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
+	{
+		if (isEmpowered)
+			spriteBatch.Draw(EmpoweredTexture, position, frame, drawColor, default, origin, scale, default, default);
 
-		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
-		{
-			if (isEmpowered)
-				spriteBatch.Draw(EmpoweredTexture, position, frame, drawColor, default, origin, scale, default, default);
-
-			return !isEmpowered;
-		}
+		return !isEmpowered;
 	}
 }

@@ -4,123 +4,122 @@ using System.Collections.Generic;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Bosses.VitricBoss
+namespace StarlightRiver.Content.Bosses.VitricBoss;
+
+internal class FireCone : ModProjectile
 {
-	internal class FireCone : ModProjectile
+	public override string Texture => AssetDirectory.Invisible;
+
+	public ref float Timer => ref Projectile.ai[0];
+	public ref float Rotation => ref Projectile.ai[1];
+
+	public bool extraShots = false;
+
+	public override void SetDefaults()
 	{
-		public override string Texture => AssetDirectory.Invisible;
+		Projectile.hostile = true;
+		Projectile.width = 1;
+		Projectile.height = 1;
+		Projectile.timeLeft = 2;
+		Projectile.hide = true;
+	}
 
-		public ref float Timer => ref Projectile.ai[0];
-		public ref float Rotation => ref Projectile.ai[1];
+	public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
+	{
+		overWiresUI.Add(index);
+	}
 
-		public bool extraShots = false;
+	public override void AI()
+	{
+		Projectile.rotation = Rotation;
+		Projectile.timeLeft = 2;
+		Timer++; //ticks up the timer
 
-		public override void SetDefaults()
+		if (Timer <= 30) //drawing in fire
 		{
-			Projectile.hostile = true;
-			Projectile.width = 1;
-			Projectile.height = 1;
-			Projectile.timeLeft = 2;
-			Projectile.hide = true;
+			Vector2 pos1 = Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation - 0.2f) * Main.rand.Next(-550, -450);
+			Vector2 pos2 = Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation + 0.2f) * Main.rand.Next(-550, -450);
+			Vector2 posRand = Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation + Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.Next(-420, -380);
+
+			Dust.NewDustPerfect(pos1, DustType<PowerupDust>(), (pos1 - Projectile.Center) * -0.03f, 0, new Color(255, 210, 180, 0), Timer / 25f * Main.rand.NextFloat(0.75f, 1f));
+			Dust.NewDustPerfect(pos2, DustType<PowerupDust>(), (pos2 - Projectile.Center) * -0.03f, 0, new Color(255, 210, 180, 0), Timer / 25f * Main.rand.NextFloat(0.75f, 1f));
+			Dust.NewDustPerfect(posRand, DustType<PowerupDust>(), (posRand - Projectile.Center) * -0.03f, 0, new Color(255, 160, 100, 0), Timer / 25f * Main.rand.NextFloat(0.3f, 0.6f));
 		}
 
-		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
+		if (Timer == 70)
 		{
-			overWiresUI.Add(index);
-		}
-
-		public override void AI()
-		{
-			Projectile.rotation = Rotation;
-			Projectile.timeLeft = 2;
-			Timer++; //ticks up the timer
-
-			if (Timer <= 30) //drawing in fire
+			for (int k = 0; k < 4; k++)
 			{
-				Vector2 pos1 = Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation - 0.2f) * Main.rand.Next(-550, -450);
-				Vector2 pos2 = Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation + 0.2f) * Main.rand.Next(-550, -450);
-				Vector2 posRand = Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation + Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.Next(-420, -380);
-
-				Dust.NewDustPerfect(pos1, DustType<PowerupDust>(), (pos1 - Projectile.Center) * -0.03f, 0, new Color(255, 210, 180, 0), Timer / 25f * Main.rand.NextFloat(0.75f, 1f));
-				Dust.NewDustPerfect(pos2, DustType<PowerupDust>(), (pos2 - Projectile.Center) * -0.03f, 0, new Color(255, 210, 180, 0), Timer / 25f * Main.rand.NextFloat(0.75f, 1f));
-				Dust.NewDustPerfect(posRand, DustType<PowerupDust>(), (posRand - Projectile.Center) * -0.03f, 0, new Color(255, 160, 100, 0), Timer / 25f * Main.rand.NextFloat(0.3f, 0.6f));
+				float rot = Projectile.rotation + Main.rand.NextFloat(-0.2f, 0.2f);
+				Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedBy(rot - MathHelper.PiOver4) * -80, DustType<LavaSpew>(), -Vector2.UnitX.RotatedBy(rot), 0, default, Main.rand.NextFloat(0.8f, 1.2f));
 			}
 
+			Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot, Projectile.Center);
+		}
+
+		if (Main.expertMode && Main.netMode != NetmodeID.MultiplayerClient)
+		{
 			if (Timer == 70)
-			{
-				for (int k = 0; k < 4; k++)
-				{
-					float rot = Projectile.rotation + Main.rand.NextFloat(-0.2f, 0.2f);
-					Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedBy(rot - MathHelper.PiOver4) * -80, DustType<LavaSpew>(), -Vector2.UnitX.RotatedBy(rot), 0, default, Main.rand.NextFloat(0.8f, 1.2f));
-				}
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.UnitX.RotatedBy(Projectile.rotation + 3.14f) * 11, ProjectileType<NPCs.Vitric.SnakeSpit>(), Projectile.damage, 1, Projectile.owner);
 
-				Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot, Projectile.Center);
+			if (Timer == 74)
+			{
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.UnitX.RotatedBy(Projectile.rotation + 3.14f + 0.5f) * 11, ProjectileType<NPCs.Vitric.SnakeSpit>(), Projectile.damage, 1, Projectile.owner);
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.UnitX.RotatedBy(Projectile.rotation + 3.14f - 0.5f) * 11, ProjectileType<NPCs.Vitric.SnakeSpit>(), Projectile.damage, 1, Projectile.owner);
 			}
 
-			if (Main.expertMode && Main.netMode != NetmodeID.MultiplayerClient)
+			if (extraShots && Timer == 78)
 			{
-				if (Timer == 70)
-					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.UnitX.RotatedBy(Projectile.rotation + 3.14f) * 11, ProjectileType<NPCs.Vitric.SnakeSpit>(), Projectile.damage, 1, Projectile.owner);
-
-				if (Timer == 74)
-				{
-					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.UnitX.RotatedBy(Projectile.rotation + 3.14f + 0.5f) * 11, ProjectileType<NPCs.Vitric.SnakeSpit>(), Projectile.damage, 1, Projectile.owner);
-					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.UnitX.RotatedBy(Projectile.rotation + 3.14f - 0.5f) * 11, ProjectileType<NPCs.Vitric.SnakeSpit>(), Projectile.damage, 1, Projectile.owner);
-				}
-
-				if (extraShots && Timer == 78)
-				{
-					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.UnitX.RotatedBy(Projectile.rotation + 3.14f + 1f) * 11, ProjectileType<NPCs.Vitric.SnakeSpit>(), Projectile.damage, 1, Projectile.owner);
-					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.UnitX.RotatedBy(Projectile.rotation + 3.14f - 1f) * 11, ProjectileType<NPCs.Vitric.SnakeSpit>(), Projectile.damage, 1, Projectile.owner);
-				}
-
-				if (Timer == 70 && Main.masterMode)
-				{
-					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ProjectileType<FireRingHostile>(), 20, 0, Main.myPlayer, 100);
-					//TODO: Homing fireball
-				}
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.UnitX.RotatedBy(Projectile.rotation + 3.14f + 1f) * 11, ProjectileType<NPCs.Vitric.SnakeSpit>(), Projectile.damage, 1, Projectile.owner);
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.UnitX.RotatedBy(Projectile.rotation + 3.14f - 1f) * 11, ProjectileType<NPCs.Vitric.SnakeSpit>(), Projectile.damage, 1, Projectile.owner);
 			}
 
-			if (Timer >= 94) //when this Projectile goes off
+			if (Timer == 70 && Main.masterMode)
 			{
-				Projectile.Kill(); //self-destruct
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ProjectileType<FireRingHostile>(), 20, 0, Main.myPlayer, 100);
+				//TODO: Homing fireball
 			}
 		}
 
-		public override void OnHitPlayer(Player target, Player.HurtInfo info)
+		if (Timer >= 94) //when this Projectile goes off
 		{
-			target.AddBuff(BuffID.OnFire, 300);
+			Projectile.Kill(); //self-destruct
 		}
+	}
 
-		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+	public override void OnHitPlayer(Player target, Player.HurtInfo info)
+	{
+		target.AddBuff(BuffID.OnFire, 300);
+	}
+
+	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+	{
+		if (Timer > 70 && Timer < 78)
 		{
-			if (Timer > 70 && Timer < 78)
-			{
-				return CollisionHelper.CheckConicalCollision(Projectile.Center, (int)((Timer - 70) / 8f * 700), Projectile.rotation, 0.2f, targetHitbox);
-			}
-
-			return false;
+			return CollisionHelper.CheckConicalCollision(Projectile.Center, (int)((Timer - 70) / 8f * 700), Projectile.rotation, 0.2f, targetHitbox);
 		}
 
-		public override bool PreDraw(ref Color lightColor)
+		return false;
+	}
+
+	public override bool PreDraw(ref Color lightColor)
+	{
+		SpriteBatch spriteBatch = Main.spriteBatch;
+
+		if (Timer < 66) //draws the proejctile's tell ~1 second before it goes off
 		{
-			SpriteBatch spriteBatch = Main.spriteBatch;
-
-			if (Timer < 66) //draws the proejctile's tell ~1 second before it goes off
-			{
-				Texture2D tex = Assets.Bosses.VitricBoss.ConeTell.Value;
-				float alpha = (Timer * 2 / 33 - (float)Math.Pow(Timer, 2) / 1086) * 0.5f;
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), new Color(255, 170, 100, 0) * alpha, Projectile.rotation - 1.57f, new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
-			}
-
-			if (Timer >= 66) //draws the proejctile
-			{
-				Texture2D tex = Assets.Bosses.VitricBoss.LavaBurst.Value;
-				var frame = new Rectangle(0, tex.Height / 7 * (int)((Timer - 66) / 4), tex.Width, tex.Height / 7);
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frame, Color.White, Projectile.rotation - 1.57f, new Vector2(tex.Width / 2, tex.Height / 7), 2, 0, 0);
-			}
-
-			return false;
+			Texture2D tex = Assets.Bosses.VitricBoss.ConeTell.Value;
+			float alpha = (Timer * 2 / 33 - (float)Math.Pow(Timer, 2) / 1086) * 0.5f;
+			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), new Color(255, 170, 100, 0) * alpha, Projectile.rotation - 1.57f, new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
 		}
+
+		if (Timer >= 66) //draws the proejctile
+		{
+			Texture2D tex = Assets.Bosses.VitricBoss.LavaBurst.Value;
+			var frame = new Rectangle(0, tex.Height / 7 * (int)((Timer - 66) / 4), tex.Width, tex.Height / 7);
+			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frame, Color.White, Projectile.rotation - 1.57f, new Vector2(tex.Width / 2, tex.Height / 7), 2, 0, 0);
+		}
+
+		return false;
 	}
 }

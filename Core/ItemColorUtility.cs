@@ -1,64 +1,63 @@
 ﻿using System.Collections.Generic;
 using Terraria.ID;
 
-namespace StarlightRiver.Core
+namespace StarlightRiver.Core;
+
+internal static class ItemColorUtility
 {
-	internal static class ItemColorUtility
+	private static readonly Dictionary<int, Color> AverageColor = new();
+
+	public static Color GetColor(int type)
 	{
-		private static readonly Dictionary<int, Color> AverageColor = new();
+		if (Main.netMode == NetmodeID.Server)
+			return Color.Transparent; //server doesn't have textures
 
-		public static Color GetColor(int type)
+		if (AverageColor.ContainsKey(type))
 		{
-			if (Main.netMode == NetmodeID.Server)
-				return Color.Transparent; //server doesn't have textures
-
-			if (AverageColor.ContainsKey(type))
-			{
-				return AverageColor[type];
-			}
-			else
-			{
-				AddColor(type);
-				return AverageColor[type];
-			}
+			return AverageColor[type];
 		}
-
-		private static void AddColor(int type)
+		else
 		{
-			if (Main.netMode == NetmodeID.Server)
-				return; //server doesn't have textures
+			AddColor(type);
+			return AverageColor[type];
+		}
+	}
 
-			Texture2D tex = Terraria.GameContent.TextureAssets.Item[type].Value;
+	private static void AddColor(int type)
+	{
+		if (Main.netMode == NetmodeID.Server)
+			return; //server doesn't have textures
 
-			int numPixels = 0;
-			int redTotal = 0;
-			int greenTotal = 0;
-			int blueTotal = 0;
+		Texture2D tex = Terraria.GameContent.TextureAssets.Item[type].Value;
 
-			var data = new Color[tex.Width * tex.Height];
-			tex.GetData(data);
+		int numPixels = 0;
+		int redTotal = 0;
+		int greenTotal = 0;
+		int blueTotal = 0;
 
-			for (int i = 0; i < tex.Width; i += 2)
+		var data = new Color[tex.Width * tex.Height];
+		tex.GetData(data);
+
+		for (int i = 0; i < tex.Width; i += 2)
+		{
+			for (int j = 0; j < tex.Height; j += 2)
 			{
-				for (int j = 0; j < tex.Height; j += 2)
+				Color alpha = data[j * tex.Width + i];
+
+				if (alpha != Color.Transparent)
 				{
-					Color alpha = data[j * tex.Width + i];
+					numPixels++;
 
-					if (alpha != Color.Transparent)
-					{
-						numPixels++;
-
-						redTotal += alpha.R;
-						greenTotal += alpha.G;
-						blueTotal += alpha.B;
-					}
+					redTotal += alpha.R;
+					greenTotal += alpha.G;
+					blueTotal += alpha.B;
 				}
 			}
-
-			if (numPixels == 0)
-				AverageColor.Add(type, Color.White);
-			else
-				AverageColor.Add(type, new Color(redTotal / numPixels, greenTotal / numPixels, blueTotal / numPixels));
 		}
+
+		if (numPixels == 0)
+			AverageColor.Add(type, Color.White);
+		else
+			AverageColor.Add(type, new Color(redTotal / numPixels, greenTotal / numPixels, blueTotal / numPixels));
 	}
 }

@@ -1,22 +1,21 @@
 ﻿using StarlightRiver.Core.Systems.BarrierSystem;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Items.Food
+namespace StarlightRiver.Content.Items.Food;
+
+internal class Lettuce : Ingredient
 {
-	internal class Lettuce : Ingredient
+	public Lettuce() : base("+40 maximum barrier", 3600, IngredientType.Side) { }
+
+	public override void SafeSetDefaults()
 	{
-		public Lettuce() : base("+40 maximum barrier", 3600, IngredientType.Side) { }
+		Item.rare = ItemRarityID.Blue;
 
-		public override void SafeSetDefaults()
-		{
-			Item.rare = ItemRarityID.Blue;
+		Item.value = Item.sellPrice(silver: 10);
+	}
 
-			Item.value = Item.sellPrice(silver: 10);
-		}
-
-		public override void BuffEffects(Player Player, float multiplier)
-		{
-			Player.GetModPlayer<BarrierPlayer>().maxBarrier += 40;
-		}
+	public override void BuffEffects(Player Player, float multiplier)
+	{
+		Player.GetModPlayer<BarrierPlayer>().maxBarrier += 40;
 	}
 }

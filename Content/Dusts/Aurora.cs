@@ -2,115 +2,114 @@
 using StarlightRiver.Core.Loaders;
 using System;
 
-namespace StarlightRiver.Content.Dusts
+namespace StarlightRiver.Content.Dusts;
+
+class Aurora : ModDust
 {
-	class Aurora : ModDust
+	public override string Texture => AssetDirectory.Dust + "Aurora";
+
+	public override void OnSpawn(Dust dust)
 	{
-		public override string Texture => AssetDirectory.Dust + "Aurora";
+		dust.noGravity = true;
+		dust.noLight = false;
+		dust.fadeIn = 60;
+		dust.frame = new Rectangle(0, 0, 100, 100);
+		dust.scale = 0;
 
-		public override void OnSpawn(Dust dust)
-		{
-			dust.noGravity = true;
-			dust.noLight = false;
-			dust.fadeIn = 60;
-			dust.frame = new Rectangle(0, 0, 100, 100);
-			dust.scale = 0;
+		if (ShaderLoader.GetShader("GlowingDust").Value != null)
+			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
+		dust.shader?.UseColor(Color.Transparent);
+	}
 
-			if (ShaderLoader.GetShader("GlowingDust").Value != null)
-				dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
-			dust.shader?.UseColor(Color.Transparent);
-		}
+	public override Color? GetAlpha(Dust dust, Color lightColor)
+	{
+		var col = Vector3.Lerp(dust.color.ToVector3(), Color.White.ToVector3(), dust.scale / (dust.customData is null ? 0.5f : (float)dust.customData));
+		return new Color(col.X, col.Y, col.Z) * ((255 - dust.alpha) / 255f);
+	}
 
-		public override Color? GetAlpha(Dust dust, Color lightColor)
-		{
-			var col = Vector3.Lerp(dust.color.ToVector3(), Color.White.ToVector3(), dust.scale / (dust.customData is null ? 0.5f : (float)dust.customData));
-			return new Color(col.X, col.Y, col.Z) * ((255 - dust.alpha) / 255f);
-		}
+	public override bool Update(Dust dust)
+	{
+		Lighting.AddLight(dust.position, dust.color.ToVector3() * dust.scale * 2.5f);
 
-		public override bool Update(Dust dust)
-		{
-			Lighting.AddLight(dust.position, dust.color.ToVector3() * dust.scale * 2.5f);
+		Vector2 currentCenter = dust.position + Vector2.One.RotatedBy(dust.rotation) * 50 * dust.scale;
 
-			Vector2 currentCenter = dust.position + Vector2.One.RotatedBy(dust.rotation) * 50 * dust.scale;
+		dust.scale = (dust.fadeIn / 15f - (float)Math.Pow(dust.fadeIn, 2) / 900f) * (dust.customData is null ? 0.5f : (float)dust.customData) * 0.2f;
+		Vector2 nextCenter = dust.position + Vector2.One.RotatedBy(dust.rotation + 0.06f) * 50 * dust.scale;
 
-			dust.scale = (dust.fadeIn / 15f - (float)Math.Pow(dust.fadeIn, 2) / 900f) * (dust.customData is null ? 0.5f : (float)dust.customData) * 0.2f;
-			Vector2 nextCenter = dust.position + Vector2.One.RotatedBy(dust.rotation + 0.06f) * 50 * dust.scale;
+		dust.rotation += 0.06f;
+		dust.position += currentCenter - nextCenter;
 
-			dust.rotation += 0.06f;
-			dust.position += currentCenter - nextCenter;
+		dust.fadeIn--;
+		dust.position += dust.velocity * 0.25f;
 
-			dust.fadeIn--;
+		dust.shader?.UseColor(dust.color);
+
+		if (dust.fadeIn <= 0)
+			dust.active = false;
+		return false;
+	}
+}
+
+class AuroraFast : Aurora
+{
+	public override bool Update(Dust dust)
+	{
+		dust.fadeIn--;
+		return base.Update(dust);
+	}
+}
+
+class AuroraDecelerating : Aurora
+{
+	public override bool Update(Dust dust)
+	{
+		dust.velocity *= 0.98f;
+		return base.Update(dust);
+	}
+}
+
+class AuroraSuction : Aurora
+{
+	public override Color? GetAlpha(Dust dust, Color lightColor)
+	{
+		var col = Vector3.Lerp(dust.color.ToVector3(), Color.White.ToVector3(), dust.scale / (dust.customData is null ? 0.5f : ((AuroraSuctionData)dust.customData).scale));
+		return new Color(col.X, col.Y, col.Z) * ((255 - dust.alpha) / 255f);
+	}
+
+	public override bool Update(Dust dust)
+	{
+		Lighting.AddLight(dust.position, dust.color.ToVector3() * dust.scale * 2.5f);
+
+		Vector2 currentCenter = dust.position + Vector2.One.RotatedBy(dust.rotation) * 50 * dust.scale;
+
+		dust.scale = (dust.fadeIn / 15f - (float)Math.Pow(dust.fadeIn, 2) / 900f) * (dust.customData is null ? 0.5f : ((AuroraSuctionData)dust.customData).scale) * 0.2f;
+		Vector2 nextCenter = dust.position + Vector2.One.RotatedBy(dust.rotation + 0.06f) * 50 * dust.scale;
+
+		dust.rotation += 0.06f;
+		dust.position += currentCenter - nextCenter;
+
+		dust.fadeIn--;
+		if (dust.customData is null || ((AuroraSuctionData)dust.customData).actor.targetItem is null)
 			dust.position += dust.velocity * 0.25f;
+		else
+			dust.position += Vector2.Normalize(((AuroraSuctionData)dust.customData).actor.targetItem.Center - dust.position) * 1.5f;
 
-			dust.shader?.UseColor(dust.color);
+		dust.shader?.UseColor(dust.color);
 
-			if (dust.fadeIn <= 0)
-				dust.active = false;
-			return false;
-		}
+		if (dust.fadeIn <= 0)
+			dust.active = false;
+		return false;
 	}
+}
 
-	class AuroraFast : Aurora
+struct AuroraSuctionData
+{
+	public readonly StarlightWaterActor actor;
+	public readonly float scale;
+
+	public AuroraSuctionData(StarlightWaterActor actor, float scale)
 	{
-		public override bool Update(Dust dust)
-		{
-			dust.fadeIn--;
-			return base.Update(dust);
-		}
-	}
-
-	class AuroraDecelerating : Aurora
-	{
-		public override bool Update(Dust dust)
-		{
-			dust.velocity *= 0.98f;
-			return base.Update(dust);
-		}
-	}
-
-	class AuroraSuction : Aurora
-	{
-		public override Color? GetAlpha(Dust dust, Color lightColor)
-		{
-			var col = Vector3.Lerp(dust.color.ToVector3(), Color.White.ToVector3(), dust.scale / (dust.customData is null ? 0.5f : ((AuroraSuctionData)dust.customData).scale));
-			return new Color(col.X, col.Y, col.Z) * ((255 - dust.alpha) / 255f);
-		}
-
-		public override bool Update(Dust dust)
-		{
-			Lighting.AddLight(dust.position, dust.color.ToVector3() * dust.scale * 2.5f);
-
-			Vector2 currentCenter = dust.position + Vector2.One.RotatedBy(dust.rotation) * 50 * dust.scale;
-
-			dust.scale = (dust.fadeIn / 15f - (float)Math.Pow(dust.fadeIn, 2) / 900f) * (dust.customData is null ? 0.5f : ((AuroraSuctionData)dust.customData).scale) * 0.2f;
-			Vector2 nextCenter = dust.position + Vector2.One.RotatedBy(dust.rotation + 0.06f) * 50 * dust.scale;
-
-			dust.rotation += 0.06f;
-			dust.position += currentCenter - nextCenter;
-
-			dust.fadeIn--;
-			if (dust.customData is null || ((AuroraSuctionData)dust.customData).actor.targetItem is null)
-				dust.position += dust.velocity * 0.25f;
-			else
-				dust.position += Vector2.Normalize(((AuroraSuctionData)dust.customData).actor.targetItem.Center - dust.position) * 1.5f;
-
-			dust.shader?.UseColor(dust.color);
-
-			if (dust.fadeIn <= 0)
-				dust.active = false;
-			return false;
-		}
-	}
-
-	struct AuroraSuctionData
-	{
-		public readonly StarlightWaterActor actor;
-		public readonly float scale;
-
-		public AuroraSuctionData(StarlightWaterActor actor, float scale)
-		{
-			this.actor = actor;
-			this.scale = scale;
-		}
+		this.actor = actor;
+		this.scale = scale;
 	}
 }

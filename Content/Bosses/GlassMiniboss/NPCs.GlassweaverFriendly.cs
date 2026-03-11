@@ -12,306 +12,305 @@ using Terraria.ID;
 using Terraria.ModLoader.IO;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Bosses.GlassMiniboss
+namespace StarlightRiver.Content.Bosses.GlassMiniboss;
+
+class GlassweaverFriendly : ModNPC
 {
-	class GlassweaverFriendly : ModNPC
+	public enum GlassweaverFriendlyState : int
 	{
-		public enum GlassweaverFriendlyState : int
+		BeforeMet = 0,
+		JumpingInside = 1,
+		WaitingForDuel = 2,
+		AfterWinDuel = 3,
+		AfterGiveKey = 4,
+		ReadyToMoveToTemple = 5,
+		MovedIntoTemple = 6
+	}
+
+	public const int FRAME_WIDTH = 124;
+
+	public const int FRAME_HEIGHT = 92;
+
+	public Player talkingTo;
+	public DialogManager manager;
+
+	public static Vector2 ArenaPos => StarlightWorld.vitricBiome.TopLeft() * 16 + new Vector2(0, 80 * 16) + new Vector2(0, 256);
+
+	public override string Texture => AssetDirectory.Glassweaver + Name;
+
+	public ref float Timer => ref NPC.ai[0];
+
+	public GlassweaverFriendlyState State
+	{
+		get => (GlassweaverFriendlyState)NPC.ai[1];
+		set => NPC.ai[1] = (float)value;
+	}
+
+	public ref float VisualTimer => ref NPC.ai[2];
+
+	public override void SetStaticDefaults()
+	{
+		DisplayName.SetDefault("Glassweaver");
+	}
+
+	public override void SetDefaults()
+	{
+		NPC.netAlways = true;
+		NPC.friendly = true;
+		NPC.width = 64;
+		NPC.height = 64;
+		NPC.aiStyle = -1;
+		NPC.damage = 10;
+		NPC.defense = 15;
+		NPC.lifeMax = 250;
+		NPC.dontTakeDamage = true;
+		NPC.immortal = true;
+		NPC.HitSound = SoundID.NPCHit1;
+		NPC.DeathSound = SoundID.NPCDeath1;
+		NPC.knockBackResist = 0;
+
+		manager = new("GlassweaverDialog.json", NPC);
+	}
+
+	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+	{
+		database.Entries.Remove(bestiaryEntry);
+	}
+
+	public override bool NeedSaving()
+	{
+		return true;
+	}
+
+	public override void AI()
+	{
+		NPC.dontTakeDamage = true;
+		NPC.immortal = true;
+
+		Timer++;
+		VisualTimer++;
+
+		GlassweaverSafetySystem.IntendedGlassweaverPhase = State;
+
+		if (Main.netMode != NetmodeID.Server) // Client based stuff
 		{
-			BeforeMet = 0,
-			JumpingInside = 1,
-			WaitingForDuel = 2,
-			AfterWinDuel = 3,
-			AfterGiveKey = 4,
-			ReadyToMoveToTemple = 5,
-			MovedIntoTemple = 6
-		}
-
-		public const int FRAME_WIDTH = 124;
-
-		public const int FRAME_HEIGHT = 92;
-
-		public Player talkingTo;
-		public DialogManager manager;
-
-		public static Vector2 ArenaPos => StarlightWorld.vitricBiome.TopLeft() * 16 + new Vector2(0, 80 * 16) + new Vector2(0, 256);
-
-		public override string Texture => AssetDirectory.Glassweaver + Name;
-
-		public ref float Timer => ref NPC.ai[0];
-
-		public GlassweaverFriendlyState State
-		{
-			get => (GlassweaverFriendlyState)NPC.ai[1];
-			set => NPC.ai[1] = (float)value;
-		}
-
-		public ref float VisualTimer => ref NPC.ai[2];
-
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("Glassweaver");
-		}
-
-		public override void SetDefaults()
-		{
-			NPC.netAlways = true;
-			NPC.friendly = true;
-			NPC.width = 64;
-			NPC.height = 64;
-			NPC.aiStyle = -1;
-			NPC.damage = 10;
-			NPC.defense = 15;
-			NPC.lifeMax = 250;
-			NPC.dontTakeDamage = true;
-			NPC.immortal = true;
-			NPC.HitSound = SoundID.NPCHit1;
-			NPC.DeathSound = SoundID.NPCDeath1;
-			NPC.knockBackResist = 0;
-
-			manager = new("GlassweaverDialog.json", NPC);
-		}
-
-		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
-		{
-			database.Entries.Remove(bestiaryEntry);
-		}
-
-		public override bool NeedSaving()
-		{
-			return true;
-		}
-
-		public override void AI()
-		{
-			NPC.dontTakeDamage = true;
-			NPC.immortal = true;
-
-			Timer++;
-			VisualTimer++;
-
-			GlassweaverSafetySystem.IntendedGlassweaverPhase = State;
-
-			if (Main.netMode != NetmodeID.Server) // Client based stuff
-			{
-				if (talkingTo != null && Vector2.Distance(talkingTo.Center, NPC.Center) > 2000)
-				{
-					talkingTo = null;
-					DialogUI.CloseDialogue();
-				}
-
-				if (talkingTo != null && talkingTo.TalkNPC != NPC)
-				{
-					talkingTo = null;
-					DialogUI.CloseDialogue();
-				}
-			}
-
-			if (State == GlassweaverFriendlyState.BeforeMet || State >= GlassweaverFriendlyState.WaitingForDuel)
-			{
-				NPC.direction = 1;
-
-				NPC.frame = new Rectangle(0, FRAME_HEIGHT * ((int)(VisualTimer / 10f) % 7), FRAME_WIDTH, FRAME_HEIGHT);
-			}
-
-			if (State == GlassweaverFriendlyState.JumpingInside)
-			{
-				if (Timer == 15)
-				{
-					NPC.direction = -1;
-					NPC.frame = new Rectangle(0, FRAME_HEIGHT * ((int)(VisualTimer / 10f) % 7), FRAME_WIDTH, FRAME_HEIGHT);
-				}
-
-				if (Timer == 30)
-					NPC.frame = new Rectangle(FRAME_WIDTH, 0, FRAME_WIDTH, FRAME_HEIGHT);
-
-				if (Timer == 60)
-				{
-					NPC.velocity.Y -= 5;
-
-					NPC.frame = new Rectangle(FRAME_WIDTH, FRAME_HEIGHT, FRAME_WIDTH, 124);
-				}
-
-				if (Timer > 60)
-				{
-					NPC.noTileCollide = true;
-					NPC.noGravity = true;
-					NPC.velocity.X = -10;
-					NPC.velocity.Y += 0.25f;
-				}
-
-				if (Timer > 120)
-				{
-					NPC.velocity *= 0;
-					NPC.noGravity = false;
-					NPC.noTileCollide = false;
-					NPC.Center = ArenaPos;
-					State = GlassweaverFriendlyState.WaitingForDuel;
-				}
-			}
-
-			if (State == GlassweaverFriendlyState.ReadyToMoveToTemple && Main.time == 0 && Main.dayTime)
-			{
-				NPC.Center = StarlightWorld.vitricBiome.Center.ToVector2() * 16 + new Vector2(-86, 1200);
-				StarlightWorld.RepairTemple();
-
-				Main.NewText("The Glassweaver has moved into the forge!", new Color(160, 230, 255));
-
-				State = GlassweaverFriendlyState.MovedIntoTemple;
-			}
-		}
-
-		public override bool CheckActive()
-		{
-			if (Main.netMode == NetmodeID.MultiplayerClient && !NPC.active) // Close any dialogs if the npc is inactive.
+			if (talkingTo != null && Vector2.Distance(talkingTo.Center, NPC.Center) > 2000)
 			{
 				talkingTo = null;
 				DialogUI.CloseDialogue();
 			}
 
-			return true;
-		}
-
-		public override bool CanChat()
-		{
-			return true;
-		}
-
-		/// <summary>
-		/// Invoked by DialogManager to trigger the camera pan to the temple
-		/// </summary>
-		public void PanCamera()
-		{
-			CameraSystem.AsymetricalPan(180, 240, 150, StarlightWorld.vitricBiome.Center.ToVector2() * 16);
-		}
-
-		/// <summary>
-		/// Invoked by DialogManager to trigger the MP sync effect
-		/// </summary>
-		public void SyncGlassweaver()
-		{
-			GlassweaverWaitingPacket statusPacket = new GlassweaverWaitingPacket(newState: 1, newTimer: 0, npcWhoAmI: NPC.whoAmI);
-			statusPacket.Send();
-		}
-
-		/// <summary>
-		/// Invoked by DialogManager to trigger the fight
-		/// </summary>
-		public void StartBossfight()
-		{
-			SacrificeNPCPacket nPacket = new SacrificeNPCPacket((int)NPC.Center.X, (int)NPC.Center.Y, NPCType<Glassweaver>(), NPC.whoAmI);
-			nPacket.Send();
-		}
-
-		/// <summary>
-		/// Invoked by DialogManager to spawn a key on request
-		/// </summary>
-		public void SpawnKey()
-		{
-			State = GlassweaverFriendlyState.AfterGiveKey;
-
-			if (!Helpers.InventoryHelper.HasItem(Main.LocalPlayer, ItemType<TempleEntranceKey>(), 1))
+			if (talkingTo != null && talkingTo.TalkNPC != NPC)
 			{
-				Main.LocalPlayer.QuickSpawnItem(NPC.GetSource_FromThis(), ItemType<TempleEntranceKey>());
-				Main.LocalPlayer.GetModPlayer<HintPlayer>().SetHintState("PreWinds");
+				talkingTo = null;
+				DialogUI.CloseDialogue();
 			}
 		}
 
-		/// <summary>
-		/// Invoked by DialogManager to set the flag for the glassweaver moving in the next day
-		/// </summary>
-		public void SetFlagForMove()
+		if (State == GlassweaverFriendlyState.BeforeMet || State >= GlassweaverFriendlyState.WaitingForDuel)
 		{
-			State = GlassweaverFriendlyState.ReadyToMoveToTemple;
+			NPC.direction = 1;
+
+			NPC.frame = new Rectangle(0, FRAME_HEIGHT * ((int)(VisualTimer / 10f) % 7), FRAME_WIDTH, FRAME_HEIGHT);
 		}
 
-		/// <summary>
-		/// Invoked by DialogManager to grant an infusion slot and infusion
-		/// </summary>
-		public void GiveInfusion()
+		if (State == GlassweaverFriendlyState.JumpingInside)
 		{
-			Main.LocalPlayer.GetHandler().InfusionLimit++;
-			Infusion.gainAnimationTimer = 240;
+			if (Timer == 15)
+			{
+				NPC.direction = -1;
+				NPC.frame = new Rectangle(0, FRAME_HEIGHT * ((int)(VisualTimer / 10f) % 7), FRAME_WIDTH, FRAME_HEIGHT);
+			}
 
-			Main.LocalPlayer.QuickSpawnItem(NPC.GetSource_FromThis(), ItemType<StellarRushItem>());
-			Main.LocalPlayer.GetModPlayer<HintPlayer>().SetHintState("PostGlassweaverMove");
+			if (Timer == 30)
+				NPC.frame = new Rectangle(FRAME_WIDTH, 0, FRAME_WIDTH, FRAME_HEIGHT);
+
+			if (Timer == 60)
+			{
+				NPC.velocity.Y -= 5;
+
+				NPC.frame = new Rectangle(FRAME_WIDTH, FRAME_HEIGHT, FRAME_WIDTH, 124);
+			}
+
+			if (Timer > 60)
+			{
+				NPC.noTileCollide = true;
+				NPC.noGravity = true;
+				NPC.velocity.X = -10;
+				NPC.velocity.Y += 0.25f;
+			}
+
+			if (Timer > 120)
+			{
+				NPC.velocity *= 0;
+				NPC.noGravity = false;
+				NPC.noTileCollide = false;
+				NPC.Center = ArenaPos;
+				State = GlassweaverFriendlyState.WaitingForDuel;
+			}
 		}
 
-		public override string GetChat()
+		if (State == GlassweaverFriendlyState.ReadyToMoveToTemple && Main.time == 0 && Main.dayTime)
 		{
-			if (Main.netMode == NetmodeID.Server) // Dialog only for client or in singleplayer.
-				return "";
+			NPC.Center = StarlightWorld.vitricBiome.Center.ToVector2() * 16 + new Vector2(-86, 1200);
+			StarlightWorld.RepairTemple();
 
-			talkingTo = Main.LocalPlayer;
+			Main.NewText("The Glassweaver has moved into the forge!", new Color(160, 230, 255));
 
-			if (State == GlassweaverFriendlyState.BeforeMet) //Waiting at entrance
-			{
-				manager.Start("Intro1");
-			}
-			else if (State == GlassweaverFriendlyState.WaitingForDuel) //Waiting in arena
-			{
-				manager.Start("Challenge" + Main.rand.Next(1, 4));
-			}
-			else if (State == GlassweaverFriendlyState.AfterWinDuel) //After winning
-			{
-				manager.Start("AfterFight1");
-			}
-			else if (State == GlassweaverFriendlyState.AfterGiveKey && !StarlightWorld.HasFlag(WorldFlags.VitricBossDowned)) //After talking after win
-			{
-				manager.Start("Key" + Main.rand.Next(1, 4));
-			}
-			else if (StarlightWorld.HasFlag(WorldFlags.VitricBossDowned) && State < GlassweaverFriendlyState.MovedIntoTemple)
-			{
-				manager.Start("Moving1");
-			}
-			else if (State == GlassweaverFriendlyState.MovedIntoTemple)
-			{
-				if (Main.LocalPlayer.GetHandler().InfusionLimit == 0)
-					manager.Start("Infusion1");
-				else
-					manager.Start("NoMore");
-			}
+			State = GlassweaverFriendlyState.MovedIntoTemple;
+		}
+	}
 
+	public override bool CheckActive()
+	{
+		if (Main.netMode == NetmodeID.MultiplayerClient && !NPC.active) // Close any dialogs if the npc is inactive.
+		{
+			talkingTo = null;
+			DialogUI.CloseDialogue();
+		}
+
+		return true;
+	}
+
+	public override bool CanChat()
+	{
+		return true;
+	}
+
+	/// <summary>
+	/// Invoked by DialogManager to trigger the camera pan to the temple
+	/// </summary>
+	public void PanCamera()
+	{
+		CameraSystem.AsymetricalPan(180, 240, 150, StarlightWorld.vitricBiome.Center.ToVector2() * 16);
+	}
+
+	/// <summary>
+	/// Invoked by DialogManager to trigger the MP sync effect
+	/// </summary>
+	public void SyncGlassweaver()
+	{
+		GlassweaverWaitingPacket statusPacket = new GlassweaverWaitingPacket(newState: 1, newTimer: 0, npcWhoAmI: NPC.whoAmI);
+		statusPacket.Send();
+	}
+
+	/// <summary>
+	/// Invoked by DialogManager to trigger the fight
+	/// </summary>
+	public void StartBossfight()
+	{
+		SacrificeNPCPacket nPacket = new SacrificeNPCPacket((int)NPC.Center.X, (int)NPC.Center.Y, NPCType<Glassweaver>(), NPC.whoAmI);
+		nPacket.Send();
+	}
+
+	/// <summary>
+	/// Invoked by DialogManager to spawn a key on request
+	/// </summary>
+	public void SpawnKey()
+	{
+		State = GlassweaverFriendlyState.AfterGiveKey;
+
+		if (!Helpers.InventoryHelper.HasItem(Main.LocalPlayer, ItemType<TempleEntranceKey>(), 1))
+		{
+			Main.LocalPlayer.QuickSpawnItem(NPC.GetSource_FromThis(), ItemType<TempleEntranceKey>());
+			Main.LocalPlayer.GetModPlayer<HintPlayer>().SetHintState("PreWinds");
+		}
+	}
+
+	/// <summary>
+	/// Invoked by DialogManager to set the flag for the glassweaver moving in the next day
+	/// </summary>
+	public void SetFlagForMove()
+	{
+		State = GlassweaverFriendlyState.ReadyToMoveToTemple;
+	}
+
+	/// <summary>
+	/// Invoked by DialogManager to grant an infusion slot and infusion
+	/// </summary>
+	public void GiveInfusion()
+	{
+		Main.LocalPlayer.GetHandler().InfusionLimit++;
+		Infusion.gainAnimationTimer = 240;
+
+		Main.LocalPlayer.QuickSpawnItem(NPC.GetSource_FromThis(), ItemType<StellarRushItem>());
+		Main.LocalPlayer.GetModPlayer<HintPlayer>().SetHintState("PostGlassweaverMove");
+	}
+
+	public override string GetChat()
+	{
+		if (Main.netMode == NetmodeID.Server) // Dialog only for client or in singleplayer.
 			return "";
-		}
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+		talkingTo = Main.LocalPlayer;
+
+		if (State == GlassweaverFriendlyState.BeforeMet) //Waiting at entrance
 		{
-			Texture2D tex = Request<Texture2D>(Texture).Value;
-			Vector2 pos = NPC.Center - Vector2.UnitY * 14 - Main.screenPosition;
-			Vector2 origin = new Vector2(FRAME_WIDTH, FRAME_HEIGHT) * 0.5f;
-
-			spriteBatch.Draw(tex, pos, NPC.frame, drawColor, NPC.rotation, origin, NPC.scale, NPC.direction == 1 ? 0 : SpriteEffects.FlipHorizontally, 0);
-
-			if ((
-				State == GlassweaverFriendlyState.BeforeMet ||
-				State == GlassweaverFriendlyState.WaitingForDuel ||
-				State == GlassweaverFriendlyState.AfterWinDuel ||
-				State == GlassweaverFriendlyState.AfterGiveKey && StarlightWorld.HasFlag(WorldFlags.VitricBossDowned) ||
-				State == GlassweaverFriendlyState.MovedIntoTemple && Main.LocalPlayer.GetHandler().InfusionLimit == 0)
-				&& talkingTo is null)
-			{
-				Texture2D exclaim = Assets.Misc.Exclaim.Value;
-				Vector2 exclaimPos = NPC.Center + Vector2.UnitY * -95 - Main.screenPosition;
-				exclaimPos.Y += (float)Math.Sin(Main.GameUpdateCount * 0.025f) * 5;
-				spriteBatch.Draw(exclaim, exclaimPos, null, Color.White, (float)Math.Sin(Main.GameUpdateCount * 0.05f) * 0.15f, exclaim.Size() / 2f, 1, 0, 0);
-
-				float pulseTime = Main.GameUpdateCount % 60 < 50 ? 0 : (Main.GameUpdateCount % 60 - 50) / 10f;
-
-				spriteBatch.Draw(exclaim, exclaimPos, null, Color.White * (1 - pulseTime), (float)Math.Sin(Main.GameUpdateCount * 0.05f) * 0.15f, exclaim.Size() / 2f, 1 + pulseTime, 0, 0);
-			}
-
-			return false;
+			manager.Start("Intro1");
 		}
-
-		public override void SaveData(TagCompound tag)
+		else if (State == GlassweaverFriendlyState.WaitingForDuel) //Waiting in arena
 		{
-			tag.Add("State", (int)State);
+			manager.Start("Challenge" + Main.rand.Next(1, 4));
+		}
+		else if (State == GlassweaverFriendlyState.AfterWinDuel) //After winning
+		{
+			manager.Start("AfterFight1");
+		}
+		else if (State == GlassweaverFriendlyState.AfterGiveKey && !StarlightWorld.HasFlag(WorldFlags.VitricBossDowned)) //After talking after win
+		{
+			manager.Start("Key" + Main.rand.Next(1, 4));
+		}
+		else if (StarlightWorld.HasFlag(WorldFlags.VitricBossDowned) && State < GlassweaverFriendlyState.MovedIntoTemple)
+		{
+			manager.Start("Moving1");
+		}
+		else if (State == GlassweaverFriendlyState.MovedIntoTemple)
+		{
+			if (Main.LocalPlayer.GetHandler().InfusionLimit == 0)
+				manager.Start("Infusion1");
+			else
+				manager.Start("NoMore");
 		}
 
-		public override void LoadData(TagCompound tag)
+		return "";
+	}
+
+	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+	{
+		Texture2D tex = Request<Texture2D>(Texture).Value;
+		Vector2 pos = NPC.Center - Vector2.UnitY * 14 - Main.screenPosition;
+		Vector2 origin = new Vector2(FRAME_WIDTH, FRAME_HEIGHT) * 0.5f;
+
+		spriteBatch.Draw(tex, pos, NPC.frame, drawColor, NPC.rotation, origin, NPC.scale, NPC.direction == 1 ? 0 : SpriteEffects.FlipHorizontally, 0);
+
+		if ((
+			State == GlassweaverFriendlyState.BeforeMet ||
+			State == GlassweaverFriendlyState.WaitingForDuel ||
+			State == GlassweaverFriendlyState.AfterWinDuel ||
+			State == GlassweaverFriendlyState.AfterGiveKey && StarlightWorld.HasFlag(WorldFlags.VitricBossDowned) ||
+			State == GlassweaverFriendlyState.MovedIntoTemple && Main.LocalPlayer.GetHandler().InfusionLimit == 0)
+			&& talkingTo is null)
 		{
-			State = (GlassweaverFriendlyState)tag.GetAsInt("State");
+			Texture2D exclaim = Assets.Misc.Exclaim.Value;
+			Vector2 exclaimPos = NPC.Center + Vector2.UnitY * -95 - Main.screenPosition;
+			exclaimPos.Y += (float)Math.Sin(Main.GameUpdateCount * 0.025f) * 5;
+			spriteBatch.Draw(exclaim, exclaimPos, null, Color.White, (float)Math.Sin(Main.GameUpdateCount * 0.05f) * 0.15f, exclaim.Size() / 2f, 1, 0, 0);
+
+			float pulseTime = Main.GameUpdateCount % 60 < 50 ? 0 : (Main.GameUpdateCount % 60 - 50) / 10f;
+
+			spriteBatch.Draw(exclaim, exclaimPos, null, Color.White * (1 - pulseTime), (float)Math.Sin(Main.GameUpdateCount * 0.05f) * 0.15f, exclaim.Size() / 2f, 1 + pulseTime, 0, 0);
 		}
+
+		return false;
+	}
+
+	public override void SaveData(TagCompound tag)
+	{
+		tag.Add("State", (int)State);
+	}
+
+	public override void LoadData(TagCompound tag)
+	{
+		State = (GlassweaverFriendlyState)tag.GetAsInt("State");
 	}
 }

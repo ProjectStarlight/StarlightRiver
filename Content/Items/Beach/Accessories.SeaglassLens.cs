@@ -1,40 +1,39 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Items.Beach
+namespace StarlightRiver.Content.Items.Beach;
+
+internal class SeaglassLens : SmartAccessory
 {
-	internal class SeaglassLens : SmartAccessory
+	public override string Texture => AssetDirectory.Assets + "Items/Beach/" + Name;
+
+	public SeaglassLens() : base("Seaglass Lens", "Your minions and sentries occasionally critically strike") { }
+
+	public override void Load()
 	{
-		public override string Texture => AssetDirectory.Assets + "Items/Beach/" + Name;
+		StarlightProjectile.ModifyHitNPCEvent += BonusDamage;
+	}
 
-		public SeaglassLens() : base("Seaglass Lens", "Your minions and sentries occasionally critically strike") { }
+	public override void SafeSetDefaults()
+	{
+		Item.rare = ItemRarityID.Blue;
+		Item.value = Item.sellPrice(silver: 50);
+	}
 
-		public override void Load()
-		{
-			StarlightProjectile.ModifyHitNPCEvent += BonusDamage;
-		}
+	private void BonusDamage(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers)
+	{
+		Player owner = Main.player[projectile.owner];
 
-		public override void SafeSetDefaults()
-		{
-			Item.rare = ItemRarityID.Blue;
-			Item.value = Item.sellPrice(silver: 50);
-		}
+		if (owner == Main.LocalPlayer && Equipped(owner) && projectile.DamageType == DamageClass.Summon && Main.rand.NextBool(10))
+			modifiers.SetCrit();
+	}
 
-		private void BonusDamage(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers)
-		{
-			Player owner = Main.player[projectile.owner];
-
-			if (owner == Main.LocalPlayer && Equipped(owner) && projectile.DamageType == DamageClass.Summon && Main.rand.NextBool(10))
-				modifiers.SetCrit();
-		}
-
-		public override void AddRecipes()
-		{
-			Recipe recipe = CreateRecipe();
-			recipe.AddIngredient(ModContent.ItemType<SeaglassRing>());
-			recipe.AddIngredient(ItemID.Glass, 10);
-			recipe.AddTile(TileID.Anvils);
-			recipe.Register();
-		}
+	public override void AddRecipes()
+	{
+		Recipe recipe = CreateRecipe();
+		recipe.AddIngredient(ModContent.ItemType<SeaglassRing>());
+		recipe.AddIngredient(ItemID.Glass, 10);
+		recipe.AddTile(TileID.Anvils);
+		recipe.Register();
 	}
 }

@@ -6,65 +6,64 @@ using StarlightRiver.Core.Systems.DummyTileSystem;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Tiles.UndergroundTemple
+namespace StarlightRiver.Content.Tiles.UndergroundTemple;
+
+class DashBarrier : DummyTile
 {
-	class DashBarrier : DummyTile
+	public override int DummyType => DummySystem.DummyType<DashBarrierDummy>();
+
+	public override string Texture => AssetDirectory.UndergroundTempleTile + Name;
+
+	public override void SetStaticDefaults()
 	{
-		public override int DummyType => DummySystem.DummyType<DashBarrierDummy>();
+		this.QuickSetFurniture(2, 3, DustType<Stamina>(), SoundID.Shatter, false, new Color(204, 91, 50), false, true);
+		MinPick = int.MaxValue;
+	}
 
-		public override string Texture => AssetDirectory.UndergroundTempleTile + Name;
-
-		public override void SetStaticDefaults()
+	public override void SafeNearbyEffects(int i, int j, bool closer)
+	{
+		if (Main.rand.NextBool(300))
 		{
-			this.QuickSetFurniture(2, 3, DustType<Stamina>(), SoundID.Shatter, false, new Color(204, 91, 50), false, true);
-			MinPick = int.MaxValue;
+			var pos = new Vector2(i * 16 + Main.rand.Next(16), j * 16 + Main.rand.Next(16));
+
+			if (Main.rand.NextBool())
+				Dust.NewDustPerfect(pos, DustType<CrystalSparkle>(), Vector2.Zero);
+			else
+				Dust.NewDustPerfect(pos, DustType<CrystalSparkle2>(), Vector2.Zero);
 		}
 
-		public override void SafeNearbyEffects(int i, int j, bool closer)
-		{
-			if (Main.rand.NextBool(300))
-			{
-				var pos = new Vector2(i * 16 + Main.rand.Next(16), j * 16 + Main.rand.Next(16));
+		base.SafeNearbyEffects(i, j, closer);
+	}
 
-				if (Main.rand.NextBool())
-					Dust.NewDustPerfect(pos, DustType<CrystalSparkle>(), Vector2.Zero);
-				else
-					Dust.NewDustPerfect(pos, DustType<CrystalSparkle2>(), Vector2.Zero);
+	public override bool CanDrop(int i, int j)
+	{
+		return false;
+	}
+}
+
+internal class DashBarrierDummy : Dummy
+{
+	public override bool DoesCollision => true;
+
+	public DashBarrierDummy() : base(TileType<DashBarrier>(), 32, 48) { }
+
+	public override void Collision(Player Player)
+	{
+		if (AbilityHelper.CheckDash(Player, Hitbox))
+		{
+			if (Main.myPlayer == Player.whoAmI)
+			{
+				WorldGen.KillTile(ParentX, ParentY);
+				NetMessage.SendTileSquare(Player.whoAmI, (int)(position.X / 16f), (int)(position.Y / 16f), 2, 3, TileChangeType.None);
 			}
 
-			base.SafeNearbyEffects(i, j, closer);
-		}
-
-		public override bool CanDrop(int i, int j)
-		{
-			return false;
+			Terraria.Audio.SoundEngine.PlaySound(SoundID.Tink, Center);
 		}
 	}
+}
 
-	internal class DashBarrierDummy : Dummy
-	{
-		public override bool DoesCollision => true;
-
-		public DashBarrierDummy() : base(TileType<DashBarrier>(), 32, 48) { }
-
-		public override void Collision(Player Player)
-		{
-			if (AbilityHelper.CheckDash(Player, Hitbox))
-			{
-				if (Main.myPlayer == Player.whoAmI)
-				{
-					WorldGen.KillTile(ParentX, ParentY);
-					NetMessage.SendTileSquare(Player.whoAmI, (int)(position.X / 16f), (int)(position.Y / 16f), 2, 3, TileChangeType.None);
-				}
-
-				Terraria.Audio.SoundEngine.PlaySound(SoundID.Tink, Center);
-			}
-		}
-	}
-
-	[SLRDebug]
-	public class DashBarrierItem : BaseTileItem
-	{
-		public DashBarrierItem() : base("Dash Barrier", "{{Debug}} Item", "DashBarrier", -12, AssetDirectory.UndergroundTempleTile) { }
-	}
+[SLRDebug]
+public class DashBarrierItem : BaseTileItem
+{
+	public DashBarrierItem() : base("Dash Barrier", "{{Debug}} Item", "DashBarrier", -12, AssetDirectory.UndergroundTempleTile) { }
 }

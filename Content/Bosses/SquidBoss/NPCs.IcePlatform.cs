@@ -2,260 +2,259 @@
 using System.IO;
 using System.Linq;
 
-namespace StarlightRiver.Content.Bosses.SquidBoss
+namespace StarlightRiver.Content.Bosses.SquidBoss;
+
+class IcePlatform : MovingPlatform
 {
-	class IcePlatform : MovingPlatform
+	public int bobTime = 0;
+	public int index;
+
+	public ref float Timer => ref NPC.ai[0];
+	public ref float State => ref NPC.ai[1];
+	public ref float HomeYPosition => ref NPC.ai[2];
+	public ref float FallTime => ref NPC.ai[3];
+
+	public override string Texture => AssetDirectory.SquidBoss + Name;
+
+	public override void SafeSetDefaults()
 	{
-		public int bobTime = 0;
-		public int index;
+		NPC.width = 200;
+		NPC.height = 32;
+	}
 
-		public ref float Timer => ref NPC.ai[0];
-		public ref float State => ref NPC.ai[1];
-		public ref float HomeYPosition => ref NPC.ai[2];
-		public ref float FallTime => ref NPC.ai[3];
+	public override void SafeAI()
+	{
+		Timer++;
 
-		public override string Texture => AssetDirectory.SquidBoss + Name;
+		if (Timer == 1)
+			NPC.netUpdate = true;
 
-		public override void SafeSetDefaults()
+		if (HomeYPosition == 0)
+			HomeYPosition = NPC.position.Y;
+
+		if (FallTime != 0)
 		{
-			NPC.width = 200;
-			NPC.height = 32;
+			if (FallTime > 360)
+				NPC.position.Y += 8;
+
+			if (FallTime <= 90 && FallTime > 0)
+				NPC.position.Y -= 9;
+
+			FallTime--;
+
+			return;
 		}
 
-		public override void SafeAI()
+		if (Main.npc.Any(n => n.active && n.type == ModContent.NPCType<ArenaActor>()))
 		{
-			Timer++;
+			ArenaActor actor = ArenaActor.latestActor;
 
-			if (Timer == 1)
-				NPC.netUpdate = true;
-
-			if (HomeYPosition == 0)
-				HomeYPosition = NPC.position.Y;
-
-			if (FallTime != 0)
+			if (NPC.position.Y >= HomeYPosition)
 			{
-				if (FallTime > 360)
-					NPC.position.Y += 8;
+				NPC.rotation = 0;
+				State = 0;
+				NPC.velocity *= 0;
 
-				if (FallTime <= 90 && FallTime > 0)
-					NPC.position.Y -= 9;
-
-				FallTime--;
-
-				return;
+				NPC.position.Y = HomeYPosition;
 			}
 
-			if (Main.npc.Any(n => n.active && n.type == ModContent.NPCType<ArenaActor>()))
+			if (NPC.position.Y + 18 >= actor.WaterLevelWorld)
+				State = 1;
+
+			if (State == 1 && (!Main.tile[(int)NPC.Center.X / 16, (int)NPC.Center.Y / 16 - 5].HasTile || actor.WaterLevelWorld - 18 > NPC.position.Y))
 			{
-				ArenaActor actor = ArenaActor.latestActor;
+				bool blockedByTiles = false;
 
-				if (NPC.position.Y >= HomeYPosition)
+				for (int x = -1; x < NPC.width / 16 + 1; x++)
 				{
-					NPC.rotation = 0;
-					State = 0;
-					NPC.velocity *= 0;
+					Tile tile = Framing.GetTileSafely((int)NPC.position.X / 16 + x, (int)NPC.position.Y / 16 - 2);
 
-					NPC.position.Y = HomeYPosition;
+					if (tile.HasTile && Main.tileSolid[tile.TileType])
+						blockedByTiles = true;
 				}
 
-				if (NPC.position.Y + 18 >= actor.WaterLevelWorld)
-					State = 1;
+				if (!blockedByTiles || actor.WaterGoingDown && (actor.WaterLevelWorld - 18) >= NPC.position.Y)
+					NPC.position.Y = actor.WaterLevelWorld - 18;
 
-				if (State == 1 && (!Main.tile[(int)NPC.Center.X / 16, (int)NPC.Center.Y / 16 - 5].HasTile || actor.WaterLevelWorld - 18 > NPC.position.Y))
-				{
-					bool blockedByTiles = false;
+				if ((beingStoodOn || bobTime > 0) && bobTime < 30)
+					bobTime++;
 
-					for (int x = -1; x < NPC.width / 16 + 1; x++)
-					{
-						Tile tile = Framing.GetTileSafely((int)NPC.position.X / 16 + x, (int)NPC.position.Y / 16 - 2);
+				if (bobTime >= 30 && !beingStoodOn)
+					bobTime = 0;
 
-						if (tile.HasTile && Main.tileSolid[tile.TileType])
-							blockedByTiles = true;
-					}
+				NPC.rotation = (float)System.Math.Sin((Main.GameUpdateCount + NPC.Center.X) * 0.04f) * 0.05f;
 
-					if (!blockedByTiles || actor.WaterGoingDown && (actor.WaterLevelWorld - 18) >= NPC.position.Y)
-						NPC.position.Y = actor.WaterLevelWorld - 18;
-
-					if ((beingStoodOn || bobTime > 0) && bobTime < 30)
-						bobTime++;
-
-					if (bobTime >= 30 && !beingStoodOn)
-						bobTime = 0;
-
-					NPC.rotation = (float)System.Math.Sin((Main.GameUpdateCount + NPC.Center.X) * 0.04f) * 0.05f;
-
-					NPC.position.Y += (float)System.Math.Sin(bobTime / 30f * 6.28f * 2) * ((30 - bobTime) / 30f) * 4;
-					NPC.rotation += (float)System.Math.Sin(bobTime / 30f * 6.28f * 2) * ((30 - bobTime) / 30f) * 0.05f;
-				}
-			}
-		}
-
-		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
-		{
-			Texture2D tex = Assets.Bosses.SquidBoss.IcePlatform.Value;
-			spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, Lighting.GetColor((int)NPC.Center.X / 16, (int)NPC.Center.Y / 16) * 1.5f, NPC.rotation, tex.Size() / 2, 1, 0, 0);
-			return false;
-		}
-
-		public override void SendExtraAI(BinaryWriter writer)
-		{
-			writer.Write(index);
-		}
-
-		public override void ReceiveExtraAI(BinaryReader reader)
-		{
-			index = reader.ReadInt32();
-		}
-	}
-
-	class IcePlatformSmall : MovingPlatform, IUnderwater
-	{
-		public ref float HomeYPosition => ref NPC.ai[0];
-		public ref float FallTimer => ref NPC.ai[1];
-
-		public override string Texture => AssetDirectory.SquidBoss + Name;
-
-		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
-		{
-			return false;
-		}
-
-		public void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer)
-		{
-			spriteBatch.Draw(Assets.Bosses.SquidBoss.IcePlatformSmall.Value, NPC.position - Main.screenPosition, Lighting.GetColor((int)NPC.Center.X / 16, (int)NPC.Center.Y / 16) * 1.5f);
-		}
-
-		public override void SafeSetDefaults()
-		{
-			NPC.width = 100;
-			NPC.height = 20;
-		}
-
-		public override void SafeAI()
-		{
-			if (HomeYPosition == 0)
-			{
-				HomeYPosition = NPC.position.Y;
-				NPC.netUpdate = true;
-			}
-
-			if (beingStoodOn)
-			{
-				Dust.NewDust(NPC.position, NPC.width, NPC.height, Terraria.ID.DustID.Ice);
-				FallTimer++;
-
-				NPC.netUpdate = true;
-			}
-			else if (FallTimer > 0)
-			{
-				FallTimer--;
-
-				NPC.netUpdate = true;
-			}
-
-			int maxStandTime = Main.masterMode ? 2 : 20;
-
-			if (FallTimer >= maxStandTime)
-				NPC.velocity.Y += 0.3f;
-			else if (NPC.position.Y > HomeYPosition)
-				NPC.velocity.Y = -1;
-			else
-				NPC.velocity.Y = 0;
-		}
-	}
-
-	class GoldPlatform : MovingPlatform, IUnderwater
-	{
-		public ref float HomeYPosition => ref NPC.ai[0];
-
-		public override string Texture => AssetDirectory.SquidBoss + Name;
-
-		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
-		{
-			return false;
-		}
-
-		public void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer)
-		{
-			spriteBatch.Draw(Assets.Bosses.SquidBoss.GoldPlatform.Value, NPC.position - Main.screenPosition, Lighting.GetColor((int)NPC.Center.X / 16, (int)NPC.Center.Y / 16));
-		}
-
-		public override void SafeSetDefaults()
-		{
-			NPC.width = 200;
-			NPC.height = 20;
-		}
-
-		public override void SafeAI()
-		{
-			if (HomeYPosition == 0)
-				HomeYPosition = NPC.position.Y;
-
-			if (beingStoodOn && StarlightWorld.HasFlag(WorldFlags.SquidBossOpen))
-			{
-				if (NPC.velocity.Y < 1.5f)
-					NPC.velocity.Y += 0.02f;
-
-				if (NPC.position.Y - HomeYPosition > 1600)
-					NPC.velocity.Y = 0;
-			}
-			else if (NPC.position.Y > HomeYPosition)
-			{
-				NPC.velocity.Y = -6;
-			}
-			else
-			{
-				NPC.velocity.Y = 0;
+				NPC.position.Y += (float)System.Math.Sin(bobTime / 30f * 6.28f * 2) * ((30 - bobTime) / 30f) * 4;
+				NPC.rotation += (float)System.Math.Sin(bobTime / 30f * 6.28f * 2) * ((30 - bobTime) / 30f) * 0.05f;
 			}
 		}
 	}
 
-	class EscapePlatform : MovingPlatform, IUnderwater
+	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
-		public ref float HomeYPosition => ref NPC.ai[0];
+		Texture2D tex = Assets.Bosses.SquidBoss.IcePlatform.Value;
+		spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, Lighting.GetColor((int)NPC.Center.X / 16, (int)NPC.Center.Y / 16) * 1.5f, NPC.rotation, tex.Size() / 2, 1, 0, 0);
+		return false;
+	}
 
-		public override string Texture => AssetDirectory.SquidBoss + "GoldPlatform";
+	public override void SendExtraAI(BinaryWriter writer)
+	{
+		writer.Write(index);
+	}
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+	public override void ReceiveExtraAI(BinaryReader reader)
+	{
+		index = reader.ReadInt32();
+	}
+}
+
+class IcePlatformSmall : MovingPlatform, IUnderwater
+{
+	public ref float HomeYPosition => ref NPC.ai[0];
+	public ref float FallTimer => ref NPC.ai[1];
+
+	public override string Texture => AssetDirectory.SquidBoss + Name;
+
+	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+	{
+		return false;
+	}
+
+	public void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer)
+	{
+		spriteBatch.Draw(Assets.Bosses.SquidBoss.IcePlatformSmall.Value, NPC.position - Main.screenPosition, Lighting.GetColor((int)NPC.Center.X / 16, (int)NPC.Center.Y / 16) * 1.5f);
+	}
+
+	public override void SafeSetDefaults()
+	{
+		NPC.width = 100;
+		NPC.height = 20;
+	}
+
+	public override void SafeAI()
+	{
+		if (HomeYPosition == 0)
 		{
-			return false;
+			HomeYPosition = NPC.position.Y;
+			NPC.netUpdate = true;
 		}
 
-		public void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer)
+		if (beingStoodOn)
 		{
-			float opacity = dontCollide ? 0.25f : 1f;
-			spriteBatch.Draw(Assets.Bosses.SquidBoss.GoldPlatform.Value, NPC.position - Main.screenPosition, Lighting.GetColor((int)NPC.Center.X / 16, (int)NPC.Center.Y / 16) * opacity);
+			Dust.NewDust(NPC.position, NPC.width, NPC.height, Terraria.ID.DustID.Ice);
+			FallTimer++;
+
+			NPC.netUpdate = true;
+		}
+		else if (FallTimer > 0)
+		{
+			FallTimer--;
+
+			NPC.netUpdate = true;
 		}
 
-		public override void SafeSetDefaults()
+		int maxStandTime = Main.masterMode ? 2 : 20;
+
+		if (FallTimer >= maxStandTime)
+			NPC.velocity.Y += 0.3f;
+		else if (NPC.position.Y > HomeYPosition)
+			NPC.velocity.Y = -1;
+		else
+			NPC.velocity.Y = 0;
+	}
+}
+
+class GoldPlatform : MovingPlatform, IUnderwater
+{
+	public ref float HomeYPosition => ref NPC.ai[0];
+
+	public override string Texture => AssetDirectory.SquidBoss + Name;
+
+	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+	{
+		return false;
+	}
+
+	public void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer)
+	{
+		spriteBatch.Draw(Assets.Bosses.SquidBoss.GoldPlatform.Value, NPC.position - Main.screenPosition, Lighting.GetColor((int)NPC.Center.X / 16, (int)NPC.Center.Y / 16));
+	}
+
+	public override void SafeSetDefaults()
+	{
+		NPC.width = 200;
+		NPC.height = 20;
+	}
+
+	public override void SafeAI()
+	{
+		if (HomeYPosition == 0)
+			HomeYPosition = NPC.position.Y;
+
+		if (beingStoodOn && StarlightWorld.HasFlag(WorldFlags.SquidBossOpen))
 		{
-			NPC.width = 200;
-			NPC.height = 20;
-		}
+			if (NPC.velocity.Y < 1.5f)
+				NPC.velocity.Y += 0.02f;
 
-		public override void SafeAI()
-		{
-			dontCollide = NPC.AnyNPCs(ModContent.NPCType<SquidBoss>());
-
-			if (HomeYPosition == 0)
-				HomeYPosition = NPC.position.Y;
-
-			if (beingStoodOn)
-			{
-				if (NPC.velocity.Y > -3f)
-					NPC.velocity.Y -= 0.02f;
-
-				if (NPC.position.Y - HomeYPosition < -1640)
-					NPC.velocity.Y = 0;
-			}
-			else if (NPC.position.Y < HomeYPosition)
-			{
-				NPC.velocity.Y = 6;
-			}
-			else
-			{
+			if (NPC.position.Y - HomeYPosition > 1600)
 				NPC.velocity.Y = 0;
-			}
+		}
+		else if (NPC.position.Y > HomeYPosition)
+		{
+			NPC.velocity.Y = -6;
+		}
+		else
+		{
+			NPC.velocity.Y = 0;
+		}
+	}
+}
+
+class EscapePlatform : MovingPlatform, IUnderwater
+{
+	public ref float HomeYPosition => ref NPC.ai[0];
+
+	public override string Texture => AssetDirectory.SquidBoss + "GoldPlatform";
+
+	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+	{
+		return false;
+	}
+
+	public void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer)
+	{
+		float opacity = dontCollide ? 0.25f : 1f;
+		spriteBatch.Draw(Assets.Bosses.SquidBoss.GoldPlatform.Value, NPC.position - Main.screenPosition, Lighting.GetColor((int)NPC.Center.X / 16, (int)NPC.Center.Y / 16) * opacity);
+	}
+
+	public override void SafeSetDefaults()
+	{
+		NPC.width = 200;
+		NPC.height = 20;
+	}
+
+	public override void SafeAI()
+	{
+		dontCollide = NPC.AnyNPCs(ModContent.NPCType<SquidBoss>());
+
+		if (HomeYPosition == 0)
+			HomeYPosition = NPC.position.Y;
+
+		if (beingStoodOn)
+		{
+			if (NPC.velocity.Y > -3f)
+				NPC.velocity.Y -= 0.02f;
+
+			if (NPC.position.Y - HomeYPosition < -1640)
+				NPC.velocity.Y = 0;
+		}
+		else if (NPC.position.Y < HomeYPosition)
+		{
+			NPC.velocity.Y = 6;
+		}
+		else
+		{
+			NPC.velocity.Y = 0;
 		}
 	}
 }

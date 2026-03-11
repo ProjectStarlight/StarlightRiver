@@ -2,35 +2,34 @@
 using StarlightRiver.Content.Items.Utility;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.NPCs.TownModifications
+namespace StarlightRiver.Content.NPCs.TownModifications;
+
+class MerchantShopAdditions : GlobalNPC
 {
-	class MerchantShopAdditions : GlobalNPC
+	public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
 	{
-		public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
+		return entity.type == NPCID.Merchant;
+	}
+
+	public override void ModifyShop(NPCShop shop)
+	{
+		if (shop.NpcType == NPCID.Merchant)
 		{
-			return entity.type == NPCID.Merchant;
+			shop.Add(new NPCShop.Entry(ItemID.Flare, Items.Breacher.FlareBreacher.getMerchantFlareCondition()));
+			shop.Add(new NPCShop.Entry(ItemID.BlueFlare, Items.Breacher.FlareBreacher.getMerchantFlareCondition()));
+			shop.Add(new NPCShop.Entry(ModContent.ItemType<ArmorBag>()));
+			shop.Add(new NPCShop.Entry(ModContent.ItemType<ChefBag>()));
+			shop.Add(new NPCShop.Entry(ModContent.ItemType<TableSalt>()));
+			shop.Add(new NPCShop.Entry(ModContent.ItemType<BlackPepper>()));
+			shop.Add(new NPCShop.Entry(ModContent.ItemType<Sugar>()));
+			shop.Add(new NPCShop.Entry(ModContent.ItemType<Flour>(), Condition.DownedEyeOfCthulhu));
+			shop.Add(new NPCShop.Entry(ModContent.ItemType<Milk>(), Condition.DownedEaterOfWorlds));
+			shop.Add(new NPCShop.Entry(ModContent.ItemType<Dressing>()));
 		}
 
-		public override void ModifyShop(NPCShop shop)
+		if (shop.NpcType == NPCID.Dryad)
 		{
-			if (shop.NpcType == NPCID.Merchant)
-			{
-				shop.Add(new NPCShop.Entry(ItemID.Flare, Items.Breacher.FlareBreacher.getMerchantFlareCondition()));
-				shop.Add(new NPCShop.Entry(ItemID.BlueFlare, Items.Breacher.FlareBreacher.getMerchantFlareCondition()));
-				shop.Add(new NPCShop.Entry(ModContent.ItemType<ArmorBag>()));
-				shop.Add(new NPCShop.Entry(ModContent.ItemType<ChefBag>()));
-				shop.Add(new NPCShop.Entry(ModContent.ItemType<TableSalt>()));
-				shop.Add(new NPCShop.Entry(ModContent.ItemType<BlackPepper>()));
-				shop.Add(new NPCShop.Entry(ModContent.ItemType<Sugar>()));
-				shop.Add(new NPCShop.Entry(ModContent.ItemType<Flour>(), Condition.DownedEyeOfCthulhu));
-				shop.Add(new NPCShop.Entry(ModContent.ItemType<Milk>(), Condition.DownedEaterOfWorlds));
-				shop.Add(new NPCShop.Entry(ModContent.ItemType<Dressing>()));
-			}
-
-			if (shop.NpcType == NPCID.Dryad)
-			{
-				shop.Add(new NPCShop.Entry(ModContent.ItemType<Cashews>()));
-			}
+			shop.Add(new NPCShop.Entry(ModContent.ItemType<Cashews>()));
 		}
 	}
 }

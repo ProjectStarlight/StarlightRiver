@@ -6,109 +6,108 @@ using System.Linq;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Items.UndergroundTemple
+namespace StarlightRiver.Content.Items.UndergroundTemple;
+
+class TempleLensUpgrade : SmartAccessory
 {
-	class TempleLensUpgrade : SmartAccessory
+	public override string Texture => AssetDirectory.CaveTempleItem + Name;
+
+	public TempleLensUpgrade() : base("Truestrike Lens", "Critical strikes inflict {{BUFF:Exposed}} on nearby enemies, increasing their {{Exposure}}\n+2% critical strike chance\n+20% critical strike damage") { }
+
+	public override void SafeSetDefaults()
 	{
-		public override string Texture => AssetDirectory.CaveTempleItem + Name;
+		Item.value = Item.sellPrice(0, 2, 50, 0);
+		Item.rare = ItemRarityID.Orange;
+	}
 
-		public TempleLensUpgrade() : base("Truestrike Lens", "Critical strikes inflict {{BUFF:Exposed}} on nearby enemies, increasing their {{Exposure}}\n+2% critical strike chance\n+20% critical strike damage") { }
+	public override void SafeUpdateEquip(Player Player)
+	{
+		Player.GetCritChance(DamageClass.Generic) += 2;
+		Player.GetModPlayer<CritMultiPlayer>().AllCritMult += 0.2f;
+	}
 
-		public override void SafeSetDefaults()
+	public override void Load()
+	{
+		StarlightPlayer.OnHitNPCEvent += ModifyHurtLens;
+		StarlightProjectile.OnHitNPCEvent += ModifyProjectileLens;
+	}
+
+	private void ModifyHurtLens(Player Player, Item Item, NPC target, NPC.HitInfo info, int damageDone)
+	{
+		if (Equipped(Player) && info.Crit)
+			ApplyExposed(target);
+	}
+
+	private void ModifyProjectileLens(Projectile Projectile, NPC target, NPC.HitInfo info, int damageDone)
+	{
+		if (Equipped(Main.player[Projectile.owner]) && info.Crit)
+			ApplyExposed(target);
+	}
+
+	private void ApplyExposed(NPC target)
+	{
+		var nearby = Main.npc.Where(n => n.active && n != target && n.Distance(target.Center) < 250 && !n.dontTakeDamage && !n.immortal && !n.friendly).ToList();
+		nearby.ForEach(n => n.AddBuff(ModContent.BuffType<Exposed>(), 200));
+		nearby.ForEach(n => Exposed.CreateDust(n, false));
+	}
+
+	public override void AddRecipes()
+	{
+		Recipe recipe = CreateRecipe();
+		recipe.AddIngredient(ItemType<TempleLens>());
+		recipe.AddIngredient(ItemType<Moonstone.MoonstoneBarItem>(), 5);
+		recipe.AddTile(TileID.Anvils);
+		recipe.Register();
+	}
+}
+
+class Exposed : SmartBuff
+{
+	public override string Texture => AssetDirectory.Debug;
+
+	public Exposed() : base("Exposed", "Effected entities have 20% exposure to all damage", true) { }
+
+	public override void Load()
+	{
+		StarlightNPC.OnHitByItemEvent += DelBuffItem;
+		StarlightNPC.OnHitByProjectileEvent += DelBuffProjectile;
+	}
+
+	public override void Update(NPC npc, ref int buffIndex)
+	{
+		npc.GetGlobalNPC<ExposureNPC>().ExposureMultAll += 0.20f;
+	}
+
+	private void DelBuffProjectile(NPC NPC, Projectile Projectile, NPC.HitInfo info, int damageDone)
+	{
+		if (Inflicted(NPC) && !info.Crit)
 		{
-			Item.value = Item.sellPrice(0, 2, 50, 0);
-			Item.rare = ItemRarityID.Orange;
-		}
-
-		public override void SafeUpdateEquip(Player Player)
-		{
-			Player.GetCritChance(DamageClass.Generic) += 2;
-			Player.GetModPlayer<CritMultiPlayer>().AllCritMult += 0.2f;
-		}
-
-		public override void Load()
-		{
-			StarlightPlayer.OnHitNPCEvent += ModifyHurtLens;
-			StarlightProjectile.OnHitNPCEvent += ModifyProjectileLens;
-		}
-
-		private void ModifyHurtLens(Player Player, Item Item, NPC target, NPC.HitInfo info, int damageDone)
-		{
-			if (Equipped(Player) && info.Crit)
-				ApplyExposed(target);
-		}
-
-		private void ModifyProjectileLens(Projectile Projectile, NPC target, NPC.HitInfo info, int damageDone)
-		{
-			if (Equipped(Main.player[Projectile.owner]) && info.Crit)
-				ApplyExposed(target);
-		}
-
-		private void ApplyExposed(NPC target)
-		{
-			var nearby = Main.npc.Where(n => n.active && n != target && n.Distance(target.Center) < 250 && !n.dontTakeDamage && !n.immortal && !n.friendly).ToList();
-			nearby.ForEach(n => n.AddBuff(ModContent.BuffType<Exposed>(), 200));
-			nearby.ForEach(n => Exposed.CreateDust(n, false));
-		}
-
-		public override void AddRecipes()
-		{
-			Recipe recipe = CreateRecipe();
-			recipe.AddIngredient(ItemType<TempleLens>());
-			recipe.AddIngredient(ItemType<Moonstone.MoonstoneBarItem>(), 5);
-			recipe.AddTile(TileID.Anvils);
-			recipe.Register();
+			NPC.DelBuff(NPC.FindBuffIndex(Type));
+			CreateDust(NPC, true);
 		}
 	}
 
-	class Exposed : SmartBuff
+	private void DelBuffItem(NPC NPC, Player Player, Item Item, NPC.HitInfo info, int damageDone)
 	{
-		public override string Texture => AssetDirectory.Debug;
-
-		public Exposed() : base("Exposed", "Effected entities have 20% exposure to all damage", true) { }
-
-		public override void Load()
+		if (Inflicted(NPC) && !info.Crit)
 		{
-			StarlightNPC.OnHitByItemEvent += DelBuffItem;
-			StarlightNPC.OnHitByProjectileEvent += DelBuffProjectile;
+			NPC.DelBuff(NPC.FindBuffIndex(Type));
+			CreateDust(NPC, true);
 		}
+	}
 
-		public override void Update(NPC npc, ref int buffIndex)
+	public static void CreateDust(NPC NPC, bool hit)
+	{
+		for (int i = 0; i < 14; i++)
 		{
-			npc.GetGlobalNPC<ExposureNPC>().ExposureMultAll += 0.20f;
-		}
-
-		private void DelBuffProjectile(NPC NPC, Projectile Projectile, NPC.HitInfo info, int damageDone)
-		{
-			if (Inflicted(NPC) && !info.Crit)
+			if (hit)
 			{
-				NPC.DelBuff(NPC.FindBuffIndex(Type));
-				CreateDust(NPC, true);
+				Vector2 dir = Main.rand.NextVector2CircularEdge(1, 1);
+				Dust.NewDustPerfect(NPC.Center + dir * 15, ModContent.DustType<GlowLineFast>(), dir * Main.rand.NextFloat(6), 0, Color.Gold, 0.75f);
 			}
-		}
 
-		private void DelBuffItem(NPC NPC, Player Player, Item Item, NPC.HitInfo info, int damageDone)
-		{
-			if (Inflicted(NPC) && !info.Crit)
-			{
-				NPC.DelBuff(NPC.FindBuffIndex(Type));
-				CreateDust(NPC, true);
-			}
-		}
-
-		public static void CreateDust(NPC NPC, bool hit)
-		{
-			for (int i = 0; i < 14; i++)
-			{
-				if (hit)
-				{
-					Vector2 dir = Main.rand.NextVector2CircularEdge(1, 1);
-					Dust.NewDustPerfect(NPC.Center + dir * 15, ModContent.DustType<GlowLineFast>(), dir * Main.rand.NextFloat(6), 0, Color.Gold, 0.75f);
-				}
-
-				Vector2 dir2 = Main.rand.NextVector2CircularEdge(1, 1);
-				Dust.NewDustPerfect(NPC.Center + dir2 * 15, ModContent.DustType<Glow>(), dir2 * Main.rand.NextFloat(6), 0, Color.Gold, 0.55f);
-			}
+			Vector2 dir2 = Main.rand.NextVector2CircularEdge(1, 1);
+			Dust.NewDustPerfect(NPC.Center + dir2 * 15, ModContent.DustType<Glow>(), dir2 * Main.rand.NextFloat(6), 0, Color.Gold, 0.55f);
 		}
 	}
 }

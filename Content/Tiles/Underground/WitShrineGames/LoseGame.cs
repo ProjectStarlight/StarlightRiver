@@ -1,37 +1,36 @@
-﻿namespace StarlightRiver.Content.Tiles.Underground.WitShrineGames
+﻿namespace StarlightRiver.Content.Tiles.Underground.WitShrineGames;
+
+class LoseGame : WitShrineGame
 {
-	class LoseGame : WitShrineGame
+	public LoseGame(WitShrineDummy parent) : base(parent) { }
+
+	public override void SetupBoard()
 	{
-		public LoseGame(WitShrineDummy parent) : base(parent) { }
+		parent.ResetBoard();
+	}
 
-		public override void SetupBoard()
+	public override void UpdateBoard()
+	{
+		for (int k = 0; k <= 6; k++)
 		{
-			parent.ResetBoard();
-		}
-
-		public override void UpdateBoard()
-		{
-			for (int k = 0; k <= 6; k++)
+			if (parent.timer == 30 * k)
 			{
-				if (parent.timer == 30 * k)
+				for (int x = -k; x <= k; x++)
 				{
-					for (int x = -k; x <= k; x++)
+					for (int y = -k; y <= k; y++)
 					{
-						for (int y = -k; y <= k; y++)
-						{
-							int realX = Clamp(parent.Player.X + x);
-							int realY = Clamp(parent.Player.Y + y);
+						int realX = Clamp(parent.Player.X + x);
+						int realY = Clamp(parent.Player.Y + y);
 
-							gameBoard[realX, realY] = WitShrineDummy.runeState.Hostile;
-						}
+						gameBoard[realX, realY] = WitShrineDummy.runeState.Hostile;
 					}
-
-					parent.PlayerTimer = 30;
 				}
-			}
 
-			if (parent.timer == 210)
-				parent.GotoGame(0);
+				parent.PlayerTimer = 30;
+			}
 		}
+
+		if (parent.timer == 210)
+			parent.GotoGame(0);
 	}
 }

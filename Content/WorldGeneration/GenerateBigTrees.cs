@@ -6,93 +6,92 @@ using Terraria.IO;
 using Terraria.WorldBuilding;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Core
+namespace StarlightRiver.Core;
+
+public partial class StarlightWorld : ModSystem
 {
-	public partial class StarlightWorld : ModSystem
+	private void BigTreeGen(GenerationProgress progress, GameConfiguration configuration)
 	{
-		private void BigTreeGen(GenerationProgress progress, GameConfiguration configuration)
+		progress.Message = "Planting big trees...";
+		for (int k = 60; k < Main.maxTilesX - 60; k++)
 		{
-			progress.Message = "Planting big trees...";
-			for (int k = 60; k < Main.maxTilesX - 60; k++)
+			if (k > Main.maxTilesX / 3 && k < Main.maxTilesX / 3 * 2 && WorldGen.genRand.NextBool(11)) //inner part of the world
 			{
-				if (k > Main.maxTilesX / 3 && k < Main.maxTilesX / 3 * 2 && WorldGen.genRand.NextBool(11)) //inner part of the world
+				for (int y = 10; y < Main.worldSurface; y++)
 				{
-					for (int y = 10; y < Main.worldSurface; y++)
+					if (IsGround(k - 1, y, 4))
 					{
-						if (IsGround(k - 1, y, 4))
-						{
-							PlaceTree(k, y, WorldGen.genRand.Next(8, 25));
-							k += WorldGen.genRand.Next(8, 16);
+						PlaceTree(k, y, WorldGen.genRand.Next(8, 25));
+						k += WorldGen.genRand.Next(8, 16);
 
-							break;
-						}
-
-						if (!IsAir(k - 1, y, 4))
-							break;
+						break;
 					}
+
+					if (!IsAir(k - 1, y, 4))
+						break;
 				}
 			}
 		}
+	}
 
-		private bool IsAir(int x, int y, int w)
+	private bool IsAir(int x, int y, int w)
+	{
+		for (int k = 0; k < w; k++)
 		{
-			for (int k = 0; k < w; k++)
-			{
-				Tile tile = Framing.GetTileSafely(x + k, y);
-				if (tile.HasTile && Main.tileSolid[tile.TileType])
-					return false;
-			}
-
-			return true;
+			Tile tile = Framing.GetTileSafely(x + k, y);
+			if (tile.HasTile && Main.tileSolid[tile.TileType])
+				return false;
 		}
 
-		public static bool IsGround(int x, int y, int w)
+		return true;
+	}
+
+	public static bool IsGround(int x, int y, int w)
+	{
+		for (int k = 0; k < w; k++)
 		{
-			for (int k = 0; k < w; k++)
-			{
-				Tile tile = Framing.GetTileSafely(x + k, y);
-				if (!(tile.HasTile && tile.Slope == SlopeType.Solid && !tile.IsHalfBlock && (tile.TileType == TileID.Grass || tile.TileType == TileID.Dirt || tile.TileType == TileID.GolfGrass)))
-					return false;
+			Tile tile = Framing.GetTileSafely(x + k, y);
+			if (!(tile.HasTile && tile.Slope == SlopeType.Solid && !tile.IsHalfBlock && (tile.TileType == TileID.Grass || tile.TileType == TileID.Dirt || tile.TileType == TileID.GolfGrass)))
+				return false;
 
-				Tile tile2 = Framing.GetTileSafely(x + k, y - 1);
-				if (tile2.HasTile && Main.tileSolid[tile2.TileType])
-					return false;
-			}
-
-			return true;
+			Tile tile2 = Framing.GetTileSafely(x + k, y - 1);
+			if (tile2.HasTile && Main.tileSolid[tile2.TileType])
+				return false;
 		}
 
-		public static void PlaceTree(int tx, int ty, int height)
+		return true;
+	}
+
+	public static void PlaceTree(int tx, int ty, int height)
+	{
+		ty -= 1;
+
+		if (ty - height < 1)
+			return;
+
+		for (int x = -1; x < 3; x++)
 		{
-			ty -= 1;
-
-			if (ty - height < 1)
-				return;
-
-			for (int x = -1; x < 3; x++)
+			for (int y = 0; y < (height + 4); y++)
 			{
-				for (int y = 0; y < (height + 4); y++)
-				{
-					WorldGen.KillTile(tx + x, ty - y);
-				}
+				WorldGen.KillTile(tx + x, ty - y);
 			}
+		}
 
-			WorldGenHelper.PlaceMultitile(new Point16(tx - 1, ty - 3), TileType<RiggedTreeBase>());
+		WorldGenHelper.PlaceMultitile(new Point16(tx - 1, ty - 3), TileType<RiggedTreeBase>());
 
-			for (int x = 0; x < 2; x++)
+		for (int x = 0; x < 2; x++)
+		{
+			for (int y = 0; y < height; y++)
 			{
-				for (int y = 0; y < height; y++)
-				{
-					WorldGen.PlaceTile(tx + x, ty - (y + 4), TileType<RiggedTree>(), true, true);
-				}
+				WorldGen.PlaceTile(tx + x, ty - (y + 4), TileType<RiggedTree>(), true, true);
 			}
+		}
 
-			for (int x = -1; x < 3; x++)
+		for (int x = -1; x < 3; x++)
+		{
+			for (int y = 0; y < (height + 4); y++)
 			{
-				for (int y = 0; y < (height + 4); y++)
-				{
-					WorldGen.TileFrame(tx + x, ty + y);
-				}
+				WorldGen.TileFrame(tx + x, ty + y);
 			}
 		}
 	}

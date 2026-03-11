@@ -2,160 +2,159 @@
 using Terraria.GameContent.Bestiary;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.NPCs.SpaceEvent
+namespace StarlightRiver.Content.NPCs.SpaceEvent;
+
+class SwordEnemy : ModNPC
 {
-	class SwordEnemy : ModNPC
+	public ref float Timer => ref NPC.ai[0];
+	public ref float Phase => ref NPC.ai[1];
+
+	public Player Target => Main.player[NPC.target];
+
+	public override string Texture => AssetDirectory.SpaceEventNPC + Name;
+
+	public override void SetStaticDefaults()
 	{
-		public ref float Timer => ref NPC.ai[0];
-		public ref float Phase => ref NPC.ai[1];
+		DisplayName.SetDefault("Sky Splicer");
+	}
 
-		public Player Target => Main.player[NPC.target];
+	public override void SetDefaults()
+	{
+		NPC.width = 60;
+		NPC.height = 60;
+		NPC.lifeMax = 200;
+		NPC.damage = 20;
+		NPC.noGravity = true;
+		NPC.aiStyle = -1;
 
-		public override string Texture => AssetDirectory.SpaceEventNPC + Name;
+		NPC.frame.Width = 192;
+		NPC.frame.Height = 164;
+	}
 
-		public override void SetStaticDefaults()
+	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+	{
+		database.Entries.Remove(bestiaryEntry);
+	}
+
+	public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+	{
+		if (Phase == 1)
 		{
-			DisplayName.SetDefault("Sky Splicer");
-		}
-
-		public override void SetDefaults()
-		{
-			NPC.width = 60;
-			NPC.height = 60;
-			NPC.lifeMax = 200;
-			NPC.damage = 20;
-			NPC.noGravity = true;
-			NPC.aiStyle = -1;
-
-			NPC.frame.Width = 192;
-			NPC.frame.Height = 164;
-		}
-
-		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
-		{
-			database.Entries.Remove(bestiaryEntry);
-		}
-
-		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
-		{
-			if (Phase == 1)
+			if (Timer < 30 || Timer > 60 && Timer < 90)
 			{
-				if (Timer < 30 || Timer > 60 && Timer < 90)
+				float angle = NPC.direction == 1 ? 0 : 3.14f;
+				return CollisionHelper.CheckConicalCollision(NPC.Center, 80, angle, 1.5f, target.Hitbox);
+			}
+
+			if (Timer > 120)
+				return CollisionHelper.CheckCircularCollision(NPC.Center, 60, target.Hitbox);
+		}
+
+		return false;
+	}
+
+	public override void AI()
+	{
+		Timer++;
+
+		switch (Phase)
+		{
+			case 0: //idle/move to Player. Might add targeting radius or LoS of some sort?
+				NPC.TargetClosest();
+
+				NPC.rotation = NPC.velocity.X * 0.1f;
+
+				if (Vector2.Distance(NPC.Center, Target.Center) < 160)
 				{
-					float angle = NPC.direction == 1 ? 0 : 3.14f;
-					return CollisionHelper.CheckConicalCollision(NPC.Center, 80, angle, 1.5f, target.Hitbox);
+					NPC.velocity *= 0.8f;
+
+					if (NPC.velocity.Length() < 2)
+					{
+						Phase = 1;
+						Timer = 0;
+					}
 				}
 
-				if (Timer > 120)
-					return CollisionHelper.CheckCircularCollision(NPC.Center, 60, target.Hitbox);
-			}
+				else
+				{
+					NPC.velocity += Vector2.Normalize(Target.Center - NPC.Center);
 
-			return false;
-		}
+					if (NPC.velocity.Length() > 4)
+						NPC.velocity = Vector2.Normalize(NPC.velocity) * 3.9f;
+				}
 
-		public override void AI()
-		{
-			Timer++;
+				break;
 
-			switch (Phase)
-			{
-				case 0: //idle/move to Player. Might add targeting radius or LoS of some sort?
-					NPC.TargetClosest();
+			case 1: //slash slash spin combo TODO: Add framing and VFX!
 
-					NPC.rotation = NPC.velocity.X * 0.1f;
+				if (Timer == 1 || Timer == 40)
+				{
+					NPC.velocity.X += NPC.direction * 8;
+					SoundHelper.PlayPitched("Effects/FancySwoosh", 1, 1, NPC.Center);
+				}
 
-					if (Vector2.Distance(NPC.Center, Target.Center) < 160)
+				if (Timer < 30)
+					NPC.Frame(0, (int)(Timer / 30f * 6) * NPC.frame.Height);
+
+				if (Timer > 40 && Timer < 70)
+					NPC.Frame(0, (int)(6 + (Timer - 40) / 30f * 6) * NPC.frame.Height);
+
+				if (Timer > 80 && Timer < 100)
+					NPC.velocity += Vector2.Normalize(Target.Center - NPC.Center) * 0.8f;
+
+				if (Timer == 80)
+				{
+					NPC.Frame(NPC.frame.Width, 0);
+					SoundHelper.PlayPitched("Effects/SwordUltimate", 0.4f, 0.5f, NPC.Center);
+				}
+
+				if (Timer >= 85)
+				{
+					NPC.Frame(NPC.frame.Width, NPC.frame.Height * Main.rand.Next(1, 3));
+
+					if (Timer < 120)
 					{
-						NPC.velocity *= 0.8f;
-
-						if (NPC.velocity.Length() < 2)
+						for (int k = 0; k < 10; k++)
 						{
-							Phase = 1;
-							Timer = 0;
+							float rot = Main.rand.NextFloat(6.28f);
+							Dust.NewDustPerfect(NPC.Center + Vector2.UnitX.RotatedBy(rot) * 60, DustType<Dusts.BlueStamina>(), Vector2.UnitX.RotatedBy(rot + 1 * NPC.direction) * Main.rand.NextFloat(7));
 						}
 					}
+				}
 
-					else
-					{
-						NPC.velocity += Vector2.Normalize(Target.Center - NPC.Center);
+				if (Timer >= 135)
+					NPC.Frame(NPC.frame.Width, 0);
 
-						if (NPC.velocity.Length() > 4)
-							NPC.velocity = Vector2.Normalize(NPC.velocity) * 3.9f;
-					}
+				if (Timer < 70 || Timer >= 100)
+					NPC.velocity *= 0.95f;
 
-					break;
+				if (Timer > 140)
+				{
+					Phase = 0;
+					Timer = 0;
+					NPC.velocity *= 0;
+				}
 
-				case 1: //slash slash spin combo TODO: Add framing and VFX!
-
-					if (Timer == 1 || Timer == 40)
-					{
-						NPC.velocity.X += NPC.direction * 8;
-						SoundHelper.PlayPitched("Effects/FancySwoosh", 1, 1, NPC.Center);
-					}
-
-					if (Timer < 30)
-						NPC.Frame(0, (int)(Timer / 30f * 6) * NPC.frame.Height);
-
-					if (Timer > 40 && Timer < 70)
-						NPC.Frame(0, (int)(6 + (Timer - 40) / 30f * 6) * NPC.frame.Height);
-
-					if (Timer > 80 && Timer < 100)
-						NPC.velocity += Vector2.Normalize(Target.Center - NPC.Center) * 0.8f;
-
-					if (Timer == 80)
-					{
-						NPC.Frame(NPC.frame.Width, 0);
-						SoundHelper.PlayPitched("Effects/SwordUltimate", 0.4f, 0.5f, NPC.Center);
-					}
-
-					if (Timer >= 85)
-					{
-						NPC.Frame(NPC.frame.Width, NPC.frame.Height * Main.rand.Next(1, 3));
-
-						if (Timer < 120)
-						{
-							for (int k = 0; k < 10; k++)
-							{
-								float rot = Main.rand.NextFloat(6.28f);
-								Dust.NewDustPerfect(NPC.Center + Vector2.UnitX.RotatedBy(rot) * 60, DustType<Dusts.BlueStamina>(), Vector2.UnitX.RotatedBy(rot + 1 * NPC.direction) * Main.rand.NextFloat(7));
-							}
-						}
-					}
-
-					if (Timer >= 135)
-						NPC.Frame(NPC.frame.Width, 0);
-
-					if (Timer < 70 || Timer >= 100)
-						NPC.velocity *= 0.95f;
-
-					if (Timer > 140)
-					{
-						Phase = 0;
-						Timer = 0;
-						NPC.velocity *= 0;
-					}
-
-					break;
-			}
+				break;
 		}
+	}
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
-		{
-			NPC.frame.Width = 192;
-			NPC.frame.Height = 164;
+	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+	{
+		NPC.frame.Width = 192;
+		NPC.frame.Height = 164;
 
-			Texture2D tex = Request<Texture2D>(Texture).Value;
-			Texture2D texSlash = Request<Texture2D>(AssetDirectory.SpaceEventNPC + "SwordEnemySlash").Value;
+		Texture2D tex = Request<Texture2D>(Texture).Value;
+		Texture2D texSlash = Request<Texture2D>(AssetDirectory.SpaceEventNPC + "SwordEnemySlash").Value;
 
-			SpriteEffects effects = NPC.direction == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+		SpriteEffects effects = NPC.direction == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-			if (Phase == 0)
-				spriteBatch.Draw(tex, NPC.Center - screenPos, null, Color.White, NPC.rotation, tex.Size() / 2, NPC.scale, effects, 0);
+		if (Phase == 0)
+			spriteBatch.Draw(tex, NPC.Center - screenPos, null, Color.White, NPC.rotation, tex.Size() / 2, NPC.scale, effects, 0);
 
-			if (Phase == 1)
-				spriteBatch.Draw(texSlash, NPC.Center - screenPos, NPC.frame, Color.White, 0, new Vector2(192 / 2, 164 / 2), 1, effects, 0);
+		if (Phase == 1)
+			spriteBatch.Draw(texSlash, NPC.Center - screenPos, NPC.frame, Color.White, 0, new Vector2(192 / 2, 164 / 2), 1, effects, 0);
 
-			return false;
-		}
+		return false;
 	}
 }

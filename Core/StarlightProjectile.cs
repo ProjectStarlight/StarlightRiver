@@ -1,7 +1,6 @@
-﻿namespace StarlightRiver.Core
-{
-	partial class StarlightProjectile : GlobalProjectile
-	{
+﻿namespace StarlightRiver.Core;
 
-	}
+partial class StarlightProjectile : GlobalProjectile
+{
+
 }

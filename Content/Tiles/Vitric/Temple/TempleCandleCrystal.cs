@@ -3,55 +3,54 @@ using StarlightRiver.Content.Items.BaseTypes;
 using System;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Tiles.Vitric.Temple
+namespace StarlightRiver.Content.Tiles.Vitric.Temple;
+
+public class TempleCandleCrystal : ModTile
 {
-	public class TempleCandleCrystal : ModTile
+	public override string Texture => "StarlightRiver/Assets/Tiles/Vitric/TempleDecoration/" + Name;
+
+	public override void SetStaticDefaults()
 	{
-		public override string Texture => "StarlightRiver/Assets/Tiles/Vitric/TempleDecoration/" + Name;
+		Main.tileLighted[Type] = true;
+		this.QuickSetFurniture(1, 2, 0, SoundID.Dig, false, new Color(80, 131, 142), false, false, "Candle", TileHelper.AnchorTableTop(1, true));
+		RegisterItemDrop(ModContent.ItemType<TempleCandleCrystalItem>());
+	}
 
-		public override void SetStaticDefaults()
+	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
+	{
+		Tile tile = Main.tile[i, j];
+
+		if (tile.TileFrameX == 0 && Main.LocalPlayer.InModBiome<VitricTempleBiome>())
 		{
-			Main.tileLighted[Type] = true;
-			this.QuickSetFurniture(1, 2, 0, SoundID.Dig, false, new Color(80, 131, 142), false, false, "Candle", TileHelper.AnchorTableTop(1, true));
-			RegisterItemDrop(ModContent.ItemType<TempleCandleCrystalItem>());
-		}
-
-		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
-		{
-			Tile tile = Main.tile[i, j];
-
-			if (tile.TileFrameX == 0 && Main.LocalPlayer.InModBiome<VitricTempleBiome>())
-			{
-				r = 0.4f;
-				g = 1f;
-				b = 0.87f;
-			}
-		}
-
-		const int height = 2;
-		public override void HitWire(int i, int j)
-		{
-			Tile tile = Main.tile[i, j];
-			int topY = j - tile.TileFrameY / 18 % height;
-			short frameAdjustment = (short)(tile.TileFrameX > 0 ? -18 : 18);
-
-			for (int h = 0; h < height; h++)
-			{
-				Main.tile[i, topY + h].TileFrameX += frameAdjustment;
-			}
-
-			for (int k = 0; k < height; k++)
-			{
-				Wiring.SkipWire(i, topY + k);
-			}
-
-			if (Main.netMode != NetmodeID.SinglePlayer)
-				NetMessage.SendTileSquare(-1, i, topY + (int)Math.Floor(height / 2f), height, TileChangeType.None);
+			r = 0.4f;
+			g = 1f;
+			b = 0.87f;
 		}
 	}
 
-	public class TempleCandleCrystalItem : BaseTileItem
+	const int height = 2;
+	public override void HitWire(int i, int j)
 	{
-		public TempleCandleCrystalItem() : base("Temple Crystal Candle", "", "TempleCandleCrystal", ItemRarityID.White, "StarlightRiver/Assets/Tiles/Vitric/TempleDecoration/") { }
+		Tile tile = Main.tile[i, j];
+		int topY = j - tile.TileFrameY / 18 % height;
+		short frameAdjustment = (short)(tile.TileFrameX > 0 ? -18 : 18);
+
+		for (int h = 0; h < height; h++)
+		{
+			Main.tile[i, topY + h].TileFrameX += frameAdjustment;
+		}
+
+		for (int k = 0; k < height; k++)
+		{
+			Wiring.SkipWire(i, topY + k);
+		}
+
+		if (Main.netMode != NetmodeID.SinglePlayer)
+			NetMessage.SendTileSquare(-1, i, topY + (int)Math.Floor(height / 2f), height, TileChangeType.None);
 	}
+}
+
+public class TempleCandleCrystalItem : BaseTileItem
+{
+	public TempleCandleCrystalItem() : base("Temple Crystal Candle", "", "TempleCandleCrystal", ItemRarityID.White, "StarlightRiver/Assets/Tiles/Vitric/TempleDecoration/") { }
 }

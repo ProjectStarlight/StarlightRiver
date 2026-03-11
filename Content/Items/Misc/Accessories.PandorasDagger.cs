@@ -8,221 +8,220 @@ using Terraria.Audio;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Items.Misc
+namespace StarlightRiver.Content.Items.Misc;
+
+public class PandorasDagger : SmartAccessory
 {
-	public class PandorasDagger : SmartAccessory
+	public override string Texture => AssetDirectory.MiscItem + Name;
+
+	public PandorasDagger() : base("Pandora's Dagger", "When you {{Graze}} projectiles, you release Discordant Bolts, inflicting stacks of Volatile") { }
+
+	public override void SafeSetDefaults()
 	{
-		public override string Texture => AssetDirectory.MiscItem + Name;
-
-		public PandorasDagger() : base("Pandora's Dagger", "When you {{Graze}} projectiles, you release Discordant Bolts, inflicting stacks of Volatile") { }
-
-		public override void SafeSetDefaults()
-		{
-			Item.rare = ItemRarityID.Orange;
-			Item.value = Item.sellPrice(gold: 1);
-		}
-
-		public override void SafeUpdateEquip(Player Player)
-		{
-			GrazePlayer gp = Player.GetModPlayer<GrazePlayer>();
-			gp.doGrazeLogic = true;
-
-			if (gp.justGrazed && Player.whoAmI == Main.myPlayer)
-			{
-				for (int i = 0; i < Main.rand.Next(2, 4); i++)
-				{
-					Projectile.NewProjectile(Item.GetSource_FromThis(), Player.Center, Vector2.One.RotatedByRandom(6.18f) * Main.rand.NextFloat(5f, 7f), ModContent.ProjectileType<DiscordantBolt>(),
-						(int)Player.GetTotalDamage(DamageClass.Generic).ApplyTo(15), 3.5f, Player.whoAmI);
-				}
-			}
-		}
-
-		public override void AddRecipes()
-		{
-			CreateRecipe().
-			AddIngredient(ModContent.ItemType<HolyAmulet>()).
-			AddIngredient(ModContent.ItemType<BloodAmulet>()).
-			AddTile(TileID.Anvils).
-			Register();
-		}
+		Item.rare = ItemRarityID.Orange;
+		Item.value = Item.sellPrice(gold: 1);
 	}
 
-	class DiscordantBolt : ModProjectile, IDrawPrimitive
+	public override void SafeUpdateEquip(Player Player)
 	{
-		private List<Vector2> cache;
-		private Trail trail;
+		GrazePlayer gp = Player.GetModPlayer<GrazePlayer>();
+		gp.doGrazeLogic = true;
 
-		public override string Texture => AssetDirectory.Invisible;
-
-		public override void SetStaticDefaults()
+		if (gp.justGrazed && Player.whoAmI == Main.myPlayer)
 		{
-			DisplayName.SetDefault("Discordant Bolt");
-		}
-
-		public override void SetDefaults()
-		{
-			Projectile.DamageType = DamageClass.Generic;
-			Projectile.friendly = true;
-
-			Projectile.width = Projectile.height = 12;
-			Projectile.tileCollide = false;
-			Projectile.timeLeft = 180;
-		}
-
-		public override void AI()
-		{
-			if (!Main.dedServ)
+			for (int i = 0; i < Main.rand.Next(2, 4); i++)
 			{
-				ManageCaches();
-				ManageTrail();
-			}
-
-			if (Projectile.soundDelay == 0)
-			{
-				Projectile.soundDelay = 10;
-				SoundEngine.PlaySound(SoundID.Item9, Projectile.position);
-			}
-
-			Projectile.rotation = Projectile.velocity.ToRotation();
-			//just basically copied from blood amulet
-			NPC target = Main.npc.Where(n => n.CanBeChasedBy(Projectile, false) && Vector2.Distance(n.Center, Projectile.Center) < 950f).OrderBy(n => Vector2.Distance(n.Center, Projectile.Center)).FirstOrDefault();
-
-			if (target != default)
-			{
-				Vector2 direction = target.Center - Projectile.Center;
-				direction.Normalize();
-				direction *= 12f;
-				Projectile.velocity = Vector2.Lerp(Projectile.velocity, direction, 0.045f);
-			}
-
-			if (Main.rand.NextBool(3))
-				Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<Dusts.GlowFastDecelerate>(), 0f, 0f, 0, new Color(220, 205, 140), 0.35f);
-		}
-
-		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-		{
-			VolatileGlobalNPC globalNPC = target.GetGlobalNPC<VolatileGlobalNPC>();
-
-			globalNPC.VolatileStacks++;
-			globalNPC.VolatileTimer = 600;
-		}
-
-		public override void OnKill(int timeLeft)
-		{
-			for (int i = 0; i < 8; i++)
-			{
-				Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<Dusts.GlowFastDecelerate>(), 0f, 0f, 0, new Color(220, 205, 140), 0.45f);
-				Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<Dusts.Glow>(), 0f, 0f, 0, new Color(220, 205, 140), 0.4f);
-			}
-
-			SoundEngine.PlaySound(SoundID.Item10, Projectile.position);
-		}
-
-		public override void PostDraw(Color lightColor)
-		{
-			Texture2D texture = Assets.StarTexture.Value;
-			var color = new Color(220, 205, 140)
-			{
-				A = 0
-			};
-			Main.spriteBatch.Draw(texture, Projectile.Center - Projectile.velocity - Main.screenPosition, null, color, 0, texture.Size() / 2f, Projectile.scale - 0.7f, SpriteEffects.None, 0);
-
-			Texture2D glowTex = Assets.Masks.GlowSoftAlpha.Value;
-			var glowColor = new Color(220, 205, 140, 0);
-			Main.spriteBatch.Draw(glowTex, Projectile.Center - Projectile.velocity - Main.screenPosition, null, glowColor * 0.6f, Projectile.rotation, glowTex.Size() / 2f, Projectile.scale - 0.35f, SpriteEffects.None, 0);
-			Main.spriteBatch.Draw(glowTex, Projectile.Center - Projectile.velocity - Main.screenPosition, null, glowColor, Projectile.rotation, glowTex.Size() / 2f, Projectile.scale - 0.45f, SpriteEffects.None, 0);
-		}
-
-		private void ManageCaches()
-		{
-			if (cache == null)
-			{
-				cache = new List<Vector2>();
-				for (int i = 0; i < 15; i++)
-				{
-					cache.Add(Projectile.Center);
-				}
-			}
-
-			cache.Add(Projectile.Center);
-
-			while (cache.Count > 15)
-			{
-				cache.RemoveAt(0);
-			}
-		}
-
-		private void ManageTrail()
-		{
-			if (trail is null || trail.IsDisposed)
-				trail = new Trail(Main.instance.GraphicsDevice, 15, new NoTip(), factor => 4.5f * (factor * 2f), factor => Color.Lerp(new Color(210, 210, 200), new Color(220, 205, 140), factor.X) * 0.8f * factor.X);
-
-			trail.Positions = cache.ToArray();
-			trail.NextPosition = Projectile.Center + Projectile.velocity;
-		}
-
-		public void DrawPrimitives()
-		{
-			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
-
-			if (effect != null)
-			{
-				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-				Matrix view = Main.GameViewMatrix.TransformationMatrix;
-				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
-
-				effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.03f);
-				effect.Parameters["repeats"].SetValue(2f);
-				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
-
-				trail?.Render(effect);
+				Projectile.NewProjectile(Item.GetSource_FromThis(), Player.Center, Vector2.One.RotatedByRandom(6.18f) * Main.rand.NextFloat(5f, 7f), ModContent.ProjectileType<DiscordantBolt>(),
+					(int)Player.GetTotalDamage(DamageClass.Generic).ApplyTo(15), 3.5f, Player.whoAmI);
 			}
 		}
 	}
 
-	class VolatileGlobalNPC : GlobalNPC
+	public override void AddRecipes()
 	{
-		public const int MAXVOLATILESTACKS = 5;
+		CreateRecipe().
+		AddIngredient(ModContent.ItemType<HolyAmulet>()).
+		AddIngredient(ModContent.ItemType<BloodAmulet>()).
+		AddTile(TileID.Anvils).
+		Register();
+	}
+}
 
-		public int VolatileStacks;
+class DiscordantBolt : ModProjectile, IDrawPrimitive
+{
+	private List<Vector2> cache;
+	private Trail trail;
 
-		public int VolatileTimer;
+	public override string Texture => AssetDirectory.Invisible;
 
-		public override bool InstancePerEntity => true;
+	public override void SetStaticDefaults()
+	{
+		DisplayName.SetDefault("Discordant Bolt");
+	}
 
-		public override void ResetEffects(NPC npc)
+	public override void SetDefaults()
+	{
+		Projectile.DamageType = DamageClass.Generic;
+		Projectile.friendly = true;
+
+		Projectile.width = Projectile.height = 12;
+		Projectile.tileCollide = false;
+		Projectile.timeLeft = 180;
+	}
+
+	public override void AI()
+	{
+		if (!Main.dedServ)
 		{
-			VolatileStacks = Utils.Clamp(VolatileStacks, 0, MAXVOLATILESTACKS);
-
-			if (VolatileTimer > 0)
-				VolatileTimer--;
-			else
-				VolatileStacks = 0;
+			ManageCaches();
+			ManageTrail();
 		}
 
-		public override void ModifyIncomingHit(NPC npc, ref NPC.HitModifiers modifiers)
+		if (Projectile.soundDelay == 0)
 		{
-			if (VolatileStacks > 0)
-				modifiers.FinalDamage *= 1f + 0.07f * VolatileStacks;
+			Projectile.soundDelay = 10;
+			SoundEngine.PlaySound(SoundID.Item9, Projectile.position);
 		}
 
-		public override void ModifyHitPlayer(NPC npc, Player target, ref Player.HurtModifiers modifiers)
+		Projectile.rotation = Projectile.velocity.ToRotation();
+		//just basically copied from blood amulet
+		NPC target = Main.npc.Where(n => n.CanBeChasedBy(Projectile, false) && Vector2.Distance(n.Center, Projectile.Center) < 950f).OrderBy(n => Vector2.Distance(n.Center, Projectile.Center)).FirstOrDefault();
+
+		if (target != default)
 		{
-			if (VolatileStacks > 0)
-				modifiers.FinalDamage *= 1f + 0.03f * VolatileStacks;
+			Vector2 direction = target.Center - Projectile.Center;
+			direction.Normalize();
+			direction *= 12f;
+			Projectile.velocity = Vector2.Lerp(Projectile.velocity, direction, 0.045f);
 		}
 
-		public override void AI(NPC npc)
+		if (Main.rand.NextBool(3))
+			Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<Dusts.GlowFastDecelerate>(), 0f, 0f, 0, new Color(220, 205, 140), 0.35f);
+	}
+
+	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+	{
+		VolatileGlobalNPC globalNPC = target.GetGlobalNPC<VolatileGlobalNPC>();
+
+		globalNPC.VolatileStacks++;
+		globalNPC.VolatileTimer = 600;
+	}
+
+	public override void OnKill(int timeLeft)
+	{
+		for (int i = 0; i < 8; i++)
 		{
-			if (VolatileStacks > 0)
+			Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<Dusts.GlowFastDecelerate>(), 0f, 0f, 0, new Color(220, 205, 140), 0.45f);
+			Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<Dusts.Glow>(), 0f, 0f, 0, new Color(220, 205, 140), 0.4f);
+		}
+
+		SoundEngine.PlaySound(SoundID.Item10, Projectile.position);
+	}
+
+	public override void PostDraw(Color lightColor)
+	{
+		Texture2D texture = Assets.StarTexture.Value;
+		var color = new Color(220, 205, 140)
+		{
+			A = 0
+		};
+		Main.spriteBatch.Draw(texture, Projectile.Center - Projectile.velocity - Main.screenPosition, null, color, 0, texture.Size() / 2f, Projectile.scale - 0.7f, SpriteEffects.None, 0);
+
+		Texture2D glowTex = Assets.Masks.GlowSoftAlpha.Value;
+		var glowColor = new Color(220, 205, 140, 0);
+		Main.spriteBatch.Draw(glowTex, Projectile.Center - Projectile.velocity - Main.screenPosition, null, glowColor * 0.6f, Projectile.rotation, glowTex.Size() / 2f, Projectile.scale - 0.35f, SpriteEffects.None, 0);
+		Main.spriteBatch.Draw(glowTex, Projectile.Center - Projectile.velocity - Main.screenPosition, null, glowColor, Projectile.rotation, glowTex.Size() / 2f, Projectile.scale - 0.45f, SpriteEffects.None, 0);
+	}
+
+	private void ManageCaches()
+	{
+		if (cache == null)
+		{
+			cache = new List<Vector2>();
+			for (int i = 0; i < 15; i++)
 			{
-				if (Main.rand.NextBool(10 - VolatileStacks))
-					Dust.NewDustDirect(npc.position, npc.width, npc.height, ModContent.DustType<Dusts.GlowFastDecelerate>(), 0f, 0f, 0, new Color(220, 205, 140), 0.35f);
-
-				if (VolatileStacks == MAXVOLATILESTACKS)
-					Dust.NewDustDirect(npc.position, npc.width, npc.height, ModContent.DustType<Dusts.Glow>(), 0f, 0f, 0, new Color(220, 205, 140), 0.45f);
+				cache.Add(Projectile.Center);
 			}
+		}
+
+		cache.Add(Projectile.Center);
+
+		while (cache.Count > 15)
+		{
+			cache.RemoveAt(0);
+		}
+	}
+
+	private void ManageTrail()
+	{
+		if (trail is null || trail.IsDisposed)
+			trail = new Trail(Main.instance.GraphicsDevice, 15, new NoTip(), factor => 4.5f * (factor * 2f), factor => Color.Lerp(new Color(210, 210, 200), new Color(220, 205, 140), factor.X) * 0.8f * factor.X);
+
+		trail.Positions = cache.ToArray();
+		trail.NextPosition = Projectile.Center + Projectile.velocity;
+	}
+
+	public void DrawPrimitives()
+	{
+		Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
+
+		if (effect != null)
+		{
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
+			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+			effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.03f);
+			effect.Parameters["repeats"].SetValue(2f);
+			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+
+			trail?.Render(effect);
+		}
+	}
+}
+
+class VolatileGlobalNPC : GlobalNPC
+{
+	public const int MAXVOLATILESTACKS = 5;
+
+	public int VolatileStacks;
+
+	public int VolatileTimer;
+
+	public override bool InstancePerEntity => true;
+
+	public override void ResetEffects(NPC npc)
+	{
+		VolatileStacks = Utils.Clamp(VolatileStacks, 0, MAXVOLATILESTACKS);
+
+		if (VolatileTimer > 0)
+			VolatileTimer--;
+		else
+			VolatileStacks = 0;
+	}
+
+	public override void ModifyIncomingHit(NPC npc, ref NPC.HitModifiers modifiers)
+	{
+		if (VolatileStacks > 0)
+			modifiers.FinalDamage *= 1f + 0.07f * VolatileStacks;
+	}
+
+	public override void ModifyHitPlayer(NPC npc, Player target, ref Player.HurtModifiers modifiers)
+	{
+		if (VolatileStacks > 0)
+			modifiers.FinalDamage *= 1f + 0.03f * VolatileStacks;
+	}
+
+	public override void AI(NPC npc)
+	{
+		if (VolatileStacks > 0)
+		{
+			if (Main.rand.NextBool(10 - VolatileStacks))
+				Dust.NewDustDirect(npc.position, npc.width, npc.height, ModContent.DustType<Dusts.GlowFastDecelerate>(), 0f, 0f, 0, new Color(220, 205, 140), 0.35f);
+
+			if (VolatileStacks == MAXVOLATILESTACKS)
+				Dust.NewDustDirect(npc.position, npc.width, npc.height, ModContent.DustType<Dusts.Glow>(), 0f, 0f, 0, new Color(220, 205, 140), 0.45f);
 		}
 	}
 }

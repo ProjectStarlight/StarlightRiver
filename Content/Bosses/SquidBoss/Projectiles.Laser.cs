@@ -5,204 +5,203 @@ using System.IO;
 using Terraria.DataStructures;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Bosses.SquidBoss
+namespace StarlightRiver.Content.Bosses.SquidBoss;
+
+class Laser : InteractiveProjectile, IUnderwater
 {
-	class Laser : InteractiveProjectile, IUnderwater
+
+	public static int ParentWhoAmIToAssign;
+
+	public NPC parent;
+	public ref float Timer => ref Projectile.ai[1];
+
+	public int height;
+
+	public override string Texture => AssetDirectory.SquidBoss + Name;
+
+	public override void SetDefaults()
 	{
+		Projectile.width = 60;
+		Projectile.height = 1;
+		Projectile.hostile = true;
+		Projectile.timeLeft = Main.masterMode ? 360 : Main.expertMode ? 510 : 660;
+		Projectile.aiStyle = -1;
+	}
 
-		public static int ParentWhoAmIToAssign;
+	public override void OnSpawn(IEntitySource source)
+	{
+		parent = Main.npc[ParentWhoAmIToAssign];
+	}
 
-		public NPC parent;
-		public ref float Timer => ref Projectile.ai[1];
+	public override bool OnTileCollide(Vector2 oldVelocity)
+	{
+		return false;
+	}
 
-		public int height;
+	public override bool PreDraw(ref Color drawColor)
+	{
+		return false;
+	}
 
-		public override string Texture => AssetDirectory.SquidBoss + Name;
-
-		public override void SetDefaults()
+	public override void AI()
+	{
+		if (Projectile.timeLeft == 659 || Main.expertMode && Projectile.timeLeft == 509 || Main.masterMode && Projectile.timeLeft == 359)
 		{
-			Projectile.width = 60;
-			Projectile.height = 1;
-			Projectile.hostile = true;
-			Projectile.timeLeft = Main.masterMode ? 360 : Main.expertMode ? 510 : 660;
-			Projectile.aiStyle = -1;
-		}
-
-		public override void OnSpawn(IEntitySource source)
-		{
-			parent = Main.npc[ParentWhoAmIToAssign];
-		}
-
-		public override bool OnTileCollide(Vector2 oldVelocity)
-		{
-			return false;
-		}
-
-		public override bool PreDraw(ref Color drawColor)
-		{
-			return false;
-		}
-
-		public override void AI()
-		{
-			if (Projectile.timeLeft == 659 || Main.expertMode && Projectile.timeLeft == 509 || Main.masterMode && Projectile.timeLeft == 359)
+			if (parent.ModNPC is SquidBoss squid)
 			{
-				if (parent.ModNPC is SquidBoss squid)
-				{
-					int y = (int)Projectile.Center.Y / 16 - 28;
+				int y = (int)Projectile.Center.Y / 16 - 28;
 
-					for (int k = 0; k < 60; k++)
-					{
-						if (Main.masterMode && ((k + 1) % 20 <= 5 || (k + 1) % 20 >= 15))
-							continue;
-
-						int x = (int)squid.arenaActor.Center.X / 16 - 30 + k;
-						ValidPoints.Add(new Point16(x, y));
-					}
-				}
-				else
+				for (int k = 0; k < 60; k++)
 				{
-					Projectile.active = false;
+					if (Main.masterMode && ((k + 1) % 20 <= 5 || (k + 1) % 20 >= 15))
+						continue;
+
+					int x = (int)squid.arenaActor.Center.X / 16 - 30 + k;
+					ValidPoints.Add(new Point16(x, y));
 				}
 			}
-
-			Timer++;
-
-			Projectile.Center = parent.Center;
-
-			//collision
-			int height = 0;
-
-			for (int k = 0; k < 200; k++)
+			else
 			{
-				Vector2 pos = Projectile.Center + new Vector2(0, -16 * k);
-				height += 16;
-
-				for (int i = -2; i <= 2; i++)
-				{
-					if (Framing.GetTileSafely(pos).HasTile)
-						k = 200;
-				}
-			}
-
-			this.height = height;
-
-			var rect = new Rectangle((int)Projectile.position.X, (int)Projectile.position.Y - height + 16, Projectile.width, height - 16);
-
-			float sin = 1 + (float)Math.Sin(Timer / 10f);
-			float cos = 1 + (float)Math.Cos(Timer / 10f);
-			var color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
-
-			if (Main.masterMode)
-				color = new Color(1, 0.65f + sin * 0.25f, 0.25f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
-
-			Color colorAlpha = color;
-			colorAlpha.A = 0;
-
-			if (Main.netMode != NetmodeID.Server)
-			{
-				for (int k = 0; k < rect.Height; k += 500)
-				{
-					Dust.NewDust(rect.TopLeft() + Vector2.UnitY * k, rect.Width, rect.Height - k, ModContent.DustType<Dusts.PixelatedEmber>(), 0, -6, 0, colorAlpha, Main.rand.NextFloat(0.1f, 0.2f));
-				}
-			}
-
-			if (Projectile.timeLeft > 30)
-			{
-				Vector2 endPos = Projectile.Center - Vector2.UnitY * height;
-
-				for (int k = 0; k < 5; k++)
-				{
-					Vector2 vel = Vector2.UnitY.RotatedByRandom(2f) * Main.rand.NextFloat(10, 25);
-					Dust.NewDustPerfect(endPos, ModContent.DustType<Dusts.PixelatedImpactLineDust>(), vel, 0, colorAlpha, Main.rand.NextFloat(0.1f, 0.2f));
-				}
-
-				if (CameraSystem.shake < 10)
-					CameraSystem.shake += (int)Math.Max(0, 1.5f - Math.Abs(Main.LocalPlayer.Center.X - endPos.X) * 0.0025f);
-
-				Lighting.AddLight(endPos, color.ToVector3() * 2);
-			}
-
-			// Adjust 1 tile down to prevent hitting the player while ontop of blocks
-			rect.Height -= 16;
-			rect.Y += 16;
-
-			if (Main.netMode != NetmodeID.Server && Main.LocalPlayer.Hitbox.Intersects(rect)) // Damage is dictated by the local client for that more fair seeming hitboxes
-			{
-				Main.LocalPlayer.Hurt(PlayerDeathReason.ByCustomReason(NetworkText.FromKey("Mods.StarlightRiver.Deaths.AuroracleLaser", Main.LocalPlayer.name)), Projectile.damage, 0);
+				Projectile.active = false;
 			}
 		}
 
-		public void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer)
+		Timer++;
+
+		Projectile.Center = parent.Center;
+
+		//collision
+		int height = 0;
+
+		for (int k = 0; k < 200; k++)
 		{
-			float sin = 1 + (float)Math.Sin(Timer / 10f);
-			float cos = 1 + (float)Math.Cos(Timer / 10f);
-			Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * 1.05f;
+			Vector2 pos = Projectile.Center + new Vector2(0, -16 * k);
+			height += 16;
 
-			if (Main.masterMode)
-				color = new Color(1, 0.5f + sin * 0.25f, 0.25f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
-
-			int denom = Main.masterMode ? 330 : Main.expertMode ? 480 : 630;
-
-			float alpha = Projectile.timeLeft > denom ? 1 - (Projectile.timeLeft - denom) / 30f : Projectile.timeLeft < 30 ? Projectile.timeLeft / 30f : 1;
-			color *= alpha;
-
-			Texture2D texBeam = Assets.ShadowTrail.Value;
-			Texture2D texBeam2 = Assets.GlowTrail.Value;
-			Texture2D texStar = Assets.GUI.ItemGlow.Value;
-
-			var origin = new Vector2(0, texBeam.Height / 2);
-			var origin2 = new Vector2(0, texBeam2.Height / 2);
-
-			Effect effect = StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value;
-
-			effect.Parameters["uColor"].SetValue(color.ToVector3());
-
-			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
-
-			float height = texBeam2.Height / 2f * 1.5f;
-			int adjustedLaserHeight = this.height - 32;
-
-			for (int k = 0; k <= adjustedLaserHeight; k += 500)
+			for (int i = -2; i <= 2; i++)
 			{
-				if (k > (adjustedLaserHeight - 500)) //Change to end for the last segment
-					texBeam2 = Assets.GlowTrailOneEnd.Value;
+				if (Framing.GetTileSafely(pos).HasTile)
+					k = 200;
+			}
+		}
 
-				Vector2 pos = Projectile.Center + Vector2.UnitY * -k - Main.screenPosition;
-				int thisHeight = k > (adjustedLaserHeight - 500) ? (adjustedLaserHeight % 500) : 500;
+		this.height = height;
 
-				var source = new Rectangle((int)(Timer * 0.015f * -texBeam.Width), 0, (int)(texBeam.Width * thisHeight / 500f), texBeam.Height);
-				var source1 = new Rectangle((int)(Timer * 0.023f * -texBeam.Width), 0, (int)(texBeam.Width * thisHeight / 500f), texBeam.Height);
-				var source2 = new Rectangle(0, 0, (int)(texBeam2.Width * thisHeight / 500f), texBeam2.Height);
+		var rect = new Rectangle((int)Projectile.position.X, (int)Projectile.position.Y - height + 16, Projectile.width, height - 16);
 
-				var target = new Rectangle((int)pos.X, (int)pos.Y, thisHeight, (int)(height * 1.25f * alpha));
-				var target2 = new Rectangle((int)pos.X, (int)pos.Y, thisHeight, (int)(height * 2.8f * alpha));
-				var target3 = new Rectangle((int)pos.X, (int)pos.Y, thisHeight, (int)(50 * alpha));
+		float sin = 1 + (float)Math.Sin(Timer / 10f);
+		float cos = 1 + (float)Math.Cos(Timer / 10f);
+		var color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
 
-				spriteBatch.Draw(texBeam, target, source, color * 0.65f, -1.57f, origin, 0, 0);
-				spriteBatch.Draw(texBeam, target, source1, color * 0.6f, -1.57f, origin, 0, 0);
-				spriteBatch.Draw(texBeam2, target2, source2, color * 0.65f, -1.57f, origin2, 0, 0);
-				spriteBatch.Draw(texBeam2, target3, source2, color * 1.1f, -1.57f, origin2, 0, 0);
+		if (Main.masterMode)
+			color = new Color(1, 0.65f + sin * 0.25f, 0.25f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
+
+		Color colorAlpha = color;
+		colorAlpha.A = 0;
+
+		if (Main.netMode != NetmodeID.Server)
+		{
+			for (int k = 0; k < rect.Height; k += 500)
+			{
+				Dust.NewDust(rect.TopLeft() + Vector2.UnitY * k, rect.Width, rect.Height - k, ModContent.DustType<Dusts.PixelatedEmber>(), 0, -6, 0, colorAlpha, Main.rand.NextFloat(0.1f, 0.2f));
+			}
+		}
+
+		if (Projectile.timeLeft > 30)
+		{
+			Vector2 endPos = Projectile.Center - Vector2.UnitY * height;
+
+			for (int k = 0; k < 5; k++)
+			{
+				Vector2 vel = Vector2.UnitY.RotatedByRandom(2f) * Main.rand.NextFloat(10, 25);
+				Dust.NewDustPerfect(endPos, ModContent.DustType<Dusts.PixelatedImpactLineDust>(), vel, 0, colorAlpha, Main.rand.NextFloat(0.1f, 0.2f));
 			}
 
-			spriteBatch.Draw(texStar, Projectile.Center - Vector2.UnitY * (this.height - 16) - Main.screenPosition, null, color * 1.1f, Timer * 0.025f, texStar.Size() / 2, 1, 0, 0);
-			spriteBatch.Draw(texStar, Projectile.Center - Vector2.UnitY * (this.height - 16) - Main.screenPosition, null, color * 1.1f, Timer * -0.045f, texStar.Size() / 2, 0.65f, 0, 0);
+			if (CameraSystem.shake < 10)
+				CameraSystem.shake += (int)Math.Max(0, 1.5f - Math.Abs(Main.LocalPlayer.Center.X - endPos.X) * 0.0025f);
 
-			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
-
+			Lighting.AddLight(endPos, color.ToVector3() * 2);
 		}
 
-		public override void SendExtraAI(BinaryWriter writer)
+		// Adjust 1 tile down to prevent hitting the player while ontop of blocks
+		rect.Height -= 16;
+		rect.Y += 16;
+
+		if (Main.netMode != NetmodeID.Server && Main.LocalPlayer.Hitbox.Intersects(rect)) // Damage is dictated by the local client for that more fair seeming hitboxes
 		{
-			writer.Write(parent.whoAmI);
+			Main.LocalPlayer.Hurt(PlayerDeathReason.ByCustomReason(NetworkText.FromKey("Mods.StarlightRiver.Deaths.AuroracleLaser", Main.LocalPlayer.name)), Projectile.damage, 0);
+		}
+	}
+
+	public void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer)
+	{
+		float sin = 1 + (float)Math.Sin(Timer / 10f);
+		float cos = 1 + (float)Math.Cos(Timer / 10f);
+		Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * 1.05f;
+
+		if (Main.masterMode)
+			color = new Color(1, 0.5f + sin * 0.25f, 0.25f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
+
+		int denom = Main.masterMode ? 330 : Main.expertMode ? 480 : 630;
+
+		float alpha = Projectile.timeLeft > denom ? 1 - (Projectile.timeLeft - denom) / 30f : Projectile.timeLeft < 30 ? Projectile.timeLeft / 30f : 1;
+		color *= alpha;
+
+		Texture2D texBeam = Assets.ShadowTrail.Value;
+		Texture2D texBeam2 = Assets.GlowTrail.Value;
+		Texture2D texStar = Assets.GUI.ItemGlow.Value;
+
+		var origin = new Vector2(0, texBeam.Height / 2);
+		var origin2 = new Vector2(0, texBeam2.Height / 2);
+
+		Effect effect = StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value;
+
+		effect.Parameters["uColor"].SetValue(color.ToVector3());
+
+		spriteBatch.End();
+		spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+
+		float height = texBeam2.Height / 2f * 1.5f;
+		int adjustedLaserHeight = this.height - 32;
+
+		for (int k = 0; k <= adjustedLaserHeight; k += 500)
+		{
+			if (k > (adjustedLaserHeight - 500)) //Change to end for the last segment
+				texBeam2 = Assets.GlowTrailOneEnd.Value;
+
+			Vector2 pos = Projectile.Center + Vector2.UnitY * -k - Main.screenPosition;
+			int thisHeight = k > (adjustedLaserHeight - 500) ? (adjustedLaserHeight % 500) : 500;
+
+			var source = new Rectangle((int)(Timer * 0.015f * -texBeam.Width), 0, (int)(texBeam.Width * thisHeight / 500f), texBeam.Height);
+			var source1 = new Rectangle((int)(Timer * 0.023f * -texBeam.Width), 0, (int)(texBeam.Width * thisHeight / 500f), texBeam.Height);
+			var source2 = new Rectangle(0, 0, (int)(texBeam2.Width * thisHeight / 500f), texBeam2.Height);
+
+			var target = new Rectangle((int)pos.X, (int)pos.Y, thisHeight, (int)(height * 1.25f * alpha));
+			var target2 = new Rectangle((int)pos.X, (int)pos.Y, thisHeight, (int)(height * 2.8f * alpha));
+			var target3 = new Rectangle((int)pos.X, (int)pos.Y, thisHeight, (int)(50 * alpha));
+
+			spriteBatch.Draw(texBeam, target, source, color * 0.65f, -1.57f, origin, 0, 0);
+			spriteBatch.Draw(texBeam, target, source1, color * 0.6f, -1.57f, origin, 0, 0);
+			spriteBatch.Draw(texBeam2, target2, source2, color * 0.65f, -1.57f, origin2, 0, 0);
+			spriteBatch.Draw(texBeam2, target3, source2, color * 1.1f, -1.57f, origin2, 0, 0);
 		}
 
-		public override void ReceiveExtraAI(BinaryReader reader)
-		{
-			int parentId = reader.ReadInt32();
-			parent = Main.npc[parentId];
-		}
+		spriteBatch.Draw(texStar, Projectile.Center - Vector2.UnitY * (this.height - 16) - Main.screenPosition, null, color * 1.1f, Timer * 0.025f, texStar.Size() / 2, 1, 0, 0);
+		spriteBatch.Draw(texStar, Projectile.Center - Vector2.UnitY * (this.height - 16) - Main.screenPosition, null, color * 1.1f, Timer * -0.045f, texStar.Size() / 2, 0.65f, 0, 0);
+
+		spriteBatch.End();
+		spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
+
+	}
+
+	public override void SendExtraAI(BinaryWriter writer)
+	{
+		writer.Write(parent.whoAmI);
+	}
+
+	public override void ReceiveExtraAI(BinaryReader reader)
+	{
+		int parentId = reader.ReadInt32();
+		parent = Main.npc[parentId];
 	}
 }

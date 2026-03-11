@@ -1,50 +1,49 @@
 ﻿using System;
 
-namespace StarlightRiver.Core
+namespace StarlightRiver.Core;
+
+class StatusTrackingNPC : GlobalNPC
 {
-	class StatusTrackingNPC : GlobalNPC
+	private Player attacker;
+	private readonly int[] storedBuffs = new int[20];
+	private readonly int[] storedTimes = new int[20];
+	private bool compareBuffs;
+
+	public static event Action<Player, NPC, int[], int[], int[], int[]> buffCompareEffects;
+
+	public override bool InstancePerEntity => true;
+
+	public StatusTrackingNPC Tracker(NPC NPC)
 	{
-		private Player attacker;
-		private readonly int[] storedBuffs = new int[20];
-		private readonly int[] storedTimes = new int[20];
-		private bool compareBuffs;
+		return NPC.GetGlobalNPC<StatusTrackingNPC>();
+	}
 
-		public static event Action<Player, NPC, int[], int[], int[], int[]> buffCompareEffects;
+	public override bool PreAI(NPC NPC)
+	{
+		return base.PreAI(NPC);
+	}
 
-		public override bool InstancePerEntity => true;
+	public override void OnHitByItem(NPC npc, Player player, Item item, NPC.HitInfo hit, int damageDone)
+	{
+		Tracker(npc).attacker = player;
+		Tracker(npc).compareBuffs = true;
+	}
 
-		public StatusTrackingNPC Tracker(NPC NPC)
+	public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
+	{
+		Tracker(npc).attacker = Main.player[projectile.owner];
+		Tracker(npc).compareBuffs = true;
+	}
+
+	public override void ResetEffects(NPC NPC)
+	{
+		if (Tracker(NPC).compareBuffs)
 		{
-			return NPC.GetGlobalNPC<StatusTrackingNPC>();
+			buffCompareEffects?.Invoke(attacker, NPC, Tracker(NPC).storedBuffs, NPC.buffType, Tracker(NPC).storedTimes, NPC.buffTime);
+			Tracker(NPC).compareBuffs = false;
 		}
 
-		public override bool PreAI(NPC NPC)
-		{
-			return base.PreAI(NPC);
-		}
-
-		public override void OnHitByItem(NPC npc, Player player, Item item, NPC.HitInfo hit, int damageDone)
-		{
-			Tracker(npc).attacker = player;
-			Tracker(npc).compareBuffs = true;
-		}
-
-		public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
-		{
-			Tracker(npc).attacker = Main.player[projectile.owner];
-			Tracker(npc).compareBuffs = true;
-		}
-
-		public override void ResetEffects(NPC NPC)
-		{
-			if (Tracker(NPC).compareBuffs)
-			{
-				buffCompareEffects?.Invoke(attacker, NPC, Tracker(NPC).storedBuffs, NPC.buffType, Tracker(NPC).storedTimes, NPC.buffTime);
-				Tracker(NPC).compareBuffs = false;
-			}
-
-			NPC.buffType.CopyTo(Tracker(NPC).storedBuffs, 0);
-			NPC.buffTime.CopyTo(Tracker(NPC).storedTimes, 0);
-		}
+		NPC.buffType.CopyTo(Tracker(NPC).storedBuffs, 0);
+		NPC.buffTime.CopyTo(Tracker(NPC).storedTimes, 0);
 	}
 }

@@ -6,79 +6,78 @@ using System;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Items.BarrierDye
+namespace StarlightRiver.Content.Items.BarrierDye;
+
+class MoonstoneBarrierDye : BarrierDye
 {
-	class MoonstoneBarrierDye : BarrierDye
+	public override string Texture => AssetDirectory.BarrierDyeItem + Name;
+
+	public override float RechargeAnimationRate => 0.01f;
+
+	public override void SetStaticDefaults()
 	{
-		public override string Texture => AssetDirectory.BarrierDyeItem + Name;
+		DisplayName.SetDefault("Moonstone Tincture");
+		Tooltip.SetDefault("Causes {{barrier}} to reflect the light of the moon\nEquipable\nVanity Item");
+	}
 
-		public override float RechargeAnimationRate => 0.01f;
+	public override void SetDefaults()
+	{
+		Item.rare = ItemRarityID.Orange;
 
-		public override void SetStaticDefaults()
+		Item.value = Item.sellPrice(silver: 90);
+	}
+
+	public override void AddRecipes()
+	{
+		Recipe recipe = CreateRecipe();
+		recipe.AddIngredient(ModContent.ItemType<MoonstoneBarItem>(), 6);
+		recipe.AddTile(TileID.DyeVat);
+		recipe.Register();
+	}
+
+	public override void PostDrawEffects(SpriteBatch spriteBatch, Player Player)
+	{
+		if (!PlayerTargetSystem.canUseTarget)
+			return;
+
+		BarrierPlayer barrier = Player.GetModPlayer<BarrierPlayer>();
+
+		Texture2D tex = PlayerTargetSystem.Target;
+
+		Vector2 pos = PlayerTargetSystem.getPositionOffset(Player.whoAmI);
+
+		if (barrier.barrier <= 0)
+			return;
+
+		Effect effect = ShaderLoader.GetShader("MoonstoneRunes").Value;
+
+		if (effect != null)
 		{
-			DisplayName.SetDefault("Moonstone Tincture");
-			Tooltip.SetDefault("Causes {{barrier}} to reflect the light of the moon\nEquipable\nVanity Item");
-		}
+			effect.Parameters["intensity"].SetValue(10f * MathF.Min(barrier.rechargeAnimationTimer, 1));
+			effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.1f);
 
-		public override void SetDefaults()
-		{
-			Item.rare = ItemRarityID.Orange;
+			effect.Parameters["noiseTexture1"].SetValue(Assets.Noise.MiscNoise3.Value);
+			effect.Parameters["noiseTexture2"].SetValue(Assets.Noise.MiscNoise4.Value);
+			effect.Parameters["color1"].SetValue(Color.Magenta.ToVector4());
+			effect.Parameters["color2"].SetValue(Color.Cyan.ToVector4());
+			effect.Parameters["opacity"].SetValue(1);
 
-			Item.value = Item.sellPrice(silver: 90);
-		}
+			effect.Parameters["screenWidth"].SetValue(tex.Width);
+			effect.Parameters["screenHeight"].SetValue(tex.Width);
+			effect.Parameters["screenPosition"].SetValue(PlayerTargetSystem.getPlayerTargetPosition(Player.whoAmI));
+			effect.Parameters["drawOriginal"].SetValue(false);
 
-		public override void AddRecipes()
-		{
-			Recipe recipe = CreateRecipe();
-			recipe.AddIngredient(ModContent.ItemType<MoonstoneBarItem>(), 6);
-			recipe.AddTile(TileID.DyeVat);
-			recipe.Register();
-		}
+			spriteBatch.End();
+			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.ZoomMatrix);
 
-		public override void PostDrawEffects(SpriteBatch spriteBatch, Player Player)
-		{
-			if (!PlayerTargetSystem.canUseTarget)
-				return;
+			Rectangle rect = PlayerTargetSystem.getPlayerTargetSourceRectangle(Player.whoAmI);
 
-			BarrierPlayer barrier = Player.GetModPlayer<BarrierPlayer>();
+			Vector2 drawPos = PlayerTargetSystem.getPlayerTargetPosition(Player.whoAmI);
 
-			Texture2D tex = PlayerTargetSystem.Target;
+			spriteBatch.Draw(tex, drawPos, rect, Color.White);
 
-			Vector2 pos = PlayerTargetSystem.getPositionOffset(Player.whoAmI);
-
-			if (barrier.barrier <= 0)
-				return;
-
-			Effect effect = ShaderLoader.GetShader("MoonstoneRunes").Value;
-
-			if (effect != null)
-			{
-				effect.Parameters["intensity"].SetValue(10f * MathF.Min(barrier.rechargeAnimationTimer, 1));
-				effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.1f);
-
-				effect.Parameters["noiseTexture1"].SetValue(Assets.Noise.MiscNoise3.Value);
-				effect.Parameters["noiseTexture2"].SetValue(Assets.Noise.MiscNoise4.Value);
-				effect.Parameters["color1"].SetValue(Color.Magenta.ToVector4());
-				effect.Parameters["color2"].SetValue(Color.Cyan.ToVector4());
-				effect.Parameters["opacity"].SetValue(1);
-
-				effect.Parameters["screenWidth"].SetValue(tex.Width);
-				effect.Parameters["screenHeight"].SetValue(tex.Width);
-				effect.Parameters["screenPosition"].SetValue(PlayerTargetSystem.getPlayerTargetPosition(Player.whoAmI));
-				effect.Parameters["drawOriginal"].SetValue(false);
-
-				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.ZoomMatrix);
-
-				Rectangle rect = PlayerTargetSystem.getPlayerTargetSourceRectangle(Player.whoAmI);
-
-				Vector2 drawPos = PlayerTargetSystem.getPlayerTargetPosition(Player.whoAmI);
-
-				spriteBatch.Draw(tex, drawPos, rect, Color.White);
-
-				spriteBatch.End();
-				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
-			}
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 }

@@ -8,118 +8,117 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Tiles.UndergroundTemple
+namespace StarlightRiver.Content.Tiles.UndergroundTemple;
+
+class JarTall : DummyTile
 {
-	class JarTall : DummyTile
+	public override int DummyType => DummySystem.DummyType<JarDummy>();
+
+	public override string Texture => AssetDirectory.UndergroundTempleTile + Name;
+
+	public override void SetStaticDefaults()
 	{
-		public override int DummyType => DummySystem.DummyType<JarDummy>();
+		this.QuickSetFurniture(2, 4, DustID.Glass, SoundID.Shatter, false, new Color(91, 211, 233), false, false, "Stamina Jar");
+		MinPick = int.MaxValue;
+		TileID.Sets.PreventsTileRemovalIfOnTopOfIt[Type] = true;
+	}
 
-		public override string Texture => AssetDirectory.UndergroundTempleTile + Name;
+	public override bool CanExplode(int i, int j)
+	{
+		return false;
+	}
 
-		public override void SetStaticDefaults()
+	public override void MouseOver(int i, int j)
+	{
+		Player Player = Main.LocalPlayer;
+		Player.cursorItemIconID = ModContent.ItemType<Items.Hovers.WindsHover>();
+		Player.noThrow = 2;
+		Player.cursorItemIconEnabled = true;
+	}
+
+	public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
+	{
+		Lighting.AddLight(new Vector2(i, j) * 16, new Vector3(0.9f, 2.1f, 2.3f) * 0.3f);
+	}
+
+	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
+	{
+		if (Main.tile[i, j].TileFrameX == 0 && Main.tile[i, j].TileFrameY == 0)
 		{
-			this.QuickSetFurniture(2, 4, DustID.Glass, SoundID.Shatter, false, new Color(91, 211, 233), false, false, "Stamina Jar");
-			MinPick = int.MaxValue;
-			TileID.Sets.PreventsTileRemovalIfOnTopOfIt[Type] = true;
-		}
+			Dummy dummy = Dummy(i, j);
 
-		public override bool CanExplode(int i, int j)
-		{
-			return false;
-		}
+			if (dummy is null)
+				return;
 
-		public override void MouseOver(int i, int j)
-		{
-			Player Player = Main.LocalPlayer;
-			Player.cursorItemIconID = ModContent.ItemType<Items.Hovers.WindsHover>();
-			Player.noThrow = 2;
-			Player.cursorItemIconEnabled = true;
-		}
+			Texture2D tex = Assets.Tiles.UndergroundTemple.JarTallGlow.Value;
+			Texture2D tex2 = Assets.Tiles.UndergroundTemple.JarTallGlow2.Value;
 
-		public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
-		{
-			Lighting.AddLight(new Vector2(i, j) * 16, new Vector3(0.9f, 2.1f, 2.3f) * 0.3f);
-		}
+			spriteBatch.End();
+			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default);
 
-		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
-		{
-			if (Main.tile[i, j].TileFrameX == 0 && Main.tile[i, j].TileFrameY == 0)
-			{
-				Dummy dummy = Dummy(i, j);
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default);
 
-				if (dummy is null)
-					return;
+			spriteBatch.Draw(tex, new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange - Main.screenPosition, Color.White);
+			spriteBatch.Draw(tex2, new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange + new Vector2(-2, 0) - Main.screenPosition, CommonVisualEffects.IndicatorColorProximity(150, 300, dummy.Center));
 
-				Texture2D tex = Assets.Tiles.UndergroundTemple.JarTallGlow.Value;
-				Texture2D tex2 = Assets.Tiles.UndergroundTemple.JarTallGlow2.Value;
-
-				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default);
-
-				spriteBatch.End();
-				spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default);
-
-				spriteBatch.Draw(tex, new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange - Main.screenPosition, Color.White);
-				spriteBatch.Draw(tex2, new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange + new Vector2(-2, 0) - Main.screenPosition, CommonVisualEffects.IndicatorColorProximity(150, 300, dummy.Center));
-
-			}
-		}
-
-		public override bool CanDrop(int i, int j)
-		{
-			return false;
 		}
 	}
 
-	internal class JarDummy : Dummy
+	public override bool CanDrop(int i, int j)
 	{
-		public override bool DoesCollision => true;
+		return false;
+	}
+}
 
-		public JarDummy() : base(TileType<JarTall>(), 32, 64) { }
+internal class JarDummy : Dummy
+{
+	public override bool DoesCollision => true;
 
-		public override void Update()
+	public JarDummy() : base(TileType<JarTall>(), 32, 64) { }
+
+	public override void Update()
+	{
+		if (Main.rand.NextBool(15))
 		{
-			if (Main.rand.NextBool(15))
+			Vector2 pos = position + new Vector2(Main.rand.Next(width), Main.rand.Next(height));
+			pos += Vector2.UnitY * 8;
+
+			if (Main.rand.NextBool(4))
 			{
-				Vector2 pos = position + new Vector2(Main.rand.Next(width), Main.rand.Next(height));
-				pos += Vector2.UnitY * 8;
-
-				if (Main.rand.NextBool(4))
-				{
-					var d = Dust.NewDustPerfect(pos, DustType<Dusts.Aurora>(), new Vector2(0, -Main.rand.NextFloat()), 0, new Color(91, 211, 233), 1);
-					d.customData = Main.rand.NextFloat(0.7f, 1.1f);
-				}
-				else
-				{
-					Dust.NewDustPerfect(pos, DustType<Dusts.Cinder>(), new Vector2(0, -Main.rand.NextFloat()), 0, new Color(91, 151, 233), 1);
-				}
+				var d = Dust.NewDustPerfect(pos, DustType<Dusts.Aurora>(), new Vector2(0, -Main.rand.NextFloat()), 0, new Color(91, 211, 233), 1);
+				d.customData = Main.rand.NextFloat(0.7f, 1.1f);
 			}
-		}
-
-		public override void Collision(Player Player)
-		{
-			if (AbilityHelper.CheckDash(Player, Hitbox))
+			else
 			{
-				WorldGen.KillTile(ParentX, ParentY);
-				NetMessage.SendTileSquare(Player.whoAmI, (int)(position.X / 16f), (int)(position.Y / 16f), 2, 4, TileChangeType.None);
-
-				Item.NewItem(null, Hitbox, ModContent.ItemType<StaminaGel>(), Main.rand.Next(3, 12));
-				Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Center);
+				Dust.NewDustPerfect(pos, DustType<Dusts.Cinder>(), new Vector2(0, -Main.rand.NextFloat()), 0, new Color(91, 151, 233), 1);
 			}
-		}
-
-		public override void PostDraw(Color lightColor)
-		{
-			Texture2D glowTex = Assets.Masks.GlowAlpha.Value;
-			Main.spriteBatch.Draw(glowTex, Center - Main.screenPosition + Vector2.UnitY * 16, glowTex.Frame(), new Color(91, 211, 233, 0) * 0.7f, 0, glowTex.Size() / 2, 0.8f, 0, 0);
 		}
 	}
 
-	[SLRDebug]
-	public class JarTallItem : BaseTileItem
+	public override void Collision(Player Player)
 	{
-		public override string Texture => AssetDirectory.Debug;
+		if (AbilityHelper.CheckDash(Player, Hitbox))
+		{
+			WorldGen.KillTile(ParentX, ParentY);
+			NetMessage.SendTileSquare(Player.whoAmI, (int)(position.X / 16f), (int)(position.Y / 16f), 2, 4, TileChangeType.None);
 
-		public JarTallItem() : base("Stamina Jar Placer (Tall)", "{{Debug}} Item", "JarTall", -12) { }
+			Item.NewItem(null, Hitbox, ModContent.ItemType<StaminaGel>(), Main.rand.Next(3, 12));
+			Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Center);
+		}
 	}
+
+	public override void PostDraw(Color lightColor)
+	{
+		Texture2D glowTex = Assets.Masks.GlowAlpha.Value;
+		Main.spriteBatch.Draw(glowTex, Center - Main.screenPosition + Vector2.UnitY * 16, glowTex.Frame(), new Color(91, 211, 233, 0) * 0.7f, 0, glowTex.Size() / 2, 0.8f, 0, 0);
+	}
+}
+
+[SLRDebug]
+public class JarTallItem : BaseTileItem
+{
+	public override string Texture => AssetDirectory.Debug;
+
+	public JarTallItem() : base("Stamina Jar Placer (Tall)", "{{Debug}} Item", "JarTall", -12) { }
 }

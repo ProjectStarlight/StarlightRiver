@@ -4,72 +4,71 @@ using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.BarrierSystem;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Items.BarrierDye
+namespace StarlightRiver.Content.Items.BarrierDye;
+
+class VitricBossBarrierDye : BarrierDye
 {
-	class VitricBossBarrierDye : BarrierDye
+	public override string Texture => AssetDirectory.BarrierDyeItem + Name;
+
+	public override float RechargeAnimationRate => 0.01f;
+
+	public override void SetStaticDefaults()
 	{
-		public override string Texture => AssetDirectory.BarrierDyeItem + Name;
+		DisplayName.SetDefault("Sentinel's Tincture");
+		Tooltip.SetDefault("Causes {{barrier}} to mimic the shield of the Shattered Sentinel\nEquipable\nVanity Item");
+	}
 
-		public override float RechargeAnimationRate => 0.01f;
+	public override void SetDefaults()
+	{
+		Item.rare = ItemRarityID.Orange;
 
-		public override void SetStaticDefaults()
+		Item.value = Item.sellPrice(silver: 15);
+	}
+
+	public override void LoseBarrierEffects(Player Player)
+	{
+		Terraria.Audio.SoundEngine.PlaySound(Terraria.ID.SoundID.Item107, Player.Center);
+
+		for (int k = 0; k < 20; k++)
+			Dust.NewDustPerfect(Player.Center, ModContent.DustType<Dusts.GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6f), 0, default, 2);
+	}
+
+	public override void PostDrawEffects(SpriteBatch spriteBatch, Player Player)
+	{
+		if (!PlayerTargetSystem.canUseTarget)
+			return;
+
+		BarrierPlayer barrier = Player.GetModPlayer<BarrierPlayer>();
+
+		Texture2D tex = PlayerTargetSystem.Target;
+
+		Vector2 pos = PlayerTargetSystem.getPositionOffset(Player.whoAmI);
+
+		Effect effect = ShaderLoader.GetShader("MoltenFormAndColor").Value;
+
+		if (effect != null)
 		{
-			DisplayName.SetDefault("Sentinel's Tincture");
-			Tooltip.SetDefault("Causes {{barrier}} to mimic the shield of the Shattered Sentinel\nEquipable\nVanity Item");
+			effect.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.ShieldMap.Value);
+			effect.Parameters["uTime"].SetValue(barrier.rechargeAnimationTimer * 2 + (barrier.rechargeAnimationTimer >= 1 ? Main.GameUpdateCount / 30f % 2f : 0));
+			effect.Parameters["sourceFrame"].SetValue(new Vector4((int)pos.X - 30, (int)pos.Y - 60, 60, 120));
+			effect.Parameters["texSize"].SetValue(tex.Size());
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, BlendState.NonPremultiplied, SamplerState.PointClamp, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.ZoomMatrix);
+
+			spriteBatch.Draw(tex, PlayerTargetSystem.getPlayerTargetPosition(Player.whoAmI), PlayerTargetSystem.getPlayerTargetSourceRectangle(Player.whoAmI), Color.White);
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 		}
+	}
 
-		public override void SetDefaults()
-		{
-			Item.rare = ItemRarityID.Orange;
-
-			Item.value = Item.sellPrice(silver: 15);
-		}
-
-		public override void LoseBarrierEffects(Player Player)
-		{
-			Terraria.Audio.SoundEngine.PlaySound(Terraria.ID.SoundID.Item107, Player.Center);
-
-			for (int k = 0; k < 20; k++)
-				Dust.NewDustPerfect(Player.Center, ModContent.DustType<Dusts.GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6f), 0, default, 2);
-		}
-
-		public override void PostDrawEffects(SpriteBatch spriteBatch, Player Player)
-		{
-			if (!PlayerTargetSystem.canUseTarget)
-				return;
-
-			BarrierPlayer barrier = Player.GetModPlayer<BarrierPlayer>();
-
-			Texture2D tex = PlayerTargetSystem.Target;
-
-			Vector2 pos = PlayerTargetSystem.getPositionOffset(Player.whoAmI);
-
-			Effect effect = ShaderLoader.GetShader("MoltenFormAndColor").Value;
-
-			if (effect != null)
-			{
-				effect.Parameters["sampleTexture2"].SetValue(Assets.Bosses.VitricBoss.ShieldMap.Value);
-				effect.Parameters["uTime"].SetValue(barrier.rechargeAnimationTimer * 2 + (barrier.rechargeAnimationTimer >= 1 ? Main.GameUpdateCount / 30f % 2f : 0));
-				effect.Parameters["sourceFrame"].SetValue(new Vector4((int)pos.X - 30, (int)pos.Y - 60, 60, 120));
-				effect.Parameters["texSize"].SetValue(tex.Size());
-
-				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.NonPremultiplied, SamplerState.PointClamp, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.ZoomMatrix);
-
-				spriteBatch.Draw(tex, PlayerTargetSystem.getPlayerTargetPosition(Player.whoAmI), PlayerTargetSystem.getPlayerTargetSourceRectangle(Player.whoAmI), Color.White);
-
-				spriteBatch.End();
-				spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
-			}
-		}
-
-		public override void AddRecipes()
-		{
-			Recipe recipe = CreateRecipe();
-			recipe.AddIngredient<VitricOre>(5);
-			recipe.AddIngredient<MagmaCore>(1);
-			recipe.AddTile(TileID.DyeVat);
-			recipe.Register();
-		}
+	public override void AddRecipes()
+	{
+		Recipe recipe = CreateRecipe();
+		recipe.AddIngredient<VitricOre>(5);
+		recipe.AddIngredient<MagmaCore>(1);
+		recipe.AddTile(TileID.DyeVat);
+		recipe.Register();
 	}
 }

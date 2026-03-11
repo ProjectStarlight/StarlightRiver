@@ -6,250 +6,249 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 
-namespace StarlightRiver.Core.Systems.InstancedBuffSystem
+namespace StarlightRiver.Core.Systems.InstancedBuffSystem;
+
+/// <summary>
+/// This class is to be used for buffs which require instanced data per enttiy it is inflicted on. For example, a different DoT value to apply.
+/// To inflict an instanced buff, call BuffInflictor.Inflict.
+/// </summary>
+public abstract class InstancedBuff : ILoadable
 {
 	/// <summary>
-	/// This class is to be used for buffs which require instanced data per enttiy it is inflicted on. For example, a different DoT value to apply.
-	/// To inflict an instanced buff, call BuffInflictor.Inflict.
+	/// Stores the prototypes of all instanced buffs, indexed by their Name property
 	/// </summary>
-	public abstract class InstancedBuff : ILoadable
+	public static Dictionary<string, InstancedBuff> prototypes = new();
+
+	/// <summary>
+	/// Stores the last time this buff was told it was sent data, to ensure that if data comes out of order only the latest is used.
+	/// </summary>
+	public long LastSentAt = 0;
+
+	/// <summary>
+	/// The numeric ID of the backing traditional buff to indicate this buffs inflicted status
+	/// </summary>
+	public int BackingType => StarlightRiver.Instance.Find<ModBuff>(Name).Type;
+
+	/// <summary>
+	/// The internal name of the instanced buff and the backing ModBuff
+	/// </summary>
+	public abstract string Name { get; }
+
+	/// <summary>
+	/// The display name of the backing ModBuff
+	/// </summary>
+	public abstract string DisplayName { get; }
+
+	/// <summary>
+	/// The texture of the backing ModBuff
+	/// </summary>
+	public abstract string Texture { get; }
+
+	/// <summary>
+	/// If the backing ModBuff should be a buff or debuff
+	/// </summary>
+	public abstract bool Debuff { get; }
+
+	/// <summary>
+	/// The tooltip of the backing ModBuff
+	/// </summary>
+	public virtual string Tooltip => "";
+
+	public void Load(Mod mod)
 	{
-		/// <summary>
-		/// Stores the prototypes of all instanced buffs, indexed by their Name property
-		/// </summary>
-		public static Dictionary<string, InstancedBuff> prototypes = new();
+		mod.AddContent(new InstancedBuffBacker(Name, DisplayName, Texture, Tooltip, Debuff));
+		prototypes[Name] = this;
 
-		/// <summary>
-		/// Stores the last time this buff was told it was sent data, to ensure that if data comes out of order only the latest is used.
-		/// </summary>
-		public long LastSentAt = 0;
-
-		/// <summary>
-		/// The numeric ID of the backing traditional buff to indicate this buffs inflicted status
-		/// </summary>
-		public int BackingType => StarlightRiver.Instance.Find<ModBuff>(Name).Type;
-
-		/// <summary>
-		/// The internal name of the instanced buff and the backing ModBuff
-		/// </summary>
-		public abstract string Name { get; }
-
-		/// <summary>
-		/// The display name of the backing ModBuff
-		/// </summary>
-		public abstract string DisplayName { get; }
-
-		/// <summary>
-		/// The texture of the backing ModBuff
-		/// </summary>
-		public abstract string Texture { get; }
-
-		/// <summary>
-		/// If the backing ModBuff should be a buff or debuff
-		/// </summary>
-		public abstract bool Debuff { get; }
-
-		/// <summary>
-		/// The tooltip of the backing ModBuff
-		/// </summary>
-		public virtual string Tooltip => "";
-
-		public void Load(Mod mod)
-		{
-			mod.AddContent(new InstancedBuffBacker(Name, DisplayName, Texture, Tooltip, Debuff));
-			prototypes[Name] = this;
-
-			Load();
-		}
-
-		/// <summary>
-		/// Tries to get the prototype of an instanced buff
-		/// </summary>
-		/// <param name="name">The internal name of the buff to get</param>
-		/// <param name="prototype">The prototype if it exists</param>
-		/// <returns>If the prototype exists or not</returns>
-		public static bool TryGetPrototype(string name, out InstancedBuff prototype)
-		{
-			if (prototypes.TryGetValue(name, out InstancedBuff proto))
-			{
-				prototype = proto;
-				return true;
-			}
-
-			prototype = null;
-			return false;
-		}
-
-		/// <summary>
-		/// You can subscribe to StarlightPlayer/StarlightNPC events here
-		/// </summary>
-		public virtual void Load()
-		{
-
-		}
-
-		/// <summary>
-		/// You should unsub from all events you subscrive to in load here
-		/// </summary>
-		public virtual void Unload()
-		{
-
-		}
-
-		/// <summary>
-		/// If this buff is inflicted on a given NPC
-		/// </summary>
-		/// <param name="npc">The NPC to check</param>
-		/// <returns>If that NPC has any instance of this buff</returns>
-		public bool AnyInflicted(NPC npc)
-		{
-			return npc.HasBuff(BackingType) && GetInstance(npc) != null;
-		}
-
-		/// <summary>
-		/// If this buff is inflicted on a given player
-		/// </summary>
-		/// <param name="player">The player to check</param>
-		/// <returns>If that player has any instance of this buff</returns>
-		public bool AnyInflicted(Player player)
-		{
-			return player.HasBuff(BackingType) && GetInstance(player) != null;
-		}
-
-		/// <summary>
-		/// Gets the inflicted instance of this instanced buff on a given NPC. To be used with StarlightNPC events
-		/// </summary>
-		/// <param name="npc">The NPC to check</param>
-		/// <returns>The inflicted instance, or null if not inflicted</returns>
-		public InstancedBuff GetInstance(NPC npc)
-		{
-			return InstancedBuffNPC.GetInstance(npc, Name);
-		}
-
-		/// <summary>
-		/// Gets the inflicted instance of this instanced buff on a given player. To be used with StarlightPlayer events
-		/// </summary>
-		/// <param name="player">The player to check</param>
-		/// <returns>The inflicted instance, or null if not inflicted</returns>
-		public InstancedBuff GetInstance(Player player)
-		{
-			return InstancedBuffPlayer.GetInstance(player, Name);
-		}
-
-		/// <summary>
-		/// The effects this buff should have while its inflicted on a player, in the default update loop
-		/// </summary>
-		/// <param name="player"></param>
-		public virtual void UpdatePlayer(Player player) { }
-
-		/// <summary>
-		/// The effects this buff should have while its inflicted on an NPC, in the default update loop
-		/// </summary>
-		/// <param name="npc"></param>
-		public virtual void UpdateNPC(NPC npc) { }
-
-		/// <summary>
-		/// Send data to sync this buff instance here
-		/// </summary>
-		public virtual void NetSend(BinaryWriter writer) { }
-
-		/// <summary>
-		/// Recieve data to sync this buff instance here
-		/// </summary>
-		public virtual void NetReceive(BinaryReader reader) { }
-
-		public void NetSync(int whoAmI, bool isPlayer)
-		{
-			if (Main.netMode == NetmodeID.SinglePlayer)
-				return;
-
-			var stream = new MemoryStream();
-			BinaryWriter writer = new BinaryWriter(stream);
-			NetSend(writer);
-
-			writer.Flush();
-			writer.Close();
-
-			if (isPlayer)
-			{
-				Player player = Main.player[whoAmI];
-				int buffIndex = player.FindBuffIndex(BackingType);
-
-				if (buffIndex == -1)
-					return;
-
-				InstancedBuffPacket packet = new(Main.myPlayer, Name, whoAmI, isPlayer, player.buffTime[buffIndex], stream.ToArray());
-				packet.Send(-1, Main.myPlayer, false);
-			}
-			else
-			{
-				NPC npc = Main.npc[whoAmI];
-				int buffIndex = npc.FindBuffIndex(BackingType);
-
-				if (buffIndex == -1)
-					return;
-
-				InstancedBuffPacket packet = new(Main.myPlayer, Name, whoAmI, isPlayer, npc.buffTime[buffIndex], stream.ToArray());
-				packet.Send(-1, Main.myPlayer, false);
-			}
-		}
-
-		public InstancedBuff Clone()
-		{
-			return MemberwiseClone() as InstancedBuff;
-		}
+		Load();
 	}
 
 	/// <summary>
-	/// The auto-generated ModBuff backing type for instanced buffs
+	/// Tries to get the prototype of an instanced buff
 	/// </summary>
-	[Autoload(false)]
-	internal class InstancedBuffBacker : ModBuff
+	/// <param name="name">The internal name of the buff to get</param>
+	/// <param name="prototype">The prototype if it exists</param>
+	/// <returns>If the prototype exists or not</returns>
+	public static bool TryGetPrototype(string name, out InstancedBuff prototype)
 	{
-		public string name;
-		public string displayName;
-		public string texture;
-		public string tooltip;
-		public bool debuff;
-
-		public override string Name => name;
-
-		public override string Texture => texture;
-
-		public InstancedBuffBacker(string name, string displayName, string texture, string tooltip, bool debuff) : base()
+		if (prototypes.TryGetValue(name, out InstancedBuff proto))
 		{
-			this.name = name;
-			this.displayName = displayName;
-			this.texture = texture;
-			this.tooltip = tooltip;
-			this.debuff = debuff;
+			prototype = proto;
+			return true;
 		}
 
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault(displayName);
-			Description.SetDefault(tooltip);
+		prototype = null;
+		return false;
+	}
 
-			Main.debuff[Type] = debuff;
+	/// <summary>
+	/// You can subscribe to StarlightPlayer/StarlightNPC events here
+	/// </summary>
+	public virtual void Load()
+	{
+
+	}
+
+	/// <summary>
+	/// You should unsub from all events you subscrive to in load here
+	/// </summary>
+	public virtual void Unload()
+	{
+
+	}
+
+	/// <summary>
+	/// If this buff is inflicted on a given NPC
+	/// </summary>
+	/// <param name="npc">The NPC to check</param>
+	/// <returns>If that NPC has any instance of this buff</returns>
+	public bool AnyInflicted(NPC npc)
+	{
+		return npc.HasBuff(BackingType) && GetInstance(npc) != null;
+	}
+
+	/// <summary>
+	/// If this buff is inflicted on a given player
+	/// </summary>
+	/// <param name="player">The player to check</param>
+	/// <returns>If that player has any instance of this buff</returns>
+	public bool AnyInflicted(Player player)
+	{
+		return player.HasBuff(BackingType) && GetInstance(player) != null;
+	}
+
+	/// <summary>
+	/// Gets the inflicted instance of this instanced buff on a given NPC. To be used with StarlightNPC events
+	/// </summary>
+	/// <param name="npc">The NPC to check</param>
+	/// <returns>The inflicted instance, or null if not inflicted</returns>
+	public InstancedBuff GetInstance(NPC npc)
+	{
+		return InstancedBuffNPC.GetInstance(npc, Name);
+	}
+
+	/// <summary>
+	/// Gets the inflicted instance of this instanced buff on a given player. To be used with StarlightPlayer events
+	/// </summary>
+	/// <param name="player">The player to check</param>
+	/// <returns>The inflicted instance, or null if not inflicted</returns>
+	public InstancedBuff GetInstance(Player player)
+	{
+		return InstancedBuffPlayer.GetInstance(player, Name);
+	}
+
+	/// <summary>
+	/// The effects this buff should have while its inflicted on a player, in the default update loop
+	/// </summary>
+	/// <param name="player"></param>
+	public virtual void UpdatePlayer(Player player) { }
+
+	/// <summary>
+	/// The effects this buff should have while its inflicted on an NPC, in the default update loop
+	/// </summary>
+	/// <param name="npc"></param>
+	public virtual void UpdateNPC(NPC npc) { }
+
+	/// <summary>
+	/// Send data to sync this buff instance here
+	/// </summary>
+	public virtual void NetSend(BinaryWriter writer) { }
+
+	/// <summary>
+	/// Recieve data to sync this buff instance here
+	/// </summary>
+	public virtual void NetReceive(BinaryReader reader) { }
+
+	public void NetSync(int whoAmI, bool isPlayer)
+	{
+		if (Main.netMode == NetmodeID.SinglePlayer)
+			return;
+
+		var stream = new MemoryStream();
+		BinaryWriter writer = new BinaryWriter(stream);
+		NetSend(writer);
+
+		writer.Flush();
+		writer.Close();
+
+		if (isPlayer)
+		{
+			Player player = Main.player[whoAmI];
+			int buffIndex = player.FindBuffIndex(BackingType);
+
+			if (buffIndex == -1)
+				return;
+
+			InstancedBuffPacket packet = new(Main.myPlayer, Name, whoAmI, isPlayer, player.buffTime[buffIndex], stream.ToArray());
+			packet.Send(-1, Main.myPlayer, false);
 		}
-
-		public override void PostDraw(SpriteBatch spriteBatch, int buffIndex, BuffDrawParams drawParams)
+		else
 		{
-			if (InstancedBuff.TryGetPrototype(name, out InstancedBuff prototype))
+			NPC npc = Main.npc[whoAmI];
+			int buffIndex = npc.FindBuffIndex(BackingType);
+
+			if (buffIndex == -1)
+				return;
+
+			InstancedBuffPacket packet = new(Main.myPlayer, Name, whoAmI, isPlayer, npc.buffTime[buffIndex], stream.ToArray());
+			packet.Send(-1, Main.myPlayer, false);
+		}
+	}
+
+	public InstancedBuff Clone()
+	{
+		return MemberwiseClone() as InstancedBuff;
+	}
+}
+
+/// <summary>
+/// The auto-generated ModBuff backing type for instanced buffs
+/// </summary>
+[Autoload(false)]
+internal class InstancedBuffBacker : ModBuff
+{
+	public string name;
+	public string displayName;
+	public string texture;
+	public string tooltip;
+	public bool debuff;
+
+	public override string Name => name;
+
+	public override string Texture => texture;
+
+	public InstancedBuffBacker(string name, string displayName, string texture, string tooltip, bool debuff) : base()
+	{
+		this.name = name;
+		this.displayName = displayName;
+		this.texture = texture;
+		this.tooltip = tooltip;
+		this.debuff = debuff;
+	}
+
+	public override void SetStaticDefaults()
+	{
+		DisplayName.SetDefault(displayName);
+		Description.SetDefault(tooltip);
+
+		Main.debuff[Type] = debuff;
+	}
+
+	public override void PostDraw(SpriteBatch spriteBatch, int buffIndex, BuffDrawParams drawParams)
+	{
+		if (InstancedBuff.TryGetPrototype(name, out InstancedBuff prototype))
+		{
+			if (prototype is StackableBuff)
 			{
-				if (prototype is StackableBuff)
-				{
-					StackableBuff stackable = prototype.GetInstance(Main.LocalPlayer) as StackableBuff;
+				StackableBuff stackable = prototype.GetInstance(Main.LocalPlayer) as StackableBuff;
 
-					if (stackable is null)
-						return;
+				if (stackable is null)
+					return;
 
-					DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
-					string message = $"x{stackable.stacks.Count}";
-					Vector2 dims = font.MeasureString(message) * 0.8f;
-					float opacity = Math.Min(1f, stackable.stacks.Count / 100f);
-					spriteBatch.DrawString(font, message, drawParams.Position + new Vector2(16, 54), Color.Lerp(drawParams.DrawColor, new Color(255, 150, 150), opacity), 0f, dims / 2f, 0.8f + opacity * 0.25f, 0, 0);
-				}
+				DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
+				string message = $"x{stackable.stacks.Count}";
+				Vector2 dims = font.MeasureString(message) * 0.8f;
+				float opacity = Math.Min(1f, stackable.stacks.Count / 100f);
+				spriteBatch.DrawString(font, message, drawParams.Position + new Vector2(16, 54), Color.Lerp(drawParams.DrawColor, new Color(255, 150, 150), opacity), 0f, dims / 2f, 0.8f + opacity * 0.25f, 0, 0);
 			}
 		}
 	}

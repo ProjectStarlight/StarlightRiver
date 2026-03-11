@@ -1,25 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace StarlightRiver.Core.Systems.PersistentDataSystem
+namespace StarlightRiver.Core.Systems.PersistentDataSystem;
+
+internal class PersistentDataStoreSystem
 {
-	internal class PersistentDataStoreSystem
+	private readonly static Dictionary<Type, PersistentDataStore> stores = new();
+
+	public static T GetDataStore<T>() where T : PersistentDataStore
 	{
-		private readonly static Dictionary<Type, PersistentDataStore> stores = new();
+		return stores[typeof(T)] as T;
+	}
 
-		public static T GetDataStore<T>() where T : PersistentDataStore
-		{
-			return stores[typeof(T)] as T;
-		}
+	public static void PutDataStore(PersistentDataStore store)
+	{
+		Type key = store.GetType();
 
-		public static void PutDataStore(PersistentDataStore store)
-		{
-			Type key = store.GetType();
-
-			if (stores.ContainsKey(key))
-				stores[key] = store;
-			else
-				stores.Add(key, store);
-		}
+		if (stores.ContainsKey(key))
+			stores[key] = store;
+		else
+			stores.Add(key, store);
 	}
 }

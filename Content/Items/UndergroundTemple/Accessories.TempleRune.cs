@@ -2,23 +2,22 @@
 using StarlightRiver.Core.Systems.BarrierSystem;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Items.UndergroundTemple
+namespace StarlightRiver.Content.Items.UndergroundTemple;
+
+class TempleRune : SmartAccessory
 {
-	class TempleRune : SmartAccessory
+	public override string Texture => AssetDirectory.CaveTempleItem + Name;
+
+	public TempleRune() : base("Rune of Warding", "+50 maximum {{barrier}}") { }
+
+	public override void SafeSetDefaults()
 	{
-		public override string Texture => AssetDirectory.CaveTempleItem + Name;
+		Item.rare = ItemRarityID.Blue;
+		Item.value = Item.sellPrice(silver: 25);
+	}
 
-		public TempleRune() : base("Rune of Warding", "+50 maximum {{barrier}}") { }
-
-		public override void SafeSetDefaults()
-		{
-			Item.rare = ItemRarityID.Blue;
-			Item.value = Item.sellPrice(silver: 25);
-		}
-
-		public override void SafeUpdateEquip(Player Player)
-		{
-			Player.GetModPlayer<BarrierPlayer>().maxBarrier += 50;
-		}
+	public override void SafeUpdateEquip(Player Player)
+	{
+		Player.GetModPlayer<BarrierPlayer>().maxBarrier += 50;
 	}
 }

@@ -1,97 +1,96 @@
 ﻿using System;
 using Terraria.ModLoader.IO;
 
-namespace StarlightRiver.Content.ArmorEnchantment
+namespace StarlightRiver.Content.ArmorEnchantment;
+
+abstract class ArmorEnchantment
 {
-	abstract class ArmorEnchantment
+	public Guid Guid;
+
+	public virtual Color Color => Color.White;
+
+	public virtual string Texture => AssetDirectory.Debug;
+
+	public ArmorEnchantment()
 	{
-		public Guid Guid;
+		Guid = Guid.Empty;
+	}
 
-		public virtual Color Color => Color.White;
+	public ArmorEnchantment(Guid guid)
+	{
+		Guid = guid;
+	}
 
-		public virtual string Texture => AssetDirectory.Debug;
+	public virtual bool IsAvailable(Item head, Item chest, Item legs)
+	{
+		return false;
+	}
 
-		public ArmorEnchantment()
-		{
-			Guid = Guid.Empty;
-		}
+	public virtual void UpdateSet(Player Player)
+	{
 
-		public ArmorEnchantment(Guid guid)
-		{
-			Guid = guid;
-		}
+	}
 
-		public virtual bool IsAvailable(Item head, Item chest, Item legs)
-		{
-			return false;
-		}
+	public virtual void DrawInInventory(Item Item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
+	{
 
-		public virtual void UpdateSet(Player Player)
-		{
+	}
 
-		}
+	public virtual bool PreDrawInInventory(Item Item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
+	{
+		return true;
+	}
 
-		public virtual void DrawInInventory(Item Item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
-		{
-
-		}
-
-		public virtual bool PreDrawInInventory(Item Item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
-		{
-			return true;
-		}
-
-		public virtual TagCompound SaveData()
-		{
-			return new TagCompound()
-			{
-
-			};
-		}
-
-		public virtual void LoadData(TagCompound tag)
+	public virtual TagCompound SaveData()
+	{
+		return new TagCompound()
 		{
 
-		}
+		};
+	}
 
-		public sealed override bool Equals(object obj)
+	public virtual void LoadData(TagCompound tag)
+	{
+
+	}
+
+	public sealed override bool Equals(object obj)
+	{
+		if (obj is ArmorEnchantment)
 		{
-			if (obj is ArmorEnchantment)
-			{
-				var a = obj as ArmorEnchantment;
+			var a = obj as ArmorEnchantment;
 
-				if (a.Guid == Guid)
-					return true;
-			}
-
-			return false;
+			if (a.Guid == Guid)
+				return true;
 		}
 
-		public static void EnchantArmor(Item head, Item chest, Item legs, ArmorEnchantment enchant)
-		{
-			EnchantArmor(head, enchant);
-			EnchantArmor(chest, enchant);
-			EnchantArmor(legs, enchant);
-		}
+		return false;
+	}
 
-		public static void EnchantArmor(Item Item, ArmorEnchantment enchant)
-		{
-			Item.GetGlobalItem<EnchantedArmorGlobalItem>().Enchantment = enchant;
-		}
+	public static void EnchantArmor(Item head, Item chest, Item legs, ArmorEnchantment enchant)
+	{
+		EnchantArmor(head, enchant);
+		EnchantArmor(chest, enchant);
+		EnchantArmor(legs, enchant);
+	}
 
-		public ArmorEnchantment MakeRealCopy() //this is dumb and there is a better way to do this probably but i really dont feel like figuring it out rn
-		{
-			Type type = GetType();
-			object copy = MemberwiseClone();
-			var realCopy = (ArmorEnchantment)Convert.ChangeType(copy, type);
-			realCopy.Guid = Guid.NewGuid();
+	public static void EnchantArmor(Item Item, ArmorEnchantment enchant)
+	{
+		Item.GetGlobalItem<EnchantedArmorGlobalItem>().Enchantment = enchant;
+	}
 
-			return realCopy;
-		}
+	public ArmorEnchantment MakeRealCopy() //this is dumb and there is a better way to do this probably but i really dont feel like figuring it out rn
+	{
+		Type type = GetType();
+		object copy = MemberwiseClone();
+		var realCopy = (ArmorEnchantment)Convert.ChangeType(copy, type);
+		realCopy.Guid = Guid.NewGuid();
 
-		public override int GetHashCode()
-		{
-			throw new NotImplementedException();
-		}
+		return realCopy;
+	}
+
+	public override int GetHashCode()
+	{
+		throw new NotImplementedException();
 	}
 }

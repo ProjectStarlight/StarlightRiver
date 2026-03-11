@@ -5,19 +5,18 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria.DataStructures;
 
-namespace StarlightRiver.Core.Systems.BossRushSystem
-{
-	internal class BossRushFrailtyAddon : ModSystem
-	{
-		public static bool active;
-	}
+namespace StarlightRiver.Core.Systems.BossRushSystem;
 
-	internal class BossRushFrailtyPlayer : ModPlayer
+internal class BossRushFrailtyAddon : ModSystem
+{
+	public static bool active;
+}
+
+internal class BossRushFrailtyPlayer : ModPlayer
+{
+	public override void OnHurt(Player.HurtInfo info)
 	{
-		public override void OnHurt(Player.HurtInfo info)
-		{
-			if (BossRushSystem.isBossRush && BossRushFrailtyAddon.active)
-				Player.KillMe(PlayerDeathReason.ByCustomReason(NetworkText.FromKey("Mods.StarlightRiver.Deaths.BossRushFrailty", Player.name)), double.PositiveInfinity, 0);
-		}
+		if (BossRushSystem.isBossRush && BossRushFrailtyAddon.active)
+			Player.KillMe(PlayerDeathReason.ByCustomReason(NetworkText.FromKey("Mods.StarlightRiver.Deaths.BossRushFrailty", Player.name)), double.PositiveInfinity, 0);
 	}
 }

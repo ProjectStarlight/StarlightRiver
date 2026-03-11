@@ -3,49 +3,48 @@ using StarlightRiver.Core.Systems.BarrierSystem;
 using StarlightRiver.Core.Systems.InoculationSystem;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Items.Desert
+namespace StarlightRiver.Content.Items.Desert;
+
+public class DefiledAnkh : CursedAccessory
 {
-	public class DefiledAnkh : CursedAccessory
+	public override string Texture => AssetDirectory.DesertItem + Name;
+
+	public override void SetStaticDefaults()
 	{
-		public override string Texture => AssetDirectory.DesertItem + Name;
+		Tooltip.SetDefault("Your {{Barrier}} protects against 25% less damage\n+100% {{Inoculation}} and immunity to most debuffs while {{Barrier}} is active" +
+			"\n+40 maximum {{Barrier}}");
+	}
 
-		public override void SetStaticDefaults()
+	public override void SafeSetDefaults()
+	{
+		Item.value = Item.sellPrice(gold: 3, silver: 50);
+	}
+
+	public override void SafeUpdateEquip(Player player)
+	{
+		BarrierPlayer bp = player.GetModPlayer<BarrierPlayer>();
+		bp.barrierDamageReduction -= 0.25f;
+		bp.maxBarrier += 40;
+
+		if (bp.barrier > 0)
 		{
-			Tooltip.SetDefault("Your {{Barrier}} protects against 25% less damage\n+100% {{Inoculation}} and immunity to most debuffs while {{Barrier}} is active" +
-				"\n+40 maximum {{Barrier}}");
-		}
+			player.buffImmune[BuffID.Bleeding] = true;
+			player.buffImmune[BuffID.Confused] = true;
+			player.buffImmune[BuffID.Darkness] = true;
+			player.buffImmune[BuffID.Silenced] = true;
+			player.buffImmune[BuffID.Weak] = true;
+			player.buffImmune[BuffID.BrokenArmor] = true;
+			player.buffImmune[BuffID.Cursed] = true;
+			player.buffImmune[BuffID.Poisoned] = true;
+			player.buffImmune[BuffID.Slow] = true;
+			player.buffImmune[BuffID.Stoned] = true;
+			player.buffImmune[BuffID.Rabies] = true;
+			player.buffImmune[BuffID.Chilled] = true;
+			player.buffImmune[BuffID.Ichor] = true;
+			player.buffImmune[BuffID.Frozen] = true;
+			player.buffImmune[BuffID.Webbed] = true;
 
-		public override void SafeSetDefaults()
-		{
-			Item.value = Item.sellPrice(gold: 3, silver: 50);
-		}
-
-		public override void SafeUpdateEquip(Player player)
-		{
-			BarrierPlayer bp = player.GetModPlayer<BarrierPlayer>();
-			bp.barrierDamageReduction -= 0.25f;
-			bp.maxBarrier += 40;
-
-			if (bp.barrier > 0)
-			{
-				player.buffImmune[BuffID.Bleeding] = true;
-				player.buffImmune[BuffID.Confused] = true;
-				player.buffImmune[BuffID.Darkness] = true;
-				player.buffImmune[BuffID.Silenced] = true;
-				player.buffImmune[BuffID.Weak] = true;
-				player.buffImmune[BuffID.BrokenArmor] = true;
-				player.buffImmune[BuffID.Cursed] = true;
-				player.buffImmune[BuffID.Poisoned] = true;
-				player.buffImmune[BuffID.Slow] = true;
-				player.buffImmune[BuffID.Stoned] = true;
-				player.buffImmune[BuffID.Rabies] = true;
-				player.buffImmune[BuffID.Chilled] = true;
-				player.buffImmune[BuffID.Ichor] = true;
-				player.buffImmune[BuffID.Frozen] = true;
-				player.buffImmune[BuffID.Webbed] = true;
-
-				player.GetModPlayer<InoculationPlayer>().DoTResist += 1;
-			}
+			player.GetModPlayer<InoculationPlayer>().DoTResist += 1;
 		}
 	}
 }

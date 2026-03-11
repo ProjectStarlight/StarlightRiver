@@ -2,22 +2,21 @@
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Tiles.Permafrost
+namespace StarlightRiver.Content.Tiles.Permafrost;
+
+class AuroraBrickWallFriendly : ModWall
 {
-	class AuroraBrickWallFriendly : ModWall
+	public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/AuroraBrickWall";
+
+	public override void SetStaticDefaults()
 	{
-		public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/AuroraBrickWall";
-
-		public override void SetStaticDefaults()
-		{
-			QuickBlock.QuickSetWall(this, DustID.Ice, SoundID.Tink, ItemType<AuroraBrickWallFriendlyItem>(), true, new Color(33, 65, 94));
-		}
+		QuickBlock.QuickSetWall(this, DustID.Ice, SoundID.Tink, ItemType<AuroraBrickWallFriendlyItem>(), true, new Color(33, 65, 94));
 	}
+}
 
-	class AuroraBrickWallFriendlyItem : BaseWallItem
-	{
-		public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/AuroraBrickWallItem";
+class AuroraBrickWallFriendlyItem : BaseWallItem
+{
+	public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/AuroraBrickWallItem";
 
-		public AuroraBrickWallFriendlyItem() : base("Aurora Brick Wall", "Oooh... Preeetttyyy", WallType<AuroraBrickWallFriendly>(), ItemRarityID.White) { }
-	}
+	public AuroraBrickWallFriendlyItem() : base("Aurora Brick Wall", "Oooh... Preeetttyyy", WallType<AuroraBrickWallFriendly>(), ItemRarityID.White) { }
 }

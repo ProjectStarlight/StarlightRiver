@@ -1,58 +1,57 @@
-namespace StarlightRiver.Content.Backgrounds
+namespace StarlightRiver.Content.Backgrounds;
+
+public class BGLoader : IOrderedLoadable
 {
-	public class BGLoader : IOrderedLoadable
+	float IOrderedLoadable.Priority => 1;
+
+	void IOrderedLoadable.Load()
 	{
-		float IOrderedLoadable.Priority => 1;
+		if (Main.dedServ)
+			return;
 
-		void IOrderedLoadable.Load()
-		{
-			if (Main.dedServ)
-				return;
+		BackgroundTextureLoader.AddBackgroundTexture(StarlightRiver.Instance, "StarlightRiver/Assets/Backgrounds/Blank");
 
-			BackgroundTextureLoader.AddBackgroundTexture(StarlightRiver.Instance, "StarlightRiver/Assets/Backgrounds/Blank");
+		BackgroundTextureLoader.AddBackgroundTexture(StarlightRiver.Instance, "StarlightRiver/Assets/Backgrounds/PermafrostBack");
 
-			BackgroundTextureLoader.AddBackgroundTexture(StarlightRiver.Instance, "StarlightRiver/Assets/Backgrounds/PermafrostBack");
-
-			BackgroundTextureLoader.AddBackgroundTexture(StarlightRiver.Instance, "StarlightRiver/Assets/Backgrounds/corruptjunglebackground");
-			BackgroundTextureLoader.AddBackgroundTexture(StarlightRiver.Instance, "StarlightRiver/Assets/Backgrounds/bloodyjunglebackground");
-		}
-
-		void IOrderedLoadable.Unload() { }
+		BackgroundTextureLoader.AddBackgroundTexture(StarlightRiver.Instance, "StarlightRiver/Assets/Backgrounds/corruptjunglebackground");
+		BackgroundTextureLoader.AddBackgroundTexture(StarlightRiver.Instance, "StarlightRiver/Assets/Backgrounds/bloodyjunglebackground");
 	}
 
-	public class BlankBG : ModUndergroundBackgroundStyle
-	{
-		public override void FillTextureArray(int[] textureSlots)
-		{
-			for (int k = 0; k < textureSlots.Length; k++)
-				textureSlots[k] = BackgroundTextureLoader.GetBackgroundSlot("StarlightRiver/Assets/Backgrounds/Blank");
-		}
-	}
+	void IOrderedLoadable.Unload() { }
+}
 
-	public class JungleCorruptBG : ModUndergroundBackgroundStyle
+public class BlankBG : ModUndergroundBackgroundStyle
+{
+	public override void FillTextureArray(int[] textureSlots)
 	{
-		public override void FillTextureArray(int[] textureSlots)
-		{
-			for (int k = 0; k < textureSlots.Length; k++)
-				textureSlots[k] = BackgroundTextureLoader.GetBackgroundSlot("StarlightRiver/Assets/Backgrounds/corruptjunglebackground");
-		}
+		for (int k = 0; k < textureSlots.Length; k++)
+			textureSlots[k] = BackgroundTextureLoader.GetBackgroundSlot("StarlightRiver/Assets/Backgrounds/Blank");
 	}
+}
 
-	public class JungleBloodyBG : ModUndergroundBackgroundStyle
+public class JungleCorruptBG : ModUndergroundBackgroundStyle
+{
+	public override void FillTextureArray(int[] textureSlots)
 	{
-		public override void FillTextureArray(int[] textureSlots)
-		{
-			for (int k = 0; k < textureSlots.Length; k++)
-				textureSlots[k] = BackgroundTextureLoader.GetBackgroundSlot("StarlightRiver/Assets/Backgrounds/bloodyjunglebackground");
-		}
+		for (int k = 0; k < textureSlots.Length; k++)
+			textureSlots[k] = BackgroundTextureLoader.GetBackgroundSlot("StarlightRiver/Assets/Backgrounds/corruptjunglebackground");
 	}
+}
 
-	public class JungleHolyBG : ModUndergroundBackgroundStyle
+public class JungleBloodyBG : ModUndergroundBackgroundStyle
+{
+	public override void FillTextureArray(int[] textureSlots)
 	{
-		public override void FillTextureArray(int[] textureSlots)
-		{
-			for (int k = 0; k < textureSlots.Length; k++)
-				textureSlots[k] = BackgroundTextureLoader.GetBackgroundSlot("StarlightRiver/Assets/Backgrounds/bloodyjunglebackground");
-		}
+		for (int k = 0; k < textureSlots.Length; k++)
+			textureSlots[k] = BackgroundTextureLoader.GetBackgroundSlot("StarlightRiver/Assets/Backgrounds/bloodyjunglebackground");
+	}
+}
+
+public class JungleHolyBG : ModUndergroundBackgroundStyle
+{
+	public override void FillTextureArray(int[] textureSlots)
+	{
+		for (int k = 0; k < textureSlots.Length; k++)
+			textureSlots[k] = BackgroundTextureLoader.GetBackgroundSlot("StarlightRiver/Assets/Backgrounds/bloodyjunglebackground");
 	}
 }

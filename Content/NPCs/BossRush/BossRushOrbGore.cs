@@ -1,73 +1,72 @@
 ﻿using Terraria.DataStructures;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.NPCs.BossRush
+namespace StarlightRiver.Content.NPCs.BossRush;
+
+internal class BossRushOrbGoreProjectile : ModProjectile
 {
-	internal class BossRushOrbGoreProjectile : ModProjectile
+	int type = 1;
+
+	public override string Texture => "StarlightRiver/Assets/NPCs/BossRush/Gores/Rock1";
+
+	public override void SetDefaults()
 	{
-		int type = 1;
+		Projectile.width = 16;
+		Projectile.height = 16;
+		Projectile.timeLeft = 420;
+		Projectile.damage = -1;
+	}
 
-		public override string Texture => "StarlightRiver/Assets/NPCs/BossRush/Gores/Rock1";
+	public override void OnSpawn(IEntitySource source)
+	{
+		type = Main.rand.Next(6) + 1;
+	}
 
-		public override void SetDefaults()
+	public override void AI()
+	{
+		Projectile.velocity.Y += 0.2f;
+		Projectile.rotation += Projectile.velocity.X * 0.05f;
+	}
+
+	public override bool OnTileCollide(Vector2 oldVelocity)
+	{
+		Projectile.velocity.X *= 0.95f;
+
+		if (Projectile.velocity.Y != oldVelocity.Y)
 		{
-			Projectile.width = 16;
-			Projectile.height = 16;
-			Projectile.timeLeft = 420;
-			Projectile.damage = -1;
+			Projectile.velocity.Y = -oldVelocity.Y * 0.2f;
 		}
 
-		public override void OnSpawn(IEntitySource source)
-		{
-			type = Main.rand.Next(6) + 1;
-		}
+		return false;
+	}
 
-		public override void AI()
-		{
-			Projectile.velocity.Y += 0.2f;
-			Projectile.rotation += Projectile.velocity.X * 0.05f;
-		}
+	public override bool PreDraw(ref Color lightColor)
+	{
+		Color color = Color.Cyan;
+		color.R += 128;
 
-		public override bool OnTileCollide(Vector2 oldVelocity)
-		{
-			Projectile.velocity.X *= 0.95f;
+		Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/NPCs/BossRush/Gores/Rock" + type.ToString()).Value;
+		Texture2D glow = ModContent.Request<Texture2D>("StarlightRiver/Assets/NPCs/BossRush/Gores/RockGlow" + type.ToString()).Value;
+		Texture2D bloom = Assets.Masks.Glow.Value;
 
-			if (Projectile.velocity.Y != oldVelocity.Y)
-			{
-				Projectile.velocity.Y = -oldVelocity.Y * 0.2f;
-			}
+		Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() * 0.5f, 1, SpriteEffects.None, 0);
 
-			return false;
-		}
+		Main.spriteBatch.End();
+		Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
-		public override bool PreDraw(ref Color lightColor)
-		{
-			Color color = Color.Cyan;
-			color.R += 128;
+		Main.spriteBatch.Draw(glow, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Black, color, (Projectile.timeLeft - 240) / 180f), Projectile.rotation, tex.Size() * 0.5f, 1, SpriteEffects.None, 0);
+		Main.spriteBatch.Draw(glow, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Black, color, (Projectile.timeLeft - 240) / 180f), Projectile.rotation, glow.Size() * 0.5f, 1, SpriteEffects.None, 0);
+		Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Black, color, (Projectile.timeLeft - 240) / 180f) * 0.5f, Projectile.rotation, bloom.Size() * 0.5f, 1, SpriteEffects.None, 0);
 
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/NPCs/BossRush/Gores/Rock" + type.ToString()).Value;
-			Texture2D glow = ModContent.Request<Texture2D>("StarlightRiver/Assets/NPCs/BossRush/Gores/RockGlow" + type.ToString()).Value;
-			Texture2D bloom = Assets.Masks.Glow.Value;
+		Main.spriteBatch.End();
+		Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() * 0.5f, 1, SpriteEffects.None, 0);
+		return false;
+	}
 
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
-
-			Main.spriteBatch.Draw(glow, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Black, color, (Projectile.timeLeft - 240) / 180f), Projectile.rotation, tex.Size() * 0.5f, 1, SpriteEffects.None, 0);
-			Main.spriteBatch.Draw(glow, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Black, color, (Projectile.timeLeft - 240) / 180f), Projectile.rotation, glow.Size() * 0.5f, 1, SpriteEffects.None, 0);
-			Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Black, color, (Projectile.timeLeft - 240) / 180f) * 0.5f, Projectile.rotation, bloom.Size() * 0.5f, 1, SpriteEffects.None, 0);
-
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
-
-			return false;
-		}
-
-		public override void OnKill(int timeLeft)
-		{
-			for (int k = 0; k < 20; k++)
-				Dust.NewDustPerfect(Projectile.Center, DustID.Obsidian);
-		}
+	public override void OnKill(int timeLeft)
+	{
+		for (int k = 0; k < 20; k++)
+			Dust.NewDustPerfect(Projectile.Center, DustID.Obsidian);
 	}
 }

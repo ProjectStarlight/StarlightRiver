@@ -2,56 +2,55 @@
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 
-namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
+namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle;
+
+class ObjectiveGear : GearTile
 {
-	class ObjectiveGear : GearTile
+	public override int DummyType => DummySystem.DummyType<ObjectiveGearDummy>();
+
+	public override bool RightClick(int i, int j)
 	{
-		public override int DummyType => DummySystem.DummyType<ObjectiveGearDummy>();
+		var dummy = Dummy(i, j) as GearTileDummy;
 
-		public override bool RightClick(int i, int j)
+		if (Main.LocalPlayer.HeldItem.type == ModContent.ItemType<Items.DebugStick>())
 		{
-			var dummy = Dummy(i, j) as GearTileDummy;
-
-			if (Main.LocalPlayer.HeldItem.type == ModContent.ItemType<Items.DebugStick>())
-			{
-				dummy.GearSize++;
-				return true;
-			}
-
+			dummy.GearSize++;
 			return true;
 		}
 
-		public override void OnEngage(GearTileEntity entity)
-		{
-			GearPuzzleHandler.engagedObjectives++;
-		}
+		return true;
 	}
 
-	class ObjectiveGearDummy : GearTileDummy
+	public override void OnEngage(GearTileEntity entity)
 	{
-		public ObjectiveGearDummy() : base(ModContent.TileType<ObjectiveGear>()) { }
-
-		public override void PostDraw(Color lightColor)
-		{
-			Texture2D pegTex = Assets.Tiles.Vitric.GearPeg.Value;
-			Main.spriteBatch.Draw(pegTex, Center - Main.screenPosition, null, lightColor, 0, pegTex.Size() / 2, 1, 0, 0);
-
-			Texture2D tex = GearSize switch
-			{
-				0 => Assets.Invisible.Value,
-				1 => Assets.Tiles.Vitric.CeramicGearSmall.Value,
-				2 => Assets.Tiles.Vitric.CeramicGearMid.Value,
-				3 => Assets.Tiles.Vitric.CeramicGearLarge.Value,
-				_ => Assets.Tiles.Vitric.CeramicGearSmall.Value,
-			};
-
-			Main.spriteBatch.Draw(tex, Center - Main.screenPosition, null, lightColor, Rotation, tex.Size() / 2, 1, 0, 0);
-		}
+		GearPuzzleHandler.engagedObjectives++;
 	}
+}
 
-	[SLRDebug]
-	class ObjectiveGearItem : BaseTileItem
+class ObjectiveGearDummy : GearTileDummy
+{
+	public ObjectiveGearDummy() : base(ModContent.TileType<ObjectiveGear>()) { }
+
+	public override void PostDraw(Color lightColor)
 	{
-		public ObjectiveGearItem() : base("Gear puzzle Point", "{{Debug}} Item", "ObjectiveGear", 8, AssetDirectory.VitricTile + "GearPeg", true) { }
+		Texture2D pegTex = Assets.Tiles.Vitric.GearPeg.Value;
+		Main.spriteBatch.Draw(pegTex, Center - Main.screenPosition, null, lightColor, 0, pegTex.Size() / 2, 1, 0, 0);
+
+		Texture2D tex = GearSize switch
+		{
+			0 => Assets.Invisible.Value,
+			1 => Assets.Tiles.Vitric.CeramicGearSmall.Value,
+			2 => Assets.Tiles.Vitric.CeramicGearMid.Value,
+			3 => Assets.Tiles.Vitric.CeramicGearLarge.Value,
+			_ => Assets.Tiles.Vitric.CeramicGearSmall.Value,
+		};
+
+		Main.spriteBatch.Draw(tex, Center - Main.screenPosition, null, lightColor, Rotation, tex.Size() / 2, 1, 0, 0);
 	}
+}
+
+[SLRDebug]
+class ObjectiveGearItem : BaseTileItem
+{
+	public ObjectiveGearItem() : base("Gear puzzle Point", "{{Debug}} Item", "ObjectiveGear", 8, AssetDirectory.VitricTile + "GearPeg", true) { }
 }

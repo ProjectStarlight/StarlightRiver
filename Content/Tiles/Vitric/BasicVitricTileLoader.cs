@@ -2,139 +2,138 @@
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Tiles.Vitric
+namespace StarlightRiver.Content.Tiles.Vitric;
+
+class BasicVitricTileLoader : SimpleTileLoader
 {
-	class BasicVitricTileLoader : SimpleTileLoader
+	public override string AssetRoot => AssetDirectory.VitricTile;
+
+	public override float Priority => 2.03f;
+
+	public override void Load()
 	{
-		public override string AssetRoot => AssetDirectory.VitricTile;
-
-		public override float Priority => 2.03f;
-
-		public override void Load()
-		{
-			LoadTile(
-				"AncientSandstone",
-				"Ancient Sandstone",
-				new TileLoadData(
-					minPick: 200,
-					dustType: DustID.Copper,
-					hitSound: SoundID.Tink,
-					mapColor: new Color(160, 115, 75)
-					)
-				);
-
-			LoadTile(
-				"AncientSandstoneTile",
-				"Ancient Sandstone Tile",
-				new TileLoadData(
-					minPick: 200,
-					dustType: DustID.Copper,
-					hitSound: SoundID.Tink,
-					mapColor: new Color(160, 115, 75)
-					)
-				);
-
-			LoadTile(
-				"VitricBrick",
-				"Vitric Bricks",
-				new TileLoadData(
-					minPick: 0,
-					dustType: DustType<Dusts.GlassNoGravity>(),
-					hitSound: SoundID.Shatter,
-					mapColor: new Color(190, 255, 245)
+		LoadTile(
+			"AncientSandstone",
+			"Ancient Sandstone",
+			new TileLoadData(
+				minPick: 200,
+				dustType: DustID.Copper,
+				hitSound: SoundID.Tink,
+				mapColor: new Color(160, 115, 75)
 				)
-			  );
+			);
 
-			LoadTile(
-				"VitricCactus",
-				"Crystal Cactus",
-				new TileLoadData(
-					minPick: 0,
-					dustType: DustType<Dusts.GlassNoGravity>(),
-					hitSound: SoundID.Shatter,
-					mapColor: new Color(190, 255, 245)
+		LoadTile(
+			"AncientSandstoneTile",
+			"Ancient Sandstone Tile",
+			new TileLoadData(
+				minPick: 200,
+				dustType: DustID.Copper,
+				hitSound: SoundID.Tink,
+				mapColor: new Color(160, 115, 75)
 				)
-			  );
+			);
 
-			LoadTile(
-				"VitricGlass",
-				"Vitric Glass",
-				new TileLoadData(
-					minPick: 0,
-					dustType: DustType<Dusts.GlassNoGravity>(),
-					hitSound: SoundID.Shatter,
-					mapColor: new Color(190, 255, 245)
-				)
-			  );
+		LoadTile(
+			"VitricBrick",
+			"Vitric Bricks",
+			new TileLoadData(
+				minPick: 0,
+				dustType: DustType<Dusts.GlassNoGravity>(),
+				hitSound: SoundID.Shatter,
+				mapColor: new Color(190, 255, 245)
+			)
+		  );
 
-			LoadTile(
-				"VitricSand",
-				"Glassy Sand",
-				new TileLoadData(
-					minPick: 0,
-					dustType: DustType<Content.Dusts.AirGravity>(),
-					hitSound: SoundID.Dig,
-					mapColor: new Color(172, 150, 105)
-				)
-			  );
+		LoadTile(
+			"VitricCactus",
+			"Crystal Cactus",
+			new TileLoadData(
+				minPick: 0,
+				dustType: DustType<Dusts.GlassNoGravity>(),
+				hitSound: SoundID.Shatter,
+				mapColor: new Color(190, 255, 245)
+			)
+		  );
 
-			LoadTile(
-				"VitricSoftSand",
-				"Soft Glassy Sand",
-				new TileLoadData(
-					minPick: 0,
-					dustType: DustType<Content.Dusts.AirGravity>(),
-					hitSound: SoundID.Dig,
-					mapColor: new Color(162, 131, 115)
-				)
-			  );
+		LoadTile(
+			"VitricGlass",
+			"Vitric Glass",
+			new TileLoadData(
+				minPick: 0,
+				dustType: DustType<Dusts.GlassNoGravity>(),
+				hitSound: SoundID.Shatter,
+				mapColor: new Color(190, 255, 245)
+			)
+		  );
 
-			LoadTile(
-				"VitricSandPlain",
-				"Soft Sand",
-				new TileLoadData(
-					minPick: 0,
-					dustType: 32,
-					hitSound: SoundID.Dig,
-					mapColor: new Color(192, 145, 110)
-				)
-			  );
-		}
+		LoadTile(
+			"VitricSand",
+			"Glassy Sand",
+			new TileLoadData(
+				minPick: 0,
+				dustType: DustType<Content.Dusts.AirGravity>(),
+				hitSound: SoundID.Dig,
+				mapColor: new Color(172, 150, 105)
+			)
+		  );
 
-		public override void PostLoad()
-		{
-			AddMerge("VitricSoftSand", "VitricSand");
-			AddMerge("VitricSoftSand", "VitricSandPlain");
-			AddMerge("VitricSoftSand", "VitricSand");
+		LoadTile(
+			"VitricSoftSand",
+			"Soft Glassy Sand",
+			new TileLoadData(
+				minPick: 0,
+				dustType: DustType<Content.Dusts.AirGravity>(),
+				hitSound: SoundID.Dig,
+				mapColor: new Color(162, 131, 115)
+			)
+		  );
 
-			AddSand("VitricSoftSand");
-			AddSand("VitricSandPlain");
+		LoadTile(
+			"VitricSandPlain",
+			"Soft Sand",
+			new TileLoadData(
+				minPick: 0,
+				dustType: 32,
+				hitSound: SoundID.Dig,
+				mapColor: new Color(192, 145, 110)
+			)
+		  );
+	}
 
-			AddHardenedSand("VitricSand");
+	public override void PostLoad()
+	{
+		AddMerge("VitricSoftSand", "VitricSand");
+		AddMerge("VitricSoftSand", "VitricSandPlain");
+		AddMerge("VitricSoftSand", "VitricSand");
 
-			int[] sands = new int[] { TileID.Sand, TileID.Ebonsand, TileID.Crimsand, TileID.Pearlsand,
-				TileID.Sandstone, TileID.CorruptSandstone, TileID.CrimsonSandstone, TileID.HallowSandstone,
-				TileID.HardenedSand, TileID.CorruptHardenedSand, TileID.CrimsonHardenedSand, TileID.HallowHardenedSand };
+		AddSand("VitricSoftSand");
+		AddSand("VitricSandPlain");
 
-			AddMerge("VitricSandPlain", sands);
+		AddHardenedSand("VitricSand");
 
-			AddMerge("VitricSoftSand", sands);
+		int[] sands = new int[] { TileID.Sand, TileID.Ebonsand, TileID.Crimsand, TileID.Pearlsand,
+			TileID.Sandstone, TileID.CorruptSandstone, TileID.CrimsonSandstone, TileID.HallowSandstone,
+			TileID.HardenedSand, TileID.CorruptHardenedSand, TileID.CrimsonHardenedSand, TileID.HallowHardenedSand };
 
-			AddMerge("VitricSand", sands);
+		AddMerge("VitricSandPlain", sands);
 
-			AddMerge("AncientSandstone", "AncientSandstoneTile");
-			AddMerge("AncientSandstone", "VitricSoftSand");
-			AddMerge("AncientSandstone", "VitricSandPlain");
-			AddMerge("AncientSandstone", "VitricSand");
-			AddMerge("AncientSandstone", "VitricGlass");
+		AddMerge("VitricSoftSand", sands);
 
-			ushort glassType = StarlightRiver.Instance.Find<ModTile>("VitricGlass").Type;
+		AddMerge("VitricSand", sands);
 
-			TileID.Sets.DrawsWalls[glassType] = true;
-			Main.tileBlockLight[glassType] = false;
+		AddMerge("AncientSandstone", "AncientSandstoneTile");
+		AddMerge("AncientSandstone", "VitricSoftSand");
+		AddMerge("AncientSandstone", "VitricSandPlain");
+		AddMerge("AncientSandstone", "VitricSand");
+		AddMerge("AncientSandstone", "VitricGlass");
 
-			ushort slabType = StarlightRiver.Instance.Find<ModTile>("AncientSandstone").Type;
-			Main.tileLargeFrames[slabType] = 1;
-		}
+		ushort glassType = StarlightRiver.Instance.Find<ModTile>("VitricGlass").Type;
+
+		TileID.Sets.DrawsWalls[glassType] = true;
+		Main.tileBlockLight[glassType] = false;
+
+		ushort slabType = StarlightRiver.Instance.Find<ModTile>("AncientSandstone").Type;
+		Main.tileLargeFrames[slabType] = 1;
 	}
 }

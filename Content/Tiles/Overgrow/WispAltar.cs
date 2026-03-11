@@ -4,43 +4,42 @@ using Terraria.ID;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Tiles.Overgrow
+namespace StarlightRiver.Content.Tiles.Overgrow;
+
+class WispAltarL : ModTile
 {
-	class WispAltarL : ModTile
+	public override string Texture => AssetDirectory.OvergrowTile + "WispAltarL";
+
+	public override void SetStaticDefaults()
 	{
-		public override string Texture => AssetDirectory.OvergrowTile + "WispAltarL";
-
-		public override void SetStaticDefaults()
-		{
-			TileObjectData.newTile.DrawYOffset = 2;
-			QuickBlock.QuickSetFurniture(this, 6, 11, DustType<Dusts.GoldNoMovement>(), SoundID.Tink, false, new Color(200, 200, 200));
-		}
+		TileObjectData.newTile.DrawYOffset = 2;
+		QuickBlock.QuickSetFurniture(this, 6, 11, DustType<Dusts.GoldNoMovement>(), SoundID.Tink, false, new Color(200, 200, 200));
 	}
+}
 
-	[SLRDebug]
-	class WispAltarLItem : BaseTileItem
+[SLRDebug]
+class WispAltarLItem : BaseTileItem
+{
+	public override string Texture => AssetDirectory.Debug;
+
+	public WispAltarLItem() : base("Wisp Altar L Placer", "{{Debug}} Item", "WispAltarL", -1) { }
+}
+
+class WispAltarR : ModTile
+{
+	public override string Texture => AssetDirectory.OvergrowTile + "WispAltarR";
+
+	public override void SetStaticDefaults()
 	{
-		public override string Texture => AssetDirectory.Debug;
-
-		public WispAltarLItem() : base("Wisp Altar L Placer", "{{Debug}} Item", "WispAltarL", -1) { }
+		TileObjectData.newTile.DrawYOffset = 2;
+		QuickBlock.QuickSetFurniture(this, 6, 11, DustType<Dusts.GoldNoMovement>(), SoundID.Tink, false, new Color(200, 200, 200));
 	}
+}
 
-	class WispAltarR : ModTile
-	{
-		public override string Texture => AssetDirectory.OvergrowTile + "WispAltarR";
+[SLRDebug]
+class WispAltarRItem : BaseTileItem
+{
+	public override string Texture => AssetDirectory.Debug;
 
-		public override void SetStaticDefaults()
-		{
-			TileObjectData.newTile.DrawYOffset = 2;
-			QuickBlock.QuickSetFurniture(this, 6, 11, DustType<Dusts.GoldNoMovement>(), SoundID.Tink, false, new Color(200, 200, 200));
-		}
-	}
-
-	[SLRDebug]
-	class WispAltarRItem : BaseTileItem
-	{
-		public override string Texture => AssetDirectory.Debug;
-
-		public WispAltarRItem() : base("Wisp Altar R Placer", "{{Debug}} Item", "WispAltarR", -1) { }
-	}
+	public WispAltarRItem() : base("Wisp Altar R Placer", "{{Debug}} Item", "WispAltarR", -1) { }
 }

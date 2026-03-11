@@ -2,67 +2,66 @@
 using System.Linq;
 using System.Threading;
 
-namespace StarlightRiver.Core.Systems.MetaballSystem
+namespace StarlightRiver.Core.Systems.MetaballSystem;
+
+public class MetaballSystem : IOrderedLoadable
 {
-	public class MetaballSystem : IOrderedLoadable
+	public static Semaphore actorsSem = new(1, 1);
+
+	public static List<MetaballActor> actors = new();
+
+	//We intentionally load after screen targets here so our extra RT swapout applies after the default ones.
+	public float Priority => 1.1f;
+
+	public void Load()
 	{
-		public static Semaphore actorsSem = new(1, 1);
+		if (Main.dedServ)
+			return;
 
-		public static List<MetaballActor> actors = new();
+		On_Main.DrawNPCs += DrawTargets;
+		On_Main.CheckMonoliths += BuildTargets;
+	}
 
-		//We intentionally load after screen targets here so our extra RT swapout applies after the default ones.
-		public float Priority => 1.1f;
+	public void Unload()
+	{
+		On_Main.DrawNPCs -= DrawTargets;
+		On_Main.CheckMonoliths -= BuildTargets;
 
-		public void Load()
+		actorsSem.WaitOne();
+		actors ??= null;
+		actorsSem.Release();
+	}
+
+	private void DrawTargets(On_Main.orig_DrawNPCs orig, Main self, bool behindTiles = false)
+	{
+		if (behindTiles)
 		{
-			if (Main.dedServ)
-				return;
-
-			On_Main.DrawNPCs += DrawTargets;
-			On_Main.CheckMonoliths += BuildTargets;
-		}
-
-		public void Unload()
-		{
-			On_Main.DrawNPCs -= DrawTargets;
-			On_Main.CheckMonoliths -= BuildTargets;
-
 			actorsSem.WaitOne();
-			actors ??= null;
+			var toDraw = actors.Where(n => !n.OverEnemies).ToList();
+			toDraw.ForEach(a => a.DrawTarget(Main.spriteBatch));
 			actorsSem.Release();
 		}
 
-		private void DrawTargets(On_Main.orig_DrawNPCs orig, Main self, bool behindTiles = false)
+		orig(self, behindTiles);
+
+		if (!behindTiles)
 		{
-			if (behindTiles)
-			{
-				actorsSem.WaitOne();
-				var toDraw = actors.Where(n => !n.OverEnemies).ToList();
-				toDraw.ForEach(a => a.DrawTarget(Main.spriteBatch));
-				actorsSem.Release();
-			}
-
-			orig(self, behindTiles);
-
-			if (!behindTiles)
-			{
-				actorsSem.WaitOne();
-				var toDraw = actors.Where(n => n.OverEnemies).ToList();
-				toDraw.ForEach(a => a.DrawTarget(Main.spriteBatch));
-				actorsSem.Release();
-			}
+			actorsSem.WaitOne();
+			var toDraw = actors.Where(n => n.OverEnemies).ToList();
+			toDraw.ForEach(a => a.DrawTarget(Main.spriteBatch));
+			actorsSem.Release();
 		}
+	}
 
-		private void BuildTargets(On_Main.orig_CheckMonoliths orig)
+	private void BuildTargets(On_Main.orig_CheckMonoliths orig)
+	{
+		orig();
+
+		if (!Main.gameMenu && Main.spriteBatch != null && Main.graphics.GraphicsDevice != null)
 		{
-			orig();
-
-			if (!Main.gameMenu && Main.spriteBatch != null && Main.graphics.GraphicsDevice != null)
-			{
-				actorsSem.WaitOne();
-				actors.ForEach(a => a.DrawToTarget(Main.spriteBatch, Main.graphics.GraphicsDevice));
-				actorsSem.Release();
-			}
+			actorsSem.WaitOne();
+			actors.ForEach(a => a.DrawToTarget(Main.spriteBatch, Main.graphics.GraphicsDevice));
+			actorsSem.Release();
 		}
 	}
 }

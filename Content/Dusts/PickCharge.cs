@@ -1,60 +1,59 @@
 ﻿using StarlightRiver.Content.Items.UndergroundTemple;
 using StarlightRiver.Core.Loaders;
 
-namespace StarlightRiver.Content.Dusts
+namespace StarlightRiver.Content.Dusts;
+
+public class PickCharge : ModDust
 {
-	public class PickCharge : ModDust
+	public override string Texture => AssetDirectory.Dust + "Aurora";
+
+	public override void OnSpawn(Dust dust)
 	{
-		public override string Texture => AssetDirectory.Dust + "Aurora";
+		dust.noGravity = true;
+		dust.noLight = false;
+		dust.frame = new Rectangle(0, 0, 100, 100);
+		dust.scale = 0.1f;
+		dust.alpha = 0;
 
-		public override void OnSpawn(Dust dust)
+		if (ShaderLoader.GetShader("GlowingDust").Value != null)
+			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
+	}
+
+	public override Color? GetAlpha(Dust dust, Color lightColor)
+	{
+		return dust.color;
+	}
+
+	public override bool Update(Dust dust)
+	{
+		if (dust.customData is int whoAmI && Main.player[whoAmI].active)
 		{
-			dust.noGravity = true;
-			dust.noLight = false;
-			dust.frame = new Rectangle(0, 0, 100, 100);
-			dust.scale = 0.1f;
-			dust.alpha = 0;
+			Player Player = Main.player[whoAmI];
+			dust.position = Player.Center + new Vector2(0, Player.gfxOffY) + dust.velocity + Vector2.One * -50 * dust.scale;
 
-			if (ShaderLoader.GetShader("GlowingDust").Value != null)
-				dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
+			if (!Main.mouseRight || !(Player.HeldItem.ModItem is TemplePick))
+				dust.active = false; //RIP multiPlayer TODO: Make this not gay
+		}
+		else
+		{
+			dust.active = false;
 		}
 
-		public override Color? GetAlpha(Dust dust, Color lightColor)
-		{
-			return dust.color;
-		}
+		if (dust.alpha < 30)
+			dust.alpha++;
 
-		public override bool Update(Dust dust)
-		{
-			if (dust.customData is int whoAmI && Main.player[whoAmI].active)
-			{
-				Player Player = Main.player[whoAmI];
-				dust.position = Player.Center + new Vector2(0, Player.gfxOffY) + dust.velocity + Vector2.One * -50 * dust.scale;
+		if (dust.scale < 0.2f)
+			dust.scale += 0.025f;
 
-				if (!Main.mouseRight || !(Player.HeldItem.ModItem is TemplePick))
-					dust.active = false; //RIP multiPlayer TODO: Make this not gay
-			}
-			else
-			{
-				dust.active = false;
-			}
+		dust.shader?.UseColor(dust.color * (dust.alpha / 30f));
 
-			if (dust.alpha < 30)
-				dust.alpha++;
+		Vector2 currentCenter = dust.position + Vector2.One.RotatedBy(dust.rotation) * 50 * dust.scale;
 
-			if (dust.scale < 0.2f)
-				dust.scale += 0.025f;
+		Vector2 nextCenter = dust.position + Vector2.One.RotatedBy(dust.rotation + 0.1f) * 50 * dust.scale;
 
-			dust.shader?.UseColor(dust.color * (dust.alpha / 30f));
+		dust.rotation += 0.1f;
+		dust.velocity += currentCenter - nextCenter;
 
-			Vector2 currentCenter = dust.position + Vector2.One.RotatedBy(dust.rotation) * 50 * dust.scale;
-
-			Vector2 nextCenter = dust.position + Vector2.One.RotatedBy(dust.rotation + 0.1f) * 50 * dust.scale;
-
-			dust.rotation += 0.1f;
-			dust.velocity += currentCenter - nextCenter;
-
-			return false;
-		}
+		return false;
 	}
 }

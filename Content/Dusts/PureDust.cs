@@ -1,67 +1,66 @@
-﻿namespace StarlightRiver.Content.Dusts
+﻿namespace StarlightRiver.Content.Dusts;
+
+public class Purify : ModDust
 {
-	public class Purify : ModDust
+	public override string Texture => AssetDirectory.Dust + Name;
+
+	public override void OnSpawn(Dust dust)
 	{
-		public override string Texture => AssetDirectory.Dust + Name;
-
-		public override void OnSpawn(Dust dust)
-		{
-			dust.noGravity = true;
-			dust.noLight = false;
-			dust.color = Color.White;
-		}
-
-		public override Color? GetAlpha(Dust dust, Color lightColor)
-		{
-			return dust.color;
-		}
-
-		public override bool Update(Dust dust)
-		{
-			dust.color *= 0.94f;
-			dust.velocity *= 0.94f;
-			dust.scale *= 0.94f;
-			dust.rotation += dust.velocity.Length() * 0.1f;
-			if (dust.scale <= 0.3)
-				dust.active = false;
-
-			float light = 0.2f * dust.scale;
-			Lighting.AddLight(dust.position, new Vector3(1, 1, 1) * light);
-
-			return false;
-		}
+		dust.noGravity = true;
+		dust.noLight = false;
+		dust.color = Color.White;
 	}
 
-	public class Purify2 : ModDust
+	public override Color? GetAlpha(Dust dust, Color lightColor)
 	{
-		public override string Texture => AssetDirectory.Dust + Name;
+		return dust.color;
+	}
 
-		public override void OnSpawn(Dust dust)
-		{
-			dust.noGravity = true;
-			dust.noLight = false;
-			dust.color = Color.White;
-		}
+	public override bool Update(Dust dust)
+	{
+		dust.color *= 0.94f;
+		dust.velocity *= 0.94f;
+		dust.scale *= 0.94f;
+		dust.rotation += dust.velocity.Length() * 0.1f;
+		if (dust.scale <= 0.3)
+			dust.active = false;
 
-		public override Color? GetAlpha(Dust dust, Color lightColor)
-		{
-			return dust.color;
-		}
+		float light = 0.2f * dust.scale;
+		Lighting.AddLight(dust.position, new Vector3(1, 1, 1) * light);
 
-		public override bool Update(Dust dust)
-		{
-			dust.color *= 0.98f;
-			dust.velocity *= 0.94f;
-			dust.position += dust.velocity;
-			dust.rotation = dust.velocity.ToRotation();
-			dust.scale *= 0.98f;
-			if (dust.scale <= 0.2)
-				dust.active = false;
+		return false;
+	}
+}
 
-			float light = 0.2f * dust.scale;
-			Lighting.AddLight(dust.position, new Vector3(1, 1, 1) * light);
+public class Purify2 : ModDust
+{
+	public override string Texture => AssetDirectory.Dust + Name;
 
-			return false;
-		}
+	public override void OnSpawn(Dust dust)
+	{
+		dust.noGravity = true;
+		dust.noLight = false;
+		dust.color = Color.White;
+	}
+
+	public override Color? GetAlpha(Dust dust, Color lightColor)
+	{
+		return dust.color;
+	}
+
+	public override bool Update(Dust dust)
+	{
+		dust.color *= 0.98f;
+		dust.velocity *= 0.94f;
+		dust.position += dust.velocity;
+		dust.rotation = dust.velocity.ToRotation();
+		dust.scale *= 0.98f;
+		if (dust.scale <= 0.2)
+			dust.active = false;
+
+		float light = 0.2f * dust.scale;
+		Lighting.AddLight(dust.position, new Vector3(1, 1, 1) * light);
+
+		return false;
 	}
 }

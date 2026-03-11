@@ -7,213 +7,212 @@ using Terraria.DataStructures;
 using Terraria.ModLoader.Exceptions;
 using Terraria.ModLoader.IO;
 
-namespace StarlightRiver.Content.Archaeology
+namespace StarlightRiver.Content.Archaeology;
+
+//TODO: Manually load generic artifacts once manual loading for tile entities is supported
+public abstract class Artifact : ModTileEntity
 {
-	//TODO: Manually load generic artifacts once manual loading for tile entities is supported
-	public abstract class Artifact : ModTileEntity
+	/// <summary>
+	/// Whether or not the artifact is displayed on the map
+	/// </summary>
+	public bool displayedOnMap = false;
+
+	/// <summary>
+	/// Cached hitbox size for screen checks
+	/// </summary>
+	public Rectangle bounds;
+
+	/// <summary>
+	/// Whether or not the artifact can be revealed by the archaeologist's map. Set to false if the artifact has a special reveal condition
+	/// </summary>
+	public virtual bool CanBeRevealed()
 	{
-		/// <summary>
-		/// Whether or not the artifact is displayed on the map
-		/// </summary>
-		public bool displayedOnMap = false;
+		return true;
+	}
 
-		/// <summary>
-		/// Cached hitbox size for screen checks
-		/// </summary>
-		public Rectangle bounds;
+	public virtual string TexturePath => AssetDirectory.Archaeology + Name;
 
-		/// <summary>
-		/// Whether or not the artifact can be revealed by the archaeologist's map. Set to false if the artifact has a special reveal condition
-		/// </summary>
-		public virtual bool CanBeRevealed()
+	protected Asset<Texture2D> texture;
+
+	/// <summary>
+	/// Texture path the artifact uses on the map when revealed
+	/// </summary>
+	public virtual Asset<Texture2D> MapPreviewTexture => Assets.Archaeology.DigMarker;
+
+	/// <summary>
+	/// Size of the artifact. In world coordinates, not tile coordinates
+	/// </summary>
+	public virtual Vector2 Size { get; set; }
+
+	/// <summary>
+	/// The dust the artifact creates.
+	/// </summary>
+	public virtual int SparkleDust { get; set; }
+
+	/// <summary>
+	/// The rate at which sparkles spawn. Increase for lower spawnrate.
+	/// </summary>
+	public virtual int SparkleRate { get; set; }
+
+	/// <summary>
+	/// The color of the glowy effect when the artifact is excavated
+	/// </summary>
+	public virtual Color BeamColor { get; set; }
+
+	/// <summary>
+	/// The item the artifact drops
+	/// </summary>
+	public virtual int ItemType { get; set; }
+
+	/// <summary>
+	/// Pretty self explanatory. Higher = higher spawnrate
+	/// </summary>
+	public virtual float SpawnChance { get; set; }
+
+	public Vector2 WorldPosition => Position.ToVector2() * 16;
+
+	/// <summary>
+	/// Override if you want to check at these specific coordinates whether the artifact can generate
+	/// </summary>
+	public virtual bool CanGenerate(int i, int j)
+	{
+		return true;
+	}
+
+	public virtual void Draw(SpriteBatch spriteBatch)
+	{
+		GenericDraw(spriteBatch);
+	}
+
+	public override void SaveData(TagCompound tag)
+	{
+		tag[nameof(displayedOnMap)] = displayedOnMap;
+	}
+
+	public override void LoadData(TagCompound tag)
+	{
+		try
 		{
-			return true;
+			displayedOnMap = tag.GetBool(nameof(displayedOnMap));
+			bounds = new Rectangle((int)WorldPosition.X, (int)WorldPosition.Y, (int)Size.X, (int)Size.Y);
+			texture = ModContent.Request<Texture2D>(TexturePath);
+
+			if (texture is null)
+				throw new MissingResourceException(TexturePath + " Could not be found for an artifact!");
+
+			ArtifactManager.artifacts.Add(this);
 		}
-
-		public virtual string TexturePath => AssetDirectory.Archaeology + Name;
-
-		protected Asset<Texture2D> texture;
-
-		/// <summary>
-		/// Texture path the artifact uses on the map when revealed
-		/// </summary>
-		public virtual Asset<Texture2D> MapPreviewTexture => Assets.Archaeology.DigMarker;
-
-		/// <summary>
-		/// Size of the artifact. In world coordinates, not tile coordinates
-		/// </summary>
-		public virtual Vector2 Size { get; set; }
-
-		/// <summary>
-		/// The dust the artifact creates.
-		/// </summary>
-		public virtual int SparkleDust { get; set; }
-
-		/// <summary>
-		/// The rate at which sparkles spawn. Increase for lower spawnrate.
-		/// </summary>
-		public virtual int SparkleRate { get; set; }
-
-		/// <summary>
-		/// The color of the glowy effect when the artifact is excavated
-		/// </summary>
-		public virtual Color BeamColor { get; set; }
-
-		/// <summary>
-		/// The item the artifact drops
-		/// </summary>
-		public virtual int ItemType { get; set; }
-
-		/// <summary>
-		/// Pretty self explanatory. Higher = higher spawnrate
-		/// </summary>
-		public virtual float SpawnChance { get; set; }
-
-		public Vector2 WorldPosition => Position.ToVector2() * 16;
-
-		/// <summary>
-		/// Override if you want to check at these specific coordinates whether the artifact can generate
-		/// </summary>
-		public virtual bool CanGenerate(int i, int j)
+		catch (Exception e)
 		{
-			return true;
-		}
-
-		public virtual void Draw(SpriteBatch spriteBatch)
-		{
-			GenericDraw(spriteBatch);
-		}
-
-		public override void SaveData(TagCompound tag)
-		{
-			tag[nameof(displayedOnMap)] = displayedOnMap;
-		}
-
-		public override void LoadData(TagCompound tag)
-		{
-			try
-			{
-				displayedOnMap = tag.GetBool(nameof(displayedOnMap));
-				bounds = new Rectangle((int)WorldPosition.X, (int)WorldPosition.Y, (int)Size.X, (int)Size.Y);
-				texture = ModContent.Request<Texture2D>(TexturePath);
-
-				if (texture is null)
-					throw new MissingResourceException(TexturePath + " Could not be found for an artifact!");
-
-				ArtifactManager.artifacts.Add(this);
-			}
-			catch (Exception e)
-			{
-				StarlightRiver.Instance.Logger.Debug("handled error loading Artifacts: " + e);
-			}
-		}
-
-		public override bool IsTileValidForEntity(int x, int y)
-		{
-			return true;
-		}
-
-		public bool IsOnScreen()
-		{
-			return ScreenTracker.OnScreen(bounds);
-		}
-
-		public void CreateSparkles()
-		{
-			Vector2 pos = WorldPosition + Size * new Vector2(Main.rand.NextFloat(), Main.rand.NextFloat());
-
-			Color lightColor = Lighting.GetColor((pos / 16).ToPoint());
-			if (lightColor == Color.Black)
-				return;
-
-			float sparkleMult = MathHelper.Max(lightColor.R, MathHelper.Max(lightColor.G, lightColor.B)) / 255f;
-
-			if (sparkleMult == 0) //incase for whatever reason the Color.Black check wasn't enough
-				return;
-
-			int modifiedSparkleRate = (int)(SparkleRate / sparkleMult); //spawns sparkles relative to light level
-			if (modifiedSparkleRate > 0 && Main.rand.NextBool(modifiedSparkleRate))
-				Dust.NewDustPerfect(WorldPosition + Size * new Vector2(Main.rand.NextFloat(), Main.rand.NextFloat()), SparkleDust, Vector2.Zero);
-		}
-
-		public void GenericDraw(SpriteBatch spriteBatch) //I have no idea why but the drawing is offset by -192 on each axis by default, so I had to correct it
-		{
-			var offScreen = new Vector2(Main.offScreenRange);
-			if (Main.drawToScreen)
-			{
-				offScreen = Vector2.Zero;
-			}
-
-			if (texture?.Value is null)
-				return;
-
-			spriteBatch.Draw(texture.Value, WorldPosition - Main.screenPosition, null, Lighting.GetColor(Position.ToPoint()), 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
-		}
-
-		public bool CheckOpen()
-		{
-			for (int i = 0; i < Size.X / 16; i++)
-			{
-				for (int j = 0; j < Size.Y / 16; j++)
-				{
-					Tile tile = Main.tile[i + Position.X, j + Position.Y];
-					if (tile.HasTile && Main.tileSolid[tile.TileType])
-						return false;
-				}
-			}
-
-			ArtifactItemProj.glowColorToAssign = BeamColor;
-			ArtifactItemProj.itemTypeToAssign = ItemType;
-			ArtifactItemProj.sizeToAssign = Size;
-			ArtifactItemProj.sparkleTypeToAssign = SparkleDust;
-
-			Projectile proj = Projectile.NewProjectileDirect(new EntitySource_Misc("Artifact"), WorldPosition, new Vector2(0, -0.5f), ModContent.ProjectileType<ArtifactItemProj>(), 0, 0);
-
-			ArtifactSpawnPacket packet = new ArtifactSpawnPacket(this.ID, Position.X, Position.Y, proj.identity, TexturePath);
-			packet.Send();
-
-			return true;
+			StarlightRiver.Instance.Logger.Debug("handled error loading Artifacts: " + e);
 		}
 	}
 
-	public class ArtifactManager : ModSystem
+	public override bool IsTileValidForEntity(int x, int y)
 	{
-		public static List<Artifact> artifacts = new();
-		public static bool scanNextFrame;
+		return true;
+	}
 
-		public override void Load()
+	public bool IsOnScreen()
+	{
+		return ScreenTracker.OnScreen(bounds);
+	}
+
+	public void CreateSparkles()
+	{
+		Vector2 pos = WorldPosition + Size * new Vector2(Main.rand.NextFloat(), Main.rand.NextFloat());
+
+		Color lightColor = Lighting.GetColor((pos / 16).ToPoint());
+		if (lightColor == Color.Black)
+			return;
+
+		float sparkleMult = MathHelper.Max(lightColor.R, MathHelper.Max(lightColor.G, lightColor.B)) / 255f;
+
+		if (sparkleMult == 0) //incase for whatever reason the Color.Black check wasn't enough
+			return;
+
+		int modifiedSparkleRate = (int)(SparkleRate / sparkleMult); //spawns sparkles relative to light level
+		if (modifiedSparkleRate > 0 && Main.rand.NextBool(modifiedSparkleRate))
+			Dust.NewDustPerfect(WorldPosition + Size * new Vector2(Main.rand.NextFloat(), Main.rand.NextFloat()), SparkleDust, Vector2.Zero);
+	}
+
+	public void GenericDraw(SpriteBatch spriteBatch) //I have no idea why but the drawing is offset by -192 on each axis by default, so I had to correct it
+	{
+		var offScreen = new Vector2(Main.offScreenRange);
+		if (Main.drawToScreen)
 		{
-			On_WorldGen.KillTile += QueueScan;
+			offScreen = Vector2.Zero;
 		}
 
-		private void QueueScan(On_WorldGen.orig_KillTile orig, int i, int j, bool fail, bool effectOnly, bool noItem)
-		{
-			orig(i, j, fail, effectOnly, noItem);
+		if (texture?.Value is null)
+			return;
 
-			if (!fail && !effectOnly)
-				scanNextFrame = true;
-		}
+		spriteBatch.Draw(texture.Value, WorldPosition - Main.screenPosition, null, Lighting.GetColor(Position.ToPoint()), 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
+	}
 
-		public override void PostUpdateEverything()
+	public bool CheckOpen()
+	{
+		for (int i = 0; i < Size.X / 16; i++)
 		{
-			if (scanNextFrame)
+			for (int j = 0; j < Size.Y / 16; j++)
 			{
-				scanNextFrame = false;
-
-				for (int k = 0; k < artifacts.Count; k++)
-				{
-					if (artifacts[k].CheckOpen())
-					{
-						scanNextFrame = true;
-						break;
-					}
-				}
+				Tile tile = Main.tile[i + Position.X, j + Position.Y];
+				if (tile.HasTile && Main.tileSolid[tile.TileType])
+					return false;
 			}
 		}
 
-		public override void ClearWorld()
+		ArtifactItemProj.glowColorToAssign = BeamColor;
+		ArtifactItemProj.itemTypeToAssign = ItemType;
+		ArtifactItemProj.sizeToAssign = Size;
+		ArtifactItemProj.sparkleTypeToAssign = SparkleDust;
+
+		Projectile proj = Projectile.NewProjectileDirect(new EntitySource_Misc("Artifact"), WorldPosition, new Vector2(0, -0.5f), ModContent.ProjectileType<ArtifactItemProj>(), 0, 0);
+
+		ArtifactSpawnPacket packet = new ArtifactSpawnPacket(this.ID, Position.X, Position.Y, proj.identity, TexturePath);
+		packet.Send();
+
+		return true;
+	}
+}
+
+public class ArtifactManager : ModSystem
+{
+	public static List<Artifact> artifacts = new();
+	public static bool scanNextFrame;
+
+	public override void Load()
+	{
+		On_WorldGen.KillTile += QueueScan;
+	}
+
+	private void QueueScan(On_WorldGen.orig_KillTile orig, int i, int j, bool fail, bool effectOnly, bool noItem)
+	{
+		orig(i, j, fail, effectOnly, noItem);
+
+		if (!fail && !effectOnly)
+			scanNextFrame = true;
+	}
+
+	public override void PostUpdateEverything()
+	{
+		if (scanNextFrame)
 		{
-			artifacts.Clear();
+			scanNextFrame = false;
+
+			for (int k = 0; k < artifacts.Count; k++)
+			{
+				if (artifacts[k].CheckOpen())
+				{
+					scanNextFrame = true;
+					break;
+				}
+			}
 		}
+	}
+
+	public override void ClearWorld()
+	{
+		artifacts.Clear();
 	}
 }

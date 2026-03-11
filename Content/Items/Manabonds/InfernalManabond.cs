@@ -4,230 +4,229 @@ using System.Collections.Generic;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Items.Manabonds
+namespace StarlightRiver.Content.Items.Manabonds;
+
+internal class InfernalManabond : Manabond
 {
-	internal class InfernalManabond : Manabond
+	public override string Texture => AssetDirectory.ManabondItem + Name;
+
+	public InfernalManabond() : base("Infernal Manabond", "Your minions can store 40 mana\nYour minions siphon 6 mana per second from you untill full\nYour minions spend 20 mana to attack with an exploding fireball occasionally") { }
+
+	public override void SafeSetDefaults()
 	{
-		public override string Texture => AssetDirectory.ManabondItem + Name;
+		Item.value = Item.sellPrice(gold: 15);
+		Item.rare = ItemRarityID.Orange;
+	}
 
-		public InfernalManabond() : base("Infernal Manabond", "Your minions can store 40 mana\nYour minions siphon 6 mana per second from you untill full\nYour minions spend 20 mana to attack with an exploding fireball occasionally") { }
-
-		public override void SafeSetDefaults()
+	public override void MinionAI(Projectile minion, ManabondProjectile mp)
+	{
+		if (mp.timer % 120 == 0 && mp.mana >= 20 && mp.target != null)
 		{
-			Item.value = Item.sellPrice(gold: 15);
-			Item.rare = ItemRarityID.Orange;
-		}
+			mp.mana -= 20;
 
-		public override void MinionAI(Projectile minion, ManabondProjectile mp)
-		{
-			if (mp.timer % 120 == 0 && mp.mana >= 20 && mp.target != null)
-			{
-				mp.mana -= 20;
-
-				if (Main.myPlayer == minion.owner)
-					Projectile.NewProjectile(minion.GetSource_FromThis(), minion.Center, minion.Center.DirectionTo(mp.target.Center) * 14, ModContent.ProjectileType<Fireball>(), 35, 1f, minion.owner);
-			}
-		}
-
-		public override void AddRecipes()
-		{
-			Recipe recipe = CreateRecipe();
-			recipe.AddIngredient(ModContent.ItemType<BasicManabond>(), 1);
-			recipe.AddIngredient(ItemID.Flamelash, 1);
-			recipe.AddTile(TileID.Bookcases);
-			recipe.Register();
+			if (Main.myPlayer == minion.owner)
+				Projectile.NewProjectile(minion.GetSource_FromThis(), minion.Center, minion.Center.DirectionTo(mp.target.Center) * 14, ModContent.ProjectileType<Fireball>(), 35, 1f, minion.owner);
 		}
 	}
 
-	internal class Fireball : ModProjectile, IDrawPrimitive
+	public override void AddRecipes()
 	{
-		private List<Vector2> cache;
-		private Trail trail;
+		Recipe recipe = CreateRecipe();
+		recipe.AddIngredient(ModContent.ItemType<BasicManabond>(), 1);
+		recipe.AddIngredient(ItemID.Flamelash, 1);
+		recipe.AddTile(TileID.Bookcases);
+		recipe.Register();
+	}
+}
 
-		public ref float State => ref Projectile.ai[0];
+internal class Fireball : ModProjectile, IDrawPrimitive
+{
+	private List<Vector2> cache;
+	private Trail trail;
 
-		public override string Texture => AssetDirectory.Invisible;
+	public ref float State => ref Projectile.ai[0];
 
-		public override void SetStaticDefaults()
+	public override string Texture => AssetDirectory.Invisible;
+
+	public override void SetStaticDefaults()
+	{
+		DisplayName.SetDefault("Fireball");
+		ProjectileID.Sets.TrailCacheLength[Projectile.type] = 2;
+		ProjectileID.Sets.TrailingMode[Projectile.type] = 1;
+	}
+
+	public override void SetDefaults()
+	{
+		Projectile.width = 32;
+		Projectile.height = 32;
+		Projectile.friendly = true;
+		Projectile.DamageType = DamageClass.Summon;
+		Projectile.timeLeft = 120;
+		Projectile.tileCollide = true;
+		Projectile.penetrate = -1;
+		Projectile.hostile = false;
+		Projectile.usesLocalNPCImmunity = true;
+		Projectile.localNPCHitCooldown = -1;
+	}
+
+	public override void AI()
+	{
+		if (State == 1)
 		{
-			DisplayName.SetDefault("Fireball");
-			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 2;
-			ProjectileID.Sets.TrailingMode[Projectile.type] = 1;
+			Projectile.velocity *= 0;
+
+			if (Projectile.timeLeft > 15)
+				Projectile.timeLeft = 15;
 		}
 
-		public override void SetDefaults()
+		if (Main.rand.NextBool(2))
+			Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Cinder>(), Vector2.UnitY * Main.rand.NextFloat(-2, -1), 0, new Color(255, Main.rand.Next(150, 255), 40), Main.rand.NextFloat(1f));
+
+		if (Main.netMode != NetmodeID.Server)
 		{
-			Projectile.width = 32;
-			Projectile.height = 32;
-			Projectile.friendly = true;
-			Projectile.DamageType = DamageClass.Summon;
-			Projectile.timeLeft = 120;
-			Projectile.tileCollide = true;
-			Projectile.penetrate = -1;
-			Projectile.hostile = false;
-			Projectile.usesLocalNPCImmunity = true;
-			Projectile.localNPCHitCooldown = -1;
+			ManageCaches();
+			ManageTrail();
 		}
+	}
 
-		public override void AI()
-		{
-			if (State == 1)
-			{
-				Projectile.velocity *= 0;
+	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+	{
+		if (State == 1)
+			return;
 
-				if (Projectile.timeLeft > 15)
-					Projectile.timeLeft = 15;
-			}
+		Main.player[Projectile.owner].TryGetModPlayer(out StarlightPlayer starlightPlayer);
+		starlightPlayer.SetHitPacketStatus(shouldRunProjMethods: true);
 
-			if (Main.rand.NextBool(2))
-				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Cinder>(), Vector2.UnitY * Main.rand.NextFloat(-2, -1), 0, new Color(255, Main.rand.Next(150, 255), 40), Main.rand.NextFloat(1f));
+		target.AddBuff(BuffID.OnFire, 300);
 
-			if (Main.netMode != NetmodeID.Server)
-			{
-				ManageCaches();
-				ManageTrail();
-			}
-		}
+		Explode();
+	}
 
-		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-		{
-			if (State == 1)
-				return;
-
-			Main.player[Projectile.owner].TryGetModPlayer(out StarlightPlayer starlightPlayer);
-			starlightPlayer.SetHitPacketStatus(shouldRunProjMethods: true);
-
-			target.AddBuff(BuffID.OnFire, 300);
-
-			Explode();
-		}
-
-		public override bool OnTileCollide(Vector2 oldVelocity)
-		{
-			if (State == 1)
-				return false;
-
-			Explode();
-
+	public override bool OnTileCollide(Vector2 oldVelocity)
+	{
+		if (State == 1)
 			return false;
+
+		Explode();
+
+		return false;
+	}
+
+	public void Explode()
+	{
+		State = 1;
+		Projectile.friendly = false;
+
+		SoundHelper.PlayPitched("Magic/FireHit", 0.25f, Main.rand.NextFloat(-0.2f, 0.2f), Projectile.Center);
+
+		var d = Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Aurora>(), Main.rand.NextVector2Circular(2, 2), 0, new Color(255, 200, 30));
+		d.customData = 1.8f;
+
+		for (int k = 0; k < 40; k++)
+		{
+			Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Cinder>(), Main.rand.NextVector2Circular(4, 4), 0, new Color(255, Main.rand.Next(150, 255), 40), Main.rand.NextFloat(2f));
+			Dust.NewDustPerfect(Projectile.Center, DustID.Torch, Main.rand.NextVector2Circular(5, 5), 0, default, Main.rand.NextFloat(1, 2));
 		}
 
-		public void Explode()
+		Rectangle inflated = Projectile.Hitbox;
+		inflated.Inflate(100, 100);
+
+		foreach (NPC npc in Main.npc)
 		{
-			State = 1;
-			Projectile.friendly = false;
-
-			SoundHelper.PlayPitched("Magic/FireHit", 0.25f, Main.rand.NextFloat(-0.2f, 0.2f), Projectile.Center);
-
-			var d = Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Aurora>(), Main.rand.NextVector2Circular(2, 2), 0, new Color(255, 200, 30));
-			d.customData = 1.8f;
-
-			for (int k = 0; k < 40; k++)
+			if (npc.active && npc.CanBeChasedBy(this) && !npc.friendly && npc.Hitbox.Intersects(inflated))
 			{
-				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Cinder>(), Main.rand.NextVector2Circular(4, 4), 0, new Color(255, Main.rand.Next(150, 255), 40), Main.rand.NextFloat(2f));
-				Dust.NewDustPerfect(Projectile.Center, DustID.Torch, Main.rand.NextVector2Circular(5, 5), 0, default, Main.rand.NextFloat(1, 2));
-			}
+				if (Main.myPlayer == Projectile.owner)
+					npc.SimpleStrikeNPC(Projectile.damage, 0, false, Projectile.knockBack, Projectile.DamageType);
 
-			Rectangle inflated = Projectile.Hitbox;
-			inflated.Inflate(100, 100);
-
-			foreach (NPC npc in Main.npc)
-			{
-				if (npc.active && npc.CanBeChasedBy(this) && !npc.friendly && npc.Hitbox.Intersects(inflated))
-				{
-					if (Main.myPlayer == Projectile.owner)
-						npc.SimpleStrikeNPC(Projectile.damage, 0, false, Projectile.knockBack, Projectile.DamageType);
-
-					npc.AddBuff(BuffID.OnFire, 300, quiet: true); //quiet since the SLR onhit packet will call this too on all clients and server so it doesn't need its own packets
-				}
+				npc.AddBuff(BuffID.OnFire, 300, quiet: true); //quiet since the SLR onhit packet will call this too on all clients and server so it doesn't need its own packets
 			}
 		}
+	}
 
-		public override void PostDraw(Color lightColor)
+	public override void PostDraw(Color lightColor)
+	{
+		Texture2D tex = Assets.Masks.GlowAlpha.Value;
+		Texture2D tex2 = Assets.Masks.GlowSoftAlpha.Value;
+		Main.spriteBatch.Draw(tex2, Projectile.Center - Main.screenPosition, null, new Color(255, 220, 20, 0), 0, tex2.Size() / 2, 1.4f, 0, 0);
+		Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0), 0, tex.Size() / 2, 0.8f, 0, 0);
+
+		if (State == 1 && Projectile.timeLeft <= 15)
 		{
-			Texture2D tex = Assets.Masks.GlowAlpha.Value;
-			Texture2D tex2 = Assets.Masks.GlowSoftAlpha.Value;
-			Main.spriteBatch.Draw(tex2, Projectile.Center - Main.screenPosition, null, new Color(255, 220, 20, 0), 0, tex2.Size() / 2, 1.4f, 0, 0);
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0), 0, tex.Size() / 2, 0.8f, 0, 0);
-
-			if (State == 1 && Projectile.timeLeft <= 15)
-			{
-				Texture2D tex3 = Assets.Masks.StarBlurryAlpha.Value;
-				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 100 + (int)(Projectile.timeLeft / 15f * 155), 50, 0) * (Projectile.timeLeft / 15f), 0, tex.Size() / 2, (15 - Projectile.timeLeft) * 0.6f, 0, 0);
-				Main.spriteBatch.Draw(tex3, Projectile.Center - Main.screenPosition, null, new Color(255, 100 + (int)(Projectile.timeLeft / 15f * 155), 50, 0) * (Projectile.timeLeft / 15f) * 1.5f, 0, tex3.Size() / 2, (15 - Projectile.timeLeft) * 0.4f, 0, 0);
-			}
+			Texture2D tex3 = Assets.Masks.StarBlurryAlpha.Value;
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 100 + (int)(Projectile.timeLeft / 15f * 155), 50, 0) * (Projectile.timeLeft / 15f), 0, tex.Size() / 2, (15 - Projectile.timeLeft) * 0.6f, 0, 0);
+			Main.spriteBatch.Draw(tex3, Projectile.Center - Main.screenPosition, null, new Color(255, 100 + (int)(Projectile.timeLeft / 15f * 155), 50, 0) * (Projectile.timeLeft / 15f) * 1.5f, 0, tex3.Size() / 2, (15 - Projectile.timeLeft) * 0.4f, 0, 0);
 		}
+	}
 
-		private void ManageCaches()
+	private void ManageCaches()
+	{
+		if (cache == null)
 		{
-			if (cache == null)
+			cache = new List<Vector2>();
+
+			for (int i = 0; i < 30; i++)
 			{
-				cache = new List<Vector2>();
-
-				for (int i = 0; i < 30; i++)
-				{
-					cache.Add(Projectile.Center);
-				}
-			}
-
-			cache.Add(Projectile.Center);
-
-			while (cache.Count > 30)
-			{
-				cache.RemoveAt(0);
+				cache.Add(Projectile.Center);
 			}
 		}
 
-		private void ManageTrail()
+		cache.Add(Projectile.Center);
+
+		while (cache.Count > 30)
 		{
-			if (trail is null || trail.IsDisposed)
-			{
-				trail = new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 21, factor =>
-							{
-								float alpha = 1;
+			cache.RemoveAt(0);
+		}
+	}
 
-								if (factor.X > 0.8f)
-									alpha = 1 + (factor.X - 0.8f) * 30;
+	private void ManageTrail()
+	{
+		if (trail is null || trail.IsDisposed)
+		{
+			trail = new Trail(Main.instance.GraphicsDevice, 30, new NoTip(), factor => factor * 21, factor =>
+						{
+							float alpha = 1;
 
-								if (factor.X == 1)
-									return Color.Transparent;
+							if (factor.X > 0.8f)
+								alpha = 1 + (factor.X - 0.8f) * 30;
 
-								if (Projectile.timeLeft < 15)
-									alpha *= Projectile.timeLeft / 15f;
+							if (factor.X == 1)
+								return Color.Transparent;
 
-								if (Projectile.timeLeft > 110)
-									alpha *= 1 - (Projectile.timeLeft - 110) / 10f;
+							if (Projectile.timeLeft < 15)
+								alpha *= Projectile.timeLeft / 15f;
 
-								return new Color(255, 50 + (int)(factor.X * 160), 30) * factor.X * alpha;
-							});
-			}
+							if (Projectile.timeLeft > 110)
+								alpha *= 1 - (Projectile.timeLeft - 110) / 10f;
 
-			trail.Positions = cache.ToArray();
-			trail.NextPosition = Projectile.Center + Projectile.velocity;
+							return new Color(255, 50 + (int)(factor.X * 160), 30) * factor.X * alpha;
+						});
 		}
 
-		public void DrawPrimitives()
+		trail.Positions = cache.ToArray();
+		trail.NextPosition = Projectile.Center + Projectile.velocity;
+	}
+
+	public void DrawPrimitives()
+	{
+		Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
+
+		if (effect != null)
 		{
-			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
+			var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
+			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			if (effect != null)
-			{
-				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-				Matrix view = Main.GameViewMatrix.TransformationMatrix;
-				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
+			effect.Parameters["repeats"].SetValue(2f);
+			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 
-				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
-				effect.Parameters["repeats"].SetValue(2f);
-				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+			effect.Parameters["opacity"].SetValue(0.25f);
+			effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
+			trail?.Render(effect);
 
-				effect.Parameters["opacity"].SetValue(0.25f);
-				effect.Parameters["sampleTexture"].SetValue(Assets.GlowTrail.Value);
-				trail?.Render(effect);
-
-				effect.Parameters["opacity"].SetValue(1f);
-				effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
-				trail?.Render(effect);
-			}
+			effect.Parameters["opacity"].SetValue(1f);
+			effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
+			trail?.Render(effect);
 		}
 	}
 }

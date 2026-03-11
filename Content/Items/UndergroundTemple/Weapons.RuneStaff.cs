@@ -6,510 +6,509 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Items.UndergroundTemple
+namespace StarlightRiver.Content.Items.UndergroundTemple;
+
+class RuneStaff : ModItem
 {
-	class RuneStaff : ModItem
+	public override string Texture => AssetDirectory.CaveTempleItem + Name;
+
+	public override bool CanUseItem(Player player)
 	{
-		public override string Texture => AssetDirectory.CaveTempleItem + Name;
-
-		public override bool CanUseItem(Player player)
-		{
-			return player.ownedProjectileCounts[ProjectileType<RuneStaffHoldout>()] <= 0;
-		}
-
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("Shine Staff");
-			Tooltip.SetDefault("Hold <left> to search for treasure\nRelease to fire stars toward the cursor");
-		}
-
-		public override void SetDefaults()
-		{
-			Item.DamageType = DamageClass.Magic;
-			Item.mana = 15;
-			Item.width = 32;
-			Item.height = 32;
-			Item.damage = 16;
-			Item.crit = 6;
-			Item.useStyle = ItemUseStyleID.Shoot;
-
-			Item.useTime = 2;
-			Item.useAnimation = 2;
-			Item.noUseGraphic = true;
-			Item.noMelee = true;
-
-			Item.knockBack = 3f;
-
-			Item.rare = ItemRarityID.Green;
-			Item.channel = true;
-
-			Item.shoot = ProjectileType<RuneStaffHoldout>();
-
-			Item.value = Item.sellPrice(gold: 1);
-		}
+		return player.ownedProjectileCounts[ProjectileType<RuneStaffHoldout>()] <= 0;
 	}
 
-	class RuneStaffHoldout : ModProjectile
+	public override void SetStaticDefaults()
 	{
-		public bool playedSound;
+		DisplayName.SetDefault("Shine Staff");
+		Tooltip.SetDefault("Hold <left> to search for treasure\nRelease to fire stars toward the cursor");
+	}
 
-		public bool shooting;
+	public override void SetDefaults()
+	{
+		Item.DamageType = DamageClass.Magic;
+		Item.mana = 15;
+		Item.width = 32;
+		Item.height = 32;
+		Item.damage = 16;
+		Item.crit = 6;
+		Item.useStyle = ItemUseStyleID.Shoot;
 
-		public float TreasureLerp;
+		Item.useTime = 2;
+		Item.useAnimation = 2;
+		Item.noUseGraphic = true;
+		Item.noMelee = true;
 
-		public List<Vector2> oldStarPositions = new();
-		public Player Owner => Main.player[Projectile.owner];
-		public override string Texture => AssetDirectory.CaveTempleItem + "RuneStaff";
+		Item.knockBack = 3f;
 
-		public ref float StarRotation => ref Projectile.ai[0];
-		public ref float PingTimer => ref Projectile.ai[1];
-		public ref float Lifetime => ref Projectile.ai[2];
+		Item.rare = ItemRarityID.Green;
+		Item.channel = true;
 
-		public override void SetStaticDefaults()
+		Item.shoot = ProjectileType<RuneStaffHoldout>();
+
+		Item.value = Item.sellPrice(gold: 1);
+	}
+}
+
+class RuneStaffHoldout : ModProjectile
+{
+	public bool playedSound;
+
+	public bool shooting;
+
+	public float TreasureLerp;
+
+	public List<Vector2> oldStarPositions = new();
+	public Player Owner => Main.player[Projectile.owner];
+	public override string Texture => AssetDirectory.CaveTempleItem + "RuneStaff";
+
+	public ref float StarRotation => ref Projectile.ai[0];
+	public ref float PingTimer => ref Projectile.ai[1];
+	public ref float Lifetime => ref Projectile.ai[2];
+
+	public override void SetStaticDefaults()
+	{
+		DisplayName.SetDefault("Shine Staff");
+	}
+
+	public override void SetDefaults()
+	{
+		Projectile.width = 44;
+		Projectile.height = 44;
+
+		Projectile.timeLeft = 5;
+		Projectile.friendly = false;
+		Projectile.hostile = false;
+
+		Projectile.tileCollide = false;
+		Projectile.DamageType = DamageClass.Magic;
+
+		Projectile.ignoreWater = true;
+	}
+
+	public override void OnSpawn(IEntitySource source)
+	{
+		Projectile.velocity = Owner.DirectionTo(Main.MouseWorld);
+		Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+	}
+
+	public override void AI()
+	{
+		if (!(Owner.HeldItem.ModItem is RuneStaff))
 		{
-			DisplayName.SetDefault("Shine Staff");
+			Projectile.Kill();
+			return;
 		}
 
-		public override void SetDefaults()
+		Lifetime++;
+
+		Vector2 starPos = Projectile.Center + (Projectile.rotation - MathHelper.PiOver4).ToRotationVector2() * 25f + new Vector2(0f, Owner.gfxOffY);
+
+		Owner.TryGetModPlayer(out ControlsPlayer controlsPlayer);
+		controlsPlayer.mouseRotationListener = true;
+
+		if ((!Owner.channel || Owner.statMana <= 15) && !shooting && Lifetime >= 30)
 		{
-			Projectile.width = 44;
-			Projectile.height = 44;
+			shooting = true;
+			Projectile.timeLeft = 45;
 
-			Projectile.timeLeft = 5;
-			Projectile.friendly = false;
-			Projectile.hostile = false;
-
-			Projectile.tileCollide = false;
-			Projectile.DamageType = DamageClass.Magic;
-
-			Projectile.ignoreWater = true;
-		}
-
-		public override void OnSpawn(IEntitySource source)
-		{
-			Projectile.velocity = Owner.DirectionTo(Main.MouseWorld);
-			Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
-		}
-
-		public override void AI()
-		{
-			if (!(Owner.HeldItem.ModItem is RuneStaff))
+			for (int i = 0; i < 4; i++)
 			{
-				Projectile.Kill();
-				return;
-			}
-
-			Lifetime++;
-
-			Vector2 starPos = Projectile.Center + (Projectile.rotation - MathHelper.PiOver4).ToRotationVector2() * 25f + new Vector2(0f, Owner.gfxOffY);
-
-			Owner.TryGetModPlayer(out ControlsPlayer controlsPlayer);
-			controlsPlayer.mouseRotationListener = true;
-
-			if ((!Owner.channel || Owner.statMana <= 15) && !shooting && Lifetime >= 30)
-			{
-				shooting = true;
-				Projectile.timeLeft = 45;
-
-				for (int i = 0; i < 4; i++)
+				for (int x = 0; x < 5; x++)
 				{
-					for (int x = 0; x < 5; x++)
-					{
-						Dust.NewDustPerfect(starPos, ModContent.DustType<Dusts.GlowFastDecelerate>(), Projectile.velocity.RotatedBy(MathHelper.ToRadians(i * 90)).RotatedByRandom(0.3f) * Main.rand.NextFloat(3f), 0, new Color(175, 155, 25), 0.65f);
-					}
-
-					if (Main.myPlayer == Projectile.owner)
-					{
-						RuneStaffProjectile.timeLeftToAssign = 240 + i * 10;
-						Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), starPos, Projectile.velocity.RotatedBy(MathHelper.ToRadians(i * 90)) * 1.5f, ModContent.ProjectileType<RuneStaffProjectile>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);
-					}
+					Dust.NewDustPerfect(starPos, ModContent.DustType<Dusts.GlowFastDecelerate>(), Projectile.velocity.RotatedBy(MathHelper.ToRadians(i * 90)).RotatedByRandom(0.3f) * Main.rand.NextFloat(3f), 0, new Color(175, 155, 25), 0.65f);
 				}
 
-				Helpers.SoundHelper.PlayPitched("Magic/HolyCastShort", 1f, 1f, starPos);
-
-				Owner.CheckMana(15, true);
-
-				if (Owner.manaRegenDelay < 240)
-					Owner.manaRegenDelay = 240;
-
-				Core.Systems.CameraSystem.CameraSystem.shake += 2;
+				if (Main.myPlayer == Projectile.owner)
+				{
+					RuneStaffProjectile.timeLeftToAssign = 240 + i * 10;
+					Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), starPos, Projectile.velocity.RotatedBy(MathHelper.ToRadians(i * 90)) * 1.5f, ModContent.ProjectileType<RuneStaffProjectile>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);
+				}
 			}
 
-			if (shooting)
-			{
-				if (Projectile.timeLeft > 30)
-					Projectile.Center = Owner.MountedCenter + (Projectile.rotation - MathHelper.PiOver4).ToRotationVector2() * MathHelper.Lerp(30f, 15f, Eases.EaseQuinticOut(1f - (Projectile.timeLeft - 30) / 15f));
-				else
-					Projectile.Center = Owner.MountedCenter + (Projectile.rotation - MathHelper.PiOver4).ToRotationVector2() * MathHelper.Lerp(15f, 30f, Eases.EaseCircularInOut(1f - Projectile.timeLeft / 30f));
-			}
+			Helpers.SoundHelper.PlayPitched("Magic/HolyCastShort", 1f, 1f, starPos);
+
+			Owner.CheckMana(15, true);
+
+			if (Owner.manaRegenDelay < 240)
+				Owner.manaRegenDelay = 240;
+
+			Core.Systems.CameraSystem.CameraSystem.shake += 2;
+		}
+
+		if (shooting)
+		{
+			if (Projectile.timeLeft > 30)
+				Projectile.Center = Owner.MountedCenter + (Projectile.rotation - MathHelper.PiOver4).ToRotationVector2() * MathHelper.Lerp(30f, 15f, Eases.EaseQuinticOut(1f - (Projectile.timeLeft - 30) / 15f));
 			else
-			{
-				Projectile.timeLeft = 2;
-				Projectile.velocity = Vector2.Lerp(Projectile.velocity, Owner.DirectionTo(controlsPlayer.mouseWorld), 0.1f);
-				Projectile.Center = Owner.MountedCenter + (Projectile.rotation - MathHelper.PiOver4).ToRotationVector2() * 30f;
-			}
-
-			TreasureLerp = FindTreasure(starPos);
-
-			Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
-
-			Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.PiOver2 - MathHelper.PiOver4);
-
-			Owner.heldProj = Projectile.whoAmI;
-			Owner.ChangeDir(controlsPlayer.mouseWorld.X < Owner.Center.X ? -1 : 1);
-
-			if (shooting)
-				return;
-
-			StarRotation += MathHelper.Lerp(0.001f, 0.15f, TreasureLerp);
-
-			Lighting.AddLight(starPos, new Color(150, 150, 10).ToVector3());
-
-			Lighting.AddLight(starPos, (new Color(255, 255, 255) * 0.5f).ToVector3());
-
-			oldStarPositions.Add(starPos);
-			if (oldStarPositions.Count > 10)
-				oldStarPositions.RemoveAt(0);
-
-			PingTimer += MathHelper.Lerp(0, 25, TreasureLerp);
-
-			if (PingTimer >= 115)
-			{
-				if (!playedSound)
-				{
-					(Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), starPos, Vector2.Zero, ModContent.ProjectileType<RuneStaffHoldoutFlash>(), 0, 0f, Owner.whoAmI).
-						ModProjectile as RuneStaffHoldoutFlash).parent = Projectile;
-					playedSound = true;
-				}
-
-				if (PingTimer >= 120)
-				{
-					Helpers.SoundHelper.PlayPitched("Effects/BleepLouder", 1.25f, MathHelper.Lerp(0.75f, 2.5f, TreasureLerp), starPos);
-					PingTimer = 0;
-					playedSound = false;
-				}
-			}
-
-			if (Lifetime % 60 == 0)
-			{
-				Owner.CheckMana(1, true);
-				Owner.manaRegenDelay += 120;
-			}
-
-			if (Main.rand.NextBool((int)MathHelper.Lerp(20, 2, TreasureLerp)))
-				Dust.NewDustPerfect(starPos, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(5f, 5f), 0, new Color(175, 155, 25), 0.5f);
+				Projectile.Center = Owner.MountedCenter + (Projectile.rotation - MathHelper.PiOver4).ToRotationVector2() * MathHelper.Lerp(15f, 30f, Eases.EaseCircularInOut(1f - Projectile.timeLeft / 30f));
 		}
-
-		private float FindTreasure(Vector2 starPos) // returns a float from 0 - 1 based on how close the nearest treasure is
+		else
 		{
-			float[] closestDistances = new float[4];
-
-			var artifacts = new List<Artifact>();
-
-			foreach (KeyValuePair<int, TileEntity> item in TileEntity.ByID)
-			{
-				if (item.Value is Artifact artifact)
-					artifacts.Add(artifact);
-			}
-
-			if (artifacts.Count > 0)
-			{
-				Artifact nearestArtifact = artifacts.OrderBy(n => n.WorldPosition.Distance(starPos)).FirstOrDefault();
-				closestDistances[0] = Vector2.Distance(nearestArtifact.WorldPosition, starPos);
-			}
-
-			Point16 topLeft = (starPos / 16).ToPoint16();
-			topLeft -= new Point16(45, 45);
-
-			List<Vector2> lifeCrystals = new();
-
-			List<Vector2> chests = new();
-
-			for (int x = topLeft.X; x < topLeft.X + 90; x++)
-			{
-				for (int y = topLeft.Y; y < topLeft.Y + 90; y++)
-				{
-					Tile tile = Framing.GetTileSafely(x, y);
-
-					if (tile.TileType == TileID.Heart)
-					{
-						lifeCrystals.Add(new Point16(x, y).ToWorldCoordinates());
-					}
-					else if (TileID.Sets.BasicChest[tile.TileType])
-					{
-						chests.Add(new Point16(x, y).ToWorldCoordinates());
-					}
-				}
-			}
-
-			lifeCrystals.OrderBy(n => n.Distance(starPos));
-			chests.OrderBy(n => n.Distance(starPos));
-
-			if (lifeCrystals.Count != 0)
-				closestDistances[1] = Vector2.Distance(lifeCrystals[0], starPos);
-			if (chests.Count != 0)
-				closestDistances[2] = Vector2.Distance(chests[0], starPos);
-
-			List<float> finalDistances = new() { closestDistances[0], closestDistances[1], closestDistances[2] };
-
-			//finalDistances.OrderBy(x => (int)x);
-
-			float smallest = 750f;
-			int smallestType = -1; //what treasure type the smallest distance is. 0 for artifact, 1 for crystal, 2 for chest
-
-			for (int i = 0; i < finalDistances.Count; i++)
-			{
-				if (finalDistances[i] < smallest && finalDistances[i] > 0)
-				{
-					smallest = finalDistances[i];
-					smallestType = i;
-				}
-			}
-
-			float distanceToCheck = 0f;
-
-			if (smallest < 400f) // if there is a treasure within 400 pixels, search for it.
-			{
-				distanceToCheck = smallest;
-			}
-			else //otherwise, use priority.
-			{
-				if (finalDistances[0] < 750f && finalDistances[0] > 0)
-				{
-					distanceToCheck = finalDistances[0];
-				}
-				else if (finalDistances[1] < 750f && finalDistances[1] > 0)
-				{
-					distanceToCheck = finalDistances[1];
-				}
-				else if (finalDistances[2] < 750f && finalDistances[2] > 0)
-				{
-					distanceToCheck = finalDistances[2];
-				}
-			}
-
-			if (distanceToCheck <= 0f)
-				return 0f;
-
-			float lerper = 1f - distanceToCheck / 750f;
-
-			return lerper;
+			Projectile.timeLeft = 2;
+			Projectile.velocity = Vector2.Lerp(Projectile.velocity, Owner.DirectionTo(controlsPlayer.mouseWorld), 0.1f);
+			Projectile.Center = Owner.MountedCenter + (Projectile.rotation - MathHelper.PiOver4).ToRotationVector2() * 30f;
 		}
 
-		public override void SendExtraAI(BinaryWriter writer)
+		TreasureLerp = FindTreasure(starPos);
+
+		Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+
+		Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.PiOver2 - MathHelper.PiOver4);
+
+		Owner.heldProj = Projectile.whoAmI;
+		Owner.ChangeDir(controlsPlayer.mouseWorld.X < Owner.Center.X ? -1 : 1);
+
+		if (shooting)
+			return;
+
+		StarRotation += MathHelper.Lerp(0.001f, 0.15f, TreasureLerp);
+
+		Lighting.AddLight(starPos, new Color(150, 150, 10).ToVector3());
+
+		Lighting.AddLight(starPos, (new Color(255, 255, 255) * 0.5f).ToVector3());
+
+		oldStarPositions.Add(starPos);
+		if (oldStarPositions.Count > 10)
+			oldStarPositions.RemoveAt(0);
+
+		PingTimer += MathHelper.Lerp(0, 25, TreasureLerp);
+
+		if (PingTimer >= 115)
 		{
-			writer.Write(Projectile.rotation);
-		}
-
-		public override void ReceiveExtraAI(BinaryReader reader)
-		{
-			Projectile.rotation = reader.ReadInt32();
-		}
-
-		public override bool PreDraw(ref Color lightColor)
-		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D texGlow = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
-
-			Texture2D starTex = Assets.StarTexture.Value;
-
-			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
-
-			SpriteEffects flip = Owner.direction == -1 ? SpriteEffects.FlipHorizontally : 0f;
-
-			float fade = 1f;
-			if (Lifetime <= 5)
-				fade = Lifetime / 5f;
-
-			if (shooting && Projectile.timeLeft <= 20f)
-				fade = Projectile.timeLeft / 20f;
-
-			Main.spriteBatch.Draw(texGlow, Projectile.Center + new Vector2(0f, Owner.gfxOffY) - Main.screenPosition, null, new Color(255, 240, 170, 0) * TreasureLerp * fade, Projectile.rotation + (flip == SpriteEffects.FlipHorizontally ? MathHelper.PiOver2 : 0f), texGlow.Size() / 2f, Projectile.scale, flip, 0f);
-
-			Main.spriteBatch.Draw(tex, Projectile.Center + new Vector2(0f, Owner.gfxOffY) - Main.screenPosition, null, lightColor * fade, Projectile.rotation + (flip == SpriteEffects.FlipHorizontally ? MathHelper.PiOver2 : 0f), tex.Size() / 2f, Projectile.scale, flip, 0f);
-
-			Vector2 starPos = Projectile.Center + (Projectile.rotation - MathHelper.PiOver4).ToRotationVector2() * 25f + new Vector2(0f, Owner.gfxOffY);
-
-			float starRot = Projectile.velocity.ToRotation() + StarRotation;
-
-			if (shooting)
-				fade = 0f;
-
-			for (int i = 0; i < 10; i++)
+			if (!playedSound)
 			{
-				float progress = Eases.EaseCircularInOut(i / 10f) * fade;
-
-				if (i > 0 && i < oldStarPositions.Count)
-				{
-					Main.spriteBatch.Draw(bloomTex, oldStarPositions[i] - Main.screenPosition, null, new Color(150, 150, 10, 0) * 0.25f * progress, 0f, bloomTex.Size() / 2f, 0.2f, 0, 0);
-
-					Main.spriteBatch.Draw(starTex, oldStarPositions[i] - Main.screenPosition, null, new Color(150, 150, 10, 0) * progress, starRot, starTex.Size() / 2f, 0.15f, 0f, 0f);
-
-					Main.spriteBatch.Draw(starTex, oldStarPositions[i] - Main.screenPosition, null, new Color(255, 255, 255, 0) * progress, starRot, starTex.Size() / 2f, 0.1f, 0, 0);
-				}
+				(Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), starPos, Vector2.Zero, ModContent.ProjectileType<RuneStaffHoldoutFlash>(), 0, 0f, Owner.whoAmI).
+					ModProjectile as RuneStaffHoldoutFlash).parent = Projectile;
+				playedSound = true;
 			}
 
-			Main.spriteBatch.Draw(bloomTex, starPos - Main.screenPosition, null, new Color(150, 150, 10, 0) * fade, 0f, bloomTex.Size() / 2f, 0.35f, 0, 0);
-
-			Main.spriteBatch.Draw(starTex, starPos - Main.screenPosition, null, new Color(150, 150, 10, 0) * fade, starRot, starTex.Size() / 2f, 0.3f, 0f, 0f);
-
-			Main.spriteBatch.Draw(starTex, starPos - Main.screenPosition, null, new Color(255, 255, 255, 0) * fade, starRot, starTex.Size() / 2f, 0.2f, 0, 0);
-
-			Main.spriteBatch.Draw(bloomTex, starPos - Main.screenPosition, null, new Color(255, 255, 255, 0) * 0.5f * fade, 0f, bloomTex.Size() / 2f, 0.55f, 0, 0);
-
-			return false;
+			if (PingTimer >= 120)
+			{
+				Helpers.SoundHelper.PlayPitched("Effects/BleepLouder", 1.25f, MathHelper.Lerp(0.75f, 2.5f, TreasureLerp), starPos);
+				PingTimer = 0;
+				playedSound = false;
+			}
 		}
+
+		if (Lifetime % 60 == 0)
+		{
+			Owner.CheckMana(1, true);
+			Owner.manaRegenDelay += 120;
+		}
+
+		if (Main.rand.NextBool((int)MathHelper.Lerp(20, 2, TreasureLerp)))
+			Dust.NewDustPerfect(starPos, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(5f, 5f), 0, new Color(175, 155, 25), 0.5f);
 	}
 
-	class RuneStaffProjectile : ModProjectile
+	private float FindTreasure(Vector2 starPos) // returns a float from 0 - 1 based on how close the nearest treasure is
 	{
+		float[] closestDistances = new float[4];
 
-		public static int timeLeftToAssign = 240;
-		public Player Owner => Main.player[Projectile.owner];
-		public override string Texture => AssetDirectory.CaveTempleItem + "RuneStaff";
-		public override void SetStaticDefaults()
+		var artifacts = new List<Artifact>();
+
+		foreach (KeyValuePair<int, TileEntity> item in TileEntity.ByID)
 		{
-			DisplayName.SetDefault("Shine Star");
+			if (item.Value is Artifact artifact)
+				artifacts.Add(artifact);
 		}
 
-		public override void SetDefaults()
+		if (artifacts.Count > 0)
 		{
-			Projectile.width = 16;
-			Projectile.height = 16;
+			Artifact nearestArtifact = artifacts.OrderBy(n => n.WorldPosition.Distance(starPos)).FirstOrDefault();
+			closestDistances[0] = Vector2.Distance(nearestArtifact.WorldPosition, starPos);
+		}
 
-			Projectile.timeLeft = 240;
-			Projectile.friendly = true;
+		Point16 topLeft = (starPos / 16).ToPoint16();
+		topLeft -= new Point16(45, 45);
 
-			Projectile.penetrate = 1;
+		List<Vector2> lifeCrystals = new();
 
-			Projectile.hostile = false;
+		List<Vector2> chests = new();
+
+		for (int x = topLeft.X; x < topLeft.X + 90; x++)
+		{
+			for (int y = topLeft.Y; y < topLeft.Y + 90; y++)
+			{
+				Tile tile = Framing.GetTileSafely(x, y);
+
+				if (tile.TileType == TileID.Heart)
+				{
+					lifeCrystals.Add(new Point16(x, y).ToWorldCoordinates());
+				}
+				else if (TileID.Sets.BasicChest[tile.TileType])
+				{
+					chests.Add(new Point16(x, y).ToWorldCoordinates());
+				}
+			}
+		}
+
+		lifeCrystals.OrderBy(n => n.Distance(starPos));
+		chests.OrderBy(n => n.Distance(starPos));
+
+		if (lifeCrystals.Count != 0)
+			closestDistances[1] = Vector2.Distance(lifeCrystals[0], starPos);
+		if (chests.Count != 0)
+			closestDistances[2] = Vector2.Distance(chests[0], starPos);
+
+		List<float> finalDistances = new() { closestDistances[0], closestDistances[1], closestDistances[2] };
+
+		//finalDistances.OrderBy(x => (int)x);
+
+		float smallest = 750f;
+		int smallestType = -1; //what treasure type the smallest distance is. 0 for artifact, 1 for crystal, 2 for chest
+
+		for (int i = 0; i < finalDistances.Count; i++)
+		{
+			if (finalDistances[i] < smallest && finalDistances[i] > 0)
+			{
+				smallest = finalDistances[i];
+				smallestType = i;
+			}
+		}
+
+		float distanceToCheck = 0f;
+
+		if (smallest < 400f) // if there is a treasure within 400 pixels, search for it.
+		{
+			distanceToCheck = smallest;
+		}
+		else //otherwise, use priority.
+		{
+			if (finalDistances[0] < 750f && finalDistances[0] > 0)
+			{
+				distanceToCheck = finalDistances[0];
+			}
+			else if (finalDistances[1] < 750f && finalDistances[1] > 0)
+			{
+				distanceToCheck = finalDistances[1];
+			}
+			else if (finalDistances[2] < 750f && finalDistances[2] > 0)
+			{
+				distanceToCheck = finalDistances[2];
+			}
+		}
+
+		if (distanceToCheck <= 0f)
+			return 0f;
+
+		float lerper = 1f - distanceToCheck / 750f;
+
+		return lerper;
+	}
+
+	public override void SendExtraAI(BinaryWriter writer)
+	{
+		writer.Write(Projectile.rotation);
+	}
+
+	public override void ReceiveExtraAI(BinaryReader reader)
+	{
+		Projectile.rotation = reader.ReadInt32();
+	}
+
+	public override bool PreDraw(ref Color lightColor)
+	{
+		Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+		Texture2D texGlow = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
+
+		Texture2D starTex = Assets.StarTexture.Value;
+
+		Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
+
+		SpriteEffects flip = Owner.direction == -1 ? SpriteEffects.FlipHorizontally : 0f;
+
+		float fade = 1f;
+		if (Lifetime <= 5)
+			fade = Lifetime / 5f;
+
+		if (shooting && Projectile.timeLeft <= 20f)
+			fade = Projectile.timeLeft / 20f;
+
+		Main.spriteBatch.Draw(texGlow, Projectile.Center + new Vector2(0f, Owner.gfxOffY) - Main.screenPosition, null, new Color(255, 240, 170, 0) * TreasureLerp * fade, Projectile.rotation + (flip == SpriteEffects.FlipHorizontally ? MathHelper.PiOver2 : 0f), texGlow.Size() / 2f, Projectile.scale, flip, 0f);
+
+		Main.spriteBatch.Draw(tex, Projectile.Center + new Vector2(0f, Owner.gfxOffY) - Main.screenPosition, null, lightColor * fade, Projectile.rotation + (flip == SpriteEffects.FlipHorizontally ? MathHelper.PiOver2 : 0f), tex.Size() / 2f, Projectile.scale, flip, 0f);
+
+		Vector2 starPos = Projectile.Center + (Projectile.rotation - MathHelper.PiOver4).ToRotationVector2() * 25f + new Vector2(0f, Owner.gfxOffY);
+
+		float starRot = Projectile.velocity.ToRotation() + StarRotation;
+
+		if (shooting)
+			fade = 0f;
+
+		for (int i = 0; i < 10; i++)
+		{
+			float progress = Eases.EaseCircularInOut(i / 10f) * fade;
+
+			if (i > 0 && i < oldStarPositions.Count)
+			{
+				Main.spriteBatch.Draw(bloomTex, oldStarPositions[i] - Main.screenPosition, null, new Color(150, 150, 10, 0) * 0.25f * progress, 0f, bloomTex.Size() / 2f, 0.2f, 0, 0);
+
+				Main.spriteBatch.Draw(starTex, oldStarPositions[i] - Main.screenPosition, null, new Color(150, 150, 10, 0) * progress, starRot, starTex.Size() / 2f, 0.15f, 0f, 0f);
+
+				Main.spriteBatch.Draw(starTex, oldStarPositions[i] - Main.screenPosition, null, new Color(255, 255, 255, 0) * progress, starRot, starTex.Size() / 2f, 0.1f, 0, 0);
+			}
+		}
+
+		Main.spriteBatch.Draw(bloomTex, starPos - Main.screenPosition, null, new Color(150, 150, 10, 0) * fade, 0f, bloomTex.Size() / 2f, 0.35f, 0, 0);
+
+		Main.spriteBatch.Draw(starTex, starPos - Main.screenPosition, null, new Color(150, 150, 10, 0) * fade, starRot, starTex.Size() / 2f, 0.3f, 0f, 0f);
+
+		Main.spriteBatch.Draw(starTex, starPos - Main.screenPosition, null, new Color(255, 255, 255, 0) * fade, starRot, starTex.Size() / 2f, 0.2f, 0, 0);
+
+		Main.spriteBatch.Draw(bloomTex, starPos - Main.screenPosition, null, new Color(255, 255, 255, 0) * 0.5f * fade, 0f, bloomTex.Size() / 2f, 0.55f, 0, 0);
+
+		return false;
+	}
+}
+
+class RuneStaffProjectile : ModProjectile
+{
+
+	public static int timeLeftToAssign = 240;
+	public Player Owner => Main.player[Projectile.owner];
+	public override string Texture => AssetDirectory.CaveTempleItem + "RuneStaff";
+	public override void SetStaticDefaults()
+	{
+		DisplayName.SetDefault("Shine Star");
+	}
+
+	public override void SetDefaults()
+	{
+		Projectile.width = 16;
+		Projectile.height = 16;
+
+		Projectile.timeLeft = 240;
+		Projectile.friendly = true;
+
+		Projectile.penetrate = 1;
+
+		Projectile.hostile = false;
+		Projectile.tileCollide = true;
+
+		Projectile.DamageType = DamageClass.Magic;
+	}
+
+	public override void OnSpawn(IEntitySource source)
+	{
+		Projectile.timeLeft = timeLeftToAssign;
+		timeLeftToAssign = 240;
+	}
+
+	public override void AI()
+	{
+		NPC target = Main.npc.Where(n => n.CanBeChasedBy() && n.Distance(Projectile.Center) < 1000f && (Collision.CanHitLine(Projectile.Center, 1, 1, n.Center, 1, 1) || Collision.CanHitLine(Owner.Center, 1, 1, n.Center, 1, 1))).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
+
+		if (target != null)
+		{
+			if (Projectile.timeLeft < 225)
+			{
+				Projectile.velocity += Vector2.Normalize(Projectile.Center - target.Center) * -0.75f;
+
+				Projectile.velocity = Vector2.Clamp(Projectile.velocity, new Vector2(-12, -12), new Vector2(12, 12));
+			}
+
+			Projectile.tileCollide = !Collision.CanHitLine(Owner.Center, 1, 1, target.Center, 1, 1);
+		}
+		else
+		{
 			Projectile.tileCollide = true;
 
-			Projectile.DamageType = DamageClass.Magic;
+			Projectile.velocity *= 0.98f;
+			if (Projectile.velocity.Length() < 0.1f)
+				Projectile.Kill();
 		}
 
-		public override void OnSpawn(IEntitySource source)
+		Projectile.rotation += Utils.Clamp(Projectile.velocity.Length() * 0.05f, 0.01f, 0.2f);
+
+		if (Main.rand.NextBool(10))
+			Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Vector2.Zero, 0, new Color(175, 155, 25), 0.45f);
+	}
+
+	public override void OnKill(int timeLeft)
+	{
+		for (int i = 0; i < 5; i++)
 		{
-			Projectile.timeLeft = timeLeftToAssign;
-			timeLeftToAssign = 240;
-		}
-
-		public override void AI()
-		{
-			NPC target = Main.npc.Where(n => n.CanBeChasedBy() && n.Distance(Projectile.Center) < 1000f && (Collision.CanHitLine(Projectile.Center, 1, 1, n.Center, 1, 1) || Collision.CanHitLine(Owner.Center, 1, 1, n.Center, 1, 1))).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
-
-			if (target != null)
-			{
-				if (Projectile.timeLeft < 225)
-				{
-					Projectile.velocity += Vector2.Normalize(Projectile.Center - target.Center) * -0.75f;
-
-					Projectile.velocity = Vector2.Clamp(Projectile.velocity, new Vector2(-12, -12), new Vector2(12, 12));
-				}
-
-				Projectile.tileCollide = !Collision.CanHitLine(Owner.Center, 1, 1, target.Center, 1, 1);
-			}
-			else
-			{
-				Projectile.tileCollide = true;
-
-				Projectile.velocity *= 0.98f;
-				if (Projectile.velocity.Length() < 0.1f)
-					Projectile.Kill();
-			}
-
-			Projectile.rotation += Utils.Clamp(Projectile.velocity.Length() * 0.05f, 0.01f, 0.2f);
-
-			if (Main.rand.NextBool(10))
-				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Vector2.Zero, 0, new Color(175, 155, 25), 0.45f);
-		}
-
-		public override void OnKill(int timeLeft)
-		{
-			for (int i = 0; i < 5; i++)
-			{
-				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(2.5f, 2.5f), 0, new Color(175, 155, 25), 0.45f);
-			}
-		}
-
-		public override void SendExtraAI(BinaryWriter writer)
-		{
-			writer.Write(Projectile.timeLeft);
-		}
-
-		public override void ReceiveExtraAI(BinaryReader reader)
-		{
-			Projectile.timeLeft = reader.ReadInt32();
-		}
-
-		public override bool PreDraw(ref Color lightColor)
-		{
-			Texture2D starTex = Assets.StarTexture.Value;
-
-			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
-
-			Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, new Color(150, 150, 10, 0), 0f, bloomTex.Size() / 2f, 0.25f, 0, 0);
-
-			Main.spriteBatch.Draw(starTex, Projectile.Center - Main.screenPosition, null, new Color(150, 150, 10, 0), Projectile.rotation, starTex.Size() / 2f, 0.2f, 0f, 0f);
-
-			Main.spriteBatch.Draw(starTex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0), Projectile.rotation, starTex.Size() / 2f, 0.1f, 0f, 0f);
-
-			Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0) * 0.5f, 0f, bloomTex.Size() / 2f, 0.35f, 0, 0);
-
-			return false;
+			Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(2.5f, 2.5f), 0, new Color(175, 155, 25), 0.45f);
 		}
 	}
 
-	class RuneStaffHoldoutFlash : ModProjectile
+	public override void SendExtraAI(BinaryWriter writer)
 	{
-		public Projectile parent;
-		public Player Owner => Main.player[Projectile.owner];
-		public override string Texture => AssetDirectory.CaveTempleItem + "RuneStaff";
+		writer.Write(Projectile.timeLeft);
+	}
 
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("Shine Staff");
-		}
+	public override void ReceiveExtraAI(BinaryReader reader)
+	{
+		Projectile.timeLeft = reader.ReadInt32();
+	}
 
-		public override void SetDefaults()
-		{
-			Projectile.width = 32;
-			Projectile.height = 32;
+	public override bool PreDraw(ref Color lightColor)
+	{
+		Texture2D starTex = Assets.StarTexture.Value;
 
-			Projectile.timeLeft = 15;
-			Projectile.friendly = false;
-			Projectile.hostile = false;
+		Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
-			Projectile.tileCollide = false;
+		Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, new Color(150, 150, 10, 0), 0f, bloomTex.Size() / 2f, 0.25f, 0, 0);
 
-			Projectile.ignoreWater = true;
-		}
+		Main.spriteBatch.Draw(starTex, Projectile.Center - Main.screenPosition, null, new Color(150, 150, 10, 0), Projectile.rotation, starTex.Size() / 2f, 0.2f, 0f, 0f);
 
-		public override void AI()
-		{
-			Projectile.Center = parent.Center + (parent.rotation - MathHelper.PiOver4).ToRotationVector2() * 25f + new Vector2(0f, Owner.gfxOffY);
-			Projectile.rotation = parent.velocity.ToRotation() + parent.ai[0];
-		}
+		Main.spriteBatch.Draw(starTex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0), Projectile.rotation, starTex.Size() / 2f, 0.1f, 0f, 0f);
 
-		public override bool PreDraw(ref Color lightColor)
-		{
-			Texture2D starTex = Assets.StarTexture.Value;
+		Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0) * 0.5f, 0f, bloomTex.Size() / 2f, 0.35f, 0, 0);
 
-			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
+		return false;
+	}
+}
 
-			float lerper = Eases.EaseCircularInOut(Projectile.timeLeft / 15f);
+class RuneStaffHoldoutFlash : ModProjectile
+{
+	public Projectile parent;
+	public Player Owner => Main.player[Projectile.owner];
+	public override string Texture => AssetDirectory.CaveTempleItem + "RuneStaff";
 
-			float scale = MathHelper.Lerp(3f, 1f, Eases.EaseCircularInOut(lerper));
+	public override void SetStaticDefaults()
+	{
+		DisplayName.SetDefault("Shine Staff");
+	}
 
-			Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, new Color(150, 150, 10, 0) * lerper, 0f, bloomTex.Size() / 2f, 0.35f * scale, 0, 0);
+	public override void SetDefaults()
+	{
+		Projectile.width = 32;
+		Projectile.height = 32;
 
-			Main.spriteBatch.Draw(starTex, Projectile.Center - Main.screenPosition, null, new Color(150, 150, 10, 0) * lerper, Projectile.rotation, starTex.Size() / 2f, 0.3f * scale, 0f, 0f);
+		Projectile.timeLeft = 15;
+		Projectile.friendly = false;
+		Projectile.hostile = false;
 
-			Main.spriteBatch.Draw(starTex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0) * lerper, Projectile.rotation, starTex.Size() / 2f, 0.2f * scale, 0f, 0f);
+		Projectile.tileCollide = false;
 
-			Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0) * 0.5f * lerper, 0f, bloomTex.Size() / 2f, 0.55f * scale, 0, 0);
+		Projectile.ignoreWater = true;
+	}
 
-			return false;
-		}
+	public override void AI()
+	{
+		Projectile.Center = parent.Center + (parent.rotation - MathHelper.PiOver4).ToRotationVector2() * 25f + new Vector2(0f, Owner.gfxOffY);
+		Projectile.rotation = parent.velocity.ToRotation() + parent.ai[0];
+	}
+
+	public override bool PreDraw(ref Color lightColor)
+	{
+		Texture2D starTex = Assets.StarTexture.Value;
+
+		Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
+
+		float lerper = Eases.EaseCircularInOut(Projectile.timeLeft / 15f);
+
+		float scale = MathHelper.Lerp(3f, 1f, Eases.EaseCircularInOut(lerper));
+
+		Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, new Color(150, 150, 10, 0) * lerper, 0f, bloomTex.Size() / 2f, 0.35f * scale, 0, 0);
+
+		Main.spriteBatch.Draw(starTex, Projectile.Center - Main.screenPosition, null, new Color(150, 150, 10, 0) * lerper, Projectile.rotation, starTex.Size() / 2f, 0.3f * scale, 0f, 0f);
+
+		Main.spriteBatch.Draw(starTex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0) * lerper, Projectile.rotation, starTex.Size() / 2f, 0.2f * scale, 0f, 0f);
+
+		Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, new Color(255, 255, 255, 0) * 0.5f * lerper, 0f, bloomTex.Size() / 2f, 0.55f * scale, 0, 0);
+
+		return false;
 	}
 }

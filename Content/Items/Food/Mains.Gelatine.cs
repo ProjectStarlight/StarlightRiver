@@ -1,34 +1,33 @@
 ﻿using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Items.Food
+namespace StarlightRiver.Content.Items.Food;
+
+internal class Gelatine : Ingredient
 {
-	internal class Gelatine : Ingredient
+	public Gelatine() : base("+6% damage reduction\n+3 defense", 3600 * 8, IngredientType.Main) { }
+
+	public override void SafeSetDefaults()
 	{
-		public Gelatine() : base("+6% damage reduction\n+3 defense", 3600 * 8, IngredientType.Main) { }
+		Item.rare = ItemRarityID.Blue;
 
-		public override void SafeSetDefaults()
-		{
-			Item.rare = ItemRarityID.Blue;
+		Item.value = Item.sellPrice(silver: 20);
+	}
 
-			Item.value = Item.sellPrice(silver: 20);
-		}
+	public override void Load()
+	{
+		StarlightNPC.ModifyNPCLootEvent += LootGelatine;
+	}
 
-		public override void Load()
-		{
-			StarlightNPC.ModifyNPCLootEvent += LootGelatine;
-		}
+	public override void BuffEffects(Player Player, float multiplier)
+	{
+		Player.endurance += 0.06f;
+		Player.statDefense += 3;
+	}
 
-		public override void BuffEffects(Player Player, float multiplier)
-		{
-			Player.endurance += 0.06f;
-			Player.statDefense += 3;
-		}
-
-		private void LootGelatine(NPC npc, NPCLoot npcloot)
-		{
-			if (npc.type == NPCID.KingSlime)
-				npcloot.Add(ItemDropRule.Common(ModContent.ItemType<Gelatine>(), 1, 5, 25));
-		}
+	private void LootGelatine(NPC npc, NPCLoot npcloot)
+	{
+		if (npc.type == NPCID.KingSlime)
+			npcloot.Add(ItemDropRule.Common(ModContent.ItemType<Gelatine>(), 1, 5, 25));
 	}
 }

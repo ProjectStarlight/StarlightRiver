@@ -1,38 +1,37 @@
-﻿namespace StarlightRiver.Content.Lavas
+﻿namespace StarlightRiver.Content.Lavas;
+
+public abstract class LavaStyle : ModWaterStyle
 {
-	public abstract class LavaStyle : ModWaterStyle
+	public string texturePath;
+	public string blockTexture;
+
+	public override string Texture => texturePath;
+
+	public override void Load()
 	{
-		public string texturePath;
-		public string blockTexture;
+		string name = "";
+		string texture = "";
+		string blockTexture = "";
+		bool value = SafeAutoload(ref name, ref texture, ref blockTexture);
 
-		public override string Texture => texturePath;
+		LavaLoader.lavas?.Add(this);
+		texturePath = texture;
+	}
 
-		public override void Load()
-		{
-			string name = "";
-			string texture = "";
-			string blockTexture = "";
-			bool value = SafeAutoload(ref name, ref texture, ref blockTexture);
+	public virtual bool SafeAutoload(ref string name, ref string texture, ref string blockTexture)
+	{
+		return true;
+	}
 
-			LavaLoader.lavas?.Add(this);
-			texturePath = texture;
-		}
+	public virtual bool DrawEffects(int x, int y)
+	{
+		return false;
+	}
 
-		public virtual bool SafeAutoload(ref string name, ref string texture, ref string blockTexture)
-		{
-			return true;
-		}
+	public virtual void DrawBlockEffects(int x, int y, Tile up, Tile left, Tile right, Tile down) { }
 
-		public virtual bool DrawEffects(int x, int y)
-		{
-			return false;
-		}
-
-		public virtual void DrawBlockEffects(int x, int y, Tile up, Tile left, Tile right, Tile down) { }
-
-		public virtual bool ChooseLavaStyle()
-		{
-			return false;
-		}
+	public virtual bool ChooseLavaStyle()
+	{
+		return false;
 	}
 }

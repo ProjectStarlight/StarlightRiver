@@ -1,33 +1,32 @@
 ﻿using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Items.Food
+namespace StarlightRiver.Content.Items.Food;
+
+internal class EaterSteak : Ingredient
 {
-	internal class EaterSteak : Ingredient
+	public EaterSteak() : base("+10% damage reduction", 3600 * 4, IngredientType.Main) { }
+
+	public override void SafeSetDefaults()
 	{
-		public EaterSteak() : base("+10% damage reduction", 3600 * 4, IngredientType.Main) { }
+		Item.rare = ItemRarityID.Blue;
 
-		public override void SafeSetDefaults()
-		{
-			Item.rare = ItemRarityID.Blue;
+		Item.value = Item.sellPrice(silver: 20);
+	}
 
-			Item.value = Item.sellPrice(silver: 20);
-		}
+	public override void Load()
+	{
+		StarlightNPC.ModifyNPCLootEvent += LootEaterSteak;
+	}
 
-		public override void Load()
-		{
-			StarlightNPC.ModifyNPCLootEvent += LootEaterSteak;
-		}
+	public override void BuffEffects(Player Player, float multiplier)
+	{
+		Player.endurance += 0.1f;
+	}
 
-		public override void BuffEffects(Player Player, float multiplier)
-		{
-			Player.endurance += 0.1f;
-		}
-
-		private void LootEaterSteak(NPC NPC, NPCLoot npcloot)
-		{
-			if (NPC.type == NPCID.EaterofSouls || NPC.type == NPCID.Corruptor)
-				npcloot.Add(ItemDropRule.Common(ModContent.ItemType<EaterSteak>(), 8));
-		}
+	private void LootEaterSteak(NPC NPC, NPCLoot npcloot)
+	{
+		if (NPC.type == NPCID.EaterofSouls || NPC.type == NPCID.Corruptor)
+			npcloot.Add(ItemDropRule.Common(ModContent.ItemType<EaterSteak>(), 8));
 	}
 }

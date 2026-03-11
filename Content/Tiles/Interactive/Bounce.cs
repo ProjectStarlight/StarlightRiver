@@ -7,71 +7,70 @@ using StarlightRiver.Helpers;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Tiles.Interactive
+namespace StarlightRiver.Content.Tiles.Interactive;
+
+internal class Bouncer : DummyTile
 {
-	internal class Bouncer : DummyTile
+	public override int DummyType => DummySystem.DummyType<BouncerDummy>();
+
+	public override string Texture => AssetDirectory.InteractiveTile + Name;
+
+	public override void SetStaticDefaults()
 	{
-		public override int DummyType => DummySystem.DummyType<BouncerDummy>();
-
-		public override string Texture => AssetDirectory.InteractiveTile + Name;
-
-		public override void SetStaticDefaults()
-		{
-			QuickBlock.QuickSetFurniture(this, 1, 1, DustType<Dusts.GlassNoGravity>(), SoundID.Shatter, false, new Color(115, 182, 158));
-		}
+		QuickBlock.QuickSetFurniture(this, 1, 1, DustType<Dusts.GlassNoGravity>(), SoundID.Shatter, false, new Color(115, 182, 158));
 	}
+}
 
-	internal class BouncerItem : BaseTileItem
+internal class BouncerItem : BaseTileItem
+{
+	public BouncerItem() : base("Vitric Bouncer", "Dash into this to go flying!\nResets jump accessories", "Bouncer", 8, AssetDirectory.InteractiveTile) { }
+
+	public override void AddRecipes()
 	{
-		public BouncerItem() : base("Vitric Bouncer", "Dash into this to go flying!\nResets jump accessories", "Bouncer", 8, AssetDirectory.InteractiveTile) { }
-
-		public override void AddRecipes()
-		{
-			Recipe recipe = CreateRecipe();
-			recipe.AddIngredient(ItemType<VitricOre>(), 2);
-			recipe.AddIngredient(ItemType<StaminaGel>(), 1);
-			recipe.AddTile(TileID.WorkBenches);
-			recipe.Register();
-		}
+		Recipe recipe = CreateRecipe();
+		recipe.AddIngredient(ItemType<VitricOre>(), 2);
+		recipe.AddIngredient(ItemType<StaminaGel>(), 1);
+		recipe.AddTile(TileID.WorkBenches);
+		recipe.Register();
 	}
+}
 
-	internal class BouncerDummy : Dummy
+internal class BouncerDummy : Dummy
+{
+	public override bool DoesCollision => true;
+
+	public BouncerDummy() : base(TileType<Bouncer>(), 16, 16) { }
+
+	public override void Collision(Player Player)
 	{
-		public override bool DoesCollision => true;
+		AbilityHandler mp = Player.GetHandler();
 
-		public BouncerDummy() : base(TileType<Bouncer>(), 16, 16) { }
-
-		public override void Collision(Player Player)
+		if (AbilityHelper.CheckDash(Player, Hitbox))
 		{
-			AbilityHandler mp = Player.GetHandler();
+			mp.ActiveAbility?.Deactivate();
 
-			if (AbilityHelper.CheckDash(Player, Hitbox))
+			if (Player.velocity.Length() != 0)
 			{
-				mp.ActiveAbility?.Deactivate();
+				Player.velocity = Vector2.Normalize(Player.velocity) * -18f;
+				Player.wingTime = Player.wingTimeMax;
+				Player.rocketTime = Player.rocketTimeMax;
+				// TODO: Jump reset once Tmod adds that!
+			}
 
-				if (Player.velocity.Length() != 0)
-				{
-					Player.velocity = Vector2.Normalize(Player.velocity) * -18f;
-					Player.wingTime = Player.wingTimeMax;
-					Player.rocketTime = Player.rocketTimeMax;
-					// TODO: Jump reset once Tmod adds that!
-				}
+			Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Center);
 
-				Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Center);
-
-				for (int k = 0; k <= 30; k++)
-				{
-					int dus = Dust.NewDust(position, 48, 32, DustType<Dusts.GlassAttracted>(), Main.rand.Next(-16, 15), Main.rand.Next(-16, 15), 0, default, 1.3f);
-					Main.dust[dus].customData = Center;
-				}
+			for (int k = 0; k <= 30; k++)
+			{
+				int dus = Dust.NewDust(position, 48, 32, DustType<Dusts.GlassAttracted>(), Main.rand.Next(-16, 15), Main.rand.Next(-16, 15), 0, default, 1.3f);
+				Main.dust[dus].customData = Center;
 			}
 		}
+	}
 
-		public override void PostDraw(Color lightColor)
-		{
-			Texture2D tex = Assets.Tiles.Interactive.BouncerGlow.Value;
-			Color color = CommonVisualEffects.IndicatorColorProximity(150, 300, Center);
-			Main.spriteBatch.Draw(tex, position - Vector2.One - Main.screenPosition, color);
-		}
+	public override void PostDraw(Color lightColor)
+	{
+		Texture2D tex = Assets.Tiles.Interactive.BouncerGlow.Value;
+		Color color = CommonVisualEffects.IndicatorColorProximity(150, 300, Center);
+		Main.spriteBatch.Draw(tex, position - Vector2.One - Main.screenPosition, color);
 	}
 }

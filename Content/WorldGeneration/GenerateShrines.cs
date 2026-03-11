@@ -5,67 +5,66 @@ using Terraria.ID;
 using Terraria.IO;
 using Terraria.WorldBuilding;
 
-namespace StarlightRiver.Core
+namespace StarlightRiver.Core;
+
+public partial class StarlightWorld
 {
-	public partial class StarlightWorld
+	public static readonly List<int> InvalidShrineTiles = new()
 	{
-		public static readonly List<int> InvalidShrineTiles = new()
-		{
-			TileID.Sand,
-			TileID.Ebonstone,
-			TileID.Crimstone,
-			TileID.IceBlock,
-			TileID.SnowBlock,
-			TileID.Sandstone,
-			TileID.JungleGrass,
-			TileID.Mud,
-			TileID.MushroomGrass,
-			TileID.Marble,
-			TileID.Granite,
-		};
+		TileID.Sand,
+		TileID.Ebonstone,
+		TileID.Crimstone,
+		TileID.IceBlock,
+		TileID.SnowBlock,
+		TileID.Sandstone,
+		TileID.JungleGrass,
+		TileID.Mud,
+		TileID.MushroomGrass,
+		TileID.Marble,
+		TileID.Granite,
+	};
 
-		public static void ShrineGen(GenerationProgress progress, GameConfiguration configuration)
-		{
-			ShrinePass("Structures/CombatShrine");
-			ShrinePass("Structures/EvasionShrine");
-		}
+	public static void ShrineGen(GenerationProgress progress, GameConfiguration configuration)
+	{
+		ShrinePass("Structures/CombatShrine");
+		ShrinePass("Structures/EvasionShrine");
+	}
 
-		public static void ShrinePass(string structure)
+	public static void ShrinePass(string structure)
+	{
+		for (int x = 350; x < Main.maxTilesX - 350; x += WorldGen.genRand.Next(100, 350))
 		{
-			for (int x = 350; x < Main.maxTilesX - 350; x += WorldGen.genRand.Next(100, 350))
+			for (int retry = 0; retry < 40; retry++)
 			{
-				for (int retry = 0; retry < 40; retry++)
+				int y = WorldGen.genRand.Next((int)Main.worldSurface + 100, Main.UnderworldLayer - 100);
+
+				Point16 dims = StructureHelper.API.Generator.GetStructureDimensions(structure, StarlightRiver.Instance);
+
+				if (WorldGen.InWorld(x, y) && WorldGenHelper.IsRectangleSafe(new Rectangle(x, y, dims.X, dims.Y), ShrineCondition))
 				{
-					int y = WorldGen.genRand.Next((int)Main.worldSurface + 100, Main.UnderworldLayer - 100);
-
-					Point16 dims = StructureHelper.API.Generator.GetStructureDimensions(structure, StarlightRiver.Instance);
-
-					if (WorldGen.InWorld(x, y) && WorldGenHelper.IsRectangleSafe(new Rectangle(x, y, dims.X, dims.Y), ShrineCondition))
-					{
-						StructureHelper.API.Generator.GenerateStructure(structure, new Point16(x, y), StarlightRiver.Instance);
-						break;
-					}
+					StructureHelper.API.Generator.GenerateStructure(structure, new Point16(x, y), StarlightRiver.Instance);
+					break;
 				}
 			}
 		}
+	}
 
-		public static bool ShrineCondition(Tile a, Point16 b)
-		{
-			//we dont want shrines on shrines...
-			if (a.TileType == StarlightRiver.Instance.Find<ModTile>("TempleBrick").Type)
-				return false;
+	public static bool ShrineCondition(Tile a, Point16 b)
+	{
+		//we dont want shrines on shrines...
+		if (a.TileType == StarlightRiver.Instance.Find<ModTile>("TempleBrick").Type)
+			return false;
 
-			if (InvalidShrineTiles.Contains(a.TileType))
-				return false;
+		if (InvalidShrineTiles.Contains(a.TileType))
+			return false;
 
-			if (vitricBiome.Contains(b.ToPoint()))
-				return false;
+		if (vitricBiome.Contains(b.ToPoint()))
+			return false;
 
-			var aether = new Rectangle((int)GenVars.shimmerPosition.X, (int)GenVars.shimmerPosition.Y, 125, 125);
-			if (aether.Contains(b.ToPoint()))
-				return false;
+		var aether = new Rectangle((int)GenVars.shimmerPosition.X, (int)GenVars.shimmerPosition.Y, 125, 125);
+		if (aether.Contains(b.ToPoint()))
+			return false;
 
-			return true;
-		}
+		return true;
 	}
 }

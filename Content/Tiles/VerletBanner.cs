@@ -8,74 +8,73 @@ using Terraria.ID;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Tiles
+namespace StarlightRiver.Content.Tiles;
+
+class VerletBanner : DummyTile
 {
-	class VerletBanner : DummyTile
-	{
-		public override int DummyType => DummySystem.DummyType<VerletBannerDummy>();
+	public override int DummyType => DummySystem.DummyType<VerletBannerDummy>();
 
-		public override void SetStaticDefaults()
+	public override void SetStaticDefaults()
+	{
+		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 2, 0);
+		this.QuickSetFurniture(2, 4, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(120, 100, 100));
+	}
+}
+
+[SLRDebug]
+class VerletBannerItem : BaseTileItem
+{
+	public VerletBannerItem() : base("Verlet banner", "{{Debug}} Item", "VerletBanner", 1, AssetDirectory.VitricTile, false) { }
+}
+
+internal class VerletBannerDummy : Dummy
+{
+	public float timer;
+
+	private VerletChain Chain;
+
+	public VerletBannerDummy() : base(TileType<VerletBanner>(), 32, 32) { }
+
+	public override void SafeSetDefaults()
+	{
+		if (Main.netMode != NetmodeID.Server)
 		{
-			TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 2, 0);
-			this.QuickSetFurniture(2, 4, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(120, 100, 100));
+			Chain = new VerletChain(16, false, Center, 16)
+			{
+				constraintRepetitions = 2,//defaults to 2, raising this lowers stretching at the cost of performance
+				drag = 2f,//This number defaults to 1, Is very sensitive
+				forceGravity = new Vector2(0f, 0.25f),//gravity x/y
+				scale = 0.6f,
+				parent = this
+			};
 		}
 	}
 
-	[SLRDebug]
-	class VerletBannerItem : BaseTileItem
+	public override void Update()
 	{
-		public VerletBannerItem() : base("Verlet banner", "{{Debug}} Item", "VerletBanner", 1, AssetDirectory.VitricTile, false) { }
+		if (Main.netMode != NetmodeID.Server)
+		{
+			Chain.UpdateChain(Center);
+
+			Chain.IterateRope(WindForce);
+			timer += 0.005f;
+		}
 	}
 
-	internal class VerletBannerDummy : Dummy
+	private void WindForce(int index)//wind
 	{
-		public float timer;
+		int offset = (int)(position.X / 16 + position.Y / 16);
 
-		private VerletChain Chain;
+		float sin = (float)System.Math.Sin(StarlightWorld.visualTimer + offset - index / 3f);
 
-		public VerletBannerDummy() : base(TileType<VerletBanner>(), 32, 32) { }
+		float cos = (float)System.Math.Cos(timer);
+		float sin2 = (float)System.Math.Sin(StarlightWorld.visualTimer + offset + cos);
 
-		public override void SafeSetDefaults()
-		{
-			if (Main.netMode != NetmodeID.Server)
-			{
-				Chain = new VerletChain(16, false, Center, 16)
-				{
-					constraintRepetitions = 2,//defaults to 2, raising this lowers stretching at the cost of performance
-					drag = 2f,//This number defaults to 1, Is very sensitive
-					forceGravity = new Vector2(0f, 0.25f),//gravity x/y
-					scale = 0.6f,
-					parent = this
-				};
-			}
-		}
+		var pos = new Vector2(Chain.ropeSegments[index].posNow.X + 1 + sin2 * 1.2f, Chain.ropeSegments[index].posNow.Y + sin * 1.4f);
 
-		public override void Update()
-		{
-			if (Main.netMode != NetmodeID.Server)
-			{
-				Chain.UpdateChain(Center);
+		Color color = new Color(150, 10, 35).MultiplyRGB(Color.White * (1 - sin * 0.2f)).MultiplyRGB(Lighting.GetColor((int)pos.X / 16, (int)pos.Y / 16));
 
-				Chain.IterateRope(WindForce);
-				timer += 0.005f;
-			}
-		}
-
-		private void WindForce(int index)//wind
-		{
-			int offset = (int)(position.X / 16 + position.Y / 16);
-
-			float sin = (float)System.Math.Sin(StarlightWorld.visualTimer + offset - index / 3f);
-
-			float cos = (float)System.Math.Cos(timer);
-			float sin2 = (float)System.Math.Sin(StarlightWorld.visualTimer + offset + cos);
-
-			var pos = new Vector2(Chain.ropeSegments[index].posNow.X + 1 + sin2 * 1.2f, Chain.ropeSegments[index].posNow.Y + sin * 1.4f);
-
-			Color color = new Color(150, 10, 35).MultiplyRGB(Color.White * (1 - sin * 0.2f)).MultiplyRGB(Lighting.GetColor((int)pos.X / 16, (int)pos.Y / 16));
-
-			Chain.ropeSegments[index].posNow = pos;
-			Chain.ropeSegments[index].color = color;
-		}
+		Chain.ropeSegments[index].posNow = pos;
+		Chain.ropeSegments[index].color = color;
 	}
 }

@@ -8,128 +8,127 @@ using System.Collections.Generic;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Bosses.VitricBoss
+namespace StarlightRiver.Content.Bosses.VitricBoss;
+
+class FireRingHostile : ModProjectile, IDrawPrimitive
 {
-	class FireRingHostile : ModProjectile, IDrawPrimitive
+	private List<Vector2> cache;
+	private Trail trail;
+
+	public float TimeFade => 1 - Projectile.timeLeft / 30f;
+	public float Radius => Eases.BezierEase((30 - Projectile.timeLeft) / 30f) * Projectile.ai[0];
+
+	public override string Texture => AssetDirectory.Invisible;
+
+	public override void SetDefaults()
 	{
-		private List<Vector2> cache;
-		private Trail trail;
+		Projectile.hostile = true;
+		Projectile.width = 1;
+		Projectile.height = 1;
+		Projectile.tileCollide = false;
+		Projectile.timeLeft = 30;
+		Projectile.penetrate = -1;
+	}
 
-		public float TimeFade => 1 - Projectile.timeLeft / 30f;
-		public float Radius => Eases.BezierEase((30 - Projectile.timeLeft) / 30f) * Projectile.ai[0];
-
-		public override string Texture => AssetDirectory.Invisible;
-
-		public override void SetDefaults()
+	public override void AI()
+	{
+		if (Main.netMode != NetmodeID.Server)
 		{
-			Projectile.hostile = true;
-			Projectile.width = 1;
-			Projectile.height = 1;
-			Projectile.tileCollide = false;
-			Projectile.timeLeft = 30;
-			Projectile.penetrate = -1;
+			ManageCaches(ref cache);
+			ManageTrail(ref trail, cache, (int)(25 * Math.Min(1, Projectile.timeLeft / 15f)));
 		}
 
-		public override void AI()
+		for (int k = 0; k < 4; k++)
 		{
-			if (Main.netMode != NetmodeID.Server)
-			{
-				ManageCaches(ref cache);
-				ManageTrail(ref trail, cache, (int)(25 * Math.Min(1, Projectile.timeLeft / 15f)));
-			}
+			float rot = Main.rand.NextFloat(0, 6.28f);
 
+			if (Main.netMode != NetmodeID.Server)
+				Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedBy(rot) * (Radius + 20), ModContent.DustType<Dusts.PixelatedEmber>(), Vector2.One.RotatedBy(rot + Main.rand.NextFloat(1.1f, 1.3f)) * Main.rand.NextFloat(3), 0, new Color(255, 120 + (int)(100 * (float)Math.Sin(TimeFade * 3.14f)), 65, 0), 0.1f);
+		}
+	}
+
+	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+	{
+		return CollisionHelper.CheckCircularCollision(Projectile.Center, (int)Radius + 20, targetHitbox);
+	}
+
+	public override void OnHitPlayer(Player target, Player.HurtInfo info)
+	{
+		if (Main.LocalPlayer.whoAmI == target.whoAmI)
+		{
+			PlayerHitPacket hitPacket = new PlayerHitPacket(Projectile.identity, target.whoAmI, info.Damage, Projectile.type);
+			hitPacket.Send(-1, Main.LocalPlayer.whoAmI, false);
+		}
+
+		target.velocity += Vector2.Normalize(target.Center - Projectile.Center) * 8;
+		target.AddBuff(BuffID.OnFire, 180, quiet: true);
+
+		if (Main.netMode != NetmodeID.MultiplayerClient)
+		{
 			for (int k = 0; k < 4; k++)
 			{
-				float rot = Main.rand.NextFloat(0, 6.28f);
+				Vector2 vel = Vector2.Normalize(target.Center - Projectile.Center).RotatedByRandom(0.5f) * Main.rand.Next(5);
 
-				if (Main.netMode != NetmodeID.Server)
-					Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedBy(rot) * (Radius + 20), ModContent.DustType<Dusts.PixelatedEmber>(), Vector2.One.RotatedBy(rot + Main.rand.NextFloat(1.1f, 1.3f)) * Main.rand.NextFloat(3), 0, new Color(255, 120 + (int)(100 * (float)Math.Sin(TimeFade * 3.14f)), 65, 0), 0.1f);
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, vel, ModContent.ProjectileType<NeedlerEmber>(), 0, 0);
+			}
+		}
+	}
+
+	private void ManageCaches(ref List<Vector2> cache)
+	{
+		if (cache is null)
+		{
+			cache = new List<Vector2>();
+
+			for (int i = 0; i < 40; i++)
+			{
+				cache.Add(Projectile.Center);
 			}
 		}
 
-		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+		for (int k = 0; k < 40; k++)
 		{
-			return CollisionHelper.CheckCircularCollision(Projectile.Center, (int)Radius + 20, targetHitbox);
+			cache[k] = Projectile.Center + Vector2.One.RotatedBy(k / 19f * 6.28f) * (Radius + 20);
 		}
 
-		public override void OnHitPlayer(Player target, Player.HurtInfo info)
+		while (cache.Count > 40)
 		{
-			if (Main.LocalPlayer.whoAmI == target.whoAmI)
-			{
-				PlayerHitPacket hitPacket = new PlayerHitPacket(Projectile.identity, target.whoAmI, info.Damage, Projectile.type);
-				hitPacket.Send(-1, Main.LocalPlayer.whoAmI, false);
-			}
-
-			target.velocity += Vector2.Normalize(target.Center - Projectile.Center) * 8;
-			target.AddBuff(BuffID.OnFire, 180, quiet: true);
-
-			if (Main.netMode != NetmodeID.MultiplayerClient)
-			{
-				for (int k = 0; k < 4; k++)
-				{
-					Vector2 vel = Vector2.Normalize(target.Center - Projectile.Center).RotatedByRandom(0.5f) * Main.rand.Next(5);
-
-					Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, vel, ModContent.ProjectileType<NeedlerEmber>(), 0, 0);
-				}
-			}
+			cache.RemoveAt(0);
 		}
+	}
 
-		private void ManageCaches(ref List<Vector2> cache)
+	private void ManageTrail(ref Trail trail, List<Vector2> cache, int width)
+	{
+		if (trail is null || trail.IsDisposed)
+			trail = new Trail(Main.instance.GraphicsDevice, 40, new NoTip(), factor => width, factor => new Color(255, 100 + (int)(100 * (float)Math.Sin(TimeFade * 3.14f)), 65) * (float)Math.Sin(TimeFade * 3.14f) * 0.5f);
+
+		trail.Positions = cache.ToArray();
+		trail.NextPosition = cache[39];
+	}
+
+	public void DrawPrimitives()
+	{
+		Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
+
+		if (effect != null)
 		{
-			if (cache is null)
+			ModContent.GetInstance<PixelationSystem>().QueueRenderAction("UnderProjectiles", () =>
 			{
-				cache = new List<Vector2>();
+				var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-				for (int i = 0; i < 40; i++)
-				{
-					cache.Add(Projectile.Center);
-				}
-			}
+				effect.Parameters["time"].SetValue(Projectile.timeLeft * 0.01f);
+				effect.Parameters["repeats"].SetValue((int)(Projectile.ai[0] / 6));
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
 
-			for (int k = 0; k < 40; k++)
-			{
-				cache[k] = Projectile.Center + Vector2.One.RotatedBy(k / 19f * 6.28f) * (Radius + 20);
-			}
+				trail?.Render(effect);
 
-			while (cache.Count > 40)
-			{
-				cache.RemoveAt(0);
-			}
-		}
+				effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
 
-		private void ManageTrail(ref Trail trail, List<Vector2> cache, int width)
-		{
-			if (trail is null || trail.IsDisposed)
-				trail = new Trail(Main.instance.GraphicsDevice, 40, new NoTip(), factor => width, factor => new Color(255, 100 + (int)(100 * (float)Math.Sin(TimeFade * 3.14f)), 65) * (float)Math.Sin(TimeFade * 3.14f) * 0.5f);
-
-			trail.Positions = cache.ToArray();
-			trail.NextPosition = cache[39];
-		}
-
-		public void DrawPrimitives()
-		{
-			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
-
-			if (effect != null)
-			{
-				ModContent.GetInstance<PixelationSystem>().QueueRenderAction("UnderProjectiles", () =>
-				{
-					var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
-					Matrix view = Main.GameViewMatrix.TransformationMatrix;
-					var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
-
-					effect.Parameters["time"].SetValue(Projectile.timeLeft * 0.01f);
-					effect.Parameters["repeats"].SetValue((int)(Projectile.ai[0] / 6));
-					effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-					effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
-
-					trail?.Render(effect);
-
-					effect.Parameters["sampleTexture"].SetValue(Assets.FireTrail.Value);
-
-					trail?.Render(effect);
-				});
-			}
+				trail?.Render(effect);
+			});
 		}
 	}
 }

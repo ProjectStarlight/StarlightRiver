@@ -7,80 +7,79 @@ using Terraria.Enums;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Tiles.Crafting
+namespace StarlightRiver.Content.Tiles.Crafting;
+
+internal class CookStation : ModTile
 {
-	internal class CookStation : ModTile
+	public override string Texture => AssetDirectory.CraftingTile + Name;
+
+	public override void SetStaticDefaults()
 	{
-		public override string Texture => AssetDirectory.CraftingTile + Name;
+		this.QuickSetFurniture(5, 4, DustID.t_LivingWood, SoundID.Dig, true, new Color(151, 107, 75), false, false, "Cooking Station", new AnchorData(AnchorType.SolidTile, 5, 0));
+		Main.tileLighted[Type] = true;
+	}
 
-		public override void SetStaticDefaults()
+	public override void NumDust(int i, int j, bool fail, ref int num)
+	{
+		num = 1;
+	}
+
+	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
+	{
+		Tile tile = Framing.GetTileSafely(i, j);
+
+		if (tile.TileFrameX == 18 && tile.TileFrameY == 18 * 2)
 		{
-			this.QuickSetFurniture(5, 4, DustID.t_LivingWood, SoundID.Dig, true, new Color(151, 107, 75), false, false, "Cooking Station", new AnchorData(AnchorType.SolidTile, 5, 0));
-			Main.tileLighted[Type] = true;
-		}
-
-		public override void NumDust(int i, int j, bool fail, ref int num)
-		{
-			num = 1;
-		}
-
-		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
-		{
-			Tile tile = Framing.GetTileSafely(i, j);
-
-			if (tile.TileFrameX == 18 && tile.TileFrameY == 18 * 2)
-			{
-				float sin = 1.1f + (float)System.Math.Sin(Main.GameUpdateCount * 0.04f) * (float)System.Math.Cos(Main.GameUpdateCount * 0.065f) * 0.15f;
-				(r, g, b) = (1f * sin, 0.65f * sin, 0.4f * sin);
-			}
-		}
-
-		public override bool RightClick(int i, int j)
-		{
-			Main.playerInventory = true;
-
-			if (!CookingUI.visible)
-			{
-				CookingUI.prepStationPos = new Vector2(i * 16, j * 16);
-				CookingUI.visible = true;
-				Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuOpen);
-
-				var bag = Main.LocalPlayer.inventory.FirstOrDefault(n => n.type == ItemType<ChefBag>())?.ModItem as ChefBag;
-
-				if (bag != null)
-				{
-					ChefBagUI.visible = true;
-					ChefBagUI.openBag = bag;
-					ChefBagUI.Move(CookingUI.Basepos + new Vector2(-500, 0));
-				}
-			}
-			else
-			{
-				CookingUI.visible = false;
-				Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuClose);
-			}
-
-			return true;
+			float sin = 1.1f + (float)System.Math.Sin(Main.GameUpdateCount * 0.04f) * (float)System.Math.Cos(Main.GameUpdateCount * 0.065f) * 0.15f;
+			(r, g, b) = (1f * sin, 0.65f * sin, 0.4f * sin);
 		}
 	}
 
-	public class CookStationItem : BaseTileItem
+	public override bool RightClick(int i, int j)
 	{
-		public CookStationItem() : base("Prep Station", "<right> to prepare meals", "CookStation", 0, AssetDirectory.CraftingTile) { }
+		Main.playerInventory = true;
 
-		public override void AddRecipes()
+		if (!CookingUI.visible)
 		{
-			CreateRecipe()
-			.AddIngredient(ItemID.Wood, 20)
-			.AddIngredient(ItemID.IronBar, 5)
-			.AddTile(TileID.WorkBenches)
-			.Register();
+			CookingUI.prepStationPos = new Vector2(i * 16, j * 16);
+			CookingUI.visible = true;
+			Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuOpen);
 
-			CreateRecipe()
-			.AddIngredient(ItemID.Wood, 20)
-			.AddIngredient(ItemID.LeadBar, 5)
-			.AddTile(TileID.WorkBenches)
-			.Register();
+			var bag = Main.LocalPlayer.inventory.FirstOrDefault(n => n.type == ItemType<ChefBag>())?.ModItem as ChefBag;
+
+			if (bag != null)
+			{
+				ChefBagUI.visible = true;
+				ChefBagUI.openBag = bag;
+				ChefBagUI.Move(CookingUI.Basepos + new Vector2(-500, 0));
+			}
 		}
+		else
+		{
+			CookingUI.visible = false;
+			Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuClose);
+		}
+
+		return true;
+	}
+}
+
+public class CookStationItem : BaseTileItem
+{
+	public CookStationItem() : base("Prep Station", "<right> to prepare meals", "CookStation", 0, AssetDirectory.CraftingTile) { }
+
+	public override void AddRecipes()
+	{
+		CreateRecipe()
+		.AddIngredient(ItemID.Wood, 20)
+		.AddIngredient(ItemID.IronBar, 5)
+		.AddTile(TileID.WorkBenches)
+		.Register();
+
+		CreateRecipe()
+		.AddIngredient(ItemID.Wood, 20)
+		.AddIngredient(ItemID.LeadBar, 5)
+		.AddTile(TileID.WorkBenches)
+		.Register();
 	}
 }

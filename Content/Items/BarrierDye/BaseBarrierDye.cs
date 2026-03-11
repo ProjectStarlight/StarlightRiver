@@ -2,90 +2,89 @@
 using StarlightRiver.Core.Systems.BarrierSystem;
 using System;
 
-namespace StarlightRiver.Content.Items.BarrierDye
+namespace StarlightRiver.Content.Items.BarrierDye;
+
+public abstract class BarrierDye : ModItem
 {
-	public abstract class BarrierDye : ModItem
+	public virtual float RechargeAnimationRate => 0.05f;
+
+	public virtual void HitBarrierEffects(Player Player) { }
+
+	public virtual void LoseBarrierEffects(Player Player) { }
+
+	public virtual void PreDrawEffects(SpriteBatch spriteBatch, Player player) { }
+
+	public virtual void PostDrawEffects(SpriteBatch spriteBatch, Player Player) { }
+
+	public override bool CanRightClick()
 	{
-		public virtual float RechargeAnimationRate => 0.05f;
-
-		public virtual void HitBarrierEffects(Player Player) { }
-
-		public virtual void LoseBarrierEffects(Player Player) { }
-
-		public virtual void PreDrawEffects(SpriteBatch spriteBatch, Player player) { }
-
-		public virtual void PostDrawEffects(SpriteBatch spriteBatch, Player Player) { }
-
-		public override bool CanRightClick()
-		{
-			return true;
-		}
-
-		public override void RightClick(Player Player)
-		{
-			BarrierPlayer mp = Player.GetModPlayer<BarrierPlayer>();
-
-			Item prevBarrierItem = mp.barrierDyeItem;
-			Player.GetModPlayer<BarrierPlayer>().barrierDyeItem = Item.Clone();
-			Item.TurnToAir();
-			mp.rechargeAnimationTimer = 0;
-
-			Main.EquipPageSelected = 2;
-
-			if (prevBarrierItem.type != ModContent.ItemType<BaseBarrierDye>())
-				Main.LocalPlayer.GetItem(Main.myPlayer, prevBarrierItem.Clone(), GetItemSettings.ItemCreatedFromItemUsage);
-		}
+		return true;
 	}
 
-	[SLRDebug]
-	class BaseBarrierDye : BarrierDye
+	public override void RightClick(Player Player)
 	{
-		public override string Texture => AssetDirectory.Invisible;
+		BarrierPlayer mp = Player.GetModPlayer<BarrierPlayer>();
 
-		public override void UpdateInventory(Player Player)
+		Item prevBarrierItem = mp.barrierDyeItem;
+		Player.GetModPlayer<BarrierPlayer>().barrierDyeItem = Item.Clone();
+		Item.TurnToAir();
+		mp.rechargeAnimationTimer = 0;
+
+		Main.EquipPageSelected = 2;
+
+		if (prevBarrierItem.type != ModContent.ItemType<BaseBarrierDye>())
+			Main.LocalPlayer.GetItem(Main.myPlayer, prevBarrierItem.Clone(), GetItemSettings.ItemCreatedFromItemUsage);
+	}
+}
+
+[SLRDebug]
+class BaseBarrierDye : BarrierDye
+{
+	public override string Texture => AssetDirectory.Invisible;
+
+	public override void UpdateInventory(Player Player)
+	{
+		if (Main.mouseItem == Item)
+			Item.TurnToAir();
+	}
+
+	public override void LoseBarrierEffects(Player Player)
+	{
+		Terraria.Audio.SoundEngine.PlaySound(Terraria.ID.SoundID.NPCDeath57, Player.Center);
+
+		for (int k = 0; k < 50; k++)
+			Dust.NewDustPerfect(Player.Center, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4f), 0, new Color(20, 100, 110), Main.rand.NextFloat(0.5f));
+	}
+
+	public override void PreDrawEffects(SpriteBatch spriteBatch, Player player)
+	{
+		if (!PlayerTargetSystem.canUseTarget)
+			return;
+
+		BarrierPlayer barrier = player.GetModPlayer<BarrierPlayer>();
+
+		spriteBatch.End();
+		spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.ZoomMatrix);
+
+		float opacity = barrier.rechargeAnimationTimer;
+
+		float sin = (float)Math.Sin(Main.GameUpdateCount / 10f);
+
+		for (int k = 0; k < 4; k++)
 		{
-			if (Main.mouseItem == Item)
-				Item.TurnToAir();
+			Vector2 dir = Vector2.UnitX.RotatedBy(k / 4f * 6.28f) * (3.5f + sin * 1f);
+			Color color = new Color(100, 255, 255) * (opacity - sin * 0.1f) * 0.9f;
+
+			spriteBatch.Draw(PlayerTargetSystem.Target, PlayerTargetSystem.getPlayerTargetPosition(player.whoAmI) + dir, PlayerTargetSystem.getPlayerTargetSourceRectangle(player.whoAmI), color);
 		}
 
-		public override void LoseBarrierEffects(Player Player)
-		{
-			Terraria.Audio.SoundEngine.PlaySound(Terraria.ID.SoundID.NPCDeath57, Player.Center);
+		spriteBatch.End();
 
-			for (int k = 0; k < 50; k++)
-				Dust.NewDustPerfect(Player.Center, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4f), 0, new Color(20, 100, 110), Main.rand.NextFloat(0.5f));
-		}
+		SamplerState samplerState = Main.DefaultSamplerState;
 
-		public override void PreDrawEffects(SpriteBatch spriteBatch, Player player)
-		{
-			if (!PlayerTargetSystem.canUseTarget)
-				return;
+		if (player.mount.Active)
+			samplerState = Terraria.Graphics.Renderers.LegacyPlayerRenderer.MountedSamplerState;
 
-			BarrierPlayer barrier = player.GetModPlayer<BarrierPlayer>();
-
-			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.ZoomMatrix);
-
-			float opacity = barrier.rechargeAnimationTimer;
-
-			float sin = (float)Math.Sin(Main.GameUpdateCount / 10f);
-
-			for (int k = 0; k < 4; k++)
-			{
-				Vector2 dir = Vector2.UnitX.RotatedBy(k / 4f * 6.28f) * (3.5f + sin * 1f);
-				Color color = new Color(100, 255, 255) * (opacity - sin * 0.1f) * 0.9f;
-
-				spriteBatch.Draw(PlayerTargetSystem.Target, PlayerTargetSystem.getPlayerTargetPosition(player.whoAmI) + dir, PlayerTargetSystem.getPlayerTargetSourceRectangle(player.whoAmI), color);
-			}
-
-			spriteBatch.End();
-
-			SamplerState samplerState = Main.DefaultSamplerState;
-
-			if (player.mount.Active)
-				samplerState = Terraria.Graphics.Renderers.LegacyPlayerRenderer.MountedSamplerState;
-
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, samplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
-		}
+		Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, samplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 	}
 }

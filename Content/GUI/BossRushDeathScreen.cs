@@ -6,98 +6,97 @@ using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 
-namespace StarlightRiver.Content.GUI
+namespace StarlightRiver.Content.GUI;
+
+internal class BossRushDeathScreen : SmartUIState
 {
-	internal class BossRushDeathScreen : SmartUIState
+	public static int timer;
+
+	public UIText retryButton;
+	public UIText giveUpButton;
+
+	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{
-		public static int timer;
+		return layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
+	}
 
-		public UIText retryButton;
-		public UIText giveUpButton;
+	public override void OnInitialize()
+	{
+		LocalizedText retry = Language.GetText("Mods.StarlightRiver.GUI.BossRushDeathScreen.Retry");
+		LocalizedText giveUp = Language.GetText("Mods.StarlightRiver.GUI.BossRushDeathScreen.GiveUp");
 
-		public override int InsertionIndex(List<GameInterfaceLayer> layers)
+		Vector2 retryTextSize = FontAssets.MouseText.Value.MeasureString(retry.Value);
+		retryButton = new UIText(retry)
 		{
-			return layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
-		}
+			Left = new StyleDimension(-retryTextSize.X / 2, 0.5f),
+			Top = new StyleDimension(80f, 0.5f),
+		};
 
-		public override void OnInitialize()
+		retryButton.OnLeftClick += (a, b) => ClickRetryButton();
+
+		Vector2 giveUpSize = FontAssets.MouseText.Value.MeasureString(giveUp.Value);
+		giveUpButton = new UIText(giveUp)
 		{
-			LocalizedText retry = Language.GetText("Mods.StarlightRiver.GUI.BossRushDeathScreen.Retry");
-			LocalizedText giveUp = Language.GetText("Mods.StarlightRiver.GUI.BossRushDeathScreen.GiveUp");
+			Left = new StyleDimension(-giveUpSize.X / 2, 0.5f),
+			Top = new StyleDimension(120f, 0.5f),
+		};
 
-			Vector2 retryTextSize = FontAssets.MouseText.Value.MeasureString(retry.Value);
-			retryButton = new UIText(retry)
-			{
-				Left = new StyleDimension(-retryTextSize.X / 2, 0.5f),
-				Top = new StyleDimension(80f, 0.5f),
-			};
+		giveUpButton.OnLeftClick += (a, b) => ClickGiveUpButton();
 
-			retryButton.OnLeftClick += (a, b) => ClickRetryButton();
+		Append(retryButton);
+		Append(giveUpButton);
+	}
 
-			Vector2 giveUpSize = FontAssets.MouseText.Value.MeasureString(giveUp.Value);
-			giveUpButton = new UIText(giveUp)
-			{
-				Left = new StyleDimension(-giveUpSize.X / 2, 0.5f),
-				Top = new StyleDimension(120f, 0.5f),
-			};
+	public void ClickGiveUpButton()
+	{
+		Visible = false;
+		WorldGen.SaveAndQuit();
 
-			giveUpButton.OnLeftClick += (a, b) => ClickGiveUpButton();
+		BossRushScore.Reset();
+		BossRushGUIHack.inScoreScreen = true;
+	}
 
-			Append(retryButton);
-			Append(giveUpButton);
-		}
-
-		public void ClickGiveUpButton()
+	public void ClickRetryButton()
+	{
+		if (BossRushSystem.deathFadeoutTimer >= BossRushSystem.MAX_DEATH_FADEOUT)
 		{
 			Visible = false;
-			WorldGen.SaveAndQuit();
-
-			BossRushScore.Reset();
-			BossRushGUIHack.inScoreScreen = true;
+			Main.LocalPlayer.respawnTimer = 0;
+			BossRushSystem.Reset();
+			BossRushGUIHack.inScoreScreen = false;
 		}
+	}
 
-		public void ClickRetryButton()
-		{
-			if (BossRushSystem.deathFadeoutTimer >= BossRushSystem.MAX_DEATH_FADEOUT)
-			{
-				Visible = false;
-				Main.LocalPlayer.respawnTimer = 0;
-				BossRushSystem.Reset();
-				BossRushGUIHack.inScoreScreen = false;
-			}
-		}
+	public override void Draw(SpriteBatch spriteBatch)
+	{
+		spriteBatch.End();
+		spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.AnisotropicClamp, DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
 
-		public override void Draw(SpriteBatch spriteBatch)
-		{
-			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.AnisotropicClamp, DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+		var pos = new Vector2(Main.screenWidth / 2, Main.screenHeight / 2 + 30);
 
-			var pos = new Vector2(Main.screenWidth / 2, Main.screenHeight / 2 + 30);
+		//seem to have to recalculate every frame otherwise buttons end up in the wrong spot
+		Recalculate();
 
-			//seem to have to recalculate every frame otherwise buttons end up in the wrong spot
-			Recalculate();
+		string value = Lang.inter[38].Value; //pulled directly from vanilla comes free with translation
+		DynamicSpriteFontExtensionMethods.DrawString(spriteBatch, FontAssets.DeathText.Value, value, new Vector2(Main.screenWidth / 2 - FontAssets.DeathText.Value.MeasureString(value).X / 2f, Main.screenHeight / 2 - 60f), Main.LocalPlayer.GetDeathAlpha(Color.Transparent), 0f, default, 1f, 0, 0f);
 
-			string value = Lang.inter[38].Value; //pulled directly from vanilla comes free with translation
-			DynamicSpriteFontExtensionMethods.DrawString(spriteBatch, FontAssets.DeathText.Value, value, new Vector2(Main.screenWidth / 2 - FontAssets.DeathText.Value.MeasureString(value).X / 2f, Main.screenHeight / 2 - 60f), Main.LocalPlayer.GetDeathAlpha(Color.Transparent), 0f, default, 1f, 0, 0f);
+		string ScoreString = Language.GetText("Mods.StarlightRiver.GUI.BossRushDeathScreen.Score").Format(BossRushSystem.Score);
 
-			string ScoreString = Language.GetText("Mods.StarlightRiver.GUI.BossRushDeathScreen.Score").Format(BossRushSystem.Score);
+		Utils.DrawBorderStringBig(spriteBatch, ScoreString, pos, Main.LocalPlayer.GetDeathAlpha(new Color(255, 255, 0, 0)), 0.5f, 0.5f, 0.5f);
 
-			Utils.DrawBorderStringBig(spriteBatch, ScoreString, pos, Main.LocalPlayer.GetDeathAlpha(new Color(255, 255, 0, 0)), 0.5f, 0.5f, 0.5f);
+		spriteBatch.End();
+		spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
 
-			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.None, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+		if (BossRushSystem.deathFadeoutTimer >= BossRushSystem.MAX_DEATH_FADEOUT)
+			timer++;
 
-			if (BossRushSystem.deathFadeoutTimer >= BossRushSystem.MAX_DEATH_FADEOUT)
-				timer++;
+		retryButton.TextColor = Color.White * (timer / 60f);
 
-			retryButton.TextColor = Color.White * (timer / 60f);
+		base.Draw(spriteBatch);
+	}
 
-			base.Draw(spriteBatch);
-		}
-
-		public static void Reset()
-		{
-			timer = 0;
-		}
+	public static void Reset()
+	{
+		timer = 0;
 	}
 }

@@ -6,210 +6,209 @@ using System.Text;
 using System.Threading.Tasks;
 using static Terraria.GameContent.Biomes.DunesBiome;
 
-namespace StarlightRiver.Core.Systems.ArmatureSystem
+namespace StarlightRiver.Core.Systems.ArmatureSystem;
+
+internal struct ArmSegment
 {
-	internal struct ArmSegment
+	public Vector2 start;
+	public float rotation;
+	public float length;
+
+	public Rectangle frame;
+
+	public Vector2 Endpoint => start + Vector2.UnitX.RotatedBy(rotation) * length;
+
+	/// <summary>
+	/// Initialize the segment to an arm
+	/// </summary>
+	/// <param name="length">The length of this arm segment</param>
+	/// <param name="frame">The frame of the texture to be used. Defaults to using the whole texture.</param>
+	public ArmSegment(float length, Rectangle frame = default)
 	{
-		public Vector2 start;
-		public float rotation;
-		public float length;
+		start = Vector2.Zero;
+		rotation = 0;
+		this.length = length;
+		this.frame = frame;
+	}
 
-		public Rectangle frame;
+	/// <summary>
+	/// Draws this segment in the world
+	/// </summary>
+	/// <param name="spriteBatch">The SpriteBatch to draw with</param>
+	/// <param name="texture">The texture used by the arm this segment belongs to</param>
+	public void DrawSegment(SpriteBatch spriteBatch, Texture2D texture)
+	{
+		Vector2 pos = start - Main.screenPosition;
+		Rectangle frame = this.frame == default ? texture.Frame() : this.frame;
+		Vector2 origin = new Vector2(0, frame.Height / 2f);
+		Vector2 midpoint = Vector2.Lerp(start, Endpoint, 0.5f);
 
-		public Vector2 Endpoint => start + Vector2.UnitX.RotatedBy(rotation) * length;
+		Color color = Lighting.GetColor((midpoint / 16).ToPoint());
 
-		/// <summary>
-		/// Initialize the segment to an arm
-		/// </summary>
-		/// <param name="length">The length of this arm segment</param>
-		/// <param name="frame">The frame of the texture to be used. Defaults to using the whole texture.</param>
-		public ArmSegment(float length, Rectangle frame = default)
+		spriteBatch.Draw(texture, pos, frame, color, rotation, origin, 1f, 0, 0);
+	}
+}
+
+internal class Arm
+{
+	public Vector2 start;
+	public ArmSegment[] segments;
+	public Texture2D texture;
+
+	public int SegmentCount => segments.Length;
+	public float MaxLen => segments.Sum(a => a.length);
+	public Vector2 Endpoint => segments[^1].Endpoint;
+
+	/// <summary>
+	/// Initialize an arm with a predefined set of ArmSegment structures. Useful for intitialzing complex limbs with differing lengths
+	/// </summary>
+	/// <param name="start">The joint position of the first segment</param>
+	/// <param name="segments">The segments to initialize the arm with</param>
+	public Arm(Vector2 start, ArmSegment[] segments, Texture2D texture)
+	{
+		if (segments is null || segments.Length <= 0)
+			throw new Exception("Arm was initialized with null or empty segment collection!");
+
+		this.start = start;
+		this.segments = segments;
+		this.texture = texture;
+	}
+
+	/// <summary>
+	/// Initialize a simple arm, with an amount of segments of a given length
+	/// </summary>
+	/// <param name="start">The joint position of the first segment</param>
+	/// <param name="segments">The amount of segments in the arm</param>
+	/// <param name="segmentLength">The length of each segment in the arm</param>
+	public Arm(Vector2 start, int segments, float segmentLength, Texture2D texture)
+	{
+		if (segments <= 0)
+			throw new Exception("Arm was initialized with null or empty segment collection!");
+
+		this.start = start;
+		this.segments = new ArmSegment[segments];
+
+		for (int k = 0; k < segments; k++)
 		{
-			start = Vector2.Zero;
-			rotation = 0;
-			this.length = length;
-			this.frame = frame;
+			this.segments[k] = new ArmSegment(segmentLength);
 		}
 
-		/// <summary>
-		/// Draws this segment in the world
-		/// </summary>
-		/// <param name="spriteBatch">The SpriteBatch to draw with</param>
-		/// <param name="texture">The texture used by the arm this segment belongs to</param>
-		public void DrawSegment(SpriteBatch spriteBatch, Texture2D texture)
+		this.texture = texture;
+	}
+
+	/// <summary>
+	/// Perform inverse kinematics calculations to arrange the various arm segments such that they reach the given target
+	/// </summary>
+	/// <param name="target">The point the arm should go to</param>
+	public void IKToPoint(Vector2 target)
+	{
+		for (int i = segments.Length - 1; i >= 0; i--)
 		{
-			Vector2 pos = start - Main.screenPosition;
-			Rectangle frame = this.frame == default ? texture.Frame() : this.frame;
-			Vector2 origin = new Vector2(0, frame.Height / 2f);
-			Vector2 midpoint = Vector2.Lerp(start, Endpoint, 0.5f);
+			ArmSegment currentSegment = segments[i];
 
-			Color color = Lighting.GetColor((midpoint / 16).ToPoint());
+			Vector2 toTarget = target - currentSegment.start;
+			float targetRotation = toTarget.ToRotation();
 
-			spriteBatch.Draw(texture, pos, frame, color, rotation, origin, 1f, 0, 0);
+			if (float.IsNaN(targetRotation))
+				targetRotation = 0;
+
+			segments[i].rotation = targetRotation;
+			target += Vector2.UnitX.RotatedBy(targetRotation) * -currentSegment.length;
 		}
 	}
 
-	internal class Arm
+	/// <summary>
+	/// Better for more 'organic' shapes like limbs
+	/// </summary>
+	/// <param name="target"></param>
+	public void FabrikIKToPoint(Vector2 target)
 	{
-		public Vector2 start;
-		public ArmSegment[] segments;
-		public Texture2D texture;
+		float totalLength = MaxLen;
+		float distanceToTarget = Vector2.Distance(start, target);
 
-		public int SegmentCount => segments.Length;
-		public float MaxLen => segments.Sum(a => a.length);
-		public Vector2 Endpoint => segments[^1].Endpoint;
-
-		/// <summary>
-		/// Initialize an arm with a predefined set of ArmSegment structures. Useful for intitialzing complex limbs with differing lengths
-		/// </summary>
-		/// <param name="start">The joint position of the first segment</param>
-		/// <param name="segments">The segments to initialize the arm with</param>
-		public Arm(Vector2 start, ArmSegment[] segments, Texture2D texture)
+		if (distanceToTarget > totalLength)
 		{
-			if (segments is null || segments.Length <= 0)
-				throw new Exception("Arm was initialized with null or empty segment collection!");
+			// Unreachable target: stretch toward it
+			Vector2 dir = (target - start).SafeNormalize(Vector2.UnitX);
+			segments[0].start = start;
 
-			this.start = start;
-			this.segments = segments;
-			this.texture = texture;
-		}
-
-		/// <summary>
-		/// Initialize a simple arm, with an amount of segments of a given length
-		/// </summary>
-		/// <param name="start">The joint position of the first segment</param>
-		/// <param name="segments">The amount of segments in the arm</param>
-		/// <param name="segmentLength">The length of each segment in the arm</param>
-		public Arm(Vector2 start, int segments, float segmentLength, Texture2D texture)
-		{
-			if (segments <= 0)
-				throw new Exception("Arm was initialized with null or empty segment collection!");
-
-			this.start = start;
-			this.segments = new ArmSegment[segments];
-
-			for (int k = 0; k < segments; k++)
+			for (int i = 0; i < segments.Length; i++)
 			{
-				this.segments[k] = new ArmSegment(segmentLength);
+				segments[i].rotation = dir.ToRotation();
+				if (i > 0)
+					segments[i].start = segments[i - 1].Endpoint;
 			}
 
-			this.texture = texture;
+			return;
 		}
 
-		/// <summary>
-		/// Perform inverse kinematics calculations to arrange the various arm segments such that they reach the given target
-		/// </summary>
-		/// <param name="target">The point the arm should go to</param>
-		public void IKToPoint(Vector2 target)
+		// Initialize joint positions
+		Vector2[] joints = new Vector2[segments.Length + 1];
+		joints[0] = start;
+		for (int i = 1; i <= segments.Length; i++)
 		{
+			joints[i] = joints[i - 1] + Vector2.UnitX * segments[i - 1].length;
+		}
+
+		for (int k = 0; k < 40; k++)
+		{
+			// BACKWARD PASS
+			joints[^1] = target;
 			for (int i = segments.Length - 1; i >= 0; i--)
 			{
-				ArmSegment currentSegment = segments[i];
-
-				Vector2 toTarget = target - currentSegment.start;
-				float targetRotation = toTarget.ToRotation();
-
-				if (float.IsNaN(targetRotation))
-					targetRotation = 0;
-
-				segments[i].rotation = targetRotation;
-				target += Vector2.UnitX.RotatedBy(targetRotation) * -currentSegment.length;
-			}
-		}
-
-		/// <summary>
-		/// Better for more 'organic' shapes like limbs
-		/// </summary>
-		/// <param name="target"></param>
-		public void FabrikIKToPoint(Vector2 target)
-		{
-			float totalLength = MaxLen;
-			float distanceToTarget = Vector2.Distance(start, target);
-
-			if (distanceToTarget > totalLength)
-			{
-				// Unreachable target: stretch toward it
-				Vector2 dir = (target - start).SafeNormalize(Vector2.UnitX);
-				segments[0].start = start;
-
-				for (int i = 0; i < segments.Length; i++)
-				{
-					segments[i].rotation = dir.ToRotation();
-					if (i > 0)
-						segments[i].start = segments[i - 1].Endpoint;
-				}
-
-				return;
+				Vector2 dir = (joints[i] - joints[i + 1]).SafeNormalize(Vector2.UnitX);
+				joints[i] = joints[i + 1] + dir * segments[i].length;
 			}
 
-			// Initialize joint positions
-			Vector2[] joints = new Vector2[segments.Length + 1];
+			// FORWARD PASS
 			joints[0] = start;
 			for (int i = 1; i <= segments.Length; i++)
 			{
-				joints[i] = joints[i - 1] + Vector2.UnitX * segments[i - 1].length;
+				Vector2 dir = (joints[i] - joints[i - 1]).SafeNormalize(Vector2.UnitX);
+				joints[i] = joints[i - 1] + dir * segments[i - 1].length;
 			}
 
-			for (int k = 0; k < 40; k++)
-			{
-				// BACKWARD PASS
-				joints[^1] = target;
-				for (int i = segments.Length - 1; i >= 0; i--)
-				{
-					Vector2 dir = (joints[i] - joints[i + 1]).SafeNormalize(Vector2.UnitX);
-					joints[i] = joints[i + 1] + dir * segments[i].length;
-				}
-
-				// FORWARD PASS
-				joints[0] = start;
-				for (int i = 1; i <= segments.Length; i++)
-				{
-					Vector2 dir = (joints[i] - joints[i - 1]).SafeNormalize(Vector2.UnitX);
-					joints[i] = joints[i - 1] + dir * segments[i - 1].length;
-				}
-
-				if (Vector2.Distance(joints[^1], target) < 0.1f)
-					break;
-			}
-
-			// Apply new joint positions and rotations
-			for (int i = 0; i < segments.Length; i++)
-			{
-				segments[i].start = joints[i];
-				Vector2 toNext = joints[i + 1] - joints[i];
-				segments[i].rotation = toNext.ToRotation();
-			}
+			if (Vector2.Distance(joints[^1], target) < 0.1f)
+				break;
 		}
 
-		/// <summary>
-		/// Updates the position of each segment sequentially
-		/// </summary>
-		public void Update()
+		// Apply new joint positions and rotations
+		for (int i = 0; i < segments.Length; i++)
 		{
-			segments[0].start = start;
+			segments[i].start = joints[i];
+			Vector2 toNext = joints[i + 1] - joints[i];
+			segments[i].rotation = toNext.ToRotation();
+		}
+	}
 
-			for (int k = 1; k < segments.Length; k++)
-			{
-				segments[k].start = segments[k - 1].Endpoint;
-			}
+	/// <summary>
+	/// Updates the position of each segment sequentially
+	/// </summary>
+	public void Update()
+	{
+		segments[0].start = start;
 
-			for (int k = 0; k < segments.Length; k++)
-			{
-				if (segments[k].rotation != segments[k].rotation) // == NaN
-					segments[k].rotation = 0;
-			}
+		for (int k = 1; k < segments.Length; k++)
+		{
+			segments[k].start = segments[k - 1].Endpoint;
 		}
 
-		/// <summary>
-		/// Draws the given arm, based on the given world coordinates and textures
-		/// </summary>
-		/// <param name="spriteBatch"></param>
-		public void DrawArm(SpriteBatch spriteBatch)
+		for (int k = 0; k < segments.Length; k++)
 		{
-			foreach (ArmSegment segment in segments)
-			{
-				segment.DrawSegment(spriteBatch, texture);
-			}
+			if (segments[k].rotation != segments[k].rotation) // == NaN
+				segments[k].rotation = 0;
+		}
+	}
+
+	/// <summary>
+	/// Draws the given arm, based on the given world coordinates and textures
+	/// </summary>
+	/// <param name="spriteBatch"></param>
+	public void DrawArm(SpriteBatch spriteBatch)
+	{
+		foreach (ArmSegment segment in segments)
+		{
+			segment.DrawSegment(spriteBatch, texture);
 		}
 	}
 }
