@@ -3,6 +3,14 @@ using System.Reflection;
 
 namespace StarlightRiver;
 
+/*
+ *		TODO: Deprecate this entirely. In the event we move to tml-build, itll be
+ *		relatively easy with regex to replace all instances of hardcoded localization strings with actual localization strings.
+ *
+ *		no idea why this even exists?
+ */
+
+[Obsolete("")]
 internal class LocalizationRewriter : ModSystem
 {
 	public override void PostSetupContent()
