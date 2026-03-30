@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Bosses.VitricBoss;
+using StarlightRiver.Content.Items.BaseTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Crimson
 {
-	internal class BonemineItem : QuickTileItem
+	internal class BonemineItem : BaseTileItem
 	{
 		public BonemineItem() : base("Bone mine", "Doyoyouuyuuhuyhh *BRRPT* *Anyuerism*", "Bonemine", 0, "StarlightRiver/Assets/Tiles/Crimson/") { }
 	}

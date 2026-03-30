@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.Items.BaseTypes;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,7 +11,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Crimson
 {
-	internal class GrayMatterItem : QuickTileItem
+	internal class GrayMatterItem : BaseTileItem
 	{
 		public GrayMatterItem() : base("Gray Matter", "You can see it thinking", "GrayMatter", 0, "StarlightRiver/Assets/Tiles/Crimson/") { }
 	}

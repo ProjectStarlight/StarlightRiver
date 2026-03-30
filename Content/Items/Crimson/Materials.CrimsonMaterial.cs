@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Items.Moonstone;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Items.Moonstone;
 using StarlightRiver.Content.Tiles.Crimson;
 using StarlightRiver.Core.Loaders;
 using Terraria.Graphics.Effects;
@@ -6,7 +7,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
-	public class DendriteBar : QuickMaterial
+	public class DendriteBar : BaseMaterial
 	{
 		public override string Texture => AssetDirectory.CrimsonItem + Name;
 
@@ -21,7 +22,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		}
 	}
 
-	public class ImaginaryTissue : QuickMaterial
+	public class ImaginaryTissue : BaseMaterial
 	{
 		public override string Texture => AssetDirectory.CrimsonItem + Name;
 
