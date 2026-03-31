@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
 using Terraria.Enums;
 using Terraria.GameContent.Drawing;
 using Terraria.ID;
@@ -43,24 +38,44 @@ namespace StarlightRiver.Content.Tiles.Crimson
 			return false;
 		}
 
+		public override void NearbyEffects(int i, int j, bool closer)
+		{
+			float absSpeed = Math.Abs(Main.windSpeedCurrent);
+			if (absSpeed > 0.4f && Main.rand.NextBool(25) && Main.rand.NextFloat() < (absSpeed - 0.4f))
+			{
+				Color color = new Color(1f, 0, 0, 0) * absSpeed;
+
+				if (Main.rand.NextBool(3))
+					color = new Color(0f, 0, 1f, 0) * absSpeed;
+
+				Dust.NewDustPerfect(new Vector2(i, j - Main.rand.NextFloat(6)) * 16, ModContent.DustType<Dusts.PixelatedEmber>(), new Vector2(Main.windSpeedCurrent * Main.rand.NextFloat(1f, 3.5f), Main.rand.NextFloat(-1, -2)) * Main.rand.NextFloat(2), 0, color, 0.1f);
+			}
+
+			Main.instance.TilesRenderer.Wind.GetWindTime(i, j - 2, 40, out int windTimeLeft, out int directionX, out int directionY);
+			Vector2 wind = new Vector2(directionX, directionY) * MathF.Sin(windTimeLeft / 40f * 3.14f);
+
+			if (windTimeLeft == 1)
+			{
+				Color color = new Color(1f, 0, 0, 0);
+
+				if (Main.rand.NextBool(3))
+					color = new Color(0f, 0, 1f, 0);
+
+				Dust.NewDustPerfect(new Vector2(i, j - Main.rand.NextFloat(6)) * 16, ModContent.DustType<Dusts.PixelatedEmber>(), new Vector2(wind.X * -15f, Main.rand.NextFloat(-0.5f, -1)) * Main.rand.NextFloat(2), 0, color, 0.1f);
+			}
+		}
+
 		public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 		{
-			Tile up = Framing.GetTileSafely(i, j - 1);
-			Tile down = Framing.GetTileSafely(i, j + 1);
-
-			if (down.type != Type)
-				Main.instance.TilesRenderer.AddSpecialPoint(i, j, TileDrawing.TileCounterType.ReverseVine);
-
+			Main.instance.TilesRenderer.AddSpecialPoint(i, j, TileDrawing.TileCounterType.CustomNonSolid);
 			return false;
 		}
 
-		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
+		public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch)
 		{
-			return;
-
 			Tile tile = Framing.GetTileSafely(i, j);
 			Texture2D tex = Assets.Tiles.Crimson.BreathingGrass.Value;
-			Vector2 pos = new Vector2(i, j + 1) * 16 + Vector2.One * Main.offScreenRange;
+			Vector2 pos = new Vector2(i, j + 1) * 16;
 			Vector2 logicPos = new Vector2(i, j + 1) * 16;
 			Color color = Lighting.GetColor(i, j); // make sure we only get lighting once since thats expensive
 
@@ -68,17 +83,23 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 			void DrawGrass(int seed, Color color, float scale)
 			{
-				int variant = seed % 8;
-				int offset = seed % 14 - 7;
+				int variant = seed % 3;
+				int offset = seed % 16 - 8;
 
-				float breath = (float)Math.Sin((Main.GameUpdateCount + seed % 90) / (60 * 6f) * 6.28f);
-				float sway = (float)Math.Sin((Main.GameUpdateCount + seed % (60 * 3)) / (60 * 9f) * 6.28f);
+				float breath = (float)Math.Sin(Main.windCounter * 4 / (60 * 6f) * 6.28f + i % 20 / 20f * 3.14f) * Main.windSpeedCurrent;
+				float sway = 0f;
+
+				Main.instance.TilesRenderer.Wind.GetWindTime(i, j - 2, 40, out int windTimeLeft, out int directionX, out int directionY);
+				Vector2 wind = new Vector2(directionX, directionY) * MathF.Sin(windTimeLeft / 40f * 3.14f);
+
+				sway += Main.windSpeedCurrent * scale * 0.08f;
+				sway += wind.X * (1f - scale / 20f);
 
 				pos.X += offset;
 				logicPos.X += offset;
 				pos.Y += 2;
 
-				float baseLen = 2;
+				float baseLen = 8;
 				float dist = tile.TileFrameX;
 				float swayOff = (tile.TileFrameY - 300) * 0.01f;
 
@@ -92,21 +113,25 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 				Vector2 lastPos = pos;
 
-				for (int k = 0; k < 8; k++)
-				{
-					Rectangle source = new(k * 8, variant * 6, 6, 4);
-					Vector2 origin = new Vector2(0, 2);
-					float rot = -1.57f + sway * (0.2f + k * (0.04f + breath * 0.02f));
-					float len = baseLen * scale;
+				int maxSegs = tex.Width / 8;
+				int frameStart = maxSegs - (int)scale;
 
-					spriteBatch.Draw(tex, lastPos - Main.screenPosition, source, color, rot, origin, scale, 0, 0);
+				for (int k = 0; k < scale; k++)
+				{
+					Rectangle source = new((frameStart + k) * 8, variant * 10, 8, 8);
+					var origin = new Vector2(0, 2);
+					float rot = -1.57f + sway * (0.2f + k * (0.03f + breath * 0.015f));
+					float len = baseLen;
+
+					spriteBatch.Draw(tex, lastPos - Main.screenPosition, source, color, rot, origin, 1, 0, 0);
 
 					lastPos += Vector2.UnitX.RotatedBy(rot) * len;
 				}
 			}
 
-			DrawGrass((seed ^ i * i) / 2, Color.Lerp(color, Color.Black, 0.3f) * 0.8f, 1.5f);
-			DrawGrass(seed, color, 1f);
+			DrawGrass((seed ^ i * i) / 3, color * 0.25f, 16f);
+			DrawGrass((seed ^ i * i) / 2, color * 0.6f, 12f);
+			DrawGrass(seed, color, 8f);
 		}
 	}
 }

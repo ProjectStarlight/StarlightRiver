@@ -4454,10 +4454,10 @@ Mods: {
 			SmoothBrassPlate.MapEntry: ""
 			RawOnyx.MapEntry: ""
 			LockedOnyx.MapEntry: ""
-			// VitricGiantCrystal.MapEntry: ""
-			// VitricLargeCrystal.MapEntry: ""
-			// VitricMediumCrystal.MapEntry: ""
 			// VitricSmallCrystal.MapEntry: ""
+			// VitricMediumCrystal.MapEntry: ""
+			// VitricLargeCrystal.MapEntry: ""
+			// VitricGiantCrystal.MapEntry: ""
 		}
 
 		Prefixes: {
@@ -4480,6 +4480,10 @@ Mods: {
 			StaminaPrefix2.DisplayName: Shining
 			StaminaPrefix3.DisplayName: Glowing
 			StaminaPrefix4.DisplayName: Radiant
+			Flawless.DisplayName: Flawless
+			Hextouched.DisplayName: Hextouched
+			Perfected.DisplayName: Perfected
+			Starborn.DisplayName: Starborn
 		}
 	}
 }
