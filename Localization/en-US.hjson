@@ -4454,10 +4454,10 @@ Mods: {
 			SmoothBrassPlate.MapEntry: ""
 			RawOnyx.MapEntry: ""
 			LockedOnyx.MapEntry: ""
-			// VitricSmallCrystal.MapEntry: ""
-			// VitricMediumCrystal.MapEntry: ""
-			// VitricLargeCrystal.MapEntry: ""
 			// VitricGiantCrystal.MapEntry: ""
+			// VitricLargeCrystal.MapEntry: ""
+			// VitricMediumCrystal.MapEntry: ""
+			// VitricSmallCrystal.MapEntry: ""
 		}
 
 		Prefixes: {
