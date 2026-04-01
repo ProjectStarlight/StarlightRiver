@@ -15,9 +15,6 @@ namespace StarlightRiver.Content.Tiles.Crimson
 		{
 			Main.tileSolid[Type] = false;
 
-			TileID.Sets.MultiTileSway[Type] = true;
-			TileID.Sets.ReverseVineThreads[Type] = true;
-
 			TileObjectData.newTile.AnchorBottom = new(AnchorType.AlternateTile | AnchorType.SolidTile, 1, 0);
 			TileObjectData.newTile.AnchorAlternateTiles = [TileID.CrimsonGrass, Type];
 			QuickBlock.QuickSetFurniture(this, 1, 1, DustID.Blood, SoundID.Grass, Color.Red);

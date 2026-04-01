@@ -294,13 +294,48 @@ namespace StarlightRiver.Content.Physics
 				if (useEndPoint)
 					ropeSegments[simEndOffset - 1].posNow = endPoint;//if the end point clamp breaks, check this
 
-				ApplyConstraint();
+				if (useEndPoint)
+					ApplyConstraintTwoWay();
+				else
+					ApplyConstraint();
 			}
 		}
 
 		private void ApplyConstraint()
 		{
 			for (int i = simStartOffset; i < simEndOffset - 1; i++)
+			{
+				float segmentDist = customDistances ? segmentDistances[i] : segmentDistance;
+
+				float dist = (ropeSegments[i].posNow - ropeSegments[i + 1].posNow).Length();
+				float error = Math.Abs(dist - segmentDist);
+				Vector2 changeDir = Vector2.Zero;
+
+				if (dist > segmentDist)
+					changeDir = Vector2.Normalize(ropeSegments[i].posNow - ropeSegments[i + 1].posNow);
+				else if (dist < segmentDist)
+					changeDir = Vector2.Normalize(ropeSegments[i + 1].posNow - ropeSegments[i].posNow);
+
+				Vector2 changeAmount = changeDir * error;
+
+				if (i == 0)
+				{
+					ropeSegments[i + 1].posNow += TileCollision(ropeSegments[i + 1].posNow, changeAmount);
+					ropeSegments[i + 1] = ropeSegments[i + 1];
+				}
+				else
+				{
+					ropeSegments[i].posNow += TileCollision(ropeSegments[i].posNow, changeAmount * -0.5f);
+					ropeSegments[i] = ropeSegments[i];
+					ropeSegments[i + 1].posNow += TileCollision(ropeSegments[i + 1].posNow, changeAmount * 0.5f);
+					ropeSegments[i + 1] = ropeSegments[i + 1];
+				}
+			}
+		}
+
+		private void ApplyConstraintTwoWay()
+		{
+			/*for (int i = simStartOffset; i < simEndOffset - 1; i++)
 			{
 				float segmentDist = customDistances ? segmentDistances[i] : segmentDistance;
 
@@ -325,6 +360,34 @@ namespace StarlightRiver.Content.Physics
 				{
 					ropeSegments[i + 1].posNow += TileCollision(ropeSegments[i + 1].posNow, changeAmount);
 					ropeSegments[i + 1] = ropeSegments[i + 1];
+				}
+			}*/
+
+			for (int i = simEndOffset - 2; i > simStartOffset; i--)
+			{
+				float segmentDist = customDistances ? segmentDistances[i] : segmentDistance;
+
+				float dist = (ropeSegments[i].posNow - ropeSegments[i - 1].posNow).Length();
+				float error = Math.Abs(dist - segmentDist);
+				Vector2 changeDir = Vector2.Zero;
+
+				if (dist > segmentDist)
+					changeDir = Vector2.Normalize(ropeSegments[i].posNow - ropeSegments[i - 1].posNow);
+				else if (dist < segmentDist)
+					changeDir = Vector2.Normalize(ropeSegments[i - 1].posNow - ropeSegments[i].posNow);
+
+				Vector2 changeAmount = changeDir * error;
+				if (i != 0)
+				{
+					ropeSegments[i].posNow += TileCollision(ropeSegments[i].posNow, changeAmount * -0.5f);
+					ropeSegments[i] = ropeSegments[i];
+					ropeSegments[i - 1].posNow += TileCollision(ropeSegments[i - 1].posNow, changeAmount * 0.5f);
+					ropeSegments[i - 1] = ropeSegments[i - 1];
+				}
+				else
+				{
+					ropeSegments[i - 1].posNow += TileCollision(ropeSegments[i - 1].posNow, changeAmount);
+					ropeSegments[i - 1] = ropeSegments[i - 1];
 				}
 			}
 		}

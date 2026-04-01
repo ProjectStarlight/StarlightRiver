@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using ReLogic.Graphics;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Biomes;
@@ -7,6 +8,7 @@ using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.NPCs.BaseTypes;
 using StarlightRiver.Content.NPCs.Starlight;
 using StarlightRiver.Content.Tiles.BaseTypes;
+using StarlightRiver.Content.Tiles.Crimson;
 using StarlightRiver.Content.Tiles.Misc;
 using StarlightRiver.Content.Tiles.Starlight;
 using StarlightRiver.Core.Systems;
@@ -14,6 +16,7 @@ using StarlightRiver.Core.Systems.ArmatureSystem;
 using StarlightRiver.Core.Systems.CutsceneSystem;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.Systems.LightingSystem;
+using System;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.WorldBuilding;
@@ -58,18 +61,140 @@ namespace StarlightRiver.Content.Items
 			return;
 		}
 
+		public void PlaceChain(int leftX, int leftY, int rightX, int rightY)
+		{
+			WorldGen.PlaceTile(leftX, leftY, ModContent.TileType<MeatballTreeChain>());
+			var chain = Framing.GetTileSafely(leftX, leftY);
+			chain.TileFrameX = (short)(rightX - leftX);
+			chain.TileFrameY = (short)(rightY - leftY);
+		}
+
+		public void JoinTrees(int leftX, int leftY, int rightX, int rightY)
+		{
+			WorldGen.PlaceTile(leftX, leftY, ModContent.TileType<MeatballTreeTopper>());
+			WorldGen.PlaceTile(rightX, rightY, ModContent.TileType<MeatballTreeTopper>());
+
+			int variant = Main.rand.Next(5);
+			variant = 0;
+
+			if (variant == 0)
+			{
+				PlaceChain(leftX + 1, leftY, rightX - 1, rightY);
+			}
+
+			if (variant == 1)
+			{
+				PlaceChain(leftX + 1, leftY + 1, rightX - 1, rightY);
+				PlaceChain(leftX + 1, leftY, rightX - 1, rightY);
+			}
+
+			if (variant == 2)
+			{
+				PlaceChain(leftX + 1, leftY + 1, rightX - 1, rightY);
+				PlaceChain(leftX + 1, leftY, rightX - 1, rightY + 1);
+			}
+		}
+
 		public override bool? UseItem(Player player)
 		{
-			var index = Projectile.NewProjectile(null, player.Center, Vector2.Zero, ModContent.ProjectileType<NeurismManifest>(), 1, 0, Main.myPlayer);
+			int lastX = 0;
+			int lastY = 0;
 
-			if (index >= 0 && Main.projectile[index].ModProjectile is NeurismManifest manifest)
+			for (int x = 0; x < Main.maxTilesX; x++)
 			{
-				manifest.target = Main.MouseWorld;
+				for (int y = 0; y < Main.maxTilesY; y++)
+				{
+					var tile = Framing.GetTileSafely(x, y);
+					if (tile.HasTile && tile.TileType == ModContent.TileType<MeatballTreeTopper>())
+					{
+						tile.HasTile = false;
+						tile.TileType = 0;
+					}
+					if (tile.HasTile && tile.TileType == ModContent.TileType<MeatballTreeChain>())
+					{
+						tile.HasTile = false;
+						tile.TileType = 0;
+					}
+				}
+			}
+
+			for (int x = 0; x < Main.maxTilesX; x++)
+			{
+				for (int y = 0; y < Main.maxTilesY; y++)
+				{
+					var tile = Framing.GetTileSafely(x, y);
+
+					var l = Framing.GetTileSafely(x - 1, y);
+					var r = Framing.GetTileSafely(x + 1, y);
+
+					if (tile.HasTile && tile.TileType == TileID.Trees && !l.HasTile && !r.HasTile)
+					{
+						if (lastX == 0 && lastY == 0)
+						{
+							lastX = x;
+							lastY = y;
+						}
+						else 
+						{
+							if (x - lastX < 30 && Math.Abs(y - lastY) < 20)
+							{
+								JoinTrees(lastX, lastY - 1, x, y - 1);
+							}
+
+							lastX = x;
+							lastY = y;
+							x += 15;
+							break;
+						}
+					}
+				}
 			}
 
 			return true;
 
-			int n = NPC.NewNPC(null, (int)Main.MouseWorld.X, (int)Main.MouseWorld.Y, ModContent.NPCType<TestCollider>());
+			/*int off = 20;
+			int yOff = Main.rand.Next(-10, 10);
+
+			int x = (int)(Main.MouseWorld.X / 16);
+			int y = (int)(Main.MouseWorld.Y / 16);
+
+			int thisY = y + 1;
+			while(!Framing.GetTileSafely(x, thisY).HasTile)
+			{
+				Tile tile = Framing.GetTileSafely(x, thisY);
+				tile.TileType = TileID.Trees;
+				tile.HasTile = true;
+				thisY++;
+			}
+
+			thisY = y+ yOff + 1;
+			while (!Framing.GetTileSafely(x + off + 1, thisY).HasTile)
+			{
+				Tile tile = Framing.GetTileSafely(x + off + 1, thisY);
+				tile.TileType = TileID.Trees;
+				tile.HasTile = true;
+				thisY++;
+			}
+
+			WorldGen.PlaceTile(x, y, ModContent.TileType<MeatballTreeTopper>());
+
+			WorldGen.PlaceTile(x + 1, y + 1, ModContent.TileType<MeatballTreeChain>());
+
+			var chain = Framing.GetTileSafely(x + 1, y + 1);
+			chain.TileFrameX = (short)(off - 1);
+			chain.TileFrameY = (short)(yOff);
+
+			WorldGen.PlaceTile(x + 1, y, ModContent.TileType<MeatballTreeChain>());
+
+			var chain2 = Framing.GetTileSafely(x + 1, y);
+			chain2.TileFrameX = (short)(off - 1);
+			chain2.TileFrameY = (short)(yOff + 1);
+
+			WorldGen.PlaceTile(x + off + 1, y + yOff, ModContent.TileType<MeatballTreeTopper>());
+
+			return true;*/
+
+			/*int n = NPC.NewNPC(null, (int)Main.MouseWorld.X, (int)Main.MouseWorld.Y, ModContent.NPCType<TestCollider>());
 			Main.npc[n].velocity.X = 3.5f;
 			n = NPC.NewNPC(null, (int)Main.MouseWorld.X, (int)Main.MouseWorld.Y + 500, ModContent.NPCType<TestCollider>());
 			Main.npc[n].velocity.X = 3.5f;
@@ -129,7 +254,7 @@ namespace StarlightRiver.Content.Items
 				}
 			}
 
-			return true;
+			return true;*/
 		}
 	}
 

@@ -4454,6 +4454,8 @@ Mods: {
 			SmoothBrassPlate.MapEntry: ""
 			RawOnyx.MapEntry: ""
 			LockedOnyx.MapEntry: ""
+			MeatballTreeTopper.MapEntry: ""
+			MeatballTreeChain.MapEntry: ""
 			// VitricGiantCrystal.MapEntry: ""
 			// VitricLargeCrystal.MapEntry: ""
 			// VitricMediumCrystal.MapEntry: ""

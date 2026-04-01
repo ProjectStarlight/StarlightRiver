@@ -41,6 +41,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Include="Content\Tiles\Crimson\MeatballTreeChain.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <PackageReference Update="tModLoader.CodeAssist" Version="0.1.5" />
 	</ItemGroup>
 </Project>
