@@ -68,11 +68,11 @@ namespace StarlightRiver.Content.Tiles.BaseTypes
 
 		public Point16 lastFrame;
 
-		public ChainDummy() : base() { }
+		public ChainDummy() : base(0, 16, 16) { }
 
 		private void BuildChain()
 		{
-			endPoint = Center + new Vector2(Parent.TileFrameX, Parent.TileFrameY) * 16 + Vector2.One * 8;
+			endPoint = Center + new Vector2(Parent.TileFrameX, Parent.TileFrameY) * 16;
 
 			int segments = (int)(Vector2.Distance(Center, endPoint) / parentSingleton.segmentLength * parentSingleton.segmentLengthMultiplier);
 
@@ -86,9 +86,12 @@ namespace StarlightRiver.Content.Tiles.BaseTypes
 					drag = 1.01f,
 					constraintRepetitions = 30
 				};
-			}
 
-			chain?.IterateRope(k => chain.ropeSegments[k].posNow = Vector2.Lerp(Center, endPoint, k / (float)segments));
+				chain.Start();
+
+				chain.IterateRope(k => chain.ropeSegments[k].posNow = Vector2.Lerp(Center, endPoint, k / (float)segments));
+				chain.IterateRope(k => chain.ropeSegments[k].posOld = Vector2.Lerp(Center, endPoint, k / (float)segments));
+			}
 
 			lastFrame = new(Parent.TileFrameX, Parent.TileFrameY);
 		}

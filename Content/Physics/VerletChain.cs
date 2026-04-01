@@ -303,92 +303,48 @@ namespace StarlightRiver.Content.Physics
 
 		private void ApplyConstraint()
 		{
-			for (int i = simStartOffset; i < simEndOffset - 1; i++)
+			var end = simEndOffset - 1;
+
+			for (int i = simStartOffset; i < end; i++)
 			{
-				float segmentDist = customDistances ? segmentDistances[i] : segmentDistance;
-
-				float dist = (ropeSegments[i].posNow - ropeSegments[i + 1].posNow).Length();
-				float error = Math.Abs(dist - segmentDist);
-				Vector2 changeDir = Vector2.Zero;
-
-				if (dist > segmentDist)
-					changeDir = Vector2.Normalize(ropeSegments[i].posNow - ropeSegments[i + 1].posNow);
-				else if (dist < segmentDist)
-					changeDir = Vector2.Normalize(ropeSegments[i + 1].posNow - ropeSegments[i].posNow);
-
-				Vector2 changeAmount = changeDir * error;
-
-				if (i == 0)
-				{
-					ropeSegments[i + 1].posNow += TileCollision(ropeSegments[i + 1].posNow, changeAmount);
-					ropeSegments[i + 1] = ropeSegments[i + 1];
-				}
-				else
-				{
-					ropeSegments[i].posNow += TileCollision(ropeSegments[i].posNow, changeAmount * -0.5f);
-					ropeSegments[i] = ropeSegments[i];
-					ropeSegments[i + 1].posNow += TileCollision(ropeSegments[i + 1].posNow, changeAmount * 0.5f);
-					ropeSegments[i + 1] = ropeSegments[i + 1];
-				}
+				PointConstrain(i, i + 1, i == 0);
 			}
 		}
 
 		private void ApplyConstraintTwoWay()
 		{
-			/*for (int i = simStartOffset; i < simEndOffset - 1; i++)
+			var end = simEndOffset - 1;
+
+			for (int i = simStartOffset; i < end; i++)
 			{
-				float segmentDist = customDistances ? segmentDistances[i] : segmentDistance;
+				PointConstrain(i, i + 1, i == 0);
+				PointConstrain(end - i, end - i - 1, i == 0);
+			}
+		}
 
-				float dist = (ropeSegments[i].posNow - ropeSegments[i + 1].posNow).Length();
-				float error = Math.Abs(dist - segmentDist);
-				Vector2 changeDir = Vector2.Zero;
+		private void PointConstrain(int start, int end, bool endOnly)
+		{
+			float segmentDist = customDistances ? segmentDistances[start] : segmentDistance;
 
-				if (dist > segmentDist)
-					changeDir = Vector2.Normalize(ropeSegments[i].posNow - ropeSegments[i + 1].posNow);
-				else if (dist < segmentDist)
-					changeDir = Vector2.Normalize(ropeSegments[i + 1].posNow - ropeSegments[i].posNow);
+			float dist = (ropeSegments[start].posNow - ropeSegments[end].posNow).Length();
+			float error = Math.Abs(dist - segmentDist);
+			Vector2 changeDir = Vector2.Zero;
 
-				Vector2 changeAmount = changeDir * error;
-				if (i != 0)
-				{
-					ropeSegments[i].posNow += TileCollision(ropeSegments[i].posNow, changeAmount * -0.5f);
-					ropeSegments[i] = ropeSegments[i];
-					ropeSegments[i + 1].posNow += TileCollision(ropeSegments[i + 1].posNow, changeAmount * 0.5f);
-					ropeSegments[i + 1] = ropeSegments[i + 1];
-				}
-				else
-				{
-					ropeSegments[i + 1].posNow += TileCollision(ropeSegments[i + 1].posNow, changeAmount);
-					ropeSegments[i + 1] = ropeSegments[i + 1];
-				}
-			}*/
+			if (dist > segmentDist)
+				changeDir = Vector2.Normalize(ropeSegments[start].posNow - ropeSegments[end].posNow);
+			else if (dist < segmentDist)
+				changeDir = Vector2.Normalize(ropeSegments[end].posNow - ropeSegments[start].posNow);
 
-			for (int i = simEndOffset - 2; i > simStartOffset; i--)
+			Vector2 changeAmount = changeDir * error;
+
+			if (endOnly)
 			{
-				float segmentDist = customDistances ? segmentDistances[i] : segmentDistance;
-
-				float dist = (ropeSegments[i].posNow - ropeSegments[i - 1].posNow).Length();
-				float error = Math.Abs(dist - segmentDist);
-				Vector2 changeDir = Vector2.Zero;
-
-				if (dist > segmentDist)
-					changeDir = Vector2.Normalize(ropeSegments[i].posNow - ropeSegments[i - 1].posNow);
-				else if (dist < segmentDist)
-					changeDir = Vector2.Normalize(ropeSegments[i - 1].posNow - ropeSegments[i].posNow);
-
-				Vector2 changeAmount = changeDir * error;
-				if (i != 0)
-				{
-					ropeSegments[i].posNow += TileCollision(ropeSegments[i].posNow, changeAmount * -0.5f);
-					ropeSegments[i] = ropeSegments[i];
-					ropeSegments[i - 1].posNow += TileCollision(ropeSegments[i - 1].posNow, changeAmount * 0.5f);
-					ropeSegments[i - 1] = ropeSegments[i - 1];
-				}
-				else
-				{
-					ropeSegments[i - 1].posNow += TileCollision(ropeSegments[i - 1].posNow, changeAmount);
-					ropeSegments[i - 1] = ropeSegments[i - 1];
-				}
+				ropeSegments[end].posNow += TileCollision(ropeSegments[end].posNow, changeAmount);
+			}
+			else
+			{
+				ropeSegments[start].posNow += TileCollision(ropeSegments[start].posNow, changeAmount * -0.5f);
+				ropeSegments[end].posNow += TileCollision(ropeSegments[end].posNow, changeAmount * 0.5f);
 			}
 		}
 
