@@ -79,8 +79,10 @@ namespace StarlightRiver.Content.Items
 
 			if (variant == 0)
 			{
-				PlaceChain(leftX + 1, leftY, rightX - 1, rightY);
-				PlaceChain(rightX - 1, rightY, leftX + 1, leftY);
+				if (leftY > rightY)
+					PlaceChain(leftX + 1, leftY, rightX - 1, rightY);
+				else
+					PlaceChain(rightX - 1, rightY, leftX + 1, leftY);
 			}
 
 			if (variant == 1)

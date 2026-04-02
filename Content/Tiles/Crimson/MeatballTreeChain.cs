@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Crimson
 {
@@ -13,37 +14,35 @@ namespace StarlightRiver.Content.Tiles.Crimson
 	{
 		public MeatballTreeChain()
 		{
-			segmentLength = 28;
-			segmentLengthMultiplier = 1.5f;
+			segmentLength = 16;
+			segmentLengthMultiplier = 1.3f;
 		}
 
 		public override void PerPointDraw(SpriteBatch spriteBatch, Vector2 worldPos, Vector2 nextPos, Vector2 prevPos, int index, int length)
 		{
-			segmentLength = 32;
-			segmentLengthMultiplier = 1.3f;
-
 			Texture2D tex = Assets.Tiles.Crimson.MeatballTreeChain.Value;
 
-			int variant = 3;
+			int variant = 9;
 
-			if (index == 0 || index == length - 2)
+			if (length >= 20)
 			{
-				return;
+				if (index < 10)
+					variant = index;
+
+				if (index >= length - 11)
+					variant = length - 2 - index;
 			}
 
-			if (length >= 8)
-			{
-				if (index < 5)
-					variant = index - 1;
-
-				if (index >= length - 6)
-					variant = length - 3 - index;
-			}
-
-			var frame = new Rectangle(variant * 34, 0, 32, 32);
+			var frame = new Rectangle(variant * 18, 0, 16, 32);
 
 			var rot = index > length / 2 ? nextPos.DirectionTo(worldPos).ToRotation() : prevPos.DirectionTo(nextPos).ToRotation();
 			FoliageLayerSystem.overTilesData.Add(new(tex, worldPos, frame, new Color(Lighting.GetSubLight(worldPos)), rot, frame.Size() / 2f, 1f, 0, 0));
+		}
+
+		public override void PerPointUpdate(Vector2 worldPos, Vector2 nextPos, Vector2 prevPos, int index, int length)
+		{
+			if (Main.rand.NextBool(150))
+				Dust.NewDustPerfect(worldPos, DustID.Water_Crimson, Vector2.UnitX * Main.windSpeedCurrent * 5);
 		}
 
 		public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)

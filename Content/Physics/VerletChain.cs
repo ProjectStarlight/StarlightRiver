@@ -286,13 +286,13 @@ namespace StarlightRiver.Content.Physics
 				segment.posNow += gravityVel;
 			}
 
-			for (int i = 0; i < constraintRepetitions; i++)//the amount of times Constraints are applied per update
+			for (int i = 0; i < (useEndPoint ? (constraintRepetitions / 2) : constraintRepetitions); i++)//the amount of times Constraints are applied per update
 			{
 				if (useStartPoint)
 					ropeSegments[simStartOffset].posNow = startPoint;
 
 				if (useEndPoint)
-					ropeSegments[simEndOffset - 1].posNow = endPoint;//if the end point clamp breaks, check this
+					ropeSegments[simEndOffset - 1].posNow = endPoint;
 
 				if (useEndPoint)
 					ApplyConstraintTwoWay();
@@ -307,7 +307,7 @@ namespace StarlightRiver.Content.Physics
 
 			for (int i = simStartOffset; i < end; i++)
 			{
-				PointConstrain(i, i + 1, i == 0);
+				PointConstrain(i, i + 1, i == simStartOffset);
 			}
 		}
 
@@ -317,8 +317,8 @@ namespace StarlightRiver.Content.Physics
 
 			for (int i = simStartOffset; i < end; i++)
 			{
-				PointConstrain(i, i + 1, i == 0);
-				PointConstrain(end - i, end - i - 1, i == 0);
+				PointConstrain(i, i + 1, i == simStartOffset);
+				PointConstrain(end - (i - simStartOffset), end - (i - simStartOffset) - 1, i == simStartOffset);
 			}
 		}
 
