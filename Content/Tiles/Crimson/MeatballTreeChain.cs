@@ -1,11 +1,5 @@
-﻿using Microsoft.VisualBasic;
-using StarlightRiver.Content.Tiles.BaseTypes;
+﻿using StarlightRiver.Content.Tiles.BaseTypes;
 using StarlightRiver.Core.Systems.FoliageLayerSystem;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Crimson
@@ -24,7 +18,7 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 			int variant = 9;
 
-			if (length >= 20)
+			if (length >= 12)
 			{
 				if (index < 10)
 					variant = index;
@@ -47,19 +41,26 @@ namespace StarlightRiver.Content.Tiles.Crimson
 
 		public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 		{
+			bool startOK = false;
+			bool endOK = false;
+
 			for (int x = -1; x <= 1; x++)
 			{
 				for (int y = -1; y <= 1; y++)
 				{
-					Tile tile = Framing.GetTileSafely(i + x, j + y);
-					if (tile.HasTile && tile.TileType == ModContent.TileType<MeatballTreeTopper>())
-					{
-						return false;
-					}
+					Tile startScan = Framing.GetTileSafely(i + x, j + y);
+					Tile endScan = Framing.GetTileSafely(i + x, j + y);
+
+					if (startScan.HasTile && startScan.TileType == ModContent.TileType<MeatballTreeTopper>())
+						startOK = true;
+
+					if (endScan.HasTile && endScan.TileType == ModContent.TileType<MeatballTreeTopper>())
+						endOK = true;
 				}
 			}
 
-			WorldGen.KillTile(i, j);
+			if (!startOK || !endOK)
+				WorldGen.KillTile(i, j);
 
 			return false;
 		}

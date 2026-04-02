@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.Tiles.Crimson
 				if (Main.rand.NextBool(4))
 					color = new Color(1f, 0.5f, 0, 0);
 
-				Dust.NewDustPerfect(new Vector2(i, j - Main.rand.NextFloat(6)) * 16, ModContent.DustType<BreathingGrassDust>(), new Vector2(wind.X * -15f, Main.rand.NextFloat(-0.5f, -1)) * Main.rand.NextFloat(2), 0, color, 0.1f);
+				Dust.NewDustPerfect(new Vector2(i, j - Main.rand.NextFloat(6)) * 16, ModContent.DustType<BreathingGrassDust>(), new Vector2(wind.X * 10f, Main.rand.NextFloat(-0.5f, -1)) * Main.rand.NextFloat(1, 2), 0, color, 0.1f);
 			}
 		}
 
@@ -90,14 +90,14 @@ namespace StarlightRiver.Content.Tiles.Crimson
 				int variant = seed % 6;
 				int offset = seed % 14 - 7;
 
-				float breath = (float)Math.Sin(Main.windCounter * 4 / (60 * 6f) * 6.28f + i % 20 / 20f * 3.14f) * Main.windSpeedCurrent;
+				float breath = (float)Math.Sin(Main.windCounter * 4 / (60 * 6f) * 6.28f + i % 20 / 20f + scale / 20f * 3.14f) * Main.windSpeedCurrent;
 				float sway = 0f;
 
 				Main.instance.TilesRenderer.Wind.GetWindTime(i, j - 2, 40, out int windTimeLeft, out int directionX, out int directionY);
-				Vector2 wind = new Vector2(directionX, directionY) * MathF.Sin(windTimeLeft / 40f * 3.14f);
+				Vector2 wind = new Vector2(directionX, directionY) * MathF.Sin(windTimeLeft / 40f * 6.28f) * (1f - windTimeLeft / 40f);
 
 				sway += Main.windSpeedCurrent * scale * 0.08f;
-				sway += wind.X * (1f - scale / 30f);
+				sway += wind.X * (1f - scale / 40f) * 1.5f;
 
 				pos.X += offset;
 				pos.Y += 2;

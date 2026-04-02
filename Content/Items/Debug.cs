@@ -61,12 +61,12 @@ namespace StarlightRiver.Content.Items
 			return;
 		}
 
-		public void PlaceChain(int leftX, int leftY, int rightX, int rightY)
+		public void PlaceChain(int startX, int startY, int endX, int endY)
 		{
-			WorldGen.PlaceTile(leftX, leftY, ModContent.TileType<MeatballTreeChain>());
-			var chain = Framing.GetTileSafely(leftX, leftY);
-			chain.TileFrameX = (short)(rightX - leftX);
-			chain.TileFrameY = (short)(rightY - leftY);
+			WorldGen.PlaceTile(startX, startY, ModContent.TileType<MeatballTreeChain>());
+			var chain = Framing.GetTileSafely(startX, startY);
+			chain.TileFrameX = (short)(endX - startX);
+			chain.TileFrameY = (short)(endY - startY);
 		}
 
 		public void JoinTrees(int leftX, int leftY, int rightX, int rightY)
@@ -74,52 +74,22 @@ namespace StarlightRiver.Content.Items
 			WorldGen.PlaceTile(leftX, leftY, ModContent.TileType<MeatballTreeTopper>());
 			WorldGen.PlaceTile(rightX, rightY, ModContent.TileType<MeatballTreeTopper>());
 
-			int variant = Main.rand.Next(5);
-			variant = 0;
-
-			if (variant == 0)
+			if (WorldGen.genRand.NextBool(3, 4))
 			{
 				if (leftY > rightY)
 					PlaceChain(leftX + 1, leftY, rightX - 1, rightY);
 				else
 					PlaceChain(rightX - 1, rightY, leftX + 1, leftY);
 			}
-
-			if (variant == 1)
-			{
-				PlaceChain(leftX + 1, leftY + 1, rightX - 1, rightY);
-				PlaceChain(leftX + 1, leftY, rightX - 1, rightY);
-			}
-
-			if (variant == 2)
-			{
-				PlaceChain(leftX + 1, leftY + 1, rightX - 1, rightY);
-				PlaceChain(leftX + 1, leftY, rightX - 1, rightY + 1);
-			}
 		}
 
 		public override bool? UseItem(Player player)
 		{
+			ModContent.GetInstance<StarlightWorld>().GraymatterGen(new GenerationProgress(), null);
+			return true;
+
 			int lastX = 0;
 			int lastY = 0;
-
-			for (int x = 0; x < Main.maxTilesX; x++)
-			{
-				for (int y = 0; y < Main.maxTilesY; y++)
-				{
-					var tile = Framing.GetTileSafely(x, y);
-					if (tile.HasTile && tile.TileType == ModContent.TileType<MeatballTreeTopper>())
-					{
-						tile.HasTile = false;
-						tile.TileType = 0;
-					}
-					if (tile.HasTile && tile.TileType == ModContent.TileType<MeatballTreeChain>())
-					{
-						tile.HasTile = false;
-						tile.TileType = 0;
-					}
-				}
-			}
 
 			for (int x = 0; x < Main.maxTilesX; x++)
 			{
@@ -130,7 +100,7 @@ namespace StarlightRiver.Content.Items
 					var l = Framing.GetTileSafely(x - 1, y);
 					var r = Framing.GetTileSafely(x + 1, y);
 
-					if (tile.HasTile && tile.TileType == TileID.Trees && !l.HasTile && !r.HasTile)
+					if (tile.HasTile && tile.TileType == TileID.Trees && !l.HasTile && !r.HasTile && WorldGenHelper.ScanForTypeDown(x, y, TileID.CrimsonGrass))
 					{
 						if (lastX == 0 && lastY == 0)
 						{

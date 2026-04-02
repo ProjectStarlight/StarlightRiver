@@ -50,15 +50,10 @@ namespace StarlightRiver.Core
 							y = 10;
 						}
 
-						if (noise.GetNoise(k * 5, 0.5f) > 0f)
+						if (noise.GetNoise(k * 2, 0.5f) > 0f)
 						{
-							for (int h = 0; h < WorldGen.genRand.Next(3, 10); h++)
-							{
-								if (!Main.tile[k, y - 1 - h].HasTile)
-									WorldGen.PlaceTile(k, y - 1 - h, ModContent.TileType<BreathingGrass>());
-								else
-									break;
-							}
+							if (!Main.tile[k, y - 1].HasTile || Main.tileCut[Main.tile[k, y - 1].TileType])
+								WorldGen.PlaceTile(k, y - 1, ModContent.TileType<BreathingGrass>());
 
 							k += 1;
 							y = 10;
@@ -194,6 +189,68 @@ namespace StarlightRiver.Core
 
 					if (generated)
 						break;
+				}
+			}
+
+			ScanAndJoinTrees();
+		}
+
+		private void PlaceChain(int startX, int startY, int endX, int endY)
+		{
+			WorldGen.PlaceTile(startX, startY, ModContent.TileType<MeatballTreeChain>());
+			var chain = Framing.GetTileSafely(startX, startY);
+			chain.TileFrameX = (short)(endX - startX);
+			chain.TileFrameY = (short)(endY - startY);
+		}
+
+		private void JoinTrees(int leftX, int leftY, int rightX, int rightY)
+		{
+			WorldGen.PlaceTile(leftX, leftY, ModContent.TileType<MeatballTreeTopper>());
+			WorldGen.PlaceTile(rightX, rightY, ModContent.TileType<MeatballTreeTopper>());
+
+			if (WorldGen.genRand.NextBool(3, 4))
+			{
+				if (leftY > rightY)
+					PlaceChain(leftX + 1, leftY, rightX - 1, rightY);
+				else
+					PlaceChain(rightX - 1, rightY, leftX + 1, leftY);
+			}
+		}
+
+		private void ScanAndJoinTrees()
+		{
+			int lastX = 0;
+			int lastY = 0;
+
+			for (int x = 0; x < Main.maxTilesX; x++)
+			{
+				for (int y = 0; y < Main.maxTilesY; y++)
+				{
+					var tile = Framing.GetTileSafely(x, y);
+
+					var l = Framing.GetTileSafely(x - 1, y);
+					var r = Framing.GetTileSafely(x + 1, y);
+
+					if (tile.HasTile && tile.TileType == TileID.Trees && !l.HasTile && !r.HasTile && WorldGenHelper.ScanForTypeDown(x, y, TileID.CrimsonGrass))
+					{
+						if (lastX == 0 && lastY == 0)
+						{
+							lastX = x;
+							lastY = y;
+						}
+						else
+						{
+							if (x - lastX < 30 && Math.Abs(y - lastY) < 20)
+							{
+								JoinTrees(lastX, lastY - 1, x, y - 1);
+							}
+
+							lastX = x;
+							lastY = y;
+							x += 15;
+							break;
+						}
+					}
 				}
 			}
 		}
