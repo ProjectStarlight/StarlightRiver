@@ -21,7 +21,6 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		{
 			this.name = name;
 			this.tooltip = tooltip;
-			maxStack = 9999;
 			this.value = value;
 			rarity = rare;
 			this.texturePath = texturePath;
@@ -38,7 +37,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		{
 			Item.width = 16;
 			Item.height = 16;
-			Item.maxStack = maxStack;
+			Item.maxStack = 9999;
 			Item.value = value;
 			Item.rare = rarity;
 		}
