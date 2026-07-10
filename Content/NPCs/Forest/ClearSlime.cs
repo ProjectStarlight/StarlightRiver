@@ -15,7 +15,6 @@ namespace StarlightRiver.Content.NPCs.Forest
 
 	internal class ClearSlime : ModNPC
 	{
-		public Vector2 squishScale = Vector2.One;
 		public int attackCooldown;
 
 		public override string Texture => AssetDirectory.ForestNPC + Name;
@@ -73,9 +72,6 @@ namespace StarlightRiver.Content.NPCs.Forest
 			if (JumpHeight < 6)
 				JumpHeight = 6;
 
-			squishScale.X += (1 - squishScale.X) * 0.09f;
-			squishScale.Y += (1 - squishScale.Y) * 0.09f;
-
 			switch (State)
 			{
 				case ClearSlimeState.bouncing:
@@ -96,8 +92,6 @@ namespace StarlightRiver.Content.NPCs.Forest
 
 					if (NPC.velocity.Y == 0) // On the ground
 					{
-						squishScale.X += 0.045f;
-						squishScale.Y -= 0.035f;
 						NPC.velocity.X *= 0.7f;
 
 						// pick the direction to jump in then jump
@@ -130,9 +124,6 @@ namespace StarlightRiver.Content.NPCs.Forest
 
 							// set last X pos 
 							LastLandX = NPC.Center.X;
-
-							squishScale.X -= 0.65f;
-							squishScale.Y += 0.5f;
 
 							NPC.velocity.Y = -JumpHeight;
 							NPC.velocity.X = NPC.direction * JumpHeight / 2;
@@ -250,13 +241,13 @@ namespace StarlightRiver.Content.NPCs.Forest
 
 			spriteBatch.Draw(fuse, fuseTarget, fuseSource, drawColor * fuseOpacity, fuseRot, Vector2.Zero, 0, 0);
 
-			spriteBatch.Draw(tex, NPC.Center - screenPos, NPC.frame, drawColor * 0.8f, NPC.rotation, NPC.frame.Size() / 2f, squishScale * NPC.scale, 0, 0);
+			spriteBatch.Draw(tex, NPC.Center - screenPos, NPC.frame, drawColor * 0.8f, NPC.rotation, NPC.frame.Size() / 2f, NPC.scale, 0, 0);
 
 			if (State == ClearSlimeState.attacking && Timer > 60)
 			{
 				float fade = (Timer - 60) / 60f;
 				Color color = Color.Lerp(Color.Orange, new Color(255, 255, 200), fade) * fade;
-				spriteBatch.Draw(over, NPC.Center - screenPos, NPC.frame, color, NPC.rotation, NPC.frame.Size() / 2f, squishScale * NPC.scale, 0, 0);
+				spriteBatch.Draw(over, NPC.Center - screenPos, NPC.frame, color, NPC.rotation, NPC.frame.Size() / 2f, NPC.scale, 0, 0);
 			}
 
 			return false;
@@ -301,7 +292,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
 		{
-			return spawnInfo.Player.ZoneForest && Main.dayTime ? 0.08f : 0f;
+			return spawnInfo.Player.ZoneForest && Main.dayTime && !spawnInfo.Invasion ? 0.08f : 0f;
 		}
 
 		public override void ModifyNPCLoot(NPCLoot npcLoot)
