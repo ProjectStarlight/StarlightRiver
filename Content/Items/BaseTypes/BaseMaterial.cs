@@ -10,7 +10,6 @@ namespace StarlightRiver.Content.Items.BaseTypes
 	{
 		private readonly string name;
 		private readonly string tooltip;
-		private readonly int maxStack;
 		private readonly int value;
 		private readonly int rarity;
 		private readonly string texturePath;
@@ -18,11 +17,11 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public override string Texture => string.IsNullOrEmpty(texturePath) ? base.Texture : texturePath + (pathHasName ? string.Empty : Name);
 
-		protected BaseMaterial(string name, string tooltip, int maxstack, int value, int rare, string texturePath = null, bool pathHasName = false)
+		protected BaseMaterial(string name, string tooltip, int value, int rare, string texturePath = null, bool pathHasName = false)
 		{
 			this.name = name;
 			this.tooltip = tooltip;
-			maxStack = maxstack;
+			maxStack = 9999;
 			this.value = value;
 			rarity = rare;
 			this.texturePath = texturePath;

@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		}
 
-		public LivingBlood() : base("Living Blood", "", 999, 50, 2, AssetDirectory.GravediggerItem) { }
+		public LivingBlood() : base("Living Blood", "", 50, 2, AssetDirectory.GravediggerItem) { }
 
 		public static void DropLivingBlood(NPC npc, NPCLoot npcLoot)
 		{

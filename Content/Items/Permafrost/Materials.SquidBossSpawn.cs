@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		public override void SetDefaults()
 		{
 			Item.rare = ItemRarityID.Green;
-			Item.maxStack = 20;
+			Item.maxStack = 9999;
 			Item.useStyle = ItemUseStyleID.Swing;
 			Item.useTime = 15;
 			Item.useAnimation = 15;
