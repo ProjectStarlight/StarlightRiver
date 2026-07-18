@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetDefaults()
 		{
 			Item.rare = ItemRarityID.Orange;
-			Item.maxStack = 20;
+			Item.maxStack = 9999;
 			Item.width = 32;
 			Item.height = 32;
 		}

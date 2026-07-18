@@ -81,7 +81,7 @@ namespace StarlightRiver.Content.Items.Food
 
 		public override void SetDefaults()
 		{
-			Item.maxStack = 99;
+			Item.maxStack = 9999;
 			Item.width = 32;
 			Item.height = 32;
 			Item.useStyle = ItemUseStyleID.Swing;

@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Items.Potions
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault(prefix + " Barrier Potion");
-			Tooltip.SetDefault($"Grants {amount} {{barrier}}\nGrants {{BUFF:ShieldDegenReduction}} for {duration / 60} seconds\nInflicts {{Buff:PotionSickness}} for 20 seconds\nInflicts {{BUFF:NoShieldPot}} for 60 seconds");
+			Tooltip.SetDefault($"Grants {amount} {{{{barrier}}}}\nGrants {{{{BUFF:ShieldDegenReduction}}}} for {duration / 60} seconds\nInflicts {{{{BUFF:PotionSickness}}}} for 20 seconds\nInflicts {{{{BUFF:NoShieldPot}}}} for 60 seconds");
 		}
 
 		public override void SetDefaults()
@@ -32,7 +32,8 @@ namespace StarlightRiver.Content.Items.Potions
 			Item.width = 32;
 			Item.height = 32;
 			Item.consumable = true;
-			Item.maxStack = 30;
+			Item.maxStack = 9999;
+			Item.rare = ItemRarityID.Green;
 			Item.UseSound = SoundID.Item3;
 			Item.useStyle = ItemUseStyleID.EatFood;
 			Item.useTime = 15;

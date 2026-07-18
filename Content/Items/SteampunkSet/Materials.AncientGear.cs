@@ -5,7 +5,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 {
 	public class AncientGear : BaseMaterial
 	{
-		public AncientGear() : base("Ancient Gear", "", 999, 200, 2, AssetDirectory.SteampunkItem) { }
+		public AncientGear() : base("Ancient Gear", "", 200, 2, AssetDirectory.SteampunkItem) { }
 
 		public override void Load()
 		{

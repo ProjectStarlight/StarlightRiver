@@ -109,7 +109,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 			Item.width = 16;
 			Item.height = 16;
 			Item.consumable = true;
-			Item.maxStack = 99;
+			Item.maxStack = 9999;
 			Item.useTime = 15;
 			Item.useAnimation = 15;
 			Item.useStyle = ItemUseStyleID.EatFood;

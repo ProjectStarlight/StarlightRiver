@@ -117,7 +117,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 	public class Slimeberry : BaseMaterial
 	{
-		public Slimeberry() : base("Slimeberry", "Ew.", 99, 1, ItemRarityID.Blue, AssetDirectory.ForestTile) { }
+		public Slimeberry() : base("Slimeberry", "Ew.", 1, ItemRarityID.Blue, AssetDirectory.ForestTile) { }
 	}
 
 	public class SlimeberryBushItem : BaseTileItem

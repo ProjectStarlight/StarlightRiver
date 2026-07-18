@@ -96,7 +96,7 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 
 		public override void SafeSetDefaults()
 		{
-			Item.maxStack = 99;
+			Item.maxStack = 9999;
 			Item.value = 30;
 		}
 
