@@ -60,8 +60,7 @@ namespace StarlightRiver.Core.Systems
 
 			TooltipLine materialLine = tooltips.FirstOrDefault(x => x.Name == "Material");
 
-			if (materialLine is not null)
-				materialLine.Text += $" [i/s1:{ModContent.ItemType<MaterialIndicatorIcon>()}]";
+			materialLine?.Text += $" [i/s1:{ModContent.ItemType<MaterialIndicatorIcon>()}]";
 		}
 	}
 
