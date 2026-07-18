@@ -1,5 +1,6 @@
 ﻿using ReLogic.Threading;
 using StarlightRiver.Content.Configs;
+using System;
 using System.Collections.Generic;
 using static Terraria.ModLoader.ModContent;
 
@@ -25,13 +26,14 @@ namespace StarlightRiver.Core
 		private readonly AnchorOptions anchorType;
 
 		private readonly int maxParticles;
+		private int currentBufferSize = 20;
 		private int lastParticleCount;
 
 		private DynamicVertexBuffer vertexBuffer;
 		private DynamicIndexBuffer indexBuffer;
 
-		private readonly VertexPositionColorTexture[] verticies;
-		private readonly short[] indicies;
+		private VertexPositionColorTexture[] verticies;
+		private short[] indicies;
 
 		private bool buffersNeedUpdated;
 
@@ -47,8 +49,10 @@ namespace StarlightRiver.Core
 			anchorType = anchor;
 			this.maxParticles = maxParticles;
 
-			verticies = new VertexPositionColorTexture[maxParticles * 4];
-			indicies = new short[maxParticles * 6];
+			currentBufferSize = 20;
+
+			verticies = new VertexPositionColorTexture[currentBufferSize * 4];
+			indicies = new short[currentBufferSize * 6];
 
 			Main.QueueMainThreadAction(() =>
 			{
@@ -59,9 +63,23 @@ namespace StarlightRiver.Core
 					Texture = this.texture
 				};
 
-				vertexBuffer = new DynamicVertexBuffer(Main.instance.GraphicsDevice, typeof(VertexPositionColorTexture), maxParticles * 4, BufferUsage.WriteOnly);
-				indexBuffer = new DynamicIndexBuffer(Main.instance.GraphicsDevice, IndexElementSize.SixteenBits, maxParticles * 6, BufferUsage.WriteOnly);
+				vertexBuffer = new DynamicVertexBuffer(Main.instance.GraphicsDevice, typeof(VertexPositionColorTexture), currentBufferSize * 4, BufferUsage.WriteOnly);
+				indexBuffer = new DynamicIndexBuffer(Main.instance.GraphicsDevice, IndexElementSize.SixteenBits, currentBufferSize * 6, BufferUsage.WriteOnly);
 			});
+		}
+
+		public void Resize(int newBufferSize)
+		{
+			if (Main.dedServ)
+				return;
+
+			currentBufferSize = newBufferSize;
+
+			Array.Resize(ref verticies, currentBufferSize * 4);
+			Array.Resize(ref indicies, currentBufferSize * 6);
+
+			vertexBuffer = new DynamicVertexBuffer(Main.instance.GraphicsDevice, typeof(VertexPositionColorTexture), currentBufferSize * 4, BufferUsage.WriteOnly);
+			indexBuffer = new DynamicIndexBuffer(Main.instance.GraphicsDevice, IndexElementSize.SixteenBits, currentBufferSize * 6, BufferUsage.WriteOnly);
 		}
 
 		/// <summary>
@@ -275,6 +293,12 @@ namespace StarlightRiver.Core
 
 			particle.SetData(position, velocity, rotation, scale, color, timer, storedPosition, frame, alpha, type);
 			particles.Add(particle);
+
+			if (particles.Count > currentBufferSize && currentBufferSize != maxParticles)
+			{
+				int newBufferSize = Math.Min(currentBufferSize * 2, maxParticles);
+				Resize(newBufferSize);
+			}
 		}
 
 		/// <summary>
