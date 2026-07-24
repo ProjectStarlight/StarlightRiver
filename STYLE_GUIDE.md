@@ -10,7 +10,7 @@ Section 0: Preface
 		project, in order to ensure everything is consistent and readable at a glance.
 
 	0.1.2: Contact
-		If you find an issue in this guide or wish to make a suggestion, please contact me on Discord (ScalarVector#9106)
+		If you find an issue in this guide or wish to make a suggestion, please contact me on Discord (@scalarvector)
 		or via github.
 
 =========================================================================================================================================================
@@ -20,8 +20,8 @@ Section 1: File and Class structure
 1.1: File structure
 
 	1.1.1: CS source files
-		.cs Source files for content should be placed in a path starting with the Content directory,followed by it's
-		content type, followed by its artistic theme or set identity. The file name shoud consist of a prefix 
+		.cs Source files for content should be placed in a path starting with the Content directory, followed by its
+		content type, followed by its artistic theme or set identity. The file name should consist of a prefix 
 		specifying the specific content type (if applicable), the name of the primary class of the file (see below
 		for specifications for classes with multiple files), and if a partial class, a suffix describing the
 		function of the specific methods of that part of the class.
@@ -36,32 +36,33 @@ Section 1: File and Class structure
 
 		.cs Source files for larger systems or loaders should be placed in a path starting the the Core directory,
 		with loaders being placed in the loader subdirectory. source files should have a descriptive name of the
-		system they manage and the type of content it effects.
+		system they manage and the type of content they affect.
 	
 		the StarlightRiver.cs source file should exist in the top level directory as required by TML.
 
 	1.1.2: FX source files and XNB compiled shader binaries
 		.fx Shader source files should be placed in the Effects/Source directory directly.
 		This will output .xnb binaries in the Effects directory during builds, which is a requirement of the autoloader.
-		You should always include .fx source files with every shader, never just the compiled binary.
+		.fx Source files should be included with every shader, never just the compiled binary.
 
 	1.1.3: texture assets
-		All texture assets should be of .png format, and within the Assets directory. Texture assets used only by
+		All texture assets should be of the .png format, and within the Assets directory. Texture assets used only by
 		a single source file or used as the primary texture of a piece of content in a source file (for example,
-		the Item texture for the vitric pickaxe) should be placed in a directory directly mirroring that of the
+		the Item texture for the Vitric Pickaxe) should be placed in a directory directly mirroring that of the
 		source file, changing the top level Content directory for the Assets directory. Texture assets which are
-		re-used should be placed in the lowest possible directory in which it is accessed. For example, if both
-		a file in the Content/Items/Vitric and Content/Items/Overgrow directory use a texture, it should be placed
-		in the Assets/Items directory.
+		re-used should be placed in the lowest possible directory in which it is accessed. For example, 
+		if a file in the Content/Items/Vitric directory and another in the Content/Items/Overgrow directory
+		both use a texture, that texture should be placed in the Assets/Items directory.
 
 		In rare cases additional subdirectories may be created within the assets directory for large quantities of
-		textures which fulfill a specific purpose, such as gore or textures with absurd quantites of variants
+		textures which fulfill a specific purpose, such as gore or textures with absurd quantities of variants
 
-		Texture asset names should be descriptive of their application, or general if they experience heavy re-use.
-		for example, the sprite for the Vitric Pickaxe should be VitricPickaxe.png, but a noise map which is used
-		by many shaders would likely better fit with something like "PerlinNoise1".
+		Texture asset names should be descriptive of their application,
+		or a general description of them if they experience heavy re-use.
+		for example, the sprite for the Vitric Pickaxe should be VitricPickaxe.png,
+		but a noise map used by many shaders should be named something like "PerlinNoise1.png".
 
-		icon.png should exist in the top level directory as required by TML.
+		icon.png, the Mod icon, should exist in the top level directory as required by TML.
 
 	1.1.4: sound files
 		All sound files must exist in the top-level Sounds directory as required by TML. All music must exist in
@@ -69,23 +70,23 @@ Section 1: File and Class structure
 
 	1.1.5: StructureHelper structure files
 		StructureHelper structure files should be located in the Structures directory, with an appropriate name for
-		the structure saved in it, if the file contains a multistructure it should be of plural form, else it should
+		the structure saved in it, if the file contains a multistructure it should be named as plural, else it should
 		be of singular form. For example: ForestTemple VS ForestTemples
 
 1.2: Class placement in source files
 
 	1.2.1: When should multiple classes be placed in one source file
-		Multiple classes should only be placed in the same source file if:
-		A: The content they describe is tightly couples. IE, a weapon and it's specialized Projectile
-		B: The length of the file does not exceed 500 lines
+		Multiple classes should be placed in the same source file only if:
+		A: The content they describe is tightly coupled. IE, a weapon and its specialized Projectile.
+		B: The combined length of the classes does not exceed 500 lines.
 		C: The secondary classes could reasonably be found under the primary classes name
 		This is to ensure it remains easy to find content for the sake of maintaining it while also keeping tightly
-		bound content together so that it is intuitive to glean the full functionality of one piece of content from
-		it's source file.
+		bound content together so that it's easy to figure out the full functionlity of a piece of content from its source file.
 
-		When content must be seperated in order to maintain the readability of a file, ensure the class names and thus
-		file names are named alike, IE: VitricSpear and VitricSpearProjectile to clearly communicate functionality is
-		in a seperate file and where it is.
+		When content must be seperated in order to maintain the readability of a file,
+		ensure that the class names, and consequently the file names are named similarly, 
+		(i.e. VitricSpear and VitricSpearProjectile), to clearly communicate that functionality is
+		in a seperate file, and in what file it is.
 
 	1.2.2: Partial classes
 		As described above, partial classes should be named alike, with a prefix describing the functionality of the
@@ -94,7 +95,7 @@ Section 1: File and Class structure
 
 =========================================================================================================================================================
 
-Section 2: Class/Interface/Strut structure
+Section 2: Class/Interface/Struct structure
 
 2.1: Ordering
 
@@ -117,21 +118,21 @@ Section 2: Class/Interface/Strut structure
 2.2: Formatting
 
 	2.2.1: General Formatting
-		Each of the subcategories of class members listed above should have an empty line between them. Additionally every
-		method should have an empty line between it and the next. This includes arrow notation methods. If multiple classes
-		are present in one file they should be seperated by a single line break. Newline (Allman) bracketing style is used
+		Each of the subcategories of class members listed above should have a linebreak between them. Additionally every
+		method should have a linebreak between it and the next. This includes arrow notation methods. If multiple classes
+		are present in one file they should be seperated by a single linebreak. The Newline (Allman) bracketing style is used
 		for all classes and methods.
 
 	2.2.2: Region usage
 		Regions may be used in larger files to keep methods thematically or functionally organized. Usage of regions is largely
-		left to judgement, but generally should not be used in files <200 lines and should have some sort of reason for grouping
+		left up to the developer's judgement, but generally should not be used in files with <200 lines and should have a reason for grouping
 		members together.
 
 2.3: Non-class structure
 
 	2.3.1: Interfaces
-		Interfaces should follow standard language naming convention ("I[X]able") and be structured with their methods in the
-		desired implementation order. Interfaces should be implemented in the order they are defined.
+		Interfaces should follow standard language naming conventions ("I[X]able") and order their methods as desired.
+		Interface methods should be implemented in the order they are defined.
 
 	2.3.2: Structs
 		Structs should follow the same structure as classes for all applicable member types.
@@ -184,7 +185,7 @@ Section 3: Method structure
 			That2();
 			That3();
 		}
-		else if (This3)
+		else if(This3)
 		{
 			That4();
 			That5();
@@ -206,9 +207,9 @@ Section 3: Method structure
 			myArray3[k] += 3;
 		}
 
-	3.1.3: Switch cases
-		All switch cases should use Allman style bracketing, and have a linebreak between them.
-		Switch cases with 1-line predicates should be placed all on the same line. Switch cases with multi-line
+	3.1.3: Switch statements
+		All switch statements should use Allman style bracketing, and have a linebreak between them.
+		Switch statements with 1-line predicates should be placed all on the same line. Switch statements with multi-line
 		predicates should have the case and break statements on seperate lines. If any predicates are
 		multi-line, use the multi-line format. Example:
 		
@@ -239,14 +240,14 @@ Section 3: Method structure
 	3.2.1: Local variables
 		Local variables should be named with specificity relevant to their usage. For example: if there is only
 		one texture used throughout the entire method and its purpose is obvious and documented, "tex" would be
-		an appropriate name. Otherwise, a more specific name is ideal. IE: use "texBody" and "texHead" over
+		an appropriate name. Otherwise, a more specific name is ideal; i.e., use "texBody" and "texHead" over
 		"tex1" and "tex2". Local variables that are to be used together or are tightly related should be defined
-		consecutively, but if they are vastly different in use or identity place a linebreak between their definition.
+		consecutively, but if they are different in their use or purpose, define them on seperate lines.
 
 	3.2.2: Method calls
-		Method calls should attempt to be kept on the same line if possible, using local variables to pass complex
-		expressions as parameters. If absolutely neccisary, split a method call so that the line ends with a comma
-		and is indendted, or so that each line is a seperate parameter Example:
+		Method calls should be kept on one line if possible, using local variables to pass long experessions as parameters.
+		If absolutely necessary, split a method call so that the line ends with a comma
+		and is indented, or so that each line has a seperate parameter. Example:
 
 		spriteBatch.Draw(MyCoolTexture, MyCoolVector,
 			MyCoolRectangle, MyCoolColor);
@@ -269,7 +270,7 @@ Section 4: Usage of StarlightPlayer, StarlightNPC, and similar classes
 4.1: Accessory/Item/Similar behavior
 	
 	4.1.1: Accessories
-		Changes to these classes directly should be avoided in all cases for accessory functionality. You should instead
+		This class should never be changed directly to implement accessory functionality. You should instead
 		subscribe to the approriate event for the hook you want (names will mirror those of ModPlayer/GlobalNPC/etc.) from
 		a load method within your Item class and define behavior there. All Accessories should descend from SmartAccessory,
 		which has helper methods for you to check within the methods you subscribe to these hooks with for if the Item is
@@ -278,20 +279,20 @@ Section 4: Usage of StarlightPlayer, StarlightNPC, and similar classes
 
 	4.2.2: Items
 		Similar to accessories, Items which would require ModPlayer/GlobalNPC/etc. functionality should instead subscribe
-		to the event hooks and check against the Player's held Item, with neccisary variables being stored on the Item instance.
+		to the event hooks and check against the Player's held Item, with necessary variables being stored on the Item instance.
 
 	4.2.3: Buffs
 		Similar to accessories, a SmartBuff class exists which has helper methods for checking if it is inflicted or not.
 		Buff effects requiring ModPlayer/ModNPC/etc. hooks should again subscribe to the approrpiate events and check for
-		the buffs infliction in the methods being subscribed with. Unfortunately as buffs are not instanced in the base game
+		the buff's infliction in the methods being subscribed with. Unfortunately as buffs are not instanced in the base game
 		ModPlayer or ModNPC classes will be required to track variables on buffs. This may change in the future with newer
 		solutions to this.
 
 4.2: Save Data
 
 	4.2.1: Saving
-		Data which needs to be saved to the Player should be placed in ModPlayer classes, same to world data and ModSystem.
-		Ideally flags are saved using BitFlag enums to reduce the size of save files and save/load times. 
+		Data which needs to be saved to the Player should be placed in ModPlayer classes, same for world data and ModSystem.
+		Ideally flags should be saved using BitFlag enums to reduce the size of save files and save/load times. 
 
 	4.2.2: Loading
 		All data which was saved should be loaded, any required resetting or similar effects should also be placed in the
@@ -312,7 +313,7 @@ Section 4: Usage of StarlightPlayer, StarlightNPC, and similar classes
 	4.3.2: How to Implement
 		When implementing a system like this, try to keep the interactions and functionality described in it as general as possible.
 		for example, it would not be ideal to add a variable to this class to track something for a single accessory which interacts
-		with the system. That would better be tracked in that accessorie's Item class. 
+		with the system. That would better be tracked in that accessory's Item class. 
 
 		Beyond this, implementation should follow standard TML implementations of these class types. Though do try to keep all
 		behavior defined in these classes focused on the default functionality of the system overall, and not when it is effected
@@ -332,7 +333,7 @@ Section 5: Drawing and Draw hooks
 
 	5.1.2: Resetting the spriteBatch
 		This should be avoided as much as possible as each reset impacts performance, but it is sometimes a necessary evil for creating
-		visual effects. When you reset the spritebatch, you should place a linebreak between when you end it, no linebreak before beginning it,
+		visual effects. When you reset the spritebatch, you should place a linebreak before you end it, no linebreak before beginning it,
 		and a linebreak after beginning it again. Example:
 
 		DrawThing();
@@ -358,7 +359,7 @@ Section 6: Conclusion
 
 	6.1: Closing thoughts
 		Thanks for reading through this entire mess of a document. I'm hoping this will help ensure that the codebase remains consistent
-		and maintainable into the future. Ofcourse not every single fringe case can be covered in something like this, but my hope is that
+		and maintainable into the future. Of course, not every single fringe case can be covered in something like this, but my hope is that
 		the examples and precedents here, along with existing examples and productive discussion can ensure that those cases comply to
 		a maintainable standard, and those standards can be appended here if the need arises.
 
