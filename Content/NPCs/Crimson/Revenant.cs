@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text.Json;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.NPCs.Crimson
@@ -97,6 +98,15 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				new(Vector2.Distance(rig.Points[swordSegment0].Pos, rig.Points[swordSegment1].Pos)),
 				new(Vector2.Distance(rig.Points[swordSegment1].Pos, rig.Points[swordSegment2].Pos)),
 				}, Assets.Invisible.Value);
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
+			{
+				BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.TheCrimson,
+				new FlavorTextBestiaryInfoElement("Bits of fallen adventurers stitched together by the thinker's neural energy float aimlessly through the crimson, lashing out against any that strike them. The coalesced energy is able to quickly reform the body when damaged.")
+			});
 		}
 
 		/// <summary>
@@ -599,6 +609,26 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			/*if (State > 0)
 				frameY += 3;*/
 
+			if (NPC.IsABestiaryIconDummy)
+			{
+				CalculateSegmentPoints();
+				Timer = Main.GameUpdateCount;
+
+				for (int k = 0; k < stringPoints.Length; k++)
+				{
+					Vector2 point = stringPoints[k];
+					StaticRigPoint rigPoint = rig.Points[k];
+
+					Vector2 targetPos = point - screenPos;
+					var frame = new Rectangle(rigPoint.Frame * 48, frameY * 52, 48, 52);
+					Color color = Color.White;
+
+					spriteBatch.Draw(tex, targetPos, frame, color, stringRotations[k] + NPC.rotation, new Vector2(24, 26), 1f, SpriteEffects.FlipHorizontally, 0);
+				}
+
+				return false;
+			}
+
 			SpriteEffects effects = NPC.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
 			if (Flipping)
@@ -614,12 +644,11 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				Vector2 point = stringPoints[k];
 				StaticRigPoint rigPoint = rig.Points[k];
 
-				Vector2 targetPos = point - Main.screenPosition;
+				Vector2 targetPos = point - screenPos;
 				var frame = new Rectangle(rigPoint.Frame * 48, frameY * 52, 48, 52);
 				Color color = new(Lighting.GetSubLight(point));
 
 				spriteBatch.Draw(tex, targetPos, frame, color, stringRotations[k] + NPC.rotation, new Vector2(24, 26), 1f, effects, 0);
-				//spriteBatch.Draw(texGlow, targetPos, frame, new Color(100, 100, 100, 100), stringRotations[k] + NPC.rotation, new Vector2(21, 27), 1f, effects, 0);
 			}
 
 			// Enqueues the pixelated links
@@ -649,7 +678,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 							float dist = Vector2.Distance(pos, lastpos);
 							float rot = pos.DirectionTo(lastpos).ToRotation();
 
-							var target = new Rectangle((int)(pos.X - Main.screenPosition.X), (int)(pos.Y - Main.screenPosition.Y), (int)dist, 46);
+							var target = new Rectangle((int)(pos.X - screenPos.X), (int)(pos.Y - screenPos.Y), (int)dist, 46);
 							var color = Color.Lerp(new Color(255, 160, 100, 150), new Color(255, 100, 220, 150), 0.5f + MathF.Sin(Main.GameUpdateCount / 4f) * 0.5f);
 
 							spriteBatch.Draw(tex, target, null, color, rot, new Vector2(0, tex.Height / 2f), 0, 0);
@@ -670,7 +699,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 					if (effect != null)
 					{
-						var world = Matrix.CreateTranslation(-Main.screenPosition.ToVector3());
+						var world = Matrix.CreateTranslation(-screenPos.ToVector3());
 						Matrix view = Matrix.Identity;
 						var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 

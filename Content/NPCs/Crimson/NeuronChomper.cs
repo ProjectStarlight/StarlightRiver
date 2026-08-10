@@ -3,7 +3,9 @@ using System;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
+using static tModPorter.ProgressUpdate;
 
 namespace StarlightRiver.Content.NPCs.Crimson
 {
@@ -50,6 +52,15 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			NPC.HitSound = SoundID.NPCHit1;
 			NPC.DeathSound = SoundID.DD2_OgreDeath.WithPitchOffset(1.5f);
 			NPC.defense = 8;
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
+			{
+				BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.TheCrimson,
+				new FlavorTextBestiaryInfoElement("These oversized, mutated neurons hang from trees, wanting nothing more than to make a connection... a connection of their jaws to prey.")
+			});
 		}
 
 		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
@@ -154,6 +165,13 @@ namespace StarlightRiver.Content.NPCs.Crimson
 		{
 			Texture2D texture = Assets.NPCs.Crimson.NeuronChomper.Value;
 			Texture2D chain = Assets.NPCs.Crimson.NeuronChomperChain.Value;
+
+			if (NPC.IsABestiaryIconDummy)
+			{
+				var frame = new Rectangle((int)(Main.GameUpdateCount / 4f) % 6 * NPC.width, 0, NPC.width, NPC.height);
+				Main.EntitySpriteDraw(texture, NPC.Center, frame, Color.White, NPC.rotation, NPC.Size / 2f, NPC.scale, SpriteEffects.None, 0);
+				return false;
+			}
 
 			Vector2 chainStart = NPC.Center + Vector2.UnitX.RotatedBy(NPC.rotation - 1.57f) * 30;
 

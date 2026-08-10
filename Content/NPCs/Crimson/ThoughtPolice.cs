@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.NPCs.Crimson
@@ -69,6 +70,15 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			NPC.netUpdate = true;
 
 			toRender.Add(this);
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
+			{
+				BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.TheCrimson,
+				new FlavorTextBestiaryInfoElement("These strange infested eyes take zombies as hosts, puppeting them around as they search for threats to the gray matter that gives them life.")
+			});
 		}
 
 		public override void AI()
@@ -233,10 +243,10 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				float pulse = 1.05f + MathF.Sin(Timer * 0.1f) * 0.05f;
 				float colorPulse = 1f + MathF.Sin(Timer * 0.1f) * 0.35f;
 
-				spriteBatch.Draw(aura, NPC.Center - Main.screenPosition, null, new Color(255, 80, 80) * 0.25f * colorPulse, 0, aura.Size() / 2f, pulse, 0, 0);
+				spriteBatch.Draw(aura, NPC.Center - screenPos, null, new Color(255, 80, 80) * 0.25f * colorPulse, 0, aura.Size() / 2f, pulse, 0, 0);
 			}
 
-			spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, frame, drawColor, NPC.rotation, frame.Size() / 2f, NPC.scale, 0, 0);
+			spriteBatch.Draw(tex, NPC.Center - screenPos, frame, drawColor, NPC.rotation, frame.Size() / 2f, NPC.scale, 0, 0);
 
 			if (aggroFlashTimer > 0)
 			{
@@ -244,7 +254,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				float prog = (MAX_FLASH_TIMER - aggroFlashTimer) / MAX_FLASH_TIMER;
 				Color color = new Color(255, 100, 100, 0) * (prog < 0.25f ? Eases.EaseQuadIn(prog / 0.25f) : 1f - Eases.EaseCircularOut((prog - 0.25f) / 0.75f));
 
-				spriteBatch.Draw(shape, NPC.Center - Main.screenPosition, frame, color, NPC.rotation, frame.Size() / 2f, NPC.scale, 0, 0);
+				spriteBatch.Draw(shape, NPC.Center - screenPos, frame, color, NPC.rotation, frame.Size() / 2f, NPC.scale, 0, 0);
 			}
 
 			return false;

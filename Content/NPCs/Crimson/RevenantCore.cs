@@ -53,6 +53,11 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			toRender.Add(this);
 		}
 
+		public override void SetBestiary(Terraria.GameContent.Bestiary.BestiaryDatabase database, Terraria.GameContent.Bestiary.BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
+		}
+
 		public override void AI()
 		{
 			Timer++;
