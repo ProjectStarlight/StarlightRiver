@@ -2,6 +2,8 @@
 using StarlightRiver.Content.Buffs;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.NPCs.Crimson
@@ -198,6 +200,24 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			}
 		}
 
+		public override void OnHitByItem(Player player, Item item, NPC.HitInfo hit, int damageDone)
+		{
+			NPC.target = player.whoAmI;
+			Timer = 0;
+			State = ThoughtPoliceState.Aggroed;
+			aggroFlashTimer = MAX_FLASH_TIMER;
+			NPC.netUpdate = true;
+		}
+
+		public override void OnHitByProjectile(Projectile projectile, NPC.HitInfo hit, int damageDone)
+		{
+			NPC.target = projectile.owner;
+			Timer = 0;
+			State = ThoughtPoliceState.Aggroed;
+			aggroFlashTimer = MAX_FLASH_TIMER;
+			NPC.netUpdate = true;
+		}
+
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
 			Texture2D tex = Assets.NPCs.Crimson.ThoughtPolice.Value;
@@ -243,6 +263,30 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 				toRender.RemoveAll(n => n is null || !n.NPC.active);
 			}
+		}
+
+		public override float SpawnChance(NPCSpawnInfo spawnInfo)
+		{
+			if (!spawnInfo.Player.ZoneCrimson || !StarlightWorld.HasFlag(WorldFlags.ThinkerBossOpen))
+				return 0;
+
+			bool overlap = Main.npc.Any(n =>
+			{
+				if (n.active && n.ModNPC is ThoughtPolice tp)
+				{
+					if (Math.Abs(spawnInfo.SpawnTileX - tp.homeX) < 30)
+						return true;
+
+					return false;
+				}
+
+				return false;
+			});
+
+			if (overlap)
+				return 0;
+
+			return 0.2f;
 		}
 	}
 }
