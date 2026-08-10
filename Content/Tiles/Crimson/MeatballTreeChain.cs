@@ -8,7 +8,7 @@ namespace StarlightRiver.Content.Tiles.Crimson
 	{
 		public MeatballTreeChain()
 		{
-			segmentLength = 16;
+			segmentLength = 14;
 			segmentLengthMultiplier = 1.3f;
 		}
 
