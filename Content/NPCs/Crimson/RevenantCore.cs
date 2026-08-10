@@ -41,8 +41,8 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 		public override void SetDefaults()
 		{
-			NPC.width = 32;
-			NPC.height = 32;
+			NPC.width = 48;
+			NPC.height = 48;
 			NPC.lifeMax = 100;
 			NPC.scale = 0;
 			NPC.noGravity = true;
@@ -56,6 +56,10 @@ namespace StarlightRiver.Content.NPCs.Crimson
 		public override void AI()
 		{
 			Timer++;
+
+			// Have to reset these with dynamic scale to get a proper hitbox
+			NPC.width = (int)(48 * NPC.scale);
+			NPC.height = (int)(48 * NPC.scale);
 
 			if (NPC.scale < 1)
 			{
@@ -84,13 +88,13 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 			NPC.position += (ParentNPC.Center - NPC.Center) * 0.05f;
 
-			NPC.velocity += randomDirection * 0.2f;
+			NPC.velocity += randomDirection * 0.25f;
 			NPC.velocity *= 0.99f;
 
 			if (Timer >= NextChange)
 			{
 				randomDirection = Main.rand.NextVector2Circular(1, 1);
-				NextChange += Main.rand.Next(20, 30);
+				NextChange += Main.rand.Next(10, 30);
 			}
 
 			NPC.TargetClosest();

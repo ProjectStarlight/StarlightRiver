@@ -8,6 +8,7 @@ using StarlightRiver.Core.Systems.PixelationSystem;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -686,6 +687,19 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			}
 
 			return false;
+		}
+
+		public override float SpawnChance(NPCSpawnInfo spawnInfo)
+		{
+			if (!spawnInfo.Player.ZoneCrimson || !StarlightWorld.HasFlag(WorldFlags.ThinkerBossOpen) || Main.npc.Any(n => n.type == Type && n.active))
+				return 0;
+
+			bool air = WorldGenHelper.CheckAirRectangle(new Point16(spawnInfo.SpawnTileX, spawnInfo.SpawnTileY - 4), new Point16(2, 3));
+
+			if (!air)
+				return 0;
+
+			return 0.2f;
 		}
 	}
 }
