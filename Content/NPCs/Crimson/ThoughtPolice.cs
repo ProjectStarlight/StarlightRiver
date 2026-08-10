@@ -148,6 +148,8 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 				case ThoughtPoliceState.Aggroed:
 
+					Lighting.AddLight(NPC.Center, new Vector3(0.5f, 0.2f, 0.2f));
+
 					if (localScanOpacity > 0)
 						localScanOpacity -= 0.1f;
 
@@ -179,6 +181,8 @@ namespace StarlightRiver.Content.NPCs.Crimson
 					break;
 
 				case ThoughtPoliceState.Attack:
+
+					Lighting.AddLight(NPC.Center, new Vector3(0.5f, 0.2f, 0.2f));
 
 					NPC.velocity *= 0.95f;
 
@@ -226,10 +230,10 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			if (State == ThoughtPoliceState.Aggroed || State == ThoughtPoliceState.Attack)
 			{
 				Texture2D aura = Assets.Bosses.TheThinkerBoss.HallucionationHazard.Value;
-				float pulse = 1.1f + MathF.Sin(Timer * 0.1f) * 0.1f;
-				float colorPulse = 1f + MathF.Sin(Timer * 0.1f) * 0.5f;
+				float pulse = 1.05f + MathF.Sin(Timer * 0.1f) * 0.05f;
+				float colorPulse = 1f + MathF.Sin(Timer * 0.1f) * 0.35f;
 
-				spriteBatch.Draw(aura, NPC.Center - Main.screenPosition, null, new Color(255, 80, 80) * 0.35f * colorPulse, 0, aura.Size() / 2f, pulse, 0, 0);
+				spriteBatch.Draw(aura, NPC.Center - Main.screenPosition, null, new Color(255, 80, 80) * 0.25f * colorPulse, 0, aura.Size() / 2f, pulse, 0, 0);
 			}
 
 			spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, frame, drawColor, NPC.rotation, frame.Size() / 2f, NPC.scale, 0, 0);
