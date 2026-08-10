@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using StarlightRiver.Core.Systems.NoBuildingSystem;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
 
@@ -42,6 +43,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			foreach (Point16 point in ValidPoints.Where(n => !Main.tile[n.X, n.Y].HasTile))
 			{
 				Framing.GetTileSafely(point.X, point.Y).IsActuated = false;
+				NoBuildSystem.pointExceptions.Add(point);
 			}
 
 			if (Projectile.timeLeft < 10)

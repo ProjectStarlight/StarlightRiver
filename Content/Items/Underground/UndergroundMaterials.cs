@@ -11,6 +11,6 @@ namespace StarlightRiver.Content.Items.Underground
 	{
 		public override string Texture => "StarlightRiver/Assets/Items/Underground/GloomGel";
 
-		public GloomGel() : base("Gloom Gel", "", 9999, 20, 1) { }
+		public GloomGel() : base("Gloom Gel", "", 20, 1) { }
 	}
 }

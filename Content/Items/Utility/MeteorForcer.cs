@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Items.Utility
 		{
 			Item.width = 32;
 			Item.height = 32;
-			Item.maxStack = 30;
+			Item.maxStack = 9999;
 			Item.useStyle = Terraria.ID.ItemUseStyleID.HoldUp;
 			Item.consumable = true;
 			Item.UseSound = Terraria.ID.SoundID.Item2;

@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Items.Infernal
 
 		public override string Texture => "StarlightRiver/Assets/Items/Infernal/InfernalCatalyst";
 
-		public InfernalCatalyst() : base("Infernal Catalyst", "Primes the lavas of hell for transmutation\nRequires a large body of lava\nItems that can be transmuted will glow in your inventory", 9999, 0, ItemRarityID.Orange) { }
+		public InfernalCatalyst() : base("Infernal Catalyst", "Primes the lavas of hell for transmutation\nRequires a large body of lava\nItems that can be transmuted will glow in your inventory", 0, ItemRarityID.Orange) { }
 
 		public override void Load()
 		{

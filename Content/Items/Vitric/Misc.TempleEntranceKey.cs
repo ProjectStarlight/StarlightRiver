@@ -6,6 +6,6 @@ namespace StarlightRiver.Content.Items.Vitric
 	{
 		public override string Texture => AssetDirectory.VitricItem + Name;
 
-		public TempleEntranceKey() : base("Forge Key", "Opens a door to the Vitric Forge.", 1, 0, Terraria.ID.ItemRarityID.Quest) { }
+		public TempleEntranceKey() : base("Forge Key", "Opens a door to the Vitric Forge.", 0, Terraria.ID.ItemRarityID.Quest) { }
 	}
 }

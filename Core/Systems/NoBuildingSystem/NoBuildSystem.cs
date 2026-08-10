@@ -114,7 +114,7 @@ namespace StarlightRiver.Core.Systems.NoBuildingSystem
 			RuntimeRegionsByPoint.Clear();
 		}
 
-		public override void PreUpdateEntities()
+		public override void PreUpdateNPCs()
 		{
 			pointExceptions.Clear();
 		}
