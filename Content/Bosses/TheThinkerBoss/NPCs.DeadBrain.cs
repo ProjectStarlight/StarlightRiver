@@ -160,7 +160,11 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					if (brain != null)
 					{
 						//TODO: The weak point entity really sohuld make its own hook and draw this there...
-						brain.weakpoint?.ModNPC?.PreDraw(obj, Main.screenPosition, Color.White);
+						if (brain.weakpoint?.ModNPC != null)
+						{
+							var glow = Assets.Masks.FlareRing64.Value;
+							obj.Draw(glow, brain.weakpoint.Center - Main.screenPosition, null, new Color(255, 100, 100), Main.GameUpdateCount * 0.02f, glow.Size() / 2f, 1f, 0, 0);
+						}
 
 						// If doing a clones attack, highlight the real one
 						if (brain.Phase == Phases.SecondPhase && (brain.AttackState == 0 || brain.AttackState == 1))
