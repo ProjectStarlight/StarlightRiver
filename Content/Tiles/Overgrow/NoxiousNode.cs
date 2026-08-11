@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
 	internal class NoxiousNodeDummy : Dummy, IFaeWhippable
 	{
-		public float DetachedLife;
+		public float DetachedLife = 61;
 		public float rotation;
 
 		public override bool DoesCollision => true;
@@ -26,13 +26,19 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
 		public override void Update()
 		{
-			if (DetachedLife > 0)
+			if (DetachedLife > 0 && DetachedLife < 61)
 			{
 				velocity.Y += 0.5f;
-				//tileCollide = true;
-				rotation += velocity.X * 0.5f;
+				rotation += velocity.X * 0.2f;
 
 				DetachedLife--;
+				position += velocity;
+
+				if (DetachedLife <= 0)
+				{
+					Kill();
+					active = false;
+				}
 			}
 
 			if (Main.rand.NextBool(4))
@@ -62,7 +68,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
 		public override bool ValidTile(Tile tile)
 		{
-			return base.ValidTile(tile) || DetachedLife > 0;
+			return base.ValidTile(tile) || DetachedLife != 61;
 		}
 
 		public void Kill()
@@ -91,7 +97,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 			color.A = 0;
 			color2.A = 0;
 
-			float opacity = DetachedLife > 0 ? (DetachedLife - 110) / 10f : 1;
+			float opacity = DetachedLife > 0 ? (DetachedLife - 50) / 10f : 1;
 
 			Main.spriteBatch.Draw(tex, pos, null, color * opacity, 0, tex.Size() / 2, 5, 0, 0);
 			Main.spriteBatch.Draw(tex, pos, null, color2 * opacity, 0, tex.Size() / 2, 5, 0, 0);
@@ -99,7 +105,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 			Texture2D flowerTex = Assets.Tiles.Overgrow.NoxiousNode.Value;
 			Main.spriteBatch.Draw(flowerTex, pos, null, lightColor, rotation, flowerTex.Size() / 2, 1, 0, 0);
 
-			if (DetachedLife <= 0)
+			if (DetachedLife == 61)
 			{
 				Texture2D glowTex = Assets.Tiles.Overgrow.NoxiousNodeGlow.Value;
 				Main.spriteBatch.Draw(glowTex, pos, null, Helpers.CommonVisualEffects.IndicatorColorProximity(400, 512, Center), rotation, glowTex.Size() / 2, 1, 0, 0);
@@ -108,7 +114,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
 		public void UpdateWhileWhipped(Whip whip)
 		{
-			if (DetachedLife <= 0)
+			if (DetachedLife == 61)
 			{
 				if (Vector2.Distance(Main.MouseWorld, Center) < 100)
 				{
@@ -116,7 +122,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 				}
 				else
 				{
-					DetachedLife = 120;
+					DetachedLife = 60;
 					WorldGen.KillTile(ParentX, ParentY);
 					velocity = (Main.MouseWorld - Center) * 0.1f;
 					Helpers.SoundHelper.PlayPitched("Effects/PickupHerbs", 1, -0.5f, Center);
@@ -131,7 +137,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
 		public bool DetachCondition()
 		{
-			return !active;
+			return !active || DetachedLife <= 50;
 		}
 
 		public bool IsWhipColliding(Vector2 whipPosition)

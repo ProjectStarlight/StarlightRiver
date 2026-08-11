@@ -98,12 +98,6 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 
 			if (!control || Player.GetHandler().Stamina <= 0)
 			{
-				attached = false;
-				attachedNPC = null;
-
-				attachedWhippable?.OnRelease(this);
-				attachedWhippable = null;
-
 				Deactivate();
 
 				extraVelocity = Main.MouseScreen;
@@ -187,6 +181,8 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 							attached = true;
 
 							AttachEffects();
+
+							return;
 						}
 					}
 
@@ -202,6 +198,8 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 							attached = true;
 
 							AttachEffects();
+
+							return;
 						}
 					}
 
@@ -240,9 +238,6 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 
 					if (attachedWhippable.DetachCondition())
 					{
-						attachedWhippable.OnRelease(this);
-						attachedWhippable = null;
-						attached = false;
 						Deactivate();
 					}
 
@@ -384,6 +379,12 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 
 		public override void OnExit()
 		{
+			attached = false;
+			attachedNPC = null;
+
+			attachedWhippable?.OnRelease(this);
+			attachedWhippable = null;
+
 			for (int k = 0; k < 40; k++) //dust
 			{
 				Vector2 pos = SplineHelper.PointOnSpline(k / 40f, spline);
