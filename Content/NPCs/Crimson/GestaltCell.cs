@@ -131,7 +131,9 @@ namespace StarlightRiver.Content.NPCs.Crimson
 		{
 			Timer++;
 
+			/*
 			squish += squish * -0.1f;
+			*/
 
 			if (opacity < 1)
 				opacity += 0.05f;
@@ -392,6 +394,8 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			{
 				case GestaltCellState.RestingOrMoving:
 
+					NPC.knockBackResist = 0.33f;
+
 					// Phase change check
 					if (NPC.life < NPC.lifeMax / 5f * 4f)
 					{
@@ -399,10 +403,16 @@ namespace StarlightRiver.Content.NPCs.Crimson
 						Timer = 0;
 						return;
 					}
+					
+					NPC.velocity.X += Target.Center.X > NPC.Center.X ? 0.45f : -0.45f;
 
-					NPC.velocity.X *= 0.75f;
+					if (Math.Abs(NPC.velocity.X) > 3)
+						NPC.velocity.X *= 0.9f;
 
-					if (Timer > 30 && NPC.velocity.Y == 0)
+					NPC.direction = NPC.velocity.X > 0 ? -1 : 1;
+
+
+					if (Timer > 60  && NPC.velocity.Y == 0)
 					{
 						State = GestaltCellState.OneCellJumping;
 						Timer = 0;
@@ -412,20 +422,20 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 				case GestaltCellState.OneCellJumping:
 
+
 					if (Timer == 1)
 					{
+						NPC.knockBackResist = 1.0f;
 						NPC.direction = Target.Center.X > NPC.Center.X ? -1 : 1;
 						NPC.velocity.X = Target.Center.X > NPC.Center.X ? 4 : -4;
 						NPC.velocity.Y -= Math.Clamp((NPC.Center.Y - Target.Center.Y) * 0.1f, 4f, 8f);
-						squish -= 0.2f;
+						NPC.velocity.X = Math.Abs(Target.Center.X - NPC.Center.X) >= 40 ? NPC.velocity.X *= 2 : NPC.velocity.X *= 1;
 					}
 
 					if (NPC.velocity.Y == 0)
 					{
 						State = GestaltCellState.RestingOrMoving;
 						Timer = 0;
-
-						squish += 0.3f;
 					}
 
 					break;
@@ -468,9 +478,9 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 				NPC.direction = NPC.velocity.X > 0 ? -1 : 1;
 
-				if (Timer > 90 && CellCount > 2)
+				if (Timer > 90 && CellCount >= 2)
 				{
-					attackChoice = Main.rand.Next((int)CellCount - 2);
+					attackChoice = CellCount == 2 ? 0 : Main.rand.Next(1, (int)CellCount - 1);
 					State = GestaltCellState.MultiCellAttack;
 					Timer = 0;
 				}
@@ -481,19 +491,63 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				switch (attackChoice)
 				{
 					case 0:
-						ThreeCellAttack();
+						TwoCellAttack();
 						break;
-
 					case 1:
+						ThreeCellRush();
+						break;
+					case 2:
 						FourCellAttack();
 						break;
-
-					case 2:
+					case 3:
 						FiveCellAttack();
 						break;
 				}
 			}
 		}
+
+		public void TwoCellAttack()
+		{
+			if (Timer > 60 && Timer < 120)
+				NPC.velocity.X = 0.5f * NPC.direction;
+			if (Timer == 120)
+				NPC.direction = (Target.Center.X - NPC.Center.X) > 0 ? -1 : 1;
+			if (Timer > 120 && Timer < 150)
+				NPC.velocity.X = 0.0f;
+			if (Timer > 150 && Timer < 160)
+			{
+				NPC.velocity.Y = -3f;
+				NPC.velocity.X = 20 * -NPC.direction;
+			}
+
+			if (Timer >= 180)
+			{
+				State = GestaltCellState.RestingOrMoving;
+				Timer = 0;
+			}
+		}
+
+		public void ThreeCellRush()
+		{
+			if (Timer < 30)
+				NPC.velocity.X *= 0.95f;
+			if (NPC.velocity.Y == 0 && Timer > 30)
+				NPC.velocity.X = 0.1f * - NPC.direction;
+			if (Timer == 59)
+				NPC.direction = (Target.Center.X - NPC.Center.X) > 0 ? -1 : 1;
+			if (Timer == 60 && NPC.velocity.Y == 0)
+			{
+				NPC.velocity.X = 10f * -NPC.direction;
+				NPC.velocity.Y = -7f;
+			}
+
+			if (Timer >= 100) 
+			{
+				State = GestaltCellState.RestingOrMoving;
+				Timer = 0;
+			}
+		}
+
 
 		public void ThreeCellAttack()
 		{
@@ -847,8 +901,10 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			Texture2D tex = Assets.NPCs.Crimson.GestaltCell.Value;
 
 			Vector2 scale = Vector2.One * NPC.scale;
+			/*
 			scale.X += squish * 2;
 			scale.Y -= squish;
+			*/
 
 			spriteBatch.Draw(tex, NPC.Center - screenPos, NPC.frame, drawColor * opacity, NPC.rotation, NPC.frame.Size() / 2f, scale, NPC.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
 
