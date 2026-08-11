@@ -4,6 +4,7 @@ using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.PixelationSystem;
 using System;
 using System.Collections.Generic;
+using System.Net.Http.Headers;
 using Terraria.Audio;
 using Terraria.ID;
 
@@ -494,13 +495,21 @@ namespace StarlightRiver.Content.NPCs.Crimson
 						TwoCellAttack();
 						break;
 					case 1:
-						ThreeCellRush();
+						if (Vector2.Distance(NPC.Center, Target.Center) >= 16 * 10)
+							attackChoice = 4;
 						break;
 					case 2:
 						FourCellAttack();
 						break;
 					case 3:
 						FiveCellAttack();
+						break;
+					case 4:
+						if (ThreeCellRush())
+							attackChoice = 5;
+						break;
+					case 5:
+						ThreeCellAttack();
 						break;
 				}
 			}
@@ -527,10 +536,10 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			}
 		}
 
-		public void ThreeCellRush()
+		public bool ThreeCellRush()
 		{
 			if (Timer < 30)
-				NPC.velocity.X *= 0.95f;
+				NPC.velocity.X = 0.8f * NPC.direction;
 			if (NPC.velocity.Y == 0 && Timer > 30)
 				NPC.velocity.X = 0.1f * - NPC.direction;
 			if (Timer == 59)
@@ -540,14 +549,28 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				NPC.velocity.X = 10f * -NPC.direction;
 				NPC.velocity.Y = -7f;
 			}
-
-			if (Timer >= 100) 
+			if (Timer == 105)
 			{
-				State = GestaltCellState.RestingOrMoving;
-				Timer = 0;
+				SoundHelper.PlayPitched("Impacts/StoneStrike", 0.5f, Main.rand.NextFloat(-0.5f, -0.3f), NPC.Center);
+				Vector2 underNPC = new Vector2(NPC.Center.X, NPC.Center.Y + 8);
+				for (int i = 0; i < 4; i++)
+				{
+					Gore.NewGorePerfect(underNPC, new Vector2(Main.rand.NextFloat(-4, 4), 0f), GoreID.Smoke1);
+					Gore.NewGorePerfect(underNPC, new Vector2(Main.rand.NextFloat(-4, 4), 0f), GoreID.Smoke2);
+					Gore.NewGorePerfect(underNPC, new Vector2(Main.rand.NextFloat(-4, 4), 0f), GoreID.Smoke3);
+				}
+				for (int i = 0; i < 16; i++)
+				{
+					Dust.NewDustPerfect(underNPC, DustID.Smoke, new Vector2(Main.rand.NextFloat(-4, 4), Main.rand.NextFloat(0f, 1f)));
+				}
 			}
+			if (Timer >= 110) 
+			{
+				Timer = 0;
+				return true;
+			}
+			return false;
 		}
-
 
 		public void ThreeCellAttack()
 		{
@@ -620,7 +643,17 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			if (Timer == 90 || Timer == 130)
 			{
 				SoundHelper.PlayPitched("Impacts/StoneStrike", 0.5f, Main.rand.NextFloat(-0.5f, -0.3f), myFollowers[0].Center);
-
+				Vector2 underNPC = new Vector2(myFollowers[0].Center.X, myFollowers[0].Center.Y + 8);
+				for (int i = 0; i < 2; i++)
+				{
+					Gore.NewGorePerfect(underNPC, new Vector2(Main.rand.NextFloat(-4, 4), 0f), GoreID.Smoke1);
+					Gore.NewGorePerfect(underNPC, new Vector2(Main.rand.NextFloat(-4, 4), 0f), GoreID.Smoke2);
+					Gore.NewGorePerfect(underNPC, new Vector2(Main.rand.NextFloat(-4, 4), 0f), GoreID.Smoke3);
+				}
+				for (int i = 0; i < 8; i++)
+				{
+					Dust.NewDustPerfect(underNPC, DustID.Smoke, new Vector2(Main.rand.NextFloat(-4, 4), Main.rand.NextFloat(0f, 1f)));
+				}
 				for (int k = 0; k < 10; k++)
 				{
 					Dust.NewDustPerfect(myFollowers[0].Center, DustID.Crimson, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5));
@@ -631,12 +664,29 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			if (Timer == 90 + (CellCount - 2) * 4 || Timer == 130 + (CellCount - 2) * 4)
 			{
 				SoundHelper.PlayPitched("Impacts/StoneStrike", 1f, Main.rand.NextFloat(-0.8f, -0.6f), myFollowers[1].Center);
-
+				Vector2 underNPC = new Vector2(myFollowers[(int)CellCount - 2].Center.X, myFollowers[(int)CellCount - 2].Center.Y + 4);
+				for (int i = 0; i < 2; i++)
+				{
+					Gore.NewGorePerfect(underNPC, new Vector2(Main.rand.NextFloat(-4, 4), 0f), GoreID.Smoke1);
+					Gore.NewGorePerfect(underNPC, new Vector2(Main.rand.NextFloat(-4, 4), 0f), GoreID.Smoke2);
+					Gore.NewGorePerfect(underNPC, new Vector2(Main.rand.NextFloat(-4, 4), 0f), GoreID.Smoke3);
+				}
+				for (int i = 0; i < 8; i++)
+				{
+					Dust.NewDustPerfect(underNPC, DustID.Smoke, new Vector2(Main.rand.NextFloat(-4, 4), Main.rand.NextFloat(0f, 1f)));
+				}
+				for (int k = 0; k < 10; k++)
+				{
+					Dust.NewDustPerfect(myFollowers[(int)CellCount - 2].Center, DustID.Crimson, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5));
+					Dust.NewDustPerfect(myFollowers[(int)CellCount - 2].Center, DustID.Blood, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(8));
+				}
+				/*
 				for (int k = 0; k < 30; k++)
 				{
 					Dust.NewDustPerfect(myFollowers[(int)CellCount - 2].Center, DustID.Crimson, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10));
 					Dust.NewDustPerfect(myFollowers[(int)CellCount - 2].Center, DustID.Blood, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(15));
 				}
+				*/
 			}
 
 			if (Timer == 150)
@@ -710,9 +760,14 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 				followerCell.savedPos = follower.Center;
 
+				if (Main.rand.NextBool())
+					SoundHelper.PlayPitched("Impacts/GoreHeavy", 0.5f, Main.rand.NextFloat(-0.5f, -0.3f), NPC.Center);
+				else
+					SoundHelper.PlayPitched("Impacts/GoreLight", 0.5f, Main.rand.NextFloat(-0.5f, -0.3f), NPC.Center);
 				for (int k = -1; k <= 1; k++)
 				{
-					Projectile.NewProjectile(follower.GetSource_FromThis(), follower.Center, follower.Center.DirectionTo(Target.Center).RotatedBy(k * 0.4f) * (5 + k), ModContent.ProjectileType<BrainBolt>(), 20, 0, Main.myPlayer, 210, 0, 20);
+					Projectile.NewProjectile(follower.GetSource_FromThis(), follower.Center, follower.Center.DirectionTo(Target.Center).RotatedBy(k * 0.4f) * (15 + k), ModContent.ProjectileType<FleshChunk>(), 20, 0, Main.myPlayer, 210, 0, 20);
+					Projectile.NewProjectile(follower.GetSource_FromThis(), follower.Center, follower.Center.DirectionTo(Target.Center).RotatedBy(k * 0.4f) * (25 + k), ModContent.ProjectileType<FleshChunk>(), 20, 0, Main.myPlayer, 210, 0, 20);
 				}
 			}
 
