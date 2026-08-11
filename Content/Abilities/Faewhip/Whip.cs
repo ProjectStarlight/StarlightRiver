@@ -3,6 +3,7 @@ using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.Systems.PixelationSystem;
 using System;
+using System.Net;
 using Terraria.GameInput;
 using static Terraria.ModLoader.ModContent;
 
@@ -286,6 +287,9 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 
 					//attachedNPC.velocity += (attachedNPC.Center - Player.Center) * -0.05f;
 				}
+
+				Player.direction = Player.Center.X < tipsPosition.X ? 1 : -1;
+				Player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, (Player.Center - tipsPosition).ToRotation());
 			}
 
 			for (int k = 0; k < 100; k++) //dust
@@ -375,6 +379,9 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 				spriteBatch.Draw(endTex, tipsPosition - Main.screenPosition, null, endColor, Main.GameUpdateCount * 0.1f, endTex.Size() / 2, endScale * 0.75f, 0, 0);
 				spriteBatch.Draw(endGlow, tipsPosition - Main.screenPosition, null, endColor, 0, endGlow.Size() / 2, endScale * (endRooted ? 0.5f : 1f), 0, 0);
 			}
+
+			Player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, (Player.Center - trailPoints[10]).ToRotation() + 1.57f);
+			Player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, (Player.Center - trailPoints[10]).ToRotation() + 1.57f);
 		}
 
 		public override void OnExit()
