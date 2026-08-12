@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core;
 using Terraria;
 using Terraria.DataStructures;
@@ -20,7 +21,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
 	internal class MagneticStrip : ModTile
 	{
-		public override string Texture => AssetDirectory.Debug;
+		public override string Texture => AssetDirectory.OvergrowTile + "MagnetStrip";
 
 		public override void SetStaticDefaults()
 		{
@@ -36,12 +37,12 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 			if (tile.IsActuated)
 				return;
 
-			var rect = tile.TileFrameX switch //funny new C# feature is funny -- looks strangely like pattern matching in smth like python or ocaml?
+			var rect = tile.TileFrameX switch
 			{
-				0 => new Rectangle(i * 16, j * 16 - 160, 16, 160),
-				1 => new Rectangle(i * 16, j * 16, 16, 160),
-				2 => new Rectangle(i * 16, j * 16, 160, 16),
-				3 => new Rectangle(i * 16 - 160, j * 16, 160, 16),
+				0 * 18 => new Rectangle(i * 16, j * 16 - 160, 16, 160),
+				1 * 18 => new Rectangle(i * 16, j * 16, 16, 160),
+				2 * 18 => new Rectangle(i * 16, j * 16, 160, 16),
+				3 * 18 => new Rectangle(i * 16 - 160, j * 16, 160, 16),
 				_ => new Rectangle(i * 16, j * 16, 160, 16),
 			};
 
@@ -51,12 +52,28 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 			{
 				var mp = player.GetModPlayer<MagneticStripPlayer>();
 
-				//if (mp.direction == GravDirection.down)
-					//mp.ChangeDirection((GravDirection)tile.TileFrameX);
-
-				mp.direction = (GravDirection)tile.TileFrameX;
+				mp.direction = (GravDirection)(tile.TileFrameX / 18);
 				mp.holdOver = 10;
-				mp.cutoffCoordinate = tile.TileFrameX <= 1 ? j * 16 : i * 16;
+				mp.cutoffCoordinate = tile.TileFrameX <= 18 ? j * 16 : i * 16;
+			}
+
+			if (Main.rand.NextBool(10))
+			{
+				var dist = Main.rand.NextFloat(160);
+				var vel = dist / 30f;
+
+				var rot = tile.TileFrameX switch
+				{
+					0 * 18 => -MathHelper.PiOver2,
+					1 * 18 => MathHelper.PiOver2,
+					2 * 18 => 0f,
+					3 * 18 => MathHelper.Pi,
+					_ => 0f
+				};
+
+				var pos = new Vector2(i, j) * 16 + Vector2.One * 8;
+
+				Dust.NewDustPerfect(pos + Vector2.UnitX.RotatedBy(rot) * dist, ModContent.DustType<Dusts.PixelatedEmber>(), Vector2.UnitX.RotatedBy(rot + 3.14f) * vel, 0, new Color(100, 255, 255, 0), Main.rand.NextFloat(0.1f));
 			}
 		}
 
@@ -64,8 +81,8 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 		{
 			//sloping the tile will rotate it instead of normal sloping behavior!
 			var tile = Framing.GetTileSafely(i, j);
-			tile.TileFrameX++;
-			tile.TileFrameX %= 4;
+			tile.TileFrameX += 18;
+			tile.TileFrameX %= 4 * 18;
 			return false;
 		}
 
@@ -82,27 +99,27 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 				return;
 
 			//Draw the glow
-			var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value;
-			Vector2 pos = new Vector2(i * 16, j * 16) - Main.screenPosition + Helpers.Helper.TileAdj * 16;
+			var tex = Assets.GlowTrail.Value;
+			Vector2 pos = new Vector2(i * 16, j * 16) - Main.screenPosition + Vector2.One * Main.offScreenRange;
 			Rectangle target = new Rectangle((int)pos.X + 16, (int)pos.Y + 176, 16, 160);
 			Rectangle source = new Rectangle(0, 0, 1, tex.Height / 2);
-			var color = new Color(100, 255, 255) * 0.35f;
+			var color = new Color(100, 200, 255) * 0.15f;
 			color.A = 0;
 
 			float rotation;
 
 			switch (tile.TileFrameX)
 			{
-				case 0: rotation = 0; target.Offset(new Point(-16, -336)); break;
-				case 1: rotation = 3.14f; break;
-				case 2: rotation = 1.57f; target.Offset(new Point(160, -176)); break;
-				case 3: rotation = 3.14f + 1.57f; target.Offset(new Point(-176, -160)); break;
+				case 0 * 18: rotation = 0; target.Offset(new Point(-16, -336)); break;
+				case 1 * 18: rotation = 3.14f; break;
+				case 2 * 18: rotation = 1.57f; target.Offset(new Point(160, -176)); break;
+				case 3 * 18: rotation = 3.14f + 1.57f; target.Offset(new Point(-176, -160)); break;
 				default: rotation = 0; break;
 			}
 
 			spriteBatch.Draw(tex, target, source, color, rotation, Vector2.Zero, 0, 0); 
 
-			var tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/MagicPixel").Value;
+			var tex2 = Assets.MagicPixel.Value;
 
 			//Draw the lines moving in the direction of gravity
 			for (int k = 0; k < 8; k++)
@@ -112,10 +129,10 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
 				switch (tile.TileFrameX)
 				{
-					case 0: target2.Offset(new Point(-16, -16)); break;
-					case 1: break;
-					case 2: target2.Offset(new Point(0, -16)); break;
-					case 3: target2.Offset(new Point(-16, 0)); break;
+					case 0 * 18: target2.Offset(new Point(-16, -16)); break;
+					case 1 * 18: break;
+					case 2 * 18: target2.Offset(new Point(0, -16)); break;
+					case 3 * 18: target2.Offset(new Point(-16, 0)); break;
 					default: break;
 				}
 
@@ -125,7 +142,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 		}
 	}
 
-	internal class MagneticStripItem : QuickTileItem
+	internal class MagneticStripItem : BaseTileItem
 	{
 		public override string Texture => AssetDirectory.Debug;
 
@@ -141,12 +158,18 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 		public GravDirection direction;
 		public GravDirection previous;
 
+		public Vector2 enterVel;
+		public int enterTime;
+		public float lastYVel;
+
 		public override void PreUpdateMovement()
 		{
 			//Adjust player dimensions when appropriate
 			if (direction != previous)
 			{
 				ChangeDirection(direction);
+				enterVel = Player.velocity;
+				enterTime = 15;
 			}
 
 			previous = direction;
@@ -245,7 +268,8 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
 				//rotate the player sprite for visual effect
 				Player.fullRotation = 3.14f + 1.57f;
-				Player.fullRotationOrigin = Player.Size / 2;
+				Player.fullRotationOrigin = Player.Size / 2 + new Vector2(0, 10);
+				Player.gfxOffY = -10;
 
 				//corrects their facing direction since it would be reversed due to rotation otherwise
 				Player.direction = Player.velocity.X > 0 ? 1 : -1;
@@ -343,7 +367,8 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 				}
 
 				Player.fullRotation = 1.57f;
-				Player.fullRotationOrigin = Player.Size / 2;
+				Player.fullRotationOrigin = Player.Size / 2 + new Vector2(0, -10);
+				Player.gfxOffY = 10;
 
 				Player.direction = Player.velocity.X > 0 ? 1 : -1;
 
@@ -383,6 +408,32 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 					Player.justJumped = true;
 				}
 			}
+
+			if (enterTime > 0)
+			{
+				//Player.position += enterVel * (enterTime / 15f);
+				enterTime--;
+			}
+
+			if (Player.velocity.Y == 0 && lastYVel != 0)
+			{
+				Vector2 off = direction switch
+				{
+					GravDirection.down => Vector2.Zero,
+					GravDirection.up => new Vector2(0, -16),
+					GravDirection.left => new Vector2(-24, 0),
+					GravDirection.right => new Vector2(16, 0),
+					_ => Vector2.Zero
+				};
+
+				for (int k = 0; k < 20; k++)
+				{
+					Dust.NewDustPerfect(Player.Center + off, ModContent.DustType<Dusts.PixelatedImpactLineDust>(), Main.rand.NextVector2Circular(9, 9), 0, new Color(100, 255, 255, 0), 0.1f);
+					SoundHelper.PlayPitched("Impacts/PanBonkSmall", 0.6f, -0.4f + Main.rand.NextFloat(-0.1f, 0.1f), Player.Center);
+				}
+			}
+
+			lastYVel = Player.velocity.Y;
 		}
 
 		public override void ResetEffects()
@@ -409,7 +460,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 			if (direction == GravDirection.right)
 			{
 				fakeXVel = Math.Max(1, Player.velocity.X);
-				Player.velocity.X = Player.velocity.Y;
+				Player.velocity.X = -Player.velocity.Y;
 				Player.width = 42;
 			}
 			else if (direction == GravDirection.left)
@@ -417,6 +468,10 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 				fakeXVel = Math.Min(-1, Player.velocity.X);
 				Player.velocity.X = Player.velocity.Y;
 				Player.width = 42;
+			}
+			else
+			{
+				Player.width = 24;
 			}
 		}
 	}

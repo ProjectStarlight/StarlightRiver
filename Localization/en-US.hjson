@@ -3475,6 +3475,11 @@ Mods: {
 				DisplayName: Locked Onyx
 				Tooltip: ""
 			}
+
+			MagneticStripItem: {
+				DisplayName: Magnetic Strip
+				Tooltip: Debug item
+			}
 		}
 
 		Projectiles: {
@@ -4456,6 +4461,7 @@ Mods: {
 			LockedOnyx.MapEntry: ""
 			MeatballTreeTopper.MapEntry: ""
 			MeatballTreeChain.MapEntry: ""
+			MagneticStrip.MapEntry: ""
 			// VitricGiantCrystal.MapEntry: ""
 			// VitricLargeCrystal.MapEntry: ""
 			// VitricMediumCrystal.MapEntry: ""
