@@ -5,7 +5,7 @@ namespace StarlightRiver.Content.Items.Food
 {
 	internal class Cabbage : Ingredient
 	{
-		public Cabbage() : base("+20 maximum barrier", 3600, IngredientType.Main) { }
+		public Cabbage() : base("+20 maximum barrier", 3600 * 5, IngredientType.Main) { }
 
 		public override void SafeSetDefaults()
 		{

@@ -1,0 +1,24 @@
+HintAbility: {
+	Name: Starsight
+	Tooltip:
+		'''
+		Press [c/6699FF:{0}] to channel starlight to see [c/AADDFF:ancient knowledge] about what your [c/6699FF:Cursor] is hovering over.
+
+		You can also press [c/6699FF:{0}] with your [c/6699FF:Cursor] hovering over the air instead to garner a [c/AADDFF:hint on what to do next!]";
+		'''
+}
+
+Dash: {
+	Name: Forbidden Winds
+	Tooltip:
+		'''
+		Press [c/6699FF:{0}] while holding any combination of [c/6699FF:{1}], [c/6699FF:{2}], [c/6699FF:{3}], and [c/6699FF:{4}] to channel starlight into a powerful dash.
+
+		You'll strike with enough force to shatter any object with a [c/88FFFF:glowing blue outline!]
+		'''
+}
+
+Whip: {
+	Name: Fae Whip
+	Tooltip: You shouldn't have this!
+}

@@ -18,28 +18,11 @@ namespace StarlightRiver.Content.GUI
 
 		private Item BigItem = new();
 		internal Item[] Selections = new Item[2];
-		internal List<string> Quotes;
 		private int QuoteID;
 
 		public override int InsertionIndex(List<GameInterfaceLayer> layers)
 		{
 			return layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
-		}
-
-		public override void OnInitialize()
-		{
-			Quotes = new List<string>() //TODO somthing with localization
-            {
-				"Loot?",
-				"Loot!",
-				"Shiny treasures!",
-				"Shinies!",
-				"Treasure!",
-				"For your troubles...",
-				"This looks valuable...",
-				"Not a mimic!",
-				"Shiny!"
-			};
 		}
 
 		public override void SafeUpdate(GameTime gameTime)
@@ -65,7 +48,7 @@ namespace StarlightRiver.Content.GUI
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, default, default, Main.UIScaleMatrix);
 
-			Texture2D glowTex = Request<Texture2D>(AssetDirectory.GUI + "ItemGlow").Value;
+			Texture2D glowTex = Assets.GUI.ItemGlow.Value;
 			float sin = (float)Math.Sin(Main.GameUpdateCount / 20f);
 			spriteBatch.Draw(glowTex, GetDimensions().Center(), null, Color.Gold * (0.4f + sin * 0.05f), Main.GameUpdateCount / 120f, glowTex.Size() / 2, 0.65f + sin * 0.03f, 0, 0);
 			spriteBatch.Draw(glowTex, GetDimensions().Center(), null, Color.White * (0.4f + sin * 0.05f), -Main.GameUpdateCount / 60f, glowTex.Size() / 2, 0.5f + sin * 0.03f, 0, 0);
@@ -73,15 +56,16 @@ namespace StarlightRiver.Content.GUI
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
 
-			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/GUI/LootSlotOn").Value;
+			Texture2D tex = Assets.GUI.LootSlotOn.Value;
 
-			Utils.DrawBorderStringBig(spriteBatch, Quotes[QuoteID], GetDimensions().Center() + new Vector2(0, -80) - 1.5f * Terraria.GameContent.FontAssets.ItemStack.Value.MeasureString(Quotes[QuoteID]) / 2, Color.White, 0.5f);
+			string quote = Language.GetTextValue($"Mods.StarlightRiver.GUI.LootUI.Jokes.{QuoteID}");
+			Utils.DrawBorderStringBig(spriteBatch, quote, GetDimensions().Center() + new Vector2(0, -80) - 1.5f * Terraria.GameContent.FontAssets.ItemStack.Value.MeasureString(quote) / 2, Color.White, 0.5f);
 
-			string str = "You get:";
-			string str2 = "Pick two:";
+			string get = Language.GetTextValue("Mods.StarlightRiver.GUI.LootUI.Get");
+			string pick = Language.GetTextValue("Mods.StarlightRiver.GUI.LootUI.Pick");
 
-			Utils.DrawBorderString(spriteBatch, str, GetDimensions().Center() + new Vector2(0, -40) - Terraria.GameContent.FontAssets.ItemStack.Value.MeasureString(str) / 2, Color.White, 0.8f);
-			Utils.DrawBorderString(spriteBatch, str2, GetDimensions().Center() + new Vector2(0, 40) - Terraria.GameContent.FontAssets.ItemStack.Value.MeasureString(str2) / 2, Color.White, 0.8f);
+			Utils.DrawBorderString(spriteBatch, get, GetDimensions().Center() + new Vector2(0, -40) - Terraria.GameContent.FontAssets.ItemStack.Value.MeasureString(get) / 2, Color.White, 0.8f);
+			Utils.DrawBorderString(spriteBatch, pick, GetDimensions().Center() + new Vector2(0, 40) - Terraria.GameContent.FontAssets.ItemStack.Value.MeasureString(pick) / 2, Color.White, 0.8f);
 
 			spriteBatch.Draw(tex, GetDimensions().Center(), tex.Frame(), Color.White * 0.75f, 0, tex.Size() / 2, 1, 0, 0);
 
@@ -127,7 +111,7 @@ namespace StarlightRiver.Content.GUI
 				AppendSlot(Item2, (-2 + k) * 60);
 			}
 
-			QuoteID = Main.rand.Next(Quotes.Count);
+			QuoteID = Main.rand.Next(9);
 		}
 
 		private void AppendSlot(Item Item, int offX)
@@ -155,7 +139,7 @@ namespace StarlightRiver.Content.GUI
 			if (Parent is LootUI)
 			{
 				var parent = Parent as LootUI;
-				Texture2D tex = parent.Selections.Any(n => n == Item) ? Request<Texture2D>("StarlightRiver/Assets/GUI/LootSlotOn").Value : Request<Texture2D>("StarlightRiver/Assets/GUI/LootSlot").Value;
+				Texture2D tex = parent.Selections.Any(n => n == Item) ? Assets.GUI.LootSlotOn.Value : Assets.GUI.LootSlot.Value;
 				float opacity = IsMouseHovering ? 1 : 0.6f;
 
 				spriteBatch.Draw(tex, GetDimensions().Position(), tex.Frame(), Color.White * opacity, 0, Vector2.Zero, 1, 0, 0);

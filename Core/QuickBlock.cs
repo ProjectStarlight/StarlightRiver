@@ -63,7 +63,7 @@ namespace StarlightRiver.Core
 			wall.AddMapEntry(mapColor);
 		}
 
-		public static void QuickSetFurniture(this ModTile tile, int width, int height, int dustType, SoundStyle? hitSound, bool tallBottom, Color mapColor, bool solidTop = false, bool solid = false, string mapName = "", AnchorData bottomAnchor = default, AnchorData topAnchor = default, int[] anchorTiles = null, bool faceDirection = false, bool wallAnchor = false, Point16 Origin = default)
+		public static void QuickSetFurniture(this ModTile tile, int width, int height, int dustType, SoundStyle? hitSound, bool tallBottom, Color mapColor, bool solidTop = false, bool solid = false, string mapName = "", AnchorData bottomAnchor = default, AnchorData topAnchor = default, int[] anchorTiles = null, bool faceDirection = false, bool wallAnchor = false, Point16 Origin = default, int variants = 1)
 		{
 			Main.tileLavaDeath[tile.Type] = false;
 			Main.tileFrameImportant[tile.Type] = true;
@@ -109,6 +109,12 @@ namespace StarlightRiver.Core
 				TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
 				TileObjectData.newAlternate.Direction = TileObjectDirection.PlaceRight;
 				TileObjectData.addAlternate(1);
+			}
+
+			if (variants > 1)
+			{
+				TileObjectData.newTile.RandomStyleRange = variants;
+				TileObjectData.newTile.StyleHorizontal = true; // Our spriters seem to like this so im making it the default... if we need to I can add a parameter for this
 			}
 
 			TileObjectData.addTile(tile.Type);

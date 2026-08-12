@@ -4,7 +4,7 @@ namespace StarlightRiver.Content.Items.Food
 {
 	internal class DicedMushrooms : Ingredient
 	{
-		public DicedMushrooms() : base("+20 maximum life", 420, IngredientType.Side) { }
+		public DicedMushrooms() : base("+20 maximum life", 3600, IngredientType.Side) { }
 
 		public override void SafeSetDefaults()
 		{

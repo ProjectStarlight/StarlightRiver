@@ -1,0 +1,112 @@
+﻿[
+  {
+    "Key": "Intro1",
+    "Title": "???",
+    "Body": "Well, look who managed to find their way inside! Seems like you've got as much fight as I had hoped you would. Whatever you killed must have had enough [c/AAF0FF:Starlight] moving through it to get that pylon running again when you took it out.",
+    "Buttons": [
+      {
+        "Key": "Intro2",
+        "Text": "Who are you?"
+      }
+    ]
+  },
+  {
+    "Key": "Intro2",
+    "Title": "Alican",
+    "Body": "Ah! My bad. My name is Alican, I'm a... well lets just say I've been studying this place and its connection to [c/AAF0FF:Starlight] for a while. I'm sure you've taken notice of the ruins around here, not unlike this observatory here. From what I've learned a long time ago they belonged to a people using them to control [c/AAF0FF:Starlight].",
+    "Buttons": [
+      {
+        "Key": "Intro3",
+        "Text": "Starlight?"
+      }
+    ]
+  },
+  {
+    "Key": "Intro3",
+    "Title": "Alican",
+    "Body": "Well, you see that giant glowing thing in the sky? They called that the [c/AAF0FF:Starlight River]. These devices would redirect the light from it through themselves, letting them work miracles.",
+    "Buttons": [
+      {
+        "Key": "Intro4",
+        "Text": "That sounds... dangerous?"
+      },
+      {
+        "Key": "Intro4",
+        "Text": "Neat!"
+      }
+    ]
+  },
+  {
+    "Key": "Intro4",
+    "Title": "Alican",
+    "Body": "Here, why dont you try it? [c/FFFFAA:This little charm] should let you direct some [c/AAF0FF:Starlight] into yourself. Then I'll teach you how to use it to [c/AADDFF:see secrets left behind in the world.]",
+    "Buttons": [
+      {
+        "Key": "Intro5",
+        "Code": "UnlockStarsight",
+        "Text": "Accept"
+      }
+    ]
+  },
+  {
+    "Key": "Intro5",
+    "Title": "Alican",
+    "Body": "There you go! Now, focus on something you want to know more about, and see what happens...",
+    "Buttons": [
+      {
+        "Key": "End",
+        "Code": "StarsightTutorial",
+        "Text": "..."
+      }
+    ]
+  },
+  {
+    "Key": "AfterTutorial1",
+    "Title": "Alican",
+    "Body": "Impressive, you picked up on that quick. I'll leave some more of these here if you've got friends that need them. I trust you'll be able to teach them now.",
+    "Buttons": [
+      {
+        "Key": "AfterTutorial2",    
+        "Text": "..."
+      }
+    ]
+  },
+  {
+    "Key": "AfterTutorial2",
+    "Title": "Alican",
+    "Body": "If you're keen to continue to persue the power of [c/AAF0FF:Starlight], or help me with my studies, you should head beneath the [c/FFAA77:desert]. You'll find [c/77FFCC:a cavern where the sand itself has fused to crystalline glass]. An [c/77FFCC:old friend] of mine lives there, and he'll be able to help you. Do be careful though, its a perilous place.",
+    "Buttons": [
+      {
+        "Key": "End",
+        "Code": "FinishTutorial",
+        "Text": "Goodbye!"
+      }
+    ]
+  },
+  {
+    "Key": "AfterTutorialRepeating",
+    "Title": "Alican",
+    "Body": "Is there something you need?",
+    "Buttons": [
+      {
+        "Key": "AfterTutorialRepeatingGuide",
+        "Text": "Where do I need to go?"
+      },
+      {
+        "Key": "End",
+        "Text": "Nevermind"
+      }
+    ]
+  },
+  {
+    "Key": "AfterTutorialRepeatingGuide",
+    "Title": "Alican",
+    "Body": "You should head beneath the [c/FFAA77:desert]. You'll find [c/77FFCC:a cavern where the sand itself has fused to crystalline glass]. An [c/77FFCC:old friend] of mine lives there, and he'll be able to help you.",
+    "Buttons": [
+      {
+        "Key": "End",
+        "Text": "Thanks!"
+      }
+    ]
+  }
+]

@@ -34,6 +34,15 @@ namespace StarlightRiver.Content.Items.Food
 			Item.height = 32;
 		}
 
+		public override ModItem Clone(Item newEntity)
+		{
+			var clone = base.Clone(newEntity) as Meal;
+			var newList = new List<Item>();
+			Ingredients.ForEach(n => newList.Add(n.Clone()));
+			clone.Ingredients = newList;
+			return clone;
+		}
+
 		public override bool CanUseItem(Player player)
 		{
 			FoodBuffHandler mp = player.GetModPlayer<FoodBuffHandler>();
@@ -116,10 +125,13 @@ namespace StarlightRiver.Content.Items.Food
 				tooltips.Add(line);
 			}
 
-			var durationLine = new TooltipLine(Mod, "StarlightRiver: Duration", (int)(Fullness * BuffLengthMult) / 60 + " seconds duration") { OverrideColor = new Color(110, 235, 255) };
+			int duration = (int)(Fullness * BuffLengthMult);
+			int cooldown = (int)(Fullness * 1.5f * DebuffLengthMult);
+
+			var durationLine = new TooltipLine(Mod, "StarlightRiver: Duration", $"{(int)(duration / 3600)}m {duration % 3600 / 60}s duration") { OverrideColor = new Color(110, 235, 255) };
 			tooltips.Add(durationLine);
 
-			var cooldownLine = new TooltipLine(Mod, "StarlightRiver: Cooldown", (int)(Fullness * 1.5f * DebuffLengthMult) / 60 + " seconds fullness") { OverrideColor = new Color(255, 170, 120) };
+			var cooldownLine = new TooltipLine(Mod, "StarlightRiver: Cooldown", $"{(int)(cooldown / 3600)}m {cooldown % 3600 / 60}s fullness") { OverrideColor = new Color(255, 170, 120) };
 			tooltips.Add(cooldownLine);
 		}
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarlightRiver.Core.Loaders;
+using System;
 
 namespace StarlightRiver.Content.Dusts
 {
@@ -17,7 +18,8 @@ namespace StarlightRiver.Content.Dusts
 			dust.noLight = false;
 			dust.frame = new Rectangle(0, 0, 43, 74);
 
-			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
+			if (ShaderLoader.GetShader("GlowingDust").Value != null)
+				dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
 		}
 
 		public override bool Update(Dust dust)
@@ -38,7 +40,7 @@ namespace StarlightRiver.Content.Dusts
 			dust.velocity *= 0.955f;
 			dust.color *= 0.96f;
 
-			dust.shader.UseColor(dust.color * MathHelper.Min(1, dust.fadeIn / 20f) * (0.5f + (float)Math.Sin(Main.GameUpdateCount * 0.5f + (float)dust.customData) * 0.5f));
+			dust.shader?.UseColor(dust.color * MathHelper.Min(1, dust.fadeIn / 20f) * (0.5f + (float)Math.Sin(Main.GameUpdateCount * 0.5f + (float)dust.customData) * 0.5f));
 			dust.fadeIn++;
 
 			Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.6f);

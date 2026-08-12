@@ -64,10 +64,10 @@ namespace StarlightRiver.Content.Items.Forest
 			float animTime = secondarySpeedCoefficient / 4f;
 			float time = Math.Max(0, (timer - animTime * 3) / animTime);
 
-			if (time > 0)
+			/*if (time > 0)
 				Filters.Scene.Activate("Shockwave", player.Center).GetShader().UseProgress(2f).UseIntensity(100 - time * 100).UseDirection(new Vector2(0.1f - time * 0.1f, 0.02f - time * 0.02f));
 			else
-				Filters.Scene.Deactivate("Shockwave");
+				Filters.Scene.Deactivate("Shockwave");*/
 
 			if (timer == 1)
 			{
@@ -100,8 +100,8 @@ namespace StarlightRiver.Content.Items.Forest
 
 		public override bool Draw(List<DrawData> playerDrawData, int drawType, Player drawPlayer, ref Texture2D texture, ref Texture2D glowTexture, ref Vector2 drawPosition, ref Rectangle frame, ref Color drawColor, ref Color glowColor, ref float rotation, ref SpriteEffects spriteEffects, ref Vector2 drawOrigin, ref float drawScale, float shadow)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D tex2 = ModContent.Request<Texture2D>(Texture + "Shape").Value;
+			Texture2D tex = Assets.Items.Forest.FeralWolfMount.Value;
+			Texture2D tex2 = Assets.Items.Forest.FeralWolfMountShape.Value;
 			CombatMountPlayer mp = drawPlayer.GetModPlayer<CombatMountPlayer>();
 			float progress = 1 - Math.Max(0, (mp.mountingTime - 15) / 15f);
 

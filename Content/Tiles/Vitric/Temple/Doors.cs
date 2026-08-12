@@ -1,4 +1,5 @@
 using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.CameraSystem;
@@ -39,7 +40,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	}
 
 	[SLRDebug]
-	class DoorVerticalItem : QuickTileItem
+	class DoorVerticalItem : BaseTileItem
 	{
 		public DoorVerticalItem() : base("Vertical Temple Door", "Temple Door, But what if it was vertical?", "DoorVertical", ItemRarityID.Blue, AssetDirectory.Debug, true) { }
 	}
@@ -65,7 +66,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			Tile tile = Framing.GetTileSafely(i, j);
 
 			Texture2D tex = Request<Texture2D>(Texture).Value;
-			Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 + Vector2.UnitY * -Helper.BezierEase(GearPuzzle.GearPuzzleHandler.solveTimer / 180f) * 7 * 16;
+			Vector2 pos = new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange + Vector2.UnitY * -Eases.BezierEase(GearPuzzle.GearPuzzleHandler.solveTimer / 180f) * 7 * 16;
 			var frame = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16);
 
 			spriteBatch.Draw(tex, pos - Main.screenPosition, frame, Lighting.GetColor(i, j));
@@ -75,7 +76,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	}
 
 	[SLRDebug]
-	class DoorGearsItem : QuickTileItem
+	class DoorGearsItem : BaseTileItem
 	{
 		public DoorGearsItem() : base("Gear Puzzle Temple Door", "Temple Door, Opens if gear puzzle is solved", "DoorGears", ItemRarityID.Blue, AssetDirectory.Debug, true) { }
 	}
@@ -101,7 +102,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			Tile tile = Framing.GetTileSafely(i, j);
 
 			Texture2D tex = Request<Texture2D>(Texture).Value;
-			Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 + Vector2.UnitY * -Helper.BezierEase(LightPuzzle.LightPuzzleHandler.solveTimer / 180f) * 5 * 16;
+			Vector2 pos = new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange + Vector2.UnitY * -Eases.BezierEase(LightPuzzle.LightPuzzleHandler.solveTimer / 180f) * 5 * 16;
 			var frame = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16);
 
 			spriteBatch.Draw(tex, pos - Main.screenPosition, frame, Lighting.GetColor(i, j));
@@ -111,7 +112,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	}
 
 	[SLRDebug]
-	class DoorLasersItem : QuickTileItem
+	class DoorLasersItem : BaseTileItem
 	{
 		public DoorLasersItem() : base("Laser Puzzle Temple Door", "Temple Door, Opens if laser puzzle is solved", "DoorLasers", ItemRarityID.Blue, AssetDirectory.Debug, true) { }
 	}
@@ -143,6 +144,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 	class DashableDoorDummy : Dummy
 	{
+		public override bool DoesCollision => true;
+
 		public DashableDoorDummy() : base(TileType<DashableDoor>(), 16 * 3, 16 * 13) { }
 
 		public override void OnSpawn()
@@ -172,13 +175,13 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public override void PostDraw(Color lightColor)
 		{
-			Main.spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricTile + "TutorialDoor2").Value, position + Vector2.UnitX * 8 - Main.screenPosition, lightColor);
-			Main.spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricTile + "TutorialDoor2Glow").Value, position + Vector2.UnitX * 8 - Main.screenPosition, Helper.IndicatorColor);
+			Main.spriteBatch.Draw(Assets.Tiles.Vitric.TutorialDoor2.Value, position + Vector2.UnitX * 8 - Main.screenPosition, lightColor);
+			Main.spriteBatch.Draw(Assets.Tiles.Vitric.TutorialDoor2Glow.Value, position + Vector2.UnitX * 8 - Main.screenPosition, CommonVisualEffects.IndicatorColor);
 		}
 	}
 
 	[SLRDebug]
-	class DashableDoorItem : QuickTileItem
+	class DashableDoorItem : BaseTileItem
 	{
 		public DashableDoorItem() : base("DashableDoor", "{{Debug}} Item", "DashableDoor", 1, AssetDirectory.Debug, true) { }
 	}

@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core.Systems;
 using Terraria.ID;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
@@ -32,7 +33,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public override bool RightClick(int i, int j)
 		{
-			if (Helpers.Helper.TryTakeItem(Main.LocalPlayer, ModContent.ItemType<Items.Vitric.TempleEntranceKey>(), 1))
+			if (Helpers.InventoryHelper.TryTakeItem(Main.LocalPlayer, ModContent.ItemType<Items.Vitric.TempleEntranceKey>(), 1))
 			{
 				WorldGen.KillTile(i, j);
 				return true;
@@ -55,7 +56,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	}
 
 	[SLRDebug]
-	class EntranceDoorItem : QuickTileItem
+	class EntranceDoorItem : BaseTileItem
 	{
 		public override string Texture => AssetDirectory.Debug;
 

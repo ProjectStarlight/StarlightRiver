@@ -3,6 +3,8 @@ using StarlightRiver.Content.Items.Moonstone;
 using StarlightRiver.Core.Systems.BarrierSystem;
 using StarlightRiver.Helpers;
 using System;
+using System.IO;
+using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
@@ -61,7 +63,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			NPC.width = 34;
 			NPC.height = 34;
 			NPC.knockBackResist = 1f;
-			NPC.lifeMax = 25;
+			NPC.lifeMax = 60;
 			NPC.noGravity = true;
 			NPC.noTileCollide = true;
 			NPC.damage = 35;
@@ -99,10 +101,11 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			{
 				case 0:
 
-					if (!initialized)
+					if (!initialized && Main.netMode != NetmodeID.MultiplayerClient)
 					{
 						flip = Main.rand.NextBool() ? -1 : 1;
 						initialized = true;
+						NPC.netUpdate = true;
 					}
 
 					NPC.TargetClosest(false);
@@ -133,8 +136,11 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 							}
 						}
 
-						if (Main.rand.NextBool() && AttackDelay == 120 && !blinked)
+						if (Main.rand.NextBool() && AttackDelay == 120 && !blinked && Main.netMode != NetmodeID.MultiplayerClient)
+						{
 							blinking = true;
+							NPC.netUpdate = true;
+						}
 
 						if (blinking)
 						{
@@ -167,7 +173,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 						barrierNPC.drawGlow = false;
 					}
 
-					if (NPC.Distance(player.Center) < 800f && AttackDelay <= 0 && !player.dead)
+					if (NPC.Distance(player.Center) < 800f && AttackDelay <= 0 && !player.dead && Main.netMode != NetmodeID.MultiplayerClient)
 					{
 						blinked = false;
 						initializeAnimation = false;
@@ -245,12 +251,12 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 							pointOnChain++;
 
 						Vector2 pos = curvePositions[pointOnChain];
-						NPC.velocity = NPC.DirectionTo(pos) * (15f * EaseBuilder.EaseCircularInOut.Ease(pointOnChain / 14f));
+						NPC.velocity = NPC.DirectionTo(pos) * (15f * Eases.EaseCircularInOut(pointOnChain / 14f));
 						NPC.rotation += 0.55f;
 
 						if (pointOnChain == 7 && !playedWhoosh)
 						{
-							Helper.PlayPitched("Effects/HeavyWhoosh", 0.5f, -0.05f, NPC.Center);
+							SoundHelper.PlayPitched("Effects/HeavyWhoosh", 0.5f, -0.05f, NPC.Center);
 							playedWhoosh = true;
 						}
 
@@ -271,27 +277,27 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
-			Texture2D eyeTex = ModContent.Request<Texture2D>(Texture + "_Eyes").Value;
+			Texture2D texture = Assets.NPCs.Moonstone.AngryCrescent.Value;
+			Texture2D glowTex = Assets.NPCs.Moonstone.AngryCrescent_Glow.Value;
+			Texture2D eyeTex = Assets.NPCs.Moonstone.AngryCrescent_Eyes.Value;
 			Vector2 origin = texture.Size() / 2f;
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			for (int k = 0; k < NPC.oldPos.Length; k++)
 			{
 				float progress = (float)((NPC.oldPos.Length - k) / (float)NPC.oldPos.Length);
 				Vector2 drawPos = NPC.oldPos[k] - screenPos + origin + new Vector2(0f, NPC.gfxOffY);
-				Color color = new Color(100, 60, 255) * EaseFunction.EaseQuarticOut.Ease(progress);
-				Main.EntitySpriteDraw(texture, drawPos, null, color, NPC.rotation, origin, NPC.scale * EaseFunction.EaseQuadOut.Ease(progress), SpriteEffects.None, 0);
+				Color color = new Color(100, 60, 255) * Eases.EaseQuarticOut(progress);
+				Main.EntitySpriteDraw(texture, drawPos, null, color, NPC.rotation, origin, NPC.scale * Eases.EaseQuadOut(progress), SpriteEffects.None, 0);
 			}
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Main.spriteBatch.Draw(texture, NPC.Center - screenPos, null, Color.White, NPC.rotation, texture.Size() / 2f, NPC.scale, SpriteEffects.None, 0f);
 
-			Color glowColor = new Color(150, 120, 255, 0) * Math.Clamp(EaseFunction.EaseQuadOut.Ease((float)Math.Sin((double)(Main.GlobalTimeWrappedHourly * 2f))), 0.25f, 1f);
+			Color glowColor = new Color(150, 120, 255, 0) * Math.Clamp(Eases.EaseQuadOut((float)Math.Sin((double)(Main.GlobalTimeWrappedHourly * 2f))), 0.25f, 1f);
 			Main.spriteBatch.Draw(glowTex, NPC.Center - screenPos, null, glowColor, NPC.rotation, glowTex.Size() / 2, NPC.scale, SpriteEffects.None, 0f);
 
 			if (flashTimer > 0)
@@ -312,11 +318,15 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 		{
 			if (NPC.life <= 0)
 			{
-				for (int i = 0; i < 2; i++)
+				if (Main.netMode != NetmodeID.MultiplayerClient)
 				{
-					Projectile.NewProjectileDirect(NPC.GetSource_Death(), NPC.Center, i == 1 ? NPC.velocity.RotatedBy(-MathHelper.PiOver2) * Main.rand.NextFloat(0.3f, 0.7f) :
-						NPC.velocity.RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(0.3f, 0.7f),
-						ModContent.ProjectileType<AngryCrescentDeathProjectile>(), 0, 0, Main.myPlayer).frame = i;
+					for (int i = 0; i < 2; i++)
+					{
+						Projectile.NewProjectileDirect(NPC.GetSource_Death(), NPC.Center, i == 1 ?
+							NPC.velocity.RotatedBy(-MathHelper.PiOver2) * Main.rand.NextFloat(0.3f, 0.7f) :
+							NPC.velocity.RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(0.3f, 0.7f),
+							ModContent.ProjectileType<AngryCrescentDeathProjectile>(), 0, 0, Main.myPlayer).frame = i;
+					}
 				}
 
 				for (int i = 0; i < 15; i++)
@@ -363,6 +373,48 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<MoonstoneOreItem>(), 3, 1, 3));
 			npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<DianesPendant>(), 150));
 		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(flip);
+			writer.Write(eyeFrame);
+			writer.Write(blinked);
+			writer.Write(blinking);
+			writer.Write(curving);
+
+			// Entering state "1" params
+			// Sort of sloppy making the assumption that only 1 packet is ever sent for state 1 and that its near enough to the transition
+			if (AIState == 1)
+			{
+				writer.WriteVector2(offset);
+				writer.Write(pointOnChain);
+				writer.Write(animating);
+				writer.Write(initializeAnimation);
+			}
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			flip = reader.ReadInt32();
+			eyeFrame = reader.ReadInt32();
+			blinked = reader.ReadBoolean();
+			blinking = reader.ReadBoolean();
+			curving = reader.ReadBoolean();
+
+			// Entering state "1" params
+			// Sort of sloppy making the assumption that only 1 packet is ever sent for state 1 and that its near enough to the transition
+			if (AIState == 1)
+			{
+				offset = reader.ReadVector2();
+				pointOnChain = reader.ReadInt32();
+				animating = reader.ReadBoolean();
+				initializeAnimation = reader.ReadBoolean();
+
+				Player target = Main.player[NPC.target];
+				var curve = new BezierCurve(target.Center + new Vector2((150 + offset.X) * flip, -150 + offset.Y), target.Bottom + new Vector2(0, 325), target.Center + new Vector2((-150 + offset.X) * flip, -150 + offset.Y));
+				curvePositions = curve.GetPoints(15).ToArray();
+			}
+		}
 	}
 
 	class AngryCrescentDeathProjectile : ModProjectile
@@ -402,8 +454,11 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			Projectile.rotation += Projectile.velocity.Length() * 0.02f;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
+			if (Main.netMode == NetmodeID.Server)
+				return;
+
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath with { Volume = 0.7f, PitchVariance = 0.1f }, Projectile.position);
 
 			for (int i = 0; i < 15; i++)
@@ -419,8 +474,8 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
+			Texture2D texture = Assets.NPCs.Moonstone.AngryCrescentDeathProjectile.Value;
+			Texture2D glowTex = Assets.NPCs.Moonstone.AngryCrescentDeathProjectile_Glow.Value;
 
 			Rectangle sourceRectangle = texture.Frame(1, Main.projFrames[Projectile.type], frameY: Projectile.frame);
 			Main.spriteBatch.Draw(texture, Projectile.Center - Main.screenPosition, sourceRectangle, Color.White, Projectile.rotation, sourceRectangle.Size() / 2f, Projectile.scale, SpriteEffects.None, 0f);

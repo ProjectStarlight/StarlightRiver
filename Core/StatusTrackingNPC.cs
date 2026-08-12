@@ -23,13 +23,13 @@ namespace StarlightRiver.Core
 			return base.PreAI(NPC);
 		}
 
-		public override void ModifyHitByItem(NPC npc, Player player, Item item, ref NPC.HitModifiers modifiers)
+		public override void OnHitByItem(NPC npc, Player player, Item item, NPC.HitInfo hit, int damageDone)
 		{
 			Tracker(npc).attacker = player;
 			Tracker(npc).compareBuffs = true;
 		}
 
-		public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref NPC.HitModifiers modifiers)
+		public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
 		{
 			Tracker(npc).attacker = Main.player[projectile.owner];
 			Tracker(npc).compareBuffs = true;

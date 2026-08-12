@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
@@ -9,7 +10,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.UndergroundTemple
 {
-	class JarTall : DummyTile, IHintable
+	class JarTall : DummyTile
 	{
 		public override int DummyType => DummySystem.DummyType<JarDummy>();
 
@@ -49,8 +50,8 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 				if (dummy is null)
 					return;
 
-				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Tiles/UndergroundTemple/JarTallGlow").Value;
-				Texture2D tex2 = Request<Texture2D>("StarlightRiver/Assets/Tiles/UndergroundTemple/JarTallGlow2").Value;
+				Texture2D tex = Assets.Tiles.UndergroundTemple.JarTallGlow.Value;
+				Texture2D tex2 = Assets.Tiles.UndergroundTemple.JarTallGlow2.Value;
 
 				spriteBatch.End();
 				spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default);
@@ -58,8 +59,8 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 				spriteBatch.End();
 				spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default);
 
-				spriteBatch.Draw(tex, (Helper.TileAdj + new Vector2(i, j)) * 16 - Main.screenPosition, Color.White);
-				spriteBatch.Draw(tex2, (Helper.TileAdj + new Vector2(i, j)) * 16 + new Vector2(-2, 0) - Main.screenPosition, Helper.IndicatorColorProximity(150, 300, dummy.Center));
+				spriteBatch.Draw(tex, new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange - Main.screenPosition, Color.White);
+				spriteBatch.Draw(tex2, new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange + new Vector2(-2, 0) - Main.screenPosition, CommonVisualEffects.IndicatorColorProximity(150, 300, dummy.Center));
 
 			}
 		}
@@ -68,15 +69,12 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 		{
 			return false;
 		}
-
-		public string GetHint()
-		{
-			return "A huge vial of pure starlight -- It's reinforced the glass itself over the centuries. Maybe a powerful starlight force could shatter it.";
-		}
 	}
 
-	internal class JarDummy : Dummy, IDrawAdditive
+	internal class JarDummy : Dummy
 	{
+		public override bool DoesCollision => true;
+
 		public JarDummy() : base(TileType<JarTall>(), 32, 64) { }
 
 		public override void Update()
@@ -110,15 +108,15 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 			}
 		}
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
+		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
-			spriteBatch.Draw(tex, Center - Main.screenPosition + Vector2.UnitY * 16, tex.Frame(), new Color(91, 211, 233) * 0.7f, 0, tex.Size() / 2, 0.8f, 0, 0);
+			Texture2D glowTex = Assets.Masks.GlowAlpha.Value;
+			Main.spriteBatch.Draw(glowTex, Center - Main.screenPosition + Vector2.UnitY * 16, glowTex.Frame(), new Color(91, 211, 233, 0) * 0.7f, 0, glowTex.Size() / 2, 0.8f, 0, 0);
 		}
 	}
 
 	[SLRDebug]
-	public class JarTallItem : QuickTileItem
+	public class JarTallItem : BaseTileItem
 	{
 		public override string Texture => AssetDirectory.Debug;
 

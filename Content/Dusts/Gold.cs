@@ -120,6 +120,8 @@ namespace StarlightRiver.Content.Dusts
 			dust.position += dust.velocity;
 			dust.fadeIn++;
 
+			dust.color = Lighting.GetColor((dust.position / 16).ToPoint());
+
 			dust.scale *= 0.999f;
 			dust.alpha = 155 + (int)(dust.fadeIn > 300 ? (dust.fadeIn - 300) / 300 * 100 : (300 - dust.fadeIn) / 300 * 100);
 

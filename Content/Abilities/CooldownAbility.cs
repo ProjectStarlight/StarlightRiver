@@ -20,7 +20,7 @@
 			CooldownBonus = 0;
 		}
 
-		public override void UpdateFixed()
+		public sealed override void UpdateFixed()
 		{
 			base.UpdateFixed();
 
@@ -29,7 +29,11 @@
 
 			if (Cooldown == 0)
 				CooldownFinish();
+
+			SafeUpdateFixed();
 		}
+
+		public virtual void SafeUpdateFixed() { }
 
 		public virtual void CooldownFinish() { }
 	}

@@ -16,8 +16,7 @@ namespace StarlightRiver.Core
 		VitricBossOpen = 1 << 5,
 		VitricBossDowned = 1 << 6,
 
-		OvergrowBossOpen = 1 << 7,
-		OvergrowBossFree = 1 << 8,
-		OvergrowBossDowned = 1 << 9,
+		ThinkerBossOpen = 1 << 7,
+		ThinkerBossDowned = 1 << 8,
 	}
 }

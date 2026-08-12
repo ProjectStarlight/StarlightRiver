@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Exotic Geode");
-			Tooltip.SetDefault("'Incredibly shiny'\nAn extractinator might be able to break it apart...");
+			Tooltip.SetDefault("'Incredibly shiny'\nAn Extractinator might be able to break it apart...");
 			ItemID.Sets.ExtractinatorMode[Item.type] = Item.type;
 		}
 
@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			Item.height = 40;
 			Item.value = Item.sellPrice(silver: 10);
 			Item.rare = ItemRarityID.Blue;
-			Item.maxStack = 30;
+			Item.maxStack = 9999;
 			Item.autoReuse = true;
 			Item.consumable = true;
 			Item.useAnimation = 15;

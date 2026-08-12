@@ -1,10 +1,11 @@
-﻿using Terraria.Graphics.Shaders;
+﻿using StarlightRiver.Core.Loaders;
+using Terraria.Graphics.Shaders;
 
 namespace StarlightRiver.Content.Items.Geomancer
 {
 	class GeoRainbowDust : ModDust
 	{
-		public override string Texture => "StarlightRiver/Assets/Keys/GlowVerySoft";
+		public override string Texture => "StarlightRiver/Assets/Masks/GlowVerySoft";
 
 		public override void OnSpawn(Dust dust)
 		{
@@ -13,7 +14,8 @@ namespace StarlightRiver.Content.Items.Geomancer
 			dust.noLight = false;
 			dust.frame = new Rectangle(0, 0, 64, 64);
 			dust.velocity *= 2;
-			dust.shader = new ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
+			if (ShaderLoader.GetShader("GlowingDust").Value != null)
+				dust.shader = new ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
 			dust.alpha = Main.rand.Next(100);
 		}
 
@@ -28,7 +30,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 			dust.velocity *= 0.98f;
 
 			dust.color = Main.hslToRgb((dust.alpha / 100f + (float)Main.timeForVisualEffects * 0.02f) % 1f, 1, 0.5f);
-			dust.shader.UseColor(dust.color);
+			dust.shader?.UseColor(dust.color);
 
 			dust.fadeIn++;
 

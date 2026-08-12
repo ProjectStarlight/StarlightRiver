@@ -11,17 +11,17 @@ namespace StarlightRiver.Core.Systems.BlockerTileSystem
 
 		public override void Load()
 		{
-			On_Main.Update += UpdateCollision;
+			On_Main.DoUpdate += UpdateCollision;
 		}
 
 		public override void Unload()
 		{
-			On_Main.Update -= UpdateCollision;
+			On_Main.DoUpdate -= UpdateCollision;
 		}
 
-		private void UpdateCollision(On_Main.orig_Update orig, Main self, GameTime gameTime)
+		private void UpdateCollision(On_Main.orig_DoUpdate orig, Main self, ref GameTime gameTime)
 		{
-			orig(self, gameTime);
+			orig(self, ref gameTime);
 
 			if (Main.gameMenu && Main.netMode != NetmodeID.Server)
 				return;

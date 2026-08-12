@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Helpers;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -24,8 +25,8 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 		{
 			Tile tile = Framing.GetTileSafely(i, j);
-			Texture2D tex = Request<Texture2D>(AssetDirectory.OvergrowTile + "Rock2x2Glow").Value;
-			Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition;
+			Texture2D tex = Assets.Tiles.Overgrow.Rock2x2Glow.Value;
+			Vector2 pos = new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange - Main.screenPosition;
 
 			spriteBatch.Draw(tex, pos, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), Color.White);
 			Lighting.AddLight(new Vector2(i, j) * 16, new Vector3(110, 200, 225) * 0.0015f);
@@ -33,7 +34,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 	}
 
 	[SLRDebug]
-	class Rock2x2Item : QuickTileItem
+	class Rock2x2Item : BaseTileItem
 	{
 		public override string Texture => AssetDirectory.OvergrowTile + Name;
 

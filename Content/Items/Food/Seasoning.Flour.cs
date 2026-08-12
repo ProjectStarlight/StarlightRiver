@@ -10,6 +10,7 @@ namespace StarlightRiver.Content.Items.Food
 		{
 			Item.value = 100;
 			Item.rare = ItemRarityID.White;
+			Item.value = Item.buyPrice(silver: 20);//higher than others since only this directly crafts into 2 other foods
 		}
 
 		public override void BuffEffects(Player Player, float multiplier)

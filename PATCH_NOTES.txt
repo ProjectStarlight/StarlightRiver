@@ -1,45 +1,19 @@
-# Starlight River 0.2.7
+﻿# Starlight River 0.3.0
 
-## Fixes
-- Fixed Face Steak dropping from Eater of Souls (now drops from Face Monsters)
-- Defense system now deals summon damage
-- Supply Beacon now has buff icons
-- Resource reservation overlays now draw for the new interfaces with numbers
-- Shine staff no longer stacks mana regen delay penalty for repeated use
-- Using Main.DefaultSamplerState for spritebatches to avoid some blurry sprites
-- Fixed gear puzzle crash
-
-## Multiplayer
-- Fixed amulet of the bloodless warrior making you appear dead in multiplayer
-- Defense System's radial selector no longer draws for other players in multiplayer
-- Breach Cannon now mostly works in multiplayer
-- Supply Beacon no longer spawns extras in multiplayer
-- Fix for Archaeologist Whip's treasure drops in multiplayer
-- Fix for pirate chest in multiplayer
-- Visual sync for sandscript
-- Cloudstrike functional in mp
-- Skullbuster mp fixes
-- Blood Amulet functional in mp
-- Radculas Rapier mp fixes
-- Bloodbolter functional in mp
-_ Visual sync for Tombsmasher
-- Haunted dagger staff functional in mp
-- Tentacle hook visual sync
-- Infernal manabond onhit visual sync
-- Fix missing graphics device for coach gun
-- Maneater pot visual sync
-- Shine staff visual sync
-- Fixed auto-select being prevented from placing torches and throwing glowsticks
-- Hardened dummy system against players joining a world late
-- vitric ore dummies now properly remove themselves for clients
+## Flagship Content
+- Added a new optional boss, The Thinker! This boss can be challenged in a crimson world at any point after the Brain of Cthulhu has been defeated, but is intended for players that have atleast visited the dungeon.
+- After defeating the Brain of Cthulhu, some strange bits of material will activate in the crimson. Will you be able to use it to your advantage, or simply go mad?
 
 ## Content
-- New enemy: Dreambeast
-
-## Tweaks
-- Both Eater Steak and Face Steak can now drop from Corruptors and Herplings respectively
-- Upped Defense system and heart statue usetime to match all other sentries
-- Seaglass Lens now deals real crits that can benefit from other accessories instead of non-scaling phantom crits
-- Breach Cannon now has Id based Iframes and no longer blocks other weapons from dealing damage
-- Skullbuster bombs now use local Iframes
-- Blood Amulet now uses local Iframes
+- The player can now seek out 3 special starlight vessel shards to increase their maximum starlight
+- The following are spoilers for the crimson biome
+||- Added gray maatter to the crimson, which emits a hallucinatory and causes hallucinations when stood on
+- Added dendrite to the crimson, a sneaky ore only visible if you are hallucinating
+||
+- The following are spoilers for The Thinker
+||- Added the bear poker, which can be used to spawn The Thinker
+- Added the lobotolizer, a spear which can throw a hallucinatory copy of itself to engage a more offensive attack mode
+- Added the mirage bow, which creates a copy of its user on critical hits reflected across their mouse
+- Added the mind crusher, a charged magic weapon which creates a growing bubble that can be collapsed for bonus damage againsted armored targets
+- Added the myelin sheath, which allows swords to create a crippling projectile on their first strike
+- Added the psychotic manabond, which drains your mana to have your minions emit a damaging aura

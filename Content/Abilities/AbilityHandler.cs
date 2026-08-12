@@ -16,8 +16,6 @@ namespace StarlightRiver.Content.Abilities
 
 		private InfusionItem[] infusions = new InfusionItem[Infusion.InfusionSlots];
 		public Dictionary<Type, Ability> unlockedAbilities = new();
-
-		private float stamina;
 		private float staminaMaxBonus;
 		private int staminaRegenCD;
 
@@ -99,14 +97,14 @@ namespace StarlightRiver.Content.Abilities
 		/// </summary>
 		public float Stamina
 		{
-			get => stamina;
+			get;
 			// Can't have less than 0 or more than max stamina.
-			set => stamina = MathHelper.Clamp(value, 0, StaminaMax);
+			set => field = MathHelper.Clamp(value, 0, StaminaMax);
 		}
 
 		//for some reason without specifically setting these values to zero with cloneNewInstances => false and contructor,
 		////on a server if someone unlocks or modifies these it will impact newly created characters from then on for that instance
-		protected override bool CloneNewInstances => false;
+		public override bool CloneNewInstances => false;
 
 		public AbilityHandler()
 		{
@@ -252,7 +250,7 @@ namespace StarlightRiver.Content.Abilities
 				}
 			}
 
-			return true;
+			return infusions.Count(n => n != null) < InfusionLimit;
 		}
 
 		/// <summary>
@@ -346,7 +344,23 @@ namespace StarlightRiver.Content.Abilities
 
 		public override void ProcessTriggers(TriggersSet triggersSet)
 		{
-			// Beyah
+			// Check infusions FIRST so they take precedence
+			foreach (InfusionItem infusion in infusions)
+			{
+				if (infusion == null)
+					continue;
+
+				// If any of the infusions match, they take precedent. This prevents "falling through" to the default ability
+				if (infusion.ability != null && infusion.ability.HotKeyMatch(triggersSet, StarlightRiver.Instance.AbilityKeys))
+				{
+					if (infusion.ability.Available)
+						infusion.ability.Activate(this);
+
+					return;
+				}
+			}
+
+			// Then check the default abilities
 			foreach (Ability ability in unlockedAbilities.Values)
 			{
 				if (ability.Available && ability.HotKeyMatch(triggersSet, StarlightRiver.Instance.AbilityKeys))
@@ -384,8 +398,7 @@ namespace StarlightRiver.Content.Abilities
 			// To ensure fusions always have their owner set to a valid Player.
 			for (int i = 0; i < infusions.Length; i++)
 			{
-				if (infusions[i] != null)
-					infusions[i].Item.playerIndexTheItemIsReservedFor = Player.whoAmI;
+				infusions[i]?.Item.playerIndexTheItemIsReservedFor = Player.whoAmI;
 			}
 		}
 
@@ -416,32 +429,30 @@ namespace StarlightRiver.Content.Abilities
 		{
 			var called = new HashSet<Ability>();
 
+			foreach (Ability ability in unlockedAbilities.Values)
+			{
+				called.Add(ability);
+			}
+
 			// Update infusions
 			foreach (InfusionItem infusion in infusions)
 			{
 				if (infusion == null)
 					continue;
-				infusion.UpdateFixed();
 
-				if (infusion.Ability != null)
+				if (infusion.ability != null)
 				{
-					if (infusion.AbilityType == ActiveAbility?.GetType())
-					{
-						infusion.UpdateActive();
-						if (Main.netMode != NetmodeID.Server)
-							infusion.UpdateActiveEffects();
-					}
-
-					called.Add(infusion.Ability);
+					called.Add(infusion.ability);
+					called.Remove(infusion.BaseAbility);
 				}
 			}
 
-			// Cut out previously called abilities
-			called.SymmetricExceptWith(unlockedAbilities.Values);
-
 			// Update abilities unaffected by infusions
 			foreach (Ability ability in called)
+			{
+				ability.User = this;
 				ability.UpdateFixed();
+			}
 
 			// Update active ability if unaffected by an infusion
 			if (ActiveAbility != null && called.Contains(ActiveAbility))
@@ -464,10 +475,7 @@ namespace StarlightRiver.Content.Abilities
 			// Call the current ability's deactivation hooks
 			if (activeAbility != null)
 			{
-				if (TryMatchInfusion(activeAbility.GetType(), out InfusionItem infusion))
-					infusion.OnExit();
-				else
-					activeAbility.OnExit();
+				activeAbility.OnExit();
 				activeAbility.Reset();
 			}
 
@@ -480,10 +488,7 @@ namespace StarlightRiver.Content.Abilities
 				nextAbility.ActivationCostBonus = 0;
 
 				// Hooks
-				if (TryMatchInfusion(nextAbility.GetType(), out InfusionItem infusion))
-					infusion.OnActivate();
-				else
-					nextAbility.OnActivate();
+				nextAbility.OnActivate();
 			}
 		}
 
@@ -507,17 +512,23 @@ namespace StarlightRiver.Content.Abilities
 		{
 			var called = new HashSet<Ability>();
 
+			foreach (Ability ability in Player.GetHandler().unlockedAbilities.Values)
+			{
+				called.Add(ability);
+			}
+
+			// Update infusions
 			foreach (InfusionItem infusion in Player.GetHandler().infusions)
 			{
 				if (infusion == null)
 					continue;
-				infusion.UpdateFixed();
 
-				if (infusion.Ability != null)
-					called.Add(infusion.Ability);
+				if (infusion.ability != null)
+				{
+					called.Add(infusion.ability);
+					called.Remove(infusion.BaseAbility);
+				}
 			}
-
-			called.SymmetricExceptWith(Player.GetHandler().unlockedAbilities.Values);
 
 			foreach (Ability ability in called)
 				ability.DrawActiveEffects(spriteBatch);

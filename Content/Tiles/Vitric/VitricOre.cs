@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Dusts;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Helpers;
@@ -10,7 +11,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-	internal class VitricOre : DummyTile, IHintable
+	internal class VitricOre : DummyTile
 	{
 		public override int DummyType => DummySystem.DummyType<VitricOreDummy>();
 
@@ -54,7 +55,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void SafeNearbyEffects(int i, int j, bool closer)
 		{
-			if (Main.rand.NextBool(50))
+			if (Main.rand.NextBool(200))
 			{
 				var pos = new Vector2(i * 16 + Main.rand.Next(16), j * 16 + Main.rand.Next(16));
 
@@ -77,13 +78,9 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		{
 			return false;
 		}
-		public string GetHint()
-		{
-			return "A crystal, infused with binding Starlight. You'd have to use a Starlight power of equal strength...";
-		}
 	}
 
-	internal class VitricOreFloat : DummyTile, IHintable
+	internal class VitricOreFloat : DummyTile
 	{
 		public override int DummyType => DummySystem.DummyType<VitricOreFloatDummy>();
 
@@ -122,14 +119,12 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		{
 			return false;
 		}
-		public string GetHint()
-		{
-			return "A crystal, infused with binding Starlight. You'd have to use a Starlight power of equal strength...";
-		}
 	}
 
 	internal class VitricOreDummy : Dummy
 	{
+		public override bool DoesCollision => true;
+
 		public string Texture => AssetDirectory.VitricTile + "VitricOreGlow";
 
 		public VitricOreDummy() : base(TileType<VitricOre>(), 32, 48) { }
@@ -158,7 +153,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		{
 			int texNum = 1 + Parent.TileFrameX / 36;
 			Texture2D tex = Request<Texture2D>(Texture + texNum).Value;
-			Color color = Helper.IndicatorColorProximity(150, 300, Center);
+			Color color = CommonVisualEffects.IndicatorColorProximity(150, 300, Center);
 
 			var offset = new Vector2(-1, -1);
 
@@ -171,6 +166,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 	internal class VitricOreFloatDummy : Dummy
 	{
+		public override bool DoesCollision => true;
+
 		public string Texture => AssetDirectory.VitricTile + "VitricOreFloatGlow";
 
 		public VitricOreFloatDummy() : base(TileType<VitricOreFloat>(), 32, 32) { }
@@ -197,21 +194,21 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = Request<Texture2D>(AssetDirectory.VitricTile + "VitricOreFloatGlow").Value;
-			Color color = Helper.IndicatorColorProximity(150, 300, Center);
+			Texture2D tex = Assets.Tiles.Vitric.VitricOreFloatGlow.Value;
+			Color color = CommonVisualEffects.IndicatorColorProximity(150, 300, Center);
 
 			Main.spriteBatch.Draw(tex, position - new Vector2(1, 1) - Main.screenPosition, color);
 		}
 	}
 
 	[SLRDebug]
-	class VitricOreItem : QuickTileItem
+	class VitricOreItem : BaseTileItem
 	{
 		public VitricOreItem() : base("Vitric Ore Crystal Item", "", "VitricOre", 1, AssetDirectory.VitricTile, false) { }
 	}
 
 	[SLRDebug]
-	class VitricOreFloatItem : QuickTileItem
+	class VitricOreFloatItem : BaseTileItem
 	{
 		public VitricOreFloatItem() : base("Floating Vitric Ore Crystal Item", "", "VitricOreFloat", 1, AssetDirectory.VitricTile, false) { }
 	}

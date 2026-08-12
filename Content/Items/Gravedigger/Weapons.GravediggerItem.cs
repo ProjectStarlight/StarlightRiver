@@ -165,7 +165,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			{
 				shouldDoSFX = false;
 
-				Helper.PlayPitched("Effects/HeavyWhooshShort", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
+				SoundHelper.PlayPitched("Effects/HeavyWhooshShort", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 			}
 
 			Owner.heldProj = Projectile.whoAmI;
@@ -309,7 +309,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			if (Main.myPlayer == Owner.whoAmI)
 				CameraSystem.shake += 3;
 
-			Helper.PlayPitched("Impacts/GoreLight", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), target.Center);
+			SoundHelper.PlayPitched("Impacts/GoreLight", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), target.Center);
 
 			if (target.knockBackResist != 0)
 			{
@@ -403,8 +403,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
-			writer.WritePackedVector2(directionTwo);
-			writer.WritePackedVector2(direction);
+			writer.WriteVector2(directionTwo);
+			writer.WriteVector2(direction);
 			writer.Write(Projectile.frame);
 			writer.Write(Projectile.frameCounter);
 			writer.Write(SlashWindow);
@@ -414,8 +414,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
-			directionTwo = reader.ReadPackedVector2();
-			direction = reader.ReadPackedVector2();
+			directionTwo = reader.ReadVector2();
+			direction = reader.ReadVector2();
 			Projectile.frame = reader.ReadInt32();
 			Projectile.frameCounter = reader.ReadInt32();
 			SlashWindow = reader.ReadInt32();

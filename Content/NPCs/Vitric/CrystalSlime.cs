@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			NPC.DeathSound = SoundID.NPCDeath1;
 			NPC.value = 10f;
 			NPC.knockBackResist = 0.6f;
-			NPC.aiStyle = 1;
+			NPC.aiStyle = NPCAIStyleID.Slime;
 			NPC.immortal = true;
 		}
 
@@ -58,6 +58,9 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override Color? GetAlpha(Color drawColor)
 		{
+			if (NPC.IsABestiaryIconDummy)
+				return Color.White * 0.75f;
+
 			return Lighting.GetColor((int)NPC.position.X / 16, (int)NPC.position.Y / 16) * 0.75f;
 		}
 
@@ -129,7 +132,13 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			{
 				modifiers.FinalDamage -= int.MaxValue;
 				modifiers.HideCombatText();
+			}
+		}
 
+		public override void HitEffect(NPC.HitInfo hit)
+		{
+			if (Shield == 1)
+			{
 				badHits++;
 				CombatText.NewText(NPC.Hitbox, new Color(200, 255, 255), badHits > 20 ? "Dash into me first!" : "Blocked!");
 			}
@@ -154,14 +163,16 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			if (Shield == 1)
+			if (Shield == 1 || NPC.IsABestiaryIconDummy)
 			{
-				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/NPCs/Vitric/Crystal").Value;
-				Texture2D texGlow = Request<Texture2D>("StarlightRiver/Assets/NPCs/Vitric/CrystalGlow").Value;
-				Color color = Helper.IndicatorColor;
+				Texture2D tex = Assets.NPCs.Vitric.Crystal.Value;
+				Texture2D texGlow = Assets.NPCs.Vitric.CrystalGlow.Value;
+				Color color = CommonVisualEffects.IndicatorColor;
 
 				spriteBatch.Draw(tex, NPC.Center - screenPos, null, drawColor, NPC.rotation, tex.Size() / 2f, NPC.scale, 0, 0);
-				spriteBatch.Draw(texGlow, NPC.Center - screenPos, null, color, NPC.rotation, texGlow.Size() / 2f, NPC.scale, 0, 0);
+
+				if (!NPC.IsABestiaryIconDummy)
+					spriteBatch.Draw(texGlow, NPC.Center - screenPos, null, color, NPC.rotation, texGlow.Size() / 2f, NPC.scale, 0, 0);
 			}
 		}
 	}

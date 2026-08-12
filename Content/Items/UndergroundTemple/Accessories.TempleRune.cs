@@ -8,7 +8,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 	{
 		public override string Texture => AssetDirectory.CaveTempleItem + Name;
 
-		public TempleRune() : base("Rune of Warding", "+50 {{barrier}}") { }
+		public TempleRune() : base("Rune of Warding", "+50 maximum {{barrier}}") { }
 
 		public override void SafeSetDefaults()
 		{

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using System;
 using System.Collections.Generic;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -17,7 +18,6 @@ namespace StarlightRiver.Content.Tiles.Herbology.Crops
 		protected readonly string TexturePath;
 
 		protected readonly int FrameCount;
-		protected readonly int DustType;
 		protected readonly SoundStyle SoundType;
 		protected readonly string DropType;
 
@@ -192,7 +192,7 @@ namespace StarlightRiver.Content.Tiles.Herbology.Crops
 			return 0;
 		}
 	}
-	public class Rice : QuickTileItem
+	public class Rice : BaseTileItem
 	{
 		public Rice() : base("Rice", " ", "TallRice", ItemRarityID.White, AssetDirectory.HerbologyCropTile) { }
 	}
@@ -201,7 +201,7 @@ namespace StarlightRiver.Content.Tiles.Herbology.Crops
 	{
 		public TallGoldenRice() : base("GoldenRice", "Golden Rice", AssetDirectory.HerbologyCropTile, 4) { }
 	}
-	public class GoldenRice : QuickTileItem
+	public class GoldenRice : BaseTileItem
 	{
 		public GoldenRice() : base("Golden Rice", " ", "TallGoldenRice", ItemRarityID.Orange, AssetDirectory.HerbologyCropTile) { }
 	}
@@ -210,7 +210,7 @@ namespace StarlightRiver.Content.Tiles.Herbology.Crops
 	{
 		public TallAncientFruit() : base("AncientFruit", "Ancient Fruit", AssetDirectory.HerbologyCropTile, 6) { }
 	}
-	public class AncientFruit : QuickTileItem
+	public class AncientFruit : BaseTileItem
 	{
 		public AncientFruit() : base("Ancient Fruit", " ", "TallAncientFruit", ItemRarityID.Orange, AssetDirectory.HerbologyCropTile) { }
 	}

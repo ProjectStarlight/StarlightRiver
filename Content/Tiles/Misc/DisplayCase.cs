@@ -7,7 +7,7 @@ using Terraria.ObjectData;
 
 namespace StarlightRiver.Content.Tiles.Misc
 {
-	class DisplayCase : ModTile, IHintable
+	class DisplayCase : ModTile
 	{
 		public override string Texture => "StarlightRiver/Assets/Tiles/Misc/DisplayCase";
 
@@ -39,9 +39,9 @@ namespace StarlightRiver.Content.Tiles.Misc
 
 			if (tile.TileFrameX == 0 && tile.TileFrameY == 0)
 			{
-				Texture2D outlineTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Misc/DisplayCaseGlow").Value;
-				Vector2 outlinePos = (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 - Main.screenPosition + new Vector2(1, 5);
-				Color outlineColor = Helpers.Helper.IndicatorColorProximity(150, 300, new Vector2(i, j) * 16 + Vector2.One * 16);
+				Texture2D outlineTex = Assets.Tiles.Misc.DisplayCaseGlow.Value;
+				Vector2 outlinePos = new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange - Main.screenPosition + new Vector2(1, 5);
+				Color outlineColor = Helpers.CommonVisualEffects.IndicatorColorProximity(150, 300, new Vector2(i, j) * 16 + Vector2.One * 16);
 
 				spriteBatch.Draw(outlineTex, outlinePos, null, outlineColor);
 
@@ -58,11 +58,11 @@ namespace StarlightRiver.Content.Tiles.Misc
 				spriteBatch.End();
 				spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default);
 
-				Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
-				Vector2 pos = (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 - Main.screenPosition - Vector2.One * 16;
+				Texture2D tex2 = Assets.Masks.GlowSoft.Value;
+				Vector2 pos = new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange - Main.screenPosition - Vector2.One * 16;
 				spriteBatch.Draw(tex2, pos, new Color(255, 255, 200) * (0.9f + (float)Math.Sin(Main.GameUpdateCount / 50f) * 0.1f));
 
-				Texture2D texShine = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/Shine").Value;
+				Texture2D texShine = Assets.Masks.Shine.Value;
 				pos += Vector2.One * 32;
 
 				spriteBatch.Draw(texShine, pos, null, new Color(255, 255, 200) * (1 - GetProgress(0)), Main.GameUpdateCount / 250f, new Vector2(texShine.Width / 2, texShine.Height), 0.08f * GetProgress(0), 0, 0);
@@ -75,7 +75,7 @@ namespace StarlightRiver.Content.Tiles.Misc
 				spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default);
 
 				Texture2D tex = Terraria.GameContent.TextureAssets.Item[entity.containedItem.type].Value;
-				var target = new Rectangle((i + (int)Helpers.Helper.TileAdj.X) * 16 - (int)Main.screenPosition.X + 4, (j + (int)Helpers.Helper.TileAdj.Y) * 16 - (int)Main.screenPosition.Y + 6, 20, 20);
+				var target = new Rectangle(i * 16 + Main.offScreenRange - (int)Main.screenPosition.X + 4, j * 16 + Main.offScreenRange - (int)Main.screenPosition.Y + 6, 20, 20);
 
 				spriteBatch.Draw(tex, target, null, Color.White);
 			}
@@ -86,11 +86,6 @@ namespace StarlightRiver.Content.Tiles.Misc
 		private float GetProgress(float off)
 		{
 			return (Main.GameUpdateCount + off * 3) % 300 / 300f;
-		}
-
-		public string GetHint()
-		{
-			return "The contents are shiny... but the glass is infused with starlight. A starlight power of equal strength may shatter it...";
 		}
 	}
 
@@ -144,7 +139,7 @@ namespace StarlightRiver.Content.Tiles.Misc
 					if (AbilityHelper.CheckDash(Player, new Rectangle(Position.X * 16, Position.Y * 16, 32, 48)))
 					{
 						WorldGen.KillTile(Position.X, Position.Y);
-						Helpers.Helper.NewItemSpecific(Player.Center, containedItem);
+						Helpers.ItemHelper.NewItemSpecific(Player.Center, containedItem);
 						Kill(Position.X, Position.Y);
 
 						Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Player.Center);

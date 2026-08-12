@@ -21,7 +21,7 @@ namespace StarlightRiver.Core
 					if (tile.HasTile && tile.TileType == TileID.MushroomGrass && WorldGen.genRand.NextBool(25) && ClearAreaForMushroom(i, j - 7, 7, 7))
 					{
 						ClearSquare(i, j - 7, 7, 7);
-						Helper.PlaceMultitile(new Point16(i, j - 7), TileType<Content.Tiles.Mushroom.JellyShroom>());
+						WorldGenHelper.PlaceMultitile(new Point16(i, j - 7), TileType<Content.Tiles.Mushroom.JellyShroom>());
 					}
 				}
 			}

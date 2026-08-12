@@ -25,8 +25,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void UpdateAccessory(Player Player, bool hideVisual)
 		{
-			if (!GUI.StaminaBar.specialVesselTextures.Contains(Texture) && Main.myPlayer == Player.whoAmI)
-				GUI.StaminaBar.specialVesselTextures.Add(Texture);
+			if (!GUI.StarlightBar.specialVesselTextures.Contains(Texture) && Main.myPlayer == Player.whoAmI)
+				GUI.StarlightBar.specialVesselTextures.Add(Texture);
 		}
 	}
 }

@@ -10,8 +10,6 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public CasualMirror() : base(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "CasualMirror").Value) { }
-
 		public override void Load()
 		{
 			StarlightItem.CanUseItemEvent += TurnMirrorIntoItem;
@@ -35,7 +33,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Causal Mirror");
-			Tooltip.SetDefault("Cursed : Your DoT and regeneration effects are inverted.\nRegenerate life when you would take damage-over-time.\nTake damage-over-time when you would regenerate life.\nThis includes natural regeneration!");
+			Tooltip.SetDefault("Your DoT and regeneration effects are inverted.\nRegenerate life when you would take damage-over-time.\nTake damage-over-time when you would regenerate life.\nThis includes natural regeneration!");
 		}
 
 		public override void SafeSetDefaults()
@@ -70,7 +68,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
 		{
 			if (equipped && hitDirection == 0 && damageSource.SourceOtherIndex == 8)
-				damageSource = PlayerDeathReason.ByCustomReason(Player.name + " didn't read the tooltip");
+				damageSource = PlayerDeathReason.ByCustomReason(NetworkText.FromKey("Mods.StarlightRiver.Deaths.CausalMirror", Player.name));
 
 			return true;
 		}

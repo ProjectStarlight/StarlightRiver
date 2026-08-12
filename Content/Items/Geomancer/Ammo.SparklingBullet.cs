@@ -72,7 +72,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 			Projectile.timeLeft = 640;
 			Projectile.penetrate = 1;
 
-			Projectile.aiStyle = 1;
+			Projectile.aiStyle = ProjAIStyleID.Arrow;
 			AIType = ProjectileID.Bullet;
 		}
 
@@ -117,7 +117,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 			return true;
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			for (int i = 0; i < 7; i++)
 			{

@@ -1,11 +1,12 @@
 ﻿using StarlightRiver.Content.Abilities;
 using System.Linq;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Corruption
 {
-	class Stalker : ModNPC, IHintable
+	class Stalker : ModNPC
 	{
 		public override string Texture => AssetDirectory.Assets + "NPCs/Corruption/" + Name;
 
@@ -26,6 +27,11 @@ namespace StarlightRiver.Content.NPCs.Corruption
 			NPC.immortal = true;
 			NPC.lifeMax = 10000;
 			NPC.alpha = 255;
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
 		}
 
 		public override void AI()
@@ -78,6 +84,11 @@ namespace StarlightRiver.Content.NPCs.Corruption
 
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
 		{
+			// Server does not initialize lighting engine so stalkers won't function there without making them clientside entirely
+			// Therefore stalkers are disabled in multiplayer until someone wants to come here and completely rewrite them
+			if (Main.netMode == NetmodeID.Server)
+				return 0;
+
 			Tile tile = Framing.GetTileSafely(spawnInfo.SpawnTileX, spawnInfo.SpawnTileY);
 			Vector2 spawnPoint = new Vector2(spawnInfo.SpawnTileX, spawnInfo.SpawnTileY) * 16;
 
@@ -94,10 +105,6 @@ namespace StarlightRiver.Content.NPCs.Corruption
 			spriteBatch.Draw(tex, NPC.Center - screenPos, NPC.frame, Color.White * (NPC.alpha / 255f), 0, NPC.Size / 2, 1, 0, 0);
 
 			return false;
-		}
-		public string GetHint()
-		{
-			return "Theres... nothing there. An illusion.";
 		}
 	}
 }

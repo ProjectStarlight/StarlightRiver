@@ -1,4 +1,6 @@
-﻿namespace StarlightRiver.Content.Dusts
+﻿using StarlightRiver.Core.Loaders;
+
+namespace StarlightRiver.Content.Dusts
 {
 	class GlowLine : ModDust
 	{
@@ -20,7 +22,8 @@
 			dust.customData = dust.scale;
 			dust.scale = 0;
 
-			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
+			if (ShaderLoader.GetShader("GlowingDust").Value != null)
+				dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
 		}
 
 		public override bool Update(Dust dust)
@@ -39,9 +42,9 @@
 			dust.color *= 0.97f;
 
 			if (dust.fadeIn <= 2)
-				dust.shader.UseColor(Color.Transparent);
+				dust.shader?.UseColor(Color.Transparent);
 			else
-				dust.shader.UseColor(dust.color);
+				dust.shader?.UseColor(dust.color);
 
 			dust.fadeIn++;
 

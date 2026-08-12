@@ -16,12 +16,6 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override string Texture => AssetDirectory.VitricNpc + Name;
 
-		public override void Load()
-		{
-			for (int k = 0; k <= 4; k++)
-				GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.VitricNpc + "Gore/CrystalPopperGore" + k);
-		}
-
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Sand Bat");
@@ -32,14 +26,14 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		{
 			writer.Write(NPC.noGravity);
 			writer.Write(NPC.target);
-			writer.WritePackedVector2(NPC.velocity);
+			writer.WriteVector2(NPC.velocity);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
 			NPC.noGravity = reader.ReadBoolean();
 			NPC.target = reader.ReadInt32();
-			NPC.velocity = reader.ReadPackedVector2();
+			NPC.velocity = reader.ReadVector2();
 		}
 
 		public override void SetDefaults()
@@ -111,7 +105,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 						{
 							for (int k = -1; k <= 1; k++)
 							{
-								Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Normalize(Main.player[NPC.target].Center - NPC.Center).RotatedBy(k * 0.5f) * 6, ProjectileType<Bosses.VitricBoss.GlassSpike>(), 10, 0);
+								Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Normalize(Main.player[NPC.target].Center - NPC.Center).RotatedBy(k * 0.5f) * 6, ProjectileType<Bosses.VitricBoss.GlassSpike>(), StarlightMathHelper.GetProjectileDamage(15, 30, 60), 0);
 							}
 						}
 

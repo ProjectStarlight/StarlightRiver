@@ -4,7 +4,7 @@ namespace StarlightRiver.Content.Items.Food
 {
 	internal class IvySalad : Ingredient
 	{
-		public IvySalad() : base("10% chance to poison with all hits", 60, IngredientType.Side) { }
+		public IvySalad() : base("10% chance to poison with all hits", 1800, IngredientType.Side) { }
 
 		public override void SafeSetDefaults()
 		{

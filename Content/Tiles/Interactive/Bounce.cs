@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Core.Systems.DummyTileSystem;
@@ -8,7 +9,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Interactive
 {
-	internal class Bouncer : DummyTile, IHintable
+	internal class Bouncer : DummyTile
 	{
 		public override int DummyType => DummySystem.DummyType<BouncerDummy>();
 
@@ -18,14 +19,9 @@ namespace StarlightRiver.Content.Tiles.Interactive
 		{
 			QuickBlock.QuickSetFurniture(this, 1, 1, DustType<Dusts.GlassNoGravity>(), SoundID.Shatter, false, new Color(115, 182, 158));
 		}
-
-		public string GetHint()
-		{
-			return "A reactive crystal. It... kinetically interacts with Starlight.";
-		}
 	}
 
-	internal class BouncerItem : QuickTileItem
+	internal class BouncerItem : BaseTileItem
 	{
 		public BouncerItem() : base("Vitric Bouncer", "Dash into this to go flying!\nResets jump accessories", "Bouncer", 8, AssetDirectory.InteractiveTile) { }
 
@@ -41,6 +37,8 @@ namespace StarlightRiver.Content.Tiles.Interactive
 
 	internal class BouncerDummy : Dummy
 	{
+		public override bool DoesCollision => true;
+
 		public BouncerDummy() : base(TileType<Bouncer>(), 16, 16) { }
 
 		public override void Collision(Player Player)
@@ -71,8 +69,8 @@ namespace StarlightRiver.Content.Tiles.Interactive
 
 		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Tiles/Interactive/BouncerGlow").Value;
-			Color color = Helper.IndicatorColorProximity(150, 300, Center);
+			Texture2D tex = Assets.Tiles.Interactive.BouncerGlow.Value;
+			Color color = CommonVisualEffects.IndicatorColorProximity(150, 300, Center);
 			Main.spriteBatch.Draw(tex, position - Vector2.One - Main.screenPosition, color);
 		}
 	}

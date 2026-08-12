@@ -4,7 +4,7 @@ namespace StarlightRiver.Content.Items.Food
 {
 	internal class VertebrateNuggets : Ingredient
 	{
-		public VertebrateNuggets() : base("Heal for 33% of your missing health", 200, IngredientType.Side) { }
+		public VertebrateNuggets() : base("Heal for 33% of your missing health", 1800, IngredientType.Side) { }
 
 		public override void SafeSetDefaults()
 		{

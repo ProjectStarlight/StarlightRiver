@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core.Systems.InoculationSystem;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Misc
@@ -7,7 +8,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public BuffChalice() : base("Plexus Chalice", "Inflicting debuffs temporarily increases your {{Inoculation}}") { }
+		public BuffChalice() : base("Plexus Chalice", "Inflicting debuffs temporarily increases your {{Inoculation}}\nGrants {{BUFF:PlexusChaliceBuff}}") { }
 
 		public override void Load()
 		{
@@ -61,12 +62,12 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Plexus Resistance");
-			Description.SetDefault("+30% {{Inoculation}}");
+			Description.SetDefault("+30% Inoculation");
 		}
 
 		public override void Update(Player Player, ref int buffIndex)
 		{
-			Player.GetModPlayer<DoTResistancePlayer>().DoTResist += 0.3f;
+			Player.GetModPlayer<InoculationPlayer>().DoTResist += 0.3f;
 		}
 	}
 }

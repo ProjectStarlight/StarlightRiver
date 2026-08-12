@@ -81,16 +81,30 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			{
 				if (!dontCollide)
 				{
-					if (Main.player.Any(Player => Player.active && Player.velocity.Y == 0 && Player.Hitbox.Intersects(NPC.Hitbox)))
+					Rectangle checkBox = NPC.Hitbox;
+					checkBox.Inflate(8, 8);
+
+					if (Main.player.Any(Player => Player.active && Player.velocity.Y == 0 && Player.Hitbox.Intersects(checkBox)))
 						masterExpirationTimer += 2;
 					else if (masterExpirationTimer > 0)
 						masterExpirationTimer--;
 
+					if (masterExpirationTimer > 30)
+					{
+						Dust.NewDustPerfect(NPC.position + new Vector2(Main.rand.Next(NPC.width), 12), ModContent.DustType<Dusts.PixelatedImpactLineDust>(), Vector2.UnitY * Main.rand.NextFloat(-4, -1), 0, new Color(255, (int)(50 + masterExpirationTimer / 150f * 200), 50, 0), Main.rand.NextFloat(0.05f, 0.2f) * masterExpirationTimer / 150f);
+					}
+
 					if (masterExpirationTimer > 150)
 					{
 						dontCollide = true;
-						Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<FireRingHostile>(), 40, 0, Main.myPlayer, 50);
+						Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<FireRingHostile>(), 40, 0, Main.myPlayer, NPC.width * 0.4f);
 						Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, NPC.Center);
+						SoundHelper.PlayPitched("Magic/FireHit", 1f, -0.5f, NPC.Center);
+
+						for (int k = 0; k < NPC.width; k += Main.rand.Next(2, 4))
+						{
+							Dust.NewDustPerfect(NPC.position + new Vector2(k, Main.rand.NextFloat(-4, 4)), ModContent.DustType<Dusts.PixelatedImpactLineDust>(), Main.rand.NextVector2Circular(40, 40), 0, new Color(255, Main.rand.Next(120, 200), 50, 0), Main.rand.NextFloat(0.2f, 0.3f));
+						}
 					}
 				}
 				else
@@ -98,24 +112,38 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					masterExpirationTimer--;
 
 					if (masterExpirationTimer <= 0)
+					{
 						dontCollide = false;
+
+						for (int k = 0; k < NPC.width; k += Main.rand.Next(2, 4))
+						{
+							Dust.NewDustPerfect(NPC.position + new Vector2(k, Main.rand.NextFloat(-4, 4)), ModContent.DustType<Dusts.PixelatedImpactLineDust>(), Main.rand.NextVector2Circular(6, 6), 0, new Color(50, 190, 255, 0), Main.rand.NextFloat(0.05f, 0.2f));
+						}
+					}
 				}
 			}
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D tex = Assets.Bosses.VitricBoss.VitricBossPlatform.Value;
 
 			if (dontCollide)
 				drawColor *= 0.25f;
 
 			drawColor.A = 255;
 
-			spriteBatch.Draw(tex, NPC.Center + Vector2.UnitY * 4 - screenPos, null, drawColor, 0, tex.Size() / 2, 1, 0, 0);
+			spriteBatch.Draw(tex, NPC.Center + Vector2.UnitY * 20 - screenPos, null, drawColor, 0, tex.Size() / 2, 1, 0, 0);
 
 			if (!dontCollide && masterExpirationTimer > 0)
-				spriteBatch.Draw(tex, NPC.Center + Vector2.UnitY * 4 - screenPos, null, Color.Lerp(Color.Transparent, Color.Red, masterExpirationTimer / 300f), 0, tex.Size() / 2, 1, 0, 0);
+			{
+				Color burnColor = Helpers.CommonVisualEffects.HeatedToCoolColor((1f - masterExpirationTimer / 260f) * 110);
+				burnColor.A = 0;
+
+				Vector2 offset = Main.rand.NextVector2Circular(1, 1) * (masterExpirationTimer / 30f);
+
+				spriteBatch.Draw(tex, NPC.Center + Vector2.UnitY * 20 - screenPos + offset, null, burnColor, 0, tex.Size() / 2, 1, 0, 0);
+			}
 
 			return false;
 		}
@@ -176,16 +204,30 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			{
 				if (!dontCollide)
 				{
-					if (Main.player.Any(Player => Player.active && Player.velocity.Y == 0 && Player.Hitbox.Intersects(NPC.Hitbox)))
+					Rectangle checkBox = NPC.Hitbox;
+					checkBox.Inflate(8, 8);
+
+					if (Main.player.Any(Player => Player.active && Player.velocity.Y == 0 && Player.Hitbox.Intersects(checkBox)))
 						masterExpirationTimer += 2;
 					else if (masterExpirationTimer > 0)
 						masterExpirationTimer--;
 
+					if (masterExpirationTimer > 30)
+					{
+						Dust.NewDustPerfect(NPC.position + new Vector2(Main.rand.Next(NPC.width), 12), ModContent.DustType<Dusts.PixelatedImpactLineDust>(), Vector2.UnitY * Main.rand.NextFloat(-4, -1), 0, new Color(255, (int)(50 + masterExpirationTimer / 150f * 200), 50, 0), Main.rand.NextFloat(0.05f, 0.2f) * masterExpirationTimer / 150f);
+					}
+
 					if (masterExpirationTimer > 150)
 					{
 						dontCollide = true;
-						Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<FireRingHostile>(), 40, 0, Main.myPlayer, 50);
+						Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<FireRingHostile>(), 40, 0, Main.myPlayer, NPC.width * 0.4f);
 						Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, NPC.Center);
+						SoundHelper.PlayPitched("Magic/FireHit", 1f, -0.5f, NPC.Center);
+
+						for (int k = 0; k < NPC.width; k += Main.rand.Next(2, 4))
+						{
+							Dust.NewDustPerfect(NPC.position + new Vector2(k, Main.rand.NextFloat(-4, 4)), ModContent.DustType<Dusts.PixelatedImpactLineDust>(), Main.rand.NextVector2Circular(40, 40), 0, new Color(255, Main.rand.Next(120, 200), 50, 0), Main.rand.NextFloat(0.2f, 0.3f));
+						}
 					}
 				}
 				else
@@ -193,7 +235,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					masterExpirationTimer--;
 
 					if (masterExpirationTimer <= 0)
+					{
 						dontCollide = false;
+
+						for (int k = 0; k < NPC.width; k += Main.rand.Next(2, 4))
+						{
+							Dust.NewDustPerfect(NPC.position + new Vector2(k, Main.rand.NextFloat(-4, 4)), ModContent.DustType<Dusts.PixelatedImpactLineDust>(), Main.rand.NextVector2Circular(6, 6), 0, new Color(50, 190, 255, 0), Main.rand.NextFloat(0.05f, 0.2f));
+						}
+					}
 				}
 			}
 		}
@@ -211,6 +260,30 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			NPC.dontCountMe = true;
 			NPC.lifeMax = 10;
 		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+		{
+			Texture2D tex = Assets.Bosses.VitricBoss.VitricBossPlatformSmall.Value;
+
+			if (dontCollide)
+				drawColor *= 0.25f;
+
+			drawColor.A = 255;
+
+			spriteBatch.Draw(tex, NPC.Center + Vector2.UnitY * 20 - screenPos, null, drawColor, 0, tex.Size() / 2, 1, 0, 0);
+
+			if (!dontCollide && masterExpirationTimer > 0)
+			{
+				Color burnColor = Helpers.CommonVisualEffects.HeatedToCoolColor((1f - masterExpirationTimer / 260f) * 110);
+				burnColor.A = 0;
+
+				Vector2 offset = Main.rand.NextVector2Circular(1, 1) * (masterExpirationTimer / 30f);
+
+				spriteBatch.Draw(tex, NPC.Center + Vector2.UnitY * 20 - screenPos + offset, null, burnColor, 0, tex.Size() / 2, 1, 0, 0);
+			}
+
+			return false;
+		}
 	}
 
 	internal class VitricBossPlatformDownSmall : VitricBossPlatformDown
@@ -224,6 +297,30 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			NPC.noTileCollide = true;
 			NPC.dontCountMe = true;
 			NPC.lifeMax = 10;
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+		{
+			Texture2D tex = Assets.Bosses.VitricBoss.VitricBossPlatformSmall.Value;
+
+			if (dontCollide)
+				drawColor *= 0.25f;
+
+			drawColor.A = 255;
+
+			spriteBatch.Draw(tex, NPC.Center + Vector2.UnitY * 20 - screenPos, null, drawColor, 0, tex.Size() / 2, 1, 0, 0);
+
+			if (!dontCollide && masterExpirationTimer > 0)
+			{
+				Color burnColor = Helpers.CommonVisualEffects.HeatedToCoolColor((1f - masterExpirationTimer / 260f) * 110);
+				burnColor.A = 0;
+
+				Vector2 offset = Main.rand.NextVector2Circular(1, 1) * (masterExpirationTimer / 30f);
+
+				spriteBatch.Draw(tex, NPC.Center + Vector2.UnitY * 20 - screenPos + offset, null, burnColor, 0, tex.Size() / 2, 1, 0, 0);
+			}
+
+			return false;
 		}
 	}
 }

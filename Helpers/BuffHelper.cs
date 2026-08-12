@@ -2,7 +2,7 @@
 
 namespace StarlightRiver.Helpers
 {
-	public static partial class Helper
+	public static class BuffHelper
 	{
 		public static bool IsValidDebuff(Player Player, int buffindex)
 		{

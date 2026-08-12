@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Perfectly Generic Object");
-			Tooltip.SetDefault("Summons a Perfectly Generic Pet");
+			Tooltip.SetDefault("Alchemizes a Perfectly Generic Pet");
 		}
 
 		public override void SetDefaults()

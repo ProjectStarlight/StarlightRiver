@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Dusts;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems;
 using System.Collections.Generic;
 using Terraria.ID;
@@ -37,7 +38,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 	}
 
 	[SLRDebug]
-	class VitricLootBoxItem : QuickTileItem
+	class VitricLootBoxItem : BaseTileItem
 	{
 		public VitricLootBoxItem() : base("Vitric Loot Box Item", "", "VitricLootBox", 1, AssetDirectory.VitricTile, false) { }
 	}

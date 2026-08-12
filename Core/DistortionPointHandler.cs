@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using StarlightRiver.Core.Loaders;
+using System.Collections.Generic;
 using Terraria.Graphics.Effects;
+using Terraria.Graphics.Shaders;
 using Terraria.ID;
 
 namespace StarlightRiver.Core
@@ -39,6 +41,11 @@ namespace StarlightRiver.Core
 	public class DistortionPointHandler : ModSystem
 	{
 		public static List<DistortionPoint> DistortionPoints = new();
+
+		public override void Load()
+		{
+			Filters.Scene["DistortionPulse"] = new Filter(new ScreenShaderData(ShaderLoader.GetShader("DistortionPulse"), "DistortionPulse" + "Pass"), EffectPriority.High);
+		}
 
 		public override void PostUpdateProjectiles()
 		{

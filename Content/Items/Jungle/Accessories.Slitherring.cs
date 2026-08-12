@@ -1,5 +1,6 @@
 ﻿using ReLogic.Content;
 using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Items.BaseTypes.Weapons;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -122,7 +123,7 @@ namespace StarlightRiver.Content.Items.Jungle
 			}
 
 			//whip
-			Asset<Texture2D> texture = ModContent.Request<Texture2D>(Texture);
+			Asset<Texture2D> texture = Assets.Items.Jungle.SlitherringWhip;
 			Rectangle whipFrame = texture.Frame(1, 5, 0, 0);
 			int height = whipFrame.Height;
 			Vector2 firstPoint = points[0];

@@ -17,13 +17,13 @@ namespace StarlightRiver.Content.Items.Vanity
 			return new AfterParent(PlayerDrawLayers.Torso);
 		}
 
-		protected override void Draw(ref PlayerDrawSet drawInfo)
+		public override void Draw(ref PlayerDrawSet drawInfo)
 		{
 			Player armorOwner = drawInfo.drawPlayer;
 			WardenVanityPlayer modPlayer = armorOwner.GetModPlayer<WardenVanityPlayer>();
 
 			drawInfo.armorHidesArms = true;
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.VanityItem + "WardenRobeRealBody").Value;
+			Texture2D tex = Assets.Items.Vanity.WardenRobeRealBody.Value;
 
 			Vector2 drawPos = armorOwner.MountedCenter - Main.screenPosition - new Vector2(0, 3 - armorOwner.gfxOffY);
 

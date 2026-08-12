@@ -1,4 +1,5 @@
 ﻿using System;
+using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Abilities
@@ -30,6 +31,11 @@ namespace StarlightRiver.Content.Abilities
 			spriteBatch.Draw(mainTex, position, null, Color.White * opacity, 0, mainTex.Size() / 2, scale, 0, 0);
 		}
 
+		public override void UpdateInventory(Player player)
+		{
+			ability?.User = player.GetHandler();
+		}
+
 		public override void Update(ref float gravity, ref float maxFallSpeed)
 		{
 			Color color;
@@ -46,7 +52,7 @@ namespace StarlightRiver.Content.Abilities
 			}
 
 			float rot = Main.rand.NextFloat((float)Math.PI * 2);
-			var d = Dust.NewDustPerfect(Item.Center + Vector2.One.RotatedBy(rot) * 16, 264, Vector2.One.RotatedBy(rot) * -1.25f, 0, color, 0.8f);
+			var d = Dust.NewDustPerfect(Item.Center + Vector2.One.RotatedBy(rot) * 16, DustID.PortalBoltTrail, Vector2.One.RotatedBy(rot) * -1.25f, 0, color, 0.8f);
 			d.noGravity = true;
 			d.noLight = true;
 		}
@@ -68,13 +74,16 @@ namespace StarlightRiver.Content.Abilities
 
 			for (int i = 0; i < mp.InfusionLimit; i++)
 			{
-				if (mp.GetInfusion(i) == null || i == mp.InfusionLimit - 1)
+				if (mp.GetInfusion(i) == null)
 				{
 					mp.SetInfusion(Item.Clone().ModItem as InfusionItem, i);
 					Item.TurnToAir();
+
 					return;
 				}
 			}
+
+			Item.stack = 1;
 		}
 	}
 }

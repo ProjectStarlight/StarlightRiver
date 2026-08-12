@@ -122,7 +122,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D texGlow = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
+			Texture2D texGlow = Assets.Masks.GlowAlpha.Value;
 			var frame = new Rectangle(0, (int)(Timer % 30 / 10) * 34, 32, 34);
 
 			var color = new Color(50, 80, 0)
@@ -139,8 +139,8 @@ namespace StarlightRiver.Content.NPCs.Corruption
 			else
 				color *= 0;
 
-			spriteBatch.Draw(texGlow, NPC.Center - Main.screenPosition, null, color, NPC.rotation, texGlow.Size() / 2f, NPC.scale * 0.6f, 0, 0);
-			spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, frame, drawColor * 0.8f, NPC.rotation, new Vector2(16, 17), NPC.scale, 0, 0);
+			spriteBatch.Draw(texGlow, NPC.Center - screenPos, null, color, NPC.rotation, texGlow.Size() / 2f, NPC.scale * 0.6f, 0, 0);
+			spriteBatch.Draw(tex, NPC.Center - screenPos, frame, drawColor * 0.8f, NPC.rotation, new Vector2(16, 17), NPC.scale, 0, 0);
 
 			return false;
 		}
@@ -149,7 +149,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 		{
 			Tile tile = Framing.GetTileSafely(spawnInfo.SpawnTileX, spawnInfo.SpawnTileY);
 
-			return (spawnInfo.Player.ZoneCorrupt && !Main.dayTime) ? 0.4f : 0;
+			return (spawnInfo.Player.ZoneCorrupt && !Main.dayTime) ? 0.1f : 0;
 		}
 	}
 }

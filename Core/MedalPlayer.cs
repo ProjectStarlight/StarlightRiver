@@ -107,7 +107,7 @@ namespace StarlightRiver.Core
 			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Medals/" + name).Value;
 
 			if (tex is null)
-				return ModContent.Request<Texture2D>("StarlightRiver/Assets/Medals/Cheater").Value;
+				return Assets.Medals.Cheater.Value;
 			else
 				return tex;
 		}

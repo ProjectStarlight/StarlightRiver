@@ -213,7 +213,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				Projectile.velocity *= 0;
 
 				Vector2 diff = Vector2.Normalize(target - targetNPC.Center).RotatedBy(randomRot);
-				Projectile.Center = Vector2.Lerp(target, targetNPC.Center + diff * 200f, Helpers.Helper.SwoopEase(Timer / 60f));
+				Projectile.Center = Vector2.Lerp(target, targetNPC.Center + diff * 200f, Helpers.Eases.SwoopEase(Timer / 60f));
 			}
 
 			if (Timer == 60) //Dash!
@@ -240,7 +240,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 			for (int k = 0; k < 20; k++)
 			{
-				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.BloodMetaballDust>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2.5f), 0, Color.Red, 0.3f);
+				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.BloodMetaballDust>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2.5f), 0, Color.Red, 0.5f);
 
 				for (int i = 0; i < 5; i++)
 				{
@@ -248,7 +248,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				}
 			}
 
-			Helpers.Helper.PlayPitched("Impacts/ArrowFleshy", 1, Main.rand.NextFloat(-0.4f, 0.2f), Projectile.Center);
+			Helpers.SoundHelper.PlayPitched("Impacts/ArrowFleshy", 1, Main.rand.NextFloat(-0.4f, 0.2f), Projectile.Center);
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -256,12 +256,12 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Vector2 targetPoint = Owner.Center;
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			//the lines connecting back to the owner
 			Texture2D tex = Terraria.GameContent.TextureAssets.MagicPixel.Value;
-			Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value;
-			Texture2D tex3 = ModContent.Request<Texture2D>("StarlightRiver/Assets/MotionTrail").Value;
+			Texture2D tex2 = Assets.EnergyTrail.Value;
+			Texture2D tex3 = Assets.MotionTrail.Value;
 
 			float strength = (0.2f + (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.05f) * (healPower * 2);
 
@@ -287,9 +287,9 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Main.spriteBatch.Draw(tex3, target3, source2, new Color(255, 80, 80) * strength, rot - 1.57f, new Vector2(0, 0), 0, 0);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
-			Texture2D mainTex = ModContent.Request<Texture2D>(Texture).Value; //the actual sprite of the minion
+			Texture2D mainTex = Assets.Items.Gravedigger.FleshApparation.Value; //the actual sprite of the minion
 
 			if (State == 1)  //draw afterimage only when dashing
 			{

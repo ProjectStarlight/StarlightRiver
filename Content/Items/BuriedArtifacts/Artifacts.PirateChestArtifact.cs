@@ -24,14 +24,14 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			Item.height = 40;
 			Item.value = Item.sellPrice(gold: 1);
 			Item.rare = ItemRarityID.Orange;
-			Item.maxStack = 30;
+			Item.maxStack = 9999;
 			Item.autoReuse = true;
 		}
 
 		public override void RightClick(Player player)
 		{
 			int bar = (GenVars.gold == TileID.Gold) ? ItemID.PlatinumBar : ItemID.GoldBar;
-			player.QuickSpawnItem(Item.GetSource_DropAsItem(), bar, Main.rand.Next(5,11));
+			player.QuickSpawnItem(Item.GetSource_DropAsItem(), bar, Main.rand.Next(5, 11));
 
 			int[] gems = new int[]
 			{

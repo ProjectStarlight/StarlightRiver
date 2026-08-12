@@ -31,7 +31,7 @@ namespace StarlightRiver.Core
 							WorldGen.PlaceTile(target.X + target.Width / 2 + k / 2, target.Y + target.Height / 2 - 3, StarlightRiver.Instance.Find<ModTile>("Springstone").Type);
 						}
 
-						Helper.PlaceMultitile(new Point16(target.X + target.Width / 2 - 2, target.Y + target.Height / 2 - 9), ModContent.TileType<HotspringFountain>());
+						WorldGenHelper.PlaceMultitile(new Point16(target.X + target.Width / 2 - 2, target.Y + target.Height / 2 - 9), ModContent.TileType<HotspringFountain>());
 
 						int amount = WorldGen.genRand.Next(2, 5);
 						for (int k = 0; k < amount; k++)

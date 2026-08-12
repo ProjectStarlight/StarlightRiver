@@ -1,0 +1,16 @@
+# The goal is to exclude all generated .xnb files
+*.xnb
+
+# Exceptions for .xnb files without any source .fx files
+!AuraEffect.xnb
+!BlurEffect.xnb
+!ColoredFireAlpha.xnb
+!Distort.xnb
+!DonutIcon.xnb
+!LightApplicator.xnb
+!Primitives.xnb
+!Purity.xnb
+!ReflectionMapper.xnb
+!Shockwave.xnb
+!TileReflection.xnb
+!WaterEffect.xnb

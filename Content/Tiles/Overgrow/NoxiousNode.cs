@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.Faewhip;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.DummyTileSystem;
@@ -16,20 +17,28 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
 	internal class NoxiousNodeDummy : Dummy, IFaeWhippable
 	{
-		public float DetachedLife;
+		public float DetachedLife = 61;
 		public float rotation;
+
+		public override bool DoesCollision => true;
 
 		public NoxiousNodeDummy() : base(ModContent.TileType<NoxiousNode>(), 8, 8) { }
 
 		public override void Update()
 		{
-			if (DetachedLife > 0)
+			if (DetachedLife > 0 && DetachedLife < 61)
 			{
 				velocity.Y += 0.5f;
-				//tileCollide = true;
-				rotation += velocity.X * 0.5f;
+				rotation += velocity.X * 0.2f;
 
 				DetachedLife--;
+				position += velocity;
+
+				if (DetachedLife <= 0)
+				{
+					Kill();
+					active = false;
+				}
 			}
 
 			if (Main.rand.NextBool(4))
@@ -49,7 +58,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
 		public override bool Colliding(Player player)
 		{
-			return Helpers.Helper.CheckCircularCollision(Center, 128, player.Hitbox);
+			return Helpers.CollisionHelper.CheckCircularCollision(Center, 128, player.Hitbox);
 		}
 
 		public override void Collision(Player Player)
@@ -59,12 +68,12 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
 		public override bool ValidTile(Tile tile)
 		{
-			return base.ValidTile(tile) || DetachedLife > 0;
+			return base.ValidTile(tile) || DetachedLife != 61;
 		}
 
 		public void Kill()
 		{
-			Helpers.Helper.PlayPitched("Effects/Splat", 1, 0, Center);
+			Helpers.SoundHelper.PlayPitched("Effects/Splat", 1, 0, Center);
 
 			for (int k = 0; k < 50; k++)
 			{
@@ -80,7 +89,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
 		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
+			Texture2D tex = Assets.Masks.GlowAlpha.Value;
 			Vector2 pos = Center - Main.screenPosition;
 			Color color = new Color(20, 230, 255) * (0.15f + 0.05f * (float)Math.Sin(Main.GameUpdateCount * 0.02f));
 			Color color2 = new Color(20, 255, 220) * (0.15f + 0.05f * (float)Math.Sin(Main.GameUpdateCount * 0.05f));
@@ -88,24 +97,24 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 			color.A = 0;
 			color2.A = 0;
 
-			float opacity = DetachedLife > 0 ? (DetachedLife - 110) / 10f : 1;
+			float opacity = DetachedLife > 0 ? (DetachedLife - 50) / 10f : 1;
 
 			Main.spriteBatch.Draw(tex, pos, null, color * opacity, 0, tex.Size() / 2, 5, 0, 0);
 			Main.spriteBatch.Draw(tex, pos, null, color2 * opacity, 0, tex.Size() / 2, 5, 0, 0);
 
-			Texture2D flowerTex = ModContent.Request<Texture2D>(AssetDirectory.OvergrowTile + "NoxiousNode").Value;
+			Texture2D flowerTex = Assets.Tiles.Overgrow.NoxiousNode.Value;
 			Main.spriteBatch.Draw(flowerTex, pos, null, lightColor, rotation, flowerTex.Size() / 2, 1, 0, 0);
 
-			if (DetachedLife <= 0)
+			if (DetachedLife == 61)
 			{
-				Texture2D glowTex = ModContent.Request<Texture2D>(AssetDirectory.OvergrowTile + "NoxiousNodeGlow").Value;
-				Main.spriteBatch.Draw(glowTex, pos, null, Helpers.Helper.IndicatorColorProximity(400, 512, Center), rotation, glowTex.Size() / 2, 1, 0, 0);
+				Texture2D glowTex = Assets.Tiles.Overgrow.NoxiousNodeGlow.Value;
+				Main.spriteBatch.Draw(glowTex, pos, null, Helpers.CommonVisualEffects.IndicatorColorProximity(400, 512, Center), rotation, glowTex.Size() / 2, 1, 0, 0);
 			}
 		}
 
 		public void UpdateWhileWhipped(Whip whip)
 		{
-			if (DetachedLife <= 0)
+			if (DetachedLife == 61)
 			{
 				if (Vector2.Distance(Main.MouseWorld, Center) < 100)
 				{
@@ -113,10 +122,10 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 				}
 				else
 				{
-					DetachedLife = 120;
+					DetachedLife = 60;
 					WorldGen.KillTile(ParentX, ParentY);
 					velocity = (Main.MouseWorld - Center) * 0.1f;
-					Helpers.Helper.PlayPitched("Effects/PickupHerbs", 1, -0.5f, Center);
+					Helpers.SoundHelper.PlayPitched("Effects/PickupHerbs", 1, -0.5f, Center);
 					CameraSystem.shake += 10;
 				}
 			}
@@ -128,7 +137,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
 		public bool DetachCondition()
 		{
-			return !active;
+			return !active || DetachedLife <= 50;
 		}
 
 		public bool IsWhipColliding(Vector2 whipPosition)
@@ -138,7 +147,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 	}
 
 	[SLRDebug]
-	internal class NoxiousNodeItem : QuickTileItem
+	internal class NoxiousNodeItem : BaseTileItem
 	{
 		public override string Texture => AssetDirectory.Debug;
 

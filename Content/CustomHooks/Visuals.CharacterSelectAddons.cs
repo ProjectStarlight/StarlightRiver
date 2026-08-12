@@ -1,9 +1,7 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core.Systems.BarrierSystem;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.IO;
@@ -11,30 +9,24 @@ using Terraria.UI;
 
 namespace StarlightRiver.Content.CustomHooks
 {
-	class CharacterSelectAddons : HookGroup
+	class CharacterSelectAddons : ModSystem
 	{
 		public static ParticleSystem sparkles;
 
-		//TODO: Create a reflection cache for this, or implement a global reflection caching utility
-		private readonly FieldInfo _PlayerPanel = typeof(UICharacterListItem).GetField("_playerPanel", BindingFlags.NonPublic | BindingFlags.Instance);
-		private readonly FieldInfo _Player = typeof(UICharacter).GetField("_player", BindingFlags.NonPublic | BindingFlags.Instance);
-		private readonly FieldInfo Elements = typeof(UIElement).GetField("Elements", BindingFlags.NonPublic | BindingFlags.Instance);
-
-		//Relies on other mods not doing anything visual here to work properly, but there is very little actual danger here, its just some extra draw calls in the UI element.
 		public override void Load()
 		{
 			if (Main.dedServ)
 				return;
 
-			Terraria.GameContent.UI.Elements.On_UICharacterListItem.DrawSelf += DrawSpecialCharacter;
-			Terraria.GameContent.UI.Elements.On_UICharacterListItem.ctor += ShiftTextOver;
+			On_UICharacterListItem.DrawSelf += DrawSpecialCharacter;
+			On_UICharacterListItem.ctor += ShiftTextOver;
 
-			sparkles = new ParticleSystem(AssetDirectory.GUI + "Sparkle", updateSparkles);
+			sparkles = new ParticleSystem(AssetDirectory.GUI + "Sparkle", updateSparkles, ParticleSystem.AnchorOptions.UI);
 		}
 
 		public override void Unload()
 		{
-			sparkles ??= null;
+			sparkles = null;
 		}
 
 		private static void updateSparkles(Particle particle)
@@ -49,48 +41,43 @@ namespace StarlightRiver.Content.CustomHooks
 			particle.Rotation += 0.05f;
 		}
 
-		private void ShiftTextOver(Terraria.GameContent.UI.Elements.On_UICharacterListItem.orig_ctor orig, UICharacterListItem self, PlayerFileData data, int snapPointIndex)
+		private void ShiftTextOver(On_UICharacterListItem.orig_ctor orig, UICharacterListItem self, PlayerFileData data, int snapPointIndex)
 		{
 			orig(self, data, snapPointIndex);
 
-			FieldInfo info = typeof(UICharacterListItem).GetField("_buttonLabel", BindingFlags.Instance | BindingFlags.NonPublic);
-			var text = info.GetValue(self) as UIText;
+			UIText text = self._buttonLabel;
 
 			text.Left.Set(190, 0);
 
-			var character = (UICharacter)_PlayerPanel.GetValue(self);
-			var Player = (Player)_Player.GetValue(character);
-			MedalPlayer mp3 = Player.GetModPlayer<MedalPlayer>();
+			Player player = self._playerPanel._player;
+			MedalPlayer mp3 = player.GetModPlayer<MedalPlayer>();
 
-			if (mp3.Player == Player && mp3.medals.Count > 0) //expand only if medals are earned
+			if (mp3.Player == player && mp3.medals.Count > 0) //expand only if medals are earned
 			{
 				self.Height.Set(152, 0);
 
-				var elements = (List<UIElement>)Elements.GetValue(self);
-				foreach (UIElement e in elements.Where(n => n.VAlign == 1))
+				foreach (UIElement e in self.Elements.Where(n => n.VAlign == 1))
 					e.Top.Set(-56, 0);
 			}
 		}
 
-		private void DrawSpecialCharacter(Terraria.GameContent.UI.Elements.On_UICharacterListItem.orig_DrawSelf orig, UICharacterListItem self, SpriteBatch spriteBatch)
+		private void DrawSpecialCharacter(On_UICharacterListItem.orig_DrawSelf orig, UICharacterListItem self, SpriteBatch spriteBatch)
 		{
 			orig(self, spriteBatch);
 			var origin = new Vector2(self.GetDimensions().X, self.GetDimensions().Y);
 
-			//hooray double reflection
-			var character = (UICharacter)_PlayerPanel.GetValue(self);
+			Player player = self._playerPanel._player;
 
-			var Player = (Player)_Player.GetValue(character);
-			AbilityHandler mp = Player.GetHandler();
-			MedalPlayer mp3 = Player.GetModPlayer<MedalPlayer>();
+			AbilityHandler mp = player.GetHandler();
+			MedalPlayer mp3 = player.GetModPlayer<MedalPlayer>();
 
 			if (mp == null || mp3 == null)
 				return;
 
-			for (int k = 0; k < Player.armor.Length; k++)
+			for (int k = 0; k < player.armor.Length; k++)
 			{
-				if (Player.armor[k].ModItem != null && Player.armor[k].ModItem.Mod.Name == StarlightRiver.Instance.Name)
-					Player.GrantPrefixBenefits(Player.armor[k]);
+				if (player.armor[k].ModItem != null && player.armor[k].ModItem.Mod.Name == StarlightRiver.Instance.Name)
+					player.GrantPrefixBenefits(player.armor[k]);
 			}
 
 			float PlayerStamina = mp.StaminaMaxDefault;
@@ -98,16 +85,16 @@ namespace StarlightRiver.Content.CustomHooks
 			var box = new Rectangle((int)(origin + new Vector2(110, 66)).X, (int)(origin + new Vector2(86, 66)).Y, 80, 25);
 			var box2 = new Rectangle((int)(origin + new Vector2(196, 66)).X, (int)(origin + new Vector2(86, 66)).Y, 104, 25);
 
-			spriteBatch.Draw(ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/box").Value, box, Color.White); //Stamina box
+			spriteBatch.Draw(Assets.GUI.box.Value, box, Color.White); //Stamina box
 
 			if (mp.AnyUnlocked)//Draw stamina if any unlocked
 			{
-				spriteBatch.Draw(ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/Stamina").Value, origin + new Vector2(115, 68), Color.White);
+				spriteBatch.Draw(Assets.GUI.Stamina.Value, origin + new Vector2(115, 68), Color.White);
 				Utils.DrawBorderString(spriteBatch, PlayerStamina + " SP", origin + new Vector2(142, 68), Color.White);
 			}
 			else//Myserious if locked
 			{
-				spriteBatch.Draw(ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/Stamina3").Value, origin + new Vector2(115, 68), Color.White);
+				spriteBatch.Draw(Assets.GUI.Stamina3.Value, origin + new Vector2(115, 68), Color.White);
 				Utils.DrawBorderString(spriteBatch, "???", origin + new Vector2(142, 68), Color.White);
 			}
 
@@ -117,22 +104,24 @@ namespace StarlightRiver.Content.CustomHooks
 			for (int k = 0; k < abilities.Length; k++)
 			{
 				Ability ability = abilities[abilities.Length - 1 - k];
-				string texture = Player.GetHandler().Unlocked(ability.GetType())
-					? ability.PreviewTexture
-					: ability.PreviewTextureOff;
-				spriteBatch.Draw(ModContent.Request<Texture2D>(texture).Value, origin + new Vector2(542 - k * 32, 64), Color.White);
+
+				Texture2D texture = player.GetHandler().Unlocked(ability.GetType())
+					? ability.PreviewTexture.Value
+					: ability.PreviewTextureOff.Value;
+
+				spriteBatch.Draw(texture, origin + new Vector2(542 - k * 32, 64), Color.White);
 			}
 
-			if (Player.statLifeMax > 400) //why vanilla dosent do this I dont know
+			if (player.statLifeMax > 400) //why vanilla dosent do this I dont know
 			{
 				spriteBatch.Draw(TextureAssets.Heart2.Value, origin + new Vector2(80, 37), Color.White);
 			}
 
-			if (Player.GetModPlayer<BarrierPlayer>().maxBarrier > 0)
+			if (player.GetModPlayer<BarrierPlayer>().maxBarrier > 0)
 			{
-				Texture2D barrierTex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldHeartOver").Value;
-				Texture2D barrierTex2 = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldHeart").Value;
-				Texture2D barrierTex3 = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldHeartLine").Value;
+				Texture2D barrierTex = Assets.GUI.ShieldHeartOver.Value;
+				Texture2D barrierTex2 = Assets.GUI.ShieldHeart.Value;
+				Texture2D barrierTex3 = Assets.GUI.ShieldHeartLine.Value;
 
 				Vector2 pos = origin + new Vector2(80, 37);
 				int width = barrierTex.Width / 2;
@@ -161,10 +150,10 @@ namespace StarlightRiver.Content.CustomHooks
 					spriteBatch.Draw(tex, pos, frame, Color.White);
 
 					if (medal.difficulty == 1 && Main.rand.NextBool(10))
-						sparkles.AddParticle(new Particle(pos + new Vector2(Main.rand.Next(34), 10 + Main.rand.Next(36)), Vector2.UnitY * Main.rand.NextFloat(0.2f), 0, 0, new Color(255, 230, 0), 90, new Vector2(Main.rand.NextFloat(0.4f, 0.7f), 0), new Rectangle(0, 0, 15, 15)));
+						sparkles.AddParticle(pos + new Vector2(Main.rand.Next(34), 10 + Main.rand.Next(36)), Vector2.UnitY * Main.rand.NextFloat(0.2f), 0, 0, new Color(255, 230, 0), 90, new Vector2(Main.rand.NextFloat(0.4f, 0.7f), 0), new Rectangle(0, 0, 15, 15));
 
 					if (medal.difficulty == 2 && Main.rand.NextBool(8))
-						sparkles.AddParticle(new Particle(pos + new Vector2(Main.rand.Next(34), 10 + Main.rand.Next(36)), Vector2.UnitY * Main.rand.NextFloat(0.2f), 0, 0, new Color(255, 50, 50), 90, new Vector2(Main.rand.NextFloat(0.4f, 0.7f), 0), new Rectangle(0, 0, 15, 15)));
+						sparkles.AddParticle(pos + new Vector2(Main.rand.Next(34), 10 + Main.rand.Next(36)), Vector2.UnitY * Main.rand.NextFloat(0.2f), 0, 0, new Color(255, 50, 50), 90, new Vector2(Main.rand.NextFloat(0.4f, 0.7f), 0), new Rectangle(0, 0, 15, 15));
 
 					var rectangle = new Rectangle((int)origin.X + 14 + k * 42, (int)origin.Y + 98, 34, 46);
 
@@ -181,27 +170,27 @@ namespace StarlightRiver.Content.CustomHooks
 			}
 
 			if ( //Player is "complete"
-				Player.statLifeMax == 500 &&
-				Player.statManaMax == 200 &&
+				player.statLifeMax == 500 &&
+				player.statManaMax == 200 &&
 				PlayerStamina == 5 &&
-				!abilities.Any(n => !Player.GetHandler().Unlocked(n.GetType()))
+				!abilities.Any(n => !player.GetHandler().Unlocked(n.GetType()))
 				)
 			{
-				Texture2D borderTex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "GoldBorder").Value;
+				Texture2D borderTex = Assets.GUI.GoldBorder.Value;
 				spriteBatch.Draw(borderTex, origin, Color.White);
 
 				if (Main.rand.NextBool(3))
 				{
 					if (Main.rand.Next(4) > 0)
-						sparkles.AddParticle(new Particle(origin + new Vector2(Main.rand.Next(borderTex.Width), Main.rand.NextBool() ? 2 : borderTex.Height - 2), Vector2.Zero, 0, 0, new Color(255, 230, 0), 60, new Vector2(Main.rand.NextFloat(0.4f, 0.7f), 0), new Rectangle(0, 0, 15, 15)));
+						sparkles.AddParticle(origin + new Vector2(Main.rand.Next(borderTex.Width), Main.rand.NextBool() ? 2 : borderTex.Height - 2), Vector2.Zero, 0, 0, new Color(255, 230, 0), 60, new Vector2(Main.rand.NextFloat(0.4f, 0.7f), 0), new Rectangle(0, 0, 15, 15));
 					else
-						sparkles.AddParticle(new Particle(origin + new Vector2(Main.rand.NextBool() ? 2 : borderTex.Width - 2, Main.rand.Next(borderTex.Height)), Vector2.Zero, 0, 0, new Color(255, 230, 0), 60, new Vector2(Main.rand.NextFloat(0.4f, 0.7f), 0), new Rectangle(0, 0, 15, 15)));
+						sparkles.AddParticle(origin + new Vector2(Main.rand.NextBool() ? 2 : borderTex.Width - 2, Main.rand.Next(borderTex.Height)), Vector2.Zero, 0, 0, new Color(255, 230, 0), 60, new Vector2(Main.rand.NextFloat(0.4f, 0.7f), 0), new Rectangle(0, 0, 15, 15));
 				}
 			}
 
 			sparkles.DrawParticles(spriteBatch);
 
-			Player.ResetEffects();
+			player.ResetEffects();
 		}
 	}
 }

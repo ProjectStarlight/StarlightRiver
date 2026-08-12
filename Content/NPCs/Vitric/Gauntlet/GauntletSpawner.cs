@@ -51,16 +51,16 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
-			writer.WritePackedVector2(startPos); //this may need to get changed into a safeSendExtraAI if the base class needs to send extra ai
-			writer.WritePackedVector2(targetPos);
+			writer.WriteVector2(startPos); //this may need to get changed into a safeSendExtraAI if the base class needs to send extra ai
+			writer.WriteVector2(targetPos);
 			writer.Write(rand); //these could be put into ai[] fields but the base class should hold dominion over those
 			writer.Write(moveTimer);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
-			startPos = reader.ReadPackedVector2();
-			targetPos = reader.ReadPackedVector2();
+			startPos = reader.ReadVector2();
+			targetPos = reader.ReadVector2();
 			rand = reader.ReadSingle();
 			moveTimer = reader.ReadInt32();
 		}

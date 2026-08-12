@@ -27,9 +27,9 @@ namespace StarlightRiver.Content.GUI
 			Vector2 basepos = player.Center - Main.screenPosition - Vector2.UnitY * 48 + Vector2.UnitX * 4;
 			basepos.Y += player.gfxOffY;
 
-			Texture2D flagTex = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaFlag").Value;
-			Texture2D emptyTex = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaSmallEmpty").Value;
-			Texture2D fillTex = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaSmall").Value;
+			Texture2D flagTex = Assets.GUI.StaminaFlag.Value;
+			Texture2D emptyTex = Assets.GUI.StaminaSmallEmpty.Value;
+			Texture2D fillTex = Assets.GUI.StaminaSmall.Value;
 
 			float width = mp.StaminaMax * (fillTex.Width / 2 + 1);
 

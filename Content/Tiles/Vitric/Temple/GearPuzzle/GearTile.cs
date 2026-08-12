@@ -307,11 +307,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 				return false;
 			}
-			set
-			{
-				if (GearEntity != null)
-					GearEntity.engaged = value;
-			}
+
+			set => GearEntity?.engaged = value;
 		}
 
 		protected float RotationVelocity
@@ -323,11 +320,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 				return 0;
 			}
-			set
-			{
-				if (GearEntity != null)
-					GearEntity.rotationVelocity = value;
-			}
+
+			set => GearEntity?.rotationVelocity = value;
 		}
 
 		protected float RotationOffset
@@ -339,11 +333,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 				return 0;
 			}
-			set
-			{
-				if (GearEntity != null)
-					GearEntity.rotationOffset = value;
-			}
+
+			set => GearEntity?.rotationOffset = value;
 		}
 
 		protected GearTileEntity GearEntity
@@ -361,12 +352,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 		public int GearSize
 		{
-			get => GearEntity?.size ?? 0;
-			set
-			{
-				if (GearEntity != null)
-					GearEntity.size = value % 4;
-			}
+			get => GearEntity?.size ?? 0; set => GearEntity?.size = value % 4;
 		}
 
 		public float Rotation
@@ -386,9 +372,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 		public override void Update()
 		{
-			if (GearEntity is null)
-				return;
-
 			if (gearAnimation > 0)
 				gearAnimation--;
 
@@ -409,11 +392,11 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 		{
 			Texture2D tex = GearSize switch
 			{
-				0 => ModContent.Request<Texture2D>(AssetDirectory.Invisible).Value,
-				1 => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearSmall").Value,
-				2 => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearMid").Value,
-				3 => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearLarge").Value,
-				_ => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearSmall").Value,
+				0 => Assets.Invisible.Value,
+				1 => Assets.Tiles.Vitric.MagicalGearSmall.Value,
+				2 => Assets.Tiles.Vitric.MagicalGearMid.Value,
+				3 => Assets.Tiles.Vitric.MagicalGearLarge.Value,
+				_ => Assets.Tiles.Vitric.MagicalGearSmall.Value,
 			};
 			Main.spriteBatch.Draw(tex, Center - Main.screenPosition, null, Color.White * 0.75f, Rotation, tex.Size() / 2, 1, 0, 0);
 		}

@@ -1,124 +1,87 @@
 ﻿using ReLogic.Content;
+using StarlightRiver.Content.Backgrounds;
 using System;
 
 namespace StarlightRiver.Content.Menus
 {
 	internal class DefaultStarlightMenu : ModMenu
 	{
-		const int LIFETIME = 120;
-		const float SIN_TIME = LIFETIME / (float)Math.PI;
-		const float SCALE_MULT = 0.01f;
+		static int timer = 0;
 
-		public static ParticleSystem sparkles;
-		public static ParticleSystem meteor;
-		public static int Timer;
+		public float activationTimer;
+		public Vector2 targetPos;
+		public Vector2 targetPos2;
 
-		public override string DisplayName => "Moonstone";
-		public override int Music => MusicLoader.GetMusicSlot(Mod, "Sounds/Music/Moonstone");
+		public override string DisplayName => "Starlight";
+		public override int Music => MusicLoader.GetMusicSlot(Mod, "Sounds/Music/StarBird");
 
-		public override Asset<Texture2D> Logo => ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/MenuIcon");
-
-		public override void SetStaticDefaults()
+		public override void Update(bool isOnTitleScreen)
 		{
-			sparkles = new ParticleSystem(AssetDirectory.Dust + "MoonstoneShimmer", updateSparkles);
-			meteor = new ParticleSystem(AssetDirectory.MiscTextures + "MoonstoneMeteor", updateMeteor);
-		}
-
-		private void updateSparkles(Particle particle)
-		{
-			particle.Alpha = particle.Timer / 120f;
-			particle.Scale *= -(float)Math.Sin(particle.Timer / (SIN_TIME * 0.5f)) * SCALE_MULT + 1;
-			particle.Position += particle.Velocity;
-			//particle.Color *= (float)Math.Sin(particle.Timer / SinTime) * 1.5f;
-
-			particle.Timer--;
-		}
-
-		private void updateMeteor(Particle particle)
-		{
-			particle.Position += particle.Velocity;
-			particle.Frame = new Rectangle(0, 82 * (particle.Timer / 8 % 4), 82, 82);
-			particle.Alpha = particle.Timer / (Main.screenHeight / 4.15f) / particle.Scale;
-			particle.Scale += 0.00085f * particle.Velocity.Length();
-
-			particle.Timer--;
+			StarlightRiverBackground.forceActiveTimer = 15;
 		}
 
 		public override bool PreDrawLogo(SpriteBatch spriteBatch, ref Vector2 logoDrawCenter, ref float logoRotation, ref float logoScale, ref Color drawColor)
 		{
 			logoScale = 1.0f;
-			Timer++;
-
 			Main.dayTime = false;
-			//Main.bgStyle = 8;//no effect
-			//Main.background = 1;//crashes if changed
+			Main.time = 10000;
 
-			//Texture2D meteor = (Texture2D)ModContent.Request<Texture2D>(AssetDirectory.MiscTextures + "MoonstoneMeteor");
-			//spriteBatch.Draw(meteor, new Vector2(200, 200), new Color(130, 130, 130, 0));
+			timer++;
 
-			if (Main.rand.NextBool(150))
-			{
-				float scale = Main.rand.NextFloat(0.4f, 1.6f);
-				var meteorpos = new Vector2(Main.rand.Next(10, (int)(Main.screenWidth * 1.5f)), -10);
-				var vel = new Vector2(-Main.rand.NextFloat(2.7f, 3.2f), Main.rand.NextFloat(2f, 2.3f));
-				var color = new Color(130, 130, 130, 0);
-				meteor.AddParticle(new Particle(meteorpos, vel * scale, 0, scale, color * scale, (int)(Main.screenHeight / 2.075f / scale), Vector2.Zero, new Rectangle(0, 0, 82, 82)));
-			}
+			if (Main.menuMode == 0 && activationTimer < 1)
+				activationTimer += (1 - activationTimer) * 0.05f;
 
-			meteor.DrawParticles(Main.spriteBatch);
+			if (Main.menuMode != 0 && activationTimer > 0)
+				activationTimer -= activationTimer * 0.05f;
 
-			var pos = new Vector2(Main.rand.Next(Main.screenWidth), Main.screenHeight + 10);//Timer % Main.screenWidth
-			float div = -(float)Math.Sin(pos.X / Main.screenWidth * Math.PI) * 0.8f + 1;
-			div += div == 0 ? 1 : 0;
-			int chance = (int)(3.75f / div);
+			targetPos += (targetPos - Main.MouseScreen) * -0.05f;
+			targetPos2 += (targetPos2 - Main.MouseScreen) * -0.01f;
 
-			//Utils.DrawBorderString(spriteBatch, "Chance:" + chance + " PosX:" + pos.X, new Vector2(50, 50), Color.Green);
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
 
-			if (Main.rand.NextBool(chance))
-			{
-				//apl/col/scale //-Main.rand.NextFloat(0.05f, 0.18f)), 0, new Color(0.2f, 0.2f, 0.25f, 0f), Main.rand.NextFloat(0.25f, 0.5f)
-				var vel = new Vector2(Main.rand.NextFloat(-0.02f, 0.02f), -Main.rand.NextFloat(0.2f, 0.35f));
-				var color = new Color(Main.rand.NextFloat(0.18f, 0.20f), Main.rand.NextFloat(0.19f, 0.21f), Main.rand.NextFloat(0.22f, 0.29f), 0f);
-				sparkles.AddParticle(new Particle(pos, vel, 0, Main.rand.NextFloat(0.85f, 1f), color, 240, new Vector2(Main.rand.NextFloat(-0.1f, 0.1f), 0), new Rectangle(0, 0, 17, 29)));
-			}
+			RenderTarget2D tex = StarlightRiverBackground.starsTarget.RenderTarget;
+			spriteBatch.Draw(tex, Main.ScreenSize.ToVector2() / 2f, null, Color.White, 0, tex.Size() / 2f, 1f, 0, 0);
 
-			sparkles.DrawParticles(Main.spriteBatch);
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.UIScaleMatrix);
 
-			float heightScale = (float)Math.Sin((Timer + 2) * 0.025f) * 5 + 5;
-			Texture2D midTex = ModContent.Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowMid").Value;
-			Color overlayColor = new Color(0.12f, 0.135f, 0.23f, 0f) * (((float)Math.Sin(Timer * 0.02f) + 4) / 4);
+			Vector2 pos2 = Main.ScreenSize.ToVector2() / 2f;
+			Vector2 mouseOff = activationTimer * (targetPos - Main.ScreenSize.ToVector2() / 2f);
 
-			for (int k = 0; k < Main.screenWidth; k += midTex.Width)
-			{
-				Main.spriteBatch.Draw(midTex, new Vector2(k + 8, Main.screenHeight + 8 + heightScale), null, overlayColor, 0, new Vector2(midTex.Width / 2, midTex.Height), new Vector2(1, 2), 0, 0);
-			}
+			//Main.screenPosition = activationTimer * (targetPos2 - Main.ScreenSize.ToVector2() / 2f) * 0.25f;
+			Main.screenPosition.X = timer * 2;
 
-			float heightScale2 = (float)Math.Sin(Timer * 0.025f) * 3 + 3;
-			Texture2D glowLines = ModContent.Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowLines").Value;
+			Color back = new Color(40, 50, 65);
+			Color front = new Color(80, 85, 90);
 
-			for (float k = 0; k < Main.screenWidth + glowLines.Width; k += glowLines.Width > 1 ? glowLines.Width - 1.00f : 1)//during loading the texture has a width of one
-			{
-				Main.spriteBatch.Draw(glowLines, new Vector2(k + 8 + (int)(Timer * 0.5f) % glowLines.Width - glowLines.Width, Main.screenHeight + 8 + heightScale2), null, overlayColor * 0.45f, 0, new Vector2(glowLines.Width / 2, glowLines.Height), new Vector2(1, 1.25f), 0, 0);
-			}
+			Color color1 = Color.Lerp(back, front, 0.3f * activationTimer);
+			Color color2 = Color.Lerp(back, front, 0.65f * activationTimer);
+			Color color3 = Color.Lerp(back, front, 1f * activationTimer);
 
-			return true;
-		}
+			Texture2D smallRing = Assets.NPCs.BossRush.ArmillaryRing1.Value;
+			Texture2D mediumRing = Assets.NPCs.BossRush.ArmillaryRing2.Value;
+			Texture2D largeRing = Assets.NPCs.BossRush.ArmillaryRing3.Value;
 
-		public override void PostDrawLogo(SpriteBatch spriteBatch, Vector2 logoDrawCenter, float logoRotation, float logoScale, Color drawColor)
-		{
-			Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/MenuIconGlow2").Value;
-			Color color = Color.White;
-			color.A = 0;
-			spriteBatch.Draw(tex2, logoDrawCenter, null, color, logoRotation, tex2.Size() / 2f, logoScale, 0, 0);
+			Texture2D smallRingRunes = Assets.NPCs.BossRush.ArmillaryRingRunes1.Value;
+			Texture2D mediumRingRunes = Assets.NPCs.BossRush.ArmillaryRingRunes2.Value;
+			Texture2D largeRingRunes = Assets.NPCs.BossRush.ArmillaryRingRunes3.Value;
 
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/MenuIconGlow").Value;
-			spriteBatch.Draw(tex, logoDrawCenter, null, Color.White, logoRotation, tex.Size() / 2f, logoScale, 0, 0);
-		}
+			float scale = 1 + activationTimer;
 
-		public override void Unload()
-		{
-			sparkles = null;
-			meteor = null;
+			spriteBatch.Draw(smallRing, pos2 + mouseOff * 0.1f, null, color1, -timer * 0.005f, smallRing.Size() * 0.5f, scale, SpriteEffects.None, 0);
+			spriteBatch.Draw(smallRingRunes, pos2 + mouseOff * 0.1f, null, new Color(0.1f, 1f, 1f) * (0.5f + (float)Math.Sin(timer * 0.05f) * 0.4f), -timer * 0.005f, smallRingRunes.Size() * 0.5f, scale, SpriteEffects.None, 0);
+
+			spriteBatch.Draw(mediumRing, pos2 + mouseOff * 0.2f, null, color2, timer * 0.005f, mediumRing.Size() * 0.5f, scale, SpriteEffects.None, 0);
+			spriteBatch.Draw(mediumRingRunes, pos2 + mouseOff * 0.2f, null, new Color(0.1f, 0.8f, 1f) * (0.5f + (float)Math.Sin((timer + 15) * 0.05f) * 0.4f), timer * 0.005f, mediumRingRunes.Size() * 0.5f, scale, SpriteEffects.None, 0);
+
+			spriteBatch.Draw(largeRing, pos2 + mouseOff * 0.3f, null, color3, -timer * 0.005f, largeRing.Size() * 0.5f, scale, SpriteEffects.None, 0);
+			spriteBatch.Draw(largeRingRunes, pos2 + mouseOff * 0.3f, null, new Color(0.1f, 0.6f, 1f) * (0.5f + (float)Math.Sin((timer + 30) * 0.05f) * 0.4f), -timer * 0.005f, largeRingRunes.Size() * 0.5f, scale, SpriteEffects.None, 0);
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, SamplerState.LinearClamp, default, default, default, Main.UIScaleMatrix);
+
+			return false;
 		}
 	}
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using System;
 using Terraria.DataStructures;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -22,7 +23,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 		}
 	}
 
-	public class TorchOvergrowItem : QuickTileItem
+	public class TorchOvergrowItem : BaseTileItem
 	{
 		public TorchOvergrowItem() : base("Faerie Torch", "Sparkly!", "WispAltarL", 0, AssetDirectory.OvergrowTile) { }
 	}
@@ -44,7 +45,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 		}
 	}
 
-	public class BlueTorchOvergrowItem : QuickTileItem
+	public class BlueTorchOvergrowItem : BaseTileItem
 	{
 		public BlueTorchOvergrowItem() : base("Blue Faerie Torch", "Sparkly! and Blue!", "BlueTorchOvergrow", 0, AssetDirectory.OvergrowTile) { }
 	}

@@ -6,10 +6,10 @@ namespace StarlightRiver.Core.PlayerLayers
 	{
 		public override Position GetDefaultPosition()
 		{
-			return new Between(PlayerDrawLayers.HeldItem, PlayerDrawLayers.ArmOverItem);
+			return new AfterParent(PlayerDrawLayers.HeldItem);
 		}
 
-		protected override void Draw(ref PlayerDrawSet drawInfo)
+		public override void Draw(ref PlayerDrawSet drawInfo)
 		{
 			if (drawInfo.drawPlayer.HeldItem.ModItem is IGlowingItem)
 				(drawInfo.drawPlayer.HeldItem.ModItem as IGlowingItem).DrawGlowmask(drawInfo);

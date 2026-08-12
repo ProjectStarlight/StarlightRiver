@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.Tiles
 				{
 					var smallLoot = new Loot[5];
 
-					List<Loot> types = Helper.RandomizeList(SmallLootPool);
+					List<Loot> types = ListHelper.RandomizeList(SmallLootPool);
 
 					for (int k = 0; k < 5; k++)
 						smallLoot[k] = types[k];

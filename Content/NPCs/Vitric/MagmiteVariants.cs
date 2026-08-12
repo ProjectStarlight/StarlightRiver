@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Items.BaseTypes;
 using System;
 using System.IO;
 using Terraria.Audio;
@@ -10,7 +11,7 @@ using static Terraria.ModLoader.ModContent;
 namespace StarlightRiver.Content.NPCs.Vitric
 {
 
-	internal class MagmiteSmol : MagmitePassive, IHintable
+	internal class MagmiteSmol : MagmitePassive
 	{
 		protected override int Offset => 4;
 		protected override float Size => 0.8f;
@@ -91,14 +92,9 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			spriteBatch.Draw(Request<Texture2D>(Texture).Value, pos, NPC.frame, Color.White * (1 - NPC.shimmerTransparency), 0, new Vector2(originX, 10), 1, NPC.spriteDirection == -1 ? 0 : SpriteEffects.FlipHorizontally, 0);
 			return false;
 		}
-
-		new public string GetHint()
-		{
-			return "Smol!";
-		}
 	}
 
-	internal class MagmiteLarge : MagmitePassive, IHintable
+	internal class MagmiteLarge : MagmitePassive
 	{
 		protected override int Offset => 10;
 		protected override float Size => 1.25f;
@@ -198,19 +194,14 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 			base.OnKill();
 		}
-
-		new public string GetHint()
-		{
-			return "Magnificent!";
-		}
 	}
 
-	internal class MagmiteSmolItem : QuickCritterItem
+	internal class MagmiteSmolItem : BaseCritterItem
 	{
 		public MagmiteSmolItem() : base("Magmini", "Nurture him!", Item.sellPrice(silver: 5), ItemRarityID.Orange, NPCType<MagmiteSmol>(), AssetDirectory.VitricItem) { }
 	}
 
-	internal class MagmiteLargeItem : QuickCritterItem
+	internal class MagmiteLargeItem : BaseCritterItem
 	{
 		public MagmiteLargeItem() : base("Magmificent", "Admire him!", Item.sellPrice(silver: 25), ItemRarityID.Orange, NPCType<MagmiteLarge>(), AssetDirectory.VitricItem) { }
 	}

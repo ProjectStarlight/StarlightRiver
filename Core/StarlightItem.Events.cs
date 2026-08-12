@@ -22,7 +22,7 @@ namespace StarlightRiver.Core
 		public static event GetHealManaDelegate GetHealManaEvent;
 		public override void GetHealMana(Item item, Player player, bool quickHeal, ref int healValue)
 		{
-			base.GetHealMana(item, player, quickHeal, ref healValue);
+			GetHealManaEvent?.Invoke(item, player, quickHeal, ref healValue);
 		}
 
 		public delegate void ModifyWeaponDamageDelegate(Item Item, Player Player, ref StatModifier statModifier);

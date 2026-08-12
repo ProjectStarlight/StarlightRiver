@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Items.BaseTypes;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
@@ -6,7 +7,7 @@ using Terraria.ObjectData;
 
 namespace StarlightRiver.Content.Tiles.Desert
 {
-	internal class DesertMonolith : ModTile, IHintable
+	internal class DesertMonolith : ModTile
 	{
 		public override string Texture => AssetDirectory.DesertTile + Name;
 
@@ -101,14 +102,9 @@ namespace StarlightRiver.Content.Tiles.Desert
 				flat.IsHalfBlock = false;
 			}
 		}
-
-		public string GetHint()
-		{
-			return "These towering monoliths withstood the test of time...";
-		}
 	}
 
-	internal class DesertMonolithItem : QuickTileItem
+	internal class DesertMonolithItem : BaseTileItem
 	{
 		public override string Texture => AssetDirectory.DesertTile + Name;
 
@@ -135,7 +131,7 @@ namespace StarlightRiver.Content.Tiles.Desert
 		}
 	}
 
-	internal class DesertMonolithFlippedItem : QuickTileItem
+	internal class DesertMonolithFlippedItem : BaseTileItem
 	{
 		public override string Texture => AssetDirectory.DesertTile + Name;
 

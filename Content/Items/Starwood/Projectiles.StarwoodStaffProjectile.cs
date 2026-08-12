@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria.GameContent;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Starwood
 {
-	class StarwoodStaffProjectile : ModProjectile, IDrawAdditive
+	class StarwoodStaffProjectile : ModProjectile
 	{
 		private const int MAX_TIME_LEFT = 60;
 
@@ -66,7 +67,7 @@ namespace StarlightRiver.Content.Items.Starwood
 				target.GetGlobalNPC<StarwoodScoreCounter>().AddScore(counterScore, Projectile.owner, damageDone);
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item10, Projectile.Center);
 
@@ -82,27 +83,24 @@ namespace StarlightRiver.Content.Items.Starwood
 
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, source, Color.White, Projectile.rotation, origin, 1f, default, default);
 
-			return false;
-		}
-
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
 			for (int k = 0; k < Projectile.oldPos.Length; k++)
 			{
-				Color color = (empowered ? new Color(200, 220, 255) * 0.35f : new Color(255, 255, 200) * 0.3f) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
+				Color glowColor = (empowered ? new Color(200, 220, 255, 0) * 0.35f : new Color(255, 255, 200, 0) * 0.3f) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
 
 				if (k <= 4)
-					color *= 1.2f;
+					glowColor *= 1.2f;
 
-				float scale = Projectile.scale * (Projectile.oldPos.Length - k) / Projectile.oldPos.Length * 0.8f * 0.5f;
-				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Starwood/Glow").Value;//TEXTURE PATH
+				float glowScale = Projectile.scale * (Projectile.oldPos.Length - k) / Projectile.oldPos.Length * 0.8f * 0.5f;
+				Texture2D glowTex = Assets.Items.Starwood.Glow.Value;
 
-				spriteBatch.Draw(tex, (Projectile.oldPos[k] + Projectile.Size / 2 + Projectile.Center) * 0.5f - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default);
+				Main.spriteBatch.Draw(glowTex, (Projectile.oldPos[k] + Projectile.Size / 2 + Projectile.Center) * 0.5f - Main.screenPosition, null, glowColor, 0, glowTex.Size() / 2, glowScale, default, default);
 			}
+
+			return false;
 		}
 	}
 
-	class StarwoodStaffFallingStar : ModProjectile, IDrawAdditive
+	class StarwoodStaffFallingStar : ModProjectile
 	{
 		private const int MAX_TIME_LEFT = 600;
 
@@ -159,9 +157,9 @@ namespace StarlightRiver.Content.Items.Starwood
 			Lighting.AddLight(Projectile.Center, lightColor);
 		}
 
-		public override void Kill(int timeLeft)
+		public override void OnKill(int timeLeft)
 		{
-			Helpers.DustHelper.DrawStar(Projectile.Center, dustType, pointAmount: 5, mainSize: 2f * ScaleMult, dustDensity: 1f, pointDepthMult: 0.3f);
+			Helpers.DustHelper.SpawnStarPattern(Projectile.Center, dustType, pointAmount: 5, mainSize: 2f * ScaleMult, dustDensity: 1f, pointDepthMult: 0.3f);
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item10, Projectile.Center);
 
 			for (int k = 0; k < 50; k++)
@@ -172,36 +170,34 @@ namespace StarlightRiver.Content.Items.Starwood
 		{
 			Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, new Rectangle(0, empowered ? 24 : 0, 22, 24), Color.White, Projectile.rotation, new Vector2(11, 12), Projectile.scale, default, default);
+
+			for (int k = 0; k < Projectile.oldPos.Length; k++)
+			{
+				Color glowColor = (empowered ? new Color(200, 220, 255, 0) * 0.35f : new Color(255, 255, 200, 0) * 0.3f) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
+
+				if (k <= 4)
+					glowColor *= 1.2f;
+
+				float glowScale = Projectile.scale * (Projectile.oldPos.Length - k) / Projectile.oldPos.Length * 0.8f;
+				Texture2D glowTex = Assets.Items.Starwood.Glow.Value;//TEXTURE PATH
+
+				Main.spriteBatch.Draw(glowTex, (Projectile.oldPos[k] + Projectile.Size / 2 + Projectile.Center) * 0.50f - Main.screenPosition, null, glowColor, 0, glowTex.Size() / 2, glowScale, default, default);
+			}
+
+			for (int k = 0; k < Projectile.oldPos.Length; k++)
+			{
+				Color glowColor = (empowered ? new Color(200, 220, 255, 0) * 0.35f : new Color(255, 255, 200, 0) * 0.3f) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
+
+				if (k <= 4)
+					glowColor *= 1.2f;
+
+				float glowScale = Projectile.scale * (Projectile.oldPos.Length - k) / Projectile.oldPos.Length * 0.8f;
+				Texture2D glowTex = Assets.Items.Starwood.StarwoodStarfallGlowTrail.Value;//TEXTURE PATH
+
+				Main.spriteBatch.Draw(glowTex, (Projectile.oldPos[k] + Projectile.Size / 2 + Projectile.Center) * 0.50f - Main.screenPosition, null, glowColor, 0, glowTex.Size() / 2, glowScale, default, default);
+			}
+
 			return false;
-		}
-
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
-			for (int k = 0; k < Projectile.oldPos.Length; k++)
-			{
-				Color color = (empowered ? new Color(200, 220, 255) * 0.35f : new Color(255, 255, 200) * 0.3f) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
-
-				if (k <= 4)
-					color *= 1.2f;
-
-				float scale = Projectile.scale * (Projectile.oldPos.Length - k) / Projectile.oldPos.Length * 0.8f;
-				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Starwood/Glow").Value;//TEXTURE PATH
-
-				spriteBatch.Draw(tex, (Projectile.oldPos[k] + Projectile.Size / 2 + Projectile.Center) * 0.50f - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default);
-			}
-
-			for (int k = 0; k < Projectile.oldPos.Length; k++)
-			{
-				Color color = (empowered ? new Color(200, 220, 255) * 0.35f : new Color(255, 255, 200) * 0.3f) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
-
-				if (k <= 4)
-					color *= 1.2f;
-
-				float scale = Projectile.scale * (Projectile.oldPos.Length - k) / Projectile.oldPos.Length * 0.8f;
-				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Starwood/StarwoodStarfallGlowTrail").Value;//TEXTURE PATH
-
-				spriteBatch.Draw(tex, (Projectile.oldPos[k] + Projectile.Size / 2 + Projectile.Center) * 0.50f - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default);
-			}
 		}
 	}
 

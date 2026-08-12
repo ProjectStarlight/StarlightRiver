@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Items.BaseTypes;
 using System;
 using System.IO;
 using Terraria.Audio;
@@ -9,7 +10,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric
 {
-	internal class MagmitePassive : ModNPC, IHintable
+	internal class MagmitePassive : ModNPC
 	{
 		public int maxLifeTime = 450; // how many ticks before the magmite starts searching for lava to kill itself :))
 
@@ -71,12 +72,12 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
-			writer.WritePackedVector2(NPC.velocity);
+			writer.WriteVector2(NPC.velocity);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
-			NPC.velocity = reader.ReadPackedVector2();
+			NPC.velocity = reader.ReadVector2();
 		}
 
 		public override bool PreAI()
@@ -290,12 +291,6 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 			return lavaPos;
 		}
-
-		public string GetHint()
-		{
-			return "Cute!";
-
-		}
 	}
 
 	internal class MagmiteGore : ModGore
@@ -340,7 +335,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		}
 	}
 
-	internal class MagmitePassiveItem : QuickCritterItem
+	internal class MagmitePassiveItem : BaseCritterItem
 	{
 		public MagmitePassiveItem() : base("Magmite", "Release him!", Item.sellPrice(silver: 15), ItemRarityID.Orange, NPCType<MagmitePassive>(), AssetDirectory.VitricItem) { }
 	}

@@ -3,7 +3,7 @@ using System;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
-	public partial class EvasionShrineDummy : ShrineDummy, IDrawAdditive
+	public partial class EvasionShrineDummy : ShrineDummy
 	{
 		int free = 0; // tracks the free square for the spear squares attack
 

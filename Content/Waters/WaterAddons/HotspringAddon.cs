@@ -1,7 +1,9 @@
 ﻿using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Tiles.Underground;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
+using StarlightRiver.Core.Systems.WaterAddonSystem;
 using System.Linq;
 using Terraria.Graphics.Effects;
 
@@ -88,24 +90,40 @@ namespace StarlightRiver.Content.Waters.WaterAddons
 
 		public override void SpritebatchChange()
 		{
-			Effect effect = Filters.Scene["HotspringWater"].GetShader().Shader;
-			effect.Parameters["offset"].SetValue(Vector2.Zero);
-			effect.Parameters["sampleTexture2"].SetValue(hotspringMapTarget.RenderTarget);
-			effect.Parameters["sampleTexture3"].SetValue(hotspringFrontShineTarget.RenderTarget);
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount / 20f);
+			Effect effect = ShaderLoader.GetShader("HotspringWater").Value;
 
-			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.Transform);
+			if (effect != null)
+			{
+				effect.Parameters["offset"].SetValue(Vector2.Zero);
+				effect.Parameters["sampleTexture2"].SetValue(hotspringMapTarget.RenderTarget);
+				effect.Parameters["sampleTexture3"].SetValue(hotspringFrontShineTarget.RenderTarget);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount / 20f);
+
+				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.Transform);
+			}
+			else
+			{
+				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, default, Main.Transform);
+			}
 		}
 
 		public override void SpritebatchChangeBack()
 		{
-			Effect effect = Filters.Scene["HotspringWater"].GetShader().Shader;
-			effect.Parameters["offset"].SetValue(Vector2.Zero);
-			effect.Parameters["sampleTexture2"].SetValue(hotspringMapTarget.RenderTarget);
-			effect.Parameters["sampleTexture3"].SetValue(hotspringBackShineTarget.RenderTarget);
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount / 20f);
+			Effect effect = ShaderLoader.GetShader("HotspringWater").Value;
 
-			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.Transform);
+			if (effect != null)
+			{
+				effect.Parameters["offset"].SetValue(Vector2.Zero);
+				effect.Parameters["sampleTexture2"].SetValue(hotspringMapTarget.RenderTarget);
+				effect.Parameters["sampleTexture3"].SetValue(hotspringBackShineTarget.RenderTarget);
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount / 20f);
+
+				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.Transform);
+			}
+			else
+			{
+				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, default, Main.Transform);
+			}
 		}
 	}
 }

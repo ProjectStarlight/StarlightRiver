@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.GUI
 			if (timer < 120)
 				timer++;
 
-			float progress = Helpers.Helper.BezierEase(timer / 120f);
+			float progress = Helpers.Eases.BezierEase(timer / 120f);
 
 			Vector2 pos = new Vector2(Main.screenWidth, Main.screenHeight) / 2f;
 
@@ -50,22 +50,22 @@ namespace StarlightRiver.Content.GUI
 			Utils.DrawBorderStringBig(spriteBatch, "Results", pos, Color.White, 1, 0.5f);
 			pos.Y += 60;
 
-			Utils.DrawBorderString(spriteBatch, $"Damage: {(int)Helpers.Helper.LerpFloat(0, BossRushSystem.damageScore, progress)}", pos, Color.White, 1, 0.5f);
+			Utils.DrawBorderString(spriteBatch, $"Damage: {(int)MathHelper.Lerp(0, BossRushSystem.damageScore, progress)}", pos, Color.White, 1, 0.5f);
 			pos.Y += 30;
 
-			Utils.DrawBorderString(spriteBatch, $"Kills: {(int)Helpers.Helper.LerpFloat(0, BossRushSystem.killScore, progress)}", pos, Color.White, 1, 0.5f);
+			Utils.DrawBorderString(spriteBatch, $"Kills: {(int)MathHelper.Lerp(0, BossRushSystem.killScore, progress)}", pos, Color.White, 1, 0.5f);
 			pos.Y += 30;
 
-			Utils.DrawBorderString(spriteBatch, $"Time: {(int)Helpers.Helper.LerpFloat(0, BossRushSystem.timeScore, progress)}", pos, Color.White, 1, 0.5f);
+			Utils.DrawBorderString(spriteBatch, $"Time: {(int)MathHelper.Lerp(0, BossRushSystem.timeScore, progress)}", pos, Color.White, 1, 0.5f);
 			pos.Y += 30;
 
-			Utils.DrawBorderString(spriteBatch, $"{BossRushSystem.hitsTaken} Hits taken: {(int)Helpers.Helper.LerpFloat(0, BossRushSystem.HurtScore, progress)}", pos, Color.White, 1, 0.5f);
+			Utils.DrawBorderString(spriteBatch, $"{BossRushSystem.hitsTaken} Hits taken: {(int)MathHelper.Lerp(0, BossRushSystem.HurtScore, progress)}", pos, Color.White, 1, 0.5f);
 			pos.Y += 30;
 
-			Utils.DrawBorderString(spriteBatch, $"Multiplier: {(int)Helpers.Helper.LerpFloat(0, BossRushSystem.scoreMult, progress)}x", pos, Color.White, 1, 0.5f);
+			Utils.DrawBorderString(spriteBatch, $"Multiplier: {(int)MathHelper.Lerp(0, BossRushSystem.scoreMult, progress)}x", pos, Color.White, 1, 0.5f);
 			pos.Y += 30;
 
-			Utils.DrawBorderString(spriteBatch, $"Total score: {(int)Helpers.Helper.LerpFloat(0, BossRushSystem.Score, progress)}", pos, Color.Yellow, 1, 0.5f);
+			Utils.DrawBorderString(spriteBatch, $"Total score: {(int)MathHelper.Lerp(0, BossRushSystem.Score, progress)}", pos, Color.Yellow, 1, 0.5f);
 
 			var dims = button.GetDimensions().ToRectangle();
 			dims.Inflate(10, 10);

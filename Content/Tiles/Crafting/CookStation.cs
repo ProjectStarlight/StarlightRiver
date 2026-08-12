@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.GUI;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.Utility;
 using System.Linq;
 using Terraria.DataStructures;
@@ -14,7 +15,7 @@ namespace StarlightRiver.Content.Tiles.Crafting
 
 		public override void SetStaticDefaults()
 		{
-			this.QuickSetFurniture(6, 4, DustID.t_LivingWood, SoundID.Dig, true, new Color(151, 107, 75), false, false, "Cooking Station", new AnchorData(AnchorType.SolidTile, 6, 0));
+			this.QuickSetFurniture(5, 4, DustID.t_LivingWood, SoundID.Dig, true, new Color(151, 107, 75), false, false, "Cooking Station", new AnchorData(AnchorType.SolidTile, 5, 0));
 			Main.tileLighted[Type] = true;
 		}
 
@@ -63,7 +64,7 @@ namespace StarlightRiver.Content.Tiles.Crafting
 		}
 	}
 
-	public class CookStationItem : QuickTileItem
+	public class CookStationItem : BaseTileItem
 	{
 		public CookStationItem() : base("Prep Station", "<right> to prepare meals", "CookStation", 0, AssetDirectory.CraftingTile) { }
 

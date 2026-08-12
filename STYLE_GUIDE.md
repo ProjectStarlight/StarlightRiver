@@ -41,9 +41,9 @@ Section 1: File and Class structure
 		the StarlightRiver.cs source file should exist in the top level directory as required by TML.
 
 	1.1.2: FX source files and XNB compiled shader binaries
-		.fx Shader source files should be placed in the Effects directory directly, along with the compiled .xnb
-		binaries. This is a requirement of the shader autoloader. You should always include .fx source files with
-		every shader, never just the compiled binary.
+		.fx Shader source files should be placed in the Effects/Source directory directly.
+		This will output .xnb binaries in the Effects directory during builds, which is a requirement of the autoloader.
+		You should always include .fx source files with every shader, never just the compiled binary.
 
 	1.1.3: texture assets
 		All texture assets should be of .png format, and within the Assets directory. Texture assets used only by

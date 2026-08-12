@@ -1,4 +1,5 @@
 using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Helpers;
 using Terraria.Audio;
@@ -11,7 +12,7 @@ using Terraria.ObjectData;
 
 namespace StarlightRiver.Content.Tiles.Desert
 {
-	public class AnkhChest : DummyTile, IHintable
+	public class AnkhChest : DummyTile
 	{
 		public override string Texture => AssetDirectory.DesertTile + Name;
 
@@ -236,15 +237,12 @@ namespace StarlightRiver.Content.Tiles.Desert
 				player.cursorItemIconEnabled = true;
 			}
 		}
-
-		public string GetHint()
-		{
-			return "Starlight-infused crystals encrust the chests' lock... Perhaps equally powerful starlight could break them off";
-		}
 	}
 
 	internal class AnkhChestDummy : Dummy
 	{
+		public override bool DoesCollision => true;
+
 		public AnkhChestDummy() : base(ModContent.TileType<AnkhChest>(), 32, 48) { }
 
 		public override void Collision(Player Player)
@@ -279,14 +277,14 @@ namespace StarlightRiver.Content.Tiles.Desert
 
 		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.DesertTile + "AnkhChestGlow").Value;
-			Color color = Helper.IndicatorColorProximity(150, 300, Center);
+			Texture2D tex = Assets.Tiles.Desert.AnkhChestGlow.Value;
+			Color color = CommonVisualEffects.IndicatorColorProximity(150, 300, Center);
 
 			Main.spriteBatch.Draw(tex, position - new Vector2(1, -1) - Main.screenPosition, color);
 		}
 	}
 
-	class AnkhChestItem : QuickTileItem
+	class AnkhChestItem : BaseTileItem
 	{
 		public AnkhChestItem() : base("Ankh Chest", "", "AnkhChest", 1, AssetDirectory.DesertTile, false) { }
 	}

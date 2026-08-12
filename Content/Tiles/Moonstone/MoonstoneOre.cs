@@ -5,7 +5,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Moonstone
 {
-	public class MoonstoneOre : ModTile, IHintable
+	public class MoonstoneOre : ModTile
 	{
 		public override string Texture => AssetDirectory.MoonstoneTile + Name;
 
@@ -20,7 +20,6 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 #pragma warning disable IDE0047 // Remove unnecessary parentheses
 		public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 		{
-			//Utils.DrawBorderString(spriteBatch, temp.ToString(), (new Vector2(i + 12, j + 7 - (i % 4)) * 16) - Main.screenPosition, Color.White, 0.75f);
 			for (int k = j - 1; k > j - 4; k--)//checks 3 blocks above
 			{
 				if (Main.tile[i, k].HasTile && WorldGen.SolidOrSlopedTile(i, k) && !TileID.Sets.NotReallySolid[Main.tile[i, k].TileType])
@@ -83,16 +82,16 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 				slopes = true;
 				if (RightHighest > LeftHighest)
 				{
-					midTex = Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowSlopeRightHalf").Value;
+					midTex = Assets.Tiles.Moonstone.GlowSlopeRightHalf.Value;
 				}
 				else
 				{
-					midTex = Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowSlopeLeftHalf").Value;
+					midTex = Assets.Tiles.Moonstone.GlowSlopeLeftHalf.Value;
 				}
 			}
 			else
 			{
-				midTex = Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowMid").Value;
+				midTex = Assets.Tiles.Moonstone.GlowMid.Value;
 			}
 
 			bool fillInBottomGap = Main.tile[i, j].IsHalfBlock || Main.tile[i, j].TopSlope;
@@ -100,26 +99,17 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 			var frame = new Rectangle(0, 0, 16, ((88 - stepUp * 8 + 8 * (j % stepUp))) + (slopes ? 15 : 0) + (fillInBottomGap ? 5 : 0));//one pixel off because scaling issues
 			spriteBatch.Draw(midTex, new Vector2(i + 12, j + 12.5f + (fillInBottomGap ? 0.625f/*one extra pixel than half a block*/ : 0)) * 16 - Main.screenPosition, frame, overlayColor, default, new Vector2(0, frame.Height), new Vector2(1, 2), default, default);
 
-			//Utils.DrawBorderString(spriteBatch, RightHighest.ToString(), (new Vector2(i + 12, j + 7 - (i % 4)) * 16) - Main.screenPosition, Color.Red, 0.75f);
-			//Utils.DrawBorderString(spriteBatch, LeftHighest.ToString(), (new Vector2(i + 12, j + 8 - (i % 4)) * 16) - Main.screenPosition, Color.Green, 0.75f);
-			//Utils.DrawBorderString(spriteBatch, stepUp.ToString(), (new Vector2(i + 12, j + 9 - (i % 4)) * 16) - Main.screenPosition, Color.Blue, 0.75f);
-
-			Texture2D glowLines = Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowLines", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+			Texture2D glowLines = Assets.Tiles.Moonstone.GlowLines.Value;
 			int realX = i * 16;
 			int realY = (int)((j + yOffsetLeft + yOffsetRight) * 16);
 			int realWidth = glowLines.Width - 1; //1 pixel offset since the texture has a empty row of pixels on the side, this is also accounted for elsewhere below
 			Color drawColor = overlayColor * 0.35f;
 
+			if (realWidth < 1)
+				realWidth = 2;
+
 			float val = (Main.GameUpdateCount * 0.3333f + realY) % realWidth;
 			int offset = (int)(val + realX % realWidth - realWidth);
-
-			//spriteBatch.Draw(glowLines, new Rectangle(realX + 192 - (int)Main.screenPosition.X, realY + 102 - (int)Main.screenPosition.Y, 16, glowLines.Height), new Rectangle(offset + 1, 0, 16, (int)(glowLines.Height * heightScale)), drawColor);
-
-			if (offset < 0)
-			{
-				int rectWidth = Math.Min(-offset, 16);
-				//spriteBatch.Draw(glowLines, new Rectangle(realX + 192 - (int)Main.screenPosition.X, realY + 102 - (int)Main.screenPosition.Y, rectWidth, glowLines.Height), new Rectangle(offset + 1 + realWidth, 0, rectWidth, (int)(glowLines.Height * heightScale)), drawColor);
-			}
 
 			return true;
 		}
@@ -144,11 +134,6 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 		public override void FloorVisuals(Player player)
 		{
 			player.AddBuff(BuffType<Buffs.Dreamwarp>(), 240);
-		}
-
-		public string GetHint()
-		{
-			return "This ore is full of Starlight, but... wrong. Twisted.";
 		}
 	}
 }

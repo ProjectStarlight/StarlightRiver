@@ -158,12 +158,12 @@ namespace StarlightRiver.Core.Systems.DummyTileSystem
 		public virtual bool SpawnConditions(int i, int j)
 		{
 			Tile tile = Main.tile[i, j];
-			return tile.TileFrameX == 0 && tile.TileFrameY == 0;
+			return !Main.tileFrameImportant[Type] || tile.TileFrameX == 0 && tile.TileFrameY == 0;
 		}
 
 		public sealed override void NearbyEffects(int i, int j, bool closer)
 		{
-			if (!Main.tileFrameImportant[Type] || SpawnConditions(i, j))
+			if (SpawnConditions(i, j))
 			{
 				int type = DummyType;
 				Dummy dummy = Dummy(i, j);

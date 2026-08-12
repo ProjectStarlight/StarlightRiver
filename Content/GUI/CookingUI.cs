@@ -61,7 +61,15 @@ namespace StarlightRiver.Content.GUI
 				visible = false;
 			}
 
-			if (TopBar.IsMouseHovering && Main.mouseLeft)
+			var dragDims = new Rectangle((int)Basepos.X - 10, (int)Basepos.Y - 10, 376, 40);
+
+			if (ChefBagUI.visible)
+			{
+				dragDims.X -= 560;
+				dragDims.Width += 560;
+			}
+
+			if (dragDims.Contains(Main.MouseScreen.ToPoint()) && Main.mouseLeft)
 			{
 				if (!Moving)
 					MoveOffset = Main.MouseScreen - Basepos;
@@ -87,7 +95,7 @@ namespace StarlightRiver.Content.GUI
 			if (Basepos.Y > Main.screenHeight - 20 - 244)
 				Basepos.Y = Main.screenHeight - 20 - 244;
 
-			ChefBagUI.Move(Basepos + new Vector2(-480, 0));
+			ChefBagUI.Move(Basepos + new Vector2(-520, 40));
 
 			Main.isMouseLeftConsumedByUI = true;
 			SetPosition(MainSlot, 44, 44);
@@ -112,21 +120,23 @@ namespace StarlightRiver.Content.GUI
 
 			if (ChefBagUI.visible)
 			{
-				backDims.X -= 520;
-				backDims.Width += 520;
+				backDims.X -= 560;
+				backDims.Width += 560;
+
+				backDims.Height += 20;
 			}
 
 			spriteBatch.Draw(TextureAssets.MagicPixel.Value, backDims, new Color(25, 25, 25) * 0.5f);
 
 			base.Draw(spriteBatch);
-			Utils.DrawBorderString(spriteBatch, "Ingredients", Basepos + new Vector2(38, 8), Color.White, 0.8f);
-			Utils.DrawBorderString(spriteBatch, "Info/Stats", Basepos + new Vector2(202, 8), Color.White, 0.8f);
-			Utils.DrawBorderString(spriteBatch, "Prepare", Basepos + new Vector2(212, 210), Color.White, 1.1f);
+			Utils.DrawBorderString(spriteBatch, Language.GetTextValue("Mods.StarlightRiver.GUI.CookingUI.Ingredients"), Basepos + new Vector2(38, 8), Color.White, 0.8f);
+			Utils.DrawBorderString(spriteBatch, Language.GetTextValue("Mods.StarlightRiver.GUI.CookingUI.Info"), Basepos + new Vector2(202, 8), Color.White, 0.8f);
+			Utils.DrawBorderString(spriteBatch, Language.GetTextValue("Mods.StarlightRiver.GUI.CookingUI.Prepare"), Basepos + new Vector2(212, 210), Color.White, 1.1f);
 
 			int drawY = 0;
 			if (!Elements.Any(n => n is CookingSlot && !(n as CookingSlot).Item.IsAir && ((n as CookingSlot).Item.ModItem as Ingredient).ThisType == IngredientType.Main))
 			{
-				Utils.DrawBorderString(spriteBatch, "Place a Main Course in\nthe top slot to start\ncooking", Basepos + new Vector2(186, 54 + drawY), Color.White, 0.7f);
+				Utils.DrawBorderString(spriteBatch, Language.GetTextValue("Mods.StarlightRiver.GUI.CookingUI.Instructions"), Basepos + new Vector2(186, 54 + drawY), Color.White, 0.7f);
 			}
 			else
 			{
@@ -147,7 +157,7 @@ namespace StarlightRiver.Content.GUI
 
 					for (int k = 0; k < strings.Count(); k++)
 					{
-						string text = "~" + Helper.WrapString(strings[k], 100, FontAssets.ItemStack.Value, 0.65f);
+						string text = "~" + LocalizationHelper.WrapString(strings[k], 100, FontAssets.ItemStack.Value, 0.65f);
 						string[] substrings = text.Split('\n');
 
 						for (int n = 0; n < substrings.Length; n++)
@@ -174,12 +184,12 @@ namespace StarlightRiver.Content.GUI
 					drawY += (int)(FontAssets.ItemStack.Value.MeasureString(line.Item1).Y * 0.65f) + 2;
 				}
 
-				Utils.DrawBorderString(spriteBatch, duration / 60 + " seconds duration", Basepos + new Vector2(186, 150), new Color(110, 235, 255), 0.65f);
-				Utils.DrawBorderString(spriteBatch, cooldown / 60 + " seconds fullness", Basepos + new Vector2(186, 164), new Color(255, 170, 120), 0.65f);
+				Utils.DrawBorderString(spriteBatch, $"{(int)(duration / 3600)}m {duration % 3600 / 60}s duration", Basepos + new Vector2(186, 150), new Color(110, 235, 255), 0.65f);
+				Utils.DrawBorderString(spriteBatch, $"{(int)(cooldown / 3600)}m {cooldown % 3600 / 60}s fullness", Basepos + new Vector2(186, 164), new Color(255, 170, 120), 0.65f);
 
 				if (lineCount > 5)
 				{
-					Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/GUI/Arrow").Value;
+					Texture2D tex = Assets.GUI.Arrow.Value;
 
 					spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Rectangle((int)Basepos.X + 352, (int)Basepos.Y + 60, 4, 80), new Color(20, 20, 10) * 0.5f);
 					spriteBatch.Draw(tex, Basepos + new Vector2(354, 60 + scrollStart / (float)(lineCount - 5) * 80), null, Color.White, 0, tex.Size() / 2, 1, 0, 0);
@@ -209,12 +219,20 @@ namespace StarlightRiver.Content.GUI
 				FoodRecipie special = FoodRecipieHandler.Recipes.FirstOrDefault(n => n.Matches((Item.ModItem as Meal).Ingredients));
 
 				if (special.result != 0) //Bad check. This entire addition is kind of a bandaid. That kinda sucks.
+				{
+					Item specialItem = FoodRecipieHandler.GetFromRecipie(special);
 					(Item.ModItem as Meal).Ingredients.Add(FoodRecipieHandler.GetFromRecipie(special));
+					//special ingredient stats also get counted, on the offchance that they are modified
+					//the alterative to repeating these from CookIngredient was to have a internal slot just for the special ingredient
+					(Item.ModItem as Meal).BuffLengthMult *= (specialItem.ModItem as Ingredient).BuffLengthMult;
+					(Item.ModItem as Meal).DebuffLengthMult *= (specialItem.ModItem as Ingredient).DebuffLengthMult;
+					(Item.ModItem as Meal).Fullness += (specialItem.ModItem as Ingredient).Fill;
+				}
 
 				Item.position = Main.LocalPlayer.Center;
 				Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), Item);
 
-				Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_BetsyScream); //TODO: Change to custom chop chop sizzle sound
+				SoundHelper.PlayPitched("Effects/UIAlchemy", 1, 0, Main.LocalPlayer.Center);
 			}
 		}
 
@@ -274,21 +292,21 @@ namespace StarlightRiver.Content.GUI
 					Main.HoverItem = Item.Clone();
 					Main.hoverItemName = "a"; //required but the value doesn't matter for having it show up
 
-					if (Main.keyState.PressingShift() && (ChefBagUI.visible || Helper.getFreeInventorySlot(Main.LocalPlayer) != -1))
+					if (Main.keyState.PressingShift() && (ChefBagUI.visible || InventoryHelper.getFreeInventorySlot(Main.LocalPlayer) != -1))
 						Main.cursorOverride = 7;
 				}
 				else
 				{
-					Main.hoverItemName = "Place [c/" + Ingredient.GetDescriptionColor(Type).Hex3() + ":" + Ingredient.GetDescription(Type) + "] here";
+					Main.hoverItemName = Language.GetText("Mods.StarlightRiver.GUI.CookingUI.SlotHover").Format(Ingredient.GetDescriptionColor(Type).Hex3(), Ingredient.GetDescription(Type));
 				}
 			}
 
-			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/GUI/CookSlotY").Value;
+			Texture2D tex = Assets.GUI.CookSlotY.Value;
 			switch (Type)
 			{
-				case IngredientType.Main: tex = Request<Texture2D>("StarlightRiver/Assets/GUI/CookSlotY").Value; break;
-				case IngredientType.Side: tex = Request<Texture2D>("StarlightRiver/Assets/GUI/CookSlotG").Value; break;
-				case IngredientType.Seasoning: tex = Request<Texture2D>("StarlightRiver/Assets/GUI/CookSlotB").Value; break;
+				case IngredientType.Main: tex = Assets.GUI.CookSlotY.Value; break;
+				case IngredientType.Side: tex = Assets.GUI.CookSlotG.Value; break;
+				case IngredientType.Seasoning: tex = Assets.GUI.CookSlotB.Value; break;
 			}
 
 			spriteBatch.Draw(tex, GetDimensions().Position(), tex.Frame(), Color.White, 0, Vector2.Zero, 1, 0, 0);
@@ -414,7 +432,7 @@ namespace StarlightRiver.Content.GUI
 			}
 
 			//attempt to quick place into your inventory if no chef bag or invalid to place there
-			int invSlotCount = Helper.getFreeInventorySlot(Main.LocalPlayer);
+			int invSlotCount = InventoryHelper.getFreeInventorySlot(Main.LocalPlayer);
 
 			if (!Item.IsAir && invSlotCount != -1)
 			{

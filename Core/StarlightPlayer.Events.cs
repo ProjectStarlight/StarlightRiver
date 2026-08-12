@@ -283,6 +283,24 @@ namespace StarlightRiver.Core
 
 			MethodInfo ModifyPlayerHitNPCWithItemMethod = typeof(CombinedHooks).GetMethod("ModifyPlayerHitNPCWithItem", BindingFlags.Public | BindingFlags.Static);
 			ModifyPlayerHitNPCWithItemHook = new Hook(ModifyPlayerHitNPCWithItemMethod, OnModifyPlayerHitNPCWithItem);
+
+			if (!Main.dedServ)
+				On_PlayerDrawLayers.DrawPlayer_RenderAllLayers += PostDrawPlayerLayer;
+		}
+
+		// Extra shim to insert our rendering events
+		private void PostDrawPlayerLayer(On_PlayerDrawLayers.orig_DrawPlayer_RenderAllLayers orig, ref PlayerDrawSet drawinfo)
+		{
+			Player drawPlayer = drawinfo.drawPlayer;
+			float shadow = drawinfo.shadow;
+
+			if (!Main.gameMenu && shadow == 0)
+				drawPlayer.GetModPlayer<StarlightPlayer>().PreDraw(drawPlayer, Main.spriteBatch);
+
+			orig(ref drawinfo);
+
+			if (!Main.gameMenu && shadow == 0)
+				drawPlayer.GetModPlayer<StarlightPlayer>().PostDraw(drawPlayer, Main.spriteBatch);
 		}
 
 		public override void Unload()

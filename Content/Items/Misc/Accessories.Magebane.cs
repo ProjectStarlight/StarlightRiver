@@ -8,8 +8,6 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public Magebane() : base(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "Magebane").Value) { }
-
 		public override void Load()
 		{
 			StarlightPlayer.CanUseItemEvent += PreventManaPotion;
@@ -26,7 +24,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SetStaticDefaults()
 		{
-			Tooltip.SetDefault("Cursed : You can not drink mana potions or other mana-replenishing items\nMagic attacks have a 25% chance to leech a large portion of their damage as mana");
+			Tooltip.SetDefault("You can not drink mana potions or other mana-replenishing items\nMagic attacks have a 25% chance to leech a large portion of their damage as mana");
 
 			ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.ManaFlower;
 			ItemID.Sets.ShimmerTransformToItem[ItemID.ManaFlower] = Type;

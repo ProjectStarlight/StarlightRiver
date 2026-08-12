@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using StarlightRiver.Content.GUI.Config;
+using System.ComponentModel;
 using Terraria.ModLoader.Config;
 
 namespace StarlightRiver.Content.Configs
@@ -23,20 +24,21 @@ namespace StarlightRiver.Content.Configs
 	{
 		public override ConfigScope Mode => ConfigScope.ClientSide;
 
-		[Label("Overhead Starlight Display")]
 		[DrawTicks]
-		[Tooltip("When/If the overhead starlight meter should display")]
 		[DefaultValue(typeof(OverlayState), "WhileNotFull")]
 		public OverlayState OverheadStaminaState = OverlayState.WhileNotFull;
 
-		[Label("Keyword Style")]
 		[DrawTicks]
-		[Tooltip("How keywords should be displayed in tooltips")]
 		public KeywordStyle KeywordStyle = KeywordStyle.Both;
 
-		[Label("Indicate Items with Added Recipes")]
-		[Tooltip("Displays a star icon in vanilla item tooltips if used in Starlight River crafting recipes")]
+		[DefaultValue(false)]
+		public bool ObviousArmorCharge;
+
 		[DefaultValue(true)]
 		public bool AddMaterialIndicator;
+
+		[DefaultValue(typeof(Vector2), "100, 300")]
+		[CustomModConfigItem(typeof(AbilityUIReposition))]
+		public Vector2 AbilityIconPosition;
 	}
 }

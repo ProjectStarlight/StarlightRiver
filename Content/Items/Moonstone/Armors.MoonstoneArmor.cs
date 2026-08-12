@@ -1,6 +1,9 @@
 ﻿using NetEasy;
-using StarlightRiver.Content.CustomHooks;
+using StarlightRiver.Content.GUI;
+using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.BarrierSystem;
+using StarlightRiver.Core.Systems.PixelationSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,13 +70,16 @@ namespace StarlightRiver.Content.Items.Moonstone
 			if (head.moonCharge >= 180 && oldCharge < 180 || head.moonCharge >= 720 && oldCharge < 720)
 				head.moonFlash = 30;
 
+			if (head.moonCharge > 720)
+				head.moonCharge = 720;
+
 			Player.GetModPlayer<StarlightPlayer>().SetHitPacketStatus(shouldRunProjMethods: false);
 		}
 
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Moonstone Helmet");
-			Tooltip.SetDefault("2% increased melee critical strike chance\n+20 {{Barrier}}");
+			Tooltip.SetDefault("2% increased melee critical strike chance\n+20 maximum {{Barrier}}");
 		}
 
 		public override void SetDefaults()
@@ -108,6 +114,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 				moonFlash--;
 
 			Lighting.AddLight(player.Center + new Vector2(0, -16), new Vector3(0.55f, 0.5f, 0.9f) * moonCharge / 720f * 0.5f);
+
+			ArmorChargeUI.SetMessage($"{Math.Truncate(moonCharge / 720f * 100)}%");
 
 			if (spearOn)
 			{
@@ -211,30 +219,48 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private void DrawMoonCharge(Player Player, SpriteBatch spriteBatch)
 		{
-			if (IsArmorSet(Player) && !Player.dead && PlayerTarget.canUseTarget)
+			if (IsArmorSet(Player) && !Player.dead && PlayerTargetSystem.canUseTarget)
 			{
-				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+				Texture2D texRing = Assets.Misc.Gauge.Value;
+				Vector2 pos = Player.MountedCenter + new Vector2(0, -16 + MathF.Sin(Main.GameUpdateCount * 0.05f) * 4) + Vector2.UnitY * Player.gfxOffY - Main.screenPosition;
 
-				var head = Player.armor[0].ModItem as MoonstoneHead;
-				float charge = head.moonCharge / 720f;
+				spriteBatch.Draw(texRing, pos + new Vector2(0, -40), new Rectangle(0, 0, texRing.Width / 2, texRing.Height), new Color(50, 50, 50, 0), -1.57f, texRing.Size() / 2, 0.4f, SpriteEffects.FlipHorizontally, 0);
 
-				Texture2D texRing = Request<Texture2D>(AssetDirectory.VitricItem + "BossBowRing").Value;
-				Color color = new Color(130, 110, 225) * (0.5f + charge * 0.5f);
+				Effect shader = ShaderLoader.GetShader("RadialFill").Value;
 
-				if (charge <= 180 / 720f)
-					color = new Color(150, 150, 150) * (0.5f + charge * 0.5f);
+				if (shader != null)
+				{
+					//ModContent.GetInstance<PixelationSystem>().QueueRenderAction("UnderProjectiles", () =>
+					//{
+					SpriteBatch sb = spriteBatch;
 
-				if (charge >= 1 || head.spearOn)
-					color = new Color(150, 150 + (int)(Math.Sin(Main.GameUpdateCount * 0.2f) * 20), 255) * (0.5f + charge * 0.5f);
+					var head = Player.armor[0].ModItem as MoonstoneHead;
+					float charge = head.moonCharge / 720f;
 
-				color = Color.Lerp(color, Color.White, head.moonFlash / 30f);
+					Color color = new Color(130, 110, 225);
 
-				spriteBatch.Draw(texRing, Player.MountedCenter + new Vector2(0, -16) + Vector2.UnitY * Player.gfxOffY - Main.screenPosition, null, color, Main.GameUpdateCount * 0.01f, texRing.Size() / 2, 0.08f + charge * 0.05f, 0, 0);
+					if (charge <= 180 / 720f)
+						color = new Color(50, 50, 50);
 
-				spriteBatch.End();
+					if (charge >= 1 || head.spearOn)
+						color = new Color(150, 150 + (int)(Math.Sin(Main.GameUpdateCount * 0.2f) * 20), 255);
 
-				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+					color = Color.Lerp(color, Color.White, head.moonFlash / 30f);
+					color.A = 0;
+
+					shader.Parameters["minAngle"].SetValue(0.2f);
+					shader.Parameters["maxAngle"].SetValue(charge * 2.94f);
+					shader.Parameters["u_color"].SetValue(color.ToVector4());
+
+					sb.End();
+					sb.Begin(default, BlendState.AlphaBlend, SamplerState.PointWrap, default, RasterizerState.CullNone, shader, Main.GameViewMatrix.ZoomMatrix);
+
+					spriteBatch.Draw(texRing, pos, null, color, -1.57f, texRing.Size() / 2, 0.4f, SpriteEffects.FlipHorizontally, 0);
+
+					sb.End();
+					sb.Begin(default, default, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.ZoomMatrix);
+					//});
+				}
 			}
 		}
 
@@ -255,7 +281,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Moonstone Chestpiece");
-			Tooltip.SetDefault("+35 {{Barrier}}");
+			Tooltip.SetDefault("+35 maximum {{Barrier}}");
 		}
 
 		public override void SetDefaults()
@@ -312,7 +338,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Moonstone Greaves");
-			Tooltip.SetDefault("Improved acceleration\n +25 {{Barrier}}");
+			Tooltip.SetDefault("Improved acceleration\n +25 maximum {{Barrier}}");
 		}
 
 		public override void SetDefaults()

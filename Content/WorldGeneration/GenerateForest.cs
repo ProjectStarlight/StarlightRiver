@@ -23,15 +23,27 @@ namespace StarlightRiver.Core
 					{
 						for (int y = 10; y < Main.worldSurface; y++)
 						{
-							if (Main.tile[k, y].TileType == TileID.Grass && Main.tile[k + 1, y].TileType == TileID.Grass && Helper.CheckAirRectangle(new Point16(k, y - 2), new Point16(2, 2)))
+							if (Main.tile[k, y].TileType == TileID.Grass && Main.tile[k + 1, y].TileType == TileID.Grass && WorldGenHelper.CheckAirRectangle(new Point16(k, y - 2), new Point16(2, 2)))
 							{
 								int type = TileType<ForestBerryBush>();
 
 								if (WorldGen.genRand.NextBool(4))
 									type = TileType<SlimeberryBush>();
 
-								Helper.PlaceMultitile(new Point16(k, y - 2), type); //25% chance for slimeberries instead
+								WorldGenHelper.PlaceMultitile(new Point16(k, y - 2), type); //25% chance for slimeberries instead
 								k += 3;
+							}
+						}
+					}
+
+					else if (WorldGen.genRand.NextBool(12)) //Veggies
+					{
+						for (int y = 10; y < Main.worldSurface; y++)
+						{
+							if (Main.tile[k, y].HasTile && Main.tile[k, y].BlockType == BlockType.Solid && Main.tile[k, y].TileType == TileID.Grass && WorldGenHelper.CheckAirRectangle(new Point16(k, y - 2), new Point16(1, 2)))
+							{
+								WorldGenHelper.PlaceMultitile(new Point16(k, y - 2), TileType<CommonVegetables>());
+								k += 2;
 							}
 						}
 					}
@@ -75,7 +87,7 @@ namespace StarlightRiver.Core
 
 						for (int j = (int)(Main.worldSurface * 0.35f); j < Main.worldSurface; j++) //Wall Bushes
 						{
-							if (Main.tile[k + x, j].WallType != 0 && Main.tile[k, j].WallType != WallType<LeafWall>())
+							if (Main.tile[k + x, j].WallType != WallID.None && Main.tile[k, j].WallType != WallType<LeafWall>())
 							{
 								surface = j;
 								break;
@@ -91,7 +103,7 @@ namespace StarlightRiver.Core
 						{
 							WorldGen.PlaceWall(k + x, y, WallType<LeafWall>(), true);
 
-							if (y - surface > 20 || !WorldGen.InWorld(k + x, y + 1) || Main.tile[k + x, y + 1].WallType != 0)
+							if (y - surface > 20 || !WorldGen.InWorld(k + x, y + 1) || Main.tile[k + x, y + 1].WallType != WallID.None)
 								break;
 						}
 
@@ -132,7 +144,7 @@ namespace StarlightRiver.Core
 		{
 			for (int y = (int)(Main.worldSurface * 0.35f); y < Main.rockLayer; y++)
 			{
-				if (Main.tile[x, y].TileType == TileID.Grass)
+				if (Main.tile[x, y].HasTile && Main.tile[x, y].TileType == TileID.Grass)
 					return true;
 			}
 

@@ -1,4 +1,5 @@
 using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Items.BaseTypes;
 using System;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -15,7 +16,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		}
 	}
 
-	class VitricPillarWallItem : QuickTileItem
+	class VitricPillarWallItem : BaseTileItem
 	{
 		public override string Texture => AssetDirectory.VitricTile + "VitricPillarWallItem";
 
@@ -32,7 +33,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		}
 	}
 
-	class VitricPillarWallShortItem : QuickTileItem
+	class VitricPillarWallShortItem : BaseTileItem
 	{
 		public override string Texture => AssetDirectory.VitricTile + "VitricPillarWallItem";
 
@@ -55,8 +56,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 			Tile tile = Framing.GetTileSafely(i, j);
 
-			Texture2D tex = Request<Texture2D>(Texture + "Glow").Value;
-			Vector2 pos = (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 - Main.screenPosition;
+			Texture2D tex = Assets.Tiles.Vitric.VitricPillarWallLavaGlow.Value;
+			Vector2 pos = new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange - Main.screenPosition;
 			float sin = 0.5f + (float)Math.Sin((Main.GameUpdateCount + i + j * 10) * 0.05f) * 0.25f;
 
 			spriteBatch.Draw(tex, pos, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), Color.White * sin);
@@ -65,7 +66,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		}
 	}
 
-	class VitricPillarWallLavaItem : QuickTileItem
+	class VitricPillarWallLavaItem : BaseTileItem
 	{
 		public override string Texture => AssetDirectory.VitricTile + "VitricPillarWallItem";
 
@@ -82,7 +83,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		}
 	}
 
-	class VitricPillarWallCrystalItem : QuickTileItem
+	class VitricPillarWallCrystalItem : BaseTileItem
 	{
 		public override string Texture => AssetDirectory.VitricTile + "VitricPillarWallItem";
 

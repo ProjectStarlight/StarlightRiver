@@ -30,11 +30,11 @@
 			PostAIEvent?.Invoke(Projectile);
 		}
 
-		public delegate void KillDelegate(Projectile Projectile, int timeLeft);
-		public static event KillDelegate KillEvent;
-		public override void Kill(Projectile Projectile, int timeLeft)
+		public delegate void OnKillDelegate(Projectile Projectile, int timeLeft);
+		public static event OnKillDelegate OnKillEvent;
+		public override void OnKill(Projectile Projectile, int timeLeft)
 		{
-			KillEvent?.Invoke(Projectile, timeLeft);
+			OnKillEvent?.Invoke(Projectile, timeLeft);
 		}
 
 		public delegate void PostDrawDelegate(Projectile projectile, Color lightColor);
@@ -50,7 +50,7 @@
 			OnHitNPCEvent = null;
 			OnHitPlayerEvent = null;
 			PostAIEvent = null;
-			KillEvent = null;
+			OnKillEvent = null;
 			PostDrawEvent = null;
 		}
 	}

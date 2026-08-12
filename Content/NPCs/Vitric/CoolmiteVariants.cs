@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Items.BaseTypes;
 using System;
 using System.IO;
 using Terraria.Audio;
@@ -10,7 +11,7 @@ using static Terraria.ModLoader.ModContent;
 namespace StarlightRiver.Content.NPCs.Vitric
 {
 
-	internal class CoolmiteSmol : CoolmitePassive, IHintable
+	internal class CoolmiteSmol : CoolmitePassive
 	{
 		protected override int Offset => 4;
 		protected override float Size => 0.8f;
@@ -91,14 +92,9 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			spriteBatch.Draw(Request<Texture2D>(Texture).Value, pos, NPC.frame, Color.White * (1 - NPC.shimmerTransparency), 0, new Vector2(originX, 16), 1, NPC.spriteDirection == -1 ? 0 : SpriteEffects.FlipHorizontally, 0);
 			return false;
 		}
-
-		new public string GetHint()
-		{
-			return "Even smoller in crystal!";
-		}
 	}
 
-	internal class CoolmiteLarge : CoolmitePassive, IHintable
+	internal class CoolmiteLarge : CoolmitePassive
 	{
 		protected override int Offset => 10;
 		protected override float Size => 1.2f;
@@ -198,19 +194,14 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 			base.OnKill();
 		}
-
-		new public string GetHint()
-		{
-			return "Even more mesmerizing in crystal!";
-		}
 	}
 
-	internal class CoolmiteSmolItem : QuickCritterItem
+	internal class CoolmiteSmolItem : BaseCritterItem
 	{
 		public CoolmiteSmolItem() : base("Coolmini", "Sharp edges! Watch your fingers.", Item.sellPrice(silver: 5), ItemRarityID.Orange, NPCType<CoolmiteSmol>(), AssetDirectory.VitricItem) { }
 	}
 
-	internal class CoolmiteLargeItem : QuickCritterItem
+	internal class CoolmiteLargeItem : BaseCritterItem
 	{
 		public CoolmiteLargeItem() : base("Coolmismer", "High intensity beauty! Avoid eye and skin exposure.", Item.sellPrice(silver: 25), ItemRarityID.Orange, NPCType<CoolmiteLarge>(), AssetDirectory.VitricItem) { }
 	}

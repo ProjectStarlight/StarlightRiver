@@ -36,31 +36,25 @@ namespace StarlightRiver.Core
 
 		private static void DestroyGore(IEntitySource entitySource, int goreID)
 		{
-			if (entitySource is EntitySource_HitEffect deathSource && deathSource.Entity is NPC npc && npc.GetGlobalNPC<GoreDestroyerNPC>().destroyGore)
+			if (entitySource is EntitySource_Parent deathSource && deathSource.Entity is NPC npc && npc.GetGlobalNPC<GoreDestroyerNPC>().destroyGore)
 				Main.gore[goreID].active = false;
 
 			if (entitySource is EntitySource_Death deathSource3 && deathSource3.Entity is NPC npc3 && npc3.GetGlobalNPC<GoreDestroyerNPC>().destroyGore)
 				Main.gore[goreID].active = false;
 
 			if (entitySource is EntitySource_OnHit deathSource2 && deathSource2.Entity is NPC npc2 && npc2.GetGlobalNPC<GoreDestroyerNPC>().destroyGore)
-				Main.gore[goreID].active = false;
-
-			if (entitySource is EntitySource_Parent deathSource4 && deathSource4.Entity is NPC npc4 && npc4.GetGlobalNPC<GoreDestroyerNPC>().destroyGore)
 				Main.gore[goreID].active = false;
 		}
 
 		private static void DestroyGore(IEntitySource entitySource, Gore gore)
 		{
-			if (entitySource is EntitySource_HitEffect deathSource && deathSource.Entity is NPC npc && npc.GetGlobalNPC<GoreDestroyerNPC>().destroyGore)
+			if (entitySource is EntitySource_Parent deathSource && deathSource.Entity is NPC npc && npc.GetGlobalNPC<GoreDestroyerNPC>().destroyGore)
 				gore.active = false;
 
 			if (entitySource is EntitySource_OnHit deathSource2 && deathSource2.Entity is NPC npc2 && npc2.GetGlobalNPC<GoreDestroyerNPC>().destroyGore)
 				gore.active = false;
 
 			if (entitySource is EntitySource_Death deathSource3 && deathSource3.Entity is NPC npc3 && npc3.GetGlobalNPC<GoreDestroyerNPC>().destroyGore)
-				gore.active = false;
-
-			if (entitySource is EntitySource_Parent deathSource4 && deathSource4.Entity is NPC npc4 && npc4.GetGlobalNPC<GoreDestroyerNPC>().destroyGore)
 				gore.active = false;
 		}
 	}

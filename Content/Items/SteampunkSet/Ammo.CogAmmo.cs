@@ -99,7 +99,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 					Dust.NewDustPerfect(dustPos, ModContent.DustType<Dusts.BuzzSpark>(), Projectile.velocity.RotatedByRandom(MathHelper.ToRadians(5f)) * Main.rand.NextFloat(-0.5f, -0.2f), 0, new Color(255, 255, 60) * 0.8f, 1.3f);
 				}
 
-				Helper.PlayPitched("Impacts/Clink", 0.25f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
+				SoundHelper.PlayPitched("Impacts/Clink", 0.25f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
 				CameraSystem.shake += 3;
 				firstHit = true;
 			}
@@ -110,7 +110,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 					Dust.NewDustPerfect(dustPos, ModContent.DustType<Dusts.BuzzSpark>(), Projectile.velocity.RotatedByRandom(MathHelper.ToRadians(5f)) * Main.rand.NextFloat(-0.4f, -0.1f), 0, new Color(255, 255, 60) * 0.8f, 1.1f);
 				}
 
-				Helper.PlayPitched("Impacts/Clink", 0.15f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
+				SoundHelper.PlayPitched("Impacts/Clink", 0.15f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
 			}
 
 			Projectile.velocity.X *= -1f;
@@ -137,7 +137,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				Dust.NewDustPerfect(dustPos, ModContent.DustType<Dusts.BuzzSpark>(), Projectile.velocity.RotatedByRandom(MathHelper.ToRadians(5f)) * Main.rand.NextFloat(-0.4f, -0.1f), 0, new Color(255, 255, 60) * 0.8f, 1.1f);
 			}
 
-			Helper.PlayPitched("Impacts/Clink", 0.10f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
+			SoundHelper.PlayPitched("Impacts/Clink", 0.10f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
 
 			if (Math.Abs(Projectile.velocity.X - oldVelocity.X) > float.Epsilon)
 				Projectile.velocity.X = -oldVelocity.X;

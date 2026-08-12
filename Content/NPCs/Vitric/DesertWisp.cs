@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Biomes;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Helpers;
 using System;
 using Terraria.GameContent.Bestiary;
@@ -29,16 +30,12 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			NPC.dontTakeDamage = true;
 			NPC.value = 0f;
 			NPC.knockBackResist = 0f;
-			NPC.aiStyle = 65;
+			NPC.aiStyle = NPCAIStyleID.Butterfly;
 		}
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
 		{
-			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
-			{
-				Bestiary.SLRSpawnConditions.VitricDesert,
-				new FlavorTextBestiaryInfoElement("A tangle of Starlight energy that can be considered alive, if only barely.")
-			});
+			database.Entries.Remove(bestiaryEntry);
 		}
 
 		public override void AI()
@@ -86,6 +83,11 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				trail = new Trail(Main.graphics.GraphicsDevice, 120, new NoTip(), TrailWidth, TrailColor);
 		}
 
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
+		}
+
 		private static Color TrailColor(Vector2 textureCoordinates)
 		{
 			return Color.Lerp(new Color(100, 200, 255), new Color(80, 120, 255), (float)Math.Sin(textureCoordinates.X * 6.28f + Main.GameUpdateCount / 100f)) * (float)Math.Pow(Math.Sin((1 - textureCoordinates.X) * 3.14f), 4);
@@ -106,25 +108,28 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			if (NPC.oldPos[119] == Vector2.Zero || trail is null)
+			if (NPC.oldPos[119] == Vector2.Zero || trail is null || trail.IsDisposed)
 				return;
 
 			trail.Positions = NPC.oldPos;
 
-			Effect effect = Terraria.Graphics.Effects.Filters.Scene["CeirosRing"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("CeirosRing").Value;
 
-			var world = Matrix.CreateTranslation(-screenPos.Vec3());
-			Matrix view = Main.GameViewMatrix.TransformationMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			if (effect != null)
+			{
+				var world = Matrix.CreateTranslation(-screenPos.ToVector3());
+				Matrix view = Main.GameViewMatrix.TransformationMatrix;
+				var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
-			effect.Parameters["time"].SetValue(-Main.GameUpdateCount / 100f);
-			effect.Parameters["repeats"].SetValue(1);
+				effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+				effect.Parameters["sampleTexture"].SetValue(Assets.EnergyTrail.Value);
+				effect.Parameters["time"].SetValue(-Main.GameUpdateCount / 100f);
+				effect.Parameters["repeats"].SetValue(1);
 
-			effect.CurrentTechnique.Passes[0].Apply();
+				effect.CurrentTechnique.Passes[0].Apply();
 
-			trail?.Render(effect);
+				trail?.Render(effect);
+			}
 		}
 
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)

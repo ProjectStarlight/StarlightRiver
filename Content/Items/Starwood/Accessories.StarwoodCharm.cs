@@ -66,12 +66,12 @@ namespace StarlightRiver.Content.Items.Starwood
 
 			if (!mp.empowered)
 			{
-				spriteBatch.Draw(ModContent.Request<Texture2D>(Texture).Value, position, frame, drawColor, 0, origin, scale, 0, 0);
+				spriteBatch.Draw(Assets.Items.Starwood.StarwoodCharm.Value, position, frame, drawColor, 0, origin, scale, 0, 0);
 				return false;
 			}
 
 			frame.Y += frame.Height + 2;
-			spriteBatch.Draw(ModContent.Request<Texture2D>(Texture).Value, position, frame, drawColor, 0, origin, scale, 0, 0);
+			spriteBatch.Draw(Assets.Items.Starwood.StarwoodCharm.Value, position, frame, drawColor, 0, origin, scale, 0, 0);
 			return false;
 		}
 

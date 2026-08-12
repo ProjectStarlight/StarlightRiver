@@ -12,7 +12,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Corruption
 {
-	class Dweller : ModNPC, IHintable
+	class Dweller : ModNPC
 	{
 		public enum States
 		{
@@ -283,11 +283,6 @@ namespace StarlightRiver.Content.NPCs.Corruption
 				for (int j = 1; j <= 7; j++)
 					Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("DwellerGore" + j).Type);
 			}
-		}
-
-		public string GetHint()
-		{
-			return "There's something here.";
 		}
 	}
 }

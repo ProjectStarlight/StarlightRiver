@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Items.Vanity
 	{
 		public override string Texture => AssetDirectory.VanityItem + Name;
 
-		public AncientStarwoodHat() : base(Request<Texture2D>(AssetDirectory.VanityItem + "AncientStarwoodHat_Alt").Value) { }
+		public AncientStarwoodHat() : base(Assets.Items.Vanity.AncientStarwoodHat_Alt.Value) { }
 
 		public override void SetStaticDefaults()
 		{
@@ -53,7 +53,7 @@ namespace StarlightRiver.Content.Items.Vanity
 	{
 		public override string Texture => AssetDirectory.VanityItem + Name;
 
-		public AncientStarwoodChest() : base(Request<Texture2D>(AssetDirectory.VanityItem + "AncientStarwoodChest_Alt").Value) { }
+		public AncientStarwoodChest() : base(Assets.Items.Vanity.AncientStarwoodChest_Alt.Value) { }
 
 		public override void SetStaticDefaults()
 		{
@@ -101,7 +101,7 @@ namespace StarlightRiver.Content.Items.Vanity
 	{
 		public override string Texture => AssetDirectory.VanityItem + Name;
 
-		public AncientStarwoodBoots() : base(Request<Texture2D>(AssetDirectory.VanityItem + "AncientStarwoodBoots_Alt").Value) { }
+		public AncientStarwoodBoots() : base(Assets.Items.Vanity.AncientStarwoodBoots_Alt.Value) { }
 
 		public override void SetStaticDefaults()
 		{

@@ -1,7 +1,7 @@
 ﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Items.BaseTypes;
 using System;
 using Terraria.ID;
-using static StarlightRiver.Helpers.Helper;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		public override void SetStaticDefaults()
 		{
 			Main.tileLighted[Type] = true;
-			this.QuickSetFurniture(1, 2, 0, SoundID.Dig, false, new Color(80, 131, 142), false, false, "Candle", AnchorTableTop(1, true));
+			this.QuickSetFurniture(1, 2, 0, SoundID.Dig, false, new Color(80, 131, 142), false, false, "Candle", TileHelper.AnchorTableTop(1, true));
 			RegisterItemDrop(ModContent.ItemType<TempleCandleCrystalItem>());
 		}
 
@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		}
 	}
 
-	public class TempleCandleCrystalItem : QuickTileItem
+	public class TempleCandleCrystalItem : BaseTileItem
 	{
 		public TempleCandleCrystalItem() : base("Temple Crystal Candle", "", "TempleCandleCrystal", ItemRarityID.White, "StarlightRiver/Assets/Tiles/Vitric/TempleDecoration/") { }
 	}

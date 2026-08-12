@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Breach Cannon");
-			Tooltip.SetDefault("Summons a sentry that shoots a laser towards the cursor \nThese lasers can combine");
+			Tooltip.SetDefault("Summons a sentry that shoots a laser towards the cursor \nColliding lasers from multiple cannons can combine");
 		}
 
 		public override void SetDefaults()

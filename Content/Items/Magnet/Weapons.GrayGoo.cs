@@ -332,7 +332,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
 			var goos = Main.projectile.Where(n => n.active && n.type == ProjectileType<GrayGooProj>()).ToList();
 			goos.ForEach(n => DrawGooTarget(n, spriteBatch));
@@ -351,6 +351,8 @@ namespace StarlightRiver.Content.Items.Magnet
 
 		public override bool Update(Dust dust)
 		{
+			GrayGooMetaballs.visible = true;
+
 			dust.position += dust.velocity;
 			dust.velocity.Y += 0.2f;
 
@@ -371,6 +373,8 @@ namespace StarlightRiver.Content.Items.Magnet
 	{
 		public override bool Update(Dust dust)
 		{
+			GrayGooMetaballs.visible = true;
+
 			var data = (GrayGooDustData)dust.customData;
 			if (!data.proj.active)
 			{
@@ -394,7 +398,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			}
 
 			Vector2 posToBe = entityCenter + new Vector2(data.x, data.y);
-			Terraria.Graphics.Shaders.ArmorShaderData unused = dust.shader.UseColor(dust.color);
+			Terraria.Graphics.Shaders.ArmorShaderData unused = dust.shader?.UseColor(dust.color);
 
 			if ((posToBe - dust.position).Length() < 5)
 			{

@@ -6,7 +6,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
-	class WitShrine : DummyTile, IHintable
+	class WitShrine : DummyTile
 	{
 		public override int DummyType => DummySystem.DummyType<WitShrineDummy>();
 
@@ -62,13 +62,9 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			return false;
 		}
-		public string GetHint()
-		{
-			return "A shrine - to which deity, you do not know, though it holds a book. The statue's eyes seem to follow you, and strange runes dance across its pedestal.";
-		}
 	}
 
-	public partial class WitShrineDummy : Dummy, IDrawAdditive
+	public partial class WitShrineDummy : Dummy
 	{
 		public enum runeState
 		{
@@ -215,7 +211,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Underground/WitPlayerTile").Value;
+			Texture2D tex = Assets.Tiles.Underground.WitPlayerTile.Value;
 			Vector2 basePos = Center + new Vector2(-48 * 3 + 24, -16 * 22) - Main.screenPosition;
 			Vector2 targetPos = basePos + Vector2.SmoothStep(Player * 48, oldPlayer * 48, PlayerTimer / 30f) + Vector2.One;
 			var source = new Rectangle(0, 0, 34, 34);
@@ -223,17 +219,18 @@ namespace StarlightRiver.Content.Tiles.Underground
 			Main.spriteBatch.Draw(tex, targetPos, source, Color.White, 0, Vector2.One * 17, 1, 0, 0);
 		}
 
+		// TODO: Call this since IDrawAdditive ded
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
 			if (state != 0)
 			{
-				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Moonstone/GlowSmall").Value;
+				Texture2D tex = Assets.Tiles.Moonstone.GlowSmall.Value;
 				var origin = new Vector2(tex.Width / 2, tex.Height);
 				spriteBatch.Draw(tex, Center - Main.screenPosition + new Vector2(0, 60), default, GetBeamColor(StarlightWorld.visualTimer), 0, origin, 3.5f, 0, 0);
 				spriteBatch.Draw(tex, Center - Main.screenPosition + new Vector2(10, 60), default, GetBeamColor(StarlightWorld.visualTimer + 2) * 0.8f, 0, origin, 2.5f, 0, 0);
 				spriteBatch.Draw(tex, Center - Main.screenPosition + new Vector2(-10, 60), default, GetBeamColor(StarlightWorld.visualTimer + 4) * 0.8f, 0, origin, 3.2f, 0, 0);
 
-				Texture2D runeTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Underground/WitRune").Value;
+				Texture2D runeTex = Assets.Tiles.Underground.WitRune.Value;
 				var runeFrame = new Rectangle(0, 0, 22, 22);
 				Vector2 basePos = Center + new Vector2(-48 * 3 + 24, -16 * 22) - Main.screenPosition;
 				Vector2 parallaxPoint = Center + new Vector2(0, -16 * 22 + 152);// - new Vector2(Main.screenWidth, Main.screenHeight) / 2;
@@ -298,7 +295,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 						if (oldPlayer == new Vector2(x, y))
 							color2 = Color.Transparent;
 
-						float combinedAlpha = Helpers.Helper.Lerp(color.A / 255f, color2.A / 255f, PlayerTimer / 30f);
+						float combinedAlpha = MathHelper.Lerp(color.A / 255f, color2.A / 255f, PlayerTimer / 30f);
 						var colorCombined = Color.Lerp(color2, color, 1 - PlayerTimer / 30f);
 
 						for (int k = 0; k < 5; k++)

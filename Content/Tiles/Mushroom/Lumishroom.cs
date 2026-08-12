@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Helpers;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Helpers;
 using System;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -35,14 +36,14 @@ namespace StarlightRiver.Content.Tiles.Mushroom
 		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 		{
 			Tile tile = Framing.GetTileSafely(i, j);
-			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Tiles/Mushroom/LumishroomGlow").Value;
-			Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition;
+			Texture2D tex = Assets.Tiles.Mushroom.LumishroomGlow.Value;
+			Vector2 pos = new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange - Main.screenPosition;
 
 			spriteBatch.Draw(tex, pos, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), Color.White * (float)(0.8f + Math.Sin(StarlightWorld.visualTimer + i) * 0.5f));
 		}
 	}
 
-	class LumishroomItem : QuickTileItem
+	class LumishroomItem : BaseTileItem
 	{
 		public LumishroomItem() : base("Lumishroom", "Glowy...", "Lumishroom", 1, "StarlightRiver/Assets/Tiles/Mushroom/") { }
 	}

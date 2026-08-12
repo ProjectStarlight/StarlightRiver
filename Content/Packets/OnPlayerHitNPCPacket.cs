@@ -29,7 +29,9 @@ namespace StarlightRiver.Content.Packets
 		private int damageDone;
 
 		/// <summary>
-		/// Opt-in for if modprojectile methods should be executed by this packet. Done this way to accomodate any projectiles that have custom onhit syncing already or otherwise did not expect to have those methods called on non-owner clients
+		/// Opt-in for if modprojectile methods should be executed by this packet.
+		/// Also applies to item onhits for true melee
+		/// Done this way to accomodate any projectiles/items that have custom onhit syncing already or otherwise did not expect to have those methods called on non-owner clients
 		/// </summary>
 		private bool runProjMethods;
 
@@ -71,9 +73,15 @@ namespace StarlightRiver.Content.Packets
 				DamageClass damageClass = Player.HeldItem.DamageType;
 				NPC.HitModifiers modifiers = Main.npc[NPCId].GetIncomingStrikeModifiers(damageClass, hitDirection: 0, ignoreArmorDebuffs: false);
 
+				if (runProjMethods)
+					Player.HeldItem.ModItem.ModifyHitNPC(Player, Main.npc[NPCId], ref modifiers);
+
 				modPlayer.ModifyHitNPCWithItem(Player.HeldItem, Main.npc[NPCId], ref modifiers);
 
 				NPC.HitInfo hitInfo = modifiers.ToHitInfo(Player.HeldItem.damage, crit, Player.HeldItem.knockBack);
+
+				if (runProjMethods)
+					Player.HeldItem.ModItem.OnHitNPC(Player, Main.npc[NPCId], hitInfo, damageDone);
 
 				modPlayer.OnHitNPCWithItem(Player.HeldItem, Main.npc[NPCId], hitInfo, damageDone);
 			}

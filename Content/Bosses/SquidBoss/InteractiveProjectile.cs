@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using StarlightRiver.Core.Systems.NoBuildingSystem;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
 
@@ -22,7 +23,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public virtual void SafeKill(int timeLeft) { }
 
-		public sealed override void Kill(int timeLeft)
+		public sealed override void OnKill(int timeLeft)
 		{
 			SafeKill(timeLeft);
 
@@ -42,6 +43,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			foreach (Point16 point in ValidPoints.Where(n => !Main.tile[n.X, n.Y].HasTile))
 			{
 				Framing.GetTileSafely(point.X, point.Y).IsActuated = false;
+				NoBuildSystem.pointExceptions.Add(point);
 			}
 
 			if (Projectile.timeLeft < 10)
@@ -55,8 +57,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.SquidBoss + "Highlight").Value;
-			Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/SquareGlow").Value;
+			Texture2D tex = Assets.Bosses.SquidBoss.Highlight.Value;
+			Texture2D tex2 = Assets.Misc.SquareGlow.Value;
 
 			int off = 16 * ((int)Projectile.ai[0] % 5);
 

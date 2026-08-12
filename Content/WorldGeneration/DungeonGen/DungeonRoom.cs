@@ -31,6 +31,11 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		public abstract string StructurePath { get; }
 
 		/// <summary>
+		/// If the structure helper file is a multistructure or regular structure
+		/// </summary>
+		public abstract bool IsMulti { get; }
+
+		/// <summary>
 		/// A matrix representing the layout of the room, used to determine the location of doors to place hallways from
 		/// and create a list of 'used' coordinates for rooms to prevent overlapping.
 		/// </summary>
@@ -85,14 +90,11 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		public void FillRoom(Point16 dungeonPos)
 		{
 			// Attempts to generate as a structure, if this fails, it falls back to generating as a multistructure.
-			bool? isMulti = StructureHelper.Generator.IsMultistructure(StructurePath, StarlightRiver.Instance);
 
-			if (isMulti == true)
-				StructureHelper.Generator.GenerateMultistructureRandom(StructurePath, TopLeftTile + dungeonPos, StarlightRiver.Instance);
-			else if (isMulti == false)
-				StructureHelper.Generator.GenerateStructure(StructurePath, TopLeftTile + dungeonPos, StarlightRiver.Instance);
+			if (IsMulti)
+				StructureHelper.API.MultiStructureGenerator.GenerateMultistructureRandom(StructurePath, TopLeftTile + dungeonPos, StarlightRiver.Instance);
 			else
-				throw new Exception($"An invalid structure file path {StructurePath} was read for dungeon room {GetType()}");
+				StructureHelper.API.Generator.GenerateStructure(StructurePath, TopLeftTile + dungeonPos, StarlightRiver.Instance);
 
 			OnGenerate(TopLeftTile + dungeonPos);
 		}

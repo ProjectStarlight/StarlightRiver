@@ -59,9 +59,9 @@ namespace StarlightRiver.Content.Items.Forest
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D topTex = ModContent.Request<Texture2D>(AssetDirectory.ForestItem + "FeralWolfMountBiteTop").Value;
-			Texture2D botTex = ModContent.Request<Texture2D>(AssetDirectory.ForestItem + "FeralWolfMountBiteBot").Value;
-			Texture2D glowTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/TriTell").Value;
+			Texture2D topTex = Assets.Items.Forest.FeralWolfMountBiteTop.Value;
+			Texture2D botTex = Assets.Items.Forest.FeralWolfMountBiteBot.Value;
+			Texture2D glowTex = Assets.Misc.TriTell.Value;
 
 			float swoop = (float)Math.Log10(Progress * 100 + 1) * 0.65f;
 			Color glowColor = new Color(255, 70, 60) * (float)Math.Sin((float)Math.Pow(Progress, 0.5f) * 3.14f);
@@ -86,7 +86,7 @@ namespace StarlightRiver.Content.Items.Forest
 	{
 		public override string Texture => AssetDirectory.Debug;
 
-		public WolfBleeding() : base("Gored", "Gored by a wolf", true, false) { }
+		public WolfBleeding() : base("Gored", "Deals 10 damage per second", true, false) { }
 
 		public override void Update(NPC npc, ref int buffIndex)
 		{

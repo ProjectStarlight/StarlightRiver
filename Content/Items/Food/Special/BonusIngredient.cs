@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.Items.Food.Special
 
 		public abstract FoodRecipie Recipie();
 
-		public override void AddRecipes()
+		public override void SafeAddRecipes()
 		{
 			FoodRecipieHandler.Recipes.Add(Recipie());
 			ChefBag.specialTypes.Add(Item.type);

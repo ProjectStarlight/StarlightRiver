@@ -38,12 +38,11 @@ namespace StarlightRiver.Core
 				{
 					int y = WorldGen.genRand.Next((int)Main.worldSurface + 100, Main.UnderworldLayer - 100);
 
-					Point16 dims = new();
-					StructureHelper.Generator.GetDimensions(structure, StarlightRiver.Instance, ref dims);
+					Point16 dims = StructureHelper.API.Generator.GetStructureDimensions(structure, StarlightRiver.Instance);
 
 					if (WorldGen.InWorld(x, y) && WorldGenHelper.IsRectangleSafe(new Rectangle(x, y, dims.X, dims.Y), ShrineCondition))
 					{
-						StructureHelper.Generator.GenerateStructure(structure, new Point16(x, y), StarlightRiver.Instance);
+						StructureHelper.API.Generator.GenerateStructure(structure, new Point16(x, y), StarlightRiver.Instance);
 						break;
 					}
 				}

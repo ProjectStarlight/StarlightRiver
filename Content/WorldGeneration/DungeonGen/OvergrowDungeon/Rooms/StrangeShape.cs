@@ -4,6 +4,8 @@
 	{
 		public override string StructurePath => "Structures/OvergrowthRooms/StrangeShape";
 
+		public override bool IsMulti => true;
+
 		public override SecType[,] Layout
 		{
 			get

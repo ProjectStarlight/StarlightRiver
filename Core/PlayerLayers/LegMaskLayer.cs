@@ -12,7 +12,7 @@ namespace StarlightRiver.Core.PlayerLayers
 			return new AfterParent(PlayerDrawLayers.Leggings);
 		}
 
-		protected override void Draw(ref PlayerDrawSet drawInfo)
+		public override void Draw(ref PlayerDrawSet drawInfo)
 		{
 			if (drawInfo.drawPlayer.armor[LEGVANITYSLOT].IsAir && drawInfo.drawPlayer.armor[LEGARMORSLOT].ModItem is IArmorLayerDrawable)
 				(drawInfo.drawPlayer.armor[LEGARMORSLOT].ModItem as IArmorLayerDrawable).DrawArmorLayer(drawInfo);

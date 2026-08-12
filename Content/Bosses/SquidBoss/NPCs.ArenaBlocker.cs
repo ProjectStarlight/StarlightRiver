@@ -1,4 +1,6 @@
 ﻿using System;
+using Terraria.GameContent.Bestiary;
+using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.SquidBoss
@@ -10,19 +12,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override string Texture => AssetDirectory.Invisible;
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+		public override void Load()
 		{
-			return false;
-		}
-
-		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
-		{
-			return State == 0;
-		}
-
-		public override bool CheckActive()
-		{
-			return !NPC.AnyNPCs(NPCType<SquidBoss>());
+			On_Player.Update_NPCCollision += ForceColliding;
 		}
 
 		public override void SetDefaults()
@@ -35,6 +27,31 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			NPC.noTileCollide = true;
 			NPC.dontTakeDamage = true;
 			NPC.knockBackResist = 0; // Fae Whip fix
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
+		}
+
+		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+		{
+			return State == 0;
+		}
+
+		public override bool CheckActive()
+		{
+			return !NPC.AnyNPCs(NPCType<SquidBoss>());
+		}
+
+		public override void ModifyHitPlayer(Player target, ref Player.HurtModifiers modifiers)
+		{
+			target.immune = true;
+			target.immuneTime = 1;
+
+			target.position.Y = NPC.position.Y + NPC.height;
+			target.velocity.Y += 5;
+			target.noKnockback = true;
 		}
 
 		public override void AI()
@@ -50,18 +67,51 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			for (int k = 0; k < Main.maxProjectiles; k++)
 			{
 				Projectile proj = Main.projectile[k];
-				if (proj.active && proj.Hitbox.Intersects(NPC.Hitbox) && proj.aiStyle == 7) //Hooks
+				if (proj.active && proj.Hitbox.Intersects(NPC.Hitbox) && proj.aiStyle == ProjAIStyleID.Hook) //Hooks
 					Main.projectile[k].active = false;
 			}
+		}
+
+		private void ForceColliding(On_Player.orig_Update_NPCCollision orig, Player self)
+		{
+			foreach (NPC npc in Main.ActiveNPCs)
+			{
+				int specialHit = 0;
+				float damageMult = 0f;
+				Rectangle npcRect = default;
+
+				if (npc.type == NPCType<ArenaBlocker>() && NPCLoader.CanHitPlayer(NPC, self, ref specialHit))
+				{
+					NPC.GetMeleeCollisionData(self.Hitbox, npc.whoAmI, ref specialHit, ref damageMult, ref npcRect);
+
+					if (self.Hitbox.Intersects(npcRect))
+					{
+						var hit = new Player.HurtInfo() { Damage = NPC.damage };
+						NPCLoader.OnHitPlayer(NPC, self, hit);
+
+						var hit2 = new Player.HurtModifiers();
+						NPCLoader.ModifyHitPlayer(NPC, self, ref hit2);
+
+						return;
+					}
+				}
+			}
+
+			orig(self);
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+		{
+			return false;
 		}
 
 		public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
 			if (Timer > 150)
 			{
-				Texture2D top = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleTop").Value;
-				Texture2D glow = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleGlow").Value;
-				Texture2D body = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleBody").Value;
+				Texture2D top = Assets.Bosses.SquidBoss.TentacleTop.Value;
+				Texture2D glow = Assets.Bosses.SquidBoss.TentacleGlow.Value;
+				Texture2D body = Assets.Bosses.SquidBoss.TentacleBody.Value;
 
 				for (int k = 0; k < Timer - top.Height; k += body.Height + 2)
 				{
@@ -85,16 +135,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				spriteBatch.Draw(glow, pos4 - screenPos, top.Frame(), color, 4.73f, top.Size() / 2, 1, 0, 0);
 				Lighting.AddLight(pos4, color.ToVector3() * 0.4f);
 			}
-		}
-
-		public override void ModifyHitPlayer(Player target, ref Player.HurtModifiers modifiers)
-		{
-			target.immune = true;
-			target.immuneTime = 1;
-
-			target.position.Y = NPC.position.Y + NPC.height;
-			target.velocity.Y += 5;
-			target.noKnockback = true;
 		}
 	}
 }

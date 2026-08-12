@@ -11,8 +11,6 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public BloodlessAmulet() : base(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "BloodlessAmuletGlow").Value) { }
-
 		public override void Load()
 		{
 			On_Player.HealEffect += GrantRage;
@@ -44,7 +42,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Amulet of the Bloodless Warrior");
-			Tooltip.SetDefault("+100 {{Barrier}}" +
+			Tooltip.SetDefault("+100 maximum {{Barrier}}" +
 				"\n{{Barrier}} absorbs ALL damage, but recharges slower" +
 				"\nYou are unaffected by damage over time" +
 				"\nYou have 0 life. Healing grants a decaying damage boost instead of life" +
@@ -76,7 +74,7 @@ namespace StarlightRiver.Content.Items.Misc
 				Player.statLife = 0;
 			else
 				Player.statLife = 1;
-			
+
 			Player.lifeRegen = 0;
 			Player.lifeRegenCount = 0;
 		}

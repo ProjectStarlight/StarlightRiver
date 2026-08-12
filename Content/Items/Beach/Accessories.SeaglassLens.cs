@@ -7,7 +7,7 @@ namespace StarlightRiver.Content.Items.Beach
 	{
 		public override string Texture => AssetDirectory.Assets + "Items/Beach/" + Name;
 
-		public SeaglassLens() : base("Seaglass Lens", "Your minions and sentries occasionally deal extra damage\nThis extra damage counts as a critical strike") { }
+		public SeaglassLens() : base("Seaglass Lens", "Your minions and sentries occasionally critically strike") { }
 
 		public override void Load()
 		{

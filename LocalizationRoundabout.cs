@@ -8,8 +8,7 @@ namespace StarlightRiver
 		public override void PostSetupContent()
 		{
 #if DEBUG
-			MethodInfo refreshInfo = typeof(LocalizationLoader).GetMethod("UpdateLocalizationFilesForMod", BindingFlags.NonPublic | BindingFlags.Static, new Type[] { typeof(Mod), typeof(string), typeof(GameCulture) });
-			refreshInfo.Invoke(null, new object[] { Mod, null, Language.ActiveCulture });
+			LocalizationLoader.UpdateLocalizationFilesForMod(Mod, null, Language.ActiveCulture);
 #endif
 		}
 	}

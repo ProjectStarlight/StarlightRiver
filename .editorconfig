@@ -229,6 +229,9 @@ csharp_style_prefer_readonly_struct_member = true:suggestion
 csharp_style_allow_blank_line_after_token_in_conditional_expression_experimental = true:silent
 csharp_style_allow_blank_line_after_token_in_arrow_expression_clause_experimental = true:silent
 
+# CS0436: Type conflicts with imported type
+dotnet_diagnostic.CS0436.severity = none
+
 [*.{cs,vb}]
 dotnet_style_coalesce_expression = true:warning
 dotnet_style_null_propagation = true:warning
@@ -264,3 +267,8 @@ dotnet_style_qualification_for_field = false:silent
 dotnet_style_qualification_for_property = false:warning
 dotnet_style_qualification_for_method = false:warning
 dotnet_style_qualification_for_event = false:warning
+
+# Enable word wrap for JSON files
+[*.json]
+csharp_wrap_preserve_single_line = true
+wrap_lines = true

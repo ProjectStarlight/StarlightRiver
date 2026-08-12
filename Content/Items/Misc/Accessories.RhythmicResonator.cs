@@ -166,11 +166,11 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "RhythmicResonatorUIBig").Value;
-			Texture2D texOutline = ModContent.Request<Texture2D>(AssetDirectory.GUI + "RhythmicResonatorUIBig_Outline").Value;
+			Texture2D tex = Assets.GUI.RhythmicResonatorUIBig.Value;
+			Texture2D texOutline = Assets.GUI.RhythmicResonatorUIBig_Outline.Value;
 
-			Texture2D texSmall = ModContent.Request<Texture2D>(AssetDirectory.GUI + "RhythmicResonatorUISmall").Value;
-			Texture2D texSmallOutline = ModContent.Request<Texture2D>(AssetDirectory.GUI + "RhythmicResonatorUISmall_Outline").Value;
+			Texture2D texSmall = Assets.GUI.RhythmicResonatorUISmall.Value;
+			Texture2D texSmallOutline = Assets.GUI.RhythmicResonatorUISmall_Outline.Value;
 
 			Vector2 mouse = Main.MouseWorld;
 

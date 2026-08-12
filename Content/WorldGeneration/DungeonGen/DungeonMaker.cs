@@ -341,7 +341,7 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		private bool TryAttachRoom(ref DungeonRoom toValidate, int x, int y)
 		{
 			toValidate.topLeft = new Point16(x, y);
-			List<Point16> doors = Helpers.Helper.RandomizeList(toValidate.GetDoorOffsets());
+			List<Point16> doors = Helpers.ListHelper.RandomizeList(toValidate.GetDoorOffsets());
 
 			foreach (Point16 doorPos in doors)
 			{

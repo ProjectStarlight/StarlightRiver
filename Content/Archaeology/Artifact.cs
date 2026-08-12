@@ -1,7 +1,10 @@
 ﻿using StarlightRiver.Content.Packets;
 using StarlightRiver.Helpers;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using Terraria.DataStructures;
+using Terraria.ModLoader.Exceptions;
 using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Archaeology
@@ -15,6 +18,11 @@ namespace StarlightRiver.Content.Archaeology
 		public bool displayedOnMap = false;
 
 		/// <summary>
+		/// Cached hitbox size for screen checks
+		/// </summary>
+		public Rectangle bounds;
+
+		/// <summary>
 		/// Whether or not the artifact can be revealed by the archaeologist's map. Set to false if the artifact has a special reveal condition
 		/// </summary>
 		public virtual bool CanBeRevealed()
@@ -24,10 +32,12 @@ namespace StarlightRiver.Content.Archaeology
 
 		public virtual string TexturePath => AssetDirectory.Archaeology + Name;
 
+		protected Asset<Texture2D> texture;
+
 		/// <summary>
 		/// Texture path the artifact uses on the map when revealed
 		/// </summary>
-		public virtual string MapTexturePath => AssetDirectory.Archaeology + "DigMarker";
+		public virtual Asset<Texture2D> MapPreviewTexture => Assets.Archaeology.DigMarker;
 
 		/// <summary>
 		/// Size of the artifact. In world coordinates, not tile coordinates
@@ -74,11 +84,6 @@ namespace StarlightRiver.Content.Archaeology
 			GenericDraw(spriteBatch);
 		}
 
-		public override void Update()
-		{
-			CheckOpen();
-		}
-
 		public override void SaveData(TagCompound tag)
 		{
 			tag[nameof(displayedOnMap)] = displayedOnMap;
@@ -89,6 +94,10 @@ namespace StarlightRiver.Content.Archaeology
 			try
 			{
 				displayedOnMap = tag.GetBool(nameof(displayedOnMap));
+				bounds = new Rectangle((int)WorldPosition.X, (int)WorldPosition.Y, (int)Size.X, (int)Size.Y);
+				texture = ModContent.Request<Texture2D>(TexturePath) ?? throw new MissingResourceException(TexturePath + " Could not be found for an artifact!");
+
+				ArtifactManager.artifacts.Add(this);
 			}
 			catch (Exception e)
 			{
@@ -103,7 +112,7 @@ namespace StarlightRiver.Content.Archaeology
 
 		public bool IsOnScreen()
 		{
-			return Helper.OnScreen(new Rectangle((int)WorldPosition.X - (int)Main.screenPosition.X, (int)WorldPosition.Y - (int)Main.screenPosition.Y, (int)Size.X, (int)Size.Y));
+			return ScreenTracker.OnScreen(bounds);
 		}
 
 		public void CreateSparkles()
@@ -126,18 +135,19 @@ namespace StarlightRiver.Content.Archaeology
 
 		public void GenericDraw(SpriteBatch spriteBatch) //I have no idea why but the drawing is offset by -192 on each axis by default, so I had to correct it
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(TexturePath).Value;
-
 			var offScreen = new Vector2(Main.offScreenRange);
 			if (Main.drawToScreen)
 			{
 				offScreen = Vector2.Zero;
 			}
 
-			spriteBatch.Draw(tex, WorldPosition - Main.screenPosition, null, Lighting.GetColor(Position.ToPoint()), 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
+			if (texture?.Value is null)
+				return;
+
+			spriteBatch.Draw(texture.Value, WorldPosition - Main.screenPosition, null, Lighting.GetColor(Position.ToPoint()), 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
 		}
 
-		public void CheckOpen()
+		public bool CheckOpen()
 		{
 			for (int i = 0; i < Size.X / 16; i++)
 			{
@@ -145,7 +155,7 @@ namespace StarlightRiver.Content.Archaeology
 				{
 					Tile tile = Main.tile[i + Position.X, j + Position.Y];
 					if (tile.HasTile && Main.tileSolid[tile.TileType])
-						return;
+						return false;
 				}
 			}
 
@@ -159,6 +169,48 @@ namespace StarlightRiver.Content.Archaeology
 			ArtifactSpawnPacket packet = new ArtifactSpawnPacket(this.ID, Position.X, Position.Y, proj.identity, TexturePath);
 			packet.Send();
 
+			return true;
+		}
+	}
+
+	public class ArtifactManager : ModSystem
+	{
+		public static List<Artifact> artifacts = new();
+		public static bool scanNextFrame;
+
+		public override void Load()
+		{
+			On_WorldGen.KillTile += QueueScan;
+		}
+
+		private void QueueScan(On_WorldGen.orig_KillTile orig, int i, int j, bool fail, bool effectOnly, bool noItem)
+		{
+			orig(i, j, fail, effectOnly, noItem);
+
+			if (!fail && !effectOnly)
+				scanNextFrame = true;
+		}
+
+		public override void PostUpdateEverything()
+		{
+			if (scanNextFrame)
+			{
+				scanNextFrame = false;
+
+				for (int k = 0; k < artifacts.Count; k++)
+				{
+					if (artifacts[k].CheckOpen())
+					{
+						scanNextFrame = true;
+						break;
+					}
+				}
+			}
+		}
+
+		public override void ClearWorld()
+		{
+			artifacts.Clear();
 		}
 	}
 }

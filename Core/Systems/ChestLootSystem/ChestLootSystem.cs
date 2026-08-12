@@ -131,7 +131,7 @@ namespace StarlightRiver.Core.Systems.ChestLootSystem
 					if (!framingToRegion.TryGetValue(
 						ModContent.GetModTile(tile.TileType) != null ?
 							tile.TileType + 10000 :
-							tile.TileFrameX + (tile.TileType == 467 ? 2000 : 0), out ChestRegionFlags region))
+							tile.TileFrameX + (tile.TileType == TileID.Containers2 ? 2000 : 0), out ChestRegionFlags region))
 					{
 						continue;
 					}
@@ -187,6 +187,7 @@ namespace StarlightRiver.Core.Systems.ChestLootSystem
 
 			return Item;
 		}
+
 		private void AddChestItem(ChestLootInfo info, Chest chest)
 		{
 			int stack = WorldGen.genRand.Next(info.stackRange.Item1, info.stackRange.Item2 + 1);
@@ -221,8 +222,8 @@ namespace StarlightRiver.Core.Systems.ChestLootSystem
 			{
 				Item Item = chest.item[i];
 
-				// Checks if the "main" chest Item is replaceable (weapon or accessory, and not stackable).
-				if (Item.accessory || Item.damage > 0 && Item.notAmmo && Item.maxStack == 1)
+				// Checks if the "main" chest Item is an accessory
+				if (Item.accessory)
 				{
 					type = chest.item[i].type;
 					break;
@@ -233,7 +234,7 @@ namespace StarlightRiver.Core.Systems.ChestLootSystem
 			{
 				Item Item = SetupItem(type, 1, true);
 
-				Helper.PlaceMultitile(new Point16(chest.x, chest.y - 1), ModContent.TileType<DisplayCase>());
+				WorldGenHelper.PlaceMultitile(new Point16(chest.x, chest.y - 1), ModContent.TileType<DisplayCase>());
 				TileEntity.PlaceEntityNet(chest.x, chest.y - 1, ModContent.TileEntityType<DisplayCaseEntity>());
 				(TileEntity.ByPosition[new Point16(chest.x, chest.y - 1)] as DisplayCaseEntity).containedItem = Item;
 				return true;

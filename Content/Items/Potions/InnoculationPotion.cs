@@ -1,4 +1,6 @@
-﻿namespace StarlightRiver.Content.Items.Potions
+﻿using StarlightRiver.Core.Systems.InoculationSystem;
+
+namespace StarlightRiver.Content.Items.Potions
 {
 	class InoculationPotion : ModItem
 	{
@@ -6,7 +8,7 @@
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("{{Inoculation}} Potion");
+			DisplayName.SetDefault("Inoculation Potion");
 			Tooltip.SetDefault("+30% {{Inoculation}}");
 		}
 
@@ -14,7 +16,7 @@
 		{
 			Item.width = 18;
 			Item.height = 30;
-			Item.maxStack = 30;
+			Item.maxStack = 9999;
 			Item.useStyle = Terraria.ID.ItemUseStyleID.EatFood;
 			Item.consumable = true;
 			Item.buffType = ModContent.BuffType<InoculationPotionBuff>();
@@ -30,12 +32,12 @@
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Inoculated");
-			Description.SetDefault("+30% {{Inoculation}}");
+			Description.SetDefault("+30% Inoculation");
 		}
 
 		public override void Update(Player Player, ref int buffIndex)
 		{
-			Player.GetModPlayer<DoTResistancePlayer>().DoTResist += 0.3f;
+			Player.GetModPlayer<InoculationPlayer>().DoTResist += 0.3f;
 		}
 	}
 }

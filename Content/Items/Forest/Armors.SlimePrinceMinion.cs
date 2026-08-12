@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Helpers;
+﻿using StarlightRiver.Core.Loaders;
+using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using Terraria.Audio;
 using Terraria.Graphics.Effects;
@@ -193,8 +194,7 @@ namespace StarlightRiver.Content.Items.Forest
 			{
 				var helm = Owner.armor[0].ModItem as SlimePrinceHead;
 
-				if (helm != null)
-					helm.targetVel = new Vector2(0, -10);
+				helm?.targetVel = new Vector2(0, -10);
 
 				State = 3;
 				Timer = 0;
@@ -251,7 +251,7 @@ namespace StarlightRiver.Content.Items.Forest
 			SpriteBatch sb = Main.spriteBatch;
 
 			// Draw wings
-			Texture2D texWing = ModContent.Request<Texture2D>(Texture + "Wing").Value;
+			Texture2D texWing = Assets.Items.Forest.SlimePrinceMinionWing.Value;
 			var wingFrame = new Rectangle(0, 46 * (int)(Main.GameUpdateCount * 0.2f % 4), 30, 46);
 
 			int wingOff = 0;
@@ -265,7 +265,7 @@ namespace StarlightRiver.Content.Items.Forest
 			Main.spriteBatch.Draw(texWing, Projectile.Center + new Vector2(36 + wingOff, 0) - Main.screenPosition, wingFrame, lightColor, Projectile.rotation, new Vector2(30, 23), Projectile.scale, SpriteEffects.FlipHorizontally, 0);
 
 			// Draw body with shader
-			Effect effect = Filters.Scene["PrinceSlime"].GetShader().Shader;
+			Effect effect = ShaderLoader.GetShader("PrinceSlime").Value;
 
 			if (effect is null)
 				return false;
@@ -275,29 +275,29 @@ namespace StarlightRiver.Content.Items.Forest
 			effect.Parameters["alpha"].SetValue(0.5f);
 
 			sb.End();
-			sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			// Drawing behavior for normal, non-fused
 			if (State < 2)
 			{
-				Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+				Texture2D tex = Assets.Items.Forest.SlimePrinceMinion.Value;
 				var frame = new Rectangle(0, 26 * Projectile.frame, 28, 26);
 				sb.Draw(tex, Projectile.Center - Main.screenPosition, frame, Color.White, Projectile.rotation, new Vector2(14, 13), Projectile.scale, 0, 0);
 			}
 			else if (State == 2 && Timer < 10) // Transition
 			{
-				Texture2D tex = ModContent.Request<Texture2D>(Texture + "Med").Value;
+				Texture2D tex = Assets.Items.Forest.SlimePrinceMinionMed.Value;
 				sb.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, tex.Size() / 2f, Projectile.scale, 0, 0);
 			}
 			else // Merged
 			{
-				Texture2D tex = ModContent.Request<Texture2D>(Texture + "Big").Value;
+				Texture2D tex = Assets.Items.Forest.SlimePrinceMinionBig.Value;
 				var frame = new Rectangle(0, 62 * Projectile.frame, 64, 62);
 				sb.Draw(tex, Projectile.Center - Main.screenPosition, frame, Color.White, Projectile.rotation, new Vector2(32, 31), Projectile.scale, 0, 0);
 			}
 
 			sb.End();
-			sb.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			return false;
 		}
@@ -305,7 +305,7 @@ namespace StarlightRiver.Content.Items.Forest
 		public override void PostDraw(Color lightColor)
 		{
 			// Draw crown
-			Texture2D texCrown = ModContent.Request<Texture2D>(Texture + "Crown").Value;
+			Texture2D texCrown = Assets.Items.Forest.SlimePrinceMinionCrown.Value;
 
 			var crownOff = new Vector2(0, -13 - Projectile.frame * 2);
 
@@ -322,8 +322,8 @@ namespace StarlightRiver.Content.Items.Forest
 			{
 				float fill = life / (float)MAX_LIFE;
 
-				Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "SmallBar1").Value;
-				Texture2D tex2 = ModContent.Request<Texture2D>(AssetDirectory.GUI + "SmallBar0").Value;
+				Texture2D tex = Assets.GUI.SmallBar1.Value;
+				Texture2D tex2 = Assets.GUI.SmallBar0.Value;
 
 				var pos = (Projectile.Center + new Vector2(-tex.Width / 2, -50) + Vector2.UnitY * Projectile.height / 2f - Main.screenPosition).ToPoint();
 

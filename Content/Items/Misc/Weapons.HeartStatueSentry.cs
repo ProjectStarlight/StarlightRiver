@@ -135,9 +135,9 @@ namespace StarlightRiver.Content.Items.Misc
 
 			Texture2D statueTex = ModContent.Request<Texture2D>(Texture).Value;
 			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "Glow").Value;
-			Texture2D radTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/GlowRing").Value;
-			Texture2D tickTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/DirectionalBeam").Value;
-			Texture2D bloomTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
+			Texture2D radTex = Assets.Misc.GlowRing.Value;
+			Texture2D tickTex = Assets.Misc.DirectionalBeam.Value;
+			Texture2D bloomTex = Assets.Masks.GlowAlpha.Value;
 
 			int frameX = wasFiring ? 34 : 0;
 			int frameY = wasFiring ? (46 * ((int)Timer % 20 / 5)) : 0;
@@ -175,7 +175,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public void DrawLine(SpriteBatch spriteBatch, Vector2 endPoint)
 		{
-			Texture2D texBeam = ModContent.Request<Texture2D>("StarlightRiver/Assets/ShadowTrail").Value;
+			Texture2D texBeam = Assets.ShadowTrail.Value;
 
 			float rotation = Projectile.Center.DirectionTo(endPoint).ToRotation();
 			float distance = Vector2.Distance(Projectile.Center, endPoint);
@@ -188,6 +188,9 @@ namespace StarlightRiver.Content.Items.Misc
 			var origin = new Vector2(0, texBeam.Height / 2);
 
 			Effect effect = StarlightRiver.Instance.Assets.Request<Effect>("Effects/Wiggle").Value;
+
+			if (effect is null)
+				return;
 
 			effect.Parameters["time"].SetValue(Timer);
 
@@ -202,7 +205,7 @@ namespace StarlightRiver.Content.Items.Misc
 			effect.Parameters["colorIn"].SetValue(color.ToVector4());
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, SamplerState.PointWrap, default, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			float height = texBeam.Height / 24f;
 			int width = (int)(Projectile.Center - endPoint).Length();
@@ -219,7 +222,7 @@ namespace StarlightRiver.Content.Items.Misc
 			spriteBatch.Draw(texBeam, target2, source2, color, rotation, origin, 0, 0);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			for (int i = 0; i < width; i += 10)
 			{
@@ -228,8 +231,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 			float opacity = height / (texBeam.Height / 2f) * 0.75f;
 
-			Texture2D impactTex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowAlpha").Value;
-			Texture2D glowTex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "GlowTrail").Value;
+			Texture2D impactTex = Assets.Masks.GlowAlpha.Value;
+			Texture2D glowTex = Assets.GlowTrail.Value;
 
 			spriteBatch.Draw(glowTex, target, source, color * 0.05f, rotation, new Vector2(0, glowTex.Height / 2), 0, 0);
 

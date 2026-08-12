@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Items.BaseTypes;
 using System.IO;
 using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
@@ -7,7 +8,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric
 {
-	internal class CoolmitePassive : MagmitePassive, IHintable
+	internal class CoolmitePassive : MagmitePassive
 	{
 		bool melting = false;
 		int meltingTimer = 0;
@@ -119,14 +120,9 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				SoundEngine.PlaySound(SoundID.Shatter, NPC.Center);
 			}
 		}
-
-		new public string GetHint()
-		{
-			return "Even cuter in crystal!";
-		}
 	}
 
-	internal class CoolmitePassiveItem : QuickCritterItem
+	internal class CoolmitePassiveItem : BaseCritterItem
 	{
 		public CoolmitePassiveItem() : base("Coolmite", "Fragile! Please handle with care.", Item.sellPrice(silver: 15), ItemRarityID.Orange, NPCType<CoolmitePassive>(), AssetDirectory.VitricItem) { }
 	}

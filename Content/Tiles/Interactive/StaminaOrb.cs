@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using Terraria.ID;
@@ -36,6 +37,8 @@ namespace StarlightRiver.Content.Tiles.Interactive
 	{
 		public float timer;
 
+		public override bool DoesCollision => true;
+
 		public StaminaOrbDummy() : base(TileType<StaminaOrb>(), 16, 16) { }
 
 		public override void Update()
@@ -65,7 +68,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
 		}
 	}
 
-	public class StaminaOrbItem : QuickTileItem
+	public class StaminaOrbItem : BaseTileItem
 	{
 		public StaminaOrbItem() : base("Starlight Orb", "Pass through this to gain starlight!\n5 second cooldown", "StaminaOrb", 8, AssetDirectory.InteractiveTile) { }
 	}

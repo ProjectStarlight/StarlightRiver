@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
@@ -47,7 +48,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	}
 
 	[SLRDebug]
-	internal class LightActorItem : QuickTileItem
+	internal class LightActorItem : BaseTileItem
 	{
 		public override string Texture => AssetDirectory.Debug;
 
@@ -96,7 +97,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 				A = 0
 			};
 
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value;
+			Texture2D tex = Assets.GlowTrail.Value;
 
 			Vector2 pos = Center - Main.screenPosition;
 

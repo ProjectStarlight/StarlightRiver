@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using StarlightRiver.Core.Systems.InoculationSystem;
+using System.Collections.Generic;
 
 namespace StarlightRiver.Content.Prefixes.Accessory
 {
-	internal abstract class DoTResistPrefix : CustomTooltipPrefix
+	internal abstract class DoTResistPrefix : ModPrefix
 	{
 		private readonly float power;
 		private readonly string name;
@@ -15,9 +16,9 @@ namespace StarlightRiver.Content.Prefixes.Accessory
 			this.tip = tip;
 		}
 
-		public override bool CanRoll(Item Item)
+		public override bool CanRoll(Item item)
 		{
-			return Item.accessory;
+			return item.accessory;
 		}
 
 		public override PrefixCategory Category => PrefixCategory.Accessory;
@@ -32,19 +33,17 @@ namespace StarlightRiver.Content.Prefixes.Accessory
 			valueMult *= 1 + 0.05f * power;
 		}
 
-		public override void Update(Item Item, Player Player)
+		public override void ApplyAccessoryEffects(Player player)
 		{
-			Player.GetModPlayer<DoTResistancePlayer>().DoTResist += power;
+			player.GetModPlayer<InoculationPlayer>().DoTResist += power;
 		}
 
-		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
+		public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
 		{
-			var newline = new TooltipLine(StarlightRiver.Instance, "DotResistTip", tip)
+			yield return new TooltipLine(StarlightRiver.Instance, "DotResistTip", tip)
 			{
 				IsModifier = true
 			};
-
-			tooltips.Add(newline);
 		}
 	}
 

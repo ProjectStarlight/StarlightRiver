@@ -1,4 +1,6 @@
-﻿namespace StarlightRiver.Content.Dusts
+﻿using StarlightRiver.Core.Loaders;
+
+namespace StarlightRiver.Content.Dusts
 {
 	public class BreacherDust : ModDust
 	{
@@ -31,8 +33,9 @@
 			dust.fadeIn = 60;
 			dust.frame = new Rectangle(0, 0, 100, 100);
 
-			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
-			dust.shader.UseColor(Color.Transparent);
+			if (ShaderLoader.GetShader("GlowingDust").Value != null)
+				dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
+			dust.shader?.UseColor(Color.Transparent);
 		}
 
 		public override Color? GetAlpha(Dust dust, Color lightColor)
@@ -49,7 +52,7 @@
 			dust.position += dust.velocity;
 			dust.velocity *= 0.94f;
 
-			dust.shader.UseColor(dust.color);
+			dust.shader?.UseColor(dust.color);
 			dust.alpha += 10;
 			if (dust.alpha >= 255)
 				dust.active = false;
@@ -80,7 +83,8 @@
 			dust.noLight = false;
 			dust.frame = new Rectangle(0, 0, 8, 128);
 
-			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
+			if (ShaderLoader.GetShader("GlowingDust").Value != null)
+				dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(ShaderLoader.GetShader("GlowingDust"), "GlowingDustPass");
 		}
 
 		public override bool Update(Dust dust)
@@ -90,7 +94,7 @@
 
 			dust.rotation = dust.velocity.ToRotation() + 1.57f;
 			dust.position += dust.velocity;
-			dust.shader.UseColor(dust.color);
+			dust.shader?.UseColor(dust.color);
 			dust.velocity *= 0.8f;
 			dust.fadeIn++;
 			dust.scale *= 0.98f;

@@ -10,7 +10,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Misc
 {
-	class Fogbinder : ModNPC, IHintable
+	class Fogbinder : ModNPC
 	{
 		private class BindedNPC //I made it a class instead of a struct so that I can consistantly pass by reference
 		{
@@ -238,10 +238,6 @@ namespace StarlightRiver.Content.NPCs.Misc
 					Dust.NewDustPerfect(pos + new Vector2(0, 20), ModContent.DustType<Dusts.Mist>(), new Vector2(0, -0.28f).RotatedByRandom(0.3f), 0, Color.White, 0.25f);
 				}
 			}
-		}
-		public string GetHint()
-		{
-			return "Disrupted with prolonged contact...";
 		}
 	}
 

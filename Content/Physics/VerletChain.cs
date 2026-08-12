@@ -1,3 +1,4 @@
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -27,7 +28,7 @@ namespace StarlightRiver.Content.Physics
 
 		private void DrawVerletBanners(On_Main.orig_DrawProjectiles orig, Main self)
 		{
-			Effect shader = Filters.Scene["Outline"].GetShader().Shader;
+			Effect shader = ShaderLoader.GetShader("Outline").Value;
 
 			if (shader is null)
 				return;
@@ -35,7 +36,7 @@ namespace StarlightRiver.Content.Physics
 			shader.Parameters["resolution"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
 			shader.Parameters["outlineColor"].SetValue(new Vector3(0, 0, 0));
 
-			Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, Filters.Scene["Outline"].GetShader().Shader, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, Main.Rasterizer, shader, Main.GameViewMatrix.TransformationMatrix);
 
 			VerletChain.DrawStripsPixelated(Main.spriteBatch);
 
@@ -285,46 +286,65 @@ namespace StarlightRiver.Content.Physics
 				segment.posNow += gravityVel;
 			}
 
-			for (int i = 0; i < constraintRepetitions; i++)//the amount of times Constraints are applied per update
+			for (int i = 0; i < (useEndPoint ? (constraintRepetitions / 2) : constraintRepetitions); i++)//the amount of times Constraints are applied per update
 			{
 				if (useStartPoint)
 					ropeSegments[simStartOffset].posNow = startPoint;
 
 				if (useEndPoint)
-					ropeSegments[simEndOffset - 1].posNow = endPoint;//if the end point clamp breaks, check this
+					ropeSegments[simEndOffset - 1].posNow = endPoint;
 
-				ApplyConstraint();
+				if (useEndPoint)
+					ApplyConstraintTwoWay();
+				else
+					ApplyConstraint();
 			}
 		}
 
 		private void ApplyConstraint()
 		{
-			for (int i = simStartOffset; i < simEndOffset - 1; i++)
+			var end = simEndOffset - 1;
+
+			for (int i = simStartOffset; i < end; i++)
 			{
-				float segmentDist = customDistances ? segmentDistances[i] : segmentDistance;
+				PointConstrain(i, i + 1, i == simStartOffset);
+			}
+		}
 
-				float dist = (ropeSegments[i].posNow - ropeSegments[i + 1].posNow).Length();
-				float error = Math.Abs(dist - segmentDist);
-				Vector2 changeDir = Vector2.Zero;
+		private void ApplyConstraintTwoWay()
+		{
+			var end = simEndOffset - 1;
 
-				if (dist > segmentDist)
-					changeDir = Vector2.Normalize(ropeSegments[i].posNow - ropeSegments[i + 1].posNow);
-				else if (dist < segmentDist)
-					changeDir = Vector2.Normalize(ropeSegments[i + 1].posNow - ropeSegments[i].posNow);
+			for (int i = simStartOffset; i < end; i++)
+			{
+				PointConstrain(i, i + 1, i == simStartOffset);
+				PointConstrain(end - (i - simStartOffset), end - (i - simStartOffset) - 1, i == simStartOffset);
+			}
+		}
 
-				Vector2 changeAmount = changeDir * error;
-				if (i != 0)
-				{
-					ropeSegments[i].posNow += TileCollision(ropeSegments[i].posNow, changeAmount * -0.5f);
-					ropeSegments[i] = ropeSegments[i];
-					ropeSegments[i + 1].posNow += TileCollision(ropeSegments[i + 1].posNow, changeAmount * 0.5f);
-					ropeSegments[i + 1] = ropeSegments[i + 1];
-				}
-				else
-				{
-					ropeSegments[i + 1].posNow += TileCollision(ropeSegments[i + 1].posNow, changeAmount);
-					ropeSegments[i + 1] = ropeSegments[i + 1];
-				}
+		private void PointConstrain(int start, int end, bool endOnly)
+		{
+			float segmentDist = customDistances ? segmentDistances[start] : segmentDistance;
+
+			float dist = (ropeSegments[start].posNow - ropeSegments[end].posNow).Length();
+			float error = Math.Abs(dist - segmentDist);
+			Vector2 changeDir = Vector2.Zero;
+
+			if (dist > segmentDist)
+				changeDir = Vector2.Normalize(ropeSegments[start].posNow - ropeSegments[end].posNow);
+			else if (dist < segmentDist)
+				changeDir = Vector2.Normalize(ropeSegments[end].posNow - ropeSegments[start].posNow);
+
+			Vector2 changeAmount = changeDir * error;
+
+			if (endOnly)
+			{
+				ropeSegments[end].posNow += TileCollision(ropeSegments[end].posNow, changeAmount);
+			}
+			else
+			{
+				ropeSegments[start].posNow += TileCollision(ropeSegments[start].posNow, changeAmount * -0.5f);
+				ropeSegments[end].posNow += TileCollision(ropeSegments[end].posNow, changeAmount * 0.5f);
 			}
 		}
 
@@ -369,9 +389,9 @@ namespace StarlightRiver.Content.Physics
 
 			float rotation = (ropeSegments[0].ScreenPos - ropeSegments[1].ScreenPos).ToRotation() + (float)Math.PI / 2;
 
-			verticies[0] = new VertexPositionColor((ropeSegments[0].ScreenPos + Vector2.UnitY.RotatedBy(rotation - Math.PI / 4) * -5).Vec3().ScreenCoord(), ropeSegments[0].color);
-			verticies[1] = new VertexPositionColor((ropeSegments[0].ScreenPos + Vector2.UnitY.RotatedBy(rotation + Math.PI / 4) * -5).Vec3().ScreenCoord(), ropeSegments[0].color);
-			verticies[2] = new VertexPositionColor(ropeSegments[1].ScreenPos.Vec3().ScreenCoord(), ropeSegments[1].color);
+			verticies[0] = new VertexPositionColor((ropeSegments[0].ScreenPos + Vector2.UnitY.RotatedBy(rotation - Math.PI / 4) * -5).ToVector3().ToScreenspaceCoord(), ropeSegments[0].color);
+			verticies[1] = new VertexPositionColor((ropeSegments[0].ScreenPos + Vector2.UnitY.RotatedBy(rotation + Math.PI / 4) * -5).ToVector3().ToScreenspaceCoord(), ropeSegments[0].color);
+			verticies[2] = new VertexPositionColor(ropeSegments[1].ScreenPos.ToVector3().ToScreenspaceCoord(), ropeSegments[1].color);
 
 			for (int k = 1; k < segmentCount - 1; k++)
 			{
@@ -380,9 +400,9 @@ namespace StarlightRiver.Content.Physics
 				int point = k * 9 - 6;
 				int off = Math.Min(k, segmentCount - segmentCount / 4);
 
-				verticies[point] = new VertexPositionColor((ropeSegments[k].ScreenPos + Vector2.UnitY.RotatedBy(rotation2 - Math.PI / 4) * -(segmentCount - off) * scale).Vec3().ScreenCoord(), ropeSegments[k].color);
-				verticies[point + 1] = new VertexPositionColor((ropeSegments[k].ScreenPos + Vector2.UnitY.RotatedBy(rotation2 + Math.PI / 4) * -(segmentCount - off) * scale).Vec3().ScreenCoord(), ropeSegments[k].color);
-				verticies[point + 2] = new VertexPositionColor(ropeSegments[k + 1].ScreenPos.Vec3().ScreenCoord(), ropeSegments[k + 1].color);
+				verticies[point] = new VertexPositionColor((ropeSegments[k].ScreenPos + Vector2.UnitY.RotatedBy(rotation2 - Math.PI / 4) * -(segmentCount - off) * scale).ToVector3().ToScreenspaceCoord(), ropeSegments[k].color);
+				verticies[point + 1] = new VertexPositionColor((ropeSegments[k].ScreenPos + Vector2.UnitY.RotatedBy(rotation2 + Math.PI / 4) * -(segmentCount - off) * scale).ToVector3().ToScreenspaceCoord(), ropeSegments[k].color);
+				verticies[point + 2] = new VertexPositionColor(ropeSegments[k + 1].ScreenPos.ToVector3().ToScreenspaceCoord(), ropeSegments[k + 1].color);
 
 				int extra = k == 1 ? 0 : 6;
 				verticies[point + 3] = verticies[point];
@@ -483,6 +503,30 @@ namespace StarlightRiver.Content.Physics
 				ret.Y *= 0;
 
 			return ret;
+		}
+
+		/// <summary>
+		/// Popualtes a list of vectors to be used as a trails position cache from this verlet chain
+		/// </summary>
+		/// <param name="cache">The cache to populate</param>
+		public void UpdateCacheFromChain(ref List<Vector2> cache)
+		{
+			if (cache is null)
+			{
+				cache = [];
+				for (int k = 0; k < segmentCount; k++)
+				{
+					cache.Add(ropeSegments[k].posNow);
+				}
+			}
+
+			for (int k = 0; k < segmentCount; k++)
+			{
+				cache[k] = ropeSegments[k].posNow;
+			}
+
+			if (useEndPoint)
+				cache[segmentCount - 1] = endPoint;
 		}
 	}
 }

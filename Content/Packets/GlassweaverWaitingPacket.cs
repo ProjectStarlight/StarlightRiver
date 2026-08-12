@@ -35,10 +35,10 @@ namespace StarlightRiver.Content.Packets
 		{
 			NPC glassweaverNpc = Main.npc[npcWhoAmI];
 
-			GlassweaverWaiting glassweaverWaiting = glassweaverNpc.ModNPC as GlassweaverWaiting;
+			GlassweaverFriendly glassweaverWaiting = glassweaverNpc.ModNPC as GlassweaverFriendly;
 
 			glassweaverWaiting.Timer = newTimer;
-			glassweaverWaiting.State = newState;
+			glassweaverWaiting.State = (GlassweaverFriendly.GlassweaverFriendlyState)newState;
 
 			if (Main.netMode == NetmodeID.Server)
 			{

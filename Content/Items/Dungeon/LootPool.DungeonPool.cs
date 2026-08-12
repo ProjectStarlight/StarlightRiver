@@ -1,3 +1,4 @@
+using StarlightRiver.Content.Items.Utility;
 using StarlightRiver.Core.Systems.ChestLootSystem;
 
 namespace StarlightRiver.Content.Items.Dungeon
@@ -6,7 +7,8 @@ namespace StarlightRiver.Content.Items.Dungeon
 	{
 		public override void AddLoot()
 		{
-			AddItem(ModContent.ItemType<AquaSapphire>(), ChestRegionFlags.Dungeon, 0.2f, 2, true, 1);
+			AddItem(ModContent.ItemType<AquaSapphire>(), ChestRegionFlags.Dungeon, 0.2f, 1, true, 1);
+			AddItem(ModContent.ItemType<CurseRemover>(), ChestRegionFlags.Dungeon, 1f, 1, false, -1);
 		}
 	}
 }

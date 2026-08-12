@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace StarlightRiver.Content.Prefixes.Accessory
 {
-	internal abstract class BarrierPrefix : CustomTooltipPrefix
+	internal abstract class BarrierPrefix : ModPrefix
 	{
 		private readonly int barrier;
 		private readonly string name;
@@ -16,9 +16,9 @@ namespace StarlightRiver.Content.Prefixes.Accessory
 			this.tip = tip;
 		}
 
-		public override bool CanRoll(Item Item)
+		public override bool CanRoll(Item item)
 		{
-			return Item.accessory;
+			return item.accessory;
 		}
 
 		public override PrefixCategory Category => PrefixCategory.Accessory;
@@ -33,39 +33,37 @@ namespace StarlightRiver.Content.Prefixes.Accessory
 			valueMult *= 1 + barrier / 100;
 		}
 
-		public override void Update(Item Item, Player Player)
+		public override void ApplyAccessoryEffects(Player player)
 		{
-			Player.GetModPlayer<BarrierPlayer>().maxBarrier += barrier;
+			player.GetModPlayer<BarrierPlayer>().maxBarrier += barrier;
 		}
 
-		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
+		public override IEnumerable<TooltipLine> GetTooltipLines(Item item)
 		{
-			var newline = new TooltipLine(StarlightRiver.Instance, "BarrierTip", tip)
+			yield return new TooltipLine(StarlightRiver.Instance, "BarrierTip", tip)
 			{
 				IsModifier = true
 			};
-
-			tooltips.Add(newline);
 		}
 	}
 
 	internal class LayeredPrefix : BarrierPrefix
 	{
-		public LayeredPrefix() : base(4, "Layered", "+4 Barrier") { }
+		public LayeredPrefix() : base(4, "Layered", "+4 maximum {{Barrier}}") { }
 	}
 
 	internal class DefensivePrefix : BarrierPrefix
 	{
-		public DefensivePrefix() : base(8, "Defensive", "+8 Barrier") { }
+		public DefensivePrefix() : base(8, "Defensive", "+8 maximum {{Barrier}}") { }
 	}
 
 	internal class PlatedPrefix : BarrierPrefix
 	{
-		public PlatedPrefix() : base(12, "Plated", "+12 Barrier") { }
+		public PlatedPrefix() : base(12, "Plated", "+12 maximum {{Barrier}}") { }
 	}
 
 	internal class ReinforcedPrefix : BarrierPrefix
 	{
-		public ReinforcedPrefix() : base(16, "Reinforced", "+16 Barrier") { }
+		public ReinforcedPrefix() : base(16, "Reinforced", "+16 maximum {{Barrier}}") { }
 	}
 }

@@ -4,6 +4,7 @@ using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.Misc;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.MetaballSystem;
 using System;
 using System.Linq;
@@ -73,17 +74,21 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			float lunacy = Main.LocalPlayer.GetModPlayer<LunacyPlayer>().lunacy;
 			if (lunacy >= 0 && lunacy < 100)
 			{
-				Effect effect = Filters.Scene["MoonstoneBeastEffect"].GetShader().Shader;
-				effect.Parameters["baseTexture"].SetValue(target);
-				effect.Parameters["distortTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise2").Value);
-				effect.Parameters["size"].SetValue(target.Size());
-				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.005f);
-				effect.Parameters["opacity"].SetValue(lunacy / 100f);
-				effect.Parameters["noiseSampleSize"].SetValue(new Vector2(800, 800));
-				effect.Parameters["noisePower"].SetValue(100f);
+				Effect effect = ShaderLoader.GetShader("MoonstoneBeastEffect").Value;
 
-				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+				if (effect != null)
+				{
+					effect.Parameters["baseTexture"].SetValue(target);
+					effect.Parameters["distortTexture"].SetValue(Assets.Noise.MiscNoise2.Value);
+					effect.Parameters["size"].SetValue(target.Size());
+					effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.005f);
+					effect.Parameters["opacity"].SetValue(lunacy / 100f);
+					effect.Parameters["noiseSampleSize"].SetValue(new Vector2(800, 800));
+					effect.Parameters["noisePower"].SetValue(100f);
+
+					Main.spriteBatch.End();
+					Main.spriteBatch.Begin(default, BlendState.Additive, default, default, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
+				}
 			}
 
 			Main.spriteBatch.Draw(target, Vector2.Zero, null, Color.White, 0, Vector2.Zero, 2, 0, 0);
@@ -162,9 +167,9 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			}
 
 			if (fullyInsaneTimer == 1)
-				insaneChargeSound = Helpers.Helper.PlayPitched("Magic/MysticCast", 1, -0.2f);
+				insaneChargeSound = Helpers.SoundHelper.PlayPitched("Magic/MysticCast", 1, -0.2f);
 			else if (fullyInsaneTimer == 90)
-				Helpers.Helper.PlayPitched("Magic/HolyCastShort", 1, 0.2f);
+				Helpers.SoundHelper.PlayPitched("Magic/HolyCastShort", 1, 0.2f);
 
 			if (lunacy < 100)
 				awarded = false;
@@ -178,11 +183,10 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				fullyInsaneTimer = 0;
 
 				if (insaneChargeSound != null)
-				{	
+				{
 					SoundEngine.TryGetActiveSound((SlotId)insaneChargeSound, out ActiveSound sound);
 
-					if (sound != null)
-						sound.Volume = 0;
+					sound?.Volume = 0;
 
 					insaneChargeSound = null;
 				}
@@ -247,7 +251,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			if (Player.dead)
 				return;
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.MoonstoneNPC + "LunaticEye").Value;
+			Texture2D tex = Assets.NPCs.Moonstone.LunaticEye.Value;
 
 			Vector2 offset = -Vector2.UnitY * (50 + Player.gfxOffY);
 			Rectangle drawRect = new(0, 0, tex.Width, tex.Height / 5);
@@ -282,7 +286,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			}
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, default, default, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 
 			if (fullyInsaneTimer < 0)
 			{
@@ -302,7 +306,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 		public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
 		{
 			if (damageSource.SourceProjectileType == ModContent.ProjectileType<DreambeastProj>() || damageSource.SourceProjectileType == ModContent.ProjectileType<DreambeastProjHome>() || damageSource.SourceNPCIndex != -1 && Main.npc[damageSource.SourceNPCIndex].type == ModContent.NPCType<Dreambeast>())
-				damageSource = PlayerDeathReason.ByCustomReason(Player.name + "'s mind was torn apart by their hallucinations");
+				damageSource = PlayerDeathReason.ByCustomReason(NetworkText.FromKey("Mods.StarlightRiver.Deaths.Dreambeast", Player.name));
 
 			return true;
 		}

@@ -1,11 +1,12 @@
 ﻿using StarlightRiver.Content.Abilities;
 using System.IO;
 using Terraria.DataStructures;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
-	internal class TentacleHurtbox : ModNPC, IHintable
+	internal class TentacleHurtbox : ModNPC
 	{
 		public static Tentacle tentacleToAssign;
 
@@ -26,6 +27,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			NPC.knockBackResist = 0f;
 			NPC.HitSound = SoundID.NPCHit1;
 			NPC.netAlways = true;
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			database.Entries.Remove(bestiaryEntry);
 		}
 
 		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
@@ -58,7 +64,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			NPC.dontTakeDamage = tentacle.State != 0;
 
-			if (Parent.NPC.life < Parent.NPC.lifeMax - tentacle.NPC.lifeMax * 4)
+			if (Parent.NPC.life < Parent.NPC.lifeMax * 0.5f)
 				NPC.dontTakeDamage = true;
 		}
 
@@ -85,11 +91,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
 			tentacle = Main.npc[reader.ReadInt32()].ModNPC as Tentacle;
-		}
-
-		public string GetHint()
-		{
-			return "Its protecting the main body!";
 		}
 	}
 }

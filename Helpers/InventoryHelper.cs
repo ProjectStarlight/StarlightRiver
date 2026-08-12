@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace StarlightRiver.Helpers
 {
-	public static partial class Helper
+	public static class InventoryHelper
 	{
 		/// <summary>
 		/// Consumes the Items specified by a predicate.
@@ -66,6 +66,14 @@ namespace StarlightRiver.Helpers
 
 			return indicies;
 		}
+
+		/// <summary>
+		/// returns if the given player has the amount specified of the specified item or not
+		/// </summary>
+		/// <param name="Player"></param>
+		/// <param name="type"></param>
+		/// <param name="count"></param>
+		/// <returns></returns>
 		public static bool HasItem(Player Player, int type, int count)
 		{
 			int items = 0;
@@ -136,6 +144,7 @@ namespace StarlightRiver.Helpers
 				return false;
 			}
 		}
+
 		public static bool HasEquipped(Player Player, int ItemID)
 		{
 			//This needs to be one more: 8, not 7, or <= instead of < -IDG

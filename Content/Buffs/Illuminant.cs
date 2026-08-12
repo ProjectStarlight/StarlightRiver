@@ -4,7 +4,7 @@ namespace StarlightRiver.Content.Buffs
 {
 	class Illuminant : SmartBuff
 	{
-		public Illuminant() : base("Illuminant", "Glowing brightly!", true) { }
+		public Illuminant() : base("Illuminant", "You glow brightly!", true) { }
 
 		public override string Texture => AssetDirectory.Buffs + "Illuminant";
 

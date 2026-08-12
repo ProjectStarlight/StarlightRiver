@@ -4,7 +4,7 @@ namespace StarlightRiver.Content.Items.Food
 {
 	internal class Cherry : Ingredient
 	{
-		public Cherry() : base("Critical hits may cause explosions", 60, IngredientType.Side) { }
+		public Cherry() : base("Critical hits may cause explosions", 900, IngredientType.Side) { }
 
 		public override void SafeSetDefaults()
 		{

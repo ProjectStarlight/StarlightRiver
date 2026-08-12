@@ -4,7 +4,7 @@ using System;
 
 namespace StarlightRiver.Helpers
 {
-	internal static class ILHelper
+	public static class ILHelper
 	{
 		/// <summary>
 		/// Adds a <see cref="VariableDefinition"/> corresponding to the <see cref="Type"/> of <typeparamref name="T"/> to <see cref="ILContext.Body"/>'s <see cref="MethodBody.Variables"/> collection. <br />

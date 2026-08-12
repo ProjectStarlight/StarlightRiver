@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 			}
 
 			if (Solved && solveTimer == 179) //don't check biome here incase they tp out or die and need a reset at the end
-				ZoomHandler.SetZoomAnimation(1f, 60);
+				ZoomHandler.ReturnZoom();
 
 			if (Solved && solveTimer < 180)
 				solveTimer++;

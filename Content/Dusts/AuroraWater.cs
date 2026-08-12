@@ -1,4 +1,6 @@
-﻿namespace StarlightRiver.Content.Dusts
+﻿using StarlightRiver.Core.Systems.AuroraWaterSystem;
+
+namespace StarlightRiver.Content.Dusts
 {
 	public class AuroraWater : ModDust
 	{
@@ -16,6 +18,8 @@
 
 		public override bool Update(Dust dust)
 		{
+			AuroraWaterSystem.visCounter = 30;
+
 			dust.scale *= 0.98f;
 
 			dust.rotation += 0.06f;

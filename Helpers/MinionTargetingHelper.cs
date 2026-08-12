@@ -2,7 +2,7 @@
 
 namespace StarlightRiver.Helpers
 {
-	internal class MinionTargetingHelper
+	public static class MinionTargetingHelper
 	{
 		/// <summary>
 		/// This retrieves a list of all valid targets for a minion, taking into account
@@ -141,7 +141,7 @@ namespace StarlightRiver.Helpers
 			if (possibles.Count == 0)
 				return null;
 
-			Helper.RandomizeList(possibles);
+			ListHelper.RandomizeList(possibles);
 
 			return possibles[0];
 		}

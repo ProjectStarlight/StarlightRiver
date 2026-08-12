@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using StarlightRiver.Content.Items.BaseTypes.Weapons;
+using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Creative;
 using Terraria.ID;
@@ -12,7 +13,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Tin Coil");
-			Tooltip.SetDefault("Strikes nearby enemies with static electricity");
+			Tooltip.SetDefault("Strikes nearby enemies with static electricity\nInflicts {{BUFF:StaticShock}}");
 			CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1;
 		}
 

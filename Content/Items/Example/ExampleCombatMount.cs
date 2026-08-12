@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Items.Example
 
 		public override void OnStartPrimaryAction(Player player)
 		{
-			Helpers.Helper.PlayPitched("Guns/FlareBoom", 1, 1, player.Center);
+			Helpers.SoundHelper.PlayPitched("Guns/FlareBoom", 1, 1, player.Center);
 		}
 
 		public override void PrimaryAction(int timer, Player player)
@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Items.Example
 				{
 					Vector2 vel = Vector2.Normalize(Main.MouseWorld - player.Center) * 20;
 					Projectile.NewProjectile(player.GetSource_Misc("Test"), player.Center, vel, ModContent.ProjectileType<Items.SteampunkSet.JetwelderJumperMissle>(), damageCoefficient, 0, player.whoAmI);
-					Helpers.Helper.PlayPitched("Guns/FlareFire", 1, 1, player.Center);
+					Helpers.SoundHelper.PlayPitched("Guns/FlareFire", 1, 1, player.Center);
 				}
 			}
 
@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.Items.Example
 		public override void OnStartSecondaryAction(Player player)
 		{
 			Projectile.NewProjectile(player.GetSource_Misc("Test"), player.Center, Vector2.Zero, ModContent.ProjectileType<Items.Vitric.FireRing>(), damageCoefficient * 4, 0, player.whoAmI);
-			Helpers.Helper.PlayPitched("Yeehaw", 1, 1, player.Center);
+			Helpers.SoundHelper.PlayPitched("Yeehaw", 1, 1, player.Center);
 		}
 	}
 

@@ -13,8 +13,8 @@ namespace StarlightRiver.Core.Loaders
 			if (Main.dedServ)
 				return;
 
-			GameShaders.Armor.BindShader(ModContent.ItemType<RainbowCycleDye>(), new ArmorShaderData(new Ref<Effect>(Filters.Scene["RainbowArmor"].GetShader().Shader), "BasicPass"));
-			GameShaders.Armor.BindShader(ModContent.ItemType<RainbowCycleDye2>(), new ArmorShaderData(new Ref<Effect>(Filters.Scene["RainbowArmor2"].GetShader().Shader), "BasicPass"));
+			GameShaders.Armor.BindShader(ModContent.ItemType<RainbowCycleDye>(), new ArmorShaderData(ShaderLoader.GetShader("RainbowArmor"), "BasicPass"));
+			GameShaders.Armor.BindShader(ModContent.ItemType<RainbowCycleDye2>(), new ArmorShaderData(ShaderLoader.GetShader("RainbowArmor2"), "BasicPass"));
 		}
 
 		public void Unload() { }

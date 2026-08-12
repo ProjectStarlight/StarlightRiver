@@ -24,6 +24,11 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 		/// </summary>
 		public float order;
 
+		/// <summary>
+		/// If this screen target should draw in the game menu. Be careful with these as lots of things are different in the menu!
+		/// </summary>
+		public bool allowOnMenu;
+
 		public RenderTarget2D RenderTarget { get; set; }
 
 		public ScreenTarget(Action<SpriteBatch> draw, Func<bool> active, float order, Func<Vector2, Vector2?> onResize = null)

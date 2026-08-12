@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Tiles.Food
 
 		public virtual int ProjectileType => ModContent.ProjectileType<TableSaltProjectile>();
 
-		public new virtual int ItemDrop => ModContent.ItemType<Items.Food.TableSalt>();
+		public virtual int ItemDrop => ModContent.ItemType<Items.Food.TableSalt>();
 
 		public virtual int TileType => ModContent.TileType<TableSalt>();
 

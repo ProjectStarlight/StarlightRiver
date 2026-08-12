@@ -4,7 +4,7 @@ namespace StarlightRiver.Content.Items.Food
 {
 	internal class CoffeeBeans : Ingredient
 	{
-		public CoffeeBeans() : base("+10% critical strike damage\n+20% duration", 180, IngredientType.Main, 1.2f) { }
+		public CoffeeBeans() : base("+10% critical strike damage\n+20% duration", 3600 * 3, IngredientType.Main, 1.2f) { }
 
 		public override void SafeSetDefaults()
 		{

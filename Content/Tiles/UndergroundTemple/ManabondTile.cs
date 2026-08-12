@@ -4,7 +4,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.UndergroundTemple
 {
-	class ManabondTile : ModTile, IHintable
+	class ManabondTile : ModTile
 	{
 		public override string Texture => "StarlightRiver/Assets/Tiles/UndergroundTemple/" + Name;
 
@@ -37,11 +37,6 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 			NetMessage.SendTileSquare(Main.myPlayer, i, j, 1, 1);
 
 			return true;
-		}
-
-		public string GetHint()
-		{
-			return "A magical scroll used to teach the non-magical magic by drawing from their master's mana. This could be useful!";
 		}
 	}
 }

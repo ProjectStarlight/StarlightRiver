@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Inert Crescent Staff");
-			Tooltip.SetDefault("‘Still holds some latent astral energy...’");
+			Tooltip.SetDefault("'Still holds some latent lightning...'");
 		}
 
 		public override void SetDefaults()

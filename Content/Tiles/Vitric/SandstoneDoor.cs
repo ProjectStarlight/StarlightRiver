@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			if (Main.tile[i, j].TileFrameX == 0 && Main.tile[i, j].TileFrameY == 0)
 			{
 				Texture2D tex = TextureAssets.Tile[Type].Value;
-				Vector2 basepos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition;
+				Vector2 basepos = new Vector2(i, j) * 16 + Vector2.One * Main.offScreenRange - Main.screenPosition;
 				int off = StarlightWorld.HasFlag(WorldFlags.DesertOpen) ? 46 : 0;
 				spriteBatch.Draw(tex, basepos + new Vector2(-off, 0), tex.Frame(), drawData.colorTint, 0, Vector2.Zero, 1, 0, 0);
 				spriteBatch.Draw(tex, basepos + new Vector2(tex.Width + off, 0), tex.Frame(), drawData.colorTint, 0, Vector2.Zero, 1, SpriteEffects.FlipHorizontally, 0);

@@ -1,0 +1,36 @@
+[
+    {
+        "Key": "Example",
+        "Title": "Example tutorial",
+        "Screens": [
+            {
+                "ImagePath": "StarlightRiver/Assets/Tutorials/Example1",
+                "Text": "This is the first page of an example tutorial using the data driven tutorials! You can make more like this."
+            },
+            {
+                "ImagePath": "StarlightRiver/Assets/Tutorials/Example2",
+                "Text": "This is the second page of an example tutorial."
+            }
+        ]
+    },
+    {
+        "Key": "Starsight",
+        "Title": "Starsight",
+        "Screens": [
+            {
+                "ImagePath": "StarlightRiver/Assets/Tutorials/HintControls",
+                "Text": "Press [c/6699FF:Y] to channel starlight to see [c/AADDFF:ancient knowledge] about what your [c/6699FF:Cursor] is hovering over.\n\n You can also press [c/6699FF:Y] with your [c/6699FF:Cursor] hovering over the air instead to garner a [c/AADDFF:hint on what to do next!]"
+            }
+        ]
+    },
+    {
+        "Key": "DashAbility",
+        "Title": "Forbidden Winds",
+        "Screens": [
+            {
+                "ImagePath": "StarlightRiver/Assets/Tutorials/DashControls",
+                "Text": "Press [c/6699FF:SHIFT] while holding any combination of [c/6699FF:W], [c/6699FF:A], [c/6699FF:S], and [c/6699FF:D] to channel starlight into a powerful dash.\n\nYou'll strike with enough force to shatter any object with a [c/88FFFF:glowing blue outline!]"
+            }
+        ]
+    }
+]
