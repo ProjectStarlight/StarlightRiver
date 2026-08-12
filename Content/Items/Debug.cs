@@ -85,6 +85,9 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
+			player.GetHandler().unlockedAbilities.Clear();
+			return true;
+
 			ModContent.GetInstance<StarlightWorld>().GraymatterGen(new GenerationProgress(), null);
 			return true;
 

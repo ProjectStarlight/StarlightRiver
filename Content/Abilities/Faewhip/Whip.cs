@@ -11,9 +11,9 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 {
 	public class Whip : Ability
 	{
-		public override Asset<Texture2D> Texture => Assets.Abilities.Faeflame;
-		public override Asset<Texture2D> PreviewTexture => Assets.Abilities.FaeflamePreview;
-		public override Asset<Texture2D> PreviewTextureOff => Assets.Abilities.FaeflamePreviewOff;
+		public override Asset<Texture2D> Texture => Assets.Abilities.Whip;
+		public override Asset<Texture2D> PreviewTexture => Assets.Abilities.WhipPreview;
+		public override Asset<Texture2D> PreviewTextureOff => Assets.Abilities.WhipPreviewOff;
 
 		public override float ActivationCostDefault => 0.15f;
 		public override Color Color => new(255, 247, 126);

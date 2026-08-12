@@ -13,9 +13,12 @@ namespace StarlightRiver.Content.Pickups
 {
 	internal class FaeflamePickup : AbilityPickup
 	{
-		public override Asset<Texture2D> Texture => Assets.Abilities.Faeflame;
+		public float timer;
+		public float timerMax = 6.28f * 2;
 
-		public override Color GlowColor => new(255, 255, 130);
+		public override Asset<Texture2D> Texture => Assets.Abilities.Whip;
+
+		public override Color GlowColor => new(255, 200, 70);
 
 		public FaeflamePickup() : base(TileType<FaeflamePickupTile>()) { }
 
@@ -24,13 +27,48 @@ namespace StarlightRiver.Content.Pickups
 			return !Player.GetHandler().Unlocked<Whip>();
 		}
 
+		public Color trailColor(float prog)
+		{
+			Color noodleColor = new Color(255, 255, 150, 0);
+			Color startColor = new Color(255, 50, 75, 0);
+			Color endColor = new Color(0, 150, 255, 0);
+
+			if (prog < 0.5)
+				return Color.Lerp(startColor, noodleColor, prog / 0.5f);
+			if (prog > 0.5)
+				return Color.Lerp(noodleColor, endColor, (prog - 0.5f) / 0.5f);
+
+			return noodleColor;
+		}
+
 		public override void Visuals()
 		{
-			Dust.NewDustPerfect(Center + new Vector2((float)Math.Cos(StarlightWorld.visualTimer), (float)Math.Sin(StarlightWorld.visualTimer)) * (float)Math.Sin(StarlightWorld.visualTimer * 2 + 1) * 32, DustType<Content.Dusts.GoldWithMovement>(), Vector2.Zero, 0, default, 0.65f);
-			Dust.NewDustPerfect(Center + new Vector2((float)Math.Cos(StarlightWorld.visualTimer + 2) / 2, (float)Math.Sin(StarlightWorld.visualTimer + 2)) * (float)Math.Sin(StarlightWorld.visualTimer * 2 + 4) * 32, DustType<Content.Dusts.GoldWithMovement>(), Vector2.Zero, 0, default, 0.65f);
-			Dust.NewDustPerfect(Center + new Vector2((float)Math.Cos(StarlightWorld.visualTimer + 4), (float)Math.Sin(StarlightWorld.visualTimer + 4) / 2) * (float)Math.Sin(StarlightWorld.visualTimer * 2 + 2) * 32, DustType<Content.Dusts.GoldWithMovement>(), Vector2.Zero, 0, default, 0.65f);
+			timerMax = 6.28f * 2;
 
-			Dust.NewDustPerfect(Center + Vector2.One.RotateRandom(Math.PI) * (float)Math.Sin(StarlightWorld.visualTimer * 2 + 2) * 32, DustType<Content.Dusts.GoldWithMovement>(), Vector2.UnitY * -2, 0, default, 0.25f);
+			timer += timerMax / 240f;
+
+			if (timer > timerMax)
+				timer = 0;
+
+			if (Main.rand.NextBool(10))
+			{
+				var yOffset = (float)Math.Sin(StarlightWorld.visualTimer) * 5;
+
+				Dust.NewDustPerfect(Center + new Vector2(5, -14 + yOffset), DustType<Dusts.PixelatedEmber>(), Vector2.UnitY.RotatedBy(-1f) * Main.rand.NextFloat(-1, 0), 0, new Color(255, 50, 75, 0), 0.15f);
+				Dust.NewDustPerfect(Center + new Vector2(5, 14 + yOffset), DustType<Dusts.PixelatedEmber>(), Vector2.UnitY.RotatedBy(1.77f) * Main.rand.NextFloat(-1, 0), 0, new Color(0, 150, 255, 0), 0.15f);
+			}
+
+			float t = timer * 2.5f;
+			float y = (timer / timerMax) * 80;
+			float w = (float)Math.Sin(y / 80f * 3.14f);
+			Dust.NewDustPerfect(Center + new Vector2((float)Math.Cos(t) * (32 * w), -40 + (float)Math.Sin(t) * (8 * w) + y), DustType<Dusts.PixelatedGlow>(), Vector2.Zero, 0, trailColor(timer / timerMax), 0.15f);
+
+			var timer2 = (timer + 3.14f) % timerMax;
+			t = timer2 * 2.5f;
+			y = (timer2 / timerMax) * 80;
+			w = (float)Math.Sin(y / 80f * 3.14f);
+			Dust.NewDustPerfect(Center + new Vector2((float)Math.Cos(t) * (32 * w), -40 + (float)Math.Sin(t) * (8 * w) + y), DustType<Dusts.PixelatedGlow>(), Vector2.Zero, 0, trailColor(timer2 / timerMax), 0.15f);
+
 		}
 
 		public override void PickupVisuals(int timer)
