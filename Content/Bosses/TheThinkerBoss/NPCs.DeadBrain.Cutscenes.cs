@@ -223,16 +223,16 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			{
 				for (int k = 0; k < 120; k++)
 				{
-					Dust.NewDust(weakpoint.position, weakpoint.width, weakpoint.height, DustID.Blood);
+					Dust.NewDust(Weakpoint.position, Weakpoint.width, Weakpoint.height, DustID.Blood);
 
 					if (Main.rand.NextBool(3))
-						Dust.NewDust(weakpoint.position, weakpoint.width, weakpoint.height, DustID.FireworksRGB, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(-5, 5), 0, new Color(1f, 0.5f, 0.6f));
+						Dust.NewDust(Weakpoint.position, Weakpoint.width, Weakpoint.height, DustID.FireworksRGB, Main.rand.NextFloat(-5, 5), Main.rand.NextFloat(-5, 5), 0, new Color(1f, 0.5f, 0.6f));
 				}
 
-				Helpers.SoundHelper.PlayPitched("Impacts/GoreHeavy", 1f, -0.25f, weakpoint.Center);
+				Helpers.SoundHelper.PlayPitched("Impacts/GoreHeavy", 1f, -0.25f, Weakpoint.Center);
 
-				weakpoint.active = false;
-				weakpoint = null;
+				Weakpoint.active = false;
+				Weakpoint = null;
 
 				chainsSplit = true;
 			}

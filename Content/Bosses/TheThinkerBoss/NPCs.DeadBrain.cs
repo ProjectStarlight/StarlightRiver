@@ -25,10 +25,15 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 		/// </summary>
 		public List<NPC> neurisms = [];
 
+		public int weakpointIndex;
 		/// <summary>
 		/// The weakpoint NPC to be damaged during the first phase
 		/// </summary>
-		public NPC weakpoint;
+		public NPC Weakpoint
+		{
+			get => Main.npc[weakpointIndex];
+			set => weakpointIndex = value.whoAmI;
+		}
 
 		public Vector2 savedPos;
 		public Vector2 savedPos2;
@@ -160,10 +165,10 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					if (brain != null)
 					{
 						//TODO: The weak point entity really sohuld make its own hook and draw this there...
-						if (brain.weakpoint?.ModNPC != null)
+						if (brain.Weakpoint?.ModNPC != null)
 						{
 							var glow = Assets.Masks.FlareRing64.Value;
-							obj.Draw(glow, brain.weakpoint.Center - Main.screenPosition, null, new Color(255, 100, 100), Main.GameUpdateCount * 0.02f, glow.Size() / 2f, 1f, 0, 0);
+							obj.Draw(glow, brain.Weakpoint.Center - Main.screenPosition, null, new Color(255, 100, 100), Main.GameUpdateCount * 0.02f, glow.Size() / 2f, 1f, 0, 0);
 						}
 
 						// If doing a clones attack, highlight the real one
@@ -411,8 +416,8 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 					{
 						NPC.active = false;
 
-						if (weakpoint != null)
-							weakpoint.active = false;
+						if (Weakpoint != null)
+							Weakpoint.active = false;
 					}
 
 					break;
@@ -453,7 +458,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 						if (weakpoint.ModNPC is WeakPoint wp)
 						{
 							wp.thinker = thinker;
-							this.weakpoint = weakpoint;
+							this.Weakpoint = weakpoint;
 
 							weakpoint.dontTakeDamage = true;
 						}
@@ -489,8 +494,8 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 					Intro();
 
-					if (weakpoint != null)
-						weakpoint.Center = attachedChain.ropeSegments[attachedChain.ropeSegments.Count / 3].posNow;
+					if (Weakpoint != null)
+						Weakpoint.Center = attachedChain.ropeSegments[attachedChain.ropeSegments.Count / 3].posNow;
 
 					break;
 
@@ -498,10 +503,10 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 					attachedChainEndpoint = NPC.Center + Vector2.UnitY * 90;
 
-					if (weakpoint != null)
+					if (Weakpoint != null)
 					{
-						weakpoint.Center = attachedChain.ropeSegments[attachedChain.ropeSegments.Count / 3].posNow;
-						weakpoint.dontTakeDamage = false;
+						Weakpoint.Center = attachedChain.ropeSegments[attachedChain.ropeSegments.Count / 3].posNow;
+						Weakpoint.dontTakeDamage = false;
 					}
 
 					if (thinker.life <= thinker.lifeMax / 2f)
@@ -1050,6 +1055,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			binaryWriter.WriteVector2(savedPos);
 			binaryWriter.WriteVector2(savedPos2);
 			binaryWriter.Write(savedRot);
+			binaryWriter.Write(weakpointIndex);
 
 			binaryWriter.Write(attackQueue.Count);
 			for (int k = 0; k < attackQueue.Count; k++)
@@ -1062,7 +1068,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 				binaryWriter.Write(safeMineIndicides[k]);
 			}
 
-			binaryWriter.Write(weakpoint?.whoAmI ?? -1);
+			binaryWriter.Write(Weakpoint?.whoAmI ?? -1);
 			binaryWriter.Write(neurisms.Count);
 			for (int k = 0; k < neurisms.Count; k++)
 			{
@@ -1075,6 +1081,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 			savedPos = binaryReader.ReadVector2();
 			savedPos2 = binaryReader.ReadVector2();
 			savedRot = binaryReader.ReadSingle();
+			weakpointIndex = binaryReader.ReadInt32();
 
 			int amount = binaryReader.ReadInt32();
 			attackQueue.Clear();
@@ -1090,7 +1097,7 @@ namespace StarlightRiver.Content.Bosses.TheThinkerBoss
 
 			int weakpointWhoAmI = binaryReader.ReadInt32();
 			if (weakpointWhoAmI > -1)
-				weakpoint = Main.npc[weakpointWhoAmI];
+				Weakpoint = Main.npc[weakpointWhoAmI];
 
 			neurisms.Clear();
 			int neurismCount = binaryReader.ReadInt32();
