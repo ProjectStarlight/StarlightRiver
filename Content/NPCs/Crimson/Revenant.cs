@@ -414,11 +414,14 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 				NPC.velocity.X += 8 * NPC.direction;
 
-				swingTrailCache.Clear();
-
-				for (int i = 0; i < 20; i++)
+				if (!Main.dedServ)
 				{
-					swingTrailCache.Add(NPC.Center + new Vector2(30 * NPC.direction, -70 * 0.95f));
+					swingTrailCache.Clear();
+
+					for (int i = 0; i < 20; i++)
+					{
+						swingTrailCache.Add(NPC.Center + new Vector2(30 * NPC.direction, -70 * 0.95f));
+					}
 				}
 			}
 
@@ -454,7 +457,8 @@ namespace StarlightRiver.Content.NPCs.Crimson
 						Vector2 prev = NPC.Center + NPC.velocity * k / 2f + SplineHelper.PointOnSpline(Eases.EaseQuinticOut((AttackTimer - 1 - windupDuration + k / 2f) / swingDuration), spline);
 						Vector2 endPoint = NPC.Center + NPC.velocity * k / 2f + SplineHelper.PointOnSpline(Eases.EaseQuinticOut((AttackTimer - windupDuration + k / 2f) / swingDuration), spline);
 
-						swingTrailCache.Add(endPoint);
+						if (!Main.dedServ)
+							swingTrailCache.Add(endPoint);
 
 						float colProg = (AttackTimer - windupDuration) / swingDuration;
 						Dust.NewDustPerfect(endPoint + Main.rand.NextVector2Circular(4f, 4f), ModContent.DustType<Dusts.PixelatedImpactLineDust>(), endPoint.DirectionTo(prev).RotatedBy(0.5f * NPC.direction) * (3 + 3 * prog), 0, new Color(1, colProg, colProg * 0.8f, 0), 0.5f * colProg);
@@ -531,7 +535,12 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			}
 
 			grayFieldWhoAmI = Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, NPC.height / 2f), Vector2.Zero, ModContent.ProjectileType<ReusableHallucinationZone>(), 0, 0, Main.myPlayer, 120, 600);
-			NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<RevenantCore>(), 0, NPC.whoAmI);
+
+			if (Main.netMode != NetmodeID.MultiplayerClient)
+			{
+				int i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<RevenantCore>(), 0, NPC.whoAmI);
+				Main.npc[i].netUpdate = true;
+			}
 
 			return false;
 		}

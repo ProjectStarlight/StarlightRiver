@@ -3,9 +3,11 @@ using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.BarrierSystem;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.NPCs.Crimson
 {
@@ -75,6 +77,9 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			if (!ParentNPC.active || ParentNPC.type != ModContent.NPCType<Revenant>())
 				NPC.active = false;
 
+			if (ParentRevenant is null)
+				return;
+
 			if (ParentRevenant.ReviveTimer == 540)
 				savedPos = NPC.Center;
 
@@ -84,6 +89,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				NPC.Center = Vector2.SmoothStep(savedPos, ParentNPC.Center, prog);
 				savedPos += NPC.velocity * (1f - prog);
 				NPC.scale = 1f - prog;
+				NPC.netUpdate = true;
 			}
 
 			if (ParentRevenant.State != 3)
@@ -96,10 +102,11 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			NPC.velocity += randomDirection * 0.25f;
 			NPC.velocity *= 0.99f;
 
-			if (Timer >= NextChange)
+			if (Timer >= NextChange && Main.netMode != NetmodeID.MultiplayerClient)
 			{
 				randomDirection = Main.rand.NextVector2Circular(1, 1);
 				NextChange += Main.rand.Next(10, 30);
+				NPC.netUpdate = true;
 			}
 
 			NPC.TargetClosest();
@@ -115,7 +122,20 @@ namespace StarlightRiver.Content.NPCs.Crimson
 				Dust.NewDustPerfect(NPC.Center, ModContent.DustType<Dusts.PixelatedImpactLineDust>(), Main.rand.NextVector2Circular(1, 1) * Main.rand.NextFloat(5, 40), 0, new Color(255, Main.rand.Next(50, 255), 50, 0), Main.rand.NextFloat(0.5f));
 			}
 
-			ParentNPC.Kill();
+			ParentNPC.StrikeInstantKill();
+			ParentNPC.netUpdate = true;
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.WriteVector2(randomDirection);
+			writer.WriteVector2(savedPos);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			randomDirection = reader.ReadVector2();
+			savedPos = reader.ReadVector2();
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)

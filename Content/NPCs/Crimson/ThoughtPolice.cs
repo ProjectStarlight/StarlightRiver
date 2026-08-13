@@ -2,6 +2,7 @@
 using StarlightRiver.Content.Buffs;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
@@ -86,8 +87,11 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			Timer++;
 
 			// check for and set home X position if needed
-			if (homeX == 0)
+			if (homeX == 0 && Main.netMode != NetmodeID.MultiplayerClient)
+			{
 				homeX = NPC.Center.X;
+				NPC.netUpdate = true;
+			}
 
 			if (aggroFlashTimer > 0)
 				aggroFlashTimer--;
@@ -200,7 +204,8 @@ namespace StarlightRiver.Content.NPCs.Crimson
 					{
 						NPC.velocity *= 0f;
 
-						Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, NPC.DirectionTo(Target.Center) * 5, ModContent.ProjectileType<ThoughtPoliceCage>(), NPC.damage, 0, Main.myPlayer);
+						if (Main.netMode != NetmodeID.MultiplayerClient)
+							Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, NPC.DirectionTo(Target.Center) * 5, ModContent.ProjectileType<ThoughtPoliceCage>(), NPC.damage, 0, Main.myPlayer);
 					}
 
 					if (Timer >= 60)
@@ -230,6 +235,27 @@ namespace StarlightRiver.Content.NPCs.Crimson
 			State = ThoughtPoliceState.Aggroed;
 			aggroFlashTimer = MAX_FLASH_TIMER;
 			NPC.netUpdate = true;
+		}
+
+		public override void HitEffect(NPC.HitInfo hit)
+		{
+			if (Main.netMode != NetmodeID.MultiplayerClient)
+			{
+				Timer = 0;
+				State = ThoughtPoliceState.Aggroed;
+				aggroFlashTimer = MAX_FLASH_TIMER;
+				NPC.netUpdate = true;
+			}
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(homeX);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			homeX = reader.ReadSingle();
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -281,7 +307,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
 		{
-			if (!spawnInfo.Player.ZoneCrimson || !StarlightWorld.HasFlag(WorldFlags.ThinkerBossOpen))
+			if (!spawnInfo.Player.ZoneCrimson || !StarlightWorld.HasFlag(WorldFlags.ThinkerBossOpen) || spawnInfo.SpawnTileY > Main.worldSurface)
 				return 0;
 
 			bool overlap = Main.npc.Any(n =>
