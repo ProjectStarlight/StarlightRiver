@@ -3463,6 +3463,11 @@ Items: {
 		DisplayName: Locked Onyx
 		Tooltip: ""
 	}
+
+	VileVial: {
+		DisplayName: Vile Vial
+		Tooltip: WIP
+	}
 }
 
 Tiles: {
@@ -3941,6 +3946,7 @@ Projectiles: {
 	Dart.DisplayName: Cursed Dart
 	SawbladeSmall.DisplayName: Cursed Sawblade
 	Spear.DisplayName: Cursed Spear
+	VileVialSentry.DisplayName: Vile Vial
 }
 
 Biomes: {
@@ -4429,6 +4435,11 @@ Buffs: {
 			What lies below?
 			Increased mining speed
 			'''
+	}
+
+	VileVialDrain: {
+		DisplayName: Heart Siphon
+		Description: ""
 	}
 }
 

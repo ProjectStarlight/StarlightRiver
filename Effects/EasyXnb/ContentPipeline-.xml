@@ -1,0 +1,1021 @@
+<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Pipeline="Microsoft.Xna.Framework.Content.Pipeline">
+  <Asset Type="Pipeline:BuildItemCollection">
+    <Item>
+      <Source>AlphaDistort.fx</Source>
+      <Name>AlphaDistort</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\AlphaDistort.xnb</Output>
+      <Time>2025-07-07T23:52:32.1382674+02:00</Time>
+      <Dependency>
+        <Key>Common.fxh</Key>
+        <Value>2025-07-07T23:52:32.1442514+02:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>AlphaTextureTrail.fx</Source>
+      <Name>AlphaTextureTrail</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\AlphaTextureTrail.xnb</Output>
+      <Time>2025-07-07T23:52:32.1382674+02:00</Time>
+    </Item>
+    <Item>
+      <Source>arc.fx</Source>
+      <Name>arc</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\arc.xnb</Output>
+      <Time>2025-07-07T23:52:32.1821496+02:00</Time>
+    </Item>
+    <Item>
+      <Source>AuroraWaterShader.fx</Source>
+      <Name>AuroraWaterShader</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\AuroraWaterShader.xnb</Output>
+      <Time>2025-07-07T23:52:32.1392646+02:00</Time>
+      <Dependency>
+        <Key>Common.fxh</Key>
+        <Value>2025-07-07T23:52:32.1442514+02:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>BorderNoise.fx</Source>
+      <Name>BorderNoise</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\BorderNoise.xnb</Output>
+      <Time>2025-07-07T23:52:32.1392646+02:00</Time>
+      <Dependency>
+        <Key>Common.fxh</Key>
+        <Value>2025-07-07T23:52:32.1442514+02:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>BowRing.fx</Source>
+      <Name>BowRing</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\BowRing.xnb</Output>
+      <Time>2025-07-07T23:52:32.140262+02:00</Time>
+    </Item>
+    <Item>
+      <Source>BrainShield.fx</Source>
+      <Name>BrainShield</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\BrainShield.xnb</Output>
+      <Time>2025-07-07T23:52:32.140262+02:00</Time>
+      <Dependency>
+        <Key>Common.fxh</Key>
+        <Value>2025-07-07T23:52:32.1442514+02:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>BreacherScan.fx</Source>
+      <Name>BreacherScan</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\BreacherScan.xnb</Output>
+      <Time>2025-07-07T23:52:32.1412587+02:00</Time>
+    </Item>
+    <Item>
+      <Source>BreachLaser.fx</Source>
+      <Name>BreachLaser</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\BreachLaser.xnb</Output>
+      <Time>2025-07-07T23:52:32.1412587+02:00</Time>
+      <Dependency>
+        <Key>Common.fxh</Key>
+        <Value>2025-07-07T23:52:32.1442514+02:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>BreachLaserBloom.fx</Source>
+      <Name>BreachLaserBloom</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\BreachLaserBloom.xnb</Output>
+      <Time>2025-07-07T23:52:32.1412587+02:00</Time>
+      <Dependency>
+        <Key>Common.fxh</Key>
+        <Value>2025-07-07T23:52:32.1442514+02:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>CeirosRing.fx</Source>
+      <Name>CeirosRing</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\CeirosRing.xnb</Output>
+      <Time>2025-07-07T23:52:32.1422566+02:00</Time>
+    </Item>
+    <Item>
+      <Source>CoachBombTrail.fx</Source>
+      <Name>CoachBombTrail</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\CoachBombTrail.xnb</Output>
+      <Time>2025-07-07T23:52:32.1422566+02:00</Time>
+    </Item>
+    <Item>
+      <Source>ColoredFire.fx</Source>
+      <Name>ColoredFire</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\ColoredFire.xnb</Output>
+      <Time>2025-07-07T23:52:32.1432536+02:00</Time>
+    </Item>
+    <Item>
+      <Source>ColorSucker.fx</Source>
+      <Name>ColorSucker</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\ColorSucker.xnb</Output>
+      <Time>2025-07-07T23:52:32.1432536+02:00</Time>
+    </Item>
+    <Item>
+      <Source>ConicalNoise.fx</Source>
+      <Name>ConicalNoise</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\ConicalNoise.xnb</Output>
+      <Time>2025-07-07T23:52:32.1442514+02:00</Time>
+      <Dependency>
+        <Key>Common.fxh</Key>
+        <Value>2025-07-07T23:52:32.1442514+02:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>CrescentOrb.fx</Source>
+      <Name>CrescentOrb</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\CrescentOrb.xnb</Output>
+      <Time>2025-07-07T23:52:32.1442514+02:00</Time>
+    </Item>
+    <Item>
+      <Source>CrystalRefraction.fx</Source>
+      <Name>CrystalRefraction</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\CrystalRefraction.xnb</Output>
+      <Time>2025-07-07T23:52:32.1452483+02:00</Time>
+      <Dependency>
+        <Key>Common.fxh</Key>
+        <Value>2025-07-07T23:52:32.1442514+02:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>CursedTooltip.fx</Source>
+      <Name>CursedTooltip</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\CursedTooltip.xnb</Output>
+      <Time>2025-07-07T23:52:32.1452483+02:00</Time>
+      <Dependency>
+        <Key>Common.fxh</Key>
+        <Value>2025-07-07T23:52:32.1442514+02:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>Cyclone.fx</Source>
+      <Name>Cyclone</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\Cyclone.xnb</Output>
+      <Time>2025-07-07T23:52:32.1462454+02:00</Time>
+    </Item>
+    <Item>
+      <Source>CycloneIce.fx</Source>
+      <Name>CycloneIce</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\CycloneIce.xnb</Output>
+      <Time>2025-07-07T23:52:32.1462454+02:00</Time>
+    </Item>
+    <Item>
+      <Source>DatsuzeiTrail.fx</Source>
+      <Name>DatsuzeiTrail</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\DatsuzeiTrail.xnb</Output>
+      <Time>2025-07-07T23:52:32.1472434+02:00</Time>
+    </Item>
+    <Item>
+      <Source>DistortionPulse.fx</Source>
+      <Name>DistortionPulse</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\DistortionPulse.xnb</Output>
+      <Time>2025-07-07T23:52:32.1482402+02:00</Time>
+    </Item>
+    <Item>
+      <Source>DistortSprite.fx</Source>
+      <Name>DistortSprite</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\DistortSprite.xnb</Output>
+      <Time>2025-07-07T23:52:32.1472434+02:00</Time>
+      <Dependency>
+        <Key>Common.fxh</Key>
+        <Value>2025-07-07T23:52:32.1442514+02:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>FireShader.fx</Source>
+      <Name>FireShader</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\FireShader.xnb</Output>
+      <Time>2025-07-07T23:52:32.1482402+02:00</Time>
+    </Item>
+    <Item>
+      <Source>FrostAura.fx</Source>
+      <Name>FrostAura</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\FrostAura.xnb</Output>
+      <Time>2025-07-07T23:52:32.149238+02:00</Time>
+      <Dependency>
+        <Key>Common.fxh</Key>
+        <Value>2025-07-07T23:52:32.1442514+02:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>GestaltLine.fx</Source>
+      <Name>GestaltLine</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\GestaltLine.xnb</Output>
+      <Time>2025-07-07T23:54:03.4239966+02:00</Time>
+    </Item>
+    <Item>
+      <Source>GhoulTrail.fx</Source>
+      <Name>GhoulTrail</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\GhoulTrail.xnb</Output>
+      <Time>2025-07-07T23:52:32.149238+02:00</Time>
+    </Item>
+    <Item>
+      <Source>GlowingCustomParticle.fx</Source>
+      <Name>GlowingCustomParticle</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\GlowingCustomParticle.xnb</Output>
+      <Time>2025-07-07T23:54:03.4249938+02:00</Time>
+      <Dependency>
+        <Key>Common.fxh</Key>
+        <Value>2025-07-07T23:52:32.1442514+02:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>GlowingDust.fx</Source>
+      <Name>GlowingDust</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\GlowingDust.xnb</Output>
+      <Time>2025-07-07T23:52:32.150235+02:00</Time>
+    </Item>
+    <Item>
+      <Source>GluttonyTrail.fx</Source>
+      <Name>GluttonyTrail</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\GluttonyTrail.xnb</Output>
+      <Time>2025-07-07T23:52:32.150235+02:00</Time>
+    </Item>
+    <Item>
+      <Source>GodrayCurve.fx</Source>
+      <Name>GodrayCurve</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\GodrayCurve.xnb</Output>
+      <Time>2025-07-07T23:52:32.1512327+02:00</Time>
+    </Item>
+    <Item>
+      <Source>GradientDistortion.fx</Source>
+      <Name>GradientDistortion</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\GradientDistortion.xnb</Output>
+      <Time>2025-07-07T23:52:32.1522301+02:00</Time>
+      <Dependency>
+        <Key>Common.fxh</Key>
+        <Value>2025-07-07T23:52:32.1442514+02:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>GrayGooShader.fx</Source>
+      <Name>GrayGooShader</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\GrayGooShader.xnb</Output>
+      <Time>2025-07-07T23:52:32.1522301+02:00</Time>
+    </Item>
+    <Item>
+      <Source>GrayMatter.fx</Source>
+      <Name>GrayMatter</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\GrayMatter.xnb</Output>
+      <Time>2025-07-07T23:52:32.1522301+02:00</Time>
+      <Dependency>
+        <Key>Common.fxh</Key>
+        <Value>2025-07-07T23:52:32.1442514+02:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>HallucionationBlockShader.fx</Source>
+      <Name>HallucionationBlockShader</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\HallucionationBlockShader.xnb</Output>
+      <Time>2025-07-07T23:52:32.1532273+02:00</Time>
+      <Dependency>
+        <Key>Common.fxh</Key>
+        <Value>2025-07-07T23:52:32.1442514+02:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>HotspringWater.fx</Source>
+      <Name>HotspringWater</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\HotspringWater.xnb</Output>
+      <Time>2025-07-07T23:52:32.1532273+02:00</Time>
+    </Item>
+    <Item>
+      <Source>IceCrystal.fx</Source>
+      <Name>IceCrystal</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\IceCrystal.xnb</Output>
+      <Time>2025-07-07T23:52:32.1542244+02:00</Time>
+      <Dependency>
+        <Key>Common.fxh</Key>
+        <Value>2025-07-07T23:52:32.1442514+02:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>IgnitionFlames.fx</Source>
+      <Name>IgnitionFlames</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\IgnitionFlames.xnb</Output>
+      <Time>2025-07-07T23:52:32.1542244+02:00</Time>
+    </Item>
+    <Item>
+      <Source>LightApply.fx</Source>
+      <Name>LightApply</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\LightApply.xnb</Output>
+      <Time>2025-07-07T23:52:32.155222+02:00</Time>
+    </Item>
+    <Item>
+      <Source>LightningTrail.fx</Source>
+      <Name>LightningTrail</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\LightningTrail.xnb</Output>
+      <Time>2025-07-07T23:52:32.1562188+02:00</Time>
+    </Item>
+    <Item>
+      <Source>LightShader.fx</Source>
+      <Name>LightShader</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\LightShader.xnb</Output>
+      <Time>2025-07-07T23:52:32.155222+02:00</Time>
+    </Item>
+    <Item>
+      <Source>LunarEffect.fx</Source>
+      <Name>LunarEffect</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\LunarEffect.xnb</Output>
+      <Time>2025-07-07T23:52:32.1562188+02:00</Time>
+    </Item>
+    <Item>
+      <Source>MagicalFlames.fx</Source>
+      <Name>MagicalFlames</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\MagicalFlames.xnb</Output>
+      <Time>2025-07-07T23:52:32.1572162+02:00</Time>
+      <Dependency>
+        <Key>Common.fxh</Key>
+        <Value>2025-07-07T23:52:32.1442514+02:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>MagmaCracks.fx</Source>
+      <Name>MagmaCracks</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\MagmaCracks.xnb</Output>
+      <Time>2025-07-07T23:52:32.1572162+02:00</Time>
+    </Item>
+    <Item>
+      <Source>MagmaNoise.fx</Source>
+      <Name>MagmaNoise</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\MagmaNoise.xnb</Output>
+      <Time>2025-07-07T23:52:32.1582135+02:00</Time>
+    </Item>
+    <Item>
+      <Source>MagmaTileShader.fx</Source>
+      <Name>MagmaTileShader</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\MagmaTileShader.xnb</Output>
+      <Time>2025-07-07T23:52:32.1582135+02:00</Time>
+    </Item>
+    <Item>
+      <Source>MetaballEdgeDetection.fx</Source>
+      <Name>MetaballEdgeDetection</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\MetaballEdgeDetection.xnb</Output>
+      <Time>2025-07-07T23:52:32.1592113+02:00</Time>
+    </Item>
+    <Item>
+      <Source>MirageItemFilter.fx</Source>
+      <Name>MirageItemFilter</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\MirageItemFilter.xnb</Output>
+      <Time>2025-07-07T23:52:32.1592113+02:00</Time>
+    </Item>
+    <Item>
+      <Source>MoltenForm.fx</Source>
+      <Name>MoltenForm</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\MoltenForm.xnb</Output>
+      <Time>2025-07-07T23:52:32.1602082+02:00</Time>
+    </Item>
+    <Item>
+      <Source>MoltenFormAndColor.fx</Source>
+      <Name>MoltenFormAndColor</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\MoltenFormAndColor.xnb</Output>
+      <Time>2025-07-07T23:52:32.1602082+02:00</Time>
+      <Dependency>
+        <Key>Common.fxh</Key>
+        <Value>2025-07-07T23:52:32.1442514+02:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>MoonFireAura.fx</Source>
+      <Name>MoonFireAura</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\MoonFireAura.xnb</Output>
+      <Time>2025-07-07T23:52:32.1612055+02:00</Time>
+    </Item>
+    <Item>
+      <Source>MoonstoneBeastEffect.fx</Source>
+      <Name>MoonstoneBeastEffect</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\MoonstoneBeastEffect.xnb</Output>
+      <Time>2025-07-07T23:52:32.1612055+02:00</Time>
+    </Item>
+    <Item>
+      <Source>MoonstoneDistortion.fx</Source>
+      <Name>MoonstoneDistortion</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\MoonstoneDistortion.xnb</Output>
+      <Time>2025-07-07T23:52:32.1622028+02:00</Time>
+      <Dependency>
+        <Key>Common.fxh</Key>
+        <Value>2025-07-07T23:52:32.1442514+02:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>MoonstoneRunes.fx</Source>
+      <Name>MoonstoneRunes</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\MoonstoneRunes.xnb</Output>
+      <Time>2025-07-07T23:52:32.1622028+02:00</Time>
+      <Dependency>
+        <Key>Common.fxh</Key>
+        <Value>2025-07-07T23:52:32.1442514+02:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>MyelinChain.fx</Source>
+      <Name>MyelinChain</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\MyelinChain.xnb</Output>
+      <Time>2025-07-07T23:52:32.1632001+02:00</Time>
+    </Item>
+    <Item>
+      <Source>NavierStokes.fx</Source>
+      <Name>NavierStokes</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\NavierStokes.xnb</Output>
+      <Time>2025-07-07T23:52:32.1632001+02:00</Time>
+    </Item>
+    <Item>
+      <Source>NavierStokesOnlyCursed.fx</Source>
+      <Name>NavierStokesOnlyCursed</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\NavierStokesOnlyCursed.xnb</Output>
+      <Time>2025-07-07T23:52:32.1641976+02:00</Time>
+    </Item>
+    <Item>
+      <Source>NeedlerExplosion.fx</Source>
+      <Name>NeedlerExplosion</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\NeedlerExplosion.xnb</Output>
+      <Time>2025-07-07T23:52:32.1651948+02:00</Time>
+    </Item>
+    <Item>
+      <Source>NeedlerRays.fx</Source>
+      <Name>NeedlerRays</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\NeedlerRays.xnb</Output>
+      <Time>2025-07-07T23:52:32.1651948+02:00</Time>
+    </Item>
+    <Item>
+      <Source>Negative.fx</Source>
+      <Name>Negative</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\Negative.xnb</Output>
+      <Time>2025-07-07T23:54:03.4249938+02:00</Time>
+    </Item>
+    <Item>
+      <Source>Neurysm.fx</Source>
+      <Name>Neurysm</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\Neurysm.xnb</Output>
+      <Time>2025-07-07T23:52:32.1661921+02:00</Time>
+    </Item>
+    <Item>
+      <Source>NPCBarrier.fx</Source>
+      <Name>NPCBarrier</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\NPCBarrier.xnb</Output>
+      <Time>2025-07-07T23:52:32.1632001+02:00</Time>
+    </Item>
+    <Item>
+      <Source>OnyxCracks.fx</Source>
+      <Name>OnyxCracks</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\OnyxCracks.xnb</Output>
+      <Time>2025-07-07T23:52:32.1671895+02:00</Time>
+    </Item>
+    <Item>
+      <Source>OrbitalStrikeTrail.fx</Source>
+      <Name>OrbitalStrikeTrail</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\OrbitalStrikeTrail.xnb</Output>
+      <Time>2025-07-07T23:52:32.1671895+02:00</Time>
+    </Item>
+    <Item>
+      <Source>Outline.fx</Source>
+      <Name>Outline</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\Outline.xnb</Output>
+      <Time>2025-07-07T23:52:32.1681867+02:00</Time>
+    </Item>
+    <Item>
+      <Source>OverTileShader.fx</Source>
+      <Name>OverTileShader</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\OverTileShader.xnb</Output>
+      <Time>2025-07-07T23:52:32.1681867+02:00</Time>
+    </Item>
+    <Item>
+      <Source>PaletteCorrection.fx</Source>
+      <Name>PaletteCorrection</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\PaletteCorrection.xnb</Output>
+      <Time>2025-07-07T23:52:32.1691842+02:00</Time>
+    </Item>
+    <Item>
+      <Source>pixelationFull.fx</Source>
+      <Name>pixelationFull</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\pixelationFull.xnb</Output>
+      <Time>2025-07-07T23:52:32.1831474+02:00</Time>
+    </Item>
+    <Item>
+      <Source>pixelTrail.fx</Source>
+      <Name>pixelTrail</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\pixelTrail.xnb</Output>
+      <Time>2025-07-07T23:52:32.1821496+02:00</Time>
+    </Item>
+    <Item>
+      <Source>PrinceSlime.fx</Source>
+      <Name>PrinceSlime</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\PrinceSlime.xnb</Output>
+      <Time>2025-07-07T23:52:32.1691842+02:00</Time>
+    </Item>
+    <Item>
+      <Source>RainbowArmor.fx</Source>
+      <Name>RainbowArmor</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\RainbowArmor.xnb</Output>
+      <Time>2025-07-07T23:52:32.1701818+02:00</Time>
+    </Item>
+    <Item>
+      <Source>RainbowArmor2.fx</Source>
+      <Name>RainbowArmor2</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\RainbowArmor2.xnb</Output>
+      <Time>2025-07-07T23:52:32.1701818+02:00</Time>
+    </Item>
+    <Item>
+      <Source>RainbowAura.fx</Source>
+      <Name>RainbowAura</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\RainbowAura.xnb</Output>
+      <Time>2025-07-07T23:52:32.1701818+02:00</Time>
+    </Item>
+    <Item>
+      <Source>RebarTrail.fx</Source>
+      <Name>RebarTrail</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\RebarTrail.xnb</Output>
+      <Time>2025-07-07T23:52:32.171179+02:00</Time>
+    </Item>
+    <Item>
+      <Source>RepeatingChain.fx</Source>
+      <Name>RepeatingChain</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\RepeatingChain.xnb</Output>
+      <Time>2025-07-07T23:52:32.171179+02:00</Time>
+    </Item>
+    <Item>
+      <Source>RiverBody.fx</Source>
+      <Name>RiverBody</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\RiverBody.xnb</Output>
+      <Time>2025-07-07T23:54:03.425991+02:00</Time>
+      <Dependency>
+        <Key>Common.fxh</Key>
+        <Value>2025-07-07T23:52:32.1442514+02:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>ShrapnelTrail.fx</Source>
+      <Name>ShrapnelTrail</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\ShrapnelTrail.xnb</Output>
+      <Time>2025-07-07T23:52:32.1721767+02:00</Time>
+    </Item>
+    <Item>
+      <Source>ShrinkingDust.fx</Source>
+      <Name>ShrinkingDust</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\ShrinkingDust.xnb</Output>
+      <Time>2025-07-07T23:52:32.1731734+02:00</Time>
+    </Item>
+    <Item>
+      <Source>SimpleReflection.fx</Source>
+      <Name>SimpleReflection</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\SimpleReflection.xnb</Output>
+      <Time>2025-07-07T23:52:32.1731734+02:00</Time>
+    </Item>
+    <Item>
+      <Source>SnoobelTrunk.fx</Source>
+      <Name>SnoobelTrunk</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\SnoobelTrunk.xnb</Output>
+      <Time>2025-07-07T23:52:32.1741708+02:00</Time>
+    </Item>
+    <Item>
+      <Source>SpaceMap.fx</Source>
+      <Name>SpaceMap</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\SpaceMap.xnb</Output>
+      <Time>2025-07-07T23:52:32.1741708+02:00</Time>
+      <Dependency>
+        <Key>Common.fxh</Key>
+        <Value>2025-07-07T23:52:32.1442514+02:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>SpearDepth.fx</Source>
+      <Name>SpearDepth</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\SpearDepth.xnb</Output>
+      <Time>2025-07-07T23:52:32.1741708+02:00</Time>
+      <Dependency>
+        <Key>Common.fxh</Key>
+        <Value>2025-07-07T23:52:32.1442514+02:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>StarMap.fx</Source>
+      <Name>StarMap</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\StarMap.xnb</Output>
+      <Time>2025-07-07T23:52:32.1751682+02:00</Time>
+    </Item>
+    <Item>
+      <Source>StarViewWarp.fx</Source>
+      <Name>StarViewWarp</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\StarViewWarp.xnb</Output>
+      <Time>2025-07-07T23:52:32.1751682+02:00</Time>
+    </Item>
+    <Item>
+      <Source>StarViewWobble.fx</Source>
+      <Name>StarViewWobble</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\StarViewWobble.xnb</Output>
+      <Time>2025-07-07T23:52:32.1761655+02:00</Time>
+    </Item>
+    <Item>
+      <Source>SunPlasma.fx</Source>
+      <Name>SunPlasma</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\SunPlasma.xnb</Output>
+      <Time>2025-07-07T23:52:32.1761655+02:00</Time>
+    </Item>
+    <Item>
+      <Source>TempleLens.fx</Source>
+      <Name>TempleLens</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\TempleLens.xnb</Output>
+      <Time>2025-07-07T23:52:32.177163+02:00</Time>
+    </Item>
+    <Item>
+      <Source>ThinkerBackground.fx</Source>
+      <Name>ThinkerBackground</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\ThinkerBackground.xnb</Output>
+      <Time>2025-07-07T23:52:32.177163+02:00</Time>
+      <Dependency>
+        <Key>Common.fxh</Key>
+        <Value>2025-07-07T23:52:32.1442514+02:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>ThinkerBody.fx</Source>
+      <Name>ThinkerBody</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\ThinkerBody.xnb</Output>
+      <Time>2025-07-07T23:52:32.178161+02:00</Time>
+    </Item>
+    <Item>
+      <Source>ThinkerPetal.fx</Source>
+      <Name>ThinkerPetal</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\ThinkerPetal.xnb</Output>
+      <Time>2025-07-07T23:52:32.178161+02:00</Time>
+    </Item>
+    <Item>
+      <Source>VitricReplicaItem.fx</Source>
+      <Name>VitricReplicaItem</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\VitricReplicaItem.xnb</Output>
+      <Time>2025-07-07T23:52:32.1791581+02:00</Time>
+    </Item>
+    <Item>
+      <Source>WaterShine.fx</Source>
+      <Name>WaterShine</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\WaterShine.xnb</Output>
+      <Time>2025-07-07T23:52:32.1791581+02:00</Time>
+      <Dependency>
+        <Key>Common.fxh</Key>
+        <Value>2025-07-07T23:52:32.1442514+02:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>Waves.fx</Source>
+      <Name>Waves</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\Waves.xnb</Output>
+      <Time>2025-07-07T23:52:32.1801548+02:00</Time>
+    </Item>
+    <Item>
+      <Source>WavesDistort.fx</Source>
+      <Name>WavesDistort</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\WavesDistort.xnb</Output>
+      <Time>2025-07-07T23:52:32.1801548+02:00</Time>
+      <Dependency>
+        <Key>Common.fxh</Key>
+        <Value>2025-07-07T23:52:32.1442514+02:00</Value>
+      </Dependency>
+    </Item>
+    <Item>
+      <Source>WhipAbility.fx</Source>
+      <Name>WhipAbility</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\WhipAbility.xnb</Output>
+      <Time>2025-07-07T23:52:32.1801548+02:00</Time>
+    </Item>
+    <Item>
+      <Source>Whitewash.fx</Source>
+      <Name>Whitewash</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\Whitewash.xnb</Output>
+      <Time>2025-07-07T23:54:03.4269889+02:00</Time>
+    </Item>
+    <Item>
+      <Source>Wiggle.fx</Source>
+      <Name>Wiggle</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\Wiggle.xnb</Output>
+      <Time>2025-07-07T23:52:32.1811528+02:00</Time>
+    </Item>
+    <Item>
+      <Source>BentTrail.fx</Source>
+      <Name>BentTrail</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>EffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\BentTrail.xnb</Output>
+      <Time>2025-07-15T14:08:09.4432609+02:00</Time>
+    </Item>
+    <BuildSuccessful>true</BuildSuccessful>
+    <Settings>
+      <ContentProjectGUID Null="true" />
+      <TargetPlatform>Windows</TargetPlatform>
+      <TargetProfile>HiDef</TargetProfile>
+      <BuildConfiguration Null="true" />
+      <CompressContent>false</CompressContent>
+      <RootDirectory>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\Source\</RootDirectory>
+      <LoggerRootDirectory Null="true" />
+      <IntermediateDirectory>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\</IntermediateDirectory>
+      <OutputDirectory>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\</OutputDirectory>
+    </Settings>
+    <Assemblies>
+      <Assembly>
+        <Key>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\Microsoft.Xna.Framework.Content.Pipeline.TextureImporter.dll</Key>
+        <Value>2025-07-07T23:52:32.1213125+02:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\Microsoft.Xna.Framework.Content.Pipeline.FBXImporter.dll</Key>
+        <Value>2025-07-07T23:52:32.1193177+02:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Users\pc\Documents\My Games\Terraria\tModLoader\ModSources\StarlightRiver\Effects\EasyXnb\Microsoft.Xna.Framework.Content.Pipeline.EffectImporter.dll</Key>
+        <Value>2025-07-07T23:52:32.0993389+02:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\windows\Microsoft.Net\assembly\GAC_32\Microsoft.Xna.Framework.Content.Pipeline\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.Content.Pipeline.dll</Key>
+        <Value>2023-04-29T23:27:58.2509444+02:00</Value>
+      </Assembly>
+    </Assemblies>
+  </Asset>
+</XnaContent>
