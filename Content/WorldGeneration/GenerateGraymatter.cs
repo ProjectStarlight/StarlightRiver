@@ -107,6 +107,7 @@ namespace StarlightRiver.Core
 			}
 
 			// Gestalt arena
+			/*
 			bool generated = false;
 
 			for (int x = Main.maxTilesX / 2; x < Main.maxTilesX - 100; x++)
@@ -190,7 +191,7 @@ namespace StarlightRiver.Core
 					if (generated)
 						break;
 				}
-			}
+			}*/
 
 			ScanAndJoinTrees();
 		}
